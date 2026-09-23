@@ -6,6 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ thống Quản trị nghiệp vụ - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</title>
     <link rel="shortcut icon" href="#">
+    <script>
+        // Suppress benign browser extension message port / channel closing errors
+        window.addEventListener('unhandledrejection', function (event) {
+            const reason = event.reason;
+            const msg = typeof reason === 'string' ? reason : (reason && (reason.message || reason.stack) ? (reason.message || reason.stack) : '');
+            if (msg && (
+                msg.includes('message channel closed') ||
+                msg.includes('listener indicated an asynchronous response') ||
+                msg.includes('message port closed')
+            )) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+            }
+        });
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>

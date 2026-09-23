@@ -199,17 +199,17 @@
 | Ngày có hiệu lực của hợp đồng | Date | Tùy điều kiện | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | **II. Thông tin người đăng ký** | - | Có | -| Control UI: Label|
 | Họ và tên | String(255) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
-| Địa chỉ | String(500) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
+| Địa chỉ | String(500) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. <br> Hiển thị Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia |
 | **III. Thông tin đăng ký** | - | Có | - | Control UI: Label |
 | Số đăng ký | String(50) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | Thời điểm có hiệu lực | Datetime | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
-| **IV. Bên bảo đảm (Tiêu đề động)** | - | Có | Theo hồ sơ | Control UI: Label Theo hồ sơ |
+| **IV. Bên bảo đảm (Tiêu đề động)** | - | Có | Theo hồ sơ | Control UI: Grid Tabl Theo hồ sơ |
 | Loại chủ thể | Enum(String(50)) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | Số giấy tờ chứng minh tư cách pháp lý | String(50) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | Tên | String(255) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | Địa chỉ | String(500) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
-| **V. Bên nhận bảo đảm (Tiêu đề động)** | - | Có | Theo hồ sơ | Control UI: Label.<br>- Theo hồ sơ dạng Chỉ đọc. |
+| **V. Bên nhận bảo đảm (Tiêu đề động)** | - | Có | Theo hồ sơ | Control UI: Grid Table.<br>- Theo hồ sơ dạng Chỉ đọc. |
 | Tên | String(255) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | Địa chỉ | String(500) | Có | Theo hồ sơ | Theo hồ sơ dạng Chỉ đọc. |
 | **VI. Tài sản bảo đảm (Tên động)** | - | Có | Theo hồ sơ | Control UI: Label.<br>- Theo hồ sơ dạng Chỉ đọc. |

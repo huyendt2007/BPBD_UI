@@ -1,4 +1,20 @@
 (function () {
+    // Suppress benign browser extension message port / channel closing errors
+    if (typeof window !== 'undefined') {
+        window.addEventListener('unhandledrejection', function (event) {
+            const reason = event.reason;
+            const msg = typeof reason === 'string' ? reason : (reason && (reason.message || reason.stack) ? (reason.message || reason.stack) : '');
+            if (msg && (
+                msg.includes('message channel closed') ||
+                msg.includes('listener indicated an asynchronous response') ||
+                msg.includes('message port closed')
+            )) {
+                event.preventDefault();
+                event.stopImmediatePropagation();
+            }
+        });
+    }
+
     const STYLE_ID = 'admin-ui-standardizer-style';
     const ROW_CLASS = 'admin-row-clickable';
     const COMPACT_FILTER_CLASS = 'admin-compact-filter';

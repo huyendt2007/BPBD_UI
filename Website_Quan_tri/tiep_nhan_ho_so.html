@@ -201,6 +201,26 @@
             cursor: not-allowed;
         }
 
+        /* Rule 9: Validation inline error */
+        .form-control.is-invalid, .form-select.is-invalid {
+            border-color: var(--danger-color, #ef4444) !important;
+            background-color: #fef2f2 !important;
+        }
+
+        .invalid-feedback {
+            color: var(--danger-color, #ef4444);
+            font-size: 11.5px;
+            margin-top: 4px;
+            display: none;
+            align-items: center;
+            gap: 4px;
+            font-weight: 500;
+        }
+
+        .invalid-feedback.visible {
+            display: flex;
+        }
+
         .required {
             color: var(--danger-color, #ef4444);
             margin-left: 2px;
@@ -258,7 +278,8 @@
         }
 
         .attachment-table th:nth-child(4) {
-            width: 200px;
+            width: 230px;
+            min-width: 230px;
             text-align: center;
         }
 
@@ -317,8 +338,9 @@
         .doc-actions {
             display: flex;
             gap: 8px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             justify-content: center;
+            white-space: nowrap;
         }
 
         .link-action {
@@ -332,6 +354,7 @@
             gap: 5px;
             padding: 4px 6px;
             font-size: 12.5px;
+            white-space: nowrap;
         }
 
         .link-action:hover {
@@ -378,8 +401,8 @@
 
         .sticky-modal-container {
             background: #fff;
-            width: 850px;
-            max-width: 95vw;
+            width: 1160px;
+            max-width: 96vw;
             border-radius: 8px;
             display: flex;
             flex-direction: column;
@@ -586,7 +609,6 @@
     <div class="page-heading">
         <div>
             <h2><i class="fa-solid fa-inbox"></i> DANH SÁCH TIẾP NHẬN HỒ SƠ</h2>
-            <p>Quản lý thông tin tiếp nhận hồ sơ đăng ký biện pháp bảo đảm và tạo khoản phải thu ban đầu trước khi chuyển thụ lý.</p>
         </div>
     </div>
 
@@ -597,11 +619,11 @@
             <div class="grid-4-cols">
                 <div class="form-group">
                     <span class="form-label">Mã hồ sơ</span>
-                    <input id="fCode" class="form-control" placeholder="VD: HS-2026-000128">
+                    <input id="fCode" class="form-control" placeholder="Nhập mã hồ sơ...">
                 </div>
                 <div class="form-group">
                     <span class="form-label">Số đơn giấy</span>
-                    <input id="fPaper" class="form-control" placeholder="VD: PG-0128">
+                    <input id="fPaper" class="form-control" placeholder="Nhập số đơn giấy...">
                 </div>
                 <div class="form-group">
                     <span class="form-label">Người yêu cầu</span>
@@ -668,7 +690,6 @@
             <div class="list-header">
                 <div>
                     <div class="list-title"><i class="fa-solid fa-table-list"></i> Bảng danh sách hồ sơ tiếp nhận</div>
-                    <div class="result-count" id="countText">Hiển thị 0 bản ghi</div>
                 </div>
                 <button class="btn btn-primary" onclick="openCreate()">
                     <i class="fa-solid fa-plus"></i> Tiếp nhận mới
@@ -745,7 +766,7 @@
                             </div>
                             <div class="form-group">
                                 <span class="form-label">Số đơn giấy <span class="required">*</span></span>
-                                <input id="paperNo" class="form-control" placeholder="PG-2026-000128">
+                                <input id="paperNo" class="form-control" placeholder="Nhập số đơn giấy...">
                             </div>
                             <div class="form-group">
                                 <span class="form-label">Đơn vị tiếp nhận</span>
@@ -767,32 +788,78 @@
                             <span class="block-icon"><i class="fa-solid fa-user-check"></i></span>
                             <div>
                                 <h3>02. Thông tin người yêu cầu</h3>
-                                <p>Thông tin cá nhân/tổ chức đứng tên yêu cầu đăng ký</p>
+                                <p>Thông tin cá nhân/tổ chức đứng tên yêu cầu đăng ký biện pháp bảo đảm</p>
                             </div>
                         </div>
                         <div class="grid-4-cols">
-                            <div class="form-group">
+                            <div class="form-group" style="grid-column: span 1;">
                                 <span class="form-label">Loại khách hàng <span class="required">*</span></span>
                                 <select id="customerType" class="form-control" onchange="updateConditionalFields()">
                                     <option value="dinh_danh">Có tài khoản trực tuyến</option>
                                     <option value="vang_lai">Khách hàng vãng lai</option>
                                 </select>
                             </div>
-                            <div class="form-group" id="accountField">
-                                <span class="form-label">Mã tài khoản trực tuyến</span>
-                                <input id="accountCode" class="form-control" placeholder="KH-000231">
+                            <div class="form-group" id="accountField" style="grid-column: span 3;">
+                                <span class="form-label">Mã tài khoản trực tuyến <span class="required">*</span></span>
+                                <div style="display:flex; gap:8px; align-items:flex-start; flex-wrap:wrap;">
+                                    <div style="flex:1; min-width:220px; position:relative;">
+                                        <input id="accountCode" class="form-control" placeholder="Nhập mã tài khoản trực tuyến..." oninput="clearAccountError()" onkeydown="if(event.key==='Enter'){event.preventDefault();searchAccountDirect();}">
+                                        <div class="invalid-feedback" id="accountCodeError">Vui lòng nhập Mã tài khoản trực tuyến để tìm kiếm</div>
+                                    </div>
+                                    <button type="button" class="btn btn-primary" onclick="searchAccountDirect()" style="white-space:nowrap; gap:6px; height:38px;">
+                                        <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" onclick="openAccountSearchModal()" style="white-space:nowrap; gap:6px; height:38px;">
+                                        <i class="fa-solid fa-filter"></i> Tìm kiếm nâng cao
+                                    </button>
+                                </div>
                             </div>
-                            <div class="form-group" style="grid-column: span 2;">
+                            <div class="form-group" style="grid-column: 1 / span 2;">
                                 <span class="form-label">Họ tên/Tên tổ chức <span class="required">*</span></span>
-                                <input id="requester" class="form-control" value="Công ty TNHH Hải Nam">
+                                <input id="requester" class="form-control" placeholder="Họ và tên hoặc tên tổ chức...">
+                                <div class="invalid-feedback" id="requesterError">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group">
                                 <span class="form-label">Số điện thoại <span class="required">*</span></span>
-                                <input id="phone" class="form-control" value="0912555666">
+                                <input id="phone" class="form-control" placeholder="Nhập số điện thoại...">
+                                <div class="invalid-feedback" id="phoneError">Vui lòng nhập số điện thoại hợp lệ (10-11 chữ số)</div>
                             </div>
-                            <div class="form-group" style="grid-column: span 2;">
-                                <span class="form-label">Email</span>
-                                <input id="email" class="form-control" value="contact@hainam.vn">
+                            <div class="form-group">
+                                <span class="form-label">Email <span class="required">*</span></span>
+                                <input id="email" class="form-control" placeholder="Nhập địa chỉ email...">
+                                <div class="invalid-feedback" id="emailError">Vui lòng nhập email hợp lệ</div>
+                            </div>
+                            <div class="form-group" style="grid-column: 1 / span 1;">
+                                <span class="form-label">Quốc gia <span class="required">*</span></span>
+                                <input id="country" class="form-control" value="Việt Nam">
+                                <div class="invalid-feedback" id="countryError">Đây là trường bắt buộc</div>
+                            </div>
+                            <div class="form-group">
+                                <span class="form-label">Tỉnh/thành phố <span class="required">*</span></span>
+                                <input id="province" class="form-control" placeholder="Chọn tỉnh/thành phố..." list="provinceList">
+                                <datalist id="provinceList">
+                                    <option value="Hà Nội">
+                                    <option value="TP Hồ Chí Minh">
+                                    <option value="Đà Nẵng">
+                                    <option value="Hải Phòng">
+                                    <option value="Cần Thơ">
+                                    <option value="Bình Dương">
+                                    <option value="Đồng Nai">
+                                    <option value="Quảng Ninh">
+                                    <option value="Bắc Ninh">
+                                    <option value="Khánh Hòa">
+                                </datalist>
+                                <div class="invalid-feedback" id="provinceError">Đây là trường bắt buộc</div>
+                            </div>
+                            <div class="form-group">
+                                <span class="form-label">Phường/Xã <span class="required">*</span></span>
+                                <input id="ward" class="form-control" placeholder="Nhập phường/xã...">
+                                <div class="invalid-feedback" id="wardError">Đây là trường bắt buộc</div>
+                            </div>
+                            <div class="form-group" style="grid-column: span 1;">
+                                <span class="form-label">Địa chỉ chi tiết <span class="required">*</span></span>
+                                <input id="addressDetail" class="form-control" placeholder="Số nhà, tên đường/phố...">
+                                <div class="invalid-feedback" id="addressDetailError">Đây là trường bắt buộc</div>
                             </div>
                         </div>
                     </section>
@@ -802,7 +869,7 @@
                             <span class="block-icon"><i class="fa-solid fa-id-card"></i></span>
                             <div>
                                 <h3>03. Thông tin người nộp hồ sơ</h3>
-                                <p>Xác định người thực hiện nộp hồ sơ và quan hệ ủy quyền</p>
+                                <p>Thông tin không bắt buộc, chỉ khai báo khi xác định được người thực hiện nộp hồ sơ và quan hệ ủy quyền</p>
                             </div>
                         </div>
                         <div class="grid-4-cols">
@@ -815,11 +882,11 @@
                                 <input id="submitter" class="form-control" placeholder="Họ tên người nộp">
                             </div>
                             <div class="form-group">
-                                <span class="form-label">CCCD/Số định danh <span class="required">*</span></span>
+                                <span class="form-label">CCCD/Số định danh</span>
                                 <input id="submitterId" class="form-control" value="001092012345">
                             </div>
                             <div class="form-group">
-                                <span class="form-label">Số điện thoại <span class="required">*</span></span>
+                                <span class="form-label">Số điện thoại</span>
                                 <input id="submitterPhone" class="form-control" value="0988000111">
                             </div>
                             <div class="form-group">
@@ -953,23 +1020,133 @@
         </div>
     </div>
 
+    <!-- POPUP TÌM KIẾM NÂNG CAO TÀI KHOẢN TRỰC TUYẾN (Rule 1, Rule 11 & Section 4.3.2.16.4.4) -->
+    <div class="modal" id="accountSearchModal">
+        <div class="sticky-modal-container" style="width: 850px; max-width: 95vw;">
+            <div class="confirm-modal-header">
+                <h3 style="margin:0; color:var(--primary-light); font-size:16px; font-weight:700; display:flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm nâng cao tài khoản trực tuyến
+                </h3>
+                <span onclick="closeAccountSearchModal()" style="cursor:pointer; font-size:24px; font-weight:bold; color:#64748b; line-height:1;" title="Đóng">&times;</span>
+            </div>
+            <div class="sticky-modal-body" style="max-height:80vh; overflow-y:auto; padding:24px;">
+                <!-- Khối Bộ lọc tìm kiếm nâng cao (Grid 2 cột 50%-50%) -->
+                <div style="background:#f8fafc; border:1px solid var(--border-color); border-radius:8px; padding:16px; margin-bottom:18px;">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Mã tài khoản trực tuyến</span>
+                            <input id="advSearchAccountCode" class="form-control" placeholder="Nhập mã tài khoản (VD: KH-000128)..." onkeydown="if(event.key==='Enter'){event.preventDefault();executeAdvAccountSearch();}">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Họ và tên/Tên tổ chức</span>
+                            <input id="advSearchName" class="form-control" placeholder="Nhập tên cá nhân hoặc tổ chức..." onkeydown="if(event.key==='Enter'){event.preventDefault();executeAdvAccountSearch();}">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Email</span>
+                            <input id="advSearchEmail" class="form-control" placeholder="Nhập email..." onkeydown="if(event.key==='Enter'){event.preventDefault();executeAdvAccountSearch();}">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Số điện thoại</span>
+                            <input id="advSearchPhone" class="form-control" placeholder="Nhập số điện thoại..." onkeydown="if(event.key==='Enter'){event.preventDefault();executeAdvAccountSearch();}">
+                        </div>
+                        <div class="form-group" style="grid-column: span 2; margin-bottom:0;">
+                            <span class="form-label">Số CCCD/Mã định danh tổ chức</span>
+                            <input id="advSearchDocNo" class="form-control" placeholder="Nhập số CCCD (cá nhân) hoặc MST/Mã định danh (tổ chức)..." onkeydown="if(event.key==='Enter'){event.preventDefault();executeAdvAccountSearch();}">
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:14px; border-top:1px dashed var(--border-color); padding-top:12px;">
+                        <button type="button" class="btn btn-secondary" onclick="resetAccountSearchFilter()" style="gap:6px;">
+                            <i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="executeAdvAccountSearch()" style="gap:6px;">
+                            <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Khối Bảng kết quả tìm kiếm -->
+                <div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <div style="font-weight:700; color:var(--primary-light); font-size:13.5px; display:flex; align-items:center; gap:6px;">
+                            <i class="fa-solid fa-table-list"></i> Kết quả tìm kiếm
+                        </div>
+                        <div class="result-count" id="advSearchResultCount">0 kết quả</div>
+                    </div>
+                    <div class="table-container" style="border:1px solid var(--border-color); border-radius:6px; overflow-x:auto;">
+                        <table class="custom-table" style="min-width:780px; margin-bottom:0;">
+                            <thead>
+                                <tr>
+                                    <th style="width:50px; text-align:center;">STT</th>
+                                    <th style="width:130px; text-align:center;">Mã khách hàng</th>
+                                    <th style="width:200px;">Tên</th>
+                                    <th style="width:160px;">Email</th>
+                                    <th style="width:115px; text-align:center;">Số điện thoại</th>
+                                    <th style="width:130px; text-align:center;">Số giấy tờ</th>
+                                    <th style="width:90px; text-align:center;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="advAccountSearchRows">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Phân trang chuẩn popup (Rule 4) -->
+                    <div class="pagination-bar" id="advPaginationBar" style="border-top:none; margin-top:10px; padding:8px 0 0 0;">
+                        <div class="pagination-left">
+                            <span>Số dòng:</span>
+                            <select class="page-size-select" id="advPageSize" onchange="changeAdvAccountPageSize(this.value)">
+                                <option value="5" selected>5</option>
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                            </select>
+                            <span id="advPageInfo">Hiển thị 0-0 trong tổng số 0 bản ghi</span>
+                        </div>
+                        <div class="pagination-pages" id="advPaginationPages"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:16px 24px 24px 24px; background:#f8fafc; border-top:1px solid var(--border-color); display:flex; justify-content:flex-end;">
+                <button type="button" class="btn btn-secondary" onclick="closeAccountSearchModal()">Đóng</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Danh sách tài khoản trực tuyến mẫu dùng cho tra cứu & tìm kiếm nâng cao (Section 4.3.2.16.4.4)
+        const onlineCustomersMock = [
+            { code: 'KH-000128', name: 'Công ty TNHH Hải Nam', email: 'contact@hainam.vn', phone: '0912555666', docNo: '0108920145', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Tràng Tiền', addressDetail: 'Số 20 Trần Hưng Đạo, Hoàn Kiếm' },
+            { code: 'KH-000130', name: 'Ngân hàng TMCP FPT', email: 'dangky@moj.gov.vn', phone: '02462739677', docNo: '0102345678', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Mỹ Đình 1', addressDetail: 'Tòa nhà FPT, Phố Duy Tân, Cầu Giấy' },
+            { code: 'KH-000131', name: 'Ngân hàng TMCP Ngoại Thương Việt Nam', email: 'vcb@vietcombank.com.vn', phone: '02439343366', docNo: '0100112437', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Lý Thái Tổ', addressDetail: '198 Trần Quang Khải, Hoàn Kiếm' },
+            { code: 'KH-000132', name: 'Công ty CP Đầu tư Mặt Trời Mới', email: 'info@mattroimoi.com', phone: '0988223344', docNo: '0106789900', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Dịch Vọng', addressDetail: 'Số 10 Phạm Hùng, Cầu Giấy' },
+            { code: 'KH-000134', name: 'Ngân hàng TMCP Quân Đội (MB)', email: 'contact@mbbank.com.vn', phone: '02462661088', docNo: '0100283873', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Trung Hòa', addressDetail: 'Số 18 Lê Văn Lương, Cầu Giấy' },
+            { code: 'KH-000135', name: 'Công ty TNHH MTV Thái Sơn', email: 'thaison@gmail.com', phone: '0913998877', docNo: '0104561234', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Láng Hạ', addressDetail: 'Số 36 Hoàng Cầu, Đống Đa' },
+            { code: 'KH-000136', name: 'Ngân hàng TMCP Tiên Phong (TPBank)', email: 'dktp@tpb.com.vn', phone: '02437688999', docNo: '0102744865', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Dịch Vọng Hậu', addressDetail: 'Tòa nhà TPBank, 57 Lý Thường Kiệt, Hoàn Kiếm' },
+            { code: 'KH-000138', name: 'Công ty CP Thép Nam Việt', email: 'namvietsteel@gmail.com', phone: '02838990011', docNo: '0304892211', country: 'Việt Nam', province: 'Bình Dương', ward: 'Phường An Bình', addressDetail: 'Khu công nghiệp Sóng Thần, Dĩ An' },
+            { code: 'KH-000139', name: 'Ngân hàng TMCP Kỹ Thương (Techcombank)', email: 'call_center@techcombank.com.vn', phone: '02439446368', docNo: '0100230800', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Phan Chu Trinh', addressDetail: 'Số 6 Quang Trung, Hoàn Kiếm' },
+            { code: 'KH-000140', name: 'Công ty TNHH Vận tải Hoàng Long', email: 'hoanglongtrans@gmail.com', phone: '0912113355', docNo: '0200889911', country: 'Việt Nam', province: 'Hải Phòng', ward: 'Phường Cầu Đất', addressDetail: 'Số 05 Phạm Ngũ Lão, Ngô Quyền' },
+            { code: 'KH-000142', name: 'Ngân hàng TMCP Á Châu (ACB)', email: 'acb@acb.com.vn', phone: '02838247247', docNo: '0301452948', country: 'Việt Nam', province: 'TP Hồ Chí Minh', ward: 'Phường Võ Thị Sáu', addressDetail: 'Số 442 Nguyễn Thị Minh Khai, Quận 3' },
+            { code: 'KH-2026-0001', name: 'Nguyễn Văn Nam', email: 'nam.nguyen@example.com', phone: '0901234567', docNo: '001086012345', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Tràng Tiền', addressDetail: 'Số 20 Trần Hưng Đạo, Hoàn Kiếm' },
+            { code: 'KH-2026-0002', name: 'Công ty Cổ phần Đầu tư ABC', email: 'contact@abc.vn', phone: '02438889999', docNo: '0101187788', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Dịch Vọng', addressDetail: 'Tầng 5, tòa nhà ABC, Cầu Giấy' },
+            { code: 'KH-2026-0004', name: 'Hoàng Thị Mai', email: 'mai.hoang@example.com', phone: '0987654321', docNo: '048188812345', country: 'Việt Nam', province: 'Đà Nẵng', ward: 'Phường Hải Châu 1', addressDetail: 'Số 88 Lê Lợi, Hải Châu' },
+            { code: 'KH-2026-0007', name: 'Phạm Văn Đồng', email: 'dong.pham@gmail.com', phone: '0912889900', docNo: '079085002233', country: 'Việt Nam', province: 'TP Hồ Chí Minh', ward: 'Phường Bến Nghé', addressDetail: '141 Pasteur, Quận 3' }
+        ];
+
         const seed = [
-            { code: 'HS-2026-000128', paper: 'PG-0128', channel: 'Trực tiếp tại quầy', requester: 'Công ty TNHH Hải Nam', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000128', phone: '0912555666', email: 'contact@hainam.vn', submitter: 'Nguyễn Văn Bình', submitterId: '001092012345', submitterPhone: '0988000111', relation: 'Người được ủy quyền', type: 'Đăng ký lần đầu', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', feeCode: 'BP-DK-001', feeName: 'Lệ phí đăng ký biện pháp bảo đảm', date: '24/07/2026 09:20', amount: 80000, fee: 'Chưa thu', status: 'Chờ thu phí', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hồ sơ giấy nộp tại quầy, đã kiểm tra thành phần tối thiểu.', attachments: [{ name: 'Đơn yêu cầu đăng ký', fileName: 'Đơn yêu cầu đăng ký.pdf', fileSize: 1258291, required: true }, { name: 'Văn bản ủy quyền', fileName: 'Văn bản ủy quyền.pdf', fileSize: 734003, required: false }], history: [['24/07/2026 09:20', 'Chờ thu phí', 'Tiếp nhận hồ sơ giấy và tạo khoản phải thu.']] },
-            { code: 'HS-2026-000129', paper: 'PG-0129', channel: 'Qua bưu điện', requester: 'Nguyễn Thị Hoa', customerType: 'Khách hàng vãng lai', accountCode: '', phone: '0903222444', email: 'hoa.nt@example.com', submitter: 'Nguyễn Thị Hoa', submitterId: '034188009912', submitterPhone: '0903222444', relation: 'Người yêu cầu', type: 'Yêu cầu cung cấp bản sao', copyQty: 1, resultMethod: 'Qua dịch vụ bưu chính', resultAddress: 'Số 12 Lê Lợi, Hoàn Kiếm, Hà Nội', feeCode: 'BP-BS-001', feeName: 'Phí cung cấp bản sao văn bản chứng nhận', date: '24/07/2026 10:05', amount: 30000, fee: 'Chưa thu', status: 'Chờ thu phí', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hồ sơ nhận qua bưu điện, chờ kế toán xác nhận thu phí.', attachments: [{ name: 'Phiếu yêu cầu cung cấp bản sao', fileName: 'Phiếu yêu cầu cung cấp bản sao.pdf', fileSize: 943718, required: true }], history: [['24/07/2026 10:05', 'Chờ thu phí', 'Tiếp nhận hồ sơ giấy và tạo khoản phải thu.']] },
-            { code: 'HS-2026-000130', paper: 'PG-0130', channel: 'Email', requester: 'Ngân hàng TMCP FPT', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000130', phone: '02462739677', email: 'dangky@moj.gov.vn', submitter: 'Trần Minh Quân', submitterId: '079090012312', submitterPhone: '0977000888', relation: 'Nhân viên tổ chức', type: 'Xóa đăng ký', copyQty: 1, resultMethod: 'Cách thức điện tử', feeCode: 'BP-XDK-001', feeName: 'Miễn lệ phí xóa đăng ký', date: '23/07/2026 15:15', amount: 0, method: 'Miễn phí', fee: 'Miễn phí', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đối tượng miễn phí, đã được kế toán xác nhận.', attachments: [{ name: 'Đơn yêu cầu xóa đăng ký', fileName: 'Đơn yêu cầu xóa đăng ký.pdf', fileSize: 1153433, required: true }, { name: 'Văn bản chứng minh căn cứ xóa đăng ký', fileName: 'Tài liệu chứng minh.pdf', fileSize: 838860, required: true }], history: [['23/07/2026 15:15', 'Chờ thu phí', 'Tiếp nhận hồ sơ giấy và tạo khoản phải thu.'], ['23/07/2026 16:10', 'Chờ giải quyết', 'Kế toán xác nhận miễn phí.']] },
-            { code: 'HS-2026-000131', paper: 'PG-0131', channel: 'Trực tiếp tại quầy', requester: 'Ngân hàng TMCP Ngoại Thương Việt Nam', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000131', phone: '02439343366', email: 'vcb@vietcombank.com.vn', submitter: 'Lê Hoàng Long', submitterId: '001095002345', submitterPhone: '0912345678', relation: 'Người được ủy quyền', type: 'Đăng ký thay đổi', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', feeCode: 'BP-TD-001', feeName: 'Lệ phí đăng ký thay đổi nội dung BPBD', date: '23/07/2026 08:45', amount: 60000, fee: 'Đã thu', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã nộp biên lai thu phí qua POS.', attachments: [{ name: 'Đơn yêu cầu đăng ký thay đổi', fileName: 'Don_thay_doi_VCB.pdf', fileSize: 1048576, required: true }], history: [['23/07/2026 08:45', 'Chờ thu phí', 'Tiếp nhận hồ sơ.'], ['23/07/2026 08:50', 'Chờ giải quyết', 'Thu phí thành công qua POS.']] },
-            { code: 'HS-2026-000132', paper: 'PG-0132', channel: 'Trực tiếp tại quầy', requester: 'Công ty CP Đầu tư Mặt Trời Mới', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000132', phone: '0988223344', email: 'info@mattroimoi.com', submitter: 'Phạm Quốc Hưng', submitterId: '037092004455', submitterPhone: '0988223344', relation: 'Người yêu cầu', type: 'Đăng ký lần đầu', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', feeCode: 'BP-DK-001', feeName: 'Lệ phí đăng ký biện pháp bảo đảm', date: '22/07/2026 14:20', amount: 80000, fee: 'Đã thu', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hồ sơ đầy đủ, chuyển phân công.', attachments: [{ name: 'Đơn yêu cầu đăng ký', fileName: 'Don_DK_Mattroi.pdf', fileSize: 1450000, required: true }], history: [['22/07/2026 14:20', 'Chờ giải quyết', 'Đã thu phí trực tiếp tại quầy.']] },
-            { code: 'HS-2026-000133', paper: 'PG-0133', channel: 'Qua bưu điện', requester: 'Ông Đặng Văn Toàn', customerType: 'Khách hàng vãng lai', accountCode: '', phone: '0977112233', email: 'toan.dv@gmail.com', submitter: 'Ông Đặng Văn Toàn', submitterId: '025088001122', submitterPhone: '0977112233', relation: 'Người yêu cầu', type: 'Yêu cầu cung cấp bản sao', copyQty: 2, resultMethod: 'Qua dịch vụ bưu chính', resultAddress: 'Số 45 Trần Phú, Hà Đông, Hà Nội', feeCode: 'BP-BS-001', feeName: 'Phí cung cấp bản sao văn bản chứng nhận', date: '22/07/2026 11:10', amount: 60000, fee: 'Chưa thu', status: 'Chờ thu phí', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Chờ bưu tá nộp tiền cước và lệ phí.', attachments: [{ name: 'Phiếu yêu cầu cung cấp bản sao', fileName: 'Phieu_YC_DangVanToan.pdf', fileSize: 850000, required: true }], history: [['22/07/2026 11:10', 'Chờ thu phí', 'Nhận chuyển phát từ bưu điện.']] },
-            { code: 'HS-2026-000134', paper: 'PG-0134', channel: 'Fax', requester: 'Ngân hàng TMCP Quân Đội (MB)', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000134', phone: '02462661088', email: 'contact@mbbank.com.vn', submitter: 'Vũ Thị Mai', submitterId: '001193005566', submitterPhone: '0904556677', relation: 'Nhân viên tổ chức', type: 'Thông báo xử lý tài sản bảo đảm', copyQty: 1, resultMethod: 'Cách thức điện tử', feeCode: 'BP-TB-001', feeName: 'Lệ phí thông báo xử lý tài sản bảo đảm', date: '21/07/2026 16:30', amount: 70000, fee: 'Đã thu', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Thanh toán chuyển khoản ngân hàng.', attachments: [{ name: 'Đơn thông báo xử lý tài sản', fileName: 'ThongBao_MB.pdf', fileSize: 1100000, required: true }], history: [['21/07/2026 16:30', 'Chờ giải quyết', 'Đã xác nhận thanh toán qua ngân hàng.']] },
-            { code: 'HS-2026-000135', paper: 'PG-0135', channel: 'Trực tiếp tại quầy', requester: 'Công ty TNHH MTV Thái Sơn', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000135', phone: '0913998877', email: 'thaison@gmail.com', submitter: 'Bùi Đình Trọng', submitterId: '012091007788', submitterPhone: '0913998877', relation: 'Người yêu cầu', type: 'Đăng ký thay đổi', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', feeCode: 'BP-TD-001', feeName: 'Lệ phí đăng ký thay đổi nội dung BPBD', date: '21/07/2026 09:15', amount: 60000, fee: 'Chưa thu', status: 'Bị từ chối', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Thiếu chữ ký bên nhận bảo đảm theo quy định.', attachments: [{ name: 'Đơn yêu cầu đăng ký thay đổi', fileName: 'Don_ThaiSon.pdf', fileSize: 980000, required: true }], history: [['21/07/2026 09:15', 'Chờ thu phí', 'Tiếp nhận kiểm tra.'], ['21/07/2026 09:30', 'Bị từ chối', 'Từ chối do thiếu thành phần hồ sơ.']] },
-            { code: 'HS-2026-000136', paper: 'PG-0136', channel: 'Email', requester: 'Ngân hàng TMCP Tiên Phong (TPBank)', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000136', phone: '02437688999', email: 'dktp@tpb.com.vn', submitter: 'Hoàng Thu Trang', submitterId: '001194008899', submitterPhone: '0936112233', relation: 'Người được ủy quyền', type: 'Xóa đăng ký', copyQty: 1, resultMethod: 'Cách thức điện tử', feeCode: 'BP-XDK-001', feeName: 'Miễn lệ phí xóa đăng ký', date: '20/07/2026 14:00', amount: 0, method: 'Miễn phí', fee: 'Miễn phí', status: 'Hoàn thành', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã hoàn tất xử lý và trả kết quả điện tử.', attachments: [{ name: 'Đơn yêu cầu xóa đăng ký', fileName: 'Xoa_TPBank.pdf', fileSize: 750000, required: true }], history: [['20/07/2026 14:00', 'Chờ giải quyết', 'Tiếp nhận thành công.'], ['20/07/2026 16:30', 'Hoàn thành', 'Đã cấp chứng nhận xóa đăng ký.']] },
-            { code: 'HS-2026-000137', paper: 'PG-0137', channel: 'Trực tiếp tại quầy', requester: 'Bà Nguyễn Thị Thanh Mai', customerType: 'Khách hàng vãng lai', accountCode: '', phone: '0904334455', email: 'mai.ntt@yahoo.com', submitter: 'Trần Văn Hùng', submitterId: '014090001234', submitterPhone: '0904334455', relation: 'Người yêu cầu', type: 'Đăng ký lần đầu', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', feeCode: 'BP-DK-001', feeName: 'Lệ phí đăng ký biện pháp bảo đảm', date: '20/07/2026 10:30', amount: 80000, fee: 'Đã thu', status: 'Hoàn thành', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã trả kết quả giấy tại quầy.', attachments: [{ name: 'Đơn yêu cầu đăng ký', fileName: 'Don_ThanhMai.pdf', fileSize: 1320000, required: true }], history: [['20/07/2026 10:30', 'Chờ giải quyết', 'Thu tiền mặt tại quầy.'], ['20/07/2026 15:00', 'Hoàn thành', 'Trả bản chứng nhận tại bộ phận một cửa.']] },
-            { code: 'HS-2026-000138', paper: 'PG-0138', channel: 'Qua bưu điện', requester: 'Công ty CP Thép Nam Việt', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000138', phone: '02838990011', email: 'namvietsteel@gmail.com', submitter: 'Đỗ Minh Đức', submitterId: '079088003344', submitterPhone: '0918776655', relation: 'Nhân viên tổ chức', type: 'Đăng ký thay đổi', copyQty: 1, resultMethod: 'Qua dịch vụ bưu chính', resultAddress: 'Khu công nghiệp Sóng Thần, Bình Dương', feeCode: 'BP-TD-001', feeName: 'Lệ phí đăng ký thay đổi nội dung BPBD', date: '19/07/2026 15:40', amount: 60000, fee: 'Đã thu', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Chuyển cán bộ thụ lý xử lý hồ sơ.', attachments: [{ name: 'Đơn yêu cầu đăng ký thay đổi', fileName: 'Don_NamViet.pdf', fileSize: 1180000, required: true }], history: [['19/07/2026 15:40', 'Chờ giải quyết', 'Đã nhận ủy nhiệm chi thanh toán.']] },
-            { code: 'HS-2026-000139', paper: 'PG-0139', channel: 'Trực tiếp tại quầy', requester: 'Ngân hàng TMCP Kỹ Thương (Techcombank)', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000139', phone: '02439446368', email: 'call_center@techcombank.com.vn', submitter: 'Lê Thị Cúc', submitterId: '001192003322', submitterPhone: '0982334455', relation: 'Người được ủy quyền', type: 'Yêu cầu cung cấp bản sao', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', feeCode: 'BP-BS-001', feeName: 'Phí cung cấp bản sao văn bản chứng nhận', date: '19/07/2026 09:05', amount: 30000, fee: 'Chưa thu', status: 'Chờ thu phí', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hồ sơ chờ xác nhận phí từ bộ phận kế toán.', attachments: [{ name: 'Phiếu yêu cầu cung cấp bản sao', fileName: 'Phieu_TCB.pdf', fileSize: 620000, required: true }], history: [['19/07/2026 09:05', 'Chờ thu phí', 'Tạo khoản phải thu.']] },
-            { code: 'HS-2026-000140', paper: 'PG-0140', channel: 'Email', requester: 'Công ty TNHH Vận tải Hoàng Long', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000140', phone: '0912113355', email: 'hoanglongtrans@gmail.com', submitter: 'Vũ Quốc Tuấn', submitterId: '031089004433', submitterPhone: '0912113355', relation: 'Người yêu cầu', type: 'Thông báo xử lý tài sản bảo đảm', copyQty: 1, resultMethod: 'Cách thức điện tử', feeCode: 'BP-TB-001', feeName: 'Lệ phí thông báo xử lý tài sản bảo đảm', date: '18/07/2026 11:50', amount: 70000, fee: 'Đã thu', status: 'Hoàn thành', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã phát hành thông báo xử lý tài sản trên CSDL.', attachments: [{ name: 'Đơn thông báo xử lý tài sản', fileName: 'TB_HoangLong.pdf', fileSize: 1050000, required: true }], history: [['18/07/2026 11:50', 'Chờ giải quyết', 'Đã thu phí.'], ['18/07/2026 15:30', 'Hoàn thành', 'Hoàn tất nhập liệu thông báo.']] },
-            { code: 'HS-2026-000141', paper: 'PG-0141', channel: 'Trực tiếp tại quầy', requester: 'Ông Lương Văn Hải', customerType: 'Khách hàng vãng lai', accountCode: '', phone: '0945667788', email: 'hailv@outlook.com', submitter: 'Ông Lương Văn Hải', submitterId: '022085006677', submitterPhone: '0945667788', relation: 'Người yêu cầu', type: 'Đăng ký lần đầu', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', feeCode: 'BP-DK-001', feeName: 'Lệ phí đăng ký biện pháp bảo đảm', date: '17/07/2026 16:15', amount: 80000, fee: 'Chưa thu', status: 'Bị từ chối', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hợp đồng bảo đảm hết hiệu lực theo thỏa thuận.', attachments: [{ name: 'Đơn yêu cầu đăng ký', fileName: 'Don_LuongVanHai.pdf', fileSize: 890000, required: true }], history: [['17/07/2026 16:15', 'Bị từ chối', 'Từ chối tiếp nhận theo quy định.']] },
-            { code: 'HS-2026-000142', paper: 'PG-0142', channel: 'Qua bưu điện', requester: 'Ngân hàng TMCP Á Châu (ACB)', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000142', phone: '02838247247', email: 'acb@acb.com.vn', submitter: 'Phan Thị Nga', submitterId: '079193006655', submitterPhone: '0908112233', relation: 'Người được ủy quyền', type: 'Xóa đăng ký', copyQty: 1, resultMethod: 'Qua dịch vụ bưu chính', resultAddress: 'Số 442 Nguyễn Thị Minh Khai, Quận 3, TP.HCM', feeCode: 'BP-XDK-001', feeName: 'Miễn lệ phí xóa đăng ký', date: '17/07/2026 08:30', amount: 0, method: 'Miễn phí', fee: 'Miễn phí', status: 'Hoàn thành', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã gửi bản chứng nhận xóa đăng ký qua bưu điện bảo đảm.', attachments: [{ name: 'Đơn yêu cầu xóa đăng ký', fileName: 'Xoa_ACB.pdf', fileSize: 920000, required: true }], history: [['17/07/2026 08:30', 'Chờ giải quyết', 'Tiếp nhận hồ sơ bưu điện.'], ['17/07/2026 11:00', 'Hoàn thành', 'Ký duyệt xóa đăng ký và gửi bưu cục.']] }
+            { code: 'HS-2026-000128', paper: 'PG-0128', channel: 'Trực tiếp tại quầy', requester: 'Công ty TNHH Hải Nam', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000128', phone: '0912555666', email: 'contact@hainam.vn', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Tràng Tiền', addressDetail: 'Số 20 Trần Hưng Đạo, Hoàn Kiếm', submitter: 'Nguyễn Văn Bình', submitterId: '001092012345', submitterPhone: '0988000111', relation: 'Người được ủy quyền', type: 'Đăng ký lần đầu', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', feeCode: 'BP-DK-001', feeName: 'Lệ phí đăng ký biện pháp bảo đảm', date: '24/07/2026 09:20', amount: 80000, fee: 'Chưa thu', status: 'Chờ thu phí', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hồ sơ giấy nộp tại quầy, đã kiểm tra thành phần tối thiểu.', attachments: [{ name: 'Đơn yêu cầu đăng ký', fileName: 'Đơn yêu cầu đăng ký.pdf', fileSize: 1258291, required: true }, { name: 'Văn bản ủy quyền', fileName: 'Văn bản ủy quyền.pdf', fileSize: 734003, required: false }], history: [['24/07/2026 09:20', 'Chờ thu phí', 'Tiếp nhận hồ sơ giấy và tạo khoản phải thu.']] },
+            { code: 'HS-2026-000129', paper: 'PG-0129', channel: 'Qua bưu điện', requester: 'Nguyễn Thị Hoa', customerType: 'Khách hàng vãng lai', accountCode: '', phone: '0903222444', email: 'hoa.nt@example.com', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Hàng Bạc', addressDetail: 'Số 12 Lê Lợi, Hoàn Kiếm', submitter: 'Nguyễn Thị Hoa', submitterId: '034188009912', submitterPhone: '0903222444', relation: 'Người yêu cầu', type: 'Yêu cầu cung cấp bản sao', copyQty: 1, resultMethod: 'Qua dịch vụ bưu chính', resultAddress: 'Số 12 Lê Lợi, Hoàn Kiếm, Hà Nội', feeCode: 'BP-BS-001', feeName: 'Phí cung cấp bản sao văn bản chứng nhận', date: '24/07/2026 10:05', amount: 30000, fee: 'Chưa thu', status: 'Chờ thu phí', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hồ sơ nhận qua bưu điện, chờ kế toán xác nhận thu phí.', attachments: [{ name: 'Phiếu yêu cầu cung cấp bản sao', fileName: 'Phiếu yêu cầu cung cấp bản sao.pdf', fileSize: 943718, required: true }], history: [['24/07/2026 10:05', 'Chờ thu phí', 'Tiếp nhận hồ sơ giấy và tạo khoản phải thu.']] },
+            { code: 'HS-2026-000130', paper: 'PG-0130', channel: 'Email', requester: 'Ngân hàng TMCP FPT', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000130', phone: '02462739677', email: 'dangky@moj.gov.vn', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Mỹ Đình 1', addressDetail: 'Tòa nhà FPT, Phố Duy Tân, Cầu Giấy', submitter: 'Trần Minh Quân', submitterId: '079090012312', submitterPhone: '0977000888', relation: 'Nhân viên tổ chức', type: 'Xóa đăng ký', copyQty: 1, resultMethod: 'Cách thức điện tử', feeCode: 'BP-XDK-001', feeName: 'Miễn lệ phí xóa đăng ký', date: '23/07/2026 15:15', amount: 0, method: 'Miễn phí', fee: 'Miễn phí', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đối tượng miễn phí, đã được kế toán xác nhận.', attachments: [{ name: 'Đơn yêu cầu xóa đăng ký', fileName: 'Đơn yêu cầu xóa đăng ký.pdf', fileSize: 1153433, required: true }, { name: 'Văn bản chứng minh căn cứ xóa đăng ký', fileName: 'Tài liệu chứng minh.pdf', fileSize: 838860, required: true }], history: [['23/07/2026 15:15', 'Chờ thu phí', 'Tiếp nhận hồ sơ giấy và tạo khoản phải thu.'], ['23/07/2026 16:10', 'Chờ giải quyết', 'Kế toán xác nhận miễn phí.']] },
+            { code: 'HS-2026-000131', paper: 'PG-0131', channel: 'Trực tiếp tại quầy', requester: 'Ngân hàng TMCP Ngoại Thương Việt Nam', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000131', phone: '02439343366', email: 'vcb@vietcombank.com.vn', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Lý Thái Tổ', addressDetail: '198 Trần Quang Khải, Hoàn Kiếm', submitter: 'Lê Hoàng Long', submitterId: '001095002345', submitterPhone: '0912345678', relation: 'Người được ủy quyền', type: 'Đăng ký thay đổi', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', feeCode: 'BP-TD-001', feeName: 'Lệ phí đăng ký thay đổi nội dung BPBD', date: '23/07/2026 08:45', amount: 60000, fee: 'Đã thu', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã nộp biên lai thu phí qua POS.', attachments: [{ name: 'Đơn yêu cầu đăng ký thay đổi', fileName: 'Don_thay_doi_VCB.pdf', fileSize: 1048576, required: true }], history: [['23/07/2026 08:45', 'Chờ thu phí', 'Tiếp nhận hồ sơ.'], ['23/07/2026 08:50', 'Chờ giải quyết', 'Thu phí thành công qua POS.']] },
+            { code: 'HS-2026-000132', paper: 'PG-0132', channel: 'Trực tiếp tại quầy', requester: 'Công ty CP Đầu tư Mặt Trời Mới', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000132', phone: '0988223344', email: 'info@mattroimoi.com', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Dịch Vọng', addressDetail: 'Số 10 Phạm Hùng, Cầu Giấy', submitter: 'Phạm Quốc Hưng', submitterId: '037092004455', submitterPhone: '0988223344', relation: 'Người yêu cầu', type: 'Đăng ký lần đầu', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', feeCode: 'BP-DK-001', feeName: 'Lệ phí đăng ký biện pháp bảo đảm', date: '22/07/2026 14:20', amount: 80000, fee: 'Đã thu', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hồ sơ đầy đủ, chuyển phân công.', attachments: [{ name: 'Đơn yêu cầu đăng ký', fileName: 'Don_DK_Mattroi.pdf', fileSize: 1450000, required: true }], history: [['22/07/2026 14:20', 'Chờ giải quyết', 'Đã thu phí trực tiếp tại quầy.']] },
+            { code: 'HS-2026-000133', paper: 'PG-0133', channel: 'Qua bưu điện', requester: 'Ông Đặng Văn Toàn', customerType: 'Khách hàng vãng lai', accountCode: '', phone: '0977112233', email: 'toan.dv@gmail.com', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Mộ Lao', addressDetail: 'Số 45 Trần Phú, Hà Đông', submitter: 'Ông Đặng Văn Toàn', submitterId: '025088001122', submitterPhone: '0977112233', relation: 'Người yêu cầu', type: 'Yêu cầu cung cấp bản sao', copyQty: 2, resultMethod: 'Qua dịch vụ bưu chính', resultAddress: 'Số 45 Trần Phú, Hà Đông, Hà Nội', feeCode: 'BP-BS-001', feeName: 'Phí cung cấp bản sao văn bản chứng nhận', date: '22/07/2026 11:10', amount: 60000, fee: 'Chưa thu', status: 'Chờ thu phí', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Chờ bưu tá nộp tiền cước và lệ phí.', attachments: [{ name: 'Phiếu yêu cầu cung cấp bản sao', fileName: 'Phieu_YC_DangVanToan.pdf', fileSize: 850000, required: true }], history: [['22/07/2026 11:10', 'Chờ thu phí', 'Nhận chuyển phát từ bưu điện.']] },
+            { code: 'HS-2026-000134', paper: 'PG-0134', channel: 'Fax', requester: 'Ngân hàng TMCP Quân Đội (MB)', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000134', phone: '02462661088', email: 'contact@mbbank.com.vn', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Trung Hòa', addressDetail: 'Số 18 Lê Văn Lương, Cầu Giấy', submitter: 'Vũ Thị Mai', submitterId: '001193005566', submitterPhone: '0904556677', relation: 'Nhân viên tổ chức', type: 'Thông báo xử lý tài sản bảo đảm', copyQty: 1, resultMethod: 'Cách thức điện tử', feeCode: 'BP-TB-001', feeName: 'Lệ phí thông báo xử lý tài sản bảo đảm', date: '21/07/2026 16:30', amount: 70000, fee: 'Đã thu', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Thanh toán chuyển khoản ngân hàng.', attachments: [{ name: 'Đơn thông báo xử lý tài sản', fileName: 'ThongBao_MB.pdf', fileSize: 1100000, required: true }], history: [['21/07/2026 16:30', 'Chờ giải quyết', 'Đã xác nhận thanh toán qua ngân hàng.']] },
+            { code: 'HS-2026-000135', paper: 'PG-0135', channel: 'Trực tiếp tại quầy', requester: 'Công ty TNHH MTV Thái Sơn', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000135', phone: '0913998877', email: 'thaison@gmail.com', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Láng Hạ', addressDetail: 'Số 36 Hoàng Cầu, Đống Đa', submitter: 'Bùi Đình Trọng', submitterId: '012091007788', submitterPhone: '0913998877', relation: 'Người yêu cầu', type: 'Đăng ký thay đổi', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', feeCode: 'BP-TD-001', feeName: 'Lệ phí đăng ký thay đổi nội dung BPBD', date: '21/07/2026 09:15', amount: 60000, fee: 'Chưa thu', status: 'Bị từ chối', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Thiếu chữ ký bên nhận bảo đảm theo quy định.', attachments: [{ name: 'Đơn yêu cầu đăng ký thay đổi', fileName: 'Don_ThaiSon.pdf', fileSize: 980000, required: true }], history: [['21/07/2026 09:15', 'Chờ thu phí', 'Tiếp nhận kiểm tra.'], ['21/07/2026 09:30', 'Bị từ chối', 'Từ chối do thiếu thành phần hồ sơ.']] },
+            { code: 'HS-2026-000136', paper: 'PG-0136', channel: 'Email', requester: 'Ngân hàng TMCP Tiên Phong (TPBank)', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000136', phone: '02437688999', email: 'dktp@tpb.com.vn', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Dịch Vọng Hậu', addressDetail: 'Tòa nhà TPBank, 57 Lý Thường Kiệt, Hoàn Kiếm', submitter: 'Hoàng Thu Trang', submitterId: '001194008899', submitterPhone: '0936112233', relation: 'Người được ủy quyền', type: 'Xóa đăng ký', copyQty: 1, resultMethod: 'Cách thức điện tử', feeCode: 'BP-XDK-001', feeName: 'Miễn lệ phí xóa đăng ký', date: '20/07/2026 14:00', amount: 0, method: 'Miễn phí', fee: 'Miễn phí', status: 'Hoàn thành', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã hoàn tất xử lý và trả kết quả điện tử.', attachments: [{ name: 'Đơn yêu cầu xóa đăng ký', fileName: 'Xoa_TPBank.pdf', fileSize: 750000, required: true }], history: [['20/07/2026 14:00', 'Chờ giải quyết', 'Tiếp nhận thành công.'], ['20/07/2026 16:30', 'Hoàn thành', 'Đã cấp chứng nhận xóa đăng ký.']] },
+            { code: 'HS-2026-000137', paper: 'PG-0137', channel: 'Trực tiếp tại quầy', requester: 'Bà Nguyễn Thị Thanh Mai', customerType: 'Khách hàng vãng lai', accountCode: '', phone: '0904334455', email: 'mai.ntt@yahoo.com', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Khương Mai', addressDetail: 'Số 55 Nguyễn Ngọc Nại, Thanh Xuân', submitter: 'Trần Văn Hùng', submitterId: '014090001234', submitterPhone: '0904334455', relation: 'Người yêu cầu', type: 'Đăng ký lần đầu', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', feeCode: 'BP-DK-001', feeName: 'Lệ phí đăng ký biện pháp bảo đảm', date: '20/07/2026 10:30', amount: 80000, fee: 'Đã thu', status: 'Hoàn thành', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã trả kết quả giấy tại quầy.', attachments: [{ name: 'Đơn yêu cầu đăng ký', fileName: 'Don_ThanhMai.pdf', fileSize: 1320000, required: true }], history: [['20/07/2026 10:30', 'Chờ giải quyết', 'Thu tiền mặt tại quầy.'], ['20/07/2026 15:00', 'Hoàn thành', 'Trả bản chứng nhận tại bộ phận một cửa.']] },
+            { code: 'HS-2026-000138', paper: 'PG-0138', channel: 'Qua bưu điện', requester: 'Công ty CP Thép Nam Việt', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000138', phone: '02838990011', email: 'namvietsteel@gmail.com', country: 'Việt Nam', province: 'Bình Dương', ward: 'Phường An Bình', addressDetail: 'Khu công nghiệp Sóng Thần, Dĩ An', submitter: 'Đỗ Minh Đức', submitterId: '079088003344', submitterPhone: '0918776655', relation: 'Nhân viên tổ chức', type: 'Đăng ký thay đổi', copyQty: 1, resultMethod: 'Qua dịch vụ bưu chính', resultAddress: 'Khu công nghiệp Sóng Thần, Bình Dương', feeCode: 'BP-TD-001', feeName: 'Lệ phí đăng ký thay đổi nội dung BPBD', date: '19/07/2026 15:40', amount: 60000, fee: 'Đã thu', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Chuyển cán bộ thụ lý xử lý hồ sơ.', attachments: [{ name: 'Đơn yêu cầu đăng ký thay đổi', fileName: 'Don_NamViet.pdf', fileSize: 1180000, required: true }], history: [['19/07/2026 15:40', 'Chờ giải quyết', 'Đã nhận ủy nhiệm chi thanh toán.']] },
+            { code: 'HS-2026-000139', paper: 'PG-0139', channel: 'Trực tiếp tại quầy', requester: 'Ngân hàng TMCP Kỹ Thương (Techcombank)', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000139', phone: '02439446368', email: 'call_center@techcombank.com.vn', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Phan Chu Trinh', addressDetail: 'Số 6 Quang Trung, Hoàn Kiếm', submitter: 'Lê Thị Cúc', submitterId: '001192003322', submitterPhone: '0982334455', relation: 'Người được ủy quyền', type: 'Yêu cầu cung cấp bản sao', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', feeCode: 'BP-BS-001', feeName: 'Phí cung cấp bản sao văn bản chứng nhận', date: '19/07/2026 09:05', amount: 30000, fee: 'Chưa thu', status: 'Chờ thu phí', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hồ sơ chờ xác nhận phí từ bộ phận kế toán.', attachments: [{ name: 'Phiếu yêu cầu cung cấp bản sao', fileName: 'Phieu_TCB.pdf', fileSize: 620000, required: true }], history: [['19/07/2026 09:05', 'Chờ thu phí', 'Tạo khoản phải thu.']] },
+            { code: 'HS-2026-000140', paper: 'PG-0140', channel: 'Email', requester: 'Công ty TNHH Vận tải Hoàng Long', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000140', phone: '0912113355', email: 'hoanglongtrans@gmail.com', country: 'Việt Nam', province: 'Hải Phòng', ward: 'Phường Cầu Đất', addressDetail: 'Số 05 Phạm Ngũ Lão, Ngô Quyền', submitter: 'Vũ Quốc Tuấn', submitterId: '031089004433', submitterPhone: '0912113355', relation: 'Người yêu cầu', type: 'Thông báo xử lý tài sản bảo đảm', copyQty: 1, resultMethod: 'Cách thức điện tử', feeCode: 'BP-TB-001', feeName: 'Lệ phí thông báo xử lý tài sản bảo đảm', date: '18/07/2026 11:50', amount: 70000, fee: 'Đã thu', status: 'Hoàn thành', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã phát hành thông báo xử lý tài sản trên CSDL.', attachments: [{ name: 'Đơn thông báo xử lý tài sản', fileName: 'TB_HoangLong.pdf', fileSize: 1050000, required: true }], history: [['18/07/2026 11:50', 'Chờ giải quyết', 'Đã thu phí.'], ['18/07/2026 15:30', 'Hoàn thành', 'Hoàn tất nhập liệu thông báo.']] },
+            { code: 'HS-2026-000141', paper: 'PG-0141', channel: 'Trực tiếp tại quầy', requester: 'Ông Lương Văn Hải', customerType: 'Khách hàng vãng lai', accountCode: '', phone: '0945667788', email: 'hailv@outlook.com', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Phúc La', addressDetail: 'Số 19 Phùng Hưng, Hà Đông', submitter: 'Ông Lương Văn Hải', submitterId: '022085006677', submitterPhone: '0945667788', relation: 'Người yêu cầu', type: 'Đăng ký lần đầu', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', feeCode: 'BP-DK-001', feeName: 'Lệ phí đăng ký biện pháp bảo đảm', date: '17/07/2026 16:15', amount: 80000, fee: 'Chưa thu', status: 'Bị từ chối', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hợp đồng bảo đảm hết hiệu lực theo thỏa thuận.', attachments: [{ name: 'Đơn yêu cầu đăng ký', fileName: 'Don_LuongVanHai.pdf', fileSize: 890000, required: true }], history: [['17/07/2026 16:15', 'Bị từ chối', 'Từ chối tiếp nhận theo quy định.']] },
+            { code: 'HS-2026-000142', paper: 'PG-0142', channel: 'Qua bưu điện', requester: 'Ngân hàng TMCP Á Châu (ACB)', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000142', phone: '02838247247', email: 'acb@acb.com.vn', country: 'Việt Nam', province: 'TP Hồ Chí Minh', ward: 'Phường Võ Thị Sáu', addressDetail: 'Số 442 Nguyễn Thị Minh Khai, Quận 3', submitter: 'Phan Thị Nga', submitterId: '079193006655', submitterPhone: '0908112233', relation: 'Người được ủy quyền', type: 'Xóa đăng ký', copyQty: 1, resultMethod: 'Qua dịch vụ bưu chính', resultAddress: 'Số 442 Nguyễn Thị Minh Khai, Quận 3, TP.HCM', feeCode: 'BP-XDK-001', feeName: 'Miễn lệ phí xóa đăng ký', date: '17/07/2026 08:30', amount: 0, method: 'Miễn phí', fee: 'Miễn phí', status: 'Hoàn thành', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã gửi bản chứng nhận xóa đăng ký qua bưu điện bảo đảm.', attachments: [{ name: 'Đơn yêu cầu xóa đăng ký', fileName: 'Xoa_ACB.pdf', fileSize: 920000, required: true }], history: [['17/07/2026 08:30', 'Chờ giải quyết', 'Tiếp nhận hồ sơ bưu điện.'], ['17/07/2026 11:00', 'Hoàn thành', 'Ký duyệt xóa đăng ký và gửi bưu cục.']] }
         ];
 
         let documents = [], selectingDocId = '', activeDocType = '';
@@ -1276,8 +1453,6 @@
             const end = total === 0 ? 0 : Math.min(start + pageSize, total);
             const pageData = filtered.slice(start, end);
 
-            const count = el('countText');
-            if (count) count.textContent = `Hiển thị ${total} bản ghi`;
 
             const pageInfo = el('pageInfo');
             if (pageInfo) pageInfo.textContent = `Hiển thị ${total === 0 ? 0 : start + 1}-${end} trong tổng số ${total} bản ghi`;
@@ -1336,6 +1511,199 @@
             renderList();
         }
 
+        function showFieldError(inputEl, msg) {
+            if (!inputEl) return;
+            inputEl.classList.add('is-invalid');
+            let parent = inputEl.parentElement;
+            let errEl = parent.querySelector('.invalid-feedback');
+            if (!errEl) {
+                errEl = document.createElement('div');
+                errEl.className = 'invalid-feedback';
+                parent.appendChild(errEl);
+            }
+            errEl.textContent = msg || 'Đây là trường bắt buộc';
+            errEl.style.display = 'block';
+        }
+
+        function clearFieldError(inputEl) {
+            if (!inputEl) return;
+            inputEl.classList.remove('is-invalid');
+            let parent = inputEl.parentElement;
+            let errEl = parent.querySelector('.invalid-feedback');
+            if (errEl) errEl.style.display = 'none';
+        }
+
+        function clearAccountError() {
+            const acc = el('accountCode');
+            if (acc) clearFieldError(acc);
+        }
+
+        function fillAccountDataToBlock02(cust) {
+            if (!cust) return;
+            const acc = el('accountCode'); if (acc) acc.value = cust.code;
+            const req = el('requester'); if (req) req.value = cust.name;
+            const phone = el('phone'); if (phone) phone.value = cust.phone;
+            const email = el('email'); if (email) email.value = cust.email;
+            const country = el('country'); if (country) country.value = cust.country || 'Việt Nam';
+            const province = el('province'); if (province) province.value = cust.province || '';
+            const ward = el('ward'); if (ward) ward.value = cust.ward || '';
+            const addr = el('addressDetail'); if (addr) addr.value = cust.addressDetail || '';
+
+            if (acc) clearFieldError(acc);
+            if (req) clearFieldError(req);
+        }
+
+        function searchAccountDirect() {
+            const acc = el('accountCode');
+            if (!acc) return;
+            const val = acc.value.trim();
+            if (!val) {
+                showFieldError(acc, 'Vui lòng nhập Mã tài khoản trực tuyến để tìm kiếm.');
+                acc.focus();
+                return;
+            }
+
+            const found = onlineCustomersMock.find(c => c.code.toLowerCase() === val.toLowerCase());
+            if (found) {
+                fillAccountDataToBlock02(found);
+            } else {
+                showFieldError(acc, '[MSG-ERR-UCPS-002] Không tìm thấy thông tin tài khoản trực tuyến phù hợp.');
+                acc.focus();
+            }
+        }
+
+        // Modal Tìm kiếm nâng cao tài khoản trực tuyến
+        let advAccountResults = [];
+        let advAccountCurrentPage = 1;
+        let advAccountPageSize = 5;
+
+        function openAccountSearchModal() {
+            const modal = el('accountSearchModal');
+            if (!modal) return;
+
+            const currentCode = el('accountCode') ? el('accountCode').value.trim() : '';
+            const advCode = el('advSearchAccountCode');
+            if (advCode) advCode.value = currentCode;
+
+            modal.classList.add('active');
+            executeAdvAccountSearch();
+        }
+
+        function closeAccountSearchModal() {
+            const modal = el('accountSearchModal');
+            if (modal) modal.classList.remove('active');
+        }
+
+        function resetAccountSearchFilter() {
+            ['advSearchAccountCode', 'advSearchCustomerName', 'advSearchEmail', 'advSearchPhone', 'advSearchDocNo'].forEach(id => {
+                const node = el(id);
+                if (node) node.value = '';
+            });
+            advAccountCurrentPage = 1;
+            executeAdvAccountSearch();
+        }
+
+        function executeAdvAccountSearch() {
+            const code = (el('advSearchAccountCode') ? el('advSearchAccountCode').value.trim() : '').toLowerCase();
+            const name = (el('advSearchCustomerName') ? el('advSearchCustomerName').value.trim() : '').toLowerCase();
+            const email = (el('advSearchEmail') ? el('advSearchEmail').value.trim() : '').toLowerCase();
+            const phone = (el('advSearchPhone') ? el('advSearchPhone').value.trim() : '').toLowerCase();
+            const docNo = (el('advSearchDocNo') ? el('advSearchDocNo').value.trim() : '').toLowerCase();
+
+            advAccountResults = onlineCustomersMock.filter(item => {
+                if (code && !item.code.toLowerCase().includes(code)) return false;
+                if (name && !item.name.toLowerCase().includes(name)) return false;
+                if (email && !item.email.toLowerCase().includes(email)) return false;
+                if (phone && !item.phone.toLowerCase().includes(phone)) return false;
+                if (docNo && !item.docNo.toLowerCase().includes(docNo)) return false;
+                return true;
+            });
+
+            advAccountCurrentPage = 1;
+            renderAdvAccountTable();
+            renderAdvAccountPagination();
+        }
+
+        function renderAdvAccountTable() {
+            const tbody = el('accountSearchResultsBody');
+            if (!tbody) return;
+
+            if (advAccountResults.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 24px; color: var(--text-muted);">Không tìm thấy tài khoản trực tuyến nào phù hợp.</td></tr>';
+                return;
+            }
+
+            const startIdx = (advAccountCurrentPage - 1) * advAccountPageSize;
+            const pageItems = advAccountResults.slice(startIdx, startIdx + advAccountPageSize);
+
+            tbody.innerHTML = pageItems.map((c, idx) => {
+                return `<tr>
+                    <td style="text-align:center;">${startIdx + idx + 1}</td>
+                    <td><strong style="color: var(--primary);">${esc(c.code)}</strong></td>
+                    <td>${esc(c.name)}</td>
+                    <td>${esc(c.email)}</td>
+                    <td>${esc(c.phone)}</td>
+                    <td>${esc(c.docNo)}</td>
+                    <td style="text-align:center;">
+                        <button type="button" class="btn btn-sm btn-primary" onclick="selectAccount('${esc(c.code)}')" title="Chọn tài khoản này">
+                            <i class="fa-solid fa-check"></i> Chọn
+                        </button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function renderAdvAccountPagination() {
+            const total = advAccountResults.length;
+            const totalPages = Math.ceil(total / advAccountPageSize) || 1;
+
+            const countEl = el('advAccountTotalCount');
+            if (countEl) countEl.textContent = total;
+
+            const pagesContainer = el('advAccountPageButtons');
+            if (pagesContainer) {
+                let btnsHtml = '';
+                for (let p = 1; p <= totalPages; p++) {
+                    btnsHtml += `<button type="button" class="page-num ${p === advAccountCurrentPage ? 'active' : ''}" onclick="changeAdvAccountPage(${p})">${p}</button>`;
+                }
+                pagesContainer.innerHTML = btnsHtml;
+            }
+
+            const firstBtn = el('advAccountFirstBtn');
+            const prevBtn = el('advAccountPrevBtn');
+            const nextBtn = el('advAccountNextBtn');
+            const lastBtn = el('advAccountLastBtn');
+
+            if (firstBtn) firstBtn.disabled = advAccountCurrentPage <= 1;
+            if (prevBtn) prevBtn.disabled = advAccountCurrentPage <= 1;
+            if (nextBtn) nextBtn.disabled = advAccountCurrentPage >= totalPages;
+            if (lastBtn) lastBtn.disabled = advAccountCurrentPage >= totalPages;
+        }
+
+        function changeAdvAccountPage(page) {
+            const totalPages = Math.ceil(advAccountResults.length / advAccountPageSize) || 1;
+            if (page < 1) page = 1;
+            if (page > totalPages) page = totalPages;
+            advAccountCurrentPage = page;
+            renderAdvAccountTable();
+            renderAdvAccountPagination();
+        }
+
+        function changeAdvAccountPageSize(size) {
+            advAccountPageSize = Number(size) || 5;
+            advAccountCurrentPage = 1;
+            renderAdvAccountTable();
+            renderAdvAccountPagination();
+        }
+
+        function selectAccount(code) {
+            const found = onlineCustomersMock.find(c => c.code === code);
+            if (found) {
+                fillAccountDataToBlock02(found);
+                closeAccountSearchModal();
+            }
+        }
+
         function openCreate() {
             const form = el('formView'), list = el('listView'), received = el('receivedAt'), paper = el('paperNo');
             if (form) form.classList.add('active');
@@ -1346,8 +1714,48 @@
             if (same) same.checked = false;
             documents = [];
             activeDocType = '';
+
+            ['paperNo', 'accountCode', 'requester', 'copyQty', 'resultAddress', 'resultEmail'].forEach(id => {
+                const node = el(id);
+                if (node) clearFieldError(node);
+            });
+
+            const customer = el('customerType');
+            if (customer) customer.value = 'dinh_danh';
+
+            // Mặc định không điền sẵn mã tài khoản trực tuyến khi mới bấm tạo mới
+            ['accountCode', 'requester', 'phone', 'email', 'province', 'ward', 'addressDetail'].forEach(id => {
+                const node = el(id);
+                if (node) node.value = '';
+            });
+            const countryNode = el('country');
+            if (countryNode) countryNode.value = 'Việt Nam';
+
             updateConditionalFields();
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function setInputReadonly(element, isReadonly) {
+            if (!element) return;
+            if (isReadonly) {
+                element.setAttribute('readonly', 'readonly');
+                element.readOnly = true;
+                element.classList.add('readonly');
+            } else {
+                element.removeAttribute('readonly');
+                element.readOnly = false;
+                element.classList.remove('readonly');
+            }
+        }
+
+        function setInputDisabled(element, isDisabled) {
+            if (!element) return;
+            element.disabled = isDisabled;
+            if (isDisabled) {
+                element.classList.add('readonly');
+            } else {
+                element.classList.remove('readonly');
+            }
         }
 
         function updateConditionalFields() {
@@ -1356,7 +1764,31 @@
             const hasAccount = customer.value === 'dinh_danh';
             if (accountWrap) accountWrap.classList.toggle('is-hidden', !hasAccount);
             if (account) account.disabled = !hasAccount;
-            if (!hasAccount && account) account.value = '';
+
+            const requester = el('requester');
+            const country = el('country');
+            const province = el('province');
+            const ward = el('ward');
+            const addressDetail = el('addressDetail');
+
+            if (hasAccount) {
+                setInputReadonly(requester, true);
+                setInputDisabled(country, true);
+                setInputReadonly(province, true);
+                setInputReadonly(ward, true);
+                setInputReadonly(addressDetail, true);
+            } else {
+                if (account) {
+                    account.value = '';
+                    clearFieldError(account);
+                }
+                setInputReadonly(requester, false);
+                setInputDisabled(country, false);
+                setInputReadonly(province, false);
+                setInputReadonly(ward, false);
+                setInputReadonly(addressDetail, false);
+            }
+
             const isCopy = type.value.includes('bản sao');
             if (copyWrap) copyWrap.classList.toggle('is-hidden', !isCopy);
             if (!isCopy && copy) copy.value = 1;
@@ -1394,26 +1826,43 @@
 
         function completeReceive(andPrint) {
             const paper = el('paperNo'), req = el('requester'), sub = el('submitter'), accountWrap = el('accountField'), account = el('accountCode'), copyWrap = el('copyQtyField'), copy = el('copyQty'), addressWrap = el('resultAddressField'), address = el('resultAddress'), emailWrap = el('resultEmailField'), resultMail = el('resultEmail'), exemptionWrap = el('exemptionField');
-            if (!paper || !paper.value || !req || !req.value || !sub || !sub.value) {
-                alert('Vui lòng nhập các trường bắt buộc.');
-                return;
+
+            ['paperNo', 'accountCode', 'requester', 'copyQty', 'resultAddress', 'resultEmail'].forEach(id => {
+                const node = el(id);
+                if (node) clearFieldError(node);
+            });
+            let firstErrorField = null;
+
+            if (!paper || !paper.value.trim()) {
+                showFieldError(paper, 'Đây là trường bắt buộc');
+                if (!firstErrorField) firstErrorField = paper;
             }
             if (accountWrap && !accountWrap.classList.contains('is-hidden') && (!account || !account.value.trim())) {
-                alert('Vui lòng nhập Mã tài khoản trực tuyến.');
-                return;
+                showFieldError(account, 'Đây là trường bắt buộc');
+                if (!firstErrorField) firstErrorField = account;
+            }
+            if (!req || !req.value.trim()) {
+                showFieldError(req, 'Đây là trường bắt buộc');
+                if (!firstErrorField) firstErrorField = req;
             }
             if (copyWrap && !copyWrap.classList.contains('is-hidden') && Number(copy ? copy.value : 0) < 1) {
-                alert('Số lượng bản sao phải lớn hơn hoặc bằng 1.');
-                return;
+                showFieldError(copy, 'Số lượng bản sao phải lớn hơn hoặc bằng 1');
+                if (!firstErrorField) firstErrorField = copy;
             }
             if (addressWrap && !addressWrap.classList.contains('is-hidden') && (!address || !address.value.trim())) {
-                alert('Vui lòng nhập Địa chỉ nhận kết quả.');
-                return;
+                showFieldError(address, 'Đây là trường bắt buộc');
+                if (!firstErrorField) firstErrorField = address;
             }
             if (emailWrap && !emailWrap.classList.contains('is-hidden') && (!resultMail || !resultMail.value.trim())) {
-                alert('Vui lòng nhập Email nhận kết quả.');
+                showFieldError(resultMail, 'Đây là trường bắt buộc');
+                if (!firstErrorField) firstErrorField = resultMail;
+            }
+
+            if (firstErrorField) {
+                firstErrorField.focus();
                 return;
             }
+
             const data = load();
             const feeAmountEl = el('feeAmount');
             const amount = Number((feeAmountEl ? feeAmountEl.textContent : '').replace(/\D/g, '')) || 0;
@@ -1428,7 +1877,11 @@
                 accountCode: filterValue('accountCode'),
                 phone: filterValue('phone'),
                 email: filterValue('email'),
-                submitter: sub.value,
+                country: filterValue('country') || 'Việt Nam',
+                province: filterValue('province'),
+                ward: filterValue('ward'),
+                addressDetail: filterValue('addressDetail'),
+                submitter: sub ? sub.value : '',
                 submitterId: filterValue('submitterId'),
                 submitterPhone: filterValue('submitterPhone'),
                 relation: filterValue('relation'),
@@ -1479,6 +1932,10 @@
                 accountCode: x.accountCode || '',
                 phone: x.phone || '0900000000',
                 email: x.email || '',
+                country: x.country || 'Việt Nam',
+                province: x.province || '',
+                ward: x.ward || '',
+                addressDetail: x.addressDetail || '',
                 submitterId: x.submitterId || '001092012345',
                 submitterPhone: x.submitterPhone || '0900000000',
                 relation: x.relation || 'Người được ủy quyền',
@@ -1499,8 +1956,7 @@
             return normalizeAttachments(files).map((doc, i) => {
                 const fileName = doc.fileName || '';
                 const encoded = jsArg(encodeURIComponent(fileName));
-                const required = doc.required ? ' <span class="doc-required">Bắt buộc</span>' : '';
-                const nameCell = '<div class="doc-name">' + esc(doc.name || 'Tài liệu gửi kèm') + required + '</div>';
+                const nameCell = '<div class="doc-name">' + esc(doc.name || 'Tài liệu gửi kèm') + '</div>';
                 const fileCell = fileName ? '<div class="file-pill"><i class="fa-solid ' + fileIcon(fileName) + '"></i><span>' + esc(fileName) + '</span></div>' : '-';
                 const disabled = fileName ? '' : ' disabled';
                 const viewBtn = '<button type="button" class="link-action"' + disabled + ' onclick="viewStoredDocument(\'' + encoded + '\')"><i class="fa-regular fa-eye"></i> Xem file</button>';
@@ -1525,6 +1981,10 @@
                 ['Họ tên/Tên tổ chức', x.requester],
                 ['Số điện thoại', x.phone],
                 ['Email', x.email],
+                ['Quốc gia', x.country || 'Việt Nam'],
+                ['Tỉnh/thành phố', x.province || '-'],
+                ['Phường/Xã', x.ward || '-'],
+                ['Địa chỉ chi tiết', x.addressDetail || '-'],
                 ['Ghi chú tiếp nhận', x.note]
             ];
             if (x.customerType === 'Có tài khoản trực tuyến') requesterItems.splice(1, 0, ['Mã tài khoản trực tuyến', x.accountCode]);
@@ -1566,7 +2026,7 @@
                     detailSection('Thông tin người yêu cầu', requesterItems, 'fa-solid fa-user-check', '#059669') +
                     detailSection('Thông tin người nộp hồ sơ', submitterItems, 'fa-solid fa-id-card', '#d97706') +
                     detailSection('Thông tin loại yêu cầu và lệ phí', feeItems, 'fa-solid fa-receipt', '#0891b2') +
-                    '<div class="detail-section" style="--detail-color:#7c3aed"><h4><i class="fa-solid fa-paperclip"></i>Tài liệu đính kèm</h4><div class="table-container"><table class="custom-table attachment-table"><thead><tr><th style="width:50px; text-align:center;">STT</th><th>Tên tài liệu</th><th>File đính kèm</th><th style="width:180px; text-align:center;">Thao tác</th></tr></thead><tbody>' + fileRows(x.attachments) + '</tbody></table></div></div>' +
+                    '<div class="detail-section" style="--detail-color:#7c3aed"><h4><i class="fa-solid fa-paperclip"></i>Tài liệu đính kèm</h4><div class="table-container"><table class="custom-table attachment-table"><thead><tr><th style="width:50px; text-align:center;">STT</th><th>Tên tài liệu</th><th>File đính kèm</th><th style="width:230px; min-width:230px; text-align:center;">Thao tác</th></tr></thead><tbody>' + fileRows(x.attachments) + '</tbody></table></div></div>' +
                     '<div class="detail-section" style="--detail-color:#475569"><h4><i class="fa-solid fa-clock-rotate-left"></i>Lịch sử trạng thái</h4>' + historyRows(x.history) + '</div>';
             }
             if (footer) {

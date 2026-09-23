@@ -100,7 +100,7 @@ Tai lieu phan tich/
     │   ├── Quan_ly_cau_hinh_slider_trang_chu.md # Cấu hình Banner/Slider cổng Public
     │   └── Quan_ly_noi_dung_ho_tro_nguoi_dung.md # Soạn thảo nội dung hướng dẫn sử dụng
     │
-    ├── 02_Can_bo_nghiep_vu/                     # Tác nghiệp Đăng ký BPBĐ & Cung cấp thông tin
+    ├── 2_Biện pháp bảo đảm/                     # Tác nghiệp Đăng ký BPBĐ & Cung cấp thông tin
     │   ├── Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md # Tiếp nhận hồ sơ giấy tại bộ phận một cửa
     │   ├── SRS_Ho_so_cho_nhap_lieu.md           # Hàng đợi hồ sơ giấy chờ số hóa
     │   ├── SRS_Nhap_lieu_ho_so_giay_Phieu_dang_ky_Can_bo.md # Nhập liệu phiếu đăng ký BPBĐ giấy

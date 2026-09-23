@@ -366,6 +366,7 @@ Dưới đây là danh sách các thông báo (MessageList - MSG) chuẩn hóa h
 | **[MSG-ERR-UCPS-007]** | Lỗi | `"Số tiền thực thu không khớp số tiền phải thu."` | Inline | Không |
 | **[MSG-ERR-UCPS-008]** | Lỗi | `"Không tìm thấy giao dịch chuyển khoản phù hợp."` | Toast | Không |
 | **[MSG-ERR-UCPS-009]** | Lỗi | `"Giao dịch chuyển khoản đã được gán cho hồ sơ khác."` | Toast | Không |
+| **[MSG-ERR-UCPS-010]** | Lỗi | `"Danh mục tài liệu đính kèm đã đạt số lượng tối đa 10 tệp."` | Inline | Không |
 | **[MSG-ERR-UC009-001]** | Lỗi | `"Thông tin tài khoản phụ đã tồn tại."` | Inline | Không |
 | **[MSG-ERR-UC009-002]** | Lỗi | `"Vui lòng chọn ít nhất một trong hai trường Nhóm người dùng hoặc Vai trò."` | Inline | Không |
 | **[MSG-ERR-UC009-003]** | Lỗi | `"[Tên trường] không hợp lệ."` | Inline | Không |
