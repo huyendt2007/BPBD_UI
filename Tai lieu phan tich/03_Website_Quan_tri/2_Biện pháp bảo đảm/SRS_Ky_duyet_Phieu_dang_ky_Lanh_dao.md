@@ -52,7 +52,7 @@
 
 - "Văn bản từ chối" do Cán bộ lập và trình Lãnh đạo ký.
 
-- Nếu Lãnh đạo từ chối hồ sơ đã thu tiền tại trạng thái "Chờ ký", hệ thống chuyển hồ sơ sang "Bị từ chối" và phát sinh luồng hoàn tiền/hoàn phí theo nguồn hồ sơ: Online theo dõi tại Module Quản lý đối soát thanh toán, hồ sơ giấy theo dõi tại Module Quản lý thu phí/hoàn phí hồ sơ giấy.
+- Nếu Lãnh đạo từ chối hồ sơ đã thu tiền tại trạng thái "Chờ ký", hệ thống chuyển hồ sơ sang "Bị từ chối" và phát sinh luồng hoàn tiền/hoàn phí theo nguồn hồ sơ: hồ sơ Online tạo yêu cầu hoàn tiền theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online); hồ sơ giấy theo dõi tại Module Quản lý thu phí/hoàn phí hồ sơ giấy.
 
 - Hồ sơ chỉ xuất hiện với Lãnh đạo khi đã ở trạng thái "Chờ ký"; các nghĩa vụ phí/miễn phí đã được xử lý trước đó theo nguồn hồ sơ.
 
@@ -206,7 +206,7 @@
 | 1 | Hủy | Nút | Đóng popup, giữ nguyên trạng thái hồ sơ và quay lại giao diện trước đó. |
 | 2 | Xác nhận từ chối | Nút | TH1 (Bỏ trống Lý do từ chối): Vi phạm [BR-VAL-001], hiển thị [MSG-ERR-VAL-001], không cho phép xác nhận. |
 |  |  |  | TH2 (Hồ sơ không còn ở trạng thái "Chờ duyệt" hoặc Lãnh đạo không có quyền xử lý): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005], không cho phép xác nhận. |
-|  |  |  | TH Hợp lệ: Hệ thống yêu cầu xác nhận bằng [MSG-CFM-DK-015]. Sau khi Lãnh đạo xác nhận, hệ thống lưu người từ chối, thời điểm từ chối, lý do từ chối, file PDF dự thảo, phiên bản dữ liệu/PDF bị từ chối; chuyển hồ sơ sang "Bị từ chối"; hiển thị [MSG-SUC-DK-KT-003]. |
+|  |  |  | TH Hợp lệ: Hệ thống yêu cầu xác nhận bằng [MSG-CFM-DK-015]. Sau khi Lãnh đạo xác nhận, hệ thống lưu người từ chối, thời điểm từ chối, lý do từ chối, file PDF dự thảo, phiên bản dữ liệu/PDF bị từ chối; chuyển hồ sơ sang "Bị từ chối"; tạo yêu cầu hoàn tiền theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online) đối với hồ sơ Online, hoặc tạo khoản hoàn phí/thông báo kế toán tại Module Quản lý thu phí/hoàn phí hồ sơ giấy đối với hồ sơ giấy đã thu phí; hiển thị [MSG-SUC-DK-KT-003]. |
 
 #### 4.3.2.4.5. UC-DK-LD.MH04 - Màn hình Danh sách Phiếu đăng ký chờ ký
 
@@ -370,7 +370,7 @@
 |  |  |  | TH3 (Không tìm thấy file PDF chờ ký hợp lệ): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-010], không thực hiện ký số đối với hồ sơ đó. |
 |  |  |  | TH4 (USB Token/chứng thư số chưa hợp lệ): Vi phạm [BR-DK-034], hiển thị [MSG-ERR-DK-011] hoặc [MSG-ERR-DK-012], không thực hiện ký số. |
 |  |  |  | TH5 (Lãnh đạo hủy ký, nhập sai PIN hoặc thành phần ký số trả lỗi): Vi phạm [BR-DK-034], hiển thị [MSG-ERR-DK-013], ghi nhận lỗi ký số và giữ nguyên trạng thái "Chờ ký" đối với hồ sơ ký lỗi. |
-|  |  |  | TH Hợp lệ: Hệ thống yêu cầu xác nhận bằng [MSG-CFM-DK-013]. Sau khi Lãnh đạo xác nhận, thành phần ký số cục bộ yêu cầu nhập PIN USB Token; hệ thống không lưu PIN. Hệ thống ký số trực tiếp trên file PDF chờ ký tại vùng ký của lá mặt/trang ký Mẫu số 05d hoặc vùng ký của văn bản từ chối. Với ký theo lô, hệ thống ký lần lượt từng file PDF, xác minh chữ ký sau khi ký, lưu file PDF đã ký, thông tin chứng thư số, người ký, thời điểm ký, phiên bản file đã ký, ghi lịch sử xử lý của hồ sơ và Audit log hệ thống. Hồ sơ ký thành công file "Văn bản chứng nhận/Thông báo kết quả" chuyển sang "Hoàn thành"; hồ sơ ký thành công file "Văn bản từ chối" chuyển sang "Bị từ chối"; hồ sơ ký lỗi giữ nguyên "Chờ ký". Hiển thị [MSG-SUC-DK-KT-005]. |
+|  |  |  | TH Hợp lệ: Hệ thống yêu cầu xác nhận bằng [MSG-CFM-DK-013]. Sau khi Lãnh đạo xác nhận, thành phần ký số cục bộ yêu cầu nhập PIN USB Token; hệ thống không lưu PIN. Hệ thống ký số trực tiếp trên file PDF chờ ký tại vùng ký của lá mặt/trang ký Mẫu số 05d hoặc vùng ký của văn bản từ chối. Với ký theo lô, hệ thống ký lần lượt từng file PDF, xác minh chữ ký sau khi ký, lưu file PDF đã ký, thông tin chứng thư số, người ký, thời điểm ký, phiên bản file đã ký, ghi lịch sử xử lý của hồ sơ và Audit log hệ thống. Hồ sơ ký thành công file "Văn bản chứng nhận/Thông báo kết quả" chuyển sang "Hoàn thành"; hồ sơ ký thành công file "Văn bản từ chối" chuyển sang "Bị từ chối" và hệ thống tạo yêu cầu hoàn tiền theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online) đối với hồ sơ Online, hoặc tạo khoản hoàn phí/thông báo kế toán tại Module Quản lý thu phí/hoàn phí hồ sơ giấy đối với hồ sơ giấy đã thu phí; hồ sơ ký lỗi giữ nguyên "Chờ ký". Hiển thị [MSG-SUC-DK-KT-005]. |
 | 3 | Hủy | Nút | Đóng popup, giữ nguyên trạng thái hồ sơ và quay lại giao diện trước đó. |
 
 #### 4.3.2.4.8. UC-DK-LD.MH07 - Popup Từ chối/Trả lại Phiếu đăng ký chờ ký
@@ -400,7 +400,7 @@
 | 1 | Hủy | Nút | Đóng popup, giữ nguyên trạng thái hồ sơ và quay lại giao diện trước đó. |
 | 2 | Xác nhận | Nút | TH1 (Bỏ trống Lý do): Vi phạm [BR-VAL-001], hiển thị [MSG-ERR-VAL-001], không cho phép xác nhận. |
 |  |  |  | TH2 (Hồ sơ không còn ở trạng thái "Chờ ký" hoặc Lãnh đạo không có quyền xử lý): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005], không cho phép xác nhận. |
-|  |  |  | TH Hợp lệ với Loại xử lý là "Từ chối": Hệ thống yêu cầu xác nhận bằng [MSG-CFM-DK-015]. Sau khi Lãnh đạo xác nhận, hệ thống lưu người từ chối, thời điểm từ chối, lý do từ chối, file PDF chờ ký, phiên bản dữ liệu/PDF bị từ chối; chuyển hồ sơ sang "Bị từ chối"; hiển thị [MSG-SUC-DK-KT-003]. |
+|  |  |  | TH Hợp lệ với Loại xử lý là "Từ chối": Hệ thống yêu cầu xác nhận bằng [MSG-CFM-DK-015]. Sau khi Lãnh đạo xác nhận, hệ thống lưu người từ chối, thời điểm từ chối, lý do từ chối, file PDF chờ ký, phiên bản dữ liệu/PDF bị từ chối; chuyển hồ sơ sang "Bị từ chối"; tạo yêu cầu hoàn tiền theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online) đối với hồ sơ Online, hoặc tạo khoản hoàn phí/thông báo kế toán tại Module Quản lý thu phí/hoàn phí hồ sơ giấy đối với hồ sơ giấy đã thu phí; hiển thị [MSG-SUC-DK-KT-003]. |
 |  |  |  | TH Hợp lệ với Loại xử lý là "Trả lại": Hệ thống yêu cầu xác nhận bằng [MSG-CFM-DK-014]. Sau khi Lãnh đạo xác nhận, hệ thống lưu người trả lại, thời điểm trả lại, lý do trả lại, phiên bản dữ liệu/PDF bị trả lại; chuyển hồ sơ sang "Bị trả lại" để Cán bộ cập nhật và trình lại; hiển thị [MSG-SUC-DK-KT-006]. |
 
 #### 4.3.2.4.9. Quy tắc duyệt, ký số, từ chối và trả lại Phiếu đăng ký
@@ -409,13 +409,13 @@
 | :--- | :--- | :--- |
 | 1 | Điều kiện hiển thị hồ sơ chờ ký | Danh sách chỉ hiển thị Phiếu đăng ký ở trạng thái "Chờ ký", thuộc đơn vị/phạm vi thẩm quyền của Lãnh đạo và được Cán bộ trình tới đúng Lãnh đạo đăng nhập theo [BR-DK-033]. |
 | 2 | Điều kiện ký | Chỉ cho phép Lãnh đạo ký số/ký duyệt, từ chối hoặc trả lại hồ sơ ở trạng thái "Chờ ký", có file PDF chờ ký hợp lệ và phiên bản dữ liệu/file đã được khóa khi Cán bộ trình ký theo [BR-DK-033]. |
-| 3 | Chuyển trạng thái sau ký | Nếu ký số/ký duyệt thành công, hồ sơ chuyển sang trạng thái sau ký tương ứng loại nghiệp vụ. Nếu từ chối, hồ sơ chuyển sang "Bị từ chối" và phát sinh yêu cầu hoàn tiền/hoàn phí tương ứng nguồn hồ sơ. Nếu trả lại, hồ sơ chuyển sang "Bị trả lại" để Cán bộ xử lý lại. |
+| 3 | Chuyển trạng thái sau ký | Nếu ký số/ký duyệt thành công, hồ sơ chuyển sang trạng thái sau ký tương ứng loại nghiệp vụ. Nếu từ chối, hồ sơ chuyển sang "Bị từ chối" và hệ thống tạo yêu cầu hoàn tiền theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online) đối với hồ sơ Online, hoặc tạo khoản hoàn phí/thông báo kế toán tại Module Quản lý thu phí/hoàn phí hồ sơ giấy đối với hồ sơ giấy đã thu phí. Nếu trả lại, hồ sơ chuyển sang "Bị trả lại" để Cán bộ xử lý lại. |
 | 4 | Điều kiện hiển thị hồ sơ chờ ký | Danh sách chỉ hiển thị Phiếu đăng ký ở trạng thái "Chờ ký", thuộc đơn vị/phạm vi thẩm quyền của Lãnh đạo và được chuyển tới đúng Lãnh đạo đăng nhập theo [BR-DK-033]. |
 | 5 | Điều kiện ký số | Chỉ cho phép ký số khi hồ sơ ở trạng thái "Chờ ký", có file PDF chờ ký hợp lệ, file đã được khóa phiên bản và chứng thư số USB Token khớp Lãnh đạo được phân công ký theo [BR-DK-034]. |
 | 6 | Ký số bằng USB Token | Hệ thống ký số bằng USB Token/chứng thư số hợp lệ của Lãnh đạo. PIN chỉ nhập tại thành phần ký số cục bộ, hệ thống không lưu PIN. |
 | 7 | Ký nhiều hồ sơ | Cho phép ký nhiều Phiếu đăng ký trong một lần thao tác. Hệ thống ký lần lượt từng file PDF và ghi nhận kết quả độc lập cho từng hồ sơ theo [BR-DK-034]. Giới hạn mặc định 20 hồ sơ/lần, lấy theo tham số cấu hình. |
 | 8 | Chuyển trạng thái sau ký số | Nếu ký file "Văn bản chứng nhận/Thông báo kết quả" thành công, hồ sơ chuyển sang "Hoàn thành". Nếu ký file "Văn bản từ chối" thành công, hồ sơ chuyển sang "Bị từ chối". Hồ sơ ký lỗi giữ nguyên trạng thái "Chờ ký". |
-| 9 | Từ chối của Lãnh đạo | Lãnh đạo nhập lý do và xác nhận từ chối tại "Chờ ký". Hồ sơ chuyển sang "Bị từ chối"; nếu đã thu tiền, hệ thống phát sinh yêu cầu hoàn tiền/hoàn phí tương ứng nguồn hồ sơ. |
+| 9 | Từ chối của Lãnh đạo | Lãnh đạo nhập lý do và xác nhận từ chối tại "Chờ ký". Hồ sơ chuyển sang "Bị từ chối"; hệ thống tạo yêu cầu hoàn tiền theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online) đối với hồ sơ Online, hoặc tạo khoản hoàn phí/thông báo kế toán tại Module Quản lý thu phí/hoàn phí hồ sơ giấy đối với hồ sơ giấy đã thu phí. |
 | 10 | Trả lại của Lãnh đạo | Lãnh đạo nhập lý do và xác nhận trả lại tại "Chờ ký". Hồ sơ chuyển sang "Bị trả lại" để Cán bộ cập nhật theo phạm vi được phép và trình lại theo [BR-DK-035]. |
 | 11 | Không sửa dữ liệu/file | Lãnh đạo chỉ xem và xử lý file đã trình; không được chỉnh sửa dữ liệu Phiếu đăng ký, nội dung PDF, phiên bản file hoặc thay thế file. |
 

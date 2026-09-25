@@ -90,3 +90,37 @@ Phạm vi kết thúc khi bản ghi đối soát/hoàn tiền được xử lý 
 | 1 | Gửi yêu cầu hoàn tiền | Nút | Gửi yêu cầu hoàn tiền sang Cổng thanh toán nếu bản ghi đủ điều kiện và chưa có yêu cầu hoàn tiền đang mở khác cho cùng giao dịch gốc. |
 | 2 | Cập nhật xử lý thủ công | Nút | Cho phép ghi nhận kết quả xử lý hoàn tiền ngoài hệ thống kèm chứng từ và ghi lịch sử. |
 | 3 | Đóng xử lý | Nút | Chỉ cho phép đóng khi yêu cầu hoàn tiền đã có kết quả cuối cùng hoặc đã có ghi nhận xử lý thủ công hợp lệ. |
+
+## 6. Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online
+
+Quy tắc dùng chung cho mọi chức năng từ chối hồ sơ Online (Phiếu đăng ký, Yêu cầu cung cấp thông tin, Yêu cầu cung cấp bản sao...) do Cán bộ hoặc Lãnh đạo thực hiện. Hồ sơ Online bị từ chối luôn là hồ sơ đã thanh toán thành công trên Cổng thanh toán.
+
+### 6.1. Tạo yêu cầu hoàn tiền
+
+Khi thao tác từ chối hồ sơ Online thực hiện thành công, hệ thống tự động tạo 01 yêu cầu hoàn tiền tại Tab "Hoàn tiền" của [UCPS008.MH01 - Danh sách đối soát thanh toán](#4-ucps008mh01---danh-sach-doi-soat-thanh-toan) với các thông tin:
+
+| Thông tin | Giá trị ghi nhận |
+| :--- | :--- |
+| Mã yêu cầu hoàn tiền | Hệ thống tự sinh. |
+| Loại nghiệp vụ | Loại nghiệp vụ của hồ sơ bị từ chối (Phiếu đăng ký, Yêu cầu cung cấp thông tin, Yêu cầu cung cấp bản sao...). |
+| Mã hồ sơ | Mã hồ sơ bị từ chối. |
+| Mã giao dịch thanh toán gốc | Mã giao dịch thanh toán thành công của hồ sơ trên Cổng thanh toán. |
+| Số tiền đã thu | Số tiền Cổng thanh toán đã xác nhận thu thành công của hồ sơ. |
+| Số tiền đề nghị hoàn | Bằng Số tiền đã thu. |
+| Lý do hoàn tiền | Lấy theo Lý do từ chối đã nhập khi từ chối hồ sơ. |
+| Người phát sinh / Thời điểm phát sinh | Cán bộ/Lãnh đạo thực hiện từ chối và thời điểm từ chối. |
+| Trạng thái hoàn tiền | "Chờ gửi yêu cầu hoàn tiền". |
+
+### 6.2. Gửi yêu cầu hoàn tiền sang Cổng thanh toán
+
+\- Việc gửi yêu cầu hoàn tiền sang Cổng thanh toán không thực hiện tại thời điểm từ chối hồ sơ mà do [Job đối soát thanh toán tự động](Job_doi_soat_thanh_toan_tu_dong.md#5134-doi-soat-yeu-cau-hoan-tien-ho-so-online) thực hiện:
+
+\+ Job gửi yêu cầu hoàn tiền sang Cổng thanh toán theo đúng Mã giao dịch thanh toán gốc và chuyển trạng thái sang "Đã gửi yêu cầu hoàn tiền".
+
+\+ Khi Cổng thanh toán phản hồi, Job cập nhật trạng thái thành "Hoàn tiền thành công" hoặc "Hoàn tiền thất bại".
+
+\+ Trường hợp không tìm thấy giao dịch thanh toán gốc, Cổng thanh toán không hỗ trợ hoàn tiền tự động hoặc phản hồi lỗi: Yêu cầu hoàn tiền chuyển sang "Cần xử lý thủ công" để Cán bộ kế toán xử lý tại [UCPS008.MH03 - Xử lý hoàn tiền](#5-ucps008mh03---xu-ly-hoan-tien).
+
+\- Mỗi hồ sơ chỉ được có một yêu cầu hoàn tiền đang mở tại một thời điểm để tránh hoàn trùng.
+
+\- Mọi lần tạo, gửi yêu cầu, nhận phản hồi và cập nhật trạng thái hoàn tiền đều được ghi lịch sử đối soát.

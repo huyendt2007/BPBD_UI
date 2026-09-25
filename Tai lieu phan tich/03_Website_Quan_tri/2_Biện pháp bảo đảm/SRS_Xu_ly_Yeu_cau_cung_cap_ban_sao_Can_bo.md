@@ -1,238 +1,196 @@
-## 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK)
+### 4.3.2.5. Xử lý yêu cầu cung cấp bản sao văn bản chứng nhận
 
-### 4.3.2.X. UC-BS-CB - Xử lý yêu cầu cung cấp bản sao văn bản chứng nhận
+#### 4.3.2.5.1. Mục đích
 
-#### 4.3.2.X.1. Mục đích
+\- Cho phép Cán bộ TTĐK xử lý (duyệt chờ ký, trình ký) hoặc từ chối hồ sơ Yêu cầu cung cấp bản sao văn bản chứng nhận trực tuyến ở trạng thái **"Chờ duyệt"**.
 
-\- Cho phép Cán bộ TTĐK kiểm tra và xử lý hồ sơ Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm ở trạng thái "Chờ duyệt" đối với hồ sơ Online đã thanh toán thành công/miễn phí hoặc trạng thái "Chờ giải quyết" đối với hồ sơ giấy đã hoàn tất thu phí/miễn phí.
-
-\- Bảo đảm Số đăng ký, Loại cung cấp bản sao, Số lượng bản sao và hồ sơ gốc đã được xác định tự động tại thời điểm Khách hàng gửi yêu cầu không bị Cán bộ thay đổi trong quá trình xử lý.
-
-\- Đối với Loại cung cấp bản sao là "Bản sao điện tử", cho phép Cán bộ kết xuất file bản sao điện tử dự thảo trước khi trình Lãnh đạo ký.
-
-\- Đối với Loại cung cấp bản sao là "Bản sao giấy", không kết xuất file; việc in/sao bản giấy chỉ thực hiện sau khi Lãnh đạo ký duyệt tại trạng thái "Chờ ký", ở ngoài hệ thống.
+\- Hồ sơ giấy Yêu cầu cung cấp bản sao được mô tả tại [Nhập liệu hồ sơ giấy Yêu cầu cung cấp bản sao](SRS_Nhap_lieu_ho_so_giay_Yeu_cau_cung_cap_ban_sao_Can_bo.md).
 
 *a. Phân quyền*
 
-\- Cán bộ TTĐK được phân quyền xử lý hồ sơ Yêu cầu cung cấp bản sao.
-
-\- Cán bộ chỉ được xử lý hồ sơ thuộc Trung tâm đăng ký giao dịch, tài sản/đơn vị được phân công.
-
-\- Cán bộ không được xử lý hồ sơ đã chuyển khỏi trạng thái đầu vào được phép xử lý, gồm "Chờ duyệt", "Chờ giải quyết" hoặc "Bị trả lại".
+\- Cán bộ TTĐK được phân quyền xử lý hồ sơ Yêu cầu cung cấp bản sao, chỉ được xử lý hồ sơ thuộc đơn vị được phân công và đang ở trạng thái "Chờ duyệt".
 
 *b. Điều kiện thực hiện*
 
 \- Cán bộ đã đăng nhập thành công vào Website Quản trị.
 
-\- Hồ sơ Yêu cầu cung cấp bản sao Online đã thanh toán thành công/miễn phí và đang ở trạng thái "Chờ duyệt", hoặc hồ sơ giấy đã hoàn tất thu phí/miễn phí và đang ở trạng thái "Chờ giải quyết".
+\- Hồ sơ Yêu cầu cung cấp bản sao Online đã thanh toán thành công/miễn phí và đang ở trạng thái "Chờ duyệt".
 
-*c. Nguyên tắc dữ liệu*
+#### 4.3.2.5.2. MH01 - Màn hình Danh sách yêu cầu cung cấp bản sao chờ duyệt
 
-\- Hồ sơ Yêu cầu cung cấp bản sao chỉ lưu **Số đăng ký** làm khóa tham chiếu tới hồ sơ gốc (không lưu bản sao tĩnh dữ liệu), theo [BR-BS-011]. Mọi màn hình hiển thị chi tiết hồ sơ gốc trong tài liệu này đều truy vấn trực tiếp (join) theo Số đăng ký tại thời điểm Cán bộ xem, luôn phản ánh đúng trạng thái hiệu lực mới nhất của hồ sơ gốc.
+##### 4.3.2.5.2.1. Màn hình
 
-\- Cán bộ được xem chi tiết hồ sơ gốc ở mọi trạng thái xử lý (khác với Website Khách hàng, chỉ xem được khi hồ sơ đã "Hoàn thành"), nhưng không được sửa hồ sơ gốc, Số đăng ký, Loại cung cấp bản sao hoặc Số lượng bản sao theo [BR-BS-001].
+![Màn hình Danh sách yêu cầu cung cấp bản sao chờ duyệt](images/UC_BS_CB_MH01_Danh_sach_yeu_cau_cung_cap_ban_sao_cho_xu_ly.png)
 
-\- Toàn bộ dữ liệu tra cứu ở trạng thái chỉ đọc.
-
-#### 4.3.2.X.2. UC-BS-CB.MH01 - Màn hình Danh sách yêu cầu cung cấp bản sao chờ xử lý
-
-##### 4.3.2.X.2.1. Màn hình
-
-![Màn hình Danh sách yêu cầu cung cấp bản sao chờ xử lý](images/UC_BS_CB_MH01_Danh_sach_yeu_cau_cung_cap_ban_sao_cho_xu_ly.png)
-
-##### 4.3.2.X.2.2. Mô tả thông tin trên màn hình
+##### 4.3.2.5.2.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
 | **I. Bộ lọc tìm kiếm** | | | | |
-| Tìm kiếm | String(255) | Không | Trống | Tìm kiếm gần đúng theo Mã hồ sơ, Người yêu cầu, Mã khách hàng hoặc Số đăng ký. |
-| Mã khách hàng | String(50) | Không | Trống | Tìm kiếm chính xác hoặc gần đúng theo Mã khách hàng nộp yêu cầu. |
-| Loại cung cấp bản sao | Enum(String(50)) | Không | Tất cả | - Tất cả<br>- Bản sao điện tử<br>- Bản sao giấy |
-| Trạng thái hồ sơ | Enum(String(50)) | Không | "Chờ duyệt" | Tham chiếu bộ trạng thái tại [4.1.X.3](../../01_Website_Khach_hang/SRS_Qly_yeu_cau_da_dky_YC%20Ban%20sao.md#41x3-bo-trang-thai-ho-so-yeu-cau-cung-cap-ban-sao-thay-the-bo-trang-thai-cu). Màn hình mặc định hiển thị hồ sơ "Chờ duyệt" và "Chờ giải quyết". |
-| Từ ngày | Date | Không | Ngày 01 của tháng hiện tại | Lọc theo Thời điểm đăng ký. Tuân thủ [BR-VAL-007]. |
-| Đến ngày | Date | Không | Ngày hiện tại | Lọc theo Thời điểm đăng ký. Tuân thủ [BR-VAL-007]. |
-| **II. Bảng danh sách hồ sơ** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].|
-| Bảng danh sách hồ sơ | Text(1000) | Không | 20 bản ghi/trang | Hiển thị danh sách hồ sơ Yêu cầu cung cấp bản sao thuộc phạm vi xử lý của Cán bộ. Sắp xếp mặc định theo Thời điểm đăng ký tăng dần. Click trực tiếp vào dòng dữ liệu để mở **UC-BS-CB.MH02**.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].|
-| STT | Integer(10) | Không | Tự tăng | Số thứ tự dòng dữ liệu trên trang hiện tại. |
-| Mã hồ sơ | String(50) | Có | Theo hồ sơ | Mã hồ sơ Yêu cầu cung cấp bản sao. |
-| Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Thời điểm Khách hàng gửi yêu cầu. |
-| Mã khách hàng | String(50) | Không | Theo hồ sơ | Mã khách hàng gắn với tài khoản nộp yêu cầu, nếu có. |
-| Người yêu cầu | String(255) | Có | Theo hồ sơ | Tên cá nhân/tổ chức yêu cầu. |
-| Số đăng ký | String(50) | Có | Theo hồ sơ | Số đăng ký của hồ sơ gốc gắn với yêu cầu. |
-| Loại cung cấp bản sao | Enum(String(50)) | Có | Theo hồ sơ | Hiển thị "Bản sao điện tử" hoặc "Bản sao giấy". |
-| Số lượng bản sao | Integer(10) | Tùy điều kiện | Theo hồ sơ | Chỉ hiển thị giá trị khi Loại cung cấp bản sao là "Bản sao giấy"; nếu là "Bản sao điện tử", hiển thị `"—"`. |
-| Trạng thái | Enum(String(50)) | Có | "Chờ duyệt" | Hiển thị trạng thái hiện tại của hồ sơ. Khi Cán bộ xử lý, trạng thái phải là "Chờ duyệt", "Chờ giải quyết" hoặc "Bị trả lại". |
-| Cán bộ xử lý | String(255) | Không | Theo phân công | Hiển thị Cán bộ đang được phân công xử lý, nếu đã có. |
-| Thao tác | String(255) | Không | Theo trạng thái | Hiển thị "Xử lý hồ sơ" đối với hồ sơ ở trạng thái "Chờ duyệt", "Chờ giải quyết" hoặc "Bị trả lại". |
+| Mã hồ sơ | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập mã hồ sơ...".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Mã hồ sơ Yêu cầu cung cấp bản sao. |
+| Người yêu cầu | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập tên người yêu cầu...".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường theo tên cá nhân/tổ chức yêu cầu. |
+| Mã khách hàng | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập mã khách hàng...".<br>- Tìm kiếm gần đúng theo Mã khách hàng nộp yêu cầu. |
+| Số đăng ký | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số đăng ký...".<br>- Tìm kiếm gần đúng, tự động trim space theo Số đăng ký của hồ sơ gốc gắn với yêu cầu. |
+| Loại cung cấp bản sao | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Bản sao điện tử<br>+ Bản sao giấy |
+| Từ ngày | Date | Không | Ngày 01 của tháng hiện tại | Control UI: Datepicker.<br>- Lọc theo Thời điểm đăng ký.<br>- Định dạng hiển thị: dd/mm/yyyy.<br>- Từ ngày phải nhỏ hơn hoặc bằng Đến ngày. |
+| Đến ngày | Date | Không | Ngày hiện tại | Control UI: Datepicker.<br>- Lọc theo Thời điểm đăng ký.<br>- Định dạng hiển thị: dd/mm/yyyy.<br>- Đến ngày phải lớn hơn hoặc bằng Từ ngày. |
+| **II. Bảng danh sách hồ sơ chờ duyệt** | | | | |
+| Bảng danh sách hồ sơ | Text(1000) | Không | 20 bản ghi/trang | Control UI: Bảng dữ liệu (Grid) kèm phân trang.<br>- Chỉ hiển thị hồ sơ Yêu cầu cung cấp bản sao ở trạng thái "Chờ duyệt", thuộc phạm vi xử lý của Cán bộ.<br>- Sắp xếp mặc định theo Thời điểm đăng ký tăng dần để ưu tiên xử lý hồ sơ đến trước.<br>- Trạng thái không có dữ liệu (Empty State): bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo [MSG-INF-SYS-001]. |
+| STT | Integer(10) | Không | Tự tăng | Control UI: Label.<br>- Số thứ tự dòng dữ liệu trên trang hiện tại. |
+| Mã hồ sơ | String(50) | Có | Theo hồ sơ | Control UI: Label.<br>- Mã hồ sơ Yêu cầu cung cấp bản sao. |
+| Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Control UI: Label.<br>- Thời điểm Khách hàng gửi yêu cầu.<br>- Định dạng hiển thị: dd/mm/yyyy hh:mm. |
+| Mã khách hàng | String(50) | Không | Theo hồ sơ | Control UI: Label.<br>- Mã khách hàng gắn với tài khoản nộp yêu cầu, nếu có. |
+| Người yêu cầu | String(255) | Có | Theo hồ sơ | Control UI: Label.<br>- Tên cá nhân/tổ chức yêu cầu. |
+| Số đăng ký | String(50) | Có | Theo hồ sơ | Control UI: Label.<br>- Số đăng ký của hồ sơ gốc Khách hàng đã nhập khi gửi yêu cầu. |
+| Loại cung cấp bản sao | Enum(String(50)) | Có | Theo hồ sơ | Control UI: Label. |
+| Số lượng bản sao | Integer(10) | Tùy điều kiện | Theo hồ sơ | Control UI: Label.<br>- Chỉ hiển thị giá trị khi Loại cung cấp bản sao là "Bản sao giấy"; nếu là "Bản sao điện tử", hiển thị `"—"`. |
+| Trạng thái | Enum(String(50)) | Có | Theo hồ sơ | Control UI: Label dạng nhãn trạng thái (Badge).<br>- Hiển thị trạng thái hiện tại của hồ sơ. |
+| Cán bộ xử lý | String(255) | Không | Theo phân công | Control UI: Label.<br>- Hiển thị Cán bộ đang được phân công xử lý, nếu đã có. |
+| Thao tác | - | - | - | Control UI: Nhóm nút thao tác trên dòng.<br>Gồm:<br>+ Xử lý hồ sơ<br>+ Từ chối |
 
-##### 4.3.2.X.2.3. Chức năng trên màn hình
+##### 4.3.2.5.2.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007], không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
-|  |  |  | TH Hợp lệ: Tìm kiếm trong phạm vi hồ sơ thuộc quyền xử lý của Cán bộ. Nếu không có dữ liệu phù hợp, hiển thị [MSG-WRN-SYS-001] hoặc trạng thái rỗng theo chuẩn danh sách. |
-| 2 | Xóa bộ lọc | Nút | Xóa toàn bộ tiêu chí lọc, đưa Trạng thái hồ sơ về "Chờ duyệt/Chờ giải quyết", Loại cung cấp bản sao về "Tất cả" và tải lại danh sách mặc định. |
-| 3 | Xử lý hồ sơ | Nút | TH1 (Hồ sơ không thuộc trạng thái Cán bộ được phép xử lý): Vi phạm [BR-BS-002], hiển thị [MSG-ERR-BS-002], không mở màn hình xử lý. |
-|  |  |  | TH2 (Cán bộ không có quyền xử lý): Vi phạm [BR-BS-002], hiển thị [MSG-ERR-BS-002], không mở màn hình xử lý. |
-|  |  |  | TH Hợp lệ: Mở **UC-BS-CB.MH02**. |
-| 4 | Click dòng dữ liệu | Row Click | Mở **UC-BS-CB.MH02**. Bảng danh sách đã lọc sẵn theo phạm vi quyền dữ liệu của Cán bộ, nên mọi dòng hiển thị đều thuộc quyền xử lý. |
+| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Từ ngày lớn hơn Đến ngày (quy định: Từ ngày phải nhỏ hơn hoặc bằng Đến ngày). Hệ thống hiển thị [MSG-ERR-VAL-007] dạng Inline dưới ô nhập tương ứng. Không thực hiện tìm kiếm.<br><br>TH2 (Không có dữ liệu trả về):<br>+ Bảng kết quả: Hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo [MSG-INF-SYS-001].<br>+ Thanh phân trang: dòng số lượng hiển thị *"Hiển thị 0-0 của 0 yêu cầu"*; các nút điều hướng trang ở trạng thái khóa mờ (Disabled).<br><br>TH Hợp lệ: Hệ thống tìm kiếm hồ sơ ở trạng thái "Chờ duyệt" theo các tiêu chí lọc đã nhập, trong phạm vi hồ sơ thuộc quyền xử lý của Cán bộ và hiển thị kết quả lên bảng danh sách. |
+| 2 | Xóa bộ lọc | Nút | Đưa toàn bộ tiêu chí lọc về giá trị mặc định và tải lại danh sách hồ sơ chờ duyệt. |
+| 3 | Xử lý hồ sơ | Nút | Hệ thống thực hiện: <br>- Thực hiện tra cứu hồ sơ gốc theo đúng Số đăng ký Khách hàng đã nhập khi gửi yêu cầu.<br>- Điền (fill) dữ liệu hồ sơ gốc tra cứu được vào khối **Cấu trúc chi tiết danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng**.<br>- Mở [MH02 - Xử lý hồ sơ yêu cầu cung cấp bản sao](#43253-mh02---man-hinh-xu-ly-ho-so-yeu-cau-cung-cap-ban-sao). |
+| 4 | Từ chối | Nút | Mở [MH04 - Popup Từ chối yêu cầu cung cấp bản sao](#43255-mh04---popup-tu-choi-yeu-cau-cung-cap-ban-sao). |
 
-#### 4.3.2.X.3. UC-BS-CB.MH02 - Màn hình Xử lý hồ sơ yêu cầu cung cấp bản sao
+#### 4.3.2.5.3. MH02 - Màn hình Xử lý hồ sơ yêu cầu cung cấp bản sao
 
-##### 4.3.2.X.3.1. Màn hình
+##### 4.3.2.5.3.1. Màn hình
 
 ![Màn hình Xử lý hồ sơ yêu cầu cung cấp bản sao](images/UC_BS_CB_MH02_Xu_ly_ho_so_yeu_cau_cung_cap_ban_sao.png)
 
-##### 4.3.2.X.3.2. Mô tả thông tin trên màn hình
+##### 4.3.2.5.3.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **I. Thông tin hồ sơ** | | | | |
-| Mã hồ sơ | String(50) | Có | Theo hồ sơ | Chỉ đọc. |
-| Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Chỉ đọc. |
-| Người yêu cầu | String(255) | Có | Theo hồ sơ | Chỉ đọc. |
-| Mã khách hàng | String(50) | Không | Theo hồ sơ | Chỉ đọc. Chỉ hiển thị khi hồ sơ có dữ liệu. |
-| Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Màn hình này xử lý hồ sơ Online ở trạng thái "Chờ duyệt" và hồ sơ giấy ở trạng thái "Chờ giải quyết". |
-| Số đăng ký | String(50) | Có | Theo hồ sơ | Chỉ đọc, không cho phép chỉnh sửa theo [BR-BS-001]. Kèm liên kết "Xem hồ sơ gốc" ngay cạnh giá trị Số đăng ký, cho phép Cán bộ mở xem chi tiết hồ sơ gốc theo yêu cầu (xem chức năng tương ứng tại mục 4.3.2.X.3.3); không tự động hiển thị sẵn trên màn hình. |
-| Loại cung cấp bản sao | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị "Bản sao điện tử" hoặc "Bản sao giấy". |
-| Số lượng bản sao | Integer(10) | Tùy điều kiện | Theo hồ sơ | Chỉ đọc. Chỉ hiển thị khi Loại cung cấp bản sao là "Bản sao giấy". |
-| Cơ quan tiếp nhận | Enum(String(100)) | Có | Theo hồ sơ | Chỉ đọc. Tham chiếu Danh mục Trung tâm giao dịch bảo đảm [DM_08]. |
-| Trạng thái | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Khi Cán bộ xử lý, trạng thái phải là "Chờ duyệt", "Chờ giải quyết" hoặc "Bị trả lại". |
-| Cán bộ xử lý | String(255) | Không | Theo phân công | Chỉ đọc. Hiển thị Cán bộ đang xử lý hồ sơ; nếu chưa có, hệ thống ghi nhận Cán bộ hiện tại khi bắt đầu xử lý. |
-| Lịch sử xử lý | Text(4000) | Không | Theo hồ sơ | Chỉ đọc. Hiển thị dòng thời gian các thao tác gửi yêu cầu/nhập liệu, thanh toán/thu phí, kết xuất, trình ký, ký số/trả kết quả, từ chối, trả lại và các lần thay đổi trạng thái. |
-| **II. Tệp bản sao điện tử dự thảo** | | | | |
-| Khối Tệp bản sao điện tử dự thảo | Text(1000) | Không | Ẩn | Chỉ hiển thị khi Loại cung cấp bản sao là "Bản sao điện tử" và Cán bộ đã bấm "Kết xuất bản sao điện tử" thành công. Không hiển thị khối này đối với Loại cung cấp bản sao là "Bản sao giấy". |
-| File bản sao điện tử dự thảo | File | Không | Theo kết xuất | File được sinh theo mẫu cấu hình chuẩn bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm, dựa trên dữ liệu hồ sơ gốc truy vấn theo Số đăng ký tại Khối I (theo [BR-BS-011]). Đây là file dự thảo, chưa phải file ký số. |
-| Thời điểm kết xuất | Datetime | Không | Theo kết xuất | Chỉ đọc. |
-| Phiên bản PDF | String(50) | Không | Theo hồ sơ | Chỉ hiển thị sau khi Cán bộ trình ký thành công. Phiên bản này bị khóa theo [BR-BS-004]. |
+| **I. Thông tin yêu cầu cung cấp bản sao** | | | | Toàn bộ dữ liệu chỉ đọc, không cho phép sửa. |
+| Mã hồ sơ | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi. |
+| Người yêu cầu | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi. |
+| Số đăng ký | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi. |
+| Loại cung cấp bản sao | - | - | - | Control UI: Label dạng nhãn trạng thái (Badge), chỉ đọc. Hiển thị theo dữ liệu bản ghi. |
+| Số lượng bản sao | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi (kèm chữ "bản"), chỉ hiển thị khi Loại cung cấp bản sao là "Bản sao giấy". |
+| **II. Cấu trúc chi tiết danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng** | - | Có | Theo hồ sơ gốc | Control UI: Khối hiển thị chi tiết hồ sơ gốc, chỉ đọc.<br>- Dữ liệu được hệ thống tra cứu theo Số đăng ký Khách hàng đã nhập và tự động điền khi Cán bộ bấm "Xử lý hồ sơ".<br>- Toàn bộ cấu trúc khối và các trường thông tin chi tiết tham chiếu tại [Cấu trúc chi tiết danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng - Tra cứu hồ sơ theo mã số sử dụng CSDL - Website Khách hàng](../../01_Website_Khach_hang/SRS_Tra%20cứu%20theo%20mã%20số%20CSDL.md#cau-truc-chi-tiet-danh-sach-ho-so-dang-ky-giao-dich-bao-dam-hop-dong). |
 
-##### 4.3.2.X.3.3. Chức năng trên màn hình
+##### 4.3.2.5.3.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Xem hồ sơ gốc | Link | Luôn hiển thị cạnh Số đăng ký. Khi Cán bộ click, mở popup/tab riêng ở chế độ chỉ đọc, hiển thị theo cấu trúc dùng chung tại [4.1.12.6. Màn hình Chi tiết kết quả tra cứu](../../01_Website_Khach_hang/UC190_to_UC192_Tra_cuu_ho_so_theo_ma_so_su_dung_CSDL.md#41126-man-hinh-chi-tiet-ket-qua-tra-cuu-dung-chung-sau-khi-bam-tim-kiem), bắt đầu từ tiêu đề **Đăng ký giao dịch bảo đảm / Hợp đồng - [Số đăng ký]**. Dữ liệu được truy vấn trực tiếp (join) theo Số đăng ký ngay tại thời điểm click, không phải bản sao dữ liệu tĩnh, theo [BR-BS-011]. Nếu hồ sơ gốc không còn ở trạng thái "Hoàn thành" tại thời điểm xem, vi phạm [BR-BS-011], hiển thị [MSG-ERR-BS-009] và không mở popup. |
-| 2 | Kết xuất bản sao điện tử | Nút | Khi Cán bộ click, hệ thống sinh file bản sao điện tử dự thảo dựa trên dữ liệu hồ sơ gốc truy vấn theo Số đăng ký, hiển thị tại **II. Tệp bản sao điện tử dự thảo**, hiển thị [MSG-SUC-BS-001]. |
-| 3 | Xem file/Tải file | Link/Nút | Cho phép xem file tại một tab riêng hoặc tải theo quyền. |
-| 4 | Trình ký | Nút | TH1 (Hồ sơ không thuộc trạng thái Cán bộ được phép xử lý): Vi phạm [BR-BS-002], hiển thị [MSG-ERR-BS-002], không cho phép trình ký. |
-|  |  |  | TH2 (Loại "Bản sao điện tử" nhưng chưa kết xuất file dự thảo): Vi phạm [BR-BS-004], hiển thị [MSG-ERR-BS-003], không cho phép trình ký. |
-|  |  |  | TH Hợp lệ: Mở **UC-BS-CB.MH03 - Popup Trình ký yêu cầu cung cấp bản sao**. |
-| 5 | Từ chối | Nút | Hiển thị khi hồ sơ ở trạng thái "Chờ duyệt", "Chờ giải quyết" hoặc "Bị trả lại". Mở **UC-BS-CB.MH04 - Popup Từ chối yêu cầu cung cấp bản sao**. Nếu hồ sơ Online đã thanh toán, hệ thống tạo yêu cầu hoàn tiền và chuyển sang Module Quản lý đối soát thanh toán để theo dõi. Nếu hồ sơ giấy đã thu phí, hệ thống tạo khoản hoàn phí/thông báo kế toán xử lý tại Module Quản lý thu phí/hoàn phí hồ sơ giấy. |
-| 6 | Quay lại | Nút | Quay lại **UC-BS-CB.MH01**, giữ nguyên bộ lọc trước đó. |
+| 1 | Duyệt chờ ký | Nút | Hệ thống thực hiện:<br>- Ghi nhận Cán bộ xử lý và thời điểm xử lý (dd/mm/yyyy hh:mm:ss).<br>- Chuyển hồ sơ sang trạng thái "Duyệt chờ ký".<br>- Ghi lịch sử xử lý và Audit log.<br>- Đóng màn hình xử lý, quay về [MH01 - Danh sách yêu cầu cung cấp bản sao chờ duyệt](#43252-mh01---man-hinh-danh-sach-yeu-cau-cung-cap-ban-sao-cho-duyet) và hiển thị [MSG-SUC-BS-001] (*"Duyệt yêu cầu cung cấp bản sao thành công."*) dạng Toast. |
+| 2 | Trình ký | Nút | Khi bấm, hệ thống phân biệt mở popup theo Loại cung cấp bản sao của hồ sơ:<br>+ **Nếu Loại cung cấp bản sao là "Bản sao điện tử"**: Hệ thống tự động trích xuất dữ liệu hồ sơ gốc theo Số đăng ký, tự động sinh file PDF dự thảo Bản sao điện tử văn bản chứng nhận đăng ký biện pháp bảo đảm (có watermark "DỰ THẢO" in chéo) theo đúng [Quy tắc sinh file PDF và Bảng Ánh xạ ra PDF Bản sao điện tử để Lãnh đạo ký sao điện tử - Nhập liệu hồ sơ giấy Yêu cầu cung cấp bản sao - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Nhap_lieu_ho_so_giay_Yeu_cau_cung_cap_ban_sao_Can_bo.md#432186-quy-tac-sinh-file-pdf-va-bang-anh-xa-ra-pdf-ban-sao-dien-tu-de-lanh-dao-ky-sao-dien-tu) và mở [MH03a - Popup Trình ký bản sao điện tử](#432541-mh03a---popup-trinh-ky-ban-sao-dien-tu).<br>+ **Nếu Loại cung cấp bản sao là "Bản sao giấy"**: Hệ thống không sinh file PDF và mở [MH03b - Popup Trình ký bản sao giấy](#432542-mh03b---popup-trinh-ky-ban-sao-giay). |
+| 3 | Hủy bỏ | Nút | Đóng màn hình xử lý, không thay đổi trạng thái hồ sơ, quay về [MH01 - Danh sách yêu cầu cung cấp bản sao chờ duyệt](#43252-mh01---man-hinh-danh-sach-yeu-cau-cung-cap-ban-sao-cho-duyet) và giữ nguyên bộ lọc trước đó. |
 
-#### 4.3.2.X.4. UC-BS-CB.MH03 - Popup Trình ký yêu cầu cung cấp bản sao
+#### 4.3.2.5.4. Popup Trình ký yêu cầu cung cấp bản sao
 
-##### 4.3.2.X.4.1. Màn hình
+##### 4.3.2.5.4.1. MH03a - Popup Trình ký bản sao điện tử
 
-![Popup Trình ký yêu cầu cung cấp bản sao](images/UC_BS_CB_MH03_Popup_trinh_duyet_yeu_cau_cung_cap_ban_sao.png)
+*a. Giao diện màn hình*
 
-##### 4.3.2.X.4.2. Mô tả thông tin trên màn hình
+![Popup Trình ký bản sao điện tử](images/BS_MH03a_Popup_trinh_ky_ban_sao_dien_tu.png)
+
+*b. Mô tả thông tin trên popup*
+
+- **Quy chuẩn kích thước và bố cục**: Kích thước chiều ngang đạt chuẩn `800px`, `max-height: 90vh`; phần thân popup (Modal Body) đạt chuẩn padding `24px` kết hợp `overflow-y: auto`, tiêu đề (Header) và nút bấm (Footer) cố định (Sticky) theo Quy tắc thiết kế UI.
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| Mã hồ sơ | String(50) | Có | Theo hồ sơ | Chỉ đọc. |
-| Loại cung cấp bản sao | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Hồ sơ Online có phí đã qua "Chờ thanh toán" trước khi vào hàng chờ Cán bộ; sau khi Cán bộ trình ký, hồ sơ chuyển sang "Chờ ký" để Lãnh đạo ký số (điện tử) hoặc ký duyệt (giấy). |
-| File bản sao điện tử dự thảo | File | Tùy điều kiện | Theo kết xuất | Chỉ đọc. Chỉ hiển thị khi Loại cung cấp bản sao là "Bản sao điện tử". Phiên bản này sẽ bị khóa khi trình ký thành công theo [BR-BS-004]. |
-| Người trình ký | String(255) | Có | Cán bộ hiện tại | Chỉ đọc. |
-| Lãnh đạo ký | Enum(String(255)) | Có | Trống | \- Control UI: Combobox có ô tìm kiếm.<br>- Bắt buộc chọn trước khi xác nhận trình ký.<br>- Hiển thị thông tin Lãnh đạo được phép ký của đơn vị tại Cấu hình thông tin về người ký.<br>- Cho phép tìm kiếm gần đúng theo tên Lãnh đạo, chức danh hoặc đơn vị trước khi chọn.<br>- Chỉ hiển thị Lãnh đạo còn hiệu lực thuộc đơn vị/phạm vi thẩm quyền xử lý hồ sơ.<br>- Đối với Loại "Bản sao điện tử", đây là Lãnh đạo ký số file bản sao điện tử tại "Chờ ký".<br>- Đối với Loại "Bản sao giấy", đây là Lãnh đạo ký duyệt (không ký số) tại "Chờ ký" trước bước trả kết quả giấy. |
+| Tiêu đề popup | - | - | - | Control UI: Label, chỉ đọc. Hiển thị: **"Trình ký yêu cầu cung cấp bản sao điện tử: [Mã hồ sơ]"**. |
+| **I. Thông tin trình ký** | - | - | - | |
+| Mã hồ sơ | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi. |
+| Số đăng ký hồ sơ gốc | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi. |
+| Người yêu cầu | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi. |
+| Lãnh đạo ký | Enum(String(255)) | Có | Trống | Control UI: Dropdown list.<br>- Bắt buộc chọn trước khi xác nhận trình ký.<br>- Hiển thị danh sách Lãnh đạo có thẩm quyền ký số còn hiệu lực của Trung tâm đăng ký, lấy từ Cấu hình thông tin về người ký của đơn vị.<br>- Lãnh đạo được chọn là người thực hiện ký số file PDF bản sao điện tử tại trạng thái "Chờ ký". |
+| **II. Khối Dự thảo Bản sao điện tử** | - | Có | Mở rộng | |
+| File PDF dự thảo | File | Có | Tự động sinh | Control UI: Khung xem trước tệp PDF (PDF Viewer nhúng).<br>- Hiển thị bản dự thảo Bản sao điện tử văn bản chứng nhận (có watermark "DỰ THẢO") do hệ thống sinh khi Cán bộ bấm "Trình ký".<br>- Cho phép phóng to, thu nhỏ, cuộn các trang để Cán bộ đối soát trước khi trình ký.<br>- Kèm 02 liên kết: `Xem file` và `Tải tệp`. |
 
-##### 4.3.2.X.4.3. Chức năng trên màn hình
+*c. Chức năng trên popup*
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Hủy | Nút | Đóng popup, giữ nguyên trạng thái hồ sơ, quay lại **UC-BS-CB.MH02**. |
-| 2 | Xác nhận | Nút | TH1 (Hồ sơ không thuộc trạng thái Cán bộ được phép xử lý): Vi phạm [BR-BS-002], hiển thị [MSG-ERR-BS-002], không cho phép trình ký. |
-|  |  |  | TH2 (Chưa chọn Lãnh đạo ký hoặc Lãnh đạo đã chọn không còn hiệu lực/không có thẩm quyền tại thời điểm xác nhận): Vi phạm [BR-VAL-001], hiển thị [MSG-ERR-VAL-001], không cho phép trình ký. |
-|  |  |  | TH3 (Hồ sơ gốc không còn ở trạng thái "Hoàn thành" khi hệ thống kiểm tra lại theo Số đăng ký, ví dụ đã bị Xóa đăng ký sau khi Khách hàng gửi yêu cầu): Vi phạm [BR-BS-011], hiển thị [MSG-ERR-BS-009], không cho phép trình ký. |
-|  |  |  | TH Hợp lệ: Hệ thống kiểm tra lại hồ sơ gốc còn hiệu lực, khóa phiên bản file bản sao điện tử dự thảo (nếu có), ghi nhận Cán bộ trình ký, thời điểm trình ký và Lãnh đạo ký đã chọn, chuyển hồ sơ sang **"Chờ ký"**, chuyển hồ sơ đến đúng Lãnh đạo đã chọn và hiển thị [MSG-SUC-BS-002]. |
+| 1 | Xem file | Liên kết | Mở file PDF dự thảo Bản sao điện tử trong một tab mới của trình duyệt ở khổ xem đầy đủ. |
+| 2 | Tải tệp | Liên kết | Tải file PDF dự thảo Bản sao điện tử về máy của Cán bộ. |
+| 3 | Xác nhận trình ký | Nút | TH1 (Chưa chọn Lãnh đạo ký): Quy định Lãnh đạo ký là bắt buộc. Hệ thống tô viền đỏ ô chọn Lãnh đạo, hiển thị [MSG-ERR-VAL-001] dạng Inline dưới ô chọn và tự động focus con trỏ vào ô lỗi. Không thực hiện trình ký.<br><br>TH Hợp lệ: Hệ thống thực hiện:<br>- Khóa phiên bản file PDF dự thảo Bản sao điện tử vừa sinh; Cán bộ và Lãnh đạo không được thay thế file đã trình ký.<br>- Ghi nhận Cán bộ trình ký, thời điểm trình ký (dd/mm/yyyy hh:mm:ss) và Lãnh đạo ký đã chọn.<br>- Chuyển trạng thái hồ sơ sang **"Chờ ký"**, chuyển hồ sơ vào hàng chờ ký số của Lãnh đạo đã chọn.<br>- Ghi lịch sử xử lý và Audit log.<br>- Đóng popup và [MH02 - Xử lý hồ sơ yêu cầu cung cấp bản sao](#43253-mh02---man-hinh-xu-ly-ho-so-yeu-cau-cung-cap-ban-sao), quay về [MH01 - Danh sách yêu cầu cung cấp bản sao chờ duyệt](#43252-mh01---man-hinh-danh-sach-yeu-cau-cung-cap-ban-sao-cho-duyet) và hiển thị [MSG-SUC-BS-002] dạng Toast. |
+| 4 | Hủy | Nút | Đóng popup, không lưu file PDF dự thảo vừa sinh vào hồ sơ, giữ nguyên trạng thái hồ sơ và quay lại [MH02 - Xử lý hồ sơ yêu cầu cung cấp bản sao](#43253-mh02---man-hinh-xu-ly-ho-so-yeu-cau-cung-cap-ban-sao). |
 
-#### 4.3.2.X.5. UC-BS-CB.MH04 - Popup Từ chối yêu cầu cung cấp bản sao
+##### 4.3.2.5.4.2. MH03b - Popup Trình ký bản sao giấy
 
-##### 4.3.2.X.5.1. Màn hình
+*a. Giao diện màn hình*
+
+![Popup Trình ký bản sao giấy](images/BS_MH03b_Popup_trinh_ky_ban_sao_giay.png)
+
+*b. Mô tả thông tin trên popup*
+
+- **Quy chuẩn kích thước và bố cục**: Kích thước chiều ngang đạt chuẩn `650px`, `max-height: 90vh`; bố cục dạng lưới 2 cột song song (Grid 50%-50%), padding `24px`, tiêu đề và nút bấm cố định theo Quy tắc thiết kế UI.
+
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :---: | :--- | :--- |
+| Tiêu đề popup | - | - | - | Control UI: Label, chỉ đọc. Hiển thị: **"Trình ký yêu cầu cung cấp bản sao giấy: [Mã hồ sơ]"**. |
+| Mã hồ sơ | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi. |
+| Số đăng ký hồ sơ gốc | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi. |
+| Người yêu cầu | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi. |
+| Số lượng bản sao | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi (kèm chữ "bản"). |
+| Lãnh đạo ký duyệt | Enum(String(255)) | Có | Trống | Control UI: Dropdown list.<br>- Bắt buộc chọn trước khi xác nhận trình ký.<br>- Hiển thị danh sách Lãnh đạo có thẩm quyền ký duyệt còn hiệu lực của đơn vị, lấy từ Cấu hình thông tin về người ký của đơn vị.<br>- Lãnh đạo được chọn thực hiện ký duyệt (không ký số) tại trạng thái "Chờ ký" trước bước trả kết quả giấy. |
+
+*c. Chức năng trên popup*
+
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Xác nhận trình ký | Nút | TH1 (Chưa chọn Lãnh đạo ký duyệt): Quy định Lãnh đạo ký duyệt là bắt buộc. Hệ thống tô viền đỏ ô chọn Lãnh đạo, hiển thị [MSG-ERR-VAL-001] dạng Inline dưới ô chọn và tự động focus con trỏ vào ô lỗi. Không thực hiện trình ký.<br><br>TH Hợp lệ: Hệ thống thực hiện:<br>- Ghi nhận Cán bộ trình ký, thời điểm trình ký (dd/mm/yyyy hh:mm:ss) và Lãnh đạo ký duyệt đã chọn.<br>- Chuyển trạng thái hồ sơ sang **"Chờ ký"** để Lãnh đạo thực hiện ký duyệt.<br>- Ghi lịch sử xử lý và Audit log.<br>- Đóng popup và [MH02 - Xử lý hồ sơ yêu cầu cung cấp bản sao](#43253-mh02---man-hinh-xu-ly-ho-so-yeu-cau-cung-cap-ban-sao), quay về [MH01 - Danh sách yêu cầu cung cấp bản sao chờ duyệt](#43252-mh01---man-hinh-danh-sach-yeu-cau-cung-cap-ban-sao-cho-duyet) và hiển thị [MSG-SUC-BS-002] dạng Toast. |
+| 2 | Hủy | Nút | Đóng popup, giữ nguyên trạng thái hồ sơ và quay lại [MH02 - Xử lý hồ sơ yêu cầu cung cấp bản sao](#43253-mh02---man-hinh-xu-ly-ho-so-yeu-cau-cung-cap-ban-sao). |
+
+#### 4.3.2.5.5. MH04 - Popup Từ chối yêu cầu cung cấp bản sao
+
+##### 4.3.2.5.5.1. Màn hình
 
 ![Popup Từ chối yêu cầu cung cấp bản sao](images/UC_BS_CB_MH04_Popup_tu_choi_yeu_cau_cung_cap_ban_sao.png)
 
-##### 4.3.2.X.5.2. Mô tả thông tin trên màn hình
+##### 4.3.2.5.5.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| Mã hồ sơ | String(50) | Có | Theo hồ sơ | Chỉ đọc. |
-| Người yêu cầu | String(255) | Có | Theo hồ sơ | Chỉ đọc. |
-| Lý do từ chối | Text(1000) | Có | Trống | Rule bắt buộc nhập lý do từ chối theo [BR-VAL-001]. |
+| Tiêu đề popup | - | - | - | Control UI: Label, chỉ đọc. Hiển thị: **"Từ chối yêu cầu cung cấp bản sao: [Mã hồ sơ]"**. |
+| Mã hồ sơ | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi. |
+| Người yêu cầu | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi. |
+| Lý do từ chối | Text(1000) | Có | Trống | Control UI: Textarea.<br>- Placeholder: "Nhập lý do từ chối...".<br>- Bắt buộc nhập; hệ thống tự động loại bỏ dấu cách thừa đầu/cuối trước khi kiểm tra. |
 
-##### 4.3.2.X.5.3. Chức năng trên màn hình
+##### 4.3.2.5.5.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Hủy | Nút | Đóng popup, giữ nguyên trạng thái hồ sơ. |
-| 2 | Xác nhận từ chối | Nút | TH1 (Bỏ trống Lý do từ chối): Vi phạm [BR-VAL-001], hiển thị [MSG-ERR-VAL-001]. Không cho phép lưu. |
-|  |  |  | TH Hợp lệ: Cập nhật trạng thái hồ sơ thành "Bị từ chối", lưu Lý do từ chối. Đóng popup, hiển thị [MSG-SUC-BS-004] và làm mới Bảng danh sách kết quả. |
+| 1 | Hủy | Nút | Đóng popup, giữ nguyên trạng thái hồ sơ và quay lại [MH01 - Danh sách yêu cầu cung cấp bản sao chờ duyệt](#43252-mh01---man-hinh-danh-sach-yeu-cau-cung-cap-ban-sao-cho-duyet). |
+| 2 | Xác nhận từ chối | Nút | TH1 (Bỏ trống Lý do từ chối): Quy định Lý do từ chối là bắt buộc. Hệ thống tô viền đỏ ô Lý do từ chối, hiển thị [MSG-ERR-VAL-001] dạng Inline dưới ô nhập và focus vào ô lỗi. Không thực hiện từ chối.<br><br>TH2 (Hồ sơ không còn ở trạng thái "Chờ duyệt"): Quy định chỉ được từ chối hồ sơ đang ở trạng thái "Chờ duyệt". Hệ thống hiển thị [MSG-ERR-BS-002] dạng Toast. Không thực hiện từ chối.<br><br>TH Hợp lệ: Hệ thống thực hiện ngay, không hiển thị thêm bước xác nhận:<br>- Lưu người từ chối, thời điểm từ chối, lý do từ chối và ghi lịch sử xử lý.<br>- Chuyển hồ sơ sang trạng thái "Bị từ chối".<br>- Tạo yêu cầu hoàn tiền cho hồ sơ theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online).<br>- Đóng popup, tải lại [MH01 - Danh sách yêu cầu cung cấp bản sao chờ duyệt](#43252-mh01---man-hinh-danh-sach-yeu-cau-cung-cap-ban-sao-cho-duyet), loại hồ sơ khỏi danh sách chờ duyệt và hiển thị [MSG-SUC-BS-004] dạng Toast. |
 
-#### 4.3.2.X.6. UC-BS-CB.MH05 - Màn hình Danh sách và Xác nhận trả kết quả bản sao giấy
+#### 4.3.2.5.6. MH05 - Màn hình Danh sách và Xác nhận trả kết quả bản sao giấy
 
-##### 4.3.2.X.6.1. Màn hình
+##### 4.3.2.5.6.1. Màn hình
 
-Áp dụng chung cho hồ sơ Loại cung cấp bản sao là "Bản sao giấy" ở trạng thái "Đã duyệt - chờ trả kết quả", bất kể Nguồn tiếp nhận là Online hay "Cán bộ nhập liệu" (hồ sơ giấy tham chiếu màn hình này từ [SRS_Nhap_lieu_ho_so_giay_Yeu_cau_cung_cap_ban_sao_Can_bo](SRS_Nhap_lieu_ho_so_giay_Yeu_cau_cung_cap_ban_sao_Can_bo.md), không thiết kế màn hình riêng).
+Áp dụng chung cho hồ sơ Loại cung cấp bản sao là "Bản sao giấy" ở trạng thái "Đã duyệt - chờ trả kết quả", bất kể Nguồn tiếp nhận là Online hay "Cán bộ nhập liệu" (hồ sơ giấy tham chiếu màn hình này từ [Nhập liệu hồ sơ giấy Yêu cầu cung cấp bản sao](SRS_Nhap_lieu_ho_so_giay_Yeu_cau_cung_cap_ban_sao_Can_bo.md), không thiết kế màn hình riêng).
 
 ![Màn hình Danh sách và Xác nhận trả kết quả bản sao giấy](images/UC_BS_CB_MH05_Danh_sach_xac_nhan_tra_ket_qua_ban_sao_giay.png)
 
-##### 4.3.2.X.6.2. Mô tả thông tin trên màn hình
+##### 4.3.2.5.6.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
 | **I. Bộ lọc tìm kiếm** | | | | |
-| Tìm kiếm | String(255) | Không | Trống | Tìm kiếm gần đúng theo Mã hồ sơ, Người yêu cầu hoặc Số đăng ký. |
-| Nguồn tiếp nhận | Enum(String(50)) | Không | Tất cả | - Tất cả<br>- Website Khách hàng<br>- Mobile Khách hàng<br>- Cán bộ nhập liệu |
-| **II. Bảng danh sách hồ sơ** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].|
-| Bảng danh sách hồ sơ | Text(1000) | Không | 20 bản ghi/trang | Chỉ hiển thị hồ sơ Loại "Bản sao giấy" ở trạng thái "Đã duyệt - chờ trả kết quả" thuộc phạm vi xử lý của Cán bộ.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].|
-| STT | Integer(10) | Không | Tự tăng | Số thứ tự dòng dữ liệu trên trang hiện tại. |
-| Mã hồ sơ | String(50) | Có | Theo hồ sơ | Chỉ đọc. |
-| Người yêu cầu | String(255) | Có | Theo hồ sơ | Chỉ đọc. |
-| Số đăng ký | String(50) | Có | Theo hồ sơ | Chỉ đọc. |
-| Số lượng bản sao | Integer(10) | Có | Theo hồ sơ | Chỉ đọc. |
-| Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. |
-| Thời điểm duyệt | Datetime | Có | Theo hồ sơ | Chỉ đọc. |
-| Thao tác | String(255) | Không | Theo trạng thái | Hiển thị "Xác nhận trả kết quả". |
+| Tìm kiếm | String(255) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm gần đúng theo Mã hồ sơ, Người yêu cầu hoặc Số đăng ký. |
+| Nguồn tiếp nhận | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Dịch vụ công<br>+ Trực tuyến<br>+ Trực tiếp |
+| **II. Bảng danh sách hồ sơ** | | | | |
+| Bảng danh sách hồ sơ | Text(1000) | Không | 20 bản ghi/trang | Control UI: Bảng dữ liệu (Grid) kèm phân trang.<br>- Chỉ hiển thị hồ sơ Loại "Bản sao giấy" ở trạng thái "Đã duyệt - chờ trả kết quả" thuộc phạm vi xử lý của Cán bộ.<br>- Trạng thái không có dữ liệu (Empty State): bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo [MSG-INF-SYS-001]. |
+| STT | Integer(10) | Không | Tự tăng | Control UI: Label.<br>- Số thứ tự dòng dữ liệu trên trang hiện tại. |
+| Mã hồ sơ | String(50) | Có | Theo hồ sơ | Control UI: Label. |
+| Người yêu cầu | String(255) | Có | Theo hồ sơ | Control UI: Label. |
+| Số đăng ký | String(50) | Có | Theo hồ sơ | Control UI: Label. |
+| Số lượng bản sao | Integer(10) | Có | Theo hồ sơ | Control UI: Label. |
+| Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | Control UI: Label. |
+| Thời điểm duyệt | Datetime | Có | Theo hồ sơ | Control UI: Label.<br>- Định dạng hiển thị: dd/mm/yyyy hh:mm. |
+| Thao tác | - | - | - | Control UI: Nút thao tác trên dòng.<br>- Hiển thị nút "Xác nhận trả kết quả". |
 
-##### 4.3.2.X.6.3. Chức năng trên màn hình
+##### 4.3.2.5.6.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Xác nhận trả kết quả | Nút | TH1 (Hồ sơ không còn ở trạng thái "Đã duyệt - chờ trả kết quả"): Vi phạm [BR-BS-010], hiển thị [MSG-ERR-DK-005], không cho phép xác nhận. |
-|  |  |  | TH Hợp lệ: Hệ thống yêu cầu xác nhận bằng [MSG-CFM-BS-005]. Sau khi xác nhận, lưu người xác nhận, thời điểm trả kết quả, chuyển hồ sơ sang "Hoàn thành" theo [BR-BS-010], hiển thị [MSG-SUC-BS-006]. |
-
----
-
-#### 4.3.2.X.7. Checklist ràng buộc chéo
-
-| Câu hỏi kiểm tra | Đánh giá áp dụng |
-| :--- | :--- |
-| UC này có cần gọi dữ liệu từ tích hợp V.1 để tự động điền hoặc kiểm tra không? | Không; hồ sơ gốc đã được xác định tự động một lần tại thời điểm Khách hàng gửi yêu cầu, không tra cứu lại tại đây. |
-| Các trường lựa chọn đã tham chiếu đúng danh mục chưa? | Cơ quan tiếp nhận Tham chiếu Danh mục Trung tâm giao dịch bảo đảm [DM_08]. |
-| Thao tác nào cần ghi log vào III.6? | Mở xử lý, kết xuất bản sao điện tử, trình ký, từ chối. |
-| Nguy cơ phát sinh bồi thường là gì? | Trình ký sai hồ sơ gốc hoặc trình ký file bản sao điện tử không đúng dữ liệu hồ sơ gốc có thể phát sinh khiếu kiện. Hệ thống kiểm tra lại hồ sơ gốc (theo Số đăng ký) vẫn còn hiệu lực ngay tại thời điểm trình ký, và khóa phiên bản file dự thảo ngay khi trình ký thành công. |
-| UC này có phiên bản Mobile tương ứng không? | Chức năng không có phiên bản tương ứng trên Mobile App dành cho Cán bộ; khách hàng gửi yêu cầu trực tuyến từ Website/Mobile Khách hàng, Cán bộ xử lý duy nhất trên Website Quản trị. |
-| Kết quả xử lý làm thay đổi Dashboard nào? | Số lượng yêu cầu cung cấp bản sao theo từng trạng thái; doanh thu phí cấp bản sao chỉ cập nhật đối với hồ sơ thuộc diện phải thu phí và thanh toán thành công. |
-
-#### 4.3.2.X.8. Sơ đồ và mô tả quy trình nghiệp vụ
-
-```mermaid
-flowchart TD
-    A[Cán bộ mở danh sách hồ sơ Chờ duyệt/Chờ giải quyết] --> B[Chọn hồ sơ Yêu cầu cung cấp bản sao]
-    B --> C[Mở xử lý hồ sơ - có thể bấm Xem hồ sơ gốc để xem chi tiết theo yêu cầu]
-    C --> D{Loại cung cấp bản sao}
-    D -->|Bản sao điện tử| E[Kết xuất file bản sao điện tử dự thảo]
-    D -->|Bản sao giấy| F[Không kết xuất file]
-    E --> G{Cán bộ quyết định}
-    F --> G
-    G -->|Từ chối| H[Hồ sơ trạng thái Bị từ chối]
-    G -->|Trình ký| I[Hồ sơ trạng thái Chờ ký]
-```
-
-| Bước | Người thực hiện | Mô tả nghiệp vụ |
-| :--- | :--- | :--- |
-| 1 | Cán bộ | Truy cập danh sách hồ sơ Yêu cầu cung cấp bản sao chờ xử lý. |
-| 2 | Hệ thống | Hiển thị hồ sơ ở trạng thái "Chờ duyệt" hoặc "Chờ giải quyết" thuộc phạm vi xử lý của Cán bộ. |
-| 3 | Cán bộ | Mở xử lý hồ sơ. Có thể bấm "Xem hồ sơ gốc" để mở popup xem chi tiết hồ sơ gốc khi cần rà soát; hồ sơ gốc không hiển thị sẵn thành khối cố định trên màn hình. Hệ thống dùng dữ liệu hồ sơ gốc (truy vấn theo Số đăng ký) để kết xuất bản sao điện tử. |
-| 4 | Cán bộ | Nếu Loại cung cấp bản sao là "Bản sao điện tử", kết xuất file bản sao điện tử dự thảo. Nếu là "Bản sao giấy", không kết xuất file. |
-| 5 | Cán bộ | Chọn "Trình ký" hoặc "Từ chối". |
-| 6 | Hệ thống | Nếu trình ký, kiểm tra lại hồ sơ gốc còn hiệu lực, khóa phiên bản file dự thảo (nếu có), chuyển hồ sơ sang "Chờ ký". Nếu từ chối, lưu lý do, chuyển hồ sơ sang "Bị từ chối" và phát sinh yêu cầu hoàn tiền/hoàn phí tương ứng nguồn hồ sơ. |
+| 1 | Xác nhận trả kết quả | Nút | TH1 (Hồ sơ không còn ở trạng thái "Đã duyệt - chờ trả kết quả"): Quy định chỉ được xác nhận trả kết quả đối với hồ sơ "Bản sao giấy" đang ở trạng thái "Đã duyệt - chờ trả kết quả". Hệ thống hiển thị [MSG-ERR-DK-005] dạng Toast, không cho phép xác nhận.<br><br>TH Hợp lệ: Hệ thống hiển thị popup xác nhận [MSG-CFM-BS-005]:<br>+ Chọn "Có": Hệ thống lưu người xác nhận, thời điểm trả kết quả, chuyển hồ sơ sang "Hoàn thành" và hiển thị [MSG-SUC-BS-006] dạng Toast.<br>+ Chọn "Không": Đóng popup xác nhận, giữ nguyên trạng thái hồ sơ. |

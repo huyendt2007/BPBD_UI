@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Xử lý logic SPA cho UC028 - Màn hình Xem chi tiết hồ sơ (Three-Pane Layout)
  * Áp dụng tổng quát cho cả 9 loại hồ sơ theo quy chuẩn Design System.
  */
@@ -2095,6 +2095,14 @@ function startDigitize(id) {
 
 function openPaperReadonly(id) {
     localStorage.setItem('selected_dossier_id', id);
+    if (typeof getPaperCcttRows === 'function') {
+        const paperCctt = getPaperCcttRows().find(x => x.id === id);
+        if (paperCctt) {
+            const returned = paperCctt.status === 'Bị trả lại' ? '&returned=1' : '';
+            window.location.href = 'nhap_lieu_ho_so_giay.html?mode=view&id=' + encodeURIComponent(id) + '&type=cctt' + returned;
+            return;
+        }
+    }
     const paperCopy = officerCopyRequests.find(x => x.id === id);
     if (paperCopy) {
         const returned = paperCopy.status === 'Bị trả lại' ? '&returned=1' : '';
@@ -4451,8 +4459,9 @@ function renderPaperCcttListTable(thead, tbody) {
                     <td><span class="badge ${row.status === 'Bị trả lại' ? 'badge-danger' : 'badge-warning'}">${row.status}</span></td>
                     <td>${row.status === 'Bị trả lại' ? (row.returnReason || 'Lãnh đạo trả lại để sửa dữ liệu tra cứu.') : '-'}</td>
                     <td>${row.handlingOfficer || 'Nguyễn Văn Cán Bộ'}</td>
-                    <td style="text-align:center" onclick="event.stopPropagation()">
-                        <button class="btn btn-primary" style="padding:6px 10px;font-size:12px" onclick="localStorage.setItem('selected_dossier_id','${row.id}'); window.location.href='nhap_lieu_ho_so_giay.html?id=${row.id}${modeUrl}'">${actionText}</button>
+                    <td style="text-align:center;white-space:nowrap" onclick="event.stopPropagation()">
+                        <button class="icon-btn view" title="Xem chi tiết hồ sơ" onclick="openPaperReadonly('${row.id}')"><i class="fa-regular fa-eye"></i></button>
+                        <button class="btn btn-primary" style="padding:4px 8px;font-size:12px;margin-left:4px" onclick="localStorage.setItem('selected_dossier_id','${row.id}'); window.location.href='nhap_lieu_ho_so_giay.html?id=${row.id}${modeUrl}'">${actionText}</button>
                     </td>
                 </tr>`;
         }).join('');

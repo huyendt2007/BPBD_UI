@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -544,6 +544,26 @@
             gap: 8px;
             flex-wrap: wrap;
             margin-top: 10px
+        }
+
+        .cctt-tab-btn {
+            border: 1px solid var(--line);
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .cctt-tab-btn:hover {
+            background: #f1f5f9;
+            color: var(--primary);
+        }
+
+        .cctt-tab-btn.active {
+            background: var(--primary) !important;
+            color: #fff !important;
+            border-color: var(--primary) !important;
+            font-weight: 700;
         }
 
         .result-summary {
@@ -2135,6 +2155,8 @@
                     <option value="tb_lan_dau">4. Thông báo xử lý TS lần đầu (Mẫu 08d)</option>
                     <option value="tb_thay_doi">5. Thay đổi thông báo xử lý TS (Mẫu 09d)</option>
                     <option value="tb_xoa">6. Xóa đăng ký thông báo xử lý TS (Mẫu 10d)</option>
+                    <option value="cctt">7. Yêu cầu cung cấp thông tin (Mẫu 13)</option>
+                    <option value="copy">8. Yêu cầu cung cấp bản sao (Mẫu 11)</option>
                 </select>
                 <button class="btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i> Quay về danh sách</button>
             </div>
@@ -2184,60 +2206,56 @@
         </section>
 
         <section id="editView" class="view">
-            <!-- Khối 1: Thông tin tiếp nhận và thu phí (Dạng thu gọn) -->
-            <div class="card">
-                <div class="card-h">
-                    <div style="display:flex;align-items:center;gap:8px">
-                        <i class="fa-solid fa-file-invoice-dollar" style="color:var(--primary)"></i>
-                        <h2>Thông tin tiếp nhận và thu phí</h2>
-                    </div>
-                    <span class="badge b-info">Chỉ đọc</span>
-                </div>
-                <div class="card-b">
-                    <div class="summary-grid" id="readonlyInfoEdit"></div>
-                </div>
-            </div>
-
-            <!-- Khối 2: Tài liệu tiếp nhận tách riêng, có thể mở rộng / thu nhỏ -->
-            <div class="card" id="cardTaiLieuTiepNhan">
-                <div class="card-h collapsible-header" onclick="toggleAttachmentBlock()" style="cursor:pointer">
-                    <div style="display:flex;align-items:center;gap:10px">
-                        <i class="fa-solid fa-paperclip" style="color:var(--primary)"></i>
-                        <h2>Tài liệu tiếp nhận</h2>
-                        <span class="badge b-info" id="attachmentCountBadge">2 tệp đính kèm</span>
+            <!-- KHỐI I: THÔNG TIN TIẾP NHẬN VÀ THU PHÍ (Dạng thu gọn - Accordion, MẶC ĐỊNH THU GỌN) -->
+            <div class="copy-accordion" id="generalReceptionAccordion">
+                <div class="copy-accordion-head" id="genRecAcc-head" onclick="toggleCopyAccordion('genRecAcc')">
+                    <div class="copy-accordion-title">
+                        <i class="fa-solid fa-receipt"></i>
+                        <span>I. THÔNG TIN TIẾP NHẬN VÀ THU PHÍ (Thu gọn)</span>
+                        <span class="badge b-info" style="font-size:11px">Chỉ đọc</span>
                     </div>
                     <div style="display:flex;align-items:center;gap:8px">
-                        <span style="font-size:12px;color:var(--muted)" id="attachmentToggleHint">Thu gọn</span>
-                        <i class="fa-solid fa-chevron-up chevron-icon" id="attachmentChevron"
-                            style="color:var(--primary)"></i>
+                        <span style="font-size:12px;color:var(--muted)">Nhấp để xem/thu gọn</span>
+                        <i class="fa-solid fa-chevron-down" id="genRecAcc-chevron" style="transition:transform 0.2s"></i>
                     </div>
                 </div>
-                <div class="card-b" id="attachmentCardBody">
-                    <div class="table-wrap">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Tên tài liệu</th>
-                                    <th>Tên tệp</th>
-                                    <th>Dung lượng</th>
-                                    <th>Người tải</th>
-                                    <th>Thời điểm tải</th>
-                                    <th style="width:160px;text-align:center">Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody id="attachmentEdit"></tbody>
-                        </table>
+                <div class="copy-accordion-body" id="genRecAcc-body">
+                    <!-- 7 thông tin tóm tắt chuẩn SRS -->
+                    <div class="summary-grid" id="readonlyInfoEdit" style="margin-bottom:16px"></div>
+                    <!-- Accordion con: Danh sách tài liệu tiếp nhận kèm theo -->
+                    <div style="border-top:1px solid var(--line);padding-top:12px">
+                        <div style="font-weight:700;font-size:13px;color:var(--primary);margin-bottom:8px">
+                            <i class="fa-solid fa-paperclip"></i> Tài liệu tiếp nhận kèm theo
+                        </div>
+                        <div class="table-wrap">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Tên tài liệu</th>
+                                        <th>Tên tệp</th>
+                                        <th>Dung lượng</th>
+                                        <th>Người tải</th>
+                                        <th>Thời điểm tải</th>
+                                        <th style="width:160px;text-align:center">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="attachmentEdit"></tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Khối 3: Biểu mẫu nhập liệu nghiệp vụ -->
-            <div class="card">
-                <div class="card-h">
-                    <h2 id="businessTitle">Nhập liệu nghiệp vụ</h2><span id="formRef" class="badge b-wait">Biểu mẫu
-                        nghiệp vụ</span>
+            <!-- KHỐI II: THÔNG TIN TRẢ LẠI TỪ LÃNH ĐẠO (Chỉ hiển thị khi Bị trả lại) -->
+            <div id="generalReturnedAccordionWrap"></div>
+
+            <!-- KHỐI III & IV: KHỐI TRA CỨU HỒ SƠ THAM CHIẾU & BIỂU MẪU NHẬP LIỆU NGHIỆP VỤ -->
+            <div class="card plain-card" id="cardBusinessWrapper">
+                <div class="card-h" id="businessCardHeader" style="display:none">
+                    <h2 id="businessTitle">Nhập liệu nghiệp vụ</h2>
+                    <span id="formRef" class="badge b-wait">Biểu mẫu nghiệp vụ</span>
                 </div>
-                <div class="card-b" id="businessForm"></div>
+                <div class="card-b" id="businessForm" style="padding:0"></div>
             </div>
         </section>
 
@@ -2531,6 +2549,95 @@
         </div>
     </div>
 
+    <!-- ==========================================================================
+         UC-CCTT-CB.MH04: POPUP TRÌNH KÝ KẾT QUẢ CUNG CẤP THÔNG TIN (STICKY HEAD/FOOT)
+         ========================================================================== -->
+    <div class="modal" id="modalCcttSign" style="display:none">
+        <div class="modal-box" style="width:min(760px, 96vw);max-height:90vh;display:flex;flex-direction:column;overflow:hidden">
+            <div class="modal-head" style="padding:24px 24px 16px;border-bottom:1px solid var(--line);flex-shrink:0;display:flex;justify-content:space-between;align-items:center">
+                <h3 style="margin:0;color:var(--primary);font-size:17px;font-weight:700;display:flex;align-items:center;gap:8px">
+                    <i class="fa-solid fa-file-signature"></i> Trình ký kết quả cung cấp thông tin
+                </h3>
+                <button type="button" class="icon" onclick="closeCcttModal('modalCcttSign')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="padding:24px;overflow-y:auto;flex:1">
+                <div class="grid two" style="gap:16px 20px">
+                    <div class="field" style="margin:0">
+                        <label style="font-weight:700">Mã hồ sơ</label>
+                        <div class="form-control" style="background:#f1f5f9;font-weight:700;color:var(--primary)" id="ccttSignDossierId">—</div>
+                    </div>
+                    <div class="field" style="margin:0">
+                        <label style="font-weight:700">Số lượng kết quả tra cứu</label>
+                        <div class="form-control" style="background:#f1f5f9;font-weight:600" id="ccttSignResultCount">—</div>
+                    </div>
+                    <div class="field" style="margin:0;grid-column:1/-1">
+                        <label style="font-weight:700">File PDF kết quả cung cấp thông tin</label>
+                        <div style="background:#f8fafc;padding:12px 16px;border-radius:6px;border:1px solid var(--line);display:flex;justify-content:space-between;align-items:center">
+                            <div style="display:flex;align-items:center;gap:10px">
+                                <i class="fa-solid fa-file-pdf" style="color:#dc2626;font-size:22px"></i>
+                                <div>
+                                    <b id="ccttSignPdfName" style="color:#1e3a8a">GCN_Mau Giay chung nhan CCTT.pdf</b>
+                                    <div style="font-size:12px;color:var(--muted)">Dự thảo Mẫu số 13 kèm watermark DỰ THẢO - 1.4 MB</div>
+                                </div>
+                            </div>
+                            <div style="display:flex;gap:12px">
+                                <a href="javascript:void(0)" onclick="openCcttPdfPreviewModal()" style="color:#2563eb;text-decoration:none;font-weight:700;font-size:13px"><i class="fa-solid fa-eye"></i> Xem file</a>
+                                <a href="javascript:void(0)" onclick="downloadCcttPdfDraft()" style="color:#059669;text-decoration:none;font-weight:700;font-size:13px"><i class="fa-solid fa-download"></i> Tải tệp</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field" style="margin:0">
+                        <label style="font-weight:700">Người trình ký</label>
+                        <div class="form-control" style="background:#f1f5f9">Nguyễn Văn Cán Bộ</div>
+                    </div>
+                    <div class="field" style="margin:0">
+                        <label style="font-weight:700">Lãnh đạo ký <span class="required">*</span></label>
+                        <select id="ccttSignLeaderSelect" class="form-control" onchange="clearAllErrors(this.parentElement)">
+                            <option value="" selected>-- Chọn Lãnh đạo ký --</option>
+                            <option value="Lê Hoàng Long - Giám đốc Trung tâm Đăng ký Hà Nội">Lê Hoàng Long - Giám đốc Trung tâm Đăng ký Hà Nội</option>
+                            <option value="Trần Thị Thu Hà - Phó Giám đốc Trung tâm Đăng ký Hà Nội">Trần Thị Thu Hà - Phó Giám đốc Trung tâm Đăng ký Hà Nội</option>
+                            <option value="Nguyễn Văn Lãnh Đạo - Phó Giám đốc Trung tâm Đăng ký Hà Nội">Nguyễn Văn Lãnh Đạo - Phó Giám đốc Trung tâm Đăng ký Hà Nội</option>
+                        </select>
+                        <div class="error-text">Đây là trường bắt buộc</div>
+                    </div>
+                    <div class="field" style="margin:0;grid-column:1/-1">
+                        <label style="font-weight:700">Ghi chú trình ký</label>
+                        <textarea id="ccttSignNote" class="form-control" rows="2" placeholder="Nhập ghi chú nội bộ trình Lãnh đạo nếu cần..."></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-foot" style="padding:16px 24px 24px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;flex-shrink:0;background:#fff">
+                <button type="button" class="btn" onclick="closeCcttModal('modalCcttSign')">Hủy</button>
+                <button type="button" class="btn primary" onclick="submitCcttSignConfirm()"><i class="fa-solid fa-check"></i> Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+         POPUP XEM TRƯỚC VĂN BẢN CUNG CẤP THÔNG TIN (MẪU 13 - NGHỊ ĐỊNH 99/2022/NĐ-CP)
+         ========================================================================== -->
+    <div class="modal" id="modalCcttPdfPreview" style="display:none">
+        <div class="modal-box" style="width:min(880px, 96vw);max-height:92vh;display:flex;flex-direction:column;overflow:hidden">
+            <div class="modal-head" style="padding:20px 24px 14px;border-bottom:1px solid var(--line);flex-shrink:0;display:flex;justify-content:space-between;align-items:center">
+                <h3 style="margin:0;color:var(--primary);font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px">
+                    <i class="fa-solid fa-file-pdf" style="color:#dc2626"></i> Xem trước Văn bản cung cấp thông tin (Mẫu số 13)
+                </h3>
+                <button type="button" class="icon" onclick="closeCcttModal('modalCcttPdfPreview')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="padding:24px;overflow-y:auto;flex:1;background:#525659">
+                <div id="ccttPdfPreviewContent" style="background:#fff;max-width:760px;margin:0 auto;padding:48px 48px;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,0.3);position:relative;font-family:'Times New Roman',serif;color:#111;line-height:1.45">
+                </div>
+            </div>
+            <div class="modal-foot" style="padding:14px 24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;flex-shrink:0;background:#fff">
+                <span style="font-size:12.5px;color:var(--muted)">Biểu mẫu Mẫu số 13 ban hành kèm theo Nghị định số 99/2022/NĐ-CP</span>
+                <div style="display:flex;gap:10px">
+                    <button type="button" class="btn" onclick="closeCcttModal('modalCcttPdfPreview')">Đóng</button>
+                    <button type="button" class="btn success" onclick="downloadCcttPdfDraft()"><i class="fa-solid fa-download"></i> Tải file dự thảo</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script>
         // Thông báo hiển thị ngay trong trang, không dùng hộp thoại alert của trình duyệt.
@@ -2572,6 +2679,57 @@ const qs = new URLSearchParams(location.search);
         const id = localStorage.getItem('selected_dossier_id') || qs.get('id') || 'HS-2026-000128';
         let mode = qs.get('mode') === 'view' ? 'view' : 'edit';
 
+        let readonlyView, editView, previewView, stepper, s1, s2, s3, businessForm, businessTitle, formRef, reviewRef;
+
+        function initDomReferences() {
+            readonlyView = document.getElementById('readonlyView');
+            editView = document.getElementById('editView');
+            previewView = document.getElementById('previewView');
+            stepper = document.getElementById('stepper');
+            s1 = document.getElementById('s1');
+            s2 = document.getElementById('s2');
+            s3 = document.getElementById('s3');
+            businessForm = document.getElementById('businessForm');
+            businessTitle = document.getElementById('businessTitle');
+            formRef = document.getElementById('formRef');
+            reviewRef = document.getElementById('reviewRef');
+        }
+
+        function renderGeneralReturnedBlock() {
+            const wrap = document.getElementById('generalReturnedAccordionWrap');
+            if (!wrap) return;
+            const isReturned = p.status === 'Bị trả lại' || qs.get('returned') === '1';
+            if (!isReturned) {
+                wrap.innerHTML = '';
+                return;
+            }
+            wrap.innerHTML = `
+                <div class="copy-accordion" id="genReturnAccordion" style="border-left:4px solid #dc2626;margin-bottom:16px">
+                    <div class="copy-accordion-head open" id="genReturnAcc-head" onclick="toggleCopyAccordion('genReturnAcc')" style="background:#fef2f2">
+                        <div class="copy-accordion-title" style="color:#dc2626">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span>II. THÔNG TIN TRẢ LẠI TỪ LÃNH ĐẠO</span>
+                            <span class="badge b-red" style="font-size:11px">Bị trả lại</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <span style="font-size:12px;color:var(--muted)">Nhấp để xem/thu gọn</span>
+                            <i class="fa-solid fa-chevron-up" id="genReturnAcc-chevron" style="transition:transform 0.2s"></i>
+                        </div>
+                    </div>
+                    <div class="copy-accordion-body open" id="genReturnAcc-body" style="background:#fff">
+                        <div class="summary-grid">
+                            <div class="kv" style="grid-column:1/-1">
+                                <span>Lý do trả lại:</span>
+                                <b style="color:#dc2626;font-size:13.5px">${e(p.returnReason || 'Lãnh đạo yêu cầu rà soát lại thông tin tham chiếu và nội dung hồ sơ giấy.')}</b>
+                            </div>
+                            ${kv('Lãnh đạo trả lại', p.returnedBy || 'Nguyễn Văn Lãnh Đạo')}
+                            ${kv('Thời điểm trả lại', p.returnedAt || '24/09/2026 10:15')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
         function normalizeType(type) {
             if (!type || type === 'Đăng ký mới') return 'Đăng ký lần đầu';
             if (type === 'Thông báo xử lý tài sản') return 'Thông báo xử lý tài sản bảo đảm lần đầu';
@@ -2583,33 +2741,63 @@ const qs = new URLSearchParams(location.search);
             const paper = JSON.parse(localStorage.getItem('ucps014_paper_profiles') || '[]');
             const all = JSON.parse(localStorage.getItem('custom_mock_profiles') || '[]');
             const found = paper.find(x => x.id === id) || all.find(x => x.id === id);
-            if (!found && (qs.get('type') === 'cctt' || id === 'HS-2026-000136')) {
-                const isReturnedMock = qs.get('returned') === '1';
+            if (qs.get('type') === 'cctt' || id === 'HS-2026-000136' || id === 'HS-2026-000188' || id.startsWith('CCTT-') || (found && (found.type === 'Yêu cầu cung cấp thông tin' || (found.type || '').includes('cung cấp thông tin')))) {
+                const isRet = qs.get('returned') === '1' || id === 'HS-2026-000188' || (found && found.status === 'Bị trả lại');
+                const ccttId = (found && (found.type === 'Yêu cầu cung cấp thông tin' || (found.type || '').includes('cung cấp thông tin')))
+                    ? found.id
+                    : (isRet ? 'HS-2026-000188' : (id.startsWith('CCTT-') || id === 'HS-2026-000136' ? id : 'HS-2026-000136'));
                 return {
-                    id,
-                    paper: isReturnedMock ? 'PG-0188' : 'PG-0136',
-                    date: isReturnedMock ? '30/07/2026 11:25' : '21/07/2026 15:50',
-                    customer: isReturnedMock ? 'Công ty TNHH An Phú' : 'Ông Phạm Minh Đức',
-                    requesterAddress: isReturnedMock ? 'Số 88 Lê Văn Lương, Thanh Xuân, Hà Nội' : 'Số 18 phố Lý Thường Kiệt, phường Cửa Nam, Hà Nội',
-                    submitter: isReturnedMock ? 'Vũ Minh Châu' : 'Phạm Minh Đức',
+                    id: ccttId,
+                    paper: (found && found.paper) || (isRet ? 'PG-0188' : 'PG-0136'),
+                    date: (found && found.date) || (isRet ? '30/07/2026 11:25' : '21/07/2026 15:50'),
+                    customer: (found && found.customer) || (isRet ? 'Công ty TNHH An Phú' : 'Ông Phạm Minh Đức'),
+                    customerAccountType: (found && found.customerAccountType) || (isRet ? 'Tài khoản nộp phí sau' : 'Tài khoản thường'),
+                    customerId: (found && found.customerId) || (isRet ? 'TK-ANPHU-088' : 'TK-DUC-0912'),
+                    customerPhone: (found && (found.phone || found.customerPhone)) || (isRet ? '0988.777.666' : '0912.345.678'),
+                    customerEmail: (found && (found.email || found.customerEmail)) || (isRet ? 'minhchau@anphu.example.com' : 'duc@example.com'),
+                    requesterCountry: 'Việt Nam',
+                    requesterProvince: (found && found.requesterProvince) || (isRet ? 'TP Hà Nội' : 'TP Hà Nội'),
+                    requesterWard: (found && found.requesterWard) || (isRet ? 'Phường Nhân Chính' : 'Phường Cửa Nam'),
+                    requesterAddress: (found && (found.requesterAddress || found.customerAddress)) || (isRet ? 'Số 88 Lê Văn Lương, phường Nhân Chính, quận Thanh Xuân, TP. Hà Nội' : 'Số 18 phố Lý Thường Kiệt, phường Cửa Nam, quận Hoàn Kiếm, TP. Hà Nội'),
+                    receptionNote: (found && found.receptionNote) || (isRet ? 'Hồ sơ đã được tiếp nhận lại sau khi giải trình ý kiến của Lãnh đạo' : 'Đề nghị cung cấp thông tin biện pháp bảo đảm liên quan để rà soát tín dụng'),
+                    submitter: (found && found.submitter) || (isRet ? 'Vũ Minh Châu' : 'Phạm Minh Đức'),
+                    submitterId: (found && found.submitterId) || (isRet ? 'CCCD: 001099023456' : 'CCCD: 091000000004'),
+                    submitterPhone: (found && found.submitterPhone) || (isRet ? '0988.777.666' : '0912.345.678'),
+                    submitterEmail: (found && (found.submitterEmail || found.email)) || (isRet ? 'minhchau@anphu.example.com' : 'duc@example.com'),
+                    submitterRelation: (found && found.submitterRelation) || (isRet ? 'Nhân viên theo giấy giới thiệu số 08/GT-AP' : 'Người yêu cầu nộp trực tiếp'),
                     type: 'Yêu cầu cung cấp thông tin',
                     transactionType: 'Biện pháp bảo đảm',
                     subtype: 'Thế chấp',
-                    receipt: 'BL-2026-000136',
-                    customerId: '-',
-                    paymentMethod: 'tien_mat',
-                    paymentStatus: 'Đã thu',
-                    resultMethod: 'dien_tu',
-                    channel: 'Trực tiếp tại quầy',
-                    status: isReturnedMock ? 'Bị trả lại' : 'Chờ giải quyết',
-                    amount: 30000,
-                    officer: 'Nguyễn Thị Tiếp Nhận',
-                    handlingOfficer: 'Nguyễn Văn Cán Bộ',
-                    email: isReturnedMock ? 'minhchau@anphu.example.com' : 'duc@example.com',
-                    returnReason: 'Lãnh đạo yêu cầu rà soát lại tiêu chí tra cứu và sinh lại file PDF dự thảo theo hồ sơ giấy.',
-                    returnedBy: 'Nguyễn Văn Lãnh Đạo',
-                    returnedAt: '02/08/2026 10:15',
-                    processingVersion: isReturnedMock ? 'v2' : 'v1'
+                    receipt: (found && found.receipt) || (isRet ? 'BL-2026-000188' : 'BL-2026-000136'),
+                    feeName: 'Phí cung cấp thông tin về biện pháp bảo đảm',
+                    feeCode: (found && found.feeCode) || (isRet ? 'PKPT-CCTT-2026-000188' : 'PKPT-CCTT-2026-000136'),
+                    paymentMethod: (found && found.paymentMethod) || 'tien_mat',
+                    paymentStatus: (found && found.paymentStatus) || 'Đã thu',
+                    paymentTime: (found && found.paymentTime) || (isRet ? '30/07/2026 11:30' : '21/07/2026 15:55'),
+                    paymentOfficer: (found && found.paymentOfficer) || 'Nguyễn Thị Tiếp Nhận',
+                    resultMethod: (found && found.resultMethod) || (isRet ? 'Trực tiếp tại bộ phận một cửa' : 'Cách thức điện tử'),
+                    resultAddress: (found && (found.resultAddress || found.requesterAddress)) || (isRet ? 'Số 88 Lê Văn Lương, phường Nhân Chính, quận Thanh Xuân, TP. Hà Nội' : 'Số 18 phố Lý Thường Kiệt, phường Cửa Nam, quận Hoàn Kiếm, TP. Hà Nội'),
+                    resultEmail: (found && (found.resultEmail || found.email)) || (isRet ? 'minhchau@anphu.example.com' : 'duc@example.com'),
+                    channel: (found && found.channel) || 'Trực tiếp tại quầy',
+                    source: 'Cán bộ nhập liệu',
+                    status: isRet ? 'Bị trả lại' : ((found && found.status) || 'Chờ giải quyết'),
+                    amount: (found && found.amount) || 30000,
+                    officer: (found && found.officer) || 'Nguyễn Thị Tiếp Nhận',
+                    agency: (found && found.agency) || 'Trung tâm Đăng ký giao dịch, tài sản tại TP Hà Nội',
+                    handlingOfficer: (found && found.handlingOfficer) || 'Nguyễn Văn Cán Bộ',
+                    email: (found && found.email) || (isRet ? 'minhchau@anphu.example.com' : 'duc@example.com'),
+                    phone: (found && found.phone) || (isRet ? '0988.777.666' : '0912.345.678'),
+                    returnReason: (found && found.returnReason) || 'Lãnh đạo yêu cầu rà soát lại tiêu chí tra cứu theo số đăng ký và sinh lại file PDF dự thảo theo hồ sơ giấy.',
+                    returnedBy: (found && found.returnedBy) || 'Nguyễn Văn Lãnh Đạo',
+                    returnedAt: (found && found.returnedAt) || '02/08/2026 10:15',
+                    processingVersion: (found && found.processingVersion) || (isRet ? 'v2' : 'v1'),
+                    history: (found && found.history) || [
+                        { time: isRet ? '30/07/2026 11:25' : '21/07/2026 15:50', status: 'Tiếp nhận hồ sơ', note: 'Tiếp nhận hồ sơ giấy tại quầy số 01, thu phí lệ phí thành công.' },
+                        { time: isRet ? '30/07/2026 11:30' : '21/07/2026 15:55', status: 'Chờ giải quyết', note: 'Chuyển hồ sơ vào hàng chờ nhập liệu của Cán bộ giải quyết.' },
+                        ...(isRet ? [
+                            { time: '02/08/2026 10:15', status: 'Bị trả lại', note: 'Lãnh đạo yêu cầu rà soát lại tiêu chí tra cứu theo số đăng ký và sinh lại file PDF dự thảo theo hồ sơ giấy.' }
+                        ] : [])
+                    ]
                 };
             }
             const copyReqList = JSON.parse(localStorage.getItem('officer_copy_requests') || '[]');
@@ -2717,8 +2905,10 @@ const qs = new URLSearchParams(location.search);
         let paperInfoLookupDone = false;
         let paperInfoHasData = null;
         let paperInfoPdfExported = false;
+        let ccttLookupDone = false;
+        let ccttHasData = null;
 
-                function lowerType() { return (p.type || '').toLowerCase(); }
+        function lowerType() { return (p.type || '').toLowerCase(); }
         function isChange() { return (lowerType().includes('thay đổi') || lowerType().includes('thay doi')) && !lowerType().includes('thông báo') && !lowerType().includes('thong bao'); }
         function isDelete() { return ((lowerType().includes('xóa đăng ký') || lowerType().includes('xoa dang ky') || lowerType().includes('xóa') || lowerType().includes('xoa')) && !lowerType().includes('thông báo') && !lowerType().includes('thong bao')) || lowerType() === 'xóa đăng ký'; }
         function isNoticeFirst() { return (lowerType().includes('thông báo') || lowerType().includes('thong bao')) && ((lowerType().includes('lần đầu') || lowerType().includes('lan dau')) || (!lowerType().includes('thay đổi') && !lowerType().includes('thay doi') && !lowerType().includes('xóa') && !lowerType().includes('xoa'))); }
@@ -2777,33 +2967,36 @@ const qs = new URLSearchParams(location.search);
         function renderReadonly() {
             if (isCopyRequest()) {
                 renderPaperCopyReadonly();
-                return;
+            } else if (isInfoRequest()) {
+                renderPaperInfoReadonly();
+            } else {
+                const isCctt = isInfoRequest();
+                const fullHtml = [
+                    kv('Mã hồ sơ', p.id),
+                    kv('Số đơn giấy', p.paper || 'PG-' + p.id.slice(-3)),
+                    kv('Mã QR/mã vạch', 'QR-' + p.id),
+                    kv('Trạng thái hồ sơ', p.status || 'Chờ giải quyết'),
+                    kv('Nguồn tiếp nhận', 'Cán bộ nhập liệu'),
+                    kv('Kênh tiếp nhận', p.channel || 'Trực tiếp tại quầy'),
+                    kv('Thời điểm tiếp nhận', p.date),
+                    kv('Đơn vị tiếp nhận', p.agency || 'Trung tâm Đăng ký giao dịch, tài sản tại TP Hà Nội'),
+                    kv('Cán bộ tiếp nhận', p.officer || 'Nguyễn Thị Tiếp Nhận'),
+                    kv('Người yêu cầu', p.customer),
+                    kv('Địa chỉ người yêu cầu', p.requesterAddress || 'Số 18 phố Lý Thường Kiệt, phường Cửa Nam, Hà Nội'),
+                    kv('Người nộp hồ sơ', p.submitter || p.customer),
+                    kv('Loại yêu cầu', p.type),
+                    kv('Phương thức nhận kết quả', resultText()),
+                    kv('Mã khoản phải thu', 'KPT-' + p.id.slice(-6)),
+                    ...(isCctt ? [] : [kv('Số lượng bản sao', isCopy() ? (p.copyQuantity || 1) + ' bản' : '-')]),
+                    kv('Trạng thái lệ phí', p.paymentStatus || (p.paymentMethod === 'mien_phi' ? 'Miễn phí' : 'Đã thu')),
+                    kv('Số tiền đã thu', money(p.amount)),
+                    kv('Phương thức thanh toán', paymentText()),
+                    kv('Số biên lai/chứng từ', p.receipt || '-'),
+                    kv('Cán bộ giải quyết', p.handlingOfficer || 'Nguyễn Văn Cán Bộ')
+                ].join('');
+                const elInfoView = document.getElementById('readonlyInfoView');
+                if (elInfoView) elInfoView.innerHTML = fullHtml;
             }
-            const isCctt = isInfoRequest();
-            const fullHtml = [
-                kv('Mã hồ sơ', p.id),
-                kv('Số đơn giấy', p.paper || 'PG-' + p.id.slice(-3)),
-                kv('Mã QR/mã vạch', 'QR-' + p.id),
-                kv('Trạng thái hồ sơ', p.status || 'Chờ giải quyết'),
-                kv('Nguồn tiếp nhận', 'Cán bộ nhập liệu'),
-                kv('Kênh tiếp nhận', p.channel || 'Trực tiếp tại quầy'),
-                kv('Thời điểm tiếp nhận', p.date),
-                kv('Đơn vị tiếp nhận', p.agency || 'Trung tâm Đăng ký giao dịch, tài sản tại TP Hà Nội'),
-                kv('Cán bộ tiếp nhận', p.officer || 'Nguyễn Thị Tiếp Nhận'),
-                kv('Người yêu cầu', p.customer),
-                kv('Địa chỉ người yêu cầu', p.requesterAddress || 'Số 18 phố Lý Thường Kiệt, phường Cửa Nam, Hà Nội'),
-                kv('Người nộp hồ sơ', p.submitter || p.customer),
-                kv('Loại yêu cầu', p.type),
-                kv('Phương thức nhận kết quả', resultText()),
-                kv('Mã khoản phải thu', 'KPT-' + p.id.slice(-6)),
-                ...(isCctt ? [] : [kv('Số lượng bản sao', isCopy() ? (p.copyQuantity || 1) + ' bản' : '-')]),
-                kv('Trạng thái lệ phí', p.paymentStatus || (p.paymentMethod === 'mien_phi' ? 'Miễn phí' : 'Đã thu')),
-                kv('Số tiền đã thu', money(p.amount)),
-                kv('Phương thức thanh toán', paymentText()),
-                kv('Số biên lai/chứng từ', p.receipt || '-'),
-                kv('Cán bộ giải quyết', p.handlingOfficer || 'Nguyễn Văn Cán Bộ')
-            ].join('');
-            readonlyInfoView.innerHTML = fullHtml;
 
             // Yêu cầu: Thông tin tiếp nhận và thu phí hiển thị dạng thu gọn gồm đúng 7 thông tin:
             // Mã hồ sơ, Số đơn giấy, Thời điểm tiếp nhận, Cán bộ tiếp nhận, Loại yêu cầu, số biên lai/chứng từ, Loại tài khoản khách hàng
@@ -2813,31 +3006,25 @@ const qs = new URLSearchParams(location.search);
                 kv('Thời điểm tiếp nhận', p.date),
                 kv('Cán bộ tiếp nhận', p.officer || 'Nguyễn Thị Tiếp Nhận'),
                 kv('Loại yêu cầu', p.type),
-                kv('Số biên lai/chứng từ', p.receipt || 'BL-2026-000128'),
-                kv('Loại tài khoản khách hàng', p.customerAccountType || (p.customerId && p.customerId !== '-' ? 'Tài khoản trực tuyến' : 'Khách hàng vãng lai'))
+                kv('Số biên lai/chứng từ', p.receipt || (isCopyRequest() ? 'BL-BS-2026-00452' : 'BL-2026-000128')),
+                kv('Loại tài khoản', p.customerAccountType || (p.customerId && p.customerId !== '-' ? 'Tài khoản trực tuyến' : 'Khách hàng vãng lai'))
             ].join('');
-            readonlyInfoEdit.innerHTML = compactHtml;
-            previewReadonly.innerHTML = compactHtml;
+            const elInfoEdit = document.getElementById('readonlyInfoEdit');
+            if (elInfoEdit) elInfoEdit.innerHTML = compactHtml;
+            const elPreview = document.getElementById('previewReadonly');
+            if (elPreview) elPreview.innerHTML = compactHtml;
         }
 
-        function toggleAttachmentBlock() {
-            const body = document.getElementById('attachmentCardBody');
-            const header = document.querySelector('#cardTaiLieuTiepNhan .collapsible-header');
-            const hint = document.getElementById('attachmentToggleHint');
-            if (!body || !header) return;
-            const isHidden = body.style.display === 'none';
-            body.style.display = isHidden ? 'block' : 'none';
-            header.classList.toggle('collapsed', !isHidden);
-            if (hint) hint.textContent = isHidden ? 'Thu gọn' : 'Mở rộng';
-        }
         function renderAttachments() {
             const rows = attachments().map(a => {
                 const size = a.fileSize ? (a.fileSize / 1048576).toFixed(1) + ' MB' : '-';
-                const actions = `<button class="btn small" onclick="viewFile('${e(a.fileName)}')">Xem file</button> <button class="btn small" onclick="downloadFile('${e(a.fileName)}')"><i class="fa-solid fa-download"></i> Tải xuống</button>`;
-                return `<tr><td>${e(a.name)}</td><td>${e(a.fileName)}</td><td>${size}</td><td>${e(p.officer || 'Nguyễn Thị Tiếp Nhận')}</td><td>${e(p.date)}</td><td>${actions}</td></tr>`;
+                const actions = `<button type="button" class="btn small" onclick="viewFile('${e(a.fileName)}')"><i class="fa-solid fa-eye"></i> Xem file</button> <button type="button" class="btn small" onclick="downloadFile('${e(a.fileName)}')"><i class="fa-solid fa-download"></i> Tải xuống</button>`;
+                return `<tr><td>${e(a.name)}</td><td><i class="fa-solid fa-file-pdf" style="color:#dc2626"></i> ${e(a.fileName)}</td><td>${size}</td><td>${e(p.officer || 'Nguyễn Thị Tiếp Nhận')}</td><td>${e(p.date)}</td><td style="text-align:center">${actions}</td></tr>`;
             }).join('');
-            attachmentReadonly.innerHTML = rows;
-            if (document.getElementById('attachmentEdit')) attachmentEdit.innerHTML = rows;
+            const elReadonly = document.getElementById('attachmentReadonly');
+            if (elReadonly) elReadonly.innerHTML = rows;
+            const elEdit = document.getElementById('attachmentEdit');
+            if (elEdit) elEdit.innerHTML = rows;
         }
         function referenceLookupHtml(label = 'Số đăng ký') {
             if (!needsOriginalNumber()) return '';
@@ -2946,128 +3133,463 @@ const qs = new URLSearchParams(location.search);
         <div class="readonly-note">Cán bộ không nhập lại số lượng bản sao tại màn nhập liệu. Số lượng, phí và trạng thái thu phí được kế thừa từ bước tiếp nhận và thu phí.</div>
         <div class="section-title">Chi tiết hồ sơ được yêu cầu cung cấp</div><div class="grid four">${readField('Tiêu đề khối động', p.type)}${readField('Loại hình giao dịch', p.transactionType || 'Biện pháp bảo đảm')}${readField('Loại biện pháp/Loại hợp đồng', p.subtype || 'Thế chấp')}${readField('Số hợp đồng', 'HDTC/2026/128')}${readField('Ngày có hiệu lực', '24/07/2026')}${readField('Giá trị nghĩa vụ', '1.500.000.000 VND')}${readField('Số đăng ký', '1505156438')}${readField('Thời điểm đăng ký', '15/05/2026 09:20')}</div>${partyBlocks(false, true)}${assetBlock(true)}`;
         }
-        function returnInfoBlock() {
-            const isReturned = p.status === 'Bị trả lại';
-            return `<div class="section-title">II. Thông tin trả lại</div>
-        <div class="grid four">
-            ${readField('Trạng thái hồ sơ', p.status || 'Chờ giải quyết')}
-            ${readField('Phiên bản xử lý hiện tại', p.processingVersion || (isReturned ? 'v2' : 'v1'))}
-            ${isReturned ? readField('Lãnh đạo trả lại', p.returnedBy || 'Nguyễn Văn Lãnh Đạo') : ''}
-            ${isReturned ? readField('Thời điểm trả lại', p.returnedAt || '02/08/2026 10:15') : ''}
-        </div>
-        ${isReturned ? areaField('Lý do trả lại gần nhất', p.returnReason || 'Lãnh đạo yêu cầu rà soát lại tiêu chí tra cứu theo hồ sơ giấy.', 'class="readonly" readonly') : '<div class="readonly-note">Hồ sơ chưa có thông tin trả lại từ Lãnh đạo.</div>'}`;
-        }
-        function paperInfoFileBlock(exported = false) {
-            if (!exported) {
-                return `<div class="pdf-card" id="paperInfoPdfCard">
-            <div class="grid four">
-                ${readField('File PDF dự thảo', 'Chưa sinh file')}
-                ${readField('Thời điểm kết xuất', '-')}
-                ${readField('Phiên bản PDF', '-')}
-                ${readField('Mẫu biểu', 'GCN_Mau Giay chung nhan CCTT.pdf')}
-            </div>
-            <div class="pdf-actions">
-                <button class="btn success" type="button" onclick="mockPaperInfoExport()"><i class="fa-solid fa-file-pdf"></i> Kết xuất kết quả</button>
-            </div>
-        </div>`;
-            }
-            return `<div class="pdf-card" id="paperInfoPdfCard">
-        <div class="grid four">
-            ${readField('File PDF dự thảo', 'CCTT_' + p.id + '_Mau_10d_v1.pdf')}
-            ${readField('Thời điểm kết xuất', new Date().toLocaleString('vi-VN'))}
-            ${readField('Phiên bản PDF', p.status === 'Bị trả lại' ? 'PDF dự thảo v2' : 'PDF dự thảo v1')}
-            ${readField('Mẫu biểu', 'GCN_Mau Giay chung nhan CCTT.pdf')}
-        </div>
-        <div class="hint">File gồm lá mặt/trang ký Mẫu số 10d và phần kết quả cung cấp thông tin/phụ lục phía sau trong cùng một tài liệu.</div>
-        <div class="pdf-actions">
-            <button class="btn small primary" type="button" onclick="openPdfPreview()">Xem file</button>
-            <button class="btn small" type="button" onclick="downloadFile('CCTT_${e(p.id)}_Mau_10d_v1.pdf')"><i class="fa-solid fa-download"></i> Tải file</button>
-            <button class="btn small success" type="button" onclick="mockPaperInfoExport()"><i class="fa-solid fa-rotate"></i> Kết xuất lại</button>
-        </div>
-    </div>`;
-        }
-        function paperInfoResultBlock(status = 'Chưa tra cứu', hasData = null) {
-            const searchValue = getPaperInfoSearchValue();
-            const meta = `<div class="result-summary">
-        ${readField('Trạng thái tra cứu', status)}
-        ${readField('Thời điểm tra cứu', status === 'Chưa tra cứu' ? '-' : new Date().toLocaleString('vi-VN'))}
-        ${readField('Tiêu chí tra cứu thực tế', document.getElementById('paperInfoCriteria')?.value || 'Số đăng ký')}
-        ${readField('Dữ liệu đầu vào tra cứu', searchValue || '-')}
-    </div>`;
-            if (hasData === false) {
-                return `${meta}<div class="inline-warning">Kết quả thông tin bạn tra cứu: Chưa được đăng ký hoặc hiệu lực của đăng ký đối với thông tin không còn.</div>`;
-            }
-            if (hasData === true) {
-                return `${meta}
-            <div class="result-card">
-                <div class="result-card-title">
-                    <span><i class="fa-solid fa-file-shield"></i> Kết quả cung cấp thông tin có xác nhận của cơ quan đăng ký</span>
-                    <span class="badge b-paid">03 hồ sơ</span>
+        function renderPaperInfoReadonly() {
+            const feeStatusBadge = `<span class="badge ${p.paymentStatus === 'Miễn phí' ? 'b-info' : 'b-done'}">${p.paymentStatus || 'Đã thu'}</span>`;
+            const docStatusBadge = `<span class="badge ${p.status === 'Bị trả lại' ? 'b-red' : (p.status === 'Bị từ chối' ? 'b-red' : 'b-wait')}">${p.status || 'Chờ giải quyết'}</span>`;
+            const feeAmountText = p.paymentStatus === 'Miễn phí' ? 'Miễn phí' : (Number(p.amount || 30000)).toLocaleString('vi-VN') + ' VNĐ';
+            const isOnlineAcc = (p.customerAccountType || '').includes('trực tuyến') || (p.customerId && p.customerId !== '-');
+
+            // Card 1: Khối Thông tin tiếp nhận
+            const blockTiepNhan = `
+                <div class="card" style="margin-bottom:16px">
+                    <div class="card-h">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <i class="fa-solid fa-file-invoice" style="color:var(--primary)"></i>
+                            <h2 style="font-size:15px;margin:0">1. Thông tin tiếp nhận</h2>
+                        </div>
+                        ${docStatusBadge}
+                    </div>
+                    <div class="card-b">
+                        <div class="summary-grid">
+                            ${kv('Mã hồ sơ', p.id)}
+                            ${kv('Số đơn giấy', p.paper || 'PG-0136')}
+                            ${kv('Nguồn tiếp nhận', p.source || 'Cán bộ nhập liệu')}
+                            ${kv('Kênh tiếp nhận', p.channel || 'Trực tiếp tại quầy')}
+                            ${kv('Thời điểm tiếp nhận', p.date || '21/07/2026 15:50')}
+                            ${kv('Đơn vị tiếp nhận', p.agency || 'Trung tâm Đăng ký giao dịch, tài sản tại TP Hà Nội')}
+                            ${kv('Cán bộ tiếp nhận', p.officer || 'Nguyễn Thị Tiếp Nhận')}
+                        </div>
+                    </div>
                 </div>
-                <div class="hint" style="margin-bottom:10px">Hiển thị giống cấu trúc VI tại màn Xem chi tiết hồ sơ Website khách hàng; mỗi hồ sơ được phân tách thành một khối riêng.</div>
-                ${table(['STT', 'Số hồ sơ', 'Số đăng ký', 'Thời điểm đăng ký', 'Loại hình đăng ký', 'Bên bảo đảm', 'Bên nhận bảo đảm', 'Trạng thái'], [
-                    ['1', 'HS-2026-000813', '1505170802', '02/07/2026 10:27', 'Đăng ký lần đầu', 'Công ty Cổ phần Xây dựng và Phát triển HTC', 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Phú Xuân', 'Hoàn thành'],
-                    ['2', 'HS-2026-000845', '1505170802', '08/07/2026 14:35', 'Đăng ký thay đổi', 'Công ty Cổ phần Xây dựng và Phát triển HTC', 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Phú Xuân', 'Hoàn thành'],
-                    ['3', 'HS-2026-000901', '1505170802', '15/07/2026 09:05', 'Thông báo xử lý tài sản bảo đảm', 'Công ty Cổ phần Xây dựng và Phát triển HTC', 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Phú Xuân', 'Hoàn thành']
-                ])}
-            </div>`;
+            `;
+
+            // Card 2: Khối Thông tin người yêu cầu
+            const blockNguoiYeuCau = `
+                <div class="card" style="margin-bottom:16px">
+                    <div class="card-h">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <i class="fa-solid fa-user-tie" style="color:var(--primary)"></i>
+                            <h2 style="font-size:15px;margin:0">2. Thông tin người yêu cầu</h2>
+                        </div>
+                    </div>
+                    <div class="card-b">
+                        <div class="summary-grid">
+                            ${kv('Loại khách hàng', isOnlineAcc ? 'Có tài khoản trực tuyến' : 'Khách hàng vãng lai')}
+                            ${isOnlineAcc ? kv('Mã tài khoản trực tuyến', p.customerId || 'TK-DUC-0912') : ''}
+                            ${kv('Họ tên / Tên tổ chức', p.customer || 'Ông Phạm Minh Đức')}
+                            ${kv('Số điện thoại', p.customerPhone || p.phone || '0912.345.678')}
+                            ${kv('Email', p.customerEmail || p.email || 'duc@example.com')}
+                            ${kv('Quốc gia', p.requesterCountry || 'Việt Nam')}
+                            ${kv('Tỉnh/thành phố', p.requesterProvince || 'TP Hà Nội')}
+                            ${kv('Phường/Xã', p.requesterWard || 'Phường Cửa Nam')}
+                            ${kv('Địa chỉ chi tiết', p.requesterAddress || 'Số 18 phố Lý Thường Kiệt, phường Cửa Nam, quận Hoàn Kiếm, TP. Hà Nội')}
+                            ${kv('Ghi chú tiếp nhận', p.receptionNote || 'Đề nghị cung cấp thông tin biện pháp bảo đảm liên quan để rà soát tín dụng')}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Card 3: Khối Thông tin người nộp hồ sơ
+            const resultMethodText = p.resultMethod || 'Cách thức điện tử';
+            const blockNguoiNop = `
+                <div class="card" style="margin-bottom:16px">
+                    <div class="card-h">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <i class="fa-solid fa-address-card" style="color:var(--primary)"></i>
+                            <h2 style="font-size:15px;margin:0">3. Thông tin người nộp hồ sơ</h2>
+                        </div>
+                    </div>
+                    <div class="card-b">
+                        <div class="summary-grid">
+                            ${kv('Họ tên', p.submitter || 'Phạm Minh Đức')}
+                            ${kv('Giấy tờ định danh', p.submitterId || 'CCCD: 091000000004')}
+                            ${kv('Số điện thoại', p.submitterPhone || '0912.345.678')}
+                            ${kv('Email', p.submitterEmail || 'duc@example.com')}
+                            ${kv('Quan hệ với người yêu cầu', p.submitterRelation || 'Người yêu cầu nộp trực tiếp')}
+                            ${kv('Phương thức nhận kết quả', resultMethodText)}
+                            ${resultMethodText.includes('bưu chính') ? kv('Địa chỉ nhận kết quả', p.resultAddress || 'Số 18 phố Lý Thường Kiệt, Cửa Nam, Hoàn Kiếm, Hà Nội') : ''}
+                            ${resultMethodText.includes('điện tử') ? kv('Email nhận kết quả', p.resultEmail || 'duc@example.com') : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Card 4: Khối Thông tin loại yêu cầu và lệ phí
+            const blockLePhi = `
+                <div class="card" style="margin-bottom:16px">
+                    <div class="card-h">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <i class="fa-solid fa-receipt" style="color:var(--primary)"></i>
+                            <h2 style="font-size:15px;margin:0">4. Thông tin loại yêu cầu và lệ phí</h2>
+                        </div>
+                        ${feeStatusBadge}
+                    </div>
+                    <div class="card-b">
+                        <div class="summary-grid">
+                            ${kv('Loại yêu cầu', p.type || 'Yêu cầu cung cấp thông tin')}
+                            ${kv('Tên khoản phí', p.feeName || 'Phí cung cấp thông tin về biện pháp bảo đảm')}
+                            ${kv('Mã khoản phải thu', p.feeCode || 'PKPT-CCTT-' + p.id.slice(-6))}
+                            ${kv('Số tiền phải thu', feeAmountText)}
+                            ${kv('Số tiền đã thu', feeAmountText)}
+                            ${kv('Hình thức thu phí', p.paymentMethod === 'tien_mat' ? 'Tiền mặt' : (p.paymentMethod === 'chuyen_khoan' ? 'Chuyển khoản' : 'Thanh toán trực tuyến'))}
+                            ${kv('Số biên lai/chứng từ', p.receipt || 'BL-2026-000136')}
+                            ${kv('Thời điểm thu phí', p.paymentTime || p.date || '21/07/2026 15:55')}
+                            ${kv('Cán bộ thu phí', p.paymentOfficer || 'Nguyễn Thị Tiếp Nhận')}
+                            ${p.feeExemptTarget ? kv('Đối tượng miễn phí', p.feeExemptTarget) : ''}
+                            ${p.paymentStatus === 'Miễn phí' ? kv('Lý do miễn phí', p.feeExemptReason || 'Theo quy định miễn lệ phí cung cấp thông tin.') : ''}
+                            <div class="kv"><span>Trạng thái lệ phí:</span><b>${feeStatusBadge}</b></div>
+                            <div class="kv"><span>Trạng thái hồ sơ:</span><b>${docStatusBadge}</b></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Card 5: Khối Tài liệu đính kèm (Bảng 4 cột: STT, Tên tài liệu, File đính kèm, Thao tác)
+            const blockTaiLieu = `
+                <div class="card" style="margin-bottom:16px">
+                    <div class="card-h">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <i class="fa-solid fa-paperclip" style="color:var(--primary)"></i>
+                            <h2 style="font-size:15px;margin:0">5. Tài liệu đính kèm</h2>
+                        </div>
+                    </div>
+                    <div class="card-b">
+                        <div class="table-wrap">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:50px;text-align:center">STT</th>
+                                        <th style="width:300px">Tên tài liệu</th>
+                                        <th>File đính kèm</th>
+                                        <th style="width:160px;text-align:center">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="text-align:center">1</td>
+                                        <td><b>Đơn yêu cầu cung cấp thông tin (Mẫu đơn giấy)</b></td>
+                                        <td>
+                                            <i class="fa-solid fa-file-pdf" style="color:#dc2626;margin-right:6px"></i>
+                                            <span>Don_yeu_cau_cung_cap_thong_tin_${p.id}.pdf</span>
+                                            <span style="color:var(--muted);font-size:12px;margin-left:8px">(1.2 MB)</span>
+                                        </td>
+                                        <td style="text-align:center;white-space:nowrap">
+                                            <a href="javascript:void(0)" onclick="viewFile('Don_yeu_cau_cung_cap_thong_tin_${p.id}.pdf')" style="color:#2563eb;text-decoration:none;font-weight:600;margin-right:12px">
+                                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Xem file
+                                            </a>
+                                            <a href="javascript:void(0)" onclick="downloadFile('Don_yeu_cau_cung_cap_thong_tin_${p.id}.pdf')" style="color:#059669;text-decoration:none;font-weight:600">
+                                                <i class="fa-solid fa-download"></i> Tải tệp
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center">2</td>
+                                        <td><b>Văn bản ủy quyền / Giấy tờ pháp lý kèm theo</b></td>
+                                        <td>
+                                            <i class="fa-solid fa-file-pdf" style="color:#dc2626;margin-right:6px"></i>
+                                            <span>Giay_to_phap_ly_kem_theo_${p.id}.pdf</span>
+                                            <span style="color:var(--muted);font-size:12px;margin-left:8px">(2.0 MB)</span>
+                                        </td>
+                                        <td style="text-align:center;white-space:nowrap">
+                                            <a href="javascript:void(0)" onclick="viewFile('Giay_to_phap_ly_kem_theo_${p.id}.pdf')" style="color:#2563eb;text-decoration:none;font-weight:600;margin-right:12px">
+                                                <i class="fa-solid fa-arrow-up-right-from-square"></i> Xem file
+                                            </a>
+                                            <a href="javascript:void(0)" onclick="downloadFile('Giay_to_phap_ly_kem_theo_${p.id}.pdf')" style="color:#059669;text-decoration:none;font-weight:600">
+                                                <i class="fa-solid fa-download"></i> Tải tệp
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Card 6: Khối Lịch sử trạng thái
+            const historyRows = (p.history || [
+                { time: p.date || '21/07/2026 15:50', status: 'Tiếp nhận hồ sơ', note: 'Tiếp nhận hồ sơ giấy tại quầy số 01, thu phí lệ phí thành công.' },
+                { time: p.date || '21/07/2026 15:55', status: 'Chờ giải quyết', note: 'Chuyển hồ sơ vào hàng chờ nhập liệu của Cán bộ giải quyết.' },
+                ...(p.status === 'Bị trả lại' ? [
+                    { time: p.returnedAt || '02/08/2026 10:15', status: 'Bị trả lại', note: p.returnReason || 'Lãnh đạo yêu cầu rà soát lại tiêu chí tra cứu theo hồ sơ giấy.' }
+                ] : [])
+            ]).map(h => `
+                <div style="display:flex;align-items:flex-start;gap:14px;padding:10px 0;border-bottom:1px dashed var(--line);font-size:13px">
+                    <div style="width:140px;color:var(--muted);flex-shrink:0"><i class="fa-regular fa-clock" style="margin-right:4px"></i> ${h.time}</div>
+                    <div style="width:130px;flex-shrink:0"><span class="badge ${h.status === 'Bị trả lại' ? 'b-red' : (h.status === 'Hoàn thành' ? 'b-done' : 'b-info')}">${h.status}</span></div>
+                    <div style="flex:1;color:#1e293b">${h.note}</div>
+                </div>
+            `).join('');
+
+            const blockLichSu = `
+                <div class="card" style="margin-bottom:20px">
+                    <div class="card-h">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <i class="fa-solid fa-timeline" style="color:var(--primary)"></i>
+                            <h2 style="font-size:15px;margin:0">6. Lịch sử trạng thái</h2>
+                        </div>
+                    </div>
+                    <div class="card-b">
+                        ${historyRows}
+                    </div>
+                </div>
+            `;
+
+            // Thanh tác vụ cuối màn hình MH02
+            const isEligible = ['Chờ giải quyết', 'Bị trả lại'].includes(p.status);
+            const actionBar = `
+                <div class="toolbar" style="margin-top:20px;padding:16px 20px;background:#fff;border-radius:8px;border:1px solid var(--line);display:flex;justify-content:flex-end;gap:12px">
+                    <button type="button" class="btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
+                    ${isEligible ? `
+                        <button type="button" class="btn danger" onclick="openRejectModal()">
+                            <i class="fa-solid fa-ban"></i> Từ chối
+                        </button>
+                        <button type="button" class="btn primary" onclick="startCreate()">
+                            <i class="fa-solid fa-pen-to-square"></i> Tạo hồ sơ
+                        </button>
+                    ` : ''}
+                </div>
+            `;
+
+            const container = document.getElementById('readonlyView');
+            if (container) {
+                container.innerHTML = `
+                    <div class="title" style="margin-bottom:16px">
+                        <h1>Chi tiết hồ sơ chờ nhập liệu: ${p.id}</h1>
+                        <p>Xem toàn bộ thông tin tiếp nhận, người yêu cầu, lệ phí và tài liệu đính kèm.</p>
+                    </div>
+                    ${blockTiepNhan}
+                    ${blockNguoiYeuCau}
+                    ${blockNguoiNop}
+                    ${blockLePhi}
+                    ${blockTaiLieu}
+                    ${blockLichSu}
+                    ${actionBar}
+                `;
             }
-            return `${meta}<div class="readonly-note">Chưa thực hiện tra cứu.</div>`;
         }
-        function getPaperInfoSearchValue() {
-            const criteria = document.getElementById('paperInfoCriteria')?.value || 'Số đăng ký';
-            const subjectType = document.getElementById('paperInfoSubjectType')?.value || 'Công dân Việt Nam';
-            if (criteria === 'Số đăng ký') return document.getElementById('paperInfoRegNo')?.value?.trim() || '';
-            if (criteria === 'Số khung') return document.getElementById('paperInfoFrameNo')?.value?.trim() || '';
-            if (subjectType === 'Công dân Việt Nam') return document.getElementById('paperInfoCitizenId')?.value?.trim() || '';
-            if (subjectType === 'Tổ chức có đăng ký kinh doanh trong nước') return document.getElementById('paperInfoTaxCode')?.value?.trim() || '';
-            if (subjectType === 'Người nước ngoài') return `${document.getElementById('paperInfoFullName')?.value?.trim() || ''} - ${document.getElementById('paperInfoPassport')?.value?.trim() || ''}`;
-            if (subjectType === 'Tổ chức nước ngoài') return document.getElementById('paperInfoInvestorCode')?.value?.trim() || '';
-            if (subjectType === 'Người không quốc tịch cư trú tại Việt Nam') return `${document.getElementById('paperInfoFullName')?.value?.trim() || ''} - ${document.getElementById('paperInfoResidenceCard')?.value?.trim() || ''}`;
-            return document.getElementById('paperInfoOrgName')?.value?.trim() || '';
-        }
-        function infoRequestBlock() {
-            return `
-        <div class="section-title">Nhập liệu hồ sơ giấy - Yêu cầu cung cấp thông tin</div>
-        <div class="readonly-note">Nguồn tiếp nhận: Cán bộ nhập liệu. Cán bộ giải quyết nhập đúng tiêu chí và dữ liệu theo hồ sơ giấy; nếu Lãnh đạo trả lại thì được phép sửa, tra cứu, kết xuất PDF mới và trình ký lại.</div>
-        <div class="grid four">
-            ${readField('Mã hồ sơ', p.id)}
-            ${readField('Số đơn giấy', p.paper || 'PG-CCTT-0001')}
-            ${readField('Nguồn tiếp nhận', 'Cán bộ nhập liệu')}
-            ${readField('Trạng thái lệ phí', p.paymentStatus || 'Đã thu')}
-        </div>
-        ${returnInfoBlock()}
-        <div class="section-title">III. Thông tin yêu cầu cung cấp thông tin</div>
-        <div class="grid">
-            ${field('Người yêu cầu cung cấp thông tin <span class="required">*</span>', p.customer, 'id="paperRequesterName"')}
-            ${selectField('Phương thức nhận kết quả <span class="required">*</span>', ['Trực tiếp tại cơ quan đăng ký', 'Qua dịch vụ bưu chính', 'Cách thức điện tử'], resultText(), 'id="paperResultMethod" onchange="updatePaperInfoCriteria()"')}
-            ${field('Email nhận kết quả', p.email || 'duc@example.com', 'id="paperResultEmail"')}
-            ${areaField('Địa chỉ liên hệ <span class="required">*</span>', p.requesterAddress || 'Số 18 phố Lý Thường Kiệt, phường Cửa Nam, Hà Nội', 'id="paperContactAddress"')}
-        </div>
-        <div class="section-title">IV. Tiêu chí và dữ liệu tra cứu</div>
-        <div class="grid">
-            ${selectField('Tiêu chí yêu cầu cung cấp thông tin <span class="required">*</span>', ['Số đăng ký', 'Bên bảo đảm', 'Số khung'], 'Số đăng ký', 'id="paperInfoCriteria" onchange="updatePaperInfoCriteria()"')}
-            <div class="conditional cctt-criteria cctt-reg">${field('Số đăng ký <span class="required">*</span>', '1505170802', 'id="paperInfoRegNo"')}</div>
-            <div class="conditional cctt-criteria cctt-frame hidden">${field('Số khung <span class="required">*</span>', 'RL4A2026HTC00001', 'id="paperInfoFrameNo"')}</div>
-            <div class="conditional cctt-criteria cctt-subject hidden">${selectField('Loại chủ thể <span class="required">*</span>', ['Công dân Việt Nam', 'Tổ chức có đăng ký kinh doanh trong nước', 'Người nước ngoài', 'Người không quốc tịch cư trú tại Việt Nam', 'Tổ chức nước ngoài', 'Tổ chức khác'], 'Công dân Việt Nam', 'id="paperInfoSubjectType" onchange="updatePaperInfoCriteria()"')}</div>
-            <div class="conditional cctt-criteria cctt-subject subject-citizen hidden">${field('Số CMND/Căn cước công dân/Chứng minh quân đội <span class="required">*</span>', '091000000004', 'id="paperInfoCitizenId" maxlength="12"')}</div>
-            <div class="conditional cctt-criteria cctt-subject subject-domestic-org hidden">${field('Mã số thuế/Số đăng ký kinh doanh <span class="required">*</span>', '3301647244', 'id="paperInfoTaxCode" maxlength="14"')}</div>
-            <div class="conditional cctt-criteria cctt-subject subject-name hidden">${field('Họ và tên <span class="required">*</span>', 'PHAM MINH DUC', 'id="paperInfoFullName"')}</div>
-            <div class="conditional cctt-criteria cctt-subject subject-passport hidden">${field('Số Hộ chiếu <span class="required">*</span>', 'P12345678', 'id="paperInfoPassport"')}</div>
-            <div class="conditional cctt-criteria cctt-subject subject-investor hidden">${field('Mã số thuế/Số giấy phép đầu tư <span class="required">*</span>', 'GPDT-2026-001', 'id="paperInfoInvestorCode"')}</div>
-            <div class="conditional cctt-criteria cctt-subject subject-org-name hidden">${field('Tên tổ chức <span class="required">*</span>', 'Công ty TNHH Minh Đức', 'id="paperInfoOrgName"')}</div>
-            <div class="conditional cctt-criteria cctt-subject subject-residence hidden">${field('Số thẻ cư trú <span class="required">*</span>', 'TRU-2026-001', 'id="paperInfoResidenceCard"')}</div>
-            ${areaField('Ghi chú nhập liệu', '', 'id="paperInfoNote" placeholder="Ghi chú nội bộ, không hiển thị trên file PDF kết quả cung cấp thông tin."')}
-        </div>
-        <div class="section-title">V. Tệp kết xuất kết quả cung cấp thông tin</div>
-        <div id="paperInfoPdfBlock">${paperInfoFileBlock(false)}</div>
-        <div class="section-title">VI. Kết quả tra cứu</div>
-        <div class="toolbar" style="margin-bottom:12px">
-            <button class="btn primary" type="button" onclick="mockPaperInfoLookup(true)"><i class="fa-solid fa-magnifying-glass"></i> Tra cứu</button>
-            <button class="btn" type="button" onclick="mockPaperInfoLookup(false)"><i class="fa-solid fa-circle-exclamation"></i> Giả lập không có dữ liệu</button>
-        </div>
-        <div id="paperInfoLookupResult">${paperInfoResultBlock()}</div>
-    `;
+
+        function renderPaperInfoBusinessForm() {
+            const container = document.getElementById('businessForm');
+            if (!container) return;
+
+            const reqName = p.customer || 'Ông Phạm Minh Đức';
+            const reqAddr = p.requesterAddress || 'Số 18 phố Lý Thường Kiệt, phường Cửa Nam, quận Hoàn Kiếm, TP. Hà Nội';
+            const resMethod = p.resultMethod || 'Cách thức điện tử';
+            const resPostal = p.resultAddress || 'Số 18 phố Lý Thường Kiệt, phường Cửa Nam, quận Hoàn Kiếm, TP. Hà Nội';
+            const resEmail = p.resultEmail || p.email || 'duc@example.com';
+
+            container.innerHTML = `
+                <!-- KHỐI III: THÔNG TIN NGƯỜI YÊU CẦU CUNG CẤP THÔNG TIN (Card mở rộng) -->
+                <section class="card-section form-block" style="margin-bottom:20px;border-left:4px solid var(--primary)">
+                    <div class="section-title" style="display:flex;align-items:center;gap:8px">
+                        <i class="fa-solid fa-user-check" style="color:var(--primary)"></i>
+                        <span>III. THÔNG TIN NGƯỜI YÊU CẦU CUNG CẤP THÔNG TIN</span>
+                    </div>
+                    <div class="readonly-note" style="margin-bottom:14px">
+                        Cán bộ đối soát và điều chỉnh theo hồ sơ giấy nếu khác thông tin ghi nhận tại bước tiếp nhận. Không sửa ngược lại dữ liệu tiếp nhận gốc.
+                    </div>
+                    <div class="grid two">
+                        <div class="field" style="margin:0;grid-column:1/-1">
+                            <label style="font-weight:700">Người yêu cầu cung cấp thông tin <span class="required">*</span></label>
+                            <input type="text" id="ccttRequesterName" class="form-control" value="${e(reqName)}" placeholder="Nhập tên người yêu cầu...">
+                            <div class="error-text">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="field" style="margin:0;grid-column:1/-1">
+                            <label style="font-weight:700">Địa chỉ liên hệ <span class="required">*</span></label>
+                            <textarea id="ccttContactAddress" class="form-control" rows="2" placeholder="Nhập địa chỉ liên hệ...">${e(reqAddr)}</textarea>
+                            <div class="error-text">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="field" style="margin:0">
+                            <label style="font-weight:700">Phương thức nhận kết quả <span class="required">*</span></label>
+                            <select id="ccttResultMethod" class="form-control" onchange="updateCcttMethod()">
+                                <option value="Trực tiếp tại bộ phận một cửa"${resMethod === 'Trực tiếp tại bộ phận một cửa' ? ' selected' : ''}>Trực tiếp tại bộ phận một cửa</option>
+                                <option value="Qua dịch vụ bưu chính"${resMethod === 'Qua dịch vụ bưu chính' ? ' selected' : ''}>Qua dịch vụ bưu chính</option>
+                                <option value="Cách thức điện tử"${resMethod === 'Cách thức điện tử' ? ' selected' : ''}>Cách thức điện tử</option>
+                            </select>
+                        </div>
+                        <div class="field" id="ccttPostalWrapper" style="margin:0;${resMethod === 'Qua dịch vụ bưu chính' ? '' : 'display:none'}">
+                            <label style="font-weight:700">Địa chỉ nhận kết quả <span class="required">*</span></label>
+                            <textarea id="ccttResultAddress" class="form-control" rows="2" placeholder="Nhập địa chỉ nhận kết quả bưu điện...">${e(resPostal)}</textarea>
+                            <div class="error-text">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="field" id="ccttEmailWrapper" style="margin:0;${resMethod === 'Cách thức điện tử' ? '' : 'display:none'}">
+                            <label style="font-weight:700">Email nhận kết quả <span class="required">*</span></label>
+                            <input type="email" id="ccttResultEmail" class="form-control" value="${e(resEmail)}" placeholder="example@domain.com">
+                            <div class="error-text">Đây là trường bắt buộc</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- KHỐI IV: TRA CỨU THÔNG TIN (Card mở rộng độc lập ở đầu biểu mẫu) -->
+                <section class="card-section form-block" style="margin-bottom:20px;border-left:4px solid var(--primary)">
+                    <div class="section-title" style="display:flex;align-items:center;gap:8px">
+                        <i class="fa-solid fa-magnifying-glass" style="color:var(--primary)"></i>
+                        <span>IV. TRA CỨU THÔNG TIN</span>
+                    </div>
+                    <div class="readonly-note" style="margin-bottom:14px">
+                        Cán bộ chọn tiêu chí theo hồ sơ giấy, nhập dữ liệu tra cứu và bấm nút "Tra cứu" để hệ thống tìm kiếm thông tin trong Cơ sở dữ liệu quốc gia. Các ô nhập không bị khóa sau tra cứu thành công.
+                    </div>
+                    <div class="grid two">
+                        <div class="field" style="margin:0">
+                            <label style="font-weight:700">Tiêu chí yêu cầu cung cấp thông tin <span class="required">*</span></label>
+                            <select id="ccttCriteria" class="form-control" onchange="updateCcttCriteria()">
+                                <option value="Số đăng ký" selected>Số đăng ký</option>
+                                <option value="Bên bảo đảm">Bên bảo đảm</option>
+                                <option value="Số khung">Số khung</option>
+                            </select>
+                        </div>
+
+                        <!-- Nhóm trường Tiêu chí 1: Số đăng ký -->
+                        <div class="field" id="ccttCriteriaReg" style="margin:0">
+                            <label style="font-weight:700">Số đăng ký <span class="required">*</span></label>
+                            <input type="text" id="ccttRegNo" class="form-control" value="1505170802" placeholder="Nhập số đăng ký biện pháp bảo đảm...">
+                            <div class="error-text">Đây là trường bắt buộc</div>
+                        </div>
+
+                        <!-- Nhóm trường Tiêu chí 3: Số khung -->
+                        <div class="field" id="ccttCriteriaFrame" style="margin:0;display:none">
+                            <label style="font-weight:700">Số khung <span class="required">*</span></label>
+                            <input type="text" id="ccttFrameNo" class="form-control" value="RL4A2026HTC00001" placeholder="Nhập số khung phương tiện...">
+                            <div class="error-text">Đây là trường bắt buộc</div>
+                        </div>
+
+                        <!-- Nhóm trường Tiêu chí 2: Bên bảo đảm -->
+                        <div id="ccttCriteriaSubject" style="grid-column:1/-1;display:none">
+                            <div class="grid two">
+                                <div class="field" style="margin:0">
+                                    <label style="font-weight:700">Loại chủ thể <span class="required">*</span></label>
+                                    <select id="ccttSubjectType" class="form-control" onchange="updateCcttSubjectType()">
+                                        <option value="Công dân Việt Nam" selected>Công dân Việt Nam</option>
+                                        <option value="Tổ chức có đăng ký kinh doanh trong nước">Tổ chức có đăng ký kinh doanh trong nước</option>
+                                        <option value="Người nước ngoài">Người nước ngoài</option>
+                                        <option value="Tổ chức nước ngoài">Tổ chức nước ngoài</option>
+                                        <option value="Tổ chức khác">Tổ chức khác</option>
+                                        <option value="Người không quốc tịch cư trú tại Việt Nam">Người không quốc tịch cư trú tại Việt Nam</option>
+                                    </select>
+                                </div>
+
+                                <!-- Chủ thể 1: Công dân Việt Nam -->
+                                <div class="field" id="ccttCitizenWrapper" style="margin:0">
+                                    <label style="font-weight:700">Số CMND/Căn cước công dân/Chứng minh quân đội <span class="required">*</span></label>
+                                    <input type="text" id="ccttCitizenId" class="form-control" maxlength="12" value="091000000004" placeholder="Nhập đúng 12 chữ số...">
+                                    <div class="error-text">Đây là trường bắt buộc</div>
+                                </div>
+
+                                <!-- Chủ thể 2: Tổ chức có ĐKKD trong nước -->
+                                <div class="field" id="ccttTaxCodeWrapper" style="margin:0;display:none">
+                                    <label style="font-weight:700">Mã số thuế/Số đăng ký kinh doanh <span class="required">*</span></label>
+                                    <input type="text" id="ccttTaxCode" class="form-control" maxlength="14" value="3301647244" placeholder="Nhập 10 hoặc 14 chữ số...">
+                                    <div class="error-text">Đây là trường bắt buộc</div>
+                                </div>
+
+                                <!-- Chủ thể 3: Người nước ngoài -->
+                                <div id="ccttForeignerWrapper" style="grid-column:1/-1;display:none" class="grid two">
+                                    <div class="field" style="margin:0">
+                                        <label style="font-weight:700">Họ và tên <span class="required">*</span></label>
+                                        <input type="text" id="ccttFullNameForeigner" class="form-control" value="JOHN SMITH" placeholder="Họ và tên người nước ngoài...">
+                                        <div class="error-text">Đây là trường bắt buộc</div>
+                                    </div>
+                                    <div class="field" style="margin:0">
+                                        <label style="font-weight:700">Số Hộ chiếu <span class="required">*</span></label>
+                                        <input type="text" id="ccttPassport" class="form-control" value="P12345678" placeholder="Nhập số hộ chiếu...">
+                                        <div class="error-text">Đây là trường bắt buộc</div>
+                                    </div>
+                                </div>
+
+                                <!-- Chủ thể 4: Tổ chức nước ngoài -->
+                                <div class="field" id="ccttInvestorWrapper" style="margin:0;display:none">
+                                    <label style="font-weight:700">Mã số thuế/Số giấy phép đầu tư <span class="required">*</span></label>
+                                    <input type="text" id="ccttInvestorCode" class="form-control" value="GPDT-2026-001" placeholder="Nhập mã số thuế hoặc số GPĐT...">
+                                    <div class="error-text">Đây là trường bắt buộc</div>
+                                </div>
+
+                                <!-- Chủ thể 5: Tổ chức khác -->
+                                <div class="field" id="ccttOtherOrgWrapper" style="margin:0;display:none">
+                                    <label style="font-weight:700">Tên tổ chức <span class="required">*</span></label>
+                                    <input type="text" id="ccttOrgName" class="form-control" value="Công ty TNHH Minh Đức" placeholder="Nhập tên tổ chức...">
+                                    <div class="error-text">Đây là trường bắt buộc</div>
+                                </div>
+
+                                <!-- Chủ thể 6: Người không quốc tịch -->
+                                <div id="ccttStatelessWrapper" style="grid-column:1/-1;display:none" class="grid two">
+                                    <div class="field" style="margin:0">
+                                        <label style="font-weight:700">Họ và tên <span class="required">*</span></label>
+                                        <input type="text" id="ccttFullNameStateless" class="form-control" value="PHAM MINH DUC" placeholder="Họ và tên...">
+                                        <div class="error-text">Đây là trường bắt buộc</div>
+                                    </div>
+                                    <div class="field" style="margin:0">
+                                        <label style="font-weight:700">Số thẻ cư trú <span class="required">*</span></label>
+                                        <input type="text" id="ccttResidenceCard" class="form-control" value="TRU-2026-001" placeholder="Nhập số thẻ cư trú...">
+                                        <div class="error-text">Đây là trường bắt buộc</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ghi chú nhập liệu -->
+                        <div class="field" style="margin:0;grid-column:1/-1">
+                            <label style="font-weight:700">Ghi chú nhập liệu</label>
+                            <textarea id="ccttNote" class="form-control" rows="2" placeholder="Ghi chú nội bộ nếu cần; không hiển thị trên file PDF kết quả cung cấp thông tin."></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Nút thao tác Khối IV -->
+                    <div style="margin-top:16px;display:flex;gap:10px;align-items:center">
+                        <button type="button" class="btn primary" onclick="performCcttLookup(true)">
+                            <i class="fa-solid fa-magnifying-glass"></i> Tra cứu
+                        </button>
+                        <button type="button" class="btn" onclick="resetCcttLookup()">
+                            <i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc
+                        </button>
+                        <button type="button" class="btn" onclick="performCcttLookup(false)" style="color:#d97706;border-color:#fde68a;background:#fffbeb">
+                            <i class="fa-solid fa-circle-exclamation"></i> Giả lập không có dữ liệu
+                        </button>
+                    </div>
+                </section>
+
+                <!-- KHỐI V: CHI TIẾT KẾT QUẢ TRA CỨU (MẶC ĐỊNH ẨN, CHỈ HIỂN THỊ SAU KHI TRA CỨU HỢP LỆ) -->
+                <section class="card-section form-block" id="ccttResultSection" style="margin-bottom:20px;border-left:4px solid #059669;display:none">
+                    <div class="section-title" style="display:flex;align-items:center;justify-content:space-between">
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <i class="fa-solid fa-file-shield" style="color:#059669"></i>
+                            <span>V. CHI TIẾT KẾT QUẢ TRA CỨU</span>
+                        </div>
+                        <span id="ccttResultBadgeHeader" class="badge b-done">Đã tra cứu</span>
+                    </div>
+
+                    <!-- Metadata phiên tra cứu -->
+                    <div style="background:#f8fafc;padding:14px 18px;border-radius:6px;border:1px solid var(--line);margin-bottom:16px">
+                        <div class="summary-grid" style="grid-template-columns:repeat(auto-fit, minmax(200px, 1fr))">
+                            <div class="kv"><span>Thời điểm tra cứu:</span><b id="ccttResultTime">—</b></div>
+                            <div class="kv"><span>Tiêu chí tra cứu thực tế:</span><b id="ccttResultCriteriaBadge" class="badge b-info">Số đăng ký</b></div>
+                            <div class="kv"><span>Dữ liệu đầu vào tra cứu:</span><b id="ccttResultSearchValue" style="color:var(--primary)">—</b></div>
+                            <div class="kv" id="ccttResultCountWrapper"><span>Số lượng hồ sơ tra cứu:</span><b id="ccttResultCountBadge" class="badge b-done">03 hồ sơ</b></div>
+                        </div>
+                    </div>
+
+                    <!-- Vùng hiển thị kết quả: Cây hồ sơ hoặc Cảnh báo không có dữ liệu -->
+                    <div id="ccttResultContent"></div>
+                </section>
+
+                <!-- THANH TÁC VỤ CUỐI MÀN HÌNH MH03 -->
+                <div class="toolbar" style="margin-top:20px;padding:16px 20px;background:#fff;border-radius:8px;border:1px solid var(--line);display:flex;justify-content:flex-end;gap:12px">
+                    <button type="button" class="btn" onclick="confirmCcttCancel()">
+                        <i class="fa-solid fa-xmark"></i> Hủy
+                    </button>
+                    <button type="button" class="btn danger" onclick="openRejectModal()">
+                        <i class="fa-solid fa-ban"></i> Từ chối
+                    </button>
+                    <button type="button" class="btn" id="btnCcttApproveWaitSign" onclick="executeCcttApproveWaitSign()" style="opacity:0.35;pointer-events:none;cursor:not-allowed">
+                        <i class="fa-solid fa-user-check"></i> Duyệt chờ ký
+                    </button>
+                    <button type="button" class="btn primary" id="btnCcttSign" onclick="openCcttSignModal()" style="opacity:0.35;pointer-events:none;cursor:not-allowed">
+                        <i class="fa-solid fa-file-signature"></i> Trình ký
+                    </button>
+                </div>
+            `;
+
+            container.parentElement.classList.remove('plain-card');
         }
         /* ==========================================================================
            BIỂU MẪU ĐĂNG KÝ LẦN ĐẦU - dựng đúng theo form Đăng ký biện pháp bảo đảm,
@@ -7860,20 +8382,12 @@ function renderBusinessForm() {
         return;
     }
 
-    formRef.textContent = refByType();
-    reviewRef.textContent = refByType();
-    businessTitle.textContent = 'Nhập liệu nghiệp vụ - ' + p.type;
+    if (formRef) formRef.textContent = refByType();
+    if (reviewRef) reviewRef.textContent = refByType();
+    if (businessTitle) businessTitle.textContent = 'Nhập liệu nghiệp vụ - ' + p.type;
 
     if (isInfoRequest()) {
-        businessForm.innerHTML = infoRequestBlock() + `
-            <div style="border-top:1px solid var(--line);margin-top:18px;padding-top:14px" class="toolbar">
-                <button class="btn" onclick="goBack()"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
-                <button class="btn danger" onclick="openRejectModal()"><i class="fa-solid fa-xmark"></i> Từ chối</button>
-                <button class="btn primary" onclick="openPaperInfoSignModal()"><i class="fa-solid fa-file-signature"></i> Trình ký</button>
-            </div>
-        `;
-        businessForm.parentElement.classList.remove('plain-card');
-        updatePaperInfoCriteria();
+        renderPaperInfoBusinessForm();
         return;
     }
 
@@ -7908,12 +8422,15 @@ function renderBusinessForm() {
 
     const actionBar = `<div class="toolbar"><button class="btn" onclick="cancelEdit()">Hủy bỏ</button><button class="btn primary" onclick="openPreview()">Tiếp tục <i class="fa-solid fa-arrow-right"></i></button></div>`;
 
-    businessForm.innerHTML = `
-        <!-- KHỐI TRA CỨU HỒ SƠ / THÔNG BÁO GỐC -->
+    const targetForm = document.getElementById('businessForm');
+    if (!targetForm) return;
+
+    targetForm.innerHTML = `
+        <!-- KHỐI III: TRA CỨU HỒ SƠ THAM CHIẾU -->
         <section class="card-section form-block" id="originalLookupCard" style="margin-bottom:20px;border-left:4px solid var(--primary)">
             <div class="section-title" style="display:flex;align-items:center;gap:8px">
                 <i class="fa-solid fa-magnifying-glass" style="color:var(--primary)"></i>
-                <span>${lookupTitle}</span>
+                <span>III. TRA CỨU HỒ SƠ THAM CHIẾU (${lookupTitle.toUpperCase()})</span>
             </div>
             <div style="background:#f8fafc;padding:18px;border-radius:8px;border:1px solid var(--line)">
                 <div class="grid two" style="align-items:end;gap:16px">
@@ -7950,8 +8467,12 @@ function renderBusinessForm() {
             </div>
         </section>
 
-        <!-- KHỐI NHẬP LIỆU NGHIỆP VỤ (MẶC ĐỊNH ẨN, CHỈ HIỂN THỊ SAU KHI BẤM TRA CỨU THÀNH CÔNG) -->
+        <!-- KHỐI IV: CHI TIẾT NHẬP LIỆU HỒ SƠ (MẶC ĐỊNH ẨN, CHỈ HIỂN THỊ SAU KHI BẤM TRA CỨU THÀNH CÔNG) -->
         <div id="dossierDetailInputSection" style="display:none">
+            <div class="section-title" style="margin-top:10px;margin-bottom:14px;display:flex;align-items:center;gap:8px">
+                <i class="fa-solid fa-file-pen" style="color:var(--primary)"></i>
+                <span>IV. CHI TIẾT NHẬP LIỆU HỒ SƠ</span>
+            </div>
             ${detailContent}
             <section class="form-block" style="margin-top:20px">
                 ${actionBar}
@@ -7959,7 +8480,7 @@ function renderBusinessForm() {
         </div>
     `;
 
-    businessForm.parentElement.classList.add('plain-card');
+    targetForm.parentElement.classList.add('plain-card');
 }
 
 
@@ -8186,132 +8707,1004 @@ function renderBusinessForm() {
             wrap.querySelector('.file-actions').style.display = 'none';
         }
         function switchView(nextMode) {
+            initDomReferences();
             mode = nextMode;
-            readonlyView.classList.toggle('active', mode === 'view');
-            editView.classList.toggle('active', mode === 'edit');
-            previewView.classList.toggle('active', mode === 'preview');
+            if (readonlyView) readonlyView.classList.toggle('active', mode === 'view');
+            if (editView) editView.classList.toggle('active', mode === 'edit');
+            if (previewView) previewView.classList.toggle('active', mode === 'preview');
+            if (mode === 'edit') {
+                renderGeneralReturnedBlock();
+            }
             if (isCopyRequest()) {
                 if (stepper) stepper.style.display = 'none';
                 initPaperCopyChrome();
+            } else if (isInfoRequest()) {
+                if (stepper) stepper.style.display = 'none';
+                initPaperInfoChrome();
             } else {
-                stepper.style.display = mode === 'view' ? 'none' : 'flex';
-                s1.classList.toggle('active', mode === 'edit');
-                s2.classList.toggle('active', mode === 'preview');
+                if (stepper) stepper.style.display = mode === 'view' ? 'none' : 'flex';
+                if (s1) s1.classList.toggle('active', mode === 'edit');
+                if (s2) s2.classList.toggle('active', mode === 'preview');
             }
         }
+
         function startCreate() {
             if (isCopyRequest()) {
                 const returnedParam = p.status === 'Bị trả lại' ? '&returned=1' : '';
                 const copyTypeParam = p.copyType === 'Bản sao giấy' ? '&copy_type=paper' : '&copy_type=electronic';
                 history.replaceState(null, '', '?id=' + encodeURIComponent(id) + '&type=copy' + copyTypeParam + returnedParam);
+            } else if (isInfoRequest()) {
+                const returnedParam = p.status === 'Bị trả lại' ? '&returned=1' : '';
+                history.replaceState(null, '', '?id=' + encodeURIComponent(id) + '&type=cctt' + returnedParam);
             } else {
                 history.replaceState(null, '', '?id=' + encodeURIComponent(id));
             }
             switchView('edit');
         }
-        function mockPaperInfoLookup(hasData) {
-            if (!validatePaperInfoInput()) return;
-            const target = document.getElementById('paperInfoLookupResult');
-            if (!target) return;
-            paperInfoLookupDone = true;
-            paperInfoHasData = hasData;
-            paperInfoPdfExported = false;
-            const pdfBlock = document.getElementById('paperInfoPdfBlock');
-            if (pdfBlock) pdfBlock.innerHTML = paperInfoFileBlock(false);
-            if (!hasData) {
-                target.innerHTML = paperInfoResultBlock('Không có kết quả', false);
-                return;
-            }
-            target.innerHTML = paperInfoResultBlock('Có kết quả', true);
+
+        function updateCcttMethod() {
+            const method = document.getElementById('ccttResultMethod')?.value || 'Cách thức điện tử';
+            const postalWrap = document.getElementById('ccttPostalWrapper');
+            const emailWrap = document.getElementById('ccttEmailWrapper');
+            if (postalWrap) postalWrap.style.display = method === 'Qua dịch vụ bưu chính' ? 'block' : 'none';
+            if (emailWrap) emailWrap.style.display = method === 'Cách thức điện tử' ? 'block' : 'none';
         }
-        function mockPaperInfoExport() {
-            if (!paperInfoLookupDone || paperInfoHasData === null) {
-                notify('Vui lòng thực hiện tra cứu thành công trước khi kết xuất kết quả.', 'warn');
-                return;
+
+        function updateCcttCriteria() {
+            const crit = document.getElementById('ccttCriteria')?.value || 'Số đăng ký';
+            const regWrap = document.getElementById('ccttCriteriaReg');
+            const frameWrap = document.getElementById('ccttCriteriaFrame');
+            const subjWrap = document.getElementById('ccttCriteriaSubject');
+
+            if (regWrap) regWrap.style.display = crit === 'Số đăng ký' ? 'block' : 'none';
+            if (frameWrap) frameWrap.style.display = crit === 'Số khung' ? 'block' : 'none';
+            if (subjWrap) subjWrap.style.display = crit === 'Bên bảo đảm' ? 'block' : 'none';
+
+            resetCcttLookupState();
+        }
+
+        function updateCcttSubjectType() {
+            const st = document.getElementById('ccttSubjectType')?.value || 'Công dân Việt Nam';
+            const citizen = document.getElementById('ccttCitizenWrapper');
+            const tax = document.getElementById('ccttTaxCodeWrapper');
+            const foreigner = document.getElementById('ccttForeignerWrapper');
+            const investor = document.getElementById('ccttInvestorWrapper');
+            const org = document.getElementById('ccttOtherOrgWrapper');
+            const stateless = document.getElementById('ccttStatelessWrapper');
+
+            if (citizen) citizen.style.display = st === 'Công dân Việt Nam' ? 'block' : 'none';
+            if (tax) tax.style.display = st === 'Tổ chức có đăng ký kinh doanh trong nước' ? 'block' : 'none';
+            if (foreigner) foreigner.style.display = st === 'Người nước ngoài' ? 'grid' : 'none';
+            if (investor) investor.style.display = st === 'Tổ chức nước ngoài' ? 'block' : 'none';
+            if (org) org.style.display = st === 'Tổ chức khác' ? 'block' : 'none';
+            if (stateless) stateless.style.display = st === 'Người không quốc tịch cư trú tại Việt Nam' ? 'grid' : 'none';
+
+            resetCcttLookupState();
+        }
+
+        function resetCcttLookupState() {
+            ccttLookupDone = false;
+            ccttHasData = null;
+            const resSec = document.getElementById('ccttResultSection');
+            if (resSec) resSec.style.display = 'none';
+
+            const btnApprove = document.getElementById('btnCcttApproveWaitSign');
+            if (btnApprove) {
+                btnApprove.style.opacity = '0.35';
+                btnApprove.style.pointerEvents = 'none';
+                btnApprove.style.cursor = 'not-allowed';
             }
-            paperInfoPdfExported = true;
-            const pdfBlock = document.getElementById('paperInfoPdfBlock');
-            if (pdfBlock) pdfBlock.innerHTML = paperInfoFileBlock(true);
-            const target = document.getElementById('paperInfoLookupResult');
-            if (target && !target.querySelector('.inline-success')) {
-                target.innerHTML += '<div class="inline-success" style="margin-top:12px">Đã sinh file PDF dự thảo Mẫu số 10d và gắn vào hồ sơ giấy.</div>';
+            const btnSign = document.getElementById('btnCcttSign');
+            if (btnSign) {
+                btnSign.style.opacity = '0.35';
+                btnSign.style.pointerEvents = 'none';
+                btnSign.style.cursor = 'not-allowed';
             }
         }
-        function openPdfPreview() {
-            if (!paperInfoPdfExported) {
-                notify('Chưa có file PDF dự thảo để xem.', 'warn');
-                return;
+
+        function getCcttSearchValue() {
+            const crit = document.getElementById('ccttCriteria')?.value || 'Số đăng ký';
+            if (crit === 'Số đăng ký') return document.getElementById('ccttRegNo')?.value?.trim() || '';
+            if (crit === 'Số khung') return document.getElementById('ccttFrameNo')?.value?.trim() || '';
+            const st = document.getElementById('ccttSubjectType')?.value || 'Công dân Việt Nam';
+            if (st === 'Công dân Việt Nam') return document.getElementById('ccttCitizenId')?.value?.trim() || '';
+            if (st === 'Tổ chức có đăng ký kinh doanh trong nước') return document.getElementById('ccttTaxCode')?.value?.trim() || '';
+            if (st === 'Người nước ngoài') {
+                const n = document.getElementById('ccttFullNameForeigner')?.value?.trim() || '';
+                const pass = document.getElementById('ccttPassport')?.value?.trim() || '';
+                return `${n} - Hộ chiếu: ${pass}`;
             }
-            modalTitle.textContent = 'Xem trước file PDF dự thảo';
-            modalBody.innerHTML = `
-        <div class="grid two">
-            ${readField('Mã hồ sơ', p.id)}
-            ${readField('Số đơn giấy', p.paper || 'PG-CCTT-0001')}
-            ${readField('Trạng thái tra cứu', paperInfoHasData ? 'Có kết quả' : 'Không có kết quả')}
-            ${readField('File PDF dự thảo', 'CCTT_' + p.id + '_Mau_10d_v1.pdf')}
-        </div>
-        <div class="preview-box" style="margin-top:14px;max-height:360px;overflow:auto;background:#f8fafc">
-            <div style="background:white;width:520px;min-height:650px;margin:0 auto;padding:36px;border:1px solid var(--line);font-family:'Times New Roman',serif;color:#111">
-                <div style="text-align:right;font-weight:bold">Mẫu số 10d</div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:18px;text-align:center;font-weight:bold">
-                    <div>CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM<br>TRUNG TÂM ĐĂNG KÝ GIAO DỊCH, TÀI SẢN TẠI TP. HÀ NỘI</div>
-                    <div>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM<br><u>Độc lập - Tự do - Hạnh phúc</u></div>
+            if (st === 'Tổ chức nước ngoài') return document.getElementById('ccttInvestorCode')?.value?.trim() || '';
+            if (st === 'Tổ chức khác') return document.getElementById('ccttOrgName')?.value?.trim() || '';
+            if (st === 'Người không quốc tịch cư trú tại Việt Nam') {
+                const n = document.getElementById('ccttFullNameStateless')?.value?.trim() || '';
+                const r = document.getElementById('ccttResidenceCard')?.value?.trim() || '';
+                return `${n} - Thẻ cư trú: ${r}`;
+            }
+            return '';
+        }
+
+        function validateCcttInput() {
+            clearAllErrors();
+            const reqName = document.getElementById('ccttRequesterName');
+            if (reqName && !reqName.value.trim()) return markInvalid(reqName, 'Đây là trường bắt buộc');
+
+            const contactAddr = document.getElementById('ccttContactAddress');
+            if (contactAddr && !contactAddr.value.trim()) return markInvalid(contactAddr, 'Đây là trường bắt buộc');
+
+            const resMethod = document.getElementById('ccttResultMethod')?.value;
+            if (resMethod === 'Qua dịch vụ bưu chính') {
+                const postal = document.getElementById('ccttResultAddress');
+                if (postal && !postal.value.trim()) return markInvalid(postal, 'Đây là trường bắt buộc');
+            }
+            if (resMethod === 'Cách thức điện tử') {
+                const email = document.getElementById('ccttResultEmail');
+                if (email && !email.value.trim()) return markInvalid(email, 'Đây là trường bắt buộc');
+                if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
+                    return markInvalid(email, 'Email nhận kết quả không đúng định dạng');
+                }
+            }
+
+            const crit = document.getElementById('ccttCriteria')?.value || 'Số đăng ký';
+            if (crit === 'Số đăng ký') {
+                const regNo = document.getElementById('ccttRegNo');
+                if (regNo && !regNo.value.trim()) return markInvalid(regNo, 'Đây là trường bắt buộc');
+            } else if (crit === 'Số khung') {
+                const frameNo = document.getElementById('ccttFrameNo');
+                if (frameNo && !frameNo.value.trim()) return markInvalid(frameNo, 'Đây là trường bắt buộc');
+            } else if (crit === 'Bên bảo đảm') {
+                const st = document.getElementById('ccttSubjectType')?.value || 'Công dân Việt Nam';
+                if (st === 'Công dân Việt Nam') {
+                    const citId = document.getElementById('ccttCitizenId');
+                    if (citId && !citId.value.trim()) return markInvalid(citId, 'Đây là trường bắt buộc');
+                    if (citId && citId.value.trim().length !== 12) {
+                        return markInvalid(citId, 'Số CMND/Căn cước công dân/Chứng minh quân đội phải gồm đúng 12 chữ số [MSG-ERR-VAL-004]');
+                    }
+                } else if (st === 'Tổ chức có đăng ký kinh doanh trong nước') {
+                    const tax = document.getElementById('ccttTaxCode');
+                    if (tax && !tax.value.trim()) return markInvalid(tax, 'Đây là trường bắt buộc');
+                    const len = tax.value.trim().length;
+                    if (len !== 10 && len !== 14) {
+                        return markInvalid(tax, 'Mã số thuế/Số ĐKKD phải gồm 10 hoặc 14 chữ số [MSG-ERR-VAL-005]');
+                    }
+                } else if (st === 'Người nước ngoài') {
+                    const fn = document.getElementById('ccttFullNameForeigner');
+                    if (fn && !fn.value.trim()) return markInvalid(fn, 'Đây là trường bắt buộc');
+                    const pass = document.getElementById('ccttPassport');
+                    if (pass && !pass.value.trim()) return markInvalid(pass, 'Đây là trường bắt buộc');
+                } else if (st === 'Tổ chức nước ngoài') {
+                    const inv = document.getElementById('ccttInvestorCode');
+                    if (inv && !inv.value.trim()) return markInvalid(inv, 'Đây là trường bắt buộc');
+                } else if (st === 'Tổ chức khác') {
+                    const org = document.getElementById('ccttOrgName');
+                    if (org && !org.value.trim()) return markInvalid(org, 'Đây là trường bắt buộc');
+                } else if (st === 'Người không quốc tịch cư trú tại Việt Nam') {
+                    const fn = document.getElementById('ccttFullNameStateless');
+                    if (fn && !fn.value.trim()) return markInvalid(fn, 'Đây là trường bắt buộc');
+                    const card = document.getElementById('ccttResidenceCard');
+                    if (card && !card.value.trim()) return markInvalid(card, 'Đây là trường bắt buộc');
+                }
+            }
+
+            return true;
+        }
+
+        function performCcttLookup(hasData = true) {
+            if (!validateCcttInput()) return;
+
+            ccttLookupDone = true;
+            ccttHasData = hasData;
+
+            const resSec = document.getElementById('ccttResultSection');
+            if (!resSec) return;
+            resSec.style.display = 'block';
+
+            const crit = document.getElementById('ccttCriteria')?.value || 'Số đăng ký';
+            const searchVal = getCcttSearchValue();
+            const now = new Date();
+            const nowStr = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+
+            const timeEl = document.getElementById('ccttResultTime');
+            if (timeEl) timeEl.textContent = nowStr;
+
+            const critEl = document.getElementById('ccttResultCriteriaBadge');
+            if (critEl) critEl.textContent = crit;
+
+            const valEl = document.getElementById('ccttResultSearchValue');
+            if (valEl) valEl.textContent = searchVal || '—';
+
+            const countWrap = document.getElementById('ccttResultCountWrapper');
+            const countEl = document.getElementById('ccttResultCountBadge');
+            if (hasData) {
+                if (countWrap) countWrap.style.display = 'flex';
+                if (countEl) {
+                    countEl.textContent = '03 hồ sơ';
+                    countEl.className = 'badge b-done';
+                }
+            } else {
+                if (countWrap) countWrap.style.display = 'none';
+            }
+
+            const contentEl = document.getElementById('ccttResultContent');
+            if (contentEl) {
+                if (hasData) {
+                    contentEl.innerHTML = renderCcttTreeAndDetailsHtml();
+                } else {
+                    contentEl.innerHTML = `
+                        <div class="alert warning" style="margin-top:10px;padding:16px 20px;background:#fffbeb;border:1px solid #fde68a;border-radius:6px;color:#92400e;display:flex;align-items:flex-start;gap:14px">
+                            <i class="fa-solid fa-triangle-exclamation" style="font-size:22px;color:#d97706;margin-top:2px"></i>
+                            <div>
+                                <div style="font-weight:700;font-size:14.5px;margin-bottom:4px">[MSG-WRN-CCTT-001] Kết quả tra cứu</div>
+                                <div style="font-size:13.5px;line-height:1.5">Kết quả thông tin bạn tra cứu: Chưa được đăng ký hoặc hiệu lực của đăng ký đối với thông tin không còn.</div>
+                                <div style="margin-top:8px;font-size:12.5px;color:#b45309">Hệ thống vẫn ghi nhận kết quả tra cứu này vào dự thảo Văn bản cung cấp thông tin (Mẫu số 13) để trình Lãnh đạo ký theo quy định [BR-CCTT-003].</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            // Kích hoạt sáng 02 nút Duyệt chờ ký & Trình ký (kể cả trường hợp không có dữ liệu per BR-CCTT-003)
+            const btnApprove = document.getElementById('btnCcttApproveWaitSign');
+            if (btnApprove) {
+                btnApprove.style.opacity = '1';
+                btnApprove.style.pointerEvents = 'auto';
+                btnApprove.style.cursor = 'pointer';
+            }
+            const btnSign = document.getElementById('btnCcttSign');
+            if (btnSign) {
+                btnSign.style.opacity = '1';
+                btnSign.style.pointerEvents = 'auto';
+                btnSign.style.cursor = 'pointer';
+            }
+
+            resSec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Render cấu trúc 6 khối chi tiết theo đúng SRS 4.1.12.7.2.1
+        function renderCcttTreeAndDetailsHtml() {
+            return `
+                <div style="background:#fff;border:1px solid var(--line);border-radius:8px;padding:20px">
+                    <!-- Bảng cây hồ sơ tổng quan -->
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+                        <div style="font-weight:700;color:var(--primary);font-size:15px;display:flex;align-items:center;gap:8px">
+                            <i class="fa-solid fa-sitemap"></i> Cây hồ sơ biện pháp bảo đảm còn hiệu lực trên hệ thống
+                        </div>
+                        <span class="badge b-done" style="font-size:12px"><i class="fa-solid fa-check"></i> Còn hiệu lực</span>
+                    </div>
+                    <div class="table-wrap">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th style="width:40px;text-align:center">STT</th>
+                                    <th style="width:130px">Mã hồ sơ</th>
+                                    <th style="width:110px">Số đăng ký</th>
+                                    <th style="width:130px">Thời điểm ĐK</th>
+                                    <th style="width:160px">Trường hợp đăng ký</th>
+                                    <th>Bên bảo đảm</th>
+                                    <th>Bên nhận bảo đảm</th>
+                                    <th style="width:105px;text-align:center">Trạng thái</th>
+                                    <th style="width:115px;text-align:center">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="text-align:center">1</td>
+                                    <td><b style="color:var(--primary)">HS-2026-000813</b></td>
+                                    <td><code>1505170802</code></td>
+                                    <td>02/07/2026 10:27</td>
+                                    <td><span class="badge b-info">ĐĂNG KÝ LẦN ĐẦU</span></td>
+                                    <td>Công ty CP Xây dựng và Phát triển HTC</td>
+                                    <td>BIDV - CN Phú Xuân</td>
+                                    <td style="text-align:center"><span class="badge b-done">Hoàn thành</span></td>
+                                    <td style="text-align:center">
+                                        <button type="button" class="btn small" onclick="switchCcttDetailTab(0)" style="font-size:11.5px;padding:4px 8px">
+                                            <i class="fa-solid fa-eye"></i> Xem chi tiết
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center">2</td>
+                                    <td><b style="color:var(--primary)">HS-2026-000845</b></td>
+                                    <td><code>1505170802</code></td>
+                                    <td>08/07/2026 14:35</td>
+                                    <td><span class="badge b-wait">ĐĂNG KÝ THAY ĐỔI</span></td>
+                                    <td>Công ty CP Xây dựng và Phát triển HTC</td>
+                                    <td>BIDV - CN Phú Xuân</td>
+                                    <td style="text-align:center"><span class="badge b-done">Hoàn thành</span></td>
+                                    <td style="text-align:center">
+                                        <button type="button" class="btn small" onclick="switchCcttDetailTab(1)" style="font-size:11.5px;padding:4px 8px">
+                                            <i class="fa-solid fa-eye"></i> Xem chi tiết
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center">3</td>
+                                    <td><b style="color:var(--primary)">HS-2026-000901</b></td>
+                                    <td><code>1505170802</code></td>
+                                    <td>15/07/2026 09:05</td>
+                                    <td><span class="badge b-wait">THÔNG BÁO XỬ LÝ TÀI SẢN</span></td>
+                                    <td>Công ty CP Xây dựng và Phát triển HTC</td>
+                                    <td>BIDV - CN Phú Xuân</td>
+                                    <td style="text-align:center"><span class="badge b-done">Hoàn thành</span></td>
+                                    <td style="text-align:center">
+                                        <button type="button" class="btn small" onclick="switchCcttDetailTab(2)" style="font-size:11.5px;padding:4px 8px">
+                                            <i class="fa-solid fa-eye"></i> Xem chi tiết
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- KHỐI CHI TIẾT 6 KHỐI THEO CHUẨN SRS 4.1.12.7.2.1 -->
+                    <div id="ccttDetailSectionContainer" style="margin-top:24px;border-top:2px solid var(--line);padding-top:18px">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+                            <div style="font-weight:700;font-size:14.5px;color:var(--primary);display:flex;align-items:center;gap:8px">
+                                <i class="fa-solid fa-file-invoice"></i> Cấu trúc chi tiết hồ sơ đăng ký giao dịch bảo đảm / hợp đồng (Mục 4.1.12.7.2.1)
+                            </div>
+                            <!-- Tab navigation cho 3 hồ sơ -->
+                            <div style="display:flex;gap:6px">
+                                <button type="button" class="btn small cctt-tab-btn active" id="ccttTabBtn0" onclick="switchCcttDetailTab(0)">1. Đăng ký lần đầu</button>
+                                <button type="button" class="btn small cctt-tab-btn" id="ccttTabBtn1" onclick="switchCcttDetailTab(1)">2. Đăng ký thay đổi</button>
+                                <button type="button" class="btn small cctt-tab-btn" id="ccttTabBtn2" onclick="switchCcttDetailTab(2)">3. Thông báo xử lý TS</button>
+                            </div>
+                        </div>
+
+                        <!-- Panel 1: Đăng ký lần đầu (HS-2026-000813) -->
+                        <div class="cctt-detail-panel" id="ccttDetailPanel0" style="display:block">
+                            <div class="card" style="margin-bottom:0;border:1px solid #cbd5e1">
+                                <div class="card-h" style="background:#f1f5f9;padding:12px 18px">
+                                    <h4 style="margin:0;font-size:14.5px;color:#1e3a8a">Đăng ký giao dịch bảo đảm / Hợp đồng - 1505170802</h4>
+                                    <span class="badge b-info">ĐĂNG KÝ LẦN ĐẦU</span>
+                                </div>
+                                <div class="card-b" style="padding:18px">
+                                    <!-- I. Thông tin chung -->
+                                    <div class="section-title" style="font-size:13.5px;margin-bottom:10px">I. Danh sách hồ sơ đăng ký giao dịch bảo đảm / Hợp đồng</div>
+                                    <div class="summary-grid" style="margin-bottom:16px">
+                                        ${kv('Tiêu đề hồ sơ', 'Đăng ký giao dịch bảo đảm / Hợp đồng - 1505170802')}
+                                        ${kv('Loại hình giao dịch', 'Biện pháp bảo đảm')}
+                                        ${kv('Loại biện pháp', 'Thế chấp')}
+                                        ${kv('Loại hợp đồng', 'Hợp đồng thế chấp tài sản')}
+                                        <div class="kv"><span>Trường hợp đăng ký:</span><b>ĐĂNG KÝ LẦN ĐẦU</b></div>
+                                        <div class="kv"><span>Trạng thái:</span><b class="badge b-done" style="width:fit-content">Hoàn thành</b></div>
+                                        ${kv('Số hợp đồng', 'HĐTC-2026-0813/BIDV')}
+                                        ${kv('Ngày có hiệu lực của hợp đồng', '02/07/2026')}
+                                    </div>
+
+                                    <!-- II. Thông tin người đăng ký -->
+                                    <div class="section-title" style="font-size:13.5px;margin-bottom:10px">II. Thông tin người đăng ký</div>
+                                    <div class="summary-grid" style="margin-bottom:16px">
+                                        ${kv('Họ và tên', 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Phú Xuân')}
+                                        <div class="kv" style="grid-column:1/-1"><span>Địa chỉ:</span><b>Số 105 đường Lý Thường Kiệt, phường Thuận Hòa, TP. Huế, tỉnh Thừa Thiên Huế, Việt Nam</b></div>
+                                    </div>
+
+                                    <!-- III. Thông tin đăng ký -->
+                                    <div class="section-title" style="font-size:13.5px;margin-bottom:10px">III. Thông tin đăng ký</div>
+                                    <div class="summary-grid" style="margin-bottom:16px">
+                                        ${kv('Số đăng ký', '1505170802')}
+                                        ${kv('Thời điểm đăng ký', '02/07/2026 10:27:00')}
+                                        ${kv('Thời điểm có hiệu lực', '02/07/2026 10:27:00')}
+                                    </div>
+
+                                    <!-- IV. Bên bảo đảm -->
+                                    <div class="section-title" style="font-size:13.5px;margin-bottom:10px">IV. Bên bảo đảm (Bên thế chấp)</div>
+                                    <div class="table-wrap" style="margin-bottom:16px">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:45px;text-align:center">STT</th>
+                                                    <th style="width:200px">Loại chủ thể</th>
+                                                    <th style="width:160px">Số giấy tờ pháp lý</th>
+                                                    <th style="width:220px">Tên bên bảo đảm</th>
+                                                    <th>Địa chỉ</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="text-align:center">1</td>
+                                                    <td>Tổ chức có đăng ký kinh doanh trong nước</td>
+                                                    <td><code>MST: 3301647244</code></td>
+                                                    <td><b>Công ty Cổ phần Xây dựng và Phát triển HTC</b></td>
+                                                    <td>Lô B1-12 Khu Đô thị mới An Vân Dương, xã Thủy Vân, thị xã Hương Thủy, tỉnh Thừa Thiên Huế, Việt Nam</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- V. Bên nhận bảo đảm -->
+                                    <div class="section-title" style="font-size:13.5px;margin-bottom:10px">V. Bên nhận bảo đảm (Bên nhận thế chấp)</div>
+                                    <div class="table-wrap" style="margin-bottom:16px">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:45px;text-align:center">STT</th>
+                                                    <th style="width:280px">Tên bên nhận bảo đảm</th>
+                                                    <th style="width:160px">Số giấy tờ pháp lý</th>
+                                                    <th>Địa chỉ</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="text-align:center">1</td>
+                                                    <td><b>Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Phú Xuân</b></td>
+                                                    <td><code>MST: 0100150619-042</code></td>
+                                                    <td>Số 105 đường Lý Thường Kiệt, phường Thuận Hòa, TP. Huế, tỉnh Thừa Thiên Huế, Việt Nam</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- VI. Tài sản bảo đảm -->
+                                    <div class="section-title" style="font-size:13.5px;margin-bottom:10px">VI. Tài sản bảo đảm</div>
+                                    <div class="summary-grid" style="margin-bottom:12px">
+                                        ${kv('Loại tài sản', 'Phương tiện giao thông cơ giới đường bộ')}
+                                        <div class="kv" style="grid-column:1/-1"><span>Mô tả:</span><b>01 xe ô tô con chuyên dùng, nhãn hiệu HYUNDAI, màu sơn Trắng, 05 chỗ ngồi</b></div>
+                                    </div>
+                                    <div class="table-wrap">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:45px;text-align:center">STT</th>
+                                                    <th>Tên phương tiện</th>
+                                                    <th>Nhãn hiệu, màu sơn</th>
+                                                    <th>Số khung</th>
+                                                    <th>Số máy</th>
+                                                    <th>Biển số</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="text-align:center">1</td>
+                                                    <td><b>Ô tô con</b></td>
+                                                    <td>HYUNDAI SANTAFE, Trắng</td>
+                                                    <td><code>RL4A2026HTC00001</code></td>
+                                                    <td>G4KE-202688</td>
+                                                    <td><b>75A-188.99</b></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Panel 2: Đăng ký thay đổi (HS-2026-000845) -->
+                        <div class="cctt-detail-panel" id="ccttDetailPanel1" style="display:none">
+                            <div class="card" style="margin-bottom:0;border:1px solid #cbd5e1">
+                                <div class="card-h" style="background:#f1f5f9;padding:12px 18px">
+                                    <h4 style="margin:0;font-size:14.5px;color:#1e3a8a">Đăng ký giao dịch bảo đảm / Hợp đồng - 1505170802</h4>
+                                    <span class="badge b-wait">ĐĂNG KÝ THAY ĐỔI</span>
+                                </div>
+                                <div class="card-b" style="padding:18px">
+                                    <!-- I. Thông tin chung -->
+                                    <div class="section-title" style="font-size:13.5px;margin-bottom:10px">I. Danh sách hồ sơ đăng ký giao dịch bảo đảm / Hợp đồng</div>
+                                    <div class="summary-grid" style="margin-bottom:16px">
+                                        ${kv('Tiêu đề hồ sơ', 'Đăng ký giao dịch bảo đảm / Hợp đồng - 1505170802')}
+                                        ${kv('Loại hình giao dịch', 'Biện pháp bảo đảm')}
+                                        ${kv('Loại biện pháp', 'Thế chấp')}
+                                        ${kv('Loại hợp đồng', 'Hợp đồng thế chấp tài sản')}
+                                        <div class="kv"><span>Trường hợp đăng ký:</span><b>ĐĂNG KÝ THAY ĐỔI</b></div>
+                                        <div class="kv"><span>Trạng thái:</span><b class="badge b-done" style="width:fit-content">Hoàn thành</b></div>
+                                        ${kv('Số hợp đồng', 'HĐTC-2026-0813/BIDV-PL01')}
+                                        ${kv('Ngày có hiệu lực của hợp đồng', '08/07/2026')}
+                                    </div>
+
+                                    <!-- II. Thông tin người đăng ký -->
+                                    <div class="section-title" style="font-size:13.5px;margin-bottom:10px">II. Thông tin người đăng ký</div>
+                                    <div class="summary-grid" style="margin-bottom:16px">
+                                        ${kv('Họ và tên', 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Phú Xuân')}
+                                        <div class="kv" style="grid-column:1/-1"><span>Địa chỉ:</span><b>Số 105 đường Lý Thường Kiệt, phường Thuận Hòa, TP. Huế, tỉnh Thừa Thiên Huế, Việt Nam</b></div>
+                                    </div>
+
+                                    <!-- III. Thông tin đăng ký -->
+                                    <div class="section-title" style="font-size:13.5px;margin-bottom:10px">III. Thông tin đăng ký</div>
+                                    <div class="summary-grid" style="margin-bottom:16px">
+                                        ${kv('Số đăng ký', '1505170802')}
+                                        ${kv('Thời điểm đăng ký', '08/07/2026 14:35:00')}
+                                        ${kv('Thời điểm có hiệu lực', '08/07/2026 14:35:00')}
+                                    </div>
+
+                                    <!-- IV. Bên bảo đảm -->
+                                    <div class="section-title" style="font-size:13.5px;margin-bottom:10px">IV. Bên bảo đảm (Bên thế chấp)</div>
+                                    <div class="table-wrap" style="margin-bottom:16px">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:45px;text-align:center">STT</th>
+                                                    <th style="width:200px">Loại chủ thể</th>
+                                                    <th style="width:160px">Số giấy tờ pháp lý</th>
+                                                    <th style="width:220px">Tên bên bảo đảm</th>
+                                                    <th>Địa chỉ</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="text-align:center">1</td>
+                                                    <td>Tổ chức có đăng ký kinh doanh trong nước</td>
+                                                    <td><code>MST: 3301647244</code></td>
+                                                    <td><b>Công ty Cổ phần Xây dựng và Phát triển HTC</b></td>
+                                                    <td>Lô B1-12 Khu Đô thị mới An Vân Dương, xã Thủy Vân, thị xã Hương Thủy, tỉnh Thừa Thiên Huế, Việt Nam</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- V. Bên nhận bảo đảm -->
+                                    <div class="section-title" style="font-size:13.5px;margin-bottom:10px">V. Bên nhận bảo đảm (Bên nhận thế chấp)</div>
+                                    <div class="table-wrap" style="margin-bottom:16px">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:45px;text-align:center">STT</th>
+                                                    <th style="width:280px">Tên bên nhận bảo đảm</th>
+                                                    <th style="width:160px">Số giấy tờ pháp lý</th>
+                                                    <th>Địa chỉ</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="text-align:center">1</td>
+                                                    <td><b>Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Phú Xuân</b></td>
+                                                    <td><code>MST: 0100150619-042</code></td>
+                                                    <td>Số 105 đường Lý Thường Kiệt, phường Thuận Hòa, TP. Huế, tỉnh Thừa Thiên Huế, Việt Nam</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- VI. Tài sản bảo đảm sau thay đổi -->
+                                    <div class="section-title" style="font-size:13.5px;margin-bottom:10px">VI. Tài sản bảo đảm sau thay đổi (Bổ sung thiết bị thi công)</div>
+                                    <div class="summary-grid" style="margin-bottom:12px">
+                                        ${kv('Loại tài sản', 'Phương tiện cơ giới đường bộ và Máy móc thiết bị thi công')}
+                                        <div class="kv" style="grid-column:1/-1"><span>Mô tả:</span><b>01 xe ô tô con HYUNDAI SANTAFE và bổ sung 01 Máy xúc đào bánh xích Komatsu PC200-8</b></div>
+                                    </div>
+                                    <div class="table-wrap">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:45px;text-align:center">STT</th>
+                                                    <th>Tên phương tiện / Thiết bị</th>
+                                                    <th>Nhãn hiệu, màu sơn</th>
+                                                    <th>Số khung / Số hiệu</th>
+                                                    <th>Số máy</th>
+                                                    <th>Biển số</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="text-align:center">1</td>
+                                                    <td><b>Ô tô con</b></td>
+                                                    <td>HYUNDAI SANTAFE, Trắng</td>
+                                                    <td><code>RL4A2026HTC00001</code></td>
+                                                    <td>G4KE-202688</td>
+                                                    <td><b>75A-188.99</b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="text-align:center">2</td>
+                                                    <td><b>Máy xúc đào bánh xích</b></td>
+                                                    <td>KOMATSU PC200-8, Vàng</td>
+                                                    <td><code>KMTPC200-99881</code></td>
+                                                    <td>SAA6D107E-1</td>
+                                                    <td><span class="badge b-wait">Đang cấp số hiệu</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Panel 3: Thông báo xử lý tài sản bảo đảm (HS-2026-000901) -->
+                        <div class="cctt-detail-panel" id="ccttDetailPanel2" style="display:none">
+                            <div class="card" style="margin-bottom:0;border:1px solid #cbd5e1">
+                                <div class="card-h" style="background:#f1f5f9;padding:12px 18px">
+                                    <h4 style="margin:0;font-size:14.5px;color:#1e3a8a">Đăng ký giao dịch bảo đảm / Hợp đồng - 1505170802</h4>
+                                    <span class="badge b-wait">THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM</span>
+                                </div>
+                                <div class="card-b" style="padding:18px">
+                                    <!-- I. Thông tin chung -->
+                                    <div class="section-title" style="font-size:13.5px;margin-bottom:10px">I. Danh sách hồ sơ đăng ký giao dịch bảo đảm / Hợp đồng</div>
+                                    <div class="summary-grid" style="margin-bottom:16px">
+                                        ${kv('Tiêu đề hồ sơ', 'Đăng ký giao dịch bảo đảm / Hợp đồng - 1505170802')}
+                                        ${kv('Loại hình giao dịch', 'Biện pháp bảo đảm')}
+                                        ${kv('Loại biện pháp', 'Thế chấp')}
+                                        ${kv('Loại hợp đồng', 'Hợp đồng thế chấp tài sản')}
+                                        <div class="kv"><span>Trường hợp đăng ký:</span><b>THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM</b></div>
+                                        <div class="kv"><span>Trạng thái:</span><b class="badge b-done" style="width:fit-content">Hoàn thành</b></div>
+                                        ${kv('Số thông báo xử lý', 'TBXL-2026/0901-BIDV')}
+                                        ${kv('Ngày thông báo xử lý', '15/07/2026')}
+                                    </div>
+
+                                    <!-- II. Thông tin người đăng ký -->
+                                    <div class="section-title" style="font-size:13.5px;margin-bottom:10px">II. Thông tin người đăng ký</div>
+                                    <div class="summary-grid" style="margin-bottom:16px">
+                                        ${kv('Họ và tên', 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Phú Xuân')}
+                                        <div class="kv" style="grid-column:1/-1"><span>Địa chỉ:</span><b>Số 105 đường Lý Thường Kiệt, phường Thuận Hòa, TP. Huế, tỉnh Thừa Thiên Huế, Việt Nam</b></div>
+                                    </div>
+
+                                    <!-- III. Thông tin đăng ký -->
+                                    <div class="section-title" style="font-size:13.5px;margin-bottom:10px">III. Thông tin đăng ký</div>
+                                    <div class="summary-grid" style="margin-bottom:16px">
+                                        ${kv('Số đăng ký', '1505170802')}
+                                        ${kv('Thời điểm đăng ký', '15/07/2026 09:05:00')}
+                                        ${kv('Thời điểm có hiệu lực', '15/07/2026 09:05:00')}
+                                    </div>
+
+                                    <!-- IV. Bên bảo đảm -->
+                                    <div class="section-title" style="font-size:13.5px;margin-bottom:10px">IV. Bên bảo đảm (Bên thế chấp)</div>
+                                    <div class="table-wrap" style="margin-bottom:16px">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:45px;text-align:center">STT</th>
+                                                    <th style="width:200px">Loại chủ thể</th>
+                                                    <th style="width:160px">Số giấy tờ pháp lý</th>
+                                                    <th style="width:220px">Tên bên bảo đảm</th>
+                                                    <th>Địa chỉ</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="text-align:center">1</td>
+                                                    <td>Tổ chức có đăng ký kinh doanh trong nước</td>
+                                                    <td><code>MST: 3301647244</code></td>
+                                                    <td><b>Công ty Cổ phần Xây dựng và Phát triển HTC</b></td>
+                                                    <td>Lô B1-12 Khu Đô thị mới An Vân Dương, xã Thủy Vân, thị xã Hương Thủy, tỉnh Thừa Thiên Huế, Việt Nam</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- V. Bên nhận bảo đảm -->
+                                    <div class="section-title" style="font-size:13.5px;margin-bottom:10px">V. Bên nhận bảo đảm (Bên nhận thế chấp)</div>
+                                    <div class="table-wrap" style="margin-bottom:16px">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:45px;text-align:center">STT</th>
+                                                    <th style="width:280px">Tên bên nhận bảo đảm</th>
+                                                    <th style="width:160px">Số giấy tờ pháp lý</th>
+                                                    <th>Địa chỉ</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="text-align:center">1</td>
+                                                    <td><b>Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Phú Xuân</b></td>
+                                                    <td><code>MST: 0100150619-042</code></td>
+                                                    <td>Số 105 đường Lý Thường Kiệt, phường Thuận Hòa, TP. Huế, tỉnh Thừa Thiên Huế, Việt Nam</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <!-- VI. Tài sản thuộc diện thông báo xử lý -->
+                                    <div class="section-title" style="font-size:13.5px;margin-bottom:10px">VI. Tài sản bảo đảm thuộc diện xử lý</div>
+                                    <div class="summary-grid" style="margin-bottom:12px">
+                                        ${kv('Loại tài sản', 'Phương tiện giao thông cơ giới đường bộ')}
+                                        <div class="kv" style="grid-column:1/-1"><span>Lý do xử lý:</span><b>Bên bảo đảm vi phạm nghĩa vụ thanh toán nợ quá hạn theo hợp đồng thế chấp và hợp đồng tín dụng</b></div>
+                                    </div>
+                                    <div class="table-wrap">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:45px;text-align:center">STT</th>
+                                                    <th>Tên phương tiện</th>
+                                                    <th>Nhãn hiệu, màu sơn</th>
+                                                    <th>Số khung</th>
+                                                    <th>Số máy</th>
+                                                    <th>Biển số</th>
+                                                    <th style="width:160px;text-align:center">Tình trạng xử lý</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="text-align:center">1</td>
+                                                    <td><b>Ô tô con</b></td>
+                                                    <td>HYUNDAI SANTAFE, Trắng</td>
+                                                    <td><code>RL4A2026HTC00001</code></td>
+                                                    <td>G4KE-202688</td>
+                                                    <td><b>75A-188.99</b></td>
+                                                    <td style="text-align:center"><span class="state-badge active">Đang thu giữ & phát mại</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Banner thông báo kết quả hợp lệ -->
+                    <div style="margin-top:16px;padding:12px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;font-size:13px;color:#166534;display:flex;align-items:center;gap:10px">
+                        <i class="fa-solid fa-circle-check" style="font-size:18px;color:#15803d"></i>
+                        <div>
+                            <b>Tra cứu thành công:</b> Tìm thấy 03 hồ sơ biện pháp bảo đảm còn hiệu lực liên quan trên hệ thống Cơ sở dữ liệu quốc gia. Hệ thống đã liên kết dữ liệu vào dự thảo Văn bản cung cấp thông tin (Mẫu số 13). Cán bộ có thể bấm <b>"Trình ký"</b> hoặc <b>"Duyệt chờ ký"</b>.
+                        </div>
+                    </div>
                 </div>
-                <p style="text-align:right;font-style:italic;margin-top:28px">Hà Nội, ngày ${new Date().toLocaleDateString('vi-VN')}</p>
-                <h3 style="text-align:center;margin-top:28px">VĂN BẢN CUNG CẤP THÔNG TIN VỀ BIỆN PHÁP BẢO ĐẢM BẰNG ĐỘNG SẢN, CÂY HẰNG NĂM, CÔNG TRÌNH TẠM</h3>
-                <p>Người yêu cầu cung cấp thông tin: ${e(document.getElementById('paperRequesterName')?.value || p.customer)}</p>
-                <p>Địa chỉ liên hệ: ${e(document.getElementById('paperContactAddress')?.value || p.requesterAddress || '')}</p>
-                <p><b>1. Việc tra cứu thông tin được thực hiện theo tiêu chí sau đây:</b></p>
-                <p>☑ ${e(document.getElementById('paperInfoCriteria')?.value || 'Số đăng ký')}: ${e(getPaperInfoSearchValue())}</p>
-                <p><b>2. Thông tin về biện pháp bảo đảm tra cứu tại thời điểm ${new Date().toLocaleString('vi-VN')} được Trung tâm cung cấp kèm theo Văn bản này.</b></p>
-                <div style="margin-top:46px;text-align:center;font-weight:bold">NGƯỜI CÓ THẨM QUYỀN CỦA TRUNG TÂM<br>ĐĂNG KÝ GIAO DỊCH, TÀI SẢN<br><span style="font-style:italic;font-weight:normal">(Ký, ghi rõ họ và tên, chức danh, đóng dấu)</span></div>
-                <hr style="margin-top:42px">
-                <h3 style="text-align:center">KẾT QUẢ CUNG CẤP THÔNG TIN CÓ XÁC NHẬN CỦA CƠ QUAN ĐĂNG KÝ</h3>
-                <p>${paperInfoHasData ? 'Thông tin đã được tìm thấy trong cơ sở dữ liệu của Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.' : 'Kết quả thông tin bạn tra cứu: Chưa được đăng ký hoặc hiệu lực của đăng ký đối với thông tin không còn.'}</p>
-            </div>
-        </div>
-        <div style="text-align:right;margin-top:14px">
-            <button class="btn" onclick="closeModal()">Đóng</button>
-            <button class="btn" onclick="downloadFile('CCTT_${e(p.id)}_Mau_10d_v1.pdf')"><i class="fa-solid fa-download"></i> Tải file dự thảo</button>
-            <button class="btn primary" onclick="openPaperInfoSignModal()">Trình ký</button>
-        </div>`;
-            modal.classList.add('show');
+            `;
         }
-        function openPaperInfoSignModal() {
-            if (!['Chờ giải quyết', 'Bị trả lại'].includes(p.status)) {
-                notify('Hồ sơ không ở trạng thái Chờ giải quyết hoặc Bị trả lại.', 'warn');
-                return;
+
+        function switchCcttDetailTab(idx) {
+            for (let i = 0; i < 3; i++) {
+                const btn = document.getElementById('ccttTabBtn' + i);
+                const panel = document.getElementById('ccttDetailPanel' + i);
+                if (btn) {
+                    if (i === idx) btn.classList.add('active');
+                    else btn.classList.remove('active');
+                }
+                if (panel) {
+                    panel.style.display = i === idx ? 'block' : 'none';
+                }
             }
-            if (!paperInfoLookupDone || !paperInfoPdfExported) {
-                notify('Vui lòng tra cứu và kết xuất file PDF dự thảo hợp lệ trước khi trình ký.', 'warn');
-                return;
-            }
-            modalTitle.textContent = 'Trình ký hồ sơ giấy Yêu cầu cung cấp thông tin';
-            modalBody.innerHTML = `
-        <div class="grid two">
-            ${readField('Mã hồ sơ', p.id)}
-            ${readField('Số đơn giấy', p.paper || 'PG-CCTT-0001')}
-            ${readField('Người yêu cầu', document.getElementById('paperRequesterName')?.value || p.customer)}
-            ${readField('Tiêu chí yêu cầu cung cấp thông tin', document.getElementById('paperInfoCriteria')?.value || 'Số đăng ký')}
-            ${readField('Giá trị tiêu chí', getPaperInfoSearchValue())}
-            ${readField('Trạng thái tra cứu', paperInfoHasData ? 'Có kết quả' : 'Không có kết quả')}
-            ${readField('File PDF dự thảo', 'CCTT_' + p.id + '_Mau_10d_v1.pdf')}
-            <div class="field"><label>Lãnh đạo ký <span class="required">*</span></label><input id="paperSignerSearch" list="paperSignerList" placeholder="Tìm theo tên, chức danh hoặc đơn vị"><datalist id="paperSignerList"><option value="Nguyễn Văn Lãnh Đạo - Giám đốc Trung tâm Hà Nội"><option value="Trần Thị Thu Hà - Phó Giám đốc Trung tâm Hà Nội"><option value="Lê Minh Quân - Trưởng phòng Đăng ký"></datalist><div class="error-text"></div></div>
-            ${areaField('Ghi chú trình ký', '', 'id="paperSignNote" placeholder="Ghi chú nội bộ nếu cần."')}
-        </div>
-        <div style="text-align:right;margin-top:14px">
-            <button class="btn" onclick="closeModal()">Hủy</button>
-            <button class="btn primary" onclick="confirmPaperInfoSign()">Xác nhận trình ký</button>
-        </div>`;
-            modal.classList.add('show');
+            const container = document.getElementById('ccttDetailSectionContainer');
+            if (container) container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
-        function confirmPaperInfoSign() {
-            clearPaperInfoErrors();
-            if (!document.getElementById('paperSignerSearch')?.value.trim()) {
-                markInvalid('paperSignerSearch', 'Vui lòng chọn Lãnh đạo ký.');
+
+        function resetCcttLookup() {
+            clearAllErrors();
+            const regNo = document.getElementById('ccttRegNo');
+            if (regNo) regNo.value = '1505170802';
+            const frameNo = document.getElementById('ccttFrameNo');
+            if (frameNo) frameNo.value = 'RL4A2026HTC00001';
+            const citId = document.getElementById('ccttCitizenId');
+            if (citId) citId.value = '091000000004';
+            const note = document.getElementById('ccttNote');
+            if (note) note.value = '';
+
+            resetCcttLookupState();
+            toast('Đã xóa bộ lọc tra cứu thông tin.');
+        }
+
+        function confirmCcttCancel() {
+            openCopyModal('modalCopyConfirm');
+        }
+
+        function executeCcttApproveWaitSign() {
+            if (!ccttLookupDone) {
+                notify('Vui lòng thực hiện tra cứu thông tin trước khi duyệt.', 'warn');
                 return;
             }
-            finish('Trình ký');
+            p.status = 'Duyệt chờ ký';
+            p.statusClass = 'badge-info';
+            p.approvedAt = new Date().toLocaleString('vi-VN');
+            p.handlingOfficer = 'Nguyễn Văn Cán Bộ';
+            saveCcttRequestUpdate(p);
+
+            const list = JSON.parse(localStorage.getItem('custom_mock_profiles') || '[]');
+            const idx = list.findIndex(x => x.id === p.id);
+            if (idx >= 0) list[idx] = { ...list[idx], ...p };
+            else list.unshift(p);
+            localStorage.setItem('custom_mock_profiles', JSON.stringify(list));
+
+            notify('Duyệt yêu cầu cung cấp thông tin thành công. [MSG-SUC-CCTT-005]', 'success');
+            setTimeout(() => {
+                goBack();
+            }, 1000);
+        }
+
+        function openCcttSignModal() {
+            if (!ccttLookupDone) {
+                notify('Vui lòng thực hiện tra cứu thông tin trước khi trình ký.', 'warn');
+                return;
+            }
+            const modalTitleEl = document.querySelector('#modalCcttSign .modal-head h3');
+            if (modalTitleEl) {
+                modalTitleEl.innerHTML = `<i class="fa-solid fa-file-signature"></i> Trình ký kết quả cung cấp thông tin: ${p.id}`;
+            }
+
+            const idEl = document.getElementById('ccttSignDossierId');
+            if (idEl) idEl.textContent = p.id;
+
+            const cntEl = document.getElementById('ccttSignResultCount');
+            if (cntEl) cntEl.textContent = ccttHasData ? '03 hồ sơ (Có kết quả)' : '0 hồ sơ (Không có dữ liệu)';
+
+            const pdfEl = document.getElementById('ccttSignPdfName');
+            if (pdfEl) pdfEl.textContent = 'CCTT_' + p.id + '_Mau_13_v1.pdf';
+
+            const sel = document.getElementById('ccttSignLeaderSelect');
+            if (sel) {
+                sel.value = '';
+                sel.classList.remove('is-invalid');
+                const fieldWrap = sel.closest('.field');
+                if (fieldWrap) {
+                    fieldWrap.classList.remove('invalid', 'is-invalid');
+                    const err = fieldWrap.querySelector('.error-text');
+                    if (err) err.style.display = 'none';
+                }
+            }
+
+            const m = document.getElementById('modalCcttSign');
+            if (m) m.style.display = 'flex';
+        }
+
+        function closeCcttModal(modalId) {
+            const m = document.getElementById(modalId);
+            if (m) m.style.display = 'none';
+        }
+
+        function openCcttPdfPreviewModal() {
+            const previewContent = document.getElementById('ccttPdfPreviewContent');
+            if (previewContent) {
+                const crit = document.getElementById('ccttCriteria')?.value || 'Số đăng ký';
+                const searchVal = getCcttSearchValue();
+                const dateStr = new Date().toLocaleDateString('vi-VN');
+                const reqName = document.getElementById('ccttRequesterName')?.value || p.customer || 'Ông Phạm Minh Đức';
+                const contactAddr = document.getElementById('ccttContactAddress')?.value || p.requesterAddress || 'Số 18 phố Lý Thường Kiệt, Hoàn Kiếm, Hà Nội';
+
+                let resultDetailHtml = '';
+                if (ccttHasData) {
+                    resultDetailHtml = `
+                        <div style="margin-top:14px;border:1px solid #94a3b8;border-radius:4px;overflow:hidden">
+                            <table style="width:100%;border-collapse:collapse;font-size:13px">
+                                <thead>
+                                    <tr style="background:#f1f5f9;border-bottom:1px solid #94a3b8">
+                                        <th style="padding:6px;border-right:1px solid #94a3b8;width:35px;text-align:center">STT</th>
+                                        <th style="padding:6px;border-right:1px solid #94a3b8;width:120px">Mã hồ sơ</th>
+                                        <th style="padding:6px;border-right:1px solid #94a3b8;width:100px">Số đăng ký</th>
+                                        <th style="padding:6px;border-right:1px solid #94a3b8;width:130px">Trường hợp đăng ký</th>
+                                        <th style="padding:6px;border-right:1px solid #94a3b8">Bên bảo đảm</th>
+                                        <th style="padding:6px">Bên nhận bảo đảm</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom:1px solid #cbd5e1">
+                                        <td style="padding:6px;text-align:center;border-right:1px solid #cbd5e1">1</td>
+                                        <td style="padding:6px;border-right:1px solid #cbd5e1">HS-2026-000813</td>
+                                        <td style="padding:6px;border-right:1px solid #cbd5e1">1505170802</td>
+                                        <td style="padding:6px;border-right:1px solid #cbd5e1">ĐĂNG KÝ LẦN ĐẦU</td>
+                                        <td style="padding:6px;border-right:1px solid #cbd5e1">Công ty CP Xây dựng HTC</td>
+                                        <td style="padding:6px">Ngân hàng TMCP Đầu tư và Phát triển VN</td>
+                                    </tr>
+                                    <tr style="border-bottom:1px solid #cbd5e1">
+                                        <td style="padding:6px;text-align:center;border-right:1px solid #cbd5e1">2</td>
+                                        <td style="padding:6px;border-right:1px solid #cbd5e1">HS-2026-000845</td>
+                                        <td style="padding:6px;border-right:1px solid #cbd5e1">1505170802</td>
+                                        <td style="padding:6px;border-right:1px solid #cbd5e1">ĐĂNG KÝ THAY ĐỔI</td>
+                                        <td style="padding:6px;border-right:1px solid #cbd5e1">Công ty CP Xây dựng HTC</td>
+                                        <td style="padding:6px">Ngân hàng TMCP Đầu tư và Phát triển VN</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding:6px;text-align:center;border-right:1px solid #cbd5e1">3</td>
+                                        <td style="padding:6px;border-right:1px solid #cbd5e1">HS-2026-000901</td>
+                                        <td style="padding:6px;border-right:1px solid #cbd5e1">1505170802</td>
+                                        <td style="padding:6px;border-right:1px solid #cbd5e1">THÔNG BÁO XỬ LÝ TS</td>
+                                        <td style="padding:6px;border-right:1px solid #cbd5e1">Công ty CP Xây dựng HTC</td>
+                                        <td style="padding:6px">Ngân hàng TMCP Đầu tư và Phát triển VN</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                } else {
+                    resultDetailHtml = `
+                        <div style="margin-top:14px;padding:12px;border:1px dashed #d97706;background:#fffbeb;color:#92400e;border-radius:4px;font-style:italic">
+                            Kết quả thông tin bạn tra cứu: Chưa được đăng ký hoặc hiệu lực của đăng ký đối với thông tin không còn.
+                        </div>
+                    `;
+                }
+
+                // Tiêu chí checkboxes mapping chuẩn SRS 4.3.2.2.7.2 STT 11-15
+                const chkId = crit === 'Bên bảo đảm' && (document.getElementById('ccttSubjectType')?.value === 'Công dân Việt Nam') ? '☒' : '☐';
+                const chkOrg = crit === 'Bên bảo đảm' && (document.getElementById('ccttSubjectType')?.value === 'Tổ chức nước ngoài') ? '☒' : '☐';
+                const chkFrame = crit === 'Số khung' ? '☒' : '☐';
+                const chkReg = crit === 'Số đăng ký' ? '☒' : '☐';
+
+                previewContent.innerHTML = `
+                    <!-- Watermark DỰ THẢO -->
+                    <div style="position:absolute;top:40%;left:50%;transform:translate(-50%, -50%) rotate(-30deg);font-size:72px;font-weight:900;color:rgba(220, 38, 38, 0.12);pointer-events:none;letter-spacing:10px;text-transform:uppercase;z-index:1;user-select:none">
+                        DỰ THẢO
+                    </div>
+                    
+                    <div style="position:relative;z-index:2">
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+                            <div style="text-align:center;font-size:12.5px;line-height:1.3">
+                                <b>BỘ TƯ PHÁP</b><br>
+                                <b>CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM<br>VÀ BỒI THƯỜNG NHÀ NƯỚC</b><br>
+                                <b>TRUNG TÂM ĐĂNG KÝ GIAO DỊCH, TÀI SẢN<br>TẠI THÀNH PHỐ HÀ NỘI</b><br>
+                                <hr style="width:120px;margin:4px auto;border-top:1px solid #333">
+                                <span style="font-size:12px">Số: CCTT-${p.id.slice(-6)}/VB-TT</span>
+                            </div>
+                            <div style="text-align:center;font-size:12.5px;line-height:1.3">
+                                <b>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</b><br>
+                                <b>Độc lập - Tự do - Hạnh phúc</b><br>
+                                <hr style="width:140px;margin:4px auto;border-top:1px solid #333">
+                                <div style="text-align:right;font-style:italic;font-size:12px;margin-top:6px">Hà Nội, ngày ${dateStr}</div>
+                                <div style="text-align:right;font-weight:bold;font-size:11.5px;margin-top:2px;color:#dc2626">Mẫu số 13</div>
+                            </div>
+                        </div>
+
+                        <div style="text-align:center;margin-top:24px;margin-bottom:18px">
+                            <h3 style="margin:0;font-size:16px;font-weight:bold;text-transform:uppercase">VĂN BẢN CUNG CẤP THÔNG TIN VỀ BIỆN PHÁP BẢO ĐẢM</h3>
+                            <div style="font-size:13px;font-style:italic;margin-top:4px">(Ban hành kèm theo Nghị định số 99/2022/NĐ-CP)</div>
+                        </div>
+
+                        <div style="font-size:13.5px;line-height:1.6">
+                            <p style="margin:6px 0">Kính gửi: <b>${e(reqName)}</b></p>
+                            <p style="margin:6px 0">Địa chỉ liên hệ: ${e(contactAddr)}</p>
+                            <p style="margin:6px 0">Mã hồ sơ yêu cầu: <b>${p.id}</b> &nbsp;|&nbsp; Số đơn giấy: <b>${p.paper || 'PG-0136'}</b></p>
+                            
+                            <p style="margin:12px 0 6px 0"><b>1. Việc tra cứu thông tin được thực hiện theo tiêu chí sau đây:</b></p>
+                            <div style="margin-left:16px;font-size:13px;line-height:1.8">
+                                <div>${chkId} Số giấy tờ xác định tư cách pháp lý của bên bảo đảm: ${chkId === '☒' ? `<b>${e(searchVal)}</b>` : '................................................'}</div>
+                                <div>${chkOrg} Tên của bên bảo đảm là tổ chức nước ngoài: ${chkOrg === '☒' ? `<b>${e(searchVal)}</b>` : '................................................'}</div>
+                                <div>${chkFrame} Số khung của phương tiện giao thông cơ giới: ${chkFrame === '☒' ? `<b>${e(searchVal)}</b>` : '................................................'}</div>
+                                <div>${chkReg} Số đăng ký biện pháp bảo đảm: ${chkReg === '☒' ? `<b>${e(searchVal)}</b>` : '................................................'}</div>
+                            </div>
+
+                            <p style="margin:14px 0 6px 0"><b>2. Thông tin về biện pháp bảo đảm bằng động sản, cây hằng năm, công trình tạm tra cứu tại thời điểm ${new Date().toLocaleString('vi-VN')} được Trung tâm Đăng ký giao dịch, tài sản tại TP Hà Nội cung cấp kèm theo Văn bản này:</b></p>
+                            ${resultDetailHtml}
+                            <p style="margin:12px 0 6px 0;font-size:13px;font-style:italic">Văn bản này được cấp kèm theo kết quả tra cứu trong Cơ sở dữ liệu quốc gia về biện pháp bảo đảm tại thời điểm tra cứu.</p>
+                        </div>
+
+                        <div style="margin-top:36px;display:flex;justify-content:space-between;align-items:flex-start">
+                            <div style="font-size:12px;line-height:1.4">
+                                <b><i>Nơi nhận:</i></b><br>
+                                - Như trên;<br>
+                                - Lưu: VT, HS.
+                            </div>
+                            <div style="text-align:center;font-size:13.5px;line-height:1.4">
+                                <b>NGƯỜI CÓ THẨM QUYỀN CỦA TRUNG TÂM</b><br>
+                                <span style="font-size:12px;font-style:italic">(Ký số / Ký, ghi rõ họ tên, chức danh và đóng dấu)</span>
+                                <div style="height:55px;display:flex;align-items:center;justify-content:center;color:#dc2626;font-size:13px;font-weight:bold;border:1px dashed #fca5a5;margin-top:8px;padding:4px 16px;background:#fff5f5;border-radius:4px">
+                                    [CHỮ KÝ SỐ DỰ KIẾN TRÌNH KÝ]
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            const m = document.getElementById('modalCcttPdfPreview');
+            if (m) m.style.display = 'flex';
+        }
+
+        function downloadCcttPdfDraft() {
+            toast('Đang tải xuống file dự thảo: CCTT_' + p.id + '_Mau_13_v1.pdf');
+            downloadFile('CCTT_' + p.id + '_Mau_13_v1.pdf');
+        }
+
+        function submitCcttSignConfirm() {
+            const sel = document.getElementById('ccttSignLeaderSelect');
+            if (!sel || !sel.value) {
+                if (sel) {
+                    sel.classList.add('is-invalid');
+                    const fieldWrap = sel.closest('.field');
+                    if (fieldWrap) {
+                        fieldWrap.classList.add('invalid', 'is-invalid');
+                        const err = fieldWrap.querySelector('.error-text');
+                        if (err) err.style.display = 'flex';
+                    }
+                    sel.focus();
+                }
+                return;
+            }
+            p.status = 'Chờ ký';
+            p.statusClass = 'badge-info';
+            p.leaderSigner = sel.value;
+            p.signNote = document.getElementById('ccttSignNote')?.value || '';
+            p.signedAt = new Date().toLocaleString('vi-VN');
+            saveCcttRequestUpdate(p);
+
+            const list = JSON.parse(localStorage.getItem('custom_mock_profiles') || '[]');
+            const idx = list.findIndex(x => x.id === p.id);
+            if (idx >= 0) list[idx] = { ...list[idx], ...p };
+            else list.unshift(p);
+            localStorage.setItem('custom_mock_profiles', JSON.stringify(list));
+
+            closeCcttModal('modalCcttSign');
+            notify('Trình yêu cầu cung cấp thông tin thành công. [MSG-SUC-CCTT-008]', 'success');
+            setTimeout(() => {
+                goBack();
+            }, 1000);
+        }
+
+        function saveCcttRequestUpdate(item) {
+            const list = JSON.parse(localStorage.getItem('officer_cctt_requests') || '[]');
+            const idx = list.findIndex(x => x.id === item.id);
+            if (idx >= 0) list[idx] = { ...list[idx], ...item };
+            else list.push(item);
+            localStorage.setItem('officer_cctt_requests', JSON.stringify(list));
         }
         // ==========================================================================
 // UNIFIED REVIEW FUNCTIONS - 100% PARITY WITH WEBSITE KHACH HANG
@@ -9263,34 +10656,63 @@ function openRegistrationSignModal() {
                 notify('Hồ sơ không ở trạng thái Chờ giải quyết hoặc Bị trả lại.', 'warn');
                 return;
             }
-            modalTitle.textContent = 'Từ chối xử lý hồ sơ';
+            modalTitle.textContent = isInfoRequest() ? `Từ chối yêu cầu cung cấp thông tin: ${p.id}` : 'Từ chối xử lý hồ sơ';
             const parts = [];
             if (isInfoRequest()) {
                 parts.push('<div class="grid two" style="margin-bottom:14px">');
                 parts.push(readField('Mã hồ sơ', p.id));
-                parts.push(readField('Số đơn giấy', p.paper || 'PG-CCTT-0001'));
-                parts.push(readField('Người yêu cầu', p.customer));
+                parts.push(readField('Người yêu cầu', p.customer || 'Ông Phạm Minh Đức'));
+                parts.push(readField('Số đơn giấy', p.paper || 'PG-0136'));
                 parts.push(readField('Trạng thái hồ sơ', p.status || 'Chờ giải quyết'));
                 parts.push('</div>');
             }
-            parts.push('<div class="field"><label>Lý do từ chối <span class="required">*</span></label><textarea id="rejectReason" placeholder="Nhập lý do từ chối xử lý hồ sơ"></textarea></div>');
-            parts.push('<div style="text-align:right;margin-top:14px"><button class="btn" onclick="closeModal()">Hủy</button> <button class="btn danger" onclick="rejectProfile()">Xác nhận từ chối</button></div>');
+            parts.push(`
+                <div class="field" style="margin:0">
+                    <label style="font-weight:700">Lý do từ chối <span class="required">*</span></label>
+                    <textarea id="rejectReason" class="form-control" rows="3" placeholder="Nhập lý do từ chối..." oninput="this.classList.remove('is-invalid'); const err = this.parentElement.querySelector('.error-text'); if(err) err.style.display='none';"></textarea>
+                    <div class="error-text" style="display:none;color:#dc2626;font-size:12.5px;margin-top:4px"><i class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc</div>
+                </div>
+            `);
+            parts.push('<div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;border-top:1px solid var(--line);padding-top:16px"><button type="button" class="btn" onclick="closeModal()">Hủy</button> <button type="button" class="btn danger" onclick="rejectProfile()"><i class="fa-solid fa-ban"></i> Xác nhận từ chối</button></div>');
             modalBody.innerHTML = parts.join('');
             modal.classList.add('show');
         }
         function rejectProfile() {
-            const reason = document.getElementById('rejectReason')?.value.trim();
+            const reasonEl = document.getElementById('rejectReason');
+            const reason = reasonEl?.value.trim();
             if (!reason) {
-                notify('Vui lòng nhập lý do từ chối.', 'warn');
+                if (reasonEl) {
+                    reasonEl.classList.add('is-invalid');
+                    const err = reasonEl.parentElement.querySelector('.error-text');
+                    if (err) err.style.display = 'block';
+                    reasonEl.focus();
+                }
                 return;
             }
             const list = JSON.parse(localStorage.getItem('custom_mock_profiles') || '[]');
             const idx = list.findIndex(x => x.id === p.id);
-            const next = { ...p, status: 'Bị từ chối', statusClass: 'badge-danger', rejectReason: reason };
+            const next = {
+                ...p,
+                status: 'Bị từ chối',
+                statusClass: 'badge-danger',
+                rejectReason: reason,
+                rejectedAt: new Date().toLocaleString('vi-VN'),
+                rejectedBy: 'Nguyễn Văn Cán Bộ'
+            };
             if (idx >= 0) list[idx] = next; else list.unshift(next);
             localStorage.setItem('custom_mock_profiles', JSON.stringify(list));
-            notify('Đã từ chối xử lý hồ sơ.', 'success');
-            goBack();
+
+            if (isInfoRequest()) {
+                saveCcttRequestUpdate(next);
+                closeModal();
+                notify('Từ chối yêu cầu cung cấp thông tin thành công. [MSG-SUC-CCTT-004]', 'success');
+            } else {
+                closeModal();
+                notify('Đã từ chối xử lý hồ sơ.', 'success');
+            }
+            setTimeout(() => {
+                goBack();
+            }, 1000);
         }
         function viewFile(name) {
             const tab = window.open('', '_blank');
@@ -9657,99 +11079,7 @@ function openRegistrationSignModal() {
             const copyTypeBadge = `<span class="badge ${isPaperCopy ? 'b-wait' : 'b-info'}">${p.copyType || (isPaperCopy ? 'Bản sao giấy' : 'Bản sao điện tử')}</span>`;
             const defaultSearchNo = p.originalRegistrationNo || '1505156438';
 
-            // Ẩn 2 card tiếp nhận bên ngoài để hiển thị Khối I & II dạng Accordion chuẩn SRS MH03
-            const editCards = document.querySelectorAll('#editView > .card');
-            if (editCards.length >= 3) {
-                editCards[0].style.display = 'none';
-                editCards[1].style.display = 'none';
-                editCards[2].classList.add('plain-card');
-                const cardH = editCards[2].querySelector('.card-h');
-                if (cardH) cardH.style.display = 'none';
-            }
 
-            const block1Accordion = `
-                <div class="copy-accordion" id="copyAccBlock1">
-                    <div class="copy-accordion-head" id="copyAcc1-head" onclick="toggleCopyAccordion('copyAcc1')">
-                        <div class="copy-accordion-title">
-                            <i class="fa-solid fa-receipt"></i>
-                            <span>I. THÔNG TIN TIẾP NHẬN VÀ THU PHÍ (Thu gọn)</span>
-                            <span class="badge b-info" style="font-size:11px">Chỉ đọc</span>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:8px">
-                            <span style="font-size:12px;color:var(--muted)">Nhấp để xem/thu gọn</span>
-                            <i class="fa-solid fa-chevron-down" id="copyAcc1-chevron" style="transition:transform 0.2s"></i>
-                        </div>
-                    </div>
-                    <div class="copy-accordion-body" id="copyAcc1-body">
-                        <div class="summary-grid" style="margin-bottom:16px">
-                            ${kv('Mã hồ sơ', p.id)}
-                            ${kv('Số đơn giấy', p.paper || 'PG-2026-001')}
-                            ${kv('Thời điểm tiếp nhận', p.date || '24/09/2026 08:30')}
-                            ${kv('Cán bộ tiếp nhận', p.officer || 'Nguyễn Thị Tiếp Nhận')}
-                            ${kv('Loại yêu cầu', p.type || 'Yêu cầu cung cấp bản sao')}
-                            ${kv('Số biên lai/chứng từ', p.receipt || 'BL-BS-2026-00452')}
-                            ${kv('Loại tài khoản', p.customerAccountType || 'Tài khoản thường')}
-                        </div>
-                        <!-- Accordion con: Danh sách tài liệu tiếp nhận -->
-                        <div style="border-top:1px solid var(--line);padding-top:12px">
-                            <div style="font-weight:700;font-size:13px;color:var(--primary);margin-bottom:8px">
-                                <i class="fa-solid fa-paperclip"></i> Tài liệu tiếp nhận kèm theo
-                            </div>
-                            <div class="table-wrap">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>Tên tài liệu</th>
-                                            <th>Tên tệp</th>
-                                            <th>Dung lượng</th>
-                                            <th style="width:160px;text-align:center">Thao tác</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Đơn yêu cầu cung cấp bản sao</td>
-                                            <td><i class="fa-solid fa-file-pdf" style="color:#dc2626"></i> Don_yeu_cau_cap_ban_sao_${p.id}.pdf</td>
-                                            <td>1.4 MB</td>
-                                            <td style="text-align:center">
-                                                <a href="javascript:void(0)" onclick="viewFile('Don_yeu_cau_cap_ban_sao_${p.id}.pdf')" style="color:#2563eb;text-decoration:none;font-weight:600;margin-right:10px">Xem file</a>
-                                                <a href="javascript:void(0)" onclick="downloadFile('Don_yeu_cau_cap_ban_sao_${p.id}.pdf')" style="color:#059669;text-decoration:none;font-weight:600">Tải xuống</a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            // Khối II: Thông tin trả lại (Chỉ hiển thị khi Bị trả lại)
-            const isReturned = p.status === 'Bị trả lại' || qs.get('returned') === '1';
-            const block2Accordion = isReturned ? `
-                <div class="copy-accordion" id="copyAccBlock2" style="border-left:4px solid #dc2626">
-                    <div class="copy-accordion-head open" id="copyAcc2-head" onclick="toggleCopyAccordion('copyAcc2')" style="background:#fef2f2">
-                        <div class="copy-accordion-title" style="color:#dc2626">
-                            <i class="fa-solid fa-rotate-left"></i>
-                            <span>II. THÔNG TIN TRẢ LẠI TỪ LÃNH ĐẠO</span>
-                            <span class="badge b-red" style="font-size:11px">Bị trả lại</span>
-                        </div>
-                        <div style="display:flex;align-items:center;gap:8px">
-                            <span style="font-size:12px;color:var(--muted)">Nhấp để xem/thu gọn</span>
-                            <i class="fa-solid fa-chevron-up" id="copyAcc2-chevron" style="transition:transform 0.2s"></i>
-                        </div>
-                    </div>
-                    <div class="copy-accordion-body open" id="copyAcc2-body" style="background:#fff">
-                        <div class="summary-grid">
-                            <div class="kv" style="grid-column:1/-1">
-                                <span>Lý do trả lại:</span>
-                                <b style="color:#dc2626;font-size:13.5px">${p.returnReason || 'Lãnh đạo yêu cầu rà soát lại Số đăng ký hồ sơ gốc, chưa khớp với phiếu yêu cầu cung cấp bản sao.'}</b>
-                            </div>
-                            ${kv('Lãnh đạo trả lại', p.returnedBy || 'Lê Hoàng Long - Giám đốc Trung tâm')}
-                            ${kv('Thời điểm trả lại', p.returnedAt || '24/09/2026 10:15')}
-                        </div>
-                    </div>
-                </div>
-            ` : '';
 
             // Khối III: Tra cứu hồ sơ gốc (Card độc lập ở đầu biểu mẫu, luôn cho phép nhập lại Số đăng ký)
             const block3TraCuu = `
@@ -9928,8 +11258,6 @@ function openRegistrationSignModal() {
             const container = document.getElementById('businessForm');
             if (container) {
                 container.innerHTML = `
-                    ${block1Accordion}
-                    ${block2Accordion}
                     ${block3TraCuu}
                     ${block4ChiTiet}
                     ${block5ThanhTacVu}
@@ -10333,24 +11661,35 @@ function openRegistrationSignModal() {
 
         function initPaperInfoChrome() {
             if (!isInfoRequest()) return;
-            document.querySelector('.title h1').textContent = 'Nhập liệu hồ sơ giấy - Yêu cầu cung cấp thông tin';
-            document.querySelector('.title p').textContent = 'UC-CCTT-GIAY - Nhập tiêu chí tra cứu, kết xuất PDF dự thảo và trình Lãnh đạo ký.';
-            document.querySelector('#readonlyView .card-h h2').textContent = 'Xem hồ sơ giấy Yêu cầu cung cấp thông tin';
-            const readonlyBadge = document.querySelector('#readonlyView .card-h .badge');
-            if (readonlyBadge) {
-                readonlyBadge.textContent = p.status || 'Chờ giải quyết';
-                readonlyBadge.className = `badge ${p.status === 'Bị trả lại' ? 'b-red' : 'b-info'}`;
+            const isView = mode === 'view';
+            const h1 = document.querySelector('.title h1');
+            if (h1) {
+                h1.textContent = isView
+                    ? `Chi tiết hồ sơ chờ nhập liệu: ${p.id}`
+                    : 'Nhập liệu hồ sơ giấy Yêu cầu cung cấp thông tin';
             }
-            s1.textContent = '1. Nhập liệu và tra cứu';
-            s2.textContent = '2. Xem PDF dự thảo';
-            s3.textContent = '3. Trình ký';
+            const pDesc = document.querySelector('.title p');
+            if (pDesc) {
+                pDesc.textContent = isView
+                    ? 'Xem toàn bộ thông tin tiếp nhận, người yêu cầu, lệ phí và tài liệu đính kèm.'
+                    : 'Tra cứu thông tin theo tiêu chí số đăng ký, bên bảo đảm hoặc số khung; lập dự thảo Mẫu 13 và trình Lãnh đạo ký số.';
+            }
+
+            if (stepper) stepper.style.display = 'none';
+
+            const bTitle = document.getElementById('businessTitle');
+            if (bTitle) bTitle.textContent = 'Nhập liệu hồ sơ giấy Yêu cầu cung cấp thông tin';
+            const fRef = document.getElementById('formRef');
+            if (fRef) fRef.textContent = 'Yêu cầu cung cấp thông tin';
         }
 
+        initDomReferences();
         initPaperInfoChrome();
         initPaperCopyChrome();
         renderReadonly();
         renderAttachments();
         renderBusinessForm();
+        renderGeneralReturnedBlock();
         const selector = document.getElementById('profileTypeSelector');
         if (selector) {
             if (isFirstRegistration()) selector.value = 'lan_dau';
@@ -10359,6 +11698,8 @@ function openRegistrationSignModal() {
             else if (isNoticeFirst()) selector.value = 'tb_lan_dau';
             else if (isNoticeChange()) selector.value = 'tb_thay_doi';
             else if (isNoticeDelete()) selector.value = 'tb_xoa';
+            else if (isInfoRequest()) selector.value = 'cctt';
+            else if (isCopyRequest()) selector.value = 'copy';
         }
         switchView(mode);
     </script>

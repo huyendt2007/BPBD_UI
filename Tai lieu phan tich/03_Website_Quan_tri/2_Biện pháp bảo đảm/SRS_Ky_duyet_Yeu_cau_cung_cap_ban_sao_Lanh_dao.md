@@ -18,7 +18,7 @@
 
 \- Loại "Bản sao giấy": Lãnh đạo **Ký duyệt** — vẫn là một hành động ký, nhưng không ký số trên file PDF, không dùng USB Token/chứng thư số; chỉ là xác nhận đồng ý cấp bản sao giấy theo [BR-BS-013]. Ký duyệt thành công chuyển hồ sơ thẳng sang "Đã duyệt - chờ trả kết quả" để Cán bộ xử lý trả kết quả theo [BR-BS-010].
 
-\- Tại trạng thái "Chờ ký", Lãnh đạo được phép ký số/ký duyệt, từ chối hoặc trả lại. Nếu từ chối hồ sơ đã thu tiền, hệ thống phát sinh yêu cầu hoàn tiền/hoàn phí theo nguồn hồ sơ. Nếu trả lại, hồ sơ chuyển sang "Bị trả lại" để Cán bộ xử lý lại và trình ký lại.
+\- Tại trạng thái "Chờ ký", Lãnh đạo được phép ký số/ký duyệt, từ chối hoặc trả lại. Nếu từ chối, hệ thống tạo yêu cầu hoàn tiền theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online) đối với hồ sơ Online, hoặc tạo khoản hoàn phí/thông báo kế toán tại Module Quản lý thu phí/hoàn phí hồ sơ giấy đối với hồ sơ giấy đã thu phí. Nếu trả lại, hồ sơ chuyển sang "Bị trả lại" để Cán bộ xử lý lại và trình ký lại.
 
 *a. Phân quyền*
 
@@ -160,7 +160,7 @@
 | 1 | Hủy | Nút | Đóng popup, giữ nguyên trạng thái hồ sơ. |
 | 2 | Xác nhận | Nút | TH1 (Bỏ trống Lý do): Vi phạm [BR-VAL-001], hiển thị [MSG-ERR-VAL-001], không cho phép xác nhận. |
 |  |  |  | TH2 (Hồ sơ không còn ở trạng thái "Chờ duyệt"): Vi phạm [BR-BS-007], hiển thị [MSG-ERR-BS-002], không cho phép xác nhận. |
-|  |  |  | TH Hợp lệ: Hệ thống yêu cầu xác nhận bằng [MSG-CFM-BS-001], lưu người từ chối, thời điểm, lý do, chuyển hồ sơ sang "Bị từ chối", hiển thị [MSG-SUC-BS-004]. |
+|  |  |  | TH Hợp lệ: Hệ thống yêu cầu xác nhận bằng [MSG-CFM-BS-001], lưu người từ chối, thời điểm, lý do, chuyển hồ sơ sang "Bị từ chối", tạo yêu cầu hoàn tiền theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online) đối với hồ sơ Online, hoặc tạo khoản hoàn phí/thông báo kế toán tại Module Quản lý thu phí/hoàn phí hồ sơ giấy đối với hồ sơ giấy đã thu phí, hiển thị [MSG-SUC-BS-004]. |
 
 #### 4.3.2.Y.5. UC-BS-LD.MH04 - Màn hình Danh sách yêu cầu cung cấp bản sao chờ ký
 
@@ -280,7 +280,7 @@ Hiển thị chung mọi hồ sơ ở trạng thái "Chờ ký", gồm: hồ sơ
 | 1 | Hủy | Nút | Đóng popup, giữ nguyên trạng thái hồ sơ. |
 | 2 | Xác nhận | Nút | TH1 (Bỏ trống Lý do): Vi phạm [BR-VAL-001], hiển thị [MSG-ERR-VAL-001], không cho phép xác nhận. |
 |  |  |  | TH2 (Hồ sơ không phải hồ sơ giấy hoặc không còn ở trạng thái "Chờ ký"): Vi phạm [BR-BS-007]/[BR-BS-009], hiển thị [MSG-ERR-BS-002], không cho phép xác nhận. |
-|  |  |  | TH Hợp lệ với Loại xử lý "Từ chối": Hệ thống yêu cầu xác nhận bằng [MSG-CFM-BS-001], lưu người từ chối, thời điểm, lý do, file bản sao điện tử chờ ký; chuyển hồ sơ sang "Bị từ chối"; hiển thị [MSG-SUC-BS-004]. |
+|  |  |  | TH Hợp lệ với Loại xử lý "Từ chối": Hệ thống yêu cầu xác nhận bằng [MSG-CFM-BS-001], lưu người từ chối, thời điểm, lý do, file bản sao điện tử chờ ký; chuyển hồ sơ sang "Bị từ chối"; tạo yêu cầu hoàn tiền theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online) đối với hồ sơ Online, hoặc tạo khoản hoàn phí/thông báo kế toán tại Module Quản lý thu phí/hoàn phí hồ sơ giấy đối với hồ sơ giấy đã thu phí; hiển thị [MSG-SUC-BS-004]. |
 |  |  |  | TH Hợp lệ với Loại xử lý "Trả lại": Hệ thống yêu cầu xác nhận bằng [MSG-CFM-BS-004], lưu người trả lại, thời điểm, lý do; chuyển hồ sơ sang "Bị trả lại"; hiển thị [MSG-SUC-BS-005]. |
 
 #### 4.3.2.Y.8. Quy tắc duyệt, ký số, từ chối và trả lại
@@ -289,7 +289,7 @@ Hiển thị chung mọi hồ sơ ở trạng thái "Chờ ký", gồm: hồ sơ
 | :--- | :--- | :--- |
 | 1 | Điều kiện ký số/ký duyệt | Chỉ cho phép Lãnh đạo ký số/ký duyệt, từ chối hoặc trả lại hồ sơ ở trạng thái "Chờ ký", thuộc đơn vị quản lý, phạm vi thẩm quyền, được phân công ký theo [BR-BS-003]. |
 | 2 | Điều kiện tài chính trước ký | Hồ sơ Online có phí phải thanh toán thành công tại UC158 trước khi vào hàng chờ Cán bộ; hồ sơ giấy có phí phải được kế toán xác nhận thu trước khi Cán bộ trình ký. |
-| 3 | Chuyển trạng thái sau ký | Bản sao điện tử ký số thành công chuyển "Hoàn thành". Bản sao giấy ký duyệt thành công chuyển "Đã duyệt - chờ trả kết quả". Nếu từ chối, hồ sơ chuyển "Bị từ chối" và phát sinh yêu cầu hoàn tiền/hoàn phí tương ứng nguồn hồ sơ. Nếu trả lại, hồ sơ chuyển "Bị trả lại" để Cán bộ xử lý lại. |
+| 3 | Chuyển trạng thái sau ký | Bản sao điện tử ký số thành công chuyển "Hoàn thành". Bản sao giấy ký duyệt thành công chuyển "Đã duyệt - chờ trả kết quả". Nếu từ chối, hồ sơ chuyển "Bị từ chối" và hệ thống tạo yêu cầu hoàn tiền theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online) đối với hồ sơ Online, hoặc tạo khoản hoàn phí/thông báo kế toán tại Module Quản lý thu phí/hoàn phí hồ sơ giấy đối với hồ sơ giấy đã thu phí. Nếu trả lại, hồ sơ chuyển "Bị trả lại" để Cán bộ xử lý lại. |
 | 4 | Điều kiện ký số | Chỉ áp dụng Loại cung cấp bản sao là "Bản sao điện tử", hồ sơ ở trạng thái "Chờ ký" (dù Nguồn tiếp nhận là Online hay Cán bộ nhập liệu) theo [BR-BS-005]/[BR-BS-006]. |
 | 5 | Ký số bằng USB Token | Hệ thống ký số file bản sao điện tử bằng USB Token/chứng thư số hợp lệ theo [BR-BS-006]. |
 | 6 | Ký nhiều hồ sơ | Hệ thống cho phép ký nhiều hồ sơ trong cùng một lần thao tác; từng hồ sơ được kiểm tra điều kiện và ghi nhận kết quả độc lập. |
