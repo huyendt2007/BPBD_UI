@@ -56,6 +56,7 @@
 | 2 | Xóa bộ lọc | Nút | Đưa toàn bộ tiêu chí lọc về giá trị mặc định và tải lại danh sách hồ sơ chờ duyệt. |
 | 3 | Xử lý hồ sơ | Nút | Hệ thống thực hiện: <br>- Thực hiện tra cứu hồ sơ gốc theo đúng Số đăng ký Khách hàng đã nhập khi gửi yêu cầu.<br>- Điền (fill) dữ liệu hồ sơ gốc tra cứu được vào khối **Cấu trúc chi tiết danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng**.<br>- Mở [MH02 - Xử lý hồ sơ yêu cầu cung cấp bản sao](#43253-mh02---man-hinh-xu-ly-ho-so-yeu-cau-cung-cap-ban-sao). |
 | 4 | Từ chối | Nút | Mở [MH04 - Popup Từ chối yêu cầu cung cấp bản sao](#43255-mh04---popup-tu-choi-yeu-cau-cung-cap-ban-sao). |
+| 5 | Click dòng dữ liệu | Row Click | Mở [MH06 - Màn hình Xem chi tiết yêu cầu cung cấp bản sao](#43257-mh06---man-hinh-xem-chi-tiet-yeu-cau-cung-cap-ban-sao) của hồ sơ được chọn. |
 
 #### 4.3.2.5.3. MH02 - Màn hình Xử lý hồ sơ yêu cầu cung cấp bản sao
 
@@ -79,8 +80,8 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Duyệt chờ ký | Nút | Hệ thống thực hiện:<br>- Ghi nhận Cán bộ xử lý và thời điểm xử lý (dd/mm/yyyy hh:mm:ss).<br>- Chuyển hồ sơ sang trạng thái "Duyệt chờ ký".<br>- Ghi lịch sử xử lý và Audit log.<br>- Đóng màn hình xử lý, quay về [MH01 - Danh sách yêu cầu cung cấp bản sao chờ duyệt](#43252-mh01---man-hinh-danh-sach-yeu-cau-cung-cap-ban-sao-cho-duyet) và hiển thị [MSG-SUC-BS-001] (*"Duyệt yêu cầu cung cấp bản sao thành công."*) dạng Toast. |
-| 2 | Trình ký | Nút | Khi bấm, hệ thống phân biệt mở popup theo Loại cung cấp bản sao của hồ sơ:<br>+ **Nếu Loại cung cấp bản sao là "Bản sao điện tử"**: Hệ thống tự động trích xuất dữ liệu hồ sơ gốc theo Số đăng ký, tự động sinh file PDF dự thảo Bản sao điện tử văn bản chứng nhận đăng ký biện pháp bảo đảm (có watermark "DỰ THẢO" in chéo) theo đúng [Quy tắc sinh file PDF và Bảng Ánh xạ ra PDF Bản sao điện tử để Lãnh đạo ký sao điện tử - Nhập liệu hồ sơ giấy Yêu cầu cung cấp bản sao - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Nhap_lieu_ho_so_giay_Yeu_cau_cung_cap_ban_sao_Can_bo.md#432186-quy-tac-sinh-file-pdf-va-bang-anh-xa-ra-pdf-ban-sao-dien-tu-de-lanh-dao-ky-sao-dien-tu) và mở [MH03a - Popup Trình ký bản sao điện tử](#432541-mh03a---popup-trinh-ky-ban-sao-dien-tu).<br>+ **Nếu Loại cung cấp bản sao là "Bản sao giấy"**: Hệ thống không sinh file PDF và mở [MH03b - Popup Trình ký bản sao giấy](#432542-mh03b---popup-trinh-ky-ban-sao-giay). |
+| 1 | Duyệt chờ ký | Nút | Nút ẩn hoàn toàn khi chưa tra cứu được hồ sơ gốc; chỉ hiển thị khi đã có dữ liệu hồ sơ gốc tại Khối II.<br>Hệ thống thực hiện:<br>- Ghi nhận Cán bộ xử lý và thời điểm xử lý (dd/mm/yyyy hh:mm:ss).<br>- Chuyển hồ sơ sang trạng thái "Duyệt chờ ký".<br>- Ghi lịch sử xử lý và Audit log.<br>- Đóng màn hình xử lý, quay về [MH01 - Danh sách yêu cầu cung cấp bản sao chờ duyệt](#43252-mh01---man-hinh-danh-sach-yeu-cau-cung-cap-ban-sao-cho-duyet) và hiển thị [MSG-SUC-BS-001] (*"Duyệt yêu cầu cung cấp bản sao thành công."*) dạng Toast. |
+| 2 | Trình ký | Nút | Nút ẩn hoàn toàn khi chưa tra cứu được hồ sơ gốc; chỉ hiển thị khi đã có dữ liệu hồ sơ gốc tại Khối II.<br>Khi bấm, hệ thống phân biệt mở popup theo Loại cung cấp bản sao của hồ sơ:<br>+ **Nếu Loại cung cấp bản sao là "Bản sao điện tử"**: Hệ thống tự động trích xuất dữ liệu hồ sơ gốc theo Số đăng ký, tự động sinh file PDF dự thảo Bản sao điện tử văn bản chứng nhận đăng ký biện pháp bảo đảm (có watermark "DỰ THẢO" in chéo) theo đúng [Quy tắc sinh file PDF và Bảng Ánh xạ ra PDF Bản sao điện tử để Lãnh đạo ký sao điện tử - Nhập liệu hồ sơ giấy Yêu cầu cung cấp bản sao - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Nhap_lieu_ho_so_giay_Yeu_cau_cung_cap_ban_sao_Can_bo.md#432186-quy-tac-sinh-file-pdf-va-bang-anh-xa-ra-pdf-ban-sao-dien-tu-de-lanh-dao-ky-sao-dien-tu) và mở [MH03a - Popup Trình ký bản sao điện tử](#432541-mh03a---popup-trinh-ky-ban-sao-dien-tu).<br>+ **Nếu Loại cung cấp bản sao là "Bản sao giấy"**: Hệ thống không sinh file PDF và mở [MH03b - Popup Trình ký bản sao giấy](#432542-mh03b---popup-trinh-ky-ban-sao-giay). |
 | 3 | Hủy bỏ | Nút | Đóng màn hình xử lý, không thay đổi trạng thái hồ sơ, quay về [MH01 - Danh sách yêu cầu cung cấp bản sao chờ duyệt](#43252-mh01---man-hinh-danh-sach-yeu-cau-cung-cap-ban-sao-cho-duyet) và giữ nguyên bộ lọc trước đó. |
 
 #### 4.3.2.5.4. Popup Trình ký yêu cầu cung cấp bản sao
@@ -194,3 +195,30 @@
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Xác nhận trả kết quả | Nút | TH1 (Hồ sơ không còn ở trạng thái "Đã duyệt - chờ trả kết quả"): Quy định chỉ được xác nhận trả kết quả đối với hồ sơ "Bản sao giấy" đang ở trạng thái "Đã duyệt - chờ trả kết quả". Hệ thống hiển thị [MSG-ERR-DK-005] dạng Toast, không cho phép xác nhận.<br><br>TH Hợp lệ: Hệ thống hiển thị popup xác nhận [MSG-CFM-BS-005]:<br>+ Chọn "Có": Hệ thống lưu người xác nhận, thời điểm trả kết quả, chuyển hồ sơ sang "Hoàn thành" và hiển thị [MSG-SUC-BS-006] dạng Toast.<br>+ Chọn "Không": Đóng popup xác nhận, giữ nguyên trạng thái hồ sơ. |
+
+#### 4.3.2.5.7. MH06 - Màn hình Xem chi tiết yêu cầu cung cấp bản sao
+
+##### 4.3.2.5.7.1. Màn hình
+
+![Màn hình Xem chi tiết yêu cầu cung cấp bản sao](images/UC_BS_CB_MH06_Xem_chi_tiet_yeu_cau_cung_cap_ban_sao.png)
+
+##### 4.3.2.5.7.2. Mô tả thông tin trên màn hình
+
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :---: | :--- | :--- |
+| Mã hồ sơ | - | - | - | Control UI: Label.<br>- Hiển thị theo dữ liệu bản ghi. |
+| Thời điểm đăng ký | - | - | - | Control UI: Label.<br>- Hiển thị theo dữ liệu bản ghi. |
+| Mã khách hàng | - | - | - | Control UI: Label.<br>- Hiển thị theo dữ liệu bản ghi. |
+| Người yêu cầu | - | - | - | Control UI: Label.<br>- Hiển thị theo dữ liệu bản ghi. |
+| Số đăng ký | - | - | - | Control UI: Label.<br>- Hiển thị theo dữ liệu bản ghi. |
+| Loại cung cấp bản sao | - | - | - | Control UI: Label.<br>- Hiển thị theo dữ liệu bản ghi. |
+| Số lượng bản sao | - | - | - | Control UI: Label.<br>- Hiển thị theo dữ liệu bản ghi. |
+| Trạng thái | - | - | - | Control UI: Label.<br>- Hiển thị theo dữ liệu bản ghi. |
+
+##### 4.3.2.5.7.3. Chức năng trên màn hình
+
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Xử lý hồ sơ | Nút | Thực hiện giống chức năng Xử lý hồ sơ tại [MH01 - Màn hình Danh sách yêu cầu cung cấp bản sao chờ duyệt](#43252-mh01---man-hinh-danh-sach-yeu-cau-cung-cap-ban-sao-cho-duyet). |
+| 2 | Từ chối | Nút | Mở [MH04 - Popup Từ chối yêu cầu cung cấp bản sao](#43255-mh04---popup-tu-choi-yeu-cau-cung-cap-ban-sao) cho hồ sơ đang xem. |
+| 3 | Đóng | Nút | Đóng màn hình Xem chi tiết, quay về [MH01 - Màn hình Danh sách yêu cầu cung cấp bản sao chờ duyệt](#43252-mh01---man-hinh-danh-sach-yeu-cau-cung-cap-ban-sao-cho-duyet) và giữ nguyên bộ lọc trước đó. |

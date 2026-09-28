@@ -3729,6 +3729,13 @@ function openLeaderCcttDetail(id) {
     `;
 }
 
+// Kết quả tra cứu đã trình ký: hiển thị giống Khối II. Kết quả tra cứu tại màn Xử lý hồ sơ của Cán bộ
+function renderLeaderCcttLookupResult(item) {
+    if (!item.lookupResult) item.lookupResult = CcttPopups.runLookup({ ...item, inputData: item.inputData, criteria: item.criteria });
+    item.lookupResult.at = item.lookupResult.at || item.registeredAt;
+    return CcttPopups.renderResult(item.lookupResult);
+}
+
 function renderLeaderCcttDetailContent(item) {
     const noData = item.resultType === 'noData';
     return `
@@ -3757,12 +3764,7 @@ function renderLeaderCcttDetailContent(item) {
                 <div class="info-group"><div class="info-label">Thời điểm trình duyệt</div><div class="info-value">${item.submittedAt}</div></div>
             </div>
             <h3 class="section-title">Kết quả tra cứu</h3>
-            ${noData ? '<div style="padding:14px;border:1px solid #FCD34D;background:#FFFBEB;border-radius:6px;font-weight:700">Kết quả thông tin bạn tra cứu: Chưa được đăng ký hoặc hiệu lực của đăng ký đối với thông tin không còn.</div>' : `
-                <div style="font-weight:700;color:var(--primary-color);margin-bottom:10px">VI. Kết quả cung cấp thông tin có xác nhận của cơ quan đăng ký</div>
-                <table class="table" style="min-width:980px">
-                    <thead><tr><th>STT</th><th>Số hồ sơ</th><th>Số đăng ký</th><th>Thời điểm đăng ký</th><th>Loại hình đăng ký</th><th>Bên bảo đảm</th><th>Bên nhận bảo đảm</th><th>Hiệu lực tại thời điểm tra cứu</th></tr></thead>
-                    <tbody><tr><td>1</td><td>HS-2026-000813</td><td>1505170802</td><td>02/07/2026 10:27</td><td>Đăng ký lần đầu</td><td>Công ty Cổ phần Xây dựng và Phát triển HTC</td><td>Ngân hàng TMCP Đầu tư và Phát triển Việt Nam</td><td>Có</td></tr></tbody>
-                </table>`}
+            ${renderLeaderCcttLookupResult(item)}
             <div class="info-group" style="margin-top:10px"><div class="info-label">Kết quả có phát sinh nghĩa vụ phí</div><div class="info-value">${(!noData && item.fee > 0) ? `Có (${item.fee.toLocaleString('vi-VN')} VNĐ)` : 'Không'}</div></div>
         </div>
     `;

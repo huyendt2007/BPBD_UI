@@ -803,8 +803,9 @@
                     {
                         title: "Kiểm tra và xử lý hồ sơ",
                         children: [
-                            { title: "Hồ sơ chờ xử lý", url: "kiem_tra_ho_so.html", badge: 7, badgeType: "danger" },
-                            { title: "Hồ sơ đang chờ ký", url: "kiem_tra_ho_so.html?view=dang_xu_ly", badge: 3, badgeType: "warning" },
+                            // Badge tính động theo dữ liệu màn Kiểm tra và xử lý hồ sơ (chỉ hiển thị khi > 0)
+                            { title: "Hồ sơ chờ xử lý", url: "kiem_tra_ho_so.html", badgeKey: "kths_pending", badgeType: "danger" },
+                            { title: "Hồ sơ đang chờ ký", url: "kiem_tra_ho_so.html?view=dang_xu_ly", badgeKey: "kths_signing", badgeType: "warning" },
                             { title: "Hồ sơ đã xử lý", url: "kiem_tra_ho_so.html?view=da_xu_ly" }
                         ]
                     },
@@ -1062,6 +1063,7 @@
         // Page initialization
         window.addEventListener('DOMContentLoaded', () => {
             renderSidebarMenu();
+            loadMenuBadges();
 
             // Handle query parameter to open correct leaf
             const urlParams = new URLSearchParams(window.location.search);
@@ -1138,7 +1140,13 @@
                             leafLink.appendChild(textSpan);
 
                             // Add badge if present
-                            if (leaf.badge) {
+                            if (leaf.badgeKey) {
+                                const badge = document.createElement('span');
+                                badge.className = `menu-badge ${leaf.badgeType || 'danger'}`;
+                                badge.dataset.badgeKey = leaf.badgeKey;
+                                badge.style.display = 'none';
+                                leafLink.appendChild(badge);
+                            } else if (leaf.badge) {
                                 const badge = document.createElement('span');
                                 badge.className = `menu-badge ${leaf.badgeType || 'danger'}`;
                                 badge.innerText = leaf.badge;
@@ -1333,12 +1341,28 @@
             selectLeaf(match.leaf, match.path, match.elementId, url);
         };
 
+        // Badge Left Menu "Hồ sơ chờ xử lý" / "Hồ sơ đang chờ ký": chỉ hiển thị khi > 0, lớn hơn 99 hiển thị "99+"
+        function applyMenuBadges(counts) {
+            if (!counts) return;
+            document.querySelectorAll('.menu-badge[data-badge-key]').forEach(el => {
+                const n = Number(counts[el.dataset.badgeKey] || 0);
+                el.innerText = n > 99 ? '99+' : String(n);
+                el.style.display = n > 0 ? '' : 'none';
+            });
+        }
+        function loadMenuBadges() {
+            try { applyMenuBadges(JSON.parse(localStorage.getItem('kths_menu_badges') || 'null')); } catch (err) { }
+        }
+
         window.addEventListener('message', (event) => {
             const data = event.data || {};
             if (data.type === 'admin:navigate' && data.url) {
                 window.openAdminModule(data.url, data.activeUrl || data.url);
             }
+            // Màn Kiểm tra và xử lý hồ sơ gửi số lượng mới sau khi mở màn hình / sau mỗi thao tác đổi trạng thái hồ sơ
+            if (data.type === 'admin:menuBadges') applyMenuBadges(data.counts);
         });
+        window.addEventListener('storage', (event) => { if (event.key === 'kths_menu_badges') loadMenuBadges(); });
 
         // Select the default first child leaf node on startup
         function selectDefaultLeaf() {

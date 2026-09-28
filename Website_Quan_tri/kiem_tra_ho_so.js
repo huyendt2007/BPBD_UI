@@ -4,8 +4,8 @@
  */
 
 let currentListTab = 'choduyet';
-let currentSortColumn = 'date';
-let currentSortOrder = 'desc';
+let currentSortColumn = null; // null = sắp xếp mặc định của từng danh sách
+let currentSortOrder = 'asc';
 let activeDetailTab = 'nguoidangky'; // Mặc định Tab chi tiết là Người đăng ký & Tham chiếu
 let activeLifecycleNode = null;
 let currentProfile = null; // Hồ sơ đang xem chi tiết
@@ -622,14 +622,14 @@ let mockProfiles = [
         type: 'Đăng ký mới',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Thế chấp',
-        status: 'Duyệt chờ ký',
+        status: 'Chờ ký',
         statusClass: 'badge-info',
         pin: '102938',
         customerId: 'KH-ALPHA',
         receipt: 'BL-991827-01',
         assetType: 'Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)',
         timeline: [
-            { id: 'node-1', title: 'Đăng ký lần đầu', date: '29/06/2026 10:00', status: 'Duyệt chờ ký', active: true }
+            { id: 'node-1', title: 'Đăng ký lần đầu', date: '29/06/2026 10:00', status: 'Chờ ký', active: true }
         ],
         internalLogs: [
             { time: '29/06/2026 10:02', user: 'Cán bộ nghiệp vụ', action: 'Trình ký', comment: 'Đã hoàn tất kiểm tra hồ sơ, trình Lãnh đạo ký duyệt.' }
@@ -643,7 +643,7 @@ let mockProfiles = [
         type: 'Đăng ký thay đổi',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Cầm cố',
-        status: 'Duyệt chờ ký',
+        status: 'Chờ ký',
         statusClass: 'badge-info',
         pin: '291039',
         customerId: 'KH-LENVANNAM',
@@ -651,7 +651,7 @@ let mockProfiles = [
         assetType: 'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '10/05/2026 09:00', status: 'Hoàn thành', active: false },
-            { id: 'node-2', title: 'Đăng ký thay đổi', date: '29/06/2026 11:30', status: 'Duyệt chờ ký', active: true }
+            { id: 'node-2', title: 'Đăng ký thay đổi', date: '29/06/2026 11:30', status: 'Chờ ký', active: true }
         ],
         internalLogs: [
             { time: '29/06/2026 11:35', user: 'Cán bộ nghiệp vụ', action: 'Trình ký', comment: 'Trình ký thay đổi Bên bảo đảm.' }
@@ -708,7 +708,7 @@ let mockProfiles = [
         type: 'Đăng ký thay đổi',
         transactionType: 'Biện pháp bảo đảm',
         subtype: 'Thế chấp',
-        status: 'Duyệt chờ ký',
+        status: 'Chờ ký',
         statusClass: 'badge-info',
         pin: '592010',
         customerId: 'KH-NGUYENVANHAI',
@@ -716,10 +716,78 @@ let mockProfiles = [
         assetType: 'Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung',
         timeline: [
             { id: 'node-1', title: 'Đăng ký lần đầu', date: '01/02/2026 09:00', status: 'Hoàn thành', active: false },
-            { id: 'node-2', title: 'Đăng ký thay đổi', date: '30/06/2026 11:00', status: 'Duyệt chờ ký', active: true }
+            { id: 'node-2', title: 'Đăng ký thay đổi', date: '30/06/2026 11:00', status: 'Chờ ký', active: true }
         ],
         internalLogs: [
             { time: '30/06/2026 11:05', user: 'Cán bộ nghiệp vụ', action: 'Trình ký', comment: 'Trình ký thay đổi thông tin chứng khoán.' }
+        ]
+    },
+    {
+        id: 'GDBD-2026-000851',
+        date: '28/06/2026 10:15',
+        customer: 'Công ty TNHH Hoàng Phát',
+        mortgagee: 'Ngân hàng TMCP Ngoại thương Việt Nam (Vietcombank)',
+        type: 'Đăng ký mới',
+        transactionType: 'Biện pháp bảo đảm',
+        subtype: 'Thế chấp',
+        status: 'Chờ ký',
+        statusClass: 'badge-info',
+        pin: '648201',
+        customerId: 'KH-HOANGPHAT-01',
+        receipt: 'BL-991827-31',
+        assetType: 'Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+        channel: 'Cách thức điện tử',
+        timeline: [
+            { id: 'node-1', title: 'Đăng ký lần đầu', date: '28/06/2026 10:15', status: 'Chờ ký', active: true }
+        ],
+        internalLogs: [
+            { time: '28/06/2026 10:20', user: 'Cán bộ nghiệp vụ', action: 'Trình ký', comment: 'Đã hoàn tất kiểm tra hồ sơ, trình Lãnh đạo ký duyệt.' }
+        ]
+    },
+    {
+        id: 'GDBD-2026-000852',
+        date: '28/06/2026 14:30',
+        customer: 'Ông Vũ Văn Nam',
+        mortgagee: 'Ngân hàng TMCP Đầu tư và Phát triển VN (BIDV)',
+        type: 'Đăng ký thay đổi',
+        transactionType: 'Biện pháp bảo đảm',
+        subtype: 'Cầm cố',
+        status: 'Chờ ký',
+        statusClass: 'badge-info',
+        pin: '749202',
+        customerId: 'KH-NAMVU-02',
+        receipt: 'BL-991827-32',
+        assetType: 'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản',
+        channel: 'Trực tiếp tại quầy',
+        timeline: [
+            { id: 'node-1', title: 'Đăng ký lần đầu', date: '10/01/2026 09:00', status: 'Hoàn thành', active: false },
+            { id: 'node-2', title: 'Đăng ký thay đổi', date: '28/06/2026 14:30', status: 'Chờ ký', active: true }
+        ],
+        internalLogs: [
+            { time: '28/06/2026 14:35', user: 'Cán bộ nghiệp vụ', action: 'Trình ký', comment: 'Trình ký thay đổi Bên bảo đảm.' }
+        ]
+    },
+    {
+        id: 'GDBD-2026-000853',
+        date: '29/06/2026 08:45',
+        customer: 'Bà Hoàng Thị Mai',
+        mortgagee: 'Ngân hàng TMCP Kỹ thương Việt Nam (Techcombank)',
+        type: 'Xóa đăng ký',
+        transactionType: 'Biện pháp bảo đảm',
+        subtype: 'Bảo lưu quyền sở hữu',
+        status: 'Chờ ký',
+        statusClass: 'badge-info',
+        pin: '850303',
+        customerId: 'KH-MAIHOANG-03',
+        receipt: 'BL-991827-33',
+        assetType: 'Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+        channel: 'Cách thức điện tử',
+        timeline: [
+            { id: 'node-1', title: 'Đăng ký lần đầu', date: '15/02/2026 08:30', status: 'Hoàn thành', active: false },
+            { id: 'node-2', title: 'Xóa đăng ký', date: '29/06/2026 08:45', status: 'Chờ ký', active: true }
+        ],
+        internalLogs: [
+            { time: '29/06/2026 08:50', user: 'Cán bộ nghiệp vụ', action: 'Trình ký', comment: 'Trình ký xóa đăng ký biện pháp bảo đảm.' }
         ]
     },
     {
@@ -875,25 +943,41 @@ let mockProfiles = [
     const countByStatus = status => mockProfiles.filter(x => x.status === status
         && (!x.handlingOfficer || x.handlingOfficer === 'Nguyễn Văn Cán Bộ')).length;
 
+    // Hồ sơ trực tuyến (Phiếu đăng ký) phục vụ Tab Chờ duyệt / Duyệt chờ ký: chỉ gồm Loại đăng ký nhóm Phiếu đăng ký,
+    // Nguồn tiếp nhận "Dịch vụ công" hoặc "Trực tuyến" và đủ 7 nhóm Loại tài sản [DM_07]
+    const REG_TYPES = ['Đăng ký mới', 'Đăng ký thay đổi', 'Xóa đăng ký', 'Thông báo xử lý tài sản', 'Thay đổi thông báo xử lý tài sản', 'Xóa thông báo xử lý tài sản'];
+    const REG_ASSET_SAMPLES = [
+        'Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+        'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản',
+        'Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ',
+        'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt',
+        'Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung',
+        'Cây hằng năm, công trình tạm',
+        'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)'
+    ];
+    const CONTRACT_SUBTYPES = ['Hợp đồng cho thuê tài chính', 'Hợp đồng thuê tài sản có thời hạn 1 năm trở lên', 'Hợp đồng ký gửi'];
+    const ONLINE_CHANNELS = ['Cách thức điện tử', 'Dịch vụ công Quốc gia'];
+
     function buildOnlineProfile(seq, status, statusClass, dayOffset) {
         const idx = seq - 1;
-        const type = pick(REQUEST_TYPES, idx);
+        const type = pick(REG_TYPES, idx);
+        const isContract = idx % 5 === 3 && !type.includes('xử lý tài sản');
         const day = 5 + (dayOffset % 20);
         return {
-            id: 'GDBD-2026-000' + (870 + seq),
+            id: 'GDBD-2026-001' + String(seq).padStart(3, '0'), // tránh trùng mã với hồ sơ giấy mẫu
             date: `${pad(day)}/08/2026 ${pad(8 + (idx % 9))}:${pad((idx * 7) % 60)}`,
             customer: pick(SECURED_PARTIES, idx),
             mortgagee: pick(SECURING_PARTIES, idx),
             type,
-            transactionType: 'Biện pháp bảo đảm',
-            subtype: pick(SUBTYPES, idx),
+            transactionType: isContract ? 'Hợp đồng' : 'Biện pháp bảo đảm',
+            subtype: isContract ? pick(CONTRACT_SUBTYPES, idx) : pick(SUBTYPES, idx),
             status,
             statusClass,
             pin: String(100000 + ((idx + 3) * 7919) % 899999),
             customerId: 'KH-2026-' + pad(seq),
             receipt: 'BL-2026-' + (9100 + seq),
-            assetType: pick(ASSET_TYPES, idx),
-            channel: pick(CHANNELS, idx),
+            assetType: pick(REG_ASSET_SAMPLES, idx),
+            channel: pick(ONLINE_CHANNELS, idx),
             handlingOfficer: 'Nguyễn Văn Cán Bộ',
             timeline: [
                 { id: 'node-1', title: type, date: `${pad(day)}/08/2026 ${pad(8 + (idx % 9))}:${pad((idx * 7) % 60)}`, status, active: true }
@@ -942,8 +1026,8 @@ let mockProfiles = [
     }
 
     let seq = 0;
-    // Hồ sơ chờ duyệt
-    for (let i = countByStatus('Chờ duyệt'); i < 15; i++) {
+    // Hồ sơ chờ duyệt (đủ 24 bản ghi để kiểm tra phân trang 20 bản ghi/trang)
+    for (let i = countByStatus('Chờ duyệt'); i < 24; i++) {
         seq++;
         mockProfiles.push(buildOnlineProfile(seq, 'Chờ duyệt', 'badge-warning', i));
     }
@@ -964,7 +1048,7 @@ let mockProfiles = [
 })();
 
 // State variables for pagination
-let pageSize = 10;
+let pageSize = 20; // Mặc định 20 bản ghi/trang theo SRS
 let currentPage = 1;
 let filteredProfiles = []; // Store currently filtered records for pagination paging
 
@@ -1234,22 +1318,15 @@ function ensurePaperDigitizeSamples() {
             ['HS-2026-000134','PG-0134','Thông báo xử lý tài sản','Ngân hàng TMCP Quân đội','Bùi Đức Long',0,'Miễn phí','Biện pháp bảo đảm','Thế chấp'],
             ['HS-2026-000135','PG-0135','Yêu cầu cung cấp bản sao kèm thông báo','Công ty Luật An Việt','Vũ Minh Châu',50000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
             ['HS-2026-000136','PG-0136','Yêu cầu cung cấp thông tin','Ông Phạm Minh Đức','Phạm Minh Đức',30000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
-            ['HS-2026-000137','PG-0137','Yêu cầu cung cấp thông tin','Trường Đại học Kinh tế Quốc dân','Đặng Thu Hà',0,'Miễn phí','Biện pháp bảo đảm','Thế chấp']
+            ['HS-2026-000137','PG-0137','Yêu cầu cung cấp thông tin','Trường Đại học Kinh tế Quốc dân','Đặng Thu Hà',0,'Miễn phí','Biện pháp bảo đảm','Thế chấp'],
+            ['HS-2026-000138','PG-0138','Yêu cầu cung cấp thông tin','Công ty TNHH Thương mại Hoàng Gia','Trần Văn Hòa',30000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
+            ['HS-2026-000139','PG-0139','Yêu cầu cung cấp thông tin','Bà Lê Thị Thanh Hương','Lê Thị Thanh Hương',30000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
+            ['HS-2026-000140','PG-0140','Yêu cầu cung cấp thông tin','Ngân hàng TMCP Quân đội (MB)','Phạm Quang Huy',30000,'Đã thu','Biện pháp bảo đảm','Thế chấp']
         ].map((r, idx) => ({
             id: r[0],
             paper: r[1],
-            date: [
-                '01/08/2026 08:30',
-                '01/08/2026 09:15',
-                '01/08/2026 10:00',
-                '02/08/2026 08:45',
-                '02/08/2026 09:30',
-                '02/08/2026 10:20',
-                '03/08/2026 08:50',
-                '03/08/2026 09:40',
-                '04/08/2026 08:35',
-                '04/08/2026 09:25'
-            ][idx],
+            // Ngày tiếp nhận trong tháng hiện tại (nằm trong khoảng lọc mặc định từ ngày 01 đến ngày hiện tại)
+            date: (() => { const d = new Date(), p = n => String(n).padStart(2, '0'); return `${p((idx % d.getDate()) + 1)}/${p(d.getMonth() + 1)}/${d.getFullYear()} ${p(8 + (idx % 8))}:${p((idx * 17) % 60)}`; })(),
             type: r[2],
             customer: r[3],
             submitter: r[4],
@@ -1268,6 +1345,9 @@ function ensurePaperDigitizeSamples() {
             customerId: `KH-MAU-13${idx + 1}`,
             phone: `090000013${idx + 1}`,
             email: `mau${idx + 1}@example.com`,
+            // Yêu cầu cung cấp thông tin: Tiêu chí tra cứu và Loại khách hàng theo hồ sơ tiếp nhận
+            lookupCriteria: r[2] === 'Yêu cầu cung cấp thông tin' ? ['Số đăng ký', 'Bên bảo đảm', 'Số khung'][idx % 3] : undefined,
+            requesterType: idx % 2 ? 'Khách hàng vãng lai' : 'Có tài khoản trực tuyến',
             copyQuantity: r[2] === 'Yêu cầu cung cấp bản sao' ? 2 : undefined,
             assetType: 'Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)',
             timeline: [{ id: 'node-1', title: 'Hồ sơ giấy chờ nhập liệu', date: '01/08/2026 08:30', status: 'Chờ giải quyết', active: true }],
@@ -1306,6 +1386,318 @@ function formatAssetTypeCell(assetType) {
     return `<td class="asset-type-cell" title="${tooltipText}" style="cursor: help; vertical-align: middle;">${displayLines}</td>`;
 }
 
+// =====================================================================
+// XỬ LÝ PHIẾU ĐĂNG KÝ (SRS 4.3.2.3) - Bộ lọc, Khối lọc động theo Loại tài sản, cột động
+// =====================================================================
+const REG_SERVICE_TYPES = ['Yêu cầu cung cấp bản sao', 'Yêu cầu cung cấp bản sao kèm thông báo', 'Yêu cầu cung cấp thông tin'];
+
+// Danh mục Loại hình đăng ký [DM_04] - chỉ nhóm Phiếu đăng ký
+const REG_TYPE_OPTIONS = [
+    ['Đăng ký mới', 'Đăng ký lần đầu'],
+    ['Đăng ký thay đổi', 'Đăng ký thay đổi'],
+    ['Xóa đăng ký', 'Xóa đăng ký'],
+    ['Thông báo xử lý tài sản', 'Thông báo xử lý tài sản bảo đảm lần đầu'],
+    ['Thay đổi thông báo xử lý tài sản', 'Thay đổi thông báo xử lý tài sản bảo đảm'],
+    ['Xóa thông báo xử lý tài sản', 'Xóa đăng ký thông báo xử lý tài sản bảo đảm']
+];
+
+// Danh mục Loại tài sản bảo đảm [DM_07] và cấu hình Khối lọc động / Cột động tương ứng
+const REG_ASSET_TYPES = [
+    { key: 'vehicle', label: 'Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)', match: /cơ giới đường bộ.*số khung|số khung/i,
+      fields: [['vehicleName', 'Tên phương tiện', 'select'], ['frameNo', 'Số khung'], ['engineNo', 'Số máy'], ['plateNo', 'Biển số']] },
+    { key: 'ship', label: 'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt, đường thủy, đường sắt', match: /tàu cá/i,
+      fields: [['shipName', 'Tên phương tiện, nhãn hiệu'], ['shipOwner', 'Tên/Họ tên chủ phương tiện/Chủ sở hữu'], ['shipRegNo', 'Số đăng ký phương tiện'], ['shipIssuer', 'Cơ quan cấp giấy chứng nhận'], ['shipGrade', 'Cấp phương tiện']] },
+    { key: 'right', label: 'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản', match: /quyền tài sản/i,
+      fields: [['rightName', 'Tên quyền'], ['rightBasis', 'Căn cứ phát sinh quyền']] },
+    { key: 'goods', label: 'Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ', match: /hàng hóa luân chuyển/i,
+      fields: [['goodsKind', 'Hàng hóa luân chuyển / Kho hàng', 'goodsSelect'], ['goodsValue', 'Giá trị hàng hóa/Tên, loại hàng hóa'], ['warehouseAddress', 'Địa chỉ kho hàng', 'warehouse'], ['warehouseNo', 'Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng', 'warehouse']] },
+    { key: 'securities', label: 'Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung', match: /chứng khoán/i,
+      fields: [['vsdcTime', 'Thời điểm đăng ký tại VSDC', 'vsdc']] },
+    { key: 'crop', label: 'Cây hằng năm, công trình tạm', match: /cây hằng năm/i, fields: [['description', 'Mô tả']] },
+    { key: 'other', label: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ, CHỨNG KHOÁN KHÔNG ĐĂNG KÝ TẬP TRUNG...)', match: /động sản khác/i, fields: [['description', 'Mô tả']] }
+];
+const REG_VEHICLE_NAMES = ['Ô tô con', 'Ô tô tải', 'Mô tô', 'Xe gắn máy', 'Xe máy chuyên dùng'];
+
+function getRegAssetConfig(key) { return REG_ASSET_TYPES.find(a => a.key === key) || null; }
+
+function getRegAssetKeys(assetType) {
+    return REG_ASSET_TYPES.filter(a => a.match.test(assetType || '')).map(a => a.key);
+}
+
+// Dữ liệu chi tiết tài sản giả lập theo hồ sơ (phục vụ Khối lọc động và Cột động)
+function getRegAssetDetail(p) {
+    if (p.assetDetail) return p.assetDetail;
+    const n = parseInt(String(p.id).replace(/\D/g, '').slice(-3), 10) || 1;
+    const detail = {
+        vehicleName: REG_VEHICLE_NAMES[n % REG_VEHICLE_NAMES.length],
+        frameNo: 'RLH' + String(100000 + n * 37).slice(-6) + 'VN',
+        engineNo: 'ENG-' + String(5000 + n * 13),
+        plateNo: `30${String.fromCharCode(65 + (n % 6))}-${String(100 + n).slice(-3)}.${String(10 + (n % 90)).padStart(2, '0')}`,
+        shipName: `Tàu cá QN-${9000 + n} - Hyundai Marine`,
+        shipOwner: p.customer,
+        shipRegNo: `QN-${9000 + n}-TS`,
+        shipIssuer: 'Chi cục Thủy sản Quảng Ninh',
+        shipGrade: n % 2 ? 'VR-SB' : 'VR-SI',
+        rightName: 'Quyền đòi nợ phát sinh từ hợp đồng',
+        rightBasis: `Hợp đồng số ${100 + n}/HĐ-2026`,
+        goodsKind: n % 2 ? 'Kho hàng' : 'Hàng hóa luân chuyển',
+        goodsValue: `Hàng tiêu dùng trị giá ${(n % 9 + 1) * 500} triệu đồng`,
+        warehouseAddress: n % 2 ? `Kho số ${n % 7 + 1}, KCN Quang Minh, Hà Nội` : '',
+        warehouseNo: n % 2 ? `KHO-${String(n).padStart(3, '0')}` : '',
+        vsdcTime: `${String(8 + (n % 9)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')} ${String(n % 27 + 1).padStart(2, '0')}/0${n % 9 + 1}/2026`,
+        description: `Mô tả tài sản của hồ sơ ${p.id}`
+    };
+    p.assetDetail = detail;
+    return detail;
+}
+
+// Nguồn tiếp nhận hiển thị trên danh sách Xử lý Phiếu đăng ký: "Dịch vụ công", "Trực tuyến" hoặc "Trực tiếp"
+function getRegSourceLabel(channel) {
+    const v = normalizeReceptionSource(channel);
+    if (v === 'Dịch vụ công Quốc gia') return 'Dịch vụ công';
+    if (v === 'Trực tuyến') return 'Trực tuyến';
+    return v; // Hồ sơ giấy do Cán bộ nhập liệu gửi duyệt ghi nhận "Trực tiếp"
+}
+
+function getRegDefaultDateRange() {
+    const today = new Date();
+    const from = new Date(today.getFullYear(), today.getMonth() - 3, today.getDate());
+    const fmt = d => `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
+    return { from: fmt(from), to: fmt(today) };
+}
+
+// Bộ lọc tìm kiếm MH01 - Danh sách Phiếu đăng ký (dùng chung cho các Tab trạng thái của nhóm Phiếu đăng ký)
+function renderRegistrationFilterPanel(container, statusFilterHtml) {
+    const range = getRegDefaultDateRange();
+    container.innerHTML = `
+        <div class="grid-4-cols">
+            <div class="form-group" style="grid-column: span 2;">
+                <label class="form-label">Tìm kiếm</label>
+                <input type="text" class="form-control" id="filter-reg-keyword" placeholder="Nhập số đăng ký, mã PIN, tên bên bảo đảm..." autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Mã khách hàng</label>
+                <input type="text" class="form-control" id="filter-customer-id" placeholder="Nhập mã khách hàng..." autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Nguồn tiếp nhận</label>
+                <select class="form-select" id="filter-nguon-tiep-nhan">
+                    <option value="">Tất cả</option>
+                    <option value="Dịch vụ công">Dịch vụ công</option>
+                    <option value="Trực tuyến">Trực tuyến</option>
+                    <option value="Trực tiếp">Trực tiếp</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Loại đăng ký</label>
+                <select class="form-select" id="filter-loaidangky">
+                    <option value="">Tất cả</option>
+                    ${REG_TYPE_OPTIONS.map(o => `<option value="${o[0]}">${o[1]}</option>`).join('')}
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Loại hình giao dịch</label>
+                <select class="form-select" id="cb-loaihinh" onchange="updateSubTypes()">
+                    <option value="">Tất cả</option>
+                    <option value="Biện pháp bảo đảm">Biện pháp bảo đảm</option>
+                    <option value="Hợp đồng">Hợp đồng</option>
+                    <option value="Thông báo xử lý tài sản">Thông báo xử lý tài sản</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Loại biện pháp / Hợp đồng</label>
+                <select class="form-select" id="cb-loaibienphap"><option value="">Tất cả</option></select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Loại tài sản</label>
+                <select class="form-select" id="filter-loaitaisan" onchange="onRegAssetTypeChange()">
+                    <option value="">Tất cả</option>
+                    ${REG_ASSET_TYPES.map(a => `<option value="${a.key}">${a.label}</option>`).join('')}
+                </select>
+            </div>
+            ${statusFilterHtml || ''}
+            <div class="form-group">
+                <label class="form-label">Từ ngày</label>
+                <div class="date-filter-wrap">
+                    <input type="text" class="form-control" id="filter-tungay" placeholder="dd/mm/yyyy" value="${range.from}">
+                    <i class="fa-regular fa-calendar-days"></i>
+                </div>
+                <div id="filter-date-error" style="display:none;color:#DC2626;font-size:12px;margin-top:4px">Từ ngày không được lớn hơn Đến ngày</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Đến ngày</label>
+                <div class="date-filter-wrap">
+                    <input type="text" class="form-control" id="filter-denngay" placeholder="dd/mm/yyyy" value="${range.to}">
+                    <i class="fa-regular fa-calendar-days"></i>
+                </div>
+            </div>
+        </div>
+        <div id="reg-dynamic-filter" style="display:none;margin-top:6px;padding:12px 14px;border:1px dashed var(--border-color);border-radius:6px;background:#F8FAFC">
+            <div style="font-weight:700;font-size:13px;color:var(--primary-color);margin-bottom:8px"><i class="fa-solid fa-sliders"></i> Khối lọc động theo Loại tài sản</div>
+            <div class="grid-4-cols" id="reg-dynamic-filter-fields"></div>
+        </div>
+        <div style="text-align: right; margin-top: 10px;">
+            <button class="btn btn-outline-secondary" onclick="resetFilters()" style="margin-right: 8px;"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+            <button class="btn btn-primary" onclick="searchList()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+        </div>
+    `;
+    updateSubTypes();
+    restoreRegListState();
+}
+
+// Giữ nguyên bộ lọc tìm kiếm và trang dữ liệu khi Đóng màn Xem chi tiết (MH02) quay lại danh sách
+const REG_FILTER_IDS = ['filter-reg-keyword', 'filter-customer-id', 'filter-nguon-tiep-nhan', 'filter-loaidangky', 'cb-loaihinh', 'cb-loaibienphap', 'filter-loaitaisan', 'filter-status-xu-ly', 'filter-tungay', 'filter-denngay'];
+
+// Tab Hồ sơ chờ nhập liệu và Tab Hồ sơ Bị trả lại dùng bố cục MH01 - Danh sách hồ sơ chờ nhập liệu
+function isRegInputLayout() { return ['chonhaplieu', 'bitralai'].includes(currentListTab); }
+
+function saveRegListState() {
+    if (isRegInputLayout() || !document.getElementById('filter-reg-keyword')) return;
+    const values = {};
+    REG_FILTER_IDS.forEach(id => { const el = document.getElementById(id); if (el) values[id] = el.value; });
+    document.querySelectorAll('[id^="dyn-"]').forEach(el => { values[el.id] = el.value; });
+    sessionStorage.setItem('regListState', JSON.stringify({ tab: currentListTab, values, page: currentPage, sortColumn: currentSortColumn, sortOrder: currentSortOrder }));
+}
+
+function restoreRegListState() {
+    let state = null;
+    try { state = JSON.parse(sessionStorage.getItem('regListState') || 'null'); } catch (err) { state = null; }
+    sessionStorage.removeItem('regListState');
+    if (!state || state.tab !== currentListTab) return;
+    const set = (id, v) => { const el = document.getElementById(id); if (el && v !== undefined) el.value = v; };
+    set('cb-loaihinh', state.values['cb-loaihinh']);
+    updateSubTypes();
+    REG_FILTER_IDS.forEach(id => set(id, state.values[id]));
+    onRegAssetTypeChange();
+    set('dyn-goodsKind', state.values['dyn-goodsKind']);
+    onRegGoodsKindChange();
+    Object.keys(state.values).filter(k => k.startsWith('dyn-')).forEach(k => set(k, state.values[k]));
+    currentSortColumn = state.sortColumn;
+    currentSortOrder = state.sortOrder || 'asc';
+    regRestoredPage = state.page || 1;
+}
+let regRestoredPage = null;
+
+// Chọn Loại tài sản: hiển thị/ẩn Khối lọc động và Cột động (TH1, TH2, TH3)
+function onRegAssetTypeChange() {
+    const key = document.getElementById('filter-loaitaisan')?.value || '';
+    const wrap = document.getElementById('reg-dynamic-filter');
+    const fieldsEl = document.getElementById('reg-dynamic-filter-fields');
+    if (!wrap || !fieldsEl) return;
+    const cfg = getRegAssetConfig(key);
+    if (!cfg) {
+        wrap.style.display = 'none';
+        fieldsEl.innerHTML = '';
+        return;
+    }
+    fieldsEl.innerHTML = cfg.fields.map(([id, label, kind]) => {
+        const hide = kind === 'warehouse' ? 'style="display:none"' : '';
+        if (kind === 'select') return `<div class="form-group"><label class="form-label">${label}</label><select class="form-select" id="dyn-${id}"><option value="">Trống</option>${REG_VEHICLE_NAMES.map(v => `<option value="${v}">${v}</option>`).join('')}</select></div>`;
+        if (kind === 'goodsSelect') return `<div class="form-group"><label class="form-label">${label}</label><select class="form-select" id="dyn-${id}" onchange="onRegGoodsKindChange()"><option value="">Tất cả</option><option value="Hàng hóa luân chuyển">Hàng hóa luân chuyển</option><option value="Kho hàng">Kho hàng</option></select></div>`;
+        if (kind === 'vsdc') return `<div class="form-group"><label class="form-label">${label}</label><input type="text" class="form-control" id="dyn-${id}" placeholder="HH:mm dd/MM/yyyy" autocomplete="off"></div>`;
+        return `<div class="form-group dyn-${kind || 'text'}" ${hide}><label class="form-label">${label}</label><input type="text" class="form-control" id="dyn-${id}" autocomplete="off"></div>`;
+    }).join('');
+    wrap.style.display = 'block';
+}
+
+// Địa chỉ kho hàng / Số hiệu kho hàng chỉ hiển thị khi chọn "Kho hàng"
+function onRegGoodsKindChange() {
+    const isWarehouse = document.getElementById('dyn-goodsKind')?.value === 'Kho hàng';
+    document.querySelectorAll('#reg-dynamic-filter-fields .dyn-warehouse').forEach(el => {
+        el.style.display = isWarehouse ? '' : 'none';
+        if (!isWarehouse) { const inp = el.querySelector('input'); if (inp) inp.value = ''; }
+    });
+}
+
+// Các cột động đang hiển thị (đúng các trường của Khối lọc động đang hiển thị)
+function getRegDynamicColumns() {
+    const cfg = getRegAssetConfig(document.getElementById('filter-loaitaisan')?.value || '');
+    if (!cfg) return [];
+    const isWarehouse = document.getElementById('dyn-goodsKind')?.value === 'Kho hàng';
+    return cfg.fields.filter(f => f[2] !== 'warehouse' || isWarehouse).map(f => ({ id: f[0], label: f[1] }));
+}
+
+// Chuyển hồ sơ danh sách sang dữ liệu Popup Trình ký / Từ chối
+function toPdkPopupRecord(p) {
+    const typeLabel = (REG_TYPE_OPTIONS.find(o => o[0] === p.type) || [p.type, p.type])[1];
+    return {
+        ref: p,
+        id: p.id,
+        registrationNo: p.id,
+        type: typeLabel,
+        transactionType: (p.type || '').includes('xử lý tài sản') ? 'Thông báo xử lý tài sản' : p.transactionType,
+        subtype: p.subtype,
+        requester: p.requestor || p.customer,
+        grantor: p.customer,
+        securedParty: p.mortgagee,
+        receivedAt: p.date,
+        submitter: p.requestor || p.customer,
+        pin: ['Đăng ký mới', 'Đăng ký lần đầu'].includes(p.type) ? p.pin : '',
+        source: getRegSourceLabel(p.channel),
+        assetType: p.assetType
+    };
+}
+
+function applyPdkPopupResult(records, message) {
+    records.forEach(r => {
+        const p = r.ref || findProfileForAction(r.id);
+        if (!p) return;
+        ['status', 'statusClass', 'pendingAction', 'rejectReason', 'rejectLeader', 'rejectedBy', 'rejectedAt', 'rejectDraftFile', 'signLeader', 'submittedBy', 'submittedAt', 'draftLocked', 'certificateDraftFile']
+            .forEach(k => { if (r[k] !== undefined) p[k] = r[k]; });
+        p.internalLogs = p.internalLogs || [];
+        p.internalLogs.unshift({ time: 'Vừa xong', user: 'Nguyễn Văn Cán Bộ', action: r.pendingAction, comment: r.pendingAction === 'Từ chối' ? `Lý do từ chối: ${r.rejectReason}. Lãnh đạo ký: ${r.rejectLeader}` : `Trình Lãnh đạo ký: ${r.signLeader}` });
+        persistProfileForAction(p);
+    });
+    saveProfiles();
+    showListToast(records.length > 1 ? `${message} (${records.length} hồ sơ).` : message + '.', 'success');
+    updateTabBadges();
+    renderTable();
+}
+
+// Duyệt / Trình ký / Từ chối trên thanh công cụ (thao tác lô)
+function getSelectedRegistrationProfiles() {
+    return getSelectedRows().map(id => findProfileForAction(id)).filter(Boolean);
+}
+
+function approveRegistrationProfiles(list) {
+    const at = new Date().toLocaleString('vi-VN');
+    list.forEach(p => {
+        p.previousStatus = p.status;
+        p.status = 'Duyệt chờ ký';
+        p.statusClass = 'badge-info';
+        p.approvedBy = 'Nguyễn Văn Cán Bộ';
+        p.approvedAt = at;
+        p.internalLogs = p.internalLogs || [];
+        p.internalLogs.unshift({ time: 'Vừa xong', user: 'Nguyễn Văn Cán Bộ', action: 'Duyệt', comment: `Chuyển trạng thái ${p.previousStatus} → Duyệt chờ ký.` });
+        persistProfileForAction(p);
+    });
+    saveProfiles();
+    updateTabBadges();
+    renderTable();
+}
+
+function openRegistrationSignToolbar() {
+    const list = getSelectedRegistrationProfiles();
+    if (!list.length) { showListToast('Vui lòng chọn ít nhất một hồ sơ để thực hiện thao tác.', 'error'); return; } // [MSG-ERR-DK-008]
+    PdkPopups.openSign(list.map(toPdkPopupRecord), { mode: 'multi', onDone: applyPdkPopupResult });
+}
+
+function openRegistrationRejectToolbar() {
+    const list = getSelectedRegistrationProfiles();
+    if (!list.length) { showListToast('Vui lòng chọn ít nhất một hồ sơ để thực hiện thao tác.', 'error'); return; } // [MSG-ERR-DK-008]
+    PdkPopups.openReject(list.map(toPdkPopupRecord), { mode: 'multi', onDone: applyPdkPopupResult });
+}
+
+function openRegistrationSignSingle(id) {
+    const p = findProfileForAction(id);
+    if (p) PdkPopups.openSign([toPdkPopupRecord(p)], { mode: 'single', onDone: applyPdkPopupResult });
+}
+
+function openRegistrationRejectSingle(id) {
+    const p = findProfileForAction(id);
+    if (p) PdkPopups.openReject([toPdkPopupRecord(p)], { mode: 'single', onDone: applyPdkPopupResult });
+}
+
 // Khởi tạo bảng dữ liệu ban đầu kết hợp lọc & phân trang
 function renderTable(resetPage = false) {
     if (resetPage) {
@@ -1321,7 +1713,7 @@ function renderTable(resetPage = false) {
     else if (currentListTab === 'da_xu_ly') targetStatuses = ['Hoàn thành', 'Bị từ chối'];
 
     // 3. Filter the complete mock profiles array plus custom localStorage data
-    const currentVersion = 'v8';
+    const currentVersion = 'v11';
     const savedVersion = localStorage.getItem('mock_profiles_version');
     if (savedVersion !== currentVersion) {
         localStorage.removeItem('custom_mock_profiles');
@@ -1355,7 +1747,7 @@ function renderTable(resetPage = false) {
         allProfiles = [...customList, ...allProfiles];
     }
 
-    if (currentListTab === 'chonhaplieu') {
+    if (isRegInputLayout()) {
         const filterMaHoSo = document.getElementById('filter-ma-ho-so')?.value.toLowerCase().trim() || '';
         const filterSoDon = document.getElementById('filter-so-don-giay')?.value.toLowerCase().trim() || '';
         const filterNguoiYeuCau = document.getElementById('filter-nguoi-yeu-cau')?.value.toLowerCase().trim() || '';
@@ -1369,6 +1761,9 @@ function renderTable(resetPage = false) {
         filteredProfiles = allProfiles.filter(p => {
             if (p.handlingOfficer && p.handlingOfficer !== "Nguyễn Văn Cán Bộ") return false;
             if (!targetStatuses.includes(p.status)) return false;
+            // Tab Hồ sơ Bị trả lại - nhóm Phiếu đăng ký: không gồm hồ sơ Yêu cầu cung cấp thông tin/bản sao
+            // Danh sách chờ nhập liệu / bị trả lại nhóm Phiếu đăng ký: không gồm hồ sơ Yêu cầu cung cấp thông tin/bản sao
+            if (REG_SERVICE_TYPES.includes(p.type) || (p.type || '').includes('Yêu cầu cung cấp')) return false;
 
             if (filterMaHoSo && !p.id.toLowerCase().includes(filterMaHoSo)) return false;
             if (filterSoDon && !(p.paper || '').toLowerCase().includes(filterSoDon)) return false;
@@ -1409,40 +1804,46 @@ function renderTable(resetPage = false) {
             filteredProfiles.sort((a, b) => parseDateString(b.date) - parseDateString(a.date));
         }
     } else {
-        const filterSoDangKy = document.getElementById('filter-so-dang-ky')?.value.toLowerCase().trim() || '';
-        const filterTenBbd = document.getElementById('filter-ten-bbd')?.value.toLowerCase().trim() || '';
-        const filterTenBnbd = document.getElementById('filter-ten-bnbd')?.value.toLowerCase().trim() || '';
-        const filterCustomerId = document.getElementById('filter-customer-id')?.value.toLowerCase().trim() || document.getElementById('filter-makh')?.value.toLowerCase().trim() || '';
-        const filterBienLai = document.getElementById('filter-so-bien-lai')?.value.toLowerCase().trim() || '';
+        const keyword = (document.getElementById('filter-reg-keyword')?.value || '').toLowerCase().trim();
+        const filterCustomerId = (document.getElementById('filter-customer-id')?.value || '').toLowerCase().trim();
         const filterNguonTiepNhan = document.getElementById('filter-nguon-tiep-nhan')?.value || '';
-        const filterCanBoXuLy = document.getElementById('filter-can-bo-xu-ly')?.value || '';
         const filterLoaidangky = document.getElementById('filter-loaidangky')?.value || '';
         const filterLoaihinh = document.getElementById('cb-loaihinh')?.value || '';
         const filterSubtype = document.getElementById('cb-loaibienphap')?.value || '';
-        const filterLoaitaisan = document.getElementById('filter-loaitaisan')?.value || '';
+        const filterAssetKey = document.getElementById('filter-loaitaisan')?.value || '';
         const filterTungay = document.getElementById('filter-tungay')?.value || '';
         const filterDenngay = document.getElementById('filter-denngay')?.value || '';
+        const dynamicFilters = getRegDynamicColumns()
+            .map(c => ({ id: c.id, value: (document.getElementById('dyn-' + c.id)?.value || '').toLowerCase().trim() }))
+            .filter(x => x.value);
 
         filteredProfiles = allProfiles.filter(p => {
             if (p.handlingOfficer && p.handlingOfficer !== "Nguyễn Văn Cán Bộ") return false;
             if (!targetStatuses.includes(p.status)) return false;
-            
+            // Chỉ lọc trong phạm vi nhóm Phiếu đăng ký
+            if (REG_SERVICE_TYPES.includes(p.type)) return false;
+
             if (currentListTab === 'da_xu_ly') {
                 const filterStatusVal = document.getElementById('filter-status-xu-ly')?.value;
                 if (filterStatusVal && p.status !== filterStatusVal) return false;
             }
 
-            if (filterSoDangKy && !p.id.toLowerCase().includes(filterSoDangKy)) return false;
-            if (filterTenBbd && !p.customer.toLowerCase().includes(filterTenBbd)) return false;
-            if (filterTenBnbd && !p.mortgagee.toLowerCase().includes(filterTenBnbd)) return false;
-            if (filterCustomerId && !p.customerId?.toLowerCase().includes(filterCustomerId)) return false;
-            if (filterBienLai && !(p.receipt || '').toLowerCase().includes(filterBienLai)) return false;
-            if (filterNguonTiepNhan && !matchReceptionSource(p.channel, filterNguonTiepNhan)) return false;
-            if (filterCanBoXuLy && (p.handlingOfficer || '') !== filterCanBoXuLy) return false;
+            // Tìm kiếm gần đúng theo Số đăng ký, Mã PIN, Tên bên bảo đảm hoặc Tên bên nhận bảo đảm
+            if (keyword && ![p.id, p.pin, p.customer, p.mortgagee].some(v => (v || '').toLowerCase().includes(keyword))) return false;
+            if (filterCustomerId && !(p.customerId || '').toLowerCase().includes(filterCustomerId)) return false;
+            if (filterNguonTiepNhan && getRegSourceLabel(p.channel) !== filterNguonTiepNhan) return false;
             if (filterLoaidangky && p.type !== filterLoaidangky) return false;
-            if (filterLoaihinh && p.transactionType !== filterLoaihinh) return false;
+            if (filterLoaihinh === 'Thông báo xử lý tài sản') {
+                if (!(p.type || '').includes('xử lý tài sản')) return false;
+            } else if (filterLoaihinh) {
+                if ((p.type || '').includes('xử lý tài sản') || p.transactionType !== filterLoaihinh) return false;
+            }
             if (filterSubtype && p.subtype !== filterSubtype) return false;
-            if (filterLoaitaisan && p.assetType !== filterLoaitaisan) return false;
+            if (filterAssetKey && !getRegAssetKeys(p.assetType).includes(filterAssetKey)) return false;
+            if (dynamicFilters.length) {
+                const detail = getRegAssetDetail(p);
+                if (!dynamicFilters.every(f => String(detail[f.id] || '').toLowerCase().includes(f.value))) return false;
+            }
 
             if (filterTungay) {
                 const rowDate = parseDateString(p.date);
@@ -1460,28 +1861,20 @@ function renderTable(resetPage = false) {
             return true;
         });
 
-        // Sắp xếp động qua click header cột
-        if (currentSortColumn === 'date') {
-            filteredProfiles.sort((a, b) => {
-                const diff = parseDateString(b.date) - parseDateString(a.date);
-                return currentSortOrder === 'desc' ? diff : -diff;
-            });
-        } else if (currentSortColumn === 'customer') {
-            filteredProfiles.sort((a, b) => {
-                const diff = a.customer.localeCompare(b.customer, 'vi');
-                return currentSortOrder === 'desc' ? -diff : diff;
-            });
+        // Sắp xếp: mặc định theo Thời điểm đăng ký tăng dần; cho phép sắp xếp 03 cột Thời điểm đăng ký, Tên bên bảo đảm, Tên bên nhận bảo đảm
+        const dir = currentSortOrder === 'desc' ? -1 : 1;
+        if (currentSortColumn === 'customer') {
+            filteredProfiles.sort((a, b) => dir * (a.customer || '').localeCompare(b.customer || '', 'vi'));
         } else if (currentSortColumn === 'mortgagee') {
-            filteredProfiles.sort((a, b) => {
-                const diff = a.mortgagee.localeCompare(b.mortgagee, 'vi');
-                return currentSortOrder === 'desc' ? -diff : diff;
-            });
+            filteredProfiles.sort((a, b) => dir * (a.mortgagee || '').localeCompare(b.mortgagee || '', 'vi'));
+        } else if (currentSortColumn === 'date') {
+            filteredProfiles.sort((a, b) => dir * (parseDateString(a.date) - parseDateString(b.date)));
         } else {
-            filteredProfiles.sort((a, b) => parseDateString(b.date) - parseDateString(a.date));
+            filteredProfiles.sort((a, b) => parseDateString(a.date) - parseDateString(b.date));
         }
     }
-
     // 5. Render sliced page rows
+    if (regRestoredPage) { currentPage = regRestoredPage; regRestoredPage = null; }
     executeRender();
 }
 
@@ -1490,7 +1883,7 @@ function executeRender() {
     tbody.innerHTML = '';
 
     const thead = document.getElementById('table-headers-container');
-    if (currentListTab === 'chonhaplieu') {
+    if (isRegInputLayout()) {
         thead.innerHTML = `
             <tr>
                 <th style="width: 50px; text-align: center;">STT</th>
@@ -1508,8 +1901,9 @@ function executeRender() {
             </tr>
         `;
     } else {
+        const isReadOnlyView = (currentListTab === 'dang_xu_ly' || currentListTab === 'da_xu_ly');
         let actionsMinWidth = '130px';
-        if (currentListTab === 'dang_xu_ly' || currentListTab === 'da_xu_ly') {
+        if (isReadOnlyView) {
             actionsMinWidth = '80px';
         } else if (currentListTab === 'bitralai') {
             actionsMinWidth = '110px';
@@ -1519,7 +1913,7 @@ function executeRender() {
 
         thead.innerHTML = `
             <tr>
-                <th style="width: 40px; text-align: center;"><input type="checkbox" id="checkAll" onclick="toggleCheckAll(this)"></th>
+                ${isReadOnlyView ? '' : '<th style="width: 40px; text-align: center;"><input type="checkbox" id="checkAll" onclick="toggleCheckAll(this)"></th>'}
                 <th style="width: 50px; text-align: center;">STT</th>
                 <th style="cursor: pointer; width: 140px;" onclick="toggleSort('date')">Thời điểm đăng ký ${getSortIcon('date')}</th>
                 <th style="width: 120px;">Số đăng ký</th>
@@ -1530,6 +1924,7 @@ function executeRender() {
                 <th style="width: 110px;">Loại hình GD</th>
                 <th style="width: 140px;">Loại biện pháp / Hợp đồng</th>
                 <th style="width: 250px;">Loại tài sản</th>
+                ${getRegDynamicColumns().map(c => `<th style="width: 160px; background:#EFF6FF;">${c.label}</th>`).join('')}
                 <th style="width: 120px;">Mã khách hàng</th>
                 <th style="width: 110px;">Số biên lai</th>
                 <th style="width: 110px;">Trạng thái</th>
@@ -1541,11 +1936,14 @@ function executeRender() {
         `;
     }
 
+    const isReadOnlyView = (currentListTab === 'dang_xu_ly' || currentListTab === 'da_xu_ly');
     const totalCount = filteredProfiles.length;
-    const colSpanCount = currentListTab === 'chonhaplieu' ? 12 : 18;
+    const dynamicCols = isRegInputLayout() ? [] : getRegDynamicColumns();
+    const colSpanCount = isRegInputLayout() ? 12 : (isReadOnlyView ? 17 + dynamicCols.length : 18 + dynamicCols.length);
 
     if (totalCount === 0) {
-        tbody.innerHTML = `<tr><td colspan="${colSpanCount}" style="text-align: center; padding: 30px; color: var(--text-muted);"><i>Không có hồ sơ nào ở trạng thái này hoặc phù hợp với điều kiện tìm kiếm.</i></td></tr>`;
+        // [MSG-INF-SYS-001]
+        tbody.innerHTML = `<tr><td colspan="${colSpanCount}" style="text-align: center; padding: 30px; color: var(--text-muted);"><i>Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</i></td></tr>`;
         applyPagination([], executeRender);
         return;
     }
@@ -1555,7 +1953,8 @@ function executeRender() {
     const startIndex = paginationStartIndex;
 
     pageData.forEach((row, index) => {
-        if (currentListTab === 'chonhaplieu') {
+        if (isRegInputLayout()) {
+            const isReturnedTab = currentListTab === 'bitralai';
             const feeText = row.paymentMethod === 'mien_phi' || Number(row.amount || 0) === 0 ? 'Miễn phí' : Number(row.amount || 0).toLocaleString('vi-VN') + ' VND';
             const feeStatus = row.paymentStatus || (row.paymentMethod === 'mien_phi' ? 'Miễn phí' : 'Đã thu');
             const feeBadge = feeStatus === 'Miễn phí' ? 'badge-info' : 'badge-success';
@@ -1564,7 +1963,7 @@ function executeRender() {
                 : row.type;
 
             tbody.innerHTML += `
-                <tr style="cursor: pointer;" onclick="openPaperReadonly('${row.id}')">
+                <tr style="cursor: pointer;" onclick="${isReturnedTab ? `openDetail('${row.id}')` : `openPaperReadonly('${row.id}')`}">
                     <td>${startIndex + index + 1}</td>
                     <td><span class="action-link" onclick="event.stopPropagation(); openPaperReadonly('${row.id}')"><b>${row.id}</b></span></td>
                     <td><code>${row.paper || '-'}</code></td>
@@ -1574,10 +1973,12 @@ function executeRender() {
                     <td>${row.date}</td>
                     <td>${feeText}</td>
                     <td><span class="badge ${feeBadge}">${feeStatus}</span></td>
-                    <td><span class="badge badge-warning">Chờ giải quyết</span></td>
+                    <td><span class="badge ${isReturnedTab ? 'badge-danger' : 'badge-warning'}">${isReturnedTab ? 'Bị trả lại' : 'Chờ giải quyết'}</span></td>
                     <td>${row.officer || '-'}</td>
                     <td style="text-align: center; white-space: nowrap;" onclick="event.stopPropagation()">
-                        <button class="icon-btn edit" title="Tạo hồ sơ" onclick="startDigitize('${row.id}')"><i class="fa-solid fa-file-circle-plus"></i></button>
+                        ${isReturnedTab
+                            ? `<button class="icon-btn edit" title="Cập nhật" onclick="startDigitize('${row.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`
+                            : `<button class="icon-btn edit" title="Tạo hồ sơ" onclick="startDigitize('${row.id}')"><i class="fa-solid fa-file-circle-plus"></i></button>`}
                         <button class="icon-btn reject" title="Từ chối" onclick="openRejectSingle('${row.id}')"><i class="fa fa-times"></i></button>
                     </td>
                 </tr>
@@ -1585,25 +1986,18 @@ function executeRender() {
         } else {
             let actionsHtml = '';
 
-            if (currentListTab === 'dang_xu_ly' || currentListTab === 'da_xu_ly') {
-                actionsHtml = '';
+            if (isReadOnlyView) {
+                actionsHtml = `<button class="icon-btn view" title="Xem chi tiết" onclick="event.stopPropagation(); openDetail('${row.id}')"><i class="fa-solid fa-eye"></i></button>`;
             } else if (currentListTab === 'choduyet') {
-                const btnApprove = `<button class="icon-btn approve" title="Duyệt hồ sơ" onclick="event.stopPropagation(); approveDossierSingle('${row.id}')"><i class="fa fa-check"></i></button>`;
-                const btnSign = `<button class="icon-btn sign" title="Trình ký" onclick="event.stopPropagation(); submitForSignatureSingle('${row.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
-                const btnReject = `<button class="icon-btn reject" title="Từ chối hồ sơ" onclick="event.stopPropagation(); openRejectSingle('${row.id}')"><i class="fa fa-times"></i></button>`;
-                
-                const isOfficerInput = (row.channel !== 'Cách thức điện tử');
-                let btnEdit = '';
-                if (isOfficerInput) {
-                    btnEdit = `<button class="icon-btn edit" title="Cập nhật" onclick="event.stopPropagation(); startDigitize('${row.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
-                } else {
-                    btnEdit = `<button class="icon-btn edit" title="Hồ sơ từ nguồn Khách hàng không được cập nhật" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-pen-to-square"></i></button>`;
-                }
-                actionsHtml = `${btnEdit}${btnApprove}${btnSign}${btnReject}`;
+                // Thao tác trên dòng: Duyệt, Trình ký, Từ chối
+                const btnApprove = `<button class="icon-btn approve" title="Duyệt" onclick="event.stopPropagation(); approveDossierSingle('${row.id}')"><i class="fa fa-check"></i></button>`;
+                const btnSign = `<button class="icon-btn sign" title="Trình ký" onclick="event.stopPropagation(); openRegistrationSignSingle('${row.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
+                const btnReject = `<button class="icon-btn reject" title="Từ chối" onclick="event.stopPropagation(); openRegistrationRejectSingle('${row.id}')"><i class="fa fa-times"></i></button>`;
+                actionsHtml = `${btnApprove}${btnSign}${btnReject}`;
             } else if (currentListTab === 'duyet-choky') {
-                const btnSign = `<button class="icon-btn sign" title="Trình ký" onclick="event.stopPropagation(); submitForSignatureSingle('${row.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
+                const btnSign = `<button class="icon-btn sign" title="Trình ký" onclick="event.stopPropagation(); openRegistrationSignSingle('${row.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
                 const btnCancelApprove = `<button class="icon-btn cancel-approve" title="Hủy duyệt" onclick="event.stopPropagation(); cancelApprovalSingle('${row.id}')"><i class="fa-solid fa-rotate-left"></i></button>`;
-                const btnReject = `<button class="icon-btn reject" title="Từ chối hồ sơ" onclick="event.stopPropagation(); openRejectSingle('${row.id}')"><i class="fa fa-times"></i></button>`;
+                const btnReject = `<button class="icon-btn reject" title="Từ chối" onclick="event.stopPropagation(); openRegistrationRejectSingle('${row.id}')"><i class="fa fa-times"></i></button>`;
                 actionsHtml = `${btnSign}${btnCancelApprove}${btnReject}`;
             } else if (currentListTab === 'bitralai') {
                 const btnEdit = `<button class="icon-btn edit" title="Cập nhật thông tin" onclick="event.stopPropagation(); startDigitize('${row.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
@@ -1615,7 +2009,7 @@ function executeRender() {
 
             tbody.innerHTML += `
                 <tr style="cursor: pointer;" onclick="openDetail('${row.id}')">
-                    <td onclick="event.stopPropagation()"><input type="checkbox" class="row-checkbox" value="${row.id}"></td>
+                    ${isReadOnlyView ? '' : `<td onclick="event.stopPropagation()"><input type="checkbox" class="row-checkbox" value="${row.id}"></td>`}
                     <td>${startIndex + index + 1}</td>
                     <td>${row.date}</td>
                     <td><span class="action-link" onclick="event.stopPropagation(); openDetail('${row.id}')">${row.id}</span></td>
@@ -1626,11 +2020,12 @@ function executeRender() {
                     <td>${row.transactionType}</td>
                     <td>${row.subtype}</td>
                     ${formatAssetTypeCell(row.assetType)}
+                    ${dynamicCols.map(c => `<td style="background:#F8FBFF">${getRegAssetDetail(row)[c.id] || '-'}</td>`).join('')}
                     <td><code>${row.customerId || '-'}</code></td>
                     <td><code>${row.receipt || '-'}</code></td>
                     <td><span class="badge ${row.statusClass}">${row.status}</span></td>
                     <td>${row.requestor || row.customer}</td>
-                    <td>${normalizeReceptionSource(row.channel)}</td>
+                    <td>${getRegSourceLabel(row.channel)}</td>
                     <td>${row.handlingOfficer || '-'}</td>
                     <td style="text-align: center; white-space: nowrap;" onclick="event.stopPropagation()">
                         ${actionsHtml}
@@ -1749,7 +2144,7 @@ function renderFilterPanel() {
     const defFromDate = `01/${month}/${year}`;
     const defToDate = `${String(today.getDate()).padStart(2, '0')}/${month}/${year}`;
 
-    if (currentListTab === 'chonhaplieu') {
+    if (isRegInputLayout()) {
         container.innerHTML = `
             <div class="grid-4-cols">
                 <div class="form-group">
@@ -1828,111 +2223,7 @@ function renderFilterPanel() {
             `;
         }
 
-        container.innerHTML = `
-            <div class="grid-4-cols">
-                <div class="form-group">
-                    <label class="form-label">Số đăng ký</label>
-                    <input type="text" class="form-control" id="filter-so-dang-ky" placeholder="Nhập số đăng ký..." autocomplete="off">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Tên bên bảo đảm</label>
-                    <input type="text" class="form-control" id="filter-ten-bbd" placeholder="Nhập tên bên bảo đảm..." autocomplete="off">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Tên bên nhận bảo đảm</label>
-                    <input type="text" class="form-control" id="filter-ten-bnbd" placeholder="Nhập tên bên nhận bảo đảm..." autocomplete="off">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Mã khách hàng</label>
-                    <input type="text" class="form-control" id="filter-customer-id" placeholder="Nhập mã khách hàng..." autocomplete="off">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Số biên lai</label>
-                    <input type="text" class="form-control" id="filter-so-bien-lai" placeholder="Nhập số biên lai..." autocomplete="off">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Nguồn tiếp nhận</label>
-                    <select class="form-select" id="filter-nguon-tiep-nhan">
-                        <option value="">Tất cả</option>
-                        <option value="Trực tuyến">Trực tuyến</option>
-                        <option value="Trực tiếp">Trực tiếp</option>
-                        <option value="Dịch vụ công Quốc gia">Dịch vụ công Quốc gia</option>
-                        <option value="Bưu chính">Bưu chính</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Cán bộ xử lý</label>
-                    <select class="form-select" id="filter-can-bo-xu-ly">
-                        <option value="">Tất cả</option>
-                        <option value="Nguyễn Văn Cán Bộ">Nguyễn Văn Cán Bộ</option>
-                        <option value="Lê Anh Tuấn">Lê Anh Tuấn</option>
-                        <option value="Trần Quốc Khánh">Trần Quốc Khánh</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Loại đăng ký</label>
-                    <select class="form-select" id="filter-loaidangky">
-                        <option value="">Tất cả</option>
-                        <option value="Đăng ký mới">Đăng ký mới</option>
-                        <option value="Đăng ký thay đổi">Đăng ký thay đổi</option>
-                        <option value="Xóa đăng ký">Xóa đăng ký</option>
-                        <option value="Yêu cầu cung cấp bản sao">Yêu cầu cung cấp bản sao</option>
-                        <option value="Yêu cầu cung cấp bản sao kèm thông báo">Yêu cầu cung cấp bản sao kèm thông báo</option>
-                        <option value="Yêu cầu cung cấp thông tin">Yêu cầu cung cấp thông tin</option>
-                        <option value="Thông báo xử lý tài sản">Thông báo xử lý tài sản</option>
-                        <option value="Thay đổi thông báo xử lý tài sản">Thay đổi thông báo xử lý tài sản</option>
-                        <option value="Xóa thông báo xử lý tài sản">Xóa thông báo xử lý tài sản</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Loại hình giao dịch</label>
-                    <select class="form-select" id="cb-loaihinh" onchange="updateSubTypes()">
-                        <option value="">Tất cả</option>
-                        <option value="Biện pháp bảo đảm">Biện pháp bảo đảm</option>
-                        <option value="Hợp đồng">Hợp đồng</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Loại biện pháp / Hợp đồng</label>
-                    <select class="form-select" id="cb-loaibienphap">
-                        <option value="">Tất cả</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Loại tài sản đảm bảo</label>
-                    <select class="form-select" id="filter-loaitaisan">
-                        <option value="">Tất cả</option>
-                        <option value="Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)">Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)</option>
-                        <option value="Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt">Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt</option>
-                        <option value="Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản">Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản</option>
-                        <option value="Cây hằng năm, công trình tạm">Cây hằng năm, công trình tạm</option>
-                        <option value="Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ">Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ</option>
-                        <option value="Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung">Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung</option>
-                        <option value="Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)">Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)</option>
-                    </select>
-                </div>
-                ${statusFilterHtml}
-                <div class="form-group">
-                    <label class="form-label">Từ ngày</label>
-                    <div class="date-filter-wrap">
-                        <input type="text" class="form-control" id="filter-tungay" placeholder="dd/mm/yyyy" value="${defFromDate}">
-                        <i class="fa-regular fa-calendar-days"></i>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Đến ngày</label>
-                    <div class="date-filter-wrap">
-                        <input type="text" class="form-control" id="filter-denngay" placeholder="dd/mm/yyyy" value="${defToDate}">
-                        <i class="fa-regular fa-calendar-days"></i>
-                    </div>
-                </div>
-            </div>
-            <div style="text-align: right; margin-top: 10px;">
-                <button class="btn btn-outline-secondary" onclick="resetFilters()" style="margin-right: 8px;"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
-                <button class="btn btn-primary" onclick="searchList()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
-            </div>
-        `;
-        updateSubTypes();
+        renderRegistrationFilterPanel(container, statusFilterHtml);
     }
 
     if (typeof flatpickr !== 'undefined') {
@@ -1945,44 +2236,26 @@ function renderFilterPanel() {
 let singleRejectId = null;
 
 function approveDossierSingle(id) {
-    const p = mockProfiles.find(prof => prof.id === id);
+    const p = findProfileForAction(id);
     if (!p) return;
-
-    p.status = 'Duyệt chờ ký';
-    p.statusClass = 'badge-info';
-    p.internalLogs.unshift({
-        time: 'Vừa xong',
-        user: 'Cán bộ nghiệp vụ TTĐK',
-        action: 'Phê duyệt',
-        comment: 'Phê duyệt hồ sơ chuyển Lãnh đạo xem xét.'
-    });
-
-    saveProfiles();
-    alert(`Đã duyệt hồ sơ ${id} thành công! (Hồ sơ được chuyển sang danh mục Duyệt chờ ký)`);
-    updateTabBadges();
-    renderTable();
+    approveRegistrationProfiles([p]);
+    showListToast('Phê duyệt hồ sơ thành công', 'success'); // [MSG-SUC-DK-KT-001]
 }
 
+// Hủy duyệt: chuyển hồ sơ từ "Duyệt chờ ký" về "Chờ duyệt", hiển thị [MSG-SUC-DK-KT-004] và tải lại danh sách
 function cancelApprovalSingle(id) {
-    const p = mockProfiles.find(prof => prof.id === id);
+    const p = findProfileForAction(id);
     if (!p) return;
-
+    p.previousStatus = p.status;
     p.status = 'Chờ duyệt';
     p.statusClass = 'badge-warning';
-    p.internalLogs.unshift({
-        time: 'Vừa xong',
-        user: 'Cán bộ nghiệp vụ TTĐK',
-        action: 'Hủy duyệt',
-        comment: 'Hủy duyệt hồ sơ, chuyển về trạng thái chờ duyệt.'
-    });
-
+    p.internalLogs = p.internalLogs || [];
+    p.internalLogs.unshift({ time: 'Vừa xong', user: 'Nguyễn Văn Cán Bộ', action: 'Hủy duyệt', comment: 'Chuyển trạng thái Duyệt chờ ký → Chờ duyệt.' });
+    persistProfileForAction(p);
     saveProfiles();
-    alert(`Đã hủy duyệt hồ sơ ${id} thành công! (Hồ sơ được chuyển về danh mục Chờ duyệt)`);
     updateTabBadges();
-
-    // Tìm tab Chờ duyệt và chuyển qua
-    const tabEl = Array.from(document.querySelectorAll('.nav-tab')).find(el => el.textContent.includes('Chờ duyệt'));
-    switchListTab('choduyet', tabEl);
+    renderTable();
+    showListToast('Đã hủy duyệt hồ sơ thành công', 'success');
 }
 
 function saveProfiles() {
@@ -2039,22 +2312,83 @@ function updateTabBadges() {
         allProfiles = [...customList, ...allProfiles];
     }
 
-    allProfiles.forEach(p => {
-        if (p.status === 'Chờ giải quyết') counts.chonhaplieu++;
-        else if (p.status === 'Chờ duyệt') counts.choduyet++;
-        else if (p.status === 'Duyệt chờ ký') counts['duyet-choky']++;
-        else if (p.status === 'Bị trả lại') counts.bitralai++;
+    // Badge Tab trạng thái = tổng số hồ sơ của 03 Tab nhóm nghiệp vụ ở trạng thái tương ứng
+    // Badge Tab nhóm nghiệp vụ = số hồ sơ của nhóm trong Tab trạng thái đang chọn (không phụ thuộc bộ lọc)
+    const perType = tab => ({
+        registration: countBadgeRegistration(allProfiles, tab),
+        cctt: countBadgeCctt(tab),
+        copy: countBadgeCopy(tab)
+    });
+    Object.keys(counts).forEach(tab => {
+        const c = perType(tab);
+        counts[tab] = c.registration + c.cctt + c.copy;
     });
 
-    const el1 = document.getElementById('badge-chonhaplieu');
-    const el2 = document.getElementById('badge-choduyet');
-    const el3 = document.getElementById('badge-duyet-choky');
-    const el4 = document.getElementById('badge-bitralai');
+    setBadgeValue(document.getElementById('badge-chonhaplieu'), counts.chonhaplieu);
+    setBadgeValue(document.getElementById('badge-choduyet'), counts.choduyet);
+    setBadgeValue(document.getElementById('badge-duyet-choky'), counts['duyet-choky']);
+    setBadgeValue(document.getElementById('badge-bitralai'), counts.bitralai);
 
-    if (el1) el1.innerText = counts.chonhaplieu;
-    if (el2) el2.innerText = counts.choduyet;
-    if (el3) el3.innerText = counts['duyet-choky'];
-    if (el4) el4.innerText = counts.bitralai;
+    // Badge Tab nhóm nghiệp vụ: chỉ hiển thị tại Hồ sơ chờ xử lý và Hồ sơ đang chờ ký
+    const showWorkBadge = currentListTab !== 'da_xu_ly';
+    const workCounts = showWorkBadge ? perType(currentListTab) : null;
+    [['badge-reg-officer', 'registration'], ['badge-cctt-officer', 'cctt'], ['badge-copy-officer', 'copy']].forEach(([id, key]) => {
+        setBadgeValue(document.getElementById(id), showWorkBadge ? workCounts[key] : 0);
+    });
+
+    // Badge Left Menu: "Hồ sơ chờ xử lý" = tổng 04 Tab trạng thái; "Hồ sơ đang chờ ký" = tổng hồ sơ "Chờ ký" của 03 nhóm nghiệp vụ
+    const signing = perType('dang_xu_ly');
+    const menuCounts = {
+        kths_pending: counts.chonhaplieu + counts.choduyet + counts['duyet-choky'] + counts.bitralai,
+        kths_signing: signing.registration + signing.cctt + signing.copy
+    };
+    try { localStorage.setItem('kths_menu_badges', JSON.stringify(menuCounts)); } catch (err) { }
+    try { if (window.parent && window.parent !== window) window.parent.postMessage({ type: 'admin:menuBadges', counts: menuCounts }, '*'); } catch (err) { }
+}
+
+// Badge chỉ hiển thị khi giá trị > 0; lớn hơn 99 hiển thị "99+"
+function setBadgeValue(el, n) {
+    if (!el) return;
+    n = Number(n) || 0;
+    el.innerText = n > 99 ? '99+' : String(n);
+    el.style.display = n > 0 ? '' : 'none';
+}
+
+const BADGE_TAB_STATUS = {
+    chonhaplieu: 'Chờ giải quyết',
+    choduyet: 'Chờ duyệt',
+    'duyet-choky': 'Duyệt chờ ký',
+    bitralai: 'Bị trả lại',
+    dang_xu_ly: 'Chờ ký'
+};
+
+function countBadgeRegistration(allProfiles, tab) {
+    const status = BADGE_TAB_STATUS[tab];
+    return allProfiles.filter(p => {
+        if (p.handlingOfficer && p.handlingOfficer !== "Nguyễn Văn Cán Bộ") return false;
+        if (p.status !== status) return false;
+        return !(REG_SERVICE_TYPES.includes(p.type) || (p.type || '').includes('Yêu cầu cung cấp'));
+    }).length;
+}
+
+function countBadgeCctt(tab) {
+    const status = BADGE_TAB_STATUS[tab];
+    try {
+        const source = ['chonhaplieu', 'bitralai'].includes(tab) ? getPaperCcttRows() : ccttOfficerRequests;
+        return source.filter(x => x.status === status).length;
+    } catch (err) { return 0; }
+}
+
+function countBadgeCopy(tab) {
+    const status = BADGE_TAB_STATUS[tab];
+    try {
+        return officerCopyRequests.filter(x => {
+            if (x.status !== status) return false;
+            if (tab === 'chonhaplieu' && (x.source !== 'Cán bộ nhập liệu' || !['Đã thu', 'Miễn phí'].includes(x.feeStatus))) return false;
+            if (tab === 'choduyet' && x.source === 'Cán bộ nhập liệu') return false;
+            return true;
+        }).length;
+    } catch (err) { return 0; }
 }
 
 function submitForSignatureSingle(id) {
@@ -2084,6 +2418,7 @@ function startDigitize(id) {
     }
     const paperCopy = officerCopyRequests.find(x => x.id === id);
     if (paperCopy) {
+        saveCopyItemForNavigation(paperCopy);
         const returned = paperCopy.status === 'Bị trả lại' ? '&returned=1' : '';
         const copyTypeParam = paperCopy.copyType === 'Bản sao giấy' ? '&copy_type=paper' : '&copy_type=electronic';
         const isNoticeParam = (paperCopy.requestType || '').includes('kèm thông báo') ? '&is_notice=1' : '';
@@ -2091,6 +2426,10 @@ function startDigitize(id) {
         return;
     }
     window.location.href = 'nhap_lieu_ho_so_giay.html?id=' + encodeURIComponent(id);
+}
+
+function openCopyReadonly(id) {
+    openPaperReadonly(id);
 }
 
 function openPaperReadonly(id) {
@@ -2105,16 +2444,30 @@ function openPaperReadonly(id) {
     }
     const paperCopy = officerCopyRequests.find(x => x.id === id);
     if (paperCopy) {
+        saveCopyItemForNavigation(paperCopy);
         const returned = paperCopy.status === 'Bị trả lại' ? '&returned=1' : '';
         const copyTypeParam = paperCopy.copyType === 'Bản sao giấy' ? '&copy_type=paper' : '&copy_type=electronic';
         const isNoticeParam = (paperCopy.requestType || '').includes('kèm thông báo') ? '&is_notice=1' : '';
         window.location.href = 'nhap_lieu_ho_so_giay.html?mode=view&id=' + encodeURIComponent(id) + '&type=copy' + copyTypeParam + isNoticeParam + returned;
         return;
     }
-    window.location.href = 'nhap_lieu_ho_so_giay.html?mode=view&id=' + encodeURIComponent(id);
+    // Phiếu đăng ký: hồ sơ Bị trả lại mở Xem chi tiết kèm nút Cập nhật, Đóng
+    const regProfile = typeof findProfileForAction === 'function' ? findProfileForAction(id) : null;
+    const regReturned = regProfile && regProfile.status === 'Bị trả lại' ? '&returned=1' : '';
+    window.location.href = 'nhap_lieu_ho_so_giay.html?mode=view&id=' + encodeURIComponent(id) + regReturned;
 }
 
 function searchList() {
+    // TH1: Từ ngày lớn hơn Đến ngày -> [MSG-ERR-VAL-007], highlight viền đỏ, không tìm kiếm
+    const fromEl = document.getElementById('filter-tungay');
+    const toEl = document.getElementById('filter-denngay');
+    const errEl = document.getElementById('filter-date-error');
+    const fromDate = parseDateString(fromEl?.value || '');
+    const toDate = parseDateString(toEl?.value || '');
+    const invalid = !!(fromDate && toDate && fromDate > toDate);
+    if (fromEl) fromEl.classList.toggle('is-invalid', invalid);
+    if (errEl) errEl.style.display = invalid ? 'block' : 'none';
+    if (invalid) return;
     renderTable(true);
 }
 
@@ -2164,7 +2517,7 @@ function resetFilters() {
         'filter-loai-chu-the', 'filter-phuong-thuc', 'filter-hinh-thuc-tra',
         'filter-status-xu-ly', 'filter-ma-ho-so', 'filter-so-don-giay',
         'filter-nguoi-yeu-cau', 'filter-nguoi-nop', 'filter-loai-yeu-cau',
-        'filter-trang-thai-phi', 'filter-can-bo-tiep-nhan'
+        'filter-trang-thai-phi', 'filter-can-bo-tiep-nhan', 'filter-reg-keyword'
     ];
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -2177,15 +2530,22 @@ function resetFilters() {
     const defFromDate = `01/${month}/${year}`;
     const defToDate = `${String(today.getDate()).padStart(2, '0')}/${month}/${year}`;
 
+    // Danh sách Phiếu đăng ký: Từ ngày là ngày hiện tại trừ 3 tháng, Đến ngày là ngày hiện tại
+    const regRange = getRegDefaultDateRange();
+    const isRegList = !isRegInputLayout();
     const elFrom = document.getElementById('filter-tungay');
-    if (elFrom) elFrom.value = defFromDate;
+    if (elFrom) { elFrom.value = isRegList ? regRange.from : defFromDate; elFrom.classList.remove('is-invalid'); }
     const elTo = document.getElementById('filter-denngay');
-    if (elTo) elTo.value = defToDate;
+    if (elTo) elTo.value = isRegList ? regRange.to : defToDate;
+    const dateErr = document.getElementById('filter-date-error');
+    if (dateErr) dateErr.style.display = 'none';
 
     const cbLoaiHinh = document.getElementById('cb-loaihinh');
     if (cbLoaiHinh) {
         updateSubTypes();
     }
+    // Ẩn Khối lọc động và các cột động theo Loại tài sản
+    if (document.getElementById('reg-dynamic-filter')) onRegAssetTypeChange();
 
     renderTable(true);
 }
@@ -2237,6 +2597,7 @@ function toggleDiffOnlyMode(checkbox) {
 // Mở màn hình Xem chi tiết hồ sơ
 function openDetail(id) {
     sessionStorage.setItem('prevCanBoPage', window.location.href);
+    saveRegListState();
     
     // Tìm kiếm node đang active để truyền tham số focusId
     let focusId = '';
@@ -2361,8 +2722,9 @@ function renderDetailActionButtons() {
         document.getElementById('opinion-req-star').style.display = 'none';
         buttonsContainer.innerHTML = `
             <button class="btn btn-outline-secondary" onclick="closeDetail()">Đóng</button>
-            <button class="btn btn-danger" onclick="handleDetailAction('tuchoi')">✖ Từ chối</button>
             <button class="btn btn-primary" onclick="handleDetailAction('trinhky')">📝 Trình ký</button>
+            <button class="btn btn-danger" onclick="handleDetailAction('tuchoi')">✖ Từ chối</button>
+            <button class="btn btn-warning" style="background-color: #64748B; color: white;" onclick="handleDetailAction('huyduyet')"><i class="fa-solid fa-rotate-left"></i> Hủy duyệt</button>
         `;
     } else {
         // Hồ sơ Duyệt chờ ký, Bị trả lại hoặc khác
@@ -2899,6 +3261,18 @@ function handleDetailAction(action) {
 
     } else if (action === 'trinhky') {
         openModalPreview('trinhky');
+    } else if (action === 'huyduyet') {
+        currentProfile.status = 'Chờ duyệt';
+        currentProfile.statusClass = 'badge-warning';
+        currentProfile.internalLogs.unshift({
+            time: 'Vừa xong',
+            user: 'Cán bộ nghiệp vụ TTĐK',
+            action: 'Hủy duyệt',
+            comment: opinionText || 'Hủy duyệt chuyển hồ sơ về danh mục Chờ duyệt.'
+        });
+        saveProfiles();
+        closeDetail();
+        showListToast('Đã hủy duyệt hồ sơ thành công', 'success');
     }
 }
 
@@ -3086,27 +3460,13 @@ function confirmPreviewAction() {
 function approveRows() {
     const selected = getSelectedRows();
     if (selected.length === 0) {
-        alert('Vui lòng chọn ít nhất một hồ sơ để thao tác!');
+        showListToast('Vui lòng chọn ít nhất một hồ sơ để thực hiện thao tác.', 'error'); // [MSG-ERR-DK-008]
         return;
     }
 
-    selected.forEach(id => {
-        const profile = mockProfiles.find(p => p.id === id);
-        if (profile) {
-            profile.status = 'Duyệt chờ ký';
-            profile.statusClass = 'badge-info';
-            profile.internalLogs.unshift({
-                time: 'Vừa xong',
-                user: 'Cán bộ nghiệp vụ TTĐK',
-                action: 'Phê duyệt hàng loạt',
-                comment: 'Phê duyệt nhanh hồ sơ chuyển Lãnh đạo.'
-            });
-        }
-    });
-
-    saveProfiles();
-    alert(`Hoàn thành thành công ${selected.length} hồ sơ! (Các hồ sơ được chuyển sang danh mục Duyệt chờ ký)`);
-    renderTable();
+    const list = selected.map(id => findProfileForAction(id)).filter(Boolean);
+    approveRegistrationProfiles(list);
+    showListToast(`Phê duyệt hồ sơ thành công. Tổng số hồ sơ đã duyệt: ${list.length}.`, 'success');
 }
 
 function closeDetail() {
@@ -3135,6 +3495,11 @@ if (document.readyState === 'loading') {
 }
 
 function initViewMode() {
+    // Làm mới dữ liệu giả lập đã lưu khi thay đổi cấu trúc dữ liệu mẫu
+    if (localStorage.getItem('mock_profiles_version') !== 'v9') {
+        localStorage.removeItem('custom_mock_profiles');
+        localStorage.setItem('mock_profiles_version', 'v9');
+    }
     const originalStaticProfiles = [...mockProfiles];
     const cachedProfiles = localStorage.getItem('custom_mock_profiles');
     if (cachedProfiles) {
@@ -3276,14 +3641,18 @@ function initViewMode() {
     renderTable();
 }
 
+// Sắp xếp cột: lần 1 tăng dần, lần 2 giảm dần, lần 3 về sắp xếp mặc định; giữ nguyên bộ lọc và về Trang 1
 function toggleSort(column) {
-    if (currentSortColumn === column) {
-        currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
-    } else {
+    if (currentSortColumn !== column) {
         currentSortColumn = column;
+        currentSortOrder = 'asc';
+    } else if (currentSortOrder === 'asc') {
         currentSortOrder = 'desc';
+    } else {
+        currentSortColumn = null;
+        currentSortOrder = 'asc';
     }
-    renderTable();
+    renderTable(true);
 }
 
 function getSortIcon(column) {
@@ -3405,7 +3774,108 @@ const ccttOfficerRequests = [
         status: 'Bị từ chối',
         officer: 'Nguyễn Văn Cán Bộ',
         resultType: 'noData',
+        signedDraft: false,
+        rejectReason: 'Thông tin hồ sơ yêu cầu tra cứu không tồn tại trên hệ thống.'
+    },
+    {
+        id: 'CCTT-20260802-000210',
+        registeredAt: '02/08/2026 09:30',
+        customerId: 'KH-NAMLONG-01',
+        requester: 'Công ty TNHH Đầu tư Nam Long',
+        address: 'Số 15 Lê Văn Thiêm, Thanh Xuân, Hà Nội',
+        source: 'Website khách hàng',
+        criteria: 'Số đăng ký',
+        inputData: '1505170802',
+        status: 'Chờ ký',
+        officer: 'Nguyễn Văn Cán Bộ',
+        resultType: 'hasData',
+        signedDraft: true
+    },
+    {
+        id: 'CCTT-20260802-000211',
+        registeredAt: '02/08/2026 10:15',
+        customerId: 'KH-VIB-02',
+        requester: 'Ngân hàng TMCP Quốc tế Việt Nam (VIB)',
+        address: 'Tòa nhà VIB, 111 Pasteur, Q.1, TP.HCM',
+        source: 'Dịch vụ công Quốc gia',
+        criteria: 'Bên bảo đảm',
+        inputData: 'Công ty CP Tập đoàn Đất Xanh',
+        status: 'Chờ ký',
+        officer: 'Nguyễn Văn Cán Bộ',
+        resultType: 'hasData',
+        signedDraft: true
+    },
+    {
+        id: 'CCTT-20260802-000212',
+        registeredAt: '02/08/2026 14:00',
+        customerId: 'KH-THUHANG-03',
+        requester: 'Bà Đỗ Thu Hằng',
+        address: 'Số 88 Cầu Giấy, Hà Nội',
+        source: 'Website khách hàng',
+        criteria: 'Số khung',
+        inputData: 'VNFPT2026CHOKY001',
+        status: 'Chờ ký',
+        officer: 'Nguyễn Văn Cán Bộ',
+        resultType: 'noData',
         signedDraft: false
+    },
+    {
+        id: 'CCTT-20260803-000220',
+        registeredAt: '03/08/2026 08:30',
+        customerId: 'KH-VCB-01',
+        requester: 'Ngân hàng TMCP Ngoại thương VN (Vietcombank)',
+        address: '198 Trần Quang Khải, Hà Nội',
+        source: 'Website khách hàng',
+        criteria: 'Số đăng ký',
+        inputData: '1505156438',
+        status: 'Hoàn thành',
+        officer: 'Nguyễn Văn Cán Bộ',
+        resultType: 'hasData',
+        signedDraft: true
+    },
+    {
+        id: 'CCTT-20260803-000221',
+        registeredAt: '03/08/2026 11:10',
+        customerId: 'KH-NAMTV-05',
+        requester: 'Ông Trần Văn Nam',
+        address: 'Số 12 Kim Mã, Ba Đình, Hà Nội',
+        source: 'Dịch vụ công Quốc gia',
+        criteria: 'Bên bảo đảm',
+        inputData: 'Công ty CP Sao Mai',
+        status: 'Hoàn thành',
+        officer: 'Nguyễn Văn Cán Bộ',
+        resultType: 'hasData',
+        signedDraft: true
+    },
+    {
+        id: 'CCTT-20260804-000230',
+        registeredAt: '04/08/2026 15:00',
+        customerId: 'KH-TUANHM-08',
+        requester: 'Ông Hoàng Minh Tuấn',
+        address: 'Số 50 Giải Phóng, Hà Nội',
+        source: 'Website khách hàng',
+        criteria: 'Số đăng ký',
+        inputData: '9999999999',
+        status: 'Bị từ chối',
+        officer: 'Nguyễn Văn Cán Bộ',
+        resultType: 'noData',
+        signedDraft: false,
+        rejectReason: 'Thông tin hồ sơ yêu cầu tra cứu không tồn tại trên hệ thống và không đúng thẩm quyền xử lý.'
+    },
+    {
+        id: 'CCTT-20260804-000231',
+        registeredAt: '04/08/2026 16:20',
+        customerId: 'KH-BACNAM-09',
+        requester: 'Công ty TNHH Vận tải Bắc Nam',
+        address: 'Số 200 Giải Phóng, Phương Liệt, Thanh Xuân, Hà Nội',
+        source: 'Website khách hàng',
+        criteria: 'Số khung',
+        inputData: 'INVALIDKHUNG888',
+        status: 'Bị từ chối',
+        officer: 'Nguyễn Văn Cán Bộ',
+        resultType: 'noData',
+        signedDraft: false,
+        rejectReason: 'Số khung phương tiện không đúng định dạng chuẩn theo cơ sở dữ liệu đăng kiểm.'
     }
 ];
 
@@ -4051,13 +4521,155 @@ const officerCopyRequests = [
     }
 ];
 
+// Hồ sơ Yêu cầu cung cấp bản sao trực tuyến (Khách hàng gửi qua Website) phục vụ MH01 - Danh sách chờ duyệt
+// và hồ sơ Bản sao giấy "Đã duyệt - chờ trả kết quả" phục vụ Xác nhận trả kết quả (MH05)
+(function seedOnlineCopyRequests() {
+    const requesters = [
+        ['Công ty TNHH Thương mại Hoàng Gia', 'KH-HOANGGIA-01'], ['Ông Trần Quang Đạo', 'KH-DAO-02'], ['Ngân hàng TMCP Quân đội (MB)', 'KH-MB-03'],
+        ['Bà Lê Thị Thanh Hương', 'KH-HUONG-04'], ['Công ty Cổ phần Vận tải Biển Đông', 'KH-BIENDONG-05'], ['Ông Phạm Văn Khánh', 'KH-KHANH-06'],
+        ['Công ty TNHH Sản xuất Tân Tiến', 'KH-TANTIEN-07'], ['Bà Đinh Thị Mai Phương', 'KH-PHUONG-08']
+    ];
+    const regNos = ['1505156438', '1505170855', '1505170802'];
+    const today = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    requesters.forEach(([name, cid], i) => {
+        const day = Math.max(1, Math.min(today.getDate(), 1 + i * 3));
+        const isPaper = i % 3 === 1;
+        officerCopyRequests.push({
+            id: `BS-2026-1${pad(i + 1)}001`,
+            paperNo: '',
+            registeredAt: `${pad(day)}/${pad(today.getMonth() + 1)}/${today.getFullYear()} ${pad(8 + i)}:${pad((i * 13) % 60)}`,
+            customerId: cid,
+            requester: name,
+            address: 'Hà Nội',
+            source: 'Website khách hàng',
+            registrationNo: regNos[i % regNos.length],
+            requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
+            copyType: isPaper ? 'Bản sao giấy' : 'Bản sao điện tử',
+            quantity: isPaper ? (i % 2) + 1 : null,
+            fee: 30000,
+            feeStatus: 'Đã thu',
+            status: i < 6 ? 'Chờ duyệt' : 'Đã duyệt - chờ trả kết quả',
+            officer: i < 6 ? '' : 'Nguyễn Văn Cán Bộ',
+            ...(i >= 6 ? { copyType: 'Bản sao giấy', quantity: 2, approvedAt: `${pad(day)}/${pad(today.getMonth() + 1)}/${today.getFullYear()} 15:30` } : {})
+        });
+    });
+})();
+// Đồng bộ trạng thái hồ sơ bản sao đã xử lý tại màn Nhập liệu (nhap_lieu_ho_so_giay.html) về danh sách
+const COPY_STORAGE_KEY = 'officer_copy_requests';
+(function syncOfficerCopyRequestsFromStorage() {
+    let stored = [];
+    try { stored = JSON.parse(localStorage.getItem(COPY_STORAGE_KEY) || '[]'); } catch (err) { stored = []; }
+    stored.forEach(s => {
+        const item = officerCopyRequests.find(x => x.id === s.id);
+        if (!item) return;
+        if (s.status) item.status = s.status;
+        if (s.originalRegistrationNo) item.registrationNo = s.originalRegistrationNo;
+        if (s.handlingOfficer && s.status !== 'Chờ giải quyết') item.officer = s.handlingOfficer;
+        if (s.registeredAtOfficial) item.registeredAtOfficial = s.registeredAtOfficial;
+        if (s.rejectReason) item.rejectReason = s.rejectReason;
+        if (s.rejectedAt) item.rejectedAt = s.rejectedAt;
+    });
+})();
 
+// Ghi hồ sơ bản sao được chọn sang localStorage để màn Xem chi tiết (MH02) / Nhập liệu (MH03) đọc đúng dữ liệu bản ghi
+function saveCopyItemForNavigation(item) {
+    let list = [];
+    try { list = JSON.parse(localStorage.getItem(COPY_STORAGE_KEY) || '[]'); } catch (err) { list = []; }
+    const mapped = {
+        id: item.id,
+        paper: item.paperNo,
+        date: item.registeredAt,
+        customer: item.requester,
+        requester: item.requester,
+        requesterAddress: item.address,
+        requesterType: item.customerId && item.customerId !== 'Vãng lai' ? 'Có tài khoản trực tuyến' : 'Khách hàng vãng lai',
+        requesterAccount: item.customerId,
+        type: item.requestType,
+        copyType: item.copyType,
+        copyQty: item.quantity || null,
+        amount: item.fee,
+        paymentStatus: item.feeStatus,
+        paymentTime: item.paidAt,
+        status: item.status,
+        officer: item.receptionOfficer,
+        originalRegistrationNo: item.registrationNo || '',
+        returnReason: item.returnReason,
+        returnedBy: item.returnedBy,
+        returnedAt: item.returnedAt
+    };
+    const idx = list.findIndex(x => x.id === item.id);
+    if (idx >= 0) list[idx] = { ...list[idx], ...mapped, status: item.status };
+    else list.unshift(mapped);
+    localStorage.setItem(COPY_STORAGE_KEY, JSON.stringify(list));
+}
+
+function persistCopyItemStatus(item) {
+    let list = [];
+    try { list = JSON.parse(localStorage.getItem(COPY_STORAGE_KEY) || '[]'); } catch (err) { list = []; }
+    const idx = list.findIndex(x => x.id === item.id);
+    const patch = { id: item.id, status: item.status, rejectReason: item.rejectReason, rejectFile: item.rejectFile, rejectedBy: item.rejectedBy, rejectedAt: item.rejectedAt };
+    if (idx >= 0) list[idx] = { ...list[idx], ...patch };
+    else list.unshift(patch);
+    localStorage.setItem(COPY_STORAGE_KEY, JSON.stringify(list));
+}
+
+// Toast thông báo dùng cho danh sách (MSG dạng Toast theo SRS)
+function showListToast(message, type = 'info') {
+    let wrap = document.getElementById('list-toast-wrap');
+    if (!wrap) {
+        wrap = document.createElement('div');
+        wrap.id = 'list-toast-wrap';
+        wrap.style.cssText = 'position:fixed;top:20px;right:20px;z-index:3000;display:flex;flex-direction:column;gap:10px;max-width:420px';
+        document.body.appendChild(wrap);
+    }
+    const colors = { success: ['#ECFDF5', '#059669', 'fa-circle-check'], error: ['#FEF2F2', '#DC2626', 'fa-circle-xmark'], warn: ['#FFFBEB', '#D97706', 'fa-triangle-exclamation'], info: ['#EFF6FF', '#2563EB', 'fa-circle-info'] };
+    const [bg, fg, icon] = colors[type] || colors.info;
+    const box = document.createElement('div');
+    box.style.cssText = `background:${bg};border:1px solid ${fg};border-left:4px solid ${fg};color:#0f172a;padding:12px 14px;border-radius:6px;box-shadow:0 6px 18px rgba(15,23,42,.12);display:flex;gap:10px;align-items:flex-start;font-size:13.5px`;
+    box.innerHTML = `<i class="fa-solid ${icon}" style="color:${fg};margin-top:2px"></i><div style="flex:1">${message}</div><span style="cursor:pointer;color:#64748b" onclick="this.parentElement.remove()">&times;</span>`;
+    wrap.appendChild(box);
+    setTimeout(() => box.remove(), 4500);
+}
+
+// Hiển thị thông báo được màn Nhập liệu chuyển về sau khi Duyệt chờ ký / Trình ký / Từ chối thành công
+document.addEventListener('DOMContentLoaded', () => {
+    const pending = sessionStorage.getItem('kthsPendingToast');
+    if (!pending) return;
+    sessionStorage.removeItem('kthsPendingToast');
+    try {
+        const t = JSON.parse(pending);
+        showListToast(t.message, t.type || 'success');
+    } catch (err) { /* bỏ qua */ }
+});
+
+
+// Đồng bộ trạng thái hồ sơ Yêu cầu cung cấp thông tin đã xử lý (lưu localStorage) về danh sách
+// Dời Thời điểm đăng ký của dữ liệu giả lập CCTT về tháng hiện tại để nằm trong khoảng lọc mặc định (từ ngày 01 đến ngày hiện tại)
+(function shiftCcttMockDatesToCurrentMonth() {
+    const today = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    (typeof ccttOfficerRequests !== 'undefined' ? ccttOfficerRequests : []).forEach((x, i) => {
+        const m = String(x.registeredAt || '').match(/(\d{2}):(\d{2})/);
+        const day = (i % today.getDate()) + 1;
+        x.registeredAt = `${pad(day)}/${pad(today.getMonth() + 1)}/${today.getFullYear()} ${m ? m[1] + ':' + m[2] : '09:00'}`;
+    });
+})();
+(function syncOfficerCcttRequestsFromStorage() {
+    let stored = [];
+    try { stored = JSON.parse(localStorage.getItem('officer_cctt_requests') || '[]'); } catch (err) { stored = []; }
+    stored.forEach(s => {
+        const item = (typeof ccttOfficerRequests !== 'undefined' ? ccttOfficerRequests : []).find(x => x.id === s.id);
+        if (item) Object.keys(s).forEach(k => { if (s[k] !== undefined && s[k] !== null) item[k] = s[k]; });
+    });
+})();
 function shouldShowOfficerWorkTabs() {
     return ['chonhaplieu', 'choduyet', 'duyet-choky', 'bitralai', 'dang_xu_ly', 'da_xu_ly'].includes(currentListTab);
 }
 
 function getOfficerCcttTargetStatuses() {
-    if (currentListTab === 'chonhaplieu') return ['Chờ giải quyết', 'Bị trả lại'];
+    // Tab Hồ sơ chờ nhập liệu chỉ hiển thị hồ sơ ở trạng thái "Chờ giải quyết" (hồ sơ "Bị trả lại" hiển thị tại Tab Hồ sơ Bị trả lại)
+    if (currentListTab === 'chonhaplieu') return ['Chờ giải quyết'];
     if (currentListTab === 'duyet-choky') return ['Duyệt chờ ký'];
     if (currentListTab === 'bitralai') return ['Bị trả lại'];
     if (currentListTab === 'dang_xu_ly') return ['Chờ ký'];
@@ -4066,7 +4678,7 @@ function getOfficerCcttTargetStatuses() {
 }
 
 function getOfficerCcttListTitle() {
-    if (currentListTab === 'chonhaplieu') return 'Danh sách hồ sơ giấy Yêu cầu cung cấp thông tin chờ giải quyết/bị trả lại';
+    if (currentListTab === 'chonhaplieu') return 'Danh sách hồ sơ chờ nhập liệu';
     if (currentListTab === 'duyet-choky') return 'Danh sách yêu cầu cung cấp thông tin duyệt chờ ký';
     if (currentListTab === 'bitralai') return 'Danh sách yêu cầu cung cấp thông tin bị trả lại';
     if (currentListTab === 'dang_xu_ly') return 'Danh sách yêu cầu cung cấp thông tin đang chờ ký';
@@ -4086,10 +4698,7 @@ function syncOfficerWorkTabs() {
     tabs.querySelectorAll('.nav-tab').forEach(tab => {
         tab.classList.toggle('active', tab.dataset.workType === officerWorkType);
     });
-    const badge = document.getElementById('badge-cctt-officer');
-    if (badge) badge.innerText = ccttOfficerRequests.length;
-    const copyBadge = document.getElementById('badge-copy-officer');
-    if (copyBadge) copyBadge.innerText = officerCopyRequests.length;
+    updateTabBadges();
 }
 
 function switchOfficerWorkType(type, element) {
@@ -4123,43 +4732,27 @@ function getOfficerRegistrationTitle() {
     return currentListTab === 'chonhaplieu' ? 'Danh sách hồ sơ chờ nhập liệu' : 'Bảng danh sách kết quả đối soát';
 }
 
+// Danh sách hồ sơ chờ nhập liệu - Yêu cầu cung cấp bản sao: phân trang mặc định 20 bản ghi/trang
+let copyPageSizeForced = false;
+function applyCopyPageSizeDefault() {
+    const isCopyInput = shouldShowOfficerWorkTabs() && officerWorkType === 'copy' && currentListTab === 'chonhaplieu';
+    // Các danh sách đều mặc định 20 bản ghi/trang; chỉ đồng bộ lại giá trị hiển thị của ô chọn số dòng
+    const select = document.getElementById('cb-pagesize');
+    if (isCopyInput) copyPageSizeForced = true;
+    if (select) select.value = String(pageSize);
+}
 renderFilterPanel = function () {
     syncOfficerWorkTabs();
-    if (shouldShowOfficerWorkTabs() && officerWorkType === 'cctt') {
+    applyCopyPageSizeDefault();
+    if (shouldShowOfficerWorkTabs() && officerWorkType === 'cctt' && !['chonhaplieu', 'bitralai'].includes(currentListTab)) {
+        // MH01 - Danh sách hồ sơ chờ duyệt (SRS Xử lý yêu cầu cung cấp thông tin)
         const container = document.getElementById('filter-card-container');
         if (!container) return;
+        const range = getCopyDefaultDateRange();
         container.innerHTML = `
             <div class="grid-4-cols">
-                <div class="form-group">
-                    <label class="form-label">Mã hồ sơ</label>
-                    <input type="text" class="form-control" id="cctt-filter-id" placeholder="Nhập mã hồ sơ CCTT...">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Mã khách hàng</label>
-                    <input type="text" class="form-control" id="cctt-filter-customer" placeholder="Nhập mã khách hàng...">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Nguồn tiếp nhận</label>
-                    <select class="form-select" id="cctt-filter-source">
-                        <option value="">Tất cả</option>
-                        <option value="Trực tuyến">Trực tuyến</option>
-                        <option value="Trực tiếp">Trực tiếp</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Từ ngày</label>
-                    <div class="date-filter-wrap">
-                        <input type="text" class="form-control" id="cctt-filter-fromdate" placeholder="dd/mm/yyyy">
-                        <i class="fa-regular fa-calendar-days"></i>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Đến ngày</label>
-                    <div class="date-filter-wrap">
-                        <input type="text" class="form-control" id="cctt-filter-todate" placeholder="dd/mm/yyyy">
-                        <i class="fa-regular fa-calendar-days"></i>
-                    </div>
-                </div>
+                <div class="form-group"><label class="form-label">Mã hồ sơ</label><input type="text" class="form-control" id="cctt-filter-id" placeholder="Nhập mã hồ sơ CCTT..."></div>
+                <div class="form-group"><label class="form-label">Mã khách hàng</label><input type="text" class="form-control" id="cctt-filter-customer" placeholder="Nhập mã khách hàng..."></div>
                 <div class="form-group">
                     <label class="form-label">Cán bộ xử lý</label>
                     <select class="form-select" id="cctt-filter-officer">
@@ -4170,7 +4763,7 @@ renderFilterPanel = function () {
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Tiêu chí yêu cầu</label>
+                    <label class="form-label">Tiêu chí yêu cầu cung cấp thông tin</label>
                     <select class="form-select" id="cctt-filter-criteria">
                         <option value="">Tất cả</option>
                         <option value="Số đăng ký">Số đăng ký</option>
@@ -4178,17 +4771,27 @@ renderFilterPanel = function () {
                         <option value="Số khung">Số khung</option>
                     </select>
                 </div>
+                ${currentListTab === 'da_xu_ly' ? `
                 <div class="form-group">
-                    <label class="form-label">Trạng thái hồ sơ</label>
+                    <label class="form-label">Trạng thái xử lý</label>
                     <select class="form-select" id="cctt-filter-status">
                         <option value="">Tất cả</option>
                         ${getOfficerCcttTargetStatuses().map(status => `<option value="${status}">${status}</option>`).join('')}
                     </select>
+                </div>` : ''}
+                <div class="form-group">
+                    <label class="form-label">Từ ngày</label>
+                    <div class="date-filter-wrap"><input type="text" class="form-control" id="cctt-filter-fromdate" placeholder="dd/mm/yyyy" value="${range.from}"><i class="fa-regular fa-calendar-days"></i></div>
+                    <div id="cctt-filter-date-error" style="display:none;color:#DC2626;font-size:12px;margin-top:4px">Từ ngày không được lớn hơn Đến ngày</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Đến ngày</label>
+                    <div class="date-filter-wrap"><input type="text" class="form-control" id="cctt-filter-todate" placeholder="dd/mm/yyyy" value="${range.to}"><i class="fa-regular fa-calendar-days"></i></div>
                 </div>
             </div>
             <div style="text-align:right;margin-top:15px">
                 <button class="btn btn-outline-secondary" onclick="renderFilterPanel(); renderTable(true)" style="margin-right:8px"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
-                <button class="btn btn-primary" onclick="renderTable(true)"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                <button class="btn btn-primary" onclick="searchCcttOfficerList()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
             </div>
         `;
         if (typeof flatpickr !== 'undefined') {
@@ -4197,7 +4800,46 @@ renderFilterPanel = function () {
         }
         return;
     }
-    if (shouldShowOfficerWorkTabs() && officerWorkType === 'copy') {
+    if (shouldShowOfficerWorkTabs() && officerWorkType === 'cctt') {
+        // MH01 - Danh sách hồ sơ chờ nhập liệu (SRS Nhập liệu hồ sơ giấy Yêu cầu cung cấp thông tin)
+        const container = document.getElementById('filter-card-container');
+        if (!container) return;
+        const range = getCopyDefaultDateRange();
+        container.innerHTML = `
+            <div class="grid-4-cols">
+                <div class="form-group"><label class="form-label">Mã hồ sơ</label><input type="text" class="form-control" id="ccttin-filter-id" placeholder="Nhập mã hồ sơ..."></div>
+                <div class="form-group"><label class="form-label">Số đơn giấy</label><input type="text" class="form-control" id="ccttin-filter-paper" placeholder="Nhập số đơn giấy..."></div>
+                <div class="form-group"><label class="form-label">Người yêu cầu</label><input type="text" class="form-control" id="ccttin-filter-requester" placeholder="Nhập tên người yêu cầu..."></div>
+                <div class="form-group">
+                    <label class="form-label">Tiêu chí tra cứu</label>
+                    <select class="form-select" id="ccttin-filter-criteria"><option value="">Tất cả</option><option value="Số đăng ký">Số đăng ký</option><option value="Bên bảo đảm">Bên bảo đảm</option><option value="Số khung">Số khung</option></select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Trạng thái lệ phí</label>
+                    <select class="form-select" id="ccttin-filter-fee"><option value="">Tất cả</option><option value="Đã thu">Đã thu</option><option value="Miễn phí">Miễn phí</option></select>
+                </div>
+                <div class="form-group"><label class="form-label">Cán bộ tiếp nhận</label><input type="text" class="form-control" id="ccttin-filter-officer" placeholder="Nhập tên cán bộ tiếp nhận..."></div>
+                <div class="form-group">
+                    <label class="form-label">Từ ngày tiếp nhận</label>
+                    <div class="date-filter-wrap"><input type="text" class="form-control" id="ccttin-filter-fromdate" placeholder="dd/mm/yyyy" value="${range.from}"><i class="fa-regular fa-calendar-days"></i></div>
+                    <div id="ccttin-filter-date-error" style="display:none;color:#DC2626;font-size:12px;margin-top:4px">Từ ngày không được lớn hơn Đến ngày</div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Đến ngày tiếp nhận</label>
+                    <div class="date-filter-wrap"><input type="text" class="form-control" id="ccttin-filter-todate" placeholder="dd/mm/yyyy" value="${range.to}"><i class="fa-regular fa-calendar-days"></i></div>
+                </div>
+            </div>
+            <div style="text-align:right;margin-top:15px">
+                <button class="btn btn-outline-secondary" onclick="renderFilterPanel(); renderTable(true)" style="margin-right:8px"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                <button class="btn btn-primary" onclick="searchCcttInputList()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+            </div>
+        `;
+        if (typeof flatpickr !== 'undefined') {
+            flatpickr("#ccttin-filter-fromdate", { dateFormat: "d/m/Y", allowInput: true });
+            flatpickr("#ccttin-filter-todate", { dateFormat: "d/m/Y", allowInput: true });
+        }
+        return;
+    }    if (shouldShowOfficerWorkTabs() && officerWorkType === 'copy') {
         const container = document.getElementById('filter-card-container');
         if (container) {
             const today = new Date();
@@ -4206,59 +4848,17 @@ renderFilterPanel = function () {
             const defFromDate = `01/${month}/${year}`;
             const defToDate = `${String(today.getDate()).padStart(2, '0')}/${month}/${year}`;
             container.innerHTML = `
-                <div class="grid-4-cols">
-                    <div class="form-group">
-                        <label class="form-label">Mã hồ sơ</label>
-                        <input type="text" class="form-control" id="copy-filter-id" placeholder="Nhập mã hồ sơ...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Số đơn giấy</label>
-                        <input type="text" class="form-control" id="copy-filter-paperno" placeholder="Nhập số đơn giấy...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Người yêu cầu</label>
-                        <input type="text" class="form-control" id="copy-filter-requester" placeholder="Nhập tên người yêu cầu...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Loại cung cấp bản sao</label>
-                        <select class="form-select" id="copy-filter-type">
-                            <option value="">Tất cả</option>
-                            <option value="Bản sao điện tử">Bản sao điện tử</option>
-                            <option value="Bản sao giấy">Bản sao giấy</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Cán bộ tiếp nhận</label>
-                        <input type="text" class="form-control" id="copy-filter-officer" placeholder="Nhập tên cán bộ tiếp nhận...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Từ ngày tiếp nhận</label>
-                        <div class="date-filter-wrap">
-                            <input type="text" class="form-control" id="copy-filter-fromdate" placeholder="dd/mm/yyyy" value="${defFromDate}">
-                            <i class="fa-solid fa-calendar-days"></i>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Đến ngày tiếp nhận</label>
-                        <div class="date-filter-wrap">
-                            <input type="text" class="form-control" id="copy-filter-todate" placeholder="dd/mm/yyyy" value="${defToDate}">
-                            <i class="fa-solid fa-calendar-days"></i>
-                        </div>
-                    </div>
-                    ${currentListTab !== 'chonhaplieu' ? `
-                    <div class="form-group">
-                        <label class="form-label">Trạng thái hồ sơ</label>
-                        <select class="form-select" id="copy-filter-status">
-                            <option value="">Tất cả</option>
-                            ${getOfficerCopyTargetStatuses().map(status => `<option value="${status}">${status}</option>`).join('')}
-                        </select>
-                    </div>` : ''}
-                </div>
+                ${renderCopyFilterFields(defFromDate, defToDate)}
                 <div style="text-align:right;margin-top:15px">
                     <button class="btn btn-outline-secondary" onclick="resetCopyOfficerFilters()" style="margin-right:8px"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
-                    <button class="btn btn-primary" onclick="renderTable(true)"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                    <button class="btn btn-primary" onclick="searchCopyOfficerList()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
                 </div>
             `;
+            restoreCopyFilters();
+            if (typeof flatpickr === 'function') {
+                flatpickr("#copy-filter-fromdate", { dateFormat: "d/m/Y", allowInput: true });
+                flatpickr("#copy-filter-todate", { dateFormat: "d/m/Y", allowInput: true });
+            }
         }
         return;
     }
@@ -4291,7 +4891,10 @@ function renderCcttOfficerTable() {
     if (tableTitle) tableTitle.innerText = getOfficerCcttListTitle();
     const thead = document.getElementById('table-headers-container');
     const tbody = document.getElementById('table-data');
-    thead.innerHTML = `
+    // Tab Hồ sơ chờ nhập liệu và Tab Hồ sơ Bị trả lại dùng bố cục MH01 - Danh sách hồ sơ chờ nhập liệu (SRS Nhập liệu CCTT)
+    const isInputTab = ['chonhaplieu', 'bitralai'].includes(currentListTab);
+    if (isInputTab) { renderCcttInputList(thead, tbody); return; }
+    thead.innerHTML = isInputTab ? `
         <tr>
             <th style="width:50px;text-align:center">STT</th>
             <th style="width:170px">Mã hồ sơ</th>
@@ -4303,7 +4906,22 @@ function renderCcttOfficerTable() {
             <th style="width:130px">Nguồn tiếp nhận</th>
             <th style="width:120px">Trạng thái</th>
             <th style="width:150px">Cán bộ xử lý</th>
-            <th style="width:120px;text-align:center">Thao tác</th>
+            <th class="col-actions" style="width:120px;min-width:120px;text-align:center">Thao tác</th>
+        </tr>
+    ` : `
+        <tr>
+            <th style="width:50px;text-align:center">STT</th>
+            <th style="width:180px">Mã hồ sơ</th>
+            <th style="width:130px">Mã khách hàng</th>
+            <th style="width:200px">Người yêu cầu</th>
+            <th style="width:220px">Địa chỉ</th>
+            <th style="width:140px">Tiêu chí yêu cầu</th>
+            <th style="width:220px">Dữ liệu đã nhập</th>
+            <th style="width:130px">Nguồn tiếp nhận</th>
+            <th style="width:150px">Thời điểm đăng ký</th>
+            <th style="width:120px">Trạng thái</th>
+            <th style="width:150px">Cán bộ xử lý</th>
+            <th class="col-actions" style="width:120px;min-width:120px;text-align:center">Thao tác</th>
         </tr>
     `;
     const dossierId = document.getElementById('cctt-filter-id')?.value.toLowerCase().trim() || '';
@@ -4338,16 +4956,38 @@ function renderCcttOfficerTable() {
         }
         return true;
     });
+    if (!isInputTab) {
+        // Sắp xếp mặc định theo Thời điểm đăng ký tăng dần để ưu tiên xử lý hồ sơ đến trước
+        rows.sort((a, b) => (parseDateString(a.registeredAt) || 0) - (parseDateString(b.registeredAt) || 0));
+    }
     const pageRows = applyPagination(rows, renderCcttOfficerTable);
     if (!pageRows.length) {
-        tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:30px;color:var(--text-muted)">Không có yêu cầu cung cấp thông tin phù hợp.</td></tr>';
+        // [MSG-INF-SYS-001]
+        tbody.innerHTML = `<tr><td colspan="${isInputTab ? 11 : 12}" style="text-align:center;padding:30px;color:var(--text-muted);font-style:italic">Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</td></tr>`;
+    } else if (!isInputTab) {
+        tbody.innerHTML = pageRows.map((row, idx) => `
+            <tr style="cursor:pointer" onclick="${currentListTab === 'duyet-choky' ? 'openCcttApprovedView' : 'openCcttView'}('${row.id}')">
+                <td style="text-align:center">${paginationStartIndex + idx + 1}</td>
+                <td><span class="action-link"><b>${row.id}</b></span></td>
+                <td><code>${row.customerId || '-'}</code></td>
+                <td><b>${row.requester}</b></td>
+                <td>${row.address || '-'}</td>
+                <td>${row.criteria}</td>
+                <td>${row.inputData}</td>
+                <td>${normalizeReceptionSource(row.source)}</td>
+                <td>${row.registeredAt}</td>
+                <td><span class="badge ${row.status === 'Hoàn thành' ? 'badge-success' : row.status === 'Bị từ chối' || row.status === 'Bị trả lại' ? 'badge-danger' : row.status === 'Chờ duyệt' ? 'badge-warning' : 'badge-info'}">${row.status}</span></td>
+                <td>${row.officer || '-'}</td>
+                <td class="col-actions" style="text-align:center;white-space:nowrap" onclick="event.stopPropagation()">${getCcttRowActions(row)}</td>
+            </tr>`).join('');
     } else {
         tbody.innerHTML = pageRows.map((row, idx) => {
             let actions = '';
             if (row.status === 'Chờ duyệt') {
                 actions += `<button class="icon-btn reject" title="Từ chối" onclick="alert('Mở popup nhập lý do từ chối cho ${row.id}')"><i class="fa fa-times"></i></button>`;
             } else if (row.status === 'Bị trả lại') {
-                actions += `<button class="icon-btn edit" title="Cập nhật và trình lại" onclick="alert('Mở màn hình cập nhật tiêu chí tra cứu cho hồ sơ giấy ${row.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                // Cập nhật: mở màn Nhập liệu, điền sẵn dữ liệu hồ sơ và hiển thị Khối Thông tin trả lại
+                actions += `<button class="icon-btn edit" title="Cập nhật" onclick="localStorage.setItem('selected_dossier_id','${row.id}'); window.location.href='nhap_lieu_ho_so_giay.html?id=${row.id}&type=cctt&returned=1'"><i class="fa-solid fa-pen-to-square"></i></button>`;
             }
             return `
             <tr style="cursor:pointer" onclick="openCcttOfficerDetail('${row.id}')">
@@ -4361,7 +5001,7 @@ function renderCcttOfficerTable() {
                 <td>${row.source}</td>
                 <td><span class="badge ${row.status === 'Hoàn thành' ? 'badge-success' : row.status === 'Bị từ chối' || row.status === 'Bị trả lại' ? 'badge-danger' : 'badge-warning'}">${row.status}</span></td>
                 <td>${row.officer}</td>
-                <td style="text-align:center" onclick="event.stopPropagation()">
+                <td class="col-actions" style="text-align:center" onclick="event.stopPropagation()">
                     ${actions}
                 </td>
             </tr>
@@ -4370,6 +5010,102 @@ function renderCcttOfficerTable() {
     }
 }
 
+// =====================================================================
+// NHẬP LIỆU HỒ SƠ GIẤY YÊU CẦU CUNG CẤP THÔNG TIN - MH01 Danh sách hồ sơ chờ nhập liệu (SRS 4.3.2.19.2)
+// Dùng cho Tab Hồ sơ chờ nhập liệu ("Chờ giải quyết") và Tab Hồ sơ Bị trả lại ("Bị trả lại")
+// =====================================================================
+function searchCcttInputList() {
+    const fromEl = document.getElementById('ccttin-filter-fromdate');
+    const toEl = document.getElementById('ccttin-filter-todate');
+    const errEl = document.getElementById('ccttin-filter-date-error');
+    const from = parseDateString(fromEl?.value || ''), to = parseDateString(toEl?.value || '');
+    const invalid = !!(from && to && from > to);
+    if (fromEl) fromEl.classList.toggle('is-invalid', invalid);
+    if (errEl) errEl.style.display = invalid ? 'block' : 'none';
+    if (invalid) return; // TH1 [MSG-ERR-VAL-007]
+    renderTable(true);
+}
+
+function getCcttInputCustomerCode(row) {
+    return (row.requesterType || '').includes('trực tuyến') && row.customerId ? row.customerId : 'Vãng lai';
+}
+
+// Tạo hồ sơ: kiểm tra điều kiện nhập liệu trước khi mở MH03
+function startCcttInputDigitize(id) {
+    const row = getPaperCcttRows().find(x => x.id === id);
+    if (!row) return;
+    if (row.status !== 'Chờ giải quyết' || !['Đã thu', 'Miễn phí'].includes(row.paymentStatus || 'Đã thu')) {
+        showListToast('Hồ sơ đã được thay đổi trạng thái xử lý, không thể thực hiện thao tác lúc này. Vui lòng tải lại trang.', 'error'); // [MSG-ERR-DK-005]
+        return;
+    }
+    startDigitize(id);
+}
+
+function renderCcttInputList(thead, tbody) {
+    const isReturned = currentListTab === 'bitralai';
+    thead.innerHTML = `
+        <tr>
+            <th style="width:50px;text-align:center">STT</th>
+            <th style="width:160px">Mã hồ sơ</th>
+            <th style="width:110px">Số đơn giấy</th>
+            <th style="width:220px">Người yêu cầu</th>
+            <th style="width:130px">Mã khách hàng</th>
+            <th style="width:150px">Ngày tiếp nhận</th>
+            <th style="width:120px">Trạng thái lệ phí</th>
+            <th style="width:130px;text-align:right">Số tiền đã thu (VNĐ)</th>
+            <th style="width:130px">Trạng thái hồ sơ</th>
+            <th style="width:160px">Cán bộ tiếp nhận</th>
+            <th style="width:100px;text-align:center">Thao tác</th>
+        </tr>`;
+    const v = id => (document.getElementById(id)?.value || '').toLowerCase().trim();
+    const fId = v('ccttin-filter-id'), fPaper = v('ccttin-filter-paper'), fReq = v('ccttin-filter-requester'), fOfficer = v('ccttin-filter-officer');
+    const fCriteria = document.getElementById('ccttin-filter-criteria')?.value || '';
+    const fFee = document.getElementById('ccttin-filter-fee')?.value || '';
+    const from = parseDateString(document.getElementById('ccttin-filter-fromdate')?.value || '');
+    const to = parseDateString(document.getElementById('ccttin-filter-todate')?.value || '');
+    if (to) to.setHours(23, 59, 59, 999);
+    const status = isReturned ? 'Bị trả lại' : 'Chờ giải quyết';
+    const rows = getPaperCcttRows().filter(x => {
+        if (x.status !== status) return false;
+        if (!['Đã thu', 'Miễn phí'].includes(x.paymentStatus || 'Đã thu')) return false;
+        if (fId && !x.id.toLowerCase().includes(fId)) return false;
+        if (fPaper && !(x.paper || '').toLowerCase().includes(fPaper)) return false;
+        if (fReq && !(x.customer || '').toLowerCase().includes(fReq)) return false;
+        if (fOfficer && !(x.officer || '').toLowerCase().includes(fOfficer)) return false;
+        if (fCriteria && (x.lookupCriteria || 'Số đăng ký') !== fCriteria) return false;
+        if (fFee && (x.paymentStatus || 'Đã thu') !== fFee) return false;
+        const d = parseDateString(x.date);
+        if (from && d && d < from) return false;
+        if (to && d && d > to) return false;
+        return true;
+    }).sort((a, b) => (parseDateString(b.date) || 0) - (parseDateString(a.date) || 0)); // Ngày tiếp nhận giảm dần
+
+    const pageRows = applyPagination(rows, renderCcttOfficerTable);
+    if (!pageRows.length) {
+        tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:30px;color:var(--text-muted);font-style:italic">Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</td></tr>'; // [MSG-INF-SYS-001]
+        return;
+    }
+    tbody.innerHTML = pageRows.map((row, idx) => {
+        const free = row.paymentStatus === 'Miễn phí';
+        const action = isReturned
+            ? `<button class="icon-btn edit" title="Cập nhật" onclick="event.stopPropagation(); localStorage.setItem('selected_dossier_id','${row.id}'); window.location.href='nhap_lieu_ho_so_giay.html?id=${row.id}&type=cctt&returned=1'"><i class="fa-solid fa-pen-to-square"></i></button>`
+            : `<button class="icon-btn edit" title="Tạo hồ sơ" onclick="event.stopPropagation(); startCcttInputDigitize('${row.id}')"><i class="fa-solid fa-file-circle-plus"></i></button>`;
+        return `
+            <tr style="cursor:pointer" onclick="${isReturned ? `openCcttReturnedView('${row.id}')` : `openPaperReadonly('${row.id}')`}">
+                <td style="text-align:center">${paginationStartIndex + idx + 1}</td>
+                <td><span class="action-link"><b>${row.id}</b></span></td>
+                <td><code>${row.paper || '-'}</code></td>
+                <td><b>${row.customer}</b></td>
+                <td>${getCcttInputCustomerCode(row)}</td>
+                <td>${row.date}</td>
+                <td><span class="badge ${free ? 'badge-info' : 'badge-success'}">${row.paymentStatus || 'Đã thu'}</span></td>
+                <td style="text-align:right">${free ? 'Miễn phí' : Number(row.amount || 0).toLocaleString('vi-VN')}</td>
+                <td><span class="badge ${isReturned ? 'badge-danger' : 'badge-warning'}">${row.status}</span></td>
+                <td>${row.officer || '-'}</td>
+                <td style="text-align:center;white-space:nowrap" onclick="event.stopPropagation()">${action}</td>
+            </tr>`;
+    }).join('');
+}
 function getPaperCcttRows() {
     const paperRows = loadPaperDigitizeProfiles()
         .filter(x => x.type === 'Yêu cầu cung cấp thông tin' && ['Đã thu','Miễn phí'].includes(x.paymentStatus || 'Đã thu'))
@@ -4379,7 +5115,11 @@ function getPaperCcttRows() {
         paperRows.push({
             id: 'HS-2026-000188',
             paper: 'PG-0188',
-            date: '30/07/2026 11:25',
+            date: (() => { const d = new Date(), p = n => String(n).padStart(2, '0'); return `01/${p(d.getMonth() + 1)}/${d.getFullYear()} 11:25`; })(),
+            lookupCriteria: 'Số đăng ký',
+            requesterType: 'Có tài khoản trực tuyến',
+            customerId: 'TK-ANPHU-088',
+            officer: 'Nguyễn Thị Tiếp Nhận',
             customer: 'Công ty TNHH An Phú',
             submitter: 'Vũ Minh Châu',
             type: 'Yêu cầu cung cấp thông tin',
@@ -4418,7 +5158,7 @@ function renderPaperCcttListTable(thead, tbody) {
     const fromDateValue = document.getElementById('cctt-filter-fromdate')?.value || '';
     const toDateValue = document.getElementById('cctt-filter-todate')?.value || '';
     const officer = document.getElementById('cctt-filter-officer')?.value || '';
-    const status = document.getElementById('cctt-filter-status')?.value || 'Chờ giải quyết';
+    const status = 'Chờ giải quyết';
     const rows = getPaperCcttRows().filter(row => {
         if (dossierId && !row.id.toLowerCase().includes(dossierId)) return false;
         if (customer && !'vãng lai'.includes(customer) && !'vang lai'.includes(customer)) return false;
@@ -4483,12 +5223,14 @@ function resetPaperCcttFilters() {
 }
 
 function getOfficerCopyTargetStatuses() {
-    if (currentListTab === 'chonhaplieu') return ['Chờ giải quyết', 'Bị trả lại'];
+    // Tab Hồ sơ chờ nhập liệu chỉ hiển thị hồ sơ ở trạng thái "Chờ giải quyết" (hồ sơ "Bị trả lại" hiển thị tại Tab Hồ sơ Bị trả lại)
+    if (currentListTab === 'chonhaplieu') return ['Chờ giải quyết'];
     if (currentListTab === 'duyet-choky') return ['Duyệt chờ ký'];
     if (currentListTab === 'bitralai') return ['Bị trả lại'];
     if (currentListTab === 'dang_xu_ly') return ['Chờ ký'];
-    if (currentListTab === 'da_xu_ly') return ['Hoàn thành', 'Bị từ chối'];
-    return ['Chờ duyệt', 'Chờ giải quyết'];
+    // Hồ sơ đã xử lý: riêng Yêu cầu cung cấp bản sao hiển thị thêm "Đã duyệt - chờ trả kết quả"
+    if (currentListTab === 'da_xu_ly') return ['Hoàn thành', 'Bị từ chối', 'Đã duyệt - chờ trả kết quả'];
+    return ['Chờ duyệt'];
 }
 
 function getOfficerCopyListTitle() {
@@ -4510,7 +5252,7 @@ function getCopyBadgeClass(status) {
 function renderCopyActionButton(label, onclick, enabled, styleClass = 'edit') {
     const iconMap = {
         'Nhập liệu': { icon: 'fa-solid fa-pen-to-square', className: 'edit', title: 'Nhập liệu hồ sơ' },
-        'Sửa và trình lại': { icon: 'fa-solid fa-pen-to-square', className: 'edit', title: 'Cập nhật và trình lại' },
+        'Cập nhật': { icon: 'fa-solid fa-pen-to-square', className: 'edit', title: 'Cập nhật' },
         'Xử lý hồ sơ': { icon: 'fa-solid fa-pen-to-square', className: 'edit', title: 'Xử lý hồ sơ' },
         'Xác nhận trả kết quả': { icon: 'fa-solid fa-check', className: 'sign', title: 'Xác nhận trả kết quả' }
     };
@@ -4520,8 +5262,121 @@ function renderCopyActionButton(label, onclick, enabled, styleClass = 'edit') {
     return `<button class="icon-btn ${config.className}" title="${config.title}" ${click} ${disabled}><i class="${config.icon}"></i></button>`;
 }
 
+// Bộ lọc danh sách Yêu cầu cung cấp bản sao:
+// - Tab Hồ sơ chờ nhập liệu: theo SRS Nhập liệu hồ sơ giấy Yêu cầu cung cấp bản sao
+// - Các Tab còn lại: theo MH01 - Danh sách yêu cầu cung cấp bản sao chờ duyệt (SRS Xử lý yêu cầu cung cấp bản sao)
+function renderCopyFilterFields(defFromDate, defToDate) {
+    const dateFields = (fromLabel, toLabel) => `
+        <div class="form-group">
+            <label class="form-label">${fromLabel}</label>
+            <div class="date-filter-wrap">
+                <input type="text" class="form-control" id="copy-filter-fromdate" placeholder="dd/mm/yyyy" value="${defFromDate}">
+                <i class="fa-solid fa-calendar-days"></i>
+            </div>
+            <div id="copy-filter-date-error" style="display:none;color:#DC2626;font-size:12px;margin-top:4px">Từ ngày không được lớn hơn Đến ngày</div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">${toLabel}</label>
+            <div class="date-filter-wrap">
+                <input type="text" class="form-control" id="copy-filter-todate" placeholder="dd/mm/yyyy" value="${defToDate}">
+                <i class="fa-solid fa-calendar-days"></i>
+            </div>
+        </div>`;
+    const typeField = `
+        <div class="form-group">
+            <label class="form-label">Loại cung cấp bản sao</label>
+            <select class="form-select" id="copy-filter-type">
+                <option value="">Tất cả</option>
+                <option value="Bản sao điện tử">Bản sao điện tử</option>
+                <option value="Bản sao giấy">Bản sao giấy</option>
+            </select>
+        </div>`;
+    if (['chonhaplieu', 'bitralai'].includes(currentListTab)) {
+        return `
+            <div class="grid-4-cols">
+                <div class="form-group"><label class="form-label">Mã hồ sơ</label><input type="text" class="form-control" id="copy-filter-id" placeholder="Nhập mã hồ sơ..."></div>
+                <div class="form-group"><label class="form-label">Số đơn giấy</label><input type="text" class="form-control" id="copy-filter-paperno" placeholder="Nhập số đơn giấy..."></div>
+                <div class="form-group"><label class="form-label">Người yêu cầu</label><input type="text" class="form-control" id="copy-filter-requester" placeholder="Nhập tên người yêu cầu..."></div>
+                ${typeField}
+                <div class="form-group"><label class="form-label">Cán bộ tiếp nhận</label><input type="text" class="form-control" id="copy-filter-officer" placeholder="Nhập tên cán bộ tiếp nhận..."></div>
+                ${dateFields('Từ ngày tiếp nhận', 'Đến ngày tiếp nhận')}
+            </div>`;
+    }
+    return `
+        <div class="grid-4-cols">
+            <div class="form-group"><label class="form-label">Mã hồ sơ</label><input type="text" class="form-control" id="copy-filter-id" placeholder="Nhập mã hồ sơ..."></div>
+            <div class="form-group"><label class="form-label">Người yêu cầu</label><input type="text" class="form-control" id="copy-filter-requester" placeholder="Nhập tên người yêu cầu..."></div>
+            <div class="form-group"><label class="form-label">Mã khách hàng</label><input type="text" class="form-control" id="copy-filter-customer" placeholder="Nhập mã khách hàng..."></div>
+            <div class="form-group"><label class="form-label">Số đăng ký</label><input type="text" class="form-control" id="copy-filter-regno" placeholder="Nhập số đăng ký..."></div>
+            ${typeField}
+            ${currentListTab === 'da_xu_ly' ? `
+            <div class="form-group">
+                <label class="form-label">Trạng thái xử lý</label>
+                <select class="form-select" id="copy-filter-status">
+                    <option value="">Tất cả</option>
+                    ${getOfficerCopyTargetStatuses().map(s => `<option value="${s}">${s}</option>`).join('')}
+                </select>
+            </div>` : ''}
+            ${dateFields('Từ ngày', 'Đến ngày')}
+        </div>`;
+}
+const COPY_FILTER_IDS = ['copy-filter-id', 'copy-filter-paperno', 'copy-filter-requester', 'copy-filter-type', 'copy-filter-officer', 'copy-filter-customer', 'copy-filter-regno', 'copy-filter-fromdate', 'copy-filter-todate', 'copy-filter-status'];
+
+function getCopyDefaultDateRange() {
+    const today = new Date();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+    return { from: `01/${month}/${year}`, to: `${String(today.getDate()).padStart(2, '0')}/${month}/${year}` };
+}
+
+// Lưu điều kiện tìm kiếm để khi Đóng màn Xem chi tiết (MH02) quay về vẫn giữ nguyên điều kiện tìm kiếm trước đó
+function saveCopyFilters() {
+    const values = {};
+    COPY_FILTER_IDS.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) values[id] = el.value;
+    });
+    sessionStorage.setItem('copyOfficerFilters_' + currentListTab, JSON.stringify(values));
+}
+
+function restoreCopyFilters() {
+    let values = null;
+    try { values = JSON.parse(sessionStorage.getItem('copyOfficerFilters_' + currentListTab) || 'null'); } catch (err) { values = null; }
+    if (!values) return;
+    Object.keys(values).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = values[id];
+    });
+}
+
+function clearCopyDateError() {
+    const fromEl = document.getElementById('copy-filter-fromdate');
+    const errEl = document.getElementById('copy-filter-date-error');
+    if (fromEl) fromEl.classList.remove('is-invalid');
+    if (errEl) errEl.style.display = 'none';
+}
+
+// Chức năng Tìm kiếm - MH01 Danh sách hồ sơ chờ nhập liệu (Yêu cầu cung cấp bản sao)
+function searchCopyOfficerList() {
+    const fromValue = document.getElementById('copy-filter-fromdate')?.value || '';
+    const toValue = document.getElementById('copy-filter-todate')?.value || '';
+    const fromDate = parseDateString(fromValue);
+    const toDate = parseDateString(toValue);
+    // TH1: Khoảng ngày không hợp lệ -> [MSG-ERR-VAL-007] Inline dưới ô nhập, không tìm kiếm
+    if (fromDate && toDate && fromDate > toDate) {
+        const fromEl = document.getElementById('copy-filter-fromdate');
+        const errEl = document.getElementById('copy-filter-date-error');
+        if (fromEl) fromEl.classList.add('is-invalid');
+        if (errEl) errEl.style.display = 'block';
+        return;
+    }
+    clearCopyDateError();
+    saveCopyFilters();
+    renderTable(true);
+}
+
 function resetCopyOfficerFilters() {
-    ['copy-filter-id', 'copy-filter-paperno', 'copy-filter-requester', 'copy-filter-officer'].forEach(id => {
+    ['copy-filter-id', 'copy-filter-paperno', 'copy-filter-requester', 'copy-filter-officer', 'copy-filter-customer', 'copy-filter-regno'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
     });
@@ -4529,34 +5384,125 @@ function resetCopyOfficerFilters() {
     if (type) type.value = '';
     const status = document.getElementById('copy-filter-status');
     if (status) status.value = '';
-    const today = new Date();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const year = today.getFullYear();
+    const range = getCopyDefaultDateRange();
     const fromEl = document.getElementById('copy-filter-fromdate');
-    if (fromEl) fromEl.value = `01/${month}/${year}`;
+    if (fromEl) fromEl.value = range.from;
     const toEl = document.getElementById('copy-filter-todate');
-    if (toEl) toEl.value = `${String(today.getDate()).padStart(2, '0')}/${month}/${year}`;
+    if (toEl) toEl.value = range.to;
+    clearCopyDateError();
+    sessionStorage.removeItem('copyOfficerFilters_' + currentListTab);
     renderTable(true);
 }
+
+const COPY_MSG_ERR_DK_005 = 'Hồ sơ đã được thay đổi trạng thái xử lý, không thể thực hiện thao tác lúc này. Vui lòng tải lại trang.';
+
+// Chức năng Tạo hồ sơ - kiểm tra điều kiện nhập liệu trước khi mở MH03
+function startCopyDigitize(id) {
+    const item = officerCopyRequests.find(x => x.id === id);
+    if (!item) return;
+    // TH1: Hồ sơ không còn đủ điều kiện nhập liệu -> [MSG-ERR-DK-005] dạng Toast
+    if (item.status !== 'Chờ giải quyết' || !['Đã thu', 'Miễn phí'].includes(item.feeStatus)) {
+        showListToast(COPY_MSG_ERR_DK_005, 'error');
+        return;
+    }
+    saveCopyItemForNavigation(item);
+    startDigitize(id);
+}
+
+// Chức năng Từ chối - MH01: mở popup Từ chối hồ sơ (Lý do từ chối + File căn cứ)
+let copyRejectListId = null;
 
 function openCopyRejectModal(id) {
     const item = officerCopyRequests.find(x => x.id === id);
     if (!item) return;
-    singleRejectId = id;
-    const modalTitle = document.querySelector('#modalReject .modal-header span:first-child');
-    if (modalTitle) modalTitle.innerText = `Từ chối hồ sơ: ${item.id}`;
-    const reasonEl = document.getElementById('rejectReason');
+    if (!['chonhaplieu', 'bitralai'].includes(currentListTab)) {
+        // MH04 - Popup Từ chối yêu cầu cung cấp bản sao (SRS Xử lý yêu cầu cung cấp bản sao)
+        BsPopups.openReject(item, (it, msg) => finishCopyAction(it, msg), { allowed: currentListTab === 'duyet-choky' ? ['Duyệt chờ ký'] : ['Chờ duyệt'] });
+        return;
+    }
+    // Hồ sơ giấy (Tab Hồ sơ chờ nhập liệu / Hồ sơ Bị trả lại): Từ chối theo Nhập liệu hồ sơ giấy Yêu cầu cung cấp bản sao
+    // TH1: Hồ sơ không còn đủ điều kiện xử lý -> [MSG-ERR-DK-005] dạng Toast, không mở popup
+    if (item.status !== (currentListTab === 'bitralai' ? 'Bị trả lại' : 'Chờ giải quyết')) {
+        showListToast(COPY_MSG_ERR_DK_005, 'error');
+        return;
+    }
+    copyRejectListId = id;
+    const title = document.getElementById('copyRejectListTitle');
+    if (title) title.innerText = `Từ chối hồ sơ: ${item.id}`;
+    const reasonEl = document.getElementById('copyRejectListReason');
     if (reasonEl) {
         reasonEl.value = '';
         reasonEl.classList.remove('is-invalid');
     }
-    const errEl = document.getElementById('rejectError');
-    if (errEl) {
-        errEl.classList.remove('active');
-        errEl.style.display = 'none';
-        errEl.innerText = 'Đây là trường bắt buộc';
+    const errEl = document.getElementById('copyRejectListReasonError');
+    if (errEl) errEl.classList.remove('active');
+    clearCopyRejectListFile();
+    openModal('modalCopyRejectList');
+}
+
+function handleCopyRejectListFile(input) {
+    const errEl = document.getElementById('copyRejectListFileError');
+    if (errEl) errEl.classList.remove('active');
+    if (!input || !input.files || !input.files[0]) return;
+    const file = input.files[0];
+    // TH3: File căn cứ không hợp lệ -> Inline dưới ô đính kèm theo [BR-FILE-010]
+    if (!file.name.toLowerCase().endsWith('.pdf') || file.size > 20 * 1024 * 1024) {
+        input.value = '';
+        document.getElementById('copyRejectListFileName').innerText = 'Chưa có tệp nào được chọn';
+        if (errEl) errEl.classList.add('active');
+        return;
     }
-    openModal('modalReject');
+    document.getElementById('copyRejectListFileName').innerText = `${file.name} (${(file.size / 1048576).toFixed(1)} MB)`;
+    document.getElementById('copyRejectListFileClear').style.display = 'inline-block';
+}
+
+function clearCopyRejectListFile() {
+    const input = document.getElementById('copyRejectListFile');
+    if (input) input.value = '';
+    const nameEl = document.getElementById('copyRejectListFileName');
+    if (nameEl) nameEl.innerText = 'Chưa có tệp nào được chọn';
+    const clearBtn = document.getElementById('copyRejectListFileClear');
+    if (clearBtn) clearBtn.style.display = 'none';
+    const errEl = document.getElementById('copyRejectListFileError');
+    if (errEl) errEl.classList.remove('active');
+}
+
+function submitCopyRejectList() {
+    const reasonEl = document.getElementById('copyRejectListReason');
+    const reason = (reasonEl?.value || '').trim();
+    // TH2: Bỏ trống Lý do từ chối -> tô viền đỏ, [MSG-ERR-VAL-001] Inline
+    if (!reason) {
+        reasonEl.classList.add('is-invalid');
+        document.getElementById('copyRejectListReasonError').classList.add('active');
+        reasonEl.focus();
+        return;
+    }
+    if (document.getElementById('copyRejectListFileError')?.classList.contains('active')) return;
+    // Hiển thị thông báo xác nhận [MSG-CFM-BS-001]
+    closeModal('modalCopyRejectList');
+    openModal('modalCopyRejectConfirm');
+}
+
+function cancelCopyRejectConfirm() {
+    closeModal('modalCopyRejectConfirm');
+    openModal('modalCopyRejectList');
+}
+
+function executeCopyRejectList() {
+    closeModal('modalCopyRejectConfirm');
+    const item = officerCopyRequests.find(x => x.id === copyRejectListId);
+    if (!item) return;
+    const fileName = document.getElementById('copyRejectListFile')?.files?.[0]?.name || '';
+    item.status = 'Bị từ chối';
+    item.rejectReason = document.getElementById('copyRejectListReason').value.trim();
+    item.rejectFile = fileName;
+    item.rejectedBy = 'Nguyễn Văn Cán Bộ';
+    item.rejectedAt = new Date().toLocaleString('vi-VN');
+    persistCopyItemStatus(item);
+    copyRejectListId = null;
+    if (document.getElementById('view-copy-process')?.classList.contains('active')) closeCopyProcess();
+    showListToast('Từ chối yêu cầu cung cấp bản sao thành công.', 'success');
+    renderTable(true);
 }
 
 function renderCopyOfficerTable() {
@@ -4568,7 +5514,8 @@ function renderCopyOfficerTable() {
     const thead = document.getElementById('table-headers-container');
     const tbody = document.getElementById('table-data');
 
-    const isChonhaplieu = currentListTab === 'chonhaplieu';
+    // Tab Hồ sơ chờ nhập liệu và Tab Hồ sơ Bị trả lại dùng bố cục MH01 - Danh sách hồ sơ chờ nhập liệu
+    const isChonhaplieu = ['chonhaplieu', 'bitralai'].includes(currentListTab);
 
     if (isChonhaplieu) {
         thead.innerHTML = `
@@ -4585,24 +5532,24 @@ function renderCopyOfficerTable() {
                 <th style="width:130px;text-align:right">Số tiền đã thu (VNĐ)</th>
                 <th style="width:130px">Trạng thái hồ sơ</th>
                 <th style="width:160px">Cán bộ tiếp nhận</th>
-                <th style="width:120px;text-align:center">Thao tác</th>
+                <th class="col-actions" style="width:120px;min-width:120px;text-align:center">Thao tác</th>
             </tr>
         `;
     } else {
+        // MH01 - Danh sách yêu cầu cung cấp bản sao chờ duyệt (SRS Xử lý yêu cầu cung cấp bản sao)
         thead.innerHTML = `
             <tr>
                 <th style="width:50px;text-align:center">STT</th>
-                <th style="width:160px">Mã hồ sơ</th>
-                <th style="width:110px">Số đơn giấy</th>
+                <th style="width:170px">Mã hồ sơ</th>
                 <th style="width:150px">Thời điểm đăng ký</th>
-                <th style="width:180px">Người yêu cầu</th>
-                <th style="width:130px">Số đăng ký gốc</th>
+                <th style="width:130px">Mã khách hàng</th>
+                <th style="width:220px">Người yêu cầu</th>
+                <th style="width:130px">Số đăng ký</th>
                 <th style="width:140px">Loại cung cấp bản sao</th>
-                <th style="width:100px;text-align:center">Số lượng</th>
-                <th style="width:120px">Trạng thái lệ phí</th>
-                <th style="width:130px">Trạng thái hồ sơ</th>
+                <th style="width:110px;text-align:center">Số lượng bản sao</th>
+                <th style="width:150px">Trạng thái</th>
                 <th style="width:150px">Cán bộ xử lý</th>
-                <th style="width:120px;text-align:center">Thao tác</th>
+                <th class="col-actions" style="width:120px;min-width:120px;text-align:center">Thao tác</th>
             </tr>
         `;
     }
@@ -4613,14 +5560,22 @@ function renderCopyOfficerTable() {
     const officer = document.getElementById('copy-filter-officer')?.value.toLowerCase().trim() || '';
     const copyType = document.getElementById('copy-filter-type')?.value || '';
     const status = document.getElementById('copy-filter-status')?.value || '';
+    const customer = document.getElementById('copy-filter-customer')?.value.toLowerCase().trim() || '';
+    const regNoFilter = document.getElementById('copy-filter-regno')?.value.toLowerCase().trim() || '';
     const fromDateValue = document.getElementById('copy-filter-fromdate')?.value || '';
     const toDateValue = document.getElementById('copy-filter-todate')?.value || '';
     const targetStatuses = getOfficerCopyTargetStatuses();
 
     const rows = officerCopyRequests.filter(x => {
         if (!targetStatuses.includes(x.status)) return false;
+        // Danh sách chờ nhập liệu: chỉ hiển thị hồ sơ giấy có Trạng thái lệ phí "Đã thu" hoặc "Miễn phí"
+        if (currentListTab === 'chonhaplieu' && (x.source !== 'Cán bộ nhập liệu' || !['Đã thu', 'Miễn phí'].includes(x.feeStatus))) return false;
+        // Danh sách chờ duyệt: chỉ hồ sơ Yêu cầu cung cấp bản sao trực tuyến (hồ sơ giấy xử lý tại Nhập liệu hồ sơ giấy)
+        if (currentListTab === 'choduyet' && x.source === 'Cán bộ nhập liệu') return false;
         if (dossierId && !x.id.toLowerCase().includes(dossierId)) return false;
         if (paperNo && !(`${x.paperNo || ''}`.toLowerCase().includes(paperNo))) return false;
+        if (customer && !(`${x.customerId || ''}`.toLowerCase().includes(customer))) return false;
+        if (regNoFilter && !(`${x.registrationNo || ''}`.toLowerCase().includes(regNoFilter))) return false;
         if (requester && !(`${x.requester || ''}`.toLowerCase().includes(requester))) return false;
         if (officer && !(`${x.receptionOfficer || x.officer || ''}`.toLowerCase().includes(officer))) return false;
         if (copyType && x.copyType !== copyType) return false;
@@ -4641,14 +5596,23 @@ function renderCopyOfficerTable() {
         return true;
     });
 
+    // Danh sách chờ nhập liệu: sắp xếp mặc định theo Ngày tiếp nhận giảm dần
+    if (isChonhaplieu) {
+        rows.sort((a, b) => (parseDateString(b.registeredAt) || 0) - (parseDateString(a.registeredAt) || 0));
+    } else {
+        // Sắp xếp mặc định theo Thời điểm đăng ký tăng dần để ưu tiên xử lý hồ sơ đến trước
+        rows.sort((a, b) => (parseDateString(a.registeredAt) || 0) - (parseDateString(b.registeredAt) || 0));
+    }
+
     const pageRows = applyPagination(rows, renderCopyOfficerTable);
     if (!pageRows.length) {
-        const colSpan = isChonhaplieu ? 13 : 12;
-        tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align:center;padding:30px;color:var(--text-muted);font-style:italic">Không có hồ sơ giấy Yêu cầu cung cấp bản sao phù hợp.</td></tr>`;
+        const colSpan = isChonhaplieu ? 13 : 11;
+        // [MSG-INF-SYS-001]
+        tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align:center;padding:30px;color:var(--text-muted);font-style:italic">Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</td></tr>`;
     } else {
         tbody.innerHTML = pageRows.map((row, idx) => {
             const isCopyPaper = row.copyType === 'Bản sao giấy';
-            const qtyText = isCopyPaper ? (row.quantity ? `${row.quantity} bản` : (row.copyQty || '1 bản')) : '—';
+            const qtyText = isCopyPaper ? (row.quantity ? `${row.quantity} bản` : (row.copyQty || '1 bản')) : '-';
             const feeText = row.feeStatus === 'Miễn phí' || row.fee === 0 ? 'Miễn phí' : Number(row.fee || 30000).toLocaleString('vi-VN');
             const feeBadge = `<span class="badge ${row.feeStatus === 'Miễn phí' ? 'badge-info' : 'badge-success'}">${row.feeStatus || 'Đã thu'}</span>`;
             const statusBadge = `<span class="badge ${getCopyBadgeClass(row.status)}">${row.status}</span>`;
@@ -4656,16 +5620,18 @@ function renderCopyOfficerTable() {
 
             if (isChonhaplieu) {
                 // Rule 3: Fixed-slot action column alignment (always 2 slots)
-                const btnCreate = `<button class="icon-btn edit" title="Tạo hồ sơ" onclick="event.stopPropagation(); startDigitize('${row.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
-                const btnReject = `<button class="icon-btn reject" title="Từ chối hồ sơ" onclick="event.stopPropagation(); openCopyRejectModal('${row.id}')"><i class="fa-solid fa-ban"></i></button>`;
-                const actions = btnCreate + btnReject;
+                const btnCreate = `<button class="icon-btn edit" title="Tạo hồ sơ" onclick="event.stopPropagation(); startCopyDigitize('${row.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                const btnReject = `<button class="icon-btn reject" title="Từ chối" onclick="event.stopPropagation(); openCopyRejectModal('${row.id}')"><i class="fa-solid fa-ban"></i></button>`;
+                // Tab Hồ sơ Bị trả lại: Cột Thao tác gồm Cập nhật (mở màn Nhập liệu kèm Khối Thông tin trả lại)
+                const btnUpdate = `<button class="icon-btn edit" title="Cập nhật" onclick="event.stopPropagation(); saveCopyItemForNavigation(officerCopyRequests.find(x => x.id === '${row.id}')); startDigitize('${row.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                const actions = currentListTab === 'bitralai' ? btnUpdate : btnCreate + btnReject;
 
                 return `
-                    <tr style="cursor:pointer" onclick="openPaperReadonly('${row.id}')">
+                    <tr style="cursor:pointer" onclick="${currentListTab === 'bitralai' ? `openCopyProcess('${row.id}')` : `openCopyReadonly('${row.id}')`}">
                         <td style="text-align:center">${paginationStartIndex + idx + 1}</td>
                         <td><span class="action-link"><b>${row.id}</b></span></td>
-                        <td><code>${row.paperNo || '—'}</code></td>
-                        <td><b>${row.requester}</b><br><span style="color:var(--text-muted);font-size:12px">${row.address || ''}</span></td>
+                        <td><code>${row.paperNo || '-'}</code></td>
+                        <td><b>${row.requester}</b></td>
                         <td>${row.requestType || row.type || 'Yêu cầu cung cấp bản sao văn bản chứng nhận'}</td>
                         <td>${copyTypeBadge}</td>
                         <td style="text-align:center">${qtyText}</td>
@@ -4674,32 +5640,25 @@ function renderCopyOfficerTable() {
                         <td style="text-align:right">${feeText}</td>
                         <td>${statusBadge}</td>
                         <td>${row.receptionOfficer || row.officer || 'Nguyễn Thị Tiếp Nhận'}</td>
-                        <td style="text-align:center;white-space:nowrap" onclick="event.stopPropagation()">${actions}</td>
+                        <td class="col-actions" style="text-align:center;white-space:nowrap" onclick="event.stopPropagation()">${actions}</td>
                     </tr>
                 `;
             } else {
-                let btnSlot1 = `<button class="icon-btn view" title="Xem chi tiết" onclick="event.stopPropagation(); openPaperReadonly('${row.id}')"><i class="fa-solid fa-eye"></i></button>`;
-                let btnSlot2 = `<button class="icon-btn edit" title="Hồ sơ ở trạng thái này không được chỉnh sửa" style="opacity:0.35;pointer-events:none;cursor:not-allowed;"><i class="fa-solid fa-pen-to-square"></i></button>`;
-
-                if (row.status === 'Bị trả lại') {
-                    btnSlot2 = `<button class="icon-btn edit" title="Sửa và trình lại" onclick="event.stopPropagation(); startDigitize('${row.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
-                }
-                const actions = btnSlot1 + btnSlot2;
-
+                const actions = getCopyRowActions(row);
+                const rowClick = currentListTab === 'choduyet' ? `openCopyView('${row.id}')` : currentListTab === 'duyet-choky' ? `openCopyProcess('${row.id}')` : `openPaperReadonly('${row.id}')`;
                 return `
-                    <tr style="cursor:pointer" onclick="openPaperReadonly('${row.id}')">
+                    <tr style="cursor:pointer" onclick="${rowClick}">
                         <td style="text-align:center">${paginationStartIndex + idx + 1}</td>
                         <td><span class="action-link"><b>${row.id}</b></span></td>
-                        <td><code>${row.paperNo || '—'}</code></td>
                         <td>${row.registeredAt}</td>
+                        <td><code>${row.customerId || '-'}</code></td>
                         <td><b>${row.requester}</b></td>
-                        <td><code>${row.registrationNo || 'Chưa nhập'}</code></td>
+                        <td><code>${row.registrationNo || '-'}</code></td>
                         <td>${copyTypeBadge}</td>
-                        <td style="text-align:center">${qtyText}</td>
-                        <td>${feeBadge}</td>
+                        <td style="text-align:center">${isCopyPaper ? qtyText : '—'}</td>
                         <td>${statusBadge}</td>
-                        <td>${row.officer || 'Nguyễn Văn Cán Bộ'}</td>
-                        <td style="text-align:center;white-space:nowrap" onclick="event.stopPropagation()">${actions}</td>
+                        <td>${row.officer || '-'}</td>
+                        <td class="col-actions" style="text-align:center;white-space:nowrap" onclick="event.stopPropagation()">${actions}</td>
                     </tr>
                 `;
             }
@@ -4707,6 +5666,159 @@ function renderCopyOfficerTable() {
     }
 }
 
+
+// Thao tác trên dòng danh sách Yêu cầu cung cấp bản sao theo Tab trạng thái
+function getCopyRowActions(row) {
+    const btn = (cls, title, icon, fn) => `<button class="icon-btn ${cls}" title="${title}" onclick="event.stopPropagation(); ${fn}('${row.id}')"><i class="${icon}"></i></button>`;
+    if (currentListTab === 'choduyet') {
+        // MH01: Xử lý hồ sơ, Từ chối
+        return btn('edit', 'Xử lý hồ sơ', 'fa-solid fa-pen-to-square', 'openCopyProcess') + btn('reject', 'Từ chối', 'fa-solid fa-ban', 'openCopyRejectModal');
+    }
+    if (currentListTab === 'duyet-choky') {
+        return btn('sign', 'Trình ký', 'fa-solid fa-file-signature', 'openCopySignFromList') + btn('cancel-approve', 'Hủy duyệt', 'fa-solid fa-rotate-left', 'cancelCopyApproval') + btn('reject', 'Từ chối', 'fa-solid fa-ban', 'openCopyRejectModal');
+    }
+    if (currentListTab === 'da_xu_ly' && row.copyType === 'Bản sao giấy' && row.status === 'Đã duyệt - chờ trả kết quả') {
+        return btn('sign', 'Xác nhận trả kết quả', 'fa-solid fa-check', 'confirmCopyPaperReturn');
+    }
+    return '';
+}
+
+// Hủy duyệt (Tab Hồ sơ duyệt chờ ký): chuyển về "Chờ duyệt", hiển thị [MSG-SUC-DK-KT-004]
+function cancelCopyApproval(id) {
+    const item = officerCopyRequests.find(x => x.id === id);
+    if (!item || item.status !== 'Duyệt chờ ký') { showListToast(COPY_MSG_ERR_DK_005, 'error'); return; }
+    item.status = 'Chờ duyệt';
+    persistCopyItem(item);
+    renderTable();
+    showListToast('Đã hủy duyệt hồ sơ thành công', 'success');
+}
+
+function persistCopyItem(item) {
+    let list = [];
+    try { list = JSON.parse(localStorage.getItem(COPY_STORAGE_KEY) || '[]'); } catch (err) { list = []; }
+    const idx = list.findIndex(x => x.id === item.id);
+    const patch = { id: item.id, status: item.status, officer: item.officer, handlingOfficer: item.officer, processedAt: item.processedAt, assignedLeader: item.assignedLeader, submittedAt: item.submittedAt, draftFile: item.draftFile, rejectReason: item.rejectReason, rejectedBy: item.rejectedBy, rejectedAt: item.rejectedAt, returnedResultAt: item.returnedResultAt };
+    if (idx >= 0) list[idx] = { ...list[idx], ...patch }; else list.unshift(patch);
+    localStorage.setItem(COPY_STORAGE_KEY, JSON.stringify(list));
+}
+
+function finishCopyAction(item, message) {
+    persistCopyItem(item);
+    closeCopyProcess();
+    showListToast(message, 'success');
+    renderTable();
+}
+
+// MH06 - Màn hình Xem chi tiết yêu cầu cung cấp bản sao (Tab Hồ sơ chờ duyệt): nút Xử lý hồ sơ, Từ chối, Đóng
+function openCopyView(id) {
+    const item = officerCopyRequests.find(x => x.id === id);
+    if (!item) return;
+    selectedOfficerCopyId = id;
+    let view = document.getElementById('view-copy-process');
+    if (!view) {
+        view = document.createElement('div');
+        view.id = 'view-copy-process';
+        view.className = 'view-section';
+        document.getElementById('view-list').insertAdjacentElement('afterend', view);
+    }
+    const isPaper = item.copyType === 'Bản sao giấy';
+    const fields = [
+        ['Mã hồ sơ', `<b>${item.id}</b>`],
+        ['Thời điểm đăng ký', item.registeredAt],
+        ['Mã khách hàng', item.customerId || '-'],
+        ['Người yêu cầu', item.requester],
+        ['Số đăng ký', item.registrationNo || '-'],
+        ['Loại cung cấp bản sao', item.copyType],
+        ['Số lượng bản sao', isPaper ? `${String(item.quantity || 1).padStart(2, '0')} bản` : '—'],
+        ['Trạng thái', `<span class="badge ${getCopyBadgeClass(item.status)}">${item.status}</span>`]
+    ];
+    const canProcess = item.status === 'Chờ duyệt';
+    view.innerHTML = `
+        <div class="card-section">
+            <div class="section-title"><span><i class="fa-solid fa-circle-info"></i> Xem chi tiết yêu cầu cung cấp bản sao: ${item.id}</span></div>
+            <div class="info-grid">${fields.map(([l, v]) => `<div class="info-group"><div class="info-label">${l}</div><div class="info-value">${v || '-'}</div></div>`).join('')}</div>
+        </div>
+        <div class="card-section" style="position:sticky;bottom:0;z-index:40;display:flex;justify-content:flex-end;gap:10px;box-shadow:0 -4px 12px rgba(15,23,42,.08)">
+            ${canProcess ? `<button class="btn btn-primary" onclick="openCopyProcess('${item.id}')"><i class="fa-solid fa-pen-to-square"></i> Xử lý hồ sơ</button>
+            <button class="btn btn-danger" onclick="openCopyRejectModal('${item.id}')"><i class="fa-solid fa-ban"></i> Từ chối</button>` : ''}
+            <button class="btn btn-outline-secondary" onclick="closeCopyProcess()">Đóng</button>
+        </div>`;
+    document.getElementById('view-list').classList.remove('active');
+    view.classList.add('active');
+    window.scrollTo(0, 0);
+}
+
+// MH02 - Màn hình Xử lý hồ sơ yêu cầu cung cấp bản sao
+function openCopyProcess(id) {
+    const item = officerCopyRequests.find(x => x.id === id);
+    if (!item) return;
+    selectedOfficerCopyId = id;
+    let view = document.getElementById('view-copy-process');
+    if (!view) {
+        view = document.createElement('div');
+        view.id = 'view-copy-process';
+        view.className = 'view-section';
+        document.getElementById('view-list').insertAdjacentElement('afterend', view);
+    }
+    const isPaper = item.copyType === 'Bản sao giấy';
+    // Nút Duyệt chờ ký / Trình ký chỉ hiển thị khi đã tra cứu được hồ sơ gốc theo Số đăng ký
+    const hasOriginal = !!BsPopups.lookup(item.registrationNo);
+    const canApprove = hasOriginal && item.status === 'Chờ duyệt';
+    const canSign = hasOriginal && ['Chờ duyệt', 'Duyệt chờ ký'].includes(item.status);
+    // Tab Hồ sơ duyệt chờ ký: bổ sung Hủy duyệt, Từ chối; nút Hủy bỏ đổi thành Đóng
+    const isApprovedWaitSign = item.status === 'Duyệt chờ ký';
+    // Tab Hồ sơ Bị trả lại: chỉ hiển thị Cập nhật, Đóng
+    const isReturnedCopy = item.status === 'Bị trả lại';
+    view.innerHTML = `
+        <div class="card-section">
+            <div class="section-title"><span><i class="fa-solid fa-copy"></i> Xử lý hồ sơ yêu cầu cung cấp bản sao: ${item.id}</span><span class="badge ${getCopyBadgeClass(item.status)}">${item.status}</span></div>
+            <h3 class="section-title" style="font-size:15px">I. Thông tin yêu cầu cung cấp bản sao</h3>
+            <div class="info-grid">
+                <div class="info-group"><div class="info-label">Mã hồ sơ</div><div class="info-value"><b>${item.id}</b></div></div>
+                <div class="info-group"><div class="info-label">Người yêu cầu</div><div class="info-value">${item.requester}</div></div>
+                <div class="info-group"><div class="info-label">Số đăng ký</div><div class="info-value"><b>${item.registrationNo || '-'}</b></div></div>
+                <div class="info-group"><div class="info-label">Loại cung cấp bản sao</div><div class="info-value"><span class="badge ${isPaper ? 'badge-secondary' : 'badge-info'}">${item.copyType}</span></div></div>
+                ${isPaper ? `<div class="info-group"><div class="info-label">Số lượng bản sao</div><div class="info-value">${String(item.quantity || 1).padStart(2, '0')} bản</div></div>` : ''}
+            </div>
+            <h3 class="section-title" style="font-size:15px;margin-top:18px">II. Cấu trúc chi tiết danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng</h3>
+            <div id="copy-process-structure">${BsPopups.renderStructure(item.registrationNo)}</div>
+        </div>
+        <div class="card-section" style="position:sticky;bottom:0;z-index:40;display:flex;justify-content:flex-end;gap:10px;box-shadow:0 -4px 12px rgba(15,23,42,.08)">
+            ${isReturnedCopy ? `<button class="btn btn-primary" onclick="saveCopyItemForNavigation(officerCopyRequests.find(x => x.id === '${item.id}')); startDigitize('${item.id}')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>
+            <button class="btn btn-danger" onclick="openCopyRejectModal('${item.id}')"><i class="fa-solid fa-ban"></i> Từ chối</button>` : ''}
+            <button class="btn btn-outline-secondary" onclick="closeCopyProcess()">${isApprovedWaitSign || isReturnedCopy ? 'Đóng' : 'Hủy bỏ'}</button>
+            ${canApprove ? `<button class="btn btn-success" onclick="approveCopyProcess('${item.id}')"><i class="fa-solid fa-check"></i> Duyệt chờ ký</button>` : ''}
+            ${isApprovedWaitSign ? `<button class="btn btn-warning" style="background-color:#64748B;color:white" onclick="cancelCopyApproval('${item.id}');closeCopyProcess()"><i class="fa-solid fa-rotate-left"></i> Hủy duyệt</button>
+            <button class="btn btn-danger" onclick="openCopyRejectModal('${item.id}')"><i class="fa-solid fa-ban"></i> Từ chối</button>` : ''}
+            ${canSign ? `<button class="btn btn-primary" onclick="openCopySignFromList('${item.id}')"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>` : ''}
+        </div>`;
+    document.getElementById('view-list').classList.remove('active');
+    view.classList.add('active');
+    window.scrollTo(0, 0);
+}
+
+// Hủy bỏ: đóng màn hình xử lý, giữ nguyên bộ lọc trước đó
+function closeCopyProcess() {
+    const view = document.getElementById('view-copy-process');
+    if (view) view.classList.remove('active');
+    document.getElementById('view-list').classList.add('active');
+}
+
+function approveCopyProcess(id) {
+    const item = officerCopyRequests.find(x => x.id === id);
+    if (!item) return;
+    const d = new Date(), p = n => String(n).padStart(2, '0');
+    item.status = 'Duyệt chờ ký';
+    item.officer = 'Nguyễn Văn Cán Bộ';
+    item.processedAt = `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+    finishCopyAction(item, 'Duyệt yêu cầu cung cấp bản sao thành công.'); // [MSG-SUC-BS-001]
+}
+
+function openCopySignFromList(id) {
+    const item = officerCopyRequests.find(x => x.id === id);
+    if (!item) return;
+    BsPopups.openSign(item, (it, msg) => { it.officer = 'Nguyễn Văn Cán Bộ'; finishCopyAction(it, msg); });
+}
 
 function openCopyOfficerDetail(id) {
     const item = officerCopyRequests.find(x => x.id === id);
@@ -4902,15 +6014,16 @@ function rejectCopyOfficer(id) {
     renderTable(true);
 }
 
+// Xác nhận trả kết quả bản sao giấy (MH05)
 function confirmCopyPaperReturn(id) {
     const item = officerCopyRequests.find(x => x.id === id);
-    if (!item || item.status !== 'Đã duyệt - chờ trả kết quả' || item.copyType !== 'Bản sao giấy') return;
-    if (!confirm(`Xác nhận đã trả kết quả bản sao giấy cho hồ sơ ${item.id}?`)) return;
-    item.status = 'Hoàn thành';
-    item.returnedAt = new Date().toLocaleString('vi-VN');
-    alert(`Đã xác nhận trả kết quả bản sao giấy cho hồ sơ ${item.id}. Hồ sơ chuyển sang Hoàn thành.`);
-    if (selectedOfficerCopyId === id) closeDetail();
-    renderTable(true);
+    if (!item) return;
+    // TH1: Hồ sơ không còn ở trạng thái "Đã duyệt - chờ trả kết quả" -> [MSG-ERR-DK-005] dạng Toast
+    if (item.status !== 'Đã duyệt - chờ trả kết quả' || item.copyType !== 'Bản sao giấy') {
+        showListToast(COPY_MSG_ERR_DK_005, 'error');
+        return;
+    }
+    BsPopups.openConfirmReturn(item, (it, msg) => finishCopyAction(it, msg));
 }
 
 function renderDevelopingTable(message) {
@@ -5013,6 +6126,205 @@ function renderCcttOfficerLookup() {
     document.getElementById('tab-contents-container').innerHTML = renderCcttOfficerDetailContent(item, true);
 }
 
+// =====================================================================
+// XỬ LÝ YÊU CẦU CUNG CẤP THÔNG TIN (SRS 4.3.2.2) - MH01/MH02/MH03 + popup MH04/MH05
+// =====================================================================
+function searchCcttOfficerList() {
+    const fromEl = document.getElementById('cctt-filter-fromdate');
+    const toEl = document.getElementById('cctt-filter-todate');
+    const errEl = document.getElementById('cctt-filter-date-error');
+    const from = parseDateString(fromEl?.value || ''), to = parseDateString(toEl?.value || '');
+    const invalid = !!(from && to && from > to);
+    if (fromEl) fromEl.classList.toggle('is-invalid', invalid);
+    if (errEl) errEl.style.display = invalid ? 'block' : 'none';
+    if (invalid) return; // TH1 [MSG-ERR-VAL-007]
+    renderTable(true);
+}
+
+function getCcttRowActions(row) {
+    const btn = (cls, title, icon, fn) => `<button class="icon-btn ${cls}" title="${title}" onclick="event.stopPropagation(); ${fn}('${row.id}')"><i class="${icon}"></i></button>`;
+    if (currentListTab === 'choduyet') return btn('edit', 'Xử lý hồ sơ', 'fa-solid fa-pen-to-square', 'openCcttProcess') + btn('reject', 'Từ chối', 'fa-solid fa-ban', 'openCcttReject');
+    if (currentListTab === 'duyet-choky') return btn('sign', 'Trình ký', 'fa-solid fa-file-signature', 'openCcttSignFromList') + btn('cancel-approve', 'Hủy duyệt', 'fa-solid fa-rotate-left', 'cancelCcttApproval') + btn('reject', 'Từ chối', 'fa-solid fa-ban', 'openCcttReject');
+    return '';
+}
+
+// Hủy duyệt (Tab Hồ sơ duyệt chờ ký): chuyển về "Chờ duyệt", hiển thị [MSG-SUC-DK-KT-004]
+function cancelCcttApproval(id) {
+    const item = ccttOfficerRequests.find(x => x.id === id);
+    if (!item || item.status !== 'Duyệt chờ ký') { showListToast(CcttPopups.MSG_ERR_STATUS, 'error'); return; }
+    item.status = 'Chờ duyệt';
+    item.cancelApprovedAt = new Date().toLocaleString('vi-VN');
+    persistCcttItem(item);
+    renderTable();
+    showListToast('Đã hủy duyệt hồ sơ thành công', 'success');
+}
+
+function ensureCcttView() {
+    let view = document.getElementById('view-cctt-process');
+    if (!view) {
+        view = document.createElement('div');
+        view.id = 'view-cctt-process';
+        view.className = 'view-section';
+        document.getElementById('view-list').insertAdjacentElement('afterend', view);
+    }
+    return view;
+}
+
+function closeCcttView() {
+    const view = document.getElementById('view-cctt-process');
+    if (view) view.classList.remove('active');
+    document.getElementById('view-list').classList.add('active');
+    selectedCcttOfficerId = null;
+}
+
+function showCcttView(html) {
+    const view = ensureCcttView();
+    view.innerHTML = html;
+    document.getElementById('view-list').classList.remove('active');
+    view.classList.add('active');
+    window.scrollTo(0, 0);
+}
+
+function persistCcttItem(item) {
+    let list = [];
+    try { list = JSON.parse(localStorage.getItem('officer_cctt_requests') || '[]'); } catch (err) { list = []; }
+    const idx = list.findIndex(x => x.id === item.id);
+    const patch = { id: item.id, status: item.status, officer: item.officer, processedAt: item.processedAt, signLeader: item.signLeader, submittedAt: item.submittedAt, rejectReason: item.rejectReason, rejectedAt: item.rejectedAt, lookupResult: item.lookupResult };
+    if (idx >= 0) list[idx] = { ...list[idx], ...patch }; else list.unshift(patch);
+    localStorage.setItem('officer_cctt_requests', JSON.stringify(list));
+}
+
+function finishCcttAction(item, message) {
+    persistCcttItem(item);
+    closeCcttView();
+    showListToast(message, 'success');
+    renderTable();
+}
+
+// MH03 - Xem chi tiết hồ sơ yêu cầu cung cấp thông tin chờ xử lý
+function openCcttView(id) {
+    const item = ccttOfficerRequests.find(x => x.id === id);
+    if (!item) return;
+    selectedCcttOfficerId = id;
+    const fields = [['Mã hồ sơ', item.id], ['Thời điểm đăng ký', item.registeredAt], ['Người yêu cầu', item.requester], ['Mã khách hàng', item.customerId || '-'], ['Nguồn tiếp nhận', normalizeReceptionSource(item.source)], ['Tiêu chí yêu cầu cung cấp thông tin', item.criteria], ...CcttPopups.getLookupFields(item)];
+    const canProcess = item.status === 'Chờ duyệt';
+    showCcttView(`
+        <div class="card-section">
+            <div class="section-title"><span><i class="fa-solid fa-circle-info"></i> Xem chi tiết hồ sơ yêu cầu cung cấp thông tin: ${item.id}</span><span class="badge badge-warning">${item.status}</span></div>
+            <div class="info-grid">${fields.map(([l, v]) => `<div class="info-group"><div class="info-label">${l}</div><div class="info-value"><b>${v || '-'}</b></div></div>`).join('')}</div>
+        </div>
+        <div class="card-section" style="position:sticky;bottom:0;z-index:40;display:flex;justify-content:flex-end;gap:10px;box-shadow:0 -4px 12px rgba(15,23,42,.08)">
+            ${canProcess ? `<button class="btn btn-primary" onclick="openCcttProcess('${item.id}')"><i class="fa-solid fa-pen-to-square"></i> Xử lý hồ sơ</button>
+            <button class="btn btn-danger" onclick="openCcttReject('${item.id}')"><i class="fa-solid fa-ban"></i> Từ chối</button>` : ''}
+            ${item.status === 'Duyệt chờ ký' ? `<button class="btn btn-primary" onclick="openCcttSignFromList('${item.id}')"><i class="fa-solid fa-file-signature"></i> Trình ký</button>
+            <button class="btn btn-warning" style="background-color:#64748B;color:white" onclick="cancelCcttApproval('${item.id}');closeCcttView()"><i class="fa-solid fa-rotate-left"></i> Hủy duyệt</button>
+            <button class="btn btn-danger" onclick="openCcttReject('${item.id}')"><i class="fa-solid fa-ban"></i> Từ chối</button>` : ''}
+            <button class="btn btn-outline-secondary" onclick="closeCcttView()">Đóng</button>
+        </div>`);
+}
+
+// MH02 - Xử lý hồ sơ yêu cầu cung cấp thông tin (tự động điền tiêu chí, tự động tra cứu khi mở màn hình)
+let ccttProcessResult = null;
+function openCcttProcess(id) {
+    const item = ccttOfficerRequests.find(x => x.id === id);
+    if (!item) return;
+    if (item.status !== 'Chờ duyệt') { showListToast(CcttPopups.MSG_ERR_STATUS, 'error'); return; } // TH1 [MSG-ERR-CCTT-002]
+    if (!item.officer) item.officer = 'Nguyễn Văn Cán Bộ'; // ghi nhận Cán bộ xử lý nếu chưa có
+    selectedCcttOfficerId = id;
+    ccttProcessResult = CcttPopups.runLookup(item);
+    // Nút Duyệt chờ ký / Trình ký chỉ hiển thị khi đã có kết quả tra cứu (có dữ liệu hoặc không có dữ liệu)
+    const hasResult = !!ccttProcessResult;
+    const segments = ['Số đăng ký', 'Bên bảo đảm', 'Số khung'].map(c => `<button type="button" class="btn ${c === item.criteria ? 'btn-primary' : 'btn-outline-secondary'}" disabled style="${c === item.criteria ? '' : 'opacity:.45'};border-radius:0">${c}</button>`).join('');
+    const inputs = CcttPopups.getLookupFields(item).map(([l, v]) => `<div class="form-group"><label class="form-label">${l}</label><input type="text" class="form-control" value="${v || ''}" disabled style="background:#F1F5F9"></div>`).join('');
+    showCcttView(`
+        <div class="card-section">
+            <div class="section-title"><span><i class="fa-solid fa-magnifying-glass"></i> Xử lý hồ sơ yêu cầu cung cấp thông tin: ${item.id}</span><span class="badge badge-warning">${item.status}</span></div>
+            <h3 class="section-title" style="font-size:15px">I. Khối tra cứu</h3>
+            <div class="form-group"><label class="form-label">Tiêu chí yêu cầu cung cấp thông tin</label><div style="display:inline-flex;border:1px solid var(--border-color);border-radius:6px;overflow:hidden">${segments}</div></div>
+            <div class="grid-4-cols">${inputs}</div>
+            <h3 class="section-title" style="font-size:15px;margin-top:10px">II. Kết quả tra cứu</h3>
+            <div id="cctt-process-result">${CcttPopups.renderResult(ccttProcessResult)}</div>
+        </div>
+        <div class="card-section" style="position:sticky;bottom:0;z-index:40;display:flex;justify-content:flex-end;gap:10px;box-shadow:0 -4px 12px rgba(15,23,42,.08)">
+            <button class="btn btn-outline-secondary" onclick="closeCcttView()">Hủy bỏ</button>
+            ${hasResult ? `<button class="btn btn-success" onclick="approveCcttProcess('${item.id}')"><i class="fa-solid fa-check"></i> Duyệt chờ ký</button>
+            <button class="btn btn-primary" onclick="openCcttSign('${item.id}')"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>` : ''}
+        </div>`);
+}
+
+// Tab Hồ sơ duyệt chờ ký: mở MH02 ở chế độ chỉ đọc, hiển thị Khối tra cứu và Kết quả tra cứu đã lưu khi Duyệt chờ ký (không tra cứu lại)
+function openCcttApprovedView(id) {
+    const item = ccttOfficerRequests.find(x => x.id === id);
+    if (!item) return;
+    selectedCcttOfficerId = id;
+    if (!item.lookupResult) item.lookupResult = CcttPopups.runLookup(item);
+    const isApproved = item.status === 'Duyệt chờ ký';
+    renderCcttReadonlyDetail(item, `
+            <button class="btn btn-outline-secondary" onclick="closeCcttView()">Đóng</button>
+            ${isApproved ? `<button class="btn btn-warning" style="background-color:#64748B;color:white" onclick="cancelCcttApproval('${item.id}');closeCcttView()"><i class="fa-solid fa-rotate-left"></i> Hủy duyệt</button>
+            <button class="btn btn-danger" onclick="openCcttReject('${item.id}')"><i class="fa-solid fa-ban"></i> Từ chối</button>
+            <button class="btn btn-primary" onclick="openCcttSignFromList('${item.id}')"><i class="fa-solid fa-file-signature"></i> Trình ký</button>` : ''}`);
+}
+
+// Tab Hồ sơ Bị trả lại: hiển thị giống Tab Hồ sơ duyệt chờ ký (Khối tra cứu + Kết quả tra cứu đã lưu, chỉ đọc), nút Cập nhật, Đóng
+function openCcttReturnedView(id) {
+    const row = getPaperCcttRows().find(x => x.id === id);
+    if (!row) return;
+    const item = { ...row, criteria: row.lookupCriteria || row.criteria || 'Số đăng ký', inputData: row.lookupValue || row.inputData || '1505170802' };
+    if (!item.lookupResult) item.lookupResult = CcttPopups.runLookup(item);
+    renderCcttReadonlyDetail(item, `
+            <button class="btn btn-primary" onclick="startDigitize('${item.id}')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>
+            <button class="btn btn-outline-secondary" onclick="closeCcttView()">Đóng</button>`);
+}
+
+function renderCcttReadonlyDetail(item, buttonsHtml) {
+    const segments = ['Số đăng ký', 'Bên bảo đảm', 'Số khung'].map(c => `<button type="button" class="btn ${c === item.criteria ? 'btn-primary' : 'btn-outline-secondary'}" disabled style="${c === item.criteria ? '' : 'opacity:.45'};border-radius:0">${c}</button>`).join('');
+    const inputs = CcttPopups.getLookupFields(item).map(([l, v]) => `<div class="form-group"><label class="form-label">${l}</label><input type="text" class="form-control" value="${v || ''}" disabled style="background:#F1F5F9"></div>`).join('');
+    showCcttView(`
+        <div class="card-section">
+            <div class="section-title"><span><i class="fa-solid fa-circle-info"></i> Xem chi tiết hồ sơ yêu cầu cung cấp thông tin: ${item.id}</span><span class="badge ${item.status === 'Bị trả lại' ? 'badge-danger' : 'badge-info'}">${item.status}</span></div>
+            <h3 class="section-title" style="font-size:15px">I. Khối tra cứu</h3>
+            <div class="form-group"><label class="form-label">Tiêu chí yêu cầu cung cấp thông tin</label><div style="display:inline-flex;border:1px solid var(--border-color);border-radius:6px;overflow:hidden">${segments}</div></div>
+            <div class="grid-4-cols">${inputs}</div>
+            <h3 class="section-title" style="font-size:15px;margin-top:10px">II. Kết quả tra cứu</h3>
+            <div id="cctt-process-result">${CcttPopups.renderResult(item.lookupResult)}</div>
+        </div>
+        <div class="card-section" style="position:sticky;bottom:0;z-index:40;display:flex;justify-content:flex-end;gap:10px;box-shadow:0 -4px 12px rgba(15,23,42,.08)">
+            ${buttonsHtml}
+        </div>`);
+}
+
+function approveCcttProcess(id) {
+    const item = ccttOfficerRequests.find(x => x.id === id);
+    if (!item) return;
+    if (item.status !== 'Chờ duyệt') { showListToast(CcttPopups.MSG_ERR_STATUS, 'error'); return; } // TH1
+    item.lookupResult = ccttProcessResult;
+    item.status = 'Duyệt chờ ký';
+    item.officer = 'Nguyễn Văn Cán Bộ';
+    item.processedAt = ccttProcessResult ? ccttProcessResult.at : new Date().toLocaleString('vi-VN');
+    finishCcttAction(item, 'Duyệt yêu cầu cung cấp thông tin thành công.'); // [MSG-SUC-CCTT-005]
+}
+
+function openCcttSign(id) {
+    const item = ccttOfficerRequests.find(x => x.id === id);
+    if (!item) return;
+    CcttPopups.openSign(item, ccttProcessResult, (it, msg) => finishCcttAction(it, msg));
+}
+
+// Trình ký từ danh sách/xem chi tiết (hồ sơ đã có kết quả tra cứu tại bước Duyệt chờ ký)
+function openCcttSignFromList(id) {
+    const item = ccttOfficerRequests.find(x => x.id === id);
+    if (!item) return;
+    CcttPopups.openSign(item, item.lookupResult || CcttPopups.runLookup(item), (it, msg) => finishCcttAction(it, msg));
+}
+
+function openCcttReject(id) {
+    const item = ccttOfficerRequests.find(x => x.id === id);
+    if (!item) return;
+    const allowed = currentListTab === 'duyet-choky' ? ['Duyệt chờ ký'] : ['Chờ duyệt'];
+    if (!allowed.includes(item.status)) { showListToast(CcttPopups.MSG_ERR_STATUS, 'error'); return; } // TH1
+    CcttPopups.openReject(item, (it, msg) => finishCcttAction(it, msg), { allowed });
+}
 switchListTab = function (tab, element) {
     const targetShowsWorkTabs = ['choduyet', 'duyet-choky', 'bitralai', 'dang_xu_ly', 'da_xu_ly'].includes(tab);
     officerWorkType = targetShowsWorkTabs ? (sessionStorage.getItem('uc028OfficerWorkType') || 'registration') : 'registration';

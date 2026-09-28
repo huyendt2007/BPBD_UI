@@ -102,15 +102,14 @@ Tai lieu phan tich/
     │
     ├── 2_Biện pháp bảo đảm/                     # Tác nghiệp Đăng ký BPBĐ & Cung cấp thông tin
     │   ├── Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md # Tiếp nhận hồ sơ giấy tại bộ phận một cửa
-    │   ├── SRS_Ho_so_cho_nhap_lieu.md           # Hàng đợi hồ sơ giấy chờ số hóa
     │   ├── SRS_Nhap_lieu_ho_so_giay_Phieu_dang_ky_Can_bo.md # Nhập liệu phiếu đăng ký BPBĐ giấy
     │   ├── SRS_Nhap_lieu_ho_so_giay_Yeu_cau_cung_cap_thong_tin_Can_bo.md # Nhập liệu đơn cung cấp thông tin giấy
     │   ├── SRS_Nhap_lieu_ho_so_giay_Yeu_cau_cung_cap_ban_sao_Can_bo.md # Nhập liệu đơn cấp bản sao giấy
     │   ├── Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md # Kế toán thu tiền mặt hồ sơ nộp trực tiếp
+    │   ├── SRS_Kiem_tra_va_xu_ly_ho_so_Can_bo.md # Hồ sơ chờ xử lý / đang chờ ký / đã xử lý (các Tab, Badge)
     │   ├── SRS_Xu_ly_Phieu_dang_ky_Can_bo.md    # Chuyên viên thẩm định hồ sơ đăng ký BPBĐ
     │   ├── SRS_Xu_ly_Yeu_cau_cung_cap_thong_tin_Can_bo.md # Chuyên viên xử lý yêu cầu cung cấp thông tin
     │   ├── SRS_Xu_ly_Yeu_cau_cung_cap_ban_sao_Can_bo.md # Chuyên viên xử lý yêu cầu cấp bản sao
-    │   ├── Kiem_tra_va_xu_ly_ho_so.md           # Tra soát lịch sử và kiểm tra trùng lặp
     │   ├── SRS_Ky_duyet_Phieu_dang_ky_Lanh_dao.md # Lãnh đạo ký số phê duyệt phiếu đăng ký BPBĐ
     │   ├── SRS_Ky_duyet_Yeu_cau_cung_cap_thong_tin_Lanh_dao.md # Lãnh đạo ký số duyệt cung cấp thông tin
     │   ├── SRS_Ky_duyet_Yeu_cau_cung_cap_ban_sao_Lanh_dao.md # Lãnh đạo ký số duyệt cấp bản sao

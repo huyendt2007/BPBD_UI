@@ -1,4 +1,4 @@
-﻿/**
+/**
  * UC035 - Xem chi tiết Hồ sơ lịch sử (UCPS003)
  * Logic xử lý hiển thị Timeline đa phiên bản, bộ lọc nâng cao, phân trang và so sánh biến động chi tiết (Diff Viewer).
  */
@@ -1312,6 +1312,78 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error(e);
         }
     }
+
+    // Hồ sơ mở từ màn Kiểm tra và xử lý hồ sơ (Xử lý Phiếu đăng ký - MH02): dùng dữ liệu bản ghi đã chọn tại danh sách
+    const listProfile = urlParams.get('from') === 'kiem_tra' ? matchedProfile : null;
+
+    function saveListProfile(patch) {
+        if (!listProfile) return;
+        Object.assign(listProfile, patch);
+        try {
+            const list = JSON.parse(localStorage.getItem('custom_mock_profiles') || '[]');
+            const idx = list.findIndex(x => x.id === listProfile.id);
+            if (idx >= 0) list[idx] = { ...list[idx], ...patch }; else list.unshift(listProfile);
+            localStorage.setItem('custom_mock_profiles', JSON.stringify(list));
+        } catch (e) { console.error(e); }
+    }
+
+    function listProfilePopupRecord() {
+        const p = listProfile;
+        const typeMap = { 'Đăng ký mới': 'Đăng ký lần đầu', 'Thông báo xử lý tài sản': 'Thông báo xử lý tài sản bảo đảm lần đầu', 'Thay đổi thông báo xử lý tài sản': 'Thay đổi thông báo xử lý tài sản bảo đảm', 'Xóa thông báo xử lý tài sản': 'Xóa đăng ký thông báo xử lý tài sản bảo đảm' };
+        return {
+            id: p.id, registrationNo: p.id, type: typeMap[p.type] || p.type,
+            transactionType: (p.type || '').includes('xử lý tài sản') ? 'Thông báo xử lý tài sản' : p.transactionType,
+            subtype: p.subtype, requester: p.requestor || p.customer, grantor: p.customer, securedParty: p.mortgagee,
+            receivedAt: p.date, submitter: p.requestor || p.customer, pin: ['Đăng ký mới', 'Đăng ký lần đầu'].includes(p.type) ? p.pin : '',
+            source: getListSourceLabel(p.channel), assetType: p.assetType
+        };
+    }
+
+    function getListSourceLabel(channel) {
+        const v = (channel || '').toLowerCase();
+        if (v.includes('dịch vụ công') || v.includes('dvcqg')) return 'Dịch vụ công';
+        if (v.includes('trực tiếp') || v.includes('quầy') || v.includes('bưu') || v.includes('cán bộ')) return 'Trực tiếp';
+        return 'Trực tuyến';
+    }
+
+    // Đóng màn hình chi tiết, quay lại danh sách và hiển thị thông báo tại danh sách
+    function finishListAction(message) {
+        sessionStorage.setItem('kthsPendingToast', JSON.stringify({ message, type: 'success' }));
+        window.goBack();
+    }
+
+    // Khối V. Thông tin bổ sung của phiên bản đang chọn và Khối VI. Tài liệu đính kèm (dành cho Cán bộ)
+    function renderListProfileExtraBlocks() {
+        if (!listProfile) return;
+        const anchor = document.querySelector('.panel-actions-card');
+        if (!anchor || document.getElementById('sectionOfficerExtra')) return;
+        const pin = ['Đăng ký mới', 'Đăng ký lần đầu'].includes(listProfile.type) ? (listProfile.pin || '-') : '-';
+        const docs = listProfile.attachments || [
+            { name: 'Phiếu yêu cầu đăng ký (bản ký số).pdf' },
+            { name: 'Hợp đồng bảo đảm.pdf' },
+            { name: 'Giấy tờ chứng minh tư cách pháp lý.pdf' }
+        ];
+        const html = `
+            <section class="detail-section" id="sectionOfficerExtra">
+                <h3 class="detail-section-title"><i class="fa-solid fa-circle-info"></i> V. Thông tin bổ sung</h3>
+                <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 20px;font-size:13.5px">
+                    <div><div style="color:var(--text-muted);font-size:12px">Mã PIN</div><b>${pin}</b></div>
+                    <div><div style="color:var(--text-muted);font-size:12px">Nguồn tiếp nhận</div><b>${getListSourceLabel(listProfile.channel)}</b></div>
+                    <div><div style="color:var(--text-muted);font-size:12px">Mã khách hàng</div><b>${listProfile.customerId || '-'}</b></div>
+                </div>
+            </section>
+            <section class="detail-section" id="sectionOfficerAttachments">
+                <h3 class="detail-section-title"><i class="fa-solid fa-paperclip"></i> VI. Tài liệu đính kèm</h3>
+                <div style="font-size:13.5px">
+                    ${docs.map(d => `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px dashed var(--border-color)">
+                        <i class="fa-solid fa-file-pdf" style="color:#dc2626"></i><span style="flex:1">${d.name}</span>
+                        <a href="javascript:void(0)" onclick="window.open('about:blank','_blank')" style="color:#2563eb;font-weight:600;text-decoration:none"><i class="fa-solid fa-arrow-up-right-from-square"></i> Xem file</a>
+                    </div>`).join('')}
+                </div>
+            </section>`;
+        anchor.insertAdjacentHTML('beforebegin', html);
+    }
+    renderListProfileExtraBlocks();
 
     // Fallback if not matched any dynamic or static profile
     const validRegNums = ['1505156435', '1505156436', '1505156437', '1505156438', '1505156439', '1505156440', '1505156441', '1505156442', '1505156443', '1505156444'];
@@ -2938,9 +3010,11 @@ document.addEventListener('DOMContentLoaded', function () {
         diffToggle.addEventListener('change', applyDiffFilter);
 
         // Back to search
-        btnBackToSearch.addEventListener('click', function () {
-            goBack();
-        });
+        if (btnBackToSearch) {
+            btnBackToSearch.addEventListener('click', function () {
+                goBack();
+            });
+        }
 
         // Download result documents toast intercept
         document.addEventListener('click', function (e) {
@@ -2996,24 +3070,26 @@ document.addEventListener('DOMContentLoaded', function () {
             renderTimeline(true);
         });
 
-        // Demo switcher event handlers
+        // Demo switcher event handlers (nếu có)
         const btnSwitchHistory = document.getElementById('btnSwitchHistory');
         const btnSwitchSingle = document.getElementById('btnSwitchSingle');
 
-        if (isSingleMode) {
-            btnSwitchSingle.style.backgroundColor = '#3B82F6';
-            btnSwitchHistory.style.backgroundColor = '#4B5563';
-        } else {
-            btnSwitchHistory.style.backgroundColor = '#3B82F6';
-            btnSwitchSingle.style.backgroundColor = '#4B5563';
-        }
+        if (btnSwitchHistory && btnSwitchSingle) {
+            if (isSingleMode) {
+                btnSwitchSingle.style.backgroundColor = '#3B82F6';
+                btnSwitchHistory.style.backgroundColor = '#4B5563';
+            } else {
+                btnSwitchHistory.style.backgroundColor = '#3B82F6';
+                btnSwitchSingle.style.backgroundColor = '#4B5563';
+            }
 
-        btnSwitchHistory.addEventListener('click', function() {
-            window.location.search = '?mode=multi';
-        });
-        btnSwitchSingle.addEventListener('click', function() {
-            window.location.search = '?mode=single';
-        });
+            btnSwitchHistory.addEventListener('click', function() {
+                window.location.search = '?mode=multi';
+            });
+            btnSwitchSingle.addEventListener('click', function() {
+                window.location.search = '?mode=single';
+            });
+        }
     }
 
         // Setup listener for asset audit trail toggle
@@ -3044,41 +3120,50 @@ document.addEventListener('DOMContentLoaded', function () {
                 status = 'Chờ ký';
             }
 
+            // Hồ sơ mở từ danh sách Xử lý Phiếu đăng ký: nút thao tác theo trạng thái hiện tại của bản ghi
+            if (listProfile) status = listProfile.status;
+
             let buttonsHtml = '';
 
             if (status === 'Chờ duyệt') {
                 buttonsHtml = `
                     <button class="btn-back" style="background-color: var(--success-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="executeAction('duyet')"><i class="fa fa-check"></i> Duyệt</button>
-                    <button class="btn-back" style="background-color: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; font-size:13px;" onclick="executeAction('trinhky')"><i class="fa-solid fa-file-signature"></i> Trình ký</button>
-                    <button class="btn-back" style="background-color: var(--danger-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; font-size:13px;" onclick="executeAction('tuchoi')"><i class="fa fa-ban"></i> Từ chối</button>
-                    <button class="btn-back" style="margin-left: auto; font-size:13px;" onclick="goBack()"><i class="fa fa-times"></i> Đóng</button>
+                    <button class="btn-back" style="background-color: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="executeAction('trinhky')"><i class="fa-solid fa-file-signature"></i> Trình ký</button>
+                    <button class="btn-back" style="background-color: var(--danger-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="executeAction('tuchoi')"><i class="fa fa-ban"></i> Từ chối</button>
+                    <button class="btn-back" style="font-size:13px;" onclick="goBack()"><i class="fa-solid fa-xmark"></i> Đóng</button>
                 `;
             } else if (status === 'Duyệt chờ ký') {
                 buttonsHtml = `
                     <button class="btn-back" style="background-color: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="executeAction('trinhky')"><i class="fa-solid fa-file-signature"></i> Trình ký</button>
-                    <button class="btn-back" style="background-color: var(--danger-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; font-size:13px;" onclick="executeAction('tuchoi')"><i class="fa fa-ban"></i> Từ chối</button>
-                    <button class="btn-back" style="background-color: #64748B; color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; font-size:13px;" onclick="executeAction('huyduyet')"><i class="fa-solid fa-rotate-left"></i> Hủy duyệt</button>
-                    <button class="btn-back" style="margin-left: auto; font-size:13px;" onclick="goBack()"><i class="fa fa-times"></i> Đóng</button>
+                    <button class="btn-back" style="background-color: var(--danger-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="executeAction('tuchoi')"><i class="fa fa-ban"></i> Từ chối</button>
+                    <button class="btn-back" style="background-color: #64748B; color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="executeAction('huyduyet')"><i class="fa-solid fa-rotate-left"></i> Hủy duyệt</button>
+                    <button class="btn-back" style="font-size:13px;" onclick="goBack()"><i class="fa-solid fa-xmark"></i> Đóng</button>
                 `;
             } else if (status === 'Chờ ký') {
                 if (currentRole === 'lanhdao') {
                     buttonsHtml = `
                         <button class="btn-back" style="background-color: var(--success-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="executeAction('kyduyet')"><i class="fa-solid fa-signature"></i> Ký duyệt</button>
-                        <button class="btn-back" style="background-color: var(--accent-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; font-size:13px;" onclick="executeAction('tralai')"><i class="fa-solid fa-reply"></i> Trả lại</button>
-                        <button class="btn-back" style="background-color: var(--danger-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; margin-left: 8px; font-size:13px;" onclick="executeAction('tuchoi')"><i class="fa fa-ban"></i> Từ chối</button>
-                        <button class="btn-back" style="margin-left: auto; font-size:13px;" onclick="goBack()"><i class="fa fa-times"></i> Đóng</button>
+                        <button class="btn-back" style="background-color: var(--accent-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="executeAction('tralai')"><i class="fa-solid fa-reply"></i> Trả lại</button>
+                        <button class="btn-back" style="background-color: var(--danger-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="executeAction('tuchoi')"><i class="fa fa-ban"></i> Từ chối</button>
+                        <button class="btn-back" style="font-size:13px;" onclick="goBack()"><i class="fa-solid fa-xmark"></i> Đóng</button>
                     `;
                 } else {
                     buttonsHtml = `
                         <span style="font-size: 13px; color: var(--text-muted); margin-right: auto; font-style: italic;">
                             <i class="fa-solid fa-lock"></i> Hồ sơ ở trạng thái Chờ ký (Chỉ Lãnh đạo mới có quyền ký duyệt)
                         </span>
-                        <button class="btn-back" style="font-size:13px;" onclick="goBack()"><i class="fa fa-times"></i> Đóng</button>
+                        <button class="btn-back" style="font-size:13px;" onclick="goBack()"><i class="fa-solid fa-xmark"></i> Đóng</button>
                     `;
                 }
+            } else if (status === 'Bị trả lại' && listProfile) {
+                // Tab Hồ sơ Bị trả lại: chỉ hiển thị Cập nhật, Đóng; Cập nhật mở màn Nhập liệu hồ sơ giấy
+                buttonsHtml = `
+                    <button class="btn-back" style="background-color: var(--primary-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="window.location.href='nhap_lieu_ho_so_giay.html?id=' + encodeURIComponent('${listProfile.id}') + '&returned=1'"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>
+                    <button class="btn-back" style="font-size:13px;" onclick="goBack()"><i class="fa-solid fa-xmark"></i> Đóng</button>
+                `;
             } else {
                 buttonsHtml = `
-                    <button class="btn-back" style="font-size:13px;" onclick="goBack()"><i class="fa fa-times"></i> Đóng</button>
+                    <button class="btn-back" style="font-size:13px;" onclick="goBack()"><i class="fa-solid fa-xmark"></i> Đóng</button>
                 `;
             }
 
@@ -3109,6 +3194,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('pinError').style.display = 'none';
                     modal.classList.add('active');
                 }
+            } else if (action === 'tuchoi' && listProfile && ['Chờ duyệt', 'Duyệt chờ ký'].includes(listProfile.status) && window.PdkPopups) {
+                // MH03 - Popup Từ chối Phiếu đăng ký
+                PdkPopups.openReject([listProfilePopupRecord()], {
+                    mode: 'single',
+                    onDone: (recs, msg) => {
+                        const r = recs[0];
+                        saveListProfile({ status: r.status, statusClass: r.statusClass, pendingAction: r.pendingAction, rejectReason: r.rejectReason, rejectLeader: r.rejectLeader, rejectedBy: r.rejectedBy, rejectedAt: r.rejectedAt, rejectDraftFile: r.rejectDraftFile });
+                        finishListAction(msg);
+                    }
+                });
             } else if (action === 'tuchoi') {
                 const modal = document.getElementById('modalReason');
                 if (modal) {
@@ -3127,6 +3222,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('reasonError').style.display = 'none';
                     modal.classList.add('active');
                 }
+            } else if (action === 'duyet' && listProfile) {
+                saveListProfile({ status: 'Duyệt chờ ký', statusClass: 'badge-info', approvedBy: 'Nguyễn Văn Cán Bộ', approvedAt: new Date().toLocaleString('vi-VN') });
+                finishListAction('Phê duyệt hồ sơ thành công'); // [MSG-SUC-DK-KT-001]
+            } else if (action === 'trinhky' && listProfile && window.PdkPopups) {
+                // MH04 - Popup Trình ký Phiếu đăng ký
+                PdkPopups.openSign([listProfilePopupRecord()], {
+                    mode: 'single',
+                    onDone: (recs, msg) => {
+                        const r = recs[0];
+                        saveListProfile({ status: r.status, statusClass: r.statusClass, pendingAction: r.pendingAction, signLeader: r.signLeader, submittedBy: r.submittedBy, submittedAt: r.submittedAt, draftLocked: true, certificateDraftFile: r.certificateDraftFile });
+                        finishListAction(msg);
+                    }
+                });
+            } else if (action === 'huyduyet' && listProfile) {
+                saveListProfile({ status: 'Chờ duyệt', statusClass: 'badge-warning' });
+                finishListAction('Đã hủy duyệt hồ sơ thành công'); // [MSG-SUC-DK-KT-004]
             } else if (action === 'duyet') {
                 if (currentSelectedVersion) {
                     currentSelectedVersion.statusText = 'Duyệt chờ ký';

@@ -27,6 +27,7 @@
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Thông tin tài khoản chung** | - | - | - | Khối luôn hiển thị cho cả tài khoản `Cá nhân` và `Tổ chức`. Toàn bộ thông tin trong khối là thông tin chỉ đọc, gắn với hồ sơ tài khoản của người dùng đang đăng nhập. |
+| Mã khách hàng | String(50) | - | - | Control UI: Label.<br>- Hiển thị thông tin Mã khách hàng đối với tài khoản chính. Với tài khoản phụ thuộc tổ chức, tài khoản phụ không có Mã khách hàng riêng nên sẽ hiển thị theo thông tin Mã khách hàng của tài khoản chính. |
 | Loại khách hàng | Enum(String(50)) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị loại khách hàng gắn với hồ sơ tài khoản của người dùng đang đăng nhập: `Cá nhân` hoặc `Tổ chức`. |
 | Loại tài khoản | Enum(String(50)) | Có | Theo người dùng đang đăng nhập | Chỉ đọc. Hiển thị loại tài khoản của người dùng đang đăng nhập: `Tài khoản chính` hoặc `Tài khoản phụ`. |
 | Nguồn xác thực | Enum(String(100)) | Có | Theo hồ sơ tài khoản | Chỉ đọc. Hiển thị nguồn xác thực đang liên kết với hồ sơ tài khoản của người dùng đang đăng nhập bao gồm các nguồn: <br> - `VNeID` <br> - `Nội bộ` <br> - `VNeID, Nội bộ`. |

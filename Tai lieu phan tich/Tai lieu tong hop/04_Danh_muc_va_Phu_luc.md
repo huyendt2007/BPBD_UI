@@ -352,11 +352,17 @@ Dưới đây là danh sách các thông báo (MessageList - MSG) chuẩn hóa h
 | **[MSG-ERR-DK-012]** | Lỗi | `"Chứng thư số không khớp với Lãnh đạo được phân công ký duyệt."` | Toast | Không |
 | **[MSG-ERR-DK-013]** | Lỗi | `"Ký số không thành công. Vui lòng kiểm tra thiết bị ký số và thử lại."` | Toast | Không |
 | **[MSG-ERR-DK-014]** | Lỗi | `"Không tìm thấy hồ sơ theo số đăng ký đã nhập. Vui lòng kiểm tra lại."` | Inline | Không |
+| **[MSG-ERR-DK-015]** | Lỗi | `"Vui lòng xem dự thảo Thông báo từ chối của tất cả hồ sơ trước khi xác nhận."` | Toast | Không |
+| **[MSG-ERR-DK-016]** | Lỗi | `"Vui lòng xem dự thảo Văn bản chứng nhận của tất cả hồ sơ trước khi trình ký."` | Toast | Không |
+| **[MSG-ERR-DK-017]** | Lỗi | `"Không sinh được file PDF dự thảo. Vui lòng thử lại sau."` | Toast | Không |
+| **[MSG-WRN-DK-001]** | Cảnh báo | `"Chỉ được trình ký tối đa 20 hồ sơ/lần. Vui lòng bỏ chọn bớt hồ sơ."` | Toast | Không |
+| **[MSG-WRN-DK-002]** | Cảnh báo | `"Chỉ được ký duyệt tối đa 20 hồ sơ/lần. Vui lòng bỏ chọn bớt hồ sơ."` | Toast | Không |
 | **[MSG-CFM-DK-013]** | Xác nhận | `"Bạn có chắc chắn muốn ký số hồ sơ đã chọn không?"` | Popup Custom Modal | Đồng ý / Hủy |
 | **[MSG-CFM-DK-014]** | Xác nhận | `"Bạn có chắc chắn muốn trả lại hồ sơ cho Cán bộ xử lý lại không?"` | Popup Custom Modal | Đồng ý / Hủy |
 | **[MSG-CFM-DK-015]** | Xác nhận | `"Bạn có chắc chắn muốn từ chối hồ sơ này không?"` | Popup Custom Modal | Đồng ý / Hủy |
 | **[MSG-SUC-DK-KT-005]** | Thành công | `"Ký số hồ sơ thành công"` | Toast | Không |
 | **[MSG-SUC-DK-KT-006]** | Thành công | `"Đã trả lại hồ sơ cho Cán bộ xử lý lại"` | Toast | Không |
+| **[MSG-SUC-DK-KT-007]** | Thành công | `"Gửi duyệt hồ sơ thành công. Hồ sơ đã chuyển sang trạng thái Chờ duyệt."` | Toast | Không |
 | **[MSG-ERR-UCPS-001]** | Lỗi | `"Số đơn giấy đã tồn tại trong năm tiếp nhận tại đơn vị này."` | Toast hoặc Inline | Không |
 | **[MSG-ERR-UCPS-002]** | Lỗi | `"Không tìm thấy tài khoản trực tuyến phù hợp."` | Toast hoặc Inline | Không |
 | **[MSG-ERR-UCPS-003]** | Lỗi | `"Không tìm thấy biểu phí đang có hiệu lực."` | Toast | Không |

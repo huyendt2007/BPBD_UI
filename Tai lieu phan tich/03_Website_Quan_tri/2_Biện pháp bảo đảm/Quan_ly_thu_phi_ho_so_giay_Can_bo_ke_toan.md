@@ -18,12 +18,12 @@ Phạm vi kết thúc khi Cán bộ kế toán xác nhận một trong các hìn
 - **"Chuyển khoản"**: ghi nhận khoản ghi Có trên tài khoản/KBNN của đơn vị theo sao kê hoặc thông báo ghi Có.
 - **"Miễn phí"**: ghi nhận căn cứ miễn phí.
 
-Sau khi xác nhận thu thành công, khoản phải thu chuyển sang **"Đã thu"** hoặc **"Miễn phí"**, hệ thống sinh số biên lai/chứng từ và chuyển hồ sơ sang **"Chờ giải quyết"** để Cán bộ giải quyết tiếp tục xử lý tại [SRS - Hồ sơ chờ nhập liệu](SRS_Ho_so_cho_nhap_lieu.md). Sau khi xác nhận hoàn phí thành công, khoản phải hoàn chuyển sang **"Đã hoàn"**, hệ thống sinh chứng từ hoàn phí và ghi lịch sử tài chính của hồ sơ.
+Sau khi xác nhận thu thành công, khoản phải thu chuyển sang **"Đã thu"** hoặc **"Miễn phí"**, hệ thống sinh số biên lai/chứng từ và chuyển hồ sơ sang **"Chờ giải quyết"** để Cán bộ giải quyết tiếp tục xử lý tại [Tab Hồ sơ chờ nhập liệu - Kiểm tra và xử lý hồ sơ - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Kiem_tra_va_xu_ly_ho_so_Can_bo.md). Sau khi xác nhận hoàn phí thành công, khoản phải hoàn chuyển sang **"Đã hoàn"**, hệ thống sinh chứng từ hoàn phí và ghi lịch sử tài chính của hồ sơ.
 
 Không thuộc phạm vi tài liệu này:
 
 - Tạo hồ sơ tiếp nhận và tính phí ban đầu: xem [UCPS012](Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md).
-- Hồ sơ chờ nhập liệu sau khi đã hoàn tất thu phí/miễn phí: xem [SRS_Ho_so_cho_nhap_lieu](SRS_Ho_so_cho_nhap_lieu.md).
+- Hồ sơ chờ nhập liệu sau khi đã hoàn tất thu phí/miễn phí: xem [Tab Hồ sơ chờ nhập liệu - Kiểm tra và xử lý hồ sơ - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Kiem_tra_va_xu_ly_ho_so_Can_bo.md).
 - Thanh toán trực tuyến tự phục vụ trên Website khách hàng và hoàn tiền Online qua Cổng thanh toán: xem [UCPS008 - Quản lý đối soát thanh toán](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md).
 
 ### 1.3. Đối tượng sử dụng
@@ -39,7 +39,7 @@ Không thuộc phạm vi tài liệu này:
 | Tài liệu | Link |
 | :--- | :--- |
 | Tiếp nhận hồ sơ giấy | [UCPS012](Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md) |
-| Hồ sơ chờ nhập liệu | [SRS_Ho_so_cho_nhap_lieu](SRS_Ho_so_cho_nhap_lieu.md) |
+| Hồ sơ chờ nhập liệu | [Tab Hồ sơ chờ nhập liệu - Kiểm tra và xử lý hồ sơ - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Kiem_tra_va_xu_ly_ho_so_Can_bo.md) |
 | Quản lý biểu phí | [UC559_Quan_ly_bieu_phi_SRS](../01_Quan_tri_he_thong/Quan_ly_bieu_phi.md) |
 
 ## 2. Nguyên tắc nghiệp vụ
@@ -469,7 +469,7 @@ Sau khi khoản phải thu là **"Đã thu"** hoặc **"Miễn phí"**, hệ th�
 1. Cập nhật hồ sơ sang **"Chờ giải quyết"**.
 2. Ghi nhận thời điểm hoàn tất thu phí/miễn phí.
 3. Liên kết biên lai/chứng từ với Mã hồ sơ.
-4. Đưa hồ sơ vào danh sách chờ nhập liệu tại [SRS_Ho_so_cho_nhap_lieu](SRS_Ho_so_cho_nhap_lieu.md).
+4. Đưa hồ sơ vào danh sách chờ nhập liệu tại [Tab Hồ sơ chờ nhập liệu - Kiểm tra và xử lý hồ sơ - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Kiem_tra_va_xu_ly_ho_so_Can_bo.md).
 5. Không yêu cầu Cán bộ giải quyết hoặc Cán bộ kế toán nhập lại dữ liệu đã có.
 
 ## 12. Trạng thái và chuyển trạng thái
@@ -543,5 +543,5 @@ Thông tin nhật ký gồm: người thực hiện, vai trò, đơn vị, thờ
 | AC-UCPS013-013 | Bấm "Chỉ xác nhận thu" lưu thông tin xác nhận, sinh số biên lai/chứng từ, cập nhật trạng thái khoản phải thu và đóng modal xác nhận. |
 | AC-UCPS013-014 | Bấm "Xác nhận & In biên lai" lưu thông tin xác nhận, sinh số biên lai/chứng từ và mở modal "Biên lai thu phí, lệ phí". |
 | AC-UCPS013-015 | Biên lai hiển thị đúng mẫu hành chính gồm tiêu ngữ, ký hiệu, số, thông tin cơ quan thu phí, người nộp phí, bảng khoản thu, tổng tiền, số tiền bằng chữ và khu vực chữ ký số. |
-| AC-UCPS013-016 | Sau khi xác nhận thành công, hồ sơ chuyển sang "Chờ giải quyết" và xuất hiện tại [SRS_Ho_so_cho_nhap_lieu](SRS_Ho_so_cho_nhap_lieu.md). |
+| AC-UCPS013-016 | Sau khi xác nhận thành công, hồ sơ chuyển sang "Chờ giải quyết" và xuất hiện tại [Tab Hồ sơ chờ nhập liệu - Kiểm tra và xử lý hồ sơ - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Kiem_tra_va_xu_ly_ho_so_Can_bo.md). |
 | AC-UCPS013-017 | Mọi thao tác xác nhận và in biên lai được ghi nhật ký đầy đủ. |

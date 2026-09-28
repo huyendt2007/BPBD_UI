@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -964,9 +964,6 @@
                 <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-color);"></i>
                 Xem chi tiết lịch sử Hồ sơ
             </h1>
-            <button class="btn-back" id="btnBackToSearch">
-                <i class="fa-solid fa-xmark"></i> Đóng
-            </button>
         </div>
 
         <!-- Warning banner if any -->
@@ -1575,28 +1572,10 @@
         </div>
     </div>
 
-    <!-- Demo Switcher for Officer Portal -->
-    <div id="demoSwitcher"
-        style="position: fixed; bottom: 20px; left: 20px; background-color: #1E2937; color: white; padding: 10px 16px; border-radius: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.25); display: flex; gap: 10px; align-items: center; z-index: 1000; font-size: 13px; font-family: 'Inter', sans-serif;">
-        <span style="font-weight: 600; display: inline-flex; align-items: center; gap: 6px;"><i
-                class="fa-solid fa-circle-half-stroke" style="color: #3B82F6;"></i> Vai trò:</span>
-        <select id="roleSelector"
-            style="background-color: #4B5563; color: white; border: none; padding: 4px 8px; border-radius: 12px; font-weight: 600; font-size: 12px; cursor: pointer; outline:none;"
-            onchange="switchRoleDemo(this.value)">
-            <option value="canbo">Cán bộ (Đăng ký viên)</option>
-            <option value="lanhdao">Lãnh đạo phê duyệt</option>
-        </select>
-        <span style="color: #4B5563;">|</span>
-        <button id="btnSwitchHistory"
-            style="background-color: #3B82F6; color: white; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 12px; transition: all 0.2s;">Phiên
-            bản lịch sử</button>
-        <button id="btnSwitchSingle"
-            style="background-color: #4B5563; color: white; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer; font-weight: 600; font-size: 12px; transition: all 0.2s;">Gốc
-            (Ẩn Timeline)</button>
-    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="xem_chi_tiet_lich_su_can_bo.js?v=20260630_v2"></script>
+    <script src="pdk_xu_ly_popups.js"></script>
+    <script src="xem_chi_tiet_lich_su_can_bo.js?v=20260928"></script>
     <script src="admin-ui-standardizer.js"></script>
 </body>
 

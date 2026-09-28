@@ -20,7 +20,7 @@ Cho phép quản lý công tác tiếp nhận hồ sơ đăng ký biện pháp b
 
 \- **Cán bộ kế toán**: Chỉ xem danh sách và chi tiết hồ sơ tiếp nhận phục vụ đối chiếu [thu phí](Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md); không tạo mới, không sửa, không xóa dữ liệu tiếp nhận.
 
-\- **Cán bộ giải quyết**: Chỉ xem danh sách và chi tiết hồ sơ tiếp nhận phục vụ bước [nhập liệu nghiệp vụ](SRS_Ho_so_cho_nhap_lieu.md); không tạo mới, không sửa, không xóa dữ liệu tiếp nhận.
+\- **Cán bộ giải quyết**: Chỉ xem danh sách và chi tiết hồ sơ tiếp nhận phục vụ bước nhập liệu nghiệp vụ tại [Tab Hồ sơ chờ nhập liệu - Kiểm tra và xử lý hồ sơ - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Kiem_tra_va_xu_ly_ho_so_Can_bo.md); không tạo mới, không sửa, không xóa dữ liệu tiếp nhận.
 
 \- **Phạm vi hiển thị dữ liệu**: Theo Đơn vị tiếp nhận được phân quyền của người dùng đăng nhập.
 

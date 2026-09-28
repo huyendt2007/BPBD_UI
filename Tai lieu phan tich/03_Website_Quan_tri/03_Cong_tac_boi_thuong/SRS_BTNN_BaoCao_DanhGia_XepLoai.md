@@ -1,160 +1,160 @@
-#### 4.3.3.25. UC509 - BÃ¡o cÃ¡o tá»•ng há»£p káº¿t quáº£ Ä‘Ã¡nh giÃ¡ vÃ  xáº¿p loáº¡i káº¿t quáº£ cÃ´ng tÃ¡c bá»“i thÆ°á»ng nhÃ  nÆ°á»›c
+#### 4.3.3.25. UC509 - Báo cáo tổng hợp kết quả đánh giá và xếp loại kết quả công tác bồi thường nhà nước
 
-##### 4.3.3.25.1. Má»¥c Ä‘Ã­ch
+##### 4.3.3.25.1. Mục đích
 
-\- Cho phÃ©p cÃ¡n bá»™ nghiá»‡p vá»¥ BTNN tá»•ng há»£p, tra cá»©u vÃ  káº¿t xuáº¥t bÃ¡o cÃ¡o káº¿t quáº£ Ä‘Ã¡nh giÃ¡, xáº¿p loáº¡i cÃ´ng tÃ¡c bá»“i thÆ°á»ng nhÃ  nÆ°á»›c theo nÄƒm, Ä‘Æ¡n vá»‹, Ä‘á»‹a phÆ°Æ¡ng, tráº¡ng thÃ¡i ká»³ cháº¥m Ä‘iá»ƒm, xáº¿p loáº¡i vÃ  nhÃ³m tiÃªu chÃ­.
+\- Cho phép cán bộ nghiệp vụ BTNN tổng hợp, tra cứu và kết xuất báo cáo kết quả đánh giá, xếp loại công tác bồi thường nhà nước theo năm, đơn vị, địa phương, trạng thái kỳ chấm điểm, xếp loại và nhóm tiêu chí.
 
-\- BÃ¡o cÃ¡o sá»­ dá»¥ng dá»¯ liá»‡u nguá»“n tá»« module Quáº£n lÃ½ cháº¥m Ä‘iá»ƒm cÃ´ng tÃ¡c BTNN táº¡i `SRS_BTNN_Cham_Diem.md`; khÃ´ng phÃ¡t sinh thao tÃ¡c cháº¥m Ä‘iá»ƒm, duyá»‡t hoáº·c trÃ¬nh lÃ£nh Ä‘áº¡o trong mÃ n hÃ¬nh bÃ¡o cÃ¡o nÃ y.
+\- Báo cáo sử dụng dữ liệu nguồn từ module Quản lý chấm điểm công tác BTNN tại `SRS_BTNN_Cham_Diem.md`; không phát sinh thao tác chấm điểm, duyệt hoặc trình lãnh đạo trong màn hình báo cáo này.
 
-\- BÃ¡o cÃ¡o phá»¥c vá»¥ theo dÃµi káº¿t quáº£ xáº¿p loáº¡i cá»§a cÃ¡c Sá»Ÿ TÆ° phÃ¡p, phÃ¢n bá»‘ má»©c xáº¿p loáº¡i theo Danh mục Xếp loại chấm điểm công tác BTNN [DM_33], so sÃ¡nh Ä‘iá»ƒm tá»± cháº¥m vá»›i Ä‘iá»ƒm Bá»™ TÆ° phÃ¡p Ä‘Ã¡nh giÃ¡ vÃ  xÃ¡c Ä‘á»‹nh nhÃ³m tiÃªu chÃ­ cáº§n cáº£i thiá»‡n theo Danh mục Nhóm tiêu chí chấm điểm công tác BTNN [DM_34].
+\- Báo cáo phục vụ theo dõi kết quả xếp loại của các Sở Tư pháp, phân bố mức xếp loại theo Danh mục Xếp loại chấm điểm công tác BTNN [DM_33], so sánh điểm tự chấm với điểm Bộ Tư pháp đánh giá và xác định nhóm tiêu chí cần cải thiện theo Danh mục Nhóm tiêu chí chấm điểm công tác BTNN [DM_34].
 
-*a. PhÃ¢n quyá»n*
+*a. Phân quyền*
 
-\- CÃ¡n bá»™ nghiá»‡p vá»¥ Bá»™ TÆ° phÃ¡p: ÄÆ°á»£c tra cá»©u, tá»•ng há»£p sá»‘ liá»‡u, xem chi tiáº¿t ká»³ cháº¥m Ä‘iá»ƒm vÃ  káº¿t xuáº¥t bÃ¡o cÃ¡o theo toÃ n bá»™ pháº¡m vi dá»¯ liá»‡u Ä‘Æ°á»£c phÃ¢n quyá»n.
+\- Cán bộ nghiệp vụ Bộ Tư pháp: Được tra cứu, tổng hợp số liệu, xem chi tiết kỳ chấm điểm và kết xuất báo cáo theo toàn bộ phạm vi dữ liệu được phân quyền.
 
-\- LÃ£nh Ä‘áº¡o Bá»™ TÆ° phÃ¡p: ÄÆ°á»£c tra cá»©u, xem sá»‘ liá»‡u tá»•ng há»£p, xem chi tiáº¿t ká»³ cháº¥m Ä‘iá»ƒm vÃ  káº¿t xuáº¥t bÃ¡o cÃ¡o; khÃ´ng chá»‰nh sá»­a dá»¯ liá»‡u cháº¥m Ä‘iá»ƒm/xáº¿p loáº¡i.
+\- Lãnh đạo Bộ Tư pháp: Được tra cứu, xem số liệu tổng hợp, xem chi tiết kỳ chấm điểm và kết xuất báo cáo; không chỉnh sửa dữ liệu chấm điểm/xếp loại.
 
-\- CÃ¡n bá»™ Sá»Ÿ TÆ° phÃ¡p: ÄÆ°á»£c tra cá»©u, xem sá»‘ liá»‡u vÃ  káº¿t xuáº¥t bÃ¡o cÃ¡o Ä‘á»‘i vá»›i Ä‘Æ¡n vá»‹ cá»§a mÃ¬nh theo pháº¡m vi Ä‘Æ°á»£c phÃ¢n quyá»n; khÃ´ng xem dá»¯ liá»‡u chi tiáº¿t cá»§a Ä‘Æ¡n vá»‹ khÃ¡c.
+\- Cán bộ Sở Tư pháp: Được tra cứu, xem số liệu và kết xuất báo cáo đối với đơn vị của mình theo phạm vi được phân quyền; không xem dữ liệu chi tiết của đơn vị khác.
 
-*b. Äiá»u kiá»‡n thá»±c hiá»‡n*
+*b. Điều kiện thực hiện*
 
-\- NgÆ°á»i dÃ¹ng Ä‘Ã£ Ä‘Äƒng nháº­p thÃ nh cÃ´ng vÃ o Website quáº£n trá»‹.
+\- Người dùng đã đăng nhập thành công vào Website quản trị.
 
-\- NgÆ°á»i dÃ¹ng Ä‘Æ°á»£c phÃ¢n quyá»n truy cáº­p menu `BÃ¡o cÃ¡o quáº£n lÃ½ BTNN` vÃ  chá»©c nÄƒng `BÃ¡o cÃ¡o tá»•ng há»£p káº¿t quáº£ Ä‘Ã¡nh giÃ¡ vÃ  xáº¿p loáº¡i káº¿t quáº£ cÃ´ng tÃ¡c bá»“i thÆ°á»ng nhÃ  nÆ°á»›c`.
+\- Người dùng được phân quyền truy cập menu `Báo cáo quản lý BTNN` và chức năng `Báo cáo tổng hợp kết quả đánh giá và xếp loại kết quả công tác bồi thường nhà nước`.
 
-\- Dá»¯ liá»‡u ká»³ cháº¥m Ä‘iá»ƒm, Ä‘iá»ƒm tá»± cháº¥m, Ä‘iá»ƒm Bá»™ TÆ° phÃ¡p Ä‘Ã¡nh giÃ¡, xáº¿p loáº¡i vÃ  Ä‘iá»ƒm theo nhÃ³m tiÃªu chÃ­ Ä‘Ã£ phÃ¡t sinh táº¡i module Quáº£n lÃ½ cháº¥m Ä‘iá»ƒm cÃ´ng tÃ¡c BTNN.
+\- Dữ liệu kỳ chấm điểm, điểm tự chấm, điểm Bộ Tư pháp đánh giá, xếp loại và điểm theo nhóm tiêu chí đã phát sinh tại module Quản lý chấm điểm công tác BTNN.
 
-\- Tráº¡ng thÃ¡i ká»³ cháº¥m Ä‘iá»ƒm tham chiáº¿u danh má»¥c [DM_32]. Xáº¿p loáº¡i ká»³ cháº¥m Ä‘iá»ƒm tham chiáº¿u danh má»¥c [DM_33]. NhÃ³m tiÃªu chÃ­ cháº¥m Ä‘iá»ƒm tham chiáº¿u danh má»¥c [DM_34]. Tá»‰nh/ThÃ nh phá»‘ tham chiáº¿u [DM_13]. ÄÆ¡n vá»‹ tham chiáº¿u `[DM_DON_VI]`.
+\- Trạng thái kỳ chấm điểm tham chiếu danh mục [DM_32]. Xếp loại kỳ chấm điểm tham chiếu danh mục [DM_33]. Nhóm tiêu chí chấm điểm tham chiếu danh mục [DM_34]. Tỉnh/Thành phố tham chiếu [DM_13]. Đơn vị tham chiếu `[DM_DON_VI]`.
 
-\- Quy táº¯c tÃ­nh tá»•ng Ä‘iá»ƒm vÃ  xáº¿p loáº¡i cÃ´ng tÃ¡c BTNN Ã¡p dá»¥ng [BR-BTNN-CD-003]. Quy táº¯c Ä‘iá»ƒm thÆ°á»Ÿng sÃ¡ng kiáº¿n vÃ  Ä‘iá»ƒm trá»« ná»™p muá»™n Ã¡p dá»¥ng [BR-BTNN-CD-004].
+\- Quy tắc tính tổng điểm và xếp loại công tác BTNN áp dụng [BR-BTNN-CD-003]. Quy tắc điểm thưởng sáng kiến và điểm trừ nộp muộn áp dụng [BR-BTNN-CD-004].
 
 ---
 
-##### 4.3.3.25.2. SÆ¡ Ä‘á»“ luá»“ng nghiá»‡p vá»¥ theo giao diá»‡n
+##### 4.3.3.25.2. Sơ đồ luồng nghiệp vụ theo giao diện
 
 ```mermaid
 flowchart TD
-    A[NgÆ°á»i dÃ¹ng má»Ÿ BÃ¡o cÃ¡o tá»•ng há»£p káº¿t quáº£ Ä‘Ã¡nh giÃ¡ vÃ  xáº¿p loáº¡i] --> B[Há»‡ thá»‘ng hiá»ƒn thá»‹ khá»‘i lá»c máº·c Ä‘á»‹nh]
-    B --> C[NgÆ°á»i dÃ¹ng chá»n nÄƒm Ä‘Ã¡nh giÃ¡, Ä‘Æ¡n vá»‹, tá»‰nh/thÃ nh phá»‘, tráº¡ng thÃ¡i, xáº¿p loáº¡i, nhÃ³m tiÃªu chÃ­]
-    C --> D[Tá»•ng há»£p sá»‘ liá»‡u]
-    D --> E{CÃ³ dá»¯ liá»‡u ká»³ cháº¥m Ä‘iá»ƒm phÃ¹ há»£p?}
-    E -->|KhÃ´ng| F[Hiá»ƒn thá»‹ thÃ´ng tin khÃ´ng cÃ³ dá»¯ liá»‡u táº¡i vÃ¹ng káº¿t quáº£]
-    E -->|CÃ³| G[Hiá»ƒn thá»‹ tháº» tá»•ng quan, báº£ng tá»•ng há»£p theo Ä‘Æ¡n vá»‹, báº£ng phÃ¢n bá»‘ xáº¿p loáº¡i vÃ  báº£ng tá»•ng há»£p theo nhÃ³m tiÃªu chÃ­]
-    G --> H[NgÆ°á»i dÃ¹ng xem chi tiáº¿t ká»³ cháº¥m Ä‘iá»ƒm báº±ng Row click]
-    H --> I[Má»Ÿ mÃ n hÃ¬nh xem chi tiáº¿t ká»³ cháº¥m Ä‘iá»ƒm á»Ÿ cháº¿ Ä‘á»™ chá»‰ xem]
-    G --> J[Káº¿t xuáº¥t]
-    J --> K[Chá»n Ä‘á»‹nh dáº¡ng Excel/DOC/PDF]
+    A[Người dùng mở Báo cáo tổng hợp kết quả đánh giá và xếp loại] --> B[Hệ thống hiển thị khối lọc mặc định]
+    B --> C[Người dùng chọn năm đánh giá, đơn vị, tỉnh/thành phố, trạng thái, xếp loại, nhóm tiêu chí]
+    C --> D[Tổng hợp số liệu]
+    D --> E{Có dữ liệu kỳ chấm điểm phù hợp?}
+    E -->|Không| F[Hiển thị thông tin không có dữ liệu tại vùng kết quả]
+    E -->|Có| G[Hiển thị thẻ tổng quan, bảng tổng hợp theo đơn vị, bảng phân bố xếp loại và bảng tổng hợp theo nhóm tiêu chí]
+    G --> H[Người dùng xem chi tiết kỳ chấm điểm bằng Row click]
+    H --> I[Mở màn hình xem chi tiết kỳ chấm điểm ở chế độ chỉ xem]
+    G --> J[Kết xuất]
+    J --> K[Chọn định dạng Excel/DOC/PDF]
 ```
 
 ---
 
-##### 4.3.3.25.3. MH01 - MÃ n hÃ¬nh BÃ¡o cÃ¡o tá»•ng há»£p káº¿t quáº£ Ä‘Ã¡nh giÃ¡ vÃ  xáº¿p loáº¡i káº¿t quáº£ cÃ´ng tÃ¡c bá»“i thÆ°á»ng nhÃ  nÆ°á»›c
+##### 4.3.3.25.3. MH01 - Màn hình Báo cáo tổng hợp kết quả đánh giá và xếp loại kết quả công tác bồi thường nhà nước
 
-###### 4.3.3.25.3.1. MÃ n hÃ¬nh
+###### 4.3.3.25.3.1. Màn hình
 
-![MH01 - BÃ¡o cÃ¡o tá»•ng há»£p káº¿t quáº£ Ä‘Ã¡nh giÃ¡ vÃ  xáº¿p loáº¡i káº¿t quáº£ cÃ´ng tÃ¡c bá»“i thÆ°á»ng nhÃ  nÆ°á»›c](images/UC509_MH01_Bao_cao_tong_hop_xep_loai_BTNN.png)
+![MH01 - Báo cáo tổng hợp kết quả đánh giá và xếp loại kết quả công tác bồi thường nhà nước](images/UC509_MH01_Bao_cao_tong_hop_xep_loai_BTNN.png)
 
-###### 4.3.3.25.3.2. MÃ´ táº£ thÃ´ng tin trÃªn mÃ n hÃ¬nh
+###### 4.3.3.25.3.2. Mô tả thông tin trên màn hình
 
-| TrÆ°á»ng thÃ´ng tin | Kiá»ƒu dá»¯ liá»‡u | Báº¯t buá»™c | Máº·c Ä‘á»‹nh | MÃ´ táº£ |
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Khá»‘i lá»c, tÃ¬m kiáº¿m thÃ´ng tin** | | | | |
-| NÄƒm Ä‘Ã¡nh giÃ¡ | Enum(String(10)) | CÃ³ | NÄƒm hiá»‡n táº¡i | GiÃ¡ trá»‹ gá»“m 05 nÄƒm gáº§n nháº¥t tÃ­nh Ä‘áº¿n nÄƒm hiá»‡n táº¡i. |
-| ÄÆ¡n vá»‹ Sá»Ÿ TÆ° phÃ¡p | Enum(String(255)) | KhÃ´ng | Theo pháº¡m vi tÃ i khoáº£n Ä‘Äƒng nháº­p | - Tham chiáº¿u `[DM_DON_VI]`.<br>- Vá»›i tÃ i khoáº£n CÃ¡n bá»™ Sá»Ÿ TÆ° phÃ¡p, há»‡ thá»‘ng tá»± lá»c theo Ä‘Æ¡n vá»‹ cá»§a tÃ i khoáº£n Ä‘Äƒng nháº­p vÃ  chá»‰ hiá»ƒn thá»‹ dá»¯ liá»‡u Ä‘Æ¡n vá»‹ Ä‘Ã³.<br>- Vá»›i tÃ i khoáº£n Bá»™ TÆ° phÃ¡p/LÃ£nh Ä‘áº¡o Bá»™ TÆ° phÃ¡p, cho phÃ©p chá»n `Táº¥t cáº£` hoáº·c chá»n má»™t Ä‘Æ¡n vá»‹ cá»¥ thá»ƒ. |
+| **I. Khối lọc, tìm kiếm thông tin** | | | | |
+| Năm đánh giá | Enum(String(10)) | Có | Năm hiện tại | Giá trị gồm 05 năm gần nhất tính đến năm hiện tại. |
+| Đơn vị Sở Tư pháp | Enum(String(255)) | Không | Theo phạm vi tài khoản đăng nhập | - Tham chiếu `[DM_DON_VI]`.<br>- Với tài khoản Cán bộ Sở Tư pháp, hệ thống tự lọc theo đơn vị của tài khoản đăng nhập và chỉ hiển thị dữ liệu đơn vị đó.<br>- Với tài khoản Bộ Tư pháp/Lãnh đạo Bộ Tư pháp, cho phép chọn `Tất cả` hoặc chọn một đơn vị cụ thể. |
 | Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Tất cả | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
 | Phường/Xã | Enum(String(100)) / String(100) | Không | Tất cả | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
-| Tráº¡ng thÃ¡i ká»³ cháº¥m Ä‘iá»ƒm | Enum(String(50)) | KhÃ´ng | HoÃ n thÃ nh | - Tham chiáº¿u [DM_32].<br>- GiÃ¡ trá»‹ lá»c gá»“m `Táº¥t cáº£` vÃ  cÃ¡c tráº¡ng thÃ¡i thuá»™c [DM_32].<br>- Máº·c Ä‘á»‹nh chá»‰ tá»•ng há»£p cÃ¡c ká»³ Ä‘Ã£ á»Ÿ tráº¡ng thÃ¡i "HoÃ n thÃ nh". |
-| Xáº¿p loáº¡i | Enum(String(50)) | KhÃ´ng | Táº¥t cáº£ | - Tham chiáº¿u [DM_33].<br>- GiÃ¡ trá»‹ lá»c gá»“m `Táº¥t cáº£` vÃ  cÃ¡c giÃ¡ trá»‹ thuá»™c [DM_33]. |
-| NhÃ³m tiÃªu chÃ­ | Enum(String(255)) | KhÃ´ng | Táº¥t cáº£ | - Tham chiáº¿u [DM_34].<br>- Khi chá»n má»™t nhÃ³m tiÃªu chÃ­ cá»¥ thá»ƒ, báº£ng tá»•ng há»£p theo nhÃ³m tiÃªu chÃ­ chá»‰ hiá»ƒn thá»‹ nhÃ³m Ä‘Æ°á»£c chá»n, báº£ng tá»•ng há»£p theo Ä‘Æ¡n vá»‹ váº«n hiá»ƒn thá»‹ tá»•ng Ä‘iá»ƒm toÃ n ká»³ vÃ  Ä‘iá»ƒm cá»§a nhÃ³m Ä‘Æ°á»£c chá»n. |
-| **II. Khá»‘i tá»•ng quan káº¿t quáº£** | | | | |
-| Tá»•ng sá»‘ Ä‘Æ¡n vá»‹ Ä‘Æ°á»£c Ä‘Ã¡nh giÃ¡ | Integer(10) | KhÃ´ng | Há»‡ thá»‘ng tÃ­nh | Chá»‰ Ä‘á»c. Äáº¿m sá»‘ Ä‘Æ¡n vá»‹ cÃ³ ká»³ cháº¥m Ä‘iá»ƒm thuá»™c Ä‘iá»u kiá»‡n lá»c hiá»‡n hÃ nh. |
-| ÄÃ£ hoÃ n thÃ nh Ä‘Ã¡nh giÃ¡ | Integer(10) | KhÃ´ng | Há»‡ thá»‘ng tÃ­nh | Chá»‰ Ä‘á»c. Äáº¿m sá»‘ ká»³ cháº¥m Ä‘iá»ƒm cÃ³ tráº¡ng thÃ¡i "HoÃ n thÃ nh". |
-| ChÆ°a hoÃ n thÃ nh Ä‘Ã¡nh giÃ¡ | Integer(10) | KhÃ´ng | Há»‡ thá»‘ng tÃ­nh | Chá»‰ Ä‘á»c. Äáº¿m sá»‘ ká»³ cháº¥m Ä‘iá»ƒm cÃ³ tráº¡ng thÃ¡i khÃ¡c "HoÃ n thÃ nh" trong Ä‘iá»u kiá»‡n lá»c hiá»‡n hÃ nh. |
-| Äiá»ƒm Bá»™ TÆ° phÃ¡p trung bÃ¬nh | Decimal(5,1) | KhÃ´ng | Há»‡ thá»‘ng tÃ­nh | Chá»‰ Ä‘á»c. Trung bÃ¬nh cá»™ng `Äiá»ƒm Bá»™ TÆ° phÃ¡p Ä‘Ã¡nh giÃ¡` cá»§a cÃ¡c ká»³ cháº¥m Ä‘iá»ƒm cÃ³ dá»¯ liá»‡u Ä‘iá»ƒm Ä‘Ã¡nh giÃ¡. |
-| Tá»· lá»‡ hoÃ n thÃ nh Ä‘Ã¡nh giÃ¡ | Decimal(5,2) | KhÃ´ng | Há»‡ thá»‘ng tÃ­nh | Chá»‰ Ä‘á»c. CÃ´ng thá»©c: `ÄÃ£ hoÃ n thÃ nh Ä‘Ã¡nh giÃ¡ / Tá»•ng sá»‘ Ä‘Æ¡n vá»‹ Ä‘Æ°á»£c Ä‘Ã¡nh giÃ¡ * 100`. Náº¿u máº«u sá»‘ báº±ng 0 thÃ¬ hiá»ƒn thá»‹ `0%`. |
+| Trạng thái kỳ chấm điểm | Enum(String(50)) | Không | Hoàn thành | - Tham chiếu [DM_32].<br>- Giá trị lọc gồm `Tất cả` và các trạng thái thuộc [DM_32].<br>- Mặc định chỉ tổng hợp các kỳ đã ở trạng thái "Hoàn thành". |
+| Xếp loại | Enum(String(50)) | Không | Tất cả | - Tham chiếu [DM_33].<br>- Giá trị lọc gồm `Tất cả` và các giá trị thuộc [DM_33]. |
+| Nhóm tiêu chí | Enum(String(255)) | Không | Tất cả | - Tham chiếu [DM_34].<br>- Khi chọn một nhóm tiêu chí cụ thể, bảng tổng hợp theo nhóm tiêu chí chỉ hiển thị nhóm được chọn, bảng tổng hợp theo đơn vị vẫn hiển thị tổng điểm toàn kỳ và điểm của nhóm được chọn. |
+| **II. Khối tổng quan kết quả** | | | | |
+| Tổng số đơn vị được đánh giá | Integer(10) | Không | Hệ thống tính | Chỉ đọc. Đếm số đơn vị có kỳ chấm điểm thuộc điều kiện lọc hiện hành. |
+| Đã hoàn thành đánh giá | Integer(10) | Không | Hệ thống tính | Chỉ đọc. Đếm số kỳ chấm điểm có trạng thái "Hoàn thành". |
+| Chưa hoàn thành đánh giá | Integer(10) | Không | Hệ thống tính | Chỉ đọc. Đếm số kỳ chấm điểm có trạng thái khác "Hoàn thành" trong điều kiện lọc hiện hành. |
+| Điểm Bộ Tư pháp trung bình | Decimal(5,1) | Không | Hệ thống tính | Chỉ đọc. Trung bình cộng `Điểm Bộ Tư pháp đánh giá` của các kỳ chấm điểm có dữ liệu điểm đánh giá. |
+| Tỷ lệ hoàn thành đánh giá | Decimal(5,2) | Không | Hệ thống tính | Chỉ đọc. Công thức: `Đã hoàn thành đánh giá / Tổng số đơn vị được đánh giá * 100`. Nếu mẫu số bằng 0 thì hiển thị `0%`. |
 | **III. Bảng kết quả tổng hợp theo đơn vị** | Text(4000) | Không | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- Sắp xếp mặc định: Sắp xếp theo "Ngày tạo" giảm dần (mới nhất hiển thị lên đầu).<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
-| STT | Integer(10) | KhÃ´ng | Theo trang hiá»‡n táº¡i | Chá»‰ Ä‘á»c. Hiá»ƒn thá»‹ sá»‘ thá»© tá»± báº£n ghi theo phÃ¢n trang. |
-| ÄÆ¡n vá»‹ Sá»Ÿ TÆ° phÃ¡p | String(255) | KhÃ´ng | Theo dá»¯ liá»‡u há»‡ thá»‘ng | Chá»‰ Ä‘á»c. Hiá»ƒn thá»‹ tÃªn Ä‘Æ¡n vá»‹ Ä‘Æ°á»£c Ä‘Ã¡nh giÃ¡. |
+| STT | Integer(10) | Không | Theo trang hiện tại | Chỉ đọc. Hiển thị số thứ tự bản ghi theo phân trang. |
+| Đơn vị Sở Tư pháp | String(255) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị tên đơn vị được đánh giá. |
 | Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Theo dữ liệu hệ thống | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
 | Phường/Xã | Enum(String(100)) / String(100) | Không | Theo dữ liệu hệ thống | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
-| NÄƒm Ä‘Ã¡nh giÃ¡ | Enum(String(10)) | KhÃ´ng | Theo dá»¯ liá»‡u há»‡ thá»‘ng | Chá»‰ Ä‘á»c. Hiá»ƒn thá»‹ nÄƒm cá»§a ká»³ cháº¥m Ä‘iá»ƒm. |
-| Tráº¡ng thÃ¡i ká»³ cháº¥m Ä‘iá»ƒm | Enum(String(50)) | KhÃ´ng | Theo dá»¯ liá»‡u há»‡ thá»‘ng | Chá»‰ Ä‘á»c. Hiá»ƒn thá»‹ theo Danh mục DM_32 [DM_32] dÆ°á»›i dáº¡ng nhÃ£n tráº¡ng thÃ¡i. |
-| Äiá»ƒm tá»± cháº¥m | Decimal(5,1) | KhÃ´ng | Theo dá»¯ liá»‡u há»‡ thá»‘ng | Chá»‰ Ä‘á»c. Hiá»ƒn thá»‹ tá»•ng Ä‘iá»ƒm tá»± cháº¥m cá»§a Sá»Ÿ TÆ° phÃ¡p trÃªn thang 100. |
-| Äiá»ƒm Bá»™ TÆ° phÃ¡p Ä‘Ã¡nh giÃ¡ | Decimal(5,1) | KhÃ´ng | Theo dá»¯ liá»‡u há»‡ thá»‘ng | Chá»‰ Ä‘á»c. Hiá»ƒn thá»‹ tá»•ng Ä‘iá»ƒm Bá»™ TÆ° phÃ¡p Ä‘Ã¡nh giÃ¡ trÃªn thang 100. |
-| ChÃªnh lá»‡ch Ä‘iá»ƒm | Decimal(5,1) | KhÃ´ng | Há»‡ thá»‘ng tÃ­nh | Chá»‰ Ä‘á»c. CÃ´ng thá»©c: `Äiá»ƒm Bá»™ TÆ° phÃ¡p Ä‘Ã¡nh giÃ¡ - Äiá»ƒm tá»± cháº¥m`. |
-| Xáº¿p loáº¡i | Enum(String(50)) | KhÃ´ng | Theo dá»¯ liá»‡u há»‡ thá»‘ng | Chá»‰ Ä‘á»c. Hiá»ƒn thá»‹ káº¿t quáº£ xáº¿p loáº¡i theo Danh mục Xếp loại chấm điểm công tác BTNN [DM_33] vÃ  [BR-BTNN-CD-003]. |
-| NhÃ³m I | Decimal(5,1) | KhÃ´ng | Theo dá»¯ liá»‡u há»‡ thá»‘ng | Chá»‰ Ä‘á»c. Hiá»ƒn thá»‹ Ä‘iá»ƒm Bá»™ TÆ° phÃ¡p Ä‘Ã¡nh giÃ¡ cá»§a NhÃ³m I theo Danh mục Nhóm tiêu chí chấm điểm công tác BTNN [DM_34]. |
-| NhÃ³m II | Decimal(5,1) | KhÃ´ng | Theo dá»¯ liá»‡u há»‡ thá»‘ng | Chá»‰ Ä‘á»c. Hiá»ƒn thá»‹ Ä‘iá»ƒm Bá»™ TÆ° phÃ¡p Ä‘Ã¡nh giÃ¡ cá»§a NhÃ³m II theo Danh mục Nhóm tiêu chí chấm điểm công tác BTNN [DM_34]. |
-| NhÃ³m III | Decimal(5,1) | KhÃ´ng | Theo dá»¯ liá»‡u há»‡ thá»‘ng | Chá»‰ Ä‘á»c. Hiá»ƒn thá»‹ Ä‘iá»ƒm Bá»™ TÆ° phÃ¡p Ä‘Ã¡nh giÃ¡ cá»§a NhÃ³m III theo Danh mục Nhóm tiêu chí chấm điểm công tác BTNN [DM_34]. |
-| NhÃ³m IV | Decimal(5,1) | KhÃ´ng | Theo dá»¯ liá»‡u há»‡ thá»‘ng | Chá»‰ Ä‘á»c. Hiá»ƒn thá»‹ Ä‘iá»ƒm Bá»™ TÆ° phÃ¡p Ä‘Ã¡nh giÃ¡ cá»§a NhÃ³m IV theo Danh mục Nhóm tiêu chí chấm điểm công tác BTNN [DM_34]. |
-| NhÃ³m V | Decimal(5,1) | KhÃ´ng | Theo dá»¯ liá»‡u há»‡ thá»‘ng | Chá»‰ Ä‘á»c. Hiá»ƒn thá»‹ Ä‘iá»ƒm Bá»™ TÆ° phÃ¡p Ä‘Ã¡nh giÃ¡ cá»§a NhÃ³m V theo Danh mục Nhóm tiêu chí chấm điểm công tác BTNN [DM_34]; hiá»ƒn thá»‹ `N/A` náº¿u ká»³ cháº¥m Ä‘iá»ƒm khÃ´ng Ã¡p dá»¥ng NhÃ³m V. |
-| Äiá»ƒm thÆ°á»Ÿng | Decimal(5,1) | KhÃ´ng | Theo dá»¯ liá»‡u há»‡ thá»‘ng | Chá»‰ Ä‘á»c. Tá»•ng Ä‘iá»ƒm thÆ°á»Ÿng sÃ¡ng kiáº¿n/giáº£i phÃ¡p theo [BR-BTNN-CD-004]. |
-| Äiá»ƒm trá»« | Decimal(5,1) | KhÃ´ng | Theo dá»¯ liá»‡u há»‡ thá»‘ng | Chá»‰ Ä‘á»c. Tá»•ng Ä‘iá»ƒm trá»« ná»™p muá»™n theo [BR-BTNN-CD-004]. |
-| NgÃ y Sá»Ÿ TÆ° phÃ¡p gá»­i | Date | KhÃ´ng | Theo dá»¯ liá»‡u há»‡ thá»‘ng | Chá»‰ Ä‘á»c. Äá»‹nh dáº¡ng `dd/mm/yyyy`. |
-| NgÃ y Bá»™ TÆ° phÃ¡p hoÃ n thÃ nh Ä‘Ã¡nh giÃ¡ | Date | KhÃ´ng | Theo dá»¯ liá»‡u há»‡ thá»‘ng | Chá»‰ Ä‘á»c. Äá»‹nh dáº¡ng `dd/mm/yyyy`. |
-| **IV. Báº£ng phÃ¢n bá»‘ xáº¿p loáº¡i** | | | | |
-| Xáº¿p loáº¡i | Enum(String(50)) | KhÃ´ng | Theo dá»¯ liá»‡u há»‡ thá»‘ng | Chá»‰ Ä‘á»c. Hiá»ƒn thá»‹ tá»«ng giÃ¡ trá»‹ xáº¿p loáº¡i thuá»™c [DM_33] cÃ³ phÃ¡t sinh trong dá»¯ liá»‡u lá»c. |
-| Sá»‘ Ä‘Æ¡n vá»‹ | Integer(10) | KhÃ´ng | Há»‡ thá»‘ng tÃ­nh | Chá»‰ Ä‘á»c. Äáº¿m sá»‘ Ä‘Æ¡n vá»‹ theo tá»«ng xáº¿p loáº¡i. |
-| Tá»· lá»‡ | Decimal(5,2) | KhÃ´ng | Há»‡ thá»‘ng tÃ­nh | Chá»‰ Ä‘á»c. CÃ´ng thá»©c: `Sá»‘ Ä‘Æ¡n vá»‹ cá»§a xáº¿p loáº¡i / Tá»•ng sá»‘ Ä‘Æ¡n vá»‹ Ä‘Æ°á»£c Ä‘Ã¡nh giÃ¡ * 100`. |
-| Äiá»ƒm Bá»™ TÆ° phÃ¡p trung bÃ¬nh theo xáº¿p loáº¡i | Decimal(5,1) | KhÃ´ng | Há»‡ thá»‘ng tÃ­nh | Chá»‰ Ä‘á»c. Trung bÃ¬nh Ä‘iá»ƒm Bá»™ TÆ° phÃ¡p Ä‘Ã¡nh giÃ¡ cá»§a cÃ¡c Ä‘Æ¡n vá»‹ thuá»™c cÃ¹ng xáº¿p loáº¡i. |
-| **V. Báº£ng tá»•ng há»£p theo nhÃ³m tiÃªu chÃ­** | | | | |
-| NhÃ³m tiÃªu chÃ­ | Enum(String(255)) | KhÃ´ng | Theo dá»¯ liá»‡u há»‡ thá»‘ng | Chá»‰ Ä‘á»c. Tham chiáº¿u [DM_34]. |
-| Äiá»ƒm tá»‘i Ä‘a | Decimal(5,1) | KhÃ´ng | Theo danh má»¥c tiÃªu chÃ­ | Chá»‰ Ä‘á»c. Hiá»ƒn thá»‹ Ä‘iá»ƒm tá»‘i Ä‘a cá»§a tá»«ng nhÃ³m tiÃªu chÃ­ trong bá»™ cháº¥m Ä‘iá»ƒm. |
-| Äiá»ƒm tá»± cháº¥m trung bÃ¬nh | Decimal(5,1) | KhÃ´ng | Há»‡ thá»‘ng tÃ­nh | Chá»‰ Ä‘á»c. Trung bÃ¬nh Ä‘iá»ƒm tá»± cháº¥m cá»§a cÃ¡c Ä‘Æ¡n vá»‹ trong Ä‘iá»u kiá»‡n lá»c. |
-| Äiá»ƒm Bá»™ TÆ° phÃ¡p trung bÃ¬nh | Decimal(5,1) | KhÃ´ng | Há»‡ thá»‘ng tÃ­nh | Chá»‰ Ä‘á»c. Trung bÃ¬nh Ä‘iá»ƒm Bá»™ TÆ° phÃ¡p Ä‘Ã¡nh giÃ¡ cá»§a cÃ¡c Ä‘Æ¡n vá»‹ trong Ä‘iá»u kiá»‡n lá»c. |
-| ChÃªnh lá»‡ch trung bÃ¬nh | Decimal(5,1) | KhÃ´ng | Há»‡ thá»‘ng tÃ­nh | Chá»‰ Ä‘á»c. CÃ´ng thá»©c: `Äiá»ƒm Bá»™ TÆ° phÃ¡p trung bÃ¬nh - Äiá»ƒm tá»± cháº¥m trung bÃ¬nh`. |
-| Sá»‘ Ä‘Æ¡n vá»‹ dÆ°á»›i ngÆ°á»¡ng | Integer(10) | KhÃ´ng | Há»‡ thá»‘ng tÃ­nh | Chá»‰ Ä‘á»c. Äáº¿m sá»‘ Ä‘Æ¡n vá»‹ cÃ³ Ä‘iá»ƒm Bá»™ TÆ° phÃ¡p Ä‘Ã¡nh giÃ¡ cá»§a nhÃ³m tiÃªu chÃ­ nhá» hÆ¡n 70% Ä‘iá»ƒm tá»‘i Ä‘a cá»§a nhÃ³m Ä‘Ã³. |
-| **VI. PhÃ¢n trang vÃ  tráº¡ng thÃ¡i káº¿t xuáº¥t** | | | | |
+| Năm đánh giá | Enum(String(10)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị năm của kỳ chấm điểm. |
+| Trạng thái kỳ chấm điểm | Enum(String(50)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị theo Danh mục DM_32 [DM_32] dưới dạng nhãn trạng thái. |
+| Điểm tự chấm | Decimal(5,1) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị tổng điểm tự chấm của Sở Tư pháp trên thang 100. |
+| Điểm Bộ Tư pháp đánh giá | Decimal(5,1) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị tổng điểm Bộ Tư pháp đánh giá trên thang 100. |
+| Chênh lệch điểm | Decimal(5,1) | Không | Hệ thống tính | Chỉ đọc. Công thức: `Điểm Bộ Tư pháp đánh giá - Điểm tự chấm`. |
+| Xếp loại | Enum(String(50)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị kết quả xếp loại theo Danh mục Xếp loại chấm điểm công tác BTNN [DM_33] và [BR-BTNN-CD-003]. |
+| Nhóm I | Decimal(5,1) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị điểm Bộ Tư pháp đánh giá của Nhóm I theo Danh mục Nhóm tiêu chí chấm điểm công tác BTNN [DM_34]. |
+| Nhóm II | Decimal(5,1) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị điểm Bộ Tư pháp đánh giá của Nhóm II theo Danh mục Nhóm tiêu chí chấm điểm công tác BTNN [DM_34]. |
+| Nhóm III | Decimal(5,1) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị điểm Bộ Tư pháp đánh giá của Nhóm III theo Danh mục Nhóm tiêu chí chấm điểm công tác BTNN [DM_34]. |
+| Nhóm IV | Decimal(5,1) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị điểm Bộ Tư pháp đánh giá của Nhóm IV theo Danh mục Nhóm tiêu chí chấm điểm công tác BTNN [DM_34]. |
+| Nhóm V | Decimal(5,1) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị điểm Bộ Tư pháp đánh giá của Nhóm V theo Danh mục Nhóm tiêu chí chấm điểm công tác BTNN [DM_34]; hiển thị `N/A` nếu kỳ chấm điểm không áp dụng Nhóm V. |
+| Điểm thưởng | Decimal(5,1) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Tổng điểm thưởng sáng kiến/giải pháp theo [BR-BTNN-CD-004]. |
+| Điểm trừ | Decimal(5,1) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Tổng điểm trừ nộp muộn theo [BR-BTNN-CD-004]. |
+| Ngày Sở Tư pháp gửi | Date | Không | Theo dữ liệu hệ thống | Chỉ đọc. Định dạng `dd/mm/yyyy`. |
+| Ngày Bộ Tư pháp hoàn thành đánh giá | Date | Không | Theo dữ liệu hệ thống | Chỉ đọc. Định dạng `dd/mm/yyyy`. |
+| **IV. Bảng phân bố xếp loại** | | | | |
+| Xếp loại | Enum(String(50)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị từng giá trị xếp loại thuộc [DM_33] có phát sinh trong dữ liệu lọc. |
+| Số đơn vị | Integer(10) | Không | Hệ thống tính | Chỉ đọc. Đếm số đơn vị theo từng xếp loại. |
+| Tỷ lệ | Decimal(5,2) | Không | Hệ thống tính | Chỉ đọc. Công thức: `Số đơn vị của xếp loại / Tổng số đơn vị được đánh giá * 100`. |
+| Điểm Bộ Tư pháp trung bình theo xếp loại | Decimal(5,1) | Không | Hệ thống tính | Chỉ đọc. Trung bình điểm Bộ Tư pháp đánh giá của các đơn vị thuộc cùng xếp loại. |
+| **V. Bảng tổng hợp theo nhóm tiêu chí** | | | | |
+| Nhóm tiêu chí | Enum(String(255)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Tham chiếu [DM_34]. |
+| Điểm tối đa | Decimal(5,1) | Không | Theo danh mục tiêu chí | Chỉ đọc. Hiển thị điểm tối đa của từng nhóm tiêu chí trong bộ chấm điểm. |
+| Điểm tự chấm trung bình | Decimal(5,1) | Không | Hệ thống tính | Chỉ đọc. Trung bình điểm tự chấm của các đơn vị trong điều kiện lọc. |
+| Điểm Bộ Tư pháp trung bình | Decimal(5,1) | Không | Hệ thống tính | Chỉ đọc. Trung bình điểm Bộ Tư pháp đánh giá của các đơn vị trong điều kiện lọc. |
+| Chênh lệch trung bình | Decimal(5,1) | Không | Hệ thống tính | Chỉ đọc. Công thức: `Điểm Bộ Tư pháp trung bình - Điểm tự chấm trung bình`. |
+| Số đơn vị dưới ngưỡng | Integer(10) | Không | Hệ thống tính | Chỉ đọc. Đếm số đơn vị có điểm Bộ Tư pháp đánh giá của nhóm tiêu chí nhỏ hơn 70% điểm tối đa của nhóm đó. |
+| **VI. Phân trang và trạng thái kết xuất** | | | | |
 | Số dòng hiển thị | Enum(String(10)) | Không | 20 bản ghi/trang | Control UI: Dropdown.<br>- Cho phép chọn số bản ghi hiển thị trên mỗi trang.<br>- Giá trị gồm:<br>+ `10`<br>+ `20`<br>+ `50`<br>+ `100`. |
 | Phân trang | String(255) | Không | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị trên mỗi trang gồm: 10, 20, 50, 100 bản ghi/trang; mặc định chọn sẵn 20 bản ghi/trang.<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;).<br>- Hiển thị dải bản ghi: "Hiển thị [từ] - [đến] của [tổng số] bản ghi". |
-| Tráº¡ng thÃ¡i ká»³ tá»•ng há»£p | Enum(String(50)) | KhÃ´ng | NhÃ¡p | - GiÃ¡ trá»‹ gá»“m:<br>+ NhÃ¡p<br>+ ÄÃ£ káº¿t xuáº¥t |
+| Trạng thái kỳ tổng hợp | Enum(String(50)) | Không | Nháp | - Giá trị gồm:<br>+ Nháp<br>+ Đã kết xuất |
 
-###### 4.3.3.25.3.3. Chá»©c nÄƒng trÃªn mÃ n hÃ¬nh
+###### 4.3.3.25.3.3. Chức năng trên màn hình
 
-| STT | TÃªn chá»©c nÄƒng | Äá»‹nh dáº¡ng | MÃ´ táº£ |
+| STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tá»•ng há»£p sá»‘ liá»‡u | Button | TH1 (KhÃ´ng cÃ³ dá»¯ liá»‡u phÃ¹ há»£p): Há»‡ thá»‘ng hiá»ƒn thá»‹ [MSG-INF-BTNN-CD-023] táº¡i vÃ¹ng káº¿t quáº£ tá»•ng há»£p, Ä‘áº·t cÃ¡c chá»‰ tiÃªu tá»•ng quan báº±ng 0, khÃ´ng hiá»ƒn thá»‹ phÃ¢n trang vÃ  lÃ m má» nÃºt `Káº¿t xuáº¥t`. |
-|  |  |  | TH Há»£p lá»‡: Há»‡ thá»‘ng tá»•ng há»£p dá»¯ liá»‡u theo Ä‘iá»u kiá»‡n lá»c hiá»‡n hÃ nh; hiá»ƒn thá»‹ khá»‘i tá»•ng quan káº¿t quáº£, báº£ng káº¿t quáº£ tá»•ng há»£p theo Ä‘Æ¡n vá»‹, báº£ng phÃ¢n bá»‘ xáº¿p loáº¡i, báº£ng tá»•ng há»£p theo nhÃ³m tiÃªu chÃ­ vÃ  Ä‘áº·t `Tráº¡ng thÃ¡i ká»³ tá»•ng há»£p` lÃ  "NhÃ¡p". |
-| 2 | XÃ³a bá»™ lá»c | Button | Há»‡ thá»‘ng Ä‘Æ°a cÃ¡c tiÃªu chÃ­ lá»c vá» giÃ¡ trá»‹ máº·c Ä‘á»‹nh, táº£i láº¡i dá»¯ liá»‡u theo pháº¡m vi tÃ i khoáº£n Ä‘Äƒng nháº­p, Ä‘Æ°a trang hiá»‡n táº¡i vá» trang 1 vÃ  hiá»ƒn thá»‹ [MSG-SUC-BTNN-CD-001]. |
-| 3 | Káº¿t xuáº¥t | Button/Menu | TH1 (KhÃ´ng cÃ³ dá»¯ liá»‡u Ä‘á»ƒ káº¿t xuáº¥t): Há»‡ thá»‘ng kiá»ƒm tra theo [BR-EXP-041], hiá»ƒn thá»‹ [MSG-WRN-SYS-002] vÃ  khÃ´ng sinh file. |
-|  |  |  | TH Há»£p lá»‡: Há»‡ thá»‘ng má»Ÿ menu chá»n Ä‘á»‹nh dáº¡ng gá»“m `Excel`, `DOC`, `PDF`. |
-| 4 | Chá»n Excel | Menu item | Há»‡ thá»‘ng káº¿t xuáº¥t bÃ¡o cÃ¡o ra file Excel theo Ä‘Ãºng dá»¯ liá»‡u Ä‘ang hiá»ƒn thá»‹ trÃªn mÃ n hÃ¬nh, cáº­p nháº­t `Tráº¡ng thÃ¡i ká»³ tá»•ng há»£p` sang "ÄÃ£ káº¿t xuáº¥t" vÃ  hiá»ƒn thá»‹ [MSG-SUC-SYS-005]. |
-| 5 | Chá»n DOC | Menu item | Há»‡ thá»‘ng káº¿t xuáº¥t bÃ¡o cÃ¡o ra file Word theo Ä‘Ãºng dá»¯ liá»‡u Ä‘ang hiá»ƒn thá»‹ trÃªn mÃ n hÃ¬nh, cáº­p nháº­t `Tráº¡ng thÃ¡i ká»³ tá»•ng há»£p` sang "ÄÃ£ káº¿t xuáº¥t" vÃ  hiá»ƒn thá»‹ [MSG-SUC-SYS-005]. |
-| 6 | Chá»n PDF | Menu item | Há»‡ thá»‘ng káº¿t xuáº¥t bÃ¡o cÃ¡o ra file PDF theo Ä‘Ãºng dá»¯ liá»‡u Ä‘ang hiá»ƒn thá»‹ trÃªn mÃ n hÃ¬nh, cáº­p nháº­t `Tráº¡ng thÃ¡i ká»³ tá»•ng há»£p` sang "ÄÃ£ káº¿t xuáº¥t" vÃ  hiá»ƒn thá»‹ [MSG-SUC-SYS-005]. |
-| 7 | Sáº¯p xáº¿p cá»™t | Header cá»™t | TH1 (Chá»n láº¡i cá»™t Ä‘ang sáº¯p xáº¿p): Há»‡ thá»‘ng Ä‘áº£o chiá»u sáº¯p xáº¿p tÄƒng/giáº£m vÃ  cáº­p nháº­t biá»ƒu tÆ°á»£ng sáº¯p xáº¿p trÃªn tiÃªu Ä‘á» cá»™t. |
-|  |  |  | TH2 (Chá»n cá»™t khÃ¡c): Há»‡ thá»‘ng Ä‘áº·t cá»™t Ä‘Æ°á»£c chá»n lÃ m cá»™t sáº¯p xáº¿p hiá»‡n hÃ nh vÃ  cáº­p nháº­t láº¡i báº£ng káº¿t quáº£ tá»•ng há»£p theo Ä‘Æ¡n vá»‹. CÃ¡c cá»™t há»— trá»£ sáº¯p xáº¿p gá»“m `ÄÆ¡n vá»‹ Sá»Ÿ TÆ° phÃ¡p`, `Tá»‰nh/ThÃ nh phá»‘`, `NÄƒm Ä‘Ã¡nh giÃ¡`, `Tráº¡ng thÃ¡i ká»³ cháº¥m Ä‘iá»ƒm`, `Äiá»ƒm tá»± cháº¥m`, `Äiá»ƒm Bá»™ TÆ° phÃ¡p Ä‘Ã¡nh giÃ¡`, `ChÃªnh lá»‡ch Ä‘iá»ƒm`, `Xáº¿p loáº¡i`, `NgÃ y Sá»Ÿ TÆ° phÃ¡p gá»­i`, `NgÃ y Bá»™ TÆ° phÃ¡p hoÃ n thÃ nh Ä‘Ã¡nh giÃ¡`. |
+| 1 | Tổng hợp số liệu | Button | TH1 (Không có dữ liệu phù hợp): Hệ thống hiển thị [MSG-INF-BTNN-CD-023] tại vùng kết quả tổng hợp, đặt các chỉ tiêu tổng quan bằng 0, không hiển thị phân trang và làm mờ nút `Kết xuất`. |
+|  |  |  | TH Hợp lệ: Hệ thống tổng hợp dữ liệu theo điều kiện lọc hiện hành; hiển thị khối tổng quan kết quả, bảng kết quả tổng hợp theo đơn vị, bảng phân bố xếp loại, bảng tổng hợp theo nhóm tiêu chí và đặt `Trạng thái kỳ tổng hợp` là "Nháp". |
+| 2 | Xóa bộ lọc | Button | Hệ thống đưa các tiêu chí lọc về giá trị mặc định, tải lại dữ liệu theo phạm vi tài khoản đăng nhập, đưa trang hiện tại về trang 1 và hiển thị [MSG-SUC-BTNN-CD-001]. |
+| 3 | Kết xuất | Button/Menu | TH1 (Không có dữ liệu để kết xuất): Hệ thống kiểm tra theo [BR-EXP-041], hiển thị [MSG-WRN-SYS-002] và không sinh file. |
+|  |  |  | TH Hợp lệ: Hệ thống mở menu chọn định dạng gồm `Excel`, `DOC`, `PDF`. |
+| 4 | Chọn Excel | Menu item | Hệ thống kết xuất báo cáo ra file Excel theo đúng dữ liệu đang hiển thị trên màn hình, cập nhật `Trạng thái kỳ tổng hợp` sang "Đã kết xuất" và hiển thị [MSG-SUC-SYS-005]. |
+| 5 | Chọn DOC | Menu item | Hệ thống kết xuất báo cáo ra file Word theo đúng dữ liệu đang hiển thị trên màn hình, cập nhật `Trạng thái kỳ tổng hợp` sang "Đã kết xuất" và hiển thị [MSG-SUC-SYS-005]. |
+| 6 | Chọn PDF | Menu item | Hệ thống kết xuất báo cáo ra file PDF theo đúng dữ liệu đang hiển thị trên màn hình, cập nhật `Trạng thái kỳ tổng hợp` sang "Đã kết xuất" và hiển thị [MSG-SUC-SYS-005]. |
+| 7 | Sắp xếp cột | Header cột | TH1 (Chọn lại cột đang sắp xếp): Hệ thống đảo chiều sắp xếp tăng/giảm và cập nhật biểu tượng sắp xếp trên tiêu đề cột. |
+|  |  |  | TH2 (Chọn cột khác): Hệ thống đặt cột được chọn làm cột sắp xếp hiện hành và cập nhật lại bảng kết quả tổng hợp theo đơn vị. Các cột hỗ trợ sắp xếp gồm `Đơn vị Sở Tư pháp`, `Tỉnh/Thành phố`, `Năm đánh giá`, `Trạng thái kỳ chấm điểm`, `Điểm tự chấm`, `Điểm Bộ Tư pháp đánh giá`, `Chênh lệch điểm`, `Xếp loại`, `Ngày Sở Tư pháp gửi`, `Ngày Bộ Tư pháp hoàn thành đánh giá`. |
 | 8 | Số dòng hiển thị | Select | Khi người dùng chọn `10`, `20`, `50` hoặc `100`, hệ thống cập nhật số bản ghi hiển thị trên mỗi trang, đưa trang hiện tại về trang 1 và tải lại bảng kết quả tổng hợp theo đơn vị; mặc định chọn sẵn `20`. |
 | 9 | Chuyển trang | Pagination | Hệ thống chuyển đến trang đầu (&#124;&lt;&lt;), trang trước (&lt;), trang được chọn, trang sau (&gt;) hoặc trang cuối (&gt;&gt;&#124;) theo thao tác người dùng; dữ liệu hiển thị giữ nguyên tiêu chí lọc/sắp xếp hiện hành và cấu hình mặc định 20 bản ghi/trang. |
-| 10 | Click dÃ²ng dá»¯ liá»‡u | Row click | TH1 (Ká»³ á»Ÿ tráº¡ng thÃ¡i "ChÆ°a báº¯t Ä‘áº§u" hoáº·c "Äang tá»± cháº¥m"): Há»‡ thá»‘ng hiá»ƒn thá»‹ [MSG-ERR-BTNN-CD-018], khÃ´ng má»Ÿ mÃ n hÃ¬nh chi tiáº¿t. |
-|  |  |  | TH Há»£p lá»‡: Há»‡ thá»‘ng má»Ÿ **MH03 - MÃ n hÃ¬nh Xem chi tiáº¿t/ÄÃ¡nh giÃ¡ ká»³ cháº¥m Ä‘iá»ƒm cÃ´ng tÃ¡c BTNN** á»Ÿ cháº¿ Ä‘á»™ chá»‰ xem. |
+| 10 | Click dòng dữ liệu | Row click | TH1 (Kỳ ở trạng thái "Chưa bắt đầu" hoặc "Đang tự chấm"): Hệ thống hiển thị [MSG-ERR-BTNN-CD-018], không mở màn hình chi tiết. |
+|  |  |  | TH Hợp lệ: Hệ thống mở **MH03 - Màn hình Xem chi tiết/Đánh giá kỳ chấm điểm công tác BTNN** ở chế độ chỉ xem. |
 
 ---
 
-##### 4.3.3.25.4. Quy táº¯c tá»•ng há»£p sá»‘ liá»‡u
+##### 4.3.3.25.4. Quy tắc tổng hợp số liệu
 
-\- Má»—i Ä‘Æ¡n vá»‹ Sá»Ÿ TÆ° phÃ¡p trong cÃ¹ng má»™t nÄƒm Ä‘Ã¡nh giÃ¡ chá»‰ Ä‘Æ°á»£c tÃ­nh má»™t báº£n ghi ká»³ cháº¥m Ä‘iá»ƒm má»›i nháº¥t theo dá»¯ liá»‡u há»‡ thá»‘ng; trÆ°á»ng há»£p cÃ³ nhiá»u phiÃªn báº£n hoÃ n thÃ nh, há»‡ thá»‘ng láº¥y phiÃªn báº£n hoÃ n thÃ nh sau cÃ¹ng.
+\- Mỗi đơn vị Sở Tư pháp trong cùng một năm đánh giá chỉ được tính một bản ghi kỳ chấm điểm mới nhất theo dữ liệu hệ thống; trường hợp có nhiều phiên bản hoàn thành, hệ thống lấy phiên bản hoàn thành sau cùng.
 
-\- BÃ¡o cÃ¡o máº·c Ä‘á»‹nh tá»•ng há»£p cÃ¡c ká»³ á»Ÿ tráº¡ng thÃ¡i "HoÃ n thÃ nh". Khi ngÆ°á»i dÃ¹ng chá»§ Ä‘á»™ng chá»n tráº¡ng thÃ¡i khÃ¡c trong bá»™ lá»c, há»‡ thá»‘ng hiá»ƒn thá»‹ cÃ¡c ká»³ tÆ°Æ¡ng á»©ng nhÆ°ng cÃ¡c trÆ°á»ng Ä‘iá»ƒm/xáº¿p loáº¡i chÆ°a phÃ¡t sinh Ä‘áº§y Ä‘á»§ Ä‘Æ°á»£c hiá»ƒn thá»‹ theo dá»¯ liá»‡u hiá»‡n cÃ³.
+\- Báo cáo mặc định tổng hợp các kỳ ở trạng thái "Hoàn thành". Khi người dùng chủ động chọn trạng thái khác trong bộ lọc, hệ thống hiển thị các kỳ tương ứng nhưng các trường điểm/xếp loại chưa phát sinh đầy đủ được hiển thị theo dữ liệu hiện có.
 
-\- Tá»•ng Ä‘iá»ƒm vÃ  xáº¿p loáº¡i cuá»‘i cÃ¹ng láº¥y theo káº¿t quáº£ Bá»™ TÆ° phÃ¡p Ä‘Ã¡nh giÃ¡, tÃ­nh theo [BR-BTNN-CD-003].
+\- Tổng điểm và xếp loại cuối cùng lấy theo kết quả Bộ Tư pháp đánh giá, tính theo [BR-BTNN-CD-003].
 
-\- Äiá»ƒm thÆ°á»Ÿng vÃ  Ä‘iá»ƒm trá»« láº¥y theo káº¿t quáº£ Ä‘Ã£ ghi nháº­n trong ká»³ cháº¥m Ä‘iá»ƒm, tÃ­nh theo [BR-BTNN-CD-004].
+\- Điểm thưởng và điểm trừ lấy theo kết quả đã ghi nhận trong kỳ chấm điểm, tính theo [BR-BTNN-CD-004].
 
-\- Khi tÃ­nh tá»· lá»‡, há»‡ thá»‘ng lÃ m trÃ²n Ä‘áº¿n 02 chá»¯ sá»‘ tháº­p phÃ¢n. Náº¿u máº«u sá»‘ báº±ng 0, há»‡ thá»‘ng hiá»ƒn thá»‹ `0%`.
+\- Khi tính tỷ lệ, hệ thống làm tròn đến 02 chữ số thập phân. Nếu mẫu số bằng 0, hệ thống hiển thị `0%`.
 
-\- Báº£ng tá»•ng há»£p theo nhÃ³m tiÃªu chÃ­ chá»‰ sá»­ dá»¥ng Ä‘iá»ƒm cá»§a cÃ¡c tiÃªu chÃ­ thuá»™c nhÃ³m tÆ°Æ¡ng á»©ng trong [DM_34]; khÃ´ng cá»™ng Ä‘iá»ƒm thÆ°á»Ÿng/Ä‘iá»ƒm trá»« vÃ o tá»«ng nhÃ³m tiÃªu chÃ­.
+\- Bảng tổng hợp theo nhóm tiêu chí chỉ sử dụng điểm của các tiêu chí thuộc nhóm tương ứng trong [DM_34]; không cộng điểm thưởng/điểm trừ vào từng nhóm tiêu chí.
 
-\- File káº¿t xuáº¥t pháº£i giá»¯ Ä‘Ãºng tiÃªu chÃ­ lá»c/sáº¯p xáº¿p Ä‘ang Ã¡p dá»¥ng trÃªn mÃ n hÃ¬nh táº¡i thá»i Ä‘iá»ƒm ngÆ°á»i dÃ¹ng chá»n Ä‘á»‹nh dáº¡ng káº¿t xuáº¥t theo [BR-EXP-041].
+\- File kết xuất phải giữ đúng tiêu chí lọc/sắp xếp đang áp dụng trên màn hình tại thời điểm người dùng chọn định dạng kết xuất theo [BR-EXP-041].
 
 ---
 
-##### 4.3.3.25.5. RÃ ng buá»™c chÃ©o vÃ  phá»¥ thuá»™c dá»¯ liá»‡u
+##### 4.3.3.25.5. Ràng buộc chéo và phụ thuộc dữ liệu
 
-| STT | Ná»™i dung kiá»ƒm tra | Káº¿t quáº£ Ã¡p dá»¥ng |
+| STT | Nội dung kiểm tra | Kết quả áp dụng |
 | :--- | :--- | :--- |
-| 1 | Danh má»¥c dÃ¹ng chung | Sá»­ dá»¥ng [DM_13], [DM_32], [DM_33], [DM_34] vÃ  `[DM_DON_VI]`; khÃ´ng táº¡o danh má»¥c cá»¥c bá»™ cho tráº¡ng thÃ¡i, xáº¿p loáº¡i, nhÃ³m tiÃªu chÃ­ hoáº·c Ä‘Æ¡n vá»‹. |
-| 2 | Nguá»“n dá»¯ liá»‡u nghiá»‡p vá»¥ | Láº¥y dá»¯ liá»‡u tá»« `SRS_BTNN_Cham_Diem.md`, gá»“m ká»³ cháº¥m Ä‘iá»ƒm, Ä‘iá»ƒm tá»± cháº¥m, Ä‘iá»ƒm Bá»™ TÆ° phÃ¡p Ä‘Ã¡nh giÃ¡, Ä‘iá»ƒm theo nhÃ³m tiÃªu chÃ­, Ä‘iá»ƒm thÆ°á»Ÿng, Ä‘iá»ƒm trá»«, ngÃ y gá»­i vÃ  ngÃ y hoÃ n thÃ nh Ä‘Ã¡nh giÃ¡. |
-| 3 | Quy táº¯c tÃ­nh toÃ¡n | Ãp dá»¥ng [BR-BTNN-CD-003] Ä‘á»ƒ xÃ¡c Ä‘á»‹nh tá»•ng Ä‘iá»ƒm/xáº¿p loáº¡i vÃ  [BR-BTNN-CD-004] Ä‘á»ƒ xÃ¡c Ä‘á»‹nh Ä‘iá»ƒm thÆ°á»Ÿng/Ä‘iá»ƒm trá»«. |
-| 4 | PhÃ¢n quyá»n dá»¯ liá»‡u | CÃ¡n bá»™ Sá»Ÿ TÆ° phÃ¡p chá»‰ xem dá»¯ liá»‡u cá»§a Ä‘Æ¡n vá»‹ mÃ¬nh; Bá»™ TÆ° phÃ¡p/LÃ£nh Ä‘áº¡o Bá»™ TÆ° phÃ¡p xem theo pháº¡m vi Ä‘Æ°á»£c phÃ¢n quyá»n. |
-| 5 | LÆ°u váº¿t há»‡ thá»‘ng | Má»i thao tÃ¡c káº¿t xuáº¥t bÃ¡o cÃ¡o pháº£i ghi nháº­n lá»‹ch sá»­ ngÆ°á»i thá»±c hiá»‡n, thá»i Ä‘iá»ƒm thá»±c hiá»‡n, Ä‘á»‹nh dáº¡ng file, tiÃªu chÃ­ lá»c vÃ  Ä‘Æ°á»ng dáº«n tá»‡p káº¿t xuáº¥t. |
-| 6 | Pháº¡m vi dá»¯ liá»‡u liÃªn phÃ¢n há»‡ | BÃ¡o cÃ¡o chá»‰ tá»•ng há»£p dá»¯ liá»‡u cháº¥m Ä‘iá»ƒm/xáº¿p loáº¡i cÃ´ng tÃ¡c BTNN; khÃ´ng láº¥y dá»¯ liá»‡u vá»¥ viá»‡c YCBT cá»§a Máº«u sá»‘ 01/03/04 ThÃ´ng tÆ° 08. |
+| 1 | Danh mục dùng chung | Sử dụng [DM_13], [DM_32], [DM_33], [DM_34] và `[DM_DON_VI]`; không tạo danh mục cục bộ cho trạng thái, xếp loại, nhóm tiêu chí hoặc đơn vị. |
+| 2 | Nguồn dữ liệu nghiệp vụ | Lấy dữ liệu từ `SRS_BTNN_Cham_Diem.md`, gồm kỳ chấm điểm, điểm tự chấm, điểm Bộ Tư pháp đánh giá, điểm theo nhóm tiêu chí, điểm thưởng, điểm trừ, ngày gửi và ngày hoàn thành đánh giá. |
+| 3 | Quy tắc tính toán | Áp dụng [BR-BTNN-CD-003] để xác định tổng điểm/xếp loại và [BR-BTNN-CD-004] để xác định điểm thưởng/điểm trừ. |
+| 4 | Phân quyền dữ liệu | Cán bộ Sở Tư pháp chỉ xem dữ liệu của đơn vị mình; Bộ Tư pháp/Lãnh đạo Bộ Tư pháp xem theo phạm vi được phân quyền. |
+| 5 | Lưu vết hệ thống | Mọi thao tác kết xuất báo cáo phải ghi nhận lịch sử người thực hiện, thời điểm thực hiện, định dạng file, tiêu chí lọc và đường dẫn tệp kết xuất. |
+| 6 | Phạm vi dữ liệu liên phân hệ | Báo cáo chỉ tổng hợp dữ liệu chấm điểm/xếp loại công tác BTNN; không lấy dữ liệu vụ việc YCBT của Mẫu số 01/03/04 Thông tư 08. |

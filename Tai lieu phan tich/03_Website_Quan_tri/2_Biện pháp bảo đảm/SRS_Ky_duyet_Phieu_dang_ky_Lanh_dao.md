@@ -1,430 +1,181 @@
-## 4.3.2. Dành cho Cán bộ nghiệp vụ tại Trung tâm đăng ký (TTĐK)
-
-### 4.3.2.4. WebAdmin-024 - Ký duyệt Phiếu đăng ký
+### 4.3.2.4. Ký duyệt Phiếu đăng ký
 
 #### 4.3.2.4.1. Mục đích
 
-- Cho phép Lãnh đạo TTĐK xem, đối chiếu và ký số/ký duyệt Phiếu đăng ký đã được Cán bộ trình ở trạng thái "Chờ ký".
-
-- Lãnh đạo không có bước "Chờ duyệt/Chờ phê duyệt" riêng. Cán bộ là người kiểm tra, duyệt nghiệp vụ và trình hồ sơ sang "Chờ ký".
-
-- Cho phép Lãnh đạo ký số file PDF chờ ký ở trạng thái "Chờ ký" bằng USB Token/chứng thư số hợp lệ; đối với trường hợp ký duyệt ngoài hệ thống, vẫn ghi nhận kết quả ký duyệt trên hồ sơ theo cấu hình nghiệp vụ.
-
-- Hỗ trợ ký số một hoặc nhiều Phiếu đăng ký trong cùng một lần thao tác.
-
-- Thống nhất cơ chế xem chi tiết bằng Row Click: Lãnh đạo click trực tiếp vào dòng dữ liệu trên lưới, ngoại trừ vùng checkbox/nút thao tác, để mở màn hình chi tiết Phiếu đăng ký.
-
-- Tài liệu này chỉ áp dụng cho nhóm "Phiếu đăng ký". Không đặc tả nghiệp vụ "Yêu cầu cung cấp thông tin", "Yêu cầu cung cấp bản sao" hoặc "Yêu cầu cung cấp bản sao kèm thông báo".
+\- Cho phép Lãnh đạo xem chi tiết, duyệt (ký số), từ chối hoặc trả lại (đối với hồ sơ có Nguồn tiếp nhận là "Trực tiếp") Phiếu đăng ký biện pháp bảo đảm, hợp đồng và thông báo xử lý tài sản bảo đảm đã được Cán bộ trình ký ở trạng thái **"Chờ ký"**.
 
 *a. Phân quyền*
 
-- Lãnh đạo được phân quyền ký số/ký duyệt Phiếu đăng ký.
+\- Lãnh đạo được phân quyền ký duyệt Phiếu đăng ký: Được phép xem, duyệt, từ chối và trả lại (chỉ với hồ sơ có Nguồn tiếp nhận là "Trực tiếp") các hồ sơ thuộc đơn vị quản lý, thuộc phạm vi thẩm quyền và được Cán bộ trình tới đúng Lãnh đạo đó.
 
-- Lãnh đạo chỉ được xem, ký số/ký duyệt, từ chối hoặc trả lại hồ sơ thuộc đơn vị quản lý và phạm vi thẩm quyền tại trạng thái "Chờ ký".
-
-- Hồ sơ được Cán bộ trình tới Lãnh đạo nào thì chỉ Lãnh đạo đó nhìn thấy và xử lý, trừ tài khoản có quyền giám sát/tra cứu thay theo cấu hình phân quyền.
-
-- Lãnh đạo không được sửa dữ liệu Phiếu đăng ký, không được sửa nội dung file PDF và không được thay thế file PDF đã được Cán bộ trình.
+\- Lãnh đạo không được sửa dữ liệu Phiếu đăng ký và không được thay thế file PDF đã được Cán bộ trình ký.
 
 *b. Điều kiện thực hiện*
 
-- Lãnh đạo đã đăng nhập thành công vào Website Quản trị.
+\- Lãnh đạo đã đăng nhập thành công vào Website Quản trị.
 
-- Lãnh đạo được phân quyền truy cập menu "Biện pháp bảo đảm > Ký duyệt hồ sơ".
+\- Hồ sơ đang ở trạng thái "Chờ ký" và đã có file PDF chờ ký được Cán bộ trình ký.
 
-- Hồ sơ ký số/ký duyệt đang ở trạng thái "Chờ ký".
+\- Máy trạm của Lãnh đạo có thành phần ký số cục bộ và USB Token/chứng thư số hợp lệ để thực hiện ký số.
 
-- Hồ sơ đã có file PDF dự thảo/chờ ký được Cán bộ trình và khóa phiên bản theo [BR-DK-026].
+---
 
-- Máy trạm của Lãnh đạo có thành phần ký số cục bộ và USB Token/chứng thư số hợp lệ để thực hiện ký số theo [BR-DK-034].
+<a id="mh01"></a>
+#### 4.3.2.4.2. MH01 - Màn hình Danh sách Phiếu đăng ký chờ ký
 
-*c. Phạm vi Phiếu đăng ký*
+##### 4.3.2.4.2.1. Màn hình
 
-- Nhóm Phiếu đăng ký Tham chiếu Danh mục Loại hình đăng ký [DM_04] và được xác định theo cấu hình nhóm nghiệp vụ trên hệ thống.
-
-*d. Nguyên tắc dữ liệu*
-
-- Hệ thống chỉ cho phép Lãnh đạo ký số/ký duyệt đúng phiên bản dữ liệu và file PDF đã được Cán bộ trình, đang được khóa trong hồ sơ.
-
-- File PDF trình ký/chờ ký có thể là:
-
-- "Văn bản chứng nhận/Thông báo kết quả" theo Mẫu số 05d.
-
-- "Văn bản từ chối" do Cán bộ lập và trình Lãnh đạo ký.
-
-- Nếu Lãnh đạo từ chối hồ sơ đã thu tiền tại trạng thái "Chờ ký", hệ thống chuyển hồ sơ sang "Bị từ chối" và phát sinh luồng hoàn tiền/hoàn phí theo nguồn hồ sơ: hồ sơ Online tạo yêu cầu hoàn tiền theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online); hồ sơ giấy theo dõi tại Module Quản lý thu phí/hoàn phí hồ sơ giấy.
-
-- Hồ sơ chỉ xuất hiện với Lãnh đạo khi đã ở trạng thái "Chờ ký"; các nghĩa vụ phí/miễn phí đã được xử lý trước đó theo nguồn hồ sơ.
-
-- Nếu ký số thành công file "Văn bản chứng nhận/Thông báo kết quả", hồ sơ chuyển sang "Hoàn thành".
-
-- Nếu ký số thành công file "Văn bản từ chối", hồ sơ chuyển sang "Bị từ chối".
-
-- Nếu Lãnh đạo phát hiện hồ sơ/file trình ký chưa phù hợp nhưng còn có thể chỉnh sửa, Lãnh đạo thực hiện "Trả lại"; hồ sơ chuyển sang "Bị trả lại" để Cán bộ cập nhật và trình lại theo [BR-DK-035].
-
-- Nếu Lãnh đạo quyết định không chấp thuận hồ sơ, Lãnh đạo thực hiện "Từ chối"; hồ sơ chuyển sang "Bị từ chối".
-
-#### 4.3.2.4.2. UC-DK-LD.MH01 - Màn hình Danh sách Phiếu đăng ký chờ duyệt (không áp dụng)
-
-##### 4.3.2.4.2.1. Màn hình`r`n`r`n> Cập nhật theo Plan BTNN: màn hình này không còn hiển thị trên UI. Lãnh đạo chỉ xử lý Phiếu đăng ký tại danh sách "Chờ ký".
-
-![Màn hình Danh sách Phiếu đăng ký chờ duyệt](images/UC_DK_LD_MH01_Danh_sach_Phieu_dang_ky_cho_duyet.png)
+![Màn hình Danh sách Phiếu đăng ký chờ ký](images/UC_DK_LD_MH01_Danh_sach_Phieu_dang_ky_cho_ky.png)
 
 ##### 4.3.2.4.2.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **I. Tab nhóm nghiệp vụ** | | | | |
-| Phiếu đăng ký | Enum(String(50)) | Có | "Phiếu đăng ký" | Tab đang được đặc tả trong tài liệu này. Chỉ hiển thị các hồ sơ thuộc nhóm Phiếu đăng ký tại mục 4.3.2.4.1.c. |
-| Yêu cầu cung cấp thông tin | Enum(String(50)) | Không | Không chọn | Không thuộc phạm vi tài liệu này. Hiển thị theo tài liệu SRS ký duyệt Yêu cầu cung cấp thông tin của Lãnh đạo. |
-| Yêu cầu cung cấp bản sao | Enum(String(50)) | Không | Không chọn | Không thuộc phạm vi tài liệu này. Hiển thị theo tài liệu SRS ký duyệt Yêu cầu cung cấp bản sao của Lãnh đạo. |
-| **II. Bộ lọc tìm kiếm** | | | | |
-| Số đăng ký | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số đăng ký...".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Số đăng ký/Mã hồ sơ của Phiếu đăng ký. |
-| Tên bên bảo đảm | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập tên bên bảo đảm...".<br>- Tìm kiếm gần đúng theo Tên bên bảo đảm trong Phiếu đăng ký. |
-| Tên bên nhận bảo đảm | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập tên bên nhận bảo đảm...".<br>- Tìm kiếm gần đúng theo Tên bên nhận bảo đảm trong Phiếu đăng ký. |
-| Mã khách hàng | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập mã khách hàng...".<br>- Tìm kiếm gần đúng theo Mã khách hàng nộp hồ sơ. |
-| Số biên lai | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số biên lai...".<br>- Tìm kiếm gần đúng theo Số biên lai thu phí/miễn phí của hồ sơ. |
-| Nguồn tiếp nhận | Enum(String(50)) | Không | "Tất cả" | Control UI: Combobox.<br>- Giá trị gồm: "Tất cả", "Trực tuyến", "Trực tiếp", "Dịch vụ công Quốc gia", "Bưu chính".<br>- Lọc theo nguồn phát sinh/tiếp nhận hồ sơ. |
-| Cán bộ xử lý | Enum(String(255)) | Không | "Tất cả" | Control UI: Combobox.<br>- Chọn Cán bộ/Chuyên viên đã xử lý hoặc trình ký hồ sơ, hoặc chọn "Tất cả".<br>- Danh sách lấy theo cán bộ thuộc phạm vi Trung tâm đăng ký của Lãnh đạo đăng nhập. |
-| Lãnh đạo ký | String(255) | Không | Lãnh đạo đăng nhập | - Cho phép tìm kiếm gần đúng theo tên Lãnh đạo được phân công ký.<br>- Hiển thị thông tin Lãnh đạo được phép ký/duyệt của đơn vị tại Cấu hình thông tin về người ký.<br>- Mặc định giới hạn theo Lãnh đạo đang đăng nhập.<br>- Chỉ vai trò được phân quyền giám sát/tra cứu thay mới được nhập tên Lãnh đạo khác theo phạm vi thẩm quyền. |
-| Loại đăng ký | Enum(String(50)) | Không | "Tất cả" | Tham chiếu Danh mục Loại hình đăng ký [DM_04]. Chỉ lọc trong phạm vi nhóm Phiếu đăng ký. |
-| Loại hình giao dịch | Enum(String(50)) | Không | "Tất cả" | Tham chiếu Danh mục Loại hình giao dịch [DM_01]. |
-| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | "Tất cả" | Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02] hoặc [DM_03] theo Loại hình giao dịch đã chọn. |
-| Loại tài sản bảo đảm | Enum(String(255)) | Không | "Tất cả" | Tham chiếu Danh mục Loại tài sản bảo đảm [DM_07]. |
-| Từ ngày | Date | Không | Ngày 01 của tháng hiện tại | Lọc theo Thời điểm đăng ký. Tuân thủ [BR-VAL-007]. |
-| Đến ngày | Date | Không | Ngày hiện tại | Lọc theo Thời điểm đăng ký. Tuân thủ [BR-VAL-007]. |
-| **III. Bảng danh sách Phiếu đăng ký chờ duyệt** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].|
-| Bảng danh sách Phiếu đăng ký chờ duyệt | Text(4000) | Không | 20 bản ghi/trang | Chỉ hiển thị Phiếu đăng ký ở trạng thái "Chờ duyệt", thuộc phạm vi duyệt của Lãnh đạo đăng nhập và đã được Cán bộ trình tới Lãnh đạo đó. Sắp xếp mặc định theo Thời điểm trình ký tăng dần. Click trực tiếp vào dòng dữ liệu, ngoại trừ vùng checkbox/nút thao tác, để mở **UC-DK-LD.MH02 - Chi tiết Phiếu đăng ký chờ duyệt**. Không thiết kế icon "Xem chi tiết" riêng theo quy tắc Row Click dùng chung.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].|
-| Checkbox chọn | Boolean | Không | Không tích | Cho phép chọn một hoặc nhiều hồ sơ đủ điều kiện để duyệt theo lô. Checkbox chọn tất cả tại tiêu đề bảng chỉ chọn các hồ sơ đủ điều kiện đang hiển thị trên trang hiện tại. |
-| STT | Integer(10) | Không | Tự tăng | Số thứ tự dòng dữ liệu trên trang hiện tại. |
-| Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Thời điểm hồ sơ được hệ thống ghi nhận. Cho phép click tiêu đề cột để đổi chiều sắp xếp. |
-| Số đăng ký/Mã hồ sơ | String(50) | Có | Theo hồ sơ | Số đăng ký hoặc Mã hồ sơ của Phiếu đăng ký. Click vào giá trị xử lý tương tự Row Click và mở **UC-DK-LD.MH02 - Chi tiết Phiếu đăng ký chờ duyệt**. |
-| Mã PIN | String(20) | Không | Theo hồ sơ | Hiển thị Mã PIN bảo mật của hồ sơ nếu đã phát sinh. |
-| Tên bên bảo đảm | String(255) | Không | Theo hồ sơ | Hiển thị tên bên bảo đảm trong hồ sơ. |
-| Tên bên nhận bảo đảm | String(255) | Không | Theo hồ sơ | Hiển thị tên bên nhận bảo đảm trong hồ sơ. |
-| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
-| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Tham chiếu Danh mục Loại hình giao dịch [DM_01]. |
-| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Theo hồ sơ | Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02] nếu Loại hình giao dịch là "Biện pháp bảo đảm"; Tham chiếu Danh mục Loại hợp đồng [DM_03] nếu Loại hình giao dịch là "Hợp đồng". |
-| Loại tài sản | Enum(String(255)) | Không | Theo hồ sơ | Tham chiếu Danh mục Loại tài sản bảo đảm [DM_07]. Nếu hồ sơ có nhiều Loại tài sản, hiển thị mỗi Loại tài sản trên một dòng riêng trong cùng ô. |
-| Mã khách hàng | String(50) | Không | Theo hồ sơ | Hiển thị Mã khách hàng nộp hồ sơ nếu có. |
-| Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | Hiển thị nguồn tiếp nhận hồ sơ theo nhóm nghiệp vụ: "Trực tuyến", "Trực tiếp", "Dịch vụ công Quốc gia", "Bưu chính". |
-| Cán bộ trình ký | String(255) | Có | Theo hồ sơ | Cán bộ đã trình ký hồ sơ. |
-| Thời điểm trình ký | Datetime | Có | Theo hồ sơ | Thời điểm Cán bộ trình ký thành công. |
-| Có phát sinh nghĩa vụ phí | Boolean | Có | Theo hồ sơ/biểu phí | Không áp dụng tại màn chờ duyệt cũ. Nghĩa vụ phí đã được xử lý trước khi hồ sơ vào "Chờ ký" của Lãnh đạo. |
-| Trạng thái | Enum(String(50)) | Có | "Chờ duyệt" | Chỉ đọc. Tại màn hình này chỉ hiển thị hồ sơ ở trạng thái "Chờ duyệt". |
-| Thao tác | String(255) | Không | Theo quyền | Việc xem chi tiết thực hiện bằng Row Click. Hiển thị các nút nghiệp vụ theo thứ tự:<br>+ "Duyệt".<br>+ "Từ chối". |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Hiển thị và xử lý giống khối **I. Bộ lọc tìm kiếm** tại [Màn hình Danh sách Phiếu đăng ký chờ duyệt - Xử lý Phiếu đăng ký - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Xu_ly_Phieu_dang_ky_Can_bo.md#mh01), bao gồm cả Khối lọc động theo Loại tài sản.<br>- Bổ sung thêm trường **Cán bộ xử lý**. |
+| Cán bộ xử lý | Enum(String(255)) | Không | Tất cả | Control UI: Combobox.<br>- Đặt ngay sau trường Nguồn tiếp nhận.<br>- Gồm:<br>+ Tất cả<br>+ Danh sách Cán bộ đã trình ký hồ sơ tới Lãnh đạo đăng nhập, thuộc đơn vị quản lý của Lãnh đạo.<br>- Lọc chính xác theo Cán bộ đã trình ký hồ sơ. |
+| **II. Bảng danh sách Phiếu đăng ký chờ ký** | - | - | - | |
+| Bảng danh sách Phiếu đăng ký | Text(1000) | Không | 20 bản ghi/trang | Control UI: Bảng dữ liệu (Grid) kèm thanh phân trang.<br>- Các cột hiển thị (bao gồm các Cột động theo Loại tài sản) giống khối **II. Bảng danh sách Phiếu đăng ký chờ duyệt** tại [Màn hình Danh sách Phiếu đăng ký chờ duyệt - Xử lý Phiếu đăng ký - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Xu_ly_Phieu_dang_ky_Can_bo.md#mh01), trừ Thanh công cụ và cột Thao tác mô tả tại màn hình này.<br>- Chỉ hiển thị Phiếu đăng ký ở trạng thái "Chờ ký" được Cán bộ trình tới Lãnh đạo đang đăng nhập.<br>- **Mặc định khi mở màn hình**: Thời điểm đăng ký trong 3 tháng gần nhất (từ ngày hiện tại trừ 3 tháng đến ngày hiện tại), các bộ lọc còn lại là "Tất cả"/Trống, không hiển thị cột động, 20 bản ghi/trang.<br>- Sắp xếp mặc định theo Thời điểm đăng ký tăng dần để ưu tiên hồ sơ đến trước.<br>- Cột Cán bộ xử lý hiển thị Cán bộ đã trình ký hồ sơ.<br>- Trạng thái không có dữ liệu (Empty State): bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 trong tổng số 0 bản ghi"* và các nút điều hướng trang ở trạng thái khóa mờ (Disabled). |
+| Thanh công cụ (Toolbar) | - | - | - | Control UI: Nhóm nút phía trên Bảng danh sách, dùng cho thao tác lô trên các hồ sơ đã tích chọn.<br>Gồm:<br>+ Duyệt<br>+ Từ chối<br>- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
+| Checkbox | Boolean | Không | Không tích | Control UI: Checkbox chọn dòng / Chọn tất cả.<br>- Cho phép chọn một hoặc nhiều hồ sơ để thực hiện thao tác lô (Duyệt, Từ chối) trên thanh công cụ.<br>- Checkbox chọn tất cả tại tiêu đề bảng chỉ chọn các hồ sơ đang hiển thị trên trang hiện tại.<br>- Khi Lãnh đạo đổi bộ lọc tìm kiếm, trang dữ liệu hoặc số bản ghi/trang, hệ thống xóa danh sách hồ sơ đã chọn. |
+| Thao tác | - | - | - | Control UI: Nhóm icon thao tác trên dòng.<br>Gồm:<br>+ Duyệt<br>+ Từ chối<br>+ Trả lại: chỉ hiển thị với hồ sơ có Nguồn tiếp nhận là "Trực tiếp".<br>- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
 
 ##### 4.3.2.4.2.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Nếu Từ ngày lớn hơn Đến ngày, vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007] và không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
-|  |  |  | TH2 (Không có dữ liệu phù hợp): Hệ thống hiển thị trạng thái rỗng ngay trong vùng bảng danh sách với nội dung "Không có hồ sơ nào ở trạng thái này hoặc phù hợp với điều kiện tìm kiếm."; không hiển thị dòng dữ liệu giả, không reset bộ lọc đã nhập. |
-|  |  |  | TH Hợp lệ: Hệ thống tìm kiếm theo bộ lọc hiện hành trong phạm vi Phiếu đăng ký thuộc quyền ký của Lãnh đạo và tải lại bảng danh sách theo kết quả tìm kiếm. |
-| 2 | Xóa bộ lọc | Nút | Xóa toàn bộ tiêu chí lọc, đưa Loại đăng ký/Loại hình giao dịch/Loại biện pháp hoặc Hợp đồng/Loại tài sản/Nguồn tiếp nhận về "Tất cả", Từ ngày/Đến ngày về mặc định và tải lại danh sách hồ sơ "Chờ duyệt". |
-| 3 | Duyệt | Nút/Icon | TH1 (Chưa chọn bản ghi khi thao tác lô): Vi phạm [BR-DK-024], hiển thị [MSG-ERR-DK-008], không thực hiện duyệt. |
-|  |  |  | TH2 (Hồ sơ không còn ở trạng thái "Chờ duyệt", Lãnh đạo không có quyền ký hoặc file PDF dự thảo không hợp lệ): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005] hoặc [MSG-ERR-DK-010], không thực hiện duyệt. |
-|  |  |  | Không áp dụng theo Plan BTNN. Lãnh đạo không thực hiện duyệt tại màn này. |
-|  |  |  | TH Hợp lệ thao tác theo lô: Hệ thống kiểm tra toàn bộ danh sách hồ sơ đã chọn. Khi tất cả hồ sơ hợp lệ, hệ thống duyệt từng hồ sơ, chuyển trạng thái theo nghĩa vụ phí của từng hồ sơ và ghi nhận kết quả độc lập. |
-| 4 | Từ chối | Nút/Icon | TH1 (Hồ sơ không còn ở trạng thái "Chờ duyệt" hoặc Lãnh đạo không có quyền xử lý): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005], không mở popup. |
-|  |  |  | TH Hợp lệ: Mở **UC-DK-LD.MH03 - Popup Từ chối Phiếu đăng ký chờ duyệt**. |
-| 5 | Click dòng dữ liệu | Row Click | Mở **UC-DK-LD.MH02 - Chi tiết Phiếu đăng ký chờ duyệt**. Đây là phương thức chính để xem chi tiết hồ sơ trên lưới, ngoại trừ khi Lãnh đạo click trực tiếp vào checkbox hoặc các nút thao tác nghiệp vụ. |
+| 1 | Tìm kiếm | Nút | Hệ thống tìm kiếm Phiếu đăng ký ở trạng thái "Chờ ký" được trình tới Lãnh đạo đăng nhập theo các điều kiện đã nhập tại Khối Bộ lọc tìm kiếm (bao gồm Cán bộ xử lý và Khối lọc động theo Loại tài sản nếu đang hiển thị).<br>- **TH1 (Điều kiện ngày không hợp lệ)**: Nếu `Từ ngày` lớn hơn `Đến ngày` (quy định: Từ ngày phải nhỏ hơn hoặc bằng Đến ngày), hệ thống hiển thị [MSG-ERR-VAL-007], highlight viền đỏ ô nhập và không thực hiện tìm kiếm.<br>- **TH2 (Không có dữ liệu trả về)**:<br>+ Bảng kết quả: Hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo [MSG-INF-SYS-001].<br>+ Thanh phân trang: Dòng số lượng hiển thị *"Hiển thị 0-0 trong tổng số 0 bản ghi"*; các nút điều hướng trang ở trạng thái khóa mờ (Disabled).<br>- **TH Hợp lệ (Có dữ liệu trả về)**: Hệ thống thực hiện:<br>+ Hiển thị danh sách Phiếu đăng ký thỏa mãn đồng thời các điều kiện lọc.<br>+ Sắp xếp mặc định theo `Thời điểm đăng ký` tăng dần.<br>+ Phân trang theo số dòng hiển thị đang chọn. |
+| 2 | Xóa bộ lọc | Nút | Hệ thống thực hiện:<br>+ Đưa toàn bộ tiêu chí lọc về mặc định: Từ ngày là ngày hiện tại trừ 3 tháng, Đến ngày là ngày hiện tại, các Combobox (bao gồm Cán bộ xử lý) về "Tất cả", các ô nhập về Trống.<br>+ Ẩn Khối lọc động và các cột động theo Loại tài sản.<br>+ Đặt lại phân trang về Trang 1 và tải lại danh sách. |
+| 3 | Chọn Loại tài sản | Combobox | Hiển thị và xử lý giống chức năng **Chọn Loại tài sản** tại [Màn hình Danh sách Phiếu đăng ký chờ duyệt - Xử lý Phiếu đăng ký - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Xu_ly_Phieu_dang_ky_Can_bo.md#mh01). |
+| 4 | Duyệt (thanh công cụ) | Nút trên Toolbar | Duyệt nhiều hồ sơ đã tích chọn trên lưới cùng một lúc.<br>- **TH1 (Chưa chọn hồ sơ)**: Quy định phải chọn ít nhất một hồ sơ trên lưới. Hệ thống hiển thị [MSG-ERR-DK-008], không mở popup.<br>- **TH2 (Vượt quá số lượng hồ sơ ký duyệt/lần)**: Nếu số hồ sơ được chọn lớn hơn giới hạn cấu hình (mặc định 20 hồ sơ/lần), hệ thống hiển thị [MSG-WRN-DK-002] và không mở popup.<br>- **TH3 (Có hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH03 - Popup Duyệt Phiếu đăng ký](#mh03) và truyền danh sách hồ sơ đã chọn vào popup. |
+| 5 | Duyệt (trên lưới) | Icon trên dòng | Duyệt hồ sơ tại dòng được chọn.<br>- **TH1 (Hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH03 - Popup Duyệt Phiếu đăng ký](#mh03) cho hồ sơ tại dòng được chọn. |
+| 6 | Từ chối (thanh công cụ) | Nút trên Toolbar | Từ chối nhiều hồ sơ đã tích chọn trên lưới cùng một lúc.<br>- **TH1 (Chưa chọn hồ sơ)**: Quy định phải chọn ít nhất một hồ sơ trên lưới. Hệ thống hiển thị [MSG-ERR-DK-008], không mở popup.<br>- **TH2 (Có hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH04 - Popup Từ chối Phiếu đăng ký](#mh04) và truyền danh sách hồ sơ đã chọn vào popup; Lý do từ chối áp dụng cho toàn bộ hồ sơ trong danh sách. |
+| 7 | Từ chối (trên lưới) | Icon trên dòng | Từ chối hồ sơ tại dòng được chọn.<br>- **TH1 (Hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH04 - Popup Từ chối Phiếu đăng ký](#mh04) cho hồ sơ tại dòng được chọn. |
+| 8 | Trả lại (trên lưới) | Icon trên dòng | Chỉ hiển thị với hồ sơ có Nguồn tiếp nhận là "Trực tiếp". Trả lại hồ sơ tại dòng được chọn.<br>- **TH1 (Hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH05 - Popup Trả lại Phiếu đăng ký](#mh05) cho hồ sơ tại dòng được chọn. |
+| 9 | Click dòng dữ liệu | Row click | Mở [MH02 - Màn hình Xem chi tiết Phiếu đăng ký chờ ký](#mh02) của bản ghi được chọn. |
+| 10 | Sắp xếp cột | Header cột | Hiển thị và xử lý giống chức năng **Sắp xếp cột** tại [Màn hình Danh sách Phiếu đăng ký chờ duyệt - Xử lý Phiếu đăng ký - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Xu_ly_Phieu_dang_ky_Can_bo.md#mh01). |
+| 11 | Chọn tất cả | Checkbox header | Tích chọn hoặc bỏ chọn toàn bộ các bản ghi đang hiển thị trên trang hiện tại phục vụ thao tác lô (Duyệt, Từ chối) trên thanh công cụ. |
 
-#### 4.3.2.4.3. UC-DK-LD.MH02 - Màn hình Chi tiết Phiếu đăng ký chờ duyệt (không áp dụng)
+---
 
-##### 4.3.2.4.3.1. Màn hình`r`n`r`n> Cập nhật theo Plan BTNN: màn hình này không còn hiển thị trên UI. Chi tiết hồ sơ của Lãnh đạo chỉ mở từ danh sách "Chờ ký".
+<a id="mh02"></a>
+#### 4.3.2.4.3. MH02 - Màn hình Xem chi tiết Phiếu đăng ký chờ ký
 
-![Màn hình Chi tiết Phiếu đăng ký chờ duyệt](images/UC_DK_LD_MH02_Chi_tiet_Phieu_dang_ky_cho_duyet.png)
+##### 4.3.2.4.3.1. Màn hình
+
+![Màn hình Xem chi tiết Phiếu đăng ký chờ ký](images/UC_DK_LD_MH02_Xem_chi_tiet_Phieu_dang_ky_cho_ky.png)
 
 ##### 4.3.2.4.3.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **I. Thông tin hồ sơ** | | | | |
-| Số hồ sơ | String(50) | Có | Theo hồ sơ | Chỉ đọc. Mã hồ sơ/số đăng ký của Phiếu đăng ký đang xem. |
-| Trạng thái | Enum(String(50)) | Có | "Chờ duyệt" | Chỉ đọc. Hiển thị nổi bật theo trạng thái hiện tại của hồ sơ. |
-| Mã khách hàng | String(50) | Không | Theo hồ sơ | Chỉ hiển thị khi hồ sơ có Mã khách hàng. |
-| Mã PIN | String(20) | Không | Theo hồ sơ | Chỉ hiển thị khi hồ sơ đã phát sinh Mã PIN. |
-| Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Chỉ đọc. Thời điểm hồ sơ được hệ thống ghi nhận. |
-| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
-| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại hình giao dịch [DM_01]. |
-| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02] hoặc [DM_03] theo Loại hình giao dịch. |
-| Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị nguồn tiếp nhận hồ sơ theo nhóm nghiệp vụ: "Trực tuyến", "Trực tiếp", "Dịch vụ công Quốc gia", "Bưu chính". |
-| Cán bộ trình ký | String(255) | Có | Theo hồ sơ | Chỉ đọc. Cán bộ đã trình ký hồ sơ. |
-| Thời điểm trình ký | Datetime | Có | Theo hồ sơ | Chỉ đọc. Thời điểm Cán bộ trình ký thành công. |
-| Lãnh đạo ký | String(255) | Có | Lãnh đạo đăng nhập | - Chỉ đọc.<br>- Lãnh đạo được Cán bộ chọn khi trình ký.<br>- Thông tin Lãnh đạo ký được xác định từ danh sách Lãnh đạo được phép ký/duyệt của đơn vị tại Cấu hình thông tin về người ký. |
-| Có phát sinh nghĩa vụ phí | Boolean | Có | Theo hồ sơ/biểu phí | Không áp dụng tại màn chờ duyệt cũ. Nghĩa vụ phí đã được xử lý trước khi hồ sơ vào "Chờ ký" của Lãnh đạo. |
-| **II. Trục vòng đời giao dịch** | | | | |
-| Danh sách phiên bản hồ sơ | Text(4000) | Không | Theo hồ sơ | Hiển thị giống hệt **I. SIDEBAR: DÒNG THỜI GIAN LỊCH SỬ** tại [UCPS003.MH01 - Màn hình Phiếu đăng ký - Xem chi tiết dành cho Khách hàng](../../01_Website_Khach_hang/SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md#41124-ucps007mh02---man-hinh-phieu-dang-ky---xem-chi-tiet). Khi Lãnh đạo mở hồ sơ từ danh sách duyệt, hệ thống tự động chọn đúng phiên bản/bản ghi tương ứng với hồ sơ đang mở xử lý trên Timeline. Phiên bản/bản ghi đang mở xử lý phải được tô nổi bật trên Timeline. |
-| Chỉ hiển thị vùng dữ liệu có biến động | Boolean | Không | Không tích | Hiển thị và xử lý giống hệt trường **Chỉ hiển thị vùng dữ liệu có biến động** tại [UCPS003.MH01](../../01_Website_Khach_hang/SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md#41124-ucps007mh02---man-hinh-phieu-dang-ky---xem-chi-tiet). |
-| **III. Nhật ký phê duyệt nội bộ** | | | | |
-| Nhật ký phê duyệt nội bộ | Text(4000) | Không | Theo hồ sơ | Chỉ đọc. Hiển thị lịch sử thao tác nội bộ: tiếp nhận, cập nhật, duyệt, hủy duyệt, trình ký, trả lại, từ chối, ký số và các thay đổi trạng thái. |
-| **IV. Khu vực chi tiết Phiếu đăng ký** | | | | |
-| Khung đối chiếu dữ liệu chi tiết | Text(4000) | Có | Theo phiên bản/bản ghi đang mở xử lý | Hiển thị giống hệt **III. KHUNG ĐỐI CHIẾU DỮ LIỆU CHI TIẾT** tại [UCPS003.MH01 - Màn hình Phiếu đăng ký - Xem chi tiết dành cho Khách hàng](../../01_Website_Khach_hang/SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md#41124-ucps007mh02---man-hinh-phieu-dang-ky---xem-chi-tiet). Toàn bộ dữ liệu trong khung ở trạng thái chỉ đọc. |
-| **V. File PDF dự thảo trình ký** | | | | |
-| File PDF dự thảo | File | Có | Theo hồ sơ | Chỉ đọc. Phiên bản file PDF đã được Cán bộ trình ký và khóa trong hồ sơ. Cho phép xem file tại một tab riêng. |
-| Phiên bản file | String(50) | Có | Theo hồ sơ | Chỉ đọc. Phiên bản file PDF đang được trình ký. |
-| Người tạo file | String(255) | Có | Theo hồ sơ | Chỉ đọc. Người tạo file PDF dự thảo. |
-| Thời điểm tạo file | Datetime | Có | Theo hồ sơ | Chỉ đọc. Thời điểm hệ thống sinh file PDF dự thảo. |
-| **VI. Thanh nút chức năng trên màn hình chi tiết** | | | | |
-| Nút tại hồ sơ trạng thái "Chờ duyệt" | Text(1000) | Không | Theo trạng thái hồ sơ | Hiển thị tại cuối màn hình chi tiết, theo thứ tự từ trái sang phải:<br>+ "Quay lại".<br>+ "Từ chối".<br>+ "Duyệt". |
+| **Nội dung màn hình** | - | - | - | Hiển thị và xử lý giống các khối từ **I. Sidebar dòng thời gian lịch sử** đến **VI. Tài liệu đính kèm** tại [Màn hình Xem chi tiết Phiếu đăng ký - Xử lý Phiếu đăng ký - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Xu_ly_Phieu_dang_ky_Can_bo.md#mh02).<br>- **Mặc định khi mở màn hình**: hệ thống focus (chọn và tô nổi bật) vào đúng phiên bản tương ứng với bản ghi Lãnh đạo đã chọn tại [MH01 - Màn hình Danh sách Phiếu đăng ký chờ ký](#mh01).<br>- Toàn bộ dữ liệu ở trạng thái chỉ đọc. |
+| Thanh nút chức năng | - | - | - | Control UI: Nhóm nút cuối màn hình.<br>Gồm:<br>+ Đóng<br>+ Trả lại<br>+ Từ chối<br>+ Duyệt<br>- Nút Duyệt, Từ chối và Trả lại chỉ hiển thị khi hồ sơ ở trạng thái "Chờ ký".<br>- Nút Trả lại chỉ hiển thị với hồ sơ có Nguồn tiếp nhận là "Trực tiếp".<br>- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
 
 ##### 4.3.2.4.3.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Quay lại | Nút | Quay lại **UC-DK-LD.MH01 - Danh sách Phiếu đăng ký chờ duyệt**, giữ nguyên bộ lọc và trang dữ liệu trước đó. |
-| 2 | Xem file | Link/Nút | Cho phép xem file PDF dự thảo tại một tab riêng. |
-| 3 | Duyệt | Nút | TH1 (Hồ sơ không còn ở trạng thái "Chờ duyệt", Lãnh đạo không có quyền ký hoặc file PDF dự thảo không hợp lệ): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005] hoặc [MSG-ERR-DK-010], không thực hiện duyệt. |
-|  |  |  | Không áp dụng theo Plan BTNN. Lãnh đạo không thực hiện duyệt tại màn này. |
-| 4 | Từ chối | Nút | TH1 (Hồ sơ không còn ở trạng thái "Chờ duyệt" hoặc Lãnh đạo không có quyền xử lý): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005], không mở popup. |
-|  |  |  | TH Hợp lệ: Mở **UC-DK-LD.MH03 - Popup Từ chối Phiếu đăng ký chờ duyệt**. |
+| 1 | Chọn phiên bản trên Timeline | Click item | Hiển thị và xử lý giống chức năng **Chọn phiên bản trên Timeline** tại [Màn hình Xem chi tiết Phiếu đăng ký - Xử lý Phiếu đăng ký - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Xu_ly_Phieu_dang_ky_Can_bo.md#mh02). |
+| 2 | Lọc vùng biến động | Checkbox toggle | Hiển thị và xử lý giống chức năng **Lọc vùng biến động** tại [Màn hình Xem chi tiết Phiếu đăng ký - Xử lý Phiếu đăng ký - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Xu_ly_Phieu_dang_ky_Can_bo.md#mh02). |
+| 3 | Xem file | Link / Nút | Cho phép xem file tại một tab riêng. |
+| 4 | Đóng | Nút | Hệ thống đóng màn hình Xem chi tiết và quay lại [MH01 - Màn hình Danh sách Phiếu đăng ký chờ ký](#mh01), giữ nguyên bộ lọc tìm kiếm và trang dữ liệu trước đó. |
+| 5 | Trả lại | Nút | Chỉ hiển thị với hồ sơ có Nguồn tiếp nhận là "Trực tiếp".<br>- **TH1 (Hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH05 - Popup Trả lại Phiếu đăng ký](#mh05) cho hồ sơ đang xem. |
+| 6 | Từ chối | Nút | - **TH1 (Hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH04 - Popup Từ chối Phiếu đăng ký](#mh04) cho hồ sơ đang xem. |
+| 7 | Duyệt | Nút | - **TH1 (Hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH03 - Popup Duyệt Phiếu đăng ký](#mh03) cho hồ sơ đang xem. |
 
-#### 4.3.2.4.4. UC-DK-LD.MH03 - Popup Từ chối Phiếu đăng ký chờ duyệt (không áp dụng)
+---
 
-##### 4.3.2.4.4.1. Màn hình`r`n`r`n> Cập nhật theo Plan BTNN: popup này không còn hiển thị trên UI. Từ chối của Lãnh đạo thực hiện tại trạng thái "Chờ ký".
+<a id="mh03"></a>
+#### 4.3.2.4.4. MH03 - Popup Duyệt Phiếu đăng ký
 
-![Popup Từ chối Phiếu đăng ký chờ duyệt](images/UC_DK_LD_MH03_Popup_tu_choi_Phieu_dang_ky_cho_duyet.png)
+##### 4.3.2.4.4.1. Màn hình
+
+![Popup Duyệt Phiếu đăng ký](images/UC_DK_LD_MH03_Popup_duyet_Phieu_dang_ky.png)
 
 ##### 4.3.2.4.4.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| Mã hồ sơ/Số đăng ký | String(50) | Có | Theo hồ sơ | Chỉ đọc. |
-| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
-| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại hình giao dịch [DM_01]. |
-| Người yêu cầu | String(255) | Không | Theo hồ sơ | Chỉ đọc. |
-| Cán bộ trình ký | String(255) | Có | Theo hồ sơ | Chỉ đọc. |
-| Thời điểm trình ký | Datetime | Có | Theo hồ sơ | Chỉ đọc. |
-| File PDF dự thảo | File | Có | Theo hồ sơ | Chỉ đọc. File PDF đã được Cán bộ trình ký và đang chờ Lãnh đạo ký. |
-| Lý do từ chối | Text(2000) | Có | Trống | Lãnh đạo bắt buộc nhập lý do từ chối. Hệ thống tự động trim space theo [BR-VAL-001]. |
+| **I. Thông tin hồ sơ ký số** | - | - | - | |
+| Danh sách hồ sơ ký số | Text(4000) | Có | Theo hồ sơ đã chọn | Control UI: Bảng dữ liệu, chỉ đọc.<br>- Hiển thị một hoặc nhiều hồ sơ đã chọn tại [MH01 - Màn hình Danh sách Phiếu đăng ký chờ ký](#mh01) hoặc hồ sơ đang xem tại [MH02 - Màn hình Xem chi tiết Phiếu đăng ký chờ ký](#mh02). |
+| Tổng số hồ sơ | Integer(10) | Có | Theo hồ sơ đã chọn | Control UI: Label, chỉ đọc.<br>- Hiển thị tổng số hồ sơ ký số, đặt phía trên bảng.<br>- Không vượt quá giới hạn cấu hình, mặc định tối đa 20 hồ sơ/lần. |
+| Cột: STT | Integer(10) | - | Tự tăng | Control UI: Label, chỉ đọc.<br>- Số thứ tự dòng trong danh sách. |
+| Cột: Số đăng ký | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
+| Cột: Loại đăng ký | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
+| Cột: Người yêu cầu | String(255) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
+| Cột: Loại file chờ ký | Enum(String(100)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>Gồm:<br>+ Văn bản chứng nhận<br>+ Thông báo từ chối |
+| Cột: File PDF chờ ký | File | - | Lấy theo dữ liệu bản ghi | Control UI: Link `Xem file`, chỉ đọc.<br>- File PDF đã được Cán bộ trình ký và khóa phiên bản.<br>- Cho phép xem file tại một tab riêng. |
+| Cột: Trạng thái ký số | Enum(String(50)) | - | Chưa ký | Control UI: Label dạng nhãn trạng thái (Badge), chỉ đọc.<br>Gồm:<br>+ Chưa ký<br>+ Đang ký<br>+ Ký thành công<br>+ Ký lỗi |
+| Hình thức ký số | Enum(String(100)) | Có | USB Token Ban Cơ yếu Chính phủ | Control UI: Label, chỉ đọc. |
+| **II. Thông tin thiết bị ký số** | - | - | - | |
+| Trạng thái USB Token | Enum(String(50)) | Không | Chưa kiểm tra | Control UI: Label dạng nhãn trạng thái (Badge), chỉ đọc.<br>Gồm:<br>+ Chưa kiểm tra<br>+ Đã nhận thiết bị<br>+ Không nhận thiết bị<br>+ Chứng thư số không hợp lệ<br>+ Chứng thư số hợp lệ |
+| Chứng thư số | Text(1000) | Không | Theo USB Token | Control UI: Label, chỉ đọc.<br>- Thông tin chứng thư số đọc được từ USB Token. |
+| Người ký | String(255) | Không | Theo chứng thư số | Control UI: Label, chỉ đọc.<br>- Người sở hữu chứng thư số dùng để ký. |
+| Thời hạn chứng thư số | String(255) | Không | Theo chứng thư số | Control UI: Label, chỉ đọc. |
 
 ##### 4.3.2.4.4.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Hủy | Nút | Đóng popup, giữ nguyên trạng thái hồ sơ và quay lại giao diện trước đó. |
-| 2 | Xác nhận từ chối | Nút | TH1 (Bỏ trống Lý do từ chối): Vi phạm [BR-VAL-001], hiển thị [MSG-ERR-VAL-001], không cho phép xác nhận. |
-|  |  |  | TH2 (Hồ sơ không còn ở trạng thái "Chờ duyệt" hoặc Lãnh đạo không có quyền xử lý): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005], không cho phép xác nhận. |
-|  |  |  | TH Hợp lệ: Hệ thống yêu cầu xác nhận bằng [MSG-CFM-DK-015]. Sau khi Lãnh đạo xác nhận, hệ thống lưu người từ chối, thời điểm từ chối, lý do từ chối, file PDF dự thảo, phiên bản dữ liệu/PDF bị từ chối; chuyển hồ sơ sang "Bị từ chối"; tạo yêu cầu hoàn tiền theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online) đối với hồ sơ Online, hoặc tạo khoản hoàn phí/thông báo kế toán tại Module Quản lý thu phí/hoàn phí hồ sơ giấy đối với hồ sơ giấy đã thu phí; hiển thị [MSG-SUC-DK-KT-003]. |
+| 1 | Xem file | Link | Cho phép xem file tại một tab riêng. |
+| 2 | Kiểm tra USB Token | Nút | - **TH1 (USB Token chưa sẵn sàng hoặc không đọc được chứng thư số hợp lệ)**: Hệ thống hiển thị [MSG-ERR-DK-011] và chưa cho phép ký số.<br>- **TH2 (Chứng thư số không khớp với Lãnh đạo được phân công ký)**: Hệ thống hiển thị [MSG-ERR-DK-012] và chưa cho phép ký số.<br>- **TH Hợp lệ**: Hệ thống thực hiện:<br>+ Nhận diện USB Token, đọc chứng thư số.<br>+ Kiểm tra thời hạn chứng thư số và trạng thái thu hồi (nếu có tích hợp OCSP/CRL).<br>+ Hiển thị Trạng thái USB Token là "Chứng thư số hợp lệ". |
+| 3 | Hủy | Nút | Hệ thống đóng popup, giữ nguyên trạng thái hồ sơ và quay lại màn hình đã mở popup. |
+| 4 | Ký số | Nút | Ký số toàn bộ hồ sơ trong danh sách chỉ với một lần xác nhận; hệ thống ký lần lượt từng file PDF, mỗi hồ sơ có kết quả ký độc lập.<br>- **TH1 (USB Token/chứng thư số chưa hợp lệ)**: Hệ thống hiển thị [MSG-ERR-DK-011] hoặc [MSG-ERR-DK-012], không thực hiện ký số.<br>- **TH2 (Hồ sơ không còn ở trạng thái "Chờ ký" hoặc không có file PDF chờ ký hợp lệ)**: Hệ thống hiển thị [MSG-ERR-DK-005] hoặc [MSG-ERR-DK-010] và không ký hồ sơ đó; các hồ sơ hợp lệ khác vẫn được ký.<br>- **TH3 (Lãnh đạo hủy ký, nhập sai PIN hoặc thành phần ký số trả lỗi)**: Hệ thống hiển thị [MSG-ERR-DK-013], cập nhật Trạng thái ký số của hồ sơ là "Ký lỗi" và giữ nguyên trạng thái hồ sơ "Chờ ký".<br>- **TH Hợp lệ**: Hệ thống yêu cầu xác nhận bằng [MSG-CFM-DK-013]. Sau khi Lãnh đạo xác nhận, hệ thống thực hiện:<br>+ Thành phần ký số cục bộ yêu cầu nhập PIN USB Token; hệ thống không lưu PIN.<br>+ Ký số trực tiếp trên file PDF chờ ký tại vùng ký của lá mặt/trang ký và xác minh chữ ký sau khi ký.<br>+ Lưu file PDF đã ký, thông tin chứng thư số, người ký, thời điểm ký, phiên bản file đã ký.<br>+ Hồ sơ có Loại file chờ ký là "Văn bản chứng nhận": chuyển sang trạng thái "Hoàn thành".<br>+ Hồ sơ có Loại file chờ ký là "Thông báo từ chối": chuyển sang trạng thái "Bị từ chối" và tạo yêu cầu hoàn tiền theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online - Quản lý đối soát thanh toán - Module Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online) đối với hồ sơ trực tuyến.<br>+ Đồng bộ trạng thái và file kết quả sang Website Khách hàng.<br>+ Ghi lịch sử xử lý và Audit log.<br>+ Hiển thị [MSG-SUC-DK-KT-005], đóng popup và tải lại [MH01 - Màn hình Danh sách Phiếu đăng ký chờ ký](#mh01). |
 
-#### 4.3.2.4.5. UC-DK-LD.MH04 - Màn hình Danh sách Phiếu đăng ký chờ ký
+---
+
+<a id="mh04"></a>
+#### 4.3.2.4.5. MH04 - Popup Từ chối Phiếu đăng ký
 
 ##### 4.3.2.4.5.1. Màn hình
 
-![Màn hình Danh sách Phiếu đăng ký chờ ký](images/UC_DK_LD_MH04_Danh_sach_Phieu_dang_ky_cho_ky.png)
+![Popup Từ chối Phiếu đăng ký](images/UC_DK_LD_MH04_Popup_tu_choi_Phieu_dang_ky.png)
 
 ##### 4.3.2.4.5.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **I. Tab nhóm nghiệp vụ** | | | | |
-| Phiếu đăng ký | Enum(String(50)) | Có | "Phiếu đăng ký" | Tab đang được đặc tả trong tài liệu này. Chỉ hiển thị các hồ sơ thuộc nhóm Phiếu đăng ký tại mục 4.3.2.4.1.c. |
-| Yêu cầu cung cấp thông tin | Enum(String(50)) | Không | Không chọn | Không thuộc phạm vi tài liệu này. Hiển thị theo tài liệu SRS ký duyệt Yêu cầu cung cấp thông tin của Lãnh đạo. |
-| Yêu cầu cung cấp bản sao | Enum(String(50)) | Không | Không chọn | Không thuộc phạm vi tài liệu này. Hiển thị theo tài liệu SRS ký duyệt Yêu cầu cung cấp bản sao của Lãnh đạo. |
-| **II. Bộ lọc tìm kiếm** | | | | |
-| Số đăng ký | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số đăng ký...".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Số đăng ký/Mã hồ sơ của Phiếu đăng ký. |
-| Tên bên bảo đảm | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập tên bên bảo đảm...".<br>- Tìm kiếm gần đúng theo Tên bên bảo đảm trong Phiếu đăng ký. |
-| Tên bên nhận bảo đảm | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập tên bên nhận bảo đảm...".<br>- Tìm kiếm gần đúng theo Tên bên nhận bảo đảm trong Phiếu đăng ký. |
-| Mã khách hàng | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập mã khách hàng...".<br>- Tìm kiếm gần đúng theo Mã khách hàng nộp hồ sơ. |
-| Số biên lai | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số biên lai...".<br>- Tìm kiếm gần đúng theo Số biên lai thu phí/miễn phí của hồ sơ. |
-| Nguồn tiếp nhận | Enum(String(50)) | Không | "Tất cả" | Control UI: Combobox.<br>- Giá trị gồm: "Tất cả", "Trực tuyến", "Trực tiếp", "Dịch vụ công Quốc gia", "Bưu chính".<br>- Lọc theo nguồn phát sinh/tiếp nhận hồ sơ. |
-| Cán bộ xử lý | Enum(String(255)) | Không | "Tất cả" | Control UI: Combobox.<br>- Chọn Cán bộ/Chuyên viên đã xử lý hoặc trình ký hồ sơ, hoặc chọn "Tất cả".<br>- Danh sách lấy theo cán bộ thuộc phạm vi Trung tâm đăng ký của Lãnh đạo đăng nhập. |
-| Lãnh đạo ký | String(255) | Không | Lãnh đạo đăng nhập | - Cho phép tìm kiếm gần đúng theo tên Lãnh đạo được phân công ký.<br>- Thông tin Lãnh đạo ký được xác định từ danh sách Lãnh đạo được phép ký của đơn vị tại Cấu hình thông tin về người ký.<br>- Mặc định giới hạn theo Lãnh đạo đang đăng nhập.<br>- Chỉ vai trò được phân quyền giám sát/tra cứu thay mới được nhập tên Lãnh đạo khác theo phạm vi thẩm quyền. |
-| Loại đăng ký | Enum(String(50)) | Không | "Tất cả" | Tham chiếu Danh mục Loại hình đăng ký [DM_04]. Chỉ lọc trong phạm vi nhóm Phiếu đăng ký. |
-| Loại hình giao dịch | Enum(String(50)) | Không | "Tất cả" | Tham chiếu Danh mục Loại hình giao dịch [DM_01]. |
-| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | "Tất cả" | Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02] hoặc [DM_03] theo Loại hình giao dịch đã chọn. |
-| Loại tài sản bảo đảm | Enum(String(255)) | Không | "Tất cả" | Tham chiếu Danh mục Loại tài sản bảo đảm [DM_07]. |
-| Từ ngày | Date | Không | Ngày 01 của tháng hiện tại | Lọc theo Thời điểm đăng ký. Tuân thủ [BR-VAL-007]. |
-| Đến ngày | Date | Không | Ngày hiện tại | Lọc theo Thời điểm đăng ký. Tuân thủ [BR-VAL-007]. |
-| **III. Bảng danh sách Phiếu đăng ký chờ ký** | | | |<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].|
-| Bảng danh sách Phiếu đăng ký chờ ký | Text(4000) | Không | 20 bản ghi/trang | Chỉ hiển thị Phiếu đăng ký ở trạng thái "Chờ ký", thuộc phạm vi ký của Lãnh đạo đăng nhập và đã được Cán bộ trình tới Lãnh đạo đó. Sắp xếp mặc định theo Thời điểm chuyển sang "Chờ ký" tăng dần. Click trực tiếp vào dòng dữ liệu, ngoại trừ vùng checkbox/nút thao tác, để mở **UC-DK-LD.MH05 - Chi tiết Phiếu đăng ký chờ ký**. Không thiết kế icon "Xem chi tiết" riêng theo quy tắc Row Click dùng chung.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].|
-| Checkbox chọn | Boolean | Không | Không tích | Cho phép chọn một hoặc nhiều hồ sơ đủ điều kiện để ký số theo lô. Checkbox chọn tất cả tại tiêu đề bảng chỉ chọn các hồ sơ đủ điều kiện đang hiển thị trên trang hiện tại. Khi đổi Tab nhóm nghiệp vụ, bộ lọc, trang dữ liệu hoặc số bản ghi/trang, hệ thống xóa danh sách hồ sơ đã chọn. |
-| STT | Integer(10) | Không | Tự tăng | Số thứ tự dòng dữ liệu trên trang hiện tại. |
-| Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Thời điểm hồ sơ được hệ thống ghi nhận. |
-| Số đăng ký/Mã hồ sơ | String(50) | Có | Theo hồ sơ | Số đăng ký hoặc Mã hồ sơ của Phiếu đăng ký. Click vào giá trị xử lý tương tự Row Click và mở **UC-DK-LD.MH05 - Chi tiết Phiếu đăng ký chờ ký**. |
-| Mã PIN | String(20) | Không | Theo hồ sơ | Hiển thị Mã PIN bảo mật của hồ sơ nếu đã phát sinh. |
-| Tên bên bảo đảm | String(255) | Không | Theo hồ sơ | Hiển thị tên bên bảo đảm trong hồ sơ. |
-| Tên bên nhận bảo đảm | String(255) | Không | Theo hồ sơ | Hiển thị tên bên nhận bảo đảm trong hồ sơ. |
-| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
-| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Tham chiếu Danh mục Loại hình giao dịch [DM_01]. |
-| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Theo hồ sơ | Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02] nếu Loại hình giao dịch là "Biện pháp bảo đảm"; Tham chiếu Danh mục Loại hợp đồng [DM_03] nếu Loại hình giao dịch là "Hợp đồng". |
-| Loại tài sản | Enum(String(255)) | Không | Theo hồ sơ | Tham chiếu Danh mục Loại tài sản bảo đảm [DM_07]. Nếu hồ sơ có nhiều Loại tài sản, hiển thị mỗi Loại tài sản trên một dòng riêng trong cùng ô. |
-| Mã khách hàng | String(50) | Không | Theo hồ sơ | Hiển thị Mã khách hàng nộp hồ sơ nếu có. |
-| Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | Hiển thị nguồn tiếp nhận hồ sơ theo nhóm nghiệp vụ: "Trực tuyến", "Trực tiếp", "Dịch vụ công Quốc gia", "Bưu chính". |
-| Cán bộ trình ký | String(255) | Có | Theo hồ sơ | Cán bộ đã trình ký hồ sơ. |
-| Thời điểm trình ký | Datetime | Có | Theo hồ sơ | Thời điểm Cán bộ trình ký thành công hoặc thời điểm hồ sơ được chuyển sang "Chờ ký" sau thanh toán. |
-| Loại file chờ ký | Enum(String(100)) | Có | Theo hồ sơ | Giá trị gồm:<br>+ "Văn bản chứng nhận/Thông báo kết quả".<br>+ "Văn bản từ chối". |
-| Trạng thái | Enum(String(50)) | Có | "Chờ ký" | Chỉ đọc. Tại màn hình này chỉ hiển thị hồ sơ ở trạng thái "Chờ ký". |
-| Thao tác | String(255) | Không | Theo quyền | Việc xem chi tiết thực hiện bằng Row Click. Hiển thị các nút nghiệp vụ theo thứ tự:<br>+ "Ký số".<br>+ "Từ chối".<br>+ "Trả lại". |
+| Danh sách hồ sơ từ chối | Text(4000) | Có | Theo hồ sơ đã chọn | Control UI: Bảng dữ liệu, chỉ đọc.<br>- Hiển thị một hoặc nhiều hồ sơ đã chọn tại [MH01 - Màn hình Danh sách Phiếu đăng ký chờ ký](#mh01) hoặc hồ sơ đang xem tại [MH02 - Màn hình Xem chi tiết Phiếu đăng ký chờ ký](#mh02). |
+| Tổng số hồ sơ | Integer(10) | Có | Theo hồ sơ đã chọn | Control UI: Label, chỉ đọc.<br>- Hiển thị tổng số hồ sơ bị từ chối, đặt phía trên bảng. |
+| Cột: STT | Integer(10) | - | Tự tăng | Control UI: Label, chỉ đọc.<br>- Số thứ tự dòng trong danh sách. |
+| Cột: Số đăng ký | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
+| Cột: Tên bên bảo đảm | String(255) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Nếu có nhiều Bên bảo đảm, hiển thị nối bằng dấu phẩy. |
+| Cột: Loại đăng ký | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
+| Cột: Cán bộ xử lý | String(255) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Cán bộ đã trình ký hồ sơ. |
+| Lý do từ chối | Text(2000) | Có | Trống | Control UI: Textarea.<br>- Placeholder: "Nhập lý do từ chối hồ sơ...".<br>- Bắt buộc nhập; hệ thống tự động loại bỏ dấu cách thừa đầu/cuối trước khi kiểm tra. |
 
 ##### 4.3.2.4.5.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | TH1 (Điều kiện ngày không hợp lệ): Nếu Từ ngày lớn hơn Đến ngày, vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007] và không thực hiện tìm kiếm.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
-|  |  |  | TH2 (Không có dữ liệu phù hợp): Hệ thống hiển thị trạng thái rỗng ngay trong vùng bảng danh sách với nội dung "Không có hồ sơ nào ở trạng thái này hoặc phù hợp với điều kiện tìm kiếm."; không hiển thị dòng dữ liệu giả, không reset bộ lọc đã nhập. |
-|  |  |  | TH Hợp lệ: Hệ thống tìm kiếm theo bộ lọc hiện hành trong phạm vi Phiếu đăng ký thuộc quyền ký của Lãnh đạo và tải lại bảng danh sách theo kết quả tìm kiếm. |
-| 2 | Xóa bộ lọc | Nút | Xóa toàn bộ tiêu chí lọc, đưa Loại đăng ký/Loại hình giao dịch/Loại biện pháp hoặc Hợp đồng/Loại tài sản/Nguồn tiếp nhận về "Tất cả", Từ ngày/Đến ngày về mặc định và tải lại danh sách hồ sơ "Chờ ký". |
-| 3 | Ký số | Nút/Icon | TH1 (Chưa chọn bản ghi khi thao tác lô): Vi phạm [BR-DK-024], hiển thị [MSG-ERR-DK-008], không mở popup ký số. |
-|  |  |  | TH2 (Hồ sơ không còn ở trạng thái "Chờ ký", Lãnh đạo không có quyền ký hoặc file PDF chờ ký không hợp lệ): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005] hoặc [MSG-ERR-DK-010], không mở popup ký số. |
-|  |  |  | TH Hợp lệ thao tác dòng: Mở **UC-DK-LD.MH06 - Popup Ký số Phiếu đăng ký** ở chế độ ký một hồ sơ. |
-|  |  |  | TH Hợp lệ thao tác theo lô: Hệ thống kiểm tra danh sách hồ sơ đã chọn. Khi tất cả hồ sơ hợp lệ, mở **UC-DK-LD.MH06 - Popup Ký số Phiếu đăng ký** ở chế độ ký nhiều hồ sơ. |
-| 4 | Từ chối | Nút/Icon | TH1 (Hồ sơ không còn ở trạng thái "Chờ ký" hoặc Lãnh đạo không có quyền xử lý): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005], không mở popup. |
-|  |  |  | TH Hợp lệ: Mở **UC-DK-LD.MH07 - Popup Từ chối/Trả lại Phiếu đăng ký chờ ký** với Loại xử lý mặc định là "Từ chối". |
-| 5 | Trả lại | Nút/Icon | TH1 (Hồ sơ không còn ở trạng thái "Chờ ký" hoặc Lãnh đạo không có quyền xử lý): Vi phạm [BR-DK-035], hiển thị [MSG-ERR-DK-005], không mở popup. |
-|  |  |  | TH Hợp lệ: Mở **UC-DK-LD.MH07 - Popup Từ chối/Trả lại Phiếu đăng ký chờ ký** với Loại xử lý mặc định là "Trả lại". |
-| 6 | Click dòng dữ liệu | Row Click | Mở **UC-DK-LD.MH05 - Chi tiết Phiếu đăng ký chờ ký**. Đây là phương thức chính để xem chi tiết hồ sơ trên lưới, ngoại trừ khi Lãnh đạo click trực tiếp vào checkbox hoặc các nút thao tác nghiệp vụ. |
+| 1 | Hủy | Nút | Hệ thống đóng popup, giữ nguyên trạng thái hồ sơ và quay lại màn hình đã mở popup. |
+| 2 | Xác nhận | Nút | - **TH1 (Bỏ trống Lý do từ chối)**: Quy định Lý do từ chối là bắt buộc. Hệ thống tô viền đỏ ô nhập, hiển thị [MSG-ERR-VAL-001] dạng Inline ngay phía dưới ô nhập và focus con trỏ vào ô nhập. Không thực hiện từ chối.<br>- **TH2 (Có hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không thực hiện từ chối.<br>- **TH Hợp lệ**: Hệ thống yêu cầu xác nhận bằng [MSG-CFM-DK-015]. Sau khi Lãnh đạo xác nhận, hệ thống thực hiện:<br>+ Lưu người từ chối, thời điểm từ chối, lý do từ chối và phiên bản dữ liệu/file PDF bị từ chối.<br>+ Chuyển hồ sơ sang trạng thái "Bị từ chối".<br>+ Tạo yêu cầu hoàn tiền theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online - Quản lý đối soát thanh toán - Module Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online) đối với hồ sơ trực tuyến.<br>+ Đồng bộ trạng thái sang Website Khách hàng.<br>+ Ghi lịch sử xử lý và Audit log.<br>+ Hiển thị [MSG-SUC-DK-KT-003], đóng popup và tải lại [MH01 - Màn hình Danh sách Phiếu đăng ký chờ ký](#mh01). |
 
-#### 4.3.2.4.6. UC-DK-LD.MH05 - Màn hình Chi tiết Phiếu đăng ký chờ ký
+---
+
+<a id="mh05"></a>
+#### 4.3.2.4.6. MH05 - Popup Trả lại Phiếu đăng ký
 
 ##### 4.3.2.4.6.1. Màn hình
 
-![Màn hình Chi tiết Phiếu đăng ký chờ ký](images/UC_DK_LD_MH05_Chi_tiet_Phieu_dang_ky_cho_ky.png)
+![Popup Trả lại Phiếu đăng ký](images/UC_DK_LD_MH05_Popup_tra_lai_Phieu_dang_ky.png)
 
 ##### 4.3.2.4.6.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **I. Thông tin hồ sơ** | | | | |
-| Số hồ sơ | String(50) | Có | Theo hồ sơ | Chỉ đọc. Mã hồ sơ/số đăng ký của Phiếu đăng ký đang xem. |
-| Trạng thái | Enum(String(50)) | Có | "Chờ ký" | Chỉ đọc. Hiển thị nổi bật theo trạng thái hiện tại của hồ sơ. |
-| Mã khách hàng | String(50) | Không | Theo hồ sơ | Chỉ hiển thị khi hồ sơ có Mã khách hàng. |
-| Mã PIN | String(20) | Không | Theo hồ sơ | Chỉ hiển thị khi hồ sơ đã phát sinh Mã PIN. |
-| Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Chỉ đọc. Thời điểm hồ sơ được hệ thống ghi nhận. |
-| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
-| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại hình giao dịch [DM_01]. |
-| Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02] hoặc [DM_03] theo Loại hình giao dịch. |
-| Nguồn tiếp nhận | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc. Hiển thị nguồn tiếp nhận hồ sơ theo nhóm nghiệp vụ: "Trực tuyến", "Trực tiếp", "Dịch vụ công Quốc gia", "Bưu chính". |
-| Cán bộ trình ký | String(255) | Có | Theo hồ sơ | Chỉ đọc. Cán bộ đã trình ký hồ sơ hoặc Cán bộ xử lý trước khi hồ sơ chuyển sang "Chờ ký". |
-| Thời điểm trình ký | Datetime | Có | Theo hồ sơ | Chỉ đọc. Thời điểm Cán bộ trình ký thành công hoặc thời điểm hồ sơ được chuyển sang "Chờ ký" sau thanh toán. |
-| Lãnh đạo ký | String(255) | Có | Lãnh đạo đăng nhập | - Chỉ đọc.<br>- Lãnh đạo được Cán bộ chọn khi trình ký hoặc Lãnh đạo đã duyệt trước đó.<br>- Thông tin Lãnh đạo ký được xác định từ danh sách Lãnh đạo được phép ký của đơn vị tại Cấu hình thông tin về người ký. |
-| **II. Trục vòng đời giao dịch** | | | | |
-| Danh sách phiên bản hồ sơ | Text(4000) | Không | Theo hồ sơ | Hiển thị giống hệt **I. SIDEBAR: DÒNG THỜI GIAN LỊCH SỬ** tại [UCPS003.MH01 - Màn hình Phiếu đăng ký - Xem chi tiết dành cho Khách hàng](../../01_Website_Khach_hang/SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md#41124-ucps007mh02---man-hinh-phieu-dang-ky---xem-chi-tiet). Khi Lãnh đạo mở hồ sơ từ danh sách ký, hệ thống tự động chọn đúng phiên bản/bản ghi tương ứng với hồ sơ đang mở xử lý trên Timeline. Phiên bản/bản ghi đang mở xử lý phải được tô nổi bật trên Timeline. |
-| Chỉ hiển thị vùng dữ liệu có biến động | Boolean | Không | Không tích | Hiển thị và xử lý giống hệt trường **Chỉ hiển thị vùng dữ liệu có biến động** tại [UCPS003.MH01](../../01_Website_Khach_hang/SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md#41124-ucps007mh02---man-hinh-phieu-dang-ky---xem-chi-tiet). |
-| **III. Nhật ký phê duyệt nội bộ** | | | | |
-| Nhật ký phê duyệt nội bộ | Text(4000) | Không | Theo hồ sơ | Chỉ đọc. Hiển thị lịch sử thao tác nội bộ: tiếp nhận, cập nhật, duyệt, hủy duyệt, trình ký, trả lại, từ chối, ký số và các thay đổi trạng thái. |
-| **IV. Khu vực chi tiết Phiếu đăng ký** | | | | |
-| Khung đối chiếu dữ liệu chi tiết | Text(4000) | Có | Theo phiên bản/bản ghi đang mở xử lý | Hiển thị giống hệt **III. KHUNG ĐỐI CHIẾU DỮ LIỆU CHI TIẾT** tại [UCPS003.MH01 - Màn hình Phiếu đăng ký - Xem chi tiết dành cho Khách hàng](../../01_Website_Khach_hang/SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md#41124-ucps007mh02---man-hinh-phieu-dang-ky---xem-chi-tiet). Toàn bộ dữ liệu trong khung ở trạng thái chỉ đọc. |
-| Thông tin bổ sung đối với phiên bản bị từ chối | Text(4000) | Tùy điều kiện | Theo phiên bản đang chọn | Hiển thị giống hệt **IV. THÔNG TIN BỔ SUNG ĐỐI VỚI PHIÊN BẢN BỊ TỪ CHỐI** tại [UCPS003.MH01](../../01_Website_Khach_hang/SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md#41124-ucps007mh02---man-hinh-phieu-dang-ky---xem-chi-tiet). Chỉ hiển thị khi phiên bản đang chọn trên Timeline có trạng thái "Bị từ chối". |
-| **V. File PDF chờ ký** | | | | |
-| Loại file chờ ký | Enum(String(100)) | Có | Theo hồ sơ | Giá trị gồm:<br>+ "Văn bản chứng nhận/Thông báo kết quả".<br>+ "Văn bản từ chối". |
-| File PDF chờ ký | File | Có | Theo hồ sơ | Chỉ đọc. Phiên bản file PDF đã được Cán bộ trình ký và khóa trong hồ sơ. Cho phép xem file tại một tab riêng. |
-| Phiên bản file | String(50) | Có | Theo hồ sơ | Chỉ đọc. Phiên bản file PDF đang chờ ký. |
-| Người tạo file | String(255) | Có | Theo hồ sơ | Chỉ đọc. Người tạo file PDF dự thảo. |
-| Thời điểm tạo file | Datetime | Có | Theo hồ sơ | Chỉ đọc. Thời điểm hệ thống sinh file PDF dự thảo. |
-| Checksum/Hash file | String(255) | Không | Theo hệ thống | Chỉ đọc. Dùng để đối chiếu tính toàn vẹn của file PDF chờ ký nếu hệ thống có cấu hình kiểm tra hash. |
-| **VI. Ý kiến xử lý của Lãnh đạo** | | | | |
-| Lý do từ chối/trả lại | Text(2000) | Tùy điều kiện | Trống | Chỉ nhập tại Popup Từ chối/Trả lại. Bắt buộc khi Lãnh đạo thực hiện "Từ chối" hoặc "Trả lại" theo [BR-DK-025]/[BR-DK-035]. |
-| **VII. Thanh nút chức năng trên màn hình chi tiết** | | | | |
-| Nút tại hồ sơ trạng thái "Chờ ký" | Text(1000) | Không | Theo trạng thái hồ sơ | Hiển thị tại cuối màn hình chi tiết, theo thứ tự từ trái sang phải:<br>+ "Quay lại".<br>+ "Từ chối".<br>+ "Trả lại".<br>+ "Ký số". |
+| Số đăng ký | String(50) | Có | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Số đăng ký của hồ sơ bị trả lại. |
+| Loại đăng ký | Enum(String(50)) | Có | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
+| Người yêu cầu | String(255) | Không | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
+| Nguồn tiếp nhận | Enum(String(50)) | Có | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Luôn hiển thị "Trực tiếp". |
+| Cán bộ xử lý | String(255) | Có | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Cán bộ đã trình ký hồ sơ, là người nhận lại hồ sơ để cập nhật. |
+| File PDF chờ ký | File | Có | Lấy theo dữ liệu bản ghi | Control UI: Link `Xem file`, chỉ đọc.<br>- Cho phép xem file tại một tab riêng. |
+| Lý do trả lại | Text(2000) | Có | Trống | Control UI: Textarea.<br>- Placeholder: "Nhập lý do trả lại hồ sơ...".<br>- Bắt buộc nhập; hệ thống tự động loại bỏ dấu cách thừa đầu/cuối trước khi kiểm tra. |
 
 ##### 4.3.2.4.6.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Quay lại | Nút | Quay lại **UC-DK-LD.MH04 - Danh sách Phiếu đăng ký chờ ký**, giữ nguyên bộ lọc và trang dữ liệu trước đó. |
-| 2 | Xem file | Link/Nút | Cho phép xem file PDF chờ ký tại một tab riêng. |
-| 3 | Ký số | Nút | TH1 (Hồ sơ không còn ở trạng thái "Chờ ký", Lãnh đạo không có quyền ký hoặc file PDF chờ ký không hợp lệ): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005] hoặc [MSG-ERR-DK-010], không mở popup ký số. |
-|  |  |  | TH Hợp lệ: Mở **UC-DK-LD.MH06 - Popup Ký số Phiếu đăng ký** ở chế độ ký một hồ sơ. |
-| 4 | Từ chối | Nút | TH1 (Hồ sơ không còn ở trạng thái "Chờ ký" hoặc Lãnh đạo không có quyền xử lý): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005], không mở popup. |
-|  |  |  | TH Hợp lệ: Mở **UC-DK-LD.MH07 - Popup Từ chối/Trả lại Phiếu đăng ký chờ ký** với Loại xử lý mặc định là "Từ chối". |
-| 5 | Trả lại | Nút | TH1 (Hồ sơ không còn ở trạng thái "Chờ ký" hoặc Lãnh đạo không có quyền xử lý): Vi phạm [BR-DK-035], hiển thị [MSG-ERR-DK-005], không mở popup. |
-|  |  |  | TH Hợp lệ: Mở **UC-DK-LD.MH07 - Popup Từ chối/Trả lại Phiếu đăng ký chờ ký** với Loại xử lý mặc định là "Trả lại". |
-
-#### 4.3.2.4.7. UC-DK-LD.MH06 - Popup Ký số Phiếu đăng ký
-
-##### 4.3.2.4.7.1. Màn hình
-
-![Popup Ký số Phiếu đăng ký](images/UC_DK_LD_MH06_Popup_ky_so_Phieu_dang_ky.png)
-
-##### 4.3.2.4.7.2. Mô tả thông tin trên màn hình
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :---: | :--- | :--- |
-| **I. Thông tin ký số** | | | | |
-| Chế độ ký số | Enum(String(50)) | Có | Theo thao tác mở popup | Chỉ đọc. Nếu Lãnh đạo bấm "Ký số" tại từng dòng hoặc tại màn chi tiết một hồ sơ, hiển thị "Ký một hồ sơ". Nếu Lãnh đạo tích chọn nhiều hồ sơ trên lưới và bấm "Ký số" trên Toolbar, hiển thị "Ký nhiều hồ sơ". |
-| Thông tin hồ sơ ký số | Text(1000) | Có | Theo hồ sơ được chọn | Chỉ hiển thị khi Chế độ ký số là "Ký một hồ sơ". Hiển thị các thông tin tóm tắt: Mã hồ sơ/Số đăng ký, Loại đăng ký, Loại hình giao dịch, Người yêu cầu, Loại file chờ ký, Trạng thái hồ sơ. |
-| Tổng số hồ sơ ký số | Integer(10) | Có | Theo hồ sơ được chọn | Chỉ hiển thị khi Chế độ ký số là "Ký nhiều hồ sơ". Chỉ đọc. Số hồ sơ ký số/lần không vượt quá giới hạn cấu hình, mặc định 20 hồ sơ/lần. |
-| Danh sách hồ sơ ký số | Text(4000) | Có | Theo hồ sơ được chọn | Chỉ hiển thị khi Chế độ ký số là "Ký nhiều hồ sơ". Chỉ đọc. Hiển thị dạng bảng gồm các cột:<br>+ STT.<br>+ Mã hồ sơ/Số đăng ký.<br>+ Loại đăng ký.<br>+ Người yêu cầu.<br>+ Loại file chờ ký.<br>+ File PDF chờ ký.<br>+ Trạng thái ký số.<br>+ Kết quả ký. |
-| File PDF chờ ký | File | Có | Theo hồ sơ được chọn | Chỉ đọc. Khi Chế độ ký số là "Ký một hồ sơ", hiển thị 01 file PDF chờ ký ngay dưới Thông tin hồ sơ ký số. Khi Chế độ ký số là "Ký nhiều hồ sơ", hiển thị file PDF chờ ký tại từng dòng trong Danh sách hồ sơ ký số. Cho phép xem file tại một tab riêng. |
-| Hình thức ký số | Enum(String(100)) | Có | "USB Token Ban Cơ yếu Chính phủ" | Chỉ đọc. Hệ thống ký số thông qua thành phần ký số cục bộ kết nối USB Token/chứng thư số hợp lệ của Lãnh đạo theo [BR-DK-034]. |
-| **II. Thông tin thiết bị ký số** | | | | |
-| Trạng thái USB Token | Enum(String(50)) | Không | "Chưa kiểm tra" | Giá trị gồm:<br>+ "Chưa kiểm tra".<br>+ "Đã nhận thiết bị".<br>+ "Không nhận thiết bị".<br>+ "Chứng thư số không hợp lệ".<br>+ "Chứng thư số hợp lệ". |
-| Chứng thư số | Text(1000) | Không | Theo USB Token | Chỉ đọc. Hiển thị thông tin chứng thư số đọc được từ USB Token. |
-| Người ký | String(255) | Không | Theo chứng thư số | Chỉ đọc. Người sở hữu chứng thư số dùng để ký. |
-| Thời hạn chứng thư số | String(255) | Không | Theo chứng thư số | Chỉ đọc. Thời hạn hiệu lực của chứng thư số. |
-| Trạng thái ký số | Enum(String(50)) | Không | "Chưa ký" | Chỉ đọc. Hiển thị trạng thái ký số của từng hồ sơ trong lô ký. Giá trị gồm:<br>+ "Chưa ký".<br>+ "Đang ký".<br>+ "Ký thành công".<br>+ "Ký lỗi". |
-| Kết quả ký từng hồ sơ | Text(4000) | Không | Theo kết quả ký | Chỉ đọc. Hiển thị kết quả ký thành công hoặc lỗi của từng hồ sơ khi ký số theo lô. |
-
-##### 4.3.2.4.7.3. Chức năng trên màn hình
-
-| STT | Tên chức năng | Định dạng | Mô tả |
-| :--- | :--- | :--- | :--- |
-| 1 | Kiểm tra USB Token | Nút | TH1 (USB Token chưa sẵn sàng hoặc không đọc được chứng thư số hợp lệ): Vi phạm [BR-DK-034], hiển thị [MSG-ERR-DK-011] và chưa cho phép ký số. |
-|  |  |  | TH2 (Chứng thư số không khớp với Lãnh đạo được phân công ký): Vi phạm [BR-DK-034], hiển thị [MSG-ERR-DK-012] và chưa cho phép ký số. |
-|  |  |  | TH Hợp lệ: Hệ thống nhận diện USB Token, đọc chứng thư số, kiểm tra thời hạn chứng thư số, kiểm tra trạng thái thu hồi nếu có tích hợp OCSP/CRL và hiển thị trạng thái "Chứng thư số hợp lệ". |
-| 2 | Ký số | Nút | Cho phép ký số toàn bộ hồ sơ hợp lệ trong danh sách đã chọn chỉ với một lần thao tác xác nhận ký số. Hệ thống ký lần lượt từng file PDF bằng USB Token/chứng thư số của Lãnh đạo; mỗi hồ sơ có kết quả ký độc lập. |
-|  |  |  | TH1 (Chưa chọn hồ sơ hợp lệ): Vi phạm [BR-DK-024], hiển thị [MSG-ERR-DK-008], không thực hiện ký số. |
-|  |  |  | TH2 (Hồ sơ không còn ở trạng thái "Chờ ký" hoặc Lãnh đạo không có quyền ký hồ sơ): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005], không thực hiện ký số đối với hồ sơ đó. |
-|  |  |  | TH3 (Không tìm thấy file PDF chờ ký hợp lệ): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-010], không thực hiện ký số đối với hồ sơ đó. |
-|  |  |  | TH4 (USB Token/chứng thư số chưa hợp lệ): Vi phạm [BR-DK-034], hiển thị [MSG-ERR-DK-011] hoặc [MSG-ERR-DK-012], không thực hiện ký số. |
-|  |  |  | TH5 (Lãnh đạo hủy ký, nhập sai PIN hoặc thành phần ký số trả lỗi): Vi phạm [BR-DK-034], hiển thị [MSG-ERR-DK-013], ghi nhận lỗi ký số và giữ nguyên trạng thái "Chờ ký" đối với hồ sơ ký lỗi. |
-|  |  |  | TH Hợp lệ: Hệ thống yêu cầu xác nhận bằng [MSG-CFM-DK-013]. Sau khi Lãnh đạo xác nhận, thành phần ký số cục bộ yêu cầu nhập PIN USB Token; hệ thống không lưu PIN. Hệ thống ký số trực tiếp trên file PDF chờ ký tại vùng ký của lá mặt/trang ký Mẫu số 05d hoặc vùng ký của văn bản từ chối. Với ký theo lô, hệ thống ký lần lượt từng file PDF, xác minh chữ ký sau khi ký, lưu file PDF đã ký, thông tin chứng thư số, người ký, thời điểm ký, phiên bản file đã ký, ghi lịch sử xử lý của hồ sơ và Audit log hệ thống. Hồ sơ ký thành công file "Văn bản chứng nhận/Thông báo kết quả" chuyển sang "Hoàn thành"; hồ sơ ký thành công file "Văn bản từ chối" chuyển sang "Bị từ chối" và hệ thống tạo yêu cầu hoàn tiền theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online) đối với hồ sơ Online, hoặc tạo khoản hoàn phí/thông báo kế toán tại Module Quản lý thu phí/hoàn phí hồ sơ giấy đối với hồ sơ giấy đã thu phí; hồ sơ ký lỗi giữ nguyên "Chờ ký". Hiển thị [MSG-SUC-DK-KT-005]. |
-| 3 | Hủy | Nút | Đóng popup, giữ nguyên trạng thái hồ sơ và quay lại giao diện trước đó. |
-
-#### 4.3.2.4.8. UC-DK-LD.MH07 - Popup Từ chối/Trả lại Phiếu đăng ký chờ ký
-
-##### 4.3.2.4.8.1. Màn hình
-
-![Popup Từ chối/Trả lại Phiếu đăng ký chờ ký](images/UC_DK_LD_MH07_Popup_tu_choi_tra_lai_Phieu_dang_ky_cho_ky.png)
-
-##### 4.3.2.4.8.2. Mô tả thông tin trên màn hình
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :---: | :--- | :--- |
-| Mã hồ sơ/Số đăng ký | String(50) | Có | Theo hồ sơ | Chỉ đọc. |
-| Loại đăng ký | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại hình đăng ký [DM_04]. |
-| Loại hình giao dịch | Enum(String(50)) | Có | Theo hồ sơ | Chỉ đọc, Tham chiếu Danh mục Loại hình giao dịch [DM_01]. |
-| Người yêu cầu | String(255) | Không | Theo hồ sơ | Chỉ đọc. |
-| Cán bộ trình ký | String(255) | Có | Theo hồ sơ | Chỉ đọc. |
-| Thời điểm trình ký | Datetime | Có | Theo hồ sơ | Chỉ đọc. |
-| File PDF chờ ký | File | Có | Theo hồ sơ | Chỉ đọc. File PDF đã được Cán bộ trình ký và đang chờ Lãnh đạo ký số. |
-| Loại xử lý | Enum(String(50)) | Có | Theo nút đã chọn | Giá trị gồm:<br>+ "Từ chối".<br>+ "Trả lại". |
-| Lý do | Text(2000) | Có | Trống | Lãnh đạo bắt buộc nhập lý do từ chối hoặc lý do trả lại. Hệ thống tự động trim space theo [BR-VAL-001]. |
-
-##### 4.3.2.4.8.3. Chức năng trên màn hình
-
-| STT | Tên chức năng | Định dạng | Mô tả |
-| :--- | :--- | :--- | :--- |
-| 1 | Hủy | Nút | Đóng popup, giữ nguyên trạng thái hồ sơ và quay lại giao diện trước đó. |
-| 2 | Xác nhận | Nút | TH1 (Bỏ trống Lý do): Vi phạm [BR-VAL-001], hiển thị [MSG-ERR-VAL-001], không cho phép xác nhận. |
-|  |  |  | TH2 (Hồ sơ không còn ở trạng thái "Chờ ký" hoặc Lãnh đạo không có quyền xử lý): Vi phạm [BR-DK-033], hiển thị [MSG-ERR-DK-005], không cho phép xác nhận. |
-|  |  |  | TH Hợp lệ với Loại xử lý là "Từ chối": Hệ thống yêu cầu xác nhận bằng [MSG-CFM-DK-015]. Sau khi Lãnh đạo xác nhận, hệ thống lưu người từ chối, thời điểm từ chối, lý do từ chối, file PDF chờ ký, phiên bản dữ liệu/PDF bị từ chối; chuyển hồ sơ sang "Bị từ chối"; tạo yêu cầu hoàn tiền theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online) đối với hồ sơ Online, hoặc tạo khoản hoàn phí/thông báo kế toán tại Module Quản lý thu phí/hoàn phí hồ sơ giấy đối với hồ sơ giấy đã thu phí; hiển thị [MSG-SUC-DK-KT-003]. |
-|  |  |  | TH Hợp lệ với Loại xử lý là "Trả lại": Hệ thống yêu cầu xác nhận bằng [MSG-CFM-DK-014]. Sau khi Lãnh đạo xác nhận, hệ thống lưu người trả lại, thời điểm trả lại, lý do trả lại, phiên bản dữ liệu/PDF bị trả lại; chuyển hồ sơ sang "Bị trả lại" để Cán bộ cập nhật và trình lại; hiển thị [MSG-SUC-DK-KT-006]. |
-
-#### 4.3.2.4.9. Quy tắc duyệt, ký số, từ chối và trả lại Phiếu đăng ký
-
-| STT | Quy tắc | Mô tả |
-| :--- | :--- | :--- |
-| 1 | Điều kiện hiển thị hồ sơ chờ ký | Danh sách chỉ hiển thị Phiếu đăng ký ở trạng thái "Chờ ký", thuộc đơn vị/phạm vi thẩm quyền của Lãnh đạo và được Cán bộ trình tới đúng Lãnh đạo đăng nhập theo [BR-DK-033]. |
-| 2 | Điều kiện ký | Chỉ cho phép Lãnh đạo ký số/ký duyệt, từ chối hoặc trả lại hồ sơ ở trạng thái "Chờ ký", có file PDF chờ ký hợp lệ và phiên bản dữ liệu/file đã được khóa khi Cán bộ trình ký theo [BR-DK-033]. |
-| 3 | Chuyển trạng thái sau ký | Nếu ký số/ký duyệt thành công, hồ sơ chuyển sang trạng thái sau ký tương ứng loại nghiệp vụ. Nếu từ chối, hồ sơ chuyển sang "Bị từ chối" và hệ thống tạo yêu cầu hoàn tiền theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online) đối với hồ sơ Online, hoặc tạo khoản hoàn phí/thông báo kế toán tại Module Quản lý thu phí/hoàn phí hồ sơ giấy đối với hồ sơ giấy đã thu phí. Nếu trả lại, hồ sơ chuyển sang "Bị trả lại" để Cán bộ xử lý lại. |
-| 4 | Điều kiện hiển thị hồ sơ chờ ký | Danh sách chỉ hiển thị Phiếu đăng ký ở trạng thái "Chờ ký", thuộc đơn vị/phạm vi thẩm quyền của Lãnh đạo và được chuyển tới đúng Lãnh đạo đăng nhập theo [BR-DK-033]. |
-| 5 | Điều kiện ký số | Chỉ cho phép ký số khi hồ sơ ở trạng thái "Chờ ký", có file PDF chờ ký hợp lệ, file đã được khóa phiên bản và chứng thư số USB Token khớp Lãnh đạo được phân công ký theo [BR-DK-034]. |
-| 6 | Ký số bằng USB Token | Hệ thống ký số bằng USB Token/chứng thư số hợp lệ của Lãnh đạo. PIN chỉ nhập tại thành phần ký số cục bộ, hệ thống không lưu PIN. |
-| 7 | Ký nhiều hồ sơ | Cho phép ký nhiều Phiếu đăng ký trong một lần thao tác. Hệ thống ký lần lượt từng file PDF và ghi nhận kết quả độc lập cho từng hồ sơ theo [BR-DK-034]. Giới hạn mặc định 20 hồ sơ/lần, lấy theo tham số cấu hình. |
-| 8 | Chuyển trạng thái sau ký số | Nếu ký file "Văn bản chứng nhận/Thông báo kết quả" thành công, hồ sơ chuyển sang "Hoàn thành". Nếu ký file "Văn bản từ chối" thành công, hồ sơ chuyển sang "Bị từ chối". Hồ sơ ký lỗi giữ nguyên trạng thái "Chờ ký". |
-| 9 | Từ chối của Lãnh đạo | Lãnh đạo nhập lý do và xác nhận từ chối tại "Chờ ký". Hồ sơ chuyển sang "Bị từ chối"; hệ thống tạo yêu cầu hoàn tiền theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online) đối với hồ sơ Online, hoặc tạo khoản hoàn phí/thông báo kế toán tại Module Quản lý thu phí/hoàn phí hồ sơ giấy đối với hồ sơ giấy đã thu phí. |
-| 10 | Trả lại của Lãnh đạo | Lãnh đạo nhập lý do và xác nhận trả lại tại "Chờ ký". Hồ sơ chuyển sang "Bị trả lại" để Cán bộ cập nhật theo phạm vi được phép và trình lại theo [BR-DK-035]. |
-| 11 | Không sửa dữ liệu/file | Lãnh đạo chỉ xem và xử lý file đã trình; không được chỉnh sửa dữ liệu Phiếu đăng ký, nội dung PDF, phiên bản file hoặc thay thế file. |
-
-#### 4.3.2.4.10. Ghi log và liên kết nghiệp vụ
-
-| STT | Nội dung | Mô tả |
-| :--- | :--- | :--- |
-| 1 | Ghi lịch sử xử lý hồ sơ | Mọi thao tác xem chi tiết, xem file, duyệt, kiểm tra USB Token, ký số, từ chối, trả lại và chuyển trạng thái phải ghi vào lịch sử xử lý của hồ sơ. |
-| 2 | Ghi Audit log hệ thống | Log tối thiểu gồm: Mã hồ sơ, người thao tác, vai trò, đơn vị, thời điểm, hành động, trạng thái trước, trạng thái sau, loại file, phiên bản file, danh sách hồ sơ nếu thao tác lô và kết quả xử lý/lỗi nếu có. |
-| 3 | Lưu metadata chữ ký số | Khi ký số thành công, hệ thống lưu thông tin chứng thư số, người ký, thời điểm ký, thuật toán ký, trạng thái xác minh chữ ký và phiên bản file PDF đã ký. |
-| 4 | Đồng bộ trạng thái sang Website Khách hàng/Mobile | Khi trạng thái hồ sơ thay đổi sang "Chờ thanh toán", "Chờ ký", "Hoàn thành", "Bị từ chối" hoặc "Bị trả lại", hệ thống đồng bộ trạng thái và file kết quả tương ứng để Khách hàng theo dõi tại chức năng Quản lý yêu cầu đã đăng ký. |
-| 5 | Nguy cơ nghiệp vụ cần kiểm soát | Đây là bước phê duyệt và ban hành kết quả có giá trị pháp lý. Nếu Lãnh đạo ký/ký sai file, ký sai hồ sơ hoặc bỏ qua cảnh báo file không khớp phiên bản trình, có thể phát sinh khiếu nại/khiếu kiện hoặc trách nhiệm bồi thường nhà nước. |
+| 1 | Xem file | Link | Cho phép xem file tại một tab riêng. |
+| 2 | Hủy | Nút | Hệ thống đóng popup, giữ nguyên trạng thái hồ sơ và quay lại màn hình đã mở popup. |
+| 3 | Xác nhận | Nút | - **TH1 (Bỏ trống Lý do trả lại)**: Quy định Lý do trả lại là bắt buộc. Hệ thống tô viền đỏ ô nhập, hiển thị [MSG-ERR-VAL-001] dạng Inline ngay phía dưới ô nhập và focus con trỏ vào ô nhập. Không thực hiện trả lại.<br>- **TH2 (Hồ sơ không còn ở trạng thái "Chờ ký" hoặc không có Nguồn tiếp nhận là "Trực tiếp")**: Quy định chỉ được trả lại hồ sơ có Nguồn tiếp nhận là "Trực tiếp" đang ở trạng thái "Chờ ký". Hệ thống hiển thị [MSG-ERR-DK-005], không thực hiện trả lại.<br>- **TH Hợp lệ**: Hệ thống yêu cầu xác nhận bằng [MSG-CFM-DK-014]. Sau khi Lãnh đạo xác nhận, hệ thống thực hiện:<br>+ Lưu người trả lại, thời điểm trả lại, lý do trả lại và phiên bản dữ liệu/file PDF bị trả lại.<br>+ Chuyển hồ sơ sang trạng thái "Bị trả lại" để Cán bộ cập nhật và trình ký lại tại Tab Hồ sơ Bị trả lại - [Kiểm tra và xử lý hồ sơ - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Kiem_tra_va_xu_ly_ho_so_Can_bo.md). Thao tác trả lại không phát sinh hoàn phí.<br>+ Ghi lịch sử xử lý và Audit log.<br>+ Hiển thị [MSG-SUC-DK-KT-006], đóng popup và tải lại [MH01 - Màn hình Danh sách Phiếu đăng ký chờ ký](#mh01). |

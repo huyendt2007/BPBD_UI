@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -46,19 +46,35 @@
             box-sizing: border-box;
         }
 
+        html, body {
+            height: 100%;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: var(--font-family);
             background-color: var(--bg-body);
             color: var(--text-main);
             margin: 0;
-            padding: 20px;
+            padding: 12px 16px;
             font-size: var(--base-size);
             line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-x: hidden;
+            overflow-y: hidden;
         }
 
         .container {
-            max-width: 1600px;
+            max-width: 100%;
+            width: 100%;
             margin: 0 auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
         }
 
         .view-section {
@@ -66,8 +82,16 @@
         }
 
         .view-section.active {
-            display: block;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
             animation: fadeIn 0.3s ease-in-out;
+        }
+
+        #view-list.view-section.active {
+            overflow-y: hidden;
         }
 
         @keyframes fadeIn {
@@ -791,38 +815,115 @@
         }
 
         /* ===== Đồng bộ kiểu bảng và khối theo chuẩn các module khác ===== */
+        .table-card-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            margin-bottom: 0 !important;
+            padding: 14px 16px 10px 16px;
+        }
+
+        .table-card-section .section-title {
+            flex-shrink: 0;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+        }
+
         .table-container {
             width: 100%;
+            flex: 1;
+            min-height: 0;
             overflow-x: auto;
+            overflow-y: auto;
             border: 1px solid var(--border-color);
-            border-radius: var(--border-radius-lg, 10px);
+            border-radius: var(--border-radius-lg, 8px);
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            background-color: #fff;
+            position: relative;
         }
 
         .custom-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
             text-align: left;
             font-size: 13px;
         }
 
-        .custom-table th {
+        .custom-table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 3;
             background-color: var(--table-header-bg, #F1F5F9);
             color: #475569;
             font-weight: 600;
-            padding: 12px 16px;
+            padding: 10px 14px;
             border-bottom: 2px solid var(--border-color);
             white-space: nowrap;
         }
 
         .custom-table td {
-            padding: 12px 16px;
+            padding: 10px 14px;
             border-bottom: 1px solid var(--border-color);
             color: var(--text-main);
             vertical-align: middle;
+            background-color: #ffffff;
         }
 
-        .custom-table tbody tr:hover {
+        .custom-table tbody tr:hover td {
+            background-color: #F0F9FF !important;
+        }
+
+        .custom-table tbody tr:nth-child(even) td {
+            background-color: #F8FAFC;
+        }
+
+        .custom-table tbody tr:nth-child(even):hover td {
+            background-color: #F0F9FF !important;
+        }
+
+        /* Cột Thao tác cố định cạnh phải bảng (Sticky/Freeze) */
+        .custom-table th:last-child,
+        .custom-table td:last-child,
+        .custom-table .col-actions,
+        .custom-table th.col-actions,
+        .custom-table td.col-actions {
+            position: sticky;
+            right: 0;
+            z-index: 2;
+            background-color: #ffffff;
+            box-shadow: -4px 0 6px -2px rgba(0, 0, 0, 0.08);
+            width: 120px;
+            min-width: 120px;
+            max-width: 120px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .custom-table thead th:last-child,
+        .custom-table thead th.col-actions {
+            position: sticky;
+            top: 0;
+            right: 0;
+            z-index: 10;
+            background-color: var(--table-header-bg, #F1F5F9);
+            box-shadow: -4px 0 6px -2px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .custom-table tbody tr:hover td:last-child,
+        .custom-table tbody tr:hover td.col-actions {
+            background-color: #F0F9FF !important;
+        }
+
+        .custom-table tbody tr:nth-child(even) td:last-child,
+        .custom-table tbody tr:nth-child(even) td.col-actions {
+            background-color: #F8FAFC;
+        }
+
+        .custom-table tbody tr:nth-child(even):hover td:last-child,
+        .custom-table tbody tr:nth-child(even):hover td.col-actions {
             background-color: #F0F9FF !important;
         }
 
@@ -934,11 +1035,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 15px;
-            padding-top: 15px;
+            margin-top: 12px;
+            padding-top: 10px;
             border-top: 1px solid var(--border-color);
             flex-wrap: wrap;
             gap: 10px;
+            flex-shrink: 0;
         }
 
         .pagination-left {
@@ -1022,7 +1124,7 @@
                 <div class="nav-tab" onclick="switchListTab('bitralai', this)">Hồ sơ Bị trả lại <span class="tab-badge danger" id="badge-bitralai">0</span></div>
             </div>
             <div class="nav-tabs" id="work-type-tabs" style="display:none; margin-top: 10px;">
-                <div class="nav-tab active" data-work-type="registration" onclick="switchOfficerWorkType('registration', this)">Phiếu đăng ký</div>
+                <div class="nav-tab active" data-work-type="registration" onclick="switchOfficerWorkType('registration', this)">Phiếu đăng ký <span class="tab-badge info" id="badge-reg-officer">0</span></div>
                 <div class="nav-tab" data-work-type="cctt" onclick="switchOfficerWorkType('cctt', this)">Yêu cầu cung cấp thông tin <span class="tab-badge info" id="badge-cctt-officer">0</span></div>
                 <div class="nav-tab" data-work-type="copy" onclick="switchOfficerWorkType('copy', this)">Yêu cầu cung cấp bản sao <span class="tab-badge info" id="badge-copy-officer">0</span></div>
             </div>
@@ -1036,20 +1138,20 @@
             </div>
 
             <!-- Bảng kết quả -->
-            <div class="card-section">
+            <div class="card-section table-card-section" id="table-card-section">
                 <div class="section-title">
                     <span id="list-table-title">Bảng danh sách kết quả đối soát</span>
                     
                     <!-- Toolbar Chờ Duyệt -->
                     <div id="toolbar-choduyet" style="display: flex; gap: 8px;">
-                        <button class="btn btn-danger" onclick="openModalReject()"><i class="fa-solid fa-ban"></i> Từ chối</button>
                         <button class="btn btn-success" onclick="approveRows()"><i class="fa-solid fa-check"></i> Duyệt</button>
-                        <button class="btn btn-primary" onclick="openModalPreview('trinhky')"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>
+                        <button class="btn btn-primary" onclick="openRegistrationSignToolbar()"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>
+                        <button class="btn btn-danger" onclick="openRegistrationRejectToolbar()"><i class="fa-solid fa-ban"></i> Từ chối</button>
                     </div>
                     <!-- Toolbar Chờ ký (ẩn mặc định) -->
                     <div id="toolbar-duyet-choky" style="display: none; gap: 8px;">
-                        <button class="btn btn-danger" onclick="openModalReject()"><i class="fa-solid fa-ban"></i> Từ chối</button>
-                        <button class="btn btn-primary" onclick="openModalPreview('trinhky')"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>
+                        <button class="btn btn-danger" onclick="openRegistrationRejectToolbar()"><i class="fa-solid fa-ban"></i> Từ chối</button>
+                        <button class="btn btn-primary" onclick="openRegistrationSignToolbar()"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>
                     </div>
                     <!-- Toolbar Chờ ký (không có nút tác vụ lô, ẩn mặc định) -->
                     <div id="toolbar-choky" style="display: none;">
@@ -1074,8 +1176,8 @@
                         <span>Số dòng hiển thị:</span>
                         <select class="page-size-select" id="cb-pagesize" onchange="changePageSize(this.value)">
                             <option value="5">5</option>
-                            <option value="10" selected>10</option>
-                            <option value="20">20</option>
+                            <option value="10">10</option>
+                            <option value="20" selected>20</option>
                             <option value="50">50</option>
                         </select>
                         <span>Hiển thị <span id="page-start-index">0</span>-<span id="page-end-index">0</span> trong tổng số <span id="total-records">0</span> bản ghi</span>
@@ -1202,6 +1304,50 @@
         </div>
     </div>
 
+    <!-- Popup Từ chối hồ sơ giấy Yêu cầu cung cấp bản sao (MH01 - Danh sách hồ sơ chờ nhập liệu) -->
+    <div class="modal-overlay" id="modalCopyRejectList">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="copyRejectListTitle">Từ chối hồ sơ</span>
+                <span style="cursor: pointer; font-size: 20px;" onclick="closeModal('modalCopyRejectList')">&times;</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Lý do từ chối <span class="required-mark">*</span></label>
+                <textarea class="form-control" id="copyRejectListReason" rows="4" maxlength="2000" placeholder="Nhập lý do từ chối..."></textarea>
+                <div class="error-message" id="copyRejectListReasonError">Đây là trường bắt buộc</div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">File căn cứ</label>
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                    <label class="btn btn-outline-secondary" for="copyRejectListFile" style="cursor:pointer;margin:0"><i class="fa-solid fa-paperclip"></i> Chọn tệp</label>
+                    <input type="file" id="copyRejectListFile" accept=".pdf" style="display:none" onchange="handleCopyRejectListFile(this)">
+                    <span id="copyRejectListFileName" style="color:var(--text-muted);font-size:13px">Chưa có tệp nào được chọn</span>
+                    <span id="copyRejectListFileClear" class="action-link" style="display:none;color:#DC2626;cursor:pointer;font-size:13px" onclick="clearCopyRejectListFile()">Xóa</span>
+                </div>
+                <div class="error-message" id="copyRejectListFileError">Tệp đính kèm phải có định dạng .pdf và dung lượng tối đa 20MB.</div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" onclick="closeModal('modalCopyRejectList')">Hủy</button>
+                <button class="btn btn-danger" onclick="submitCopyRejectList()">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup xác nhận từ chối [MSG-CFM-BS-001] -->
+    <div class="modal-overlay" id="modalCopyRejectConfirm">
+        <div class="modal-content" style="max-width:480px">
+            <div class="modal-header">
+                <span>Xác nhận từ chối</span>
+                <span style="cursor: pointer; font-size: 20px;" onclick="cancelCopyRejectConfirm()">&times;</span>
+            </div>
+            <p style="margin:6px 0 4px">Bạn có chắc chắn muốn từ chối yêu cầu cung cấp bản sao này không?</p>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" onclick="cancelCopyRejectConfirm()">Không</button>
+                <button class="btn btn-danger" onclick="executeCopyRejectList()">Có</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Preview PDF Dự thảo -->
     <div class="modal-overlay" id="modalPreview">
         <div class="modal-content modal-large">
@@ -1233,6 +1379,9 @@
     <div class="popover-history" id="hover-popover-msg"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="pdk_xu_ly_popups.js"></script>
+    <script src="bs_xu_ly_popups.js"></script>
+    <script src="cctt_xu_ly_popups.js"></script>
     <script src="kiem_tra_ho_so.js"></script>
     <script src="admin-ui-standardizer.js"></script>
 </body>

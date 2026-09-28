@@ -4380,6 +4380,7 @@
                             </optgroup>
                             <optgroup label="Khách hàng Tổ chức">
                                 <option value="org-both">Tổ chức trong nước - Đã liên kết VNeID và Nội bộ</option>
+                                <option value="org-sub">Tổ chức trong nước - Tài khoản phụ (dùng Mã khách hàng của tổ chức)</option>
                                 <option value="org-vneid">Tổ chức trong nước - Chỉ liên kết VNeID (chưa tạo mật khẩu Nội bộ)</option>
                                 <option value="org-internal">Tổ chức nước ngoài - Chỉ có Nội bộ (không có VNeID)</option>
                             </optgroup>
@@ -4391,6 +4392,11 @@
                         Thông tin tài khoản chung
                     </h3>
                     <div class="grid-2-cols" style="gap: 15px var(--spacing-lg); margin-bottom: 24px; background-color: #F8FAFC; padding: 18px 20px; border-radius: var(--border-radius-md); border: 1px solid var(--border-color);">
+                        <div style="grid-column: span 2;">
+                            <span style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Mã khách hàng:</span>
+                            <span id="lblCommonCustomerCode" style="font-weight: 700; font-size: 14px; color: var(--primary-color);">-</span>
+                            <span id="lblCommonCustomerCodeNote" class="hidden" style="display: block; font-size: 12px; color: var(--text-muted); margin-top: 4px;"></span>
+                        </div>
                         <div>
                             <span style="font-weight: 600; color: var(--text-muted); display: block; font-size: 12px; margin-bottom: 4px;">Loại khách hàng:</span>
                             <span id="lblCommonCustomerType" style="font-weight: 700; font-size: 14px; color: var(--primary-color);">-</span>
@@ -6939,6 +6945,31 @@
                         { name: 'Trần Văn Quyết', docNo: '001092005678', techId: 'TECH-CN-5A92-5678', role: 'Người đại diện theo pháp luật', status: 'Đang hoạt động', lastAuth: '12/08/2026 09:30' },
                         { name: 'Nguyễn Thị Minh Anh', docNo: '001094009999', techId: 'TECH-CN-9C44-9999', role: 'Người được ủy quyền', status: 'Đang hoạt động', lastAuth: '11/08/2026 15:42' }
                     ]
+                }
+            },
+            'org-sub': {
+                methods: { vneid: false, internal: true },
+                profile: {
+                    customerCode: 'KH-TC-000101',
+                    parentAccountEmail: 'taikhoantestfpt@gmail.com',
+                    entityType: 'organization',
+                    customerType: 'Tổ chức',
+                    accountType: 'Tài khoản phụ',
+                    mst: '0109201234',
+                    name: 'Ngân hàng Thương mại Cổ phần FPT (FPT Bank)',
+                    type: 'Tổ chức có đăng ký kinh doanh trong nước',
+                    nationality: 'Việt Nam',
+                    classification: 'Trong nước',
+                    province: 'Hà Nội',
+                    ward: 'Phường Dịch Vọng Hậu',
+                    address: 'Tòa nhà FPT, Số 17 Duy Tân, Cầu Giấy, Hà Nội',
+                    email: 'nhanvien.tindung@fptbank.vn',
+                    phone: '02437341234',
+                    defaultCenter: 'Trung tâm Đăng ký giao dịch, tài sản tại Hà Nội',
+                    usageNeeds: ['Tài khoản đăng ký'],
+                    repName: 'Trần Văn Quyết',
+                    repDocType: 'CCCD',
+                    repDocNum: '001092005678'
                 }
             },
             'org-vneid': {
@@ -13485,6 +13516,18 @@
                 commonCustomerType.innerHTML = isPersonal
                     ? `<span style="display:inline-flex; align-items:center; gap:5px; padding:2px 8px; border-radius:4px; background:#EFF6FF; color:#1D4ED8; font-weight:700; border:1px solid #BFDBFE;"><i class="fa fa-user"></i> Cá nhân</span>`
                     : `<span style="display:inline-flex; align-items:center; gap:5px; padding:2px 8px; border-radius:4px; background:#F0FDF4; color:#15803D; font-weight:700; border:1px solid #BBF7D0;"><i class="fa fa-building"></i> Tổ chức</span>`;
+            }
+            // Mã khách hàng: tài khoản chính hiển thị mã của chính hồ sơ; tài khoản phụ không có mã riêng
+            // nên hiển thị Mã khách hàng của tài khoản chính (tổ chức) kèm dòng ghi chú để phân biệt
+            const isSubAccount = orgDetails.accountType === 'Tài khoản phụ';
+            const commonCustomerCode = document.getElementById('lblCommonCustomerCode');
+            if (commonCustomerCode) commonCustomerCode.innerText = orgDetails.customerCode || '-';
+            const commonCustomerCodeNote = document.getElementById('lblCommonCustomerCodeNote');
+            if (commonCustomerCodeNote) {
+                commonCustomerCodeNote.classList.toggle('hidden', !isSubAccount);
+                commonCustomerCodeNote.innerHTML = isSubAccount
+                    ? `<i class="fa-solid fa-circle-info"></i> Mã khách hàng của tổ chức (dùng chung với Tài khoản chính${orgDetails.parentAccountEmail ? ': ' + orgDetails.parentAccountEmail : ''}). Tài khoản phụ không có Mã khách hàng riêng.`
+                    : '';
             }
             const commonAccountType = document.getElementById('lblCommonAccountType');
             if (commonAccountType) commonAccountType.innerText = orgDetails.accountType || 'Tài khoản chính';
