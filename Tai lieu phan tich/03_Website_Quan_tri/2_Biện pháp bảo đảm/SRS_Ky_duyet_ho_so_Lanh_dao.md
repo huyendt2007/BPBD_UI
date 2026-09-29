@@ -1,6 +1,6 @@
-### 4.3.2.16. Ký duyệt hồ sơ
+### 4.3.2.20. Ký duyệt hồ sơ
 
-#### 4.3.2.16.1. Mục đích
+#### 4.3.2.20.1. Mục đích
 
 \- Cho phép Lãnh đạo theo dõi và ký duyệt các hồ sơ đã được Cán bộ trình ký ở trạng thái "Chờ ký" theo 03 Tab nghiệp vụ: Phiếu đăng ký, Yêu cầu cung cấp thông tin, Yêu cầu cung cấp bản sao.
 
@@ -19,13 +19,13 @@
 ---
 
 <a id="mh01"></a>
-#### 4.3.2.16.2. MH01 - Màn hình Ký duyệt hồ sơ
+#### 4.3.2.20.2. MH01 - Màn hình Ký duyệt hồ sơ
 
-##### 4.3.2.16.2.1. Màn hình
+##### 4.3.2.20.2.1. Màn hình
 
 ![Màn hình Ký duyệt hồ sơ](images/KDHS_MH01_Ky_duyet_ho_so.png)
 
-##### 4.3.2.16.2.2. Mô tả thông tin trên màn hình
+##### 4.3.2.20.2.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
@@ -37,7 +37,7 @@
 | Yêu cầu cung cấp thông tin | - | - | - | Hiển thị và xử lý theo tài liệu [Ký duyệt yêu cầu cung cấp thông tin - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Ky_duyet_Yeu_cau_cung_cap_thong_tin_Lanh_dao.md). |
 | Yêu cầu cung cấp bản sao | - | - | - | Hiển thị và xử lý theo tài liệu [Ký duyệt yêu cầu cung cấp bản sao văn bản chứng nhận - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Ky_duyet_Yeu_cau_cung_cap_ban_sao_Lanh_dao.md). |
 
-##### 4.3.2.16.2.3. Chức năng trên màn hình
+##### 4.3.2.20.2.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
