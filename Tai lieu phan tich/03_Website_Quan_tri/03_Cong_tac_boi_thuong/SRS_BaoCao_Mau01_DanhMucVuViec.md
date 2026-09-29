@@ -57,7 +57,7 @@ flowchart TD
 | Loại kỳ báo cáo | Enum(String(100)) | Có | `Báo cáo năm số liệu thực tế (01/01 - 31/10)` | Control UI: Combobox.<br>Tham chiếu Danh mục Loại kỳ báo cáo [DM_44]. Xác định khoảng thời gian lấy số liệu tương ứng (01/01-31/10 hoặc 01/01-31/12 của năm báo cáo). |
 | Đơn vị báo cáo | Enum(String(255)) | Có | Theo đơn vị đăng nhập | Control UI: Combobox có tìm kiếm nhanh.<br>Tham chiếu Danh mục Cơ quan, Đơn vị giải quyết [DM_DON_VI]. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng. |
 | Loại cơ quan báo cáo | Enum(String(100)) | Có | `UBND cấp tỉnh` | Control UI: Combobox.<br>Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. |
-| **II. Bộ lọc bổ sung** | | | | |
+| **II. Bộ lọc bổ sung** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | Không | `Tất cả` | Control UI: Combobox.<br>Tham chiếu Danh mục Lĩnh vực phát sinh thiệt hại [DM_22]. |
 | Từ khóa | String(255) | Không | Trống | Control UI: Textbox.<br>Tìm kiếm gần đúng theo `Mã vụ việc`, `Tên vụ việc` hoặc `Họ và tên của người yêu cầu bồi thường`. |
 | Nút: Xóa bộ lọc | Button | Không | Hiển thị | Control UI: Button.<br>Luôn hiển thị ở trạng thái khả dụng. |

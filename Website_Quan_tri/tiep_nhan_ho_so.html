@@ -602,6 +602,9 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Thanh nút chức năng màn Tiếp nhận hồ sơ: luôn cố định ở cuối màn hình */
+        .form-sticky-actions { position: sticky; bottom: 0; z-index: 40; background: #fff; padding: 12px 16px !important; margin-bottom: 0; box-shadow: 0 -4px 12px rgba(15, 23, 42, .08); border-radius: 8px 8px 0 0; }
     </style>
 </head>
 
@@ -615,7 +618,8 @@
     <!-- LIST VIEW -->
     <section id="listView" class="view active">
         <!-- FILTER CARD (Styling matching tiep_nhan_ycbt.html) -->
-        <div class="filter-card">
+        <div class="filter-card" data-bpbd-filter>
+            <div data-bpbd-filter-body>
             <div class="grid-4-cols">
                 <div class="form-group">
                     <span class="form-label">Mã hồ sơ</span>
@@ -683,14 +687,12 @@
                     <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
                 </button>
             </div>
+            </div>
         </div>
 
         <!-- LIST CARD (Styling matching tiep_nhan_ycbt.html) -->
         <div class="list-card">
-            <div class="list-header">
-                <div>
-                    <div class="list-title"><i class="fa-solid fa-table-list"></i> Bảng danh sách hồ sơ tiếp nhận</div>
-                </div>
+            <div class="list-header" style="justify-content: flex-end;">
                 <button class="btn btn-primary" onclick="openCreate()">
                     <i class="fa-solid fa-plus"></i> Tiếp nhận mới
                 </button>
@@ -997,7 +999,7 @@
                         <input id="hiddenFileInput" class="is-hidden" type="file" accept=".pdf,.doc,.docx,.zip,.rar,.xls,.xlsx" onchange="handleFileSelected(event)">
                     </section>
                 </div>
-                <div class="filter-actions" style="margin-top:20px;">
+                <div class="filter-actions form-sticky-actions" style="margin-top:20px;">
                     <button class="btn btn-secondary" onclick="showList()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
                     <button class="btn btn-warning" onclick="completeReceive(true)"><i class="fa-solid fa-print"></i> Hoàn tất & In phiếu</button>
                     <button class="btn btn-success" onclick="completeReceive(false)"><i class="fa-solid fa-check"></i> Hoàn tất tiếp nhận</button>
@@ -2091,6 +2093,7 @@
         renderList();
         syncProfiles(load());
     </script>
+    <script src="bpbd_filter_toggle.js"></script>
     <script src="admin-ui-standardizer.js"></script>
 </body>
 

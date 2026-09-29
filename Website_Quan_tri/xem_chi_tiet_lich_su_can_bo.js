@@ -7,12 +7,16 @@ document.addEventListener('DOMContentLoaded', function () {
     // DOM Elements - Sidebar
     const timelineContainer = document.getElementById('timelineContainer');
     const timelineSearchInput = document.getElementById('timelineSearchInput');
+    const filterRegistrationCase = document.getElementById('filterRegistrationCase');
     const filterFromDate = document.getElementById('filterFromDate');
     const filterToDate = document.getElementById('filterToDate');
+    const btnSearchTimeline = document.getElementById('btnSearchTimeline');
+    const btnClearTimelineFilters = document.getElementById('btnClearTimelineFilters');
 
     if (filterFromDate) filterFromDate.value = '';
     if (filterToDate) filterToDate.value = '';
     const btnLoadMoreTimeline = document.getElementById('btnLoadMoreTimeline');
+    const btnCollapseTimeline = document.getElementById('btnCollapseTimeline');
     const timelineMoreBtnContainer = document.getElementById('timelineMoreBtnContainer');
 
     // DOM Elements - Main detail panel headers
@@ -1314,7 +1318,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Hồ sơ mở từ màn Kiểm tra và xử lý hồ sơ (Xử lý Phiếu đăng ký - MH02): dùng dữ liệu bản ghi đã chọn tại danh sách
-    const listProfile = urlParams.get('from') === 'kiem_tra' ? matchedProfile : null;
+    // Mở từ màn Ký duyệt của Lãnh đạo: dùng bản ghi Lãnh đạo đã chọn tại danh sách Phiếu đăng ký chờ ký
+    const isLeaderView = urlParams.get('from') === 'ky_duyet';
+    if (isLeaderView && !matchedProfile) {
+        try {
+            const lp = JSON.parse(localStorage.getItem('leader_detail_profile') || 'null');
+            if (lp && lp.id && lp.id.toLowerCase() === regNumParam.toLowerCase()) matchedProfile = lp;
+        } catch (e) { /* bỏ qua */ }
+    }
+    const listProfile = ['kiem_tra', 'ky_duyet'].includes(urlParams.get('from')) ? matchedProfile : null;
 
     function saveListProfile(patch) {
         if (!listProfile) return;
@@ -1358,6 +1370,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const anchor = document.querySelector('.panel-actions-card');
         if (!anchor || document.getElementById('sectionOfficerExtra')) return;
         const pin = ['Đăng ký mới', 'Đăng ký lần đầu'].includes(listProfile.type) ? (listProfile.pin || '-') : '-';
+        // Số đăng ký: hiển thị khi xem chi tiết tại Hồ sơ chờ duyệt, Hồ sơ duyệt chờ ký, Hồ sơ bị trả lại, Hồ sơ đang chờ ký, Hồ sơ đã xử lý
+        const showRegNo = ['Chờ duyệt', 'Duyệt chờ ký', 'Bị trả lại', 'Chờ ký', 'Hoàn thành', 'Bị từ chối'].includes(listProfile.status);
+        const regNoHtml = showRegNo ? `<div><div style="color:var(--text-muted);font-size:12px">Số đăng ký</div><b id="officerRegNo">${listProfile.registrationNo || listProfile.id || '-'}</b></div>` : '';
         const docs = listProfile.attachments || [
             { name: 'Phiếu yêu cầu đăng ký (bản ký số).pdf' },
             { name: 'Hợp đồng bảo đảm.pdf' },
@@ -1366,7 +1381,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const html = `
             <section class="detail-section" id="sectionOfficerExtra">
                 <h3 class="detail-section-title"><i class="fa-solid fa-circle-info"></i> V. Thông tin bổ sung</h3>
-                <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 20px;font-size:13.5px">
+                <div style="display:grid;grid-template-columns:repeat(${showRegNo ? 4 : 3},minmax(0,1fr));gap:12px 20px;font-size:13.5px">
+                    ${regNoHtml}
                     <div><div style="color:var(--text-muted);font-size:12px">Mã PIN</div><b>${pin}</b></div>
                     <div><div style="color:var(--text-muted);font-size:12px">Nguồn tiếp nhận</div><b>${getListSourceLabel(listProfile.channel)}</b></div>
                     <div><div style="color:var(--text-muted);font-size:12px">Mã khách hàng</div><b>${listProfile.customerId || '-'}</b></div>
@@ -1384,6 +1400,46 @@ document.addEventListener('DOMContentLoaded', function () {
         anchor.insertAdjacentHTML('beforebegin', html);
     }
     renderListProfileExtraBlocks();
+
+    // Khối IV. Thông tin trả lại / Khối V. Thông tin từ chối (SRS Xử lý Phiếu đăng ký - MH02, giống khối II, III tại Kiểm tra và xử lý hồ sơ - MH04)
+    function renderListProfileStatusBlocks() {
+        // Hồ sơ đã từng bị trả lại và được trình ký lại: giữ lại vết lịch sử các lần trả lại (mặc định thu gọn)
+        const hasReturnTrace = listProfile && listProfile.status !== 'Bị từ chối' && Array.isArray(listProfile.returnHistory) && listProfile.returnHistory.length;
+        if (!listProfile || (!['Bị trả lại', 'Bị từ chối'].includes(listProfile.status) && !hasReturnTrace)) return;
+        const anchor = document.getElementById('sectionRejectionInfo') || document.getElementById('sectionSummaryOfChanges');
+        if (!anchor || document.getElementById('sectionListStatusInfo')) return;
+        const esc = v => String(v ?? '').replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s]));
+        const f = (l, v, red) => v ? `<div><div style="color:var(--text-muted);font-size:12px">${l}</div><b style="${red ? 'color:#B91C1C' : ''}">${v}</b></div>` : '';
+        const box = 'background:#FFF5F5;border:1px solid #FEB2B2;border-left:5px solid var(--danger-color);border-radius:var(--border-radius-lg);padding:16px 20px;margin-bottom:20px';
+        let html = '';
+        if (listProfile.status === 'Bị trả lại' || hasReturnTrace) {
+            const toTime = s => { const m = String(s || '').match(/(\d{2})\/(\d{2})\/(\d{4})\s*(\d{2})?:?(\d{2})?/); return m ? new Date(+m[3], +m[2] - 1, +m[1], +(m[4] || 0), +(m[5] || 0)).getTime() : 0; };
+            const list = (listProfile.returnHistory && listProfile.returnHistory.length ? listProfile.returnHistory : [{ reason: listProfile.returnReason, by: listProfile.returnedBy, at: listProfile.returnedAt }])
+                .map(r => ({ reason: r.reason || 'Lãnh đạo yêu cầu rà soát, cập nhật lại hồ sơ.', by: r.by || 'Nguyễn Văn Lãnh Đạo', at: r.at || '-', resubmittedAt: r.resubmittedAt || '' }))
+                .sort((a, b) => toTime(b.at) - toTime(a.at));
+            // Mặc định mở rộng khi hồ sơ đang Bị trả lại; mặc định thu gọn khi hồ sơ đã được trình ký lại
+            html = `<details class="detail-section" id="sectionListStatusInfo" ${listProfile.status === 'Bị trả lại' ? 'open' : ''} style="${box}">
+                <summary style="cursor:pointer;font-weight:700;color:var(--danger-dark);list-style:none"><i class="fa-solid fa-rotate-left"></i> Thông tin trả lại (${list.length} lần)</summary>
+                ${list.map((r, i) => `<div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:10px 20px;font-size:13.5px;padding-top:12px;${i ? 'border-top:1px dashed #FEB2B2;margin-top:12px' : ''}">
+                    ${f('Lý do trả lại', esc(r.reason), true)}${f('Lãnh đạo trả lại', esc(r.by))}${f('Thời điểm trả lại', esc(r.at))}${f('Thời điểm trình ký lại', esc(r.resubmittedAt))}</div>`).join('')}
+            </details>`;
+        } else {
+            const doc = listProfile.rejectDraftFile ? `<a href="javascript:void(0)" onclick="window.open('about:blank','_blank')" style="color:#2563eb;font-weight:600;text-decoration:none"><i class="fa-solid fa-file-pdf"></i> Xem file</a>` : '';
+            html = `<section class="detail-section" id="sectionListStatusInfo" style="${box}">
+                <h3 class="detail-section-title" style="color:var(--danger-dark);border-bottom-color:#FEB2B2"><i class="fa-solid fa-ban"></i> Thông tin từ chối</h3>
+                <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 20px;font-size:13.5px">
+                    ${f('Lý do từ chối', esc(listProfile.rejectReason || 'Không đủ điều kiện giải quyết theo quy định.'), true)}
+                    ${f('Người từ chối', esc(listProfile.rejectedBy || 'Nguyễn Văn Cán Bộ'))}
+                    ${f('Thời điểm từ chối', esc(listProfile.rejectedAt || '-'))}
+                    ${f('Lãnh đạo ký văn bản từ chối', esc(listProfile.rejectLeader || ''))}
+                    ${f('Văn bản từ chối đã ký', doc)}
+                </div>
+            </section>
+            <style>#sectionRejectionInfo{display:none !important}</style>`;
+        }
+        anchor.insertAdjacentHTML('beforebegin', html);
+    }
+    renderListProfileStatusBlocks();
 
     // Fallback if not matched any dynamic or static profile
     const validRegNums = ['1505156435', '1505156436', '1505156437', '1505156438', '1505156439', '1505156440', '1505156441', '1505156442', '1505156443', '1505156444'];
@@ -1945,6 +2001,36 @@ document.addEventListener('DOMContentLoaded', function () {
     let summaryIdx = 1;
     let visibleCount = 10;
     let filteredData = [...mockTimelineData];
+    // Tiêu chí lọc Sidebar dòng thời gian: chỉ áp dụng khi bấm "Tìm kiếm" (giống Website Khách hàng)
+    let activeTimelineFilters = { query: '', registrationCase: 'Tất cả', fromDate: '', toDate: '' };
+
+    // Người tạo của từng phiên bản (giả lập giống Website Khách hàng): hiển thị tên người tạo, không hiển thị tài khoản/email
+    const mockCreatorPool = ['Nguyễn Thị Ngân', 'Trần Minh Hải', 'Lê Thu Hương', 'Phạm Quốc An', 'Vũ Hoàng Long'];
+    mockTimelineData.forEach((node, index) => {
+        if (!node) return;
+        const seed = Number.isFinite(Number(node.version)) ? Number(node.version) : index;
+        node.creator = node.creator || node.data?.creator || mockCreatorPool[Math.abs(seed) % mockCreatorPool.length];
+        if (node.data) node.data.creator = node.creator;
+    });
+
+    // Trường hợp đăng ký của phiên bản (dùng cho bộ lọc "Trường hợp đăng ký" tại Sidebar)
+    function getCleanRegistrationCase(node) {
+        const normalized = `${node?.title || ''} ${node?.label || ''} ${node?.data?.regCase || ''}`
+            .normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
+        if (normalized.includes('khoi phuc')) return 'Khôi phục hủy đăng ký';
+        if (normalized.includes('huy dang ky')) return 'Hủy đăng ký';
+        if (normalized.includes('chinh ly')) return 'Chỉnh lý thông tin';
+        if (normalized.includes('xoa dang ky thong bao xu ly tai san bao dam') || (normalized.includes('xoa') && normalized.includes('thong bao xu ly'))) return 'Xóa đăng ký thông báo xử lý tài sản bảo đảm';
+        if (normalized.includes('thay doi thong bao xu ly tai san bao dam') || (normalized.includes('thay doi') && normalized.includes('thong bao xu ly'))) return 'Thay đổi thông báo xử lý tài sản bảo đảm';
+        if (normalized.includes('thong bao xu ly')) return 'Thông báo xử lý tài sản bảo đảm lần đầu';
+        if (normalized.includes('xoa dang ky')) return 'Xóa đăng ký';
+        if (normalized.includes('dang ky thay doi') || normalized.includes('thay doi noi dung dang ky') || normalized.includes('thay doi thong tin') || normalized.includes('thay doi 1') || normalized.includes('thay doi 2')) return 'Đăng ký thay đổi';
+        if (normalized.includes('dang ky lan dau') || normalized.includes('dang ky goc')) return 'Đăng ký lần đầu';
+        return String(node?.title || node?.data?.regCase || '')
+            .replace(/\s*\((Hoàn thành|Chờ thanh toán|Chờ duyệt|Chờ ký|Bị từ chối|Sai lệch thanh toán)\)\s*/g, '')
+            .replace(/\s*\(Gốc\)\s*/g, '')
+            .trim();
+    }
 
     // Read stored registration number if any to show banner
     const savedRegNum = localStorage.getItem('canBoRegNum');
@@ -2011,19 +2097,16 @@ document.addEventListener('DOMContentLoaded', function () {
         timelineContainer.innerHTML = '';
         
         // Filter based on search input and date filters
-        const query = (timelineSearchInput.value || '').trim().toLowerCase();
-        const fromDateVal = (filterFromDate.value || '').trim();
-        const toDateVal = (filterToDate.value || '').trim();
-
-        const fromDateObj = parseDate(fromDateVal);
-        const toDateObj = parseDate(toDateVal);
+        const query = (activeTimelineFilters.query || '').toLowerCase();
+        const selectedCase = activeTimelineFilters.registrationCase || 'Tất cả';
+        const fromDateObj = parseDate(activeTimelineFilters.fromDate);
+        const toDateObj = parseDate(activeTimelineFilters.toDate);
 
         filteredData = mockTimelineData.filter(node => {
-            // Search filter
-            const matchesQuery = !query || 
-                node.title.toLowerCase().includes(query) || 
-                node.regCode.toLowerCase().includes(query) || 
-                node.description.toLowerCase().includes(query);
+            if (selectedCase !== 'Tất cả' && getCleanRegistrationCase(node) !== selectedCase) return false;
+
+            // Tìm kiếm theo Số đăng ký của phiên bản
+            const matchesQuery = !query || String(node.regCode || '').toLowerCase().includes(query);
 
             if (!matchesQuery) return false;
 
@@ -2045,7 +2128,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (filteredData.length === 0) {
             timelineContainer.innerHTML = `
                 <div style="text-align: center; padding: 20px; color: var(--text-muted); font-style: italic;">
-                    Không tìm thấy phiên bản phù hợp.
+                    Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.
                 </div>
             `;
             timelineMoreBtnContainer.style.display = 'none';
@@ -2083,6 +2166,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const isCompleted = node.statusText === 'Hoàn thành';
+            const cleanCase = getCleanRegistrationCase(node);
+            const nodeCreator = node.creator || node.data?.creator || '-';
             nodeEl.innerHTML = `
                 <div class="node-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                     <span class="node-badge ${node.badgeClass}">${node.label}</span>
@@ -2090,12 +2175,18 @@ document.addEventListener('DOMContentLoaded', function () {
                         ${statusTextHtml}
                     </span>
                 </div>
-                <div class="node-title" style="font-weight: 700; color: var(--text-main); font-size: 13.5px; margin-bottom: 4px;">${node.title}</div>
+                <div class="node-title" style="font-weight: 700; color: var(--text-main); font-size: 13.5px; margin-bottom: 4px;">${cleanCase}</div>
                 <div class="node-reg-code" style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 4px;">
-                    <strong>Số HS:</strong> ${node.regCode}
+                    <strong>Số đăng ký:</strong> ${node.regCode}
                 </div>
                 <div class="node-date" style="font-size: 11.5px; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
-                    <i class="fa-regular fa-calendar"></i> <strong>Thời điểm:</strong> ${node.date}
+                    <i class="fa-regular fa-calendar" style="width: 13px; text-align: center; flex-shrink: 0;"></i> <strong>Thời điểm đăng ký:</strong> ${node.date}
+                </div>
+                <div class="node-status-text" style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 4px;">
+                    <i class="fa-solid fa-circle-info" style="width: 13px; text-align: center; flex-shrink: 0;"></i> <strong>Trạng thái:</strong> ${node.statusText || '-'}
+                </div>
+                <div class="node-creator" style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 4px;">
+                    <i class="fa-regular fa-user" style="width: 13px; text-align: center; flex-shrink: 0;"></i> <strong>Người tạo:</strong> ${nodeCreator}
                 </div>
                 <p class="node-desc" style="font-size: 11px; color: var(--text-muted); margin: 6px 0 0 0; line-height: 1.4; border-top: 1px dashed #E2E8F0; padding-top: 6px;">
                     ${node.description}
@@ -2123,12 +2214,18 @@ document.addEventListener('DOMContentLoaded', function () {
             timelineContainer.appendChild(nodeEl);
         });
 
-        // Show or hide "Load More" button
-        if (filteredData.length > visibleCount) {
-            timelineMoreBtnContainer.style.display = 'block';
+        // Nút "Xem thêm" / "Thu gọn" của Sidebar
+        const hasMoreRecords = filteredData.length > visibleCount;
+        const canCollapseTimeline = visibleCount > 10 && filteredData.length > 10;
+        if (hasMoreRecords) {
+            const loadMoreLabel = btnLoadMoreTimeline.querySelector('span');
+            if (loadMoreLabel) loadMoreLabel.textContent = `Xem thêm ${Math.min(10, filteredData.length - visibleCount)} bản ghi`;
+            btnLoadMoreTimeline.style.display = '';
         } else {
-            timelineMoreBtnContainer.style.display = 'none';
+            btnLoadMoreTimeline.style.display = 'none';
         }
+        if (btnCollapseTimeline) btnCollapseTimeline.style.display = canCollapseTimeline ? '' : 'none';
+        timelineMoreBtnContainer.style.display = (hasMoreRecords || canCollapseTimeline) ? 'flex' : 'none';
 
         // Auto select the first item on load/search
         if (resetPagination && slice.length > 0) {
@@ -3003,8 +3100,8 @@ document.addEventListener('DOMContentLoaded', function () {
     // Set up event listeners
     function setupEventListeners() {
         if (typeof flatpickr !== 'undefined') {
-            flatpickr("#filterFromDate", { dateFormat: "d/m/Y", allowInput: true, onChange: () => renderTimeline(false) });
-            flatpickr("#filterToDate", { dateFormat: "d/m/Y", allowInput: true, onChange: () => renderTimeline(false) });
+            flatpickr("#filterFromDate", { dateFormat: "d/m/Y", allowInput: true });
+            flatpickr("#filterToDate", { dateFormat: "d/m/Y", allowInput: true });
         }
         // Toggle Switch
         diffToggle.addEventListener('change', applyDiffFilter);
@@ -3057,17 +3154,60 @@ document.addEventListener('DOMContentLoaded', function () {
             renderTimeline(false);
         });
 
-        // Search Timeline versions
-        timelineSearchInput.addEventListener('input', function() {
-            renderTimeline(true);
-        });
+        // Thu gọn danh sách phiên bản về 10 phiên bản đầu tiên theo bộ lọc hiện tại
+        if (btnCollapseTimeline) {
+            btnCollapseTimeline.addEventListener('click', function() {
+                visibleCount = 10;
+                renderTimeline(false);
+            });
+        }
 
-        // Date filter change events
-        filterFromDate.addEventListener('input', function() {
+        // Tìm kiếm / Xóa lọc phiên bản trên Sidebar (giống Website Khách hàng)
+        const setTimelineDateError = (message) => {
+            let err = document.getElementById('timelineDateError');
+            if (!err) {
+                err = document.createElement('div');
+                err.id = 'timelineDateError';
+                err.style.cssText = 'color: var(--danger-color, #DC2626); font-size: 11.5px; margin: -4px 0 10px;';
+                document.querySelector('.timeline-date-filters').insertAdjacentElement('afterend', err);
+            }
+            err.textContent = message || '';
+            err.style.display = message ? '' : 'none';
+            [filterFromDate, filterToDate].forEach(el => { el.style.borderColor = message ? 'var(--danger-color, #DC2626)' : ''; });
+        };
+        const applyTimelineFilters = () => {
+            const fromDate = (filterFromDate.value || '').trim();
+            const toDate = (filterToDate.value || '').trim();
+            const fromObj = parseDate(fromDate);
+            const toObj = parseDate(toDate);
+            if (fromObj && toObj && fromObj > toObj) {
+                setTimelineDateError('Từ ngày không được lớn hơn Đến ngày'); // [MSG-ERR-VAL-007]
+                return;
+            }
+            setTimelineDateError('');
+            activeTimelineFilters = {
+                query: (timelineSearchInput.value || '').trim(),
+                registrationCase: filterRegistrationCase ? filterRegistrationCase.value : 'Tất cả',
+                fromDate,
+                toDate
+            };
             renderTimeline(true);
-        });
-        filterToDate.addEventListener('input', function() {
+        };
+        const clearTimelineFilters = () => {
+            timelineSearchInput.value = '';
+            if (filterRegistrationCase) filterRegistrationCase.value = 'Tất cả';
+            [filterFromDate, filterToDate].forEach(el => { if (el._flatpickr) el._flatpickr.clear(); el.value = ''; });
+            setTimelineDateError('');
+            activeTimelineFilters = { query: '', registrationCase: 'Tất cả', fromDate: '', toDate: '' };
             renderTimeline(true);
+        };
+        if (btnSearchTimeline) btnSearchTimeline.addEventListener('click', applyTimelineFilters);
+        if (btnClearTimelineFilters) btnClearTimelineFilters.addEventListener('click', clearTimelineFilters);
+        timelineSearchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                applyTimelineFilters();
+            }
         });
 
         // Demo switcher event handlers (nếu có)
@@ -3125,6 +3265,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             let buttonsHtml = '';
 
+            // Mở từ Tra cứu hồ sơ: chế độ chỉ đọc, chỉ hiển thị nút Đóng (quay lại Tra cứu hồ sơ)
+            if (urlParams.get('from') === 'tra_cuu') {
+                container.innerHTML = `<button class="btn-back" style="font-size:13px;" onclick="goBack()"><i class="fa-solid fa-xmark"></i> Đóng</button>`;
+                return;
+            }
+
             if (status === 'Chờ duyệt') {
                 buttonsHtml = `
                     <button class="btn-back" style="background-color: var(--success-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="executeAction('duyet')"><i class="fa fa-check"></i> Duyệt</button>
@@ -3138,6 +3284,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     <button class="btn-back" style="background-color: var(--danger-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="executeAction('tuchoi')"><i class="fa fa-ban"></i> Từ chối</button>
                     <button class="btn-back" style="background-color: #64748B; color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="executeAction('huyduyet')"><i class="fa-solid fa-rotate-left"></i> Hủy duyệt</button>
                     <button class="btn-back" style="font-size:13px;" onclick="goBack()"><i class="fa-solid fa-xmark"></i> Đóng</button>
+                `;
+            } else if (status === 'Chờ ký' && isLeaderView && listProfile) {
+                // Màn Xem chi tiết Phiếu đăng ký chờ ký của Lãnh đạo: Đóng, Trả lại (chỉ hồ sơ Trực tiếp), Từ chối, Duyệt
+                const isDirect = getListSourceLabel(listProfile.source || listProfile.channel) === 'Trực tiếp';
+                const go = act => `sessionStorage.setItem('ldPdkDetailUrl', window.location.href); window.location.href='ky_duyet_ho_so.html?leaderAction=${act}&id=' + encodeURIComponent('${listProfile.id}')`;
+                buttonsHtml = `
+                    <button class="btn-back" style="font-size:13px;" onclick="goBack()"><i class="fa-solid fa-xmark"></i> Đóng</button>
+                    ${isDirect ? `<button class="btn-back" style="background-color: var(--accent-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="${go('return')}"><i class="fa-solid fa-reply"></i> Trả lại</button>` : ''}
+                    <button class="btn-back" style="background-color: var(--danger-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="${go('reject')}"><i class="fa fa-ban"></i> Từ chối</button>
+                    <button class="btn-back" style="background-color: var(--success-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="${go('approve')}"><i class="fa-solid fa-file-signature"></i> Duyệt</button>
                 `;
             } else if (status === 'Chờ ký') {
                 if (currentRole === 'lanhdao') {
@@ -3231,7 +3387,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     mode: 'single',
                     onDone: (recs, msg) => {
                         const r = recs[0];
-                        saveListProfile({ status: r.status, statusClass: r.statusClass, pendingAction: r.pendingAction, signLeader: r.signLeader, submittedBy: r.submittedBy, submittedAt: r.submittedAt, draftLocked: true, certificateDraftFile: r.certificateDraftFile });
+                        // Hồ sơ đã từng bị trả lại được trình ký lại: ghi nhận Thời điểm trình ký lại vào lịch sử trả lại
+                        const history = Array.isArray(listProfile.returnHistory) ? listProfile.returnHistory.map((h, i, a) => (i === a.length - 1 && !h.resubmittedAt) ? { ...h, resubmittedAt: r.submittedAt } : h) : listProfile.returnHistory;
+                        saveListProfile({ status: r.status, statusClass: r.statusClass, pendingAction: r.pendingAction, signLeader: r.signLeader, submittedBy: r.submittedBy, submittedAt: r.submittedAt, draftLocked: true, certificateDraftFile: r.certificateDraftFile, returnHistory: history });
                         finishListAction(msg);
                     }
                 });

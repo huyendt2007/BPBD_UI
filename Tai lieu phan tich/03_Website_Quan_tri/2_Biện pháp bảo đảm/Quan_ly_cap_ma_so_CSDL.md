@@ -44,7 +44,7 @@ Cho phép Cán bộ nghiệp vụ quản lý tập trung toàn bộ danh sách c
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **Bộ lọc tìm kiếm** | - | - | - | |
+| **Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Mã yêu cầu | String(50) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm chính xác hoặc gần đúng (không phân biệt chữ hoa, chữ thường; tự động cắt khoảng trắng thừa đầu và cuối chuỗi - Trim space) theo Mã yêu cầu. |
 | Mã số sử dụng CSDL | String(50) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm chính xác hoặc gần đúng (không phân biệt chữ hoa, chữ thường; tự động cắt khoảng trắng thừa đầu và cuối chuỗi - Trim space) theo Mã số sử dụng CSDL. |
 | Tên đối tượng đề nghị | String(255) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm gần đúng (không phân biệt chữ hoa, chữ thường; tự động cắt khoảng trắng thừa đầu và cuối chuỗi - Trim space) theo Tên đối tượng đăng ký/đề nghị cấp mã. |

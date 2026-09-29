@@ -64,7 +64,7 @@ Nguồn UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_tu_lieu_vbqppl.html
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | | | | |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Từ khóa | String(255) | Không | Trống | Control UI: Text input.<br>- Tìm kiếm theo tên văn bản hoặc số hiệu văn bản (placeholder: "Tên văn bản hoặc số hiệu..."). |
 | Loại văn bản | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại văn bản quy phạm pháp luật [DM_21].<br>Gồm:<br>+ Tất cả<br>+ Luật<br>+ Nghị định<br>+ Thông tư<br>+ Nghị quyết<br>+ Quyết định<br>+ Thông tư liên tịch |
 | Cơ quan ban hành | String(255) | Không | Trống | Control UI: Text input.<br>- Tìm kiếm theo tên cơ quan ban hành văn bản (placeholder: "Ví dụ: Chính phủ, Bộ Tư pháp..."). |

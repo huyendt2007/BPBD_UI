@@ -32,6 +32,7 @@
 
 ---
 
+<a id="413-mh01---khoi-tao-giao-dich-va-chuyen-cong-thanh-toan"></a>
 #### 4.1.3. MH01 - Khởi tạo giao dịch và chuyển Cổng thanh toán
 
 ##### 4.1.3.1. Màn hình
@@ -75,6 +76,7 @@
 
 ---
 
+<a id="414-xu-ly-ket-qua-tra-ve-tu-cong-thanh-toan"></a>
 #### 4.1.4. Xử lý kết quả trả về từ Cổng thanh toán
 
 ##### 4.1.4.1. Mô tả thông tin kết quả trả về
@@ -104,6 +106,7 @@
 
 ---
 
+<a id="415-mh02---man-hinh-ket-qua-thanh-toan-thanh-cong"></a>
 #### 4.1.5. MH02 - Màn hình Kết quả thanh toán thành công
 
 ##### 4.1.5.1. Màn hình

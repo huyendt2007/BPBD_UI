@@ -62,7 +62,7 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **Khối Bộ lọc tìm kiếm** | - | - | - | |
+| **Khối Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Mã hồ sơ | String(50) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm gần đúng (không phân biệt chữ hoa, chữ thường; tự động cắt khoảng trắng thừa đầu và cuối chuỗi - Trim space) theo Mã hồ sơ. |
 | Số đơn giấy | String(50) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm gần đúng (không phân biệt chữ hoa, chữ thường; tự động cắt khoảng trắng thừa đầu và cuối chuỗi - Trim space) theo Số đơn giấy ghi trên đơn giấy khách hàng nộp. |
 | Người yêu cầu | String(255) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm gần đúng (không phân biệt chữ hoa, chữ thường; tự động cắt khoảng trắng thừa đầu và cuối chuỗi - Trim space) theo Họ tên cá nhân/Tên tổ chức yêu cầu. |
@@ -71,7 +71,7 @@ flowchart TD
 | Trạng thái hồ sơ | Enum(String(50)) | Không | Tất cả | Control UI: Combobox chọn một giá trị.<br>- Giá trị gồm:<br>+ Tất cả<br>+ Chờ thu phí<br>+ Chờ giải quyết<br>+ Bị từ chối|
 | Từ ngày tiếp nhận | Date | Không | Trống | Control UI: Input date kèm icon lịch, định dạng `dd/mm/yyyy`.<br>- Không được lớn hơn `Đến ngày tiếp nhận`. |
 | Đến ngày tiếp nhận | Date | Không | Trống | Control UI: Input date kèm icon lịch, định dạng `dd/mm/yyyy`.<br>- Không được nhỏ hơn `Từ ngày tiếp nhận`. |
-| **Khối Bảng danh sách hồ sơ tiếp nhận** | - | - | - | Control UI: Bảng dữ liệu kèm thanh phân trang theo quy chuẩn phân trang dùng chung.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải dữ liệu tại trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- **Sắp xếp mặc định**: Sắp xếp theo **"Thời điểm tiếp nhận" giảm dần** (hồ sơ mới tiếp nhận nhất hiển thị lên đầu). Hỗ trợ sắp xếp động (Sortable) khi người dùng click vào tiêu đề cột.<br>- Trạng thái không có dữ liệu (Empty State): Bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung **[MSG-INF-SYS-001]**. |
+| **Khối Bảng danh sách hồ sơ tiếp nhận** | - | - | - | Control UI: Bảng dữ liệu kèm thanh phân trang theo quy chuẩn phân trang dùng chung.<br>- Không hiển thị tiêu đề bảng lưới kết quả; nút Tiếp nhận mới đặt bên phải phía trên bảng.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải dữ liệu tại trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- **Sắp xếp mặc định**: Sắp xếp theo **"Thời điểm tiếp nhận" giảm dần** (hồ sơ mới tiếp nhận nhất hiển thị lên đầu). Hỗ trợ sắp xếp động (Sortable) khi người dùng click vào tiêu đề cột.<br>- Trạng thái không có dữ liệu (Empty State): Bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung **[MSG-INF-SYS-001]**. |
 | STT | Integer(10) | - | Theo trang | Control UI: Label, chỉ đọc.<br>- Số thứ tự dòng tính liên tục theo trang kết quả hiện tại. |
 | Mã hồ sơ | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Link, chỉ đọc.<br>- Hiển thị dạng liên kết mở [MH03 - Màn hình Xem chi tiết hồ sơ tiếp nhận](#432165-mh03---màn-hình-xem-chi-tiết-hồ-sơ-tiếp-nhận). |
 | Số đơn giấy | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |

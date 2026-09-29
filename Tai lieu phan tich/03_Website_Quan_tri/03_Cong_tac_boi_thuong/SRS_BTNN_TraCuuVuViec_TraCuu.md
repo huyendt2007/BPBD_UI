@@ -91,7 +91,7 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Khối Lọc, tìm kiếm thông tin** | - | - | - | Control UI: Filter panel.<br>- Khối lọc hiển thị phía trên bảng kết quả của tab `Phục hồi danh dự`.<br>- Các tiêu chí có dữ liệu được kết hợp theo điều kiện AND. |
+| **I. Khối Lọc, tìm kiếm thông tin** | - | - | - | Control UI: Filter panel dạng thu gọn/mở rộng (Accordion).<br>- Khối lọc hiển thị phía trên bảng kết quả của tab `Phục hồi danh dự`.<br>- Các tiêu chí có dữ liệu được kết hợp theo điều kiện AND.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Mã vụ việc | String(50) | Không | Trống | Control UI: Input text.<br>- Tìm gần đúng theo mã vụ việc, tự động trim space trước khi lọc. |
 | Tên vụ việc | String(255) | Không | Trống | Control UI: Input text.<br>- Tìm gần đúng theo tên vụ việc, không phân biệt hoa thường. |
 | Người bị thiệt hại/người yêu cầu | String(255) | Không | Trống | Control UI: Input text.<br>- Tìm gần đúng theo họ tên người bị thiệt hại hoặc người yêu cầu bồi thường. |
@@ -126,7 +126,7 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Khối Lọc, tìm kiếm thông tin** | - | - | - | Control UI: Filter panel.<br>- Khối lọc hiển thị phía trên bảng kết quả của tab `Yêu cầu bồi thường`.<br>- Các tiêu chí có dữ liệu được kết hợp theo điều kiện AND. |
+| **I. Khối Lọc, tìm kiếm thông tin** | - | - | - | Control UI: Filter panel dạng thu gọn/mở rộng (Accordion).<br>- Khối lọc hiển thị phía trên bảng kết quả của tab `Yêu cầu bồi thường`.<br>- Các tiêu chí có dữ liệu được kết hợp theo điều kiện AND.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Mã vụ việc | String(50) | Không | Trống | Control UI: Input text.<br>- Tìm gần đúng theo mã vụ việc, tự động trim space trước khi lọc. |
 | Tên vụ việc | String(255) | Không | Trống | Control UI: Input text.<br>- Tìm gần đúng theo tên vụ việc, không phân biệt hoa thường. |
 | Tên người yêu cầu | String(100) | Không | Trống | Control UI: Input text.<br>- Tìm gần đúng theo họ tên người yêu cầu bồi thường. |

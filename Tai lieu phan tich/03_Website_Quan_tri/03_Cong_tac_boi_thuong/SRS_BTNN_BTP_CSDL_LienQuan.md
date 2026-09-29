@@ -47,7 +47,7 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | | | | |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Từ khóa | String(255) | Không | Trống | Tìm kiếm gần đúng theo `Tên/Mã bản ghi tham chiếu`. |
 | Loại CSDL nguồn | Enum(String(100)) | Không | Tất cả | \- Giá trị gồm:<br>+ Tất cả<br>+ CSDL về bản án, quyết định của Tòa án<br>+ CSDL quốc gia về thủ tục hành chính (TTHC)<br>+ CSDL quốc gia về khiếu nại, tố cáo<br>+ Khác |
 | Từ ngày trích xuất | Date | Không | Theo dữ liệu hệ thống | Định dạng `dd/mm/yyyy`. |

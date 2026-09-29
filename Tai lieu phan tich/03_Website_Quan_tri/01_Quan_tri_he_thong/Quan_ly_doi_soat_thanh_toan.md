@@ -32,6 +32,7 @@ Phạm vi kết thúc khi bản ghi đối soát/hoàn tiền được xử lý 
 | UCPS008.MH02 | Chi tiết bản ghi đối soát | Xem thông tin giao dịch, hồ sơ liên quan, lịch sử xử lý và chứng từ |
 | UCPS008.MH03 | Xử lý hoàn tiền | Gửi lại yêu cầu hoàn tiền, cập nhật kết quả hoặc chuyển xử lý thủ công |
 
+<a id="4-ucps008mh01---danh-sach-doi-soat-thanh-toan"></a>
 ## 4. UCPS008.MH01 - Danh sách đối soát thanh toán
 
 ### 4.1. Mô tả thông tin trên màn hình
@@ -68,6 +69,7 @@ Phạm vi kết thúc khi bản ghi đối soát/hoàn tiền được xử lý 
 | 4 | Xử lý | Nút | Cho phép Cán bộ kế toán/Admin cập nhật hướng xử lý với bản ghi sai lệch hoặc giao dịch chưa xác định. |
 | 5 | Gửi lại yêu cầu hoàn tiền | Nút | Chỉ khả dụng với yêu cầu hoàn tiền ở trạng thái "Hoàn tiền thất bại" hoặc "Cần xử lý thủ công" và còn đủ điều kiện gửi lại sang Cổng thanh toán. |
 
+<a id="5-ucps008mh03---xu-ly-hoan-tien"></a>
 ## 5. UCPS008.MH03 - Xử lý hoàn tiền
 
 ### 5.1. Mô tả thông tin trên màn hình
@@ -91,6 +93,7 @@ Phạm vi kết thúc khi bản ghi đối soát/hoàn tiền được xử lý 
 | 2 | Cập nhật xử lý thủ công | Nút | Cho phép ghi nhận kết quả xử lý hoàn tiền ngoài hệ thống kèm chứng từ và ghi lịch sử. |
 | 3 | Đóng xử lý | Nút | Chỉ cho phép đóng khi yêu cầu hoàn tiền đã có kết quả cuối cùng hoặc đã có ghi nhận xử lý thủ công hợp lệ. |
 
+<a id="6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online"></a>
 ## 6. Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online
 
 Quy tắc dùng chung cho mọi chức năng từ chối hồ sơ Online (Phiếu đăng ký, Yêu cầu cung cấp thông tin, Yêu cầu cung cấp bản sao...) do Cán bộ hoặc Lãnh đạo thực hiện. Hồ sơ Online bị từ chối luôn là hồ sơ đã thanh toán thành công trên Cổng thanh toán.

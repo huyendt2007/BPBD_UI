@@ -1343,14 +1343,14 @@ document.addEventListener('DOMContentLoaded', function () {
             'xoa dang ky',
             'thong bao xu ly tai san bao dam',
             'thay doi thong bao xu ly tai san bao dam',
-            'xoa dang ky thong bao xu ly tai san bao dam'
+            'xoa dang ky thong bao xu ly tai san bao dam',
+            'chinh ly',
+            'huy dang ky',
+            'khoi phuc'
         ];
         const excluded = [
             'yeu cau cung cap ban sao',
-            'yeu cau cung cap thong tin',
-            'chinh ly thong tin',
-            'huy dang ky',
-            'khoi phuc huy dang ky'
+            'yeu cau cung cap thong tin'
         ];
         return allowed.some(keyword => text.includes(keyword)) && !excluded.some(keyword => text.includes(keyword));
     }
@@ -1363,6 +1363,9 @@ document.addEventListener('DOMContentLoaded', function () {
             .replace(/Đ/g, 'D')
             .toLowerCase();
 
+        if (normalized.includes('khoi phuc')) return 'Khôi phục hủy đăng ký';
+        if (normalized.includes('huy dang ky')) return 'Hủy đăng ký';
+        if (normalized.includes('chinh ly')) return 'Chỉnh lý thông tin';
         if (normalized.includes('xoa dang ky thong bao xu ly tai san bao dam') || (normalized.includes('xoa') && normalized.includes('thong bao xu ly'))) {
             return 'Xóa đăng ký thông báo xử lý tài sản bảo đảm';
         }

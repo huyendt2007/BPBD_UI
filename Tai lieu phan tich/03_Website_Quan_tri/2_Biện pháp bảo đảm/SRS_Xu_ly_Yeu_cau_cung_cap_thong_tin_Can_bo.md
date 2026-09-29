@@ -28,6 +28,7 @@
 
 \- Toàn bộ dữ liệu tra cứu ở trạng thái chỉ đọc. Cán bộ không được thay đổi tiêu chí, loại chủ thể, số giấy tờ, họ tên, tên tổ chức, số đăng ký, số khung hoặc thêm/bớt điều kiện tra cứu.
 
+<a id="43222-mh01---man-hinh-danh-sach-ho-so-cho-duyet"></a>
 #### 4.3.2.2.2. MH01 - Màn hình Danh sách hồ sơ chờ duyệt
 
 ##### 4.3.2.2.2.1. Màn hình
@@ -38,7 +39,7 @@
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | | | | |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Mã hồ sơ | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập mã hồ sơ CCTT...".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Mã hồ sơ Yêu cầu cung cấp thông tin. |
 | Mã khách hàng | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập mã khách hàng...".<br>- Tìm kiếm gần đúng theo Mã khách hàng nộp yêu cầu. |
 | Cán bộ xử lý | Enum(String(255)) | Không | Tất cả | Control UI: Combobox.<br>- Chọn Cán bộ xử lý hồ sơ hoặc chọn "Tất cả".<br>- Danh sách lấy theo cán bộ thuộc phạm vi Trung tâm đăng ký của người dùng đăng nhập. |
@@ -70,6 +71,7 @@
 | 4 | Xử lý hồ sơ | Nút | TH1 (Hồ sơ không còn ở trạng thái "Chờ duyệt"): Quy định chỉ được xử lý hồ sơ đang ở trạng thái "Chờ duyệt". Hệ thống hiển thị [MSG-ERR-CCTT-002] dạng Toast. Không mở màn hình xử lý.<br><br>TH Hợp lệ: Hệ thống thực hiện:<br>- Ghi nhận Cán bộ hiện tại là Cán bộ xử lý hồ sơ (nếu hồ sơ chưa có Cán bộ xử lý).<br>- Mở [MH02 - Xử lý hồ sơ yêu cầu cung cấp thông tin](#43223-mh02---man-hinh-xu-ly-ho-so-yeu-cau-cung-cap-thong-tin), tự động điền sẵn tiêu chí và dữ liệu tra cứu theo thông tin hồ sơ, tự động kiểm tra và hiển thị kết quả tra cứu. |
 | 5 | Từ chối | Nút | TH1 (Hồ sơ không còn ở trạng thái "Chờ duyệt"): Quy định chỉ được từ chối hồ sơ đang ở trạng thái "Chờ duyệt". Hệ thống hiển thị [MSG-ERR-CCTT-002] dạng Toast. Không mở popup từ chối.<br><br>TH Hợp lệ: Mở [MH05 - Popup Từ chối yêu cầu cung cấp thông tin](#43226-mh05---popup-tu-choi-yeu-cau-cung-cap-thong-tin). |
 
+<a id="43223-mh02---man-hinh-xu-ly-ho-so-yeu-cau-cung-cap-thong-tin"></a>
 #### 4.3.2.2.3. MH02 - Màn hình Xử lý hồ sơ yêu cầu cung cấp thông tin
 
 ##### 4.3.2.2.3.1. Màn hình
@@ -80,7 +82,14 @@
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **I. Khối tra cứu** | | | | Toàn bộ dữ liệu chỉ đọc, hệ thống tự động điền theo thông tin hồ sơ khi mở màn hình, không cho phép sửa. |
+| **I. Thông tin chung** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion), đặt phía trên Khối II. Khối tra cứu.<br>- Mặc định hiển thị dạng thu gọn: chỉ hiển thị dòng tiêu đề khối kèm Mã hồ sơ và Trạng thái; Cán bộ bấm vào tiêu đề khối để mở rộng xem đầy đủ thông tin.<br>- Toàn bộ dữ liệu chỉ đọc, không cho phép sửa. |
+| Mã hồ sơ | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
+| Mã khách hàng | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
+| Người yêu cầu | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
+| Địa chỉ | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi.<br>- Hiển thị đầy đủ theo thứ tự: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia. |
+| Thời điểm đăng ký | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi.<br>- Định dạng hiển thị: dd/mm/yyyy hh:mm. |
+| Trạng thái | - | - | - | Control UI: Label dạng nhãn trạng thái (Badge), chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
+| **II. Khối tra cứu** | | | | Toàn bộ dữ liệu chỉ đọc, hệ thống tự động điền theo thông tin hồ sơ khi mở màn hình, không cho phép sửa. |
 | Tiêu chí yêu cầu cung cấp thông tin | Enum(String(50)) | Có | Theo hồ sơ | Control UI: Segmented control (nhóm 03 nút chọn liền nhau trên một hàng), chỉ đọc.<br>- Lấy theo thông tin hồ sơ: segment tương ứng với tiêu chí của hồ sơ được tô nổi bật (active), các segment còn lại ở trạng thái mờ (Disabled), không cho phép chuyển.<br>Gồm:<br>+ Số đăng ký<br>+ Bên bảo đảm<br>+ Số khung |
 | Số đăng ký | String(50) | Tùy điều kiện | Theo hồ sơ | Control UI: Textbox, chỉ đọc (Disabled).<br>- Chỉ hiển thị khi Tiêu chí yêu cầu cung cấp thông tin là "Số đăng ký".<br>- Lấy theo thông tin hồ sơ. |
 | Loại chủ thể | String(50) | Tùy điều kiện | Theo hồ sơ | Control UI: Textbox, chỉ đọc (Disabled).<br>- Chỉ hiển thị khi Tiêu chí yêu cầu cung cấp thông tin là "Bên bảo đảm".<br>- Lấy theo thông tin hồ sơ. |
@@ -92,7 +101,7 @@
 | Tên tổ chức | String(255) | Tùy điều kiện | Theo hồ sơ | Control UI: Textbox, chỉ đọc (Disabled).<br>- Chỉ hiển thị khi Tiêu chí là "Bên bảo đảm" và Loại chủ thể là "Tổ chức khác".<br>- Lấy theo thông tin hồ sơ. |
 | Số thẻ cư trú | String(50) | Tùy điều kiện | Theo hồ sơ | Control UI: Textbox, chỉ đọc (Disabled).<br>- Chỉ hiển thị khi Tiêu chí là "Bên bảo đảm" và Loại chủ thể là "Người không quốc tịch cư trú tại Việt Nam".<br>- Lấy theo thông tin hồ sơ. |
 | Số khung | String(50) | Tùy điều kiện | Theo hồ sơ | Control UI: Textbox, chỉ đọc (Disabled).<br>- Chỉ hiển thị khi Tiêu chí yêu cầu cung cấp thông tin là "Số khung".<br>- Lấy theo thông tin hồ sơ. |
-| **II. Kết quả tra cứu** | | | | Hiển thị ngay sau khi hệ thống hoàn tất kiểm tra theo tiêu chí tra cứu. |
+| **III. Kết quả tra cứu** | | | | Hiển thị ngay sau khi hệ thống hoàn tất kiểm tra theo tiêu chí tra cứu. |
 | Thời điểm tra cứu | Datetime | Có | Theo lần tra cứu | Control UI: Label, chỉ đọc.<br>- Thời điểm hệ thống thực hiện kiểm tra.<br>- Định dạng hiển thị: dd/mm/yyyy hh:mm:ss. |
 | Tiêu chí tra cứu thực tế | Enum(String(50)) | Có | Theo hồ sơ | Control UI: Label, chỉ đọc.<br>- Tiêu chí hệ thống đã dùng để kiểm tra. |
 | Dữ liệu đầu vào tra cứu | Text(1000) | Có | Theo hồ sơ | Control UI: Label, chỉ đọc.<br>- Dữ liệu hệ thống đã dùng để kiểm tra. |
@@ -104,11 +113,13 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tự động tra cứu | Sự kiện mở màn hình | Khi mở màn hình, hệ thống tự động điền tiêu chí và dữ liệu tra cứu theo thông tin hồ sơ, sau đó thực hiện kiểm tra trên toàn hệ thống các Hồ sơ biện pháp bảo đảm theo tiêu chí tra cứu và trả về kết quả:<br>- **Phạm vi kiểm tra**: Tập Hồ sơ biện pháp bảo đảm đang có hiệu lực, chưa có yêu cầu Xóa đăng ký được phê duyệt Hoàn thành.<br>- **Kết quả trả về**: Với mỗi Hồ sơ biện pháp bảo đảm thỏa mãn tiêu chí, hệ thống trả về toàn bộ hồ sơ bắt đầu từ Hồ sơ đăng ký lần đầu đến tất cả các hồ sơ có liên quan tới Hồ sơ đăng ký lần đầu đó (Đăng ký thay đổi, Thông báo xử lý tài sản bảo đảm...), sắp xếp theo Thời điểm đăng ký tăng dần.<br><br>TH1 (Không có dữ liệu): Không tìm thấy Hồ sơ biện pháp bảo đảm phù hợp. Hệ thống thực hiện:<br>- Hiển thị Khối II với [MSG-WRN-CCTT-001] dạng Inline.<br>- Ghi nhận kết quả không có dữ liệu vào hồ sơ.<br>- Hiển thị nút "Duyệt chờ ký" và "Trình ký" trên thanh tác vụ. Hồ sơ không bị chuyển sang "Bị từ chối" và không phát sinh thêm nghĩa vụ thanh toán.<br><br>TH2 (Có dữ liệu): Hệ thống thực hiện:<br>- Hiển thị Khối II - Kết quả tra cứu với danh sách hồ sơ tìm thấy.<br>- Ghi nhận Cán bộ thực hiện, thời điểm tra cứu, tiêu chí tra cứu, dữ liệu đầu vào và kết quả tra cứu vào hồ sơ; ghi lịch sử xử lý và Audit log.<br>- Hiển thị nút "Duyệt chờ ký" và "Trình ký" trên thanh tác vụ. |
-| 2 | Duyệt chờ ký | Nút | Nút ẩn hoàn toàn khi chưa có kết quả tra cứu; chỉ hiển thị khi đã có kết quả tra cứu (có dữ liệu hoặc không có dữ liệu).<br>TH1 (Hồ sơ không còn ở trạng thái "Chờ duyệt"): Quy định chỉ được xử lý hồ sơ đang ở trạng thái "Chờ duyệt". Hệ thống hiển thị [MSG-ERR-CCTT-002] dạng Toast. Không thực hiện.<br><br>TH Hợp lệ: Hệ thống thực hiện:<br>- Lưu kết quả tra cứu vào hồ sơ.<br>- Ghi nhận Cán bộ xử lý và thời điểm xử lý (dd/mm/yyyy hh:mm:ss).<br>- Chuyển hồ sơ sang trạng thái "Duyệt chờ ký".<br>- Ghi lịch sử xử lý và Audit log.<br>- Đóng màn hình xử lý, quay về [MH01 - Danh sách hồ sơ chờ duyệt](#43222-mh01---man-hinh-danh-sach-ho-so-cho-duyet) và hiển thị [MSG-SUC-CCTT-005] dạng Toast. |
-| 3 | Trình ký | Nút | Nút ẩn hoàn toàn khi chưa có kết quả tra cứu; chỉ hiển thị khi đã có kết quả tra cứu (có dữ liệu hoặc không có dữ liệu).<br>Hệ thống thực hiện:<br>- Tự động sinh file PDF dự thảo kết quả cung cấp thông tin theo [4.3.2.2.7. Quy tắc xử lý kết quả tra cứu và kết xuất PDF kết quả cung cấp thông tin](#43227-quy-tac-xu-ly-ket-qua-tra-cuu-va-ket-xuat-pdf-ket-qua-cung-cap-thong-tin).<br>- Mở [MH04 - Popup Trình ký kết quả cung cấp thông tin](#43225-mh04---popup-trinh-ky-ket-qua-cung-cap-thong-tin). |
-| 4 | Hủy bỏ | Nút | Đóng màn hình xử lý, không thay đổi trạng thái hồ sơ, quay về [MH01 - Danh sách hồ sơ chờ duyệt](#43222-mh01---man-hinh-danh-sach-ho-so-cho-duyet) và giữ nguyên bộ lọc trước đó. |
+| 1 | Thu gọn/Mở rộng Thông tin chung | Click tiêu đề khối | TH1 (Khối đang thu gọn): Hệ thống mở rộng Khối I. Thông tin chung, hiển thị đầy đủ các trường thông tin.<br><br>TH2 (Khối đang mở rộng): Hệ thống thu gọn Khối I. Thông tin chung về dạng mặc định. |
+| 2 | Tự động tra cứu | Sự kiện mở màn hình | Khi mở màn hình, hệ thống tự động điền tiêu chí và dữ liệu tra cứu theo thông tin hồ sơ, sau đó thực hiện kiểm tra trên toàn hệ thống các Hồ sơ biện pháp bảo đảm theo tiêu chí tra cứu và trả về kết quả:<br>- **Phạm vi kiểm tra**: Tập Hồ sơ biện pháp bảo đảm đang có hiệu lực, chưa có yêu cầu Xóa đăng ký được phê duyệt Hoàn thành.<br>- **Kết quả trả về**: Với mỗi Hồ sơ biện pháp bảo đảm thỏa mãn tiêu chí, hệ thống trả về toàn bộ hồ sơ bắt đầu từ Hồ sơ đăng ký lần đầu đến tất cả các hồ sơ có liên quan tới Hồ sơ đăng ký lần đầu đó (Đăng ký thay đổi, Thông báo xử lý tài sản bảo đảm...), sắp xếp theo Thời điểm đăng ký tăng dần.<br><br>TH1 (Không có dữ liệu): Không tìm thấy Hồ sơ biện pháp bảo đảm phù hợp. Hệ thống thực hiện:<br>- Hiển thị Khối III với [MSG-WRN-CCTT-001] dạng Inline.<br>- Ghi nhận kết quả không có dữ liệu vào hồ sơ.<br>- Hiển thị nút "Duyệt chờ ký" và "Trình ký" trên thanh tác vụ. Hồ sơ không bị chuyển sang "Bị từ chối" và không phát sinh thêm nghĩa vụ thanh toán.<br><br>TH2 (Có dữ liệu): Hệ thống thực hiện:<br>- Hiển thị Khối III - Kết quả tra cứu với danh sách hồ sơ tìm thấy.<br>- Ghi nhận Cán bộ thực hiện, thời điểm tra cứu, tiêu chí tra cứu, dữ liệu đầu vào và kết quả tra cứu vào hồ sơ; ghi lịch sử xử lý và Audit log.<br>- Hiển thị nút "Duyệt chờ ký" và "Trình ký" trên thanh tác vụ. |
+| 3 | Duyệt chờ ký | Nút | Nút ẩn hoàn toàn khi chưa có kết quả tra cứu; chỉ hiển thị khi đã có kết quả tra cứu (có dữ liệu hoặc không có dữ liệu).<br>TH1 (Hồ sơ không còn ở trạng thái "Chờ duyệt"): Quy định chỉ được xử lý hồ sơ đang ở trạng thái "Chờ duyệt". Hệ thống hiển thị [MSG-ERR-CCTT-002] dạng Toast. Không thực hiện.<br><br>TH Hợp lệ: Hệ thống thực hiện:<br>- Lưu kết quả tra cứu vào hồ sơ.<br>- Ghi nhận Cán bộ xử lý và thời điểm xử lý (dd/mm/yyyy hh:mm:ss).<br>- Chuyển hồ sơ sang trạng thái "Duyệt chờ ký".<br>- Ghi lịch sử xử lý và Audit log.<br>- Đóng màn hình xử lý, quay về [MH01 - Danh sách hồ sơ chờ duyệt](#43222-mh01---man-hinh-danh-sach-ho-so-cho-duyet) và hiển thị [MSG-SUC-CCTT-005] dạng Toast. |
+| 4 | Trình ký | Nút | Nút ẩn hoàn toàn khi chưa có kết quả tra cứu; chỉ hiển thị khi đã có kết quả tra cứu (có dữ liệu hoặc không có dữ liệu).<br>Hệ thống thực hiện:<br>- Tự động sinh file PDF dự thảo kết quả cung cấp thông tin theo [4.3.2.2.7. Quy tắc xử lý kết quả tra cứu và kết xuất PDF kết quả cung cấp thông tin](#43227-quy-tac-xu-ly-ket-qua-tra-cuu-va-ket-xuat-pdf-ket-qua-cung-cap-thong-tin).<br>- Mở [MH04 - Popup Trình ký kết quả cung cấp thông tin](#43225-mh04---popup-trinh-ky-ket-qua-cung-cap-thong-tin). |
+| 5 | Hủy bỏ | Nút | Đóng màn hình xử lý, không thay đổi trạng thái hồ sơ, quay về [MH01 - Danh sách hồ sơ chờ duyệt](#43222-mh01---man-hinh-danh-sach-ho-so-cho-duyet) và giữ nguyên bộ lọc trước đó. |
 
+<a id="43224-mh03---man-hinh-xem-chi-tiet-ho-so-yeu-cau-cung-cap-thong-tin-cho-xu-ly"></a>
 #### 4.3.2.2.4. MH03 - Màn hình Xem chi tiết hồ sơ yêu cầu cung cấp thông tin chờ xử lý
 
 ##### 4.3.2.2.4.1. Màn hình
@@ -143,6 +154,7 @@
 | 2 | Từ chối | Nút | TH1 (Hồ sơ không còn ở trạng thái "Chờ duyệt"): Hệ thống hiển thị [MSG-ERR-CCTT-002] dạng Toast. Không mở popup từ chối.<br><br>TH Hợp lệ: Mở [MH05 - Popup Từ chối yêu cầu cung cấp thông tin](#43226-mh05---popup-tu-choi-yeu-cau-cung-cap-thong-tin). |
 | 3 | Đóng | Nút | Đóng màn hình xem chi tiết, quay về [MH01 - Danh sách hồ sơ chờ duyệt](#43222-mh01---man-hinh-danh-sach-ho-so-cho-duyet) và giữ nguyên bộ lọc trước đó. |
 
+<a id="43225-mh04---popup-trinh-ky-ket-qua-cung-cap-thong-tin"></a>
 #### 4.3.2.2.5. MH04 - Popup Trình ký kết quả cung cấp thông tin
 
 ##### 4.3.2.2.5.1. Màn hình
@@ -168,6 +180,7 @@
 |  |  |  | TH3 (Chưa chọn Lãnh đạo ký hoặc Lãnh đạo ký không còn hiệu lực trong cấu hình): Hệ thống tô viền đỏ ô chọn Lãnh đạo ký, hiển thị [MSG-ERR-VAL-001] dạng Inline dưới ô chọn, không cho phép trình ký. |
 |  |  |  | TH Hợp lệ: Hệ thống thực hiện:<br>\- Lưu kết quả tra cứu được sử dụng để trình ký.<br>\- Khóa kết quả tra cứu và khóa phiên bản file PDF dự thảo được trình ký; Cán bộ và Lãnh đạo không được chỉnh sửa kết quả tra cứu hoặc thay thế file PDF đã trình ký.<br>\- Ghi nhận Cán bộ trình ký, thời điểm trình ký và Lãnh đạo ký đã chọn.<br>\- Chuyển hồ sơ sang trạng thái "Chờ ký" và chuyển đến đúng Lãnh đạo ký đã chọn.<br>\- Ghi lịch sử xử lý của hồ sơ và Audit log hệ thống, gồm người thao tác, thời điểm, hành động "Trình ký", mã hồ sơ, phiên bản PDF trình ký và Lãnh đạo ký đã chọn.<br>\- Đóng popup và [MH02 - Xử lý hồ sơ yêu cầu cung cấp thông tin](#43223-mh02---man-hinh-xu-ly-ho-so-yeu-cau-cung-cap-thong-tin), quay về [MH01 - Danh sách hồ sơ chờ duyệt](#43222-mh01---man-hinh-danh-sach-ho-so-cho-duyet) và hiển thị [MSG-SUC-CCTT-003]. |
 
+<a id="43226-mh05---popup-tu-choi-yeu-cau-cung-cap-thong-tin"></a>
 #### 4.3.2.2.6. MH05 - Popup Từ chối yêu cầu cung cấp thông tin
 
 ##### 4.3.2.2.6.1. Màn hình
@@ -190,6 +203,7 @@
 | 1 | Hủy | Nút | Đóng popup, giữ nguyên trạng thái hồ sơ và quay lại màn hình đã mở popup. |
 | 2 | Xác nhận từ chối | Nút | TH1 (Bỏ trống Lý do từ chối): Quy định Lý do từ chối là bắt buộc. Hệ thống tô viền đỏ ô Lý do từ chối, hiển thị [MSG-ERR-VAL-001] dạng Inline dưới ô nhập và focus vào ô lỗi. Không thực hiện từ chối.<br><br>TH2 (Hồ sơ không còn ở trạng thái "Chờ duyệt"): Quy định chỉ được từ chối hồ sơ đang ở trạng thái "Chờ duyệt". Hệ thống hiển thị [MSG-ERR-CCTT-002] dạng Toast. Không thực hiện từ chối.<br><br>TH Hợp lệ: Hệ thống thực hiện ngay, không hiển thị thêm bước xác nhận:<br>- Lưu người từ chối, thời điểm từ chối, lý do từ chối và ghi lịch sử xử lý.<br>- Chuyển hồ sơ sang trạng thái "Bị từ chối".<br>- Tạo yêu cầu hoàn tiền cho hồ sơ theo [Quy tắc tạo yêu cầu hoàn tiền khi từ chối hồ sơ Online](../01_Quan_tri_he_thong/Quan_ly_doi_soat_thanh_toan.md#6-quy-tac-tao-yeu-cau-hoan-tien-khi-tu-choi-ho-so-online).<br>- Đóng popup (và đóng [MH03 - Xem chi tiết hồ sơ yêu cầu cung cấp thông tin chờ xử lý](#43224-mh03---man-hinh-xem-chi-tiet-ho-so-yeu-cau-cung-cap-thong-tin-cho-xu-ly) nếu popup được mở từ màn này), quay về [MH01 - Danh sách hồ sơ chờ duyệt](#43222-mh01---man-hinh-danh-sach-ho-so-cho-duyet), loại hồ sơ khỏi danh sách chờ duyệt và hiển thị [MSG-SUC-CCTT-004] dạng Toast. |
 
+<a id="43227-quy-tac-xu-ly-ket-qua-tra-cuu-va-ket-xuat-pdf-ket-qua-cung-cap-thong-tin"></a>
 #### 4.3.2.2.7. Quy tắc xử lý kết quả tra cứu và kết xuất PDF kết quả cung cấp thông tin
 
 ##### 4.3.2.2.7.1. Nguyên tắc sinh file PDF kết quả cung cấp thông tin
@@ -262,10 +276,11 @@
 | 10 | Dòng kết quả không có dữ liệu | Kết quả tra cứu đã lưu trong hồ sơ | Chỉ hiển thị khi Trạng thái tra cứu là "Không có kết quả". Nội dung lấy theo [MSG-WRN-CCTT-001]. |
 | 11 | Liên kết với lá mặt/trang ký | File PDF kết quả cung cấp thông tin | Phần kết quả cung cấp thông tin/phụ lục nằm sau lá mặt/trang ký trong cùng một file PDF; không tách thành file riêng. |
 
+<a id="432274-mapping-du-lieu-chi-tiet-ho-so-ket-qua-tra-cuu"></a>
 ##### 4.3.2.2.7.4. Mapping dữ liệu chi tiết hồ sơ kết quả tra cứu
 
 | STT | Thành phần kết quả đính kèm | Nguồn dữ liệu hệ thống | Quy tắc mapping/xử lý |
 | :--- | :--- | :--- | :--- |
-| 1 | Chi tiết hồ sơ kết quả tra cứu | Kết quả tra cứu đã lưu trong hồ sơ và dữ liệu Review nghiệp vụ tương ứng | Phần chi tiết hồ sơ kết quả tra cứu trong file PDF dự thảo/trình ký/ký số phải hiển thị lần lượt từng hồ sơ theo Thời điểm đăng ký tăng dần (từ Hồ sơ đăng ký lần đầu đến các hồ sơ liên quan), mỗi hồ sơ bắt đầu bằng dòng tiêu đề "Hồ sơ [n]: Đăng ký giao dịch bảo đảm / Hợp đồng - [Số đăng ký] ([Trường hợp đăng ký])" (đánh số liên tục 1, 2, 3... theo thứ tự hiển thị) và trình bày theo các khối I - VI của [Cấu trúc chi tiết danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng - Tra cứu theo mã số CSDL (Website Khách hàng)](../../01_Website_Khach_hang/SRS_Tra%20cứu%20theo%20mã%20số%20CSDL.md#cau-truc-chi-tiet-danh-sach-ho-so-dang-ky-giao-dich-bao-dam-hop-dong), giống Khối II. Kết quả tra cứu tại [MH02 - Màn hình Xử lý hồ sơ yêu cầu cung cấp thông tin](#43223-mh02---man-hinh-xu-ly-ho-so-yeu-cau-cung-cap-thong-tin). Không mô tả lại các khối/cột chi tiết tại tài liệu này để bảo đảm Website Cán bộ, Lãnh đạo và Website Khách hàng dùng chung một cấu trúc hiển thị. |
+| 1 | Chi tiết hồ sơ kết quả tra cứu | Kết quả tra cứu đã lưu trong hồ sơ và dữ liệu Review nghiệp vụ tương ứng | Phần chi tiết hồ sơ kết quả tra cứu trong file PDF dự thảo/trình ký/ký số phải hiển thị lần lượt từng hồ sơ theo Thời điểm đăng ký tăng dần (từ Hồ sơ đăng ký lần đầu đến các hồ sơ liên quan), mỗi hồ sơ bắt đầu bằng dòng tiêu đề "Hồ sơ [n]: Đăng ký giao dịch bảo đảm / Hợp đồng - [Số đăng ký] ([Trường hợp đăng ký])" (đánh số liên tục 1, 2, 3... theo thứ tự hiển thị) và trình bày theo các khối I - VI của [Cấu trúc chi tiết danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng - Tra cứu theo mã số CSDL (Website Khách hàng)](../../01_Website_Khach_hang/SRS_Tra%20cứu%20theo%20mã%20số%20CSDL.md#cau-truc-chi-tiet-danh-sach-ho-so-dang-ky-giao-dich-bao-dam-hop-dong), giống Khối III. Kết quả tra cứu tại [MH02 - Màn hình Xử lý hồ sơ yêu cầu cung cấp thông tin](#43223-mh02---man-hinh-xu-ly-ho-so-yeu-cau-cung-cap-thong-tin). Không mô tả lại các khối/cột chi tiết tại tài liệu này để bảo đảm Website Cán bộ, Lãnh đạo và Website Khách hàng dùng chung một cấu trúc hiển thị. |
 | 2 | Phạm vi hồ sơ đưa vào phần kết quả chi tiết | Kết quả tra cứu đã lưu trong hồ sơ | Chỉ đưa vào phần kết quả chi tiết các Hồ sơ biện pháp bảo đảm đang có hiệu lực, chưa có yêu cầu Xóa đăng ký được phê duyệt Hoàn thành; mỗi kết quả gồm toàn bộ hồ sơ từ Hồ sơ đăng ký lần đầu đến các hồ sơ có liên quan tới Hồ sơ đăng ký lần đầu đó, sắp xếp theo Thời điểm đăng ký tăng dần. |
 | 3 | Số trang và liên kết với file chính | Trình sinh PDF | Đánh số trang liên tục cho toàn bộ file PDF. Phần kết quả chi tiết nếu có phải nằm trong cùng file PDF được trình ký và ký số. |

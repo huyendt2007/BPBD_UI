@@ -177,6 +177,7 @@
             height: 30px;
             width: 30px;
         }
+        .card[data-bpbd-filter] > .bpbd-filter-toggle-bar { padding: 0 16px; }
     </style>
 </head>
 <body>
@@ -188,9 +189,9 @@
         </div>
         <button class="btn primary" onclick="scanQr()"><i class="fa-solid fa-qrcode"></i> Quét mã</button>
     </div>
-    <div class="card">
-        <div class="card-h"><h2>Bộ lọc tìm kiếm</h2><button class="btn" onclick="resetFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button></div>
-        <div class="card-b">
+    <div class="card" data-bpbd-filter data-bpbd-filter-extra=".thu-phi-reset-btn" style="padding-top:10px">
+        <button class="btn thu-phi-reset-btn" onclick="resetFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+        <div class="card-b" data-bpbd-filter-body>
             <div class="grid">
                 <div class="field"><label>Mã hồ sơ/Mã QR</label><input id="fCode" placeholder="HS-2026-000128" oninput="applySearch()"></div>
                 <div class="field"><label>Số đơn giấy</label><input id="fPaper" placeholder="PG-0128" oninput="applySearch()"></div>
@@ -703,6 +704,7 @@ currentPage = 1;
 renderList();
 renderRefunds();
 </script>
+    <script src="bpbd_filter_toggle.js"></script>
     <script src="admin-ui-standardizer.js"></script>
 </body>
 </html>

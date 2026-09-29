@@ -41,7 +41,24 @@
                 background-color: rgba(14, 116, 144, 0.04) !important;
             }
             .${COMPACT_FILTER_CLASS} {
-                padding: 12px 16px !important;
+                padding: 10px 16px 8px 16px !important;
+                margin-bottom: 10px !important;
+                background-color: #FFFFFF !important;
+                border: 1px solid #E2E8F0 !important;
+                border-radius: 8px !important;
+                box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+            }
+            .${COMPACT_FILTER_CLASS}.bpbd-filter-collapsed {
+                height: 32px !important;
+                min-height: 32px !important;
+                max-height: 32px !important;
+                padding: 4px 14px !important;
+                margin-bottom: 8px !important;
+                background: #F8FAFC !important;
+                overflow: hidden !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
             }
             .${COMPACT_FILTER_CLASS} .form-grid,
             .${COMPACT_FILTER_CLASS} .grid,
@@ -49,45 +66,115 @@
             .${COMPACT_FILTER_CLASS} .grid-3,
             .${COMPACT_FILTER_CLASS} .grid-4,
             .${COMPACT_FILTER_CLASS} .grid-3-cols,
+            .${COMPACT_FILTER_CLASS} .grid-4-cols,
             .${COMPACT_FILTER_CLASS} .filter-grid {
-                gap: 12px 16px !important;
+                display: grid !important;
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                gap: 8px 14px !important;
+            }
+            @media (max-width: 1200px) {
+                .${COMPACT_FILTER_CLASS} .grid-4-cols,
+                .${COMPACT_FILTER_CLASS} .grid-4,
+                .${COMPACT_FILTER_CLASS} .filter-grid {
+                    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+                }
+            }
+            @media (max-width: 768px) {
+                .${COMPACT_FILTER_CLASS} .grid-4-cols,
+                .${COMPACT_FILTER_CLASS} .grid-4,
+                .${COMPACT_FILTER_CLASS} .filter-grid {
+                    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                }
+            }
+            @media (max-width: 480px) {
+                .${COMPACT_FILTER_CLASS} .grid-4-cols,
+                .${COMPACT_FILTER_CLASS} .grid-4,
+                .${COMPACT_FILTER_CLASS} .filter-grid {
+                    grid-template-columns: 1fr !important;
+                }
             }
             .${COMPACT_FILTER_CLASS} .form-group {
-                margin-bottom: 8px !important;
+                margin-bottom: 0 !important;
+            }
+            .${COMPACT_FILTER_CLASS} .form-label {
+                font-size: 13px !important;
+                font-weight: 500 !important;
+                color: #334155 !important;
+                margin-bottom: 3px !important;
+                line-height: 1.3 !important;
+                display: block !important;
             }
             .${COMPACT_FILTER_CLASS} input,
             .${COMPACT_FILTER_CLASS} select,
             .${COMPACT_FILTER_CLASS} .form-control,
             .${COMPACT_FILTER_CLASS} .form-select {
-                min-height: 36px !important;
-                height: 36px !important;
+                min-height: 34px !important;
+                height: 34px !important;
                 font-size: 13px !important;
-                padding-top: 6px !important;
-                padding-bottom: 6px !important;
+                padding: 4px 10px !important;
+                border-radius: 6px !important;
+                border: 1px solid #CBD5E1 !important;
+                background-color: #FFFFFF !important;
+                color: #0F172A !important;
+                box-sizing: border-box !important;
+                transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+            }
+            .${COMPACT_FILTER_CLASS} input:focus,
+            .${COMPACT_FILTER_CLASS} select:focus,
+            .${COMPACT_FILTER_CLASS} .form-control:focus,
+            .${COMPACT_FILTER_CLASS} .form-select:focus {
+                border-color: #2563EB !important;
+                box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+                outline: none !important;
             }
             .${COMPACT_FILTER_CLASS} textarea {
                 font-size: 13px !important;
+                border-radius: 6px !important;
+                border: 1px solid #CBD5E1 !important;
             }
             .date-filter-wrap {
-                position: relative;
+                position: relative !important;
+                display: flex !important;
+                align-items: center !important;
             }
             .date-filter-wrap .fa-calendar-days,
             .date-filter-wrap .fa-calendar {
-                position: absolute;
-                right: 10px;
-                top: 50%;
-                transform: translateY(-50%);
-                color: #64748b;
-                font-size: 13px;
-                pointer-events: none;
+                position: absolute !important;
+                right: 10px !important;
+                top: 50% !important;
+                transform: translateY(-50%) !important;
+                color: #64748b !important;
+                font-size: 13px !important;
+                pointer-events: none !important;
             }
             .date-filter-wrap input {
-                padding-right: 32px !important;
+                padding-right: 34px !important;
             }
             .${COMPACT_FILTER_CLASS} .btn,
-            .${COMPACT_FILTER_CLASS} button {
-                min-height: 34px;
-                font-size: 13px;
+            .${COMPACT_FILTER_CLASS} button:not(.bpbd-filter-toggle-btn):not(.icon-btn) {
+                min-height: 36px !important;
+                height: 36px !important;
+                font-size: 13px !important;
+                font-weight: 500 !important;
+                padding: 0 18px !important;
+                border-radius: 6px !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 6px !important;
+                cursor: pointer !important;
+                transition: all 0.15s ease-in-out !important;
+            }
+            .${COMPACT_FILTER_CLASS} > div[style*="text-align: right"],
+            .${COMPACT_FILTER_CLASS} > div[style*="text-align:right"] {
+                margin-top: 14px !important;
+                margin-bottom: 0 !important;
+                padding-top: 12px !important;
+                border-top: 1px solid #F1F5F9 !important;
+                display: flex !important;
+                justify-content: flex-end !important;
+                align-items: center !important;
+                gap: 10px !important;
             }
             td.admin-actions-cell,
             th.admin-actions-cell {

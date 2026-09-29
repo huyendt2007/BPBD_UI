@@ -324,6 +324,23 @@
             opacity: 0.5;
             cursor: not-allowed;
         }
+
+        /* Tra cứu hồ sơ: Bộ lọc tìm kiếm và lưới kết quả theo từng Tab */
+        .grid-4-cols { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 16px; }
+        @media (max-width: 1100px) { .grid-4-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        .lookup-filter { background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 14px 18px; border-radius: var(--border-radius-md); margin-bottom: 16px; }
+        #cb-dynamic-filter[hidden] { display: none !important; }
+        .lookup-filter-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 12px; }
+        .lookup-grid-toolbar { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 12px; }
+        .lookup-table-wrap { border: 1px solid var(--border-color); border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0; overflow-x: auto; max-width: 100%; }
+        .lookup-table th { white-space: nowrap; }
+        .lookup-table th.sortable { cursor: pointer; user-select: none; }
+        .lookup-table th.sortable i { margin-left: 4px; color: #94A3B8; }
+        .lookup-table th.sortable.sorted i { color: #3B82F6; }
+        .lookup-table tbody tr.lookup-row-click { cursor: pointer; }
+        .lookup-empty { text-align: center; color: var(--text-muted); font-style: italic; }
+        .page-size { width: auto !important; padding: 4px 8px !important; font-size: 12px !important; }
+        .btn:disabled { opacity: 0.45; cursor: not-allowed; pointer-events: none; }
     </style>
 </head>
 <body>
@@ -348,170 +365,284 @@
             <div class="nav-tab" data-lookup-group="cctt" onclick="switchLookupGroup('cctt', this)">Yêu cầu cung cấp thông tin</div>
             <div class="nav-tab" data-lookup-group="copy" onclick="switchLookupGroup('copy', this)">Yêu cầu cung cấp bản sao</div>
         </div>
-        <div class="card-section" style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 20px; border-radius: var(--border-radius-md); margin-bottom: 20px;">
-            <div class="grid-3-cols">
-                <div class="form-group">
-                    <label class="form-label">Số đăng ký BĐ / Từ khóa</label>
-                    <input type="text" class="form-control" id="cb-regNum" placeholder="Nhập số đăng ký / từ khóa...">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Tên bên bảo đảm</label>
-                    <input type="text" class="form-control" id="cb-guarantor" placeholder="Nhập tên bên bảo đảm...">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Trạng thái hồ sơ</label>
-                    <select class="form-select" id="cb-status">
-                        <option value="Tất cả" selected>Tất cả</option>
-                        <option value="Lưu nháp">Lưu nháp</option>
-                        <option value="Chờ thanh toán">Chờ thanh toán</option>
-                        <option value="Chờ duyệt">Chờ duyệt</option>
-                        <option value="Chờ ký">Chờ ký</option>
-                        <option value="Hoàn thành">Hoàn thành</option>
-                        <option value="Bị từ chối">Bị từ chối</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="grid-3-cols" style="margin-top: 10px;">
-                <div class="form-group">
-                    <label class="form-label">Từ ngày</label>
-                    <input type="text" class="form-control flatpickr-input" id="cb-fromDate" placeholder="dd/mm/yyyy">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Đến ngày</label>
-                    <input type="text" class="form-control flatpickr-input" id="cb-toDate" placeholder="dd/mm/yyyy">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Loại đăng ký</label>
-                    <select class="form-select" id="cb-regType">
-                        <option value="Tất cả" selected>Tất cả</option>
-                        <option value="Đăng ký lần đầu">Đăng ký lần đầu</option>
-                        <option value="Đăng ký thay đổi">Đăng ký thay đổi</option>
-                        <option value="Xóa đăng ký">Xóa đăng ký</option>
-                        <option value="Thông báo xử lý tài sản đảm bảo lần đầu">Thông báo xử lý tài sản đảm bảo lần đầu</option>
-                        <option value="Thay đổi thông báo xử lý tài sản bảo đảm">Thay đổi thông báo xử lý tài sản bảo đảm</option>
-                        <option value="Xóa đăng ký thông báo xử lý tài sản bảo đảm">Xóa đăng ký thông báo xử lý tài sản bảo đảm</option>
-                        <option value="Yêu cầu cung cấp bản sao">Yêu cầu cung cấp bản sao</option>
-                        <option value="Yêu cầu cung cấp bản sao kèm thông báo">Yêu cầu cung cấp bản sao kèm thông báo</option>
-                        <option value="Yêu cầu cung cấp thông tin">Yêu cầu cung cấp thông tin</option>
-                        <option value="Chỉnh lý thông tin">Chỉnh lý thông tin</option>
-                        <option value="Hủy đăng ký">Hủy đăng ký</option>
-                        <option value="Khôi phục hủy đăng ký">Khôi phục hủy đăng ký</option>
-                    </select>
+
+        <!-- ===== TAB PHIẾU ĐĂNG KÝ ===== -->
+        <div class="lookup-panel" id="panel-registration">
+            <div class="card-section lookup-filter" data-bpbd-filter>
+                <div data-bpbd-filter-body>
+                    <div class="grid-4-cols">
+                        <div class="form-group"><label class="form-label">Số đăng ký</label><input type="text" class="form-control" id="cb-regNum" placeholder="Nhập số đăng ký..."></div>
+                        <div class="form-group"><label class="form-label">Tên bên bảo đảm</label><input type="text" class="form-control" id="cb-guarantor" placeholder="Nhập tên bên bảo đảm..."></div>
+                        <div class="form-group"><label class="form-label">Tên bên nhận bảo đảm</label><input type="text" class="form-control" id="cb-mortgagee" placeholder="Nhập tên bên nhận bảo đảm..."></div>
+                        <div class="form-group"><label class="form-label">Mã khách hàng</label><input type="text" class="form-control" id="cb-customerId" placeholder="Nhập mã khách hàng..."></div>
+                        <div class="form-group"><label class="form-label">Số biên lai</label><input type="text" class="form-control" id="cb-receipt" placeholder="Nhập số biên lai..."></div>
+                        <div class="form-group"><label class="form-label">Nguồn tiếp nhận</label>
+                            <select class="form-select" id="cb-source">
+                                <option value="Tất cả" selected>Tất cả</option>
+                                <option value="Dịch vụ công">Dịch vụ công</option>
+                                <option value="Trực tuyến">Trực tuyến</option>
+                                <option value="Trực tiếp">Trực tiếp</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label class="form-label">Cán bộ xử lý</label>
+                            <select class="form-select" id="cb-handlingOfficer" data-officer-select></select>
+                        </div>
+                        <div class="form-group"><label class="form-label">Trạng thái hồ sơ</label>
+                            <select class="form-select" id="cb-status">
+                                <option value="Tất cả" selected>Tất cả</option>
+                                <option value="Lưu nháp">Lưu nháp</option>
+                                <option value="Chờ thanh toán">Chờ thanh toán</option>
+                                <option value="Chờ giải quyết">Chờ giải quyết</option>
+                                <option value="Chờ duyệt">Chờ duyệt</option>
+                                <option value="Duyệt chờ ký">Duyệt chờ ký</option>
+                                <option value="Chờ ký">Chờ ký</option>
+                                <option value="Bị trả lại">Bị trả lại</option>
+                                <option value="Hoàn thành">Hoàn thành</option>
+                                <option value="Bị từ chối">Bị từ chối</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label class="form-label">Loại đăng ký</label>
+                            <select class="form-select" id="cb-regType">
+                                <option value="Tất cả" selected>Tất cả</option>
+                                <option value="Đăng ký lần đầu">Đăng ký lần đầu</option>
+                                <option value="Đăng ký thay đổi">Đăng ký thay đổi</option>
+                                <option value="Xóa đăng ký">Xóa đăng ký</option>
+                                <option value="Thông báo xử lý tài sản bảo đảm lần đầu">Thông báo xử lý tài sản bảo đảm lần đầu</option>
+                                <option value="Thay đổi thông báo xử lý tài sản bảo đảm">Thay đổi thông báo xử lý tài sản bảo đảm</option>
+                                <option value="Xóa đăng ký thông báo xử lý tài sản bảo đảm">Xóa đăng ký thông báo xử lý tài sản bảo đảm</option>
+                                <option value="Chỉnh lý thông tin">Chỉnh lý thông tin</option>
+                                <option value="Hủy đăng ký">Hủy đăng ký</option>
+                                <option value="Khôi phục hủy đăng ký">Khôi phục hủy đăng ký</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label class="form-label">Loại hình giao dịch</label>
+                            <select class="form-select" id="cb-transType" onchange="onCbTransTypeChange()">
+                                <option value="Tất cả" selected>Tất cả</option>
+                                <option value="Biện pháp bảo đảm">Biện pháp bảo đảm</option>
+                                <option value="Hợp đồng">Hợp đồng</option>
+                                <option value="Thông báo xử lý tài sản bảo đảm">Thông báo xử lý tài sản bảo đảm</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label class="form-label">Loại biện pháp / Hợp đồng</label>
+                            <select class="form-select" id="cb-measureType"><option value="Tất cả" selected>Tất cả</option></select>
+                        </div>
+                        <div class="form-group"><label class="form-label">Loại tài sản</label>
+                            <select class="form-select" id="cb-assetType" onchange="onCbAssetTypeChange()"><option value="Tất cả" selected>Tất cả</option></select>
+                        </div>
+                    </div>
+                    <!-- Khối lọc động theo Loại tài sản: không hiển thị tiêu đề khối -->
+                    <div id="cb-dynamic-filter" class="grid-4-cols" hidden style="margin-top: 4px;"></div>
+                    <div class="grid-4-cols" style="margin-top: 4px;">
+                        <div class="form-group"><label class="form-label">Từ ngày</label><input type="text" class="form-control flatpickr-input" id="cb-fromDate" placeholder="dd/mm/yyyy"></div>
+                        <div class="form-group"><label class="form-label">Đến ngày</label><input type="text" class="form-control flatpickr-input" id="cb-toDate" placeholder="dd/mm/yyyy"></div>
+                    </div>
+                    <div class="lookup-filter-actions">
+                        <button class="btn btn-outline-primary" onclick="resetCanBoSearch()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                        <button class="btn btn-primary" onclick="searchCanBo()"><i class="fa fa-search"></i> Tìm kiếm</button>
+                    </div>
                 </div>
             </div>
 
-            <div class="grid-3-cols" style="margin-top: 10px;">
-                <div class="form-group">
-                    <label class="form-label">Loại hình giao dịch</label>
-                    <select class="form-select" id="cb-transType" onchange="onCbTransTypeChange()">
-                        <option value="Tất cả" selected>Tất cả</option>
-                        <option value="Biện pháp bảo đảm">Biện pháp bảo đảm</option>
-                        <option value="Hợp đồng">Hợp đồng</option>
-                        <option value="Thông báo xử lý tài sản bảo đảm">Thông báo xử lý tài sản bảo đảm</option>
-                    </select>
+            <div class="card-section">
+                <div class="lookup-grid-toolbar">
+                    <button class="btn btn-outline-primary" id="cb-export" onclick="exportExcel('registration')"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Loại Biện pháp/Loại HĐ</label>
-                    <select class="form-select" id="cb-measureType">
-                        <option value="Tất cả" selected>Tất cả</option>
-                        <option value="Thế chấp">Thế chấp</option>
-                        <option value="Bảo lưu quyền sở hữu">Bảo lưu quyền sở hữu</option>
-                        <option value="Cầm cố">Cầm cố</option>
-                        <option value="Đặt cọc">Đặt cọc</option>
-                        <option value="Ký cược">Ký cược</option>
-                        <option value="Ký quỹ">Ký quỹ</option>
-                        <option value="Hợp đồng cho thuê tài chính">Hợp đồng cho thuê tài chính</option>
-                        <option value="Hợp đồng thuê tài sản có thời hạn 1 năm trở lên">Hợp đồng thuê tài sản có thời hạn 1 năm trở lên</option>
-                        <option value="Hợp đồng chuyển giao quyền đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác">Hợp đồng chuyển giao quyền đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác</option>
-                        <option value="Hợp đồng ký gửi">Hợp đồng ký gửi</option>
-                    </select>
+                <div class="table-responsive lookup-table-wrap">
+                    <table class="table lookup-table" id="cb-table" style="font-size: 13px; margin-bottom: 0; min-width: 2000px;">
+                        <thead style="background-color: var(--table-header-bg);"><tr id="cb-thead-row"></tr></thead>
+                        <tbody id="canbo-table-body"></tbody>
+                    </table>
                 </div>
-                <div class="form-group">
-                    <label class="form-label">Loại tài sản</label>
-                    <select class="form-select" id="cb-assetType">
-                        <option value="Tất cả" selected>Tất cả</option>
-                        <option value="Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)">Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)</option>
-                        <option value="Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt">Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt</option>
-                        <option value="Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản">Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản</option>
-                        <option value="Cây hằng năm, công trình tạm">Cây hằng năm, công trình tạm</option>
-                        <option value="Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ">Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ</option>
-                        <option value="Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung">Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung</option>
-                        <option value="Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)">Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)</option>
-                    </select>
+                <div class="pagination-container">
+                    <div id="cb-count-display"></div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span>Hiển thị</span>
+                            <select class="form-select page-size" id="cb-pageSize" onchange="changeCbPageSize()">
+                                <option value="10">10</option><option value="20" selected>20</option><option value="50">50</option><option value="100">100</option>
+                            </select>
+                            <span>bản ghi/trang</span>
+                        </div>
+                        <div class="pagination-buttons" id="cb-pagination"></div>
+                    </div>
                 </div>
-            </div>
-
-            <div class="grid-3-cols" style="margin-top: 10px;">
-                <div class="form-group">
-                    <label class="form-label">Mã khách hàng</label>
-                    <input type="text" class="form-control" id="cb-customerId" placeholder="Nhập mã khách hàng...">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Cán bộ xử lý</label>
-                    <select class="form-select" id="cb-handlingOfficer">
-                        <option value="Tất cả" selected>Tất cả</option>
-                        <option value="Nguyễn Văn Cán Bộ">Nguyễn Văn Cán Bộ</option>
-                        <option value="Lê Anh Tuấn">Lê Anh Tuấn</option>
-                        <option value="Trần Quốc Khánh">Trần Quốc Khánh</option>
-                    </select>
-                </div>
-            </div>
-
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px;">
-                <button class="btn btn-outline-primary" onclick="resetCanBoSearch()">Xóa bộ lọc</button>
-                <button class="btn btn-primary" onclick="searchCanBo()"><i class="fa fa-search"></i> Tìm kiếm</button>
             </div>
         </div>
 
-        <div class="card-section">
-            <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 15px;">
-                <button class="btn btn-outline-primary" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
-            </div>
-            
-            <div class="table-responsive" style="border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); overflow-x: auto; max-width: 100%;">
-                <table class="table" style="font-size: 13px; margin-bottom: 0; min-width: 1800px;">
-                    <thead style="background-color: var(--table-header-bg);">
-                        <tr>
-                            <th style="width: 3%; text-align: center;">STT</th>
-                            <th style="width: 10%; cursor: pointer;" onclick="toggleCbSort('date')" id="cb-header-date">Thời điểm đăng ký <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
-                            <th style="width: 8%;">Số đăng ký</th>
-                            <th style="width: 5%;">Mã PIN</th>
-                            <th style="width: 12%; cursor: pointer;" onclick="toggleCbSort('guarantor')" id="cb-header-guarantor">Tên bên bảo đảm <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
-                            <th style="width: 12%; cursor: pointer;" onclick="toggleCbSort('mortgagee')" id="cb-header-mortgagee">Tên bên nhận bảo đảm <i class="fa-solid fa-sort" style="margin-left: 4px; color: #94A3B8;"></i></th>
-                            <th style="width: 10%;">Loại đăng ký</th>
-                            <th style="width: 8%;">Loại hình GD</th>
-                            <th style="width: 8%;">Loại BP/HĐ</th>
-                            <th style="width: 10%;">Loại tài sản</th>
-                            <th style="width: 8%; text-align: center;">Trạng thái</th>
-                            <th style="width: 12%;">Người yêu cầu</th>
-                            <th style="width: 10%;">Mã khách hàng</th>
-                            <th style="width: 8%;">Số biên lai</th>
-                            <th style="width: 8%;">Cán bộ xử lý</th>
-                            <th style="text-align: center; min-width: 180px;">Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody id="canbo-table-body">
-                        <!-- Populated dynamically by javascript -->
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="pagination-container" id="cb-pagination-container">
-                <div id="cb-count-display">Hiển thị 1-10 của 10 hồ sơ</div>
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <span>Hiển thị</span>
-                        <select class="form-select" id="cb-pageSize" style="width: auto; padding: 4px 8px; font-size: 12px;" onchange="changeCbPageSize()">
-                            <option value="5">5</option>
-                            <option value="10" selected>10</option>
-                            <option value="20">20</option>
-                            <option value="50">50</option>
-                        </select>
-                        <span>bản ghi/trang</span>
+        <!-- ===== TAB YÊU CẦU CUNG CẤP THÔNG TIN ===== -->
+        <div class="lookup-panel" id="panel-cctt" style="display: none;">
+            <div class="card-section lookup-filter" data-bpbd-filter>
+                <div data-bpbd-filter-body>
+                    <div class="grid-4-cols">
+                        <div class="form-group"><label class="form-label">Mã hồ sơ</label><input type="text" class="form-control" id="ct-code" placeholder="Nhập mã hồ sơ..."></div>
+                        <div class="form-group"><label class="form-label">Người yêu cầu</label><input type="text" class="form-control" id="ct-requester" placeholder="Nhập tên người yêu cầu..."></div>
+                        <div class="form-group"><label class="form-label">Mã khách hàng</label><input type="text" class="form-control" id="ct-customerId" placeholder="Nhập mã khách hàng..."></div>
+                        <div class="form-group"><label class="form-label">Nguồn tiếp nhận</label>
+                            <select class="form-select" id="ct-source">
+                                <option value="Tất cả" selected>Tất cả</option>
+                                <option value="Dịch vụ công">Dịch vụ công</option>
+                                <option value="Trực tuyến">Trực tuyến</option>
+                                <option value="Trực tiếp">Trực tiếp</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label class="form-label">Cán bộ xử lý</label><select class="form-select" id="ct-officer" data-officer-select></select></div>
+                        <div class="form-group"><label class="form-label">Tiêu chí yêu cầu cung cấp thông tin</label>
+                            <select class="form-select" id="ct-criteria">
+                                <option value="Tất cả" selected>Tất cả</option>
+                                <option value="Số đăng ký">Số đăng ký</option>
+                                <option value="Bên bảo đảm">Bên bảo đảm</option>
+                                <option value="Số khung">Số khung</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label class="form-label">Trạng thái hồ sơ</label>
+                            <select class="form-select" id="ct-status">
+                                <option value="Tất cả" selected>Tất cả</option>
+                                <option value="Chờ thanh toán">Chờ thanh toán</option>
+                                <option value="Chờ giải quyết">Chờ giải quyết</option>
+                                <option value="Chờ duyệt">Chờ duyệt</option>
+                                <option value="Duyệt chờ ký">Duyệt chờ ký</option>
+                                <option value="Chờ ký">Chờ ký</option>
+                                <option value="Bị trả lại">Bị trả lại</option>
+                                <option value="Hoàn thành">Hoàn thành</option>
+                                <option value="Bị từ chối">Bị từ chối</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="pagination-buttons" id="cb-pagination">
-                        <!-- Dynamic pagination buttons -->
+                    <div class="grid-4-cols" style="margin-top: 4px;">
+                        <div class="form-group"><label class="form-label">Từ ngày</label><input type="text" class="form-control flatpickr-input" id="ct-fromDate" placeholder="dd/mm/yyyy"></div>
+                        <div class="form-group"><label class="form-label">Đến ngày</label><input type="text" class="form-control flatpickr-input" id="ct-toDate" placeholder="dd/mm/yyyy"></div>
+                    </div>
+                    <div class="lookup-filter-actions">
+                        <button class="btn btn-outline-primary" onclick="resetServiceSearch('cctt')"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                        <button class="btn btn-primary" onclick="searchService('cctt')"><i class="fa fa-search"></i> Tìm kiếm</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-section">
+                <div class="lookup-grid-toolbar">
+                    <button class="btn btn-outline-primary" id="ct-export" onclick="exportExcel('cctt')"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+                </div>
+                <div class="table-responsive lookup-table-wrap">
+                    <table class="table lookup-table" style="font-size: 13px; margin-bottom: 0; min-width: 1500px;">
+                        <thead style="background-color: var(--table-header-bg);">
+                            <tr>
+                                <th style="width: 50px; text-align: center;">STT</th>
+                                <th>Mã hồ sơ</th>
+                                <th class="sortable" id="ct-header-date" onclick="toggleServiceSort('cctt')">Thời điểm đăng ký <i class="fa-solid fa-sort-down"></i></th>
+                                <th>Mã khách hàng</th>
+                                <th>Người yêu cầu</th>
+                                <th>Địa chỉ</th>
+                                <th>Tiêu chí yêu cầu</th>
+                                <th>Dữ liệu tra cứu</th>
+                                <th>Nguồn tiếp nhận</th>
+                                <th>Cán bộ xử lý</th>
+                                <th style="text-align: center;">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ct-table-body"></tbody>
+                    </table>
+                </div>
+                <div class="pagination-container">
+                    <div id="ct-count-display"></div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span>Hiển thị</span>
+                            <select class="form-select page-size" id="ct-pageSize" onchange="changeServicePageSize('cctt')">
+                                <option value="10">10</option><option value="20" selected>20</option><option value="50">50</option><option value="100">100</option>
+                            </select>
+                            <span>bản ghi/trang</span>
+                        </div>
+                        <div class="pagination-buttons" id="ct-pagination"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TAB YÊU CẦU CUNG CẤP BẢN SAO ===== -->
+        <div class="lookup-panel" id="panel-copy" style="display: none;">
+            <div class="card-section lookup-filter" data-bpbd-filter>
+                <div data-bpbd-filter-body>
+                    <div class="grid-4-cols">
+                        <div class="form-group"><label class="form-label">Mã hồ sơ</label><input type="text" class="form-control" id="bs-code" placeholder="Nhập mã hồ sơ..."></div>
+                        <div class="form-group"><label class="form-label">Người yêu cầu</label><input type="text" class="form-control" id="bs-requester" placeholder="Nhập tên người yêu cầu..."></div>
+                        <div class="form-group"><label class="form-label">Số đăng ký</label><input type="text" class="form-control" id="bs-regNo" placeholder="Nhập số đăng ký..."></div>
+                        <div class="form-group"><label class="form-label">Mã khách hàng</label><input type="text" class="form-control" id="bs-customerId" placeholder="Nhập mã khách hàng..."></div>
+                        <div class="form-group"><label class="form-label">Nguồn tiếp nhận</label>
+                            <select class="form-select" id="bs-source">
+                                <option value="Tất cả" selected>Tất cả</option>
+                                <option value="Dịch vụ công">Dịch vụ công</option>
+                                <option value="Trực tuyến">Trực tuyến</option>
+                                <option value="Trực tiếp">Trực tiếp</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label class="form-label">Cán bộ xử lý</label><select class="form-select" id="bs-officer" data-officer-select></select></div>
+                        <div class="form-group"><label class="form-label">Loại cung cấp bản sao</label>
+                            <select class="form-select" id="bs-copyType">
+                                <option value="Tất cả" selected>Tất cả</option>
+                                <option value="Bản sao điện tử">Bản sao điện tử</option>
+                                <option value="Bản sao giấy">Bản sao giấy</option>
+                            </select>
+                        </div>
+                        <div class="form-group"><label class="form-label">Trạng thái hồ sơ</label>
+                            <select class="form-select" id="bs-status">
+                                <option value="Tất cả" selected>Tất cả</option>
+                                <option value="Chờ thanh toán">Chờ thanh toán</option>
+                                <option value="Chờ giải quyết">Chờ giải quyết</option>
+                                <option value="Chờ duyệt">Chờ duyệt</option>
+                                <option value="Duyệt chờ ký">Duyệt chờ ký</option>
+                                <option value="Chờ ký">Chờ ký</option>
+                                <option value="Bị trả lại">Bị trả lại</option>
+                                <option value="Đã duyệt - chờ trả kết quả">Đã duyệt - chờ trả kết quả</option>
+                                <option value="Hoàn thành">Hoàn thành</option>
+                                <option value="Bị từ chối">Bị từ chối</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid-4-cols" style="margin-top: 4px;">
+                        <div class="form-group"><label class="form-label">Từ ngày</label><input type="text" class="form-control flatpickr-input" id="bs-fromDate" placeholder="dd/mm/yyyy"></div>
+                        <div class="form-group"><label class="form-label">Đến ngày</label><input type="text" class="form-control flatpickr-input" id="bs-toDate" placeholder="dd/mm/yyyy"></div>
+                    </div>
+                    <div class="lookup-filter-actions">
+                        <button class="btn btn-outline-primary" onclick="resetServiceSearch('copy')"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                        <button class="btn btn-primary" onclick="searchService('copy')"><i class="fa fa-search"></i> Tìm kiếm</button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-section">
+                <div class="lookup-grid-toolbar">
+                    <button class="btn btn-outline-primary" id="bs-export" onclick="exportExcel('copy')"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+                </div>
+                <div class="table-responsive lookup-table-wrap">
+                    <table class="table lookup-table" style="font-size: 13px; margin-bottom: 0; min-width: 1500px;">
+                        <thead style="background-color: var(--table-header-bg);">
+                            <tr>
+                                <th style="width: 50px; text-align: center;">STT</th>
+                                <th>Mã hồ sơ</th>
+                                <th class="sortable" id="bs-header-date" onclick="toggleServiceSort('copy')">Thời điểm đăng ký <i class="fa-solid fa-sort-down"></i></th>
+                                <th>Mã khách hàng</th>
+                                <th>Người yêu cầu</th>
+                                <th>Số đăng ký</th>
+                                <th style="text-align: center;">Loại cung cấp bản sao</th>
+                                <th style="text-align: center;">Số lượng bản sao</th>
+                                <th>Nguồn tiếp nhận</th>
+                                <th>Cán bộ xử lý</th>
+                                <th style="text-align: center;">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bs-table-body"></tbody>
+                    </table>
+                </div>
+                <div class="pagination-container">
+                    <div id="bs-count-display"></div>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span>Hiển thị</span>
+                            <select class="form-select page-size" id="bs-pageSize" onchange="changeServicePageSize('copy')">
+                                <option value="10">10</option><option value="20" selected>20</option><option value="50">50</option><option value="100">100</option>
+                            </select>
+                            <span>bản ghi/trang</span>
+                        </div>
+                        <div class="pagination-buttons" id="bs-pagination"></div>
                     </div>
                 </div>
             </div>
@@ -579,7 +710,9 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="bpbd_yeu_cau_dich_vu_mock.js"></script>
 <script src="tra_cuu_thong_tin.js"></script>
     <script src="admin-ui-standardizer.js"></script>
+    <script src="bpbd_filter_toggle.js"></script>
 </body>
 </html>

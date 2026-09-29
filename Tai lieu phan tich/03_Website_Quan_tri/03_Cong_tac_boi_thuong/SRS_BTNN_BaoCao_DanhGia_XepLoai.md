@@ -58,7 +58,7 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Khối lọc, tìm kiếm thông tin** | | | | |
+| **I. Khối lọc, tìm kiếm thông tin** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Năm đánh giá | Enum(String(10)) | Có | Năm hiện tại | Giá trị gồm 05 năm gần nhất tính đến năm hiện tại. |
 | Đơn vị Sở Tư pháp | Enum(String(255)) | Không | Theo phạm vi tài khoản đăng nhập | - Tham chiếu `[DM_DON_VI]`.<br>- Với tài khoản Cán bộ Sở Tư pháp, hệ thống tự lọc theo đơn vị của tài khoản đăng nhập và chỉ hiển thị dữ liệu đơn vị đó.<br>- Với tài khoản Bộ Tư pháp/Lãnh đạo Bộ Tư pháp, cho phép chọn `Tất cả` hoặc chọn một đơn vị cụ thể. |
 | Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Tất cả | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |

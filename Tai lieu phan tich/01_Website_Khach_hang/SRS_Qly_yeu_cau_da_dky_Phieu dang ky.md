@@ -19,6 +19,7 @@
 
 ---
 
+<a id="41122-tab-phieu-dang-ky"></a>
 #### 4.1.12.2. Tab Phiếu đăng ký
 
 ##### 4.1.12.2.1. Màn hình
@@ -95,6 +96,7 @@
 | Người tạo | String(255) | - | Theo hồ sơ | Hiển thị tên người đang đăng nhập đã tạo hồ sơ/phiên bản; không hiển thị account/email đăng nhập. |
 | Thao tác | Text(1000) | Không | Theo trạng thái hồ sơ | Control UI: Fixed-slot Action Column.<br>- Hiển thị động các icon/nút thao tác theo trạng thái hồ sơ, loại hồ sơ và vị trí của hồ sơ/phiên bản trong cây hồ sơ liên quan.<br>- `Cập nhật`: Chỉ hiển thị khi hồ sơ ở trạng thái `Lưu nháp`.<br>- `Thanh toán`: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ thanh toán`.<br>- `Xóa`: Chỉ hiển thị khi hồ sơ ở trạng thái `Lưu nháp` và chỉ thực hiện sau khi NSD xác nhận tại popup xác nhận xóa.<br>- Hồ sơ ở trạng thái `Bị từ chối` tuyệt đối không được xóa vì đã được lưu vết chính thức trong CSDL hệ thống.<br>- `Thao tác khác`: Hiển thị dạng Dropdown khi hồ sơ/phiên bản đang chọn ở trạng thái `Hoàn thành` và có ít nhất một thao tác nghiệp vụ tiếp theo phù hợp.<br>- Nếu không có thao tác nghiệp vụ tiếp theo phù hợp, icon/nút `Thao tác khác` hiển thị ở trạng thái khóa mờ (Disabled).<br>- Các thao tác trong Dropdown `Thao tác khác` được xác định động theo loại hồ sơ, vị trí của hồ sơ trong cây hồ sơ liên quan và trạng thái các hồ sơ liên quan:<br>+ `Đăng ký thay đổi`: Hiển thị khi hồ sơ đang chọn là hồ sơ gốc `Đăng ký lần đầu`, trạng thái `Hoàn thành`, và không tồn tại hồ sơ `Đăng ký thay đổi` liên quan đang trong trạng thái xử lý.<br>+ `Thông báo xử lý tài sản`: Hiển thị khi hồ sơ đang chọn là hồ sơ gốc `Đăng ký lần đầu`, trạng thái `Hoàn thành`, chưa có thông báo xử lý tài sản liên quan và không có hồ sơ xóa đăng ký/hồ sơ liên quan đang chặn thao tác.<br>+ `Xóa đăng ký`: Hiển thị khi hồ sơ đang chọn là hồ sơ gốc `Đăng ký lần đầu`, trạng thái `Hoàn thành`, và chưa có hồ sơ `Xóa đăng ký` liên quan.<br>+ `Thay đổi thông báo`: Hiển thị khi hồ sơ đang chọn là `Thông báo xử lý tài sản bảo đảm lần đầu`, trạng thái `Hoàn thành`, và không tồn tại hồ sơ `Thay đổi thông báo` liên quan đang trong trạng thái xử lý.<br>+ `Xóa thông báo`: Hiển thị khi hồ sơ đang chọn là `Thông báo xử lý tài sản bảo đảm lần đầu`, trạng thái `Hoàn thành`, và không tồn tại hồ sơ `Xóa đăng ký thông báo xử lý tài sản bảo đảm` liên quan.<br>+ `Yêu cầu cung cấp thông tin`: Hiển thị khi hồ sơ đang chọn ở trạng thái `Hoàn thành`.<br>+ `Yêu cầu cung cấp bản sao`: Hiển thị khi hồ sơ đang chọn ở trạng thái `Hoàn thành`. |
 
+<a id="411223-chuc-nang-tren-man-hinh"></a>
 ##### 4.1.12.2.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
@@ -119,6 +121,7 @@
 | | | | **TH Yêu cầu cung cấp thông tin**: Hệ thống chuyển sang màn hình **Yêu cầu cung cấp thông tin**, tự động điền `Số đăng ký` và `Số PIN` của hồ sơ đang chọn vào tiêu chí tra cứu tương ứng để NSD tiếp tục gửi yêu cầu. |
 | | | | **TH Yêu cầu cung cấp bản sao**: Hệ thống chuyển sang màn hình **Yêu cầu cung cấp bản sao văn bản chứng nhận**, tự động điền `Số đăng ký` và `Số PIN` của hồ sơ gốc để NSD tiếp tục gửi yêu cầu. |
 
+<a id="41123-phieu-dang-ky---xem-chi-tiet"></a>
 #### 4.1.12.3. Phiếu đăng ký - Xem chi tiết
 
 - Phạm vi màn hình này chỉ bao gồm các Phiếu đăng ký: Đăng ký lần đầu, Đăng ký thay đổi, Xóa đăng ký, Thông báo xử lý tài sản bảo đảm lần đầu, Thay đổi thông báo xử lý tài sản bảo đảm, Xóa đăng ký thông báo xử lý tài sản bảo đảm.
@@ -128,16 +131,19 @@
 
 ![Phiếu đăng ký - Xem chi tiết](images/UCPS003_MH01_Phieu_dang_ky_xem_chi_tiet.png)
 
+<a id="411232-mo-ta-thong-tin-tren-man-hinh"></a>
 ##### 4.1.12.3.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :-- | :-- | :-- | :-- | :-- |
 | **I. Sidebar dòng thời gian lịch sử** | - | - | - | Chỉ hiển thị khi hồ sơ có từ 2 phiên bản trở lên. |
 | Số đăng ký | String(50) | Không | Trống | Control UI: Input text.<br>- Lọc danh sách phiên bản theo số đăng ký của phiên bản trong Sidebar dòng thời gian. |
-| Loại đăng ký | Enum(String(255)) | Không | Tất cả | Control UI: Combobox.<br>- Lọc danh sách phiên bản theo loại đăng ký.<br>- Tham chiếu Danh mục Loại trường hợp đăng ký [DM_01]. |
+| Loại đăng ký | Enum(String(255)) | Không | Tất cả | Control UI: Combobox.<br>- Lọc danh sách phiên bản theo loại đăng ký.<br>Gồm:<br>+ Tất cả<br>+ Đăng ký lần đầu<br>+ Đăng ký thay đổi<br>+ Xóa đăng ký<br>+ Thông báo xử lý tài sản bảo đảm lần đầu<br>+ Thay đổi thông báo xử lý tài sản bảo đảm<br>+ Xóa đăng ký thông báo xử lý tài sản bảo đảm<br>+ Chỉnh lý thông tin<br>+ Hủy đăng ký<br>+ Khôi phục hủy đăng ký |
 | Từ ngày | Date | Không | Trống | Control UI: Datepicker.<br>- Lọc các phiên bản có `Thời điểm đăng ký` từ ngày này. |
 | Đến ngày | Date | Không | Trống | Control UI: Datepicker.<br>- Lọc các phiên bản có `Thời điểm đăng ký` đến ngày này.<br>- Nếu nhập cùng `Từ ngày`, áp dụng [BR-VAL-007]. |
-| Danh sách các phiên bản | Text(4000) | Không | 10 phiên bản gần nhất | Control UI: Danh sách node phiên bản.<br>- Khi mở màn hình, Sidebar bên trái hiển thị tối đa 10 phiên bản gần nhất, sắp xếp theo `Thời điểm đăng ký` giảm dần.<br>- Nếu người dùng mở từ màn hình danh sách, hệ thống chọn mặc định phiên bản được click; nếu mở trực tiếp từ hồ sơ, hệ thống chọn mặc định phiên bản mới nhất đang có hiệu lực.<br>- Mỗi node hiển thị từng thông tin trên một dòng riêng.<br>- Dòng đầu hiển thị trực tiếp giá trị `Loại đăng ký`: `Đăng ký lần đầu`, `Đăng ký thay đổi`, `Xóa đăng ký`, `Thông báo xử lý tài sản bảo đảm lần đầu`, `Thay đổi thông báo xử lý tài sản bảo đảm`, `Xóa đăng ký thông báo xử lý tài sản bảo đảm`, `Hủy đăng ký`, `Khôi phục hủy` hoặc `Chỉnh lý thông tin`.<br>- Số đăng ký.<br>- Thời điểm đăng ký theo định dạng `dd/mm/yyyy hh:mm:ss`.<br>- Trạng thái.<br>- Người tạo.<br>- Nếu phiên bản có văn bản kết quả, trạng thái `Hoàn thành` và đã sinh/ký số file kết quả, hiển thị icon tải/xem PDF văn bản kết quả. |
+| Tìm kiếm | - | - | - | Control UI: Button. |
+| Xóa lọc | - | - | - | Control UI: Button. |
+| Danh sách các phiên bản | Text(4000) | Không | 10 phiên bản gần nhất | Control UI: Danh sách node phiên bản.<br>- Khi mở màn hình, Sidebar bên trái hiển thị tối đa 10 phiên bản gần nhất, sắp xếp theo `Thời điểm đăng ký` giảm dần.<br>- Nếu người dùng mở từ màn hình danh sách, hệ thống chọn mặc định phiên bản được click; nếu mở trực tiếp từ hồ sơ, hệ thống chọn mặc định phiên bản mới nhất đang có hiệu lực.<br>- Mỗi node hiển thị từng thông tin trên một dòng riêng.<br>- Dòng đầu hiển thị trực tiếp giá trị `Loại đăng ký`: `Đăng ký lần đầu`, `Đăng ký thay đổi`, `Xóa đăng ký`, `Thông báo xử lý tài sản bảo đảm lần đầu`, `Thay đổi thông báo xử lý tài sản bảo đảm`, `Xóa đăng ký thông báo xử lý tài sản bảo đảm`, `Chỉnh lý thông tin`, `Hủy đăng ký` hoặc `Khôi phục hủy đăng ký`.<br>- Số đăng ký.<br>- Thời điểm đăng ký theo định dạng `dd/mm/yyyy hh:mm:ss`.<br>- Trạng thái.<br>- Người tạo.<br>- Nếu phiên bản có văn bản kết quả, trạng thái `Hoàn thành` và đã sinh/ký số file kết quả, hiển thị icon tải/xem PDF văn bản kết quả. |
 | **II. Vùng tiêu đề và thao tác** | - | - | - | Hiển thị phía trên vùng chi tiết phiên bản đang chọn. |
 | Tiêu đề phiên bản đang chọn | Text | Có | Theo phiên bản đang chọn | Control UI: Label / Header hiển thị thông tin phiên bản (Read-only). Gồm 2 dòng:<br>- Dòng 1: Chữ in đậm, hiển thị `[Loại đăng ký của phiên bản đang chọn] - Trạng thái: [Tên trạng thái]`. Ví dụ: "Đăng ký thay đổi - Trạng thái: Hoàn thành".<br>- Dòng 2: Chữ nhỏ hơn (muted), hiển thị: `Số đăng ký: [Số đăng ký] \| Thời điểm đăng ký: [dd/mm/yyyy hh:mm:ss]`. Ví dụ: "Số đăng ký: 1505156435-TĐ1 \| Thời điểm đăng ký: 05/06/2026 14:30:00". |
 | Chỉ hiển thị vùng dữ liệu có biến động | Boolean | Không | Tắt | Control UI: Checkbox/Toggle.<br>- Chỉ hiển thị khi `Loại đăng ký` là `Đăng ký thay đổi` hoặc `Thay đổi thông báo xử lý tài sản bảo đảm`.<br>- Khi bật, chỉ hiển thị các vùng/trường có thay đổi so với phiên bản gần nhất đã có hiệu lực.<br>- Khi tắt, hiển thị đầy đủ thông tin của phiên bản đang chọn. |
@@ -159,6 +165,7 @@
 | Người từ chối | String(255) | Không | Theo hồ sơ | Hiển thị người từ chối nếu hệ thống có ghi nhận. |
 | Văn bản từ chối | File/Link | Không | Theo hồ sơ | Hiển thị nếu hồ sơ có file thông báo từ chối đã sinh/đã ký số. |
 
+<a id="411233-chuc-nang-tren-man-hinh"></a>
 ##### 4.1.12.3.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
@@ -170,13 +177,13 @@
 | | | | **TH4 - Phiên bản là Thông báo xử lý tài sản bảo đảm lần đầu**: Hiển thị chi tiết phiên bản thông báo xử lý tài sản bảo đảm lần đầu dạng Read-only theo cấu trúc màn Review của [Dang_ky_Thay_doi_Xoa_thong_bao_xu_ly_tai_san.md](Dang_ky_Thay_doi_Xoa_thong_bao_xu_ly_tai_san.md), không hiển thị chức năng `Chỉ hiển thị vùng dữ liệu có biến động`. |
 | | | | **TH5 - Phiên bản là Thay đổi thông báo xử lý tài sản bảo đảm**: Hiển thị chi tiết phiên bản thay đổi thông báo xử lý tài sản bảo đảm dạng Read-only theo cấu trúc màn Review của [Dang_ky_Thay_doi_Xoa_thong_bao_xu_ly_tai_san.md](Dang_ky_Thay_doi_Xoa_thong_bao_xu_ly_tai_san.md), đồng thời so sánh với phiên bản thông báo gần nhất đã có hiệu lực trước đó gồm Thông báo xử lý tài sản bảo đảm lần đầu hoặc Thay đổi thông báo xử lý tài sản bảo đảm gần nhất; hiển thị chức năng `Chỉ hiển thị vùng dữ liệu có biến động`. |
 | | | | **TH6 - Phiên bản là Xóa đăng ký thông báo xử lý tài sản bảo đảm**: Hiển thị chi tiết phiên bản xóa thông báo xử lý tài sản bảo đảm dạng Read-only theo cấu trúc màn Review của [Dang_ky_Thay_doi_Xoa_thong_bao_xu_ly_tai_san.md](Dang_ky_Thay_doi_Xoa_thong_bao_xu_ly_tai_san.md), không hiển thị chức năng `Chỉ hiển thị vùng dữ liệu có biến động`. |
-| | | | **TH7 - Phiên bản là Hủy đăng ký/Khôi phục hủy/Chỉnh lý thông tin**: Hiển thị chi tiết phiên bản dạng Read-only theo cấu trúc màn hình nghiệp vụ tương ứng và ghi nhận đầy đủ lịch sử xử lý. |
+| | | | **TH7 - Phiên bản là Chỉnh lý thông tin/Hủy đăng ký/Khôi phục hủy đăng ký**: Hiển thị chi tiết phiên bản dạng Read-only theo cấu trúc màn hình nghiệp vụ tương ứng và ghi nhận đầy đủ lịch sử xử lý. |
 | | | | **TH8 - Phiên bản bị từ chối**: Hiển thị thêm khối `Lý do bị từ chối`. |
 | 2 | Bật/Tắt chỉ hiển thị vùng dữ liệu có biến động | Toggle | Khi NSD bật, hệ thống chỉ hiển thị các vùng/trường có thay đổi so với phiên bản gần nhất đã có hiệu lực; khi tắt, hệ thống hiển thị đầy đủ thông tin phiên bản. |
-| 3 | Tìm kiếm phiên bản trên Sidebar | Button | Khi NSD click nút `Tìm kiếm` tại Sidebar, hệ thống kiểm tra tính hợp lệ của khoảng ngày theo [BR-VAL-007] và lọc danh sách node phiên bản thỏa mãn đồng thời các tiêu chí `Số đăng ký`, `Loại đăng ký`, `Từ ngày`, `Đến ngày`. |
+| 3 | Tìm kiếm (trên Sidebar phiên bản) | Button | Khi NSD click nút `Tìm kiếm` tại Sidebar, hệ thống kiểm tra tính hợp lệ của khoảng ngày theo [BR-VAL-007] và lọc danh sách node phiên bản thỏa mãn đồng thời các tiêu chí `Số đăng ký`, `Loại đăng ký`, `Từ ngày`, `Đến ngày`. |
 | | | | **TH1 - Điều kiện ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị thông báo lỗi theo MessageList dùng chung. Không thực hiện lọc. |
 | | | | **TH Hợp lệ**: Hệ thống hiển thị danh sách node phiên bản thỏa mãn điều kiện lọc, sắp xếp theo `Thời điểm đăng ký` giảm dần; nếu không có dữ liệu, Sidebar hiển thị thông báo rỗng theo MessageList dùng chung [MSG-INF-SYS-001]. Sidebar tiếp tục sử dụng cơ chế danh sách cuộn với `Xem thêm`/`Thu gọn`. |
-| 4 | Xóa lọc phiên bản trên Sidebar | Button | Xóa toàn bộ tiêu chí lọc tại Sidebar, đặt `Loại đăng ký` về `Tất cả`, xóa `Số đăng ký`, `Từ ngày`, `Đến ngày` và hiển thị lại tối đa 10 phiên bản gần nhất theo thứ tự mặc định. |
+| 4 | Xóa lọc (trên Sidebar phiên bản) | Button | Xóa toàn bộ tiêu chí lọc tại Sidebar, đặt `Loại đăng ký` về `Tất cả`, xóa `Số đăng ký`, `Từ ngày`, `Đến ngày` và hiển thị lại tối đa 10 phiên bản gần nhất theo thứ tự mặc định. |
 | 5 | Xem thêm | Button | Hiển thị ở cuối danh sách khi còn phiên bản chưa hiển thị. Mỗi lần click, hệ thống tải thêm 10 phiên bản theo bộ lọc hiện tại. |
 | 6 | Thu gọn | Button | Chỉ hiển thị khi danh sách phiên bản đang hiển thị nhiều hơn 10 phiên bản. Khi NSD click, hệ thống thu gọn danh sách về 10 phiên bản đầu tiên theo bộ lọc hiện tại. |
 | 7 | Tải/Xem văn bản kết quả | Icon/Button | Khi NSD click, hệ thống mở xem trực tiếp file PDF văn bản kết quả trên tab mới hoặc tải file PDF xuống thiết bị. |

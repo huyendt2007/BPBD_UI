@@ -2148,6 +2148,26 @@
             padding: 14px 20px !important;
         }
         .sticky-actions > .toolbar { margin: 0 !important; justify-content: flex-end; }
+
+        /* Màn Xem chi tiết hồ sơ giấy (mở từ Hồ sơ chờ xử lý - Tab Chờ nhập liệu / Bị trả lại): thanh nút luôn cố định ở cuối màn hình */
+        #readonlyView.active { display: flex; flex-direction: column; min-height: calc(100vh - 40px); }
+        #readonlyView.active > .card:has(#regReadonlyToolbar) { flex: 1; display: flex; flex-direction: column; margin-bottom: 0; }
+        #readonlyView.active > .card:has(#regReadonlyToolbar) > .card-b { flex: 1; display: flex; flex-direction: column; }
+        #readonlyView > .toolbar:last-child,
+        #regReadonlyToolbar {
+            position: sticky !important;
+            bottom: 0 !important;
+            z-index: 50;
+            margin-top: auto !important;
+            background: #fff !important;
+            border: 1px solid var(--line) !important;
+            border-radius: 8px 8px 0 0 !important;
+            box-shadow: 0 -4px 12px rgba(15, 23, 42, .08) !important;
+            padding: 14px 20px !important;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
     </style>
 </head>
 
@@ -2686,7 +2706,7 @@ const qs = new URLSearchParams(location.search);
                     <div class="copy-accordion-head open" id="genReturnAcc-head" onclick="toggleCopyAccordion('genReturnAcc')" style="background:#fef2f2">
                         <div class="copy-accordion-title" style="color:#dc2626">
                             <i class="fa-solid fa-rotate-left"></i>
-                            <span>THÔNG TIN TRẢ LẠI TỪ LÃNH ĐẠO</span>
+                            <span>THÔNG TIN TRẢ LẠI</span>
                             <span class="badge b-red" style="font-size:11px">Bị trả lại</span>
                         </div>
                         <div style="display:flex;align-items:center;gap:8px">
@@ -10399,9 +10419,10 @@ function openRegistrationSignModal() {
                 source: 'Trực tiếp',
                 handlingOfficer: 'Nguyễn Văn Cán Bộ',
                 customerId: isOnlineCustomer ? (p.customerId || p.requesterAccount || '-') : 'Vãng lai',
-                registeredAt,
-                registrationNo: '15' + String(now.getTime()).slice(-8),
-                pinCode: needPin ? String(Math.floor(100000 + Math.random() * 900000)) : ''
+                // Hồ sơ Bị trả lại gửi duyệt lại: giữ nguyên Thời điểm đăng ký (lần Gửi duyệt đầu), Số đăng ký và Mã PIN đã cấp; nhập liệu lần đầu mới cấp số
+                registeredAt: isReturnedProfile() ? (p.registeredAt || p.date || registeredAt) : registeredAt,
+                registrationNo: isReturnedProfile() ? (p.registrationNo || p.id) : '15' + String(now.getTime()).slice(-8),
+                pinCode: isReturnedProfile() ? (p.pinCode || p.pin || '') : (needPin ? String(Math.floor(100000 + Math.random() * 900000)) : '')
             };
             const list = JSON.parse(localStorage.getItem('custom_mock_profiles') || '[]');
             const idx = list.findIndex(x => x.id === p.id);

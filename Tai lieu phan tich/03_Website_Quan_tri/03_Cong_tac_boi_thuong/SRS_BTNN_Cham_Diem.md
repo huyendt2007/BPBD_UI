@@ -77,7 +77,7 @@ Nguồn UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_cham_diem_btnn.html
 | Xếp loại | Enum(String(50)) | Không | Tất cả | - Tham chiếu danh mục Xếp loại chấm điểm công tác BTNN [DM_33].<br>- Giá trị lọc gồm `Tất cả` và các giá trị thuộc [DM_33], trừ giá trị "Không đánh giá" nếu không phát sinh trong bộ lọc UI. |
 | Hạn nộp từ ngày | Date | Không | Ngày đầu tháng hiện tại | - Định dạng `dd/mm/yyyy`.<br>- Dùng để nhập điều kiện lọc hạn nộp bắt đầu.<br>- Áp dụng rule khoảng ngày [BR-VAL-007]. |
 | Hạn nộp đến ngày | Date | Không | Ngày hiện tại | - Định dạng `dd/mm/yyyy`.<br>- Dùng để nhập điều kiện lọc hạn nộp kết thúc.<br>- Áp dụng rule khoảng ngày [BR-VAL-007]. |
-| Thông báo nghiệp vụ | Text(1000) | Không | Theo tài khoản đăng nhập | - Chỉ đọc.<br>- Với tài khoản Cán bộ Sở Tư pháp, hiển thị cảnh báo thời hạn nộp kỳ chấm điểm.<br>- Với tài khoản Cán bộ nghiệp vụ Bộ Tư pháp, hiển thị thông báo nghiệp vụ BTP về số đơn vị đã gửi bảng tự chấm và thời hạn thẩm định. |
+| Thông báo nghiệp vụ | Text(1000) | Không | Theo tài khoản đăng nhập | - Chỉ đọc.<br>- Các mốc thời hạn lấy theo năm tự đánh giá hiện hành theo [BR-BTNN-CD-006]; không gán cố định ngày trên giao diện.<br>- Với tài khoản Cán bộ Sở Tư pháp, hiển thị cảnh báo:<br>+ Hạn gửi kết quả tự đánh giá, chấm điểm về Bộ Tư pháp: trước ngày 08/12/[Năm].<br>+ Gửi sau 05 ngày làm việc kể từ ngày 08/12 bị trừ 05 điểm; gửi sau 07 ngày làm việc thì không đánh giá và xếp loại theo [BR-BTNN-CD-004].<br>- Với tài khoản Cán bộ nghiệp vụ Bộ Tư pháp, hiển thị thông báo:<br>+ Số đơn vị và tên các Sở Tư pháp đã gửi bảng tự chấm đang chờ đánh giá (đếm theo dữ liệu kỳ chấm điểm ở trạng thái "Đã gửi BTP" của năm tự đánh giá).<br>+ Hạn lấy ý kiến Sở Tư pháp về dự thảo Báo cáo tổng hợp kết quả đánh giá và xếp loại: trước ngày 20/12/[Năm].<br>+ Hạn gửi Thông báo kết quả đánh giá, chấm điểm và xếp loại tới UBND cấp tỉnh và các Sở Tư pháp: trước ngày 31/12/[Năm]. |
 | **Bảng danh sách kỳ chấm điểm** | Text(4000) | Không | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- Sắp xếp mặc định: Sắp xếp theo "Ngày tạo" giảm dần (mới nhất hiển thị lên đầu).<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
 | Cột: STT | Integer(10) | Không | Theo trang hiện tại | - Chỉ đọc.<br>- Hiển thị số thứ tự bản ghi theo phân trang. |
 | Cột: Kỳ đánh giá | String(50) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị dạng `Kỳ chấm năm [Năm]`.<br>- Hỗ trợ sắp xếp theo năm đánh giá. |
@@ -166,7 +166,8 @@ Nguồn UI: `screenStpScoring` trong `quan_ly_cham_diem_btnn.html`.
 | 14 | Tiếp tục | Button | Hệ thống chuyển sang bước tiếp theo trong quy trình tự chấm. Tại bước cuối, nút hiển thị nhãn `Tổng kết & Gửi` và không cho chuyển tiếp. |
 | 15 | Xuất Phụ lục I (Bảng điểm) | Button | Hệ thống kết xuất báo cáo Phụ lục I theo bảng điểm tự chấm hiện hành và hiển thị [MSG-SUC-BTNN-CD-006]. |
 | 16 | Gửi Bộ Tư pháp duyệt | Button | TH1 (Chưa tích cam đoan thông tin số liệu): Hệ thống hiển thị [MSG-ERR-BTNN-CD-004] và không gửi bảng tự chấm. |
-|  |  |  | TH Hợp lệ: Hệ thống lưu dữ liệu tự chấm, chuyển kỳ chấm điểm sang trạng thái "Đã gửi BTP", đánh dấu đã gửi Bộ Tư pháp và hiển thị [MSG-SUC-BTNN-CD-005]. |
+|  |  |  | TH2 (Gửi sau 07 ngày làm việc kể từ ngày 08/12 của năm tự đánh giá): Theo [BR-BTNN-CD-004], hệ thống lưu dữ liệu tự chấm, ghi nhận ngày gửi, chuyển kỳ chấm điểm sang trạng thái "Không đánh giá", xếp loại "Không đánh giá" và hiển thị [MSG-WRN-BTNN-CD-024]. |
+|  |  |  | TH Hợp lệ: Hệ thống lưu dữ liệu tự chấm, ghi nhận ngày gửi và điểm trừ nộp muộn theo [BR-BTNN-CD-004] (trừ 05 điểm nếu gửi sau 05 ngày làm việc kể từ ngày 08/12), chuyển kỳ chấm điểm sang trạng thái "Đã gửi BTP", đánh dấu đã gửi Bộ Tư pháp và hiển thị [MSG-SUC-BTNN-CD-005]. |
 
 ---
 
@@ -250,7 +251,7 @@ Nguồn UI: `modalCreatePeriod` trong `quan_ly_cham_diem_btnn.html`.
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Năm đánh giá | Enum(String(10)) | Có | 2027 | - Giá trị UI gồm:<br>+ 2027<br>+ 2028 |
-| Hạn nộp tự chấm | Date | Có | 08/12/2027 | Định dạng `dd/mm/yyyy`. |
+| Hạn nộp tự chấm | Date | Có | 08/12/[Năm đánh giá] | - Định dạng `dd/mm/yyyy`.<br>- Mặc định là ngày 08/12 của Năm đánh giá đã chọn theo [BR-BTNN-CD-006]; khi đổi Năm đánh giá, hệ thống tự cập nhật lại giá trị mặc định. |
 | Phạm vi áp dụng | Enum(String(255)) | Có | Tất cả các Sở Tư pháp trên toàn quốc (63 tỉnh/thành) | - Cho phép chọn tất cả đơn vị.<br>- Cho phép chọn nhiều Sở Tư pháp trong danh sách.<br>- Có ô tìm kiếm nhanh theo tên đơn vị. |
 | Tìm kiếm nhanh theo tên đơn vị | String(255) | Không | Trống | Lọc nhanh danh sách đơn vị trong vùng chọn phạm vi áp dụng. |
 

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Xử lý logic SPA cho UC028 - Màn hình Xem chi tiết hồ sơ (Three-Pane Layout)
  * Áp dụng tổng quát cho cả 9 loại hồ sơ theo quy chuẩn Design System.
  */
@@ -1322,8 +1322,8 @@ function renderFilterPanel() {
                     </div>
                 </div>
             </div>
-            <div style="text-align: right; margin-top: 15px;">
-                <button class="btn btn-outline-secondary" onclick="resetFilters()" style="margin-right: 8px;"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+            <div class="filter-action-row" style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #F1F5F9; display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
+                <button class="btn btn-outline-secondary" onclick="resetFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
                 <button class="btn btn-primary" onclick="searchList()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
             </div>
         `;
@@ -1335,20 +1335,16 @@ function renderFilterPanel() {
                     <input type="text" class="form-control" id="filter-so-dang-ky" placeholder="Nhập số đăng ký..." autocomplete="off">
                 </div>
                 <div class="form-group">
+                    <label class="form-label">Mã khách hàng</label>
+                    <input type="text" class="form-control" id="filter-customer-id" placeholder="Nhập mã khách hàng..." autocomplete="off">
+                </div>
+                <div class="form-group">
                     <label class="form-label">Tên bên bảo đảm</label>
                     <input type="text" class="form-control" id="filter-ten-bbd" placeholder="Nhập tên bên bảo đảm..." autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Tên bên nhận bảo đảm</label>
                     <input type="text" class="form-control" id="filter-ten-bnbd" placeholder="Nhập tên bên nhận bảo đảm..." autocomplete="off">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Mã khách hàng</label>
-                    <input type="text" class="form-control" id="filter-customer-id" placeholder="Nhập mã khách hàng..." autocomplete="off">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Số biên lai</label>
-                    <input type="text" class="form-control" id="filter-so-bien-lai" placeholder="Nhập số biên lai..." autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Nguồn tiếp nhận</label>
@@ -1358,15 +1354,6 @@ function renderFilterPanel() {
                         <option value="Trực tiếp">Trực tiếp</option>
                         <option value="Dịch vụ công Quốc gia">Dịch vụ công Quốc gia</option>
                         <option value="Bưu chính">Bưu chính</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Cán bộ xử lý</label>
-                    <select class="form-select" id="filter-can-bo-xu-ly">
-                        <option value="">Tất cả</option>
-                        <option value="Nguyễn Văn Cán Bộ">Nguyễn Văn Cán Bộ</option>
-                        <option value="Lê Anh Tuấn">Lê Anh Tuấn</option>
-                        <option value="Trần Quốc Khánh">Trần Quốc Khánh</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -1399,16 +1386,16 @@ function renderFilterPanel() {
                     </select>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Loại tài sản đảm bảo</label>
-                    <select class="form-select" id="filter-loaitaisan">
+                    <label class="form-label">Số biên lai</label>
+                    <input type="text" class="form-control" id="filter-so-bien-lai" placeholder="Nhập số biên lai..." autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cán bộ xử lý</label>
+                    <select class="form-select" id="filter-can-bo-xu-ly">
                         <option value="">Tất cả</option>
-                        <option value="Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)">Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)</option>
-                        <option value="Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt">Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt</option>
-                        <option value="Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản">Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản</option>
-                        <option value="Cây hằng năm, công trình tạm">Cây hằng năm, công trình tạm</option>
-                        <option value="Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ">Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ</option>
-                        <option value="Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung">Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung</option>
-                        <option value="Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)">Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)</option>
+                        <option value="Nguyễn Văn Cán Bộ">Nguyễn Văn Cán Bộ</option>
+                        <option value="Lê Anh Tuấn">Lê Anh Tuấn</option>
+                        <option value="Trần Quốc Khánh">Trần Quốc Khánh</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -1425,9 +1412,22 @@ function renderFilterPanel() {
                         <i class="fa-regular fa-calendar-days"></i>
                     </div>
                 </div>
+                <div class="form-group" style="grid-column: 1 / span 2;">
+                    <label class="form-label">Loại tài sản đảm bảo</label>
+                    <select class="form-select" id="filter-loaitaisan">
+                        <option value="">Tất cả</option>
+                        <option value="Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)">Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)</option>
+                        <option value="Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt">Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt</option>
+                        <option value="Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản">Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản</option>
+                        <option value="Cây hằng năm, công trình tạm">Cây hằng năm, công trình tạm</option>
+                        <option value="Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ">Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ</option>
+                        <option value="Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung">Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung</option>
+                        <option value="Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)">Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)</option>
+                    </select>
+                </div>
             </div>
-            <div style="text-align: right; margin-top: 15px;">
-                <button class="btn btn-outline-secondary" onclick="resetFilters()" style="margin-right: 8px;"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+            <div class="filter-action-row" style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #F1F5F9; display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
+                <button class="btn btn-outline-secondary" onclick="resetFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
                 <button class="btn btn-primary" onclick="searchList()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
             </div>
         `;
@@ -3294,8 +3294,8 @@ renderFilterPanel = function () {
                     </div>
                 </div>
             </div>
-            <div style="text-align:right;margin-top:15px">
-                <button class="btn btn-outline-secondary" onclick="renderFilterPanel(); renderTable(true)" style="margin-right:8px"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+            <div class="filter-action-row" style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #F1F5F9; display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
+                <button class="btn btn-outline-secondary" onclick="renderFilterPanel(); renderTable(true)"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
                 <button class="btn btn-primary" onclick="renderTable(true)"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
             </div>
         `;
@@ -3354,8 +3354,8 @@ renderFilterPanel = function () {
                     <input type="date" class="form-control" id="leader-copy-todate">
                 </div>
             </div>
-            <div style="text-align:right;margin-top:15px">
-                <button class="btn btn-outline-secondary" onclick="renderFilterPanel(); renderTable(true)" style="margin-right:8px"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+            <div class="filter-action-row" style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #F1F5F9; display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
+                <button class="btn btn-outline-secondary" onclick="renderFilterPanel(); renderTable(true)"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
                 <button class="btn btn-primary" onclick="renderTable(true)"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
             </div>
         `;

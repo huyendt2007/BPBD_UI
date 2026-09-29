@@ -45,7 +45,7 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | | | | |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Từ khóa | String(255) | Không | Trống | Tìm kiếm gần đúng theo `Tên hoạt động phối hợp`. |
 | Cơ quan phối hợp | Enum(String(255)) | Không | Tất cả | Tham chiếu Danh mục Cơ quan, Đơn vị giải quyết [DM_DON_VI]. |
 | Hình thức phối hợp | Enum(String(50)) | Không | Tất cả | \- Giá trị gồm:<br>+ Tất cả<br>+ Văn bản trao đổi<br>+ Họp liên ngành<br>+ Hội nghị/hội thảo<br>+ Khác |

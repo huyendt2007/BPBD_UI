@@ -77,6 +77,7 @@ Tiến trình đối soát tiến hành so khớp mã giao dịch và số tiề
 
 ---
 
+<a id="5134-doi-soat-yeu-cau-hoan-tien-ho-so-online"></a>
 #### 5.1.3.4. Đối soát yêu cầu hoàn tiền hồ sơ Online
 
 ##### 5.1.3.4.1. Nguồn phát sinh yêu cầu hoàn tiền

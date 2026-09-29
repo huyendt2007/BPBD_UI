@@ -1,6 +1,6 @@
 ﻿/**
- * Xử lý logic SPA cho UC027 - Tra cứu thông tin đăng ký (Website Cán bộ)
- * Tích hợp bảng dạng cây (Tree-view), phân trang đầy đủ, bộ lọc nâng cao và dropdown Thao tác khác
+ * Tra cứu hồ sơ (Website Quản trị - Module Biện pháp bảo đảm): 03 Tab Phiếu đăng ký / Yêu cầu cung cấp thông tin / Yêu cầu cung cấp bản sao
+ * Tích hợp bảng dạng cây (Tree-view), phân trang, bộ lọc riêng từng Tab; click dòng để xem chi tiết (chỉ đọc)
  */
 
 // 1. MOCK DATA DẠNG CÂY DỮ LIỆU CÁN BỘ (Bổ sung Số biên lai)
@@ -56,7 +56,7 @@ let canBoDossiersData = [
                 regNum: "1505156435-TBXL",
                 pin: "5635-B1",
                 date: "05/06/2026 15:30",
-                type: "Thông báo xử lý tài sản đảm bảo lần đầu",
+                type: "Thông báo xử lý tài sản bảo đảm lần đầu",
                 guarantor: "Nguyễn Văn A",
                 securedParty: "Ngân hàng TMCP FPT",
                 status: "Hoàn thành",
@@ -138,7 +138,7 @@ let canBoDossiersData = [
                 regNum: "1505156438-TBXL",
                 pin: "5638-B1",
                 date: "15/06/2026 10:00",
-                type: "Thông báo xử lý tài sản đảm bảo lần đầu",
+                type: "Thông báo xử lý tài sản bảo đảm lần đầu",
                 guarantor: "Công ty TNHH Hải Nam",
                 securedParty: "Ngân hàng TMCP FPT",
                 status: "Hoàn thành",
@@ -365,284 +365,376 @@ let canBoDossiersData = [
         expanded: false,
         children: []
     },
-    {
-        id: "11",
-        regNum: "CCTT-2026-000201",
-        pin: "C201",
-        date: "01/08/2026 09:15",
-        type: "Yêu cầu cung cấp thông tin",
-        guarantor: "Ông Nguyễn Văn Hùng",
-        securedParty: "Theo tiêu chí tra cứu: Số đăng ký 1505170802",
-        status: "Chờ duyệt",
-        transType: "Yêu cầu cung cấp thông tin",
-        measureContractType: "Số đăng ký",
-        secAssets: "Tra cứu thông tin đăng ký biện pháp bảo đảm theo số đăng ký",
-        handlingOfficer: "Nguyễn Văn Cán Bộ",
-        receiptNo: "GD-20260801-0001",
-        expanded: false,
-        children: []
-    },
-    {
-        id: "12",
-        regNum: "CCTT-2026-000177",
-        pin: "C177",
-        date: "31/07/2026 15:05",
-        type: "Yêu cầu cung cấp thông tin",
-        guarantor: "Ngân hàng TMCP FPT",
-        securedParty: "Theo tiêu chí tra cứu: Số khung RLZ2026KHUNG0007VN",
-        status: "Chờ ký",
-        transType: "Yêu cầu cung cấp thông tin",
-        measureContractType: "Số khung",
-        secAssets: "Tra cứu thông tin đăng ký biện pháp bảo đảm theo số khung",
-        handlingOfficer: "Nguyễn Văn Cán Bộ",
-        receiptNo: "BL-20260731-0011",
-        expanded: false,
-        children: []
-    },
-    {
-        id: "13",
-        regNum: "BS-2026-000129",
-        pin: "B129",
-        date: "24/07/2026 10:05",
-        type: "Yêu cầu cung cấp bản sao",
-        guarantor: "Nguyễn Thị Hoa",
-        securedParty: "Theo hồ sơ yêu cầu cấp bản sao",
-        status: "Hoàn thành",
-        transType: "Yêu cầu cung cấp bản sao",
-        measureContractType: "Bản sao văn bản chứng nhận",
-        secAssets: "Cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm",
-        handlingOfficer: "Nguyễn Văn Cán Bộ",
-        receiptNo: "BL-20260724-0129",
-        expanded: false,
-        children: []
-    },
-    {
-        id: "14",
-        regNum: "BS-2026-000134",
-        pin: "B134",
-        date: "24/07/2026 15:20",
-        type: "Yêu cầu cung cấp bản sao kèm thông báo",
-        guarantor: "Nguyễn Văn Hoàng",
-        securedParty: "Theo hồ sơ yêu cầu cấp bản sao kèm thông báo",
-        status: "Chờ ký",
-        transType: "Yêu cầu cung cấp bản sao",
-        measureContractType: "Bản sao kèm thông báo",
-        secAssets: "Cấp bản sao văn bản chứng nhận và thông báo liên quan",
-        handlingOfficer: "Nguyễn Văn Cán Bộ",
-        receiptNo: "BL-20260724-0134",
-        expanded: false,
-        children: []
-    }
 ];
+
+// Nguồn tiếp nhận giả lập của Phiếu đăng ký (hồ sơ liên quan dùng Nguồn tiếp nhận của hồ sơ gốc nếu không có)
+const PDK_SOURCE_BY_ROOT = { '1': 'Trực tuyến', '2': 'Dịch vụ công', '3': 'Trực tiếp', '4': 'Trực tuyến', '5': 'Trực tiếp', '6': 'Dịch vụ công', '7': 'Trực tuyến', '8': 'Trực tiếp', '9': 'Trực tuyến', '10': 'Dịch vụ công' };
+(function initPdkMock() {
+    const walk = (node, root) => {
+        node.source = node.source || PDK_SOURCE_BY_ROOT[root.id] || 'Trực tuyến';
+        (node.children || []).forEach(c => walk(c, root));
+    };
+    canBoDossiersData.forEach(r => walk(r, r));
+})();
+
+// Loại tài sản và các trường của Khối lọc động / Cột động (giống màn Kiểm tra và xử lý hồ sơ)
+const LOOKUP_ASSET_TYPES = [
+    { key: 'vehicle', label: 'Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)', match: /cơ giới đường bộ|xe máy chuyên dùng|số khung/i,
+      fields: [['vehicleName', 'Tên phương tiện', 'select'], ['frameNo', 'Số khung'], ['engineNo', 'Số máy'], ['plateNo', 'Biển số']] },
+    { key: 'ship', label: 'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt, đường thủy, đường sắt', match: /tàu cá|đường thủy|đường sắt/i,
+      fields: [['shipName', 'Tên phương tiện, nhãn hiệu'], ['shipOwner', 'Tên/Họ tên chủ phương tiện/Chủ sở hữu'], ['shipRegNo', 'Số đăng ký phương tiện'], ['shipIssuer', 'Cơ quan cấp giấy chứng nhận'], ['shipGrade', 'Cấp phương tiện']] },
+    { key: 'right', label: 'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản', match: /quyền tài sản/i,
+      fields: [['rightName', 'Tên quyền'], ['rightBasis', 'Căn cứ phát sinh quyền']] },
+    { key: 'goods', label: 'Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ', match: /hàng hóa luân chuyển|kho hàng/i,
+      fields: [['goodsKind', 'Hàng hóa luân chuyển / Kho hàng', 'goodsSelect'], ['goodsValue', 'Giá trị hàng hóa/Tên, loại hàng hóa'], ['warehouseAddress', 'Địa chỉ kho hàng', 'warehouse'], ['warehouseNo', 'Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng', 'warehouse']] },
+    { key: 'securities', label: 'Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung', match: /chứng khoán đã đăng ký tập trung/i,
+      fields: [['vsdcTime', 'Thời điểm đăng ký tại VSDC', 'vsdc']] },
+    { key: 'crop', label: 'Cây hằng năm, công trình tạm', match: /cây hằng năm|công trình tạm/i, fields: [['description', 'Mô tả']] },
+    { key: 'other', label: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ, CHỨNG KHOÁN KHÔNG ĐĂNG KÝ TẬP TRUNG...)', match: /động sản khác/i, fields: [['description', 'Mô tả']] }
+];
+const LOOKUP_VEHICLE_NAMES = ['Ô tô con', 'Ô tô tải', 'Mô tô', 'Xe gắn máy', 'Xe máy chuyên dùng'];
+const getLookupAssetConfig = key => LOOKUP_ASSET_TYPES.find(a => a.key === key) || null;
+
+// Dữ liệu chi tiết tài sản giả lập theo hồ sơ (phục vụ Khối lọc động và Cột động)
+function getPdkAssetDetail(p) {
+    if (p.assetDetail) return p.assetDetail;
+    const n = parseInt(String(p.regNum).replace(/\D/g, '').slice(-3), 10) || 1;
+    p.assetDetail = {
+        vehicleName: LOOKUP_VEHICLE_NAMES[n % LOOKUP_VEHICLE_NAMES.length],
+        frameNo: 'RLH' + String(100000 + n * 37).slice(-6) + 'VN',
+        engineNo: 'ENG-' + String(5000 + n * 13),
+        plateNo: `30${String.fromCharCode(65 + (n % 6))}-${String(100 + n).slice(-3)}.${String(10 + (n % 90)).padStart(2, '0')}`,
+        shipName: `Tàu cá QN-${9000 + n} - Hyundai Marine`,
+        shipOwner: p.guarantor,
+        shipRegNo: `QN-${9000 + n}-TS`,
+        shipIssuer: 'Chi cục Thủy sản Quảng Ninh',
+        shipGrade: n % 2 ? 'VR-SB' : 'VR-SI',
+        rightName: 'Quyền đòi nợ phát sinh từ hợp đồng',
+        rightBasis: `Hợp đồng số ${100 + n}/HĐ-2026`,
+        goodsKind: n % 2 ? 'Kho hàng' : 'Hàng hóa luân chuyển',
+        goodsValue: `Hàng tiêu dùng trị giá ${(n % 9 + 1) * 500} triệu đồng`,
+        warehouseAddress: n % 2 ? `Kho số ${n % 7 + 1}, KCN Quang Minh, Hà Nội` : '',
+        warehouseNo: n % 2 ? `KHO-${String(n).padStart(3, '0')}` : '',
+        vsdcTime: `${String(8 + (n % 9)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')} ${String(n % 27 + 1).padStart(2, '0')}/0${n % 9 + 1}/2026`,
+        description: `Mô tả tài sản của hồ sơ ${p.regNum}`
+    };
+    return p.assetDetail;
+}
+
+const MSG_EMPTY = 'Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.'; // [MSG-INF-SYS-001]
+const MSG_DATE_RANGE = 'Từ ngày không được lớn hơn Đến ngày'; // [MSG-ERR-VAL-007]
 
 let canBoFilteredData = [];
 let cbCurrentPage = 1;
-let cbPageSize = 10;
+let cbPageSize = 20;
 let cbSortField = '';
-let cbSortOrder = 'asc';
+let cbSortOrder = 'desc';
 let activeLookupGroup = 'registration';
 
-// NSD Mockup data (Simple list)
-const mockNSD = [
-    { id: '1505156435', pin: '5635', type: 'Đăng ký lần đầu', status: 'Hoàn thành', transaction: 'Biện pháp bảo đảm', name: 'Nguyễn Văn A', date: '05/06/2026 09:00' },
-    { id: '1505156436', pin: '5636', type: 'Đăng ký lần đầu', status: 'Chờ thanh toán', transaction: 'Biện pháp bảo đảm', name: 'Trần Thị Bình', date: '01/06/2026 08:30' },
-    { id: '1505156437', pin: '5637', type: 'Đăng ký lần đầu', status: 'Bị từ chối', transaction: 'Biện pháp bảo đảm', name: 'Phạm Văn Cường', date: '20/05/2026 16:45' }
-];
+// Trạng thái Tab Yêu cầu cung cấp thông tin / Yêu cầu cung cấp bản sao
+const serviceState = {
+    cctt: { prefix: 'ct', filtered: [], page: 1, pageSize: 20, sortOrder: '' },
+    copy: { prefix: 'bs', filtered: [], page: 1, pageSize: 20, sortOrder: '' }
+};
+
+const pad2 = n => String(n).padStart(2, '0');
+const fmtDate = d => `${pad2(d.getDate())}/${pad2(d.getMonth() + 1)}/${d.getFullYear()}`;
+const normalizeText = v => String(v || '').trim().toLowerCase();
 
 document.addEventListener('DOMContentLoaded', () => {
     // Ẩn Header nếu load trong iframe
     if (window.top !== window.self) {
         const portalHeader = document.getElementById('portalHeader');
         if (portalHeader) portalHeader.style.display = 'none';
-        
-        // Căn lề padding hợp lý
         document.body.style.padding = '10px';
         const container = document.querySelector('.container');
         if (container) container.style.maxWidth = '100%';
     }
 
-    const today = new Date();
-    const day = String(today.getDate()).padStart(2, '0');
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const year = today.getFullYear();
+    shiftPdkMockDates();
+    fillStaticOptions();
 
-    // Shift all mock data dates so that the most recent profile is "today"
-    let maxDate = null;
-    const findMaxDate = (item) => {
-        const d = parseDateString(item.date);
-        if (d && (!maxDate || d > maxDate)) {
-            maxDate = d;
-        }
-        if (item.children) {
-            item.children.forEach(findMaxDate);
-        }
-    };
-    canBoDossiersData.forEach(findMaxDate);
-    mockNSD.forEach(findMaxDate);
-
-    if (maxDate) {
-        const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-        if (maxDate < todayStart) {
-            const todayWithTime = new Date(today.getFullYear(), today.getMonth(), today.getDate(), maxDate.getHours(), maxDate.getMinutes(), maxDate.getSeconds());
-            const diffMs = todayWithTime.getTime() - maxDate.getTime();
-
-            const formatDate = (date) => {
-                const dd = String(date.getDate()).padStart(2, '0');
-                const mm = String(date.getMonth() + 1).padStart(2, '0');
-                const yyyy = date.getFullYear();
-                const hh = String(date.getHours()).padStart(2, '0');
-                const min = String(date.getMinutes()).padStart(2, '0');
-                return `${dd}/${mm}/${yyyy} ${hh}:${min}`;
-            };
-
-            const shiftDateString = (dateStr) => {
-                const d = parseDateString(dateStr);
-                if (!d) return dateStr;
-                const shifted = new Date(d.getTime() + diffMs);
-                return formatDate(shifted);
-            };
-
-            const shiftItem = (item) => {
-                item.date = shiftDateString(item.date);
-                if (item.children) {
-                    item.children.forEach(shiftItem);
-                }
-            };
-            canBoDossiersData.forEach(shiftItem);
-            mockNSD.forEach(shiftItem);
-        }
-    }
-
-    // Default from date: 30 days ago to show all recent mock profiles
-    const thirtyDaysAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
-    const fromMonth = String(thirtyDaysAgo.getMonth() + 1).padStart(2, '0');
-    const fromDay = String(thirtyDaysAgo.getDate()).padStart(2, '0');
-    const fromYear = thirtyDaysAgo.getFullYear();
-    const fromDateVal = `${fromDay}/${fromMonth}/${fromYear}`;
-    const toDateVal = `${day}/${month}/${year}`;
-    
     if (typeof flatpickr !== 'undefined') {
-        flatpickr("#cb-fromDate", { dateFormat: "d/m/Y", allowInput: true });
-        flatpickr("#cb-toDate", { dateFormat: "d/m/Y", allowInput: true });
+        ['cb', 'ct', 'bs'].forEach(p => {
+            flatpickr(`#${p}-fromDate`, { dateFormat: 'd/m/Y', allowInput: true });
+            flatpickr(`#${p}-toDate`, { dateFormat: 'd/m/Y', allowInput: true });
+        });
     }
-    
-    const fromDateInput = document.getElementById('cb-fromDate');
-    const toDateInput = document.getElementById('cb-toDate');
-    if (fromDateInput) fromDateInput.value = fromDateVal;
-    if (toDateInput) toDateInput.value = toDateVal;
 
-    // Render bảng khách hàng NSD
-    renderNSDTable();
+    setDefaultDates('registration');
+    setDefaultDates('cctt');
+    setDefaultDates('copy');
+    renderCbHeader();
 
-    // Khởi tạo bảng Cán bộ với bộ lọc mặc định
-    searchCanBo();
-
-    // Event listener click ra ngoài đóng Dropdown
-    document.addEventListener('click', (e) => {
-        if (!e.target.matches('.dropdown-toggle') && !e.target.closest('.dropdown-toggle')) {
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = 'none');
-        }
-    });
+    const restored = restoreLookupState();
+    if (!restored) {
+        searchCanBo();
+        searchService('cctt');
+        searchService('copy');
+    }
 });
 
-// Chuyển đổi qua lại giữa vai trò (Mockup)
-function getPinDisplayText(item) {
-    // Mã PIN chỉ được hệ thống cấp một lần duy nhất tại thời điểm Đăng ký mới (UC024).
-    // Các loại hồ sơ khác (Đăng ký thay đổi, Xóa đăng ký, Thông báo xử lý tài sản,...) không phát sinh PIN mới nên hiển thị trống.
-    if (!item || item.type !== 'Đăng ký lần đầu') return '—';
-    return item.pin || '—';
+// Dời thời điểm đăng ký của dữ liệu giả lập Phiếu đăng ký để hồ sơ mới nhất rơi vào ngày hiện tại
+function shiftPdkMockDates() {
+    let maxDate = null;
+    const findMax = item => {
+        const d = parseDateString(item.date);
+        if (d && (!maxDate || d > maxDate)) maxDate = d;
+        (item.children || []).forEach(findMax);
+    };
+    canBoDossiersData.forEach(findMax);
+    const today = new Date();
+    const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+    if (!maxDate || maxDate >= todayStart) return;
+    const diff = new Date(today.getFullYear(), today.getMonth(), today.getDate(), maxDate.getHours(), maxDate.getMinutes()).getTime() - maxDate.getTime();
+    const shift = item => {
+        const d = parseDateString(item.date);
+        if (d) {
+            const s = new Date(d.getTime() + diff);
+            item.date = `${fmtDate(s)} ${pad2(s.getHours())}:${pad2(s.getMinutes())}`;
+        }
+        (item.children || []).forEach(shift);
+    };
+    canBoDossiersData.forEach(shift);
 }
 
-function switchRole(role, element) {
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    element.classList.add('active');
-
-    document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-    document.getElementById('view-' + role).classList.add('active');
+function fillStaticOptions() {
+    const asset = document.getElementById('cb-assetType');
+    LOOKUP_ASSET_TYPES.forEach(a => asset.insertAdjacentHTML('beforeend', `<option value="${a.key}">${a.label}</option>`));
+    // Cán bộ xử lý: danh sách Cán bộ thuộc đơn vị của Cán bộ đăng nhập
+    const officers = new Set();
+    const collect = n => { if (n.handlingOfficer) officers.add(n.handlingOfficer); (n.children || []).forEach(collect); };
+    canBoDossiersData.forEach(collect);
+    getServiceList('cctt').concat(getServiceList('copy')).forEach(x => { if (x.officer) officers.add(x.officer); });
+    const optionsHtml = '<option value="Tất cả" selected>Tất cả</option>' + [...officers].sort().map(o => `<option value="${o}">${o}</option>`).join('');
+    document.querySelectorAll('[data-officer-select]').forEach(s => { s.innerHTML = optionsHtml; });
 }
 
-function switchLookupGroup(group, element) {
+// Mặc định: Tab Phiếu đăng ký 3 tháng gần nhất; Tab Yêu cầu cung cấp thông tin / bản sao từ ngày 01 của tháng hiện tại
+function setDefaultDates(group) {
+    const today = new Date();
+    const prefix = group === 'registration' ? 'cb' : serviceState[group].prefix;
+    const from = group === 'registration'
+        ? new Date(today.getFullYear(), today.getMonth() - 3, today.getDate())
+        : new Date(today.getFullYear(), today.getMonth(), 1);
+    setDateValue(`${prefix}-fromDate`, from);
+    setDateValue(`${prefix}-toDate`, today);
+}
+
+function setDateValue(id, date) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    if (el._flatpickr) el._flatpickr.setDate(date, false);
+    else el.value = fmtDate(date);
+    el.style.borderColor = '';
+}
+
+// Hàm đối sánh chuỗi ngày tháng
+function parseDateString(dateStr) {
+    if (!dateStr) return null;
+    const parts = String(dateStr).trim().split(' ');
+    const dateParts = parts[0].split('/');
+    if (dateParts.length !== 3) return null;
+    const timeParts = parts.length > 1 ? parts[1].split(':') : [0, 0];
+    return new Date(dateParts[2], dateParts[1] - 1, dateParts[0], timeParts[0] || 0, timeParts[1] || 0);
+}
+
+// Kiểm tra Từ ngày <= Đến ngày; trả về khoảng [from, endOfTo] hoặc null nếu không hợp lệ
+function readDateRange(prefix) {
+    const fromEl = document.getElementById(`${prefix}-fromDate`);
+    const toEl = document.getElementById(`${prefix}-toDate`);
+    fromEl.style.borderColor = '';
+    toEl.style.borderColor = '';
+    const from = parseDateString(fromEl.value);
+    const to = parseDateString(toEl.value);
+    if (from && to && from > to) {
+        fromEl.style.borderColor = 'var(--danger-color)';
+        toEl.style.borderColor = 'var(--danger-color)';
+        showLookupToast(MSG_DATE_RANGE, 'error');
+        return null;
+    }
+    if (to) to.setHours(23, 59, 59, 999);
+    return { from, to };
+}
+
+function inRange(dateStr, range) {
+    const d = parseDateString(dateStr);
+    if (!d) return true;
+    if (range.from && d < range.from) return false;
+    if (range.to && d > range.to) return false;
+    return true;
+}
+
+function showLookupToast(message, type) {
+    let wrap = document.getElementById('lookup-toast');
+    if (!wrap) {
+        wrap = document.createElement('div');
+        wrap.id = 'lookup-toast';
+        wrap.style.cssText = 'position:fixed;top:20px;right:20px;z-index:3000;display:flex;flex-direction:column;gap:8px;';
+        document.body.appendChild(wrap);
+    }
+    const t = document.createElement('div');
+    const bg = type === 'error' ? '#FEF2F2' : '#ECFDF5';
+    const color = type === 'error' ? '#B91C1C' : '#047857';
+    t.style.cssText = `background:${bg};color:${color};border:1px solid ${color}33;padding:10px 14px;border-radius:6px;font-size:13px;font-weight:500;box-shadow:0 4px 10px rgba(0,0,0,.08);`;
+    t.textContent = message;
+    wrap.appendChild(t);
+    setTimeout(() => t.remove(), 3500);
+}
+
+function getStatusBadge(status) {
+    const map = {
+        'Hoàn thành': 'completed', 'Chờ duyệt': 'pending-approval', 'Chờ giải quyết': 'pending-approval', 'Chờ thanh toán': 'pending-payment',
+        'Duyệt chờ ký': 'approved-pending-signature', 'Chờ ký': 'approved-pending-signature', 'Đã duyệt - chờ trả kết quả': 'approved-pending-signature',
+        'Lưu nháp': 'draft', 'Bị trả lại': 'pending-payment', 'Bị từ chối': 'rejected'
+    };
+    return `<span class="status-badge ${map[status] || 'draft'}">${status}</span>`;
+}
+
+// ----------------------------------------------------
+// CHỌN TAB NHÓM NGHIỆP VỤ
+// ----------------------------------------------------
+// Giữ nguyên bộ lọc, kết quả, sắp xếp và trang dữ liệu của từng Tab khi chuyển qua lại giữa các Tab
+function switchLookupGroup(group) {
     activeLookupGroup = group;
-    document.querySelectorAll('#lookup-type-tabs .nav-tab').forEach(t => t.classList.remove('active'));
-    if (element) element.classList.add('active');
-    const regType = document.getElementById('cb-regType');
-    if (regType) regType.value = 'Tất cả';
-    cbCurrentPage = 1;
+    document.querySelectorAll('#lookup-type-tabs .nav-tab').forEach(t => t.classList.toggle('active', t.dataset.lookupGroup === group));
+    document.querySelectorAll('.lookup-panel').forEach(p => { p.style.display = p.id === `panel-${group}` ? '' : 'none'; });
+}
+
+// ----------------------------------------------------
+// TAB PHIẾU ĐĂNG KÝ
+// ----------------------------------------------------
+const PDK_MEASURE_OPTIONS = {
+    'Biện pháp bảo đảm': ['Thế chấp', 'Cầm cố', 'Bảo lưu quyền sở hữu', 'Đặt cọc', 'Ký cược', 'Ký quỹ'],
+    'Hợp đồng': ['Hợp đồng cho thuê tài chính', 'Hợp đồng thuê tài sản có thời hạn 1 năm trở lên', 'Hợp đồng chuyển giao quyền đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác', 'Hợp đồng ký gửi']
+};
+
+function onCbTransTypeChange() {
+    const opts = PDK_MEASURE_OPTIONS[document.getElementById('cb-transType').value] || [];
+    document.getElementById('cb-measureType').innerHTML = '<option value="Tất cả" selected>Tất cả</option>' + opts.map(o => `<option value="${o}">${o}</option>`).join('');
+}
+
+// Chọn Loại tài sản: hiển thị/ẩn Khối lọc động và Cột động
+function onCbAssetTypeChange() {
+    const cfg = getLookupAssetConfig(document.getElementById('cb-assetType').value);
+    const wrap = document.getElementById('cb-dynamic-filter');
+    if (!cfg) {
+        wrap.hidden = true;
+        wrap.innerHTML = '';
+    } else {
+        wrap.innerHTML = cfg.fields.map(([id, label, kind]) => {
+            if (kind === 'select') return `<div class="form-group"><label class="form-label">${label}</label><select class="form-select" id="dyn-${id}"><option value="">Tất cả</option>${LOOKUP_VEHICLE_NAMES.map(v => `<option value="${v}">${v}</option>`).join('')}</select></div>`;
+            if (kind === 'goodsSelect') return `<div class="form-group"><label class="form-label">${label}</label><select class="form-select" id="dyn-${id}" onchange="onCbGoodsKindChange()"><option value="">Tất cả</option><option value="Hàng hóa luân chuyển">Hàng hóa luân chuyển</option><option value="Kho hàng">Kho hàng</option></select></div>`;
+            if (kind === 'vsdc') return `<div class="form-group"><label class="form-label">${label}</label><input type="text" class="form-control" id="dyn-${id}" placeholder="HH:mm dd/MM/yyyy" autocomplete="off"></div>`;
+            return `<div class="form-group dyn-${kind || 'text'}" ${kind === 'warehouse' ? 'style="display:none"' : ''}><label class="form-label">${label}</label><input type="text" class="form-control" id="dyn-${id}" autocomplete="off"></div>`;
+        }).join('');
+        wrap.hidden = false;
+    }
+    renderCbHeader();
+    renderCanBoTable();
+}
+
+// Địa chỉ kho hàng / Số hiệu kho hàng chỉ hiển thị khi chọn "Kho hàng"
+function onCbGoodsKindChange() {
+    const isWarehouse = document.getElementById('dyn-goodsKind')?.value === 'Kho hàng';
+    document.querySelectorAll('#cb-dynamic-filter .dyn-warehouse').forEach(el => {
+        el.style.display = isWarehouse ? '' : 'none';
+        if (!isWarehouse) { const inp = el.querySelector('input'); if (inp) inp.value = ''; }
+    });
+    renderCbHeader();
+    renderCanBoTable();
+}
+
+// Các Cột động đang hiển thị (đúng các trường của Khối lọc động đang hiển thị)
+function getCbDynamicColumns() {
+    const cfg = getLookupAssetConfig(document.getElementById('cb-assetType').value);
+    if (!cfg) return [];
+    const isWarehouse = document.getElementById('dyn-goodsKind')?.value === 'Kho hàng';
+    return cfg.fields.filter(f => f[2] !== 'warehouse' || isWarehouse).map(f => ({ id: f[0], label: f[1] }));
+}
+
+function renderCbHeader() {
+    const sortIcon = field => {
+        if (cbSortField !== field) return '<i class="fa-solid fa-sort"></i>';
+        return `<i class="fa-solid fa-sort-${cbSortOrder === 'asc' ? 'up' : 'down'}"></i>`;
+    };
+    const sortTh = (field, label) => `<th class="sortable ${cbSortField === field ? 'sorted' : ''}" id="cb-header-${field}" onclick="toggleCbSort('${field}')">${label} ${sortIcon(field)}</th>`;
+    const dyn = getCbDynamicColumns().map(c => `<th>${c.label}</th>`).join('');
+    document.getElementById('cb-thead-row').innerHTML = `
+        <th style="width: 60px; text-align: center;">STT</th>
+        ${sortTh('date', 'Thời điểm đăng ký')}
+        <th>Số đăng ký</th>
+        <th>Mã PIN</th>
+        ${sortTh('guarantor', 'Tên bên bảo đảm')}
+        ${sortTh('mortgagee', 'Tên bên nhận bảo đảm')}
+        <th>Loại đăng ký</th>
+        <th>Loại hình GD</th>
+        <th>Loại biện pháp / Hợp đồng</th>
+        <th>Loại tài sản</th>
+        ${dyn}
+        <th style="text-align: center;">Trạng thái</th>
+        <th>Người yêu cầu</th>
+        <th>Mã khách hàng</th>
+        <th>Số biên lai</th>
+        <th>Nguồn tiếp nhận</th>
+        <th>Cán bộ xử lý</th>
+`;
+}
+
+const CB_TEXT_FILTERS = ['cb-regNum', 'cb-guarantor', 'cb-mortgagee', 'cb-customerId', 'cb-receipt'];
+const CB_SELECT_FILTERS = ['cb-source', 'cb-handlingOfficer', 'cb-status', 'cb-regType', 'cb-transType', 'cb-measureType', 'cb-assetType'];
+
+function resetCanBoSearch() {
+    CB_TEXT_FILTERS.forEach(id => { document.getElementById(id).value = ''; });
+    CB_SELECT_FILTERS.forEach(id => { document.getElementById(id).value = 'Tất cả'; });
+    onCbTransTypeChange();
+    const wrap = document.getElementById('cb-dynamic-filter');
+    wrap.hidden = true;
+    wrap.innerHTML = '';
+    setDefaultDates('registration');
+    cbSortField = '';
+    cbSortOrder = 'desc';
+    renderCbHeader();
     searchCanBo();
 }
 
-function matchesLookupGroup(item) {
-    const copyTypes = ['Yêu cầu cung cấp bản sao', 'Yêu cầu cung cấp bản sao kèm thông báo'];
-    if (activeLookupGroup === 'cctt') return item.type === 'Yêu cầu cung cấp thông tin';
-    if (activeLookupGroup === 'copy') return copyTypes.includes(item.type);
-    return item.type !== 'Yêu cầu cung cấp thông tin' && !copyTypes.includes(item.type);
-}
+function getPdkCustomerId(item) { return item.customerId || ('KH-' + String(item.pin || '').split('-')[0]); }
 
-// ----------------------------------------------------
-// XỬ LÝ CHO BẢNG NSD (KHÁCH HÀNG)
-// ----------------------------------------------------
-function renderNSDTable() {
-    const tbody = document.getElementById('nsd-table-body');
-    if (!tbody) return;
-    tbody.innerHTML = '';
-    mockNSD.forEach(item => {
-        let badgeClass = 'badge-success';
-        let bgStyle = '';
-        if (item.status === 'Chờ thanh toán') badgeClass = 'badge-warning';
-        else if (item.status === 'Bị từ chối') { badgeClass = 'badge'; bgStyle = 'background: var(--danger-color); color: white;'; }
+function searchCanBo(keepPage) {
+    const range = readDateRange('cb');
+    if (!range) return;
+    const v = id => normalizeText(document.getElementById(id).value);
+    const sel = id => document.getElementById(id).value;
+    const regNum = v('cb-regNum'), guarantor = v('cb-guarantor'), mortgagee = v('cb-mortgagee'), customerId = v('cb-customerId'), receipt = v('cb-receipt');
+    const source = sel('cb-source'), officer = sel('cb-handlingOfficer'), status = sel('cb-status'), regType = sel('cb-regType');
+    const transType = sel('cb-transType'), measureType = sel('cb-measureType');
+    const assetCfg = getLookupAssetConfig(sel('cb-assetType'));
+    const dynFilters = getCbDynamicColumns()
+        .map(c => ({ id: c.id, value: normalizeText(document.getElementById('dyn-' + c.id)?.value) }))
+        .filter(f => f.value);
 
-        tbody.innerHTML += `
-            <tr class="data-row">
-                <td><span class="action-link" onclick="openDetail('${item.id}')">${item.id}</span></td>
-                <td>****</td>
-                <td>${item.type}</td>
-                <td><span class="badge ${badgeClass}" style="${bgStyle}">${item.status}</span></td>
-                <td>${item.transaction}</td>
-                <td>${item.name}</td>
-                <td>${item.date}</td>
-                <td><span class="action-link" onclick="openDetail('${item.id}')">Xem chi tiết</span></td>
-            </tr>
-        `;
-    });
-}
-
-// ----------------------------------------------------
-// XỬ LÝ LỌC & RENDER BẢNG CÁN BỘ (TREE-VIEW)
-// ----------------------------------------------------
-function onCbTransTypeChange() {
-    const cbTransType = document.getElementById('cb-transType').value;
-    const cbMeasureType = document.getElementById('cb-measureType');
-    cbMeasureType.innerHTML = '<option value="Tất cả" selected>Tất cả</option>';
-    
-    if (cbTransType === 'Biện pháp bảo đảm') {
-        const options = ['Thế chấp', 'Cầm cố', 'Bảo lưu quyền sở hữu', 'Đặt cọc', 'Ký cược', 'Ký quỹ'];
-        options.forEach(opt => cbMeasureType.innerHTML += `<option value="${opt}">${opt}</option>`);
-    } else if (cbTransType === 'Hợp đồng') {
-        const options = [
-            'Hợp đồng cho thuê tài chính',
-            'Hợp đồng thuê tài sản có thời hạn 1 năm trở lên',
-            'Hợp đồng chuyển giao quyền đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác',
-            'Hợp đồng ký gửi'
-        ];
-        options.forEach(opt => cbMeasureType.innerHTML += `<option value="${opt}">${opt}</option>`);
-    }
-}
-
-function resetCanBoSearch() {
-    document.getElementById('cb-regNum').value = '';
-    document.getElementById('cb-guarantor').value = '';
-    if (document.getElementById('cb-customerId')) document.getElementById('cb-customerId').value = '';
-    document.getElementById('cb-status').value = 'Tất cả';
-    document.getElementById('cb-fromDate').value = '';
-    document.getElementById('cb-toDate').value = '';
-    document.getElementById('cb-regType').value = 'Tất cả';
-    document.getElementById('cb-transType').value = 'Tất cả';
-    onCbTransTypeChange();
-    document.getElementById('cb-assetType').value = 'Tất cả';
-    document.getElementById('cb-handlingOfficer').value = 'Tất cả';
-    
-    canBoFilteredData = [];
-    cbCurrentPage = 1;
+    const matchNode = n => {
+        if (regNum && !normalizeText(n.regNum).includes(regNum)) return false;
+        if (guarantor && !normalizeText(n.guarantor).includes(guarantor)) return false;
+        if (mortgagee && !normalizeText(n.securedParty).includes(mortgagee)) return false;
+        if (customerId && !normalizeText(getPdkCustomerId(n)).includes(customerId)) return false;
+        if (receipt && !normalizeText(n.receiptNo).includes(receipt)) return false;
+        if (source !== 'Tất cả' && n.source !== source) return false;
+        if (officer !== 'Tất cả' && n.handlingOfficer !== officer) return false;
+        if (status !== 'Tất cả' && n.status !== status) return false;
+        if (regType !== 'Tất cả' && n.type !== regType) return false;
+        if (transType !== 'Tất cả' && n.transType !== transType) return false;
+        if (measureType !== 'Tất cả' && n.measureContractType !== measureType) return false;
+        if (assetCfg && !assetCfg.match.test(n.secAssets || '')) return false;
+        if (dynFilters.length) {
+            const d = getPdkAssetDetail(n);
+            if (!dynFilters.every(f => normalizeText(d[f.id]).includes(f.value))) return false;
+        }
+        return inRange(n.date, range);
+    };
+    const matchTree = n => matchNode(n) || (n.children || []).some(matchTree);
+    canBoFilteredData = canBoDossiersData.filter(matchTree);
+    if (!keepPage) cbCurrentPage = 1;
     renderCanBoTable();
 }
 
@@ -660,545 +752,330 @@ function goToCbPage(page) {
 // Cây Toggle expand/collapse
 function toggleCbTree(id, event) {
     if (event) event.stopPropagation();
-    
-    const findAndToggle = (list) => {
-        for (let item of list) {
-            if (item.id === id) {
-                item.expanded = !item.expanded;
-                return true;
-            }
-            if (item.children && item.children.length > 0) {
-                if (findAndToggle(item.children)) return true;
-            }
+    const find = list => {
+        for (const item of list) {
+            if (item.id === id) { item.expanded = !item.expanded; return true; }
+            if (item.children && find(item.children)) return true;
         }
         return false;
     };
-    
-    findAndToggle(canBoDossiersData);
+    find(canBoDossiersData);
     renderCanBoTable();
 }
 
-// Hàm đối sánh chuỗi ngày tháng
-function parseDateString(dateStr) {
-    if (!dateStr) return null;
-    if (dateStr.includes('-')) {
-        const parts = dateStr.split('-');
-        return new Date(parts[0], parts[1] - 1, parts[2]);
-    }
-    const parts = dateStr.split(' ');
-    const dateParts = parts[0].split('/');
-    const timeParts = parts.length > 1 ? parts[1].split(':') : [0,0];
-    return new Date(dateParts[2], dateParts[1] - 1, dateParts[0], timeParts[0], timeParts[1]);
-}
-
-// Lọc dữ liệu tìm kiếm
-function searchCanBo() {
-    const regNum = document.getElementById('cb-regNum').value.trim().toLowerCase();
-    const guarantor = document.getElementById('cb-guarantor').value.trim().toLowerCase();
-    const customerId = document.getElementById('cb-customerId')?.value.trim().toLowerCase() || '';
-    const status = document.getElementById('cb-status').value;
-    const fromDateVal = document.getElementById('cb-fromDate').value.trim();
-    const toDateVal = document.getElementById('cb-toDate').value.trim();
-    const regType = document.getElementById('cb-regType').value;
-    const transType = document.getElementById('cb-transType').value;
-    const measureType = document.getElementById('cb-measureType').value;
-    const assetType = document.getElementById('cb-assetType').value;
-    const handlingOfficer = document.getElementById('cb-handlingOfficer').value;
-
-    const fromDateObj = parseDateString(fromDateVal);
-    const toDateObj = parseDateString(toDateVal);
-
-    if (fromDateObj && toDateObj && fromDateObj > toDateObj) {
-        alert('Lỗi: Từ ngày không được lớn hơn Đến ngày!');
-        return;
-    }
-
-    canBoFilteredData = canBoDossiersData.filter(parent => {
-        const matchChild = (child) => {
-            const matchesGroup = matchesLookupGroup(child);
-            const matchesRegNum = !regNum || child.regNum.toLowerCase().includes(regNum) || child.id.toLowerCase().includes(regNum);
-            const matchesGuarantor = !guarantor || child.guarantor.toLowerCase().includes(guarantor);
-            const matchesCustomerId = !customerId || (child.customerId && child.customerId.toLowerCase().includes(customerId));
-            const matchesStatus = status === 'Tất cả' || child.status === status;
-            const matchesRegType = regType === 'Tất cả' || child.type === regType;
-            const matchesTransType = transType === 'Tất cả' || child.transType === transType;
-            const matchesMeasureType = measureType === 'Tất cả' || child.measureContractType === measureType;
-            const matchesAssetType = assetType === 'Tất cả' || child.secAssets.includes(assetType);
-            const matchesHandlingOfficer = handlingOfficer === 'Tất cả' || (child.handlingOfficer && child.handlingOfficer === handlingOfficer);
-            
-            let matchesDate = true;
-            const itemDate = parseDateString(child.date);
-            if (itemDate) {
-                if (fromDateObj && itemDate < fromDateObj) matchesDate = false;
-                if (toDateObj) {
-                    const endOfToDate = new Date(toDateObj);
-                    endOfToDate.setHours(23, 59, 59, 999);
-                    if (itemDate > endOfToDate) matchesDate = false;
-                }
-            }
-
-            return matchesGroup && matchesRegNum && matchesGuarantor && matchesCustomerId && matchesStatus && matchesRegType && matchesTransType && matchesMeasureType && matchesAssetType && matchesDate && matchesHandlingOfficer;
-        };
-
-        const parentMatches = matchChild(parent);
-        
-        let childrenMatch = false;
-        if (parent.children && parent.children.length > 0) {
-            childrenMatch = parent.children.some(child => {
-                const childMatch = matchChild(child);
-                let grandchildMatch = false;
-                if (child.children && child.children.length > 0) {
-                    grandchildMatch = child.children.some(gc => matchChild(gc));
-                }
-                return childMatch || grandchildMatch;
-            });
-        }
-
-        return parentMatches || childrenMatch;
-    });
-
+// Sắp xếp: lần 1 tăng dần, lần 2 giảm dần, lần 3 về mặc định (Thời điểm đăng ký giảm dần); về Trang 1
+window.toggleCbSort = function (field) {
+    if (cbSortField !== field) { cbSortField = field; cbSortOrder = 'asc'; }
+    else if (cbSortOrder === 'asc') cbSortOrder = 'desc';
+    else { cbSortField = ''; cbSortOrder = 'desc'; }
     cbCurrentPage = 1;
+    renderCbHeader();
     renderCanBoTable();
+};
+
+function sortPdkList(list) {
+    const field = cbSortField || 'date';
+    const order = cbSortField ? cbSortOrder : 'desc';
+    const val = x => field === 'date' ? (parseDateString(x.date)?.getTime() || 0) : normalizeText(field === 'guarantor' ? x.guarantor : x.securedParty);
+    return [...list].sort((a, b) => {
+        const A = val(a), B = val(b);
+        if (A < B) return order === 'asc' ? -1 : 1;
+        if (A > B) return order === 'asc' ? 1 : -1;
+        return 0;
+    });
 }
 
-// Render dữ liệu cây cán bộ
+function renderPagination(containerId, current, total, goFn) {
+    const el = document.getElementById(containerId);
+    const pages = Math.max(total, 1);
+    const dis = cond => cond ? 'disabled' : '';
+    let html = `<button class="page-btn" ${dis(current <= 1 || !total)} onclick="${goFn}(1)"><i class="fa fa-angle-double-left"></i></button>`;
+    html += `<button class="page-btn" ${dis(current <= 1 || !total)} onclick="${goFn}(${current - 1})"><i class="fa fa-angle-left"></i></button>`;
+    for (let i = 1; i <= pages && total; i++) html += `<button class="page-btn ${i === current ? 'active' : ''}" onclick="${goFn}(${i})">${i}</button>`;
+    html += `<button class="page-btn" ${dis(current >= pages || !total)} onclick="${goFn}(${current + 1})"><i class="fa fa-angle-right"></i></button>`;
+    html += `<button class="page-btn" ${dis(current >= pages || !total)} onclick="${goFn}(${pages})"><i class="fa fa-angle-double-right"></i></button>`;
+    el.innerHTML = html;
+}
+
 function renderCanBoTable() {
     const tbody = document.getElementById('canbo-table-body');
     if (!tbody) return;
-
-    const isFiltered = document.getElementById('cb-regNum').value ||
-        document.getElementById('cb-guarantor').value ||
-        document.getElementById('cb-status').value !== 'Tất cả' ||
-        document.getElementById('cb-fromDate').value ||
-        document.getElementById('cb-toDate').value ||
-        document.getElementById('cb-regType').value !== 'Tất cả' ||
-        document.getElementById('cb-transType').value !== 'Tất cả' ||
-        document.getElementById('cb-measureType').value !== 'Tất cả' ||
-        document.getElementById('cb-assetType').value !== 'Tất cả' ||
-        document.getElementById('cb-handlingOfficer').value !== 'Tất cả';
-
-    let dataList = isFiltered ? canBoFilteredData : canBoDossiersData;
-
-    // Sắp xếp dữ liệu nếu có trường được chọn
-    if (cbSortField) {
-        dataList = [...dataList].sort((a, b) => {
-            let valA = '';
-            let valB = '';
-            
-            if (cbSortField === 'date') {
-                const parseDate = (dStr) => {
-                    if (!dStr) return 0;
-                    const parts = dStr.trim().split(' ');
-                    const dateParts = parts[0].split('/');
-                    if (dateParts.length !== 3) return 0;
-                    const day = parseInt(dateParts[0], 10);
-                    const month = parseInt(dateParts[1], 10) - 1;
-                    const year = parseInt(dateParts[2], 10);
-                    let h = 0, m = 0;
-                    if (parts.length > 1) {
-                        const timeParts = parts[1].split(':');
-                        h = parseInt(timeParts[0], 10) || 0;
-                        m = parseInt(timeParts[1], 10) || 0;
-                    }
-                    return new Date(year, month, day, h, m).getTime();
-                };
-                valA = parseDate(a.date);
-                valB = parseDate(b.date);
-            } else if (cbSortField === 'guarantor') {
-                valA = (a.guarantor || '').toLowerCase();
-                valB = (b.guarantor || '').toLowerCase();
-            } else if (cbSortField === 'mortgagee') {
-                valA = (a.securedParty || '').toLowerCase();
-                valB = (b.securedParty || '').toLowerCase();
-            }
-            
-            if (valA < valB) return cbSortOrder === 'asc' ? -1 : 1;
-            if (valA > valB) return cbSortOrder === 'asc' ? 1 : -1;
-            return 0;
-        });
-    }
+    const dynCols = getCbDynamicColumns();
+    const colCount = 16 + dynCols.length;
+    const dataList = sortPdkList(canBoFilteredData);
+    const exportBtn = document.getElementById('cb-export');
 
     if (dataList.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="16" style="text-align:center; color:var(--text-muted); font-style:italic;">Không tìm thấy hồ sơ đăng ký phù hợp với điều kiện tìm kiếm.</td></tr>`;
-        document.getElementById('cb-count-display').innerText = `Hiển thị 0-0 của 0 hồ sơ gốc`;
-        document.getElementById('cb-pagination').innerHTML = '';
+        tbody.innerHTML = `<tr><td colspan="${colCount}" class="lookup-empty">${MSG_EMPTY}</td></tr>`;
+        document.getElementById('cb-count-display').innerText = 'Hiển thị 0-0 trong tổng số 0 bản ghi';
+        renderPagination('cb-pagination', 1, 0, 'goToCbPage');
+        exportBtn.disabled = true;
+        exportBtn.title = 'Không có dữ liệu để kết xuất Excel';
         return;
     }
+    exportBtn.disabled = false;
+    exportBtn.title = '';
 
-    const totalRoots = dataList.length;
-    const totalPages = Math.ceil(totalRoots / cbPageSize);
-    if (cbCurrentPage > totalPages) cbCurrentPage = totalPages || 1;
+    const totalPages = Math.ceil(dataList.length / cbPageSize);
+    if (cbCurrentPage > totalPages) cbCurrentPage = totalPages;
+    const start = (cbCurrentPage - 1) * cbPageSize;
+    const end = Math.min(start + cbPageSize, dataList.length);
+    document.getElementById('cb-count-display').innerText = `Hiển thị ${start + 1}-${end} trong tổng số ${dataList.length} bản ghi`;
+    renderPagination('cb-pagination', cbCurrentPage, totalPages, 'goToCbPage');
 
-    const startIndex = (cbCurrentPage - 1) * cbPageSize;
-    const endIndex = Math.min(startIndex + cbPageSize, totalRoots);
-    const pageRoots = dataList.slice(startIndex, endIndex);
-
-    document.getElementById('cb-count-display').innerText = `Hiển thị ${startIndex + 1}-${endIndex} của ${totalRoots} hồ sơ gốc`;
-
-    // Render nút phân trang
-    let pagHtml = '';
-    pagHtml += `<button class="page-btn" ${cbCurrentPage === 1 ? 'disabled' : ''} onclick="goToCbPage(1)"><i class="fa fa-angle-double-left"></i></button>`;
-    pagHtml += `<button class="page-btn" ${cbCurrentPage === 1 ? 'disabled' : ''} onclick="goToCbPage(${cbCurrentPage - 1})"><i class="fa fa-angle-left"></i></button>`;
-    
-    for (let i = 1; i <= totalPages; i++) {
-        pagHtml += `<button class="page-btn ${i === cbCurrentPage ? 'active' : ''}" onclick="goToCbPage(${i})">${i}</button>`;
-    }
-    
-    pagHtml += `<button class="page-btn" ${cbCurrentPage === totalPages ? 'disabled' : ''} onclick="goToCbPage(${cbCurrentPage + 1})"><i class="fa fa-angle-right"></i></button>`;
-    pagHtml += `<button class="page-btn" ${cbCurrentPage === totalPages ? 'disabled' : ''} onclick="goToCbPage(${totalPages})"><i class="fa fa-angle-double-right"></i></button>`;
-    
-    document.getElementById('cb-pagination').innerHTML = pagHtml;
+    const formatRegNum = num => (!num || num.length < 10) ? num : num.substring(0, 3) + '.' + num.substring(3, 6) + '.' + num.substring(6);
+    const assetCell = assetType => {
+        const list = String(assetType || '').split(/[\|\n]|\s+\/\s+/).map(x => x.trim()).filter(Boolean);
+        if (!list.length) return '<td>-</td>';
+        const lines = list.map(i => `<div style="margin-bottom:2px;">${i.length > 30 ? i.substring(0, 30) + '...' : i}</div>`).join('');
+        return `<td title="${list.join('\n')}" style="cursor: help;">${lines}</td>`;
+    };
+    const dynCells = n => dynCols.map(c => `<td>${getPdkAssetDetail(n)[c.id] || '-'}</td>`).join('');
+    const cells = (n, firstCell, parents) => `
+        ${firstCell}
+        <td style="white-space: nowrap;">${n.date}</td>
+        <td>${parents.length ? formatRegNum(n.regNum) : `<strong>${formatRegNum(n.regNum)}</strong>`}</td>
+        <td><span style="font-family: monospace;">${getPinDisplayText(n, !parents.length)}</span></td>
+        <td>${n.guarantor}</td>
+        <td>${n.securedParty}</td>
+        <td>${n.type}</td>
+        <td>${n.transType || '-'}</td>
+        <td>${n.measureContractType || '-'}</td>
+        ${assetCell(n.secAssets)}
+        ${dynCells(n)}
+        <td style="text-align: center;">${getStatusBadge(n.status)}</td>
+        <td>${n.requestor || n.guarantor}</td>
+        <td><code>${getPdkCustomerId(n)}</code></td>
+        <td><strong>${n.receiptNo || '-'}</strong></td>
+        <td>${n.source || '-'}</td>
+        <td>${n.handlingOfficer || '-'}</td>`;
+    const toggle = n => (n.children && n.children.length)
+        ? `<span class="tree-toggle ${n.expanded ? '' : 'collapsed'}" onclick="toggleCbTree('${n.id}', event)"><i class="fa-solid fa-chevron-down"></i></span>`
+        : '<span style="margin-left: 24px;"></span>';
 
     let html = '';
-    let stt = startIndex + 1;
-
-    // Helper sinh dropdown Thao tác khác tuân thủ quy tắc Fixed-slot
-    const getMoreActionsDropdownHtml = (item, parentItem = null, grandparentItem = null) => {
-        const isHoanThanh = item.status === 'Hoàn thành';
-        
-        if (!isHoanThanh) {
-            return `
-                <div class="dropdown">
-                    <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px; opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ khả dụng với hồ sơ ở trạng thái Hoàn thành">
-                        Thao tác khác <i class="fa fa-caret-down"></i>
-                    </button>
-                </div>
-            `;
-        }
-
-        const root = grandparentItem || parentItem || item;
-        const getFamilyNodes = (rootNode) => {
-            const list = [rootNode];
-            if (rootNode.children) {
-                rootNode.children.forEach(child => {
-                    list.push(child);
-                    if (child.children) {
-                        child.children.forEach(gc => {
-                            list.push(gc);
-                        });
-                    }
-                });
-            }
-            return list;
-        };
-        const familyNodes = getFamilyNodes(root);
-        const pendingStatuses = ["Chờ thanh toán", "Chờ duyệt", "Duyệt chờ ký", "Sai lệch thanh toán", "Chờ ký"];
-        const hasPendingRelated = familyNodes.some(node => {
-            if (node.id === item.id) return false;
-            const isPending = pendingStatuses.includes(node.status);
-            if (!isPending) return false;
-            const t = node.type;
-            return t.includes("thay đổi") || 
-                   t.includes("Xóa") || 
-                   t.includes("Hủy") || 
-                   t.includes("Thông báo xử lý") || 
-                   t.includes("Chỉnh lý");
-        });
-
-        const isRoot = item.type === 'Đăng ký lần đầu';
-        const isChildNotice = item.type === 'Thông báo xử lý tài sản đảm bảo lần đầu';
-        
-        const isChangable = [
-            'Đăng ký lần đầu', 'Đăng ký thay đổi', 'Xóa đăng ký', 
-            'Thông báo xử lý tài sản đảm bảo lần đầu', 
-            'Thay đổi thông báo xử lý tài sản bảo đảm', 
-            'Xóa đăng ký thông báo xử lý tài sản bảo đảm'
-        ].includes(item.type);
-
-        const isLeaf = !item.children || item.children.length === 0;
-        
-        let isBpbđ = item.transType === 'Biện pháp bảo đảm';
-        if (!isBpbđ && parentItem) {
-            isBpbđ = parentItem.transType === 'Biện pháp bảo đảm';
-        }
-        if (!isBpbđ && grandparentItem) {
-            isBpbđ = grandparentItem.transType === 'Biện pháp bảo đảm';
-        }
-
-        const isHuy = item.type === 'Hủy đăng ký';
-
-        const actionSlots = [
-            {
-                key: 'change',
-                label: 'Đăng ký thay đổi',
-                icon: 'fa-solid fa-file-pen',
-                enabled: isRoot && !hasPendingRelated,
-                tip: !isRoot ? 'Chỉ hiển thị đối với Hồ sơ gốc (Đăng ký lần đầu)' : (hasPendingRelated ? 'Không thể thực hiện do có hồ sơ liên quan đang xử lý' : 'Tạo hồ sơ đăng ký thay đổi'),
-                click: `actionClick('${item.regNum}', 'Đăng ký thay đổi')`
-            },
-            {
-                key: 'notice',
-                label: 'Thông báo xử lý tài sản',
-                icon: 'fa-solid fa-bullhorn',
-                enabled: isRoot && !hasPendingRelated,
-                tip: !isRoot ? 'Chỉ hiển thị đối với Hồ sơ gốc (Đăng ký lần đầu)' : (hasPendingRelated ? 'Không thể thực hiện do có hồ sơ liên quan đang xử lý' : 'Lập thông báo xử lý tài sản bảo đảm'),
-                click: `actionClick('${item.regNum}', 'Thông báo xử lý tài sản')`
-            },
-            {
-                key: 'delete',
-                label: 'Xóa đăng ký',
-                icon: 'fa-solid fa-file-circle-minus',
-                enabled: isRoot && !hasPendingRelated,
-                tip: !isRoot ? 'Chỉ hiển thị đối với Hồ sơ gốc (Đăng ký lần đầu)' : (hasPendingRelated ? 'Không thể thực hiện do có hồ sơ liên quan đang xử lý' : 'Lập hồ sơ xóa đăng ký'),
-                click: `actionClick('${item.regNum}', 'Xóa đăng ký')`
-            },
-            {
-                key: 'edit_notice',
-                label: 'Thay đổi thông báo',
-                icon: 'fa-solid fa-pen-to-square',
-                enabled: isChildNotice && !hasPendingRelated,
-                tip: !isChildNotice ? 'Chỉ hiển thị đối với Yêu cầu Thông báo xử lý tài sản đảm bảo lần đầu (Hồ sơ con)' : (hasPendingRelated ? 'Không thể thực hiện do có hồ sơ liên quan đang xử lý' : 'Lập hồ sơ thay đổi thông báo xử lý tài sản'),
-                click: `actionClick('${item.regNum}', 'Thay đổi thông báo')`
-            },
-            {
-                key: 'delete_notice',
-                label: 'Xóa thông báo',
-                icon: 'fa-solid fa-trash-can',
-                enabled: isChildNotice && !hasPendingRelated,
-                tip: !isChildNotice ? 'Chỉ hiển thị đối với Yêu cầu Thông báo xử lý tài sản đảm bảo lần đầu (Hồ sơ con)' : (hasPendingRelated ? 'Không thể thực hiện do có hồ sơ liên quan đang xử lý' : 'Lập hồ sơ xóa thông báo xử lý tài sản'),
-                click: `actionClick('${item.regNum}', 'Xóa thông báo')`
-            },
-            {
-                key: 'correct',
-                label: 'Chỉnh lý thông tin',
-                icon: 'fa-solid fa-wrench',
-                enabled: isChangable,
-                tip: isChangable ? 'Lập hồ sơ chỉnh lý thông tin' : 'Chỉ hiển thị ở các Hồ sơ Đăng ký thay đổi, Đăng ký mới, Xóa đăng ký, Thông báo xử lý tài sản, Thay đổi thông báo, Xóa thông báo',
-                click: `actionClick('${item.regNum}', 'Chỉnh lý thông tin')`
-            },
-            {
-                key: 'cancel',
-                label: 'Hủy đăng ký',
-                icon: 'fa-solid fa-ban',
-                enabled: isLeaf && ['Đăng ký lần đầu', 'Đăng ký thay đổi'].includes(item.type) && isBpbđ,
-                tip: (isLeaf && ['Đăng ký lần đầu', 'Đăng ký thay đổi'].includes(item.type) && isBpbđ) ? 'Lập hồ sơ hủy đăng ký' : 'Chỉ hiển thị đối với nút lá cuối cùng trên nhánh hồ sơ về Đăng ký biện pháp bảo đảm và thuộc loại Đăng ký lần đầu/Đăng ký thay đổi',
-                click: `actionClick('${item.regNum}', 'Hủy đăng ký')`
-            },
-            {
-                key: 'restore',
-                label: 'Khôi phục Hủy đăng ký',
-                icon: 'fa-solid fa-trash-arrow-up',
-                enabled: isHuy,
-                tip: isHuy ? 'Lập hồ sơ khôi phục hủy đăng ký' : 'Chỉ hiển thị ở bản ghi Loại Hủy đăng ký ở trạng thái Hoàn thành',
-                click: `actionClick('${item.regNum}', 'Khôi phục Hủy đăng ký')`
-            }
-        ];
-
-        let menuItemsHtml = '';
-        let enabledCount = 0;
-        actionSlots.forEach(slot => {
-            if (slot.enabled) {
-                enabledCount++;
-                menuItemsHtml += `
-                    <a class="dropdown-item" onclick="${slot.click}" title="${slot.tip}">
-                        <i class="${slot.icon}"></i> ${slot.label}
-                    </a>
-                `;
-            }
-        });
-
-        if (enabledCount === 0) {
-            return `
-                <div class="dropdown">
-                    <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px; opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Không có thao tác khả dụng cho hồ sơ này">
-                        Thao tác khác <i class="fa fa-caret-down"></i>
-                    </button>
-                </div>
-            `;
-        }
-
-        return `
-            <div class="dropdown" style="position: relative; display: inline-block;">
-                <button class="btn btn-outline-primary dropdown-toggle" style="padding: 4px 8px; font-size: 11px;" onclick="toggleRowDropdown(this, event)">
-                    Thao tác khác <i class="fa fa-caret-down"></i>
-                </button>
-                <div class="dropdown-menu">
-                    ${menuItemsHtml}
-                </div>
-            </div>
-        `;
-    };
-
-    const formatRegNumForDisplay = (num) => {
-        if (!num || num.length < 10) return num;
-        return num.substring(0, 3) + '.' + num.substring(3, 6) + '.' + num.substring(6);
-    };
-
-    const renderAssetTypeCell = (assetType) => {
-        if (!assetType) return '<td>-</td>';
-        const list = assetType.split(/[\|\n]|\s+\/\s+/).map(x => x.trim()).filter(Boolean);
-        if (list.length === 0) return '<td>-</td>';
-        const tooltipText = list.join('\n');
-        const displayLines = list.map(item => {
-            const truncated = item.length > 30 ? item.substring(0, 30) + '...' : item;
-            return `<div class="asset-type-line" style="margin-bottom: 2px;">${truncated}</div>`;
-        }).join('');
-        return `<td class="asset-type-cell" title="${tooltipText}" style="cursor: help; vertical-align: middle;">${displayLines}</td>`;
-    };
-
-    pageRoots.forEach(parent => {
-        const hasChildren = parent.children && parent.children.length > 0;
-        const toggleHtml = hasChildren
-            ? `<span class="tree-toggle ${parent.expanded ? '' : 'collapsed'}" onclick="toggleCbTree('${parent.id}', event)"><i class="fa-solid fa-chevron-down"></i></span>`
-            : `<span style="margin-left: 24px;"></span>`;
-
-        html += `
-            <tr class="tree-row depth-0">
-                <td style="text-align: center;">${toggleHtml} <strong>${stt++}</strong></td>
-                <td>${parent.date}</td>
-                <td><strong>${formatRegNumForDisplay(parent.regNum)}</strong></td>
-                <td><span style="font-family: monospace;">${getPinDisplayText(parent)}</span></td>
-                <td>${parent.guarantor}</td>
-                <td>${parent.securedParty}</td>
-                <td>${parent.type}</td>
-                <td>${parent.transType || ''}</td>
-                <td>${parent.measureContractType || ''}</td>
-                ${renderAssetTypeCell(parent.secAssets)}
-                <td style="text-align: center;"><span class="status-badge ${parent.status === 'Hoàn thành' ? 'completed' : (parent.status === 'Chờ duyệt' ? 'pending-approval' : (parent.status === 'Chờ thanh toán' ? 'pending-payment' : (parent.status === 'Chờ ký' ? 'approved-pending-signature' : 'rejected')))}">${parent.status}</span></td>
-                <td>${parent.requestor || parent.guarantor}</td>
-                <td><code>${parent.customerId || ('KH-' + parent.pin)}</code></td>
-                <td><strong>${parent.receiptNo || '-'}</strong></td>
-                <td>${parent.handlingOfficer || '-'}</td>
-                <td style="text-align: center;">
-                    <div style="display:flex; gap:5px; justify-content: center; align-items: center;">
-                        <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="openDetail('${parent.regNum}')">Xem</button>
-                        ${getMoreActionsDropdownHtml(parent)}
-                    </div>
-                </td>
-            </tr>
-        `;
-
-        if (hasChildren && parent.expanded) {
-            parent.children.forEach(child => {
-                const hasGrandchildren = child.children && child.children.length > 0;
-                const childToggleHtml = hasGrandchildren
-                    ? `<span class="tree-toggle ${child.expanded ? '' : 'collapsed'}" onclick="toggleCbTree('${child.id}', event)"><i class="fa-solid fa-chevron-down"></i></span>`
-                    : `<span style="margin-left: 24px;"></span>`;
-
-                html += `
-                    <tr class="tree-row depth-1">
-                        <td><span class="tree-indent-line" style="margin-left:12px;">├──</span> ${childToggleHtml}</td>
-                        <td>${child.date}</td>
-                        <td><span>${formatRegNumForDisplay(child.regNum)}</span></td>
-                        <td><span style="font-family: monospace;">${getPinDisplayText(child)}</span></td>
-                        <td>${child.guarantor}</td>
-                        <td>${child.securedParty}</td>
-                        <td>${child.type}</td>
-                        <td>${child.transType || ''}</td>
-                        <td>${child.measureContractType || ''}</td>
-                        ${renderAssetTypeCell(child.secAssets)}
-                        <td style="text-align: center;"><span class="status-badge ${child.status === 'Hoàn thành' ? 'completed' : (child.status === 'Chờ duyệt' ? 'pending-approval' : (child.status === 'Chờ thanh toán' ? 'pending-payment' : (child.status === 'Chờ ký' ? 'approved-pending-signature' : 'rejected')))}">${child.status}</span></td>
-                        <td>${child.requestor || child.guarantor}</td>
-                        <td><code>${child.customerId || ('KH-' + child.pin)}</code></td>
-                        <td><strong>${child.receiptNo || '-'}</strong></td>
-                        <td>${child.handlingOfficer || '-'}</td>
-                        <td style="text-align: center;">
-                            <div style="display:flex; gap:5px; justify-content: center; align-items: center;">
-                                <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="openDetail('${child.regNum}')">Xem</button>
-                                ${getMoreActionsDropdownHtml(child, parent)}
-                            </div>
-                        </td>
-                    </tr>
-                `;
-
-                if (hasGrandchildren && child.expanded) {
-                    child.children.forEach(gc => {
-                        html += `
-                            <tr class="tree-row depth-2">
-                                <td><span class="tree-indent-line" style="margin-left:36px;">└──</span> <span style="margin-left:24px;"></span></td>
-                                <td>${gc.date}</td>
-                                <td><span>${formatRegNumForDisplay(gc.regNum)}</span></td>
-                                <td><span style="font-family: monospace;">${getPinDisplayText(gc)}</span></td>
-                                <td>${gc.guarantor}</td>
-                                <td>${gc.securedParty}</td>
-                                <td>${gc.type}</td>
-                                <td>${gc.transType || ''}</td>
-                                <td>${gc.measureContractType || ''}</td>
-                                ${renderAssetTypeCell(gc.secAssets)}
-                                <td style="text-align: center;"><span class="status-badge ${gc.status === 'Hoàn thành' ? 'completed' : (gc.status === 'Chờ duyệt' ? 'pending-approval' : (gc.status === 'Chờ thanh toán' ? 'pending-payment' : (gc.status === 'Chờ ký' ? 'approved-pending-signature' : 'rejected')))}">${gc.status}</span></td>
-                                <td>${gc.requestor || gc.guarantor}</td>
-                                <td><code>${gc.customerId || ('KH-' + gc.pin)}</code></td>
-                                <td><strong>${gc.receiptNo || '-'}</strong></td>
-                                <td>${gc.handlingOfficer || '-'}</td>
-                                <td style="text-align: center;">
-                                    <div style="display:flex; gap:5px; justify-content: center; align-items: center;">
-                                        <button class="btn btn-outline-primary" style="padding: 4px 8px; font-size: 11px;" onclick="openDetail('${gc.regNum}')">Xem</button>
-                                        ${getMoreActionsDropdownHtml(gc, child, parent)}
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
-                    });
-                }
+    let stt = start + 1;
+    dataList.slice(start, end).forEach(root => {
+        html += `<tr class="tree-row depth-0 lookup-row-click" title="Click để xem chi tiết hồ sơ" onclick="openDetail('${root.regNum}')">${cells(root, `<td style="text-align: center;">${toggle(root)} <strong>${stt++}</strong></td>`, [])}</tr>`;
+        if (!(root.children && root.children.length && root.expanded)) return;
+        root.children.forEach(child => {
+            html += `<tr class="tree-row depth-1 lookup-row-click" title="Click để xem chi tiết hồ sơ" onclick="openDetail('${child.regNum}')">${cells(child, `<td><span class="tree-indent-line" style="margin-left:12px;">├──</span> ${toggle(child)}</td>`, [root])}</tr>`;
+            if (!(child.children && child.children.length && child.expanded)) return;
+            child.children.forEach(gc => {
+                html += `<tr class="tree-row depth-2 lookup-row-click" title="Click để xem chi tiết hồ sơ" onclick="openDetail('${gc.regNum}')">${cells(gc, '<td><span class="tree-indent-line" style="margin-left:36px;">└──</span> <span style="margin-left:24px;"></span></td>', [child, root])}</tr>`;
             });
-        }
+        });
     });
-
     tbody.innerHTML = html;
 }
 
-// Xử lý mở đóng dropdown thao tác hàng
-function toggleRowDropdown(btn, event) {
-    if (event) event.stopPropagation();
-    
-    const dropdownMenu = btn.nextElementSibling;
-    const isVisible = dropdownMenu.style.display === 'block';
-    
-    document.querySelectorAll('.dropdown-menu').forEach(m => m.style.display = 'none');
-    
-    if (!isVisible) {
-        dropdownMenu.style.display = 'block';
+// Mã PIN chỉ được cấp với hồ sơ Đăng ký lần đầu / Thông báo xử lý tài sản bảo đảm lần đầu (chưa đăng ký BPBĐ)
+function getPinDisplayText(item, isRootRow) {
+    if (!item) return '-';
+    const hasPin = item.type === 'Đăng ký lần đầu' || (item.type === 'Thông báo xử lý tài sản bảo đảm lần đầu' && isRootRow);
+    return hasPin ? (item.pin || '-') : '-';
+}
+
+// ----------------------------------------------------
+// TAB YÊU CẦU CUNG CẤP THÔNG TIN / YÊU CẦU CUNG CẤP BẢN SAO
+// ----------------------------------------------------
+function getServiceList(group) {
+    if (group === 'cctt') return typeof ccttOfficerRequests !== 'undefined' ? ccttOfficerRequests : [];
+    return typeof officerCopyRequests !== 'undefined' ? officerCopyRequests : [];
+}
+
+// Nguồn tiếp nhận: "Dịch vụ công", "Trực tuyến" hoặc "Trực tiếp"
+function getServiceSource(item) {
+    const s = normalizeText(item.source);
+    if (s.includes('dịch vụ công')) return 'Dịch vụ công';
+    if (s.includes('website') || s.includes('trực tuyến')) return 'Trực tuyến';
+    return 'Trực tiếp';
+}
+
+const SERVICE_FIELDS = {
+    cctt: {
+        text: [['code', x => x.id], ['requester', x => x.requester], ['customerId', x => x.customerId]],
+        select: [['source', x => getServiceSource(x)], ['officer', x => x.officer], ['criteria', x => x.criteria], ['status', x => x.status]]
+    },
+    copy: {
+        text: [['code', x => x.id], ['requester', x => x.requester], ['regNo', x => x.registrationNo], ['customerId', x => x.customerId]],
+        select: [['source', x => getServiceSource(x)], ['officer', x => x.officer], ['copyType', x => x.copyType], ['status', x => x.status]]
     }
+};
+
+function searchService(group, keepPage) {
+    const st = serviceState[group];
+    const range = readDateRange(st.prefix);
+    if (!range) return;
+    const cfg = SERVICE_FIELDS[group];
+    const texts = cfg.text.map(([id, get]) => [normalizeText(document.getElementById(`${st.prefix}-${id}`).value), get]).filter(t => t[0]);
+    const selects = cfg.select.map(([id, get]) => [document.getElementById(`${st.prefix}-${id}`).value, get]).filter(s => s[0] !== 'Tất cả');
+    st.filtered = getServiceList(group).filter(x =>
+        texts.every(([v, get]) => normalizeText(get(x)).includes(v)) &&
+        selects.every(([v, get]) => get(x) === v) &&
+        inRange(x.registeredAt, range));
+    if (!keepPage) st.page = 1;
+    renderServiceTable(group);
 }
 
-// Click vào một action trong dropdown
-function actionClick(regNum, actionName) {
-    alert(`Đã nhận lệnh yêu cầu tác vụ: [${actionName}] cho hồ sơ số đăng ký: ${regNum}. Hệ thống đang khởi tạo giao dịch...`);
+function resetServiceSearch(group) {
+    const st = serviceState[group];
+    const cfg = SERVICE_FIELDS[group];
+    cfg.text.forEach(([id]) => { document.getElementById(`${st.prefix}-${id}`).value = ''; });
+    cfg.select.forEach(([id]) => { document.getElementById(`${st.prefix}-${id}`).value = 'Tất cả'; });
+    setDefaultDates(group);
+    st.sortOrder = '';
+    updateServiceSortIcon(group);
+    searchService(group);
 }
 
-// Điều hướng xem chi tiết
-function openDetail(id) {
+function changeServicePageSize(group) {
+    const st = serviceState[group];
+    st.pageSize = parseInt(document.getElementById(`${st.prefix}-pageSize`).value, 10);
+    st.page = 1;
+    renderServiceTable(group);
+}
+
+function goToServicePage(group, page) {
+    serviceState[group].page = page;
+    renderServiceTable(group);
+}
+window.goToCtPage = page => goToServicePage('cctt', page);
+window.goToBsPage = page => goToServicePage('copy', page);
+
+// Sắp xếp cột Thời điểm đăng ký: lần 1 tăng dần, lần 2 giảm dần, lần 3 về mặc định (giảm dần)
+function toggleServiceSort(group) {
+    const st = serviceState[group];
+    st.sortOrder = st.sortOrder === '' ? 'asc' : (st.sortOrder === 'asc' ? 'desc' : '');
+    st.page = 1;
+    updateServiceSortIcon(group);
+    renderServiceTable(group);
+}
+
+function updateServiceSortIcon(group) {
+    const st = serviceState[group];
+    const th = document.getElementById(`${st.prefix}-header-date`);
+    if (!th) return;
+    th.classList.toggle('sorted', !!st.sortOrder);
+    th.querySelector('i').className = `fa-solid ${st.sortOrder === 'asc' ? 'fa-sort-up' : (st.sortOrder === 'desc' ? 'fa-sort-down' : 'fa-sort')}`;
+}
+
+function renderServiceTable(group) {
+    const st = serviceState[group];
+    const tbody = document.getElementById(`${st.prefix}-table-body`);
+    const exportBtn = document.getElementById(`${st.prefix}-export`);
+    const goFn = group === 'cctt' ? 'goToCtPage' : 'goToBsPage';
+    const order = st.sortOrder || 'desc';
+    const list = [...st.filtered].sort((a, b) => {
+        const A = parseDateString(a.registeredAt)?.getTime() || 0;
+        const B = parseDateString(b.registeredAt)?.getTime() || 0;
+        return order === 'asc' ? A - B : B - A;
+    });
+    if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="11" class="lookup-empty">${MSG_EMPTY}</td></tr>`;
+        document.getElementById(`${st.prefix}-count-display`).innerText = 'Hiển thị 0-0 trong tổng số 0 bản ghi';
+        renderPagination(`${st.prefix}-pagination`, 1, 0, goFn);
+        exportBtn.disabled = true;
+        exportBtn.title = 'Không có dữ liệu để kết xuất Excel';
+        return;
+    }
+    exportBtn.disabled = false;
+    exportBtn.title = '';
+    const totalPages = Math.ceil(list.length / st.pageSize);
+    if (st.page > totalPages) st.page = totalPages;
+    const start = (st.page - 1) * st.pageSize;
+    const end = Math.min(start + st.pageSize, list.length);
+    document.getElementById(`${st.prefix}-count-display`).innerText = `Hiển thị ${start + 1}-${end} trong tổng số ${list.length} bản ghi`;
+    renderPagination(`${st.prefix}-pagination`, st.page, totalPages, goFn);
+
+    tbody.innerHTML = list.slice(start, end).map((x, i) => {
+        const common = `
+            <td style="text-align: center;">${start + i + 1}</td>
+            <td style="white-space: nowrap;"><strong style="color: var(--primary-color);">${x.id}</strong></td>
+            <td style="white-space: nowrap;">${x.registeredAt}</td>
+            <td><code>${x.customerId || '-'}</code></td>
+            <td>${x.requester}</td>`;
+        const tail = `
+            <td>${getServiceSource(x)}</td>
+            <td>${x.officer || '-'}</td>
+            <td style="text-align: center;">${getStatusBadge(x.status)}</td>`;
+        const middle = group === 'cctt'
+            ? `<td>${x.address || '-'}</td><td>${x.criteria}</td><td>${x.inputData}</td>`
+            : `<td>${x.registrationNo || '-'}</td>
+               <td style="text-align: center;"><span class="badge ${x.copyType === 'Bản sao giấy' ? 'badge-warning' : 'badge-success'}">${x.copyType}</span></td>
+               <td style="text-align: center;">${x.copyType === 'Bản sao giấy' && x.quantity ? x.quantity : '-'}</td>`;
+        return `<tr class="lookup-row-click" title="Click để xem chi tiết hồ sơ" onclick="openServiceDetail('${group}', '${x.id}')">${common}${middle}${tail}</tr>`;
+    }).join('');
+}
+
+// ----------------------------------------------------
+// XEM CHI TIẾT / KẾT XUẤT EXCEL / GIỮ TRẠNG THÁI KHI QUAY LẠI
+// ----------------------------------------------------
+const LOOKUP_STATE_KEY = 'traCuuHoSoState';
+
+function saveLookupState() {
+    const values = {};
+    document.querySelectorAll('#view-canbo input[id], #view-canbo select[id]').forEach(el => { values[el.id] = el.value; });
+    sessionStorage.setItem(LOOKUP_STATE_KEY, JSON.stringify({
+        group: activeLookupGroup, values,
+        cb: { page: cbCurrentPage, sortField: cbSortField, sortOrder: cbSortOrder },
+        cctt: { page: serviceState.cctt.page, sortOrder: serviceState.cctt.sortOrder },
+        copy: { page: serviceState.copy.page, sortOrder: serviceState.copy.sortOrder }
+    }));
     sessionStorage.setItem('prevCanBoPage', window.location.href);
-    window.location.href = 'xem_chi_tiet_lich_su_can_bo.html?id=' + id + '&focusId=' + id + '&from=tra_cuu';
 }
 
-// Tác vụ Xuất Excel
-function exportExcel() {
-    alert('Đang kết xuất Excel danh sách kết quả tra cứu hồ sơ cán bộ...');
+function restoreLookupState() {
+    let state = null;
+    try { state = JSON.parse(sessionStorage.getItem(LOOKUP_STATE_KEY) || 'null'); } catch (e) { state = null; }
+    sessionStorage.removeItem(LOOKUP_STATE_KEY);
+    if (!state) return false;
+    const set = (id, v) => { const el = document.getElementById(id); if (el && v !== undefined) el.value = v; };
+    set('cb-transType', state.values['cb-transType']);
+    onCbTransTypeChange();
+    set('cb-assetType', state.values['cb-assetType']);
+    onCbAssetTypeChange();
+    set('dyn-goodsKind', state.values['dyn-goodsKind']);
+    onCbGoodsKindChange();
+    Object.keys(state.values).forEach(id => set(id, state.values[id]));
+    cbSortField = state.cb.sortField || '';
+    cbSortOrder = state.cb.sortOrder || 'desc';
+    cbPageSize = parseInt(document.getElementById('cb-pageSize').value, 10);
+    renderCbHeader();
+    cbCurrentPage = state.cb.page || 1;
+    searchCanBo(true);
+    ['cctt', 'copy'].forEach(g => {
+        const st = serviceState[g];
+        st.sortOrder = state[g].sortOrder || '';
+        st.pageSize = parseInt(document.getElementById(`${st.prefix}-pageSize`).value, 10);
+        st.page = state[g].page || 1;
+        updateServiceSortIcon(g);
+        searchService(g, true);
+    });
+    switchLookupGroup(state.group || 'registration');
+    return true;
 }
 
-// Quay lại danh sách
+// Phiếu đăng ký: màn Xem chi tiết Phiếu đăng ký (focus đúng phiên bản của dòng được chọn)
+function openDetail(id) {
+    saveLookupState();
+    window.location.href = 'xem_chi_tiet_lich_su_can_bo.html?id=' + encodeURIComponent(id) + '&focusId=' + encodeURIComponent(id) + '&from=tra_cuu';
+}
+
+// Yêu cầu cung cấp thông tin / bản sao: màn Xem chi tiết tại Kiểm tra và xử lý hồ sơ (chế độ chỉ đọc)
+function openServiceDetail(group, id) {
+    saveLookupState();
+    window.location.href = `kiem_tra_ho_so.html?from=tra_cuu&${group === 'cctt' ? 'openCctt' : 'openCopy'}=${encodeURIComponent(id)}`;
+}
+
+function exportExcel(group) {
+    const names = { registration: 'Phiếu đăng ký', cctt: 'Yêu cầu cung cấp thông tin', copy: 'Yêu cầu cung cấp bản sao' };
+    showLookupToast(`Đang kết xuất Excel danh sách ${names[group]} theo điều kiện lọc...`, 'success');
+}
+
+// Màn chi tiết cũ (giữ tương thích)
 function closeDetail() {
     document.getElementById('view-detail').classList.remove('active');
-    document.querySelector('.nav-tabs').style.display = 'flex';
     document.getElementById('view-canbo').classList.add('active');
 }
-
-window.toggleCbSort = function(field) {
-    if (cbSortField === field) {
-        cbSortOrder = (cbSortOrder === 'asc') ? 'desc' : 'asc';
-    } else {
-        cbSortField = field;
-        cbSortOrder = 'asc';
-    }
-    
-    // Cập nhật icon sắp xếp trong DOM
-    const fields = ['date', 'guarantor', 'mortgagee'];
-    fields.forEach(f => {
-        const header = document.getElementById(`cb-header-${f}`);
-        if (!header) return;
-        const icon = header.querySelector('i');
-        if (!icon) return;
-        
-        if (f === cbSortField) {
-            icon.className = (cbSortOrder === 'asc') ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down';
-            icon.style.color = '#3B82F6';
-        } else {
-            icon.className = 'fa-solid fa-sort';
-            icon.style.color = '#94A3B8';
-        }
-    });
-    
-    cbCurrentPage = 1;
-    renderCanBoTable();
-};
+function viewHistoryDetails() {}

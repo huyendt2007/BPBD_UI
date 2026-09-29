@@ -57,6 +57,7 @@
 
 #### 4.1.5.3. UC131.1 - Đăng ký thông báo xử lý tài sản bảo đảm lần đầu
 
+<a id="41531-uc1311mh02---man-hinh-nhap-thong-tin-dang-ky-thong-bao-xu-ly-lan-dau"></a>
 ##### 4.1.5.3.1. UC131.1.MH02 - Màn hình Nhập thông tin đăng ký thông báo xử lý lần đầu
 
 ##### 4.1.5.3.2. Mô tả thông tin trên màn hình
@@ -113,6 +114,7 @@
 
 ---
 
+<a id="41534-uc1311mh03---man-hinh-xem-truoc-review-dang-ky-lan-dau"></a>
 ##### 4.1.5.3.4. UC131.1.MH03 - Màn hình Xem trước (Review) đăng ký lần đầu
 
 ##### 4.1.5.3.5. Mô tả thông tin trên màn hình
@@ -154,16 +156,17 @@
 | :-- | :--- | :--- | :--- |
 | 1 | Quay lại | Nút | - Thao tác: NSD click nút Quay lại.<br>- Xử lý: Đóng màn hình xem trước và quay trở về màn hình Nhập thông tin (UC131.1.MH02), giữ nguyên toàn bộ dữ liệu đã nhập trên form và trạng thái tích chọn trong danh sách tài sản. |
 | 2 | Tiếp tục | Nút | - Thao tác: NSD click nút Tiếp tục.<br>- Xử lý:<br>+ Ghi nhận hồ sơ dưới trạng thái **"Chờ thanh toán"**; chưa chuyển hồ sơ sang **Chờ duyệt** tại bước này.<br>+ Đóng gói thông tin thanh toán (Mã hồ sơ tạm, lệ phí xử lý lấy từ biểu phí, nội dung thanh toán) và chuyển hướng người dùng sang Cổng thanh toán [UC158 - Quản lý thanh toán phí](UC158_Quan_ly_thanh_toan_phi.md).<br>+ Chỉ sau khi hệ thống nhận kết quả **thanh toán thành công** từ UC158/Webhook, hồ sơ mới được chuyển sang trạng thái **"Chờ duyệt"**.<br>+ Nếu Nguồn tài sản = **Tài sản chưa đăng ký BPBĐ**, hệ thống chỉ sinh Số thông báo xử lý và mã PIN mới sau khi thanh toán thành công và hồ sơ được ghi nhận chuyển sang **Chờ duyệt**.<br>+ Nếu Nguồn tài sản = **Từ hồ sơ BPBĐ đã đăng ký**, không sinh mã PIN mới cho hồ sơ thông báo xử lý. |
-| 3 | Lắng nghe trạng thái thanh toán & Hiển thị kết quả (Auto) | Background Task / Redirect | Hệ thống thực hiện lắng nghe trạng thái thanh toán từ Cổng thanh toán (Webhook callback).<br>- Khi thanh toán thành công: chuyển hồ sơ sang trạng thái **Chờ duyệt** và hiển thị kết quả giao dịch tại Màn hình Kết quả Giao dịch chung của hệ thống.<br>- Khi thanh toán không thành công/hủy/quá hạn: giữ hồ sơ ở trạng thái thanh toán tương ứng theo UC158, không chuyển sang **Chờ duyệt**.<br>- Chi tiết quy trình xử lý Webhook cho các trường hợp TH1 đến TH7: Tham chiếu tại [4.1.2.3. Lắng nghe trạng thái thanh toán từ Cổng thanh toán (Webhook Callback) của UC158](UC158_Quan_ly_thanh_toan_phi.md#4123-lang-nghe-trang-thai-thanh-toan-tu-cong-thanh-toan-webhook-callback).<br>- Chi tiết giao diện và cấu hình hiển thị kết quả giao dịch: Tham chiếu tại [4.1.2.4. UC158.MH02 - Màn hình Kết quả Giao dịch chung của UC158](UC158_Quan_ly_thanh_toan_phi.md#4124-uc158mh02---man-hinh-ket-qua-giao-dich-chung). |
+| 3 | Lắng nghe trạng thái thanh toán & Hiển thị kết quả (Auto) | Background Task / Redirect | Hệ thống thực hiện lắng nghe trạng thái thanh toán từ Cổng thanh toán (Webhook callback).<br>- Khi thanh toán thành công: chuyển hồ sơ sang trạng thái **Chờ duyệt** và hiển thị kết quả giao dịch tại Màn hình Kết quả Giao dịch chung của hệ thống.<br>- Khi thanh toán không thành công/hủy/quá hạn: giữ hồ sơ ở trạng thái thanh toán tương ứng theo UC158, không chuyển sang **Chờ duyệt**.<br>- Chi tiết quy trình xử lý Webhook cho các trường hợp TH1 đến TH7: Tham chiếu tại [Xử lý kết quả trả về từ Cổng thanh toán - Thanh toán trực tuyến (Website Khách hàng)](SRS_Thanh%20toan%20truc%20tuyen.md#414-xu-ly-ket-qua-tra-ve-tu-cong-thanh-toan).<br>- Chi tiết giao diện và cấu hình hiển thị kết quả giao dịch: Tham chiếu tại [MH02 - Màn hình Kết quả thanh toán thành công - Thanh toán trực tuyến (Website Khách hàng)](SRS_Thanh%20toan%20truc%20tuyen.md#415-mh02---man-hinh-ket-qua-thanh-toan-thanh-cong). |
 
 ---
 
 ##### 4.1.5.3.7. Màn hình Kết quả thanh toán
 - Sau khi thực hiện thanh toán xong trên Cổng thanh toán trực tuyến, hệ thống tự động chuyển hướng người dùng quay trở lại hệ thống và hiển thị kết quả giao dịch trên Màn hình kết quả giao dịch chung.
-- Chi tiết thông tin giao diện và các quy tắc hiển thị động cho nghiệp vụ Đăng ký thông báo xử lý tài sản bảo đảm lần đầu: Tham chiếu tại [4.1.2.4. UC158.MH02 - Màn hình Kết quả Giao dịch chung của UC158](UC158_Quan_ly_thanh_toan_phi.md#4124-uc158mh02---man-hinh-ket-qua-giao-dich-chung).
+- Chi tiết thông tin giao diện và các quy tắc hiển thị động cho nghiệp vụ Đăng ký thông báo xử lý tài sản bảo đảm lần đầu: Tham chiếu tại [MH02 - Màn hình Kết quả thanh toán thành công - Thanh toán trực tuyến (Website Khách hàng)](SRS_Thanh%20toan%20truc%20tuyen.md#415-mh02---man-hinh-ket-qua-thanh-toan-thanh-cong).
 
 ---
 
+<a id="41538-quy-tac-sinh-so-thong-bao-va-ma-pin"></a>
 ##### 4.1.5.3.8. Quy tắc sinh Số thông báo và mã PIN
 
 | Trường hợp | Thời điểm sinh thông tin | Quy tắc |
@@ -178,6 +181,7 @@
 
 #### 4.1.5.4. UC131.2 - Đăng ký thay đổi thông báo xử lý tài sản bảo đảm
 
+<a id="41541-uc1312mh02---man-hinh-nhap-thong-tin-thay-doi-thong-bao-xu-ly"></a>
 ##### 4.1.5.4.1. UC131.2.MH02 - Màn hình Nhập thông tin thay đổi thông báo xử lý
 
 ##### 4.1.5.4.2. Mô tả thông tin trên màn hình
@@ -228,6 +232,7 @@
 
 ---
 
+<a id="41544-uc1312mh03---man-hinh-xem-truoc-review-thay-doi-thong-bao-xu-ly"></a>
 ##### 4.1.5.4.4. UC131.2.MH03 - Màn hình Xem trước (Review) thay đổi thông báo xử lý
 
 ##### 4.1.5.4.5. Mô tả thông tin trên màn hình
@@ -269,16 +274,17 @@
 | :-- | :--- | :--- | :--- |
 | 1 | Quay lại | Nút | - Đóng màn hình xem trước và quay trở về màn hình Nhập thông tin thay đổi (UC131.2.MH02), giữ nguyên dữ liệu đã cập nhật. |
 | 2 | Tiếp tục | Nút | - Thao tác: NSD click nút Tiếp tục.<br>- Xử lý:<br>+ Lưu hồ sơ ở trạng thái **"Chờ thanh toán"**, thực hiện đóng gói thông tin thanh toán (Mã hồ sơ, lệ phí xử lý, nội dung thanh toán). Chuyển tiếp sang Cổng thanh toán [UC158](UC158_Quan_ly_thanh_toan_phi.md) để thanh toán.<br>+ Chỉ sau khi hệ thống nhận kết quả **thanh toán thành công** từ UC158/Webhook, hồ sơ mới được chuyển sang trạng thái **"Chờ duyệt"** và đi tiếp sang Màn hình kết quả (UC131.2.MH04). |
-| 3 | Lắng nghe trạng thái thanh toán & Hiển thị kết quả (Auto) | Background Task / Redirect | Hệ thống thực hiện lắng nghe trạng thái thanh toán từ Cổng thanh toán (Webhook callback).<br>- Khi thanh toán thành công: chuyển hồ sơ sang trạng thái **Chờ duyệt** và hiển thị kết quả giao dịch tại Màn hình Kết quả Giao dịch chung của hệ thống.<br>- Khi thanh toán không thành công/hủy/quá hạn: giữ hồ sơ ở trạng thái thanh toán tương ứng theo UC158, không chuyển sang **Chờ duyệt**.<br>- Chi tiết quy trình xử lý Webhook cho các trường hợp TH1 đến TH7: Tham chiếu tại [4.1.2.3. Lắng nghe trạng thái thanh toán từ Cổng thanh toán (Webhook Callback) của UC158](UC158_Quan_ly_thanh_toan_phi.md#4123-lang-nghe-trang-thai-thanh-toan-tu-cong-thanh-toan-webhook-callback).<br>- Chi tiết giao diện và cấu hình hiển thị kết quả giao dịch: Tham chiếu tại [4.1.2.4. UC158.MH02 - Màn hình Kết quả Giao dịch chung của UC158](UC158_Quan_ly_thanh_toan_phi.md#4124-uc158mh02---man-hinh-ket-qua-giao-dich-chung). |
+| 3 | Lắng nghe trạng thái thanh toán & Hiển thị kết quả (Auto) | Background Task / Redirect | Hệ thống thực hiện lắng nghe trạng thái thanh toán từ Cổng thanh toán (Webhook callback).<br>- Khi thanh toán thành công: chuyển hồ sơ sang trạng thái **Chờ duyệt** và hiển thị kết quả giao dịch tại Màn hình Kết quả Giao dịch chung của hệ thống.<br>- Khi thanh toán không thành công/hủy/quá hạn: giữ hồ sơ ở trạng thái thanh toán tương ứng theo UC158, không chuyển sang **Chờ duyệt**.<br>- Chi tiết quy trình xử lý Webhook cho các trường hợp TH1 đến TH7: Tham chiếu tại [Xử lý kết quả trả về từ Cổng thanh toán - Thanh toán trực tuyến (Website Khách hàng)](SRS_Thanh%20toan%20truc%20tuyen.md#414-xu-ly-ket-qua-tra-ve-tu-cong-thanh-toan).<br>- Chi tiết giao diện và cấu hình hiển thị kết quả giao dịch: Tham chiếu tại [MH02 - Màn hình Kết quả thanh toán thành công - Thanh toán trực tuyến (Website Khách hàng)](SRS_Thanh%20toan%20truc%20tuyen.md#415-mh02---man-hinh-ket-qua-thanh-toan-thanh-cong). |
 
 ---
 
 ##### 4.1.5.4.7. Màn hình Kết quả thanh toán
 - Sau khi thực hiện thanh toán xong trên Cổng thanh toán trực tuyến, hệ thống tự động chuyển hướng người dùng quay trở lại hệ thống và hiển thị kết quả giao dịch trên Màn hình kết quả giao dịch chung.
-- Chi tiết thông tin giao diện và các quy tắc hiển thị động cho nghiệp vụ Đăng ký thay đổi thông báo xử lý tài sản bảo đảm: Tham chiếu tại [4.1.2.4. UC158.MH02 - Màn hình Kết quả Giao dịch chung của UC158](UC158_Quan_ly_thanh_toan_phi.md#4124-uc158mh02---man-hinh-ket-qua-giao-dich-chung).
+- Chi tiết thông tin giao diện và các quy tắc hiển thị động cho nghiệp vụ Đăng ký thay đổi thông báo xử lý tài sản bảo đảm: Tham chiếu tại [MH02 - Màn hình Kết quả thanh toán thành công - Thanh toán trực tuyến (Website Khách hàng)](SRS_Thanh%20toan%20truc%20tuyen.md#415-mh02---man-hinh-ket-qua-thanh-toan-thanh-cong).
 
 ---
 
+<a id="41548-quy-dinh-hien-thi-nhan-bien-dong-tren-man-nhap-lieu"></a>
 ##### 4.1.5.4.8. Quy định hiển thị nhãn biến động trên màn nhập liệu
 
 Quy định này chỉ áp dụng tại **UC131.2.MH02 - Nhập thông tin thay đổi thông báo xử lý** để hỗ trợ NSD nhận biết các thay đổi so với thông báo xử lý tài sản gần nhất đang có hiệu lực. **UC131.2.MH03 - Xem trước (Review)** không hiển thị nhãn biến động, chỉ hiển thị bản thông tin hoàn thiện cuối cùng đã nhập/xác nhận tại MH02 ở trạng thái chỉ đọc.
@@ -296,6 +302,7 @@ Quy định này chỉ áp dụng tại **UC131.2.MH02 - Nhập thông tin thay 
 
 #### 4.1.5.5. UC131.3 - Xóa đăng ký thông báo xử lý tài sản bảo đảm
 
+<a id="41551-uc1313mh02---man-hinh-nhap-thong-tin-xoa-thong-bao-xu-ly"></a>
 ##### 4.1.5.5.1. UC131.3.MH02 - Màn hình Nhập thông tin xóa thông báo xử lý
 
 ##### 4.1.5.5.2. Mô tả thông tin trên màn hình
@@ -332,6 +339,7 @@ Quy định này chỉ áp dụng tại **UC131.2.MH02 - Nhập thông tin thay 
 
 ---
 
+<a id="41554-uc1313mh03---man-hinh-xem-truoc-review-xoa-thong-bao-xu-ly"></a>
 ##### 4.1.5.5.4. UC131.3.MH03 - Màn hình Xem trước (Review) xóa thông báo xử lý
 
 ##### 4.1.5.5.5. Mô tả thông tin trên màn hình
@@ -363,10 +371,10 @@ Quy định này chỉ áp dụng tại **UC131.2.MH02 - Nhập thông tin thay 
 | :-- | :--- | :--- | :--- |
 | 1 | Quay lại | Nút | - Đóng màn hình xem trước và quay trở về màn hình Nhập thông tin xóa thông báo (UC131.3.MH02), giữ nguyên dữ liệu đã nhập. |
 | 2 | Tiếp tục | Nút | - Thao tác: NSD click nút Tiếp tục.<br>- Xử lý:<br>+ Lưu hồ sơ dưới trạng thái **"Chờ thanh toán"**, thực hiện đóng gói thông tin thanh toán (Mã hồ sơ, lệ phí xóa thông báo, nội dung thanh toán). Chuyển tiếp sang Cổng thanh toán [UC158](UC158_Quan_ly_thanh_toan_phi.md) để thanh toán lệ phí xóa thông báo.<br>+ Chỉ sau khi hệ thống nhận kết quả **thanh toán thành công** từ UC158/Webhook, hồ sơ mới được chuyển sang trạng thái **"Chờ duyệt"** và đi tiếp sang Màn hình kết quả (UC131.3.MH04). |
-| 3 | Lắng nghe trạng thái thanh toán & Hiển thị kết quả (Auto) | Background Task / Redirect | Hệ thống thực hiện lắng nghe trạng thái thanh toán từ Cổng thanh toán (Webhook callback).<br>- Khi thanh toán thành công: chuyển hồ sơ sang trạng thái **Chờ duyệt** và hiển thị kết quả giao dịch tại Màn hình Kết quả Giao dịch chung của hệ thống.<br>- Khi thanh toán không thành công/hủy/quá hạn: giữ hồ sơ ở trạng thái thanh toán tương ứng theo UC158, không chuyển sang **Chờ duyệt**.<br>- Chi tiết quy trình xử lý Webhook cho các trường hợp TH1 đến TH7: Tham chiếu tại [4.1.2.3. Lắng nghe trạng thái thanh toán từ Cổng thanh toán (Webhook Callback) của UC158](UC158_Quan_ly_thanh_toan_phi.md#4123-lang-nghe-trang-thai-thanh-toan-tu-cong-thanh-toan-webhook-callback).<br>- Chi tiết giao diện và cấu hình hiển thị kết quả giao dịch: Tham chiếu tại [4.1.2.4. UC158.MH02 - Màn hình Kết quả Giao dịch chung của UC158](UC158_Quan_ly_thanh_toan_phi.md#4124-uc158mh02---man-hinh-ket-qua-giao-dich-chung). |
+| 3 | Lắng nghe trạng thái thanh toán & Hiển thị kết quả (Auto) | Background Task / Redirect | Hệ thống thực hiện lắng nghe trạng thái thanh toán từ Cổng thanh toán (Webhook callback).<br>- Khi thanh toán thành công: chuyển hồ sơ sang trạng thái **Chờ duyệt** và hiển thị kết quả giao dịch tại Màn hình Kết quả Giao dịch chung của hệ thống.<br>- Khi thanh toán không thành công/hủy/quá hạn: giữ hồ sơ ở trạng thái thanh toán tương ứng theo UC158, không chuyển sang **Chờ duyệt**.<br>- Chi tiết quy trình xử lý Webhook cho các trường hợp TH1 đến TH7: Tham chiếu tại [Xử lý kết quả trả về từ Cổng thanh toán - Thanh toán trực tuyến (Website Khách hàng)](SRS_Thanh%20toan%20truc%20tuyen.md#414-xu-ly-ket-qua-tra-ve-tu-cong-thanh-toan).<br>- Chi tiết giao diện và cấu hình hiển thị kết quả giao dịch: Tham chiếu tại [MH02 - Màn hình Kết quả thanh toán thành công - Thanh toán trực tuyến (Website Khách hàng)](SRS_Thanh%20toan%20truc%20tuyen.md#415-mh02---man-hinh-ket-qua-thanh-toan-thanh-cong). |
 
 ---
 
 ##### 4.1.5.5.7. Màn hình Kết quả thanh toán
 - Sau khi thực hiện thanh toán xong trên Cổng thanh toán trực tuyến, hệ thống tự động chuyển hướng người dùng quay trở lại hệ thống và hiển thị kết quả giao dịch trên Màn hình kết quả giao dịch chung.
-- Chi tiết thông tin giao diện và các quy tắc hiển thị động cho nghiệp vụ Xóa đăng ký thông báo xử lý tài sản bảo đảm: Tham chiếu tại [4.1.2.4. UC158.MH02 - Màn hình Kết quả Giao dịch chung của UC158](UC158_Quan_ly_thanh_toan_phi.md#4124-uc158mh02---man-hinh-ket-qua-giao-dich-chung).
+- Chi tiết thông tin giao diện và các quy tắc hiển thị động cho nghiệp vụ Xóa đăng ký thông báo xử lý tài sản bảo đảm: Tham chiếu tại [MH02 - Màn hình Kết quả thanh toán thành công - Thanh toán trực tuyến (Website Khách hàng)](SRS_Thanh%20toan%20truc%20tuyen.md#415-mh02---man-hinh-ket-qua-thanh-toan-thanh-cong).

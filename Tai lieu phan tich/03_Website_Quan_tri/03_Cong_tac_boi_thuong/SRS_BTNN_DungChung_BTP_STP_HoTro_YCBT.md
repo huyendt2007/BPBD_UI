@@ -45,7 +45,7 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | | | | |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Từ khóa | String(255) | Không | Trống | Tìm kiếm gần đúng theo `Họ và tên người được hỗ trợ` hoặc `Số điện thoại`. |
 | Hình thức hỗ trợ | Enum(String(50)) | Không | Tất cả | \- Giá trị gồm:<br>+ Tất cả<br>+ Trực tiếp tại trụ sở<br>+ Qua điện thoại<br>+ Qua văn bản/email<br>+ Khác |
 | Kết quả hỗ trợ | Enum(String(50)) | Không | Tất cả | \- Giá trị gồm:<br>+ Tất cả<br>+ Đang hỗ trợ<br>+ Đã hướng dẫn xong<br>+ Người dân đã nộp YCBT<br>+ Không liên hệ được |

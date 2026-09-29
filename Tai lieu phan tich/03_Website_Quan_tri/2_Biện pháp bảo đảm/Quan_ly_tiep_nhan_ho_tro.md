@@ -27,7 +27,7 @@
 ##### 4.3.2.12.2.2. Mô tả thông tin trên màn hình
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | | | | |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Từ khóa tìm kiếm | String(255) | Không | Trống | - Nhập từ khóa để tìm kiếm theo Tiêu đề, Nội dung, Mã yêu cầu, Họ tên người yêu cầu hoặc Email. |
 | Trạng thái | Enum(String(50)) | Không | "Tất cả" | Control UI: Hộp chọn.<br>- Chọn trạng thái yêu cầu:<br>+ Tất cả<br>+ Chờ tiếp nhận<br>+ Đang xử lý<br>+ Yêu cầu làm rõ<br>+ Hoàn thành |
 | Mức độ ưu tiên | Enum(String(50)) | Không | "Tất cả" | Control UI: Hộp chọn.<br>- Chọn mức độ ưu tiên:<br>+ Tất cả mức độ<br>+ Thấp<br>+ Trung bình<br>+ Cao |

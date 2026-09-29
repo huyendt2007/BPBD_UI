@@ -940,6 +940,10 @@
             border-color: var(--danger-color);
             background-color: #FFF5F5;
         }
+
+        /* Thanh nút chức năng màn Xem chi tiết: luôn cố định ở cuối màn hình (kể cả khi nội dung ngắn) */
+        .details-panel { display: flex; flex-direction: column; min-height: calc(100vh - 140px); }
+        .details-panel > .panel-actions-card { position: sticky; bottom: 0; z-index: 40; margin-top: auto !important; background-color: #fff !important; box-shadow: 0 -4px 12px rgba(15, 23, 42, .08) !important; }
     </style>
 </head>
 
@@ -983,15 +987,34 @@
 
                 <!-- Quick Search Input -->
                 <div class="timeline-search-box" style="margin-bottom: 12px; position: relative;">
-                    <input type="text" id="timelineSearchInput" placeholder="Tìm kiếm nhanh phiên bản..."
+                    <input type="text" id="timelineSearchInput" placeholder="Tìm kiếm theo Số đăng ký..."
+                        aria-label="Tìm kiếm theo Số đăng ký"
                         style="width: 100%; padding: 8px 12px 8px 30px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); box-sizing: border-box; font-size: 13px;">
                     <i class="fa-solid fa-magnifying-glass"
                         style="position: absolute; left: 10px; top: 10px; color: var(--text-muted); font-size: 12px;"></i>
                 </div>
 
+                <div style="margin-bottom: 12px;">
+                    <label class="field-label"
+                        style="font-size: 11px; font-weight: 600; display: block; margin-bottom: 4px;">Loại đăng ký</label>
+                    <select id="filterRegistrationCase"
+                        style="width: 100%; padding: 7px 8px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); font-size: 12px; box-sizing: border-box; background: #fff;">
+                        <option value="Tất cả" selected>Tất cả</option>
+                        <option value="Đăng ký lần đầu">Đăng ký lần đầu</option>
+                        <option value="Đăng ký thay đổi">Đăng ký thay đổi</option>
+                        <option value="Xóa đăng ký">Xóa đăng ký</option>
+                        <option value="Thông báo xử lý tài sản bảo đảm lần đầu">Thông báo xử lý tài sản bảo đảm lần đầu</option>
+                        <option value="Thay đổi thông báo xử lý tài sản bảo đảm">Thay đổi thông báo xử lý tài sản bảo đảm</option>
+                        <option value="Xóa đăng ký thông báo xử lý tài sản bảo đảm">Xóa đăng ký thông báo xử lý tài sản bảo đảm</option>
+                        <option value="Chỉnh lý thông tin">Chỉnh lý thông tin</option>
+                        <option value="Hủy đăng ký">Hủy đăng ký</option>
+                        <option value="Khôi phục hủy đăng ký">Khôi phục hủy đăng ký</option>
+                    </select>
+                </div>
+
                 <!-- Date Range Filters -->
                 <div class="timeline-date-filters"
-                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px;">
+                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
                     <div>
                         <label class="field-label"
                             style="font-size: 11px; font-weight: 600; display: block; margin-bottom: 4px;">Từ
@@ -1007,6 +1030,19 @@
                             style="width: 100%; padding: 6px 8px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); font-size: 12px; box-sizing: border-box;">
                     </div>
                 </div>
+                <div class="timeline-filter-actions"
+                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px;">
+                    <button id="btnSearchTimeline" type="button"
+                        style="background-color: var(--primary-color); border: 1px solid var(--primary-color); color: white; padding: 8px 10px; border-radius: var(--border-radius-md); font-size: 12px; font-weight: 600; cursor: pointer; min-height: 34px;">
+                        <i class="fa-solid fa-magnifying-glass" style="font-size: 11px; margin-right: 4px;"></i>
+                        Tìm kiếm
+                    </button>
+                    <button id="btnClearTimelineFilters" type="button"
+                        style="background-color: white; border: 1px solid var(--border-color); color: var(--primary-color); padding: 8px 10px; border-radius: var(--border-radius-md); font-size: 12px; font-weight: 600; cursor: pointer; min-height: 34px;">
+                        <i class="fa-solid fa-rotate-left" style="font-size: 11px; margin-right: 4px;"></i>
+                        Xóa lọc
+                    </button>
+                </div>
 
                 <!-- Vertical timeline list -->
                 <div class="vertical-timeline" id="timelineContainer">
@@ -1015,10 +1051,15 @@
 
                 <!-- Load More Button -->
                 <div class="timeline-more-btn-container" id="timelineMoreBtnContainer"
-                    style="text-align: center; margin-top: 15px; display: none;">
-                    <button id="btnLoadMoreTimeline"
-                        style="background-color: white; border: 1px solid var(--border-color); color: var(--primary-color); padding: 8px 12px; border-radius: var(--border-radius-md); font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; width: 100%;">
-                        <label>Xem thêm</label> <i class="fa-solid fa-chevron-down"
+                    style="text-align: center; margin-top: 15px; display: none; gap: 8px; align-items: center;">
+                    <button id="btnLoadMoreTimeline" type="button"
+                        style="background-color: white; border: 1px solid var(--border-color); color: var(--primary-color); padding: 8px 12px; border-radius: var(--border-radius-md); font-size: 12px; font-weight: 600; cursor: pointer; transition: background-color 0.2s, border-color 0.2s, color 0.2s; flex: 1; min-height: 34px;">
+                        <span>Xem thêm</span> <i class="fa-solid fa-chevron-down"
+                            style="font-size: 10px; margin-left: 4px;"></i>
+                    </button>
+                    <button id="btnCollapseTimeline" type="button"
+                        style="background-color: #F1F5F9; border: 1px solid #CBD5E1; color: #334155; padding: 8px 12px; border-radius: var(--border-radius-md); font-size: 12px; font-weight: 600; cursor: pointer; transition: background-color 0.2s, border-color 0.2s, color 0.2s; flex: 1; min-height: 34px; display: none;">
+                        <span>Thu gọn</span> <i class="fa-solid fa-chevron-up"
                             style="font-size: 10px; margin-left: 4px;"></i>
                     </button>
                 </div>

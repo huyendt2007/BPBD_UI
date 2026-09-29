@@ -28,6 +28,7 @@
 \- Hồ sơ có Trạng thái lệ phí là "Đã thu" hoặc "Miễn phí" theo [BR-UCPS-001] và [BR-UCPS-006].
 
 
+<a id="432192-mh01---man-hinh-danh-sach-ho-so-cho-nhap-lieu"></a>
 #### 4.3.2.19.2. MH01 - Màn hình Danh sách hồ sơ chờ nhập liệu
 
 ##### 4.3.2.19.2.1. Màn hình
@@ -38,7 +39,7 @@
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | | | | |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Mã hồ sơ | String(50) | Không | Trống | - Control UI: Textbox.<br>- Tìm kiếm gần đúng theo Mã hồ sơ giấy, không phân biệt hoa thường, tự động trim space. |
 | Số đơn giấy | String(50) | Không | Trống | - Control UI: Textbox.<br>- Tìm kiếm gần đúng theo Số đơn giấy ghi nhận tại bước tiếp nhận. |
 | Người yêu cầu | String(255) | Không | Trống | - Control UI: Textbox.<br>- Tìm kiếm gần đúng, không phân biệt hoa thường. |
@@ -72,6 +73,7 @@
 | 4 | Tạo hồ sơ | Nút | TH1 (Hồ sơ không còn đủ điều kiện nhập liệu): Hồ sơ không còn ở trạng thái "Chờ giải quyết" hoặc `Trạng thái lệ phí` không còn là "Đã thu"/"Miễn phí". Vi phạm [BR-CCTT-008], hiển thị [MSG-ERR-DK-005] dạng Toast. Không mở màn hình nhập liệu.<br><br>TH Hợp lệ: Hệ thống mở [MH03 - Màn hình Nhập liệu hồ sơ giấy Yêu cầu cung cấp thông tin](#432194-mh03---man-hinh-nhap-lieu-ho-so-giay-yeu-cau-cung-cap-thong-tin). |
 
 
+<a id="432193-mh02---man-hinh-xem-chi-tiet-ho-so-cho-nhap-lieu"></a>
 #### 4.3.2.19.3. MH02 - Màn hình Xem chi tiết hồ sơ chờ nhập liệu
 
 ##### 4.3.2.19.3.1. Màn hình
@@ -144,6 +146,7 @@
 | 3 | Tạo hồ sơ | Nút | TH1 (Hồ sơ không còn đủ điều kiện nhập liệu): Hồ sơ không còn ở trạng thái "Chờ giải quyết" hoặc `Trạng thái lệ phí` không còn là "Đã thu"/"Miễn phí". Vi phạm [BR-CCTT-008], hiển thị [MSG-ERR-DK-005] dạng Toast. Không mở màn hình nhập liệu.<br><br>TH Hợp lệ: Hệ thống mở [MH03 - Màn hình Nhập liệu hồ sơ giấy Yêu cầu cung cấp thông tin](#432194-mh03---man-hinh-nhap-lieu-ho-so-giay-yeu-cau-cung-cap-thong-tin). |
 
 
+<a id="432194-mh03---man-hinh-nhap-lieu-ho-so-giay-yeu-cau-cung-cap-thong-tin"></a>
 #### 4.3.2.19.4. MH03 - Màn hình Nhập liệu hồ sơ giấy Yêu cầu cung cấp thông tin
 
 ##### 4.3.2.19.4.1. Màn hình
@@ -191,9 +194,9 @@
 | Thời điểm tra cứu | Datetime | Có | Theo phiên tra cứu | - Control UI: Label, chỉ đọc.<br>- Định dạng hiển thị: dd/mm/yyyy hh:mm:ss. |
 | Tiêu chí tra cứu thực tế | Enum(String(50)) | Có | Theo phiên tra cứu | - Control UI: Label dạng nhãn trạng thái (Badge), chỉ đọc.|
 | Dữ liệu đầu vào tra cứu | Text(1000) | Có | Theo phiên tra cứu | - Control UI: Label, chỉ đọc.|
-| Tổng số hồ sơ phù hợp | Integer(10) | Tùy điều kiện | Theo kết quả | - Control UI: Label, chỉ đọc.<br>- Chỉ hiển thị khi có hồ sơ được tìm thấy.<br>- Hiển thị và cách đếm giống trường **Tổng số hồ sơ phù hợp** tại Khối II. Kết quả tra cứu - [Màn hình Xử lý hồ sơ yêu cầu cung cấp thông tin - Xử lý yêu cầu cung cấp thông tin - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Xu_ly_Yeu_cau_cung_cap_thong_tin_Can_bo.md#43223-mh02---man-hinh-xu-ly-ho-so-yeu-cau-cung-cap-thong-tin): đếm theo tổng số lượng hồ sơ đăng ký tìm thấy trong kết quả tra cứu, định dạng "Tổng số hồ sơ phù hợp: [N]" (ví dụ: "Tổng số hồ sơ phù hợp: 3"). |
+| Tổng số hồ sơ phù hợp | Integer(10) | Tùy điều kiện | Theo kết quả | - Control UI: Label, chỉ đọc.<br>- Chỉ hiển thị khi có hồ sơ được tìm thấy.<br>- Hiển thị và cách đếm giống trường **Tổng số hồ sơ phù hợp** tại Khối III. Kết quả tra cứu - [Màn hình Xử lý hồ sơ yêu cầu cung cấp thông tin - Xử lý yêu cầu cung cấp thông tin - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Xu_ly_Yeu_cau_cung_cap_thong_tin_Can_bo.md#43223-mh02---man-hinh-xu-ly-ho-so-yeu-cau-cung-cap-thong-tin): đếm theo tổng số lượng hồ sơ đăng ký tìm thấy trong kết quả tra cứu, định dạng "Tổng số hồ sơ phù hợp: [N]" (ví dụ: "Tổng số hồ sơ phù hợp: 3"). |
 | Dòng thông báo không có dữ liệu | Text(300) | Tùy điều kiện | Theo kết quả | - Control UI: Khung cảnh báo Inline (Alert warning).<br>- Chỉ hiển thị khi kết quả tra cứu không có dữ liệu <br> - Hiển thị [MSG-WRN-CCTT-001] dạng Inline. |
-| Danh sách hồ sơ đăng ký giao dịch bảo đảm/hợp đồng tìm thấy | Text(10000) | Tùy điều kiện | Theo kết quả tra cứu | - Control UI: Khối hiển thị danh sách hồ sơ, chỉ đọc (không hiển thị dạng bảng tóm tắt).<br>- Chỉ hiển thị khi có kết quả.<br>- Hiển thị giống trường **Danh sách hồ sơ đăng ký giao dịch bảo đảm/hợp đồng tìm thấy** tại Khối II. Kết quả tra cứu - [Màn hình Xử lý hồ sơ yêu cầu cung cấp thông tin - Xử lý yêu cầu cung cấp thông tin - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Xu_ly_Yeu_cau_cung_cap_thong_tin_Can_bo.md#43223-mh02---man-hinh-xu-ly-ho-so-yeu-cau-cung-cap-thong-tin):<br>+ Hiển thị lần lượt từng hồ sơ theo Thời điểm đăng ký tăng dần, từ Hồ sơ đăng ký lần đầu đến các hồ sơ liên quan.<br>+ Dòng tiêu đề mỗi hồ sơ gồm số thứ tự "Hồ sơ [n]", tiêu đề "Đăng ký giao dịch bảo đảm / Hợp đồng - [Số đăng ký]" và nhãn Trường hợp đăng ký.<br>+ Chi tiết mỗi hồ sơ theo [Cấu trúc chi tiết danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng - Tra cứu theo mã số CSDL (Website Khách hàng)](../../01_Website_Khach_hang/SRS_Tra%20cứu%20theo%20mã%20số%20CSDL.md#cau-truc-chi-tiet-danh-sach-ho-so-dang-ky-giao-dich-bao-dam-hop-dong). |
+| Danh sách hồ sơ đăng ký giao dịch bảo đảm/hợp đồng tìm thấy | Text(10000) | Tùy điều kiện | Theo kết quả tra cứu | - Control UI: Khối hiển thị danh sách hồ sơ, chỉ đọc (không hiển thị dạng bảng tóm tắt).<br>- Chỉ hiển thị khi có kết quả.<br>- Hiển thị giống trường **Danh sách hồ sơ đăng ký giao dịch bảo đảm/hợp đồng tìm thấy** tại Khối III. Kết quả tra cứu - [Màn hình Xử lý hồ sơ yêu cầu cung cấp thông tin - Xử lý yêu cầu cung cấp thông tin - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Xu_ly_Yeu_cau_cung_cap_thong_tin_Can_bo.md#43223-mh02---man-hinh-xu-ly-ho-so-yeu-cau-cung-cap-thong-tin):<br>+ Hiển thị lần lượt từng hồ sơ theo Thời điểm đăng ký tăng dần, từ Hồ sơ đăng ký lần đầu đến các hồ sơ liên quan.<br>+ Dòng tiêu đề mỗi hồ sơ gồm số thứ tự "Hồ sơ [n]", tiêu đề "Đăng ký giao dịch bảo đảm / Hợp đồng - [Số đăng ký]" và nhãn Trường hợp đăng ký.<br>+ Chi tiết mỗi hồ sơ theo [Cấu trúc chi tiết danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng - Tra cứu theo mã số CSDL (Website Khách hàng)](../../01_Website_Khach_hang/SRS_Tra%20cứu%20theo%20mã%20số%20CSDL.md#cau-truc-chi-tiet-danh-sach-ho-so-dang-ky-giao-dich-bao-dam-hop-dong). |
 | **V. Thanh tác vụ** | - | Có | - | - Control UI: Thanh nút cố định (Sticky) ở cuối màn hình, luôn hiển thị khi Cán bộ cuộn trang.<br>- Gồm các nút: "Hủy", "Duyệt chờ ký", "Trình ký".<br>- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
 ##### 4.3.2.19.4.3. Chức năng trên màn hình
 

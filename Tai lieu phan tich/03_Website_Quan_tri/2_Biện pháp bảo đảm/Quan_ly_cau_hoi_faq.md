@@ -22,7 +22,7 @@
 ##### 4.3.2.14.2.2. Mô tả thông tin trên màn hình
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | | | | |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Từ khóa | String(255) | Không | Trống | - Nhập từ khóa tìm kiếm theo nội dung Câu hỏi hoặc nội dung Trả lời. |
 | Nhóm chủ đề | Enum(String(50)) | Không | "Tất cả" | Control UI: Hộp chọn.<br>- Chọn nhóm chủ đề phân loại câu hỏi FAQ.<br>- Danh sách giá trị bao gồm:<br>  + Tất cả nhóm chủ đề<br>  + Tài khoản và Phân quyền<br>  + Nghiệp vụ Đăng ký biện pháp bảo đảm<br>  + Thanh toán phí và Lệ phí<br>  + Sự cố kỹ thuật và lỗi hệ thống |
 | Trạng thái | Enum(String(50)) | Không | "Tất cả" | Control UI: Hộp chọn.<br>- Chọn trạng thái phê duyệt của bản ghi.<br>- Danh sách giá trị bao gồm:<br>  + Tất cả trạng thái<br>  + Lưu nháp<br>  + Chờ duyệt<br>  + Đã duyệt<br>  + Từ chối |

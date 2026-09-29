@@ -38,11 +38,12 @@
 
 \- Hồ sơ có Nguồn tiếp nhận là "Cán bộ nhập liệu" và Loại yêu cầu thuộc nhóm Phiếu đăng ký.
 
-\- Hồ sơ đang ở trạng thái "Chờ giải quyết".
+\- Hồ sơ đang ở trạng thái "Chờ giải quyết", hoặc trạng thái "Bị trả lại" khi Cán bộ bấm Cập nhật tại Tab Hồ sơ bị trả lại.
 
 \- Hồ sơ có Trạng thái lệ phí là "Đã thu" hoặc "Miễn phí" theo [BR-UCPS-001] và [BR-UCPS-006].
 
 
+<a id="432172-mh01---man-hinh-danh-sach-ho-so-cho-nhap-lieu"></a>
 #### 4.3.2.17.2. MH01 - Màn hình Danh sách hồ sơ chờ nhập liệu
 
 ##### 4.3.2.17.2.1. Màn hình
@@ -53,7 +54,7 @@
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | | | | |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Mã hồ sơ | String(50) | Không | Trống | - Control UI: Textbox.<br>- Tìm kiếm gần đúng theo Mã hồ sơ giấy, không phân biệt hoa thường, tự động trim space. |
 | Số đơn giấy | String(50) | Không | Trống | - Control UI: Textbox.<br>- Tìm kiếm gần đúng theo Số đơn giấy ghi nhận tại bước tiếp nhận. |
 | Người yêu cầu | String(255) | Không | Trống | - Control UI: Textbox.<br>- Tìm kiếm gần đúng, không phân biệt hoa thường. |
@@ -95,6 +96,7 @@
 |  |  |  | TH3 (File căn cứ không hợp lệ): File không đúng định dạng `.pdf` hoặc vượt quá 20MB. Vi phạm [BR-FILE-010], hiển thị [MSG-ERR-FILE-010] dạng Inline dưới ô đính kèm. Không thực hiện từ chối. |
 |  |  |  | TH Hợp lệ: Hệ thống thực hiện:<br>- Mở popup Từ chối hồ sơ gồm:<br>+ `Lý do từ chối`: Control UI Textarea, Text(2000), bắt buộc nhập theo [BR-DK-025].<br>+ `File căn cứ`: Control UI Nút chọn tệp, không bắt buộc, cho phép đính kèm 01 file theo [BR-FILE-010].<br>+ 02 nút "Xác nhận" và "Hủy".<br>- Chọn "Hủy": đóng popup, giữ nguyên trạng thái hồ sơ.<br>- Chọn "Xác nhận": hiển thị thông báo xác nhận [MSG-CFM-DK-015]. Sau khi Cán bộ đồng ý, hệ thống lưu Lý do từ chối và File căn cứ, ghi nhận Cán bộ từ chối và thời điểm từ chối, chuyển hồ sơ sang trạng thái "Bị từ chối", loại hồ sơ khỏi danh sách chờ nhập liệu và hiển thị [MSG-SUC-DK-KT-003]. |
 
+<a id="432173-mh02---man-hinh-xem-chi-tiet-ho-so-cho-nhap-lieu"></a>
 #### 4.3.2.17.3. MH02 - Màn hình Xem chi tiết hồ sơ chờ nhập liệu
 
 ##### 4.3.2.17.3.1. Màn hình
@@ -174,6 +176,7 @@
 |  |  |  | Sau khi hồ sơ chuyển sang trạng thái "Bị từ chối", hệ thống ẩn toàn bộ nút thao tác nghiệp vụ trên màn hình chi tiết (bao gồm "Tạo hồ sơ" và "Từ chối"), chỉ cho phép xem thông tin và đóng màn hình. Hồ sơ không còn hiển thị trong danh sách hồ sơ chờ nhập liệu. |
 | 5 | Đóng | Nút | Hệ thống đóng màn hình chi tiết và quay về [MH01 - Màn hình Danh sách hồ sơ chờ nhập liệu](#432172-mh01---man-hinh-danh-sach-ho-so-cho-nhap-lieu), giữ nguyên điều kiện tìm kiếm trước đó. |
 
+<a id="432174-mh03---man-hinh-nhap-lieu-ho-so-giay-phieu-dang-ky"></a>
 #### 4.3.2.17.4. MH03 - Màn hình Nhập liệu hồ sơ giấy Phiếu đăng ký
 
 ##### 4.3.2.17.4.1. Màn hình
@@ -239,6 +242,7 @@
 | 5 | Hủy bỏ | Nút | TH1 (Cán bộ chưa nhập hoặc chưa thay đổi dữ liệu nào): Hệ thống đóng màn hình nhập liệu và quay về màn hình nguồn đã mở hồ sơ, không hiển thị thông báo xác nhận. |
 |  |  |  | TH Hợp lệ: Cán bộ đã nhập hoặc thay đổi dữ liệu nhưng chưa được lưu. Hệ thống thực hiện:<br>+ Hiển thị popup xác nhận [MSG-CFM-UCPS-001] - *"Dữ liệu đang nhập chưa được lưu. Bạn có chắc chắn muốn hủy bỏ?"* gồm 02 nút "Đồng ý" và "Hủy".<br>+ Chọn "Đồng ý": Hệ thống hủy toàn bộ dữ liệu đang nhập, đóng màn hình nhập liệu, quay về màn hình nguồn đã mở hồ sơ và giữ nguyên trạng thái hồ sơ.<br>+ Chọn "Hủy": Hệ thống đóng popup, ở lại màn hình nhập liệu và giữ nguyên toàn bộ dữ liệu đang nhập. |
 
+<a id="432175-mh04---man-hinh-xem-truoc-ho-so-giay-phieu-dang-ky"></a>
 #### 4.3.2.17.5. MH04 - Màn hình Xem trước hồ sơ giấy Phiếu đăng ký
 
 ##### 4.3.2.17.5.1. Màn hình
@@ -271,4 +275,4 @@
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Quay lại | Nút | Quay về [MH03 - Màn hình Nhập liệu hồ sơ giấy Phiếu đăng ký](#432174-mh03---man-hinh-nhap-lieu-ho-so-giay-phieu-dang-ky) và giữ nguyên toàn bộ dữ liệu Cán bộ đã nhập. |
-| 2 | Gửi duyệt | Nút | TH Hợp lệ: Hệ thống thực hiện:<br>- Lưu dữ liệu nghiệp vụ và khóa phiên bản dữ liệu đã duyệt.<br>- Ghi nhận các thông tin:<br>+ `Nguồn tiếp nhận` là "Trực tiếp".<br>+ `Cán bộ xử lý` là Họ và tên Cán bộ nhập liệu đang thực hiện thao tác.<br>+ `Mã khách hàng`:<br>* Nếu `Loại khách hàng` là "Có tài khoản trực tuyến": ghi nhận Mã khách hàng là Mã tài khoản trực tuyến của Người yêu cầu đăng ký.<br>* Nếu `Loại khách hàng` là "Khách hàng vãng lai": ghi nhận Mã khách hàng là "Vãng lai".<br>+ Ghi nhận `Thời điểm đăng ký` là ngày giờ hiện tại của hệ thống tại thời điểm thực hiện thành công, lưu đầy đủ theo định dạng dd/mm/yyyy hh:mm:ss.<br>- Thực hiện cấp `Số đăng ký` cho hồ sơ. Cấp `Mã PIN` cho hồ sơ (chỉ áp dụng khi Loại yêu cầu là "Đăng ký lần đầu" hoặc "Thông báo xử lý tài sản bảo đảm lần đầu (Trường hợp chưa đăng ký BPBĐ)"; các Loại yêu cầu còn lại không cấp Mã PIN).<br>- Chuyển hồ sơ sang trạng thái "Chờ duyệt", đóng màn hình xem trước, quay về [MH01 - Màn hình Danh sách hồ sơ chờ nhập liệu](#432172-mh01---man-hinh-danh-sach-ho-so-cho-nhap-lieu) và hiển thị thông báo thành công [MSG-SUC-DK-KT-007] dạng Toast. |
+| 2 | Gửi duyệt | Nút | TH Hợp lệ: Hệ thống thực hiện:<br>- Lưu dữ liệu nghiệp vụ và khóa phiên bản dữ liệu đã duyệt.<br>- Ghi nhận các thông tin:<br>+ `Nguồn tiếp nhận` là "Trực tiếp".<br>+ `Cán bộ xử lý` là Họ và tên Cán bộ nhập liệu đang thực hiện thao tác.<br>+ `Mã khách hàng`:<br>* Nếu `Loại khách hàng` là "Có tài khoản trực tuyến": ghi nhận Mã khách hàng là Mã tài khoản trực tuyến của Người yêu cầu đăng ký.<br>* Nếu `Loại khách hàng` là "Khách hàng vãng lai": ghi nhận Mã khách hàng là "Vãng lai".<br>+ Ghi nhận `Thời điểm đăng ký`:<br>* Hồ sơ ở trạng thái "Chờ giải quyết" (nhập liệu lần đầu): là ngày giờ hiện tại của hệ thống tại thời điểm Gửi duyệt thành công, lưu đầy đủ theo định dạng dd/mm/yyyy hh:mm:ss.<br>* Hồ sơ ở trạng thái "Bị trả lại" (Cán bộ cập nhật và gửi duyệt lại): giữ nguyên Thời điểm đăng ký là thời điểm Gửi duyệt lần đầu, không ghi nhận lại.<br>- Cấp `Số đăng ký` và `Mã PIN` cho hồ sơ:<br>+ Hồ sơ ở trạng thái "Chờ giải quyết" (nhập liệu lần đầu): Thực hiện cấp `Số đăng ký` cho hồ sơ. Cấp `Mã PIN` cho hồ sơ (chỉ áp dụng khi Loại yêu cầu là "Đăng ký lần đầu" hoặc "Thông báo xử lý tài sản bảo đảm lần đầu (Trường hợp chưa đăng ký BPBĐ)"; các Loại yêu cầu còn lại không cấp Mã PIN).<br>+ Hồ sơ ở trạng thái "Bị trả lại" (Cán bộ cập nhật và gửi duyệt lại): Giữ nguyên `Số đăng ký` và `Mã PIN` đã cấp cho hồ sơ, không cấp số mới.<br>- Chuyển hồ sơ sang trạng thái "Chờ duyệt", đóng màn hình xem trước, quay về [MH01 - Màn hình Danh sách hồ sơ chờ nhập liệu](#432172-mh01---man-hinh-danh-sach-ho-so-cho-nhap-lieu) và hiển thị thông báo thành công [MSG-SUC-DK-KT-007] dạng Toast. |

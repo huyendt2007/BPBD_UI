@@ -156,6 +156,7 @@
 
 ---
 
+<a id="41127-mh06---man-hinh-chi-tiet-ket-qua-tra-cuu-dung-chung-sau-khi-bam-tim-kiem"></a>
 #### 4.1.12.7. MH06 - Màn hình Chi tiết kết quả tra cứu (dùng chung sau khi bấm Tìm kiếm)
 
 ##### 4.1.12.7.1. Màn hình

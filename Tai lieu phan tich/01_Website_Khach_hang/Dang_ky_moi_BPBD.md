@@ -11,12 +11,14 @@
 
 \- Hệ thống đang hoạt động bình thường, tài khoản người dùng hợp lệ và Người dùng được phân quyền thực hiện tính năng.  
 
+<a id="4112-uc024mh01---man-hinh-nhap-lieu-dang-ky-moi-bpbd"></a>
 #### 4.1.1.2. UC024.MH01 - Màn hình Nhập liệu Đăng ký mới BPBĐ
 
 ##### 4.1.1.2.1. Màn hình
 
 \- Giao diện màn hình Đăng ký Biện pháp bảo đảm, Hợp đồng (Gồm 5 phần: Thông tin người đăng ký, Thông tin chung, Bên bảo đảm, Bên nhận bảo đảm, Tài liệu đính kèm).
 
+<a id="41122-mo-ta-thong-tin-tren-man-hinh"></a>
 ##### 4.1.1.2.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
@@ -149,6 +151,7 @@
 | 9 | Cập nhật | Nút | - **Điều kiện hiển thị**: Chỉ hiển thị đối với trường hợp Cập nhật Đăng ký mới (Người dùng chọn Cập nhật tại màn hình Quản lý yêu cầu đã đăng ký) và hồ sơ ở trạng thái Chờ duyệt hoặc Bị từ chối.<br>- **Thao tác**: NSD click nút "Cập nhật" ở cuối màn hình.<br>- **Kiểm tra**: Thực hiện các bước kiểm tra (validation) dữ liệu tương tự như khi thực hiện lần đầu (các bước validate khi bấm nút Tiếp tục tại STT 8).<br>- **Xử lý**:<br>+ Nếu hồ sơ ở trạng thái Chờ duyệt: Hệ thống lưu lại thông tin cập nhật và giữ nguyên trạng thái Chờ duyệt.<br>+ Nếu hồ sơ ở trạng thái Bị từ chối: Hệ thống lưu lại thông tin cập nhật đồng thời chuyển hồ sơ sang trạng thái Chờ duyệt. Lưu ý: Phiên bản bị từ chối trước đó (Rejected snapshot) cùng với ý kiến từ chối của cán bộ vẫn được lưu trữ nguyên vẹn trong lịch sử phê duyệt và hiển thị đầy đủ trên màn hình Phiếu đăng ký - Xem chi tiết ([SRS_Qly_yeu_cau_da_dky_Phieu dang ky.md, mục 4.1.12.3](SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md#41123-phieu-dang-ky---xem-chi-tiet)) để đối chiếu.<br>+ Hệ thống hiển thị thông báo thành công: "Cập nhật thông tin hồ sơ thành công."<br>+ Chuyển hướng người dùng quay trở lại Màn hình Danh sách yêu cầu đã đăng ký ([SRS_Qly_yeu_cau_da_dky_Phieu dang ky.md](SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md)). Đóng form cập nhật thông tin. |
 | 10 | Hủy | Nút | - **Điều kiện hiển thị**: Chỉ hiển thị đối với trường hợp Cập nhật Đăng ký mới (Người dùng chọn Cập nhật tại màn hình Quản lý yêu cầu đã đăng ký) và hồ sơ ở trạng thái Chờ duyệt hoặc Bị từ chối hoặc Chờ thanh toán.<br>- **Thao tác**: NSD click nút "Hủy" ở cuối màn hình.<br>- **Xử lý**: Hệ thống đóng màn hình Cập nhật và trở về màn Danh sách yêu cầu đã đăng ký ([SRS_Qly_yeu_cau_da_dky_Phieu dang ky.md](SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md)). |
 
+<a id="41124-popup-tim-kiem-chu-the"></a>
 ##### 4.1.1.2.4. Popup Tìm kiếm chủ thể
 
 **1. Màn hình**
@@ -185,6 +188,7 @@ Mở popup tra cứu thông tin chủ thể đã có trong CSDL để điền nh
 |  |  |  | \- TH2 (Không có dữ liệu): Hệ thống hiển thị thông báo lỗi "Kết quả tìm kiếm không tồn tại" (chữ màu đỏ) và xóa sạch danh sách hiển thị trên lưới. |
 | 2 | ĐÓNG | Nút | Hệ thống đóng lại form tìm kiếm và hủy bỏ thao tác tra cứu. |
 
+<a id="41125-popup-import-bang-thong-tin-so-khung"></a>
 ##### 4.1.1.2.5. Popup Import Bảng thông tin Số khung
 
 **1. Màn hình**
@@ -210,6 +214,7 @@ Giao diện popup cho phép tải lên file Excel biểu mẫu danh sách Số k
 | 3 | Gửi tệp tin | Nút | Thực hiện tải lên dữ liệu:<br>+ Hệ thống thực hiện quét, bóc tách và validate từng dòng dữ liệu theo ma trận ràng buộc ở trên.<br>+ Các dòng dữ liệu hợp lệ sẽ được import thành công và đẩy lên lưới danh sách ở màn hình chính.<br>+ Các dòng dữ liệu lỗi sẽ bị loại bỏ và hệ thống hiển thị danh sách lỗi chi tiết kèm số dòng và lý do lỗi để người dùng biết và chỉnh sửa.<br>+ Sau khi import xong, hiển thị Toast thông báo kết quả import thành công một phần/toàn bộ và đóng popup nếu không có lỗi. |
 | 4 | Hủy | Nút | Đóng popup, không thực hiện lưu hoặc import dữ liệu. |
 
+<a id="41126-popup-import-bang-thong-tin-phuong-tien"></a>
 ##### 4.1.1.2.6. Popup Import Bảng thông tin Phương tiện
 
 **1. Màn hình**
@@ -234,12 +239,14 @@ Giao diện popup cho phép tải lên file Excel biểu mẫu danh sách Phươ
 | 3 | Gửi tệp tin | Nút | Thực hiện tải lên dữ liệu:<br>+ Hệ thống thực hiện quét, bóc tách và validate từng dòng dữ liệu theo ma trận ràng buộc ở trên.<br>+ Các dòng dữ liệu hợp lệ sẽ được import thành công và đẩy lên lưới danh sách ở màn hình chính.<br>+ Các dòng dữ liệu lỗi sẽ bị loại bỏ và hệ thống hiển thị danh sách lỗi chi tiết kèm số dòng và lý do lỗi để người dùng biết và chỉnh sửa.<br>+ Sau khi import xong, hiển thị Toast thông báo kết quả import thành công một phần/toàn bộ và đóng popup nếu không có lỗi. |
 | 4 | Hủy | Nút | Đóng popup, không thực hiện lưu hoặc import dữ liệu. |
 
+<a id="4113-uc024mh02---man-hinh-xem-truoc-review"></a>
 #### 4.1.1.3. UC024.MH02 - Màn hình Xem trước (Review)
 
 ##### 4.1.1.3.1. Màn hình
 
 \- Giao diện màn hình hiển thị toàn bộ các khối thông tin dưới dạng chỉ đọc (Read-only) để người dùng kiểm tra lại trước khi chính thức Gửi đăng ký.
 
+<a id="41132-mo-ta-thong-tin-tren-man-hinh"></a>
 ##### 4.1.1.3.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
@@ -281,10 +288,10 @@ Giao diện popup cho phép tải lên file Excel biểu mẫu danh sách Phươ
 | :--- | :--- | :--- | :--- |
 | 1 | QUAY LẠI | Nút | \- Thao tác: NSD click nút QUAY LẠI.<br>- Xử lý: Hệ thống đóng màn hình Xem trước, quay trở lại Màn hình Nhập liệu đăng ký mới, giữ nguyên toàn bộ dữ liệu NSD đã nhập trên Form. |
 | 2 | TIẾP TỤC | Nút | \- Thao tác: NSD click nút TIẾP TỤC.<br>- Kiểm tra: Hệ thống phân loại tài khoản đăng nhập đang thực hiện thao tác.<br>- Xử lý:<br>+ TH1 (Nếu Tài khoản đang đăng nhập thuộc đối tượng Miễn phí): Hệ thống sẽ lưu hồ sơ vào CSDL với trạng thái "Chờ duyệt", đồng thời hiển thị thông báo Tạo hồ sơ thành công cho người dùng.<br>+ TH2 (Nếu Tài khoản đang đăng nhập thuộc đối tượng phải nộp phí): Hệ thống sẽ lưu thông tin hồ sơ vào CSDL với trạng thái "Chờ thanh toán"<br>Hệ thống thực hiện đóng gói thông tin thanh toán bao gồm: *(Chi tiết sẽ làm rõ thêm với Cổng thanh toán)*<br>  - Mã hồ sơ (Mã hồ sơ).<br>  - Số tiền phải thu (Lệ phí đăng ký lấy từ Danh mục cấu hình Biểu phí tương ứng với Loại Đăng ký mới của hồ sơ).<br>  - Nội dung thanh toán (Định dạng mặc định: "Thanh toan le phi dang ky moi ho so [Mã hồ sơ]").<br>  - Mã đơn vị thụ hưởng (Trung tâm Đăng ký giao dịch bảo đảm tiếp nhận hồ sơ).<br>  - Đường dẫn quay lại (Return URL của hệ thống sau khi thanh toán).<br>Đồng thời chuyển hướng sang Màn hình Thanh toán lệ phí của Cổng thanh toán ([UC158](UC158_Quan_ly_thanh_toan_phi.md)) để người dùng nộp phí. |
-| 3 | Lắng nghe trạng thái thanh toán & Hiển thị kết quả (Auto) | Background Task / Redirect | Hệ thống thực hiện lắng nghe trạng thái thanh toán từ Cổng thanh toán (Webhook callback) và hiển thị kết quả giao dịch tại Màn hình Kết quả Giao dịch chung của hệ thống.<br>- Chi tiết quy trình xử lý Webhook cho các trường hợp TH1 đến TH7: Tham chiếu tại [4.1.2.3. Lắng nghe trạng thái thanh toán từ Cổng thanh toán (Webhook Callback) của UC158](UC158_Quan_ly_thanh_toan_phi.md#4123-lang-nghe-trang-thai-thanh-toan-tu-cong-thanh-toan-webhook-callback).<br>- Chi tiết giao diện và cấu hình hiển thị kết quả giao dịch: Tham chiếu tại [4.1.2.4. UC158.MH02 - Màn hình Kết quả Giao dịch chung của UC158](UC158_Quan_ly_thanh_toan_phi.md#4124-uc158mh02---man-hinh-ket-qua-giao-dich-chung). |
+| 3 | Lắng nghe trạng thái thanh toán & Hiển thị kết quả (Auto) | Background Task / Redirect | Hệ thống thực hiện lắng nghe trạng thái thanh toán từ Cổng thanh toán (Webhook callback) và hiển thị kết quả giao dịch tại Màn hình Kết quả Giao dịch chung của hệ thống.<br>- Chi tiết quy trình xử lý Webhook cho các trường hợp TH1 đến TH7: Tham chiếu tại [Xử lý kết quả trả về từ Cổng thanh toán - Thanh toán trực tuyến (Website Khách hàng)](SRS_Thanh%20toan%20truc%20tuyen.md#414-xu-ly-ket-qua-tra-ve-tu-cong-thanh-toan).<br>- Chi tiết giao diện và cấu hình hiển thị kết quả giao dịch: Tham chiếu tại [MH02 - Màn hình Kết quả thanh toán thành công - Thanh toán trực tuyến (Website Khách hàng)](SRS_Thanh%20toan%20truc%20tuyen.md#415-mh02---man-hinh-ket-qua-thanh-toan-thanh-cong). |
 
 ---
 
 #### 4.1.1.4. Màn hình Kết quả thanh toán
 - Sau khi thực hiện thanh toán xong trên Cổng thanh toán trực tuyến, hệ thống tự động chuyển hướng người dùng quay trở lại hệ thống và hiển thị kết quả giao dịch trên Màn hình kết quả giao dịch chung.
-- Chi tiết thông tin giao diện và các quy tắc hiển thị động cho nghiệp vụ Đăng ký mới biện pháp bảo đảm: Tham chiếu tại [4.1.2.4. UC158.MH02 - Màn hình Kết quả Giao dịch chung của UC158](UC158_Quan_ly_thanh_toan_phi.md#4124-uc158mh02---man-hinh-ket-qua-giao-dich-chung).
+- Chi tiết thông tin giao diện và các quy tắc hiển thị động cho nghiệp vụ Đăng ký mới biện pháp bảo đảm: Tham chiếu tại [MH02 - Màn hình Kết quả thanh toán thành công - Thanh toán trực tuyến (Website Khách hàng)](SRS_Thanh%20toan%20truc%20tuyen.md#415-mh02---man-hinh-ket-qua-thanh-toan-thanh-cong).

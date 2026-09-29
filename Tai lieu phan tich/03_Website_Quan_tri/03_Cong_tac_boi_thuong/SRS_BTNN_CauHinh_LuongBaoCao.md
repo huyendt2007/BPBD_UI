@@ -73,7 +73,7 @@ flowchart TD
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề màn hình | String(255) | - | - | Control UI: Page Header.<br>Chỉ đọc. `CẤU HÌNH LUỒNG BÁO CÁO PHÂN HỆ BỒI THƯỜNG NHÀ NƯỚC`. |
-| **I. Khối bộ lọc tìm kiếm** | | | | |
+| **I. Khối bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Tên biểu mẫu báo cáo | Enum(String(255)) | Không | `Tất cả` | Control UI: Combobox.<br>Tham chiếu Danh mục Biểu mẫu báo cáo của phân hệ Bồi thường nhà nước. |
 | Đơn vị lập báo cáo | String(255) | Không | Trống | Control UI: Textbox.<br>Tìm kiếm tương đối theo mã hoặc tên đơn vị lập báo cáo, không phân biệt chữ hoa chữ thường, tự động cắt khoảng trắng thừa. |
 | Đơn vị nhận báo cáo | String(255) | Không | Trống | Control UI: Textbox.<br>Tìm kiếm tương đối theo mã hoặc tên đơn vị nhận báo cáo, không phân biệt chữ hoa chữ thường. |

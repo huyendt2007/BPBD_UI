@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -503,7 +503,7 @@
             font-size: 13px;
             flex-wrap: wrap;
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 0;
         }
 
         .pagination-left {
@@ -815,9 +815,9 @@
             margin-top: 2px;
         }
 
-        /* Khối bộ lọc: 5 cột trên màn rộng để 5 tiêu chí nằm gọn 1 hàng */
+        /* Khối bộ lọc: 6 cột trên màn rộng để 6 tiêu chí nằm gọn 1 hàng */
         #filterSection .form-grid-3 {
-            grid-template-columns: repeat(5, minmax(0, 1fr));
+            grid-template-columns: repeat(6, minmax(0, 1fr));
             gap: 10px 14px;
         }
 
@@ -853,41 +853,31 @@
             font-size: 13px;
         }
 
-        /* Tiêu đề khối bộ lọc, bấm để thu gọn */
-        .filter-head {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-            user-select: none;
-            color: var(--primary-color);
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 10px;
-            padding-bottom: 6px;
-            border-bottom: 1px solid var(--border-color);
+        /* Cột Thao tác cố định cạnh phải bảng khi cuộn ngang */
+        #feeTable th:last-child,
+        #feeTable td.action-cell {
+            position: sticky;
+            right: 0;
+            z-index: 2;
+            background-color: var(--bg-surface);
+            box-shadow: -2px 0 4px rgba(15, 23, 42, 0.06);
         }
 
-        .filter-head .toggle-caret {
-            font-size: 12px;
-            transition: transform .18s ease;
+        #feeTable th:last-child {
+            z-index: 3;
+            background-color: var(--table-header-bg);
         }
 
-        #filterSection.collapsed .filter-head {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
+        #feeTable tbody tr:hover td.action-cell {
+            background-color: #F0F9FF;
         }
 
-        #filterSection.collapsed .filter-head .toggle-caret {
-            transform: rotate(-90deg);
+        #feeTable td[colspan] {
+            position: static;
+            box-shadow: none;
         }
 
-        #filterSection.collapsed .filter-body {
-            display: none;
-        }
-
-        /* Tiêu đề lưới gộp chung hàng với nhóm nút chức năng */
+        /* Nhóm nút chức năng phía trên bảng (không hiển thị tiêu đề bảng) */
         .section-title {
             margin-bottom: 12px;
             padding-bottom: 8px;
@@ -917,17 +907,17 @@
 
     <!-- 1. SEARCH/FILTER SECTION (Quy chuẩn Thiết kế Khối lọc tìm kiếm) -->
     <div class="card-section" id="filterSection"
+        data-bpbd-filter
         style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 12px 15px; margin-bottom: 12px; border-radius: var(--border-radius-md);">
-        <div class="filter-head" onclick="toggleFilterSection()" title="Bấm để thu gọn hoặc mở rộng bộ lọc">
-            <span><i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm</span>
-            <i class="fa-solid fa-chevron-down toggle-caret"></i>
-        </div>
-        <div class="filter-body">
+        <div data-bpbd-filter-body>
         <div class="form-grid-3">
             <div class="form-group">
-                <label for="searchKeyword">Từ khóa tìm kiếm</label>
-                <input type="text" id="searchKeyword" class="input-control"
-                    placeholder="Mã biểu phí hoặc Tên biểu phí...">
+                <label for="searchCode">Mã biểu phí</label>
+                <input type="text" id="searchCode" class="input-control" placeholder="Nhập mã biểu phí...">
+            </div>
+            <div class="form-group">
+                <label for="searchName">Tên biểu phí</label>
+                <input type="text" id="searchName" class="input-control" placeholder="Nhập tên biểu phí...">
             </div>
             <div class="form-group">
                 <label for="searchCategory">Loại dịch vụ</label>
@@ -954,14 +944,14 @@
                 </select>
             </div>
             <div class="form-group">
-                <label>Hiệu lực từ ngày</label>
+                <label>Thời điểm áp dụng từ ngày</label>
                 <div class="date-input-container">
                     <input type="text" id="searchFromDate" class="input-control" placeholder="dd/mm/yyyy">
                     <i class="fa-regular fa-calendar"></i>
                 </div>
             </div>
             <div class="form-group">
-                <label>Hiệu lực đến ngày</label>
+                <label>Thời điểm áp dụng đến ngày</label>
                 <div class="date-input-container">
                     <input type="text" id="searchToDate" class="input-control" placeholder="dd/mm/yyyy">
                     <i class="fa-regular fa-calendar"></i>
@@ -984,9 +974,8 @@
 
     <!-- 2. ACTION TOOLBAR & RESULTS -->
     <div class="card-section">
-        <div class="section-title">
-            <span>Danh sách cấu hình biểu phí hệ thống</span>
-            <!-- Nút chức năng gộp chung hàng với tiêu đề để tiết kiệm diện tích -->
+        <div class="section-title" style="justify-content: flex-end; border-bottom: none;">
+            <!-- Không hiển thị tiêu đề phía trên bảng; nhóm nút chức năng đặt ở góc phải -->
             <div class="title-actions">
                 <button class="btn btn-primary" onclick="openAddModal()">
                     <i class="fa fa-plus"></i> Thêm mới
@@ -995,9 +984,6 @@
                     <i class="fa-solid fa-file-excel"></i> Kết xuất Excel
                 </button>
             </div>
-        </div>
-        <div style="font-size: 12.5px; color: var(--text-muted); margin: -6px 0 10px;">
-            Áp dụng quy chuẩn Thông tư 64/2025/TT-BTC và Thông tư 61/2023/TT-BTC
         </div>
 
         <!-- 3. DATA GRID -->
@@ -1033,25 +1019,15 @@
                 <div class="page-size-selector">
                     <span>Số bản ghi:</span>
                     <select class="page-size-select" id="pageSizeSelect" onchange="changePageSize(this.value)">
-                        <option value="5">5</option>
-                        <option value="10" selected>10</option>
-                        <option value="20">20</option>
+                        <option value="10">10</option>
+                        <option value="20" selected>20</option>
                         <option value="50">50</option>
+                        <option value="100">100</option>
                     </select>
                 </div>
                 <div class="pagination-buttons" id="paginationButtons">
                     <!-- Rendered dynamically -->
                 </div>
-            </div>
-        </div>
-
-        <!-- Miễn phí note from the image -->
-        <div class="alert-info-box">
-            <i class="fa-solid fa-circle-info"></i>
-            <div>
-                <strong>Trường hợp được miễn phí đăng ký:</strong> Cá nhân, hộ gia đình vay vốn tại tổ chức tín dụng
-                phục vụ phát triển nông nghiệp nông thôn theo quy định tại Nghị định số 55/2015/NĐ-CP về chính sách tín
-                dụng phục vụ phát triển nông nghiệp, nông thôn.
             </div>
         </div>
     </div>
@@ -1383,7 +1359,7 @@
         // State variables
         let feeList = [...rawMockData];
         let currentPage = 1;
-        let pageSize = 10;
+        let pageSize = 20;
         let sortedColumn = "effective_from";
         let sortDirection = "desc"; // desc by default
         let deleteTargetId = null;
@@ -1531,7 +1507,7 @@
 
             if (feeList.length === 0) {
                 const tr = document.createElement("tr");
-                tr.innerHTML = `<td colspan="8" class="empty-row-text">Không tìm thấy biểu phí nào phù hợp với bộ lọc tìm kiếm.</td>`;
+                tr.innerHTML = `<td colspan="8" class="empty-row-text">Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</td>`;
                 tbody.appendChild(tr);
 
                 // Hide pagination if empty
@@ -1704,7 +1680,8 @@
 
         // Filter / Search Action
         function performSearch() {
-            const keyword = document.getElementById("searchKeyword").value.trim().toLowerCase();
+            const codeKw = document.getElementById("searchCode").value.trim().toLowerCase();
+            const nameKw = document.getElementById("searchName").value.trim().toLowerCase();
             const category = document.getElementById("searchCategory").value;
             const status = document.getElementById("searchStatus").value;
             const fromDateStr = document.getElementById("searchFromDate").value.trim();
@@ -1722,12 +1699,25 @@
                 showToast("Định dạng đến ngày không hợp lệ (dd/mm/yyyy)", "error");
                 return;
             }
+            // Thời điểm áp dụng từ ngày phải nhỏ hơn hoặc bằng Thời điểm áp dụng đến ngày
+            const fromEl = document.getElementById("searchFromDate");
+            const toEl = document.getElementById("searchToDate");
+            fromEl.style.borderColor = "";
+            toEl.style.borderColor = "";
+            if (fromDate && toDate && fromDate > toDate) {
+                fromEl.style.borderColor = "var(--danger-color, #DC2626)";
+                toEl.style.borderColor = "var(--danger-color, #DC2626)";
+                showToast("Từ ngày không được lớn hơn Đến ngày", "error");
+                return;
+            }
 
             feeList = rawMockData.filter(item => {
-                // Keyword match (code or name)
-                const matchKeyword = !keyword ||
-                    item.code.toLowerCase().includes(keyword) ||
-                    item.name.toLowerCase().includes(keyword);
+                // Mã biểu phí / Tên biểu phí (tiếng Việt hoặc tiếng Anh): tìm gần đúng
+                const matchCode = !codeKw || item.code.toLowerCase().includes(codeKw);
+                const matchName = !nameKw ||
+                    item.name.toLowerCase().includes(nameKw) ||
+                    (item.name_en || "").toLowerCase().includes(nameKw);
+                const matchKeyword = matchCode && matchName;
 
                 // Category match
                 const matchCategory = !category || item.category === category;
@@ -1754,7 +1744,10 @@
 
         // Reset Filter (Rule 1: "Xóa bộ lọc")
         function resetFilters() {
-            document.getElementById("searchKeyword").value = "";
+            document.getElementById("searchCode").value = "";
+            document.getElementById("searchName").value = "";
+            document.getElementById("searchFromDate").style.borderColor = "";
+            document.getElementById("searchToDate").style.borderColor = "";
             document.getElementById("searchCategory").value = "";
             document.getElementById("searchStatus").value = "";
 
@@ -2067,13 +2060,9 @@
             renderTable();
         }
 
-        // Thu gon / mo rong khoi Bo loc tim kiem de nhuong dien tich cho luoi danh sach
-        function toggleFilterSection() {
-            const sec = document.getElementById('filterSection');
-            if (sec) sec.classList.toggle('collapsed');
-        }
     </script>
     <script src="admin-ui-standardizer.js"></script>
+    <script src="bpbd_filter_toggle.js"></script>
 </body>
 
 </html>

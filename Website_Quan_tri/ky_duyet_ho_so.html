@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -399,6 +399,25 @@
             background-color: rgba(241, 245, 249, 0.5);
         }
 
+        /* Cột Thao tác cố định cạnh phải bảng danh sách (Sticky/Freeze), giống màn Kiểm tra và xử lý hồ sơ */
+        #view-list .table th:last-child,
+        #view-list .table td:last-child {
+            position: sticky;
+            right: 0;
+            z-index: 2;
+            background-color: #ffffff;
+            box-shadow: -4px 0 6px -2px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            white-space: nowrap;
+        }
+        #view-list .table thead th:last-child {
+            z-index: 3;
+            background-color: var(--table-header-bg);
+        }
+        #view-list .table tbody tr:hover td:last-child {
+            background-color: #F8FAFC;
+        }
+
         .action-link {
             color: var(--secondary-color);
             text-decoration: none;
@@ -789,6 +808,199 @@
             max-width: 250px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.15);
         }
+        /* Thanh nút chức năng của các màn Xem chi tiết / Xử lý / Cập nhật: luôn cố định ở cuối màn hình (kể cả khi nội dung ngắn) */
+        .view-section.active > .card-section[style*="position:sticky"] { margin-top: auto; margin-bottom: 0; }
+
+        /* ===== Khối Bộ lọc tìm kiếm: Chuẩn Enterprise UI, thông thoáng, thanh lịch ===== */
+        #filter-section {
+            background-color: #FFFFFF !important;
+            border: 1px solid #E2E8F0 !important;
+            border-radius: 8px !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+            padding: 10px 16px 8px 16px !important;
+            margin-bottom: 10px !important;
+        }
+
+        #filter-section.bpbd-filter-collapsed {
+            padding: 4px 14px !important;
+            margin-bottom: 8px !important;
+            min-height: auto !important;
+            height: 32px !important;
+            box-sizing: border-box !important;
+            background-color: #F8FAFC !important;
+            border: 1px solid #E2E8F0 !important;
+            border-radius: 6px !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+        }
+
+        #filter-section .section-title {
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            cursor: pointer;
+            user-select: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-color, #1E3A8A);
+            border-bottom: 1px solid #E2E8F0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #filter-section .section-title .toggle-caret {
+            transition: transform .2s ease;
+            font-size: 12px;
+            color: #64748B;
+        }
+
+        #filter-section.collapsed .section-title {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        #filter-section.collapsed .section-title .toggle-caret {
+            transform: rotate(-90deg);
+        }
+
+        #filter-section.collapsed #filter-card-container {
+            display: none;
+        }
+
+        /* 4 cột cân đối, rộng rãi cho nhãn tiếng Việt và các ô nhập liệu */
+        #filter-card-container .grid-4-cols {
+            display: grid !important;
+            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+            gap: 8px 14px !important;
+        }
+
+        @media (max-width: 1200px) {
+            #filter-card-container .grid-4-cols { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+        }
+
+        @media (max-width: 768px) {
+            #filter-card-container .grid-4-cols { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+        }
+
+        @media (max-width: 480px) {
+            #filter-card-container .grid-4-cols { grid-template-columns: 1fr !important; }
+        }
+
+        #filter-card-container .form-group {
+            margin-bottom: 0 !important;
+        }
+
+        #filter-card-container .form-label {
+            font-size: 12.5px !important;
+            font-weight: 500 !important;
+            color: #334155 !important;
+            margin-bottom: 3px !important;
+            line-height: 1.3 !important;
+            display: block !important;
+            white-space: normal !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+        }
+
+        #filter-card-container .form-control,
+        #filter-card-container .form-select {
+            height: 34px !important;
+            min-height: 34px !important;
+            padding: 4px 10px !important;
+            font-size: 13px !important;
+            color: #0F172A !important;
+            background-color: #FFFFFF !important;
+            border-radius: 5px !important;
+            border: 1px solid #CBD5E1 !important;
+            line-height: 1.4 !important;
+            box-sizing: border-box !important;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out !important;
+        }
+
+        #filter-card-container .form-control:focus,
+        #filter-card-container .form-select:focus {
+            border-color: #2563EB !important;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
+            outline: none !important;
+        }
+
+        #filter-card-container .date-filter-wrap {
+            position: relative !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+
+        #filter-card-container .date-filter-wrap .form-control {
+            padding-right: 32px !important;
+        }
+
+        #filter-card-container .date-filter-wrap i {
+            position: absolute !important;
+            right: 9px !important;
+            top: 50% !important;
+            transform: translateY(-50%) !important;
+            font-size: 12px !important;
+            color: #64748B !important;
+            pointer-events: none !important;
+        }
+
+        /* Khối lọc động Loại tài sản: Khối tinh tế, có vạch nhấn màu xanh dương bên trái */
+        #ld-dynamic-filter {
+            margin-top: 8px !important;
+            padding: 8px 12px !important;
+            border: 1px solid #E2E8F0 !important;
+            border-left: 3px solid #2563EB !important;
+            border-radius: 5px !important;
+            background: #F8FAFC !important;
+        }
+
+        #ld-dynamic-filter .grid-4-cols {
+            display: grid !important;
+            grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+            gap: 8px 14px !important;
+        }
+
+        @media (max-width: 1200px) {
+            #ld-dynamic-filter .grid-4-cols {
+                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            #ld-dynamic-filter .grid-4-cols {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            }
+        }
+
+        /* Hàng nút Tìm kiếm / Xóa bộ lọc: Phân cách nhẹ, bố cục thoáng */
+        #filter-card-container > div[style*="text-align: right"],
+        #filter-card-container > div[style*="text-align:right"],
+        .filter-action-row {
+            margin-top: 8px !important;
+            margin-bottom: 0 !important;
+            padding-top: 8px !important;
+            border-top: 1px solid #F1F5F9 !important;
+            display: flex !important;
+            justify-content: flex-end !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+
+        #filter-card-container .btn {
+            height: 32px !important;
+            min-height: 32px !important;
+            padding: 0 14px !important;
+            font-size: 12.5px !important;
+            font-weight: 500 !important;
+            border-radius: 5px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 5px !important;
+            line-height: normal !important;
+            cursor: pointer !important;
+            transition: all 0.15s ease-in-out !important;
+        }
     </style>
 </head>
 
@@ -801,13 +1013,16 @@
         <!-- ========================================== -->
         <div id="view-list" class="view-section active">
             <div class="nav-tabs" id="leader-work-type-tabs" style="display:flex;">
-                <div class="nav-tab active" data-work-type="registration" onclick="switchLeaderWorkType('registration', this)">Phiếu đăng ký</div>
+                <div class="nav-tab active" data-work-type="registration" onclick="switchLeaderWorkType('registration', this)">Phiếu đăng ký <span class="tab-badge info" id="badge-reg-leader" style="display:none">0</span></div>
                 <div class="nav-tab" data-work-type="cctt" onclick="switchLeaderWorkType('cctt', this)">Yêu cầu cung cấp thông tin <span class="tab-badge info" id="badge-cctt-leader">0</span></div>
                 <div class="nav-tab" data-work-type="copy" onclick="switchLeaderWorkType('copy', this)">Yêu cầu cung cấp bản sao <span class="tab-badge info" id="badge-copy-leader">0</span></div>
             </div>
 
             <!-- Bộ lọc tìm kiếm -->
-            <div class="card-section" id="filter-card-container">
+            <div class="card-section" id="filter-section" data-bpbd-filter>
+                <div id="filter-card-container" data-bpbd-filter-body></div>
+            </div>
+            <div style="display:none">
                 <!-- Will be dynamically rendered based on tab -->
             </div>
 
@@ -1078,6 +1293,8 @@
     <script src="bs_xu_ly_popups.js"></script>
     <script src="cctt_xu_ly_popups.js"></script>
     <script src="ky_duyet_ho_so.js"></script>
+    <script src="ky_duyet_lanh_dao.js"></script>
+    <script src="bpbd_filter_toggle.js"></script>
     <script src="admin-ui-standardizer.js"></script>
 </body>
 

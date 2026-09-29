@@ -25,6 +25,7 @@
 ---
 
 <a id="mh01"></a>
+<a id="43232-mh01---man-hinh-danh-sach-phieu-dang-ky-cho-duyet"></a>
 #### 4.3.2.3.2. MH01 - Màn hình Danh sách Phiếu đăng ký chờ duyệt
 
 ##### 4.3.2.3.2.1. Màn hình
@@ -35,15 +36,18 @@
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | - | - | - | |
-| Tìm kiếm | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số đăng ký, mã PIN, tên bên bảo đảm...".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Số đăng ký, Mã PIN, Tên bên bảo đảm hoặc Tên bên nhận bảo đảm. |
-| Mã khách hàng | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập mã khách hàng...".<br>- Tìm kiếm gần đúng theo Mã khách hàng nộp hồ sơ. |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
+| Số đăng ký | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số đăng ký...".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Số đăng ký của Phiếu đăng ký. |
+| Tên bên bảo đảm | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập tên bên bảo đảm...".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Tên bên bảo đảm; hồ sơ có nhiều Bên bảo đảm được trả về nếu một trong các Bên bảo đảm thỏa mãn. |
+| Tên bên nhận bảo đảm | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập tên bên nhận bảo đảm...".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Tên bên nhận bảo đảm; hồ sơ có nhiều Bên nhận bảo đảm được trả về nếu một trong các Bên nhận bảo đảm thỏa mãn. |
+| Mã khách hàng | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập mã khách hàng...".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Mã khách hàng nộp hồ sơ. |
+| Số biên lai | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số biên lai...".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Số biên lai/biên nhận thanh toán lệ phí của hồ sơ. |
 | Nguồn tiếp nhận | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Dịch vụ công<br>+ Trực tuyến<br>+ Trực tiếp |
 | Loại đăng ký | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại hình đăng ký [DM_04].<br>- Chỉ lọc trong phạm vi nhóm Phiếu đăng ký, không trả về hồ sơ Yêu cầu cung cấp thông tin/Yêu cầu cung cấp bản sao. |
 | Loại hình giao dịch | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại hình giao dịch [DM_01].<br>- Khi chọn "Biện pháp bảo đảm", hệ thống cập nhật danh sách Loại biện pháp/Hợp đồng theo Danh mục Loại biện pháp bảo đảm [DM_02].<br>- Khi chọn "Hợp đồng", hệ thống cập nhật danh sách Loại biện pháp/Hợp đồng theo Danh mục Loại hợp đồng [DM_03].<br>- Khi chọn "Thông báo xử lý tài sản", hệ thống lọc các hồ sơ thông báo xử lý tài sản trong [DM_04]. |
 | Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02] hoặc [DM_03] theo Loại hình giao dịch đã chọn.<br>- Nếu chưa chọn Loại hình giao dịch, chỉ hiển thị "Tất cả". |
 | Loại tài sản | Enum(String(255)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại tài sản bảo đảm [DM_07].<br>- Nếu chọn một loại tài sản cụ thể, hệ thống hiển thị thêm **Khối lọc động theo Loại tài sản** và các cột động tương ứng trên Bảng danh sách. |
-| **Khối lọc động theo Loại tài sản** | - | Không | Ẩn | Chỉ hiển thị khi Cán bộ chọn một giá trị cụ thể tại trường `Loại tài sản`. Các trường trong khối lọc động tương ứng với cấu trúc thông tin tài sản tại [Màn hình Nhập liệu Đăng ký mới BPBĐ - Đăng ký mới Biện pháp bảo đảm, Hợp đồng (Website Khách hàng)](../../01_Website_Khach_hang/Dang_ky_moi_BPBD.md#4112-uc024mh01---man-hinh-nhap-lieu-dang-ky-moi-bpbd), giống khối lọc tại [Tab Phiếu đăng ký - Quản lý yêu cầu đã đăng ký - Phiếu đăng ký (Website Khách hàng)](../../01_Website_Khach_hang/SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md#41122-tab-phieu-dang-ky). |
+| **Khối lọc động theo Loại tài sản** | - | Không | Ẩn | - Không hiển thị tiêu đề khối; các trường lọc động hiển thị ngay dưới các trường lọc chung.<br>- Chỉ hiển thị khi Cán bộ chọn một giá trị cụ thể tại trường `Loại tài sản`. Các trường trong khối lọc động tương ứng với cấu trúc thông tin tài sản tại [Màn hình Nhập liệu Đăng ký mới BPBĐ - Đăng ký mới Biện pháp bảo đảm, Hợp đồng (Website Khách hàng)](../../01_Website_Khach_hang/Dang_ky_moi_BPBD.md#4112-uc024mh01---man-hinh-nhap-lieu-dang-ky-moi-bpbd), giống khối lọc tại [Tab Phiếu đăng ký - Quản lý yêu cầu đã đăng ký - Phiếu đăng ký (Website Khách hàng)](../../01_Website_Khach_hang/SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md#41122-tab-phieu-dang-ky). |
 | Tên phương tiện | Enum(String(255)) | Không | Trống | Control UI: Combobox.<br>- Chỉ hiển thị khi `Loại tài sản` = `Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)`.<br>- Tham chiếu Danh mục Tên phương tiện giao thông [DM_41]. |
 | Số khung | String(50) | Không | Trống | Control UI: Input text.<br>- Chỉ hiển thị khi `Loại tài sản` = `Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)`. |
 | Số máy | String(50) | Không | Trống | Control UI: Input text.<br>- Chỉ hiển thị khi `Loại tài sản` = `Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)`. |
@@ -123,6 +127,7 @@
 ---
 
 <a id="mh02"></a>
+<a id="43233-mh02---man-hinh-xem-chi-tiet-phieu-dang-ky"></a>
 #### 4.3.2.3.3. MH02 - Màn hình Xem chi tiết Phiếu đăng ký
 
 ##### 4.3.2.3.3.1. Màn hình
@@ -139,12 +144,15 @@
 | **I. Sidebar dòng thời gian lịch sử** | - | - | - | Hiển thị và xử lý giống khối **I. Sidebar dòng thời gian lịch sử** tại [Phiếu đăng ký - Xem chi tiết - Quản lý yêu cầu đã đăng ký - Phiếu đăng ký (Website Khách hàng)](../../01_Website_Khach_hang/SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md#411232-mo-ta-thong-tin-tren-man-hinh).<br>- Mặc định focus vào node phiên bản tương ứng với bản ghi Cán bộ đã chọn tại [MH01 - Màn hình Danh sách Phiếu đăng ký chờ duyệt](#mh01). |
 | **II. Vùng tiêu đề và thao tác** | - | - | - | Hiển thị và xử lý giống khối **II. Vùng tiêu đề và thao tác** tại [Phiếu đăng ký - Xem chi tiết - Quản lý yêu cầu đã đăng ký - Phiếu đăng ký (Website Khách hàng)](../../01_Website_Khach_hang/SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md#411232-mo-ta-thong-tin-tren-man-hinh). |
 | **III. Thông tin hồ sơ** | - | - | - | Hiển thị giống khối **III. Thông tin hồ sơ** tại [Phiếu đăng ký - Xem chi tiết - Quản lý yêu cầu đã đăng ký - Phiếu đăng ký (Website Khách hàng)](../../01_Website_Khach_hang/SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md#411232-mo-ta-thong-tin-tren-man-hinh). |
-| **IV. Thông tin chi tiết phiên bản** | - | - | - | Hiển thị giống khối **IV. Thông tin chi tiết phiên bản** tại [Phiếu đăng ký - Xem chi tiết - Quản lý yêu cầu đã đăng ký - Phiếu đăng ký (Website Khách hàng)](../../01_Website_Khach_hang/SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md#411232-mo-ta-thong-tin-tren-man-hinh). |
-| **V. Thông tin bổ sung của phiên bản đang chọn** | - | - | - | Hiển thị các thông tin bổ sung dành cho Cán bộ của phiên bản đang được chọn trên Sidebar. |
+| **IV. Thông tin trả lại** | - | - | - | Hiển thị và xử lý giống khối **II. Thông tin trả lại** tại [MH04 - Màn hình Xem chi tiết yêu cầu cung cấp bản sao - Kiểm tra và xử lý hồ sơ - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Kiem_tra_va_xu_ly_ho_so_Can_bo.md#43215-mh04---man-hinh-xem-chi-tiet-yeu-cau-cung-cap-ban-sao), đặt ngay dưới Khối III.<br>- Chỉ hiển thị khi hồ sơ ở trạng thái "Bị trả lại". |
+| **V. Thông tin từ chối** | - | - | - | Hiển thị và xử lý giống khối **III. Thông tin từ chối** tại [MH04 - Màn hình Xem chi tiết yêu cầu cung cấp bản sao - Kiểm tra và xử lý hồ sơ - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Kiem_tra_va_xu_ly_ho_so_Can_bo.md#43215-mh04---man-hinh-xem-chi-tiet-yeu-cau-cung-cap-ban-sao), đặt ngay dưới Khối III.<br>- Chỉ hiển thị khi hồ sơ ở trạng thái "Bị từ chối".<br>- Văn bản từ chối đã ký là Thông báo từ chối đã được Lãnh đạo ký số. |
+| **VI. Thông tin chi tiết phiên bản** | - | - | - | Hiển thị giống khối **IV. Thông tin chi tiết phiên bản** tại [Phiếu đăng ký - Xem chi tiết - Quản lý yêu cầu đã đăng ký - Phiếu đăng ký (Website Khách hàng)](../../01_Website_Khach_hang/SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md#411232-mo-ta-thong-tin-tren-man-hinh). |
+| **VII. Thông tin bổ sung của phiên bản đang chọn** | - | - | - | Hiển thị các thông tin bổ sung dành cho Cán bộ của phiên bản đang được chọn trên Sidebar. |
+| Số đăng ký | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi.<br>- Hiển thị Số đăng ký đã cấp cho hồ sơ.<br>- Hiển thị khi xem chi tiết hồ sơ tại các Tab/màn hình: Hồ sơ chờ duyệt, Hồ sơ duyệt chờ ký, Hồ sơ bị trả lại, Hồ sơ đang chờ ký, Hồ sơ đã xử lý.<br>- Với hồ sơ Bị trả lại được Cán bộ cập nhật và gửi duyệt lại, Số đăng ký giữ nguyên, không cấp số mới. |
 | Mã PIN | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi. |
 | Nguồn tiếp nhận | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi. |
 | Mã khách hàng | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi. |
-| **VI. Tài liệu đính kèm** | - | - | - | |
+| **VIII. Tài liệu đính kèm** | - | - | - | |
 | Tài liệu đính kèm của Khách hàng | - | - | - | Control UI: Danh sách tệp đính kèm kèm link "Xem file", chỉ đọc. Hiển thị theo dữ liệu bản ghi.<br>- Hiển thị danh sách tệp đính kèm do Khách hàng đã gửi cùng hồ sơ. |
 
 ##### 4.3.2.3.3.3. Chức năng trên màn hình
@@ -234,6 +242,7 @@
 
 ---
 
+<a id="43236-quy-tac-sinh-file-pdf-du-thao-van-ban-chung-nhan-theo-mau-so-05d"></a>
 #### 4.3.2.3.6. Quy tắc sinh file PDF dự thảo Văn bản chứng nhận theo Mẫu số 05d
 
 ##### 4.3.2.3.6.1. Nguyên tắc sinh file
@@ -290,6 +299,7 @@
 
 ---
 
+<a id="43237-quy-tac-sinh-file-pdf-du-thao-thong-bao-tu-choi"></a>
 #### 4.3.2.3.7. Quy tắc sinh file PDF dự thảo Thông báo từ chối
 
 ##### 4.3.2.3.7.1. Nguyên tắc sinh file

@@ -216,6 +216,7 @@
 
 ---
 
+<a id="41222-uc_htkhmh01---khung-giao-dien-tong-the--module-switcher-che-do-da-dang-nhap"></a>
 #### 4.1.22.2. UC_HTKH.MH01 - Khung giao diện tổng thể & Module Switcher (Chế độ đã đăng nhập)
 
 ##### 4.1.22.2.1. Màn hình

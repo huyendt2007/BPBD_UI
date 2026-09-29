@@ -131,7 +131,7 @@ flowchart LR
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **Khối Bộ lọc tìm kiếm** |  |  |  | Nhóm điều kiện tìm kiếm khoản phải thu/khoản phải hoàn. |
+| **Khối Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Nhóm điều kiện tìm kiếm khoản phải thu/khoản phải hoàn.<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Loại khoản | Enum(String(50)) | Không | "Khoản phải thu" | Lọc theo loại khoản tài chính.<br>- Tất cả<br>- Khoản phải thu<br>- Khoản phải hoàn |
 | Mã hồ sơ/Mã QR | String(100) | Không | Trống | Tìm kiếm gần đúng theo Mã hồ sơ hoặc Mã QR. Placeholder: "HS-2026-000128". |
 | Số đơn giấy | String(50) | Không | Trống | Tìm kiếm gần đúng theo số đơn giấy. Placeholder: "PG-0128". |

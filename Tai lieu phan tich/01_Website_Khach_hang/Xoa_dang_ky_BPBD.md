@@ -47,12 +47,14 @@
 
 ---
 
+<a id="4133-uc026mh02---man-hinh-nhap-thong-tin-xoa-dang-ky"></a>
 #### 4.1.3.3. UC026.MH02 - Màn hình Nhập thông tin xóa đăng ký
 
 ##### 4.1.3.3.1. Màn hình
 
 \- Giao diện nhập liệu thông tin xóa đăng ký. Các thông tin chung của hồ sơ gốc và thông tin các bên bảo đảm, bên nhận bảo đảm được hệ thống tự động điền sẵn (pre-fill); riêng Cơ quan tiếp nhận cho phép thay đổi tại màn nhập liệu, các thông tin còn lại ở trạng thái chỉ đọc để bảo toàn dữ liệu gốc. Khách hàng thực hiện chọn thông tin Người yêu cầu đăng ký, Căn cứ xóa đăng ký, Diện miễn nộp phí và xem thông tin tài sản bảo đảm trong phạm vi xóa đăng ký.
 
+<a id="41332-mo-ta-thong-tin-tren-man-hinh"></a>
 ##### 4.1.3.3.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
@@ -118,6 +120,7 @@
 
 ---
 
+<a id="4134-uc026mh03---man-hinh-xem-truoc-review"></a>
 #### 4.1.3.4. UC026.MH03 - Màn hình Xem trước (Review)
 
 ##### 4.1.3.4.1. Màn hình
@@ -126,6 +129,7 @@
 
 ![Màn hình Xem trước](images/UC026_Review.png)
 
+<a id="41342-mo-ta-thong-tin-tren-man-hinh"></a>
 ##### 4.1.3.4.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin                                                         | Kiểu dữ liệu | Bắt buộc | Mặc định                           | Mô tả                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
@@ -185,10 +189,10 @@
 | :--- | :--- | :--- | :--- |
 | 1 | QUAY LẠI | Nút | \- Thao tác: NSD click nút QUAY LẠI.<br>- Xử lý: Hệ thống chuyển hướng người dùng trở về Màn hình Nhập thông tin xóa đăng ký (UC026.MH02), giữ nguyên toàn bộ dữ liệu đã kê khai trên form và lưới. |
 | 2 | GỬI ĐĂNG KÝ | Nút | \- Thao tác: NSD click nút GỬI ĐĂNG KÝ.<br>- Kiểm tra: Hệ thống thực hiện kiểm tra kết nối Cơ sở dữ liệu và các quy tắc ràng buộc chéo ở thời điểm hiện tại.<br>+ TH1 (Lưu thất bại / Lỗi hệ thống): Quá trình lưu gặp sự cố kỹ thuật hoặc ngắt kết nối DB. Hệ thống hiển thị thông báo lỗi: "Lưu hồ sơ thất bại. Vui lòng thử lại sau."<br>+ TH Hợp lệ 1 (Không được miễn phí): Hệ thống ghi nhận hồ sơ ở trạng thái "Chờ thanh toán", tự động sinh Số đăng ký xóa. **Lưu ý: Hệ thống KHÔNG cấp Mã số PIN mới cho hồ sơ xóa đăng ký** (Mã PIN chỉ được cấp một lần duy nhất khi Đăng ký mới - UC024).<br>Hệ thống thực hiện đóng gói thông tin thanh toán bao gồm: *(Chi tiết sẽ làm rõ thêm với Cổng thanh toán)*<br>  - Mã hồ sơ (Mã hồ sơ).<br>  - Số tiền phải thu (Lệ phí xóa đăng ký lấy từ Danh mục cấu hình Biểu phí tương ứng với Loại Xóa đăng ký của hồ sơ).<br>  - Nội dung thanh toán (Định dạng mặc định: "Thanh toan le phi xoa dang ky ho so [Mã hồ sơ]").<br>  - Mã đơn vị thụ hưởng (Trung tâm Đăng ký giao dịch bảo đảm tiếp nhận hồ sơ).<br>  - Đường dẫn quay lại (Return URL của hệ thống sau khi thanh toán).<br>Đồng thời chuyển hướng sang Use Case [UC158 - Quản lý thanh toán phí](UC158_Quan_ly_thanh_toan_phi.md) để người dùng thực hiện nộp lệ phí.<br>+ TH Hợp lệ 2 (Được miễn phí): Hệ thống ghi nhận hồ sơ ở trạng thái "Chờ duyệt" (không cần thanh toán thực tế), tự động sinh Số đăng ký xóa (không cấp Mã số PIN mới) và hiển thị trực tiếp Modal "Thông báo Kết quả" (nội dung cảm ơn: "Cảm ơn Quý khách đã gửi yêu cầu. Hồ sơ của Quý khách đã được tiếp nhận thành công và đang được xử lý.") ngay trên giao diện hiện hành, không chuyển hướng sang nộp phí. |
-| 3 | Lắng nghe trạng thái thanh toán & Hiển thị kết quả (Auto) | Background Task / Redirect | Hệ thống thực hiện lắng nghe trạng thái thanh toán từ Cổng thanh toán (Webhook callback) và hiển thị kết quả giao dịch tại Màn hình Kết quả Giao dịch chung của hệ thống.<br>- Chi tiết quy trình xử lý Webhook cho các trường hợp TH1 đến TH7: Tham chiếu tại [4.1.2.3. Lắng nghe trạng thái thanh toán từ Cổng thanh toán (Webhook Callback) của UC158](UC158_Quan_ly_thanh_toan_phi.md#4123-lang-nghe-trang-thai-thanh-toan-tu-cong-thanh-toan-webhook-callback).<br>- Chi tiết giao diện và cấu hình hiển thị kết quả giao dịch: Tham chiếu tại [4.1.2.4. UC158.MH02 - Màn hình Kết quả Giao dịch chung của UC158](UC158_Quan_ly_thanh_toan_phi.md#4124-uc158mh02---man-hinh-ket-qua-giao-dich-chung). |
+| 3 | Lắng nghe trạng thái thanh toán & Hiển thị kết quả (Auto) | Background Task / Redirect | Hệ thống thực hiện lắng nghe trạng thái thanh toán từ Cổng thanh toán (Webhook callback) và hiển thị kết quả giao dịch tại Màn hình Kết quả Giao dịch chung của hệ thống.<br>- Chi tiết quy trình xử lý Webhook cho các trường hợp TH1 đến TH7: Tham chiếu tại [Xử lý kết quả trả về từ Cổng thanh toán - Thanh toán trực tuyến (Website Khách hàng)](SRS_Thanh%20toan%20truc%20tuyen.md#414-xu-ly-ket-qua-tra-ve-tu-cong-thanh-toan).<br>- Chi tiết giao diện và cấu hình hiển thị kết quả giao dịch: Tham chiếu tại [MH02 - Màn hình Kết quả thanh toán thành công - Thanh toán trực tuyến (Website Khách hàng)](SRS_Thanh%20toan%20truc%20tuyen.md#415-mh02---man-hinh-ket-qua-thanh-toan-thanh-cong). |
 
 ---
 
 #### 4.1.3.5. Màn hình Kết quả thanh toán
 - Sau khi thực hiện thanh toán xong trên Cổng thanh toán trực tuyến, hệ thống tự động chuyển hướng người dùng quay trở lại hệ thống và hiển thị kết quả giao dịch trên Màn hình kết quả giao dịch chung.
-- Chi tiết thông tin giao diện và các quy tắc hiển thị động cho nghiệp vụ Xóa đăng ký biện pháp bảo đảm: Tham chiếu tại [4.1.2.4. UC158.MH02 - Màn hình Kết quả Giao dịch chung của UC158](UC158_Quan_ly_thanh_toan_phi.md#4124-uc158mh02---man-hinh-ket-qua-giao-dich-chung).
+- Chi tiết thông tin giao diện và các quy tắc hiển thị động cho nghiệp vụ Xóa đăng ký biện pháp bảo đảm: Tham chiếu tại [MH02 - Màn hình Kết quả thanh toán thành công - Thanh toán trực tuyến (Website Khách hàng)](SRS_Thanh%20toan%20truc%20tuyen.md#415-mh02---man-hinh-ket-qua-thanh-toan-thanh-cong).

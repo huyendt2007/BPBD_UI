@@ -112,6 +112,32 @@
             background-size: 16px 12px !important;
         }
 
+        /* Khung bao TomSelect không nhận kiểu ô nhập của khối lọc (tránh 2 lớp viền); ô chọn cao bằng các ô lọc khác */
+        .admin-compact-filter .ts-wrapper.form-control,
+        .ts-wrapper.form-control {
+            padding: 0 !important;
+            border: none !important;
+            height: auto !important;
+            min-height: 0 !important;
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+        .admin-compact-filter .ts-control {
+            min-height: 34px !important;
+            padding: 6px 30px 6px 10px !important;
+            border: 1px solid #CBD5E1 !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+        .admin-compact-filter .ts-control input {
+            height: auto !important;
+            min-height: 0 !important;
+            border: none !important;
+            padding: 0 !important;
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
         .ts-dropdown {
             font-size: 13px !important;
             border-radius: var(--border-radius-md) !important;
@@ -1045,9 +1071,6 @@
                         <option value="Chưa xếp loại">Chưa xếp loại</option>
                     </select>
                 </div>
-            </div>
-
-            <div class="grid-2-cols" style="margin-top: 5px;">
                 <div class="form-group">
                     <label class="form-label">Hạn nộp từ ngày</label>
                     <div class="input-group-date">
@@ -1373,7 +1396,7 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label class="form-label">Năm đánh giá <span style="color:red;">*</span></label>
-                    <select class="form-control" id="newPeriodYear">
+                    <select class="form-control" id="newPeriodYear" onchange="onNewPeriodYearChange(this.value)">
                         <option value="2027">2027</option>
                         <option value="2028">2028</option>
                     </select>
@@ -1420,33 +1443,33 @@
         // MOCK DATA FOR 63 STP UNITS PERIODS LIST (at least 2 pages)
         const initialMockPeriods = [
             // Hà Nội (12 bản ghi)
-            { id: 1, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "Đang tự chấm", selfScore: 45, btpScore: 0, grade: "Chưa xếp loại", deadline: "15/12/2026", details: { "I.1": 6, "I.2": 6 }, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
-            { id: 2, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "Chưa bắt đầu", selfScore: 0, btpScore: 0, grade: "Chưa xếp loại", deadline: "15/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
-            { id: 3, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "Đã gửi BTP", selfScore: 85, btpScore: 0, grade: "Chưa xếp loại", deadline: "15/12/2026", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Không", "V.1": 0, "V.2": 0, "V.3": 0 }, bonus: [], penalty: 0, stpApproved: true, btpApproved: false },
-            { id: 4, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "BTP đang đánh giá", selfScore: 88, btpScore: 82, grade: "Chưa xếp loại", deadline: "15/12/2026", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Có", "V.1": 4, "V.2": 3, "V.3": 3 }, bonus: [], penalty: 3, stpApproved: true, btpApproved: false },
-            { id: 5, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "Không đánh giá", selfScore: 0, btpScore: 0, grade: "Không đánh giá", deadline: "15/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
-            { id: 6, year: "2025", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 86, btpScore: 81, grade: "Khá", deadline: "15/12/2025", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Có", "V.1": 4, "V.2": 3, "V.3": 3 }, bonus: [], penalty: 5, stpApproved: true, btpApproved: true },
-            { id: 7, year: "2025", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 95, btpScore: 95, grade: "Tốt", deadline: "15/12/2025", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Có", "V.1": 4, "V.2": 3, "V.3": 3 }, bonus: [{ name: "Ứng dụng số hóa tra cứu YCBT", decNo: "32/QĐ-STP", date: "10/05/2025", file: "QD32_SoHoa.pdf" }], penalty: 0, stpApproved: true, btpApproved: true },
-            { id: 8, year: "2025", unit: "Sở Tư pháp Hà Nội", status: "Không đánh giá", selfScore: 0, btpScore: 0, grade: "Không đánh giá", deadline: "15/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
-            { id: 9, year: "2025", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 68, btpScore: 65, grade: "Trung bình", deadline: "15/12/2025", details: {}, bonus: [], penalty: 2, stpApproved: true, btpApproved: true },
-            { id: 10, year: "2024", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 90, btpScore: 90, grade: "Tốt", deadline: "15/12/2024", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
-            { id: 11, year: "2024", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 78, btpScore: 78, grade: "Khá", deadline: "15/12/2024", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
-            { id: 12, year: "2024", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 48, btpScore: 45, grade: "Yếu", deadline: "15/12/2024", details: {}, bonus: [], penalty: 5, stpApproved: true, btpApproved: true },
+            { id: 1, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "Đang tự chấm", selfScore: 45, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: { "I.1": 6, "I.2": 6 }, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 2, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "Chưa bắt đầu", selfScore: 0, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 3, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "Đã gửi BTP", selfScore: 85, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Không", "V.1": 0, "V.2": 0, "V.3": 0 }, bonus: [], penalty: 0, stpApproved: true, btpApproved: false },
+            { id: 4, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "BTP đang đánh giá", selfScore: 88, btpScore: 82, grade: "Chưa xếp loại", deadline: "08/12/2026", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Có", "V.1": 4, "V.2": 3, "V.3": 3 }, bonus: [], penalty: 5, stpApproved: true, btpApproved: false },
+            { id: 5, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "Không đánh giá", selfScore: 0, btpScore: 0, grade: "Không đánh giá", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 6, year: "2025", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 86, btpScore: 81, grade: "Khá", deadline: "08/12/2025", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Có", "V.1": 4, "V.2": 3, "V.3": 3 }, bonus: [], penalty: 5, stpApproved: true, btpApproved: true },
+            { id: 7, year: "2025", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 95, btpScore: 95, grade: "Tốt", deadline: "08/12/2025", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Có", "V.1": 4, "V.2": 3, "V.3": 3 }, bonus: [{ name: "Ứng dụng số hóa tra cứu YCBT", decNo: "32/QĐ-STP", date: "10/05/2025", file: "QD32_SoHoa.pdf" }], penalty: 0, stpApproved: true, btpApproved: true },
+            { id: 8, year: "2025", unit: "Sở Tư pháp Hà Nội", status: "Không đánh giá", selfScore: 0, btpScore: 0, grade: "Không đánh giá", deadline: "08/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 9, year: "2025", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 68, btpScore: 65, grade: "Trung bình", deadline: "08/12/2025", details: {}, bonus: [], penalty: 5, stpApproved: true, btpApproved: true },
+            { id: 10, year: "2024", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 90, btpScore: 90, grade: "Tốt", deadline: "08/12/2024", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
+            { id: 11, year: "2024", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 78, btpScore: 78, grade: "Khá", deadline: "08/12/2024", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
+            { id: 12, year: "2024", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 48, btpScore: 45, grade: "Yếu", deadline: "08/12/2024", details: {}, bonus: [], penalty: 5, stpApproved: true, btpApproved: true },
 
             // Các đơn vị khác (13 bản ghi)
-            { id: 13, year: "2026", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Đã gửi BTP", selfScore: 82, btpScore: 0, grade: "Chưa xếp loại", deadline: "15/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: false },
-            { id: 14, year: "2026", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "BTP đang đánh giá", selfScore: 85, btpScore: 79, grade: "Chưa xếp loại", deadline: "15/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: false },
-            { id: 15, year: "2026", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Chưa bắt đầu", selfScore: 0, btpScore: 0, grade: "Chưa xếp loại", deadline: "15/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
-            { id: 16, year: "2026", unit: "Sở Tư pháp Đà Nẵng", status: "Chưa bắt đầu", selfScore: 0, btpScore: 0, grade: "Chưa xếp loại", deadline: "15/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
-            { id: 17, year: "2026", unit: "Sở Tư pháp Đà Nẵng", status: "Đang tự chấm", selfScore: 50, btpScore: 0, grade: "Chưa xếp loại", deadline: "15/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
-            { id: 18, year: "2026", unit: "Sở Tư pháp Hải Phòng", status: "Hoàn thành", selfScore: 92, btpScore: 92, grade: "Tốt", deadline: "15/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
-            { id: 19, year: "2026", unit: "Sở Tư pháp Cần Thơ", status: "Không đánh giá", selfScore: 0, btpScore: 0, grade: "Không đánh giá", deadline: "15/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
-            { id: 20, year: "2025", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Hoàn thành", selfScore: 78, btpScore: 78, grade: "Khá", deadline: "15/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
-            { id: 21, year: "2025", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Không đánh giá", selfScore: 0, btpScore: 0, grade: "Không đánh giá", deadline: "15/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
-            { id: 22, year: "2025", unit: "Sở Tư pháp Đà Nẵng", status: "Hoàn thành", selfScore: 84, btpScore: 80, grade: "Khá", deadline: "15/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
-            { id: 23, year: "2025", unit: "Sở Tư pháp Hải Phòng", status: "Hoàn thành", selfScore: 88, btpScore: 88, grade: "Khá", deadline: "15/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
-            { id: 24, year: "2025", unit: "Sở Tư pháp Cần Thơ", status: "Hoàn thành", selfScore: 48, btpScore: 48, grade: "Yếu", deadline: "15/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
-            { id: 25, year: "2024", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Hoàn thành", selfScore: 83, btpScore: 83, grade: "Khá", deadline: "15/12/2024", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true }
+            { id: 13, year: "2026", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Đã gửi BTP", selfScore: 82, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: false },
+            { id: 14, year: "2026", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "BTP đang đánh giá", selfScore: 85, btpScore: 79, grade: "Chưa xếp loại", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: false },
+            { id: 15, year: "2026", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Chưa bắt đầu", selfScore: 0, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 16, year: "2026", unit: "Sở Tư pháp Đà Nẵng", status: "Chưa bắt đầu", selfScore: 0, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 17, year: "2026", unit: "Sở Tư pháp Đà Nẵng", status: "Đang tự chấm", selfScore: 50, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 18, year: "2026", unit: "Sở Tư pháp Hải Phòng", status: "Hoàn thành", selfScore: 92, btpScore: 92, grade: "Tốt", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
+            { id: 19, year: "2026", unit: "Sở Tư pháp Cần Thơ", status: "Không đánh giá", selfScore: 0, btpScore: 0, grade: "Không đánh giá", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 20, year: "2025", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Hoàn thành", selfScore: 78, btpScore: 78, grade: "Khá", deadline: "08/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
+            { id: 21, year: "2025", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Không đánh giá", selfScore: 0, btpScore: 0, grade: "Không đánh giá", deadline: "08/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 22, year: "2025", unit: "Sở Tư pháp Đà Nẵng", status: "Hoàn thành", selfScore: 84, btpScore: 80, grade: "Khá", deadline: "08/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
+            { id: 23, year: "2025", unit: "Sở Tư pháp Hải Phòng", status: "Hoàn thành", selfScore: 88, btpScore: 88, grade: "Khá", deadline: "08/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
+            { id: 24, year: "2025", unit: "Sở Tư pháp Cần Thơ", status: "Hoàn thành", selfScore: 48, btpScore: 48, grade: "Yếu", deadline: "08/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
+            { id: 25, year: "2024", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Hoàn thành", selfScore: 83, btpScore: 83, grade: "Khá", deadline: "08/12/2024", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true }
         ];
 
         // CRITERIA DICTIONARY WITH POPUP HELP
@@ -1729,12 +1752,12 @@
             // Load from storage or set default
             let allData;
             try {
-                allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4'));
+                allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v5'));
             } catch (e) {
                 allData = null;
             }
             if (!allData || !Array.isArray(allData) || allData.length === 0) {
-                localStorage.setItem('btnn_scoring_periods_v4', JSON.stringify(initialMockPeriods));
+                localStorage.setItem('btnn_scoring_periods_v5', JSON.stringify(initialMockPeriods));
                 allData = initialMockPeriods;
             }
             currentPeriods = allData;
@@ -1922,29 +1945,71 @@
         }
 
         // RENDER ALERTS SECTION
+        // [BR-BTNN-CD-006] Mốc thời hạn của năm tự đánh giá:
+        // 08/12: Sở Tư pháp gửi kết quả tự đánh giá; 20/12: lấy ý kiến dự thảo Báo cáo tổng hợp; 31/12: gửi Thông báo kết quả
+        function getScoringMilestones(year) {
+            return { submit: `08/12/${year}`, draftReport: `20/12/${year}`, announce: `31/12/${year}` };
+        }
+
+        // Popup Khởi tạo kỳ: Hạn nộp tự chấm mặc định là ngày 08/12 của Năm đánh giá đã chọn
+        function onNewPeriodYearChange(year) {
+            const val = getScoringMilestones(year).submit;
+            const input = document.getElementById('newPeriodDeadline');
+            if (typeof fpNewPeriodDeadline !== 'undefined' && fpNewPeriodDeadline && fpNewPeriodDeadline.setDate) fpNewPeriodDeadline.setDate(val, true, 'd/m/Y');
+            else if (input) input.value = val;
+        }
+
+        // Số ngày làm việc (không tính thứ Bảy, Chủ nhật; ngày nghỉ lễ lấy theo cấu hình lịch nghỉ của hệ thống) tính từ sau ngày hạn nộp
+        function countWorkingDaysAfter(deadlineStr, date) {
+            const m = String(deadlineStr || '').match(/(\d{2})\/(\d{2})\/(\d{4})/);
+            if (!m) return 0;
+            const cur = new Date(+m[3], +m[2] - 1, +m[1]);
+            const end = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            let days = 0;
+            while (cur < end) {
+                cur.setDate(cur.getDate() + 1);
+                const wd = cur.getDay();
+                if (wd !== 0 && wd !== 6) days++;
+            }
+            return days;
+        }
+
+        // [BR-BTNN-CD-004] Gửi sau 05 ngày làm việc kể từ 08/12: trừ 05 điểm; sau 07 ngày làm việc: không đánh giá và xếp loại
+        function calcLatePenalty(deadlineStr, date = new Date()) {
+            const lateDays = countWorkingDaysAfter(deadlineStr, date);
+            return { lateDays, penalty: lateDays > 5 && lateDays <= 7 ? 5 : 0, notRated: lateDays > 7 };
+        }
+
         function renderAlertBanner() {
             const container = document.getElementById('alertBannerContainer');
             container.innerHTML = '';
 
+            // Mốc thời hạn theo năm tự đánh giá [BR-BTNN-CD-006]
+            const periods = JSON.parse(localStorage.getItem('btnn_scoring_periods_v5') || '[]');
+            const evalYear = String(new Date().getFullYear());
+            const dl = getScoringMilestones(evalYear);
             if (activeRole === 'stp') {
                 container.innerHTML = `
                     <div class="alert-banner alert-warning">
                         <i class="fa-solid fa-triangle-exclamation" style="font-size: 16px;"></i>
                         <div>
-                            <strong>Cảnh báo thời hạn nộp kỳ chấm điểm 2026:</strong> 
-                            Hạn nộp tự chấm điểm chính thức của Sở Tư pháp là trước ngày <strong>08/12/2026</strong>. 
-                            Vui lòng hoàn thành tự chấm đúng hạn để tránh bị trừ 5 điểm hoặc bị hủy kết quả xếp loại thi đua theo quy định tại Điều 10.2 QĐ 3062.
+                            <strong>Cảnh báo thời hạn nộp kỳ chấm điểm ${evalYear}:</strong>
+                            Sở Tư pháp gửi kết quả tự đánh giá, chấm điểm về Bộ Tư pháp trước ngày <strong>${dl.submit}</strong>.
+                            Gửi sau 05 ngày làm việc kể từ ngày ${dl.submit} bị trừ 05 điểm; gửi sau 07 ngày làm việc thì Sở Tư pháp không được đánh giá và xếp loại.
                         </div>
                     </div>
                 `;
             } else {
+                // Đếm động số đơn vị đã gửi bảng tự chấm của năm tự đánh giá
+                const sentUnits = [...new Set(periods.filter(p => p.year === evalYear && p.status === 'Đã gửi BTP').map(p => p.unit))];
                 container.innerHTML = `
                     <div class="alert-banner alert-danger">
                         <i class="fa-solid fa-clock-rotate-left" style="font-size: 16px;"></i>
                         <div>
-                            <strong>Thông báo nghiệp vụ BTP:</strong> 
-                            Có <strong>1 đơn vị (Sở Tư pháp TP. Hồ Chí Minh)</strong> đã gửi bảng tự chấm điểm. 
-                            Thời hạn để Cán bộ Bộ Tư pháp hoàn thành đánh giá thẩm định xếp loại là trước ngày <strong>20/12/2026</strong>.
+                            <strong>Thông báo nghiệp vụ BTP:</strong>
+                            ${sentUnits.length ? `Có <strong>${sentUnits.length} đơn vị (${sentUnits.join(', ')})</strong> đã gửi bảng tự chấm điểm chờ đánh giá.` : 'Chưa có đơn vị nào gửi bảng tự chấm điểm chờ đánh giá.'}
+                            Dự thảo Báo cáo tổng hợp kết quả đánh giá và xếp loại lấy ý kiến Sở Tư pháp trước ngày <strong>${dl.draftReport}</strong>;
+                            Thông báo kết quả đánh giá, chấm điểm và xếp loại gửi UBND cấp tỉnh và các Sở Tư pháp trước ngày <strong>${dl.announce}</strong>.
                         </div>
                     </div>
                 `;
@@ -1958,7 +2023,7 @@
             const statusVal = document.getElementById('filterStatus').value;
             const gradeVal = document.getElementById('filterGrade').value;
 
-            let allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4')) || [];
+            let allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v5')) || [];
 
             let filtered = allData.filter(item => {
                 if (yearVal && item.year !== yearVal) return false;
@@ -2132,7 +2197,7 @@
 
         // PAGINATION NAVIGATION
         function goToPage(dir) {
-            let allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4')) || [];
+            let allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v5')) || [];
             if (activeRole === 'stp') {
                 allData = allData.filter(i => i.unit === "Sở Tư pháp Hà Nội");
             }
@@ -2169,13 +2234,13 @@
         // ==================== WIZARD / STEPPER LOGIC FOR STP ====================
         function startStpScoring(id) {
             editingPeriodId = id;
-            const allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4')) || [];
+            const allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v5')) || [];
             selectedPeriod = allData.find(p => p.id === id);
 
             // Set state to "Đang tự chấm" if "Chưa bắt đầu"
             if (selectedPeriod.status === 'Chưa bắt đầu') {
                 selectedPeriod.status = "Đang tự chấm";
-                localStorage.setItem('btnn_scoring_periods_v4', JSON.stringify(allData));
+                localStorage.setItem('btnn_scoring_periods_v5', JSON.stringify(allData));
                 filterData();
             }
 
@@ -2256,10 +2321,10 @@
             // Bonus initiatives (+5 each)
             const sumBonus = initiativeList.length * 5;
 
-            // Penalty (if year 2025, late by default for test)
+            // Điểm trừ nộp muộn [BR-BTNN-CD-004]: kỳ đã gửi lấy theo điểm trừ đã ghi nhận; kỳ đang tự chấm tính theo ngày hiện tại so với hạn nộp
             let sumPenalty = 0;
-            if (selectedPeriod && selectedPeriod.year === "2025") {
-                sumPenalty = 5; // Automatic penalty
+            if (selectedPeriod) {
+                sumPenalty = selectedPeriod.stpApproved ? (selectedPeriod.penalty || 0) : calcLatePenalty(selectedPeriod.deadline).penalty;
             }
 
             const totalScore = Math.max(0, Math.min(100, sumGroup1 + sumGroup2 + sumGroup3 + sumGroup4 + sumGroup5 + sumBonus - sumPenalty));
@@ -2466,7 +2531,7 @@
                     <div class="criterion-card" style="border-color: var(--danger-color); background-color: #FFFDFD;">
                         <h4 style="font-weight:600; color:var(--danger-color); margin-bottom:10px;"><i class="fa-solid fa-circle-minus"></i> ĐIỂM TRỪ DO GỬI CHẬM HẠN (Điều 10.2)</h4>
                         <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">
-                            Hệ thống tự động tính điểm trừ nộp muộn dựa theo ngày gửi báo cáo thực tế. Báo cáo nộp chậm từ 6 - 7 ngày làm việc sau hạn 08/12 sẽ bị trừ 5 điểm. Trễ quá 7 ngày sẽ bị khóa quyền nộp.
+                            Hệ thống tự động tính điểm trừ nộp muộn dựa theo ngày gửi báo cáo thực tế. Gửi kết quả sau 05 ngày làm việc (không tính ngày nghỉ hằng tuần, ngày nghỉ lễ) kể từ ngày 08/12 của năm tự đánh giá bị trừ 05 điểm; gửi sau 07 ngày làm việc thì không đánh giá và xếp loại Sở Tư pháp.
                         </p>
                         <div class="form-group" style="max-width: 300px;">
                             <label class="form-label">Số điểm bị trừ</label>
@@ -2546,7 +2611,7 @@
                                         <td colspan="2" class="text-right"><strong>Trừ Điểm nộp muộn:</strong></td>
                                         <td class="text-right">-</td>
                                         <td class="text-right" style="color:var(--danger-color); font-weight:700;">-${penalty}</td>
-                                        <td>${penalty > 0 ? 'Nộp muộn từ 6 - 7 ngày làm việc sau ngày 08/12.' : 'Nộp đúng thời hạn quy định.'}</td>
+                                        <td>${penalty > 0 ? 'Gửi kết quả sau 05 ngày làm việc kể từ ngày 08/12 của năm tự đánh giá.' : 'Nộp đúng thời hạn quy định.'}</td>
                                     </tr>
                                     <tr style="background-color: #EFF6FF; font-size:14px;">
                                         <td colspan="2" class="text-right"><strong>TỔNG ĐIỂM CHUNG TỰ CHẤM:</strong></td>
@@ -3113,7 +3178,7 @@
 
             // SAVE DRAFT
             function saveDraft() {
-                const allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4'));
+                const allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods_v5'));
                 const idx = allPeriods.findIndex(p => p.id === selectedPeriod.id);
                 if (idx !== -1) {
                     allPeriods[idx].details = scoringData;
@@ -3122,7 +3187,7 @@
                     allPeriods[idx].bonus = initiativeList;
                     allPeriods[idx].status = "Đang tự chấm";
 
-                    localStorage.setItem('btnn_scoring_periods_v4', JSON.stringify(allPeriods));
+                    localStorage.setItem('btnn_scoring_periods_v5', JSON.stringify(allPeriods));
                     showToast("Đã lưu nháp bảng tự chấm điểm thành công!", "success");
                     filterData();
                 }
@@ -3136,18 +3201,28 @@
                     return;
                 }
 
-                const allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4'));
+                const allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods_v5'));
                 const idx = allPeriods.findIndex(p => p.id === selectedPeriod.id);
                 if (idx !== -1) {
                     allPeriods[idx].details = scoringData;
                     allPeriods[idx].selfScore = selectedPeriod.selfScore;
                     allPeriods[idx].grade = selectedPeriod.grade;
                     allPeriods[idx].bonus = initiativeList;
-                    allPeriods[idx].status = "Đã gửi BTP"; // change status
                     allPeriods[idx].stpApproved = true;
+                    // [BR-BTNN-CD-004] Ghi nhận điểm trừ / không đánh giá theo ngày gửi thực tế so với hạn 08/12
+                    const late = calcLatePenalty(allPeriods[idx].deadline);
+                    allPeriods[idx].submittedAt = new Date().toLocaleDateString('vi-VN');
+                    if (late.notRated) {
+                        allPeriods[idx].status = "Không đánh giá";
+                        allPeriods[idx].grade = "Không đánh giá";
+                        allPeriods[idx].penalty = 0;
+                    } else {
+                        allPeriods[idx].status = "Đã gửi BTP"; // change status
+                        allPeriods[idx].penalty = late.penalty;
+                    }
 
-                    localStorage.setItem('btnn_scoring_periods_v4', JSON.stringify(allPeriods));
-                    showToast("Đã nộp bảng tự chấm điểm thành công cho Bộ Tư pháp!", "success");
+                    localStorage.setItem('btnn_scoring_periods_v5', JSON.stringify(allPeriods));
+                    showToast(late.notRated ? "Kết quả tự chấm gửi sau 07 ngày làm việc kể từ hạn nộp: Sở Tư pháp không được đánh giá và xếp loại." : "Đã nộp bảng tự chấm điểm thành công cho Bộ Tư pháp!", late.notRated ? "warning" : "success");
                     showScreenList();
                     filterData();
                 }
@@ -3161,13 +3236,13 @@
             function startBtpEvaluation(id) {
                 editingPeriodId = id;
                 isBtpEvaluationMode = true; // Evaluation Mode!
-                const allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4')) || [];
+                const allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v5')) || [];
                 selectedPeriod = allData.find(p => p.id === id);
 
                 // Set state to "BTP đang đánh giá"
                 if (selectedPeriod.status === 'Đã gửi BTP') {
                     selectedPeriod.status = "BTP đang đánh giá";
-                    localStorage.setItem('btnn_scoring_periods_v4', JSON.stringify(allData));
+                    localStorage.setItem('btnn_scoring_periods_v5', JSON.stringify(allData));
                     filterData();
                 }
 
@@ -3295,12 +3370,12 @@
 
                 // Set state to BTP đang đánh giá if it was Đã gửi BTP
                 if (selectedPeriod.status === 'Đã gửi BTP') {
-                    const allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4')) || [];
+                    const allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v5')) || [];
                     const idx = allData.findIndex(p => p.id === selectedPeriod.id);
                     if (idx !== -1) {
                         allData[idx].status = "BTP đang đánh giá";
                         selectedPeriod.status = "BTP đang đánh giá";
-                        localStorage.setItem('btnn_scoring_periods_v4', JSON.stringify(allData));
+                        localStorage.setItem('btnn_scoring_periods_v5', JSON.stringify(allData));
                         filterData();
                     }
                 }
@@ -3503,12 +3578,12 @@
 
             // SAVE BTP DRAFT
             function saveBtpDraft() {
-                const allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4'));
+                const allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods_v5'));
                 const idx = allPeriods.findIndex(p => p.id === selectedPeriod.id);
                 if (idx !== -1) {
                     allPeriods[idx].btpDetails = selectedPeriod.btpDetails;
                     allPeriods[idx].status = "BTP đang đánh giá";
-                    localStorage.setItem('btnn_scoring_periods_v4', JSON.stringify(allPeriods));
+                    localStorage.setItem('btnn_scoring_periods_v5', JSON.stringify(allPeriods));
                     showToast("Đã lưu nháp kết quả thẩm định của BTP!", "success");
                     filterData();
                 }
@@ -3542,7 +3617,7 @@
                     return;
                 }
 
-                const allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4'));
+                const allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods_v5'));
                 const idx = allPeriods.findIndex(p => p.id === selectedPeriod.id);
                 if (idx !== -1) {
                     allPeriods[idx].btpDetails = selectedPeriod.btpDetails;
@@ -3551,7 +3626,7 @@
                     allPeriods[idx].grade = selectedPeriod.btpGrade; // Final grade
                     allPeriods[idx].btpApproved = true;
 
-                    localStorage.setItem('btnn_scoring_periods_v4', JSON.stringify(allPeriods));
+                    localStorage.setItem('btnn_scoring_periods_v5', JSON.stringify(allPeriods));
                     showToast("Đã hoàn thành đánh giá và xếp loại kỳ chấm điểm thành công!", "success");
                     showScreenList();
                     filterData();
@@ -3566,7 +3641,7 @@
             function openDetailView(id) {
                 editingPeriodId = id;
                 isBtpEvaluationMode = false; // Read-only View Mode!
-                const allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4')) || [];
+                const allData = JSON.parse(localStorage.getItem('btnn_scoring_periods_v5')) || [];
                 selectedPeriod = allData.find(p => p.id === id);
 
                 if (selectedPeriod.status === 'Chưa bắt đầu' || selectedPeriod.status === 'Đang tự chấm') {
@@ -3738,7 +3813,7 @@
                     return;
                 }
 
-                let allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods_v4')) || [];
+                let allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods_v5')) || [];
                 let newRecords = [];
                 let newIdStart = allPeriods.length > 0 ? Math.max(...allPeriods.map(p => p.id)) + 1 : 1;
 
@@ -3770,7 +3845,7 @@
                 }
 
                 allPeriods = [...newRecords, ...allPeriods];
-                localStorage.setItem('btnn_scoring_periods_v4', JSON.stringify(allPeriods));
+                localStorage.setItem('btnn_scoring_periods_v5', JSON.stringify(allPeriods));
 
                 showToast(`Khởi tạo thành công kỳ chấm điểm năm ${year} cho các đơn vị!`, "success");
                 closeModal('modalCreatePeriod');
@@ -3797,6 +3872,8 @@
             }
     </script>
     <script src="admin-ui-standardizer.js"></script>
+    <script src="bpbd_filter_toggle.js"></script>
+    <script src="filter_toggle_auto.js"></script>
 </body>
 
 </html>

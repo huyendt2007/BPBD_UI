@@ -202,7 +202,7 @@ Cho phép Cán bộ nghiệp vụ và Lãnh đạo thực hiện tìm kiếm, th
 ###### Mô tả thông tin trên màn hình:
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | | | | |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Từ khóa tìm kiếm | String(255) | Không | Trống | - Nhập mã hồ sơ hoặc một phần tên văn bản cần tra cứu. |
 | Bộ lọc Loại văn bản | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>- Chọn từ Danh mục dùng chung - Loại văn bản quy phạm pháp luật `[DM_LOAI_VBQPPL]`. |
 | Bộ lọc Trạng thái tiến độ| Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>- Lọc theo tình trạng tiến độ (Đang soạn thảo, Đang lấy ý kiến, Đang thẩm định, Đang trình ký, Đã ban hành, Tạm dừng/Hủy bỏ). |
@@ -424,7 +424,7 @@ Cho phép cán bộ nghiệp vụ theo dõi tiến độ hoàn thành các mốc
 ###### Mô tả thông tin trên màn hình:
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | | | | |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Từ khóa tìm kiếm | String(255) | Không | Trống | - Tìm kiếm theo tên kế hoạch hoặc số quyết định ban hành. |
 | Loại kế hoạch | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>- Lọc theo Kế hoạch năm, quý, tháng, chuyên đề. |
 | Trạng thái thực hiện | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>- Lọc theo Đang triển khai, Hoàn thành, Trễ hạn... |

@@ -1403,18 +1403,18 @@ const REG_TYPE_OPTIONS = [
 
 // Danh mục Loại tài sản bảo đảm [DM_07] và cấu hình Khối lọc động / Cột động tương ứng
 const REG_ASSET_TYPES = [
-    { key: 'vehicle', label: 'Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)', match: /cơ giới đường bộ.*số khung|số khung/i,
+    { key: 'vehicle', label: 'Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)', match: /cơ giới đường bộ|xe máy chuyên dùng|số khung/i,
       fields: [['vehicleName', 'Tên phương tiện', 'select'], ['frameNo', 'Số khung'], ['engineNo', 'Số máy'], ['plateNo', 'Biển số']] },
-    { key: 'ship', label: 'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt, đường thủy, đường sắt', match: /tàu cá/i,
+    { key: 'ship', label: 'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt, đường thủy, đường sắt', match: /tàu cá|đường thủy|đường sắt/i,
       fields: [['shipName', 'Tên phương tiện, nhãn hiệu'], ['shipOwner', 'Tên/Họ tên chủ phương tiện/Chủ sở hữu'], ['shipRegNo', 'Số đăng ký phương tiện'], ['shipIssuer', 'Cơ quan cấp giấy chứng nhận'], ['shipGrade', 'Cấp phương tiện']] },
     { key: 'right', label: 'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản', match: /quyền tài sản/i,
       fields: [['rightName', 'Tên quyền'], ['rightBasis', 'Căn cứ phát sinh quyền']] },
-    { key: 'goods', label: 'Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ', match: /hàng hóa luân chuyển/i,
+    { key: 'goods', label: 'Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ', match: /hàng hóa luân chuyển|kho hàng/i,
       fields: [['goodsKind', 'Hàng hóa luân chuyển / Kho hàng', 'goodsSelect'], ['goodsValue', 'Giá trị hàng hóa/Tên, loại hàng hóa'], ['warehouseAddress', 'Địa chỉ kho hàng', 'warehouse'], ['warehouseNo', 'Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng', 'warehouse']] },
     { key: 'securities', label: 'Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung', match: /chứng khoán/i,
       fields: [['vsdcTime', 'Thời điểm đăng ký tại VSDC', 'vsdc']] },
-    { key: 'crop', label: 'Cây hằng năm, công trình tạm', match: /cây hằng năm/i, fields: [['description', 'Mô tả']] },
-    { key: 'other', label: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ, CHỨNG KHOÁN KHÔNG ĐĂNG KÝ TẬP TRUNG...)', match: /động sản khác/i, fields: [['description', 'Mô tả']] }
+    { key: 'crop', label: 'Cây hằng năm, công trình tạm', match: /cây hằng năm|công trình tạm/i, fields: [['description', 'Mô tả']] },
+    { key: 'other', label: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ, CHỨNG KHOÁN KHÔNG ĐĂNG KÝ TẬP TRUNG...)', match: /động sản khác|tiền và giấy tờ có giá|tiền gửi tiết kiệm|kim khí quý/i, fields: [['description', 'Mô tả']] }
 ];
 const REG_VEHICLE_NAMES = ['Ô tô con', 'Ô tô tải', 'Mô tô', 'Xe gắn máy', 'Xe máy chuyên dùng'];
 
@@ -1471,13 +1471,21 @@ function renderRegistrationFilterPanel(container, statusFilterHtml) {
     const range = getRegDefaultDateRange();
     container.innerHTML = `
         <div class="grid-4-cols">
-            <div class="form-group" style="grid-column: span 2;">
-                <label class="form-label">Tìm kiếm</label>
-                <input type="text" class="form-control" id="filter-reg-keyword" placeholder="Nhập số đăng ký, mã PIN, tên bên bảo đảm..." autocomplete="off">
+            <div class="form-group">
+                <label class="form-label">Số đăng ký</label>
+                <input type="text" class="form-control" id="filter-reg-sdk" placeholder="Nhập số đăng ký..." autocomplete="off">
             </div>
             <div class="form-group">
                 <label class="form-label">Mã khách hàng</label>
                 <input type="text" class="form-control" id="filter-customer-id" placeholder="Nhập mã khách hàng..." autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tên bên bảo đảm</label>
+                <input type="text" class="form-control" id="filter-reg-bbd" placeholder="Nhập tên bên bảo đảm..." autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Tên bên nhận bảo đảm</label>
+                <input type="text" class="form-control" id="filter-reg-bnbd" placeholder="Nhập tên bên nhận bảo đảm..." autocomplete="off">
             </div>
             <div class="form-group">
                 <label class="form-label">Nguồn tiếp nhận</label>
@@ -1509,6 +1517,10 @@ function renderRegistrationFilterPanel(container, statusFilterHtml) {
                 <select class="form-select" id="cb-loaibienphap"><option value="">Tất cả</option></select>
             </div>
             <div class="form-group">
+                <label class="form-label">Số biên lai</label>
+                <input type="text" class="form-control" id="filter-reg-receipt" placeholder="Nhập số biên lai..." autocomplete="off">
+            </div>
+            <div class="form-group">
                 <label class="form-label">Loại tài sản</label>
                 <select class="form-select" id="filter-loaitaisan" onchange="onRegAssetTypeChange()">
                     <option value="">Tất cả</option>
@@ -1532,12 +1544,11 @@ function renderRegistrationFilterPanel(container, statusFilterHtml) {
                 </div>
             </div>
         </div>
-        <div id="reg-dynamic-filter" style="display:none;margin-top:6px;padding:12px 14px;border:1px dashed var(--border-color);border-radius:6px;background:#F8FAFC">
-            <div style="font-weight:700;font-size:13px;color:var(--primary-color);margin-bottom:8px"><i class="fa-solid fa-sliders"></i> Khối lọc động theo Loại tài sản</div>
+        <div id="reg-dynamic-filter" style="display:none;margin-top:8px;padding:8px 12px;border:1px solid #E2E8F0;border-left:3px solid #2563EB;border-radius:5px;background:#F8FAFC">
             <div class="grid-4-cols" id="reg-dynamic-filter-fields"></div>
         </div>
-        <div style="text-align: right; margin-top: 10px;">
-            <button class="btn btn-outline-secondary" onclick="resetFilters()" style="margin-right: 8px;"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+        <div class="filter-action-row" style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #F1F5F9; display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
+            <button class="btn btn-outline-secondary" onclick="resetFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
             <button class="btn btn-primary" onclick="searchList()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
         </div>
     `;
@@ -1546,13 +1557,13 @@ function renderRegistrationFilterPanel(container, statusFilterHtml) {
 }
 
 // Giữ nguyên bộ lọc tìm kiếm và trang dữ liệu khi Đóng màn Xem chi tiết (MH02) quay lại danh sách
-const REG_FILTER_IDS = ['filter-reg-keyword', 'filter-customer-id', 'filter-nguon-tiep-nhan', 'filter-loaidangky', 'cb-loaihinh', 'cb-loaibienphap', 'filter-loaitaisan', 'filter-status-xu-ly', 'filter-tungay', 'filter-denngay'];
+const REG_FILTER_IDS = ['filter-reg-sdk', 'filter-reg-bbd', 'filter-reg-bnbd', 'filter-customer-id', 'filter-reg-receipt', 'filter-nguon-tiep-nhan', 'filter-loaidangky', 'cb-loaihinh', 'cb-loaibienphap', 'filter-loaitaisan', 'filter-status-xu-ly', 'filter-tungay', 'filter-denngay'];
 
 // Tab Hồ sơ chờ nhập liệu và Tab Hồ sơ Bị trả lại dùng bố cục MH01 - Danh sách hồ sơ chờ nhập liệu
 function isRegInputLayout() { return ['chonhaplieu', 'bitralai'].includes(currentListTab); }
 
 function saveRegListState() {
-    if (isRegInputLayout() || !document.getElementById('filter-reg-keyword')) return;
+    if (isRegInputLayout() || !document.getElementById('filter-reg-sdk')) return;
     const values = {};
     REG_FILTER_IDS.forEach(id => { const el = document.getElementById(id); if (el) values[id] = el.value; });
     document.querySelectorAll('[id^="dyn-"]').forEach(el => { values[el.id] = el.value; });
@@ -1588,16 +1599,18 @@ function onRegAssetTypeChange() {
     if (!cfg) {
         wrap.style.display = 'none';
         fieldsEl.innerHTML = '';
+        renderTable(true);
         return;
     }
     fieldsEl.innerHTML = cfg.fields.map(([id, label, kind]) => {
         const hide = kind === 'warehouse' ? 'style="display:none"' : '';
-        if (kind === 'select') return `<div class="form-group"><label class="form-label">${label}</label><select class="form-select" id="dyn-${id}"><option value="">Trống</option>${REG_VEHICLE_NAMES.map(v => `<option value="${v}">${v}</option>`).join('')}</select></div>`;
+        if (kind === 'select') return `<div class="form-group"><label class="form-label">${label}</label><select class="form-select" id="dyn-${id}"><option value="">Tất cả</option>${REG_VEHICLE_NAMES.map(v => `<option value="${v}">${v}</option>`).join('')}</select></div>`;
         if (kind === 'goodsSelect') return `<div class="form-group"><label class="form-label">${label}</label><select class="form-select" id="dyn-${id}" onchange="onRegGoodsKindChange()"><option value="">Tất cả</option><option value="Hàng hóa luân chuyển">Hàng hóa luân chuyển</option><option value="Kho hàng">Kho hàng</option></select></div>`;
         if (kind === 'vsdc') return `<div class="form-group"><label class="form-label">${label}</label><input type="text" class="form-control" id="dyn-${id}" placeholder="HH:mm dd/MM/yyyy" autocomplete="off"></div>`;
         return `<div class="form-group dyn-${kind || 'text'}" ${hide}><label class="form-label">${label}</label><input type="text" class="form-control" id="dyn-${id}" autocomplete="off"></div>`;
     }).join('');
     wrap.style.display = 'block';
+    renderTable(true);
 }
 
 // Địa chỉ kho hàng / Số hiệu kho hàng chỉ hiển thị khi chọn "Kho hàng"
@@ -1607,6 +1620,7 @@ function onRegGoodsKindChange() {
         el.style.display = isWarehouse ? '' : 'none';
         if (!isWarehouse) { const inp = el.querySelector('input'); if (inp) inp.value = ''; }
     });
+    renderTable(true);
 }
 
 // Các cột động đang hiển thị (đúng các trường của Khối lọc động đang hiển thị)
@@ -1644,6 +1658,11 @@ function applyPdkPopupResult(records, message) {
         if (!p) return;
         ['status', 'statusClass', 'pendingAction', 'rejectReason', 'rejectLeader', 'rejectedBy', 'rejectedAt', 'rejectDraftFile', 'signLeader', 'submittedBy', 'submittedAt', 'draftLocked', 'certificateDraftFile']
             .forEach(k => { if (r[k] !== undefined) p[k] = r[k]; });
+        // Hồ sơ đã từng bị trả lại được trình ký lại: ghi nhận Thời điểm trình ký lại vào lịch sử trả lại
+        if (r.status === 'Chờ ký' && Array.isArray(p.returnHistory) && p.returnHistory.length) {
+            const last = p.returnHistory[p.returnHistory.length - 1];
+            if (!last.resubmittedAt) last.resubmittedAt = r.submittedAt;
+        }
         p.internalLogs = p.internalLogs || [];
         p.internalLogs.unshift({ time: 'Vừa xong', user: 'Nguyễn Văn Cán Bộ', action: r.pendingAction, comment: r.pendingAction === 'Từ chối' ? `Lý do từ chối: ${r.rejectReason}. Lãnh đạo ký: ${r.rejectLeader}` : `Trình Lãnh đạo ký: ${r.signLeader}` });
         persistProfileForAction(p);
@@ -1804,7 +1823,11 @@ function renderTable(resetPage = false) {
             filteredProfiles.sort((a, b) => parseDateString(b.date) - parseDateString(a.date));
         }
     } else {
-        const keyword = (document.getElementById('filter-reg-keyword')?.value || '').toLowerCase().trim();
+        const fv = id => (document.getElementById(id)?.value || '').toLowerCase().trim();
+        const filterSdk = fv('filter-reg-sdk');
+        const filterBbd = fv('filter-reg-bbd');
+        const filterBnbd = fv('filter-reg-bnbd');
+        const filterReceipt = fv('filter-reg-receipt');
         const filterCustomerId = (document.getElementById('filter-customer-id')?.value || '').toLowerCase().trim();
         const filterNguonTiepNhan = document.getElementById('filter-nguon-tiep-nhan')?.value || '';
         const filterLoaidangky = document.getElementById('filter-loaidangky')?.value || '';
@@ -1828,8 +1851,11 @@ function renderTable(resetPage = false) {
                 if (filterStatusVal && p.status !== filterStatusVal) return false;
             }
 
-            // Tìm kiếm gần đúng theo Số đăng ký, Mã PIN, Tên bên bảo đảm hoặc Tên bên nhận bảo đảm
-            if (keyword && ![p.id, p.pin, p.customer, p.mortgagee].some(v => (v || '').toLowerCase().includes(keyword))) return false;
+            // Tìm kiếm gần đúng theo từng trường: Số đăng ký, Tên bên bảo đảm, Tên bên nhận bảo đảm, Số biên lai
+            if (filterSdk && !String(p.registrationNo || p.id || '').toLowerCase().includes(filterSdk)) return false;
+            if (filterBbd && !(p.customer || '').toLowerCase().includes(filterBbd)) return false;
+            if (filterBnbd && !(p.mortgagee || '').toLowerCase().includes(filterBnbd)) return false;
+            if (filterReceipt && !(p.receipt || '').toLowerCase().includes(filterReceipt)) return false;
             if (filterCustomerId && !(p.customerId || '').toLowerCase().includes(filterCustomerId)) return false;
             if (filterNguonTiepNhan && getRegSourceLabel(p.channel) !== filterNguonTiepNhan) return false;
             if (filterLoaidangky && p.type !== filterLoaidangky) return false;
@@ -1924,7 +1950,7 @@ function executeRender() {
                 <th style="width: 110px;">Loại hình GD</th>
                 <th style="width: 140px;">Loại biện pháp / Hợp đồng</th>
                 <th style="width: 250px;">Loại tài sản</th>
-                ${getRegDynamicColumns().map(c => `<th style="width: 160px; background:#EFF6FF;">${c.label}</th>`).join('')}
+                ${getRegDynamicColumns().map(c => `<th style="width: 160px; min-width: 140px; background:#EFF6FF; color:#1E40AF; font-weight:600;">${c.label}</th>`).join('')}
                 <th style="width: 120px;">Mã khách hàng</th>
                 <th style="width: 110px;">Số biên lai</th>
                 <th style="width: 110px;">Trạng thái</th>
@@ -2189,22 +2215,22 @@ function renderFilterPanel() {
                     <input type="text" class="form-control" id="filter-can-bo-tiep-nhan" placeholder="Tên cán bộ tiếp nhận" autocomplete="off">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Từ ngày</label>
+                    <label class="form-label">Từ ngày tiếp nhận</label>
                     <div class="date-filter-wrap">
                         <input type="text" class="form-control" id="filter-tungay" placeholder="dd/mm/yyyy" value="${defFromDate}">
                         <i class="fa-regular fa-calendar-days"></i>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Đến ngày</label>
+                    <label class="form-label">Đến ngày tiếp nhận</label>
                     <div class="date-filter-wrap">
                         <input type="text" class="form-control" id="filter-denngay" placeholder="dd/mm/yyyy" value="${defToDate}">
                         <i class="fa-regular fa-calendar-days"></i>
                     </div>
                 </div>
             </div>
-            <div style="text-align: right; margin-top: 10px;">
-                <button class="btn btn-outline-secondary" onclick="resetFilters()" style="margin-right: 8px;"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+            <div class="filter-action-row" style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #F1F5F9; display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
+                <button class="btn btn-outline-secondary" onclick="resetFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
                 <button class="btn btn-primary" onclick="searchList()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
             </div>
         `;
@@ -2517,7 +2543,7 @@ function resetFilters() {
         'filter-loai-chu-the', 'filter-phuong-thuc', 'filter-hinh-thuc-tra',
         'filter-status-xu-ly', 'filter-ma-ho-so', 'filter-so-don-giay',
         'filter-nguoi-yeu-cau', 'filter-nguoi-nop', 'filter-loai-yeu-cau',
-        'filter-trang-thai-phi', 'filter-can-bo-tiep-nhan', 'filter-reg-keyword'
+        'filter-trang-thai-phi', 'filter-can-bo-tiep-nhan', 'filter-reg-sdk', 'filter-reg-bbd', 'filter-reg-bnbd', 'filter-reg-receipt'
     ];
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -3496,9 +3522,9 @@ if (document.readyState === 'loading') {
 
 function initViewMode() {
     // Làm mới dữ liệu giả lập đã lưu khi thay đổi cấu trúc dữ liệu mẫu
-    if (localStorage.getItem('mock_profiles_version') !== 'v9') {
+    if (localStorage.getItem('mock_profiles_version') !== 'v11') {
         localStorage.removeItem('custom_mock_profiles');
-        localStorage.setItem('mock_profiles_version', 'v9');
+        localStorage.setItem('mock_profiles_version', 'v11');
     }
     const originalStaticProfiles = [...mockProfiles];
     const cachedProfiles = localStorage.getItem('custom_mock_profiles');
@@ -3570,11 +3596,13 @@ function initViewMode() {
     const navTabs = document.querySelector('.nav-tabs');
     const headerTitle = document.querySelector('h1');
     const tableTitle = document.getElementById('list-table-title');
+    // Màn Hồ sơ đang chờ ký / Hồ sơ đã xử lý: không cố định cột Thao tác bên phải bảng
+    document.body.classList.toggle('no-sticky-actions', viewMode === 'dang_xu_ly' || viewMode === 'da_xu_ly');
 
     if (viewMode === 'dang_xu_ly') {
         if (navTabs) navTabs.style.display = 'none';
-        if (headerTitle) headerTitle.innerText = 'HỆ THỐNG QUẢN TRỊ - HỒ SƠ ĐANG XỬ LÝ (CHỜ KÝ)';
-        if (tableTitle) tableTitle.innerText = 'Danh sách hồ sơ đang xử lý';
+        if (headerTitle) headerTitle.innerText = 'HỆ THỐNG QUẢN TRỊ - HỒ SƠ ĐANG CHỜ KÝ';
+        if (tableTitle) tableTitle.innerText = 'Danh sách hồ sơ đang chờ ký';
         currentListTab = 'dang_xu_ly';
         document.getElementById('toolbar-choduyet').style.display = 'none';
         document.getElementById('toolbar-duyet-choky').style.display = 'none';
@@ -3639,6 +3667,36 @@ function initViewMode() {
     renderFilterPanel();
     updateTabBadges();
     renderTable();
+
+    // Mở Xem chi tiết từ màn Tra cứu hồ sơ (?from=tra_cuu&openCctt=<id> hoặc &openCopy=<id>)
+    const lookupCctt = urlParams.get('openCctt');
+    const lookupCopy = urlParams.get('openCopy');
+    if (urlParams.get('from') === 'tra_cuu' && (lookupCctt || lookupCopy)) {
+        openLookupServiceDetail(lookupCctt ? 'cctt' : 'copy', lookupCctt || lookupCopy);
+    }
+}
+
+// Xem chi tiết mở từ Tra cứu hồ sơ: chỉ đọc, chỉ hiển thị nút "Đóng" (quay lại Tra cứu hồ sơ, giữ nguyên Tab/bộ lọc/trang)
+var lookupReadOnly = false;
+function openLookupServiceDetail(kind, id) {
+    lookupReadOnly = true;
+    const list = kind === 'cctt' ? ccttOfficerRequests : officerCopyRequests;
+    const item = list.find(x => x.id === id);
+    if (!item) return;
+    if (kind === 'cctt') openCcttOfficerDetail(id); else openCopyOfficerDetail(id);
+    const navTabs = document.querySelector('.nav-tabs');
+    if (navTabs) navTabs.style.display = 'none';
+    const headerTitle = document.querySelector('h1');
+    if (headerTitle) headerTitle.innerText = 'HỆ THỐNG QUẢN TRỊ - TRA CỨU HỒ SƠ';
+    // Hồ sơ đã qua bước tra cứu của Cán bộ: hiển thị luôn Kết quả tra cứu
+    if (kind === 'cctt' && !['Chờ giải quyết', 'Chờ duyệt'].includes(item.status)) {
+        document.getElementById('tab-contents-container').innerHTML = renderCcttOfficerDetailContent(item, true);
+    }
+    document.getElementById('detail-toolbar-buttons').innerHTML = `<button class="btn btn-outline-secondary" onclick="backToLookup()">Đóng</button>`;
+}
+
+function backToLookup() {
+    window.location.href = sessionStorage.getItem('prevCanBoPage') || 'tra_cuu_thong_tin.html';
 }
 
 // Sắp xếp cột: lần 1 tăng dần, lần 2 giảm dần, lần 3 về sắp xếp mặc định; giữ nguyên bộ lọc và về Trang 1
@@ -3675,902 +3733,6 @@ const UC028_BASE = {
 let officerWorkType = sessionStorage.getItem('uc028OfficerWorkType') || 'registration';
 let selectedCcttOfficerId = null;
 let selectedOfficerCopyId = null;
-
-const ccttOfficerRequests = [
-    {
-        id: 'CCTT-20260801-000201',
-        registeredAt: '01/08/2026 09:15',
-        customerId: 'KH-HUNG-02',
-        requester: 'Ông Nguyễn Văn Hùng',
-        address: 'Số 12 phố Duy Tân, phường Dịch Vọng Hậu, Hà Nội',
-        source: 'Website khách hàng',
-        criteria: 'Số đăng ký',
-        inputData: '1505170802',
-        status: 'Chờ duyệt',
-        officer: 'Nguyễn Văn Cán Bộ',
-        resultType: 'hasData',
-        signedDraft: false
-    },
-    {
-        id: 'CCTT-20260801-000202',
-        registeredAt: '01/08/2026 10:40',
-        customerId: 'KH-MINHTAM-01',
-        requester: 'Công ty Cổ phần Đầu tư Minh Tâm',
-        address: 'Tầng 6, tòa nhà FPT, Cầu Giấy, Hà Nội',
-        source: 'Website khách hàng',
-        criteria: 'Bên bảo đảm',
-        inputData: 'Công dân Việt Nam - CCCD 091000000004',
-        status: 'Chờ duyệt',
-        officer: 'Nguyễn Văn Cán Bộ',
-        resultType: 'noData',
-        signedDraft: false
-    },
-    {
-        id: 'CCTT-20260731-000177',
-        registeredAt: '31/07/2026 15:05',
-        customerId: 'KH-FPT-07',
-        requester: 'Ngân hàng TMCP FPT',
-        address: 'Tòa nhà FPT, Cầu Giấy, Hà Nội',
-        source: 'Website khách hàng',
-        criteria: 'Số khung',
-        inputData: 'RLZ2026KHUNG0007VN',
-        status: 'Chờ duyệt',
-        officer: 'Nguyễn Văn Cán Bộ',
-        resultType: 'hasData',
-        signedDraft: true
-    },
-    {
-        id: 'CCTT-20260730-000171',
-        registeredAt: '30/07/2026 11:25',
-        customerId: 'KH-ANPHU-05',
-        requester: 'Công ty TNHH An Phú',
-        address: 'Số 88 Lê Văn Lương, Thanh Xuân, Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        criteria: 'Số đăng ký',
-        inputData: '1505170868',
-        status: 'Bị trả lại',
-        officer: 'Nguyễn Văn Cán Bộ',
-        resultType: 'hasData',
-        signedDraft: true,
-        returnReason: 'Lãnh đạo yêu cầu rà soát lại tiêu chí tra cứu theo hồ sơ giấy.'
-    },
-    {
-        id: 'CCTT-20260729-000165',
-        registeredAt: '29/07/2026 08:40',
-        customerId: 'KH-LANANH-03',
-        requester: 'Bà Trần Lan Anh',
-        address: 'Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        criteria: 'Số đăng ký',
-        inputData: '1505170855',
-        status: 'Duyệt chờ ký',
-        officer: 'Nguyễn Văn Cán Bộ',
-        resultType: 'noData',
-        signedDraft: true
-    },
-    {
-        id: 'CCTT-20260728-000158',
-        registeredAt: '28/07/2026 16:20',
-        customerId: 'KH-HTC-04',
-        requester: 'Công ty Cổ phần Xây dựng và Phát triển HTC',
-        address: 'Đường số 5, cụm công nghiệp Tứ Hạ mở rộng, thành phố Huế',
-        source: 'Website khách hàng',
-        criteria: 'Số đăng ký',
-        inputData: '1505170802',
-        status: 'Hoàn thành',
-        officer: 'Nguyễn Văn Cán Bộ',
-        resultType: 'hasData',
-        signedDraft: true
-    },
-    {
-        id: 'CCTT-20260727-000149',
-        registeredAt: '27/07/2026 09:10',
-        customerId: 'KH-MINHHUNG-09',
-        requester: 'Ông Lê Minh Hùng',
-        address: 'Số 9 Nguyễn Trãi, Hà Đông, Hà Nội',
-        source: 'Website khách hàng',
-        criteria: 'Bên bảo đảm',
-        inputData: 'CCCD 091000000099',
-        status: 'Bị từ chối',
-        officer: 'Nguyễn Văn Cán Bộ',
-        resultType: 'noData',
-        signedDraft: false,
-        rejectReason: 'Thông tin hồ sơ yêu cầu tra cứu không tồn tại trên hệ thống.'
-    },
-    {
-        id: 'CCTT-20260802-000210',
-        registeredAt: '02/08/2026 09:30',
-        customerId: 'KH-NAMLONG-01',
-        requester: 'Công ty TNHH Đầu tư Nam Long',
-        address: 'Số 15 Lê Văn Thiêm, Thanh Xuân, Hà Nội',
-        source: 'Website khách hàng',
-        criteria: 'Số đăng ký',
-        inputData: '1505170802',
-        status: 'Chờ ký',
-        officer: 'Nguyễn Văn Cán Bộ',
-        resultType: 'hasData',
-        signedDraft: true
-    },
-    {
-        id: 'CCTT-20260802-000211',
-        registeredAt: '02/08/2026 10:15',
-        customerId: 'KH-VIB-02',
-        requester: 'Ngân hàng TMCP Quốc tế Việt Nam (VIB)',
-        address: 'Tòa nhà VIB, 111 Pasteur, Q.1, TP.HCM',
-        source: 'Dịch vụ công Quốc gia',
-        criteria: 'Bên bảo đảm',
-        inputData: 'Công ty CP Tập đoàn Đất Xanh',
-        status: 'Chờ ký',
-        officer: 'Nguyễn Văn Cán Bộ',
-        resultType: 'hasData',
-        signedDraft: true
-    },
-    {
-        id: 'CCTT-20260802-000212',
-        registeredAt: '02/08/2026 14:00',
-        customerId: 'KH-THUHANG-03',
-        requester: 'Bà Đỗ Thu Hằng',
-        address: 'Số 88 Cầu Giấy, Hà Nội',
-        source: 'Website khách hàng',
-        criteria: 'Số khung',
-        inputData: 'VNFPT2026CHOKY001',
-        status: 'Chờ ký',
-        officer: 'Nguyễn Văn Cán Bộ',
-        resultType: 'noData',
-        signedDraft: false
-    },
-    {
-        id: 'CCTT-20260803-000220',
-        registeredAt: '03/08/2026 08:30',
-        customerId: 'KH-VCB-01',
-        requester: 'Ngân hàng TMCP Ngoại thương VN (Vietcombank)',
-        address: '198 Trần Quang Khải, Hà Nội',
-        source: 'Website khách hàng',
-        criteria: 'Số đăng ký',
-        inputData: '1505156438',
-        status: 'Hoàn thành',
-        officer: 'Nguyễn Văn Cán Bộ',
-        resultType: 'hasData',
-        signedDraft: true
-    },
-    {
-        id: 'CCTT-20260803-000221',
-        registeredAt: '03/08/2026 11:10',
-        customerId: 'KH-NAMTV-05',
-        requester: 'Ông Trần Văn Nam',
-        address: 'Số 12 Kim Mã, Ba Đình, Hà Nội',
-        source: 'Dịch vụ công Quốc gia',
-        criteria: 'Bên bảo đảm',
-        inputData: 'Công ty CP Sao Mai',
-        status: 'Hoàn thành',
-        officer: 'Nguyễn Văn Cán Bộ',
-        resultType: 'hasData',
-        signedDraft: true
-    },
-    {
-        id: 'CCTT-20260804-000230',
-        registeredAt: '04/08/2026 15:00',
-        customerId: 'KH-TUANHM-08',
-        requester: 'Ông Hoàng Minh Tuấn',
-        address: 'Số 50 Giải Phóng, Hà Nội',
-        source: 'Website khách hàng',
-        criteria: 'Số đăng ký',
-        inputData: '9999999999',
-        status: 'Bị từ chối',
-        officer: 'Nguyễn Văn Cán Bộ',
-        resultType: 'noData',
-        signedDraft: false,
-        rejectReason: 'Thông tin hồ sơ yêu cầu tra cứu không tồn tại trên hệ thống và không đúng thẩm quyền xử lý.'
-    },
-    {
-        id: 'CCTT-20260804-000231',
-        registeredAt: '04/08/2026 16:20',
-        customerId: 'KH-BACNAM-09',
-        requester: 'Công ty TNHH Vận tải Bắc Nam',
-        address: 'Số 200 Giải Phóng, Phương Liệt, Thanh Xuân, Hà Nội',
-        source: 'Website khách hàng',
-        criteria: 'Số khung',
-        inputData: 'INVALIDKHUNG888',
-        status: 'Bị từ chối',
-        officer: 'Nguyễn Văn Cán Bộ',
-        resultType: 'noData',
-        signedDraft: false,
-        rejectReason: 'Số khung phương tiện không đúng định dạng chuẩn theo cơ sở dữ liệu đăng kiểm.'
-    }
-];
-
-const officerCopyRequests = [
-    {
-        id: 'BS-2026-000001',
-        paperNo: 'PG-2026-001',
-        registeredAt: '23/09/2026 08:40',
-        customerId: 'KH-ONLINE-09882',
-        requester: 'Ngân hàng TMCP Ngoại thương Việt Nam - Chi nhánh Sở giao dịch',
-        address: 'Số 11 Láng Hạ, phường Thành Công, quận Ba Đình, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505156438',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao điện tử',
-        copyQty: '—',
-        quantity: null,
-        fee: 30000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Nguyễn Thị Tiếp Nhận',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '23/09/2026 08:50',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000002',
-        paperNo: 'PG-2026-002',
-        registeredAt: '23/09/2026 09:05',
-        customerId: 'KH-ANVIET-09',
-        requester: 'Công ty Luật TNHH An Việt',
-        address: 'Số 45 phố Nguyễn Thị Định, phường Trung Hòa, quận Cầu Giấy, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505170855',
-        requestType: 'Yêu cầu cung cấp bản sao kèm thông báo về việc đăng ký thế chấp',
-        copyType: 'Bản sao giấy',
-        copyQty: '02 bản',
-        quantity: 2,
-        fee: 60000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Trần Thị Thu Trang',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '23/09/2026 09:12',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000003',
-        paperNo: 'PG-2026-003',
-        registeredAt: '23/09/2026 09:20',
-        customerId: 'KH-HOANG-07',
-        requester: 'Ông Lê Đức Hoàng',
-        address: 'Số 8 Nguyễn Trãi, phường Thanh Xuân Trung, quận Thanh Xuân, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505156438',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao điện tử',
-        copyQty: '—',
-        quantity: null,
-        fee: 0,
-        feeStatus: 'Miễn phí',
-        status: 'Bị trả lại',
-        receptionOfficer: 'Nguyễn Thị Tiếp Nhận',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '23/09/2026 09:25',
-        draftFile: '',
-        returnReason: 'Lãnh đạo yêu cầu rà soát lại Số đăng ký hồ sơ gốc, Số đăng ký trên phiếu tiếp nhận chưa khớp với nội dung đơn giấy.',
-        returnedBy: 'Lê Hoàng Long - Giám đốc Trung tâm',
-        returnedAt: '23/09/2026 10:15'
-    },
-    {
-        id: 'BS-2026-000004',
-        paperNo: 'PG-2026-004',
-        registeredAt: '23/09/2026 09:45',
-        customerId: 'KH-BIDV-01',
-        requester: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Hà Thành',
-        address: 'Số 74 phố Thợ Nhuộm, phường Trần Hưng Đạo, quận Hoàn Kiếm, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505170802',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao giấy',
-        copyQty: '03 bản',
-        quantity: 3,
-        fee: 90000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Trần Thị Thu Trang',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '23/09/2026 09:55',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000005',
-        paperNo: 'PG-2026-005',
-        registeredAt: '23/09/2026 10:15',
-        customerId: 'KH-TCB-02',
-        requester: 'Ngân hàng TMCP Kỹ thương Việt Nam - Khối KHDN',
-        address: 'Số 191 Bà Triệu, phường Lê Đại Hành, quận Hai Bà Trưng, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505170802',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao điện tử',
-        copyQty: '—',
-        quantity: null,
-        fee: 30000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Nguyễn Thị Tiếp Nhận',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '23/09/2026 10:20',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000006',
-        paperNo: 'PG-2026-006',
-        registeredAt: '23/09/2026 10:50',
-        customerId: 'KH-VPB-03',
-        requester: 'Ngân hàng TMCP Việt Nam Thịnh Vượng - Trung tâm Xử lý nợ',
-        address: 'Số 89 Láng Hạ, phường Láng Hạ, quận Đống Đa, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505170855',
-        requestType: 'Yêu cầu cung cấp bản sao kèm thông báo về việc đăng ký thế chấp',
-        copyType: 'Bản sao giấy',
-        copyQty: '01 bản',
-        quantity: 1,
-        fee: 30000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Trần Thị Thu Trang',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '23/09/2026 11:00',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000007',
-        paperNo: 'PG-2026-007',
-        registeredAt: '23/09/2026 11:15',
-        customerId: 'KH-MB-04',
-        requester: 'Ngân hàng TMCP Quân đội - Chi nhánh Ba Đình',
-        address: 'Số 28 Điện Biên Phủ, phường Điện Biên, quận Ba Đình, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505156438',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao điện tử',
-        copyQty: '—',
-        quantity: null,
-        fee: 30000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Nguyễn Thị Tiếp Nhận',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '23/09/2026 11:22',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000008',
-        paperNo: 'PG-2026-008',
-        registeredAt: '22/09/2026 08:30',
-        customerId: 'KH-SHB-05',
-        requester: 'Ngân hàng TMCP Sài Gòn - Hà Nội - PGD Tràng An',
-        address: 'Số 77 Trần Hưng Đạo, phường Hàng Bông, quận Hoàn Kiếm, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505170802',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao điện tử',
-        copyQty: '—',
-        quantity: null,
-        fee: 30000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Nguyễn Thị Tiếp Nhận',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '22/09/2026 08:40',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000009',
-        paperNo: 'PG-2026-009',
-        registeredAt: '22/09/2026 09:10',
-        customerId: 'KH-ACB-06',
-        requester: 'Ngân hàng TMCP Á Châu - Chi nhánh Hà Nội',
-        address: 'Số 184 Bà Triệu, phường Nguyễn Du, quận Hai Bà Trưng, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505170855',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao giấy',
-        copyQty: '02 bản',
-        quantity: 2,
-        fee: 60000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Trần Thị Thu Trang',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '22/09/2026 09:20',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000010',
-        paperNo: 'PG-2026-010',
-        registeredAt: '22/09/2026 10:00',
-        customerId: 'KH-HDB-07',
-        requester: 'Ngân hàng TMCP Phát triển TP.HCM - Chi nhánh Hoàn Kiếm',
-        address: 'Số 32 phố Hai Bà Trưng, phường Tràng Tiền, quận Hoàn Kiếm, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505156438',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao điện tử',
-        copyQty: '—',
-        quantity: null,
-        fee: 30000,
-        feeStatus: 'Đã thu',
-        status: 'Bị trả lại',
-        receptionOfficer: 'Nguyễn Thị Tiếp Nhận',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '22/09/2026 10:10',
-        draftFile: '',
-        returnReason: 'Dữ liệu người yêu cầu trên đơn giấy chưa đồng nhất với CSDL.',
-        returnedBy: 'Trần Thị Minh Nguyệt - Phó Giám đốc Trung tâm',
-        returnedAt: '22/09/2026 11:30'
-    },
-    {
-        id: 'BS-2026-000011',
-        paperNo: 'PG-2026-011',
-        registeredAt: '22/09/2026 10:45',
-        customerId: 'KH-VIB-08',
-        requester: 'Ngân hàng TMCP Quốc tế Việt Nam - PGD Cầu Giấy',
-        address: 'Tòa nhà Detech, số 8C Tôn Thất Thuyết, Mỹ Đình 2, Nam Từ Liêm, Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505170802',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao giấy',
-        copyQty: '04 bản',
-        quantity: 4,
-        fee: 120000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Trần Thị Thu Trang',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '22/09/2026 11:00',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000012',
-        paperNo: 'PG-2026-012',
-        registeredAt: '22/09/2026 14:15',
-        customerId: 'KH-TPB-09',
-        requester: 'Ngân hàng TMCP Tiên Phong - Trung tâm Kinh doanh Hội sở',
-        address: 'Số 57 phố Lý Thường Kiệt, phường Trần Hưng Đạo, quận Hoàn Kiếm, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505156438',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao điện tử',
-        copyQty: '—',
-        quantity: null,
-        fee: 30000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Nguyễn Thị Tiếp Nhận',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '22/09/2026 14:25',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000013',
-        paperNo: 'PG-2026-013',
-        registeredAt: '22/09/2026 15:00',
-        customerId: 'KH-MSB-10',
-        requester: 'Ngân hàng TMCP Hàng Hải Việt Nam - Chi nhánh Đống Đa',
-        address: 'Số 54A Nguyễn Chí Thanh, phường Láng Thượng, quận Đống Đa, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505170855',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao giấy',
-        copyQty: '02 bản',
-        quantity: 2,
-        fee: 60000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Trần Thị Thu Trang',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '22/09/2026 15:10',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000014',
-        paperNo: 'PG-2026-014',
-        registeredAt: '22/09/2026 15:40',
-        customerId: 'KH-LPB-11',
-        requester: 'Ngân hàng TMCP Lộc Phát Việt Nam - Chi nhánh Hà Nội',
-        address: 'Tòa nhà Thaiholdings, 210 Trần Quang Khải, Tràng Tiền, Hoàn Kiếm, Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505156438',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao điện tử',
-        copyQty: '—',
-        quantity: null,
-        fee: 30000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Nguyễn Thị Tiếp Nhận',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '22/09/2026 15:50',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000015',
-        paperNo: 'PG-2026-015',
-        registeredAt: '22/09/2026 16:20',
-        customerId: 'KH-SEAB-12',
-        requester: 'Ngân hàng TMCP Đông Nam Á - Chi nhánh Thăng Long',
-        address: 'Số 25 phố Trần Hưng Đạo, phường Phan Chu Trinh, quận Hoàn Kiếm, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505170802',
-        requestType: 'Yêu cầu cung cấp bản sao kèm thông báo về việc đăng ký thế chấp',
-        copyType: 'Bản sao giấy',
-        copyQty: '01 bản',
-        quantity: 1,
-        fee: 30000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Trần Thị Thu Trang',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '22/09/2026 16:30',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000016',
-        paperNo: 'PG-2026-016',
-        registeredAt: '21/09/2026 08:45',
-        customerId: 'KH-OJB-13',
-        requester: 'Ngân hàng Thương mại TNHH MTV Đại Dương',
-        address: 'Số 18 đường Láng Hạ, phường Thành Công, quận Ba Đình, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505156438',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao điện tử',
-        copyQty: '—',
-        quantity: null,
-        fee: 30000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Nguyễn Thị Tiếp Nhận',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '21/09/2026 08:55',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000017',
-        paperNo: 'PG-2026-017',
-        registeredAt: '21/09/2026 09:30',
-        customerId: 'KH-GPB-14',
-        requester: 'Ngân hàng Thương mại TNHH MTV Dầu Khí Toàn Cầu',
-        address: 'Số 109 phố Trần Hưng Đạo, phường Cửa Nam, quận Hoàn Kiếm, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505170855',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao giấy',
-        copyQty: '02 bản',
-        quantity: 2,
-        fee: 60000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Trần Thị Thu Trang',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '21/09/2026 09:40',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000018',
-        paperNo: 'PG-2026-018',
-        registeredAt: '21/09/2026 10:15',
-        customerId: 'KH-CB-15',
-        requester: 'Ngân hàng Thương mại TNHH MTV Xây dựng Việt Nam',
-        address: 'Tòa nhà Capital Tower, 109 Trần Hưng Đạo, Cửa Nam, Hoàn Kiếm, Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505156438',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao điện tử',
-        copyQty: '—',
-        quantity: null,
-        fee: 0,
-        feeStatus: 'Miễn phí',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Nguyễn Thị Tiếp Nhận',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '21/09/2026 10:20',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000019',
-        paperNo: 'PG-2026-019',
-        registeredAt: '21/09/2026 11:00',
-        customerId: 'KH-VBSP-16',
-        requester: 'Ngân hàng Chính sách xã hội Việt Nam',
-        address: 'Tòa nhà CC5, Bán đảo Linh Đàm, phường Hoàng Liệt, quận Hoàng Mai, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505170802',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao giấy',
-        copyQty: '03 bản',
-        quantity: 3,
-        fee: 0,
-        feeStatus: 'Miễn phí',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Trần Thị Thu Trang',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '21/09/2026 11:10',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000020',
-        paperNo: 'PG-2026-020',
-        registeredAt: '21/09/2026 14:20',
-        customerId: 'KH-VDB-17',
-        requester: 'Ngân hàng Phát triển Việt Nam - Sở giao dịch I',
-        address: 'Số 185 phố Bà Triệu, phường Lê Đại Hành, quận Hai Bà Trưng, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505156438',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao điện tử',
-        copyQty: '—',
-        quantity: null,
-        fee: 30000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Nguyễn Thị Tiếp Nhận',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '21/09/2026 14:30',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000021',
-        paperNo: 'PG-2026-021',
-        registeredAt: '20/09/2026 09:15',
-        customerId: 'KH-SCB-18',
-        requester: 'Ngân hàng TMCP Sài Gòn - Chi nhánh Hai Bà Trưng',
-        address: 'Số 310 phố Huế, phường Phố Huế, quận Hai Bà Trưng, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505170855',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao giấy',
-        copyQty: '02 bản',
-        quantity: 2,
-        fee: 60000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Trần Thị Thu Trang',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '20/09/2026 09:25',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000022',
-        paperNo: 'PG-2026-022',
-        registeredAt: '20/09/2026 10:30',
-        customerId: 'KH-NAB-19',
-        requester: 'Ngân hàng TMCP Nam Á - Chi nhánh Đống Đa',
-        address: 'Số 412 Tây Sơn, phường Thịnh Quang, quận Đống Đa, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505156438',
-        requestType: 'Yêu cầu cung cấp bản sao kèm thông báo về việc đăng ký thế chấp',
-        copyType: 'Bản sao điện tử',
-        copyQty: '—',
-        quantity: null,
-        fee: 30000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Nguyễn Thị Tiếp Nhận',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '20/09/2026 10:40',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000023',
-        paperNo: 'PG-2026-023',
-        registeredAt: '20/09/2026 14:00',
-        customerId: 'KH-BVB-20',
-        requester: 'Ngân hàng TMCP Bản Việt - Chi nhánh Cầu Giấy',
-        address: 'Số 233 phố Cầu Giấy, phường Dịch Vọng, quận Cầu Giấy, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505170802',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao giấy',
-        copyQty: '01 bản',
-        quantity: 1,
-        fee: 30000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Trần Thị Thu Trang',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '20/09/2026 14:10',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000024',
-        paperNo: 'PG-2026-024',
-        registeredAt: '19/09/2026 09:00',
-        customerId: 'KH-VIETABANK-21',
-        requester: 'Ngân hàng TMCP Việt Á - PGD Khâm Thiên',
-        address: 'Số 224 phố Khâm Thiên, phường Thổ Quan, quận Đống Đa, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505156438',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao điện tử',
-        copyQty: '—',
-        quantity: null,
-        fee: 30000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Nguyễn Thị Tiếp Nhận',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '19/09/2026 09:10',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000025',
-        paperNo: 'PG-2026-025',
-        registeredAt: '19/09/2026 10:45',
-        customerId: 'KH-NCB-22',
-        requester: 'Ngân hàng TMCP Quốc Dân - PGD Thanh Xuân',
-        address: 'Số 493 Nguyễn Trãi, phường Thanh Xuân Nam, quận Thanh Xuân, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505170855',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao giấy',
-        copyQty: '02 bản',
-        quantity: 2,
-        fee: 60000,
-        feeStatus: 'Đã thu',
-        status: 'Bị trả lại',
-        receptionOfficer: 'Trần Thị Thu Trang',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '19/09/2026 10:55',
-        draftFile: '',
-        returnReason: 'Số lượng bản sao yêu cầu vượt quá mức đăng ký thu phí ban đầu.',
-        returnedBy: 'Lê Hoàng Long - Giám đốc Trung tâm',
-        returnedAt: '19/09/2026 14:00'
-    },
-    {
-        id: 'BS-2026-000026',
-        paperNo: 'PG-2026-026',
-        registeredAt: '18/09/2026 08:30',
-        customerId: 'KH-KLB-23',
-        requester: 'Ngân hàng TMCP Kiên Long - Chi nhánh Hà Nội',
-        address: 'Số 68 Bà Triệu, phường Hàng Bài, quận Hoàn Kiếm, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505156438',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao điện tử',
-        copyQty: '—',
-        quantity: null,
-        fee: 30000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Nguyễn Thị Tiếp Nhận',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '18/09/2026 08:40',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000027',
-        paperNo: 'PG-2026-027',
-        registeredAt: '18/09/2026 14:15',
-        customerId: 'KH-BAB-24',
-        requester: 'Ngân hàng TMCP Bắc Á - PGD Kim Liên',
-        address: 'Số 9 phố Đào Duy Anh, phường Phương Mai, quận Đống Đa, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505170802',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao giấy',
-        copyQty: '02 bản',
-        quantity: 2,
-        fee: 60000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Trần Thị Thu Trang',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '18/09/2026 14:25',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000028',
-        paperNo: 'PG-2026-028',
-        registeredAt: '17/09/2026 09:30',
-        customerId: 'KH-PGB-25',
-        requester: 'Ngân hàng TMCP Thịnh vượng và Phát triển (PGBank)',
-        address: 'Tòa nhà Mipec, 229 Tây Sơn, Ngã Tư Sở, Đống Đa, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505156438',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao điện tử',
-        copyQty: '—',
-        quantity: null,
-        fee: 30000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ giải quyết',
-        receptionOfficer: 'Nguyễn Thị Tiếp Nhận',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '17/09/2026 09:40',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000029',
-        paperNo: 'PG-2026-029',
-        registeredAt: '16/09/2026 10:00',
-        customerId: 'KH-SAIGONBANK-26',
-        requester: 'Ngân hàng TMCP Sài Gòn Công Thương - Chi nhánh Hà Nội',
-        address: 'Số 14 phố Lê Đại Hành, phường Lê Đại Hành, quận Hai Bà Trưng, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505170855',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao giấy',
-        copyQty: '01 bản',
-        quantity: 1,
-        fee: 30000,
-        feeStatus: 'Đã thu',
-        status: 'Duyệt chờ ký',
-        receptionOfficer: 'Trần Thị Thu Trang',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '16/09/2026 10:10',
-        draftFile: ''
-    },
-    {
-        id: 'BS-2026-000030',
-        paperNo: 'PG-2026-030',
-        registeredAt: '15/09/2026 11:20',
-        customerId: 'KH-BIDC-27',
-        requester: 'Ngân hàng Đầu tư và Phát triển Campuchia - Chi nhánh Hà Nội',
-        address: 'Số 10A phố Dã Tượng, phường Trần Hưng Đạo, quận Hoàn Kiếm, TP Hà Nội',
-        source: 'Cán bộ nhập liệu',
-        registrationNo: '1505156438',
-        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-        copyType: 'Bản sao điện tử',
-        copyQty: '—',
-        quantity: null,
-        fee: 30000,
-        feeStatus: 'Đã thu',
-        status: 'Chờ ký',
-        receptionOfficer: 'Nguyễn Thị Tiếp Nhận',
-        officer: 'Nguyễn Văn Cán Bộ',
-        paidAt: '15/09/2026 11:30',
-        draftFile: ''
-    }
-];
-
-// Hồ sơ Yêu cầu cung cấp bản sao trực tuyến (Khách hàng gửi qua Website) phục vụ MH01 - Danh sách chờ duyệt
-// và hồ sơ Bản sao giấy "Đã duyệt - chờ trả kết quả" phục vụ Xác nhận trả kết quả (MH05)
-(function seedOnlineCopyRequests() {
-    const requesters = [
-        ['Công ty TNHH Thương mại Hoàng Gia', 'KH-HOANGGIA-01'], ['Ông Trần Quang Đạo', 'KH-DAO-02'], ['Ngân hàng TMCP Quân đội (MB)', 'KH-MB-03'],
-        ['Bà Lê Thị Thanh Hương', 'KH-HUONG-04'], ['Công ty Cổ phần Vận tải Biển Đông', 'KH-BIENDONG-05'], ['Ông Phạm Văn Khánh', 'KH-KHANH-06'],
-        ['Công ty TNHH Sản xuất Tân Tiến', 'KH-TANTIEN-07'], ['Bà Đinh Thị Mai Phương', 'KH-PHUONG-08']
-    ];
-    const regNos = ['1505156438', '1505170855', '1505170802'];
-    const today = new Date();
-    const pad = n => String(n).padStart(2, '0');
-    requesters.forEach(([name, cid], i) => {
-        const day = Math.max(1, Math.min(today.getDate(), 1 + i * 3));
-        const isPaper = i % 3 === 1;
-        officerCopyRequests.push({
-            id: `BS-2026-1${pad(i + 1)}001`,
-            paperNo: '',
-            registeredAt: `${pad(day)}/${pad(today.getMonth() + 1)}/${today.getFullYear()} ${pad(8 + i)}:${pad((i * 13) % 60)}`,
-            customerId: cid,
-            requester: name,
-            address: 'Hà Nội',
-            source: 'Website khách hàng',
-            registrationNo: regNos[i % regNos.length],
-            requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
-            copyType: isPaper ? 'Bản sao giấy' : 'Bản sao điện tử',
-            quantity: isPaper ? (i % 2) + 1 : null,
-            fee: 30000,
-            feeStatus: 'Đã thu',
-            status: i < 6 ? 'Chờ duyệt' : 'Đã duyệt - chờ trả kết quả',
-            officer: i < 6 ? '' : 'Nguyễn Văn Cán Bộ',
-            ...(i >= 6 ? { copyType: 'Bản sao giấy', quantity: 2, approvedAt: `${pad(day)}/${pad(today.getMonth() + 1)}/${today.getFullYear()} 15:30` } : {})
-        });
-    });
-})();
-// Đồng bộ trạng thái hồ sơ bản sao đã xử lý tại màn Nhập liệu (nhap_lieu_ho_so_giay.html) về danh sách
-const COPY_STORAGE_KEY = 'officer_copy_requests';
-(function syncOfficerCopyRequestsFromStorage() {
-    let stored = [];
-    try { stored = JSON.parse(localStorage.getItem(COPY_STORAGE_KEY) || '[]'); } catch (err) { stored = []; }
-    stored.forEach(s => {
-        const item = officerCopyRequests.find(x => x.id === s.id);
-        if (!item) return;
-        if (s.status) item.status = s.status;
-        if (s.originalRegistrationNo) item.registrationNo = s.originalRegistrationNo;
-        if (s.handlingOfficer && s.status !== 'Chờ giải quyết') item.officer = s.handlingOfficer;
-        if (s.registeredAtOfficial) item.registeredAtOfficial = s.registeredAtOfficial;
-        if (s.rejectReason) item.rejectReason = s.rejectReason;
-        if (s.rejectedAt) item.rejectedAt = s.rejectedAt;
-    });
-})();
 
 // Ghi hồ sơ bản sao được chọn sang localStorage để màn Xem chi tiết (MH02) / Nhập liệu (MH03) đọc đúng dữ liệu bản ghi
 function saveCopyItemForNavigation(item) {
@@ -4644,25 +3806,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// Đồng bộ trạng thái hồ sơ Yêu cầu cung cấp thông tin đã xử lý (lưu localStorage) về danh sách
-// Dời Thời điểm đăng ký của dữ liệu giả lập CCTT về tháng hiện tại để nằm trong khoảng lọc mặc định (từ ngày 01 đến ngày hiện tại)
-(function shiftCcttMockDatesToCurrentMonth() {
-    const today = new Date();
-    const pad = n => String(n).padStart(2, '0');
-    (typeof ccttOfficerRequests !== 'undefined' ? ccttOfficerRequests : []).forEach((x, i) => {
-        const m = String(x.registeredAt || '').match(/(\d{2}):(\d{2})/);
-        const day = (i % today.getDate()) + 1;
-        x.registeredAt = `${pad(day)}/${pad(today.getMonth() + 1)}/${today.getFullYear()} ${m ? m[1] + ':' + m[2] : '09:00'}`;
-    });
-})();
-(function syncOfficerCcttRequestsFromStorage() {
-    let stored = [];
-    try { stored = JSON.parse(localStorage.getItem('officer_cctt_requests') || '[]'); } catch (err) { stored = []; }
-    stored.forEach(s => {
-        const item = (typeof ccttOfficerRequests !== 'undefined' ? ccttOfficerRequests : []).find(x => x.id === s.id);
-        if (item) Object.keys(s).forEach(k => { if (s[k] !== undefined && s[k] !== null) item[k] = s[k]; });
-    });
-})();
 function shouldShowOfficerWorkTabs() {
     return ['chonhaplieu', 'choduyet', 'duyet-choky', 'bitralai', 'dang_xu_ly', 'da_xu_ly'].includes(currentListTab);
 }
@@ -4789,8 +3932,8 @@ renderFilterPanel = function () {
                     <div class="date-filter-wrap"><input type="text" class="form-control" id="cctt-filter-todate" placeholder="dd/mm/yyyy" value="${range.to}"><i class="fa-regular fa-calendar-days"></i></div>
                 </div>
             </div>
-            <div style="text-align:right;margin-top:15px">
-                <button class="btn btn-outline-secondary" onclick="renderFilterPanel(); renderTable(true)" style="margin-right:8px"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+            <div class="filter-action-row" style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #F1F5F9; display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
+                <button class="btn btn-outline-secondary" onclick="renderFilterPanel(); renderTable(true)"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
                 <button class="btn btn-primary" onclick="searchCcttOfficerList()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
             </div>
         `;
@@ -4829,8 +3972,8 @@ renderFilterPanel = function () {
                     <div class="date-filter-wrap"><input type="text" class="form-control" id="ccttin-filter-todate" placeholder="dd/mm/yyyy" value="${range.to}"><i class="fa-regular fa-calendar-days"></i></div>
                 </div>
             </div>
-            <div style="text-align:right;margin-top:15px">
-                <button class="btn btn-outline-secondary" onclick="renderFilterPanel(); renderTable(true)" style="margin-right:8px"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+            <div class="filter-action-row" style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #F1F5F9; display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
+                <button class="btn btn-outline-secondary" onclick="renderFilterPanel(); renderTable(true)"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
                 <button class="btn btn-primary" onclick="searchCcttInputList()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
             </div>
         `;
@@ -4849,8 +3992,8 @@ renderFilterPanel = function () {
             const defToDate = `${String(today.getDate()).padStart(2, '0')}/${month}/${year}`;
             container.innerHTML = `
                 ${renderCopyFilterFields(defFromDate, defToDate)}
-                <div style="text-align:right;margin-top:15px">
-                    <button class="btn btn-outline-secondary" onclick="resetCopyOfficerFilters()" style="margin-right:8px"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                <div class="filter-action-row" style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #F1F5F9; display: flex; justify-content: flex-end; align-items: center; gap: 8px;">
+                    <button class="btn btn-outline-secondary" onclick="resetCopyOfficerFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
                     <button class="btn btn-primary" onclick="searchCopyOfficerList()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
                 </div>
             `;
@@ -4966,7 +4109,7 @@ function renderCcttOfficerTable() {
         tbody.innerHTML = `<tr><td colspan="${isInputTab ? 11 : 12}" style="text-align:center;padding:30px;color:var(--text-muted);font-style:italic">Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</td></tr>`;
     } else if (!isInputTab) {
         tbody.innerHTML = pageRows.map((row, idx) => `
-            <tr style="cursor:pointer" onclick="${currentListTab === 'duyet-choky' ? 'openCcttApprovedView' : 'openCcttView'}('${row.id}')">
+            <tr style="cursor:pointer" onclick="${currentListTab === 'choduyet' ? 'openCcttView' : 'openCcttApprovedView'}('${row.id}')">
                 <td style="text-align:center">${paginationStartIndex + idx + 1}</td>
                 <td><span class="action-link"><b>${row.id}</b></span></td>
                 <td><code>${row.customerId || '-'}</code></td>
@@ -5121,6 +4264,7 @@ function getPaperCcttRows() {
             customerId: 'TK-ANPHU-088',
             officer: 'Nguyễn Thị Tiếp Nhận',
             customer: 'Công ty TNHH An Phú',
+            requesterAddress: 'Số 88 Lê Văn Lương, phường Nhân Chính, TP Hà Nội',
             submitter: 'Vũ Minh Châu',
             type: 'Yêu cầu cung cấp thông tin',
             paymentStatus: 'Đã thu',
@@ -5237,7 +4381,7 @@ function getOfficerCopyListTitle() {
     if (currentListTab === 'chonhaplieu') return 'Danh sách hồ sơ chờ nhập liệu';
     if (currentListTab === 'duyet-choky') return 'Danh sách yêu cầu cung cấp bản sao duyệt chờ ký';
     if (currentListTab === 'bitralai') return 'Danh sách yêu cầu cung cấp bản sao bị trả lại';
-    if (currentListTab === 'dang_xu_ly') return 'Danh sách yêu cầu cung cấp bản sao chờ ký';
+    if (currentListTab === 'dang_xu_ly') return 'Danh sách yêu cầu cung cấp bản sao đang chờ ký';
     if (currentListTab === 'da_xu_ly') return 'Danh sách yêu cầu cung cấp bản sao đã xử lý';
     return 'Danh sách yêu cầu cung cấp bản sao';
 }
@@ -5645,7 +4789,7 @@ function renderCopyOfficerTable() {
                 `;
             } else {
                 const actions = getCopyRowActions(row);
-                const rowClick = currentListTab === 'choduyet' ? `openCopyView('${row.id}')` : currentListTab === 'duyet-choky' ? `openCopyProcess('${row.id}')` : `openPaperReadonly('${row.id}')`;
+                const rowClick = currentListTab === 'choduyet' ? `openCopyView('${row.id}')` : `openCopyProcess('${row.id}')`;
                 return `
                     <tr style="cursor:pointer" onclick="${rowClick}">
                         <td style="text-align:center">${paginationStartIndex + idx + 1}</td>
@@ -5677,8 +4821,18 @@ function getCopyRowActions(row) {
     if (currentListTab === 'duyet-choky') {
         return btn('sign', 'Trình ký', 'fa-solid fa-file-signature', 'openCopySignFromList') + btn('cancel-approve', 'Hủy duyệt', 'fa-solid fa-rotate-left', 'cancelCopyApproval') + btn('reject', 'Từ chối', 'fa-solid fa-ban', 'openCopyRejectModal');
     }
-    if (currentListTab === 'da_xu_ly' && row.copyType === 'Bản sao giấy' && row.status === 'Đã duyệt - chờ trả kết quả') {
-        return btn('sign', 'Xác nhận trả kết quả', 'fa-solid fa-check', 'confirmCopyPaperReturn');
+    if (currentListTab === 'dang_xu_ly') {
+        return btn('view', 'Xem chi tiết', 'fa-solid fa-eye', 'openCopyProcess');
+    }
+    if (currentListTab === 'da_xu_ly') {
+        const btnView = btn('view', 'Xem chi tiết', 'fa-solid fa-eye', 'openCopyProcess');
+        if (row.copyType === 'Bản sao giấy' && row.status === 'Đã duyệt - chờ trả kết quả') {
+            const btnReturn = btn('sign', 'Xác nhận trả kết quả', 'fa-solid fa-box-archive', 'confirmCopyPaperReturn');
+            return btnView + btnReturn;
+        } else {
+            const disabledBtn = `<button class="icon-btn" title="Không có thao tác bổ sung" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-box-archive"></i></button>`;
+            return btnView + disabledBtn;
+        }
     }
     return '';
 }
@@ -5769,9 +4923,29 @@ function openCopyProcess(id) {
     const isApprovedWaitSign = item.status === 'Duyệt chờ ký';
     // Tab Hồ sơ Bị trả lại: chỉ hiển thị Cập nhật, Đóng
     const isReturnedCopy = item.status === 'Bị trả lại';
+    const isReadOnlyCopy = ['Chờ ký', 'Hoàn thành', 'Bị từ chối', 'Đã duyệt - chờ trả kết quả'].includes(item.status);
+    const canReturnResult = item.status === 'Đã duyệt - chờ trả kết quả' && isPaper;
+
+    // Thông tin từ chối / trả lại hiển thị bằng khối dùng chung renderReturnRejectBlocks (Khối II, III)
+    let copyStatusBanner = '';
+    if (item.status === 'Hoàn thành') {
+        copyStatusBanner = `
+            <div class="alert alert-success" style="background:#F0FDF4;border:1px solid #86EFAC;border-radius:6px;padding:12px;margin-bottom:15px;color:#166534;">
+                <b><i class="fa-solid fa-circle-check"></i> Kết quả xử lý:</b> Hồ sơ đã hoàn thành việc cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm.
+            </div>
+        `;
+    } else if (item.status === 'Đã duyệt - chờ trả kết quả') {
+        copyStatusBanner = `
+            <div class="alert alert-info" style="background:#EFF6FF;border:1px solid #93C5FD;border-radius:6px;padding:12px;margin-bottom:15px;color:#1E40AF;">
+                <b><i class="fa-solid fa-circle-info"></i> Trạng thái hồ sơ:</b> Đã duyệt bản sao giấy, chờ cán bộ thực hiện in ấn và trả kết quả cho người yêu cầu.
+            </div>
+        `;
+    }
+
     view.innerHTML = `
         <div class="card-section">
-            <div class="section-title"><span><i class="fa-solid fa-copy"></i> Xử lý hồ sơ yêu cầu cung cấp bản sao: ${item.id}</span><span class="badge ${getCopyBadgeClass(item.status)}">${item.status}</span></div>
+            <div class="section-title"><span><i class="fa-solid fa-copy"></i> ${isReadOnlyCopy ? 'Xem chi tiết' : 'Xử lý'} hồ sơ yêu cầu cung cấp bản sao: ${item.id}</span><span class="badge ${getCopyBadgeClass(item.status)}">${item.status}</span></div>
+            ${copyStatusBanner}
             <h3 class="section-title" style="font-size:15px">I. Thông tin yêu cầu cung cấp bản sao</h3>
             <div class="info-grid">
                 <div class="info-group"><div class="info-label">Mã hồ sơ</div><div class="info-value"><b>${item.id}</b></div></div>
@@ -5780,13 +4954,15 @@ function openCopyProcess(id) {
                 <div class="info-group"><div class="info-label">Loại cung cấp bản sao</div><div class="info-value"><span class="badge ${isPaper ? 'badge-secondary' : 'badge-info'}">${item.copyType}</span></div></div>
                 ${isPaper ? `<div class="info-group"><div class="info-label">Số lượng bản sao</div><div class="info-value">${String(item.quantity || 1).padStart(2, '0')} bản</div></div>` : ''}
             </div>
-            <h3 class="section-title" style="font-size:15px;margin-top:18px">II. Cấu trúc chi tiết danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng</h3>
+            ${renderReturnRejectBlocks(item)}
+            <h3 class="section-title" style="font-size:15px;margin-top:18px">IV. Cấu trúc chi tiết danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng</h3>
             <div id="copy-process-structure">${BsPopups.renderStructure(item.registrationNo)}</div>
         </div>
         <div class="card-section" style="position:sticky;bottom:0;z-index:40;display:flex;justify-content:flex-end;gap:10px;box-shadow:0 -4px 12px rgba(15,23,42,.08)">
+            ${canReturnResult ? `<button class="btn btn-primary" onclick="confirmCopyPaperReturn('${item.id}');closeCopyProcess()"><i class="fa-solid fa-box-archive"></i> Xác nhận trả kết quả</button>` : ''}
             ${isReturnedCopy ? `<button class="btn btn-primary" onclick="saveCopyItemForNavigation(officerCopyRequests.find(x => x.id === '${item.id}')); startDigitize('${item.id}')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>
             <button class="btn btn-danger" onclick="openCopyRejectModal('${item.id}')"><i class="fa-solid fa-ban"></i> Từ chối</button>` : ''}
-            <button class="btn btn-outline-secondary" onclick="closeCopyProcess()">${isApprovedWaitSign || isReturnedCopy ? 'Đóng' : 'Hủy bỏ'}</button>
+            <button class="btn btn-outline-secondary" onclick="closeCopyProcess()">${isApprovedWaitSign || isReturnedCopy || isReadOnlyCopy ? 'Đóng' : 'Hủy bỏ'}</button>
             ${canApprove ? `<button class="btn btn-success" onclick="approveCopyProcess('${item.id}')"><i class="fa-solid fa-check"></i> Duyệt chờ ký</button>` : ''}
             ${isApprovedWaitSign ? `<button class="btn btn-warning" style="background-color:#64748B;color:white" onclick="cancelCopyApproval('${item.id}');closeCopyProcess()"><i class="fa-solid fa-rotate-left"></i> Hủy duyệt</button>
             <button class="btn btn-danger" onclick="openCopyRejectModal('${item.id}')"><i class="fa-solid fa-ban"></i> Từ chối</button>` : ''}
@@ -5860,7 +5036,7 @@ function openCopyOfficerDetail(id) {
 }
 
 function renderCopyOfficerDetailContent(item) {
-    const canEditPaper = item.source === 'Cán bộ nhập liệu' && ['Chờ giải quyết', 'Bị trả lại'].includes(item.status);
+    const canEditPaper = !lookupReadOnly && item.source === 'Cán bộ nhập liệu' && ['Chờ giải quyết', 'Bị trả lại'].includes(item.status);
     const showQuantity = item.copyType === 'Bản sao giấy';
     const readonly = canEditPaper ? '' : 'readonly';
     const disabled = canEditPaper ? '' : 'disabled';
@@ -5879,7 +5055,7 @@ function renderCopyOfficerDetailContent(item) {
                 <div class="info-group"><div class="info-label">Số tiền đã thu/thanh toán</div><div class="info-value">${item.fee.toLocaleString('vi-VN')} VNĐ</div></div>
             </div>
 
-            ${item.returnReason ? `<div style="margin-top:12px;padding:12px;border:1px solid #FCA5A5;background:#FEF2F2;border-radius:6px"><b>Lý do trả lại:</b> ${item.returnReason}</div>` : ''}
+            ${renderReturnRejectBlocks(item)}
 
             <h3 class="section-title">Thông tin yêu cầu cung cấp bản sao</h3>
             <div class="info-grid">
@@ -5940,7 +5116,7 @@ function toggleCopyOfficerQty() {
 }
 
 function syncCopyDetailInputs(item) {
-    const canEditPaper = item.source === 'Cán bộ nhập liệu' && ['Chờ giải quyết', 'Bị trả lại'].includes(item.status);
+    const canEditPaper = !lookupReadOnly && item.source === 'Cán bộ nhập liệu' && ['Chờ giải quyết', 'Bị trả lại'].includes(item.status);
     if (!canEditPaper) return true;
     const regNo = document.getElementById('copy-detail-regno')?.value.trim() || '';
     const type = document.getElementById('copy-detail-type')?.value || 'Bản sao giấy';
@@ -6090,7 +5266,7 @@ function renderCcttOfficerDetailContent(item, searched) {
             <div class="info-grid">
                 <div class="info-group"><div class="info-label">File PDF dự thảo</div><div class="info-value">Mẫu số 10d - chưa ký</div></div>
                 <div class="info-group"><div class="info-label">Phiên bản</div><div class="info-value">Dự thảo v1</div></div>
-                <div class="info-group" style="grid-column:span 2"><button class="btn btn-primary" onclick="alert('Đã sinh file PDF dự thảo Mẫu số 10d và gắn vào hồ sơ ${item.id}.')"><i class="fa-solid fa-file-pdf"></i> Kết xuất PDF dự thảo</button></div>
+                ${lookupReadOnly ? '' : `<div class="info-group" style="grid-column:span 2"><button class="btn btn-primary" onclick="alert('Đã sinh file PDF dự thảo Mẫu số 10d và gắn vào hồ sơ ${item.id}.')"><i class="fa-solid fa-file-pdf"></i> Kết xuất PDF dự thảo</button></div>`}
             </div>
             <h3 class="section-title">Khu vực tra cứu</h3>
             <div class="info-grid">
@@ -6145,6 +5321,7 @@ function getCcttRowActions(row) {
     const btn = (cls, title, icon, fn) => `<button class="icon-btn ${cls}" title="${title}" onclick="event.stopPropagation(); ${fn}('${row.id}')"><i class="${icon}"></i></button>`;
     if (currentListTab === 'choduyet') return btn('edit', 'Xử lý hồ sơ', 'fa-solid fa-pen-to-square', 'openCcttProcess') + btn('reject', 'Từ chối', 'fa-solid fa-ban', 'openCcttReject');
     if (currentListTab === 'duyet-choky') return btn('sign', 'Trình ký', 'fa-solid fa-file-signature', 'openCcttSignFromList') + btn('cancel-approve', 'Hủy duyệt', 'fa-solid fa-rotate-left', 'cancelCcttApproval') + btn('reject', 'Từ chối', 'fa-solid fa-ban', 'openCcttReject');
+    if (currentListTab === 'dang_xu_ly' || currentListTab === 'da_xu_ly') return btn('view', 'Xem chi tiết', 'fa-solid fa-eye', 'openCcttApprovedView');
     return '';
 }
 
@@ -6212,6 +5389,7 @@ function openCcttView(id) {
         <div class="card-section">
             <div class="section-title"><span><i class="fa-solid fa-circle-info"></i> Xem chi tiết hồ sơ yêu cầu cung cấp thông tin: ${item.id}</span><span class="badge badge-warning">${item.status}</span></div>
             <div class="info-grid">${fields.map(([l, v]) => `<div class="info-group"><div class="info-label">${l}</div><div class="info-value"><b>${v || '-'}</b></div></div>`).join('')}</div>
+            ${renderReturnRejectBlocks(item)}
         </div>
         <div class="card-section" style="position:sticky;bottom:0;z-index:40;display:flex;justify-content:flex-end;gap:10px;box-shadow:0 -4px 12px rgba(15,23,42,.08)">
             ${canProcess ? `<button class="btn btn-primary" onclick="openCcttProcess('${item.id}')"><i class="fa-solid fa-pen-to-square"></i> Xử lý hồ sơ</button>
@@ -6221,6 +5399,73 @@ function openCcttView(id) {
             <button class="btn btn-danger" onclick="openCcttReject('${item.id}')"><i class="fa-solid fa-ban"></i> Từ chối</button>` : ''}
             <button class="btn btn-outline-secondary" onclick="closeCcttView()">Đóng</button>
         </div>`);
+}
+
+// Khối Thông tin trả lại / Thông tin từ chối dùng chung (SRS Kiểm tra và xử lý hồ sơ - MH04 khối II, III)
+// - Thông tin trả lại: Accordion viền đỏ, mặc định mở rộng, chỉ hiển thị khi "Bị trả lại"; liệt kê các lần trả lại theo Thời điểm giảm dần
+// - Thông tin từ chối: chỉ hiển thị khi "Bị từ chối"
+function renderReturnRejectBlocks(item) {
+    if (!item) return '';
+    const esc = v => String(v ?? '').replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s]));
+    const kv = (l, v, red) => v ? `<div class="info-group"><div class="info-label">${l}</div><div class="info-value" style="${red ? 'color:#B91C1C;font-weight:700' : ''}">${v}</div></div>` : '';
+    const fileLink = (name, label) => name ? `<a href="#" class="action-link" onclick="event.preventDefault(); alert('Mở xem file: ${esc(name)}')"><i class="fa-regular fa-file-pdf"></i> ${label || 'Xem file'}</a>` : '';
+    // Hồ sơ đã từng bị trả lại và được trình ký lại: giữ lại vết lịch sử các lần trả lại (mặc định thu gọn)
+    const hasReturnTrace = item.status !== 'Bị từ chối' && Array.isArray(item.returnHistory) && item.returnHistory.length;
+    if (item.status === 'Bị trả lại' || hasReturnTrace) {
+        const toTime = s => { const m = String(s || '').match(/(\d{2})\/(\d{2})\/(\d{4})\s*(\d{2})?:?(\d{2})?/); return m ? new Date(+m[3], +m[2] - 1, +m[1], +(m[4] || 0), +(m[5] || 0)).getTime() : 0; };
+        const list = (item.returnHistory && item.returnHistory.length ? item.returnHistory : [{ reason: item.returnReason, by: item.returnedBy, at: item.returnedAt }])
+            .map(r => ({ reason: r.reason || 'Lãnh đạo yêu cầu rà soát, cập nhật lại hồ sơ.', by: r.by || 'Nguyễn Văn Lãnh Đạo', at: r.at || '-', resubmittedAt: r.resubmittedAt || '' }))
+            .sort((a, b) => toTime(b.at) - toTime(a.at));
+        return `
+            <details class="block-return-info" ${item.status === 'Bị trả lại' ? 'open' : ''} style="border:1px solid #FCA5A5;border-left:4px solid #DC2626;border-radius:8px;margin:12px 0;background:#fff">
+                <summary style="cursor:pointer;padding:10px 14px;font-weight:700;color:#B91C1C;background:#FEF2F2;list-style:none;display:flex;align-items:center;gap:8px">
+                    <i class="fa-solid fa-rotate-left"></i> Thông tin trả lại <span class="badge badge-danger" style="margin-left:6px">${list.length} lần</span>
+                </summary>
+                ${list.map((r, i) => `<div class="info-grid" style="padding:10px 14px;${i ? 'border-top:1px dashed #FCA5A5' : ''}">
+                    ${kv('Lý do trả lại', esc(r.reason), true)}${kv('Lãnh đạo trả lại', esc(r.by))}${kv('Thời điểm trả lại', esc(r.at))}${kv('Thời điểm trình ký lại', esc(r.resubmittedAt))}
+                </div>`).join('')}
+            </details>`;
+    }
+    if (item.status === 'Bị từ chối') {
+        return `
+            <div class="block-reject-info" style="border:1px solid #FCA5A5;border-left:4px solid #DC2626;border-radius:8px;margin:12px 0;background:#fff">
+                <div style="padding:10px 14px;font-weight:700;color:#B91C1C;background:#FEF2F2"><i class="fa-solid fa-ban"></i> Thông tin từ chối</div>
+                <div class="info-grid" style="padding:10px 14px">
+                    ${kv('Lý do từ chối', esc(item.rejectReason || 'Không đủ điều kiện giải quyết theo quy định.'), true)}
+                    ${kv('Người từ chối', esc(item.rejectedBy || item.officer || 'Nguyễn Văn Cán Bộ'))}
+                    ${kv('Thời điểm từ chối', esc(item.rejectedAt || '-'))}
+                    ${kv('Lãnh đạo ký văn bản từ chối', esc(item.rejectLeader || item.signLeader || ''))}
+                    ${kv('Văn bản từ chối đã ký', fileLink(item.rejectDraftFile || item.rejectNoticeFile, 'Xem file'))}
+                    ${kv('Tài liệu đính kèm lý do từ chối', fileLink(item.rejectFile, esc(item.rejectFile)))}
+                </div>
+            </div>`;
+    }
+    return '';
+}
+
+// Khối I. Thông tin chung (Accordion, mặc định thu gọn): Mã hồ sơ, Mã khách hàng, Người yêu cầu, Địa chỉ, Thời điểm đăng ký, Trạng thái
+function renderCcttGeneralInfo(item) {
+    // Địa chỉ đầy đủ: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia
+    // Hồ sơ giấy (Tab Hồ sơ Bị trả lại) dùng trường customer / requesterAddress / date
+    let addr = [item.addressDetail, item.ward, item.province, item.country].filter(Boolean).join(', ') || item.address || item.requesterAddress || '-';
+    if (addr !== '-' && !/Việt Nam|Viet Nam/i.test(addr)) addr += ', Việt Nam';
+    const badge = item.status === 'Hoàn thành' ? 'badge-success' : (item.status === 'Bị từ chối' || item.status === 'Bị trả lại' ? 'badge-danger' : (item.status === 'Chờ duyệt' || item.status === 'Chờ ký' ? 'badge-warning' : 'badge-info'));
+    const fields = [['Mã hồ sơ', `<b>${item.id}</b>`], ['Mã khách hàng', item.customerId || '-'], ['Người yêu cầu', item.requester || item.customer || '-'], ['Địa chỉ', addr], ['Thời điểm đăng ký', item.registeredAt || item.date || '-'], ['Trạng thái', `<span class="badge ${badge}">${item.status}</span>`]];
+    return `
+            <details class="cctt-general-info" style="border:1px solid var(--border-color);border-radius:8px;margin-bottom:14px">
+                <style>
+                    details.cctt-general-info[open] .cgi-collapsed-only { display: none; }
+                    details.cctt-general-info .cgi-chevron { transition: transform .2s; }
+                    details.cctt-general-info[open] .cgi-chevron { transform: rotate(90deg); }
+                </style>
+                <summary style="cursor:pointer;padding:10px 14px;font-weight:700;color:var(--primary-color);display:flex;align-items:center;gap:10px;list-style:none">
+                    <i class="fa-solid fa-chevron-right cgi-chevron" style="font-size:12px"></i> I. Thông tin chung
+                    <!-- Mã hồ sơ và Trạng thái chỉ hiển thị trên dòng tiêu đề khi khối thu gọn; khi mở rộng đã hiển thị tại các trường bên dưới -->
+                    <span class="cgi-collapsed-only" style="font-weight:500;color:var(--text-muted)">${item.id}</span>
+                    <span class="cgi-collapsed-only badge ${badge}" style="margin-left:auto">${item.status}</span>
+                </summary>
+                <div class="info-grid" style="padding:4px 14px 12px">${fields.map(([l, v]) => `<div class="info-group"><div class="info-label">${l}</div><div class="info-value">${v}</div></div>`).join('')}</div>
+            </details>`;
 }
 
 // MH02 - Xử lý hồ sơ yêu cầu cung cấp thông tin (tự động điền tiêu chí, tự động tra cứu khi mở màn hình)
@@ -6238,11 +5483,12 @@ function openCcttProcess(id) {
     const inputs = CcttPopups.getLookupFields(item).map(([l, v]) => `<div class="form-group"><label class="form-label">${l}</label><input type="text" class="form-control" value="${v || ''}" disabled style="background:#F1F5F9"></div>`).join('');
     showCcttView(`
         <div class="card-section">
-            <div class="section-title"><span><i class="fa-solid fa-magnifying-glass"></i> Xử lý hồ sơ yêu cầu cung cấp thông tin: ${item.id}</span><span class="badge badge-warning">${item.status}</span></div>
-            <h3 class="section-title" style="font-size:15px">I. Khối tra cứu</h3>
+            <div class="section-title"><span><i class="fa-solid fa-magnifying-glass"></i> Xử lý hồ sơ yêu cầu cung cấp thông tin: ${item.id}</span></div>
+            ${renderCcttGeneralInfo(item)}
+            <h3 class="section-title" style="font-size:15px">II. Khối tra cứu</h3>
             <div class="form-group"><label class="form-label">Tiêu chí yêu cầu cung cấp thông tin</label><div style="display:inline-flex;border:1px solid var(--border-color);border-radius:6px;overflow:hidden">${segments}</div></div>
             <div class="grid-4-cols">${inputs}</div>
-            <h3 class="section-title" style="font-size:15px;margin-top:10px">II. Kết quả tra cứu</h3>
+            <h3 class="section-title" style="font-size:15px;margin-top:10px">III. Kết quả tra cứu</h3>
             <div id="cctt-process-result">${CcttPopups.renderResult(ccttProcessResult)}</div>
         </div>
         <div class="card-section" style="position:sticky;bottom:0;z-index:40;display:flex;justify-content:flex-end;gap:10px;box-shadow:0 -4px 12px rgba(15,23,42,.08)">
@@ -6280,13 +5526,28 @@ function openCcttReturnedView(id) {
 function renderCcttReadonlyDetail(item, buttonsHtml) {
     const segments = ['Số đăng ký', 'Bên bảo đảm', 'Số khung'].map(c => `<button type="button" class="btn ${c === item.criteria ? 'btn-primary' : 'btn-outline-secondary'}" disabled style="${c === item.criteria ? '' : 'opacity:.45'};border-radius:0">${c}</button>`).join('');
     const inputs = CcttPopups.getLookupFields(item).map(([l, v]) => `<div class="form-group"><label class="form-label">${l}</label><input type="text" class="form-control" value="${v || ''}" disabled style="background:#F1F5F9"></div>`).join('');
+    const badgeClass = item.status === 'Hoàn thành' ? 'badge-success' : (item.status === 'Bị từ chối' || item.status === 'Bị trả lại' ? 'badge-danger' : (item.status === 'Chờ ký' || item.status === 'Chờ duyệt' ? 'badge-warning' : 'badge-info'));
+
+    // Thông tin từ chối / trả lại hiển thị bằng khối dùng chung renderReturnRejectBlocks (Khối II, III)
+    let statusBanner = '';
+    if (item.status === 'Hoàn thành') {
+        statusBanner = `
+            <div class="alert alert-success" style="background:#F0FDF4;border:1px solid #86EFAC;border-radius:6px;padding:12px;margin-bottom:15px;color:#166534;">
+                <b><i class="fa-solid fa-circle-check"></i> Kết quả xử lý:</b> Hồ sơ đã hoàn thành việc cung cấp thông tin có xác nhận của cơ quan đăng ký.
+            </div>
+        `;
+    }
+
     showCcttView(`
         <div class="card-section">
-            <div class="section-title"><span><i class="fa-solid fa-circle-info"></i> Xem chi tiết hồ sơ yêu cầu cung cấp thông tin: ${item.id}</span><span class="badge ${item.status === 'Bị trả lại' ? 'badge-danger' : 'badge-info'}">${item.status}</span></div>
-            <h3 class="section-title" style="font-size:15px">I. Khối tra cứu</h3>
+            <div class="section-title"><span><i class="fa-solid fa-circle-info"></i> Xem chi tiết hồ sơ yêu cầu cung cấp thông tin: ${item.id}</span></div>
+            ${statusBanner}
+            ${renderCcttGeneralInfo(item)}
+            ${renderReturnRejectBlocks(item)}
+            <h3 class="section-title" style="font-size:15px">IV. Khối tra cứu</h3>
             <div class="form-group"><label class="form-label">Tiêu chí yêu cầu cung cấp thông tin</label><div style="display:inline-flex;border:1px solid var(--border-color);border-radius:6px;overflow:hidden">${segments}</div></div>
             <div class="grid-4-cols">${inputs}</div>
-            <h3 class="section-title" style="font-size:15px;margin-top:10px">II. Kết quả tra cứu</h3>
+            <h3 class="section-title" style="font-size:15px;margin-top:10px">V. Kết quả tra cứu</h3>
             <div id="cctt-process-result">${CcttPopups.renderResult(item.lookupResult)}</div>
         </div>
         <div class="card-section" style="position:sticky;bottom:0;z-index:40;display:flex;justify-content:flex-end;gap:10px;box-shadow:0 -4px 12px rgba(15,23,42,.08)">

@@ -64,7 +64,7 @@ Nguồn UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_cau_hoi_faq.html`.
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | | | | |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Từ khóa | String(255) | Không | Trống | Control UI: Text input.<br>- Tìm kiếm theo nội dung câu hỏi hoặc nội dung câu trả lời (placeholder: "Tìm theo nội dung câu hỏi hoặc câu trả lời..."). |
 | Nhóm chủ đề | Enum(String(100)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Nhóm chủ đề câu hỏi thường gặp [DM_36].<br>Gồm:<br>+ Tất cả<br>+ Đăng ký biện pháp bảo đảm<br>+ Lệ phí và thanh toán<br>+ Tài khoản và phân quyền<br>+ Xử lý hồ sơ và biểu mẫu |
 | Trạng thái | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Trạng thái nội dung [DM_35].<br>Gồm:<br>+ Tất cả<br>+ Lưu nháp<br>+ Chờ duyệt<br>+ Đã duyệt<br>+ Từ chối |

@@ -37,6 +37,7 @@
 \- Hồ sơ có Trạng thái lệ phí là "Đã thu" hoặc "Miễn phí" theo [BR-UCPS-001] và [BR-UCPS-006].
 
 
+<a id="432182-mh01---man-hinh-danh-sach-ho-so-cho-nhap-lieu"></a>
 #### 4.3.2.18.2. MH01 - Màn hình Danh sách hồ sơ chờ nhập liệu
 
 ##### 4.3.2.18.2.1. Màn hình
@@ -47,7 +48,7 @@
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | | | | |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Mã hồ sơ | String(50) | Không | Trống | - Control UI: Textbox.<br>- Tìm kiếm gần đúng theo Mã hồ sơ giấy, không phân biệt hoa thường, tự động trim space. |
 | Số đơn giấy | String(50) | Không | Trống | - Control UI: Textbox.<br>- Tìm kiếm gần đúng theo Số đơn giấy ghi nhận tại bước tiếp nhận. |
 | Người yêu cầu | String(255) | Không | Trống | - Control UI: Textbox.<br>- Tìm kiếm gần đúng, không phân biệt hoa thường. |
@@ -90,6 +91,7 @@
 |  |  |  | TH Hợp lệ: Hệ thống thực hiện:<br>- Mở popup Từ chối hồ sơ gồm:<br>+ `Lý do từ chối`: Control UI Textarea, Text(2000), bắt buộc nhập theo [BR-DK-025].<br>+ `File căn cứ`: Control UI Nút chọn tệp, không bắt buộc, cho phép đính kèm 01 file theo [BR-FILE-010].<br>+ 02 nút "Xác nhận" và "Hủy".<br>- Chọn "Hủy": đóng popup, giữ nguyên trạng thái hồ sơ.<br>- Chọn "Xác nhận": hiển thị thông báo xác nhận [MSG-CFM-BS-001]. Sau khi Cán bộ đồng ý, hệ thống lưu Lý do từ chối và File căn cứ, ghi nhận Cán bộ từ chối và thời điểm từ chối, chuyển hồ sơ sang trạng thái "Bị từ chối", loại hồ sơ khỏi danh sách chờ nhập liệu và hiển thị [MSG-SUC-BS-004]. |
 
 
+<a id="432183-mh02---man-hinh-xem-chi-tiet-ho-so-cho-nhap-lieu"></a>
 #### 4.3.2.18.3. MH02 - Màn hình Xem chi tiết hồ sơ chờ nhập liệu
 
 ##### 4.3.2.18.3.1. Màn hình
@@ -176,6 +178,7 @@
 | 5 | Đóng | Nút | Hệ thống đóng màn hình chi tiết và quay về [MH01 - Màn hình Danh sách hồ sơ chờ nhập liệu](#432182-mh01---man-hinh-danh-sach-ho-so-cho-nhap-lieu), giữ nguyên điều kiện tìm kiếm trước đó. |
 
 
+<a id="432184-mh03---man-hinh-nhap-lieu-ho-so-giay-yeu-cau-cung-cap-ban-sao"></a>
 #### 4.3.2.18.4. MH03 - Màn hình Nhập liệu hồ sơ giấy Yêu cầu cung cấp bản sao
 
 ##### 4.3.2.18.4.1. Màn hình
@@ -226,6 +229,7 @@
 
 #### 4.3.2.18.5. Popup Trình ký yêu cầu cung cấp bản sao
 
+<a id="4321851-mh03a---popup-trinh-ky-ban-sao-dien-tu"></a>
 ##### 4.3.2.18.5.1. MH03a - Popup Trình ký bản sao điện tử
 
 *a. Giao diện màn hình*
@@ -257,6 +261,7 @@
 | 4 | Hủy | Nút | Đóng popup, giữ nguyên trạng thái hồ sơ và dữ liệu đang thao tác tại màn hình MH03. |
 
 
+<a id="4321852-mh03b---popup-trinh-ky-ban-sao-giay"></a>
 ##### 4.3.2.18.5.2. MH03b - Popup Trình ký bản sao giấy
 
 *a. Giao diện màn hình*
@@ -284,6 +289,7 @@
 | 2 | Hủy | Nút | Đóng popup, giữ nguyên trạng thái hồ sơ và dữ liệu đang thao tác tại màn hình MH03. |
 
 
+<a id="432186-quy-tac-sinh-file-pdf-va-bang-anh-xa-ra-pdf-ban-sao-dien-tu-de-lanh-dao-ky-sao-dien-tu"></a>
 #### 4.3.2.18.6. Quy tắc sinh file PDF và Bảng Ánh xạ ra PDF Bản sao điện tử để Lãnh đạo ký sao điện tử
 
 *a. Cấu trúc file Bản sao điện tử văn bản chứng nhận đăng ký biện pháp bảo đảm*

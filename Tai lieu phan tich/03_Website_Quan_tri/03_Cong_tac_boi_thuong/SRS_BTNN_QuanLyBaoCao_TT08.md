@@ -94,7 +94,7 @@ flowchart TD
 | KPI 4: Chưa nộp / Quá hạn | Integer(10) | - | Theo dữ liệu | Control UI: KPI Card.<br>Chỉ đọc. Hiển thị số lượng đơn vị chưa nộp hoặc quá hạn (màu đỏ cảnh báo). Click để mở danh sách đôn đốc khẩn cấp. |
 | Thanh Tab lọc nhanh theo tiến độ | Enum(String) | - | `Tất cả đơn vị` | Control UI: Tab buttons bar.<br>Gồm:<br>+ Tất cả đơn vị<br>+ Đã nộp / Đã duyệt<br>+ Yêu cầu chỉnh lý<br>+ ⚠️ Chưa nộp báo cáo |
 | Khối cảnh báo hạn nộp & Nút Đôn đốc tất cả | Panel | Không | Ẩn | Control UI: Alert Box.<br>Hiển thị khi chọn tab `⚠️ Chưa nộp báo cáo`. Hiển thị nút `Đôn đốc tất cả` (icon `fa-paper-plane`). |
-| **III. Bộ lọc tìm kiếm kỳ báo cáo** | | | | |
+| **III. Bộ lọc tìm kiếm kỳ báo cáo** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Năm báo cáo | Enum(String(10)) | Không | Năm hiện tại | Control UI: Combobox.<br>Hiển thị 05 năm gần nhất. |
 | Loại kỳ báo cáo | Enum(String(100)) | Không | `Tất cả` | Control UI: Combobox.<br>Tham chiếu Danh mục Loại kỳ báo cáo [DM_44]. |
 | Đơn vị/Đầu mối | Enum(Tree) | Không | Theo phạm vi phân quyền | Control UI: Popup chọn cây đơn vị.<br>Tham chiếu Danh mục Cơ quan, Đơn vị giải quyết [DM_DON_VI]. Cho phép lọc theo đơn vị báo cáo thực tế hoặc đầu mối tổng hợp. |

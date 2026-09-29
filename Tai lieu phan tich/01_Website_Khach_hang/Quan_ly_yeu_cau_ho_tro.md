@@ -59,6 +59,7 @@
 
 ---
 
+<a id="41193-uc266mh01---man-hinh-tao-yeu-cau-ho-tro"></a>
 #### 4.1.19.3. UC266.MH01 - Màn hình Tạo yêu cầu hỗ trợ
 
 ##### 4.1.19.3.1. Màn hình
@@ -89,11 +90,12 @@
 | | | | - TH2 (Sai định dạng file đính kèm): Hệ thống kiểm tra nếu có tệp đính kèm tải lên không đúng định dạng.<br>\- Định dạng tệp tin đính kèm hợp lệ: `.pdf`, `.jpg`, `.jpeg`, `.png`.<br>\- Nếu phát hiện có tệp tin tải lên có đuôi mở rộng sai định dạng, hiển thị thông báo lỗi: *"Định dạng tệp tin [Tên tệp] không hợp lệ. Chỉ chấp nhận các định dạng .pdf, .jpg, .jpeg, .png."*.<br>\- Focus và highlight viền đỏ ô lỗi. Chặn không cho gửi. |
 | | | | - TH3 (Vượt quá dung lượng / số lượng / độ dài): Hệ thống kiểm tra ràng buộc về kích thước và số lượng dữ liệu đầu vào:<br>  \+ Tiêu đề vượt quá độ dài: Nếu độ dài ký tự nhập vào Tiêu đề > 200 ký tự, hiển thị thông báo lỗi: *"Tiêu đề không được vượt quá 200 ký tự."*<br>  \+ Nội dung vượt quá độ dài: Nếu độ dài ký tự nhập vào Nội dung > 2000 ký tự, hiển thị thông báo lỗi: *"Nội dung yêu cầu không được vượt quá 2000 ký tự."*<br>  \+ Vượt dung lượng tệp tin: Nếu có tệp đính kèm dung lượng > 20MB, hiển thị thông báo lỗi: *"Dung lượng tệp tin [Tên tệp] vượt quá 20MB. Vui lòng kiểm tra lại."*<br>  \+ Vượt quá số lượng tệp tin: Nếu số lượng tệp tải lên > 3 tệp, hiển thị thông báo lỗi: *"Hệ thống chỉ hỗ trợ đính kèm tối đa 3 tệp tin."*<br>  \+ Focus và highlight viền đỏ ô lỗi tương ứng. Chặn không cho gửi. |
 | | | | - TH4 (Trùng lặp yêu cầu): Hệ thống kiểm tra nếu phát hiện trong cơ sở dữ liệu đã có yêu cầu hỗ trợ của cùng một người dùng (NSD) có trạng thái "Chờ tiếp nhận" hoặc "Đang xử lý" và có cùng Tiêu đề trong ngày hiện tại.<br>\- Nếu trùng, hiển thị cảnh báo dưới trường Tiêu đề: *"Yêu cầu hỗ trợ với tiêu đề này đang được tiếp nhận xử lý. Vui lòng không gửi yêu cầu trùng lặp."*<br>\- Focus và highlight viền đỏ ô Tiêu đề. Chặn không cho gửi. |
-| | | | - TH Hợp lệ (Xử lý gửi thành công): Nếu tất cả thông tin hợp lệ, hệ thống thực hiện:<br>  \+ Lưu thông tin yêu cầu hỗ trợ vào Cơ sở dữ liệu ở trạng thái: **Chờ tiếp nhận**.<br>  \+ Tự động sinh **Mã yêu cầu hỗ trợ** mới theo quy tắc: `HT-[YYYYMMDD]-[TỰ_TĂNG_6_SỐ]`. Ví dụ: `HT-20260601-000049`.<br>  \+ Gửi email thông báo tự động xác nhận tiếp nhận yêu cầu hỗ trợ về địa chỉ email của người tạo yêu cầu theo [Mẫu Email Tiếp nhận yêu cầu hỗ trợ](../04_Danh_muc_va_Phu_luc.md#email-tiep-nhan-yc-ho-tro).<br>  \+ Chuyển hướng người dùng sang Màn hình Kết quả tiếp nhận yêu cầu hỗ trợ tại mục [4.1.19.4](#41194-uc266mh02---man-hinh-ket-qua-tiep-nhan-yeu-cau-ho-tro). |
+| | | | - TH Hợp lệ (Xử lý gửi thành công): Nếu tất cả thông tin hợp lệ, hệ thống thực hiện:<br>  \+ Lưu thông tin yêu cầu hỗ trợ vào Cơ sở dữ liệu ở trạng thái: **Chờ tiếp nhận**.<br>  \+ Tự động sinh **Mã yêu cầu hỗ trợ** mới theo quy tắc: `HT-[YYYYMMDD]-[TỰ_TĂNG_6_SỐ]`. Ví dụ: `HT-20260601-000049`.<br>  \+ Gửi email thông báo tự động xác nhận tiếp nhận yêu cầu hỗ trợ về địa chỉ email của người tạo yêu cầu theo [Mẫu Email Tiếp nhận yêu cầu hỗ trợ](../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#email-tiep-nhan-yc-ho-tro).<br>  \+ Chuyển hướng người dùng sang Màn hình Kết quả tiếp nhận yêu cầu hỗ trợ tại mục [4.1.19.4](#41194-uc266mh02---man-hinh-ket-qua-tiep-nhan-yeu-cau-ho-tro). |
 | 2 | HỦY | Nút bấm | - **Thao tác:** Người dùng bấm nút **[HỦY]**.<br>- **Xử lý:** Quay lại trang chủ hoặc danh sách giao dịch cũ, không lưu thông tin vừa nhập. |
 
 ---
 
+<a id="41194-uc266mh02---man-hinh-ket-qua-tiep-nhan-yeu-cau-ho-tro"></a>
 #### 4.1.19.4. UC266.MH02 - Màn hình Kết quả tiếp nhận yêu cầu hỗ trợ
 
 ##### 4.1.19.4.1. Màn hình
@@ -110,6 +112,7 @@
 
 ---
 
+<a id="41195-uc267mh02---man-hinh-xem-chi-tiet-yeu-cau-ho-tro"></a>
 #### 4.1.19.5. UC267.MH02 - Màn hình Xem chi tiết yêu cầu hỗ trợ
 
 ##### 4.1.19.5.1. Màn hình
