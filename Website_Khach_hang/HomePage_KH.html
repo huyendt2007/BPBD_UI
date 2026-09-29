@@ -16252,33 +16252,49 @@
             return 'other';
         }
 
+        // Dữ liệu giả lập tài sản bảo đảm của hồ sơ gốc: đúng tính chất từng Loại tài sản
         function getCopyAssetDetail(original, typeName, index) {
             const baseNum = formatRegNumForDisplay(original.regNum || '');
-            const suffix = baseNum.slice(-4) || `00${index + 1}`;
+            const digits = String(original.regNum || '').replace(/\D/g, '');
+            const suffix = (digits.slice(-4) || String(index + 1)).padStart(4, '0');
+            const guarantor = original.guarantor || 'Nguyễn Văn A';
+            const isSeafood = /thủy sản/i.test(guarantor);
             return {
-                vehicleName: original.assetVehicleName || (index % 2 === 0 ? 'Xe ô tô con 5 chỗ' : 'Xe máy chuyên dùng'),
-                brandColor: original.brandColor || (index % 2 === 0 ? 'Toyota Camry 2.5Q, màu đen' : 'Komatsu, màu vàng'),
-                frameNo: original.frameNo || `RLHXX${suffix}VN`,
-                engineNo: original.engineNo || `2AR-FE-${suffix}`,
-                plateNo: original.plateNo || (index % 2 === 0 ? '30H-888.99' : '29C-688.88'),
-                vehicleBrand: original.vehicleBrand || 'Tàu cá vỏ thép đánh bắt xa bờ',
-                ownerName: original.ownerName || original.guarantor || 'Nguyễn Văn A',
-                vehicleRegNo: original.vehicleRegNo || `ĐK-${suffix}-HP`,
-                vehicleIssuer: original.vehicleIssuer || 'Chi cục Thủy sản TP. Hải Phòng',
-                vehicleLevel: original.vehicleLevel || 'Cấp I',
-                rightName: original.rightName || 'Quyền đòi nợ phát sinh từ Hợp đồng cung cấp dịch vụ số 88/2026/HĐDV',
-                rightBasis: original.rightBasis || `Hợp đồng kinh tế số 88/2026/HĐDV ngày 15/05/2026 ký giữa ${original.guarantor || 'Nguyễn Văn A'} và bên liên quan`,
-                cropDescription: original.cropDescription || 'Cây hằng năm, công trình tạm theo mô tả tại hồ sơ gốc.',
+                // Số khung: phương tiện giao thông cơ giới đường bộ có số khung
+                vehicleName: original.assetVehicleName || 'Xe ô tô con 5 chỗ',
+                brandColor: original.brandColor || 'Toyota Camry 2.5Q, màu đen',
+                frameNo: original.frameNo || `RLGBF3FK7MN0${suffix}`,
+                engineNo: original.engineNo || `2AR-58${suffix}`,
+                plateNo: original.plateNo || `30H-${suffix.slice(0, 3)}.${suffix.slice(-2)}`,
+                // Phương tiện: tàu cá / phương tiện thủy nội địa / đường sắt
+                vehicleBrand: original.vehicleBrand || 'Tàu cá vỏ thép, máy chính Yanmar 6AYM-WET công suất 610CV',
+                ownerName: original.ownerName || guarantor,
+                vehicleRegNo: original.vehicleRegNo || `HP-9${suffix}-TS`,
+                vehicleIssuer: original.vehicleIssuer || 'Chi cục Thủy sản thành phố Hải Phòng',
+                vehicleLevel: original.vehicleLevel || 'Tàu cá nhóm I (chiều dài từ 24 m trở lên)',
+                // Quyền tài sản
+                rightName: original.rightName || 'Quyền đòi nợ trị giá 1.500.000.000 VNĐ',
+                rightBasis: original.rightBasis || `Phát sinh từ Hợp đồng cung cấp dịch vụ số 88/2026/HĐDV ngày 15/05/2026 giữa ${guarantor} và Công ty TNHH Dịch vụ Minh Phát`,
+                // Cây hằng năm, công trình tạm
+                cropDescription: original.cropDescription || 'Cây lúa vụ Đông Xuân 2026 trên diện tích 10 ha tại xã Vĩnh Hòa, tỉnh An Giang',
+                // Hàng hóa luân chuyển / Kho hàng
                 goodsKind: original.goodsKind || 'Kho hàng',
-                goodsValueName: original.goodsValueName || 'Lô linh kiện điện tử và thiết bị viễn thông công nghệ cao',
-                warehouseAddress: original.warehouseAddress || 'Kho K1, Lô 12 Khu công nghiệp Quang Minh, Thị trấn Quang Minh, Huyện Mê Linh, TP. Hà Nội, Việt Nam',
-                warehouseSign: original.warehouseSign || `Kho linh kiện FPT-K1`,
+                goodsValueName: original.goodsValueName || (isSeafood
+                    ? 'Cá tra phi lê đông lạnh xuất khẩu, khối lượng 120 tấn, trị giá 9.600.000.000 VNĐ'
+                    : 'Linh kiện điện tử và thiết bị viễn thông, trị giá 5.000.000.000 VNĐ'),
+                warehouseAddress: original.warehouseAddress || (isSeafood
+                    ? 'Kho lạnh số 2, Khu công nghiệp Trà Nóc, phường Trà Nóc, thành phố Cần Thơ, Việt Nam'
+                    : 'Kho K1, Lô 12 Khu công nghiệp Quang Minh, xã Quang Minh, thành phố Hà Nội, Việt Nam'),
+                warehouseSign: original.warehouseSign || (isSeafood ? 'KHO-TN-02' : 'KHO-QM-K1'),
+                // Chứng khoán đã đăng ký tập trung: Thời điểm đăng ký tại VSDC
                 vsdcHour: original.vsdcHour !== undefined ? String(original.vsdcHour).padStart(2, '0') : '09',
                 vsdcMinute: original.vsdcMinute !== undefined ? String(original.vsdcMinute).padStart(2, '0') : '30',
                 vsdcDay: original.vsdcDay !== undefined ? String(original.vsdcDay).padStart(2, '0') : '15',
                 vsdcMonth: original.vsdcMonth !== undefined ? String(original.vsdcMonth).padStart(2, '0') : '04',
                 vsdcYear: original.vsdcYear || '2026',
-                otherDescription: original.otherDescription || original.assetDescription || `${typeName} theo mô tả chi tiết tại hồ sơ gốc.`
+                // Các động sản khác
+                otherDescription: original.otherDescription || original.assetDescription || 'Hệ thống máy phát điện dự phòng Cummins 500 kVA, sản xuất năm 2024, lắp đặt tại trụ sở của bên bảo đảm',
+                regNo: baseNum
             };
         }
 
@@ -16364,13 +16380,13 @@
                 `;
             }
 
+            // Quyền tài sản: khung chữ gồm Tên quyền (in đậm) và Căn cứ phát sinh quyền
             if (kind === 'propertyRight') {
                 return `
                     ${titleHtml}
-                    ${renderCopyReadonlyGrid([
-                        { label: 'Tên quyền', value: detail.rightName },
-                        { label: 'Căn cứ phát sinh quyền', value: detail.rightBasis }
-                    ])}
+                    <div style="background:#F8FAFC; border:1px solid var(--border-color); border-radius:6px; padding:12px 14px; font-size:13.5px; line-height:1.6;">
+                        <b>${escapeHtml(detail.rightName)}</b><br>${escapeHtml(detail.rightBasis)}
+                    </div>
                 `;
             }
 
@@ -16457,10 +16473,6 @@
                 generalGridItems.push({ label: 'Ngày có hiệu lực của hợp đồng', value: original.contractDate });
             }
 
-            const registrantGridItems = [
-                { label: 'Họ và tên', value: original.registrantName || original.securedParty || 'Ngân hàng TMCP FPT' },
-                { label: 'Địa chỉ', value: original.registrantAddress || original.securedAddress || 'Số 17 Duy Tân, Phường Dịch Vọng Hậu, Quận Cầu Giấy, TP. Hà Nội, Việt Nam' }
-            ];
 
             const registrationGridItems = [
                 { label: 'Số đăng ký', value: item.regNum },
@@ -16486,29 +16498,20 @@
                 </div>
 
                 <div style="margin-bottom: 22px;">
-                    <h4 style="font-size: 14px; font-weight: 700; color: #1E3A8A; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                        <i class="fa-solid fa-circle-info" style="color: #3B82F6;"></i> I. Thông tin chung hồ sơ
-                    </h4>
                     ${renderCopyReadonlyGrid(generalGridItems)}
                 </div>
 
-                <div style="margin-bottom: 22px;">
-                    <h4 style="font-size: 14px; font-weight: 700; color: #1E3A8A; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                        <i class="fa-solid fa-user-pen" style="color: #3B82F6;"></i> II. Thông tin người đăng ký
-                    </h4>
-                    ${renderCopyReadonlyGrid(registrantGridItems)}
-                </div>
 
                 <div style="margin-bottom: 22px;">
                     <h4 style="font-size: 14px; font-weight: 700; color: #1E3A8A; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                        <i class="fa-solid fa-clock" style="color: #3B82F6;"></i> III. Thông tin đăng ký
+                        <i class="fa-solid fa-clock" style="color: #3B82F6;"></i> Thông tin đăng ký
                     </h4>
                     ${renderCopyReadonlyGrid(registrationGridItems)}
                 </div>
 
                 <div style="margin-bottom: 22px;">
                     <h4 style="font-size: 14px; font-weight: 700; color: #1E3A8A; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                        <i class="fa-solid fa-users" style="color: #3B82F6;"></i> IV. ${escapeHtml(guarantorTitle)}
+                        <i class="fa-solid fa-users" style="color: #3B82F6;"></i> ${escapeHtml(guarantorTitle)}
                     </h4>
                     <div class="table-responsive">
                         <table class="table">
@@ -16534,7 +16537,7 @@
 
                 <div style="margin-bottom: 22px;">
                     <h4 style="font-size: 14px; font-weight: 700; color: #1E3A8A; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                        <i class="fa-solid fa-building-columns" style="color: #3B82F6;"></i> V. ${escapeHtml(securedPartyTitle)}
+                        <i class="fa-solid fa-building-columns" style="color: #3B82F6;"></i> ${escapeHtml(securedPartyTitle)}
                     </h4>
                     <div class="table-responsive">
                         <table class="table">
@@ -16556,7 +16559,7 @@
 
                 <div style="margin-bottom: 22px;">
                     <h4 style="font-size: 14px; font-weight: 700; color: #1E3A8A; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                        <i class="fa-solid fa-boxes-stacked" style="color: #3B82F6;"></i> VI. ${escapeHtml(assetBlockTitle)}
+                        <i class="fa-solid fa-boxes-stacked" style="color: #3B82F6;"></i> ${escapeHtml(assetBlockTitle)}
                     </h4>
                     ${renderCopyAssetsByType(original)}
                 </div>

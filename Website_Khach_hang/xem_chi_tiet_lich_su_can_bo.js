@@ -2009,76 +2009,72 @@ document.addEventListener('DOMContentLoaded', function () {
             node.data.scale = "Bên bảo đảm sử dụng khoản vay cho tiêu dùng cá nhân";
             node.data.receivingAgency = "Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội";
 
-            // Bảng Loại tài sản giả lập đủ 7 loại tài sản
+            // Giả lập đủ 7 Loại tài sản, dữ liệu đúng tính chất từng loại:
+            // - Số khung: Tên phương tiện, Nhãn hiệu màu sơn, Số khung, Số máy, Biển số
+            // - Phương tiện (tàu cá, phương tiện thủy/đường sắt): Tên phương tiện nhãn hiệu, Chủ phương tiện, Số đăng ký, Cơ quan cấp giấy chứng nhận, Cấp phương tiện
+            // - Quyền tài sản: Tên quyền, Căn cứ phát sinh quyền
+            // - Hàng hóa luân chuyển/Kho hàng: loại, Giá trị/Tên loại hàng hóa, Địa chỉ kho hàng, Số hiệu kho hàng
+            // - Chứng khoán đã đăng ký tập trung: mô tả + Thời điểm đăng ký tại VSDC
+            // - Cây hằng năm, công trình tạm / Các động sản khác: Mô tả
             const baseAssets = [
                 {
                     id: 1,
-                    typeName: "Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)",
+                    typeName: "Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)",
                     name: "Xe ô tô con 5 chỗ",
-                    brandColor: "Toyota Camry 2.5Q, Màu đen",
-                    frameNo: "CAMRY-88992211",
-                    engineNo: "ENG-2AR-998811",
+                    brandColor: "Toyota Camry 2.5Q, màu đen",
+                    frameNo: "RLGBF3FK7MN012345",
+                    engineNo: "2AR-5872134",
                     plateNo: "30H-123.45",
                     status: "Đang bảo đảm"
                 },
                 {
                     id: 2,
-                    typeName: "Tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt",
-                    name: "Tàu cá vỏ gỗ Yamaha 200HP",
-                    brandColor: "Công suất 150CV, Trắng xanh",
-                    frameNo: "TC-9988-VN",
-                    engineNo: "ENG-YAM-55331",
-                    plateNo: "QB-90827-TS",
+                    typeName: "Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt",
+                    name: "Tàu cá vỏ gỗ QB-90827-TS",
+                    brandColor: "Máy chính Yanmar 6HA2M-WDT, công suất 150CV",
+                    ownerName: "Nguyễn Văn Nam",
+                    registrationNo: "QB-90827-TS",
+                    certificateAgency: "Chi cục Thủy sản tỉnh Quảng Bình",
+                    vehicleLevel: "Tàu cá nhóm II (chiều dài từ 12 m đến dưới 15 m)",
                     status: "Đang bảo đảm"
                 },
                 {
                     id: 3,
                     typeName: "Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản",
                     name: "Quyền đòi nợ trị giá 2.000.000.000 VNĐ",
-                    brandColor: "Phát sinh từ Hợp đồng mua bán số 01/2026/HĐMB đối với Công ty ABC",
-                    frameNo: "QTD-2026-001",
-                    engineNo: "-",
-                    plateNo: "-",
+                    brandColor: "Phát sinh từ Hợp đồng mua bán hàng hóa số 01/2026/HĐMB ngày 15/01/2026 giữa bên bảo đảm và Công ty TNHH Thương mại ABC",
                     status: "Đang bảo đảm"
                 },
                 {
                     id: 4,
                     typeName: "Cây hằng năm, công trình tạm",
-                    name: "Vườn cây cao su đang thu hoạch",
-                    brandColor: "Diện tích 5ha tại Nông trường Bình Phước",
-                    frameNo: "VCCS-2026-88",
-                    engineNo: "-",
-                    plateNo: "-",
+                    name: "Cây mía đường niên vụ 2026 - 2027",
+                    brandColor: "Diện tích 5 ha tại xã Tân Châu, tỉnh Tây Ninh",
                     status: "Đang bảo đảm"
                 },
                 {
                     id: 5,
                     typeName: "Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ",
                     name: "Kho hàng hạt tiêu xuất khẩu",
-                    brandColor: "Khối lượng 50 tấn tại Cảng Hải Phòng",
-                    frameNo: "HT-50T-HP",
-                    engineNo: "-",
-                    plateNo: "-",
+                    goodsKind: "Kho hàng",
+                    brandColor: "Hạt tiêu đen xuất khẩu, khối lượng 50 tấn, trị giá 6.500.000.000 VNĐ",
+                    warehouseAddress: "Kho số 3, Cảng Đình Vũ, phường Đông Hải 2, thành phố Hải Phòng",
+                    warehouseNo: "KHO-DV-03",
                     status: "Đang bảo đảm"
                 },
                 {
                     id: 6,
                     typeName: "Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung",
-                    name: "50.000 cổ phiếu tự do chuyển nhượng",
-                    brandColor: "Mã HBC của Công ty Cổ phần Xây dựng Hòa Bình",
-                    frameNo: "CP-HBC-50K",
-                    engineNo: "-",
-                    plateNo: "-",
+                    name: "50.000 cổ phiếu mã HBC",
+                    brandColor: "Cổ phiếu phổ thông của Công ty Cổ phần Tập đoàn Xây dựng Hòa Bình",
+                    vsdcTime: { hour: "09", minute: "30", day: "15", month: "03", year: "2026" },
                     status: "Đang bảo đảm"
                 },
                 {
                     id: 7,
                     typeName: "Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)",
-                    name: "Dây chuyền sản xuất sợi cotton Rieter",
-                    brandColor: "Nhập khẩu Thụy Sĩ mới 100%, Model 2025",
-                    frameNo: "DC-RIETER-09",
-                    engineNo: "ENG-RIET-01",
-                    plateNo: "-",
+                    name: "Dây chuyền kéo sợi cotton Rieter G36",
+                    brandColor: "Máy móc thiết bị nhập khẩu từ Thụy Sĩ, sản xuất năm 2025, đặt tại nhà máy thuộc KCN Phố Nối A, tỉnh Hưng Yên",
                     status: "Đang bảo đảm"
                 }
             ];
@@ -2136,8 +2132,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 baseAssets.forEach(a => a.status = "Đã giải chấp");
             } else if (node.title.toLowerCase().includes("thay đổi") || node.label.toLowerCase().includes("thay đổi") || node.version > 1) {
                 baseAssets[3].status = "Sửa thông tin";
-                baseAssets[3].prevName = "Vườn cây cao su non";
-                baseAssets[3].prevBrandColor = "Diện tích 4ha tại Nông trường Bình Phước";
+                baseAssets[3].prevName = "Cây mía đường niên vụ 2025 - 2026";
+                baseAssets[3].prevBrandColor = "Diện tích 4 ha tại xã Tân Châu, tỉnh Tây Ninh";
                 baseAssets[4].status = "Bổ sung mới";
             }
 
@@ -2188,7 +2184,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const asset = data.assets?.[0];
                 if (!asset) return;
                 asset.prevBrandColor = prevData.assets?.[0]?.brandColor || asset.brandColor;
-                asset.brandColor = `Toyota Camry 2.5Q, màu xanh đen, cập nhật lần ${step}`;
+                asset.brandColor = `Toyota Camry 2.5Q, ${['màu xanh đen', 'màu trắng ngọc trai', 'màu bạc', 'màu đỏ'][step % 4]}`;
                 asset.status = 'Sửa thông tin';
             },
             (data, step) => {
@@ -2196,11 +2192,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 data.assets.push({
                     id: 100 + step,
                     typeName: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)',
-                    name: `Máy móc thiết bị bổ sung lần ${step}`,
-                    brandColor: `Model LS-${String(step).padStart(2, '0')}, tình trạng mới`,
-                    frameNo: `MMTB-LS-${String(step).padStart(2, '0')}`,
-                    engineNo: '-',
-                    plateNo: '-',
+                    name: `Máy dệt kim tròn Pailung (bổ sung lần ${step})`,
+                    brandColor: 'Máy móc thiết bị sản xuất năm 2024, đặt tại nhà máy thuộc KCN Phố Nối A, tỉnh Hưng Yên',
                     status: 'Bổ sung mới'
                 });
             },
@@ -2988,14 +2981,16 @@ document.addEventListener('DOMContentLoaded', function () {
             return '';
         };
 
+        // Xác định Loại tài sản: kiểm tra Hàng hóa luân chuyển/Kho hàng trước, vì tên loại này có chứa cụm
+        // "…không phải là phương tiện giao thông cơ giới đường bộ" (tránh xếp nhầm kho hàng vào bảng Số khung)
         const getAssetBucket = (asset) => {
             const type = (asset.typeName || '').toLowerCase();
-            if (type.includes('có số khung') || type.includes('giao thông cơ giới đường bộ')) return 'road';
-            if (type.includes('tàu cá') || type.includes('đường thủy') || type.includes('đường sắt')) return 'vehicle';
-            if (type.includes('quyền tài sản')) return 'rights';
-            if (type.includes('cây hằng năm') || type.includes('công trình tạm')) return 'annual';
             if (type.includes('hàng hóa luân chuyển') || type.includes('kho hàng')) return 'inventory';
             if (type.includes('chứng khoán đã đăng ký tập trung')) return 'securities';
+            if (type.includes('quyền tài sản')) return 'rights';
+            if (type.includes('cây hằng năm') || type.includes('công trình tạm')) return 'annual';
+            if (type.includes('tàu cá') || type.includes('đường thủy') || type.includes('đường sắt')) return 'vehicle';
+            if (type.includes('có số khung') || type.includes('giao thông cơ giới đường bộ')) return 'road';
             return 'other';
         };
 
@@ -3047,7 +3042,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         addListSummaryRow('Tài sản bảo đảm', 'Tên tài sản', 'Chỉnh sửa', asset.prevName, asset.name);
                     }
                     if (asset.prevBrandColor && asset.prevBrandColor !== asset.brandColor) {
-                        addListSummaryRow('Tài sản bảo đảm', 'Nhãn hiệu, màu sơn', 'Chỉnh sửa', asset.prevBrandColor, asset.brandColor);
+                        const detailLabel = { road: 'Nhãn hiệu, màu sơn', vehicle: 'Tên phương tiện, nhãn hiệu', rights: 'Căn cứ phát sinh quyền', inventory: 'Giá trị hàng hóa/Tên, loại hàng hóa' }[getAssetBucket(asset)] || 'Mô tả';
+                        addListSummaryRow('Tài sản bảo đảm', detailLabel, 'Chỉnh sửa', asset.prevBrandColor, asset.brandColor);
                     }
                     if (asset.prevFrameNo && asset.prevFrameNo !== asset.frameNo) {
                         addListSummaryRow('Tài sản bảo đảm', 'Số khung', 'Chỉnh sửa', asset.prevFrameNo, asset.frameNo);
@@ -3170,7 +3166,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <td>${htmlEscape(asset.name)}<br><span style="color: var(--text-muted);">${htmlEscape(asset.brandColor)}</span> ${assetStatusBadge(asset)}</td>
                                 <td>${htmlEscape(asset.ownerName || currData.securingParties?.[0]?.name || '-')}</td>
                                 <td>${htmlEscape(asset.registrationNo || asset.plateNo || '-')}</td>
-                                <td>${htmlEscape(asset.certificateAgency || 'Cục Đăng kiểm Việt Nam')}</td>
+                                <td>${htmlEscape(asset.certificateAgency || '-')}</td>
                                 <td>${htmlEscape(asset.vehicleLevel || '-')}</td>
                             </tr>
                         `).join('')}
@@ -3196,21 +3192,53 @@ document.addEventListener('DOMContentLoaded', function () {
             `;
         };
 
+        // Quyền tài sản: khung chữ gồm Tên quyền (in đậm) và Căn cứ phát sinh quyền
+        // Cây hằng năm, công trình tạm / Các động sản khác: khung chữ Mô tả
         const renderTextAssets = (items) => items.map(asset => `
             <div class="ucps-readonly-text" data-status="${htmlEscape(asset.status)}">
                 <strong>${renderChangedText(asset.name, asset.status === 'Bổ sung xử lý' ? null : asset.prevName)}</strong> ${assetStatusBadge(asset)}
                 <br>${renderChangedText(asset.brandColor, asset.status === 'Bổ sung xử lý' ? null : asset.prevBrandColor)}
-                ${asset.frameNo && asset.frameNo !== '-' ? `<br>Số định danh: ${renderChangedText(asset.frameNo, asset.status === 'Bổ sung xử lý' ? null : asset.prevFrameNo)}` : ''}
             </div>
         `).join('<div style="height: 10px;"></div>') + processingInfoHtml(items);
+
+        // Hàng hóa luân chuyển / Kho hàng: Hàng hóa luân chuyển/Kho hàng, Giá trị hàng hóa/Tên loại hàng hóa, Địa chỉ kho hàng, Số hiệu kho hàng
+        const renderInventoryAssets = (items) => items.map(asset => `
+            <div class="ucps-readonly-text" data-status="${htmlEscape(asset.status)}">
+                <strong>${renderChangedText(asset.name, asset.status === 'Bổ sung xử lý' ? null : asset.prevName)}</strong> ${assetStatusBadge(asset)}
+                <div class="info-grid-3" style="margin-top: 8px;">
+                    <div class="info-field" style="padding: 0;"><span class="field-label">Hàng hóa luân chuyển / Kho hàng</span><span class="field-value">${htmlEscape(asset.goodsKind || 'Kho hàng')}</span></div>
+                    <div class="info-field" style="padding: 0; grid-column: span 2;"><span class="field-label">Giá trị hàng hóa/Tên, loại hàng hóa</span><span class="field-value">${renderChangedText(asset.brandColor, asset.status === 'Bổ sung xử lý' ? null : asset.prevBrandColor)}</span></div>
+                    ${(asset.goodsKind || 'Kho hàng') === 'Kho hàng' ? `
+                        <div class="info-field" style="padding: 0; grid-column: span 2;"><span class="field-label">Địa chỉ kho hàng</span><span class="field-value">${htmlEscape(asset.warehouseAddress || '-')}</span></div>
+                        <div class="info-field" style="padding: 0;"><span class="field-label">Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng</span><span class="field-value">${htmlEscape(asset.warehouseNo || '-')}</span></div>` : ''}
+                </div>
+            </div>
+        `).join('<div style="height: 10px;"></div>') + processingInfoHtml(items);
+
+        // Chứng khoán đã đăng ký tập trung: mô tả + Thời điểm đăng ký tại VSDC (Giờ, Phút, Ngày, Tháng, Năm)
+        const renderSecuritiesAssets = (items) => items.map(asset => {
+            const t = asset.vsdcTime || {};
+            return `
+            <div class="ucps-readonly-text" data-status="${htmlEscape(asset.status)}">
+                <strong>${renderChangedText(asset.name, asset.status === 'Bổ sung xử lý' ? null : asset.prevName)}</strong> ${assetStatusBadge(asset)}
+                <br>${renderChangedText(asset.brandColor, asset.status === 'Bổ sung xử lý' ? null : asset.prevBrandColor)}
+            </div>
+            <div style="font-weight: 700; color: var(--primary-color); margin: 12px 0 8px;">Thời điểm đăng ký biện pháp bảo đảm bằng chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam</div>
+            <div style="overflow-x: auto;">
+                <table class="grid-view-table">
+                    <thead><tr><th>GIỜ</th><th>PHÚT</th><th>NGÀY</th><th>THÁNG</th><th>NĂM</th></tr></thead>
+                    <tbody><tr><td>${htmlEscape(t.hour || '-')}</td><td>${htmlEscape(t.minute || '-')}</td><td>${htmlEscape(t.day || '-')}</td><td>${htmlEscape(t.month || '-')}</td><td>${htmlEscape(t.year || '-')}</td></tr></tbody>
+                </table>
+            </div>`;
+        }).join('<div style="height: 10px;"></div>') + processingInfoHtml(items);
 
         const assetHtml = [];
         if (assetGroups.road.items.length) assetHtml.push(blockHtml('road', renderRoadTable(assetGroups.road.items)));
         if (assetGroups.vehicle.items.length) assetHtml.push(blockHtml('vehicle', renderVehicleTable(assetGroups.vehicle.items)));
         if (assetGroups.rights.items.length) assetHtml.push(blockHtml('rights', renderTextAssets(assetGroups.rights.items)));
         if (assetGroups.annual.items.length) assetHtml.push(blockHtml('annual', renderTextAssets(assetGroups.annual.items)));
-        if (assetGroups.inventory.items.length) assetHtml.push(blockHtml('inventory', renderTextAssets(assetGroups.inventory.items)));
-        if (assetGroups.securities.items.length) assetHtml.push(blockHtml('securities', renderTextAssets(assetGroups.securities.items)));
+        if (assetGroups.inventory.items.length) assetHtml.push(blockHtml('inventory', renderInventoryAssets(assetGroups.inventory.items)));
+        if (assetGroups.securities.items.length) assetHtml.push(blockHtml('securities', renderSecuritiesAssets(assetGroups.securities.items)));
         if (assetGroups.other.items.length) assetHtml.push(blockHtml('other', renderTextAssets(assetGroups.other.items)));
 
         if (assetTypeSections) {

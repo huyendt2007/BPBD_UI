@@ -765,6 +765,52 @@
             border-right: 1.5px solid #FDE68A !important;
         }
 
+        /* Asset Group Review Layout */
+        .ucps-review-asset-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .ucps-review-asset-block {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            background: #fff;
+            overflow: visible;
+        }
+
+        .ucps-review-asset-title {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 13px 16px;
+            background: #F8FAFC;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 700;
+            color: var(--primary-color);
+            line-height: 1.45;
+        }
+
+        .ucps-review-asset-body {
+            padding: 14px 16px 16px;
+        }
+
+        .ucps-readonly-text {
+            border: 1px solid #D7E0EA;
+            border-radius: var(--border-radius-md);
+            background: #F8FAFC;
+            padding: 12px 14px;
+            color: var(--text-main);
+            line-height: 1.55;
+            white-space: normal;
+            overflow: visible;
+        }
+
+        .ucps-asset-type-hidden {
+            display: none !important;
+        }
+
         /* Collapsible Section Placeholder when hidden */
         .section-empty-placeholder {
             display: none;
@@ -1323,23 +1369,8 @@
                     <h3 class="detail-section-title">
                         <i class="fa-solid fa-car-rear"></i> <label>Danh sách tài sản</label>
                     </h3>
-                    <div style="overflow-x: auto;">
-                        <table class="grid-view-table" id="assetsTable">
-                            <thead>
-                                <tr>
-                                    <th><label>STT</label></th>
-                                    <th><label>Loại tài sản</label></th>
-                                    <th><label>TÊN PHƯƠNG TIỆN / TÊN TÀI SẢN</label></th>
-                                    <th><label>NHÃN HIỆU, MÀU SƠN / MÔ TẢ CHI TIẾT</label></th>
-                                    <th><label>SỐ KHUNG / SỐ ĐỊNH DANH</label></th>
-                                    <th><label>SỐ MÁY / BIỂN SỐ</label></th>
-                                    <th><label>TRẠNG THÁI BIẾN ĐỘNG</label></th>
-                                </tr>
-                            </thead>
-                            <tbody id="assetsTableBody">
-                                <!-- Dynamic rows injected here -->
-                            </tbody>
-                        </table>
+                    <div class="ucps-review-asset-list" id="assetTypeSections">
+                        <!-- Dynamic categorized asset blocks injected here -->
                     </div>
                     <div class="section-empty-placeholder" id="assetsEmpty">
                         Không có biến động nào về danh mục tài sản bảo đảm.

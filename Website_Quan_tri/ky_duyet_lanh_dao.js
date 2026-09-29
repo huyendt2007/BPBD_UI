@@ -1022,12 +1022,12 @@
         showServiceView(`
             <div class="card-section">
                 <div class="section-title"><span><i class="fa-solid fa-copy"></i> Xem chi tiết hồ sơ yêu cầu cung cấp bản sao: ${esc(r.id)}</span></div>
-                <h3 class="section-title" style="font-size:15px">I. Thông tin yêu cầu cung cấp bản sao</h3>
+                <h3 class="section-title" style="font-size:15px">Thông tin yêu cầu cung cấp bản sao</h3>
                 <div class="info-grid">${kvHtml('Mã hồ sơ', `<b>${esc(r.id)}</b>`)}${kvHtml('Người yêu cầu', esc(r.requester))}${kvHtml('Số đăng ký', `<b>${esc(r.registrationNo || '-')}</b>`)}${kvHtml('Loại cung cấp bản sao', `<span class="badge ${paper ? 'badge-muted' : 'badge-info'}">${esc(r.copyType)}</span>`)}${paper ? kvHtml('Số lượng bản sao', copyQty(r)) : ''}</div>
                 ${returnHistoryBlock(r)}
-                <h3 class="section-title" style="font-size:15px;margin-top:18px">IV. Cấu trúc chi tiết danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng</h3>
+                <h3 class="section-title" style="font-size:15px;margin-top:18px">Kết quả tra cứu</h3>
                 <div>${window.BsPopups ? BsPopups.renderStructure(r.registrationNo) : ''}</div>
-                ${paper ? '' : `<h3 class="section-title" style="font-size:15px;margin-top:18px">V. File bản sao điện tử chờ ký</h3><div class="info-grid">${kvHtml('File bản sao điện tử', copyFile(r) ? fileLink(copyFile(r)) : '-')}</div>`}
+                ${paper ? '' : `<h3 class="section-title" style="font-size:15px;margin-top:18px">File bản sao điện tử chờ ký</h3><div class="info-grid">${kvHtml('File bản sao điện tử', copyFile(r) ? fileLink(copyFile(r)) : '-')}</div>`}
             </div>
             ${stickyBar(`<button class="btn btn-outline-secondary" onclick="LeaderUI.closeDetail()">Đóng</button>
                 ${pending && direct ? `<button class="btn btn-outline-primary" onclick="LeaderUI.copyReturn('${r.id}')"><i class="fa-solid fa-reply"></i> Trả lại</button>

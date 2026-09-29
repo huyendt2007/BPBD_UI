@@ -2131,54 +2131,114 @@ function renderTabContentsOnly() {
 
         container.innerHTML = `
             <div class="card-section" style="box-shadow: none; border: none; padding: 0; display: ${hideAssetTable ? 'none' : 'block'};">
-                <h4 style="color: var(--primary-color); margin-top: 0;">Bảng danh sách tài sản bảo đảm</h4>
-                <table class="table" style="${styleStrike}">
-                    <thead>
-                        <tr>
-                            <th style="width: 50px;">STT</th>
-                            <th>Loại tài sản</th>
-                            <th>Số máy / Số định danh</th>
-                            <th>Số khung / Số đăng ký</th>
-                            <th>Mô tả chi tiết tài sản</th>
-                            <th style="width: 180px;">Trạng thái tài sản</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="${isStrike ? 'row-removed' : (isDisposal ? 'row-modified' : (isCancelDisposal ? 'row-added' : ''))}">
-                            <td>1</td>
-                            <td>Phương tiện giao thông</td>
-                            <td>M-2918201</td>
-                            <td><b>K-8472910398</b></td>
-                            <td>Xe ô tô Toyota Camry màu sơn Đen, sản xuất năm 2024.</td>
-                            <td>
-                                ${isDisposal ? '<span class="badge badge-danger">Yêu cầu xử lý</span>' : 
-                                  isCancelDisposal ? '<span class="badge badge-success">Khôi phục bình thường</span>' : 
-                                  isStrike ? '<span class="badge badge-danger">Giải chấp</span>' :
-                                  '<span class="badge badge-muted">Đang bảo đảm</span>'}
-                            </td>
-                        </tr>
-                        <tr class="${isStrike ? 'row-removed' : ''}">
-                            <td>2</td>
-                            <td>Phương tiện giao thông</td>
-                            <td>M-9918274</td>
-                            <td><b>K-2819201928</b></td>
-                            <td>Xe máy Honda SH màu sơn Trắng, sản xuất năm 2025.</td>
-                            <td>
-                                <span class="badge badge-muted">${isStrike ? 'Giải chấp' : 'Đang bảo đảm'}</span>
-                            </td>
-                        </tr>
-                        ${isModifiedAsset ? `
-                        <tr class="row-added">
-                            <td>3</td>
-                            <td>Phương tiện giao thông</td>
-                            <td>M-2819201</td>
-                            <td><b>K-8472910901</b></td>
-                            <td>Xe ô tô Toyota Vios màu sơn Bạc, sản xuất năm 2025.</td>
-                            <td><span class="badge badge-success">Bổ sung mới</span></td>
-                        </tr>
-                        ` : ''}
-                    </tbody>
-                </table>
+                <h4 style="color: var(--primary-color); margin-top: 0; margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-car"></i> <span>Tài sản bảo đảm</span>
+                </h4>
+
+                <div class="ucps-review-asset-list">
+                    <!-- KHỐI 1: Phương tiện giao thông cơ giới đường bộ có số khung -->
+                    <div class="ucps-review-asset-block">
+                        <div class="ucps-review-asset-title">
+                            Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)
+                        </div>
+                        <div class="ucps-review-asset-body">
+                            <div style="font-weight: 700; color: var(--primary-color); margin-bottom: 10px;">Số khung</div>
+                            <div style="overflow-x: auto;">
+                                <table class="table" style="margin-bottom: 0; ${styleStrike}">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 56px; text-align: center;">STT</th>
+                                            <th>TÊN PHƯƠNG TIỆN</th>
+                                            <th>NHÃN HIỆU, MÀU SƠN</th>
+                                            <th>SỐ KHUNG</th>
+                                            <th>SỐ MÁY</th>
+                                            <th>BIỂN SỐ</th>
+                                            ${(isModifiedAsset || isDisposal || isCancelDisposal || isStrike) ? '<th style="width: 150px; text-align: center;">TRẠNG THÁI</th>' : ''}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="${isStrike ? 'row-removed' : (isDisposal ? 'row-modified' : (isCancelDisposal ? 'row-added' : ''))}">
+                                            <td style="text-align: center;">1</td>
+                                            <td>Xe ô tô con 5 chỗ</td>
+                                            <td>Toyota Camry 2.5Q, màu bạc</td>
+                                            <td><code>RLGBF3FK7MN012345</code></td>
+                                            <td><code>2AR-5872134</code></td>
+                                            <td><code>30H-123.45</code></td>
+                                            ${(isModifiedAsset || isDisposal || isCancelDisposal || isStrike) ? `
+                                            <td style="text-align: center;">
+                                                ${isDisposal ? '<span class="badge badge-danger">Yêu cầu xử lý</span>' : 
+                                                  isCancelDisposal ? '<span class="badge badge-success">Khôi phục bình thường</span>' : 
+                                                  isStrike ? '<span class="badge badge-danger">Giải chấp</span>' :
+                                                  '<span class="badge badge-muted">Đang bảo đảm</span>'}
+                                            </td>` : ''}
+                                        </tr>
+                                        ${isModifiedAsset ? `
+                                        <tr class="row-added">
+                                            <td style="text-align: center;">2</td>
+                                            <td>Xe ô tô Toyota Vios</td>
+                                            <td>Toyota Vios 1.5G, màu bạc</td>
+                                            <td><code>RLGBF3FK7MN012901</code></td>
+                                            <td><code>2AR-5872901</code></td>
+                                            <td><code>30H-999.88</code></td>
+                                            <td style="text-align: center;"><span class="badge badge-success">Bổ sung mới</span></td>
+                                        </tr>
+                                        ` : ''}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KHỐI 2: Tàu cá; phương tiện giao thông đường thủy nội địa; đường sắt -->
+                    <div class="ucps-review-asset-block">
+                        <div class="ucps-review-asset-title">
+                            Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt, đường thủy, đường sắt
+                        </div>
+                        <div class="ucps-review-asset-body">
+                            <div style="font-weight: 700; color: var(--primary-color); margin-bottom: 10px;">Phương tiện</div>
+                            <div style="overflow-x: auto;">
+                                <table class="table" style="margin-bottom: 0; ${styleStrike}">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 56px; text-align: center;">STT</th>
+                                            <th>TÊN PHƯƠNG TIỆN, NHÃN HIỆU</th>
+                                            <th>TÊN/HỌ TÊN CHỦ PHƯƠNG TIỆN/CHỦ SỞ HỮU</th>
+                                            <th>SỐ ĐĂNG KÝ</th>
+                                            <th>CƠ QUAN CẤP GIẤY CHỨNG NHẬN</th>
+                                            <th>CẤP PHƯƠNG TIỆN</th>
+                                            ${(isModifiedAsset || isDisposal || isCancelDisposal || isStrike) ? '<th style="width: 150px; text-align: center;">TRẠNG THÁI</th>' : ''}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="${isStrike ? 'row-removed' : ''}">
+                                            <td style="text-align: center;">1</td>
+                                            <td>Tàu cá vỏ gỗ QB-90827-TS<br><span style="color: var(--text-muted); font-size: 12px;">Máy chính Yanmar 6HA2M-WDT, công suất 150CV</span></td>
+                                            <td>Nguyễn Văn Nam</td>
+                                            <td><code>QB-90827-TS</code></td>
+                                            <td>Chi cục Thủy sản tỉnh Quảng Bình</td>
+                                            <td>Tàu cá nhóm II (chiều dài từ 12 m đến dưới 15 m)</td>
+                                            ${(isModifiedAsset || isDisposal || isCancelDisposal || isStrike) ? `
+                                            <td style="text-align: center;"><span class="badge badge-muted">${isStrike ? 'Giải chấp' : 'Đang bảo đảm'}</span></td>` : ''}
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KHỐI 3: Quyền tài sản -->
+                    <div class="ucps-review-asset-block">
+                        <div class="ucps-review-asset-title">
+                            Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản
+                        </div>
+                        <div class="ucps-review-asset-body">
+                            <div class="ucps-readonly-text" style="${styleStrike}">
+                                <div style="font-weight: 700; color: var(--text-main); margin-bottom: 4px;">Quyền đòi nợ trị giá 3,0 tỷ VNĐ</div>
+                                <div style="color: var(--text-muted);">Phát sinh từ Hợp đồng mua bán hàng hóa số 01/2026/HĐMB ngày 15/01/2026 giữa bên bảo đảm và Công ty TNHH Thương mại ABC</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             ${hideAssetTable ? `<div style="text-align: center; color: var(--text-muted); padding: 30px;"><i>Không có biến động tài sản ở phiên bản này.</i></div>` : ''}
         `;

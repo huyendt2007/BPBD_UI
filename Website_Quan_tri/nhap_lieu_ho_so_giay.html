@@ -9350,14 +9350,13 @@ function renderBusinessForm() {
                     resultDetailHtml = getCcttResultRecords().map((r, i, all) => `
                         <div style="margin:10px 0 0 8px;font-size:13px;line-height:1.55">
                             <div><b>Hồ sơ ${i + 1}: Đăng ký giao dịch bảo đảm / Hợp đồng - ${e(r.regNo)} (${e(r.caseName)})</b></div>
-                            ${sec('I. Danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng')}
                             ${line('Loại hình giao dịch', r.transactionType)}${line('Loại biện pháp', r.measure)}${line('Loại hợp đồng', r.contractType)}
                             <div>- Trường hợp đăng ký: <b>${e(r.caseName)}</b></div>${line('Trạng thái', r.status)}${line('Số hợp đồng', r.contractNo)}${line('Ngày có hiệu lực của hợp đồng', r.contractDate)}
-                            ${sec('II. Thông tin người đăng ký')}${line('Họ và tên', r.registrant.name)}${line('Địa chỉ', r.registrant.address)}
-                            ${sec('III. Thông tin đăng ký')}${line('Số đăng ký', r.regNo)}${line('Thời điểm đăng ký', r.registeredAt)}${line('Thời điểm có hiệu lực', r.effectiveAt)}
-                            ${sec('IV. Bên bảo đảm')}${r.grantors.map((g, k) => `<div>${k + 1}. ${e(g.name)} - ${e(g.subjectType)} - ${e(g.idNo)} - Địa chỉ: ${e(g.address)}</div>`).join('')}
-                            ${sec('V. Bên nhận bảo đảm')}${r.securedParties.map((s, k) => `<div>${k + 1}. ${e(s.name)} - Địa chỉ: ${e(s.address)}</div>`).join('')}
-                            ${sec('VI. Tài sản bảo đảm')}${r.assets.map((a, k) => `<div>${k + 1}. ${e(a.assetType)}: ${e(a.description || '')}${a.rightName ? `; Tên quyền: ${e(a.rightName)}` : ''}${a.rightBasis ? `; Căn cứ phát sinh quyền: ${e(a.rightBasis)}` : ''}</div>`).join('')}
+                
+                            ${sec('Thông tin đăng ký')}${line('Số đăng ký', r.regNo)}${line('Thời điểm đăng ký', r.registeredAt)}${line('Thời điểm có hiệu lực', r.effectiveAt)}
+                            ${sec('Bên bảo đảm')}${r.grantors.map((g, k) => `<div>${k + 1}. ${e(g.name)} - ${e(g.subjectType)} - ${e(g.idNo)} - Địa chỉ: ${e(g.address)}</div>`).join('')}
+                            ${sec('Bên nhận bảo đảm')}${r.securedParties.map((s, k) => `<div>${k + 1}. ${e(s.name)} - Địa chỉ: ${e(s.address)}</div>`).join('')}
+                            ${sec('Tài sản bảo đảm')}${r.assets.map((a, k) => `<div>${k + 1}. ${e(a.assetType)}: ${e(a.description || '')}${a.rightName ? `; Tên quyền: ${e(a.rightName)}` : ''}${a.rightBasis ? `; Căn cứ phát sinh quyền: ${e(a.rightBasis)}` : ''}</div>`).join('')}
                         </div>${i < all.length - 1 ? '<hr style="border-style:dashed;margin:10px 0">' : ''}`).join('');
                 } else {
                     resultDetailHtml = `
@@ -10910,15 +10909,26 @@ function openRegistrationSignModal() {
                 securedParties: [{ name: 'Ngân hàng TMCP Ngoại thương Việt Nam - Chi nhánh Sở Giao Dịch', idNo: 'MST 0100112437-001', address: 'Số 11 Láng Hạ, Phường Thành Công, TP Hà Nội, Việt Nam' }],
                 assets: [
                     {
-                        assetType: 'Phương tiện giao thông',
-                        description: 'Xe ô tô con 05 chỗ ngồi',
-                        frames: [{ vehicleName: 'Xe ô tô con', brandColor: 'Toyota Camry, màu đen', frameNo: 'RTY7862001', engineNo: '2AR889102', plateNo: '30A-998.88' }]
+                        type: 'road',
+                        groupTitle: 'Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+                        subTitle: 'Số khung',
+                        items: [
+                            { vehicleName: 'Xe ô tô con 5 chỗ', brandColor: 'Toyota Camry 2.5Q, màu bạc', frameNo: 'RLGBF3FK7MN012345', engineNo: '2AR-5872134', plateNo: '30H-123.45' }
+                        ]
                     },
                     {
-                        assetType: 'Quyền tài sản',
-                        description: 'Toàn bộ quyền tài sản và lợi ích phát sinh từ Hợp đồng mua bán căn hộ chung cư',
-                        rightName: 'Quyền tài sản phát sinh từ hợp đồng mua bán căn hộ',
-                        rightBasis: 'Hợp đồng mua bán căn hộ chung cư số 88/HĐMB-2025'
+                        type: 'vehicle',
+                        groupTitle: 'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt, đường thủy, đường sắt',
+                        subTitle: 'Phương tiện',
+                        items: [
+                            { vehicleName: 'Tàu cá vỏ gỗ QB-90827-TS', subInfo: 'Máy chính Yanmar 6HA2M-WDT, công suất 150CV', owner: 'Nguyễn Văn Nam', regNo: 'QB-90827-TS', issuer: 'Chi cục Thủy sản tỉnh Quảng Bình', grade: 'Tàu cá nhóm II (chiều dài từ 12 m đến dưới 15 m)' }
+                        ]
+                    },
+                    {
+                        type: 'rights',
+                        groupTitle: 'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản',
+                        name: 'Quyền đòi nợ trị giá 3,0 tỷ VNĐ',
+                        basis: 'Phát sinh từ Hợp đồng mua bán hàng hóa số 01/2026/HĐMB ngày 15/01/2026 giữa bên bảo đảm và Công ty TNHH Thương mại ABC'
                     }
                 ]
             };
@@ -11183,23 +11193,67 @@ function openRegistrationSignModal() {
             const optionalKv = (label, value) => value ? kv(label, value) : '';
             const grantorRows = rec.grantors.map((g, i) => `<tr><td style="text-align:center">${i + 1}</td><td>${e(g.subjectType)}</td><td>${e(g.idNo)}</td><td><b>${e(g.name)}</b></td><td>${e(g.address)}</td></tr>`).join('');
             const securedRows = rec.securedParties.map((s, i) => `<tr><td style="text-align:center">${i + 1}</td><td><b>${e(s.name)}</b></td><td>${e(s.address)}</td></tr>`).join('');
-            const assetsHtml = rec.assets.map((a, i) => `
-                <div style="border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:12px">
-                    <div style="font-weight:700;color:var(--primary);margin-bottom:8px">Tài sản ${i + 1}: ${e(a.assetType)}</div>
-                    <div class="summary-grid">
-                        ${kv('Loại tài sản', a.assetType)}
-                        ${optionalKv('Mô tả', a.description)}
-                        ${optionalKv('Tên quyền', a.rightName)}
-                        ${optionalKv('Căn cứ phát sinh quyền', a.rightBasis)}
-                    </div>
-                    ${a.frames && a.frames.length ? `
-                        <div style="font-weight:600;font-size:13px;margin:10px 0 6px">Bảng thông tin Số khung</div>
-                        <div class="table-wrap"><table class="table">
-                            <thead><tr><th>Tên phương tiện</th><th>Nhãn hiệu, màu sơn</th><th>Số khung</th><th>Số máy</th><th>Biển số</th></tr></thead>
-                            <tbody>${a.frames.map(fr => `<tr><td>${e(fr.vehicleName)}</td><td>${e(fr.brandColor)}</td><td><code>${e(fr.frameNo)}</code></td><td><code>${e(fr.engineNo || '-')}</code></td><td>${e(fr.plateNo || '-')}</td></tr>`).join('')}</tbody>
-                        </table></div>` : ''}
-                </div>
-            `).join('');
+            const assetsHtml = (rec.assets || []).map(a => {
+                if (a.type === 'road' || a.frames || a.assetType === 'Phương tiện giao thông') {
+                    const titleText = a.groupTitle || 'Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)';
+                    const items = a.items || a.frames || [];
+                    return `
+                        <div style="border:1px solid var(--line);border-radius:8px;background:#fff;overflow:hidden;margin-bottom:14px">
+                            <div style="background:#f8fafc;padding:11px 16px;font-weight:700;color:#1e3a8a;border-bottom:1px solid #e2e8f0;font-size:13.5px">${e(titleText)}</div>
+                            <div style="padding:14px 16px">
+                                <div style="font-weight:700;color:#1e3a8a;margin-bottom:8px;font-size:13px">${e(a.subTitle || 'Số khung')}</div>
+                                <div class="table-wrap"><table class="table" style="font-size:12.5px;margin-bottom:0">
+                                    <thead><tr style="background:#f1f5f9"><th style="width:50px;text-align:center">STT</th><th>TÊN PHƯƠNG TIỆN</th><th>NHÃN HIỆU, MÀU SƠN</th><th>SỐ KHUNG</th><th>SỐ MÁY</th><th>BIỂN SỐ</th></tr></thead>
+                                    <tbody>${items.map((it, idx) => `<tr><td style="text-align:center">${idx + 1}</td><td>${e(it.vehicleName || it.name || '')}</td><td>${e(it.brandColor || '')}</td><td><code>${e(it.frameNo || '')}</code></td><td><code>${e(it.engineNo || '-')}</code></td><td>${e(it.plateNo || '-')}</td></tr>`).join('')}</tbody>
+                                </table></div>
+                            </div>
+                        </div>
+                    `;
+                } else if (a.type === 'vehicle') {
+                    const titleText = a.groupTitle || 'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt, đường thủy, đường sắt';
+                    const items = a.items || [];
+                    return `
+                        <div style="border:1px solid var(--line);border-radius:8px;background:#fff;overflow:hidden;margin-bottom:14px">
+                            <div style="background:#f8fafc;padding:11px 16px;font-weight:700;color:#1e3a8a;border-bottom:1px solid #e2e8f0;font-size:13.5px">${e(titleText)}</div>
+                            <div style="padding:14px 16px">
+                                <div style="font-weight:700;color:#1e3a8a;margin-bottom:8px;font-size:13px">${e(a.subTitle || 'Phương tiện')}</div>
+                                <div class="table-wrap"><table class="table" style="font-size:12.5px;margin-bottom:0">
+                                    <thead><tr style="background:#f1f5f9"><th style="width:50px;text-align:center">STT</th><th>TÊN PHƯƠNG TIỆN, NHÃN HIỆU</th><th>TÊN/HỌ TÊN CHỦ PHƯƠNG TIỆN/CHỦ SỞ HỮU</th><th>SỐ ĐĂNG KÝ</th><th>CƠ QUAN CẤP GIẤY CHỨNG NHẬN</th><th>CẤP PHƯƠNG TIỆN</th></tr></thead>
+                                    <tbody>${items.map((it, idx) => `<tr><td style="text-align:center">${idx + 1}</td><td>${e(it.vehicleName || it.name || '')}${it.subInfo ? `<br><span style="color:#64748b;font-size:12px">${e(it.subInfo)}</span>` : ''}</td><td>${e(it.owner || it.ownerName || '-')}</td><td>${e(it.regNo || it.registrationNo || '-')}</td><td>${e(it.issuer || it.certificateAgency || '-')}</td><td>${e(it.grade || it.vehicleLevel || '-')}</td></tr>`).join('')}</tbody>
+                                </table></div>
+                            </div>
+                        </div>
+                    `;
+                } else if (a.type === 'rights' || a.assetType === 'Quyền tài sản') {
+                    const titleText = a.groupTitle || 'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản';
+                    const name = a.name || a.rightName || a.description || '';
+                    const basis = a.basis || a.rightBasis || '';
+                    return `
+                        <div style="border:1px solid var(--line);border-radius:8px;background:#fff;overflow:hidden;margin-bottom:14px">
+                            <div style="background:#f8fafc;padding:11px 16px;font-weight:700;color:#1e3a8a;border-bottom:1px solid #e2e8f0;font-size:13.5px">${e(titleText)}</div>
+                            <div style="padding:14px 16px">
+                                <div style="border:1px solid #e2e8f0;border-radius:6px;padding:14px 16px;background:#f8fafc">
+                                    <div style="font-weight:700;color:#0f172a;margin-bottom:4px;font-size:13.5px">${e(name)}</div>
+                                    <div style="color:#475569;font-size:13px;line-height:1.5">${e(basis)}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    const titleText = a.groupTitle || a.assetType || 'Tài sản bảo đảm khác';
+                    return `
+                        <div style="border:1px solid var(--line);border-radius:8px;background:#fff;overflow:hidden;margin-bottom:14px">
+                            <div style="background:#f8fafc;padding:11px 16px;font-weight:700;color:#1e3a8a;border-bottom:1px solid #e2e8f0;font-size:13.5px">${e(titleText)}</div>
+                            <div style="padding:14px 16px">
+                                <div style="border:1px solid #e2e8f0;border-radius:6px;padding:14px 16px;background:#f8fafc">
+                                    <div style="font-weight:700;color:#0f172a;margin-bottom:4px">${e(a.name || a.description || '')}</div>
+                                    <div style="color:#475569;font-size:13px">${e(a.basis || a.rightBasis || '')}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }).join('');
 
             return `
                 <div style="border:1px solid var(--line);border-radius:8px;overflow:hidden">
@@ -11209,7 +11263,6 @@ function openRegistrationSignModal() {
                         ${opts.index ? `<span style="margin-left:auto;background:#fff;border:1px solid #bfdbfe;border-radius:4px;padding:2px 9px;font-size:12.5px;text-transform:uppercase">${e(rec.caseName)}</span>` : ''}
                     </div>
                     <div style="padding:14px">
-                        <div class="section-title">I. Danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng</div>
                         <div class="summary-grid" style="margin-bottom:14px">
                             ${kv('Loại hình giao dịch', rec.transactionType)}
                             ${optionalKv('Loại biện pháp', rec.measure)}
@@ -11219,28 +11272,23 @@ function openRegistrationSignModal() {
                             ${optionalKv('Số hợp đồng', rec.contractNo)}
                             ${optionalKv('Ngày có hiệu lực của hợp đồng', rec.contractDate)}
                         </div>
-                        <div class="section-title">II. Thông tin người đăng ký</div>
-                        <div class="summary-grid" style="margin-bottom:14px">
-                            ${kv('Họ và tên', rec.registrant.name)}
-                            ${kv('Địa chỉ', rec.registrant.address)}
-                        </div>
-                        <div class="section-title">III. Thông tin đăng ký</div>
+                        <div class="section-title">Thông tin đăng ký</div>
                         <div class="summary-grid" style="margin-bottom:14px">
                             ${kv('Số đăng ký', regNo)}
                             ${kv('Thời điểm đăng ký', rec.registeredAt)}
                             ${kv('Thời điểm có hiệu lực', rec.effectiveAt)}
                         </div>
-                        <div class="section-title">IV. Bên bảo đảm</div>
+                        <div class="section-title">Bên bảo đảm</div>
                         <div class="table-wrap" style="margin-bottom:14px"><table class="table">
                             <thead><tr><th style="width:50px;text-align:center">STT</th><th>Loại chủ thể</th><th>Số giấy tờ chứng minh tư cách pháp lý</th><th>Tên</th><th>Địa chỉ</th></tr></thead>
                             <tbody>${grantorRows}</tbody>
                         </table></div>
-                        <div class="section-title">V. Bên nhận bảo đảm</div>
+                        <div class="section-title">Bên nhận bảo đảm</div>
                         <div class="table-wrap" style="margin-bottom:14px"><table class="table">
                             <thead><tr><th style="width:50px;text-align:center">STT</th><th>Tên</th><th>Địa chỉ</th></tr></thead>
                             <tbody>${securedRows}</tbody>
                         </table></div>
-                        <div class="section-title">VI. Tài sản bảo đảm</div>
+                        <div class="section-title"><i class="fa-solid fa-car"></i> Tài sản bảo đảm</div>
                         ${assetsHtml}
                     </div>
                 </div>

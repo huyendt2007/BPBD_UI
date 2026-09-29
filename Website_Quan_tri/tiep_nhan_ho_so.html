@@ -395,6 +395,11 @@
             padding: 20px;
         }
 
+        /* Popup Tìm kiếm nâng cao: cố định cột Thao tác (nút Chọn) cạnh phải bảng */
+        #accountSearchModal .custom-table th:last-child, #accountSearchModal .custom-table td:last-child { position: sticky; right: 0; background: #fff; z-index: 2; box-shadow: -4px 0 8px rgba(15,23,42,0.06); }
+        #accountSearchModal .custom-table th:last-child { background: var(--table-header-bg, #f1f5f9); z-index: 3; }
+        #accountSearchModal .custom-table td[colspan] { position: static; box-shadow: none; }
+
         .modal.show {
             display: flex;
         }
@@ -1037,7 +1042,7 @@
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:14px;">
                         <div class="form-group" style="margin-bottom:0;">
                             <span class="form-label">Mã tài khoản trực tuyến</span>
-                            <input id="advSearchAccountCode" class="form-control" placeholder="Nhập mã tài khoản (VD: KH-000128)..." onkeydown="if(event.key==='Enter'){event.preventDefault();executeAdvAccountSearch();}">
+                            <input id="advSearchAccountCode" class="form-control" placeholder="Nhập mã tài khoản (VD: KH-00128)..." onkeydown="if(event.key==='Enter'){event.preventDefault();executeAdvAccountSearch();}">
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
                             <span class="form-label">Họ và tên/Tên tổ chức</span>
@@ -1066,8 +1071,88 @@
                     </div>
                 </div>
 
-                <!-- Khối Bảng kết quả tìm kiếm -->
-                <div>
+                <!-- Khối Dữ liệu giả lập để demo (Mở rộng / Thu nhỏ giống Tra cứu cung cấp bản sao) -->
+                <details class="demo-hint-details" style="margin-bottom:18px; border:1px dashed #94a3b8; border-radius:8px; background:#f8fafc; font-size:12.5px;">
+                    <summary style="cursor:pointer; padding:9px 14px; font-weight:700; color:#334155; display:flex; align-items:center; gap:8px; outline:none; user-select:none;">
+                        <i class="fa-solid fa-flask" style="color:var(--primary);"></i>
+                        <span>Dữ liệu giả lập để demo - Bấm vào Mã tài khoản để điền sẵn vào ô tìm kiếm</span>
+                        <span style="font-size:11.5px; font-weight:normal; color:#64748b; margin-left:auto;"><i class="fa-solid fa-chevron-down" style="font-size:11px;"></i> (Bấm để mở rộng / thu nhỏ)</span>
+                    </summary>
+                    <div style="padding:0 12px 12px 12px; overflow-x:auto;">
+                        <table class="custom-table" style="min-width:100%; font-size:12px; margin-bottom:0; background:#fff; border:1px solid #e2e8f0; border-radius:4px;">
+                            <thead>
+                                <tr style="background:#f1f5f9;">
+                                    <th style="width:115px; text-align:center;">Mã tài khoản</th>
+                                    <th>Họ và tên / Tên tổ chức</th>
+                                    <th style="width:125px; text-align:center;">Số CCCD / MST</th>
+                                    <th style="width:105px; text-align:center;">Điện thoại</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="text-align:center;"><a href="javascript:void(0)" onclick="fillAdvDemoCode('KH-00128')" style="font-weight:700; color:var(--primary); text-decoration:none;" title="Bấm để điền mã KH-00128"><code>KH-00128</code></a></td>
+                                    <td>Công ty TNHH Hải Nam</td>
+                                    <td style="text-align:center;">0108920145</td>
+                                    <td style="text-align:center;">0912555666</td>
+                                    <td>contact@hainam.vn</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;"><a href="javascript:void(0)" onclick="fillAdvDemoCode('KH-000128')" style="font-weight:700; color:var(--primary); text-decoration:none;" title="Bấm để điền mã KH-000128"><code>KH-000128</code></a></td>
+                                    <td>Công ty TNHH Hải Nam (Trụ sở chính)</td>
+                                    <td style="text-align:center;">0108920145</td>
+                                    <td style="text-align:center;">0912555666</td>
+                                    <td>contact@hainam.vn</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;"><a href="javascript:void(0)" onclick="fillAdvDemoCode('KH-000130')" style="font-weight:700; color:var(--primary); text-decoration:none;" title="Bấm để điền mã KH-000130"><code>KH-000130</code></a></td>
+                                    <td>Ngân hàng TMCP FPT</td>
+                                    <td style="text-align:center;">0102345678</td>
+                                    <td style="text-align:center;">02462739677</td>
+                                    <td>dangky@moj.gov.vn</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;"><a href="javascript:void(0)" onclick="fillAdvDemoCode('KH-000131')" style="font-weight:700; color:var(--primary); text-decoration:none;" title="Bấm để điền mã KH-000131"><code>KH-000131</code></a></td>
+                                    <td>Ngân hàng TMCP Ngoại Thương Việt Nam (Vietcombank)</td>
+                                    <td style="text-align:center;">0100112437</td>
+                                    <td style="text-align:center;">02439343366</td>
+                                    <td>vcb@vietcombank.com.vn</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;"><a href="javascript:void(0)" onclick="fillAdvDemoCode('KH-000134')" style="font-weight:700; color:var(--primary); text-decoration:none;" title="Bấm để điền mã KH-000134"><code>KH-000134</code></a></td>
+                                    <td>Ngân hàng TMCP Quân Đội (MB)</td>
+                                    <td style="text-align:center;">0100283873</td>
+                                    <td style="text-align:center;">02462661088</td>
+                                    <td>contact@mbbank.com.vn</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;"><a href="javascript:void(0)" onclick="fillAdvDemoCode('KH-000135')" style="font-weight:700; color:var(--primary); text-decoration:none;" title="Bấm để điền mã KH-000135"><code>KH-000135</code></a></td>
+                                    <td>Công ty TNHH MTV Thái Sơn</td>
+                                    <td style="text-align:center;">0104561234</td>
+                                    <td style="text-align:center;">0913998877</td>
+                                    <td>thaison@gmail.com</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;"><a href="javascript:void(0)" onclick="fillAdvDemoCode('KH-2026-0001')" style="font-weight:700; color:var(--primary); text-decoration:none;" title="Bấm để điền mã KH-2026-0001"><code>KH-2026-0001</code></a></td>
+                                    <td>Nguyễn Văn Nam (Cá nhân)</td>
+                                    <td style="text-align:center;">001086012345</td>
+                                    <td style="text-align:center;">0901234567</td>
+                                    <td>nam.nguyen@example.com</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center;"><a href="javascript:void(0)" onclick="fillAdvDemoCode('KH-2026-0004')" style="font-weight:700; color:var(--primary); text-decoration:none;" title="Bấm để điền mã KH-2026-0004"><code>KH-2026-0004</code></a></td>
+                                    <td>Hoàng Thị Mai (Cá nhân)</td>
+                                    <td style="text-align:center;">048188812345</td>
+                                    <td style="text-align:center;">0987654321</td>
+                                    <td>mai.hoang@example.com</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </details>
+
+                <!-- Khối Bảng kết quả tìm kiếm (Mặc định ẩn, chỉ hiển thị sau khi bấm Tìm kiếm) -->
+                <div id="advSearchResultSection" style="display:none;">
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
                         <div style="font-weight:700; color:var(--primary-light); font-size:13.5px; display:flex; align-items:center; gap:6px;">
                             <i class="fa-solid fa-table-list"></i> Kết quả tìm kiếm
@@ -1116,9 +1201,10 @@
     <script>
         // Danh sách tài khoản trực tuyến mẫu dùng cho tra cứu & tìm kiếm nâng cao (Section 4.3.2.16.4.4)
         const onlineCustomersMock = [
-            { code: 'KH-000128', name: 'Công ty TNHH Hải Nam', email: 'contact@hainam.vn', phone: '0912555666', docNo: '0108920145', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Tràng Tiền', addressDetail: 'Số 20 Trần Hưng Đạo, Hoàn Kiếm' },
+            { code: 'KH-00128', name: 'Công ty TNHH Hải Nam', email: 'contact@hainam.vn', phone: '0912555666', docNo: '0108920145', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Tràng Tiền', addressDetail: 'Số 20 Trần Hưng Đạo, Hoàn Kiếm' },
+            { code: 'KH-000128', name: 'Công ty TNHH Hải Nam (Trụ sở chính)', email: 'contact@hainam.vn', phone: '0912555666', docNo: '0108920145', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Tràng Tiền', addressDetail: 'Số 20 Trần Hưng Đạo, Hoàn Kiếm' },
             { code: 'KH-000130', name: 'Ngân hàng TMCP FPT', email: 'dangky@moj.gov.vn', phone: '02462739677', docNo: '0102345678', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Mỹ Đình 1', addressDetail: 'Tòa nhà FPT, Phố Duy Tân, Cầu Giấy' },
-            { code: 'KH-000131', name: 'Ngân hàng TMCP Ngoại Thương Việt Nam', email: 'vcb@vietcombank.com.vn', phone: '02439343366', docNo: '0100112437', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Lý Thái Tổ', addressDetail: '198 Trần Quang Khải, Hoàn Kiếm' },
+            { code: 'KH-000131', name: 'Ngân hàng TMCP Ngoại Thương Việt Nam (Vietcombank)', email: 'vcb@vietcombank.com.vn', phone: '02439343366', docNo: '0100112437', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Lý Thái Tổ', addressDetail: '198 Trần Quang Khải, Hoàn Kiếm' },
             { code: 'KH-000132', name: 'Công ty CP Đầu tư Mặt Trời Mới', email: 'info@mattroimoi.com', phone: '0988223344', docNo: '0106789900', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Dịch Vọng', addressDetail: 'Số 10 Phạm Hùng, Cầu Giấy' },
             { code: 'KH-000134', name: 'Ngân hàng TMCP Quân Đội (MB)', email: 'contact@mbbank.com.vn', phone: '02462661088', docNo: '0100283873', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Trung Hòa', addressDetail: 'Số 18 Lê Văn Lương, Cầu Giấy' },
             { code: 'KH-000135', name: 'Công ty TNHH MTV Thái Sơn', email: 'thaison@gmail.com', phone: '0913998877', docNo: '0104561234', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Láng Hạ', addressDetail: 'Số 36 Hoàng Cầu, Đống Đa' },
@@ -1560,12 +1646,14 @@
             if (!acc) return;
             const val = acc.value.trim();
             if (!val) {
-                showFieldError(acc, 'Vui lòng nhập Mã tài khoản trực tuyến để tìm kiếm.');
+                showFieldError(acc, 'Vui lòng nhập Mã tài khoản trực tuyến để tìm kiếm');
                 acc.focus();
                 return;
             }
 
-            const found = onlineCustomersMock.find(c => c.code.toLowerCase() === val.toLowerCase());
+            // Hỗ trợ tìm kiếm linh hoạt mã tài khoản (VD: KH-00128, KH-000128, 00128, 128...)
+            const found = onlineCustomersMock.find(c => c.code.toLowerCase() === val.toLowerCase()) ||
+                          onlineCustomersMock.find(c => matchCustomerCode(c.code, val));
             if (found) {
                 fillAccountDataToBlock02(found);
             } else {
@@ -1574,112 +1662,159 @@
             }
         }
 
+        // Khớp mã tài khoản linh hoạt: hỗ trợ cả dạng 5 số (KH-00128) và 6 số (KH-000128), hoặc chỉ gõ số (128)
+        function matchCustomerCode(custCode, queryCode) {
+            if (!queryCode) return true;
+            const c = String(custCode || '').toLowerCase().trim();
+            const q = String(queryCode || '').toLowerCase().trim();
+            if (c === q) return true;
+            if (c.includes(q) || q.includes(c)) return true;
+            const cDigits = (c.match(/\d+/) || [''])[0].replace(/^0+/, '');
+            const qDigits = (q.match(/\d+/) || [''])[0].replace(/^0+/, '');
+            if (cDigits && qDigits && (cDigits === qDigits || cDigits.includes(qDigits) || qDigits.includes(cDigits))) {
+                if (q.includes('kh') && !c.includes('kh')) return false;
+                return true;
+            }
+            return false;
+        }
+
+        // Bỏ dấu tiếng Việt phục vụ tìm kiếm gần đúng Họ và tên/Tên tổ chức
+        function stripDiacritics(str) {
+            return String(str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase().trim();
+        }
+
         // Modal Tìm kiếm nâng cao tài khoản trực tuyến
         let advAccountResults = [];
         let advAccountCurrentPage = 1;
         let advAccountPageSize = 5;
+        let advAccountSearched = false;
 
+        // Điền nhanh mã tài khoản từ khối Dữ liệu giả lập demo
+        function fillAdvDemoCode(code) {
+            const input = el('advSearchAccountCode');
+            if (input) {
+                input.value = code;
+                input.focus();
+            }
+        }
+
+        // Mở Popup: mặc định KHÔNG hiển thị bảng kết quả, chỉ hiển thị form tìm kiếm và khối dữ liệu giả lập
         function openAccountSearchModal() {
             const modal = el('accountSearchModal');
             if (!modal) return;
+            ['advSearchAccountCode', 'advSearchName', 'advSearchEmail', 'advSearchPhone', 'advSearchDocNo'].forEach(id => {
+                const node = el(id);
+                if (node) node.value = '';
+            });
+            advAccountSearched = false;
+            const resSec = el('advSearchResultSection');
+            if (resSec) resSec.style.display = 'none';
 
-            const currentCode = el('accountCode') ? el('accountCode').value.trim() : '';
+            modal.classList.add('show');
             const advCode = el('advSearchAccountCode');
-            if (advCode) advCode.value = currentCode;
-
-            modal.classList.add('active');
-            executeAdvAccountSearch();
+            if (advCode) advCode.focus();
         }
 
         function closeAccountSearchModal() {
             const modal = el('accountSearchModal');
-            if (modal) modal.classList.remove('active');
+            if (modal) modal.classList.remove('show');
         }
 
+        // Xóa bộ lọc: xóa trắng các tiêu chí lọc và ẩn lại bảng kết quả tìm kiếm
         function resetAccountSearchFilter() {
-            ['advSearchAccountCode', 'advSearchCustomerName', 'advSearchEmail', 'advSearchPhone', 'advSearchDocNo'].forEach(id => {
+            ['advSearchAccountCode', 'advSearchName', 'advSearchEmail', 'advSearchPhone', 'advSearchDocNo'].forEach(id => {
                 const node = el(id);
                 if (node) node.value = '';
             });
-            advAccountCurrentPage = 1;
-            executeAdvAccountSearch();
+            advAccountSearched = false;
+            const resSec = el('advSearchResultSection');
+            if (resSec) resSec.style.display = 'none';
+            const advCode = el('advSearchAccountCode');
+            if (advCode) advCode.focus();
         }
 
+        // Tìm kiếm gần đúng: hỗ trợ mã tài khoản, tên tiếng Việt có/không dấu, email, điện thoại, CCCD/MST
         function executeAdvAccountSearch() {
-            const code = (el('advSearchAccountCode') ? el('advSearchAccountCode').value.trim() : '').toLowerCase();
-            const name = (el('advSearchCustomerName') ? el('advSearchCustomerName').value.trim() : '').toLowerCase();
-            const email = (el('advSearchEmail') ? el('advSearchEmail').value.trim() : '').toLowerCase();
-            const phone = (el('advSearchPhone') ? el('advSearchPhone').value.trim() : '').toLowerCase();
-            const docNo = (el('advSearchDocNo') ? el('advSearchDocNo').value.trim() : '').toLowerCase();
+            const v = id => (el(id) ? el(id).value.trim() : '').toLowerCase();
+            const code = v('advSearchAccountCode'), name = v('advSearchName'), email = v('advSearchEmail'), phone = v('advSearchPhone'), docNo = v('advSearchDocNo');
 
             advAccountResults = onlineCustomersMock.filter(item => {
-                if (code && !item.code.toLowerCase().includes(code)) return false;
-                if (name && !item.name.toLowerCase().includes(name)) return false;
+                if (code && !matchCustomerCode(item.code, code)) return false;
+                if (name && !item.name.toLowerCase().includes(name) && !stripDiacritics(item.name).includes(stripDiacritics(name))) return false;
                 if (email && !item.email.toLowerCase().includes(email)) return false;
-                if (phone && !item.phone.toLowerCase().includes(phone)) return false;
-                if (docNo && !item.docNo.toLowerCase().includes(docNo)) return false;
+                if (phone && !item.phone.toLowerCase().includes(phone.replace(/[^0-9]/g, ''))) return false;
+                if (docNo && !item.docNo.toLowerCase().includes(docNo.replace(/[^a-z0-9]/g, ''))) return false;
                 return true;
             });
 
+            advAccountSearched = true;
             advAccountCurrentPage = 1;
+            const resSec = el('advSearchResultSection');
+            if (resSec) resSec.style.display = 'block';
             renderAdvAccountTable();
             renderAdvAccountPagination();
         }
 
         function renderAdvAccountTable() {
-            const tbody = el('accountSearchResultsBody');
+            const tbody = el('advAccountSearchRows');
             if (!tbody) return;
+            const countEl = el('advSearchResultCount');
+            if (countEl) countEl.textContent = `${advAccountResults.length} kết quả`;
 
+            if (!advAccountSearched) {
+                tbody.innerHTML = '';
+                return;
+            }
             if (advAccountResults.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 24px; color: var(--text-muted);">Không tìm thấy tài khoản trực tuyến nào phù hợp.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding: 24px; color: var(--text-muted); font-style: italic;">Không tìm thấy dữ liệu phù hợp</td></tr>';
                 return;
             }
 
             const startIdx = (advAccountCurrentPage - 1) * advAccountPageSize;
             const pageItems = advAccountResults.slice(startIdx, startIdx + advAccountPageSize);
 
-            tbody.innerHTML = pageItems.map((c, idx) => {
-                return `<tr>
+            tbody.innerHTML = pageItems.map((c, idx) => `<tr>
                     <td style="text-align:center;">${startIdx + idx + 1}</td>
-                    <td><strong style="color: var(--primary);">${esc(c.code)}</strong></td>
+                    <td style="text-align:center;"><strong style="color: var(--primary);">${esc(c.code)}</strong></td>
                     <td>${esc(c.name)}</td>
                     <td>${esc(c.email)}</td>
-                    <td>${esc(c.phone)}</td>
-                    <td>${esc(c.docNo)}</td>
+                    <td style="text-align:center;">${esc(c.phone)}</td>
+                    <td style="text-align:center;">${esc(c.docNo)}</td>
                     <td style="text-align:center;">
                         <button type="button" class="btn btn-sm btn-primary" onclick="selectAccount('${esc(c.code)}')" title="Chọn tài khoản này">
                             <i class="fa-solid fa-check"></i> Chọn
                         </button>
                     </td>
-                </tr>`;
-            }).join('');
+                </tr>`).join('');
         }
 
         function renderAdvAccountPagination() {
+            const bar = el('advPaginationBar');
+            if (bar) bar.style.display = advAccountSearched ? '' : 'none';
             const total = advAccountResults.length;
             const totalPages = Math.ceil(total / advAccountPageSize) || 1;
+            const start = total ? (advAccountCurrentPage - 1) * advAccountPageSize + 1 : 0;
+            const end = Math.min(advAccountCurrentPage * advAccountPageSize, total);
 
-            const countEl = el('advAccountTotalCount');
-            if (countEl) countEl.textContent = total;
+            const info = el('advPageInfo');
+            if (info) info.textContent = `Hiển thị ${start}-${end} trong tổng số ${total} bản ghi`;
 
-            const pagesContainer = el('advAccountPageButtons');
-            if (pagesContainer) {
-                let btnsHtml = '';
+            const wrapper = el('advPaginationPages');
+            if (!wrapper) return;
+            const none = total === 0;
+            const first = advAccountCurrentPage <= 1 || none, last = advAccountCurrentPage >= totalPages || none;
+            let html = `
+                <button type="button" class="page-item ${first ? 'disabled' : ''}" ${first ? 'disabled' : ''} onclick="changeAdvAccountPage(1)" title="Trang đầu">|&lt;&lt;</button>
+                <button type="button" class="page-item ${first ? 'disabled' : ''}" ${first ? 'disabled' : ''} onclick="changeAdvAccountPage(${advAccountCurrentPage - 1})" title="Trang trước">&lt;</button>`;
+            if (!none) {
                 for (let p = 1; p <= totalPages; p++) {
-                    btnsHtml += `<button type="button" class="page-num ${p === advAccountCurrentPage ? 'active' : ''}" onclick="changeAdvAccountPage(${p})">${p}</button>`;
+                    html += `<button type="button" class="page-item ${p === advAccountCurrentPage ? 'active' : ''}" onclick="changeAdvAccountPage(${p})">${p}</button>`;
                 }
-                pagesContainer.innerHTML = btnsHtml;
             }
-
-            const firstBtn = el('advAccountFirstBtn');
-            const prevBtn = el('advAccountPrevBtn');
-            const nextBtn = el('advAccountNextBtn');
-            const lastBtn = el('advAccountLastBtn');
-
-            if (firstBtn) firstBtn.disabled = advAccountCurrentPage <= 1;
-            if (prevBtn) prevBtn.disabled = advAccountCurrentPage <= 1;
-            if (nextBtn) nextBtn.disabled = advAccountCurrentPage >= totalPages;
-            if (lastBtn) lastBtn.disabled = advAccountCurrentPage >= totalPages;
+            html += `
+                <button type="button" class="page-item ${last ? 'disabled' : ''}" ${last ? 'disabled' : ''} onclick="changeAdvAccountPage(${advAccountCurrentPage + 1})" title="Trang sau">&gt;</button>
+                <button type="button" class="page-item ${last ? 'disabled' : ''}" ${last ? 'disabled' : ''} onclick="changeAdvAccountPage(${totalPages})" title="Trang cuối">&gt;&gt;|</button>`;
+            wrapper.innerHTML = html;
         }
 
         function changeAdvAccountPage(page) {
@@ -1699,7 +1834,7 @@
         }
 
         function selectAccount(code) {
-            const found = onlineCustomersMock.find(c => c.code === code);
+            const found = onlineCustomersMock.find(c => c.code === code) || onlineCustomersMock.find(c => matchCustomerCode(c.code, code));
             if (found) {
                 fillAccountDataToBlock02(found);
                 closeAccountSearchModal();

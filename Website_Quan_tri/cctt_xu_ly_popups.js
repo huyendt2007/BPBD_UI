@@ -105,14 +105,13 @@
         const sec = t => `<div style="margin-top:6px"><b><i>${t}</i></b></div>`;
         return `<div style="margin:8px 0">
             <div><b>Hồ sơ ${index}: Đăng ký giao dịch bảo đảm / Hợp đồng - ${esc(r.regNo)} (${esc(r.caseName)})</b></div>
-            ${sec('I. Danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng')}
             ${line('Loại hình giao dịch', r.transactionType)}${line('Loại biện pháp', r.measure)}${line('Loại hợp đồng', r.contractType)}
             <div>- Trường hợp đăng ký: <b>${esc(r.caseName)}</b></div>${line('Trạng thái', r.status)}${line('Số hợp đồng', r.contractNo)}${line('Ngày có hiệu lực của hợp đồng', r.contractDate)}
-            ${sec('II. Thông tin người đăng ký')}${line('Họ và tên', r.registrant.name)}${line('Địa chỉ', r.registrant.address)}
-            ${sec('III. Thông tin đăng ký')}${line('Số đăng ký', r.regNo)}${line('Thời điểm đăng ký', r.registeredAt)}${line('Thời điểm có hiệu lực', r.effectiveAt)}
-            ${sec('IV. Bên bảo đảm')}${r.grantors.map((g, i) => `<div>${i + 1}. ${esc(g.name)} - ${esc(g.subjectType)} - ${esc(g.idNo)} - Địa chỉ: ${esc(g.address)}</div>`).join('')}
-            ${sec('V. Bên nhận bảo đảm')}${r.securedParties.map((s, i) => `<div>${i + 1}. ${esc(s.name)} - Địa chỉ: ${esc(s.address)}</div>`).join('')}
-            ${sec('VI. Tài sản bảo đảm')}${r.assets.map((a, i) => `<div>${i + 1}. ${esc(a.assetType)}: ${esc(a.description || '')}${a.rightName ? `; Tên quyền: ${esc(a.rightName)}` : ''}${a.rightBasis ? `; Căn cứ phát sinh quyền: ${esc(a.rightBasis)}` : ''}${a.frames ? '; ' + a.frames.map(f => `${esc(f.vehicleName)} ${esc(f.brandColor)}, số khung ${esc(f.frameNo)}, số máy ${esc(f.engineNo || '-')}, biển số ${esc(f.plateNo || '-')}`).join('; ') : ''}</div>`).join('')}
+
+            ${sec('Thông tin đăng ký')}${line('Số đăng ký', r.regNo)}${line('Thời điểm đăng ký', r.registeredAt)}${line('Thời điểm có hiệu lực', r.effectiveAt)}
+            ${sec('Bên bảo đảm')}${r.grantors.map((g, i) => `<div>${i + 1}. ${esc(g.name)} - ${esc(g.subjectType)} - ${esc(g.idNo)} - Địa chỉ: ${esc(g.address)}</div>`).join('')}
+            ${sec('Bên nhận bảo đảm')}${r.securedParties.map((s, i) => `<div>${i + 1}. ${esc(s.name)} - Địa chỉ: ${esc(s.address)}</div>`).join('')}
+            ${sec('Tài sản bảo đảm')}${r.assets.map((a, i) => `<div>${i + 1}. ${esc(a.assetType)}: ${esc(a.description || '')}${a.rightName ? `; Tên quyền: ${esc(a.rightName)}` : ''}${a.rightBasis ? `; Căn cứ phát sinh quyền: ${esc(a.rightBasis)}` : ''}${a.frames ? '; ' + a.frames.map(f => `${esc(f.vehicleName)} ${esc(f.brandColor)}, số khung ${esc(f.frameNo)}, số máy ${esc(f.engineNo || '-')}, biển số ${esc(f.plateNo || '-')}`).join('; ') : ''}</div>`).join('')}
         </div>`;
     }
 

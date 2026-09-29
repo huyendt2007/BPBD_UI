@@ -41,6 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const securedPartiesTableBody = document.getElementById('securedPartiesTableBody');
     const securedPartiesEmpty = document.getElementById('securedPartiesEmpty');
     const assetsTableBody = document.getElementById('assetsTableBody');
+    const assetTypeSections = document.getElementById('assetTypeSections');
     const assetsEmpty = document.getElementById('assetsEmpty');
     const securingPartiesTitleLabel = document.getElementById('securingPartiesTitleLabel');
     const securedPartiesTitleLabel = document.getElementById('securedPartiesTitleLabel');
@@ -1902,76 +1903,72 @@ document.addEventListener('DOMContentLoaded', function () {
             node.data.scale = "Bên bảo đảm sử dụng khoản vay cho tiêu dùng cá nhân";
             node.data.receivingAgency = "Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội";
 
-            // Bảng Loại tài sản giả lập đủ 7 loại tài sản
+            // Giả lập đủ 7 Loại tài sản, dữ liệu đúng tính chất từng loại:
+            // - Số khung: Tên phương tiện, Nhãn hiệu màu sơn, Số khung, Số máy, Biển số
+            // - Phương tiện (tàu cá, phương tiện thủy/đường sắt): Tên phương tiện nhãn hiệu, Chủ phương tiện, Số đăng ký, Cơ quan cấp giấy chứng nhận, Cấp phương tiện
+            // - Quyền tài sản: Tên quyền, Căn cứ phát sinh quyền
+            // - Hàng hóa luân chuyển/Kho hàng: loại, Giá trị/Tên loại hàng hóa, Địa chỉ kho hàng, Số hiệu kho hàng
+            // - Chứng khoán đã đăng ký tập trung: mô tả + Thời điểm đăng ký tại VSDC
+            // - Cây hằng năm, công trình tạm / Các động sản khác: Mô tả
             const baseAssets = [
                 {
                     id: 1,
-                    typeName: "Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)",
+                    typeName: "Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)",
                     name: "Xe ô tô con 5 chỗ",
-                    brandColor: "Toyota Camry 2.5Q, Màu đen",
-                    frameNo: "CAMRY-88992211",
-                    engineNo: "ENG-2AR-998811",
+                    brandColor: "Toyota Camry 2.5Q, màu bạc",
+                    frameNo: "RLGBF3FK7MN012345",
+                    engineNo: "2AR-5872134",
                     plateNo: "30H-123.45",
                     status: "Đang bảo đảm"
                 },
                 {
                     id: 2,
-                    typeName: "Tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt",
-                    name: "Tàu cá vỏ gỗ Yamaha 200HP",
-                    brandColor: "Công suất 150CV, Trắng xanh",
-                    frameNo: "TC-9988-VN",
-                    engineNo: "ENG-YAM-55331",
-                    plateNo: "QB-90827-TS",
+                    typeName: "Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt",
+                    name: "Tàu cá vỏ gỗ QB-90827-TS",
+                    brandColor: "Máy chính Yanmar 6HA2M-WDT, công suất 150CV",
+                    ownerName: "Nguyễn Văn Nam",
+                    registrationNo: "QB-90827-TS",
+                    certificateAgency: "Chi cục Thủy sản tỉnh Quảng Bình",
+                    vehicleLevel: "Tàu cá nhóm II (chiều dài từ 12 m đến dưới 15 m)",
                     status: "Đang bảo đảm"
                 },
                 {
                     id: 3,
                     typeName: "Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản",
-                    name: "Quyền đòi nợ trị giá 2.000.000.000 VNĐ",
-                    brandColor: "Phát sinh từ Hợp đồng mua bán số 01/2026/HĐMB đối với Công ty ABC",
-                    frameNo: "QTD-2026-001",
-                    engineNo: "-",
-                    plateNo: "-",
+                    name: "Quyền đòi nợ trị giá 3,0 tỷ VNĐ",
+                    brandColor: "Phát sinh từ Hợp đồng mua bán hàng hóa số 01/2026/HĐMB ngày 15/01/2026 giữa bên bảo đảm và Công ty TNHH Thương mại ABC",
                     status: "Đang bảo đảm"
                 },
                 {
                     id: 4,
                     typeName: "Cây hằng năm, công trình tạm",
-                    name: "Vườn cây cao su đang thu hoạch",
-                    brandColor: "Diện tích 5ha tại Nông trường Bình Phước",
-                    frameNo: "VCCS-2026-88",
-                    engineNo: "-",
-                    plateNo: "-",
+                    name: "Cây mía đường niên vụ 2026 - 2027",
+                    brandColor: "Diện tích 5 ha tại xã Tân Châu, tỉnh Tây Ninh",
                     status: "Đang bảo đảm"
                 },
                 {
                     id: 5,
                     typeName: "Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ",
                     name: "Kho hàng hạt tiêu xuất khẩu",
-                    brandColor: "Khối lượng 50 tấn tại Cảng Hải Phòng",
-                    frameNo: "HT-50T-HP",
-                    engineNo: "-",
-                    plateNo: "-",
+                    goodsKind: "Kho hàng",
+                    brandColor: "Hạt tiêu đen xuất khẩu, khối lượng 50 tấn, trị giá 6.500.000.000 VNĐ",
+                    warehouseAddress: "Kho số 3, Cảng Đình Vũ, phường Đông Hải 2, thành phố Hải Phòng",
+                    warehouseNo: "KHO-DV-03",
                     status: "Đang bảo đảm"
                 },
                 {
                     id: 6,
                     typeName: "Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung",
-                    name: "50.000 cổ phiếu tự do chuyển nhượng",
-                    brandColor: "Mã HBC của Công ty Cổ phần Xây dựng Hòa Bình",
-                    frameNo: "CP-HBC-50K",
-                    engineNo: "-",
-                    plateNo: "-",
+                    name: "50.000 cổ phiếu mã HBC",
+                    brandColor: "Cổ phiếu phổ thông của Công ty Cổ phần Tập đoàn Xây dựng Hòa Bình",
+                    vsdcTime: { hour: "09", minute: "30", day: "15", month: "03", year: "2026" },
                     status: "Đang bảo đảm"
                 },
                 {
                     id: 7,
-                    typeName: "Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)",
+                    typeName: "Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ, CHỨNG KHOÁN KHÔNG ĐĂNG KÝ TẬP TRUNG...)",
                     name: "Dây chuyền sản xuất sợi cotton Rieter",
-                    brandColor: "Nhập khẩu Thụy Sĩ mới 100%, Model 2025",
-                    frameNo: "DC-RIETER-09",
-                    engineNo: "ENG-RIET-01",
-                    plateNo: "-",
+                    brandColor: "Hệ thống kéo sợi tự động Model 2025, xuất xứ Thụy Sỹ, công suất 1.200 tấn/năm",
                     status: "Đang bảo đảm"
                 }
             ];
@@ -2683,246 +2680,302 @@ document.addEventListener('DOMContentLoaded', function () {
             securedPartiesTableBody.appendChild(tr);
         });
 
-        // 6. Danh sách tài sản GridView
-        const isAuditMode = document.getElementById('assetAuditToggle') && document.getElementById('assetAuditToggle').checked;
-        assetsTableBody.innerHTML = '';
-        
-        if (isAuditMode) {
-            // Render Audit Trail of assets
-            const assetsTable = document.getElementById('assetsTable');
-            if (assetsTable) {
-                const thead = assetsTable.querySelector('thead');
-                if (thead) {
-                    thead.innerHTML = `
-                        <tr>
-                            <th style="width: 50px; text-align: center;">STT</th>
-                            <th>Loại tài sản</th>
-                            <th>Tên phương tiện / Tài sản</th>
-                            <th>Nhãn hiệu, màu sơn / Mô tả chi tiết</th>
-                            <th>Số khung / Số định danh</th>
-                            <th>Số máy / Biển số</th>
-                            <th>Trạng thái</th>
-                            <th>Phiên bản thay đổi</th>
-                            <th>Thời điểm thay đổi</th>
-                            <th>Nội dung thay đổi</th>
-                        </tr>
-                    `;
-                }
+        // 6. Danh sách tài sản - Hiển thị theo từng nhóm chuẩn DM_07
+        const showAssetChanges = current.label.includes("Thay đổi") || 
+                                current.label.includes("Xóa") || 
+                                current.label.includes("Hủy") || 
+                                current.label.includes("Khôi phục") || 
+                                current.label.includes("Chỉnh lý");
+
+        const isNoticeView = (current.label || '').includes('Thông báo xử lý');
+        const isChangeNoticeView = (current.label || '').includes('Thay đổi thông báo xử lý');
+        const isDeleteNoticeView = (current.label || '').includes('Xóa thông báo xử lý');
+        const currentProcessingInfo = currData.processingInfo || {};
+        const previousProcessingInfo = prevData?.processingInfo || {};
+
+        const htmlEscape = (value) => String(value ?? '-')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+
+        const isDeleteRegistrationView = current.label === 'Xóa đăng ký';
+        const assetStatusBadge = (asset) => {
+            if (!showAssetChanges && !isNoticeView) return '';
+            if (asset.status === 'Được chọn xử lý') return '';
+            if (asset.status === 'Bổ sung xử lý') return '<span class="table-status-tag tag-added"><i class="fa-solid fa-plus"></i> Bổ sung xử lý</span>';
+            if (asset.status === 'Rút khỏi thông báo') return '<span class="table-status-tag tag-removed"><i class="fa-solid fa-minus"></i> Rút khỏi thông báo</span>';
+            if (asset.status === 'Bổ sung mới') return '<span class="table-status-tag tag-added"><i class="fa-solid fa-plus"></i> Bổ sung mới</span>';
+            if (asset.status === 'Đã giải chấp') {
+                if (isDeleteRegistrationView) return '';
+                return '<span class="table-status-tag tag-removed"><i class="fa-solid fa-minus"></i> Đã giải chấp</span>';
             }
+            if (asset.status === 'Đã hủy') return '<span class="table-status-tag tag-removed"><i class="fa-solid fa-ban"></i> Đã hủy</span>';
+            if (asset.status === 'Sửa thông tin') return '<span class="table-status-tag tag-modified"><i class="fa-solid fa-pen"></i> Sửa thông tin</span>';
+            if (asset.status === 'Đang xử lý') return '<span class="table-status-tag tag-processing">Đang xử lý</span>';
+            return '';
+        };
 
-            // Build merged asset list across all versions chronologically up to the current version
-            const historyVersions = mockTimelineData
-                .filter(v => v.version <= current.version)
-                .sort((a, b) => a.version - b.version);
+        const getAssetBucket = (asset) => {
+            const type = (asset.typeName || '').toLowerCase();
+            if (type.includes('hàng hóa luân chuyển') || type.includes('kho hàng')) return 'inventory';
+            if (type.includes('chứng khoán đã đăng ký tập trung')) return 'securities';
+            if (type.includes('quyền tài sản')) return 'rights';
+            if (type.includes('cây hằng năm') || type.includes('công trình tạm')) return 'annual';
+            if (type.includes('tàu cá') || type.includes('đường thủy') || type.includes('đường sắt')) return 'vehicle';
+            if (type.includes('có số khung') || type.includes('giao thông cơ giới đường bộ')) return 'road';
+            return 'other';
+        };
 
-            const trackedAssets = [];
-
-            historyVersions.forEach(ver => {
-                if (ver.data && ver.data.assets) {
-                    ver.data.assets.forEach(asset => {
-                        const existing = trackedAssets.find(ta => {
-                            if (asset.frameNo && asset.frameNo !== '-' && ta.frameNo === asset.frameNo) {
-                                return true;
-                            }
-                            return ta.name === asset.name && ta.brandColor === asset.brandColor;
-                        });
-
-                        if (existing) {
-                            existing.lastVersion = ver.label;
-                            existing.lastDate = ver.date;
-                            if (asset.status === 'Đã giải chấp' || asset.status === 'Đã hủy' || ver.data.hasDeRegistration || ver.data.hasCancelReg) {
-                                existing.status = 'Đã giải chấp / Hủy';
-                                existing.changeType = 'Giải chấp';
-                            } else if (asset.status === 'Sửa thông tin') {
-                                existing.brandColor = asset.brandColor;
-                                existing.status = 'Đang bảo đảm';
-                                existing.changeType = 'Sửa thông tin';
-                            } else {
-                                existing.status = 'Đang bảo đảm';
-                                existing.changeType = 'Không thay đổi';
-                            }
-                        } else {
-                            let initStatus = 'Đang bảo đảm';
-                            let changeType = 'Đăng ký gốc';
-                            if (ver.version > 1) {
-                                changeType = 'Bổ sung mới';
-                            }
-                            if (asset.status === 'Đã giải chấp' || asset.status === 'Đã hủy') {
-                                initStatus = 'Đã giải chấp / Hủy';
-                                changeType = 'Giải chấp';
-                            }
-
-                            trackedAssets.push({
-                                typeName: asset.typeName,
-                                name: asset.name,
-                                brandColor: asset.brandColor,
-                                frameNo: asset.frameNo,
-                                engineNo: asset.engineNo,
-                                plateNo: asset.plateNo,
-                                status: initStatus,
-                                lastVersion: ver.label,
-                                lastDate: ver.date,
-                                changeType: changeType
-                            });
-                        }
-                    });
-                }
-            });
-
-            trackedAssets.forEach((asset, idx) => {
-                const tr = document.createElement('tr');
-                
-                let statusHtml = '';
-                let rowStyle = '';
-                let textStyle = '';
-
-                if (asset.status === 'Đã giải chấp / Hủy') {
-                    rowStyle = 'background-color: #FEF2F2; text-decoration: line-through; color: var(--danger-dark);';
-                    textStyle = 'color: var(--danger-dark);';
-                    statusHtml = `<span class="table-status-tag tag-removed" style="background-color: var(--danger-light); color: var(--danger-dark); border: 1px solid #FCA5A5; font-size:11px; padding:2px 6px; border-radius:4px;"><i class="fa-solid fa-ban"></i> Đã giải chấp / Hủy</span>`;
-                } else if (asset.changeType === 'Bổ sung mới') {
-                    rowStyle = 'background-color: #F0FDF4;';
-                    textStyle = 'color: var(--success-dark);';
-                    statusHtml = `<span class="table-status-tag tag-added" style="background-color: var(--success-light); color: var(--success-dark); border: 1px solid #A7F3D0; font-size:11px; padding:2px 6px; border-radius:4px;"><i class="fa-solid fa-plus"></i> Đăng ký bổ sung</span>`;
-                } else if (asset.changeType === 'Sửa thông tin') {
-                    rowStyle = 'background-color: #FFFDF5;';
-                    textStyle = 'color: var(--text-main); font-weight: 600;';
-                    statusHtml = `<span class="table-status-tag tag-modified" style="background-color: var(--accent-light); color: var(--accent-dark); border: 1px solid #FDE68A; font-size:11px; padding:2px 6px; border-radius:4px;"><i class="fa-solid fa-pen"></i> Đang bảo đảm (Sửa)</span>`;
-                } else {
-                    textStyle = 'color: #0F172A;';
-                    statusHtml = `<span class="table-status-tag tag-normal" style="background-color: #F1F5F9; color: #334155; border: 1px solid #CBD5E1; font-size:11px; padding:2px 6px; border-radius:4px;">Đang bảo đảm</span>`;
-                }
-
-                tr.style.cssText = rowStyle;
-                tr.innerHTML = `
-                    <td style="text-align: center; ${textStyle}">${idx + 1}</td>
-                    <td style="${textStyle}">${asset.typeName || ''}</td>
-                    <td style="${textStyle}">${asset.name}</td>
-                    <td style="${textStyle}">${asset.brandColor}</td>
-                    <td style="${textStyle}"><code>${asset.frameNo || '-'}</code></td>
-                    <td style="${textStyle}"><code>${asset.plateNo || '-'}</code></td>
-                    <td style="text-align: center;">${statusHtml}</td>
-                    <td style="${textStyle}"><b>${asset.lastVersion}</b></td>
-                    <td style="${textStyle}">${asset.lastDate}</td>
-                    <td style="${textStyle} font-style: italic;">${asset.changeType}</td>
-                `;
-                assetsTableBody.appendChild(tr);
-            });
-
-        } else {
-            // Restore standard headers
-            const assetsTable = document.getElementById('assetsTable');
-            if (assetsTable) {
-                const thead = assetsTable.querySelector('thead');
-                if (thead) {
-                    thead.innerHTML = `
-                        <tr>
-                            <th style="width: 50px; text-align: center;">STT</th>
-                            <th>Loại tài sản</th>
-                            <th>Tên phương tiện / Tài sản</th>
-                            <th>Nhãn hiệu, màu sơn / Mô tả chi tiết</th>
-                            <th>Số khung / Số định danh</th>
-                            <th>Số máy / Biển số</th>
-                            <th>Trạng thái biến động</th>
-                        </tr>
-                    `;
-                }
+        const assetGroups = {
+            road: {
+                title: 'Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+                items: []
+            },
+            vehicle: {
+                title: 'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt, đường thủy, đường sắt',
+                items: []
+            },
+            rights: {
+                title: 'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản',
+                items: []
+            },
+            annual: {
+                title: 'Cây hằng năm, công trình tạm',
+                items: []
+            },
+            inventory: {
+                title: 'Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ',
+                items: []
+            },
+            securities: {
+                title: 'Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung',
+                items: []
+            },
+            other: {
+                title: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ, CHỨNG KHOÁN KHÔNG ĐĂNG KÝ TẬP TRUNG...)',
+                items: []
             }
+        };
 
-            // Show asset changes if selected version has changes or is Xóa/Hủy/Khôi phục/Chỉnh lý
-            const showAssetChanges = current.label.includes("Thay đổi") || 
-                                    current.label.includes("Xóa") || 
-                                    current.label.includes("Hủy") || 
-                                    current.label.includes("Khôi phục") || 
-                                    current.label.includes("Chỉnh lý");
+        const assetsForDisplay = isNoticeView
+            ? (currData.assets || []).filter(asset => asset.selectedForProcessing || asset.status === 'Rút khỏi thông báo')
+            : (currData.assets || []);
 
-            currData.assets.forEach((asset, idx) => {
-                const tr = document.createElement('tr');
-                tr.setAttribute('data-status', asset.status);
-                
-                let statusTag = '';
-                let rowClass = '';
-                
-                if (showAssetChanges) {
-                    if (asset.status === 'Bổ sung mới') {
-                        rowClass = 'asset-added';
-                        statusTag = '<span class="table-status-tag tag-added"><i class="fa-solid fa-plus"></i> Bổ sung mới</span>';
-                        addListSummaryRow('Tài sản bảo đảm', asset.name, 'Thêm mới', '-', `${asset.name} (${asset.brandColor})`);
-                    } else if (asset.status === 'Đã giải chấp') {
-                        rowClass = 'asset-removed';
-                        statusTag = '<span class="table-status-tag tag-removed"><i class="fa-solid fa-minus"></i> Đã giải chấp</span>';
-                        addListSummaryRow('Tài sản bảo đảm', asset.name, 'Rút bớt', `${asset.name} (${asset.brandColor})`, '-');
-                    } else if (asset.status === 'Đã hủy') {
-                        rowClass = 'asset-removed';
-                        statusTag = '<span class="table-status-tag tag-removed"><i class="fa-solid fa-ban"></i> Đã hủy</span>';
-                        addListSummaryRow('Tài sản bảo đảm', asset.name, 'Rút bớt', `${asset.name} (${asset.brandColor})`, '-');
-                    } else if (asset.status === 'Sửa thông tin') {
-                        rowClass = 'asset-modified';
-                        statusTag = '<span class="table-status-tag tag-modified"><i class="fa-solid fa-pen"></i> Sửa thông tin</span>';
-                    } else if (asset.status === 'Đang xử lý') {
-                        statusTag = '<span class="table-status-tag tag-processing">Đang xử lý</span>';
-                    } else {
-                        statusTag = '<span class="table-status-tag tag-normal">Đang bảo đảm</span>';
-                    }
-                } else {
-                    statusTag = '<span class="table-status-tag tag-normal">Đang bảo đảm</span>';
-                }
-                
-                if (rowClass) tr.className = rowClass;
+        assetsForDisplay.forEach(asset => {
+            assetGroups[getAssetBucket(asset)].items.push(asset);
 
-                let nameCell = `<td>${asset.name}</td>`;
-                let brandCell = `<td>${asset.brandColor}</td>`;
-                let frameCell = `<td>${asset.frameNo}</td>`;
-                let enginePlateCell = `<td>Khung/Máy: ${asset.engineNo} / Biển: ${asset.plateNo || 'Chưa đăng ký'}</td>`;
-                
-                if (showAssetChanges && asset.status === 'Sửa thông tin') {
+            if (!isNoticeView && showAssetChanges) {
+                if (asset.status === 'Bổ sung mới') {
+                    addListSummaryRow('Tài sản bảo đảm', asset.name, 'Thêm mới', '-', `${asset.name} (${asset.brandColor})`);
+                } else if (asset.status === 'Đã giải chấp' || asset.status === 'Đã hủy') {
+                    addListSummaryRow('Tài sản bảo đảm', asset.name, 'Rút bớt', `${asset.name} (${asset.brandColor})`, '-');
+                } else if (asset.status === 'Sửa thông tin') {
                     if (asset.prevName && asset.prevName !== asset.name) {
-                        nameCell = `
-                            <td class="cell-modified">
-                                <del style="color: var(--text-muted); font-size:11.5px;">${asset.prevName}</del><br>
-                                <strong>${asset.name}</strong>
-                            </td>
-                        `;
                         addListSummaryRow('Tài sản bảo đảm', 'Tên tài sản', 'Chỉnh sửa', asset.prevName, asset.name);
                     }
                     if (asset.prevBrandColor && asset.prevBrandColor !== asset.brandColor) {
-                        brandCell = `
-                            <td class="cell-modified">
-                                <del style="color: var(--text-muted); font-size:11.5px;">${asset.prevBrandColor}</del><br>
-                                <strong>${asset.brandColor}</strong>
-                            </td>
-                        `;
-                        addListSummaryRow('Tài sản bảo đảm', 'Nhãn hiệu, màu sơn', 'Chỉnh sửa', asset.prevBrandColor, asset.brandColor);
+                        const detailLabel = { road: 'Nhãn hiệu, màu sơn', vehicle: 'Tên phương tiện, nhãn hiệu', rights: 'Căn cứ phát sinh quyền', inventory: 'Giá trị hàng hóa/Tên, loại hàng hóa' }[getAssetBucket(asset)] || 'Mô tả';
+                        addListSummaryRow('Tài sản bảo đảm', detailLabel, 'Chỉnh sửa', asset.prevBrandColor, asset.brandColor);
                     }
                     if (asset.prevFrameNo && asset.prevFrameNo !== asset.frameNo) {
-                        frameCell = `
-                            <td class="cell-modified">
-                                <del style="color: var(--text-muted); font-size:11.5px;">${asset.prevFrameNo}</del><br>
-                                <strong>${asset.frameNo}</strong>
-                            </td>
-                        `;
                         addListSummaryRow('Tài sản bảo đảm', 'Số khung', 'Chỉnh sửa', asset.prevFrameNo, asset.frameNo);
                     }
                 }
+            }
+        });
 
-                let typeNameCell = '';
-                if (asset.typeName && asset.typeName.length > 40) {
-                    typeNameCell = `<td title="${asset.typeName}">${asset.typeName.substring(0, 37)}...</td>`;
-                } else {
-                    typeNameCell = `<td>${asset.typeName || ''}</td>`;
-                }
+        const blockHtml = (groupKey, bodyHtml) => {
+            const group = assetGroups[groupKey];
+            const hasProcessingChange = isChangeNoticeView && (
+                currentProcessingInfo.reason !== previousProcessingInfo.reason ||
+                currentProcessingInfo.time !== previousProcessingInfo.time ||
+                currentProcessingInfo.location !== previousProcessingInfo.location
+            );
+            const hasChange = group.items.some(asset => ['Bổ sung mới', 'Đã giải chấp', 'Đã hủy', 'Sửa thông tin', 'Bổ sung xử lý', 'Rút khỏi thông báo'].includes(asset.status)) || hasProcessingChange;
+            const hiddenClass = diffToggle.checked && !hasChange ? ' ucps-asset-type-hidden' : '';
+            return `
+                <div class="ucps-review-asset-block${hiddenClass}" data-asset-group="${groupKey}" data-has-change="${hasChange}">
+                    <div class="ucps-review-asset-title">
+                        <span>${htmlEscape(group.title)}</span>
+                    </div>
+                    <div class="ucps-review-asset-body">
+                        ${bodyHtml}
+                    </div>
+                </div>
+            `;
+        };
 
-                tr.innerHTML = `
-                    <td style="text-align: center;">${idx + 1}</td>
-                    ${typeNameCell}
-                    ${nameCell}
-                    ${brandCell}
-                    ${frameCell}
-                    ${enginePlateCell}
-                    <td style="text-align: center;">${statusTag}</td>
-                `;
-                assetsTableBody.appendChild(tr);
-            });
+        const processingInfoHtml = (items = []) => {
+            if (!isNoticeView) return '';
+            const isAddedOrRemovedOnlyGroup = isChangeNoticeView &&
+                items.length > 0 &&
+                items.every(asset => ['Bổ sung xử lý', 'Rút khỏi thông báo'].includes(asset.status));
+            const renderNoticeChangedText = (fieldKey, currentValue) => {
+                const previousValue = previousProcessingInfo[fieldKey];
+                return isChangeNoticeView && !isAddedOrRemovedOnlyGroup
+                    ? renderChangedText(currentValue, previousValue)
+                    : htmlEscape(currentValue || '-');
+            };
+
+            return `
+                <div class="ucps-processing-info" data-status="${isChangeNoticeView ? 'Sửa thông tin' : 'Thông tin xử lý'}" style="margin-top: 14px; border: 1px solid #BFDBFE; border-left: 4px solid var(--primary-color); border-radius: var(--border-radius-md); background: #EFF6FF; padding: 12px 14px;">
+                    <div style="font-weight: 800; color: var(--primary-color); margin-bottom: 10px;">
+                        <i class="fa-solid fa-gavel"></i> Thông tin xử lý tài sản
+                    </div>
+                    <div class="info-grid-3">
+                        <div class="info-field" style="padding: 0;">
+                            <span class="field-label">Lý do xử lý</span>
+                            <span class="field-value">${renderNoticeChangedText('reason', currentProcessingInfo.reason)}</span>
+                        </div>
+                        <div class="info-field" style="padding: 0;">
+                            <span class="field-label">Thời gian xử lý</span>
+                            <span class="field-value">${renderNoticeChangedText('time', currentProcessingInfo.time)}</span>
+                        </div>
+                        <div class="info-field" style="padding: 0;">
+                            <span class="field-label">Địa điểm xử lý</span>
+                            <span class="field-value">${renderNoticeChangedText('location', currentProcessingInfo.location)}</span>
+                        </div>
+                        ${isDeleteNoticeView ? `
+                            <div class="info-field" style="padding: 0; grid-column: 1 / -1;">
+                                <span class="field-label">Lý do xóa thông báo</span>
+                                <span class="field-value">${htmlEscape(currData.deleteNoticeInfo?.reason || 'Các bên thỏa thuận không xử lý tài sản bảo đảm.')}</span>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        };
+
+        const renderRoadTable = (items) => `
+            <div style="font-weight: 700; color: var(--primary-color); margin-bottom: 10px;">Số khung</div>
+            <div style="overflow-x: auto;">
+                <table class="grid-view-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 56px; text-align: center;">STT</th>
+                            <th>TÊN PHƯƠNG TIỆN</th>
+                            <th>NHÃN HIỆU, MÀU SƠN</th>
+                            <th>SỐ KHUNG</th>
+                            <th>SỐ MÁY</th>
+                            <th>BIỂN SỐ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${items.map((asset, idx) => `
+                            <tr data-status="${htmlEscape(asset.status)}">
+                                <td style="text-align:center;">${idx + 1}</td>
+                                <td>${htmlEscape(asset.name)} ${assetStatusBadge(asset)}</td>
+                                <td>${htmlEscape(asset.brandColor)}</td>
+                                <td><code>${htmlEscape(asset.frameNo)}</code></td>
+                                <td><code>${htmlEscape(asset.engineNo)}</code></td>
+                                <td><code>${htmlEscape(asset.plateNo || '-')}</code></td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+            ${processingInfoHtml(items)}
+        `;
+
+        const renderVehicleTable = (items) => `
+            <div style="font-weight: 700; color: var(--primary-color); margin-bottom: 10px;">Phương tiện</div>
+            <div style="overflow-x: auto;">
+                <table class="grid-view-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 56px; text-align: center;">STT</th>
+                            <th>TÊN PHƯƠNG TIỆN, NHÃN HIỆU</th>
+                            <th>TÊN/HỌ TÊN CHỦ PHƯƠNG TIỆN/CHỦ SỞ HỮU</th>
+                            <th>SỐ ĐĂNG KÝ</th>
+                            <th>CƠ QUAN CẤP GIẤY CHỨNG NHẬN</th>
+                            <th>CẤP PHƯƠNG TIỆN</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${items.map((asset, idx) => `
+                            <tr data-status="${htmlEscape(asset.status)}">
+                                <td style="text-align:center;">${idx + 1}</td>
+                                <td>${htmlEscape(asset.name)}<br><span style="color: var(--text-muted);">${htmlEscape(asset.brandColor)}</span> ${assetStatusBadge(asset)}</td>
+                                <td>${htmlEscape(asset.ownerName || currData.securingParties?.[0]?.name || '-')}</td>
+                                <td><code>${htmlEscape(asset.registrationNo || asset.plateNo || '-')}</code></td>
+                                <td>${htmlEscape(asset.certificateAgency || '-')}</td>
+                                <td>${htmlEscape(asset.vehicleLevel || '-')}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+            ${processingInfoHtml(items)}
+        `;
+
+        const renderChangedText = (currentValue, previousValue) => {
+            const hasChanged = showAssetChanges && previousValue && previousValue !== currentValue;
+            const escapedCurrent = htmlEscape(currentValue);
+            if (!hasChanged) return escapedCurrent;
+
+            return `
+                <span class="cell-modified">
+                    ${escapedCurrent}
+                    <div class="popover-container" style="display:inline-block; margin-left: 5px;">
+                        <span class="history-trigger-icon"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                        <div class="history-popover">Giá trị cũ: ${htmlEscape(previousValue)}</div>
+                    </div>
+                </span>
+            `;
+        };
+
+        const renderTextAssets = (items) => items.map(asset => `
+            <div class="ucps-readonly-text" data-status="${htmlEscape(asset.status)}">
+                <strong>${renderChangedText(asset.name, asset.status === 'Bổ sung xử lý' ? null : asset.prevName)}</strong> ${assetStatusBadge(asset)}
+                <br>${renderChangedText(asset.brandColor, asset.status === 'Bổ sung xử lý' ? null : asset.prevBrandColor)}
+            </div>
+        `).join('<div style="height: 10px;"></div>') + processingInfoHtml(items);
+
+        const renderInventoryAssets = (items) => items.map(asset => `
+            <div class="ucps-readonly-text" data-status="${htmlEscape(asset.status)}">
+                <strong>${renderChangedText(asset.name, asset.status === 'Bổ sung xử lý' ? null : asset.prevName)}</strong> ${assetStatusBadge(asset)}
+                <div class="info-grid-3" style="margin-top: 8px;">
+                    <div class="info-field" style="padding: 0;"><span class="field-label">Hàng hóa luân chuyển / Kho hàng</span><span class="field-value">${htmlEscape(asset.goodsKind || 'Kho hàng')}</span></div>
+                    <div class="info-field" style="padding: 0; grid-column: span 2;"><span class="field-label">Giá trị hàng hóa/Tên, loại hàng hóa</span><span class="field-value">${renderChangedText(asset.brandColor, asset.status === 'Bổ sung xử lý' ? null : asset.prevBrandColor)}</span></div>
+                    ${(asset.goodsKind || 'Kho hàng') === 'Kho hàng' ? `
+                        <div class="info-field" style="padding: 0; grid-column: span 2;"><span class="field-label">Địa chỉ kho hàng</span><span class="field-value">${htmlEscape(asset.warehouseAddress || '-')}</span></div>
+                        <div class="info-field" style="padding: 0;"><span class="field-label">Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng</span><span class="field-value">${htmlEscape(asset.warehouseNo || '-')}</span></div>` : ''}
+                </div>
+            </div>
+        `).join('<div style="height: 10px;"></div>') + processingInfoHtml(items);
+
+        const renderSecuritiesAssets = (items) => items.map(asset => {
+            const t = asset.vsdcTime || {};
+            return `
+            <div class="ucps-readonly-text" data-status="${htmlEscape(asset.status)}">
+                <strong>${renderChangedText(asset.name, asset.status === 'Bổ sung xử lý' ? null : asset.prevName)}</strong> ${assetStatusBadge(asset)}
+                <br>${renderChangedText(asset.brandColor, asset.status === 'Bổ sung xử lý' ? null : asset.prevBrandColor)}
+            </div>
+            <div style="font-weight: 700; color: var(--primary-color); margin: 12px 0 8px;">Thời điểm đăng ký biện pháp bảo đảm bằng chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam</div>
+            <div style="overflow-x: auto;">
+                <table class="grid-view-table">
+                    <thead><tr><th>GIỜ</th><th>PHÚT</th><th>NGÀY</th><th>THÁNG</th><th>NĂM</th></tr></thead>
+                    <tbody><tr><td>${htmlEscape(t.hour || '-')}</td><td>${htmlEscape(t.minute || '-')}</td><td>${htmlEscape(t.day || '-')}</td><td>${htmlEscape(t.month || '-')}</td><td>${htmlEscape(t.year || '-')}</td></tr></tbody>
+                </table>
+            </div>`;
+        }).join('<div style="height: 10px;"></div>') + processingInfoHtml(items);
+
+        const assetHtml = [];
+        if (assetGroups.road.items.length) assetHtml.push(blockHtml('road', renderRoadTable(assetGroups.road.items)));
+        if (assetGroups.vehicle.items.length) assetHtml.push(blockHtml('vehicle', renderVehicleTable(assetGroups.vehicle.items)));
+        if (assetGroups.rights.items.length) assetHtml.push(blockHtml('rights', renderTextAssets(assetGroups.rights.items)));
+        if (assetGroups.annual.items.length) assetHtml.push(blockHtml('annual', renderTextAssets(assetGroups.annual.items)));
+        if (assetGroups.inventory.items.length) assetHtml.push(blockHtml('inventory', renderInventoryAssets(assetGroups.inventory.items)));
+        if (assetGroups.securities.items.length) assetHtml.push(blockHtml('securities', renderSecuritiesAssets(assetGroups.securities.items)));
+        if (assetGroups.other.items.length) assetHtml.push(blockHtml('other', renderTextAssets(assetGroups.other.items)));
+
+        if (assetTypeSections) {
+            assetTypeSections.innerHTML = assetHtml.join('');
+        }
+        if (assetsEmpty) {
+            assetsEmpty.style.display = assetHtml.length ? 'none' : 'block';
         }
 
         // Hide change summary if version is Đăng ký lần đầu (Gốc)
@@ -3077,11 +3130,16 @@ document.addEventListener('DOMContentLoaded', function () {
         sectionSecuredParties.style.display = (isDiffOnly && !hasSecuredDiff) ? 'none' : 'block';
 
         // 6. Assets
-        const assetRows = assetsTableBody.querySelectorAll('tr');
+        const assetRows = assetTypeSections ? assetTypeSections.querySelectorAll('[data-status]') : [];
         let hasAssetDiff = false;
         assetRows.forEach(row => {
             const status = row.getAttribute('data-status');
-            const isChange = status === 'Bổ sung mới' || status === 'Đã giải chấp' || status === 'Đã hủy' || status === 'Sửa thông tin';
+            const isChange = status === 'Bổ sung mới' ||
+                status === 'Đã giải chấp' ||
+                status === 'Đã hủy' ||
+                status === 'Sửa thông tin' ||
+                status === 'Bổ sung xử lý' ||
+                status === 'Rút khỏi thông báo';
             if (isDiffOnly) {
                 if (isChange) {
                     row.style.display = '';

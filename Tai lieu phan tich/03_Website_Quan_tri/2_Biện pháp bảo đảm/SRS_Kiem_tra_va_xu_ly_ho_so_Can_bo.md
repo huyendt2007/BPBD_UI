@@ -133,26 +133,25 @@
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **I. Thông tin yêu cầu cung cấp bản sao** | - | - | - | Toàn bộ dữ liệu chỉ đọc, không cho phép sửa. |
+| **Thông tin yêu cầu cung cấp bản sao** | - | - | - | Toàn bộ dữ liệu chỉ đọc, không cho phép sửa. |
 | Mã hồ sơ | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Người yêu cầu | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Số đăng ký | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Loại cung cấp bản sao | - | - | - | Control UI: Label dạng nhãn (Badge), chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Số lượng bản sao | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi.<br>- Chỉ hiển thị khi Loại cung cấp bản sao là "Bản sao giấy". |
-| **II. Thông tin trả lại** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion) viền đỏ, đặt ngay dưới Khối I.<br>- Hiển thị khi hồ sơ đang ở trạng thái "Bị trả lại", hoặc hồ sơ đã từng bị trả lại và được Cán bộ cập nhật, trình ký lại (hệ thống giữ lại vết lịch sử các lần trả lại trước đó).<br>- Mặc định mở rộng khi hồ sơ đang ở trạng thái "Bị trả lại"; mặc định thu gọn khi hồ sơ đã được trình ký lại.<br>- Liệt kê lần lượt các lần hồ sơ bị trả lại, sắp xếp theo Thời điểm trả lại giảm dần (lần gần nhất ở trên cùng); mỗi lần trả lại gồm các trường bên dưới.<br>- Toàn bộ dữ liệu chỉ đọc, không cho phép sửa. |
+| **Thông tin trả lại** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion) viền đỏ, đặt ngay dưới Khối Thông tin yêu cầu cung cấp bản sao.<br>- Hiển thị khi hồ sơ đang ở trạng thái "Bị trả lại", hoặc hồ sơ đã từng bị trả lại và được Cán bộ cập nhật, trình ký lại (hệ thống giữ lại vết lịch sử các lần trả lại trước đó).<br>- Mặc định mở rộng khi hồ sơ đang ở trạng thái "Bị trả lại"; mặc định thu gọn khi hồ sơ đã được trình ký lại.<br>- Liệt kê lần lượt các lần hồ sơ bị trả lại, sắp xếp theo Thời điểm trả lại giảm dần (lần gần nhất ở trên cùng); mỗi lần trả lại gồm các trường bên dưới.<br>- Toàn bộ dữ liệu chỉ đọc, không cho phép sửa. |
 | Lý do trả lại | - | - | - | Control UI: Label, chỉ đọc, chữ màu đỏ.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Lãnh đạo trả lại | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Thời điểm trả lại | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi.<br>- Định dạng hiển thị: dd/mm/yyyy hh:mm. |
 | Thời điểm trình ký lại | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi.<br>- Định dạng hiển thị: dd/mm/yyyy hh:mm.<br>- Chỉ hiển thị khi hồ sơ đã được Cán bộ trình ký lại sau lần trả lại đó. |
-| **III. Thông tin từ chối** | - | - | - | Control UI: Khối thông tin viền đỏ, chỉ đọc, đặt ngay dưới Khối I.<br>- Chỉ hiển thị khi hồ sơ ở trạng thái "Bị từ chối".<br>- Toàn bộ dữ liệu chỉ đọc, không cho phép sửa. |
+| **Thông tin từ chối** | - | - | - | Control UI: Khối thông tin viền đỏ, chỉ đọc, đặt ngay dưới Khối Thông tin yêu cầu cung cấp bản sao.<br>- Chỉ hiển thị khi hồ sơ ở trạng thái "Bị từ chối".<br>- Toàn bộ dữ liệu chỉ đọc, không cho phép sửa. |
 | Lý do từ chối | - | - | - | Control UI: Label, chỉ đọc, chữ màu đỏ.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Người từ chối | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi.<br>- Họ tên Cán bộ hoặc Lãnh đạo đã thực hiện từ chối. |
 | Thời điểm từ chối | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi.<br>- Định dạng hiển thị: dd/mm/yyyy hh:mm. |
 | Lãnh đạo ký văn bản từ chối | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi.<br>- Chỉ hiển thị khi văn bản từ chối được trình Lãnh đạo ký. |
 | Văn bản từ chối đã ký | - | - | - | Control UI: Link "Xem file", chỉ đọc.<br>- Hiển thị file Thông báo/Văn bản từ chối đã được Lãnh đạo ký số.<br>- Chỉ hiển thị khi hồ sơ có văn bản từ chối đã ký. |
 | Tài liệu đính kèm lý do từ chối | - | - | - | Control UI: Link "Xem file", chỉ đọc.<br>- Hiển thị tài liệu Cán bộ đính kèm khi từ chối (đối với hồ sơ giấy).<br>- Chỉ hiển thị khi có tài liệu đính kèm. |
-| **IV. Cấu trúc chi tiết danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng** | - | - | - | Control UI: Khối hiển thị nổi bật, chỉ đọc, đặt dưới các Khối I đến III.<br>- Khối có khung viền riêng; dòng tiêu đề "Đăng ký giao dịch bảo đảm / Hợp đồng - [Số đăng ký]" in đậm trên nền màu nhấn để Cán bộ nhận biết ngay hồ sơ gốc cần cấp bản sao.<br>- Hiển thị dữ liệu hồ sơ gốc đã tra cứu theo Số đăng ký tại bước xử lý; hệ thống không tra cứu lại, Cán bộ không phải bấm "Tra cứu".<br>- Gồm lần lượt các khối IV.1 đến IV.6 bên dưới. |
-| **IV.1. Danh sách hồ sơ đăng ký giao dịch bảo đảm / hợp đồng** | - | - | - | |
+| **Kết quả tra cứu** | - | - | - | Control UI: Khối hiển thị nổi bật, chỉ đọc, đặt dưới khối Thông tin yêu cầu cung cấp bản sao (hoặc dưới Thông tin trả lại / Thông tin từ chối nếu có).<br>- Khối có khung viền riêng; dòng tiêu đề "Đăng ký giao dịch bảo đảm / Hợp đồng - [Số đăng ký]" in đậm trên nền màu nhấn để Cán bộ nhận biết ngay hồ sơ gốc cần cấp bản sao.<br>- Hiển thị dữ liệu hồ sơ gốc đã tra cứu theo Số đăng ký tại bước xử lý; hệ thống không tra cứu lại, Cán bộ không phải bấm "Tra cứu".<br>- Gồm lần lượt các thông tin và khối bên dưới: thông tin chung của hồ sơ, Thông tin đăng ký, Bên bảo đảm, Bên nhận bảo đảm, Tài sản bảo đảm. |
 | Loại hình giao dịch | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Loại biện pháp | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Loại hợp đồng | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
@@ -160,22 +159,19 @@
 | Trạng thái | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Số hợp đồng | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Ngày có hiệu lực của hợp đồng | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
-| **IV.2. Thông tin người đăng ký** | - | - | - | |
-| Họ và tên | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
-| Địa chỉ | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
-| **IV.3. Thông tin đăng ký** | - | - | - | |
+| **Thông tin đăng ký** | - | - | - | |
 | Số đăng ký | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Thời điểm đăng ký | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Thời điểm có hiệu lực | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
-| **IV.4. Bên bảo đảm** | - | - | - | Control UI: Bảng dữ liệu (Grid), chỉ đọc. |
+| **Bên bảo đảm** | - | - | - | Control UI: Bảng dữ liệu (Grid), chỉ đọc. |
 | Cột: Loại chủ thể | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Cột: Số giấy tờ chứng minh tư cách pháp lý | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Cột: Tên | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Cột: Địa chỉ | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
-| **IV.5. Bên nhận bảo đảm** | - | - | - | Control UI: Bảng dữ liệu (Grid), chỉ đọc. |
+| **Bên nhận bảo đảm** | - | - | - | Control UI: Bảng dữ liệu (Grid), chỉ đọc. |
 | Cột: Tên | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Cột: Địa chỉ | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
-| **IV.6. Tài sản bảo đảm** | - | - | - | Hiển thị lần lượt từng tài sản bảo đảm của hồ sơ gốc. |
+| **Tài sản bảo đảm** | - | - | - | Hiển thị lần lượt từng tài sản bảo đảm của hồ sơ gốc. |
 | Loại tài sản | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Mô tả | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Bảng thông tin Số khung | - | - | - | Control UI: Bảng dữ liệu (Grid), chỉ đọc.<br>- Gồm các cột: Tên phương tiện, Nhãn hiệu, màu sơn, Số khung, Số máy, Biển số.<br>- Hiển thị theo dữ liệu bản ghi. |
@@ -239,7 +235,7 @@
 | Dữ liệu đầu vào tra cứu | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Thông báo không có dữ liệu | - | - | - | Control UI: Khung cảnh báo Inline, chỉ đọc.<br>- Chỉ hiển thị khi kết quả tra cứu đã lưu không có dữ liệu, nội dung [MSG-WRN-CCTT-001]. |
 | Tổng số hồ sơ phù hợp | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi.<br>- Chỉ hiển thị khi kết quả tra cứu có dữ liệu. |
-| Danh sách hồ sơ đăng ký giao dịch bảo đảm/hợp đồng tìm thấy | - | - | - | Control UI: Khối danh sách, chỉ đọc.<br>- Chỉ hiển thị khi kết quả tra cứu có dữ liệu.<br>- Hiển thị lần lượt từng hồ sơ theo Thời điểm đăng ký tăng dần, dòng tiêu đề mỗi hồ sơ gồm "Hồ sơ [n]", "Đăng ký giao dịch bảo đảm / Hợp đồng - [Số đăng ký]" và nhãn Trường hợp đăng ký.<br>- Chi tiết mỗi hồ sơ gồm các khối giống Khối IV.1 đến IV.6 tại [MH04 - Màn hình Xem chi tiết yêu cầu cung cấp bản sao](#43215-mh04---man-hinh-xem-chi-tiet-yeu-cau-cung-cap-ban-sao). |
+| Danh sách hồ sơ đăng ký giao dịch bảo đảm/hợp đồng tìm thấy | - | - | - | Control UI: Khối danh sách, chỉ đọc.<br>- Chỉ hiển thị khi kết quả tra cứu có dữ liệu.<br>- Hiển thị lần lượt từng hồ sơ theo Thời điểm đăng ký tăng dần, dòng tiêu đề mỗi hồ sơ gồm "Hồ sơ [n]", "Đăng ký giao dịch bảo đảm / Hợp đồng - [Số đăng ký]" và nhãn Trường hợp đăng ký.<br>- Chi tiết mỗi hồ sơ hiển thị giống Khối Kết quả tra cứu tại [MH04 - Màn hình Xem chi tiết yêu cầu cung cấp bản sao](#43215-mh04---man-hinh-xem-chi-tiet-yeu-cau-cung-cap-ban-sao). |
 | **VI. Thanh nút chức năng** | - | - | - | Control UI: Thanh nút cố định (Sticky) ở cuối màn hình, luôn hiển thị kể cả khi nội dung ngắn hoặc khi cuộn trang.<br>- Nút hiển thị theo Tab trạng thái đã mở màn hình.<br>- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
 
 ##### 4.3.2.1.6.3. Chức năng trên màn hình
