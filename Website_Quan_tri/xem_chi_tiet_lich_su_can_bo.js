@@ -2948,12 +2948,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const renderSecuritiesAssets = (items) => items.map(asset => {
             const t = asset.vsdcTime || {};
+            // Chứng khoán đã đăng ký tập trung: chỉ hiển thị Bảng Thời điểm đăng ký tại VSDC, không có phần mô tả
             return `
-            <div class="ucps-readonly-text" data-status="${htmlEscape(asset.status)}">
-                <strong>${renderChangedText(asset.name, asset.status === 'Bổ sung xử lý' ? null : asset.prevName)}</strong> ${assetStatusBadge(asset)}
-                <br>${renderChangedText(asset.brandColor, asset.status === 'Bổ sung xử lý' ? null : asset.prevBrandColor)}
-            </div>
-            <div style="font-weight: 700; color: var(--primary-color); margin: 12px 0 8px;">Thời điểm đăng ký biện pháp bảo đảm bằng chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam</div>
+            <div data-status="${htmlEscape(asset.status)}" style="font-weight: 700; color: var(--primary-color); margin: 0 0 8px;">Thời điểm đăng ký biện pháp bảo đảm bằng chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam ${assetStatusBadge(asset)}</div>
             <div style="overflow-x: auto;">
                 <table class="grid-view-table">
                     <thead><tr><th>GIỜ</th><th>PHÚT</th><th>NGÀY</th><th>THÁNG</th><th>NĂM</th></tr></thead>

@@ -93,15 +93,63 @@
     // Hiển thị danh mục tài sản bảo đảm chuẩn SRS (phân loại theo nhóm, không hiển thị cột Mô tả thừa ở phương tiện)
     function renderAssetsHtml(assets) {
         if (!assets || !assets.length) return '<div style="color:#64748b;font-style:italic;padding:10px 0">Không có thông tin tài sản bảo đảm.</div>';
-        return assets.map(a => {
-            if (a.type === 'road' || a.frames || a.assetType === 'Phương tiện giao thông') {
-                const titleText = a.groupTitle || 'Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)';
-                const items = a.items || a.frames || [];
+
+        // Nhóm các tài sản theo nhóm danh mục chuẩn SRS để không bị lặp tiêu đề nhóm
+        const groups = [];
+        const groupMap = {};
+
+        assets.forEach(a => {
+            let cat = 'other';
+            let titleText = a.groupTitle || a.assetType || 'Tài sản bảo đảm khác';
+
+            if (a.type === 'road' || a.frames || a.assetType === 'Phương tiện giao thông' || (titleText && titleText.includes('cơ giới đường bộ'))) {
+                cat = 'road';
+                titleText = a.groupTitle || 'Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)';
+            } else if (a.type === 'vehicle' || (titleText && (titleText.includes('tàu cá') || titleText.includes('đường thủy') || titleText.includes('đường sắt')))) {
+                cat = 'vehicle';
+                titleText = a.groupTitle || 'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt, đường thủy, đường sắt';
+            } else if (a.type === 'rights' || a.assetType === 'Quyền tài sản' || (titleText && titleText.includes('quyền tài sản'))) {
+                cat = 'rights';
+                titleText = a.groupTitle || 'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản';
+            }
+
+            const groupKey = cat + '::' + titleText;
+            if (!groupMap[groupKey]) {
+                groupMap[groupKey] = {
+                    cat,
+                    titleText,
+                    subTitle: a.subTitle || (cat === 'road' ? 'Số khung' : (cat === 'vehicle' ? 'Phương tiện' : '')),
+                    items: []
+                };
+                groups.push(groupMap[groupKey]);
+            }
+
+            if (cat === 'road') {
+                const subItems = a.items || a.frames || [a];
+                subItems.forEach(it => {
+                    if (it.frameNo || it.vehicleName || it.brandColor || it.name) {
+                        groupMap[groupKey].items.push(it);
+                    }
+                });
+            } else if (cat === 'vehicle') {
+                const subItems = a.items || [a];
+                subItems.forEach(it => {
+                    if (it.regNo || it.registrationNo || it.vehicleName || it.name || it.owner) {
+                        groupMap[groupKey].items.push(it);
+                    }
+                });
+            } else {
+                groupMap[groupKey].items.push(a);
+            }
+        });
+
+        return groups.map(g => {
+            if (g.cat === 'road') {
                 return `
                     <div style="border:1px solid #e2e8f0;border-radius:8px;background:#fff;overflow:hidden;margin-bottom:14px">
-                        <div style="background:#f8fafc;padding:11px 16px;font-weight:700;color:#1e3a8a;border-bottom:1px solid #e2e8f0;font-size:13.5px">${esc(titleText)}</div>
+                        <div style="background:#f8fafc;padding:11px 16px;font-weight:700;color:#1e3a8a;border-bottom:1px solid #e2e8f0;font-size:13.5px">${esc(g.titleText)}</div>
                         <div style="padding:14px 16px">
-                            <div style="font-weight:700;color:#1e3a8a;margin-bottom:8px;font-size:13px">${esc(a.subTitle || 'Số khung')}</div>
+                            <div style="font-weight:700;color:#1e3a8a;margin-bottom:8px;font-size:13px">${esc(g.subTitle || 'Số khung')}</div>
                             <div style="overflow-x:auto">
                                 <table style="width:100%;border-collapse:collapse;font-size:12.5px">
                                     <thead>
@@ -115,7 +163,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        ${items.map((it, idx) => `
+                                        ${g.items.map((it, idx) => `
                                             <tr>
                                                 <td style="${td};text-align:center">${idx + 1}</td>
                                                 <td style="${td}">${esc(it.vehicleName || it.name || '')}</td>
@@ -131,14 +179,12 @@
                         </div>
                     </div>
                 `;
-            } else if (a.type === 'vehicle') {
-                const titleText = a.groupTitle || 'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt, đường thủy, đường sắt';
-                const items = a.items || [];
+            } else if (g.cat === 'vehicle') {
                 return `
                     <div style="border:1px solid #e2e8f0;border-radius:8px;background:#fff;overflow:hidden;margin-bottom:14px">
-                        <div style="background:#f8fafc;padding:11px 16px;font-weight:700;color:#1e3a8a;border-bottom:1px solid #e2e8f0;font-size:13.5px">${esc(titleText)}</div>
+                        <div style="background:#f8fafc;padding:11px 16px;font-weight:700;color:#1e3a8a;border-bottom:1px solid #e2e8f0;font-size:13.5px">${esc(g.titleText)}</div>
                         <div style="padding:14px 16px">
-                            <div style="font-weight:700;color:#1e3a8a;margin-bottom:8px;font-size:13px">${esc(a.subTitle || 'Phương tiện')}</div>
+                            <div style="font-weight:700;color:#1e3a8a;margin-bottom:8px;font-size:13px">${esc(g.subTitle || 'Phương tiện')}</div>
                             <div style="overflow-x:auto">
                                 <table style="width:100%;border-collapse:collapse;font-size:12.5px">
                                     <thead>
@@ -152,7 +198,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        ${items.map((it, idx) => `
+                                        ${g.items.map((it, idx) => `
                                             <tr>
                                                 <td style="${td};text-align:center">${idx + 1}</td>
                                                 <td style="${td}">${esc(it.vehicleName || it.name || '')}${it.subInfo ? `<br><span style="color:#64748b;font-size:12px">${esc(it.subInfo)}</span>` : ''}</td>
@@ -168,31 +214,35 @@
                         </div>
                     </div>
                 `;
-            } else if (a.type === 'rights' || a.assetType === 'Quyền tài sản') {
-                const titleText = a.groupTitle || 'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản';
-                const name = a.name || a.rightName || a.description || '';
-                const basis = a.basis || a.rightBasis || '';
+            } else if (g.cat === 'rights') {
                 return `
                     <div style="border:1px solid #e2e8f0;border-radius:8px;background:#fff;overflow:hidden;margin-bottom:14px">
-                        <div style="background:#f8fafc;padding:11px 16px;font-weight:700;color:#1e3a8a;border-bottom:1px solid #e2e8f0;font-size:13.5px">${esc(titleText)}</div>
-                        <div style="padding:14px 16px">
-                            <div style="border:1px solid #e2e8f0;border-radius:6px;padding:14px 16px;background:#f8fafc">
-                                <div style="font-weight:700;color:#0f172a;margin-bottom:4px;font-size:13.5px">${esc(name)}</div>
-                                <div style="color:#475569;font-size:13px;line-height:1.5">${esc(basis)}</div>
-                            </div>
+                        <div style="background:#f8fafc;padding:11px 16px;font-weight:700;color:#1e3a8a;border-bottom:1px solid #e2e8f0;font-size:13.5px">${esc(g.titleText)}</div>
+                        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+                            ${g.items.map(it => {
+                                const name = it.rightName || it.name || it.description || '';
+                                const basis = it.rightBasis || it.basis || '';
+                                return `
+                                    <div style="border:1px solid #e2e8f0;border-radius:6px;padding:14px 16px;background:#f8fafc">
+                                        <div style="font-weight:700;color:#0f172a;margin-bottom:4px;font-size:13.5px">${esc(name)}</div>
+                                        ${basis ? `<div style="color:#475569;font-size:13px;line-height:1.5">${esc(basis)}</div>` : ''}
+                                    </div>
+                                `;
+                            }).join('')}
                         </div>
                     </div>
                 `;
             } else {
-                const titleText = a.groupTitle || a.assetType || 'Tài sản bảo đảm khác';
                 return `
                     <div style="border:1px solid #e2e8f0;border-radius:8px;background:#fff;overflow:hidden;margin-bottom:14px">
-                        <div style="background:#f8fafc;padding:11px 16px;font-weight:700;color:#1e3a8a;border-bottom:1px solid #e2e8f0;font-size:13.5px">${esc(titleText)}</div>
-                        <div style="padding:14px 16px">
-                            <div style="border:1px solid #e2e8f0;border-radius:6px;padding:14px 16px;background:#f8fafc">
-                                <div style="font-weight:700;color:#0f172a;margin-bottom:4px">${esc(a.name || a.description || '')}</div>
-                                <div style="color:#475569;font-size:13px">${esc(a.basis || a.rightBasis || '')}</div>
-                            </div>
+                        <div style="background:#f8fafc;padding:11px 16px;font-weight:700;color:#1e3a8a;border-bottom:1px solid #e2e8f0;font-size:13.5px">${esc(g.titleText)}</div>
+                        <div style="padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+                            ${g.items.map(it => `
+                                <div style="border:1px solid #e2e8f0;border-radius:6px;padding:14px 16px;background:#f8fafc">
+                                    <div style="font-weight:700;color:#0f172a;margin-bottom:4px">${esc(it.name || it.description || '')}</div>
+                                    <div style="color:#475569;font-size:13px">${esc(it.basis || it.rightBasis || '')}</div>
+                                </div>
+                            `).join('')}
                         </div>
                     </div>
                 `;
