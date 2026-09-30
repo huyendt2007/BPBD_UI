@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Dữ liệu giả lập dùng chung: Yêu cầu cung cấp thông tin và Yêu cầu cung cấp bản sao (Website Quản trị - Module Biện pháp bảo đảm).
  * Dùng cho màn Kiểm tra và xử lý hồ sơ (kiem_tra_ho_so.html) và màn Tra cứu hồ sơ (tra_cuu_thong_tin.html).
  */
@@ -58,7 +58,33 @@ const ccttOfficerRequests = [
         officer: 'Nguyễn Văn Cán Bộ',
         resultType: 'hasData',
         signedDraft: true,
-        returnReason: 'Lãnh đạo yêu cầu rà soát lại tiêu chí tra cứu theo hồ sơ giấy.'
+        returnReason: 'Lãnh đạo yêu cầu rà soát lại tiêu chí tra cứu theo hồ sơ giấy, thông tin giấy tờ tùy thân chưa khớp với bản gốc.',
+        returnedBy: 'Lê Hoàng Long - Giám đốc Trung tâm',
+        returnedAt: '30/07/2026 14:15',
+        returnHistory: [
+            { reason: 'Lãnh đạo yêu cầu rà soát lại tiêu chí tra cứu theo hồ sơ giấy, thông tin giấy tờ tùy thân chưa khớp với bản gốc.', by: 'Lê Hoàng Long - Giám đốc Trung tâm', at: '30/07/2026 14:15', resubmittedAt: '' }
+        ]
+    },
+    {
+        id: 'CCTT-20260731-000178',
+        registeredAt: '31/07/2026 16:30',
+        customerId: 'KH-NAMHAI-08',
+        requester: 'Công ty Cổ phần Thương mại Nam Hải',
+        address: 'Số 108 Lò Đúc, phường Đống Mác, quận Hai Bà Trưng, Hà Nội',
+        source: 'Cán bộ nhập liệu',
+        criteria: 'Bên bảo đảm',
+        inputData: 'Mã số thuế: 0108899889',
+        status: 'Bị trả lại',
+        officer: 'Nguyễn Văn Cán Bộ',
+        resultType: 'hasData',
+        signedDraft: true,
+        returnReason: 'Thông tin kết quả tra cứu chưa đầy đủ theo danh mục tài sản bên bảo đảm khai báo.',
+        returnedBy: 'Trần Thị Minh Nguyệt - Phó Giám đốc Trung tâm',
+        returnedAt: '31/07/2026 16:30',
+        returnHistory: [
+            { reason: 'Thông tin kết quả tra cứu chưa đầy đủ theo danh mục tài sản bên bảo đảm khai báo.', by: 'Trần Thị Minh Nguyệt - Phó Giám đốc Trung tâm', at: '31/07/2026 16:30', resubmittedAt: '' },
+            { reason: 'Văn bản dự thảo thiếu chữ ký số của Cán bộ lập biểu.', by: 'Lê Hoàng Long - Giám đốc Trung tâm', at: '31/07/2026 09:20', resubmittedAt: '31/07/2026 11:00' }
+        ]
     },
     {
         id: 'CCTT-20260729-000165',
@@ -101,7 +127,12 @@ const ccttOfficerRequests = [
         officer: 'Nguyễn Văn Cán Bộ',
         resultType: 'noData',
         signedDraft: false,
-        rejectReason: 'Thông tin hồ sơ yêu cầu tra cứu không tồn tại trên hệ thống.'
+        rejectReason: 'Thông tin hồ sơ yêu cầu tra cứu không tồn tại trên hệ thống dữ liệu quốc gia.',
+        rejectedBy: 'Nguyễn Văn Cán Bộ',
+        rejectedAt: '27/07/2026 10:30',
+        rejectLeader: 'Lê Hoàng Long - Giám đốc Trung tâm',
+        rejectDraftFile: 'Van_ban_tu_choi_CCTT_20260727_000149_Signed.pdf',
+        rejectFile: 'Bien_ban_kiem_tra_khong_hop_le_099.pdf'
     },
     {
         id: 'CCTT-20260802-000210',
@@ -186,7 +217,12 @@ const ccttOfficerRequests = [
         officer: 'Nguyễn Văn Cán Bộ',
         resultType: 'noData',
         signedDraft: false,
-        rejectReason: 'Thông tin hồ sơ yêu cầu tra cứu không tồn tại trên hệ thống và không đúng thẩm quyền xử lý.'
+        rejectReason: 'Thông tin hồ sơ yêu cầu tra cứu không tồn tại trên hệ thống và không đúng thẩm quyền xử lý.',
+        rejectedBy: 'Trần Thị Thu Trang - Cán bộ tiếp nhận',
+        rejectedAt: '04/08/2026 15:40',
+        rejectLeader: 'Lê Hoàng Long - Giám đốc Trung tâm',
+        rejectDraftFile: 'Van_ban_tu_choi_CCTT_20260804_000230_Signed.pdf',
+        rejectFile: 'Phieu_kiem_tra_tham_quyen.pdf'
     },
     {
         id: 'CCTT-20260804-000231',
@@ -201,7 +237,12 @@ const ccttOfficerRequests = [
         officer: 'Nguyễn Văn Cán Bộ',
         resultType: 'noData',
         signedDraft: false,
-        rejectReason: 'Số khung phương tiện không đúng định dạng chuẩn theo cơ sở dữ liệu đăng kiểm.'
+        rejectReason: 'Số khung phương tiện không đúng định dạng chuẩn theo cơ sở dữ liệu đăng kiểm.',
+        rejectedBy: 'Nguyễn Văn Cán Bộ',
+        rejectedAt: '04/08/2026 17:00',
+        rejectLeader: 'Lê Hoàng Long - Giám đốc Trung tâm',
+        rejectDraftFile: 'Van_ban_tu_choi_CCTT_20260804_000231_Signed.pdf',
+        rejectFile: 'Chung_thu_giam_dinh_so_khung.pdf'
     }
 ];
 
@@ -270,7 +311,10 @@ const officerCopyRequests = [
         draftFile: '',
         returnReason: 'Lãnh đạo yêu cầu rà soát lại Số đăng ký hồ sơ gốc, Số đăng ký trên phiếu tiếp nhận chưa khớp với nội dung đơn giấy.',
         returnedBy: 'Lê Hoàng Long - Giám đốc Trung tâm',
-        returnedAt: '23/09/2026 10:15'
+        returnedAt: '23/09/2026 10:15',
+        returnHistory: [
+            { reason: 'Lãnh đạo yêu cầu rà soát lại Số đăng ký hồ sơ gốc, Số đăng ký trên phiếu tiếp nhận chưa khớp với nội dung đơn giấy.', by: 'Lê Hoàng Long - Giám đốc Trung tâm', at: '23/09/2026 10:15', resubmittedAt: '' }
+        ]
     },
     {
         id: 'BS-2026-000004',
@@ -418,9 +462,12 @@ const officerCopyRequests = [
         officer: 'Nguyễn Văn Cán Bộ',
         paidAt: '22/09/2026 10:10',
         draftFile: '',
-        returnReason: 'Dữ liệu người yêu cầu trên đơn giấy chưa đồng nhất với CSDL.',
+        returnReason: 'Dữ liệu người yêu cầu trên đơn giấy chưa đồng nhất với CSDL đăng ký biện pháp bảo đảm.',
         returnedBy: 'Trần Thị Minh Nguyệt - Phó Giám đốc Trung tâm',
-        returnedAt: '22/09/2026 11:30'
+        returnedAt: '22/09/2026 11:30',
+        returnHistory: [
+            { reason: 'Dữ liệu người yêu cầu trên đơn giấy chưa đồng nhất với CSDL đăng ký biện pháp bảo đảm.', by: 'Trần Thị Minh Nguyệt - Phó Giám đốc Trung tâm', at: '22/09/2026 11:30', resubmittedAt: '' }
+        ]
     },
     {
         id: 'BS-2026-000011',
@@ -736,9 +783,13 @@ const officerCopyRequests = [
         officer: 'Nguyễn Văn Cán Bộ',
         paidAt: '19/09/2026 10:55',
         draftFile: '',
-        returnReason: 'Số lượng bản sao yêu cầu vượt quá mức đăng ký thu phí ban đầu.',
+        returnReason: 'Số lượng bản sao yêu cầu vượt quá mức đăng ký thu phí ban đầu, yêu cầu đối soát lại biên lai thu phí.',
         returnedBy: 'Lê Hoàng Long - Giám đốc Trung tâm',
-        returnedAt: '19/09/2026 14:00'
+        returnedAt: '19/09/2026 14:00',
+        returnHistory: [
+            { reason: 'Số lượng bản sao yêu cầu vượt quá mức đăng ký thu phí ban đầu, yêu cầu đối soát lại biên lai thu phí.', by: 'Lê Hoàng Long - Giám đốc Trung tâm', at: '19/09/2026 14:00', resubmittedAt: '' },
+            { reason: 'Cán bộ đính kèm nhầm bản scan đơn của hồ sơ khác.', by: 'Trần Thị Minh Nguyệt - Phó Giám đốc Trung tâm', at: '18/09/2026 16:15', resubmittedAt: '19/09/2026 09:30' }
+        ]
     },
     {
         id: 'BS-2026-000026',
@@ -948,6 +999,9 @@ const officerCopyRequests = [
         rejectReason: 'Không tìm thấy hồ sơ gốc tương ứng với số đăng ký yêu cầu.',
         rejectedBy: 'Nguyễn Văn Cán Bộ',
         rejectedAt: '18/09/2026 14:30',
+        rejectLeader: 'Lê Hoàng Long - Giám đốc Trung tâm',
+        rejectDraftFile: 'Van_ban_tu_choi_cap_ban_sao_BS2026000035_Signed.pdf',
+        rejectFile: 'Bien_ban_kiem_tra_ho_so_goc.pdf',
         receptionOfficer: 'Nguyễn Thị Tiếp Nhận',
         officer: 'Nguyễn Văn Cán Bộ',
         paidAt: '18/09/2026 14:10',
@@ -995,6 +1049,60 @@ const officerCopyRequests = [
         receptionOfficer: 'Trần Thị Thu Trang',
         officer: 'Nguyễn Văn Cán Bộ',
         paidAt: '20/09/2026 16:30',
+        draftFile: ''
+    },
+    {
+        id: 'BS-2026-000038',
+        paperNo: 'PG-2026-038',
+        registeredAt: '21/09/2026 14:10',
+        customerId: 'KH-VIB-02',
+        requester: 'Ngân hàng TMCP Quốc tế Việt Nam (VIB)',
+        address: 'Tòa nhà VIB, 111 Pasteur, Q.1, TP.HCM',
+        source: 'Cán bộ nhập liệu',
+        registrationNo: '1505170802',
+        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
+        copyType: 'Bản sao giấy',
+        copyQty: '02 bản',
+        quantity: 2,
+        fee: 60000,
+        feeStatus: 'Đã thu',
+        status: 'Bị từ chối',
+        rejectReason: 'Hồ sơ đăng ký gốc thuộc danh mục tài sản đặc biệt không thuộc thẩm quyền cấp bản sao của Trung tâm.',
+        rejectedBy: 'Trần Thị Thu Trang',
+        rejectedAt: '21/09/2026 15:45',
+        rejectLeader: 'Lê Hoàng Long - Giám đốc Trung tâm',
+        rejectDraftFile: 'Van_ban_tu_choi_cap_ban_sao_BS2026000038_Signed.pdf',
+        rejectFile: 'Phieu_chuyen_ho_so_tham_quyen.pdf',
+        receptionOfficer: 'Trần Thị Thu Trang',
+        officer: 'Nguyễn Văn Cán Bộ',
+        paidAt: '21/09/2026 14:20',
+        draftFile: ''
+    },
+    {
+        id: 'BS-2026-000039',
+        paperNo: 'PG-2026-039',
+        registeredAt: '22/09/2026 08:50',
+        customerId: 'KH-HUNG-02',
+        requester: 'Ông Nguyễn Văn Hùng',
+        address: 'Số 12 phố Duy Tân, phường Dịch Vọng Hậu, Hà Nội',
+        source: 'Website khách hàng',
+        registrationNo: '1505156438',
+        requestType: 'Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm',
+        copyType: 'Bản sao điện tử',
+        copyQty: '—',
+        quantity: null,
+        fee: 30000,
+        feeStatus: 'Đã thu',
+        status: 'Bị từ chối',
+        rejectReason: 'Đơn yêu cầu cấp bản sao không có chữ ký, con dấu hợp lệ của người yêu cầu theo quy định của Nghị định 99/2022/NĐ-CP.',
+        rejectedBy: 'Nguyễn Thị Tiếp Nhận',
+        rejectedAt: '22/09/2026 09:20',
+        rejectLeader: 'Lê Hoàng Long - Giám đốc Trung tâm',
+        rejectDraftFile: 'Van_ban_tu_choi_cap_ban_sao_BS2026000039_Signed.pdf',
+        rejectFile: 'Ban_chup_don_yeu_cau_thieu_chu_ky.pdf',
+        receptionOfficer: 'Nguyễn Thị Tiếp Nhận',
+        officer: 'Nguyễn Văn Cán Bộ',
+        paidAt: '22/09/2026 09:00',
         draftFile: ''
     }
 ];
@@ -1052,14 +1160,40 @@ const COPY_STORAGE_KEY = 'officer_copy_requests';
 
 
 // Đồng bộ trạng thái hồ sơ Yêu cầu cung cấp thông tin đã xử lý (lưu localStorage) về danh sách
-// Dời Thời điểm đăng ký của dữ liệu giả lập CCTT về tháng hiện tại để nằm trong khoảng lọc mặc định (từ ngày 01 đến ngày hiện tại)
-(function shiftCcttMockDatesToCurrentMonth() {
+// Dời Thời điểm đăng ký của dữ liệu giả lập CCTT & Bản sao về tháng hiện tại để nằm trong khoảng lọc mặc định (từ ngày 01 đến ngày hiện tại)
+(function shiftServiceMockDatesToCurrentMonth() {
     const today = new Date();
     const pad = n => String(n).padStart(2, '0');
+    const curMonth = pad(today.getMonth() + 1);
+    const curYear = today.getFullYear();
+    const maxDay = Math.max(1, today.getDate());
+
     (typeof ccttOfficerRequests !== 'undefined' ? ccttOfficerRequests : []).forEach((x, i) => {
         const m = String(x.registeredAt || '').match(/(\d{2}):(\d{2})/);
-        const day = (i % today.getDate()) + 1;
-        x.registeredAt = `${pad(day)}/${pad(today.getMonth() + 1)}/${today.getFullYear()} ${m ? m[1] + ':' + m[2] : '09:00'}`;
+        const day = pad((i % maxDay) + 1);
+        x.registeredAt = `${day}/${curMonth}/${curYear} ${m ? m[1] + ':' + m[2] : '09:00'}`;
+        if (x.returnedAt) {
+            const tm = String(x.returnedAt).match(/(\d{2}):(\d{2})/);
+            x.returnedAt = `${day}/${curMonth}/${curYear} ${tm ? tm[1] + ':' + tm[2] : '14:15'}`;
+        }
+        if (x.rejectedAt) {
+            const tm = String(x.rejectedAt).match(/(\d{2}):(\d{2})/);
+            x.rejectedAt = `${day}/${curMonth}/${curYear} ${tm ? tm[1] + ':' + tm[2] : '16:00'}`;
+        }
+    });
+
+    (typeof officerCopyRequests !== 'undefined' ? officerCopyRequests : []).forEach((x, i) => {
+        const m = String(x.registeredAt || '').match(/(\d{2}):(\d{2})/);
+        const day = pad((i % maxDay) + 1);
+        x.registeredAt = `${day}/${curMonth}/${curYear} ${m ? m[1] + ':' + m[2] : '09:15'}`;
+        if (x.returnedAt) {
+            const tm = String(x.returnedAt).match(/(\d{2}):(\d{2})/);
+            x.returnedAt = `${day}/${curMonth}/${curYear} ${tm ? tm[1] + ':' + tm[2] : '10:15'}`;
+        }
+        if (x.rejectedAt) {
+            const tm = String(x.rejectedAt).match(/(\d{2}):(\d{2})/);
+            x.rejectedAt = `${day}/${curMonth}/${curYear} ${tm ? tm[1] + ':' + tm[2] : '14:30'}`;
+        }
     });
 })();
 (function syncOfficerCcttRequestsFromStorage() {

@@ -3551,6 +3551,10 @@ function approveRows() {
 }
 
 function closeDetail() {
+    if (lookupReadOnly) {
+        backToLookup();
+        return;
+    }
     document.getElementById('view-detail').classList.remove('active');
     document.getElementById('view-list').classList.add('active');
 
@@ -3559,6 +3563,26 @@ function closeDetail() {
     const navTabs = document.querySelector('.nav-tabs');
     if (navTabs && viewMode !== 'dang_xu_ly' && viewMode !== 'da_xu_ly') {
         navTabs.style.display = 'flex';
+    }
+
+    // Khôi phục layout 2 pane ban đầu
+    const sidebar = document.querySelector('.sidebar-pane');
+    if (sidebar) sidebar.style.display = '';
+    const threePane = document.querySelector('.three-pane-layout');
+    if (threePane) {
+        threePane.style.gridTemplateColumns = '';
+        threePane.style.width = '';
+    }
+    const mainPane = document.querySelector('.main-pane');
+    if (mainPane) {
+        mainPane.style.width = '';
+        mainPane.style.minHeight = '';
+        mainPane.style.display = '';
+        mainPane.style.flexDirection = '';
+    }
+    const actionsContainer = document.getElementById('pane-actions-container');
+    if (actionsContainer) {
+        actionsContainer.classList.remove('sticky-footer-actions');
     }
 
     currentProfile = null;
@@ -3756,22 +3780,37 @@ function openLookupServiceDetail(kind, id) {
     document.getElementById('view-detail').classList.add('active');
     document.getElementById('detail-id-display').innerText = item.id;
     const status = document.getElementById('detail-status');
-    const badgeClass = item.status === 'Hoàn thành' ? 'badge-success' : (item.status === 'Bị từ chối' || item.status === 'Bị trả lại' ? 'badge-danger' : (item.status === 'Chờ ký' || item.status === 'Chờ duyệt' ? 'badge-warning' : 'badge-info'));
+    const badgeClass = item.status === 'Hoàn thành' ? 'badge-success' : (item.status === 'Bị từ chối' || item.status === 'Bị trả lại' ? 'badge-danger' : (item.status === 'Chờ ký' || item.status === 'Chờ duyệt' || item.status === 'Chờ giải quyết' ? 'badge-warning' : 'badge-info'));
     status.className = `badge ${badgeClass}`;
     status.innerText = item.status;
     document.getElementById('toggle-diff-container').style.display = 'none';
 
-    // Lifecycle timeline đồng bộ với hồ sơ đã hoàn thành / ký duyệt
-    document.getElementById('lifecycle-timeline').innerHTML = `
-        <li class="timeline-item active"><div class="timeline-title">Tiếp nhận yêu cầu</div><div class="timeline-date">${item.registeredAt}</div></li>
-        <li class="timeline-item active"><div class="timeline-title">Cán bộ xử lý & tra cứu</div><div class="timeline-date">${item.submittedAt || item.registeredAt}</div></li>
-        <li class="timeline-item active"><div class="timeline-title">Lãnh đạo ký số phê duyệt</div><div class="timeline-date">${item.signedAt || item.submittedAt || item.registeredAt}</div></li>
-    `;
-    document.getElementById('internal-log-content').innerHTML = `
-        <div><b>${item.registeredAt}</b> - Hệ thống tiếp nhận hồ sơ từ ${item.source}.</div>
-        <div><b>${item.submittedAt || item.registeredAt}</b> - ${item.officer || 'Cán bộ'} hoàn thành tra cứu và lập văn bản trình duyệt.</div>
-        <div><b>${item.signedAt || item.submittedAt || item.registeredAt}</b> - Lãnh đạo Cục đã ký số phê duyệt văn bản kết quả thành công.</div>
-    `;
+    // 1. BỎ ĐI TRỤC VÒNG ĐỜI GIAO DỊCH NHẬT KÝ PHÊ DUYỆT Ở BÊN TRÁI:
+    // Ẩn sidebar-pane, mở rộng main-pane ra toàn màn hình (100% width)
+    const sidebar = document.querySelector('.sidebar-pane');
+    if (sidebar) sidebar.style.display = 'none';
+    const threePane = document.querySelector('.three-pane-layout');
+    if (threePane) {
+        threePane.style.gridTemplateColumns = '1fr';
+        threePane.style.width = '100%';
+    }
+    const mainPane = document.querySelector('.main-pane');
+    if (mainPane) {
+        mainPane.style.width = '100%';
+        mainPane.style.minHeight = 'calc(100vh - 120px)';
+        mainPane.style.display = 'flex';
+        mainPane.style.flexDirection = 'column';
+    }
+    const detailDataView = document.getElementById('detail-data-view');
+    if (detailDataView) {
+        detailDataView.style.flex = '1';
+    }
+
+    // 2. CỐ ĐỊNH NÚT PHÍA CUỐI FOOTER (Sticky Footer):
+    const actionsContainer = document.getElementById('pane-actions-container');
+    if (actionsContainer) {
+        actionsContainer.classList.add('sticky-footer-actions');
+    }
 
     document.getElementById('tab-controls-container').style.display = 'none';
     const opinion = document.getElementById('group-officer-opinion');
@@ -3782,22 +3821,19 @@ function openLookupServiceDetail(kind, id) {
     const headerTitle = document.querySelector('h1');
     if (headerTitle) headerTitle.innerText = 'HỆ THỐNG QUẢN TRỊ - TRA CỨU HỒ SƠ';
 
+    // 3. RENDER NỘI DUNG VÀ FOOTER:
+    // Phần Xem file đã ký số không phải ở nút footer màn hình mà nằm ở khối thông tin.
+    // Footer màn hình chỉ hiển thị duy nhất nút Đóng cố định.
     if (kind === 'cctt') {
         document.getElementById('tab-contents-container').innerHTML = renderLookupCcttDetailContent(item);
-        document.getElementById('detail-toolbar-buttons').innerHTML = `
-            <button class="btn btn-outline-secondary" onclick="backToLookup()"><i class="fa-solid fa-arrow-left"></i> Đóng</button>
-            <button class="btn btn-primary" onclick="viewSignedCcttPdf('${item.id}')"><i class="fa-solid fa-file-pdf"></i> Xem file PDF đã ký</button>
-            <button class="btn btn-outline-primary" onclick="downloadSignedPdf('Van_ban_cung_cap_thong_tin_Mau_10d_${item.id}_Signed.pdf')"><i class="fa-solid fa-download"></i> Tải file PDF</button>
-        `;
     } else {
         document.getElementById('tab-contents-container').innerHTML = renderLookupCopyDetailContent(item);
-        const fileName = item.copyType === 'Bản sao điện tử' ? `Ban_sao_bien_phap_bao_dam_${item.registrationNo || item.id}_Signed.pdf` : `Ban_sao_giay_dong_dau_${item.registrationNo || item.id}.pdf`;
-        document.getElementById('detail-toolbar-buttons').innerHTML = `
-            <button class="btn btn-outline-secondary" onclick="backToLookup()"><i class="fa-solid fa-arrow-left"></i> Đóng</button>
-            <button class="btn btn-primary" onclick="viewSignedCopyPdf('${item.id}')"><i class="fa-solid fa-file-pdf"></i> Xem file PDF đã ký</button>
-            <button class="btn btn-outline-primary" onclick="downloadSignedPdf('${fileName}')"><i class="fa-solid fa-download"></i> Tải file PDF</button>
-        `;
     }
+
+    document.getElementById('detail-toolbar-buttons').innerHTML = `
+        <button class="btn btn-outline-secondary" onclick="backToLookup()"><i class="fa-solid fa-arrow-left"></i> Đóng</button>
+    `;
+    document.getElementById('detail-toolbar-buttons').style.marginTop = '0';
 }
 
 function renderLookupCcttDetailContent(item) {
@@ -3807,73 +3843,82 @@ function renderLookupCcttDetailContent(item) {
     const signedAt = item.signedAt || item.submittedAt || '28/07/2026 16:30:00';
     const previewUrl = `../Website_Khach_hang/cctt_pdf_mau_10d_signed.html?id=${encodeURIComponent(item.id)}`;
 
+    // Khối File PDF đã được Lãnh đạo ký số (CHỈ HIỂN THỊ KHI TRẠNG THÁI "Hoàn thành")
+    const signedPdfBlock = (item.status === 'Hoàn thành') ? `
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <h3 class="section-title" style="margin:0;border:none;padding:0;color:var(--primary-color)">
+                <i class="fa-solid fa-file-signature"></i> File PDF đã được Lãnh đạo ký số
+            </h3>
+            <span class="badge" style="background:#DCFCE7;color:#166534;font-weight:700;font-size:12px;padding:6px 12px;border:1px solid #86EFAC">
+                <i class="fa-solid fa-circle-check"></i> ĐÃ ĐƯỢC LÃNH ĐẠO KÝ SỐ
+            </span>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #CBD5E1;border-radius:8px;padding:16px 20px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.05)">
+            <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #E2E8F0;padding-bottom:14px;margin-bottom:14px;flex-wrap:wrap;gap:12px">
+                <div style="display:flex;align-items:center;gap:14px">
+                    <div style="width:46px;height:46px;border-radius:8px;background:#FEE2E2;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                        <i class="fa-solid fa-file-pdf" style="font-size:26px;color:#DC2626"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:700;font-size:15px;color:#0F172A">
+                            ${pdfFileName}
+                            <a href="${previewUrl}" target="_blank" class="action-link" style="margin-left:12px;font-size:13px;font-weight:600"><i class="fa-solid fa-arrow-up-right-from-square"></i> Xem file</a>
+                            <a href="javascript:void(0)" onclick="downloadSignedPdf('${pdfFileName}')" class="action-link" style="margin-left:10px;font-size:13px;font-weight:600;color:var(--primary-color)"><i class="fa-solid fa-download"></i> Tải xuống</a>
+                        </div>
+                        <div style="color:#64748B;font-size:12.5px;margin-top:2px">
+                            Văn bản cung cấp thông tin theo Mẫu số 10d • Đã hoàn thành ký số công vụ • Kích thước: 342 KB
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex;gap:8px">
+                    <button class="btn btn-outline-primary" style="padding:6px 14px;font-size:13px" onclick="viewSignedCcttPdf('${item.id}')">
+                        <i class="fa-solid fa-eye"></i> Xem file PDF
+                    </button>
+                    <button class="btn btn-primary" style="padding:6px 14px;font-size:13px" onclick="downloadSignedPdf('${pdfFileName}')">
+                        <i class="fa-solid fa-download"></i> Tải xuống
+                    </button>
+                </div>
+            </div>
+
+            <div class="info-grid" style="font-size:13px">
+                <div class="info-group">
+                    <div class="info-label">Lãnh đạo ký duyệt</div>
+                    <div class="info-value"><b>${signer}</b></div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Thời điểm ký số</div>
+                    <div class="info-value"><span style="color:#1E3A8A;font-weight:600">${signedAt}</span></div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Chứng thư số công vụ</div>
+                    <div class="info-value">Ban Cơ yếu Chính phủ - Cục Đăng ký Giao dịch bảo đảm</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Tình trạng chữ ký số</div>
+                    <div class="info-value"><span style="color:#166534;font-weight:700"><i class="fa-solid fa-circle-check"></i> Chữ ký số hợp lệ, văn bản toàn vẹn</span></div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Phiên bản văn bản</div>
+                    <div class="info-value">Mẫu số 10d - Bản chính thức có chữ ký số</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Xác thực mã QR</div>
+                    <div class="info-value"><span style="color:var(--primary-color)"><i class="fa-solid fa-qrcode"></i> Quét QR trên file để xác thực tính hợp pháp hồ sơ ${item.id}</span></div>
+                </div>
+            </div>
+        </div>
+    ` : '';
+
+    // Khối thông tin Trả lại / Từ chối (nếu có)
+    const returnRejectBlock = renderReturnRejectBlocks(item);
+    const badgeClass = item.status === 'Hoàn thành' ? 'badge-success' : (item.status === 'Bị từ chối' || item.status === 'Bị trả lại' ? 'badge-danger' : (item.status === 'Chờ ký' || item.status === 'Chờ duyệt' || item.status === 'Chờ giải quyết' ? 'badge-warning' : 'badge-info'));
+
     return `
         <div class="card-section" style="box-shadow:none;border:none;padding:0">
-            <!-- Khối File PDF đã được Lãnh đạo ký số -->
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-                <h3 class="section-title" style="margin:0;border:none;padding:0;color:var(--primary-color)">
-                    <i class="fa-solid fa-file-signature"></i> File PDF đã được Lãnh đạo ký số
-                </h3>
-                <span class="badge" style="background:#DCFCE7;color:#166534;font-weight:700;font-size:12px;padding:6px 12px;border:1px solid #86EFAC">
-                    <i class="fa-solid fa-circle-check"></i> ĐÃ ĐƯỢC LÃNH ĐẠO KÝ SỐ
-                </span>
-            </div>
-            <div style="background:#F8FAFC;border:1px solid #CBD5E1;border-radius:8px;padding:16px 20px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.05)">
-                <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #E2E8F0;padding-bottom:14px;margin-bottom:14px;flex-wrap:wrap;gap:12px">
-                    <div style="display:flex;align-items:center;gap:14px">
-                        <div style="width:46px;height:46px;border-radius:8px;background:#FEE2E2;display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                            <i class="fa-solid fa-file-pdf" style="font-size:26px;color:#DC2626"></i>
-                        </div>
-                        <div>
-                            <div style="font-weight:700;font-size:15px;color:#0F172A">
-                                ${pdfFileName}
-                                <a href="${previewUrl}" target="_blank" class="action-link" style="margin-left:12px;font-size:13px;font-weight:600"><i class="fa-solid fa-arrow-up-right-from-square"></i> Xem file</a>
-                                <a href="javascript:void(0)" onclick="downloadSignedPdf('${pdfFileName}')" class="action-link" style="margin-left:10px;font-size:13px;font-weight:600;color:var(--primary-color)"><i class="fa-solid fa-download"></i> Tải xuống</a>
-                            </div>
-                            <div style="color:#64748B;font-size:12.5px;margin-top:2px">
-                                Văn bản cung cấp thông tin theo Mẫu số 10d • Đã hoàn thành ký số công vụ • Kích thước: 342 KB
-                            </div>
-                        </div>
-                    </div>
-                    <div style="display:flex;gap:8px">
-                        <button class="btn btn-outline-primary" style="padding:6px 14px;font-size:13px" onclick="viewSignedCcttPdf('${item.id}')">
-                            <i class="fa-solid fa-eye"></i> Xem file PDF
-                        </button>
-                        <button class="btn btn-primary" style="padding:6px 14px;font-size:13px" onclick="downloadSignedPdf('${pdfFileName}')">
-                            <i class="fa-solid fa-download"></i> Tải xuống
-                        </button>
-                    </div>
-                </div>
+            ${signedPdfBlock}
+            ${returnRejectBlock}
 
-                <div class="info-grid" style="font-size:13px">
-                    <div class="info-group">
-                        <div class="info-label">Lãnh đạo ký duyệt</div>
-                        <div class="info-value"><b>${signer}</b></div>
-                    </div>
-                    <div class="info-group">
-                        <div class="info-label">Thời điểm ký số</div>
-                        <div class="info-value"><span style="color:#1E3A8A;font-weight:600">${signedAt}</span></div>
-                    </div>
-                    <div class="info-group">
-                        <div class="info-label">Chứng thư số công vụ</div>
-                        <div class="info-value">Ban Cơ yếu Chính phủ - Cục Đăng ký Giao dịch bảo đảm</div>
-                    </div>
-                    <div class="info-group">
-                        <div class="info-label">Tình trạng chữ ký số</div>
-                        <div class="info-value"><span style="color:#166534;font-weight:700"><i class="fa-solid fa-circle-check"></i> Chữ ký số hợp lệ, văn bản toàn vẹn</span></div>
-                    </div>
-                    <div class="info-group">
-                        <div class="info-label">Phiên bản văn bản</div>
-                        <div class="info-value">Mẫu số 10d - Bản chính thức có chữ ký số</div>
-                    </div>
-                    <div class="info-group">
-                        <div class="info-label">Xác thực mã QR</div>
-                        <div class="info-value"><span style="color:var(--primary-color)"><i class="fa-solid fa-qrcode"></i> Quét QR trên file để xác thực tính hợp pháp hồ sơ ${item.id}</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Khối Thông tin hồ sơ (như khối hồ sơ chờ ký) -->
+            <!-- Khối Thông tin hồ sơ -->
             <h3 class="section-title">Thông tin hồ sơ</h3>
             <div class="info-grid">
                 <div class="info-group"><div class="info-label">Mã hồ sơ</div><div class="info-value"><b>${item.id}</b></div></div>
@@ -3888,11 +3933,11 @@ function renderLookupCcttDetailContent(item) {
                 <div class="info-group"><div class="info-label">Thời điểm tra cứu</div><div class="info-value">${item.registeredAt}</div></div>
                 <div class="info-group"><div class="info-label">Cán bộ trình duyệt</div><div class="info-value">${item.officer || 'Nguyễn Văn Cán Bộ'}</div></div>
                 <div class="info-group"><div class="info-label">Lãnh đạo ký duyệt</div><div class="info-value">${signer}</div></div>
-                <div class="info-group"><div class="info-label">Trạng thái hồ sơ</div><div class="info-value"><span class="badge ${item.status === 'Hoàn thành' ? 'badge-success' : 'badge-warning'}">${item.status}</span></div></div>
+                <div class="info-group"><div class="info-label">Trạng thái hồ sơ</div><div class="info-value"><span class="badge ${badgeClass}">${item.status}</span></div></div>
                 <div class="info-group"><div class="info-label">Lệ phí cung cấp thông tin</div><div class="info-value">${(item.fee || 30000).toLocaleString('vi-VN')} VNĐ - Đã thanh toán (Biên lai điện tử)</div></div>
             </div>
 
-            <!-- Khối Kết quả tra cứu (như khối kết quả tra cứu, chờ ký ấy) -->
+            <!-- Khối Kết quả tra cứu -->
             <h3 class="section-title">Kết quả tra cứu</h3>
             ${renderLookupCcttResult(item)}
 
@@ -3937,73 +3982,84 @@ function renderLookupCopyDetailContent(item) {
     const origAsset = item.asset || (rec && rec.assets?.[0] ? (rec.assets[0].name || rec.assets[0].items?.[0]?.vehicleName || 'Xe ô tô con Toyota Camry') : 'Tài sản bảo đảm theo hồ sơ gốc');
     const origStatus = item.originalStatus || (rec ? rec.status : 'Hoàn thành');
 
+    const isFinished = item.status === 'Hoàn thành' || item.status === 'Đã duyệt - chờ trả kết quả';
+    const badgeClass = item.status === 'Hoàn thành' ? 'badge-success' : (item.status === 'Bị từ chối' || item.status === 'Bị trả lại' ? 'badge-danger' : (item.status === 'Chờ ký' || item.status === 'Chờ duyệt' || item.status === 'Chờ giải quyết' ? 'badge-warning' : 'badge-info'));
+
+    // Khối File PDF đã được Lãnh đạo ký số / Phê duyệt phát hành (CHỈ HIỂN THỊ KHI "Hoàn thành" hoặc "Đã duyệt - chờ trả kết quả")
+    const signedPdfBlock = isFinished ? `
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <h3 class="section-title" style="margin:0;border:none;padding:0;color:var(--primary-color)">
+                <i class="fa-solid fa-file-signature"></i> ${isDigital ? 'File PDF bản sao điện tử đã được Lãnh đạo ký số' : 'Bản sao giấy đã được Lãnh đạo ký duyệt & đóng dấu'}
+            </h3>
+            <span class="badge" style="background:#DCFCE7;color:#166534;font-weight:700;font-size:12px;padding:6px 12px;border:1px solid #86EFAC">
+                <i class="fa-solid ${isDigital ? 'fa-circle-check' : 'fa-stamp'}"></i> ${isDigital ? 'ĐÃ ĐƯỢC LÃNH ĐẠO KÝ SỐ' : 'ĐÃ KÝ DUYỆT & ĐÓNG DẤU'}
+            </span>
+        </div>
+        <div style="background:#F8FAFC;border:1px solid #CBD5E1;border-radius:8px;padding:16px 20px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.05)">
+            <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #E2E8F0;padding-bottom:14px;margin-bottom:14px;flex-wrap:wrap;gap:12px">
+                <div style="display:flex;align-items:center;gap:14px">
+                    <div style="width:46px;height:46px;border-radius:8px;background:${isDigital ? '#FEE2E2' : '#FEF3C7'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                        <i class="fa-solid ${isDigital ? 'fa-file-pdf' : 'fa-stamp'}" style="font-size:26px;color:${isDigital ? '#DC2626' : '#D97706'}"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight:700;font-size:15px;color:#0F172A">
+                            ${pdfFileName}
+                            <a href="${previewUrl}" target="_blank" class="action-link" style="margin-left:12px;font-size:13px;font-weight:600"><i class="fa-solid fa-arrow-up-right-from-square"></i> ${isDigital ? 'Xem file' : 'Xem bản scan'}</a>
+                            <a href="javascript:void(0)" onclick="downloadSignedPdf('${pdfFileName}')" class="action-link" style="margin-left:10px;font-size:13px;font-weight:600;color:var(--primary-color)"><i class="fa-solid fa-download"></i> Tải xuống</a>
+                        </div>
+                        <div style="color:#64748B;font-size:12.5px;margin-top:2px">
+                            ${isDigital ? 'Văn bản chứng nhận bản sao điện tử • Có chữ ký số xác thực của Lãnh đạo • Kích thước: 285 KB' : 'Bản sao giấy chính thức có chữ ký tươi & con dấu đỏ • Đã hoàn thành trả kết quả'}
+                        </div>
+                    </div>
+                </div>
+                <div style="display:flex;gap:8px">
+                    <button class="btn btn-outline-primary" style="padding:6px 14px;font-size:13px" onclick="viewSignedCopyPdf('${item.id}')">
+                        <i class="fa-solid fa-eye"></i> ${isDigital ? 'Xem file PDF' : 'Xem bản scan'}
+                    </button>
+                    <button class="btn btn-primary" style="padding:6px 14px;font-size:13px" onclick="downloadSignedPdf('${pdfFileName}')">
+                        <i class="fa-solid fa-download"></i> Tải xuống
+                    </button>
+                </div>
+            </div>
+
+            <div class="info-grid" style="font-size:13px">
+                <div class="info-group">
+                    <div class="info-label">Lãnh đạo ký duyệt</div>
+                    <div class="info-value"><b>${signer}</b></div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Thời điểm ký duyệt</div>
+                    <div class="info-value"><span style="color:#1E3A8A;font-weight:600">${signedAt}</span></div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">${isDigital ? 'Chứng thư số công vụ' : 'Hình thức cấp bản sao'}</div>
+                    <div class="info-value">${isDigital ? 'Ban Cơ yếu Chính phủ - Cục Đăng ký Giao dịch bảo đảm' : `Bản sao giấy (${item.copyQty || '02 bản'}) - Đóng dấu tròn cơ quan đăng ký`}</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Tình trạng chữ ký / phê duyệt</div>
+                    <div class="info-value"><span style="color:#166534;font-weight:700"><i class="fa-solid fa-circle-check"></i> ${isDigital ? 'Chữ ký số hợp lệ, văn bản toàn vẹn' : 'Đã duyệt phát hành, con dấu hợp thức'}</span></div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Cán bộ trình ký</div>
+                    <div class="info-value">${item.officer || 'Nguyễn Văn Cán Bộ'} (${item.submittedAt || item.registeredAt})</div>
+                </div>
+                <div class="info-group">
+                    <div class="info-label">Mã QR xác thực</div>
+                    <div class="info-value"><span style="color:var(--primary-color)"><i class="fa-solid fa-qrcode"></i> Quét QR để đối chiếu bản sao với cơ sở dữ liệu gốc</span></div>
+                </div>
+            </div>
+        </div>
+    ` : '';
+
+    // Khối thông tin Trả lại / Từ chối (nếu có)
+    const returnRejectBlock = renderReturnRejectBlocks(item);
+
     return `
         <div class="card-section" style="box-shadow:none;border:none;padding:0">
-            <!-- Khối File PDF đã được Lãnh đạo ký số / Phê duyệt phát hành -->
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-                <h3 class="section-title" style="margin:0;border:none;padding:0;color:var(--primary-color)">
-                    <i class="fa-solid fa-file-signature"></i> ${isDigital ? 'File PDF bản sao điện tử đã được Lãnh đạo ký số' : 'Bản sao giấy đã được Lãnh đạo ký duyệt & đóng dấu'}
-                </h3>
-                <span class="badge" style="background:#DCFCE7;color:#166534;font-weight:700;font-size:12px;padding:6px 12px;border:1px solid #86EFAC">
-                    <i class="fa-solid ${isDigital ? 'fa-circle-check' : 'fa-stamp'}"></i> ${isDigital ? 'ĐÃ ĐƯỢC LÃNH ĐẠO KÝ SỐ' : 'ĐÃ KÝ DUYỆT & ĐÓNG DẤU'}
-                </span>
-            </div>
-            <div style="background:#F8FAFC;border:1px solid #CBD5E1;border-radius:8px;padding:16px 20px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.05)">
-                <div style="display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #E2E8F0;padding-bottom:14px;margin-bottom:14px;flex-wrap:wrap;gap:12px">
-                    <div style="display:flex;align-items:center;gap:14px">
-                        <div style="width:46px;height:46px;border-radius:8px;background:${isDigital ? '#FEE2E2' : '#FEF3C7'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
-                            <i class="fa-solid ${isDigital ? 'fa-file-pdf' : 'fa-stamp'}" style="font-size:26px;color:${isDigital ? '#DC2626' : '#D97706'}"></i>
-                        </div>
-                        <div>
-                            <div style="font-weight:700;font-size:15px;color:#0F172A">
-                                ${pdfFileName}
-                                <a href="${previewUrl}" target="_blank" class="action-link" style="margin-left:12px;font-size:13px;font-weight:600"><i class="fa-solid fa-arrow-up-right-from-square"></i> ${isDigital ? 'Xem file' : 'Xem bản scan'}</a>
-                                <a href="javascript:void(0)" onclick="downloadSignedPdf('${pdfFileName}')" class="action-link" style="margin-left:10px;font-size:13px;font-weight:600;color:var(--primary-color)"><i class="fa-solid fa-download"></i> Tải xuống</a>
-                            </div>
-                            <div style="color:#64748B;font-size:12.5px;margin-top:2px">
-                                ${isDigital ? 'Văn bản chứng nhận bản sao điện tử • Có chữ ký số xác thực của Lãnh đạo • Kích thước: 285 KB' : 'Bản sao giấy chính thức có chữ ký tươi & con dấu đỏ • Đã hoàn thành trả kết quả'}
-                            </div>
-                        </div>
-                    </div>
-                    <div style="display:flex;gap:8px">
-                        <button class="btn btn-outline-primary" style="padding:6px 14px;font-size:13px" onclick="viewSignedCopyPdf('${item.id}')">
-                            <i class="fa-solid fa-eye"></i> ${isDigital ? 'Xem file PDF' : 'Xem bản scan'}
-                        </button>
-                        <button class="btn btn-primary" style="padding:6px 14px;font-size:13px" onclick="downloadSignedPdf('${pdfFileName}')">
-                            <i class="fa-solid fa-download"></i> Tải xuống
-                        </button>
-                    </div>
-                </div>
+            ${signedPdfBlock}
+            ${returnRejectBlock}
 
-                <div class="info-grid" style="font-size:13px">
-                    <div class="info-group">
-                        <div class="info-label">Lãnh đạo ký duyệt</div>
-                        <div class="info-value"><b>${signer}</b></div>
-                    </div>
-                    <div class="info-group">
-                        <div class="info-label">Thời điểm ký duyệt</div>
-                        <div class="info-value"><span style="color:#1E3A8A;font-weight:600">${signedAt}</span></div>
-                    </div>
-                    <div class="info-group">
-                        <div class="info-label">${isDigital ? 'Chứng thư số công vụ' : 'Hình thức cấp bản sao'}</div>
-                        <div class="info-value">${isDigital ? 'Ban Cơ yếu Chính phủ - Cục Đăng ký Giao dịch bảo đảm' : `Bản sao giấy (${item.copyQty || '02 bản'}) - Đóng dấu tròn cơ quan đăng ký`}</div>
-                    </div>
-                    <div class="info-group">
-                        <div class="info-label">Tình trạng chữ ký / phê duyệt</div>
-                        <div class="info-value"><span style="color:#166534;font-weight:700"><i class="fa-solid fa-circle-check"></i> ${isDigital ? 'Chữ ký số hợp lệ, văn bản toàn vẹn' : 'Đã duyệt phát hành, con dấu hợp thức'}</span></div>
-                    </div>
-                    <div class="info-group">
-                        <div class="info-label">Cán bộ trình ký</div>
-                        <div class="info-value">${item.officer || 'Nguyễn Văn Cán Bộ'} (${item.submittedAt || item.registeredAt})</div>
-                    </div>
-                    <div class="info-group">
-                        <div class="info-label">Mã QR xác thực</div>
-                        <div class="info-value"><span style="color:var(--primary-color)"><i class="fa-solid fa-qrcode"></i> Quét QR để đối chiếu bản sao với cơ sở dữ liệu gốc</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Khối Thông tin yêu cầu cung cấp bản sao (như khối hồ sơ chờ ký) -->
+            <!-- Khối Thông tin yêu cầu cung cấp bản sao -->
             <h3 class="section-title">Thông tin yêu cầu cung cấp bản sao</h3>
             <div class="info-grid">
                 <div class="info-group"><div class="info-label">Mã hồ sơ</div><div class="info-value"><b>${item.id}</b></div></div>
@@ -4020,10 +4076,10 @@ function renderLookupCopyDetailContent(item) {
                 <div class="info-group"><div class="info-label">Lãnh đạo ký duyệt</div><div class="info-value">${signer}</div></div>
                 <div class="info-group"><div class="info-label">Thời điểm trình ký</div><div class="info-value">${item.submittedAt || item.registeredAt}</div></div>
                 <div class="info-group"><div class="info-label">Phí cung cấp bản sao</div><div class="info-value">${(item.fee || 30000).toLocaleString('vi-VN')} VNĐ - ${item.paidAt || item.feeStatus || 'Đã thu'}</div></div>
-                <div class="info-group"><div class="info-label">Trạng thái hồ sơ</div><div class="info-value"><span class="badge ${item.status === 'Hoàn thành' ? 'badge-success' : 'badge-warning'}">${item.status}</span></div></div>
+                <div class="info-group"><div class="info-label">Trạng thái hồ sơ</div><div class="info-value"><span class="badge ${badgeClass}">${item.status}</span></div></div>
             </div>
 
-            <!-- Khối Hồ sơ đăng ký gốc được cung cấp bản sao (bảng tóm tắt như khối chờ ký) -->
+            <!-- Khối Hồ sơ đăng ký gốc được cung cấp bản sao -->
             <h3 class="section-title">Hồ sơ đăng ký gốc được cung cấp bản sao</h3>
             <table class="table" style="min-width:900px">
                 <thead>
@@ -4041,7 +4097,7 @@ function renderLookupCopyDetailContent(item) {
                 </tbody>
             </table>
 
-            <!-- Khối Kết quả tra cứu chi tiết hồ sơ gốc (như khối kết quả tra cứu, chờ ký ấy) -->
+            <!-- Khối Kết quả tra cứu chi tiết hồ sơ gốc -->
             <h3 class="section-title" style="margin-top:20px"><i class="fa-solid fa-folder-tree" style="color:var(--primary-color)"></i> Kết quả tra cứu chi tiết hồ sơ gốc</h3>
             <div id="copy-original-structure-result">
                 ${(typeof BsPopups !== 'undefined' && BsPopups.renderStructure) ? BsPopups.renderStructure(item.registrationNo) : ''}
@@ -4113,10 +4169,46 @@ function viewSignedCopyPdf(id) {
 
 function downloadSignedPdf(fileName) {
     if (typeof showListToast === 'function') {
-        showListToast(`Đang tải xuống file PDF đã ký số: ${fileName}`, 'success');
+        showListToast(`Đang tải xuống file PDF: ${fileName}`, 'success');
     } else {
-        alert(`Đang tải xuống file PDF đã ký số: ${fileName}`);
+        alert(`Đang tải xuống file PDF: ${fileName}`);
     }
+}
+
+function viewRejectAttachment(fileName, id) {
+    const modal = document.getElementById('modalPreview');
+    if (modal) {
+        document.getElementById('previewTitle').innerText = `Văn bản / Tài liệu từ chối: ${fileName}`;
+        document.getElementById('preview-pdf-doc-name').innerHTML = `
+            <div style="display:flex;align-items:center;gap:10px">
+                <span style="font-weight:700">${fileName}</span>
+                <span class="badge" style="background:#FEE2E2;color:#B91C1C;font-weight:700;border:1px solid #FCA5A5"><i class="fa-solid fa-ban"></i> TỪ CHỐI GIẢI QUYẾT</span>
+            </div>
+            <div>
+                <a href="javascript:void(0)" onclick="downloadSignedPdf('${fileName}')" class="btn btn-outline-primary" style="padding:4px 10px;font-size:12px;text-decoration:none"><i class="fa-solid fa-download"></i> Tải xuống</a>
+            </div>
+        `;
+        document.getElementById('pdf-view-body').innerHTML = `
+            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:36px 20px;text-align:center;min-height:300px;display:flex;flex-direction:column;align-items:center;justify-content:center">
+                <div style="width:64px;height:64px;border-radius:50%;background:#FEE2E2;display:flex;align-items:center;justify-content:center;margin-bottom:14px">
+                    <i class="fa-solid fa-file-pdf" style="font-size:32px;color:#DC2626"></i>
+                </div>
+                <h4 style="margin:0 0 8px 0;color:#0F172A;font-size:16px">${fileName}</h4>
+                <div style="color:#64748B;font-size:13px;max-width:480px;line-height:1.5;margin-bottom:20px">
+                    Văn bản / tài liệu đính kèm hồ sơ từ chối giải quyết yêu cầu của cơ quan có thẩm quyền đối với hồ sơ <b>${id || ''}</b>.
+                </div>
+                <div style="display:flex;gap:10px">
+                    <button class="btn btn-primary" onclick="downloadSignedPdf('${fileName}')"><i class="fa-solid fa-download"></i> Tải file về máy</button>
+                    <button class="btn btn-outline-secondary" onclick="closeModal('modalPreview')">Đóng</button>
+                </div>
+            </div>
+        `;
+        const btnConfirm = document.getElementById('btnConfirmPreview');
+        if (btnConfirm) btnConfirm.style.display = 'none';
+        modal.classList.add('active');
+        return;
+    }
+    alert(`Mở xem file đính kèm: ${fileName}`);
 }
 
 function backToLookup() {
@@ -5444,11 +5536,8 @@ function openCopyOfficerDetail(id) {
 
     if (item.status === 'Hoàn thành') {
         document.getElementById('tab-contents-container').innerHTML = renderLookupCopyDetailContent(item);
-        const fileName = item.copyType === 'Bản sao điện tử' ? `Ban_sao_bien_phap_bao_dam_${item.registrationNo || item.id}_Signed.pdf` : `Ban_sao_giay_dong_dau_${item.registrationNo || item.id}.pdf`;
         document.getElementById('detail-toolbar-buttons').innerHTML = `
-            <button class="btn btn-outline-secondary" onclick="closeDetail()">Đóng</button>
-            <button class="btn btn-primary" onclick="viewSignedCopyPdf('${item.id}')"><i class="fa-solid fa-file-pdf"></i> Xem file PDF đã ký</button>
-            <button class="btn btn-outline-primary" onclick="downloadSignedPdf('${fileName}')"><i class="fa-solid fa-download"></i> Tải file PDF</button>
+            <button class="btn btn-outline-secondary" onclick="closeDetail()"><i class="fa-solid fa-arrow-left"></i> Đóng</button>
         `;
         return;
     }
@@ -5838,13 +5927,26 @@ function openCcttView(id) {
 }
 
 // Khối Thông tin trả lại / Thông tin từ chối dùng chung (SRS Kiểm tra và xử lý hồ sơ - MH04 khối II, III)
+// Khối Thông tin trả lại / Thông tin từ chối dùng chung (SRS Kiểm tra và xử lý hồ sơ - MH04 khối II, III)
 // - Thông tin trả lại: Accordion viền đỏ, mặc định mở rộng, chỉ hiển thị khi "Bị trả lại"; liệt kê các lần trả lại theo Thời điểm giảm dần
 // - Thông tin từ chối: chỉ hiển thị khi "Bị từ chối"
 function renderReturnRejectBlocks(item) {
     if (!item) return '';
     const esc = v => String(v ?? '').replace(/[&<>"']/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[s]));
     const kv = (l, v, red) => v ? `<div class="info-group"><div class="info-label">${l}</div><div class="info-value" style="${red ? 'color:#B91C1C;font-weight:700' : ''}">${v}</div></div>` : '';
-    const fileLink = (name, label) => name ? `<a href="#" class="action-link" onclick="event.preventDefault(); alert('Mở xem file: ${esc(name)}')"><i class="fa-regular fa-file-pdf"></i> ${label || 'Xem file'}</a>` : '';
+    const fileLink = (name, defaultName) => {
+        const finalName = name || defaultName;
+        if (!finalName) return '';
+        return `
+            <span style="font-weight:600;color:#0F172A">${esc(finalName)}</span>
+            <a href="javascript:void(0)" onclick="viewRejectAttachment('${esc(finalName)}', '${esc(item.id)}')" class="action-link" style="margin-left:10px;font-size:13px;font-weight:600">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> Xem file
+            </a>
+            <a href="javascript:void(0)" onclick="downloadSignedPdf('${esc(finalName)}')" class="action-link" style="margin-left:8px;font-size:13px;font-weight:600;color:var(--primary-color)">
+                <i class="fa-solid fa-download"></i> Tải xuống
+            </a>
+        `;
+    };
     // Hồ sơ đã từng bị trả lại và được trình ký lại: giữ lại vết lịch sử các lần trả lại (mặc định thu gọn)
     const hasReturnTrace = item.status !== 'Bị từ chối' && Array.isArray(item.returnHistory) && item.returnHistory.length;
     if (item.status === 'Bị trả lại' || hasReturnTrace) {
@@ -5853,26 +5955,28 @@ function renderReturnRejectBlocks(item) {
             .map(r => ({ reason: r.reason || 'Lãnh đạo yêu cầu rà soát, cập nhật lại hồ sơ.', by: r.by || 'Nguyễn Văn Lãnh Đạo', at: r.at || '-', resubmittedAt: r.resubmittedAt || '' }))
             .sort((a, b) => toTime(b.at) - toTime(a.at));
         return `
-            <details class="block-return-info" ${item.status === 'Bị trả lại' ? 'open' : ''} style="border:1px solid #FCA5A5;border-left:4px solid #DC2626;border-radius:8px;margin:12px 0;background:#fff">
-                <summary style="cursor:pointer;padding:10px 14px;font-weight:700;color:#B91C1C;background:#FEF2F2;list-style:none;display:flex;align-items:center;gap:8px">
+            <details class="block-return-info" ${item.status === 'Bị trả lại' ? 'open' : ''} style="border:1px solid #FCA5A5;border-left:4px solid #DC2626;border-radius:8px;margin:12px 0 20px 0;background:#fff;box-shadow:0 1px 3px rgba(220,38,38,0.06)">
+                <summary style="cursor:pointer;padding:12px 16px;font-weight:700;color:#B91C1C;background:#FEF2F2;list-style:none;display:flex;align-items:center;gap:8px;border-top-left-radius:7px;border-top-right-radius:7px">
                     <i class="fa-solid fa-rotate-left"></i> Thông tin trả lại <span class="badge badge-danger" style="margin-left:6px">${list.length} lần</span>
                 </summary>
-                ${list.map((r, i) => `<div class="info-grid" style="padding:10px 14px;${i ? 'border-top:1px dashed #FCA5A5' : ''}">
+                ${list.map((r, i) => `<div class="info-grid" style="padding:14px 16px;${i ? 'border-top:1px dashed #FCA5A5' : ''}">
                     ${kv('Lý do trả lại', esc(r.reason), true)}${kv('Lãnh đạo trả lại', esc(r.by))}${kv('Thời điểm trả lại', esc(r.at))}${kv('Thời điểm trình ký lại', esc(r.resubmittedAt))}
                 </div>`).join('')}
             </details>`;
     }
     if (item.status === 'Bị từ chối') {
         return `
-            <div class="block-reject-info" style="border:1px solid #FCA5A5;border-left:4px solid #DC2626;border-radius:8px;margin:12px 0;background:#fff">
-                <div style="padding:10px 14px;font-weight:700;color:#B91C1C;background:#FEF2F2"><i class="fa-solid fa-ban"></i> Thông tin từ chối</div>
-                <div class="info-grid" style="padding:10px 14px">
+            <div class="block-reject-info" style="border:1px solid #FCA5A5;border-left:4px solid #DC2626;border-radius:8px;margin:12px 0 20px 0;background:#fff;box-shadow:0 1px 3px rgba(220,38,38,0.06)">
+                <div style="padding:12px 16px;font-weight:700;color:#B91C1C;background:#FEF2F2;display:flex;align-items:center;gap:8px;border-top-left-radius:7px;border-top-right-radius:7px">
+                    <i class="fa-solid fa-ban"></i> Thông tin từ chối
+                </div>
+                <div class="info-grid" style="padding:14px 16px">
                     ${kv('Lý do từ chối', esc(item.rejectReason || 'Không đủ điều kiện giải quyết theo quy định.'), true)}
                     ${kv('Người từ chối', esc(item.rejectedBy || item.officer || 'Nguyễn Văn Cán Bộ'))}
                     ${kv('Thời điểm từ chối', esc(item.rejectedAt || '-'))}
-                    ${kv('Lãnh đạo ký văn bản từ chối', esc(item.rejectLeader || item.signLeader || ''))}
-                    ${kv('Văn bản từ chối đã ký', fileLink(item.rejectDraftFile || item.rejectNoticeFile, 'Xem file'))}
-                    ${kv('Tài liệu đính kèm lý do từ chối', fileLink(item.rejectFile, esc(item.rejectFile)))}
+                    ${kv('Lãnh đạo ký văn bản từ chối', esc(item.rejectLeader || item.signLeader || 'Lê Hoàng Long - Giám đốc Trung tâm'))}
+                    ${kv('Văn bản từ chối đã ký', fileLink(item.rejectDraftFile || item.rejectNoticeFile, `Van_ban_tu_choi_${item.id}_Signed.pdf`))}
+                    ${kv('Tài liệu đính kèm lý do từ chối', fileLink(item.rejectFile, `Tai_lieu_dinh_kem_tu_choi_${item.id}.pdf`))}
                 </div>
             </div>`;
     }
@@ -5944,9 +6048,7 @@ function openCcttApprovedView(id) {
         showCcttView(`
             ${renderLookupCcttDetailContent(item)}
             <div class="card-section" style="position:sticky;bottom:0;z-index:40;display:flex;justify-content:flex-end;gap:10px;box-shadow:0 -4px 12px rgba(15,23,42,.08)">
-                <button class="btn btn-outline-secondary" onclick="closeCcttView()">Đóng</button>
-                <button class="btn btn-primary" onclick="viewSignedCcttPdf('${item.id}')"><i class="fa-solid fa-file-pdf"></i> Xem file PDF đã ký</button>
-                <button class="btn btn-outline-primary" onclick="downloadSignedPdf('Van_ban_cung_cap_thong_tin_Mau_10d_${item.id}_Signed.pdf')"><i class="fa-solid fa-download"></i> Tải file PDF</button>
+                <button class="btn btn-outline-secondary" onclick="closeCcttView()"><i class="fa-solid fa-arrow-left"></i> Đóng</button>
             </div>
         `);
         return;
