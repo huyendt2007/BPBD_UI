@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File PDF đã ký - Bản sao điện tử</title>
+    <link rel="icon" href="data:,">
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; background: #d1d5db; color: #111827; font-family: Arial, sans-serif; }
+        .tab-toolbar {
+            position: sticky; top: 0; z-index: 10; background: #0f172a; color: #fff;
+            min-height: 52px; padding: 10px 18px; display: flex; align-items: center;
+            justify-content: space-between; gap: 12px; box-shadow: 0 2px 10px rgba(0,0,0,.24);
+        }
+        .tab-toolbar-title { font-weight: 700; font-size: 14px; }
+        .tab-toolbar-actions { display: flex; gap: 8px; }
+        .tab-btn {
+            border: 1px solid #cbd5e1; background: #fff; color: #0f172a; padding: 8px 12px;
+            border-radius: 4px; font-weight: 700; cursor: pointer;
+        }
+        .tab-btn.primary { background: #1e3a8a; border-color: #1e3a8a; color: #fff; }
+        .pdf-viewer { padding: 24px; overflow: auto; }
+        .pdf-page {
+            width: 794px; min-height: 1123px; background: #fff; color: #000; margin: 0 auto 22px;
+            padding: 54px 64px; font-family: "Times New Roman", Times, serif; font-size: 15px;
+            line-height: 1.35; box-shadow: 0 4px 18px rgba(0,0,0,.18);
+        }
+        .pdf-page h2, .pdf-page h3, .pdf-page p { margin-top: 0; }
+        .pdf-topline {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start;
+            text-align: center; font-weight: 700;
+        }
+        .pdf-form-code { text-align: right; font-weight: 700; margin-bottom: 12px; }
+        .pdf-title {
+            text-align: center; font-weight: 700; font-size: 18px; margin: 30px 0 6px;
+            text-transform: uppercase;
+        }
+        .pdf-subtitle {
+            text-align: center; font-weight: 700; font-size: 14px; margin-bottom: 24px;
+            color: #dc2626; letter-spacing: 0.5px;
+        }
+        .pdf-divider { border-top: 1px solid #111827; margin: 18px 0 14px; }
+        .pdf-sign-area { display: grid; grid-template-columns: 130px 1fr; gap: 30px; align-items: start; margin-top: 26px; }
+        .pdf-qr {
+            width: 82px; height: 82px;
+            background:
+                linear-gradient(90deg, #000 10px, transparent 10px) 0 0/18px 18px,
+                linear-gradient(#000 10px, transparent 10px) 0 0/18px 18px,
+                #fff;
+            border: 6px solid #fff; box-shadow: inset 0 0 0 2px #000;
+        }
+        .pdf-seal-row { display: flex; justify-content: center; align-items: center; gap: 22px; margin-top: 18px; }
+        .pdf-seal {
+            width: 68px; height: 68px; border-radius: 50%; border: 3px solid #dc2626; color: #dc2626;
+            display: flex; align-items: center; justify-content: center; text-align: center; font-size: 9px; font-weight: 700;
+        }
+        .pdf-sign-text { font-size: 12px; color: #111827; line-height: 1.25; text-align: left; }
+        .pdf-table { width: 100%; border-collapse: collapse; margin: 8px 0 14px; font-size: 13.5px; }
+        .pdf-table th, .pdf-table td { border: 1px solid #111827; padding: 6px 8px; vertical-align: top; }
+        .pdf-table th { font-weight: 700; text-align: center; }
+        .pdf-section-title { font-weight: 700; font-size: 16px; margin: 16px 0 8px; text-transform: uppercase; }
+        .pdf-meta-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; margin-bottom: 12px; }
+        @media print {
+            body { background: #fff; }
+            .tab-toolbar { display: none; }
+            .pdf-viewer { padding: 0; }
+            .pdf-page { margin: 0; box-shadow: none; page-break-after: always; }
+        }
+        @media (max-width: 900px) {
+            .pdf-viewer { padding: 12px; }
+            .pdf-page { width: 100%; min-height: auto; padding: 34px 24px; }
+            .pdf-topline, .pdf-sign-area { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="tab-toolbar">
+        <div class="tab-toolbar-title" id="toolbar-title">File PDF đã ký - Bản sao điện tử - BS-2026-000001</div>
+        <div class="tab-toolbar-actions">
+            <button class="tab-btn" onclick="window.print()">🖨 In văn bản</button>
+            <button class="tab-btn" onclick="alert('Đang tải xuống file PDF bản sao đã ký số...')">📥 Tải xuống PDF</button>
+            <button class="tab-btn primary" onclick="window.close()">Đóng tab</button>
+        </div>
+    </div>
+    <main class="pdf-viewer">
+        <section class="pdf-page">
+            <div class="pdf-form-code">BẢN SAO ĐIỆN TỬ CHỨNG THỰC</div>
+            <div style="text-align:right;margin-bottom:18px">
+                <b>Mã hồ sơ yêu cầu bản sao:</b> <span style="border:1px solid #111827;padding:3px 8px" id="dossier-id">BS-2026-000001</span>
+            </div>
+            <div class="pdf-topline">
+                <div>
+                    CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM<br>
+                    VÀ BỒI THƯỜNG NHÀ NƯỚC<br>
+                    TRUNG TÂM ĐĂNG KÝ GIAO DỊCH,<br>
+                    TÀI SẢN TẠI TP. HÀ NỘI
+                </div>
+                <div>
+                    CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM<br>
+                    <u>Độc lập - Tự do - Hạnh phúc</u><br><br>
+                    <i id="pdf-date">Hà Nội, ngày 23 tháng 09 năm 2026</i>
+                </div>
+            </div>
+            <div class="pdf-title">VĂN BẢN CHỨNG NHẬN ĐĂNG KÝ BIỆN PHÁP BẢO ĐẢM</div>
+            <div class="pdf-subtitle">(BẢN SAO ĐIỆN TỬ - CÓ GIÁ TRỊ NHƯ BẢN CHÍNH)</div>
+
+            <p style="text-align:justify">
+                Trung tâm Đăng ký giao dịch, tài sản tại thành phố Hà Nội chứng nhận: Biện pháp bảo đảm dưới đây đã được đăng ký và ghi nhận trong Cơ sở dữ liệu quốc gia về biện pháp bảo đảm bằng động sản theo đúng quy định của pháp luật:
+            </p>
+
+            <div class="pdf-section-title">I. Thông tin đăng ký biện pháp bảo đảm</div>
+            <div class="pdf-meta-grid">
+                <div><b>Số đăng ký:</b> <code style="font-size:15px;color:#1e3a8a" id="pdf-reg-no">1505170802</code></div>
+                <div><b>Loại hình giao dịch:</b> Biện pháp bảo đảm</div>
+                <div><b>Loại biện pháp:</b> Thế chấp tài sản</div>
+                <div><b>Trường hợp đăng ký:</b> ĐĂNG KÝ LẦN ĐẦU</div>
+                <div><b>Số hợp đồng:</b> HĐTC-VCB-2025/089</div>
+                <div><b>Ngày có hiệu lực hợp đồng:</b> 12/05/2025</div>
+                <div><b>Thời điểm đăng ký:</b> 15/05/2025 09:30:15</div>
+                <div><b>Thời điểm có hiệu lực:</b> 15/05/2025 09:30:15</div>
+            </div>
+
+            <div class="pdf-section-title">II. Bên bảo đảm</div>
+            <table class="pdf-table">
+                <thead><tr><th>STT</th><th>Loại chủ thể</th><th>Số giấy tờ chứng minh</th><th>Tên bên bảo đảm</th><th>Địa chỉ</th></tr></thead>
+                <tbody id="grantor-body">
+                    <tr>
+                        <td style="text-align:center">1</td>
+                        <td>Tổ chức trong nước</td>
+                        <td>MST: 3301647244</td>
+                        <td><b>CÔNG TY CỔ PHẦN XÂY DỰNG VÀ PHÁT TRIỂN HTC</b></td>
+                        <td>Đường số 5, CCN Tứ Hạ mở rộng, TP Huế, Việt Nam</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pdf-section-title">III. Bên nhận bảo đảm</div>
+            <table class="pdf-table">
+                <thead><tr><th>STT</th><th>Loại chủ thể</th><th>Số giấy tờ chứng minh</th><th>Tên bên nhận bảo đảm</th><th>Địa chỉ</th></tr></thead>
+                <tbody id="secured-body">
+                    <tr>
+                        <td style="text-align:center">1</td>
+                        <td>Tổ chức tín dụng</td>
+                        <td>MST: 0100112437-001</td>
+                        <td><b>NGÂN HÀNG TMCP ĐẦU TƯ VÀ PHÁT TRIỂN VIỆT NAM</b></td>
+                        <td>Số 35 Hàng Vôi, Hoàn Kiếm, Hà Nội</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="pdf-section-title">IV. Danh mục tài sản bảo đảm</div>
+            <table class="pdf-table">
+                <thead><tr><th>STT</th><th>Loại tài sản</th><th>Mô tả / Nhãn hiệu, màu sơn</th><th>Số khung</th><th>Số máy</th><th>Biển số</th></tr></thead>
+                <tbody id="asset-body">
+                    <tr>
+                        <td style="text-align:center">1</td>
+                        <td>Phương tiện cơ giới</td>
+                        <td>Xe ô tô con Toyota Camry 2.5Q, màu đen</td>
+                        <td>RLGBF3FK7MN012345</td>
+                        <td>2AR-5872134</td>
+                        <td>30H-123.45</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="font-size:13.5px;color:#334155;margin-top:4px">
+                <b>Tài sản bảo đảm là quyền tài sản:</b> Toàn bộ quyền đòi nợ và các khoản phải thu phát sinh từ hợp đồng kinh tế theo danh mục hồ sơ gốc.
+            </p>
+
+            <div class="pdf-divider"></div>
+
+            <div class="pdf-sign-area">
+                <div>
+                    <div class="pdf-qr"></div>
+                    <div style="font-size:11px;margin-top:6px" id="qr-label">QR xác thực<br>BS-2026-000001</div>
+                </div>
+                <div style="text-align:center">
+                    <b>NGƯỜI CÓ THẨM QUYỀN CỦA TRUNG TÂM<br>ĐĂNG KÝ GIAO DỊCH, TÀI SẢN</b><br>
+                    <i>(Ký số, ghi rõ họ và tên, chức danh)</i>
+                    <div class="pdf-seal-row">
+                        <div class="pdf-seal">KÝ BỞI<br>TTĐK<br>HÀ NỘI</div>
+                        <div class="pdf-sign-text">
+                            <b>Ký bởi: LÊ HOÀNG LONG</b><br>
+                            Chức danh: Giám đốc Trung tâm<br>
+                            Cơ quan: Trung tâm Đăng ký giao dịch, tài sản tại TP Hà Nội<br>
+                            <span id="pdf-sign-time">Thời gian ký: 23/09/2026 10:30:15</span><br>
+                            Chứng thư số: Ban Cơ yếu Chính phủ - Hợp lệ
+                        </div>
+                        <div class="pdf-seal">ĐÃ KÝ<br>SỐ</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            const regNo = params.get('regNo');
+            if (id) {
+                document.getElementById('toolbar-title').innerText = `File PDF đã ký - Bản sao điện tử - ${id}`;
+                document.getElementById('dossier-id').innerText = id;
+                document.getElementById('qr-label').innerHTML = `QR xác thực<br>${id}`;
+            }
+            if (regNo) {
+                document.getElementById('pdf-reg-no').innerText = regNo;
+            }
+        })();
+    </script>
+</body>
+</html>

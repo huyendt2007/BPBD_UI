@@ -76,16 +76,17 @@
 </head>
 <body>
     <div class="tab-toolbar">
-        <div class="tab-toolbar-title">File PDF đã ký - Mẫu số 10d - CCTT-20260817-000001</div>
+        <div class="tab-toolbar-title" id="cctt-pdf-title">File PDF đã ký - Mẫu số 10d - CCTT-20260817-000001</div>
         <div class="tab-toolbar-actions">
-            <button class="tab-btn" onclick="window.print()">In</button>
+            <button class="tab-btn" onclick="window.print()">🖨 In</button>
+            <button class="tab-btn" onclick="alert('Đang tải xuống file PDF Mẫu số 10d đã ký số...')">📥 Tải xuống PDF</button>
             <button class="tab-btn primary" onclick="window.close()">Đóng tab</button>
         </div>
     </div>
     <main class="pdf-viewer">
         <section class="pdf-page">
             <div class="pdf-form-code">Mẫu số 10d<sup>1</sup></div>
-            <div style="text-align:right;margin-bottom:18px"><b>Mã hồ sơ TTHC</b> <span style="border:1px solid #111827;padding:3px 8px">000.01.18.G15-2608170001</span></div>
+            <div style="text-align:right;margin-bottom:18px"><b>Mã hồ sơ TTHC</b> <span style="border:1px solid #111827;padding:3px 8px" id="cctt-tthc-code">000.01.18.G15-2608170001</span></div>
             <div class="pdf-topline">
                 <div>
                     CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM<br>
@@ -192,5 +193,18 @@
             <p><b>Thông tin xử lý tài sản</b><br>Lý do xử lý: Bên bảo đảm vi phạm nghĩa vụ thanh toán theo hợp đồng tín dụng.<br>Thời gian xử lý: 31/07/2026<br>Địa điểm xử lý: Kho tài sản bảo đảm tại Khu công nghiệp Phú Bài, thành phố Huế.</p>
         </section>
     </main>
+
+    <script>
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            if (id) {
+                const titleEl = document.getElementById('cctt-pdf-title');
+                if (titleEl) titleEl.innerText = `File PDF đã ký - Mẫu số 10d - ${id}`;
+                const tthcEl = document.getElementById('cctt-tthc-code');
+                if (tthcEl) tthcEl.innerText = `000.01.18.G15-${id.replace(/[^a-zA-Z0-9]/g, '')}`;
+            }
+        })();
+    </script>
 </body>
 </html>
