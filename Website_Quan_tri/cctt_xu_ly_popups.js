@@ -61,7 +61,7 @@
             { ...origin, regNo: '1505170802', caseName: 'ĐĂNG KÝ LẦN ĐẦU', registeredAt: '20/04/2025 10:05:22', effectiveAt: '20/04/2025 10:05:22' },
             {
                 ...origin, regNo: '1509124410', caseName: 'ĐĂNG KÝ THAY ĐỔI', registeredAt: '12/09/2025 14:20:10', effectiveAt: '12/09/2025 14:20:10',
-                assets: [...origin.assets, { assetType: 'Quyền tài sản', description: 'Bổ sung quyền đòi nợ phát sinh từ Hợp đồng tiền gửi có kỳ hạn', rightName: 'Quyền đòi tiền gửi có kỳ hạn', rightBasis: 'Hợp đồng tiền gửi số TG-2025/1422 ngày 05/09/2025' }]
+                contractNo: 'HĐCC-BIDV-2025/233/PL01', contractDate: '10/09/2025'
             },
             {
                 ...origin, regNo: '1602031875', caseName: 'THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM LẦN ĐẦU', registeredAt: '03/02/2026 09:15:40', effectiveAt: '03/02/2026 09:15:40',
