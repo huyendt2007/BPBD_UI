@@ -893,7 +893,7 @@
 
         function buildMockInputData(criteria, idx) {
             if (criteria === 'Số đăng ký') return `DK-2026-${String(1000 + idx)}`;
-            if (criteria === 'Số khung') return `RLZ${1000 + idx}KHUNG${idx}VN`;
+            if (criteria === 'Số khung') return `RLHRF3F12NM${String(100000 + idx * 137).slice(-6)}`; // Số khung 17 ký tự theo chuẩn VIN
             return `Công dân Việt Nam - CCCD 09${String(1000000000 + idx).slice(0, 10)}`;
         }
 
@@ -1248,8 +1248,8 @@
                             <tbody><tr><td><b>NGÂN HÀNG TMCP ĐẦU TƯ VÀ PHÁT TRIỂN VIỆT NAM - CHI NHÁNH PHÚ XUÂN</b></td><td>26 Bà Triệu, phường Thuận Hóa, thành phố Huế, Việt Nam</td></tr></tbody>
                         </table>
                         <div style="font-weight:700;color:var(--primary-color);margin-bottom:8px">Tài sản bảo đảm</div>
-                        <div style="margin-bottom:8px"><b>Các động sản khác</b></div>
-                        <div style="line-height:1.55">Toàn bộ số tiền thu được của Công ty Cổ phần Xây dựng và Phát triển HTC phát sinh từ các Hợp đồng kinh tế có nguồn gốc vốn vay của Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Phú Xuân với giá trị tối thiểu bằng số dư tín dụng, gồm dư nợ vay, số dư L/C, các khoản lãi, phí và nghĩa vụ liên quan khác.</div>
+                        <div style="margin-bottom:8px"><b>Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản</b></div>
+                        <div style="line-height:1.55;background:#F8FAFC;border:1px solid var(--border-color);border-radius:6px;padding:10px 14px"><b>Quyền đòi nợ, khoản phải thu của Công ty Cổ phần Xây dựng và Phát triển HTC</b><br>Phát sinh từ các Hợp đồng kinh tế có nguồn gốc vốn vay của Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Phú Xuân, với giá trị tối thiểu bằng số dư tín dụng (dư nợ vay, số dư L/C, các khoản lãi, phí và nghĩa vụ liên quan khác).</div>
                     </div>
                 </div>
 
@@ -1339,8 +1339,8 @@
                             <thead><tr><th>STT</th><th>TÊN PHƯƠNG TIỆN</th><th>NHÃN HIỆU, MÀU SƠN</th><th>SỐ KHUNG</th><th>SỐ MÁY</th><th>BIỂN SỐ</th></tr></thead>
                             <tbody><tr><td>1</td><td>Ô tô</td><td>TOYOTA, màu trắng</td><td>RL4A2026HTC00001</td><td>2GD-884512</td><td>75A-226.88</td></tr></tbody>
                         </table>
-                        <div style="margin-bottom:8px"><b>Các động sản khác</b></div>
-                        <div style="line-height:1.55;margin-bottom:12px">Quyền đòi nợ, khoản phải thu phát sinh từ các hợp đồng kinh tế đã mô tả tại hồ sơ đăng ký lần đầu.</div>
+                        <div style="margin-bottom:8px"><b>Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản</b></div>
+                        <div style="line-height:1.55;margin-bottom:12px;background:#F8FAFC;border:1px solid var(--border-color);border-radius:6px;padding:10px 14px"><b>Quyền đòi nợ, khoản phải thu của Công ty Cổ phần Xây dựng và Phát triển HTC</b><br>Phát sinh từ các Hợp đồng kinh tế đã mô tả tại hồ sơ đăng ký lần đầu.</div>
                         <div style="font-weight:700;color:var(--primary-color);margin-bottom:8px">Thông tin xử lý tài sản</div>
                         <div class="detail-grid">
                             <div class="detail-field">

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -78,23 +78,44 @@
             align-items: center;
         }
 
-        .grid-2-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .grid-3-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .grid-4-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+        .grid-2-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 18px; }
+        .grid-3-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px 18px; }
+        .grid-4-cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px 18px; }
 
         /* Form Controls */
-        .form-group { margin-bottom: 15px; }
+        .form-group { margin-bottom: 0; }
 
         .form-control, .form-select {
             border: 1px solid var(--border-color);
             border-radius: var(--border-radius-sm);
-            padding: 8px 12px;
+            padding: 6px 12px;
             font-size: 13px;
+            height: 38px;
+            min-height: 38px;
+            box-sizing: border-box;
             color: var(--text-main);
             transition: all 0.2s ease-in-out;
             width: 100%;
             outline: none;
             font-family: var(--font-family);
+        }
+
+        .date-filter-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .date-filter-wrap .form-control {
+            padding-right: 34px;
+        }
+        .date-filter-wrap i {
+            position: absolute;
+            right: 11px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+            font-size: 13px;
+            pointer-events: none;
         }
 
         .form-control:focus, .form-select:focus {
@@ -517,8 +538,8 @@
 
 <div class="container">
     <!-- Filter Card -->
-    <div class="card-section" id="search-card" data-bpbd-filter style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 15px; margin-bottom: 20px; border-radius: var(--border-radius-md);">
-        <h3 data-bpbd-filter-title style="font-size: 14px; color: var(--primary-color); font-weight: 600; margin-bottom: 12px;">
+    <div class="card-section" id="search-card" data-bpbd-filter style="background-color: #FFFFFF; border: 1px solid var(--border-color); padding: 18px 20px 16px 20px; margin-bottom: 20px; border-radius: var(--border-radius-lg);">
+        <h3 data-bpbd-filter-title style="font-size: 14px; color: var(--primary-color); font-weight: 600; margin-bottom: 14px;">
             <i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm
         </h3>
         
@@ -545,8 +566,6 @@
                         <option value="co_quan">Cơ quan có thẩm quyền</option>
                     </select>
                 </div>
-            </div>
-            <div class="grid-4-cols">
                 <div class="form-group">
                     <label class="form-label">Loại mã số CSDL</label>
                     <select id="filterLoaiMa" class="form-select">
@@ -580,22 +599,23 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Từ ngày</label>
-                    <input type="text" id="filterTuNgay" class="form-control" placeholder="dd/mm/yyyy">
+                    <div class="date-filter-wrap">
+                        <input type="text" id="filterTuNgay" class="form-control" placeholder="dd/mm/yyyy">
+                        <i class="fa-solid fa-calendar-days"></i>
+                    </div>
                 </div>
-            </div>
-            <div class="grid-4-cols">
                 <div class="form-group">
                     <label class="form-label">Đến ngày</label>
-                    <input type="text" id="filterDenNgay" class="form-control" placeholder="dd/mm/yyyy">
+                    <div class="date-filter-wrap">
+                        <input type="text" id="filterDenNgay" class="form-control" placeholder="dd/mm/yyyy">
+                        <i class="fa-solid fa-calendar-days"></i>
+                    </div>
                 </div>
-                <div class="form-group"></div>
-                <div class="form-group"></div>
-                <div class="form-group"></div>
             </div>
 
             <div class="search-actions">
                 <button type="button" class="btn btn-outline-primary" onclick="clearFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
-                <button type="button" class="btn btn-primary" onclick="applyFilters()"><i class="fa fa-search"></i> Tìm kiếm</button>
+                <button type="button" class="btn btn-primary" onclick="applyFilters()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
             </div>
         </form>
     </div>

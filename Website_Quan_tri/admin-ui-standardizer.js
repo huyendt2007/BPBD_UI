@@ -41,19 +41,19 @@
                 background-color: rgba(14, 116, 144, 0.04) !important;
             }
             .${COMPACT_FILTER_CLASS} {
-                padding: 10px 16px 8px 16px !important;
-                margin-bottom: 10px !important;
+                padding: 16px 20px 14px 20px !important;
+                margin-bottom: 16px !important;
                 background-color: #FFFFFF !important;
                 border: 1px solid #E2E8F0 !important;
                 border-radius: 8px !important;
                 box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
             }
             .${COMPACT_FILTER_CLASS}.bpbd-filter-collapsed {
-                height: 32px !important;
-                min-height: 32px !important;
-                max-height: 32px !important;
+                height: 34px !important;
+                min-height: 34px !important;
+                max-height: 34px !important;
                 padding: 4px 14px !important;
-                margin-bottom: 8px !important;
+                margin-bottom: 10px !important;
                 background: #F8FAFC !important;
                 overflow: hidden !important;
                 display: flex !important;
@@ -70,7 +70,7 @@
             .${COMPACT_FILTER_CLASS} .filter-grid {
                 display: grid !important;
                 grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-                gap: 8px 14px !important;
+                gap: 14px 18px !important;
             }
             @media (max-width: 1200px) {
                 .${COMPACT_FILTER_CLASS} .grid-4-cols,
@@ -96,22 +96,25 @@
             .${COMPACT_FILTER_CLASS} .form-group {
                 margin-bottom: 0 !important;
             }
+            .${COMPACT_FILTER_CLASS} form > div + div:not(.search-actions):not([style*="text-align: right"]):not([style*="text-align:right"]) {
+                margin-top: 14px !important;
+            }
             .${COMPACT_FILTER_CLASS} .form-label {
                 font-size: 13px !important;
-                font-weight: 500 !important;
+                font-weight: 600 !important;
                 color: #334155 !important;
-                margin-bottom: 3px !important;
-                line-height: 1.3 !important;
+                margin-bottom: 6px !important;
+                line-height: 1.4 !important;
                 display: block !important;
             }
             .${COMPACT_FILTER_CLASS} input,
             .${COMPACT_FILTER_CLASS} select,
             .${COMPACT_FILTER_CLASS} .form-control,
             .${COMPACT_FILTER_CLASS} .form-select {
-                min-height: 34px !important;
-                height: 34px !important;
+                min-height: 38px !important;
+                height: 38px !important;
                 font-size: 13px !important;
-                padding: 4px 10px !important;
+                padding: 6px 12px !important;
                 border-radius: 6px !important;
                 border: 1px solid #CBD5E1 !important;
                 background-color: #FFFFFF !important;
@@ -140,7 +143,7 @@
             .date-filter-wrap .fa-calendar-days,
             .date-filter-wrap .fa-calendar {
                 position: absolute !important;
-                right: 10px !important;
+                right: 11px !important;
                 top: 50% !important;
                 transform: translateY(-50%) !important;
                 color: #64748b !important;
@@ -152,25 +155,27 @@
             }
             .${COMPACT_FILTER_CLASS} .btn,
             .${COMPACT_FILTER_CLASS} button:not(.bpbd-filter-toggle-btn):not(.icon-btn) {
-                min-height: 36px !important;
-                height: 36px !important;
+                min-height: 38px !important;
+                height: 38px !important;
                 font-size: 13px !important;
-                font-weight: 500 !important;
-                padding: 0 18px !important;
+                font-weight: 600 !important;
+                padding: 0 20px !important;
                 border-radius: 6px !important;
                 display: inline-flex !important;
                 align-items: center !important;
                 justify-content: center !important;
-                gap: 6px !important;
+                gap: 8px !important;
                 cursor: pointer !important;
                 transition: all 0.15s ease-in-out !important;
             }
+            .${COMPACT_FILTER_CLASS} .search-actions,
             .${COMPACT_FILTER_CLASS} > div[style*="text-align: right"],
-            .${COMPACT_FILTER_CLASS} > div[style*="text-align:right"] {
-                margin-top: 14px !important;
+            .${COMPACT_FILTER_CLASS} > div[style*="text-align:right"],
+            .${COMPACT_FILTER_CLASS} .filter-action-row {
+                margin-top: 16px !important;
                 margin-bottom: 0 !important;
-                padding-top: 12px !important;
-                border-top: 1px solid #F1F5F9 !important;
+                padding-top: 14px !important;
+                border-top: 1px solid #E2E8F0 !important;
                 display: flex !important;
                 justify-content: flex-end !important;
                 align-items: center !important;

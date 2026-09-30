@@ -133,53 +133,18 @@
             gap: 16px;
         }
 
+        /* Khối thông tin: dạng block đồng nhất (nền trắng, viền xám), không icon, không đổi màu theo khối */
         .form-block {
-            --block-color: #2563eb;
-            --block-bg: #eff6ff;
             border: 1px solid var(--border-color, #e2e8f0);
-            border-left: 4px solid var(--block-color);
             border-radius: 8px;
-            background: linear-gradient(90deg, var(--block-bg), #fff 28%);
+            background: #fff;
             padding: 16px;
         }
 
-        .form-block.accent-green {
-            --block-color: #059669;
-            --block-bg: #ecfdf5;
-        }
-
-        .form-block.accent-amber {
-            --block-color: #d97706;
-            --block-bg: #fff7ed;
-        }
-
-        .form-block.accent-cyan {
-            --block-color: #0891b2;
-            --block-bg: #ecfeff;
-        }
-
-        .form-block.accent-violet {
-            --block-color: #7c3aed;
-            --block-bg: #f5f3ff;
-        }
-
         .block-head {
-            display: flex;
-            align-items: center;
-            gap: 10px;
             margin-bottom: 14px;
-        }
-
-        .block-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            display: grid;
-            place-items: center;
-            background: var(--block-color);
-            color: #fff;
-            font-size: 15px;
-            flex-shrink: 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color, #e2e8f0);
         }
 
         .block-head h3 {
@@ -189,10 +154,11 @@
             font-weight: 700;
         }
 
-        .block-head p {
-            margin: 2px 0 0;
+        .block-note {
+            margin: -6px 0 12px;
             color: var(--text-muted, #64748b);
             font-size: 12px;
+            font-style: italic;
         }
 
         .readonly {
@@ -750,13 +716,7 @@
             <div class="form-card-b">
                 <div class="form-stack">
                     <section class="form-block">
-                        <div class="block-head">
-                            <span class="block-icon"><i class="fa-solid fa-inbox"></i></span>
-                            <div>
-                                <h3>01. Thông tin tiếp nhận</h3>
-                                <p>Ghi nhận nguồn hồ sơ, thời điểm và đơn vị xử lý ban đầu</p>
-                            </div>
-                        </div>
+                        <div class="block-head"><h3>01. Thông tin tiếp nhận</h3></div>
                         <div class="grid-4-cols">
                             <div class="form-group">
                                 <span class="form-label">Kênh tiếp nhận <span class="required">*</span></span>
@@ -790,14 +750,8 @@
                         </div>
                     </section>
 
-                    <section class="form-block accent-green">
-                        <div class="block-head">
-                            <span class="block-icon"><i class="fa-solid fa-user-check"></i></span>
-                            <div>
-                                <h3>02. Thông tin người yêu cầu</h3>
-                                <p>Thông tin cá nhân/tổ chức đứng tên yêu cầu đăng ký biện pháp bảo đảm</p>
-                            </div>
-                        </div>
+                    <section class="form-block">
+                        <div class="block-head"><h3>02. Thông tin người yêu cầu</h3></div>
                         <div class="grid-4-cols">
                             <div class="form-group" style="grid-column: span 1;">
                                 <span class="form-label">Loại khách hàng <span class="required">*</span></span>
@@ -871,14 +825,9 @@
                         </div>
                     </section>
 
-                    <section class="form-block accent-amber">
-                        <div class="block-head">
-                            <span class="block-icon"><i class="fa-solid fa-id-card"></i></span>
-                            <div>
-                                <h3>03. Thông tin người nộp hồ sơ</h3>
-                                <p>Thông tin không bắt buộc, chỉ khai báo khi xác định được người thực hiện nộp hồ sơ và quan hệ ủy quyền</p>
-                            </div>
-                        </div>
+                    <section class="form-block">
+                        <div class="block-head"><h3>03. Thông tin người nộp hồ sơ</h3></div>
+                        <p class="block-note">Thông tin không bắt buộc, chỉ khai báo khi xác định được người thực hiện nộp hồ sơ và quan hệ ủy quyền</p>
                         <div class="grid-4-cols">
                             <div class="form-group" style="grid-column: span 2;">
                                 <span class="form-label">
@@ -908,14 +857,8 @@
                         </div>
                     </section>
 
-                    <section class="form-block accent-cyan">
-                        <div class="block-head">
-                            <span class="block-icon"><i class="fa-solid fa-receipt"></i></span>
-                            <div>
-                                <h3>04. Loại yêu cầu và lệ phí</h3>
-                                <p>Chọn nghiệp vụ, tham số tính phí và phương thức nhận kết quả</p>
-                            </div>
-                        </div>
+                    <section class="form-block">
+                        <div class="block-head"><h3>04. Loại yêu cầu và lệ phí</h3></div>
                         <div class="grid-4-cols">
                             <div class="form-group">
                                 <span class="form-label">Loại yêu cầu <span class="required">*</span></span>
@@ -976,14 +919,8 @@
                         </div>
                     </section>
 
-                    <section class="form-block accent-violet">
-                        <div class="block-head">
-                            <span class="block-icon"><i class="fa-solid fa-paperclip"></i></span>
-                            <div>
-                                <h3>05. Tài liệu đính kèm</h3>
-                                <p>Đính kèm thành phần hồ sơ giấy đã tiếp nhận</p>
-                            </div>
-                        </div>
+                    <section class="form-block">
+                        <div class="block-head"><h3>05. Tài liệu đính kèm</h3></div>
                         <div class="table-container">
                             <table class="custom-table attachment-table">
                                 <thead>
