@@ -537,8 +537,8 @@
 | Trường thông tin  | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :------------------- | :-------------- | :--------- | :---------- | :-------------------------------------------------------------------------------------------------------- |
 | Từ khóa tìm kiếm | String(255) | Không     | Trống      | Tìm kiếm theo Mã biểu phí hoặc Tên biểu phí (tiếng Việt hoặc tiếng Anh). |
-| Loại dịch vụ      | Enum(String(50)) | Không     | Tất cả    | Control UI: Hộp chọn.<br>Lọc theo loại thủ tục: Đăng ký mới, Thay đổi, Xóa đăng ký, Cấp bản sao, Cấp mã số CSDL Một lần, Cấp mã số CSDL thường xuyên, Khác. |
-| Trạng thái        | Enum(String(50)) | Không     | Tất cả    | Control UI: Hộp chọn.<br>Lọc theo trạng thái hiệu lực: Hoạt động (Active), Hết hiệu lực (Inactive), Lưu nháp (Draft). |
+| Loại dịch vụ      | Enum(String(50)) | Không     | Tất cả    | Control UI: Hộp chọn.<br>Gồm:<br>+ Đăng ký giao dịch bảo đảm<br>+ Thông báo xử lý tài sản<br>+ Thay đổi thông tin<br>+ Xóa đăng ký<br>+ Cung cấp thông tin<br>+ Cấp bản sao<br>+ Cấp mã số CSDL Một lần<br>+ Cấp mã số CSDL thường xuyên<br>+ Khác |
+| Trạng thái        | Enum(String(50)) | Không     | Tất cả    | Control UI: Hộp chọn.<br>Gồm:<br>+ Hoạt động<br>+ Hết hiệu lực<br>+ Lưu nháp |
 | Hiệu lực từ ngày  | Date | Không    | Đầu tháng  | Control UI: Datepicker.<br>Bộ chọn ngày Flatpickr (định dạng `dd/mm/yyyy`). Mặc định ngày đầu tháng hiện tại. |
 | Hiệu lực đến ngày  | Date | Không    | Hiện tại   | Control UI: Datepicker.<br>Bộ chọn ngày Flatpickr (định dạng `dd/mm/yyyy`). Mặc định ngày hiện tại. |
 
@@ -566,7 +566,7 @@
 | Loại dịch vụ     | Enum(String(50)) | Có        | Trống          | Control UI: Hộp chọn.<br>Dịch vụ công được áp dụng biểu phí này. |
 | Mức phí (VNĐ)    | Decimal(18,0) | Có        | Trống          | Số tiền phí quy định. Tự động định dạng dấu phân tách hàng nghìn khi gõ, giá trị thực tế >= 0. |
 | Ngày áp dụng     | Date | Có       | Trống          | Control UI: Datepicker.<br>Bộ chọn ngày Flatpickr. Khi thêm mới bắt buộc lớn hơn hoặc bằng ngày hiện tại. |
-| Trạng thái        | - | Có        | Hoạt động      | Control UI: Nút bấm.<br>Chọn Hoạt động (Active) hoặc Lưu nháp (Draft). |
+| Trạng thái        | Enum(String(50)) | Có        | Hoạt động      | Control UI: Radio.<br>Gồm:<br>+ Hoạt động<br>+ Lưu nháp |
 | Mô tả             | String(500) | Không     | Trống          | Ghi chú thêm chi tiết về cơ sở pháp lý ban hành biểu phí. |
 
 ####### 4.3.1.6.10.3.2. Chức năng trên màn hình
