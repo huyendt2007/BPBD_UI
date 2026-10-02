@@ -187,13 +187,13 @@ Dưới đây là danh sách các thông báo (MessageList - MSG) chuẩn hóa h
 | **[MSG-CFM-BS-004]** | Xác nhận | `"Bạn có chắc chắn muốn trả lại hồ sơ giấy yêu cầu cung cấp bản sao này cho Cán bộ xử lý không?"` | Popup xác nhận | Có / Không |
 | **[MSG-CFM-BS-005]** | Xác nhận | `"Xác nhận đã trả kết quả bản sao giấy cho Khách hàng?"` | Popup xác nhận | Có / Không |
 | **[MSG-WRN-BS-001]** | Cảnh báo | `"Ký số thành công [Số hồ sơ ký thành công]/[Tổng số hồ sơ] hồ sơ. Các hồ sơ ký lỗi vẫn ở trạng thái Chờ ký, vui lòng kiểm tra và ký lại."` | Toast | Không |
-| **[MSG-ERR-VAL-001]** | Lỗi | `"Đây là trường bắt buộc"` | Inline (Dưới trường nhập liệu) | Không |
+| <a id="msg-err-val-001"></a>**[MSG-ERR-VAL-001]** | Lỗi | `"Đây là trường bắt buộc"` | Inline (Dưới trường nhập liệu) | Không |
 | **[MSG-ERR-VAL-002]** | Lỗi | `"Địa chỉ email không đúng định dạng (ví dụ: abc@domain.com)"` | Inline | Không |
 | **[MSG-ERR-VAL-003]** | Lỗi | `"Số điện thoại không hợp lệ (độ dài 8-15 ký tự, bắt đầu bằng 0 hoặc +)"` | Inline | Không |
 | **[MSG-ERR-VAL-004]** | Lỗi | `"Số định danh/CCCD phải đúng 12 chữ số"` | Inline | Không |
 | **[MSG-ERR-VAL-005]** | Lỗi | `"Mã số thuế/Mã số doanh nghiệp không hợp lệ (phải đúng 10 hoặc 14 chữ số)"` | Inline | Không |
 | **[MSG-ERR-VAL-006]** | Lỗi | `"Mật khẩu mới không đạt độ phức tạp yêu cầu (Phải từ 8-20 ký tự, chứa chữ hoa, chữ thường, số và ký tự đặc biệt)."` | Inline | Không |
-| **[MSG-ERR-VAL-007]** | Lỗi | `"Từ ngày không được lớn hơn Đến ngày"` | Inline | Không |
+| <a id="msg-err-val-007"></a>**[MSG-ERR-VAL-007]** | Lỗi | `"Từ ngày không được lớn hơn Đến ngày"` | Inline | Không |
 | **[MSG-ERR-VAL-008]** | Lỗi | `"Ngày nhập vào không được lớn hơn ngày hiện tại"` | Inline | Không |
 | **[MSG-ERR-VAL-009]** | Lỗi | `"Dữ liệu [Tên trường] '[Giá trị]' đã tồn tại trên hệ thống. Vui lòng kiểm tra lại."` | Inline | Không |
 | **[MSG-ERR-VAL-010]** | Lỗi | `"Mật khẩu mới không được trùng với mật khẩu cũ."` | Inline | Không |
@@ -204,13 +204,13 @@ Dưới đây là danh sách các thông báo (MessageList - MSG) chuẩn hóa h
 | **[MSG-ERR-FILE-001]** | Lỗi | `"Định dạng tệp tin không hợp lệ. Chỉ chấp nhận tệp tin định dạng .pdf."` | Inline | Không |
 | **[MSG-ERR-FILE-002]** | Lỗi | `"Dung lượng tệp tin vượt quá 20MB. Vui lòng kiểm tra lại."` | Inline | Không |
 | **[MSG-ERR-FILE-003]** | Lỗi | `"Định dạng tệp tin [Tên tệp] không hợp lệ. Chỉ chấp nhận các định dạng .pdf, .jpg, .jpeg, .png."` | Inline | Không |
-| **[MSG-ERR-FILE-004]** | Lỗi | `"Dung lượng tệp tin [Tên tệp] vượt quá 20MB. Vui lòng kiểm tra lại."` | Inline | Không |
+| <a id="msg-err-file-004"></a>**[MSG-ERR-FILE-004]** | Lỗi | `"Dung lượng tệp tin [Tên tệp] vượt quá 20MB. Vui lòng kiểm tra lại."` | Inline | Không |
 | **[MSG-ERR-FILE-005]** | Lỗi | `"Hệ thống chỉ hỗ trợ đính kèm tối đa 3 tệp tin."` | Inline | Không |
 | **[MSG-ERR-DK-001]** | Lỗi | `"Số đăng ký lần đầu hoặc Số PIN không chính xác. Vui lòng kiểm tra lại."` | Inline | Không |
 | **[MSG-ERR-DK-002]** | Lỗi | `"Hồ sơ gốc chưa ở trạng thái Hoàn thành. Không thể thực hiện thao tác."` | Toast | Không |
 | **[MSG-ERR-DK-003]** | Lỗi | `"Hồ sơ gốc đang bị tạm dừng/ngăn chặn giao dịch. Không thể thực hiện thao tác."` | Toast | Không |
 | **[MSG-ERR-DK-004]** | Lỗi | `"Tồn tại hồ sơ liên quan chưa được phê duyệt hoàn thành. Vui lòng kiểm tra lại."` | Toast | Không |
-| **[MSG-ERR-DK-005]** | Lỗi | `"Hồ sơ đã được thay đổi trạng thái xử lý, không thể thực hiện thao tác lúc này. Vui lòng tải lại trang."` | Toast | Không |
+| <a id="msg-err-dk-005"></a>**[MSG-ERR-DK-005]** | Lỗi | `"Hồ sơ đã được thay đổi trạng thái xử lý, không thể thực hiện thao tác lúc này. Vui lòng tải lại trang."` | Toast | Không |
 | **[MSG-ERR-DK-006]** | Lỗi | `"Hồ sơ gốc đã được đăng ký thông báo xử lý tài sản bảo đảm lần đầu đang có hiệu lực. Vui lòng chọn loại hình Thay đổi hoặc Xóa thông báo."` | Toast | Không |
 | **[MSG-ERR-DK-007]** | Lỗi | `"Hồ sơ gốc chưa được đăng ký thông báo xử lý tài sản bảo đảm lần đầu. Không thể thực hiện thao tác."` | Toast | Không |
 | **[MSG-ERR-DK-008]** | Lỗi | `"Vui lòng chọn ít nhất một hồ sơ để thực hiện thao tác."` | Toast | Không |
@@ -230,8 +230,8 @@ Dưới đây là danh sách các thông báo (MessageList - MSG) chuẩn hóa h
 | **[MSG-ERR-SYS-004]** | Lỗi | `"Vui lòng chọn ít nhất một người dùng để thực hiện thao tác."` | Toast | Không |
 | **[MSG-WRN-SYS-001]** | Cảnh báo | `"Không có dữ liệu để xuất Excel."` | Toast | Không |
 | **[MSG-WRN-SYS-002]** | Cảnh báo | `"Không có dữ liệu để kết xuất."` | Toast | Không |
-| **[MSG-INF-SYS-001]** | Thông tin (Info / Empty State) | `"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."` | Inline (Duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng `colspan`, in nghiêng) | Không |
-| **[MSG-CFM-SYS-001]** | Xác nhận | `"Bạn có chắc chắn muốn xóa bản ghi [Tên bản ghi] không?"` | Popup Custom Modal | Đồng ý / Hủy |
+| <a id="msg-inf-sys-001"></a>**[MSG-INF-SYS-001]** | Thông tin (Info / Empty State) | `"Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm."` | Inline (Duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng `colspan`, in nghiêng) | Không |
+| <a id="msg-cfm-sys-001"></a>**[MSG-CFM-SYS-001]** | Xác nhận | `"Bạn có chắc chắn muốn xóa bản ghi [Tên bản ghi] không?"` | Popup Custom Modal | Đồng ý / Hủy |
 | **[MSG-SUC-SYS-001]** | Thành công | `"Lưu nháp hồ sơ thành công"` | Toast | Không |
 | **[MSG-SUC-SYS-002]** | Thành công | `"Cập nhật dữ liệu thành công."` | Toast | Không |
 | **[MSG-SUC-SYS-003]** | Thành công | `"Gửi yêu cầu đăng ký thành công."` | Toast | Không |
@@ -352,17 +352,17 @@ Dưới đây là danh sách các thông báo (MessageList - MSG) chuẩn hóa h
 | **[MSG-SUC-DK-KT-002]** | Thành công | `"Đã trình ký hồ sơ thành công"` | Toast | Không |
 | **[MSG-SUC-DK-KT-003]** | Thành công | `"Đã từ chối hồ sơ thành công"` | Toast | Không |
 | **[MSG-SUC-DK-KT-004]** | Thành công | `"Đã hủy duyệt hồ sơ thành công"` | Toast | Không |
-| **[MSG-ERR-DK-010]** | Lỗi | `"Không tìm thấy file PDF chờ ký hợp lệ."` | Toast | Không |
-| **[MSG-ERR-DK-011]** | Lỗi | `"Thiết bị/tài khoản ký số chưa sẵn sàng hoặc chưa nhận chứng thư số hợp lệ."` | Toast | Không |
-| **[MSG-ERR-DK-012]** | Lỗi | `"Chứng thư số không khớp với Lãnh đạo được phân công ký duyệt."` | Toast | Không |
-| **[MSG-ERR-DK-013]** | Lỗi | `"Ký số không thành công. Vui lòng kiểm tra thiết bị ký số và thử lại."` | Toast | Không |
+| <a id="msg-err-dk-010"></a>**[MSG-ERR-DK-010]** | Lỗi | `"Không tìm thấy file PDF chờ ký hợp lệ."` | Toast | Không |
+| <a id="msg-err-dk-011"></a>**[MSG-ERR-DK-011]** | Lỗi | `"Thiết bị/tài khoản ký số chưa sẵn sàng hoặc chưa nhận chứng thư số hợp lệ."` | Toast | Không |
+| <a id="msg-err-dk-012"></a>**[MSG-ERR-DK-012]** | Lỗi | `"Chứng thư số không khớp với Lãnh đạo được phân công ký duyệt."` | Toast | Không |
+| <a id="msg-err-dk-013"></a>**[MSG-ERR-DK-013]** | Lỗi | `"Ký số không thành công. Vui lòng kiểm tra thiết bị ký số và thử lại."` | Toast | Không |
 | **[MSG-ERR-DK-014]** | Lỗi | `"Không tìm thấy hồ sơ theo số đăng ký đã nhập. Vui lòng kiểm tra lại."` | Inline | Không |
 | **[MSG-ERR-DK-015]** | Lỗi | `"Vui lòng xem dự thảo Thông báo từ chối của tất cả hồ sơ trước khi xác nhận."` | Toast | Không |
 | **[MSG-ERR-DK-016]** | Lỗi | `"Vui lòng xem dự thảo Văn bản chứng nhận của tất cả hồ sơ trước khi trình ký."` | Toast | Không |
 | **[MSG-ERR-DK-017]** | Lỗi | `"Không sinh được file PDF dự thảo. Vui lòng thử lại sau."` | Toast | Không |
 | **[MSG-WRN-DK-001]** | Cảnh báo | `"Chỉ được trình ký tối đa 20 hồ sơ/lần. Vui lòng bỏ chọn bớt hồ sơ."` | Toast | Không |
 | **[MSG-WRN-DK-003]** | Cảnh báo | `"Ký số thành công [Số hồ sơ ký thành công]/[Tổng số hồ sơ] hồ sơ. Các hồ sơ ký lỗi vẫn ở trạng thái Chờ ký, vui lòng kiểm tra và ký lại."` | Toast | Không |
-| **[MSG-CFM-DK-013]** | Xác nhận | `"Bạn có chắc chắn muốn ký số hồ sơ đã chọn không?"` | Popup Custom Modal | Đồng ý / Hủy |
+| <a id="msg-cfm-dk-013"></a>**[MSG-CFM-DK-013]** | Xác nhận | `"Bạn có chắc chắn muốn ký số hồ sơ đã chọn không?"` | Popup Custom Modal | Đồng ý / Hủy |
 | **[MSG-CFM-DK-014]** | Xác nhận | `"Bạn có chắc chắn muốn trả lại hồ sơ cho Cán bộ xử lý lại không?"` | Popup Custom Modal | Đồng ý / Hủy |
 | **[MSG-CFM-DK-015]** | Xác nhận | `"Bạn có chắc chắn muốn từ chối hồ sơ này không?"` | Popup Custom Modal | Đồng ý / Hủy |
 | **[MSG-CFM-DK-016]** | Xác nhận | `"Bạn có chắc chắn muốn từ chối và ký số Thông báo từ chối cho hồ sơ đã chọn không?"` | Popup Custom Modal | Đồng ý / Hủy |
@@ -452,6 +452,15 @@ Dưới đây là danh sách các thông báo (MessageList - MSG) chuẩn hóa h
 | **[MSG-CFM-BTNN-HT-001]** | Xác nhận | `"Hồ sơ sẽ chuyển sang trạng thái Không xem xét trách nhiệm hoàn trả và kết thúc tiến trình. Bạn có chắc chắn muốn lưu kết luận này?"` | Popup [POPUP-CFM-001] | Đồng ý / Hủy bỏ |
 | **[MSG-INF-BTNN-HT-001]** | Thông tin | `"Bước này chưa được mở khóa theo trạng thái hiện tại của hồ sơ."` | Toast | Không |
 | **[MSG-INF-BTNN-HT-002]** | Thông tin | `"Hồ sơ đã kết thúc do Hội đồng kết luận không xem xét trách nhiệm hoàn trả nên bước này không được mở."` | Toast | Không |
+| <a id="msg-err-cldk-001"></a>**[MSG-ERR-CLDK-001]** | Lỗi | `"Số đăng ký không tồn tại trên hệ thống. Vui lòng kiểm tra lại."` | Inline (Dưới trường nhập liệu) | Không |
+| <a id="msg-err-cldk-002"></a>**[MSG-ERR-CLDK-002]** | Lỗi | `"Hồ sơ chưa ở trạng thái Hoàn thành, không được phép lập đề nghị."` | Inline (Dưới trường nhập liệu) | Không |
+| <a id="msg-err-cldk-003"></a>**[MSG-ERR-CLDK-003]** | Lỗi | `"Định dạng tệp tin [Tên tệp] không hợp lệ. Chỉ chấp nhận các định dạng .pdf, .doc, .docx, .png, .jpg."` | Inline (Dưới trường nhập liệu) | Không |
+| <a id="msg-suc-cldk-001"></a>**[MSG-SUC-CLDK-001]** | Thành công | `"Gửi đề nghị thành công. Mã đề nghị: [Mã đề nghị]"` | Toast | Không |
+| <a id="msg-suc-cldk-002"></a>**[MSG-SUC-CLDK-002]** | Thành công | `"Đã phê duyệt đề nghị và chuyển giao cho [Họ tên người thực hiện] thực hiện."` | Toast | Không |
+| <a id="msg-suc-cldk-003"></a>**[MSG-SUC-CLDK-003]** | Thành công | `"Đã từ chối phê duyệt đề nghị [Mã đề nghị]."` | Toast | Không |
+| <a id="msg-suc-cldk-004"></a>**[MSG-SUC-CLDK-004]** | Thành công | `"Trình ký hồ sơ thành công. Mã đề nghị: [Mã đề nghị]"` | Toast | Không |
+| <a id="msg-suc-cldk-005"></a>**[MSG-SUC-CLDK-005]** | Thành công | `"Ký số và phát hành thành công hồ sơ [Mã đề nghị]."` | Toast | Không |
+| <a id="msg-suc-cldk-006"></a>**[MSG-SUC-CLDK-006]** | Thành công | `"Đã trả lại hồ sơ [Mã đề nghị] cho Người thực hiện."` | Toast | Không |
 
 ---
 

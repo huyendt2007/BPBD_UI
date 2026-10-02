@@ -1,962 +1,1144 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Theo dõi & Xử lý đề nghị Chỉnh lý / Hủy / Khôi phục</title>
+    <title>Bàn làm việc Quản lý Chỉnh lý, Hủy và Khôi phục đăng ký biện pháp bảo đảm</title>
+    <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../Common/style_iframe.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="../Common/iframe_helper.js"></script>
     <!-- Flatpickr CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="../Common/iframe_helper.js"></script>
+
     <style>
+        :root {
+            /* Brand Colors */
+            --primary-color: #1E3A8A; /* Xanh Navy đậm */
+            --primary-hover: #1E40AF;
+            --secondary-color: #3B82F6;
+            --accent-color: #F59E0B; /* Vàng hổ phách */
+
+            /* Semantic Colors */
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --warning-color: #F59E0B;
+            --info-color: #3B82F6;
+
+            /* Neutral/Grayscale */
+            --bg-body: #F3F4F6;
+            --bg-surface: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border-color: #E2E8F0;
+            --table-header-bg: #F1F5F9;
+            --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            --base-size: 14px;
+            --heading-size: 18px;
+            
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --border-radius-sm: 4px;
+            --border-radius-md: 6px;
+            --border-radius-lg: 8px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        body {
+            background-color: var(--bg-body);
+            padding: 12px 16px 24px 16px;
+            font-family: var(--font-family);
+            color: var(--text-main);
+            margin: 0;
+            font-size: var(--base-size);
+            line-height: 1.5;
+        }
+
         .container {
-            max-width: 1400px;
-            width: 95%;
+            max-width: 100%;
+            width: 100%;
             margin: 0 auto;
-            padding: 20px;
-            background-color: #ffffff;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            padding: 0;
         }
-        
-        .nav-tabs {
-            display: flex;
-            border-bottom: 2px solid var(--border-color);
-            margin-bottom: 20px;
-            background: white;
-            border-radius: 6px 6px 0 0;
-            padding: 0 10px;
-            gap: 5px;
-            overflow-x: auto;
-        }
-        
-        .nav-tab {
-            padding: 14px 20px;
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--text-muted);
-            transition: all 0.2s;
+
+        /* Breadcrumb & Header */
+        .page-breadcrumb {
             display: flex;
             align-items: center;
             gap: 8px;
-            white-space: nowrap;
             font-size: 13px;
-            border-radius: 6px 6px 0 0;
+            color: var(--text-muted);
+            margin-bottom: 12px;
         }
-        
-        .nav-tab:hover {
+        .page-breadcrumb a {
             color: var(--primary-color);
-            background-color: rgba(30, 58, 138, 0.02);
+            text-decoration: none;
+            font-weight: 500;
         }
-        
-        .nav-tab.active {
-            color: var(--primary-color);
-            background-color: rgba(30, 58, 138, 0.08); /* Sleek light blue background tint */
-            box-shadow: inset 0 -3px 0 var(--primary-color);
-            font-weight: 700;
+        .page-breadcrumb a:hover {
+            text-decoration: underline;
         }
-        
-        .tab-badge {
-            font-size: 11px;
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-weight: 700;
-            background-color: #e2e8f0;
-            color: #475569;
-        }
-        
-        .nav-tab.active .tab-badge {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        
-        .tab-badge.danger {
-            background-color: #ef4444;
-            color: white;
-        }
-        .tab-badge.warning {
-            background-color: #f59e0b;
-            color: white;
-        }
-        .tab-badge.info {
-            background-color: #3b82f6;
-            color: white;
-        }
-        
-        .card-section {
-            background-color: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(0, 0, 0, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s ease;
-        }
-        .modal-overlay.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .modal-content {
-            background-color: #fff;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 700px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            max-height: 90vh;
-            overflow: hidden;
-        }
-        .modal-header {
-            padding: 15px 20px;
-            border-bottom: 1px solid #cbd5e1;
+
+        .top-action-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #f8fafc;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 14px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 12px;
         }
-        .modal-header h3 {
-            margin: 0;
-            font-size: 15px;
-            font-weight: 700;
+        .top-action-bar h2 {
+            font-size: 17px;
             color: var(--primary-color);
-        }
-        .modal-body {
-            padding: 20px;
-            overflow-y: auto;
-            flex: 1;
-        }
-        .modal-footer {
-            padding: 15px 20px;
-            border-top: 1px solid #cbd5e1;
-            background-color: #f8fafc;
+            font-weight: 700;
+            margin: 0;
             display: flex;
-            justify-content: flex-end;
+            align-items: center;
             gap: 10px;
         }
-        
-        .toast-notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 12px 24px;
-            background-color: #10b981;
+
+        /* Navigation Tabs - Đồng bộ 100% Hồ sơ chờ xử lý (kiem_tra_ho_so.html) */
+        .nav-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 12px;
+            background: white;
+            border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+            padding: 0 10px;
+        }
+
+        .nav-tab {
+            padding: 10px 16px;
+            font-size: 13.5px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-tab.active {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* Tab badges - Đồng bộ 100% Hồ sơ chờ xử lý (kiem_tra_ho_so.html) */
+        .tab-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1;
             color: white;
-            border-radius: 6px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            z-index: 1000;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            border-radius: 10px;
+            margin-left: 6px;
+        }
+        .tab-badge.warning { background-color: var(--warning-color); }
+        .tab-badge.info { background-color: var(--secondary-color); }
+        .tab-badge.danger { background-color: var(--danger-color); }
+        .tab-badge.secondary { background-color: #64748B; }
+        .tab-badge.success { background-color: var(--success-color); }
+        .tab-badge.primary { background-color: var(--primary-color); }
+
+        /* Filter Section Accordion (chuẩn Enterprise UI giống Hồ sơ chờ xử lý) */
+        .card-filter {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px 20px 14px 20px;
+            margin-bottom: 16px;
+            background: #ffffff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        .filter-header-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-color, #1e3a8a);
             display: flex;
             align-items: center;
             gap: 8px;
-            font-weight: 500;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
         }
-        
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
+        .filter-body {
+            margin-top: 14px;
+            display: block;
+        }
+        .filter-body.collapsed {
+            display: none;
+        }
+
+        .grid-filter {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 14px;
+        }
+        .form-group {
+            margin-bottom: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        .form-label {
             font-size: 12px;
             font-weight: 600;
-            border-radius: 4px;
-            text-transform: uppercase;
+            color: #475569;
+            margin-bottom: 5px;
         }
-        .badge-success { background-color: #d1fae5; color: #10b981; }
-        .badge-danger { background-color: #fee2e2; color: #ef4444; }
-        .badge-warning { background-color: #fef3c7; color: #f59e0b; }
-        .badge-info { background-color: #e0f2fe; color: #0284c7; }
-        
-        .detail-row {
+        .form-control, .form-select {
+            padding: 8px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 12.5px;
+            font-family: inherit;
+            color: #1e293b;
+            background-color: #ffffff;
+            transition: all 0.2s;
+        }
+        .form-control:focus, .form-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        /* Buttons - Standardized with Hồ sơ chờ xử lý */
+        .btn {
+            font-weight: 500;
+            border-radius: 6px;
+            padding: 0.5rem 1.25rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            text-decoration: none;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        .btn-primary {
+            background-color: var(--primary-color, #1E3A8A);
+            color: #ffffff;
+            border-color: var(--primary-color, #1E3A8A);
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-hover, #1E40AF);
+            border-color: var(--primary-hover, #1E40AF);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .btn-outline-primary {
+            background-color: transparent;
+            color: var(--primary-color, #1E3A8A);
+            border: 1px solid var(--primary-color, #1E3A8A);
+        }
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color, #1E3A8A);
+            color: #ffffff;
+        }
+        .btn-outline-secondary,
+        .btn-outline {
+            background-color: transparent;
+            color: #1E293B;
+            border: 1px solid #CBD5E1;
+        }
+        .btn-outline-secondary:hover,
+        .btn-outline:hover {
+            background-color: #F1F5F9;
+            border-color: #94A3B8;
+            color: #1E293B;
+        }
+        .btn-secondary {
+            background-color: transparent;
+            color: #1E293B;
+            border: 1px solid #CBD5E1;
+        }
+        .btn-secondary:hover {
+            background-color: #F1F5F9;
+            border-color: #94A3B8;
+        }
+        .btn-outline-success {
+            background-color: transparent;
+            border-color: #10B981;
+            color: #10B981;
+        }
+        .btn-outline-success:hover {
+            background-color: #10B981;
+            color: #ffffff;
+        }
+        .btn-danger {
+            background-color: #EF4444;
+            color: #ffffff;
+            border-color: #EF4444;
+        }
+        .btn-danger:hover {
+            background-color: #DC2626;
+            border-color: #DC2626;
+        }
+        .btn-success {
+            background-color: #10B981;
+            color: #ffffff;
+            border-color: #10B981;
+        }
+        .btn-success:hover {
+            background-color: #059669;
+            border-color: #059669;
+        }
+        .btn-warning {
+            background-color: #F59E0B;
+            color: #ffffff;
+            border-color: #F59E0B;
+        }
+        .btn-warning:hover {
+            background-color: #D97706;
+            border-color: #D97706;
+        }
+
+        /* Table Card Section (chuẩn Enterprise UI giống Hồ sơ chờ xử lý) */
+        .table-card-section {
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            padding: 16px 20px;
+            margin-bottom: 16px;
+        }
+        .table-toolbar {
             display: flex;
-            border-bottom: 1px dashed #f1f5f9;
-            padding: 8px 0;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 14px;
+            gap: 10px;
+        }
+
+        /* ===== Đồng bộ kiểu bảng và khối theo chuẩn màn Hồ sơ chờ xử lý ===== */
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            background-color: #fff;
+            position: relative;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            text-align: left;
             font-size: 13px;
         }
-        .detail-label {
-            width: 180px;
+
+        .custom-table thead th {
+            position: sticky;
+            top: 0;
+            z-index: 3;
+            background-color: #F1F5F9;
+            color: #475569;
+            font-weight: 600;
+            padding: 10px 14px;
+            border-bottom: 2px solid #e2e8f0;
+            white-space: nowrap;
+        }
+
+        .custom-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #1e293b;
+            vertical-align: middle;
+            background-color: #ffffff;
+        }
+
+        .custom-table tbody tr {
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .custom-table tbody tr:hover td {
+            background-color: #F0F9FF !important;
+        }
+
+        .custom-table tbody tr:nth-child(even) td {
+            background-color: #F8FAFC;
+        }
+
+        .custom-table tbody tr:nth-child(even):hover td {
+            background-color: #F0F9FF !important;
+        }
+
+        /* Cột Thao tác cố định cạnh phải bảng (Sticky/Freeze) */
+        .custom-table th:last-child,
+        .custom-table td:last-child,
+        .custom-table .col-actions {
+            position: sticky;
+            right: 0;
+            z-index: 2;
+            background-color: #ffffff;
+            box-shadow: -4px 0 6px -2px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            white-space: nowrap;
+            min-width: 90px;
+        }
+
+        .custom-table thead th:last-child,
+        .custom-table thead th.col-actions {
+            position: sticky;
+            top: 0;
+            right: 0;
+            z-index: 10;
+            background-color: #F1F5F9;
+            box-shadow: -4px 0 6px -2px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        .custom-table tbody tr:hover td:last-child,
+        .custom-table tbody tr:hover td.col-actions {
+            background-color: #F0F9FF !important;
+        }
+
+        .custom-table tbody tr:nth-child(even) td:last-child,
+        .custom-table tbody tr:nth-child(even) td.col-actions {
+            background-color: #F8FAFC;
+        }
+
+        .custom-table tbody tr:nth-child(even):hover td:last-child,
+        .custom-table tbody tr:nth-child(even):hover td.col-actions {
+            background-color: #F0F9FF !important;
+        }
+
+        /* Specific Cell Styles */
+        .link-code {
+            color: #1e40af;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .link-code:hover {
+            text-decoration: underline;
+        }
+        .party-cell {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            line-height: 1.4;
+        }
+        .party-line {
+            display: flex;
+            gap: 4px;
+        }
+        .party-label {
             font-weight: 600;
             color: #64748b;
+            white-space: nowrap;
         }
-        .detail-value {
-            flex: 1;
+        .party-value {
             color: #1e293b;
         }
 
-        .compare-table {
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            font-size: 11px;
+            font-weight: 600;
+            border-radius: 4px;
+            text-align: center;
+            line-height: 1.2;
+        }
+        .badge-type-chinhly { background-color: #f3e8ff; color: #7e22ce; border: 1px solid #e9d5ff; }
+        .badge-type-huytoanphan { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+        .badge-type-huymotphan { background-color: #ffedd5; color: #c2410c; border: 1px solid #fed7aa; }
+        .badge-type-khoiphuc { background-color: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+
+        .badge-st-choduyet { background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+        .badge-st-tuchoi { background-color: #f1f5f9; color: #ef4444; border: 1px solid #cbd5e1; }
+        .badge-st-chothuchien { background-color: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+        .badge-st-choky { background-color: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe; }
+        .badge-st-bitralai { background-color: #ffe4e6; color: #e11d48; border: 1px solid #fecdd3; }
+        .badge-st-hoanthanh { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+
+        /* FIXED-SLOT ACTION BUTTONS (MÀU SẮC & NÚT TRÒN CHUẨN HỒ SƠ CHỜ XỬ LÝ) */
+        .action-slot-group {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .icon-btn {
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            margin: 0 4px;
+        }
+        .icon-btn.approve {
+            background-color: #ECFDF5;
+            color: #10B981;
+        }
+        .icon-btn.approve:hover {
+            background-color: #D1FAE5;
+            color: #059669;
+            transform: translateY(-1px);
+        }
+        .icon-btn.edit {
+            background-color: #FFF7ED;
+            color: #F59E0B;
+        }
+        .icon-btn.edit:hover {
+            background-color: #FFEDD5;
+            color: #B45309;
+            transform: translateY(-1px);
+        }
+        .icon-btn.sign {
+            background-color: #EEF2F6;
+            color: #1E3A8A;
+        }
+        .icon-btn.sign:hover {
+            background-color: #DBEAFE;
+            color: #1E40AF;
+            transform: translateY(-1px);
+        }
+        .icon-btn.reject, .icon-btn.delete {
+            background-color: #FEF2F2;
+            color: #EF4444;
+        }
+        .icon-btn.reject:hover, .icon-btn.delete:hover {
+            background-color: #FEE2E2;
+            color: #B91C1C;
+            transform: translateY(-1px);
+        }
+        .icon-btn.history {
+            background-color: #EFF6FF;
+            color: #2563EB;
+        }
+        .icon-btn.history:hover {
+            background-color: #DBEAFE;
+            color: #1D4ED8;
+            transform: translateY(-1px);
+        }
+        .icon-btn.disabled, .icon-btn[disabled] {
+            background-color: #F1F5F9 !important;
+            color: #94A3B8 !important;
+            opacity: 0.35;
+            pointer-events: none;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* ===== Thanh phân trang đồng bộ chuẩn Hồ sơ chờ xử lý ===== */
+        .pagination-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid #E2E8F0;
+            flex-wrap: wrap;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .pagination-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #64748B;
+        }
+        .page-size-select {
+            padding: 4px 8px;
+            border: 1px solid #CBD5E1;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            font-size: 13px;
+            background: #fff;
+            color: #1E293B;
+        }
+        .pagination-pages {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .page-item, .page-btn {
+            min-width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 6px;
+            border: 1px solid #E2E8F0;
+            border-radius: 4px;
+            background-color: #fff;
+            color: #1E293B;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
+        }
+        .page-item:hover:not(.disabled):not(:disabled),
+        .page-btn:hover:not(.disabled):not(:disabled) {
+            border-color: var(--primary-color, #1E3A8A);
+            color: var(--primary-color, #1E3A8A);
+            background-color: #EFF6FF;
+        }
+        .page-item.active, .page-btn.active {
+            background-color: var(--primary-color, #1E3A8A);
+            color: #fff;
+            border-color: var(--primary-color, #1E3A8A);
+        }
+        .page-item.disabled, .page-btn.disabled,
+        .page-item:disabled, .page-btn:disabled {
+            color: #CBD5E1;
+            background-color: #F8FAFC;
+            cursor: not-allowed;
+            border-color: #E2E8F0;
+            pointer-events: none;
+        }
+
+        /* STICKY MODALS (RULE 1 & RULE 4.11) */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            backdrop-filter: blur(2px);
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-content {
+            background: #ffffff;
+            border-radius: 10px;
+            width: 92%;
+            max-width: 800px;
+            max-height: 90vh; /* Rule 1 */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Rule 1 */
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+            border: 1px solid #e2e8f0;
+        }
+        .modal-header {
+            padding: 24px 24px 16px 24px; /* Rule 4.11 */
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+            flex-shrink: 0; /* Sticky header */
+        }
+        .modal-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-color, #1e3a8a);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .modal-body {
+            padding: 24px; /* Rule 4.11 */
+            overflow-y: auto; /* Rule 1 */
+            flex: 1;
+            font-size: 13px;
+        }
+        .modal-footer {
+            padding: 16px 24px 24px 24px; /* Rule 4.11 */
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            background: #f8fafc;
+            flex-shrink: 0; /* Sticky footer */
+        }
+
+        /* 2-Column Grid in Modal Body */
+        .modal-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* Diff comparison table (MH07) */
+        .diff-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 12px;
+            font-size: 12.5px;
+            margin-top: 10px;
         }
-        .compare-table th {
-            border: 1px solid #cbd5e1;
-            padding: 6px;
+        .diff-table th, .diff-table td {
+            border: 1px solid #e2e8f0;
+            padding: 8px 12px;
+        }
+        .diff-table th {
             background: #f1f5f9;
-            color: #475569;
+            font-weight: 600;
+            color: #334155;
+        }
+        .diff-old {
+            background-color: #fef2f2;
+            color: #b91c1c;
+            text-decoration: line-through;
+        }
+        .diff-new {
+            background-color: #f0fdf4;
+            color: #15803d;
             font-weight: 600;
         }
-        .compare-table td {
-            border: 1px solid #cbd5e1;
-            padding: 6px;
+
+        /* Tree history visual */
+        .history-tree-list {
+            list-style: none;
+            padding-left: 10px;
+            position: relative;
         }
+        .history-tree-list::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            bottom: 10px;
+            left: 20px;
+            width: 2px;
+            background-color: #cbd5e1;
+        }
+        .tree-node-item {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 16px;
+        }
+        .tree-node-dot {
+            position: absolute;
+            left: 14px;
+            top: 4px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: #3b82f6;
+            border: 3px solid #ffffff;
+            box-shadow: 0 0 0 2px #3b82f6;
+        }
+        .tree-node-content {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 10px 14px;
+        }
+
+        /* Toast */
+        .toast-msg {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            background: #10b981;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 11000;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        .toast-msg.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+        .date-invalid-msg { display: none; color: #EF4444; font-size: 12px; margin-top: 4px; font-weight: 500; }
+        .date-invalid-msg.show { display: block; }
+        .form-control.is-invalid { border-color: #EF4444 !important; background-color: #FFF5F5 !important; }
     </style>
+    <link rel="stylesheet" href="chinh_ly_common.css">
 </head>
+<!-- MH01 - Màn hình Bàn làm việc Quản lý Chỉnh lý, Hủy và Khôi phục đăng ký -->
 <body>
-    <div class="container">
-        <!-- TIÊU ĐỀ TRANG -->
-        <div style="border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px;">
-            <h2 style="font-size: 16px; color: var(--primary-color); font-weight: 700; margin: 0;">
-                <i class="fa-solid fa-folder-tree"></i> THEO DÕI VÀ XỬ LÝ ĐỀ NGHỊ CHỈNH LÝ / HỦY / KHÔI PHỤC
-            </h2>
-        </div>
 
-        <!-- TABS HEADER -->
-        <div class="nav-tabs">
-            <div class="nav-tab active" onclick="switchTab('cho_duyet', this)">
-                <i class="fa-solid fa-clock-rotate-left"></i> Đề nghị/Hồ sơ chờ ký
-                <span class="tab-badge warning" id="badge-cho_duyet">0</span>
+<div class="container">
+    <div class="page-breadcrumb">
+        <a href="HomePageAdmin.html"><i class="fa-solid fa-house"></i> Trang chủ</a>
+        <i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i>
+        <span>Biện pháp bảo đảm</span>
+        <i class="fa-solid fa-chevron-right" style="font-size: 10px;"></i>
+        <span>Quản lý Chỉnh lý thông tin, Hủy và Khôi phục đăng ký</span>
+    </div>
+
+    <div class="top-action-bar">
+        <h2><i class="fa-solid fa-folder-tree"></i> QUẢN LÝ CHỈNH LÝ THÔNG TIN, HỦY VÀ KHÔI PHỤC ĐĂNG KÝ</h2>
+    </div>
+
+    <!-- TẦNG TAB ĐIỀU HƯỚNG NHANH -->
+    <div class="nav-tabs" id="statusTabs">
+        <div class="nav-tab active" data-tab="all">Tất cả <span class="tab-badge secondary" id="badge_all">0</span></div>
+        <div class="nav-tab" data-tab="my_tasks">Cần xử lý của tôi <span class="tab-badge danger" id="badge_my_tasks">0</span></div>
+        <div class="nav-tab" data-tab="cho_duyet">Chờ duyệt đề nghị <span class="tab-badge warning" id="badge_cho_duyet">0</span></div>
+        <div class="nav-tab" data-tab="cho_thuc_hien">Chờ thực hiện <span class="tab-badge info" id="badge_cho_thuc_hien">0</span></div>
+        <div class="nav-tab" data-tab="cho_ky">Chờ ký số <span class="tab-badge primary" id="badge_cho_ky">0</span></div>
+        <div class="nav-tab" data-tab="hoan_thanh">Lịch sử hoàn thành <span class="tab-badge success" id="badge_hoan_thanh">0</span></div>
+    </div>
+
+    <!-- BỘ LỌC TÌM KIẾM -->
+    <div class="card-filter">
+        <div class="filter-header" id="filterHeader">
+            <div class="filter-header-title"><i class="fa-solid fa-filter"></i> BỘ LỌC TÌM KIẾM</div>
+            <div style="font-size: 12px; color: #64748b;"><span id="txtToggleFilter">Thu gọn</span> <i class="fa-solid fa-chevron-up" id="iconToggleFilter" style="margin-left: 4px;"></i></div>
+        </div>
+        <div class="filter-body" id="filterBody">
+            <div class="grid-filter" style="margin-top: 14px;">
+                <div class="form-group"><label class="form-label" for="fMaDeNghi">Mã đề nghị</label>
+                    <input type="text" class="form-control" id="fMaDeNghi" maxlength="50" placeholder="Nhập mã đề nghị..."></div>
+                <div class="form-group"><label class="form-label" for="fMaKhachHang">Mã khách hàng</label>
+                    <input type="text" class="form-control" id="fMaKhachHang" maxlength="50" placeholder="Nhập mã khách hàng..."></div>
+                <div class="form-group"><label class="form-label" for="fSoDangKy">Số đăng ký</label>
+                    <input type="text" class="form-control" id="fSoDangKy" maxlength="50" placeholder="Nhập số đăng ký..."></div>
+                <div class="form-group"><label class="form-label" for="fLoaiDeNghi">Loại đề nghị</label>
+                    <select class="form-select" id="fLoaiDeNghi">
+                        <option value="">Tất cả</option>
+                        <option>Chỉnh lý thông tin sai sót</option>
+                        <option>Hủy đăng ký (Toàn phần)</option>
+                        <option>Hủy đăng ký (Một phần)</option>
+                        <option>Khôi phục hủy đăng ký</option>
+                    </select></div>
+                <div class="form-group"><label class="form-label" for="fLoaiDangKy">Loại đăng ký</label>
+                    <select class="form-select" id="fLoaiDangKy">
+                        <option value="">Tất cả</option>
+                        <option>Đăng ký lần đầu</option>
+                        <option>Đăng ký thay đổi</option>
+                        <option>Xóa đăng ký</option>
+                        <option>Thông báo xử lý tài sản đảm bảo lần đầu</option>
+                        <option>Thay đổi thông báo xử lý tài sản bảo đảm</option>
+                        <option>Xóa đăng ký thông báo xử lý tài sản bảo đảm</option>
+                        <option>Yêu cầu cung cấp bản sao</option>
+                        <option>Yêu cầu cung cấp thông tin</option>
+                    </select></div>
+                <div class="form-group" id="grpTrangThai"><label class="form-label" for="fTrangThai">Trạng thái</label>
+                    <!-- Danh sách giá trị nạp theo Tab đang chọn -->
+                    <select class="form-select" id="fTrangThai"><option value="">Tất cả</option></select></div>
+                <div class="form-group"><label class="form-label" for="fBenBaoDam">Tên bên bảo đảm</label>
+                    <input type="text" class="form-control" id="fBenBaoDam" maxlength="255" placeholder="Nhập tên bên bảo đảm..."></div>
+                <div class="form-group"><label class="form-label" for="fBenNhanBaoDam">Tên bên nhận bảo đảm</label>
+                    <input type="text" class="form-control" id="fBenNhanBaoDam" maxlength="255" placeholder="Nhập tên bên nhận bảo đảm..."></div>
+                <div class="form-group"><label class="form-label" for="fNguoiXuLy">Người xử lý</label>
+                    <input type="text" class="form-control" id="fNguoiXuLy" maxlength="255" placeholder="Nhập tên người lập hoặc người thực hiện..."></div>
+                <div class="form-group"><label class="form-label" for="fTuNgay">Từ ngày</label>
+                    <input type="text" class="form-control" id="fTuNgay" placeholder="dd/mm/yyyy"></div>
+                <div class="form-group"><label class="form-label" for="fDenNgay">Đến ngày</label>
+                    <input type="text" class="form-control" id="fDenNgay" placeholder="dd/mm/yyyy">
+                    <div class="date-invalid-msg" id="errNgay"></div></div>
             </div>
-            <div class="nav-tab" onclick="switchTab('cho_thuc_hien', this)">
-                <i class="fa-solid fa-gears"></i> Hồ sơ chờ thực hiện
-                <span class="tab-badge info" id="badge-cho_thuc_hien">0</span>
-            </div>
-            <div class="nav-tab" onclick="switchTab('bi_tra_lai', this)">
-                <i class="fa-solid fa-circle-exclamation"></i> Đề nghị/Hồ sơ bị trả lại
-                <span class="tab-badge danger" id="badge-bi_tra_lai">0</span>
-            </div>
-            <div class="nav-tab" onclick="switchTab('da_xuly', this)">
-                <i class="fa-solid fa-circle-check"></i> Đề nghị/Hồ sơ đã xử lý
-                <span class="tab-badge success" id="badge-da_xuly">0</span>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px;">
+                <button type="button" class="btn btn-outline-secondary" id="btnXoaLoc"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                <button type="button" class="btn btn-primary" id="btnTimKiem"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
             </div>
         </div>
+    </div>
 
-        <!-- BỘ LỌC TÌM KIẾM NÂNG CAO -->
-        <div class="card-section">
-            <div class="grid-4-cols" style="gap: 15px;">
-                <div class="form-group" style="margin: 0;">
-                    <label class="form-label" style="font-size: 12px;">Số đăng ký gốc</label>
-                    <input type="text" class="form-control" id="filterSoDK" oninput="applyFilters()" placeholder="Nhập số đăng ký gốc...">
-                </div>
-                <div class="form-group" style="margin: 0;">
-                    <label class="form-label" style="font-size: 12px;">Loại đề xuất</label>
-                    <select class="form-select" id="filterType" onchange="applyFilters()">
-                        <option value="">-- Tất cả --</option>
-                        <option value="Chỉnh lý thông tin">Chỉnh lý thông tin</option>
-                        <option value="Hủy đăng ký một phần">Hủy một phần</option>
-                        <option value="Hủy đăng ký toàn phần">Hủy toàn phần</option>
-                        <option value="Khôi phục hủy đăng ký">Khôi phục hủy đăng ký</option>
-                    </select>
-                </div>
-                <div class="form-group" style="margin: 0;">
-                    <label class="form-label" style="font-size: 12px;">Từ ngày</label>
-                    <input type="text" class="form-control" id="filterFromDate" oninput="applyFilters()" placeholder="dd/mm/yyyy">
-                </div>
-                <div class="form-group" style="margin: 0;">
-                    <label class="form-label" style="font-size: 12px;">Đến ngày</label>
-                    <input type="text" class="form-control" id="filterToDate" oninput="applyFilters()" placeholder="dd/mm/yyyy">
-                </div>
-            </div>
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
-                <button type="button" class="btn btn-secondary" onclick="resetFilters()"><i class="fa-solid fa-eraser"></i> Xóa bộ lọc</button>
-            </div>
+    <!-- BẢNG DANH SÁCH ĐỀ NGHỊ CHỈNH LÝ, HỦY VÀ KHÔI PHỤC ĐĂNG KÝ -->
+    <div class="table-card-section">
+        <div class="table-toolbar">
+            <button type="button" class="btn btn-outline-primary" id="btnExportExcel"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+            <a href="lap_de_nghi_chinh_ly.html" class="btn btn-primary" id="btnLapDeNghi" style="text-decoration: none;"><i class="fa-solid fa-plus"></i> Lập đề nghị mới</a>
         </div>
-
-        <!-- BẢNG KẾT QUẢ HIỂN THỊ -->
-        <div class="table-responsive" style="overflow-x: auto; max-width: 100%;">
-            <table class="table" style="width: 100%; border-collapse: collapse; min-width: 1300px; font-size: 13px;">
+        <div class="table-container">
+            <table class="custom-table" id="mainTable">
                 <thead>
-                    <tr style="background-color: var(--table-header-bg);">
-                        <th style="width: 50px; text-align: center;">STT</th>
-                        <th style="width: 130px; text-align: center;">Mã đề nghị</th>
-                        <th style="width: 180px; text-align: center;">Loại đề xuất</th>
-                        <th style="width: 140px; text-align: center;">Số đăng ký gốc</th>
-                        <th>Lý do đề xuất / Diễn giải</th>
-                        <th style="width: 150px; text-align: center;">Cán bộ lập đề xuất</th>
-                        <th style="width: 140px; text-align: center;">Thời điểm lập</th>
-                        <th style="width: 130px; text-align: center;">Trạng thái</th>
-                        <th style="width: 150px; text-align: center;">Thao tác</th>
+                    <tr>
+                        <th style="width: 45px; text-align: center;">STT</th>
+                        <th style="text-align: center;" class="sortable" data-sort="maDeNghi">Mã đề nghị <i class="fa-solid fa-sort" style="font-size: 11px;"></i></th>
+                        <th style="text-align: center;" class="sortable" data-sort="loaiDeNghi">Loại đề nghị <i class="fa-solid fa-sort" style="font-size: 11px;"></i></th>
+                        <th style="text-align: center;" class="sortable" data-sort="maKH">Mã KH <i class="fa-solid fa-sort" style="font-size: 11px;"></i></th>
+                        <th style="text-align: center;" class="sortable" data-sort="soDangKy">Số đăng ký <i class="fa-solid fa-sort" style="font-size: 11px;"></i></th>
+                        <th style="text-align: center;" class="sortable" data-sort="loaiDangKy">Loại đăng ký <i class="fa-solid fa-sort" style="font-size: 11px;"></i></th>
+                        <th style="min-width: 170px;" class="sortable" data-sort="bbd">Tên bên bảo đảm <i class="fa-solid fa-sort" style="font-size: 11px;"></i></th>
+                        <th style="min-width: 170px;" class="sortable" data-sort="bnbd">Tên bên nhận bảo đảm <i class="fa-solid fa-sort" style="font-size: 11px;"></i></th>
+                        <th class="sortable" data-sort="nguoiXuLy">Người xử lý <i class="fa-solid fa-sort" style="font-size: 11px;"></i></th>
+                        <th style="text-align: center;" class="sortable" data-sort="thoiDiemGuiSort">Thời điểm gửi <i class="fa-solid fa-sort" style="font-size: 11px;"></i></th>
+                        <th style="text-align: center;" class="sortable" data-sort="trangThai">Trạng thái <i class="fa-solid fa-sort" style="font-size: 11px;"></i></th>
+                        <th style="width: 90px; min-width: 90px; text-align: center;" class="col-actions">Thao tác</th>
                     </tr>
                 </thead>
-                <tbody id="proposal-tbody">
-                    <!-- Render by JS -->
-                </tbody>
+                <tbody id="tableBody"></tbody>
             </table>
         </div>
-    </div>
-
-    <!-- MODAL PHÊ DUYỆT CHỦ TRƯƠNG ĐỀ NGHỊ -->
-    <div class="modal-overlay" id="approvalModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="mdlTitle">ĐỀ NGHỊ CHỜ KÝ DUYỆT</h3>
-                <button onclick="closeApprovalModal()" style="border:none; background:none; cursor:pointer; font-size:16px;"><i class="fa-solid fa-xmark"></i></button>
+        <div class="pagination-bar">
+            <div class="pagination-left">
+                <span>Hiển thị:</span>
+                <select class="page-size-select" id="pageSizeSelect">
+                    <option value="10">10</option><option value="20">20</option><option value="50">50</option><option value="100">100</option>
+                </select>
+                <span id="pageInfoText"></span>
             </div>
-            <div class="modal-body">
-                <div class="detail-row">
-                    <div class="detail-label">Mã đề xuất:</div>
-                    <div class="detail-value" id="mdlProposalCode" style="font-weight: 700;">-</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Loại đề xuất:</div>
-                    <div class="detail-value" id="mdlProposalType">-</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Số đăng ký gốc:</div>
-                    <div class="detail-value" id="mdlSoDKGoc" style="color: var(--primary-color); font-weight: 600;">-</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Lập bởi cán bộ:</div>
-                    <div class="detail-value" id="mdlCreator">-</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Thời điểm lập:</div>
-                    <div class="detail-value" id="mdlCreatedDate">-</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Căn cứ pháp lý:</div>
-                    <div class="detail-value" id="mdlDocRef">-</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Tài liệu scan:</div>
-                    <div class="detail-value">
-                        <a href="#" onclick="alert('Đang tải tài liệu PDF đính kèm...')" id="mdlDocFile" style="color: var(--secondary-color); font-weight: 600; text-decoration: underline;"><i class="fa-solid fa-file-pdf" style="color:#ef4444"></i> QuyetDinhChiTiet.pdf</a>
-                    </div>
-                </div>
-                <div class="detail-row" style="border-bottom: none;">
-                    <div class="detail-label">Lý do/Diễn giải:</div>
-                    <div class="detail-value" id="mdlReason" style="background-color: #f8fafc; padding: 8px; border-radius: 4px; border: 1px solid #e2e8f0; min-height: 40px;">-</div>
-                </div>
-
-                <!-- B4: BẢNG SO SÁNH TRƯỜNG CỦA LÃNH ĐẠO XEM ĐỐI CHIẾU CHỦ TRƯƠNG -->
-                <div id="mdlCorrectionFieldsGroup" style="display: none; margin-top: 15px; background: #fafafa; border: 1px solid #cbd5e1; border-radius: 6px; padding: 12px;">
-                    <div style="font-weight: 700; font-size: 12.5px; margin-bottom: 8px; color: var(--primary-color);">
-                        <i class="fa-solid fa-list-check"></i> Chi tiết các trường đề xuất chỉnh lý (Chủ trương):
-                    </div>
-                    <table class="compare-table">
-                        <thead>
-                            <tr>
-                                <th>Trường thông tin</th>
-                                <th>Giá trị hiện tại</th>
-                                <th>Giá trị đề xuất sửa</th>
-                                <th>Lý do sai sót</th>
-                            </tr>
-                        </thead>
-                        <tbody id="mdlTblCorrectionRows">
-                            <!-- Render dynamic rows -->
-                        </tbody>
-                    </table>
-                    <div style="margin-top: 10px; font-size: 11.5px; font-weight: 600; color: #b45309;" id="mdlLblScope">
-                        <!-- Cascading scope label -->
-                    </div>
-                </div>
-
-                <div class="form-group" id="grpRejectReason" style="display: none; margin-top: 15px;">
-                    <label class="form-label" style="font-weight: 600; color: #ef4444;">Lý do từ chối (Lãnh đạo trả lại)</label>
-                    <div id="mdlRejectReasonText" style="background-color: #fee2e2; border: 1px solid #fca5a5; padding: 10px; border-radius: 4px; color: #b91c1c; font-size: 13px;">-</div>
-                </div>
-
-                <div class="form-group" id="grpApprovalOpinion" style="margin-top: 15px;">
-                    <label class="form-label" style="font-weight: 600;">Ý kiến của Lãnh đạo / Chỉ đạo tác nghiệp</label>
-                    <textarea class="form-control" id="txtOpinion" rows="2" placeholder="Nhập ý kiến chỉ đạo..."></textarea>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeApprovalModal()" style="background:#e2e8f0; color:#475569;">Đóng</button>
-                <div id="divApprovalActions" style="display: inline-flex; gap: 10px;">
-                    <button type="button" class="btn btn-danger" onclick="executeApproval('Từ chối')"><i class="fa-solid fa-circle-xmark"></i> Từ chối ký</button>
-                    <button type="button" class="btn btn-primary" onclick="executeApproval('Đã ký')"><i class="fa-solid fa-signature"></i> Phê duyệt & Ký số</button>
-                </div>
-            </div>
+            <div class="pagination-pages" id="paginationControls"></div>
         </div>
     </div>
+</div>
 
-    <!-- TOAST NOTIFICATION -->
-    <div id="toast" class="toast-notification">
-        <i class="fa-solid fa-circle-check"></i> <span id="toastMsg">Thao tác thành công!</span>
-    </div>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="chinh_ly_common.js"></script>
+<script>
+(function () {
+    const C = CLDK;
+    const $ = C.byId;
+    const TAB_STATUS = {
+        all: null,
+        my_tasks: ['Bị từ chối đề nghị', 'Chờ thực hiện', 'Bị trả lại'],
+        cho_duyet: ['Chờ duyệt đề nghị'],
+        cho_thuc_hien: ['Chờ thực hiện'],
+        cho_ky: ['Chờ ký số'],
+        hoan_thanh: ['Hoàn thành']
+    };
+    const ALL_STATUS = ['Chờ duyệt đề nghị', 'Bị từ chối đề nghị', 'Chờ thực hiện', 'Chờ ký số', 'Bị trả lại', 'Hoàn thành'];
+    let currentTab = TAB_STATUS.hasOwnProperty(C.param('tab')) ? C.param('tab') : 'all';
+    let criteria = {};
+    let currentPage = 1, pageSize = 10;
+    let sortKey = 'thoiDiemGuiSort', sortAsc = false;
+    let rows = [];
 
-    <script>
-        let currentTab = 'cho_duyet';
-        let proposals = [];
-        let selectedProposal = null;
+    // Dòng dữ liệu hiển thị trên bảng
+    function toRow(p) {
+        const hs = C.hoSoOf(p) || {};
+        const dt = C.parseDMY(p.thoiDiemGui);
+        const [hh, mm] = (p.thoiDiemGui.split(' ')[1] || '00:00').split(':');
+        if (dt) dt.setHours(+hh, +mm);
+        return {
+            p, id: p.id, maDeNghi: p.maDeNghi, loaiDeNghi: C.loaiLabel(p), maKH: hs.maKH || '',
+            soDangKy: p.soDangKy, soKhac: [hs.soDKLanDau, p.soDKHuyMoi].filter(Boolean).join(' '),
+            loaiDangKy: hs.loaiDangKy || '', bbd: C.tenDanhSach(hs.bbd), bnbd: C.tenDanhSach(hs.bnbd),
+            nguoiXuLy: C.nguoiXuLy(p), nguoiLap: p.nguoiLap, nguoiThucHien: p.pheDuyet ? p.pheDuyet.nguoiThucHien : '',
+            thoiDiemGui: p.thoiDiemGui, thoiDiemGuiSort: dt ? dt.getTime() : 0, ngayGui: dt, trangThai: p.trangThai
+        };
+    }
 
-        function initMockProfiles() {
-            let list = JSON.parse(localStorage.getItem('custom_mock_profiles') || '[]');
-            const mockCount = list.filter(p => p.id.startsWith('GDBD-2026-0009')).length;
-            if (mockCount < 10) {
-                const getPastDateStr = (daysAgo) => {
-                    const d = new Date();
-                    d.setDate(d.getDate() - daysAgo);
-                    const pad = (n) => n < 10 ? '0' + n : n;
-                    return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} 09:00`;
-                };
-
-                const initialDossiers = [
-                    { id: 'GDBD-2026-000901', date: getPastDateStr(10), customer: 'Công ty TNHH Cơ khí Hải Phong', mortgagee: 'Ngân hàng TMCP Ngoại thương VN (Vietcombank)', type: 'Đăng ký mới', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '0101987654', receiptNo: 'BL-9921', assetType: 'Xe ô tô Mazda 3 BKS 30G-123.45 | Xe ô tô Toyota Camry BKS 30H-889.21', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] },
-                    { id: 'GDBD-2026-000902', date: getPastDateStr(9), customer: 'Ông Nguyễn Văn Long', mortgagee: 'Ngân hàng TMCP Quân đội (MB Bank)', type: 'Đăng ký thay đổi', transactionType: 'Biện pháp bảo đảm', subtype: 'dat_coc', status: 'Hoàn thành', customerCode: '001090123456', receiptNo: 'BL-9922', assetType: 'Quyền tài sản phát sinh từ hợp đồng mua bán căn hộ chung cư số 102', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] },
-                    { id: 'GDBD-2026-000903', date: getPastDateStr(8), customer: 'Công ty Vận tải Mai Linh', mortgagee: 'Ngân hàng TMCP Đầu tư và Phát triển VN (BIDV)', type: 'Xóa đăng ký', transactionType: 'Biện pháp bảo đảm', subtype: 'cam_co', status: 'Hoàn thành', customerCode: '0101234567', receiptNo: 'BL-9923', assetType: 'Xe tải KIA Frontier BKS 29C-990.11', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] },
-                    { id: 'GDBD-2026-000904', date: getPastDateStr(7), customer: 'Bà Trần Thị Mai', mortgagee: 'Ngân hàng TMCP Kỹ thương Việt Nam (Techcombank)', type: 'Thông báo xử lý tài sản', transactionType: 'Biện pháp bảo đảm', subtype: 'ky_quy', status: 'Hoàn thành', customerCode: '030099887711', receiptNo: 'BL-9924', assetType: 'Xe ô tô Ford Ranger BKS 30K-771.22', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] },
-                    { id: 'GDBD-2026-000905', date: getPastDateStr(6), customer: 'Công ty Cổ phần Alpha', mortgagee: 'Ngân hàng TMCP Công thương Việt Nam (VietinBank)', type: 'Thay đổi thông báo xử lý tài sản', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '0109928172', receiptNo: 'BL-9925', assetType: 'Tàu đánh bắt cá công suất lớn số hiệu HP-90812-TS', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] },
-                    { id: 'GDBD-2026-000906', date: getPastDateStr(5), customer: 'Ông Lê Văn Nam', mortgagee: 'Bà Nguyễn Thị Lan', type: 'Xóa thông báo xử lý tài sản', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '034091000999', receiptNo: 'BL-9926', assetType: 'Xe ô tô Hyundai Accent BKS 29A-882.19', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] },
-                    { id: 'GDBD-2026-000907', date: getPastDateStr(4), customer: 'Công ty TNHH Hưng Phát', mortgagee: 'Ngân hàng TMCP Thịnh Vượng (VPBank)', type: 'Hủy đăng ký', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '0108871625', receiptNo: 'BL-9927', assetType: 'Xe xúc lật Komatsu số khung KM-99120', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] },
-                    { id: 'GDBD-2026-000908', date: getPastDateStr(3), customer: 'Ông Phạm Văn Đồng', mortgagee: 'Ngân hàng Nông nghiệp & PTNT VN (Agribank)', type: 'Đăng ký mới', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '001085000444', receiptNo: 'BL-9928', assetType: 'Xe ô tô Toyota Vios BKS 30E-991.23 | Xe máy Honda SH BKS 30F-122.99', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] },
-                    { id: 'GDBD-2026-000909', date: getPastDateStr(2), customer: 'Công ty TNHH Sao Vàng', mortgagee: 'Ngân hàng TMCP Sài Gòn Thương Tín (Sacombank)', type: 'Đăng ký mới', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Hoàn thành', customerCode: '0200887261', receiptNo: 'BL-9929', assetType: 'Dây chuyền máy móc sản xuất bao bì tự động nhập khẩu', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] },
-                    { id: 'GDBD-2026-000910', date: getPastDateStr(1), customer: 'Ông Vũ Đức Đam', mortgagee: 'Ngân hàng Phát triển Việt Nam (VDB)', type: 'Đăng ký mới', transactionType: 'Biện pháp bảo đảm', subtype: 'the_chap', status: 'Đã hủy', customerCode: '001080001111', receiptNo: 'BL-9930', assetType: 'Nhà xưởng thép tiền chế tại khu công nghiệp Quang Minh', handlingOfficer: 'Nguyễn Văn Cán Bộ', correctionLogs: [] }
-                ];
-
-                initialDossiers.forEach(d => {
-                    const exIdx = list.findIndex(l => l.id === d.id);
-                    if (exIdx !== -1) {
-                        list[exIdx] = d;
-                    } else {
-                        list.push(d);
-                    }
-                });
-
-                localStorage.setItem('custom_mock_profiles', JSON.stringify(list));
-            }
-        }
-
-        function initMockProposalsIfEmpty() {
-            initMockProfiles();
-
-            const cached = localStorage.getItem('custom_proposals');
-            if (cached) {
-                proposals = JSON.parse(cached);
-                return;
-            }
-
-            const mockDossiers = JSON.parse(localStorage.getItem('custom_mock_profiles') || '[]');
-            const getDossier = (id) => mockDossiers.find(d => d.id === id) || mockDossiers[0];
-
-            proposals = [
-                {
-                    id: 1,
-                    proposalCode: 'DN-CL-2026-0001',
-                    type: 'Chỉnh lý thông tin',
-                    originalDossierId: 'GDBD-2026-000901',
-                    originalDossier: getDossier('GDBD-2026-000901'),
-                    docNo: 'QĐ-01/2026/THA',
-                    docDate: '10/06/2026',
-                    docIssuer: 'Chi cục THADS Quận Hoàn Kiếm',
-                    reason: 'Chỉnh lý thông tin bên bảo đảm và MST do lỗi cán bộ gõ nhầm.',
-                    fileName: 'QuyetDinhSuaLoiChinhTa_01.pdf',
-                    creator: 'Nguyễn Văn Cán Bộ',
-                    createdDate: '25/06/2026 09:30',
-                    status: 'Chờ ký',
-                    rejectReason: '',
-                    proposalScope: 'cascade_future',
-                    correctionTable: [
-                        { field: 'customer', fieldName: 'Tên bên bảo đảm', oldValue: 'Công ty TNHH Cơ khí Hải Phong', newValue: 'Công ty TNHH Cơ khí Hải Phong New', reason: 'Sai lỗi chính tả tên công ty' },
-                        { field: 'customerCode', fieldName: 'Số định danh/CCCD bên bảo đảm', oldValue: '0101987654', newValue: '0101987655', reason: 'Sai số cuối MST doanh nghiệp' }
-                    ]
-                },
-                {
-                    id: 2,
-                    proposalCode: 'DN-H-2026-0002',
-                    type: 'Hủy đăng ký toàn phần',
-                    originalDossierId: 'GDBD-2026-000902',
-                    originalDossier: getDossier('GDBD-2026-000902'),
-                    docNo: 'Bản án 45/2026/DS-ST',
-                    docDate: '12/06/2026',
-                    docIssuer: 'TAND Thành phố Hà Nội',
-                    reason: 'Hủy đăng ký toàn phần do Hợp đồng thế chấp mua bán căn hộ bị tuyên vô hiệu.',
-                    fileName: 'BanAn_45_VohieuHDTC.pdf',
-                    creator: 'Nguyễn Văn Cán Bộ',
-                    createdDate: '26/06/2026 14:15',
-                    status: 'Chờ ký',
-                    rejectReason: ''
-                },
-                {
-                    id: 3,
-                    proposalCode: 'DN-KP-2026-0003',
-                    type: 'Khôi phục hủy đăng ký',
-                    originalDossierId: 'GDBD-2026-000910',
-                    originalDossier: getDossier('GDBD-2026-000910'),
-                    docNo: 'QĐ-212/THA',
-                    docDate: '14/06/2026',
-                    docIssuer: 'Cục THADS Hà Nội',
-                    reason: 'Khôi phục hiệu lực hồ sơ bị hủy sai địa chỉ số khung nhà xưởng.',
-                    fileName: 'QuyetDinhKhoiPhuc_212.pdf',
-                    creator: 'Nguyễn Văn Cán Bộ',
-                    createdDate: '27/06/2026 10:00',
-                    status: 'Chờ ký',
-                    rejectReason: ''
-                },
-                // 5 hồ sơ Chờ thực hiện (Tab 2) - Trạng thái Hoàn thành
-                {
-                    id: 4,
-                    proposalCode: 'DN-CL-2026-0004',
-                    type: 'Chỉnh lý thông tin',
-                    originalDossierId: 'GDBD-2026-000901',
-                    originalDossier: getDossier('GDBD-2026-000901'),
-                    docNo: 'QĐ-52/THA',
-                    docDate: '01/06/2026',
-                    docIssuer: 'Chi cục THADS Hoàn Kiếm',
-                    reason: 'Chỉnh lý lại Tên bên nhận bảo đảm do gõ nhầm.',
-                    fileName: 'QuyetDinhChinhLyBBD.pdf',
-                    creator: 'Nguyễn Văn Cán Bộ',
-                    createdDate: '20/06/2026 15:30',
-                    status: 'Hoàn thành',
-                    rejectReason: '',
-                    proposalScope: 'cascade_future',
-                    correctionTable: [
-                        { field: 'mortgagee', fieldName: 'Tên bên nhận bảo đảm', oldValue: 'Ngân hàng TMCP Ngoại thương VN (Vietcombank)', newValue: 'Ngân hàng TMCP Ngoại thương Việt Nam - Chi nhánh Hoàn Kiếm', reason: 'Sai thông tin chi nhánh thụ lý' }
-                    ]
-                },
-                {
-                    id: 5,
-                    proposalCode: 'DN-CL-2026-0005',
-                    type: 'Chỉnh lý thông tin',
-                    originalDossierId: 'GDBD-2026-000902',
-                    originalDossier: getDossier('GDBD-2026-000902'),
-                    docNo: 'QĐ-122/THA',
-                    docDate: '03/06/2026',
-                    docIssuer: 'Chi cục THADS Hoàn Kiếm',
-                    reason: 'Chỉnh lý lại Số biên lai gốc bị nhập sai ký tự.',
-                    fileName: 'ChinhLyThayDoi.pdf',
-                    creator: 'Nguyễn Văn Cán Bộ',
-                    createdDate: '21/06/2026 09:00',
-                    status: 'Hoàn thành',
-                    rejectReason: '',
-                    proposalScope: 'only_this',
-                    correctionTable: [
-                        { field: 'receiptNo', fieldName: 'Số biên lai gốc', oldValue: 'BL-9922', newValue: 'BL-9922-A', reason: 'Thiếu hậu tố phân loại biên lai' }
-                    ]
-                },
-                {
-                    id: 6,
-                    proposalCode: 'DN-CL-2026-0006',
-                    type: 'Chỉnh lý thông tin',
-                    originalDossierId: 'GDBD-2026-000903',
-                    originalDossier: getDossier('GDBD-2026-000903'),
-                    docNo: 'Biên bản số 09',
-                    docDate: '05/06/2026',
-                    docIssuer: 'Trung tâm đăng ký',
-                    reason: 'Chỉnh lý thông tin mô tả tài sản bảo đảm.',
-                    fileName: 'BienBanXoaDK.pdf',
-                    creator: 'Nguyễn Văn Cán Bộ',
-                    createdDate: '22/06/2026 10:20',
-                    status: 'Hoàn thành',
-                    rejectReason: '',
-                    proposalScope: 'cascade_future',
-                    correctionTable: [
-                        { field: 'assetType', fieldName: 'Mô tả tài sản bảo đảm', oldValue: 'Xe tải KIA Frontier BKS 29C-990.11', newValue: 'Xe tải KIA Frontier BKS 29C-990.11 (Có kèm theo thùng kín phía sau)', reason: 'Cán bộ nhập thiếu phụ lục đặc điểm thùng xe' }
-                    ]
-                },
-                {
-                    id: 7,
-                    proposalCode: 'DN-H-2026-0007',
-                    type: 'Hủy đăng ký một phần',
-                    originalDossierId: 'GDBD-2026-000908',
-                    originalDossier: getDossier('GDBD-2026-000908'),
-                    docNo: 'QĐ-88/THA',
-                    docDate: '08/06/2026',
-                    docIssuer: 'Cục THADS Hà Nội',
-                    reason: 'Hủy đăng ký một phần (hủy bảo đảm đối với Xe máy Honda SH).',
-                    fileName: 'QuyetDinhHuy1Phan.pdf',
-                    cancelledAssets: ['Xe máy Honda SH BKS 30F-122.99'],
-                    creator: 'Nguyễn Văn Cán Bộ',
-                    createdDate: '23/06/2026 11:30',
-                    status: 'Hoàn thành',
-                    rejectReason: ''
-                },
-                {
-                    id: 8,
-                    proposalCode: 'DN-H-2026-0008',
-                    type: 'Hủy đăng ký toàn phần',
-                    originalDossierId: 'GDBD-2026-000909',
-                    originalDossier: getDossier('GDBD-2026-000909'),
-                    docNo: 'Bản án 102/DS-ST',
-                    docDate: '10/06/2026',
-                    docIssuer: 'TAND Quận Hai Bà Trưng',
-                    reason: 'Hủy toàn phần do bên nhận bảo đảm tuyên bố chấm dứt quan hệ tín dụng.',
-                    fileName: 'BanAnVohieuSacombank.pdf',
-                    creator: 'Nguyễn Văn Cán Bộ',
-                    createdDate: '24/06/2026 14:00',
-                    status: 'Hoàn thành',
-                    rejectReason: ''
-                },
-                // 1 Đề xuất bị từ chối/trả lại (Tab 3)
-                {
-                    id: 9,
-                    proposalCode: 'DN-CL-2026-0009',
-                    type: 'Chỉnh lý thông tin',
-                    originalDossierId: 'GDBD-2026-000903',
-                    originalDossier: getDossier('GDBD-2026-000903'),
-                    docNo: 'Đơn đề nghị',
-                    docDate: '12/06/2026',
-                    docIssuer: 'Công ty Mai Linh',
-                    reason: 'Chỉnh lý lại Số định danh chủ doanh nghiệp do gõ nhầm.',
-                    fileName: 'DonDeNghiSuaLoi.pdf',
-                    creator: 'Nguyễn Văn Cán Bộ',
-                    createdDate: '25/06/2026 11:00',
-                    status: 'Bị trả lại',
-                    rejectReason: 'Không đính kèm văn bản đồng ý phê duyệt của Ngân hàng BIDV. Yêu cầu đăng ký viên lấy xác nhận ngân hàng trước khi nộp lại.'
-                },
-                // Đã xử lý (Tab 4)
-                {
-                    id: 10,
-                    proposalCode: 'DN-KP-2026-0010',
-                    type: 'Khôi phục hủy đăng ký',
-                    originalDossierId: 'GDBD-2026-000910',
-                    originalDossier: getDossier('GDBD-2026-000910'),
-                    docNo: 'QĐ-112/THA',
-                    docDate: '15/06/2026',
-                    docIssuer: 'Cục THADS Hà Nội',
-                    reason: 'Khôi phục hiệu lực đăng ký gốc đã bị hủy nhầm.',
-                    fileName: 'QuyetDinhKhoiPhucHieuLuc.pdf',
-                    creator: 'Nguyễn Văn Cán Bộ',
-                    createdDate: '26/06/2026 10:10',
-                    status: 'Đã xử lý',
-                    rejectReason: ''
-                }
-            ];
-
-            localStorage.setItem('custom_proposals', JSON.stringify(proposals));
-        }
-
-        function switchTab(tabName, element) {
-            currentTab = tabName;
-            
-            document.querySelectorAll('.nav-tab').forEach(item => {
-                item.classList.remove('active');
-            });
-            element.classList.add('active');
-
-            renderTableData();
-        }
-
-        function parseDateStr(str) {
-            if (!str) return null;
-            const parts = str.split(' ')[0].split('/');
-            if (parts.length !== 3) return null;
-            return new Date(parts[2], parts[1] - 1, parts[0]);
-        }
-
-        function getFilteredProposals() {
-            const soDK = document.getElementById('filterSoDK').value.trim().toLowerCase();
-            const type = document.getElementById('filterType').value;
-            const fromDateStr = document.getElementById('filterFromDate').value.trim();
-            const toDateStr = document.getElementById('filterToDate').value.trim();
-
-            const fromDate = parseDateStr(fromDateStr);
-            const toDate = parseDateStr(toDateStr);
-
-            let list = proposals.filter(p => {
-                if (currentTab === 'cho_duyet') return p.status === 'Chờ ký';
-                if (currentTab === 'cho_thuc_hien') return p.status === 'Hoàn thành';
-                if (currentTab === 'bi_tra_lai') return p.status === 'Bị trả lại';
-                if (currentTab === 'da_xuly') return p.status === 'Đã xử lý';
-                return false;
-            });
-
-            if (soDK) {
-                list = list.filter(p => p.originalDossierId.toLowerCase().includes(soDK));
-            }
-            if (type) {
-                list = list.filter(p => p.type === type);
-            }
-            if (fromDate) {
-                list = list.filter(p => {
-                    const d = parseDateStr(p.createdDate);
-                    return d && d >= fromDate;
-                });
-            }
-            if (toDate) {
-                list = list.filter(p => {
-                    const d = parseDateStr(p.createdDate);
-                    return d && d <= toDate;
-                });
-            }
-
-            return list;
-        }
-
-        function renderTableData() {
-            const tbody = document.getElementById('proposal-tbody');
-            tbody.innerHTML = '';
-
-            const list = getFilteredProposals();
-
-            if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: #64748b; padding: 40px; font-style: italic;">Không tìm thấy đề xuất nào phù hợp.</td></tr>`;
-                return;
-            }
-
-            list.forEach((item, idx) => {
-                const tr = document.createElement('tr');
-                tr.style.borderBottom = '1px solid var(--border-color)';
-                
-                let statusBadge = '';
-                if (item.status === 'Chờ ký') statusBadge = `<span class="badge badge-warning">Chờ ký</span>`;
-                else if (item.status === 'Hoàn thành') statusBadge = `<span class="badge badge-success">Hoàn thành</span>`;
-                else if (item.status === 'Bị trả lại') statusBadge = `<span class="badge badge-danger">Bị từ chối</span>`;
-                else if (item.status === 'Đã xử lý') statusBadge = `<span class="badge badge-info">Đã xử lý</span>`;
-
-                let actions = '';
-                if (item.status === 'Chờ ký') {
-                    actions = `
-                        <button class="icon-btn view" title="Xem chi tiết" onclick="openApprovalModal(${item.id})">Xem</button>
-                    `;
-                } else if (item.status === 'Hoàn thành') {
-                    actions = `
-                        <button class="btn btn-primary" style="padding: 4px 10px; font-size: 12px;" onclick="executeCorrection(${item.id})">
-                            <i class="fa-solid fa-gears"></i> Thực hiện
-                        </button>
-                    `;
-                } else if (item.status === 'Bị trả lại') {
-                    actions = `
-                        <button class="btn btn-outline-primary" style="padding: 4px 10px; font-size: 12px; color: #ef4444; border-color: #ef4444;" onclick="resubmitProposal(${item.id})">
-                            <i class="fa-solid fa-pen-to-square"></i> Sửa đề nghị
-                        </button>
-                    `;
-                } else if (item.status === 'Đã xử lý') {
-                    actions = `
-                        <button class="icon-btn view" title="Xem chi tiết" style="margin-right: 8px;" onclick="openApprovalModal(${item.id})">Xem</button>
-                        <button class="icon-btn view" style="color: #ef4444 !important;" title="Tải văn bản kết quả" onclick="downloadNotice(${item.id})">
-                            <i class="fa-solid fa-file-pdf"></i>
-                        </button>
-                    `;
-                }
-
-                const reasonDisplay = item.reason.length > 80 ? item.reason.substring(0, 80) + '...' : item.reason;
-
-                tr.innerHTML = `
-                    <td style="text-align: center;">${idx + 1}</td>
-                    <td style="text-align: center; font-weight: 600;">${item.proposalCode}</td>
-                    <td style="text-align: center;">${item.type}</td>
-                    <td style="text-align: center; color: var(--primary-color); font-weight: 600;">${item.originalDossierId}</td>
-                    <td title="${item.reason}">${reasonDisplay}</td>
-                    <td style="text-align: center;">${item.creator}</td>
-                    <td style="text-align: center;">${item.createdDate}</td>
-                    <td style="text-align: center;">${statusBadge}</td>
-                    <td style="text-align: center;">${actions}</td>
-                `;
-
-                tbody.appendChild(tr);
-            });
-        }
-
-        function updateBadges() {
-            const counts = {
-                cho_duyet: proposals.filter(p => p.status === 'Chờ ký').length,
-                cho_thuc_hien: proposals.filter(p => p.status === 'Hoàn thành').length,
-                bi_tra_lai: proposals.filter(p => p.status === 'Bị trả lại').length,
-                da_xuly: proposals.filter(p => p.status === 'Đã xử lý').length
-            };
-
-            document.getElementById('badge-cho_duyet').innerText = counts.cho_duyet;
-            document.getElementById('badge-cho_thuc_hien').innerText = counts.cho_thuc_hien;
-            document.getElementById('badge-bi_tra_lai').innerText = counts.bi_tra_lai;
-            document.getElementById('badge-da_xuly').innerText = counts.da_xuly;
-        }
-
-        function applyFilters() {
-            renderTableData();
-        }
-
-        function resetFilters() {
-            document.getElementById('filterSoDK').value = '';
-            document.getElementById('filterType').value = '';
-            
-            const today = new Date();
-            const twoMonthsAgo = new Date();
-            twoMonthsAgo.setMonth(today.getMonth() - 2);
-
-            const formatDate = (date) => {
-                let dd = date.getDate();
-                let mm = date.getMonth() + 1;
-                const yyyy = date.getFullYear();
-                if (dd < 10) dd = '0' + dd;
-                if (mm < 10) mm = '0' + mm;
-                return `${dd}/${mm}/${yyyy}`;
-            };
-
-            const defaultFrom = formatDate(twoMonthsAgo);
-            const defaultTo = formatDate(today);
-
-            const elStart = document.getElementById('filterFromDate');
-            const elEnd = document.getElementById('filterToDate');
-            if (elStart) {
-                elStart.value = defaultFrom;
-                if (elStart._flatpickr) elStart._flatpickr.setDate(defaultFrom);
-            }
-            if (elEnd) {
-                elEnd.value = defaultTo;
-                if (elEnd._flatpickr) elEnd._flatpickr.setDate(defaultTo);
-            }
-
-            applyFilters();
-        }
-
-        function openApprovalModal(id) {
-            const proposal = proposals.find(p => p.id === id);
-            if (!proposal) return;
-
-            selectedProposal = proposal;
-
-            document.getElementById('mdlProposalCode').innerText = proposal.proposalCode;
-            document.getElementById('mdlProposalType').innerText = proposal.type;
-            document.getElementById('mdlSoDKGoc').innerText = proposal.originalDossierId;
-            document.getElementById('mdlCreator').innerText = proposal.creator;
-            document.getElementById('mdlCreatedDate').innerText = proposal.createdDate;
-            document.getElementById('mdlDocRef').innerText = `${proposal.docIssuer} - Số ${proposal.docNo} ngày ${proposal.docDate}`;
-            document.getElementById('mdlDocFile').innerHTML = `<i class="fa-solid fa-file-pdf" style="color:#ef4444"></i> ${proposal.fileName}`;
-            document.getElementById('mdlReason').innerText = proposal.reason;
-
-            // B4: Render bảng trường thông tin đối chiếu chủ trương
-            const corrFieldsGroup = document.getElementById('mdlCorrectionFieldsGroup');
-            const tbodyCorr = document.getElementById('mdlTblCorrectionRows');
-            const lblScope = document.getElementById('mdlLblScope');
-
-            if (proposal.type === 'Chỉnh lý thông tin' && proposal.correctionTable && proposal.correctionTable.length > 0) {
-                corrFieldsGroup.style.display = 'block';
-                tbodyCorr.innerHTML = '';
-                
-                proposal.correctionTable.forEach(row => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td style="font-weight:600;">${row.fieldName || row.field}</td>
-                        <td style="color:#64748b;">${row.oldValue}</td>
-                        <td style="color:#1e293b; font-weight:600; background:#f0fdf4;">${row.newValue}</td>
-                        <td>${row.reason}</td>
-                    `;
-                    tbodyCorr.appendChild(tr);
-                });
-
-                const scopeText = proposal.proposalScope === 'cascade_future' 
-                    ? '⚡ Phạm vi áp dụng: Chỉnh lý XUYÊN SUỐT từ phiên bản này trở đi.'
-                    : '📌 Phạm vi áp dụng: Chỉ chỉnh lý tại PHIÊN BẢN ĐANG CHỌN.';
-                lblScope.innerText = scopeText;
-            } else {
-                corrFieldsGroup.style.display = 'none';
-            }
-
-            const grpReject = document.getElementById('grpRejectReason');
-            if (proposal.status === 'Bị trả lại') {
-                grpReject.style.display = 'block';
-                document.getElementById('mdlRejectReasonText').innerText = proposal.rejectReason || 'Không rõ lý do';
-            } else {
-                grpReject.style.display = 'none';
-            }
-
-            const divActions = document.getElementById('divApprovalActions');
-            const grpOpinion = document.getElementById('grpApprovalOpinion');
-            const mdlTitle = document.getElementById('mdlTitle');
-
-            if (currentTab === 'cho_duyet') {
-                divActions.style.display = 'block';
-                grpOpinion.style.display = 'block';
-                mdlTitle.innerText = 'ĐỀ NGHỊ CHỜ PHÊ DUYỆT & KÝ SỐ';
-            } else {
-                divActions.style.display = 'none';
-                grpOpinion.style.display = 'none';
-                mdlTitle.innerText = 'CHI TIẾT YÊU CẦU ĐỀ NGHỊ';
-            }
-
-            document.getElementById('txtOpinion').value = '';
-            document.getElementById('approvalModal').classList.add('active');
-        }
-
-        function closeApprovalModal() {
-            document.getElementById('approvalModal').classList.remove('active');
-            selectedProposal = null;
-        }
-
-        function executeApproval(decision) {
-            if (!selectedProposal) return;
-            const opinion = document.getElementById('txtOpinion').value.trim();
-
-            if (decision === 'Từ chối' && !opinion) {
-                showToast('Vui lòng nhập lý do từ chối trước khi trả lại!', 'error');
-                return;
-            }
-
-            selectedProposal.status = decision === 'Đã ký' ? 'Hoàn thành' : 'Bị trả lại';
-            if (decision === 'Từ chối') {
-                selectedProposal.rejectReason = opinion;
-            } else {
-                selectedProposal.rejectReason = '';
-            }
-
-            localStorage.setItem('custom_proposals', JSON.stringify(proposals));
-
-            showToast(decision === 'Đã ký' ? 'Ký số CA phê duyệt chủ trương thành công! Chuyển tác vụ chờ thực hiện.' : 'Đã từ chối đề xuất chủ trương chỉnh sửa!');
-            
-            closeApprovalModal();
-            updateBadges();
-            renderTableData();
-        }
-
-        function executeCorrection(id) {
-            window.location.href = `thuc_hien_chinh_ly_form.html?proposalId=${id}`;
-        }
-
-        function resubmitProposal(id) {
-            const proposal = proposals.find(p => p.id === id);
-            if (proposal) {
-                window.location.href = `lap_de_nghi_chinh_ly.html?soDK=${proposal.originalDossierId}`;
-            }
-        }
-
-        function downloadNotice(id) {
-            const proposal = proposals.find(p => p.id === id);
-            if (proposal) {
-                alert(`Đang tải văn bản kết quả chính thức: TB-${proposal.type === 'Chỉnh lý thông tin' ? 'CL' : 'H'}-2026.pdf (Đã ký số CA của Cục Đăng ký)`);
-            }
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            initMockProposalsIfEmpty();
-
-            const today = new Date();
-            const twoMonthsAgo = new Date();
-            twoMonthsAgo.setMonth(today.getMonth() - 2);
-
-            const formatDate = (date) => {
-                let dd = date.getDate();
-                let mm = date.getMonth() + 1;
-                const yyyy = date.getFullYear();
-                if (dd < 10) dd = '0' + dd;
-                if (mm < 10) mm = '0' + mm;
-                return `${dd}/${mm}/${yyyy}`;
-            };
-
-            const defaultFrom = formatDate(twoMonthsAgo);
-            const defaultTo = formatDate(today);
-
-            document.getElementById('filterFromDate').value = defaultFrom;
-            document.getElementById('filterToDate').value = defaultTo;
-
-            if (typeof flatpickr !== 'undefined') {
-                flatpickr("#filterFromDate", { dateFormat: "d/m/Y", allowInput: true, onChange: applyFilters });
-                flatpickr("#filterToDate", { dateFormat: "d/m/Y", allowInput: true, onChange: applyFilters });
-            }
-
-            updateBadges();
-            renderTableData();
+    function updateBadges() {
+        const all = C.proposals();
+        Object.keys(TAB_STATUS).forEach(t => {
+            $('badge_' + t).textContent = TAB_STATUS[t] ? all.filter(p => TAB_STATUS[t].includes(p.trangThai)).length : all.length;
         });
-    </script>
-    <!-- Flatpickr JS -->
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="admin-ui-standardizer.js"></script>
+    }
+
+    function readCriteria() {
+        const v = id => $(id).value.trim().toLowerCase();
+        return {
+            ma: v('fMaDeNghi'), maKH: v('fMaKhachHang'), so: v('fSoDangKy'),
+            loai: $('fLoaiDeNghi').value, loaiDK: $('fLoaiDangKy').value, st: $('fTrangThai').value,
+            bbd: v('fBenBaoDam'), bnbd: v('fBenNhanBaoDam'), nguoi: v('fNguoiXuLy'),
+            tu: C.parseDMY($('fTuNgay').value.trim()), den: C.parseDMY($('fDenNgay').value.trim())
+        };
+    }
+
+    function load() {
+        const c = criteria;
+        rows = C.proposals().map(toRow).filter(r => {
+            if (TAB_STATUS[currentTab] && !TAB_STATUS[currentTab].includes(r.trangThai)) return false;
+            if (c.ma && !r.maDeNghi.toLowerCase().includes(c.ma)) return false;
+            if (c.maKH && !r.maKH.toLowerCase().includes(c.maKH)) return false;
+            if (c.so && !(r.soDangKy + ' ' + r.soKhac).toLowerCase().includes(c.so)) return false;
+            if (c.loai && r.loaiDeNghi !== c.loai) return false;
+            if (c.loaiDK && r.loaiDangKy !== c.loaiDK) return false;
+            if (c.st && r.trangThai !== c.st) return false;
+            if (c.bbd && !r.bbd.toLowerCase().includes(c.bbd)) return false;
+            if (c.bnbd && !r.bnbd.toLowerCase().includes(c.bnbd)) return false;
+            if (c.nguoi && !(r.nguoiLap + ' ' + r.nguoiThucHien).toLowerCase().includes(c.nguoi)) return false;
+            if (c.tu && r.ngayGui && r.ngayGui < c.tu) return false;
+            if (c.den && r.ngayGui) { const end = new Date(c.den); end.setHours(23, 59, 59); if (r.ngayGui > end) return false; }
+            return true;
+        });
+        rows.sort((a, b) => {
+            const x = a[sortKey], y = b[sortKey];
+            const cmp = typeof x === 'number' ? x - y : String(x).localeCompare(String(y), 'vi');
+            return sortAsc ? cmp : -cmp;
+        });
+        render();
+    }
+
+    // Nút thao tác trên dòng theo trạng thái hồ sơ (nút không áp dụng được ẩn hoàn toàn)
+    function actions(p) {
+        const btn = (cls, icon, title, act) => `<button type="button" class="icon-btn ${cls}" title="${title}" data-act="${act}" data-id="${p.id}"><i class="fa-solid ${icon}"></i></button>`;
+        switch (p.trangThai) {
+            case 'Chờ duyệt đề nghị': return btn('approve', 'fa-check-to-slot', 'Duyệt đề nghị', 'duyet') + btn('reject', 'fa-ban', 'Từ chối đề nghị', 'tuchoi');
+            case 'Chờ thực hiện': return btn('edit', 'fa-pen-to-square', 'Thực hiện đề nghị', 'thuchien');
+            case 'Chờ ký số': return btn('sign', 'fa-file-signature', 'Ký số hồ sơ', 'kyso') + btn('reject', 'fa-rotate-left', 'Trả lại hồ sơ', 'tralai');
+            case 'Bị từ chối đề nghị': return btn('edit', 'fa-pen-clip', 'Cập nhật đề nghị', 'capnhat');
+            case 'Bị trả lại': return btn('edit', 'fa-file-pen', 'Sửa hồ sơ trình ký', 'suahoso');
+            default: return '';
+        }
+    }
+
+    function render() {
+        const tbody = $('tableBody');
+        // Tab Lịch sử hoàn thành: không hiển thị cột Thao tác
+        const showActions = currentTab !== 'hoan_thanh';
+        document.querySelector('#mainTable thead th.col-actions').style.display = showActions ? '' : 'none';
+        const total = rows.length;
+        const totalPages = Math.max(1, Math.ceil(total / pageSize));
+        if (currentPage > totalPages) currentPage = totalPages;
+        if (!total) {
+            tbody.innerHTML = `<tr><td colspan="${showActions ? 12 : 11}" style="text-align:center;padding:24px;font-style:italic;color:#64748b;">${C.esc(C.MSG.INF_SYS_001)}</td></tr>`;
+        } else {
+            const start = (currentPage - 1) * pageSize;
+            tbody.innerHTML = rows.slice(start, start + pageSize).map((r, i) => `<tr data-row="${r.id}" title="Click vào dòng để xem chi tiết">
+                <td style="text-align:center;">${start + i + 1}</td>
+                <td style="text-align:center;white-space:nowrap;"><a class="link-code" data-open="${r.id}">${C.esc(r.maDeNghi)}</a></td>
+                <td style="text-align:center;">${C.badge(r.loaiDeNghi, C.loaiClass(r.p))}</td>
+                <td style="text-align:center;color:#475569;white-space:nowrap;">${C.esc(C.val(r.maKH))}</td>
+                <td style="text-align:center;font-weight:700;color:#1e3a8a;white-space:nowrap;">${C.esc(r.soDangKy)}</td>
+                <td style="text-align:center;">${C.esc(C.val(r.loaiDangKy))}</td>
+                <td style="font-weight:500;">${C.esc(r.bbd)}</td>
+                <td style="font-weight:500;">${C.esc(r.bnbd)}</td>
+                <td>${C.esc(r.nguoiXuLy)}</td>
+                <td style="text-align:center;color:#475569;">${C.esc(r.thoiDiemGui)}</td>
+                <td style="text-align:center;">${C.badge(r.trangThai, C.statusClass(r.trangThai))}</td>
+                ${showActions ? `<td class="col-actions"><div class="action-slot-group">${actions(r.p)}</div></td>` : ''}</tr>`).join('');
+        }
+        const s = total ? (currentPage - 1) * pageSize + 1 : 0;
+        $('pageInfoText').textContent = `Hiển thị ${s}-${Math.min(currentPage * pageSize, total)} trong tổng số ${total} bản ghi`;
+        const pg = $('paginationControls');
+        const b = (label, page, dis, act, title) => `<button type="button" class="page-item${act ? ' active' : ''}${dis ? ' disabled' : ''}" ${dis ? 'disabled' : ''} data-page="${page}" title="${title || ''}">${label}</button>`;
+        let html = b('|&lt;&lt;', 1, currentPage === 1 || !total, false, 'Trang đầu') + b('&lt;', currentPage - 1, currentPage === 1 || !total, false, 'Trang trước');
+        for (let i = 1; i <= totalPages; i++) html += b(i, i, !total, i === currentPage && total);
+        html += b('&gt;', currentPage + 1, currentPage === totalPages || !total, false, 'Trang sau') + b('&gt;&gt;|', totalPages, currentPage === totalPages || !total, false, 'Trang cuối');
+        pg.innerHTML = html;
+    }
+
+    // Mở màn hình theo trạng thái: MH03 hoặc MH07 (chế độ chỉ đọc)
+    function openDetail(id) {
+        const p = C.getProposal(id);
+        if (!p) return;
+        // Chờ ký số: MH07 có thao tác Ký số, Trả lại hồ sơ; Hoàn thành: MH07 chế độ chỉ đọc; còn lại: MH03
+        if (p.trangThai === 'Chờ ký số') location.href = `ky_so_chinh_ly.html?id=${id}`;
+        else if (p.trangThai === 'Hoàn thành') location.href = `ky_so_chinh_ly.html?id=${id}&mode=view`;
+        else location.href = `lap_de_nghi_chinh_ly.html?id=${id}&mode=view`;
+    }
+    function afterAction(cur, msg) { updateBadges(); load(); C.toast(msg); }
+    function doAction(act, id) {
+        const p = C.getProposal(id);
+        if (!p) return;
+        if (act === 'duyet') C.openDuyet(p, afterAction);
+        if (act === 'tuchoi') C.openTuChoi(p, afterAction);
+        if (act === 'tralai') C.openTraLai(p, afterAction);
+        if (act === 'thuchien' || act === 'suahoso') location.href = `thuc_hien_chinh_ly_form.html?id=${id}`;
+        if (act === 'kyso') location.href = `ky_so_chinh_ly.html?id=${id}`;
+        if (act === 'capnhat') location.href = `lap_de_nghi_chinh_ly.html?id=${id}&mode=edit`;
+    }
+
+    function switchTab(tab) {
+        currentTab = tab;
+        document.querySelectorAll('.nav-tab').forEach(t => t.classList.toggle('active', t.getAttribute('data-tab') === tab));
+        // Lập đề nghị mới chỉ hiển thị tại Tab "Tất cả" và "Cần xử lý của tôi"
+        $('btnLapDeNghi').style.display = (tab === 'all' || tab === 'my_tasks') ? 'inline-flex' : 'none';
+        // Trạng thái: chỉ gồm các trạng thái của Tab; Tab chỉ có 01 trạng thái thì ẩn tiêu chí này
+        const sts = TAB_STATUS[tab] || ALL_STATUS;
+        const sel = $('fTrangThai');
+        const keep = sts.includes(sel.value) ? sel.value : '';
+        sel.innerHTML = '<option value="">Tất cả</option>' + sts.map(s => `<option${s === keep ? ' selected' : ''}>${s}</option>`).join('');
+        $('grpTrangThai').style.display = sts.length > 1 ? '' : 'none';
+        criteria.st = keep;
+        currentPage = 1;
+        updateBadges();
+        load();
+    }
+
+    function search() {
+        const tu = $('fTuNgay'), den = $('fDenNgay');
+        const c = readCriteria();
+        const bad = c.tu && c.den && c.tu > c.den;
+        [tu, den].forEach(el => el.classList.toggle('is-invalid', !!bad));
+        $('errNgay').textContent = bad ? C.MSG.VAL_007 : '';
+        $('errNgay').classList.toggle('show', !!bad);
+        if (bad) return;
+        criteria = c;
+        currentPage = 1;
+        load();
+    }
+    function defaultDates() {
+        const now = new Date();
+        const from = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
+        $('fTuNgay').value = C.fmtDate(from);
+        $('fDenNgay').value = C.fmtDate(now);
+    }
+    function clearFilter() {
+        ['fMaDeNghi', 'fMaKhachHang', 'fSoDangKy', 'fBenBaoDam', 'fBenNhanBaoDam', 'fNguoiXuLy'].forEach(id => { $(id).value = ''; });
+        ['fLoaiDeNghi', 'fLoaiDangKy', 'fTrangThai'].forEach(id => { $(id).value = ''; });
+        defaultDates();
+        search();
+    }
+
+    // ---------- Khởi tạo ----------
+    defaultDates();
+    if (window.flatpickr) { flatpickr('#fTuNgay', { dateFormat: 'd/m/Y', allowInput: true }); flatpickr('#fDenNgay', { dateFormat: 'd/m/Y', allowInput: true }); }
+    document.querySelectorAll('.nav-tab').forEach(t => t.addEventListener('click', () => switchTab(t.getAttribute('data-tab'))));
+    $('filterHeader').addEventListener('click', () => {
+        const collapsed = $('filterBody').classList.toggle('collapsed');
+        $('txtToggleFilter').textContent = collapsed ? 'Mở rộng' : 'Thu gọn';
+        $('iconToggleFilter').className = collapsed ? 'fa-solid fa-chevron-down' : 'fa-solid fa-chevron-up';
+    });
+    $('btnTimKiem').addEventListener('click', search);
+    $('btnXoaLoc').addEventListener('click', clearFilter);
+    document.querySelectorAll('#filterBody input').forEach(i => i.addEventListener('keydown', e => { if (e.key === 'Enter') search(); }));
+    $('pageSizeSelect').addEventListener('change', e => { pageSize = +e.target.value; currentPage = 1; render(); });
+    $('paginationControls').addEventListener('click', e => { const b = e.target.closest('[data-page]'); if (b && !b.disabled) { currentPage = +b.getAttribute('data-page'); render(); } });
+    document.querySelectorAll('th.sortable').forEach(th => th.addEventListener('click', () => {
+        const k = th.getAttribute('data-sort');
+        if (sortKey === k) sortAsc = !sortAsc; else { sortKey = k; sortAsc = true; }
+        load();
+    }));
+    $('tableBody').addEventListener('click', e => {
+        const a = e.target.closest('[data-act]');
+        if (a) { e.stopPropagation(); doAction(a.getAttribute('data-act'), +a.getAttribute('data-id')); return; }
+        if (e.target.closest('.col-actions')) return;
+        const tr = e.target.closest('[data-row]');
+        if (tr) openDetail(+tr.getAttribute('data-row'));
+    });
+    $('btnExportExcel').addEventListener('click', () => {
+        const d = new Date();
+        C.toast(`${C.MSG.SUC_SYS_005} Danh_sach_de_nghi_chinh_ly_huy_khoi_phuc_${C.pad(d.getDate())}${C.pad(d.getMonth() + 1)}${d.getFullYear()}.xlsx`);
+    });
+
+    criteria = readCriteria();
+    switchTab(currentTab);
+    C.showFlash();
+})();
+</script>
 </body>
 </html>

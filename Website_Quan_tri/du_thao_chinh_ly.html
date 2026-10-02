@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Văn bản chỉnh lý, hủy và khôi phục đăng ký</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; background: #525659; font-family: 'Times New Roman', Times, serif; color: #111; }
+        body.embed { background: #fff; }
+        .page { position: relative; width: 794px; min-height: 1123px; margin: 24px auto; background: #fff; padding: 64px 72px 72px 90px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45); overflow: hidden; font-size: 15px; line-height: 1.55; }
+        body.embed .page { margin: 0; box-shadow: none; }
+        .head { display: flex; justify-content: space-between; text-align: center; font-size: 13.5px; }
+        .head .l { width: 46%; }
+        .head .r { width: 54%; }
+        .head b { display: block; }
+        .head .line { width: 120px; border-top: 1px solid #111; margin: 4px auto 6px auto; }
+        .date { text-align: right; font-style: italic; margin: 12px 0 18px 0; font-size: 14px; }
+        h1 { text-align: center; font-size: 17px; margin: 18px 0 4px 0; text-transform: uppercase; }
+        .sub { text-align: center; font-style: italic; margin-bottom: 18px; }
+        p { margin: 6px 0; text-align: justify; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0 12px 0; font-size: 13.5px; }
+        th, td { border: 1px solid #333; padding: 5px 7px; vertical-align: top; }
+        th { background: #F3F4F6; }
+        .sign { display: flex; justify-content: flex-end; margin-top: 30px; }
+        .sign .box { width: 300px; text-align: center; }
+        .sign .role { font-weight: 700; text-transform: uppercase; }
+        .sig-stamp { margin: 14px auto 8px auto; border: 2px solid #B91C1C; color: #B91C1C; border-radius: 6px; padding: 8px 10px;
+            font-family: Arial, sans-serif; font-size: 11.5px; text-align: left; line-height: 1.5; }
+        .sig-space { height: 80px; }
+        .watermark { position: absolute; top: 46%; left: 50%; transform: translate(-50%, -50%) rotate(-32deg); font-family: Arial, sans-serif;
+            font-size: 54px; font-weight: 800; color: rgba(220, 38, 38, 0.13); white-space: nowrap; pointer-events: none; letter-spacing: 2px; }
+        .note { font-size: 12.5px; color: #374151; margin-top: 26px; border-top: 1px dashed #9CA3AF; padding-top: 8px; font-family: Arial, sans-serif; }
+    </style>
+</head>
+<!-- Văn bản chỉnh lý / Văn bản xác nhận hủy / Quyết định khôi phục đăng ký: du_thao_chinh_ly.html?id={id}[&draft=1][&embed=1] -->
+<body>
+<div class="page" id="page"></div>
+<script src="chinh_ly_common.js"></script>
+<script>
+(function () {
+    const C = CLDK;
+    const e = C.esc;
+    if (C.param('embed')) document.body.classList.add('embed');
+    const p = C.getProposal(C.param('id'));
+    const page = C.byId('page');
+    if (!p) { page.innerHTML = `<p>${e(C.MSG.ERR_DK_010)}</p>`; return; }
+
+    const signed = p.trangThai === 'Hoàn thành' && p.kySo && !C.param('draft');
+    const draft = C.param('draft') ? C.readDraft(p.id) : null;
+    const hs = C.hoSoOf(p);
+    const huy = C.huyOf(p);
+    const nd = p.noiDung || {};
+    const now = new Date();
+    const ngay = signed && p.kySo ? C.parseDMY(p.kySo.thoiDiem) || now : now;
+    const lanhDao = (p.kySo && p.kySo.nguoi) || (p.trinhKy && p.trinhKy.lanhDao) || '';
+    const ld = C.LANH_DAO.find(x => x.ten === lanhDao);
+    const titles = C.partyTitles(hs ? hs.chung : {});
+    const soVB = signed ? `${p.id + 100}/${p.loai === 'KHOI_PHUC' ? 'QĐ' : 'VB'}-TTĐK` : '......../' + (p.loai === 'KHOI_PHUC' ? 'QĐ' : 'VB') + '-TTĐK';
+    document.title = C.loaiFileChoKy(p) + ' - ' + p.maDeNghi;
+
+    let tieuDe = '', noiDung = '';
+    if (p.loai === 'CHINH_LY') {
+        tieuDe = 'Văn bản chỉnh lý thông tin đăng ký biện pháp bảo đảm';
+        const src = draft || p.chinhLy || { before: hs, after: hs };
+        const rows = changeRows(src.before, src.after);
+        noiDung = `<p>Căn cứ đề nghị chỉnh lý thông tin sai sót số <b>${e(p.maDeNghi)}</b> đã được phê duyệt;</p>
+            <p>${e(C.CURRENT_USER.donVi)} chỉnh lý thông tin sai sót trong phiên bản đăng ký số <b>${e(p.soDangKy)}</b>
+            (${e(titles.bbd)}: ${e(C.tenDanhSach(src.after.bbd))}) như sau:</p>
+            <table><thead><tr><th style="width:36px;">STT</th><th>Nội dung chỉnh lý</th><th>Thông tin trước chỉnh lý</th><th>Thông tin sau chỉnh lý</th></tr></thead>
+            <tbody>${rows.length ? rows.map((r, i) => `<tr><td style="text-align:center;">${i + 1}</td><td>${e(r[0])}</td><td>${e(r[1])}</td><td>${e(r[2])}</td></tr>`).join('')
+                : '<tr><td colspan="4" style="text-align:center;font-style:italic;">Chưa có thông tin được chỉnh lý.</td></tr>'}</tbody></table>
+            <p>Lý do chỉnh lý: ${e(nd.lyDo)}</p>
+            <p>Các thông tin khác của phiên bản đăng ký số ${e(p.soDangKy)} không thay đổi.</p>`;
+    } else if (p.loai === 'HUY') {
+        tieuDe = 'Văn bản xác nhận hủy đăng ký biện pháp bảo đảm';
+        const ht = C.hinhThucHuy(p);
+        noiDung = `<p>Căn cứ đề nghị hủy đăng ký số <b>${e(p.maDeNghi)}</b> đã được phê duyệt;</p>
+            <p>${e(C.CURRENT_USER.donVi)} xác nhận <b>${e(ht.toLowerCase())}</b> đối với hồ sơ có Số đăng ký lần đầu <b>${e(hs.soDKLanDau)}</b>,
+            ${e(titles.bbd)}: ${e(C.tenDanhSach(hs.bbd))}; ${e(titles.bnbd)}: ${e(C.tenDanhSach(hs.bnbd))}.</p>
+            ${signed && p.soDKHuyMoi ? `<p>Số đăng ký hủy: <b>${e(p.soDKHuyMoi)}</b>.</p>` : ''}
+            <p>Danh sách tài sản hủy đăng ký:</p>${assetTable(hs, new Set(nd.taiSanHuyIds || []))}
+            <p>Căn cứ và lý do hủy: ${e(nd.lyDoHuy)}</p>`;
+    } else {
+        tieuDe = 'Quyết định khôi phục việc đăng ký biện pháp bảo đảm đã bị hủy';
+        noiDung = `<p>Căn cứ đề nghị khôi phục hủy đăng ký số <b>${e(p.maDeNghi)}</b> đã được phê duyệt;</p>
+            <p><b>Điều 1.</b> Khôi phục hiệu lực việc đăng ký đã bị hủy theo Số đăng ký hủy <b>${e(p.soDangKy)}</b> (${e(huy ? huy.hinhThucHuy.toLowerCase() : '')}, thực hiện ngày ${e(huy ? huy.thoiDiemHuy : '')})
+            đối với hồ sơ có Số đăng ký <b>${e(hs.soDangKy)}</b>, ${e(titles.bbd)}: ${e(C.tenDanhSach(hs.bbd))}.</p>
+            <p>Danh sách tài sản được khôi phục hiệu lực:</p>${assetTable(hs, new Set(huy ? huy.taiSanHuyIds : []))}
+            <p><b>Điều 2.</b> Các tài sản khác của hồ sơ giữ nguyên dữ liệu và trạng thái hiện tại.</p>
+            <p>Căn cứ khôi phục: ${e(nd.lyDoKhoiPhuc)}</p>`;
+    }
+
+    page.innerHTML = `${signed ? '' : '<div class="watermark">BẢN DỰ THẢO - CHỜ KÝ SỐ</div>'}
+        <div class="head">
+            <div class="l"><b>CỤC ĐĂNG KÝ QUỐC GIA GIAO DỊCH BẢO ĐẢM</b><b>${e(C.CURRENT_USER.donVi.toUpperCase())}</b><div class="line"></div>Số: ${e(soVB)}</div>
+            <div class="r"><b>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</b><b>Độc lập - Tự do - Hạnh phúc</b><div class="line"></div></div>
+        </div>
+        <div class="date">Hà Nội, ngày ${C.pad(ngay.getDate())} tháng ${C.pad(ngay.getMonth() + 1)} năm ${ngay.getFullYear()}</div>
+        <h1>${e(tieuDe)}</h1>
+        <div class="sub">(Kèm theo đề nghị số ${e(p.maDeNghi)})</div>
+        ${noiDung}
+        <div class="sign"><div class="box">
+            <div class="role">${e(ld ? ld.chucVu : 'Lãnh đạo ký duyệt')}</div>
+            ${signed ? `<div class="sig-stamp"><b>ĐÃ KÝ SỐ</b><br>Người ký: ${e(p.kySo.nguoi)}<br>Thời điểm ký: ${e(p.kySo.thoiDiem)}<br>Hình thức: ${e(p.kySo.hinhThuc || '')}</div>` : '<div class="sig-space"></div>'}
+            <b>${e(lanhDao || '[Lãnh đạo ký duyệt]')}</b>
+        </div></div>
+        <div class="note">${signed ? 'Văn bản điện tử đã được ký số và phát hành trên Hệ thống đăng ký biện pháp bảo đảm.' : 'Bản dự thảo được hệ thống sinh tự động theo dữ liệu đang cập nhật, chưa có giá trị pháp lý.'}</div>`;
+
+    // Danh sách thay đổi giữa dữ liệu trước và sau chỉnh lý
+    function changeRows(b, a) {
+        const out = [];
+        C.CHUNG_FIELDS.forEach(f => {
+            const fmt = v => (f.fmt ? f.fmt(v) : (v || '(Để trống)'));
+            if ((b.chung[f.key] || '') !== (a.chung[f.key] || '')) out.push([f.label, fmt(b.chung[f.key]), fmt(a.chung[f.key])]);
+        });
+        const party = (label, kind) => C.diffRows(b[kind], a[kind], C.COLS[kind]).forEach(d => {
+            if (d.status === 'added') out.push([`${label}: bổ sung`, '-', d.row.ten]);
+            if (d.status === 'removed') out.push([`${label}: xóa`, d.row.ten, '-']);
+            if (d.status === 'modified') Object.keys(d.changed).forEach(k => out.push([`${label} ${d.row.ten}: ${C.COLS[kind].find(c => c.key === k).label}`, d.changed[k] || '(Để trống)', d.row[k] || '(Để trống)']));
+        });
+        party(C.partyTitles(a.chung).bbd, 'bbd');
+        party(C.partyTitles(a.chung).bnbd, 'bnbd');
+        C.LOAI_TS.forEach(lt => {
+            const bt = b.taiSan[lt.key], at = a.taiSan[lt.key];
+            if (!bt && !at) return;
+            if (!bt) { out.push(['Loại tài sản: bổ sung', '-', lt.ten]); return; }
+            if (!at) { out.push(['Loại tài sản: xóa', lt.ten, '-']); return; }
+            if (C.TABLE_TS.includes(lt.key)) {
+                const keyName = r => r.soKhung || r.ten || r.soDK || `${r.ngay}/${r.thang}/${r.nam}`;
+                C.diffRows(bt.rows, at.rows, C.COLS[lt.key]).forEach(d => {
+                    if (d.status === 'added') out.push(['Tài sản: bổ sung', '-', keyName(d.row)]);
+                    if (d.status === 'removed') out.push(['Tài sản: xóa', keyName(d.row), '-']);
+                    if (d.status === 'modified') Object.keys(d.changed).forEach(k => out.push([`Tài sản ${keyName(d.row)}: ${C.COLS[lt.key].find(c => c.key === k).label}`, d.changed[k] || '(Để trống)', d.row[k] || '(Để trống)']));
+                });
+            } else {
+                Object.keys(at).forEach(k => { if ((at[k] || '') !== (bt[k] || '')) out.push([`Tài sản - ${k === 'moTa' ? 'Mô tả' : k === 'tenQuyen' ? 'Tên quyền' : k === 'canCu' ? 'Căn cứ phát sinh quyền' : k === 'soHieuKho' ? 'Số hiệu kho hàng' : k === 'diaChiKho' ? 'Địa chỉ kho hàng' : k === 'giaTri' ? 'Giá trị hàng hóa' : 'Hàng hóa luân chuyển / Kho hàng'}`, bt[k] || '(Để trống)', at[k] || '(Để trống)']); });
+            }
+        });
+        return out;
+    }
+    function assetTable(h, ids) {
+        const rows = [];
+        C.TABLE_TS.forEach(k => {
+            const lt = C.LOAI_TS.find(x => x.key === k);
+            ((h.taiSan[k] && h.taiSan[k].rows) || []).filter(r => ids.has(r.id)).forEach(r => {
+                const moTa = k === 'SO_KHUNG' ? `${r.tenPT} ${r.nhanHieu}; Số khung: ${r.soKhung}; Số máy: ${r.soMay || '-'}; Biển số: ${r.bienSo || '-'}`
+                    : k === 'PHUONG_TIEN' ? `${r.ten}; Chủ sở hữu: ${r.chu}; Số đăng ký: ${r.soDK || '-'}`
+                    : `Đăng ký tại VSDC lúc ${r.gio}:${r.phut} ngày ${r.ngay}/${r.thang}/${r.nam}`;
+                rows.push([lt.ten, moTa]);
+            });
+        });
+        C.LOAI_TS.filter(lt => !C.TABLE_TS.includes(lt.key) && h.taiSan[lt.key] && ids.has('loai:' + lt.key)).forEach(lt => {
+            const d = h.taiSan[lt.key];
+            rows.push([lt.ten, d.moTa || [d.tenQuyen, d.canCu].filter(Boolean).join('; ') || [d.kieu, d.giaTri, d.diaChiKho, d.soHieuKho].filter(Boolean).join('; ')]);
+        });
+        return `<table><thead><tr><th style="width:36px;">STT</th><th style="width:38%;">Loại tài sản</th><th>Thông tin tài sản</th></tr></thead><tbody>
+            ${rows.map((r, i) => `<tr><td style="text-align:center;">${i + 1}</td><td>${e(r[0])}</td><td>${e(r[1])}</td></tr>`).join('')}</tbody></table>`;
+    }
+})();
+</script>
+</body>
+</html>

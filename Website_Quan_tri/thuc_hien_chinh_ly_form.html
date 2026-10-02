@@ -1,450 +1,406 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thực hiện Chỉnh lý / Hủy đăng ký biện pháp bảo đảm</title>
+    <title>Thực hiện chỉnh lý, hủy và khôi phục đăng ký</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../Common/style_iframe.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="chinh_ly_common.css">
     <script src="../Common/iframe_helper.js"></script>
     <style>
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #ffffff;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        
-        .header-summary {
-            background-color: #f1f5f9;
-            border-left: 4px solid var(--primary-color);
-            padding: 15px;
-            border-radius: 0 6px 6px 0;
-            margin-bottom: 20px;
-            font-size: 13px;
-        }
-
-        .card-section {
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            background-color: #fff;
-        }
-
-        .card-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--secondary-color);
-            padding-bottom: 8px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 8px;
-            font-size: 12px;
-            font-weight: 600;
-            border-radius: 4px;
-            text-transform: uppercase;
-        }
-        .badge-success { background-color: #d1fae5; color: #10b981; }
-        .badge-danger { background-color: #fee2e2; color: #ef4444; }
-        .badge-warning { background-color: #fef3c7; color: #f59e0b; }
-        
-        .toast-notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 12px 24px;
-            background-color: #10b981;
-            color: white;
-            border-radius: 6px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            z-index: 1000;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-        
-        .required-mark {
-            color: #ef4444;
-            margin-left: 4px;
-        }
-
-        .compare-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-        .compare-table th {
-            border: 1px solid #cbd5e1;
-            padding: 8px;
-            background: #f1f5f9;
-            color: #475569;
-            font-weight: 600;
-        }
-        .compare-table td {
-            border: 1px solid #cbd5e1;
-            padding: 8px;
-            vertical-align: middle;
-        }
+        .cl-edit-field { padding: 6px 8px; border: 1px solid transparent; border-radius: 6px; }
+        .cl-edit-field.cl-modified { background: #FFFBEB; border-color: #F59E0B; }
+        .cl-ts-types { display: flex; flex-direction: column; gap: 8px; }
+        .cl-ts-detail { margin: 8px 0 6px 26px; padding: 12px 14px; border-left: 3px solid #BFDBFE; background: #F8FAFC; border-radius: 0 6px 6px 0; }
+        .cl-ts-item > label { display: flex; gap: 8px; align-items: flex-start; cursor: pointer; font-size: 12.5px; }
+        .cl-ts-item > label input { margin-top: 3px; }
+        .cl-table-toolbar { display: flex; justify-content: flex-end; margin-bottom: 8px; }
     </style>
 </head>
-<body>
-    <div class="container">
-        <!-- TIÊU ĐỀ TRANG -->
-        <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 20px;">
-            <h2 style="font-size: 18px; color: var(--primary-color); font-weight: 700; margin: 0;" id="pageTitleHeader">
-                <i class="fa-solid fa-gears"></i> THỰC HIỆN TÁC NGHIỆP CSDL
-            </h2>
-            <span class="badge badge-warning" id="lblStepBadge">Bước 3: Thực hiện thay đổi</span>
-        </div>
+<!-- MH06 - Màn hình Thực hiện chỉnh lý, hủy và khôi phục đăng ký: thuc_hien_chinh_ly_form.html?id={id} -->
+<body class="cl-page">
+<div class="cl-container">
+    <div class="cl-breadcrumb">
+        <a href="theo_doi_xu_ly_de_nghi.html"><i class="fa-solid fa-arrow-left"></i> Quản lý Chỉnh lý thông tin, Hủy và Khôi phục đăng ký</a>
+        <span>/</span><span>Thực hiện đề nghị</span>
+    </div>
+    <div class="cl-page-header">
+        <h2><i class="fa-solid fa-gears"></i><span id="pageTitle">THỰC HIỆN CHỈNH LÝ, HỦY VÀ KHÔI PHỤC ĐĂNG KÝ</span></h2>
+        <div id="pageHeaderRight"></div>
+    </div>
+    <div id="pageBody"></div>
+</div>
 
-        <!-- TÓM TẮT ĐỀ XUẤT CHỦ TRƯƠNG ĐÃ DUYỆT -->
-        <div class="header-summary">
-            <div style="font-weight: 700; font-size: 14px; margin-bottom: 8px; color: #1e293b;">
-                <i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Đề xuất đã phê duyệt chủ trương: <span id="lblProposalCode" style="color: var(--primary-color);">DN-2026-0001</span>
-            </div>
-            <div class="grid-3-cols">
-                <div><strong>Loại đề xuất:</strong> <span id="lblProposalType">-</span></div>
-                <div><strong>Số đăng ký gốc:</strong> <span id="lblSoDKGoc">-</span></div>
-                <div><strong>Văn bản căn cứ:</strong> <span id="lblDocRef">-</span></div>
-            </div>
-            <div style="margin-top: 8px; border-top: 1px dashed #cbd5e1; padding-top: 6px;">
-                <strong>Lý do phê duyệt chủ trương:</strong> <span id="lblProposalReason" style="font-style: italic; color: #475569;">-</span>
-            </div>
-        </div>
+<div class="cl-sticky-footer" id="footerBar">
+    <button type="button" class="cl-btn cl-btn-outline" id="btnHuyBo"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
+    <button type="button" class="cl-btn cl-btn-primary" id="btnTrinhKy"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>
+</div>
 
-        <!-- B4: BẢNG SO SÁNH TÁC NGHIỆP CHỈNH LÝ (BẮT BUỘC KHỚP VỚI CHỦ TRƯƠNG) -->
-        <div class="card-section" id="correctionExecutionSection" style="display: none;">
-            <div class="card-title">
-                <span><i class="fa-solid fa-pen-to-square"></i> CHI TIẾT TÁC NGHIỆP CHỈNH LÝ HỒ SƠ THEO CHỦ TRƯƠNG ĐÃ DUYỆT</span>
-            </div>
-            <p style="font-size: 12.5px; color: #64748b; margin-bottom: 15px; line-height: 1.4;">
-                <i class="fa-solid fa-circle-info" style="color: #3b82f6;"></i> <strong>Quy tắc nghiệp vụ:</strong> Đăng ký viên chỉ được chỉnh sửa dữ liệu khớp chính xác 100% với giá trị đã được Lãnh đạo duyệt chủ trương. Các trường khác nằm ngoài phạm vi đã phê duyệt đều bị khóa.
-            </p>
-            
-            <table class="compare-table">
-                <thead>
-                    <tr>
-                        <th style="width: 220px;">Trường thông tin</th>
-                        <th>Giá trị trước chỉnh lý (Vũ cũ)</th>
-                        <th style="width: 250px;">Giá trị chủ trương đã duyệt</th>
-                        <th style="width: 250px;">Giá trị nhập thực tế <span class="required-mark">*</span></th>
-                        <th style="width: 140px; text-align: center;">Đối chiếu tự động</th>
-                    </tr>
-                </thead>
-                <tbody id="tblCorrectionExecutionRows">
-                    <!-- Dynamic comparison fields with live validation -->
-                </tbody>
-            </table>
-        </div>
-
-        <!-- MÀN HÌNH HỦY ĐĂNG KÝ MỘT PHẦN -->
-        <div id="partialCancelBlock" style="display: none;">
-            <div class="card-section" style="background-color: #fffbeb; border-color: #fde68a;">
-                <div class="card-title" style="color: #92400e; border-bottom-color: #fde68a;">
-                    <span><i class="fa-solid fa-list-check"></i> DANH SÁCH TÀI SẢN HỦY BẢO ĐẢM THEO CHỦ TRƯƠNG</span>
-                </div>
-                <p style="font-size: 13px; color: #78350f;">
-                    Lãnh đạo đã phê duyệt chủ trương hủy đăng ký một phần cho các tài sản sau. Vui lòng xác nhận thực thi để hệ thống cập nhật trạng thái pháp lý.
-                </p>
-                <div id="divListPartialAssets" style="margin-top: 15px; display: flex; flex-direction: column; gap: 10px;">
-                    <!-- Rendered by JS -->
-                </div>
-            </div>
-        </div>
-
-        <!-- MÀN HÌNH HỦY TOÀN PHẦN / KHÔI PHỤC -->
-        <div id="fullCancelRestoreBlock" style="display: none;">
-            <div class="card-section" id="divConfirmBox">
-                <div class="card-title" id="confirmBoxTitle">
-                    <span><i class="fa-solid fa-circle-exclamation"></i> XÁC NHẬN THỰC THI THAY ĐỔI CSDL</span>
-                </div>
-                <p style="font-size: 13px; line-height: 1.6;" id="confirmBoxMsg">
-                    Đề xuất hủy toàn bộ hồ sơ đang ở trạng thái Chờ thực hiện. Bấm nút Hoàn thành bên dưới để chấm dứt hiệu lực pháp lý của toàn bộ hồ sơ này.
-                </p>
-                <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 6px; margin-top: 15px;">
-                    <div style="font-weight: bold; margin-bottom: 8px;">Tóm tắt hồ sơ gốc bị tác động:</div>
-                    <div class="grid-2-cols" style="font-size: 12px; gap: 10px;">
-                        <div><strong>Số hồ sơ:</strong> <span id="confSoDK">-</span></div>
-                        <div><strong>Bên bảo đảm:</strong> <span id="confBenBaoDam">-</span></div>
-                        <div><strong>Bên nhận bảo đảm:</strong> <span id="confBenNhanBD">-</span></div>
-                        <div><strong>Loại hình giao dịch:</strong> <span id="confLoaiHinhGD">-</span></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- FOOTER ACTIONS -->
-        <div style="display: flex; justify-content: flex-end; gap: 15px; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: 20px;">
-            <button type="button" class="btn btn-secondary" onclick="goBackToDashboard()" style="background: #e2e8f0; color: #475569;">Đóng</button>
-            <button type="button" class="btn btn-primary" id="btnConfirmAction" onclick="saveCorrectionChanges()"><i class="fa-solid fa-circle-check"></i> Hoàn thành tác nghiệp</button>
+<!-- Popup thêm / sửa dòng dữ liệu (Bên bảo đảm, Bên nhận bảo đảm, Số khung, Phương tiện, Chứng khoán) -->
+<div class="cl-modal-overlay" id="rowModal">
+    <div class="cl-modal" style="max-width:620px;">
+        <div class="cl-modal-header"><h3><i class="fa-solid fa-pen-to-square"></i><span id="rowModalTitle"></span></h3>
+            <button type="button" class="cl-modal-close" onclick="CLDK.closeModal('rowModal')"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="cl-modal-body"><div class="cl-grid-2" id="rowModalBody"></div></div>
+        <div class="cl-modal-footer">
+            <button type="button" class="cl-btn cl-btn-outline" onclick="CLDK.closeModal('rowModal')">Hủy bỏ</button>
+            <button type="button" class="cl-btn cl-btn-primary" id="rowModalSave"><i class="fa-solid fa-check"></i> Lưu</button>
         </div>
     </div>
+</div>
 
-    <!-- TOAST NOTIFICATION -->
-    <div id="toast" class="toast-notification">
-        <i class="fa-solid fa-circle-check"></i> <span id="toastMsg">Thao tác thành công!</span>
-    </div>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="chinh_ly_common.js"></script>
+<script>
+(function () {
+    const C = CLDK;
+    const $ = C.byId;
+    const p = C.getProposal(C.param('id'));
+    const body = $('pageBody');
 
-    <script>
-        let currentProposal = null;
-        let originalDossier = null;
+    $('btnHuyBo').onclick = () => C.goList();
+    if (!p) { body.innerHTML = banner(C.MSG.INF_SYS_001); $('btnTrinhKy').classList.add('cl-hidden'); return; }
+    $('pageTitle').textContent = 'THỰC HIỆN ĐỀ NGHỊ: ' + p.maDeNghi;
+    $('pageHeaderRight').innerHTML = C.badge(C.loaiLabel(p), C.loaiClass(p)) + ' ' + C.badge(p.trangThai, C.statusClass(p.trangThai));
+    if (!['Chờ thực hiện', 'Bị trả lại'].includes(p.trangThai)) {
+        body.innerHTML = banner(C.MSG.ERR_DK_005);
+        $('btnTrinhKy').classList.add('cl-hidden');
+        return;
+    }
 
-        function showToast(msg, type = 'success') {
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMsg');
-            toastMsg.innerText = msg;
-            if (type === 'error') {
-                toast.style.backgroundColor = '#ef4444';
-                toast.querySelector('i').className = 'fa-solid fa-circle-xmark';
-            } else {
-                toast.style.backgroundColor = '#10b981';
-                toast.querySelector('i').className = 'fa-solid fa-circle-check';
-            }
-            toast.style.opacity = '1';
-            setTimeout(() => {
-                toast.style.opacity = '0';
-            }, 3000);
+    const hs = C.hoSoOf(p);
+    const huy = C.huyOf(p);
+    const nd = p.noiDung || {};
+    const parts = [];
+
+    // ===================== KHỐI THAM CHIẾU ĐỀ NGHỊ ĐÃ DUYỆT =====================
+    const d = p.pheDuyet || {};
+    let canCu = '';
+    if (p.loai === 'CHINH_LY') canCu = C.infoItem('Nội dung sai sót', nd.saiSot, { span: true }) + C.infoItem('Nội dung đề nghị chỉnh lý', nd.deNghi, { span: true }) + C.infoItem('Căn cứ & Lý do sai sót', nd.lyDo, { span: true });
+    if (p.loai === 'HUY') canCu = C.infoItem('Hình thức hủy', C.hinhThucHuy(p)) + C.infoItem('Căn cứ & Lý do đề nghị hủy', nd.lyDoHuy, { span: true });
+    // Khôi phục: chỉ hiển thị Căn cứ; Khối Thông tin giao dịch hủy hiển thị tại phần nội dung bên dưới
+    if (p.loai === 'KHOI_PHUC') canCu = C.infoItem('Căn cứ & Lý do đề nghị khôi phục việc đăng ký', nd.lyDoKhoiPhuc, { span: true });
+    parts.push(card('Khối Tham chiếu đề nghị đã duyệt', 'fa-file-circle-check', `<div class="cl-info-grid cl-cols-4">
+        ${C.infoItem('Mã đề nghị', `<a class="cl-link" href="lap_de_nghi_chinh_ly.html?id=${p.id}&mode=view" target="_blank" title="Mở Xem chi tiết đề nghị tại tab mới">${C.esc(p.maDeNghi)} <i class="fa-solid fa-up-right-from-square" style="font-size:11px;"></i></a>`, { html: true })}
+        ${C.infoItem('Loại đề nghị', C.badge(C.loaiLabel(p), C.loaiClass(p)), { html: true })}
+        ${C.infoItem('Số đăng ký', p.soDangKy)}${C.infoItem('Người lập đề nghị', p.nguoiLap)}${C.infoItem('Thời điểm lập', p.thoiDiemLap)}
+        ${C.infoItem('Người phê duyệt', d.nguoi)}${C.infoItem('Thời điểm phê duyệt', d.thoiDiem)}${C.infoItem('Hạn hoàn thành', d.han)}
+        ${C.infoItem('Ý kiến chỉ đạo', d.yKien, { span: true })}</div>
+        <div class="cl-sub-title" style="margin-top:12px;"><span><i class="fa-solid fa-pen-to-square"></i> Căn cứ và nội dung đề xuất</span></div>
+        <div class="cl-info-grid">${canCu}</div>`, { id: 'cardThamChieu' }));
+
+    // ===================== KHỐI THÔNG TIN TRẢ LẠI HỒ SƠ =====================
+    if (p.traLai && p.traLai.length) {
+        const items = p.traLai.slice().reverse().map((t, i) => `<div class="cl-history-item"><div class="cl-history-head"><i class="fa-solid fa-rotate-left"></i> Lần trả lại thứ ${p.traLai.length - i}</div>
+            <div class="cl-info-grid">${C.infoItem('Người trả lại', t.nguoi)}${C.infoItem('Thời điểm trả lại', t.thoiDiem)}${t.thoiDiemTrinhLai ? C.infoItem('Thời điểm trình ký lại', t.thoiDiemTrinhLai) : ''}
+            ${C.infoItem('Lý do trả lại', t.lyDo, { span: true, danger: true })}</div></div>`).join('');
+        parts.push(card('Thông tin trả lại hồ sơ', 'fa-rotate-left', items, { id: 'cardTraLai', danger: true, collapsed: p.trangThai !== 'Bị trả lại' }));
+    }
+
+    // ===================== NỘI DUNG THEO LOẠI ĐỀ NGHỊ =====================
+    let before = null, after = null;
+    const stash = {};       // giữ dữ liệu loại tài sản khi bỏ chọn để chọn lại không mất dữ liệu
+    if (p.loai === 'CHINH_LY') {
+        before = p.chinhLy ? C.clone(p.chinhLy.before) : C.clone(hs);
+        after = p.chinhLy ? C.clone(p.chinhLy.after) : C.clone(hs);
+        parts.push(card('Thông tin chung & Nghĩa vụ được bảo đảm', 'fa-file-contract', '<div id="chungHost"></div>', { id: 'cardChung' }));
+        parts.push(card('Bên bảo đảm', 'fa-user-shield', '<div id="bbdHost"></div><div class="cl-error" id="errBbd">Đây là trường bắt buộc</div>', { id: 'cardBbd' }));
+        parts.push(card('Bên nhận bảo đảm', 'fa-building-columns', '<div id="bnbdHost"></div><div class="cl-error" id="errBnbd">Đây là trường bắt buộc</div>', { id: 'cardBnbd' }));
+        parts.push(card('Tài sản bảo đảm', 'fa-boxes-stacked', '<div id="tsHost"></div>', { id: 'cardTs' }));
+    } else if (p.loai === 'HUY') {
+        const note = `Hệ thống nạp dữ liệu mới nhất của hồ sơ theo Số đăng ký lần đầu. Các tài sản hủy đã được tích chọn sẵn đúng theo đề nghị đã phê duyệt (<b>${C.esc(C.hinhThucHuy(p))}</b>); không được thay đổi tài sản hủy.`;
+        parts.push(card('Thông tin hồ sơ đề nghị hủy', 'fa-database', `<div class="cl-banner cl-banner-info"><i class="fa-solid fa-circle-info"></i><div>${note}</div></div><div id="hoSoHost"></div>`, { id: 'cardHoSo' }));
+    } else {
+        const note = 'Hệ thống nạp dữ liệu theo Số đăng ký hủy, lấy theo dữ liệu đã ghi nhận tại thời điểm hủy. Khi ký số hoàn thành, hệ thống khôi phục hiệu lực cho toàn bộ các tài sản gắn nhãn <b>[Đã hủy]</b>; các tài sản khác của hồ sơ giữ nguyên dữ liệu và trạng thái hiện tại.';
+        parts.push(card('Khối Thông tin giao dịch hủy đã thực hiện trước đây', 'fa-clock-rotate-left', `<div class="cl-banner cl-banner-info"><i class="fa-solid fa-circle-info"></i><div>${note}</div></div><div id="gdHuyHost"></div>`, { id: 'cardGdHuy' }));
+    }
+
+    body.innerHTML = parts.join('');
+    body.querySelectorAll('.cl-card[data-collapsible]').forEach(c => C.collapsible(c));
+    if (p.loai === 'KHOI_PHUC' && huy) C.renderGiaoDichHuy($('gdHuyHost'), huy);
+
+    if (p.loai === 'HUY') {
+        const v = C.renderHoSo($('hoSoHost'), hs, { loai: 'HUY', checkbox: true, checked: new Set(nd.taiSanHuyIds || []), disabledChecks: true });
+        const ht = C.hinhThucHuy(p);
+        v.setHinhThuc(C.badge(ht, ht === 'Hủy đăng ký toàn phần' ? 'cl-type-huytoanphan' : 'cl-type-huymotphan'));
+    }
+    if (p.loai === 'CHINH_LY') { renderChung(); updateTitles(); renderTaiSan(); }
+
+    // ===================== FORM CHỈNH LÝ: THÔNG TIN CHUNG =====================
+    function renderChung() {
+        const c = after.chung;
+        const sel = (key, opts) => `<select class="cl-select" data-chung="${key}">${opts.map(o => `<option value="${C.esc(o)}"${o === c[key] ? ' selected' : ''}>${C.esc(o)}</option>`).join('')}</select>`;
+        const fld = (key, label, ctrl, req, cls) => `<div class="cl-form-group cl-edit-field${cls ? ' ' + cls : ''}" data-field="${key}"><label class="cl-label">${label}${req ? ' <span class="cl-req">*</span>' : ''}<span data-hist="${key}"></span></label>${ctrl}<div class="cl-error">Đây là trường bắt buộc</div></div>`;
+        $('chungHost').innerHTML = `<div class="cl-grid-3">
+            ${fld('coQuan', 'Cơ quan tiếp nhận', sel('coQuan', C.CO_QUAN), true)}
+            ${fld('loaiHinh', 'Loại hình giao dịch', sel('loaiHinh', ['Biện pháp bảo đảm', 'Hợp đồng']), true)}
+            ${fld('loaiBienPhap', 'Loại biện pháp', sel('loaiBienPhap', [''].concat(C.LOAI_BIEN_PHAP)), true, c.loaiHinh === 'Biện pháp bảo đảm' ? '' : 'cl-hidden')}
+            ${fld('loaiHopDong', 'Loại hợp đồng', sel('loaiHopDong', [''].concat(C.LOAI_HOP_DONG)), true, c.loaiHinh === 'Hợp đồng' ? '' : 'cl-hidden')}
+            ${fld('soHopDong', 'Số hợp đồng', `<input class="cl-input" data-chung="soHopDong" maxlength="100" value="${C.esc(c.soHopDong)}">`, true)}
+            ${fld('ngayHieuLucHD', 'Ngày có hiệu lực của hợp đồng', `<input class="cl-input" data-chung="ngayHieuLucHD" placeholder="dd/mm/yyyy" value="${C.esc(c.ngayHieuLucHD)}">`, true)}
+            ${fld('giaTri', 'Giá trị khoản vay hoặc nghĩa vụ (VND)', `<input class="cl-input" data-chung="giaTri" value="${C.esc(c.giaTri)}">`, false)}
+            ${fld('quyMo', 'Quy mô', sel('quyMo', C.QUY_MO), false)}
+            ${fld('chuDNNu', 'Chủ doanh nghiệp là nữ giới?', `<label style="display:inline-flex;gap:8px;align-items:center;margin-top:6px;"><input type="checkbox" data-chung="chuDNNu" ${c.chuDNNu ? 'checked' : ''}> Có</label>`, false)}
+        </div>`;
+        const ngay = $('chungHost').querySelector('[data-chung="ngayHieuLucHD"]');
+        if (window.flatpickr) flatpickr(ngay, { dateFormat: 'd/m/Y', allowInput: true, maxDate: 'today', onChange: () => onChung(ngay) });
+        $('chungHost').querySelectorAll('[data-chung]').forEach(el => el.addEventListener(el.type === 'checkbox' || el.tagName === 'SELECT' ? 'change' : 'input', () => onChung(el)));
+        Object.keys(c).forEach(markChung);
+    }
+    function onChung(el) {
+        const key = el.getAttribute('data-chung');
+        after.chung[key] = el.type === 'checkbox' ? el.checked : el.value.trim();
+        if (key === 'loaiHinh') {
+            if (after.chung.loaiHinh === 'Hợp đồng') after.chung.loaiBienPhap = ''; else after.chung.loaiHopDong = '';
+            renderChung(); updateTitles(); return;
         }
+        if (key === 'loaiBienPhap' || key === 'loaiHopDong') updateTitles();
+        const grp = el.closest('.cl-edit-field');
+        if (grp && String(after.chung[key]).trim()) { el.classList.remove('is-invalid'); grp.querySelector('.cl-error').classList.remove('show'); }
+        markChung(key);
+    }
+    function markChung(key) {
+        const grp = $('chungHost').querySelector(`[data-field="${key}"]`);
+        if (!grp) return;
+        const b = before.chung[key], a = after.chung[key];
+        const changed = (b || '') !== (a || '');
+        grp.classList.toggle('cl-modified', changed);
+        const fmt = v => (typeof v === 'boolean' ? (v ? 'Có' : 'Không') : v);
+        grp.querySelector(`[data-hist="${key}"]`).innerHTML = changed ? C.histIcon(fmt(b)) : '';
+    }
+    function updateTitles() {
+        const t = C.partyTitles(after.chung);
+        $('cardBbd').querySelector('.cl-card-title').innerHTML = `<i class="fa-solid fa-user-shield"></i> ${C.esc(t.bbd)}`;
+        $('cardBnbd').querySelector('.cl-card-title').innerHTML = `<i class="fa-solid fa-building-columns"></i> ${C.esc(t.bnbd)}`;
+        $('cardTs').querySelector('.cl-card-title').innerHTML = `<i class="fa-solid fa-boxes-stacked"></i> ${C.esc(t.ts)}`;
+        renderParty('bbd'); renderParty('bnbd');
+    }
 
-        function loadProposalData() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const proposalId = parseInt(urlParams.get('proposalId'));
-            
-            if (!proposalId) {
-                alert('Không tìm thấy ID đề xuất chủ trương hợp lệ!');
-                goBackToDashboard();
-                return;
-            }
+    // ===================== FORM CHỈNH LÝ: BẢNG DỮ LIỆU =====================
+    function tableHtml(kind, beforeRows, afterRows, cols, addLabel) {
+        const diff = C.diffRows(beforeRows, afterRows, cols);
+        let stt = 0;
+        const rows = diff.map(dr => {
+            const r = dr.row;
+            const cls = { modified: 'cl-row-modified', added: 'cl-row-added', removed: 'cl-row-removed' }[dr.status] || '';
+            if (dr.status !== 'removed') stt++;
+            const cells = cols.map(cc => {
+                const v = cc.file ? (r[cc.key] ? `<i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i> ${C.esc(r[cc.key])}` : '-') : C.esc(C.val(r[cc.key]));
+                const mod = dr.status === 'modified' && Object.prototype.hasOwnProperty.call(dr.changed, cc.key);
+                return `<td class="${cc.center ? 'cl-center ' : ''}${mod ? 'cl-cell-modified' : ''}"${cc.bold ? ' style="font-weight:600;"' : ''}>${v}${mod ? C.histIcon(dr.changed[cc.key]) : ''}</td>`;
+            }).join('');
+            const act = dr.status === 'removed'
+                ? `<button type="button" class="cl-icon-action cl-undo" title="Hoàn tác xóa" data-undo="${kind}|${r.id}"><i class="fa-solid fa-rotate-left"></i></button>`
+                : `<button type="button" class="cl-icon-action" title="Sửa" data-edit="${kind}|${r.id}"><i class="fa-solid fa-pen"></i></button><button type="button" class="cl-icon-action cl-del" title="Xóa" data-del="${kind}|${r.id}"><i class="fa-solid fa-trash"></i></button>`;
+            return `<tr class="${cls}"><td class="cl-center">${dr.status === 'removed' ? '-' : stt}</td>${cells}<td class="cl-no-strike">${C.TAG[dr.status] || ''}</td><td class="cl-center cl-no-strike" style="white-space:nowrap;">${act}</td></tr>`;
+        }).join('');
+        return `<div class="cl-table-toolbar"><button type="button" class="cl-btn cl-btn-outline-primary cl-btn-sm" data-add="${kind}"><i class="fa-solid fa-plus"></i> ${C.esc(addLabel)}</button></div>
+            <div class="cl-table-wrap"><table class="cl-table"><thead><tr><th class="cl-center" style="width:50px;">STT</th>${cols.map(cc => `<th${cc.center ? ' class="cl-center"' : ''}>${C.esc(cc.label)}</th>`).join('')}<th>Trạng thái chỉnh lý</th><th class="cl-center">Thao tác</th></tr></thead>
+            <tbody>${rows || `<tr class="cl-empty-row"><td colspan="${cols.length + 3}">${C.esc(C.MSG.INF_SYS_001)}</td></tr>`}</tbody></table></div>`;
+    }
+    function renderParty(kind) {
+        const t = C.partyTitles(after.chung);
+        $(kind + 'Host').innerHTML = tableHtml(kind, before[kind], after[kind], C.COLS[kind], 'Thêm ' + (kind === 'bbd' ? t.bbd : t.bnbd).toLowerCase());
+        bindTable($(kind + 'Host'));
+    }
 
-            const proposals = JSON.parse(localStorage.getItem('custom_proposals') || '[]');
-            const proposal = proposals.find(p => p.id === proposalId);
-
-            if (!proposal) {
-                alert('Đề xuất không tồn tại trong hệ thống!');
-                goBackToDashboard();
-                return;
-            }
-
-            currentProposal = proposal;
-            originalDossier = proposal.originalDossier;
-
-            document.getElementById('lblProposalCode').innerText = proposal.proposalCode;
-            document.getElementById('lblProposalType').innerText = proposal.type;
-            document.getElementById('lblSoDKGoc').innerText = proposal.originalDossierId;
-            document.getElementById('lblDocRef').innerText = `${proposal.docIssuer} - Số ${proposal.docNo} ngày ${proposal.docDate}`;
-            document.getElementById('lblProposalReason').innerText = proposal.reason;
-
-            // PHÂN BIỆT HIỂN THỊ CÁC KHỐI THEO CHỦ TRƯƠNG ĐÃ DUYỆT
-            if (proposal.type === 'Chỉnh lý thông tin') {
-                document.getElementById('correctionExecutionSection').style.display = 'block';
-                document.getElementById('pageTitleHeader').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> THỰC HIỆN TÁC NGHIỆP CHỈNH LÝ HỒ SƠ`;
-                
-                // Render bảng đối chiếu chỉnh lý theo B4
-                const tbody = document.getElementById('tblCorrectionExecutionRows');
-                tbody.innerHTML = '';
-
-                if (proposal.correctionTable && proposal.correctionTable.length > 0) {
-                    proposal.correctionTable.forEach((row, idx) => {
-                        const tr = document.createElement('tr');
-                        tr.innerHTML = `
-                            <td style="font-weight:600;">${row.fieldName || row.field}</td>
-                            <td style="color:#64748b;">${row.oldValue}</td>
-                            <td style="color:var(--primary-color); font-weight:700; background:#f8fafc;">${row.newValue}</td>
-                            <td>
-                                <input type="text" class="form-control" id="txtInputReal-${idx}" style="font-size:12px; height:32px;" placeholder="Nhập lại đúng giá trị đã duyệt..." oninput="validateInputRow(${idx}, '${row.newValue}')">
-                            </td>
-                            <td style="text-align: center;" id="tdStatus-${idx}">
-                                <span class="badge badge-warning" style="font-size:11px;"><i class="fa-solid fa-circle-exclamation"></i> Chưa khớp ⚠️</span>
-                            </td>
-                        `;
-                        tbody.appendChild(tr);
-                    });
-                } else {
-                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#94a3b8; font-style:italic;">Không có trường dữ liệu chỉnh sửa được khai báo.</td></tr>`;
-                }
-            } 
-            else if (proposal.type === 'Hủy đăng ký một phần') {
-                document.getElementById('partialCancelBlock').style.display = 'block';
-                document.getElementById('pageTitleHeader').innerHTML = `<i class="fa-solid fa-list-check"></i> THỰC HIỆN HỦY ĐĂNG KÝ MỘT PHẦN`;
-                
-                const listDiv = document.getElementById('divListPartialAssets');
-                listDiv.innerHTML = '';
-                if (proposal.cancelledAssets && proposal.cancelledAssets.length > 0) {
-                    proposal.cancelledAssets.forEach((asset, idx) => {
-                        const div = document.createElement('div');
-                        div.style.padding = '8px 12px';
-                        div.style.backgroundColor = '#fee2e2';
-                        div.style.borderLeft = '4px solid #ef4444';
-                        div.style.borderRadius = '4px';
-                        div.style.fontSize = '13px';
-                        div.innerHTML = `<i class="fa-solid fa-trash-can" style="color:#ef4444"></i> <strong>Tài sản ${idx + 1}:</strong> ${asset} <span class="badge badge-danger" style="margin-left: 10px;">Yêu cầu hủy bảo đảm</span>`;
-                        listDiv.appendChild(div);
-                    });
-                }
-            } 
+    // ===================== FORM CHỈNH LÝ: TÀI SẢN BẢO ĐẢM =====================
+    function renderTaiSan() {
+        const ts = after.taiSan;
+        const blocks = {};
+        C.LOAI_TS.filter(lt => ts[lt.key]).forEach(lt => {
+            const a = ts[lt.key], b = before.taiSan[lt.key];
+            const isNew = !b;
+            let inner = '';
+            const tf = (k, label, ctrl, req) => {
+                const changed = !isNew && (b[k] || '') !== (a[k] || '');
+                return `<div class="cl-form-group cl-edit-field${changed ? ' cl-modified' : ''}"><label class="cl-label">${label}${req ? ' <span class="cl-req">*</span>' : ''}${changed ? C.histIcon(b[k]) : ''}</label>${ctrl}<div class="cl-error">Đây là trường bắt buộc</div></div>`;
+            };
+            if (lt.key === 'CAY' || lt.key === 'DONG_SAN') inner = tf('moTa', 'Mô tả', `<textarea class="cl-textarea" rows="3" data-ts="${lt.key}|moTa" maxlength="2000">${C.esc(a.moTa)}</textarea>`, true);
+            else if (lt.key === 'QUYEN') inner = `<div class="cl-grid-2">${tf('tenQuyen', 'Tên quyền', `<input class="cl-input" data-ts="QUYEN|tenQuyen" maxlength="255" value="${C.esc(a.tenQuyen)}">`, true)}${tf('canCu', 'Căn cứ phát sinh quyền', `<textarea class="cl-textarea" rows="2" data-ts="QUYEN|canCu" maxlength="2000">${C.esc(a.canCu)}</textarea>`, true)}</div>`;
+            else if (lt.key === 'HANG_HOA') inner = `<div class="cl-grid-2">
+                ${tf('kieu', 'Hàng hóa luân chuyển / Kho hàng', `<select class="cl-select" data-ts="HANG_HOA|kieu">${['Hàng hóa luân chuyển', 'Kho hàng'].map(o => `<option${o === a.kieu ? ' selected' : ''}>${o}</option>`).join('')}</select>`, true)}
+                ${tf('giaTri', 'Giá trị hàng hóa/Tên, loại hàng hóa', `<input class="cl-input" data-ts="HANG_HOA|giaTri" maxlength="255" value="${C.esc(a.giaTri)}">`, true)}
+                ${a.kieu === 'Kho hàng' ? tf('diaChiKho', 'Địa chỉ kho hàng', `<input class="cl-input" data-ts="HANG_HOA|diaChiKho" maxlength="500" value="${C.esc(a.diaChiKho)}">`, true)
+                    + tf('soHieuKho', 'Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng', `<input class="cl-input" data-ts="HANG_HOA|soHieuKho" maxlength="255" value="${C.esc(a.soHieuKho)}">`, false) : ''}</div>`;
             else {
-                document.getElementById('fullCancelRestoreBlock').style.display = 'block';
-                const divConfirm = document.getElementById('divConfirmBox');
-                
-                if (proposal.type === 'Hủy đăng ký toàn phần') {
-                    document.getElementById('pageTitleHeader').innerHTML = `<i class="fa-solid fa-circle-xmark"></i> THỰC HIỆN HỦY ĐĂNG KÝ TOÀN PHẦN`;
-                    divConfirm.style.backgroundColor = '#fee2e2';
-                    divConfirm.style.borderColor = '#fca5a5';
-                    document.getElementById('confirmBoxTitle').style.color = '#b91c1c';
-                    document.getElementById('confirmBoxMsg').innerHTML = `Lãnh đạo đã phê duyệt chủ trương hủy toàn bộ hồ sơ đăng ký. Bấm <strong>Hoàn thành tác nghiệp</strong> để vô hiệu hóa pháp lý hoàn toàn.`;
-                } else {
-                    document.getElementById('pageTitleHeader').innerHTML = `<i class="fa-solid fa-rotate-left"></i> THỰC HIỆN KHÔI PHỤC HỦY ĐĂNG KÝ`;
-                    divConfirm.style.backgroundColor = '#f0fdf4';
-                    divConfirm.style.borderColor = '#bbf7d0';
-                    document.getElementById('confirmBoxTitle').style.color = '#15803d';
-                    document.getElementById('confirmBoxMsg').innerHTML = `Lãnh đạo đã phê duyệt chủ trương khôi phục hiệu lực hồ sơ đăng ký đã hủy. Bấm <strong>Hoàn thành tác nghiệp</strong> để khôi phục hiệu lực hoạt động.`;
-                }
-
-                document.getElementById('confSoDK').innerText = originalDossier.id;
-                document.getElementById('confBenBaoDam').innerText = originalDossier.customer;
-                document.getElementById('confBenNhanBD').innerText = originalDossier.mortgagee;
-                document.getElementById('confLoaiHinhGD').innerText = originalDossier.transactionType || 'Biện pháp bảo đảm';
+                const label = lt.key === 'SO_KHUNG' ? 'Thêm số khung' : (lt.key === 'PHUONG_TIEN' ? 'Thêm phương tiện' : 'Thêm thời điểm đăng ký chứng khoán');
+                inner = tableHtml('ts:' + lt.key, b ? b.rows : [], a.rows, C.COLS[lt.key], label) + `<div class="cl-error" data-ts-err="${lt.key}">Đây là trường bắt buộc</div>`;
             }
-        }
-
-        // B4: Live validation
-        function validateInputRow(idx, targetValue) {
-            const inputVal = document.getElementById(`txtInputReal-${idx}`).value.trim();
-            const tdStatus = document.getElementById(`tdStatus-${idx}`);
-
-            if (inputVal === targetValue) {
-                tdStatus.innerHTML = `<span class="badge badge-success" style="font-size:11px;"><i class="fa-solid fa-circle-check"></i> Khớp ✅</span>`;
-            } else {
-                tdStatus.innerHTML = `<span class="badge badge-danger" style="font-size:11px;"><i class="fa-solid fa-circle-xmark"></i> Sai lệch ⚠️</span>`;
-            }
-        }
-
-        function saveCorrectionChanges() {
-            const mockDossiers = JSON.parse(localStorage.getItem('custom_mock_profiles') || '[]');
-            const idx = mockDossiers.findIndex(d => d.id === originalDossier.id);
-
-            if (idx === -1) {
-                showToast('Hồ sơ gốc không tồn tại trên hệ thống!', 'error');
-                return;
-            }
-
-            const dossier = mockDossiers[idx];
-            const now = new Date();
-            const dateStr = `${now.getDate() < 10 ? '0' + now.getDate() : now.getDate()}/${now.getMonth() + 1 < 10 ? '0' + (now.getMonth()+1) : now.getMonth()+1}/${now.getFullYear()} ${now.getHours() < 10 ? '0' + now.getHours() : now.getHours()}:${now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes()}`;
-
-            if (currentProposal.type === 'Chỉnh lý thông tin') {
-                // Kiểm soát 100% đối chiếu khớp trước khi lưu CSDL
-                let allMatched = true;
-                currentProposal.correctionTable.forEach((row, rIdx) => {
-                    const inputVal = document.getElementById(`txtInputReal-${rIdx}`).value.trim();
-                    if (inputVal !== row.newValue) {
-                        allMatched = false;
-                    }
-                });
-
-                if (!allMatched) {
-                    showToast('Giá trị nhập thực tế chưa khớp với chủ trương đã được phê duyệt! Vui lòng nhập đúng để hoàn thành.', 'error');
-                    return;
-                }
-
-                // Cập nhật CSDL
-                currentProposal.correctionTable.forEach(row => {
-                    dossier[row.field] = row.newValue;
-                    
-                    // Lưu vết biến động chỉnh lý hệ thống (B3)
-                    if (!dossier.correctionLogs) dossier.correctionLogs = [];
-                    dossier.correctionLogs.push({
-                        field: row.field,
-                        oldValue: row.oldValue,
-                        newValue: row.newValue,
-                        date: dateStr,
-                        proposalCode: currentProposal.proposalCode
-                    });
-                });
-            } 
-            else if (currentProposal.type === 'Hủy đăng ký một phần') {
-                let originalAssets = dossier.assetType.split('|').map(a => a.trim());
-                let cancelList = currentProposal.cancelledAssets;
-
-                let remainingAssets = originalAssets.filter(a => !cancelList.includes(a));
-                dossier.assetType = remainingAssets.join(' | ');
-
-                if (!dossier.timeline) dossier.timeline = [];
-                dossier.timeline.push({
-                    id: `node-${dossier.timeline.length + 1}`,
-                    title: 'Hủy một phần đăng ký',
-                    date: dateStr,
-                    status: 'Hoàn thành',
-                    active: true
-                });
-            }
-            else if (currentProposal.type === 'Hủy đăng ký toàn phần') {
-                dossier.status = 'Đã hủy';
-                
-                if (!dossier.timeline) dossier.timeline = [];
-                dossier.timeline.push({
-                    id: `node-${dossier.timeline.length + 1}`,
-                    title: 'Hủy đăng ký toàn phần',
-                    date: dateStr,
-                    status: 'Hoàn thành',
-                    active: true
-                });
-            }
-            else if (currentProposal.type === 'Khôi phục hủy đăng ký') {
-                dossier.status = 'Hoàn thành';
-                
-                if (!dossier.timeline) dossier.timeline = [];
-                dossier.timeline.push({
-                    id: `node-${dossier.timeline.length + 1}`,
-                    title: 'Khôi phục hủy đăng ký',
-                    date: dateStr,
-                    status: 'Hoàn thành',
-                    active: true
-                });
-            }
-
-            // Lưu lại danh sách hồ sơ gốc
-            localStorage.setItem('custom_mock_profiles', JSON.stringify(mockDossiers));
-
-            // Cập nhật trạng thái đề xuất thành Đã xử lý
-            const proposals = JSON.parse(localStorage.getItem('custom_proposals') || '[]');
-            const propIdx = proposals.findIndex(p => p.id === currentProposal.id);
-            if (propIdx !== -1) {
-                proposals[propIdx].status = 'Đã xử lý';
-                localStorage.setItem('custom_proposals', JSON.stringify(proposals));
-            }
-
-            showToast('Hoàn thành thực thi thay đổi vào CSDL! Đang sinh thông báo kết quả...');
-
-            setTimeout(() => {
-                goBackToDashboard();
-            }, 2000);
-        }
-
-        function goBackToDashboard() {
-            window.location.href = 'theo_doi_xu_ly_de_nghi.html';
-        }
-
-        window.addEventListener('DOMContentLoaded', () => {
-            loadProposalData();
+            blocks[lt.key] = inner;
         });
-    </script>
-    <script src="admin-ui-standardizer.js"></script>
+        // Mỗi Loại tài sản: checkbox, ngay bên dưới là khối nhập thông tin của loại đó (khi được tích chọn)
+        $('tsHost').innerHTML = `<div class="cl-sub-title"><span>Loại tài sản <span class="cl-req" style="color:#EF4444;">*</span></span></div>
+            <div class="cl-ts-types">${C.LOAI_TS.map(lt => {
+                const tag = ts[lt.key] && !before.taiSan[lt.key] ? C.TAG.added : (before.taiSan[lt.key] && !ts[lt.key] ? C.TAG.removed : '');
+                return `<div class="cl-ts-item" data-asset="${lt.key}">
+                    <label><input type="checkbox" data-loai-ts="${lt.key}" ${ts[lt.key] ? 'checked' : ''}> <span>${C.esc(lt.ten)}${tag ? ' ' + tag : ''}</span></label>
+                    ${blocks[lt.key] !== undefined ? `<div class="cl-ts-detail">${blocks[lt.key]}</div>` : ''}</div>`;
+            }).join('')}</div>
+            <div class="cl-error" id="errLoaiTs">Đây là trường bắt buộc</div>`;
+        $('tsHost').querySelectorAll('[data-loai-ts]').forEach(chk => chk.addEventListener('change', () => {
+            const k = chk.getAttribute('data-loai-ts');
+            if (chk.checked) {
+                ts[k] = stash[k] || (before.taiSan[k] ? C.clone(before.taiSan[k]) : emptyTs(k));
+            } else { stash[k] = ts[k]; delete ts[k]; }
+            renderTaiSan();
+        }));
+        $('tsHost').querySelectorAll('[data-ts]').forEach(el => el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', () => {
+            const [k, f] = el.getAttribute('data-ts').split('|');
+            ts[k][f] = el.value;
+            if (el.value.trim()) { el.classList.remove('is-invalid'); const e = el.parentElement.querySelector('.cl-error'); if (e) e.classList.remove('show'); }
+            if (el.tagName === 'SELECT') { renderTaiSan(); return; }
+            const grp = el.closest('.cl-edit-field');
+            const b = before.taiSan[k];
+            if (grp && b) {
+                const changed = (b[f] || '') !== (el.value || '');
+                grp.classList.toggle('cl-modified', changed);
+                const lbl = grp.querySelector('.cl-label');
+                const old = lbl.querySelector('.cl-hist');
+                if (old) old.remove();
+                if (changed) lbl.insertAdjacentHTML('beforeend', C.histIcon(b[f]));
+            }
+        }));
+        bindTable($('tsHost'));
+    }
+    function emptyTs(k) {
+        if (C.TABLE_TS.includes(k)) return { rows: [] };
+        if (k === 'QUYEN') return { tenQuyen: '', canCu: '' };
+        if (k === 'HANG_HOA') return { kieu: 'Hàng hóa luân chuyển', giaTri: '', diaChiKho: '', soHieuKho: '' };
+        return { moTa: '' };
+    }
+
+    // ===================== THÊM / SỬA / XÓA DÒNG =====================
+    function rowsOf(kind, src) {
+        const s = src || after;
+        if (kind.indexOf('ts:') === 0) { const k = kind.slice(3); return s.taiSan[k] ? s.taiSan[k].rows : []; }
+        return s[kind];
+    }
+    function colsOf(kind) { return kind.indexOf('ts:') === 0 ? C.COLS[kind.slice(3)] : C.COLS[kind]; }
+    function rerender(kind) { if (kind.indexOf('ts:') === 0) renderTaiSan(); else renderParty(kind); }
+    function bindTable(scope) {
+        scope.querySelectorAll('[data-add]').forEach(b => b.onclick = () => openRow(b.getAttribute('data-add'), null));
+        scope.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => { const [k, id] = b.getAttribute('data-edit').split('|'); openRow(k, id); });
+        scope.querySelectorAll('[data-del]').forEach(b => b.onclick = async () => {
+            const [k, id] = b.getAttribute('data-del').split('|');
+            const rows = rowsOf(k);
+            const target = rows.find(r => r.id === id) || {};
+            const name = target.ten || target.soKhung || (target.ngay ? `${target.ngay}/${target.thang}/${target.nam}` : 'đã chọn');
+            if (!(await C.confirmBox(C.MSG.CFM_SYS_001(name), 'Đồng ý'))) return;
+            rows.splice(rows.findIndex(r => r.id === id), 1);
+            rerender(k);
+        });
+        scope.querySelectorAll('[data-undo]').forEach(b => b.onclick = () => {
+            const [k, id] = b.getAttribute('data-undo').split('|');
+            const orig = rowsOf(k, before).find(r => r.id === id);
+            const rows = rowsOf(k);
+            const idx = rowsOf(k, before).findIndex(r => r.id === id);
+            rows.splice(Math.min(idx, rows.length), 0, C.clone(orig));
+            rerender(k);
+        });
+    }
+    function openRow(kind, id) {
+        const cols = colsOf(kind);
+        const rows = rowsOf(kind);
+        const row = id ? rows.find(r => r.id === id) : null;
+        const names = { bbd: C.partyTitles(after.chung).bbd, bnbd: C.partyTitles(after.chung).bnbd, 'ts:SO_KHUNG': 'số khung', 'ts:PHUONG_TIEN': 'phương tiện', 'ts:CHUNG_KHOAN': 'thời điểm đăng ký chứng khoán' };
+        $('rowModalTitle').textContent = (row ? 'Sửa ' : 'Thêm ') + (names[kind] || '').toLowerCase();
+        $('rowModalBody').innerHTML = cols.map(cc => {
+            const v = row ? (row[cc.key] || '') : '';
+            let ctrl;
+            if (cc.type === 'select') ctrl = `<select class="cl-select" data-k="${cc.key}"><option value="">-- Chọn --</option>${cc.options.map(o => `<option${o === v ? ' selected' : ''}>${C.esc(o)}</option>`).join('')}</select>`;
+            else if (cc.file) ctrl = `<input type="file" class="cl-input" accept=".pdf" data-k="${cc.key}">${v ? `<div class="cl-hint">Tệp hiện tại: ${C.esc(v)}</div>` : ''}`;
+            else ctrl = `<input class="cl-input" data-k="${cc.key}" value="${C.esc(v)}">`;
+            return `<div class="cl-form-group${cc.key === 'diaChi' || cc.key === 'ten' ? ' cl-span-all' : ''}"><label class="cl-label">${C.esc(cc.label)}${cc.req ? ' <span class="cl-req">*</span>' : ''}</label>${ctrl}<div class="cl-error">Đây là trường bắt buộc</div></div>`;
+        }).join('');
+        $('rowModalSave').onclick = () => {
+            const data = {};
+            let first = null;
+            cols.forEach(cc => {
+                const el = $('rowModalBody').querySelector(`[data-k="${cc.key}"]`);
+                let v = cc.file ? (el.files[0] ? el.files[0].name : (row ? row[cc.key] : '')) : el.value.trim();
+                data[cc.key] = v;
+                const bad = cc.req && !v;
+                el.classList.toggle('is-invalid', bad);
+                el.parentElement.querySelector('.cl-error').classList.toggle('show', bad);
+                if (bad && !first) first = el;
+            });
+            if (first) { first.focus(); return; }
+            if (row) Object.assign(row, data); else rows.push(Object.assign({ id: 'new' + Date.now() }, data));
+            C.closeModal('rowModal');
+            rerender(kind);
+        };
+        C.openModal('rowModal');
+    }
+
+    // ===================== TRÌNH KÝ =====================
+    function validateChinhLy() {
+        let first = null;
+        const flag = (el, bad, errEl) => {
+            if (!el) return;
+            el.classList.toggle('is-invalid', bad);
+            const e = errEl || (el.closest('.cl-form-group') ? el.closest('.cl-form-group').querySelector('.cl-error') : null);
+            if (e) e.classList.toggle('show', bad);
+            if (bad && !first) first = el;
+        };
+        const c = after.chung;
+        ['coQuan', 'loaiHinh', 'soHopDong', 'ngayHieuLucHD'].concat(c.loaiHinh === 'Hợp đồng' ? ['loaiHopDong'] : ['loaiBienPhap']).forEach(k => {
+            flag($('chungHost').querySelector(`[data-chung="${k}"]`), !String(c[k] || '').trim());
+        });
+        flag($('bbdHost').querySelector('[data-add]'), !after.bbd.length, $('errBbd'));
+        flag($('bnbdHost').querySelector('[data-add]'), !after.bnbd.length, $('errBnbd'));
+        const keys = Object.keys(after.taiSan);
+        flag($('tsHost').querySelector('[data-loai-ts]'), !keys.length, $('errLoaiTs'));
+        keys.forEach(k => {
+            const a = after.taiSan[k];
+            if (C.TABLE_TS.includes(k)) {
+                flag($('tsHost').querySelector(`[data-add="ts:${k}"]`), !a.rows.length, $('tsHost').querySelector(`[data-ts-err="${k}"]`));
+            } else {
+                const req = k === 'QUYEN' ? ['tenQuyen', 'canCu'] : (k === 'HANG_HOA' ? (a.kieu === 'Kho hàng' ? ['kieu', 'giaTri', 'diaChiKho'] : ['kieu', 'giaTri']) : ['moTa']);
+                req.forEach(f => flag($('tsHost').querySelector(`[data-ts="${k}|${f}"]`), !String(a[f] || '').trim()));
+            }
+        });
+        if (first) {
+            const cardEl = first.closest('.cl-card');
+            if (cardEl) cardEl.classList.remove('cl-collapsed');
+            first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            if (first.focus) first.focus();
+            return false;
+        }
+        return true;
+    }
+
+    $('btnTrinhKy').onclick = () => {
+        if (p.loai === 'CHINH_LY' && !validateChinhLy()) return;
+        const getDraft = () => (p.loai === 'CHINH_LY' ? { before, after } : null);
+        C.openTrinhKy(p, getDraft, lanhDao => {
+            const cur = C.getProposal(p.id);
+            if (!cur || !['Chờ thực hiện', 'Bị trả lại'].includes(cur.trangThai)) { C.toast(C.MSG.ERR_DK_005, 'error'); return; }
+            const now = C.fmtDateTime(new Date());
+            const last = cur.traLai && cur.traLai[cur.traLai.length - 1];
+            if (last && !last.thoiDiemTrinhLai) last.thoiDiemTrinhLai = now;
+            cur.trangThai = 'Chờ ký số';
+            cur.trinhKy = { nguoi: cur.pheDuyet ? cur.pheDuyet.nguoiThucHien : C.CURRENT_USER.ten, thoiDiem: now, lanhDao };
+            cur.thoiDiemGui = now;
+            if (cur.loai === 'CHINH_LY') cur.chinhLy = { before, after };
+            C.updateProposal(cur);
+            C.goList(C.MSG.SUC_CLDK_004(cur.maDeNghi));
+        });
+    };
+
+    // ===================== TIỆN ÍCH =====================
+    function card(title, icon, inner, o) {
+        const opt = o || {};
+        return `<div class="cl-card${opt.danger ? ' cl-card-danger' : ''}${opt.collapsed ? ' cl-collapsed' : ''}" id="${opt.id || ''}"${opt.id === 'cardThamChieu' || opt.id === 'cardTraLai' ? ' data-collapsible="1"' : ''}>
+            <div class="cl-card-header"><span class="cl-card-title"><i class="fa-solid ${icon}"></i> ${C.esc(title)}</span></div>
+            <div class="cl-card-body">${inner}</div></div>`;
+    }
+    function banner(msg) { return `<div class="cl-banner cl-banner-warn"><i class="fa-solid fa-triangle-exclamation"></i> ${C.esc(msg)}</div>`; }
+})();
+</script>
 </body>
 </html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xem chi tiết và Ký số hồ sơ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../Common/style_iframe.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="chinh_ly_common.css">
+    <script src="../Common/iframe_helper.js"></script>
+    <style>
+        .cl-version-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+            border-bottom: 2px solid #E2E8F0; padding-bottom: 12px; margin-bottom: 18px; }
+        .cl-version-head .cl-v1 { font-size: 15px; font-weight: 700; color: #1E3A8A; }
+        .cl-version-head .cl-v2 { font-size: 12.5px; color: #64748B; margin-top: 2px; }
+        .cl-diff-section { margin-bottom: 22px; }
+        .cl-diff-section:last-child { margin-bottom: 0; }
+        body.cl-diff-only [data-changed="0"] { display: none !important; }
+    </style>
+</head>
+<!-- MH07 - Màn hình Xem chi tiết và Ký số hồ sơ: ky_so_chinh_ly.html?id={id}[&mode=view] -->
+<body class="cl-page">
+<div class="cl-container">
+    <div class="cl-breadcrumb">
+        <a href="theo_doi_xu_ly_de_nghi.html"><i class="fa-solid fa-arrow-left"></i> Quản lý Chỉnh lý thông tin, Hủy và Khôi phục đăng ký</a>
+        <span>/</span><span>Xem chi tiết và Ký số hồ sơ</span>
+    </div>
+    <div class="cl-page-header">
+        <h2><i class="fa-solid fa-file-signature"></i><span id="pageTitle">XEM CHI TIẾT VÀ KÝ SỐ HỒ SƠ</span></h2>
+        <div id="pageHeaderRight"></div>
+    </div>
+    <div id="pageBody"></div>
+</div>
+<div class="cl-sticky-footer" id="footerBar"></div>
+
+<script src="chinh_ly_common.js"></script>
+<script>
+(function () {
+    const C = CLDK;
+    const $ = C.byId;
+    const p = C.getProposal(C.param('id'));
+    const readonly = C.param('mode') === 'view';
+    const body = $('pageBody');
+
+    if (!p) { body.innerHTML = `<div class="cl-banner cl-banner-warn"><i class="fa-solid fa-triangle-exclamation"></i> ${C.esc(C.MSG.INF_SYS_001)}</div>`; footer(); return; }
+    $('pageTitle').textContent = 'XEM CHI TIẾT VÀ KÝ SỐ HỒ SƠ: ' + p.maDeNghi;
+    $('pageHeaderRight').innerHTML = C.badge(p.trangThai, C.statusClass(p.trangThai));
+
+    const tk = p.trinhKy || {};
+    const pd = p.pheDuyet || {};
+    const parts = [];
+
+    // ===================== TÓM TẮT THÔNG TIN HỒ SƠ TRÌNH KÝ =====================
+    parts.push(card('Tóm tắt thông tin hồ sơ trình ký', 'fa-circle-info', `<div class="cl-info-grid cl-cols-4">
+        ${C.infoItem('Mã đề nghị', p.maDeNghi)}
+        ${C.infoItem('Loại đề nghị', C.badge(C.loaiLabel(p), C.loaiClass(p)), { html: true })}
+        ${C.infoItem('Người trình ký', `${C.esc(C.val(tk.nguoi))}<div class="cl-muted" style="font-weight:500;font-size:12px;">Thời điểm trình ký: ${C.esc(C.val(tk.thoiDiem))}</div>`, { html: true })}
+        ${C.infoItem('Người phê duyệt đề nghị', `${C.esc(C.val(pd.nguoi))}<div class="cl-muted" style="font-weight:500;font-size:12px;">Ý kiến chỉ đạo: ${C.esc(C.val(pd.yKien))}</div>`, { html: true })}
+    </div>`));
+
+    // ===================== KHUNG XEM TRƯỚC VĂN BẢN / CHỨNG THƯ =====================
+    const docUrl = `du_thao_chinh_ly.html?id=${p.id}`;
+    const docName = (p.trangThai === 'Hoàn thành' ? '' : 'Du_thao_') + C.loaiFileChoKy(p).replace(/ /g, '_') + '_' + p.maDeNghi.replace(/[^\w]/g, '') + '.pdf';
+    parts.push(card('Khung Xem trước Văn bản / Chứng thư', 'fa-file-pdf', `
+        <div class="cl-pdf-toolbar">
+            <button type="button" id="pdfZoomOut" title="Thu nhỏ"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+            <span id="pdfZoomLbl" style="min-width:44px;text-align:center;">85%</span>
+            <button type="button" id="pdfZoomIn" title="Phóng to"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+            <button type="button" id="pdfRotate" title="Xoay"><i class="fa-solid fa-rotate-right"></i></button>
+            <span style="margin-left:8px;">Trang <b>1</b> / 1</span>
+            <span class="cl-pdf-sep"></span>
+            <span style="opacity:.85;margin-right:8px;"><i class="fa-solid fa-file-pdf"></i> ${C.esc(docName)}</span>
+            <a id="pdfOpen"><i class="fa-solid fa-up-right-from-square"></i> Xem file</a>
+            <a id="pdfDownload" style="margin-left:12px;"><i class="fa-solid fa-download"></i> Tải tệp</a>
+        </div>
+        <div class="cl-pdf-stage"><div class="cl-pdf-page" id="pdfPage"><iframe src="${docUrl}&embed=1" title="Văn bản"></iframe></div></div>`));
+
+    // ===================== III / THÔNG TIN HỒ SƠ =====================
+    const hs = C.hoSoOf(p);
+    let before = null, after = null;
+    if (p.loai === 'CHINH_LY') {
+        before = p.chinhLy ? p.chinhLy.before : C.clone(hs);
+        after = p.chinhLy ? p.chinhLy.after : C.clone(hs);
+        parts.push(card('Thông tin hồ sơ sau chỉnh lý', 'fa-file-pen', '<div id="diffHost"></div>', { id: 'cardDiff', collapsible: true }));
+    } else if (p.loai === 'HUY') {
+        parts.push(card('Thông tin hồ sơ đề nghị hủy', 'fa-database', '<div id="ivHinhThuc" style="margin-bottom:14px;"></div><div id="ivHost"></div>', { id: 'cardIV', collapsible: true }));
+    } else {
+        parts.push(card('Khối Thông tin giao dịch hủy đã thực hiện trước đây', 'fa-clock-rotate-left', '<div id="gdHuyHost"></div>', { id: 'cardV', collapsible: true }));
+    }
+    body.innerHTML = parts.join('');
+    body.querySelectorAll('.cl-card[data-collapsible]').forEach(c => C.collapsible(c));
+
+    // PDF viewer: phóng to, thu nhỏ, xoay
+    let zoom = 0.85, rot = 0;
+    const applyPdf = () => { $('pdfPage').style.transform = `scale(${zoom}) rotate(${rot}deg)`; $('pdfZoomLbl').textContent = Math.round(zoom * 100) + '%'; };
+    $('pdfZoomIn').onclick = () => { zoom = Math.min(2, zoom + 0.1); applyPdf(); };
+    $('pdfZoomOut').onclick = () => { zoom = Math.max(0.4, zoom - 0.1); applyPdf(); };
+    $('pdfRotate').onclick = () => { rot = (rot + 90) % 360; applyPdf(); };
+    $('pdfOpen').onclick = () => window.open(docUrl, '_blank');
+    $('pdfDownload').onclick = () => C.downloadFile(docName);
+    applyPdf();
+
+    if (p.loai === 'CHINH_LY') renderDiff();
+    else if (p.loai === 'HUY') {
+        const ht = C.hinhThucHuy(p);
+        $('ivHinhThuc').innerHTML = `<div class="cl-info-grid cl-cols-2">${C.infoItem('Hình thức hủy', C.badge(ht, ht === 'Hủy đăng ký toàn phần' ? 'cl-type-huytoanphan' : 'cl-type-huymotphan'), { html: true })}</div>`;
+        C.renderHoSo($('ivHost'), hs, { loai: 'HUY', onlyIds: new Set(p.noiDung.taiSanHuyIds || []) });
+    } else {
+        const huy = C.huyOf(p);
+        if (huy) C.renderGiaoDichHuy($('gdHuyHost'), huy);
+    }
+    footer();
+
+    // ===================== HIỂN THỊ THÔNG TIN ĐÃ CHỈNH LÝ =====================
+    function renderDiff() {
+        const titles = C.partyTitles(after.chung);
+        const isLanDau = after.loaiDangKy === 'Đăng ký lần đầu';
+        const sec = (n, title, icon, inner, changed) => `<div class="cl-diff-section" data-changed="${changed ? 1 : 0}"><div class="cl-sub-title"><span><i class="fa-solid ${icon}"></i> ${n}. ${C.esc(title)}</span></div>${inner}</div>`;
+
+        // 2. Thông tin hồ sơ
+        const s2 = `<div class="cl-info-grid">
+            ${C.infoItem('Loại đăng ký', after.loaiDangKy)}${C.infoItem('Số đăng ký', after.soDangKy)}${C.infoItem('Thời điểm đăng ký', after.thoiDiemDangKy)}
+            ${C.infoItem('Thời điểm có hiệu lực', after.thoiDiemHieuLuc)}${C.infoItem('Trạng thái hồ sơ', C.badge(after.trangThai, C.statusClass(after.trangThai)), { html: true })}
+            ${isLanDau ? '' : C.infoItem('Số đăng ký lần đầu', after.soDKLanDau) + C.infoItem('Thời điểm đăng ký lần đầu', after.thoiDiemDKLanDau)}
+            ${C.infoItem('Văn bản kết quả', after.vanBanKetQua ? `<a class="cl-link" onclick="CLDK.viewFile('${C.esc(after.vanBanKetQua)}')"><i class="fa-solid fa-up-right-from-square"></i> Xem file</a>` : '-', { html: true })}</div>`;
+
+        // 3. Thông tin người yêu cầu đăng ký
+        const ny = after.nguoiYeuCau || {};
+        const s3 = `<div class="cl-info-grid">${C.infoItem('Họ và tên/Tên tổ chức', ny.ten)}${C.infoItem('Địa chỉ', ny.diaChi)}
+            ${ny.taiLieu ? C.infoItem('Tài liệu chứng minh', `<a class="cl-link" onclick="CLDK.viewFile('${C.esc(ny.taiLieu)}')"><i class="fa-solid fa-up-right-from-square"></i> Xem file</a>`, { html: true }) : ''}</div>`;
+
+        // 4. Thông tin chung & Nghĩa vụ được bảo đảm
+        let chungChanged = false;
+        const s4 = `<div class="cl-info-grid">${C.CHUNG_FIELDS.filter(f => !f.show || f.show(after.chung)).map(f => {
+            const a = after.chung[f.key], b = before.chung[f.key];
+            const changed = (a || '') !== (b || '');
+            if (changed) chungChanged = true;
+            const fmt = v => (f.fmt ? f.fmt(v) : v);
+            const shown = f.file ? (a ? `<a class="cl-link" onclick="CLDK.viewFile('${C.esc(a)}')"><i class="fa-solid fa-up-right-from-square"></i> Xem file</a>` : '-') : C.esc(C.val(fmt(a)));
+            return `<div class="cl-info-item${changed ? ' cl-modified' : ''}" data-changed="${changed ? 1 : 0}"><div class="cl-info-label">${C.esc(f.label)}</div>
+                <div class="cl-info-value cl-has-hist">${shown}${changed ? C.histIcon(fmt(b)) : ''}</div></div>`;
+        }).join('')}</div>`;
+
+        // 5, 6. Bảng chủ thể
+        const tableDiff = (beforeRows, afterRows, cols) => {
+            const diff = C.diffRows(beforeRows, afterRows, cols);
+            // Cột Trạng thái chỉnh lý chỉ hiển thị khi bảng có ít nhất 01 dòng thay đổi
+            const any = diff.some(dr => dr.status !== 'same');
+            let stt = 0;
+            const rows = diff.map(dr => {
+                const r = dr.row;
+                const cls = { modified: 'cl-row-modified', added: 'cl-row-added', removed: 'cl-row-removed' }[dr.status] || '';
+                if (dr.status !== 'removed') stt++;
+                const cells = cols.map(cc => {
+                    const mod = dr.status === 'modified' && Object.prototype.hasOwnProperty.call(dr.changed, cc.key);
+                    const v = cc.file ? (r[cc.key] ? `<a class="cl-link" onclick="CLDK.viewFile('${C.esc(r[cc.key])}')"><i class="fa-solid fa-up-right-from-square"></i> Xem file</a>` : '-') : C.esc(C.val(r[cc.key]));
+                    return `<td class="${cc.center ? 'cl-center ' : ''}${mod ? 'cl-cell-modified cl-has-hist' : ''}"${cc.bold ? ' style="font-weight:600;"' : ''}>${v}${mod ? C.histIcon(dr.changed[cc.key]) : ''}</td>`;
+                }).join('');
+                return `<tr class="${cls}" data-changed="${dr.status === 'same' ? 0 : 1}"><td class="cl-center">${dr.status === 'removed' ? '-' : stt}</td>${cells}${any ? `<td class="cl-no-strike">${C.TAG[dr.status] || ''}</td>` : ''}</tr>`;
+            }).join('');
+            return { any, html: `<div class="cl-table-wrap"><table class="cl-table"><thead><tr><th class="cl-center" style="width:50px;">STT</th>
+                ${cols.map(cc => `<th${cc.center ? ' class="cl-center"' : ''}>${C.esc(cc.label)}</th>`).join('')}${any ? '<th>Trạng thái chỉnh lý</th>' : ''}</tr></thead>
+                <tbody>${rows || `<tr class="cl-empty-row"><td colspan="${cols.length + (any ? 2 : 1)}">${C.esc(C.MSG.INF_SYS_001)}</td></tr>`}</tbody></table></div>` };
+        };
+        const t5 = tableDiff(before.bbd, after.bbd, C.COLS.bbd);
+        const t6 = tableDiff(before.bnbd, after.bnbd, C.COLS.bnbd);
+
+        // 7. Tài sản bảo đảm
+        let tsChanged = false;
+        const assetBlocks = C.LOAI_TS.filter(lt => before.taiSan[lt.key] || after.taiSan[lt.key]).map(lt => {
+            const a = after.taiSan[lt.key], b = before.taiSan[lt.key];
+            const removed = !a, added = !b;
+            const data = a || b;
+            let inner = '', changed = removed || added;
+            const field = (k, label) => {
+                const mod = !removed && !added && (a[k] || '') !== (b[k] || '');
+                if (mod) changed = true;
+                return `<div class="cl-info-item${mod ? ' cl-modified' : ''}" data-changed="${mod || removed || added ? 1 : 0}"><div class="cl-info-label">${C.esc(label)}</div>
+                    <div class="cl-info-value cl-has-hist">${C.esc(C.val(data[k]))}${mod ? C.histIcon(b[k]) : ''}</div></div>`;
+            };
+            if (lt.key === 'CAY' || lt.key === 'DONG_SAN') inner = `<div class="cl-info-grid cl-cols-2"><div class="cl-span-all">${field('moTa', 'Mô tả')}</div></div>`;
+            else if (lt.key === 'QUYEN') inner = `<div class="cl-info-grid cl-cols-2">${field('tenQuyen', 'Tên quyền')}${field('canCu', 'Căn cứ phát sinh quyền')}</div>`;
+            else if (lt.key === 'HANG_HOA') inner = `<div class="cl-info-grid cl-cols-2">${field('kieu', 'Hàng hóa luân chuyển / Kho hàng')}${field('giaTri', 'Giá trị hàng hóa/Tên, loại hàng hóa')}
+                ${data.kieu === 'Kho hàng' ? field('diaChiKho', 'Địa chỉ kho hàng') + field('soHieuKho', 'Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng') : ''}</div>`;
+            else {
+                const td = tableDiff(removed ? b.rows : (b ? b.rows : []), removed ? b.rows : a.rows, C.COLS[lt.key]);
+                if (td.any) changed = true;
+                const tableTitle = lt.key === 'SO_KHUNG' ? 'Số khung' : (lt.key === 'PHUONG_TIEN' ? 'Phương tiện' : 'Thời điểm đăng ký biện pháp bảo đảm bằng chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam');
+                inner = `<div style="font-weight:600;font-size:12.5px;margin-bottom:6px;">${C.esc(tableTitle)}</div>${added ? td.html.replace(/data-changed="0"/g, 'data-changed="1"') : td.html}`;
+            }
+            if (changed) tsChanged = true;
+            const tag = removed ? C.TAG.removed : (added ? C.TAG.added : '');
+            return `<div class="cl-asset-block" data-changed="${changed ? 1 : 0}"><div class="cl-asset-type-title${removed ? ' cl-removed' : ''}"><i class="fa-solid fa-caret-right"></i>${C.esc(lt.ten)}</div>${tag ? `<div style="margin:-4px 0 8px 0;">${tag}</div>` : ''}
+                <div class="${removed ? 'cl-removed-block' : ''}">${inner}</div></div>`;
+        }).join('');
+
+        $('diffHost').innerHTML = `
+            <div class="cl-version-head">
+                <div><div class="cl-v1">${C.esc(after.loaiDangKy)} - Trạng thái: ${C.esc(after.trangThai)}</div>
+                    <div class="cl-v2">Số đăng ký: ${C.esc(after.soDangKy)} | Thời điểm đăng ký: ${C.esc(after.thoiDiemDangKy)}</div></div>
+                <label class="cl-switch-wrap">Chỉ hiển thị vùng dữ liệu có biến động
+                    <span class="cl-switch"><input type="checkbox" id="diffToggle"><span class="cl-slider"></span></span></label>
+            </div>
+            ${sec(2, 'Thông tin hồ sơ', 'fa-file-invoice', s2, false)}
+            ${sec(3, 'Thông tin người yêu cầu đăng ký', 'fa-user', s3, false)}
+            ${sec(4, 'Thông tin chung & Nghĩa vụ được bảo đảm', 'fa-file-contract', s4, chungChanged)}
+            ${sec(5, titles.bbd, 'fa-user-shield', t5.html, t5.any)}
+            ${sec(6, titles.bnbd, 'fa-building-columns', t6.html, t6.any)}
+            ${sec(7, titles.ts, 'fa-boxes-stacked', assetBlocks || `<div class="cl-banner cl-banner-muted">${C.esc(C.MSG.INF_SYS_001)}</div>`, tsChanged)}`;
+        $('diffToggle').addEventListener('change', e => document.body.classList.toggle('cl-diff-only', e.target.checked));
+    }
+
+    // ===================== CHỨC NĂNG TRÊN MÀN HÌNH =====================
+    function footer() {
+        const bar = $('footerBar');
+        bar.innerHTML = '<button type="button" class="cl-btn cl-btn-outline" id="btnDong"><i class="fa-solid fa-xmark"></i> Đóng</button>';
+        $('btnDong').onclick = () => C.goList();
+        if (!p || readonly || p.trangThai !== 'Chờ ký số') return;
+        const traLai = document.createElement('button');
+        traLai.type = 'button'; traLai.className = 'cl-btn cl-btn-outline-danger';
+        traLai.innerHTML = '<i class="fa-solid fa-rotate-left"></i> Trả lại hồ sơ';
+        traLai.onclick = () => C.openTraLai(p, (cur, msg) => C.goList(msg));
+        const kySo = document.createElement('button');
+        kySo.type = 'button'; kySo.className = 'cl-btn cl-btn-primary';
+        kySo.innerHTML = '<i class="fa-solid fa-file-signature"></i> Ký số';
+        kySo.onclick = () => {
+            const cur = C.getProposal(p.id);
+            if (!cur || cur.trangThai !== 'Chờ ký số') { C.toast(C.MSG.ERR_DK_005, 'error'); return; }
+            C.openKySo(cur, (done, msg) => C.goList(msg));
+        };
+        bar.appendChild(traLai);
+        bar.appendChild(kySo);
+    }
+    function card(title, icon, inner, o) {
+        const opt = o || {};
+        return `<div class="cl-card" id="${opt.id || ''}"${opt.collapsible ? ' data-collapsible="1"' : ''}>
+            <div class="cl-card-header"><span class="cl-card-title"><i class="fa-solid ${icon}"></i> ${C.esc(title)}</span></div>
+            <div class="cl-card-body">${inner}</div></div>`;
+    }
+})();
+</script>
+</body>
+</html>
