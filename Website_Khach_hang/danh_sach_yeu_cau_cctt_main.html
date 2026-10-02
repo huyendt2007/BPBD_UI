@@ -671,7 +671,6 @@
                             <option value="Chờ thanh toán">Chờ thanh toán</option>
                             <option value="Hoàn thành">Hoàn thành</option>
                             <option value="Bị từ chối">Bị từ chối</option>
-                            <option value="Bị trả lại">Bị trả lại</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -749,6 +748,10 @@
                     </div>
                 </div>
 
+                <!-- Hồ sơ Hoàn thành: hiển thị giống Xem chi tiết hồ sơ yêu cầu cung cấp thông tin tại Website Quản trị, bổ sung khối Thông tin thanh toán -->
+                <div id="ccttProcessedView" class="hidden"></div>
+
+                <div id="ccttStandardView">
                 <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-folder-open"></i> Thông tin hồ sơ</h3>
                 <div class="detail-grid">
                     <div class="detail-field">
@@ -761,7 +764,7 @@
                     </div>
                     <div class="detail-field">
                         <span class="detail-label">Nguồn tiếp nhận</span>
-                        <span class="detail-value" id="detNguonTiepNhan">Website khách hàng</span>
+                        <span class="detail-value" id="detNguonTiepNhan">Trực tuyến</span>
                     </div>
                 </div>
 
@@ -845,10 +848,12 @@
                     <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-file-shield"></i> Nội dung kết quả cung cấp thông tin</h3>
                     <div id="relatedDossierContainer" style="margin-bottom: 10px;"></div>
                 </div>
+                </div>
 
                 <div class="detail-actions">
                     <button class="btn btn-secondary" onclick="backToList()"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
                     <div class="detail-actions-right">
+                        <button class="btn btn-outline-primary hidden" id="btnDetailViewFile" onclick="viewFile()"><i class="fa-regular fa-file-pdf"></i> Xem file</button>
                         <button class="btn btn-outline-primary hidden" id="btnDetailDownload" onclick="downloadFile()"><i class="fa-solid fa-download"></i> Tải file</button>
                         <button class="btn btn-outline-primary hidden" id="btnDetailReceipt" onclick="printReceipt()"><i class="fa-solid fa-receipt"></i> Xem/In biên lai</button>
                         <button class="btn btn-primary hidden" id="btnDetailPay" onclick="payFromDetail()"><i class="fa-solid fa-credit-card"></i> Thanh toán</button>
@@ -876,6 +881,9 @@
         </div>
     </div>
 
+    <!-- Dùng chung cách hiển thị Kết quả tra cứu với Website Quản trị -->
+    <script src="../Website_Quan_tri/bs_xu_ly_popups.js"></script>
+    <script src="../Website_Quan_tri/cctt_xu_ly_popups.js"></script>
     <script>
         // ================= Mock data (25 bản ghi, đủ 3 tiêu chí và 5 trạng thái) =================
         const STATUS_MAP = {
@@ -888,7 +896,7 @@
         };
 
         const CRITERIA_CYCLE = ['Số đăng ký', 'Bên bảo đảm', 'Số khung'];
-        const STATUS_CYCLE = ['Chờ duyệt', 'Chờ thanh toán', 'Chờ ký', 'Hoàn thành', 'Bị từ chối', 'Bị trả lại'];
+        const STATUS_CYCLE = ['Chờ duyệt', 'Chờ thanh toán', 'Chờ ký', 'Hoàn thành', 'Bị từ chối'];
         const CREATOR_NAME_CYCLE = ['Nguyễn Văn A', 'Trần Minh Hải', 'Lê Thu Hương', 'Phạm Quốc An', 'Nguyễn Minh Anh', 'Trần Văn H'];
 
         function buildMockInputData(criteria, idx) {
@@ -1165,6 +1173,13 @@
 
             // Khối Kết quả cung cấp thông tin + Chi tiết đăng ký liên quan (chỉ hiện khi Hoàn thành)
             const isCompleted = item.status === 'Hoàn thành';
+            const processedView = document.getElementById('ccttProcessedView');
+            processedView.classList.toggle('hidden', !isCompleted);
+            processedView.innerHTML = isCompleted ? renderCcttProcessedView(item) : '';
+            document.getElementById('ccttStandardView').classList.toggle('hidden', isCompleted);
+            document.querySelector('#screen-detail .detail-sub').innerText = isCompleted
+                ? 'Xem chi tiết hồ sơ yêu cầu cung cấp thông tin'
+                : 'Chi tiết yêu cầu cung cấp thông tin về biện pháp bảo đảm';
             document.getElementById('blockKetQua').classList.toggle('hidden', !isCompleted);
             if (isCompleted) {
                 document.getElementById('detNoiDungKetQua').innerText = item.resultContent || 'Nội dung kết quả cung cấp thông tin được phê duyệt và lưu trong file PDF kết quả đã ký.';
@@ -1178,6 +1193,7 @@
 
             const btnDownload = document.getElementById('btnDetailDownload');
             btnDownload.classList.toggle('hidden', !isCompleted);
+            document.getElementById('btnDetailViewFile').classList.toggle('hidden', !isCompleted);
             btnDownload.dataset.code = item.dossierCode;
 
             const btnReceipt = document.getElementById('btnDetailReceipt');
@@ -1187,6 +1203,48 @@
             document.getElementById('screen-list').classList.add('hidden');
             document.getElementById('screen-detail').classList.remove('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Hồ sơ Hoàn thành: hiển thị giống màn Xem chi tiết hồ sơ yêu cầu cung cấp thông tin tại Website Quản trị
+        // (Thông tin chung, Khối tra cứu, Kết quả tra cứu), bổ sung khối Thông tin thanh toán trên Website Khách hàng
+        function renderCcttProcessedView(item) {
+            const esc = pdfEscape;
+            const statusMeta = STATUS_MAP[item.status] || { cls: '', icon: 'fa-circle' };
+            const field = (label, value, full) => `<div class="detail-field${full ? ' full-row' : ''}"><span class="detail-label">${esc(label)}</span><span class="detail-value">${value}</span></div>`;
+            const segments = ['Số đăng ký', 'Bên bảo đảm', 'Số khung'].map(c => `<span style="display:inline-block;padding:7px 14px;font-size:13px;font-weight:600;${c === item.criteria ? 'background:var(--primary-color);color:#fff' : 'background:#fff;color:#64748b;opacity:.55'}">${esc(c)}</span>`).join('');
+            const inputs = CcttPopups.getLookupFields(item).map(([l, v]) => field(l, esc(v || '—'))).join('');
+            const result = item.lookupResult || (item.lookupResult = CcttPopups.runLookup(item));
+            if (item.lookupTime) result.at = item.lookupTime;
+            const payment = [
+                field('Số tiền đã thanh toán', `${Number(item.paidAmount || item.amount || 0).toLocaleString('vi-VN')} VNĐ`),
+                field('Mã giao dịch thanh toán', esc(item.paymentTxn || `GD${item.dossierCode.slice(-8)}`)),
+                field('Số biên lai', esc(item.receiptNo || `BL${item.dossierCode.slice(-6)}`)),
+                field('Thời điểm thanh toán', esc(item.paymentTime || item.registeredAt)),
+                field('Trạng thái thanh toán', 'Thanh toán thành công')
+            ].join('');
+            return `
+                <div style="background:#F0FDF4;border:1px solid #86EFAC;border-radius:6px;padding:12px;margin-bottom:15px;color:#166534;">
+                    <b><i class="fa-solid fa-circle-check"></i> Kết quả xử lý:</b> Hồ sơ đã hoàn thành việc cung cấp thông tin có xác nhận của cơ quan đăng ký.
+                </div>
+                <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-folder-open"></i> Thông tin chung</h3>
+                <div class="detail-grid">
+                    ${field('Mã hồ sơ', `<b>${esc(item.dossierCode)}</b>`)}
+                    ${field('Người yêu cầu', esc(item.creatorName || '—'))}
+                    ${field('Thời điểm đăng ký', esc(item.registeredAt))}
+                    ${field('Nguồn tiếp nhận', 'Trực tuyến')}
+                    ${field('Trạng thái', `<span class="status-badge ${statusMeta.cls}"><i class="fa-solid ${statusMeta.icon}"></i> ${esc(item.status)}</span>`)}
+                </div>
+                <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-magnifying-glass"></i> Khối tra cứu</h3>
+                <div style="margin-bottom:10px">
+                    <div class="detail-label" style="margin-bottom:6px">Tiêu chí yêu cầu cung cấp thông tin</div>
+                    <div style="display:inline-flex;border:1px solid var(--border-color);border-radius:6px;overflow:hidden">${segments}</div>
+                </div>
+                <div class="detail-grid two-cols">${inputs}</div>
+                <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-file-shield"></i> Kết quả tra cứu</h3>
+                <div style="margin-bottom:10px">${CcttPopups.renderResult(result)}</div>
+                <h3 class="section-title" style="font-size: 14px;"><i class="fa-solid fa-credit-card"></i> Thông tin thanh toán</h3>
+                <div class="detail-grid">${payment}</div>
+            `;
         }
 
         function toggleDetailItem(wrapperId, valueId, show, value) {

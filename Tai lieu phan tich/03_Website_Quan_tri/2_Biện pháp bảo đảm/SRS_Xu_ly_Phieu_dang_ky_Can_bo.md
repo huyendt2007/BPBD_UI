@@ -44,7 +44,7 @@
 | Số biên lai | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số biên lai...".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Số biên lai/biên nhận thanh toán lệ phí của hồ sơ. |
 | Nguồn tiếp nhận | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Dịch vụ công<br>+ Trực tuyến<br>+ Trực tiếp |
 | Loại đăng ký | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại hình đăng ký [DM_04].<br>- Chỉ lọc trong phạm vi nhóm Phiếu đăng ký, không trả về hồ sơ Yêu cầu cung cấp thông tin/Yêu cầu cung cấp bản sao. |
-| Loại hình giao dịch | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại hình giao dịch [DM_01].<br>- Khi chọn "Biện pháp bảo đảm", hệ thống cập nhật danh sách Loại biện pháp/Hợp đồng theo Danh mục Loại biện pháp bảo đảm [DM_02].<br>- Khi chọn "Hợp đồng", hệ thống cập nhật danh sách Loại biện pháp/Hợp đồng theo Danh mục Loại hợp đồng [DM_03].<br>- Khi chọn "Thông báo xử lý tài sản", hệ thống lọc các hồ sơ thông báo xử lý tài sản trong [DM_04]. |
+| Loại hình giao dịch | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại hình giao dịch [DM_01].<br>- Khi chọn "Biện pháp bảo đảm", hệ thống cập nhật danh sách Loại biện pháp/Hợp đồng theo Danh mục Loại biện pháp bảo đảm [DM_02].<br>- Khi chọn "Hợp đồng", hệ thống cập nhật danh sách Loại biện pháp/Hợp đồng theo Danh mục Loại hợp đồng [DM_03]. |
 | Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02] hoặc [DM_03] theo Loại hình giao dịch đã chọn.<br>- Nếu chưa chọn Loại hình giao dịch, chỉ hiển thị "Tất cả". |
 | Loại tài sản | Enum(String(255)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại tài sản bảo đảm [DM_07].<br>- Nếu chọn một loại tài sản cụ thể, hệ thống hiển thị thêm **Khối lọc động theo Loại tài sản** và các cột động tương ứng trên Bảng danh sách. |
 | **Khối lọc động theo Loại tài sản** | - | Không | Ẩn | - Không hiển thị tiêu đề khối; các trường lọc động hiển thị ngay dưới các trường lọc chung.<br>- Chỉ hiển thị khi Cán bộ chọn một giá trị cụ thể tại trường `Loại tài sản`. Các trường trong khối lọc động tương ứng với cấu trúc thông tin tài sản tại [Màn hình Nhập liệu Đăng ký mới BPBĐ - Đăng ký mới Biện pháp bảo đảm, Hợp đồng (Website Khách hàng)](../../01_Website_Khach_hang/Dang_ky_moi_BPBD.md#4112-uc024mh01---man-hinh-nhap-lieu-dang-ky-moi-bpbd), giống khối lọc tại [Tab Phiếu đăng ký - Quản lý yêu cầu đã đăng ký - Phiếu đăng ký (Website Khách hàng)](../../01_Website_Khach_hang/SRS_Qly_yeu_cau_da_dky_Phieu%20dang%20ky.md#41122-tab-phieu-dang-ky). |
@@ -152,7 +152,7 @@
 | Mã PIN | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi. |
 | Nguồn tiếp nhận | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi. |
 | Mã khách hàng | - | - | - | Control UI: Label, chỉ đọc. Hiển thị theo dữ liệu bản ghi. |
-| **VIII. Tài liệu đính kèm** | - | - | - | |
+| **VIII. Tài liệu đính kèm** | - | - | - | - Chỉ hiển thị khi `Nguồn tiếp nhận` của hồ sơ là "Dịch vụ công" hoặc "Trực tiếp".<br>- Không hiển thị khối này khi `Nguồn tiếp nhận` là "Trực tuyến". |
 | Tài liệu đính kèm của Khách hàng | - | - | - | Control UI: Danh sách tệp đính kèm kèm link "Xem file", chỉ đọc. Hiển thị theo dữ liệu bản ghi.<br>- Hiển thị danh sách tệp đính kèm do Khách hàng đã gửi cùng hồ sơ. |
 
 ##### 4.3.2.3.3.3. Chức năng trên màn hình

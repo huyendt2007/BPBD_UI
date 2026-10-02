@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -595,7 +595,7 @@
             <!-- Thông tin Người đăng ký -->
             <div class="card-section highlight-card">
                 <h3 class="section-title" style="color: var(--primary-color); border-bottom-color: rgba(30, 58, 138, 0.15); margin-bottom: 15px;">
-                    <i class="fa-solid fa-address-card"></i> I. Thông Tin Người Đăng Ký
+                    <i class="fa-solid fa-address-card"></i> Thông tin Người đăng ký
                 </h3>
                 <div class="review-grid-2">
                     <div class="review-item">
@@ -717,36 +717,12 @@
                 </div>
             </div>
 
-            <!-- III. Tài sản bảo đảm -->
+            <!-- Tài sản bảo đảm -->
             <div class="card-section">
-                <h3 class="section-title"><i class="fa-solid fa-car-rear"></i> III. Tài sản bảo đảm</h3>
+                <h3 class="section-title"><i class="fa-solid fa-car-rear"></i> Tài sản bảo đảm</h3>
                 
-                <div class="form-group">
-                    <label class="form-label" style="color: var(--text-muted);">Mô tả tài sản đảm bảo</label>
-                    <div style="background-color: #F8FAFC; padding: 12px; border-radius: 4px; border: 1px solid #E2E8F0; font-size: 13.5px;" id="lblAssetCommonDesc">
-                        Các phương tiện giao thông cơ giới đường bộ và động sản khác thuộc quyền sở hữu của bên bảo đảm.
-                    </div>
-                </div>
-
-                <div style="margin-top: 20px;">
-                    <label class="form-label" style="color: var(--text-muted); display: block; margin-bottom: 8px;">Bảng Danh sách tài sản bảo đảm (Hiển thị các thông tin chi tiết chỉ đọc)</label>
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th style="width: 50px; text-align: center;">STT</th>
-                                    <th style="width: 300px;">TÊN PHƯƠNG TIỆN / TÊN TÀI SẢN</th>
-                                    <th style="width: 350px;">NHÃN HIỆU, MÀU SƠN / MÔ TẢ CHI TIẾT</th>
-                                    <th style="width: 220px;">SỐ KHUNG / SỐ ĐINH DANH</th>
-                                    <th>SỐ MÁY / BIỂN SỐ</th>
-                                </tr>
-                            </thead>
-                            <tbody id="assetsTableBody">
-                                <!-- Loaded dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <!-- Hiển thị theo từng Loại tài sản: mỗi loại một khung, tiêu đề là tên Loại tài sản, các trường đúng theo loại -->
+                <div id="assetTypeBlocks"></div>
             </div>
 
             <!-- Footer Actions -->
@@ -865,16 +841,54 @@
             }
         };
 
-        // 7 Mock assets representing different categories
+        // Tài sản bảo đảm của hồ sơ gốc: giả lập đủ 7 Loại tài sản, dữ liệu đúng tính chất từng loại
         const mockAssets = [
-            { id: 1, name: 'Xe ô tô con Toyota Vios', desc: 'Toyota Vios, Màu đen', frame: 'TYT-VIOS-88992', machine: 'ENG-4A-FE-990 / 30H-123.45' },
-            { id: 2, name: 'Tàu cá vỏ gỗ Hải Nam', desc: 'Chủ sở hữu: Công ty TNHH Hải Nam - Cấp IV', frame: 'ĐK-99882-HP', machine: '--- / ---' },
-            { id: 3, name: 'Quyền đòi nợ phát sinh từ Hợp đồng mua bán số 12/2026/HĐMB', desc: 'Căn cứ phát sinh: Hợp đồng số 12/2026/HĐMB ký giữa Công ty A và Công ty B', frame: '---', machine: '---' },
-            { id: 4, name: 'Vườn cây cao su 5 năm tuổi', desc: 'Khu đất canh tác tại xã Ea Kly, huyện Krông Pắc, Đắk Lắk', frame: '---', machine: '---' },
-            { id: 5, name: 'Kho hạt cà phê lưu kho', desc: 'Địa chỉ kho: Số 45 Cảng Cát Lái, Quận 2, TP.HCM - Số hiệu kho: KH-CF-02', frame: '---', machine: '---' },
-            { id: 6, name: '100.000 cổ phiếu của Công ty Cổ phần Thủy sản Miền Nam', desc: 'Thời điểm đăng ký: 09 giờ 30 phút ngày 15/04/2026', frame: '---', machine: '---' },
-            { id: 7, name: 'Dây chuyền máy móc dệt may chuyên dụng', desc: 'Nhập khẩu nguyên chiếc từ Nhật Bản, Model 2025-TXT', frame: '---', machine: '---' }
+            { kind: 'chassis', typeName: 'Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+              items: [{ name: 'Xe ô tô con 5 chỗ', brandColor: 'Toyota Vios 1.5G, màu đen', frameNo: 'RLKBF3F1XMN012345', engineNo: '2NR-A123456', plateNo: '30H-123.45' }] },
+            { kind: 'vehicle', typeName: 'Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt, đường thủy, đường sắt',
+              items: [{ name: 'Tàu cá vỏ gỗ', brand: 'Máy chính Yanmar 6HA2M-WDT, công suất 150CV', owner: 'Công ty TNHH Hải Nam', regNo: 'HP-99882-TS', issuer: 'Chi cục Thủy sản thành phố Hải Phòng', level: 'Tàu cá nhóm II (chiều dài từ 12 m đến dưới 15 m)' }] },
+            { kind: 'right', typeName: 'Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản',
+              items: [{ name: 'Quyền đòi nợ trị giá 1.500.000.000 VNĐ', basis: 'Phát sinh từ Hợp đồng mua bán hàng hóa số 12/2026/HĐMB ký giữa Công ty TNHH Hải Nam và Công ty CP Thương mại Minh Long' }] },
+            { kind: 'annual', typeName: 'Cây hằng năm, công trình tạm',
+              items: [{ desc: 'Cây lúa vụ Đông Xuân 2026 trên diện tích 10 ha tại xã Vĩnh Hòa, tỉnh An Giang' }] },
+            { kind: 'goods', typeName: 'Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ',
+              items: [{ goodsKind: 'Kho hàng', value: 'Cà phê nhân Robusta xuất khẩu, khối lượng 200 tấn, trị giá 18.000.000.000 VNĐ', address: 'Kho số 5, Cảng Cát Lái, phường Cát Lái, Thành phố Hồ Chí Minh', sign: 'KH-CF-05' }] },
+            { kind: 'securities', typeName: 'Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung',
+              items: [{ hour: '09', minute: '30', day: '15', month: '04', year: '2026' }] },
+            { kind: 'other', typeName: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ, CHỨNG KHOÁN KHÔNG ĐĂNG KÝ TẬP TRUNG...)',
+              items: [{ desc: 'Dây chuyền máy dệt kim tròn Pailung (10 máy), sản xuất năm 2024, đặt tại nhà xưởng của Công ty TNHH Hải Nam, KCN Tràng Duệ, Hải Phòng' }] }
         ];
+
+        // Khung hiển thị 01 Loại tài sản (tiêu đề = tên Loại tài sản)
+        function renderAssetTypeBlock(group) {
+            const th = 'style="background:#F1F5F9;color:#334155;font-size:12px;"';
+            const box = 'style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;padding:10px 14px;font-size:13.5px;line-height:1.6;"';
+            const sub = t => `<div style="font-weight:700;color:var(--primary-color);margin-bottom:8px;">${t}</div>`;
+            let body = '';
+            if (group.kind === 'chassis') {
+                body = sub('Số khung') + `<div class="table-responsive"><table class="table"><thead><tr><th style="background:#F1F5F9;color:#334155;font-size:12px;width:50px;text-align:center;">STT</th><th ${th}>TÊN PHƯƠNG TIỆN</th><th ${th}>NHÃN HIỆU, MÀU SƠN</th><th ${th}>SỐ KHUNG</th><th ${th}>SỐ MÁY</th><th ${th}>BIỂN SỐ</th></tr></thead><tbody>`
+                    + group.items.map((a, i) => `<tr><td style="text-align:center;">${i + 1}</td><td>${a.name}</td><td>${a.brandColor}</td><td><span style="font-family:monospace;">${a.frameNo}</span></td><td><span style="font-family:monospace;">${a.engineNo}</span></td><td><span style="font-family:monospace;">${a.plateNo}</span></td></tr>`).join('')
+                    + '</tbody></table></div>';
+            } else if (group.kind === 'vehicle') {
+                body = sub('Phương tiện') + `<div class="table-responsive"><table class="table"><thead><tr><th style="background:#F1F5F9;color:#334155;font-size:12px;width:50px;text-align:center;">STT</th><th ${th}>TÊN PHƯƠNG TIỆN, NHÃN HIỆU</th><th ${th}>TÊN/HỌ TÊN CHỦ PHƯƠNG TIỆN/CHỦ SỞ HỮU</th><th ${th}>SỐ ĐĂNG KÝ</th><th ${th}>CƠ QUAN CẤP GIẤY CHỨNG NHẬN</th><th ${th}>CẤP PHƯƠNG TIỆN</th></tr></thead><tbody>`
+                    + group.items.map((a, i) => `<tr><td style="text-align:center;">${i + 1}</td><td>${a.name}<br><span style="color:var(--text-muted);">${a.brand}</span></td><td>${a.owner}</td><td>${a.regNo}</td><td>${a.issuer}</td><td>${a.level}</td></tr>`).join('')
+                    + '</tbody></table></div>';
+            } else if (group.kind === 'right') {
+                body = group.items.map(a => `<div ${box}><b>${a.name}</b><br>${a.basis}</div>`).join('<div style="height:8px;"></div>');
+            } else if (group.kind === 'goods') {
+                body = group.items.map(a => `<div ${box}><div><span style="color:var(--text-muted);">Hàng hóa luân chuyển / Kho hàng:</span> <b>${a.goodsKind}</b></div><div><span style="color:var(--text-muted);">Giá trị hàng hóa/Tên, loại hàng hóa:</span> ${a.value}</div>${a.goodsKind === 'Kho hàng' ? `<div><span style="color:var(--text-muted);">Địa chỉ kho hàng:</span> ${a.address}</div><div><span style="color:var(--text-muted);">Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng:</span> ${a.sign}</div>` : ''}</div>`).join('<div style="height:8px;"></div>');
+            } else if (group.kind === 'securities') {
+                body = sub('Thời điểm đăng ký biện pháp bảo đảm bằng chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam') + `<div class="table-responsive"><table class="table"><thead><tr><th ${th}>GIỜ</th><th ${th}>PHÚT</th><th ${th}>NGÀY</th><th ${th}>THÁNG</th><th ${th}>NĂM</th></tr></thead><tbody>`
+                    + group.items.map(a => `<tr><td>${a.hour}</td><td>${a.minute}</td><td>${a.day}</td><td>${a.month}</td><td>${a.year}</td></tr>`).join('')
+                    + '</tbody></table></div>';
+            } else {
+                body = group.items.map(a => `<div ${box}>${a.desc}</div>`).join('<div style="height:8px;"></div>');
+            }
+            return `<div style="border:1px solid #E2E8F0;border-radius:8px;margin-bottom:14px;overflow:hidden;">
+                <div style="background:#F8FAFC;border-bottom:1px solid #E2E8F0;padding:10px 14px;font-weight:700;color:var(--primary-color);">${group.typeName}</div>
+                <div style="padding:12px 14px;">${body}</div>
+            </div>`;
+        }
 
         let loadedDossier = null;
 
@@ -1029,17 +1043,9 @@
                 </tr>
             `).join('');
 
-            // Render 7 mock assets in 5 columns format
-            const assetsTbody = document.getElementById('assetsTableBody');
-            assetsTbody.innerHTML = mockAssets.map((a, idx) => `
-                <tr>
-                    <td style="text-align: center;">${idx + 1}</td>
-                    <td><strong>${a.name}</strong></td>
-                    <td>${a.desc}</td>
-                    <td><span style="font-family: monospace;">${a.frame}</span></td>
-                    <td>${a.machine}</td>
-                </tr>
-            `).join('');
+            // Tài sản bảo đảm: hiển thị theo từng Loại tài sản
+            const assetBlocks = document.getElementById('assetTypeBlocks');
+            if (assetBlocks) assetBlocks.innerHTML = mockAssets.map(renderAssetTypeBlock).join('');
 
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }

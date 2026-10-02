@@ -60,8 +60,8 @@ let canBoDossiersData = [
                 guarantor: "Nguyễn Văn A",
                 securedParty: "Ngân hàng TMCP FPT",
                 status: "Hoàn thành",
-                transType: "Thông báo xử lý tài sản bảo đảm",
-                measureContractType: "",
+                transType: "Biện pháp bảo đảm",
+                measureContractType: "Thế chấp",
                 secAssets: "Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt",
                 handlingOfficer: "Nguyễn Văn Cán Bộ",
                 receiptNo: "BL-992100"
@@ -142,8 +142,8 @@ let canBoDossiersData = [
                 guarantor: "Công ty TNHH Hải Nam",
                 securedParty: "Ngân hàng TMCP FPT",
                 status: "Hoàn thành",
-                transType: "Thông báo xử lý tài sản bảo đảm",
-                measureContractType: "",
+                transType: "Hợp đồng",
+                measureContractType: "Hợp đồng cho thuê tài chính",
                 secAssets: "Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)\nTài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt",
                 handlingOfficer: "Lê Anh Tuấn",
                 receiptNo: "BL-983050",
@@ -158,8 +158,8 @@ let canBoDossiersData = [
                         guarantor: "Công ty TNHH Hải Nam",
                         securedParty: "Ngân hàng TMCP FPT",
                         status: "Hoàn thành",
-                        transType: "Thông báo xử lý tài sản bảo đảm",
-                        measureContractType: "",
+                        transType: "Hợp đồng",
+                        measureContractType: "Hợp đồng cho thuê tài chính",
                         secAssets: "Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)\nTài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt",
                         handlingOfficer: "Lê Anh Tuấn"
                     },
@@ -172,8 +172,8 @@ let canBoDossiersData = [
                         guarantor: "Công ty TNHH Hải Nam",
                         securedParty: "Ngân hàng TMCP FPT",
                         status: "Chờ duyệt",
-                        transType: "Thông báo xử lý tài sản bảo đảm",
-                        measureContractType: "",
+                        transType: "Hợp đồng",
+                        measureContractType: "Hợp đồng cho thuê tài chính",
                         secAssets: "Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)\nTài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt",
                         handlingOfficer: "Lê Anh Tuấn"
                     }

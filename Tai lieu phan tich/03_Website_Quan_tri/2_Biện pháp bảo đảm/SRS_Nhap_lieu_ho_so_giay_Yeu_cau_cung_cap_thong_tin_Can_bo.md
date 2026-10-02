@@ -6,7 +6,7 @@
 
 \- Chức năng gồm 03 màn hình: Danh sách hồ sơ chờ nhập liệu, Xem chi tiết hồ sơ chờ nhập liệu và Nhập liệu hồ sơ giấy Yêu cầu cung cấp thông tin.
 
-\- Danh sách hồ sơ chờ nhập liệu tại chức năng này chỉ hiển thị hồ sơ giấy có Loại yêu cầu là "Yêu cầu cung cấp thông tin". Hồ sơ giấy của các nhóm nghiệp vụ khác được mô tả tại [Tab Hồ sơ chờ nhập liệu - Kiểm tra và xử lý hồ sơ - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Kiem_tra_va_xu_ly_ho_so_Can_bo.md).
+\- Danh sách hồ sơ chờ nhập liệu tại chức năng này chỉ hiển thị hồ sơ giấy có Loại đăng ký là "Yêu cầu cung cấp thông tin". Hồ sơ giấy của các nhóm nghiệp vụ khác được mô tả tại [Tab Hồ sơ chờ nhập liệu - Kiểm tra và xử lý hồ sơ - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Kiem_tra_va_xu_ly_ho_so_Can_bo.md).
 
 \- Chức năng này áp dụng cho thủ tục "Yêu cầu cung cấp thông tin về biện pháp bảo đảm" theo quy định tại Nghị định số 99/2022/NĐ-CP (Phiếu yêu cầu theo Mẫu số 09d; Văn bản cung cấp thông tin về biện pháp bảo đảm theo Mẫu số 13).
 
@@ -21,7 +21,7 @@
 
 \- NSD đã đăng nhập Website quản trị và có quyền nhập liệu hồ sơ giấy Yêu cầu cung cấp thông tin.
 
-\- Hồ sơ có Nguồn tiếp nhận là "Cán bộ nhập liệu" và Loại yêu cầu là "Yêu cầu cung cấp thông tin".
+\- Hồ sơ có Nguồn tiếp nhận là "Cán bộ nhập liệu" và Loại đăng ký là "Yêu cầu cung cấp thông tin".
 
 \- Hồ sơ đang ở trạng thái "Chờ giải quyết".
 
@@ -50,7 +50,7 @@
 | Đến ngày tiếp nhận | Date | Không | Ngày hiện tại | - Control UI: Datepicker.<br>- Lọc theo Thời điểm tiếp nhận.<br>- Định dạng hiển thị: dd/mm/yyyy.<br>- Tuân thủ [BR-VAL-007]. |
 | Tìm kiếm | - | Không | - | - Control UI: Button.<br>- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
 | Xóa bộ lọc | - | Không | - | - Control UI: Button.<br>- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
-| **II. Bảng danh sách hồ sơ chờ nhập liệu** | - | Có | 20 bản ghi/trang | - Control UI: Bảng dữ liệu (Grid) kèm phân trang.<br>- Chỉ hiển thị hồ sơ giấy có Loại yêu cầu là "Yêu cầu cung cấp thông tin", trạng thái "Chờ giải quyết" và Trạng thái lệ phí là "Đã thu" hoặc "Miễn phí" theo [BR-UCPS-001].<br>- Chỉ hiển thị hồ sơ trong phạm vi đơn vị của Cán bộ đăng nhập.<br>- Sắp xếp mặc định theo Ngày tiếp nhận giảm dần.<br>- Phân trang 20 bản ghi/trang.<br>- Trạng thái không có dữ liệu: hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo [MSG-INF-SYS-001]. |
+| **II. Bảng danh sách hồ sơ chờ nhập liệu** | - | Có | 20 bản ghi/trang | - Control UI: Bảng dữ liệu (Grid) kèm phân trang.<br>- Chỉ hiển thị hồ sơ giấy có Loại đăng ký là "Yêu cầu cung cấp thông tin", trạng thái "Chờ giải quyết" và Trạng thái lệ phí là "Đã thu" hoặc "Miễn phí" theo [BR-UCPS-001].<br>- Chỉ hiển thị hồ sơ trong phạm vi đơn vị của Cán bộ đăng nhập.<br>- Sắp xếp mặc định theo Ngày tiếp nhận giảm dần.<br>- Phân trang 20 bản ghi/trang.<br>- Trạng thái không có dữ liệu: hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo [MSG-INF-SYS-001]. |
 | STT | Integer(10) | Có | Theo trang | Số thứ tự dòng trên trang kết quả. |
 | Mã hồ sơ | String(50) | Có | Theo hồ sơ | Chỉ đọc. |
 | Số đơn giấy | String(50) | Có | Theo hồ sơ tiếp nhận | Chỉ đọc. |
@@ -113,11 +113,10 @@
 | Phương thức nhận kết quả | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi.<br>Gồm:<br>+ Trực tiếp tại bộ phận một cửa<br>+ Qua dịch vụ bưu chính<br>+ Cách thức điện tử |
 | Địa chỉ nhận kết quả | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi.<br>- Chỉ hiển thị khi `Phương thức nhận kết quả` = "Qua dịch vụ bưu chính". |
 | Email nhận kết quả | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi.<br>- Chỉ hiển thị khi `Phương thức nhận kết quả` = "Cách thức điện tử". |
-| **Khối Thông tin loại yêu cầu và lệ phí** | - | - | - | |
-| Loại yêu cầu | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
-| Tên khoản phí | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
+| **Khối Thông tin loại đăng ký và lệ phí** | - | - | - | |
+| Loại đăng ký | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Mã khoản phải thu | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
-| Số tiền phải thu | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
+| Số tiền phải thu | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. Chỉ hiển thị số tiền kèm đơn vị VNĐ, không hiển thị mã biểu phí và tên khoản phí. |
 | Số tiền đã thu | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Hình thức thu phí | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Số biên lai/chứng từ | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |

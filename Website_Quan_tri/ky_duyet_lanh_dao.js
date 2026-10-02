@@ -1,7 +1,7 @@
 /**
  * Màn hình Ký duyệt hồ sơ của Lãnh đạo (Website Quản trị - Module Biện pháp bảo đảm)
  * Dựng theo tài liệu SRS:
- *  - Ký duyệt Phiếu đăng ký (MH01 Danh sách, MH03 Popup Duyệt, MH04 Popup Từ chối, MH05 Popup Trả lại; MH02 mở màn Xem chi tiết Phiếu đăng ký)
+ *  - Ký duyệt Phiếu đăng ký (MH01 Danh sách, MH03 Popup Ký số, MH04 Popup Từ chối, MH05 Popup Trả lại; MH02 mở màn Xem chi tiết Phiếu đăng ký)
  *  - Ký duyệt yêu cầu cung cấp thông tin (MH01 - MH05)
  *  - Ký duyệt yêu cầu cung cấp bản sao văn bản chứng nhận (MH01 - MH05)
  * Nạp sau ky_duyet_ho_so.js, ghi đè renderFilterPanel / renderTable / initViewMode của màn Lãnh đạo.
@@ -186,7 +186,7 @@
         const ok = signState.certStatus === 'Chứng thư số hợp lệ';
         const cert = signState.certs[signState.certIdx];
         return `
-            <h4 class="section-title" style="font-size:15px;margin-top:16px">II. Thông tin ký số</h4>
+            <h4 class="section-title" style="font-size:15px;margin-top:16px">Thông tin ký số</h4>
             <div class="form-group">
                 <label class="form-label">Hình thức ký số <span class="required-mark">*</span></label>
                 <div style="display:flex;gap:18px;flex-wrap:wrap">${SIGN_METHODS.map(m => `<label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer"><input type="radio" name="ldSignMethod" value="${m}" ${m === signState.method ? 'checked' : ''} onchange="LeaderSign.changeMethod(this.value)"> ${m}</label>`).join('')}</div>
@@ -432,7 +432,7 @@
                 <div class="form-group"><label class="form-label">Tên bên nhận bảo đảm</label><input type="text" class="form-control" id="ld-pdk-bnbd" placeholder="Nhập tên bên nhận bảo đảm..." autocomplete="off"></div>
                 <div class="form-group"><label class="form-label">Nguồn tiếp nhận</label><select class="form-select" id="ld-pdk-source"><option value="">Tất cả</option><option>Dịch vụ công</option><option>Trực tuyến</option><option>Trực tiếp</option></select></div>
                 <div class="form-group"><label class="form-label">Loại đăng ký</label><select class="form-select" id="ld-pdk-type"><option value="">Tất cả</option>${PDK_TYPES.map(o => `<option value="${o[0]}">${o[1]}</option>`).join('')}</select></div>
-                <div class="form-group"><label class="form-label">Loại hình giao dịch</label><select class="form-select" id="cb-loaihinh" onchange="LeaderUI.pdkTxnChange()"><option value="">Tất cả</option><option>Biện pháp bảo đảm</option><option>Hợp đồng</option><option>Thông báo xử lý tài sản</option></select></div>
+                <div class="form-group"><label class="form-label">Loại hình giao dịch</label><select class="form-select" id="cb-loaihinh" onchange="LeaderUI.pdkTxnChange()"><option value="">Tất cả</option><option>Biện pháp bảo đảm</option><option>Hợp đồng</option></select></div>
                 <div class="form-group"><label class="form-label">Loại biện pháp / Hợp đồng</label><select class="form-select" id="cb-loaibienphap"><option value="">Tất cả</option></select></div>
                 <div class="form-group"><label class="form-label">Số biên lai</label><input type="text" class="form-control" id="ld-pdk-bienlai" placeholder="Nhập số biên lai..." autocomplete="off"></div>
                 <div class="form-group"><label class="form-label">Cán bộ xử lý</label><select class="form-select" id="ld-pdk-officer">${officerOptions()}</select></div>
@@ -488,8 +488,7 @@
             if (val('ld-pdk-source') && pdkSource(p) !== val('ld-pdk-source')) return false;
             if (val('ld-pdk-officer') && (p.handlingOfficer || '') !== val('ld-pdk-officer')) return false;
             if (val('ld-pdk-type') && p.type !== val('ld-pdk-type')) return false;
-            if (txn === 'Thông báo xử lý tài sản') { if (!(p.type || '').includes('xử lý tài sản')) return false; }
-            else if (txn && ((p.type || '').includes('xử lý tài sản') || p.transactionType !== txn)) return false;
+            if (txn && p.transactionType !== txn) return false;
             if (val('cb-loaibienphap') && p.subtype !== val('cb-loaibienphap')) return false;
             if (val('filter-loaitaisan') && !assetKeys(p.assetType).includes(val('filter-loaitaisan'))) return false;
             if (dyn.length) { const d = assetDetail(p); if (!dyn.every(f => String(d[f.id] || '').toLowerCase().includes(f.value))) return false; }
@@ -507,7 +506,7 @@
 
     function renderPdkTable() {
         setListChrome('Danh sách Phiếu đăng ký chờ ký', `
-            <button class="btn btn-success" onclick="LeaderUI.pdkApproveBatch()"><i class="fa-solid fa-file-signature"></i> Duyệt</button>
+            <button class="btn btn-success" onclick="LeaderUI.pdkApproveBatch()"><i class="fa-solid fa-file-signature"></i> Ký số</button>
             <button class="btn btn-danger" onclick="LeaderUI.pdkRejectBatch()"><i class="fa-solid fa-ban"></i> Từ chối</button>`);
         const dyn = dynamicColumns();
         const s = LD.pdkSort;
@@ -541,13 +540,13 @@
                 <td><span class="action-link" onclick="event.stopPropagation(); LeaderUI.pdkDetail('${p.id}')">${esc(pdkRegNo(p))}</span></td>
                 <td><code>${['Đăng ký mới', 'Đăng ký lần đầu'].includes(p.type) ? esc(p.pin || '-') : '-'}</code></td>
                 <td><b>${esc(p.customer)}</b></td><td>${esc(p.mortgagee)}</td><td>${esc(typeLabel(p.type))}</td>
-                <td>${esc((p.type || '').includes('xử lý tài sản') ? 'Thông báo xử lý tài sản' : p.transactionType)}</td><td>${esc(p.subtype || '-')}</td><td>${assets}</td>
+                <td>${esc(p.transactionType || '-')}</td><td>${esc(p.subtype || '-')}</td><td>${assets}</td>
                 ${dyn.map(c => `<td style="background:#F8FBFF">${esc(d[c.id] || '-')}</td>`).join('')}
                 <td><code>${esc(p.customerId || '-')}</code></td><td><code>${esc(p.receipt || '-')}</code></td>
                 <td><span class="badge ${badgeClassOf(p.status)}">${esc(p.status)}</span></td>
                 <td>${esc(p.requestor || p.customer)}</td><td>${pdkSource(p)}</td><td>${esc(p.handlingOfficer || '-')}</td>
                 <td style="text-align:center;white-space:nowrap" onclick="event.stopPropagation()">
-                    ${rowAction('sign', 'Duyệt', 'fa-solid fa-file-signature', `LeaderUI.pdkApprove(['${p.id}'])`, true)}
+                    ${rowAction('sign', 'Ký số', 'fa-solid fa-file-signature', `LeaderUI.pdkApprove(['${p.id}'])`, true)}
                     ${rowAction('reject', 'Từ chối', 'fa-solid fa-ban', `LeaderUI.pdkReject(['${p.id}'])`, true)}
                     ${rowAction('edit', 'Trả lại', 'fa-solid fa-reply', `LeaderUI.pdkReturn('${p.id}')`, isDirect)}
                 </td></tr>`;
@@ -560,7 +559,7 @@
     // Kiểm tra các hồ sơ còn ở trạng thái Chờ ký
     function pdkValid(ids) { return ids.map(pdkById).filter(Boolean).every(p => p.status === 'Chờ ký'); }
 
-    // MH03 - Popup Duyệt Phiếu đăng ký
+    // MH03 - Popup Ký số Phiếu đăng ký
     function pdkApprove(ids) {
         if (!ids.length) { toast(MSG.DK_008, 'error'); return; }
         if (!pdkValid(ids)) { toast(MSG.DK_005, 'error'); return; }
@@ -570,14 +569,14 @@
         const single = recs.length === 1;
         const p = recs[0];
         const info = single ? `
-            <h4 class="section-title" style="font-size:15px;margin-top:0">I. Thông tin hồ sơ ký số</h4>
+            <h4 class="section-title" style="font-size:15px;margin-top:0">Thông tin hồ sơ ký số</h4>
             <div class="info-grid">${kvHtml('Số đăng ký', `<b>${esc(pdkRegNo(p))}</b>`)}${kvHtml('Loại đăng ký', esc(typeLabel(p.type)))}${kvHtml('Người yêu cầu', esc(p.requestor || p.customer))}${kvHtml('Loại file chờ ký', pdkFileKind(p))}${kvHtml('File PDF chờ ký', fileLink(pdkFileName(p)))}</div>`
-            : `<h4 class="section-title" style="font-size:15px;margin-top:0">I. Danh sách hồ sơ ký số</h4>
+            : `<h4 class="section-title" style="font-size:15px;margin-top:0">Danh sách hồ sơ ký số</h4>
             <div style="margin-bottom:6px">Tổng số hồ sơ: <b>${recs.length}</b></div>
             <div style="overflow-x:auto"><table class="table" style="width:100%"><thead><tr><th>STT</th><th>Số đăng ký</th><th>Loại đăng ký</th><th>Người yêu cầu</th><th>Loại file chờ ký</th><th>File PDF chờ ký</th><th>Trạng thái ký số</th></tr></thead>
             <tbody>${recs.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(pdkRegNo(r))}</td><td>${esc(typeLabel(r.type))}</td><td>${esc(r.requestor || r.customer)}</td><td>${pdkFileKind(r)}</td><td>${fileLink(pdkFileName(r))}</td><td data-sign-status="${esc(r.id)}"><span class="badge badge-muted">Chưa ký</span></td></tr>`).join('')}</tbody></table></div>`;
         const box = openModal(`
-            <div class="modal-header"><span><i class="fa-solid fa-file-signature"></i> Duyệt Phiếu đăng ký</span><span style="cursor:pointer;font-size:20px" onclick="LeaderUI.cancelPopup()">&times;</span></div>
+            <div class="modal-header"><span><i class="fa-solid fa-file-signature"></i> Ký số Phiếu đăng ký</span><span style="cursor:pointer;font-size:20px" onclick="LeaderUI.cancelPopup()">&times;</span></div>
             ${info}
             <div id="ldSignSection">${renderSignSection()}</div>
             <div id="ldBusy" style="display:none;align-items:center;gap:8px;margin-top:12px;color:var(--primary-color)"><i class="fa-solid fa-spinner fa-spin"></i> Đang thực hiện ký số, vui lòng chờ...</div>
@@ -639,9 +638,9 @@
         const p = recs[0];
         const viewed = {};
         const info = single ? `
-            <h4 class="section-title" style="font-size:15px;margin-top:0">I. Thông tin hồ sơ từ chối</h4>
+            <h4 class="section-title" style="font-size:15px;margin-top:0">Thông tin hồ sơ từ chối</h4>
             <div class="info-grid">${kvHtml('Số đăng ký', `<b>${esc(pdkRegNo(p))}</b>`)}${kvHtml('Tên bên bảo đảm', esc(p.customer))}${kvHtml('Loại đăng ký', esc(typeLabel(p.type)))}${kvHtml('Cán bộ xử lý', esc(p.handlingOfficer || '-'))}</div>`
-            : `<h4 class="section-title" style="font-size:15px;margin-top:0">I. Danh sách hồ sơ từ chối</h4>
+            : `<h4 class="section-title" style="font-size:15px;margin-top:0">Danh sách hồ sơ từ chối</h4>
             <div style="margin-bottom:6px">Tổng số hồ sơ: <b>${recs.length}</b></div>
             <div style="overflow-x:auto"><table class="table" style="width:100%"><thead><tr><th>STT</th><th>Số đăng ký</th><th>Tên bên bảo đảm</th><th>Loại đăng ký</th><th>Cán bộ xử lý</th><th>Trạng thái ký số</th><th style="text-align:center">Thao tác</th></tr></thead>
             <tbody>${recs.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(pdkRegNo(r))}</td><td>${esc(r.customer)}</td><td>${esc(typeLabel(r.type))}</td><td>${esc(r.handlingOfficer || '-')}</td><td data-sign-status="${esc(r.id)}"><span class="badge badge-muted">Chưa ký</span></td>
@@ -796,7 +795,7 @@
         return `<details class="cctt-general-info" style="border:1px solid var(--border-color);border-radius:8px;margin-bottom:14px">
             <style>details.cctt-general-info[open] .cgi-collapsed-only{display:none}details.cctt-general-info .cgi-chevron{transition:transform .2s}details.cctt-general-info[open] .cgi-chevron{transform:rotate(90deg)}</style>
             <summary style="cursor:pointer;padding:10px 14px;font-weight:700;color:var(--primary-color);display:flex;align-items:center;gap:10px;list-style:none">
-                <i class="fa-solid fa-chevron-right cgi-chevron" style="font-size:12px"></i> I. Thông tin chung
+                <i class="fa-solid fa-chevron-right cgi-chevron" style="font-size:12px"></i> Thông tin chung
                 <span class="cgi-collapsed-only" style="font-weight:500;color:var(--text-muted)">${esc(r.id)}</span>
                 <span class="cgi-collapsed-only badge ${badgeClassOf(r.status)}" style="margin-left:auto">${esc(r.status)}</span></summary>
             <div class="info-grid" style="padding:4px 14px 12px">${fields.map(([l, v]) => kvHtml(l, v)).join('')}</div></details>`;
@@ -807,7 +806,7 @@
         if (!list.length) return '';
         const isReturned = r.status === 'Bị trả lại';
         return `<details class="block-return-info" ${isReturned ? 'open' : ''} style="border:1px solid #FCA5A5;border-left:4px solid #DC2626;border-radius:8px;margin:12px 0;background:#fff">
-            <summary style="cursor:pointer;padding:10px 14px;font-weight:700;color:#B91C1C;background:#FEF2F2;list-style:none;display:flex;align-items:center;gap:8px"><i class="fa-solid fa-rotate-left"></i> II. Thông tin trả lại <span class="badge badge-danger" style="margin-left:6px">${list.length} lần</span></summary>
+            <summary style="cursor:pointer;padding:10px 14px;font-weight:700;color:#B91C1C;background:#FEF2F2;list-style:none;display:flex;align-items:center;gap:8px"><i class="fa-solid fa-rotate-left"></i> Thông tin trả lại <span class="badge badge-danger" style="margin-left:6px">${list.length} lần</span></summary>
             ${list.map((h, i) => `<div class="info-grid" style="padding:10px 14px;${i ? 'border-top:1px dashed #FCA5A5' : ''}">
                 ${kvHtml('Lý do trả lại', `<span style="color:#B91C1C;font-weight:700">${esc(h.reason)}</span>`)}${kvHtml('Lãnh đạo trả lại', esc(h.by))}${kvHtml('Thời điểm trả lại', esc(h.at))}${h.resubmittedAt ? kvHtml('Thời điểm trình ký lại', esc(h.resubmittedAt)) : ''}
             </div>`).join('')}</details>`;
@@ -847,12 +846,12 @@
                 <div class="section-title"><span><i class="fa-solid fa-circle-info"></i> Xem chi tiết hồ sơ yêu cầu cung cấp thông tin: ${esc(r.id)}</span></div>
                 ${generalInfo(r)}
                 ${returnHistoryBlock(r)}
-                <h3 class="section-title" style="font-size:15px">IV. Khối tra cứu</h3>
+                <h3 class="section-title" style="font-size:15px">Khối tra cứu</h3>
                 <div class="form-group"><label class="form-label">Tiêu chí yêu cầu cung cấp thông tin</label><div style="display:inline-flex;border:1px solid var(--border-color);border-radius:6px;overflow:hidden">${segments}</div></div>
                 <div class="grid-4-cols">${inputs}</div>
-                <h3 class="section-title" style="font-size:15px;margin-top:10px">V. Kết quả tra cứu</h3>
+                <h3 class="section-title" style="font-size:15px;margin-top:10px">Kết quả tra cứu</h3>
                 <div>${window.CcttPopups ? CcttPopups.renderResult(r.lookupResult) : ''}</div>
-                <h3 class="section-title" style="font-size:15px;margin-top:10px">VI. File PDF chờ ký</h3>
+                <h3 class="section-title" style="font-size:15px;margin-top:10px">File PDF chờ ký</h3>
                 <div class="info-grid">${kvHtml('File PDF kết quả cung cấp thông tin', hasPdf(r) ? fileLink(ccttPdf(r)) : '-')}</div>
             </div>
             ${stickyBar(`<button class="btn btn-outline-secondary" onclick="LeaderUI.closeDetail()">Đóng</button>
@@ -870,9 +869,9 @@
         LD.popupKind = 'cctt';
         resetSignState();
         const single = recs.length === 1, r0 = recs[0];
-        const info = single ? `<h4 class="section-title" style="font-size:15px;margin-top:0">I. Thông tin hồ sơ ký số</h4>
+        const info = single ? `<h4 class="section-title" style="font-size:15px;margin-top:0">Thông tin hồ sơ ký số</h4>
             <div class="info-grid">${kvHtml('Mã hồ sơ', `<b>${esc(r0.id)}</b>`)}${kvHtml('Người yêu cầu', esc(r0.requester))}${kvHtml('Tiêu chí yêu cầu', esc(r0.criteria))}${kvHtml('Dữ liệu tra cứu', esc(r0.inputData))}${kvHtml('Nguồn tiếp nhận', ccttSource(r0))}${kvHtml('File PDF chờ ký', fileLink(ccttPdf(r0)))}</div>`
-            : `<h4 class="section-title" style="font-size:15px;margin-top:0">I. Danh sách hồ sơ ký số</h4><div style="margin-bottom:6px">Tổng số hồ sơ: <b>${recs.length}</b></div>
+            : `<h4 class="section-title" style="font-size:15px;margin-top:0">Danh sách hồ sơ ký số</h4><div style="margin-bottom:6px">Tổng số hồ sơ: <b>${recs.length}</b></div>
             <div style="overflow-x:auto"><table class="table" style="width:100%"><thead><tr><th>STT</th><th>Mã hồ sơ</th><th>Người yêu cầu</th><th>Tiêu chí yêu cầu</th><th>Dữ liệu tra cứu</th><th>Nguồn tiếp nhận</th><th>File PDF chờ ký</th><th>Trạng thái ký số</th></tr></thead>
             <tbody>${recs.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(r.id)}</td><td>${esc(r.requester)}</td><td>${esc(r.criteria)}</td><td>${esc(r.inputData)}</td><td>${ccttSource(r)}</td><td>${fileLink(ccttPdf(r))}</td><td data-sign-status="${esc(r.id)}"><span class="badge badge-muted">Chưa ký</span></td></tr>`).join('')}</tbody></table></div>`;
         signPopup('Ký số yêu cầu cung cấp thông tin', info, recs, {
@@ -1045,9 +1044,9 @@
         LD.popupKind = 'copy';
         resetSignState();
         const single = recs.length === 1, r0 = recs[0];
-        const info = single ? `<h4 class="section-title" style="font-size:15px;margin-top:0">I. Thông tin hồ sơ ký số</h4>
+        const info = single ? `<h4 class="section-title" style="font-size:15px;margin-top:0">Thông tin hồ sơ ký số</h4>
             <div class="info-grid">${kvHtml('Mã hồ sơ', `<b>${esc(r0.id)}</b>`)}${kvHtml('Người yêu cầu', esc(r0.requester))}${kvHtml('Số đăng ký', esc(r0.registrationNo))}${kvHtml('Nguồn tiếp nhận', copySource(r0))}${kvHtml('File bản sao điện tử chờ ký', fileLink(copyFile(r0)))}</div>`
-            : `<h4 class="section-title" style="font-size:15px;margin-top:0">I. Danh sách hồ sơ ký số</h4><div style="margin-bottom:6px">Tổng số hồ sơ: <b>${recs.length}</b></div>
+            : `<h4 class="section-title" style="font-size:15px;margin-top:0">Danh sách hồ sơ ký số</h4><div style="margin-bottom:6px">Tổng số hồ sơ: <b>${recs.length}</b></div>
             <div style="overflow-x:auto"><table class="table" style="width:100%"><thead><tr><th>STT</th><th>Mã hồ sơ</th><th>Người yêu cầu</th><th>Số đăng ký</th><th>Nguồn tiếp nhận</th><th>File bản sao điện tử chờ ký</th><th>Trạng thái ký số</th></tr></thead>
             <tbody>${recs.map((r, i) => `<tr><td>${i + 1}</td><td>${esc(r.id)}</td><td>${esc(r.requester)}</td><td>${esc(r.registrationNo)}</td><td>${copySource(r)}</td><td>${fileLink(copyFile(r))}</td><td data-sign-status="${esc(r.id)}"><span class="badge badge-muted">Chưa ký</span></td></tr>`).join('')}</tbody></table></div>`;
         signPopup('Ký số yêu cầu cung cấp bản sao', info, recs, {

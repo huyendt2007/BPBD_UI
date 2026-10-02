@@ -6,7 +6,7 @@ Cho phép quản lý công tác tiếp nhận hồ sơ đăng ký biện pháp b
 
 \- Tra cứu, theo dõi danh sách hồ sơ giấy đã tiếp nhận theo phạm vi dữ liệu được phân quyền.
 
-\- Ghi nhận thông tin hành chính tối thiểu của hồ sơ giấy: thông tin tiếp nhận, người yêu cầu, người nộp hồ sơ, Loại yêu cầu, tham số tính phí, phương thức nhận kết quả và tài liệu đính kèm.
+\- Ghi nhận thông tin hành chính tối thiểu của hồ sơ giấy: thông tin tiếp nhận, người yêu cầu, người nộp hồ sơ, Loại đăng ký, phương thức nhận kết quả và tài liệu đính kèm.
 
 \- Hoàn tất tiếp nhận để hệ thống sinh Mã hồ sơ, mã QR/mã vạch và tạo khoản phải thu tương ứng với biểu phí đang có hiệu lực.
 
@@ -28,7 +28,7 @@ Cho phép quản lý công tác tiếp nhận hồ sơ đăng ký biện pháp b
 
 \- Người dùng đã đăng nhập Website Quản trị thành công và được phân quyền truy cập chức năng `Tiếp nhận hồ sơ giấy`.
 
-\- Hệ thống đã cấu hình biểu phí đang có hiệu lực tương ứng với Loại yêu cầu được tiếp nhận.
+\- Hệ thống đã cấu hình biểu phí đang có hiệu lực tương ứng với Loại đăng ký được tiếp nhận.
 
 ---
 
@@ -66,7 +66,7 @@ flowchart TD
 | Mã hồ sơ | String(50) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm gần đúng (không phân biệt chữ hoa, chữ thường; tự động cắt khoảng trắng thừa đầu và cuối chuỗi - Trim space) theo Mã hồ sơ. |
 | Số đơn giấy | String(50) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm gần đúng (không phân biệt chữ hoa, chữ thường; tự động cắt khoảng trắng thừa đầu và cuối chuỗi - Trim space) theo Số đơn giấy ghi trên đơn giấy khách hàng nộp. |
 | Người yêu cầu | String(255) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm gần đúng (không phân biệt chữ hoa, chữ thường; tự động cắt khoảng trắng thừa đầu và cuối chuỗi - Trim space) theo Họ tên cá nhân/Tên tổ chức yêu cầu. |
-| Loại yêu cầu | Enum(String(50)) | Không | Tất cả | Control UI: Combobox chọn một giá trị.<br>- Giá trị gồm:<br>+ Tất cả<br>+ Đăng ký lần đầu<br>+ Đăng ký thay đổi<br>+ Xóa đăng ký<br>+ Yêu cầu cung cấp bản sao<br>+ Thông báo xử lý tài sản bảo đảm |
+| Loại đăng ký | Enum(String(50)) | Không | Tất cả | Control UI: Combobox chọn một giá trị.<br>Gồm:<br>+ Tất cả<br>+ Đăng ký lần đầu<br>+ Đăng ký thay đổi<br>+ Xóa đăng ký<br>+ Thông báo xử lý tài sản đảm bảo lần đầu<br>+ Thay đổi thông báo xử lý tài sản bảo đảm<br>+ Xóa đăng ký thông báo xử lý tài sản bảo đảm<br>+ Yêu cầu cung cấp bản sao<br>+ Yêu cầu cung cấp thông tin |
 | Kênh tiếp nhận | Enum(String(50)) | Không | Tất cả | Control UI: Combobox chọn một giá trị.<br>- Giá trị gồm:<br>+ Tất cả<br>+ Trực tiếp tại quầy<br>+ Qua bưu điện<br>+ Fax<br>+ Email |
 | Trạng thái hồ sơ | Enum(String(50)) | Không | Tất cả | Control UI: Combobox chọn một giá trị.<br>- Giá trị gồm:<br>+ Tất cả<br>+ Chờ thu phí<br>+ Chờ giải quyết<br>+ Bị từ chối|
 | Từ ngày tiếp nhận | Date | Không | Trống | Control UI: Input date kèm icon lịch, định dạng `dd/mm/yyyy`.<br>- Không được lớn hơn `Đến ngày tiếp nhận`. |
@@ -77,7 +77,7 @@ flowchart TD
 | Số đơn giấy | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
 | Người yêu cầu | String(255) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Hiển thị Họ tên cá nhân/Tên tổ chức yêu cầu. |
 | Người nộp | String(255) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Hiển thị Họ tên người trực tiếp nộp hồ sơ; để trống nếu hồ sơ không ghi nhận người nộp. |
-| Loại yêu cầu | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Tham chiếu Danh mục Loại yêu cầu đăng ký biện pháp bảo đảm. |
+| Loại đăng ký | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Hiển thị loại đăng ký của hồ sơ. |
 | Thời điểm tiếp nhận | Datetime | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Hiển thị theo định dạng `dd/MM/yyyy HH:mm`.<br>- Hỗ trợ sắp xếp động (Sortable); mặc định sắp xếp theo chiều giảm dần (mới nhất hiển thị lên đầu). |
 | Phải thu (VNĐ) | Decimal(18,0) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Hiển thị số tiền phải thu có phân cách hàng nghìn, căn phải. |
 | Lệ phí | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Badge trạng thái, chỉ đọc.<br>- Giá trị gồm:<br>+ Chưa thu<br>+ Đã thu<br>+ Miễn phí |
@@ -112,7 +112,7 @@ flowchart TD
 | **Khối 01. Thông tin tiếp nhận** | - | - | - | |
 | Kênh tiếp nhận | Enum(String(50)) | Có | Trực tiếp tại quầy | Control UI: Combobox chọn một giá trị.<br>- Giá trị gồm:<br>+ Trực tiếp tại quầy<br>+ Qua bưu điện<br>+ Fax<br>+ Email |
 | Thời điểm tiếp nhận | Datetime | Có | Thời gian hệ thống | Control UI: Input datetime, chỉ đọc.<br>- Hệ thống tự ghi nhận theo thời gian đăng nhập thao tác, định dạng `dd/MM/yyyy HH:mm`. |
-| Số đơn giấy | String(50) | Có | Trống | Control UI: Input text.<br>- Kiểm tra trùng lặp: Không được trùng theo tổ hợp Số đơn giấy, Đơn vị tiếp nhận và Năm tiếp nhận. |
+| Số đơn giấy | String(50) | Không | Trống | Control UI: Input text.<br>- Không bắt buộc nhập (áp dụng trong trường hợp hồ sơ nộp bằng đơn giấy có ghi số đơn hoặc cần theo dõi số đơn giấy).<br>- Nếu có nhập: Kiểm tra trùng lặp không được trùng theo tổ hợp Số đơn giấy, Đơn vị tiếp nhận và Năm tiếp nhận. |
 | Đơn vị tiếp nhận | String(255) | Có | Đơn vị của tài khoản đăng nhập | Control UI: Input text, chỉ đọc.<br>- Lấy theo tài khoản đăng nhập, không cho chọn lại đơn vị. |
 | Cán bộ tiếp nhận | String(100) | Có | Người dùng đăng nhập | Control UI: Input text, chỉ đọc.<br>- Lấy theo tài khoản đăng nhập. |
 | Ghi chú tiếp nhận | Text(1000) | Không | Trống | Control UI: Input text.<br>- Thông tin ghi chú khác nếu có. |
@@ -134,21 +134,21 @@ flowchart TD
 | CCCD/Số định danh | String(20) | Không | Trống | Control UI: Input text.<br>- Nếu có nhập, kiểm tra độ dài và định dạng theo cấu hình hệ thống. |
 | Số điện thoại | String(20) | Không | Trống | Control UI: Input text.<br>- Nếu có nhập, kiểm tra định dạng số điện thoại hợp lệ (10-11 chữ số). |
 | Quan hệ | Enum(String(50)) | Không | Người được ủy quyền | Control UI: Combobox chọn một giá trị.<br>- Giá trị gồm:<br>+ Người được ủy quyền<br>+ Người yêu cầu<br>+ Nhân viên tổ chức<br>+ Khác |
-| **Khối 04. Loại yêu cầu và lệ phí** | - | - | - | |
-| Loại yêu cầu | Enum(String(50)) | Có | Trống | Control UI: Combobox chọn một giá trị.<br>- Dữ liệu lấy theo Danh mục dùng chung (Danh mục Loại yêu cầu đăng ký biện pháp bảo đảm). |
-| Số lượng bản sao | Integer(10) | Có điều kiện | 1 | Control UI: Input number.<br>- Chỉ hiển thị khi `Loại yêu cầu` thuộc nhóm "Yêu cầu cung cấp bản sao" hoặc "Yêu cầu cung cấp bản sao kèm thông báo".<br>- Bắt buộc nhập khi hiển thị, giá trị là số nguyên dương lớn hơn hoặc bằng 1. |
-| Đối tượng miễn phí | Enum(String(50)) | Không | Trống | Control UI: Combobox chọn một giá trị.<br>- Chỉ hiển thị khi `Loại yêu cầu` thuộc trường hợp có thể được miễn lệ phí theo cấu hình biểu phí.<br>- Giá trị gồm:<br>+ Cơ quan nhà nước theo quy định<br>+ Trường hợp miễn lệ phí theo biểu phí |
+| **Khối 04. Loại đăng ký và Lệ phí** | - | - | - | |
+| Loại đăng ký | Enum(String(50)) | Có | Trống | Control UI: Combobox chọn một giá trị.<br>Gồm:<br>+ Đăng ký lần đầu<br>+ Đăng ký thay đổi<br>+ Xóa đăng ký<br>+ Thông báo xử lý tài sản đảm bảo lần đầu<br>+ Thay đổi thông báo xử lý tài sản bảo đảm<br>+ Xóa đăng ký thông báo xử lý tài sản bảo đảm<br>+ Yêu cầu cung cấp bản sao<br>+ Yêu cầu cung cấp thông tin |
+| Loại cung cấp bản sao | Enum(String(50)) | Có điều kiện | Bản sao điện tử | Control UI: Combobox chọn một giá trị.<br>- Chỉ hiển thị khi `Loại đăng ký` = "Yêu cầu cung cấp bản sao".<br>- Bắt buộc chọn khi hiển thị.<br>Gồm:<br>+ Bản sao điện tử<br>+ Bản sao giấy |
+| Số lượng bản sao | Integer(10) | Có điều kiện | 1 | Control UI: Input number.<br>- Chỉ hiển thị khi `Loại đăng ký` = "Yêu cầu cung cấp bản sao" và `Loại cung cấp bản sao` = "Bản sao giấy". Khi `Loại cung cấp bản sao` = "Bản sao điện tử", hệ thống ẩn ô nhập này và không yêu cầu nhập số lượng.<br>- Bắt buộc nhập khi hiển thị, giá trị là số nguyên dương lớn hơn hoặc bằng 1. |
+| Đối tượng miễn phí | Boolean | Không | Không tích chọn | Control UI: Checkbox (nhãn "Miễn lệ phí").<br>- Luôn hiển thị trên màn hình.<br>- Khi tích chọn: Xác định hồ sơ thuộc đối tượng miễn phí; hệ thống tự động gán `Số tiền phải thu` thành `0 VNĐ` và `Trạng thái lệ phí` thành "Miễn phí".<br>- Khi không tích chọn: Hệ thống tính số tiền phải thu theo `Loại đăng ký` và số lượng bản sao (nếu có); `Trạng thái lệ phí` là "Chưa thu". |
 | Phương thức nhận kết quả | Enum(String(50)) | Có | Trực tiếp tại cơ quan | Control UI: Combobox chọn một giá trị.<br>- Giá trị gồm:<br>+ Trực tiếp tại cơ quan<br>+ Qua dịch vụ bưu chính<br>+ Cách thức điện tử |
 | Địa chỉ nhận kết quả | Text(1000) | Có điều kiện | Trống | Control UI: Input text.<br>- Chỉ hiển thị và bắt buộc nhập khi `Phương thức nhận kết quả` = "Qua dịch vụ bưu chính". |
 | Email nhận kết quả | String(255) | Có điều kiện | Theo Email người yêu cầu nếu có | Control UI: Input text.<br>- Chỉ hiển thị và bắt buộc nhập khi `Phương thức nhận kết quả` = "Cách thức điện tử".<br>- Kiểm tra định dạng email hợp lệ. |
-| Tên khoản phí | String(255) | - | Theo biểu phí đang có hiệu lực | Control UI: Label, chỉ đọc.<br>- Hệ thống tự xác định theo `Loại yêu cầu`. |
-| Số tiền phải thu | Decimal(18,0) | - | Theo biểu phí đang có hiệu lực | Control UI: Label, chỉ đọc.<br>- Hệ thống tự tính theo tham số tính phí và biểu phí đang có hiệu lực, hiển thị có phân cách hàng nghìn kèm đơn vị `VNĐ`.<br>- Cán bộ tiếp nhận không được nhập hoặc sửa trực tiếp. |
-| **Khối 05. Tài liệu đính kèm** | - | - | - | Control UI: GridTable.<br>- Cho phép đính kèm nhiều tệp tin, không giới hạn số lượng dòng thành phần hồ sơ.<br>- Quy định dung lượng: Tổng dung lượng tối đa cho phép của tất cả các tệp đính kèm trong hồ sơ là 50MB (dung lượng mỗi tệp đơn lẻ tối đa 20MB). Định dạng tệp tin cho phép gồm: `.pdf, .doc, .docx, .zip, .rar, .xls, .xlsx`. |
+| Số tiền phải thu | Decimal(18,0) | - | Theo biểu phí đang có hiệu lực | Control UI: Label, chỉ đọc.<br>- Khi tích chọn `Đối tượng miễn phí`: Hiển thị `0 VNĐ`.<br>- Khi không tích chọn: Hệ thống tự động tính và hiển thị số tiền tương ứng theo `Loại đăng ký` và `Loại cung cấp bản sao`: Đăng ký lần đầu: 80.000 VNĐ; Đăng ký thay đổi: 60.000 VNĐ; Xóa đăng ký: 20.000 VNĐ; Thông báo xử lý tài sản đảm bảo lần đầu: 30.000 VNĐ; Thay đổi thông báo xử lý tài sản bảo đảm: 30.000 VNĐ; Xóa đăng ký thông báo xử lý tài sản bảo đảm: 20.000 VNĐ; Yêu cầu cung cấp bản sao (Bản sao điện tử): 50.000 VNĐ (tạm tính); Yêu cầu cung cấp bản sao (Bản sao giấy): 25.000 VNĐ x số lượng bản sao; Yêu cầu cung cấp thông tin: 15.000 VNĐ. Hiển thị có phân cách hàng nghìn kèm đơn vị `VNĐ`. Không hiển thị mã biểu phí và tên khoản phí.<br>- Cán bộ tiếp nhận không được sửa trực tiếp. |
+| **Khối 05. Tài liệu đính kèm** | - | - | - | Control UI: GridTable.<br>- Mặc định bảng trống, không có tài liệu đính kèm mặc định nào. Cán bộ bấm nút "Thêm thành phần hồ sơ mới" để tự thêm các dòng thành phần hồ sơ theo thực tế.<br>- Cho phép đính kèm nhiều tệp tin, tối đa 10 tệp/hồ sơ (dung lượng mỗi tệp tối đa 20MB). Định dạng tệp tin cho phép gồm: `.pdf, .doc, .docx, .zip, .rar, .xls, .xlsx`. |
 | STT | Integer(10) | - | Theo dòng | Control UI: Label, chỉ đọc. |
-| Tên tài liệu | String(255) | Có điều kiện | Theo thành phần hồ sơ của Loại yêu cầu | Control UI: Label đối với thành phần hồ sơ theo quy định (kèm nhãn "Bắt buộc" màu đỏ nếu là tài liệu bắt buộc) / Input text đối với thành phần hồ sơ do cán bộ tự thêm.<br>- Bắt buộc nhập đối với dòng thành phần hồ sơ do cán bộ tự thêm. |
-| File đính kèm | File | Không | Trống | Control UI: Nút `Tải lên` / Nhãn tên tệp tin.<br>- Khi chưa đính kèm tệp: Hiển thị nút `Tải lên`.<br>- Khi đã đính kèm tệp: Nút `Tải lên` được thay bằng icon định dạng tệp kèm Tên tệp tin. |
-| Thao tác | - | - | - | Control UI: Nhóm liên kết thao tác trên dòng.<br>- Khi dòng chưa có tệp đính kèm: Các liên kết ở trạng thái khóa mờ (Disabled).<br>- Khi dòng đã có tệp đính kèm: Hiển thị liên kết `Xem file` và liên kết `Xóa`. |
-| Thêm thành phần hồ sơ mới | - | - | - | Control UI: Nút viền nét đứt đặt dưới bảng danh mục tài liệu.<br>- Luôn hiển thị cho phép cán bộ bổ sung thêm thành phần hồ sơ mới. |
+| Tên tài liệu | String(255) | Không | Trống | Control UI: Input text để cán bộ tự nhập tên thành phần hồ sơ. |
+| File đính kèm | File | Không | Trống | Control UI: Nút `Chọn file` / Khung hiển thị tên tệp tin (File pill).<br>- Khi chưa đính kèm tệp: Hiển thị nút `Chọn file`.<br>- Khi đã đính kèm tệp: Hiển thị icon định dạng tệp kèm Tên tệp tin. |
+| Thao tác | - | - | - | Control UI: Nhóm liên kết thao tác trên dòng.<br>- Khi đã có tệp đính kèm: Hiển thị liên kết `Xem file`, liên kết `Gỡ file` và liên kết `Xóa dòng`.<br>- Khi chưa có tệp đính kèm: Hiển thị liên kết `Xóa dòng` để gỡ bỏ dòng thành phần hồ sơ khỏi bảng. |
+| Thêm thành phần hồ sơ mới | - | - | - | Control UI: Nút viền nét đứt đặt dưới bảng danh mục tài liệu.<br>- Cho phép cán bộ tự do bấm bổ sung thêm thành phần hồ sơ mới. |
 
 ###### 4.3.2.16.4.3. Chức năng trên màn hình
 
@@ -163,7 +163,7 @@ flowchart TD
 | 7 | Thêm thành phần hồ sơ mới | Nút | Hệ thống chèn thêm một dòng trống vào bảng danh mục tài liệu gửi kèm để người dùng nhập tên tài liệu và tải lên tệp đính kèm, không giới hạn số lượng dòng. |
 | 8 | Hoàn tất tiếp nhận | Nút | **TH Bỏ trống trường bắt buộc**: Áp dụng quy tắc kiểm tra bắt buộc, hiển thị viền đỏ và thông báo cảnh báo màu đỏ *"Đây là trường bắt buộc"* ngay phía dưới ô trống, tự động đưa con trỏ focus vào ô lỗi đầu tiên và hiển thị thông báo **[MSG-ERR-VAL-001]**. |
 |  |  |  | **TH Dữ liệu không hợp lệ**: Hệ thống kiểm tra tính hợp lệ của dữ liệu:<br>+ Định dạng email: Phải có ký tự `@` và tên miền hợp lệ; nếu sai, hiển thị **[MSG-ERR-VAL-002]**.<br>+ Định dạng số điện thoại: Phải là số hợp lệ từ 10-11 chữ số; nếu sai, hiển thị **[MSG-ERR-VAL-003]**.<br>+ Số lượng bản sao: Phải là số nguyên dương lớn hơn hoặc bằng 1; nếu sai, hiển thị **[MSG-ERR-VAL-012]**.<br>- Hệ thống dừng xử lý khi dữ liệu không hợp lệ. |
-|  |  |  | **TH Không xác định được biểu phí**: Nếu hệ thống không tìm thấy biểu phí đang có hiệu lực tương ứng với Loại yêu cầu, hiển thị thông báo lỗi **[MSG-ERR-UCPS-003]** và không tạo hồ sơ. |
+|  |  |  | **TH Không xác định được biểu phí**: Nếu hệ thống không tìm thấy biểu phí đang có hiệu lực tương ứng với Loại đăng ký, hiển thị thông báo lỗi **[MSG-ERR-UCPS-003]** và không tạo hồ sơ. |
 |  |  |  | **TH Hợp lệ**: Hệ thống thực hiện tuần tự các bước:<br>+ (1) Sinh Mã hồ sơ duy nhất và mã QR/mã vạch cho hồ sơ tiếp nhận.<br>+ (2) Lưu bản ghi hồ sơ tiếp nhận cùng danh mục tài liệu đính kèm vào Cơ sở dữ liệu.<br>+ (3) Khởi tạo khoản phải thu trong cùng giao dịch tương ứng với số tiền phí, lệ phí theo biểu phí có hiệu lực.<br>+ (4) Cập nhật trạng thái hồ sơ sang "Chờ thu phí" (chuyển tiếp sang bước [Quản lý thu phí hồ sơ giấy](Quan_ly_thu_phi_ho_so_giay_Can_bo_ke_toan.md)).<br>+ (5) Ghi nhật ký hệ thống (Audit Log) ghi nhận hành động tiếp nhận hồ sơ.<br>+ (6) Hiển thị thông báo tiếp nhận hồ sơ thành công (**[MSG-SUC-UCPS-001]**).<br>+ (7) Điều hướng quay về [MH01 - Màn hình Danh sách tiếp nhận hồ sơ](#432163-mh01---màn-hình-danh-sách-tiếp-nhận-hồ-sơ).<br>- Trường hợp bước tạo khoản phải thu thất bại: Hệ thống rollback (hủy bỏ) toàn bộ giao dịch, không tạo hồ sơ và hiển thị thông báo lỗi tạo khoản phải thu (**[MSG-ERR-UCPS-004]**). |
 | 9 | Hoàn tất & In phiếu | Nút | Hệ thống thực hiện đầy đủ các bước kiểm tra và xử lý như chức năng `Hoàn tất tiếp nhận`; sau khi hoàn tất thành công, hệ thống mở tiếp [MH04 - Màn hình Phiếu tiếp nhận](#432166-mh04---màn-hình-phiếu-tiếp-nhận) của hồ sơ vừa tạo. |
 | 10 | Hủy bỏ | Nút | **TH Chưa nhập dữ liệu**: Hệ thống đóng màn hình và quay về [MH01 - Màn hình Danh sách tiếp nhận hồ sơ](#432163-mh01---màn-hình-danh-sách-tiếp-nhận-hồ-sơ).<br>- **TH Đã nhập dữ liệu chưa lưu**: Hệ thống hiển thị **[MSG-CFM-UCPS-001]**; khi người dùng xác nhận, hệ thống hủy toàn bộ dữ liệu đang nhập và quay về [MH01 - Màn hình Danh sách tiếp nhận hồ sơ](#432163-mh01---màn-hình-danh-sách-tiếp-nhận-hồ-sơ). |
@@ -246,15 +246,15 @@ Cho phép Cán bộ tiếp nhận tra cứu, tìm kiếm tài khoản trực tuy
 | Phương thức nhận kết quả | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Địa chỉ nhận kết quả | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi.<br>- Chỉ hiển thị khi `Phương thức nhận kết quả` = "Qua dịch vụ bưu chính". |
 | Email nhận kết quả | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi.<br>- Chỉ hiển thị khi `Phương thức nhận kết quả` = "Cách thức điện tử". |
-| **Khối Thông tin loại yêu cầu và lệ phí** | - | - | - | |
-| Loại yêu cầu | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
-| Tham số tính phí | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
-| Tên khoản phí | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
-| Số tiền phải thu | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
-| Đối tượng miễn phí | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi.<br>- Chỉ hiển thị khi hồ sơ có ghi nhận đối tượng miễn phí. |
+| **Khối Thông tin loại đăng ký và lệ phí** | - | - | - | |
+| Loại đăng ký | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
+| Loại cung cấp bản sao | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi.<br>- Chỉ hiển thị khi `Loại đăng ký` = "Yêu cầu cung cấp bản sao".<br>Gồm:<br>+ Bản sao điện tử<br>+ Bản sao giấy |
+| Số lượng bản sao | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi.<br>- Chỉ hiển thị khi `Loại đăng ký` = "Yêu cầu cung cấp bản sao" và `Loại cung cấp bản sao` = "Bản sao giấy". |
+| Số tiền phải thu | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. Chỉ hiển thị số tiền kèm đơn vị VNĐ, không hiển thị mã biểu phí và tên khoản phí. |
+| Đối tượng miễn phí | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. Luôn hiển thị. Hiển thị "Miễn lệ phí" (nếu hồ sơ thuộc đối tượng miễn phí) hoặc "Không" (nếu không miễn phí). |
 | Trạng thái lệ phí | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Trạng thái hồ sơ | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
-| **Khối Tài liệu đính kèm** | - | - | - | Control UI: Bảng dữ liệu 4 cột (`STT`, `Tên tài liệu`, `File đính kèm`, `Thao tác`), chỉ đọc.<br>- Ẩn toàn bộ nút `Tải lên`, liên kết `Xóa` và nút `Thêm thành phần hồ sơ mới` của [MH02 - Màn hình Tiếp nhận hồ sơ giấy](#432164-mh02---màn-hình-tiếp-nhận-hồ-sơ-giấy). |
+| **Khối Tài liệu đính kèm** | - | - | - | Control UI: Bảng dữ liệu 4 cột (`STT`, `Tên tài liệu`, `File đính kèm`, `Thao tác`), chỉ đọc. Hiển thị danh sách các thành phần hồ sơ và tệp đính kèm người dùng đã thêm (nếu không có tệp đính kèm nào thì hiển thị thông báo "Không có tài liệu đính kèm").<br>- Ẩn toàn bộ nút `Tải lên`, liên kết `Xóa` và nút `Thêm thành phần hồ sơ mới` của [MH02 - Màn hình Tiếp nhận hồ sơ giấy](#432164-mh02---màn-hình-tiếp-nhận-hồ-sơ-giấy). |
 | STT | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Tên tài liệu | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi.<br>- Không hiển thị nhãn "Bắt buộc" của thành phần hồ sơ. |
 | File đính kèm | - | - | - | Control UI: Label kèm icon định dạng tệp, chỉ đọc. Lấy theo dữ liệu bản ghi.<br>- Hiển thị dấu `-` nếu dòng tài liệu chưa có tệp đính kèm. |
@@ -294,7 +294,7 @@ Cho phép Cán bộ tiếp nhận tra cứu, tìm kiếm tài khoản trực tuy
 | Ngày giờ tiếp nhận | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Người yêu cầu | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Người nộp hồ sơ | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
-| Loại yêu cầu | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
+| Loại đăng ký | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Số tiền phải thu | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Phương thức nhận kết quả | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Đơn vị tiếp nhận | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
@@ -324,7 +324,7 @@ Cho phép Cán bộ tiếp nhận tra cứu, tìm kiếm tài khoản trực tuy
 | Mã QR/Mã vạch | - | - | - | Control UI: Hình ảnh mã QR/mã vạch, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Mã hồ sơ | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Số đơn giấy | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
-| Loại yêu cầu | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
+| Loại đăng ký | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Ngày tiếp nhận | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Đơn vị tiếp nhận | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 

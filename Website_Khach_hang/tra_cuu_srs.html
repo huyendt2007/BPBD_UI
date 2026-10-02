@@ -1235,28 +1235,9 @@
 
                 <!-- BẢNG KẾT QUẢ SEARCH (MH02) -->
                 <div id="reg-mh02-result" class="hidden">
-                    <h2 class="section-title"><i class="fa-solid fa-list"></i> Danh sách kết quả tra cứu</h2>
-                    
-                    <div class="table-responsive">
-                        <table class="table" id="reg-result-table">
-                            <thead>
-                                <tr>
-                                    <th style="width: 50px; text-align: center;">STT</th>
-                                    <th style="width: 180px;">Số đăng ký</th>
-                                    <th style="width: 100px;">Số PIN</th>
-                                    <th style="width: 180px;">Loại hình đăng ký</th>
-                                    <th style="width: 220px;">Tên bên bảo đảm</th>
-                                    <th style="width: 220px;">Tên bên nhận bảo đảm</th>
-                                    <th style="width: 170px;">Thời điểm đăng ký</th>
-                                    <th style="width: 120px;">Trạng thái</th>
-                                    <th style="width: 80px; text-align: center;">Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody id="reg-result-body">
-                                <!-- Load dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
+                    <h2 class="section-title"><i class="fa-solid fa-file-shield"></i> Chi tiết kết quả tra cứu</h2>
+                    <!-- Hiển thị giống Kết quả tra cứu của Yêu cầu cung cấp thông tin tại Website Quản trị -->
+                    <div id="reg-result-body"></div>
 
                     <div class="action-footer">
                         <button class="btn btn-primary" onclick="exportPDF('reg')"><i class="fa-solid fa-file-pdf"></i> Xuất văn bản kết quả tra cứu điện tử</button>
@@ -1351,29 +1332,9 @@
 
                 <!-- BẢNG KẾT QUẢ SEARCH (MH02) -->
                 <div id="owner-mh02-result" class="hidden">
-                    <h2 class="section-title"><i class="fa-solid fa-list"></i> Danh sách kết quả tra cứu</h2>
-
-                    <div class="table-responsive">
-                        <table class="table" id="owner-result-table">
-                            <thead>
-                                <tr>
-                                    <th style="width: 50px; text-align: center;">STT</th>
-                                    <th style="width: 170px;">Số đăng ký</th>
-                                    <th style="width: 100px;">Số PIN</th>
-                                    <th style="width: 170px;">Loại hình đăng ký</th>
-                                    <th style="width: 200px;">Tên bên bảo đảm</th>
-                                    <th style="width: 180px;">Số giấy tờ/MST/Hộ chiếu</th>
-                                    <th style="width: 200px;">Tên bên nhận bảo đảm</th>
-                                    <th style="width: 150px;">Thời điểm đăng ký</th>
-                                    <th style="width: 110px;">Trạng thái</th>
-                                    <th style="width: 80px; text-align: center;">Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody id="owner-result-body">
-                                <!-- Load dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
+                    <h2 class="section-title"><i class="fa-solid fa-file-shield"></i> Chi tiết kết quả tra cứu</h2>
+                    <!-- Hiển thị giống Kết quả tra cứu của Yêu cầu cung cấp thông tin tại Website Quản trị -->
+                    <div id="owner-result-body"></div>
 
                     <div class="action-footer">
                         <button class="btn btn-primary" onclick="exportPDF('owner')"><i class="fa-solid fa-file-pdf"></i> Xuất văn bản kết quả tra cứu điện tử</button>
@@ -1414,29 +1375,9 @@
 
                 <!-- BẢNG KẾT QUẢ SEARCH (MH02) -->
                 <div id="frame-mh02-result" class="hidden">
-                    <h2 class="section-title"><i class="fa-solid fa-list"></i> Danh sách kết quả tra cứu</h2>
-
-                    <div class="table-responsive">
-                        <table class="table" id="frame-result-table">
-                            <thead>
-                                <tr>
-                                    <th style="width: 50px; text-align: center;">STT</th>
-                                    <th style="width: 170px;">Số đăng ký</th>
-                                    <th style="width: 100px;">Số PIN</th>
-                                    <th style="width: 170px;">Loại hình đăng ký</th>
-                                    <th style="width: 200px;">Tên bên bảo đảm</th>
-                                    <th style="width: 200px;">Tên bên nhận bảo đảm</th>
-                                    <th style="width: 150px;">Thời điểm đăng ký</th>
-                                    <th style="width: 150px;">Số khung</th>
-                                    <th style="width: 110px;">Trạng thái</th>
-                                    <th style="width: 80px; text-align: center;">Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody id="frame-result-body">
-                                <!-- Load dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
+                    <h2 class="section-title"><i class="fa-solid fa-file-shield"></i> Chi tiết kết quả tra cứu</h2>
+                    <!-- Hiển thị giống Kết quả tra cứu của Yêu cầu cung cấp thông tin tại Website Quản trị -->
+                    <div id="frame-result-body"></div>
 
                     <div class="action-footer">
                         <button class="btn btn-primary" onclick="exportPDF('frame')"><i class="fa-solid fa-file-pdf"></i> Xuất văn bản kết quả tra cứu điện tử</button>
@@ -1503,6 +1444,9 @@
     </div>
 </div>
 
+<!-- Dùng chung cách hiển thị Kết quả tra cứu với Website Quản trị -->
+<script src="../Website_Quan_tri/bs_xu_ly_popups.js"></script>
+<script src="../Website_Quan_tri/cctt_xu_ly_popups.js"></script>
 <script>
     // System Mock Databases representing complete records
     const mockRegistrations = {
@@ -2202,6 +2146,43 @@
         window.location.href = url;
     }
 
+    // Chi tiết kết quả tra cứu: hiển thị giống Kết quả tra cứu khi xử lý Yêu cầu cung cấp thông tin tại Website Quản trị
+    // (Thời điểm tra cứu, Tiêu chí tra cứu thực tế, Dữ liệu đầu vào tra cứu, Tổng số hồ sơ phù hợp, từng hồ sơ theo Cấu trúc chi tiết danh sách hồ sơ)
+    function renderCsdlLookupResult(tab, record, criteria, input) {
+        const pad = n => String(n).padStart(2, '0');
+        const d = new Date();
+        const at = `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+        let records = [];
+        if (record) {
+            // Dữ liệu chi tiết hồ sơ lấy theo mẫu kết quả tra cứu của Website Quản trị, gắn đúng Số đăng ký/chủ thể của hồ sơ tìm thấy
+            const templates = CcttPopups.runLookup({ criteria: 'Số đăng ký', inputData: record.id }).records;
+            const chain = [record, ...(record.children || [])];
+            records = chain.map((node, idx) => {
+                const isNotice = /thông báo/i.test(node.regType || '');
+                const tpl = JSON.parse(JSON.stringify(isNotice ? templates[2] : (idx === 0 ? templates[0] : templates[1])));
+                tpl.regNo = node.id;
+                tpl.originRegNo = record.id;
+                tpl.caseName = String(node.regType || '').toUpperCase();
+                tpl.status = node.status || tpl.status;
+                tpl.registeredAt = node.regTime;
+                tpl.effectiveAt = node.regTime;
+                tpl.grantors = tpl.grantors.map(g => ({ ...g, name: node.ownerName || record.ownerName, idNo: record.ownerDocId || g.idNo }));
+                tpl.securedParties = tpl.securedParties.map(s => ({ ...s, name: node.securedName || record.securedName, address: 'Số 17 Duy Tân, Phường Cầu Giấy, TP Hà Nội, Việt Nam' }));
+                if (node.chassis || record.chassis) {
+                    tpl.assets = [{
+                        type: 'road',
+                        groupTitle: 'Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)',
+                        subTitle: 'Số khung',
+                        items: [{ vehicleName: 'Ô tô', brandColor: 'Màu trắng', frameNo: node.chassis || record.chassis, engineNo: '-', plateNo: '-' }]
+                    }, ...tpl.assets];
+                }
+                return tpl;
+            });
+        }
+        const container = document.getElementById(`${tab}-result-body`);
+        container.innerHTML = CcttPopups.renderResult({ at, hasData: records.length > 0, records, criteria, input });
+    }
+
     function exportPDF(tab) {
         alert('Đang kết xuất tệp văn bản báo cáo kết quả tra cứu điện tử (.pdf) chính thức...\nHệ thống tiến hành ký số tự động bằng chữ ký số của Cục Đăng ký.');
     }
@@ -2267,16 +2248,9 @@
         if (!validateCsdlCode(csdlCode, errorBox, errorText)) return;
 
         // Query database
-        const record = mockRegistrations[regNum];
-        if (!record) {
-            errorBox.style.display = 'flex';
-            errorText.innerText = 'Số đăng ký không tồn tại trên hệ thống. Vui lòng kiểm tra lại.';
-            return;
-        }
-
-        // Success: Render TreeView Table
-        const tbody = document.getElementById('reg-result-body');
-        tbody.innerHTML = generateTreeViewRows(record, 'reg');
+        // Không có dữ liệu: hiển thị thông báo ngay tại khu vực Chi tiết kết quả tra cứu
+        const record = mockRegistrations[regNum] || null;
+        renderCsdlLookupResult('reg', record, 'Số đăng ký', regNum);
 
         showSearchResult('reg', csdlCode);
     }
@@ -2401,15 +2375,9 @@
             }
         });
 
-        if (!foundRecord) {
-            errorBox.style.display = 'flex';
-            errorText.innerText = 'Không tìm thấy hồ sơ đăng ký biện pháp bảo đảm phù hợp với tiêu chí tra cứu.';
-            return;
-        }
-
-        // Render Results Table
-        const tbody = document.getElementById('owner-result-body');
-        tbody.innerHTML = generateTreeViewRows(foundRecord, 'owner');
+        // Không có dữ liệu: hiển thị thông báo ngay tại khu vực Chi tiết kết quả tra cứu
+        const ownerTypeLabel = document.getElementById('owner-subject-type').selectedOptions[0]?.text || '';
+        renderCsdlLookupResult('owner', foundRecord, 'Bên bảo đảm', [ownerTypeLabel, queryName, queryDocId].filter(Boolean).join(' - '));
 
         showSearchResult('owner', csdlCode);
     }
@@ -2449,15 +2417,8 @@
             }
         });
 
-        if (!foundRecord) {
-            errorBox.style.display = 'flex';
-            errorText.innerText = 'Số khung không tồn tại trên hệ thống. Vui lòng kiểm tra lại.';
-            return;
-        }
-
-        // Render TreeView results
-        const tbody = document.getElementById('frame-result-body');
-        tbody.innerHTML = generateTreeViewRows(foundRecord, 'frame');
+        // Không có dữ liệu: hiển thị thông báo ngay tại khu vực Chi tiết kết quả tra cứu
+        renderCsdlLookupResult('frame', foundRecord, 'Số khung', chassis);
 
         showSearchResult('frame', csdlCode);
     }

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
@@ -4809,8 +4809,8 @@
                                 <label class="form-label">Loại hình giao dịch</label>
                                 <select class="form-select" id="disposalTransactionType" disabled
                                     style="background-color: #F1F5F9;">
-                                    <option value="Thông báo xử lý tài sản bảo đảm" selected>Thông báo xử lý tài sản bảo
-                                        đảm</option>
+                                    <option value="Biện pháp bảo đảm" selected>Biện pháp bảo đảm</option>
+                                    <option value="Hợp đồng">Hợp đồng</option>
                                 </select>
                             </div>
                             <div class="form-group">
@@ -5556,9 +5556,7 @@
                                     <option value="Tất cả" selected>Tất cả</option>
                                     <option value="Biện pháp bảo đảm">Biện pháp bảo đảm</option>
                                     <option value="Hợp đồng">Hợp đồng</option>
-                                    <option value="Thông báo xử lý tài sản bảo đảm">Thông báo xử lý tài sản bảo đảm
-                                    </option>
-                                </select>
+                                                                    </select>
                             </div>
                             <div class="form-group">
                                 <label class="form-label">Loại Biện pháp/Loại HĐ</label>
@@ -5738,7 +5736,6 @@
                                         <option value="Đã duyệt - chờ trả kết quả">Đã duyệt - chờ trả kết quả</option>
                                         <option value="Hoàn thành">Hoàn thành</option>
                                         <option value="Bị từ chối">Bị từ chối</option>
-                                        <option value="Bị trả lại">Bị trả lại</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -5805,7 +5802,7 @@
                         <div id="copyReqDetailView" class="hidden">
                             <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px;">
                                 <h3 class="section-title" style="margin:0;">
-                                    <i class="fa-solid fa-copy"></i> Chi tiết yêu cầu cung cấp bản sao
+                                    <i class="fa-solid fa-copy"></i> <span id="copyReqDetailTitle">Chi tiết yêu cầu cung cấp bản sao</span>
                                 </h3>
                                 <div style="display:flex; gap:8px;">
                                     <button class="btn btn-outline-primary" onclick="backToCopyReqList()">
@@ -5823,9 +5820,13 @@
                                 </div>
                             </div>
 
+                            <!-- Hồ sơ Hoàn thành / Bị từ chối: hiển thị giống Xem chi tiết hồ sơ đã xử lý tại Website Quản trị, bổ sung khối Thông tin thanh toán -->
+                            <div id="copyDetailProcessedView" class="hidden"></div>
+
+                            <div id="copyDetailStandardView">
                             <div
                                 style="background-color:#F8FAFC; border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:18px; margin-bottom:18px;">
-                                <h4 style="margin:0 0 14px; color:var(--primary-color); font-size:15px;">I. Thông tin hồ sơ</h4>
+                                <h4 style="margin:0 0 14px; color:var(--primary-color); font-size:15px;">Thông tin hồ sơ</h4>
                                 <div class="grid-3-cols">
                                     <div class="form-group">
                                         <label class="form-label">Mã hồ sơ</label>
@@ -5864,14 +5865,15 @@
 
                             <div id="copyDetailOriginalBlock"
                                 style="background-color:#FFFFFF; border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:18px;">
-                                <h4 style="margin:0 0 14px; color:var(--primary-color); font-size:15px;">II. Thông tin chi tiết hồ sơ gốc</h4>
+                                <h4 style="margin:0 0 14px; color:var(--primary-color); font-size:15px;">Thông tin chi tiết hồ sơ gốc</h4>
                                 <div id="copyDetailOriginalInfo" style="line-height:1.7; color:var(--text-main);"></div>
                             </div>
 
                             <div id="copyDetailProcessingBlock"
                                 style="background-color:#FFFFFF; border:1px solid var(--border-color); border-radius:var(--border-radius-md); padding:18px; margin-top:18px;">
-                                <h4 style="margin:0 0 14px; color:var(--primary-color); font-size:15px;">III. Thông tin xử lý</h4>
+                                <h4 style="margin:0 0 14px; color:var(--primary-color); font-size:15px;">Thông tin xử lý</h4>
                                 <div id="copyDetailProcessingInfo" style="line-height:1.7; color:var(--text-main);"></div>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -11312,6 +11314,8 @@
                 // Prefill Section III Secured Details (Read-only)
                 const now = new Date();
                 document.getElementById('disposalTimeDisplay').value = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+                // Loại hình giao dịch theo hồ sơ BPBĐ đã đăng ký (chỉ gồm Biện pháp bảo đảm / Hợp đồng)
+                document.getElementById('disposalTransactionType').value = record.transType === 'Hợp đồng' ? 'Hợp đồng' : 'Biện pháp bảo đảm';
                 document.getElementById('disposalContractNum').value = record.contractNum || 'FPT-100293/BD';
                 document.getElementById('disposalContractDate').value = record.contractDate || '12/05/2026';
                 document.getElementById('disposalLoanValue').value = record.loanValue ? record.loanValue.toLocaleString() : '1,000,000,000';
@@ -11380,6 +11384,8 @@
                 // Prefill Section III Secured Details
                 const now = new Date();
                 document.getElementById('disposalTimeDisplay').value = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+                // Loại hình giao dịch theo hồ sơ BPBĐ đã đăng ký (chỉ gồm Biện pháp bảo đảm / Hợp đồng)
+                document.getElementById('disposalTransactionType').value = record.transType === 'Hợp đồng' ? 'Hợp đồng' : 'Biện pháp bảo đảm';
                 document.getElementById('disposalContractNum').value = record.contractNum || 'FPT-100293/BD';
                 document.getElementById('disposalContractDate').value = record.contractDate || '12/05/2026';
                 document.getElementById('disposalLoanValue').value = record.loanValue ? record.loanValue.toLocaleString() : '1,000,000,000';
@@ -12603,7 +12609,7 @@
                 const amount = (disposalMode === 'delete') ? 20000 : 80000;
 
                 document.getElementById('pm_disposalSoHoSo').innerText = 'TEMP-' + noticeNum;
-                document.getElementById('pm_disposalLoaiHinh').innerText = 'Loại hình giao dịch: ' + (disposalMode === 'first' ? 'Thông báo xử lý tài sản bảo đảm lần đầu' : (disposalMode === 'change' ? 'Thay đổi thông báo xử lý tài sản bảo đảm' : 'Xóa đăng ký thông báo xử lý tài sản bảo đảm'));
+                document.getElementById('pm_disposalLoaiHinh').innerText = 'Loại đăng ký: ' + (disposalMode === 'first' ? 'Thông báo xử lý tài sản bảo đảm lần đầu' : (disposalMode === 'change' ? 'Thay đổi thông báo xử lý tài sản bảo đảm' : 'Xóa đăng ký thông báo xử lý tài sản bảo đảm'));
                 document.getElementById('pm_disposalAmount').innerText = amount.toLocaleString() + ' VNĐ';
 
                 selectedDisposalBank = null;
@@ -14696,8 +14702,8 @@
                         guarantor: "Nguyễn Văn A",
                         securedParty: "Ngân hàng TMCP FPT",
                         status: "Hoàn thành",
-                        transType: "Thông báo xử lý tài sản bảo đảm",
-                        measureContractType: "",
+                        transType: "Biện pháp bảo đảm",
+                        measureContractType: "Thế chấp",
                         secAssets: ["Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt hoặc phương tiện chuyên dùng trên đường bộ, đường thủy, đường sắt"]
                     }
                 ]
@@ -14768,8 +14774,8 @@
                         guarantor: "Công ty TNHH Hải Nam",
                         securedParty: "Ngân hàng TMCP FPT",
                         status: "Hoàn thành",
-                        transType: "Thông báo xử lý tài sản bảo đảm",
-                        measureContractType: "",
+                        transType: "Hợp đồng",
+                        measureContractType: "Hợp đồng cho thuê tài chính",
                         secAssets: ["Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)"],
                         expanded: true,
                         children: [
@@ -14782,8 +14788,8 @@
                                 guarantor: "Công ty TNHH Hải Nam",
                                 securedParty: "Ngân hàng TMCP FPT",
                                 status: "Hoàn thành",
-                                transType: "Thông báo xử lý tài sản bảo đảm",
-                                measureContractType: "",
+                                transType: "Hợp đồng",
+                                measureContractType: "Hợp đồng cho thuê tài chính",
                                 secAssets: ["Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)"]
                             },
                             {
@@ -14795,8 +14801,8 @@
                                 guarantor: "Công ty TNHH Hải Nam",
                                 securedParty: "Ngân hàng TMCP FPT",
                                 status: "Chờ duyệt",
-                                transType: "Thông báo xử lý tài sản bảo đảm",
-                                measureContractType: "",
+                                transType: "Hợp đồng",
+                                measureContractType: "Hợp đồng cho thuê tài chính",
                                 secAssets: ["Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)"]
                             }
                         ]
@@ -14886,7 +14892,7 @@
                 guarantor: "Công ty TNHH Minh An",
                 securedParty: "Ngân hàng TMCP FPT",
                 status: "Hoàn thành",
-                transType: "Thông báo xử lý tài sản bảo đảm",
+                transType: "",
                 measureContractType: "",
                 secAssets: ["Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)"],
                 effectiveTime: "24/04/2026 10:05:12",
@@ -14999,7 +15005,7 @@
             },
             {
                 code: 'BS-20260715-000144',
-                regNum: '1505156447',
+                regNum: '1505156437',
                 copyType: 'Bản sao điện tử',
                 quantity: null,
                 status: 'Bị từ chối',
@@ -15007,21 +15013,28 @@
                 creator: 'Phạm Quốc An',
                 amount: 30000,
                 paymentTime: '15/07/2026 08:50',
+                rejectReason: 'Người yêu cầu không thuộc đối tượng được cấp bản sao văn bản chứng nhận của hồ sơ đăng ký này.',
+                rejectOfficer: 'Trần Thị Cán Bộ',
+                rejectedTime: '15/07/2026 14:20',
+                rejectLeader: 'Nguyễn Văn Lãnh Đạo',
+                rejectNoticeFile: 'Thong_bao_tu_choi_BS-20260715-000144.pdf',
                 fileName: ''
             },
             {
                 code: 'BS-20260714-000142',
-                regNum: '1505156448',
+                regNum: '1505156436',
                 copyType: 'Bản sao giấy',
                 quantity: 1,
-                status: 'Bị trả lại',
+                status: 'Bị từ chối',
                 date: '14/07/2026 16:05',
                 creator: 'Nguyễn Thị Mai',
                 amount: 30000,
                 paymentTime: '14/07/2026 16:10',
-                returnReason: 'Cán bộ yêu cầu bổ sung thông tin nhận bản sao giấy.',
-                returnedTime: '15/07/2026 09:00',
-                returnOfficer: 'Trần Thị Cán Bộ',
+                rejectReason: 'Hồ sơ đăng ký gốc đang trong quá trình xử lý, chưa đủ điều kiện cấp bản sao.',
+                rejectOfficer: 'Trần Thị Cán Bộ',
+                rejectedTime: '15/07/2026 09:00',
+                rejectLeader: 'Nguyễn Văn Lãnh Đạo',
+                rejectNoticeFile: 'Thong_bao_tu_choi_BS-20260714-000142.pdf',
                 fileName: ''
             }
         ];
@@ -16656,12 +16669,88 @@
             return '<div>Không có thông tin xử lý bổ sung.</div>';
         }
 
+        // Khối Thông tin thanh toán (chỉ có trên Website Khách hàng)
+        function renderCopyPaymentBlock(item) {
+            const items = [
+                { label: 'Số tiền đã thanh toán (VNĐ)', value: Number(item.amount || 0).toLocaleString('vi-VN') },
+                { label: 'Mã giao dịch thanh toán', value: item.paymentTxn || `PAY-${item.code.replace(/[^0-9]/g, '').slice(-8)}` },
+                { label: 'Thời điểm thanh toán', value: item.paymentTime || item.date }
+            ];
+            if (item.receiptNo) items.splice(2, 0, { label: 'Số biên lai', value: item.receiptNo });
+            return `
+                <h4 style="margin:22px 0 4px; color:var(--primary-color); font-size:15px;"><i class="fa-solid fa-credit-card"></i> Thông tin thanh toán</h4>
+                ${renderCopyReadonlyGrid(items)}
+            `;
+        }
+
+        // Hồ sơ Hoàn thành / Bị từ chối: hiển thị giống màn Xem chi tiết hồ sơ yêu cầu cung cấp bản sao đã xử lý tại Website Quản trị
+        // (Bản sao điện tử và Bản sao giấy cùng cấu trúc, Bản sao giấy bổ sung Số lượng bản sao)
+        function renderCopyRequestProcessedView(item) {
+            const isPaper = item.copyType === 'Bản sao giấy';
+            const kv = (label, value, red) => value ? `
+                <div style="background:#F8FAFC; border:1px solid var(--border-color); border-radius:6px; padding:10px 14px;">
+                    <div style="font-size:12px; color:var(--text-muted); margin-bottom:4px; font-weight:500;">${escapeHtml(label)}</div>
+                    <div style="font-weight:600; font-size:13.5px; color:${red ? '#B91C1C' : 'var(--text-main)'};">${value}</div>
+                </div>` : '';
+            const fileLink = (name, label) => name ? `<a href="#" onclick="event.preventDefault(); showToast('Mở xem file: ${escapeHtml(name)}', 'info')"><i class="fa-regular fa-file-pdf"></i> ${escapeHtml(label || name)}</a>` : '';
+            const grid = html => `<div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:12px; margin-top:10px;">${html}</div>`;
+
+            const banner = item.status === 'Hoàn thành' ? `
+                <div style="background:#F0FDF4; border:1px solid #86EFAC; border-radius:6px; padding:12px; margin-bottom:15px; color:#166534;">
+                    <b><i class="fa-solid fa-circle-check"></i> Kết quả xử lý:</b> Hồ sơ đã hoàn thành việc cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm.
+                </div>` : '';
+
+            const rejectBlock = item.status === 'Bị từ chối' ? `
+                <div style="border:1px solid #FCA5A5; border-left:4px solid #DC2626; border-radius:8px; margin:16px 0 0; background:#fff;">
+                    <div style="padding:10px 14px; font-weight:700; color:#B91C1C; background:#FEF2F2;"><i class="fa-solid fa-ban"></i> Thông tin từ chối</div>
+                    <div style="padding:0 14px 12px;">
+                        ${grid(`
+                            ${kv('Lý do từ chối', escapeHtml(item.rejectReason || 'Không đủ điều kiện giải quyết theo quy định.'), true)}
+                            ${kv('Người từ chối', escapeHtml(item.rejectOfficer || 'Trần Thị Cán Bộ'))}
+                            ${kv('Thời điểm từ chối', escapeHtml(item.rejectedTime || '-'))}
+                            ${kv('Lãnh đạo ký văn bản từ chối', escapeHtml(item.rejectLeader || ''))}
+                            ${kv('Văn bản từ chối đã ký', fileLink(item.rejectNoticeFile, 'Xem file'))}
+                            ${kv('Tài liệu đính kèm lý do từ chối', fileLink(item.rejectFile))}
+                        `)}
+                    </div>
+                </div>` : '';
+
+            return `
+                ${banner}
+                <h4 style="margin:0 0 4px; color:var(--primary-color); font-size:15px;">Thông tin yêu cầu cung cấp bản sao</h4>
+                ${grid(`
+                    ${kv('Mã hồ sơ', `<b>${escapeHtml(item.code)}</b>`)}
+                    ${kv('Người yêu cầu', escapeHtml(item.creator))}
+                    ${kv('Số đăng ký', `<b>${escapeHtml(item.regNum || '-')}</b>`)}
+                    ${kv('Loại cung cấp bản sao', `<span class="status-badge ${isPaper ? 'draft' : 'pending-approval'}">${escapeHtml(item.copyType)}</span>`)}
+                    ${isPaper ? kv('Số lượng bản sao', `${String(item.quantity || 1).padStart(2, '0')} bản`) : ''}
+                `)}
+                ${rejectBlock}
+                ${renderCopyPaymentBlock(item)}
+                <h4 style="margin:22px 0 12px; color:var(--primary-color); font-size:15px;">Kết quả tra cứu</h4>
+                <div style="line-height:1.7; color:var(--text-main);">${renderCopyRequestOriginalInfo(item)}</div>
+            `;
+        }
+
         function viewCopyRequestDetail(code) {
             const item = findCopyRequest(code);
             if (!item) {
                 showToast('Không tìm thấy yêu cầu cung cấp bản sao.', 'error');
                 return;
             }
+
+            const isProcessed = ['Hoàn thành', 'Bị từ chối'].includes(item.status);
+            const titleEl = document.getElementById('copyReqDetailTitle');
+            if (titleEl) titleEl.innerHTML = isProcessed
+                ? `Xem chi tiết hồ sơ yêu cầu cung cấp bản sao: ${escapeHtml(item.code)} <span class="status-badge ${getStatusClass(item.status)}" style="margin-left:8px; vertical-align:middle;">${escapeHtml(item.status)}</span>`
+                : 'Chi tiết yêu cầu cung cấp bản sao';
+            const processedView = document.getElementById('copyDetailProcessedView');
+            const standardView = document.getElementById('copyDetailStandardView');
+            if (processedView) {
+                processedView.classList.toggle('hidden', !isProcessed);
+                processedView.innerHTML = isProcessed ? renderCopyRequestProcessedView(item) : '';
+            }
+            if (standardView) standardView.classList.toggle('hidden', isProcessed);
 
             document.getElementById('copyDetailCode').textContent = item.code;
             document.getElementById('copyDetailStatus').innerHTML = `<span class="status-badge ${getStatusClass(item.status)}">${escapeHtml(item.status)}</span>`;

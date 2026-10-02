@@ -30,7 +30,7 @@
 | **I. Bộ lọc tìm kiếm** | - | - | - | Vùng nhập điều kiện tìm kiếm danh sách hồ sơ. |
 | Mã hồ sơ | String(50) | Không | Trống | Tìm kiếm chính xác hoặc gần đúng theo Mã hồ sơ Yêu cầu cung cấp thông tin. |
 | Tiêu chí yêu cầu | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Số đăng ký<br>+ Bên bảo đảm<br>+ Số khung |
-| Trạng thái hồ sơ | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Chờ thanh toán<br>+ Chờ duyệt<br>+ Chờ ký<br>+ Hoàn thành<br>+ Bị từ chối<br>+ Bị trả lại |
+| Trạng thái hồ sơ | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Chờ thanh toán<br>+ Chờ duyệt<br>+ Chờ ký<br>+ Hoàn thành<br>+ Bị từ chối |
 | Người tạo | String(255) | Không | Trống | Tìm kiếm gần đúng theo tên người đang đăng nhập đã tạo Phiếu yêu cầu cung cấp thông tin. |
 | Từ ngày | Date | Không | Trống | Lọc theo `Thời điểm đăng ký`. Nếu nhập cùng `Đến ngày`, áp dụng [BR-VAL-007]. |
 | Đến ngày | Date | Không | Trống | Lọc theo `Thời điểm đăng ký`. Nếu nhập cùng `Từ ngày`, áp dụng [BR-VAL-007]. |
@@ -75,7 +75,7 @@
 | Mã hồ sơ | String(50) | Có | Theo hồ sơ | Control UI: Hiển thị/Read-only. |
 | Trạng thái hồ sơ | Enum(String(50)) | Có | Theo hồ sơ | Control UI: Badge trạng thái. |
 | Thời điểm đăng ký | Datetime | Có | Theo hồ sơ | Thời điểm Khách hàng gửi hồ sơ. |
-| Nguồn tiếp nhận | Enum(String(50)) | Có | Website Khách hàng | Hiển thị nguồn tạo hồ sơ. |
+| Nguồn tiếp nhận | Enum(String(50)) | Có | Trực tuyến | Hiển thị nguồn tạo hồ sơ.<br>- Hồ sơ gửi từ Website Khách hàng luôn có Nguồn tiếp nhận là "Trực tuyến". |
 | **II. Thông tin yêu cầu cung cấp thông tin** | - | - | - | Dữ liệu yêu cầu do Khách hàng đã gửi. |
 | Tiêu chí yêu cầu | Enum(String(50)) | Có | Theo hồ sơ | `Số đăng ký`, `Bên bảo đảm` hoặc `Số khung`. |
 | Dữ liệu đã nhập | Text(1000) | Có | Theo hồ sơ | Hiển thị dữ liệu tra cứu đã gửi theo tiêu chí. |

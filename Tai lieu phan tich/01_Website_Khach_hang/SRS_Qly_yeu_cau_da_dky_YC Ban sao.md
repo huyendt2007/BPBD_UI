@@ -32,7 +32,7 @@
 | Mã hồ sơ | String(50) | Không | Trống | Tìm kiếm chính xác hoặc gần đúng theo Mã hồ sơ (`BS-[YYYYMMDD]-[TỰ_TĂNG_6_SỐ]`); tự động cắt khoảng trắng đầu cuối [BR-VAL-001]. |
 | Số đăng ký | String(50) | Không | Trống | Tìm kiếm theo Số đăng ký của hồ sơ gốc gắn với yêu cầu. |
 | Loại cung cấp bản sao | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Bản sao điện tử<br>+ Bản sao giấy |
-| Trạng thái hồ sơ | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Chờ thanh toán<br>+ Chờ duyệt<br>+ Chờ ký<br>+ Đã duyệt - chờ trả kết quả<br>+ Hoàn thành<br>+ Bị từ chối<br>+ Bị trả lại |
+| Trạng thái hồ sơ | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Chờ thanh toán<br>+ Chờ duyệt<br>+ Chờ ký<br>+ Đã duyệt - chờ trả kết quả<br>+ Hoàn thành<br>+ Bị từ chối |
 | Người tạo | String(255) | Không | Trống | Tìm kiếm gần đúng theo tên người đang đăng nhập đã tạo Yêu cầu cung cấp bản sao. |
 | Từ ngày | Date | Không | Trống | Lọc theo `Thời điểm đăng ký`. Nếu nhập cùng `Đến ngày`, áp dụng [BR-VAL-007]. |
 | Đến ngày | Date | Không | Trống | Lọc theo `Thời điểm đăng ký`. Nếu nhập cùng `Từ ngày`, áp dụng [BR-VAL-007]. |

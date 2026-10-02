@@ -1309,19 +1309,19 @@ function ensurePaperDigitizeSamples() {
     try {
         const current = JSON.parse(localStorage.getItem('ucps014_paper_profiles') || '[]');
         const requiredSamples = [
-            ['HS-2026-000128','PG-0128','Đăng ký lần đầu','Công ty TNHH Hải Nam','Nguyễn Văn Bình',80000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
-            ['HS-2026-000129','PG-0129','Yêu cầu cung cấp bản sao','Nguyễn Thị Hoa','Nguyễn Thị Hoa',30000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
-            ['HS-2026-000130','PG-0130','Xóa đăng ký','Ngân hàng TMCP FPT','Trần Minh Quân',0,'Miễn phí','Biện pháp bảo đảm','Cầm cố'],
+            ['HS-2026-000128','PG-0128','Đăng ký lần đầu','Công ty TNHH Hải Nam','Nguyễn Văn Bình',80000,'Chưa thu','Biện pháp bảo đảm','Thế chấp'],
+            ['HS-2026-000129','PG-0129','Yêu cầu cung cấp bản sao','Nguyễn Thị Hoa','Nguyễn Thị Hoa',25000,'Chưa thu','Biện pháp bảo đảm','Thế chấp'],
+            ['HS-2026-000130','PG-0130','Xóa đăng ký','Ngân hàng TMCP FPT','Trần Minh Quân',20000,'Chưa thu','Biện pháp bảo đảm','Cầm cố'],
             ['HS-2026-000131','PG-0131','Đăng ký thay đổi','Công ty Cổ phần Minh Khang','Lê Bảo Nam',60000,'Đã thu','Hợp đồng','Hợp đồng cho thuê tài chính'],
-            ['HS-2026-000132','PG-0132','Thông báo xử lý tài sản','Ngân hàng TMCP Công thương Việt Nam','Phạm Thu Trang',70000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
-            ['HS-2026-000133','PG-0133','Thông báo xử lý tài sản','Ngân hàng TMCP Kỹ thương Việt Nam','Đỗ Hoàng Anh',50000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
-            ['HS-2026-000134','PG-0134','Thông báo xử lý tài sản','Ngân hàng TMCP Quân đội','Bùi Đức Long',0,'Miễn phí','Biện pháp bảo đảm','Thế chấp'],
-            ['HS-2026-000135','PG-0135','Yêu cầu cung cấp bản sao kèm thông báo','Công ty Luật An Việt','Vũ Minh Châu',50000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
-            ['HS-2026-000136','PG-0136','Yêu cầu cung cấp thông tin','Ông Phạm Minh Đức','Phạm Minh Đức',30000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
-            ['HS-2026-000137','PG-0137','Yêu cầu cung cấp thông tin','Trường Đại học Kinh tế Quốc dân','Đặng Thu Hà',0,'Miễn phí','Biện pháp bảo đảm','Thế chấp'],
-            ['HS-2026-000138','PG-0138','Yêu cầu cung cấp thông tin','Công ty TNHH Thương mại Hoàng Gia','Trần Văn Hòa',30000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
-            ['HS-2026-000139','PG-0139','Yêu cầu cung cấp thông tin','Bà Lê Thị Thanh Hương','Lê Thị Thanh Hương',30000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
-            ['HS-2026-000140','PG-0140','Yêu cầu cung cấp thông tin','Ngân hàng TMCP Quân đội (MB)','Phạm Quang Huy',30000,'Đã thu','Biện pháp bảo đảm','Thế chấp']
+            ['HS-2026-000132','PG-0132','Đăng ký lần đầu','Ngân hàng TMCP Công thương Việt Nam','Phạm Thu Trang',80000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
+            ['HS-2026-000133','PG-0133','Yêu cầu cung cấp bản sao','Ngân hàng TMCP Kỹ thương Việt Nam','Đỗ Hoàng Anh',50000,'Chưa thu','Biện pháp bảo đảm','Thế chấp'],
+            ['HS-2026-000134','PG-0134','Thông báo xử lý tài sản đảm bảo lần đầu','Ngân hàng TMCP Quân đội','Bùi Đức Long',30000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
+            ['HS-2026-000135','PG-0135','Thay đổi thông báo xử lý tài sản bảo đảm','Công ty Luật An Việt','Vũ Minh Châu',30000,'Chưa thu','Biện pháp bảo đảm','Thế chấp'],
+            ['HS-2026-000136','PG-0136','Xóa đăng ký thông báo xử lý tài sản bảo đảm','Ngân hàng TMCP Tiên Phong','Hoàng Thu Trang',20000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
+            ['HS-2026-000137','PG-0137','Yêu cầu cung cấp thông tin','Trường Đại học Kinh tế Quốc dân','Đặng Thu Hà',15000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
+            ['HS-2026-000138','PG-0138','Đăng ký thay đổi','Công ty TNHH Thương mại Hoàng Gia','Trần Văn Hòa',60000,'Đã thu','Biện pháp bảo đảm','Thế chấp'],
+            ['HS-2026-000139','PG-0139','Yêu cầu cung cấp bản sao','Bà Lê Thị Thanh Hương','Lê Thị Thanh Hương',25000,'Chưa thu','Biện pháp bảo đảm','Thế chấp'],
+            ['HS-2026-000140','PG-0140','Thông báo xử lý tài sản đảm bảo lần đầu','Ngân hàng TMCP Quân đội (MB)','Phạm Quang Huy',30000,'Đã thu','Biện pháp bảo đảm','Thế chấp']
         ].map((r, idx) => ({
             id: r[0],
             paper: r[1],
@@ -1393,12 +1393,12 @@ const REG_SERVICE_TYPES = ['Yêu cầu cung cấp bản sao', 'Yêu cầu cung c
 
 // Danh mục Loại hình đăng ký [DM_04] - chỉ nhóm Phiếu đăng ký
 const REG_TYPE_OPTIONS = [
-    ['Đăng ký mới', 'Đăng ký lần đầu'],
+    ['Đăng ký lần đầu', 'Đăng ký lần đầu'],
     ['Đăng ký thay đổi', 'Đăng ký thay đổi'],
     ['Xóa đăng ký', 'Xóa đăng ký'],
-    ['Thông báo xử lý tài sản', 'Thông báo xử lý tài sản bảo đảm lần đầu'],
-    ['Thay đổi thông báo xử lý tài sản', 'Thay đổi thông báo xử lý tài sản bảo đảm'],
-    ['Xóa thông báo xử lý tài sản', 'Xóa đăng ký thông báo xử lý tài sản bảo đảm']
+    ['Thông báo xử lý tài sản đảm bảo lần đầu', 'Thông báo xử lý tài sản đảm bảo lần đầu'],
+    ['Thay đổi thông báo xử lý tài sản bảo đảm', 'Thay đổi thông báo xử lý tài sản bảo đảm'],
+    ['Xóa đăng ký thông báo xử lý tài sản bảo đảm', 'Xóa đăng ký thông báo xử lý tài sản bảo đảm']
 ];
 
 // Danh mục Loại tài sản bảo đảm [DM_07] và cấu hình Khối lọc động / Cột động tương ứng
@@ -1912,7 +1912,7 @@ function executeRender() {
                 <th style="width: 110px;">Số đơn giấy</th>
                 <th style="cursor: pointer; width: 210px;" onclick="toggleSort('name')">Người yêu cầu ${getSortIcon('name')}</th>
                 <th style="width: 180px;">Người nộp</th>
-                <th style="width: 190px;">Loại yêu cầu</th>
+                <th style="width: 190px;">Loại đăng ký</th>
                 <th style="cursor: pointer; width: 140px;" onclick="toggleSort('date')">Ngày tiếp nhận ${getSortIcon('date')}</th>
                 <th style="width: 130px;">Đã thu/Miễn phí</th>
                 <th style="width: 120px;">Trạng thái lệ phí</th>
@@ -2185,16 +2185,15 @@ function renderFilterPanel() {
                     <input type="text" class="form-control" id="filter-nguoi-nop" placeholder="Tên người nộp" autocomplete="off">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Loại yêu cầu</label>
+                    <label class="form-label">Loại đăng ký</label>
                     <select class="form-select" id="filter-loai-yeu-cau">
                         <option value="">Tất cả</option>
                         <option value="Đăng ký lần đầu">Đăng ký lần đầu</option>
                         <option value="Đăng ký thay đổi">Đăng ký thay đổi</option>
                         <option value="Xóa đăng ký">Xóa đăng ký</option>
-                        <option value="Thông báo xử lý tài sản">Thông báo xử lý tài sản</option>
-                        <option value="Yêu cầu cung cấp thông tin">Yêu cầu cung cấp thông tin</option>
-                        <option value="Yêu cầu cung cấp bản sao">Yêu cầu cung cấp bản sao</option>
-                        <option value="Yêu cầu cung cấp bản sao kèm thông báo">Yêu cầu cung cấp bản sao kèm thông báo</option>
+                        <option value="Thông báo xử lý tài sản đảm bảo lần đầu">Thông báo xử lý tài sản đảm bảo lần đầu</option>
+                        <option value="Thay đổi thông báo xử lý tài sản bảo đảm">Thay đổi thông báo xử lý tài sản bảo đảm</option>
+                        <option value="Xóa đăng ký thông báo xử lý tài sản bảo đảm">Xóa đăng ký thông báo xử lý tài sản bảo đảm</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -5812,7 +5811,7 @@ function renderCcttOfficerResult(item, noData) {
     }
     return `
         <div style="padding:12px;border:1px solid var(--border-color);border-radius:6px;background:#fff">
-            <div style="font-weight:700;color:var(--primary-color);margin-bottom:10px">VI. Kết quả cung cấp thông tin có xác nhận của cơ quan đăng ký</div>
+            <div style="font-weight:700;color:var(--primary-color);margin-bottom:10px">Kết quả cung cấp thông tin có xác nhận của cơ quan đăng ký</div>
             <table class="table" style="min-width:980px">
                 <thead><tr><th>STT</th><th>Số hồ sơ</th><th>Số đăng ký</th><th>Thời điểm đăng ký</th><th>Loại hình đăng ký</th><th>Bên bảo đảm</th><th>Bên nhận bảo đảm</th><th>Hiệu lực tại thời điểm tra cứu</th></tr></thead>
                 <tbody><tr><td>1</td><td>HS-2026-000813</td><td>1505170802</td><td>02/07/2026 10:27</td><td>Đăng ký lần đầu</td><td>Công ty Cổ phần Xây dựng và Phát triển HTC</td><td>Ngân hàng TMCP Đầu tư và Phát triển Việt Nam</td><td>Có</td></tr></tbody>
@@ -5999,7 +5998,7 @@ function renderCcttGeneralInfo(item) {
                     details.cctt-general-info[open] .cgi-chevron { transform: rotate(90deg); }
                 </style>
                 <summary style="cursor:pointer;padding:10px 14px;font-weight:700;color:var(--primary-color);display:flex;align-items:center;gap:10px;list-style:none">
-                    <i class="fa-solid fa-chevron-right cgi-chevron" style="font-size:12px"></i> I. Thông tin chung
+                    <i class="fa-solid fa-chevron-right cgi-chevron" style="font-size:12px"></i> Thông tin chung
                     <!-- Mã hồ sơ và Trạng thái chỉ hiển thị trên dòng tiêu đề khi khối thu gọn; khi mở rộng đã hiển thị tại các trường bên dưới -->
                     <span class="cgi-collapsed-only" style="font-weight:500;color:var(--text-muted)">${item.id}</span>
                     <span class="cgi-collapsed-only badge ${badge}" style="margin-left:auto">${item.status}</span>
@@ -6025,10 +6024,10 @@ function openCcttProcess(id) {
         <div class="card-section">
             <div class="section-title"><span><i class="fa-solid fa-magnifying-glass"></i> Xử lý hồ sơ yêu cầu cung cấp thông tin: ${item.id}</span></div>
             ${renderCcttGeneralInfo(item)}
-            <h3 class="section-title" style="font-size:15px">II. Khối tra cứu</h3>
+            <h3 class="section-title" style="font-size:15px">Khối tra cứu</h3>
             <div class="form-group"><label class="form-label">Tiêu chí yêu cầu cung cấp thông tin</label><div style="display:inline-flex;border:1px solid var(--border-color);border-radius:6px;overflow:hidden">${segments}</div></div>
             <div class="grid-4-cols">${inputs}</div>
-            <h3 class="section-title" style="font-size:15px;margin-top:10px">III. Kết quả tra cứu</h3>
+            <h3 class="section-title" style="font-size:15px;margin-top:10px">Kết quả tra cứu</h3>
             <div id="cctt-process-result">${CcttPopups.renderResult(ccttProcessResult)}</div>
         </div>
         <div class="card-section" style="position:sticky;bottom:0;z-index:40;display:flex;justify-content:flex-end;gap:10px;box-shadow:0 -4px 12px rgba(15,23,42,.08)">
@@ -6093,10 +6092,10 @@ function renderCcttReadonlyDetail(item, buttonsHtml) {
             ${statusBanner}
             ${renderCcttGeneralInfo(item)}
             ${renderReturnRejectBlocks(item)}
-            <h3 class="section-title" style="font-size:15px">IV. Khối tra cứu</h3>
+            <h3 class="section-title" style="font-size:15px">Khối tra cứu</h3>
             <div class="form-group"><label class="form-label">Tiêu chí yêu cầu cung cấp thông tin</label><div style="display:inline-flex;border:1px solid var(--border-color);border-radius:6px;overflow:hidden">${segments}</div></div>
             <div class="grid-4-cols">${inputs}</div>
-            <h3 class="section-title" style="font-size:15px;margin-top:10px">V. Kết quả tra cứu</h3>
+            <h3 class="section-title" style="font-size:15px;margin-top:10px">Kết quả tra cứu</h3>
             <div id="cctt-process-result">${CcttPopups.renderResult(item.lookupResult)}</div>
         </div>
         <div class="card-section" style="position:sticky;bottom:0;z-index:40;display:flex;justify-content:flex-end;gap:10px;box-shadow:0 -4px 12px rgba(15,23,42,.08)">

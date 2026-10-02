@@ -6,9 +6,9 @@
 
 \- Chức năng gồm 03 màn hình chính và các Popup nghiệp vụ: Danh sách hồ sơ chờ nhập liệu (MH01), Xem chi tiết hồ sơ chờ nhập liệu (MH02), Nhập liệu hồ sơ giấy Yêu cầu cung cấp bản sao (MH03), Popup Trình ký bản sao điện tử và Popup Trình ký bản sao giấy.
 
-\- Danh sách hồ sơ chờ nhập liệu tại chức năng này chỉ hiển thị hồ sơ giấy có Loại yêu cầu thuộc nhóm Yêu cầu cung cấp bản sao. Hồ sơ giấy của các nhóm nghiệp vụ khác được mô tả tại [Tab Hồ sơ chờ nhập liệu - Kiểm tra và xử lý hồ sơ - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Kiem_tra_va_xu_ly_ho_so_Can_bo.md).
+\- Danh sách hồ sơ chờ nhập liệu tại chức năng này chỉ hiển thị hồ sơ giấy có Loại đăng ký thuộc nhóm Yêu cầu cung cấp bản sao. Hồ sơ giấy của các nhóm nghiệp vụ khác được mô tả tại [Tab Hồ sơ chờ nhập liệu - Kiểm tra và xử lý hồ sơ - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Kiem_tra_va_xu_ly_ho_so_Can_bo.md).
 
-\- Chức năng này áp dụng cho các Loại yêu cầu thuộc nhóm Yêu cầu cung cấp bản sao theo quy định tại Nghị định số 99/2022/NĐ-CP:
+\- Chức năng này áp dụng cho các Loại đăng ký thuộc nhóm Yêu cầu cung cấp bản sao theo quy định tại Nghị định số 99/2022/NĐ-CP:
 + "Yêu cầu cung cấp bản sao văn bản chứng nhận đăng ký biện pháp bảo đảm" (Mẫu số 11đ).
 + "Yêu cầu cung cấp bản sao kèm thông báo về việc đăng ký thế chấp" (Mẫu số 12đ).
 
@@ -30,7 +30,7 @@
 
 \- NSD đã đăng nhập Website quản trị và có quyền nhập liệu hồ sơ giấy Yêu cầu cung cấp bản sao.
 
-\- Hồ sơ có Nguồn tiếp nhận là "Cán bộ nhập liệu" và Loại yêu cầu thuộc nhóm Yêu cầu cung cấp bản sao.
+\- Hồ sơ có Nguồn tiếp nhận là "Cán bộ nhập liệu" và Loại đăng ký thuộc nhóm Yêu cầu cung cấp bản sao.
 
 \- Hồ sơ đang ở trạng thái "Chờ giải quyết".
 
@@ -58,12 +58,12 @@
 | Đến ngày tiếp nhận | Date | Không | Ngày hiện tại | - Control UI: Datepicker.<br>- Lọc theo Thời điểm tiếp nhận.<br>- Định dạng hiển thị: dd/mm/yyyy.<br>- Tuân thủ [BR-VAL-007]. |
 | Tìm kiếm | - | Không | - | - Control UI: Button.<br>- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
 | Xóa bộ lọc | - | Không | - | - Control UI: Button.<br>- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
-| **II. Bảng danh sách hồ sơ chờ nhập liệu** | - | Có | 20 bản ghi/trang | - Control UI: Bảng dữ liệu (Grid) kèm phân trang.<br>- Chỉ hiển thị hồ sơ giấy có Loại yêu cầu thuộc nhóm Yêu cầu cung cấp bản sao, trạng thái "Chờ giải quyết" và Trạng thái lệ phí là "Đã thu" hoặc "Miễn phí".<br>- Chỉ hiển thị hồ sơ trong phạm vi đơn vị của Cán bộ đăng nhập.<br>- Sắp xếp mặc định theo Ngày tiếp nhận giảm dần.<br>- Phân trang 20 bản ghi/trang.<br>- Trạng thái không có dữ liệu: hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo [MSG-INF-SYS-001]. |
+| **II. Bảng danh sách hồ sơ chờ nhập liệu** | - | Có | 20 bản ghi/trang | - Control UI: Bảng dữ liệu (Grid) kèm phân trang.<br>- Chỉ hiển thị hồ sơ giấy có Loại đăng ký thuộc nhóm Yêu cầu cung cấp bản sao, trạng thái "Chờ giải quyết" và Trạng thái lệ phí là "Đã thu" hoặc "Miễn phí".<br>- Chỉ hiển thị hồ sơ trong phạm vi đơn vị của Cán bộ đăng nhập.<br>- Sắp xếp mặc định theo Ngày tiếp nhận giảm dần.<br>- Phân trang 20 bản ghi/trang.<br>- Trạng thái không có dữ liệu: hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo [MSG-INF-SYS-001]. |
 | STT | Integer(10) | Có | Theo trang | Số thứ tự dòng trên trang kết quả. |
 | Mã hồ sơ | String(50) | Có | Theo hồ sơ | Chỉ đọc. |
 | Số đơn giấy | String(50) | Có | Theo hồ sơ tiếp nhận | Chỉ đọc. |
 | Người yêu cầu | String(255) | Có | Theo hồ sơ tiếp nhận | Tên cá nhân/tổ chức yêu cầu cấp bản sao. |
-| Loại yêu cầu | Enum(String(100)) | Có | Theo hồ sơ tiếp nhận | - Control UI: Label. <br>- Theo thông tin bản ghi |
+| Loại đăng ký | Enum(String(100)) | Có | Theo hồ sơ tiếp nhận | - Control UI: Label. <br>- Theo thông tin bản ghi |
 | Loại cung cấp bản sao | Enum(String(50)) | Có | Theo hồ sơ tiếp nhận | - Control UI: Label dạng nhãn (Badge).<br>- Theo thông tin bản ghi.<br>Gồm:<br>+ Bản sao điện tử<br>+ Bản sao giấy |
 | Số lượng bản sao | Integer(10) | Tùy điều kiện | Theo hồ sơ tiếp nhận | Chỉ hiển thị số lượng khi Loại cung cấp bản sao là "Bản sao giấy"; trường hợp "Bản sao điện tử" hiển thị dấu `-`. |
 | Ngày tiếp nhận | Datetime | Có | Theo hồ sơ tiếp nhận | Định dạng hiển thị: dd/mm/yyyy hh:mm. |
@@ -131,14 +131,12 @@
 | Phương thức nhận kết quả | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Địa chỉ nhận kết quả | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi.<br>- Chỉ hiển thị khi `Phương thức nhận kết quả` = "Qua dịch vụ bưu chính". |
 | Email nhận kết quả | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi.<br>- Chỉ hiển thị khi `Phương thức nhận kết quả` = "Cách thức điện tử". |
-| **Khối Thông tin loại yêu cầu và lệ phí** | - | - | - | |
-| Loại yêu cầu | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
+| **Khối Thông tin loại đăng ký và lệ phí** | - | - | - | |
+| Loại đăng ký | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Loại cung cấp bản sao | - | - | - | Control UI: Label dạng nhãn trạng thái (Badge), chỉ đọc. Lấy theo dữ liệu bản ghi.<br>Gồm:<br>+ Bản sao điện tử<br>+ Bản sao giấy |
 | Số lượng bản sao | Integer(10) | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi.<br>- Chỉ hiển thị khi `Loại cung cấp bản sao` = "Bản sao giấy". |
-| Tham số tính phí | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
-| Tên khoản phí | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Mã khoản phải thu | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
-| Số tiền phải thu | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
+| Số tiền phải thu | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. Chỉ hiển thị số tiền kèm đơn vị VNĐ, không hiển thị mã biểu phí và tên khoản phí. |
 | Số tiền đã thu | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Hình thức thu phí | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Số biên lai/chứng từ | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |

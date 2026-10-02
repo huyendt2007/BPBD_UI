@@ -40,7 +40,7 @@
 | Nguồn tiếp nhận | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Dịch vụ công<br>+ Trực tuyến<br>+ Trực tiếp |
 | Cán bộ xử lý | Enum(String(255)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Danh sách Cán bộ đã trình ký hồ sơ tới Lãnh đạo đăng nhập, thuộc đơn vị quản lý của Lãnh đạo.<br>- Lọc chính xác theo Cán bộ đã trình ký hồ sơ. |
 | Loại đăng ký | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại hình đăng ký [DM_04].<br>- Chỉ lọc trong phạm vi nhóm Phiếu đăng ký. |
-| Loại hình giao dịch | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại hình giao dịch [DM_01].<br>- Khi chọn "Biện pháp bảo đảm", hệ thống cập nhật danh sách Loại biện pháp / Hợp đồng theo Danh mục Loại biện pháp bảo đảm [DM_02].<br>- Khi chọn "Hợp đồng", hệ thống cập nhật danh sách Loại biện pháp / Hợp đồng theo Danh mục Loại hợp đồng [DM_03].<br>- Khi chọn "Thông báo xử lý tài sản", hệ thống lọc các hồ sơ thông báo xử lý tài sản trong [DM_04]. |
+| Loại hình giao dịch | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại hình giao dịch [DM_01].<br>- Khi chọn "Biện pháp bảo đảm", hệ thống cập nhật danh sách Loại biện pháp / Hợp đồng theo Danh mục Loại biện pháp bảo đảm [DM_02].<br>- Khi chọn "Hợp đồng", hệ thống cập nhật danh sách Loại biện pháp / Hợp đồng theo Danh mục Loại hợp đồng [DM_03]. |
 | Loại biện pháp / Hợp đồng | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại biện pháp bảo đảm [DM_02] hoặc Danh mục Loại hợp đồng [DM_03] theo Loại hình giao dịch đã chọn.<br>- Nếu chưa chọn Loại hình giao dịch, chỉ hiển thị "Tất cả". |
 | Loại tài sản | Enum(String(255)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Loại tài sản bảo đảm [DM_07].<br>- Nếu chọn một loại tài sản cụ thể, hệ thống hiển thị thêm **Khối lọc động theo Loại tài sản** và các Cột động tương ứng trên Bảng danh sách. |
 | **Khối lọc động theo Loại tài sản** | - | Không | Ẩn | - Không hiển thị tiêu đề khối; các trường lọc động hiển thị ngay dưới các trường lọc chung.<br>- Chỉ hiển thị khi Lãnh đạo chọn một giá trị cụ thể tại trường `Loại tài sản`.<br>- Gồm các trường lọc tương ứng với Loại tài sản đã chọn như mô tả tại các dòng dưới đây.<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space đối với các trường Input text; lọc chính xác đối với các trường Combobox. |
@@ -65,8 +65,8 @@
 | Đến ngày | Date | Không | Ngày hiện tại | Control UI: Datepicker.<br>- Lọc theo Thời điểm đăng ký.<br>- Định dạng hiển thị: dd/mm/yyyy.<br>- Đến ngày phải lớn hơn hoặc bằng Từ ngày. |
 | **II. Bảng danh sách Phiếu đăng ký chờ ký** | - | - | - | |
 | Bảng danh sách Phiếu đăng ký | Text(1000) | Không | 20 bản ghi/trang | Control UI: Bảng dữ liệu (Grid) kèm thanh phân trang.<br>- Không hiển thị tiêu đề phía trên bảng; Thanh công cụ đặt ở góc phải phía trên bảng.<br>- Chỉ hiển thị Phiếu đăng ký ở trạng thái "Chờ ký" được Cán bộ trình tới Lãnh đạo đang đăng nhập.<br>- **Mặc định khi mở màn hình**: Thời điểm đăng ký trong 3 tháng gần nhất (từ ngày hiện tại trừ 3 tháng đến ngày hiện tại), các bộ lọc còn lại là "Tất cả"/Trống, không hiển thị Cột động, 20 bản ghi/trang.<br>- Sắp xếp mặc định theo Thời điểm đăng ký tăng dần để ưu tiên hồ sơ đến trước.<br>- Cho phép sắp xếp khi click tiêu đề tại 03 cột: Thời điểm đăng ký, Tên bên bảo đảm, Tên bên nhận bảo đảm. Các cột còn lại không hỗ trợ sắp xếp.<br>- Trạng thái không có dữ liệu (Empty State): bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 trong tổng số 0 bản ghi"* và các nút điều hướng trang ở trạng thái khóa mờ (Disabled). |
-| Thanh công cụ (Toolbar) | - | - | - | Control UI: Nhóm nút phía trên Bảng danh sách, dùng cho thao tác lô trên các hồ sơ đã tích chọn.<br>Gồm:<br>+ Duyệt<br>+ Từ chối<br>- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
-| Checkbox | Boolean | Không | Không tích | Control UI: Checkbox chọn dòng / Chọn tất cả.<br>- Cho phép chọn một hoặc nhiều hồ sơ để thực hiện thao tác lô (Duyệt, Từ chối) trên thanh công cụ.<br>- Checkbox chọn tất cả tại tiêu đề bảng chỉ chọn các hồ sơ đang hiển thị trên trang hiện tại.<br>- Khi Lãnh đạo đổi bộ lọc tìm kiếm, trang dữ liệu hoặc số bản ghi/trang, hệ thống xóa danh sách hồ sơ đã chọn. |
+| Thanh công cụ (Toolbar) | - | - | - | Control UI: Nhóm nút phía trên Bảng danh sách, dùng cho thao tác lô trên các hồ sơ đã tích chọn.<br>Gồm:<br>+ Ký số<br>+ Từ chối<br>- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
+| Checkbox | Boolean | Không | Không tích | Control UI: Checkbox chọn dòng / Chọn tất cả.<br>- Cho phép chọn một hoặc nhiều hồ sơ để thực hiện thao tác lô (Ký số, Từ chối) trên thanh công cụ.<br>- Checkbox chọn tất cả tại tiêu đề bảng chỉ chọn các hồ sơ đang hiển thị trên trang hiện tại.<br>- Khi Lãnh đạo đổi bộ lọc tìm kiếm, trang dữ liệu hoặc số bản ghi/trang, hệ thống xóa danh sách hồ sơ đã chọn. |
 | STT | Integer(10) | - | Theo trang | Control UI: Label, chỉ đọc.<br>- Số thứ tự dòng tính liên tục theo trang kết quả hiện tại. |
 | Thời điểm đăng ký | Datetime | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Định dạng `dd/mm/yyyy HH:mm`.<br>- Hỗ trợ sắp xếp động (Sortable) khi click vào tiêu đề cột. |
 | Số đăng ký | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Link, chỉ đọc.<br>- Số đăng ký của Phiếu đăng ký. Click vào giá trị mở [MH02 - Màn hình Xem chi tiết Phiếu đăng ký chờ ký](#mh02). |
@@ -101,7 +101,7 @@
 | Người yêu cầu | String(255) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Tên người yêu cầu đăng ký; nếu hồ sơ không lưu Người yêu cầu riêng, hệ thống hiển thị theo Tên bên bảo đảm/người nộp hồ sơ theo dữ liệu hồ sơ. |
 | Nguồn tiếp nhận | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
 | Cán bộ xử lý | String(255) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc |
-| Thao tác | - | - | - | Control UI: Nhóm icon thao tác trên dòng.<br>Gồm:<br>+ Duyệt<br>+ Từ chối<br>+ Trả lại: chỉ khả dụng với hồ sơ có Nguồn tiếp nhận là "Trực tiếp"; hồ sơ khác hiển thị icon dạng mờ (Disabled), không ẩn.<br>- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
+| Thao tác | - | - | - | Control UI: Nhóm icon thao tác trên dòng.<br>Gồm:<br>+ Ký số<br>+ Từ chối<br>+ Trả lại: chỉ khả dụng với hồ sơ có Nguồn tiếp nhận là "Trực tiếp"; hồ sơ khác hiển thị icon dạng mờ (Disabled), không ẩn.<br>- Chi tiết nghiệp vụ xem ở bảng Chức năng trên màn hình. |
 
 ##### 4.3.2.4.2.3. Chức năng trên màn hình
 
@@ -110,14 +110,14 @@
 | 1 | Tìm kiếm | Nút | Hệ thống tìm kiếm Phiếu đăng ký ở trạng thái "Chờ ký" được trình tới Lãnh đạo đăng nhập theo các điều kiện đã nhập tại Khối Bộ lọc tìm kiếm (bao gồm Cán bộ xử lý và Khối lọc động theo Loại tài sản nếu đang hiển thị).<br>- **TH1 (Điều kiện ngày không hợp lệ)**: Nếu `Từ ngày` lớn hơn `Đến ngày` (quy định: Từ ngày phải nhỏ hơn hoặc bằng Đến ngày), hệ thống hiển thị [MSG-ERR-VAL-007], highlight viền đỏ ô nhập và không thực hiện tìm kiếm.<br>- **TH2 (Không có dữ liệu trả về)**:<br>+ Bảng kết quả: Hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo [MSG-INF-SYS-001].<br>+ Thanh phân trang: Dòng số lượng hiển thị *"Hiển thị 0-0 trong tổng số 0 bản ghi"*; các nút điều hướng trang ở trạng thái khóa mờ (Disabled).<br>- **TH Hợp lệ (Có dữ liệu trả về)**: Hệ thống thực hiện:<br>+ Hiển thị danh sách Phiếu đăng ký thỏa mãn đồng thời các điều kiện lọc.<br>+ Sắp xếp mặc định theo `Thời điểm đăng ký` tăng dần.<br>+ Phân trang theo số dòng hiển thị đang chọn. |
 | 2 | Xóa bộ lọc | Nút | Hệ thống thực hiện:<br>+ Đưa toàn bộ tiêu chí lọc về mặc định: Từ ngày là ngày hiện tại trừ 3 tháng, Đến ngày là ngày hiện tại, các Combobox (bao gồm Cán bộ xử lý) về "Tất cả", các ô nhập về Trống.<br>+ Ẩn Khối lọc động và các Cột động theo Loại tài sản.<br>+ Đặt lại phân trang về Trang 1 và tải lại danh sách. |
 | 3 | Chọn Loại tài sản | Combobox | - **TH1 (Chọn một loại tài sản cụ thể)**: Hệ thống hiển thị **Khối lọc động theo Loại tài sản** với các trường tương ứng loại tài sản đã chọn, đồng thời hiển thị các **Cột động** tương ứng trên Bảng danh sách.<br>- **TH2 (Đổi sang loại tài sản khác)**: Hệ thống xóa giá trị đã nhập ở các trường lọc động của loại cũ, hiển thị bộ trường lọc động và Cột động của loại mới.<br>- **TH3 (Chọn lại "Tất cả")**: Hệ thống ẩn Khối lọc động, xóa giá trị các trường lọc động và ẩn toàn bộ Cột động. |
-| 4 | Duyệt (thanh công cụ) | Nút trên Toolbar | Duyệt các hồ sơ đã tích chọn trên lưới cùng một lúc, không giới hạn số lượng hồ sơ.<br>- **TH1 (Chưa chọn hồ sơ)**: Quy định phải chọn ít nhất một hồ sơ trên lưới. Hệ thống hiển thị [MSG-ERR-DK-008], không mở popup.<br>- **TH2 (Có hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH03 - Popup Duyệt Phiếu đăng ký](#mh03) và truyền danh sách hồ sơ đã chọn vào popup:<br>+ Chọn 01 hồ sơ: popup hiển thị theo trường hợp Ký 01 hồ sơ.<br>+ Chọn từ 02 hồ sơ trở lên: popup hiển thị theo trường hợp Ký đồng thời nhiều hồ sơ. |
-| 5 | Duyệt (trên lưới) | Icon trên dòng | Duyệt hồ sơ tại dòng được chọn.<br>- **TH1 (Hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH03 - Popup Duyệt Phiếu đăng ký](#mh03) theo trường hợp Ký 01 hồ sơ cho hồ sơ tại dòng được chọn. |
+| 4 | Ký số (thanh công cụ) | Nút trên Toolbar | Ký số các hồ sơ đã tích chọn trên lưới cùng một lúc, không giới hạn số lượng hồ sơ.<br>- **TH1 (Chưa chọn hồ sơ)**: Quy định phải chọn ít nhất một hồ sơ trên lưới. Hệ thống hiển thị [MSG-ERR-DK-008], không mở popup.<br>- **TH2 (Có hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH03 - Popup Ký số Phiếu đăng ký](#mh03) và truyền danh sách hồ sơ đã chọn vào popup:<br>+ Chọn 01 hồ sơ: popup hiển thị theo trường hợp Ký 01 hồ sơ.<br>+ Chọn từ 02 hồ sơ trở lên: popup hiển thị theo trường hợp Ký đồng thời nhiều hồ sơ. |
+| 5 | Ký số (trên lưới) | Icon trên dòng | Ký số hồ sơ tại dòng được chọn.<br>- **TH1 (Hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH03 - Popup Ký số Phiếu đăng ký](#mh03) theo trường hợp Ký 01 hồ sơ cho hồ sơ tại dòng được chọn. |
 | 6 | Từ chối (thanh công cụ) | Nút trên Toolbar | Từ chối các hồ sơ đã tích chọn trên lưới cùng một lúc, không giới hạn số lượng hồ sơ.<br>- **TH1 (Chưa chọn hồ sơ)**: Quy định phải chọn ít nhất một hồ sơ trên lưới. Hệ thống hiển thị [MSG-ERR-DK-008], không mở popup.<br>- **TH2 (Có hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH04 - Popup Từ chối Phiếu đăng ký](#mh04) và truyền danh sách hồ sơ đã chọn vào popup; Lý do từ chối áp dụng cho toàn bộ hồ sơ trong danh sách:<br>+ Chọn 01 hồ sơ: popup hiển thị theo trường hợp Từ chối 01 hồ sơ.<br>+ Chọn từ 02 hồ sơ trở lên: popup hiển thị theo trường hợp Từ chối đồng thời nhiều hồ sơ. |
 | 7 | Từ chối (trên lưới) | Icon trên dòng | Từ chối hồ sơ tại dòng được chọn.<br>- **TH1 (Hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH04 - Popup Từ chối Phiếu đăng ký](#mh04) theo trường hợp Từ chối 01 hồ sơ cho hồ sơ tại dòng được chọn. |
 | 8 | Trả lại (trên lưới) | Icon trên dòng | Chỉ khả dụng với hồ sơ có Nguồn tiếp nhận là "Trực tiếp"; hồ sơ khác hiển thị icon dạng mờ (Disabled), không ẩn. Trả lại hồ sơ tại dòng được chọn.<br>- **TH1 (Hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH05 - Popup Trả lại Phiếu đăng ký](#mh05) cho hồ sơ tại dòng được chọn. |
 | 9 | Click dòng dữ liệu | Row click | Mở [MH02 - Màn hình Xem chi tiết Phiếu đăng ký chờ ký](#mh02) của bản ghi được chọn. |
 | 10 | Sắp xếp cột | Header cột | Chỉ áp dụng cho 03 cột: `Thời điểm đăng ký`, `Tên bên bảo đảm`, `Tên bên nhận bảo đảm`. Các cột còn lại không hỗ trợ sắp xếp. Khi Lãnh đạo click vào tiêu đề một trong 03 cột trên:<br>+ Lần click thứ nhất: Sắp xếp danh sách kết quả theo chiều tăng dần.<br>+ Lần click thứ hai: Sắp xếp danh sách kết quả theo chiều giảm dần.<br>+ Lần click thứ ba: Đưa về trạng thái sắp xếp mặc định (Thời điểm đăng ký tăng dần).<br>+ Giữ nguyên các tiêu chí lọc đang thiết lập và đưa hiển thị về Trang 1. |
-| 11 | Chọn tất cả | Checkbox header | Tích chọn hoặc bỏ chọn toàn bộ các bản ghi đang hiển thị trên trang hiện tại phục vụ thao tác lô (Duyệt, Từ chối) trên thanh công cụ. |
+| 11 | Chọn tất cả | Checkbox header | Tích chọn hoặc bỏ chọn toàn bộ các bản ghi đang hiển thị trên trang hiện tại phục vụ thao tác lô (Ký số, Từ chối) trên thanh công cụ. |
 
 ---
 
@@ -133,7 +133,7 @@
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
 | **Nội dung màn hình** | - | - | - | Hiển thị và xử lý giống các khối từ **I. Sidebar dòng thời gian lịch sử** đến **VIII. Tài liệu đính kèm** tại [Màn hình Xem chi tiết Phiếu đăng ký - Xử lý Phiếu đăng ký - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Xu_ly_Phieu_dang_ky_Can_bo.md#mh02).<br>- **Mặc định khi mở màn hình**: hệ thống focus (chọn và tô nổi bật) vào đúng phiên bản tương ứng với bản ghi Lãnh đạo đã chọn tại [MH01 - Màn hình Danh sách Phiếu đăng ký chờ ký](#mh01).<br>- Toàn bộ dữ liệu ở trạng thái chỉ đọc. |
-| Thanh nút chức năng | - | - | - | Control UI: Thanh nút cố định (Sticky) ở cuối màn hình, luôn hiển thị kể cả khi nội dung ngắn hoặc khi cuộn trang.<br>Gồm:<br>+ Đóng<br>+ Trả lại: chỉ hiển thị với hồ sơ có Nguồn tiếp nhận là "Trực tiếp"<br>+ Từ chối<br>+ Duyệt.|
+| Thanh nút chức năng | - | - | - | Control UI: Thanh nút cố định (Sticky) ở cuối màn hình, luôn hiển thị kể cả khi nội dung ngắn hoặc khi cuộn trang.<br>Gồm:<br>+ Đóng<br>+ Trả lại: chỉ hiển thị với hồ sơ có Nguồn tiếp nhận là "Trực tiếp"<br>+ Từ chối<br>+ Ký số.|
 
 ##### 4.3.2.4.3.3. Chức năng trên màn hình
 
@@ -145,24 +145,24 @@
 | 4 | Đóng | Nút | Hệ thống đóng màn hình Xem chi tiết và quay lại [MH01 - Màn hình Danh sách Phiếu đăng ký chờ ký](#mh01), giữ nguyên bộ lọc tìm kiếm và trang dữ liệu trước đó. |
 | 5 | Trả lại | Nút | Chỉ hiển thị với hồ sơ có Nguồn tiếp nhận là "Trực tiếp".<br>- **TH1 (Hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH05 - Popup Trả lại Phiếu đăng ký](#mh05) cho hồ sơ đang xem. |
 | 6 | Từ chối | Nút | - **TH1 (Hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH04 - Popup Từ chối Phiếu đăng ký](#mh04) theo trường hợp Từ chối 01 hồ sơ cho hồ sơ đang xem. |
-| 7 | Duyệt | Nút | - **TH1 (Hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH03 - Popup Duyệt Phiếu đăng ký](#mh03) theo trường hợp Ký 01 hồ sơ cho hồ sơ đang xem. |
+| 7 | Ký số | Nút | - **TH1 (Hồ sơ không còn ở trạng thái "Chờ ký")**: Hệ thống hiển thị [MSG-ERR-DK-005], không mở popup.<br>- **TH Hợp lệ**: Hệ thống mở [MH03 - Popup Ký số Phiếu đăng ký](#mh03) theo trường hợp Ký 01 hồ sơ cho hồ sơ đang xem. |
 
 ---
 
 <a id="mh03"></a>
-#### 4.3.2.4.4. MH03 - Popup Duyệt Phiếu đăng ký
+#### 4.3.2.4.4. MH03 - Popup Ký số Phiếu đăng ký
 
 ##### 4.3.2.4.4.1. Màn hình
 
-![Popup Duyệt Phiếu đăng ký](images/UC_DK_LD_MH03_Popup_duyet_Phieu_dang_ky.png)
+![Popup Ký số Phiếu đăng ký](images/UC_DK_LD_MH03_Popup_duyet_Phieu_dang_ky.png)
 
 ##### 4.3.2.4.4.2. Mô tả thông tin trên màn hình
 
 \- Popup có 02 trường hợp hiển thị:
 
-\+ **Ký 01 hồ sơ**: khi Lãnh đạo bấm Duyệt trên lưới, bấm Duyệt tại [MH02 - Màn hình Xem chi tiết Phiếu đăng ký chờ ký](#mh02), hoặc bấm Duyệt trên thanh công cụ khi chỉ tích chọn 01 hồ sơ. Popup hiển thị khung **Thông tin hồ sơ ký số**.
+\+ **Ký 01 hồ sơ**: khi Lãnh đạo bấm Ký số trên lưới, bấm Ký số tại [MH02 - Màn hình Xem chi tiết Phiếu đăng ký chờ ký](#mh02), hoặc bấm Ký số trên thanh công cụ khi chỉ tích chọn 01 hồ sơ. Popup hiển thị khung **Thông tin hồ sơ ký số**.
 
-\+ **Ký đồng thời nhiều hồ sơ**: khi Lãnh đạo bấm Duyệt trên thanh công cụ và tích chọn từ 02 hồ sơ trở lên. Popup hiển thị **Danh sách hồ sơ ký số**. Không giới hạn số lượng hồ sơ trong một lần ký.
+\+ **Ký đồng thời nhiều hồ sơ**: khi Lãnh đạo bấm Ký số trên thanh công cụ và tích chọn từ 02 hồ sơ trở lên. Popup hiển thị **Danh sách hồ sơ ký số**. Không giới hạn số lượng hồ sơ trong một lần ký.
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |

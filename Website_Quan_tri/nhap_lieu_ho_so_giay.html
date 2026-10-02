@@ -3969,7 +3969,7 @@ const qs = new URLSearchParams(location.search);
         <div class="asset-selection-group">
             <div class="asset-selection-title">
                 Loại tài sản <span class="required">*</span>
-                <i class="fa-solid fa-circle-info" style="color:var(--blue);font-size:13px" title="Chọn một hoặc nhiều loại tài sản bằng cách đánh dấu hộp kiểm"></i>
+                <i class="fa-solid fa-circle-info" style="color:var(--blue);font-size:13px" title="Hướng dẫn kê khai Loại tài sản:&#10;1. Đối với hàng hóa luân chuyển: Kê khai theo giá trị hàng hóa hoặc theo loại hàng hóa.&#10;2. Đối với kho hàng: Kê khai theo giá trị hàng hóa hoặc theo tên, loại hàng hóa và kê khai thêm thông tin về địa chỉ hoặc số hiệu kho hoặc dấu hiệu khác của vị trí kho hàng. Không kê khai nhà kho, công trình xây dựng khác hoặc kho bãi được sử dụng cho việc chứa hoặc lưu trữ hàng hóa.&#10;3. Đối với quyền tài sản: Kê khai tên quyền tài sản được dùng để bảo đảm và căn cứ phát sinh quyền tài sản. Trường hợp căn cứ phát sinh quyền có ghi rõ tên quyền tài sản thì kê khai thông tin về tên quyền phải phù hợp với thông tin này (nếu là hợp đồng thì kê khai tên hợp đồng, số hợp đồng, thời điểm có hiệu lực, các bên tham gia; đối với căn cứ khác thì kê khai tên căn cứ, tên chủ thể ban hành, số căn cứ, thời điểm có hiệu lực/ngày ký).&#10;4. Đối với chứng khoán không đăng ký tập trung: Thông tin kê khai phải thể hiện được tài sản là chứng khoán không đăng ký tập trung (bao gồm cả chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam mà trở thành chứng khoán không đăng ký tập trung).&#10;5. Đối đối với động sản khác: Phạm vi kê khai có thể là một, một số hoặc toàn bộ tài sản hiện có hoặc tài sản hình thành trong tương lai nhưng không bao gồm tàu bay, tàu biển, chứng khoán đã đăng ký tập trung, quyền sử dụng đất, nhà ở, công trình xây dựng."></i>
             </div>
             <div id="regErrorTaiSan" class="error-text" style="display:none;margin-bottom:12px;padding:10px 14px;background:#fef2f2;border:1px solid #fca5a5;border-radius:6px;font-size:13px"><i class="fa-solid fa-circle-exclamation"></i> Vui lòng chọn ít nhất một loại tài sản bảo đảm.</div>
 
@@ -4032,7 +4032,7 @@ const qs = new URLSearchParams(location.search);
                                         <th style="min-width:130px">
                                             <div style="display:flex;align-items:center;gap:4px">
                                                 BIỂN SỐ
-                                                <i class="fa-solid fa-circle-info" style="color:#ef4444;font-size:11px" title="Kê khai biển số theo Giấy chứng nhận"></i>
+                                                <i class="fa-solid fa-circle-info" style="color:#ef4444;font-size:11px" title="Để có đủ thông tin đáp ứng yêu cầu kết nối, chia sẻ dữ liệu với Cục CSGT, đề nghị người yêu cầu đăng ký kê khai biển số của phương tiện theo Giấy chứng nhận nhưng không nhập thông tin '(T)' hoặc '(V)', nếu có trên Giấy chứng nhận"></i>
                                             </div>
                                         </th>
                                         <th style="width:60px;text-align:center">Xóa</th>
@@ -4057,7 +4057,7 @@ const qs = new URLSearchParams(location.search);
                     </label>
 
                     <div class="asset-sub-box hidden" id="regGridTauCa">
-                        <h4 style="color:var(--primary);margin:0 0 12px;font-size:15px;font-weight:700">Phương tiện <span class="required">*</span></h4>
+                        <h4 style="color:var(--primary);margin:0 0 12px;font-size:15px;font-weight:700">Phương tiện</h4>
                         <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
                             <button type="button" class="btn small" onclick="addRegVehicleRow()">+ Thêm phương tiện</button>
                             <button type="button" class="btn small danger" style="background:#ef4444;color:#fff;border-color:#ef4444" onclick="confirmRemoveRegCheckedRows('regTbodyTauCa')">Xóa phương tiện</button>
@@ -4096,12 +4096,12 @@ const qs = new URLSearchParams(location.search);
                         <h4 style="color:var(--primary);margin:0 0 12px;font-size:15px;font-weight:700">Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản</h4>
                         <div class="field" id="fieldQtsTenQuyen">
                             <label>Tên quyền <span class="required">*</span></label>
-                            <textarea id="regQtsTenQuyen" rows="2" placeholder="Nhập tên quyền tài sản..."></textarea>
+                            <textarea id="regQtsTenQuyen" rows="2"></textarea>
                             <div class="error-text">Đây là trường bắt buộc</div>
                         </div>
                         <div class="field" id="fieldQtsCanCu" style="margin-top:10px">
                             <label>Căn cứ phát sinh quyền <span class="required">*</span></label>
-                            <textarea id="regQtsCanCu" rows="2" placeholder="Nhập căn cứ phát sinh quyền..."></textarea>
+                            <textarea id="regQtsCanCu" rows="2"></textarea>
                             <div class="error-text">Đây là trường bắt buộc</div>
                         </div>
                     </div>
@@ -4110,12 +4110,12 @@ const qs = new URLSearchParams(location.search);
                 <!-- 4. Cây hằng năm, công trình tạm (Theo đúng ảnh mẫu) -->
                 <div class="asset-type-wrapper">
                     <label class="asset-check-row">
-                        <input type="checkbox" class="asset-checkbox" value="cayHangNam" checked onchange="updateRegVisibility()">
+                        <input type="checkbox" class="asset-checkbox" value="cayHangNam" onchange="updateRegVisibility()">
                         <span class="asset-name">Cây hằng năm, công trình tạm</span>
                     </label>
 
-                    <div class="asset-sub-textarea-box" id="regGridCayHangNam">
-                        <textarea id="regDescCayHangNam" rows="4" placeholder="Nhập mô tả cây hằng năm, công trình tạm..."></textarea>
+                    <div class="asset-sub-textarea-box hidden" id="regGridCayHangNam">
+                        <textarea id="regDescCayHangNam" rows="3"></textarea>
                         <div class="error-text">Đây là trường bắt buộc</div>
                     </div>
                 </div>
@@ -4135,18 +4135,18 @@ const qs = new URLSearchParams(location.search);
                         </div>
                         <div class="field" id="fieldHhGiaTri">
                             <label>Giá trị hàng hóa/Tên, loại hàng hóa <span class="required">*</span></label>
-                            <textarea id="regHhGiaTri" rows="2" placeholder="Nhập giá trị / tên, loại hàng hóa..."></textarea>
+                            <textarea id="regHhGiaTri" rows="2"></textarea>
                             <div class="error-text">Đây là trường bắt buộc</div>
                         </div>
                         <div class="hidden dashed-sep" id="regFieldsKhoHang">
                             <div class="field" id="fieldHhDiaChiKho">
                                 <label>Địa chỉ kho hàng <span class="required">*</span></label>
-                                <textarea id="regHhDiaChiKho" rows="2" placeholder="Nhập địa chỉ kho hàng..."></textarea>
+                                <textarea id="regHhDiaChiKho" rows="2"></textarea>
                                 <div class="error-text">Đây là trường bắt buộc</div>
                             </div>
                             <div class="field" style="margin-top:10px">
                                 <label>Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng</label>
-                                <textarea id="regHhSoHieuKho" rows="2" placeholder="Nhập số hiệu kho hàng hoặc dấu hiệu nhận biết khác..."></textarea>
+                                <textarea id="regHhSoHieuKho" rows="2"></textarea>
                             </div>
                         </div>
                     </div>
@@ -4160,16 +4160,16 @@ const qs = new URLSearchParams(location.search);
                     </label>
 
                     <div class="asset-sub-box hidden" id="regGridChungKhoan">
-                        <h4 style="color:var(--primary);margin:0 0 12px;font-size:15px;font-weight:700">Bảng thông tin Thời điểm đăng ký biện pháp bảo đảm bằng chứng khoán tại VSDC</h4>
+                        <h4 style="color:var(--primary);margin:0 0 12px;font-size:15px;font-weight:700">Bảng thông tin Thời điểm đăng ký biện pháp bảo đảm bằng chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam</h4>
                         <div class="table-wrap" style="margin-bottom:12px;max-width:520px">
                             <table class="table" style="min-width:auto">
                                 <thead><tr><th>GIỜ</th><th>PHÚT</th><th>NGÀY</th><th>THÁNG</th><th>NĂM</th></tr></thead>
                                 <tbody><tr>
-                                    <td><input type="number" id="regCkGio" min="0" max="23" placeholder="09" style="width:65px"></td>
-                                    <td><input type="number" id="regCkPhut" min="0" max="59" placeholder="30" style="width:65px"></td>
-                                    <td><input type="number" id="regCkNgay" min="1" max="31" placeholder="24" style="width:65px"></td>
-                                    <td><input type="number" id="regCkThang" min="1" max="12" placeholder="07" style="width:65px"></td>
-                                    <td><input type="number" id="regCkNam" min="2000" max="2099" placeholder="2026" style="width:85px"></td>
+                                    <td><input type="number" id="regCkGio" min="0" max="23" style="width:65px"></td>
+                                    <td><input type="number" id="regCkPhut" min="0" max="59" style="width:65px"></td>
+                                    <td><input type="number" id="regCkNgay" min="1" max="31" style="width:65px"></td>
+                                    <td><input type="number" id="regCkThang" min="1" max="12" style="width:65px"></td>
+                                    <td><input type="number" id="regCkNam" min="2000" max="2099" style="width:85px"></td>
                                 </tr></tbody>
                             </table>
                         </div>
@@ -4185,7 +4185,7 @@ const qs = new URLSearchParams(location.search);
                     </label>
 
                     <div class="asset-sub-textarea-box hidden" id="regGridDongSanKhac">
-                        <textarea id="regDescDongSanKhac" rows="4" placeholder="Nhập mô tả các động sản khác..."></textarea>
+                        <textarea id="regDescDongSanKhac" rows="3"></textarea>
                         <div class="error-text">Đây là trường bắt buộc</div>
                     </div>
                 </div>
@@ -4848,10 +4848,10 @@ const qs = new URLSearchParams(location.search);
                 dongSanKhac: false
             },
             quyenTaiSan: { tenQuyen: '', canCu: '' },
-            cayHangNam: 'Theo thông tin hồ sơ gốc',
+            cayHangNam: '',
             hangHoa: { loai: 'luanchuyen', tenHangHoa: '', diaChiKho: '', soHieuKho: '' },
             chungKhoan: { ck_gio: '', ck_phut: '', ck_ngay: '', ck_thang: '', ck_nam: '', file: '' },
-            dongSanKhac: 'Theo thông tin hồ sơ gốc'
+            dongSanKhac: ''
         };
 
         // chgState chứa trạng thái đang soạn thảo (mặc định mở khóa tất cả cho cán bộ)
@@ -5506,7 +5506,7 @@ const qs = new URLSearchParams(location.search);
             const khoBlock = document.getElementById('chgFieldsKhoHang');
             const lbl = document.getElementById('chgHhGiaTriLabel');
             if (khoBlock) khoBlock.style.display = isKho ? 'block' : 'none';
-            if (lbl) lbl.innerHTML = isKho ? 'Tên kho hàng <span class="required">*</span>' : 'Giá trị hàng hóa / Tên, loại hàng hóa <span class="required">*</span>';
+            if (lbl) lbl.innerHTML = 'Giá trị hàng hóa/Tên, loại hàng hóa <span class="required">*</span>';
             if (chgState.hangHoa) chgState.hangHoa.loai = isKho ? 'khohang' : 'luanchuyen';
         }
 
@@ -5518,7 +5518,7 @@ const qs = new URLSearchParams(location.search);
 
             const soKhungList = chgState.assets.filter(a => a.type !== 'tauca');
             if (!soKhungList.length) {
-                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:14px">Chưa có phương tiện số khung nào</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:14px">Chưa có phương tiện số khung nào</td></tr>`;
                 return;
             }
 
@@ -5566,8 +5566,7 @@ const qs = new URLSearchParams(location.search);
                     <td><input type="text" class="inline-input" value="${e(a.frameNo || '')}" ${readonlyAttr} onchange="updateInlineAsset(${idx}, 'sokhung', 'frameNo', this.value)"></td>
                     <td><input type="text" class="inline-input" value="${e(a.engineNo || '')}" ${readonlyAttr} onchange="updateInlineAsset(${idx}, 'sokhung', 'engineNo', this.value)"></td>
                     <td><input type="text" class="inline-input" value="${e(a.plateNo || '')}" ${readonlyAttr} onchange="updateInlineAsset(${idx}, 'sokhung', 'plateNo', this.value)"></td>
-                    <td style="text-align:center">${statusBadge}</td>
-                    <td style="text-align:center"><div style="display:flex;justify-content:center;gap:4px">${btnDelete}${btnUndo}</div></td>
+                    <td style="text-align:center">${isRemoved ? btnUndo : btnDelete}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -5682,7 +5681,7 @@ const qs = new URLSearchParams(location.search);
             tbody.innerHTML = '';
 
             if (!chgState.tauCaList || !chgState.tauCaList.length) {
-                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:14px">Chưa có phương tiện tàu cá nào</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:14px">Chưa có phương tiện tàu cá nào</td></tr>`;
                 return;
             }
 
@@ -5724,8 +5723,7 @@ const qs = new URLSearchParams(location.search);
                     <td><input type="text" class="inline-input" value="${e(a.regNo || '')}" ${readonlyAttr} onchange="updateInlineTauCa(${idx}, 'regNo', this.value)"></td>
                     <td><input type="text" class="inline-input" value="${e(a.certAgency || '')}" ${readonlyAttr} onchange="updateInlineTauCa(${idx}, 'certAgency', this.value)"></td>
                     <td><input type="text" class="inline-input" value="${e(a.level || '')}" ${readonlyAttr} onchange="updateInlineTauCa(${idx}, 'level', this.value)"></td>
-                    <td style="text-align:center">${statusBadge}</td>
-                    <td style="text-align:center"><div style="display:flex;justify-content:center;gap:4px">${btnDelete}${btnUndo}</div></td>
+                    <td style="text-align:center">${isRemoved ? btnUndo : btnDelete}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -6356,7 +6354,7 @@ function changeRegistrationForm() {
             </div>
         </section>
 
-        <!-- CARD 6: TÀI SẢN BẢO ĐẢM - CÁC KHỐI THÔNG TIN NẰM NGAY DƯỚI TỪNG LOẠI TÀI SẢN -->
+        <!-- CARD 6: TÀI SẢN BẢO ĐẢM - Đồng nhất với Website Khách hàng (Đăng ký thay đổi): khối chi tiết nằm ngay dưới từng loại tài sản -->
         <section class="card-section form-block" id="cardAssets" style="margin-bottom:20px">
             <div class="section-title" style="display:flex;align-items:center;gap:8px">
                 <i class="fa-solid fa-car" style="color:var(--blue)"></i>
@@ -6364,262 +6362,225 @@ function changeRegistrationForm() {
             </div>
 
             <div style="margin-bottom:16px;padding:12px 16px;background:#eef2ff;border-left:4px solid var(--blue);border-radius:4px;font-size:13px;color:#1e3a8a">
-                Bạn phải mô tả tài sản bảo đảm và nhập số khung (nếu có). Cần chọn một hoặc nhiều tài sản bằng cách đánh dấu nhiều loại tài sản. Dữ liệu chi tiết từng loại tài sản hiển thị ngay bên dưới lựa chọn.
+                Bạn phải mô tả tài sản bảo đảm và nhập số khung (nếu có). Cần chọn một hoặc nhiều tài sản bằng cách đánh dấu nhiều loại tài sản.
             </div>
 
-            <div class="field" style="margin-bottom:20px">
-                <label class="form-label" style="font-weight:700;display:block;margin-bottom:12px;font-size:14px">Loại tài sản <span class="required">*</span></label>
-                
-                <div class="asset-items-list" style="display:flex;flex-direction:column;gap:16px">
-                    
-                    <!-- 1. PHƯƠNG TIỆN CÓ SỐ KHUNG -->
-                    <div class="asset-type-wrapper" style="border:1px solid var(--line);border-radius:8px;padding:16px;background:#fff">
-                        <label class="check-item" style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-weight:600">
-                            <input type="checkbox" id="chkSoKhung" onchange="chgToggleAssetType('soKhung')" ${chgState.assetTypes.soKhung ? 'checked' : ''} style="margin-top:3px">
-                            <span>1. Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)</span>
-                        </label>
-                        
-                        <!-- Lưới Số khung nằm NGAY DƯỚI Checkbox -->
-                        <div id="gridSoKhung" class="sub-form" style="display:${chgState.assetTypes.soKhung ? 'block' : 'none'};margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)">
-                            <h4 style="margin:0 0 12px 0;font-size:14px;color:var(--blue);font-weight:700">Chi tiết Phương tiện có số khung <span class="required">*</span></h4>
-                            <div style="margin-bottom:12px;display:flex;gap:8px">
-                                <button type="button" class="btn primary small" id="btnThemSoKhung" onclick="addInlineSoKhungRow()">+ Thêm số khung</button>
-                                <button type="button" class="btn danger small" id="btnXoaSoKhung" onclick="deleteSelectedChgSK()">Xóa số khung</button>
-                            </div>
+            <div class="asset-selection-group">
+                <div class="asset-selection-title">
+                    Loại tài sản <span class="required">*</span>
+                    <i class="fa-solid fa-circle-info" style="color:var(--blue);font-size:13px" title="Hướng dẫn kê khai Loại tài sản:&#10;1. Đối với hàng hóa luân chuyển: Kê khai theo giá trị hàng hóa hoặc theo loại hàng hóa.&#10;2. Đối với kho hàng: Kê khai theo giá trị hàng hóa hoặc theo tên, loại hàng hóa và kê khai thêm thông tin về địa chỉ hoặc số hiệu kho hoặc dấu hiệu khác của vị trí kho hàng. Không kê khai nhà kho, công trình xây dựng khác hoặc kho bãi được sử dụng cho việc chứa hoặc lưu trữ hàng hóa.&#10;3. Đối với quyền tài sản: Kê khai tên quyền tài sản được dùng để bảo đảm và căn cứ phát sinh quyền tài sản. Trường hợp căn cứ phát sinh quyền có ghi rõ tên quyền tài sản thì kê khai thông tin về tên quyền phải phù hợp với thông tin này (nếu là hợp đồng thì kê khai tên hợp đồng, số hợp đồng, thời điểm có hiệu lực, các bên tham gia; đối với căn cứ khác thì kê khai tên căn cứ, tên chủ thể ban hành, số căn cứ, thời điểm có hiệu lực/ngày ký).&#10;4. Đối với chứng khoán không đăng ký tập trung: Thông tin kê khai phải thể hiện được tài sản là chứng khoán không đăng ký tập trung (bao gồm cả chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam mà trở thành chứng khoán không đăng ký tập trung).&#10;5. Đối đối với động sản khác: Phạm vi kê khai có thể là một, một số hoặc toàn bộ tài sản hiện có hoặc tài sản hình thành trong tương lai nhưng không bao gồm tàu bay, tàu biển, chứng khoán đã đăng ký tập trung, quyền sử dụng đất, nhà ở, công trình xây dựng."></i>
+                </div>
 
-                            <!-- Bộ lọc nhanh số khung -->
-                            <div class="asset-quick-filter" style="display:grid;grid-template-columns:repeat(4, 1fr) auto;gap:10px;align-items:end;margin-bottom:12px;padding:12px;background:#f8fafc;border:1px solid var(--line);border-radius:6px">
-                                <div class="field" style="margin:0">
-                                    <label style="font-size:11.5px">Tên phương tiện</label>
-                                    <select class="form-select" id="filterSKType">
+                <div class="asset-items-list">
+
+                    <!-- Phương tiện có số khung -->
+                    <div class="asset-type-wrapper">
+                        <label class="asset-check-row">
+                            <input type="checkbox" class="asset-checkbox" id="chkSoKhung" onchange="chgToggleAssetType('soKhung')" ${chgState.assetTypes.soKhung ? 'checked' : ''}>
+                            <span class="asset-name">Phương tiện giao thông cơ giới đường bộ, xe máy chuyên dùng CÓ số khung (ô tô, mô tô, xe gắn máy...)</span>
+                        </label>
+                        <div id="gridSoKhung" class="asset-sub-box" style="display:${chgState.assetTypes.soKhung ? 'block' : 'none'}">
+                            <h4 style="color:var(--primary);margin:0 0 12px;font-size:15px;font-weight:700">Số khung <span class="required">*</span></h4>
+                            <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+                                <button type="button" class="btn small" id="btnThemSoKhung" onclick="addInlineSoKhungRow()">+ Thêm số khung</button>
+                                <button type="button" class="btn small danger" style="background:#ef4444;color:#fff;border-color:#ef4444" id="btnXoaSoKhung" onclick="deleteSelectedChgSK()">Xóa số khung</button>
+                            </div>
+                            <div class="asset-quick-filter-bar">
+                                <div class="filter-col">
+                                    <label>Tên phương tiện</label>
+                                    <select id="filterSKType">
                                         <option value="">Tất cả</option>
                                         <option value="oto">Ô tô</option>
                                         <option value="moto">Mô tô</option>
                                         <option value="xemaychuyendung">Xe máy chuyên dùng</option>
                                     </select>
                                 </div>
-                                <div class="field" style="margin:0">
-                                    <label style="font-size:11.5px">Số khung</label>
-                                    <input class="form-control" id="filterSKFrameNo" placeholder="Nhập số khung...">
+                                <div class="filter-col">
+                                    <label>Số khung</label>
+                                    <input type="text" id="filterSKFrameNo" placeholder="Nhập số khung...">
                                 </div>
-                                <div class="field" style="margin:0">
-                                    <label style="font-size:11.5px">Số máy</label>
-                                    <input class="form-control" id="filterSKEngineNo" placeholder="Nhập số máy...">
+                                <div class="filter-col">
+                                    <label>Số máy</label>
+                                    <input type="text" id="filterSKEngineNo" placeholder="Nhập số máy...">
                                 </div>
-                                <div class="field" style="margin:0">
-                                    <label style="font-size:11.5px">Biển số</label>
-                                    <input class="form-control" id="filterSKPlateNo" placeholder="Nhập biển số...">
+                                <div class="filter-col">
+                                    <label>Biển số</label>
+                                    <input type="text" id="filterSKPlateNo" placeholder="Nhập biển số...">
                                 </div>
                                 <div style="display:flex;gap:6px">
-                                    <button type="button" class="btn primary small" onclick="applyChgSoKhungFilter()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
-                                    <button type="button" class="btn small" onclick="clearChgSoKhungFilter()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                                    <button type="button" class="btn small primary" onclick="applyChgSoKhungFilter()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                                    <button type="button" class="btn small" onclick="clearChgSoKhungFilter()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa lọc</button>
                                 </div>
                             </div>
-
-                            <!-- Bảng nhập liệu inline Số khung -->
                             <div class="table-wrap">
                                 <table class="table" id="tableSoKhung">
                                     <thead>
                                         <tr>
-                                            <th style="width:36px;text-align:center"><input type="checkbox" id="chkAllSK" onchange="toggleSelectAllChgSK(this)" title="Chọn tất cả"></th>
-                                            <th style="width:40px;text-align:center">STT</th>
-                                            <th style="width:130px">TÊN PHƯƠNG TIỆN</th>
-                                            <th style="width:170px">NHÃN HIỆU, MÀU SƠN</th>
-                                            <th style="width:170px">SỐ KHUNG</th>
-                                            <th style="width:130px">SỐ MÁY</th>
-                                            <th style="width:140px">BIỂN SỐ</th>
-                                            <th style="width:140px;text-align:center">TRẠNG THÁI</th>
-                                            <th style="width:80px;text-align:center">THAO TÁC</th>
+                                            <th style="width:40px;text-align:center"><input type="checkbox" id="chkAllSK" onchange="toggleSelectAllChgSK(this)" title="Chọn tất cả"></th>
+                                            <th style="width:50px;text-align:center">STT</th>
+                                            <th style="min-width:130px">TÊN PHƯƠNG TIỆN</th>
+                                            <th style="min-width:150px">NHÃN HIỆU, MÀU SƠN</th>
+                                            <th style="min-width:150px">SỐ KHUNG</th>
+                                            <th style="min-width:130px">SỐ MÁY</th>
+                                            <th style="min-width:130px">
+                                                <div style="display:flex;align-items:center;gap:4px">
+                                                    BIỂN SỐ
+                                                    <i class="fa-solid fa-circle-info" style="color:#ef4444;font-size:11px" title="Để có đủ thông tin đáp ứng yêu cầu kết nối, chia sẻ dữ liệu với Cục CSGT, đề nghị người yêu cầu đăng ký kê khai biển số của phương tiện theo Giấy chứng nhận nhưng không nhập thông tin '(T)' hoặc '(V)', nếu có trên Giấy chứng nhận"></i>
+                                                </div>
+                                            </th>
+                                            <th style="width:60px;text-align:center">Xóa</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tbodySoKhung">
-                                    </tbody>
+                                    <tbody id="tbodySoKhung"></tbody>
                                 </table>
                             </div>
-
-                            <div style="margin-top:12px;display:flex;gap:8px;border-top:1px solid var(--line);padding-top:12px">
-                                <button type="button" class="btn small" onclick="downloadTemplateFile('sokhung')"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
-                                <button type="button" class="btn small success" onclick="importExcelData('sokhung')"><i class="fa-solid fa-file-import"></i> Gửi tệp tin danh sách số khung</button>
+                            <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px">
+                                <button type="button" class="btn small" onclick="downloadTemplateFile('sokhung')">File mẫu</button>
+                                <button type="button" class="btn small success" style="background:#10b981;border-color:#10b981;color:#fff" onclick="importExcelData('sokhung')">Gửi tệp tin danh sách số khung</button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 2. TÀU CÁ / PHƯƠNG TIỆN THỦY -->
-                    <div class="asset-type-wrapper" style="border:1px solid var(--line);border-radius:8px;padding:16px;background:#fff">
-                        <label class="check-item" style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-weight:600">
-                            <input type="checkbox" id="chkTauCa" onchange="chgToggleAssetType('tauCa')" ${chgState.assetTypes.tauCa ? 'checked' : ''} style="margin-top:3px">
-                            <span>2. Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt</span>
+                    <!-- Tàu cá / phương tiện thủy nội địa, đường sắt -->
+                    <div class="asset-type-wrapper">
+                        <label class="asset-check-row">
+                            <input type="checkbox" class="asset-checkbox" id="chkTauCa" onchange="chgToggleAssetType('tauCa')" ${chgState.assetTypes.tauCa ? 'checked' : ''}>
+                            <span class="asset-name">Tài sản bảo đảm là tàu cá; phương tiện giao thông đường thủy nội địa; phương tiện giao thông đường sắt, đường thủy, đường sắt</span>
                         </label>
-
-                        <!-- Lưới Tàu cá nằm NGAY DƯỚI Checkbox -->
-                        <div id="gridTauCa" class="sub-form" style="display:${chgState.assetTypes.tauCa ? 'block' : 'none'};margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)">
-                            <h4 style="margin:0 0 12px 0;font-size:14px;color:var(--blue);font-weight:700">Chi tiết Tàu cá / Phương tiện đường thủy <span class="required">*</span></h4>
-                            <div style="margin-bottom:12px;display:flex;gap:8px">
-                                <button type="button" class="btn primary small" id="btnThemTauCa" onclick="addInlineTauCaRow()">+ Thêm phương tiện</button>
-                                <button type="button" class="btn danger small" id="btnXoaTauCa" onclick="deleteSelectedChgTC()">Xóa phương tiện</button>
+                        <div id="gridTauCa" class="asset-sub-box" style="display:${chgState.assetTypes.tauCa ? 'block' : 'none'}">
+                            <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">
+                                <button type="button" class="btn small" id="btnThemTauCa" onclick="addInlineTauCaRow()">+ Thêm phương tiện</button>
+                                <button type="button" class="btn small danger" style="background:#ef4444;color:#fff;border-color:#ef4444" id="btnXoaTauCa" onclick="deleteSelectedChgTC()">Xóa phương tiện</button>
                             </div>
-
-                            <!-- Bộ lọc nhanh phương tiện -->
-                            <div class="asset-quick-filter" style="display:grid;grid-template-columns:repeat(3, 1fr) auto;gap:10px;align-items:end;margin-bottom:12px;padding:12px;background:#f8fafc;border:1px solid var(--line);border-radius:6px">
-                                <div class="field" style="margin:0">
-                                    <label style="font-size:11.5px">Tên phương tiện</label>
-                                    <input class="form-control" id="filterTCName" placeholder="Nhập tên phương tiện...">
+                            <div class="asset-quick-filter-bar">
+                                <div class="filter-col">
+                                    <label>Tên phương tiện</label>
+                                    <input type="text" id="filterTCName" placeholder="Nhập tên phương tiện...">
                                 </div>
-                                <div class="field" style="margin:0">
-                                    <label style="font-size:11.5px">Tên chủ phương tiện</label>
-                                    <input class="form-control" id="filterTCOwner" placeholder="Nhập tên chủ...">
+                                <div class="filter-col">
+                                    <label>Tên chủ phương tiện</label>
+                                    <input type="text" id="filterTCOwner" placeholder="Nhập tên chủ phương tiện...">
                                 </div>
-                                <div class="field" style="margin:0">
-                                    <label style="font-size:11.5px">Số đăng ký</label>
-                                    <input class="form-control" id="filterTCRegNo" placeholder="Nhập số đăng ký...">
+                                <div class="filter-col">
+                                    <label>Số đăng ký</label>
+                                    <input type="text" id="filterTCRegNo" placeholder="Nhập số đăng ký...">
                                 </div>
                                 <div style="display:flex;gap:6px">
-                                    <button type="button" class="btn primary small" onclick="applyChgTauCaFilter()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
-                                    <button type="button" class="btn small" onclick="clearChgTauCaFilter()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                                    <button type="button" class="btn small primary" onclick="applyChgTauCaFilter()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                                    <button type="button" class="btn small" onclick="clearChgTauCaFilter()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa lọc</button>
                                 </div>
                             </div>
-
-                            <!-- Bảng nhập liệu inline Phương tiện chuẩn Website khách hàng -->
                             <div class="table-wrap">
                                 <table class="table" id="tableTauCa">
                                     <thead>
                                         <tr>
-                                            <th style="width:36px;text-align:center"><input type="checkbox" id="chkAllTC" onchange="toggleSelectAllChgTC(this)" title="Chọn tất cả"></th>
-                                            <th style="width:40px;text-align:center">STT</th>
-                                            <th style="width:180px">TÊN PHƯƠNG TIỆN, NHÃN HIỆU</th>
-                                            <th style="width:170px">CHỦ PHƯƠNG TIỆN</th>
-                                            <th style="width:140px">SỐ ĐĂNG KÝ</th>
-                                            <th style="width:180px">CƠ QUAN CẤP GCN</th>
-                                            <th style="width:120px">CẤP PHƯƠNG TIỆN</th>
-                                            <th style="width:130px;text-align:center">TRẠNG THÁI</th>
-                                            <th style="width:80px;text-align:center">THAO TÁC</th>
+                                            <th style="width:40px;text-align:center"><input type="checkbox" id="chkAllTC" onchange="toggleSelectAllChgTC(this)" title="Chọn tất cả"></th>
+                                            <th style="width:50px;text-align:center">STT</th>
+                                            <th style="min-width:180px">TÊN PHƯƠNG TIỆN, NHÃN HIỆU</th>
+                                            <th style="min-width:180px">TÊN/HỌ TÊN CHỦ PHƯƠNG TIỆN/CHỦ SỞ HỮU</th>
+                                            <th style="min-width:140px">SỐ ĐĂNG KÝ</th>
+                                            <th style="min-width:180px">CƠ QUAN CẤP GIẤY CHỨNG NHẬN</th>
+                                            <th style="min-width:130px">CẤP PHƯƠNG TIỆN</th>
+                                            <th style="width:60px;text-align:center">Xóa</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tbodyTauCa">
-                                    </tbody>
+                                    <tbody id="tbodyTauCa"></tbody>
                                 </table>
                             </div>
-
-                            <div style="margin-top:12px;display:flex;gap:8px;border-top:1px solid var(--line);padding-top:12px">
-                                <button type="button" class="btn small" onclick="downloadTemplateFile('tauca')"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
-                                <button type="button" class="btn small success" onclick="importExcelData('tauca')"><i class="fa-solid fa-file-import"></i> Gửi tệp tin danh sách phương tiện</button>
+                            <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:12px">
+                                <button type="button" class="btn small" onclick="downloadTemplateFile('tauca')">File mẫu</button>
+                                <button type="button" class="btn small success" style="background:#10b981;border-color:#10b981;color:#fff" onclick="importExcelData('tauca')">Gửi tệp tin danh sách phương tiện</button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 3. QUYỀN TÀI SẢN -->
-                    <div class="asset-type-wrapper" style="border:1px solid var(--line);border-radius:8px;padding:16px;background:#fff">
-                        <label class="check-item" style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-weight:600">
-                            <input type="checkbox" id="chkQuyenTaiSan" onchange="chgToggleAssetType('quyenTaiSan')" ${chgState.assetTypes.quyenTaiSan ? 'checked' : ''} style="margin-top:3px">
-                            <span>3. Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản</span>
+                    <!-- Quyền tài sản -->
+                    <div class="asset-type-wrapper">
+                        <label class="asset-check-row">
+                            <input type="checkbox" class="asset-checkbox" id="chkQuyenTaiSan" onchange="chgToggleAssetType('quyenTaiSan')" ${chgState.assetTypes.quyenTaiSan ? 'checked' : ''}>
+                            <span class="asset-name">Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản</span>
                         </label>
-                        
-                        <!-- Lưới Quyền tài sản nằm NGAY DƯỚI Checkbox -->
-                        <div id="gridQuyenTaiSan" class="sub-form" style="display:${chgState.assetTypes.quyenTaiSan ? 'block' : 'none'};margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)">
-                            <h4 style="margin:0 0 12px 0;font-size:14px;color:var(--blue);font-weight:700">Chi tiết Quyền tài sản <span class="required">*</span></h4>
-                            <div class="field" style="margin-bottom:12px">
+                        <div id="gridQuyenTaiSan" class="asset-sub-box" style="display:${chgState.assetTypes.quyenTaiSan ? 'block' : 'none'}">
+                            <h4 style="color:var(--primary);margin:0 0 12px;font-size:15px;font-weight:700">Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản</h4>
+                            <div class="field">
                                 <label>Tên quyền <span class="required">*</span></label>
-                                <textarea class="form-control" id="qts_tenQuyen" rows="2" placeholder="Nhập tên quyền tài sản...">${e(chgState.quyenTaiSan?.tenQuyen || '')}</textarea>
+                                <textarea id="qts_tenQuyen" rows="2">${e(chgState.quyenTaiSan?.tenQuyen || '')}</textarea>
+                            </div>
+                            <div class="field" style="margin-top:10px">
+                                <label>Căn cứ phát sinh quyền <span class="required">*</span></label>
+                                <textarea id="qts_canCu" rows="2" placeholder="Nhập rõ số hợp đồng phát sinh quyền tài sản, ngày ký kết hợp đồng và thông tin các bên giao kết hợp đồng.">${e(chgState.quyenTaiSan?.canCu || '')}</textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cây hằng năm, công trình tạm -->
+                    <div class="asset-type-wrapper">
+                        <label class="asset-check-row">
+                            <input type="checkbox" class="asset-checkbox" id="chkCayHangNam" onchange="chgToggleAssetType('cayHangNam')" ${chgState.assetTypes.cayHangNam ? 'checked' : ''}>
+                            <span class="asset-name">Cây hằng năm, công trình tạm</span>
+                        </label>
+                        <div class="asset-sub-textarea-box" id="descCayHangNamWrapper" style="display:${chgState.assetTypes.cayHangNam ? 'block' : 'none'}">
+                            <textarea id="descCayHangNam" rows="3">${e(chgState.cayHangNam || '')}</textarea>
+                        </div>
+                    </div>
+
+                    <!-- Hàng hóa luân chuyển / Kho hàng -->
+                    <div class="asset-type-wrapper">
+                        <label class="asset-check-row">
+                            <input type="checkbox" class="asset-checkbox" id="chkHangHoa" onchange="chgToggleAssetType('hangHoa')" ${chgState.assetTypes.hangHoa ? 'checked' : ''}>
+                            <span class="asset-name">Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ</span>
+                        </label>
+                        <div id="gridHangHoa" class="asset-sub-box" style="display:${chgState.assetTypes.hangHoa ? 'block' : 'none'}">
+                            <h4 style="color:var(--primary);margin:0 0 12px;font-size:15px;font-weight:700">Hàng hóa luân chuyển / Kho hàng</h4>
+                            <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px">
+                                <label class="check-item" style="cursor:pointer"><input type="radio" name="chgLoaiHangHoa" id="chgRadioLuanchuyen" value="luanchuyen" ${chgState.hangHoa.loai === 'luanchuyen' ? 'checked' : ''} onchange="chgToggleHangHoaRadio()"> Hàng hóa luân chuyển</label>
+                                <label class="check-item" style="cursor:pointer"><input type="radio" name="chgLoaiHangHoa" id="chgRadioKhoHang" value="khohang" ${chgState.hangHoa.loai === 'khohang' ? 'checked' : ''} onchange="chgToggleHangHoaRadio()"> Kho hàng</label>
                             </div>
                             <div class="field">
-                                <label>Căn cứ phát sinh quyền <span class="required">*</span></label>
-                                <textarea class="form-control" id="qts_canCu" rows="2" placeholder="Nhập rõ số hợp đồng, ngày ký kết và thông tin các bên...">${e(chgState.quyenTaiSan?.canCu || '')}</textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 4. CÂY HẰNG NĂM -->
-                    <div class="asset-type-wrapper" style="border:1px solid var(--line);border-radius:8px;padding:16px;background:#fff">
-                        <label class="check-item" style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-weight:600">
-                            <input type="checkbox" id="chkCayHangNam" onchange="chgToggleAssetType('cayHangNam')" ${chgState.assetTypes.cayHangNam ? 'checked' : ''} style="margin-top:3px">
-                            <span>4. Cây hằng năm, công trình tạm</span>
-                        </label>
-
-                        <!-- Lưới Cây hằng năm nằm NGAY DƯỚI Checkbox -->
-                        <div class="asset-inline-description sub-form" id="descCayHangNamWrapper" style="display:${chgState.assetTypes.cayHangNam ? 'block' : 'none'};margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)">
-                            <label class="form-label" style="font-weight:600;font-size:13px;display:block;margin-bottom:6px">Mô tả cây hằng năm, công trình tạm <span class="required">*</span></label>
-                            <textarea class="form-control" id="descCayHangNam" rows="3" placeholder="Nhập mô tả cây hằng năm, công trình tạm...">${e(chgState.cayHangNam || '')}</textarea>
-                        </div>
-                    </div>
-
-                    <!-- 5. HÀNG HÓA LUÂN CHUYỂN -->
-                    <div class="asset-type-wrapper" style="border:1px solid var(--line);border-radius:8px;padding:16px;background:#fff">
-                        <label class="check-item" style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-weight:600">
-                            <input type="checkbox" id="chkHangHoa" onchange="chgToggleAssetType('hangHoa')" ${chgState.assetTypes.hangHoa ? 'checked' : ''} style="margin-top:3px">
-                            <span>5. Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ</span>
-                        </label>
-
-                        <!-- Lưới Hàng hóa nằm NGAY DƯỚI Checkbox -->
-                        <div id="gridHangHoa" class="sub-form" style="display:${chgState.assetTypes.hangHoa ? 'block' : 'none'};margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)">
-                            <h4 style="margin:0 0 12px 0;font-size:14px;color:var(--blue);font-weight:700">Chi tiết Hàng hóa luân chuyển / Kho hàng <span class="required">*</span></h4>
-                            <div style="display:flex;gap:20px;margin-bottom:12px">
-                                <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:500">
-                                    <input type="radio" name="chgLoaiHangHoa" id="chgRadioLuanchuyen" value="luanchuyen" ${chgState.hangHoa.loai === 'luanchuyen' ? 'checked' : ''} onchange="chgToggleHangHoaRadio()"> Hàng hóa luân chuyển
-                                </label>
-                                <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-weight:500">
-                                    <input type="radio" name="chgLoaiHangHoa" id="chgRadioKhoHang" value="khohang" ${chgState.hangHoa.loai === 'khohang' ? 'checked' : ''} onchange="chgToggleHangHoaRadio()"> Kho hàng
-                                </label>
-                            </div>
-                            <div class="field" style="margin-bottom:12px">
-                                <label id="chgHhGiaTriLabel">Giá trị hàng hóa / Tên, loại hàng hóa <span class="required">*</span></label>
-                                <textarea class="form-control" id="chgHhTenHangHoa" rows="2" placeholder="Nhập giá trị hàng hóa hoặc tên, loại hàng hóa...">${e(chgState.hangHoa.tenHangHoa || '')}</textarea>
+                                <label id="chgHhGiaTriLabel">Giá trị hàng hóa/Tên, loại hàng hóa <span class="required">*</span></label>
+                                <textarea id="chgHhTenHangHoa" rows="2">${e(chgState.hangHoa.tenHangHoa || '')}</textarea>
                             </div>
                             <div id="chgFieldsKhoHang" style="display:${chgState.hangHoa.loai === 'khohang' ? 'block' : 'none'}">
-                                <div class="field" style="margin-bottom:12px">
+                                <div class="field" style="margin-top:10px">
                                     <label>Địa chỉ kho hàng <span class="required">*</span></label>
-                                    <textarea class="form-control" id="chgHhDiaChiKho" rows="2" placeholder="Địa chỉ chi tiết - Tỉnh/Thành phố - Quốc gia">${e(chgState.hangHoa.diaChiKho || '')}</textarea>
+                                    <textarea id="chgHhDiaChiKho" rows="2" placeholder="Địa chỉ chi tiết - Tỉnh/Thành phố - Quốc gia">${e(chgState.hangHoa.diaChiKho || '')}</textarea>
                                 </div>
-                                <div class="field">
-                                    <label>Số hiệu kho hàng / Dấu hiệu vị trí kho</label>
-                                    <textarea class="form-control" id="chgHhSoHieuKho" rows="2" placeholder="Nhập số hiệu kho hoặc dấu hiệu vị trí kho...">${e(chgState.hangHoa.soHieuKho || '')}</textarea>
+                                <div class="field" style="margin-top:10px">
+                                    <label>Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng</label>
+                                    <textarea id="chgHhSoHieuKho" rows="2">${e(chgState.hangHoa.soHieuKho || '')}</textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- 6. CHỨNG KHOÁN -->
-                    <div class="asset-type-wrapper" style="border:1px solid var(--line);border-radius:8px;padding:16px;background:#fff">
-                        <label class="check-item" style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-weight:600">
-                            <input type="checkbox" id="chkChungKhoan" onchange="chgToggleAssetType('chungKhoan')" ${chgState.assetTypes.chungKhoan ? 'checked' : ''} style="margin-top:3px">
-                            <span>6. Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung</span>
+                    <!-- Chứng khoán đã đăng ký tập trung -->
+                    <div class="asset-type-wrapper">
+                        <label class="asset-check-row">
+                            <input type="checkbox" class="asset-checkbox" id="chkChungKhoan" onchange="chgToggleAssetType('chungKhoan')" ${chgState.assetTypes.chungKhoan ? 'checked' : ''}>
+                            <span class="asset-name">Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung</span>
                         </label>
-
-                        <!-- Lưới Chứng khoán nằm NGAY DƯỚI Checkbox -->
-                        <div id="gridChungKhoan" class="sub-form" style="display:${chgState.assetTypes.chungKhoan ? 'block' : 'none'};margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)">
-                            <h4 style="margin:0 0 12px 0;font-size:14px;color:var(--blue);font-weight:700">Thời điểm đăng ký BPBĐ bằng chứng khoán tại VSD <span class="required">*</span></h4>
-                            <div class="table-wrap" style="margin-bottom:14px">
+                        <div id="gridChungKhoan" class="asset-sub-box" style="display:${chgState.assetTypes.chungKhoan ? 'block' : 'none'}">
+                            <h4 style="color:var(--primary);margin:0 0 12px;font-size:15px;font-weight:700">Bảng thông tin Thời điểm đăng ký biện pháp bảo đảm bằng chứng khoán đã đăng ký tập trung tại Tổng công ty lưu ký và bù trừ chứng khoán Việt Nam</h4>
+                            <div class="table-wrap" style="margin-bottom:12px">
                                 <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th>GIỜ</th>
-                                            <th>PHÚT</th>
-                                            <th>NGÀY</th>
-                                            <th>THÁNG</th>
-                                            <th>NĂM</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><input type="number" id="chgCkGio" class="form-control" min="0" max="23" value="${e(chgState.chungKhoan.ck_gio || '')}"></td>
-                                            <td><input type="number" id="chgCkPhut" class="form-control" min="0" max="59" value="${e(chgState.chungKhoan.ck_phut || '')}"></td>
-                                            <td><input type="number" id="chgCkNgay" class="form-control" min="1" max="31" value="${e(chgState.chungKhoan.ck_ngay || '')}"></td>
-                                            <td><input type="number" id="chgCkThang" class="form-control" min="1" max="12" value="${e(chgState.chungKhoan.ck_thang || '')}"></td>
-                                            <td><input type="number" id="chgCkNam" class="form-control" min="1900" max="2100" value="${e(chgState.chungKhoan.ck_nam || '')}"></td>
-                                        </tr>
-                                    </tbody>
+                                    <thead><tr><th style="width:20%">GIỜ</th><th style="width:20%">PHÚT</th><th style="width:20%">NGÀY</th><th style="width:20%">THÁNG</th><th style="width:20%">NĂM</th></tr></thead>
+                                    <tbody><tr>
+                                        <td><input type="number" id="chgCkGio" class="form-control" min="0" max="23" value="${e(chgState.chungKhoan.ck_gio || '')}"></td>
+                                        <td><input type="number" id="chgCkPhut" class="form-control" min="0" max="59" value="${e(chgState.chungKhoan.ck_phut || '')}"></td>
+                                        <td><input type="number" id="chgCkNgay" class="form-control" min="1" max="31" value="${e(chgState.chungKhoan.ck_ngay || '')}"></td>
+                                        <td><input type="number" id="chgCkThang" class="form-control" min="1" max="12" value="${e(chgState.chungKhoan.ck_thang || '')}"></td>
+                                        <td><input type="number" id="chgCkNam" class="form-control" min="1900" max="2100" value="${e(chgState.chungKhoan.ck_nam || '')}"></td>
+                                    </tr></tbody>
                                 </table>
                             </div>
-
                             <div style="border-top:1px dashed var(--line);padding-top:14px">
                                 <label class="form-label" style="font-weight:600;font-size:13px;display:block;margin-bottom:6px">Đính kèm file .pdf <span class="required">*</span></label>
                                 <div style="display:flex;align-items:center;gap:10px">
                                     <input type="file" id="chgAssetsPdfFile" style="display:none" accept=".pdf" onchange="handleChgFileSelected('chgAssetsPdfFile', 'chgFilePreviewAssetsPdf')">
-                                    <button type="button" class="btn" style="padding:6px 12px;font-size:13px;background:var(--blue);color:#fff" onclick="document.getElementById('chgAssetsPdfFile').click()">
-                                        <i class="fa-solid fa-upload"></i> Chọn tệp PDF...
-                                    </button>
+                                    <button type="button" class="btn small" onclick="document.getElementById('chgAssetsPdfFile').click()">Chọn tệp PDF...</button>
                                     <div id="chgFilePreviewAssetsPdf" style="display:${chgState.files.assetsPdfFile ? 'flex' : 'none'};align-items:center;gap:8px">
-                                        <span class="file-name" id="chgFileNameAssetsPdf" style="font-size:13px;font-weight:500">${chgState.files.assetsPdfFile || 'mota_taisan.pdf'}</span>
-                                        <a href="javascript:void(0)" onclick="viewFile(chgState.files.assetsPdfFile || 'mota_taisan.pdf')" style="color:var(--blue);font-weight:600;text-decoration:none;font-size:13px">Xem file</a>
+                                        <span class="file-name" id="chgFileNameAssetsPdf" style="font-size:13px;font-weight:500">${chgState.files.assetsPdfFile || ''}</span>
+                                        <a href="javascript:void(0)" onclick="viewFile(chgState.files.assetsPdfFile)" style="color:var(--blue);font-weight:600;text-decoration:none;font-size:13px">Xem file</a>
                                         <span style="color:var(--line);font-size:12px">|</span>
                                         <button type="button" class="btn-remove-file" style="color:var(--red);background:none;border:none;cursor:pointer;text-decoration:underline;font-size:13px" onclick="removeChgSelectedFile('chgAssetsPdfFile', 'chgFilePreviewAssetsPdf')">Xóa</button>
                                     </div>
@@ -6629,17 +6590,14 @@ function changeRegistrationForm() {
                         </div>
                     </div>
 
-                    <!-- 7. ĐỘNG SẢN KHÁC -->
-                    <div class="asset-type-wrapper" style="border:1px solid var(--line);border-radius:8px;padding:16px;background:#fff">
-                        <label class="check-item" style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-weight:600">
-                            <input type="checkbox" id="chkDongSanKhac" onchange="chgToggleAssetType('dongSanKhac')" ${chgState.assetTypes.dongSanKhac ? 'checked' : ''} style="margin-top:3px">
-                            <span>7. Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ, CHỨNG KHOÁN KHÔNG ĐĂNG KÝ TẬP TRUNG...)</span>
+                    <!-- Các động sản khác -->
+                    <div class="asset-type-wrapper">
+                        <label class="asset-check-row">
+                            <input type="checkbox" class="asset-checkbox" id="chkDongSanKhac" onchange="chgToggleAssetType('dongSanKhac')" ${chgState.assetTypes.dongSanKhac ? 'checked' : ''}>
+                            <span class="asset-name">Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ, CHỨNG KHOÁN KHÔNG ĐĂNG KÝ TẬP TRUNG...)</span>
                         </label>
-
-                        <!-- Lưới Động sản khác nằm NGAY DƯỚI Checkbox -->
-                        <div class="asset-inline-description sub-form" id="descDongSanKhacWrapper" style="display:${chgState.assetTypes.dongSanKhac ? 'block' : 'none'};margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)">
-                            <label class="form-label" style="font-weight:600;font-size:13px;display:block;margin-bottom:6px">Mô tả các động sản khác <span class="required">*</span></label>
-                            <textarea class="form-control" id="descDongSanKhac" rows="3" placeholder="Nhập mô tả các động sản khác...">${e(chgState.dongSanKhac || '')}</textarea>
+                        <div class="asset-sub-textarea-box" id="descDongSanKhacWrapper" style="display:${chgState.assetTypes.dongSanKhac ? 'block' : 'none'}">
+                            <textarea id="descDongSanKhac" rows="3">${e(chgState.dongSanKhac || '')}</textarea>
                         </div>
                     </div>
 
@@ -7819,7 +7777,7 @@ function noticeFirstForm() {
                 </div>
                 <div class="field">
                     <label>Loại hình giao dịch</label>
-                    <input type="text" class="form-control readonly" value="Thông báo xử lý tài sản bảo đảm" readonly>
+                    <input type="text" class="form-control readonly" value="${e(defaultXoaMock.transactionType || 'Biện pháp bảo đảm')}" readonly>
                 </div>
                 <div class="field">
                     <label>Số hợp đồng</label>
