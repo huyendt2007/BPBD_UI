@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "TC-2026-01",
             contractDate: "04/01/2026",
             loanValue: "1.500.000.000 VNĐ",
-            scale: "Doanh nghiệp vừa",
+            scale: "Bên bảo đảm là công ty có từ 300 nhân viên hoặc nhiều hơn",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "TC-2026-01-SĐ01",
             contractDate: "10/02/2026",
             loanValue: "2.500.000.000 VNĐ",
-            scale: "Doanh nghiệp vừa",
+            scale: "Bên bảo đảm là công ty có từ 300 nhân viên hoặc nhiều hơn",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "TC-2026-01-SĐ02",
             contractDate: "02/03/2026",
             loanValue: "2.500.000.000 VNĐ",
-            scale: "Doanh nghiệp vừa",
+            scale: "Bên bảo đảm là công ty có từ 300 nhân viên hoặc nhiều hơn",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -435,7 +435,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "TC-2026-01-SĐ01",
             contractDate: "10/02/2026",
             loanValue: "2.500.000.000 VNĐ",
-            scale: "Doanh nghiệp vừa",
+            scale: "Bên bảo đảm là công ty có từ 300 nhân viên hoặc nhiều hơn",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -501,100 +501,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // v5: Yêu cầu cung cấp bản sao (Cấp bản sao GCN thay đổi lần 1)
-    const v5 = {
-        version: 5,
-        label: "Bản sao",
-        badgeClass: "badge-change",
-        title: "Yêu cầu cung cấp bản sao",
-        statusText: "Hoàn thành",
-        date: "28/03/2026 09:00:00",
-        regCode: "BD-2026-001-BS01",
-        description: "Yêu cầu cấp 03 bản sao Giấy chứng nhận Đăng ký thay đổi lần 1",
-        data: {
-            registrantName: "Công ty Cổ phần Vận tải biển Đông",
-            registrantAddress: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
-            registrantDoc: "Giấy_DN_BienDong.pdf",
-            regCase: "Yêu cầu cung cấp bản sao",
-            firstRegNo: "BD-2026-001",
-            firstRegDate: "05/01/2026 08:00:00",
-            viewOriginalDoc: "GCN_Goc_BD-2026-001.pdf",
-            
-            // Special bản sao fields
-            copyRegNo: "BD-2026-001-TD01",
-            copyCount: "03 bản",
-
-            receivingAgency: "Trung tâm Đăng ký giao dịch, tài sản tại thành phố Hà Nội",
-            transactionType: "Biện pháp bảo đảm",
-            measureType: "Thế chấp",
-            contractType: "",
-            contractNo: "TC-2026-01-SĐ01",
-            contractDate: "10/02/2026",
-            loanValue: "2.500.000.000 VNĐ",
-            scale: "Doanh nghiệp vừa",
-            femaleOwner: "Không",
-            securingParties: [
-                {
-                    type: "tc_vn",
-                    typeName: "Tổ chức trong nước",
-                    name: "Công ty Cổ phần Vận tải biển Đông",
-                    paperNo: "0102030405",
-                    address: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
-                    status: "Không thay đổi"
-                },
-                {
-                    type: "cd_vn",
-                    typeName: "Công dân Việt Nam",
-                    name: "Trần Văn An",
-                    paperNo: "001085006789",
-                    address: "Số 99 Lê Duẩn, Phường Cửa Nam, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
-                    status: "Không thay đổi"
-                }
-            ],
-            securedParties: [
-                {
-                    typeName: "Tổ chức",
-                    paperNo: "0100112437",
-                    name: "Ngân hàng TMCP Ngoại thương Việt Nam (VCB) - Chi nhánh Hà Nội",
-                    address: "Số 198 Trần Quang Khải, Phường Lý Thái Tổ, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
-                    status: "Không thay đổi"
-                }
-            ],
-            assets: [
-                {
-                    id: 1,
-                    typeName: "Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)",
-                    name: "Xe ô tô con 5 chỗ",
-                    brandColor: "Toyota Camry 2.5Q, Màu đỏ",
-                    frameNo: "CAMRY-88992211",
-                    engineNo: "ENG-2AR-998811",
-                    plateNo: "30H-123.45",
-                    status: "Đang bảo đảm"
-                },
-                {
-                    id: 2,
-                    typeName: "Tàu cá; phương tiện giao thông đường thủy nội địa, đường sắt, hoặc chuyên dùng",
-                    name: "Xe tải ben 5 tấn",
-                    brandColor: "Hyundai HD120, Màu xanh",
-                    frameNo: "HYU-BEN-771122",
-                    engineNo: "ENG-D6GA-88221",
-                    plateNo: "29C-567.89",
-                    status: "Đang bảo đảm"
-                },
-                {
-                    id: 3,
-                    typeName: "Các động sản khác (Tiền, giấy tờ có giá, hàng tiêu dùng, nguyên nhiên vật liệu...)",
-                    name: "Xe ô tô bán tải",
-                    brandColor: "Ford Ranger Wildtrak, Màu cam",
-                    frameNo: "RAN-FOR-554433",
-                    engineNo: "ENG-BIO-112233",
-                    plateNo: "29H-987.65",
-                    status: "Đang bảo đảm"
-                }
-            ]
-        }
-    };
-
     // v6: Hủy đăng ký (Hủy một phần tài sản Ford Ranger theo Bản án Tòa án)
     const v6 = {
         version: 6,
@@ -630,7 +536,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "TC-2026-01-SĐ01",
             contractDate: "10/02/2026",
             loanValue: "2.500.000.000 VNĐ",
-            scale: "Doanh nghiệp vừa",
+            scale: "Bên bảo đảm là công ty có từ 300 nhân viên hoặc nhiều hơn",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -727,7 +633,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "TC-2026-01-SĐ01",
             contractDate: "10/02/2026",
             loanValue: "2.500.000.000 VNĐ",
-            scale: "Doanh nghiệp vừa",
+            scale: "Bên bảo đảm là công ty có từ 300 nhân viên hoặc nhiều hơn",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -822,7 +728,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "TC-2026-01-SĐ01",
             contractDate: "10/02/2026",
             loanValue: "2.500.000.000 VNĐ",
-            scale: "Doanh nghiệp vừa",
+            scale: "Bên bảo đảm là công ty có từ 300 nhân viên hoặc nhiều hơn",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -912,7 +818,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "HĐTC-FPT/2026/01",
             contractDate: "13/05/2026",
             loanValue: "500.000.000 VNĐ",
-            scale: "Cá nhân",
+            scale: "Bên bảo đảm sử dụng khoản vay cho tiêu dùng cá nhân",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -1006,7 +912,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "HĐTC-HN/2026/02",
             contractDate: "14/06/2026",
             loanValue: "1.200.000.000 VNĐ",
-            scale: "Doanh nghiệp nhỏ",
+            scale: "Bên bảo đảm là công ty có từ 10 đến 299 nhân viên",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -1083,7 +989,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "HĐTC-JS/2026/01",
             contractDate: "14/06/2026",
             loanValue: "900.000.000 VNĐ",
-            scale: "Cá nhân nước ngoài",
+            scale: "Bên bảo đảm sử dụng khoản vay cho tiêu dùng cá nhân",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -1142,7 +1048,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "HĐTC-IP/2026/03",
             contractDate: "15/06/2026",
             loanValue: "700.000.000 VNĐ",
-            scale: "Cá nhân không quốc tịch",
+            scale: "Bên bảo đảm sử dụng khoản vay cho tiêu dùng cá nhân",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -1201,7 +1107,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "HĐTC-GIG/2026/04",
             contractDate: "16/06/2026",
             loanValue: "3.000.000.000 VNĐ",
-            scale: "Tổ chức nước ngoài",
+            scale: "Bên bảo đảm là công ty có từ 10 đến 299 nhân viên",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -1260,7 +1166,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "HĐTC-QT/2026/05",
             contractDate: "17/06/2026",
             loanValue: "300.000.000 VNĐ",
-            scale: "Tổ chức khác",
+            scale: "Bên bảo đảm là công ty có ít hơn 10 nhân viên",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -1345,7 +1251,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const typeMap = { 'Đăng ký mới': 'Đăng ký lần đầu', 'Thông báo xử lý tài sản': 'Thông báo xử lý tài sản bảo đảm lần đầu', 'Thay đổi thông báo xử lý tài sản': 'Thay đổi thông báo xử lý tài sản bảo đảm', 'Xóa thông báo xử lý tài sản': 'Xóa đăng ký thông báo xử lý tài sản bảo đảm' };
         return {
             id: p.id, registrationNo: p.id, type: typeMap[p.type] || p.type,
-            transactionType: (p.type || '').includes('xử lý tài sản') ? 'Thông báo xử lý tài sản' : p.transactionType,
+            transactionType: p.transactionType,
             subtype: p.subtype, requester: p.requestor || p.customer, grantor: p.customer, securedParty: p.mortgagee,
             receivedAt: p.date, submitter: p.requestor || p.customer, pin: ['Đăng ký mới', 'Đăng ký lần đầu'].includes(p.type) ? p.pin : '',
             source: getListSourceLabel(p.channel), assetType: p.assetType
@@ -1379,6 +1285,18 @@ document.addEventListener('DOMContentLoaded', function () {
             { name: 'Hợp đồng bảo đảm.pdf' },
             { name: 'Giấy tờ chứng minh tư cách pháp lý.pdf' }
         ];
+        // Khối Tài liệu đính kèm: chỉ hiển thị khi Nguồn tiếp nhận là "Dịch vụ công" hoặc "Trực tiếp", không hiển thị khi "Trực tuyến"
+        const showAttachments = getListSourceLabel(listProfile.channel) !== 'Trực tuyến';
+        const attachmentsHtml = showAttachments ? `
+            <section class="detail-section" id="sectionOfficerAttachments">
+                <h3 class="detail-section-title"><i class="fa-solid fa-paperclip"></i> VI. Tài liệu đính kèm</h3>
+                <div style="font-size:13.5px">
+                    ${docs.map(d => `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px dashed var(--border-color)">
+                        <i class="fa-solid fa-file-pdf" style="color:#dc2626"></i><span style="flex:1">${d.name}</span>
+                        <a href="javascript:void(0)" onclick="window.open('about:blank','_blank')" style="color:#2563eb;font-weight:600;text-decoration:none"><i class="fa-solid fa-arrow-up-right-from-square"></i> Xem file</a>
+                    </div>`).join('')}
+                </div>
+            </section>` : '';
         const html = `
             <section class="detail-section" id="sectionOfficerExtra">
                 <h3 class="detail-section-title"><i class="fa-solid fa-circle-info"></i> V. Thông tin bổ sung</h3>
@@ -1388,16 +1306,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div><div style="color:var(--text-muted);font-size:12px">Nguồn tiếp nhận</div><b>${getListSourceLabel(listProfile.channel)}</b></div>
                     <div><div style="color:var(--text-muted);font-size:12px">Mã khách hàng</div><b>${listProfile.customerId || '-'}</b></div>
                 </div>
-            </section>
-            <section class="detail-section" id="sectionOfficerAttachments">
-                <h3 class="detail-section-title"><i class="fa-solid fa-paperclip"></i> VI. Tài liệu đính kèm</h3>
-                <div style="font-size:13.5px">
-                    ${docs.map(d => `<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px dashed var(--border-color)">
-                        <i class="fa-solid fa-file-pdf" style="color:#dc2626"></i><span style="flex:1">${d.name}</span>
-                        <a href="javascript:void(0)" onclick="window.open('about:blank','_blank')" style="color:#2563eb;font-weight:600;text-decoration:none"><i class="fa-solid fa-arrow-up-right-from-square"></i> Xem file</a>
-                    </div>`).join('')}
-                </div>
-            </section>`;
+            </section>${attachmentsHtml}`;
         anchor.insertAdjacentHTML('beforebegin', html);
     }
     renderListProfileExtraBlocks();
@@ -1450,139 +1359,117 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (matchedProfile && matchedProfile.timeline && matchedProfile.timeline.length > 0) {
-        // Dựng timeline động từ custom mock profile
+        // Dựng timeline động từ hồ sơ được chọn tại danh sách (Kiểm tra và xử lý hồ sơ / Ký duyệt hồ sơ).
+        // Dữ liệu từng phiên bản dùng lại bộ dữ liệu mẫu của Website Khách hàng (Đăng ký lần đầu -> Đăng ký thay đổi),
+        // phiên bản sau kế thừa dữ liệu phiên bản trước và ghi nhận biến động (giá trị cũ) để hiển thị so sánh.
+        const isIndividual = /^(Ông|Bà|Anh|Chị)\s/i.test(matchedProfile.customer || '');
+        const profileParty = {
+            type: isIndividual ? "cd_vn" : "tc_vn",
+            typeName: isIndividual ? "Công dân Việt Nam" : "Tổ chức trong nước",
+            name: matchedProfile.customer,
+            paperNo: isIndividual ? `0010860${String(matchedProfile.pin || '12345').slice(-5)}` : "0102030405",
+            address: "Số 25 Trần Hưng Đạo, Phường Cửa Nam, TP. Hà Nội, Việt Nam",
+            status: "Không thay đổi"
+        };
+        const profileSecuredParty = {
+            typeName: "Tổ chức",
+            paperNo: "0100150619",
+            name: matchedProfile.mortgagee,
+            address: "Số 17 Duy Tân, Phường Cầu Giấy, TP. Hà Nội, Việt Nam",
+            status: "Không thay đổi"
+        };
+        const firstNode = matchedProfile.timeline[0] || {};
+        let changeCount = 0;
+        let prevNodeData = null;
+
         matchedProfile.timeline.forEach((node, idx) => {
-            const assets = [
-                {
-                    id: 1,
-                    typeName: "Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)",
-                    name: "Xe ô tô con 5 chỗ hiệu TOYOTA VIOS",
-                    brandColor: "Màu đỏ",
-                    frameNo: `FN-${matchedProfile.pin || '9920'}-1`,
-                    engineNo: `EN-${matchedProfile.pin || '8830'}-1`,
-                    plateNo: `29D-${matchedProfile.pin || '123'}.10`,
-                    status: node.title.includes("Xóa") ? "Đã giải chấp" : "Đang bảo đảm"
-                },
-                {
-                    id: 2,
-                    typeName: "Tàu cá; phương tiện giao thông đường thủy nội địa, đường sắt, hoặc chuyên dùng",
-                    name: "Tàu cá vỏ gỗ Yamaha 200HP",
-                    brandColor: "Công suất 150CV, Trắng xanh",
-                    frameNo: `FN-${matchedProfile.pin || '9920'}-2`,
-                    engineNo: `EN-${matchedProfile.pin || '8830'}-2`,
-                    plateNo: `QB-90827-TS`,
-                    status: node.title.includes("Xóa") ? "Đã giải chấp" : "Đang bảo đảm"
-                },
-                {
-                    id: 3,
-                    typeName: "Tài sản bảo đảm là quyền tài sản hoặc một phần quyền tài sản",
-                    name: "Quyền đòi nợ trị giá 2.000.000.000 VNĐ",
-                    brandColor: "Phát sinh từ Hợp đồng mua bán số 01/2026/HĐMB đối với Công ty ABC",
-                    frameNo: `FN-${matchedProfile.pin || '9920'}-3`,
-                    engineNo: `EN-${matchedProfile.pin || '8830'}-3`,
-                    plateNo: `-`,
-                    status: node.title.includes("Xóa") ? "Đã giải chấp" : "Đang bảo đảm"
-                },
-                {
-                    id: 4,
-                    typeName: "Cây hằng năm, công trình tạm",
-                    name: "Vườn cây cao su đang thu hoạch",
-                    brandColor: "Diện tích 5ha tại Nông trường Bình Phước",
-                    frameNo: `FN-${matchedProfile.pin || '9920'}-4`,
-                    engineNo: `EN-${matchedProfile.pin || '8830'}-4`,
-                    plateNo: `-`,
-                    status: node.title.includes("Xóa") ? "Đã giải chấp" : "Đang bảo đảm"
-                },
-                {
-                    id: 5,
-                    typeName: "Tài sản bảo đảm là hàng hóa luân chuyển trong quá trình sản xuất, kinh doanh, kho hàng không phải là phương tiện giao thông cơ giới đường bộ",
-                    name: "Kho hàng hạt tiêu xuất khẩu",
-                    brandColor: "Khối lượng 50 tấn tại Cảng Hải Phòng",
-                    frameNo: `FN-${matchedProfile.pin || '9920'}-5`,
-                    engineNo: `EN-${matchedProfile.pin || '8830'}-5`,
-                    plateNo: `-`,
-                    status: node.title.includes("Xóa") ? "Đã giải chấp" : "Đang bảo đảm"
-                },
-                {
-                    id: 6,
-                    typeName: "Chứng khoán đã đăng ký tập trung trở thành chứng khoán không đăng ký tập trung",
-                    name: "50.000 cổ phiếu tự do chuyển nhượng",
-                    brandColor: "Mã HBC của Công ty Cổ phần Xây dựng Hòa Bình",
-                    frameNo: `FN-${matchedProfile.pin || '9920'}-6`,
-                    engineNo: `EN-${matchedProfile.pin || '8830'}-6`,
-                    plateNo: `-`,
-                    status: node.title.includes("Xóa") ? "Đã giải chấp" : "Đang bảo đảm"
-                },
-                {
-                    id: 7,
-                    typeName: "Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)",
-                    name: "Dây chuyền sản xuất sợi cotton Rieter",
-                    brandColor: "Nhập khẩu Thụy Sĩ mới 100%, Model 2025",
-                    frameNo: `FN-${matchedProfile.pin || '9920'}-7`,
-                    engineNo: `EN-${matchedProfile.pin || '8830'}-7`,
-                    plateNo: `-`,
-                    status: node.title.includes("Xóa") ? "Đã giải chấp" : "Đang bảo đảm"
+            const nodeTitle = node.title || '';
+            const lowerTitle = nodeTitle.toLowerCase();
+            const isInitial = idx === 0 || lowerTitle.includes('lần đầu') || lowerTitle.includes('gốc') || lowerTitle === 'đăng ký mới';
+            const isChange = !isInitial && lowerTitle.includes('thay đổi') && !lowerTitle.includes('thông báo xử lý');
+            const contractSuffix = isChange ? `-SĐ${String(changeCount + 1).padStart(2, '0')}` : '';
+
+            let data;
+            if (isInitial || !prevNodeData) {
+                // Phiên bản gốc: dữ liệu Đăng ký lần đầu (theo mẫu Website Khách hàng), thay thông tin các bên theo hồ sơ đang chọn
+                data = JSON.parse(JSON.stringify(v1.data));
+                data.registrantName = matchedProfile.customer;
+                data.registrantAddress = profileParty.address;
+                data.registrantDoc = `Giay_to_chung_minh_${matchedProfile.id}.pdf`;
+                data.securingParties = [JSON.parse(JSON.stringify(profileParty))];
+                data.securedParties = [JSON.parse(JSON.stringify(profileSecuredParty))];
+                data.contractNo = `HĐ-${matchedProfile.pin || '2026'}/2026`;
+                data.contractDate = String(firstNode.date || '').split(' ')[0] || data.contractDate;
+                data.loanValue = "1.500.000.000 VNĐ";
+            } else {
+                // Phiên bản sau: kế thừa dữ liệu phiên bản trước, xóa dấu vết biến động cũ
+                data = JSON.parse(JSON.stringify(prevNodeData));
+                ['securingParties', 'securedParties'].forEach(key => (data[key] || []).forEach(party => {
+                    party.status = 'Không thay đổi';
+                    delete party.prevName;
+                    delete party.prevAddress;
+                }));
+            }
+
+            data.regCase = getCleanRegistrationCase({ title: nodeTitle });
+            data.firstRegNo = matchedProfile.id;
+            data.firstRegDate = firstNode.date || matchedProfile.date;
+            data.viewOriginalDoc = `GCN_Goc_${matchedProfile.id}.pdf`;
+            data.transactionType = matchedProfile.transactionType || "Biện pháp bảo đảm";
+            data.measureType = data.transactionType === 'Hợp đồng' ? '' : (matchedProfile.subtype || "Thế chấp");
+            data.contractType = data.transactionType === 'Hợp đồng' ? (matchedProfile.subtype || '') : '';
+
+            if (isChange) {
+                // Biến động giống phiên bản Đăng ký thay đổi của Website Khách hàng:
+                // sửa số hợp đồng, giá trị khoản vay; bổ sung bên bảo đảm; sửa địa chỉ bên nhận bảo đảm
+                changeCount++;
+                data.contractNo = `${String(data.contractNo).replace(/-SĐ\d+$/, '')}${contractSuffix}`;
+                data.contractDate = String(node.date || '').split(' ')[0] || data.contractDate;
+                data.loanValue = changeCount === 1 ? "2.500.000.000 VNĐ" : `${2500 + changeCount * 250}.000.000 VNĐ`.replace(/^(\d)(\d{3})/, '$1.$2');
+                if (changeCount === 1) {
+                    data.securingParties.push({
+                        type: "cd_vn",
+                        typeName: "Công dân Việt Nam",
+                        name: "Trần Văn An",
+                        paperNo: "001085006789",
+                        address: "Số 45 Hàng Bài, Phường Hoàn Kiếm, TP. Hà Nội, Việt Nam",
+                        status: "Bổ sung mới"
+                    });
                 }
-            ];
+                const securedParty = data.securedParties[0];
+                if (securedParty) {
+                    securedParty.prevAddress = securedParty.address;
+                    securedParty.address = changeCount === 1
+                        ? "Tháp BIDV, Số 194 Trần Quang Khải, Phường Hoàn Kiếm, TP. Hà Nội, Việt Nam"
+                        : `Số ${10 + changeCount} Lý Thường Kiệt, Phường Cửa Nam, TP. Hà Nội, Việt Nam`;
+                    securedParty.status = "Sửa thông tin";
+                }
+            }
 
             const v = {
                 version: idx + 1,
-                label: node.title,
-                badgeClass: node.title.includes("lần đầu") || node.title.includes("mới") || node.title.includes("Gốc") ? "badge-initial" : 
-                            (node.title.includes("thay đổi") ? "badge-change" : 
-                            (node.title.includes("Xóa") ? "badge-delete" : "badge-other")),
-                title: `${node.title} (${node.status})`,
+                label: isInitial ? "Đăng ký gốc" : (isChange ? `Thay đổi lần ${changeCount}` : nodeTitle),
+                badgeClass: isInitial ? "badge-initial" :
+                            (lowerTitle.includes("thay đổi") ? "badge-change" :
+                            (lowerTitle.includes("xóa") ? "badge-delete" : "badge-other")),
+                title: `${nodeTitle} (${node.status})`,
                 statusText: node.status,
                 date: node.date,
                 regCode: matchedProfile.id,
-                description: `${node.title} cho tài sản bảo đảm`,
+                description: isInitial
+                    ? "Đăng ký biện pháp bảo đảm lần đầu"
+                    : (isChange ? "Sửa số hợp đồng, giá trị khoản vay; bổ sung bên bảo đảm; sửa địa chỉ bên nhận bảo đảm; sửa và bổ sung tài sản bảo đảm" : `${nodeTitle} cho tài sản bảo đảm`),
                 active: node.active || false,
                 isPending: ["Chờ duyệt", "Chờ ký", "Chờ thanh toán"].includes(node.status),
                 nodeId: node.id,
-                data: {
-                    registrantName: matchedProfile.customer,
-                    registrantAddress: "Số 25 Trần Hưng Đạo, Quận Hoàn Kiếm, TP. Hà Nội, Việt Nam",
-                    registrantDoc: `Giay_dang_ky_${matchedProfile.id}.pdf`,
-                    regCase: node.title,
-                    firstRegNo: matchedProfile.id,
-                    firstRegDate: matchedProfile.date,
-                    viewOriginalDoc: `GCN_Goc_${matchedProfile.id}.pdf`,
-                    receivingAgency: "Trung tâm Đăng ký giao dịch, tài sản quốc gia",
-                    transactionType: matchedProfile.transactionType || "Biện pháp bảo đảm",
-                    measureType: matchedProfile.subtype || "Thế chấp",
-                    contractType: "",
-                    contractNo: `HĐTC-${matchedProfile.pin || '2026'}`,
-                    contractDate: "14/06/2026",
-                    loanValue: "1.500.000.000 VNĐ",
-                    scale: "Doanh nghiệp",
-                    femaleOwner: "Không",
-                    securingParties: [
-                        {
-                            type: "tc_vn",
-                            typeName: "Tổ chức trong nước",
-                            name: matchedProfile.customer,
-                            paperNo: matchedProfile.customerId || "0102030405",
-                            address: "Số 25 Trần Hưng Đạo, Quận Hoàn Kiếm, TP. Hà Nội, Việt Nam",
-                            status: "Không thay đổi"
-                        }
-                    ],
-                    securedParties: [
-                        {
-                            typeName: "Tổ chức",
-                            paperNo: "0100112437",
-                            name: matchedProfile.mortgagee,
-                            address: "Số 17 Duy Tân, Quận Cầu Giấy, TP. Hà Nội, Việt Nam",
-                            status: "Không thay đổi"
-                        }
-                    ],
-                    assets: assets
-                }
+                isProfileInitial: isInitial,
+                data: data
             };
 
-            if (node.title.includes("Xóa")) {
+            if (lowerTitle.includes("xóa")) {
                 v.data.deRegBasis = "Khoản 1 Điều 21 Nghị định 99/2022/NĐ-CP (Các bên thỏa thuận xóa đăng ký biện pháp bảo đảm)";
             }
-            if (node.title.includes("Hủy")) {
+            if (lowerTitle.includes("hủy")) {
                 v.data.cancelRegBasis = "Hủy đăng ký theo quyết định của cơ quan nhà nước có thẩm quyền";
             }
             if (node.status === "Bị từ chối") {
@@ -1592,6 +1479,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 v.data.rejectionUser = "Nguyễn Văn Cán Bộ";
             }
 
+            // Chỉ phiên bản đã có hiệu lực mới làm căn cứ so sánh cho phiên bản sau
+            if (node.status === 'Hoàn thành' || !prevNodeData) prevNodeData = data;
             mockTimelineData.push(v);
         });
 
@@ -1856,7 +1745,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 mockTimelineData.push(h38_v1);
             }
         } else {
-            // Mặc định (BD-2026-001) với 8 phiên bản + 8 phiên bản nháp (tổng cộng 17 phiên bản timeline)
+            // Mặc định (BD-2026-001) với các phiên bản thuộc cây lịch sử
             if (isSingleMode) {
                 mockTimelineData.push(v1);
             } else {
@@ -1864,26 +1753,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 mockTimelineData.push(v8);
                 mockTimelineData.push(v7);
                 mockTimelineData.push(v6);
-                mockTimelineData.push(v5);
                 mockTimelineData.push(v4);
                 mockTimelineData.push(v3);
                 mockTimelineData.push(v2);
 
-                // Bổ sung các phiên bản phụ
-                for (let i = 8; i >= 1; i--) {
-                    mockTimelineData.push({
-                        version: i + 10,
-                        label: `Thay đổi phụ ${i}`,
-                        badgeClass: "badge-change",
-                        title: `Thay đổi thông tin phụ lần ${i}`,
-                        statusText: "Hoàn thành",
-                        date: `1${i}/03/2026 10:00:00`,
-                        regCode: `BD-2026-001-TD${i + 2}`,
-                        description: `Thay đổi thông tin nhỏ liên quan đến quy trình lần thứ ${i}`,
-                        data: JSON.parse(JSON.stringify(v4.data))
-                    });
-                }
-                
                 // Đăng ký gốc ở cuối cùng
                 mockTimelineData.push(v1);
             }
@@ -1898,8 +1771,11 @@ document.addEventListener('DOMContentLoaded', function () {
             node.statusText = "Hoàn thành";
         }
         if (node.data) {
-            node.data.transactionType = "Hợp đồng";
-            node.data.contractType = "Hợp đồng chuyển giao quyền đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác";
+            // Hồ sơ mở từ danh sách (Kiểm tra/Ký duyệt): giữ đúng Loại hình giao dịch của hồ sơ đã chọn
+            if (!matchedProfile) {
+                node.data.transactionType = "Hợp đồng";
+                node.data.contractType = "Hợp đồng chuyển giao quyền đòi nợ, khoản phải thu, quyền yêu cầu thanh toán khác";
+            }
             node.data.scale = "Bên bảo đảm sử dụng khoản vay cho tiêu dùng cá nhân";
             node.data.receivingAgency = "Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội";
 
@@ -1979,12 +1855,21 @@ document.addEventListener('DOMContentLoaded', function () {
                               node.statusText === "Đã giải chấp" ||
                               (node.data && (node.data.hasDeRegistration || node.data.hasCancelReg));
 
+            // Giá trị cũ của tài sản Cây hằng năm (giống Website Khách hàng)
+            const annualPrevName = "Cây mía đường niên vụ 2025 - 2026";
+            const annualPrevDesc = "Diện tích 4 ha tại xã Tân Châu, tỉnh Tây Ninh";
+
             if (isRemoved) {
                 baseAssets.forEach(a => a.status = "Đã giải chấp");
+            } else if (node.isProfileInitial) {
+                // Phiên bản gốc của hồ sơ chọn từ danh sách: dữ liệu trước khi thay đổi (chưa có Kho hàng bổ sung sau)
+                baseAssets[3].name = annualPrevName;
+                baseAssets[3].brandColor = annualPrevDesc;
+                baseAssets.splice(4, 1);
             } else if (node.title.toLowerCase().includes("thay đổi") || node.label.toLowerCase().includes("thay đổi") || node.version > 1) {
                 baseAssets[3].status = "Sửa thông tin";
-                baseAssets[3].prevName = "Vườn cây cao su non";
-                baseAssets[3].prevBrandColor = "Diện tích 4ha tại Nông trường Bình Phước";
+                baseAssets[3].prevName = annualPrevName;
+                baseAssets[3].prevBrandColor = annualPrevDesc;
                 baseAssets[4].status = "Bổ sung mới";
             }
 
@@ -2027,6 +1912,12 @@ document.addEventListener('DOMContentLoaded', function () {
             .replace(/\s*\((Hoàn thành|Chờ thanh toán|Chờ duyệt|Chờ ký|Bị từ chối|Sai lệch thanh toán)\)\s*/g, '')
             .replace(/\s*\(Gốc\)\s*/g, '')
             .trim();
+    }
+
+    function canShowDiffToggle(node) {
+        const normalized = getCleanRegistrationCase(node)
+            .normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase();
+        return normalized.includes('dang ky thay doi') || normalized.includes('thay doi thong bao xu ly tai san bao dam');
     }
 
     // Read stored registration number if any to show banner
@@ -2166,28 +2057,21 @@ document.addEventListener('DOMContentLoaded', function () {
             const cleanCase = getCleanRegistrationCase(node);
             const nodeCreator = node.creator || node.data?.creator || '-';
             nodeEl.innerHTML = `
-                <div class="node-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <span class="node-badge ${node.badgeClass}">${node.label}</span>
-                    <span class="node-status-badge ${statusClass}">
+                <div class="node-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 4px;">
+                    <div class="node-title" style="font-weight: 700; color: var(--text-main); font-size: 13.5px;">${cleanCase}</div>
+                    <span class="node-status-badge ${statusClass}" style="flex-shrink: 0; white-space: nowrap;">
                         ${statusTextHtml}
                     </span>
                 </div>
-                <div class="node-title" style="font-weight: 700; color: var(--text-main); font-size: 13.5px; margin-bottom: 4px;">${cleanCase}</div>
                 <div class="node-reg-code" style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 4px;">
                     <strong>Số đăng ký:</strong> ${node.regCode}
                 </div>
                 <div class="node-date" style="font-size: 11.5px; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
                     <i class="fa-regular fa-calendar" style="width: 13px; text-align: center; flex-shrink: 0;"></i> <strong>Thời điểm đăng ký:</strong> ${node.date}
                 </div>
-                <div class="node-status-text" style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 4px;">
-                    <i class="fa-solid fa-circle-info" style="width: 13px; text-align: center; flex-shrink: 0;"></i> <strong>Trạng thái:</strong> ${node.statusText || '-'}
-                </div>
                 <div class="node-creator" style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 4px;">
                     <i class="fa-regular fa-user" style="width: 13px; text-align: center; flex-shrink: 0;"></i> <strong>Người tạo:</strong> ${nodeCreator}
                 </div>
-                <p class="node-desc" style="font-size: 11px; color: var(--text-muted); margin: 6px 0 0 0; line-height: 1.4; border-top: 1px dashed #E2E8F0; padding-top: 6px;">
-                    ${node.description}
-                </p>
                 ${isCompleted ? `
                     <div class="node-actions" style="display: flex; justify-content: flex-end; margin-top: 6px; padding-top: 4px;">
                         <button class="btn-download-pdf" data-version="${node.version}" data-code="${node.regCode}">
@@ -2261,6 +2145,13 @@ document.addEventListener('DOMContentLoaded', function () {
         // Update title/status headers
         currentVersionTitle.textContent = `${versionNode.title} - Trạng thái: ${versionNode.statusText}`;
         currentVersionSubtitle.textContent = `Số đăng ký: ${versionNode.regCode} | Thời điểm thực hiện: ${versionNode.date}`;
+
+        // "Chỉ hiển thị vùng dữ liệu có biến động" chỉ hiển thị với Đăng ký thay đổi / Thay đổi thông báo xử lý tài sản bảo đảm (giống Website Khách hàng)
+        const allowDiff = canShowDiffToggle(versionNode);
+        document.querySelectorAll('.diff-toggle-container').forEach(container => {
+            container.style.display = allowDiff ? 'flex' : 'none';
+        });
+        if (!allowDiff && diffToggle) diffToggle.checked = false;
 
         // Reset display of special blocks
         sectionDeRegistration.style.display = 'none';
@@ -2767,13 +2658,28 @@ document.addEventListener('DOMContentLoaded', function () {
             assetGroups[getAssetBucket(asset)].items.push(asset);
 
             if (!isNoticeView && showAssetChanges) {
+                // Đối tượng/giá trị hiển thị theo đúng trường của từng Loại tài sản (không dùng tên tự đặt)
+                const bucket = getAssetBucket(asset);
+                const joinDesc = (a, b) => [a, b].filter(v => v && v !== '-').join(', ');
+                const isDescBucket = bucket === 'annual' || bucket === 'other';
+                const summaryObject = isDescBucket ? 'Mô tả'
+                    : bucket === 'inventory' ? joinDesc(asset.goodsKind || 'Kho hàng', asset.warehouseNo)
+                    : asset.name;
+                const summaryValue = isDescBucket ? joinDesc(asset.name, asset.brandColor)
+                    : bucket === 'inventory' ? asset.brandColor
+                    : `${asset.name} (${asset.brandColor})`;
                 if (asset.status === 'Bổ sung mới') {
-                    addListSummaryRow('Tài sản bảo đảm', asset.name, 'Thêm mới', '-', `${asset.name} (${asset.brandColor})`);
+                    addListSummaryRow('Tài sản bảo đảm', summaryObject, 'Thêm mới', '-', summaryValue);
                 } else if (asset.status === 'Đã giải chấp' || asset.status === 'Đã hủy') {
-                    addListSummaryRow('Tài sản bảo đảm', asset.name, 'Rút bớt', `${asset.name} (${asset.brandColor})`, '-');
+                    addListSummaryRow('Tài sản bảo đảm', summaryObject, 'Rút bớt', summaryValue, '-');
+                } else if (asset.status === 'Sửa thông tin' && isDescBucket) {
+                    const prevDesc = joinDesc(asset.prevName || asset.name, asset.prevBrandColor || asset.brandColor);
+                    const currDesc = joinDesc(asset.name, asset.brandColor);
+                    if (prevDesc !== currDesc) addListSummaryRow('Tài sản bảo đảm', 'Mô tả', 'Chỉnh sửa', prevDesc, currDesc);
                 } else if (asset.status === 'Sửa thông tin') {
-                    if (asset.prevName && asset.prevName !== asset.name) {
-                        addListSummaryRow('Tài sản bảo đảm', 'Tên tài sản', 'Chỉnh sửa', asset.prevName, asset.name);
+                    if (asset.prevName && asset.prevName !== asset.name && bucket !== 'inventory') {
+                        const nameLabel = { road: 'Tên phương tiện', vehicle: 'Tên phương tiện, nhãn hiệu', rights: 'Tên quyền' }[bucket] || 'Tên tài sản';
+                        addListSummaryRow('Tài sản bảo đảm', nameLabel, 'Chỉnh sửa', asset.prevName, asset.name);
                     }
                     if (asset.prevBrandColor && asset.prevBrandColor !== asset.brandColor) {
                         const detailLabel = { road: 'Nhãn hiệu, màu sơn', vehicle: 'Tên phương tiện, nhãn hiệu', rights: 'Căn cứ phát sinh quyền', inventory: 'Giá trị hàng hóa/Tên, loại hàng hóa' }[getAssetBucket(asset)] || 'Mô tả';
@@ -2926,25 +2832,44 @@ document.addEventListener('DOMContentLoaded', function () {
             `;
         };
 
-        const renderTextAssets = (items) => items.map(asset => `
-            <div class="ucps-readonly-text" data-status="${htmlEscape(asset.status)}">
-                <strong>${renderChangedText(asset.name, asset.status === 'Bổ sung xử lý' ? null : asset.prevName)}</strong> ${assetStatusBadge(asset)}
-                <br>${renderChangedText(asset.brandColor, asset.status === 'Bổ sung xử lý' ? null : asset.prevBrandColor)}
+        const isRemovedStatus = s => ['Rút bớt', 'Đã giải chấp', 'Đã hủy', 'Rút khỏi thông báo'].includes(s);
+
+        // Quyền tài sản: Tên quyền, Căn cứ phát sinh quyền
+        const renderRightsAssets = (items) => items.map(asset => `
+            <div data-status="${htmlEscape(asset.status)}" class="info-grid-2" style="gap: 12px 20px;">
+                <div class="info-field" style="padding: 0;"><span class="field-label">Tên quyền ${assetStatusBadge(asset)}</span><span class="field-value">${renderChangedText(asset.name, asset.status === 'Bổ sung xử lý' ? null : asset.prevName)}</span></div>
+                <div class="info-field" style="padding: 0;"><span class="field-label">Căn cứ phát sinh quyền</span><span class="field-value">${renderChangedText(asset.brandColor, asset.status === 'Bổ sung xử lý' ? null : asset.prevBrandColor)}</span></div>
             </div>
         `).join('<div style="height: 10px;"></div>') + processingInfoHtml(items);
 
-        const renderInventoryAssets = (items) => items.map(asset => `
-            <div class="ucps-readonly-text" data-status="${htmlEscape(asset.status)}">
-                <strong>${renderChangedText(asset.name, asset.status === 'Bổ sung xử lý' ? null : asset.prevName)}</strong> ${assetStatusBadge(asset)}
-                <div class="info-grid-3" style="margin-top: 8px;">
-                    <div class="info-field" style="padding: 0;"><span class="field-label">Hàng hóa luân chuyển / Kho hàng</span><span class="field-value">${htmlEscape(asset.goodsKind || 'Kho hàng')}</span></div>
-                    <div class="info-field" style="padding: 0; grid-column: span 2;"><span class="field-label">Giá trị hàng hóa/Tên, loại hàng hóa</span><span class="field-value">${renderChangedText(asset.brandColor, asset.status === 'Bổ sung xử lý' ? null : asset.prevBrandColor)}</span></div>
-                    ${(asset.goodsKind || 'Kho hàng') === 'Kho hàng' ? `
-                        <div class="info-field" style="padding: 0; grid-column: span 2;"><span class="field-label">Địa chỉ kho hàng</span><span class="field-value">${htmlEscape(asset.warehouseAddress || '-')}</span></div>
-                        <div class="info-field" style="padding: 0;"><span class="field-label">Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng</span><span class="field-value">${htmlEscape(asset.warehouseNo || '-')}</span></div>` : ''}
-                </div>
-            </div>
-        `).join('<div style="height: 10px;"></div>') + processingInfoHtml(items);
+        // Cây hằng năm, công trình tạm / Các động sản khác: 01 trường Mô tả duy nhất cho mỗi loại tài sản
+        const composeDesc = (name, detail) => [name, detail].filter(v => v && v !== '-').join(', ');
+        const renderDescAssets = (items) => {
+            const shown = items.filter(a => !isRemovedStatus(a.status)).length ? items.filter(a => !isRemovedStatus(a.status)) : items;
+            const text = shown.map(a => composeDesc(a.name, a.brandColor)).join('; ');
+            const hasPrev = shown.some(a => a.status !== 'Bổ sung xử lý' && (a.prevName || a.prevBrandColor));
+            const prevText = hasPrev ? shown.map(a => composeDesc(a.prevName || a.name, a.prevBrandColor || a.brandColor)).join('; ') : null;
+            const flagged = shown.find(a => a.status && a.status !== 'Đang bảo đảm') || shown[0] || {};
+            return `
+            <div class="info-field" data-status="${htmlEscape(flagged.status || '')}" style="padding: 0;">
+                <span class="field-label">Mô tả ${flagged.status ? assetStatusBadge(flagged) : ''}</span>
+                <span class="field-value" style="display: block;">${renderChangedText(text, prevText)}</span>
+            </div>` + processingInfoHtml(items);
+        };
+
+        // Hàng hóa luân chuyển / Kho hàng: Hàng hóa luân chuyển/Kho hàng, Giá trị hàng hóa/Tên loại hàng hóa, Địa chỉ kho hàng, Số hiệu kho hàng
+        const renderInventoryAssets = (items) => items.map(asset => {
+            const kind = asset.goodsKind || 'Kho hàng';
+            const noPrev = asset.status === 'Bổ sung xử lý';
+            return `
+            <div data-status="${htmlEscape(asset.status)}" class="info-grid-2" style="gap: 12px 20px;">
+                <div class="info-field" style="padding: 0;"><span class="field-label">Hàng hóa luân chuyển / Kho hàng ${assetStatusBadge(asset)}</span><span class="field-value">${htmlEscape(kind)}</span></div>
+                <div class="info-field" style="padding: 0;"><span class="field-label">Giá trị hàng hóa/Tên, loại hàng hóa</span><span class="field-value">${renderChangedText(asset.brandColor, noPrev ? null : asset.prevBrandColor)}</span></div>
+                ${kind === 'Kho hàng' ? `
+                <div class="info-field" style="padding: 0;"><span class="field-label">Địa chỉ kho hàng</span><span class="field-value">${htmlEscape(asset.warehouseAddress || '-')}</span></div>
+                <div class="info-field" style="padding: 0;"><span class="field-label">Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng</span><span class="field-value">${htmlEscape(asset.warehouseNo || '-')}</span></div>` : ''}
+            </div>`;
+        }).join('<div style="height: 10px;"></div>') + processingInfoHtml(items);
 
         const renderSecuritiesAssets = (items) => items.map(asset => {
             const t = asset.vsdcTime || {};
@@ -2962,11 +2887,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const assetHtml = [];
         if (assetGroups.road.items.length) assetHtml.push(blockHtml('road', renderRoadTable(assetGroups.road.items)));
         if (assetGroups.vehicle.items.length) assetHtml.push(blockHtml('vehicle', renderVehicleTable(assetGroups.vehicle.items)));
-        if (assetGroups.rights.items.length) assetHtml.push(blockHtml('rights', renderTextAssets(assetGroups.rights.items)));
-        if (assetGroups.annual.items.length) assetHtml.push(blockHtml('annual', renderTextAssets(assetGroups.annual.items)));
+        if (assetGroups.rights.items.length) assetHtml.push(blockHtml('rights', renderRightsAssets(assetGroups.rights.items)));
+        if (assetGroups.annual.items.length) assetHtml.push(blockHtml('annual', renderDescAssets(assetGroups.annual.items)));
         if (assetGroups.inventory.items.length) assetHtml.push(blockHtml('inventory', renderInventoryAssets(assetGroups.inventory.items)));
         if (assetGroups.securities.items.length) assetHtml.push(blockHtml('securities', renderSecuritiesAssets(assetGroups.securities.items)));
-        if (assetGroups.other.items.length) assetHtml.push(blockHtml('other', renderTextAssets(assetGroups.other.items)));
+        if (assetGroups.other.items.length) assetHtml.push(blockHtml('other', renderDescAssets(assetGroups.other.items)));
 
         if (assetTypeSections) {
             assetTypeSections.innerHTML = assetHtml.join('');
@@ -3149,6 +3074,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 hasAssetDiff = true;
             }
         });
+        // Ẩn cả khối Loại tài sản không còn dòng biến động nào (giống Website Khách hàng)
+        const assetBlocks = assetTypeSections ? assetTypeSections.querySelectorAll('[data-asset-group]') : [];
+        assetBlocks.forEach(block => {
+            const visibleRows = block.querySelectorAll('[data-status]:not([style*="display: none"])');
+            block.classList.toggle('ucps-asset-type-hidden', isDiffOnly && visibleRows.length === 0);
+        });
         sectionAssets.style.display = (isDiffOnly && !hasAssetDiff) ? 'none' : 'block';
     }
 
@@ -3287,16 +3218,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-        // Setup listener for asset audit trail toggle
-        const assetAuditToggle = document.getElementById('assetAuditToggle');
-        if (assetAuditToggle) {
-            assetAuditToggle.addEventListener('change', function () {
-                if (currentSelectedVersion) {
-                    selectVersion(currentSelectedVersion);
-                }
-            });
-        }
-
         // Render dynamic officer actions
         function renderActionButtons() {
             const container = document.getElementById('action-buttons-container');
@@ -3341,14 +3262,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     <button class="btn-back" style="font-size:13px;" onclick="goBack()"><i class="fa-solid fa-xmark"></i> Đóng</button>
                 `;
             } else if (status === 'Chờ ký' && isLeaderView && listProfile) {
-                // Màn Xem chi tiết Phiếu đăng ký chờ ký của Lãnh đạo: Đóng, Trả lại (chỉ hồ sơ Trực tiếp), Từ chối, Duyệt
+                // Màn Xem chi tiết Phiếu đăng ký chờ ký của Lãnh đạo: Đóng, Trả lại (chỉ hồ sơ Trực tiếp), Từ chối, Ký số
                 const isDirect = getListSourceLabel(listProfile.source || listProfile.channel) === 'Trực tiếp';
                 const go = act => `sessionStorage.setItem('ldPdkDetailUrl', window.location.href); window.location.href='ky_duyet_ho_so.html?leaderAction=${act}&id=' + encodeURIComponent('${listProfile.id}')`;
                 buttonsHtml = `
                     <button class="btn-back" style="font-size:13px;" onclick="goBack()"><i class="fa-solid fa-xmark"></i> Đóng</button>
                     ${isDirect ? `<button class="btn-back" style="background-color: var(--accent-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="${go('return')}"><i class="fa-solid fa-reply"></i> Trả lại</button>` : ''}
                     <button class="btn-back" style="background-color: var(--danger-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="${go('reject')}"><i class="fa fa-ban"></i> Từ chối</button>
-                    <button class="btn-back" style="background-color: var(--success-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="${go('approve')}"><i class="fa-solid fa-file-signature"></i> Duyệt</button>
+                    <button class="btn-back" style="background-color: var(--success-color); color: white; border: none; padding: 8px 16px; border-radius: var(--border-radius-md); font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-size:13px;" onclick="${go('approve')}"><i class="fa-solid fa-file-signature"></i> Ký số</button>
                 `;
             } else if (status === 'Chờ ký') {
                 if (currentRole === 'lanhdao') {

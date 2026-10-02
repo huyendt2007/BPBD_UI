@@ -455,100 +455,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // v5: Yêu cầu cung cấp bản sao (Cấp bản sao GCN thay đổi lần 1)
-    const v5 = {
-        version: 5,
-        label: "Bản sao",
-        badgeClass: "badge-change",
-        title: "Yêu cầu cung cấp bản sao",
-        statusText: "Hoàn thành",
-        date: "28/03/2026 09:00:00",
-        regCode: "BD-2026-001-BS01",
-        description: "Yêu cầu cấp 03 bản sao Giấy chứng nhận Đăng ký thay đổi lần 1",
-        data: {
-            registrantName: "Công ty Cổ phần Vận tải biển Đông",
-            registrantAddress: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
-            registrantDoc: "Giấy_DN_BienDong.pdf",
-            regCase: "Yêu cầu cung cấp bản sao",
-            firstRegNo: "BD-2026-001",
-            firstRegDate: "05/01/2026 08:00:00",
-            viewOriginalDoc: "GCN_Goc_BD-2026-001.pdf",
-            
-            // Special bản sao fields
-            copyRegNo: "BD-2026-001-TD01",
-            copyCount: "03 bản",
-
-            receivingAgency: "Trung tâm Đăng ký giao dịch, tài sản tại thành phố Hà Nội",
-            transactionType: "Biện pháp bảo đảm",
-            measureType: "Thế chấp",
-            contractType: "",
-            contractNo: "TC-2026-01-SĐ01",
-            contractDate: "10/02/2026",
-            loanValue: "2.500.000.000 VNĐ",
-            scale: "Doanh nghiệp vừa",
-            femaleOwner: "Không",
-            securingParties: [
-                {
-                    type: "tc_vn",
-                    typeName: "Tổ chức trong nước",
-                    name: "Công ty Cổ phần Vận tải biển Đông",
-                    paperNo: "0102030405",
-                    address: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
-                    status: "Không thay đổi"
-                },
-                {
-                    type: "cd_vn",
-                    typeName: "Công dân Việt Nam",
-                    name: "Trần Văn An",
-                    paperNo: "001085006789",
-                    address: "Số 99 Lê Duẩn, Phường Cửa Nam, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
-                    status: "Không thay đổi"
-                }
-            ],
-            securedParties: [
-                {
-                    typeName: "Tổ chức",
-                    paperNo: "0100112437",
-                    name: "Ngân hàng TMCP Ngoại thương Việt Nam (VCB) - Chi nhánh Hà Nội",
-                    address: "Số 198 Trần Quang Khải, Phường Lý Thái Tổ, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
-                    status: "Không thay đổi"
-                }
-            ],
-            assets: [
-                {
-                    id: 1,
-                    typeName: "Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)",
-                    name: "Xe ô tô con 5 chỗ",
-                    brandColor: "Toyota Camry 2.5Q, Màu đỏ",
-                    frameNo: "CAMRY-88992211",
-                    engineNo: "ENG-2AR-998811",
-                    plateNo: "30H-123.45",
-                    status: "Đang bảo đảm"
-                },
-                {
-                    id: 2,
-                    typeName: "Tàu cá; phương tiện giao thông đường thủy nội địa, đường sắt, hoặc chuyên dùng",
-                    name: "Xe tải ben 5 tấn",
-                    brandColor: "Hyundai HD120, Màu xanh",
-                    frameNo: "HYU-BEN-771122",
-                    engineNo: "ENG-D6GA-88221",
-                    plateNo: "29C-567.89",
-                    status: "Đang bảo đảm"
-                },
-                {
-                    id: 3,
-                    typeName: "Các động sản khác (Tiền, giấy tờ có giá, hàng tiêu dùng, nguyên nhiên vật liệu...)",
-                    name: "Xe ô tô bán tải",
-                    brandColor: "Ford Ranger Wildtrak, Màu cam",
-                    frameNo: "RAN-FOR-554433",
-                    engineNo: "ENG-BIO-112233",
-                    plateNo: "29H-987.65",
-                    status: "Đang bảo đảm"
-                }
-            ]
-        }
-    };
-
     // v6: Hủy đăng ký (Hủy một phần tài sản Ford Ranger theo Bản án Tòa án)
     const v6 = {
         version: 6,
@@ -1285,26 +1191,10 @@ document.addEventListener('DOMContentLoaded', function () {
             mockTimelineData.push(v8);
             mockTimelineData.push(v7);
             mockTimelineData.push(v6);
-            mockTimelineData.push(v5);
             mockTimelineData.push(v4);
             mockTimelineData.push(v3);
             mockTimelineData.push(v2);
 
-            // Add 8 dummy versions in between to make it 17 total versions (> 10)
-            for (let i = 8; i >= 1; i--) {
-                mockTimelineData.push({
-                    version: i + 10,
-                    label: `Thay đổi phụ ${i}`,
-                    badgeClass: "badge-change",
-                    title: `Thay đổi thông tin phụ lần ${i}`,
-                    statusText: "Hoàn thành",
-                    date: `1${i}/03/2026 10:00:00`,
-                    regCode: `BD-2026-001-TD${i + 2}`,
-                    description: `Thay đổi thông tin nhỏ liên quan đến quy trình lần thứ ${i}`,
-                    data: JSON.parse(JSON.stringify(v4.data))
-                });
-            }
-            
             // Put oldest version at the end
             mockTimelineData.push(v1);
 
@@ -1432,22 +1322,18 @@ document.addEventListener('DOMContentLoaded', function () {
             
             const isCompleted = node.statusText === 'Hoàn thành';
             nodeEl.innerHTML = `
-                <div class="node-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <span class="node-badge ${node.badgeClass}">${node.label}</span>
-                    <span class="node-status-badge ${isCompleted ? 'status-completed' : 'status-rejected'}">
+                <div class="node-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 4px;">
+                    <div class="node-title" style="font-weight: 700; color: var(--text-main); font-size: 13.5px;">${node.title}</div>
+                    <span class="node-status-badge ${isCompleted ? 'status-completed' : 'status-rejected'}" style="flex-shrink: 0; white-space: nowrap;">
                         ${isCompleted ? '<i class="fa-solid fa-circle-check"></i> Hoàn thành' : '<i class="fa-solid fa-circle-xmark"></i> Bị từ chối'}
                     </span>
                 </div>
-                <div class="node-title" style="font-weight: 700; color: var(--text-main); font-size: 13.5px; margin-bottom: 4px;">${node.title}</div>
                 <div class="node-reg-code" style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 4px;">
                     <strong>Số HS:</strong> ${node.regCode}
                 </div>
                 <div class="node-date" style="font-size: 11.5px; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
                     <i class="fa-regular fa-calendar"></i> <strong>Thời điểm:</strong> ${node.date}
                 </div>
-                <p class="node-desc" style="font-size: 11px; color: var(--text-muted); margin: 6px 0 0 0; line-height: 1.4; border-top: 1px dashed #E2E8F0; padding-top: 6px;">
-                    ${node.description}
-                </p>
                 ${isCompleted ? `
                     <div class="node-actions" style="display: flex; justify-content: flex-end; margin-top: 6px; padding-top: 4px;">
                         <button class="btn-download-pdf" data-version="${node.version}" data-code="${node.regCode}">

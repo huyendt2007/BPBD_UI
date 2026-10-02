@@ -113,6 +113,7 @@ Tai lieu phan tich/
     │   ├── SRS_Ky_duyet_Phieu_dang_ky_Lanh_dao.md # Lãnh đạo ký số phê duyệt phiếu đăng ký BPBĐ
     │   ├── SRS_Ky_duyet_Yeu_cau_cung_cap_thong_tin_Lanh_dao.md # Lãnh đạo ký số duyệt cung cấp thông tin
     │   ├── SRS_Ky_duyet_Yeu_cau_cung_cap_ban_sao_Lanh_dao.md # Lãnh đạo ký số duyệt cấp bản sao
+    │   ├── SRS_Ky_duyet_Chinh_ly_huy_khoi_phuc_dang_ky_Lanh_dao.md # Lãnh đạo duyệt đề nghị, ký số hồ sơ chỉnh lý/hủy/khôi phục
     │   ├── Quan_ly_cap_ma_so_CSDL.md            # Cấp mã số sử dụng CSDL thường xuyên/một lần
     │   ├── Xem_lich_su_thay_doi_can_bo.md       # Audit Trail lịch sử tác nghiệp của cán bộ
     │   ├── Quan_ly_tiep_nhan_ho_tro.md          # Tiếp nhận & xử lý ticket hỗ trợ kỹ thuật

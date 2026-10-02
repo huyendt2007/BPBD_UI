@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bàn làm việc Quản lý Chỉnh lý, Hủy và Khôi phục đăng ký biện pháp bảo đảm</title>
+    <title>Danh sách đề nghị chỉnh lý, hủy và khôi phục đăng ký</title>
     <!-- Google Fonts Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -391,10 +391,9 @@
             background-color: #F0F9FF !important;
         }
 
-        /* Cột Thao tác cố định cạnh phải bảng (Sticky/Freeze) */
-        .custom-table th:last-child,
-        .custom-table td:last-child,
-        .custom-table .col-actions {
+        /* Cột Thao tác cố định cạnh phải bảng (Sticky/Freeze) - Chỉ áp dụng cho class .col-actions, tuyệt đối không dùng :last-child tránh làm dính cột Trạng thái */
+        .custom-table th.col-actions,
+        .custom-table td.col-actions {
             position: sticky;
             right: 0;
             z-index: 2;
@@ -405,7 +404,6 @@
             min-width: 90px;
         }
 
-        .custom-table thead th:last-child,
         .custom-table thead th.col-actions {
             position: sticky;
             top: 0;
@@ -416,17 +414,14 @@
             text-align: center;
         }
 
-        .custom-table tbody tr:hover td:last-child,
         .custom-table tbody tr:hover td.col-actions {
             background-color: #F0F9FF !important;
         }
 
-        .custom-table tbody tr:nth-child(even) td:last-child,
         .custom-table tbody tr:nth-child(even) td.col-actions {
             background-color: #F8FAFC;
         }
 
-        .custom-table tbody tr:nth-child(even):hover td:last-child,
         .custom-table tbody tr:nth-child(even):hover td.col-actions {
             background-color: #F0F9FF !important;
         }
@@ -695,7 +690,7 @@
             gap: 16px;
         }
 
-        /* Diff comparison table (MH07) */
+        /* Diff comparison table (MH05) */
         .diff-table {
             width: 100%;
             border-collapse: collapse;
@@ -792,7 +787,7 @@
     </style>
     <link rel="stylesheet" href="chinh_ly_common.css">
 </head>
-<!-- MH01 - Màn hình Bàn làm việc Quản lý Chỉnh lý, Hủy và Khôi phục đăng ký -->
+<!-- MH01 - Màn hình Danh sách đề nghị chỉnh lý, hủy và khôi phục đăng ký -->
 <body>
 
 <div class="container">
@@ -813,9 +808,7 @@
         <div class="nav-tab active" data-tab="all">Tất cả <span class="tab-badge secondary" id="badge_all">0</span></div>
         <div class="nav-tab" data-tab="my_tasks">Cần xử lý của tôi <span class="tab-badge danger" id="badge_my_tasks">0</span></div>
         <div class="nav-tab" data-tab="cho_duyet">Chờ duyệt đề nghị <span class="tab-badge warning" id="badge_cho_duyet">0</span></div>
-        <div class="nav-tab" data-tab="cho_thuc_hien">Chờ thực hiện <span class="tab-badge info" id="badge_cho_thuc_hien">0</span></div>
         <div class="nav-tab" data-tab="cho_ky">Chờ ký số <span class="tab-badge primary" id="badge_cho_ky">0</span></div>
-        <div class="nav-tab" data-tab="hoan_thanh">Lịch sử hoàn thành <span class="tab-badge success" id="badge_hoan_thanh">0</span></div>
     </div>
 
     <!-- BỘ LỌC TÌM KIẾM -->
@@ -846,11 +839,9 @@
                         <option>Đăng ký lần đầu</option>
                         <option>Đăng ký thay đổi</option>
                         <option>Xóa đăng ký</option>
-                        <option>Thông báo xử lý tài sản đảm bảo lần đầu</option>
+                        <option>Thông báo xử lý tài sản bảo đảm lần đầu</option>
                         <option>Thay đổi thông báo xử lý tài sản bảo đảm</option>
                         <option>Xóa đăng ký thông báo xử lý tài sản bảo đảm</option>
-                        <option>Yêu cầu cung cấp bản sao</option>
-                        <option>Yêu cầu cung cấp thông tin</option>
                     </select></div>
                 <div class="form-group" id="grpTrangThai"><label class="form-label" for="fTrangThai">Trạng thái</label>
                     <!-- Danh sách giá trị nạp theo Tab đang chọn -->
@@ -859,8 +850,10 @@
                     <input type="text" class="form-control" id="fBenBaoDam" maxlength="255" placeholder="Nhập tên bên bảo đảm..."></div>
                 <div class="form-group"><label class="form-label" for="fBenNhanBaoDam">Tên bên nhận bảo đảm</label>
                     <input type="text" class="form-control" id="fBenNhanBaoDam" maxlength="255" placeholder="Nhập tên bên nhận bảo đảm..."></div>
-                <div class="form-group"><label class="form-label" for="fNguoiXuLy">Người xử lý</label>
-                    <input type="text" class="form-control" id="fNguoiXuLy" maxlength="255" placeholder="Nhập tên người lập hoặc người thực hiện..."></div>
+                <div class="form-group"><label class="form-label" for="fCanBoLap">Cán bộ lập đề nghị</label>
+                    <input type="text" class="form-control" id="fCanBoLap" maxlength="255" placeholder="Nhập tên cán bộ lập đề nghị..."></div>
+                <div class="form-group"><label class="form-label" for="fCanBoXuLy">Cán bộ xử lý</label>
+                    <input type="text" class="form-control" id="fCanBoXuLy" maxlength="255" placeholder="Nhập tên cán bộ xử lý..."></div>
                 <div class="form-group"><label class="form-label" for="fTuNgay">Từ ngày</label>
                     <input type="text" class="form-control" id="fTuNgay" placeholder="dd/mm/yyyy"></div>
                 <div class="form-group"><label class="form-label" for="fDenNgay">Đến ngày</label>
@@ -892,7 +885,8 @@
                         <th style="text-align: center;" class="sortable" data-sort="loaiDangKy">Loại đăng ký <i class="fa-solid fa-sort" style="font-size: 11px;"></i></th>
                         <th style="min-width: 170px;" class="sortable" data-sort="bbd">Tên bên bảo đảm <i class="fa-solid fa-sort" style="font-size: 11px;"></i></th>
                         <th style="min-width: 170px;" class="sortable" data-sort="bnbd">Tên bên nhận bảo đảm <i class="fa-solid fa-sort" style="font-size: 11px;"></i></th>
-                        <th class="sortable" data-sort="nguoiXuLy">Người xử lý <i class="fa-solid fa-sort" style="font-size: 11px;"></i></th>
+                        <th class="sortable" data-sort="canBoLap">Cán bộ lập đề nghị <i class="fa-solid fa-sort" style="font-size: 11px;"></i></th>
+                        <th class="sortable" data-sort="canBoXuLy">Cán bộ xử lý <i class="fa-solid fa-sort" style="font-size: 11px;"></i></th>
                         <th style="text-align: center;" class="sortable" data-sort="thoiDiemGuiSort">Thời điểm gửi <i class="fa-solid fa-sort" style="font-size: 11px;"></i></th>
                         <th style="text-align: center;" class="sortable" data-sort="trangThai">Trạng thái <i class="fa-solid fa-sort" style="font-size: 11px;"></i></th>
                         <th style="width: 90px; min-width: 90px; text-align: center;" class="col-actions">Thao tác</th>
@@ -924,9 +918,7 @@
         all: null,
         my_tasks: ['Bị từ chối đề nghị', 'Chờ thực hiện', 'Bị trả lại'],
         cho_duyet: ['Chờ duyệt đề nghị'],
-        cho_thuc_hien: ['Chờ thực hiện'],
-        cho_ky: ['Chờ ký số'],
-        hoan_thanh: ['Hoàn thành']
+        cho_ky: ['Chờ ký số']
     };
     const ALL_STATUS = ['Chờ duyệt đề nghị', 'Bị từ chối đề nghị', 'Chờ thực hiện', 'Chờ ký số', 'Bị trả lại', 'Hoàn thành'];
     let currentTab = TAB_STATUS.hasOwnProperty(C.param('tab')) ? C.param('tab') : 'all';
@@ -945,7 +937,8 @@
             p, id: p.id, maDeNghi: p.maDeNghi, loaiDeNghi: C.loaiLabel(p), maKH: hs.maKH || '',
             soDangKy: p.soDangKy, soKhac: [hs.soDKLanDau, p.soDKHuyMoi].filter(Boolean).join(' '),
             loaiDangKy: hs.loaiDangKy || '', bbd: C.tenDanhSach(hs.bbd), bnbd: C.tenDanhSach(hs.bnbd),
-            nguoiXuLy: C.nguoiXuLy(p), nguoiLap: p.nguoiLap, nguoiThucHien: p.pheDuyet ? p.pheDuyet.nguoiThucHien : '',
+            // Cán bộ xử lý: cán bộ được phân công thực hiện (đề nghị chưa được duyệt thì chưa có)
+            canBoLap: p.nguoiLap || '', canBoXuLy: p.pheDuyet ? (p.pheDuyet.nguoiThucHien || '') : '',
             thoiDiemGui: p.thoiDiemGui, thoiDiemGuiSort: dt ? dt.getTime() : 0, ngayGui: dt, trangThai: p.trangThai
         };
     }
@@ -962,7 +955,7 @@
         return {
             ma: v('fMaDeNghi'), maKH: v('fMaKhachHang'), so: v('fSoDangKy'),
             loai: $('fLoaiDeNghi').value, loaiDK: $('fLoaiDangKy').value, st: $('fTrangThai').value,
-            bbd: v('fBenBaoDam'), bnbd: v('fBenNhanBaoDam'), nguoi: v('fNguoiXuLy'),
+            bbd: v('fBenBaoDam'), bnbd: v('fBenNhanBaoDam'), canBoLap: v('fCanBoLap'), canBoXuLy: v('fCanBoXuLy'),
             tu: C.parseDMY($('fTuNgay').value.trim()), den: C.parseDMY($('fDenNgay').value.trim())
         };
     }
@@ -979,7 +972,8 @@
             if (c.st && r.trangThai !== c.st) return false;
             if (c.bbd && !r.bbd.toLowerCase().includes(c.bbd)) return false;
             if (c.bnbd && !r.bnbd.toLowerCase().includes(c.bnbd)) return false;
-            if (c.nguoi && !(r.nguoiLap + ' ' + r.nguoiThucHien).toLowerCase().includes(c.nguoi)) return false;
+            if (c.canBoLap && !r.canBoLap.toLowerCase().includes(c.canBoLap)) return false;
+            if (c.canBoXuLy && !r.canBoXuLy.toLowerCase().includes(c.canBoXuLy)) return false;
             if (c.tu && r.ngayGui && r.ngayGui < c.tu) return false;
             if (c.den && r.ngayGui) { const end = new Date(c.den); end.setHours(23, 59, 59); if (r.ngayGui > end) return false; }
             return true;
@@ -994,11 +988,9 @@
 
     // Nút thao tác trên dòng theo trạng thái hồ sơ (nút không áp dụng được ẩn hoàn toàn)
     function actions(p) {
-        const btn = (cls, icon, title, act) => `<button type="button" class="icon-btn ${cls}" title="${title}" data-act="${act}" data-id="${p.id}"><i class="fa-solid ${icon}"></i></button>`;
+        const btn = (cls, icon, title, act, disabled) => `<button type="button" class="icon-btn ${cls}" title="${title}" data-act="${act}" data-id="${p.id}"${disabled ? ' disabled' : ''}><i class="fa-solid ${icon}"></i></button>`;
         switch (p.trangThai) {
-            case 'Chờ duyệt đề nghị': return btn('approve', 'fa-check-to-slot', 'Duyệt đề nghị', 'duyet') + btn('reject', 'fa-ban', 'Từ chối đề nghị', 'tuchoi');
-            case 'Chờ thực hiện': return btn('edit', 'fa-pen-to-square', 'Thực hiện đề nghị', 'thuchien');
-            case 'Chờ ký số': return btn('sign', 'fa-file-signature', 'Ký số hồ sơ', 'kyso') + btn('reject', 'fa-rotate-left', 'Trả lại hồ sơ', 'tralai');
+            case 'Chờ thực hiện': return C.laNguoiDuocPhanCong(p) ? btn('edit', 'fa-pen-to-square', 'Thực hiện đề nghị', 'thuchien') : '';
             case 'Bị từ chối đề nghị': return btn('edit', 'fa-pen-clip', 'Cập nhật đề nghị', 'capnhat');
             case 'Bị trả lại': return btn('edit', 'fa-file-pen', 'Sửa hồ sơ trình ký', 'suahoso');
             default: return '';
@@ -1007,14 +999,14 @@
 
     function render() {
         const tbody = $('tableBody');
-        // Tab Lịch sử hoàn thành: không hiển thị cột Thao tác
-        const showActions = currentTab !== 'hoan_thanh';
+        // Tab Chờ duyệt đề nghị, Chờ ký số: không hiển thị cột Thao tác (Lãnh đạo xử lý tại màn Ký duyệt hồ sơ)
+        const showActions = currentTab !== 'cho_duyet' && currentTab !== 'cho_ky';
         document.querySelector('#mainTable thead th.col-actions').style.display = showActions ? '' : 'none';
         const total = rows.length;
         const totalPages = Math.max(1, Math.ceil(total / pageSize));
         if (currentPage > totalPages) currentPage = totalPages;
         if (!total) {
-            tbody.innerHTML = `<tr><td colspan="${showActions ? 12 : 11}" style="text-align:center;padding:24px;font-style:italic;color:#64748b;">${C.esc(C.MSG.INF_SYS_001)}</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="${showActions ? 13 : 12}" style="text-align:center;padding:24px;font-style:italic;color:#64748b;">${C.esc(C.MSG.INF_SYS_001)}</td></tr>`;
         } else {
             const start = (currentPage - 1) * pageSize;
             tbody.innerHTML = rows.slice(start, start + pageSize).map((r, i) => `<tr data-row="${r.id}" title="Click vào dòng để xem chi tiết">
@@ -1026,7 +1018,8 @@
                 <td style="text-align:center;">${C.esc(C.val(r.loaiDangKy))}</td>
                 <td style="font-weight:500;">${C.esc(r.bbd)}</td>
                 <td style="font-weight:500;">${C.esc(r.bnbd)}</td>
-                <td>${C.esc(r.nguoiXuLy)}</td>
+                <td>${C.esc(C.val(r.canBoLap))}</td>
+                <td>${C.esc(C.val(r.canBoXuLy))}</td>
                 <td style="text-align:center;color:#475569;">${C.esc(r.thoiDiemGui)}</td>
                 <td style="text-align:center;">${C.badge(r.trangThai, C.statusClass(r.trangThai))}</td>
                 ${showActions ? `<td class="col-actions"><div class="action-slot-group">${actions(r.p)}</div></td>` : ''}</tr>`).join('');
@@ -1041,29 +1034,25 @@
         pg.innerHTML = html;
     }
 
-    // Mở màn hình theo trạng thái: MH03 hoặc MH07 (chế độ chỉ đọc)
+    // Mở màn hình theo trạng thái: MH03 hoặc MH05 (chế độ chỉ đọc)
     function openDetail(id) {
         const p = C.getProposal(id);
         if (!p) return;
-        // Chờ ký số: MH07 có thao tác Ký số, Trả lại hồ sơ; Hoàn thành: MH07 chế độ chỉ đọc; còn lại: MH03
-        if (p.trangThai === 'Chờ ký số') location.href = `ky_so_chinh_ly.html?id=${id}`;
-        else if (p.trangThai === 'Hoàn thành') location.href = `ky_so_chinh_ly.html?id=${id}&mode=view`;
+        // Chờ ký số, Hoàn thành: Xem chi tiết hồ sơ trình ký (chỉ đọc); còn lại: Xem chi tiết đề nghị
+        if (p.trangThai === 'Chờ ký số' || p.trangThai === 'Hoàn thành') location.href = `ky_so_chinh_ly.html?id=${id}&mode=view`;
         else location.href = `lap_de_nghi_chinh_ly.html?id=${id}&mode=view`;
     }
     function afterAction(cur, msg) { updateBadges(); load(); C.toast(msg); }
     function doAction(act, id) {
         const p = C.getProposal(id);
         if (!p) return;
-        if (act === 'duyet') C.openDuyet(p, afterAction);
-        if (act === 'tuchoi') C.openTuChoi(p, afterAction);
-        if (act === 'tralai') C.openTraLai(p, afterAction);
         if (act === 'thuchien' || act === 'suahoso') location.href = `thuc_hien_chinh_ly_form.html?id=${id}`;
-        if (act === 'kyso') location.href = `ky_so_chinh_ly.html?id=${id}`;
         if (act === 'capnhat') location.href = `lap_de_nghi_chinh_ly.html?id=${id}&mode=edit`;
     }
 
     function switchTab(tab) {
         currentTab = tab;
+        C.rememberListTab(tab);
         document.querySelectorAll('.nav-tab').forEach(t => t.classList.toggle('active', t.getAttribute('data-tab') === tab));
         // Lập đề nghị mới chỉ hiển thị tại Tab "Tất cả" và "Cần xử lý của tôi"
         $('btnLapDeNghi').style.display = (tab === 'all' || tab === 'my_tasks') ? 'inline-flex' : 'none';
@@ -1098,7 +1087,7 @@
         $('fDenNgay').value = C.fmtDate(now);
     }
     function clearFilter() {
-        ['fMaDeNghi', 'fMaKhachHang', 'fSoDangKy', 'fBenBaoDam', 'fBenNhanBaoDam', 'fNguoiXuLy'].forEach(id => { $(id).value = ''; });
+        ['fMaDeNghi', 'fMaKhachHang', 'fSoDangKy', 'fBenBaoDam', 'fBenNhanBaoDam', 'fCanBoLap', 'fCanBoXuLy'].forEach(id => { $(id).value = ''; });
         ['fLoaiDeNghi', 'fLoaiDangKy', 'fTrangThai'].forEach(id => { $(id).value = ''; });
         defaultDates();
         search();
@@ -1136,6 +1125,7 @@
     });
 
     criteria = readCriteria();
+    C.clearReturnUrl();
     switchTab(currentTab);
     C.showFlash();
 })();

@@ -455,6 +455,14 @@ Dưới đây là danh sách các thông báo (MessageList - MSG) chuẩn hóa h
 | <a id="msg-err-cldk-001"></a>**[MSG-ERR-CLDK-001]** | Lỗi | `"Số đăng ký không tồn tại trên hệ thống. Vui lòng kiểm tra lại."` | Inline (Dưới trường nhập liệu) | Không |
 | <a id="msg-err-cldk-002"></a>**[MSG-ERR-CLDK-002]** | Lỗi | `"Hồ sơ chưa ở trạng thái Hoàn thành, không được phép lập đề nghị."` | Inline (Dưới trường nhập liệu) | Không |
 | <a id="msg-err-cldk-003"></a>**[MSG-ERR-CLDK-003]** | Lỗi | `"Định dạng tệp tin [Tên tệp] không hợp lệ. Chỉ chấp nhận các định dạng .pdf, .doc, .docx, .png, .jpg."` | Inline (Dưới trường nhập liệu) | Không |
+| <a id="msg-err-cldk-004"></a>**[MSG-ERR-CLDK-004]** | Lỗi | `"Hồ sơ đã được xóa đăng ký, không được phép lập đề nghị."` | Inline (Dưới trường nhập liệu) | Không |
+| <a id="msg-err-cldk-005"></a>**[MSG-ERR-CLDK-005]** | Lỗi | `"Hồ sơ đã bị hủy đăng ký toàn phần, không được phép lập đề nghị chỉnh lý thông tin hoặc hủy đăng ký."` | Inline (Dưới trường nhập liệu) | Không |
+| <a id="msg-err-cldk-006"></a>**[MSG-ERR-CLDK-006]** | Lỗi | `"Hồ sơ đang có đề nghị [Mã đề nghị] chưa hoàn thành xử lý, không được phép lập đề nghị mới."` | Inline (Dưới trường nhập liệu) | Không |
+| <a id="msg-err-cldk-007"></a>**[MSG-ERR-CLDK-007]** | Lỗi | `"Số đăng ký hủy đã được khôi phục, không được phép lập đề nghị khôi phục hủy đăng ký."` | Inline (Dưới trường nhập liệu) | Không |
+| <a id="msg-err-cldk-008"></a>**[MSG-ERR-CLDK-008]** | Lỗi | `"Số đăng ký [Số đăng ký] thuộc phiên bản [Loại đăng ký], không thuộc phạm vi chỉnh lý thông tin. Chỉ được chỉnh lý phiên bản Đăng ký lần đầu, Đăng ký thay đổi, Thông báo xử lý tài sản bảo đảm lần đầu hoặc Thay đổi thông báo xử lý tài sản bảo đảm."` | Inline (Dưới trường nhập liệu) | Không |
+| <a id="msg-err-cldk-009"></a>**[MSG-ERR-CLDK-009]** | Lỗi | `"Số đăng ký [Số đăng ký] không phải Số đăng ký lần đầu. Vui lòng nhập Số đăng ký lần đầu của hồ sơ cần hủy."` | Inline (Dưới trường nhập liệu) | Không |
+| <a id="msg-err-cldk-010"></a>**[MSG-ERR-CLDK-010]** | Lỗi | `"Số đăng ký [Số đăng ký] không phải Số đăng ký hủy. Vui lòng nhập Số đăng ký hủy cần khôi phục."` | Inline (Dưới trường nhập liệu) | Không |
+| <a id="msg-err-cldk-011"></a>**[MSG-ERR-CLDK-011]** | Lỗi | `"Hồ sơ [Số đăng ký] không còn đủ điều kiện thực hiện đề nghị [Mã đề nghị] do [Lý do: đã bị xóa đăng ký / đã bị hủy đăng ký toàn phần / Số đăng ký hủy đã được khôi phục]."` | Toast | Không |
 | <a id="msg-suc-cldk-001"></a>**[MSG-SUC-CLDK-001]** | Thành công | `"Gửi đề nghị thành công. Mã đề nghị: [Mã đề nghị]"` | Toast | Không |
 | <a id="msg-suc-cldk-002"></a>**[MSG-SUC-CLDK-002]** | Thành công | `"Đã phê duyệt đề nghị và chuyển giao cho [Họ tên người thực hiện] thực hiện."` | Toast | Không |
 | <a id="msg-suc-cldk-003"></a>**[MSG-SUC-CLDK-003]** | Thành công | `"Đã từ chối phê duyệt đề nghị [Mã đề nghị]."` | Toast | Không |

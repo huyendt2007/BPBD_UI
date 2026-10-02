@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "TC-2026-01",
             contractDate: "04/01/2026",
             loanValue: "1.500.000.000 VNĐ",
-            scale: "Doanh nghiệp vừa",
+            scale: "Bên bảo đảm là công ty có từ 300 nhân viên hoặc nhiều hơn",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "TC-2026-01-SĐ01",
             contractDate: "10/02/2026",
             loanValue: "2.500.000.000 VNĐ",
-            scale: "Doanh nghiệp vừa",
+            scale: "Bên bảo đảm là công ty có từ 300 nhân viên hoặc nhiều hơn",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "TC-2026-01-SĐ02",
             contractDate: "02/03/2026",
             loanValue: "2.500.000.000 VNĐ",
-            scale: "Doanh nghiệp vừa",
+            scale: "Bên bảo đảm là công ty có từ 300 nhân viên hoặc nhiều hơn",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -440,7 +440,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "TC-2026-01-SĐ01",
             contractDate: "10/02/2026",
             loanValue: "2.500.000.000 VNĐ",
-            scale: "Doanh nghiệp vừa",
+            scale: "Bên bảo đảm là công ty có từ 300 nhân viên hoặc nhiều hơn",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -507,101 +507,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
-    // v5: Yêu cầu cung cấp bản sao (Cấp bản sao GCN thay đổi lần 1)
-    const v5 = {
-        version: 5,
-        label: "Bản sao",
-        badgeClass: "badge-change",
-        title: "Yêu cầu cung cấp bản sao",
-        statusText: "Hoàn thành",
-        date: "28/03/2026 09:00:00",
-        regCode: "BD-2026-001-BS01",
-        description: "Yêu cầu cấp 03 bản sao Giấy chứng nhận Đăng ký thay đổi lần 1",
-        data: {
-            registrantName: "Công ty Cổ phần Vận tải biển Đông",
-            registrantAddress: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
-            registrantDoc: "Giấy_DN_BienDong.pdf",
-            regCase: "Yêu cầu cung cấp bản sao",
-            firstRegNo: "BD-2026-001",
-            firstRegDate: "05/01/2026 08:00:00",
-            viewOriginalDoc: "GCN_Goc_BD-2026-001.pdf",
-            
-            // Special bản sao fields
-            copyRegNo: "BD-2026-001-TD01",
-            copyCount: "03 bản",
-
-            receivingAgency: "Trung tâm Đăng ký giao dịch, tài sản tại thành phố Hà Nội",
-            transactionType: "Biện pháp bảo đảm",
-            measureType: "Thế chấp",
-            contractType: "",
-            contractNo: "TC-2026-01-SĐ01",
-            contractDate: "10/02/2026",
-            loanValue: "2.500.000.000 VNĐ",
-            scale: "Doanh nghiệp vừa",
-            femaleOwner: "Không",
-            securingParties: [
-                {
-                    type: "tc_vn",
-                    typeName: "Tổ chức trong nước",
-                    name: "Công ty Cổ phần Vận tải biển Đông",
-                    paperNo: "0102030405",
-                    address: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
-                    status: "Không thay đổi"
-                },
-                {
-                    type: "cd_vn",
-                    typeName: "Công dân Việt Nam",
-                    name: "Trần Văn An",
-                    paperNo: "001085006789",
-                    birthDate: "15/08/1985",
-                    address: "Số 99 Lê Duẩn, Phường Cửa Nam, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
-                    status: "Không thay đổi"
-                }
-            ],
-            securedParties: [
-                {
-                    typeName: "Tổ chức",
-                    paperNo: "0100112437",
-                    name: "Ngân hàng TMCP Ngoại thương Việt Nam (VCB) - Chi nhánh Hà Nội",
-                    address: "Số 198 Trần Quang Khải, Phường Lý Thái Tổ, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
-                    status: "Không thay đổi"
-                }
-            ],
-            assets: [
-                {
-                    id: 1,
-                    typeName: "Phương tiện giao thông cơ giới đường bộ CÓ số khung (ô tô, mô tô, xe gắn máy...)",
-                    name: "Xe ô tô con 5 chỗ",
-                    brandColor: "Toyota Camry 2.5Q, Màu đỏ",
-                    frameNo: "CAMRY-88992211",
-                    engineNo: "ENG-2AR-998811",
-                    plateNo: "30H-123.45",
-                    status: "Đang bảo đảm"
-                },
-                {
-                    id: 2,
-                    typeName: "Tàu cá; phương tiện giao thông đường thủy nội địa, đường sắt, hoặc chuyên dùng",
-                    name: "Xe tải ben 5 tấn",
-                    brandColor: "Hyundai HD120, Màu xanh",
-                    frameNo: "HYU-BEN-771122",
-                    engineNo: "ENG-D6GA-88221",
-                    plateNo: "29C-567.89",
-                    status: "Đang bảo đảm"
-                },
-                {
-                    id: 3,
-                    typeName: "Các động sản khác (Tiền, giấy tờ có giá, hàng tiêu dùng, nguyên nhiên vật liệu...)",
-                    name: "Xe ô tô bán tải",
-                    brandColor: "Ford Ranger Wildtrak, Màu cam",
-                    frameNo: "RAN-FOR-554433",
-                    engineNo: "ENG-BIO-112233",
-                    plateNo: "29H-987.65",
-                    status: "Đang bảo đảm"
-                }
-            ]
-        }
-    };
-
     // v6: Hủy đăng ký (Hủy một phần tài sản Ford Ranger theo Bản án Tòa án)
     const v6 = {
         version: 6,
@@ -637,7 +542,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "TC-2026-01-SĐ01",
             contractDate: "10/02/2026",
             loanValue: "2.500.000.000 VNĐ",
-            scale: "Doanh nghiệp vừa",
+            scale: "Bên bảo đảm là công ty có từ 300 nhân viên hoặc nhiều hơn",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -735,7 +640,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "TC-2026-01-SĐ01",
             contractDate: "10/02/2026",
             loanValue: "2.500.000.000 VNĐ",
-            scale: "Doanh nghiệp vừa",
+            scale: "Bên bảo đảm là công ty có từ 300 nhân viên hoặc nhiều hơn",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -831,7 +736,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "TC-2026-01-SĐ01",
             contractDate: "10/02/2026",
             loanValue: "2.500.000.000 VNĐ",
-            scale: "Doanh nghiệp vừa",
+            scale: "Bên bảo đảm là công ty có từ 300 nhân viên hoặc nhiều hơn",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -922,7 +827,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "HĐTC-FPT/2026/01",
             contractDate: "13/05/2026",
             loanValue: "500.000.000 VNĐ",
-            scale: "Cá nhân",
+            scale: "Bên bảo đảm sử dụng khoản vay cho tiêu dùng cá nhân",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -1017,7 +922,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "HĐTC-HN/2026/02",
             contractDate: "14/06/2026",
             loanValue: "1.200.000.000 VNĐ",
-            scale: "Doanh nghiệp nhỏ",
+            scale: "Bên bảo đảm là công ty có từ 10 đến 299 nhân viên",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -1094,7 +999,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "HĐTC-JS/2026/01",
             contractDate: "14/06/2026",
             loanValue: "900.000.000 VNĐ",
-            scale: "Cá nhân nước ngoài",
+            scale: "Bên bảo đảm sử dụng khoản vay cho tiêu dùng cá nhân",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -1153,7 +1058,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "HĐTC-IP/2026/03",
             contractDate: "15/06/2026",
             loanValue: "700.000.000 VNĐ",
-            scale: "Cá nhân không quốc tịch",
+            scale: "Bên bảo đảm sử dụng khoản vay cho tiêu dùng cá nhân",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -1212,7 +1117,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "HĐTC-GIG/2026/04",
             contractDate: "16/06/2026",
             loanValue: "3.000.000.000 VNĐ",
-            scale: "Tổ chức nước ngoài",
+            scale: "Bên bảo đảm là công ty có từ 10 đến 299 nhân viên",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -1271,7 +1176,7 @@ document.addEventListener('DOMContentLoaded', function () {
             contractNo: "HĐTC-QT/2026/05",
             contractDate: "17/06/2026",
             loanValue: "300.000.000 VNĐ",
-            scale: "Tổ chức khác",
+            scale: "Bên bảo đảm là công ty có ít hơn 10 nhân viên",
             femaleOwner: "Không",
             securingParties: [
                 {
@@ -1558,7 +1463,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     contractNo: `HĐTC-${matchedProfile.pin || '2026'}`,
                     contractDate: "14/06/2026",
                     loanValue: "1.500.000.000 VNĐ",
-                    scale: "Doanh nghiệp",
+                    scale: "Bên bảo đảm là công ty có từ 10 đến 299 nhân viên",
                     femaleOwner: "Không",
                     securingParties: [
                         {
@@ -1912,7 +1817,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 mockTimelineData.push(h38_v1);
             }
         } else {
-            // Mặc định (BD-2026-001) với 8 phiên bản + 8 phiên bản nháp (tổng cộng 17 phiên bản timeline)
+            // Mặc định (BD-2026-001) với các phiên bản thuộc cây lịch sử
             if (isSingleMode) {
                 mockTimelineData.push(v1);
             } else {
@@ -1920,26 +1825,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 mockTimelineData.push(v8);
                 mockTimelineData.push(v7);
                 mockTimelineData.push(v6);
-                mockTimelineData.push(v5);
                 mockTimelineData.push(v4);
                 mockTimelineData.push(v3);
                 mockTimelineData.push(v2);
 
-                // Bổ sung các phiên bản phụ
-                for (let i = 8; i >= 1; i--) {
-                    mockTimelineData.push({
-                        version: i + 10,
-                        label: `Thay đổi phụ ${i}`,
-                        badgeClass: "badge-change",
-                        title: `Thay đổi thông tin phụ lần ${i}`,
-                        statusText: "Hoàn thành",
-                        date: `1${i}/03/2026 10:00:00`,
-                        regCode: `BD-2026-001-TD${i + 2}`,
-                        description: `Thay đổi thông tin nhỏ liên quan đến quy trình lần thứ ${i}`,
-                        data: JSON.parse(JSON.stringify(v4.data))
-                    });
-                }
-                
                 // Đăng ký gốc ở cuối cùng
                 mockTimelineData.push(v1);
             }
@@ -2090,7 +1979,7 @@ document.addEventListener('DOMContentLoaded', function () {
                               (node.data && (node.data.hasDeRegistration || node.data.hasCancelReg));
 
             if (isAssetNotice) {
-                node.data.transactionType = "Thông báo xử lý tài sản bảo đảm";
+                // Loại hình giao dịch giữ theo hồ sơ BPBĐ gốc (chỉ gồm Biện pháp bảo đảm / Hợp đồng)
                 node.data.processingInfo = (isChangeAssetNotice || isDeleteAssetNotice) ? {
                     reason: "Bên bảo đảm vi phạm nghĩa vụ thanh toán theo hợp đồng tín dụng đã ký kết.",
                     time: "20/06/2026",
@@ -2140,146 +2029,6 @@ document.addEventListener('DOMContentLoaded', function () {
             node.data.assets = baseAssets;
         }
     });
-
-    function ensureLoadMoreTimelineMockData() {
-        const minRecordsForLoadMore = 20;
-        if (isSingleMode || mockTimelineData.length < 2 || mockTimelineData.length >= minRecordsForLoadMore) return;
-
-        const sortedByVersionAsc = [...mockTimelineData].sort((a, b) => a.version - b.version);
-        const initialNode = sortedByVersionAsc.find(node => getCleanRegistrationCase(node) === 'Đăng ký lần đầu') || sortedByVersionAsc[0];
-        const nextAfterInitialNode = sortedByVersionAsc.find(node => node !== initialNode && Number(node.version) > Number(initialNode.version));
-        const initialDate = parseDate(initialNode?.date) || new Date(2026, 0, 1, 8, 0, 0);
-        const nextDate = parseDate(nextAfterInitialNode?.date);
-        const initialVersion = Number.isFinite(initialNode?.version) ? Number(initialNode.version) : 1;
-        const nextVersion = Number.isFinite(nextAfterInitialNode?.version) ? Number(nextAfterInitialNode.version) : initialVersion + 1;
-        const rootRegCode = initialNode?.data?.firstRegNo || initialNode?.regCode || regNumParam || '1505156435';
-        const recordsToAdd = minRecordsForLoadMore - mockTimelineData.length;
-        let previousGeneratedData = JSON.parse(JSON.stringify(initialNode.data || {}));
-
-        const mutationPlans = [
-            (data, step) => {
-                data.contractNo = `HD-2026-LS-${String(step).padStart(2, '0')}`;
-            },
-            (data, step) => {
-                data.contractDate = `${String(1 + (step % 27)).padStart(2, '0')}/02/2026`;
-            },
-            (data, step) => {
-                data.loanValue = `${(1200 + step * 150).toLocaleString('vi-VN')}.000.000 VNĐ`;
-            },
-            (data, step, prevData) => {
-                const party = data.securingParties?.[0];
-                if (!party) return;
-                party.prevAddress = prevData.securingParties?.[0]?.address || party.address;
-                party.address = `Số ${20 + step} Nguyễn Trãi, Quận Thanh Xuân, Hà Nội, Việt Nam`;
-                party.status = 'Sửa thông tin';
-            },
-            (data, step, prevData) => {
-                const party = data.securedParties?.[0];
-                if (!party) return;
-                party.prevName = prevData.securedParties?.[0]?.name || party.name;
-                party.name = `Ngân hàng TMCP FPT - Chi nhánh lịch sử ${step}`;
-                party.status = 'Sửa thông tin';
-            },
-            (data, step, prevData) => {
-                const asset = data.assets?.[0];
-                if (!asset) return;
-                asset.prevBrandColor = prevData.assets?.[0]?.brandColor || asset.brandColor;
-                asset.brandColor = `Toyota Camry 2.5Q, ${['màu xanh đen', 'màu trắng ngọc trai', 'màu bạc', 'màu đỏ'][step % 4]}`;
-                asset.status = 'Sửa thông tin';
-            },
-            (data, step) => {
-                data.assets = Array.isArray(data.assets) ? data.assets : [];
-                data.assets.push({
-                    id: 100 + step,
-                    typeName: 'Các động sản khác (TIỀN VÀ GIẤY TỜ CÓ GIÁ, hàng tiêu dùng; kim khí quý, đá quý; NGUYÊN, NHIÊN VẬT LIỆU, NÔNG SẢN, MÁY MÓC THIẾT BỊ,...)',
-                    name: `Máy dệt kim tròn Pailung (bổ sung lần ${step})`,
-                    brandColor: 'Máy móc thiết bị sản xuất năm 2024, đặt tại nhà máy thuộc KCN Phố Nối A, tỉnh Hưng Yên',
-                    status: 'Bổ sung mới'
-                });
-            },
-            (data, step, prevData) => {
-                const party = data.securingParties?.[0];
-                if (!party) return;
-                party.prevName = prevData.securingParties?.[0]?.name || party.name;
-                party.name = `${party.name} - cập nhật ${step}`;
-                party.status = 'Sửa thông tin';
-            },
-            (data, step) => {
-                data.scale = `Bên bảo đảm sử dụng khoản vay cho hoạt động sản xuất kinh doanh lần ${step}`;
-            },
-            (data, step, prevData) => {
-                const asset = data.assets?.find(item => item.typeName?.includes('quyền tài sản')) || data.assets?.[2];
-                if (!asset) return;
-                asset.prevName = prevData.assets?.find(item => item.id === asset.id)?.name || asset.name;
-                asset.name = `Quyền đòi nợ trị giá ${(2 + step / 10).toFixed(1).replace('.', ',')} tỷ VNĐ`;
-                asset.status = 'Sửa thông tin';
-            }
-        ];
-
-        for (let i = 1; i <= recordsToAdd; i++) {
-            let nodeDate;
-            if (nextDate && nextDate > initialDate) {
-                const ratio = i / (recordsToAdd + 1);
-                nodeDate = new Date(initialDate.getTime() + ((nextDate.getTime() - initialDate.getTime()) * ratio));
-            } else {
-                nodeDate = new Date(initialDate);
-                nodeDate.setDate(initialDate.getDate() + (i * 7));
-            }
-
-            const generatedNode = JSON.parse(JSON.stringify(initialNode));
-            generatedNode.version = initialVersion + ((nextVersion - initialVersion) * (i / (recordsToAdd + 1)));
-            generatedNode.label = `Thay đổi lịch sử ${i}`;
-            generatedNode.badgeClass = 'badge-change';
-            generatedNode.title = `Đăng ký thay đổi lịch sử lần ${i} (Hoàn thành)`;
-            generatedNode.statusText = 'Hoàn thành';
-            generatedNode.date = formatDateTime(nodeDate);
-            generatedNode.regCode = `${rootRegCode}-LS${String(i).padStart(2, '0')}`;
-            generatedNode.description = `Đăng ký thay đổi dữ liệu hồ sơ lịch sử lần ${i}`;
-            generatedNode.active = false;
-            generatedNode.isPending = false;
-            generatedNode.nodeId = `mock-history-${i}`;
-            generatedNode.creator = pickMockCreator(generatedNode, i);
-
-            if (generatedNode.data) {
-                generatedNode.data = JSON.parse(JSON.stringify(previousGeneratedData));
-                generatedNode.data.regCase = 'Đăng ký thay đổi';
-                generatedNode.data.firstRegNo = rootRegCode;
-                generatedNode.data.firstRegDate = initialNode?.data?.firstRegDate || initialNode?.date || generatedNode.date;
-                generatedNode.data.creator = generatedNode.creator;
-                generatedNode.data.hasDeRegistration = false;
-                generatedNode.data.hasCancelReg = false;
-                generatedNode.data.hasRestoreReg = false;
-                generatedNode.data.hasRejection = false;
-
-                generatedNode.data.securingParties?.forEach(party => {
-                    party.status = 'Không thay đổi';
-                    delete party.prevName;
-                    delete party.prevAddress;
-                });
-                generatedNode.data.securedParties?.forEach(party => {
-                    party.status = 'Không thay đổi';
-                    delete party.prevName;
-                    delete party.prevAddress;
-                });
-                generatedNode.data.assets?.forEach(asset => {
-                    asset.status = 'Đang bảo đảm';
-                    delete asset.prevName;
-                    delete asset.prevBrandColor;
-                    delete asset.prevSelectedForProcessing;
-                });
-
-                const plan = mutationPlans[(i - 1) % mutationPlans.length];
-                plan(generatedNode.data, i, previousGeneratedData);
-                previousGeneratedData = JSON.parse(JSON.stringify(generatedNode.data));
-            }
-
-            mockTimelineData.push(generatedNode);
-        }
-
-        mockTimelineData.sort((a, b) => b.version - a.version);
-    }
-
-    ensureLoadMoreTimelineMockData();
 
     let currentSelectedVersion = null;
     let visibleCount = 10;
@@ -2428,28 +2177,21 @@ document.addEventListener('DOMContentLoaded', function () {
             const cleanCase = getCleanRegistrationCase(node);
             const nodeCreator = node.creator || node.data?.creator || '-';
             nodeEl.innerHTML = `
-                <div class="node-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-                    <span class="node-badge ${node.badgeClass}">${node.label}</span>
-                    <span class="node-status-badge ${statusClass}">
+                <div class="node-header" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 4px;">
+                    <div class="node-title" style="font-weight: 700; color: var(--text-main); font-size: 13.5px;">${cleanCase}</div>
+                    <span class="node-status-badge ${statusClass}" style="flex-shrink: 0; white-space: nowrap;">
                         ${statusTextHtml}
                     </span>
                 </div>
-                <div class="node-title" style="font-weight: 700; color: var(--text-main); font-size: 13.5px; margin-bottom: 4px;">${cleanCase}</div>
                 <div class="node-reg-code" style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 4px;">
                     <strong>Số đăng ký:</strong> ${node.regCode}
                 </div>
                 <div class="node-date" style="font-size: 11.5px; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
                     <i class="fa-regular fa-calendar" style="width: 13px; text-align: center; flex-shrink: 0;"></i> <strong>Thời điểm đăng ký:</strong> ${node.date}
                 </div>
-                <div class="node-status-text" style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 4px;">
-                    <i class="fa-solid fa-circle-info" style="width: 13px; text-align: center; flex-shrink: 0;"></i> <strong>Trạng thái:</strong> ${node.statusText || '-'}
-                </div>
                 <div class="node-creator" style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 4px;">
                     <i class="fa-regular fa-user" style="width: 13px; text-align: center; flex-shrink: 0;"></i> <strong>Người tạo:</strong> ${nodeCreator}
                 </div>
-                <p class="node-desc" style="font-size: 11px; color: var(--text-muted); margin: 6px 0 0 0; line-height: 1.4; border-top: 1px dashed #E2E8F0; padding-top: 6px;">
-                    ${node.description}
-                </p>
                 ${isCompleted ? `
                     <div class="node-actions" style="display: flex; justify-content: flex-end; margin-top: 6px; padding-top: 4px;">
                         <button class="btn-download-pdf" data-version="${node.version}" data-code="${node.regCode}">
@@ -3033,13 +2775,28 @@ document.addEventListener('DOMContentLoaded', function () {
             assetGroups[getAssetBucket(asset)].items.push(asset);
 
             if (!isNoticeView && showAssetChanges) {
+                // Đối tượng/giá trị hiển thị theo đúng trường của từng Loại tài sản (không dùng tên tự đặt)
+                const bucket = getAssetBucket(asset);
+                const joinDesc = (a, b) => [a, b].filter(v => v && v !== '-').join(', ');
+                const isDescBucket = bucket === 'annual' || bucket === 'other';
+                const summaryObject = isDescBucket ? 'Mô tả'
+                    : bucket === 'inventory' ? joinDesc(asset.goodsKind || 'Kho hàng', asset.warehouseNo)
+                    : asset.name;
+                const summaryValue = isDescBucket ? joinDesc(asset.name, asset.brandColor)
+                    : bucket === 'inventory' ? asset.brandColor
+                    : `${asset.name} (${asset.brandColor})`;
                 if (asset.status === 'Bổ sung mới') {
-                    addListSummaryRow('Tài sản bảo đảm', asset.name, 'Thêm mới', '-', `${asset.name} (${asset.brandColor})`);
+                    addListSummaryRow('Tài sản bảo đảm', summaryObject, 'Thêm mới', '-', summaryValue);
                 } else if (asset.status === 'Đã giải chấp' || asset.status === 'Đã hủy') {
-                    addListSummaryRow('Tài sản bảo đảm', asset.name, 'Rút bớt', `${asset.name} (${asset.brandColor})`, '-');
+                    addListSummaryRow('Tài sản bảo đảm', summaryObject, 'Rút bớt', summaryValue, '-');
+                } else if (asset.status === 'Sửa thông tin' && isDescBucket) {
+                    const prevDesc = joinDesc(asset.prevName || asset.name, asset.prevBrandColor || asset.brandColor);
+                    const currDesc = joinDesc(asset.name, asset.brandColor);
+                    if (prevDesc !== currDesc) addListSummaryRow('Tài sản bảo đảm', 'Mô tả', 'Chỉnh sửa', prevDesc, currDesc);
                 } else if (asset.status === 'Sửa thông tin') {
-                    if (asset.prevName && asset.prevName !== asset.name) {
-                        addListSummaryRow('Tài sản bảo đảm', 'Tên tài sản', 'Chỉnh sửa', asset.prevName, asset.name);
+                    if (asset.prevName && asset.prevName !== asset.name && bucket !== 'inventory') {
+                        const nameLabel = { road: 'Tên phương tiện', vehicle: 'Tên phương tiện, nhãn hiệu', rights: 'Tên quyền' }[bucket] || 'Tên tài sản';
+                        addListSummaryRow('Tài sản bảo đảm', nameLabel, 'Chỉnh sửa', asset.prevName, asset.name);
                     }
                     if (asset.prevBrandColor && asset.prevBrandColor !== asset.brandColor) {
                         const detailLabel = { road: 'Nhãn hiệu, màu sơn', vehicle: 'Tên phương tiện, nhãn hiệu', rights: 'Căn cứ phát sinh quyền', inventory: 'Giá trị hàng hóa/Tên, loại hàng hóa' }[getAssetBucket(asset)] || 'Mô tả';
@@ -3194,26 +2951,44 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Quyền tài sản: khung chữ gồm Tên quyền (in đậm) và Căn cứ phát sinh quyền
         // Cây hằng năm, công trình tạm / Các động sản khác: khung chữ Mô tả
-        const renderTextAssets = (items) => items.map(asset => `
-            <div class="ucps-readonly-text" data-status="${htmlEscape(asset.status)}">
-                <strong>${renderChangedText(asset.name, asset.status === 'Bổ sung xử lý' ? null : asset.prevName)}</strong> ${assetStatusBadge(asset)}
-                <br>${renderChangedText(asset.brandColor, asset.status === 'Bổ sung xử lý' ? null : asset.prevBrandColor)}
+        const isRemovedStatus = s => ['Rút bớt', 'Đã giải chấp', 'Đã hủy', 'Rút khỏi thông báo'].includes(s);
+
+        // Quyền tài sản: Tên quyền, Căn cứ phát sinh quyền
+        const renderRightsAssets = (items) => items.map(asset => `
+            <div data-status="${htmlEscape(asset.status)}" class="info-grid-2" style="gap: 12px 20px;">
+                <div class="info-field" style="padding: 0;"><span class="field-label">Tên quyền ${assetStatusBadge(asset)}</span><span class="field-value">${renderChangedText(asset.name, asset.status === 'Bổ sung xử lý' ? null : asset.prevName)}</span></div>
+                <div class="info-field" style="padding: 0;"><span class="field-label">Căn cứ phát sinh quyền</span><span class="field-value">${renderChangedText(asset.brandColor, asset.status === 'Bổ sung xử lý' ? null : asset.prevBrandColor)}</span></div>
             </div>
         `).join('<div style="height: 10px;"></div>') + processingInfoHtml(items);
 
+        // Cây hằng năm, công trình tạm / Các động sản khác: 01 trường Mô tả duy nhất cho mỗi loại tài sản
+        const composeDesc = (name, detail) => [name, detail].filter(v => v && v !== '-').join(', ');
+        const renderDescAssets = (items) => {
+            const shown = items.filter(a => !isRemovedStatus(a.status)).length ? items.filter(a => !isRemovedStatus(a.status)) : items;
+            const text = shown.map(a => composeDesc(a.name, a.brandColor)).join('; ');
+            const hasPrev = shown.some(a => a.status !== 'Bổ sung xử lý' && (a.prevName || a.prevBrandColor));
+            const prevText = hasPrev ? shown.map(a => composeDesc(a.prevName || a.name, a.prevBrandColor || a.brandColor)).join('; ') : null;
+            const flagged = shown.find(a => a.status && a.status !== 'Đang bảo đảm') || shown[0] || {};
+            return `
+            <div class="info-field" data-status="${htmlEscape(flagged.status || '')}" style="padding: 0;">
+                <span class="field-label">Mô tả ${flagged.status ? assetStatusBadge(flagged) : ''}</span>
+                <span class="field-value" style="display: block;">${renderChangedText(text, prevText)}</span>
+            </div>` + processingInfoHtml(items);
+        };
+
         // Hàng hóa luân chuyển / Kho hàng: Hàng hóa luân chuyển/Kho hàng, Giá trị hàng hóa/Tên loại hàng hóa, Địa chỉ kho hàng, Số hiệu kho hàng
-        const renderInventoryAssets = (items) => items.map(asset => `
-            <div class="ucps-readonly-text" data-status="${htmlEscape(asset.status)}">
-                <strong>${renderChangedText(asset.name, asset.status === 'Bổ sung xử lý' ? null : asset.prevName)}</strong> ${assetStatusBadge(asset)}
-                <div class="info-grid-3" style="margin-top: 8px;">
-                    <div class="info-field" style="padding: 0;"><span class="field-label">Hàng hóa luân chuyển / Kho hàng</span><span class="field-value">${htmlEscape(asset.goodsKind || 'Kho hàng')}</span></div>
-                    <div class="info-field" style="padding: 0; grid-column: span 2;"><span class="field-label">Giá trị hàng hóa/Tên, loại hàng hóa</span><span class="field-value">${renderChangedText(asset.brandColor, asset.status === 'Bổ sung xử lý' ? null : asset.prevBrandColor)}</span></div>
-                    ${(asset.goodsKind || 'Kho hàng') === 'Kho hàng' ? `
-                        <div class="info-field" style="padding: 0; grid-column: span 2;"><span class="field-label">Địa chỉ kho hàng</span><span class="field-value">${htmlEscape(asset.warehouseAddress || '-')}</span></div>
-                        <div class="info-field" style="padding: 0;"><span class="field-label">Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng</span><span class="field-value">${htmlEscape(asset.warehouseNo || '-')}</span></div>` : ''}
-                </div>
-            </div>
-        `).join('<div style="height: 10px;"></div>') + processingInfoHtml(items);
+        const renderInventoryAssets = (items) => items.map(asset => {
+            const kind = asset.goodsKind || 'Kho hàng';
+            const noPrev = asset.status === 'Bổ sung xử lý';
+            return `
+            <div data-status="${htmlEscape(asset.status)}" class="info-grid-2" style="gap: 12px 20px;">
+                <div class="info-field" style="padding: 0;"><span class="field-label">Hàng hóa luân chuyển / Kho hàng ${assetStatusBadge(asset)}</span><span class="field-value">${htmlEscape(kind)}</span></div>
+                <div class="info-field" style="padding: 0;"><span class="field-label">Giá trị hàng hóa/Tên, loại hàng hóa</span><span class="field-value">${renderChangedText(asset.brandColor, noPrev ? null : asset.prevBrandColor)}</span></div>
+                ${kind === 'Kho hàng' ? `
+                <div class="info-field" style="padding: 0;"><span class="field-label">Địa chỉ kho hàng</span><span class="field-value">${htmlEscape(asset.warehouseAddress || '-')}</span></div>
+                <div class="info-field" style="padding: 0;"><span class="field-label">Số hiệu kho hàng/Dấu hiệu khác của vị trí kho hàng</span><span class="field-value">${htmlEscape(asset.warehouseNo || '-')}</span></div>` : ''}
+            </div>`;
+        }).join('<div style="height: 10px;"></div>') + processingInfoHtml(items);
 
         // Chứng khoán đã đăng ký tập trung: mô tả + Thời điểm đăng ký tại VSDC (Giờ, Phút, Ngày, Tháng, Năm)
         const renderSecuritiesAssets = (items) => items.map(asset => {
@@ -3232,11 +3007,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const assetHtml = [];
         if (assetGroups.road.items.length) assetHtml.push(blockHtml('road', renderRoadTable(assetGroups.road.items)));
         if (assetGroups.vehicle.items.length) assetHtml.push(blockHtml('vehicle', renderVehicleTable(assetGroups.vehicle.items)));
-        if (assetGroups.rights.items.length) assetHtml.push(blockHtml('rights', renderTextAssets(assetGroups.rights.items)));
-        if (assetGroups.annual.items.length) assetHtml.push(blockHtml('annual', renderTextAssets(assetGroups.annual.items)));
+        if (assetGroups.rights.items.length) assetHtml.push(blockHtml('rights', renderRightsAssets(assetGroups.rights.items)));
+        if (assetGroups.annual.items.length) assetHtml.push(blockHtml('annual', renderDescAssets(assetGroups.annual.items)));
         if (assetGroups.inventory.items.length) assetHtml.push(blockHtml('inventory', renderInventoryAssets(assetGroups.inventory.items)));
         if (assetGroups.securities.items.length) assetHtml.push(blockHtml('securities', renderSecuritiesAssets(assetGroups.securities.items)));
-        if (assetGroups.other.items.length) assetHtml.push(blockHtml('other', renderTextAssets(assetGroups.other.items)));
+        if (assetGroups.other.items.length) assetHtml.push(blockHtml('other', renderDescAssets(assetGroups.other.items)));
 
         if (assetTypeSections) {
             assetTypeSections.innerHTML = assetHtml.join('');

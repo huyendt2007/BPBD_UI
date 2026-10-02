@@ -20,12 +20,12 @@
         body.cl-diff-only [data-changed="0"] { display: none !important; }
     </style>
 </head>
-<!-- MH07 - Màn hình Xem chi tiết và Ký số hồ sơ: ky_so_chinh_ly.html?id={id}[&mode=view] -->
+<!-- MH05 - Màn hình Xem chi tiết hồ sơ trình ký (Quản lý Chỉnh lý, chỉ đọc) / MH03 - Xem chi tiết và Ký số hồ sơ (Ký duyệt hồ sơ): ky_so_chinh_ly.html?id={id}[&mode=view] -->
 <body class="cl-page">
 <div class="cl-container">
     <div class="cl-breadcrumb">
         <a href="theo_doi_xu_ly_de_nghi.html"><i class="fa-solid fa-arrow-left"></i> Quản lý Chỉnh lý thông tin, Hủy và Khôi phục đăng ký</a>
-        <span>/</span><span>Xem chi tiết và Ký số hồ sơ</span>
+        <span>/</span><span id="crumbTitle">Xem chi tiết hồ sơ trình ký</span>
     </div>
     <div class="cl-page-header">
         <h2><i class="fa-solid fa-file-signature"></i><span id="pageTitle">XEM CHI TIẾT VÀ KÝ SỐ HỒ SƠ</span></h2>
@@ -45,7 +45,11 @@
     const body = $('pageBody');
 
     if (!p) { body.innerHTML = `<div class="cl-banner cl-banner-warn"><i class="fa-solid fa-triangle-exclamation"></i> ${C.esc(C.MSG.INF_SYS_001)}</div>`; footer(); return; }
-    $('pageTitle').textContent = 'XEM CHI TIẾT VÀ KÝ SỐ HỒ SƠ: ' + p.maDeNghi;
+    // Mở từ Ký duyệt hồ sơ (Lãnh đạo): Xem chi tiết và Ký số hồ sơ; mở từ Quản lý Chỉnh lý: Xem chi tiết hồ sơ trình ký (chỉ đọc)
+    const ttl = C.fromKyDuyet() ? 'Xem chi tiết và Ký số hồ sơ' : 'Xem chi tiết hồ sơ trình ký';
+    $('pageTitle').textContent = ttl.toUpperCase() + ': ' + p.maDeNghi;
+    if ($('crumbTitle')) $('crumbTitle').textContent = ttl;
+    document.title = ttl;
     $('pageHeaderRight').innerHTML = C.badge(p.trangThai, C.statusClass(p.trangThai));
 
     const tk = p.trinhKy || {};
@@ -54,7 +58,7 @@
 
     // ===================== TÓM TẮT THÔNG TIN HỒ SƠ TRÌNH KÝ =====================
     parts.push(card('Tóm tắt thông tin hồ sơ trình ký', 'fa-circle-info', `<div class="cl-info-grid cl-cols-4">
-        ${C.infoItem('Mã đề nghị', p.maDeNghi)}
+        ${C.infoItem('Mã đề nghị', `<a class="cl-link" href="lap_de_nghi_chinh_ly.html?id=${p.id}&mode=view" target="_blank" title="Mở Xem chi tiết đề nghị tại tab mới">${C.esc(p.maDeNghi)} <i class="fa-solid fa-up-right-from-square" style="font-size:11px;"></i></a>`, { html: true })}
         ${C.infoItem('Loại đề nghị', C.badge(C.loaiLabel(p), C.loaiClass(p)), { html: true })}
         ${C.infoItem('Người trình ký', `${C.esc(C.val(tk.nguoi))}<div class="cl-muted" style="font-weight:500;font-size:12px;">Thời điểm trình ký: ${C.esc(C.val(tk.thoiDiem))}</div>`, { html: true })}
         ${C.infoItem('Người phê duyệt đề nghị', `${C.esc(C.val(pd.nguoi))}<div class="cl-muted" style="font-weight:500;font-size:12px;">Ý kiến chỉ đạo: ${C.esc(C.val(pd.yKien))}</div>`, { html: true })}
@@ -217,7 +221,8 @@
         const bar = $('footerBar');
         bar.innerHTML = '<button type="button" class="cl-btn cl-btn-outline" id="btnDong"><i class="fa-solid fa-xmark"></i> Đóng</button>';
         $('btnDong').onclick = () => C.goList();
-        if (!p || readonly || p.trangThai !== 'Chờ ký số') return;
+        // Ký số/Trả lại hồ sơ: chỉ thực hiện tại màn Ký duyệt hồ sơ của Lãnh đạo
+        if (!p || readonly || p.trangThai !== 'Chờ ký số' || !C.fromKyDuyet()) return;
         const traLai = document.createElement('button');
         traLai.type = 'button'; traLai.className = 'cl-btn cl-btn-outline-danger';
         traLai.innerHTML = '<i class="fa-solid fa-rotate-left"></i> Trả lại hồ sơ';

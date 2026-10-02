@@ -1,14 +1,14 @@
 /* =========================================================================
    QUẢN LÝ CHỈNH LÝ, HỦY VÀ KHÔI PHỤC ĐĂNG KÝ - LOGIC DÙNG CHUNG
    - Dữ liệu giả lập hồ sơ gốc + đề nghị (lưu trạng thái ở localStorage để các màn hình
-     MH01 → MH10 dùng chung một luồng).
-   - MessageList, popup dùng chung (MH04, MH05, MH08, MH09, MH10), combobox có tìm kiếm,
+     MH01 → MH06 và Tab Chỉnh lý/Hủy/Khôi phục tại Ký duyệt hồ sơ dùng chung một luồng).
+   - MessageList, popup dùng chung (Duyệt, Từ chối, Trả lại, Ký số - dùng tại Ký duyệt hồ sơ; Trình ký - MH06), combobox có tìm kiếm,
      khối hiển thị Thông tin hồ sơ gốc và khối đánh dấu thông tin đã chỉnh lý.
    ========================================================================= */
 (function (global) {
     'use strict';
 
-    const STORE_KEY = 'cldk_demo_state_v5';   // tăng phiên bản khi đổi dữ liệu mẫu để trình duyệt nạp lại
+    const STORE_KEY = 'cldk_demo_state_v6';   // tăng phiên bản khi đổi dữ liệu mẫu để trình duyệt nạp lại
     const FLASH_KEY = 'cldk_flash_toast';
     const DRAFT_KEY_PREFIX = 'cldk_draft_preview_';
 
@@ -430,7 +430,7 @@
               files: files('Van_ban_xac_nhan_VIB.pdf') },
             { loai: 'HUY', soDangKy: '2300332211', trangThai: 'Chờ thực hiện', nguoiLap: 'Trần Thị B', lapH: 28,
               noiDung: { lyDoHuy: 'Hủy toàn phần do đăng ký trùng lặp với hồ sơ số 2300332200.', taiSanHuyIds: ['sk1', 'pt1'] },
-              files: files('Bien_ban_rasoat_trung_lap.pdf'), pheDuyet: pd(24, 'Trần Thị B', '') },
+              files: files('Bien_ban_rasoat_trung_lap.pdf'), pheDuyet: pd(24, 'Nguyễn Văn A', 'Rà soát kỹ hồ sơ trùng lặp trước khi thực hiện.') },
             { loai: 'KHOI_PHUC', soDangKy: 'H26000456', trangThai: 'Chờ thực hiện', nguoiLap: 'Lê Văn Thành', lapH: 40,
               noiDung: { lyDoKhoiPhuc: 'Hủy nhầm tài sản do sơ suất đối chiếu biển số, căn cứ biên bản giải trình ngày 22/09/2026.' },
               files: files('Bien_ban_giai_trinh.pdf'), pheDuyet: pd(35, 'Lê Văn Thành', '') },
@@ -563,13 +563,17 @@
     }
     function badge(text, cls) { return `<span class="cl-badge ${cls}">${esc(text)}</span>`; }
     function soDangKyLabel(loai) {
-        return loai === 'CHINH_LY' ? 'Số đăng ký phiên bản sai sót' : (loai === 'KHOI_PHUC' ? 'Số đăng ký hủy' : 'Số đăng ký');
+        return loai === 'CHINH_LY' ? 'Số đăng ký phiên bản sai sót' : (loai === 'KHOI_PHUC' ? 'Số đăng ký hủy' : 'Số đăng ký lần đầu');
     }
     function loaiFileChoKy(p) {
         return p.loai === 'CHINH_LY' ? 'Văn bản chỉnh lý' : (p.loai === 'HUY' ? 'Văn bản xác nhận hủy' : 'Quyết định khôi phục đăng ký');
     }
     function nguoiXuLy(p) {
         return ['Chờ duyệt đề nghị', 'Bị từ chối đề nghị'].includes(p.trangThai) ? p.nguoiLap : (p.pheDuyet ? p.pheDuyet.nguoiThucHien : p.nguoiLap);
+    }
+    // Chỉ cán bộ được phân công thực hiện (tại Popup Duyệt đề nghị) mới được Thực hiện đề nghị
+    function laNguoiDuocPhanCong(p) {
+        return !!(p && p.pheDuyet && p.pheDuyet.nguoiThucHien === CURRENT_USER.ten);
     }
     function tenDanhSach(list) { return (list || []).map(x => x.ten).join('; '); }
 
@@ -600,9 +604,34 @@
         sessionStorage.removeItem(FLASH_KEY);
         try { const f = JSON.parse(raw); setTimeout(() => toast(f.msg, f.type), 150); } catch (e) { /* bỏ qua */ }
     }
+    // Ghi nhớ Tab đang chọn tại MH01 để khi Đóng/quay lại từ màn chi tiết mở đúng Tab đó
+    const LIST_TAB_KEY = 'cldk_list_tab';
+    function rememberListTab(tab) { try { sessionStorage.setItem(LIST_TAB_KEY, tab); } catch (e) { /* bỏ qua */ } }
+    // Mở màn chi tiết từ màn khác (VD: Ký duyệt hồ sơ - Tab Chỉnh lý/Hủy/Khôi phục đăng ký): Đóng/xử lý xong quay về đúng màn đó
+    const RETURN_KEY = 'cldk_return_url';
+    function setReturnUrl(url) { try { sessionStorage.setItem(RETURN_KEY, url); } catch (e) { /* bỏ qua */ } }
+    function clearReturnUrl() { try { sessionStorage.removeItem(RETURN_KEY); } catch (e) { /* bỏ qua */ } }
+    function returnUrl() { try { return sessionStorage.getItem(RETURN_KEY) || ''; } catch (e) { return ''; } }
+    // Màn chi tiết được mở từ màn Ký duyệt hồ sơ của Lãnh đạo: chỉ khi đó mới hiển thị thao tác Duyệt/Từ chối, Ký số/Trả lại
+    function fromKyDuyet() { return /ky_duyet_ho_so\.html/.test(returnUrl()); }
+    function listUrl(tab) {
+        if (!tab && returnUrl()) return returnUrl();
+        let t = tab;
+        if (!t) { try { t = sessionStorage.getItem(LIST_TAB_KEY) || ''; } catch (e) { t = ''; } }
+        return 'theo_doi_xu_ly_de_nghi.html' + (t ? '?tab=' + encodeURIComponent(t) : '');
+    }
     function goList(msg, type, tab) {
         if (msg) flash(msg, type);
-        location.href = 'theo_doi_xu_ly_de_nghi.html' + (tab ? '?tab=' + tab : '');
+        location.href = listUrl(tab);
+    }
+    // Liên kết quay lại danh sách (breadcrumb) trên các màn chi tiết cũng mở đúng Tab đã chọn
+    if (!/theo_doi_xu_ly_de_nghi\.html/.test(location.pathname)) {
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('a[href="theo_doi_xu_ly_de_nghi.html"]').forEach(a => {
+                a.href = listUrl();
+                if (/ky_duyet_ho_so\.html/.test(returnUrl())) a.innerHTML = '<i class="fa-solid fa-arrow-left"></i> Ký duyệt hồ sơ';
+            });
+        });
     }
 
     // ---------------------------------------------------------------------
@@ -1002,7 +1031,7 @@
         return ok;
     }
 
-    // MH04 - Popup Duyệt đề nghị và Phân công người thực hiện
+    // MH04 (Ký duyệt Chỉnh lý/Hủy/Khôi phục) - Popup Duyệt đề nghị và Phân công người thực hiện
     let duyetCombo = null;
     function openDuyet(p, done) {
         const el = ensureModal('clMH04', modalShell('clMH04', '', '<i class="fa-solid fa-check-to-slot" style="color:#10B981;"></i>',
@@ -1013,7 +1042,7 @@
             <div class="cl-form-group"><label class="cl-label" for="clMH04YKien">Ý kiến chỉ đạo</label><textarea class="cl-textarea" id="clMH04YKien" rows="3" placeholder="Nhập ý kiến chỉ đạo..."></textarea></div>`,
             '<button type="button" class="cl-btn cl-btn-outline" data-close>Hủy bỏ</button><button type="button" class="cl-btn cl-btn-success" data-ok><i class="fa-solid fa-check"></i> Xác nhận duyệt</button>', 640));
         el.querySelector('[data-title]').textContent = `Phê duyệt đề nghị: ${p.maDeNghi}`;
-        el.querySelector('[data-ro]').innerHTML = readonlyBox([infoItem('Mã đề nghị', p.maDeNghi), infoItem('Loại đề nghị', loaiLabel(p)), infoItem('Người lập đề nghị', p.nguoiLap)]);
+        el.querySelector('[data-ro]').innerHTML = readonlyBox([infoItem('Mã đề nghị', p.maDeNghi), infoItem('Loại đề nghị', loaiLabel(p)), infoItem('Cán bộ lập đề nghị', p.nguoiLap)]);
         duyetCombo = combo(byId('clMH04Combo'), { options: peopleOptions(CAN_BO), value: p.nguoiLap, placeholder: 'Tìm theo Họ và tên hoặc Tên đăng nhập...', errorEl: byId('clMH04ComboErr') });
         const han = byId('clMH04Han');
         if (han._flatpickr) han._flatpickr.destroy();
@@ -1034,13 +1063,13 @@
         openModal('clMH04');
     }
 
-    // MH05 - Popup Từ chối đề nghị
+    // MH05 (Ký duyệt Chỉnh lý/Hủy/Khôi phục) - Popup Từ chối đề nghị
     function openTuChoi(p, done) {
         const el = ensureModal('clMH05', modalShell('clMH05', '', '<i class="fa-solid fa-ban" style="color:#EF4444;"></i>',
             `<div data-ro></div>${textareaGroup('clMH05LyDo', 'Lý do từ chối', 'Nhập chi tiết lý do từ chối đề nghị...')}`,
             '<button type="button" class="cl-btn cl-btn-outline" data-close>Hủy bỏ</button><button type="button" class="cl-btn cl-btn-danger" data-ok><i class="fa-solid fa-ban"></i> Xác nhận từ chối</button>', 600));
         el.querySelector('[data-title]').textContent = `Từ chối phê duyệt đề nghị: ${p.maDeNghi}`;
-        el.querySelector('[data-ro]').innerHTML = readonlyBox([infoItem('Mã đề nghị', p.maDeNghi), infoItem('Người lập đề nghị', p.nguoiLap)]);
+        el.querySelector('[data-ro]').innerHTML = readonlyBox([infoItem('Mã đề nghị', p.maDeNghi), infoItem('Cán bộ lập đề nghị', p.nguoiLap)]);
         const ta = byId('clMH05LyDo');
         ta.value = ''; ta.classList.remove('is-invalid'); byId('clMH05LyDoErr').classList.remove('show');
         el.querySelector('[data-ok]').onclick = () => {
@@ -1058,7 +1087,7 @@
         setTimeout(() => ta.focus(), 50);
     }
 
-    // MH08 - Popup Trả lại hồ sơ
+    // MH06 (Ký duyệt Chỉnh lý/Hủy/Khôi phục) - Popup Trả lại hồ sơ
     function openTraLai(p, done) {
         const el = ensureModal('clMH08', modalShell('clMH08', '', '<i class="fa-solid fa-rotate-left" style="color:#EF4444;"></i>',
             `<div data-ro></div>${textareaGroup('clMH08LyDo', 'Lý do trả lại', 'Nhập chi tiết sai sót, lý do trả lại để người thực hiện chỉnh sửa lại...')}`,
@@ -1090,7 +1119,7 @@
     }
     function readDraft(id) { try { return JSON.parse(localStorage.getItem(DRAFT_KEY_PREFIX + id) || 'null'); } catch (e) { return null; } }
 
-    // MH09 - Popup Trình ký
+    // MH06 - Popup Trình ký
     let trinhKyCombo = null;
     function openTrinhKy(p, getDraft, done) {
         const el = ensureModal('clMH09', modalShell('clMH09', '', '<i class="fa-solid fa-paper-plane" style="color:#1E3A8A;"></i>',
@@ -1113,7 +1142,7 @@
         openModal('clMH09');
     }
 
-    // MH10 - Popup Ký số hồ sơ
+    // MH07 (Ký duyệt Chỉnh lý/Hủy/Khôi phục) - Popup Ký số hồ sơ
     function openKySo(p, done) {
         const el = ensureModal('clMH10', modalShell('clMH10', '', '<i class="fa-solid fa-file-signature" style="color:#6D28D9;"></i>',
             `<div class="cl-modal-section-title">Thông tin hồ sơ ký số</div><div data-ro></div>
@@ -1250,10 +1279,10 @@
         MSG, CURRENT_USER, CAN_BO, LANH_DAO, CO_QUAN, LOAI_BIEN_PHAP, LOAI_HOP_DONG, QUY_MO, LOAI_CHU_THE, TEN_PHUONG_TIEN,
         LOAI_TS, TABLE_TS, COLS, CHUNG_FIELDS, HO_SO, HO_SO_HUY,
         lookup, proposals, getProposal, updateProposal, nextMaDeNghi, peekMaDeNghi, resetDemo,
-        hoSoOf, huyOf, selectableIds, hinhThucHuy, loaiLabel, loaiClass, statusClass, soDangKyLabel, loaiFileChoKy, nguoiXuLy, tenDanhSach, partyTitles,
+        hoSoOf, huyOf, selectableIds, hinhThucHuy, loaiLabel, loaiClass, statusClass, soDangKyLabel, loaiFileChoKy, nguoiXuLy, laNguoiDuocPhanCong, tenDanhSach, partyTitles,
         // tiện ích
         pad, fmtDate, fmtDateTime, fmtDateTimeSec, daysFromNow, clone, esc, val, byId, param, parseDMY,
-        toast, flash, showFlash, goList, badge, infoItem, fileLinks, viewFile, downloadFile, collapsible, combo, peopleOptions, datePicker,
+        toast, flash, showFlash, goList, listUrl, rememberListTab, setReturnUrl, clearReturnUrl, fromKyDuyet, badge, infoItem, fileLinks, viewFile, downloadFile, collapsible, combo, peopleOptions, datePicker,
         // hiển thị
         renderHoSo, renderGiaoDichHuy, diffRows, TAG, histIcon, countChanges,
         // popup

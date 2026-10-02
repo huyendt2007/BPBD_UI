@@ -40,7 +40,7 @@
             <div class="cl-card-body">
                 <div class="cl-grid-4" style="margin-bottom:14px;">
                     <div class="cl-form-group"><label class="cl-label">Mã đề nghị <span class="cl-req">*</span></label><input class="cl-input" id="txtMaDeNghi" readonly></div>
-                    <div class="cl-form-group"><label class="cl-label">Người lập đề nghị <span class="cl-req">*</span></label><input class="cl-input" id="txtNguoiLap" readonly></div>
+                    <div class="cl-form-group"><label class="cl-label">Cán bộ lập đề nghị <span class="cl-req">*</span></label><input class="cl-input" id="txtNguoiLap" readonly></div>
                     <div class="cl-form-group"><label class="cl-label">Đơn vị công tác <span class="cl-req">*</span></label><input class="cl-input" id="txtDonVi" readonly></div>
                     <div class="cl-form-group"><label class="cl-label">Thời điểm lập <span class="cl-req">*</span></label><input class="cl-input" id="txtThoiDiemLap" readonly></div>
                 </div>
@@ -101,10 +101,6 @@
                     <div id="blkKhoiPhuc" class="cl-hidden">
                         <div class="cl-form-group"><label class="cl-label" for="txtLyDoKhoiPhuc">Căn cứ &amp; Lý do đề nghị khôi phục việc đăng ký <span class="cl-req">*</span></label>
                             <textarea class="cl-textarea" id="txtLyDoKhoiPhuc" rows="3" placeholder="Nhập căn cứ pháp lý và lý do đề nghị khôi phục hiệu lực việc đăng ký..."></textarea><div class="cl-error">Đây là trường bắt buộc</div></div>
-                        <div class="cl-card" id="cardGdHuy" style="margin:16px 0 0 0;">
-                            <div class="cl-card-header"><span class="cl-card-title"><i class="fa-solid fa-clock-rotate-left"></i> Khối Thông tin giao dịch hủy đã thực hiện trước đây</span></div>
-                            <div class="cl-card-body" id="kpHuyInfo"></div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -122,6 +118,12 @@
                     <div class="cl-error" id="errFile">Đây là trường bắt buộc</div>
                     <div class="cl-file-list" id="fileList"></div>
                 </div>
+            </div>
+
+            <!-- KHỐI THÔNG TIN GIAO DỊCH HỦY ĐÃ THỰC HIỆN TRƯỚC ĐÂY (chỉ Khôi phục hủy đăng ký; đặt sau Tệp tin đính kèm) -->
+            <div class="cl-card cl-hidden" id="cardGdHuy">
+                <div class="cl-card-header"><span class="cl-card-title"><i class="fa-solid fa-clock-rotate-left"></i> Khối Thông tin giao dịch hủy đã thực hiện trước đây</span></div>
+                <div class="cl-card-body" id="kpHuyInfo"></div>
             </div>
 
             <!-- THÔNG TIN HỒ SƠ GỐC -->
@@ -167,7 +169,7 @@
     // =====================================================================
     const PLACEHOLDER = {
         CHINH_LY: 'Nhập số đăng ký phiên bản cần chỉnh lý...',
-        HUY: 'Nhập số đăng ký cần hủy...',
+        HUY: 'Nhập số đăng ký lần đầu cần hủy...',
         KHOI_PHUC: 'Nhập số đăng ký hủy cần khôi phục...'
     };
     C.collapsible($('cardHoSoGoc'));
@@ -232,6 +234,7 @@
         $('blkChinhLy').classList.toggle('cl-hidden', loai !== 'CHINH_LY');
         $('blkHuy').classList.toggle('cl-hidden', loai !== 'HUY');
         $('blkKhoiPhuc').classList.toggle('cl-hidden', loai !== 'KHOI_PHUC');
+        $('cardGdHuy').classList.toggle('cl-hidden', loai !== 'KHOI_PHUC');
         ['txtSaiSot', 'txtDeNghi', 'txtLyDoSaiSot', 'txtLyDoHuy', 'txtLyDoKhoiPhuc'].forEach(id => clearInvalid($(id)));
         $('errTaiSan').classList.remove('show');
         if (!prefill) ['txtSaiSot', 'txtDeNghi', 'txtLyDoSaiSot', 'txtLyDoHuy', 'txtLyDoKhoiPhuc'].forEach(id => { $(id).value = ''; });
@@ -380,7 +383,7 @@
 
         // Thông tin chung đề nghị
         parts.push(card('Thông tin chung đề nghị', 'fa-circle-info', `<div class="cl-info-grid cl-cols-4">
-            ${C.infoItem('Mã đề nghị', p.maDeNghi)}${C.infoItem('Người lập đề nghị', p.nguoiLap)}${C.infoItem('Đơn vị công tác', p.donVi)}${C.infoItem('Thời điểm lập', p.thoiDiemLap)}
+            ${C.infoItem('Mã đề nghị', p.maDeNghi)}${C.infoItem('Cán bộ lập đề nghị', p.nguoiLap)}${C.infoItem('Đơn vị công tác', p.donVi)}${C.infoItem('Thời điểm lập', p.thoiDiemLap)}
             ${C.infoItem('Trạng thái đề nghị', C.badge(p.trangThai, C.statusClass(p.trangThai)), { html: true })}
             ${C.infoItem('Loại đề nghị', C.badge(C.loaiLabel(p), C.loaiClass(p)), { html: true })}
             ${C.infoItem('Số đăng ký', p.soDangKy)}</div>`));
@@ -389,7 +392,7 @@
         if (p.tuChoi && p.tuChoi.length) parts.push(tuChoiCard(p, p.trangThai !== 'Bị từ chối đề nghị'));
         // Khối Thông tin trả lại hồ sơ
         if (p.traLai && p.traLai.length) {
-            const items = p.traLai.slice().reverse().map((t, i) => `<div class="cl-history-item"><div class="cl-history-head"><i class="fa-solid fa-rotate-left"></i> Lần trả lại thứ ${p.traLai.length - i}</div>
+            const items = p.traLai.slice().reverse().map((t, i) => `<div class="cl-history-item">
                 <div class="cl-info-grid">${C.infoItem('Người trả lại', t.nguoi)}${C.infoItem('Thời điểm trả lại', t.thoiDiem)}${t.thoiDiemTrinhLai ? C.infoItem('Thời điểm trình ký lại', t.thoiDiemTrinhLai) : ''}
                 ${C.infoItem('Lý do trả lại', t.lyDo, { span: true, danger: true })}</div></div>`).join('');
             parts.push(card('Thông tin trả lại hồ sơ', 'fa-rotate-left', items, { danger: true, id: 'cardTraLai', collapsed: p.trangThai !== 'Bị trả lại' }));
@@ -397,9 +400,10 @@
         // Khối Thông tin phê duyệt và phân công
         if (p.pheDuyet && ['Chờ thực hiện', 'Chờ ký số', 'Bị trả lại', 'Hoàn thành'].includes(p.trangThai)) {
             const d = p.pheDuyet;
-            parts.push(card('Thông tin phê duyệt và phân công', 'fa-user-check', `<div class="cl-info-grid">
-                ${C.infoItem('Người phê duyệt', d.nguoi)}${C.infoItem('Thời điểm phê duyệt', d.thoiDiem)}${C.infoItem('Người thực hiện được phân công', d.nguoiThucHien)}
-                ${C.infoItem('Hạn hoàn thành', d.han)}${C.infoItem('Ý kiến chỉ đạo', d.yKien, { span: true })}</div>`));
+            parts.push(card('Thông tin phê duyệt và phân công', 'fa-user-check', `<div class="cl-info-grid cl-cols-4">
+                ${C.infoItem('Người phê duyệt', d.nguoi)}${C.infoItem('Thời điểm phê duyệt', d.thoiDiem)}
+                ${C.infoItem('Người thực hiện được phân công', d.nguoiThucHien)}${C.infoItem('Hạn hoàn thành', d.han)}
+                ${C.infoItem('Ý kiến chỉ đạo', d.yKien, { span: true })}</div>`));
         }
 
         // Căn cứ và nội dung đề xuất
@@ -411,10 +415,7 @@
             cc = `<div class="cl-info-grid cl-cols-2">${C.infoItem('Hình thức hủy', C.badge(ht, ht === 'Hủy đăng ký toàn phần' ? 'cl-type-huytoanphan' : 'cl-type-huymotphan'), { html: true, span: true })}
                 ${C.infoItem('Căn cứ & Lý do đề nghị hủy', nd.lyDoHuy, { span: true })}</div>`;
         } else if (huy) {
-            cc = `<div class="cl-info-grid cl-cols-2">${C.infoItem('Căn cứ & Lý do đề nghị khôi phục việc đăng ký', nd.lyDoKhoiPhuc, { span: true })}</div>
-                <div class="cl-card cl-collapsed" id="cardGdHuyView" data-collapsible="1" style="margin:14px 0 0 0;">
-                    <div class="cl-card-header"><span class="cl-card-title"><i class="fa-solid fa-clock-rotate-left"></i> Khối Thông tin giao dịch hủy đã thực hiện trước đây</span></div>
-                    <div class="cl-card-body" id="viewGdHuyHost"></div></div>`;
+            cc = `<div class="cl-info-grid cl-cols-2">${C.infoItem('Căn cứ & Lý do đề nghị khôi phục việc đăng ký', nd.lyDoKhoiPhuc, { span: true })}</div>`;
         }
         parts.push(card('Căn cứ và nội dung đề xuất', 'fa-pen-to-square', cc));
 
@@ -422,6 +423,9 @@
         const fl = (p.files || []).length ? `<div class="cl-file-list cl-mt-0">${p.files.map(f => `<div class="cl-file-item">${C.fileLinks(f.ten, true)}</div>`).join('')}</div>`
             : `<div class="cl-muted">-</div>`;
         parts.push(card('Tệp tin đính kèm', 'fa-paperclip', fl));
+
+        // Khôi phục hủy đăng ký: Khối Thông tin giao dịch hủy đã thực hiện trước đây đặt sau Tệp tin đính kèm (mặc định thu gọn)
+        if (huy) parts.push(card('Khối Thông tin giao dịch hủy đã thực hiện trước đây', 'fa-clock-rotate-left', '<div id="viewGdHuyHost"></div>', { id: 'cardGdHuyView', collapsed: true }));
 
         // Thông tin hồ sơ gốc (mặc định thu gọn); không hiển thị với Khôi phục hủy đăng ký
         if (p.loai !== 'KHOI_PHUC') parts.push(card('Thông tin hồ sơ gốc', 'fa-database', '<div id="viewHoSoHost"></div>', { id: 'cardViewHoSo', collapsed: true }));
@@ -439,19 +443,21 @@
 
         // Chức năng trên màn hình
         const btns = [];
-        if (p.trangThai === 'Chờ duyệt đề nghị') {
+        // Duyệt/Từ chối đề nghị: chỉ thực hiện tại màn Ký duyệt hồ sơ của Lãnh đạo
+        if (p.trangThai === 'Chờ duyệt đề nghị' && C.fromKyDuyet()) {
             btns.push(['cl-btn-danger', 'fa-ban', 'Từ chối đề nghị', () => C.openTuChoi(p, (cur, msg) => C.goList(msg))]);
             btns.push(['cl-btn-success', 'fa-check', 'Duyệt đề nghị', () => C.openDuyet(p, (cur, msg) => C.goList(msg))]);
         }
         if (p.trangThai === 'Bị từ chối đề nghị') btns.push(['cl-btn-primary', 'fa-pen-clip', 'Cập nhật lại đề nghị', () => { location.href = `lap_de_nghi_chinh_ly.html?id=${p.id}&mode=edit`; }]);
-        if (p.trangThai === 'Chờ thực hiện') btns.push(['cl-btn-primary', 'fa-pen-to-square', 'Thực hiện đề nghị', () => { location.href = `thuc_hien_chinh_ly_form.html?id=${p.id}`; }]);
+        // Chỉ cán bộ được phân công thực hiện mới thấy nút Thực hiện đề nghị
+        if (p.trangThai === 'Chờ thực hiện' && C.laNguoiDuocPhanCong(p)) btns.push(['cl-btn-primary', 'fa-pen-to-square', 'Thực hiện đề nghị', () => { location.href = `thuc_hien_chinh_ly_form.html?id=${p.id}`; }]);
         if (p.trangThai === 'Bị trả lại') btns.push(['cl-btn-primary', 'fa-file-pen', 'Sửa hồ sơ trình ký', () => { location.href = `thuc_hien_chinh_ly_form.html?id=${p.id}`; }]);
         footer(btns);
     }
 
     function tuChoiCard(p, collapsed) {
         if (!p.tuChoi || !p.tuChoi.length) return '';
-        const items = p.tuChoi.slice().reverse().map((t, i) => `<div class="cl-history-item"><div class="cl-history-head"><i class="fa-solid fa-ban"></i> Lần từ chối thứ ${p.tuChoi.length - i}</div>
+        const items = p.tuChoi.slice().reverse().map((t, i) => `<div class="cl-history-item">
             <div class="cl-info-grid">${C.infoItem('Người từ chối', t.nguoi)}${C.infoItem('Thời điểm từ chối', t.thoiDiem)}${t.thoiDiemGuiLai ? C.infoItem('Thời điểm gửi lại', t.thoiDiemGuiLai) : ''}
             ${C.infoItem('Lý do từ chối', t.lyDo, { span: true, danger: true })}</div></div>`).join('');
         return card('Thông tin từ chối đề nghị', 'fa-circle-xmark', items, { danger: true, id: 'cardTuChoi', collapsed });

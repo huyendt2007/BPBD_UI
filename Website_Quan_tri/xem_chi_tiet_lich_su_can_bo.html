@@ -807,6 +807,27 @@
             overflow: visible;
         }
 
+        .ucps-readonly-text .cell-modified {
+            display: inline;
+        }
+
+        .ucps-processing-info .history-popover {
+            left: auto;
+            right: 0;
+            max-width: min(340px, calc(100vw - 24px));
+        }
+
+        .ucps-processing-info .history-popover::after {
+            left: auto;
+            right: 12px;
+        }
+
+        .ucps-processing-info .field-value {
+            align-items: flex-start;
+            flex-wrap: wrap;
+            overflow: visible;
+        }
+
         .ucps-asset-type-hidden {
             display: none !important;
         }
@@ -1119,19 +1140,12 @@
                         <p id="currentVersionSubtitle">Số đăng ký: --</p>
                     </div>
 
-                    <!-- Diff & Asset Audit Filter Toggle Switches -->
+                    <!-- Diff Filter Toggle Switch (giống Website Khách hàng) -->
                     <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
                         <div class="diff-toggle-container" style="margin-bottom: 0;">
                             <span class="diff-toggle-label"><label>Chỉ hiển thị vùng dữ liệu có biến động</label></span>
                             <label class="switch">
                                 <input type="checkbox" id="diffToggle">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                        <div class="diff-toggle-container" style="margin-bottom: 0;">
-                            <span class="diff-toggle-label"><label>Hiển thị biến động Tài sản đảm bảo</label></span>
-                            <label class="switch">
-                                <input type="checkbox" id="assetAuditToggle">
                                 <span class="slider"></span>
                             </label>
                         </div>
@@ -1647,7 +1661,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="pdk_xu_ly_popups.js"></script>
-    <script src="xem_chi_tiet_lich_su_can_bo.js?v=20260928"></script>
+    <script src="xem_chi_tiet_lich_su_can_bo.js?v=20261002d"></script>
     <script src="admin-ui-standardizer.js"></script>
 </body>
 

@@ -21,7 +21,7 @@
         .cl-table-toolbar { display: flex; justify-content: flex-end; margin-bottom: 8px; }
     </style>
 </head>
-<!-- MH06 - Màn hình Thực hiện chỉnh lý, hủy và khôi phục đăng ký: thuc_hien_chinh_ly_form.html?id={id} -->
+<!-- MH04 - Màn hình Thực hiện chỉnh lý, hủy và khôi phục đăng ký: thuc_hien_chinh_ly_form.html?id={id} -->
 <body class="cl-page">
 <div class="cl-container">
     <div class="cl-breadcrumb">
@@ -87,7 +87,7 @@
     parts.push(card('Khối Tham chiếu đề nghị đã duyệt', 'fa-file-circle-check', `<div class="cl-info-grid cl-cols-4">
         ${C.infoItem('Mã đề nghị', `<a class="cl-link" href="lap_de_nghi_chinh_ly.html?id=${p.id}&mode=view" target="_blank" title="Mở Xem chi tiết đề nghị tại tab mới">${C.esc(p.maDeNghi)} <i class="fa-solid fa-up-right-from-square" style="font-size:11px;"></i></a>`, { html: true })}
         ${C.infoItem('Loại đề nghị', C.badge(C.loaiLabel(p), C.loaiClass(p)), { html: true })}
-        ${C.infoItem('Số đăng ký', p.soDangKy)}${C.infoItem('Người lập đề nghị', p.nguoiLap)}${C.infoItem('Thời điểm lập', p.thoiDiemLap)}
+        ${C.infoItem('Số đăng ký', p.soDangKy)}${C.infoItem('Cán bộ lập đề nghị', p.nguoiLap)}${C.infoItem('Thời điểm lập', p.thoiDiemLap)}
         ${C.infoItem('Người phê duyệt', d.nguoi)}${C.infoItem('Thời điểm phê duyệt', d.thoiDiem)}${C.infoItem('Hạn hoàn thành', d.han)}
         ${C.infoItem('Ý kiến chỉ đạo', d.yKien, { span: true })}</div>
         <div class="cl-sub-title" style="margin-top:12px;"><span><i class="fa-solid fa-pen-to-square"></i> Căn cứ và nội dung đề xuất</span></div>
@@ -95,7 +95,7 @@
 
     // ===================== KHỐI THÔNG TIN TRẢ LẠI HỒ SƠ =====================
     if (p.traLai && p.traLai.length) {
-        const items = p.traLai.slice().reverse().map((t, i) => `<div class="cl-history-item"><div class="cl-history-head"><i class="fa-solid fa-rotate-left"></i> Lần trả lại thứ ${p.traLai.length - i}</div>
+        const items = p.traLai.slice().reverse().map((t, i) => `<div class="cl-history-item">
             <div class="cl-info-grid">${C.infoItem('Người trả lại', t.nguoi)}${C.infoItem('Thời điểm trả lại', t.thoiDiem)}${t.thoiDiemTrinhLai ? C.infoItem('Thời điểm trình ký lại', t.thoiDiemTrinhLai) : ''}
             ${C.infoItem('Lý do trả lại', t.lyDo, { span: true, danger: true })}</div></div>`).join('');
         parts.push(card('Thông tin trả lại hồ sơ', 'fa-rotate-left', items, { id: 'cardTraLai', danger: true, collapsed: p.trangThai !== 'Bị trả lại' }));

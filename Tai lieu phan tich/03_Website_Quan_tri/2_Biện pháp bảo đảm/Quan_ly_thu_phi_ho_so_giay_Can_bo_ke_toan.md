@@ -33,63 +33,66 @@
 
 ##### 4.3.2.21.2.2. Mô tả thông tin trên màn hình
 
-- Màn hình gồm 01 Khối Bộ lọc tìm kiếm dùng chung và 02 bảng danh sách riêng: Danh sách khoản phải thu, Danh sách khoản phải hoàn phí.
-- Nút "Quét mã" đặt ở góc phải phía trên màn hình.
+- Màn hình gồm 01 Khối Bộ lọc tìm kiếm động theo ngữ cảnh và 02 Tab nghiệp vụ riêng biệt: **Tab 1: Khoản phải thu** và **Tab 2: Khoản phải hoàn phí**. Thanh Tab đặt ngay dưới tiêu đề màn hình, phía trên Khối Bộ lọc tìm kiếm; Tab đang chọn quyết định cả các trường của Khối Bộ lọc tìm kiếm và Bảng dữ liệu hiển thị bên dưới.
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **I. Khối Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng; cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên.<br>- Phạm vi áp dụng của từng trường lọc được ghi rõ tại từng dòng bên dưới. |
-| Mã hồ sơ/Mã QR | String(100) | Không | Trống | Control UI: Input text.<br>- Placeholder: "HS-2026-000128".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Mã hồ sơ hoặc Mã QR.<br>- Áp dụng cho cả 02 bảng. |
-| Số đơn giấy | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "PG-0128".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Số đơn giấy.<br>- Áp dụng cho cả 02 bảng. |
-| Người yêu cầu | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Tên cá nhân/tổ chức".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo tên cá nhân/tổ chức yêu cầu.<br>- Áp dụng cho cả 02 bảng. |
-| Loại yêu cầu | Enum(String(100)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Đăng ký lần đầu<br>+ Đăng ký thay đổi<br>+ Xóa đăng ký<br>+ Yêu cầu cung cấp bản sao<br>+ Thông báo xử lý tài sản bảo đảm<br>- Áp dụng cho Danh sách khoản phải thu. |
-| Hình thức thanh toán | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Tiền mặt<br>+ Chuyển khoản<br>+ Miễn phí<br>- Áp dụng cho Danh sách khoản phải thu. |
-| Trạng thái thu phí | Enum(String(50)) | Không | Chờ thu phí | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Chờ thu phí<br>+ Đã thu<br>+ Miễn phí<br>- Áp dụng cho Danh sách khoản phải thu. |
-| Trạng thái hoàn phí | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Chờ hoàn phí<br>+ Cần bổ sung chứng từ<br>+ Đã hoàn<br>- Áp dụng cho Danh sách khoản phải hoàn phí. |
-| Từ ngày tiếp nhận | Date | Không | Trống | Control UI: Datepicker (`dd/mm/yyyy`).<br>- Lọc theo Ngày tiếp nhận hồ sơ.<br>- Từ ngày tiếp nhận phải nhỏ hơn hoặc bằng Đến ngày tiếp nhận.<br>- Áp dụng cho Danh sách khoản phải thu. |
-| Đến ngày tiếp nhận | Date | Không | Trống | Control UI: Datepicker (`dd/mm/yyyy`).<br>- Lọc theo Ngày tiếp nhận hồ sơ.<br>- Đến ngày tiếp nhận phải lớn hơn hoặc bằng Từ ngày tiếp nhận.<br>- Áp dụng cho Danh sách khoản phải thu. |
-| **II. Quy định chung của 02 bảng danh sách** | - | - | - | Control UI: Bảng dữ liệu (Grid) kèm thanh phân trang riêng cho từng bảng.<br>- Mỗi bảng hiển thị tiêu đề bảng ở góc trái và badge tổng số khoản thỏa mãn điều kiện lọc ở góc phải (dạng "[n] khoản").<br>- Chỉ hiển thị khoản phải thu/khoản phải hoàn thuộc đơn vị được phân công của Cán bộ đăng nhập.<br>- Cột Thao tác cố định cạnh phải bảng (Sticky) khi cuộn ngang; icon không khả dụng hiển thị dạng mờ (Disabled), không ẩn.<br>- Mặc định 20 bản ghi/trang; cho phép chọn 10, 20, 50, 100 bản ghi/trang.<br>- Trạng thái không có dữ liệu (Empty State): bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 trong tổng số 0 bản ghi"* và các nút điều hướng trang ở trạng thái khóa mờ (Disabled). |
-| **III. Danh sách khoản phải thu** | - | - | 20 bản ghi/trang | Tiêu đề bảng: "Danh sách khoản phải thu". |
+| **I. Hệ thống Tab nghiệp vụ** | - | - | - | Control UI: Thanh chuyển Tab đặt ngay dưới tiêu đề màn hình, phía trên Khối Bộ lọc tìm kiếm.<br>- Tab đang chọn điều khiển đồng thời Khối Bộ lọc tìm kiếm (các trường lọc theo Tab) và Bảng dữ liệu bên dưới.<br>- Gồm 02 Tab: "Khoản phải thu" và "Khoản phải hoàn phí".<br>- Mỗi Tab có badge đếm số lượng bản ghi thỏa mãn điều kiện lọc tương ứng. |
+| Tab Khoản phải thu | Button / Tab | - | Active mặc định | Control UI: Nút Tab kèm icon `fa-file-invoice-dollar` và badge số lượng.<br>- Khi click: hiển thị Bảng Danh sách khoản phải thu và cấu hình bộ lọc tương ứng với khoản phải thu. |
+| Tab Khoản phải hoàn phí | Button / Tab | - | - | Control UI: Nút Tab kèm icon `fa-money-bill-transfer` và badge số lượng.<br>- Khi click: hiển thị Bảng Danh sách khoản phải hoàn phí và cấu hình bộ lọc tương ứng với khoản phải hoàn. |
+| **II. Khối Bộ lọc tìm kiếm (Động theo Tab)** | - | - | - | Control UI: Khối lọc có nút Xóa bộ lọc và Tìm kiếm, đặt ngay dưới thanh Tab.<br>- Hiển thị động các trường tìm kiếm theo Tab đang active.<br>- Mặc định giá trị Từ ngày là ngày đầu tháng hiện tại, Đến ngày là ngày hiện tại. |
+| Mã hồ sơ/Mã QR | String(100) | Không | Trống | Control UI: Input text.<br>- Placeholder: "HS-2026-000128".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Mã hồ sơ hoặc Mã QR.<br>- Hiển thị trên cả 02 Tab. |
+| Số đơn giấy | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "PG-0128".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo Số đơn giấy.<br>- Hiển thị trên cả 02 Tab. |
+| Người yêu cầu | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Tên cá nhân/tổ chức".<br>- Tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space theo tên cá nhân/tổ chức yêu cầu.<br>- Hiển thị trên cả 02 Tab. |
+| Loại yêu cầu | Enum(String(100)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Đăng ký lần đầu<br>+ Đăng ký thay đổi<br>+ Xóa đăng ký<br>+ Yêu cầu cung cấp bản sao<br>+ Thông báo xử lý tài sản bảo đảm<br>- Chỉ hiển thị khi chọn Tab Khoản phải thu (ẩn khi chọn Tab Khoản phải hoàn phí). |
+| Hình thức thanh toán | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Tiền mặt<br>+ Chuyển khoản<br>+ Miễn phí<br>- Chỉ hiển thị khi chọn Tab Khoản phải thu (ẩn khi chọn Tab Khoản phải hoàn phí). |
+| Trạng thái thu phí | Enum(String(50)) | Không | Chờ thu phí | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Chờ thu phí<br>+ Đã thu<br>+ Miễn phí<br>- Chỉ hiển thị khi chọn Tab Khoản phải thu (ẩn khi chọn Tab Khoản phải hoàn phí). |
+| Trạng thái hoàn phí | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Chờ hoàn phí<br>+ Cần bổ sung chứng từ<br>+ Đã hoàn<br>- Chỉ hiển thị khi chọn Tab Khoản phải hoàn phí (ẩn khi chọn Tab Khoản phải thu). |
+| Từ ngày tiếp nhận / Từ ngày phát sinh | Date | Không | Ngày đầu tháng | Control UI: Input text kèm icon lịch (`dd/mm/yyyy`).<br>- Mặc định ngày đầu tháng hiện tại.<br>- Đổi nhãn động: "Từ ngày tiếp nhận" (ở Tab Khoản phải thu) hoặc "Từ ngày phát sinh" (ở Tab Khoản phải hoàn phí).<br>- Phải nhỏ hơn hoặc bằng Đến ngày. |
+| Đến ngày tiếp nhận / Đến ngày phát sinh | Date | Không | Ngày hiện tại | Control UI: Input text kèm icon lịch (`dd/mm/yyyy`).<br>- Mặc định ngày hiện tại.<br>- Đổi nhãn động: "Đến ngày tiếp nhận" (ở Tab Khoản phải thu) hoặc "Đến ngày phát sinh" (ở Tab Khoản phải hoàn phí).<br>- Phải lớn hơn hoặc bằng Từ ngày. |
+| **III. Quy định chung của Bảng dữ liệu theo Tab** | - | - | - | Control UI: Bảng dữ liệu (Grid) kèm thanh phân trang riêng cho từng Tab.<br>- Chỉ hiển thị khoản phải thu/khoản phải hoàn thuộc đơn vị được phân công của Cán bộ đăng nhập.<br>- Cột Thao tác: Tuân thủ quy chuẩn số slot nút bấm cố định (03 slot). Luôn hiển thị đầy đủ các thao tác, các nút không khả dụng ở trạng thái hiện tại hiển thị dạng mờ (`opacity: 0.35; pointer-events: none; cursor: not-allowed;`), tuyệt đối không ẩn đi.<br>- Phân trang chuẩn: Mặc định 10 bản ghi/trang; cho phép chọn cấu hình 10, 20, 50, 100 bản ghi/trang. Có đầy đủ nút điều hướng Đầu (`\|<<`), Trước (`<`), các số trang, Sau (`>`), Cuối (`>>\|`).<br>- Trạng thái không có dữ liệu (Empty State): bảng hiển thị 01 dòng căn giữa (`colspan`), in nghiêng theo [MSG-INF-SYS-001]; phân trang hiển thị *"Đang hiển thị 0–0 trong tổng số 0 hồ sơ"* và các nút điều hướng bị khóa mờ (Disabled). |
+| **IV. Tab Khoản phải thu - Bảng danh sách** | - | - | 10 bản ghi/trang | Tiêu đề bảng: "Danh sách khoản phải thu" kèm badge số khoản. |
 | STT | Integer(10) | - | Theo trang | Control UI: Label, chỉ đọc.<br>- Số thứ tự dòng tính liên tục theo trang kết quả hiện tại. |
 | Mã hồ sơ | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Link, chỉ đọc.<br>- Click mở [MH02 - Màn hình Chi tiết khoản phải thu/khoản phải hoàn](#mh02). |
 | Số đơn giấy | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
 | Người yêu cầu | String(255) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
 | Người nộp | String(255) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
 | Loại yêu cầu | Enum(String(100)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
-| Hình thức TT | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Hiển thị "Tiền mặt", "Chuyển khoản" hoặc "Miễn phí"; khoản chưa xác nhận hiển thị "-". |
-| Phải thu | Decimal(18,0) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Định dạng phân tách hàng nghìn, đơn vị VNĐ. |
-| Đã thu | Decimal(18,0) | - | 0 VNĐ | Control UI: Label, chỉ đọc.<br>- Bằng 0 với khoản đang "Chờ thu phí" hoặc "Miễn phí". |
-| Trạng thái | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label dạng nhãn trạng thái (Badge), chỉ đọc.<br>- Hiển thị một trong các giá trị: Chờ thu phí, Đã thu, Miễn phí. |
-| Số biên lai | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Hiển thị số biên lai/chứng từ sau khi xác nhận; chưa có hiển thị "-". |
+| Hình thức TT | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>Gồm:<br>+ Tiền mặt<br>+ Chuyển khoản<br>+ Miễn phí<br>- Khoản chưa xác nhận hiển thị "-". |
+| Phải thu | Decimal(18,0) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc, căn phải.<br>- Định dạng phân tách hàng nghìn, đơn vị VNĐ. |
+| Đã thu | Decimal(18,0) | - | 0 VNĐ | Control UI: Label, chỉ đọc, căn phải.<br>- Bằng 0 với khoản đang "Chờ thu phí" hoặc "Miễn phí". |
+| Trạng thái | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label dạng nhãn trạng thái (Badge), chỉ đọc.<br>Gồm:<br>+ Chờ thu phí<br>+ Đã thu<br>+ Miễn phí |
+| Số biên lai | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Hiển thị số biên lai sau khi xác nhận; chưa có hiển thị "-". |
 | Ngày tiếp nhận | Datetime | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Định dạng `dd/mm/yyyy HH:mm`. |
 | Cán bộ tiếp nhận | String(100) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
-| Thao tác | - | - | - | Control UI: Nhóm icon thao tác trên dòng.<br>Gồm:<br>+ Xác nhận thu phí: khả dụng khi Trạng thái là "Chờ thu phí".<br>+ In biên lai: khả dụng khi Trạng thái là "Đã thu" hoặc "Miễn phí". |
-| **IV. Danh sách khoản phải hoàn phí** | - | - | 20 bản ghi/trang | Tiêu đề bảng: "Danh sách khoản phải hoàn phí".<br>- Hiển thị các khoản phải hoàn phát sinh khi hồ sơ giấy đã thu phí bị từ chối. |
+| Thao tác | - | - | - | Control UI: Nhóm 03 icon thao tác cố định (Fixed-Slot) trên mỗi dòng.<br>Gồm:<br>+ Slot 1 (Xem chi tiết): Icon mắt, luôn khả dụng, click mở [MH02](#mh02).<br>+ Slot 2 (Xác nhận thu phí): Icon hóa đơn (`fa-receipt`), mở popup nhập liệu xác nhận [MH03](#mh03); khả dụng khi Trạng thái là "Chờ thu phí" (trạng thái khác hiển thị mờ, disabled).<br>+ Slot 3 (In biên lai): Icon máy in (`fa-print`), mở [MH04](#mh04); khả dụng khi Trạng thái là "Đã thu" hoặc "Miễn phí" (trạng thái khác hiển thị mờ, disabled). |
+| **V. Tab Khoản phải hoàn phí - Bảng danh sách** | - | - | 10 bản ghi/trang | Tiêu đề bảng: "Danh sách khoản phải hoàn phí" kèm badge số khoản. |
 | STT | Integer(10) | - | Theo trang | Control UI: Label, chỉ đọc.<br>- Số thứ tự dòng tính liên tục theo trang kết quả hiện tại. |
 | Mã hồ sơ | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Link, chỉ đọc.<br>- Click mở [MH02 - Màn hình Chi tiết khoản phải thu/khoản phải hoàn](#mh02). |
 | Số đơn giấy | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
 | Người yêu cầu | String(255) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
 | Lý do hoàn phí | Text(1000) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Lấy theo lý do từ chối hồ sơ. |
-| Phải hoàn | Decimal(18,0) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Định dạng phân tách hàng nghìn, đơn vị VNĐ. |
-| Đã hoàn | Decimal(18,0) | - | 0 VNĐ | Control UI: Label, chỉ đọc.<br>- Định dạng phân tách hàng nghìn, đơn vị VNĐ. |
-| Hình thức hoàn | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Hiển thị "Tiền mặt" hoặc "Chuyển khoản". |
-| Trạng thái | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label dạng nhãn trạng thái (Badge), chỉ đọc.<br>- Hiển thị một trong các giá trị: Chờ hoàn phí, Cần bổ sung chứng từ, Đã hoàn. |
+| Phải hoàn | Decimal(18,0) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc, căn phải.<br>- Định dạng phân tách hàng nghìn, đơn vị VNĐ. |
+| Đã hoàn | Decimal(18,0) | - | 0 VNĐ | Control UI: Label, chỉ đọc, căn phải.<br>- Định dạng phân tách hàng nghìn, đơn vị VNĐ. |
+| Hình thức hoàn | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>Gồm:<br>+ Tiền mặt<br>+ Chuyển khoản |
+| Trạng thái | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label dạng nhãn trạng thái (Badge), chỉ đọc.<br>Gồm:<br>+ Chờ hoàn phí<br>+ Cần bổ sung chứng từ<br>+ Đã hoàn |
 | Ngày phát sinh | Datetime | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Thời điểm phát sinh khoản phải hoàn, định dạng `dd/mm/yyyy HH:mm`. |
 | Cán bộ xử lý | String(100) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
-| Thao tác | - | - | - | Control UI: Nhóm icon thao tác trên dòng.<br>Gồm:<br>+ Xác nhận hoàn phí: khả dụng khi Trạng thái là "Chờ hoàn phí" hoặc "Cần bổ sung chứng từ".<br>+ In chứng từ hoàn phí: khả dụng khi Trạng thái là "Đã hoàn". |
+| Thao tác | - | - | - | Control UI: Nhóm 03 icon thao tác cố định (Fixed-Slot) trên mỗi dòng.<br>Gồm:<br>+ Slot 1 (Xem chi tiết): Icon mắt, luôn khả dụng, click mở [MH02](#mh02).<br>+ Slot 2 (Xác nhận hoàn phí): Icon chuyển tiền (`fa-money-bill-transfer`), mở popup nhập liệu xác nhận [MH05](#mh05); khả dụng khi Trạng thái là "Chờ hoàn phí" hoặc "Cần bổ sung chứng từ" (trạng thái "Đã hoàn" hiển thị mờ, disabled).<br>+ Slot 3 (In chứng từ hoàn phí): Icon máy in (`fa-print`), mở [MH06](#mh06); khả dụng khi Trạng thái là "Đã hoàn" (trạng thái khác hiển thị mờ, disabled). |
 
 ##### 4.3.2.21.2.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Nút | Hệ thống lọc đồng thời 02 bảng danh sách theo các điều kiện tại Khối Bộ lọc tìm kiếm (mỗi trường lọc áp dụng cho bảng theo phạm vi mô tả tại Khối I).<br>- **TH1 (Khoảng ngày không hợp lệ)**: Nếu `Từ ngày tiếp nhận` lớn hơn `Đến ngày tiếp nhận`, hệ thống hiển thị [MSG-ERR-VAL-007], highlight viền đỏ ô nhập và không thực hiện tìm kiếm.<br>- **TH2 (Không có dữ liệu)**: Bảng tương ứng hiển thị trạng thái không có dữ liệu theo mô tả tại Khối II.<br>- **TH Hợp lệ**: Hệ thống hiển thị danh sách thỏa mãn đồng thời các điều kiện lọc, cập nhật badge số khoản và đưa phân trang của cả 02 bảng về Trang 1. |
-| 2 | Xóa bộ lọc | Nút | Hệ thống xóa các điều kiện tìm kiếm, đưa `Trạng thái thu phí` về "Chờ thu phí", các trường còn lại về "Tất cả"/Trống và tải lại 02 bảng danh sách. |
-| 3 | Quét mã | Nút | Cho phép mở nhanh khoản phải thu theo Mã hồ sơ/Mã QR.<br>- **TH1 (Không tìm thấy)**: Hệ thống hiển thị [MSG-ERR-UCPS-005].<br>- **TH Hợp lệ**: Hệ thống lọc danh sách theo mã đã quét và mở [MH02 - Màn hình Chi tiết khoản phải thu/khoản phải hoàn](#mh02) của khoản tương ứng. |
-| 4 | Xem chi tiết | Row Click / Link Mã hồ sơ | Hệ thống mở [MH02 - Màn hình Chi tiết khoản phải thu/khoản phải hoàn](#mh02) của khoản phải thu hoặc khoản phải hoàn tương ứng. |
-| 5 | Xác nhận thu phí | Icon | Hệ thống mở [MH03 - Popup Xác nhận thu phí & Phát hành biên lai](#mh03). |
-| 6 | In biên lai | Icon | Hệ thống mở [MH04 - Popup Biên lai thu phí, lệ phí](#mh04). |
-| 7 | Xác nhận hoàn phí | Icon | Hệ thống mở [MH05 - Popup Xác nhận hoàn phí](#mh05). |
-| 8 | In chứng từ hoàn phí | Icon | Hệ thống mở [MH06 - Popup Chứng từ hoàn phí](#mh06). |
+| 1 | Chuyển Tab | Nút Tab | Hệ thống chuyển đổi giữa 2 Tab: "Khoản phải thu" và "Khoản phải hoàn phí". Đồng thời tự động cập nhật hiển thị các trường lọc ngữ cảnh và nhãn ngày tương ứng với Tab được chọn. |
+| 2 | Tìm kiếm | Nút | Hệ thống thực hiện tìm kiếm/lọc dữ liệu theo các điều kiện lọc đang nhập:<br>- **TH1 (Khoảng ngày không hợp lệ)**: Nếu `Từ ngày` lớn hơn `Đến ngày`, hệ thống highlight viền đỏ ô nhập (class `.is-invalid`), hiển thị cảnh báo đỏ *"Từ ngày không được lớn hơn Đến ngày"* ngay phía dưới ô nhập và tự động focus con trỏ vào ô nhập lỗi (Rule 9 Validation).<br>- **TH2 (Không có dữ liệu)**: Bảng tương ứng hiển thị trạng thái không có dữ liệu theo [MSG-INF-SYS-001].<br>- **TH Hợp lệ**: Hệ thống hiển thị danh sách thỏa mãn điều kiện lọc, cập nhật badge số lượng trên thanh Tab và đưa phân trang về Trang 1. |
+| 3 | Xóa bộ lọc | Nút | Hệ thống xóa các điều kiện tìm kiếm, đặt lại `Từ ngày` là ngày đầu tháng, `Đến ngày` là ngày hiện tại, `Trạng thái thu phí` về "Chờ thu phí", các trường còn lại về "Tất cả"/Trống và tải lại danh sách. |
+| 4 | Quét mã | Nút | Cho phép quét mã QR trên phiếu tiếp nhận để tự động điền mã hồ sơ vào bộ lọc và mở chi tiết khoản phải thu/hoàn. |
+| 5 | Xem chi tiết | Link / Icon mắt | Hệ thống mở [MH02 - Màn hình Chi tiết khoản phải thu/khoản phải hoàn](#mh02) của khoản thu hoặc khoản hoàn tương ứng. |
+| 6 | Xác nhận thu phí | Icon | Hệ thống mở [MH03 - Popup Xác nhận thu phí & Phát hành biên lai](#mh03) để Cán bộ kế toán nhập liệu thông tin thu phí. |
+| 7 | In biên lai | Icon | Hệ thống mở [MH04 - Popup Biên lai thu phí, lệ phí](#mh04). |
+| 8 | Xác nhận hoàn phí | Icon | Hệ thống mở [MH05 - Popup Xác nhận hoàn phí](#mh05) để Cán bộ kế toán nhập liệu thông tin hoàn phí. |
+| 9 | In chứng từ hoàn phí | Icon | Hệ thống mở [MH06 - Popup Chứng từ hoàn phí](#mh06). |
 
 ---
 
@@ -109,12 +112,12 @@
 | **I. Thông tin tiếp nhận** | - | - | - | Hiển thị lại thông tin tiếp nhận hồ sơ giấy tại [Tiếp nhận hồ sơ giấy - Module Biện pháp bảo đảm (Website Quản trị)](Tiep_nhan_ho_so_giay_Can_bo_tiep_nhan.md). |
 | Mã hồ sơ | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
 | Số đơn giấy | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
-| Kênh tiếp nhận | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Hiển thị một trong các giá trị: Trực tiếp tại quầy, Qua bưu điện, Fax, Email. |
+| Kênh tiếp nhận | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>Gồm:<br>+ Trực tiếp tại quầy<br>+ Qua bưu điện<br>+ Fax<br>+ Email |
 | Thời điểm tiếp nhận | Datetime | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Định dạng `dd/mm/yyyy HH:mm`. |
 | Đơn vị tiếp nhận | String(255) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
 | Cán bộ tiếp nhận | String(100) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
 | **II. Thông tin người yêu cầu** | - | - | - | |
-| Loại khách hàng | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Hiển thị "Có tài khoản trực tuyến" hoặc "Khách hàng vãng lai". |
+| Loại khách hàng | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>Gồm:<br>+ Có tài khoản trực tuyến<br>+ Khách hàng vãng lai |
 | Mã tài khoản trực tuyến | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Chỉ hiển thị khi Loại khách hàng là "Có tài khoản trực tuyến". |
 | Họ tên/Tên tổ chức | String(255) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
 | Số điện thoại người yêu cầu | String(20) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
@@ -125,8 +128,8 @@
 | Giấy tờ định danh | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Số CCCD/CMND/Hộ chiếu/giấy tờ định danh. |
 | Số điện thoại người nộp | String(20) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
 | Email người nộp | String(255) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
-| Quan hệ với người yêu cầu | Enum(String(100)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Hiển thị một trong các giá trị: Người được ủy quyền, Người yêu cầu, Nhân viên tổ chức, Khác. |
-| Phương thức nhận kết quả | Enum(String(100)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Hiển thị một trong các giá trị: Trực tiếp tại cơ quan, Qua dịch vụ bưu chính, Cách thức điện tử. |
+| Quan hệ với người yêu cầu | Enum(String(100)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>Gồm:<br>+ Người được ủy quyền<br>+ Người yêu cầu<br>+ Nhân viên tổ chức<br>+ Khác |
+| Phương thức nhận kết quả | Enum(String(100)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>Gồm:<br>+ Trực tiếp tại cơ quan<br>+ Qua dịch vụ bưu chính<br>+ Cách thức điện tử |
 | Địa chỉ nhận kết quả | String(500) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Chỉ hiển thị khi Phương thức nhận kết quả là "Qua dịch vụ bưu chính". |
 | Email nhận kết quả | String(255) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Chỉ hiển thị khi Phương thức nhận kết quả là "Cách thức điện tử". |
 | **IV. Thông tin loại yêu cầu và lệ phí** | - | - | - | |
@@ -137,8 +140,8 @@
 | Tên khoản phí | String(255) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
 | Số tiền phải thu | Decimal(18,0) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Định dạng phân tách hàng nghìn, đơn vị VNĐ. |
 | Số tiền đã thu | Decimal(18,0) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Bằng 0 nếu đang "Chờ thu phí" hoặc "Miễn phí". |
-| Hình thức thanh toán | Enum(String(50)) | - | Chưa xác nhận | Control UI: Label, chỉ đọc.<br>- Hiển thị "Chưa xác nhận" nếu chưa thu; sau xác nhận hiển thị "Tiền mặt", "Chuyển khoản" hoặc "Miễn phí". |
-| Trạng thái thu phí | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label dạng nhãn trạng thái (Badge), chỉ đọc.<br>- Hiển thị một trong các giá trị: Chờ thu phí, Đã thu, Miễn phí. |
+| Hình thức thanh toán | Enum(String(50)) | - | Chưa xác nhận | Control UI: Label, chỉ đọc.<br>Gồm:<br>+ Chưa xác nhận<br>+ Tiền mặt<br>+ Chuyển khoản<br>+ Miễn phí |
+| Trạng thái thu phí | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label dạng nhãn trạng thái (Badge), chỉ đọc.<br>Gồm:<br>+ Chờ thu phí<br>+ Đã thu<br>+ Miễn phí |
 | Trạng thái hồ sơ | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Ví dụ: "Chờ thu phí", "Chờ giải quyết". |
 | Số biên lai | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Chưa có hiển thị "-". |
 | **V. Thông tin hoàn phí** | - | - | - | Chỉ hiển thị khi mở chi tiết từ Danh sách khoản phải hoàn phí. |
@@ -146,8 +149,8 @@
 | Lý do phát sinh hoàn phí | Text(1000) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Lấy theo lý do từ chối hồ sơ. |
 | Số tiền phải hoàn | Decimal(18,0) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
 | Số tiền đã hoàn | Decimal(18,0) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
-| Hình thức hoàn phí | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Hiển thị "Tiền mặt" hoặc "Chuyển khoản". |
-| Trạng thái hoàn phí | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label dạng nhãn trạng thái (Badge), chỉ đọc.<br>- Hiển thị một trong các giá trị: Chờ hoàn phí, Cần bổ sung chứng từ, Đã hoàn. |
+| Hình thức hoàn phí | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>Gồm:<br>+ Tiền mặt<br>+ Chuyển khoản |
+| Trạng thái hoàn phí | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label dạng nhãn trạng thái (Badge), chỉ đọc.<br>Gồm:<br>+ Chờ hoàn phí<br>+ Cần bổ sung chứng từ<br>+ Đã hoàn |
 | Số chứng từ hoàn phí | String(100) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Chưa có hiển thị "-". |
 | **VI. Tài liệu đính kèm** | - | - | - | Control UI: Bảng dữ liệu, chỉ đọc.<br>- Hiển thị danh sách tài liệu đã tiếp nhận. |
 | STT | Integer(10) | - | Theo thứ tự | Control UI: Label, chỉ đọc. |
@@ -181,18 +184,21 @@
 
 ##### 4.3.2.21.4.2. Mô tả thông tin trên màn hình
 
+- **Quy chuẩn hiển thị Popup**: Thiết kế kích thước chiều ngang lớn (`min(850px, 94vw)`), bố cục các trường dữ liệu dạng 2 cột song song (Grid 50%-50%), khoảng cách lề chuẩn 24px; Tiêu đề (Header) và Nút bấm (Footer) cố định ở đầu và chân popup (Sticky), chỉ cuộn độc lập phần thân nội dung (Modal body, `max-height: 80vh; overflow-y: auto`).
+- **Quy chuẩn kiểm tra dữ liệu (Rule 9 Validation)**: Khi bấm "Chỉ xác nhận thu" hoặc "Xác nhận & In biên lai", nếu có trường bắt buộc chưa nhập hoặc không hợp lệ, hệ thống highlight viền đỏ ô nhập (class `.is-invalid`), hiển thị thông báo lỗi màu đỏ ngay phía dưới ô nhập và tự động focus con trỏ vào ô nhập lỗi đầu tiên. Tuyệt đối không dùng thông báo dạng Alert hay Toast.
+
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **I. Tóm tắt khoản phải thu** | - | - | - | Hiển thị ở đầu popup để Cán bộ kế toán đối chiếu trước khi xác nhận. |
+| **I. Tóm tắt khoản phải thu** | - | - | - | Hiển thị dạng khối thẻ tóm tắt ở đầu popup để Cán bộ kế toán đối chiếu trước khi xác nhận. |
 | Mã hồ sơ | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
 | Người yêu cầu / Khách hàng | String(255) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
 | Loại yêu cầu | Enum(String(100)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc. |
-| Số tiền phải thu | Decimal(18,0) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc, hiển thị nổi bật.<br>- Định dạng phân tách hàng nghìn, đơn vị VNĐ. |
+| Số tiền phải thu | Decimal(18,0) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc, hiển thị màu xanh nổi bật.<br>- Định dạng phân tách hàng nghìn, đơn vị VNĐ. |
 | **II. Hình thức thanh toán** | - | - | - | |
 | Hình thức thanh toán | Enum(String(50)) | Có | Tiền mặt (nếu Số tiền phải thu > 0) / Miễn phí (nếu Số tiền phải thu = 0) | Control UI: Radio button.<br>Gồm:<br>+ Tiền mặt<br>+ Chuyển khoản<br>+ Miễn phí<br>- Khi chọn từng giá trị, hệ thống hiển thị khối trường tương ứng tại các Khối III, IV, V. |
 | **III. Nếu chọn: Tiền mặt** | - | - | - | |
 | Số tiền khách nộp | Decimal(18,0) | Có | Bằng Số tiền phải thu | Control UI: Input number.<br>- Tự động định dạng phân tách hàng nghìn khi nhập.<br>- Phải lớn hơn hoặc bằng Số tiền phải thu. |
-| Số tiền trả lại | Decimal(18,0) | - | 0 VNĐ | Control UI: Label, chỉ đọc.<br>- Hệ thống tự tính = Số tiền khách nộp - Số tiền phải thu; nếu âm hiển thị 0. |
+| Số tiền trả lại | Decimal(18,0) | - | 0 VNĐ | Control UI: Label, chỉ đọc, hiển thị màu xanh.<br>- Hệ thống tự tính = Số tiền khách nộp - Số tiền phải thu; nếu âm hiển thị 0. |
 | Ghi chú / Số biên lai giấy nếu có | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập ghi chú hoặc số biên lai giấy". |
 | **IV. Nếu chọn: Chuyển khoản** | - | - | - | Cán bộ kế toán xác nhận theo khoản ghi Có trên tài khoản thụ hưởng của đơn vị. |
 | Nguồn xác nhận | Enum(String(100)) | Có | Sao kê tài khoản/KBNN | Control UI: Combobox.<br>Gồm:<br>+ Sao kê tài khoản/KBNN<br>+ Thông báo ghi Có ngân hàng<br>+ Chứng từ khách hàng cung cấp |
@@ -209,7 +215,7 @@
 | Lý do miễn phí | Enum(String(100)) | Có | Đối tượng ưu tiên | Control UI: Combobox.<br>Gồm:<br>+ Đối tượng ưu tiên<br>+ Theo quy định pháp luật<br>+ Khác |
 | Văn bản / Căn cứ miễn phí | String(500) | Không | "Hồ sơ thuộc trường hợp miễn lệ phí theo quy định." | Control UI: Input text. |
 | Tài liệu đính kèm căn cứ | File | Không | Chưa chọn tệp | Control UI: Upload file 01 tệp, hiển thị và xử lý giống trường Đính kèm sao kê/chứng từ tại Khối IV. |
-| **VI. Thanh nút chức năng** | - | - | - | Control UI: Thanh nút cố định ở cuối popup.<br>Gồm:<br>+ Hủy bỏ<br>+ Chỉ xác nhận thu<br>+ Xác nhận & In biên lai |
+| **VI. Thanh nút chức năng** | - | - | - | Control UI: Thanh nút cố định ở cuối popup (Sticky footer).<br>Gồm:<br>+ Hủy bỏ<br>+ Chỉ xác nhận thu<br>+ Xác nhận & In biên lai |
 
 ##### 4.3.2.21.4.3. Chức năng trên màn hình
 
@@ -218,7 +224,7 @@
 | 1 | Hủy bỏ | Nút | Hệ thống đóng popup, không lưu dữ liệu đã nhập. |
 | 2 | Chọn hình thức thanh toán | Radio button | Hệ thống hiển thị khối trường tương ứng hình thức đã chọn (Khối III, IV hoặc V) và ẩn các khối còn lại. |
 | 3 | Đính kèm / Xem file / Xóa | Nút / Link | - **TH1 (Sai định dạng hoặc vượt dung lượng)**: Hệ thống hiển thị [MSG-ERR-FILE-003] và không nhận tệp.<br>- **TH Hợp lệ**: Hệ thống hiển thị tên tệp cùng link "Xem file" (mở tệp tại tab trình duyệt mới) và "Xóa" (gỡ tệp, đưa về trạng thái "Chưa chọn tệp"). |
-| 4 | Chỉ xác nhận thu | Nút | Hệ thống kiểm tra dữ liệu theo hình thức thanh toán đã chọn:<br>- **TH1 (Khoản không ở trạng thái "Chờ thu phí")**: Hệ thống hiển thị [MSG-ERR-UCPS-006] và không xác nhận.<br>- **TH2 (Bỏ trống trường bắt buộc)**: Hệ thống hiển thị [MSG-ERR-VAL-001] tại trường lỗi, highlight viền đỏ và focus vào trường lỗi đầu tiên.<br>- **TH3 (Tiền mặt: Số tiền khách nộp nhỏ hơn Số tiền phải thu)**: Hệ thống hiển thị [MSG-ERR-UCPS-007] và không xác nhận.<br>- **TH4 (Chuyển khoản: Số tiền ghi Có nhỏ hơn Số tiền phải thu)**: Hệ thống hiển thị [MSG-ERR-UCPS-007] và không xác nhận.<br>- **TH Hợp lệ**: Hệ thống thực hiện:<br>+ Lưu thông tin xác nhận thu phí (với Chuyển khoản: lưu thông tin đối soát khoản ghi Có; với Miễn phí: lưu căn cứ miễn phí).<br>+ Cập nhật khoản phải thu sang "Đã thu" (Tiền mặt, Chuyển khoản; Số tiền đã thu = Số tiền phải thu) hoặc "Miễn phí".<br>+ Sinh số biên lai/chứng từ và liên kết với Mã hồ sơ.<br>+ Chuyển hồ sơ sang trạng thái "Chờ giải quyết"; hồ sơ hiển thị tại [Tab Hồ sơ chờ nhập liệu - Kiểm tra và xử lý hồ sơ - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Kiem_tra_va_xu_ly_ho_so_Can_bo.md).<br>+ Ghi lịch sử trạng thái và Audit log (người thực hiện, thời điểm, hình thức thanh toán, số tiền, trạng thái trước/sau).<br>+ Hiển thị [MSG-SUC-UCPS-002] (Tiền mặt, Chuyển khoản) hoặc [MSG-SUC-UCPS-003] (Miễn phí), đóng popup và tải lại danh sách. |
+| 4 | Chỉ xác nhận thu | Nút | Hệ thống kiểm tra dữ liệu theo hình thức thanh toán đã chọn:<br>- **TH1 (Khoản không ở trạng thái "Chờ thu phí")**: Hệ thống hiển thị [MSG-ERR-UCPS-006] và không xác nhận.<br>- **TH2 (Bỏ trống trường bắt buộc)**: Hệ thống highlight viền đỏ ô nhập lỗi (class `.is-invalid`), hiển thị thông báo lỗi *"Đây là trường bắt buộc"* ngay phía dưới ô nhập và tự động focus con trỏ vào ô nhập lỗi đầu tiên (Rule 9 Validation).<br>- **TH3 (Tiền mặt: Số tiền khách nộp nhỏ hơn Số tiền phải thu)**: Hệ thống highlight viền đỏ ô Số tiền khách nộp, hiển thị thông báo lỗi *"Số tiền khách nộp phải lớn hơn hoặc bằng số tiền phải thu"* và focus vào ô nhập.<br>- **TH4 (Chuyển khoản: Số tiền ghi Có nhỏ hơn Số tiền phải thu)**: Hệ thống highlight viền đỏ ô Số tiền ghi Có, hiển thị thông báo lỗi *"Số tiền ghi Có phải lớn hơn hoặc bằng số tiền phải thu"* và focus vào ô nhập.<br>- **TH Hợp lệ**: Hệ thống thực hiện:<br>+ Lưu thông tin xác nhận thu phí (với Chuyển khoản: lưu thông tin đối soát khoản ghi Có; với Miễn phí: lưu căn cứ miễn phí).<br>+ Cập nhật khoản phải thu sang "Đã thu" (Tiền mặt, Chuyển khoản; Số tiền đã thu = Số tiền phải thu) hoặc "Miễn phí".<br>+ Sinh số biên lai/chứng từ và liên kết với Mã hồ sơ.<br>+ Chuyển hồ sơ sang trạng thái "Chờ giải quyết"; hồ sơ hiển thị tại [Tab Hồ sơ chờ nhập liệu - Kiểm tra và xử lý hồ sơ - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Kiem_tra_va_xu_ly_ho_so_Can_bo.md).<br>+ Ghi lịch sử trạng thái và Audit log (người thực hiện, thời điểm, hình thức thanh toán, số tiền, trạng thái trước/sau).<br>+ Hiển thị [MSG-SUC-UCPS-002] (Tiền mặt, Chuyển khoản) hoặc [MSG-SUC-UCPS-003] (Miễn phí), đóng popup và tải lại danh sách. |
 | 5 | Xác nhận & In biên lai | Nút | Hệ thống kiểm tra và xử lý giống chức năng Chỉ xác nhận thu; **TH Hợp lệ**: sau khi xác nhận thành công, hệ thống mở [MH04 - Popup Biên lai thu phí, lệ phí](#mh04). |
 
 ---
@@ -277,13 +283,16 @@
 
 ##### 4.3.2.21.6.2. Mô tả thông tin trên màn hình
 
+- **Quy chuẩn hiển thị Popup**: Thiết kế kích thước chiều ngang lớn (`min(850px, 94vw)`), bố cục các trường dữ liệu dạng 2 cột song song (Grid 50%-50%), khoảng cách lề chuẩn 24px; Tiêu đề (Header) và Nút bấm (Footer) cố định ở đầu và chân popup (Sticky), chỉ cuộn độc lập phần thân nội dung (Modal body, `max-height: 80vh; overflow-y: auto`).
+- **Quy chuẩn kiểm tra dữ liệu (Rule 9 Validation)**: Khi bấm "Xác nhận hoàn phí", nếu có trường bắt buộc chưa nhập hoặc không hợp lệ, hệ thống highlight viền đỏ ô nhập (class `.is-invalid`), hiển thị thông báo lỗi màu đỏ ngay phía dưới ô nhập và tự động focus con trỏ vào ô nhập lỗi đầu tiên. Tuyệt đối không dùng thông báo dạng Alert hay Toast.
+
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **I. Thông tin khoản phải hoàn** | - | - | - | |
+| **I. Thông tin khoản phải hoàn** | - | - | - | Hiển thị dạng khối thẻ tóm tắt ở đầu popup để Cán bộ kế toán đối chiếu trước khi xác nhận. |
 | Mã hồ sơ | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Link, chỉ đọc.<br>- Click mở [MH02 - Màn hình Chi tiết khoản phải thu/khoản phải hoàn](#mh02). |
 | Mã khoản thu gốc | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Liên kết tới biên lai/chứng từ thu phí ban đầu. |
 | Lý do phát sinh hoàn phí | Text(1000) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Lấy theo lý do từ chối hồ sơ. |
-| Số tiền phải hoàn | Decimal(18,0) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc, đơn vị VNĐ. |
+| Số tiền phải hoàn | Decimal(18,0) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc, hiển thị màu xanh nổi bật.<br>- Định dạng phân tách hàng nghìn, đơn vị VNĐ. |
 | **II. Thông tin hoàn phí** | - | - | - | |
 | Người được hoàn phí | String(255) | Có | Người nộp phí ban đầu | Control UI: Input text.<br>- Cho phép điều chỉnh nếu khác người nộp ban đầu; khi điều chỉnh, bắt buộc nhập lý do tại trường Ghi chú. |
 | Hình thức hoàn phí | Enum(String(50)) | Có | Chuyển khoản | Control UI: Radio button.<br>Gồm:<br>+ Tiền mặt<br>+ Chuyển khoản |
@@ -291,9 +300,9 @@
 | Thông tin nhận chuyển khoản | Text(1000) | Có (khi Chuyển khoản) | Trống | Control UI: Textarea.<br>- Chỉ hiển thị và bắt buộc khi Hình thức hoàn phí là "Chuyển khoản" (số tài khoản, ngân hàng, chủ tài khoản nhận tiền). |
 | Số chứng từ hoàn phí | String(100) | Có | Trống | Control UI: Input text.<br>- Số phiếu chi/số chứng từ kế toán hoặc số bút toán hoàn phí. |
 | Ngày hoàn phí | Date | Có | Ngày hiện tại | Control UI: Datepicker (`dd/mm/yyyy`). |
-| Tài liệu chứng từ | File | Không | Chưa chọn tệp | Control UI: Upload nhiều tệp (chứng từ hoàn phí, sao kê, phiếu chi).<br>- Chấp nhận định dạng .pdf, .jpg, .jpeg, .png; tối đa 20MB/tệp. |
-| Ghi chú | Text(1000) | Không | Trống | Control UI: Textarea. |
-| **III. Thanh nút chức năng** | - | - | - | Gồm:<br>+ Hủy bỏ<br>+ Lưu nháp<br>+ Xác nhận hoàn phí |
+| Tài liệu chứng từ | File | Không | Chưa chọn tệp | Control UI: Upload file.<br>- Nút "Chọn tệp"; hiển thị tên tệp cùng link "Xem file" và "Xóa" sau khi chọn tệp.<br>- Chấp nhận định dạng .pdf, .jpg, .jpeg, .png; tối đa 20MB/tệp. |
+| Ghi chú | Text(1000) | Không | Trống | Control UI: Textarea.<br>- Bắt buộc nhập lý do khi điều chỉnh Người được hoàn phí khác với ban đầu. |
+| **III. Thanh nút chức năng** | - | - | - | Control UI: Thanh nút cố định ở cuối popup (Sticky footer).<br>Gồm:<br>+ Hủy bỏ<br>+ Lưu nháp<br>+ Xác nhận hoàn phí |
 
 ##### 4.3.2.21.6.3. Chức năng trên màn hình
 
@@ -301,7 +310,7 @@
 | :--- | :--- | :--- | :--- |
 | 1 | Hủy bỏ | Nút | Hệ thống đóng popup, không thay đổi trạng thái khoản phải hoàn. |
 | 2 | Lưu nháp | Nút | Hệ thống lưu thông tin đang nhập; khoản phải hoàn giữ nguyên trạng thái hiện tại. |
-| 3 | Xác nhận hoàn phí | Nút | - **TH1 (Khoản không ở trạng thái "Chờ hoàn phí" hoặc "Cần bổ sung chứng từ")**: Hệ thống hiển thị [MSG-ERR-UCPS-006] và không xác nhận.<br>- **TH2 (Bỏ trống trường bắt buộc)**: Hệ thống hiển thị [MSG-ERR-VAL-001] tại trường lỗi, highlight viền đỏ và focus vào trường lỗi đầu tiên.<br>- **TH3 (Số tiền hoàn thực tế lớn hơn Số tiền phải hoàn)**: Hệ thống hiển thị thông báo lỗi tại trường và không xác nhận.<br>- **TH Hợp lệ**: Hệ thống thực hiện:<br>+ Lưu kết quả hoàn phí (hình thức, số tiền hoàn, người nhận, chứng từ).<br>+ Cập nhật khoản phải hoàn sang "Đã hoàn".<br>+ Sinh chứng từ hoàn phí và ghi lịch sử tài chính của hồ sơ, Audit log.<br>+ Hiển thị [MSG-SUC-SYS-001], đóng popup và tải lại danh sách. |
+| 3 | Xác nhận hoàn phí | Nút | - **TH1 (Khoản không ở trạng thái "Chờ hoàn phí" hoặc "Cần bổ sung chứng từ")**: Hệ thống hiển thị [MSG-ERR-UCPS-006] và không xác nhận.<br>- **TH2 (Bỏ trống trường bắt buộc)**: Hệ thống highlight viền đỏ ô nhập lỗi (class `.is-invalid`), hiển thị thông báo lỗi *"Đây là trường bắt buộc"* ngay phía dưới ô nhập và tự động focus con trỏ vào ô nhập lỗi đầu tiên (Rule 9 Validation).<br>- **TH3 (Số tiền hoàn thực tế lớn hơn Số tiền phải hoàn)**: Hệ thống highlight viền đỏ ô Số tiền hoàn thực tế, hiển thị thông báo lỗi *"Số tiền hoàn thực tế không được lớn hơn Số tiền phải hoàn"* và focus vào ô nhập.<br>- **TH4 (Thay đổi người nhận nhưng không nhập ghi chú)**: Hệ thống highlight viền đỏ ô Ghi chú, hiển thị thông báo lỗi *"Vui lòng nhập lý do điều chỉnh Người được hoàn phí tại Ghi chú"* và focus vào ô nhập.<br>- **TH Hợp lệ**: Hệ thống thực hiện:<br>+ Lưu kết quả hoàn phí (hình thức, số tiền hoàn, người nhận, chứng từ).<br>+ Cập nhật khoản phải hoàn sang "Đã hoàn".<br>+ Sinh chứng từ hoàn phí và ghi lịch sử tài chính của hồ sơ, Audit log.<br>+ Hiển thị [MSG-SUC-SYS-001], đóng popup và tải lại danh sách. |
 
 ---
 

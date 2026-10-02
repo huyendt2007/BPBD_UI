@@ -276,6 +276,8 @@
     vertical-align: middle;
 }
 .cl-table tbody tr:last-child td { border-bottom: none; }
+/* Đường kẻ phân cách giữa các cột */
+.cl-table th + th, .cl-table td + td { border-left: 1px solid var(--cl-border); }
 .cl-table .cl-center { text-align: center; }
 .cl-table .cl-empty-row td {
     text-align: center;
