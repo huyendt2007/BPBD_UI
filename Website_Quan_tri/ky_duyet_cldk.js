@@ -14,7 +14,7 @@
     // Lãnh đạo đăng nhập (dữ liệu giả lập dùng chung với phần Chỉnh lý)
     const LEADER = C.LANH_DAO[0].ten;
     const STATUSES = ['Chờ duyệt đề nghị', 'Chờ ký số'];
-    const LOAI_DANG_KY = ['Đăng ký lần đầu', 'Đăng ký thay đổi', 'Xóa đăng ký', 'Thông báo xử lý tài sản bảo đảm lần đầu', 'Thay đổi thông báo xử lý tài sản bảo đảm', 'Xóa đăng ký thông báo xử lý tài sản bảo đảm'];
+    const LOAI_DANG_KY = ['Đăng ký lần đầu', 'Đăng ký thay đổi', 'Thông báo xử lý tài sản bảo đảm lần đầu', 'Thay đổi thông báo xử lý tài sản bảo đảm'];
     const LOAI_DE_NGHI = ['Chỉnh lý thông tin sai sót', 'Hủy đăng ký (Toàn phần)', 'Hủy đăng ký (Một phần)', 'Khôi phục hủy đăng ký'];
 
     let page = 1, sortKey = 'thoiDiemGuiSort', sortAsc = true, sortClicks = 0;

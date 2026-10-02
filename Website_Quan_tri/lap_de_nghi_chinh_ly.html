@@ -49,7 +49,8 @@
                         <label class="cl-label" for="selLoaiDeNghi">Loại đề nghị <span class="cl-req">*</span></label>
                         <select class="cl-select" id="selLoaiDeNghi">
                             <option value="CHINH_LY">Chỉnh lý thông tin sai sót</option>
-                            <option value="HUY">Hủy đăng ký</option>
+                            <option value="HUY_TP">Hủy đăng ký (Toàn phần)</option>
+                            <option value="HUY_MP">Hủy đăng ký (Một phần)</option>
                             <option value="KHOI_PHUC">Khôi phục hủy đăng ký</option>
                         </select>
                     </div>
@@ -66,11 +67,11 @@
                     <span><i class="fa-solid fa-wand-magic-sparkles"></i> Dữ liệu mẫu (bản demo):</span>
                     <button type="button" class="cl-demo-chip" data-demo="CHINH_LY|2300123456-TĐ1">Chỉnh lý: 2300123456-TĐ1</button>
                     <button type="button" class="cl-demo-chip" data-demo="CHINH_LY|2300776655">Chỉnh lý: 2300776655</button>
-                    <button type="button" class="cl-demo-chip" data-demo="HUY|2300554433">Hủy: 2300554433</button>
-                    <button type="button" class="cl-demo-chip" data-demo="HUY|2300332211">Hủy: 2300332211</button>
+                    <button type="button" class="cl-demo-chip" data-demo="HUY_MP|2300554433">Hủy: 2300554433</button>
+                    <button type="button" class="cl-demo-chip" data-demo="HUY_MP|2300332211">Hủy: 2300332211</button>
                     <button type="button" class="cl-demo-chip" data-demo="KHOI_PHUC|H26000456">Khôi phục: H26000456</button>
                     <button type="button" class="cl-demo-chip cl-bad" data-demo="CHINH_LY|2300999888">Chưa Hoàn thành: 2300999888</button>
-                    <button type="button" class="cl-demo-chip cl-bad" data-demo="HUY|9999999999">Không tồn tại: 9999999999</button>
+                    <button type="button" class="cl-demo-chip cl-bad" data-demo="HUY_MP|9999999999">Không tồn tại: 9999999999</button>
                 </div>
             </div>
         </div>
@@ -92,9 +93,6 @@
                             <textarea class="cl-textarea" id="txtLyDoSaiSot" rows="3" placeholder="Nhập nguyên nhân dẫn đến sai sót..."></textarea><div class="cl-error">Đây là trường bắt buộc</div></div>
                     </div>
                     <div id="blkHuy" class="cl-hidden">
-                        <div class="cl-banner cl-banner-info"><i class="fa-solid fa-circle-info"></i>
-                            <div>Tích chọn tài sản đề nghị hủy tại khối <b>Thông tin hồ sơ gốc</b>. Tích chọn toàn bộ tài sản: hệ thống ghi nhận <b>Hủy đăng ký toàn phần</b>; tích chọn một phần (tối thiểu 01 tài sản): ghi nhận <b>Hủy đăng ký một phần</b>.
-                            <div style="margin-top:6px;">Hình thức hủy: <span id="lblHinhThucHuy"></span></div></div></div>
                         <div class="cl-form-group"><label class="cl-label" for="txtLyDoHuy">Căn cứ &amp; Lý do đề nghị hủy <span class="cl-req">*</span></label>
                             <textarea class="cl-textarea" id="txtLyDoHuy" rows="3" placeholder="Nhập căn cứ pháp lý và lý do hủy hồ sơ..."></textarea><div class="cl-error">Đây là trường bắt buộc</div></div>
                     </div>
@@ -186,8 +184,12 @@
         $('editTuChoi').querySelectorAll('.cl-card[data-collapsible]').forEach(c => C.collapsible(c));
     }
 
+    // Giá trị Combobox: CHINH_LY, HUY_TP (Hủy toàn phần), HUY_MP (Hủy một phần), KHOI_PHUC; dữ liệu đề nghị lưu loai = HUY
+    const loaiGoc = v => (v === 'HUY_TP' || v === 'HUY_MP') ? 'HUY' : v;
+    const curLoai = () => loaiGoc($('selLoaiDeNghi').value);
+    const isToanPhan = () => $('selLoaiDeNghi').value === 'HUY_TP';
     function setLoaiUI() {
-        const loai = $('selLoaiDeNghi').value;
+        const loai = curLoai();
         $('lblSoDangKy').textContent = C.soDangKyLabel(loai);
         $('txtSoDangKy').placeholder = PLACEHOLDER[loai];
     }
@@ -204,18 +206,28 @@
     }
 
     // Khi thay đổi Loại đề nghị: xóa trắng Số đăng ký, ẩn nút Gửi đề nghị và các khối chi tiết
-    $('selLoaiDeNghi').addEventListener('change', () => { $('txtSoDangKy').value = ''; resetLookup(); setLoaiUI(); });
+    let prevLoaiValue = $('selLoaiDeNghi').value;
+    $('selLoaiDeNghi').addEventListener('change', () => {
+        const v = $('selLoaiDeNghi').value;
+        const huyToHuy = loaiGoc(prevLoaiValue) === 'HUY' && loaiGoc(v) === 'HUY';
+        prevLoaiValue = v;
+        if (huyToHuy && found) { renderTaiSanHuy([]); return; }       // Toàn phần <-> Một phần: giữ Số đăng ký và dữ liệu đã nhập
+        $('txtSoDangKy').value = ''; resetLookup(); setLoaiUI();
+    });
     $('btnTraCuu').addEventListener('click', () => traCuu());
     $('txtSoDangKy').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); traCuu(); } });
     document.querySelectorAll('[data-demo]').forEach(b => b.addEventListener('click', () => {
         const [loai, so] = b.getAttribute('data-demo').split('|');
-        $('selLoaiDeNghi').value = loai; setLoaiUI(); $('txtSoDangKy').value = so; traCuu();
+        // Dữ liệu mẫu Hủy: giữ nguyên Hủy đăng ký (Toàn phần)/(Một phần) Người dùng đang chọn
+        const cur = $('selLoaiDeNghi').value;
+        const v = loai.indexOf('HUY') === 0 && (cur === 'HUY_TP' || cur === 'HUY_MP') ? cur : loai;
+        $('selLoaiDeNghi').value = v; prevLoaiValue = v; setLoaiUI(); $('txtSoDangKy').value = so; traCuu();
     }));
     setLoaiUI();
 
     function traCuu(prefill) {
         resetLookup();
-        const loai = $('selLoaiDeNghi').value;
+        const loai = curLoai();
         const so = $('txtSoDangKy').value.trim();
         $('txtSoDangKy').value = so;
         if (!so) { setErr(C.MSG.VAL_001); $('txtSoDangKy').focus(); return; }                       // TH1
@@ -246,25 +258,43 @@
         // Khôi phục: không hiển thị Thông tin hồ sơ gốc (đã có tại Khối Thông tin giao dịch hủy)
         $('cardHoSoGoc').classList.toggle('cl-hidden', loai === 'KHOI_PHUC');
         if (loai === 'KHOI_PHUC') { hoSoView = null; $('hoSoGocHost').innerHTML = ''; return; }
-        const checked = new Set(prefill && loai === 'HUY' ? prefill.taiSanHuyIds : []);
+        if (loai === 'HUY') { renderTaiSanHuy(prefill ? prefill.taiSanHuyIds : []); return; }
+        hoSoView = C.renderHoSo($('hoSoGocHost'), hs, { loai, checkbox: false });
+        hoSoView.setHinhThuc('');
+    }
+
+    // Hủy đăng ký (Toàn phần): mặc định lấy toàn bộ tài sản, không hiển thị cột tích chọn
+    // Hủy đăng ký (Một phần): tự tích chọn; nếu tích toàn bộ thì tự chuyển sang Hủy đăng ký (Toàn phần)
+    function selectedHuyIds() { return isToanPhan() ? C.selectableIds(found.data) : hoSoView.getChecked(); }
+    function renderTaiSanHuy(selectedIds) {
+        const hs = found.data;
+        const all = C.selectableIds(hs);
+        const toanPhan = isToanPhan();
         hoSoView = C.renderHoSo($('hoSoGocHost'), hs, {
-            loai,
-            checkbox: loai === 'HUY',
-            checked,
-            onChange: ids => updateHinhThuc(ids)
+            loai: 'HUY',
+            checkbox: !toanPhan,
+            checked: new Set(toanPhan ? [] : (selectedIds || []).filter(id => all.includes(id))),
+            onChange: ids => {
+                if (!isToanPhan() && all.length && ids.length === all.length) {
+                    $('selLoaiDeNghi').value = 'HUY_TP'; prevLoaiValue = 'HUY_TP';
+                    renderTaiSanHuy(all);
+                    C.toast(C.MSG.INF_CLDK_001, 'warn');
+                    return;
+                }
+                updateHinhThuc(ids);
+            }
         });
-        if (loai === 'HUY') updateHinhThuc(hoSoView.getChecked()); else hoSoView.setHinhThuc('');
+        updateHinhThuc(selectedHuyIds());
     }
 
     function updateHinhThuc(ids) {
-        if ($('selLoaiDeNghi').value !== 'HUY' || !hoSoView) return;
+        if (curLoai() !== 'HUY' || !hoSoView) return;
         const total = hoSoView.allIds().length;
         let html;
         if (!ids.length) html = C.badge('Chưa chọn tài sản đề nghị hủy', 'cl-st-neutral');
         else if (ids.length === total) html = C.badge(`Hủy đăng ký toàn phần (${ids.length}/${total} tài sản)`, 'cl-type-huytoanphan');
         else html = C.badge(`Hủy đăng ký một phần (${ids.length}/${total} tài sản)`, 'cl-type-huymotphan');
         hoSoView.setHinhThuc(html);
-        $('lblHinhThucHuy').innerHTML = html;
         if (ids.length) $('errTaiSan').classList.remove('show');
     }
 
@@ -303,13 +333,13 @@
 
     $('btnGuiDeNghi').addEventListener('click', () => {
         if (!found) return;
-        const loai = $('selLoaiDeNghi').value;
+        const loai = curLoai();
         let first = null;
         const need = id => { const el = $(id); if (!el.value.trim()) { markInvalid(el); first = first || el; } else clearInvalid(el); };
         if (loai === 'CHINH_LY') ['txtSaiSot', 'txtDeNghi', 'txtLyDoSaiSot'].forEach(need);
         if (loai === 'HUY') {
             need('txtLyDoHuy');
-            if (!hoSoView.getChecked().length) {
+            if (!selectedHuyIds().length) {
                 $('errTaiSan').classList.add('show');
                 const card = $('cardHoSoGoc'); card.classList.remove('cl-collapsed');
                 first = first || card;
@@ -321,7 +351,7 @@
 
         const noiDung = loai === 'CHINH_LY'
             ? { saiSot: $('txtSaiSot').value.trim(), deNghi: $('txtDeNghi').value.trim(), lyDo: $('txtLyDoSaiSot').value.trim() }
-            : loai === 'HUY' ? { lyDoHuy: $('txtLyDoHuy').value.trim(), taiSanHuyIds: hoSoView.getChecked() }
+            : loai === 'HUY' ? { lyDoHuy: $('txtLyDoHuy').value.trim(), taiSanHuyIds: selectedHuyIds() }
             : { lyDoKhoiPhuc: $('txtLyDoKhoiPhuc').value.trim() };
         const now = C.fmtDateTime(new Date());
         let p;
@@ -347,7 +377,8 @@
 
     // Cập nhật đề nghị bị từ chối: nạp lại dữ liệu đã lập
     if (editing) {
-        $('selLoaiDeNghi').value = editing.loai;
+        $('selLoaiDeNghi').value = editing.loai === 'HUY' ? (C.hinhThucHuy(editing) === 'Hủy đăng ký toàn phần' ? 'HUY_TP' : 'HUY_MP') : editing.loai;
+        prevLoaiValue = $('selLoaiDeNghi').value;
         setLoaiUI();
         $('txtSoDangKy').value = editing.soDangKy;
         files = (editing.files || []).slice();

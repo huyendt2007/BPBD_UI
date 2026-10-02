@@ -806,7 +806,7 @@
     <!-- TẦNG TAB ĐIỀU HƯỚNG NHANH -->
     <div class="nav-tabs" id="statusTabs">
         <div class="nav-tab active" data-tab="all">Tất cả <span class="tab-badge secondary" id="badge_all">0</span></div>
-        <div class="nav-tab" data-tab="my_tasks">Cần xử lý của tôi <span class="tab-badge danger" id="badge_my_tasks">0</span></div>
+        <div class="nav-tab" data-tab="my_tasks">Chờ xử lý <span class="tab-badge danger" id="badge_my_tasks">0</span></div>
         <div class="nav-tab" data-tab="cho_duyet">Chờ duyệt đề nghị <span class="tab-badge warning" id="badge_cho_duyet">0</span></div>
         <div class="nav-tab" data-tab="cho_ky">Chờ ký số <span class="tab-badge primary" id="badge_cho_ky">0</span></div>
     </div>
@@ -838,10 +838,8 @@
                         <option value="">Tất cả</option>
                         <option>Đăng ký lần đầu</option>
                         <option>Đăng ký thay đổi</option>
-                        <option>Xóa đăng ký</option>
                         <option>Thông báo xử lý tài sản bảo đảm lần đầu</option>
                         <option>Thay đổi thông báo xử lý tài sản bảo đảm</option>
-                        <option>Xóa đăng ký thông báo xử lý tài sản bảo đảm</option>
                     </select></div>
                 <div class="form-group" id="grpTrangThai"><label class="form-label" for="fTrangThai">Trạng thái</label>
                     <!-- Danh sách giá trị nạp theo Tab đang chọn -->
@@ -946,7 +944,11 @@
     function updateBadges() {
         const all = C.proposals();
         Object.keys(TAB_STATUS).forEach(t => {
-            $('badge_' + t).textContent = TAB_STATUS[t] ? all.filter(p => TAB_STATUS[t].includes(p.trangThai)).length : all.length;
+            // Badge: ẩn khi bằng 0, lớn hơn 99 hiển thị "99+"
+            const n = TAB_STATUS[t] ? all.filter(p => TAB_STATUS[t].includes(p.trangThai)).length : all.length;
+            const el = $('badge_' + t);
+            el.textContent = n > 99 ? '99+' : n;
+            el.style.display = n ? '' : 'none';
         });
     }
 
@@ -1054,7 +1056,7 @@
         currentTab = tab;
         C.rememberListTab(tab);
         document.querySelectorAll('.nav-tab').forEach(t => t.classList.toggle('active', t.getAttribute('data-tab') === tab));
-        // Lập đề nghị mới chỉ hiển thị tại Tab "Tất cả" và "Cần xử lý của tôi"
+        // Lập đề nghị mới chỉ hiển thị tại Tab "Tất cả" và "Chờ xử lý"
         $('btnLapDeNghi').style.display = (tab === 'all' || tab === 'my_tasks') ? 'inline-flex' : 'none';
         // Trạng thái: chỉ gồm các trạng thái của Tab; Tab chỉ có 01 trạng thái thì ẩn tiêu chí này
         const sts = TAB_STATUS[tab] || ALL_STATUS;

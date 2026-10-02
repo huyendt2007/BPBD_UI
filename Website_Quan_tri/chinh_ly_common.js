@@ -39,6 +39,7 @@
         VAL_001: 'Đây là trường bắt buộc',
         VAL_007: 'Từ ngày không được lớn hơn Đến ngày',
         INF_SYS_001: 'Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.',
+        INF_CLDK_001: 'Đã tích chọn toàn bộ tài sản. Hệ thống tự động chuyển Loại đề nghị sang Hủy đăng ký (Toàn phần).',
         SUC_SYS_005: 'Kết xuất tệp thành công.',
         ERR_CLDK_001: 'Số đăng ký không tồn tại trên hệ thống. Vui lòng kiểm tra lại.',
         ERR_CLDK_002: 'Hồ sơ chưa ở trạng thái Hoàn thành, không được phép lập đề nghị.',
