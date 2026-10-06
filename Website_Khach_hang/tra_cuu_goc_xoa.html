@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -356,37 +356,142 @@
             color: #B91C1C;
         }
 
-        /* Demo helper styling */
-        .demo-helper {
-            background-color: #FFFBEB;
-            border: 1px dashed #F59E0B;
-            border-radius: var(--border-radius-md);
-            padding: 15px;
+        /* Demo chips styling (đồng bộ chuẩn Chỉnh lý Website quản trị & Đăng ký thay đổi) */
+        .cl-demo-chips-box {
+            background-color: #F8FAFC;
+            border: 1px dashed #CBD5E1;
+            border-radius: var(--border-radius-lg);
+            padding: 16px 20px;
             margin-bottom: 25px;
-            font-size: 12.5px;
-            color: #B45309;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        .cl-demo-chips-header {
             display: flex;
-            align-items: flex-start;
-            gap: 10px;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 10px;
         }
 
-        .demo-helper i {
-            font-size: 16px;
-            margin-top: 2px;
+        .cl-demo-chips-header i {
+            color: #7C3AED;
+            font-size: 15px;
         }
 
-        .demo-helper strong {
-            color: #92400E;
-        }
-
-        .demo-credentials {
-            display: inline-block;
-            margin-top: 5px;
-            background-color: rgba(245, 158, 11, 0.1);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-family: monospace;
+        .cl-demo-chips-desc {
             font-size: 12px;
+            color: #64748B;
+            margin-bottom: 12px;
+        }
+
+        .cl-demo-chips-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .cl-demo-chips-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .cl-demo-group-label {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #475569;
+            min-width: 110px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .cl-demo-chip {
+            background: #FFFFFF;
+            color: #334155;
+            border: 1px solid #CBD5E1;
+            border-radius: 16px;
+            padding: 5px 12px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 12px;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            user-select: none;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+
+        .cl-demo-chip:hover {
+            background: #F1F5F9;
+            border-color: #94A3B8;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+        }
+
+        .cl-demo-chip.cl-good {
+            background: #ECFDF5;
+            color: #065F46;
+            border-color: #A7F3D0;
+        }
+
+        .cl-demo-chip.cl-good:hover {
+            background: #D1FAE5;
+            border-color: #6EE7B7;
+        }
+
+        .cl-demo-chip.cl-bad {
+            background: #FEF2F2;
+            color: #991B1B;
+            border-color: #FECACA;
+        }
+
+        .cl-demo-chip.cl-bad:hover {
+            background: #FEE2E2;
+            border-color: #FCA5A5;
+        }
+
+        .cl-demo-chip code {
+            font-family: monospace;
+            background: rgba(0,0,0,0.06);
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* Nút mắt xem/ẩn mã PIN */
+        .pin-input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-toggle-pin {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #64748B;
+            padding: 6px 8px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-toggle-pin:hover {
+            color: var(--primary-color);
+            background-color: #F1F5F9;
         }
     </style>
 </head>
@@ -440,24 +545,60 @@
             </div>
         </div>
 
-        <!-- Demo Help Bar -->
-        <div class="demo-helper">
-            <i class="fa-solid fa-circle-info"></i>
-            <div>
-                <strong>Chế độ mô phỏng kiểm thử (Demo Mode) - UC026:</strong> Nhập các giá trị sau vào ô Số đăng ký (bất kỳ PIN):
-                <div style="margin-top: 5px; display: flex; flex-wrap: wrap; gap: 8px;">
-                    <div class="demo-credentials">Hợp lệ: <strong>12345678</strong> (PIN: 8888)</div>
-                    <div class="demo-credentials">Lỗi CSDL: <strong>CSDL_FAIL</strong></div>
-                    <div class="demo-credentials">Sai PIN: <strong>SAI_PIN</strong></div>
-                    <div class="demo-credentials">Chưa hoàn thành: <strong>CHUA_HT</strong></div>
-                    <div class="demo-credentials">Hồ sơ liên quan: <strong>LIEN_QUAN</strong> / <strong>99999999</strong></div>
-                    <div class="demo-credentials">Xử lý tài sản (Kê biên): <strong>KHE_BIEN</strong></div>
-                </div>
+        <!-- Kịch bản kiểm thử mẫu (Demo Chips tương tác) -->
+        <div class="cl-demo-chips-box">
+            <div class="cl-demo-chips-header">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>Dữ liệu kiểm thử mẫu (Demo) - Nhấn chọn để tự động điền vào form:</span>
+            </div>
+            <div class="cl-demo-chips-desc">
+                Nhấp vào bất kỳ trường hợp nào dưới đây để hệ thống tự động điền Số đăng ký và PIN vào form, sau đó nhấn nút <strong>Tiếp tục</strong> để thực hiện tra cứu:
+            </div>
+            
+            <div class="cl-demo-chips-group">
+                <span class="cl-demo-group-label"><i class="fa-solid fa-circle-check" style="color: #059669;"></i> Hợp lệ:</span>
+                <button type="button" class="cl-demo-chip cl-good" data-reg="12345678" data-pin="8888" title="Hồ sơ hợp lệ chuẩn, chuyển sang MH02 Nhập thông tin xóa">
+                    <i class="fa-solid fa-check"></i> Hợp lệ chuẩn: <code>12345678</code> / PIN: <code>8888</code>
+                </button>
+                <button type="button" class="cl-demo-chip cl-good" data-reg="KHE_BIEN" data-pin="8888" title="Hồ sơ có Thông báo xử lý TS còn hiệu lực -> không chặn Xóa đăng ký, thông báo tự chấm dứt khi hoàn thành">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Có TBXL còn hiệu lực: <code>KHE_BIEN</code>
+                </button>
+                <button type="button" class="cl-demo-chip cl-good" data-reg="HUY_MOT_PHAN" data-pin="8888" title="Hồ sơ đã bị Hủy một phần -> tài sản đã hủy không thuộc phạm vi xóa">
+                    <i class="fa-solid fa-ban"></i> Đã hủy một phần: <code>HUY_MOT_PHAN</code>
+                </button>
+            </div>
+
+            <div class="cl-demo-chips-group" style="margin-top: 10px;">
+                <span class="cl-demo-group-label"><i class="fa-solid fa-triangle-exclamation" style="color: #DC2626;"></i> Lỗi / Chặn:</span>
+                <button type="button" class="cl-demo-chip cl-bad" data-reg="CHUA_HT" data-pin="8888" title="[MSG-ERR-DK-002] Hồ sơ gốc chưa ở trạng thái Hoàn thành">
+                    <i class="fa-solid fa-circle-xmark"></i> Chưa hoàn thành: <code>CHUA_HT</code>
+                </button>
+                <button type="button" class="cl-demo-chip cl-bad" data-reg="LIEN_QUAN" data-pin="8888" title="[MSG-ERR-DK-004] Tồn tại hồ sơ liên quan chưa được phê duyệt hoàn thành">
+                    <i class="fa-solid fa-clock"></i> HS liên quan đang xử lý: <code>LIEN_QUAN</code>
+                </button>
+                <button type="button" class="cl-demo-chip cl-bad" data-reg="NGAN_CHAN" data-pin="8888" title="[MSG-ERR-DK-003] Hồ sơ gốc đang bị tạm dừng / ngăn chặn giao dịch">
+                    <i class="fa-solid fa-hand"></i> Bị ngăn chặn: <code>NGAN_CHAN</code>
+                </button>
+                <button type="button" class="cl-demo-chip cl-bad" data-reg="DA_XOA" data-pin="8888" title="[MSG-ERR-DK-018] Hồ sơ đã được xóa đăng ký">
+                    <i class="fa-solid fa-trash-can"></i> Đã xóa ĐK: <code>DA_XOA</code>
+                </button>
+                <button type="button" class="cl-demo-chip cl-bad" data-reg="DA_HUY" data-pin="8888" title="[MSG-ERR-DK-019] Hồ sơ đã bị hủy đăng ký toàn phần">
+                    <i class="fa-solid fa-file-excel"></i> Đã hủy toàn phần: <code>DA_HUY</code>
+                </button>
+                <button type="button" class="cl-demo-chip cl-bad" data-reg="HS_TBXL" data-pin="8888" title="[MSG-ERR-DK-020] Số đăng ký đã nhập là số của Thông báo xử lý tài sản bảo đảm">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Số là TBXL: <code>HS_TBXL</code>
+                </button>
+                <button type="button" class="cl-demo-chip cl-bad" data-reg="12345678" data-pin="9999" title="Sai mã PIN xác thực">
+                    <i class="fa-solid fa-key"></i> Sai mã PIN: <code>12345678</code> / PIN: <code>9999</code>
+                </button>
+                <button type="button" class="cl-demo-chip cl-bad" data-reg="CSDL_FAIL" data-pin="8888" title="Lỗi kết nối cơ sở dữ liệu">
+                    <i class="fa-solid fa-database"></i> Lỗi CSDL: <code>CSDL_FAIL</code>
+                </button>
             </div>
         </div>
 
         <!-- Main Card Section -->
-        <div class="card-section" style="max-width: 500px; margin: 30px auto;">
+        <div class="card-section" style="max-width: 600px; margin: 0 auto 30px auto;">
             <h2 class="section-title">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 Tra cứu Giao dịch & Xác thực hồ sơ gốc
@@ -481,7 +622,12 @@
             
             <div class="form-group" style="margin-bottom: 15px;">
                 <label class="form-label" for="pinNum">Mã số PIN xác thực <span style="color: var(--danger-color); font-weight: bold;">*</span></label>
-                <input type="password" id="pinNum" class="form-control" placeholder="Nhập mã PIN bảo mật..." style="padding-left: 12px; background-color: white;">
+                <div class="pin-input-group">
+                    <input type="password" id="pinNum" class="form-control" placeholder="Nhập mã PIN bảo mật..." style="padding-left: 12px; padding-right: 40px; background-color: white;">
+                    <button type="button" id="btnTogglePin" class="btn-toggle-pin" title="Hiển thị mã PIN" aria-label="Xem mã PIN">
+                        <i class="fa-solid fa-eye" id="iconTogglePin"></i>
+                    </button>
+                </div>
             </div>
 
             <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px; border-top:1px solid var(--border-color); padding-top:15px;">

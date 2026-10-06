@@ -101,7 +101,7 @@
 | Email | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Quốc gia | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Tỉnh/thành phố | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
-| Phường/Xã | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
+| Phường/Xã | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi.<br>- Chỉ hiển thị khi Quốc gia là Việt Nam theo [BR-VAL-015]. |
 | Địa chỉ chi tiết | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | Ghi chú tiếp nhận | - | - | - | Control UI: Label, chỉ đọc. Lấy theo dữ liệu bản ghi. |
 | **Khối Thông tin người nộp hồ sơ** | - | - | - | |
@@ -169,7 +169,7 @@
 | **II. Thông tin Người yêu cầu cung cấp thông tin** | | | | |
 | Khối Thông tin Người yêu cầu | - | Có | Mở rộng | - Control UI: Card thông tin.<br>- Cho phép Cán bộ đối soát và điều chỉnh theo hồ sơ giấy nếu khác thông tin ghi nhận tại bước tiếp nhận. Không sửa ngược lại dữ liệu tiếp nhận gốc. |
 | Người yêu cầu cung cấp thông tin | String(255) | Có | Theo hồ sơ tiếp nhận | - Control UI: Textbox.<br>- Tên cá nhân/tổ chức yêu cầu cung cấp thông tin.<br>- Tự động trim space theo [BR-VAL-001]. |
-| Địa chỉ liên hệ | Text(500) | Có | Theo hồ sơ tiếp nhận | - Control UI: Textarea.<br>- Địa chỉ liên hệ của Người yêu cầu (gồm Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia). |
+| Địa chỉ liên hệ | Text(500) | Có | Theo hồ sơ tiếp nhận | - Control UI: Textarea.<br>- Địa chỉ liên hệ của Người yêu cầu (gồm Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia (Quốc gia khác Việt Nam không có Phường/Xã, theo [BR-VAL-015])). |
 | Phương thức nhận kết quả | Enum(String(50)) | Có | Theo hồ sơ tiếp nhận | - Control UI: Dropdown list.<br>- Cho phép điều chỉnh theo hồ sơ giấy.<br>Gồm:<br>+ Trực tiếp tại bộ phận một cửa<br>+ Qua dịch vụ bưu chính<br>+ Cách thức điện tử |
 | Địa chỉ nhận kết quả | Text(500) | Tùy điều kiện | Theo hồ sơ tiếp nhận | - Control UI: Textarea.<br>- Chỉ hiển thị và bắt buộc nhập khi `Phương thức nhận kết quả` = "Qua dịch vụ bưu chính". |
 | Email nhận kết quả | String(255) | Tùy điều kiện | Theo hồ sơ tiếp nhận | - Control UI: Textbox.<br>- Chỉ hiển thị và bắt buộc nhập khi `Phương thức nhận kết quả` = "Cách thức điện tử". Kiểm tra hợp lệ theo [BR-VAL-002]. |

@@ -10,6 +10,44 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../Common/style_iframe.css">
     <script src="../Common/iframe_helper.js"></script>
+    <style>
+        /* Phường/Xã (chỉ hiển thị khi Quốc gia = Việt Nam): bố trí lại lưới địa chỉ khi có thêm ô Phường/Xã */
+        #subFormBenTheChap.subject-compact-form #formDiaChiChung.co-phuong-xa {
+            grid-template-columns: 160px minmax(170px, 1fr) minmax(170px, 1fr) minmax(260px, 1.6fr);
+        }
+
+        #subFormBenNhanTheChap.subject-compact-form .subject-compact-grid.co-phuong-xa > .form-group:last-child {
+            grid-column: span 2 !important;
+        }
+
+        .uc131-disposal-standalone #subFormBenNhanTheChap .grid-2-cols.co-phuong-xa {
+            grid-template-columns: minmax(200px, 1.2fr) 150px minmax(160px, 1fr) minmax(160px, 1fr) minmax(240px, 1.5fr);
+        }
+
+        .uc131-disposal-standalone #subFormBenNhanTheChap .grid-2-cols.co-phuong-xa > .form-group:last-child {
+            grid-column: auto !important;
+        }
+
+        @media (max-width: 1100px) {
+            .uc131-disposal-standalone #subFormBenNhanTheChap .grid-2-cols.co-phuong-xa {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .uc131-disposal-standalone #subFormBenNhanTheChap .grid-2-cols.co-phuong-xa > .form-group:last-child {
+                grid-column: span 2 !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .uc131-disposal-standalone #subFormBenNhanTheChap .grid-2-cols.co-phuong-xa {
+                grid-template-columns: 1fr;
+            }
+
+            .uc131-disposal-standalone #subFormBenNhanTheChap .grid-2-cols.co-phuong-xa > .form-group:last-child {
+                grid-column: auto !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -343,13 +381,11 @@
                                 <th style="width: 128px; text-align: center;">Thao tác</th>
                                 <th>Tên</th>
                                 <th>Địa chỉ</th>
-                                <th>Tỉnh/ Thành phố</th>
-                                <th>Quốc gia</th>
                             </tr>
                         </thead>
                         <tbody id="tbodyNTC">
                             <tr>
-                                <td colspan="5" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.
+                                <td colspan="3"style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.
                                 </td>
                             </tr>
                         </tbody>
@@ -784,6 +820,7 @@
                                     <th id="searchColPassportCountry">Quốc gia cấp hộ chiếu</th>
                                     <th>Quốc gia</th>
                                     <th>Tỉnh/Thành phố</th>
+                                    <th>Phường/Xã</th>
                                     <th>Địa chỉ chi tiết</th>
                                     <th style="width: 80px; text-align: center;">Chọn</th>
                                 </tr>
@@ -920,6 +957,7 @@
     </div>
 
     <script src="../countries.js"></script>
+    <script src="../Common/dia_ban_vn.js"></script>
     <script src="dang_ky_bpbd.js"></script>
 </body>
 

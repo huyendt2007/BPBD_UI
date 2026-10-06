@@ -1197,7 +1197,7 @@
         <!-- Red Alert Banner for error validation / system failure (TH1) -->
         <div id="errorAlertBanner" class="alert alert-danger" style="display: none; padding: 15px 20px; background-color: #FEF2F2; border: 1px solid #FEE2E2; border-radius: var(--border-radius-md); color: #991B1B; font-weight: 500; margin-bottom: 20px; align-items: center; gap: 12px;">
             <i class="fa-solid fa-triangle-exclamation" style="font-size: 18px; color: #EF4444;"></i>
-            <span>Lưu hồ sơ thất bại. Vui lòng thử lại sau.</span>
+            <span id="errorAlertText">Lưu hồ sơ thất bại. Vui lòng thử lại sau.</span>
         </div>
 
         <!-- Main Form Content (Single Column, matching UC024 Review style) -->
@@ -1432,6 +1432,7 @@
     </div>
 
     <!-- Script rendering logic -->
+    <script src="../Common/dia_ban_vn.js"></script>
     <script>
         let draftData = null;
         let originalData = null;
@@ -1457,6 +1458,31 @@
             // Populates dynamic content
             renderView2FullTab(regNum);
         });
+
+        // Ghép địa chỉ "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia" (bỏ Phường/Xã với địa chỉ nước ngoài)
+        function formatAddressParts(detail, ward, province, country) {
+            if (typeof DiaBanVN !== 'undefined') return DiaBanVN.formatAddress(detail, ward, province, country);
+            const isVN = String(country || '').trim() === 'Việt Nam';
+            return [detail, isVN ? ward : '', province, country].map(x => String(x || '').trim()).filter(Boolean).join(', ');
+        }
+
+        // Địa chỉ chi tiết của chủ thể (address lưu cấp số nhà/đường); dữ liệu cũ đã ghép sẵn cả chuỗi
+        // (dấu " - " hoặc dấu phẩy) -> bóc lại phần địa chỉ chi tiết để ghép thống nhất
+        function getPartyDetailAddress(p) {
+            const addr = String((p && p.address) || '').trim();
+            if (!p || !p.country) return addr;
+            if (addr.endsWith(' - ' + String(p.country).trim())) return addr.split(' - ')[0].trim();
+            const tail = formatAddressParts('', p.ward, p.province, p.country);
+            if (tail && addr !== tail && addr.endsWith(', ' + tail)) return addr.slice(0, addr.length - tail.length - 2).trim();
+            return addr;
+        }
+
+        // Địa chỉ hiển thị của chủ thể: luôn ghép từ các thành phần; dữ liệu chỉ có chuỗi địa chỉ đầy đủ (không có Quốc gia) thì giữ nguyên
+        function getPartyFullAddress(p) {
+            if (!p) return '';
+            if (!p.country) return String(p.address || '').trim();
+            return formatAddressParts(getPartyDetailAddress(p), p.ward, p.province, p.country);
+        }
 
         // Entity Matching Helpers
         function getOriginalSecuringParty(paperNo, name) {
@@ -1492,8 +1518,8 @@
             if ((orig.birthDate || '') !== (p.birthDate || '')) {
                 diffs.push(`Ngày tháng năm sinh cũ: <span class="diff-before">${orig.birthDate || '-'}</span>`);
             }
-            if (orig.address !== p.address) {
-                diffs.push(`Địa chỉ cũ: <span class="diff-before">${orig.address}</span>`);
+            if (getPartyFullAddress(orig) !== getPartyFullAddress(p)) {
+                diffs.push(`Địa chỉ cũ: <span class="diff-before">${getPartyFullAddress(orig)}</span>`);
             }
 
             if (diffs.length === 0) return '';
@@ -1510,8 +1536,8 @@
             if (!orig) return '';
 
             let diffs = [];
-            if (orig.address !== p.address) {
-                diffs.push(`Địa chỉ cũ: <span class="diff-before">${orig.address}</span>`);
+            if (getPartyFullAddress(orig) !== getPartyFullAddress(p)) {
+                diffs.push(`Địa chỉ cũ: <span class="diff-before">${getPartyFullAddress(orig)}</span>`);
             }
 
             if (diffs.length === 0) return '';
@@ -1578,13 +1604,13 @@
             const scaleText = scaleMapping[scaleVal] || scaleVal || '(Trống)';
             fillAndHighlightField('scale', 'fullOrgScale', scaleText);
 
-            // Populate address under dynamic format: "Địa chỉ chi tiết - Tỉnh/Thành phố - Quốc gia"
+            // Populate address under dynamic format: "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia"
             const addrEl = document.getElementById('fullReqAddress');
             if (addrEl) {
                 if (draftData.orgName && draftData.orgName.includes("NGOẠI THƯƠNG")) {
-                    addrEl.textContent = "Số 198 Trần Quang Khải - Thành phố Hà Nội - Việt Nam";
+                    addrEl.textContent = formatAddressParts("Số 198 Trần Quang Khải", "Phường Hoàn Kiếm", "Thành phố Hà Nội", "Việt Nam");
                 } else {
-                    addrEl.textContent = "Số 17 Duy Tân - Thành phố Hà Nội - Việt Nam";
+                    addrEl.textContent = formatAddressParts("Số 17 Duy Tân", "Phường Cầu Giấy", "Thành phố Hà Nội", "Việt Nam");
                 }
             }
 
@@ -1774,14 +1800,14 @@
                         <td>${p.type === 'cd_vn' ? (p.birthDate || '-') : '-'}</td>
                         <td>${p.name || ''}</td>
                         <td>
-                            <div>${p.address || ''}</div>
+                            <div>${getPartyFullAddress(p)}</div>
                             ${diffHtml}
                         </td>
                     `;
                     securingTbody.appendChild(tr);
                 });
                 if (visibleCount === 0) {
-                    securingTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 15px;"><i>Không có thông tin bên bảo đảm.</i></td></tr>`;
+                    securingTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 15px;"><i>Không có thông tin bên bảo đảm.</i></td></tr>`;
                 }
             }
 
@@ -1813,7 +1839,7 @@
                         <td style="text-align: center;">${visibleCount}</td>
                         <td>${p.name || ''}</td>
                         <td>
-                            <div>${p.address || ''}</div>
+                            <div>${getPartyFullAddress(p)}</div>
                             ${diffHtml}
                         </td>
                     `;
@@ -2073,7 +2099,14 @@
             const banner = document.getElementById('errorAlertBanner');
             if (banner) banner.style.display = 'none';
             
-            if (choice === 1) {
+            const bannerText = document.getElementById('errorAlertText');
+            const SAVE_ERRORS = {
+                1: 'Lưu hồ sơ thất bại. Vui lòng thử lại sau.',
+                4: 'Tồn tại hồ sơ liên quan chưa được phê duyệt hoàn thành. Vui lòng kiểm tra lại.', // [MSG-ERR-DK-004]
+                5: 'Tài sản "Xe ô tô con (Số khung: TYT-VIOS-88992)" đang thuộc thông báo xử lý tài sản bảo đảm, không được Rút bớt hoặc Sửa thông tin. Vui lòng thực hiện Thay đổi/Xóa thông báo trước.' // [MSG-ERR-DK-024]
+            };
+            if (SAVE_ERRORS[choice]) {
+                if (bannerText) bannerText.textContent = SAVE_ERRORS[choice];
                 if (banner) {
                     banner.style.display = 'flex';
                     banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -2119,13 +2152,21 @@
                     <i class="fa-solid fa-circle-xmark" style="color: var(--danger-color); margin-right: 8px;"></i>
                     TH1: Lưu thất bại (Hiện Alert lỗi)
                 </button>
+                <button type="button" class="btn btn-outline" style="justify-content: flex-start; text-align: left; padding: 12px 16px; width: 100%; border: 1px solid var(--border-color);" onclick="executeSaveScenario(4)">
+                    <i class="fa-solid fa-ban" style="color: var(--danger-color); margin-right: 8px;"></i>
+                    TH2: Hồ sơ gốc không còn đủ điều kiện (VD: có hồ sơ liên quan đang xử lý)
+                </button>
+                <button type="button" class="btn btn-outline" style="justify-content: flex-start; text-align: left; padding: 12px 16px; width: 100%; border: 1px solid var(--border-color);" onclick="executeSaveScenario(5)">
+                    <i class="fa-solid fa-lock" style="color: var(--danger-color); margin-right: 8px;"></i>
+                    TH3: Tài sản đã chuyển sang "Đang xử lý tài sản"
+                </button>
                 <button type="button" class="btn btn-outline" style="justify-content: flex-start; text-align: left; padding: 12px 16px; width: 100%; border: 1px solid var(--border-color);" onclick="executeSaveScenario(2)">
                     <i class="fa-solid fa-credit-card" style="color: var(--secondary-color); margin-right: 8px;"></i>
-                    TH2: Chờ thanh toán (Chuyển tiếp)
+                    TH Hợp lệ 1: Chờ thanh toán (Chuyển tiếp)
                 </button>
                 <button type="button" class="btn btn-outline" style="justify-content: flex-start; text-align: left; padding: 12px 16px; width: 100%; border: 1px solid var(--border-color);" onclick="executeSaveScenario(3)">
                     <i class="fa-solid fa-circle-check" style="color: var(--success-color); margin-right: 8px;"></i>
-                    TH3: Được miễn phí (Hiện kết quả)
+                    TH Hợp lệ 2: Được miễn phí (Hiện kết quả)
                 </button>
             </div>
             <button type="button" class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="closeSaveSimulatorModal()">HỦY BỎ</button>

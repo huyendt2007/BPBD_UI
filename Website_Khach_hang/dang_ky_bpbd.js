@@ -1,4 +1,12 @@
-﻿const initFloatingTooltips = () => {
+﻿// Ghép địa chỉ hiển thị trên lưới/màn xem lại: "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia"
+// (Quốc gia khác Việt Nam không có Phường/Xã; bỏ qua phần trống, không để dấu phân cách thừa)
+const ghepDiaChiChuThe = (diaChi, phuongXa, tinhThanh, quocGia) => {
+    if (window.DiaBanVN) return DiaBanVN.formatAddress(diaChi, phuongXa, tinhThanh, quocGia);
+    const laVN = /^(việt nam|viet nam|vn)$/i.test(String(quocGia || '').trim());
+    return [diaChi, laVN ? phuongXa : '', tinhThanh, quocGia].map(x => String(x || '').trim()).filter(Boolean).join(', ');
+};
+
+const initFloatingTooltips = () => {
     let tooltipEl = null;
 
     const removeTooltip = () => {
@@ -587,6 +595,37 @@ const initApp = () => {
     document.getElementById('tc_quocgia')?.dispatchEvent(new Event('change'));
     document.getElementById('ntc_quocgia')?.dispatchEvent(new Event('change'));
 
+    // Phường/Xã: chỉ hiển thị (và bắt buộc) khi Quốc gia là Việt Nam, lọc theo Tỉnh/Thành phố đã chọn (dùng chung Common/dia_ban_vn.js)
+    // Lưu ý: ô Tỉnh/Thành phố được dựng lại khi đổi Quốc gia nhưng luôn giữ id `${prefix}_tinhthanh_select` (kể cả khi là ô nhập text)
+    const layPhuongXa = (prefix) => (window.DiaBanVN ? DiaBanVN.get(`${prefix}_phuongxa`) : null);
+    const capNhatBoCucPhuongXa = (prefix) => {
+        const px = layPhuongXa(prefix);
+        const elQuocGia = document.getElementById(`${prefix}_quocgia`);
+        if (!px || !elQuocGia) return;
+        px.el.parentElement.classList.toggle('co-phuong-xa', DiaBanVN.isVN(elQuocGia.value));
+    };
+    const ganPhuongXa = (prefix, value) => {
+        const px = layPhuongXa(prefix);
+        if (!px) return;
+        px.reset();
+        px.setValue(value || '');
+        capNhatBoCucPhuongXa(prefix);
+    };
+    ['tc', 'ntc'].forEach(prefix => {
+        if (!window.DiaBanVN) return;
+        const px = DiaBanVN.bind({
+            id: `${prefix}_phuongxa`,
+            country: `${prefix}_quocgia`,
+            province: `${prefix}_tinhthanh_select`,
+            after: `${prefix}_tinhthanh_wrapper`,
+            // Chọn lại Phường/Xã thì bỏ thông báo lỗi bắt buộc của lần Lưu trước
+            onChange: () => document.getElementById(`${prefix}_phuongxa_group`)?.querySelector('.error-text')?.remove()
+        });
+        if (!px) return;
+        document.getElementById(`${prefix}_quocgia`)?.addEventListener('change', () => capNhatBoCucPhuongXa(prefix));
+        capNhatBoCucPhuongXa(prefix);
+    });
+
     // 3. Grid Bên thế chấp operations
     const subFormBenTheChap = document.getElementById('subFormBenTheChap');
     const loaiChuTheTC = document.getElementById('loaiChuTheTC');
@@ -627,6 +666,9 @@ const initApp = () => {
                 if (err) err.remove();
             }
         });
+        // Tỉnh/Thành phố vừa bị xóa trắng -> làm mới Phường/Xã (khóa lại, xóa giá trị)
+        ganPhuongXa('tc', '');
+        subFormBenTheChap.querySelectorAll('.dbvn-err').forEach(el => el.remove());
     };
 
     const renderChuTheFields = (type) => {
@@ -743,7 +785,7 @@ const initApp = () => {
     btnLuuTC.addEventListener('click', () => {
         // Clear errors
         subFormBenTheChap.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-        subFormBenTheChap.querySelectorAll('.error-text').forEach(el => el.remove());
+        subFormBenTheChap.querySelectorAll('.error-text, .dbvn-err').forEach(el => el.remove());
 
         let localValid = true;
         const addError = (el, text) => {
@@ -792,6 +834,9 @@ const initApp = () => {
 
         if (elQuocGia && !elQuocGia.value) addError(elQuocGia, 'Đây là trường bắt buộc');
         if (elTinhThanh && !elTinhThanh.value.trim()) addError(elTinhThanh, 'Đây là trường bắt buộc');
+        // Phường/Xã bắt buộc khi Quốc gia là Việt Nam (ô đang hiển thị)
+        const pxTC = layPhuongXa('tc');
+        if (pxTC && pxTC.isVisible() && !pxTC.value()) addError(pxTC.select, 'Đây là trường bắt buộc');
         if (elDiaChi && !elDiaChi.value.trim()) addError(elDiaChi, 'Đây là trường bắt buộc');
 
         if (!localValid) return;
@@ -802,7 +847,9 @@ const initApp = () => {
         const valQuocGia = elQuocGia.value;
         const valTinhThanh = elTinhThanh.value.trim();
         const valDiaChi = elDiaChi.value.trim();
-        const fullAddr = `${valDiaChi} - ${valTinhThanh} - ${valQuocGia}`;
+        const valPhuongXa = pxTC ? pxTC.value() : '';
+        // Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia (bỏ Phường/Xã với địa chỉ nước ngoài)
+        const fullAddr = ghepDiaChiChuThe(valDiaChi, valPhuongXa, valTinhThanh, valQuocGia);
 
         // Duplicate Check
         const rows = Array.from(tbodyTC.querySelectorAll('tr')).filter(r => r.dataset.giayTo);
@@ -819,6 +866,7 @@ const initApp = () => {
             editingRowTC.dataset.ngaySinh = valNgaySinh;
             editingRowTC.dataset.giayTo = valGiayTo;
             editingRowTC.dataset.diachi = valDiaChi;
+            editingRowTC.dataset.ward = valPhuongXa;
             editingRowTC.dataset.tinhthanh = valTinhThanh;
             editingRowTC.dataset.quocgia = valQuocGia;
 
@@ -842,6 +890,7 @@ const initApp = () => {
             tr.dataset.ngaySinh = valNgaySinh;
             tr.dataset.giayTo = valGiayTo;
             tr.dataset.diachi = valDiaChi;
+            tr.dataset.ward = valPhuongXa;
             tr.dataset.tinhthanh = valTinhThanh;
             tr.dataset.quocgia = valQuocGia;
 
@@ -887,6 +936,7 @@ const initApp = () => {
                         setTimeout(() => {
                             const ttField = document.getElementById('tc_tinhthanh_select') || document.getElementById('tc_tinhthanh_input');
                             if (ttField) ttField.value = tr.dataset.tinhthanh;
+                            ganPhuongXa('tc', tr.dataset.ward);
                         }, 20);
                     }
                     const dcInput = document.getElementById('tc_diachi');
@@ -935,13 +985,14 @@ const initApp = () => {
         document.getElementById('ntc_quocgia').value = 'Việt Nam';
         document.getElementById('ntc_quocgia').dispatchEvent(new Event('change'));
         document.getElementById('ntc_diachi').value = '';
+        ganPhuongXa('ntc', '');
         subFormBenNhanTheChap.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-        subFormBenNhanTheChap.querySelectorAll('.error-text').forEach(el => el.remove());
+        subFormBenNhanTheChap.querySelectorAll('.error-text, .dbvn-err').forEach(el => el.remove());
     };
 
     btnLuuNTC.addEventListener('click', () => {
         subFormBenNhanTheChap.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
-        subFormBenNhanTheChap.querySelectorAll('.error-text').forEach(el => el.remove());
+        subFormBenNhanTheChap.querySelectorAll('.error-text, .dbvn-err').forEach(el => el.remove());
 
         let localValid = true;
         const addError = (el, text) => {
@@ -961,6 +1012,9 @@ const initApp = () => {
         if (elTen && !elTen.value.trim()) addError(elTen, 'Đây là trường bắt buộc');
         if (elQuocGia && !elQuocGia.value) addError(elQuocGia, 'Đây là trường bắt buộc');
         if (elTinhThanh && !elTinhThanh.value.trim()) addError(elTinhThanh, 'Đây là trường bắt buộc');
+        // Phường/Xã bắt buộc khi Quốc gia là Việt Nam (ô đang hiển thị)
+        const pxNTC = layPhuongXa('ntc');
+        if (pxNTC && pxNTC.isVisible() && !pxNTC.value()) addError(pxNTC.select, 'Đây là trường bắt buộc');
         if (elDiaChi && !elDiaChi.value.trim()) addError(elDiaChi, 'Đây là trường bắt buộc');
 
         if (!localValid) return;
@@ -969,7 +1023,9 @@ const initApp = () => {
         const valQuocGia = elQuocGia.value;
         const valTinhThanh = elTinhThanh.value.trim();
         const valDiaChi = elDiaChi.value.trim();
-        const fullAddr = `${valDiaChi} - ${valTinhThanh} - ${valQuocGia}`;
+        const valPhuongXa = pxNTC ? pxNTC.value() : '';
+        // Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia (bỏ Phường/Xã với địa chỉ nước ngoài)
+        const fullAddr = ghepDiaChiChuThe(valDiaChi, valPhuongXa, valTinhThanh, valQuocGia);
 
         // Duplicate Check by Name and address
         const rows = Array.from(tbodyNTC.querySelectorAll('tr')).filter(r => r.dataset.ten);
@@ -982,13 +1038,12 @@ const initApp = () => {
         if (editingRowNTC) {
             editingRowNTC.dataset.ten = valTen;
             editingRowNTC.dataset.diachi = valDiaChi;
+            editingRowNTC.dataset.ward = valPhuongXa;
             editingRowNTC.dataset.tinhthanh = valTinhThanh;
             editingRowNTC.dataset.quocgia = valQuocGia;
 
             editingRowNTC.children[1].innerText = valTen;
             editingRowNTC.children[2].innerText = fullAddr;
-            editingRowNTC.children[3].innerText = valTinhThanh;
-            editingRowNTC.children[4].innerText = valQuocGia;
 
             btnLuuNTC.innerText = 'LƯU';
             editingRowNTC = null;
@@ -1000,6 +1055,7 @@ const initApp = () => {
             const tr = document.createElement('tr');
             tr.dataset.ten = valTen;
             tr.dataset.diachi = valDiaChi;
+            tr.dataset.ward = valPhuongXa;
             tr.dataset.tinhthanh = valTinhThanh;
             tr.dataset.quocgia = valQuocGia;
 
@@ -1012,14 +1068,12 @@ const initApp = () => {
                 </td>
                 <td>${valTen}</td>
                 <td>${fullAddr}</td>
-                <td>${valTinhThanh}</td>
-                <td>${valQuocGia}</td>
             `;
 
             tr.querySelector('.btn-xoa-ntc').addEventListener('click', () => {
                 tr.remove();
                 if (tbodyNTC.children.length === 0) {
-                    tbodyNTC.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
+                    tbodyNTC.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
                 }
             });
 
@@ -1032,8 +1086,9 @@ const initApp = () => {
                 setTimeout(() => {
                     const ttField = document.getElementById('ntc_tinhthanh_select') || document.getElementById('ntc_tinhthanh_input');
                     if (ttField) ttField.value = tr.dataset.tinhthanh;
+                    ganPhuongXa('ntc', tr.dataset.ward);
                 }, 20);
-                
+
                 elDiaChi.value = tr.dataset.diachi;
 
                 btnLuuNTC.innerText = 'CẬP NHẬT';
@@ -1063,11 +1118,12 @@ const initApp = () => {
                 elQuocGia.value = "Việt Nam";
                 elQuocGia.dispatchEvent(new Event('change'));
             }
-            if (elDiaChi) elDiaChi.value = "Số 10, Phố Duy Tân, Phường Dịch Vọng Hậu, Quận Cầu Giấy";
+            if (elDiaChi) elDiaChi.value = "Số 10, Phố Duy Tân";
 
             setTimeout(() => {
                 const ttField = document.getElementById('ntc_tinhthanh_select') || document.getElementById('ntc_tinhthanh_input');
                 if (ttField) ttField.value = "Hà Nội";
+                ganPhuongXa('ntc', 'Phường Cầu Giấy');
             }, 20);
 
             // Open the subform and adjust buttons
@@ -1986,6 +2042,8 @@ const initApp = () => {
                 ngaySinh: tr.dataset.ngaySinh || '',
                 ten: tr.dataset.ten,
                 diaChi: tr.children[5].innerText,
+                diaChiChiTiet: tr.dataset.diachi || '',
+                ward: tr.dataset.ward || '',
                 loaiVal: tr.dataset.loai,
                 tinhThanh: tr.dataset.tinhthanh,
                 quocGia: tr.dataset.quocgia
@@ -1996,6 +2054,8 @@ const initApp = () => {
             .map(tr => ({
                 ten: tr.dataset.ten,
                 diaChi: tr.children[2].innerText,
+                diaChiChiTiet: tr.dataset.diachi || '',
+                ward: tr.dataset.ward || '',
                 tinhThanh: tr.dataset.tinhthanh,
                 quocGia: tr.dataset.quocgia
             }));
@@ -2204,9 +2264,12 @@ const initApp = () => {
                     tr.dataset.ten = r.ten;
                     tr.dataset.ngaySinh = r.ngaySinh || '';
                     tr.dataset.giayTo = r.giayTo;
-                    tr.dataset.diachi = r.diaChi.split(' - ')[0] || '';
+                    tr.dataset.diachi = r.diaChiChiTiet ?? (r.diaChi || '');
+                    tr.dataset.ward = r.ward || '';
                     tr.dataset.tinhthanh = r.tinhThanh;
                     tr.dataset.quocgia = r.quocGia;
+                    // Ghép lại địa chỉ từ các thành phần (dữ liệu nháp cũ có thể còn định dạng cũ)
+                    const diaChiHienThi = r.diaChiChiTiet != null ? ghepDiaChiChuThe(r.diaChiChiTiet, r.ward, r.tinhThanh, r.quocGia) : (r.diaChi || '');
 
                     tr.innerHTML = `
                         <td style="text-align: center;">
@@ -2219,7 +2282,7 @@ const initApp = () => {
                         <td>${r.giayTo}</td>
                         <td>${r.ngaySinh || '-'}</td>
                         <td>${r.ten}</td>
-                        <td>${r.diaChi}</td>
+                        <td>${diaChiHienThi}</td>
                     `;
 
                     // wire buttons
@@ -2245,6 +2308,7 @@ const initApp = () => {
                                 setTimeout(() => {
                                     const ttField = document.getElementById('tc_tinhthanh_select') || document.getElementById('tc_tinhthanh_input');
                                     if (ttField) ttField.value = tr.dataset.tinhthanh;
+                                    ganPhuongXa('tc', tr.dataset.ward);
                                 }, 20);
                             }
                             const dcInput = document.getElementById('tc_diachi');
@@ -2271,9 +2335,12 @@ const initApp = () => {
                 data.rowsNTC.forEach(r => {
                     const tr = document.createElement('tr');
                     tr.dataset.ten = r.ten;
-                    tr.dataset.diachi = r.diaChi.split(' - ')[0] || '';
+                    tr.dataset.diachi = r.diaChiChiTiet ?? (r.diaChi || '');
+                    tr.dataset.ward = r.ward || '';
                     tr.dataset.tinhthanh = r.tinhThanh;
                     tr.dataset.quocgia = r.quocGia;
+                    // Ghép lại địa chỉ từ các thành phần (dữ liệu nháp cũ có thể còn định dạng cũ)
+                    const diaChiHienThi = r.diaChiChiTiet != null ? ghepDiaChiChuThe(r.diaChiChiTiet, r.ward, r.tinhThanh, r.quocGia) : (r.diaChi || '');
 
                     tr.innerHTML = `
                         <td style="text-align: center;">
@@ -2283,14 +2350,12 @@ const initApp = () => {
                             </div>
                         </td>
                         <td>${r.ten}</td>
-                        <td>${r.diaChi}</td>
-                        <td>${r.tinhThanh}</td>
-                        <td>${r.quocGia}</td>
+                        <td>${diaChiHienThi}</td>
                     `;
 
                     tr.querySelector('.btn-xoa-ntc').addEventListener('click', () => {
                         tr.remove();
-                        if (tbodyNTC.children.length === 0) tbodyNTC.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
+                        if (tbodyNTC.children.length === 0) tbodyNTC.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
                         btnLayNguoiDangKy.classList.remove('hidden');
                     });
                     tr.querySelector('.btn-sua-ntc').addEventListener('click', () => {
@@ -2301,6 +2366,7 @@ const initApp = () => {
                         setTimeout(() => {
                             const ttField = document.getElementById('ntc_tinhthanh_select') || document.getElementById('ntc_tinhthanh_input');
                             if (ttField) ttField.value = tr.dataset.tinhthanh;
+                            ganPhuongXa('ntc', tr.dataset.ward);
                         }, 20);
                         document.getElementById('ntc_diachi').value = tr.dataset.diachi;
                         btnLuuNTC.innerText = 'CẬP NHẬT';
@@ -2440,7 +2506,8 @@ const initApp = () => {
             birthDate: '12/09/1992',
             country: 'Việt Nam',
             province: 'Hà Nội',
-            address: 'Tòa nhà FPT, Số 17 Duy Tân, Dịch Vọng Hậu, Cầu Giấy, Hà Nội'
+            ward: 'Phường Cầu Giấy',
+            address: 'Tòa nhà FPT, Số 17 Duy Tân'
         },
         {
             type: 'cd_vn',
@@ -2450,7 +2517,8 @@ const initApp = () => {
             birthDate: '05/08/1990',
             country: 'Việt Nam',
             province: 'Hà Nội',
-            address: 'Tòa nhà FPT, Số 17 Duy Tân, Dịch Vọng Hậu, Cầu Giấy, Hà Nội'
+            ward: 'Phường Cầu Giấy',
+            address: 'Tòa nhà FPT, Số 17 Duy Tân'
         },
         {
             type: 'cd_vn',
@@ -2460,7 +2528,8 @@ const initApp = () => {
             birthDate: '01/01/1988',
             country: 'Việt Nam',
             province: 'Hà Nội',
-            address: '123 Đường Láng, Láng Thượng, Đống Đa, Hà Nội'
+            ward: 'Phường Láng',
+            address: '123 Đường Láng'
         },
         {
             type: 'tc_vn',
@@ -2469,7 +2538,8 @@ const initApp = () => {
             name: 'Ngân hàng Thương mại Cổ phần FPT (FPT Bank)',
             country: 'Việt Nam',
             province: 'Hà Nội',
-            address: 'Tòa nhà FPT, Số 17 Duy Tân, Dịch Vọng Hậu, Cầu Giấy, Hà Nội'
+            ward: 'Phường Cầu Giấy',
+            address: 'Tòa nhà FPT, Số 17 Duy Tân'
         },
         {
             type: 'tc_vn',
@@ -2478,7 +2548,8 @@ const initApp = () => {
             name: 'Công ty Cổ phần Đầu tư Phát triển Công nghệ',
             country: 'Việt Nam',
             province: 'TP. Hồ Chí Minh',
-            address: '789 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh'
+            ward: 'Phường Sài Gòn',
+            address: '789 Nguyễn Huệ'
         },
         {
             type: 'nn',
@@ -2505,7 +2576,8 @@ const initApp = () => {
             name: 'Hiệp hội Cà phê Việt Nam',
             country: 'Việt Nam',
             province: 'Hà Nội',
-            address: 'Số 6 Nguyễn Công Hoan, Ngọc Khánh, Ba Đình, Hà Nội'
+            ward: 'Phường Giảng Võ',
+            address: 'Số 6 Nguyễn Công Hoan'
         },
         {
             type: 'tc_khac',
@@ -2514,7 +2586,8 @@ const initApp = () => {
             name: 'Hiệp hội Hồ tiêu Việt Nam',
             country: 'Việt Nam',
             province: 'Hà Nội',
-            address: 'Số 12 Huỳnh Thúc Kháng, Láng Hạ, Đống Đa, Hà Nội'
+            ward: 'Phường Cửa Nam',
+            address: 'Số 12 Huỳnh Thúc Kháng'
         },
         {
             type: 'no_nation_vn',
@@ -2523,7 +2596,8 @@ const initApp = () => {
             name: 'Alexandre Yersin',
             country: 'Việt Nam',
             province: 'Khánh Hòa',
-            address: 'Xã Suối Dầu, Huyện Cam Lâm, Khánh Hòa'
+            ward: 'Xã Diên Khánh',
+            address: 'Thôn Suối Lau'
         }
     ];
 
@@ -2627,6 +2701,8 @@ const initApp = () => {
             setTimeout(() => {
                 const elTinhThanh = document.getElementById('tc_tinhthanh_select') || document.getElementById('tc_tinhthanh_input');
                 if (elTinhThanh) elTinhThanh.value = subject.province;
+                // Fill Phường/Xã (chỉ áp dụng khi Quốc gia là Việt Nam)
+                ganPhuongXa('tc', subject.ward);
             }, 50);
 
         }, 50);
@@ -2738,6 +2814,7 @@ const initApp = () => {
                             <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color); display: ${showPassportCountry ? 'table-cell' : 'none'};">${subject.type === 'nn' ? (subject.country || '-') : '-'}</td>
                             <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${subject.country || '-'}</td>
                             <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${subject.province || '-'}</td>
+                            <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${subject.ward || '-'}</td>
                             <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${subject.address || '-'}</td>
                             <td style="text-align: center; padding: 10px 12px; border-bottom: 1px solid var(--border-color);">
                                 <button type="button" class="btn btn-primary btn-sm btn-select-subject" style="padding: 4px 10px; font-size: 12px; height: auto;">Chọn</button>

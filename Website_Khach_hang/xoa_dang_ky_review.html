@@ -676,7 +676,7 @@
                     </div>
                     <div class="review-item">
                         <span class="review-label">Địa chỉ liên hệ:</span>
-                        <span class="review-val" id="lblRequesterAddress">Số 198 Trần Quang Khải, Quận Hoàn Kiếm, Thành phố Hà Nội, Việt Nam</span>
+                        <span class="review-val" id="lblRequesterAddress">Số 198 Trần Quang Khải, Phường Hoàn Kiếm, Thành phố Hà Nội, Việt Nam</span>
                     </div>
                     <div class="review-item" id="representativeProofReviewItem" style="display: none; grid-column: span 2; border-top: 1px dashed rgba(30, 58, 138, 0.15); padding-top: 12px; margin-top: 5px;">
                         <span class="review-label">Tài liệu chứng minh tư cách người yêu cầu đăng ký (pdf):</span>
@@ -883,7 +883,22 @@
     </div>
 
     <!-- Script logic -->
+    <script src="../Common/dia_ban_vn.js"></script>
     <script>
+        // Ghép địa chỉ "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia" (bỏ Phường/Xã với địa chỉ nước ngoài)
+        function formatAddressParts(detail, ward, province, country) {
+            if (typeof DiaBanVN !== 'undefined') return DiaBanVN.formatAddress(detail, ward, province, country);
+            const isVN = String(country || '').trim() === 'Việt Nam';
+            return [detail, isVN ? ward : '', province, country].map(x => String(x || '').trim()).filter(Boolean).join(', ');
+        }
+
+        // Địa chỉ hiển thị của chủ thể: ghép từ các thành phần; dữ liệu chỉ có chuỗi địa chỉ đầy đủ (không có Quốc gia) thì giữ nguyên
+        function formatPartyAddress(p) {
+            if (!p) return '';
+            if (!p.country) return String(p.address || '').trim();
+            return formatAddressParts(p.address, p.ward, p.province, p.country);
+        }
+
         document.addEventListener('DOMContentLoaded', function () {
             window.scrollTo(0, 0);
             if (window.parent && window.parent !== window) {
@@ -938,34 +953,35 @@
                 // Lấy thông tin Bên nhận thế chấp
                 if (draft.securedParties && draft.securedParties.length > 0) {
                     reqName = draft.securedParties[0].name;
-                    reqAddress = draft.securedParties[0].address + " - " + (draft.securedParties[0].province || "Thành phố Hà Nội") + " - " + (draft.securedParties[0].country || "Việt Nam");
+                    const sp0 = draft.securedParties[0];
+                    reqAddress = formatPartyAddress(sp0);
                 }
             } else if (draft.requesterRole === 'ben_bd') {
                 // Lấy thông tin Bên thế chấp
                 if (draft.securingParties && draft.securingParties.length > 0) {
                     reqName = draft.securingParties[0].name;
-                    reqAddress = draft.securingParties[0].address + " - Việt Nam";
+                    reqAddress = formatPartyAddress(draft.securingParties[0]);
                 }
             } else {
                 // Các vai trò đại diện khác
                 if (draft.requesterRole === 'ben_bd_moi') {
                     reqName = "Nguyễn Văn Bảo Đảm Mới";
-                    reqAddress = "Số 100 Lê Duẩn - Phường Cửa Nam - Quận Hoàn Kiếm - Thành phố Hà Nội - Việt Nam";
+                    reqAddress = "Số 100 Lê Duẩn, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam";
                 } else if (draft.requesterRole === 'ben_nhan_bd_moi') {
                     reqName = "Ngân hàng TMCP Việt Nam Thịnh Vượng";
-                    reqAddress = "Số 89 Láng Hạ - Quận Đống Đa - Thành phố Hà Nội - Việt Nam";
+                    reqAddress = "Số 89 Láng Hạ, Phường Đống Đa, Thành phố Hà Nội, Việt Nam";
                 } else if (draft.requesterRole === 'quan_tai_vien') {
                     reqName = "Công ty Quản lý Tài sản Việt Nam (VAMC)";
-                    reqAddress = "Số 22 Hàng Tre - Quận Hoàn Kiếm - Thành phố Hà Nội - Việt Nam";
+                    reqAddress = "Số 22 Hàng Tre, Phường Hoàn Kiếm, Thành phố Hà Nội, Việt Nam";
                 } else if (draft.requesterRole === 'ben_ke_thua') {
                     reqName = "Trần Văn Kế Thừa";
-                    reqAddress = "Số 45 Tràng Tiền - Quận Hoàn Kiếm - Thành phố Hà Nội - Việt Nam";
+                    reqAddress = "Số 45 Tràng Tiền, Phường Hoàn Kiếm, Thành phố Hà Nội, Việt Nam";
                 } else if (draft.requesterRole === 'co_quan_thads') {
                     reqName = "Chi cục Thi hành án dân sự Quận Hoàn Kiếm";
-                    reqAddress = "Số 15 Dã Tượng - Quận Hoàn Kiếm - Thành phố Hà Nội - Việt Nam";
+                    reqAddress = "Số 15 Dã Tượng, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam";
                 } else {
                     reqName = "Tòa án nhân dân thành phố Hà Nội";
-                    reqAddress = "Số 43 Hai Bà Trưng - Quận Hoàn Kiếm - Thành phố Hà Nội - Việt Nam";
+                    reqAddress = "Số 43 Hai Bà Trưng, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam";
                 }
             }
 
@@ -1016,7 +1032,7 @@
                     <td>${typeText}</td>
                     <td>${party.paperNo}</td>
                     <td style="font-weight: 600;">${party.name}</td>
-                    <td>${party.address}</td>
+                    <td>${formatPartyAddress(party)}</td>
                 `;
                 securingPartiesBody.appendChild(tr);
             });
@@ -1026,7 +1042,8 @@
             securedPartiesBody.innerHTML = '';
             (draft.securedParties || []).forEach((party, idx) => {
                 const tr = document.createElement('tr');
-                const fullAddress = `${party.address || ''} - ${party.province || ''} - ${party.country || ''}`.replace(/^[ \-]+|[ \-]+$/g, '').replace(/ -  - /g, ' - ');
+                // Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia (bỏ Phường/Xã với địa chỉ nước ngoài)
+                const fullAddress = formatPartyAddress(party);
                 tr.innerHTML = `
                     <td style="text-align: center;">${idx + 1}</td>
                     <td style="font-weight: 600;">${party.name}</td>

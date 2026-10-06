@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thêm mới hồ sơ BPBĐ đã nhận</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../Common/style_iframe.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="nhan_du_lieu_bpbd.css?v=20261006q">
+    <script src="../Common/iframe_helper.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="top-action-bar">
+        <div>
+            <h2><i id="pageIcon" class="fa-solid fa-database"></i><span id="pageTitle">Thêm mới hồ sơ</span></h2>
+            <div class="sub" id="pageSub"></div>
+        </div>
+    </div>
+    <div id="errBox"></div>
+
+    <div id="hsBlocks"></div>
+    <div id="childBlocks"></div>
+    <div class="card-block">
+        <div class="card-block-header"><h3><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm</h3></div>
+        <div class="card-block-body">
+            <div id="fileList" class="attach-list"></div>
+            <div id="fileEmpty" class="attach-empty">Chưa có tệp đính kèm.</div>
+            <button class="btn btn-outline btn-sm" onclick="document.getElementById('fileInp').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp</button>
+            <input type="file" id="fileInp" accept=".pdf,.jpg,.jpeg,.png" multiple hidden onchange="onFiles(this)">
+        </div>
+    </div>
+    <div class="card-block" id="reasonBlock" style="display:none">
+        <div class="card-block-header"><h3><i class="fa-solid fa-comment-dots"></i> Lý do sửa</h3></div>
+        <div class="card-block-body"><div class="form-group"><label class="form-label" for="lyDoSua">Lý do sửa <span class="req">*</span></label><textarea id="lyDoSua" class="form-control" rows="2" maxlength="1000" placeholder="Nhập lý do sửa"></textarea><div class="err-text" id="lyDoErr"></div></div></div>
+    </div>
+    <div class="sticky-footer">
+        <button class="btn btn-outline" onclick="cancelForm()">Hủy bỏ</button>
+        <button class="btn btn-primary" onclick="saveForm()"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="confirmModal">
+    <div class="modal-content small">
+        <div class="modal-header"><h3 id="cfTitle"><i class="fa-solid fa-circle-question"></i> Xác nhận</h3><button class="modal-close" onclick="closeConfirm()" aria-label="Đóng">&times;</button></div>
+        <div class="modal-body" id="cfMsg"></div>
+        <div class="modal-footer"><button class="btn btn-outline" onclick="closeConfirm()">Hủy</button><button class="btn btn-primary" id="cfOk">Đồng ý</button></div>
+    </div>
+</div>
+
+<script src="nhan_du_lieu_bpbd_spec.js?v=20261006q"></script>
+<script src="nhan_du_lieu_bpbd_common.js?v=20261006q"></script>
+<script>
+const TYPE = NDL.typeFromUrl();
+const T = NDL.TYPES[TYPE];
+const { LDK } = NDL;
+const P = new URLSearchParams(location.search);
+const MODE = P.get('mode') === 'edit' ? 'edit' : 'add';
+let st = NDL.load();
+const rec = MODE === 'edit' ? st.records.find(r => r.id === P.get('id')) : null;
+const L = NDL.lists(TYPE);
+const hsCols = NDL.cols(TYPE, 'HO_SO'), benCols = NDL.cols(TYPE, 'BEN_BAO_DAM'), tsCols = NDL.cols(TYPE, 'TAI_SAN');
+const e = NDL.esc;
+const GRIDS = [
+    { key: 'bbd', sheet: 'BEN_BAO_DAM', title: 'Bên bảo đảm', icon: 'fa-solid fa-user-shield', cols: benCols },
+    { key: 'bnbd', sheet: 'BEN_NHAN_BAO_DAM', title: 'Bên nhận bảo đảm', icon: 'fa-solid fa-building-columns', cols: benCols },
+    { key: 'ts', sheet: 'TAI_SAN', title: 'Tài sản bảo đảm', icon: T.icon, cols: tsCols }
+];
+const blank = colsDef => { const o = {}; colsDef.forEach(c => { o[c.k] = ''; }); return o; };
+const AGENCIES = NDL.agencies(st, TYPE); // Cơ quan đăng ký đã cấu hình cho Loại tài sản
+const data = rec
+    ? { coQuan: rec.coQuan, hs: Object.assign({}, rec.hs), bbd: rec.bbd.map(o => Object.assign({}, o)), bnbd: rec.bnbd.map(o => Object.assign({}, o)), ts: rec.ts.map(o => Object.assign({}, o)), files: rec.files.slice() }
+    : { coQuan: AGENCIES.length === 1 ? AGENCIES[0] : '', hs: blank(hsCols), bbd: [blank(benCols)], bnbd: [blank(benCols)], ts: T.assetGroups ? [] : [blank(tsCols)], files: [] };
+// Loại tài sản nhập theo nhóm có tích chọn (VD: đất theo mục 5.1 - 5.5 Mẫu số 01a)
+const AG = T.assetGroups || null;
+const openTypes = new Set(AG ? data.ts.map(o => o.loaiTS) : []);
+let dirty = false;
+const blobs = {}; // Tệp vừa chọn trên trình duyệt, dùng cho Xem file
+
+document.getElementById('pageIcon').className = T.icon;
+document.getElementById('pageTitle').textContent = MODE === 'edit' ? 'Sửa hồ sơ ' + rec.hs.soDK : 'Thêm mới hồ sơ';
+document.getElementById('pageSub').textContent = T.menu + (MODE === 'edit' ? ' - Mã bản ghi ' + rec.id : '');
+document.title = document.getElementById('pageTitle').textContent;
+document.getElementById('reasonBlock').style.display = MODE === 'edit' ? '' : 'none';
+
+/** Placeholder chỉ gợi ý định dạng ngày, giờ */
+function ph(c) {
+    const n = c.note || '';
+    if (/hh:mm/.test(n)) return 'dd/mm/yyyy hh:mm';
+    if (/dd\/mm\/yyyy/.test(n)) return 'dd/mm/yyyy';
+    if (/yyyy/.test(n)) return 'yyyy';
+    return '';
+}
+function inputHtml(c, v, attrs, disabled) {
+    const dis = disabled ? 'disabled' : '';
+    if (c.list) return `<select class="form-select" ${attrs} ${dis}><option value="">-- Chọn --</option>${(L[c.list] || []).map(o => `<option ${o === v ? 'selected' : ''}>${e(o)}</option>`).join('')}</select>`;
+    const up = c.upper ? 'style="text-transform:uppercase"' : '';
+    return `<input class="form-control" ${attrs} ${up} value="${e(v)}" placeholder="${ph(c)}" ${dis}>`;
+}
+/** Bố cục ô trong lưới 4 cột: văn bản dài chiếm cả dòng, địa chỉ chiếm 2 cột */
+function layoutOf(c) {
+    if (/diaChi/i.test(c.k) || c.k === 'soDKLD') return 'span-2';
+    if ((c.w || 0) >= 36 || c.k === 'ghiChu' || c.k === 'noiDung') return 'span-full';
+    return '';
+}
+/** Trường bắt buộc tại thời điểm nhập (gồm bắt buộc theo Loại đăng ký) */
+function reqNow(c) {
+    const loai = NDL.loaiDK(data.hs);
+    if (c.req) return true;
+    if (c.k === 'soDKLD' || c.k === 'noiDung' || c.k === 'canCu') return true;
+    if (c.k === 'soHD' && data.hs.loaiDK !== undefined && (loai === LDK.LAN_DAU || loai === LDK.THAY_DOI)) return true;
+    return false;
+}
+function renderHs() {
+    const groups = NDL.hsGroups(TYPE);
+    document.getElementById('hsBlocks').innerHTML = groups.map((g, gi) => {
+        let fields = '';
+        if (gi === 0) {
+            // Không hiển thị Loại tài sản (theo tab đang chọn); Cơ quan đăng ký chọn theo cấu hình cơ quan đăng ký của Loại tài sản, chế độ Sửa chỉ đọc
+            const opts = AGENCIES.indexOf(data.coQuan) < 0 && data.coQuan ? AGENCIES.concat([data.coQuan]) : AGENCIES;
+            fields += `<div class="form-group span-2"><label class="form-label" for="coQuan">Cơ quan đăng ký <span class="req">*</span></label>
+            <select id="coQuan" class="form-select" data-sheet="HO_SO" data-line="0" data-col="Cơ quan đăng ký" onchange="data.coQuan=this.value;dirty=true"><option value="">-- Chọn cơ quan đăng ký --</option>${opts.map(a => `<option ${a === data.coQuan ? 'selected' : ''}>${e(a)}</option>`).join('')}</select></div>`;
+        }
+        g.cols.forEach(c => {
+            if (!NDL.hsVisible(c, data.hs)) return;
+            const lock = MODE === 'edit' && c.k === 'loaiDK';
+            const attrs = `data-sheet="HO_SO" data-line="0" data-col="${e(c.h)}" onchange="setHs('${c.k}', this.value)"${c.upper ? ' oninput="this.value=this.value.toUpperCase()"' : ''}`;
+            const lay = layoutOf(c);
+            const field = lay === 'span-full' && !c.list ? `<textarea class="form-control" rows="2" ${attrs}>${e(data.hs[c.k])}</textarea>` : inputHtml(c, data.hs[c.k], attrs, lock);
+            fields += `<div class="form-group ${lay}"><label class="form-label">${e(c.h)}${reqNow(c) ? ' <span class="req">*</span>' : ''}</label>${field}</div>`;
+        });
+        if (!fields) return ''; // Khối không có trường áp dụng cho Loại đăng ký (VD: Tàu bay - Hợp đồng bảo đảm chỉ với Đăng ký lần đầu)
+        const icon = gi === 0 ? 'fa-solid fa-file-contract' : (g.name.indexOf('Người yêu cầu') === 0 ? 'fa-solid fa-user-pen' : 'fa-solid fa-file-signature');
+        return `<div class="card-block"><div class="card-block-header"><h3><i class="${icon}"></i> ${e(g.name)}</h3></div><div class="card-block-body"><div class="form-grid">${fields}</div></div></div>`;
+    }).join('');
+}
+function setHs(k, v) {
+    data.hs[k] = v.trim(); dirty = true;
+    if (k === 'loaiDK') { renderHs(); renderGrids(); }
+}
+function renderGrids() {
+    const loai = NDL.loaiDK(data.hs);
+    const msg = loai === LDK.XOA
+        ? 'Xóa đăng ký không yêu cầu nhập Bên bảo đảm, Bên nhận bảo đảm, Tài sản. Khi lưu, toàn bộ tài sản của hồ sơ chuyển "Đã giải chấp".'
+        : `${loai} không nhập Bên bảo đảm, Bên nhận bảo đảm, Tài sản bảo đảm (chỉ nhập với Đăng ký lần đầu).`;
+    document.getElementById('childBlocks').innerHTML = !NDL.hasChildren(TYPE, loai)
+        ? `<div class="notice info"><i class="fa-solid fa-circle-info"></i><div>${e(msg)}</div></div>`
+        : GRIDS.map(g => {
+            if (g.key === 'ts' && AG) return assetBlock();
+            const vc = g.cols.filter(c => c.k !== 'ma' && c.k !== 'stt');
+            const minW = c => `style="min-width:${Math.max(130, Math.min(300, (c.w || 18) * 8))}px"`;
+            return `<div class="card-block"><div class="card-block-header"><h3><i class="${g.icon}"></i> ${e(g.title)}</h3><button class="btn btn-outline btn-sm" onclick="addRow('${g.key}')"><i class="fa-solid fa-plus"></i> Thêm dòng</button></div>
+            <div class="card-block-body"><div class="table-container"><table class="custom-table grid-edit"><thead><tr><th>STT</th>${vc.map(c => `<th ${minW(c)}>${e(c.h)}${c.req ? ' <span style="color:#DC2626">*</span>' : ''}</th>`).join('')}<th class="col-actions">Xóa</th></tr></thead>
+            <tbody>${data[g.key].map((o, ri) => `<tr><td>${ri + 1}</td>${vc.map(c => `<td>${inputHtml(c, o[c.k], `data-sheet="${g.sheet}" data-line="${ri + 1}" data-col="${e(c.h)}" onchange="setCell('${g.key}',${ri},'${c.k}',this.value)"${c.upper ? ' oninput="this.value=this.value.toUpperCase()"' : ''}`)}</td>`).join('')}
+            <td class="col-actions"><button class="icon-btn delete" title="Xóa dòng" onclick="delRow('${g.key}',${ri})"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('')
+            || `<tr class="empty-row"><td colspan="${vc.length + 2}">Chưa có dữ liệu. Chọn "Thêm dòng" để nhập.</td></tr>`}</tbody></table></div></div></div>`;
+        }).join('');
+}
+// ---------- Tài sản theo nhóm có tích chọn ----------
+const groupOf = name => AG.find(G => G.name === name);
+const sectionsOf = (G, o) => G.sections || G.byQuanHe[o.quanHe] || null;
+/** Danh sách loại tài sản dạng checkbox; tích loại nào thì khối thông tin của loại đó hiển thị ngay dưới dòng tích (như Đăng ký mới BPBĐ) */
+function assetBlock() {
+    const rows = AG.map(G => {
+        const open = openTypes.has(G.name);
+        const items = data.ts.map((o, i) => ({ o, i })).filter(x => x.o.loaiTS === G.name);
+        const sub = open ? `<div class="asset-sub"><div class="asset-sub-head"><span class="muted-sm">${items.length} tài sản</span><button class="btn btn-outline-primary btn-sm" onclick="addAsset('${G.no}')"><i class="fa-solid fa-plus"></i> Thêm tài sản</button></div>
+            ${items.map((x, n) => assetItem(G, x.o, x.i, n + 1)).join('') || '<div class="muted-sm">Chưa có tài sản. Chọn "Thêm tài sản" để nhập.</div>'}</div>` : '';
+        return `<label class="check-item"><input type="checkbox" ${open ? 'checked' : ''} onchange="toggleType('${G.no}', this)"><span class="check-label">${e(G.name)}</span></label>${sub}`;
+    }).join('');
+    return `<div class="card-block"><div class="card-block-header"><h3><i class="${T.icon}"></i> Tài sản bảo đảm</h3><span class="muted-sm">${data.ts.length} tài sản</span></div><div class="card-block-body">
+        <div class="form-label">Loại tài sản <span class="req">*</span></div><div class="check-group" data-sheet="HO_SO" data-line="0" data-col="Loại tài sản">${rows}</div></div></div>`;
+}
+function assetItem(G, o, i, n) {
+    const qhCol = NDL.colOf(TYPE, 'TAI_SAN', 'quanHe').h;
+    let body = '';
+    if (G.byQuanHe) {
+        body += `<div class="qh-row" data-sheet="TAI_SAN" data-line="${i + 1}" data-col="${e(qhCol)}">${[NDL.QH_DONG_THOI, NDL.QH_KHONG].map((q, qi) =>
+            `<label class="radio-item"><input type="radio" name="qh${i}" ${o.quanHe === q ? 'checked' : ''} onchange="setAsset(${i},'quanHe',this.checked ? '${q}' : '')"> ${e(q)}</label>`).join('')}</div>`;
+    }
+    const secs = sectionsOf(G, o);
+    body += secs ? secs.map(s => `<div class="asset-sec">${s.t ? `<div class="asset-sec-t">${e(s.t)}</div>` : ''}<div class="form-grid">${s.fields.map(f => assetField(f, o, i)).join('')}</div></div>`).join('')
+        : '<div class="muted-sm">Chọn Bên bảo đảm đồng thời hoặc không đồng thời là người sử dụng đất để nhập thông tin.</div>';
+    return `<div class="asset-item"><div class="asset-item-head"><span>Tài sản ${n}</span><button class="icon-btn delete" title="Xóa tài sản" onclick="delAsset(${i})"><i class="fa-solid fa-trash"></i></button></div>${body}</div>`;
+}
+function assetField(f, o, i) {
+    const col = NDL.colOf(TYPE, 'TAI_SAN', f.k).h;
+    const attrs = `data-sheet="TAI_SAN" data-line="${i + 1}" data-col="${e(col)}" onchange="setAsset(${i},'${f.k}',this.value)"`;
+    const cls = f.area || f.span === 4 ? 'span-full' : f.span === 2 ? 'span-2' : '';
+    const input = f.area ? `<textarea class="form-control" rows="3" ${attrs}>${e(o[f.k])}</textarea>` : `<input class="form-control" ${attrs} value="${e(o[f.k])}" placeholder="${f.ph || ''}">`;
+    return `<div class="form-group ${cls}"><label class="form-label">${e(f.h)}${f.req ? ' <span class="req">*</span>' : ''}</label>${input}</div>`;
+}
+function newAsset(G) { const o = blank(tsCols); o.loaiTS = G.name; return o; }
+function toggleType(no, el) {
+    const G = AG.find(x => x.no === no);
+    if (el.checked) { openTypes.add(G.name); if (!data.ts.some(o => o.loaiTS === G.name)) data.ts.push(newAsset(G)); dirty = true; renderGrids(); return; }
+    const filled = data.ts.filter(o => o.loaiTS === G.name && tsCols.some(c => !['ma', 'stt', 'loaiTS'].includes(c.k) && o[c.k]));
+    const off = () => { data.ts = data.ts.filter(o => o.loaiTS !== G.name); openTypes.delete(G.name); dirty = true; renderGrids(); };
+    if (!filled.length) return off();
+    el.checked = true;
+    confirmBox('Bỏ chọn loại tài sản', `Bỏ chọn <b>${e(G.name)}</b> sẽ xóa ${filled.length} tài sản đã nhập của loại này. Bạn có chắc chắn?`, off);
+}
+function addAsset(no) { data.ts.push(newAsset(AG.find(x => x.no === no))); dirty = true; renderGrids(); }
+function delAsset(i) { data.ts.splice(i, 1); dirty = true; renderGrids(); }
+function setAsset(i, k, v) {
+    const o = data.ts[i]; o[k] = v.trim(); dirty = true;
+    if (k === 'quanHe') {
+        // Chỉ giữ thông tin của trường hợp đang chọn (đồng thời / không đồng thời là người sử dụng đất)
+        const keep = new Set(['ma', 'stt', 'loaiTS', 'quanHe'].concat((sectionsOf(groupOf(o.loaiTS), o) || []).flatMap(s => s.fields.map(f => f.k))));
+        tsCols.forEach(c => { if (!keep.has(c.k)) o[c.k] = ''; });
+        renderGrids();
+    }
+}
+function addRow(k) { const g = GRIDS.find(x => x.key === k); data[k].push(blank(g.cols)); dirty = true; renderGrids(); }
+function delRow(k, i) { data[k].splice(i, 1); dirty = true; renderGrids(); }
+function setCell(k, ri, ck, v) { data[k][ri][ck] = v.trim(); dirty = true; }
+function onFiles(inp) {
+    for (const f of Array.from(inp.files)) {
+        if (!/\.(pdf|jpe?g|png)$/i.test(f.name)) { NDL.toast(`Định dạng tệp tin ${f.name} không hợp lệ. Chỉ chấp nhận các định dạng .pdf, .jpg, .jpeg, .png.`, 'error'); continue; }
+        if (f.size > 20 * 1024 * 1024) { NDL.toast(`Dung lượng tệp tin ${f.name} vượt quá 20MB. Vui lòng kiểm tra lại.`, 'error'); continue; }
+        if (!data.files.some(x => x.name === f.name)) data.files.push({ name: f.name, size: (f.size / 1048576).toFixed(1).replace('.', ',') + ' MB', nguon: 'Đính kèm khi ' + (MODE === 'edit' ? 'sửa' : 'thêm mới'), user: NDL.USER, t: NDL.nowStr(), isNew: true });
+        blobs[f.name] = f;
+        dirty = true;
+    }
+    inp.value = ''; renderFiles();
+}
+function renderFiles() {
+    document.getElementById('fileList').innerHTML = data.files.map((f, i) => {
+        const img = /\.(jpe?g|png)$/i.test(f.name);
+        return `<div class="attach-item"><i class="fi ${img ? 'img fa-solid fa-file-image' : 'fa-solid fa-file-pdf'}"></i><span class="nm">${e(f.name)}</span>${f.size && f.size !== '-' ? `<span class="sz">(${e(f.size)})</span>` : ''}
+        <span class="acts"><button class="link-act" onclick="viewFile(${i})"><i class="fa-solid fa-eye"></i> Xem file</button><span class="sep">|</span><button class="link-act danger" onclick="removeFile(${i})"><i class="fa-solid fa-trash-can"></i> Xóa</button></span></div>`;
+    }).join('');
+    document.getElementById('fileEmpty').style.display = data.files.length ? 'none' : '';
+}
+function viewFile(i) {
+    const f = data.files[i], b = blobs[f.name];
+    if (b) window.open(URL.createObjectURL(b), '_blank');
+    else NDL.toast(`Mở tệp ${f.name} (giả lập).`, 'info');
+}
+function removeFile(i) {
+    const f = data.files[i];
+    confirmBox('Xóa tệp đính kèm', `Bạn có chắc chắn muốn xóa tệp <b>${e(f.name)}</b>?`, () => { data.files.splice(i, 1); delete blobs[f.name]; dirty = true; renderFiles(); });
+}
+
+function closeConfirm() { document.getElementById('confirmModal').classList.remove('active'); }
+function confirmBox(title, html, onOk) {
+    document.getElementById('cfTitle').innerHTML = `<i class="fa-solid fa-circle-question"></i> ${e(title)}`;
+    document.getElementById('cfMsg').innerHTML = html;
+    document.getElementById('cfOk').onclick = () => { closeConfirm(); onOk(); };
+    document.getElementById('confirmModal').classList.add('active');
+}
+function cancelForm() {
+    const back = () => { location.href = MODE === 'edit' ? `nhan_du_lieu_bpbd_chi_tiet.html?loai=${TYPE}&id=${rec.id}` : `nhan_du_lieu_bpbd.html?loai=${TYPE}`; };
+    if (!dirty) return back();
+    confirmBox('Hủy bỏ', 'Dữ liệu đang nhập chưa được lưu. Bạn có chắc chắn muốn hủy bỏ?', back);
+}
+function buildPack() {
+    const noChildren = !NDL.hasChildren(TYPE, NDL.loaiDK(data.hs)); // Loại đăng ký không nhập chủ thể, tài sản
+    const hs = Object.assign({}, data.hs, { ma: rec ? rec.hs.ma : 'FORM', files: '', coQuan: data.coQuan });
+    hsCols.forEach(c => { if (c.upper && hs[c.k]) hs[c.k] = hs[c.k].toUpperCase(); });
+    const pack = { hs, hsLine: 0, bbd: [], bnbd: [], ts: [] };
+    GRIDS.forEach(g => {
+        if (noChildren) return;
+        data[g.key].forEach((o, i) => {
+            if (!g.cols.some(c => c.k !== 'ma' && c.k !== 'stt' && o[c.k])) return;
+            const x = Object.assign({}, o, { ma: hs.ma, stt: String(pack[g.key].length + 1) });
+            g.cols.forEach(c => { if (c.upper && x[c.k]) x[c.k] = x[c.k].toUpperCase(); });
+            pack[g.key].push({ o: x, line: i + 1 });
+        });
+    });
+    return pack;
+}
+function showErrors(errors) {
+    document.querySelectorAll('.is-invalid').forEach(x => x.classList.remove('is-invalid'));
+    const box = document.getElementById('errBox');
+    if (!errors.length) { box.innerHTML = ''; return; }
+    const where = er => {
+        if (er.sheet === 'HO_SO') return 'Thông tin hồ sơ';
+        if (er.sheet === 'TAI_SAN' && AG) {
+            const o = data.ts[er.line - 1], G = o && groupOf(o.loaiTS);
+            if (G) return `${G.name} - Tài sản ${data.ts.slice(0, er.line).filter(x => x.loaiTS === o.loaiTS).length}`;
+        }
+        return `${GRIDS.find(g => g.sheet === er.sheet).title} dòng ${er.line}`;
+    };
+    // Tài sản theo nhóm: hiển thị tên trường theo nhãn trên màn hình của loại tài sản
+    const colLabel = er => {
+        if (er.sheet !== 'TAI_SAN' || !AG || !er.col) return er.col;
+        const o = data.ts[er.line - 1], G = o && groupOf(o.loaiTS);
+        const f = G && (sectionsOf(G, o) || []).flatMap(s => s.fields).find(x => NDL.colOf(TYPE, 'TAI_SAN', x.k).h === er.col);
+        return f ? f.h : er.col;
+    };
+    box.innerHTML = `<div class="notice err"><i class="fa-solid fa-circle-xmark"></i><div>Dữ liệu chưa hợp lệ, vui lòng kiểm tra lại:<ul>${errors.map(er => `<li>${e(where(er))}${er.col ? ' - ' + e(colLabel(er)) : ''}: ${e(er.msg)}</li>`).join('')}</ul></div></div>`;
+    errors.forEach(er => {
+        document.querySelectorAll(`[data-sheet="${er.sheet}"][data-line="${er.line}"]`).forEach(el => { if (!er.col || el.dataset.col === er.col) el.classList.add('is-invalid'); });
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function saveForm() {
+    const errors = [];
+    const cqEl = document.getElementById('coQuan');
+    const pack = buildPack();
+    const v = NDL.validate({ type: TYPE, coQuan: data.coQuan, st, selfId: rec ? rec.id : null, origCoQuan: rec ? rec.coQuan : null, source: 'form' }, pack);
+    errors.push(...v.errors);
+    const reason = MODE === 'edit' ? document.getElementById('lyDoSua').value.trim() : '';
+    document.getElementById('lyDoErr').textContent = '';
+    if (MODE === 'edit' && !reason) { document.getElementById('lyDoErr').textContent = 'Trường này bắt buộc nhập.'; errors.push({ sheet: 'HO_SO', line: -1, col: '', msg: 'Bắt buộc nhập Lý do sửa.' }); }
+    showErrors(errors);
+    if (data.coQuan && cqEl) cqEl.classList.remove('is-invalid');
+    if (errors.length) return;
+    const go = () => commit(pack, reason);
+    if (v.warnings.length) confirmBox('Hồ sơ có cảnh báo', `<ul class="msg-list">${v.warnings.map(w => `<li class="w">${e(w)}</li>`).join('')}</ul><p>Cảnh báo không chặn việc lưu. Bạn có muốn tiếp tục lưu hồ sơ?</p>`, go);
+    else go();
+}
+function diff(pack) {
+    const ch = [];
+    if ((rec.coQuan || '') !== (data.coQuan || '')) ch.push(`Cơ quan đăng ký: "${rec.coQuan || ''}" → "${data.coQuan || ''}"`);
+    hsCols.forEach(c => { if (c.k === 'ma' || c.k === 'files' || c.k === 'coQuan') return; if ((rec.hs[c.k] || '') !== (pack.hs[c.k] || '')) ch.push(`${c.h}: "${rec.hs[c.k] || ''}" → "${pack.hs[c.k] || ''}"`); });
+    GRIDS.forEach(g => {
+        const sig = o => g.cols.filter(c => c.k !== 'ma' && c.k !== 'stt').map(c => o[c.k] || '').join('|');
+        const a = rec[g.key].map(sig), b = pack[g.key].map(x => sig(x.o));
+        if (a.join('#') !== b.join('#')) ch.push(`${g.title}: ${a.length} dòng → ${b.length} dòng (có thay đổi nội dung)`);
+    });
+    const newFiles = data.files.filter(f => f.isNew).map(f => f.name);
+    if (newFiles.length) ch.push('Thêm tệp: ' + newFiles.join(', '));
+    const removed = rec.files.filter(f => !data.files.some(x => x.name === f.name)).map(f => f.name);
+    if (removed.length) ch.push('Gỡ tệp: ' + removed.join(', '));
+    return ch;
+}
+function commit(pack, reason) {
+    const t = NDL.nowStr();
+    const files = data.files.map(f => { const x = Object.assign({}, f); delete x.isNew; return x; });
+    if (MODE === 'edit') {
+        const changes = diff(pack);
+        Object.assign(rec, { coQuan: data.coQuan, hs: pack.hs, bbd: pack.bbd.map(x => x.o), bnbd: pack.bnbd.map(x => x.o), ts: pack.ts.map(x => x.o), files });
+        rec.history.push({ t, user: NDL.USER, action: 'Sửa bản ghi', reason, changes });
+        NDL.save(st);
+        NDL.toast('Cập nhật hồ sơ thành công.', 'success');
+        setTimeout(() => { location.href = `nhan_du_lieu_bpbd_chi_tiet.html?loai=${TYPE}&id=${rec.id}`; }, 700);
+    } else {
+        const id = NDL.nextRecId(st);
+        pack.hs.ma = '';
+        st.records.push({ id, loai: TYPE, coQuan: data.coQuan, hs: pack.hs, bbd: pack.bbd.map(x => x.o), bnbd: pack.bnbd.map(x => x.o), ts: pack.ts.map(x => x.o), files,
+            nguon: 'Thêm mới thủ công', loId: '', nguoiNhan: NDL.USER, ngayNhan: t, trangThai: 'Hiệu lực', lyDoHuy: '', history: [{ t, user: NDL.USER, action: 'Thêm mới thủ công', reason: '' }] });
+        NDL.save(st);
+        NDL.toast('Thêm mới hồ sơ thành công.', 'success');
+        setTimeout(() => { location.href = `nhan_du_lieu_bpbd_chi_tiet.html?loai=${TYPE}&id=${id}`; }, 700);
+    }
+}
+renderHs(); renderGrids(); renderFiles();
+</script>
+
+</body>
+</html>

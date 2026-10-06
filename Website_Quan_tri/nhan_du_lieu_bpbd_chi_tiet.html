@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết dữ liệu BPBĐ đã nhận</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../Common/style_iframe.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="nhan_du_lieu_bpbd.css?v=20261006q">
+    <script src="../Common/iframe_helper.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="top-action-bar">
+        <div>
+            <h2><i id="pageIcon" class="fa-solid fa-database"></i><span>Chi tiết hồ sơ đã nhận</span> <span id="hdrSoDK" class="link-code" style="cursor:default"></span></h2>
+        </div>
+    </div>
+    <div id="warnBox"></div>
+    <div id="content"></div>
+    <!-- Nút thao tác cố định cuối màn hình -->
+    <div class="sticky-footer">
+        <button class="btn btn-outline" id="btnCancel" onclick="askCancel()"><i class="fa-solid fa-ban"></i> Hủy bản ghi</button>
+        <button class="btn btn-primary" id="btnEdit" onclick="goEdit()"><i class="fa-solid fa-pen"></i> Sửa</button>
+        <button class="btn btn-outline" onclick="goBack()" title="Đóng màn hình chi tiết"><i class="fa-solid fa-xmark"></i> Đóng</button>
+    </div>
+</div>
+
+<!-- POPUP HỦY BẢN GHI -->
+<div class="modal-overlay" id="cancelModal">
+    <div class="modal-content small">
+        <div class="modal-header"><h3><i class="fa-solid fa-ban"></i> Hủy bản ghi</h3><button class="modal-close" onclick="closeModal('cancelModal')" aria-label="Đóng">&times;</button></div>
+        <div class="modal-body">
+            <p style="margin-top:0" id="cancelMsg"></p>
+            <div class="form-group"><label class="form-label" for="cancelReason">Lý do hủy <span class="req">*</span></label><textarea id="cancelReason" class="form-control" rows="3" maxlength="1000"></textarea><div class="err-text" id="cancelErr"></div></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('cancelModal')">Hủy</button><button class="btn btn-danger" onclick="doCancel()">Đồng ý</button></div>
+    </div>
+</div>
+
+
+<script src="nhan_du_lieu_bpbd_spec.js?v=20261006q"></script>
+<script src="nhan_du_lieu_bpbd_common.js?v=20261006q"></script>
+<script>
+const TYPE = NDL.typeFromUrl();
+const T = NDL.TYPES[TYPE];
+const { LDK } = NDL;
+let st = NDL.load();
+const recId = new URLSearchParams(location.search).get('id');
+let rec = st.records.find(r => r.id === recId) || st.records.find(r => r.loai === TYPE);
+
+document.getElementById('pageIcon').className = T.icon;
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+function goBack() { location.href = `nhan_du_lieu_bpbd.html?loai=${TYPE}`; }
+function goEdit() { location.href = `nhan_du_lieu_bpbd_form.html?loai=${TYPE}&mode=edit&id=${rec.id}`; }
+function openRec(id) { location.href = `nhan_du_lieu_bpbd_chi_tiet.html?loai=${TYPE}&id=${id}`; }
+const e = NDL.esc;
+const item = (k, v, wide) => `<div class="info-item"${wide ? ' style="grid-column:1/-1"' : ''}><div class="k">${e(k)}</div><div class="v">${v === '' || v == null ? '-' : v}</div></div>`;
+
+function render() {
+    const benCols = NDL.cols(TYPE, 'BEN_BAO_DAM'), tsCols = NDL.cols(TYPE, 'TAI_SAN');
+    const cs = NDL.chainState(st, rec);
+    const cancelled = rec.trangThai === 'Đã hủy';
+    const loai = NDL.loaiDK(rec.hs);
+    document.title = 'Chi tiết ' + rec.hs.soDK;
+    document.getElementById('hdrSoDK').textContent = rec.hs.soDK;
+    document.getElementById('btnEdit').style.display = cancelled ? 'none' : ''; document.getElementById('btnCancel').style.display = cancelled ? 'none' : '';
+
+    let wb = '';
+    if (cancelled) wb += `<div class="notice err"><i class="fa-solid fa-ban"></i><div>Bản ghi đã bị hủy. Lý do: ${e(rec.lyDoHuy)}</div></div>`;
+    document.getElementById('warnBox').innerHTML = wb;
+
+    // Các khối thông tin của sheet HO_SO, theo nhóm trường của biểu mẫu Loại tài sản
+    let h = '';
+    NDL.hsGroups(TYPE).forEach((g, gi) => {
+        const fields = g.cols.filter(c => NDL.hsVisible(c, rec.hs)).map(c => {
+            let v = e(rec.hs[c.k]);
+            if (c.k === 'loaiDK') v = NDL.loaiDKBadge(loai);
+            if (c.k === 'soDK') v = `<b>${v}</b>`;
+            return item(c.h, v, (c.w || 0) >= 36);
+        }).join('');
+        let head = '';
+        if (gi === 0) {
+            head = item('Loại tài sản', e(T.label)) + item('Cơ quan đăng ký', e(rec.coQuan))                + (NDL.hasCol(TYPE, 'HO_SO', 'loaiDK') ? '' : item('Loại đăng ký', NDL.loaiDKBadge(loai)));
+        }
+        if (gi > 0 && !fields) return; // Khối không có trường áp dụng cho Loại đăng ký (VD: Tàu bay - Hợp đồng bảo đảm chỉ với Đăng ký lần đầu)
+        const badges = gi === 0 ? `<div>${NDL.statusBadge(rec.trangThai)} ${NDL.statusBadge(cs.status)}</div>` : '';
+        const icon = gi === 0 ? 'fa-solid fa-file-contract' : (g.name.indexOf('Người yêu cầu') === 0 ? 'fa-solid fa-user-pen' : 'fa-solid fa-file-signature');
+        h += `<div class="card-block"><div class="card-block-header"><h3><i class="${icon}"></i> ${e(g.name)}</h3>${badges}</div><div class="card-block-body"><div class="info-grid">${head}${fields}</div></div></div>`;
+    });
+
+    // Chủ thể
+    const benTable = (title, icon, rows) => {
+        const showCols = benCols.filter(c => c.k !== 'ma' && c.k !== 'stt');
+        return `<div class="card-block"><div class="card-block-header"><h3><i class="${icon}"></i> ${title}</h3><span class="muted-sm">${rows.length} chủ thể</span></div><div class="card-block-body"><div class="table-container"><table class="custom-table">
+            <thead><tr><th>STT</th>${showCols.map(c => `<th>${e(c.h)}</th>`).join('')}</tr></thead>
+            <tbody>${rows.length ? rows.map((o, i) => `<tr><td>${i + 1}</td>${showCols.map(c => `<td>${e(o[c.k]) || '-'}</td>`).join('')}</tr>`).join('') : `<tr class="empty-row"><td colspan="${showCols.length + 1}">Không có dữ liệu${loai === LDK.XOA ? ' (Xóa đăng ký không yêu cầu thông tin chủ thể)' : ''}.</td></tr>`}</tbody></table></div></div></div>`;
+    };
+    // Loại tài sản có quy định riêng (VD: Tàu bay): Bên bảo đảm, Bên nhận bảo đảm, Tài sản bảo đảm chỉ hiển thị với Đăng ký lần đầu
+    const showChildren = !T.childrenFor || NDL.hasChildren(TYPE, loai);
+    if (showChildren) h += benTable('Bên bảo đảm', 'fa-solid fa-user-shield', rec.bbd);
+    if (showChildren) h += benTable('Bên nhận bảo đảm', 'fa-solid fa-building-columns', rec.bnbd);
+
+    // Tài sản
+    const tCols = tsCols.filter(c => c.k !== 'ma' && c.k !== 'stt');
+    if (!showChildren) { /* không hiển thị */ }
+    else if (T.assetGroups) h += assetGroupsView(cancelled, loai);
+    else h += `<div class="card-block"><div class="card-block-header"><h3><i class="${T.icon}"></i> Tài sản bảo đảm</h3><span class="muted-sm">${rec.ts.length} tài sản</span></div><div class="card-block-body"><div class="table-container"><table class="custom-table">
+        <thead><tr><th>STT</th>${tCols.map(c => `<th>${e(c.h)}</th>`).join('')}<th>Tình trạng tài sản</th></tr></thead>
+        <tbody>${rec.ts.length ? rec.ts.map((o, i) => `<tr><td>${i + 1}</td>${tCols.map(c => `<td>${e(o[c.k]) || '-'}</td>`).join('')}<td>${cancelled ? '-' : NDL.statusBadge(NDL.assetStatus(st, rec, o))}</td></tr>`).join('') : `<tr class="empty-row"><td colspan="${tCols.length + 2}">Không có dữ liệu${loai === LDK.XOA ? ' (toàn bộ tài sản của hồ sơ chuyển Đã giải chấp)' : ''}.</td></tr>`}</tbody></table></div></div></div>`;
+
+    // Tài liệu đính kèm: chỉ xem; không có tệp thì ẩn khối
+    const lot = st.lots.find(l => l.id === rec.loId);
+    const lotFiles = lot ? lot.congVan.map(x => ({ name: x, nguon: 'Công văn, tài liệu của lô ' + lot.id })) : [];
+    const allFiles = rec.files.concat(lotFiles);
+    if (allFiles.length) h += `<div class="card-block"><div class="card-block-header"><h3><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm</h3><span class="muted-sm">${allFiles.length} tệp</span></div><div class="card-block-body"><div class="table-container"><table class="custom-table">
+        <thead><tr><th>STT</th><th>Tên tệp</th><th>Nguồn</th><th>Người đính kèm</th><th>Thời điểm</th></tr></thead>
+        <tbody>${allFiles.map((f, i) => `<tr><td>${i + 1}</td><td><a class="link-code" onclick="NDL.toast('Mở tệp ${e(f.name)} (giả lập).','info')"><i class="fa-solid fa-file-lines"></i> ${e(f.name)}</a></td><td>${e(f.nguon)}</td><td>${e(f.user || (lot && f.nguon.indexOf('lô') >= 0 ? lot.nguoiNhan : rec.nguoiNhan))}</td><td>${e(f.t || (lot && f.nguon.indexOf('lô') >= 0 ? lot.thoiDiem : rec.ngayNhan))}</td></tr>`).join('')}</tbody></table></div></div></div>`;
+
+    // Thông tin nhận dữ liệu: Mã lô, Tệp dữ liệu chỉ hiển thị khi Nguồn nhận là Nhận từ file
+    const fromFile = rec.nguon === 'Nhận từ file';
+    h += `<div class="card-block"><div class="card-block-header"><h3><i class="fa-solid fa-inbox"></i> Thông tin nhận dữ liệu</h3></div><div class="card-block-body"><div class="info-grid">
+        ${item('Mã bản ghi', e(rec.id))}${item('Nguồn nhận', e(rec.nguon))}${fromFile ? item('Mã lô', e(rec.loId)) : ''}
+        ${fromFile ? item('Tệp dữ liệu', e(lot ? lot.fileName : '')) : ''}${item('Người nhận', e(rec.nguoiNhan))}${item('Thời điểm nhận', e(rec.ngayNhan))}
+    </div></div></div>`;
+
+    // Lịch sử hồ sơ (các lần đăng ký liên kết theo Số Giấy chứng nhận đăng ký biện pháp bảo đảm đã cấp)
+    const chain = NDL.chainRecords(st, rec);
+    h += `<div class="card-block"><div class="card-block-header"><h3><i class="fa-solid fa-code-branch"></i> Lịch sử hồ sơ</h3><span class="muted-sm">Số Giấy chứng nhận đăng ký biện pháp bảo đảm đã cấp: ${e(NDL.soDKLanDau(rec.hs))}${cs.hasBase ? '' : ' (chưa có hồ sơ gốc)'}</span></div><div class="card-block-body"><ul class="timeline">
+        ${chain.map(r => `<li class="${r.id === rec.id ? 'current' : ''}"><span class="t">${e(r.hs.thoiDiem)}</span><span>${NDL.loaiDKBadge(NDL.loaiDK(r.hs))} <a class="link-code" onclick="openRec('${r.id}')">${e(r.hs.soDK)}</a> ${NDL.statusBadge(r.trangThai)}${r.id === rec.id ? ' <span class="muted-sm">(đang xem)</span>' : ''}</span></li>`).join('')}
+    </ul></div></div>`;
+
+    // Lịch sử thao tác
+    h += `<div class="card-block"><div class="card-block-header"><h3><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử thao tác</h3></div><div class="card-block-body"><div class="table-container"><table class="custom-table">
+        <thead><tr><th>Thời điểm</th><th>Người thực hiện</th><th>Thao tác</th><th>Lý do</th><th>Nội dung thay đổi</th></tr></thead>
+        <tbody>${rec.history.slice().reverse().map(x => `<tr><td style="white-space:nowrap">${e(x.t)}</td><td>${e(x.user)}</td><td>${e(x.action)}</td><td>${e(x.reason) || '-'}</td><td>${x.changes && x.changes.length ? `<ul class="msg-list">${x.changes.map(c => `<li>${e(c)}</li>`).join('')}</ul>` : '-'}</td></tr>`).join('')}</tbody></table></div></div></div>`;
+    document.getElementById('content').innerHTML = h;
+}
+
+/** Tài sản theo nhóm (đất - mục 5 Mẫu số 01a): chỉ hiển thị các loại có tài sản, mỗi tài sản hiển thị thông tin theo loại */
+function assetGroupsView(cancelled, loai) {
+    const groups = T.assetGroups.filter(G => rec.ts.some(o => o.loaiTS === G.name));
+    const body = groups.map(G => {
+        const items = rec.ts.filter(o => o.loaiTS === G.name);
+        return `<div class="asset-sub"><div class="asset-sub-head"><h4>${e(G.name)}</h4><span class="muted-sm">${items.length} tài sản</span></div><div style="padding:6px 18px">${items.map((o, n) => {
+            const showAssetNum = rec.ts.length > 1;
+            const assetIdx = items.length > 1 ? (n + 1) : (rec.ts.indexOf(o) + 1);
+            const qhIdx = [NDL.QH_DONG_THOI, NDL.QH_KHONG].indexOf(o.quanHe);
+            const qhText = (G.byQuanHe && qhIdx >= 0) ? e(o.quanHe) : '';
+            let assetTitle = '';
+            if (showAssetNum) {
+                assetTitle = `Tài sản ${assetIdx}${qhText ? ` - ${qhText}` : ''}`;
+            } else if (qhText) {
+                assetTitle = qhText;
+            }
+            const statusBadge = cancelled ? '' : NDL.statusBadge(NDL.assetStatus(st, rec, o));
+            const headHtml = (assetTitle || statusBadge) ? `
+                <div class="asset-item-head" ${!assetTitle ? 'style="justify-content:flex-end; margin-bottom:8px;"' : ''}>
+                    ${assetTitle ? `<span><i class="fa-solid fa-layer-group" style="color:#2563EB; margin-right:6px"></i>${assetTitle}</span>` : ''}
+                    ${statusBadge}
+                </div>` : '';
+
+            let blocksHtml = '';
+            if (G.name === 'Quyền sử dụng đất') {
+                // Trong Quyền sử dụng đất có 2 khối thông tin nằm trên dưới với nhau rõ ràng
+                blocksHtml = `
+                    <div class="asset-block-sec">
+                        <div class="asset-block-title"><i class="fa-solid fa-map-location-dot"></i> Thông tin thửa đất</div>
+                        <div class="info-grid">
+                            ${item('Thửa đất số', e(o.soThua))}
+                            ${item('Tờ bản đồ số (nếu có)', e(o.toBanDo))}
+                            ${item('Mục đích sử dụng đất', e(o.mucDich))}
+                            ${item('Thời hạn sử dụng đất', e(o.thoiHan))}
+                            ${item('Địa chỉ thửa đất', e(o.diaChiThua), true)}
+                        </div>
+                    </div>
+                    <div class="asset-block-sec">
+                        <div class="asset-block-title"><i class="fa-solid fa-certificate"></i> Thông tin Giấy chứng nhận đối với quyền sử dụng đất</div>
+                        <div class="info-grid">
+                            ${item('Tên Giấy chứng nhận', e(o.tenGCN), true)}
+                            ${item('Số phát hành', e(o.soPhatHanhGCN))}
+                            ${item('Số vào sổ cấp giấy', e(o.soVaoSoGCN))}
+                            ${item('Cơ quan cấp', e(o.cqCapGCN), true)}
+                            ${item('Ngày cấp', e(o.ngayCapGCN))}
+                        </div>
+                    </div>
+                `;
+            } else {
+                const secs = G.sections || G.byQuanHe[o.quanHe] || [];
+                blocksHtml = secs.map(s => {
+                    const isGCN = s.t && s.t.indexOf('Giấy chứng nhận') >= 0;
+                    const isQD = s.t && s.t.indexOf('Quyết định') >= 0;
+                    const icon = isGCN ? 'fa-solid fa-certificate' : (isQD ? 'fa-solid fa-landmark' : 'fa-solid fa-circle-info');
+                    const titleHtml = s.t ? `<div class="asset-block-title"><i class="${icon}"></i> <span>${e(s.t)}</span></div>` : '';
+                    return `<div class="asset-block-sec">
+                        ${titleHtml}
+                        <div class="info-grid">${s.fields.map(f => item(f.h, e(o[f.k]), f.span >= 2 || f.area)).join('')}</div>
+                    </div>`;
+                }).join('');
+            }
+
+            return `<div class="asset-view-item">${headHtml}${blocksHtml}</div>`;
+        }).join('')}</div></div>`;
+    }).join('');
+    return `<div class="card-block"><div class="card-block-header"><h3><i class="${T.icon}"></i> Tài sản bảo đảm</h3><span class="muted-sm">${rec.ts.length} tài sản</span></div><div class="card-block-body">
+        ${body || `<div class="muted-sm">Không có dữ liệu${loai === LDK.XOA ? ' (toàn bộ tài sản của hồ sơ chuyển Đã giải chấp)' : ''}.</div>`}</div></div>`;
+}
+function askCancel() {
+    if (NDL.loaiDK(rec.hs) === LDK.LAN_DAU) {
+        const blk = NDL.chainRecords(st, rec).filter(r => r.id !== rec.id && r.trangThai === 'Hiệu lực');
+        if (blk.length) { NDL.toast(`Không thể hủy do đã có bản ghi đăng ký thay đổi/xóa đăng ký còn hiệu lực liên kết (${blk.map(b => b.hs.soDK).join(', ')}). Vui lòng hủy các bản ghi đó trước.`, 'error'); return; }
+    }
+    document.getElementById('cancelMsg').textContent = `Bản ghi ${rec.hs.soDK} sẽ chuyển sang trạng thái Đã hủy và không còn được sử dụng để tra cứu, báo cáo, cảnh báo trùng. Bạn có chắc chắn muốn hủy?`;
+    document.getElementById('cancelReason').value = ''; document.getElementById('cancelErr').textContent = '';
+    document.getElementById('cancelModal').classList.add('active');
+}
+function doCancel() {
+    const reason = document.getElementById('cancelReason').value.trim();
+    if (!reason) { document.getElementById('cancelErr').textContent = 'Trường này bắt buộc nhập.'; return; }
+    rec.trangThai = 'Đã hủy'; rec.lyDoHuy = reason;
+    rec.history.push({ t: NDL.nowStr(), user: NDL.USER, action: 'Hủy bản ghi', reason });
+    NDL.save(st); closeModal('cancelModal'); render();
+    NDL.toast('Hủy bản ghi thành công.', 'success');
+}
+render();
+</script>
+
+</body>
+</html>

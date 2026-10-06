@@ -336,6 +336,12 @@
         #dossier-list-section .icon-btn.approve {
             color: var(--success-color) !important;
         }
+
+        /* Phường/Xã đang hiển thị (Quốc gia = Việt Nam): Địa chỉ chi tiết đứng cùng hàng với Phường/Xã */
+        #tc_phuongxa_group:not([style*="none"]) + .form-group,
+        #ntc_phuongxa_group:not([style*="none"]) + .form-group {
+            grid-column: span 1 !important;
+        }
     </style>
 </head>
 
@@ -979,13 +985,14 @@
                                             <th>Thao tác</th>
                                             <th>Loại chủ thể</th>
                                             <th>Số giấy tờ chứng minh tư cách pháp lý</th>
+                                            <th>Ngày tháng năm sinh</th>
                                             <th>Tên</th>
                                             <th>Địa chỉ</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbodyTC">
                                         <tr>
-                                            <td colspan="5" style="text-align: center; color: var(--text-muted);">Chưa
+                                            <td colspan="6" style="text-align: center; color: var(--text-muted);">Chưa
                                                 có dữ liệu.</td>
                                         </tr>
                                     </tbody>
@@ -1051,13 +1058,11 @@
                                             <th>Thao tác</th>
                                             <th>Tên</th>
                                             <th>Địa chỉ</th>
-                                            <th>Tỉnh/ Thành phố</th>
-                                            <th>Quốc gia</th>
                                         </tr>
                                     </thead>
                                     <tbody id="tbodyNTC">
                                         <tr>
-                                            <td colspan="5" style="text-align: center; color: var(--text-muted);">Chưa
+                                            <td colspan="3" style="text-align: center; color: var(--text-muted);">Chưa
                                                 có dữ liệu.</td>
                                         </tr>
                                     </tbody>
@@ -1462,9 +1467,7 @@
                                     <th>Số giấy tờ</th>
                                     <th id="searchColBirthDate">Ngày tháng năm sinh</th>
                                     <th id="searchColPassportCountry">Quốc gia cấp hộ chiếu</th>
-                                    <th>Quốc gia</th>
-                                    <th>Tỉnh/Thành phố</th>
-                                    <th>Địa chỉ chi tiết</th>
+                                    <th>Địa chỉ</th>
                                     <th style="width: 80px; text-align: center;">Chọn</th>
                                 </tr>
                             </thead>
@@ -1531,15 +1534,16 @@
     </div>
 
     <script src="../countries.js"></script>
+    <script src="../Common/dia_ban_vn.js"></script>
     <script src="dang_ky_bpbd.js"></script>
 
     <!-- SCRIPT ĐIỀU HỢP CÁN BỘ & ĐỐI SOÁT LIÊN KẾT -->
     <script>
         const bankAccounts = [
-            { id: "KH-VCB-04", name: "Ngân hàng TMCP Ngoại thương Việt Nam (Vietcombank)", address: "198 Trần Quang Khải, Hoàn Kiếm, Hà Nội", representative: "Nguyễn Văn An", cccd: "001090909091", phone: "0901234567", email: "vcb_contact@vietcombank.com.vn" },
-            { id: "KH-BIDV-01", name: "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam (BIDV)", address: "35 Hàng Vôi, Hoàn Kiếm, Hà Nội", representative: "Trần Văn Bình", cccd: "001090909092", phone: "0911223344", email: "bidv_contact@bidv.com.vn" },
-            { id: "KH-AGRI-02", name: "Ngân hàng Nông nghiệp & Phát triển Nông thôn VN (Agribank)", address: "2 Láng Hạ, Ba Đình, Hà Nội", representative: "Phạm Văn Chung", cccd: "001090909093", phone: "0922334455", email: "agribank_contact@agribank.com.vn" },
-            { id: "KH-MB-03", name: "Ngân hàng TMCP Quân đội (MB Bank)", address: "21 Cát Linh, Đống Đa, Hà Nội", representative: "Lê Văn Dũng", cccd: "001090909094", phone: "0933445566", email: "mb_contact@mbbank.com.vn" }
+            { id: "KH-VCB-04", name: "Ngân hàng TMCP Ngoại thương Việt Nam (Vietcombank)", address: "198 Trần Quang Khải", ward: "Phường Hoàn Kiếm", province: "Hà Nội", representative: "Nguyễn Văn An", cccd: "001090909091", phone: "0901234567", email: "vcb_contact@vietcombank.com.vn" },
+            { id: "KH-BIDV-01", name: "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam (BIDV)", address: "35 Hàng Vôi", ward: "Phường Hoàn Kiếm", province: "Hà Nội", representative: "Trần Văn Bình", cccd: "001090909092", phone: "0911223344", email: "bidv_contact@bidv.com.vn" },
+            { id: "KH-AGRI-02", name: "Ngân hàng Nông nghiệp & Phát triển Nông thôn VN (Agribank)", address: "2 Láng Hạ", ward: "Phường Giảng Võ", province: "Hà Nội", representative: "Phạm Văn Chung", cccd: "001090909093", phone: "0922334455", email: "agribank_contact@agribank.com.vn" },
+            { id: "KH-MB-03", name: "Ngân hàng TMCP Quân đội (MB Bank)", address: "21 Cát Linh", ward: "Phường Đống Đa", province: "Hà Nội", representative: "Lê Văn Dũng", cccd: "001090909094", phone: "0933445566", email: "mb_contact@mbbank.com.vn" }
         ];
 
         let selectedAccount = null;
@@ -2049,8 +2053,8 @@
             document.getElementById('loaiBienPhap').value = 'the_chap';
             document.getElementById('loaiBienPhap').dispatchEvent(new Event('change'));
 
-            document.getElementById('tbodyTC').innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
-            document.getElementById('tbodyNTC').innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
+            document.getElementById('tbodyTC').innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
+            document.getElementById('tbodyNTC').innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
             document.getElementById('wrapperTableTC').classList.add('hidden');
             document.getElementById('wrapperTableNTC').classList.add('hidden');
 
@@ -2106,6 +2110,10 @@
             if (uploadBtn) {
                 if (enabled) uploadBtn.removeAttribute('disabled');
                 else uploadBtn.setAttribute('disabled', 'true');
+            }
+            // Phường/Xã: tính lại trạng thái hiển thị/khóa theo Quốc gia, Tỉnh/Thành phố hiện tại (khóa khi chưa chọn Tỉnh/Thành phố)
+            if (enabled && window.DiaBanVN) {
+                ['tc_phuongxa', 'ntc_phuongxa'].forEach(id => DiaBanVN.get(id)?.refresh());
             }
         }
 
@@ -2359,7 +2367,10 @@
             // Auto-fill Bên nhận bảo đảm fields in Section 2 and trigger Save button
             document.getElementById('ntc_ten').value = acc.name;
             document.getElementById('ntc_quocgia').value = 'Việt Nam';
-            document.getElementById('ntc_tinhthanh_select').value = 'Hà Nội';
+            document.getElementById('ntc_tinhthanh_select').value = acc.province || 'Hà Nội';
+            // Phường/Xã: gán sau khi đã có Tỉnh/Thành phố (gán .value bằng mã không phát sinh sự kiện)
+            const wardNTC = window.DiaBanVN && DiaBanVN.get('ntc_phuongxa');
+            if (wardNTC) wardNTC.setValue(acc.ward);
             document.getElementById('ntc_diachi').value = acc.address;
             document.getElementById('btnLuuNTC').click(); // Auto-add to table
         }
@@ -2367,7 +2378,7 @@
         function clearNTCGrid() {
             const tbodyNTC = document.getElementById('tbodyNTC');
             if (tbodyNTC) {
-                tbodyNTC.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
+                tbodyNTC.innerHTML = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
                 const wrapper = document.getElementById('wrapperTableNTC');
                 if (wrapper) wrapper.classList.add('hidden');
             }
@@ -2787,135 +2798,53 @@
             if (btnThemNTC) btnThemNTC.classList.remove('hidden');
             if (btnHuyNTC) btnHuyNTC.classList.add('hidden');
 
+            // Dòng lưới được dựng qua BPBDPartyGrid (dang_ky_bpbd.js) để cùng cấu trúc cột với dòng thêm mới
+            // và nút Sửa → CẬP NHẬT cập nhật tại chỗ (dùng chung biến editingRowTC/editingRowNTC của module)
+            const partyGrid = window.BPBDPartyGrid;
+
             // 3. Số hóa Bên bảo đảm (tbodyTC)
             const tbodyTC = document.getElementById('tbodyTC');
             const wrapperTableTC = document.getElementById('wrapperTableTC');
-            if (tbodyTC) {
+            if (tbodyTC && partyGrid) {
                 tbodyTC.innerHTML = '';
                 if (wrapperTableTC) wrapperTableTC.classList.remove('hidden');
 
                 let loaiKey = 'cd_vn';
-                let loaiText = 'Công dân Việt Nam';
                 const lowerCustomer = (selectedItem.customer || '').toLowerCase();
                 if (lowerCustomer.includes('công ty') || lowerCustomer.includes('doanh nghiệp') || lowerCustomer.includes('tập đoàn') || lowerCustomer.includes('global') || lowerCustomer.includes('hợp tác xã') || lowerCustomer.includes('htx') || lowerCustomer.includes('quản lý')) {
                     loaiKey = 'tc_vn';
-                    loaiText = 'Tổ chức trong nước';
                 } else if (lowerCustomer.includes('john') || lowerCustomer.includes('petrov') || lowerCustomer.includes('smith') || lowerCustomer.includes('ivan')) {
                     loaiKey = 'nn';
-                    loaiText = 'Người nước ngoài';
                 }
 
-                const tr = document.createElement('tr');
-                tr.dataset.loai = loaiKey;
-                tr.dataset.ten = selectedItem.customer;
-                tr.dataset.giayTo = selectedItem.customerId || '001092008421';
-                tr.dataset.diachi = 'Số 15 Phố Duy Tân, Phường Dịch Vọng Hậu, Quận Cầu Giấy, Hà Nội';
-                tr.dataset.tinhthanh = 'Hà Nội';
-                tr.dataset.quocgia = 'Việt Nam';
-
-                tr.innerHTML = `
-                    <td>
-                        <button type="button" class="btn btn-outline-primary btn-sua-tc" style="padding: 4px 8px; font-size: 12px;">Sửa</button>
-                        <button type="button" class="btn btn-danger btn-xoa-tc" style="padding: 4px 8px; font-size: 12px;">Xóa</button>
-                    </td>
-                    <td>${loaiText}</td>
-                    <td>${tr.dataset.giayTo}</td>
-                    <td><b>${selectedItem.customer}</b></td>
-                    <td>Số 15 Phố Duy Tân, Phường Dịch Vọng Hậu, Quận Cầu Giấy, Hà Nội</td>
-                `;
-
-                // Wire delete event
-                tr.querySelector('.btn-xoa-tc').addEventListener('click', () => {
-                    tr.remove();
-                    if (tbodyTC.children.length === 0) tbodyTC.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
+                // Địa chỉ lưu tách phần (chi tiết đến số nhà/đường); cột Địa chỉ ghép "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia"
+                partyGrid.appendRowTC({
+                    loai: loaiKey,
+                    ten: selectedItem.customer,
+                    giayTo: selectedItem.customerId || '001092008421',
+                    diachi: 'Số 15 Phố Duy Tân',
+                    ward: 'Phường Cầu Giấy',
+                    tinhthanh: 'Hà Nội',
+                    quocgia: 'Việt Nam'
                 });
-
-                // Wire edit event
-                tr.querySelector('.btn-sua-tc').addEventListener('click', () => {
-                    editingRowTC = tr;
-                    loaiChuTheTC.value = tr.dataset.loai;
-                    loaiChuTheTC.dispatchEvent(new Event('change'));
-
-                    setTimeout(() => {
-                        const tenInput = document.getElementById('tt_ten') || document.querySelector('#formChuTheWrapper input[id$="ten"]');
-                        const giaytoInput = document.getElementById('tt_sogiayto') || document.querySelector('#formChuTheWrapper input[id$="giayto"]') || document.querySelector('#formChuTheWrapper input[id$="sogiayto"]');
-                        const diachiInput = document.getElementById('tc_diachi');
-                        const quocgiaInput = document.getElementById('tc_quocgia');
-
-                        if (tenInput) tenInput.value = tr.dataset.ten;
-                        if (giaytoInput) giaytoInput.value = tr.dataset.giayTo;
-                        if (diachiInput) diachiInput.value = tr.dataset.diachi;
-                        if (quocgiaInput) {
-                            quocgiaInput.value = tr.dataset.quocgia;
-                            quocgiaInput.dispatchEvent(new Event('change'));
-                        }
-                    }, 50);
-
-                    const btnLuuTC = document.getElementById('btnLuuTC');
-                    if (btnLuuTC) btnLuuTC.innerText = 'CẬP NHẬT';
-                    if (subFormBenTheChap) subFormBenTheChap.classList.remove('hidden');
-                    if (btnThemTC) btnThemTC.classList.add('hidden');
-                    if (btnHuyTC) btnHuyTC.classList.remove('hidden');
-                });
-
-                tbodyTC.appendChild(tr);
             }
 
             // 4. Số hóa Bên nhận bảo đảm (tbodyNTC)
             const tbodyNTC = document.getElementById('tbodyNTC');
             const wrapperTableNTC = document.getElementById('wrapperTableNTC');
-            if (tbodyNTC) {
+            if (tbodyNTC && partyGrid) {
                 tbodyNTC.innerHTML = '';
                 if (wrapperTableNTC) wrapperTableNTC.classList.remove('hidden');
 
-                const tr = document.createElement('tr');
-                tr.dataset.loai = 'tc_vn';
-                tr.dataset.ten = selectedItem.mortgagee;
-                tr.dataset.giayTo = '0100112437';
-                tr.dataset.diachi = 'Số 17 Duy Tân, Quận Cầu Giấy, Hà Nội';
-                tr.dataset.tinhthanh = 'Hà Nội';
-                tr.dataset.quocgia = 'Việt Nam';
-
-                tr.innerHTML = `
-                    <td>
-                        <button type="button" class="btn btn-outline-primary btn-sua-ntc" style="padding: 4px 8px; font-size: 12px;">Sửa</button>
-                        <button type="button" class="btn btn-danger btn-xoa-ntc" style="padding: 4px 8px; font-size: 12px;">Xóa</button>
-                    </td>
-                    <td>Tổ chức trong nước</td>
-                    <td>0100112437</td>
-                    <td><b>${selectedItem.mortgagee}</b></td>
-                    <td>Số 17 Duy Tân, Quận Cầu Giấy, Hà Nội</td>
-                `;
-
-                // Wire delete event
-                tr.querySelector('.btn-xoa-ntc').addEventListener('click', () => {
-                    tr.remove();
-                    if (tbodyNTC.children.length === 0) tbodyNTC.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
+                partyGrid.appendRowNTC({
+                    loai: 'tc_vn',
+                    giayTo: '0100112437',
+                    ten: selectedItem.mortgagee,
+                    diachi: 'Số 17 Duy Tân',
+                    ward: 'Phường Cầu Giấy',
+                    tinhthanh: 'Hà Nội',
+                    quocgia: 'Việt Nam'
                 });
-
-                // Wire edit event
-                tr.querySelector('.btn-sua-ntc').addEventListener('click', () => {
-                    editingRowNTC = tr;
-                    const subFormBenNhanTheChap = document.getElementById('subFormBenNhanTheChap');
-                    if (subFormBenNhanTheChap) subFormBenNhanTheChap.classList.remove('hidden');
-
-                    document.getElementById('ntc_ten').value = tr.dataset.ten;
-                    document.getElementById('ntc_quocgia').value = tr.dataset.quocgia;
-                    document.getElementById('ntc_quocgia').dispatchEvent(new Event('change'));
-
-                    setTimeout(() => {
-                        const ttField = document.getElementById('ntc_tinhthanh_select') || document.getElementById('ntc_tinhthanh_input');
-                        if (ttField) ttField.value = tr.dataset.tinhthanh;
-                        document.getElementById('ntc_diachi').value = tr.dataset.diachi;
-                    }, 50);
-
-                    const btnLuuNTC = document.getElementById('btnLuuNTC');
-                    if (btnLuuNTC) btnLuuNTC.innerText = 'CẬP NHẬT';
-                    if (btnThemNTC) btnThemNTC.classList.add('hidden');
-                    if (btnHuyNTC) btnHuyNTC.classList.remove('hidden');
-                });
-
-                tbodyNTC.appendChild(tr);
             }
 
             // 5. Select Asset Checkbox & Populate Mock Asset Data

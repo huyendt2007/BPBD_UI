@@ -955,6 +955,24 @@
                             </select>
                         </div>
                     </div>
+                    <div class="form-group" id="basisProofBlock" style="margin-top: 15px;">
+                        <label class="form-label">Tải lên tài liệu chứng minh căn cứ xóa đăng ký (pdf)</label>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <div id="dropzoneBasis" style="display: flex; align-items: center;">
+                                <button type="button" class="btn btn-outline-primary" style="padding: 6px 12px; font-size: 13px;">
+                                    Chọn tệp PDF...
+                                </button>
+                            </div>
+                            <input type="file" id="fileBasis" style="display: none;" accept=".pdf">
+                            <div id="basisFileInfo" class="uploaded-file-info" style="display: none; margin-top: 0; padding: 0; border: none; background: none; align-items: center; gap: 8px;">
+                                <span id="lblBasisFileName" style="font-size: 13px; color: var(--text-main); font-weight: 500;">ten_file.pdf</span>
+                                <button type="button" class="btn-view-pdf" onclick="alert('Xem tài liệu chứng minh căn cứ xóa đăng ký'); return false;" style="font-size: 13px;">[Xem file]</button>
+                                <button type="button" id="btnDeleteBasisFile" style="color: var(--danger-color); background: none; border: none; cursor: pointer; text-decoration: underline; font-size: 13px;">Xóa</button>
+                            </div>
+                            <span id="lblNoFileBasis" style="font-size: 13px; color: var(--text-muted); font-style: italic;">Chưa chọn tệp</span>
+                        </div>
+                        <span class="form-text" style="font-size: 12px; color: var(--text-muted);">Không bắt buộc. Dung lượng tệp tin tối đa 20MB.</span>
+                    </div>
                 </div>
 
                 <!-- Diện miễn nộp phí -->
@@ -1060,6 +1078,7 @@
     </div>
 
     <!-- Script connection -->
+    <script src="../Common/dia_ban_vn.js"></script>
     <script src="xoa_dang_ky.js"></script>
 </body>
 </html>

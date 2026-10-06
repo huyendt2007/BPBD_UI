@@ -218,6 +218,94 @@
             border-top: 1px solid var(--border-color);
         }
 
+        /* Demo Chips styling đồng bộ Website quản trị */
+        .cl-demo-chips-box {
+            background-color: #F8FAFC;
+            border: 1px dashed #CBD5E1;
+            border-radius: var(--border-radius-md);
+            padding: 12px 14px;
+            margin-top: 15px;
+        }
+        .cl-demo-chips-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+        .cl-demo-chips-header i {
+            color: #7C3AED;
+            font-size: 13px;
+        }
+        .cl-demo-chips-desc {
+            font-size: 11.5px;
+            color: #64748B;
+            margin-bottom: 8px;
+        }
+        .cl-demo-chips-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .cl-demo-chips-group:last-child {
+            margin-bottom: 0;
+        }
+        .cl-demo-group-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #475569;
+            min-width: 85px;
+            text-transform: uppercase;
+        }
+        .cl-demo-chip {
+            background: #FFFFFF;
+            color: #334155;
+            border: 1px solid #CBD5E1;
+            border-radius: 12px;
+            padding: 3px 10px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 11.5px;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            user-select: none;
+        }
+        .cl-demo-chip:hover {
+            background: #F1F5F9;
+            border-color: #94A3B8;
+            transform: translateY(-1px);
+        }
+        .cl-demo-chip.cl-good {
+            background: #ECFDF5;
+            color: #065F46;
+            border-color: #A7F3D0;
+        }
+        .cl-demo-chip.cl-good:hover {
+            background: #D1FAE5;
+        }
+        .cl-demo-chip.cl-bad {
+            background: #FEF2F2;
+            color: #991B1B;
+            border-color: #FECACA;
+        }
+        .cl-demo-chip.cl-bad:hover {
+            background: #FEE2E2;
+        }
+        .cl-demo-chip code {
+            font-family: monospace;
+            background: rgba(0,0,0,0.06);
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-size: 10.5px;
+            font-weight: 600;
+        }
+
         .btn {
             font-weight: 600;
             border-radius: var(--border-radius-sm);
@@ -1225,11 +1313,36 @@
                         <button class="btn btn-primary" onclick="searchReg()">Tìm kiếm <i class="fa-solid fa-search"></i></button>
                     </div>
                     
-                    <div class="test-suggestions">
-                        * Gợi ý kiểm thử:
-                        <br>- Số đăng ký hợp lệ: <span class="demo-badge">1505156435</span> hoặc <span class="demo-badge">1505156436</span>
-                        <br>- Giả lập <strong>Mã CSDL thường xuyên</strong> (hiển thị kết quả phía dưới, giữ nguyên form tìm kiếm): Nhập mã bắt đầu bằng <strong>TX</strong> hoặc <strong>CQ</strong> (Ví dụ: <span class="demo-badge">TX-839210</span>)
-                        <br>- Giả lập <strong>Mã CSDL 1 lần</strong> (ẩn form tìm kiếm, chỉ hiển thị kết quả): Nhập mã bắt đầu bằng <strong>1L</strong> hoặc <strong>OL</strong> (Ví dụ: <span class="demo-badge">1L-002931</span>)
+                    <!-- Kịch bản kiểm thử mẫu (Demo Chips tương tác) -->
+                    <div class="cl-demo-chips-box">
+                        <div class="cl-demo-chips-header">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>Dữ liệu kiểm thử mẫu (Demo) - Nhấn chọn để tự động điền vào form:</span>
+                        </div>
+                        <div class="cl-demo-chips-desc">
+                            Nhấp chọn trường hợp bên dưới để điền Mã CSDL & Số đăng ký vào form, sau đó nhấn nút <strong>Tìm kiếm</strong>:
+                        </div>
+                        <div class="cl-demo-chips-group">
+                            <span class="cl-demo-group-label"><i class="fa-solid fa-circle-check" style="color: #059669;"></i> Hợp lệ:</span>
+                            <button type="button" class="cl-demo-chip cl-good" onclick="fillRegDemo('TX-839210', '1505156435')" title="Mã thường xuyên TX + Số ĐK hợp lệ 1505156435">
+                                <i class="fa-solid fa-check"></i> TX: <code>TX-839210</code> | ĐK: <code>1505156435</code>
+                            </button>
+                            <button type="button" class="cl-demo-chip cl-good" onclick="fillRegDemo('1L-002931', '1505156435')" title="Mã 1 lần 1L + Số ĐK hợp lệ 1505156435">
+                                <i class="fa-solid fa-check"></i> 1 Lần: <code>1L-002931</code> | ĐK: <code>1505156435</code>
+                            </button>
+                            <button type="button" class="cl-demo-chip cl-good" onclick="fillRegDemo('TX-839210', '1505156436')" title="Mã thường xuyên TX + Số ĐK 1505156436">
+                                <i class="fa-solid fa-check"></i> TX: <code>TX-839210</code> | ĐK: <code>1505156436</code>
+                            </button>
+                        </div>
+                        <div class="cl-demo-chips-group" style="margin-top: 6px;">
+                            <span class="cl-demo-group-label"><i class="fa-solid fa-triangle-exclamation" style="color: #DC2626;"></i> Lỗi / Chặn:</span>
+                            <button type="button" class="cl-demo-chip cl-bad" onclick="fillRegDemo('TX-839210', '9999999999')" title="Không tìm thấy hồ sơ trong CSDL">
+                                <i class="fa-solid fa-circle-xmark"></i> Không tìm thấy: <code>9999999999</code>
+                            </button>
+                            <button type="button" class="cl-demo-chip cl-bad" onclick="fillRegDemo('SAI_MA_CSDL', '1505156435')" title="Mã sử dụng CSDL không hợp lệ">
+                                <i class="fa-solid fa-key"></i> Sai mã CSDL: <code>SAI_MA_CSDL</code>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -1317,16 +1430,30 @@
                         <button class="btn btn-primary" onclick="searchOwner()">Tìm kiếm <i class="fa-solid fa-search"></i></button>
                     </div>
 
-                    <div class="test-suggestions">
-                        * Gợi ý kiểm thử:
-                        <br>- <strong>Công dân Việt Nam</strong>: Nhập CCCD <span class="demo-badge">001092008421</span>
-                        <br>- <strong>Tổ chức có đăng ký kinh doanh trong nước</strong>: Nhập MST/Số ĐKKD <span class="demo-badge">0102030405</span>
-                        <br>- <strong>Người nước ngoài</strong>: Nhập Họ tên <span class="demo-badge">John Smith</span> và Số Hộ chiếu <span class="demo-badge">A1234567</span>
-                        <br>- <strong>Người không quốc tịch cư trú tại Việt Nam</strong>: Nhập Họ tên <span class="demo-badge">Ivan Petrov</span> và Số thẻ cư trú <span class="demo-badge">TR-998877</span>
-                        <br>- <strong>Tổ chức nước ngoài</strong>: Nhập MST/Số GPĐT <span class="demo-badge">INVEST-8899</span>
-                        <br>- <strong>Tổ chức khác</strong>: Nhập Tên <span class="demo-badge">Hợp tác xã Nông nghiệp Quyết Thắng</span>
-                        <br>- Giả lập <strong>Mã CSDL thường xuyên</strong> (hiển thị kết quả phía dưới, giữ nguyên form tìm kiếm): Nhập mã bắt đầu bằng <strong>TX</strong> hoặc <strong>CQ</strong> (Ví dụ: <span class="demo-badge">TX-839210</span>)
-                        <br>- Giả lập <strong>Mã CSDL 1 lần</strong> (ẩn form tìm kiếm, chỉ hiển thị kết quả): Nhập mã bắt đầu bằng <strong>1L</strong> hoặc <strong>OL</strong> (Ví dụ: <span class="demo-badge">1L-002931</span>)
+                    <!-- Kịch bản kiểm thử mẫu (Demo Chips tương tác) -->
+                    <div class="cl-demo-chips-box">
+                        <div class="cl-demo-chips-header">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>Dữ liệu kiểm thử mẫu (Demo) - Nhấn chọn để tự động điền vào form:</span>
+                        </div>
+                        <div class="cl-demo-chips-desc">
+                            Nhấp chọn trường hợp bên dưới để điền Mã CSDL & Thông tin chủ thể vào form, sau đó nhấn nút <strong>Tìm kiếm</strong>:
+                        </div>
+                        <div class="cl-demo-chips-group">
+                            <span class="cl-demo-group-label"><i class="fa-solid fa-circle-check" style="color: #059669;"></i> Hợp lệ:</span>
+                            <button type="button" class="cl-demo-chip cl-good" onclick="fillOwnerDemo('TX-839210', 'cong_dan_vn', '001092008421', '')" title="Công dân VN: CCCD 001092008421">
+                                <i class="fa-solid fa-user"></i> Công dân VN: CCCD <code>001092008421</code>
+                            </button>
+                            <button type="button" class="cl-demo-chip cl-good" onclick="fillOwnerDemo('TX-839210', 'to_chuc_vn', '0102030405', '')" title="Tổ chức trong nước: MST 0102030405">
+                                <i class="fa-solid fa-building"></i> Doanh nghiệp: MST <code>0102030405</code>
+                            </button>
+                            <button type="button" class="cl-demo-chip cl-good" onclick="fillOwnerDemo('1L-002931', 'nguoi_nuoc_ngoai', 'A1234567', 'John Smith')" title="Người nước ngoài: John Smith - Hộ chiếu A1234567">
+                                <i class="fa-solid fa-passport"></i> Nước ngoài: <code>John Smith</code> (A1234567)
+                            </button>
+                            <button type="button" class="cl-demo-chip cl-good" onclick="fillOwnerDemo('TX-839210', 'to_chuc_khac', '', 'Hợp tác xã Nông nghiệp Quyết Thắng')" title="Tổ chức khác: HTX Nông nghiệp Quyết Thắng">
+                                <i class="fa-solid fa-users"></i> Tổ chức khác: <code>HTX Quyết Thắng</code>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -1365,11 +1492,30 @@
                         <button class="btn btn-primary" onclick="searchFrame()">Tìm kiếm <i class="fa-solid fa-search"></i></button>
                     </div>
 
-                    <div class="test-suggestions">
-                        * Gợi ý kiểm thử:
-                        <br>- Số khung hợp lệ: <span class="demo-badge">TYT-VIOS-88992</span> hoặc <span class="demo-badge">ĐK-99882-HP</span>
-                        <br>- Giả lập <strong>Mã CSDL thường xuyên</strong> (hiển thị kết quả phía dưới, giữ nguyên form tìm kiếm): Nhập mã bắt đầu bằng <strong>TX</strong> hoặc <strong>CQ</strong> (Ví dụ: <span class="demo-badge">TX-839210</span>)
-                        <br>- Giả lập <strong>Mã CSDL 1 lần</strong> (ẩn form tìm kiếm, chỉ hiển thị kết quả): Nhập mã bắt đầu bằng <strong>1L</strong> hoặc <strong>OL</strong> (Ví dụ: <span class="demo-badge">1L-002931</span>)
+                    <!-- Kịch bản kiểm thử mẫu (Demo Chips tương tác) -->
+                    <div class="cl-demo-chips-box">
+                        <div class="cl-demo-chips-header">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>Dữ liệu kiểm thử mẫu (Demo) - Nhấn chọn để tự động điền vào form:</span>
+                        </div>
+                        <div class="cl-demo-chips-desc">
+                            Nhấp chọn trường hợp bên dưới để điền Mã CSDL & Số khung vào form, sau đó nhấn nút <strong>Tìm kiếm</strong>:
+                        </div>
+                        <div class="cl-demo-chips-group">
+                            <span class="cl-demo-group-label"><i class="fa-solid fa-circle-check" style="color: #059669;"></i> Hợp lệ:</span>
+                            <button type="button" class="cl-demo-chip cl-good" onclick="fillFrameDemo('TX-839210', 'TYT-VIOS-88992')" title="Mã thường xuyên TX + Số khung TYT-VIOS-88992">
+                                <i class="fa-solid fa-car"></i> TX: <code>TX-839210</code> | Khung: <code>TYT-VIOS-88992</code>
+                            </button>
+                            <button type="button" class="cl-demo-chip cl-good" onclick="fillFrameDemo('1L-002931', 'ĐK-99882-HP')" title="Mã 1 lần 1L + Số khung ĐK-99882-HP">
+                                <i class="fa-solid fa-car-side"></i> 1 Lần: <code>1L-002931</code> | Khung: <code>ĐK-99882-HP</code>
+                            </button>
+                        </div>
+                        <div class="cl-demo-chips-group" style="margin-top: 6px;">
+                            <span class="cl-demo-group-label"><i class="fa-solid fa-triangle-exclamation" style="color: #DC2626;"></i> Lỗi / Chặn:</span>
+                            <button type="button" class="cl-demo-chip cl-bad" onclick="fillFrameDemo('TX-839210', 'KHUNG_KHONG_TON_TAI')" title="Số khung không có trong CSDL">
+                                <i class="fa-solid fa-circle-xmark"></i> Không tồn tại: <code>KHUNG_99999</code>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -1403,8 +1549,29 @@
                         <button class="btn btn-primary" onclick="searchTthc()">Tìm kiếm <i class="fa-solid fa-search"></i></button>
                     </div>
 
-                    <div class="test-suggestions">
-                        * Điểm gợi ý test: Có sẵn 5 kịch bản kết quả. Nhập <span class="demo-badge">HSC-20260618-001</span> (Đạt), <span class="demo-badge">HSC-20260618-002</span> (Đang xử lý), <span class="demo-badge">HSC-20260618-003</span> (Bổ sung), <span class="demo-badge">HSC-20260618-004</span> (Từ chối).
+                    <!-- Kịch bản kiểm thử mẫu (Demo Chips tương tác) -->
+                    <div class="cl-demo-chips-box">
+                        <div class="cl-demo-chips-header">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>Dữ liệu kiểm thử mẫu (Demo) - Nhấn chọn để tự động điền vào form:</span>
+                        </div>
+                        <div class="cl-demo-chips-desc">
+                            Nhấp chọn trường hợp bên dưới để điền Mã hồ sơ TTHC vào form, sau đó nhấn nút <strong>Tìm kiếm</strong>:
+                        </div>
+                        <div class="cl-demo-chips-group">
+                            <button type="button" class="cl-demo-chip cl-good" onclick="fillTthcDemo('HSC-20260618-001')" title="Hồ sơ đã phê duyệt thành công (Đạt)">
+                                <i class="fa-solid fa-circle-check"></i> Đạt: <code>HSC-20260618-001</code>
+                            </button>
+                            <button type="button" class="cl-demo-chip" onclick="fillTthcDemo('HSC-20260618-002')" title="Hồ sơ đang trong quá trình thụ lý">
+                                <i class="fa-solid fa-spinner"></i> Đang xử lý: <code>HSC-20260618-002</code>
+                            </button>
+                            <button type="button" class="cl-demo-chip" onclick="fillTthcDemo('HSC-20260618-003')" title="Hồ sơ cần bổ sung tài liệu">
+                                <i class="fa-solid fa-file-circle-question"></i> Bổ sung: <code>HSC-20260618-003</code>
+                            </button>
+                            <button type="button" class="cl-demo-chip cl-bad" onclick="fillTthcDemo('HSC-20260618-004')" title="Hồ sơ bị từ chối giải quyết">
+                                <i class="fa-solid fa-circle-xmark"></i> Từ chối: <code>HSC-20260618-004</code>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -2210,6 +2377,70 @@
                 backBtn.classList.remove('hidden');
             }
         }
+    }
+
+    // ==================== DEMO FILL HELPERS (CHỈ ĐIỀN FORM - KHÔNG TỰ SEARCH) ====================
+    function flashInput(el) {
+        if (!el) return;
+        el.style.transition = 'background-color 0.3s';
+        el.style.backgroundColor = '#EFF6FF';
+        setTimeout(() => el.style.backgroundColor = 'white', 400);
+    }
+
+    function fillRegDemo(csdl, reg) {
+        clearInputErrors('reg');
+        const csdlInput = document.getElementById('reg-csdl-code');
+        const regInput = document.getElementById('reg-num');
+        const errorBox = document.getElementById('reg-error-box');
+        if (errorBox) errorBox.style.display = 'none';
+        if (csdlInput) { csdlInput.value = csdl; flashInput(csdlInput); }
+        if (regInput) { regInput.value = reg; flashInput(regInput); }
+    }
+
+    function fillOwnerDemo(csdl, subjectType, docNo, name) {
+        clearInputErrors('owner');
+        const csdlInput = document.getElementById('owner-csdl-code');
+        const typeSelect = document.getElementById('owner-subject-type');
+        const errorBox = document.getElementById('owner-error-box');
+        if (errorBox) errorBox.style.display = 'none';
+        if (csdlInput) { csdlInput.value = csdl; flashInput(csdlInput); }
+        if (typeSelect) {
+            typeSelect.value = subjectType;
+            renderOwnerFields(subjectType);
+        }
+        if (subjectType === 'cong_dan_vn') {
+            const el = document.getElementById('owner-idcard');
+            if (el) { el.value = docNo; flashInput(el); }
+        } else if (subjectType === 'to_chuc_vn') {
+            const el = document.getElementById('owner-tax-reg-code');
+            if (el) { el.value = docNo; flashInput(el); }
+        } else if (subjectType === 'nguoi_nuoc_ngoai') {
+            const elPassport = document.getElementById('owner-passport');
+            const elName = document.getElementById('owner-fullname');
+            if (elPassport) { elPassport.value = docNo; flashInput(elPassport); }
+            if (elName) { elName.value = name; flashInput(elName); }
+        } else if (subjectType === 'to_chuc_khac') {
+            const el = document.getElementById('owner-org-name');
+            if (el) { el.value = name; flashInput(el); }
+        }
+    }
+
+    function fillFrameDemo(csdl, frame) {
+        clearInputErrors('frame');
+        const csdlInput = document.getElementById('frame-csdl-code');
+        const frameInput = document.getElementById('frame-num');
+        const errorBox = document.getElementById('frame-error-box');
+        if (errorBox) errorBox.style.display = 'none';
+        if (csdlInput) { csdlInput.value = csdl; flashInput(csdlInput); }
+        if (frameInput) { frameInput.value = frame; flashInput(frameInput); }
+    }
+
+    function fillTthcDemo(code) {
+        clearInputErrors('tthc');
+        const codeInput = document.getElementById('tthc-code');
+        const errorBox = document.getElementById('tthc-error-box');
+        if (errorBox) errorBox.style.display = 'none';
+        if (codeInput) { codeInput.value = code; flashInput(codeInput); }
     }
 
     // ==================== SEARCH TAB 1: SỐ ĐĂNG KÝ ====================

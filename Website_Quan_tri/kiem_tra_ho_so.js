@@ -1447,6 +1447,9 @@ function getRegAssetDetail(p) {
         vsdcTime: `${String(8 + (n % 9)).padStart(2, '0')}:${String(n % 60).padStart(2, '0')} ${String(n % 27 + 1).padStart(2, '0')}/0${n % 9 + 1}/2026`,
         description: `Mô tả tài sản của hồ sơ ${p.id}`
     };
+    // Phiếu thuộc dữ liệu giả lập Lọc phiếu trùng lặp: lấy đúng tài sản đã khai
+    const tlDetail = window.TRUNGLAP ? TRUNGLAP.assetDetailOf(p.registrationNo || p.id) : null;
+    if (tlDetail) Object.keys(tlDetail).forEach(k => { if (tlDetail[k]) detail[k] = tlDetail[k]; });
     p.assetDetail = detail;
     return detail;
 }
@@ -1542,6 +1545,15 @@ function renderRegistrationFilterPanel(container, statusFilterHtml) {
                     <i class="fa-regular fa-calendar-days"></i>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="form-label">Trùng lặp</label>
+                <select class="form-select" id="filter-trung-lap">
+                    <option value="">Tất cả</option>
+                    <option value="chua">Có hồ sơ trùng chưa rà soát</option>
+                    <option value="da">Có hồ sơ trùng đã rà soát</option>
+                    <option value="khong">Không trùng lặp</option>
+                </select>
+            </div>
         </div>
         <div id="reg-dynamic-filter" style="display:none;margin-top:8px;padding:8px 12px;border:1px solid #E2E8F0;border-left:3px solid #2563EB;border-radius:5px;background:#F8FAFC">
             <div class="grid-4-cols" id="reg-dynamic-filter-fields"></div>
@@ -1556,7 +1568,7 @@ function renderRegistrationFilterPanel(container, statusFilterHtml) {
 }
 
 // Giữ nguyên bộ lọc tìm kiếm và trang dữ liệu khi Đóng màn Xem chi tiết (MH02) quay lại danh sách
-const REG_FILTER_IDS = ['filter-reg-sdk', 'filter-reg-bbd', 'filter-reg-bnbd', 'filter-customer-id', 'filter-reg-receipt', 'filter-nguon-tiep-nhan', 'filter-loaidangky', 'cb-loaihinh', 'cb-loaibienphap', 'filter-loaitaisan', 'filter-status-xu-ly', 'filter-tungay', 'filter-denngay'];
+const REG_FILTER_IDS = ['filter-reg-sdk', 'filter-reg-bbd', 'filter-reg-bnbd', 'filter-customer-id', 'filter-reg-receipt', 'filter-nguon-tiep-nhan', 'filter-loaidangky', 'cb-loaihinh', 'cb-loaibienphap', 'filter-loaitaisan', 'filter-status-xu-ly', 'filter-tungay', 'filter-denngay', 'filter-trung-lap'];
 
 // Tab Hồ sơ chờ nhập liệu và Tab Hồ sơ Bị trả lại dùng bố cục MH01 - Danh sách hồ sơ chờ nhập liệu
 function isRegInputLayout() { return ['chonhaplieu', 'bitralai'].includes(currentListTab); }
@@ -1697,7 +1709,7 @@ function approveRegistrationProfiles(list) {
 function openRegistrationSignToolbar() {
     const list = getSelectedRegistrationProfiles();
     if (!list.length) { showListToast('Vui lòng chọn ít nhất một hồ sơ để thực hiện thao tác.', 'error'); return; } // [MSG-ERR-DK-008]
-    PdkPopups.openSign(list.map(toPdkPopupRecord), { mode: 'multi', onDone: applyPdkPopupResult });
+    confirmDuplicate(list, () => PdkPopups.openSign(list.map(toPdkPopupRecord), { mode: 'multi', onDone: applyPdkPopupResult }));
 }
 
 function openRegistrationRejectToolbar() {
@@ -1708,7 +1720,13 @@ function openRegistrationRejectToolbar() {
 
 function openRegistrationSignSingle(id) {
     const p = findProfileForAction(id);
-    if (p) PdkPopups.openSign([toPdkPopupRecord(p)], { mode: 'single', onDone: applyPdkPopupResult });
+    if (p) confirmDuplicate([p], () => PdkPopups.openSign([toPdkPopupRecord(p)], { mode: 'single', onDone: applyPdkPopupResult }));
+}
+
+// Cảnh báo hồ sơ trùng lặp chưa rà soát trước khi Duyệt / Trình ký [BR-DK-029] - [MSG-CFM-DK-010]
+function confirmDuplicate(list, onContinue) {
+    if (!window.TRUNGLAP) { onContinue(); return; }
+    TRUNGLAP.confirmIfDup(list.map(p => p.registrationNo || p.id), onContinue);
 }
 
 function openRegistrationRejectSingle(id) {
@@ -1833,6 +1851,7 @@ function renderTable(resetPage = false) {
         const filterLoaihinh = document.getElementById('cb-loaihinh')?.value || '';
         const filterSubtype = document.getElementById('cb-loaibienphap')?.value || '';
         const filterAssetKey = document.getElementById('filter-loaitaisan')?.value || '';
+        const filterTrungLap = document.getElementById('filter-trung-lap')?.value || '';
         const filterTungay = document.getElementById('filter-tungay')?.value || '';
         const filterDenngay = document.getElementById('filter-denngay')?.value || '';
         const dynamicFilters = getRegDynamicColumns()
@@ -1861,6 +1880,12 @@ function renderTable(resetPage = false) {
             if (filterLoaihinh && p.transactionType !== filterLoaihinh) return false;
             if (filterSubtype && p.subtype !== filterSubtype) return false;
             if (filterAssetKey && !getRegAssetKeys(p.assetType).includes(filterAssetKey)) return false;
+            // Trùng lặp: theo kết quả xác định trùng lặp [BR-DK-037] và trạng thái rà soát [BR-DK-038]
+            if (filterTrungLap && window.TRUNGLAP) {
+                const so = p.registrationNo || p.id;
+                const tl = !TRUNGLAP.hasDup(so) ? 'khong' : (TRUNGLAP.hasUnreviewed(so) ? 'chua' : 'da');
+                if (tl !== filterTrungLap) return false;
+            }
             if (dynamicFilters.length) {
                 const detail = getRegAssetDetail(p);
                 if (!dynamicFilters.every(f => String(detail[f.id] || '').toLowerCase().includes(f.value))) return false;
@@ -2033,7 +2058,7 @@ function executeRender() {
                     ${isReadOnlyView ? '' : `<td onclick="event.stopPropagation()"><input type="checkbox" class="row-checkbox" value="${row.id}"></td>`}
                     <td>${startIndex + index + 1}</td>
                     <td>${row.date}</td>
-                    <td><span class="action-link" onclick="event.stopPropagation(); openDetail('${row.id}')">${row.id}</span></td>
+                    <td><span class="action-link" onclick="event.stopPropagation(); openDetail('${row.id}')">${row.id}</span>${window.TRUNGLAP ? TRUNGLAP.label(row.registrationNo || row.id) : ''}</td>
                     <td><code>${['Đăng ký mới', 'Đăng ký lần đầu'].includes(row.type) ? (row.pin || '-') : '-'}</code></td>
                     <td><b>${row.customer}</b></td>
                     <td>${row.mortgagee}</td>
@@ -2258,8 +2283,10 @@ let singleRejectId = null;
 function approveDossierSingle(id) {
     const p = findProfileForAction(id);
     if (!p) return;
-    approveRegistrationProfiles([p]);
-    showListToast('Phê duyệt hồ sơ thành công', 'success'); // [MSG-SUC-DK-KT-001]
+    confirmDuplicate([p], () => {
+        approveRegistrationProfiles([p]);
+        showListToast('Phê duyệt hồ sơ thành công', 'success'); // [MSG-SUC-DK-KT-001]
+    });
 }
 
 // Hủy duyệt: chuyển hồ sơ từ "Duyệt chờ ký" về "Chờ duyệt", hiển thị [MSG-SUC-DK-KT-004] và tải lại danh sách
@@ -2537,7 +2564,7 @@ function resetFilters() {
         'filter-loai-chu-the', 'filter-phuong-thuc', 'filter-hinh-thuc-tra',
         'filter-status-xu-ly', 'filter-ma-ho-so', 'filter-so-don-giay',
         'filter-nguoi-yeu-cau', 'filter-nguoi-nop', 'filter-loai-yeu-cau',
-        'filter-trang-thai-phi', 'filter-can-bo-tiep-nhan', 'filter-reg-sdk', 'filter-reg-bbd', 'filter-reg-bnbd', 'filter-reg-receipt'
+        'filter-trang-thai-phi', 'filter-can-bo-tiep-nhan', 'filter-reg-sdk', 'filter-reg-bbd', 'filter-reg-bnbd', 'filter-reg-receipt', 'filter-trung-lap'
     ];
     ids.forEach(id => {
         const el = document.getElementById(id);
@@ -2840,7 +2867,7 @@ function renderTabContentsOnly() {
                     </div>
                     <div class="info-group">
                         <div class="info-label">Địa chỉ liên hệ</div>
-                        <div class="info-value">Số 8 Duy Tân, Cầu Giấy, Hà Nội, Việt Nam</div>
+                        <div class="info-value">Số 8 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam</div>
                     </div>
                     <div class="info-group">
                         <div class="info-label">Email liên hệ</div>
@@ -2909,7 +2936,7 @@ function renderTabContentsOnly() {
                     </div>
                     <div class="info-group">
                         <div class="info-label">Địa chỉ liên hệ</div>
-                        <div class="info-value">Số 8 Duy Tân, Cầu Giấy, Hà Nội</div>
+                        <div class="info-value">Số 8 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam</div>
                     </div>
                     <div class="info-group">
                         <div class="info-label">Email liên hệ</div>
@@ -3050,7 +3077,7 @@ function renderTabContentsOnly() {
                             <td>Tổ chức trong nước</td>
                             <td>0109200847</td>
                             <td><b>Công ty Cổ phần Đầu tư Minh Tâm</b></td>
-                            <td>Số 8 Duy Tân, Cầu Giấy, Hà Nội</td>
+                            <td>Số 8 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam</td>
                             <td><span class="badge badge-muted">Đang bảo đảm</span></td>
                         </tr>
                         ${isModifiedBBD ? `
@@ -3059,7 +3086,7 @@ function renderTabContentsOnly() {
                             <td>Cá nhân trong nước</td>
                             <td>001092008472</td>
                             <td><b>Trần Thị B (Thành viên liên kết)</b></td>
-                            <td>Hà Đông, Hà Nội, Việt Nam</td>
+                            <td>Số 15 Quang Trung, Phường Hà Đông, Thành phố Hà Nội, Việt Nam</td>
                             <td><span class="badge badge-success">Bổ sung mới</span></td>
                         </tr>
                         ` : ''}
@@ -3087,7 +3114,7 @@ function renderTabContentsOnly() {
                             <td>Tổ chức tín dụng trong nước</td>
                             <td>0100230812</td>
                             <td><b>Ngân hàng TMCP Đầu tư và Phát triển VN (BIDV)</b></td>
-                            <td>Tháp BIDV, Hoàn Kiếm, Hà Nội</td>
+                            <td>Tháp BIDV, Số 194 Trần Quang Khải, Phường Hoàn Kiếm, Thành phố Hà Nội, Việt Nam</td>
                             <td><span class="badge badge-muted">Đang bảo đảm</span></td>
                         </tr>
                     </tbody>
@@ -3141,9 +3168,9 @@ function renderTabContentsOnly() {
                                             <td><code>30H-123.45</code></td>
                                             ${(isModifiedAsset || isDisposal || isCancelDisposal || isStrike) ? `
                                             <td style="text-align: center;">
-                                                ${isDisposal ? '<span class="badge badge-danger">Yêu cầu xử lý</span>' :
-                                                  isCancelDisposal ? '<span class="badge badge-success">Khôi phục bình thường</span>' :
-                                                  isStrike ? '<span class="badge badge-danger">Giải chấp</span>' :
+                                                ${isDisposal ? '<span class="badge badge-warning">Đang xử lý tài sản</span>' :
+                                                  isCancelDisposal ? '<span class="badge badge-muted">Đang bảo đảm</span>' :
+                                                  isStrike ? '<span class="badge badge-danger">Đã giải chấp</span>' :
                                                   '<span class="badge badge-muted">Đang bảo đảm</span>'}
                                             </td>` : ''}
                                         </tr>
@@ -3193,7 +3220,7 @@ function renderTabContentsOnly() {
                                             <td>Chi cục Thủy sản tỉnh Quảng Bình</td>
                                             <td>Tàu cá nhóm II (chiều dài từ 12 m đến dưới 15 m)</td>
                                             ${(isModifiedAsset || isDisposal || isCancelDisposal || isStrike) ? `
-                                            <td style="text-align: center;"><span class="badge badge-muted">${isStrike ? 'Giải chấp' : 'Đang bảo đảm'}</span></td>` : ''}
+                                            <td style="text-align: center;"><span class="badge badge-muted">${isStrike ? 'Đã giải chấp' : 'Đang bảo đảm'}</span></td>` : ''}
                                         </tr>
                                     </tbody>
                                 </table>
@@ -3290,7 +3317,7 @@ function renderTabContentsOnly() {
                         <div class="info-group">
                             <div class="info-label">Địa điểm xử lý tài sản dự kiến</div>
                             <div class="info-value">
-                                ${isChange ? '<span class="text-diff-old">Số 8 Duy Tân, Cầu Giấy, Hà Nội</span> <span class="text-diff-new">Số 12 Lạch Tray, Ngô Quyền, Hải Phòng</span>' : 'Số 8 Duy Tân, Cầu Giấy, Hà Nội'}
+                                ${isChange ? '<span class="text-diff-old">Số 8 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam</span> <span class="text-diff-new">Số 12 Lạch Tray, Phường Ngô Quyền, Thành phố Hải Phòng, Việt Nam</span>' : 'Số 8 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam'}
                             </div>
                         </div>
                         <div class="info-group">
@@ -3545,8 +3572,10 @@ function approveRows() {
     }
 
     const list = selected.map(id => findProfileForAction(id)).filter(Boolean);
-    approveRegistrationProfiles(list);
-    showListToast(`Phê duyệt hồ sơ thành công. Tổng số hồ sơ đã duyệt: ${list.length}.`, 'success');
+    confirmDuplicate(list, () => {
+        approveRegistrationProfiles(list);
+        showListToast(`Phê duyệt hồ sơ thành công. Tổng số hồ sơ đã duyệt: ${list.length}.`, 'success');
+    });
 }
 
 function closeDetail() {
@@ -4779,7 +4808,7 @@ function getPaperCcttRows() {
             customerId: 'TK-ANPHU-088',
             officer: 'Nguyễn Thị Tiếp Nhận',
             customer: 'Công ty TNHH An Phú',
-            requesterAddress: 'Số 88 Lê Văn Lương, phường Nhân Chính, TP Hà Nội',
+            requesterAddress: 'Số 88 Lê Văn Lương, Phường Thanh Xuân, Thành phố Hà Nội, Việt Nam',
             submitter: 'Vũ Minh Châu',
             type: 'Yêu cầu cung cấp thông tin',
             paymentStatus: 'Đã thu',

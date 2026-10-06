@@ -1865,7 +1865,7 @@ function renderTabContentsOnly() {
                     </div>
                     <div class="info-group">
                         <div class="info-label">Địa chỉ liên hệ</div>
-                        <div class="info-value">Số 8 Duy Tân, Cầu Giấy, Hà Nội, Việt Nam</div>
+                        <div class="info-value">Số 8 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam</div>
                     </div>
                     <div class="info-group">
                         <div class="info-label">Email liên hệ</div>
@@ -1934,7 +1934,7 @@ function renderTabContentsOnly() {
                     </div>
                     <div class="info-group">
                         <div class="info-label">Địa chỉ liên hệ</div>
-                        <div class="info-value">Số 8 Duy Tân, Cầu Giấy, Hà Nội</div>
+                        <div class="info-value">Số 8 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam</div>
                     </div>
                     <div class="info-group">
                         <div class="info-label">Email liên hệ</div>
@@ -2075,7 +2075,7 @@ function renderTabContentsOnly() {
                             <td>Tổ chức trong nước</td>
                             <td>0109200847</td>
                             <td><b>Công ty Cổ phần Đầu tư Minh Tâm</b></td>
-                            <td>Số 8 Duy Tân, Cầu Giấy, Hà Nội</td>
+                            <td>Số 8 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam</td>
                             <td><span class="badge badge-muted">Đang bảo đảm</span></td>
                         </tr>
                         ${isModifiedBBD ? `
@@ -2084,7 +2084,7 @@ function renderTabContentsOnly() {
                             <td>Cá nhân trong nước</td>
                             <td>001092008472</td>
                             <td><b>Trần Thị B (Thành viên liên kết)</b></td>
-                            <td>Hà Đông, Hà Nội, Việt Nam</td>
+                            <td>Số 15 Quang Trung, Phường Hà Đông, Thành phố Hà Nội, Việt Nam</td>
                             <td><span class="badge badge-success">Bổ sung mới</span></td>
                         </tr>
                         ` : ''}
@@ -2112,7 +2112,7 @@ function renderTabContentsOnly() {
                             <td>Tổ chức tín dụng trong nước</td>
                             <td>0100230812</td>
                             <td><b>Ngân hàng TMCP Đầu tư và Phát triển VN (BIDV)</b></td>
-                            <td>Tháp BIDV, Hoàn Kiếm, Hà Nội</td>
+                            <td>Tháp BIDV, Số 194 Trần Quang Khải, Phường Hoàn Kiếm, Thành phố Hà Nội, Việt Nam</td>
                             <td><span class="badge badge-muted">Đang bảo đảm</span></td>
                         </tr>
                     </tbody>
@@ -2166,9 +2166,9 @@ function renderTabContentsOnly() {
                                             <td><code>30H-123.45</code></td>
                                             ${(isModifiedAsset || isDisposal || isCancelDisposal || isStrike) ? `
                                             <td style="text-align: center;">
-                                                ${isDisposal ? '<span class="badge badge-danger">Yêu cầu xử lý</span>' : 
-                                                  isCancelDisposal ? '<span class="badge badge-success">Khôi phục bình thường</span>' : 
-                                                  isStrike ? '<span class="badge badge-danger">Giải chấp</span>' :
+                                                ${isDisposal ? '<span class="badge badge-warning">Đang xử lý tài sản</span>' : 
+                                                  isCancelDisposal ? '<span class="badge badge-muted">Đang bảo đảm</span>' : 
+                                                  isStrike ? '<span class="badge badge-danger">Đã giải chấp</span>' :
                                                   '<span class="badge badge-muted">Đang bảo đảm</span>'}
                                             </td>` : ''}
                                         </tr>
@@ -2218,7 +2218,7 @@ function renderTabContentsOnly() {
                                             <td>Chi cục Thủy sản tỉnh Quảng Bình</td>
                                             <td>Tàu cá nhóm II (chiều dài từ 12 m đến dưới 15 m)</td>
                                             ${(isModifiedAsset || isDisposal || isCancelDisposal || isStrike) ? `
-                                            <td style="text-align: center;"><span class="badge badge-muted">${isStrike ? 'Giải chấp' : 'Đang bảo đảm'}</span></td>` : ''}
+                                            <td style="text-align: center;"><span class="badge badge-muted">${isStrike ? 'Đã giải chấp' : 'Đang bảo đảm'}</span></td>` : ''}
                                         </tr>
                                     </tbody>
                                 </table>
@@ -2315,7 +2315,7 @@ function renderTabContentsOnly() {
                         <div class="info-group">
                             <div class="info-label">Địa điểm xử lý tài sản dự kiến</div>
                             <div class="info-value">
-                                ${isChange ? '<span class="text-diff-old">Số 8 Duy Tân, Cầu Giấy, Hà Nội</span> <span class="text-diff-new">Số 12 Lạch Tray, Ngô Quyền, Hải Phòng</span>' : 'Số 8 Duy Tân, Cầu Giấy, Hà Nội'}
+                                ${isChange ? '<span class="text-diff-old">Số 8 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam</span> <span class="text-diff-new">Số 12 Lạch Tray, Phường Ngô Quyền, Thành phố Hải Phòng, Việt Nam</span>' : 'Số 8 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam'}
                             </div>
                         </div>
                         <div class="info-group">
@@ -2678,7 +2678,7 @@ const leaderCcttRequests = [
         submittedAt: '01/08/2026 10:30',
         customerId: 'KH-HUNG-02',
         requester: 'Ông Nguyễn Văn Hùng',
-        address: 'Số 12 phố Duy Tân, phường Dịch Vọng Hậu, Hà Nội',
+        address: 'Số 12 phố Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam',
         source: 'Website khách hàng',
         criteria: 'Số đăng ký',
         inputData: '1505170802',
@@ -2696,7 +2696,7 @@ const leaderCcttRequests = [
         submittedAt: '01/08/2026 11:20',
         customerId: 'KH-MINHTAM-01',
         requester: 'Công ty Cổ phần Đầu tư Minh Tâm',
-        address: 'Tầng 6, tòa nhà FPT, Cầu Giấy, Hà Nội',
+        address: 'Tầng 6, tòa nhà FPT, Số 17 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam',
         source: 'Cán bộ nhập liệu',
         criteria: 'Bên bảo đảm',
         inputData: 'Công dân Việt Nam - CCCD 091000000004',
@@ -2714,7 +2714,7 @@ const leaderCcttRequests = [
         submittedAt: '31/07/2026 16:00',
         customerId: 'KH-FPT-07',
         requester: 'Ngân hàng TMCP FPT',
-        address: 'Tòa nhà FPT, Cầu Giấy, Hà Nội',
+        address: 'Tòa nhà FPT, Số 17 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam',
         source: 'Website khách hàng',
         criteria: 'Số khung',
         inputData: 'RLZ2026KHUNG0007VN',
@@ -2733,7 +2733,7 @@ const leaderCcttRequests = [
         submittedAt: '29/07/2026 09:50',
         customerId: 'KH-LANANH-03',
         requester: 'Bà Trần Lan Anh',
-        address: 'Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội',
+        address: 'Số 45 Nguyễn Chí Thanh, Phường Láng, Thành phố Hà Nội, Việt Nam',
         source: 'Cán bộ nhập liệu',
         criteria: 'Số đăng ký',
         inputData: '1505170855',
@@ -2751,7 +2751,7 @@ const leaderCcttRequests = [
         submittedAt: '29/07/2026 11:10',
         customerId: 'KH-VIETTIN-11',
         requester: 'Ngân hàng TMCP Công thương Việt Nam - Chi nhánh Ba Đình',
-        address: 'Số 34 Cửa Nam, Hoàn Kiếm, Hà Nội',
+        address: 'Số 34 Cửa Nam, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam',
         source: 'Website khách hàng',
         criteria: 'Số khung',
         inputData: 'RLZ2026KHUNG0011VN',
@@ -2770,7 +2770,7 @@ const leaderCcttRequests = [
         submittedAt: '29/07/2026 14:00',
         customerId: 'KH-GIAY-02',
         requester: 'Công ty TNHH Vận tải Đông Bắc',
-        address: 'Số 18 Nguyễn Văn Cừ, Long Biên, Hà Nội',
+        address: 'Số 18 Nguyễn Văn Cừ, Phường Long Biên, Thành phố Hà Nội, Việt Nam',
         source: 'Cán bộ nhập liệu',
         criteria: 'Bên bảo đảm',
         inputData: 'MST 0108899001 - Công ty TNHH Vận tải Đông Bắc',
@@ -2789,7 +2789,7 @@ const leaderCcttRequests = [
         submittedAt: '28/07/2026 10:25',
         customerId: 'KH-TECH-08',
         requester: 'Ngân hàng TMCP Kỹ thương Việt Nam',
-        address: 'Số 191 Bà Triệu, Hai Bà Trưng, Hà Nội',
+        address: 'Số 191 Bà Triệu, Phường Hai Bà Trưng, Thành phố Hà Nội, Việt Nam',
         source: 'Website khách hàng',
         criteria: 'Số đăng ký',
         inputData: '1505170901',
@@ -2808,7 +2808,7 @@ const leaderCcttRequests = [
         submittedAt: '30/07/2026 14:10',
         customerId: 'KH-ANPHU-05',
         requester: 'Công ty TNHH An Phú',
-        address: 'Số 88 Lê Văn Lương, Thanh Xuân, Hà Nội',
+        address: 'Số 88 Lê Văn Lương, Phường Thanh Xuân, Thành phố Hà Nội, Việt Nam',
         source: 'Cán bộ nhập liệu',
         criteria: 'Số đăng ký',
         inputData: '1505170868',
@@ -2826,7 +2826,7 @@ const leaderCcttRequests = [
         submittedAt: '28/07/2026 17:05',
         customerId: 'KH-HTC-04',
         requester: 'Công ty Cổ phần Xây dựng và Phát triển HTC',
-        address: 'Đường số 5, cụm công nghiệp Tứ Hạ mở rộng, thành phố Huế',
+        address: 'Đường số 5 Cụm công nghiệp Tứ Hạ mở rộng, Phường Hương Trà, Thành phố Huế, Việt Nam',
         source: 'Website khách hàng',
         criteria: 'Số đăng ký',
         inputData: '1505170802',
@@ -2845,7 +2845,7 @@ const leaderCcttRequests = [
         submittedAt: '28/07/2026 09:55',
         customerId: 'KH-SONGDA-05',
         requester: 'Công ty Cổ phần Sông Đà',
-        address: 'Số 1 Phạm Hùng, Nam Từ Liêm, Hà Nội',
+        address: 'Số 1 Phạm Hùng, Phường Từ Liêm, Thành phố Hà Nội, Việt Nam',
         source: 'Website khách hàng',
         criteria: 'Số khung',
         inputData: 'SD2026KHUNG0005',
@@ -2865,7 +2865,7 @@ const leaderCcttRequests = [
         submittedAt: '27/07/2026 16:10',
         customerId: 'KH-THUY-01',
         requester: 'Bà Phạm Minh Thủy',
-        address: 'Số 21 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội',
+        address: 'Số 21 Lý Thường Kiệt, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam',
         source: 'Cán bộ nhập liệu',
         criteria: 'Bên bảo đảm',
         inputData: 'CCCD 001199887766 - Phạm Minh Thủy',
@@ -2885,7 +2885,7 @@ const leaderCcttRequests = [
         submittedAt: '27/07/2026 10:15',
         customerId: 'KH-MINHHUNG-09',
         requester: 'Ông Lê Minh Hùng',
-        address: 'Số 9 Nguyễn Trãi, Hà Đông, Hà Nội',
+        address: 'Số 9 Nguyễn Trãi, Phường Hà Đông, Thành phố Hà Nội, Việt Nam',
         source: 'Website khách hàng',
         criteria: 'Bên bảo đảm',
         inputData: 'CCCD 091000000099',
@@ -2903,7 +2903,7 @@ const leaderCcttRequests = [
         submittedAt: '26/07/2026 15:30',
         customerId: 'KH-ANBINH-10',
         requester: 'Công ty TNHH An Bình',
-        address: 'Số 88 Trần Phú, Hà Đông, Hà Nội',
+        address: 'Số 88 Trần Phú, Phường Hà Đông, Thành phố Hà Nội, Việt Nam',
         source: 'Cán bộ nhập liệu',
         criteria: 'Số đăng ký',
         inputData: '1505170999',
@@ -2929,7 +2929,7 @@ const leaderCopyRequests = [
         submittedAt: '01/08/2026 10:10',
         customerId: 'KH-VCB-04',
         requester: 'Ngân hàng TMCP Ngoại thương Việt Nam - Chi nhánh Cầu Giấy',
-        address: 'Số 198 Trần Duy Hưng, phường Yên Hòa, Hà Nội',
+        address: 'Số 198 Trần Duy Hưng, Phường Yên Hòa, Thành phố Hà Nội, Việt Nam',
         source: 'Website khách hàng',
         registrationNo: '1505170802',
         copyType: 'Bản sao điện tử',
@@ -2951,7 +2951,7 @@ const leaderCopyRequests = [
         submittedAt: '01/08/2026 10:35',
         customerId: 'KH-THUY-01',
         requester: 'Bà Phạm Minh Thủy',
-        address: 'Số 21 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội',
+        address: 'Số 21 Lý Thường Kiệt, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam',
         source: 'Cán bộ nhập liệu',
         registrationNo: '1505170855',
         copyType: 'Bản sao giấy',
@@ -2973,7 +2973,7 @@ const leaderCopyRequests = [
         submittedAt: '01/08/2026 11:05',
         customerId: 'KH-BIDV-07',
         requester: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Hà Nội',
-        address: 'Số 194 Trần Quang Khải, Hoàn Kiếm, Hà Nội',
+        address: 'Số 194 Trần Quang Khải, Phường Hoàn Kiếm, Thành phố Hà Nội, Việt Nam',
         source: 'Website khách hàng',
         registrationNo: '1505170920',
         copyType: 'Bản sao điện tử',
@@ -2995,7 +2995,7 @@ const leaderCopyRequests = [
         submittedAt: '01/08/2026 11:30',
         customerId: 'KH-GIAY-03',
         requester: 'Ông Trần Quốc Bảo',
-        address: 'Số 6 Hoàng Hoa Thám, Ba Đình, Hà Nội',
+        address: 'Số 6 Hoàng Hoa Thám, Phường Ba Đình, Thành phố Hà Nội, Việt Nam',
         source: 'Cán bộ nhập liệu',
         registrationNo: '1505170944',
         copyType: 'Bản sao giấy',
@@ -3017,7 +3017,7 @@ const leaderCopyRequests = [
         submittedAt: '31/07/2026 16:05',
         customerId: 'KH-TECH-08',
         requester: 'Ngân hàng TMCP Kỹ thương Việt Nam',
-        address: 'Số 191 Bà Triệu, Hai Bà Trưng, Hà Nội',
+        address: 'Số 191 Bà Triệu, Phường Hai Bà Trưng, Thành phố Hà Nội, Việt Nam',
         source: 'Website khách hàng',
         registrationNo: '1505170990',
         copyType: 'Bản sao điện tử',
@@ -3039,7 +3039,7 @@ const leaderCopyRequests = [
         submittedAt: '31/07/2026 15:20',
         customerId: 'KH-HOANG-07',
         requester: 'Ông Lê Đức Hoàng',
-        address: 'Số 8 Nguyễn Trãi, Hà Đông, Hà Nội',
+        address: 'Số 8 Nguyễn Trãi, Phường Thanh Xuân, Thành phố Hà Nội, Việt Nam',
         source: 'Cán bộ nhập liệu',
         registrationNo: '1505170868',
         copyType: 'Bản sao điện tử',
@@ -3061,7 +3061,7 @@ const leaderCopyRequests = [
         submittedAt: '30/07/2026 11:05',
         customerId: 'KH-ANPHU-05',
         requester: 'Công ty TNHH An Phú',
-        address: 'Số 88 Lê Văn Lương, Thanh Xuân, Hà Nội',
+        address: 'Số 88 Lê Văn Lương, Phường Thanh Xuân, Thành phố Hà Nội, Việt Nam',
         source: 'Cán bộ nhập liệu',
         registrationNo: '1505170901',
         copyType: 'Bản sao giấy',
@@ -3083,7 +3083,7 @@ const leaderCopyRequests = [
         submittedAt: '30/07/2026 10:35',
         customerId: 'KH-MAI-03',
         requester: 'Bà Nguyễn Thị Mai',
-        address: 'Số 70 Nguyễn Trãi, Thanh Xuân, Hà Nội',
+        address: 'Số 70 Nguyễn Trãi, Phường Thanh Xuân, Thành phố Hà Nội, Việt Nam',
         source: 'Cán bộ nhập liệu',
         registrationNo: '1505170755',
         copyType: 'Bản sao giấy',
@@ -3107,7 +3107,7 @@ const leaderCopyRequests = [
         submittedAt: '28/07/2026 14:00',
         customerId: 'KH-HUNG-02',
         requester: 'Ông Nguyễn Văn Hùng',
-        address: 'Số 12 phố Duy Tân, Cầu Giấy, Hà Nội',
+        address: 'Số 12 phố Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam',
         source: 'Website khách hàng',
         registrationNo: '1505170802',
         copyType: 'Bản sao điện tử',
@@ -3129,7 +3129,7 @@ const leaderCopyRequests = [
         submittedAt: '28/07/2026 09:25',
         customerId: 'KH-VCB-04',
         requester: 'Ngân hàng TMCP Ngoại thương Việt Nam - Chi nhánh Cầu Giấy',
-        address: 'Số 198 Trần Duy Hưng, phường Yên Hòa, Hà Nội',
+        address: 'Số 198 Trần Duy Hưng, Phường Yên Hòa, Thành phố Hà Nội, Việt Nam',
         source: 'Website khách hàng',
         registrationNo: '1505170803',
         copyType: 'Bản sao điện tử',
@@ -3152,7 +3152,7 @@ const leaderCopyRequests = [
         submittedAt: '27/07/2026 14:20',
         customerId: 'KH-LANANH-03',
         requester: 'Bà Trần Lan Anh',
-        address: 'Số 45 Nguyễn Chí Thanh, Đống Đa, Hà Nội',
+        address: 'Số 45 Nguyễn Chí Thanh, Phường Láng, Thành phố Hà Nội, Việt Nam',
         source: 'Website khách hàng',
         registrationNo: '1505170855',
         copyType: 'Bản sao giấy',
@@ -3176,7 +3176,7 @@ const leaderCopyRequests = [
         submittedAt: '26/07/2026 11:00',
         customerId: 'KH-DOTHIDEV',
         requester: 'Công ty TNHH Phát triển Đô thị',
-        address: 'Số 12 Lê Văn Lương, Thanh Xuân, Hà Nội',
+        address: 'Số 12 Lê Văn Lương, Phường Thanh Xuân, Thành phố Hà Nội, Việt Nam',
         source: 'Cán bộ nhập liệu',
         registrationNo: '1505170701',
         copyType: 'Bản sao điện tử',

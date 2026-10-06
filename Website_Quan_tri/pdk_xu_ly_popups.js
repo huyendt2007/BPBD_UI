@@ -147,7 +147,7 @@
             </tr></table>
             <h3 style="text-align:center;margin:18px 0 14px">THÔNG BÁO VỀ VIỆC TỪ CHỐI TIẾP NHẬN, TỪ CHỐI GIẢI QUYẾT HỒ SƠ ĐĂNG KÝ BIỆN PHÁP BẢO ĐẢM</h3>
             <p style="text-align:center">Kính gửi: <b>${esc(r.submitter || r.requester || r.grantor)}</b></p>
-            <p>Địa chỉ: ${esc(r.submitterAddress || 'Số 8 Duy Tân, Phường Cầu Giấy, TP Hà Nội, Việt Nam')}</p>
+            <p>Địa chỉ: ${esc(r.submitterAddress || 'Số 8 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam')}</p>
             <p>Trung tâm Đăng ký giao dịch, tài sản tại TP. Hà Nội thông báo từ chối tiếp nhận, từ chối giải quyết hồ sơ đăng ký với các thông tin sau:</p>
             <p>- Số đăng ký: <b>${esc(regNo(r))}</b></p>
             <p>- Loại đăng ký: ${esc(r.type)}</p>
@@ -159,30 +159,43 @@
         return openDocTab(`ThongBaoTuChoi_${regNo(r)}.pdf`, body);
     }
 
-    // Mục 4.3.2.3.6 - Mẫu số 05d (lá mặt/trang ký + phần chi tiết đăng ký phía sau)
+    // Mục 4.3.2.3.6 - Mẫu số 05d (lá mặt/trang ký + phần chi tiết phía sau); nội dung theo Loại đăng ký tại mục 4.3.2.3.6.4
     function buildCertificateDraft(r, leader) {
-        const d = new Date();
-        const isNotice = (r.type || '').toLowerCase().includes('xử lý tài sản');
-        const docTitle = isNotice ? 'VĂN BẢN CHỨNG NHẬN ĐĂNG KÝ THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM'
-            : (r.transactionType === 'Hợp đồng' ? 'VĂN BẢN CHỨNG NHẬN ĐĂNG KÝ BIỆN PHÁP BẢO ĐẢM, HỢP ĐỒNG' : 'VĂN BẢN CHỨNG NHẬN ĐĂNG KÝ BIỆN PHÁP BẢO ĐẢM');
-        const detailTitle = ({
-            'Đăng ký thay đổi': 'CHI TIẾT ĐĂNG KÝ THAY ĐỔI', 'Xóa đăng ký': 'CHI TIẾT XÓA ĐĂNG KÝ',
-            'Thông báo xử lý tài sản': 'CHI TIẾT THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM', 'Thay đổi thông báo xử lý tài sản': 'CHI TIẾT THAY ĐỔI THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM',
-            'Xóa thông báo xử lý tài sản': 'CHI TIẾT XÓA THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM'
-        })[r.type] || 'CHI TIẾT ĐĂNG KÝ';
+        const type = (r.type || '').toLowerCase();
+        const isFirst = ['đăng ký mới', 'đăng ký lần đầu'].includes(type);
+        const isNoticeFirst = type === 'thông báo xử lý tài sản' || type === 'thông báo xử lý tài sản bảo đảm lần đầu';
+        const isChange = type === 'đăng ký thay đổi';
+        const isDelete = type === 'xóa đăng ký';
+        const isNoticeChange = type.startsWith('thay đổi thông báo');
+        const isNoticeDelete = type.startsWith('xóa thông báo') || type.startsWith('xóa đăng ký thông báo');
+        const detailTitle = isChange ? 'CHI TIẾT ĐĂNG KÝ THAY ĐỔI' : isDelete ? 'CHI TIẾT XÓA ĐĂNG KÝ'
+            : isNoticeFirst ? 'CHI TIẾT THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM' : isNoticeChange ? 'CHI TIẾT THAY ĐỔI THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM'
+            : isNoticeDelete ? 'CHI TIẾT XÓA THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM' : 'CHI TIẾT ĐĂNG KÝ';
+        // Mã Pin: chỉ Đăng ký lần đầu và Thông báo xử lý lần đầu đối với tài sản chưa đăng ký biện pháp bảo đảm
+        const showPin = !!r.pin && (isFirst || isNoticeFirst);
         const isPaper = (r.source || '').toLowerCase().includes('trực tiếp') || (r.source || '').toLowerCase().includes('cán bộ');
-        const effective = `${pad(d.getHours())} giờ ${pad(d.getMinutes())} phút, ngày ${pad(d.getDate())} tháng ${pad(d.getMonth() + 1)} năm ${d.getFullYear()}`;
+        const firstRegNo = r.firstRegNo || r.refRegNo || '';
+        const relatedLine = (isChange || isDelete || isNoticeChange || isNoticeDelete || (isNoticeFirst && firstRegNo))
+            ? `<p>- Số đăng ký lần đầu của hồ sơ gốc: <b>${esc(firstRegNo || 'Theo dữ liệu hồ sơ gốc')}</b></p>` : '';
+        const scopeNote = isChange ? 'Toàn bộ nội dung của hồ sơ sau thay đổi (gồm cả nội dung không thay đổi; không gồm bên và tài sản đã rút bớt).'
+            : isDelete ? 'Toàn bộ nội dung của hồ sơ tại thời điểm xóa đăng ký; Căn cứ xóa đăng ký theo dữ liệu Phiếu xóa đăng ký.'
+            : isNoticeFirst ? 'Nội dung thông báo và các tài sản bị xử lý thuộc thông báo.'
+            : isNoticeChange ? 'Toàn bộ nội dung thông báo sau thay đổi (không gồm tài sản đã rút khỏi thông báo).'
+            : isNoticeDelete ? 'Toàn bộ nội dung thông báo và các tài sản thuộc thông báo tại thời điểm xóa.'
+            : 'Toàn bộ nội dung Phiếu đăng ký.';
+        // Thời điểm cập nhật vào CSDL và Ngày tháng năm: để trống trên dự thảo, hệ thống tự động điền khi Lãnh đạo ký số thành công
+        const blankTime = '<span style="background:#FEF3C7;padding:0 4px" title="Hệ thống tự động điền khi Lãnh đạo ký số thành công">..... giờ..... phút, ngày..... tháng..... năm.....</span>';
         const body = `
             ${headerBlock('Mẫu số 05d')}
             <p style="font-size:13.5px">Mã hồ sơ TTHC: <b>${esc(r.id)}</b></p>
-            <p style="text-align:right;font-style:italic">${UNIT.place}, ngày ${pad(d.getDate())} tháng ${pad(d.getMonth() + 1)} năm ${d.getFullYear()}</p>
-            <h3 style="text-align:center;margin:14px 0">${docTitle}</h3>
-            <p style="text-align:center"><b>${UNIT.name} CHỨNG NHẬN:</b></p>
-            <p>1. Nội dung đăng ký của phiếu yêu cầu đăng ký số <b>${esc(regNo(r))}</b> đã được cập nhật vào Cơ sở dữ liệu về biện pháp bảo đảm; có hiệu lực đăng ký từ thời điểm <b>${effective}</b> và được Trung tâm Đăng ký giao dịch, tài sản gửi kèm theo Văn bản chứng nhận.</p>
-            <p>- Bên nhận bảo đảm: <b>${esc(r.securedParty || '-')}</b><br>&nbsp;&nbsp;Địa chỉ: ${esc(r.securedPartyAddress || 'Số 35 Hàng Vôi, Phường Hoàn Kiếm, TP Hà Nội, Việt Nam')}</p>
-            <p>- Bên bảo đảm: <b>${esc(r.grantor || '-')}</b><br>&nbsp;&nbsp;${esc(r.grantorId || 'Mã số thuế: 0109200847')}</p>
-            ${r.pin ? `<p>- Mã PIN: <b>${esc(r.pin)}</b> <i>(Người yêu cầu đăng ký hoàn toàn chịu trách nhiệm về việc bảo mật thông tin liên quan đến mã PIN do cơ quan đăng ký cấp)</i></p>` : ''}
-            <p>2. ${isPaper ? 'Phiếu yêu cầu đăng ký kèm theo Văn bản chứng nhận này là một phần không thể tách rời của Văn bản chứng nhận.' : 'Chi tiết thông tin thể hiện trên giao diện đăng ký trực tuyến kèm theo Văn bản chứng nhận này là một phần không thể tách rời của Văn bản chứng nhận.'}</p>
+            <p style="text-align:right;font-style:italic">${UNIT.place}, <span style="background:#FEF3C7;padding:0 4px" title="Hệ thống tự động điền khi Lãnh đạo ký số thành công">ngày..... tháng..... năm.....</span></p>
+            <h3 style="text-align:center;margin:14px 0">VĂN BẢN CHỨNG NHẬN ĐĂNG KÝ BIỆN PHÁP BẢO ĐẢM,<br>THÔNG BÁO XỬ LÝ TÀI SẢN BẢO ĐẢM</h3>
+            <p style="text-align:center"><b>${UNIT.name}<br>CHỨNG NHẬN</b></p>
+            <p><b>1.</b> Nội dung của Phiếu yêu cầu đăng ký đã được cập nhật vào Cơ sở dữ liệu tại thời điểm ${blankTime}, số đăng ký <b>${esc(regNo(r))}</b></p>
+            <p>1.1. Bên nhận bảo đảm: <b>${esc(r.securedParty || '-')}</b><br>Địa chỉ: ${esc(r.securedPartyAddress || 'Số 35 Hàng Vôi, Phường Hoàn Kiếm, Thành phố Hà Nội, Việt Nam')}</p>
+            <p>1.2. Bên bảo đảm: <b>${esc(r.grantor || '-')}</b><br>Giấy tờ chứng minh tư cách pháp lý: ${esc(r.grantorId || 'Mã số thuế: 0109200847')}</p>
+            ${showPin ? `<p>1.3. Mã Pin: <b>${esc(r.pin)}</b><br><i>(Người yêu cầu đăng ký hoàn toàn chịu trách nhiệm về việc bảo mật thông tin liên quan đến mã Pin do cơ quan đăng ký cấp).</i></p>` : ''}
+            <p><b>2.</b> ${isPaper ? 'Phiếu yêu cầu đăng ký kèm theo Văn bản chứng nhận này là một phần không thể tách rời của Văn bản chứng nhận.' : 'Chi tiết thông tin thể hiện trên giao diện đăng ký trực tuyến kèm theo Văn bản chứng nhận này là một phần không thể tách rời của Văn bản chứng nhận.'}</p>
             <div style="display:flex;justify-content:space-between;align-items:flex-end">
                 <div style="width:96px;height:96px;border:1px dashed #94a3b8;display:flex;align-items:center;justify-content:center;font-size:11px;color:#64748b;text-align:center">QR xác thực<br>(Dự thảo)</div>
                 ${signerBlock(leader)}
@@ -190,10 +203,12 @@
             <div style="page-break-before:always;border-top:2px dashed #94a3b8;margin-top:40px;padding-top:24px">
                 <h3 style="text-align:center">${detailTitle}</h3>
                 <p>- Số đăng ký: <b>${esc(regNo(r))}</b> &nbsp;|&nbsp; Thời điểm đăng ký: ${esc(r.receivedAt || '-')}</p>
+                ${relatedLine}
                 <p>- Loại hình giao dịch: ${esc(r.transactionType || '-')} &nbsp;|&nbsp; Loại đăng ký: ${esc(r.type)} &nbsp;|&nbsp; Loại biện pháp/Hợp đồng: ${esc(r.subtype || '-')}</p>
+                <p><i>Phạm vi nội dung: ${esc(scopeNote)}</i></p>
                 <p><b>Bên bảo đảm:</b> ${esc(r.grantor || '-')}</p>
                 <p><b>Bên nhận bảo đảm:</b> ${esc(r.securedParty || '-')}</p>
-                <p><b>Tài sản bảo đảm - ${esc(r.assetType || 'Theo hồ sơ')}:</b> Chi tiết theo dữ liệu Phiếu đăng ký.</p>
+                <p><b>${isNoticeFirst || isNoticeChange || isNoticeDelete ? 'Tài sản bị xử lý' : 'Tài sản bảo đảm'} - ${esc(r.assetType || 'Theo hồ sơ')}:</b> Chi tiết theo dữ liệu Phiếu đăng ký.</p>
                 <p style="text-align:center;font-size:12px;color:#64748b">Trang 2</p>
             </div>`;
         return openDocTab(`DuThao_VanBanChungNhan_${regNo(r)}.pdf`, body);

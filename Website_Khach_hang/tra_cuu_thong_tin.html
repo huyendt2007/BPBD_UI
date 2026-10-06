@@ -137,6 +137,90 @@
             .compact-filter-panel .grid-3-cols { grid-template-columns: 1fr; }
         }
 
+        /* Demo Chips styling đồng bộ Website quản trị */
+        .cl-demo-chips-box {
+            background-color: #F8FAFC;
+            border: 1px dashed #CBD5E1;
+            border-radius: var(--border-radius-md);
+            padding: 10px 14px;
+            margin-bottom: 12px;
+        }
+        .cl-demo-chips-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+        .cl-demo-chips-header i {
+            color: #7C3AED;
+            font-size: 13px;
+        }
+        .cl-demo-chips-desc {
+            font-size: 11.5px;
+            color: #64748B;
+            margin-bottom: 8px;
+        }
+        .cl-demo-chips-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+        .cl-demo-group-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #475569;
+            min-width: 80px;
+            text-transform: uppercase;
+        }
+        .cl-demo-chip {
+            background: #FFFFFF;
+            color: #334155;
+            border: 1px solid #CBD5E1;
+            border-radius: 12px;
+            padding: 3px 10px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 11.5px;
+            transition: all 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            user-select: none;
+        }
+        .cl-demo-chip:hover {
+            background: #F1F5F9;
+            border-color: #94A3B8;
+            transform: translateY(-1px);
+        }
+        .cl-demo-chip.cl-good {
+            background: #ECFDF5;
+            color: #065F46;
+            border-color: #A7F3D0;
+        }
+        .cl-demo-chip.cl-good:hover {
+            background: #D1FAE5;
+        }
+        .cl-demo-chip.cl-bad {
+            background: #FEF2F2;
+            color: #991B1B;
+            border-color: #FECACA;
+        }
+        .cl-demo-chip.cl-bad:hover {
+            background: #FEE2E2;
+        }
+        .cl-demo-chip code {
+            font-family: monospace;
+            background: rgba(0,0,0,0.06);
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-size: 10.5px;
+            font-weight: 600;
+        }
+
         /* Buttons */
         .btn {
             font-weight: 500;
@@ -377,6 +461,40 @@
     <!-- MH02: TRA CỨU DÀNH CHO CÁN BỘ TTĐK -->
     <!-- ========================================== -->
     <div id="view-canbo" class="view-section active">
+                <!-- Ká»‹ch báº£n kiá»ƒm thá»­ máº«u (Demo Chips tÆ°Æ¡ng tÃ¡c) -->
+        <div class="cl-demo-chips-box">
+            <div class="cl-demo-chips-header">
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>Dữ liệu kiểm thử mẫu (Demo) - Nhấn chọn để tự động điền vào bộ lọc:</span>
+            </div>
+            <div class="cl-demo-chips-desc">
+                Nhấp chọn trường hợp bên dưới để điền tiêu chí vào bộ lọc, sau đó nhấn nút <strong>Tìm kiếm</strong>:
+            </div>
+            <div class="cl-demo-chips-group">
+                <span class="cl-demo-group-label"><i class="fa-solid fa-magnifying-glass" style="color: #2563EB;"></i> Mẫu tìm:</span>
+                <button type="button" class="cl-demo-chip cl-good" onclick="applyThongTinDemo({ regNum: '1505156435' })" title="Hồ sơ gốc có nhiều phiên bản biến động: 1505156435">
+                    <i class="fa-solid fa-folder-tree"></i> HS có biến động: <code>1505156435</code>
+                </button>
+                <button type="button" class="cl-demo-chip" onclick="applyThongTinDemo({ regNum: '1505156435-TĐ2', status: 'Chờ duyệt' })" title="Hồ sơ thay đổi đang Chờ duyệt">
+                    <i class="fa-solid fa-clock"></i> Chờ duyệt: <code>1505156435-TĐ2</code>
+                </button>
+                <button type="button" class="cl-demo-chip" onclick="applyThongTinDemo({ guarantor: 'Nguyễn Văn A' })" title="Tìm theo Bên bảo đảm Nguyễn Văn A">
+                    <i class="fa-solid fa-user"></i> Bên BĐ: <code>Nguyễn Văn A</code>
+                </button>
+                <button type="button" class="cl-demo-chip" onclick="applyThongTinDemo({ guarantor: 'Công ty TNHH Hải Nam' })" title="Tìm theo Doanh nghiệp Hải Nam">
+                    <i class="fa-solid fa-building"></i> Bên BĐ: <code>Hải Nam</code>
+                </button>
+                <button type="button" class="cl-demo-chip" onclick="applyThongTinDemo({ status: 'Hoàn thành' })" title="Lọc toàn bộ hồ sơ Hoàn thành">
+                    <i class="fa-solid fa-circle-check" style="color: #059669;"></i> TT: <code>Hoàn thành</code>
+                </button>
+                <button type="button" class="cl-demo-chip" onclick="applyThongTinDemo({ regType: 'Đăng ký thay đổi' })" title="Lọc toàn bộ giao dịch Đăng ký thay đổi">
+                    <i class="fa-solid fa-pen-to-square"></i> Loại: <code>Đăng ký thay đổi</code>
+                </button>
+                <button type="button" class="cl-demo-chip" onclick="applyThongTinDemo({ regType: 'Thông báo xử lý tài sản đảm bảo lần đầu' })" title="Lọc toàn bộ Thông báo xử lý tài sản">
+                    <i class="fa-solid fa-bullhorn"></i> Loại: <code>Thông báo xử lý TS</code>
+                </button>
+            </div>
+        </div>
         <div class="card-section compact-filter-panel">
             <div class="grid-3-cols">
                 <div class="form-group">
@@ -583,7 +701,7 @@
                     <tr><th>Loại chủ thể</th><th>Số giấy tờ chứng minh</th><th>Tên chủ thể</th><th>Địa chỉ</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td>Tổ chức có đăng ký kinh doanh trong nước</td><td>0123456789</td><td>Công ty TNHH ABC</td><td>Hà Nội, Việt Nam</td></tr>
+                    <tr><td>Tổ chức có đăng ký kinh doanh trong nước</td><td>0123456789</td><td>Công ty TNHH ABC</td><td>Số 36 Hoàng Cầu, Phường Đống Đa, Thành phố Hà Nội, Việt Nam</td></tr>
                 </tbody>
             </table>
         </div>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhận dữ liệu BPBĐ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../Common/style_iframe.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="nhan_du_lieu_bpbd.css?v=20261006q">
+    <script src="../Common/iframe_helper.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <!-- I. Tiêu đề và thao tác chung -->
+    <div class="top-action-bar">
+        <div>
+            <h2><i class="fa-solid fa-database"></i><span>Nhận dữ liệu BPBĐ từ cơ quan đăng ký khác</span></h2>
+            <div class="sub">Dữ liệu hồ sơ đăng ký biện pháp bảo đảm do cơ quan đăng ký khác gửi về để lưu trữ, tra cứu nội bộ và báo cáo</div>
+        </div>
+        <div class="top-actions">
+            <button class="btn btn-outline" onclick="openCfg()"><i class="fa-solid fa-gear"></i> Cấu hình cơ quan đăng ký</button>
+        </div>
+    </div>
+
+    <!-- II. Tab theo Loại tài sản -->
+    <div class="nav-tabs" id="typeTabs"></div>
+
+    <div id="tabRecords">
+        <div class="card-filter">
+            <div class="filter-header" onclick="document.getElementById('filterBody').classList.toggle('collapsed')">
+                <div class="filter-header-title"><i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm</div>
+                <i class="fa-solid fa-chevron-down" style="color:#64748B"></i>
+            </div>
+            <div class="filter-body" id="filterBody">
+                <div class="grid-filter">
+                    <div class="form-group"><label class="form-label" for="fSoDK">Số đăng ký</label><input id="fSoDK" class="form-control" placeholder="Nhập số đăng ký..."></div>
+                    <div class="form-group"><label class="form-label" for="fLoaiDK">Loại đăng ký</label><select id="fLoaiDK" class="form-select"></select></div>
+                    <div class="form-group"><label class="form-label" for="fCoQuan">Cơ quan đăng ký</label><select id="fCoQuan" class="form-select"></select></div>
+                    <div class="form-group"><label class="form-label" for="fBBD">Bên bảo đảm</label><input id="fBBD" class="form-control" placeholder="Tên hoặc số giấy tờ..."></div>
+                    <div class="form-group"><label class="form-label" for="fBNBD">Bên nhận bảo đảm</label><input id="fBNBD" class="form-control" placeholder="Tên hoặc số giấy tờ..."></div>
+                    <div class="form-group"><label class="form-label" for="fTS" id="fTSLabel">Thông tin tài sản</label><input id="fTS" class="form-control"></div>
+                    <div class="form-group"><label class="form-label">Thời điểm đăng ký</label><div class="range-pair"><input id="fDKTu" type="date" class="form-control" aria-label="Từ ngày"><span>-</span><input id="fDKDen" type="date" class="form-control" aria-label="Đến ngày"></div></div>
+                    <div class="form-group"><label class="form-label" for="fNguon">Nguồn nhận</label><select id="fNguon" class="form-select"><option value="">Tất cả</option><option>Nhận từ file</option><option>Thêm mới thủ công</option></select></div>
+                    <div class="form-group"><label class="form-label" for="fLo">Mã lô</label><input id="fLo" class="form-control" placeholder="VD: LO-2026-0001"></div>
+                    <div class="form-group"><label class="form-label" for="fTrangThai">Trạng thái bản ghi</label><select id="fTrangThai" class="form-select"><option value="">Tất cả</option><option selected>Hiệu lực</option><option>Đã hủy</option></select></div>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn btn-outline" onclick="resetFilter()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                    <button class="btn btn-primary" onclick="applyFilter()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-card-section">
+            <div class="table-toolbar">
+                <span id="recCount">0 bản ghi</span>
+                <div class="toolbar-actions">
+                    <button class="btn btn-outline-danger" id="btnBulkCancel" style="display:none" onclick="askCancelSelected()"><i class="fa-solid fa-ban"></i> Hủy bản ghi đã chọn (<span id="selCount">0</span>)</button>
+                    <button class="btn btn-primary" onclick="goAdd()"><i class="fa-solid fa-plus"></i> Thêm mới</button>
+                    <button class="btn btn-outline-primary" onclick="openImport()"><i class="fa-solid fa-file-import"></i> Nhận từ Excel</button>
+                    <button class="btn btn-outline" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table class="custom-table">
+                    <thead><tr>
+                        <th class="col-chk"><input type="checkbox" id="chkAll" title="Chọn tất cả bản ghi Hiệu lực trên trang" onclick="toggleAll(this.checked)"></th>
+                        <th>STT</th><th>Số đăng ký</th><th>Loại đăng ký</th><th>Thời điểm đăng ký</th><th>Cơ quan đăng ký</th>
+                        <th>Bên bảo đảm</th><th>Bên nhận bảo đảm</th><th>Tài sản</th><th>Nguồn nhận</th><th>Ngày nhận</th>
+                        <th>Trạng thái</th><th class="col-actions" style="text-align: center; min-width: 90px;">Thao tác</th>
+                    </tr></thead>
+                    <tbody id="recBody"></tbody>
+                </table>
+            </div>
+            <div class="pagination-bar"><span id="recPageInfo"></span><div class="pagination-pages" id="recPages"></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- MH02 - POPUP NHẬN DỮ LIỆU TỪ FILE -->
+<div class="modal-overlay" id="importModal">
+    <div class="modal-content wide">
+        <div class="modal-header"><h3><i class="fa-solid fa-file-import"></i> Nhận dữ liệu từ Excel</h3><button class="modal-close" onclick="closeImport()" aria-label="Đóng">&times;</button></div>
+        <div class="modal-body">
+            <div class="steps"><div class="step active" id="step1Tab"><span class="num">1</span> Chọn tệp dữ liệu</div><div class="step" id="step2Tab"><span class="num">2</span> Kết quả kiểm tra và ghi nhận</div></div>
+
+            <div id="step1">
+                <!-- Khối Tải file mẫu: đặt đầu popup, nổi bật -->
+                <div class="template-box">
+                    <i class="fa-solid fa-file-excel tb-ic"></i>
+                    <div class="tb-text"><div class="tb-title">File mẫu nhận dữ liệu <span id="impTypeName"></span></div><div class="tb-sub">Tải file mẫu Excel, nhập dữ liệu đúng cấu trúc rồi tải lên tại mục Tệp dữ liệu Excel bên dưới.</div></div>
+                    <a class="btn btn-success" id="impTemplateLink" download><i class="fa-solid fa-file-arrow-down"></i> Tải file mẫu</a>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group span-2">
+                        <label class="form-label">Tệp dữ liệu Excel <span class="req">*</span></label>
+                        <div class="dropzone"><button class="btn btn-outline btn-sm" onclick="document.getElementById('impFile').click()"><i class="fa-solid fa-upload"></i> Chọn tệp</button><span class="file-name" id="impFileName">Chưa chọn tệp (.xls, .xlsx, tối đa 20MB)</span></div>
+                        <input type="file" id="impFile" accept=".xls,.xlsx" hidden onchange="onPickFile(this)">
+                        <div class="err-text" id="errFile"></div>
+                    </div>
+                    <div class="form-group span-2">
+                        <label class="form-label">Tệp nén file đính kèm của hồ sơ</label>
+                        <div class="dropzone"><button class="btn btn-outline btn-sm" onclick="document.getElementById('impZip').click()"><i class="fa-solid fa-file-zipper"></i> Chọn tệp</button><span class="file-name" id="impZipName">Không bắt buộc (.zip, tối đa 100MB). Tên file trong tệp nén phải trùng cột "Tên file đính kèm" của sheet HO_SO.</span></div>
+                        <input type="file" id="impZip" accept=".zip" hidden onchange="onPickZip(this)">
+                        <div class="err-text" id="errZip"></div>
+                    </div>
+                    <div class="form-group span-2">
+                        <label class="form-label">Công văn, tài liệu gửi kèm</label>
+                        <div class="dropzone"><button class="btn btn-outline btn-sm" onclick="document.getElementById('impCV').click()"><i class="fa-solid fa-paperclip"></i> Thêm tệp</button><span id="impCVList" class="file-name">Không bắt buộc (.pdf, .jpg, .png, tối đa 20MB/tệp)</span></div>
+                        <input type="file" id="impCV" accept=".pdf,.jpg,.jpeg,.png" multiple hidden onchange="onPickCV(this)">
+                        <div class="err-text" id="errCV"></div>
+                    </div>
+                    <div class="form-group span-2"><label class="form-label" for="impGhiChu">Ghi chú</label><textarea id="impGhiChu" class="form-control" rows="2" maxlength="500" placeholder="VD: Dữ liệu tháng 10/2026"></textarea></div>
+                </div>
+            </div>
+
+            <div id="step2" style="display:none">
+                <div class="summary-chips" id="sumChips"></div>
+                <div id="resultFile"></div>
+            </div>
+        </div>
+        <div class="modal-footer" id="impFooter1">
+            <button class="btn-link left" onclick="useDemo()" title="Dùng dữ liệu mẫu có sẵn để xem thử kết quả kiểm tra"><i class="fa-solid fa-flask"></i> Dùng dữ liệu mẫu</button>
+            <button class="btn btn-outline" onclick="closeImport()">Hủy</button>
+            <button class="btn btn-primary" onclick="checkImport()"><i class="fa-solid fa-list-check"></i> Kiểm tra dữ liệu</button>
+        </div>
+        <div class="modal-footer" id="impFooter2" style="display:none">
+            <button class="btn btn-outline" onclick="backToStep1()"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
+            <button class="btn btn-primary" id="btnCommit" onclick="askCommit()"><i class="fa-solid fa-floppy-disk"></i> Ghi nhận</button>
+        </div>
+    </div>
+</div>
+
+<!-- MH06 - POPUP CẤU HÌNH CƠ QUAN ĐĂNG KÝ THEO LOẠI TÀI SẢN -->
+<div class="modal-overlay" id="cfgModal">
+    <div class="modal-content wide">
+        <div class="modal-header"><h3><i class="fa-solid fa-gear"></i> Cấu hình cơ quan đăng ký</h3><button class="modal-close" onclick="closeModal('cfgModal')" aria-label="Đóng">&times;</button></div>
+        <div class="modal-body">
+            <div class="notice info"><i class="fa-solid fa-circle-info"></i><div>Chọn các đơn vị (lấy từ Quản trị hệ thống &gt; Quản lý đơn vị, trạng thái Hoạt động) là cơ quan đăng ký của từng Loại tài sản. Danh sách này dùng cho ô chọn Cơ quan đăng ký khi Thêm mới/Sửa, bộ lọc tìm kiếm, danh mục trong file mẫu Excel và kiểm tra khi Nhận từ Excel.</div></div>
+            <div class="table-container"><table class="custom-table cfg-table">
+                <thead><tr><th style="width:240px">Loại tài sản</th><th>Cơ quan đăng ký</th></tr></thead>
+                <tbody id="cfgBody"></tbody>
+            </table></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('cfgModal')">Hủy</button><button class="btn btn-primary" onclick="saveCfg()"><i class="fa-solid fa-floppy-disk"></i> Lưu</button></div>
+    </div>
+</div>
+
+<!-- POPUP XÁC NHẬN DÙNG CHUNG -->
+<div class="modal-overlay" id="confirmModal">
+    <div class="modal-content small">
+        <div class="modal-header"><h3 id="cfTitle"><i class="fa-solid fa-circle-question"></i> Xác nhận</h3><button class="modal-close" onclick="closeModal('confirmModal')" aria-label="Đóng">&times;</button></div>
+        <div class="modal-body">
+            <p id="cfMsg" style="margin-top:0"></p>
+            <div id="cfReasonWrap" style="display:none" class="form-group"><label class="form-label" for="cfReason">Lý do <span class="req">*</span></label><textarea id="cfReason" class="form-control" rows="3" maxlength="1000"></textarea><div class="err-text" id="cfReasonErr"></div></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('confirmModal')">Hủy</button><button class="btn btn-primary" id="cfOk">Đồng ý</button></div>
+    </div>
+</div>
+
+<script src="nhan_du_lieu_bpbd_spec.js?v=20261006q"></script>
+<script src="nhan_du_lieu_bpbd_common.js?v=20261006q"></script>
+<script src="nhan_du_lieu_bpbd.js?v=20261006q"></script>
+</body>
+</html>

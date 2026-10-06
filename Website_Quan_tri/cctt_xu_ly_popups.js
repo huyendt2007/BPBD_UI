@@ -52,9 +52,9 @@
         const origin = {
             transactionType: 'Biện pháp bảo đảm', measure: 'Cầm cố tài sản', contractType: '', status: 'Hoàn thành',
             contractNo: 'HĐCC-BIDV-2025/233', contractDate: '18/04/2025',
-            registrant: { name: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Thăng Long', address: 'Số 3 Phạm Hùng, Phường Cầu Giấy, TP Hà Nội, Việt Nam' },
-            grantors: [{ subjectType: 'Cá nhân', idNo: 'CCCD 001190003456', name: 'Trần Thị Mai', address: 'Số 18 Hoàng Quốc Việt, Phường Nghĩa Đô, TP Hà Nội, Việt Nam' }],
-            securedParties: [{ name: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Thăng Long', idNo: 'MST 0100150619-048', address: 'Số 3 Phạm Hùng, Phường Cầu Giấy, TP Hà Nội, Việt Nam' }],
+            registrant: { name: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Thăng Long', address: 'Số 3 Phạm Hùng, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam' },
+            grantors: [{ subjectType: 'Cá nhân', idNo: 'CCCD 001190003456', name: 'Trần Thị Mai', address: 'Số 18 Hoàng Quốc Việt, Phường Nghĩa Đô, Thành phố Hà Nội, Việt Nam' }],
+            securedParties: [{ name: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Thăng Long', idNo: 'MST 0100150619-048', address: 'Số 3 Phạm Hùng, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam' }],
             assets: [{ assetType: 'Quyền tài sản', description: 'Quyền đòi nợ phát sinh từ Hợp đồng tiền gửi có kỳ hạn', rightName: 'Quyền đòi tiền gửi có kỳ hạn', rightBasis: 'Hợp đồng tiền gửi số TG-2025/1188 ngày 10/04/2025' }]
         };
         const list = [

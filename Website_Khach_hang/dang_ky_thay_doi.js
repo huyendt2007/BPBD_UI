@@ -109,7 +109,10 @@ const mockTimelineData = [
                     paperType: "CCCD",
                     paperNo: "001088012345",
                     birthDate: "12/08/1988",
-                    address: "Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Quận Hoàn Kiếm, Hà Nội",
+                    country: "Việt Nam",
+                    province: "Thành phố Hà Nội",
+                    ward: "Phường Cửa Nam",
+                    address: "Số 15 Lý Thường Kiệt",
                     status: "Không thay đổi"
                 },
                 {
@@ -118,7 +121,10 @@ const mockTimelineData = [
                     paperType: "CCCD",
                     paperNo: "002095067890",
                     birthDate: "21/05/1995",
-                    address: "Số 88 Giải Phóng, Phường Phương Mai, Quận Đống Đa, Hà Nội",
+                    country: "Việt Nam",
+                    province: "Thành phố Hà Nội",
+                    ward: "Phường Đống Đa",
+                    address: "Số 88 Giải Phóng",
                     status: "Bổ sung mới" // Added in version 3
                 }
             ],
@@ -127,7 +133,8 @@ const mockTimelineData = [
                     name: "NGÂN HÀNG TMCP NGOẠI THƯƠNG VIỆT NAM (VCB) - CHI NHÁNH HÀ NỘI",
                     country: "Việt Nam",
                     province: "Thành phố Hà Nội",
-                    address: "Số 198 Trần Quang Khải, Quận Hoàn Kiếm, Hà Nội",
+                    ward: "Phường Hoàn Kiếm",
+                    address: "Số 198 Trần Quang Khải",
                     status: "Không thay đổi"
                 }
             ],
@@ -205,7 +212,10 @@ const mockTimelineData = [
                     paperType: "CCCD",
                     paperNo: "001088012345",
                     birthDate: "12/08/1988",
-                    address: "Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Quận Hoàn Kiếm, Hà Nội",
+                    country: "Việt Nam",
+                    province: "Thành phố Hà Nội",
+                    ward: "Phường Cửa Nam",
+                    address: "Số 15 Lý Thường Kiệt",
                     status: "Không thay đổi"
                 }
             ],
@@ -214,7 +224,8 @@ const mockTimelineData = [
                     name: "NGÂN HÀNG TMCP NGOẠI THƯƠNG VIỆT NAM (VCB) - CHI NHÁNH HÀ NỘI",
                     country: "Việt Nam",
                     province: "Thành phố Hà Nội",
-                    address: "Số 198 Trần Quang Khải, Quận Hoàn Kiếm, Hà Nội",
+                    ward: "Phường Hoàn Kiếm",
+                    address: "Số 198 Trần Quang Khải",
                     status: "Không thay đổi"
                 }
             ],
@@ -278,7 +289,10 @@ const mockTimelineData = [
                     name: "Nguyễn Văn Nam",
                     paperType: "CCCD",
                     paperNo: "001088012345",
-                    address: "Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Quận Hoàn Kiếm, Hà Nội",
+                    country: "Việt Nam",
+                    province: "Thành phố Hà Nội",
+                    ward: "Phường Cửa Nam",
+                    address: "Số 15 Lý Thường Kiệt",
                     status: "Không thay đổi"
                 }
             ],
@@ -287,7 +301,8 @@ const mockTimelineData = [
                     name: "NGÂN HÀNG TMCP NGOẠI THƯƠNG VIỆT NAM (VCB) - CHI NHÁNH HÀ NỘI",
                     country: "Việt Nam",
                     province: "Thành phố Hà Nội",
-                    address: "Số 198 Trần Quang Khải, Quận Hoàn Kiếm, Hà Nội",
+                    ward: "Phường Hoàn Kiếm",
+                    address: "Số 198 Trần Quang Khải",
                     status: "Không thay đổi"
                 }
             ],
@@ -339,6 +354,77 @@ const VN_PROVINCES = [
     "Tỉnh Khánh Hòa"
 ];
 
+// ----------------------------------------------------
+// PHƯỜNG/XÃ & GHÉP ĐỊA CHỈ (dùng module chung Common/dia_ban_vn.js)
+// ----------------------------------------------------
+// Ghép địa chỉ đầy đủ "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia" (bỏ Phường/Xã với địa chỉ nước ngoài)
+function composeAddress(detail, ward, province, country) {
+    if (typeof DiaBanVN !== 'undefined') return DiaBanVN.formatAddress(detail, ward, province, country);
+    const isVN = String(country || '').trim() === 'Việt Nam';
+    return [detail, isVN ? ward : '', province, country].map(x => String(x || '').trim()).filter(Boolean).join(', ');
+}
+
+// Địa chỉ chi tiết (cấp số nhà/đường) của chủ thể. Dữ liệu lưu tách thành phần: address = địa chỉ chi tiết,
+// ward/province/country = Phường/Xã, Tỉnh/Thành phố, Quốc gia. Dữ liệu cũ có thể đã ghép sẵn cả chuỗi
+// (dấu " - " hoặc dấu phẩy) -> bóc lại phần địa chỉ chi tiết để ghép và so sánh thống nhất.
+function getPartyDetailAddress(p) {
+    const addr = String((p && p.address) || '').trim();
+    if (!p || !p.country) return addr;
+    if (addr.endsWith(' - ' + String(p.country).trim())) return addr.split(' - ')[0].trim();
+    const tail = composeAddress('', p.ward, p.province, p.country);
+    if (tail && addr !== tail && addr.endsWith(', ' + tail)) return addr.slice(0, addr.length - tail.length - 2).trim();
+    return addr;
+}
+
+// Địa chỉ hiển thị của chủ thể: luôn ghép từ các thành phần; dữ liệu chỉ có chuỗi địa chỉ đầy đủ (không có Quốc gia) thì giữ nguyên
+function getPartyFullAddress(p) {
+    if (!p) return '';
+    if (!p.country) return String(p.address || '').trim();
+    return composeAddress(getPartyDetailAddress(p), p.ward, p.province, p.country);
+}
+
+// Gắn ô Phường/Xã ngay sau ô Tỉnh/Thành phố của sub-form (chỉ hiện khi Quốc gia = Việt Nam)
+function bindWardControl(wardId, countryId, provinceId, provinceWrapperId) {
+    if (typeof DiaBanVN === 'undefined') return null;
+    return DiaBanVN.bind({
+        id: wardId,
+        country: countryId,
+        province: provinceId, // truyền id: ô Tỉnh/Thành phố được dựng lại (select/input) khi đổi Quốc gia
+        after: () => document.getElementById(provinceWrapperId).parentNode,
+        groupClass: 'form-group',
+        labelClass: 'form-label',
+        selectClass: 'form-select',
+        requiredHtml: ' <span>*</span>',
+        onChange: (value) => {
+            // Xóa thông báo lỗi bắt buộc của trang khi đã chọn Phường/Xã
+            if (!value) return;
+            const group = document.getElementById(wardId + '_group');
+            const err = group ? group.querySelector('.error-text') : null;
+            if (err) err.remove();
+        }
+    });
+}
+
+function getWardControl(wardId) {
+    return typeof DiaBanVN !== 'undefined' ? DiaBanVN.get(wardId) : null;
+}
+
+function getWardValue(wardId) {
+    const ctl = getWardControl(wardId);
+    return ctl ? ctl.value() : '';
+}
+
+// Gán Phường/Xã sau khi đã gán Quốc gia/Tỉnh bằng code (gán .value không phát sinh sự kiện)
+function setWardValue(wardId, value) {
+    const ctl = getWardControl(wardId);
+    if (ctl) ctl.setValue(value || '');
+}
+
+function resetWardValue(wardId) {
+    const ctl = getWardControl(wardId);
+    if (ctl) ctl.reset();
+}
+
 function initPage() {
     try {
         initFloatingTooltips();
@@ -372,7 +458,10 @@ function initPage() {
                         paperType: "CCCD",
                         paperNo: "001088012345",
                         birthDate: "12/08/1988",
-                        address: "Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Quận Hoàn Kiếm, Hà Nội",
+                        country: "Việt Nam",
+                        province: "Thành phố Hà Nội",
+                        ward: "Phường Cửa Nam",
+                        address: "Số 15 Lý Thường Kiệt",
                         status: "Không thay đổi"
                     },
                     {
@@ -381,7 +470,10 @@ function initPage() {
                         paperType: "CCCD",
                         paperNo: "002095067890",
                         birthDate: "21/05/1995",
-                        address: "Số 88 Giải Phóng, Phường Phương Mai, Quận Đống Đa, Hà Nội",
+                        country: "Việt Nam",
+                        province: "Thành phố Hà Nội",
+                        ward: "Phường Đống Đa",
+                        address: "Số 88 Giải Phóng",
                         status: "Không thay đổi"
                     }
                 ],
@@ -390,7 +482,8 @@ function initPage() {
                         name: "NGÂN HÀNG TMCP FPT",
                         country: "Việt Nam",
                         province: "Thành phố Hà Nội",
-                        address: "Số 17 Duy Tân, Quận Cầu Giấy, Hà Nội",
+                        ward: "Phường Cầu Giấy",
+                        address: "Số 17 Duy Tân",
                         status: "Không thay đổi"
                     }
                 ],
@@ -564,6 +657,10 @@ function initPage() {
         // Populate country province wrappers for subforms
         setupCountryProvinceControls('secCountry', 'secProvinceWrapper', 'secProvince');
         setupCountryProvinceControls('sedCountry', 'sedProvinceWrapper', 'sedProvince');
+
+        // Phường/Xã: ngay sau Tỉnh/Thành phố, chỉ hiển thị khi Quốc gia = Việt Nam, lọc theo Tỉnh/Thành phố
+        bindWardControl('secWard', 'secCountry', 'secProvince', 'secProvinceWrapper');
+        bindWardControl('sedWard', 'sedCountry', 'sedProvince', 'sedProvinceWrapper');
 
         // Subject type change listener in Securing Party subform
         document.getElementById('secSubjectType').addEventListener('change', handleSecuringSubjectTypeChange);
@@ -1068,20 +1165,21 @@ function renderSecuringList() {
         const origPaperNo = orig ? (orig.paperNo || '') : '';
         const origBirthDate = orig ? (orig.birthDate || '') : '';
         const origName = orig ? (orig.name || '') : '';
-        const origAddress = orig ? (orig.address || '') : '';
+        const origAddress = orig ? getPartyFullAddress(orig) : '';
+        const partyAddress = getPartyFullAddress(party);
 
         // Cell delta checks
         const typeTdAttr = orig ? getCellHtml(party.typeLabel || party.paperType || '', origTypeLabel) : '';
         const paperTdAttr = orig ? getCellHtml(party.paperNo || '', origPaperNo) : '';
         const birthDateTdAttr = orig ? getCellHtml(party.birthDate || '', origBirthDate) : '';
         const nameTdAttr = orig ? getCellHtml(party.name || '', origName) : '';
-        const addressTdAttr = orig ? getCellHtml(party.address || '', origAddress) : '';
+        const addressTdAttr = orig ? getCellHtml(partyAddress, origAddress) : '';
 
         const typeHistory = orig ? getHistoryIcon(party.typeLabel || party.paperType || '', origTypeLabel) : '';
         const paperHistory = orig ? getHistoryIcon(party.paperNo || '', origPaperNo) : '';
         const birthDateHistory = orig ? getHistoryIcon(party.birthDate || '', origBirthDate) : '';
         const nameHistory = orig ? getHistoryIcon(party.name || '', origName) : '';
-        const addressHistory = orig ? getHistoryIcon(party.address || '', origAddress) : '';
+        const addressHistory = orig ? getHistoryIcon(partyAddress, origAddress) : '';
 
         // Format actions column based on status
         let actionsHtml = '';
@@ -1106,7 +1204,7 @@ function renderSecuringList() {
             <td ${paperTdAttr}>${party.paperNo || ''} ${paperHistory}</td>
             <td ${birthDateTdAttr}>${party.type === 'cd_vn' ? (party.birthDate || '-') : '-'} ${party.type === 'cd_vn' ? birthDateHistory : ''}</td>
             <td ${nameTdAttr}>${party.name || ''} ${nameHistory}</td>
-            <td ${addressTdAttr}>${party.address || ''} ${addressHistory}</td>
+            <td ${addressTdAttr}>${partyAddress} ${addressHistory}</td>
             <td>${statusTag}</td>
         `;
 
@@ -1136,6 +1234,7 @@ function showAddSecuringForm() {
 
     const provSelect = document.getElementById('secProvince');
     if (provSelect) provSelect.value = "";
+    resetWardValue('secWard');
 
     document.getElementById('secAddress').value = "";
 
@@ -1203,23 +1302,10 @@ function editSecuring(index) {
     if (provSelect) {
         provSelect.value = party.province || "";
     }
+    setWardValue('secWard', party.ward);
 
-    let rawAddress = party.address || "";
-    let detailAddress = rawAddress;
-    if (rawAddress.includes(" - ")) {
-        const parts = rawAddress.split(" - ");
-        detailAddress = parts[0];
-    } else {
-        if (party.province && detailAddress.includes(party.province)) {
-            detailAddress = detailAddress.split(`, ${party.province}`)[0];
-            detailAddress = detailAddress.split(` - ${party.province}`)[0];
-        }
-        if (party.country && detailAddress.includes(party.country)) {
-            detailAddress = detailAddress.split(`, ${party.country}`)[0];
-            detailAddress = detailAddress.split(` - ${party.country}`)[0];
-        }
-    }
-    document.getElementById('secAddress').value = detailAddress.trim();
+    // Chỉ nạp phần Địa chỉ chi tiết (Phường/Xã, Tỉnh/Thành phố, Quốc gia đã có ô riêng)
+    document.getElementById('secAddress').value = getPartyDetailAddress(party);
 
     document.getElementById('btnSaveSecuringNew').style.display = 'none';
     document.getElementById('btnUpdateSecuring').style.display = 'inline-flex';
@@ -1341,6 +1427,7 @@ function saveSecuringParty(isUpdate) {
     const country = document.getElementById('secCountry').value;
     const provinceSelect = document.getElementById('secProvince');
     const province = provinceSelect ? provinceSelect.value.trim() : '';
+    const ward = getWardValue('secWard');
     const addressInput = document.getElementById('secAddress');
     const detailAddress = addressInput.value.trim();
 
@@ -1354,6 +1441,13 @@ function saveSecuringParty(isUpdate) {
             highlightError(provinceSelect, "Đây là trường bắt buộc");
             return;
         }
+    }
+
+    // Phường/Xã bắt buộc khi đang hiển thị (Quốc gia = Việt Nam)
+    const secWardCtl = getWardControl('secWard');
+    if (secWardCtl && secWardCtl.isVisible() && !ward) {
+        showError('secWard', "Đây là trường bắt buộc");
+        return;
     }
 
     if (!detailAddress) {
@@ -1378,7 +1472,7 @@ function saveSecuringParty(isUpdate) {
         }
     }
 
-    const fullAddress = `${detailAddress}${province ? ' - ' + province : ''} - ${country}`;
+    const fullAddress = composeAddress(detailAddress, ward, province, country);
 
     let typeLabel = 'Công dân Việt Nam';
     if (type === 'nn_ngoai') typeLabel = 'Người nước ngoài';
@@ -1398,19 +1492,22 @@ function saveSecuringParty(isUpdate) {
             passportCountry: passportCountry,
             country: country,
             province: province,
-            address: fullAddress,
+            ward: ward,
+            address: detailAddress, // lưu Địa chỉ chi tiết; địa chỉ đầy đủ ghép khi hiển thị
             status: "Bổ sung mới"
         });
     } else {
         const item = baselineData.securingParties[editSecuringIndex];
         const originalSubject = originalData.securingParties.find(p => p.paperNo === item.paperNo) || originalData.securingParties[editSecuringIndex] || {};
 
+        // Thay đổi Phường/Xã được tính là "Sửa thông tin" như thay đổi Tỉnh/Thành phố/Địa chỉ
         const isModified = (
             name !== originalSubject.name ||
             paperNo !== originalSubject.paperNo ||
             birthDate !== (originalSubject.birthDate || '') ||
             type !== originalSubject.type ||
-            fullAddress !== originalSubject.address
+            fullAddress !== getPartyFullAddress(originalSubject) ||
+            ward !== (originalSubject.ward || '')
         );
 
         item.type = type;
@@ -1422,7 +1519,8 @@ function saveSecuringParty(isUpdate) {
         item.passportCountry = passportCountry;
         item.country = country;
         item.province = province;
-        item.address = fullAddress;
+        item.ward = ward;
+        item.address = detailAddress; // lưu Địa chỉ chi tiết; địa chỉ đầy đủ ghép khi hiển thị
 
         if (item.status !== 'Bổ sung mới') {
             item.status = isModified ? 'Sửa thông tin' : 'Không thay đổi';
@@ -1494,20 +1592,16 @@ function renderSecuredList() {
             orig = originalData.securedParties.find(p => p.name && p.name.toLowerCase() === party.name.toLowerCase()) || originalData.securedParties[index];
         }
 
+        // Địa chỉ hiển thị 1 cột: "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia"
         const origName = orig ? (orig.name || '') : '';
-        const origAddress = orig ? (orig.address || '') : '';
-        const origProvince = orig ? (orig.province || '') : '';
-        const origCountry = orig ? (orig.country || '') : '';
+        const origAddress = orig ? getPartyFullAddress(orig) : '';
+        const partyAddress = getPartyFullAddress(party);
 
         const nameTdAttr = orig ? getCellHtml(party.name || '', origName) : '';
-        const addressTdAttr = orig ? getCellHtml(party.address || '', origAddress) : '';
-        const provinceTdAttr = orig ? getCellHtml(party.province || '', origProvince) : '';
-        const countryTdAttr = orig ? getCellHtml(party.country || '', origCountry) : '';
+        const addressTdAttr = orig ? getCellHtml(partyAddress, origAddress) : '';
 
         const nameHistory = orig ? getHistoryIcon(party.name || '', origName) : '';
-        const addressHistory = orig ? getHistoryIcon(party.address || '', origAddress) : '';
-        const provinceHistory = orig ? getHistoryIcon(party.province || '', origProvince) : '';
-        const countryHistory = orig ? getHistoryIcon(party.country || '', origCountry) : '';
+        const addressHistory = orig ? getHistoryIcon(partyAddress, origAddress) : '';
 
         let actionsHtml = '';
         if (isEditable) {
@@ -1528,9 +1622,7 @@ function renderSecuredList() {
         tr.innerHTML = `
             <td style="text-align: center;">${actionsHtml}</td>
             <td ${nameTdAttr}>${party.name || ''} ${nameHistory}</td>
-            <td ${addressTdAttr}>${party.address || ''} ${addressHistory}</td>
-            <td ${provinceTdAttr}>${party.province || ''} ${provinceHistory}</td>
-            <td ${countryTdAttr}>${party.country || ''} ${countryHistory}</td>
+            <td ${addressTdAttr}>${partyAddress} ${addressHistory}</td>
             <td>${statusTag}</td>
         `;
 
@@ -1547,6 +1639,7 @@ function showAddSecuredForm() {
 
     const provSelect = document.getElementById('sedProvince');
     if (provSelect) provSelect.value = "";
+    resetWardValue('sedWard');
 
     document.getElementById('sedAddress').value = "";
 
@@ -1578,7 +1671,8 @@ function fillSelfAsSecured() {
     setTimeout(() => {
         const provSelect = document.getElementById('sedProvince');
         if (provSelect) provSelect.value = "Thành phố Hà Nội";
-        document.getElementById('sedAddress').value = "Số 99 Trần Duy Hưng, Quận Cầu Giấy";
+        setWardValue('sedWard', "Phường Yên Hòa");
+        document.getElementById('sedAddress').value = "Số 99 Trần Duy Hưng";
     }, 10);
 
     document.getElementById('formSecuredParty').style.display = 'block';
@@ -1607,23 +1701,10 @@ function editSecured(index) {
     if (provSelect) {
         provSelect.value = party.province || "";
     }
+    setWardValue('sedWard', party.ward);
 
-    let rawAddress = party.address || "";
-    let detailAddress = rawAddress;
-    if (rawAddress.includes(" - ")) {
-        const parts = rawAddress.split(" - ");
-        detailAddress = parts[0];
-    } else {
-        if (party.province && detailAddress.includes(party.province)) {
-            detailAddress = detailAddress.split(`, ${party.province}`)[0];
-            detailAddress = detailAddress.split(` - ${party.province}`)[0];
-        }
-        if (party.country && detailAddress.includes(party.country)) {
-            detailAddress = detailAddress.split(`, ${party.country}`)[0];
-            detailAddress = detailAddress.split(` - ${party.country}`)[0];
-        }
-    }
-    document.getElementById('sedAddress').value = detailAddress.trim();
+    // Chỉ nạp phần Địa chỉ chi tiết (Phường/Xã, Tỉnh/Thành phố, Quốc gia đã có ô riêng)
+    document.getElementById('sedAddress').value = getPartyDetailAddress(party);
 
     document.getElementById('btnSaveSecuredNew').style.display = 'none';
     document.getElementById('btnUpdateSecured').style.display = 'inline-flex';
@@ -1659,6 +1740,7 @@ function saveSecuredParty(isUpdate) {
     const country = document.getElementById('sedCountry').value;
     const provinceSelect = document.getElementById('sedProvince');
     const province = provinceSelect ? provinceSelect.value.trim() : '';
+    const ward = getWardValue('sedWard');
     const addressInput = document.getElementById('sedAddress');
     const detailAddress = addressInput.value.trim();
 
@@ -1674,6 +1756,13 @@ function saveSecuredParty(isUpdate) {
         }
     }
 
+    // Phường/Xã bắt buộc khi đang hiển thị (Quốc gia = Việt Nam)
+    const sedWardCtl = getWardControl('sedWard');
+    if (sedWardCtl && sedWardCtl.isVisible() && !ward) {
+        showError('sedWard', "Đây là trường bắt buộc");
+        return;
+    }
+
     if (!detailAddress) {
         highlightError(addressInput, "Đây là trường bắt buộc");
         return;
@@ -1684,7 +1773,7 @@ function saveSecuredParty(isUpdate) {
         return;
     }
 
-    const fullAddress = `${detailAddress}${province ? ' - ' + province : ''} - ${country}`;
+    const fullAddress = composeAddress(detailAddress, ward, province, country);
 
     const duplicate = baselineData.securedParties.find((p, idx) =>
         p.name.toLowerCase() === name.toLowerCase() &&
@@ -1701,22 +1790,26 @@ function saveSecuredParty(isUpdate) {
             name: name,
             country: country,
             province: province,
-            address: fullAddress,
+            ward: ward,
+            address: detailAddress, // lưu Địa chỉ chi tiết; địa chỉ đầy đủ ghép khi hiển thị
             status: "Bổ sung mới"
         });
     } else {
         const item = baselineData.securedParties[editSecuredIndex];
         const originalSubject = originalData.securedParties[editSecuredIndex] || originalData.securedParties.find(p => p.name.toLowerCase() === item.name.toLowerCase()) || {};
 
+        // Thay đổi Phường/Xã được tính là "Sửa thông tin" như thay đổi Tỉnh/Thành phố/Địa chỉ
         const isModified = (
             name !== originalSubject.name ||
-            fullAddress !== originalSubject.address
+            fullAddress !== getPartyFullAddress(originalSubject) ||
+            ward !== (originalSubject.ward || '')
         );
 
         item.name = name;
         item.country = country;
         item.province = province;
-        item.address = fullAddress;
+        item.ward = ward;
+        item.address = detailAddress; // lưu Địa chỉ chi tiết; địa chỉ đầy đủ ghép khi hiển thị
 
         if (item.status !== 'Bổ sung mới') {
             item.status = isModified ? 'Sửa thông tin' : 'Không thay đổi';
@@ -1807,7 +1900,52 @@ function toggleAssetDescription(field) {
     }
 }
 
+// Khóa tài sản theo trạng thái tài sản hiện hành:
+//  - "Đang xử lý tài sản" (thuộc Thông báo xử lý còn hiệu lực): không được Rút bớt, không được Sửa thông tin
+//  - "Đã hủy" (hủy đăng ký một phần): chỉ hiển thị đối chiếu, không tính là tài sản còn hiệu lực
+const ASSET_LOCK_HINT = 'Tài sản đang thuộc thông báo xử lý; thực hiện Thay đổi/Xóa thông báo trước.';
+
+function ensureAssetLockStyles() {
+    if (document.getElementById('assetLockStyles')) return;
+    const style = document.createElement('style');
+    style.id = 'assetLockStyles';
+    style.textContent = `
+        tr.row-locked td { background-color: #FFF7ED; }
+        tr.row-cancelled td { background-color: #F3F4F6; color: #9CA3AF; }
+        tr.row-cancelled input, tr.row-cancelled select { text-decoration: line-through; color: #9CA3AF; }
+        .asset-lock-tag { display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; padding: 1px 6px; border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+        .asset-lock-tag.processing { background: #FFEDD5; color: #C2410C; border: 1px solid #FDBA74; }
+        .asset-lock-tag.cancelled { background: #E5E7EB; color: #4B5563; border: 1px solid #D1D5DB; }
+        .asset-lock-btn { padding: 2px 6px; background: transparent; border: 1px dashed #FDBA74; color: #C2410C; border-radius: 4px; cursor: not-allowed; }
+    `;
+    document.head.appendChild(style);
+}
+
+function getAssetLockTag(a) {
+    if (a.lockState === 'Đang xử lý tài sản') {
+        return `<br><span class="asset-lock-tag processing" title="${ASSET_LOCK_HINT}"><i class="fa-solid fa-lock"></i> Đang xử lý tài sản</span>`;
+    }
+    if (a.lockState === 'Đã hủy') {
+        return `<br><span class="asset-lock-tag cancelled" title="Tài sản đã bị hủy đăng ký, chỉ hiển thị để đối chiếu."><i class="fa-solid fa-ban"></i> Đã hủy</span>`;
+    }
+    return '';
+}
+
+function getAssetLockMessage(a) {
+    return a.lockState === 'Đã hủy' ? 'Tài sản đã bị hủy đăng ký, không được Rút bớt hoặc Sửa thông tin.' : ASSET_LOCK_HINT;
+}
+
+function getAssetLockButton(a) {
+    const title = getAssetLockMessage(a);
+    return `<button type="button" class="asset-lock-btn" title="${title}" onclick="alert(this.title)"><i class="fa-solid fa-lock"></i></button>`;
+}
+
+function hasLockedAsset(list) {
+    return list.some(a => a.lockState);
+}
+
 function loadAssetsData() {
+    ensureAssetLockStyles();
     placeAssetBlocksByCheckbox();
     soKhungList = [];
     tauCaList = [];
@@ -1870,6 +2008,17 @@ function loadAssetsData() {
         document.getElementById('ck_thang').value = ck.ck_thang || '';
         document.getElementById('ck_nam').value = ck.ck_nam || '';
     }
+
+    // Không cho bỏ tích Loại tài sản đang có tài sản bị khóa (bỏ tích tương đương Rút bớt)
+    [[chkSoKhung, () => soKhungList], [chkTauCa, () => tauCaList]].forEach(([chk, getList]) => {
+        chk.addEventListener('change', function () {
+            const locked = getList().find(a => a.lockState);
+            if (!this.checked && locked) {
+                this.checked = true;
+                alert(locked.lockState === 'Đã hủy' ? 'Loại tài sản có tài sản đã bị hủy đăng ký, không được bỏ chọn.' : ASSET_LOCK_HINT);
+            }
+        });
+    });
 
     // Set checkboxes change listeners to toggle subforms
     const checkboxes = [chkSoKhung, chkTauCa, chkQuyenTaiSan, chkCayHangNam, chkHangHoa, chkChungKhoan, chkDongSanKhac];
@@ -2043,6 +2192,8 @@ function renderSoKhungGrid() {
         } else if (a.status === 'Rút bớt') {
             rowClass = 'row-removed';
         }
+        if (a.lockState === 'Đang xử lý tài sản') rowClass += ' row-locked';
+        if (a.lockState === 'Đã hủy') rowClass += ' row-cancelled';
         tr.className = rowClass;
 
         let orig = null;
@@ -2067,8 +2218,9 @@ function renderSoKhungGrid() {
         const engineNoHistory = orig ? getHistoryIcon(a.engineNo || '', origEngineNo) : '';
         const plateNoHistory = orig ? getHistoryIcon(a.plateNo || '', origPlateNo) : '';
 
-        const disabledAttr = (isEditable && a.status !== 'Rút bớt') ? '' : 'disabled';
-        const readonlyAttr = (isEditable && a.status !== 'Rút bớt') ? '' : 'readonly';
+        const canEditRow = isEditable && a.status !== 'Rút bớt' && !a.lockState;
+        const disabledAttr = canEditRow ? '' : 'disabled';
+        const readonlyAttr = canEditRow ? '' : 'readonly';
 
         const typeSelectHtml = `
             <select class="form-select inline-input" ${disabledAttr} onchange="updateInlineAsset(${index}, 'sokhung', 'type', this.value)">
@@ -2078,7 +2230,7 @@ function renderSoKhungGrid() {
             </select>
         `;
 
-        const actionBtn = (isEditable) ?
+        const actionBtn = (isEditable && a.lockState) ? getAssetLockButton(a) : (isEditable) ?
             (a.status === 'Rút bớt' ?
                 `<button type="button" class="btn btn-outline" style="padding: 2px 6px;" onclick="undoRemoveInlineAsset(${index}, 'sokhung')"><i class="fa-solid fa-undo"></i></button>` :
                 `<button type="button" class="btn btn-danger" style="padding: 2px 6px;" onclick="removeInlineAsset(${index}, 'sokhung')"><i class="fa-solid fa-trash"></i></button>`
@@ -2086,7 +2238,7 @@ function renderSoKhungGrid() {
 
         tr.innerHTML = `
             <td style="text-align: center;"><input type="checkbox" class="chk-row-sk" data-index="${index}" ${disabledAttr}></td>
-            <td>${index + 1}</td>
+            <td>${index + 1}${getAssetLockTag(a)}</td>
             <td ${typeTdAttr}>${typeSelectHtml} ${typeHistory}</td>
             <td ${brandColorTdAttr}>
                 <input type="text" class="form-control inline-input" value="${a.brandColor || ''}" ${readonlyAttr} onchange="updateInlineAsset(${index}, 'sokhung', 'brandColor', this.value)">
@@ -2134,6 +2286,8 @@ function renderTauCaGrid() {
         } else if (a.status === 'Rút bớt') {
             rowClass = 'row-removed';
         }
+        if (a.lockState === 'Đang xử lý tài sản') rowClass += ' row-locked';
+        if (a.lockState === 'Đã hủy') rowClass += ' row-cancelled';
         tr.className = rowClass;
 
         let orig = null;
@@ -2158,10 +2312,11 @@ function renderTauCaGrid() {
         const certAgencyHistory = orig ? getHistoryIcon(a.certAgency || '', origCertAgency) : '';
         const levelHistory = orig ? getHistoryIcon(a.level || '', origLevel) : '';
 
-        const disabledAttr = (isEditable && a.status !== 'Rút bớt') ? '' : 'disabled';
-        const readonlyAttr = (isEditable && a.status !== 'Rút bớt') ? '' : 'readonly';
+        const canEditRow = isEditable && a.status !== 'Rút bớt' && !a.lockState;
+        const disabledAttr = canEditRow ? '' : 'disabled';
+        const readonlyAttr = canEditRow ? '' : 'readonly';
 
-        const actionBtn = (isEditable) ?
+        const actionBtn = (isEditable && a.lockState) ? getAssetLockButton(a) : (isEditable) ?
             (a.status === 'Rút bớt' ?
                 `<button type="button" class="btn btn-outline" style="padding: 2px 6px;" onclick="undoRemoveInlineAsset(${index}, 'tauca')"><i class="fa-solid fa-undo"></i></button>` :
                 `<button type="button" class="btn btn-danger" style="padding: 2px 6px;" onclick="removeInlineAsset(${index}, 'tauca')"><i class="fa-solid fa-trash"></i></button>`
@@ -2169,7 +2324,7 @@ function renderTauCaGrid() {
 
         tr.innerHTML = `
             <td style="text-align: center;"><input type="checkbox" class="chk-row-tc" data-index="${index}" ${disabledAttr}></td>
-            <td>${index + 1}</td>
+            <td>${index + 1}${getAssetLockTag(a)}</td>
             <td ${nameTdAttr}>
                 <input type="text" class="form-control inline-input" value="${a.name || ''}" ${readonlyAttr} onchange="updateInlineAsset(${index}, 'tauca', 'name', this.value)">
                 ${nameHistory}
@@ -2240,7 +2395,7 @@ function deleteSelectedSoKhungRows() {
 
 function noticeAllSoKhungRows() {
     soKhungList.forEach(a => {
-        if (a.status !== 'Rút bớt') {
+        if (a.status !== 'Rút bớt' && !a.lockState) {
             a.hasNotice = true;
             if (!a.noticeAgency) {
                 a.noticeAgency = "Cục Cảnh sát Giao thông đường bộ - Hà Nội";
@@ -2303,7 +2458,7 @@ function deleteSelectedTauCaRows() {
 
 function noticeAllTauCaRows() {
     tauCaList.forEach(a => {
-        if (a.status !== 'Rút bớt') {
+        if (a.status !== 'Rút bớt' && !a.lockState) {
             a.hasNotice = true;
             if (!a.noticeAgency) {
                 a.noticeAgency = "Cục Cảnh sát Giao thông đường bộ - Hà Nội";
@@ -2329,6 +2484,7 @@ function toggleSelectAllTauCa(master) {
 function removeInlineAsset(index, typeGrid) {
     const list = typeGrid === 'sokhung' ? soKhungList : tauCaList;
     const item = list[index];
+    if (item && item.lockState) { alert(getAssetLockMessage(item)); return; }
     if (item.status === 'Bổ sung mới') {
         list.splice(index, 1);
     } else {
@@ -2350,6 +2506,7 @@ function updateInlineAsset(index, typeGrid, field, value) {
     const list = typeGrid === 'sokhung' ? soKhungList : tauCaList;
     const item = list[index];
     if (!item) return;
+    if (item.lockState) { alert(getAssetLockMessage(item)); return; }
 
     if (field === 'hasNotice') {
         item.hasNotice = !!value;
@@ -2581,9 +2738,9 @@ function generateAutoSummary() {
                         oldParts.push(`Tên: ${orig.name}`);
                         newParts.push(`Tên: ${p.name}`);
                     }
-                    if (p.address !== orig.address) {
-                        oldParts.push(`Địa chỉ: ${orig.address}`);
-                        newParts.push(`Địa chỉ: ${p.address}`);
+                    if (getPartyFullAddress(p) !== getPartyFullAddress(orig)) {
+                        oldParts.push(`Địa chỉ: ${getPartyFullAddress(orig)}`);
+                        newParts.push(`Địa chỉ: ${getPartyFullAddress(p)}`);
                     }
                 }
                 const oldInfo = oldParts.join(', ') || 'Thông tin cũ';
@@ -2605,9 +2762,9 @@ function generateAutoSummary() {
                 let oldParts = [];
                 let newParts = [];
                 if (orig) {
-                    if (p.address !== orig.address) {
-                        oldParts.push(`Địa chỉ: ${orig.address}`);
-                        newParts.push(`Địa chỉ: ${p.address}`);
+                    if (getPartyFullAddress(p) !== getPartyFullAddress(orig)) {
+                        oldParts.push(`Địa chỉ: ${getPartyFullAddress(orig)}`);
+                        newParts.push(`Địa chỉ: ${getPartyFullAddress(p)}`);
                     }
                 }
                 const oldInfo = oldParts.join(', ') || 'Thông tin cũ';
@@ -2735,6 +2892,20 @@ function showError(fieldId, message) {
     field.classList.add('is-invalid');
 
     // Check if there is already an error message
+    const parent = field.parentElement;
+    let errText = parent.querySelector('.error-text');
+    if (!errText) {
+        errText = document.createElement('span');
+        errText.className = 'error-text';
+        parent.appendChild(errText);
+    }
+    errText.textContent = message;
+}
+
+// Hiển thị lỗi theo phần tử (dùng trong kiểm tra form Bên bảo đảm/Bên nhận bảo đảm)
+function highlightError(field, message) {
+    if (!field) return;
+    field.classList.add('is-invalid');
     const parent = field.parentElement;
     let errText = parent.querySelector('.error-text');
     if (!errText) {
@@ -3057,20 +3228,24 @@ function proceedToReview() {
     // Ensure list is not empty (must have at least 1 securing party, 1 secured party, and 1 asset)
     const activeSecurings = baselineData.securingParties.filter(p => p.status !== 'Rút bớt');
     const activeSecureds = baselineData.securedParties.filter(p => p.status !== 'Rút bớt');
-    const activeAssets = baselineData.assets.filter(a => a.status !== 'Rút bớt');
+    // Tài sản còn hiệu lực: không tính dòng Rút bớt và tài sản "Đã hủy"
+    const activeAssets = baselineData.assets.filter(a => a.status !== 'Rút bớt' && a.lockState !== 'Đã hủy');
+    const hasOtherAssets = ['chkQuyenTaiSan', 'chkCayHangNam', 'chkHangHoa', 'chkChungKhoan', 'chkDongSanKhac']
+        .some(id => document.getElementById(id)?.checked);
 
+    // TH2 (Không còn chủ thể/tài sản còn hiệu lực) [MSG-ERR-DK-022]
     if (activeSecurings.length === 0) {
         hasErrors = true;
-        alert("Hồ sơ thay đổi phải có ít nhất 01 Bên thế chấp/Bên bảo đảm hoạt động.");
+        alert("Hồ sơ phải còn ít nhất 01 Bên bảo đảm còn hiệu lực. Vui lòng kiểm tra lại.");
     }
     if (activeSecureds.length === 0) {
         hasErrors = true;
-        alert("Hồ sơ thay đổi phải có ít nhất 01 Bên nhận thế chấp/Bên nhận bảo đảm hoạt động.");
+        alert("Hồ sơ phải còn ít nhất 01 Bên nhận bảo đảm còn hiệu lực. Vui lòng kiểm tra lại.");
     }
-    //if (activeAssets.length === 0) {
-    //     hasErrors = true;
-    //     alert("Hồ sơ thay đổi phải có ít nhất 01 Tài sản bảo đảm hoạt động.");
-    // }
+    if (activeAssets.length === 0 && !hasOtherAssets) {
+        hasErrors = true;
+        alert("Hồ sơ phải còn ít nhất 01 Tài sản bảo đảm còn hiệu lực. Vui lòng kiểm tra lại.");
+    }
 
     if (hasErrors) {
         if (firstGridErr) {
@@ -3199,22 +3374,22 @@ function proceedToReview() {
     // Securing parties diffs
     baselineData.securingParties.forEach(p => {
         if (p.status === 'Bổ sung mới') {
-            deltas.push({ type: 'list', action: 'Thêm mới Bên thế chấp', detail: `${p.name} (Số GT: ${p.paperNo}, Địa chỉ: ${p.address})` });
+            deltas.push({ type: 'list', action: 'Thêm mới Bên thế chấp', detail: `${p.name} (Số GT: ${p.paperNo}, Địa chỉ: ${getPartyFullAddress(p)})` });
         } else if (p.status === 'Rút bớt') {
             deltas.push({ type: 'list', action: 'Rút bớt Bên thế chấp', detail: `${p.name} (Số GT: ${p.paperNo})` });
         } else if (p.status === 'Sửa thông tin') {
-            deltas.push({ type: 'list', action: 'Sửa đổi Bên thế chấp', detail: `${p.name} (Mới: Số GT: ${p.paperNo}, Địa chỉ: ${p.address})` });
+            deltas.push({ type: 'list', action: 'Sửa đổi Bên thế chấp', detail: `${p.name} (Mới: Số GT: ${p.paperNo}, Địa chỉ: ${getPartyFullAddress(p)})` });
         }
     });
 
     // Secured parties diffs
     baselineData.securedParties.forEach(p => {
         if (p.status === 'Bổ sung mới') {
-            deltas.push({ type: 'list', action: 'Thêm mới Bên nhận thế chấp', detail: `${p.name} (Địa chỉ: ${p.address})` });
+            deltas.push({ type: 'list', action: 'Thêm mới Bên nhận thế chấp', detail: `${p.name} (Địa chỉ: ${getPartyFullAddress(p)})` });
         } else if (p.status === 'Rút bớt') {
             deltas.push({ type: 'list', action: 'Rút bớt Bên nhận thế chấp', detail: `${p.name}` });
         } else if (p.status === 'Sửa thông tin') {
-            deltas.push({ type: 'list', action: 'Sửa đổi Bên nhận thế chấp', detail: `${p.name} (Địa chỉ mới: ${p.address})` });
+            deltas.push({ type: 'list', action: 'Sửa đổi Bên nhận thế chấp', detail: `${p.name} (Địa chỉ mới: ${getPartyFullAddress(p)})` });
         }
     });
 
@@ -3228,6 +3403,22 @@ function proceedToReview() {
             deltas.push({ type: 'list', action: 'Sửa đổi Tài sản', detail: `${a.name || a.brandColor} (Số khung: ${a.frameNo || 'Không'}, Hiệu/Sơn mới: ${a.brandColor || ''})` });
         }
     });
+
+    // TH3 (Không có nội dung thay đổi) [MSG-ERR-DK-023]
+    // Không tính thay đổi chỉ ở Người yêu cầu đăng ký, Cơ quan tiếp nhận, miễn lệ phí, tài liệu đính kèm
+    const NON_CONTENT_LABELS = ['Tên cơ quan yêu cầu', 'Cơ quan tiếp nhận', 'Miễn lệ phí'];
+    const assetExtraKeys = ['quyenTaiSan', 'hangHoa', 'chungKhoan', 'assetDescriptions', 'cayHangNam', 'dongSanKhac'];
+    const normExtra = v => {
+        if (!v || typeof v !== "object") return String(v || "");
+        const entries = Object.entries(v).filter(([, x]) => x !== "" && x !== false && x != null).sort();
+        return entries.length ? JSON.stringify(entries) : "";
+    };
+    const hasContentChange = deltas.some(d => !(d.type === 'field' && NON_CONTENT_LABELS.includes(d.label)))
+        || assetExtraKeys.some(k => normExtra(baselineData[k]) !== normExtra(originalData[k]));
+    if (!hasContentChange) {
+        alert("Hồ sơ chưa có nội dung thay đổi so với phiên bản hiện hành. Vui lòng kiểm tra lại.");
+        return;
+    }
 
     // Save everything in localStorage
     localStorage.setItem('dossierDraft', JSON.stringify(baselineData));
@@ -3368,22 +3559,22 @@ function saveDraft() {
     // Securing parties diffs
     baselineData.securingParties.forEach(p => {
         if (p.status === 'Bổ sung mới') {
-            deltas.push({ type: 'list', action: 'Thêm mới Bên thế chấp', detail: `${p.name} (Số GT: ${p.paperNo}, Địa chỉ: ${p.address})` });
+            deltas.push({ type: 'list', action: 'Thêm mới Bên thế chấp', detail: `${p.name} (Số GT: ${p.paperNo}, Địa chỉ: ${getPartyFullAddress(p)})` });
         } else if (p.status === 'Rút bớt') {
             deltas.push({ type: 'list', action: 'Rút bớt Bên thế chấp', detail: `${p.name} (Số GT: ${p.paperNo})` });
         } else if (p.status === 'Sửa thông tin') {
-            deltas.push({ type: 'list', action: 'Sửa đổi Bên thế chấp', detail: `${p.name} (Mới: Số GT: ${p.paperNo}, Địa chỉ: ${p.address})` });
+            deltas.push({ type: 'list', action: 'Sửa đổi Bên thế chấp', detail: `${p.name} (Mới: Số GT: ${p.paperNo}, Địa chỉ: ${getPartyFullAddress(p)})` });
         }
     });
 
     // Secured parties diffs
     baselineData.securedParties.forEach(p => {
         if (p.status === 'Bổ sung mới') {
-            deltas.push({ type: 'list', action: 'Thêm mới Bên nhận thế chấp', detail: `${p.name} (Địa chỉ: ${p.address})` });
+            deltas.push({ type: 'list', action: 'Thêm mới Bên nhận thế chấp', detail: `${p.name} (Địa chỉ: ${getPartyFullAddress(p)})` });
         } else if (p.status === 'Rút bớt') {
             deltas.push({ type: 'list', action: 'Rút bớt Bên nhận thế chấp', detail: `${p.name}` });
         } else if (p.status === 'Sửa thông tin') {
-            deltas.push({ type: 'list', action: 'Sửa đổi Bên nhận thế chấp', detail: `${p.name} (Địa chỉ mới: ${p.address})` });
+            deltas.push({ type: 'list', action: 'Sửa đổi Bên nhận thế chấp', detail: `${p.name} (Địa chỉ mới: ${getPartyFullAddress(p)})` });
         }
     });
 
@@ -3530,7 +3721,7 @@ function viewVersionDetails(item) {
                     </div>
                     <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
                         <div>Loại giấy tờ: ${p.paperType || 'CCCD'} | Số GT: ${p.paperNo}</div>
-                        <div>Địa chỉ: ${p.address}</div>
+                        <div>Địa chỉ: ${getPartyFullAddress(p)}</div>
                     </div>
                 </div>
             `;
@@ -3558,7 +3749,7 @@ function viewVersionDetails(item) {
                         ${statusBadge}
                     </div>
                     <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
-                        <div>Địa chỉ: ${p.address} (${p.province || ''}, ${p.country || ''})</div>
+                        <div>Địa chỉ: ${getPartyFullAddress(p)}</div>
                     </div>
                 </div>
             `;
@@ -3577,7 +3768,7 @@ function viewVersionDetails(item) {
         item.data.assets.forEach((a, idx) => {
             const statusBadge = a.status === 'Bổ sung mới' ? '<span class="entity-badge badge-added">[Bổ sung mới]</span>' :
                 (a.status === 'Rút bớt' ? '<span class="entity-badge badge-removed">[Rút bớt]</span>' :
-                    (a.status === 'Sửa thông tin' ? '<span class="entity-badge badge-modified">[Đã sửa]</span>' :
+                    (a.status === 'Sửa thông tin' ? '<span class="entity-badge badge-modified">[Sửa thông tin]</span>' :
                         '<span class="entity-badge badge-unchanged">[Đang bảo đảm]</span>'));
             html += `
                 <div class="drawer-list-item" style="${a.status === 'Rút bớt' ? 'text-decoration: line-through; opacity: 0.6;' : ''}">
@@ -3670,8 +3861,9 @@ const mockSubjectDB = [
         paperNo: '001088012345',
         birthDate: '12/08/1988',
         country: 'Việt Nam',
-        province: 'Hà Nội',
-        address: '12 Cầu Giấy, Phường Quan Hoa, Quận Cầu Giấy'
+        province: 'Thành phố Hà Nội',
+        ward: 'Phường Cầu Giấy',
+        address: '12 Cầu Giấy'
     },
     {
         type: 'cd_vn',
@@ -3679,8 +3871,9 @@ const mockSubjectDB = [
         paperNo: '002089054321',
         birthDate: '21/05/1989',
         country: 'Việt Nam',
-        province: 'Hải Phòng',
-        address: '45 Lạch Tray, Quận Ngô Quyền'
+        province: 'Thành phố Hải Phòng',
+        ward: 'Phường Ngô Quyền',
+        address: '45 Lạch Tray'
     },
     {
         type: 'nn_ngoai',
@@ -3713,32 +3906,35 @@ const mockSubjectDB = [
         name: 'Công ty Cổ phần Công nghệ FPT',
         paperNo: '0101243148',
         country: 'Việt Nam',
-        province: 'Hà Nội',
-        address: 'Tòa nhà FPT, Phố Duy Tân, Quận Cầu Giấy'
+        province: 'Thành phố Hà Nội',
+        ward: 'Phường Cầu Giấy',
+        address: 'Tòa nhà FPT, Phố Duy Tân'
     },
     {
         type: 'tc_dn',
         name: 'Tổng Công ty Cổ phần Bảo hiểm Quân đội (MIC)',
         paperNo: '0102030405',
         country: 'Việt Nam',
-        province: 'Hà Nội',
-        address: 'Tầng 15, Tòa nhà MIPEC, 229 Tây Sơn, Quận Đống Đa'
+        province: 'Thành phố Hà Nội',
+        ward: 'Phường Đống Đa',
+        address: 'Tầng 15, Tòa nhà MIPEC, 229 Tây Sơn'
     },
     {
         type: 'nd_nn',
         name: 'Samsung Electronics Vietnam Co., Ltd.',
         paperNo: '2300762459',
         country: 'Hàn Quốc',
-        province: 'Bắc Ninh',
-        address: 'KCN Yên Phong, Huyện Yên Phong'
+        province: 'Gyeonggi-do',
+        address: '129 Samsung-ro, Yeongtong-gu, Suwon-si'
     },
     {
         type: 'tc_khac',
         name: 'Quỹ Đầu tư Phát triển Thành phố Hồ Chí Minh',
         paperNo: '',
         country: 'Việt Nam',
-        province: 'TP Hồ Chí Minh',
-        address: '33 Nguyễn Thị Minh Khai, Quận 1'
+        province: 'Thành phố Hồ Chí Minh',
+        ward: 'Phường Bến Thành',
+        address: '33 Nguyễn Thị Minh Khai'
     }
 ];
 
@@ -3934,6 +4130,7 @@ function executeSubjectSearch() {
                 <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color); display: ${showPassportCountry ? 'table-cell' : 'none'};">${item.type === 'nn_ngoai' ? (item.passportCountry || '-') : '-'}</td>
                 <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${item.country || '-'}</td>
                 <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${item.province || '-'}</td>
+                <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${item.country === 'Việt Nam' ? (item.ward || '-') : '-'}</td>
                 <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${item.address || '-'}</td>
                 <td style="text-align: center; padding: 10px 12px; border-bottom: 1px solid var(--border-color);">
                     <button type="button" class="btn btn-primary btn-sm" onclick="selectSubjectFromSearch(${globalIdx})" style="padding: 4px 10px; font-size: 12px; height: auto;">Chọn</button>
@@ -4006,6 +4203,7 @@ function selectSubjectFromSearch(idx) {
                 if (provinceSelect) {
                     provinceSelect.value = item.province;
                 }
+                setWardValue('secWard', item.ward);
             }, 50);
         }
         
@@ -4026,6 +4224,7 @@ function selectSubjectFromSearch(idx) {
                 if (provinceSelect) {
                     provinceSelect.value = item.province;
                 }
+                setWardValue('sedWard', item.ward);
             }, 50);
         }
         
@@ -4038,6 +4237,10 @@ function selectSubjectFromSearch(idx) {
 
 // Simulator Control Panel Scenario Manager for MH02
 let activeSaveScenario = 'TH1';
+
+function simTarget() {
+    return soKhungList.find(a => !a.lockState) || soKhungList[0];
+}
 
 function setSaveScenario(scen) {
     activeSaveScenario = scen;
@@ -4065,24 +4268,24 @@ function setSaveScenario(scen) {
         // C08 warning mismatch: frameNo MISMATCH123
         c08Bypass = false;
         if (soKhungList.length > 0) {
-            soKhungList[0].frameNo = 'MISMATCH123';
-            soKhungList[0].status = 'Sửa thông tin';
+            simTarget().frameNo = 'MISMATCH123';
+            simTarget().status = 'Sửa thông tin';
             renderSoKhungGrid();
         }
     } else if (scen === 'TH3') {
         // Blacklist Kê biên block: frameNo BLACKLIST123
         if (soKhungList.length > 0) {
-            soKhungList[0].frameNo = 'BLACKLIST123';
-            soKhungList[0].status = 'Sửa thông tin';
+            simTarget().frameNo = 'BLACKLIST123';
+            simTarget().status = 'Sửa thông tin';
             renderSoKhungGrid();
         }
     } else if (scen === 'TH4') {
         // Out of jurisdiction block: type bds
         if (soKhungList.length > 0) {
-            soKhungList[0].type = 'bds';
-            soKhungList[0].typeName = 'Bất động sản';
-            soKhungList[0].name = 'Quyền sử dụng đất tại Hà Nội';
-            soKhungList[0].status = 'Sửa thông tin';
+            simTarget().type = 'bds';
+            simTarget().typeName = 'Bất động sản';
+            simTarget().name = 'Quyền sử dụng đất tại Hà Nội';
+            simTarget().status = 'Sửa thông tin';
             renderSoKhungGrid();
         }
     }

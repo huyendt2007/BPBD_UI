@@ -2628,6 +2628,7 @@
     </div>
 
 
+    <script src="../Common/dia_ban_vn.js"></script>
     <script>
         // Thông báo hiển thị ngay trong trang, không dùng hộp thoại alert của trình duyệt.
         function notify(message, type = 'info', timeout = 4200) {
@@ -2647,9 +2648,13 @@
 // ==========================================================================
 const toast = notify;
 
-function getStatusBadge(status) {
+// isAsset: tài sản không thay đổi hiển thị Trạng thái tài sản hiện hành (Đang bảo đảm/Đang xử lý tài sản)
+function getStatusBadge(status, isAsset) {
+    if (isAsset && status === 'Đang xử lý tài sản') {
+        return '<span class="state-badge active">Đang xử lý tài sản</span>';
+    }
     if (!status || status === 'Không thay đổi' || status === 'Giữ nguyên' || status === 'Đang bảo đảm') {
-        return '<span class="state-badge active">Giữ nguyên</span>';
+        return `<span class="state-badge active">${isAsset ? 'Đang bảo đảm' : 'Giữ nguyên'}</span>`;
     }
     if (status === 'Bổ sung mới') {
         return '<span class="state-badge added"><i class="fa-solid fa-plus"></i> Bổ sung mới</span>';
@@ -2754,10 +2759,10 @@ const qs = new URLSearchParams(location.search);
                     customerId: (found && found.customerId) || (isRet ? 'TK-ANPHU-088' : 'TK-DUC-0912'),
                     customerPhone: (found && (found.phone || found.customerPhone)) || (isRet ? '0988.777.666' : '0912.345.678'),
                     customerEmail: (found && (found.email || found.customerEmail)) || (isRet ? 'minhchau@anphu.example.com' : 'duc@example.com'),
-                    requesterCountry: 'Việt Nam',
+                    requesterCountry: (found && found.requesterCountry) || 'Việt Nam',
                     requesterProvince: (found && found.requesterProvince) || (isRet ? 'TP Hà Nội' : 'TP Hà Nội'),
-                    requesterWard: (found && found.requesterWard) || (isRet ? 'Phường Nhân Chính' : 'Phường Cửa Nam'),
-                    requesterAddress: (found && (found.requesterAddress || found.customerAddress)) || (isRet ? 'Số 88 Lê Văn Lương, phường Nhân Chính, quận Thanh Xuân, TP. Hà Nội' : 'Số 18 phố Lý Thường Kiệt, phường Cửa Nam, quận Hoàn Kiếm, TP. Hà Nội'),
+                    requesterWard: (found && found.requesterWard) || (isRet ? 'Phường Thanh Xuân' : 'Phường Cửa Nam'),
+                    requesterAddress: (found && (found.requesterAddress || found.customerAddress)) || (isRet ? 'Số 88 Lê Văn Lương' : 'Số 18 phố Lý Thường Kiệt'),
                     receptionNote: (found && found.receptionNote) || (isRet ? 'Hồ sơ đã được tiếp nhận lại sau khi giải trình ý kiến của Lãnh đạo' : 'Đề nghị cung cấp thông tin biện pháp bảo đảm liên quan để rà soát tín dụng'),
                     submitter: (found && found.submitter) || (isRet ? 'Vũ Minh Châu' : 'Phạm Minh Đức'),
                     submitterId: (found && found.submitterId) || (isRet ? 'CCCD: 001099023456' : 'CCCD: 091000000004'),
@@ -2775,7 +2780,7 @@ const qs = new URLSearchParams(location.search);
                     paymentTime: (found && found.paymentTime) || (isRet ? '30/07/2026 11:30' : '21/07/2026 15:55'),
                     paymentOfficer: (found && found.paymentOfficer) || 'Nguyễn Thị Tiếp Nhận',
                     resultMethod: (found && found.resultMethod) || (isRet ? 'Trực tiếp tại bộ phận một cửa' : 'Cách thức điện tử'),
-                    resultAddress: (found && (found.resultAddress || found.requesterAddress)) || (isRet ? 'Số 88 Lê Văn Lương, phường Nhân Chính, quận Thanh Xuân, TP. Hà Nội' : 'Số 18 phố Lý Thường Kiệt, phường Cửa Nam, quận Hoàn Kiếm, TP. Hà Nội'),
+                    resultAddress: (found && (found.resultAddress || found.requesterAddress)) || (isRet ? 'Số 88 Lê Văn Lương, Phường Thanh Xuân, TP Hà Nội, Việt Nam' : 'Số 18 phố Lý Thường Kiệt, Phường Cửa Nam, TP Hà Nội, Việt Nam'),
                     resultEmail: (found && (found.resultEmail || found.email)) || (isRet ? 'minhchau@anphu.example.com' : 'duc@example.com'),
                     channel: (found && found.channel) || 'Trực tiếp tại quầy',
                     source: 'Cán bộ nhập liệu',
@@ -2839,9 +2844,8 @@ const qs = new URLSearchParams(location.search);
                     requesterEmail: 'vietcombank.sgd@vcb.com.vn',
                     requesterCountry: 'Việt Nam',
                     requesterProvince: 'TP Hà Nội',
-                    requesterDistrict: 'Quận Hoàn Kiếm',
-                    requesterWard: 'Phường Phan Chu Trinh',
-                    requesterAddress: 'Số 11 Láng Hạ, phường Thành Công, quận Ba Đình, TP Hà Nội',
+                    requesterWard: 'Phường Giảng Võ',
+                    requesterAddress: 'Số 11 Láng Hạ',
                     receptionNote: 'Đề nghị cấp bản sao kèm xác nhận có hiệu lực pháp lý để bổ sung hồ sơ tín dụng',
                     submitter: 'Nguyễn Văn Hải',
                     submitterId: 'CCCD: 001088019283',
@@ -3002,7 +3006,7 @@ const qs = new URLSearchParams(location.search);
                     kv('Đơn vị tiếp nhận', p.agency || 'Trung tâm Đăng ký giao dịch, tài sản tại TP Hà Nội'),
                     kv('Cán bộ tiếp nhận', p.officer || 'Nguyễn Thị Tiếp Nhận'),
                     kv('Người yêu cầu', p.customer),
-                    kv('Địa chỉ người yêu cầu', p.requesterAddress || 'Số 18 phố Lý Thường Kiệt, phường Cửa Nam, Hà Nội'),
+                    kv('Địa chỉ người yêu cầu', (p.requesterProvince ? fullAddress(p.requesterAddress, p.requesterWard, p.requesterProvince, p.requesterCountry || 'Việt Nam') : p.requesterAddress) || 'Số 18 phố Lý Thường Kiệt, Phường Cửa Nam, Hà Nội, Việt Nam'),
                     kv('Người nộp hồ sơ', p.submitter || p.customer),
                     kv('Loại yêu cầu', p.type),
                     kv('Phương thức nhận kết quả', resultText()),
@@ -3108,8 +3112,8 @@ const qs = new URLSearchParams(location.search);
             const isSecuredReceiver = title === 'Bên nhận bảo đảm';
             if (isSecuredReceiver) {
                 const rows = withState
-                    ? [['Đang bảo đảm', 'Ngân hàng TMCP Ngoại thương Việt Nam', '198 Trần Quang Khải - Hà Nội - Việt Nam'], ['Sửa thông tin', 'Ngân hàng TMCP Công thương Việt Nam', '108 Trần Hưng Đạo - Hà Nội - Việt Nam']]
-                    : [['', 'Ngân hàng TMCP Ngoại thương Việt Nam', '198 Trần Quang Khải - Hà Nội - Việt Nam']];
+                    ? [['Đang bảo đảm', 'Ngân hàng TMCP Ngoại thương Việt Nam', '198 Trần Quang Khải, Phường Hoàn Kiếm, Hà Nội, Việt Nam'], ['Sửa thông tin', 'Ngân hàng TMCP Công thương Việt Nam', '108 Trần Hưng Đạo, Phường Cửa Nam, Hà Nội, Việt Nam']]
+                    : [['', 'Ngân hàng TMCP Ngoại thương Việt Nam', '198 Trần Quang Khải, Phường Hoàn Kiếm, Hà Nội, Việt Nam']];
                 const headers = withState ? ['Biến động', 'Tên', 'Địa chỉ'] : ['Tên', 'Địa chỉ'];
                 const body = rows.map(r => withState ? [`<span class="state-tag">${r[0]}</span>`, r[1], r[2]] : [r[1], r[2]]);
                 const editor = readonly ? '' : `<details><summary><i class="fa-solid fa-building-columns"></i> Form thêm/cập nhật ${title}</summary><div class="detail-body"><div class="grid">
@@ -3121,8 +3125,8 @@ const qs = new URLSearchParams(location.search);
                 return `<div class="section-title">${title}</div>${table(headers, body)}${readonly ? '' : `<div style="margin:10px 0 12px"><button class="btn small"><i class="fa-solid fa-plus"></i> Thêm ${title.toLowerCase()}</button></div>${editor}`}`;
             }
             const rows = withState
-                ? [['Đang bảo đảm', 'Công dân Việt Nam', '001092012345', p.customer, 'Số 12 Trần Hưng Đạo - Hà Nội - Việt Nam'], ['Bổ sung mới', 'Tổ chức có đăng ký kinh doanh trong nước', '0109988776', 'Công ty TNHH Minh An', 'Quận 1 - TP Hồ Chí Minh - Việt Nam']]
-                : [['', 'Công dân Việt Nam', '001092012345', p.customer, 'Số 12 Trần Hưng Đạo - Hà Nội - Việt Nam']];
+                ? [['Đang bảo đảm', 'Công dân Việt Nam', '001092012345', p.customer, 'Số 12 Trần Hưng Đạo, Phường Cửa Nam, Hà Nội, Việt Nam'], ['Bổ sung mới', 'Tổ chức có đăng ký kinh doanh trong nước', '0109988776', 'Công ty TNHH Minh An', 'Số 25 Lê Lợi, Phường Bến Thành, TP Hồ Chí Minh, Việt Nam']]
+                : [['', 'Công dân Việt Nam', '001092012345', p.customer, 'Số 12 Trần Hưng Đạo, Phường Cửa Nam, Hà Nội, Việt Nam']];
             const headers = withState ? ['Biến động', 'Loại chủ thể', 'Số giấy tờ', 'Tên', 'Địa chỉ'] : ['Loại chủ thể', 'Số giấy tờ', 'Tên', 'Địa chỉ'];
             const body = rows.map(r => withState ? [`<span class="state-tag">${r[0]}</span>`, r[1], r[2], r[3], r[4]] : [r[1], r[2], r[3], r[4]]);
             const editor = readonly ? '' : `<details><summary><i class="fa-solid fa-user-pen"></i> Form thêm/cập nhật ${title}</summary><div class="detail-body"><div class="grid">
@@ -3229,8 +3233,8 @@ const qs = new URLSearchParams(location.search);
                             ${kv('Email', p.customerEmail || p.email || 'duc@example.com')}
                             ${kv('Quốc gia', p.requesterCountry || 'Việt Nam')}
                             ${kv('Tỉnh/thành phố', p.requesterProvince || 'TP Hà Nội')}
-                            ${kv('Phường/Xã', p.requesterWard || 'Phường Cửa Nam')}
-                            ${kv('Địa chỉ chi tiết', p.requesterAddress || 'Số 18 phố Lý Thường Kiệt, phường Cửa Nam, quận Hoàn Kiếm, TP. Hà Nội')}
+                            ${DiaBanVN.isVN(p.requesterCountry || 'Việt Nam') ? kv('Phường/Xã', p.requesterWard || 'Phường Cửa Nam') : ''}
+                            ${kv('Địa chỉ chi tiết', p.requesterAddress || 'Số 18 phố Lý Thường Kiệt')}
                             ${kv('Ghi chú tiếp nhận', p.receptionNote || 'Đề nghị cung cấp thông tin biện pháp bảo đảm liên quan để rà soát tín dụng')}
                         </div>
                     </div>
@@ -3429,9 +3433,11 @@ const qs = new URLSearchParams(location.search);
             if (!container) return;
 
             const reqName = p.customer || 'Ông Phạm Minh Đức';
-            const reqAddr = p.requesterAddress || 'Số 18 phố Lý Thường Kiệt, phường Cửa Nam, quận Hoàn Kiếm, TP. Hà Nội';
+            // Địa chỉ liên hệ: ghép "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia" từ thông tin tiếp nhận
+            const reqAddr = (p.requesterProvince ? fullAddress(p.requesterAddress, p.requesterWard, p.requesterProvince, p.requesterCountry || 'Việt Nam') : p.requesterAddress)
+                || 'Số 18 phố Lý Thường Kiệt, Phường Cửa Nam, TP Hà Nội, Việt Nam';
             const resMethod = p.resultMethod || 'Cách thức điện tử';
-            const resPostal = p.resultAddress || 'Số 18 phố Lý Thường Kiệt, phường Cửa Nam, quận Hoàn Kiếm, TP. Hà Nội';
+            const resPostal = p.resultAddress || 'Số 18 phố Lý Thường Kiệt, Phường Cửa Nam, TP Hà Nội, Việt Nam';
             const resEmail = p.resultEmail || p.email || 'duc@example.com';
 
             container.innerHTML = `
@@ -3680,6 +3686,52 @@ const qs = new URLSearchParams(location.search);
         // Danh sách chủ thể đã khai báo của từng bên
         const regParties = { tc: [], ntc: [] };
 
+        // Trường Phường/Xã dùng chung (DiaBanVN): chèn ngay sau ô Tỉnh/Thành phố của form địa chỉ, chỉ hiển thị khi Quốc gia là Việt Nam.
+        // Form được dựng lại bằng template nên cần gọi lại sau mỗi lần chèn HTML (bind không tạo trùng khi phần tử còn tồn tại).
+        function bindWardField(id, countryId, provinceId, afterId, selectClass = '') {
+            if (!window.DiaBanVN || !document.getElementById(afterId)) return null;
+            return DiaBanVN.bind({
+                id, country: countryId, province: provinceId, after: afterId,
+                groupClass: 'field', labelClass: '', selectClass,
+                requiredHtml: ' <span class="required">*</span>',
+                onChange: v => {
+                    // Dùng kiểu báo lỗi inline của trang (.field.invalid > .error-text) thay cho thông báo mặc định của module
+                    const sel = document.getElementById(id);
+                    const wrap = sel && sel.closest('.field');
+                    if (!wrap) return;
+                    wrap.querySelector('.dbvn-err')?.remove();
+                    if (v) { sel.classList.remove('is-invalid'); wrap.classList.remove('invalid'); }
+                }
+            });
+        }
+        function wardCtl(id) { return window.DiaBanVN ? DiaBanVN.get(id) : null; }
+        function wardValue(id) { const c = wardCtl(id); return c ? c.value() : ''; }
+        // Kiểm tra bắt buộc Phường/Xã khi đang hiển thị; trả về phần tử lỗi (nếu có)
+        function validateWardField(id) {
+            const c = wardCtl(id);
+            if (!c || !c.isVisible() || c.value()) return null;
+            markInvalid(c.select, 'Đây là trường bắt buộc');
+            return c.select;
+        }
+        // Địa chỉ đầy đủ: "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia" (bỏ Phường/Xã với địa chỉ nước ngoài, bỏ phần trống)
+        function fullAddress(diaChi, phuongXa, tinhThanh, quocGia) {
+            return window.DiaBanVN ? DiaBanVN.formatAddress(diaChi, phuongXa, tinhThanh, quocGia)
+                : [diaChi, String(quocGia || '').trim() === 'Việt Nam' ? phuongXa : '', tinhThanh, quocGia]
+                    .map(x => String(x || '').trim()).filter(Boolean).join(', ');
+        }
+        function bindRegWardFields() {
+            bindWardField('regTcPhuongXa', 'regTcQuocGia', 'regTcTinhThanh', 'fieldTcTinhThanh');
+            bindWardField('regNtcPhuongXa', 'regNtcQuocGia', 'regNtcTinhThanh', 'fieldNtcTinhThanh');
+        }
+        // Đăng ký thay đổi: form Bên bảo đảm (sec*) và Bên nhận bảo đảm (sed*)
+        function bindChgWardFields() {
+            bindWardField('secWard', 'secCountry', 'secProvince', 'secGroupProvince', 'form-select');
+            bindWardField('sedWard', 'sedCountry', 'sedProvince', 'sedGroupProvince', 'form-select');
+        }
+        function chgPartyAddress(party) {
+            return fullAddress(party.address, party.ward, party.province, party.country || 'Việt Nam');
+        }
+
         function triggerRegDatePicker(textId, pickerId) {
             const textInput = document.getElementById(textId);
             const picker = document.getElementById(pickerId);
@@ -3872,7 +3924,7 @@ const qs = new URLSearchParams(location.search);
                 </div>
                 <div class="field" id="fieldTcDiaChi" style="grid-column:span 2">
                     <label>Địa chỉ chi tiết <span class="required">*</span></label>
-                    <input id="regTcDiaChi" placeholder="Nhập số nhà, tên đường, phường/xã...">
+                    <input id="regTcDiaChi" placeholder="Nhập số nhà, tên đường...">
                     <div class="error-text">Đây là trường bắt buộc</div>
                 </div>
             </div>
@@ -3934,7 +3986,7 @@ const qs = new URLSearchParams(location.search);
                 </div>
                 <div class="field" id="fieldNtcDiaChi" style="grid-column:span 2">
                     <label>Địa chỉ chi tiết <span class="required">*</span></label>
-                    <input id="regNtcDiaChi" placeholder="Nhập số nhà, tên đường, phường/xã...">
+                    <input id="regNtcDiaChi" placeholder="Nhập số nhà, tên đường...">
                     <div class="error-text">Đây là trường bắt buộc</div>
                 </div>
             </div>
@@ -3950,8 +4002,6 @@ const qs = new URLSearchParams(location.search);
                     <th style="width:120px;text-align:center">Thao tác</th>
                     <th>Tên</th>
                     <th>Địa chỉ</th>
-                    <th>Tỉnh/ Thành phố</th>
-                    <th>Quốc gia</th>
                 </tr></thead>
                 <tbody id="regTbodyNTC"></tbody>
             </table>
@@ -4265,6 +4315,8 @@ const qs = new URLSearchParams(location.search);
                     if (tinhThanh) tinhThanh.value = item.tinhThanh || 'Hà Nội';
                     const quocGia = document.getElementById('regTcQuocGia');
                     if (quocGia) quocGia.value = item.quocGia || 'Việt Nam';
+                    bindRegWardFields();
+                    wardCtl('regTcPhuongXa')?.setValue(item.ward || '');
                 } else {
                     if (titleEl) titleEl.textContent = 'Khai báo thông tin Bên thế chấp';
                     form.querySelectorAll('input:not([type=hidden]), textarea').forEach(i => i.value = '');
@@ -4273,6 +4325,8 @@ const qs = new URLSearchParams(location.search);
                         selectType.value = 'tc_vn';
                         renderRegSubjectFields('tc');
                     }
+                    bindRegWardFields();
+                    wardCtl('regTcPhuongXa')?.reset();
                 }
                 if (shouldScroll) document.getElementById('regLoaiChuTheTC')?.focus();
             } else {
@@ -4287,6 +4341,8 @@ const qs = new URLSearchParams(location.search);
                     if (tinhThanh) tinhThanh.value = item.tinhThanh || 'Hà Nội';
                     const quocGia = document.getElementById('regNtcQuocGia');
                     if (quocGia) quocGia.value = item.quocGia || 'Việt Nam';
+                    bindRegWardFields();
+                    wardCtl('regNtcPhuongXa')?.setValue(item.ward || '');
                 } else {
                     if (titleEl) titleEl.textContent = 'Khai báo thông tin Bên nhận thế chấp';
                     form.querySelectorAll('input:not([type=hidden]), textarea').forEach(i => i.value = '');
@@ -4294,6 +4350,8 @@ const qs = new URLSearchParams(location.search);
                     if (quocGia) quocGia.value = 'Việt Nam';
                     const tinhThanh = document.getElementById('regNtcTinhThanh');
                     if (tinhThanh) tinhThanh.value = 'Hà Nội';
+                    bindRegWardFields();
+                    wardCtl('regNtcPhuongXa')?.reset();
                 }
                 if (shouldScroll) document.getElementById('regNtcTen')?.focus();
             }
@@ -4307,6 +4365,7 @@ const qs = new URLSearchParams(location.search);
             if (!form) return;
             clearAllErrors(form);
             form.querySelectorAll('input:not([type=hidden]), textarea').forEach(i => i.value = '');
+            wardCtl(isTC ? 'regTcPhuongXa' : 'regNtcPhuongXa')?.reset();
             editingPartyIndex = -1;
             editingPartySide = null;
 
@@ -4353,6 +4412,8 @@ const qs = new URLSearchParams(location.search);
                 }
                 checkRequired('regTcQuocGia');
                 checkRequired('regTcTinhThanh');
+                // Phường/Xã: bắt buộc khi hiển thị (Quốc gia là Việt Nam)
+                if (wardCtl('regTcPhuongXa')?.isVisible()) checkRequired('regTcPhuongXa');
                 checkRequired('regTcDiaChi');
 
                 if (hasError) {
@@ -4360,6 +4421,7 @@ const qs = new URLSearchParams(location.search);
                     return;
                 }
 
+                const tcWard = wardValue('regTcPhuongXa');
                 const partyData = {
                     loai: regSubjectTypeLabel(type),
                     rawType: type,
@@ -4367,13 +4429,15 @@ const qs = new URLSearchParams(location.search);
                     ngaySinh: document.getElementById('regTtNgaySinh')?.value.trim() || '-',
                     ten: document.getElementById('regTtTen')?.value.trim(),
                     diaChiRaw: document.getElementById('regTcDiaChi')?.value.trim(),
+                    ward: tcWard,
                     tinhThanh: document.getElementById('regTcTinhThanh')?.value,
                     quocGia: document.getElementById('regTcQuocGia')?.value,
-                    diaChi: [
+                    diaChi: fullAddress(
                         document.getElementById('regTcDiaChi')?.value.trim(),
+                        tcWard,
                         document.getElementById('regTcTinhThanh')?.value,
                         document.getElementById('regTcQuocGia')?.value
-                    ].filter(Boolean).join(' - ')
+                    )
                 };
 
                 if (editingPartySide === 'tc' && editingPartyIndex >= 0 && editingPartyIndex < regParties.tc.length) {
@@ -4387,6 +4451,8 @@ const qs = new URLSearchParams(location.search);
                 checkRequired('regNtcTen');
                 checkRequired('regNtcQuocGia');
                 checkRequired('regNtcTinhThanh');
+                // Phường/Xã: bắt buộc khi hiển thị (Quốc gia là Việt Nam)
+                if (wardCtl('regNtcPhuongXa')?.isVisible()) checkRequired('regNtcPhuongXa');
                 checkRequired('regNtcDiaChi');
 
                 if (hasError) {
@@ -4394,14 +4460,17 @@ const qs = new URLSearchParams(location.search);
                     return;
                 }
 
+                const ntcWard = wardValue('regNtcPhuongXa');
                 const partyData = {
                     ten: document.getElementById('regNtcTen')?.value.trim(),
                     diaChiRaw: document.getElementById('regNtcDiaChi')?.value.trim(),
-                    diaChi: [
+                    ward: ntcWard,
+                    diaChi: fullAddress(
                         document.getElementById('regNtcDiaChi')?.value.trim(),
+                        ntcWard,
                         document.getElementById('regNtcTinhThanh')?.value,
                         document.getElementById('regNtcQuocGia')?.value
-                    ].filter(Boolean).join(' - '),
+                    ),
                     tinhThanh: document.getElementById('regNtcTinhThanh')?.value || 'Hà Nội',
                     quocGia: document.getElementById('regNtcQuocGia')?.value || 'Việt Nam'
                 };
@@ -4465,22 +4534,26 @@ const qs = new URLSearchParams(location.search);
                 <button type="button" class="btn small danger" title="Xóa" onclick="confirmDeleteParty('${side}', ${i})"><i class="fa-solid fa-trash-can"></i></button>
             </div>
         `;
+                // Một cột Địa chỉ: "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia" (ghép tại thời điểm hiển thị)
+                const diaChi = fullAddress(r.diaChiRaw, r.ward, r.tinhThanh, r.quocGia) || r.diaChi || '';
                 return side === 'tc'
-                    ? `<tr><td style="text-align:center">${actions}</td><td>${e(r.loai)}</td><td>${e(r.soGiayTo)}</td><td>${e(r.ngaySinh)}</td><td><b>${e(r.ten)}</b></td><td>${e(r.diaChi)}</td></tr>`
-                    : `<tr><td style="text-align:center">${actions}</td><td><b>${e(r.ten)}</b></td><td>${e(r.diaChi)}</td><td>${e(r.tinhThanh)}</td><td>${e(r.quocGia)}</td></tr>`;
+                    ? `<tr><td style="text-align:center">${actions}</td><td>${e(r.loai)}</td><td>${e(r.soGiayTo)}</td><td>${e(r.ngaySinh)}</td><td><b>${e(r.ten)}</b></td><td>${e(diaChi)}</td></tr>`
+                    : `<tr><td style="text-align:center">${actions}</td><td><b>${e(r.ten)}</b></td><td>${e(diaChi)}</td></tr>`;
             }).join('');
         }
 
         function fillRegRegistrantAsParty() {
+            // Mở form trước (form mới sẽ xóa trắng các ô nhập), sau đó mới điền thông tin Người đăng ký
+            openRegPartyForm('ntc');
             const ten = document.getElementById('regNtcTen');
             const diaChi = document.getElementById('regNtcDiaChi');
             const tinhThanh = document.getElementById('regNtcTinhThanh');
             const quocGia = document.getElementById('regNtcQuocGia');
             if (ten) ten.value = p.customer || '';
-            if (diaChi) diaChi.value = p.requesterAddress || 'Số 18 phố Lý Thường Kiệt, phường Cửa Nam, Hà Nội';
+            if (diaChi) diaChi.value = p.requesterAddress || 'Số 18 phố Lý Thường Kiệt';
             if (tinhThanh) tinhThanh.value = 'Hà Nội';
             if (quocGia) quocGia.value = 'Việt Nam';
-            openRegPartyForm('ntc');
+            wardCtl('regNtcPhuongXa')?.setValue(p.requesterWard || 'Phường Cửa Nam');
             notify('Đã tự động điền thông tin Người đăng ký vào biểu mẫu Bên nhận thế chấp.', 'success');
         }
 
@@ -4694,6 +4767,7 @@ const qs = new URLSearchParams(location.search);
             regParties.tc = [];
             regParties.ntc = [];
 
+            bindRegWardFields();
             renderRegSubjectFields('tc');
             renderRegPartyTable('tc');
             renderRegPartyTable('ntc');
@@ -4715,7 +4789,7 @@ const qs = new URLSearchParams(location.search);
             refRegDate: '10:30 15/01/2026',
             reqRole: 'Bên bảo đảm',
             orgName: 'Công ty TNHH Hải Nam',
-            orgAddress: 'Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Quận Hoàn Kiếm, Hà Nội',
+            orgAddress: 'Số 15 Lý Thường Kiệt, Phường Cửa Nam, Hà Nội, Việt Nam',
             receivingAgency: 'Trung tâm Đăng ký Giao dịch, Tài sản tại TP. Hà Nội',
             transactionType: 'Biện pháp bảo đảm',
             measureType: 'Thế chấp',
@@ -4738,7 +4812,8 @@ const qs = new URLSearchParams(location.search);
                     birthDate: '12/08/1988',
                     country: 'Việt Nam',
                     province: 'Hà Nội',
-                    address: 'Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Quận Hoàn Kiếm, Hà Nội',
+                    ward: 'Phường Cửa Nam',
+                    address: 'Số 15 Lý Thường Kiệt',
                     status: 'Không thay đổi'
                 },
                 {
@@ -4751,7 +4826,8 @@ const qs = new URLSearchParams(location.search);
                     birthDate: '25/04/1992',
                     country: 'Việt Nam',
                     province: 'Hà Nội',
-                    address: 'Số 28 Quang Trung, Phường Trần Hưng Đạo, Quận Hoàn Kiếm, Hà Nội',
+                    ward: 'Phường Cửa Nam',
+                    address: 'Số 28 Quang Trung',
                     status: 'Sửa thông tin'
                 },
                 {
@@ -4764,7 +4840,8 @@ const qs = new URLSearchParams(location.search);
                     birthDate: '',
                     country: 'Việt Nam',
                     province: 'Hà Nội',
-                    address: 'Số 88 Láng Hạ, Phường Láng Hạ, Quận Đống Đa, Hà Nội',
+                    ward: 'Phường Láng',
+                    address: 'Số 88 Láng Hạ',
                     status: 'Bổ sung mới'
                 }
             ],
@@ -4774,7 +4851,8 @@ const qs = new URLSearchParams(location.search);
                     name: 'NGÂN HÀNG TMCP NGOẠI THƯƠNG VIỆT NAM (VCB) - CHI NHÁNH HÀ NỘI',
                     country: 'Việt Nam',
                     province: 'Thành phố Hà Nội',
-                    address: 'Số 198 Trần Quang Khải, Quận Hoàn Kiếm, Hà Nội',
+                    ward: 'Phường Hoàn Kiếm',
+                    address: 'Số 198 Trần Quang Khải',
                     status: 'Không thay đổi'
                 },
                 {
@@ -4782,7 +4860,8 @@ const qs = new URLSearchParams(location.search);
                     name: 'NGÂN HÀNG TMCP ĐẦU TƯ VÀ PHÁT TRIỂN VIỆT NAM (BIDV) - CHI NHÁNH QUANG TRUNG',
                     country: 'Việt Nam',
                     province: 'Thành phố Hà Nội',
-                    address: 'Số 53 Quang Trung, Phường Trần Hưng Đạo, Quận Hoàn Kiếm, Hà Nội',
+                    ward: 'Phường Cửa Nam',
+                    address: 'Số 53 Quang Trung',
                     status: 'Bổ sung mới'
                 },
                 {
@@ -4790,7 +4869,8 @@ const qs = new URLSearchParams(location.search);
                     name: 'CÔNG TY TÀI CHÍNH TNHH MTV QUỐC TẾ VIỆT',
                     country: 'Việt Nam',
                     province: 'Thành phố Hà Nội',
-                    address: 'Tầng 12, Tòa nhà Keangnam Landmark 72, Đường Phạm Hùng, Quận Nam Từ Liêm, Hà Nội',
+                    ward: 'Phường Từ Liêm',
+                    address: 'Tầng 12, Tòa nhà Keangnam Landmark 72, Đường Phạm Hùng',
                     status: 'Không thay đổi'
                 }
             ],
@@ -5056,7 +5136,7 @@ const qs = new URLSearchParams(location.search);
                         <td><b>${e(party.paperNo || '-')}</b> (${e(party.paperType || 'CCCD')})</td>
                         <td>${e(party.birthDate || '-')}</td>
                         <td><b>${e(party.name || '-')}</b></td>
-                        <td>${e(party.address || '-')}</td>
+                        <td>${e(chgPartyAddress(party) || '-')}</td>
                         <td style="text-align:center">${statusBadge}</td>
                     </tr>
                 `;
@@ -5080,6 +5160,8 @@ const qs = new URLSearchParams(location.search);
             if (document.getElementById('secCountry')) document.getElementById('secCountry').value = 'Việt Nam';
             if (document.getElementById('secProvince')) document.getElementById('secProvince').value = 'Hà Nội';
             if (document.getElementById('secAddress')) document.getElementById('secAddress').value = '';
+            bindChgWardFields();
+            wardCtl('secWard')?.reset();
 
             const btnSave = document.getElementById('btnSaveSecuringNew');
             const btnUpdate = document.getElementById('btnUpdateSecuring');
@@ -5128,6 +5210,8 @@ const qs = new URLSearchParams(location.search);
             if (document.getElementById('secCountry')) document.getElementById('secCountry').value = p.country || 'Việt Nam';
             if (document.getElementById('secProvince')) document.getElementById('secProvince').value = p.province || 'Hà Nội';
             if (document.getElementById('secAddress')) document.getElementById('secAddress').value = p.address || '';
+            bindChgWardFields();
+            wardCtl('secWard')?.setValue(p.ward || '');
 
             const btnSave = document.getElementById('btnSaveSecuringNew');
             const btnUpdate = document.getElementById('btnUpdateSecuring');
@@ -5182,16 +5266,21 @@ const qs = new URLSearchParams(location.search);
                 birthDate = document.getElementById('secBirthDate')?.value.trim() || '';
             }
 
+            // Phường/Xã bắt buộc khi hiển thị (Quốc gia là Việt Nam)
+            if (validateWardField('secWard')) return;
             const elAddr = document.getElementById('secAddress');
             if (!elAddr.value.trim()) { markInvalid(elAddr, 'Đây là trường bắt buộc'); return; }
             const address = elAddr.value.trim();
             const country = document.getElementById('secCountry')?.value || 'Việt Nam';
             const province = document.getElementById('secProvince')?.value || 'Hà Nội';
+            const ward = wardValue('secWard');
 
             if (isUpdate && chgEditingSecuringIdx >= 0) {
                 const item = chgState.securingParties[chgEditingSecuringIdx];
                 const orig = originalData.securingParties.find(p => p.paperNo === item.paperNo) || originalData.securingParties[chgEditingSecuringIdx] || {};
-                const isModified = (name !== orig.name || paperNo !== orig.paperNo || address !== orig.address);
+                // Địa chỉ so sánh theo chuỗi ghép đầy đủ (Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia)
+                const isModified = (name !== orig.name || paperNo !== orig.paperNo
+                    || chgPartyAddress({ address, ward, province, country }) !== chgPartyAddress(orig));
 
                 item.type = type;
                 item.typeLabel = typeLabel;
@@ -5200,6 +5289,7 @@ const qs = new URLSearchParams(location.search);
                 item.birthDate = birthDate;
                 item.country = country;
                 item.province = province;
+                item.ward = ward;
                 item.address = address;
                 if (item.status !== 'Bổ sung mới') {
                     item.status = isModified ? 'Sửa thông tin' : 'Không thay đổi';
@@ -5215,6 +5305,7 @@ const qs = new URLSearchParams(location.search);
                     birthDate,
                     country,
                     province,
+                    ward,
                     address,
                     status: 'Bổ sung mới'
                 });
@@ -5266,7 +5357,7 @@ const qs = new URLSearchParams(location.search);
             const parties = chgState.securedParties;
 
             if (!parties.length) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:18px">Chưa có bên nhận bảo đảm nào</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:18px">Chưa có bên nhận bảo đảm nào</td></tr>`;
                 return;
             }
 
@@ -5304,9 +5395,7 @@ const qs = new URLSearchParams(location.search);
                     <tr class="${rowClass}">
                         <td style="text-align:center;min-width:130px">${actionsHtml}</td>
                         <td><b>${e(party.name || '-')}</b></td>
-                        <td>${e(party.address || '-')}</td>
-                        <td>${e(party.province || '-')}</td>
-                        <td>${e(party.country || 'Việt Nam')}</td>
+                        <td>${e(chgPartyAddress(party) || '-')}</td>
                         <td style="text-align:center">${statusBadge}</td>
                     </tr>
                 `;
@@ -5321,6 +5410,8 @@ const qs = new URLSearchParams(location.search);
             if (document.getElementById('sedCountry')) document.getElementById('sedCountry').value = 'Việt Nam';
             if (document.getElementById('sedProvince')) document.getElementById('sedProvince').value = 'Thành phố Hà Nội';
             if (document.getElementById('sedAddress')) document.getElementById('sedAddress').value = '';
+            bindChgWardFields();
+            wardCtl('sedWard')?.reset();
 
             const btnSave = document.getElementById('btnSaveSecuredNew');
             const btnUpdate = document.getElementById('btnUpdateSecured');
@@ -5337,12 +5428,13 @@ const qs = new URLSearchParams(location.search);
 
         function fillSelfAsSecured() {
             const customerName = p.customer || 'DOANH NGHIỆP TƯ NHÂN NGUYỄN VĂN KHÁCH';
-            const customerAddr = p.customerAddress || 'Số 99 Trần Duy Hưng, Quận Cầu Giấy, Hà Nội';
+            const customerAddr = p.customerAddress || 'Số 99 Trần Duy Hưng';
             chgState.securedParties.push({
                 id: 'sed-' + (chgState.securedParties.length + 1),
                 name: customerName,
                 country: 'Việt Nam',
                 province: 'Thành phố Hà Nội',
+                ward: p.requesterWard || 'Phường Yên Hòa',
                 address: customerAddr,
                 status: 'Bổ sung mới'
             });
@@ -5360,6 +5452,8 @@ const qs = new URLSearchParams(location.search);
             if (document.getElementById('sedCountry')) document.getElementById('sedCountry').value = p.country || 'Việt Nam';
             if (document.getElementById('sedProvince')) document.getElementById('sedProvince').value = p.province || 'Thành phố Hà Nội';
             if (document.getElementById('sedAddress')) document.getElementById('sedAddress').value = p.address || '';
+            bindChgWardFields();
+            wardCtl('sedWard')?.setValue(p.ward || '');
 
             const btnSave = document.getElementById('btnSaveSecuredNew');
             const btnUpdate = document.getElementById('btnUpdateSecured');
@@ -5378,21 +5472,27 @@ const qs = new URLSearchParams(location.search);
             const elName = document.getElementById('sedName');
             const elAddr = document.getElementById('sedAddress');
             if (!elName.value.trim()) { markInvalid(elName, 'Đây là trường bắt buộc'); return; }
+            // Phường/Xã bắt buộc khi hiển thị (Quốc gia là Việt Nam)
+            if (validateWardField('sedWard')) return;
             if (!elAddr.value.trim()) { markInvalid(elAddr, 'Đây là trường bắt buộc'); return; }
 
             const name = elName.value.trim();
             const address = elAddr.value.trim();
             const country = document.getElementById('sedCountry')?.value || 'Việt Nam';
             const province = document.getElementById('sedProvince')?.value || 'Thành phố Hà Nội';
+            const ward = wardValue('sedWard');
 
             if (isUpdate && chgEditingSecuredIdx >= 0) {
                 const item = chgState.securedParties[chgEditingSecuredIdx];
                 const orig = originalData.securedParties.find(p => p.name.toLowerCase() === item.name.toLowerCase()) || originalData.securedParties[chgEditingSecuredIdx] || {};
-                const isModified = (name !== orig.name || address !== orig.address);
+                // Địa chỉ so sánh theo chuỗi ghép đầy đủ (Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia)
+                const isModified = (name !== orig.name
+                    || chgPartyAddress({ address, ward, province, country }) !== chgPartyAddress(orig));
 
                 item.name = name;
                 item.country = country;
                 item.province = province;
+                item.ward = ward;
                 item.address = address;
                 if (item.status !== 'Bổ sung mới') {
                     item.status = isModified ? 'Sửa thông tin' : 'Không thay đổi';
@@ -5403,6 +5503,7 @@ const qs = new URLSearchParams(location.search);
                     name,
                     country,
                     province,
+                    ward,
                     address,
                     status: 'Bổ sung mới'
                 });
@@ -5821,16 +5922,16 @@ const qs = new URLSearchParams(location.search);
                 <div class="section-title">Bên thế chấp gốc</div>
                 <div class="readonly-value" style="margin-bottom:12px">
                     1. <b>Nguyễn Văn Nam</b> - CCCD: 001088012345 (Sinh: 12/08/1988)<br>
-                    Địa chỉ: Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Quận Hoàn Kiếm, Hà Nội<br>
+                    Địa chỉ: Số 15 Lý Thường Kiệt, Phường Cửa Nam, Hà Nội, Việt Nam<br>
                     2. <b>Trần Thị Mai</b> - CCCD: 001192003456 (Sinh: 25/04/1992)<br>
-                    Địa chỉ: Số 12 Dã Tượng, Phường Trần Hưng Đạo, Hoàn Kiếm, Hà Nội
+                    Địa chỉ: Số 12 Dã Tượng, Phường Cửa Nam, Hà Nội, Việt Nam
                 </div>
                 <div class="section-title">Bên nhận thế chấp gốc</div>
                 <div class="readonly-value" style="margin-bottom:12px">
                     1. <b>NGÂN HÀNG TMCP NGOẠI THƯƠNG VIỆT NAM (VCB) - CHI NHÁNH HÀ NỘI</b><br>
-                    Địa chỉ: Số 198 Trần Quang Khải, Quận Hoàn Kiếm, Hà Nội<br>
+                    Địa chỉ: Số 198 Trần Quang Khải, Phường Hoàn Kiếm, Hà Nội, Việt Nam<br>
                     2. <b>CÔNG TY TÀI CHÍNH TNHH MTV QUỐC TẾ VIỆT</b><br>
-                    Địa chỉ: Tầng 12, Tòa nhà Keangnam Landmark 72, Đường Phạm Hùng, Quận Nam Từ Liêm, Hà Nội
+                    Địa chỉ: Tầng 12, Tòa nhà Keangnam Landmark 72, Đường Phạm Hùng, Phường Từ Liêm, Hà Nội, Việt Nam
                 </div>
                 <div class="section-title">Danh sách tài sản thế chấp gốc</div>
                 <div class="readonly-value">
@@ -5978,7 +6079,7 @@ const qs = new URLSearchParams(location.search);
 function changeRegistrationForm() {
     const titles = chgGetDynamicTitles();
     const applicantName = p.customer || 'Công ty TNHH Hải Nam';
-    const applicantAddress = p.customerAddress || 'Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Quận Hoàn Kiếm, Hà Nội';
+    const applicantAddress = p.customerAddress || 'Số 15 Lý Thường Kiệt, Phường Cửa Nam, Hà Nội, Việt Nam';
 
     return `
         <!-- CARD 1: THÔNG TIN NGƯỜI YÊU CẦU ĐĂNG KÝ -->
@@ -6248,7 +6349,7 @@ function changeRegistrationForm() {
                             <option value="Khác">Quốc gia khác</option>
                         </select>
                     </div>
-                    <div class="field">
+                    <div class="field" id="secGroupProvince">
                         <label>Tỉnh/Thành phố <span class="required">*</span></label>
                         <input id="secProvince" class="form-control" value="Hà Nội">
                     </div>
@@ -6319,7 +6420,7 @@ function changeRegistrationForm() {
                             <option value="Khác">Khác</option>
                         </select>
                     </div>
-                    <div class="field">
+                    <div class="field" id="sedGroupProvince">
                         <label>Tỉnh/Thành phố <span class="required">*</span></label>
                         <input id="sedProvince" class="form-control" value="Thành phố Hà Nội">
                     </div>
@@ -6343,8 +6444,6 @@ function changeRegistrationForm() {
                             <th style="width:130px;text-align:center">THAO TÁC</th>
                             <th>TÊN</th>
                             <th>ĐỊA CHỈ</th>
-                            <th>TỈNH/THÀNH PHỐ</th>
-                            <th>QUỐC GIA</th>
                             <th style="width:200px;text-align:center">TRẠNG THÁI BIẾN ĐỘNG CHỦ THỂ</th>
                         </tr>
                     </thead>
@@ -6609,6 +6708,7 @@ function changeRegistrationForm() {
 
 
         function initChangeForm() {
+            bindChgWardFields();
             updateChgDynamicTitles();
             renderChgSecuringTable();
             renderChgSecuredTable();
@@ -6621,7 +6721,7 @@ function changeRegistrationForm() {
         function renderChangeRegistrationReview() {
             const titles = chgGetDynamicTitles();
             const applicantName = p.customer || 'Công ty TNHH Hải Nam';
-            const applicantAddress = p.customerAddress || 'Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Quận Hoàn Kiếm, Hà Nội';
+            const applicantAddress = p.customerAddress || 'Số 15 Lý Thường Kiệt, Phường Cửa Nam, Hà Nội, Việt Nam';
 
             // Sync form inputs to chgState before generating review
             if (document.getElementById('chgContractNo')) chgState.contractNo = document.getElementById('chgContractNo').value.trim();
@@ -6690,7 +6790,7 @@ function changeRegistrationForm() {
                                     <div><b>${e(a.plateNo || '-')}</b></div>
                                     ${diffHtml}
                                 </td>
-                                <td style="text-align:center">${getStatusBadge(a.status)}</td>
+                                <td style="text-align:center">${getStatusBadge(a.status, true)}</td>
                             </tr>
                         `;
                     }).join('');
@@ -6735,7 +6835,7 @@ function changeRegistrationForm() {
                                 <td><b>${e(a.regNo || '-')}</b></td>
                                 <td>${e(a.certAgency || a.registryAgency || '-')}</td>
                                 <td>${e(a.level || '-')}</td>
-                                <td style="text-align:center">${getStatusBadge(a.status)}</td>
+                                <td style="text-align:center">${getStatusBadge(a.status, true)}</td>
                             </tr>
                         `;
                     }).join('');
@@ -7020,7 +7120,7 @@ function changeRegistrationForm() {
                                             if (isMod(p.name, orig.name)) diffs.push(`Tên cũ: <span class="diff-before">${orig.name}</span>`);
                                             if (isMod(p.paperNo, orig.paperNo)) diffs.push(`Số giấy tờ cũ: <span class="diff-before">${orig.paperNo}</span>`);
                                             if (isMod(p.birthDate, orig.birthDate)) diffs.push(`Ngày sinh cũ: <span class="diff-before">${orig.birthDate || '-'}</span>`);
-                                            if (isMod(p.address, orig.address)) diffs.push(`Địa chỉ cũ: <span class="diff-before">${orig.address}</span>`);
+                                            if (isMod(chgPartyAddress(p), chgPartyAddress(orig))) diffs.push(`Địa chỉ cũ: <span class="diff-before">${e(chgPartyAddress(orig))}</span>`);
                                             if (diffs.length) {
                                                 diffHtml = `<div style="margin-top:4px;font-size:11.5px;color:var(--muted)">${diffs.map(d => `<div style="margin-top:2px"><i class="fa-solid fa-clock-rotate-left"></i> ${d}</div>`).join('')}</div>`;
                                             }
@@ -7035,7 +7135,7 @@ function changeRegistrationForm() {
                                             <td>${e(p.birthDate || '-')}</td>
                                             <td><b>${e(p.name || '-')}</b></td>
                                             <td>
-                                                <div>${e(p.address || '-')}</div>
+                                                <div>${e(chgPartyAddress(p) || '-')}</div>
                                                 ${diffHtml}
                                             </td>
                                             <td style="text-align:center">${getStatusBadge(p.status)}</td>
@@ -7060,8 +7160,6 @@ function changeRegistrationForm() {
                                     <th style="width:40px;text-align:center">STT</th>
                                     <th>TÊN</th>
                                     <th>ĐỊA CHỈ</th>
-                                    <th>TỈNH/THÀNH PHỐ</th>
-                                    <th>QUỐC GIA</th>
                                     <th style="width:180px;text-align:center">TRẠNG THÁI BIẾN ĐỘNG</th>
                                 </tr>
                             </thead>
@@ -7070,8 +7168,8 @@ function changeRegistrationForm() {
                                     let diffHtml = '';
                                     if (p.status === 'Sửa thông tin') {
                                         const orig = originalData.securedParties.find(x => x.name === p.name);
-                                        if (orig && isMod(p.address, orig.address)) {
-                                            diffHtml = `<div style="margin-top:4px;font-size:11.5px;color:var(--muted)"><i class="fa-solid fa-clock-rotate-left"></i> Địa chỉ cũ: <span class="diff-before">${orig.address}</span></div>`;
+                                        if (orig && isMod(chgPartyAddress(p), chgPartyAddress(orig))) {
+                                            diffHtml = `<div style="margin-top:4px;font-size:11.5px;color:var(--muted)"><i class="fa-solid fa-clock-rotate-left"></i> Địa chỉ cũ: <span class="diff-before">${e(chgPartyAddress(orig))}</span></div>`;
                                         }
                                     }
                                     const rowCls = p.status === 'Rút bớt' ? 'row-removed' : (p.status === 'Bổ sung mới' ? 'row-added' : (p.status === 'Sửa thông tin' ? 'row-modified' : 'row-unchanged'));
@@ -7080,11 +7178,9 @@ function changeRegistrationForm() {
                                             <td style="text-align:center">${i + 1}</td>
                                             <td><b>${e(p.name || '-')}</b></td>
                                             <td>
-                                                <div>${e(p.address || '-')}</div>
+                                                <div>${e(chgPartyAddress(p) || '-')}</div>
                                                 ${diffHtml}
                                             </td>
-                                            <td>${e(p.province || '-')}</td>
-                                            <td>${e(p.country || 'Việt Nam')}</td>
                                             <td style="text-align:center">${getStatusBadge(p.status)}</td>
                                         </tr>
                                     `;
@@ -7136,13 +7232,13 @@ const defaultXoaMock = {
     isFemaleOwner: 'Không',
     receivingAgency: 'Trung tâm Đăng ký giao dịch, tài sản của Bộ Tư pháp tại TP. Hà Nội',
     requesterOrg: 'NGÂN HÀNG TMCP NGOẠI THƯƠNG VIỆT NAM (VCB) - CHI NHÁNH HÀ NỘI',
-    requesterAddress: 'Số 198 Trần Quang Khải, Quận Hoàn Kiếm, Thành phố Hà Nội, Việt Nam',
+    requesterAddress: 'Số 198 Trần Quang Khải, Phường Hoàn Kiếm, Hà Nội, Việt Nam',
     securingParties: [
-        { name: 'Nguyễn Văn Nam', paperNo: '001088012345 (CCCD)', address: 'Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Hoàn Kiếm, Hà Nội' },
-        { name: 'Trần Thị Mai', paperNo: '001192003456 (CCCD)', address: 'Số 28 Quang Trung, Phường Trần Hưng Đạo, Hoàn Kiếm, Hà Nội' }
+        { name: 'Nguyễn Văn Nam', paperNo: '001088012345 (CCCD)', address: 'Số 15 Lý Thường Kiệt, Phường Cửa Nam, Hà Nội, Việt Nam' },
+        { name: 'Trần Thị Mai', paperNo: '001192003456 (CCCD)', address: 'Số 28 Quang Trung, Phường Cửa Nam, Hà Nội, Việt Nam' }
     ],
     securedParties: [
-        { name: 'NGÂN HÀNG TMCP NGOẠI THƯƠNG VIỆT NAM (VCB) - CHI NHÁNH HÀ NỘI', address: 'Số 198 Trần Quang Khải, Quận Hoàn Kiếm, Hà Nội' }
+        { name: 'NGÂN HÀNG TMCP NGOẠI THƯƠNG VIỆT NAM (VCB) - CHI NHÁNH HÀ NỘI', address: 'Số 198 Trần Quang Khải, Phường Hoàn Kiếm, Hà Nội, Việt Nam' }
     ],
     assets: [
         { id: 1, type: 'sokhung', group: 'Phương tiện đường bộ có số khung', name: 'Ô tô con Toyota Vios', brandColor: 'Toyota / Đen', frameNo: 'TYT-VIOS-88992', engineNo: 'ENG-4A-FE-990', plateNo: '30H-123.45', desc: 'Xe 5 chỗ sản xuất năm 2023' },
@@ -7168,7 +7264,7 @@ function renderCommonAssetPanels(options = {}) {
         const isChecked = selectedIds.includes(item.id);
         let tag = '';
         if (isNoticeChange) {
-            tag = isChecked ? '<span class="tag-badge tag-added">Thuộc phạm vi xử lý</span>' : '<span class="tag-badge tag-removed">Rút khỏi thông báo</span>';
+            tag = isChecked ? '<span class="tag-badge" style="background:#F1F5F9;color:#475569;border-color:#CBD5E1">Đang xử lý tài sản</span>' : '<span class="tag-badge tag-removed">Rút khỏi thông báo</span>';
         }
         const cbHtml = showCheckbox ? `<td style="text-align:center"><input type="checkbox" class="cb-asset-notice" data-id="${item.id}" ${isChecked ? 'checked' : ''} onchange="${onToggleAsset || ''}('sokhung', ${item.id}, this.checked)"></td>` : '';
         return `
@@ -7190,7 +7286,7 @@ function renderCommonAssetPanels(options = {}) {
         const isChecked = selectedIds.includes(item.id);
         let tag = '';
         if (isNoticeChange) {
-            tag = isChecked ? '<span class="tag-badge tag-added">Thuộc phạm vi xử lý</span>' : '<span class="tag-badge tag-removed">Rút khỏi thông báo</span>';
+            tag = isChecked ? '<span class="tag-badge" style="background:#F1F5F9;color:#475569;border-color:#CBD5E1">Đang xử lý tài sản</span>' : '<span class="tag-badge tag-removed">Rút khỏi thông báo</span>';
         }
         const cbHtml = showCheckbox ? `<td style="text-align:center"><input type="checkbox" class="cb-asset-notice" data-id="${item.id}" ${isChecked ? 'checked' : ''} onchange="${onToggleAsset || ''}('tauca', ${item.id}, this.checked)"></td>` : '';
         return `
@@ -8048,13 +8144,13 @@ function noticeChangeForm() {
                     </thead>
                     <tbody>
                         ${tbChgState.assets.map((item, idx) => {
-                            let badge = '<span class="state-badge active">Đang xử lý</span>';
+                            let badge = '<span class="state-badge active">Đang xử lý tài sản</span>';
                             let rowCls = '';
                             if (item.status === 'removed') {
-                                badge = '<span class="state-badge deleted">Rút khỏi diện xử lý</span>';
+                                badge = '<span class="state-badge deleted">Rút khỏi thông báo</span>';
                                 rowCls = 'row-removed';
                             } else if (item.status === 'added') {
-                                badge = '<span class="state-badge added">Bổ sung mới</span>';
+                                badge = '<span class="state-badge added">Bổ sung xử lý</span>';
                                 rowCls = 'row-added';
                             }
                             return `
@@ -8337,6 +8433,13 @@ function getPdkDemoRows() {
         ['1505156442', 'DK-004', 'Hồ sơ liên quan đang xử lý', 'Tồn tại hồ sơ liên quan chưa phê duyệt hoàn thành - [MSG-ERR-DK-004]']
     ];
     if (isNoticeFirst()) rows.push(['1505156443', 'DK-006', 'Đã có thông báo lần đầu', 'Hồ sơ gốc đã có thông báo xử lý TS lần đầu đang hiệu lực - [MSG-ERR-DK-006]']);
+    // Điều kiện thực hiện Xóa đăng ký [BR-DK-040]
+    if (isDelete()) rows.push(
+        ['1505156444', 'ok', 'Hợp lệ', 'Hồ sơ gốc đang có thông báo xử lý tài sản còn hiệu lực - vẫn cho phép Xóa đăng ký, thông báo tự chấm dứt khi hoàn thành'],
+        ['1505156445', 'DK-018', 'Đã xóa đăng ký', 'Hồ sơ đã có Xóa đăng ký ở trạng thái Hoàn thành - [MSG-ERR-DK-018]'],
+        ['1505156446', 'DK-019', 'Đã hủy toàn phần', 'Hồ sơ đã bị Hủy đăng ký toàn phần, chưa khôi phục - [MSG-ERR-DK-019]'],
+        ['TBXL-2026-000050', 'DK-020', 'Hồ sơ Thông báo xử lý', 'Số đăng ký của Thông báo xử lý tài sản (tài sản chưa đăng ký BPBĐ) - [MSG-ERR-DK-020]']
+    );
     if (isDelete() && defaultXoaMock && defaultXoaMock.regNum) rows.splice(2, 0, [defaultXoaMock.regNum, 'ok', 'Hợp lệ', 'Hồ sơ mẫu của màn Xóa đăng ký - nạp dữ liệu kế thừa']);
     rows.push(['1505999999', 'DK-014', 'Không có dữ liệu', 'Không tìm thấy hồ sơ - [MSG-ERR-DK-014] (hoặc nhập bất kỳ số khác)']);
     return rows;
@@ -8348,6 +8451,9 @@ const PDK_LOOKUP_MESSAGES = {
     'DK-004': 'Tồn tại hồ sơ liên quan chưa được phê duyệt hoàn thành. Vui lòng kiểm tra lại.',
     'DK-006': 'Hồ sơ gốc đã được đăng ký thông báo xử lý tài sản bảo đảm lần đầu đang có hiệu lực. Vui lòng chọn loại hình Thay đổi hoặc Xóa thông báo.',
     'DK-007': 'Hồ sơ gốc chưa được đăng ký thông báo xử lý tài sản bảo đảm lần đầu. Không thể thực hiện thao tác.',
+    'DK-018': 'Hồ sơ đã được xóa đăng ký. Không thể thực hiện thao tác.',
+    'DK-019': 'Hồ sơ đã bị hủy đăng ký toàn phần. Không thể thực hiện thao tác.',
+    'DK-020': 'Số đăng ký đã nhập là số đăng ký của Thông báo xử lý tài sản bảo đảm. Vui lòng thực hiện Xóa đăng ký thông báo xử lý tài sản bảo đảm.',
     'DK-014': 'Không tìm thấy hồ sơ theo số đăng ký đã nhập. Vui lòng kiểm tra lại.'
 };
 
@@ -9299,7 +9405,7 @@ function renderBusinessForm() {
                 const searchVal = getCcttSearchValue();
                 const dateStr = new Date().toLocaleDateString('vi-VN');
                 const reqName = document.getElementById('ccttRequesterName')?.value || p.customer || 'Ông Phạm Minh Đức';
-                const contactAddr = document.getElementById('ccttContactAddress')?.value || p.requesterAddress || 'Số 18 phố Lý Thường Kiệt, Hoàn Kiếm, Hà Nội';
+                const contactAddr = document.getElementById('ccttContactAddress')?.value || p.requesterAddress || 'Số 18 phố Lý Thường Kiệt, Phường Cửa Nam, Hà Nội, Việt Nam';
 
                 let resultDetailHtml = '';
                 if (ccttHasData) {
@@ -9453,7 +9559,10 @@ function renderFirstRegistrationReview() {
     const reqEl = document.getElementById('regNguoiYeuCau');
     const reqRoleText = reqEl?.options[reqEl.selectedIndex]?.text || 'Bên bảo đảm';
     const hoTenText = p.submitter || p.customer || 'Nguyễn Văn Nam';
-    const diaChiText = p.customerAddress || p.requesterAddress || 'Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Quận Hoàn Kiếm, Hà Nội, Việt Nam';
+    // Địa chỉ tiếp nhận theo từng thành phần ("Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia") nếu có
+    const diaChiText = p.customerAddress
+        || (p.requesterProvince ? fullAddress(p.requesterAddress, p.requesterWard, p.requesterProvince, p.requesterCountry || 'Việt Nam') : p.requesterAddress)
+        || fullAddress('Số 15 Lý Thường Kiệt', 'Phường Cửa Nam', 'Hà Nội', 'Việt Nam');
 
     let proofDocHtml = '';
     const proofFile = document.querySelector('#regUploadProofWrapper .file-name');
@@ -9495,15 +9604,19 @@ function renderFirstRegistrationReview() {
     const quyMoText = quyMoEl && quyMoEl.selectedIndex > 0 ? quyMoEl.options[quyMoEl.selectedIndex].text : 'Doanh nghiệp lớn';
     const nuChuVal = document.getElementById('regChuDNNu')?.checked ? 'Có' : 'Không';
 
-    // Danh sách bên bảo đảm
-    const securingList = (window.regSecuringParties && window.regSecuringParties.length > 0) ? window.regSecuringParties : [
-        { typeText: 'Cá nhân trong nước', idCode: '001088012345', name: 'Nguyễn Văn Nam', address: 'Số 15 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội' }
-    ];
+    // Danh sách bên bảo đảm (lấy theo danh sách cán bộ đã khai báo; địa chỉ: "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia")
+    const securingList = regParties.tc.length > 0
+        ? regParties.tc.map(r => ({ typeText: r.loai, idCode: r.soGiayTo, name: r.ten, address: fullAddress(r.diaChiRaw, r.ward, r.tinhThanh, r.quocGia) }))
+        : [
+            { typeText: 'Cá nhân trong nước', idCode: '001088012345', name: 'Nguyễn Văn Nam', address: fullAddress('Số 15 Lý Thường Kiệt', 'Phường Cửa Nam', 'Hà Nội', 'Việt Nam') }
+        ];
 
     // Danh sách bên nhận bảo đảm
-    const securedList = (window.regSecuredParties && window.regSecuredParties.length > 0) ? window.regSecuredParties : [
-        { name: 'NGÂN HÀNG TMCP NGOẠI THƯƠNG VIỆT NAM (VCB) - CHI NHÁNH HÀ NỘI', address: 'Số 198 Trần Quang Khải, Quận Hoàn Kiếm, TP. Hà Nội' }
-    ];
+    const securedList = regParties.ntc.length > 0
+        ? regParties.ntc.map(r => ({ name: r.ten, address: fullAddress(r.diaChiRaw, r.ward, r.tinhThanh, r.quocGia) }))
+        : [
+            { name: 'NGÂN HÀNG TMCP NGOẠI THƯƠNG VIỆT NAM (VCB) - CHI NHÁNH HÀ NỘI', address: fullAddress('Số 198 Trần Quang Khải', 'Phường Hoàn Kiếm', 'Hà Nội', 'Việt Nam') }
+        ];
 
     return `
         <!-- I. THÔNG TIN NGƯỜI ĐĂNG KÝ -->
@@ -10072,13 +10185,13 @@ function renderNoticeChangeReview() {
                     </thead>
                     <tbody>
                         ${tbChgState.assets.map((item, idx) => {
-                            let badge = '<span class="state-badge active">Đang xử lý</span>';
+                            let badge = '<span class="state-badge active">Đang xử lý tài sản</span>';
                             let rowCls = '';
                             if (item.status === 'removed') {
-                                badge = '<span class="state-badge deleted">Rút khỏi diện xử lý</span>';
+                                badge = '<span class="state-badge deleted">Rút khỏi thông báo</span>';
                                 rowCls = 'row-removed';
                             } else if (item.status === 'added') {
-                                badge = '<span class="state-badge added">Bổ sung mới</span>';
+                                badge = '<span class="state-badge added">Bổ sung xử lý</span>';
                                 rowCls = 'row-added';
                             }
                             return `
@@ -10255,6 +10368,26 @@ function renderNoticeDeleteReview() {
     `;
 }
 
+// Tài sản đang nhập dùng để đối chiếu trùng lặp theo [BR-DK-037]: Phương tiện có số khung, Tàu cá/phương tiện thủy, Kho hàng
+function collectDuplicateCheckAssets() {
+    const input = { vehicles: [], ships: [], kho: [] };
+    if (isFirstRegistration()) {
+        document.querySelectorAll('#regTbodySoKhung tr').forEach(tr => input.vehicles.push({
+            soKhung: tr.querySelector('.reg-sk-frame')?.value || '', soMay: tr.querySelector('.reg-sk-engine')?.value || '', bienSo: tr.querySelector('.reg-sk-plate')?.value || ''
+        }));
+        document.querySelectorAll('#regTbodyTauCa tr').forEach(tr => { const i = tr.querySelectorAll('input:not([type=checkbox])'); input.ships.push({ soDK: i[2]?.value || '' }); });
+        if (document.querySelector('input[name="regLoaiHangHoa"]:checked')?.value === 'kho_hang') {
+            input.kho.push({ diaChi: document.getElementById('regHhDiaChiKho')?.value || '', soHieu: document.getElementById('regHhSoHieuKho')?.value || '' });
+        }
+    } else if (isChange() && typeof chgState !== 'undefined') {
+        const active = a => !/rút|giải chấp|hủy|xóa/i.test(a.status || a.changeStatus || '');
+        (chgState.assets || []).filter(active).forEach(a => input.vehicles.push({ soKhung: a.frameNo, soMay: a.engineNo, bienSo: a.plateNo }));
+        (chgState.tauCaList || []).filter(active).forEach(s => input.ships.push({ soDK: s.regNo }));
+        if (chgState.hangHoa && /kho/i.test(chgState.hangHoa.loai || '')) input.kho.push({ diaChi: chgState.hangHoa.diaChiKho, soHieu: chgState.hangHoa.soHieuKho });
+    }
+    return input;
+}
+
 function openPreview() {
     if (isInfoRequest()) {
         openPdfPreview();
@@ -10272,6 +10405,19 @@ function openPreview() {
         if (!validateNoticeChangeForm()) return;
     } else if (isNoticeDelete()) {
         if (!validateNoticeDeleteForm()) return;
+    }
+
+    // Cảnh báo tài sản bảo đảm trùng với Phiếu đăng ký khác trên hệ thống [BR-DK-029] - [MSG-CFM-DK-017]:
+    // không chặn nhập liệu; Cán bộ chọn "Tiếp tục" để sang bước Xem trước, chọn "Hủy" để ở lại kiểm tra thêm
+    if ((isFirstRegistration() || isChange()) && window.TRUNGLAP && !openPreview.dupConfirmed) {
+        const dups = TRUNGLAP.checkAssets(collectDuplicateCheckAssets());
+        if (dups.length) {
+            TRUNGLAP.confirmNhapLieu(dups, () => {
+                openPreview.dupConfirmed = true;
+                try { openPreview(); } finally { openPreview.dupConfirmed = false; }
+            });
+            return;
+        }
     }
 
     const titleH2 = document.getElementById('reviewTitle');
@@ -10679,7 +10825,7 @@ function openRegistrationSignModal() {
                             ${kv('Email', p.requesterEmail || 'vietcombank.sgd@vcb.com.vn')}
                             ${kv('Quốc gia', p.requesterCountry || 'Việt Nam')}
                             ${kv('Tỉnh/thành phố', p.requesterProvince || 'TP Hà Nội')}
-                            ${kv('Phường/Xã', p.requesterWard || 'Phường Phan Chu Trinh')}
+                            ${DiaBanVN.isVN(p.requesterCountry || 'Việt Nam') ? kv('Phường/Xã', p.requesterWard || 'Phường Phan Chu Trinh') : ''}
                             ${kv('Địa chỉ chi tiết', p.requesterAddress || 'Số 11 Láng Hạ, Ba Đình, Hà Nội')}
                             ${kv('Ghi chú tiếp nhận', p.receptionNote || 'Đề nghị cấp bản sao kèm xác nhận có hiệu lực pháp lý để bổ sung hồ sơ tín dụng')}
                         </div>
@@ -10860,11 +11006,11 @@ function openRegistrationSignModal() {
                 pdfTitle: 'VĂN BẢN CHỨNG NHẬN ĐĂNG KÝ BIỆN PHÁP BẢO ĐẢM - BẢN SAO ĐIỆN TỬ',
                 contractNo: 'HĐTC-VCB-2025/089',
                 contractDate: '12/05/2025',
-                registrant: { name: 'Ngân hàng TMCP Ngoại thương Việt Nam - Chi nhánh Sở Giao Dịch', address: 'Số 11 Láng Hạ, Phường Thành Công, TP Hà Nội, Việt Nam' },
+                registrant: { name: 'Ngân hàng TMCP Ngoại thương Việt Nam - Chi nhánh Sở Giao Dịch', address: 'Số 11 Láng Hạ, Phường Giảng Võ, TP Hà Nội, Việt Nam' },
                 registeredAt: '15/05/2025 09:30:15',
                 effectiveAt: '15/05/2025 09:30:15',
                 grantors: [{ subjectType: 'Cá nhân', idNo: 'CCCD 001085002134', name: 'Nguyễn Văn Nam', address: 'Số 45 Trần Hưng Đạo, Phường Cửa Nam, TP Hà Nội, Việt Nam' }],
-                securedParties: [{ name: 'Ngân hàng TMCP Ngoại thương Việt Nam - Chi nhánh Sở Giao Dịch', idNo: 'MST 0100112437-001', address: 'Số 11 Láng Hạ, Phường Thành Công, TP Hà Nội, Việt Nam' }],
+                securedParties: [{ name: 'Ngân hàng TMCP Ngoại thương Việt Nam - Chi nhánh Sở Giao Dịch', idNo: 'MST 0100112437-001', address: 'Số 11 Láng Hạ, Phường Giảng Võ, TP Hà Nội, Việt Nam' }],
                 assets: [
                     {
                         type: 'road',
@@ -11801,6 +11947,7 @@ function openRegistrationSignModal() {
         switchView(mode);
         if (mode === 'edit') { preloadReturnedCcttLookup(); preloadReturnedPdkLookup(); }
     </script>
+    <script src="trung_lap_common.js"></script>
     <script src="admin-ui-standardizer.js"></script>
 </body>
 

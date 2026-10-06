@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
         description: "Đăng ký biện pháp bảo đảm lần đầu bằng 02 phương tiện ô tô",
         data: {
             registrantName: "Công ty Cổ phần Vận tải biển Đông",
-            registrantAddress: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
+            registrantAddress: "Số 12 Cát Linh, Phường Đống Đa, Thành phố Hà Nội, Việt Nam",
             registrantDoc: "Giấy_DN_BienDong.pdf",
             regCase: "Đăng ký lần đầu",
             firstRegNo: "BD-2026-001",
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức trong nước",
                     name: "Công ty Cổ phần Vận tải biển Đông",
                     paperNo: "0102030405",
-                    address: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
+                    address: "Số 12 Cát Linh, Phường Đống Đa, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức",
                     paperNo: "0100112437",
                     name: "Ngân hàng TMCP Ngoại thương Việt Nam (VCB) - Chi nhánh Hà Nội",
-                    address: "Số 198 Trần Quang Khải, Phường Lý Thái Tổ, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
+                    address: "Số 198 Trần Quang Khải, Phường Hoàn Kiếm, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -234,7 +234,7 @@ document.addEventListener('DOMContentLoaded', function () {
         description: "Bổ sung bên thế chấp, thay đổi giá trị khoản vay lên 2.5 tỷ và thêm 01 ô tô",
         data: {
             registrantName: "Công ty Cổ phần Vận tải biển Đông",
-            registrantAddress: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
+            registrantAddress: "Số 12 Cát Linh, Phường Đống Đa, Thành phố Hà Nội, Việt Nam",
             registrantDoc: "Giấy_DN_BienDong.pdf",
             regCase: "Đăng ký thay đổi",
             firstRegNo: "BD-2026-001",
@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức trong nước",
                     name: "Công ty Cổ phần Vận tải biển Đông",
                     paperNo: "0102030405",
-                    address: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
+                    address: "Số 12 Cát Linh, Phường Đống Đa, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 },
                 {
@@ -264,7 +264,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     name: "Trần Văn An",
                     paperNo: "001085006789",
                     birthDate: "15/08/1985",
-                    address: "Số 45 Hàng Bài, Phường Hàng Bài, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
+                    address: "Số 45 Hàng Bài, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam",
                     status: "Bổ sung mới"
                 }
             ],
@@ -273,7 +273,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức",
                     paperNo: "0100112437",
                     name: "Ngân hàng TMCP Ngoại thương Việt Nam (VCB) - Chi nhánh Hà Nội",
-                    address: "Số 198 Trần Quang Khải, Phường Lý Thái Tổ, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
+                    address: "Số 198 Trần Quang Khải, Phường Hoàn Kiếm, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -329,7 +329,7 @@ document.addEventListener('DOMContentLoaded', function () {
             rejectNoticePdf: "Thong_bao_tu_choi_BD-2026-001-TD02.pdf",
 
             registrantName: "Công ty Cổ phần Vận tải biển Đông",
-            registrantAddress: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
+            registrantAddress: "Số 12 Cát Linh, Phường Đống Đa, Thành phố Hà Nội, Việt Nam",
             registrantDoc: "Giấy_DN_BienDong.pdf",
             regCase: "Đăng ký thay đổi",
             firstRegNo: "BD-2026-001",
@@ -350,7 +350,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức trong nước",
                     name: "Công ty Cổ phần Vận tải biển Đông",
                     paperNo: "0102030405",
-                    address: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
+                    address: "Số 12 Cát Linh, Phường Đống Đa, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 },
                 {
@@ -359,7 +359,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     name: "Trần Văn An",
                     paperNo: "001085006789",
                     birthDate: "15/08/1985",
-                    address: "Số 45 Hàng Bài, Phường Hàng Bài, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
+                    address: "Số 45 Hàng Bài, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -368,7 +368,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức",
                     paperNo: "0100112437",
                     name: "Ngân hàng TMCP Ngoại thương Việt Nam (VCB) - Chi nhánh Hà Nội",
-                    address: "Số 198 Trần Quang Khải, Phường Lý Thái Tổ, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
+                    address: "Số 198 Trần Quang Khải, Phường Hoàn Kiếm, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -427,7 +427,7 @@ document.addEventListener('DOMContentLoaded', function () {
             editNoticePdf: "Thong_bao_chinh_ly_BD-2026-001-CL01.pdf",
 
             registrantName: "Công ty Cổ phần Vận tải biển Đông",
-            registrantAddress: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
+            registrantAddress: "Số 12 Cát Linh, Phường Đống Đa, Thành phố Hà Nội, Việt Nam",
             registrantDoc: "Giấy_DN_BienDong.pdf",
             regCase: "Chỉnh lý thông tin",
             firstRegNo: "BD-2026-001",
@@ -448,7 +448,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức trong nước",
                     name: "Công ty Cổ phần Vận tải biển Đông",
                     paperNo: "0102030405",
-                    address: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
+                    address: "Số 12 Cát Linh, Phường Đống Đa, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 },
                 {
@@ -457,8 +457,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     name: "Trần Văn An",
                     paperNo: "001085006789",
                     birthDate: "15/08/1985",
-                    address: "Số 99 Lê Duẩn, Phường Cửa Nam, Quận Hoàn Kiếm, Hà Nội, Việt Nam", // Sửa thông tin
-                    prevAddress: "Số 45 Hàng Bài, Phường Hàng Bài, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
+                    address: "Số 99 Lê Duẩn, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam", // Sửa thông tin
+                    prevAddress: "Số 45 Hàng Bài, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam",
                     status: "Sửa thông tin"
                 }
             ],
@@ -467,7 +467,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức",
                     paperNo: "0100112437",
                     name: "Ngân hàng TMCP Ngoại thương Việt Nam (VCB) - Chi nhánh Hà Nội",
-                    address: "Số 198 Trần Quang Khải, Phường Lý Thái Tổ, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
+                    address: "Số 198 Trần Quang Khải, Phường Hoàn Kiếm, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -529,7 +529,7 @@ document.addEventListener('DOMContentLoaded', function () {
             cancelNoticePdf: "Thong_bao_huy_dang_ky_BD-2026-001-HD01.pdf",
 
             registrantName: "Công ty Cổ phần Vận tải biển Đông",
-            registrantAddress: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
+            registrantAddress: "Số 12 Cát Linh, Phường Đống Đa, Thành phố Hà Nội, Việt Nam",
             registrantDoc: "Giấy_DN_BienDong.pdf",
             regCase: "Hủy đăng ký",
             firstRegNo: "BD-2026-001",
@@ -550,7 +550,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức trong nước",
                     name: "Công ty Cổ phần Vận tải biển Đông",
                     paperNo: "0102030405",
-                    address: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
+                    address: "Số 12 Cát Linh, Phường Đống Đa, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 },
                 {
@@ -559,7 +559,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     name: "Trần Văn An",
                     paperNo: "001085006789",
                     birthDate: "15/08/1985",
-                    address: "Số 99 Lê Duẩn, Phường Cửa Nam, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
+                    address: "Số 99 Lê Duẩn, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -568,7 +568,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức",
                     paperNo: "0100112437",
                     name: "Ngân hàng TMCP Ngoại thương Việt Nam (VCB) - Chi nhánh Hà Nội",
-                    address: "Số 198 Trần Quang Khải, Phường Lý Thái Tổ, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
+                    address: "Số 198 Trần Quang Khải, Phường Hoàn Kiếm, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -627,7 +627,7 @@ document.addEventListener('DOMContentLoaded', function () {
             restoreNoticePdf: "Thong_bao_khoi_phuc_BD-2026-001-KF01.pdf",
 
             registrantName: "Công ty Cổ phần Vận tải biển Đông",
-            registrantAddress: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
+            registrantAddress: "Số 12 Cát Linh, Phường Đống Đa, Thành phố Hà Nội, Việt Nam",
             registrantDoc: "Giấy_DN_BienDong.pdf",
             regCase: "Khôi phục hủy đăng ký",
             firstRegNo: "BD-2026-001",
@@ -648,7 +648,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức trong nước",
                     name: "Công ty Cổ phần Vận tải biển Đông",
                     paperNo: "0102030405",
-                    address: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
+                    address: "Số 12 Cát Linh, Phường Đống Đa, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 },
                 {
@@ -657,7 +657,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     name: "Trần Văn An",
                     paperNo: "001085006789",
                     birthDate: "15/08/1985",
-                    address: "Số 99 Lê Duẩn, Phường Cửa Nam, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
+                    address: "Số 99 Lê Duẩn, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -666,7 +666,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức",
                     paperNo: "0100112437",
                     name: "Ngân hàng TMCP Ngoại thương Việt Nam (VCB) - Chi nhánh Hà Nội",
-                    address: "Số 198 Trần Quang Khải, Phường Lý Thái Tổ, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
+                    address: "Số 198 Trần Quang Khải, Phường Hoàn Kiếm, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -723,7 +723,7 @@ document.addEventListener('DOMContentLoaded', function () {
             deRegNoticePdf: "Thong_bao_xoa_dang_ky_BD-2026-001-XD01.pdf",
 
             registrantName: "Công ty Cổ phần Vận tải biển Đông",
-            registrantAddress: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
+            registrantAddress: "Số 12 Cát Linh, Phường Đống Đa, Thành phố Hà Nội, Việt Nam",
             registrantDoc: "Giấy_DN_BienDong.pdf",
             regCase: "Xóa đăng ký",
             firstRegNo: "BD-2026-001",
@@ -744,7 +744,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức trong nước",
                     name: "Công ty Cổ phần Vận tải biển Đông",
                     paperNo: "0102030405",
-                    address: "Số 12 Cát Linh, Phường Quốc Tử Giám, Quận Đống Đa, Hà Nội, Việt Nam",
+                    address: "Số 12 Cát Linh, Phường Đống Đa, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 },
                 {
@@ -753,7 +753,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     name: "Trần Văn An",
                     paperNo: "001085006789",
                     birthDate: "15/08/1985",
-                    address: "Số 99 Lê Duẩn, Phường Cửa Nam, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
+                    address: "Số 99 Lê Duẩn, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -762,7 +762,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức",
                     paperNo: "0100112437",
                     name: "Ngân hàng TMCP Ngoại thương Việt Nam (VCB) - Chi nhánh Hà Nội",
-                    address: "Số 198 Trần Quang Khải, Phường Lý Thái Tổ, Quận Hoàn Kiếm, Hà Nội, Việt Nam",
+                    address: "Số 198 Trần Quang Khải, Phường Hoàn Kiếm, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -814,7 +814,7 @@ document.addEventListener('DOMContentLoaded', function () {
         description: "Đăng ký biện pháp bảo đảm lần đầu bằng 01 phương tiện ô tô Toyota Vios",
         data: {
             registrantName: "Nguyễn Văn Nam",
-            registrantAddress: "Số 15 Phố Duy Tân, Phường Dịch Vọng Hậu, Quận Cầu Giấy, TP. Hà Nội, Việt Nam",
+            registrantAddress: "Số 15 Phố Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam",
             registrantDoc: "Giay_dang_ky_1505156435.pdf",
             regCase: "Đăng ký lần đầu",
             firstRegNo: "1505156435",
@@ -836,7 +836,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     name: "Nguyễn Văn Nam",
                     paperNo: "001092008421",
                     birthDate: "20/09/1992",
-                    address: "Số 15 Phố Duy Tân, Phường Dịch Vọng Hậu, Quận Cầu Giấy, TP. Hà Nội, Việt Nam",
+                    address: "Số 15 Phố Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -845,7 +845,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức",
                     paperNo: "0100112437",
                     name: "NGÂN HÀNG TMCP FPT (FPT BANK)",
-                    address: "Số 17 Duy Tân, Quận Cầu Giấy, TP. Hà Nội, Việt Nam",
+                    address: "Số 17 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -909,7 +909,7 @@ document.addEventListener('DOMContentLoaded', function () {
         description: "Đăng ký biện pháp bảo đảm lần đầu xe ô tô tải Hyundai Porter",
         data: {
             registrantName: "Công ty TNHH Hải Nam",
-            registrantAddress: "Số 25 Trần Hưng Đạo, Quận Hoàn Kiếm, TP. Hà Nội, Việt Nam",
+            registrantAddress: "Số 25 Trần Hưng Đạo, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam",
             registrantDoc: "Giay_dang_ky_1505156438.pdf",
             regCase: "Đăng ký lần đầu",
             firstRegNo: "1505156438",
@@ -930,7 +930,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức trong nước",
                     name: "Công ty TNHH Hải Nam",
                     paperNo: "0102030405",
-                    address: "Số 25 Trần Hưng Đạo, Quận Hoàn Kiếm, TP. Hà Nội, Việt Nam",
+                    address: "Số 25 Trần Hưng Đạo, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -939,7 +939,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức",
                     paperNo: "0100112437",
                     name: "NGÂN HÀNG TMCP FPT (FPT BANK)",
-                    address: "Số 17 Duy Tân, Quận Cầu Giấy, TP. Hà Nội, Việt Nam",
+                    address: "Số 17 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -987,7 +987,7 @@ document.addEventListener('DOMContentLoaded', function () {
         description: "Đăng ký biện pháp bảo đảm lần đầu xe ô tô Toyota Camry",
         data: {
             registrantName: "John Smith",
-            registrantAddress: "Phòng 802 Tòa nhà Lancaster, Kim Mã, Ba Đình, Hà Nội",
+            registrantAddress: "Phòng 802 Tòa nhà Lancaster, Phường Giảng Võ, Thành phố Hà Nội, Việt Nam",
             registrantDoc: "Passport_JohnSmith.pdf",
             regCase: "Đăng ký lần đầu",
             firstRegNo: "1505156440",
@@ -1007,7 +1007,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Người nước ngoài",
                     name: "John Smith",
                     paperNo: "A1234567",
-                    address: "Phòng 802 Tòa nhà Lancaster, Kim Mã, Ba Đình, Hà Nội",
+                    address: "Phòng 802 Tòa nhà Lancaster, Phường Giảng Võ, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -1016,7 +1016,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức",
                     paperNo: "0100112437",
                     name: "NGÂN HÀNG TMCP FPT (FPT BANK)",
-                    address: "Số 17 Duy Tân, Quận Cầu Giấy, TP. Hà Nội, Việt Nam",
+                    address: "Số 17 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -1046,7 +1046,7 @@ document.addEventListener('DOMContentLoaded', function () {
         description: "Đăng ký biện pháp bảo đảm lần đầu xe ô tô Honda Civic",
         data: {
             registrantName: "Ivan Petrov",
-            registrantAddress: "Số 10 Chùa Láng, Quận Đống Đa, TP. Hà Nội, Việt Nam",
+            registrantAddress: "Số 10 Chùa Láng, Phường Láng, Thành phố Hà Nội, Việt Nam",
             registrantDoc: "ResidenceCard_Petrov.pdf",
             regCase: "Đăng ký lần đầu",
             firstRegNo: "1505156441",
@@ -1066,7 +1066,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Người không quốc tịch",
                     name: "Ivan Petrov",
                     paperNo: "TR-998877",
-                    address: "Số 10 Chùa Láng, Quận Đống Đa, TP. Hà Nội, Việt Nam",
+                    address: "Số 10 Chùa Láng, Phường Láng, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -1075,7 +1075,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức",
                     paperNo: "0100112437",
                     name: "NGÂN HÀNG TMCP FPT (FPT BANK)",
-                    address: "Số 17 Duy Tân, Quận Cầu Giấy, TP. Hà Nội, Việt Nam",
+                    address: "Số 17 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -1105,7 +1105,7 @@ document.addEventListener('DOMContentLoaded', function () {
         description: "Đăng ký biện pháp bảo đảm lần đầu xe ô tô BMW X5",
         data: {
             registrantName: "Global Investment Group",
-            registrantAddress: "Tòa nhà Keangnam, Mễ Trì, Quận Nam Từ Liêm, TP. Hà Nội, Việt Nam",
+            registrantAddress: "Tòa nhà Keangnam, Phường Yên Hòa, Thành phố Hà Nội, Việt Nam",
             registrantDoc: "GPDT_Global.pdf",
             regCase: "Đăng ký lần đầu",
             firstRegNo: "1505156442",
@@ -1125,7 +1125,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức nước ngoài",
                     name: "Global Investment Group",
                     paperNo: "INVEST-8899",
-                    address: "Tòa nhà Keangnam, Mễ Trì, Quận Nam Từ Liêm, TP. Hà Nội, Việt Nam",
+                    address: "Tòa nhà Keangnam, Phường Yên Hòa, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -1134,7 +1134,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức",
                     paperNo: "0100112437",
                     name: "NGÂN HÀNG TMCP FPT (FPT BANK)",
-                    address: "Số 17 Duy Tân, Quận Cầu Giấy, TP. Hà Nội, Việt Nam",
+                    address: "Số 17 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -1164,7 +1164,7 @@ document.addEventListener('DOMContentLoaded', function () {
         description: "Đăng ký biện pháp bảo đảm lần đầu xe tải Suzuki Carry",
         data: {
             registrantName: "Hợp tác xã Nông nghiệp Quyết Thắng",
-            registrantAddress: "Thôn Quyết Thắng, Xã Ba Vì, Huyện Ba Vì, Hà Nội, Việt Nam",
+            registrantAddress: "Thôn Quyết Thắng, Xã Ba Vì, Thành phố Hà Nội, Việt Nam",
             registrantDoc: "QDTL_QuyetThang.pdf",
             regCase: "Đăng ký lần đầu",
             firstRegNo: "1505156443",
@@ -1184,7 +1184,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức khác",
                     name: "Hợp tác xã Nông nghiệp Quyết Thắng",
                     paperNo: "HTX-556677",
-                    address: "Thôn Quyết Thắng, Xã Ba Vì, Huyện Ba Vì, Hà Nội, Việt Nam",
+                    address: "Thôn Quyết Thắng, Xã Ba Vì, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -1193,7 +1193,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     typeName: "Tổ chức",
                     paperNo: "0100112437",
                     name: "NGÂN HÀNG TMCP FPT (FPT BANK)",
-                    address: "Số 17 Duy Tân, Quận Cầu Giấy, TP. Hà Nội, Việt Nam",
+                    address: "Số 17 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -1450,7 +1450,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 nodeId: node.id,
                 data: {
                     registrantName: matchedProfile.customer,
-                    registrantAddress: "Số 25 Trần Hưng Đạo, Quận Hoàn Kiếm, TP. Hà Nội, Việt Nam",
+                    registrantAddress: "Số 25 Trần Hưng Đạo, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam",
                     registrantDoc: `Giay_dang_ky_${matchedProfile.id}.pdf`,
                     regCase: node.title,
                     firstRegNo: matchedProfile.id,
@@ -1471,7 +1471,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             typeName: "Tổ chức trong nước",
                             name: matchedProfile.customer,
                             paperNo: matchedProfile.customerId || "0102030405",
-                            address: "Số 25 Trần Hưng Đạo, Quận Hoàn Kiếm, TP. Hà Nội, Việt Nam",
+                            address: "Số 25 Trần Hưng Đạo, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam",
                             status: "Không thay đổi"
                         }
                     ],
@@ -1480,7 +1480,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             typeName: "Tổ chức",
                             paperNo: "0100112437",
                             name: matchedProfile.mortgagee,
-                            address: "Số 17 Duy Tân, Quận Cầu Giấy, TP. Hà Nội, Việt Nam",
+                            address: "Số 17 Duy Tân, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam",
                             status: "Không thay đổi"
                         }
                     ],
@@ -1973,10 +1973,14 @@ document.addEventListener('DOMContentLoaded', function () {
             const isDeleteAssetNotice = isDeleteAssetNoticeNode(node);
 
             // Determine if the node is Xóa/Hủy/Giải chấp
-            const isRemoved = node.title.toLowerCase().includes("xóa") || 
-                              node.title.toLowerCase().includes("hủy") || 
+            // Trạng thái tài sản theo [BR-DK-039]: Khôi phục hủy -> "Đang bảo đảm"; Hủy đăng ký -> "Đã hủy"; Xóa đăng ký -> "Đã giải chấp"
+            const nodeText = `${node.title || ''} ${node.label || ''}`.toLowerCase();
+            const isRestoreNode = nodeText.includes("khôi phục");
+            const isNoticeNode = nodeText.includes("thông báo xử lý");
+            const isCancelNode = !isRestoreNode && (nodeText.includes("hủy") || !!(node.data && node.data.hasCancelReg));
+            const isRemoved = !isRestoreNode && !isNoticeNode && !isCancelNode && (nodeText.includes("xóa") ||
                               node.statusText === "Đã giải chấp" ||
-                              (node.data && (node.data.hasDeRegistration || node.data.hasCancelReg));
+                              !!(node.data && node.data.hasDeRegistration));
 
             if (isAssetNotice) {
                 // Loại hình giao dịch giữ theo hồ sơ BPBĐ gốc (chỉ gồm Biện pháp bảo đảm / Hợp đồng)
@@ -2003,7 +2007,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const removedIds = isChangeAssetNotice ? [2] : [];
                 baseAssets.forEach(asset => {
                     asset.selectedForProcessing = selectedIds.includes(asset.id);
-                    asset.status = asset.selectedForProcessing ? "Được chọn xử lý" : "Không chọn xử lý";
+                    // Tài sản thuộc thông báo: "Đang xử lý tài sản"; Xóa thông báo: tài sản trở lại "Đang bảo đảm"
+                    asset.status = asset.selectedForProcessing && !isDeleteAssetNotice ? "Đang xử lý tài sản" : "Đang bảo đảm";
                     if (isChangeAssetNotice && asset.id === 1) {
                         asset.prevSelectedForProcessing = true;
                     }
@@ -2017,6 +2022,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         asset.status = "Rút khỏi thông báo";
                     }
                 });
+            } else if (isCancelNode) {
+                baseAssets.forEach(a => a.status = "Đã hủy");
             } else if (isRemoved) {
                 baseAssets.forEach(a => a.status = "Đã giải chấp");
             } else if (node.title.toLowerCase().includes("thay đổi") || node.label.toLowerCase().includes("thay đổi") || node.version > 1) {
@@ -2560,7 +2567,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (party.status === 'Bổ sung mới') {
                     rowClass = 'row-added';
                     statusTag = '<span class="table-status-tag tag-added"><i class="fa-solid fa-plus"></i> Bổ sung mới</span>';
-                    addListSummaryRow(isContract ? 'Bên bảo đảm' : 'Bên bảo đảm', party.name, 'Thêm mới', '-', `${party.name} (${party.typeName})`);
+                    addListSummaryRow(isContract ? 'Bên bảo đảm' : 'Bên bảo đảm', party.name, 'Bổ sung mới', '-', `${party.name} (${party.typeName})`);
                 } else if (party.status === 'Rút bớt') {
                     rowClass = 'row-removed';
                     statusTag = '<span class="table-status-tag tag-removed"><i class="fa-solid fa-minus"></i> Rút bớt</span>';
@@ -2591,7 +2598,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                         </td>
                     `;
-                    addListSummaryRow('Bên bảo đảm', 'Tên chủ thể', 'Chỉnh sửa', party.prevName, party.name);
+                    addListSummaryRow('Bên bảo đảm', 'Tên chủ thể', 'Sửa thông tin', party.prevName, party.name);
                 }
                 
                 if (party.prevAddress && party.prevAddress !== party.address) {
@@ -2604,7 +2611,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                         </td>
                     `;
-                    addListSummaryRow('Bên bảo đảm', 'Địa chỉ chủ thể', 'Chỉnh sửa', party.prevAddress, party.address);
+                    addListSummaryRow('Bên bảo đảm', 'Địa chỉ chủ thể', 'Sửa thông tin', party.prevAddress, party.address);
                 }
             }
 
@@ -2631,7 +2638,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (party.status === 'Bổ sung mới') {
                     rowClass = 'row-added';
                     statusTag = '<span class="table-status-tag tag-added"><i class="fa-solid fa-plus"></i> Bổ sung mới</span>';
-                    addListSummaryRow(isContract ? 'Bên nhận bảo đảm' : 'Bên nhận bảo đảm', party.name, 'Thêm mới', '-', party.name);
+                    addListSummaryRow(isContract ? 'Bên nhận bảo đảm' : 'Bên nhận bảo đảm', party.name, 'Bổ sung mới', '-', party.name);
                 } else if (party.status === 'Rút bớt') {
                     rowClass = 'row-removed';
                     statusTag = '<span class="table-status-tag tag-removed"><i class="fa-solid fa-minus"></i> Rút bớt</span>';
@@ -2662,7 +2669,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                         </td>
                     `;
-                    addListSummaryRow('Bên nhận bảo đảm', 'Tên chủ thể', 'Chỉnh sửa', party.prevName, party.name);
+                    addListSummaryRow('Bên nhận bảo đảm', 'Tên chủ thể', 'Sửa thông tin', party.prevName, party.name);
                 }
                 
                 if (party.prevAddress && party.prevAddress !== party.address) {
@@ -2675,7 +2682,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                         </td>
                     `;
-                    addListSummaryRow('Bên nhận bảo đảm', 'Địa chỉ chủ thể', 'Chỉnh sửa', party.prevAddress, party.address);
+                    addListSummaryRow('Bên nhận bảo đảm', 'Địa chỉ chủ thể', 'Sửa thông tin', party.prevAddress, party.address);
                 }
             }
 
@@ -2708,7 +2715,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const isDeleteRegistrationView = current.label === 'Xóa đăng ký';
         const assetStatusBadge = (asset) => {
             if (!showAssetChanges && !isNoticeView) return '';
-            if (asset.status === 'Được chọn xử lý') return '';
             if (asset.status === 'Bổ sung xử lý') return '<span class="table-status-tag tag-added"><i class="fa-solid fa-plus"></i> Bổ sung xử lý</span>';
             if (asset.status === 'Rút khỏi thông báo') return '<span class="table-status-tag tag-removed"><i class="fa-solid fa-minus"></i> Rút khỏi thông báo</span>';
             if (asset.status === 'Bổ sung mới') return '<span class="table-status-tag tag-added"><i class="fa-solid fa-plus"></i> Bổ sung mới</span>';
@@ -2719,7 +2725,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             if (asset.status === 'Đã hủy') return '<span class="table-status-tag tag-removed"><i class="fa-solid fa-ban"></i> Đã hủy</span>';
             if (asset.status === 'Sửa thông tin') return '<span class="table-status-tag tag-modified"><i class="fa-solid fa-pen"></i> Sửa thông tin</span>';
-            if (asset.status === 'Đang xử lý') return '<span class="table-status-tag tag-processing">Đang xử lý</span>';
+            if (asset.status === 'Đang xử lý tài sản') return '<span class="table-status-tag tag-processing">Đang xử lý tài sản</span>';
+            if (asset.status === 'Rút bớt') return '<span class="table-status-tag tag-removed"><i class="fa-solid fa-minus"></i> Rút bớt</span>';
             return '';
         };
 
@@ -2786,24 +2793,24 @@ document.addEventListener('DOMContentLoaded', function () {
                     : bucket === 'inventory' ? asset.brandColor
                     : `${asset.name} (${asset.brandColor})`;
                 if (asset.status === 'Bổ sung mới') {
-                    addListSummaryRow('Tài sản bảo đảm', summaryObject, 'Thêm mới', '-', summaryValue);
-                } else if (asset.status === 'Đã giải chấp' || asset.status === 'Đã hủy') {
+                    addListSummaryRow('Tài sản bảo đảm', summaryObject, 'Bổ sung mới', '-', summaryValue);
+                } else if (asset.status === 'Rút bớt' || asset.status === 'Đã giải chấp' || asset.status === 'Đã hủy') {
                     addListSummaryRow('Tài sản bảo đảm', summaryObject, 'Rút bớt', summaryValue, '-');
                 } else if (asset.status === 'Sửa thông tin' && isDescBucket) {
                     const prevDesc = joinDesc(asset.prevName || asset.name, asset.prevBrandColor || asset.brandColor);
                     const currDesc = joinDesc(asset.name, asset.brandColor);
-                    if (prevDesc !== currDesc) addListSummaryRow('Tài sản bảo đảm', 'Mô tả', 'Chỉnh sửa', prevDesc, currDesc);
+                    if (prevDesc !== currDesc) addListSummaryRow('Tài sản bảo đảm', 'Mô tả', 'Sửa thông tin', prevDesc, currDesc);
                 } else if (asset.status === 'Sửa thông tin') {
                     if (asset.prevName && asset.prevName !== asset.name && bucket !== 'inventory') {
                         const nameLabel = { road: 'Tên phương tiện', vehicle: 'Tên phương tiện, nhãn hiệu', rights: 'Tên quyền' }[bucket] || 'Tên tài sản';
-                        addListSummaryRow('Tài sản bảo đảm', nameLabel, 'Chỉnh sửa', asset.prevName, asset.name);
+                        addListSummaryRow('Tài sản bảo đảm', nameLabel, 'Sửa thông tin', asset.prevName, asset.name);
                     }
                     if (asset.prevBrandColor && asset.prevBrandColor !== asset.brandColor) {
                         const detailLabel = { road: 'Nhãn hiệu, màu sơn', vehicle: 'Tên phương tiện, nhãn hiệu', rights: 'Căn cứ phát sinh quyền', inventory: 'Giá trị hàng hóa/Tên, loại hàng hóa' }[getAssetBucket(asset)] || 'Mô tả';
-                        addListSummaryRow('Tài sản bảo đảm', detailLabel, 'Chỉnh sửa', asset.prevBrandColor, asset.brandColor);
+                        addListSummaryRow('Tài sản bảo đảm', detailLabel, 'Sửa thông tin', asset.prevBrandColor, asset.brandColor);
                     }
                     if (asset.prevFrameNo && asset.prevFrameNo !== asset.frameNo) {
-                        addListSummaryRow('Tài sản bảo đảm', 'Số khung', 'Chỉnh sửa', asset.prevFrameNo, asset.frameNo);
+                        addListSummaryRow('Tài sản bảo đảm', 'Số khung', 'Sửa thông tin', asset.prevFrameNo, asset.frameNo);
                     }
                 }
             }
@@ -2816,7 +2823,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 currentProcessingInfo.time !== previousProcessingInfo.time ||
                 currentProcessingInfo.location !== previousProcessingInfo.location
             );
-            const hasChange = group.items.some(asset => ['Bổ sung mới', 'Đã giải chấp', 'Đã hủy', 'Sửa thông tin', 'Bổ sung xử lý', 'Rút khỏi thông báo'].includes(asset.status)) || hasProcessingChange;
+            const hasChange = group.items.some(asset => ['Bổ sung mới', 'Rút bớt', 'Đã giải chấp', 'Đã hủy', 'Sửa thông tin', 'Bổ sung xử lý', 'Rút khỏi thông báo'].includes(asset.status)) || hasProcessingChange;
             const hiddenClass = diffToggle.checked && !hasChange ? ' ucps-asset-type-hidden' : '';
             return `
                 <div class="ucps-review-asset-block${hiddenClass}" data-asset-group="${groupKey}" data-has-change="${hasChange}">
@@ -3164,6 +3171,7 @@ document.addEventListener('DOMContentLoaded', function () {
         assetRows.forEach(row => {
             const status = row.getAttribute('data-status');
             const isChange = status === 'Bổ sung mới' ||
+                status === 'Rút bớt' ||
                 status === 'Đã giải chấp' ||
                 status === 'Đã hủy' ||
                 status === 'Sửa thông tin' ||
@@ -3345,7 +3353,7 @@ document.addEventListener('DOMContentLoaded', function () {
             ].some(label => title.includes(normalize(label)));
             const rootDescendants = context ? (context.rootDescendants || []) : [];
             const itemDescendants = context ? (context.itemDescendants || []) : [];
-            const activeStatuses = ['Lưu nháp', 'Chờ thanh toán', 'Chờ duyệt', 'Duyệt chờ ký', 'Chờ ký', 'Sai lệch thanh toán'].map(normalize);
+            const activeStatuses = ['Chờ thanh toán', 'Sai lệch thanh toán', 'Chờ duyệt', 'Duyệt chờ ký', 'Chờ ký', 'Bị trả lại'] /* Trạng thái đang xử lý theo [BR-DK-022] */.map(normalize);
             const isActiveStatus = (item) => activeStatuses.includes(normalize(item.status));
             const hasType = (item, keyword) => normalize(item.type).includes(normalize(keyword));
             const isBlockingDeleteRegistration = (item) =>
@@ -3368,6 +3376,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const hasBlockingDeleteRegistration = rootDescendants.some(isBlockingDeleteRegistration);
             const hasActiveChangeNotice = itemDescendants.some(item => hasType(item, 'Thay đổi thông báo') && isActiveStatus(item));
             const hasAnyDeleteNotice = itemDescendants.some(item => hasType(item, 'Xóa') && hasType(item, 'Thông báo'));
+            // Hồ sơ liên quan đang xử lý theo [BR-DK-022]: mọi Phiếu Đăng ký thay đổi, Xóa đăng ký, Thông báo xử lý (lần đầu/thay đổi/xóa) của cùng hồ sơ gốc
+            const isRelatedPhieu = (c) => hasType(c, 'Đăng ký thay đổi') || hasType(c, 'Xóa đăng ký') || hasType(c, 'Thông báo xử lý') || hasType(c, 'Thay đổi thông báo') || hasType(c, 'Xóa thông báo');
+            const hasActiveRelated = rootDescendants.some(c => isRelatedPhieu(c) && isActiveStatus(c));
+            const hasCompletedDeleteRegistration = rootDescendants.some(c => hasType(c, 'Xóa đăng ký') && !hasType(c, 'Thông báo') && normalize(c.status) === normalize('Hoàn thành'));
 
             const primaryButtons = [];
             const otherActions = [];
@@ -3398,22 +3410,22 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             if (isRootFirstRegistration) {
-                if (!hasActiveChangeRegistration) {
+                if (!hasActiveRelated && !hasCompletedDeleteRegistration) {
                     addOtherAction('Đăng ký thay đổi', 'change-registration', 'fa-solid fa-file-pen');
                 }
-                if (!hasAnyAssetNotice && !hasBlockingDeleteRegistration) {
+                if (!hasAnyAssetNotice && !hasActiveRelated && !hasCompletedDeleteRegistration) {
                     addOtherAction('Thông báo xử lý tài sản', 'asset-disposal', 'fa-solid fa-bullhorn');
                 }
-                if (!hasAnyDeleteRegistration) {
+                if (!hasActiveRelated && !hasCompletedDeleteRegistration) {
                     addOtherAction('Xóa đăng ký', 'delete-registration', 'fa-solid fa-file-circle-minus');
                 }
             }
 
             if (isFirstAssetNotice) {
-                if (!hasActiveChangeNotice) {
+                if (!hasActiveRelated && !hasAnyDeleteNotice) {
                     addOtherAction('Thay đổi thông báo', 'change-notice', 'fa-solid fa-pen-to-square');
                 }
-                if (!hasAnyDeleteNotice) {
+                if (!hasActiveRelated && !hasAnyDeleteNotice) {
                     addOtherAction('Xóa thông báo', 'delete-notice', 'fa-solid fa-trash-can');
                 }
             }
@@ -3569,7 +3581,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     break;
                 case 'asset-disposal':
                     if (registeredDetailContext?.rootDescendants) {
-                        const activeStatuses = ['Lưu nháp', 'Chờ thanh toán', 'Chờ duyệt', 'Duyệt chờ ký', 'Chờ ký', 'Sai lệch thanh toán'].map(normalize);
+                        const activeStatuses = ['Chờ thanh toán', 'Sai lệch thanh toán', 'Chờ duyệt', 'Duyệt chờ ký', 'Chờ ký', 'Bị trả lại'] /* Trạng thái đang xử lý theo [BR-DK-022] */.map(normalize);
                         const hasBlockingDeleteRegistration = registeredDetailContext.rootDescendants.some(item => {
                             const typeNorm = normalize(item.type);
                             const statusNorm = normalize(item.status);

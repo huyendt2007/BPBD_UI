@@ -44,7 +44,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     name: "Nguyễn Văn Nam",
                     paperType: "CCCD",
                     paperNo: "001088012345",
-                    address: "Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Quận Hoàn Kiếm, Hà Nội",
+                    country: "Việt Nam",
+                    province: "Thành phố Hà Nội",
+                    ward: "Phường Cửa Nam",
+                    address: "Số 15 Lý Thường Kiệt",
                     status: "Không thay đổi"
                 },
                 {
@@ -52,7 +55,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     name: "Trần Thị Bé",
                     paperType: "CCCD",
                     paperNo: "002095067890",
-                    address: "Số 88 Giải Phóng, Phường Phương Mai, Quận Đống Đa, Hà Nội",
+                    country: "Việt Nam",
+                    province: "Thành phố Hà Nội",
+                    ward: "Phường Đống Đa",
+                    address: "Số 88 Giải Phóng",
                     status: "Không thay đổi"
                 }
             ],
@@ -61,7 +67,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     name: "NGÂN HÀNG TMCP FPT",
                     country: "Việt Nam",
                     province: "Thành phố Hà Nội",
-                    address: "Số 17 Duy Tân, Quận Cầu Giấy, Hà Nội",
+                    ward: "Phường Cầu Giấy",
+                    address: "Số 17 Duy Tân",
                     status: "Không thay đổi"
                 }
             ],
@@ -168,6 +175,13 @@ document.addEventListener('DOMContentLoaded', function () {
         baselineData = defaultMock;
     }
 
+    // Hồ sơ đã Hủy đăng ký một phần: tài sản "Đã hủy" vẫn hiển thị nhưng không thuộc phạm vi xóa đăng ký [BR-DK-040]
+    if (baselineData && localStorage.getItem('xoaPartialCancel') === '1') {
+        const huyAsset = (baselineData.assets || []).filter(a => a.type === 'sokhung')[1] || (baselineData.assets || []).find(a => a.type === 'tauca');
+        if (huyAsset) huyAsset.status = 'Đã hủy';
+    }
+
+
     // 2. DOM Elements
     const refRegNumInput = document.getElementById('refRegNum');
     const refRegDateInput = document.getElementById('refRegDate');
@@ -266,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     <td>${typeText}</td>
                     <td>${party.paperNo}</td>
                     <td style="font-weight: 600;">${party.name}</td>
-                    <td>${party.address}</td>
+                    <td>${formatPartyAddress(party)}</td>
                 `;
                 securingPartiesBody.appendChild(tr);
             });
@@ -281,7 +295,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (baselineData.securedParties && baselineData.securedParties.length > 0) {
             baselineData.securedParties.forEach((party, index) => {
                 const tr = document.createElement('tr');
-                const fullAddress = `${party.address || ''} - ${party.province || ''} - ${party.country || ''}`.replace(/^[ \-]+|[ \-]+$/g, '').replace(/ -  - /g, ' - ');
+                // Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia (bỏ Phường/Xã với địa chỉ nước ngoài)
+                const fullAddress = formatPartyAddress(party);
                 tr.innerHTML = `
                     <td style="text-align: center; font-weight: 500;">${index + 1}</td>
                     <td style="font-weight: 600;">${party.name}</td>
@@ -314,11 +329,17 @@ document.addEventListener('DOMContentLoaded', function () {
         `;
     }
 
+    // Nhãn [Đã hủy]: tài sản đã bị hủy đăng ký, Checkbox khóa, không thuộc phạm vi xóa đăng ký
+    const huyTag = asset => asset.status === 'Đã hủy'
+        ? ' <span style="display:inline-block;margin-left:6px;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:700;color:#B91C1C;background:#FEF2F2;border:1px solid #FCA5A5" title="Tài sản đã bị hủy đăng ký, không thuộc phạm vi xóa đăng ký">[Đã hủy]</span>' : '';
+    const huyRow = asset => asset.status === 'Đã hủy' ? ' style="opacity:.65;background:#FEF2F2"' : '';
+
+
     function renderVehicleFrameAssets(assets) {
         const rows = assets.map((asset, index) => `
-            <tr>
+            <tr${huyRow(asset)}>
                 <td style="text-align: center; font-weight: 500;">${index + 1}</td>
-                <td class="asset-text-cell" style="font-weight: 600;">${asset.name || '---'}</td>
+                <td class="asset-text-cell" style="font-weight: 600;">${asset.name || '---'}${huyTag(asset)}</td>
                 <td class="asset-text-cell">${asset.brandColor || '---'}</td>
                 <td class="asset-text-cell" style="font-family: monospace;">${asset.frameNo || '---'}</td>
                 <td class="asset-text-cell">${asset.engineNo || '---'}</td>
@@ -347,9 +368,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function renderSpecialVehicleAssets(assets) {
         const rows = assets.map((asset, index) => `
-            <tr>
+            <tr${huyRow(asset)}>
                 <td style="text-align: center; font-weight: 500;">${index + 1}</td>
-                <td class="asset-text-cell" style="font-weight: 600;">${asset.name || '---'}</td>
+                <td class="asset-text-cell" style="font-weight: 600;">${asset.name || '---'}${huyTag(asset)}</td>
                 <td class="asset-text-cell">${asset.brandColor || '---'}</td>
                 <td class="asset-text-cell">${asset.frameNo || '---'}</td>
                 <td class="asset-text-cell">${asset.noticeAgency || '---'}</td>
@@ -446,6 +467,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                 </div>`;
             }
+            if (asset.status === 'Đã hủy') bodyHtml = `<div style="margin-bottom:8px">${huyTag(asset)}</div>` + bodyHtml;
             html.push(createAssetTypePanel(asset.typeName || 'Tài sản bảo đảm', bodyHtml));
         });
 
@@ -488,6 +510,24 @@ document.addEventListener('DOMContentLoaded', function () {
     // 11. Xử lý tải file chứng minh
     setupFileUpload(dropzoneRepresentative, fileRepresentativeInput, representativeFileInfo, lblRepresentativeFileName, 'representative');
     setupFileUpload(dropzoneExemption, fileExemptionInput, exemptionFileInfo, lblExemptionFileName, 'exemption');
+
+
+    // Tài liệu chứng minh căn cứ xóa đăng ký: không bắt buộc [BR-DK-040]
+    const dropzoneBasis = document.getElementById('dropzoneBasis');
+    if (dropzoneBasis) {
+        const fileBasisInput = document.getElementById('fileBasis');
+        const basisFileInfo = document.getElementById('basisFileInfo');
+        const lblNoFileBasis = document.getElementById('lblNoFileBasis');
+        setupFileUpload(dropzoneBasis, fileBasisInput, basisFileInfo, document.getElementById('lblBasisFileName'), 'basis');
+        fileBasisInput.addEventListener('change', () => { if (lblNoFileBasis) lblNoFileBasis.style.display = uploadedFiles.basis ? 'none' : ''; });
+        document.getElementById('btnDeleteBasisFile').addEventListener('click', () => {
+            delete uploadedFiles.basis;
+            fileBasisInput.value = '';
+            basisFileInfo.style.display = 'none';
+            dropzoneBasis.style.display = 'flex';
+            if (lblNoFileBasis) lblNoFileBasis.style.display = '';
+        });
+    }
 
     function setupFileUpload(dropzone, fileInput, fileInfoPanel, lblFileName, fileKey) {
         // Click dropzone to select file
@@ -704,8 +744,9 @@ document.addEventListener('DOMContentLoaded', function () {
         const totalAssets = (baselineData.assets || []).map(asset => {
             return {
                 ...asset,
-                selectedForDeletion: true,
-                status: "Xóa"
+                // Tài sản "Đã hủy" không thuộc phạm vi xóa; tài sản khác chỉ chuyển "Đã giải chấp" khi Xóa đăng ký hoàn thành [BR-DK-039]
+                selectedForDeletion: asset.status !== 'Đã hủy',
+                status: asset.status === 'Đã hủy' ? 'Đã hủy' : 'Đang bảo đảm'
             };
         });
 
@@ -793,6 +834,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 });
+
+// Ghép địa chỉ "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia" từ các thành phần (bỏ Phường/Xã với địa chỉ nước ngoài);
+// dữ liệu chỉ có chuỗi địa chỉ đầy đủ (không có Quốc gia) thì giữ nguyên
+function formatPartyAddress(party) {
+    const p = party || {};
+    if (!p.country) return String(p.address || '').trim();
+    if (typeof DiaBanVN !== 'undefined') return DiaBanVN.formatAddress(p.address, p.ward, p.province, p.country);
+    const isVN = String(p.country || '').trim() === 'Việt Nam';
+    return [p.address, isVN ? p.ward : '', p.province, p.country].map(x => String(x || '').trim()).filter(Boolean).join(', ');
+}
 
 function goHome() {
     if (window.top !== window.self && typeof window.top.returnFromCustomerModule === 'function') {

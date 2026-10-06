@@ -8,7 +8,7 @@
 (function (global) {
     'use strict';
 
-    const STORE_KEY = 'cldk_demo_state_v6';   // tăng phiên bản khi đổi dữ liệu mẫu để trình duyệt nạp lại
+    const STORE_KEY = 'cldk_demo_state_v7';   // tăng phiên bản khi đổi dữ liệu mẫu để trình duyệt nạp lại
     const FLASH_KEY = 'cldk_flash_toast';
     const DRAFT_KEY_PREFIX = 'cldk_draft_preview_';
 
@@ -181,14 +181,14 @@
             soDangKy: '2300123456-TĐ1', loaiDangKy: 'Đăng ký thay đổi', trangThai: 'Hoàn thành', maKH: 'KH-00189',
             thoiDiemDangKy: '15/02/2026 10:15:30', thoiDiemHieuLuc: '15/02/2026 14:02:11',
             soDKLanDau: '2300123456', thoiDiemDKLanDau: '10/01/2026 08:30:15', vanBanKetQua: 'Van_ban_chung_nhan_2300123456-TD1.pdf',
-            nguoiYeuCau: { ten: 'Công ty Cổ phần Xây dựng và Thương mại Hà Thành', diaChi: 'Số 120 Hoàng Quốc Việt - Phường Nghĩa Đô - Thành phố Hà Nội - Việt Nam', taiLieu: 'Giay_uy_quyen_HaThanh.pdf' },
+            nguoiYeuCau: { ten: 'Công ty Cổ phần Xây dựng và Thương mại Hà Thành', diaChi: 'Số 120 Hoàng Quốc Việt, Phường Nghĩa Đô, Thành phố Hà Nội, Việt Nam', taiLieu: 'Giay_uy_quyen_HaThanh.pdf' },
             chung: { coQuan: CO_QUAN[0], loaiHinh: 'Biện pháp bảo đảm', loaiBienPhap: 'Thế chấp', loaiHopDong: '', soHopDong: 'HĐTC-2026/089/VCB-HT', ngayHieuLucHD: '14/02/2026', giaTri: '15.000.000.000', quyMo: 'Bên bảo đảm là công ty có từ 300 nhân viên hoặc nhiều hơn', chuDNNu: false, mienPhi: false, taiLieuMienPhi: '' },
             bbd: [
-                { id: 'b1', loaiChuThe: 'Tổ chức có đăng ký kinh doanh trong nước', soGiayTo: '0109887766', ten: 'Công ty Cổ phần Xây dựng và Thương mại Hà Thành', diaChi: 'Số 120 Hoàng Quốc Việt - Phường Nghĩa Đô - Thành phố Hà Nội - Việt Nam' },
-                { id: 'b2', loaiChuThe: 'Công dân Việt Nam', soGiayTo: '001085012345', ten: 'Nguyễn Hữu Thành', diaChi: 'Số 18 Trần Thái Tông - Phường Cầu Giấy - Thành phố Hà Nội - Việt Nam' }
+                { id: 'b1', loaiChuThe: 'Tổ chức có đăng ký kinh doanh trong nước', soGiayTo: '0109887766', ten: 'Công ty Cổ phần Xây dựng và Thương mại Hà Thành', diaChi: 'Số 120 Hoàng Quốc Việt, Phường Nghĩa Đô, Thành phố Hà Nội, Việt Nam' },
+                { id: 'b2', loaiChuThe: 'Công dân Việt Nam', soGiayTo: '001085012345', ten: 'Nguyễn Hữu Thành', diaChi: 'Số 18 Trần Thái Tông, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam' }
             ],
             bnbd: [
-                { id: 'n1', ten: 'Ngân hàng TMCP Ngoại thương Việt Nam - Chi nhánh Thành Công', diaChi: 'Số 11 Láng Hạ - Phường Giảng Võ - Thành phố Hà Nội - Việt Nam' }
+                { id: 'n1', ten: 'Ngân hàng TMCP Ngoại thương Việt Nam - Chi nhánh Thành Công', diaChi: 'Số 11 Láng Hạ, Phường Giảng Võ, Thành phố Hà Nội, Việt Nam' }
             ],
             taiSan: {
                 SO_KHUNG: { rows: [
@@ -203,13 +203,13 @@
             soDangKy: '2300445566', loaiDangKy: 'Đăng ký lần đầu', trangThai: 'Hoàn thành', maKH: 'KH-00203',
             thoiDiemDangKy: '20/03/2026 09:05:12', thoiDiemHieuLuc: '20/03/2026 15:40:02',
             soDKLanDau: '2300445566', thoiDiemDKLanDau: '20/03/2026 09:05:12', vanBanKetQua: 'Van_ban_chung_nhan_2300445566.pdf',
-            nguoiYeuCau: { ten: 'Công ty Cho thuê tài chính TNHH MTV Ngân hàng TMCP Công Thương Việt Nam', diaChi: 'Số 16 Phan Đình Phùng - Phường Ba Đình - Thành phố Hà Nội - Việt Nam', taiLieu: '' },
+            nguoiYeuCau: { ten: 'Công ty Cho thuê tài chính TNHH MTV Ngân hàng TMCP Công Thương Việt Nam', diaChi: 'Số 16 Phan Đình Phùng, Phường Ba Đình, Thành phố Hà Nội, Việt Nam', taiLieu: '' },
             chung: { coQuan: CO_QUAN[0], loaiHinh: 'Hợp đồng', loaiBienPhap: '', loaiHopDong: 'Hợp đồng cho thuê tài chính', soHopDong: '125/2026/HĐCTTC-VTL', ngayHieuLucHD: '18/03/2026', giaTri: '42.800.000.000', quyMo: 'Bên bảo đảm là công ty có từ 10 đến 299 nhân viên', chuDNNu: true, mienPhi: false, taiLieuMienPhi: '' },
             bbd: [
-                { id: 'b1', loaiChuThe: 'Tổ chức có đăng ký kinh doanh trong nước', soGiayTo: '0201554433', ten: 'Công ty TNHH Vận tải Thủy Nam Việt', diaChi: 'Số 25 Đà Nẵng - Phường Hải An - Thành phố Hải Phòng - Việt Nam' }
+                { id: 'b1', loaiChuThe: 'Tổ chức có đăng ký kinh doanh trong nước', soGiayTo: '0201554433', ten: 'Công ty TNHH Vận tải Thủy Nam Việt', diaChi: 'Số 25 Đà Nẵng, Phường Hải An, Thành phố Hải Phòng, Việt Nam' }
             ],
             bnbd: [
-                { id: 'n1', ten: 'Công ty Cho thuê tài chính TNHH MTV Ngân hàng TMCP Công Thương Việt Nam', diaChi: 'Số 16 Phan Đình Phùng - Phường Ba Đình - Thành phố Hà Nội - Việt Nam' }
+                { id: 'n1', ten: 'Công ty Cho thuê tài chính TNHH MTV Ngân hàng TMCP Công Thương Việt Nam', diaChi: 'Số 16 Phan Đình Phùng, Phường Ba Đình, Thành phố Hà Nội, Việt Nam' }
             ],
             taiSan: {
                 PHUONG_TIEN: { rows: [
@@ -222,13 +222,13 @@
             soDangKy: '2300776655', loaiDangKy: 'Đăng ký lần đầu', trangThai: 'Hoàn thành', maKH: 'KH-00193',
             thoiDiemDangKy: '05/04/2026 08:12:40', thoiDiemHieuLuc: '05/04/2026 10:30:00',
             soDKLanDau: '2300776655', thoiDiemDKLanDau: '05/04/2026 08:12:40', vanBanKetQua: 'Van_ban_chung_nhan_2300776655.pdf',
-            nguoiYeuCau: { ten: 'Vũ Thị Hằng Nga', diaChi: 'Số 9 Ngõ 120 Trần Duy Hưng - Phường Yên Hòa - Thành phố Hà Nội - Việt Nam', taiLieu: '' },
+            nguoiYeuCau: { ten: 'Vũ Thị Hằng Nga', diaChi: 'Số 9 Ngõ 120 Trần Duy Hưng, Phường Yên Hòa, Thành phố Hà Nội, Việt Nam', taiLieu: '' },
             chung: { coQuan: CO_QUAN[0], loaiHinh: 'Biện pháp bảo đảm', loaiBienPhap: 'Cầm cố', loaiHopDong: '', soHopDong: '0458/2026/HĐCC-VIB', ngayHieuLucHD: '04/04/2026', giaTri: '2.300.000.000', quyMo: 'Bên bảo đảm là công ty có ít hơn 10 nhân viên', chuDNNu: false, mienPhi: false, taiLieuMienPhi: '' },
             bbd: [
-                { id: 'b1', loaiChuThe: 'Công dân Việt Nam', soGiayTo: '001190033221', ten: 'Vũ Thị Hằng Nga', diaChi: 'Số 9 Ngõ 120 Trần Duy Hưng - Phường Yên Hòa - Thành phố Hà Nội - Việt Nam' }
+                { id: 'b1', loaiChuThe: 'Công dân Việt Nam', soGiayTo: '001190033221', ten: 'Vũ Thị Hằng Nga', diaChi: 'Số 9 Ngõ 120 Trần Duy Hưng, Phường Yên Hòa, Thành phố Hà Nội, Việt Nam' }
             ],
             bnbd: [
-                { id: 'n1', ten: 'Ngân hàng TMCP Quốc tế Việt Nam (VIB) - Chi nhánh Hà Nội', diaChi: 'Số 16 Phạm Hùng - Phường Từ Liêm - Thành phố Hà Nội - Việt Nam' }
+                { id: 'n1', ten: 'Ngân hàng TMCP Quốc tế Việt Nam (VIB) - Chi nhánh Hà Nội', diaChi: 'Số 16 Phạm Hùng, Phường Từ Liêm, Thành phố Hà Nội, Việt Nam' }
             ],
             taiSan: {
                 QUYEN: { tenQuyen: 'Quyền đòi nợ phát sinh từ Hợp đồng thi công số 15/2026/HĐTC', canCu: 'Hợp đồng thi công số 15/2026/HĐTC ngày 10/01/2026 giữa Vũ Thị Hằng Nga và Công ty CP Đầu tư An Phát.' },
@@ -239,13 +239,13 @@
             soDangKy: '2300554433', loaiDangKy: 'Đăng ký lần đầu', trangThai: 'Hoàn thành', maKH: 'KH-00198',
             thoiDiemDangKy: '12/01/2026 14:20:05', thoiDiemHieuLuc: '12/01/2026 16:45:30',
             soDKLanDau: '2300554433', thoiDiemDKLanDau: '12/01/2026 14:20:05', vanBanKetQua: 'Van_ban_chung_nhan_2300554433.pdf',
-            nguoiYeuCau: { ten: 'Ngân hàng TMCP Đông Nam Á - Chi nhánh Hà Nội', diaChi: 'Số 198 Trần Quang Khải - Phường Hoàn Kiếm - Thành phố Hà Nội - Việt Nam', taiLieu: '' },
+            nguoiYeuCau: { ten: 'Ngân hàng TMCP Đông Nam Á - Chi nhánh Hà Nội', diaChi: 'Số 198 Trần Quang Khải, Phường Hoàn Kiếm, Thành phố Hà Nội, Việt Nam', taiLieu: '' },
             chung: { coQuan: CO_QUAN[0], loaiHinh: 'Biện pháp bảo đảm', loaiBienPhap: 'Thế chấp', loaiHopDong: '', soHopDong: '2026/0112/HĐTC-SEAB', ngayHieuLucHD: '11/01/2026', giaTri: '6.750.000.000', quyMo: 'Bên bảo đảm là công ty có từ 10 đến 299 nhân viên', chuDNNu: false, mienPhi: false, taiLieuMienPhi: '' },
             bbd: [
-                { id: 'b1', loaiChuThe: 'Tổ chức có đăng ký kinh doanh trong nước', soGiayTo: '0105667788', ten: 'Doanh nghiệp tư nhân Hoàng Long', diaChi: 'Số 45 Nguyễn Văn Linh - Phường Long Biên - Thành phố Hà Nội - Việt Nam' }
+                { id: 'b1', loaiChuThe: 'Tổ chức có đăng ký kinh doanh trong nước', soGiayTo: '0105667788', ten: 'Doanh nghiệp tư nhân Hoàng Long', diaChi: 'Số 45 Nguyễn Văn Linh, Phường Long Biên, Thành phố Hà Nội, Việt Nam' }
             ],
             bnbd: [
-                { id: 'n1', ten: 'Ngân hàng TMCP Đông Nam Á - Chi nhánh Hà Nội', diaChi: 'Số 198 Trần Quang Khải - Phường Hoàn Kiếm - Thành phố Hà Nội - Việt Nam' }
+                { id: 'n1', ten: 'Ngân hàng TMCP Đông Nam Á - Chi nhánh Hà Nội', diaChi: 'Số 198 Trần Quang Khải, Phường Hoàn Kiếm, Thành phố Hà Nội, Việt Nam' }
             ],
             taiSan: {
                 SO_KHUNG: { rows: [
@@ -265,13 +265,13 @@
             soDangKy: '2300332211', loaiDangKy: 'Đăng ký lần đầu', trangThai: 'Hoàn thành', maKH: 'KH-00195',
             thoiDiemDangKy: '02/02/2026 10:00:00', thoiDiemHieuLuc: '02/02/2026 11:15:20',
             soDKLanDau: '2300332211', thoiDiemDKLanDau: '02/02/2026 10:00:00', vanBanKetQua: 'Van_ban_chung_nhan_2300332211.pdf',
-            nguoiYeuCau: { ten: 'Đỗ Anh Tuấn', diaChi: 'Số 7 Phố Huế - Phường Hai Bà Trưng - Thành phố Hà Nội - Việt Nam', taiLieu: '' },
+            nguoiYeuCau: { ten: 'Đỗ Anh Tuấn', diaChi: 'Số 7 Phố Huế, Phường Hai Bà Trưng, Thành phố Hà Nội, Việt Nam', taiLieu: '' },
             chung: { coQuan: CO_QUAN[0], loaiHinh: 'Biện pháp bảo đảm', loaiBienPhap: 'Thế chấp', loaiHopDong: '', soHopDong: '0099/2026/HĐTC-SHB', ngayHieuLucHD: '01/02/2026', giaTri: '1.850.000.000', quyMo: 'Bên bảo đảm là công ty có ít hơn 10 nhân viên', chuDNNu: false, mienPhi: false, taiLieuMienPhi: '' },
             bbd: [
-                { id: 'b1', loaiChuThe: 'Công dân Việt Nam', soGiayTo: '001088004455', ten: 'Đỗ Anh Tuấn', diaChi: 'Số 7 Phố Huế - Phường Hai Bà Trưng - Thành phố Hà Nội - Việt Nam' }
+                { id: 'b1', loaiChuThe: 'Công dân Việt Nam', soGiayTo: '001088004455', ten: 'Đỗ Anh Tuấn', diaChi: 'Số 7 Phố Huế, Phường Hai Bà Trưng, Thành phố Hà Nội, Việt Nam' }
             ],
             bnbd: [
-                { id: 'n1', ten: 'Ngân hàng TMCP Sài Gòn - Hà Nội (SHB) - Chi nhánh Hà Nội', diaChi: 'Số 77 Trần Hưng Đạo - Phường Cửa Nam - Thành phố Hà Nội - Việt Nam' }
+                { id: 'n1', ten: 'Ngân hàng TMCP Sài Gòn - Hà Nội (SHB) - Chi nhánh Hà Nội', diaChi: 'Số 77 Trần Hưng Đạo, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam' }
             ],
             taiSan: {
                 SO_KHUNG: { rows: [
@@ -301,10 +301,10 @@
                 soDangKy: '2200554433', loaiDangKy: 'Đăng ký lần đầu', trangThai: 'Hoàn thành', maKH: 'KH-00192',
                 thoiDiemDangKy: '15/10/2025 08:40:00', thoiDiemHieuLuc: '15/10/2025 10:10:10',
                 soDKLanDau: '2200554433', thoiDiemDKLanDau: '15/10/2025 08:40:00', vanBanKetQua: 'Van_ban_chung_nhan_2200554433.pdf',
-                nguoiYeuCau: { ten: 'Trần Văn Hoàng', diaChi: 'Số 88 Giải Phóng - Phường Bạch Mai - Thành phố Hà Nội - Việt Nam', taiLieu: '' },
+                nguoiYeuCau: { ten: 'Trần Văn Hoàng', diaChi: 'Số 88 Giải Phóng, Phường Bạch Mai, Thành phố Hà Nội, Việt Nam', taiLieu: '' },
                 chung: { coQuan: CO_QUAN[0], loaiHinh: 'Biện pháp bảo đảm', loaiBienPhap: 'Thế chấp', loaiHopDong: '', soHopDong: 'HĐTC-2025/099/TCB', ngayHieuLucHD: '14/10/2025', giaTri: '3.200.000.000', quyMo: 'Bên bảo đảm là công ty có ít hơn 10 nhân viên', chuDNNu: false, mienPhi: false, taiLieuMienPhi: '' },
-                bbd: [{ id: 'b1', loaiChuThe: 'Công dân Việt Nam', soGiayTo: '036085002233', ten: 'Trần Văn Hoàng', diaChi: 'Số 88 Giải Phóng - Phường Bạch Mai - Thành phố Hà Nội - Việt Nam' }],
-                bnbd: [{ id: 'n1', ten: 'Ngân hàng TMCP Kỹ Thương Việt Nam - Chi nhánh Hai Bà Trưng', diaChi: 'Số 191 Bà Triệu - Phường Hai Bà Trưng - Thành phố Hà Nội - Việt Nam' }],
+                bbd: [{ id: 'b1', loaiChuThe: 'Công dân Việt Nam', soGiayTo: '036085002233', ten: 'Trần Văn Hoàng', diaChi: 'Số 88 Giải Phóng, Phường Bạch Mai, Thành phố Hà Nội, Việt Nam' }],
+                bnbd: [{ id: 'n1', ten: 'Ngân hàng TMCP Kỹ Thương Việt Nam - Chi nhánh Hai Bà Trưng', diaChi: 'Số 191 Bà Triệu, Phường Hai Bà Trưng, Thành phố Hà Nội, Việt Nam' }],
                 taiSan: {
                     SO_KHUNG: { rows: [
                         { id: 'sk1', tenPT: 'Ô tô con', nhanHieu: 'Ford Everest, màu trắng', soKhung: 'MNCLS4D10PW998877', soMay: 'YN2S-998877', bienSo: '30G-666.88' },
@@ -328,10 +328,10 @@
                 soDangKy: '2100889900', loaiDangKy: 'Đăng ký lần đầu', trangThai: 'Hoàn thành', maKH: 'KH-00196',
                 thoiDiemDangKy: '08/06/2025 09:20:00', thoiDiemHieuLuc: '08/06/2025 11:00:00',
                 soDKLanDau: '2100889900', thoiDiemDKLanDau: '08/06/2025 09:20:00', vanBanKetQua: 'Van_ban_chung_nhan_2100889900.pdf',
-                nguoiYeuCau: { ten: 'Ngân hàng TMCP Hàng Hải Việt Nam (MSB)', diaChi: 'Số 54A Nguyễn Chí Thanh - Phường Láng - Thành phố Hà Nội - Việt Nam', taiLieu: '' },
+                nguoiYeuCau: { ten: 'Ngân hàng TMCP Hàng Hải Việt Nam (MSB)', diaChi: 'Số 54A Nguyễn Chí Thanh, Phường Láng, Thành phố Hà Nội, Việt Nam', taiLieu: '' },
                 chung: { coQuan: CO_QUAN[0], loaiHinh: 'Biện pháp bảo đảm', loaiBienPhap: 'Thế chấp', loaiHopDong: '', soHopDong: '0607/2025/HĐTC-MSB', ngayHieuLucHD: '07/06/2025', giaTri: '25.000.000.000', quyMo: 'Bên bảo đảm là công ty có từ 300 nhân viên hoặc nhiều hơn', chuDNNu: false, mienPhi: false, taiLieuMienPhi: '' },
-                bbd: [{ id: 'b1', loaiChuThe: 'Tổ chức có đăng ký kinh doanh trong nước', soGiayTo: '0200998877', ten: 'Công ty TNHH Vận tải Biển Đông', diaChi: 'Số 3 Lê Thánh Tông - Phường Gia Viên - Thành phố Hải Phòng - Việt Nam' }],
-                bnbd: [{ id: 'n1', ten: 'Ngân hàng TMCP Hàng Hải Việt Nam (MSB) - Chi nhánh Hải Phòng', diaChi: 'Số 5 Nguyễn Tri Phương - Phường Hồng Bàng - Thành phố Hải Phòng - Việt Nam' }],
+                bbd: [{ id: 'b1', loaiChuThe: 'Tổ chức có đăng ký kinh doanh trong nước', soGiayTo: '0200998877', ten: 'Công ty TNHH Vận tải Biển Đông', diaChi: 'Số 3 Lê Thánh Tông, Phường Gia Viên, Thành phố Hải Phòng, Việt Nam' }],
+                bnbd: [{ id: 'n1', ten: 'Ngân hàng TMCP Hàng Hải Việt Nam (MSB) - Chi nhánh Hải Phòng', diaChi: 'Số 5 Nguyễn Tri Phương, Phường Hồng Bàng, Thành phố Hải Phòng, Việt Nam' }],
                 taiSan: {
                     PHUONG_TIEN: { rows: [
                         { id: 'pt1', ten: 'Tàu Biển Đông Star, vỏ thép', chu: 'Công ty TNHH Vận tải Biển Đông', soDK: 'HP-5501', coQuan: 'Chi cục Hàng hải Hải Phòng', cap: 'VR-SB' },
@@ -372,8 +372,8 @@
         const afterA = buildChinhLyAfter(hsA, a => {
             a.chung.giaTri = '15.500.000.000';
             a.bbd[1].soGiayTo = '001085012354';
-            a.bbd[1].diaChi = 'Số 18A Trần Thái Tông - Phường Cầu Giấy - Thành phố Hà Nội - Việt Nam';
-            a.bnbd.push({ id: 'n2', ten: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Hà Thành', diaChi: 'Số 74 Thợ Nhuộm - Phường Cửa Nam - Thành phố Hà Nội - Việt Nam' });
+            a.bbd[1].diaChi = 'Số 18A Trần Thái Tông, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam';
+            a.bnbd.push({ id: 'n2', ten: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Hà Thành', diaChi: 'Số 74 Thợ Nhuộm, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam' });
             a.taiSan.SO_KHUNG.rows[0].bienSo = '30K-123.54';
             a.taiSan.SO_KHUNG.rows.splice(2, 1);
             a.taiSan.SO_KHUNG.rows.push({ id: 'sk4', tenPT: 'Ô tô con', nhanHieu: 'Toyota Vios, màu bạc', soKhung: 'MR0EX8CD1J0451133', soMay: '2NR-451133', bienSo: '30G-456.87' });
@@ -956,7 +956,7 @@
     const TAG = {
         modified: '<span class="cl-tag cl-tag-modified"><i class="fa-solid fa-pen"></i> Sửa thông tin</span>',
         added: '<span class="cl-tag cl-tag-added"><i class="fa-solid fa-plus"></i> Bổ sung mới</span>',
-        removed: '<span class="cl-tag cl-tag-removed"><i class="fa-solid fa-minus"></i> Đã xóa</span>'
+        removed: '<span class="cl-tag cl-tag-removed"><i class="fa-solid fa-minus"></i> Rút bớt</span>'
     };
     function histIcon(oldVal) {
         return `<span class="cl-hist"><i class="fa-solid fa-clock-rotate-left"></i><span class="cl-hist-pop">Giá trị trước chỉnh lý: ${esc(oldVal === '' || oldVal === null || oldVal === undefined ? '(Để trống)' : oldVal)}</span></span>`;

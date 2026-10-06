@@ -1,4 +1,4 @@
-﻿/**
+/**
  * tra_cuu_goc.js
  * Xử lý nghiệp vụ tra cứu hồ sơ gốc và hiển thị Timeline Baseline cho UC0025
  */
@@ -54,7 +54,10 @@ function generateTimeline(regNum, info) {
                         name: info.name,
                         paperType: "CCCD",
                         paperNo: "001088012345",
-                        address: "Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Quận Hoàn Kiếm, Hà Nội",
+                        country: "Việt Nam",
+                        province: "Thành phố Hà Nội",
+                        ward: "Phường Cửa Nam",
+                        address: "Số 15 Lý Thường Kiệt",
                         status: "Không thay đổi"
                     },
                     {
@@ -62,7 +65,10 @@ function generateTimeline(regNum, info) {
                         name: "Trần Thị Bé",
                         paperType: "CCCD",
                         paperNo: "002095067890",
-                        address: "Số 88 Giải Phóng, Phường Phương Mai, Quận Đống Đa, Hà Nội",
+                        country: "Việt Nam",
+                        province: "Thành phố Hà Nội",
+                        ward: "Phường Đống Đa",
+                        address: "Số 88 Giải Phóng",
                         status: "Bổ sung mới"
                     }
                 ],
@@ -71,7 +77,8 @@ function generateTimeline(regNum, info) {
                         name: "NGÂN HÀNG TMCP FPT",
                         country: "Việt Nam",
                         province: "Thành phố Hà Nội",
-                        address: "Số 17 Duy Tân, Quận Cầu Giấy, Hà Nội",
+                        ward: "Phường Cầu Giấy",
+                        address: "Số 17 Duy Tân",
                         status: "Không thay đổi"
                     }
                 ],
@@ -148,7 +155,10 @@ function generateTimeline(regNum, info) {
                         name: info.name,
                         paperType: "CCCD",
                         paperNo: "001088012345",
-                        address: "Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Quận Hoàn Kiếm, Hà Nội",
+                        country: "Việt Nam",
+                        province: "Thành phố Hà Nội",
+                        ward: "Phường Cửa Nam",
+                        address: "Số 15 Lý Thường Kiệt",
                         status: "Không thay đổi"
                     }
                 ],
@@ -157,7 +167,8 @@ function generateTimeline(regNum, info) {
                         name: "NGÂN HÀNG TMCP FPT",
                         country: "Việt Nam",
                         province: "Thành phố Hà Nội",
-                        address: "Số 17 Duy Tân, Quận Cầu Giấy, Hà Nội",
+                        ward: "Phường Cầu Giấy",
+                        address: "Số 17 Duy Tân",
                         status: "Không thay đổi"
                     }
                 ],
@@ -221,7 +232,10 @@ function generateTimeline(regNum, info) {
                         name: info.name,
                         paperType: "CCCD",
                         paperNo: "001088012345",
-                        address: "Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Quận Hoàn Kiếm, Hà Nội",
+                        country: "Việt Nam",
+                        province: "Thành phố Hà Nội",
+                        ward: "Phường Cửa Nam",
+                        address: "Số 15 Lý Thường Kiệt",
                         status: "Không thay đổi"
                     }
                 ],
@@ -230,7 +244,8 @@ function generateTimeline(regNum, info) {
                         name: "NGÂN HÀNG TMCP FPT",
                         country: "Việt Nam",
                         province: "Thành phố Hà Nội",
-                        address: "Số 17 Duy Tân, Quận Cầu Giấy, Hà Nội",
+                        ward: "Phường Cầu Giấy",
+                        address: "Số 17 Duy Tân",
                         status: "Không thay đổi"
                     }
                 ],
@@ -315,10 +330,59 @@ function initPage() {
         }
     }
 
+    // Demo chips click handler: chỉ tự động điền form, người dùng tự nhấn nút để kiểm tra
+    document.querySelectorAll('.cl-demo-chip[data-reg]').forEach(chip => {
+        chip.addEventListener('click', function () {
+            const reg = this.getAttribute('data-reg') || '';
+            const pin = this.getAttribute('data-pin') || '8888';
+            regNumInput.value = reg;
+            pinNumInput.value = pin;
+
+            // Xóa lỗi cũ nếu có
+            document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            document.querySelectorAll('.error-text').forEach(el => el.remove());
+            if (errorMsg) errorMsg.style.display = 'none';
+
+            // Hiệu ứng nhấp nháy nhẹ để người dùng nhận biết dữ liệu vừa được điền
+            regNumInput.style.transition = 'background-color 0.3s';
+            pinNumInput.style.transition = 'background-color 0.3s';
+            regNumInput.style.backgroundColor = '#EFF6FF';
+            pinNumInput.style.backgroundColor = '#EFF6FF';
+            setTimeout(() => {
+                regNumInput.style.backgroundColor = 'white';
+                pinNumInput.style.backgroundColor = 'white';
+            }, 400);
+        });
+    });
+
+    // Xử lý nút mắt xem/ẩn mã PIN
+    const btnTogglePin = document.getElementById('btnTogglePin');
+    const iconTogglePin = document.getElementById('iconTogglePin');
+    if (btnTogglePin && pinNumInput) {
+        btnTogglePin.addEventListener('click', function () {
+            if (pinNumInput.type === 'password') {
+                pinNumInput.type = 'text';
+                if (iconTogglePin) {
+                    iconTogglePin.classList.remove('fa-eye');
+                    iconTogglePin.classList.add('fa-eye-slash');
+                }
+                btnTogglePin.title = 'Ẩn mã PIN';
+            } else {
+                pinNumInput.type = 'password';
+                if (iconTogglePin) {
+                    iconTogglePin.classList.remove('fa-eye-slash');
+                    iconTogglePin.classList.add('fa-eye');
+                }
+                btnTogglePin.title = 'Hiển thị mã PIN';
+            }
+            pinNumInput.focus();
+        });
+    }
+
     // Search Trigger
     btnSearch.addEventListener('click', function () {
-        const regNum = regNumInput.value.trim();
-        const pinNum = pinNumInput.value.trim();
+        let regNum = regNumInput.value.trim();
+        let pinNum = pinNumInput.value.trim();
 
         // Xóa các cảnh báo lỗi cũ
         document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
@@ -341,11 +405,30 @@ function initPage() {
 
         if (hasErrors) return;
 
-        // Custom test case for uncompleted original dossier (TH3)
-        if (regNum === '77777777') {
+        // Điều kiện hồ sơ gốc khi Đăng ký thay đổi (TH3-TH8) - giả lập theo mã demo
+        const blockCases = {
+            '77777777': "Hồ sơ gốc chưa ở trạng thái Hoàn thành. Không thể thực hiện thao tác.", // TH3 [MSG-ERR-DK-002]
+            CHUA_HT: "Hồ sơ gốc chưa ở trạng thái Hoàn thành. Không thể thực hiện thao tác.", // TH3 [MSG-ERR-DK-002]
+            LIEN_QUAN: "Tồn tại hồ sơ liên quan chưa được phê duyệt hoàn thành. Vui lòng kiểm tra lại.", // TH4 [MSG-ERR-DK-004]
+            NGAN_CHAN: "Hồ sơ gốc đang bị tạm dừng/ngăn chặn giao dịch. Không thể thực hiện thao tác.", // TH5 [MSG-ERR-DK-003]
+            DA_XOA: "Hồ sơ đã được xóa đăng ký. Không thể thực hiện thao tác.", // TH6 [MSG-ERR-DK-018]
+            DA_HUY: "Hồ sơ đã bị hủy đăng ký toàn phần. Không thể thực hiện thao tác.", // TH7 [MSG-ERR-DK-019]
+            HS_TBXL: "Số đăng ký đã nhập là số đăng ký của Thông báo xử lý tài sản bảo đảm. Vui lòng nhập Số đăng ký lần đầu của hồ sơ biện pháp bảo đảm." // TH8 [MSG-ERR-DK-021]
+        };
+        const demoCode = regNum.toUpperCase();
+        if (blockCases[demoCode]) {
             errorMsg.style.display = 'flex';
-            errorText.textContent = 'Hồ sơ gốc chưa ở trạng thái Hoàn thành. Không thể thực hiện đăng ký thay đổi.';
+            errorText.textContent = blockCases[demoCode];
             return;
+        }
+        // Trường hợp hợp lệ đặc biệt: không chặn, chỉ khóa tài sản tại MH02
+        //  - CO_TBXL: hồ sơ đang có Thông báo xử lý còn hiệu lực -> tài sản "Đang xử lý tài sản" bị khóa
+        //  - HUY_MOT_PHAN: hồ sơ bị Hủy đăng ký một phần -> tài sản "Đã hủy" chỉ đọc
+        let lockCase = '';
+        if (demoCode === 'CO_TBXL' || demoCode === 'HUY_MOT_PHAN') {
+            lockCase = demoCode;
+            regNum = '12345678';
+            pinNum = '8888';
         }
 
         // Kiểm tra khớp thông tin đăng ký trong CSDL (TH2)
@@ -356,10 +439,10 @@ function initPage() {
             return;
         }
 
-        // Kiểm tra trường hợp hồ sơ thay đổi song song (chưa hoàn thành) (TH3)
+        // TH4 (Có hồ sơ liên quan đang xử lý) [MSG-ERR-DK-004]
         if (dossierInfo.pending) {
             errorMsg.style.display = 'flex';
-            errorText.textContent = 'Hồ sơ gốc chưa ở trạng thái Hoàn thành. Không thể thực hiện đăng ký thay đổi.';
+            errorText.textContent = 'Tồn tại hồ sơ liên quan chưa được phê duyệt hoàn thành. Vui lòng kiểm tra lại.';
             return;
         }
 
@@ -368,6 +451,16 @@ function initPage() {
 
         const timelineData = generateTimeline(regNum, dossierInfo);
         const latestBaseline = timelineData[0]; // Kế thừa bản mới nhất
+
+        // Phiên bản hiện hành làm mốc so sánh: bỏ dòng đã rút bớt ở phiên bản trước, các dòng còn lại là "Không thay đổi"
+        ['securingParties', 'securedParties', 'assets'].forEach(key => {
+            latestBaseline.data[key] = (latestBaseline.data[key] || [])
+                .filter(x => x.status !== 'Rút bớt')
+                .map(x => ({ ...x, status: 'Không thay đổi' }));
+        });
+        // Trạng thái tài sản hiện hành (giả lập): khóa tài sản không được Rút bớt/Sửa thông tin
+        if (lockCase === 'CO_TBXL' && latestBaseline.data.assets[0]) latestBaseline.data.assets[0].lockState = 'Đang xử lý tài sản';
+        if (lockCase === 'HUY_MOT_PHAN' && latestBaseline.data.assets[2]) latestBaseline.data.assets[2].lockState = 'Đã hủy';
 
         localStorage.setItem('regNum', regNum);
         localStorage.setItem('pinNum', pinNum);
@@ -427,7 +520,7 @@ function initPage() {
         previewDate.textContent = node.dateOnly;
 
         previewBaoDam.innerHTML = node.data.securingParties.map(p => `<strong>${p.name}</strong> (Giấy tờ: ${p.paperType} - ${p.paperNo})`).join('<br>');
-        previewNhanBaoDam.innerHTML = node.data.securedParties.map(p => `<strong>${p.name}</strong><br>Địa chỉ: ${p.address}`).join('<br>');
+        previewNhanBaoDam.innerHTML = node.data.securedParties.map(p => `<strong>${p.name}</strong><br>Địa chỉ: ${formatPartyAddress(p)}`).join('<br>');
         previewAssetCount.textContent = node.data.assets.length + " tài sản";
 
         if (node.changesSummary && node.changesSummary.length > 0) {
@@ -460,6 +553,16 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initPage);
 } else {
     initPage();
+}
+
+// Địa chỉ đầy đủ "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia" (bỏ Phường/Xã với địa chỉ nước ngoài);
+// address lưu Địa chỉ chi tiết, ghép với các thành phần khi hiển thị; dữ liệu không có Quốc gia (đã ghép sẵn) thì giữ nguyên
+function formatPartyAddress(p) {
+    const addr = String((p && p.address) || '').trim();
+    if (!p || !p.country) return addr;
+    if (typeof DiaBanVN !== 'undefined') return DiaBanVN.formatAddress(addr, p.ward, p.province, p.country);
+    const isVN = String(p.country).trim() === 'Việt Nam';
+    return [addr, isVN ? p.ward : '', p.province, p.country].map(x => String(x || '').trim()).filter(Boolean).join(', ');
 }
 
 function goHome() {

@@ -587,6 +587,38 @@ const initApp = () => {
     document.getElementById('tc_quocgia')?.dispatchEvent(new Event('change'));
     document.getElementById('ntc_quocgia')?.dispatchEvent(new Event('change'));
 
+    // 2b. Phường/Xã (dùng chung Common/dia_ban_vn.js): chỉ hiển thị & bắt buộc khi Quốc gia = Việt Nam, lọc theo Tỉnh/Thành phố
+    // Lưu ý: setupCascadingAddress dùng chung id *_tinhthanh_select cho cả select (VN) và input (nước ngoài) nên truyền id dạng chuỗi
+    const hasDiaBanVN = typeof DiaBanVN !== 'undefined';
+    const getWardApi = (id) => (hasDiaBanVN ? DiaBanVN.get(id) : null);
+    const getWardValue = (id) => getWardApi(id)?.value() || '';
+    const setWardValue = (id, v) => getWardApi(id)?.setValue(v || '');
+    const resetWard = (id) => getWardApi(id)?.reset();
+    // Địa chỉ ghép: "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia" (bỏ Phường/Xã với địa chỉ nước ngoài, bỏ phần trống)
+    const composeAddress = (diaChi, phuongXa, tinhThanh, quocGia) => (hasDiaBanVN
+        ? DiaBanVN.formatAddress(diaChi, phuongXa, tinhThanh, quocGia)
+        : [diaChi, String(quocGia || '').trim() === 'Việt Nam' ? phuongXa : '', tinhThanh, quocGia]
+            .map(x => String(x || '').trim()).filter(Boolean).join(', '));
+    if (hasDiaBanVN) {
+        [
+            { id: 'tc_phuongxa', country: 'tc_quocgia', province: 'tc_tinhthanh_select', after: 'tc_tinhthanh_wrapper' },
+            { id: 'ntc_phuongxa', country: 'ntc_quocgia', province: 'ntc_tinhthanh_select', after: 'ntc_tinhthanh_wrapper' }
+        ].forEach(cfg => {
+            const api = DiaBanVN.bind(cfg);
+            if (!api) return;
+            // Đồng bộ kiểu báo lỗi của trang (.is-invalid + span.error-text) khi người dùng chọn lại Phường/Xã
+            api.select.addEventListener('change', () => {
+                api.el.querySelectorAll('.error-text, .dbvn-err').forEach(el => el.remove());
+                if (api.isVisible() && !api.select.value) {
+                    const span = document.createElement('span');
+                    span.className = 'error-text';
+                    span.innerText = 'Đây là trường bắt buộc';
+                    api.el.appendChild(span);
+                }
+            });
+        });
+    }
+
     // 3. Grid Bên thế chấp operations
     const subFormBenTheChap = document.getElementById('subFormBenTheChap');
     const loaiChuTheTC = document.getElementById('loaiChuTheTC');
@@ -627,6 +659,7 @@ const initApp = () => {
                 if (err) err.remove();
             }
         });
+        resetWard('tc_phuongxa');
     };
 
     const renderChuTheFields = (type) => {
@@ -740,6 +773,97 @@ const initApp = () => {
         }
     });
 
+    // Lưới Bên bảo đảm (dùng chung cho thêm mới, khôi phục từ reviewData và dữ liệu hồ sơ giả lập):
+    // Thao tác | Loại chủ thể | Số giấy tờ | Ngày tháng năm sinh | Tên | Địa chỉ (một cột, ghép bằng composeAddress)
+    const EMPTY_ROW_TC = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
+    const getLoaiChuTheText = (val) => {
+        const opt = Array.from(loaiChuTheTC.options).find(o => o.value === val);
+        return opt ? opt.text : '';
+    };
+    // Vẽ lại các ô hiển thị theo dataset của dòng
+    const renderRowTC = (tr) => {
+        [
+            getLoaiChuTheText(tr.dataset.loai) || tr.dataset.loaiText || '',
+            tr.dataset.giayTo || '',
+            tr.dataset.ngaySinh || '-',
+            tr.dataset.ten || '',
+            composeAddress(tr.dataset.diachi, tr.dataset.ward, tr.dataset.tinhthanh, tr.dataset.quocgia)
+        ].forEach((v, i) => { tr.children[i + 1].textContent = v; });
+    };
+    // Mở form ở chế độ sửa: CẬP NHẬT sẽ cập nhật đúng dòng này (editingRowTC)
+    const startEditTC = (tr) => {
+        editingRowTC = tr;
+        loaiChuTheTC.value = tr.dataset.loai;
+        loaiChuTheTC.dispatchEvent(new Event('change'));
+
+        // Use timeout to let fields render
+        setTimeout(() => {
+            const tenInput = document.getElementById('tt_ten');
+            const ngaySinhInput = document.getElementById('tt_ngaysinh');
+            const giaytoInput = document.getElementById('tt_sogiayto');
+            const qgSelect = document.getElementById('tc_quocgia');
+
+            if (tenInput) tenInput.value = tr.dataset.ten;
+            if (ngaySinhInput) ngaySinhInput.value = tr.dataset.ngaySinh || '';
+            if (giaytoInput) giaytoInput.value = tr.dataset.giayTo;
+            if (qgSelect) {
+                qgSelect.value = tr.dataset.quocgia;
+                qgSelect.dispatchEvent(new Event('change'));
+                setTimeout(() => {
+                    const ttField = document.getElementById('tc_tinhthanh_select') || document.getElementById('tc_tinhthanh_input');
+                    if (ttField) ttField.value = tr.dataset.tinhthanh;
+                    setWardValue('tc_phuongxa', tr.dataset.ward);
+                }, 20);
+            }
+            const dcInput = document.getElementById('tc_diachi');
+            if (dcInput) dcInput.value = tr.dataset.diachi;
+        }, 50);
+
+        btnLuuTC.innerText = 'CẬP NHẬT';
+        subFormBenTheChap.classList.remove('hidden');
+        btnThemTC.classList.add('hidden');
+        btnHuyTC.classList.remove('hidden');
+    };
+    // Tạo dòng mới từ dữ liệu { loai, loaiText, ten, ngaySinh, giayTo, diachi (chi tiết), ward, tinhthanh, quocgia }
+    const createRowTC = (d) => {
+        const tr = document.createElement('tr');
+        tr.dataset.loai = d.loai || '';
+        if (d.loaiText) tr.dataset.loaiText = d.loaiText;
+        tr.dataset.ten = d.ten || '';
+        tr.dataset.ngaySinh = d.ngaySinh || '';
+        tr.dataset.giayTo = d.giayTo || '';
+        tr.dataset.diachi = d.diachi || '';
+        tr.dataset.ward = d.ward || '';
+        tr.dataset.tinhthanh = d.tinhthanh || '';
+        tr.dataset.quocgia = d.quocgia || '';
+
+        tr.innerHTML = `
+                <td style="text-align: center;">
+                    <div class="grid-row-actions">
+                        <button type="button" class="grid-action-btn edit btn-sua-tc" title="Sửa thông tin"><i class="fa-solid fa-pen"></i><span>Sửa</span></button>
+                        <button type="button" class="grid-action-btn delete btn-xoa-tc" title="Xóa dòng"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button>
+                    </div>
+                </td>
+                <td></td><td></td><td></td><td></td><td></td>
+            `;
+        renderRowTC(tr);
+
+        tr.querySelector('.btn-xoa-tc').addEventListener('click', () => {
+            tr.remove();
+            if (tbodyTC.children.length === 0) tbodyTC.innerHTML = EMPTY_ROW_TC;
+        });
+        tr.querySelector('.btn-sua-tc').addEventListener('click', () => startEditTC(tr));
+        return tr;
+    };
+    const appendRowTC = (d) => {
+        if (tbodyTC.children.length === 1 && tbodyTC.querySelector('td[colspan]')) {
+            tbodyTC.innerHTML = '';
+        }
+        const tr = createRowTC(d);
+        tbodyTC.appendChild(tr);
+        return tr;
+    };
+
     btnLuuTC.addEventListener('click', () => {
         // Clear errors
         subFormBenTheChap.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
@@ -792,6 +916,9 @@ const initApp = () => {
 
         if (elQuocGia && !elQuocGia.value) addError(elQuocGia, 'Đây là trường bắt buộc');
         if (elTinhThanh && !elTinhThanh.value.trim()) addError(elTinhThanh, 'Đây là trường bắt buộc');
+        // Phường/Xã bắt buộc khi đang hiển thị (Quốc gia = Việt Nam)
+        const wardTC = getWardApi('tc_phuongxa');
+        if (wardTC && wardTC.isVisible() && !wardTC.value()) addError(wardTC.select, 'Đây là trường bắt buộc');
         if (elDiaChi && !elDiaChi.value.trim()) addError(elDiaChi, 'Đây là trường bắt buộc');
 
         if (!localValid) return;
@@ -801,8 +928,8 @@ const initApp = () => {
         const valGiayTo = elGiayTo.value.trim();
         const valQuocGia = elQuocGia.value;
         const valTinhThanh = elTinhThanh.value.trim();
+        const valPhuongXa = getWardValue('tc_phuongxa');
         const valDiaChi = elDiaChi.value.trim();
-        const fullAddr = `${valDiaChi} - ${valTinhThanh} - ${valQuocGia}`;
 
         // Duplicate Check
         const rows = Array.from(tbodyTC.querySelectorAll('tr')).filter(r => r.dataset.giayTo);
@@ -813,93 +940,32 @@ const initApp = () => {
         }
 
         if (editingRowTC) {
-            // Update
+            // Update: cập nhật dữ liệu và vẽ lại đúng dòng đang sửa
             editingRowTC.dataset.loai = loaiChuTheTC.value;
             editingRowTC.dataset.ten = valTen;
             editingRowTC.dataset.ngaySinh = valNgaySinh;
             editingRowTC.dataset.giayTo = valGiayTo;
             editingRowTC.dataset.diachi = valDiaChi;
+            editingRowTC.dataset.ward = valPhuongXa;
             editingRowTC.dataset.tinhthanh = valTinhThanh;
             editingRowTC.dataset.quocgia = valQuocGia;
+            delete editingRowTC.dataset.loaiText;
+            renderRowTC(editingRowTC);
 
-            editingRowTC.children[1].innerText = loaiChuTheTC.options[loaiChuTheTC.selectedIndex].text;
-            editingRowTC.children[2].innerText = valGiayTo;
-            editingRowTC.children[3].innerText = valNgaySinh || '-';
-            editingRowTC.children[4].innerText = valTen;
-            editingRowTC.children[5].innerText = fullAddr;
-            
             btnLuuTC.innerText = 'LƯU';
             editingRowTC = null;
         } else {
             // Insert
-            if (tbodyTC.children.length === 1 && tbodyTC.querySelector('td[colspan]')) {
-                tbodyTC.innerHTML = '';
-            }
-
-            const tr = document.createElement('tr');
-            tr.dataset.loai = loaiChuTheTC.value;
-            tr.dataset.ten = valTen;
-            tr.dataset.ngaySinh = valNgaySinh;
-            tr.dataset.giayTo = valGiayTo;
-            tr.dataset.diachi = valDiaChi;
-            tr.dataset.tinhthanh = valTinhThanh;
-            tr.dataset.quocgia = valQuocGia;
-
-            tr.innerHTML = `
-                <td style="text-align: center;">
-                    <div class="grid-row-actions">
-                        <button type="button" class="grid-action-btn edit btn-sua-tc" title="Sửa thông tin"><i class="fa-solid fa-pen"></i><span>Sửa</span></button>
-                        <button type="button" class="grid-action-btn delete btn-xoa-tc" title="Xóa dòng"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button>
-                    </div>
-                </td>
-                <td>${loaiChuTheTC.options[loaiChuTheTC.selectedIndex].text}</td>
-                <td>${valGiayTo}</td>
-                <td>${valNgaySinh || '-'}</td>
-                <td>${valTen}</td>
-                <td>${fullAddr}</td>
-            `;
-
-            tr.querySelector('.btn-xoa-tc').addEventListener('click', () => {
-                tr.remove();
-                if (tbodyTC.children.length === 0) {
-                    tbodyTC.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
-                }
+            appendRowTC({
+                loai: loaiChuTheTC.value,
+                ten: valTen,
+                ngaySinh: valNgaySinh,
+                giayTo: valGiayTo,
+                diachi: valDiaChi,
+                ward: valPhuongXa,
+                tinhthanh: valTinhThanh,
+                quocgia: valQuocGia
             });
-
-            tr.querySelector('.btn-sua-tc').addEventListener('click', () => {
-                editingRowTC = tr;
-                loaiChuTheTC.value = tr.dataset.loai;
-                loaiChuTheTC.dispatchEvent(new Event('change'));
-
-                // Use timeout to let fields render
-                setTimeout(() => {
-                    const tenInput = document.getElementById('tt_ten');
-                    const ngaySinhInput = document.getElementById('tt_ngaysinh');
-                    const giaytoInput = document.getElementById('tt_sogiayto');
-                    const qgSelect = document.getElementById('tc_quocgia');
-                    
-                    if (tenInput) tenInput.value = tr.dataset.ten;
-                    if (ngaySinhInput) ngaySinhInput.value = tr.dataset.ngaySinh || '';
-                    if (giaytoInput) giaytoInput.value = tr.dataset.giayTo;
-                    if (qgSelect) {
-                        qgSelect.value = tr.dataset.quocgia;
-                        qgSelect.dispatchEvent(new Event('change'));
-                        setTimeout(() => {
-                            const ttField = document.getElementById('tc_tinhthanh_select') || document.getElementById('tc_tinhthanh_input');
-                            if (ttField) ttField.value = tr.dataset.tinhthanh;
-                        }, 20);
-                    }
-                    const dcInput = document.getElementById('tc_diachi');
-                    if (dcInput) dcInput.value = tr.dataset.diachi;
-                }, 50);
-
-                btnLuuTC.innerText = 'CẬP NHẬT';
-                subFormBenTheChap.classList.remove('hidden');
-                btnThemTC.classList.add('hidden');
-                btnHuyTC.classList.remove('hidden');
-            });
-
-            tbodyTC.appendChild(tr);
         }
 
         subFormBenTheChap.classList.add('hidden');
@@ -935,8 +1001,90 @@ const initApp = () => {
         document.getElementById('ntc_quocgia').value = 'Việt Nam';
         document.getElementById('ntc_quocgia').dispatchEvent(new Event('change'));
         document.getElementById('ntc_diachi').value = '';
+        resetWard('ntc_phuongxa');
         subFormBenNhanTheChap.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
         subFormBenNhanTheChap.querySelectorAll('.error-text').forEach(el => el.remove());
+    };
+
+    // Lưới Bên nhận bảo đảm (dùng chung cho thêm mới, khôi phục từ reviewData và dữ liệu hồ sơ giả lập):
+    // Thao tác | Tên | Địa chỉ (một cột, ghép bằng composeAddress)
+    const EMPTY_ROW_NTC = '<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
+    const renderRowNTC = (tr) => {
+        tr.children[1].textContent = tr.dataset.ten || '';
+        tr.children[2].textContent = composeAddress(tr.dataset.diachi, tr.dataset.ward, tr.dataset.tinhthanh, tr.dataset.quocgia);
+    };
+    // Mở form ở chế độ sửa: CẬP NHẬT sẽ cập nhật đúng dòng này (editingRowNTC)
+    const startEditNTC = (tr) => {
+        editingRowNTC = tr;
+        const elTen = document.getElementById('ntc_ten');
+        const elQuocGia = document.getElementById('ntc_quocgia');
+        elTen.value = tr.dataset.ten;
+        elQuocGia.value = tr.dataset.quocgia;
+        elQuocGia.dispatchEvent(new Event('change'));
+
+        setTimeout(() => {
+            const ttField = document.getElementById('ntc_tinhthanh_select') || document.getElementById('ntc_tinhthanh_input');
+            if (ttField) ttField.value = tr.dataset.tinhthanh;
+            setWardValue('ntc_phuongxa', tr.dataset.ward);
+        }, 20);
+
+        document.getElementById('ntc_diachi').value = tr.dataset.diachi;
+
+        btnLuuNTC.innerText = 'CẬP NHẬT';
+        subFormBenNhanTheChap.classList.remove('hidden');
+        btnThemNTC.classList.add('hidden');
+        btnHuyNTC.classList.remove('hidden');
+    };
+    // Tạo dòng mới từ dữ liệu { ten, diachi (chi tiết), ward, tinhthanh, quocgia[, loai, giayTo] }
+    // showLayNguoiDangKyOnEmpty: hiện lại nút "Thêm người đăng ký là bên nhận bảo đảm" khi xóa hết dòng
+    const createRowNTC = (d, showLayNguoiDangKyOnEmpty) => {
+        const tr = document.createElement('tr');
+        if (d.loai) tr.dataset.loai = d.loai;
+        if (d.giayTo) tr.dataset.giayTo = d.giayTo;
+        tr.dataset.ten = d.ten || '';
+        tr.dataset.diachi = d.diachi || '';
+        tr.dataset.ward = d.ward || '';
+        tr.dataset.tinhthanh = d.tinhthanh || '';
+        tr.dataset.quocgia = d.quocgia || '';
+
+        tr.innerHTML = `
+                <td style="text-align: center;">
+                    <div class="grid-row-actions">
+                        <button type="button" class="grid-action-btn edit btn-sua-ntc" title="Sửa thông tin"><i class="fa-solid fa-pen"></i><span>Sửa</span></button>
+                        <button type="button" class="grid-action-btn delete btn-xoa-ntc" title="Xóa dòng"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button>
+                    </div>
+                </td>
+                <td></td><td></td>
+            `;
+        renderRowNTC(tr);
+
+        tr.querySelector('.btn-xoa-ntc').addEventListener('click', () => {
+            tr.remove();
+            if (tbodyNTC.children.length === 0) {
+                tbodyNTC.innerHTML = EMPTY_ROW_NTC;
+                if (showLayNguoiDangKyOnEmpty && btnLayNguoiDangKy) btnLayNguoiDangKy.classList.remove('hidden');
+            }
+        });
+        tr.querySelector('.btn-sua-ntc').addEventListener('click', () => startEditNTC(tr));
+        return tr;
+    };
+    const appendRowNTC = (d, showLayNguoiDangKyOnEmpty) => {
+        if (tbodyNTC.children.length === 1 && tbodyNTC.querySelector('td[colspan]')) {
+            tbodyNTC.innerHTML = '';
+        }
+        const tr = createRowNTC(d, showLayNguoiDangKyOnEmpty);
+        tbodyNTC.appendChild(tr);
+        return tr;
+    };
+
+    // Cho phép trang chứa (dang_ky_bpbd_can_bo.html - loadDossierData) dựng dòng lưới theo cùng một cấu trúc cột
+    // và sửa tại chỗ qua đúng biến editingRowTC/editingRowNTC của module này
+    window.BPBDPartyGrid = {
+        EMPTY_ROW_TC,
+        EMPTY_ROW_NTC,
+        composeAddress,
+        appendRowTC,
+        appendRowNTC
     };
 
     btnLuuNTC.addEventListener('click', () => {
@@ -961,6 +1109,9 @@ const initApp = () => {
         if (elTen && !elTen.value.trim()) addError(elTen, 'Đây là trường bắt buộc');
         if (elQuocGia && !elQuocGia.value) addError(elQuocGia, 'Đây là trường bắt buộc');
         if (elTinhThanh && !elTinhThanh.value.trim()) addError(elTinhThanh, 'Đây là trường bắt buộc');
+        // Phường/Xã bắt buộc khi đang hiển thị (Quốc gia = Việt Nam)
+        const wardNTC = getWardApi('ntc_phuongxa');
+        if (wardNTC && wardNTC.isVisible() && !wardNTC.value()) addError(wardNTC.select, 'Đây là trường bắt buộc');
         if (elDiaChi && !elDiaChi.value.trim()) addError(elDiaChi, 'Đây là trường bắt buộc');
 
         if (!localValid) return;
@@ -968,8 +1119,8 @@ const initApp = () => {
         const valTen = elTen.value.trim();
         const valQuocGia = elQuocGia.value;
         const valTinhThanh = elTinhThanh.value.trim();
+        const valPhuongXa = getWardValue('ntc_phuongxa');
         const valDiaChi = elDiaChi.value.trim();
-        const fullAddr = `${valDiaChi} - ${valTinhThanh} - ${valQuocGia}`;
 
         // Duplicate Check by Name and address
         const rows = Array.from(tbodyNTC.querySelectorAll('tr')).filter(r => r.dataset.ten);
@@ -980,69 +1131,24 @@ const initApp = () => {
         }
 
         if (editingRowNTC) {
+            // Update: cập nhật dữ liệu và vẽ lại đúng dòng đang sửa
             editingRowNTC.dataset.ten = valTen;
             editingRowNTC.dataset.diachi = valDiaChi;
+            editingRowNTC.dataset.ward = valPhuongXa;
             editingRowNTC.dataset.tinhthanh = valTinhThanh;
             editingRowNTC.dataset.quocgia = valQuocGia;
-
-            editingRowNTC.children[1].innerText = valTen;
-            editingRowNTC.children[2].innerText = fullAddr;
-            editingRowNTC.children[3].innerText = valTinhThanh;
-            editingRowNTC.children[4].innerText = valQuocGia;
+            renderRowNTC(editingRowNTC);
 
             btnLuuNTC.innerText = 'LƯU';
             editingRowNTC = null;
         } else {
-            if (tbodyNTC.children.length === 1 && tbodyNTC.querySelector('td[colspan]')) {
-                tbodyNTC.innerHTML = '';
-            }
-
-            const tr = document.createElement('tr');
-            tr.dataset.ten = valTen;
-            tr.dataset.diachi = valDiaChi;
-            tr.dataset.tinhthanh = valTinhThanh;
-            tr.dataset.quocgia = valQuocGia;
-
-            tr.innerHTML = `
-                <td style="text-align: center;">
-                    <div class="grid-row-actions">
-                        <button type="button" class="grid-action-btn edit btn-sua-ntc" title="Sửa thông tin"><i class="fa-solid fa-pen"></i><span>Sửa</span></button>
-                        <button type="button" class="grid-action-btn delete btn-xoa-ntc" title="Xóa dòng"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button>
-                    </div>
-                </td>
-                <td>${valTen}</td>
-                <td>${fullAddr}</td>
-                <td>${valTinhThanh}</td>
-                <td>${valQuocGia}</td>
-            `;
-
-            tr.querySelector('.btn-xoa-ntc').addEventListener('click', () => {
-                tr.remove();
-                if (tbodyNTC.children.length === 0) {
-                    tbodyNTC.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
-                }
+            appendRowNTC({
+                ten: valTen,
+                diachi: valDiaChi,
+                ward: valPhuongXa,
+                tinhthanh: valTinhThanh,
+                quocgia: valQuocGia
             });
-
-            tr.querySelector('.btn-sua-ntc').addEventListener('click', () => {
-                editingRowNTC = tr;
-                elTen.value = tr.dataset.ten;
-                elQuocGia.value = tr.dataset.quocgia;
-                elQuocGia.dispatchEvent(new Event('change'));
-                
-                setTimeout(() => {
-                    const ttField = document.getElementById('ntc_tinhthanh_select') || document.getElementById('ntc_tinhthanh_input');
-                    if (ttField) ttField.value = tr.dataset.tinhthanh;
-                }, 20);
-                
-                elDiaChi.value = tr.dataset.diachi;
-
-                btnLuuNTC.innerText = 'CẬP NHẬT';
-                subFormBenNhanTheChap.classList.remove('hidden');
-                btnThemNTC.classList.add('hidden');
-                btnHuyNTC.classList.remove('hidden');
-            });
-
-            tbodyNTC.appendChild(tr);
         }
 
         subFormBenNhanTheChap.classList.add('hidden');
@@ -1063,11 +1169,12 @@ const initApp = () => {
                 elQuocGia.value = "Việt Nam";
                 elQuocGia.dispatchEvent(new Event('change'));
             }
-            if (elDiaChi) elDiaChi.value = "Số 10, Phố Duy Tân, Phường Dịch Vọng Hậu, Quận Cầu Giấy";
+            if (elDiaChi) elDiaChi.value = "Số 10, Phố Duy Tân";
 
             setTimeout(() => {
                 const ttField = document.getElementById('ntc_tinhthanh_select') || document.getElementById('ntc_tinhthanh_input');
                 if (ttField) ttField.value = "Hà Nội";
+                setWardValue('ntc_phuongxa', 'Phường Cầu Giấy');
             }, 20);
 
             // Open the subform and adjust buttons
@@ -1986,7 +2093,9 @@ const initApp = () => {
                 ngaySinh: tr.dataset.ngaySinh || '',
                 ten: tr.dataset.ten,
                 diaChi: tr.children[5].innerText,
+                diaChiChiTiet: tr.dataset.diachi || '',
                 loaiVal: tr.dataset.loai,
+                ward: tr.dataset.ward || '',
                 tinhThanh: tr.dataset.tinhthanh,
                 quocGia: tr.dataset.quocgia
             }));
@@ -1996,6 +2105,8 @@ const initApp = () => {
             .map(tr => ({
                 ten: tr.dataset.ten,
                 diaChi: tr.children[2].innerText,
+                diaChiChiTiet: tr.dataset.diachi || '',
+                ward: tr.dataset.ward || '',
                 tinhThanh: tr.dataset.tinhthanh,
                 quocGia: tr.dataset.quocgia
             }));
@@ -2195,67 +2306,26 @@ const initApp = () => {
                 if (location) location.value = data.uc131DisposalLocation || '';
             }
 
+            // Địa chỉ chi tiết lưu riêng (diaChiChiTiet); dữ liệu cũ chỉ có địa chỉ ghép thì lấy phần đầu
+            const getDiaChiChiTiet = (r) => (r.diaChiChiTiet !== undefined
+                ? r.diaChiChiTiet
+                : (String(r.diaChi || '').split(/ - |, /)[0] || ''));
+
             if (data.rowsTC && data.rowsTC.length > 0) {
                 tbodyTC.innerHTML = '';
                 wrapperTableTC.classList.remove('hidden');
                 data.rowsTC.forEach(r => {
-                    const tr = document.createElement('tr');
-                    tr.dataset.loai = r.loaiVal;
-                    tr.dataset.ten = r.ten;
-                    tr.dataset.ngaySinh = r.ngaySinh || '';
-                    tr.dataset.giayTo = r.giayTo;
-                    tr.dataset.diachi = r.diaChi.split(' - ')[0] || '';
-                    tr.dataset.tinhthanh = r.tinhThanh;
-                    tr.dataset.quocgia = r.quocGia;
-
-                    tr.innerHTML = `
-                        <td style="text-align: center;">
-                            <div class="grid-row-actions">
-                                <button type="button" class="grid-action-btn edit btn-sua-tc" title="Sửa thông tin"><i class="fa-solid fa-pen"></i><span>Sửa</span></button>
-                                <button type="button" class="grid-action-btn delete btn-xoa-tc" title="Xóa dòng"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button>
-                            </div>
-                        </td>
-                        <td>${r.loai}</td>
-                        <td>${r.giayTo}</td>
-                        <td>${r.ngaySinh || '-'}</td>
-                        <td>${r.ten}</td>
-                        <td>${r.diaChi}</td>
-                    `;
-
-                    // wire buttons
-                    tr.querySelector('.btn-xoa-tc').addEventListener('click', () => {
-                        tr.remove();
-                        if (tbodyTC.children.length === 0) tbodyTC.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
+                    appendRowTC({
+                        loai: r.loaiVal,
+                        loaiText: r.loai,
+                        ten: r.ten,
+                        ngaySinh: r.ngaySinh || '',
+                        giayTo: r.giayTo,
+                        diachi: getDiaChiChiTiet(r),
+                        ward: r.ward || '',
+                        tinhthanh: r.tinhThanh,
+                        quocgia: r.quocGia
                     });
-                    tr.querySelector('.btn-sua-tc').addEventListener('click', () => {
-                        editingRowTC = tr;
-                        loaiChuTheTC.value = tr.dataset.loai;
-                        loaiChuTheTC.dispatchEvent(new Event('change'));
-                        setTimeout(() => {
-                            const tenInput = document.getElementById('tt_ten');
-                            const ngaySinhInput = document.getElementById('tt_ngaysinh');
-                            const giaytoInput = document.getElementById('tt_sogiayto');
-                            const qgSelect = document.getElementById('tc_quocgia');
-                            if (tenInput) tenInput.value = tr.dataset.ten;
-                            if (ngaySinhInput) ngaySinhInput.value = tr.dataset.ngaySinh || '';
-                            if (giaytoInput) giaytoInput.value = tr.dataset.giayTo;
-                            if (qgSelect) {
-                                qgSelect.value = tr.dataset.quocgia;
-                                qgSelect.dispatchEvent(new Event('change'));
-                                setTimeout(() => {
-                                    const ttField = document.getElementById('tc_tinhthanh_select') || document.getElementById('tc_tinhthanh_input');
-                                    if (ttField) ttField.value = tr.dataset.tinhthanh;
-                                }, 20);
-                            }
-                            const dcInput = document.getElementById('tc_diachi');
-                            if (dcInput) dcInput.value = tr.dataset.diachi;
-                        }, 50);
-                        btnLuuTC.innerText = 'CẬP NHẬT';
-                        subFormBenTheChap.classList.remove('hidden');
-                        btnThemTC.classList.add('hidden');
-                        btnHuyTC.classList.remove('hidden');
-                    });
-                    tbodyTC.appendChild(tr);
                 });
                 subFormBenTheChap.classList.add('hidden');
                 btnThemTC.classList.remove('hidden');
@@ -2269,46 +2339,13 @@ const initApp = () => {
                 tbodyNTC.innerHTML = '';
                 wrapperTableNTC.classList.remove('hidden');
                 data.rowsNTC.forEach(r => {
-                    const tr = document.createElement('tr');
-                    tr.dataset.ten = r.ten;
-                    tr.dataset.diachi = r.diaChi.split(' - ')[0] || '';
-                    tr.dataset.tinhthanh = r.tinhThanh;
-                    tr.dataset.quocgia = r.quocGia;
-
-                    tr.innerHTML = `
-                        <td style="text-align: center;">
-                            <div class="grid-row-actions">
-                                <button type="button" class="grid-action-btn edit btn-sua-ntc" title="Sửa thông tin"><i class="fa-solid fa-pen"></i><span>Sửa</span></button>
-                                <button type="button" class="grid-action-btn delete btn-xoa-ntc" title="Xóa dòng"><i class="fa-solid fa-trash-can"></i><span>Xóa</span></button>
-                            </div>
-                        </td>
-                        <td>${r.ten}</td>
-                        <td>${r.diaChi}</td>
-                        <td>${r.tinhThanh}</td>
-                        <td>${r.quocGia}</td>
-                    `;
-
-                    tr.querySelector('.btn-xoa-ntc').addEventListener('click', () => {
-                        tr.remove();
-                        if (tbodyNTC.children.length === 0) tbodyNTC.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Chưa có dữ liệu.</td></tr>';
-                        btnLayNguoiDangKy.classList.remove('hidden');
-                    });
-                    tr.querySelector('.btn-sua-ntc').addEventListener('click', () => {
-                        editingRowNTC = tr;
-                        document.getElementById('ntc_ten').value = tr.dataset.ten;
-                        document.getElementById('ntc_quocgia').value = tr.dataset.quocgia;
-                        document.getElementById('ntc_quocgia').dispatchEvent(new Event('change'));
-                        setTimeout(() => {
-                            const ttField = document.getElementById('ntc_tinhthanh_select') || document.getElementById('ntc_tinhthanh_input');
-                            if (ttField) ttField.value = tr.dataset.tinhthanh;
-                        }, 20);
-                        document.getElementById('ntc_diachi').value = tr.dataset.diachi;
-                        btnLuuNTC.innerText = 'CẬP NHẬT';
-                        subFormBenNhanTheChap.classList.remove('hidden');
-                        btnThemNTC.classList.add('hidden');
-                        btnHuyNTC.classList.remove('hidden');
-                    });
-                    tbodyNTC.appendChild(tr);
+                    appendRowNTC({
+                        ten: r.ten,
+                        diachi: getDiaChiChiTiet(r),
+                        ward: r.ward || '',
+                        tinhthanh: r.tinhThanh,
+                        quocgia: r.quocGia
+                    }, true);
                 });
                 // Hide copy button if items populated
                 btnLayNguoiDangKy.classList.add('hidden');
@@ -2440,7 +2477,8 @@ const initApp = () => {
             birthDate: '12/09/1992',
             country: 'Việt Nam',
             province: 'Hà Nội',
-            address: 'Tòa nhà FPT, Số 17 Duy Tân, Dịch Vọng Hậu, Cầu Giấy, Hà Nội'
+            ward: 'Phường Cầu Giấy',
+            address: 'Tòa nhà FPT, Số 17 Duy Tân'
         },
         {
             type: 'cd_vn',
@@ -2450,7 +2488,8 @@ const initApp = () => {
             birthDate: '05/08/1990',
             country: 'Việt Nam',
             province: 'Hà Nội',
-            address: 'Tòa nhà FPT, Số 17 Duy Tân, Dịch Vọng Hậu, Cầu Giấy, Hà Nội'
+            ward: 'Phường Cầu Giấy',
+            address: 'Tòa nhà FPT, Số 17 Duy Tân'
         },
         {
             type: 'cd_vn',
@@ -2460,7 +2499,8 @@ const initApp = () => {
             birthDate: '01/01/1988',
             country: 'Việt Nam',
             province: 'Hà Nội',
-            address: '123 Đường Láng, Láng Thượng, Đống Đa, Hà Nội'
+            ward: 'Phường Láng',
+            address: '123 Đường Láng'
         },
         {
             type: 'tc_vn',
@@ -2469,7 +2509,8 @@ const initApp = () => {
             name: 'Ngân hàng Thương mại Cổ phần FPT (FPT Bank)',
             country: 'Việt Nam',
             province: 'Hà Nội',
-            address: 'Tòa nhà FPT, Số 17 Duy Tân, Dịch Vọng Hậu, Cầu Giấy, Hà Nội'
+            ward: 'Phường Cầu Giấy',
+            address: 'Tòa nhà FPT, Số 17 Duy Tân'
         },
         {
             type: 'tc_vn',
@@ -2478,7 +2519,8 @@ const initApp = () => {
             name: 'Công ty Cổ phần Đầu tư Phát triển Công nghệ',
             country: 'Việt Nam',
             province: 'TP. Hồ Chí Minh',
-            address: '789 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh'
+            ward: 'Phường Sài Gòn',
+            address: '789 Nguyễn Huệ'
         },
         {
             type: 'nn',
@@ -2487,7 +2529,7 @@ const initApp = () => {
             name: 'John Doe',
             country: 'Hoa Kỳ',
             province: 'California',
-            address: '100 Pine Street, San Francisco, CA'
+            address: '100 Pine Street, San Francisco'
         },
         {
             type: 'investor_nn',
@@ -2496,7 +2538,7 @@ const initApp = () => {
             name: 'Global Investment Fund',
             country: 'Singapore',
             province: 'Singapore',
-            address: '10 Collyer Quay, Singapore'
+            address: '10 Collyer Quay'
         },
         {
             type: 'tc_khac',
@@ -2505,7 +2547,8 @@ const initApp = () => {
             name: 'Hiệp hội Cà phê Việt Nam',
             country: 'Việt Nam',
             province: 'Hà Nội',
-            address: 'Số 6 Nguyễn Công Hoan, Ngọc Khánh, Ba Đình, Hà Nội'
+            ward: 'Phường Giảng Võ',
+            address: 'Số 6 Nguyễn Công Hoan'
         },
         {
             type: 'tc_khac',
@@ -2514,7 +2557,8 @@ const initApp = () => {
             name: 'Hiệp hội Hồ tiêu Việt Nam',
             country: 'Việt Nam',
             province: 'Hà Nội',
-            address: 'Số 12 Huỳnh Thúc Kháng, Láng Hạ, Đống Đa, Hà Nội'
+            ward: 'Phường Láng',
+            address: 'Số 12 Huỳnh Thúc Kháng'
         },
         {
             type: 'no_nation_vn',
@@ -2523,7 +2567,8 @@ const initApp = () => {
             name: 'Alexandre Yersin',
             country: 'Việt Nam',
             province: 'Khánh Hòa',
-            address: 'Xã Suối Dầu, Huyện Cam Lâm, Khánh Hòa'
+            ward: 'Phường Nha Trang',
+            address: 'Số 8 Trần Phú'
         }
     ];
 
@@ -2627,6 +2672,8 @@ const initApp = () => {
             setTimeout(() => {
                 const elTinhThanh = document.getElementById('tc_tinhthanh_select') || document.getElementById('tc_tinhthanh_input');
                 if (elTinhThanh) elTinhThanh.value = subject.province;
+                // Phường/Xã: chỉ áp dụng với địa chỉ Việt Nam (ẩn & xóa giá trị với nước ngoài)
+                setWardValue('tc_phuongxa', subject.ward);
             }, 50);
 
         }, 50);
@@ -2736,9 +2783,7 @@ const initApp = () => {
                             <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${subject.doc || '-'}</td>
                             <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color); display: ${showBirthDate ? 'table-cell' : 'none'};">${subject.type === 'cd_vn' ? (subject.birthDate || '-') : '-'}</td>
                             <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color); display: ${showPassportCountry ? 'table-cell' : 'none'};">${subject.type === 'nn' ? (subject.country || '-') : '-'}</td>
-                            <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${subject.country || '-'}</td>
-                            <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${subject.province || '-'}</td>
-                            <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${subject.address || '-'}</td>
+                            <td style="padding: 10px 12px; border-bottom: 1px solid var(--border-color);">${composeAddress(subject.address, subject.ward, subject.province, subject.country) || '-'}</td>
                             <td style="text-align: center; padding: 10px 12px; border-bottom: 1px solid var(--border-color);">
                                 <button type="button" class="btn btn-primary btn-sm btn-select-subject" style="padding: 4px 10px; font-size: 12px; height: auto;">Chọn</button>
                             </td>

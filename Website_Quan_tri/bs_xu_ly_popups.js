@@ -21,9 +21,9 @@
     const DB = {
         '1505156438': {
             ...base, contractNo: 'HĐTC-VCB-2025/089', contractDate: '12/05/2025', registeredAt: '15/05/2025 09:30:15', effectiveAt: '15/05/2025 09:30:15',
-            registrant: { name: 'Ngân hàng TMCP Ngoại thương Việt Nam - Chi nhánh Sở Giao Dịch', address: 'Số 11 Láng Hạ, Phường Thành Công, TP Hà Nội, Việt Nam' },
-            grantors: [{ subjectType: 'Cá nhân', idNo: 'CCCD 001085002134', name: 'Nguyễn Văn Nam', address: 'Số 45 Trần Hưng Đạo, Phường Cửa Nam, TP Hà Nội, Việt Nam' }],
-            securedParties: [{ name: 'Ngân hàng TMCP Ngoại thương Việt Nam - Chi nhánh Sở Giao Dịch', idNo: 'MST 0100112437-001', address: 'Số 11 Láng Hạ, Phường Thành Công, TP Hà Nội, Việt Nam' }],
+            registrant: { name: 'Ngân hàng TMCP Ngoại thương Việt Nam - Chi nhánh Sở Giao Dịch', address: 'Số 11 Láng Hạ, Phường Giảng Võ, Thành phố Hà Nội, Việt Nam' },
+            grantors: [{ subjectType: 'Cá nhân', idNo: 'CCCD 001085002134', name: 'Nguyễn Văn Nam', address: 'Số 45 Trần Hưng Đạo, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam' }],
+            securedParties: [{ name: 'Ngân hàng TMCP Ngoại thương Việt Nam - Chi nhánh Sở Giao Dịch', idNo: 'MST 0100112437-001', address: 'Số 11 Láng Hạ, Phường Giảng Võ, Thành phố Hà Nội, Việt Nam' }],
             assets: [
                 {
                     type: 'road',
@@ -51,9 +51,9 @@
         },
         '1505170855': {
             ...base, contractNo: 'HĐTC-ANVIET-2025/017', contractDate: '03/03/2025', registeredAt: '05/03/2025 14:12:40', effectiveAt: '05/03/2025 14:12:40',
-            registrant: { name: 'Công ty Luật TNHH An Việt', address: 'Số 45 phố Nguyễn Thị Định, Phường Yên Hòa, TP Hà Nội, Việt Nam' },
-            grantors: [{ subjectType: 'Tổ chức', idNo: 'MST 0106543210', name: 'Công ty Cổ phần Thương mại Minh Phát', address: 'Số 120 Nguyễn Trãi, Phường Thanh Xuân, TP Hà Nội, Việt Nam' }],
-            securedParties: [{ name: 'Ngân hàng TMCP Kỹ thương Việt Nam - Chi nhánh Hà Nội', idNo: 'MST 0100230800-005', address: 'Số 6 Quang Trung, Phường Cửa Nam, TP Hà Nội, Việt Nam' }],
+            registrant: { name: 'Công ty Luật TNHH An Việt', address: 'Số 45 phố Nguyễn Thị Định, Phường Yên Hòa, Thành phố Hà Nội, Việt Nam' },
+            grantors: [{ subjectType: 'Tổ chức', idNo: 'MST 0106543210', name: 'Công ty Cổ phần Thương mại Minh Phát', address: 'Số 120 Nguyễn Trãi, Phường Thanh Xuân, Thành phố Hà Nội, Việt Nam' }],
+            securedParties: [{ name: 'Ngân hàng TMCP Kỹ thương Việt Nam - Chi nhánh Hà Nội', idNo: 'MST 0100230800-005', address: 'Số 6 Quang Trung, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam' }],
             assets: [
                 {
                     type: 'road',
@@ -67,9 +67,9 @@
         },
         '1505170802': {
             ...base, measure: 'Cầm cố tài sản', contractNo: 'HĐCC-BIDV-2025/233', contractDate: '18/04/2025', registeredAt: '20/04/2025 10:05:22', effectiveAt: '20/04/2025 10:05:22',
-            registrant: { name: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Thăng Long', address: 'Số 3 Phạm Hùng, Phường Cầu Giấy, TP Hà Nội, Việt Nam' },
-            grantors: [{ subjectType: 'Cá nhân', idNo: 'CCCD 001190003456', name: 'Trần Thị Mai', address: 'Số 18 Hoàng Quốc Việt, Phường Nghĩa Đô, TP Hà Nội, Việt Nam' }],
-            securedParties: [{ name: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Thăng Long', idNo: 'MST 0100150619-048', address: 'Số 3 Phạm Hùng, Phường Cầu Giấy, TP Hà Nội, Việt Nam' }],
+            registrant: { name: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Thăng Long', address: 'Số 3 Phạm Hùng, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam' },
+            grantors: [{ subjectType: 'Cá nhân', idNo: 'CCCD 001190003456', name: 'Trần Thị Mai', address: 'Số 18 Hoàng Quốc Việt, Phường Nghĩa Đô, Thành phố Hà Nội, Việt Nam' }],
+            securedParties: [{ name: 'Ngân hàng TMCP Đầu tư và Phát triển Việt Nam - Chi nhánh Thăng Long', idNo: 'MST 0100150619-048', address: 'Số 3 Phạm Hùng, Phường Cầu Giấy, Thành phố Hà Nội, Việt Nam' }],
             assets: [
                 {
                     type: 'rights',

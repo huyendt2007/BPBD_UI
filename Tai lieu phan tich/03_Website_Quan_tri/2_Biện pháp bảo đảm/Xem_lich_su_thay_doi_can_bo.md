@@ -40,8 +40,8 @@
 | Cột: Phiên bản | String(50) | \- | \- | \- Hiển thị mốc phiên bản thay đổi (Ví dụ: "Thay đổi lần 1", "Thay đổi lần 2"). |
 | Cột: Khối thông tin | String(100) | \- | \- | \- Gồm:<br>  + Thông tin chung <br>  + Bên bảo đảm <br>  + Bên nhận bảo đảm <br>  + Tài sản bảo đảm |
 | Cột: Trường thông tin | String(100) | \- | \- | \- Tên trường thông tin có biến động (Ví dụ: "Địa chỉ", "Số khung", "Tên Bên nhận bảo đảm"). |
-| Cột: Trạng thái biến động | String(50) | \- | \- | \- Gồm:<br>  + `[Thêm mới]`: Chữ màu xanh lục.<br>  + `[Chỉnh sửa]`: Chữ màu cam.<br>  + `[Rút bớt]`: Chữ màu đỏ. |
-| Cột: Giá trị cũ (Before) | String(500) | \- | \- | \- Hiển thị giá trị trước khi thay đổi. Nếu là Thêm mới thì hiển thị `N/A`. |
+| Cột: Trạng thái biến động | String(50) | \- | \- | \- Gồm:<br>  + `[Bổ sung mới]`: Chữ màu xanh lục.<br>  + `[Sửa thông tin]`: Chữ màu cam.<br>  + `[Rút bớt]`: Chữ màu đỏ. |
+| Cột: Giá trị cũ (Before) | String(500) | \- | \- | \- Hiển thị giá trị trước khi thay đổi. Nếu là Bổ sung mới thì hiển thị `N/A`. |
 | Cột: Giá trị mới (After) | String(500) | \- | \- | \- Hiển thị giá trị mới sau khi thay đổi. Nếu là Rút bớt thì hiển thị chữ gạch quang (`<del>`). |
 | **3. Khối kết quả rà soát rủi ro tự động** | | | | |
 | Bảng đối soát rủi ro tự động | - | \- | \- | Control UI: Bảng/Lưới hiển thị.<br>\- Hiển thị các lỗi/cảnh báo rà soát tự động từ hệ thống (kê biên, trùng tài sản, bên bảo đảm bị khóa...).<br>- Nếu có rủi ro nghiêm trọng: tô nền màu đỏ nhạt (`#FEF2F2`), chữ đỏ sẫm. Nếu hợp lệ: chữ màu xanh lục (`#059669`). |

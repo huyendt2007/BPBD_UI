@@ -146,6 +146,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 <script src="chinh_ly_common.js"></script>
+<script src="trung_lap_common.js"></script>
 <script>
 (function () {
     const C = CLDK;
@@ -224,6 +225,13 @@
         $('selLoaiDeNghi').value = v; prevLoaiValue = v; setLoaiUI(); $('txtSoDangKy').value = so; traCuu();
     }));
     setLoaiUI();
+
+    // Mở từ Lọc phiếu trùng lặp: điền sẵn Loại đề nghị Hủy đăng ký và Số đăng ký lần đầu, hệ thống tự động Tra cứu
+    if (!editing && C.param('so')) {
+        if (window.TRUNGLAP) TRUNGLAP.registerCldk();
+        const v = C.param('loai') === 'HUY_MP' ? 'HUY_MP' : 'HUY_TP';
+        $('selLoaiDeNghi').value = v; prevLoaiValue = v; setLoaiUI(); $('txtSoDangKy').value = C.param('so'); traCuu();
+    }
 
     function traCuu(prefill) {
         resetLookup();

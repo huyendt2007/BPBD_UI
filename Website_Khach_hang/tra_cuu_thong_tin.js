@@ -1,4 +1,50 @@
-﻿/**
+﻿
+// ==================== DEMO CHIPS HELPER (CHá»ˆ ÄIá»€N FORM Bá»˜ Lá»ŒC) ====================
+function flashInput(el) {
+    if (!el) return;
+    el.style.transition = 'background-color 0.3s';
+    el.style.backgroundColor = '#EFF6FF';
+    setTimeout(() => el.style.backgroundColor = 'white', 400);
+}
+
+function applyThongTinDemo(filters) {
+    if (typeof resetCanBoSearch === 'function') {
+        resetCanBoSearch();
+    }
+
+    if (filters.regNum) {
+        const el = document.getElementById('cb-regNum');
+        if (el) { el.value = filters.regNum; flashInput(el); }
+    }
+    if (filters.guarantor) {
+        const el = document.getElementById('cb-guarantor');
+        if (el) { el.value = filters.guarantor; flashInput(el); }
+    }
+    if (filters.creator) {
+        const el = document.getElementById('cb-creator');
+        if (el) { el.value = filters.creator; flashInput(el); }
+    }
+    if (filters.status) {
+        const el = document.getElementById('cb-status');
+        if (el) { el.value = filters.status; flashInput(el); }
+    }
+    if (filters.regType) {
+        const el = document.getElementById('cb-regType');
+        if (el) { el.value = filters.regType; flashInput(el); }
+    }
+    if (filters.transType) {
+        const el = document.getElementById('cb-transType');
+        if (el) {
+            el.value = filters.transType;
+            if (typeof onCbTransTypeChange === 'function') onCbTransTypeChange();
+            flashInput(el);
+        }
+    }
+
+    // CHá»ˆ ÄIá»€N FORM Bá»˜ Lá»ŒC - KHÃ”NG Tá»° Äá»˜NG Gá»ŒI searchCanBo()
+    // NgÆ°á»i dÃ¹ng sáº½ tá»± nháº¥n nÃºt 'TÃ¬m kiáº¿m' Ä‘á»ƒ thá»±c thi lá»c káº¿t quáº£
+}
+/**
  * Xử lý logic SPA cho UC027 - Tra cứu thông tin đăng ký (Website Cán bộ)
  * Tích hợp bảng dạng cây (Tree-view), phân trang đầy đủ, bộ lọc nâng cao và dropdown Thao tác khác
  */
@@ -757,7 +803,7 @@ function renderCanBoTable() {
             return list;
         };
         const familyNodes = getFamilyNodes(root);
-        const pendingStatuses = ["Chờ thanh toán", "Chờ duyệt", "Duyệt chờ ký", "Sai lệch thanh toán", "Chờ ký"];
+        const pendingStatuses = ["Chờ thanh toán", "Sai lệch thanh toán", "Chờ duyệt", "Duyệt chờ ký", "Chờ ký", "Bị trả lại"]; // [BR-DK-022]
         const hasPendingRelated = familyNodes.some(node => {
             if (node.id === item.id) return false;
             const isPending = pendingStatuses.includes(node.status);

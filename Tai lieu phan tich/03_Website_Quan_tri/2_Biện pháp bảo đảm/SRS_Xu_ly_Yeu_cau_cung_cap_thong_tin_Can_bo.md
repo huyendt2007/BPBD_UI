@@ -86,7 +86,7 @@
 | Mã hồ sơ | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Mã khách hàng | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Người yêu cầu | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
-| Địa chỉ | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi.<br>- Hiển thị đầy đủ theo thứ tự: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia. |
+| Địa chỉ | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi.<br>- Hiển thị đầy đủ theo thứ tự: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia (Quốc gia khác Việt Nam không có Phường/Xã, theo [BR-VAL-015]). |
 | Thời điểm đăng ký | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi.<br>- Định dạng hiển thị: dd/mm/yyyy hh:mm. |
 | Trạng thái | - | - | - | Control UI: Label dạng nhãn trạng thái (Badge), chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | **II. Khối tra cứu** | | | | Toàn bộ dữ liệu chỉ đọc, hệ thống tự động điền theo thông tin hồ sơ khi mở màn hình, không cho phép sửa. |
@@ -247,7 +247,7 @@
 | 5 | Địa danh, ngày tháng năm lập văn bản | Cấu hình đơn vị xử lý hồ sơ và thời điểm kết xuất PDF | Địa danh lấy theo đơn vị xử lý hồ sơ. Ngày tháng năm lấy theo ngày hệ thống sinh file PDF dự thảo tại thao tác "Trình ký". Định dạng theo mẫu: "[Địa danh], ngày [dd] tháng [mm] năm [yyyy]". |
 | 6 | Tên văn bản | Cấu hình biểu mẫu | Hiển thị cố định, in hoa, in đậm: "VĂN BẢN CUNG CẤP THÔNG TIN VỀ BIỆN PHÁP BẢO ĐẢM BẰNG ĐỘNG SẢN, CÂY HẰNG NĂM, CÔNG TRÌNH TẠM". |
 | 7 | Người yêu cầu cung cấp thông tin | Hồ sơ Yêu cầu cung cấp thông tin do Khách hàng gửi | Hiển thị tên cá nhân/tổ chức yêu cầu cung cấp thông tin. Định dạng: "Người yêu cầu cung cấp thông tin: [Tên người yêu cầu]". |
-| 8 | Địa chỉ liên hệ | Hồ sơ Yêu cầu cung cấp thông tin do Khách hàng gửi | Hiển thị địa chỉ của người yêu cầu đã lưu trong hồ sơ. Định dạng: "Địa chỉ liên hệ: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], [Quốc gia]". |
+| 8 | Địa chỉ liên hệ | Hồ sơ Yêu cầu cung cấp thông tin do Khách hàng gửi | Hiển thị địa chỉ của người yêu cầu đã lưu trong hồ sơ. Định dạng: "Địa chỉ liên hệ: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], [Quốc gia]" (Quốc gia khác Việt Nam không có Phường/Xã, theo [BR-VAL-015]). |
 | 9 | Tên Trung tâm chứng nhận | Đơn vị xử lý hồ sơ | Hiển thị tên Trung tâm đăng ký giao dịch, tài sản xử lý hồ sơ, in hoa, in đậm theo mẫu. |
 | 10 | Mục 1 - Dòng dẫn tiêu chí tra cứu | Cấu hình biểu mẫu | Hiển thị cố định: "1. Việc tra cứu thông tin được thực hiện theo tiêu chí sau đây:". |
 | 11 | Checkbox "Số giấy tờ xác định tư cách pháp lý của bên bảo đảm" | Tiêu chí và dữ liệu tra cứu đã khóa trong hồ sơ | Hiển thị checkbox. Tích chọn nếu Tiêu chí yêu cầu cung cấp thông tin là "Bên bảo đảm" và dữ liệu tra cứu là số giấy tờ/số định danh của Bên bảo đảm. Sau nhãn hiển thị giá trị theo đúng dữ liệu đã khóa nếu được tích chọn. |

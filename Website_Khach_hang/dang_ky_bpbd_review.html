@@ -68,7 +68,7 @@
                     </div>
                     <div class="review-block">
                         <div class="readonly-label">Địa chỉ</div>
-                        <div class="readonly-value" id="rev_diaChi">123 Đường Lê Lợi, Quận 1, TP. Hồ Chí Minh, Việt Nam
+                        <div class="readonly-value" id="rev_diaChi">123 Đường Lê Lợi, Phường Sài Gòn, Thành phố Hồ Chí Minh, Việt Nam
                         </div>
                     </div>
                 </div>
@@ -212,6 +212,7 @@
             </div>
         </form>
     </div>
+    <script src="../Common/dia_ban_vn.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const isDisposalStandaloneMode = new URLSearchParams(window.location.search).get('mode') === 'disposalStandalone';
@@ -353,12 +354,21 @@
                     document.getElementById('rev_titleTaiSan').innerText = 'Tài sản bảo đảm';
                 }
 
+                // Địa chỉ: "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia" (bỏ Phường/Xã với địa chỉ nước ngoài)
+                // Dữ liệu cũ chưa tách Địa chỉ chi tiết thì r.diaChi đã là chuỗi đầy đủ -> hiển thị nguyên trạng
+                const dinhDangDiaChi = (r) => {
+                    if (r.diaChiChiTiet === undefined) return r.diaChi || '';
+                    if (window.DiaBanVN) return DiaBanVN.formatAddress(r.diaChiChiTiet, r.ward, r.tinhThanh, r.quocGia);
+                    const laVN = /^(việt nam|viet nam|vn)$/i.test(String(r.quocGia || '').trim());
+                    return [r.diaChiChiTiet, laVN ? r.ward : '', r.tinhThanh, r.quocGia].map(x => String(x || '').trim()).filter(Boolean).join(', ');
+                };
+
                 // Bind tables
                 if (data.rowsTC && data.rowsTC.length > 0) {
                     const tbTC = document.getElementById('rev_tbodyTC');
                     tbTC.innerHTML = '';
                     data.rowsTC.forEach(r => {
-                        tbTC.innerHTML += `<tr><td>${r.loai}</td><td>${r.giayTo}</td><td>${r.ngaySinh || '-'}</td><td>${r.ten}</td><td>${r.diaChi}</td></tr>`;
+                        tbTC.innerHTML += `<tr><td>${r.loai}</td><td>${r.giayTo}</td><td>${r.ngaySinh || '-'}</td><td>${r.ten}</td><td>${dinhDangDiaChi(r)}</td></tr>`;
                     });
                 }
 
@@ -366,8 +376,7 @@
                     const tbNTC = document.getElementById('rev_tbodyNTC');
                     tbNTC.innerHTML = '';
                     data.rowsNTC.forEach(r => {
-                        const fullAddress = [r.diaChi, r.tinhThanh, r.quocGia].filter(Boolean).join(' - ');
-                        tbNTC.innerHTML += `<tr><td>${r.ten}</td><td>${fullAddress}</td></tr>`;
+                        tbNTC.innerHTML += `<tr><td>${r.ten}</td><td>${dinhDangDiaChi(r)}</td></tr>`;
                     });
                 }
 

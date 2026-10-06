@@ -1,4 +1,4 @@
-﻿/**
+/**
  * tra_cuu_goc.js - UC026
  * Xử lý nghiệp vụ tra cứu hồ sơ gốc trước khi thực hiện xóa đăng ký
  */
@@ -133,7 +133,7 @@ function getDossierData(regNum) {
                     name: "Nguyễn Văn Nam",
                     paperType: "CCCD",
                     paperNo: "001088012345",
-                    address: "Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Quận Hoàn Kiếm, Hà Nội",
+                    address: "Số 15 Lý Thường Kiệt, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 },
                 {
@@ -141,7 +141,7 @@ function getDossierData(regNum) {
                     name: "Trần Thị Bé",
                     paperType: "CCCD",
                     paperNo: "002095067890",
-                    address: "Số 88 Giải Phóng, Phường Phương Mai, Quận Đống Đa, Hà Nội",
+                    address: "Số 88 Giải Phóng, Phường Đống Đa, Thành phố Hà Nội, Việt Nam",
                     status: "Không thay đổi"
                 }
             ],
@@ -150,7 +150,8 @@ function getDossierData(regNum) {
                     name: "NGÂN HÀNG TMCP FPT",
                     country: "Việt Nam",
                     province: "Thành phố Hà Nội",
-                    address: "Số 17 Duy Tân, Quận Cầu Giấy, Hà Nội",
+                    ward: "Phường Cầu Giấy",
+                    address: "Số 17 Duy Tân",
                     status: "Không thay đổi"
                 }
             ],
@@ -181,7 +182,7 @@ function getDossierData(regNum) {
                 name: meta.name,
                 paperType: "CCCD",
                 paperNo: "001088012345",
-                address: "Số 15 Lý Thường Kiệt, Phường Phan Chu Trinh, Quận Hoàn Kiếm, Hà Nội",
+                address: "Số 15 Lý Thường Kiệt, Phường Cửa Nam, Thành phố Hà Nội, Việt Nam",
                 status: "Không thay đổi"
             },
             {
@@ -189,7 +190,7 @@ function getDossierData(regNum) {
                 name: "Trần Thị Bé",
                 paperType: "CCCD",
                 paperNo: "002095067890",
-                address: "Số 88 Giải Phóng, Phường Phương Mai, Quận Đống Đa, Hà Nội",
+                address: "Số 88 Giải Phóng, Phường Đống Đa, Thành phố Hà Nội, Việt Nam",
                 status: "Không thay đổi"
             }
         ],
@@ -198,7 +199,8 @@ function getDossierData(regNum) {
                 name: "NGÂN HÀNG TMCP FPT",
                 country: "Việt Nam",
                 province: "Thành phố Hà Nội",
-                address: "Số 17 Duy Tân, Quận Cầu Giấy, Hà Nội",
+                ward: "Phường Cầu Giấy",
+                address: "Số 17 Duy Tân",
                 status: "Không thay đổi"
             }
         ],
@@ -233,8 +235,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     btnSearch.addEventListener('click', function () {
-        const regNum = regNumInput.value.trim();
-        const pinNum = pinNumInput.value.trim();
+        let regNum = regNumInput.value.trim();
+        let pinNum = pinNumInput.value.trim();
 
         // Xóa thông báo lỗi cũ
         errorMsg.style.display = 'none';
@@ -265,21 +267,27 @@ document.addEventListener('DOMContentLoaded', function () {
             errorText.textContent = "Số đăng ký lần đầu hoặc Số PIN không chính xác. Vui lòng kiểm tra lại.";
             return;
         }
-        if (regNum === 'CHUA_HT') {
+        // Điều kiện thực hiện Xóa đăng ký [BR-DK-040] - kiểm tra lần lượt
+        const blockCases = {
+            HS_TBXL: "Số đăng ký đã nhập là số đăng ký của Thông báo xử lý tài sản bảo đảm. Vui lòng thực hiện Xóa đăng ký thông báo xử lý tài sản bảo đảm.", // [MSG-ERR-DK-020]
+            CHUA_HT: "Hồ sơ gốc chưa ở trạng thái Hoàn thành. Không thể thực hiện thao tác.", // [MSG-ERR-DK-002]
+            DA_XOA: "Hồ sơ đã được xóa đăng ký. Không thể thực hiện thao tác.", // [MSG-ERR-DK-018]
+            DA_HUY: "Hồ sơ đã bị hủy đăng ký toàn phần. Không thể thực hiện thao tác.", // [MSG-ERR-DK-019]
+            NGAN_CHAN: "Hồ sơ gốc đang bị tạm dừng/ngăn chặn giao dịch. Không thể thực hiện thao tác.", // [MSG-ERR-DK-003]
+            LIEN_QUAN: "Tồn tại hồ sơ liên quan chưa được phê duyệt hoàn thành. Vui lòng kiểm tra lại.", // [MSG-ERR-DK-004]
+            "99999999": "Tồn tại hồ sơ liên quan chưa được phê duyệt hoàn thành. Vui lòng kiểm tra lại." // [MSG-ERR-DK-004]
+        };
+        if (blockCases[regNum]) {
             errorMsg.style.display = 'flex';
-            errorText.textContent = "Hồ sơ gốc chưa ở trạng thái Hoàn thành. Không thể thực hiện xóa đăng ký.";
+            errorText.textContent = blockCases[regNum];
             return;
         }
-        if (regNum === 'LIEN_QUAN') {
-            errorMsg.style.display = 'flex';
-            errorText.textContent = "Tồn tại hồ sơ liên quan chưa được phê duyệt hoàn thành. Vui lòng kiểm tra lại.";
-            return;
-        }
-        if (regNum === 'KHE_BIEN') {
-            errorMsg.style.display = 'flex';
-            errorText.textContent = "Hồ sơ gốc đang trong quá trình xử lý tài sản bảo đảm. Vui lòng thực hiện Xóa thông báo xử lý tài sản trước khi xóa đăng ký.";
-            return;
-        }
+        // Hồ sơ đã Hủy đăng ký một phần (hợp lệ): tài sản "Đã hủy" vẫn hiển thị nhưng không thuộc phạm vi xóa
+        const isPartialCancel = regNum === 'HUY_MOT_PHAN';
+        if (isPartialCancel) { regNum = '12345678'; pinNum = '8888'; }
+        // Hồ sơ đang có thông báo xử lý còn hiệu lực: không chặn Xóa đăng ký, thông báo tự chấm dứt khi hoàn thành [BR-DK-040]
+        if (regNum === 'KHE_BIEN' || regNum === 'CO_TBXL') { regNum = '12345678'; pinNum = '8888'; }
+        localStorage.setItem('xoaPartialCancel', isPartialCancel ? '1' : '0');
 
         // TH2 (Sai thông tin đăng ký): Số đăng ký lần đầu hoặc Số PIN không tồn tại hoặc không khớp
         const dossierInfo = getDossierData(regNum);
@@ -326,6 +334,53 @@ document.addEventListener('DOMContentLoaded', function () {
         regNumInput.style.borderColor = '';
         pinNumInput.style.borderColor = '';
         document.querySelectorAll('.field-error').forEach(el => el.remove());
+    }
+
+    // Demo chips click handler: chỉ tự động điền form, người dùng tự nhấn nút Tiếp tục để thực hiện tra cứu
+    document.querySelectorAll('.cl-demo-chip[data-reg]').forEach(chip => {
+        chip.addEventListener('click', function () {
+            const reg = this.getAttribute('data-reg') || '';
+            const pin = this.getAttribute('data-pin') || '8888';
+            regNumInput.value = reg;
+            pinNumInput.value = pin;
+
+            // Xóa lỗi cũ nếu có
+            clearInputErrors();
+            if (errorMsg) errorMsg.style.display = 'none';
+
+            // Hiệu ứng nhấp nháy nhẹ để người dùng nhận biết dữ liệu vừa được điền
+            regNumInput.style.transition = 'background-color 0.3s';
+            pinNumInput.style.transition = 'background-color 0.3s';
+            regNumInput.style.backgroundColor = '#EFF6FF';
+            pinNumInput.style.backgroundColor = '#EFF6FF';
+            setTimeout(() => {
+                regNumInput.style.backgroundColor = 'white';
+                pinNumInput.style.backgroundColor = 'white';
+            }, 400);
+        });
+    });
+
+    // Xử lý nút mắt xem/ẩn mã PIN
+    const btnTogglePin = document.getElementById('btnTogglePin');
+    const iconTogglePin = document.getElementById('iconTogglePin');
+    if (btnTogglePin && pinNumInput) {
+        btnTogglePin.addEventListener('click', function () {
+            if (pinNumInput.type === 'password') {
+                pinNumInput.type = 'text';
+                if (iconTogglePin) {
+                    iconTogglePin.classList.remove('fa-eye');
+                    iconTogglePin.classList.add('fa-eye-slash');
+                }
+                btnTogglePin.title = 'Ẩn mã PIN';
+            } else {
+                pinNumInput.type = 'password';
+                if (iconTogglePin) {
+                    iconTogglePin.classList.remove('fa-eye-slash');
+                    iconTogglePin.classList.add('fa-eye');
+                }
+                btnTogglePin.title = 'Hiển thị mã PIN';
+            }
+        });
     }
 });
 

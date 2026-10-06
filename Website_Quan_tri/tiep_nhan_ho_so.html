@@ -750,7 +750,7 @@
                                 <input id="country" class="form-control" value="Việt Nam">
                                 <div class="invalid-feedback" id="countryError">Đây là trường bắt buộc</div>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" id="provinceGroup">
                                 <span class="form-label">Tỉnh/thành phố <span class="required">*</span></span>
                                 <input id="province" class="form-control" placeholder="Chọn tỉnh/thành phố..." list="provinceList">
                                 <datalist id="provinceList">
@@ -767,11 +767,7 @@
                                 </datalist>
                                 <div class="invalid-feedback" id="provinceError">Đây là trường bắt buộc</div>
                             </div>
-                            <div class="form-group">
-                                <span class="form-label">Phường/Xã <span class="required">*</span></span>
-                                <input id="ward" class="form-control" placeholder="Nhập phường/xã...">
-                                <div class="invalid-feedback" id="wardError">Đây là trường bắt buộc</div>
-                            </div>
+                            <!-- Phường/Xã (#ward): chèn động ngay sau Tỉnh/thành phố bởi DiaBanVN, chỉ hiển thị khi Quốc gia là Việt Nam -->
                             <div class="form-group" style="grid-column: span 1;">
                                 <span class="form-label">Địa chỉ chi tiết <span class="required">*</span></span>
                                 <input id="addressDetail" class="form-control" placeholder="Số nhà, tên đường/phố...">
@@ -982,7 +978,7 @@
                                 <span class="form-label">Tỉnh/thành phố</span>
                                 <input id="dtlProvince" class="form-control readonly" readonly>
                             </div>
-                            <div class="form-group">
+                            <div class="form-group" id="dtlWardGroup">
                                 <span class="form-label">Phường/Xã</span>
                                 <input id="dtlWard" class="form-control readonly" readonly>
                             </div>
@@ -1289,42 +1285,43 @@
         </div>
     </div>
 
+    <script src="../Common/dia_ban_vn.js"></script>
     <script>
         // Danh sách tài khoản trực tuyến mẫu dùng cho tra cứu & tìm kiếm nâng cao (Section 4.3.2.16.4.4)
         const onlineCustomersMock = [
-            { code: 'KH-000128', name: 'Công ty TNHH Hải Nam', email: 'contact@hainam.vn', phone: '0912555666', docNo: '0108920145', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Tràng Tiền', addressDetail: 'Số 20 Trần Hưng Đạo, Hoàn Kiếm' },
-            { code: 'KH-000130', name: 'Ngân hàng TMCP FPT', email: 'dangky@moj.gov.vn', phone: '02462739677', docNo: '0102345678', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Mỹ Đình 1', addressDetail: 'Tòa nhà FPT, Phố Duy Tân, Cầu Giấy' },
-            { code: 'KH-000131', name: 'Ngân hàng TMCP Ngoại Thương Việt Nam (Vietcombank)', email: 'vcb@vietcombank.com.vn', phone: '02439343366', docNo: '0100112437', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Lý Thái Tổ', addressDetail: '198 Trần Quang Khải, Hoàn Kiếm' },
-            { code: 'KH-000132', name: 'Công ty CP Đầu tư Mặt Trời Mới', email: 'info@mattroimoi.com', phone: '0988223344', docNo: '0106789900', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Dịch Vọng', addressDetail: 'Số 10 Phạm Hùng, Cầu Giấy' },
-            { code: 'KH-000134', name: 'Ngân hàng TMCP Quân Đội (MB)', email: 'contact@mbbank.com.vn', phone: '02462661088', docNo: '0100283873', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Trung Hòa', addressDetail: 'Số 18 Lê Văn Lương, Cầu Giấy' },
-            { code: 'KH-000135', name: 'Công ty TNHH MTV Thái Sơn', email: 'thaison@gmail.com', phone: '0913998877', docNo: '0104561234', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Láng Hạ', addressDetail: 'Số 36 Hoàng Cầu, Đống Đa' },
-            { code: 'KH-000136', name: 'Ngân hàng TMCP Tiên Phong (TPBank)', email: 'dktp@tpb.com.vn', phone: '02437688999', docNo: '0102744865', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Dịch Vọng Hậu', addressDetail: 'Tòa nhà TPBank, 57 Lý Thường Kiệt, Hoàn Kiếm' },
-            { code: 'KH-000138', name: 'Công ty CP Thép Nam Việt', email: 'namvietsteel@gmail.com', phone: '02838990011', docNo: '0304892211', country: 'Việt Nam', province: 'Bình Dương', ward: 'Phường An Bình', addressDetail: 'Khu công nghiệp Sóng Thần, Dĩ An' },
-            { code: 'KH-000139', name: 'Ngân hàng TMCP Kỹ Thương (Techcombank)', email: 'call_center@techcombank.com.vn', phone: '02439446368', docNo: '0100230800', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Phan Chu Trinh', addressDetail: 'Số 6 Quang Trung, Hoàn Kiếm' },
-            { code: 'KH-000140', name: 'Công ty TNHH Vận tải Hoàng Long', email: 'hoanglongtrans@gmail.com', phone: '0912113355', docNo: '0200889911', country: 'Việt Nam', province: 'Hải Phòng', ward: 'Phường Cầu Đất', addressDetail: 'Số 05 Phạm Ngũ Lão, Ngô Quyền' },
-            { code: 'KH-000142', name: 'Ngân hàng TMCP Á Châu (ACB)', email: 'acb@acb.com.vn', phone: '02838247247', docNo: '0301452948', country: 'Việt Nam', province: 'TP Hồ Chí Minh', ward: 'Phường Võ Thị Sáu', addressDetail: 'Số 442 Nguyễn Thị Minh Khai, Quận 3' },
-            { code: 'KH-2026-0001', name: 'Nguyễn Văn Nam', email: 'nam.nguyen@example.com', phone: '0901234567', docNo: '001086012345', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Tràng Tiền', addressDetail: 'Số 20 Trần Hưng Đạo, Hoàn Kiếm' },
-            { code: 'KH-2026-0002', name: 'Công ty Cổ phần Đầu tư ABC', email: 'contact@abc.vn', phone: '02438889999', docNo: '0101187788', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Dịch Vọng', addressDetail: 'Tầng 5, tòa nhà ABC, Cầu Giấy' },
-            { code: 'KH-2026-0004', name: 'Hoàng Thị Mai', email: 'mai.hoang@example.com', phone: '0987654321', docNo: '048188812345', country: 'Việt Nam', province: 'Đà Nẵng', ward: 'Phường Hải Châu 1', addressDetail: 'Số 88 Lê Lợi, Hải Châu' },
-            { code: 'KH-2026-0007', name: 'Phạm Văn Đồng', email: 'dong.pham@gmail.com', phone: '0912889900', docNo: '079085002233', country: 'Việt Nam', province: 'TP Hồ Chí Minh', ward: 'Phường Bến Nghé', addressDetail: '141 Pasteur, Quận 3' }
+            { code: 'KH-000128', name: 'Công ty TNHH Hải Nam', email: 'contact@hainam.vn', phone: '0912555666', docNo: '0108920145', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Hoàn Kiếm', addressDetail: 'Số 20 Trần Hưng Đạo' },
+            { code: 'KH-000130', name: 'Ngân hàng TMCP FPT', email: 'dangky@moj.gov.vn', phone: '02462739677', docNo: '0102345678', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Cầu Giấy', addressDetail: 'Tòa nhà FPT, Phố Duy Tân' },
+            { code: 'KH-000131', name: 'Ngân hàng TMCP Ngoại Thương Việt Nam (Vietcombank)', email: 'vcb@vietcombank.com.vn', phone: '02439343366', docNo: '0100112437', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Hoàn Kiếm', addressDetail: '198 Trần Quang Khải' },
+            { code: 'KH-000132', name: 'Công ty CP Đầu tư Mặt Trời Mới', email: 'info@mattroimoi.com', phone: '0988223344', docNo: '0106789900', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Cầu Giấy', addressDetail: 'Số 10 Phạm Hùng' },
+            { code: 'KH-000134', name: 'Ngân hàng TMCP Quân Đội (MB)', email: 'contact@mbbank.com.vn', phone: '02462661088', docNo: '0100283873', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Yên Hòa', addressDetail: 'Số 18 Lê Văn Lương' },
+            { code: 'KH-000135', name: 'Công ty TNHH MTV Thái Sơn', email: 'thaison@gmail.com', phone: '0913998877', docNo: '0104561234', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Đống Đa', addressDetail: 'Số 36 Hoàng Cầu' },
+            { code: 'KH-000136', name: 'Ngân hàng TMCP Tiên Phong (TPBank)', email: 'dktp@tpb.com.vn', phone: '02437688999', docNo: '0102744865', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Cửa Nam', addressDetail: 'Tòa nhà TPBank, 57 Lý Thường Kiệt' },
+            { code: 'KH-000138', name: 'Công ty CP Thép Nam Việt', email: 'namvietsteel@gmail.com', phone: '02838990011', docNo: '0304892211', country: 'Việt Nam', province: 'Bình Dương', ward: 'Phường Dĩ An', addressDetail: 'Khu công nghiệp Sóng Thần' },
+            { code: 'KH-000139', name: 'Ngân hàng TMCP Kỹ Thương (Techcombank)', email: 'call_center@techcombank.com.vn', phone: '02439446368', docNo: '0100230800', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Cửa Nam', addressDetail: 'Số 6 Quang Trung' },
+            { code: 'KH-000140', name: 'Công ty TNHH Vận tải Hoàng Long', email: 'hoanglongtrans@gmail.com', phone: '0912113355', docNo: '0200889911', country: 'Việt Nam', province: 'Hải Phòng', ward: 'Phường Ngô Quyền', addressDetail: 'Số 05 Phạm Ngũ Lão' },
+            { code: 'KH-000142', name: 'Ngân hàng TMCP Á Châu (ACB)', email: 'acb@acb.com.vn', phone: '02838247247', docNo: '0301452948', country: 'Việt Nam', province: 'TP Hồ Chí Minh', ward: 'Phường Xuân Hòa', addressDetail: 'Số 442 Nguyễn Thị Minh Khai' },
+            { code: 'KH-2026-0001', name: 'Nguyễn Văn Nam', email: 'nam.nguyen@example.com', phone: '0901234567', docNo: '001086012345', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Hoàn Kiếm', addressDetail: 'Số 20 Trần Hưng Đạo' },
+            { code: 'KH-2026-0002', name: 'Công ty Cổ phần Đầu tư ABC', email: 'contact@abc.vn', phone: '02438889999', docNo: '0101187788', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Cầu Giấy', addressDetail: 'Tầng 5, tòa nhà ABC' },
+            { code: 'KH-2026-0004', name: 'Hoàng Thị Mai', email: 'mai.hoang@example.com', phone: '0987654321', docNo: '048188812345', country: 'Việt Nam', province: 'Đà Nẵng', ward: 'Phường Hải Châu', addressDetail: 'Số 88 Lê Lợi' },
+            { code: 'KH-2026-0007', name: 'Phạm Văn Đồng', email: 'dong.pham@gmail.com', phone: '0912889900', docNo: '079085002233', country: 'Việt Nam', province: 'TP Hồ Chí Minh', ward: 'Phường Xuân Hòa', addressDetail: '141 Pasteur' }
         ];
 
         const seed = [
-            { code: 'HS-2026-000128', paper: 'PG-0128', channel: 'Trực tiếp tại quầy', requester: 'Công ty TNHH Hải Nam', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000128', phone: '0912555666', email: 'contact@hainam.vn', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Tràng Tiền', addressDetail: 'Số 20 Trần Hưng Đạo, Hoàn Kiếm', submitter: 'Nguyễn Văn Bình', submitterId: '001092012345', submitterPhone: '0988000111', relation: 'Người được ủy quyền', type: 'Đăng ký lần đầu', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', date: '24/07/2026 09:20', amount: 80000, fee: 'Chưa thu', status: 'Chờ thu phí', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hồ sơ giấy nộp tại quầy, đã kiểm tra thành phần tối thiểu.', attachments: [{ name: 'Đơn yêu cầu đăng ký', fileName: 'Đơn yêu cầu đăng ký.pdf', fileSize: 1258291, required: false }], history: [['24/07/2026 09:20', 'Chờ thu phí', 'Tiếp nhận hồ sơ giấy và tạo khoản phải thu.']] },
-            { code: 'HS-2026-000129', paper: 'PG-0129', channel: 'Qua bưu điện', requester: 'Nguyễn Thị Hoa', customerType: 'Khách hàng vãng lai', accountCode: '', phone: '0903222444', email: 'hoa.nt@example.com', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Hàng Bạc', addressDetail: 'Số 12 Lê Lợi, Hoàn Kiếm', submitter: 'Nguyễn Thị Hoa', submitterId: '034188009912', submitterPhone: '0903222444', relation: 'Người yêu cầu', type: 'Yêu cầu cung cấp bản sao', copyType: 'Bản sao giấy', copyQty: 1, resultMethod: 'Qua dịch vụ bưu chính', resultAddress: 'Số 12 Lê Lợi, Hoàn Kiếm, Hà Nội', date: '24/07/2026 10:05', amount: 25000, fee: 'Chưa thu', status: 'Chờ thu phí', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hồ sơ nhận qua bưu điện, chờ kế toán xác nhận thu phí (Bản sao giấy: 25.000 VNĐ).', attachments: [{ name: 'Phiếu yêu cầu cung cấp bản sao', fileName: 'Phiếu yêu cầu cung cấp bản sao.pdf', fileSize: 943718, required: false }], history: [['24/07/2026 10:05', 'Chờ thu phí', 'Tiếp nhận hồ sơ giấy và tạo khoản phải thu.']] },
-            { code: 'HS-2026-000130', paper: 'PG-0130', channel: 'Email', requester: 'Ngân hàng TMCP FPT', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000130', phone: '02462739677', email: 'dangky@moj.gov.vn', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Mỹ Đình 1', addressDetail: 'Tòa nhà FPT, Phố Duy Tân, Cầu Giấy', submitter: 'Trần Minh Quân', submitterId: '079090012312', submitterPhone: '0977000888', relation: 'Nhân viên tổ chức', type: 'Xóa đăng ký', isExempt: true, copyQty: 1, resultMethod: 'Cách thức điện tử', date: '23/07/2026 15:15', amount: 0, fee: 'Miễn phí', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hồ sơ xóa đăng ký thuộc đối tượng miễn lệ phí theo quy định.', attachments: [{ name: 'Đơn yêu cầu xóa đăng ký', fileName: 'Đơn yêu cầu xóa đăng ký.pdf', fileSize: 1153433, required: false }], history: [['23/07/2026 15:15', 'Chờ giải quyết', 'Tiếp nhận hồ sơ giấy (thuộc đối tượng miễn lệ phí), chuyển xử lý.']] },
-            { code: 'HS-2026-000131', paper: 'PG-0131', channel: 'Trực tiếp tại quầy', requester: 'Ngân hàng TMCP Ngoại Thương Việt Nam', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000131', phone: '02439343366', email: 'vcb@vietcombank.com.vn', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Lý Thái Tổ', addressDetail: '198 Trần Quang Khải, Hoàn Kiếm', submitter: 'Lê Hoàng Long', submitterId: '001095002345', submitterPhone: '0912345678', relation: 'Người được ủy quyền', type: 'Đăng ký thay đổi', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', date: '23/07/2026 08:45', amount: 60000, fee: 'Đã thu', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã nộp biên lai thu phí qua POS.', attachments: [{ name: 'Đơn yêu cầu đăng ký thay đổi', fileName: 'Don_thay_doi_VCB.pdf', fileSize: 1048576, required: false }], history: [['23/07/2026 08:45', 'Chờ thu phí', 'Tiếp nhận hồ sơ.'], ['23/07/2026 08:50', 'Chờ giải quyết', 'Thu phí thành công qua POS.']] },
-            { code: 'HS-2026-000132', paper: 'PG-0132', channel: 'Trực tiếp tại quầy', requester: 'Công ty CP Đầu tư Mặt Trời Mới', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000132', phone: '0988223344', email: 'info@mattroimoi.com', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Dịch Vọng', addressDetail: 'Số 10 Phạm Hùng, Cầu Giấy', submitter: 'Phạm Quốc Hưng', submitterId: '037092004455', submitterPhone: '0988223344', relation: 'Người yêu cầu', type: 'Đăng ký lần đầu', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', date: '22/07/2026 14:20', amount: 80000, fee: 'Đã thu', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hồ sơ đầy đủ, chuyển phân công.', attachments: [{ name: 'Đơn yêu cầu đăng ký', fileName: 'Don_DK_Mattroi.pdf', fileSize: 1450000, required: false }], history: [['22/07/2026 14:20', 'Chờ giải quyết', 'Đã thu phí trực tiếp tại quầy.']] },
-            { code: 'HS-2026-000133', paper: 'PG-0133', channel: 'Qua bưu điện', requester: 'Ông Đặng Văn Toàn', customerType: 'Khách hàng vãng lai', accountCode: '', phone: '0977112233', email: 'toan.dv@gmail.com', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Mộ Lao', addressDetail: 'Số 45 Trần Phú, Hà Đông', submitter: 'Ông Đặng Văn Toàn', submitterId: '025088001122', submitterPhone: '0977112233', relation: 'Người yêu cầu', type: 'Yêu cầu cung cấp bản sao', copyType: 'Bản sao giấy', copyQty: 2, resultMethod: 'Qua dịch vụ bưu chính', resultAddress: 'Số 45 Trần Phú, Hà Đông, Hà Nội', date: '22/07/2026 11:10', amount: 50000, fee: 'Chưa thu', status: 'Chờ thu phí', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Chờ nộp phí 2 bản sao giấy (25.000 x 2 = 50.000 VNĐ).', attachments: [{ name: 'Phiếu yêu cầu cung cấp bản sao', fileName: 'Phieu_YC_DangVanToan.pdf', fileSize: 850000, required: false }], history: [['22/07/2026 11:10', 'Chờ thu phí', 'Nhận chuyển phát từ bưu điện.']] },
-            { code: 'HS-2026-000134', paper: 'PG-0134', channel: 'Fax', requester: 'Ngân hàng TMCP Quân Đội (MB)', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000134', phone: '02462661088', email: 'contact@mbbank.com.vn', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Trung Hòa', addressDetail: 'Số 18 Lê Văn Lương, Cầu Giấy', submitter: 'Vũ Thị Mai', submitterId: '001193005566', submitterPhone: '0904556677', relation: 'Nhân viên tổ chức', type: 'Thông báo xử lý tài sản đảm bảo lần đầu', copyQty: 1, resultMethod: 'Cách thức điện tử', date: '21/07/2026 16:30', amount: 30000, fee: 'Đã thu', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Thanh toán chuyển khoản ngân hàng.', attachments: [{ name: 'Đơn thông báo xử lý tài sản', fileName: 'ThongBao_MB.pdf', fileSize: 1100000, required: false }], history: [['21/07/2026 16:30', 'Chờ giải quyết', 'Đã xác nhận thanh toán qua ngân hàng.']] },
-            { code: 'HS-2026-000135', paper: 'PG-0135', channel: 'Trực tiếp tại quầy', requester: 'Công ty TNHH MTV Thái Sơn', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000135', phone: '0913998877', email: 'thaison@gmail.com', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Láng Hạ', addressDetail: 'Số 36 Hoàng Cầu, Đống Đa', submitter: 'Bùi Đình Trọng', submitterId: '012091007788', submitterPhone: '0913998877', relation: 'Người yêu cầu', type: 'Thay đổi thông báo xử lý tài sản bảo đảm', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', date: '21/07/2026 09:15', amount: 30000, fee: 'Chưa thu', status: 'Bị từ chối', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Thiếu chữ ký bên nhận bảo đảm theo quy định.', attachments: [{ name: 'Đơn yêu cầu thay đổi thông báo xử lý tài sản', fileName: 'Don_ThaiSon.pdf', fileSize: 980000, required: false }], history: [['21/07/2026 09:15', 'Chờ thu phí', 'Tiếp nhận kiểm tra.'], ['21/07/2026 09:30', 'Bị từ chối', 'Từ chối do thiếu thành phần hồ sơ.']] },
-            { code: 'HS-2026-000136', paper: 'PG-0136', channel: 'Email', requester: 'Ngân hàng TMCP Tiên Phong (TPBank)', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000136', phone: '02437688999', email: 'dktp@tpb.com.vn', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Dịch Vọng Hậu', addressDetail: 'Tòa nhà TPBank, 57 Lý Thường Kiệt, Hoàn Kiếm', submitter: 'Hoàng Thu Trang', submitterId: '001194008899', submitterPhone: '0936112233', relation: 'Người được ủy quyền', type: 'Xóa đăng ký thông báo xử lý tài sản bảo đảm', copyQty: 1, resultMethod: 'Cách thức điện tử', date: '20/07/2026 14:00', amount: 20000, method: 'Chuyển khoản', fee: 'Đã thu', status: 'Hoàn thành', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã hoàn tất xử lý và trả kết quả điện tử.', attachments: [{ name: 'Đơn yêu cầu xóa đăng ký thông báo', fileName: 'Xoa_TPBank.pdf', fileSize: 750000, required: false }], history: [['20/07/2026 14:00', 'Chờ giải quyết', 'Tiếp nhận thành công.'], ['20/07/2026 16:30', 'Hoàn thành', 'Đã cấp chứng nhận xóa đăng ký.']] },
-            { code: 'HS-2026-000137', paper: 'PG-0137', channel: 'Trực tiếp tại quầy', requester: 'Bà Nguyễn Thị Thanh Mai', customerType: 'Khách hàng vãng lai', accountCode: '', phone: '0904334455', email: 'mai.ntt@yahoo.com', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Khương Mai', addressDetail: 'Số 55 Nguyễn Ngọc Nại, Thanh Xuân', submitter: 'Trần Văn Hùng', submitterId: '014090001234', submitterPhone: '0904334455', relation: 'Người yêu cầu', type: 'Yêu cầu cung cấp thông tin', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', date: '20/07/2026 10:30', amount: 15000, fee: 'Đã thu', status: 'Hoàn thành', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã trả văn bản cung cấp thông tin tại quầy.', attachments: [{ name: 'Phiếu yêu cầu cung cấp thông tin', fileName: 'Don_ThanhMai.pdf', fileSize: 1320000, required: false }], history: [['20/07/2026 10:30', 'Chờ giải quyết', 'Thu tiền mặt tại quầy.'], ['20/07/2026 15:00', 'Hoàn thành', 'Trả văn bản cung cấp thông tin.']] },
-            { code: 'HS-2026-000138', paper: 'PG-0138', channel: 'Qua bưu điện', requester: 'Công ty CP Thép Nam Việt', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000138', phone: '02838990011', email: 'namvietsteel@gmail.com', country: 'Việt Nam', province: 'Bình Dương', ward: 'Phường An Bình', addressDetail: 'Khu công nghiệp Sóng Thần, Dĩ An', submitter: 'Đỗ Minh Đức', submitterId: '079088003344', submitterPhone: '0918776655', relation: 'Nhân viên tổ chức', type: 'Đăng ký thay đổi', copyQty: 1, resultMethod: 'Qua dịch vụ bưu chính', resultAddress: 'Khu công nghiệp Sóng Thần, Bình Dương', date: '19/07/2026 15:40', amount: 60000, fee: 'Đã thu', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Chuyển cán bộ thụ lý xử lý hồ sơ.', attachments: [{ name: 'Đơn yêu cầu đăng ký thay đổi', fileName: 'Don_NamViet.pdf', fileSize: 1180000, required: false }], history: [['19/07/2026 15:40', 'Chờ giải quyết', 'Đã nhận ủy nhiệm chi thanh toán.']] },
-            { code: 'HS-2026-000139', paper: 'PG-0139', channel: 'Trực tiếp tại quầy', requester: 'Ngân hàng TMCP Kỹ Thương (Techcombank)', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000139', phone: '02439446368', email: 'call_center@techcombank.com.vn', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Phan Chu Trinh', addressDetail: 'Số 6 Quang Trung, Hoàn Kiếm', submitter: 'Lê Thị Cúc', submitterId: '001192003322', submitterPhone: '0982334455', relation: 'Người được ủy quyền', type: 'Yêu cầu cung cấp bản sao', copyType: 'Bản sao điện tử', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', date: '19/07/2026 09:05', amount: 50000, fee: 'Chưa thu', status: 'Chờ thu phí', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hồ sơ chờ xác nhận phí bản sao điện tử (50.000 VNĐ) từ bộ phận kế toán.', attachments: [{ name: 'Phiếu yêu cầu cung cấp bản sao', fileName: 'Phieu_TCB.pdf', fileSize: 620000, required: false }], history: [['19/07/2026 09:05', 'Chờ thu phí', 'Tạo khoản phải thu.']] },
-            { code: 'HS-2026-000140', paper: 'PG-0140', channel: 'Email', requester: 'Công ty TNHH Vận tải Hoàng Long', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000140', phone: '0912113355', email: 'hoanglongtrans@gmail.com', country: 'Việt Nam', province: 'Hải Phòng', ward: 'Phường Cầu Đất', addressDetail: 'Số 05 Phạm Ngũ Lão, Ngô Quyền', submitter: 'Vũ Quốc Tuấn', submitterId: '031089004433', submitterPhone: '0912113355', relation: 'Người yêu cầu', type: 'Thông báo xử lý tài sản đảm bảo lần đầu', copyQty: 1, resultMethod: 'Cách thức điện tử', date: '18/07/2026 11:50', amount: 30000, fee: 'Đã thu', status: 'Hoàn thành', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã phát hành thông báo xử lý tài sản trên CSDL.', attachments: [{ name: 'Đơn thông báo xử lý tài sản', fileName: 'TB_HoangLong.pdf', fileSize: 1050000, required: false }], history: [['18/07/2026 11:50', 'Chờ giải quyết', 'Đã thu phí.'], ['18/07/2026 15:30', 'Hoàn thành', 'Hoàn tất nhập liệu thông báo.']] },
-            { code: 'HS-2026-000141', paper: 'PG-0141', channel: 'Trực tiếp tại quầy', requester: 'Ông Lương Văn Hải', customerType: 'Khách hàng vãng lai', accountCode: '', phone: '0945667788', email: 'hailv@outlook.com', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Phúc La', addressDetail: 'Số 19 Phùng Hưng, Hà Đông', submitter: 'Ông Lương Văn Hải', submitterId: '022085006677', submitterPhone: '0945667788', relation: 'Người yêu cầu', type: 'Đăng ký lần đầu', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', date: '17/07/2026 16:15', amount: 80000, fee: 'Chưa thu', status: 'Bị từ chối', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hợp đồng bảo đảm hết hiệu lực theo thỏa thuận.', attachments: [], history: [['17/07/2026 16:15', 'Bị từ chối', 'Từ chối tiếp nhận theo quy định.']] },
-            { code: 'HS-2026-000142', paper: 'PG-0142', channel: 'Qua bưu điện', requester: 'Ngân hàng TMCP Á Châu (ACB)', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000142', phone: '02838247247', email: 'acb@acb.com.vn', country: 'Việt Nam', province: 'TP Hồ Chí Minh', ward: 'Phường Võ Thị Sáu', addressDetail: 'Số 442 Nguyễn Thị Minh Khai, Quận 3', submitter: 'Phan Thị Nga', submitterId: '079193006655', submitterPhone: '0908112233', relation: 'Người được ủy quyền', type: 'Xóa đăng ký', copyQty: 1, resultMethod: 'Qua dịch vụ bưu chính', resultAddress: 'Số 442 Nguyễn Thị Minh Khai, Quận 3, TP.HCM', date: '17/07/2026 08:30', amount: 20000, method: 'Chuyển khoản', fee: 'Đã thu', status: 'Hoàn thành', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã gửi bản chứng nhận xóa đăng ký qua bưu điện bảo đảm.', attachments: [{ name: 'Đơn yêu cầu xóa đăng ký', fileName: 'Xoa_ACB.pdf', fileSize: 920000, required: false }], history: [['17/07/2026 08:30', 'Chờ giải quyết', 'Tiếp nhận hồ sơ bưu điện.'], ['17/07/2026 11:00', 'Hoàn thành', 'Ký duyệt xóa đăng ký và gửi bưu cục.']] }
+            { code: 'HS-2026-000128', paper: 'PG-0128', channel: 'Trực tiếp tại quầy', requester: 'Công ty TNHH Hải Nam', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000128', phone: '0912555666', email: 'contact@hainam.vn', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Hoàn Kiếm', addressDetail: 'Số 20 Trần Hưng Đạo', submitter: 'Nguyễn Văn Bình', submitterId: '001092012345', submitterPhone: '0988000111', relation: 'Người được ủy quyền', type: 'Đăng ký lần đầu', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', date: '24/07/2026 09:20', amount: 80000, fee: 'Chưa thu', status: 'Chờ thu phí', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hồ sơ giấy nộp tại quầy, đã kiểm tra thành phần tối thiểu.', attachments: [{ name: 'Đơn yêu cầu đăng ký', fileName: 'Đơn yêu cầu đăng ký.pdf', fileSize: 1258291, required: false }], history: [['24/07/2026 09:20', 'Chờ thu phí', 'Tiếp nhận hồ sơ giấy và tạo khoản phải thu.']] },
+            { code: 'HS-2026-000129', paper: 'PG-0129', channel: 'Qua bưu điện', requester: 'Nguyễn Thị Hoa', customerType: 'Khách hàng vãng lai', accountCode: '', phone: '0903222444', email: 'hoa.nt@example.com', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Hoàn Kiếm', addressDetail: 'Số 12 Lê Lợi', submitter: 'Nguyễn Thị Hoa', submitterId: '034188009912', submitterPhone: '0903222444', relation: 'Người yêu cầu', type: 'Yêu cầu cung cấp bản sao', copyType: 'Bản sao giấy', copyQty: 1, resultMethod: 'Qua dịch vụ bưu chính', resultAddress: 'Số 12 Lê Lợi, Phường Hoàn Kiếm, Hà Nội, Việt Nam', date: '24/07/2026 10:05', amount: 25000, fee: 'Chưa thu', status: 'Chờ thu phí', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hồ sơ nhận qua bưu điện, chờ kế toán xác nhận thu phí (Bản sao giấy: 25.000 VNĐ).', attachments: [{ name: 'Phiếu yêu cầu cung cấp bản sao', fileName: 'Phiếu yêu cầu cung cấp bản sao.pdf', fileSize: 943718, required: false }], history: [['24/07/2026 10:05', 'Chờ thu phí', 'Tiếp nhận hồ sơ giấy và tạo khoản phải thu.']] },
+            { code: 'HS-2026-000130', paper: 'PG-0130', channel: 'Email', requester: 'Ngân hàng TMCP FPT', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000130', phone: '02462739677', email: 'dangky@moj.gov.vn', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Cầu Giấy', addressDetail: 'Tòa nhà FPT, Phố Duy Tân', submitter: 'Trần Minh Quân', submitterId: '079090012312', submitterPhone: '0977000888', relation: 'Nhân viên tổ chức', type: 'Xóa đăng ký', isExempt: true, copyQty: 1, resultMethod: 'Cách thức điện tử', date: '23/07/2026 15:15', amount: 0, fee: 'Miễn phí', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hồ sơ xóa đăng ký thuộc đối tượng miễn lệ phí theo quy định.', attachments: [{ name: 'Đơn yêu cầu xóa đăng ký', fileName: 'Đơn yêu cầu xóa đăng ký.pdf', fileSize: 1153433, required: false }], history: [['23/07/2026 15:15', 'Chờ giải quyết', 'Tiếp nhận hồ sơ giấy (thuộc đối tượng miễn lệ phí), chuyển xử lý.']] },
+            { code: 'HS-2026-000131', paper: 'PG-0131', channel: 'Trực tiếp tại quầy', requester: 'Ngân hàng TMCP Ngoại Thương Việt Nam', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000131', phone: '02439343366', email: 'vcb@vietcombank.com.vn', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Hoàn Kiếm', addressDetail: '198 Trần Quang Khải', submitter: 'Lê Hoàng Long', submitterId: '001095002345', submitterPhone: '0912345678', relation: 'Người được ủy quyền', type: 'Đăng ký thay đổi', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', date: '23/07/2026 08:45', amount: 60000, fee: 'Đã thu', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã nộp biên lai thu phí qua POS.', attachments: [{ name: 'Đơn yêu cầu đăng ký thay đổi', fileName: 'Don_thay_doi_VCB.pdf', fileSize: 1048576, required: false }], history: [['23/07/2026 08:45', 'Chờ thu phí', 'Tiếp nhận hồ sơ.'], ['23/07/2026 08:50', 'Chờ giải quyết', 'Thu phí thành công qua POS.']] },
+            { code: 'HS-2026-000132', paper: 'PG-0132', channel: 'Trực tiếp tại quầy', requester: 'Công ty CP Đầu tư Mặt Trời Mới', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000132', phone: '0988223344', email: 'info@mattroimoi.com', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Cầu Giấy', addressDetail: 'Số 10 Phạm Hùng', submitter: 'Phạm Quốc Hưng', submitterId: '037092004455', submitterPhone: '0988223344', relation: 'Người yêu cầu', type: 'Đăng ký lần đầu', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', date: '22/07/2026 14:20', amount: 80000, fee: 'Đã thu', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hồ sơ đầy đủ, chuyển phân công.', attachments: [{ name: 'Đơn yêu cầu đăng ký', fileName: 'Don_DK_Mattroi.pdf', fileSize: 1450000, required: false }], history: [['22/07/2026 14:20', 'Chờ giải quyết', 'Đã thu phí trực tiếp tại quầy.']] },
+            { code: 'HS-2026-000133', paper: 'PG-0133', channel: 'Qua bưu điện', requester: 'Ông Đặng Văn Toàn', customerType: 'Khách hàng vãng lai', accountCode: '', phone: '0977112233', email: 'toan.dv@gmail.com', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Hà Đông', addressDetail: 'Số 45 Trần Phú', submitter: 'Ông Đặng Văn Toàn', submitterId: '025088001122', submitterPhone: '0977112233', relation: 'Người yêu cầu', type: 'Yêu cầu cung cấp bản sao', copyType: 'Bản sao giấy', copyQty: 2, resultMethod: 'Qua dịch vụ bưu chính', resultAddress: 'Số 45 Trần Phú, Phường Hà Đông, Hà Nội, Việt Nam', date: '22/07/2026 11:10', amount: 50000, fee: 'Chưa thu', status: 'Chờ thu phí', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Chờ nộp phí 2 bản sao giấy (25.000 x 2 = 50.000 VNĐ).', attachments: [{ name: 'Phiếu yêu cầu cung cấp bản sao', fileName: 'Phieu_YC_DangVanToan.pdf', fileSize: 850000, required: false }], history: [['22/07/2026 11:10', 'Chờ thu phí', 'Nhận chuyển phát từ bưu điện.']] },
+            { code: 'HS-2026-000134', paper: 'PG-0134', channel: 'Fax', requester: 'Ngân hàng TMCP Quân Đội (MB)', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000134', phone: '02462661088', email: 'contact@mbbank.com.vn', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Yên Hòa', addressDetail: 'Số 18 Lê Văn Lương', submitter: 'Vũ Thị Mai', submitterId: '001193005566', submitterPhone: '0904556677', relation: 'Nhân viên tổ chức', type: 'Thông báo xử lý tài sản đảm bảo lần đầu', copyQty: 1, resultMethod: 'Cách thức điện tử', date: '21/07/2026 16:30', amount: 30000, fee: 'Đã thu', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Thanh toán chuyển khoản ngân hàng.', attachments: [{ name: 'Đơn thông báo xử lý tài sản', fileName: 'ThongBao_MB.pdf', fileSize: 1100000, required: false }], history: [['21/07/2026 16:30', 'Chờ giải quyết', 'Đã xác nhận thanh toán qua ngân hàng.']] },
+            { code: 'HS-2026-000135', paper: 'PG-0135', channel: 'Trực tiếp tại quầy', requester: 'Công ty TNHH MTV Thái Sơn', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000135', phone: '0913998877', email: 'thaison@gmail.com', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Đống Đa', addressDetail: 'Số 36 Hoàng Cầu', submitter: 'Bùi Đình Trọng', submitterId: '012091007788', submitterPhone: '0913998877', relation: 'Người yêu cầu', type: 'Thay đổi thông báo xử lý tài sản bảo đảm', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', date: '21/07/2026 09:15', amount: 30000, fee: 'Chưa thu', status: 'Bị từ chối', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Thiếu chữ ký bên nhận bảo đảm theo quy định.', attachments: [{ name: 'Đơn yêu cầu thay đổi thông báo xử lý tài sản', fileName: 'Don_ThaiSon.pdf', fileSize: 980000, required: false }], history: [['21/07/2026 09:15', 'Chờ thu phí', 'Tiếp nhận kiểm tra.'], ['21/07/2026 09:30', 'Bị từ chối', 'Từ chối do thiếu thành phần hồ sơ.']] },
+            { code: 'HS-2026-000136', paper: 'PG-0136', channel: 'Email', requester: 'Ngân hàng TMCP Tiên Phong (TPBank)', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000136', phone: '02437688999', email: 'dktp@tpb.com.vn', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Cửa Nam', addressDetail: 'Tòa nhà TPBank, 57 Lý Thường Kiệt', submitter: 'Hoàng Thu Trang', submitterId: '001194008899', submitterPhone: '0936112233', relation: 'Người được ủy quyền', type: 'Xóa đăng ký thông báo xử lý tài sản bảo đảm', copyQty: 1, resultMethod: 'Cách thức điện tử', date: '20/07/2026 14:00', amount: 20000, method: 'Chuyển khoản', fee: 'Đã thu', status: 'Hoàn thành', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã hoàn tất xử lý và trả kết quả điện tử.', attachments: [{ name: 'Đơn yêu cầu xóa đăng ký thông báo', fileName: 'Xoa_TPBank.pdf', fileSize: 750000, required: false }], history: [['20/07/2026 14:00', 'Chờ giải quyết', 'Tiếp nhận thành công.'], ['20/07/2026 16:30', 'Hoàn thành', 'Đã cấp chứng nhận xóa đăng ký.']] },
+            { code: 'HS-2026-000137', paper: 'PG-0137', channel: 'Trực tiếp tại quầy', requester: 'Bà Nguyễn Thị Thanh Mai', customerType: 'Khách hàng vãng lai', accountCode: '', phone: '0904334455', email: 'mai.ntt@yahoo.com', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Thanh Xuân', addressDetail: 'Số 55 Nguyễn Ngọc Nại', submitter: 'Trần Văn Hùng', submitterId: '014090001234', submitterPhone: '0904334455', relation: 'Người yêu cầu', type: 'Yêu cầu cung cấp thông tin', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', date: '20/07/2026 10:30', amount: 15000, fee: 'Đã thu', status: 'Hoàn thành', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã trả văn bản cung cấp thông tin tại quầy.', attachments: [{ name: 'Phiếu yêu cầu cung cấp thông tin', fileName: 'Don_ThanhMai.pdf', fileSize: 1320000, required: false }], history: [['20/07/2026 10:30', 'Chờ giải quyết', 'Thu tiền mặt tại quầy.'], ['20/07/2026 15:00', 'Hoàn thành', 'Trả văn bản cung cấp thông tin.']] },
+            { code: 'HS-2026-000138', paper: 'PG-0138', channel: 'Qua bưu điện', requester: 'Công ty CP Thép Nam Việt', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000138', phone: '02838990011', email: 'namvietsteel@gmail.com', country: 'Việt Nam', province: 'Bình Dương', ward: 'Phường Dĩ An', addressDetail: 'Khu công nghiệp Sóng Thần', submitter: 'Đỗ Minh Đức', submitterId: '079088003344', submitterPhone: '0918776655', relation: 'Nhân viên tổ chức', type: 'Đăng ký thay đổi', copyQty: 1, resultMethod: 'Qua dịch vụ bưu chính', resultAddress: 'Khu công nghiệp Sóng Thần, Phường Dĩ An, Bình Dương, Việt Nam', date: '19/07/2026 15:40', amount: 60000, fee: 'Đã thu', status: 'Chờ giải quyết', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Chuyển cán bộ thụ lý xử lý hồ sơ.', attachments: [{ name: 'Đơn yêu cầu đăng ký thay đổi', fileName: 'Don_NamViet.pdf', fileSize: 1180000, required: false }], history: [['19/07/2026 15:40', 'Chờ giải quyết', 'Đã nhận ủy nhiệm chi thanh toán.']] },
+            { code: 'HS-2026-000139', paper: 'PG-0139', channel: 'Trực tiếp tại quầy', requester: 'Ngân hàng TMCP Kỹ Thương (Techcombank)', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000139', phone: '02439446368', email: 'call_center@techcombank.com.vn', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Cửa Nam', addressDetail: 'Số 6 Quang Trung', submitter: 'Lê Thị Cúc', submitterId: '001192003322', submitterPhone: '0982334455', relation: 'Người được ủy quyền', type: 'Yêu cầu cung cấp bản sao', copyType: 'Bản sao điện tử', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', date: '19/07/2026 09:05', amount: 50000, fee: 'Chưa thu', status: 'Chờ thu phí', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hồ sơ chờ xác nhận phí bản sao điện tử (50.000 VNĐ) từ bộ phận kế toán.', attachments: [{ name: 'Phiếu yêu cầu cung cấp bản sao', fileName: 'Phieu_TCB.pdf', fileSize: 620000, required: false }], history: [['19/07/2026 09:05', 'Chờ thu phí', 'Tạo khoản phải thu.']] },
+            { code: 'HS-2026-000140', paper: 'PG-0140', channel: 'Email', requester: 'Công ty TNHH Vận tải Hoàng Long', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000140', phone: '0912113355', email: 'hoanglongtrans@gmail.com', country: 'Việt Nam', province: 'Hải Phòng', ward: 'Phường Ngô Quyền', addressDetail: 'Số 05 Phạm Ngũ Lão', submitter: 'Vũ Quốc Tuấn', submitterId: '031089004433', submitterPhone: '0912113355', relation: 'Người yêu cầu', type: 'Thông báo xử lý tài sản đảm bảo lần đầu', copyQty: 1, resultMethod: 'Cách thức điện tử', date: '18/07/2026 11:50', amount: 30000, fee: 'Đã thu', status: 'Hoàn thành', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã phát hành thông báo xử lý tài sản trên CSDL.', attachments: [{ name: 'Đơn thông báo xử lý tài sản', fileName: 'TB_HoangLong.pdf', fileSize: 1050000, required: false }], history: [['18/07/2026 11:50', 'Chờ giải quyết', 'Đã thu phí.'], ['18/07/2026 15:30', 'Hoàn thành', 'Hoàn tất nhập liệu thông báo.']] },
+            { code: 'HS-2026-000141', paper: 'PG-0141', channel: 'Trực tiếp tại quầy', requester: 'Ông Lương Văn Hải', customerType: 'Khách hàng vãng lai', accountCode: '', phone: '0945667788', email: 'hailv@outlook.com', country: 'Việt Nam', province: 'Hà Nội', ward: 'Phường Hà Đông', addressDetail: 'Số 19 Phùng Hưng', submitter: 'Ông Lương Văn Hải', submitterId: '022085006677', submitterPhone: '0945667788', relation: 'Người yêu cầu', type: 'Đăng ký lần đầu', copyQty: 1, resultMethod: 'Trực tiếp tại cơ quan', date: '17/07/2026 16:15', amount: 80000, fee: 'Chưa thu', status: 'Bị từ chối', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Hợp đồng bảo đảm hết hiệu lực theo thỏa thuận.', attachments: [], history: [['17/07/2026 16:15', 'Bị từ chối', 'Từ chối tiếp nhận theo quy định.']] },
+            { code: 'HS-2026-000142', paper: 'PG-0142', channel: 'Qua bưu điện', requester: 'Ngân hàng TMCP Á Châu (ACB)', customerType: 'Có tài khoản trực tuyến', accountCode: 'KH-000142', phone: '02838247247', email: 'acb@acb.com.vn', country: 'Việt Nam', province: 'TP Hồ Chí Minh', ward: 'Phường Xuân Hòa', addressDetail: 'Số 442 Nguyễn Thị Minh Khai', submitter: 'Phan Thị Nga', submitterId: '079193006655', submitterPhone: '0908112233', relation: 'Người được ủy quyền', type: 'Xóa đăng ký', copyQty: 1, resultMethod: 'Qua dịch vụ bưu chính', resultAddress: 'Số 442 Nguyễn Thị Minh Khai, Phường Xuân Hòa, TP Hồ Chí Minh, Việt Nam', date: '17/07/2026 08:30', amount: 20000, method: 'Chuyển khoản', fee: 'Đã thu', status: 'Hoàn thành', agency: 'Trung tâm đăng ký, giao dịch tài sản tại TP Hà Nội', officer: 'Nguyễn Thị Tiếp Nhận', note: 'Đã gửi bản chứng nhận xóa đăng ký qua bưu điện bảo đảm.', attachments: [{ name: 'Đơn yêu cầu xóa đăng ký', fileName: 'Xoa_ACB.pdf', fileSize: 920000, required: false }], history: [['17/07/2026 08:30', 'Chờ giải quyết', 'Tiếp nhận hồ sơ bưu điện.'], ['17/07/2026 11:00', 'Hoàn thành', 'Ký duyệt xóa đăng ký và gửi bưu cục.']] }
         ];
 
         let documents = [], selectingDocId = '';
@@ -1520,6 +1517,11 @@
                 customerType: x.customerType === 'Có tài khoản trực tuyến' ? 'dinh_danh' : 'vang_lai',
                 phone: x.phone || '0900000000',
                 email: x.email || '',
+                // Địa chỉ Người yêu cầu (Phường/Xã chỉ áp dụng với địa chỉ tại Việt Nam)
+                requesterCountry: x.country || 'Việt Nam',
+                requesterProvince: x.province || '',
+                requesterWard: (window.DiaBanVN ? DiaBanVN.isVN(x.country || 'Việt Nam') : true) ? (x.ward || '') : '',
+                requesterAddress: x.addressDetail || '',
                 paymentMethod: x.method === 'Tiền mặt' ? 'tien_mat' : x.method === 'Chuyển khoản' ? 'chuyen_khoan' : 'mien_phi',
                 resultMethod: x.resultMethod === 'Qua dịch vụ bưu chính' ? 'buu_chinh' : x.resultMethod === 'Cách thức điện tử' ? 'dien_tu' : 'truc_tiep',
                 handlingOfficer: 'Nguyễn Văn Cán Bộ',
@@ -1707,6 +1709,51 @@
             if (errEl) errEl.style.display = 'none';
         }
 
+        // Phường/Xã của Người yêu cầu: chỉ hiển thị (và bắt buộc) khi Quốc gia là Việt Nam, lọc theo Tỉnh/thành phố đã chọn
+        function bindWardField() {
+            if (!window.DiaBanVN) return null;
+            const ctl = DiaBanVN.bind({
+                id: 'ward', country: 'country', province: 'province', after: 'provinceGroup',
+                groupClass: 'form-group', labelClass: 'form-label', selectClass: 'form-control',
+                requiredHtml: ' <span class="required">*</span>',
+                onChange: v => {
+                    // Dùng kiểu báo lỗi inline của trang thay cho thông báo mặc định của module
+                    const w = el('ward');
+                    const dbErr = w && w.parentElement.querySelector('.dbvn-err');
+                    if (dbErr) dbErr.remove();
+                    if (v) clearFieldError(w); else showFieldError(w, 'Đây là trường bắt buộc');
+                }
+            });
+            if (ctl && !ctl.el.querySelector('.invalid-feedback')) {
+                const err = document.createElement('div');
+                err.className = 'invalid-feedback';
+                err.id = 'wardError';
+                err.textContent = 'Đây là trường bắt buộc';
+                ctl.el.appendChild(err);
+            }
+            return ctl;
+        }
+
+        // Khách hàng có tài khoản trực tuyến: Phường/Xã lấy theo tài khoản, không cho sửa
+        function applyWardLock() {
+            const ctl = bindWardField();
+            if (!ctl) return;
+            ctl.refresh();
+            if (filterValue('customerType') === 'dinh_danh') {
+                ctl.select.disabled = true;
+                ctl.select.classList.add('readonly');
+            } else {
+                ctl.select.classList.remove('readonly');
+            }
+        }
+
+        function setWardValue(value) {
+            const ctl = bindWardField();
+            if (!ctl) return;
+            ctl.setValue(value || '');
+            applyWardLock();
+        }
+
         function clearAccountError() {
             const acc = el('accountCode');
             if (acc) clearFieldError(acc);
@@ -1720,7 +1767,7 @@
             const email = el('email'); if (email) email.value = cust.email;
             const country = el('country'); if (country) country.value = cust.country || 'Việt Nam';
             const province = el('province'); if (province) province.value = cust.province || '';
-            const ward = el('ward'); if (ward) ward.value = cust.ward || '';
+            setWardValue(cust.ward || '');
             const addr = el('addressDetail'); if (addr) addr.value = cust.addressDetail || '';
 
             if (acc) clearFieldError(acc);
@@ -1960,12 +2007,16 @@
             if (customer) customer.value = 'dinh_danh';
 
             // Mặc định không điền sẵn mã tài khoản trực tuyến khi mới bấm tạo mới
-            ['accountCode', 'requester', 'phone', 'email', 'province', 'ward', 'addressDetail'].forEach(id => {
+            ['accountCode', 'requester', 'phone', 'email', 'province', 'addressDetail'].forEach(id => {
                 const node = el(id);
                 if (node) node.value = '';
             });
             const countryNode = el('country');
             if (countryNode) countryNode.value = 'Việt Nam';
+            const wardCtl = bindWardField();
+            if (wardCtl) wardCtl.reset();
+            const wardNode = el('ward');
+            if (wardNode) clearFieldError(wardNode);
 
             updateConditionalFields();
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2004,14 +2055,12 @@
             const requester = el('requester');
             const country = el('country');
             const province = el('province');
-            const ward = el('ward');
             const addressDetail = el('addressDetail');
 
             if (hasAccount) {
                 setInputReadonly(requester, true);
                 setInputDisabled(country, true);
                 setInputReadonly(province, true);
-                setInputReadonly(ward, true);
                 setInputReadonly(addressDetail, true);
             } else {
                 if (account) {
@@ -2021,9 +2070,9 @@
                 setInputReadonly(requester, false);
                 setInputDisabled(country, false);
                 setInputReadonly(province, false);
-                setInputReadonly(ward, false);
                 setInputReadonly(addressDetail, false);
             }
+            applyWardLock();
 
             const isCopy = type.value === 'Yêu cầu cung cấp bản sao';
             if (copyTypeWrap) copyTypeWrap.classList.toggle('is-hidden', !isCopy);
@@ -2098,11 +2147,12 @@
         function completeReceive(andPrint) {
             const paper = el('paperNo'), req = el('requester'), sub = el('submitter'), accountWrap = el('accountField'), account = el('accountCode'), copyWrap = el('copyQtyField'), copy = el('copyQty'), addressWrap = el('resultAddressField'), address = el('resultAddress'), emailWrap = el('resultEmailField'), resultMail = el('resultEmail'), exemptionWrap = el('exemptionField');
 
-            ['paperNo', 'accountCode', 'requester', 'copyQty', 'resultAddress', 'resultEmail'].forEach(id => {
+            ['paperNo', 'accountCode', 'requester', 'ward', 'copyQty', 'resultAddress', 'resultEmail'].forEach(id => {
                 const node = el(id);
                 if (node) clearFieldError(node);
             });
             let firstErrorField = null;
+            const wardCtl = bindWardField();
 
             // Số đơn giấy: không bắt buộc nhập
             if (accountWrap && !accountWrap.classList.contains('is-hidden') && (!account || !account.value.trim())) {
@@ -2112,6 +2162,11 @@
             if (!req || !req.value.trim()) {
                 showFieldError(req, 'Đây là trường bắt buộc');
                 if (!firstErrorField) firstErrorField = req;
+            }
+            // Phường/Xã bắt buộc khi đang hiển thị (Quốc gia là Việt Nam)
+            if (wardCtl && wardCtl.isVisible() && !wardCtl.value()) {
+                showFieldError(wardCtl.select, 'Đây là trường bắt buộc');
+                if (!firstErrorField) firstErrorField = wardCtl.select;
             }
             if (copyWrap && !copyWrap.classList.contains('is-hidden') && Number(copy ? copy.value : 0) < 1) {
                 showFieldError(copy, 'Số lượng bản sao phải lớn hơn hoặc bằng 1');
@@ -2152,7 +2207,7 @@
                 email: filterValue('email'),
                 country: filterValue('country') || 'Việt Nam',
                 province: filterValue('province'),
-                ward: filterValue('ward'),
+                ward: wardCtl ? wardCtl.value() : filterValue('ward'),
                 addressDetail: filterValue('addressDetail'),
                 submitter: sub ? sub.value : '',
                 submitterId: filterValue('submitterId'),
@@ -2280,6 +2335,9 @@
             setVal('dtlCountry', x.country || 'Việt Nam');
             setVal('dtlProvince', x.province || '-');
             setVal('dtlWard', x.ward || '-');
+            // Phường/Xã chỉ hiển thị với địa chỉ tại Việt Nam
+            const dtlWardGroup = el('dtlWardGroup');
+            if (dtlWardGroup) dtlWardGroup.classList.toggle('is-hidden', !(window.DiaBanVN ? DiaBanVN.isVN(x.country || 'Việt Nam') : true));
             setVal('dtlAddressDetail', x.addressDetail || '-');
 
             // 03. Thông tin người nộp hồ sơ
@@ -2400,6 +2458,7 @@
         }
 
         // Initialize page
+        bindWardField();
         renderList();
         syncProfiles(load());
         const initParams = new URLSearchParams(window.location.search);

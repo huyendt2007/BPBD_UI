@@ -167,10 +167,10 @@
 | Cột: Loại chủ thể | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Cột: Số giấy tờ chứng minh tư cách pháp lý | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Cột: Tên | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
-| Cột: Địa chỉ | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
+| Cột: Địa chỉ | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi.<br>- Định dạng: "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia" theo [BR-VAL-015]. |
 | **Bên nhận bảo đảm** | - | - | - | Control UI: Bảng dữ liệu (Grid), chỉ đọc. |
 | Cột: Tên | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
-| Cột: Địa chỉ | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
+| Cột: Địa chỉ | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi.<br>- Định dạng: "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia" theo [BR-VAL-015]. |
 | **Tài sản bảo đảm** | - | - | - | Hiển thị lần lượt từng tài sản bảo đảm của hồ sơ gốc. |
 | Loại tài sản | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Mô tả | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
@@ -218,7 +218,7 @@
 | Mã hồ sơ | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Mã khách hàng | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | Người yêu cầu | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
-| Địa chỉ | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi.<br>- Hiển thị đầy đủ theo thứ tự: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia. |
+| Địa chỉ | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi.<br>- Hiển thị đầy đủ theo thứ tự: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia (Quốc gia khác Việt Nam không có Phường/Xã, theo [BR-VAL-015]). |
 | Thời điểm đăng ký | - | - | - | Control UI: Label, chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi.<br>- Định dạng hiển thị: dd/mm/yyyy hh:mm. |
 | Trạng thái | - | - | - | Control UI: Label dạng nhãn trạng thái (Badge), chỉ đọc.<br>- Hiển thị theo dữ liệu bản ghi. |
 | **II. Thông tin trả lại** | - | - | - | Hiển thị và xử lý giống khối **II. Thông tin trả lại** tại [MH04 - Màn hình Xem chi tiết yêu cầu cung cấp bản sao](#43215-mh04---man-hinh-xem-chi-tiet-yeu-cau-cung-cap-ban-sao), đặt ngay dưới Khối I.<br>- Hiển thị khi hồ sơ đang ở trạng thái "Bị trả lại", hoặc hồ sơ đã từng bị trả lại và được trình ký lại (giữ lại vết lịch sử các lần trả lại trước đó). |

@@ -396,6 +396,9 @@
             warehouseAddress: n % 2 ? `Kho số ${n % 7 + 1}, KCN Quang Minh, Hà Nội` : '', warehouseNo: n % 2 ? `KHO-${String(n).padStart(3, '0')}` : '',
             vsdcTime: `${pad(8 + (n % 9))}:${pad(n % 60)} ${pad(n % 27 + 1)}/0${n % 9 + 1}/2026`, description: `Mô tả tài sản của hồ sơ ${p.id}`
         };
+        // Phiếu thuộc dữ liệu giả lập Lọc phiếu trùng lặp: lấy đúng tài sản đã khai
+        const tl = window.TRUNGLAP ? TRUNGLAP.assetDetailOf(pdkRegNo(p)) : null;
+        if (tl) Object.keys(tl).forEach(k => { if (tl[k]) p.assetDetail[k] = tl[k]; });
         return p.assetDetail;
     }
     function dynamicColumns() {
@@ -438,6 +441,7 @@
                 <div class="form-group"><label class="form-label">Cán bộ xử lý</label><select class="form-select" id="ld-pdk-officer">${officerOptions()}</select></div>
                 ${dateInputs(threeMonthsAgo(), today())}
                 <div class="form-group" style="grid-column: 1 / span 2;"><label class="form-label">Loại tài sản</label><select class="form-select" id="filter-loaitaisan" onchange="LeaderUI.assetChange()"><option value="">Tất cả</option>${ASSET_TYPES.map(a => `<option value="${a.key}">${a.label}</option>`).join('')}</select></div>
+                <div class="form-group"><label class="form-label">Trùng lặp</label><select class="form-select" id="ld-pdk-trunglap"><option value="">Tất cả</option><option value="chua">Có hồ sơ trùng chưa rà soát</option><option value="da">Có hồ sơ trùng đã rà soát</option><option value="khong">Không trùng lặp</option></select></div>
             </div>
             <div id="ld-dynamic-filter" style="display:none;margin-top:8px;padding:8px 12px;border:1px solid #E2E8F0;border-left:3px solid #2563EB;border-radius:5px;background:#F8FAFC"><div class="grid-4-cols" id="ld-dynamic-filter-fields"></div></div>
             ${filterButtons}`;
@@ -491,6 +495,12 @@
             if (txn && p.transactionType !== txn) return false;
             if (val('cb-loaibienphap') && p.subtype !== val('cb-loaibienphap')) return false;
             if (val('filter-loaitaisan') && !assetKeys(p.assetType).includes(val('filter-loaitaisan'))) return false;
+            // Trùng lặp: theo kết quả xác định trùng lặp [BR-DK-037] và trạng thái rà soát [BR-DK-038]
+            if (val('ld-pdk-trunglap') && window.TRUNGLAP) {
+                const so = pdkRegNo(p);
+                const tl = !TRUNGLAP.hasDup(so) ? 'khong' : (TRUNGLAP.hasUnreviewed(so) ? 'chua' : 'da');
+                if (tl !== val('ld-pdk-trunglap')) return false;
+            }
             if (dyn.length) { const d = assetDetail(p); if (!dyn.every(f => String(d[f.id] || '').toLowerCase().includes(f.value))) return false; }
             return inDateRange(p.date, 'ld-from', 'ld-to');
         });
@@ -537,7 +547,7 @@
             return `<tr style="cursor:pointer" onclick="LeaderUI.pdkDetail('${p.id}')">
                 <td onclick="event.stopPropagation()" style="text-align:center"><input type="checkbox" class="row-checkbox" value="${p.id}"></td>
                 <td style="text-align:center">${start + i + 1}</td><td>${esc(p.date)}</td>
-                <td><span class="action-link" onclick="event.stopPropagation(); LeaderUI.pdkDetail('${p.id}')">${esc(pdkRegNo(p))}</span></td>
+                <td><span class="action-link" onclick="event.stopPropagation(); LeaderUI.pdkDetail('${p.id}')">${esc(pdkRegNo(p))}</span>${window.TRUNGLAP ? TRUNGLAP.label(pdkRegNo(p)) : ''}</td>
                 <td><code>${['Đăng ký mới', 'Đăng ký lần đầu'].includes(p.type) ? esc(p.pin || '-') : '-'}</code></td>
                 <td><b>${esc(p.customer)}</b></td><td>${esc(p.mortgagee)}</td><td>${esc(typeLabel(p.type))}</td>
                 <td>${esc(p.transactionType || '-')}</td><td>${esc(p.subtype || '-')}</td><td>${assets}</td>

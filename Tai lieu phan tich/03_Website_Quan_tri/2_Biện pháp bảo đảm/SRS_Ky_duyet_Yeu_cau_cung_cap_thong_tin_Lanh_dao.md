@@ -49,7 +49,7 @@
 | Thời điểm đăng ký | Datetime | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Định dạng `dd/mm/yyyy HH:mm`.<br>- Hỗ trợ sắp xếp động (Sortable) khi click vào tiêu đề cột. |
 | Mã khách hàng | String(50) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Mã khách hàng gắn với tài khoản nộp yêu cầu, nếu có. |
 | Người yêu cầu | String(255) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Tên cá nhân/tổ chức yêu cầu cung cấp thông tin. |
-| Địa chỉ | Text(500) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Địa chỉ của Người yêu cầu, hiển thị đầy đủ theo thứ tự: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia. |
+| Địa chỉ | Text(500) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Địa chỉ của Người yêu cầu, hiển thị đầy đủ theo thứ tự: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia (Quốc gia khác Việt Nam không có Phường/Xã, theo [BR-VAL-015]). |
 | Tiêu chí yêu cầu | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Hiển thị một trong các giá trị: "Số đăng ký", "Bên bảo đảm", "Số khung". |
 | Dữ liệu tra cứu | Text(1000) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Dữ liệu tra cứu tương ứng Tiêu chí yêu cầu. |
 | Nguồn tiếp nhận | Enum(String(50)) | - | Lấy theo dữ liệu bản ghi | Control UI: Label, chỉ đọc.<br>- Hiển thị "Trực tuyến" hoặc "Trực tiếp". |
