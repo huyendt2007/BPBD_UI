@@ -918,9 +918,9 @@
             const agency = (document.getElementById('filter_agency')?.value || '').trim().toLowerCase();
             const status = document.getElementById('filter_status')?.value || '';
             let filtered = workingRows.filter(row => {
-                const joined = row.join(' ').toLowerCase();
-                if (keyword && !joined.includes(keyword)) return false;
-                if (agency && !joined.includes(agency)) return false;
+                // Mỗi ô lọc chỉ so khớp đúng cột tương ứng: Mã hồ sơ/Mã cuộc kiểm tra (cột 1), Cơ quan (cột 2)
+                if (keyword && !String(row[0] || '').toLowerCase().includes(keyword)) return false;
+                if (agency && !String(row[1] || '').toLowerCase().includes(agency)) return false;
                 if (status && row[row.length - 1] !== status) return false;
                 return true;
             });

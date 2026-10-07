@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard trực quan về quản lý BTNN</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="vn_34_tinh.js"></script>
+<style>
+    :root {
+        --primary-color: #1E3A8A;
+        --primary-hover: #1E40AF;
+        --secondary-color: #3B82F6;
+        --success-color: #10B981;
+        --danger-color: #EF4444;
+        --bg-body: #F3F4F6;
+        --bg-surface: #FFFFFF;
+        --text-main: #1E293B;
+        --text-muted: #64748B;
+        --border-color: #E2E8F0;
+        --table-header-bg: #F1F5F9;
+        --font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        --box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -1px rgba(0,0,0,0.05);
+        /* Vai trò màu biểu đồ (bảng màu tham chiếu đã kiểm định) */
+        --viz-grid: #e1e0d9;
+        --viz-axis: #c3c2b7;
+        --viz-muted: #898781;
+        --viz-ink2: #52514e;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-family); background: var(--bg-body); color: var(--text-main); font-size: 14px; line-height: 1.5; padding: 20px; }
+    .container { max-width: 100%; margin: 0 auto; }
+    .page-header { margin-bottom: 18px; background: var(--bg-surface); border: 1px solid var(--border-color); padding: 16px 20px; border-radius: 8px; box-shadow: var(--box-shadow); }
+    .page-header h1 { font-size: 19px; font-weight: 700; color: var(--primary-color); display: flex; align-items: center; gap: 10px; }
+    .card { background: var(--bg-surface); border-radius: 8px; box-shadow: var(--box-shadow); padding: 18px 20px; margin-bottom: 18px; border: 1px solid rgba(0,0,0,0.05); }
+    .card-title { color: var(--primary-color); font-size: 15px; font-weight: 600; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .card-title .left { display: flex; align-items: center; gap: 8px; }
+    .filter-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+    .form-label { font-size: 12.5px; font-weight: 600; color: #334155; }
+    .form-label .req { color: var(--danger-color); }
+    .form-control { width: 100%; height: 38px; padding: 0 10px; border: 1px solid #CBD5E1; border-radius: 6px; font-family: inherit; font-size: 13.5px; color: var(--text-main); background: #fff; }
+    .form-control:focus { outline: none; border-color: var(--secondary-color); box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
+    .filter-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; }
+    .btn { height: 38px; padding: 0 16px; border-radius: 6px; font-family: inherit; font-size: 13.5px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; border: 1px solid transparent; }
+    .btn-primary { background: var(--primary-color); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-secondary { background: #fff; color: #334155; border-color: #CBD5E1; }
+    .btn-secondary:hover { background: #F8FAFC; }
+    .btn-sm { height: 30px; padding: 0 10px; font-size: 12.5px; }
+    .btn-link { background: none; border: none; color: var(--secondary-color); font-weight: 600; font-size: 12.5px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 0; }
+    .btn-link:hover { text-decoration: underline; }
+
+    /* Thẻ số liệu */
+    .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 18px; }
+    .kpi { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px 16px; box-shadow: var(--box-shadow); }
+    .kpi .lbl { font-size: 12.5px; color: var(--text-muted); font-weight: 500; display: flex; align-items: center; gap: 6px; }
+    .kpi .val { font-size: 24px; font-weight: 700; color: var(--text-main); margin-top: 4px; line-height: 1.2; }
+    .kpi .sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    /* Lưới thành phần màn tổng quan */
+    .widget-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; align-items: start; }
+    .widget-grid .card { margin-bottom: 0; }
+    .chart-box { position: relative; height: 300px; }
+    .chart-box.tall { height: 360px; }
+
+    /* Chọn loại biểu đồ */
+    .seg { display: inline-flex; border: 1px solid #CBD5E1; border-radius: 6px; overflow: hidden; }
+    .seg button { height: 30px; padding: 0 12px; background: #fff; border: none; border-left: 1px solid #CBD5E1; font-family: inherit; font-size: 12.5px; font-weight: 600; color: #475569; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+    .seg button:first-child { border-left: none; }
+    .seg button.active { background: var(--primary-color); color: #fff; }
+
+    /* Bảng */
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border-color); border-radius: 6px; }
+    table.tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+    table.tbl th { background: var(--table-header-bg); color: #334155; font-weight: 600; text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--border-color); white-space: nowrap; }
+    table.tbl td { padding: 8px 12px; border-bottom: 1px solid #F1F5F9; }
+    table.tbl td.num, table.tbl th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    table.tbl tr:last-child td { border-bottom: none; }
+    table.tbl tr.total td { font-weight: 700; background: #F8FAFC; }
+    .badge { display: inline-flex; align-items: center; gap: 5px; padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; border: 1px solid transparent; }
+    .badge.on { background: #ECFDF5; color: #047857; border-color: #A7F3D0; }
+    .badge.off { background: #F1F5F9; color: #475569; border-color: #E2E8F0; }
+    .lv-dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+
+    /* Phân tích: biểu đồ + bản đồ */
+    .split { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 18px; align-items: start; }
+    .split .card { margin-bottom: 0; }
+
+    /* Bản đồ hành chính tỉnh, thành phố */
+    .vn-map svg { display: block; width: 100%; max-width: 420px; height: auto; margin: 0 auto; }
+    .vn-map .prov path, .vn-map path.prov { stroke: #ffffff; stroke-width: 0.7; stroke-linejoin: round; cursor: pointer; transition: opacity .1s; }
+    .vn-map path.prov:hover { stroke: #0b0b0b; stroke-width: 1.4; }
+    .vn-map g.isl { cursor: pointer; }
+    .vn-map g.isl:hover circle { stroke: #0b0b0b; stroke-width: 1.2; }
+    .vn-map .isl-lbl { font-size: 9px; fill: #52514e; font-weight: 600; }
+    .map-legend { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 12px; font-size: 12px; color: var(--viz-ink2); }
+    .map-legend .sw { display: inline-block; width: 22px; height: 12px; border-radius: 3px; vertical-align: -2px; margin-right: 4px; }
+    .map-note { text-align: center; font-size: 11.5px; color: var(--viz-muted); margin-top: 6px; }
+    .viz-tip { position: fixed; pointer-events: none; background: #fff; border: 1px solid rgba(11,11,11,0.12); box-shadow: 0 6px 16px rgba(0,0,0,0.12); border-radius: 6px; padding: 8px 10px; font-size: 12.5px; color: #0b0b0b; z-index: 50; display: none; min-width: 160px; }
+    .viz-tip .t { font-weight: 700; margin-bottom: 3px; }
+    .viz-tip .r { display: flex; justify-content: space-between; gap: 14px; color: var(--viz-ink2); }
+    .viz-tip .r b { color: #0b0b0b; font-variant-numeric: tabular-nums; }
+
+    /* Popup */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(15,23,42,0.45); display: none; align-items: center; justify-content: center; z-index: 100; }
+    .modal-backdrop.visible { display: flex; }
+    .modal { background: #fff; border-radius: 10px; width: 720px; max-width: calc(100% - 32px); max-height: calc(100% - 40px); display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+    .modal-header { padding: 14px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+    .modal-header h3 { font-size: 16px; color: var(--primary-color); display: flex; align-items: center; gap: 8px; }
+    .modal-body { padding: 18px 20px; overflow-y: auto; }
+    .modal-footer { padding: 12px 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 10px; }
+    .icon-btn { width: 30px; height: 30px; border-radius: 6px; border: 1px solid #E2E8F0; background: #fff; color: #475569; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+    .icon-btn.edit { color: #059669; border-color: #A7F3D0; background: #ECFDF5; }
+    .icon-btn.edit:hover { background: #D1FAE5; }
+    .form-grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .err-text { color: var(--danger-color); font-size: 12px; min-height: 16px; }
+    .toast { position: fixed; top: 20px; right: 20px; background: #065F46; color: #fff; padding: 10px 16px; border-radius: 8px; box-shadow: var(--box-shadow); display: none; align-items: center; gap: 8px; z-index: 200; font-size: 13.5px; }
+    .empty { text-align: center; color: var(--text-muted); font-style: italic; padding: 28px; }
+    @media (max-width: 1280px) { .split { grid-template-columns: 1fr; } }
+    @media (max-width: 1100px) { .widget-grid { grid-template-columns: 1fr; } .filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="page-header"><h1 id="pageTitle"></h1></div>
+    <div class="card" id="filterCard">
+        <div class="card-title"><span class="left"><i class="fa-solid fa-filter"></i> Lọc, tìm kiếm thông tin</span></div>
+        <div class="filter-grid" id="filterGrid"></div>
+        <div class="filter-actions">
+            <button class="btn btn-secondary" onclick="resetFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+            <button class="btn btn-primary" onclick="applyFilters()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+        </div>
+    </div>
+    <div id="content"></div>
+</div>
+
+<!-- Popup Thêm mới/Cập nhật cấu hình -->
+<div class="modal-backdrop" id="cfgModal">
+    <div class="modal">
+        <div class="modal-header"><h3 id="cfgModalTitle"></h3><button class="icon-btn" onclick="closeCfgModal()" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="modal-body"><div class="form-grid-2" id="cfgForm"></div></div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeCfgModal()">Hủy bỏ</button>
+            <button class="btn btn-primary" onclick="saveCfg()"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>
+        </div>
+    </div>
+</div>
+<div class="viz-tip" id="vizTip"></div>
+<div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText"></span></div>
+
+<script>
+// ===================== Danh mục =====================
+const YEARS = [2022, 2023, 2024, 2025, 2026];
+const SCORE_YEARS = [2022, 2023, 2024, 2025];          // Năm đánh giá đã có kết quả chấm điểm
+const CUR_YEAR = 2026, CUR_SCORE_YEAR = 2025;
+const PERIODS = [['thuc_te', 'Báo cáo năm số liệu thực tế (01/01 - 31/10)'], ['chinh_thuc', 'Số liệu thống kê năm chính thức (01/01 - 31/12)']]; // [DM_44]
+const LV = ['Quản lý hành chính', 'Tố tụng hình sự', 'Tố tụng dân sự', 'Tố tụng hành chính', 'Thi hành án hình sự', 'Thi hành án dân sự']; // [DM_22]
+const CAP = ['UBND cấp tỉnh', 'Tòa án nhân dân tối cao', 'Viện kiểm sát nhân dân tối cao', 'Bộ/cơ quan ngang Bộ']; // [DM_43]
+const LEVELS = ['Tốt', 'Khá', 'Trung bình', 'Yếu'];  // [DM_33] - trừ Chưa xếp loại, Không đánh giá
+// Danh mục tỉnh, thành phố [DM_13] và vị trí ô trên bản đồ (cột, hàng) theo vị trí địa lý tương đối
+const PROVINCES = [
+    ['LCH', 'Tỉnh Lai Châu', 1, 0], ['LCA', 'Tỉnh Lào Cai', 2, 0], ['TQU', 'Tỉnh Tuyên Quang', 3, 0], ['CBA', 'Tỉnh Cao Bằng', 4, 0],
+    ['DBI', 'Tỉnh Điện Biên', 0, 1], ['SLA', 'Tỉnh Sơn La', 1, 1], ['PTH', 'Tỉnh Phú Thọ', 2, 1], ['TNG', 'Tỉnh Thái Nguyên', 3, 1], ['LSO', 'Tỉnh Lạng Sơn', 4, 1],
+    ['HNO', 'Thành phố Hà Nội', 2, 2], ['BNI', 'Tỉnh Bắc Ninh', 3, 2], ['QNI', 'Tỉnh Quảng Ninh', 4, 2],
+    ['NBI', 'Tỉnh Ninh Bình', 2, 3], ['HYE', 'Tỉnh Hưng Yên', 3, 3], ['HPH', 'Thành phố Hải Phòng', 4, 3],
+    ['THO', 'Tỉnh Thanh Hóa', 2, 4], ['NAN', 'Tỉnh Nghệ An', 2, 5], ['HTI', 'Tỉnh Hà Tĩnh', 3, 6], ['QTR', 'Tỉnh Quảng Trị', 3, 7],
+    ['HUE', 'Thành phố Huế', 3, 8], ['DNA', 'Thành phố Đà Nẵng', 4, 9],
+    ['GLA', 'Tỉnh Gia Lai', 3, 10], ['QNG', 'Tỉnh Quảng Ngãi', 4, 10], ['DLA', 'Tỉnh Đắk Lắk', 3, 11], ['KHO', 'Tỉnh Khánh Hòa', 4, 11],
+    ['TNI', 'Tỉnh Tây Ninh', 1, 12], ['DNI', 'Tỉnh Đồng Nai', 2, 12], ['LDO', 'Tỉnh Lâm Đồng', 3, 12],
+    ['AGI', 'Tỉnh An Giang', 0, 13], ['DTH', 'Tỉnh Đồng Tháp', 1, 13], ['HCM', 'Thành phố Hồ Chí Minh', 2, 13],
+    ['CTH', 'Thành phố Cần Thơ', 1, 14], ['VLO', 'Tỉnh Vĩnh Long', 2, 14], ['CMA', 'Tỉnh Cà Mau', 1, 15]
+].map(([code, name, c, r]) => ({ code, name, short: name.replace(/^(Tỉnh|Thành phố) /, ''), c, r }));
+const provByCode = Object.fromEntries(PROVINCES.map(p => [p.code, p]));
+const stpName = p => 'Sở Tư pháp ' + p.short;
+
+// ===================== Màu (bảng màu tham chiếu đã kiểm định) =====================
+const CAT = ['#2a78d6', '#eb6834', '#1baf7a', '#eda100', '#e87ba4', '#008300', '#4a3aa7', '#e34948'];
+const LEVEL_COLOR = { 'Tốt': '#0d366b', 'Khá': '#2a78d6', 'Trung bình': '#6da7ec', 'Yếu': '#9ec5f4' }; // thứ bậc, một sắc độ xanh
+const SEQ = ['#cde2fb', '#9ec5f4', '#6da7ec', '#3987e5', '#256abf', '#184f95'];               // tuần tự, một sắc độ xanh
+const INK_ON = hex => (['#cde2fb', '#9ec5f4', '#6da7ec', '#86b6ef', '#f0efec'].includes(hex) ? '#0b0b0b' : '#ffffff');
+
+// ===================== Dữ liệu giả lập =====================
+function rng(seed) { return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const R = rng(20261007);
+const BIG = { HNO: 3.2, HCM: 3.6, HPH: 1.6, DNA: 1.4, CTH: 1.3, DNI: 1.5, BNI: 1.2, THO: 1.3, NAN: 1.3 };
+const LV_W = [0.44, 0.2, 0.1, 0.08, 0.05, 0.13];
+// Phân bổ theo loại cơ quan báo cáo [DM_43] của từng lĩnh vực
+const CAP_W = [[0.85, 0, 0, 0.15], [0, 0.35, 0.45, 0.2], [0, 1, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 0, 1]];
+// Cơ quan giải quyết bồi thường theo lĩnh vực
+const AGENCY_OF = [p => ['UBND ' + p.name.replace('Tỉnh', 'tỉnh').replace('Thành phố', 'thành phố'), 'UBND cấp xã thuộc ' + p.short], p => ['Công an ' + p.short, 'Viện kiểm sát nhân dân ' + p.short, 'Tòa án nhân dân ' + p.short], p => ['Tòa án nhân dân ' + p.short], p => ['Tòa án nhân dân ' + p.short], p => ['Công an ' + p.short], p => ['Thi hành án dân sự ' + p.short]];
+const CASES = {};   // CASES[year][prov][lv] = { thuLy, giaiQuyet, tien(triệu đồng), agency: {tên: số vụ} }
+YEARS.forEach((y, yi) => {
+    CASES[y] = {};
+    PROVINCES.forEach(p => {
+        const base = (BIG[p.code] || (0.5 + R() * 0.7)) * (8 + yi * 1.2);
+        CASES[y][p.code] = LV.map((_, li) => {
+            const thuLy = Math.max(0, Math.round(base * LV_W[li] * (0.7 + R() * 0.6)));
+            const giaiQuyet = Math.round(thuLy * (0.55 + R() * 0.38));
+            const tien = Math.round(giaiQuyet * (90 + R() * 700));
+            const ags = AGENCY_OF[li](p); const agency = {};
+            let left = thuLy; ags.forEach((a, ai) => { const n = ai === ags.length - 1 ? left : Math.round(left * (0.5 + R() * 0.3)); agency[a] = n; left -= n; });
+            return { thuLy, giaiQuyet, tien, agency };
+        });
+    });
+});
+const SCORES = {};  // SCORES[year][prov] = { tuCham, btp }
+const SCORE_BASE = Object.fromEntries(PROVINCES.map(p => [p.code, 46 + R() * 42]));
+SCORE_YEARS.forEach((y, yi) => {
+    SCORES[y] = {};
+    PROVINCES.forEach(p => { const btp = Math.max(40, Math.min(99, SCORE_BASE[p.code] + yi * 1.8 + (R() - 0.5) * 9)); SCORES[y][p.code] = { btp: +btp.toFixed(1), tuCham: +Math.min(100, btp + 1.5 + R() * 5).toFixed(1) }; });
+});
+const levelOf = s => s >= 85 ? 'Tốt' : s >= 70 ? 'Khá' : s >= 50 ? 'Trung bình' : 'Yếu'; // [BR-BTNN-CD-003]
+
+// Tổng hợp vụ việc theo điều kiện lọc
+const METRICS = [['thuLy', 'Số vụ việc thụ lý'], ['giaiQuyet', 'Số vụ việc đã giải quyết'], ['tien', 'Số tiền đã chi trả (triệu đồng)']];
+const metricLabel = k => (METRICS.find(m => m[0] === k) || [k, k])[1];
+const periodFactor = k => k === 'chinh_thuc' ? 1.18 : 1;
+function caseRows({ year, period, prov, lv, cap }) {
+    const out = [], f = periodFactor(period);
+    PROVINCES.forEach(p => {
+        if (prov && prov !== p.code) return;
+        CASES[year][p.code].forEach((c, li) => {
+            if (lv !== '' && lv !== undefined && +lv !== li) return;
+            const capW = cap !== '' && cap !== undefined ? CAP_W[li][+cap] : 1;
+            if (!capW) return;
+            out.push({ p, li, w: capW * f, c });
+        });
+    });
+    return out;
+}
+function sumRows(rows, key) { return Math.round(rows.reduce((s, r) => s + r.c[key] * r.w, 0)); }
+function sumBy(rows, keyFn, metric) { const m = {}; rows.forEach(r => { const k = keyFn(r); m[k] = (m[k] || 0) + r.c[metric] * r.w; }); Object.keys(m).forEach(k => m[k] = Math.round(m[k])); return m; }
+const fmt = n => (Math.round(n) || 0).toLocaleString('vi-VN');
+const fmt1 = n => (+n).toLocaleString('vi-VN', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const pct = (a, b) => b ? (a * 100 / b).toLocaleString('vi-VN', { maximumFractionDigits: 1 }) + '%' : '-';
+
+// ===================== Cấu hình hiển thị (chung toàn hệ thống) =====================
+const SCREENS = {
+    tong_quan: { title: 'Màn hình trực quan thông tin chung về tình hình quản lý công tác BTNN', icon: 'fa-gauge-high' },
+    cau_hinh: { title: 'Cấu hình lựa chọn hình thức hiển thị thông tin về tình hình quản lý công tác BTNN', icon: 'fa-sliders' },
+    pt_thoi_gian: { title: 'Phân tích tình hình kết quả đánh giá công tác BTNN theo thời gian', icon: 'fa-chart-line', analysis: true },
+    pt_dia_phuong: { title: 'Phân tích tình hình kết quả đánh giá công tác BTNN theo địa phương', icon: 'fa-map-location-dot', analysis: true },
+    pt_pham_vi: { title: 'Phân tích tình hình kết quả đánh giá công tác BTNN theo phạm vi trách nhiệm bồi thường của Nhà nước', icon: 'fa-scale-balanced', analysis: true },
+    pt_co_quan: { title: 'Phân tích tình hình kết quả đánh giá công tác BTNN theo cơ quan giải quyết bồi thường', icon: 'fa-building-columns', analysis: true },
+    pt_cap: { title: 'Phân tích tình hình kết quả đánh giá công tác BTNN theo cấp thực hiện', icon: 'fa-sitemap', analysis: true },
+    pt_ca_nuoc: { title: 'Phân tích tình hình giải quyết vụ việc trong phạm vi cả nước', icon: 'fa-earth-asia', analysis: true }
+};
+const CHART_TYPES = [['bar', 'Biểu đồ cột', 'fa-chart-column'], ['pie', 'Biểu đồ tròn', 'fa-chart-pie'], ['line', 'Biểu đồ đường', 'fa-chart-line']];
+const chartTypeLabel = k => k === 'map' ? 'Bản đồ' : (CHART_TYPES.find(c => c[0] === k) || [k, k])[1];
+// Thành phần cấu hình: 06 màn phân tích + các thành phần của màn tổng quan
+const COMPONENTS = [
+    { id: 'pt_thoi_gian', name: SCREENS.pt_thoi_gian.title, scope: 'Màn hình phân tích', metrics: [['xepLoai', 'Phân bố xếp loại'], ['diemTB', 'Điểm bình quân do Bộ Tư pháp đánh giá']] },
+    { id: 'pt_dia_phuong', name: SCREENS.pt_dia_phuong.title, scope: 'Màn hình phân tích', metrics: [['btp', 'Điểm do Bộ Tư pháp đánh giá'], ['tuCham', 'Điểm tự chấm']] },
+    { id: 'pt_pham_vi', name: SCREENS.pt_pham_vi.title, scope: 'Màn hình phân tích', metrics: METRICS },
+    { id: 'pt_co_quan', name: SCREENS.pt_co_quan.title, scope: 'Màn hình phân tích', metrics: METRICS },
+    { id: 'pt_cap', name: SCREENS.pt_cap.title, scope: 'Màn hình phân tích', metrics: METRICS },
+    { id: 'pt_ca_nuoc', name: SCREENS.pt_ca_nuoc.title, scope: 'Màn hình phân tích', metrics: METRICS },
+    { id: 'w_dien_bien', name: 'Diễn biến thụ lý, giải quyết vụ việc 05 năm', scope: 'Màn hình tổng quan', link: 'pt_ca_nuoc' },
+    { id: 'w_pham_vi', name: 'Vụ việc theo phạm vi trách nhiệm bồi thường', scope: 'Màn hình tổng quan', link: 'pt_pham_vi' },
+    { id: 'w_xep_loai', name: 'Kết quả xếp loại công tác BTNN của các Sở Tư pháp', scope: 'Màn hình tổng quan', link: 'pt_dia_phuong' },
+    { id: 'w_ban_do', name: 'Bản đồ vụ việc thụ lý theo tỉnh, thành phố', scope: 'Màn hình tổng quan', link: 'pt_ca_nuoc', fixed: 'map' },
+    { id: 'w_cap', name: 'Vụ việc theo cấp thực hiện', scope: 'Màn hình tổng quan', link: 'pt_cap' },
+    { id: 'w_co_quan', name: 'Cơ quan giải quyết bồi thường có nhiều vụ việc nhất', scope: 'Màn hình tổng quan', link: 'pt_co_quan' }
+];
+const compById = id => COMPONENTS.find(c => c.id === id);
+const CFG_KEY = 'btnn_dashboard_cfg_v1';
+function defaultCfg() {
+    const who = 'Nguyễn Văn Quản Trị', at = '01/10/2026 09:00';
+    const r = (id, chart, metric, order, on) => ({ id, chart, metric, order, status: on ? 'Áp dụng' : 'Không áp dụng', user: who, at });
+    return [
+        r('pt_thoi_gian', 'bar', 'xepLoai', 1, true), r('pt_dia_phuong', 'bar', 'btp', 2, true), r('pt_pham_vi', 'bar', 'thuLy', 3, true),
+        r('pt_co_quan', 'bar', 'thuLy', 4, true), r('pt_cap', 'pie', 'thuLy', 5, true), r('pt_ca_nuoc', 'bar', 'thuLy', 6, true),
+        r('w_dien_bien', 'line', '', 1, true), r('w_pham_vi', 'bar', '', 2, true), r('w_xep_loai', 'pie', '', 3, true), r('w_ban_do', 'map', '', 4, true), r('w_cap', 'pie', '', 5, false)
+        // w_co_quan chưa cấu hình: dùng để minh họa Thêm mới
+    ];
+}
+function loadCfg() { try { const v = JSON.parse(localStorage.getItem(CFG_KEY) || 'null'); if (Array.isArray(v)) return v; } catch (e) { } const d = defaultCfg(); saveCfgStore(d); return d; }
+function saveCfgStore(v) { try { localStorage.setItem(CFG_KEY, JSON.stringify(v)); } catch (e) { } }
+let CFG = loadCfg();
+const cfgOf = id => CFG.find(c => c.id === id);
+
+// ===================== Tiện ích giao diện =====================
+const P = new URLSearchParams(location.search);
+const MODULE = SCREENS[P.get('module')] ? P.get('module') : 'tong_quan';
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function showToast(t) { const el = document.getElementById('toast'); document.getElementById('toastText').textContent = t; el.style.display = 'flex'; clearTimeout(window.__t); window.__t = setTimeout(() => el.style.display = 'none', 2200); }
+const opt = (v, l, sel) => `<option value="${esc(v)}" ${String(v) === String(sel) ? 'selected' : ''}>${esc(l)}</option>`;
+function selectHtml(id, label, options, value, allLabel) {
+    return `<div class="form-group"><span class="form-label">${label}</span><select class="form-control" id="${id}">${allLabel ? opt('', allLabel, value) : ''}${options.map(o => opt(o[0], o[1], value)).join('')}</select></div>`;
+}
+const val = id => (document.getElementById(id) || {}).value;
+const provOptions = PROVINCES.map(p => [p.code, p.name]);
+const stpOptions = PROVINCES.map(p => [p.code, stpName(p)]);
+
+// ===================== Biểu đồ (Chart.js) =====================
+const charts = {};
+function chart(id, config) { if (charts[id]) charts[id].destroy(); const el = document.getElementById(id); if (!el || !window.Chart) return; charts[id] = new Chart(el, config); }
+function baseOpts({ horizontal, stacked, legend, money, yTitle } = {}) {
+    const tick = { color: '#898781', font: { size: 11.5 } };
+    const valueAxis = { beginAtZero: true, stacked: !!stacked, grid: { color: '#e1e0d9' }, border: { display: false }, ticks: { ...tick, callback: v => fmt(v) }, title: yTitle ? { display: true, text: yTitle, color: '#898781', font: { size: 11.5 } } : undefined };
+    const catAxis = { stacked: !!stacked, grid: { display: false }, border: { color: '#c3c2b7' }, ticks: { ...tick, autoSkip: false } };
+    return {
+        responsive: true, maintainAspectRatio: false, animation: { duration: 250 }, indexAxis: horizontal ? 'y' : 'x',
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+            legend: { display: !!legend, position: 'bottom', labels: { color: '#52514e', boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: 'rectRounded', padding: 14 } },
+            tooltip: { backgroundColor: '#ffffff', titleColor: '#0b0b0b', bodyColor: '#52514e', borderColor: 'rgba(11,11,11,0.12)', borderWidth: 1, padding: 10, boxPadding: 4, usePointStyle: true,
+                callbacks: { label: c => ` ${c.dataset.label ? c.dataset.label + ': ' : ''}${typeof c.raw === 'number' && !Number.isInteger(c.raw) ? fmt1(c.raw) : fmt(c.raw)}` } }
+        },
+        scales: horizontal ? { x: valueAxis, y: catAxis } : { x: catAxis, y: valueAxis }
+    };
+}
+const barDs = (label, data, color, extra) => ({ label, data, backgroundColor: color, borderRadius: 4, borderSkipped: 'start', maxBarThickness: 26, categoryPercentage: 0.72, barPercentage: 0.9, ...extra });
+const stackDs = (label, data, color) => ({ label, data, backgroundColor: color, borderColor: '#ffffff', borderWidth: 1, maxBarThickness: 30, categoryPercentage: 0.7 });
+const lineDs = (label, data, color) => ({ label, data, borderColor: color, backgroundColor: color, borderWidth: 2, tension: 0.4, pointRadius: 4, pointHoverRadius: 6, pointBackgroundColor: color, pointBorderColor: '#ffffff', pointBorderWidth: 2 });
+function pieCfg(labels, data, colors) {
+    return { type: 'doughnut', data: { labels, datasets: [{ data, backgroundColor: colors, borderColor: '#ffffff', borderWidth: 2, hoverOffset: 6 }] },
+        options: { responsive: true, maintainAspectRatio: false, cutout: '58%', animation: { duration: 250 },
+            plugins: { legend: { position: 'right', labels: { color: '#52514e', boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: 'rectRounded', padding: 12,
+                generateLabels: ch => { const ds = ch.data.datasets[0], tot = ds.data.reduce((a, b) => a + b, 0); return ch.data.labels.map((l, i) => ({ text: `${l}: ${fmt(ds.data[i])} (${pct(ds.data[i], tot)})`, fillStyle: ds.backgroundColor[i], strokeStyle: ds.backgroundColor[i], fontColor: '#52514e', index: i, hidden: !ch.getDataVisibility(i), pointStyle: 'rectRounded' })); } } },
+                tooltip: { backgroundColor: '#ffffff', titleColor: '#0b0b0b', bodyColor: '#52514e', borderColor: 'rgba(11,11,11,0.12)', borderWidth: 1, padding: 10, callbacks: { label: c => { const tot = c.dataset.data.reduce((a, b) => a + b, 0); return ` ${c.label}: ${fmt(c.raw)} (${pct(c.raw, tot)})`; } } } } } };
+}
+function segHtml(active) { return `<div class="seg" role="group" aria-label="Loại biểu đồ">${CHART_TYPES.map(([k, l, ic]) => `<button class="${k === active ? 'active' : ''}" onclick="setChartType('${k}')" title="${l}"><i class="fa-solid ${ic}"></i> ${l.replace('Biểu đồ ', '').replace(/^./, s => s.toUpperCase())}</button>`).join('')}</div>`; }
+
+// ===================== Bản đồ hành chính 34 tỉnh, thành phố =====================
+// Phép chiếu đơn giản (kinh độ hiệu chỉnh theo vĩ độ trung bình), khung gồm cả quần đảo Hoàng Sa, Trường Sa
+const MAP_BOX = { lon0: 102.0, lon1: 116.2, lat0: 7.2, lat1: 23.6 }, MAP_K = 30, MAP_COS = Math.cos(15.5 * Math.PI / 180);
+const MAP_W = (MAP_BOX.lon1 - MAP_BOX.lon0) * MAP_K * MAP_COS, MAP_H = (MAP_BOX.lat1 - MAP_BOX.lat0) * MAP_K;
+const prj = ([lon, lat]) => [((lon - MAP_BOX.lon0) * MAP_K * MAP_COS).toFixed(1), ((MAP_BOX.lat1 - lat) * MAP_K).toFixed(1)];
+function geoPath(g) {
+    const ring = r => 'M' + r.map(pt => prj(pt).join(',')).join('L') + 'Z';
+    const polys = g.type === 'Polygon' ? [g.coordinates] : g.coordinates;
+    return polys.map(poly => poly.map(ring).join('')).join('');
+}
+const PROV_PATH = {};
+if (window.VN34) Object.entries(VN34.provinces).forEach(([code, g]) => { PROV_PATH[code] = geoPath(g); });
+// Quần đảo Hoàng Sa (thành phố Đà Nẵng), Trường Sa (tỉnh Khánh Hòa): vẽ bổ sung dạng cụm điểm đảo
+const ISLANDS = [
+    { code: 'DNA', label: 'Quần đảo Hoàng Sa', at: [111.75, 15.25], pts: [[111.6, 16.5], [111.75, 16.45], [112.3, 16.7], [111.2, 15.8], [111.55, 16.05], [112.05, 16.95]] },
+    { code: 'KHO', label: 'Quần đảo Trường Sa', at: [114.0, 7.75], pts: [[114.3, 11.4], [114.9, 10.85], [113.8, 10.2], [114.4, 9.9], [112.9, 8.65], [115.3, 9.9], [113.0, 10.9], [114.05, 8.85]] }
+];
+function tileMapHtml(id, colorOf, tipOf, legendHtml) {
+    if (!window.VN34) return '<div class="empty">Không tải được dữ liệu bản đồ.</div>';
+    const prov = PROVINCES.map(p => { const bg = colorOf(p); return `<path class="prov" data-code="${p.code}" d="${PROV_PATH[p.code] || ''}" fill="${bg}"></path>`; }).join('');
+    const isl = ISLANDS.map(s => { const p = provByCode[s.code], bg = colorOf(p); const [lx, ly] = prj(s.at);
+        return `<g class="prov isl" data-code="${s.code}">${s.pts.map(pt => { const [x, y] = prj(pt); return `<circle cx="${x}" cy="${y}" r="2.6" fill="${bg}" stroke="#52514e" stroke-width="0.6"></circle>`; }).join('')}<text x="${lx}" y="${ly}" text-anchor="middle" class="isl-lbl">${s.label}</text></g>`; }).join('');
+    return `<div class="vn-map" id="${id}"><svg viewBox="0 0 ${MAP_W.toFixed(0)} ${MAP_H.toFixed(0)}" role="img" aria-label="Bản đồ 34 tỉnh, thành phố"><rect width="100%" height="100%" fill="#f4f8fc"></rect>${prov}${isl}</svg></div>
+        <div class="map-legend">${legendHtml}</div><div class="map-note">Bản đồ hành chính 34 tỉnh, thành phố (sau sắp xếp năm 2025); di chuột vào tỉnh, thành phố để xem số liệu.</div>`;
+}
+function bindTileMap(id, tipOf, onClick) {
+    const box = document.getElementById(id); if (!box) return; const tip = document.getElementById('vizTip');
+    box.querySelectorAll('.prov').forEach(t => {
+        const p = provByCode[t.dataset.code];
+        t.addEventListener('mousemove', e => { tip.innerHTML = `<div class="t">${esc(p.name)}${t.classList.contains('isl') ? ' (gồm ' + esc(ISLANDS.find(s => s.code === p.code).label) + ')' : ''}</div>${tipOf(p).map(([k, v]) => `<div class="r"><span>${esc(k)}</span><b>${esc(v)}</b></div>`).join('')}`; tip.style.display = 'block'; tip.style.left = Math.min(e.clientX + 14, innerWidth - 260) + 'px'; tip.style.top = (e.clientY + 14) + 'px'; });
+        t.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
+        if (onClick) t.addEventListener('click', () => onClick(p));
+    });
+}function seqBins(values) { const max = Math.max(1, ...values); const step = Math.ceil(max / SEQ.length); return SEQ.map((c, i) => ({ from: i * step, to: (i + 1) * step - 1, color: c })); }
+const seqLegend = bins => bins.map(b => `<span><span class="sw" style="background:${b.color}"></span>${fmt(b.from)} - ${fmt(b.to)}</span>`).join('');
+const levelLegend = () => LEVELS.map(l => `<span><span class="sw" style="background:${LEVEL_COLOR[l]}"></span>${l}</span>`).join('') + `<span><span class="sw" style="background:#f0efec;box-shadow:0 0 0 1px #c3c2b7 inset"></span>Chưa xếp loại</span>`;
+
+// ===================== Bảng & kết xuất =====================
+let TABLE = { head: [], rows: [], name: 'du_lieu' };
+function tableHtml(head, rows, totalRow) {
+    TABLE = { head, rows: totalRow ? rows.concat([totalRow]) : rows };
+    if (!rows.length) return `<div class="empty">Không có dữ liệu phù hợp với điều kiện tìm kiếm.</div>`;
+    const cell = (v, i) => `<td class="${head[i].num ? 'num' : ''}">${v}</td>`;
+    return `<div class="table-wrap"><table class="tbl"><thead><tr>${head.map(h => `<th class="${h.num ? 'num' : ''}">${h.t}</th>`).join('')}</tr></thead><tbody>${rows.map(r => `<tr>${r.map(cell).join('')}</tr>`).join('')}${totalRow ? `<tr class="total">${totalRow.map(cell).join('')}</tr>` : ''}</tbody></table></div>`;
+}
+function exportTable() {
+    if (!window.XLSX || !TABLE.rows.length) { showToast('Không có dữ liệu để kết xuất.'); return; }
+    const strip = v => String(v).replace(/<[^>]+>/g, '').trim();
+    const aoa = [TABLE.head.map(h => h.t)].concat(TABLE.rows.map(r => r.map(strip)));
+    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), 'Du_lieu');
+    XLSX.writeFile(wb, `${MODULE}_${new Date().toISOString().slice(0, 10)}.xlsx`);
+}
+
+// ===================== Bộ lọc theo màn hình =====================
+const yearOpts = ys => ys.map(y => [y, 'Năm ' + y]);
+function filterDefs() {
+    const c = cfgOf(MODULE), comp = compById(MODULE), metricOpts = comp && comp.metrics;
+    const metric = (c && c.metric) || (metricOpts ? metricOpts[0][0] : '');
+    const mSel = metricOpts ? [['f_metric', 'Chỉ tiêu', metricOpts, metric]] : [];
+    switch (MODULE) {
+        case 'tong_quan': return [['f_year', 'Năm', yearOpts(YEARS), CUR_YEAR], ['f_period', 'Loại kỳ báo cáo', PERIODS, 'thuc_te'], ['f_prov', 'Tỉnh/Thành phố', provOptions, '', 'Toàn quốc']];
+        case 'cau_hinh': return [['f_scope', 'Áp dụng tại', [['Màn hình tổng quan', 'Màn hình tổng quan'], ['Màn hình phân tích', 'Màn hình phân tích']], '', 'Tất cả'], ['f_comp', 'Thành phần hiển thị', COMPONENTS.map(x => [x.id, x.name]), '', 'Tất cả'], ['f_chart', 'Loại biểu đồ mặc định', CHART_TYPES.map(x => [x[0], x[1]]).concat([['map', 'Bản đồ']]), '', 'Tất cả'], ['f_status', 'Trạng thái', [['Áp dụng', 'Áp dụng'], ['Không áp dụng', 'Không áp dụng']], '', 'Tất cả']];
+        case 'pt_thoi_gian': return [['f_from', 'Từ năm đánh giá', yearOpts(SCORE_YEARS), SCORE_YEARS[0]], ['f_to', 'Đến năm đánh giá', yearOpts(SCORE_YEARS), CUR_SCORE_YEAR], ['f_stp', 'Sở Tư pháp', stpOptions, '', 'Tất cả']].concat(mSel);
+        case 'pt_dia_phuong': return [['f_year', 'Năm đánh giá', yearOpts(SCORE_YEARS), CUR_SCORE_YEAR], ['f_stp', 'Sở Tư pháp', stpOptions, '', 'Tất cả'], ['f_level', 'Xếp loại', LEVELS.map(l => [l, l]), '', 'Tất cả']].concat(mSel);
+        case 'pt_pham_vi': return [['f_year', 'Năm', yearOpts(YEARS), CUR_YEAR], ['f_period', 'Loại kỳ báo cáo', PERIODS, 'thuc_te'], ['f_prov', 'Tỉnh/Thành phố', provOptions, '', 'Toàn quốc'], ['f_cap', 'Cấp thực hiện', CAP.map((x, i) => [i, x]), '', 'Tất cả']].concat(mSel);
+        case 'pt_co_quan': return [['f_year', 'Năm', yearOpts(YEARS), CUR_YEAR], ['f_period', 'Loại kỳ báo cáo', PERIODS, 'thuc_te'], ['f_prov', 'Tỉnh/Thành phố', provOptions, '', 'Toàn quốc'], ['f_lv', 'Phạm vi trách nhiệm bồi thường', LV.map((x, i) => [i, x]), '', 'Tất cả']].concat(mSel);
+        case 'pt_cap': return [['f_year', 'Năm', yearOpts(YEARS), CUR_YEAR], ['f_period', 'Loại kỳ báo cáo', PERIODS, 'thuc_te'], ['f_prov', 'Tỉnh/Thành phố', provOptions, '', 'Toàn quốc'], ['f_lv', 'Phạm vi trách nhiệm bồi thường', LV.map((x, i) => [i, x]), '', 'Tất cả']].concat(mSel);
+        case 'pt_ca_nuoc': return [['f_year', 'Năm', yearOpts(YEARS), CUR_YEAR], ['f_period', 'Loại kỳ báo cáo', PERIODS, 'thuc_te'], ['f_lv', 'Phạm vi trách nhiệm bồi thường', LV.map((x, i) => [i, x]), '', 'Tất cả'], ['f_cap', 'Cấp thực hiện', CAP.map((x, i) => [i, x]), '', 'Tất cả']].concat(mSel);
+    }
+    return [];
+}
+function renderFilters(fromUrl) {
+    document.getElementById('filterGrid').innerHTML = filterDefs().map(([id, label, opts, def, all]) => {
+        const urlKey = id.slice(2); const v = fromUrl && P.has(urlKey) ? P.get(urlKey) : def;
+        return selectHtml(id, label, opts, v, all);
+    }).join('');
+}
+function resetFilters() { renderFilters(false); applyFilters(); }
+let chartType = 'bar';
+function setChartType(t) { chartType = t; render(); }
+function applyFilters() {
+    if (MODULE === 'pt_thoi_gian' && +val('f_from') > +val('f_to')) { showToast('Từ năm đánh giá không được lớn hơn Đến năm đánh giá.'); return; }
+    render();
+}
+function goDetail(module, extra) {
+    const q = new URLSearchParams({ module });
+    ['year', 'period', 'prov'].forEach(k => { const v = val('f_' + k); if (v) q.set(k, v); });
+    Object.entries(extra || {}).forEach(([k, v]) => q.set(k, v));
+    location.href = 'dashboard_btnn.html?' + q.toString();
+}
+
+// ===================== MH01 - Tổng quan =====================
+function renderOverview() {
+    const year = +val('f_year'), period = val('f_period'), prov = val('f_prov');
+    const rows = caseRows({ year, period, prov });
+    const thuLy = sumRows(rows, 'thuLy'), gq = sumRows(rows, 'giaiQuyet'), tien = sumRows(rows, 'tien');
+    const sy = Math.min(year, CUR_SCORE_YEAR), sc = SCORES[sy];
+    const scored = prov ? [prov] : PROVINCES.map(p => p.code);
+    const avg = scored.reduce((s, k) => s + sc[k].btp, 0) / scored.length;
+    const kpi = (ic, lbl, v, sub) => `<div class="kpi"><div class="lbl"><i class="fa-solid ${ic}"></i> ${lbl}</div><div class="val">${v}</div><div class="sub">${sub}</div></div>`;
+    let h = `<div class="kpi-row">
+        ${kpi('fa-folder-open', 'Vụ việc thụ lý', fmt(thuLy), 'Năm ' + year)}
+        ${kpi('fa-circle-check', 'Đã giải quyết', fmt(gq), 'Tỷ lệ ' + pct(gq, thuLy))}
+        ${kpi('fa-hourglass-half', 'Đang giải quyết', fmt(thuLy - gq), 'Chuyển kỳ sau')}
+        ${kpi('fa-sack-dollar', 'Số tiền đã chi trả', fmt1(tien / 1000), 'tỷ đồng')}
+        ${prov ? kpi('fa-award', 'Xếp loại ' + stpName(provByCode[prov]), levelOf(sc[prov].btp), fmt1(sc[prov].btp) + ' điểm - năm đánh giá ' + sy) : kpi('fa-award', 'Điểm bình quân các Sở Tư pháp', fmt1(avg), 'Bộ Tư pháp đánh giá - năm ' + sy)}
+    </div>`;
+    const widgets = CFG.filter(c => compById(c.id) && compById(c.id).scope === 'Màn hình tổng quan' && c.status === 'Áp dụng').sort((a, b) => a.order - b.order);
+    if (!widgets.length) { document.getElementById('content').innerHTML = h + `<div class="card empty">Chưa có thành phần nào được cấu hình hiển thị trên màn hình tổng quan.</div>`; return; }
+    h += `<div class="widget-grid">${widgets.map(w => { const comp = compById(w.id); return `<div class="card"><div class="card-title"><span class="left">${esc(comp.name)}</span><button class="btn-link" onclick="goDetail('${comp.link}')">Xem chi tiết <i class="fa-solid fa-arrow-right"></i></button></div>${w.chart === 'map' ? `<div id="wmap_${w.id}"></div>` : `<div class="chart-box"><canvas id="wc_${w.id}"></canvas></div>`}</div>`; }).join('')}</div>`;
+    document.getElementById('content').innerHTML = h;
+    widgets.forEach(w => drawWidget(w, { year, period, prov, sy }));
+}
+function drawWidget(w, { year, period, prov, sy }) {
+    const id = 'wc_' + w.id, t = w.chart;
+    if (w.id === 'w_dien_bien') {
+        const a = YEARS.map(y => sumRows(caseRows({ year: y, period, prov }), 'thuLy')), b = YEARS.map(y => sumRows(caseRows({ year: y, period, prov }), 'giaiQuyet'));
+        if (t === 'pie') { const tl = sumRows(caseRows({ year, period, prov }), 'thuLy'), g = sumRows(caseRows({ year, period, prov }), 'giaiQuyet'); return chart(id, pieCfg(['Đã giải quyết', 'Đang giải quyết'], [g, tl - g], [CAT[0], CAT[1]])); }
+        return chart(id, { type: t, data: { labels: YEARS.map(String), datasets: t === 'line' ? [lineDs('Thụ lý', a, CAT[0]), lineDs('Đã giải quyết', b, CAT[1])] : [barDs('Thụ lý', a, CAT[0]), barDs('Đã giải quyết', b, CAT[1])] }, options: baseOpts({ legend: true }) });
+    }
+    if (w.id === 'w_pham_vi' || w.id === 'w_cap' || w.id === 'w_co_quan') {
+        const rows = caseRows({ year, period, prov });
+        let labels, data;
+        if (w.id === 'w_pham_vi') { const m = sumBy(rows, r => r.li, 'thuLy'); labels = LV; data = LV.map((_, i) => m[i] || 0); }
+        else if (w.id === 'w_cap') { labels = CAP; data = CAP.map((_, ci) => Math.round(rows.reduce((s, r) => s + r.c.thuLy * r.w * CAP_W[r.li][ci], 0))); }
+        else { const top = agencyTotals(rows, 'thuLy').slice(0, 6); labels = top.map(x => x[0]); data = top.map(x => x[1]); }
+        if (t === 'pie') return chart(id, pieCfg(labels, data, CAT.slice(0, labels.length)));
+        if (t === 'line') return chart(id, { type: 'line', data: { labels: YEARS.map(String), datasets: labels.slice(0, 6).map((l, i) => lineDs(l, YEARS.map(y => w.id === 'w_pham_vi' ? (sumBy(caseRows({ year: y, period, prov }), r => r.li, 'thuLy')[i] || 0) : w.id === 'w_cap' ? Math.round(caseRows({ year: y, period, prov }).reduce((s, r) => s + r.c.thuLy * r.w * CAP_W[r.li][i], 0)) : (agencyMap(caseRows({ year: y, period, prov }), 'thuLy')[l] || 0)), CAT[i])) }, options: baseOpts({ legend: true }) });
+        return chart(id, { type: 'bar', data: { labels, datasets: [barDs('Số vụ việc thụ lý', data, CAT[0])] }, options: baseOpts({ horizontal: true }) });
+    }
+    if (w.id === 'w_xep_loai') {
+        const cnt = LEVELS.map(l => PROVINCES.filter(p => levelOf(SCORES[sy][p.code].btp) === l).length);
+        if (t === 'pie') return chart(id, pieCfg(LEVELS, cnt, LEVELS.map(l => LEVEL_COLOR[l])));
+        if (t === 'line') return chart(id, { type: 'line', data: { labels: SCORE_YEARS.map(String), datasets: LEVELS.map(l => lineDs(l, SCORE_YEARS.map(y => PROVINCES.filter(p => levelOf(SCORES[y][p.code].btp) === l).length), LEVEL_COLOR[l])) }, options: baseOpts({ legend: true }) });
+        return chart(id, { type: 'bar', data: { labels: LEVELS, datasets: [barDs('Số Sở Tư pháp', cnt, LEVELS.map(l => LEVEL_COLOR[l]))] }, options: baseOpts() });
+    }
+    if (w.id === 'w_ban_do') {
+        const m = {}; PROVINCES.forEach(p => m[p.code] = sumRows(caseRows({ year, period, prov: p.code }), 'thuLy'));
+        const bins = seqBins(Object.values(m)); const colorOf = p => (bins.find(b => m[p.code] <= b.to) || bins[bins.length - 1]).color;
+        document.getElementById('wmap_' + w.id).innerHTML = tileMapHtml('tm_' + w.id, colorOf, null, seqLegend(bins));
+        bindTileMap('tm_' + w.id, p => [['Số vụ việc thụ lý', fmt(m[p.code])]], p => goDetail('pt_ca_nuoc', { prov: p.code }));
+    }
+}
+function agencyMap(rows, metric) { const m = {}; rows.forEach(r => { const tot = Object.values(r.c.agency).reduce((a, b) => a + b, 0) || 1; Object.entries(r.c.agency).forEach(([a, n]) => { m[a] = (m[a] || 0) + r.c[metric] * r.w * n / tot; }); }); Object.keys(m).forEach(k => m[k] = Math.round(m[k])); return m; }
+function agencyTotals(rows, metric) { return Object.entries(agencyMap(rows, metric)).sort((a, b) => b[1] - a[1]); }
+
+// ===================== MH02 - Cấu hình =====================
+function renderConfig() {
+    const scope = val('f_scope'), comp = val('f_comp'), ct = val('f_chart'), status = val('f_status');
+    const list = CFG.filter(c => compById(c.id)).filter(c => (!scope || compById(c.id).scope === scope) && (!comp || c.id === comp) && (!ct || c.chart === ct) && (!status || c.status === status))
+        .sort((a, b) => compById(a.id).scope.localeCompare(compById(b.id).scope) || a.order - b.order);
+    const rows = list.map((c, i) => { const x = compById(c.id); const m = x.metrics ? (x.metrics.find(mm => mm[0] === c.metric) || ['', '-'])[1] : '-'; return [i + 1, esc(x.name), esc(x.scope), chartTypeLabel(c.chart), esc(m), c.order, `<span class="badge ${c.status === 'Áp dụng' ? 'on' : 'off'}">${c.status}</span>`, esc(c.user), esc(c.at), `<button class="icon-btn edit" title="Cập nhật" onclick="openCfgModal('${c.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`]; });
+    const head = [{ t: 'STT' }, { t: 'Thành phần hiển thị' }, { t: 'Áp dụng tại' }, { t: 'Loại biểu đồ mặc định' }, { t: 'Chỉ tiêu mặc định' }, { t: 'Thứ tự hiển thị', num: true }, { t: 'Trạng thái' }, { t: 'Người cập nhật' }, { t: 'Thời điểm cập nhật' }, { t: 'Thao tác' }];
+    document.getElementById('content').innerHTML = `<div class="card"><div class="card-title"><span class="left"><i class="fa-solid fa-table-list"></i> Danh sách cấu hình hiển thị (${list.length})</span><button class="btn btn-primary btn-sm" onclick="openCfgModal()"><i class="fa-solid fa-circle-plus"></i> Thêm mới</button></div>${tableHtml(head, rows)}</div>`;
+}
+let editingId = null;
+function openCfgModal(id) {
+    editingId = id || null;
+    const c = id ? cfgOf(id) : null, free = COMPONENTS.filter(x => !cfgOf(x.id));
+    if (!id && !free.length) { showToast('Tất cả thành phần đã có cấu hình. Vui lòng chọn Cập nhật.'); return; }
+    document.getElementById('cfgModalTitle').innerHTML = `<i class="fa-solid fa-sliders"></i> ${id ? 'Cập nhật' : 'Thêm mới'} cấu hình hiển thị`;
+    const compId = id || free[0].id;
+    document.getElementById('cfgForm').innerHTML = `
+        <div class="form-group" style="grid-column:1/-1"><span class="form-label">Thành phần hiển thị <span class="req">*</span></span><select class="form-control" id="m_comp" ${id ? 'disabled' : ''} onchange="refreshCfgForm()">${(id ? [compById(id)] : free).map(x => opt(x.id, x.name, compId)).join('')}</select></div>
+        <div class="form-group"><span class="form-label">Áp dụng tại</span><input class="form-control" id="m_scope" disabled></div>
+        <div class="form-group"><span class="form-label">Loại biểu đồ mặc định <span class="req">*</span></span><select class="form-control" id="m_chart"></select></div>
+        <div class="form-group" id="m_metric_wrap"><span class="form-label">Chỉ tiêu mặc định <span class="req">*</span></span><select class="form-control" id="m_metric"></select></div>
+        <div class="form-group"><span class="form-label">Thứ tự hiển thị <span class="req">*</span></span><input class="form-control" id="m_order" type="number" min="1" max="99" value="${c ? c.order : CFG.length + 1}"><div class="err-text" id="m_err"></div></div>
+        <div class="form-group"><span class="form-label">Trạng thái <span class="req">*</span></span><select class="form-control" id="m_status">${opt('Áp dụng', 'Áp dụng', c ? c.status : 'Áp dụng')}${opt('Không áp dụng', 'Không áp dụng', c ? c.status : '')}</select></div>`;
+    refreshCfgForm(c);
+    document.getElementById('cfgModal').classList.add('visible');
+}
+function refreshCfgForm(c) {
+    const x = compById(val('m_comp')); c = c || cfgOf(x.id);
+    document.getElementById('m_scope').value = x.scope;
+    document.getElementById('m_chart').innerHTML = x.fixed ? opt('map', 'Bản đồ', 'map') : CHART_TYPES.map(t => opt(t[0], t[1], c ? c.chart : 'bar')).join('');
+    document.getElementById('m_chart').disabled = !!x.fixed;
+    document.getElementById('m_metric_wrap').style.display = x.metrics ? '' : 'none';
+    document.getElementById('m_metric').innerHTML = (x.metrics || []).map(m => opt(m[0], m[1], c ? c.metric : '')).join('');
+}
+function nowStr() { const d = new Date(), p = n => String(n).padStart(2, '0'); return `// :`; }
+function closeCfgModal() { document.getElementById('cfgModal').classList.remove('visible'); }
+function saveCfg() {
+    const id = val('m_comp'), order = +val('m_order');
+    if (!order || order < 1) { document.getElementById('m_err').textContent = 'Trường này bắt buộc nhập.'; return; }
+    const rec = { id, chart: val('m_chart'), metric: compById(id).metrics ? val('m_metric') : '', order, status: val('m_status'), user: 'Nguyễn Văn Cán Bộ', at: nowStr() };
+    const i = CFG.findIndex(c => c.id === id); if (i >= 0) CFG[i] = rec; else CFG.push(rec);
+    saveCfgStore(CFG); closeCfgModal(); renderConfig(); showToast(editingId ? 'Cập nhật cấu hình thành công.' : 'Thêm mới cấu hình thành công.');
+}
+
+// ===================== MH03-MH08 - Phân tích =====================
+function analysisShell(title, extraTop, withMap) {
+    return `${extraTop || ''}<div class="${withMap ? 'split' : ''}">
+        <div class="card"><div class="card-title"><span class="left"><i class="fa-solid fa-chart-simple"></i> ${title}</span>${segHtml(chartType)}</div><div class="chart-box tall"><canvas id="mainChart"></canvas></div></div>
+        ${withMap ? `<div class="card"><div class="card-title"><span class="left"><i class="fa-solid fa-map"></i> Bản đồ theo tỉnh, thành phố</span></div><div id="mapBox"></div></div>` : ''}
+    </div>
+    <div class="card" style="margin-top:18px"><div class="card-title"><span class="left"><i class="fa-solid fa-table"></i> Bảng số liệu</span><button class="btn btn-secondary btn-sm" onclick="exportTable()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button></div><div id="tableBox"></div></div>`;
+}
+function renderThoiGian() {
+    const from = +val('f_from'), to = +val('f_to'), stp = val('f_stp'), metric = val('f_metric');
+    const ys = SCORE_YEARS.filter(y => y >= from && y <= to), ps = PROVINCES.filter(p => !stp || p.code === stp);
+    const cnt = (y, l) => ps.filter(p => levelOf(SCORES[y][p.code].btp) === l).length;
+    const avg = y => ps.reduce((s, p) => s + SCORES[y][p.code].btp, 0) / ps.length;
+    document.getElementById('content').innerHTML = analysisShell(metric === 'diemTB' ? 'Điểm bình quân do Bộ Tư pháp đánh giá theo năm' : 'Phân bố xếp loại các Sở Tư pháp theo năm');
+    const labels = ys.map(String);
+    if (chartType === 'pie') chart('mainChart', pieCfg(LEVELS, LEVELS.map(l => ys.reduce((s, y) => s + cnt(y, l), 0)), LEVELS.map(l => LEVEL_COLOR[l])));
+    else if (metric === 'diemTB') chart('mainChart', { type: chartType, data: { labels, datasets: [chartType === 'line' ? lineDs('Điểm bình quân', ys.map(y => +avg(y).toFixed(1)), CAT[0]) : barDs('Điểm bình quân', ys.map(y => +avg(y).toFixed(1)), CAT[0])] }, options: { ...baseOpts({ yTitle: 'Điểm' }), scales: { ...baseOpts().scales, y: { ...baseOpts().scales.y, max: 100 } } } });
+    else chart('mainChart', { type: chartType, data: { labels, datasets: LEVELS.map(l => chartType === 'line' ? lineDs(l, ys.map(y => cnt(y, l)), LEVEL_COLOR[l]) : stackDs(l, ys.map(y => cnt(y, l)), LEVEL_COLOR[l])) }, options: baseOpts({ legend: true, stacked: chartType === 'bar', yTitle: 'Số Sở Tư pháp' }) });
+    document.getElementById('tableBox').innerHTML = tableHtml([{ t: 'Năm đánh giá' }, { t: 'Số Sở Tư pháp được xếp loại', num: true }].concat(LEVELS.map(l => ({ t: l, num: true }))).concat([{ t: 'Điểm bình quân', num: true }]),
+        ys.map(y => [y, ps.length].concat(LEVELS.map(l => cnt(y, l))).concat([fmt1(avg(y))])));
+}
+function renderDiaPhuong() {
+    const y = +val('f_year'), stp = val('f_stp'), lv = val('f_level'), metric = val('f_metric') || 'btp';
+    const ps = PROVINCES.filter(p => (!stp || p.code === stp) && (!lv || levelOf(SCORES[y][p.code].btp) === lv)).sort((a, b) => SCORES[y][b.code][metric] - SCORES[y][a.code][metric]);
+    const mLabel = metric === 'btp' ? 'Điểm do Bộ Tư pháp đánh giá' : 'Điểm tự chấm';
+    document.getElementById('content').innerHTML = analysisShell(chartType === 'line' ? 'Diễn biến điểm qua các năm' : `${mLabel} của các Sở Tư pháp - năm ${y}`, '', true);
+    if (chartType === 'pie') chart('mainChart', pieCfg(LEVELS, LEVELS.map(l => ps.filter(p => levelOf(SCORES[y][p.code].btp) === l).length), LEVELS.map(l => LEVEL_COLOR[l])));
+    else if (chartType === 'line') { const sel = ps.slice(0, 5); chart('mainChart', { type: 'line', data: { labels: SCORE_YEARS.map(String), datasets: sel.map((p, i) => lineDs(stpName(p), SCORE_YEARS.map(yy => SCORES[yy][p.code][metric]), CAT[i])) }, options: { ...baseOpts({ legend: true, yTitle: 'Điểm' }), scales: { ...baseOpts().scales, y: { ...baseOpts().scales.y, min: 40, max: 100, beginAtZero: false } } } }); }
+    else { const box = document.querySelector('.chart-box'); box.style.height = Math.max(360, ps.length * 22 + 60) + 'px'; chart('mainChart', { type: 'bar', data: { labels: ps.map(stpName), datasets: [barDs(mLabel, ps.map(p => SCORES[y][p.code][metric]), ps.map(p => LEVEL_COLOR[levelOf(SCORES[y][p.code].btp)]), { maxBarThickness: 16 })] }, options: { ...baseOpts({ horizontal: true }), scales: { ...baseOpts({ horizontal: true }).scales, x: { ...baseOpts({ horizontal: true }).scales.x, max: 100 } }, plugins: { ...baseOpts().plugins, legend: { display: false } } } }); }
+    const inSet = new Set(ps.map(p => p.code));
+    document.getElementById('mapBox').innerHTML = tileMapHtml('tmDP', p => inSet.has(p.code) ? LEVEL_COLOR[levelOf(SCORES[y][p.code].btp)] : '#f0efec', null, levelLegend());
+    bindTileMap('tmDP', p => [['Điểm tự chấm', fmt1(SCORES[y][p.code].tuCham)], ['Điểm Bộ Tư pháp đánh giá', fmt1(SCORES[y][p.code].btp)], ['Xếp loại', levelOf(SCORES[y][p.code].btp)]]);
+    document.getElementById('tableBox').innerHTML = tableHtml([{ t: 'STT' }, { t: 'Sở Tư pháp' }, { t: 'Điểm tự chấm', num: true }, { t: 'Điểm Bộ Tư pháp đánh giá', num: true }, { t: 'Xếp loại' }],
+        ps.map((p, i) => [i + 1, esc(stpName(p)), fmt1(SCORES[y][p.code].tuCham), fmt1(SCORES[y][p.code].btp), `<span class="lv-dot" style="background:${LEVEL_COLOR[levelOf(SCORES[y][p.code].btp)]}"></span>${levelOf(SCORES[y][p.code].btp)}`]));
+}
+// Dùng chung cho Phạm vi trách nhiệm, Cơ quan giải quyết, Cấp thực hiện
+function renderDimension(kind) {
+    const f = { year: +val('f_year'), period: val('f_period'), prov: val('f_prov'), lv: val('f_lv'), cap: val('f_cap') }, metric = val('f_metric') || 'thuLy';
+    const rowsFor = y => caseRows({ ...f, year: y });
+    const rows = rowsFor(f.year);
+    // Mỗi thành viên của chiều phân tích: [nhãn, hàm lấy giá trị theo bộ dòng và chỉ tiêu]
+    let members, title;
+    if (kind === 'pham_vi') { members = LV.map((l, i) => [l, (rs, m) => Math.round(rs.filter(r => r.li === i).reduce((s, r) => s + r.c[m] * r.w, 0))]); title = 'theo phạm vi trách nhiệm bồi thường'; }
+    else if (kind === 'cap') { members = CAP.map((l, ci) => [l, (rs, m) => Math.round(rs.reduce((s, r) => s + r.c[m] * r.w * CAP_W[r.li][ci], 0))]); title = 'theo cấp thực hiện'; }
+    else { const top = agencyTotals(rows, metric); members = top.map(([a]) => [a, (rs, m) => agencyMap(rs, m)[a] || 0]); title = 'theo cơ quan giải quyết bồi thường'; }
+    const valsOf = (rs, m) => members.map(([, fn]) => fn(rs, m));
+    const cur = valsOf(rows, metric);
+    document.getElementById('content').innerHTML = analysisShell(chartType === 'line' ? `${metricLabel(metric)} ${title} qua các năm` : `${metricLabel(metric)} ${title} - năm ${f.year}`);
+    const labels = members.map(m => m[0]);
+    if (chartType === 'pie') {
+        let L = labels, V = cur; if (kind === 'co_quan' && L.length > 6) { V = cur.slice(0, 5).concat([cur.slice(5).reduce((a, b) => a + b, 0)]); L = labels.slice(0, 5).concat(['Các cơ quan khác']); }
+        chart('mainChart', pieCfg(L, V, CAT.slice(0, L.length).map((c, i) => (L[i] === 'Các cơ quan khác' ? '#c3c2b7' : c))));
+    } else if (chartType === 'line') {
+        const sel = kind === 'co_quan' ? members.slice(0, 5) : members;
+        chart('mainChart', { type: 'line', data: { labels: YEARS.map(String), datasets: sel.map(([l, fn], i) => lineDs(l, YEARS.map(y => fn(rowsFor(y), metric)), CAT[i])) }, options: baseOpts({ legend: true }) });
+    } else {
+        let L = labels, V = cur; if (kind === 'co_quan') { V = cur.slice(0, 10); L = labels.slice(0, 10); } // Biểu đồ cột: 10 cơ quan có giá trị lớn nhất
+        chart('mainChart', { type: 'bar', data: { labels: L, datasets: [barDs(metricLabel(metric), V, L.map(l => l === 'Các cơ quan khác' ? '#c3c2b7' : CAT[0]))] }, options: baseOpts({ horizontal: kind !== 'cap' }) });
+    }
+    const tl = valsOf(rows, 'thuLy'), gq = valsOf(rows, 'giaiQuyet'), tn = valsOf(rows, 'tien');
+    const head = [{ t: 'STT' }, { t: kind === 'pham_vi' ? 'Phạm vi trách nhiệm bồi thường' : kind === 'cap' ? 'Cấp thực hiện' : 'Cơ quan giải quyết bồi thường' }, { t: 'Số vụ việc thụ lý', num: true }, { t: 'Số vụ việc đã giải quyết', num: true }, { t: 'Tỷ lệ giải quyết', num: true }, { t: 'Số tiền đã chi trả (triệu đồng)', num: true }];
+    const body = labels.map((l, i) => [i + 1, esc(l), fmt(tl[i]), fmt(gq[i]), pct(gq[i], tl[i]), fmt(tn[i])]).filter((r, i) => tl[i] || gq[i] || tn[i]);
+    const S = a => a.reduce((x, y) => x + y, 0);
+    document.getElementById('tableBox').innerHTML = tableHtml(head, body, body.length ? ['', 'Tổng cộng', fmt(S(tl)), fmt(S(gq)), pct(S(gq), S(tl)), fmt(S(tn))] : null);
+}
+function renderCaNuoc() {
+    const f = { year: +val('f_year'), period: val('f_period'), lv: val('f_lv'), cap: val('f_cap') }, metric = val('f_metric') || 'thuLy', provHi = P.get('prov');
+    const byProv = (y, m) => { const o = {}; PROVINCES.forEach(p => o[p.code] = sumRows(caseRows({ ...f, year: y, prov: p.code }), m)); return o; };
+    const cur = byProv(f.year, metric), tl = byProv(f.year, 'thuLy'), gq = byProv(f.year, 'giaiQuyet'), tn = byProv(f.year, 'tien');
+    const S = o => Object.values(o).reduce((a, b) => a + b, 0);
+    const kpi = (ic, lbl, v, sub) => `<div class="kpi"><div class="lbl"><i class="fa-solid ${ic}"></i> ${lbl}</div><div class="val">${v}</div><div class="sub">${sub}</div></div>`;
+    const top = `<div class="kpi-row">${kpi('fa-folder-open', 'Vụ việc thụ lý', fmt(S(tl)), 'Cả nước - năm ' + f.year)}${kpi('fa-circle-check', 'Đã giải quyết', fmt(S(gq)), 'Tỷ lệ ' + pct(S(gq), S(tl)))}${kpi('fa-hourglass-half', 'Đang giải quyết', fmt(S(tl) - S(gq)), 'Chuyển kỳ sau')}${kpi('fa-sack-dollar', 'Số tiền đã chi trả', fmt1(S(tn) / 1000), 'tỷ đồng')}</div>`;
+    const sorted = PROVINCES.slice().sort((a, b) => cur[b.code] - cur[a.code]);
+    document.getElementById('content').innerHTML = analysisShell(chartType === 'pie' ? `Tình trạng giải quyết vụ việc cả nước - năm ${f.year}` : chartType === 'line' ? 'Diễn biến thụ lý, giải quyết vụ việc cả nước qua các năm' : `${metricLabel(metric)} theo tỉnh, thành phố - năm ${f.year}`, top, true);
+    if (chartType === 'pie') chart('mainChart', pieCfg(['Đã giải quyết', 'Đang giải quyết'], [S(gq), S(tl) - S(gq)], [CAT[0], CAT[1]]));
+    else if (chartType === 'line') chart('mainChart', { type: 'line', data: { labels: YEARS.map(String), datasets: [lineDs('Số vụ việc thụ lý', YEARS.map(y => S(byProv(y, 'thuLy'))), CAT[0]), lineDs('Số vụ việc đã giải quyết', YEARS.map(y => S(byProv(y, 'giaiQuyet'))), CAT[1])] }, options: baseOpts({ legend: true }) });
+    else { document.querySelector('.chart-box').style.height = (sorted.length * 22 + 60) + 'px'; chart('mainChart', { type: 'bar', data: { labels: sorted.map(p => p.short), datasets: [barDs(metricLabel(metric), sorted.map(p => cur[p.code]), sorted.map(p => p.code === provHi ? CAT[1] : CAT[0]), { maxBarThickness: 16 })] }, options: baseOpts({ horizontal: true }) }); }
+    const bins = seqBins(Object.values(cur));
+    document.getElementById('mapBox').innerHTML = tileMapHtml('tmCN', p => (bins.find(b => cur[p.code] <= b.to) || bins[bins.length - 1]).color, null, seqLegend(bins));
+    bindTileMap('tmCN', p => [['Số vụ việc thụ lý', fmt(tl[p.code])], ['Số vụ việc đã giải quyết', fmt(gq[p.code])], ['Tỷ lệ giải quyết', pct(gq[p.code], tl[p.code])], ['Số tiền đã chi trả (triệu đồng)', fmt(tn[p.code])]], p => goDetail('pt_pham_vi', { prov: p.code }));
+    if (provHi) { const t = document.querySelector(`#tmCN path.prov[data-code="${provHi}"]`); if (t) { t.style.stroke = '#eb6834'; t.style.strokeWidth = '2'; t.parentNode.appendChild(t); } }
+    const body = sorted.map((p, i) => [i + 1, esc(p.name), fmt(tl[p.code]), fmt(gq[p.code]), pct(gq[p.code], tl[p.code]), fmt(tn[p.code])]);
+    document.getElementById('tableBox').innerHTML = tableHtml([{ t: 'STT' }, { t: 'Tỉnh/Thành phố' }, { t: 'Số vụ việc thụ lý', num: true }, { t: 'Số vụ việc đã giải quyết', num: true }, { t: 'Tỷ lệ giải quyết', num: true }, { t: 'Số tiền đã chi trả (triệu đồng)', num: true }], body, ['', 'Tổng cộng', fmt(S(tl)), fmt(S(gq)), pct(S(gq), S(tl)), fmt(S(tn))]);
+}
+
+// ===================== Khởi tạo =====================
+function render() {
+    ({ tong_quan: renderOverview, cau_hinh: renderConfig, pt_thoi_gian: renderThoiGian, pt_dia_phuong: renderDiaPhuong, pt_pham_vi: () => renderDimension('pham_vi'), pt_co_quan: () => renderDimension('co_quan'), pt_cap: () => renderDimension('cap'), pt_ca_nuoc: renderCaNuoc })[MODULE]();
+}
+(function init() {
+    const s = SCREENS[MODULE];
+    document.title = s.title;
+    document.getElementById('pageTitle').innerHTML = `<i class="fa-solid ${s.icon}"></i> ${esc(s.title)}`;
+    const c = cfgOf(MODULE); if (s.analysis) chartType = (P.get('chart')) || (c && c.chart) || 'bar';
+    renderFilters(true);
+    if (!window.Chart) document.getElementById('content').insertAdjacentHTML('beforebegin', '<div class="card empty">Không tải được thư viện biểu đồ. Vui lòng kiểm tra kết nối mạng.</div>');
+    render();
+    if (MODULE === 'cau_hinh' && P.get('popup') === 'them') openCfgModal(); // Mở sẵn popup Thêm mới (minh họa)
+})();
+</script>
+<script src="admin-ui-standardizer.js"></script>
+<script src="filter_toggle_auto.js"></script>
+</body>
+</html>

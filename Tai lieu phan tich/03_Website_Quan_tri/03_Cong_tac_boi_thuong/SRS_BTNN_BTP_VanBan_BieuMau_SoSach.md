@@ -46,7 +46,8 @@ flowchart TD
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
-| Từ khóa | String(255) | Không | Trống | Tìm kiếm gần đúng theo `Tên văn bản/biểu mẫu/sổ sách` hoặc `Số hiệu`. |
+| Tên văn bản/biểu mẫu/sổ sách | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập tên văn bản/biểu mẫu/sổ sách...".<br>- Tìm gần đúng theo Tên văn bản/biểu mẫu/sổ sách; không phân biệt hoa thường, có dấu/không dấu. |
+| Số hiệu | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số hiệu...".<br>- Tìm gần đúng theo Số hiệu; không phân biệt hoa thường, có dấu/không dấu. |
 | Loại nội dung | Enum(String(50)) | Không | Tất cả | \- Giá trị gồm:<br>+ Tất cả<br>+ Văn bản<br>+ Biểu mẫu<br>+ Sổ sách |
 | Loại văn bản QPPL | Enum(String(50)) | Không | Tất cả | \- Chỉ áp dụng khi `Loại nội dung` là `Văn bản`.<br>- Tham chiếu Danh mục Loại văn bản quy phạm pháp luật [DM_21]. |
 | Từ ngày ban hành | Date | Không | Theo dữ liệu hệ thống | Định dạng `dd/mm/yyyy`. |

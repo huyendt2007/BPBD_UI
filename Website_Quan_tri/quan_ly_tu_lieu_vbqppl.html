@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -773,8 +773,12 @@
         <div class="card-section search-filters-box" data-bpbd-filter>
             <div class="grid-layout" style="grid-template-columns: repeat(3, 1fr);">
                 <div class="form-group">
-                    <label class="form-label">Từ khóa</label>
-                    <input type="text" id="filterKeyword" class="form-control" placeholder="Tên văn bản hoặc số hiệu...">
+                    <label class="form-label">Tên văn bản</label>
+                    <input type="text" id="filterDocName" class="form-control" placeholder="Nhập tên văn bản...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Số hiệu văn bản</label>
+                    <input type="text" id="filterDocNo" class="form-control" placeholder="Nhập số hiệu văn bản...">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Loại văn bản</label>
@@ -1274,15 +1278,19 @@
             let list = documents.filter(d => !d.isDeleted);
 
             // 1. Apply Filter panel criteria
-            const kw = document.getElementById('filterKeyword').value.trim().toLowerCase();
+            const docName = document.getElementById('filterDocName').value.trim().toLowerCase();
+            const docNo = document.getElementById('filterDocNo').value.trim().toLowerCase();
             const docType = document.getElementById('filterDocType').value;
             const issuer = document.getElementById('filterIssuer').value.trim().toLowerCase();
             const status = document.getElementById('filterStatus').value;
             const fromD = parseDate(document.getElementById('filterFromDate').value);
             const toD = parseDate(document.getElementById('filterToDate').value);
 
-            if (kw) {
-                list = list.filter(d => d.tenVanban.toLowerCase().includes(kw) || d.soHieu.toLowerCase().includes(kw));
+            if (docName) {
+                list = list.filter(d => d.tenVanban.toLowerCase().includes(docName));
+            }
+            if (docNo) {
+                list = list.filter(d => d.soHieu.toLowerCase().includes(docNo));
             }
             if (docType) {
                 list = list.filter(d => d.loaiVanban === docType);
@@ -1556,7 +1564,8 @@
 
         // CLEAR FILTERS
         function clearFilters() {
-            document.getElementById('filterKeyword').value = '';
+            document.getElementById('filterDocName').value = '';
+            document.getElementById('filterDocNo').value = '';
             document.getElementById('filterDocType').value = '';
             document.getElementById('filterIssuer').value = '';
             document.getElementById('filterStatus').value = '';

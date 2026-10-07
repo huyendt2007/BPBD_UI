@@ -55,7 +55,8 @@ flowchart TD
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
-| Từ khóa | String(255) | Không | Trống | Tìm kiếm gần đúng theo `Số văn bản kiến nghị` hoặc `Số Quyết định bị kiến nghị`. |
+| Số văn bản kiến nghị | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số văn bản kiến nghị...".<br>- Tìm gần đúng theo Số văn bản kiến nghị; không phân biệt hoa thường, có dấu/không dấu. |
+| Số Quyết định bị kiến nghị | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số Quyết định bị kiến nghị...".<br>- Tìm gần đúng theo Số Quyết định bị kiến nghị; không phân biệt hoa thường, có dấu/không dấu. |
 | Loại quyết định bị kiến nghị | Enum(String(50)) | Không | Tất cả | \- Giá trị gồm:<br>+ Tất cả<br>+ Quyết định hoàn trả<br>+ Quyết định giảm mức hoàn trả |
 | Trạng thái | Enum(String(50)) | Không | Tất cả | Tham chiếu Danh mục Trạng thái xử lý trách nhiệm hoàn trả [DM_42]. |
 | Từ ngày gửi | Date | Không | Theo dữ liệu hệ thống | Định dạng `dd/mm/yyyy`. |

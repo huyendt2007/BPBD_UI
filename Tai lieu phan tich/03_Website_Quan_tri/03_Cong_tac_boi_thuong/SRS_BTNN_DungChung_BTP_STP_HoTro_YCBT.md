@@ -46,7 +46,8 @@ flowchart TD
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
-| Từ khóa | String(255) | Không | Trống | Tìm kiếm gần đúng theo `Họ và tên người được hỗ trợ` hoặc `Số điện thoại`. |
+| Họ và tên người được hỗ trợ | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập họ và tên người được hỗ trợ...".<br>- Tìm gần đúng theo Họ và tên người được hỗ trợ; không phân biệt hoa thường, có dấu/không dấu. |
+| Số điện thoại | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số điện thoại...".<br>- Tìm gần đúng theo Số điện thoại; không phân biệt hoa thường, có dấu/không dấu. |
 | Hình thức hỗ trợ | Enum(String(50)) | Không | Tất cả | \- Giá trị gồm:<br>+ Tất cả<br>+ Trực tiếp tại trụ sở<br>+ Qua điện thoại<br>+ Qua văn bản/email<br>+ Khác |
 | Kết quả hỗ trợ | Enum(String(50)) | Không | Tất cả | \- Giá trị gồm:<br>+ Tất cả<br>+ Đang hỗ trợ<br>+ Đã hướng dẫn xong<br>+ Người dân đã nộp YCBT<br>+ Không liên hệ được |
 | Từ ngày hỗ trợ | Date | Không | Theo dữ liệu hệ thống | Định dạng `dd/mm/yyyy`. |

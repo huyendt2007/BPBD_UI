@@ -46,7 +46,8 @@ flowchart TD
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
-| Từ khóa | String(255) | Không | Trống | Tìm kiếm gần đúng theo `Họ và tên` hoặc `Số điện thoại`. |
+| Họ và tên | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập họ và tên...".<br>- Tìm gần đúng theo Họ và tên; không phân biệt hoa thường, có dấu/không dấu. |
+| Số điện thoại | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số điện thoại...".<br>- Tìm gần đúng theo Số điện thoại; không phân biệt hoa thường, có dấu/không dấu. |
 | Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Tất cả | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
 | Phường/Xã | Enum(String(100)) / String(100) | Không | Tất cả | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
 | Vai trò phụ trách | Enum(String(50)) | Không | Tất cả | \- Giá trị gồm:<br>+ Tất cả<br>+ Lãnh đạo phụ trách công tác BTNN<br>+ Công chức đầu mối |

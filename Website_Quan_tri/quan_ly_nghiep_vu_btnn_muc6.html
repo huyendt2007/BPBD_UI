@@ -563,9 +563,7 @@
     <div class="page-header">
         <div class="page-title">
             <h1 id="pageTitle">Nghiệp vụ bồi thường nhà nước</h1>
-            <p id="pageSubtitle">Quản lý nghiệp vụ theo SRS phần công tác bồi thường nhà nước.</p>
         </div>
-        <button class="btn btn-secondary" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
     </div>
 
     <div class="section">
@@ -789,7 +787,8 @@
                 icon: 'fa-handshake-angle',
                 simple: true,
                 filters: [
-                    ['keyword', 'Từ khóa', 'Nhập họ tên hoặc số điện thoại...'],
+                    ['q_name', 'Họ và tên người được hỗ trợ', 'Nhập họ và tên người được hỗ trợ...', 0],
+                    ['q_phone', 'Số điện thoại', 'Nhập số điện thoại...', 1],
                     ['method', 'Hình thức hỗ trợ', ['Tất cả', 'Trực tiếp tại trụ sở', 'Qua điện thoại', 'Qua văn bản/email', 'Khác']],
                     ['status', 'Kết quả hỗ trợ', ['Tất cả', 'Đang hỗ trợ', 'Đã hướng dẫn xong', 'Người dân đã nộp YCBT', 'Không liên hệ được']],
                     ['fromDate', 'Từ ngày hỗ trợ', 'date'],
@@ -834,7 +833,7 @@
                 icon: 'fa-triangle-exclamation',
                 sendLabel: 'Gửi kiến nghị',
                 responseTitle: 'Cập nhật kết quả phản hồi kiến nghị',
-                filters: commonWorkflowFilters('Từ khóa', 'Nhập số văn bản kiến nghị hoặc cơ quan nhận kiến nghị...'),
+                filters: commonWorkflowFilters([['q_docNo', 'Số văn bản kiến nghị', 'Nhập số văn bản kiến nghị...', 0], ['q_receiver', 'Cơ quan nhận kiến nghị', 'Nhập cơ quan nhận kiến nghị...', 1]]),
                 columns: ['Số văn bản kiến nghị', 'Cơ quan nhận kiến nghị', 'Vụ việc/QĐ liên quan', 'Ngày gửi', 'Trạng thái', 'Thao tác'],
                 fields: [
                     ['related', 'Vụ việc/Quyết định liên quan', 'relatedSearch', false],
@@ -872,7 +871,7 @@
                 icon: 'fa-scale-balanced',
                 sendLabel: 'Gửi kiến nghị',
                 responseTitle: 'Cập nhật kết quả phản hồi kiến nghị kháng nghị',
-                filters: commonWorkflowFilters('Từ khóa', 'Nhập số văn bản kiến nghị hoặc số Bản án/Quyết định...'),
+                filters: commonWorkflowFilters([['q_docNo', 'Số văn bản kiến nghị', 'Nhập số văn bản kiến nghị...', 0], ['q_judgmentNo', 'Số Bản án/Quyết định', 'Nhập số Bản án/Quyết định...', 1]]),
                 columns: ['Số văn bản kiến nghị', 'Số Bản án/Quyết định bị kiến nghị', 'Người/cơ quan có thẩm quyền kháng nghị', 'Ngày gửi', 'Trạng thái', 'Thao tác'],
                 fields: [
                     ['judgmentNo', 'Số Bản án/Quyết định', 'text', true],
@@ -913,7 +912,7 @@
                 icon: 'fa-file-circle-xmark',
                 sendLabel: 'Gửi yêu cầu',
                 responseTitle: 'Cập nhật kết quả phản hồi yêu cầu hủy quyết định GQBT',
-                filters: commonWorkflowFilters('Từ khóa', 'Nhập số văn bản yêu cầu hoặc số Quyết định GQBT...'),
+                filters: commonWorkflowFilters([['q_docNo', 'Số văn bản yêu cầu', 'Nhập số văn bản yêu cầu...', 0], ['q_decisionNo', 'Số Quyết định GQBT bị yêu cầu hủy', 'Nhập số Quyết định GQBT bị yêu cầu hủy...', 1]]),
                 columns: ['Số văn bản yêu cầu', 'Số Quyết định GQBT bị yêu cầu hủy', 'Cơ quan nhận yêu cầu', 'Ngày gửi', 'Trạng thái', 'Thao tác'],
                 fields: [
                     ['decisionNo', 'Số Quyết định GQBT', 'text', true],
@@ -955,7 +954,8 @@
                 sendLabel: 'Gửi kiến nghị',
                 responseTitle: 'Cập nhật kết quả phản hồi kiến nghị xem xét quyết định hoàn trả',
                 filters: [
-                    ['keyword', 'Từ khóa', 'Nhập số văn bản kiến nghị hoặc số Quyết định...'],
+                    ['q_docNo', 'Số văn bản kiến nghị', 'Nhập số văn bản kiến nghị...', 0],
+                    ['q_decisionNo', 'Số Quyết định bị kiến nghị', 'Nhập số Quyết định bị kiến nghị...', 2],
                     ['decisionType', 'Loại quyết định bị kiến nghị', ['Tất cả', 'Quyết định hoàn trả', 'Quyết định giảm mức hoàn trả']],
                     ['status', 'Trạng thái', statusOptions],
                     ['fromDate', 'Từ ngày gửi', 'date'],
@@ -1002,7 +1002,8 @@
                 icon: 'fa-compass-drafting',
                 simple: true,
                 filters: [
-                    ['keyword', 'Từ khóa', 'Nhập tên chiến lược/chính sách hoặc số văn bản...'],
+                    ['q_title', 'Tên chiến lược/chính sách', 'Nhập tên chiến lược/chính sách...', 0],
+                    ['q_docNo', 'Số văn bản', 'Nhập số văn bản...', null],
                     ['docType', 'Loại văn bản', ['Tất cả', 'Chiến lược', 'Chính sách', 'Kế hoạch', 'Đề án', 'Chương trình']],
                     ['deployStatus', 'Trạng thái triển khai', ['Tất cả', 'Đang xây dựng', 'Đã ban hành', 'Đang triển khai', 'Đã hoàn thành']],
                     ['fromDate', 'Từ ngày ban hành', 'date'],
@@ -1040,7 +1041,8 @@
                 icon: 'fa-book',
                 simple: true,
                 filters: [
-                    ['keyword', 'Từ khóa', 'Nhập tên văn bản/biểu mẫu/sổ sách hoặc số hiệu...'],
+                    ['q_title', 'Tên văn bản/biểu mẫu/sổ sách', 'Nhập tên văn bản/biểu mẫu/sổ sách...', 0],
+                    ['q_docNo', 'Số hiệu', 'Nhập số hiệu...', 2],
                     ['contentType', 'Loại nội dung', ['Tất cả', 'Văn bản', 'Biểu mẫu', 'Sổ sách']],
                     ['legalType', 'Loại văn bản QPPL', ['Tất cả', ...qpplTypes]],
                     ['fromDate', 'Từ ngày ban hành', 'date'],
@@ -1080,7 +1082,8 @@
                 icon: 'fa-earth-asia',
                 simple: true,
                 filters: [
-                    ['keyword', 'Từ khóa', 'Nhập tên hoạt động hoặc đối tác/tổ chức quốc tế...'],
+                    ['q_title', 'Tên hoạt động hợp tác quốc tế', 'Nhập tên hoạt động hợp tác quốc tế...', 0],
+                    ['q_partner', 'Đối tác/Tổ chức quốc tế', 'Nhập đối tác/Tổ chức quốc tế...', 1],
                     ['country', 'Quốc gia đối tác', ['Tất cả', ...countries]],
                     ['cooperationType', 'Hình thức hợp tác', ['Tất cả', 'Hội thảo/Tọa đàm', 'Trao đổi đoàn công tác', 'Ký kết văn bản hợp tác', 'Hỗ trợ kỹ thuật', 'Khác']],
                     ['fromDate', 'Từ ngày thực hiện', 'date'],
@@ -1118,7 +1121,7 @@
                 icon: 'fa-building-columns',
                 simple: true,
                 filters: [
-                    ['keyword', 'Từ khóa', 'Nhập tên hoạt động phối hợp...'],
+                    ['q_title', 'Tên hoạt động phối hợp', 'Nhập tên hoạt động phối hợp...', 0],
                     ['agency', 'Cơ quan phối hợp', ['Tất cả', 'TAND tối cao', 'VKSND tối cao']],
                     ['method', 'Hình thức phối hợp', ['Tất cả', 'Văn bản trao đổi', 'Họp liên ngành', 'Hội nghị/hội thảo', 'Khác']],
                     ['fromDate', 'Từ ngày thực hiện', 'date'],
@@ -1156,7 +1159,8 @@
                 icon: 'fa-comments',
                 simple: true,
                 filters: [
-                    ['keyword', 'Từ khóa', 'Nhập nội dung vướng mắc hoặc tên/đơn vị đề nghị...'],
+                    ['q_question', 'Nội dung vướng mắc', 'Nhập nội dung vướng mắc...', 0],
+                    ['q_requester', 'Tên/Đơn vị đề nghị', 'Nhập tên/Đơn vị đề nghị...', 2],
                     ['requesterType', 'Đối tượng đề nghị', ['Tất cả', 'Cơ quan giải quyết bồi thường', 'Tổ chức/cá nhân khác']],
                     ['fromDate', 'Từ ngày nhận đề nghị', 'date'],
                     ['toDate', 'Đến ngày nhận đề nghị', 'date']
@@ -1197,7 +1201,8 @@
                 icon: 'fa-address-card',
                 simple: true,
                 filters: [
-                    ['keyword', 'Từ khóa', 'Nhập họ tên hoặc số điện thoại...'],
+                    ['q_fullName', 'Họ và tên', 'Nhập họ và tên...', 2],
+                    ['q_phone', 'Số điện thoại', 'Nhập số điện thoại...', 5],
                     ['province', 'Tỉnh/Thành phố', ['Tất cả', ...provinces]],
                     ['role', 'Vai trò phụ trách', ['Tất cả', 'Lãnh đạo phụ trách công tác BTNN', 'Công chức đầu mối']],
                     ['status', 'Trạng thái', ['Tất cả', 'Đang phụ trách', 'Đã ngừng phụ trách']]
@@ -1236,7 +1241,7 @@
                 icon: 'fa-database',
                 simple: true,
                 filters: [
-                    ['keyword', 'Từ khóa', 'Nhập tên/mã bản ghi tham chiếu...'],
+                    ['q_refCode', 'Tên/Mã bản ghi tham chiếu', 'Nhập tên/Mã bản ghi tham chiếu...', 0],
                     ['sourceType', 'Loại CSDL nguồn', ['Tất cả', 'CSDL về bản án, quyết định của Tòa án', 'CSDL quốc gia về thủ tục hành chính (TTHC)', 'CSDL quốc gia về khiếu nại, tố cáo', 'Khác']],
                     ['fromDate', 'Từ ngày trích xuất', 'date'],
                     ['toDate', 'Đến ngày trích xuất', 'date']
@@ -1267,9 +1272,9 @@
             }
         };
 
-        function commonWorkflowFilters(label, placeholder) {
+        function commonWorkflowFilters(textFilters) {
             return [
-                ['keyword', label, placeholder],
+                ...textFilters,
                 ['status', 'Trạng thái', statusOptions],
                 ['fromDate', 'Từ ngày gửi', 'date'],
                 ['toDate', 'Đến ngày gửi', 'date']
@@ -1679,11 +1684,12 @@
             const head = document.getElementById('tableHead');
             const body = document.getElementById('tableBody');
             head.innerHTML = `<tr><th style="width:56px; text-align:center;">STT</th>${config.columns.map((col, index) => `<th style="${index === config.columns.length - 1 ? 'width:148px; text-align:center;' : ''}">${col}</th>`).join('')}</tr>`;
-            const keyword = (document.getElementById('filter_keyword')?.value || '').toLowerCase().trim();
+            const textFilters = config.filters.filter(f => typeof f[2] === 'string' && f[2] !== 'date' && f[3] !== undefined)
+                .map(f => ({ col: f[3], value: normalizeSearchText(document.getElementById(`filter_${f[0]}`)?.value) }))
+                .filter(f => f.value && f.col !== null);
             const statusFilter = document.getElementById('filter_status')?.value || '';
             const filtered = rows.filter(row => {
-                const joined = row.join(' ').toLowerCase();
-                if (keyword && !joined.includes(keyword)) return false;
+                if (textFilters.some(f => !normalizeSearchText(row[f.col]).includes(f.value))) return false;
                 if (statusFilter && row[row.length - 1] !== statusFilter) return false;
                 return true;
             });
@@ -1900,7 +1906,6 @@
         function init() {
             document.title = config.title;
             document.getElementById('pageTitle').innerHTML = `<i class="fa-solid ${config.icon}"></i> ${config.title}`;
-            document.getElementById('pageSubtitle').innerText = config.subtitle;
             document.getElementById('filterGrid').innerHTML = config.filters.map(renderFilterControl).join('');
             currentPage = 1;
             renderTable();

@@ -46,7 +46,8 @@ flowchart TD
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
-| Từ khóa | String(255) | Không | Trống | Tìm kiếm gần đúng theo `Tên hoạt động` hoặc `Đối tác/Tổ chức quốc tế`. |
+| Tên hoạt động hợp tác quốc tế | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập tên hoạt động hợp tác quốc tế...".<br>- Tìm gần đúng theo Tên hoạt động hợp tác quốc tế; không phân biệt hoa thường, có dấu/không dấu. |
+| Đối tác/Tổ chức quốc tế | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập đối tác/Tổ chức quốc tế...".<br>- Tìm gần đúng theo Đối tác/Tổ chức quốc tế; không phân biệt hoa thường, có dấu/không dấu. |
 | Quốc gia đối tác | Enum(String(100)) | Không | Tất cả | Tham chiếu Danh mục Quốc tịch / Quốc gia [DM_09]. |
 | Hình thức hợp tác | Enum(String(50)) | Không | Tất cả | \- Giá trị gồm:<br>+ Tất cả<br>+ Hội thảo/Tọa đàm<br>+ Trao đổi đoàn công tác<br>+ Ký kết văn bản hợp tác<br>+ Hỗ trợ kỹ thuật<br>+ Khác |
 | Từ ngày thực hiện | Date | Không | Theo dữ liệu hệ thống | Định dạng `dd/mm/yyyy`. |

@@ -23,7 +23,8 @@
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
-| Từ khóa | String(255) | Không | Trống | - Nhập từ khóa tìm kiếm theo nội dung Câu hỏi hoặc nội dung Trả lời. |
+| Nội dung câu hỏi | String(500) | Không | Trống | Control UI: Textbox.<br>- Placeholder: "Nhập nội dung câu hỏi...".<br>- Tìm gần đúng theo Nội dung câu hỏi; không phân biệt hoa thường, có dấu/không dấu. |
+| Nội dung câu trả lời | String(500) | Không | Trống | Control UI: Textbox.<br>- Placeholder: "Nhập nội dung câu trả lời...".<br>- Tìm gần đúng theo Nội dung câu trả lời; không phân biệt hoa thường, có dấu/không dấu. |
 | Nhóm chủ đề | Enum(String(50)) | Không | "Tất cả" | Control UI: Hộp chọn.<br>- Chọn nhóm chủ đề phân loại câu hỏi FAQ.<br>- Danh sách giá trị bao gồm:<br>  + Tất cả nhóm chủ đề<br>  + Tài khoản và Phân quyền<br>  + Nghiệp vụ Đăng ký biện pháp bảo đảm<br>  + Thanh toán phí và Lệ phí<br>  + Sự cố kỹ thuật và lỗi hệ thống |
 | Trạng thái | Enum(String(50)) | Không | "Tất cả" | Control UI: Hộp chọn.<br>- Chọn trạng thái phê duyệt của bản ghi.<br>- Danh sách giá trị bao gồm:<br>  + Tất cả trạng thái<br>  + Lưu nháp<br>  + Chờ duyệt<br>  + Đã duyệt<br>  + Từ chối |
 | Từ ngày tạo | String(10) | Không | Ngày đầu tiên của tháng hiện tại | - Nhập tay hoặc chọn từ lịch theo định dạng `dd/mm/yyyy` (tự động thêm dấu `/` khi gõ). |
@@ -43,7 +44,7 @@
 ##### 4.3.2.14.2.3. Chức năng trên màn hình
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Xóa bộ lọc | Nút | - Thao tác: Người dùng bấm nút **[Xóa bộ lọc]**.<br>- Xử lý: Thiết lập lại toàn bộ các bộ lọc tìm kiếm về giá trị mặc định (Từ khóa rỗng, Nhóm chủ đề và Trạng thái về "Tất cả", ngày tạo từ đầu tháng đến ngày hiện tại). Tự động kích hoạt lại tìm kiếm để cập nhật lại lưới dữ liệu. |
+| 1 | Xóa bộ lọc | Nút | - Thao tác: Người dùng bấm nút **[Xóa bộ lọc]**.<br>- Xử lý: Thiết lập lại toàn bộ các bộ lọc tìm kiếm về giá trị mặc định (Nội dung câu hỏi, Nội dung câu trả lời rỗng, Nhóm chủ đề và Trạng thái về "Tất cả", ngày tạo từ đầu tháng đến ngày hiện tại). Tự động kích hoạt lại tìm kiếm để cập nhật lại lưới dữ liệu. |
 | 2 | Tìm kiếm | Nút | - Thao tác: Người dùng bấm nút **[Tìm kiếm]**.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | | | | - TH1 (Từ ngày > Đến ngày): Hệ thống hiển thị thông báo lỗi: *"Từ ngày tạo không được lớn hơn Đến ngày tạo"* và chặn tìm kiếm. |
 | | | | - TH Hợp lệ: Hệ thống lọc danh sách câu hỏi FAQ theo các tiêu chí đã nhập/chọn trên form bộ lọc, trả kết quả và phân trang lại lưới dữ liệu (20 bản ghi/trang). |

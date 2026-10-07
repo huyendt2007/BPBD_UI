@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -772,9 +772,13 @@
         <!-- Filter Panel -->
         <div class="card-section search-filters-box" data-bpbd-filter>
             <div class="grid-layout" style="grid-template-columns: repeat(3, 1fr);">
-                <div class="form-group" style="grid-column: span 2;">
-                    <label class="form-label">Từ khóa</label>
-                    <input type="text" id="filterKeyword" class="form-control" placeholder="Tìm theo nội dung câu hỏi hoặc câu trả lời...">
+                <div class="form-group">
+                    <label class="form-label">Nội dung câu hỏi</label>
+                    <input type="text" id="filterQuestion" class="form-control" placeholder="Nhập nội dung câu hỏi...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nội dung câu trả lời</label>
+                    <input type="text" id="filterAnswer" class="form-control" placeholder="Nhập nội dung câu trả lời...">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Nhóm chủ đề</label>
@@ -1198,14 +1202,18 @@
             let list = documents.filter(d => !d.isDeleted);
 
             // 1. Apply Filter panel criteria
-            const kw = document.getElementById('filterKeyword').value.trim().toLowerCase();
+            const question = document.getElementById('filterQuestion').value.trim().toLowerCase();
+            const answer = document.getElementById('filterAnswer').value.trim().toLowerCase();
             const topic = document.getElementById('filterTopic').value;
             const status = document.getElementById('filterStatus').value;
             const fromD = parseDate(document.getElementById('filterFromDate').value);
             const toD = parseDate(document.getElementById('filterToDate').value);
 
-            if (kw) {
-                list = list.filter(d => d.cauHoi.toLowerCase().includes(kw) || d.traLoi.toLowerCase().includes(kw));
+            if (question) {
+                list = list.filter(d => d.cauHoi.toLowerCase().includes(question));
+            }
+            if (answer) {
+                list = list.filter(d => d.traLoi.toLowerCase().includes(answer));
             }
             if (topic) {
                 list = list.filter(d => d.nhomChuDe === topic);
@@ -1469,7 +1477,8 @@
 
         // CLEAR FILTERS
         function clearFilters() {
-            document.getElementById('filterKeyword').value = '';
+            document.getElementById('filterQuestion').value = '';
+            document.getElementById('filterAnswer').value = '';
             document.getElementById('filterTopic').value = '';
             document.getElementById('filterStatus').value = '';
 

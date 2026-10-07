@@ -23,9 +23,10 @@
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
-| Từ khóa | String(255) | Không | Trống | - Nhập từ khóa tìm kiếm theo Tên văn bản hoặc Số hiệu văn bản. |
+| Tên văn bản | String(500) | Không | Trống | Control UI: Textbox.<br>- Placeholder: "Nhập tên văn bản...".<br>- Tìm gần đúng theo Tên văn bản; không phân biệt hoa thường, có dấu/không dấu. |
+| Số hiệu văn bản | String(50) | Không | Trống | Control UI: Textbox.<br>- Placeholder: "Nhập số hiệu văn bản...".<br>- Tìm gần đúng theo Số hiệu văn bản; không phân biệt hoa thường, có dấu/không dấu. |
 | Loại văn bản | Enum(String(50)) | Không | "Tất cả" | Control UI: Hộp chọn.<br>- Chọn loại văn bản quy phạm pháp luật.<br>- Danh sách giá trị bao gồm:<br>  + Tất cả loại văn bản<br>  + Luật<br>  + Nghị định<br>  + Thông tư<br>  + Nghị quyết |
-| Cơ quan ban hành | String(200) | Không | Trống | - Nhập từ khóa tìm kiếm theo tên Cơ quan ban hành văn bản. |
+| Cơ quan ban hành | String(200) | Không | Trống | - Tìm gần đúng theo tên Cơ quan ban hành văn bản. |
 | Trạng thái | Enum(String(50)) | Không | "Tất cả" | Control UI: Hộp chọn.<br>- Chọn trạng thái phê duyệt của bản ghi.<br>- Danh sách giá trị bao gồm:<br>  + Tất cả trạng thái<br>  + Lưu nháp<br>  + Chờ duyệt<br>  + Đã duyệt<br>  + Từ chối |
 | Từ ngày ban hành | String(10) | Không | Ngày đầu tiên của tháng hiện tại | - Nhập tay hoặc chọn từ lịch theo định dạng `dd/mm/yyyy` (tự động thêm dấu `/` khi gõ). |
 | Đến ngày ban hành | String(10) | Không | Ngày hiện tại | - Nhập tay hoặc chọn từ lịch theo định dạng `dd/mm/yyyy` (tự động thêm dấu `/` khi gõ). |
@@ -46,7 +47,7 @@
 ##### 4.3.2.13.2.3. Chức năng trên màn hình
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Xóa bộ lọc | Nút | - Thao tác: Người dùng bấm nút **[Xóa bộ lọc]**.<br>- Xử lý: Thiết lập lại toàn bộ các bộ lọc tìm kiếm về giá trị mặc định (Từ khóa rỗng, Loại văn bản và Trạng thái về "Tất cả", Cơ quan ban hành rỗng, ngày ban hành từ đầu tháng đến ngày hiện tại). Tự động kích hoạt lại tìm kiếm để cập nhật lại lưới dữ liệu. |
+| 1 | Xóa bộ lọc | Nút | - Thao tác: Người dùng bấm nút **[Xóa bộ lọc]**.<br>- Xử lý: Thiết lập lại toàn bộ các bộ lọc tìm kiếm về giá trị mặc định (Tên văn bản, Số hiệu văn bản rỗng, Loại văn bản và Trạng thái về "Tất cả", Cơ quan ban hành rỗng, ngày ban hành từ đầu tháng đến ngày hiện tại). Tự động kích hoạt lại tìm kiếm để cập nhật lại lưới dữ liệu. |
 | 2 | Tìm kiếm | Nút | - Thao tác: Người dùng bấm nút **[Tìm kiếm]**.<br>- **TH Không có dữ liệu trả về**:<br>+ Bảng kết quả: Hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001].<br>+ Thanh phân trang (Pagination): Dòng số lượng hiển thị *"Hiển thị 0-0 của 0 bản ghi"*; các nút điều hướng trang (&#124;&lt;&lt;, &lt;, các số trang, &gt;, &gt;&gt;&#124;) ở trạng thái ẩn hoặc khóa mờ (Disabled).<br>+ Nút "Kết xuất Excel" (nếu màn hình có nút này): Thiết lập ở trạng thái khóa mờ (Disabled) kèm tooltip: *"Không có dữ liệu để kết xuất Excel"*.|
 | | | | - TH1 (Từ ngày > Đến ngày): Hệ thống hiển thị thông báo lỗi: *"Từ ngày ban hành không được lớn hơn Đến ngày ban hành"* và chặn tìm kiếm. |
 | | | | - TH Hợp lệ: Hệ thống lọc danh sách văn bản theo các tiêu chí đã nhập/chọn trên form bộ lọc, trả kết quả và phân trang lại lưới dữ liệu (20 bản ghi/trang). |
