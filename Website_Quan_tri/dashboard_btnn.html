@@ -138,7 +138,7 @@
     <div id="content"></div>
 </div>
 
-<!-- Popup Thêm mới/Cập nhật cấu hình -->
+<!-- Popup Cập nhật cấu hình -->
 <div class="modal-backdrop" id="cfgModal">
     <div class="modal">
         <div class="modal-header"><h3 id="cfgModalTitle"></h3><button class="icon-btn" onclick="closeCfgModal()" aria-label="Đóng"><i class="fa-solid fa-xmark"></i></button></div>
@@ -249,7 +249,7 @@ const SCREENS = {
     pt_cap: { title: 'Phân tích tình hình kết quả đánh giá công tác BTNN theo cấp thực hiện', icon: 'fa-sitemap', analysis: true },
     pt_ca_nuoc: { title: 'Phân tích tình hình giải quyết vụ việc trong phạm vi cả nước', icon: 'fa-earth-asia', analysis: true }
 };
-const CHART_TYPES = [['bar', 'Biểu đồ cột', 'fa-chart-column'], ['pie', 'Biểu đồ tròn', 'fa-chart-pie'], ['line', 'Biểu đồ đường', 'fa-chart-line']];
+const CHART_TYPES = [['bar', 'Biểu đồ cột', 'fa-chart-column'], ['pie', 'Biểu đồ tròn', 'fa-chart-pie'], ['line', 'Biểu đồ hình sin', 'fa-wave-square']];
 const chartTypeLabel = k => k === 'map' ? 'Bản đồ' : (CHART_TYPES.find(c => c[0] === k) || [k, k])[1];
 // Thành phần cấu hình: 06 màn phân tích + các thành phần của màn tổng quan
 const COMPONENTS = [
@@ -267,15 +267,14 @@ const COMPONENTS = [
     { id: 'w_co_quan', name: 'Cơ quan giải quyết bồi thường có nhiều vụ việc nhất', scope: 'Màn hình tổng quan', link: 'pt_co_quan' }
 ];
 const compById = id => COMPONENTS.find(c => c.id === id);
-const CFG_KEY = 'btnn_dashboard_cfg_v1';
+const CFG_KEY = 'btnn_dashboard_cfg_v2';
 function defaultCfg() {
     const who = 'Nguyễn Văn Quản Trị', at = '01/10/2026 09:00';
     const r = (id, chart, metric, order, on) => ({ id, chart, metric, order, status: on ? 'Áp dụng' : 'Không áp dụng', user: who, at });
     return [
         r('pt_thoi_gian', 'bar', 'xepLoai', 1, true), r('pt_dia_phuong', 'bar', 'btp', 2, true), r('pt_pham_vi', 'bar', 'thuLy', 3, true),
         r('pt_co_quan', 'bar', 'thuLy', 4, true), r('pt_cap', 'pie', 'thuLy', 5, true), r('pt_ca_nuoc', 'bar', 'thuLy', 6, true),
-        r('w_dien_bien', 'line', '', 1, true), r('w_pham_vi', 'bar', '', 2, true), r('w_xep_loai', 'pie', '', 3, true), r('w_ban_do', 'map', '', 4, true), r('w_cap', 'pie', '', 5, false)
-        // w_co_quan chưa cấu hình: dùng để minh họa Thêm mới
+        r('w_dien_bien', 'line', '', 1, true), r('w_pham_vi', 'bar', '', 2, true), r('w_xep_loai', 'pie', '', 3, true), r('w_ban_do', 'map', '', 4, true), r('w_cap', 'pie', '', 5, false), r('w_co_quan', 'bar', '', 6, false)
     ];
 }
 function loadCfg() { try { const v = JSON.parse(localStorage.getItem(CFG_KEY) || 'null'); if (Array.isArray(v)) return v; } catch (e) { } const d = defaultCfg(); saveCfgStore(d); return d; }
@@ -316,7 +315,7 @@ function baseOpts({ horizontal, stacked, legend, money, yTitle } = {}) {
 }
 const barDs = (label, data, color, extra) => ({ label, data, backgroundColor: color, borderRadius: 4, borderSkipped: 'start', maxBarThickness: 26, categoryPercentage: 0.72, barPercentage: 0.9, ...extra });
 const stackDs = (label, data, color) => ({ label, data, backgroundColor: color, borderColor: '#ffffff', borderWidth: 1, maxBarThickness: 30, categoryPercentage: 0.7 });
-const lineDs = (label, data, color) => ({ label, data, borderColor: color, backgroundColor: color, borderWidth: 2, tension: 0.4, pointRadius: 4, pointHoverRadius: 6, pointBackgroundColor: color, pointBorderColor: '#ffffff', pointBorderWidth: 2 });
+const lineDs = (label, data, color) => ({ label, data, borderColor: color, backgroundColor: color, borderWidth: 2, tension: 0.5, cubicInterpolationMode: 'default', pointRadius: 4, pointHoverRadius: 6, pointBackgroundColor: color, pointBorderColor: '#ffffff', pointBorderWidth: 2 });
 function pieCfg(labels, data, colors) {
     return { type: 'doughnut', data: { labels, datasets: [{ data, backgroundColor: colors, borderColor: '#ffffff', borderWidth: 2, hoverOffset: 6 }] },
         options: { responsive: true, maintainAspectRatio: false, cutout: '58%', animation: { duration: 250 },
@@ -479,21 +478,21 @@ function renderConfig() {
         .sort((a, b) => compById(a.id).scope.localeCompare(compById(b.id).scope) || a.order - b.order);
     const rows = list.map((c, i) => { const x = compById(c.id); const m = x.metrics ? (x.metrics.find(mm => mm[0] === c.metric) || ['', '-'])[1] : '-'; return [i + 1, esc(x.name), esc(x.scope), chartTypeLabel(c.chart), esc(m), c.order, `<span class="badge ${c.status === 'Áp dụng' ? 'on' : 'off'}">${c.status}</span>`, esc(c.user), esc(c.at), `<button class="icon-btn edit" title="Cập nhật" onclick="openCfgModal('${c.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`]; });
     const head = [{ t: 'STT' }, { t: 'Thành phần hiển thị' }, { t: 'Áp dụng tại' }, { t: 'Loại biểu đồ mặc định' }, { t: 'Chỉ tiêu mặc định' }, { t: 'Thứ tự hiển thị', num: true }, { t: 'Trạng thái' }, { t: 'Người cập nhật' }, { t: 'Thời điểm cập nhật' }, { t: 'Thao tác' }];
-    document.getElementById('content').innerHTML = `<div class="card"><div class="card-title"><span class="left"><i class="fa-solid fa-table-list"></i> Danh sách cấu hình hiển thị (${list.length})</span><button class="btn btn-primary btn-sm" onclick="openCfgModal()"><i class="fa-solid fa-circle-plus"></i> Thêm mới</button></div>${tableHtml(head, rows)}</div>`;
+    document.getElementById('content').innerHTML = `<div class="card"><div class="card-title"><span class="left"><i class="fa-solid fa-table-list"></i> Danh sách cấu hình hiển thị (${list.length})</span></div>${tableHtml(head, rows)}</div>`;
 }
 let editingId = null;
 function openCfgModal(id) {
-    editingId = id || null;
-    const c = id ? cfgOf(id) : null, free = COMPONENTS.filter(x => !cfgOf(x.id));
-    if (!id && !free.length) { showToast('Tất cả thành phần đã có cấu hình. Vui lòng chọn Cập nhật.'); return; }
-    document.getElementById('cfgModalTitle').innerHTML = `<i class="fa-solid fa-sliders"></i> ${id ? 'Cập nhật' : 'Thêm mới'} cấu hình hiển thị`;
-    const compId = id || free[0].id;
+    // Mỗi thành phần có sẵn 01 cấu hình; chỉ cho phép Cập nhật, không Thêm mới, không Xóa
+    editingId = id;
+    const c = cfgOf(id); if (!c) return;
+    document.getElementById('cfgModalTitle').innerHTML = `<i class="fa-solid fa-sliders"></i> Cập nhật cấu hình hiển thị`;
+    const compId = id;
     document.getElementById('cfgForm').innerHTML = `
-        <div class="form-group" style="grid-column:1/-1"><span class="form-label">Thành phần hiển thị <span class="req">*</span></span><select class="form-control" id="m_comp" ${id ? 'disabled' : ''} onchange="refreshCfgForm()">${(id ? [compById(id)] : free).map(x => opt(x.id, x.name, compId)).join('')}</select></div>
+        <div class="form-group" style="grid-column:1/-1"><span class="form-label">Thành phần hiển thị</span><select class="form-control" id="m_comp" disabled>${opt(compId, compById(compId).name, compId)}</select></div>
         <div class="form-group"><span class="form-label">Áp dụng tại</span><input class="form-control" id="m_scope" disabled></div>
         <div class="form-group"><span class="form-label">Loại biểu đồ mặc định <span class="req">*</span></span><select class="form-control" id="m_chart"></select></div>
         <div class="form-group" id="m_metric_wrap"><span class="form-label">Chỉ tiêu mặc định <span class="req">*</span></span><select class="form-control" id="m_metric"></select></div>
-        <div class="form-group"><span class="form-label">Thứ tự hiển thị <span class="req">*</span></span><input class="form-control" id="m_order" type="number" min="1" max="99" value="${c ? c.order : CFG.length + 1}"><div class="err-text" id="m_err"></div></div>
+        <div class="form-group"><span class="form-label">Thứ tự hiển thị <span class="req">*</span></span><input class="form-control" id="m_order" type="number" min="1" max="99" value="${c.order}"><div class="err-text" id="m_err"></div></div>
         <div class="form-group"><span class="form-label">Trạng thái <span class="req">*</span></span><select class="form-control" id="m_status">${opt('Áp dụng', 'Áp dụng', c ? c.status : 'Áp dụng')}${opt('Không áp dụng', 'Không áp dụng', c ? c.status : '')}</select></div>`;
     refreshCfgForm(c);
     document.getElementById('cfgModal').classList.add('visible');
@@ -513,7 +512,7 @@ function saveCfg() {
     if (!order || order < 1) { document.getElementById('m_err').textContent = 'Trường này bắt buộc nhập.'; return; }
     const rec = { id, chart: val('m_chart'), metric: compById(id).metrics ? val('m_metric') : '', order, status: val('m_status'), user: 'Nguyễn Văn Cán Bộ', at: nowStr() };
     const i = CFG.findIndex(c => c.id === id); if (i >= 0) CFG[i] = rec; else CFG.push(rec);
-    saveCfgStore(CFG); closeCfgModal(); renderConfig(); showToast(editingId ? 'Cập nhật cấu hình thành công.' : 'Thêm mới cấu hình thành công.');
+    saveCfgStore(CFG); closeCfgModal(); renderConfig(); showToast('Cập nhật cấu hình thành công.');
 }
 
 // ===================== MH03-MH08 - Phân tích =====================
@@ -613,7 +612,7 @@ function render() {
     renderFilters(true);
     if (!window.Chart) document.getElementById('content').insertAdjacentHTML('beforebegin', '<div class="card empty">Không tải được thư viện biểu đồ. Vui lòng kiểm tra kết nối mạng.</div>');
     render();
-    if (MODULE === 'cau_hinh' && P.get('popup') === 'them') openCfgModal(); // Mở sẵn popup Thêm mới (minh họa)
+    if (MODULE === 'cau_hinh' && P.get('popup') === 'sua') openCfgModal(P.get('id') || 'pt_thoi_gian'); // Mở sẵn popup Cập nhật (minh họa)
 })();
 </script>
 <script src="admin-ui-standardizer.js"></script>

@@ -556,6 +556,16 @@
                 grid-template-columns: 1fr;
             }
         }
+        /* Bảng tài liệu đính kèm - đồng nhất với màn Tiếp nhận yêu cầu */
+        .doc-actions { align-items: center; display: flex; gap: 10px; justify-content: center; white-space: nowrap; }
+        .action-link { font-size: 12px; font-weight: 600; text-decoration: none; }
+        .action-link.view-link { color: var(--secondary-color); }
+        .action-link.delete-link { color: var(--danger-color); }
+        .disabled-action { cursor: not-allowed; opacity: 0.35; pointer-events: none; }
+        .btn-upload-rust { background-color: #C27857; color: white; border: none; border-radius: 4px; padding: 6px 16px; font-size: 12.5px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-upload-rust:hover { background-color: #A96241; }
+        .file-name { font-weight: 600; color: #166534; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; display: inline-block; max-width: 100%; }
+        .btn.btn-sm { height: 32px; padding: 0 12px; font-size: 12.5px; }
     </style>
 </head>
 
@@ -642,15 +652,15 @@
                     <tr>
                         <th style="width:60px; text-align:center;">STT</th>
                         <th>Tên tài liệu</th>
-                        <th>File đính kèm</th>
-                        <th style="width:120px; text-align:center;">Thao tác</th>
+                        <th style="width:260px;">File đính kèm</th>
+                        <th style="width:160px; text-align:center;">Thao tác tài liệu</th>
                     </tr>
                 </thead>
                 <tbody id="documentRows"></tbody>
             </table>
         </div>
-        <div style="margin-top:10px;">
-            <button class="btn btn-secondary" onclick="addDocumentRow()"><i class="fa-solid fa-plus"></i> Thêm dòng tài liệu</button>
+        <div style="margin-top:10px;" id="addDocBtnWrapper">
+            <button class="btn btn-secondary btn-sm" onclick="addDocumentRow()"><i class="fa-solid fa-plus"></i> Thêm dòng</button>
         </div>
 
         <div class="footer-actions" id="formActions"></div>
@@ -1734,22 +1744,38 @@
             renderPaginationPages(maxPages);
         }
 
+        // Bảng tài liệu đính kèm - đồng nhất với màn Tiếp nhận yêu cầu (Xem file, Xóa)
+        let docReadOnly = false;
+        const escDoc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         function renderDocuments() {
             const body = document.getElementById('documentRows');
+            const addWrap = document.getElementById('addDocBtnWrapper');
+            if (addWrap) addWrap.style.display = docReadOnly ? 'none' : '';
+            if (docReadOnly && (!documents || documents.length === 0)) {
+                body.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); font-style:italic; padding:16px;">Không có tài liệu đính kèm nào.</td></tr>`;
+                return;
+            }
             body.innerHTML = documents.map((doc, index) => `
                 <tr>
                     <td style="text-align:center;">${index + 1}</td>
-                    <td><input class="form-control" value="${doc.name}" onchange="documents[${index}].name = this.value"></td>
                     <td>
-                        <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-                            <span style="font-weight:700; color:#475569;"><i class="fa-solid fa-paperclip"></i> ${doc.file || 'Chưa chọn file'}</span>
-                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('docFile_${index}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải lên</button>
-                            <input type="file" id="docFile_${index}" style="display:none;" onchange="setDocumentFile(${index}, this.files)">
-                        </div>
+                        ${docReadOnly
+                            ? `<span style="font-weight:500; color:#1e293b;">${escDoc(doc.name || '--')}</span>`
+                            : `<input class="form-control" value="${escDoc(doc.name)}" placeholder="Nhập tên tài liệu..." oninput="documents[${index}].name = this.value">`}
                     </td>
-                    <td style="text-align:center;">
-                        <button class="icon-btn" title="Xem file" onclick="showToast('Đang mở file ${doc.file || ''}.')">Xem</button>
-                        <button class="icon-btn" title="Xóa" onclick="removeDocumentRow(${index})"><i class="fa-solid fa-trash"></i></button>
+                    <td>
+                        ${doc.file
+                            ? `<span class="file-name" title="${escDoc(doc.file)}"><i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:6px;"></i>${escDoc(doc.file)}</span>`
+                            : (docReadOnly
+                                ? `<span style="color:var(--text-muted); font-style:italic;">--</span>`
+                                : `<button type="button" class="btn-upload-rust" onclick="document.getElementById('docFile_${index}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải lên</button>`)}
+                        <input type="file" id="docFile_${index}" style="display:none;" onchange="setDocumentFile(${index}, this.files)">
+                    </td>
+                    <td>
+                        <div class="doc-actions">
+                            <a href="javascript:void(0)" class="action-link view-link ${doc.file ? '' : 'disabled-action'}" onclick="viewDocumentFile(${index})">Xem file</a>
+                            ${docReadOnly ? '' : `<a href="javascript:void(0)" class="action-link delete-link" onclick="removeDocumentRow(${index})"><i class="fa-solid fa-trash-can"></i> Xóa</a>`}
+                        </div>
                     </td>
                 </tr>
             `).join('');
@@ -1761,19 +1787,24 @@
         }
 
         function removeDocumentRow(index) {
-            documents.splice(index, 1);
+            if (documents.length === 1) documents = [{ name: '', file: '' }];
+            else documents.splice(index, 1);
             renderDocuments();
-            showToast('Đã xóa dòng tài liệu.');
+        }
+
+        function viewDocumentFile(index) {
+            const doc = documents[index];
+            if (!doc || !doc.file) return;
+            showToast(`Giả lập mở file: ${doc.file}`);
         }
 
         function setDocumentFile(index, files) {
             if (files && files[0]) {
                 documents[index].file = files[0].name;
+                if (!documents[index].name) documents[index].name = files[0].name.replace(/\.[^.]+$/, '');
                 renderDocuments();
-                showToast('Đã tải lên file đính kèm.');
             }
         }
-
         function openForm(mode, rowIndex = null) {
             selectedRowIndex = rowIndex;
             const row = rowIndex !== null ? rows[rowIndex] : null;
@@ -1787,6 +1818,7 @@
                 { name: 'Tài liệu đầu vào', file: 'tai_lieu_dau_vao.pdf' },
                 { name: 'Tài liệu xử lý', file: '' }
             ];
+            docReadOnly = mode === 'view';
             renderDocuments();
             renderFormActions(row ? row[row.length - 1] : (config.simple ? 'Đang nhập' : 'Lưu nháp'), mode);
             prepareRelatedLookupLinks(rowIndex, mode);

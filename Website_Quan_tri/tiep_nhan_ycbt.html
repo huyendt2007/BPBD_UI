@@ -300,11 +300,11 @@
                     </div>
                     <div class="form-group">
                         <span class="form-label">Từ ngày</span>
-                        <input id="filterFromDate" class="form-control" placeholder="dd/mm/yyyy">
+                        <input id="filterFromDate" class="form-control" placeholder="dd/mm/yyyy" autocomplete="off">
                     </div>
                     <div class="form-group">
                         <span class="form-label">Đến ngày</span>
-                        <input id="filterToDate" class="form-control" placeholder="dd/mm/yyyy">
+                        <input id="filterToDate" class="form-control" placeholder="dd/mm/yyyy" autocomplete="off">
                     </div>
                 </div>
                 <div class="filter-actions">
@@ -1068,15 +1068,33 @@
         ];
 
         document.addEventListener("DOMContentLoaded", () => {
+            initDatePickers();
             initDates();
             loadClaims();
             renderReceptionTable();
         });
 
+        // Khoảng lọc mặc định: 03 tháng gần nhất (từ cùng ngày của 03 tháng trước đến ngày hiện tại)
         function initDates() {
             const now = new Date();
-            setValue("filterFromDate", formatDate(new Date(now.getFullYear(), now.getMonth(), 1)));
-            setValue("filterToDate", formatDate(now));
+            const from = new Date(now.getFullYear(), now.getMonth() - 3, now.getDate());
+            setDateValue("filterFromDate", from);
+            setDateValue("filterToDate", now);
+        }
+
+        // Ô Từ ngày, Đến ngày dạng DatePicker
+        function initDatePickers() {
+            if (typeof flatpickr === "undefined") return;
+            const vi = { firstDayOfWeek: 1, weekdays: { shorthand: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"], longhand: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"] }, months: { shorthand: ["Th1", "Th2", "Th3", "Th4", "Th5", "Th6", "Th7", "Th8", "Th9", "Th10", "Th11", "Th12"], longhand: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"] } };
+            const opts = { dateFormat: "d/m/Y", allowInput: true, locale: vi };
+            flatpickr("#filterFromDate", opts);
+            flatpickr("#filterToDate", opts);
+        }
+
+        function setDateValue(id, date) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (el._flatpickr) el._flatpickr.setDate(date, false); else el.value = formatDate(date);
         }
 
         // Phân bổ trạng thái / cán bộ tiếp nhận cho dữ liệu giả lập theo vị trí bản ghi,
@@ -1093,14 +1111,13 @@
             { status: "Chờ tiếp nhận", by: OTHER_OFFICER }
         ];
 
-        // Rải ngày tiếp nhận vào tháng hiện tại để dữ liệu giả lập nằm trong
-        // khoảng lọc mặc định (từ ngày 01 của tháng hiện tại đến ngày hiện tại).
+        // Rải ngày tiếp nhận trong 03 tháng gần nhất để dữ liệu giả lập nằm trong
+        // khoảng lọc mặc định.
         function spreadReceptionDates(list) {
             const now = new Date();
             const today = now.getDate();
             list.forEach((item, idx) => {
-                const day = Math.max(1, today - (idx % Math.max(1, today)));
-                const d = new Date(now.getFullYear(), now.getMonth(), day);
+                const d = new Date(now.getFullYear(), now.getMonth(), today - ((idx * 11) % 88));
                 const dateStr = formatDate(d);
                 const timeStr = item.receivedAt && item.receivedAt.split(" ")[1]
                     ? item.receivedAt.split(" ")[1]
@@ -1988,7 +2005,7 @@
             window.print();
         }
     </script>
-    <script src="admin-ui-standardizer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
 </body>
