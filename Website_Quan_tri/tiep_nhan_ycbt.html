@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="quan_ly_boi_thuong.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
         body {
             background: var(--bg-body);
@@ -352,7 +353,7 @@
                         <span>Số dòng hiển thị:</span>
                         <select class="page-size-select" id="pageSize" onchange="changePageSize(this.value)">
                             <option value="10">10</option>
-                            <option value="20">20</option>
+                            <option value="20" selected>20</option>
                             <option value="50">50</option>
                             <option value="100">100</option>
                         </select>
@@ -1282,7 +1283,7 @@
             wrapper.innerHTML = `
                 <button class="btn btn-secondary btn-sm" ${currentPage === 1 ? "disabled" : ""} onclick="goToPage(1)">|&lt;&lt;</button>
                 <button class="btn btn-secondary btn-sm" ${currentPage === 1 ? "disabled" : ""} onclick="goToPage(${currentPage - 1})">&lt;</button>
-                <button class="btn btn-primary btn-sm">${currentPage}</button>
+                ${Array.from({ length: totalPages }, (_, i) => i + 1).map(p => `<button class="btn ${p === currentPage ? "btn-primary" : "btn-secondary"} btn-sm" onclick="goToPage(${p})">${p}</button>`).join("")}
                 <button class="btn btn-secondary btn-sm" ${currentPage === totalPages ? "disabled" : ""} onclick="goToPage(${currentPage + 1})">&gt;</button>
                 <button class="btn btn-secondary btn-sm" ${currentPage === totalPages ? "disabled" : ""} onclick="goToPage(${totalPages})">&gt;&gt;|</button>
             `;
