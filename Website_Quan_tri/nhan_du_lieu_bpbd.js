@@ -22,6 +22,9 @@ if (AF.length) {
     g.style.display = 'none';
 }
 const AF_IDS = AF.map(a => 'fA_' + a.k);
+// Nhãn Số đăng ký theo Loại tài sản (VD: đất là Số hồ sơ đăng ký biến động)
+document.getElementById('lblSoDK').textContent = document.getElementById('thSoDK').textContent = NDL.lbl(TYPE, 'soDK');
+document.getElementById('fSoDK').placeholder = 'Nhập ' + NDL.lbl(TYPE, 'soDK').toLowerCase() + '...';
 fillSelect('fLoaiDK', ['Tất cả'].concat(NDL.lists(TYPE).LOAI_DK || [LDK.LAN_DAU]), true);
 // Biểu mẫu không có cột Loại đăng ký: ẩn bộ lọc Loại đăng ký
 if (!NDL.hasCol(TYPE, 'HO_SO', 'loaiDK')) document.getElementById('fLoaiDK').closest('.form-group').style.display = 'none';
@@ -102,7 +105,6 @@ function renderRecords() {
         body.innerHTML = '<tr class="empty-row"><td colspan="13">Không có dữ liệu phù hợp với điều kiện tìm kiếm.</td></tr>'; // 13 cột gồm cột chọn
     } else {
         body.innerHTML = rows.map((r, i) => {
-            const w = NDL.warnings(st, r);
             const cancelled = r.trangThai === 'Đã hủy';
             const ts = r.ts.length ? NDL.esc(T.summary(r.ts[0])) + (r.ts.length > 1 ? ` <span class="muted-sm">(+${r.ts.length - 1} tài sản)</span>` : '') : '<span class="muted-sm">-</span>';
             const btnEdit = cancelled
@@ -115,8 +117,8 @@ function renderRecords() {
             return `<tr class="clickable ${cancelled ? 'row-cancelled' : ''}" title="Nhấn vào dòng để xem chi tiết" onclick="goDetail('${r.id}')">
                 <td class="col-chk" onclick="event.stopPropagation()"><input type="checkbox" ${cancelled ? 'disabled title="Bản ghi đã hủy"' : ''} ${selected.has(r.id) ? 'checked' : ''} onchange="toggleSel('${r.id}', this.checked)"></td>
                 <td>${start + i + 1}</td>
-                <td class="cell-sodk"><a class="link-code">${NDL.esc(r.hs.soDK)}</a>${w.length ? `<i class="fa-solid fa-triangle-exclamation ndl-warn-ic" title="${NDL.esc(w.join('\n'))}"></i>` : ''}
-                    ${NDL.loaiDK(r.hs) !== LDK.LAN_DAU ? `<div class="muted-sm">Số Giấy chứng nhận đăng ký biện pháp bảo đảm đã cấp: ${NDL.esc(r.hs.soDKLD)}</div>` : ''}</td>
+                <td class="cell-sodk"><a class="link-code">${NDL.esc(r.hs.soDK)}</a>
+                    ${NDL.loaiDK(r.hs) !== LDK.LAN_DAU ? `<div class="muted-sm">${NDL.lbl(TYPE, 'soDKLD')}: ${NDL.esc(r.hs.soDKLD)}</div>` : ''}</td>
                 <td>${NDL.loaiDKBadge(NDL.loaiDK(r.hs))}</td>
                 <td style="white-space:nowrap">${NDL.esc(r.hs.thoiDiem)}</td>
                 <td style="min-width:180px">${NDL.esc(r.coQuan)}</td>
@@ -208,7 +210,7 @@ function askCancelSelected() {
 // ---------- Xuất Excel ----------
 function exportExcel() {
     if (!filtered.length) { NDL.toast('Không có dữ liệu để xuất Excel.', 'warn'); return; }
-    const aoa = [['STT', 'Số đăng ký', 'Số Giấy chứng nhận đăng ký biện pháp bảo đảm đã cấp', 'Loại đăng ký', 'Thời điểm đăng ký', 'Cơ quan đăng ký', 'Bên bảo đảm', 'Bên nhận bảo đảm', 'Tài sản', 'Nguồn nhận', 'Mã lô', 'Ngày nhận', 'Trạng thái', 'Cảnh báo']];
+    const aoa = [['STT', NDL.lbl(TYPE, 'soDK'), NDL.lbl(TYPE, 'soDKLD'), 'Loại đăng ký', 'Thời điểm đăng ký', 'Cơ quan đăng ký', 'Bên bảo đảm', 'Bên nhận bảo đảm', 'Tài sản', 'Nguồn nhận', 'Mã lô', 'Ngày nhận', 'Trạng thái', 'Cảnh báo']];
     filtered.forEach((r, i) => aoa.push([i + 1, r.hs.soDK, r.hs.soDKLD, NDL.loaiDK(r.hs), r.hs.thoiDiem, r.coQuan,
         r.bbd.map(x => x.ten).join('; '), r.bnbd.map(x => x.ten).join('; '), r.ts.map(T.summary).join('; '),
         r.nguon, r.loId, r.ngayNhan, r.trangThai, NDL.warnings(st, r).join(' ')]));
@@ -321,6 +323,8 @@ function useDemo() {
         const h = Object.assign({}, hs0, { ma, soDK: so, thoiDiem: td, files: '' });
         if (hasLoaiDK) Object.assign(h, { loaiDK: loai, soDKLD: ld, noiDung: '', canCu: '' });
         if ('thoiDiemHL' in h) h.thoiDiemHL = td;
+        // Đất - Đăng ký thay đổi: nhập Văn bản thay cho Số hợp đồng bảo đảm, Thời điểm có hiệu lực
+        if (loai === LDK.THAY_DOI && NDL.hasCol(TYPE, 'HO_SO', 'tenVB')) Object.assign(h, { soHD: '', ngayHD: '', tenVB: 'Văn bản sửa đổi, bổ sung hợp đồng thế chấp', soVB: '01/2026/SĐBS', ngayVB: '01/10/2026' });
         return Object.assign(h, extra || {});
     };
     const C = (o, ma, extra) => Object.assign({}, o, { ma }, extra || {});

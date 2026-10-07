@@ -9,7 +9,7 @@
  */
 (function () {
     const SPEC = window.NDL_SPEC;
-    const STORE_KEY = 'ndl_bpbd_v8';
+    const STORE_KEY = 'ndl_bpbd_v11';
     const USER = 'Nguyễn Văn Quản (QTHT)';
 
     const LDK = { LAN_DAU: 'Đăng ký lần đầu', THAY_DOI: 'Đăng ký thay đổi', SUA_SAI: 'Sửa chữa sai sót', XOA: 'Xóa đăng ký' };
@@ -67,6 +67,8 @@
             icon: 'fa-solid fa-map-location-dot',
             agencies: ['Văn phòng Đăng ký đất đai thành phố Hà Nội', 'Văn phòng Đăng ký đất đai Thành phố Hồ Chí Minh', 'Văn phòng Đăng ký đất đai tỉnh Bắc Ninh'],
             prefix: 'ĐĐ',
+            // Nhãn riêng của đất cho Số đăng ký, Số Giấy chứng nhận đăng ký biện pháp bảo đảm đã cấp
+            labels: { soDK: 'Số hồ sơ đăng ký biến động', soDKLD: 'Số hồ sơ đăng ký thế chấp lần đầu' },
             assetFilterLabel: 'Thông tin tài sản', assetFilterPh: 'Số thửa, tờ bản đồ, số Giấy chứng nhận...',
             summary: o => `${o.loaiTS}: Thửa ${o.soThua || '-'}, tờ bản đồ ${o.toBanDo || '-'} - ${o.diaChiThua || ''}`,
             assetKey: o => o.soThua ? ['dat', norm(o.soThua), norm(o.toBanDo), norm(o.diaChiThua)].join('|') : '',
@@ -103,9 +105,9 @@
             assetFilterLabel: 'Thông tin tàu bay', assetFilterPh: 'Số hiệu đăng ký, kiểu tàu bay, số xuất xưởng...',
             // Bộ lọc tài sản tách riêng từng trường (thay cho ô Thông tin tài sản tìm gộp)
             assetFilters: [
-                { k: 'soHieu', label: 'Số hiệu đăng ký', ph: 'VD: VN-A321' },
+                { k: 'soHieu', label: 'Số hiệu đăng ký', ph: 'Nhập số hiệu đăng ký...' },
                 { k: 'loaiTB', label: 'Loại tàu bay', ph: 'Nhập loại tàu bay...' },
-                { k: 'kieuTB', label: 'Kiểu tàu bay', ph: 'VD: A321-200' }
+                { k: 'kieuTB', label: 'Kiểu tàu bay', ph: 'Nhập kiểu tàu bay...' }
             ],
             summary: o => `${o.loaiTB || 'Tàu bay'} ${o.kieuTB || ''}${o.soHieu ? ' - ' + o.soHieu : ''} (S/N ${o.serial || '-'})`,
             assetKey: o => (o.nsx && o.serial) ? ['taubay', norm(o.nsx), norm(o.serial)].join('|') : '',
@@ -123,18 +125,25 @@
             menu: 'Nhận dữ liệu BPBĐ bằng tàu biển',
             icon: 'fa-solid fa-ship',
             agencies: ['Chi cục Hàng hải Việt Nam tại thành phố Hải Phòng', 'Chi cục Hàng hải Việt Nam tại Thành phố Hồ Chí Minh', 'Cục Hàng hải và Đường thủy Việt Nam'],
+            // Bên bảo đảm, Bên nhận bảo đảm, Tài sản bảo đảm chỉ nhập, hiển thị với Đăng ký lần đầu (theo mô hình Tàu bay)
+            childrenFor: [LDK.LAN_DAU],
             prefix: 'TBI',
-            assetFilterLabel: 'Thông tin tàu biển', assetFilterPh: 'Tên tàu, số IMO, số đăng ký tàu biển...',
-            summary: o => `${o.loaiTS} ${o.tenTau || ''}${o.imo ? ' - IMO ' + o.imo : ''}`,
+            assetFilterLabel: 'Thông tin tàu biển', assetFilterPh: 'Tên tàu, số IMO, số đăng ký...',
+            // Bộ lọc tài sản tách riêng từng trường
+            assetFilters: [
+                { k: 'tenTau', label: 'Tên tàu', ph: 'Nhập tên tàu...' },
+                { k: 'imo', label: 'Số IMO', ph: 'Nhập số IMO...' },
+                { k: 'soDKTau', label: 'Số đăng ký tàu', ph: 'Nhập số đăng ký tàu...' }
+            ],
+            summary: o => `${o.loaiTau || 'Tàu biển'} ${o.tenTau || ''}${o.imo ? ' - IMO ' + o.imo : ''}`,
             assetKey: o => (o.imo || o.soDKTau) ? ['taubien', norm(o.imo || o.soDKTau)].join('|') : '',
-            assetKeyLabel: o => `Tàu ${o.tenTau} (${o.imo ? 'IMO ' + o.imo : 'Số đăng ký ' + o.soDKTau})`,
+            assetKeyLabel: o => `tàu ${o.tenTau} (${o.imo ? 'IMO ' + o.imo : 'Số đăng ký ' + o.soDKTau})`,
             search: o => [o.tenTau, o.imo, o.hoHieu, o.soDKTau].join(' '),
             vary: (o, n) => { o.tenTau = 'MẪU ' + ['STAR', 'OCEAN', 'PEARL', 'WAVE', 'SUN', 'MOON', 'SKY'][n % 7]; o.imo = String(9000001 + n); o.soDKTau = 'VN-000' + (1 + n) + '-TB'; return o; },
             condRules: (o, push) => {
-                if (o.loaiTS === 'Tàu biển' && !o.soDKTau) push('soDKTau', 'Bắt buộc nhập Số đăng ký tàu biển khi Loại tài sản là Tàu biển.');
                 if (o.imo && !/^\d{7}$/.test(o.imo)) push('imo', 'Số IMO phải gồm 07 chữ số.');
-                ['gt', 'dwt'].forEach(k => { if (o[k] && !/^\d+(,\d+)?$/.test(o[k])) push(k, 'Giá trị không đúng định dạng số.'); });
                 if (o.namDong && !/^\d{4}$/.test(o.namDong)) push('namDong', 'Năm đóng phải gồm 04 chữ số (yyyy).');
+                if (o.ngayDK) dateRule(o.ngayDK, 'ngayDK', push, true);
             }
         },
         chungkhoan: {
@@ -180,6 +189,16 @@
         if (!d) { push(key, 'Không đúng định dạng dd/mm/yyyy hh:mm.'); return null; }
         return d;
     }
+    // Thời điểm dạng hh:mm dd/mm/yyyy (VD: Thời điểm có hiệu lực của đất)
+    function tdRule(v, key, push, notFuture) {
+        const m = /^(\d{2}:\d{2}) (\d{2}\/\d{2}\/\d{4})$/.exec(v);
+        const d = m ? parseDT(m[2] + ' ' + m[1]) : null;
+        if (!d) push(key, 'Không đúng định dạng hh:mm dd/mm/yyyy.');
+        else if (notFuture && d > new Date()) push(key, 'Thời điểm không được lớn hơn thời điểm hiện tại.');
+    }
+    /** Nhãn Số đăng ký, Số Giấy chứng nhận đăng ký biện pháp bảo đảm đã cấp theo Loại tài sản */
+    const LABELS = { soDK: 'Số đăng ký', soDKLD: 'Số Giấy chứng nhận đăng ký biện pháp bảo đảm đã cấp' };
+    function lbl(type, k) { return ((TYPES[type] && TYPES[type].labels) || {})[k] || LABELS[k]; }
     function splitFiles(s) { return String(s || '').split(';').map(x => x.trim()).filter(Boolean); }
 
     // ---------- Cấu trúc cột theo Loại tài sản ----------
@@ -340,7 +359,7 @@
         const out = [];
         if (rec.trangThai !== 'Hiệu lực') return out;
         const cs = chainState(st, rec);
-        if (loaiDK(rec.hs) !== LDK.LAN_DAU && !cs.hasBase) out.push(`Chưa có hồ sơ gốc theo Số Giấy chứng nhận đăng ký biện pháp bảo đảm đã cấp ${rec.hs.soDKLD}.`);
+        if (loaiDK(rec.hs) !== LDK.LAN_DAU && !cs.hasBase) out.push(`Chưa có hồ sơ gốc theo ${lbl(rec.loai, 'soDKLD')} ${rec.hs.soDKLD}.`);
         out.push(...assetDupWarnings(st, rec.loai, rec.coQuan, rec.hs, rec.ts, rec.id));
         return out;
     }
@@ -376,6 +395,7 @@
                 if (sheet === 'HO_SO' && !hsVisible(c, hs) && c.k !== 'ma' && c.k !== 'files') return;
                 const v = String(o[c.k] == null ? '' : o[c.k]).trim();
                 if (c.req && !v) E(sheet, line, c.k, 'Bắt buộc nhập.');
+                else if (c.reqFor && c.reqFor.indexOf(loai) >= 0 && !v) E(sheet, line, c.k, 'Bắt buộc nhập với ' + c.reqFor.join(', ') + '.');
                 else if (v && c.list && (L[c.list] || []).indexOf(v) < 0) E(sheet, line, c.k, 'Giá trị không thuộc danh sách cho phép.');
                 else if (v && c.upper && v !== v.toUpperCase()) E(sheet, line, c.k, 'Phải viết chữ IN HOA.');
             });
@@ -387,7 +407,7 @@
 
         // 2. Bắt buộc theo Loại đăng ký, định dạng
         if (hs.loaiDK && loai !== LDK.LAN_DAU && !hs.soDKLD) E('HO_SO', hsLine, 'soDKLD', 'Bắt buộc nhập khi Loại đăng ký khác "Đăng ký lần đầu".');
-        if (hs.loaiDK && loai === LDK.LAN_DAU && hs.soDKLD && norm(hs.soDKLD) !== norm(hs.soDK)) E('HO_SO', hsLine, 'soDKLD', 'Với Đăng ký lần đầu, Số Giấy chứng nhận đăng ký biện pháp bảo đảm đã cấp phải để trống hoặc trùng Số đăng ký.');
+        if (hs.loaiDK && loai === LDK.LAN_DAU && hs.soDKLD && norm(hs.soDKLD) !== norm(hs.soDK)) E('HO_SO', hsLine, 'soDKLD', `Với Đăng ký lần đầu, ${lbl(type, 'soDKLD')} phải để trống hoặc trùng ${lbl(type, 'soDK')}.`);
         if (hs.loaiDK && (loai === LDK.LAN_DAU || loai === LDK.THAY_DOI) && hasCol(type, 'HO_SO', 'soHD') && hsVisible(colOf(type, 'HO_SO', 'soHD'), hs) && !hs.soHD) E('HO_SO', hsLine, 'soHD', 'Bắt buộc nhập với Đăng ký lần đầu, Đăng ký thay đổi.');
         if ((loai === LDK.THAY_DOI || loai === LDK.SUA_SAI) && !hs.noiDung) E('HO_SO', hsLine, 'noiDung', 'Bắt buộc nhập với Đăng ký thay đổi, Sửa chữa sai sót.');
         if (loai === LDK.XOA && !hs.canCu) E('HO_SO', hsLine, 'canCu', 'Bắt buộc chọn với Xóa đăng ký.');
@@ -395,7 +415,7 @@
         let dDK = null;
         if (hs.thoiDiem) { dDK = dtRule(hs.thoiDiem, 'thoiDiem', push); if (dDK && dDK > new Date()) push('thoiDiem', 'Thời điểm đăng ký không được lớn hơn thời điểm hiện tại.'); }
         if (hs.thoiDiemHL) { const dHL = dtRule(hs.thoiDiemHL, 'thoiDiemHL', push); if (dHL && dDK && dHL < dDK) push('thoiDiemHL', 'Thời điểm có hiệu lực không được nhỏ hơn Thời điểm đăng ký.'); }
-        ['ngayHD', 'hieuLucHD', 'nycNgayCap'].forEach(k => { if (hs[k]) dateRule(hs[k], k, push, true); });
+        ['ngayHD', 'hieuLucHD', 'nycNgayCap', 'ngayVB'].forEach(k => { if (hs[k]) (colOf(type, 'HO_SO', k).fmt === 'hh:mm dd/mm/yyyy' ? tdRule : dateRule)(hs[k], k, push, true); });
         if (hs.nycEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(hs.nycEmail)) push('nycEmail', 'Thư điện tử không đúng định dạng.');
         if (hs.nycSoGT) giayToRule(hs.nycLoaiGT, hs.nycSoGT, 'nycSoGT', push);
 
@@ -446,15 +466,15 @@
             const inFile = (ctx.pending || []).find(p => p.coQuan === ctx.coQuan && norm(p.hs.soDK) === norm(hs.soDK) && loaiDK(p.hs) === loai);
             if (existed) {
                 if (ctx.source === 'file') { dup = true; warns.push(`Đã tồn tại trên hệ thống (bản ghi ${existed.id}), không ghi nhận lại.`); }
-                else E('HO_SO', hsLine, 'soDK', 'Hồ sơ đã tồn tại trên hệ thống (trùng Cơ quan đăng ký, Số đăng ký và Loại đăng ký).');
+                else E('HO_SO', hsLine, 'soDK', `Hồ sơ đã tồn tại trên hệ thống (trùng Cơ quan đăng ký, ${lbl(type, 'soDK')} và Loại đăng ký).`);
             } else if (inFile) {
-                E('HO_SO', hsLine, 'soDK', `Trùng Cơ quan đăng ký, Số đăng ký và Loại đăng ký với hồ sơ ${inFile.hs.ma} trong cùng tệp.`);
+                E('HO_SO', hsLine, 'soDK', `Trùng Cơ quan đăng ký, ${lbl(type, 'soDK')} và Loại đăng ký với hồ sơ ${inFile.hs.ma} trong cùng tệp.`);
             } else if (loai !== LDK.LAN_DAU) {
                 const k = chainKey(ctx.coQuan, hs);
                 const chainActive = active(st, type).filter(r => r.id !== ctx.selfId && recChain(st, r) === k)
                     .map(r => r.hs).concat((ctx.pending || []).filter(p => chainKey(p.coQuan, p.hs) === k).map(p => p.hs));
                 if (chainActive.some(h => loaiDK(h) === LDK.XOA)) E('HO_SO', hsLine, 'soDKLD', `Hồ sơ gốc ${hs.soDKLD} đã được xóa đăng ký. Không thể ghi nhận thêm đăng ký thay đổi, sửa chữa sai sót hoặc xóa đăng ký.`);
-                else if (!chainActive.some(h => loaiDK(h) === LDK.LAN_DAU)) warns.push(`Chưa có hồ sơ gốc theo Số Giấy chứng nhận đăng ký biện pháp bảo đảm đã cấp ${hs.soDKLD}. Hệ thống vẫn ghi nhận và tự liên kết khi nhận được hồ sơ gốc.`);
+                else if (!chainActive.some(h => loaiDK(h) === LDK.LAN_DAU)) warns.push(`Chưa có hồ sơ gốc theo ${lbl(type, 'soDKLD')} ${hs.soDKLD}. Hệ thống vẫn ghi nhận và tự liên kết khi nhận được hồ sơ gốc.`);
             }
             if (!errors.length && !dup) warns.push(...assetDupWarnings(st, type, ctx.coQuan, hs, pack.ts.map(x => x.o), ctx.selfId));
         }
@@ -504,7 +524,7 @@
     window.NDL = {
         SPEC, TYPES, LDK, SHEETS, USER, DAT_TS, QH_DONG_THOI, QH_KHONG,
         norm, esc, fmtNum, nowStr, parseDT, splitFiles,
-        cols, hasCol, colOf, lists, headerText, templatePath, book, toObj, toRow, loaiDK, soDKLanDau, hsVisible, hsGroups, hasChildren,
+        cols, hasCol, colOf, lists, headerText, lbl, templatePath, book, toObj, toRow, loaiDK, soDKLanDau, hsVisible, hsGroups, hasChildren,
         load, save, nextRecId, nextLotId, UNITS, agencies,
         chainKey, chainRecords, chainState, assetStatus, warnings, validate,
         toast, typeFromUrl, statusBadge, loaiDKBadge

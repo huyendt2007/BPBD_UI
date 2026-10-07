@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../Common/style_iframe.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="nhan_du_lieu_bpbd.css?v=20261006q">
+    <link rel="stylesheet" href="nhan_du_lieu_bpbd.css?v=20261007g">
     <script src="../Common/iframe_helper.js"></script>
 </head>
 <body>
@@ -40,8 +40,8 @@
 </div>
 
 
-<script src="nhan_du_lieu_bpbd_spec.js?v=20261006q"></script>
-<script src="nhan_du_lieu_bpbd_common.js?v=20261006q"></script>
+<script src="nhan_du_lieu_bpbd_spec.js?v=20261007g"></script>
+<script src="nhan_du_lieu_bpbd_common.js?v=20261007g"></script>
 <script>
 const TYPE = NDL.typeFromUrl();
 const T = NDL.TYPES[TYPE];
@@ -78,7 +78,7 @@ function render() {
             let v = e(rec.hs[c.k]);
             if (c.k === 'loaiDK') v = NDL.loaiDKBadge(loai);
             if (c.k === 'soDK') v = `<b>${v}</b>`;
-            return item(c.h, v, (c.w || 0) >= 36);
+            return (c.sub ? `<div class="sub-title">${e(c.sub)}</div>` : '') + item(c.h, v, (c.w || 0) >= 36);
         }).join('');
         let head = '';
         if (gi === 0) {
@@ -127,7 +127,7 @@ function render() {
 
     // Lịch sử hồ sơ (các lần đăng ký liên kết theo Số Giấy chứng nhận đăng ký biện pháp bảo đảm đã cấp)
     const chain = NDL.chainRecords(st, rec);
-    h += `<div class="card-block"><div class="card-block-header"><h3><i class="fa-solid fa-code-branch"></i> Lịch sử hồ sơ</h3><span class="muted-sm">Số Giấy chứng nhận đăng ký biện pháp bảo đảm đã cấp: ${e(NDL.soDKLanDau(rec.hs))}${cs.hasBase ? '' : ' (chưa có hồ sơ gốc)'}</span></div><div class="card-block-body"><ul class="timeline">
+    h += `<div class="card-block"><div class="card-block-header"><h3><i class="fa-solid fa-code-branch"></i> Lịch sử hồ sơ</h3><span class="muted-sm">${e(NDL.lbl(TYPE, 'soDKLD'))}: ${e(NDL.soDKLanDau(rec.hs))}${cs.hasBase ? '' : ' (chưa có hồ sơ gốc)'}</span></div><div class="card-block-body"><ul class="timeline">
         ${chain.map(r => `<li class="${r.id === rec.id ? 'current' : ''}"><span class="t">${e(r.hs.thoiDiem)}</span><span>${NDL.loaiDKBadge(NDL.loaiDK(r.hs))} <a class="link-code" onclick="openRec('${r.id}')">${e(r.hs.soDK)}</a> ${NDL.statusBadge(r.trangThai)}${r.id === rec.id ? ' <span class="muted-sm">(đang xem)</span>' : ''}</span></li>`).join('')}
     </ul></div></div>`;
 

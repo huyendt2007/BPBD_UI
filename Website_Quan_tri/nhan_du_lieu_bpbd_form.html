@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../Common/style_iframe.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="nhan_du_lieu_bpbd.css?v=20261006q">
+    <link rel="stylesheet" href="nhan_du_lieu_bpbd.css?v=20261007g">
     <script src="../Common/iframe_helper.js"></script>
 </head>
 <body>
@@ -49,8 +49,8 @@
     </div>
 </div>
 
-<script src="nhan_du_lieu_bpbd_spec.js?v=20261006q"></script>
-<script src="nhan_du_lieu_bpbd_common.js?v=20261006q"></script>
+<script src="nhan_du_lieu_bpbd_spec.js?v=20261007g"></script>
+<script src="nhan_du_lieu_bpbd_common.js?v=20261007g"></script>
 <script>
 const TYPE = NDL.typeFromUrl();
 const T = NDL.TYPES[TYPE];
@@ -87,6 +87,7 @@ document.getElementById('reasonBlock').style.display = MODE === 'edit' ? '' : 'n
 /** Placeholder chỉ gợi ý định dạng ngày, giờ */
 function ph(c) {
     const n = c.note || '';
+    if (/^hh:mm dd\/mm\/yyyy/.test(n)) return 'hh:mm dd/mm/yyyy';
     if (/hh:mm/.test(n)) return 'dd/mm/yyyy hh:mm';
     if (/dd\/mm\/yyyy/.test(n)) return 'dd/mm/yyyy';
     if (/yyyy/.test(n)) return 'yyyy';
@@ -108,6 +109,7 @@ function layoutOf(c) {
 function reqNow(c) {
     const loai = NDL.loaiDK(data.hs);
     if (c.req) return true;
+    if (c.reqFor && c.reqFor.indexOf(loai) >= 0) return true;
     if (c.k === 'soDKLD' || c.k === 'noiDung' || c.k === 'canCu') return true;
     if (c.k === 'soHD' && data.hs.loaiDK !== undefined && (loai === LDK.LAN_DAU || loai === LDK.THAY_DOI)) return true;
     return false;
@@ -127,6 +129,8 @@ function renderHs() {
             const lock = MODE === 'edit' && c.k === 'loaiDK';
             const attrs = `data-sheet="HO_SO" data-line="0" data-col="${e(c.h)}" onchange="setHs('${c.k}', this.value)"${c.upper ? ' oninput="this.value=this.value.toUpperCase()"' : ''}`;
             const lay = layoutOf(c);
+            // Tiêu đề nhóm con trong khối (VD: đất - Hợp đồng bảo đảm/Văn bản... đặt trước Nội dung thay đổi)
+            if (c.sub) fields += `<div class="sub-title">${e(c.sub)}</div>`;
             const field = lay === 'span-full' && !c.list ? `<textarea class="form-control" rows="2" ${attrs}>${e(data.hs[c.k])}</textarea>` : inputHtml(c, data.hs[c.k], attrs, lock);
             fields += `<div class="form-group ${lay}"><label class="form-label">${e(c.h)}${reqNow(c) ? ' <span class="req">*</span>' : ''}</label>${field}</div>`;
         });

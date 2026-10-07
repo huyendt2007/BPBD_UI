@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../Common/style_iframe.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="nhan_du_lieu_bpbd.css?v=20261006q">
+    <link rel="stylesheet" href="nhan_du_lieu_bpbd.css?v=20261007g">
     <script src="../Common/iframe_helper.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -18,7 +18,6 @@
     <div class="top-action-bar">
         <div>
             <h2><i class="fa-solid fa-database"></i><span>Nhận dữ liệu BPBĐ từ cơ quan đăng ký khác</span></h2>
-            <div class="sub">Dữ liệu hồ sơ đăng ký biện pháp bảo đảm do cơ quan đăng ký khác gửi về để lưu trữ, tra cứu nội bộ và báo cáo</div>
         </div>
         <div class="top-actions">
             <button class="btn btn-outline" onclick="openCfg()"><i class="fa-solid fa-gear"></i> Cấu hình cơ quan đăng ký</button>
@@ -36,7 +35,7 @@
             </div>
             <div class="filter-body" id="filterBody">
                 <div class="grid-filter">
-                    <div class="form-group"><label class="form-label" for="fSoDK">Số đăng ký</label><input id="fSoDK" class="form-control" placeholder="Nhập số đăng ký..."></div>
+                    <div class="form-group"><label class="form-label" for="fSoDK" id="lblSoDK">Số đăng ký</label><input id="fSoDK" class="form-control" placeholder="Nhập số đăng ký..."></div>
                     <div class="form-group"><label class="form-label" for="fLoaiDK">Loại đăng ký</label><select id="fLoaiDK" class="form-select"></select></div>
                     <div class="form-group"><label class="form-label" for="fCoQuan">Cơ quan đăng ký</label><select id="fCoQuan" class="form-select"></select></div>
                     <div class="form-group"><label class="form-label" for="fBBD">Bên bảo đảm</label><input id="fBBD" class="form-control" placeholder="Tên hoặc số giấy tờ..."></div>
@@ -44,8 +43,8 @@
                     <div class="form-group"><label class="form-label" for="fTS" id="fTSLabel">Thông tin tài sản</label><input id="fTS" class="form-control"></div>
                     <div class="form-group"><label class="form-label">Thời điểm đăng ký</label><div class="range-pair"><input id="fDKTu" type="date" class="form-control" aria-label="Từ ngày"><span>-</span><input id="fDKDen" type="date" class="form-control" aria-label="Đến ngày"></div></div>
                     <div class="form-group"><label class="form-label" for="fNguon">Nguồn nhận</label><select id="fNguon" class="form-select"><option value="">Tất cả</option><option>Nhận từ file</option><option>Thêm mới thủ công</option></select></div>
-                    <div class="form-group"><label class="form-label" for="fLo">Mã lô</label><input id="fLo" class="form-control" placeholder="VD: LO-2026-0001"></div>
-                    <div class="form-group"><label class="form-label" for="fTrangThai">Trạng thái bản ghi</label><select id="fTrangThai" class="form-select"><option value="">Tất cả</option><option selected>Hiệu lực</option><option>Đã hủy</option></select></div>
+                    <div class="form-group"><label class="form-label" for="fLo">Mã lô</label><input id="fLo" class="form-control" placeholder="Nhập mã lô..."></div>
+                    <div class="form-group"><label class="form-label" for="fTrangThai">Trạng thái</label><select id="fTrangThai" class="form-select"><option value="">Tất cả</option><option selected>Hiệu lực</option><option>Đã hủy</option></select></div>
                 </div>
                 <div class="filter-actions">
                     <button class="btn btn-outline" onclick="resetFilter()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
@@ -68,7 +67,7 @@
                 <table class="custom-table">
                     <thead><tr>
                         <th class="col-chk"><input type="checkbox" id="chkAll" title="Chọn tất cả bản ghi Hiệu lực trên trang" onclick="toggleAll(this.checked)"></th>
-                        <th>STT</th><th>Số đăng ký</th><th>Loại đăng ký</th><th>Thời điểm đăng ký</th><th>Cơ quan đăng ký</th>
+                        <th>STT</th><th id="thSoDK">Số đăng ký</th><th>Loại đăng ký</th><th>Thời điểm đăng ký</th><th>Cơ quan đăng ký</th>
                         <th>Bên bảo đảm</th><th>Bên nhận bảo đảm</th><th>Tài sản</th><th>Nguồn nhận</th><th>Ngày nhận</th>
                         <th>Trạng thái</th><th class="col-actions" style="text-align: center; min-width: 90px;">Thao tác</th>
                     </tr></thead>
@@ -113,7 +112,7 @@
                         <input type="file" id="impCV" accept=".pdf,.jpg,.jpeg,.png" multiple hidden onchange="onPickCV(this)">
                         <div class="err-text" id="errCV"></div>
                     </div>
-                    <div class="form-group span-2"><label class="form-label" for="impGhiChu">Ghi chú</label><textarea id="impGhiChu" class="form-control" rows="2" maxlength="500" placeholder="VD: Dữ liệu tháng 10/2026"></textarea></div>
+                    <div class="form-group span-2"><label class="form-label" for="impGhiChu">Ghi chú</label><textarea id="impGhiChu" class="form-control" rows="2" maxlength="500" placeholder="Nhập ghi chú..."></textarea></div>
                 </div>
             </div>
 
@@ -161,8 +160,8 @@
     </div>
 </div>
 
-<script src="nhan_du_lieu_bpbd_spec.js?v=20261006q"></script>
-<script src="nhan_du_lieu_bpbd_common.js?v=20261006q"></script>
-<script src="nhan_du_lieu_bpbd.js?v=20261006q"></script>
+<script src="nhan_du_lieu_bpbd_spec.js?v=20261007g"></script>
+<script src="nhan_du_lieu_bpbd_common.js?v=20261007g"></script>
+<script src="nhan_du_lieu_bpbd.js?v=20261007g"></script>
 </body>
 </html>

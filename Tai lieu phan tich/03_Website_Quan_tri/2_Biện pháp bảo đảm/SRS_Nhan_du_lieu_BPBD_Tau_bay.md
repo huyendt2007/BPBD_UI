@@ -53,7 +53,7 @@
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :---: | :--- | :--- |
-| **I. Tiêu đề màn hình** | - | - | - | Control UI: Label.<br>- Tiêu đề: "Nhận dữ liệu BPBĐ từ cơ quan đăng ký khác".<br>- Dòng mô tả: "Dữ liệu hồ sơ đăng ký biện pháp bảo đảm do cơ quan đăng ký khác gửi về để lưu trữ, tra cứu nội bộ và báo cáo".<br>- Góc phải: Nút "Cấu hình cơ quan đăng ký" (chỉ hiển thị khi được phân quyền), mở 
+| **I. Tiêu đề màn hình** | - | - | - | Control UI: Label.<br>- Tiêu đề: "Nhận dữ liệu BPBĐ từ cơ quan đăng ký khác".<br>- Góc phải: Nút "Cấu hình cơ quan đăng ký" (chỉ hiển thị khi được phân quyền), mở [MH06 - Popup Cấu hình cơ quan đăng ký - Nhận dữ liệu BPBĐ từ cơ quan đăng ký khác - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Nhan_du_lieu_BPBD_tu_co_quan_dang_ky_khac.md#mh06). |
 | **II. Tab Loại tài sản** | - | - | Tab đầu tiên được phân quyền | Control UI: Tab, chỉ hiển thị tên Loại tài sản (không có icon, không có badge số lượng).<br>Gồm:<br>+ Quyền sử dụng đất, tài sản gắn liền với đất<br>+ Tàu bay<br>+ Tàu biển<br>+ Chứng khoán đã lưu ký tập trung<br>- Chỉ hiển thị tab được phân quyền.<br>- Tài liệu này mô tả Tab Tàu bay; các tab còn lại tại [Mục đích - Nhận dữ liệu BPBĐ từ cơ quan đăng ký khác - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Nhan_du_lieu_BPBD_tu_co_quan_dang_ky_khac.md). |
 | **III. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion), mặc định mở rộng. |
 | Số đăng ký | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số đăng ký...".<br>- Tìm gần đúng theo Số đăng ký hoặc Số Giấy chứng nhận đăng ký biện pháp bảo đảm đã cấp; không phân biệt hoa thường, bỏ qua dấu cách và ký tự - . /. |
@@ -61,17 +61,17 @@
 | Cơ quan đăng ký | Enum(String(255)) | Không | Tất cả | Control UI: Hộp chọn.<br>Gồm:<br>+ Tất cả<br>+ Các cơ quan đăng ký đã cấu hình cho Loại tài sản Tàu bay tại [MH06 - Popup Cấu hình cơ quan đăng ký - Nhận dữ liệu BPBĐ từ cơ quan đăng ký khác - Module Biện pháp bảo đảm (Website Quản trị)](SRS_Nhan_du_lieu_BPBD_tu_co_quan_dang_ky_khac.md#mh06) theo [BR-NDL-011] (VD: Cục Hàng không Việt Nam). |
 | Bên bảo đảm | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Tên hoặc số giấy tờ...".<br>- Tìm gần đúng theo Tên đầy đủ hoặc Số giấy tờ của bất kỳ Bên bảo đảm nào của bản ghi. |
 | Bên nhận bảo đảm | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Tên hoặc số giấy tờ...".<br>- Tìm gần đúng như trường Bên bảo đảm. |
-| Số hiệu đăng ký | String(20) | Không | Trống | Control UI: Input text.<br>- Placeholder: "VD: VN-A321".<br>- Tìm gần đúng theo Số hiệu đăng ký của bất kỳ tàu bay nào thuộc bản ghi; không phân biệt hoa thường, bỏ qua dấu cách và ký tự - . /. |
+| Số hiệu đăng ký | String(20) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số hiệu đăng ký...".<br>- Tìm gần đúng theo Số hiệu đăng ký của bất kỳ tàu bay nào thuộc bản ghi; không phân biệt hoa thường, bỏ qua dấu cách và ký tự - . /. |
 | Loại tàu bay | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập loại tàu bay...".<br>- Tìm gần đúng theo Loại tàu bay của bất kỳ tàu bay nào thuộc bản ghi; không phân biệt hoa thường, bỏ qua dấu cách và ký tự - . /. |
-| Kiểu tàu bay | String(100) | Không | Trống | Control UI: Input text.<br>- Placeholder: "VD: A321-200".<br>- Tìm gần đúng theo Kiểu tàu bay của bất kỳ tàu bay nào thuộc bản ghi; không phân biệt hoa thường, bỏ qua dấu cách và ký tự - . /. |
+| Kiểu tàu bay | String(100) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập kiểu tàu bay...".<br>- Tìm gần đúng theo Kiểu tàu bay của bất kỳ tàu bay nào thuộc bản ghi; không phân biệt hoa thường, bỏ qua dấu cách và ký tự - . /. |
 | Thời điểm đăng ký | Date | Không | Trống | Control UI: Cặp ô chọn ngày Từ ngày - Đến ngày (dd/mm/yyyy).<br>- Kiểm tra theo [BR-VAL-007], vi phạm hiển thị [MSG-ERR-VAL-007]. |
 | Nguồn nhận | Enum(String(50)) | Không | Tất cả | Control UI: Hộp chọn.<br>Gồm:<br>+ Tất cả<br>+ Nhận từ file<br>+ Thêm mới thủ công |
-| Mã lô | String(20) | Không | Trống | Control UI: Input text.<br>- Placeholder: "VD: LO-2026-0001".<br>- Tìm gần đúng. |
-| Trạng thái bản ghi | Enum(String(50)) | Không | Hiệu lực | Control UI: Hộp chọn.<br>Gồm:<br>+ Tất cả<br>+ Hiệu lực<br>+ Đã hủy |
+| Mã lô | String(20) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập mã lô...".<br>- Tìm gần đúng. |
+| Trạng thái | Enum(String(50)) | Không | Hiệu lực | Control UI: Hộp chọn.<br>Gồm:<br>+ Tất cả<br>+ Hiệu lực<br>+ Đã hủy |
 | **IV. Danh sách** | - | - | - | Control UI: Bảng/Lưới hiển thị, phân trang 10 bản ghi/trang.<br>- Thanh công cụ phía trên bảng: bên trái hiển thị tổng số bản ghi; bên phải gồm các nút theo thứ tự: Hủy bản ghi đã chọn (chỉ hiển thị khi có bản ghi được chọn), Thêm mới, Nhận từ Excel, Kết xuất Excel.<br>- Sắp xếp mặc định: Ngày nhận giảm dần, sau đó Thời điểm đăng ký giảm dần.<br>- Click vào dòng mở [MH03 - Màn hình Xem chi tiết hồ sơ tàu bay đã nhận](#tb-mh03).<br>- Dòng có trạng thái "Đã hủy" hiển thị chữ màu xám. |
 | Chọn | Boolean | - | Không chọn | Control UI: Checkbox.<br>- Tiêu đề cột là checkbox Chọn tất cả: chọn/bỏ chọn toàn bộ bản ghi "Hiệu lực" trên trang hiện tại.<br>- Bản ghi "Đã hủy": checkbox vô hiệu hóa.<br>- Danh sách đã chọn được xóa khi Tìm kiếm, Xóa bộ lọc. |
 | STT | Integer(10) | - | Tự sinh | Số thứ tự tăng dần theo trang. |
-| Số đăng ký | String(50) | - | Theo dữ liệu | Control UI: Link.<br>- Loại đăng ký khác Đăng ký lần đầu: hiển thị thêm dòng phụ "Số Giấy chứng nhận đăng ký biện pháp bảo đảm đã cấp: [Số Giấy chứng nhận đăng ký biện pháp bảo đảm đã cấp]".<br>- Bản ghi có cảnh báo theo [BR-NDL-005], [BR-NDL-007]: hiển thị icon cảnh báo màu vàng, hover hiển thị nội dung cảnh báo. |
+| Số đăng ký | String(50) | - | Theo dữ liệu | Control UI: Link.<br>- Loại đăng ký khác Đăng ký lần đầu: hiển thị thêm dòng phụ "Số Giấy chứng nhận đăng ký biện pháp bảo đảm đã cấp: [Số Giấy chứng nhận đăng ký biện pháp bảo đảm đã cấp]". |
 | Loại đăng ký | Enum(String(50)) | - | Theo dữ liệu | Control UI: Tag màu theo Loại đăng ký.<br>Gồm:<br>+ Đăng ký lần đầu<br>+ Đăng ký thay đổi<br>+ Xóa đăng ký |
 | Thời điểm đăng ký | DateTime | - | Theo dữ liệu | Định dạng dd/mm/yyyy hh:mm. |
 | Cơ quan đăng ký | String(255) | - | Theo dữ liệu | |
@@ -92,7 +92,7 @@
 | 3 | Nhận từ Excel | Nút (Thanh công cụ lưới) | - Mở [MH02 - Popup Nhận dữ liệu tàu bay từ Excel](#tb-mh02). |
 | 4 | Kết xuất Excel | Nút (Thanh công cụ lưới) | - Kiểm tra theo yêu cầu tại [BR-EXP-040].<br>- TH1 (Danh sách rỗng): Hiển thị [MSG-WRN-SYS-001].<br>- TH Hợp lệ: Xuất tệp Excel theo kết quả tìm kiếm hiện hành, gồm các cột: STT, Số đăng ký, Số Giấy chứng nhận đăng ký biện pháp bảo đảm đã cấp, Loại đăng ký, Thời điểm đăng ký, Cơ quan đăng ký, Bên bảo đảm, Bên nhận bảo đảm, Tài sản, Nguồn nhận, Mã lô, Ngày nhận, Trạng thái, Cảnh báo. |
 | 5 | Tìm kiếm | Nút | - TH1 (Khoảng ngày không hợp lệ): Vi phạm [BR-VAL-007], hiển thị [MSG-ERR-VAL-007].<br>- TH Hợp lệ: Lọc danh sách theo đồng thời các tiêu chí đã nhập/chọn, về trang 1, bỏ chọn các bản ghi đã chọn. |
-| 6 | Xóa bộ lọc | Nút | - Xóa các tiêu chí đã nhập, đưa Trạng thái bản ghi về "Hiệu lực", tải lại danh sách, bỏ chọn các bản ghi đã chọn. |
+| 6 | Xóa bộ lọc | Nút | - Xóa các tiêu chí đã nhập, đưa Trạng thái về "Hiệu lực", tải lại danh sách, bỏ chọn các bản ghi đã chọn. |
 | 7 | Xem chi tiết | Click dòng trên bảng | - Click vào dòng bất kỳ trên bảng (trừ cột Chọn, Thao tác) để mở [MH03 - Màn hình Xem chi tiết hồ sơ tàu bay đã nhận](#tb-mh03). |
 | 8 | Sửa | Icon | - Mở [MH04 - Màn hình Thêm mới/Sửa hồ sơ tàu bay](#tb-mh04) ở chế độ Sửa. |
 | 9 | Hủy bản ghi | Icon | - Kiểm tra theo yêu cầu tại [BR-NDL-010].<br>- TH1 (Bản ghi Đăng ký lần đầu đang có bản ghi Đăng ký thay đổi, Xóa đăng ký "Hiệu lực" cùng hồ sơ): Hiển thị [MSG-ERR-NDL-007], không mở popup.<br>- TH Hợp lệ: Mở [MH05 - Popup Hủy bản ghi](#tb-mh05) với nội dung [MSG-CFM-NDL-002]. |
@@ -121,7 +121,7 @@
 | Tệp dữ liệu Excel | File | Có | Trống | Control UI: Upload file.<br>- Kiểm tra theo yêu cầu tại [BR-NDL-002]: định dạng .xls, .xlsx; tối đa 20MB.<br>- Vi phạm hiển thị [MSG-ERR-IMP-001] hoặc [MSG-ERR-IMP-002] dạng Inline. |
 | Tệp nén file đính kèm của hồ sơ | File | Không | Trống | Control UI: Upload file.<br>- Kiểm tra theo yêu cầu tại [BR-NDL-008]: định dạng .zip; tối đa 100MB.<br>- Vi phạm hiển thị [MSG-ERR-NDL-002]; không đọc được tệp hiển thị [MSG-ERR-NDL-008].<br>- Đọc hợp lệ: hiển thị tên tệp và số tệp bên trong. |
 | Công văn, tài liệu gửi kèm | File | Không | Trống | Control UI: Upload nhiều file, hiển thị dạng chip có nút xóa.<br>- Kiểm tra theo yêu cầu tại [BR-NDL-008]: .pdf, .jpg, .jpeg, .png; tối đa 20MB/tệp.<br>- Vi phạm hiển thị [MSG-ERR-FILE-003] hoặc [MSG-ERR-FILE-004]. |
-| Ghi chú | Text(500) | Không | Trống | Control UI: Textarea.<br>- Placeholder: "VD: Dữ liệu tháng 10/2026". |
+| Ghi chú | Text(500) | Không | Trống | Control UI: Textarea.<br>- Placeholder: "Nhập ghi chú...". |
 | **III. Bước 2 - Kết quả kiểm tra** | - | - | - | Control UI: Khối thông tin chỉ đọc, gồm 03 thẻ số liệu và khối File kết quả. |
 | Tổng số bản ghi | Integer(10) | - | Theo kết quả | Control UI: Thẻ số liệu.<br>- Số hồ sơ (số dòng dữ liệu của sheet HO_SO) đọc được từ tệp. |
 | Tổng số hợp lệ | Integer(10) | - | Theo kết quả | Control UI: Thẻ số liệu, số màu xanh lá.<br>- Số hồ sơ không có lỗi, được ghi nhận khi chọn "Ghi nhận [N] hồ sơ".<br>- Gồm cả hồ sơ có cảnh báo theo [BR-NDL-005], [BR-NDL-007] (cảnh báo không chặn ghi nhận). |
@@ -135,32 +135,18 @@
 | :-- | :--- | :--- | :--- |
 | 1 | Tải file mẫu | Nút (Bước 1) | - Hệ thống tải xuống file mẫu Excel tàu bay theo mục [Cấu trúc dữ liệu tàu bay](#cau-truc-du-lieu-tau-bay). |
 | 2 | Kiểm tra dữ liệu | Nút (Bước 1) | - TH1 (Bỏ trống trường bắt buộc): Vi phạm [BR-VAL-001], hiển thị [MSG-ERR-VAL-001] dưới Tệp dữ liệu Excel.<br>- TH2 (Tệp sai cấu trúc): Thiếu sheet hoặc tên, thứ tự cột khác biểu mẫu tàu bay theo [BR-NDL-002]. Hiển thị [MSG-ERR-IMP-003], giữ nguyên Bước 1.<br>- TH3 (Tệp không có dữ liệu): Hiển thị [MSG-ERR-NDL-001], giữ nguyên Bước 1.<br>- TH Hợp lệ: Hệ thống đọc dữ liệu, kiểm tra từng hồ sơ theo yêu cầu tại [BR-NDL-003], [BR-NDL-004], [BR-NDL-005], [BR-NDL-007], [BR-NDL-008] và mục [Kiểm tra dữ liệu tàu bay](#kiem-tra-du-lieu-tau-bay), chuyển sang Bước 2.<br>- Thứ tự kiểm tra trong cùng tệp: Đăng ký lần đầu trước, sau đó Đăng ký thay đổi, Xóa đăng ký theo Thời điểm đăng ký tăng dần.<br>- Bước kiểm tra chưa ghi nhận dữ liệu vào hệ thống. |
-| 3 | Dùng dữ liệu mẫu | Link (Bước 1) | - Chỉ dùng trên bản giả lập (Mockup) để xem thử kết quả kiểm tra với bộ dữ liệu mẫu có đủ các Loại đăng ký, gồm cả hồ sơ hợp lệ và hồ sơ lỗi. Không thuộc phạm vi hệ thống chính thức. |
-| 4 | Hủy | Nút (Bước 1) | - Đóng popup, không lưu dữ liệu. |
-| 5 | Tải về | Nút (Khối File kết quả) | - Tải xuống File kết quả theo mục [Cấu trúc File kết quả](#tb-file-ket-qua).<br>- Người dùng sửa dữ liệu trực tiếp trên File kết quả và nhận lại bằng chức năng Nhận từ Excel; hệ thống bỏ qua cột "Mô tả lỗi" theo [BR-NDL-002]. |
-| 6 | Quay lại | Nút (Bước 2) | - Quay về Bước 1, giữ nguyên các thông tin đã chọn. |
-| 7 | Ghi nhận [N] hồ sơ | Nút (Bước 2) | - Nhãn nút hiển thị số hồ sơ sẽ ghi nhận (Tổng số hợp lệ).<br>- TH1 (Không có hồ sơ được ghi nhận): Hiển thị [MSG-ERR-NDL-003].<br>- TH Hợp lệ: Hiển thị popup xác nhận [MSG-CFM-NDL-001]:<br>+ Chọn "Hủy": Đóng popup xác nhận, giữ nguyên Bước 2.<br>+ Chọn "Đồng ý": Hệ thống thực hiện:<br>* Sinh Mã lô cho lần nhận (định dạng LO-[yyyy]-[Số thứ tự 4 chữ số]; Mã lô không có trong file Excel); lưu thông tin lần nhận gồm Cơ quan gửi dữ liệu (các Cơ quan đăng ký có trong tệp), Tệp dữ liệu, Tệp nén, Công văn tài liệu gửi kèm, Ghi chú, Người nhận, Thời điểm nhận, Tổng số bản ghi, Tổng số hợp lệ, Tổng số lỗi.<br>* Ghi nhận từng hồ sơ hợp lệ thành 01 bản ghi: Cơ quan đăng ký, Loại đăng ký theo dữ liệu, Nguồn nhận "Nhận từ file", Mã lô, Người nhận, Ngày nhận là thời điểm hiện tại, trạng thái "Hiệu lực"; lưu các tệp đã khai báo tại cột "Tên file đính kèm" theo [BR-NDL-008]; tệp trong tệp nén không được hồ sơ hợp lệ nào khai báo thì không lưu.<br>* Liên kết các lần đăng ký của hồ sơ theo [BR-NDL-005].<br>* Ghi lịch sử thao tác "Nhận từ file (lô [Mã lô])".<br>* Đóng popup, tải lại danh sách, hiển thị [MSG-SUC-NDL-001]. |
-| 8 | Đóng (x) | Icon | - Đóng popup, không lưu dữ liệu. |
+| 3 | Hủy | Nút (Bước 1) | - Đóng popup, không lưu dữ liệu. |
+| 4 | Tải về | Nút (Khối File kết quả) | - Tải xuống File kết quả theo mục [Cấu trúc File kết quả](#tb-file-ket-qua).<br>- Người dùng sửa dữ liệu trực tiếp trên File kết quả và nhận lại bằng chức năng Nhận từ Excel; hệ thống bỏ qua cột "Mô tả lỗi" theo [BR-NDL-002]. |
+| 5 | Quay lại | Nút (Bước 2) | - Quay về Bước 1, giữ nguyên các thông tin đã chọn. |
+| 6 | Ghi nhận [N] hồ sơ | Nút (Bước 2) | - Nhãn nút hiển thị số hồ sơ sẽ ghi nhận (Tổng số hợp lệ).<br>- TH1 (Không có hồ sơ được ghi nhận): Hiển thị [MSG-ERR-NDL-003].<br>- TH Hợp lệ: Hiển thị popup xác nhận [MSG-CFM-NDL-001]:<br>+ Chọn "Hủy": Đóng popup xác nhận, giữ nguyên Bước 2.<br>+ Chọn "Đồng ý": Hệ thống thực hiện:<br>* Sinh Mã lô cho lần nhận (định dạng LO-[yyyy]-[Số thứ tự 4 chữ số]; Mã lô không có trong file Excel); lưu thông tin lần nhận gồm Cơ quan gửi dữ liệu (các Cơ quan đăng ký có trong tệp), Tệp dữ liệu, Tệp nén, Công văn tài liệu gửi kèm, Ghi chú, Người nhận, Thời điểm nhận, Tổng số bản ghi, Tổng số hợp lệ, Tổng số lỗi.<br>* Ghi nhận từng hồ sơ hợp lệ thành 01 bản ghi: Cơ quan đăng ký, Loại đăng ký theo dữ liệu, Nguồn nhận "Nhận từ file", Mã lô, Người nhận, Ngày nhận là thời điểm hiện tại, trạng thái "Hiệu lực"; lưu các tệp đã khai báo tại cột "Tên file đính kèm" theo [BR-NDL-008]; tệp trong tệp nén không được hồ sơ hợp lệ nào khai báo thì không lưu.<br>* Liên kết các lần đăng ký của hồ sơ theo [BR-NDL-005].<br>* Ghi lịch sử thao tác "Nhận từ file (lô [Mã lô])".<br>* Đóng popup, tải lại danh sách, hiển thị [MSG-SUC-NDL-001]. |
+| 7 | Đóng (x) | Icon | - Đóng popup, không lưu dữ liệu. |
 
 <a id="tb-file-ket-qua"></a>
 ##### 4.3.2.26.3.4. Cấu trúc File kết quả
 
-| STT | Thành phần | Mô tả |
-| :-- | :--- | :--- |
-| 1 | Định dạng tệp | Tệp .xlsx, đúng biểu mẫu Excel đã nhận của Loại tài sản. |
-| 2 | Sheet | Giữ nguyên tên, thứ tự các sheet của tệp đã nhận: HUONG_DAN, HO_SO, BEN_BAO_DAM, BEN_NHAN_BAO_DAM, TAI_SAN, DANH_MUC. |
-| 3 | Cột dữ liệu | Giữ nguyên tên, thứ tự cột và danh sách chọn của biểu mẫu. |
-| 4 | Dòng 1, dòng 2 | Giữ nguyên dòng tên cột (dòng 1) và dòng hướng dẫn nhập (dòng 2). |
-| 5 | Dòng dữ liệu sheet HO_SO | Chỉ giữ dòng của hồ sơ lỗi (hồ sơ tính vào Tổng số lỗi), giữ nguyên giá trị đã nhập. |
-| 6 | Dòng dữ liệu sheet BEN_BAO_DAM, BEN_NHAN_BAO_DAM, TAI_SAN | Giữ toàn bộ các dòng có Mã hồ sơ trong file thuộc hồ sơ lỗi (kể cả dòng không có lỗi) để người dùng sửa và nhận lại đầy đủ hồ sơ. |
-| 7 | Dòng không xác định được hồ sơ | Giữ các dòng ở sheet BEN_BAO_DAM, BEN_NHAN_BAO_DAM, TAI_SAN có Mã hồ sơ không có trong sheet HO_SO. |
-| 8 | Dòng không giữ lại | Dòng của hồ sơ hợp lệ, dòng ví dụ (Mã hồ sơ bắt đầu bằng "VD") và dòng trống. |
-| 9 | Cột "Mô tả lỗi" | Thêm vào sau cột cuối cùng của các sheet HO_SO, BEN_BAO_DAM, BEN_NHAN_BAO_DAM, TAI_SAN.<br>- Dòng 2: "Lỗi của dòng dữ liệu. Sửa dữ liệu theo nội dung này rồi nhận lại; hệ thống bỏ qua cột này khi nhận."<br>- Mỗi lỗi ghi trên 01 dòng trong ô.<br>- Dòng không có lỗi: Để trống. |
-| 10 | Nội dung lỗi gắn với cột | Định dạng "Cột "[Tên cột]": [Nội dung lỗi]". |
-| 11 | Nội dung lỗi chung của hồ sơ | Ghi tại dòng sheet HO_SO, định dạng "[Nội dung lỗi]" (VD: Thiếu Bên bảo đảm, Bên nhận bảo đảm hoặc tài sản). |
-| 12 | Hồ sơ đã tồn tại trên hệ thống | Ghi tại dòng sheet HO_SO: "Đã tồn tại trên hệ thống (bản ghi [Mã bản ghi]), không ghi nhận lại." |
-| 13 | Hồ sơ có lỗi tại sheet khác | Ghi thêm tại dòng sheet HO_SO: "Hồ sơ có lỗi tại sheet [Tên sheet] (xem cột "Mô tả lỗi" của sheet đó)." |
-| 14 | Dòng không xác định được hồ sơ | Ghi: "Mã hồ sơ trong file không có trong sheet HO_SO." |
+\- Giống file mẫu nhận dữ liệu tàu bay, chỉ giữ lại các bản ghi bị lỗi, thêm cột "Mô tả lỗi" ở cuối mỗi sheet dữ liệu ghi rõ lỗi của từng dòng.
+
+\- File mẫu: [Mau_Ket_qua_nhan_du_lieu_BPBD_Tau_bay.xlsx](../Bieu_mau_nhan_du_lieu_BPBD/Mau_Ket_qua_nhan_du_lieu_BPBD_Tau_bay.xlsx).
 
 ---
 
@@ -185,10 +171,10 @@
 | :--- | :--- | :---: | :--- | :--- |
 | **Tiêu đề màn hình** | - | - | - | Control UI: Label "Chi tiết hồ sơ đã nhận [Số đăng ký]". |
 | **Khối thông báo** | - | - | - | Control UI: Khối thông báo đặt dưới tiêu đề; chỉ hiển thị khi bản ghi đã hủy. |
-| Thông báo bản ghi đã hủy | - | - | Theo dữ liệu bản ghi | Control UI: Khối màu đỏ "Bản ghi đã bị hủy. Lý do: [Lý do hủy]".<br>- Chỉ hiển thị khi Trạng thái bản ghi là "Đã hủy". |
+| Thông báo bản ghi đã hủy | - | - | Theo dữ liệu bản ghi | Control UI: Khối màu đỏ "Bản ghi đã bị hủy. Lý do: [Lý do hủy]".<br>- Chỉ hiển thị khi Trạng thái là "Đã hủy". |
 | **I. Thông tin đăng ký** | - | - | - | Control UI: Khối thông tin chỉ đọc, lưới 4 cột.<br>- Luôn hiển thị. |
-| Trạng thái bản ghi | - | - | Theo dữ liệu bản ghi | Control UI: Tag tại góc phải tiêu đề khối. |
-| Tình trạng hồ sơ | - | - | Theo dữ liệu bản ghi | Control UI: Tag tại góc phải tiêu đề khối, cạnh Trạng thái bản ghi. |
+| Trạng thái | - | - | Theo dữ liệu bản ghi | Control UI: Tag tại góc phải tiêu đề khối. |
+| Tình trạng hồ sơ | - | - | Theo dữ liệu bản ghi | Control UI: Tag tại góc phải tiêu đề khối, cạnh Trạng thái. |
 | Loại tài sản | - | - | Theo dữ liệu bản ghi | Control UI: Label, giá trị "Tàu bay". |
 | Cơ quan đăng ký | - | - | Theo dữ liệu bản ghi | Control UI: Label. |
 | Loại đăng ký | - | - | Theo dữ liệu bản ghi | Control UI: Tag. |
