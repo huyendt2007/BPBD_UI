@@ -106,7 +106,7 @@ flowchart TD
 | Ngày Bản án/Quyết định có hiệu lực | Date | Có | Trống | Áp dụng rule ngày quá khứ [BR-VAL-008]. |
 | Nội dung GQBT bị kiến nghị kháng nghị | Text(2000) | Có | Trống | Ghi rõ nội dung GQBT trong bản án/quyết định chưa phù hợp quy định pháp luật. Áp dụng rule bắt buộc [BR-VAL-001]. |
 | Vụ việc yêu cầu bồi thường liên quan | String(255) | Không | Trống | Ô nhập `Mã vụ việc` kèm nút `Tìm kiếm` và `Tìm kiếm nâng cao`. Khi thao tác tìm kiếm, hệ thống mở popup chuẩn tại **Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan** trong SRS Module Giải quyết yêu cầu bồi thường. |
-| Liên kết hồ sơ gốc | Link | Không | Ẩn | Chỉ hiển thị sau khi cán bộ chọn vụ việc yêu cầu bồi thường liên quan từ popup hoặc khi mở lại bản ghi đã có liên kết. Link hiển thị `Mã vụ việc - Tên vụ việc`; khi bấm mở màn hình xem chi tiết hồ sơ gốc ở cùng tab, chế độ chỉ xem. |
+| Liên kết hồ sơ gốc | Link | Không | Ẩn | Chỉ hiển thị sau khi cán bộ chọn vụ việc yêu cầu bồi thường liên quan từ popup hoặc khi mở lại bản ghi đã có liên kết. Link hiển thị `Mã vụ việc - Họ và tên người yêu cầu bồi thường`; khi bấm mở màn hình xem chi tiết hồ sơ gốc ở cùng tab, chế độ chỉ xem. |
 | **II. Nội dung kiến nghị** | Text(2000) | - | - | Khối nội dung văn bản kiến nghị. |
 | Người/cơ quan có thẩm quyền kháng nghị | Enum(String(255)) | Có | Trống | Tham chiếu Danh mục Cơ quan, Đơn vị giải quyết [DM_DON_VI]. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng. Áp dụng rule bắt buộc [BR-VAL-001]. |
 | Căn cứ pháp lý kiến nghị | Text(1000) | Có | `Điều 28 Thông tư 08/2019/TT-BTP` | Áp dụng rule bắt buộc [BR-VAL-001]. |

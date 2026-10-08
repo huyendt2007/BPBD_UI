@@ -46,7 +46,7 @@ Tai lieu phan tich/
 ├── watch_srs.ps1                                # Script chạy ngầm tự động gộp file khi có chỉnh sửa
 │
 ├── Tai lieu tong hop/                           # TÀI LIỆU QUY CHUẨN DÙNG CHUNG (Bắt buộc đọc trước)
-│   ├── 00_Tong_quan_va_Quy_tac_chung.md          # Tổng quan dự án, Master Data [DM_01] -> [DM_53], kiến trúc
+│   ├── 00_Tong_quan_va_Quy_tac_chung.md          # Tổng quan dự án, Master Data [DM_01] -> [DM_54], kiến trúc
 │   ├── 04_Danh_muc_va_Phu_luc.md                 # Bộ từ điển: Business Rules [BR], Message List [MSG], Popup [POPUP]
 │   ├── FeatureMap.md                            # Bản đồ tính năng, phân rã Use Case (UC) và luồng liên thông
 │   └── Quy_tac_kiem_tra_tai_lieu_SRS.md          # Tiêu chuẩn kỹ thuật thẩm định tài liệu phân tích

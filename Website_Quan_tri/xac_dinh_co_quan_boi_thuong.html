@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <!-- External stylesheet -->
-    <link rel="stylesheet" href="xac_dinh_co_quan_boi_thuong.css?v=20260824-v2-trash-fixed">
+    <link rel="stylesheet" href="xac_dinh_co_quan_boi_thuong.css?v=20261008">
 </head>
 
 <body>
@@ -40,10 +40,6 @@
                     <input type="text" class="form-control" id="filterClaimCode" placeholder="Nhập mã YCBT...">
                 </div>
                 <div>
-                    <span class="form-label">Tên vụ việc</span>
-                    <input type="text" class="form-control" id="filterCaseName" placeholder="Nhập tên vụ việc...">
-                </div>
-                <div>
                     <span class="form-label">Tên người yêu cầu</span>
                     <input type="text" class="form-control" id="filterName" placeholder="Nhập tên người yêu cầu...">
                 </div>
@@ -63,12 +59,23 @@
                     <span class="form-label">Trạng thái</span>
                     <select class="form-control" id="filterStatus">
                         <option value="">Tất cả trạng thái</option>
+                        <option value="Lưu nháp">Lưu nháp</option>
                         <option value="Chờ tiếp nhận">Chờ tiếp nhận</option>
+                        <option value="Đang thực hiện">Đang thực hiện</option>
+                        <option value="Chờ phê duyệt">Chờ phê duyệt</option>
+                        <option value="Bị trả lại">Bị trả lại</option>
+                        <option value="Chờ chuyển CQGQBT">Chờ chuyển CQGQBT</option>
                         <option value="Yêu cầu bổ sung">Yêu cầu bổ sung</option>
-                        <option value="Đang xác minh">Đang xác minh</option>
                         <option value="Bị từ chối">Bị từ chối</option>
                         <option value="Hoàn thành">Hoàn thành</option>
-                        <option value="Lưu nháp">Lưu nháp</option>
+                    </select>
+                </div>
+                <div>
+                    <span class="form-label">Vai trò xử lý</span>
+                    <select class="form-control" id="filterRole">
+                        <option value="">Tất cả</option>
+                        <option value="chuTri">Chủ trì</option>
+                        <option value="phoiHop">Phối hợp</option>
                     </select>
                 </div>
                 <div>
@@ -97,8 +104,9 @@
             </div>
 
             <!-- GRID ACTION TOOLBAR -->
+            <div id="xdScopeNotice" style="display:none; margin-top:16px; padding:12px 16px; border-radius:8px; background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; font-size:13px;"></div>
             <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 12px; margin-top: 16px;">
-                <button class="btn btn-primary" onclick="showFormScreen(null)">
+                <button class="btn btn-primary" id="btnCreateRequest" onclick="showFormScreen(null)">
                     <i class="fa-solid fa-plus"></i> Tạo yêu cầu
                 </button>
             </div>
@@ -110,14 +118,14 @@
                         <tr>
                             <th style="width: 50px; text-align: center;">STT</th>
                             <th style="width: 110px; text-align: center;">Mã yêu cầu</th>
-                            <th style="min-width: 190px;">Tên vụ việc</th>
                             <th style="min-width: 150px;">Tên người yêu cầu</th>
                             <th style="width: 110px; text-align: center;">Số điện thoại</th>
-                            <th style="min-width: 200px;">Lĩnh vực thiệt hại</th>
+                            <th style="min-width: 170px;">Lĩnh vực thiệt hại</th>
                             <th style="min-width: 200px;">Hành vi gây thiệt hại</th>
                             <th style="width: 130px; text-align: center;">Ngày tiếp nhận</th>
+                            <th style="min-width: 150px;">Cán bộ chủ trì</th>
                             <th style="width: 130px; text-align: center;">Mã hồ sơ YCBT</th>
-                            <th style="width: 130px; text-align: center;">Trạng thái</th>
+                            <th style="width: 140px; text-align: center;">Trạng thái</th>
                             <th style="width: 128px; text-align: center; min-width: 128px;">Thao tác</th>
                         </tr>
                     </thead>
@@ -166,8 +174,7 @@
                     <span class="form-label">Hình thức tiếp nhận hồ sơ<span class="required">*</span></span>
                     <select class="form-control" id="formHinhThucTiepNhan">
                         <option value="Trực tiếp">Trực tiếp</option>
-                        <option value="Bưu chính">Bưu chính</option>
-                        <option value="Phương thức điện tử">Phương thức điện tử</option>
+                        <option value="Nhận qua bưu điện/bưu chính">Nhận qua bưu điện/bưu chính</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -180,11 +187,6 @@
                         <option value="TRONG HOẠT ĐỘNG THI HÀNH ÁN HÌNH SỰ">TRONG HOẠT ĐỘNG THI HÀNH ÁN HÌNH SỰ</option>
                         <option value="TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ">TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ</option>
                     </select>
-                </div>
-                <div class="form-group">
-                    <span class="form-label">Tên vụ việc<span class="required">*</span></span>
-                    <input type="text" class="form-control" id="formCaseName" placeholder="Nhập tên/tóm tắt vụ việc...">
-                    <div class="error-message">Đây là trường bắt buộc</div>
                 </div>
             </div>
 
@@ -205,7 +207,7 @@
 
                     <div class="form-group" style="margin-bottom: 0;">
                         <span class="form-label">Tư cách người yêu cầu bồi thường<span class="required">*</span></span>
-                        <select class="form-control" id="formNYCRole">
+                        <select class="form-control" id="formNYCRole" onchange="toggleNbthBlock()">
                             <option value="Người bị thiệt hại">Người bị thiệt hại</option>
                             <option value="Người thừa kế của người bị thiệt hại">Người thừa kế của người bị thiệt hại</option>
                             <option value="Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại">Tổ chức kế thừa quyền, nghĩa vụ...</option>
@@ -235,16 +237,17 @@
 
                     <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
                         <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Số điện thoại liên hệ<span class="required">*</span></span>
+                            <span class="form-label">Số điện thoại liên hệ</span>
                             <input type="text" class="form-control" id="formNYCPhone" placeholder="Nhập số điện thoại...">
-                            <div class="error-message">Đây là trường bắt buộc</div>
+                            <div class="error-message">Nhập ít nhất một trong hai: Số điện thoại liên hệ hoặc Thư điện tử (Email)</div>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Thư điện tử (Email)</span>
                             <input type="email" class="form-control" id="formNYCEmail" placeholder="Nhập email...">
-                            <div class="error-message">Đây là trường bắt buộc</div>
+                            <div class="error-message">Nhập ít nhất một trong hai: Số điện thoại liên hệ hoặc Thư điện tử (Email)</div>
                         </div>
                     </div>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: -6px;"><i class="fa-solid fa-circle-info"></i> Bắt buộc nhập ít nhất một thông tin liên hệ: Số điện thoại liên hệ hoặc Thư điện tử (Email).</div>
                 </div>
 
                 <!-- Right Sub-column: Giấy tờ & Địa chỉ -->
@@ -336,6 +339,104 @@
                 </div>
             </div>
 
+            <!-- Người bị thiệt hại: chỉ hiển thị khi người yêu cầu không phải là người bị thiệt hại -->
+            <div id="nbthBlock" style="display: none;">
+                <div class="sub-section-title">THÔNG TIN NGƯỜI BỊ THIỆT HẠI</div>
+                <div class="grid-2" style="gap: 24px; align-items: stretch; margin-bottom: 20px;">
+                    <div style="background: #f8fafc; padding: 20px; border-radius: var(--border-radius-lg); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 14px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <span class="form-label">Họ và tên người bị thiệt hại<span class="required">*</span></span>
+                            <input type="text" class="form-control" id="nbthName" placeholder="Nhập họ và tên người bị thiệt hại...">
+                            <div class="error-message">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Giới tính</span>
+                                <select class="form-control" id="nbthGender">
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Ngày tháng năm sinh<span class="required">*</span></span>
+                                <div class="date-input-wrapper">
+                                    <input type="text" class="form-control" id="nbthDob" placeholder="dd/mm/yyyy">
+                                    <i class="fa-regular fa-calendar-days"></i>
+                                </div>
+                                <div class="error-message">Đây là trường bắt buộc</div>
+                            </div>
+                        </div>
+                        <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Số điện thoại liên hệ</span>
+                                <input type="text" class="form-control" id="nbthPhone" placeholder="Nhập số điện thoại...">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Thư điện tử (Email)</span>
+                                <input type="email" class="form-control" id="nbthEmail" placeholder="Nhập email...">
+                            </div>
+                        </div>
+                    </div>
+                    <div style="background: #f8fafc; padding: 20px; border-radius: var(--border-radius-lg); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 14px;">
+                        <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Loại giấy tờ thân nhân<span class="required">*</span></span>
+                                <select class="form-control" id="nbthDocType">
+                                    <option value="CCCD">Căn cước công dân / Thẻ căn cước</option>
+                                    <option value="Chứng minh nhân dân">Chứng minh nhân dân</option>
+                                    <option value="Hộ chiếu">Hộ chiếu</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Số giấy tờ thân nhân<span class="required">*</span></span>
+                                <input type="text" class="form-control" id="nbthDocNo" placeholder="Nhập số giấy tờ...">
+                                <div class="error-message">Đây là trường bắt buộc</div>
+                            </div>
+                        </div>
+                        <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Ngày cấp</span>
+                                <div class="date-input-wrapper">
+                                    <input type="text" class="form-control" id="nbthDocDate" placeholder="dd/mm/yyyy">
+                                    <i class="fa-regular fa-calendar-days"></i>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Nơi cấp</span>
+                                <input type="text" class="form-control" id="nbthDocPlace" placeholder="Nhập nơi cấp...">
+                            </div>
+                        </div>
+                        <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Quốc gia</span>
+                                <select class="form-control" id="nbthCountry">
+                                    <option value="Việt Nam">Việt Nam</option>
+                                    <option value="Mỹ">Mỹ</option>
+                                    <option value="Nhật Bản">Nhật Bản</option>
+                                    <option value="Hàn Quốc">Hàn Quốc</option>
+                                    <option value="Khác">Khác</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Tỉnh / Thành phố</span>
+                                <input class="form-control" id="nbthCity" list="provinceOptions" placeholder="Gõ Mã hoặc Tên Tỉnh/Thành phố...">
+                            </div>
+                        </div>
+                        <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Phường / Xã</span>
+                                <input type="text" class="form-control" id="nbthWard" placeholder="Nhập phường/xã...">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Địa chỉ chi tiết</span>
+                                <input type="text" class="form-control" id="nbthAddress" placeholder="Nhập số nhà, tên đường/phố, thôn/xóm/ấp...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Behavior & receiving method section -->
             <div class="sub-section-title">III. HÀNH VI GÂY THIỆT HẠI & PHƯƠNG THỨC NHẬN KẾT QUẢ</div>
             <div class="form-group">
@@ -348,7 +449,7 @@
                     <span class="form-label">Hình thức nhận kết quả giải quyết<span class="required">*</span></span>
                     <div style="display: flex; gap: 20px; margin-top: 8px;">
                         <label style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-weight: 500;">
-                            <input type="radio" name="formHinhThucNhan" value="Phương thức điện tử" checked onchange="toggleFormEmailRequired(true)"> Phương thức điện tử (Bắt buộc Email)
+                            <input type="radio" name="formHinhThucNhan" value="Phương thức điện tử" checked onchange="toggleFormEmailRequired(true)"> Phương thức điện tử (Email, Zalo, SMS...)
                         </label>
                         <label style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; font-weight: 500;">
                             <input type="radio" name="formHinhThucNhan" value="Hồ sơ giấy" onchange="toggleFormEmailRequired(false)"> Hồ sơ giấy
@@ -380,7 +481,7 @@
             <div class="form-footer">
                 <button class="btn btn-secondary" onclick="showListScreen()">Hủy bỏ</button>
                 <button class="btn btn-secondary" onclick="saveForm(true)"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>
-                <button class="btn btn-primary" onclick="saveForm(false)"><i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu</button>
+                <button class="btn btn-primary" id="btnFormSubmit" onclick="saveForm(false)"><i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu</button>
             </div>
         </div>
 
@@ -400,7 +501,6 @@
                 <div class="grid-2" style="font-size: 13px; line-height: 1.6;">
                     <div>
                         <p><strong>Mã yêu cầu:</strong> <span id="lblProcCode"></span></p>
-                        <p><strong>Tên vụ việc:</strong> <span id="lblProcCaseName"></span></p>
                         <p><strong>Họ tên người yêu cầu:</strong> <span id="lblProcName"></span></p>
                         <p><strong>Lĩnh vực phát sinh thiệt hại:</strong> <span id="lblProcLinhVuc"></span></p>
                     </div>
@@ -454,9 +554,9 @@
             </div>
 
             <div class="form-footer">
-                <!-- Removed "Lưu tạm" button, leaving only "Hủy bỏ" and "Hoàn thành xác minh" -->
                 <button class="btn btn-secondary" onclick="showListScreen()">Hủy bỏ</button>
-                <button class="btn btn-success" onclick="saveProcessResult(true)"><i class="fa-solid fa-check-double"></i> Hoàn thành xác minh</button>
+                <button class="btn btn-secondary" onclick="saveProcessResult(false)"><i class="fa-solid fa-floppy-disk"></i> Lưu kết quả</button>
+                <button class="btn btn-primary" onclick="saveProcessResult(true)"><i class="fa-solid fa-paper-plane"></i> Lưu và trình phê duyệt</button>
             </div>
         </div>
 
@@ -469,6 +569,9 @@
             </div>
 
             <input type="hidden" id="detailRequestId">
+
+            <!-- Thông báo trả lại / yêu cầu bổ sung / quyền xem -->
+            <div id="dtNoticeBlock" style="display: none; padding: 14px 16px; border-radius: var(--border-radius-md); margin-bottom: 16px; font-size: 13px; line-height: 1.55;"></div>
 
             <!-- Rejection Info Block (Visible only if status is Bị từ chối) -->
             <div id="dtRejectionBlock" style="display: none; border-left: 4px solid var(--danger-color); background-color: #FEF2F2; padding: 15px; border-radius: var(--border-radius-md); margin-bottom: 20px;">
@@ -488,10 +591,6 @@
                 <div class="detail-row">
                     <div class="detail-label">Mã yêu cầu</div>
                     <div class="detail-value" style="font-weight: 700; color: var(--primary-color);" id="dtCode"></div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Tên vụ việc</div>
-                    <div class="detail-value" id="dtCaseName"></div>
                 </div>
                 <div class="detail-row">
                     <div class="detail-label">Trạng thái xử lý</div>
@@ -540,6 +639,30 @@
                     <div class="detail-value" id="dtFileAttachment"></div>
                 </div>
 
+                <div id="dtNbthBlock" style="display: none;">
+                    <div class="sub-section-title">THÔNG TIN NGƯỜI BỊ THIỆT HẠI</div>
+                    <div class="detail-row">
+                        <div class="detail-label">Họ và tên người bị thiệt hại</div>
+                        <div class="detail-value" style="font-weight: 700; text-transform: uppercase;" id="dtNbthName"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Giới tính / Ngày sinh</div>
+                        <div class="detail-value" id="dtNbthGenderDob"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Giấy tờ thân nhân</div>
+                        <div class="detail-value" id="dtNbthDoc"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Liên hệ</div>
+                        <div class="detail-value" id="dtNbthContact"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Địa chỉ</div>
+                        <div class="detail-value" id="dtNbthAddress"></div>
+                    </div>
+                </div>
+
                 <div class="sub-section-title">III. HÀNH VI GÂY THIỆT HẠI & PHƯƠNG THỨC NHẬN KẾT QUẢ</div>
                 <div class="detail-row">
                     <div class="detail-label">Hành vi gây thiệt hại của công chức</div>
@@ -570,99 +693,63 @@
                         <div class="detail-label">Quyết định chuyển giao đính kèm</div>
                         <div class="detail-value" id="dtProcDecisionFile"></div>
                     </div>
-                    <div class="detail-row" id="dtClaimCodeRow" style="display: none;">
+                </div>
+
+                <!-- Kết quả chuyển cơ quan giải quyết bồi thường -->
+                <div id="dtTransferBlock" style="display: none;">
+                    <div class="sub-section-title" style="color: var(--success-color);">KẾT QUẢ CHUYỂN CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG</div>
+                    <div class="detail-row">
+                        <div class="detail-label">Cơ quan nhận hồ sơ</div>
+                        <div class="detail-value" style="font-weight: 700;" id="dtTransferAgency"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Nội dung chuyển xử lý</div>
+                        <div class="detail-value" style="line-height: 1.5;" id="dtTransferContent"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Tệp đính kèm</div>
+                        <div class="detail-value" id="dtTransferFiles"></div>
+                    </div>
+                    <div class="detail-row">
+                        <div class="detail-label">Thời điểm chuyển</div>
+                        <div class="detail-value" id="dtTransferAt"></div>
+                    </div>
+                    <div class="detail-row" id="dtClaimCodeRow">
                         <div class="detail-label">Mã hồ sơ yêu cầu bồi thường</div>
                         <div class="detail-value" style="font-weight: 700; color: #8B5CF6;" id="dtClaimCode"></div>
                     </div>
+                </div>
+
+                <!-- Thông tin xử lý theo luồng phân công - phê duyệt -->
+                <div class="sub-section-title">THÔNG TIN XỬ LÝ</div>
+                <div class="detail-row">
+                    <div class="detail-label">Đơn vị tiếp nhận</div>
+                    <div class="detail-value" id="dtRootUnit"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Cán bộ chủ trì</div>
+                    <div class="detail-value" id="dtChuTri"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Cán bộ phối hợp</div>
+                    <div class="detail-value" id="dtPhoiHop"></div>
+                </div>
+                <div id="dtApprovalWrap" style="margin-top: 12px;">
+                    <div style="font-weight: 600; color: var(--primary-color); margin-bottom: 8px;"><i class="fa-solid fa-file-signature"></i> Trình phê duyệt</div>
+                    <div id="dtApproval"></div>
+                </div>
+                <div style="margin-top: 14px;">
+                    <div style="font-weight: 600; color: var(--primary-color); margin-bottom: 8px;"><i class="fa-solid fa-diagram-project"></i> Quá trình phân công</div>
+                    <div id="dtRoutes"></div>
+                </div>
+                <div style="margin-top: 14px;">
+                    <div style="font-weight: 600; color: var(--primary-color); margin-bottom: 8px;"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử xử lý</div>
+                    <div id="dtHistory"></div>
                 </div>
             </div>
 
             <div class="form-footer" id="detailWorkflowActions">
                 <!-- Action buttons based on status populated by JS -->
-            </div>
-        </div>
-
-        <!-- ============================================== -->
-        <!-- SCREEN 5: SPAWNING CLAIM FORM SCREEN -->
-        <!-- ============================================== -->
-        <div id="screenCreateClaim" class="card-section" style="display: none;">
-            <div class="section-title">
-                <span><i class="fa-solid fa-compass"></i> KHỞI TẠO HỒ SƠ YÊU CẦU BỒI THƯỜNG LIÊN THÔNG</span>
-            </div>
-
-            <input type="hidden" id="claimSourceRequestId">
-
-            <div style="background-color: #F0FDF4; border: 1px solid #BBF7D0; padding: 12px 18px; border-radius: var(--border-radius-md); margin-bottom: 20px; font-size: 13px; color: #166534; line-height: 1.5;">
-                <i class="fa-solid fa-circle-check"></i>
-                Hệ thống tự động liên thông dữ liệu. Toàn bộ thông tin nhân thân người yêu cầu, hành vi gây thiệt hại và cơ quan giải quyết bồi thường đã được tự động điền sẵn từ kết quả xác định thẩm quyền trước đó.
-            </div>
-
-            <div class="sub-section-title">I. ĐƠN VỊ THỤ LÝ VÀ THÔNG TIN CHI TIẾT NGƯỜI YÊU CẦU</div>
-            <div class="grid-2">
-                <div class="form-group">
-                    <span class="form-label">Đơn vị thụ lý giải quyết bồi thường (được xác định)</span>
-                    <input type="text" class="form-control" id="claimTargetAgency" readonly style="font-weight: 700; color: var(--primary-color);">
-                </div>
-                <div class="form-group">
-                    <span class="form-label">Tên người yêu cầu bồi thường</span>
-                    <input type="text" class="form-control" id="claimNYCName" readonly>
-                </div>
-            </div>
-            <div class="grid-3">
-                <div class="form-group">
-                    <span class="form-label">Tư cách người yêu cầu</span>
-                    <input type="text" class="form-control" id="claimNYCRole" readonly>
-                </div>
-                <div class="form-group">
-                    <span class="form-label">Số điện thoại</span>
-                    <input type="text" class="form-control" id="claimNYCPhone" readonly>
-                </div>
-                <div class="form-group">
-                    <span class="form-label">Email</span>
-                    <input type="text" class="form-control" id="claimNYCEmail" readonly>
-                </div>
-            </div>
-            <div class="form-group">
-                <span class="form-label">Địa chỉ liên hệ</span>
-                <input type="text" class="form-control" id="claimNYCAddress" readonly>
-            </div>
-
-            <div class="sub-section-title">II. NỘI DUNG YÊU CẦU BỒI THƯỜNG</div>
-            <div class="form-group">
-                <span class="form-label">Văn bản căn cứ yêu cầu bồi thường</span>
-                <input type="text" class="form-control" id="claimDocBase" readonly style="color: var(--primary-hover); font-weight: 600;">
-            </div>
-            <div class="form-group">
-                <span class="form-label">Hành vi phản ánh gây thiệt hại</span>
-                <textarea class="form-control" id="claimHanhVi" rows="2" readonly></textarea>
-            </div>
-
-            <div class="sub-section-title" style="margin-top: 20px;">III. MỨC ĐỘ THIỆT HẠI & TÀI LIỆU CHỨNG MINH</div>
-            <div class="grid-2">
-                <div class="form-group">
-                    <span class="form-label">Tổng số tiền yêu cầu bồi thường (đồng)<span class="required">*</span></span>
-                    <input type="number" class="form-control" id="claimTotalAmount" placeholder="Nhập tổng số tiền yêu cầu..." style="font-weight: 700; font-size: 15px; color: var(--danger-color);">
-                </div>
-                <div class="form-group">
-                    <span class="form-label">Tải lên hồ sơ yêu cầu bồi thường (Mẫu 01/BTNN kèm chứng từ thiệt hại)</span>
-                    <div class="file-upload-container">
-                        <div class="file-upload-trigger" onclick="triggerFileInput('claimFile')">
-                            <i class="fa-solid fa-file-arrow-up"></i> Chọn tệp đính kèm +
-                        </div>
-                        <input type="file" id="claimFile" style="display: none;" onchange="handleFileSelected('claimFile', 'claimFileAttachmentInfo')">
-                        <div id="claimFileAttachmentInfo" style="display: none;" class="attached-file-info">
-                            <span class="file-icon"><i class="fa-solid fa-file-pdf"></i></span>
-                            <span class="file-name" id="claimFileName">don_yeu_cau.pdf</span>
-                            <a href="#" target="_blank" class="action-link view-link" id="claimFileViewLink">Xem file</a>
-                            <a href="javascript:void(0)" class="action-link delete-link" title="Xóa file" onclick="removeAttachedFile('claimFile', 'claimFileAttachmentInfo')"><i class="fa-solid fa-trash-can"></i> Xóa file</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-footer">
-                <button class="btn btn-secondary" onclick="showDetailScreen(document.getElementById('detailRequestId').value)">Hủy bỏ</button>
-                <button class="btn btn-success" onclick="saveCreatedClaim()"><i class="fa-solid fa-floppy-disk"></i> Lưu hồ sơ bồi thường</button>
             </div>
         </div>
 
@@ -674,44 +761,97 @@
         <span>Thông báo thành công!</span>
     </div>
 
-    <!-- Reject Acceptance Modal HTML -->
-    <div id="rejectAcceptanceModal" class="confirm-modal-overlay">
-        <div class="confirm-modal-container" style="max-width: 650px; width: 90%; max-height: 90vh; display: flex; flex-direction: column;">
-            <div class="modal-content" style="display: flex; flex-direction: column; height: 100%; max-height: 90vh; overflow: hidden; background: #fff; border-radius: 12px;">
-                <div class="modal-header" style="border-bottom: 1px solid var(--border-color); padding: 24px 24px 16px 24px; display: flex; justify-content: space-between; align-items: center; background: #fff; flex-shrink: 0;">
-                    <h3 id="rejectAcceptanceTitle" style="margin: 0; font-size: 16px; color: var(--danger-color); font-weight: 700; display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-circle-xmark"></i> Từ chối tiếp nhận hồ sơ
-                    </h3>
-                    <span onclick="closeRejectAcceptanceModal()" style="cursor: pointer; font-size: 18px; color: var(--text-muted);"><i class="fa-solid fa-xmark"></i></span>
-                </div>
-                <div class="modal-body" style="padding: 24px; overflow-y: auto; flex: 1;">
-                    <input type="hidden" id="modalRejectRequestId">
-                    <div class="form-group" style="margin-bottom: 20px;">
-                        <span class="form-label" id="rejectAcceptanceReasonLabel" style="font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 8px; display: block;">Lý do từ chối tiếp nhận<span class="required">*</span></span>
-                        <textarea class="form-control" id="rejectAcceptanceReason" rows="4" placeholder="Nhập lý do chi tiết từ chối tiếp nhận hồ sơ..." style="border: 1px solid #cbd5e1; border-radius: 6px; padding: 10px 14px; font-size: 13.5px; width: 100%; box-sizing: border-box; resize: vertical; color: #1e293b;"></textarea>
-                        <div class="error-message" style="color: var(--danger-color); font-size: 11px; margin-top: 4px; display: none;">Đây là trường bắt buộc</div>
-                    </div>
-                    
-                    <div class="form-group" style="margin-bottom: 10px;">
-                        <span class="form-label" id="rejectAcceptanceFileLabel" style="font-size: 13px; font-weight: 600; color: #334155; margin-bottom: 8px; display: block;">Văn bản thông báo từ chối đính kèm</span>
-                        <div style="display: flex; gap: 10px; align-items: center;">
-                            <input type="file" id="rejectAcceptanceFileInput" style="display: none;" onchange="handleRejectFileUpload(this)">
-                            <button class="btn btn-secondary btn-sm" type="button" onclick="document.getElementById('rejectAcceptanceFileInput').click()" style="background-color: #fff; border: 1px solid #cbd5e1; color: #475569; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s;">
-                                <i class="fa-solid fa-file-arrow-up"></i> Chọn tệp đính kèm...
-                            </button>
-                            <span style="font-size: 12px; color: var(--text-muted); font-style: italic;">(Đính kèm quyết định/thông báo chính thức)</span>
-                        </div>
-                        <div id="rejectAcceptanceFilesContainer" style="margin-top: 12px;"></div>
+    <!-- Popup Trình phê duyệt -->
+    <div id="submitApprovalModal" class="confirm-modal-overlay">
+        <div class="confirm-modal-container wf-modal-box">
+            <div class="wf-modal-head"><h3><i class="fa-solid fa-paper-plane"></i> Trình phê duyệt</h3><span class="wf-modal-x" onclick="closeXdModal('submitApprovalModal')">&times;</span></div>
+            <div class="wf-modal-content">
+                <input type="hidden" id="submitRequestId">
+                <div class="form-group">
+                    <span class="form-label">Nội dung trình<span class="required">*</span></span>
+                    <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:6px;">
+                        <label class="wf-radio"><input type="radio" name="submitKind" value="Hoàn thành xác định" checked> Hoàn thành xác định</label>
+                        <label class="wf-radio"><input type="radio" name="submitKind" value="Yêu cầu bổ sung"> Yêu cầu bổ sung</label>
+                        <label class="wf-radio"><input type="radio" name="submitKind" value="Từ chối"> Từ chối</label>
                     </div>
                 </div>
-                <div class="modal-footer" style="border-top: 1px solid var(--border-color); padding: 16px 24px 24px 24px; text-align: right; background: #fff; flex-shrink: 0; display: flex; justify-content: flex-end; gap: 12px;">
-                    <button class="btn btn-secondary" onclick="closeRejectAcceptanceModal()" style="background-color: #fff; border: 1px solid #cbd5e1; color: #475569; padding: 9px 20px; border-radius: 6px; font-size: 13.5px; font-weight: 500; cursor: pointer; transition: all 0.15s;">Hủy bỏ</button>
-                    <button class="btn btn-danger" id="rejectAcceptanceSubmitBtn" onclick="submitRejectAcceptance()" style="background-color: #ef4444; border: 1px solid #ef4444; color: #fff; padding: 9px 24px; border-radius: 6px; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all 0.15s;">Xác nhận từ chối</button>
+                <div class="form-group">
+                    <span class="form-label">Ý kiến trình / Nội dung đề xuất<span class="required">*</span></span>
+                    <textarea class="form-control" id="submitContent" rows="4" placeholder="Nhập ý kiến trình..."></textarea>
+                    <div class="error-message">Đây là trường bắt buộc</div>
                 </div>
+                <div class="form-group">
+                    <span class="form-label">Tệp đính kèm</span>
+                    <input type="file" id="submitFileInput" multiple style="display:none;" onchange="addModalFiles('submit', this)">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('submitFileInput').click()"><i class="fa-solid fa-file-arrow-up"></i> Chọn tệp đính kèm...</button>
+                    <div id="submitFilesList" class="wf-file-list"></div>
+                </div>
+                <div class="wf-path-box" id="submitPathInfo"></div>
+            </div>
+            <div class="wf-modal-foot">
+                <button class="btn btn-secondary" onclick="closeXdModal('submitApprovalModal')">Hủy bỏ</button>
+                <button class="btn btn-primary" onclick="confirmSubmitApproval()"><i class="fa-solid fa-paper-plane"></i> Trình phê duyệt</button>
             </div>
         </div>
     </div>
 
+    <!-- Popup Chuyển CQGQBT -->
+    <div id="transferModal" class="confirm-modal-overlay">
+        <div class="confirm-modal-container wf-modal-box">
+            <div class="wf-modal-head"><h3><i class="fa-solid fa-share-from-square"></i> Chuyển cơ quan giải quyết bồi thường</h3><span class="wf-modal-x" onclick="closeXdModal('transferModal')">&times;</span></div>
+            <div class="wf-modal-content">
+                <input type="hidden" id="transferRequestId">
+                <div id="transferError" class="wf-error-box" style="display:none;"></div>
+                <div class="form-group">
+                    <span class="form-label">Cơ quan giải quyết bồi thường được chỉ định</span>
+                    <input type="text" class="form-control" id="transferAgency" readonly style="font-weight:700; color:var(--primary-color);">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Nội dung chuyển xử lý<span class="required">*</span></span>
+                    <textarea class="form-control" id="transferContent" rows="4" placeholder="Nhập nội dung chuyển xử lý..."></textarea>
+                    <div class="error-message">Đây là trường bắt buộc</div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Tệp đính kèm<span class="required">*</span></span>
+                    <input type="file" id="transferFileInput" multiple style="display:none;" onchange="addModalFiles('transfer', this)">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('transferFileInput').click()"><i class="fa-solid fa-file-arrow-up"></i> Chọn tệp đính kèm...</button>
+                    <div id="transferFilesList" class="wf-file-list"></div>
+                    <div class="error-message" id="transferFileError">Vui lòng đính kèm ít nhất một tệp</div>
+                </div>
+                <div class="wf-path-box">Sau khi chuyển: hồ sơ này chuyển [Hoàn thành]; hệ thống tạo hồ sơ Yêu cầu bồi thường ở trạng thái [Chờ phân công] và chuyển Lãnh đạo cơ quan được chỉ định phân công xử lý.</div>
+            </div>
+            <div class="wf-modal-foot">
+                <button class="btn btn-secondary" onclick="closeXdModal('transferModal')">Hủy bỏ</button>
+                <button class="btn btn-primary" onclick="confirmTransfer()"><i class="fa-solid fa-share-from-square"></i> Chuyển CQGQBT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup Bổ sung tài liệu (cán bộ phối hợp) -->
+    <div id="coopDocModal" class="confirm-modal-overlay">
+        <div class="confirm-modal-container wf-modal-box" style="max-width:560px;">
+            <div class="wf-modal-head"><h3><i class="fa-solid fa-paperclip"></i> Bổ sung tài liệu</h3><span class="wf-modal-x" onclick="closeXdModal('coopDocModal')">&times;</span></div>
+            <div class="wf-modal-content">
+                <input type="hidden" id="coopRequestId">
+                <div class="form-group">
+                    <span class="form-label">Tên tài liệu<span class="required">*</span></span>
+                    <input type="text" class="form-control" id="coopDocName" placeholder="Nhập tên tài liệu...">
+                    <div class="error-message">Đây là trường bắt buộc</div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Tệp đính kèm<span class="required">*</span></span>
+                    <input type="file" id="coopFileInput" style="display:none;" onchange="addModalFiles('coop', this)">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('coopFileInput').click()"><i class="fa-solid fa-file-arrow-up"></i> Chọn tệp đính kèm...</button>
+                    <div id="coopFilesList" class="wf-file-list"></div>
+                    <div class="error-message" id="coopFileError">Vui lòng đính kèm tệp</div>
+                </div>
+            </div>
+            <div class="wf-modal-foot">
+                <button class="btn btn-secondary" onclick="closeXdModal('coopDocModal')">Hủy bỏ</button>
+                <button class="btn btn-primary" onclick="confirmCoopDoc()"><i class="fa-solid fa-floppy-disk"></i> Lưu tài liệu</button>
+            </div>
+        </div>
+    </div>
     <!-- Preview Modal for Phiếu hướng dẫn bổ sung hồ sơ xác định cơ quan -->
     <div id="previewModalSupplement" class="confirm-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
         <div class="sticky-modal-container" style="background:#fff; width:800px; max-width:95%; border-radius:8px; display:flex; flex-direction:column; max-height:90vh; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
@@ -775,7 +915,8 @@
     </div>
 
     <!-- External javascript logic -->
-    <script src="xac_dinh_co_quan_boi_thuong.js?v=20260824-v2-trash-fixed"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261008"></script>
+    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261008"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>

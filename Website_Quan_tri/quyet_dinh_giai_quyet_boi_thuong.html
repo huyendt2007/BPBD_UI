@@ -1136,10 +1136,6 @@
                     <input type="text" class="form-control" id="searchYcbtCode" placeholder="Nhập mã vụ việc...">
                 </div>
                 <div>
-                    <span class="form-label">Tên vụ việc</span>
-                    <input type="text" class="form-control" id="searchCaseName" placeholder="Nhập tên vụ việc...">
-                </div>
-                <div>
                     <span class="form-label">Loại quyết định</span>
                     <select class="form-control" id="searchDecisionType">
                         <option value="">Tất cả</option>
@@ -1148,12 +1144,12 @@
                         <option value="Quyết định sửa chữa, bổ sung quyết định giải quyết bồi thường">Quyết định sửa chữa, bổ sung quyết định giải quyết bồi thường</option>
                     </select>
                 </div>
-            </div>
-            <div class="grid-4-cols" style="margin-bottom: 16px;">
                 <div>
                     <span class="form-label">Người ký quyết định</span>
                     <input type="text" class="form-control" id="searchSigner" placeholder="Nhập tên người ký...">
                 </div>
+            </div>
+            <div class="grid-4-cols" style="margin-bottom: 16px;">
                 <div>
                     <span class="form-label">Trạng thái quyết định</span>
                     <select class="form-control" id="searchDecStatus">
@@ -1173,8 +1169,6 @@
                     <span class="form-label">Ban hành: Đến ngày</span>
                     <input type="text" class="form-control" id="searchDecToDate" placeholder="dd/mm/yyyy">
                 </div>
-            </div>
-            <div class="grid-4-cols" style="margin-bottom: 16px;">
                 <div>
                     <span class="form-label">Hình thức ban hành</span>
                     <select class="form-control" id="searchDecIssueMode">
@@ -1183,6 +1177,8 @@
                         <option value="Ký bên ngoài">Ký bên ngoài</option>
                     </select>
                 </div>
+            </div>
+            <div class="grid-4-cols" style="margin-bottom: 16px;">
                 <div>
                     <span class="form-label">Đơn vị ban hành</span>
                     <select class="form-control" id="searchDecIssuingUnit">
@@ -1194,6 +1190,7 @@
                         <option value="Cục Thi hành án dân sự Hà Nội">Cục Thi hành án dân sự Hà Nội</option>
                     </select>
                 </div>
+                <div></div>
                 <div></div>
                 <div style="display: flex; justify-content: flex-end; gap: 8px; align-items: flex-end; height: 100%;">
                     <button class="btn btn-secondary" onclick="clearDecFilters()">Xóa bộ lọc</button>
@@ -1230,7 +1227,6 @@
                         <th style="width: 170px;">Đơn vị ban hành</th>
                         <th style="width: auto; min-width: 240px;">Trích yếu quyết định</th>
                         <th style="width: 120px; text-align: center;">Mã vụ việc</th>
-                        <th style="width: 170px;">Tên vụ việc</th>
                         <th style="width: 110px; text-align: center;">Trạng thái</th>
                         <th style="width: 160px; text-align: center; min-width: 160px;">Thao tác</th>
                     </tr>
@@ -3405,7 +3401,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
             tbody.innerHTML = '';
 
             const thead = document.querySelector('#decisionsTable thead');
-            // Lưới danh sách quyết định: 13 cột chuẩn theo SRS, dùng chung cho cả 02 vai trò
+            // Lưới danh sách quyết định: 12 cột chuẩn theo SRS, dùng chung cho cả 02 vai trò
             thead.innerHTML = `
                 <tr>
                     <th style="width: 50px; text-align: center;">STT</th>
@@ -3418,7 +3414,6 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                     <th style="width: 170px;">Đơn vị ban hành</th>
                     <th style="width: auto; min-width: 240px;">Trích yếu quyết định</th>
                     <th style="width: 120px; text-align: center;">Mã vụ việc</th>
-                    <th style="width: 170px;">Tên vụ việc</th>
                     <th style="width: 110px; text-align: center;">Trạng thái</th>
                     <th style="width: 130px; text-align: center; min-width: 130px;">Thao tác</th>
                 </tr>
@@ -3432,7 +3427,6 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
 
             const decNo = document.getElementById('searchDecNo').value.trim().toLowerCase();
             const ycbtCode = document.getElementById('searchYcbtCode').value.trim().toLowerCase();
-            const caseName = document.getElementById('searchCaseName').value.trim().toLowerCase();
             const decisionType = document.getElementById('searchDecisionType').value;
             const signer = document.getElementById('searchSigner').value.trim().toLowerCase();
             const status = document.getElementById('searchDecStatus').value;
@@ -3444,7 +3438,6 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
 
             if (decNo) filtered = filtered.filter(item => item.decNo.toLowerCase().includes(decNo));
             if (ycbtCode) filtered = filtered.filter(item => item.ycbtCode.toLowerCase().includes(ycbtCode));
-            if (caseName) filtered = filtered.filter(item => (item.caseName || `Vụ việc yêu cầu bồi thường của ${item.ycbtNyc || ''}`).toLowerCase().includes(caseName));
             if (decisionType) filtered = filtered.filter(item => (item.decisionType || 'Quyết định giải quyết bồi thường') === decisionType);
             if (signer) filtered = filtered.filter(item => item.approver.toLowerCase().includes(signer) || item.signer.toLowerCase().includes(signer));
             if (status) filtered = filtered.filter(item => item.status === status);
@@ -3490,7 +3483,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
             const endIdx = Math.min(startIdx + decPageSize, total);
 
             if (total === 0) {
-                tbody.innerHTML = `<tr><td colspan="13" style="text-align:center; color:var(--text-muted); padding:30px; font-style:italic;">Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; color:var(--text-muted); padding:30px; font-style:italic;">Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</td></tr>`;
                 document.getElementById('decCurrentRange').innerText = "0-0";
                 return;
             }
@@ -3556,14 +3549,13 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                 // Split signer name for nice display
                 const signerClean = item.approver ? item.approver.split(' (')[0] : item.signer;
                 const decisionType = item.decisionType || 'Quyết định giải quyết bồi thường';
-                const caseNameText = item.caseName || `Vụ việc yêu cầu bồi thường của ${item.ycbtNyc || ''}`;
                 
                 const displayNo = item.decNo === 'Chưa cấp số' ? '<span style="color:#94a3b8; font-style:italic; font-weight:normal;">Chưa cấp số</span>' : `<strong>${item.decNo}</strong>`;
                 const displayDate = item.date === 'Chưa ban hành' ? '<span style="color:#94a3b8; font-style:italic;">Chưa ban hành</span>' : item.date;
                 const displayIssueMode = item.signMode || 'Ký số trên hệ thống';
                 const displayIssuingUnit = item.issuingUnit || item.agency || '';
 
-                // 13 cột chuẩn theo SRS, dùng chung cho cả 02 vai trò
+                // 12 cột chuẩn theo SRS, dùng chung cho cả 02 vai trò
                 const rowCols = `
                         <td style="text-align:center;">${startIdx + idx + 1}</td>
                         <td style="text-align:center;">${displayNo}</td>
@@ -3575,7 +3567,6 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                         <td title="${displayIssuingUnit}">${displayIssuingUnit}</td>
                         <td class="excerpt-col" title="${item.excerpt}">${item.excerpt}</td>
                         <td style="text-align:center;"><a href="javascript:void(0)" class="claim-code-link" onclick="event.stopPropagation(); openLinkedClaimDetail('${item.ycbtCode}'); return false;" style="font-weight:600; color:var(--secondary-color); text-decoration:none;">${item.ycbtCode}</a></td>
-                        <td title="${caseNameText}">${caseNameText}</td>
                         <td style="text-align:center;"><span class="badge ${badgeClass}">${item.status}</span></td>
                         <td style="text-align:center;">
                             <div class="action-flex">
@@ -3640,7 +3631,6 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
         function clearDecFilters() {
             document.getElementById('searchDecNo').value = '';
             document.getElementById('searchYcbtCode').value = '';
-            document.getElementById('searchCaseName').value = '';
             document.getElementById('searchDecisionType').value = '';
             document.getElementById('searchSigner').value = '';
             document.getElementById('searchDecStatus').value = '';
@@ -4823,7 +4813,6 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
             const overlay = document.getElementById('decisionClaimSearchOverlay');
             if (!overlay) return;
             document.getElementById('decisionClaimSearchCode').value = prefillCode || '';
-            document.getElementById('decisionClaimSearchName').value = '';
             document.getElementById('decisionClaimSearchRequester').value = '';
 
             // Chỉ tự động tìm khi popup được mở kèm Mã vụ việc (nút Tìm kiếm tại form chính).
@@ -4917,7 +4906,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
         function resetDecisionClaimSearchResults() {
             const tbody = document.getElementById('decisionClaimSearchResults');
             if (!tbody) return;
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#64748b; font-style:italic; padding:18px;">Nhập tiêu chí tìm kiếm và bấm nút "Tìm kiếm" để hiển thị danh sách vụ việc.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b; font-style:italic; padding:18px;">Nhập tiêu chí tìm kiếm và bấm nút "Tìm kiếm" để hiển thị danh sách vụ việc.</td></tr>`;
             // Chưa tìm kiếm thì không hiển thị thanh phân trang
             const pagerEl = document.getElementById('decisionClaimSearchPager');
             if (pagerEl) pagerEl.innerHTML = '';
@@ -4928,16 +4917,14 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
             const tbody = document.getElementById('decisionClaimSearchResults');
             if (!tbody) return;
             const code = normalizeLookupText(document.getElementById('decisionClaimSearchCode')?.value);
-            const name = normalizeLookupText(document.getElementById('decisionClaimSearchName')?.value);
             const requester = normalizeLookupText(document.getElementById('decisionClaimSearchRequester')?.value);
             const rows = getDecisionClaimLookupRows().filter(item => {
                 return (!code || normalizeLookupText(item.code).includes(code))
-                    && (!name || normalizeLookupText(item.caseName).includes(name))
                     && (!requester || normalizeLookupText(item.requester).includes(requester));
             });
 
             if (!rows.length) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#64748b; font-style:italic; padding:18px;">Không tìm thấy vụ việc phù hợp</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#64748b; font-style:italic; padding:18px;">Không tìm thấy vụ việc phù hợp</td></tr>`;
                 renderLookupPagerBar('decisionClaim', 'decisionClaimSearchPager', 0, 'renderDecisionClaimSearchResults');
                 return;
             }
@@ -4948,7 +4935,6 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
             tbody.innerHTML = pageRows.map(item => `
                 <tr onclick="selectDecisionClaimFromLookup('${item.code}')" style="cursor:pointer;">
                     <td style="font-weight:700; color:#1d4ed8; text-align:center;">${item.code}</td>
-                    <td>${item.caseName}</td>
                     <td>${item.requester}</td>
                     <td>${item.agency}</td>
                     <td style="text-align:right; font-weight:600;">${Number(item.amount || 0).toLocaleString('vi-VN')} đ</td>
@@ -6325,8 +6311,8 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                 ? 'Hủy quyết định giải quyết bồi thường'
                 : 'Sửa chữa, bổ sung quyết định giải quyết bồi thường';
             const article1 = isCancel
-                ? `Hủy Quyết định giải quyết bồi thường số <strong>${data.originDecisionNo || '...'}</strong>${data.originDecisionDate ? ` ngày <strong>${data.originDecisionDate}</strong>` : ''} đối với ${data.caseName || 'vụ việc yêu cầu bồi thường'}.`
-                : `Sửa chữa, bổ sung Quyết định giải quyết bồi thường số <strong>${data.originDecisionNo || '...'}</strong>${data.originDecisionDate ? ` ngày <strong>${data.originDecisionDate}</strong>` : ''} đối với ${data.caseName || 'vụ việc yêu cầu bồi thường'}.`;
+                ? `Hủy Quyết định giải quyết bồi thường số <strong>${data.originDecisionNo || '...'}</strong>${data.originDecisionDate ? ` ngày <strong>${data.originDecisionDate}</strong>` : ''} đối với vụ việc yêu cầu bồi thường${data.ycbtCode ? ` mã <strong>${data.ycbtCode}</strong>` : ''}${data.nyc ? ` của ${data.nyc}` : ''}.`
+                : `Sửa chữa, bổ sung Quyết định giải quyết bồi thường số <strong>${data.originDecisionNo || '...'}</strong>${data.originDecisionDate ? ` ngày <strong>${data.originDecisionDate}</strong>` : ''} đối với vụ việc yêu cầu bồi thường${data.ycbtCode ? ` mã <strong>${data.ycbtCode}</strong>` : ''}${data.nyc ? ` của ${data.nyc}` : ''}.`;
             // Mẫu 12: in bảng đối chiếu nội dung cũ - nội dung mới, chỉ gồm các trường thực sự thay đổi
             const amendChanges = Array.isArray(data.amendChanges) ? data.amendChanges : [];
             const compareHtml = (!isCancel && amendChanges.length)
@@ -6724,14 +6710,10 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                 <button type="button" class="close-modal" onclick="closeDecisionClaimSearchModal()">&times;</button>
             </div>
             <div class="modal-body" style="overflow:auto;">
-                <div class="grid-3-cols" style="margin-bottom:16px;">
+                <div class="grid-2-cols" style="margin-bottom:16px;">
                     <div class="form-group">
                         <span class="form-label">Mã vụ việc</span>
                         <input class="form-control" id="decisionClaimSearchCode" placeholder="Nhập mã vụ việc...">
-                    </div>
-                    <div class="form-group">
-                        <span class="form-label">Tên vụ việc</span>
-                        <input class="form-control" id="decisionClaimSearchName" placeholder="Nhập tên vụ việc...">
                     </div>
                     <div class="form-group">
                         <span class="form-label">Người yêu cầu</span>
@@ -6739,7 +6721,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                     </div>
                 </div>
                 <div style="display:flex; justify-content:flex-end; gap:8px; margin-bottom:12px;">
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('decisionClaimSearchCode').value='';document.getElementById('decisionClaimSearchName').value='';document.getElementById('decisionClaimSearchRequester').value='';resetDecisionClaimSearchResults();">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('decisionClaimSearchCode').value='';document.getElementById('decisionClaimSearchRequester').value='';resetDecisionClaimSearchResults();">
                         <i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc
                     </button>
                     <button type="button" class="btn btn-primary btn-sm" onclick="resetLookupPager('decisionClaim'); renderDecisionClaimSearchResults()">
@@ -6751,7 +6733,6 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                         <thead>
                             <tr>
                                 <th style="width:120px; text-align:center;">Mã vụ việc</th>
-                                <th style="width:220px;">Tên vụ việc</th>
                                 <th style="width:160px;">Người yêu cầu</th>
                                 <th style="width:190px;">Cơ quan giải quyết</th>
                                 <th style="width:130px; text-align:right;">Số tiền</th>

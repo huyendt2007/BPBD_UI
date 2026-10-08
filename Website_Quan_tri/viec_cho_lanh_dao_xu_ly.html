@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Việc chờ lãnh đạo xử lý</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="quan_ly_boi_thuong.css">
+    <style>
+        body { background: var(--bg-body); padding: 20px; }
+        .page-heading { margin-bottom: 16px; padding-right: 360px; }
+        .page-heading h2 { color: var(--primary-light); display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; margin: 0; }
+        .filter-card, .list-card { background: #fff; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); box-shadow: var(--box-shadow); margin-bottom: 16px; }
+        .filter-card { padding: 16px; }
+        .filter-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 16px; }
+        .filter-actions { border-top: 1px dashed var(--border-color); display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; padding-top: 12px; }
+        .wf-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border-color); padding: 0 12px; }
+        .wf-tab { background: none; border: 0; border-bottom: 3px solid transparent; padding: 12px 16px; font: 600 13.5px Inter, sans-serif; color: #475569; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+        .wf-tab.active { color: var(--primary-light); border-bottom-color: var(--primary-light); }
+        .wf-count { background: #e2e8f0; color: #334155; border-radius: 999px; padding: 1px 8px; font-size: 12px; min-width: 22px; text-align: center; }
+        .wf-tab.active .wf-count { background: var(--primary-light); color: #fff; }
+        .wf-tab-note { color: var(--text-muted); font-size: 12.5px; padding: 10px 16px 0; }
+        #taskTable { min-width: 1250px; }
+        #taskTable tbody tr { cursor: pointer; }
+        .code-cell { color: var(--primary-light); font-weight: 700; text-align: center; }
+        .muted { color: var(--text-muted); font-size: 12px; }
+        .act { display: inline-flex; align-items: center; gap: 5px; border: 1px solid var(--border-color); background: #fff; border-radius: 6px; padding: 5px 9px; font: 600 12px Inter, sans-serif; cursor: pointer; color: #334155; white-space: nowrap; }
+        .act.primary { background: var(--primary-light); border-color: var(--primary-light); color: #fff; }
+        .act.success { background: #15803d; border-color: #15803d; color: #fff; }
+        .act.danger { color: #b91c1c; border-color: #fecaca; background: #fff5f5; }
+        .act.warn { color: #b45309; border-color: #fde68a; background: #fffbeb; }
+        .act-flex { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+        .wf-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); display: none; align-items: center; justify-content: center; z-index: 9500; }
+        .wf-overlay.open { display: flex; }
+        .wf-modal { background: #fff; border-radius: 10px; width: 720px; max-width: 95vw; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2); }
+        .wf-modal.wide { width: 980px; }
+        .wf-modal-header { padding: 18px 22px 12px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
+        .wf-modal-header h3 { margin: 0; font-size: 16px; color: var(--primary-light); display: flex; gap: 8px; align-items: center; }
+        .wf-modal-body { padding: 18px 22px; overflow-y: auto; flex: 1; font-size: 13.5px; }
+        .wf-modal-footer { padding: 14px 22px 18px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 10px; background: #f8fafc; border-radius: 0 0 10px 10px; }
+        .wf-close { cursor: pointer; font-size: 20px; color: #64748b; }
+        .info-grid { display: grid; grid-template-columns: 200px 1fr; gap: 8px 14px; margin-bottom: 14px; }
+        .info-grid .k { color: var(--text-muted); font-weight: 600; }
+        .sec-title { font-weight: 700; color: var(--primary-light); margin: 16px 0 8px; font-size: 13.5px; text-transform: uppercase; }
+        .radio-row { display: flex; gap: 20px; margin: 6px 0 12px; }
+        .radio-row label, .check-list label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; font-weight: 500; }
+        .check-list { display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 12px; max-height: 180px; overflow-y: auto; }
+        .error-text { color: #dc2626; font-size: 12px; margin-top: 4px; display: none; }
+        .hint { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
+        @media (max-width: 900px) { .filter-grid { grid-template-columns: 1fr; } .page-heading { padding-right: 0; padding-top: 40px; } .info-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="page-heading">
+            <h2><i class="fa-solid fa-user-tie"></i> VIỆC CHỜ LÃNH ĐẠO XỬ LÝ</h2>
+            <div class="muted" id="userContext" style="margin-top:6px;"></div>
+        </div>
+
+        <div class="filter-card">
+            <div class="filter-grid">
+                <div class="form-group">
+                    <span class="form-label">Mã hồ sơ</span>
+                    <input id="fCode" class="form-control" placeholder="Nhập mã hồ sơ...">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Họ và tên người yêu cầu</span>
+                    <input id="fName" class="form-control" placeholder="Nhập họ và tên người yêu cầu...">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Loại yêu cầu</span>
+                    <select id="fType" class="form-control"></select>
+                </div>
+            </div>
+            <div class="filter-actions">
+                <button class="btn btn-secondary" onclick="resetFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                <button class="btn btn-primary" onclick="renderAll()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+            </div>
+        </div>
+
+        <div class="list-card">
+            <div class="wf-tabs">
+                <button class="wf-tab active" data-tab="assign" onclick="switchTab('assign')"><i class="fa-solid fa-diagram-project"></i> Chờ phân công <span class="wf-count" id="cntAssign">0</span></button>
+                <button class="wf-tab" data-tab="approve" onclick="switchTab('approve')"><i class="fa-solid fa-file-signature"></i> Chờ duyệt <span class="wf-count" id="cntApprove">0</span></button>
+                <button class="wf-tab" data-tab="done" onclick="switchTab('done')"><i class="fa-solid fa-clock-rotate-left"></i> Đã xử lý <span class="wf-count" id="cntDone">0</span></button>
+            </div>
+            <div class="wf-tab-note" id="tabNote"></div>
+            <div class="table-container" style="border:0; border-radius:0;">
+                <table class="custom-table" id="taskTable">
+                    <thead>
+                        <tr>
+                            <th style="width:54px; text-align:center;">STT</th>
+                            <th style="width:130px; text-align:center;">Mã hồ sơ</th>
+                            <th style="width:200px;">Loại yêu cầu</th>
+                            <th style="width:170px;">Họ và tên người yêu cầu</th>
+                            <th style="width:250px;">Nội dung cần xử lý</th>
+                            <th style="width:190px;">Người chuyển/trình</th>
+                            <th style="width:130px; text-align:center;">Thời điểm nhận</th>
+                            <th style="width:150px; text-align:center;">Trạng thái hồ sơ</th>
+                            <th style="width:190px; text-align:center;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="taskBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Popup Xem chi tiết hồ sơ -->
+    <div class="wf-overlay" id="detailOverlay">
+        <div class="wf-modal wide">
+            <div class="wf-modal-header">
+                <h3><i class="fa-solid fa-folder-open"></i> <span id="dTitle">Chi tiết hồ sơ</span></h3>
+                <span class="wf-close" onclick="closeOverlay('detailOverlay')">&times;</span>
+            </div>
+            <div class="wf-modal-body" id="dBody"></div>
+            <div class="wf-modal-footer" id="dFooter"></div>
+        </div>
+    </div>
+
+    <!-- Popup Phân công -->
+    <div class="wf-overlay" id="assignOverlay">
+        <div class="wf-modal">
+            <div class="wf-modal-header">
+                <h3><i class="fa-solid fa-diagram-project"></i> Phân công xử lý hồ sơ <span id="aCode"></span></h3>
+                <span class="wf-close" onclick="closeOverlay('assignOverlay')">&times;</span>
+            </div>
+            <div class="wf-modal-body">
+                <div class="muted" id="aContext" style="margin-bottom:10px;"></div>
+                <span class="form-label">Hình thức phân công<span class="required">*</span></span>
+                <div class="radio-row" id="aModeRow"></div>
+                <div id="aUnitBlock" class="form-group">
+                    <span class="form-label">Đơn vị nhận<span class="required">*</span></span>
+                    <select id="aUnit" class="form-control"></select>
+                    <div class="error-text" id="aUnitErr">Đây là trường bắt buộc</div>
+                </div>
+                <div id="aOfficerBlock">
+                    <div class="form-group">
+                        <span class="form-label">Cán bộ chủ trì<span class="required">*</span></span>
+                        <select id="aChuTri" class="form-control" onchange="renderPhoiHop()"></select>
+                        <div class="error-text" id="aChuTriErr">Đây là trường bắt buộc</div>
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Cán bộ phối hợp</span>
+                        <div class="check-list" id="aPhoiHop"></div>
+                        <div class="hint">Cán bộ phối hợp được xem hồ sơ và bổ sung tài liệu; không được trình phê duyệt.</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Ý kiến chỉ đạo</span>
+                    <textarea id="aNote" class="form-control" rows="3" placeholder="Nhập ý kiến chỉ đạo..."></textarea>
+                </div>
+            </div>
+            <div class="wf-modal-footer">
+                <button class="btn btn-secondary" onclick="closeOverlay('assignOverlay')">Hủy bỏ</button>
+                <button class="btn btn-primary" onclick="submitAssign()"><i class="fa-solid fa-paper-plane"></i> Xác nhận phân công</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup Phê duyệt / Từ chối -->
+    <div class="wf-overlay" id="decideOverlay">
+        <div class="wf-modal">
+            <div class="wf-modal-header">
+                <h3 id="decTitle"><i class="fa-solid fa-circle-check"></i> Phê duyệt</h3>
+                <span class="wf-close" onclick="closeOverlay('decideOverlay')">&times;</span>
+            </div>
+            <div class="wf-modal-body">
+                <div id="decContext" style="margin-bottom:12px;"></div>
+                <div class="form-group">
+                    <span class="form-label" id="decLabel">Ý kiến phê duyệt</span>
+                    <textarea id="decNote" class="form-control" rows="4"></textarea>
+                    <div class="error-text" id="decErr">Đây là trường bắt buộc</div>
+                </div>
+            </div>
+            <div class="wf-modal-footer">
+                <button class="btn btn-secondary" onclick="closeOverlay('decideOverlay')">Hủy bỏ</button>
+                <button class="btn btn-primary" id="decSubmit" onclick="submitDecision()">Xác nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup xác nhận -->
+    <div class="wf-overlay" id="confirmOverlay">
+        <div class="wf-modal" style="width:460px;">
+            <div class="wf-modal-header"><h3><i class="fa-solid fa-circle-exclamation"></i> Xác nhận</h3><span class="wf-close" onclick="closeOverlay('confirmOverlay')">&times;</span></div>
+            <div class="wf-modal-body" id="confirmMsg"></div>
+            <div class="wf-modal-footer">
+                <button class="btn btn-secondary" onclick="closeOverlay('confirmOverlay')">Hủy bỏ</button>
+                <button class="btn btn-primary" id="confirmOk">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast-notif"></div>
+
+    <script src="btnn_luong_xu_ly.js"></script>
+    <script>
+        const WF = BTNN_WF;
+        let activeTab = 'assign';
+        let actingCode = null;
+        let decisionMode = 'approve';
+        const TAB_NOTES = {
+            assign: 'Hồ sơ đang chờ lãnh đạo đơn vị phân công: chuyển đơn vị cấp dưới hoặc phân công cán bộ chủ trì, phối hợp theo Cấu hình luồng xử lý.',
+            approve: 'Hồ sơ cán bộ chủ trì đã trình. Luồng phê duyệt đi ngược chiều luồng phân công; từ chối phê duyệt ở bất kỳ cấp nào thì hồ sơ chuyển [Bị trả lại].',
+            done: 'Hồ sơ đã phân công/phê duyệt. Được Thu hồi khi bên nhận chưa xử lý; việc bên nhận đã xem hồ sơ không ảnh hưởng đến quyền thu hồi.'
+        };
+
+        function esc(v) { return WF.esc(v); }
+        function norm(v) { return String(v || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase().trim(); }
+
+        function init() {
+            WF.mountUserSwitcher();
+            const me = WF.getCurrentUser();
+            document.getElementById('userContext').textContent = `Đơn vị: ${WF.unitName(me.unitId)} | Lãnh đạo đơn vị: ${WF.isLeaderOf(me.id, me.unitId) ? 'Có' : 'Không (không có việc chờ xử lý)'}`;
+            const types = WF.getRequestTypesForUser(me.id);
+            document.getElementById('fType').innerHTML = `<option value="">Tất cả</option>` + types.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('');
+            const tab = new URLSearchParams(location.search).get('tab');
+            if (['assign', 'approve', 'done'].includes(tab)) activeTab = tab;
+            switchTab(activeTab);
+        }
+
+        function resetFilters() {
+            ['fCode', 'fName', 'fType'].forEach(id => document.getElementById(id).value = '');
+            renderAll();
+        }
+
+        function switchTab(tab) {
+            activeTab = tab;
+            document.querySelectorAll('.wf-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+            document.getElementById('tabNote').textContent = TAB_NOTES[tab];
+            renderAll();
+        }
+
+        function lastSender(rec) {
+            if (activeTab === 'approve' && rec.approval) {
+                const step = rec.approval.steps[rec.approval.steps.length - 1];
+                return step ? { who: `${WF.userName(step.userId)} (${WF.unitName(step.unitId)})`, at: step.at } : { who: `${WF.userName(rec.approval.submittedBy)} - Cán bộ chủ trì`, at: rec.approval.submittedAt };
+            }
+            const r = WF.latestRoute(rec);
+            if (r) return { who: `${WF.userName(r.fromUserId)} (${WF.unitName(r.fromUnitId)})`, at: r.at };
+            const h = (rec.history || [])[0];
+            return { who: h ? `${h.userName} - ${/Xác định CQGQBT/.test(h.action) ? 'Chuyển từ Xác định CQGQBT' : 'Cán bộ tiếp nhận'}` : '--', at: rec.receivedAt || '--' };
+        }
+
+        function contentText(rec) {
+            const me = WF.getCurrentUserId();
+            if (activeTab === 'assign') return `Phân công xử lý tại ${WF.unitName(rec.currentUnitId)}`;
+            if (activeTab === 'approve') return `Phê duyệt: ${rec.approval.kind} (cấp ${rec.approval.level + 1}/${rec.approval.path.length})`;
+            const mine = (rec.history || []).filter(h => h.userId === me).pop();
+            return mine ? `${mine.action}: ${mine.note}` : '--';
+        }
+
+        function getRows(tab) {
+            const tasks = WF.getLeaderTasks();
+            const code = norm(document.getElementById('fCode').value);
+            const name = norm(document.getElementById('fName').value);
+            const type = document.getElementById('fType').value;
+            return tasks[tab].filter(r => (!code || norm(r.code).includes(code)) && (!name || norm(r.nycName).includes(name)) && (!type || r.loaiYeuCau === type));
+        }
+
+        function renderAll() {
+            const tasks = WF.getLeaderTasks();
+            document.getElementById('cntAssign').textContent = tasks.assign.length;
+            document.getElementById('cntApprove').textContent = tasks.approve.length;
+            document.getElementById('cntDone').textContent = tasks.done.length;
+            const rows = getRows(activeTab);
+            const body = document.getElementById('taskBody');
+            if (!rows.length) {
+                body.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:28px; font-style:italic;">Không có hồ sơ.</td></tr>`;
+                return;
+            }
+            const me = WF.getCurrentUserId();
+            body.innerHTML = rows.map((rec, i) => {
+                const s = lastSender(rec);
+                let acts = `<button class="act" title="Xem chi tiết" onclick="event.stopPropagation(); openDetail('${esc(rec.code)}')"><i class="fa-solid fa-eye"></i> Xem</button>`;
+                if (activeTab === 'assign') acts += `<button class="act primary" onclick="event.stopPropagation(); openAssign('${esc(rec.code)}')"><i class="fa-solid fa-diagram-project"></i> Phân công</button>`;
+                if (activeTab === 'approve') acts += `<button class="act success" onclick="event.stopPropagation(); openDecision('${esc(rec.code)}','approve')"><i class="fa-solid fa-check"></i> Phê duyệt</button><button class="act danger" onclick="event.stopPropagation(); openDecision('${esc(rec.code)}','reject')"><i class="fa-solid fa-xmark"></i> Từ chối</button>`;
+                if (activeTab === 'done' && WF.getRecallInfo(rec, me)) acts += `<button class="act warn" onclick="event.stopPropagation(); confirmRecall('${esc(rec.code)}')"><i class="fa-solid fa-rotate-left"></i> Thu hồi</button>`;
+                return `<tr onclick="openDetail('${esc(rec.code)}')">
+                    <td style="text-align:center;">${i + 1}</td>
+                    <td class="code-cell">${esc(rec.code)}</td>
+                    <td>${esc(rec.loaiYeuCau)}${rec.nguonHoSo ? `<div class="muted">Nguồn: ${esc(rec.nguonHoSo)}</div>` : ''}</td>
+                    <td><strong>${esc(rec.nycName || '--')}</strong></td>
+                    <td>${esc(contentText(rec))}</td>
+                    <td>${esc(s.who)}</td>
+                    <td style="text-align:center;">${esc(s.at)}</td>
+                    <td style="text-align:center;">${WF.statusBadge(rec.status)}</td>
+                    <td><div class="act-flex">${acts}</div></td>
+                </tr>`;
+            }).join('');
+        }
+
+        // ---------- Chi tiết ----------
+        function openDetail(code) {
+            const rec = WF.getRecord(code);
+            if (!rec) return;
+            const me = WF.getCurrentUserId();
+            if (WF.markViewed(rec, me)) WF.upsertRecord(rec);
+            const docs = (rec.attachedDocs || []).map(d => `${esc(d.name)}${d.file ? ' - ' + esc(d.file) : ''}`).join('<br>') || '<span class="muted">Không có</span>';
+            const nb = rec.nbth;
+            const moduleUrl = rec.module === 'XD' ? `xac_dinh_co_quan_boi_thuong.html?detail=${encodeURIComponent(rec.code)}&readonly=1&returnUrl=viec_cho_lanh_dao_xu_ly.html` : '';
+            document.getElementById('dTitle').textContent = `Chi tiết hồ sơ ${rec.code}`;
+            document.getElementById('dBody').innerHTML = `
+                <div class="info-grid">
+                    <div class="k">Mã hồ sơ</div><div><strong style="color:var(--primary-light);">${esc(rec.code)}</strong></div>
+                    <div class="k">Loại yêu cầu</div><div>${esc(rec.loaiYeuCau)}</div>
+                    ${rec.nguonHoSo ? `<div class="k">Nguồn hồ sơ</div><div>${esc(rec.nguonHoSo)}${rec.xdCode ? ` - Hồ sơ Xác định CQGQBT <a href="#" onclick="openModule('xac_dinh_co_quan_boi_thuong.html?detail=${encodeURIComponent(rec.xdCode)}&readonly=1&returnUrl=viec_cho_lanh_dao_xu_ly.html'); return false;">${esc(rec.xdCode)}</a>` : ''}</div>` : ''}
+                    <div class="k">Trạng thái</div><div>${WF.statusBadge(rec.status)}</div>
+                    <div class="k">Đơn vị gốc</div><div>${esc(WF.unitName(rec.rootUnitId))}</div>
+                    <div class="k">Đơn vị đang phân công</div><div>${esc(WF.unitName(rec.currentUnitId))}</div>
+                    <div class="k">Họ và tên người yêu cầu</div><div><strong>${esc(rec.nycName || '--')}</strong>${rec.nycRole ? ` <span class="muted">(${esc(rec.nycRole)})</span>` : ''}</div>
+                    ${nb && nb.name ? `<div class="k">Người bị thiệt hại</div><div>${esc(nb.name)}${nb.dob ? ' - Ngày sinh: ' + esc(nb.dob) : ''}${nb.docNo ? ' - ' + esc(nb.docType || '') + ': ' + esc(nb.docNo) : ''}</div>` : ''}
+                    <div class="k">Hành vi gây thiệt hại</div><div>${esc(rec.hanhVi || '--')}</div>
+                    ${rec.transferContent ? `<div class="k">Nội dung chuyển xử lý</div><div>${esc(rec.transferContent)}<div class="muted">${(rec.transferFiles || []).map(f => esc(f.name)).join(', ')}</div></div>` : ''}
+                    <div class="k">Tài liệu đính kèm</div><div>${docs}</div>
+                    <div class="k">Cán bộ chủ trì</div><div>${rec.chuTri ? esc(WF.userLabel(rec.chuTri)) : '<span class="muted">Chưa phân công</span>'}</div>
+                    <div class="k">Cán bộ phối hợp</div><div>${(rec.phoiHop || []).length ? rec.phoiHop.map(id => esc(WF.userName(id))).join(', ') : '<span class="muted">Không có</span>'}</div>
+                </div>
+                ${rec.approval ? `<div class="sec-title">Trình phê duyệt</div>${WF.renderApprovalHtml(rec)}` : ''}
+                <div class="sec-title">Quá trình phân công</div>${WF.renderRoutesHtml(rec)}
+                <div class="sec-title">Lịch sử xử lý</div>${WF.renderHistoryHtml(rec)}`;
+            let footer = `<button class="btn btn-secondary" onclick="closeOverlay('detailOverlay')">Đóng</button>`;
+            if (moduleUrl && !['Chờ phân công', 'Đang phân công'].includes(rec.status)) footer += `<button class="btn btn-secondary" onclick="openModule('${moduleUrl}')"><i class="fa-solid fa-up-right-from-square"></i> Mở hồ sơ trong phân hệ</button>`;
+            if (WF.canAssign(rec, me)) footer += `<button class="btn btn-primary" onclick="closeOverlay('detailOverlay'); openAssign('${esc(rec.code)}')"><i class="fa-solid fa-diagram-project"></i> Phân công</button>`;
+            if (WF.canApprove(rec, me)) footer += `<button class="btn btn-danger" style="background:#ef4444; color:#fff; border:none;" onclick="closeOverlay('detailOverlay'); openDecision('${esc(rec.code)}','reject')">Từ chối</button><button class="btn btn-primary" onclick="closeOverlay('detailOverlay'); openDecision('${esc(rec.code)}','approve')"><i class="fa-solid fa-check"></i> Phê duyệt</button>`;
+            if (WF.getRecallInfo(rec, me)) footer += `<button class="btn btn-secondary" onclick="closeOverlay('detailOverlay'); confirmRecall('${esc(rec.code)}')"><i class="fa-solid fa-rotate-left"></i> Thu hồi</button>`;
+            document.getElementById('dFooter').innerHTML = footer;
+            openOverlay('detailOverlay');
+            renderAll();
+        }
+
+        function openModule(url) {
+            if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === 'function') {
+                window.parent.openAdminModule(url, 'xac_dinh_co_quan_boi_thuong.html?v=20261008');
+            } else {
+                location.href = url;
+            }
+        }
+
+        // ---------- Phân công ----------
+        function openAssign(code) {
+            const rec = WF.getRecord(code);
+            const me = WF.getCurrentUserId();
+            if (!WF.canAssign(rec, me)) { showToast('Hồ sơ đã được xử lý bởi người khác. Danh sách đã được tải lại.', 'error'); renderAll(); return; }
+            if (WF.markViewed(rec, me)) WF.upsertRecord(rec);
+            actingCode = code;
+            const node = WF.getNodeConfig(rec.currentUnitId) || {};
+            document.getElementById('aCode').textContent = code;
+            document.getElementById('aContext').textContent = `Đơn vị đang phân công: ${WF.unitName(rec.currentUnitId)} - Người yêu cầu: ${rec.nycName || '--'}`;
+            const modes = [];
+            if (node.allowUnit && (node.units || []).length) modes.push(['unit', 'Chuyển đơn vị']);
+            if (node.allowOfficer && (node.officers || []).length) modes.push(['officer', 'Phân công cán bộ']);
+            document.getElementById('aModeRow').innerHTML = modes.map((m, i) => `<label><input type="radio" name="aMode" value="${m[0]}" ${i === 0 ? 'checked' : ''} onchange="toggleAssignMode()"> ${m[1]}</label>`).join('') || '<span class="muted">Đơn vị chưa được cấu hình hướng xử lý.</span>';
+            document.getElementById('aUnit').innerHTML = `<option value="">Chọn đơn vị nhận...</option>` + (node.units || []).map(u => `<option value="${esc(u)}">${esc(WF.unitName(u))}</option>`).join('');
+            document.getElementById('aChuTri').innerHTML = `<option value="">Chọn cán bộ chủ trì...</option>` + (node.officers || []).map(u => `<option value="${esc(u)}">${esc(WF.userLabel(u))}</option>`).join('');
+            document.getElementById('aNote').value = '';
+            ['aUnitErr', 'aChuTriErr'].forEach(id => document.getElementById(id).style.display = 'none');
+            renderPhoiHop();
+            toggleAssignMode();
+            openOverlay('assignOverlay');
+        }
+        function toggleAssignMode() {
+            const mode = (document.querySelector('input[name="aMode"]:checked') || {}).value;
+            document.getElementById('aUnitBlock').style.display = mode === 'unit' ? 'block' : 'none';
+            document.getElementById('aOfficerBlock').style.display = mode === 'officer' ? 'block' : 'none';
+        }
+        function renderPhoiHop() {
+            const rec = WF.getRecord(actingCode);
+            const node = (rec && WF.getNodeConfig(rec.currentUnitId)) || {};
+            const chuTri = document.getElementById('aChuTri').value;
+            const list = (node.officers || []).filter(u => u !== chuTri);
+            document.getElementById('aPhoiHop').innerHTML = list.map(u => `<label><input type="checkbox" value="${esc(u)}"> ${esc(WF.userLabel(u))}</label>`).join('') || '<span class="muted">Không có cán bộ khác.</span>';
+        }
+        function submitAssign() {
+            const mode = (document.querySelector('input[name="aMode"]:checked') || {}).value;
+            const note = document.getElementById('aNote').value.trim();
+            let res;
+            if (mode === 'unit') {
+                const unit = document.getElementById('aUnit').value;
+                if (!unit) { document.getElementById('aUnitErr').style.display = 'block'; return; }
+                res = WF.assignToUnit(actingCode, unit, note);
+            } else if (mode === 'officer') {
+                const chuTri = document.getElementById('aChuTri').value;
+                if (!chuTri) { document.getElementById('aChuTriErr').style.display = 'block'; return; }
+                const ph = Array.from(document.querySelectorAll('#aPhoiHop input:checked')).map(x => x.value);
+                res = WF.assignToOfficers(actingCode, chuTri, ph, note);
+            } else return;
+            closeOverlay('assignOverlay');
+            showToast(res.ok ? `Đã phân công hồ sơ ${actingCode}. Trạng thái: [${res.record.status}].` : res.message, res.ok ? 'success' : 'error');
+            renderAll();
+        }
+
+        // ---------- Phê duyệt / Từ chối ----------
+        function openDecision(code, mode) {
+            const rec = WF.getRecord(code);
+            const me = WF.getCurrentUserId();
+            if (!WF.canApprove(rec, me)) { showToast('Hồ sơ đã được xử lý bởi người khác. Danh sách đã được tải lại.', 'error'); renderAll(); return; }
+            if (WF.markViewed(rec, me)) WF.upsertRecord(rec);
+            actingCode = code;
+            decisionMode = mode;
+            const a = rec.approval;
+            const isLast = a.level === a.path.length - 1;
+            const after = mode === 'approve' ? (isLast ? `Cấp phê duyệt cuối cùng. Sau khi phê duyệt, hồ sơ chuyển [${WF.SUBMIT_KINDS[a.kind]}].` : `Sau khi phê duyệt, hồ sơ chuyển ${WF.unitName(a.path[a.level + 1])} phê duyệt.`) : 'Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị trả lại] cho cán bộ chủ trì.';
+            document.getElementById('decTitle').innerHTML = mode === 'approve' ? `<i class="fa-solid fa-circle-check"></i> Phê duyệt hồ sơ ${esc(code)}` : `<i class="fa-solid fa-circle-xmark" style="color:#dc2626;"></i> Từ chối phê duyệt hồ sơ ${esc(code)}`;
+            document.getElementById('decContext').innerHTML = `<div><strong>Nội dung trình:</strong> ${esc(a.kind)} - ${esc(WF.userName(a.submittedBy))}</div>${a.content ? `<div class="muted">${esc(a.content)}</div>` : ''}<div style="margin-top:6px;"><strong>Cấp phê duyệt:</strong> ${a.level + 1}/${a.path.length} - ${esc(WF.unitName(a.path[a.level]))}</div><div class="hint">${esc(after)}</div>`;
+            document.getElementById('decLabel').innerHTML = mode === 'approve' ? 'Ý kiến phê duyệt' : 'Lý do từ chối phê duyệt<span class="required">*</span>';
+            document.getElementById('decNote').placeholder = mode === 'approve' ? 'Nhập ý kiến phê duyệt...' : 'Nhập lý do từ chối phê duyệt...';
+            document.getElementById('decNote').value = '';
+            document.getElementById('decErr').style.display = 'none';
+            const btn = document.getElementById('decSubmit');
+            btn.textContent = mode === 'approve' ? 'Phê duyệt' : 'Từ chối phê duyệt';
+            btn.className = mode === 'approve' ? 'btn btn-primary' : 'btn btn-danger';
+            btn.style.cssText = mode === 'approve' ? '' : 'background:#ef4444; color:#fff; border:none;';
+            openOverlay('decideOverlay');
+        }
+        function submitDecision() {
+            const note = document.getElementById('decNote').value.trim();
+            if (decisionMode === 'reject' && !note) { document.getElementById('decErr').style.display = 'block'; return; }
+            const res = decisionMode === 'approve' ? WF.approve(actingCode, note) : WF.rejectApproval(actingCode, note);
+            closeOverlay('decideOverlay');
+            showToast(res.ok ? `Hồ sơ ${actingCode}: [${res.record.status}]${res.record.status === 'Chờ phê duyệt' ? ' - chuyển ' + WF.unitName(res.record.approval.path[res.record.approval.level]) : ''}.` : res.message, res.ok ? 'success' : 'error');
+            renderAll();
+        }
+
+        // ---------- Thu hồi ----------
+        function confirmRecall(code) {
+            const rec = WF.getRecord(code);
+            const info = WF.getRecallInfo(rec, WF.getCurrentUserId());
+            if (!info) { showToast('Không thể thu hồi: bên nhận đã xử lý hồ sơ.', 'error'); renderAll(); return; }
+            let viewed = '';
+            if (info.kind === 'route' && info.route.viewedAt) viewed = ` Bên nhận đã xem lúc ${info.route.viewedAt}.`;
+            document.getElementById('confirmMsg').textContent = `Bạn có chắc chắn muốn thu hồi hồ sơ ${code}?${viewed}`;
+            document.getElementById('confirmOk').onclick = () => {
+                closeOverlay('confirmOverlay');
+                const res = WF.recall(code);
+                showToast(res.ok ? `Đã thu hồi hồ sơ ${code}. Trạng thái: [${res.record.status}].` : res.message, res.ok ? 'success' : 'error');
+                renderAll();
+            };
+            openOverlay('confirmOverlay');
+        }
+
+        function openOverlay(id) { document.getElementById(id).classList.add('open'); }
+        function closeOverlay(id) { document.getElementById(id).classList.remove('open'); }
+        function showToast(message, type) {
+            const t = document.getElementById('toast');
+            t.className = `toast-notif ${type || 'success'} visible`;
+            t.innerHTML = `<i class="fa-solid ${type === 'error' ? 'fa-circle-xmark' : 'fa-circle-check'}"></i><span>${esc(message)}</span>`;
+            setTimeout(() => t.classList.remove('visible'), 3200);
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+    <script src="admin-ui-standardizer.js"></script>
+</body>
+
+</html>

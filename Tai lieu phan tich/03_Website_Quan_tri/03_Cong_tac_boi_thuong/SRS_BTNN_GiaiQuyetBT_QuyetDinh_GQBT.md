@@ -79,7 +79,6 @@ flowchart TD
 | **Khối Bộ lọc tìm kiếm** | Section | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Khối tiêu chí tìm kiếm và lọc danh sách quyết định.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Số quyết định | String(50) | Không | Trống | Cho phép nhập số quyết định để tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space. |
 | Mã vụ việc | String(50) | Không | Trống | Cho phép nhập mã vụ việc để tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space. |
-| Tên vụ việc | String(255) | Không | Trống | Cho phép nhập tên vụ việc để tìm kiếm gần đúng, không phân biệt hoa thường, tự động trim space. |
 | Loại quyết định | Enum(String(100)) | Không | `Tất cả` | Control UI: Dropdown/Select.<br>Danh sách lựa chọn gồm:<br>- `Tất cả`<br>- `Quyết định giải quyết bồi thường`<br>- `Quyết định hủy quyết định giải quyết bồi thường`<br>- `Quyết định sửa chữa, bổ sung quyết định giải quyết bồi thường` |
 | Người ký quyết định | String(100) | Không | Trống | Cho phép nhập tên người ký quyết định để tìm kiếm gần đúng. |
 | Trạng thái quyết định | Enum(String(50)) | Không | `Tất cả` | Control UI: Dropdown/Select.<br>Danh sách giá trị theo Danh mục [DM_30]:<br>- `Tất cả`<br>- `Lưu nháp`<br>- `Chờ ký`<br>- `Bị từ chối`<br>- `Đã ban hành`<br>- `Đã hủy` |
@@ -98,7 +97,6 @@ flowchart TD
 | Đơn vị ban hành | String(255) | - | Theo dữ liệu | Hiển thị đơn vị sở hữu sổ văn bản và có thẩm quyền ban hành quyết định. |
 | Trích yếu quyết định | String(500) | - | Theo dữ liệu | Hiển thị tóm tắt trích yếu nội dung quyết định giải quyết bồi thường theo cú pháp "Quyết định giải quyết bồi thường đối với " + [Họ và tên người yêu cầu bồi thường |
 | Mã vụ việc | String(50) | - | Theo dữ liệu | Control UI: Text link (Hyperlink). Cho phép click mở màn hình Chi tiết vụ việc yêu cầu bồi thường liên kết. |
-| Tên vụ việc | String(255) | - | Theo dữ liệu | Hiển thị tên vụ việc bồi thường liên kết. |
 | Trạng thái | Enum(String(50)) | - | Theo dữ liệu | Control UI: Text hiển thị kèm Badge màu theo trạng thái quyết định [DM_30]. |
 | Thao tác | Action Buttons | - | Theo trạng thái | Control UI: Fixed-slot Action Column.<br>Mỗi thao tác hiển thị trên 01 dòng riêng biệt theo điều kiện trạng thái hồ sơ:<br>- **Cập nhật**: Chỉ hiển thị với Quyết định ở trạng thái `Lưu nháp` hoặc `Bị từ chối`.<br>- **Xóa**: Chỉ hiển thị với Quyết định ở trạng thái `Lưu nháp`.<br>- **Ký số**: Chỉ hiển thị với Quyết định ở trạng thái `Chờ ký`.<br>- **Từ chối**: Chỉ hiển thị với Quyết định ở trạng thái `Chờ ký`.<br>- **Hủy quyết định**: Chỉ hiển thị với Quyết định ở trạng thái `Đã ban hành`.<br>- **Sửa chữa, bổ sung**: Chỉ hiển thị với Quyết định ở trạng thái `Đã ban hành`.<br>- Các thao tác không thỏa mãn điều kiện theo trạng thái hồ sơ sẽ hiển thị ở dạng mờ/khóa, không cho phép thao tác. |
 | Phân trang | Pagination | Không | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị trên mỗi trang gồm: 10, 20, 50, 100 bản ghi/trang; mặc định chọn sẵn 20 bản ghi/trang.<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;).<br>- Hiển thị dải bản ghi: "Hiển thị [từ] - [đến] của [tổng số] bản ghi". |
@@ -402,7 +400,6 @@ Tên trường tại cột đầu tiên được viết đúng theo tên và th�
 | Mã vụ việc gốc | Mã vụ việc trên Quyết định giải quyết bồi thường | Giữ nguyên |
 | Số Quyết định làm căn cứ | Số quyết định của Quyết định giải quyết bồi thường vừa ban hành | Giữ nguyên Số quyết định gốc. Số Quyết định sửa chữa, bổ sung được ghi nhận tại Khối Căn cứ thay đổi trạng thái theo Quyết định |
 | Ngày Quyết định làm căn cứ | Ngày quyết định của Quyết định giải quyết bồi thường vừa ban hành | Giữ nguyên Ngày quyết định gốc. Ngày Quyết định sửa chữa, bổ sung được ghi nhận tại Khối Căn cứ thay đổi trạng thái theo Quyết định |
-| Tên vụ việc | Trường `Tên vụ việc` trên Quyết định | Cập nhật theo giá trị mới nếu bị thay đổi |
 | Trạng thái đề nghị | Gán cố định `Chờ lập đề nghị` | Chuyển về `Chờ lập đề nghị` bất kể trạng thái trước đó. Nếu trạng thái trước đó là `Chờ chi trả` thì phê duyệt cũ bị thu hồi, Lãnh đạo bắt buộc phải phê duyệt lại theo số liệu mới |
 | **Khối Chi tiết thông tin người yêu cầu bồi thường** | | |
 | Họ và tên người yêu cầu bồi thường | Trường `Người yêu cầu bồi thường` trên Quyết định | Cập nhật theo giá trị mới nếu bị thay đổi |

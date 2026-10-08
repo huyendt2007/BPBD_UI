@@ -1,4 +1,4 @@
-﻿const systemPermissions = [
+const systemPermissions = [
     {
         "id":  "Web",
         "name":  "Website khÃ¡ch hÃ ng",
@@ -3027,7 +3027,23 @@
                                                                        "children":  [
 
                                                                                     ]
-                                                                   }
+                                                                   },
+{
+ "id":  "WebAdmin-10-01-06",
+ "name":  "Trình phê duyệt kết quả xác định cơ quan giải quyết bồi thường",
+ "children":  [
+
+
+ ]
+ },
+{
+ "id":  "WebAdmin-10-01-07",
+ "name":  "Chuyển cơ quan giải quyết bồi thường",
+ "children":  [
+
+
+ ]
+ }
                                                                ]
                                               },
                                               {
@@ -3084,7 +3100,41 @@
                                                                                     ]
                                                                    }
                                                                ]
-                                              }
+                                              },
+{
+ "id":  "WebAdmin-10-03",
+ "name":  "Việc chờ lãnh đạo xử lý",
+ "children":  [
+{
+ "id":  "WebAdmin-10-03-01",
+ "name":  "Tra cứu việc chờ lãnh đạo xử lý",
+ "children":  [
+
+ ]
+ },
+{
+ "id":  "WebAdmin-10-03-02",
+ "name":  "Phân công xử lý hồ sơ",
+ "children":  [
+
+ ]
+ },
+{
+ "id":  "WebAdmin-10-03-03",
+ "name":  "Phê duyệt/Từ chối phê duyệt hồ sơ",
+ "children":  [
+
+ ]
+ },
+{
+ "id":  "WebAdmin-10-03-04",
+ "name":  "Thu hồi hồ sơ đã phân công/phê duyệt",
+ "children":  [
+
+ ]
+ }
+ ]
+ }
                                           ]
                          },
                          {
@@ -4762,7 +4812,27 @@
                                                                                     ]
                                                                    }
                                                                ]
-                                              }
+                                              },
+{
+ "id":  "WebAdmin-29-13",
+ "name":  "Cấu hình luồng xử lý",
+ "children":  [
+{
+ "id":  "WebAdmin-29-13-01",
+ "name":  "Tra cứu cấu hình luồng xử lý",
+ "children":  [
+
+ ]
+ },
+{
+ "id":  "WebAdmin-29-13-02",
+ "name":  "Cập nhật cấu hình luồng xử lý",
+ "children":  [
+
+ ]
+ }
+ ]
+ }
                                           ]
                          }
                      ]

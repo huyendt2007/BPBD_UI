@@ -1059,7 +1059,7 @@
             <p>Vụ việc bồi thường gốc: <a id="pageHeaderClaimLink" href="#"
                     style="color:var(--secondary-color); font-weight:700; text-decoration:underline; display:inline-flex; align-items:center; gap:4px;">BT-2026-001
                     <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i> <span>[Xem hồ sơ
-                        gốc]</span></a> - <span id="pageHeaderClaimTitle">Cưỡng chế tháo dỡ nhà ở tại Cầu Giấy</span>
+                        gốc]</span></a>
             </p>
         </div>
 
@@ -1089,10 +1089,6 @@
                     </div>
                 </div>
                 <div class="info-item">
-                    <div class="info-label">Tên vụ việc</div>
-                    <div class="info-value" id="claimInfoTitle" style="font-weight:700;">Cưỡng chế tháo dỡ nhà ở tại Cầu Giấy</div>
-                </div>
-                <div class="info-item">
                     <div class="info-label">Ngày QĐ giải quyết bồi thường</div>
                     <div class="info-value" id="claimInfoDecisionDate">16/07/2026</div>
                 </div>
@@ -1104,7 +1100,7 @@
                     <div class="info-label">Lĩnh vực phát sinh thiệt hại</div>
                     <div class="info-value" id="claimInfoField">Quản lý hành chính đất đai &amp; xây dựng</div>
                 </div>
-                <div class="info-item">
+                <div class="info-item" style="grid-column: span 2;">
                     <div class="info-label">Hành vi gây thiệt hại</div>
                     <div class="info-value" id="claimInfoAct">Ban hành quyết định cưỡng chế tháo dỡ nhà ở trái quy định pháp luật</div>
                 </div>
@@ -3835,7 +3831,6 @@
                     };
                     headerLink.innerHTML = `${activeDossier.claimCode} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i> <span>[Xem hồ sơ gốc]</span>`;
                 }
-                document.getElementById('pageHeaderClaimTitle').innerText = activeDossier.claimTitle;
 
                 // Map active dossier status to initial sub-state
                 currentStepState = getActiveSubStateForDossier();
@@ -4261,9 +4256,6 @@
                     pageHeaderClaimLink.onclick = (e) => { e.preventDefault(); openLinkedClaimDetail(activeDossier.claimCode); };
                 }
 
-                const pageHeaderClaimTitle = document.getElementById('pageHeaderClaimTitle');
-                if (pageHeaderClaimTitle) pageHeaderClaimTitle.innerText = activeDossier.claimTitle || '';
-
                 // Update status in Khối II info card as well
                 const claimInfoStatusBadge = document.getElementById('claimInfoStatusBadge');
                 if (claimInfoStatusBadge) {
@@ -4276,9 +4268,6 @@
                     claimInfoCodeLink.innerHTML = `${activeDossier.claimCode} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i> [Xem hồ sơ gốc]`;
                     claimInfoCodeLink.onclick = (e) => { e.preventDefault(); openLinkedClaimDetail(activeDossier.claimCode); };
                 }
-                const claimInfoTitle = document.getElementById('claimInfoTitle');
-                if (claimInfoTitle) claimInfoTitle.innerText = activeDossier.claimTitle || '';
-
                 const claimInfoDecisionDate = document.getElementById('claimInfoDecisionDate');
                 if (claimInfoDecisionDate) claimInfoDecisionDate.innerText = activeDossier.claimDate || '16/07/2026';
 

@@ -1,5 +1,5 @@
-// Mock Data: 12 items for testing pagination
-let requestList = [
+// Dữ liệu giả lập ban đầu; được chuyển một lần vào kho hồ sơ luồng dùng chung (btnn_luong_xu_ly.js)
+const LEGACY_SEED = [
     {
         id: "REQ1",
         code: "XD-2026-001",
@@ -46,11 +46,11 @@ let requestList = [
         nycCountry: "Việt Nam",
         nycTinhThanh: "Tỉnh Lâm Đồng",
         nycAddressDetail: "Số 88 đường Lạch Tray",
-        hinhThucTiepNhan: "Bưu chính",
+        hinhThucTiepNhan: "Nhận qua bưu điện/bưu chính",
         linhVuc: "TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ",
         hanhVi: "Bị tạm giam giữ trái pháp luật của Công an tỉnh Lâm Đồng làm suy sụp sức khỏe nghiêm trọng.",
         hinhThucNhan: "Hồ sơ giấy",
-        status: "Đang xác minh",
+        status: "Đang thực hiện",
         attachedFile: "Ho_so_yeu_cau_xac_dinh_co_quan_2.pdf",
         procBasis: "Khoản 2 Điều 40 - Có sự tham gia của nhiều cơ quan cùng gây thiệt hại",
         procTargetAgency: "Cục Thi hành án dân sự tỉnh Lâm Đồng",
@@ -85,7 +85,7 @@ let requestList = [
         nycCountry: "Việt Nam",
         nycTinhThanh: "Thành phố Đà Nẵng",
         nycAddressDetail: "Số 22 đường Bạch Đằng, Hải Châu",
-        hinhThucTiepNhan: "Phương thức điện tử",
+        hinhThucTiepNhan: "Trực tiếp",
         linhVuc: "TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ",
         hanhVi: "Phong tỏa tài khoản tiết kiệm ngân hàng trái pháp luật của Chi cục THADS trong thời gian giải quyết tranh chấp.",
         hinhThucNhan: "Phương thức điện tử",
@@ -172,7 +172,7 @@ let requestList = [
         nycCountry: "Việt Nam",
         nycTinhThanh: "Thành phố Hải Phòng",
         nycAddressDetail: "Số 12 đường Lê Lợi, Ngô Quyền",
-        hinhThucTiepNhan: "Bưu chính",
+        hinhThucTiepNhan: "Nhận qua bưu điện/bưu chính",
         linhVuc: "TRONG HOẠT ĐỘNG THI HÀNH ÁN HÌNH SỰ",
         hanhVi: "Bắt buộc chấp hành án phạt lao động cải tạo khi đang hoãn thi hành án do bệnh lý nặng của trại giam.",
         hinhThucNhan: "Hồ sơ giấy",
@@ -205,7 +205,7 @@ let requestList = [
         linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH",
         hanhVi: "Đóng cửa nhà xưởng kinh doanh sai thẩm quyền gây ngừng trệ và hư hỏng nguyên vật liệu.",
         hinhThucNhan: "Phương thức điện tử",
-        status: "Đang xác minh",
+        status: "Đang thực hiện",
         attachedFile: "Bien_ban_dung_cua_nha_xuong.pdf",
         procBasis: "Khoản 2 Điều 40 - Có sự tham gia của nhiều cơ quan cùng gây thiệt hại",
         procTargetAgency: "Sở Tư pháp Thành phố Hà Nội",
@@ -230,7 +230,7 @@ let requestList = [
         nycCountry: "Việt Nam",
         nycTinhThanh: "Thành phố Hà Nội",
         nycAddressDetail: "Phường Dịch Vọng, Cầu Giấy",
-        hinhThucTiepNhan: "Phương thức điện tử",
+        hinhThucTiepNhan: "Trực tiếp",
         linhVuc: "TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ",
         hanhVi: "Khởi tố và bắt tạm giam oan sai đối với cá nhân làm thiệt hại uy tín doanh nghiệp.",
         hinhThucNhan: "Phương thức điện tử",
@@ -259,7 +259,7 @@ let requestList = [
         nycCountry: "Mỹ",
         nycTinhThanh: "",
         nycAddressDetail: "Flat 4, 12th Avenue, New York",
-        hinhThucTiepNhan: "Bưu chính",
+        hinhThucTiepNhan: "Nhận qua bưu điện/bưu chính",
         linhVuc: "TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ",
         hanhVi: "Kéo dài quá hạn thời gian xét xử tranh chấp đất đai kiều bào gây thiệt hại chi phí đi lại.",
         hinhThucNhan: "Phương thức điện tử",
@@ -288,7 +288,7 @@ let requestList = [
         nycCountry: "Việt Nam",
         nycTinhThanh: "Thành phố Đà Nẵng",
         nycAddressDetail: "Quận Ngũ Hành Sơn, Đà Nẵng",
-        hinhThucTiepNhan: "Bưu chính",
+        hinhThucTiepNhan: "Nhận qua bưu điện/bưu chính",
         linhVuc: "TRONG HOẠT ĐỘNG TỐ TỤNG HÀNH CHÍNH",
         hanhVi: "Quyết định xử phạt hành chính thu hồi đất dự án đầu tư sai luật của UBND thành phố.",
         hinhThucNhan: "Hồ sơ giấy",
@@ -346,11 +346,11 @@ let requestList = [
         nycCountry: "Việt Nam",
         nycTinhThanh: "Thành phố Hồ Chí Minh",
         nycAddressDetail: "Quận 3, TP. Hồ Chí Minh",
-        hinhThucTiepNhan: "Bưu chính",
+        hinhThucTiepNhan: "Nhận qua bưu điện/bưu chính",
         linhVuc: "TRONG HOẠT ĐỘNG THI HÀNH ÁN HÌNH SỰ",
         hanhVi: "Trì hoãn chấp hành án phạt tù làm ảnh hưởng nghiêm trọng đến tinh thần người thi hành án.",
         hinhThucNhan: "Hồ sơ giấy",
-        status: "Đang xác minh",
+        status: "Đang thực hiện",
         attachedFile: "Ho_so_yeu_cau_xac_dinh_binh.pdf",
         procBasis: "Khoản 2 Điều 40 - Có sự tham gia của nhiều cơ quan cùng gây thiệt hại",
         procTargetAgency: "UBND quận Hoàn Kiếm, Thành phố Hà Nội",
@@ -404,7 +404,7 @@ let requestList = [
         nycCountry: "Việt Nam",
         nycTinhThanh: "Thành phố Đà Nẵng",
         nycAddressDetail: "Số 154 Nguyễn Văn Linh, Hải Châu",
-        hinhThucTiepNhan: "Bưu chính",
+        hinhThucTiepNhan: "Nhận qua bưu điện/bưu chính",
         linhVuc: "TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ",
         hanhVi: "Kê biên tài sản phục vụ điều tra sai đối tượng đương sự.",
         hinhThucNhan: "Hồ sơ giấy",
@@ -433,7 +433,7 @@ let requestList = [
         nycCountry: "Việt Nam",
         nycTinhThanh: "Thành phố Hồ Chí Minh",
         nycAddressDetail: "Số 78 Cách Mạng Tháng 8, Quận 3",
-        hinhThucTiepNhan: "Phương thức điện tử",
+        hinhThucTiepNhan: "Trực tiếp",
         linhVuc: "TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ",
         hanhVi: "Chậm thi hành án quyết định bàn giao nhà ở đã có hiệu lực.",
         hinhThucNhan: "Phương thức điện tử",
@@ -478,6 +478,8 @@ let requestList = [
     }
 ];
 
+let requestList = [];
+
 // Active State
 let currentPage = 1;
 let pageSize = 20;
@@ -486,7 +488,6 @@ let formMode = 'create';
 let formDocRows = [];
 
 const REQUEST_TYPE_XDCQ = "Xác định cơ quan giải quyết bồi thường";
-const RECEPTION_STORAGE_KEY = "claimsList";
 const wardCatalog = {
     "Thành phố Hà Nội": ["00001 - Phường Ba Đình", "00004 - Phường Hoàn Kiếm", "00007 - Phường Cầu Giấy", "00010 - Phường Thanh Xuân"],
     "Thành phố Hồ Chí Minh": ["26734 - Phường Bến Thành", "26737 - Phường Sài Gòn", "26740 - Phường Tân Định", "26743 - Phường Chợ Lớn"],
@@ -495,8 +496,9 @@ const wardCatalog = {
     "Thành phố Hải Phòng": ["11359 - Phường Hồng Bàng", "11362 - Phường Ngô Quyền", "11365 - Phường Lê Chân", "11368 - Phường Hải An"]
 };
 
+// Nhãn nhận diện hồ sơ: Mã yêu cầu - Họ và tên người yêu cầu
 function getCaseName(item) {
-    return (item && item.caseName) ? item.caseName : `Vụ việc yêu cầu bồi thường của ${(item && item.nycName) || 'người yêu cầu'}`;
+    return item ? `${item.code || ''} - ${item.nycName || 'Người yêu cầu'}` : '';
 }
 
 // Temporary file upload cache
@@ -505,107 +507,135 @@ let fileCache = {
     claimFile: null
 };
 
-// DOM Elements
+// Khởi tạo màn hình
 document.addEventListener('DOMContentLoaded', () => {
     // Tự động tính toán mặc định 'Từ ngày' (3 tháng trước) đến 'Đến ngày' (ngày hiện tại)
     const today = new Date();
     const threeMonthsAgo = new Date();
     threeMonthsAgo.setMonth(today.getMonth() - 3);
-
-    // Format dd/mm/yyyy
-    const formatDate = (date) => {
-        const d = String(date.getDate()).padStart(2, '0');
-        const m = String(date.getMonth() + 1).padStart(2, '0');
-        const y = date.getFullYear();
-        return `${d}/${m}/${y}`;
-    };
-
-    document.getElementById('filterFromDate').value = formatDate(threeMonthsAgo);
-    document.getElementById('filterToDate').value = formatDate(today);
+    document.getElementById('filterFromDate').value = formatDateValue(threeMonthsAgo);
+    document.getElementById('filterToDate').value = formatDateValue(today);
     const pageSizeSelect = document.getElementById('pageSizeSelect');
     if (pageSizeSelect) pageSizeSelect.value = String(pageSize);
 
     // Initialize flatpickr for dates
-    flatpickr("#filterFromDate", { dateFormat: "d/m/Y", allowInput: true });
-    flatpickr("#filterToDate", { dateFormat: "d/m/Y", allowInput: true });
-    flatpickr("#formNYCDob", { dateFormat: "d/m/Y", allowInput: true });
-    flatpickr("#formNYCDocDate", { dateFormat: "d/m/Y", allowInput: true });
+    ["#filterFromDate", "#filterToDate", "#formNYCDob", "#formNYCDocDate", "#nbthDob", "#nbthDocDate"].forEach(sel => {
+        if (document.querySelector(sel)) flatpickr(sel, { dateFormat: "d/m/Y", allowInput: true });
+    });
 
-    syncReceptionRequests();
-    normalizeRequestData();
+    const params = new URLSearchParams(window.location.search);
+    readOnlyView = params.get('readonly') === '1';
+    if (!readOnlyView) BTNN_WF.mountUserSwitcher();
 
-    // Initial render
+    initWorkflowData();
+    applyScopeNotice();
     applyFilters();
 
-    const detailCode = new URLSearchParams(window.location.search).get('detail');
+    const detailCode = params.get('detail');
     if (detailCode) {
-        const matchedRequest = requestList.find(item => item.code === detailCode);
-        if (matchedRequest) {
-            showDetailScreen(matchedRequest.id);
-        }
+        const matched = findRecordByCode(detailCode);
+        if (matched) showDetailScreen(matched.id);
     }
 });
 
-function syncReceptionRequests() {
-    const stored = localStorage.getItem(RECEPTION_STORAGE_KEY);
-    if (!stored) return;
-    let receptionRows = [];
-    try {
-        receptionRows = JSON.parse(stored);
-    } catch (e) {
-        receptionRows = [];
-    }
+// Phạm vi xem: cán bộ chủ trì, cán bộ phối hợp, người tạo (Lưu nháp), lãnh đạo các đơn vị trên luồng phân công/phê duyệt.
+// Hồ sơ Chờ phân công/Đang phân công nằm tại Tiếp nhận yêu cầu và Việc chờ lãnh đạo xử lý.
+let readOnlyView = false;
+const LEGACY_FLAG = 'btnn_xd_legacy_seed_v1';
 
-    receptionRows
-        .filter(item => !item.deleted && item.requestType === REQUEST_TYPE_XDCQ)
-        .forEach(item => {
-            const existing = requestList.find(req => req.sourceReceptionCode === item.code || req.code === item.code);
-            if (existing) return;
-            requestList.unshift({
-                id: `REQ-TN-${item.code || Date.now()}`,
-                code: item.code || `XD-${new Date().getFullYear()}-${String(requestList.length + 1).padStart(3, '0')}`,
-                sourceReceptionCode: item.code,
-                date: (item.receivedAt || item.date || '').split(' ')[0] || formatDateValue(new Date()),
-                receivedAt: item.receivedAt || item.date || '',
-                caseName: item.caseName,
-                nycName: item.nyc,
-                nycRole: "Người bị thiệt hại",
-                nycGender: "Nam",
-                nycDob: "",
-                nycDocType: "CCCD",
-                nycDocNo: "",
-                nycDocDate: "",
-                nycDocPlace: "",
-                nycPhone: "",
-                nycEmail: "",
-                nycCountry: "Việt Nam",
-                nycTinhThanh: item.nycTinhThanh || "",
-                nycPhuongXa: item.nycPhuongXa || "",
-                nycAddressDetail: item.nycAddressDetail || item.address || "",
-                hinhThucTiepNhan: item.nopKenh || "Trực tiếp",
-                linhVuc: mapReceptionFieldGroup(item.fieldGroup),
-                hanhVi: "",
-                hinhThucNhan: "Phương thức điện tử",
-                status: "Chờ tiếp nhận",
-                attachedFile: item.files && item.files[0] ? item.files[0].name : "",
-                attachedDocs: (item.receptionDocs || []).map(doc => ({ name: doc.name || doc.file || "", file: doc.file || doc.name || "" })),
-                procBasis: "",
-                procTargetAgency: "",
-                procReason: "",
-                procDecisionFile: "",
-                claimCode: "-"
-            });
-        });
+function initWorkflowData() {
+    migrateLegacySeed();
+    reloadRequestList();
 }
+
+function migrateLegacySeed() {
+    let done = null;
+    try { done = localStorage.getItem(LEGACY_FLAG); } catch (e) { done = null; }
+    const records = BTNN_WF.loadRecords();
+    if (done && records.some(r => r.code === LEGACY_SEED[0].code)) return;
+    LEGACY_SEED.forEach(item => {
+        if (records.some(r => r.code === item.code)) return;
+        const rec = JSON.parse(JSON.stringify(item));
+        delete rec.caseName;
+        if (rec.status === 'Hoàn thành' && (!rec.claimCode || rec.claimCode === '-')) rec.status = BTNN_WF.STATUS.CHO_CHUYEN;
+        Object.assign(rec, {
+            id: 'WF-' + rec.code, module: 'XD', loaiYeuCau: BTNN_WF.REQUEST_TYPE_XD, source: 'Tạo trực tiếp',
+            rootUnitId: 'BTP-01', currentUnitId: 'PLN-02', createdBy: 'canbonv', chuTri: 'canbonv', phoiHop: [],
+            routes: [], approval: null, receivedAt: rec.receivedAt || rec.date,
+            history: [{ at: (rec.date || '') , userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Tạo yêu cầu', note: `Trạng thái: ${rec.status}.` }]
+        });
+        if (rec.status === 'Bị từ chối') rec.rejectionReason = rec.rejectionReason || rec.procReason;
+        records.push(rec);
+    });
+    BTNN_WF.saveRecords(records);
+    try { localStorage.setItem(LEGACY_FLAG, '1'); } catch (e) { /* bỏ qua */ }
+}
+
+function getMe() { return BTNN_WF.getCurrentUserId(); }
+
+function isVisibleToMe(rec) {
+    const me = getMe();
+    if (rec.module !== 'XD') return false;
+    if ([BTNN_WF.STATUS.CHO_PHAN_CONG, BTNN_WF.STATUS.DANG_PHAN_CONG].includes(rec.status)) return false;
+    if (rec.status === BTNN_WF.STATUS.LUU_NHAP) return rec.createdBy === me;
+    if (rec.chuTri === me || (rec.phoiHop || []).includes(me) || rec.createdBy === me) return true;
+    const units = (rec.routes || []).map(r => r.fromUnitId).concat(rec.approval ? rec.approval.path : []);
+    return units.some(u => BTNN_WF.isLeaderOf(me, u));
+}
+
+function reloadRequestList() {
+    requestList = BTNN_WF.loadRecords().filter(isVisibleToMe);
+    normalizeRequestData();
+}
+
+function findRecordByCode(code) {
+    let rec = requestList.find(r => r.code === code);
+    if (!rec) {
+        rec = BTNN_WF.getRecord(code);
+        if (rec) { requestList.push(rec); normalizeRequestData(); }
+    }
+    return rec;
+}
+
+// Ghi một hồ sơ về kho dùng chung
+function saveItem(item) {
+    if (item) BTNN_WF.upsertRecord(item);
+}
+
+function saveRequestList() {
+    requestList.forEach(saveItem);
+}
+
+function canCreateXd() {
+    return BTNN_WF.getRequestTypesForUser().includes(REQUEST_TYPE_XDCQ);
+}
+
+function applyScopeNotice() {
+    const notice = document.getElementById('xdScopeNotice');
+    const btn = document.getElementById('btnCreateRequest');
+    const allowed = canCreateXd();
+    if (btn) btn.style.display = allowed && !readOnlyView ? 'inline-flex' : 'none';
+    if (notice) {
+        notice.style.display = allowed ? 'none' : 'block';
+        notice.innerHTML = `<i class="fa-solid fa-circle-info"></i> Loại yêu cầu "Xác định cơ quan giải quyết bồi thường" không áp dụng cho đơn vị ${escapeHtml(BTNN_WF.unitName(BTNN_WF.getCurrentUser().unitId))} (Danh mục Loại yêu cầu - Đơn vị áp dụng). Chỉ Bộ Tư pháp và Sở Tư pháp được xử lý loại yêu cầu này.`;
+    }
+}
+
+function isChuTri(item) { return item && item.chuTri === getMe(); }
+function isPhoiHop(item) { return item && (item.phoiHop || []).includes(getMe()); }
 
 function normalizeRequestData() {
     requestList.forEach(item => {
         if (item.status === "Chờ nhập liệu") item.status = "Chờ tiếp nhận";
+        if (item.status === "Đang xác minh") item.status = "Đang thực hiện";
         if (!item.nycPhuongXa) item.nycPhuongXa = inferWard(item.nycTinhThanh);
         if (!item.attachedDocs) {
             item.attachedDocs = item.attachedFile ? [{ name: "Tài liệu đính kèm", file: item.attachedFile }] : [];
         }
-        if (!item.caseName) item.caseName = getCaseName(item);
+        if (!item.hanhVi) item.hanhVi = '';
+        if (!item.linhVuc) item.linhVuc = 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH';
+        if (!item.date) item.date = (item.receivedAt || '').split(' ').pop() || formatDateValue(new Date());
+        if (!item.claimCode) item.claimCode = '-';
     });
 }
 
@@ -630,13 +660,42 @@ function toggleCountrySelect(val) {
 }
 
 // Toggle email requirement on Form screen
-function toggleFormEmailRequired(required) {
+// Phương thức điện tử (Email, Zalo, SMS...): chỉ bắt buộc có ít nhất một thông tin liên hệ (Số điện thoại hoặc Email)
+function toggleFormEmailRequired() {
     const label = document.querySelector("#formNYCEmail").previousElementSibling;
-    if (required) {
-        label.innerHTML = 'Thư điện tử (Email)<span class="required">*</span>';
-    } else {
-        label.innerHTML = 'Thư điện tử (Email)';
-    }
+    label.innerHTML = 'Thư điện tử (Email)';
+}
+
+// Hiển thị khối Người bị thiệt hại khi người yêu cầu không phải là người bị thiệt hại
+function toggleNbthBlock() {
+    const role = document.getElementById('formNYCRole').value;
+    document.getElementById('nbthBlock').style.display = role !== 'Người bị thiệt hại' ? 'block' : 'none';
+}
+
+function fillNbth(nb) {
+    nb = nb || {};
+    document.getElementById('nbthName').value = nb.name || '';
+    document.getElementById('nbthGender').value = nb.gender || 'Nam';
+    document.getElementById('nbthDob').value = nb.dob || '';
+    document.getElementById('nbthDocType').value = nb.docType || 'CCCD';
+    document.getElementById('nbthDocNo').value = nb.docNo || '';
+    document.getElementById('nbthDocDate').value = nb.docDate || '';
+    document.getElementById('nbthDocPlace').value = nb.docPlace || '';
+    document.getElementById('nbthPhone').value = nb.phone || '';
+    document.getElementById('nbthEmail').value = nb.email || '';
+    document.getElementById('nbthCountry').value = nb.country || 'Việt Nam';
+    document.getElementById('nbthCity').value = nb.city || '';
+    document.getElementById('nbthWard').value = nb.ward || '';
+    document.getElementById('nbthAddress').value = nb.address || '';
+}
+
+function readNbth() {
+    const v = id => document.getElementById(id).value.trim();
+    return {
+        name: v('nbthName'), gender: v('nbthGender'), dob: v('nbthDob'), docType: v('nbthDocType'), docNo: v('nbthDocNo'),
+        docDate: v('nbthDocDate'), docPlace: v('nbthDocPlace'), phone: v('nbthPhone'), email: v('nbthEmail'),
+        country: v('nbthCountry'), city: stripAdministrativeCode(v('nbthCity')), ward: v('nbthWard'), address: v('nbthAddress')
+    };
 }
 
 // Screen Switching
@@ -645,8 +704,8 @@ function showListScreen() {
     document.getElementById('screenForm').style.display = 'none';
     document.getElementById('screenProcess').style.display = 'none';
     document.getElementById('screenDetail').style.display = 'none';
-    document.getElementById('screenCreateClaim').style.display = 'none';
-    renderTable();
+    reloadRequestList();
+    filterData();
 }
 
 function closeDetailOrReturn() {
@@ -668,28 +727,32 @@ function showFormScreen(id = null, mode = null) {
     document.getElementById('screenForm').style.display = 'block';
     document.getElementById('screenProcess').style.display = 'none';
     document.getElementById('screenDetail').style.display = 'none';
-    document.getElementById('screenCreateClaim').style.display = 'none';
 
     clearValidation();
 
     const title = document.getElementById('formScreenTitle');
     const formRequestId = document.getElementById('formRequestId');
     const item = id ? requestList.find(r => r.id === id) : null;
-    formMode = mode || (!id ? 'create' : item && item.status === 'Chờ tiếp nhận' ? 'accept' : 'editDraft');
+    formMode = mode || (!id ? 'create' : item && item.status === 'Chờ tiếp nhận' ? 'accept' : item && item.status === 'Lưu nháp' ? 'editDraft' : 'edit');
 
-    // Reset form fields
     formRequestId.value = id || '';
     const statusGroup = document.getElementById('formStatusGroup');
     const statusBadge = document.getElementById('formStatusBadge');
     if (statusGroup && statusBadge) {
         statusGroup.style.display = formMode === 'create' ? 'none' : 'block';
-        statusBadge.innerHTML = formMode === 'accept'
-            ? `<span class="badge badge-pending">Chờ tiếp nhận</span>`
-            : `<span class="badge badge-draft">Lưu nháp</span>`;
+        statusBadge.innerHTML = item ? BTNN_WF.statusBadge(item.status) : '';
     }
+    const submitBtn = document.getElementById('btnFormSubmit');
+    if (submitBtn) {
+        submitBtn.innerHTML = formMode === 'accept'
+            ? '<i class="fa-solid fa-file-import"></i> Tiếp nhận'
+            : formMode === 'edit' ? '<i class="fa-solid fa-floppy-disk"></i> Lưu thông tin' : '<i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu';
+    }
+    const draftBtn = document.querySelector('#screenForm .form-footer button[onclick="saveForm(true)"]');
+    if (draftBtn) draftBtn.style.display = formMode === 'edit' ? 'none' : 'inline-flex';
+
     document.getElementById('formHinhThucTiepNhan').value = 'Trực tiếp';
     document.getElementById('formLinhVuc').value = 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH';
-    document.getElementById('formCaseName').value = '';
     document.getElementById('formNYCName').value = '';
     document.getElementById('formNYCRole').value = 'Người bị thiệt hại';
     document.getElementById('formNYCGender').value = 'Nam';
@@ -709,57 +772,52 @@ function showFormScreen(id = null, mode = null) {
     document.getElementById('formNYCAddressDetail').value = '';
     document.getElementById('formHanhVi').value = '';
     document.querySelector('input[name="formHinhThucNhan"][value="Phương thức điện tử"]').checked = true;
-    toggleFormEmailRequired(true);
+    toggleFormEmailRequired();
+    fillNbth(null);
 
     formDocRows = [{ name: "", file: "" }];
     renderFormDocs();
 
-    if (id) {
+    if (id && item) {
         title.innerHTML = formMode === 'accept'
             ? `<i class="fa-solid fa-file-import"></i> TIẾP NHẬN YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`
             : `<i class="fa-solid fa-file-pen"></i> CHỈNH SỬA YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`;
-        if (item) {
-            document.getElementById('formHinhThucTiepNhan').value = item.hinhThucTiepNhan;
-            document.getElementById('formLinhVuc').value = item.linhVuc;
-            document.getElementById('formCaseName').value = getCaseName(item);
-            document.getElementById('formNYCName').value = item.nycName;
-            document.getElementById('formNYCRole').value = item.nycRole;
-            document.getElementById('formNYCGender').value = item.nycGender;
-            document.getElementById('formNYCDob').value = item.nycDob;
-            document.getElementById('formNYCDocType').value = item.nycDocType;
-            document.getElementById('formNYCDocNo').value = item.nycDocNo;
-            document.getElementById('formNYCDocDate').value = item.nycDocDate;
-            document.getElementById('formNYCDocPlace').value = item.nycDocPlace;
-            document.getElementById('formNYCPhone').value = item.nycPhone;
-            document.getElementById('formNYCEmail').value = item.nycEmail;
-            document.getElementById('formNYCCountry').value = item.nycCountry;
-            toggleCountrySelect(item.nycCountry);
-            if (item.nycCountry === 'Việt Nam') {
-                document.getElementById('formNYCTinhThanh').value = normalizeProvinceOption(item.nycTinhThanh);
-                updateWardOptions(item.nycPhuongXa || inferWard(item.nycTinhThanh));
-            } else {
-                document.getElementById('formNYCTinhThanhText').value = item.nycTinhThanh;
-                document.getElementById('formNYCPhuongXaText').value = item.nycPhuongXa || "";
-            }
-            document.getElementById('formNYCAddressDetail').value = item.nycAddressDetail;
-            document.getElementById('formHanhVi').value = item.hanhVi;
-
-            if (item.hinhThucNhan === 'Phương thức điện tử') {
-                document.querySelector('input[name="formHinhThucNhan"][value="Phương thức điện tử"]').checked = true;
-                toggleFormEmailRequired(true);
-            } else {
-                document.querySelector('input[name="formHinhThucNhan"][value="Hồ sơ giấy"]').checked = true;
-                toggleFormEmailRequired(false);
-            }
-
-            formDocRows = item.attachedDocs && item.attachedDocs.length
-                ? item.attachedDocs.map(doc => ({ name: doc.name || "", file: doc.file || "" }))
-                : item.attachedFile ? [{ name: "Tài liệu đính kèm", file: item.attachedFile }] : [{ name: "", file: "" }];
-            renderFormDocs();
+        const method = item.hinhThucTiepNhan === 'Nhận qua bưu điện/bưu chính' || item.hinhThucTiepNhan === 'Bưu chính' ? 'Nhận qua bưu điện/bưu chính' : 'Trực tiếp';
+        document.getElementById('formHinhThucTiepNhan').value = method;
+        document.getElementById('formLinhVuc').value = item.linhVuc;
+        document.getElementById('formNYCName').value = item.nycName || '';
+        document.getElementById('formNYCRole').value = item.nycRole || 'Người bị thiệt hại';
+        document.getElementById('formNYCGender').value = item.nycGender || 'Nam';
+        document.getElementById('formNYCDob').value = item.nycDob || '';
+        document.getElementById('formNYCDocType').value = item.nycDocType || 'CCCD';
+        document.getElementById('formNYCDocNo').value = item.nycDocNo || '';
+        document.getElementById('formNYCDocDate').value = item.nycDocDate || '';
+        document.getElementById('formNYCDocPlace').value = item.nycDocPlace || '';
+        document.getElementById('formNYCPhone').value = item.nycPhone || '';
+        document.getElementById('formNYCEmail').value = item.nycEmail || '';
+        document.getElementById('formNYCCountry').value = item.nycCountry || 'Việt Nam';
+        toggleCountrySelect(item.nycCountry || 'Việt Nam');
+        if ((item.nycCountry || 'Việt Nam') === 'Việt Nam') {
+            document.getElementById('formNYCTinhThanh').value = normalizeProvinceOption(item.nycTinhThanh);
+            updateWardOptions(item.nycPhuongXa || inferWard(item.nycTinhThanh));
+        } else {
+            document.getElementById('formNYCTinhThanhText').value = item.nycTinhThanh;
+            document.getElementById('formNYCPhuongXaText').value = item.nycPhuongXa || "";
         }
+        document.getElementById('formNYCAddressDetail').value = item.nycAddressDetail || '';
+        document.getElementById('formHanhVi').value = item.hanhVi || '';
+        const receiveValue = item.hinhThucNhan === 'Hồ sơ giấy' ? 'Hồ sơ giấy' : 'Phương thức điện tử';
+        document.querySelector(`input[name="formHinhThucNhan"][value="${receiveValue}"]`).checked = true;
+        fillNbth(item.nbth);
+
+        formDocRows = item.attachedDocs && item.attachedDocs.length
+            ? item.attachedDocs.map(doc => ({ name: doc.name || "", file: doc.file || "" }))
+            : item.attachedFile ? [{ name: "Tài liệu đính kèm", file: item.attachedFile }] : [{ name: "", file: "" }];
+        renderFormDocs();
     } else {
         title.innerHTML = `<i class="fa-solid fa-file-signature"></i> THÊM MỚI YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`;
     }
+    toggleNbthBlock();
 }
 
 function showProcessScreen(id) {
@@ -767,27 +825,21 @@ function showProcessScreen(id) {
     document.getElementById('screenForm').style.display = 'none';
     document.getElementById('screenProcess').style.display = 'block';
     document.getElementById('screenDetail').style.display = 'none';
-    document.getElementById('screenCreateClaim').style.display = 'none';
 
     const item = requestList.find(r => r.id === id);
     if (!item) return;
 
     document.getElementById('processRequestId').value = id;
     document.getElementById('lblProcCode').innerText = item.code;
-    document.getElementById('lblProcCaseName').innerText = getCaseName(item);
-    document.getElementById('lblProcName').innerText = item.nycName;
-    document.getElementById('lblProcLinhVuc').innerText = item.linhVuc;
-    document.getElementById('lblProcPhone').innerText = item.nycPhone;
-    document.getElementById('lblProcHanhVi').innerText = item.hanhVi;
+    document.getElementById('lblProcName').innerText = item.nycName || '';
+    document.getElementById('lblProcLinhVuc').innerText = item.linhVuc || '';
+    document.getElementById('lblProcPhone').innerText = item.nycPhone || item.nycEmail || '';
+    document.getElementById('lblProcHanhVi').innerText = item.hanhVi || '';
 
-    // Prefill process fields
-    document.getElementById('procBasis').value = item.procBasis || "Khoản 2 Điều 40 - Có sự tham gia của nhiều cơ quan cùng gây thiệt hại";
-
-    // Set searchable dropdown values
-    const agencyVal = item.procTargetAgency || "Sở Tư pháp Thành phố Hà Nội";
+    document.getElementById('procBasis').value = item.procBasis || "";
+    const agencyVal = item.procTargetAgency || "";
     document.getElementById('procTargetAgencyInput').value = agencyVal;
     document.getElementById('procTargetAgency').value = agencyVal;
-
     document.getElementById('procReason').value = item.procReason || "";
 
     clearAttachedFile('procDecisionFile', 'procFileAttachmentInfo');
@@ -796,160 +848,183 @@ function showProcessScreen(id) {
     }
 }
 
+function statusBadgeClass(status) {
+    switch (status) {
+        case 'Chờ tiếp nhận': return 'badge-pending';
+        case 'Yêu cầu bổ sung': return 'badge-warning';
+        case 'Đang thực hiện': return 'badge-verifying';
+        case 'Chờ phê duyệt': return 'badge-approval';
+        case 'Bị trả lại': return 'badge-returned';
+        case 'Chờ chuyển CQGQBT': return 'badge-transfer';
+        case 'Bị từ chối': return 'badge-rejected';
+        case 'Hoàn thành': return 'badge-success';
+        default: return 'badge-draft';
+    }
+}
+
+function fileLinksHtml(files) {
+    if (!files || !files.length) return `<span style="color: var(--text-muted); font-style: italic;">Không có tệp đính kèm</span>`;
+    return files.map(f => `<div style="font-weight: 600; color: #0F766E; margin-bottom: 4px;"><i class="fa-solid fa-file-pdf"></i> ${escapeHtml(f.name || f)} <a href="#" onclick="event.preventDefault(); previewNamedFile('${escapeAttr(f.name || f)}');" style="margin-left: 12px; color: var(--secondary-color); text-decoration: none;"><i class="fa-solid fa-up-right-from-square"></i> Xem file</a></div>`).join('');
+}
+
+function openYcbtRecord(code) {
+    // Hồ sơ YCBT chỉ có tại phân hệ Giải quyết YCBT sau khi lãnh đạo cơ quan được chỉ định phân công cán bộ
+    const ycbt = BTNN_WF.getRecord(code);
+    if (ycbt && [BTNN_WF.STATUS.CHO_PHAN_CONG, BTNN_WF.STATUS.DANG_PHAN_CONG].includes(ycbt.status)) {
+        showToast(`Hồ sơ ${code} đang [${ycbt.status}] tại ${BTNN_WF.unitName(ycbt.currentUnitId)}; chưa có tại phân hệ Giải quyết yêu cầu bồi thường.`, "info");
+        return;
+    }
+    const url = `quan_ly_boi_thuong.html?id=${encodeURIComponent(code)}`;
+    if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === 'function') {
+        window.parent.openAdminModule(url, 'quan_ly_boi_thuong.html?v=1');
+    } else {
+        window.location.href = url;
+    }
+}
+
 function showDetailScreen(id) {
     document.getElementById('screenList').style.display = 'none';
     document.getElementById('screenForm').style.display = 'none';
     document.getElementById('screenProcess').style.display = 'none';
     document.getElementById('screenDetail').style.display = 'block';
-    document.getElementById('screenCreateClaim').style.display = 'none';
 
     const item = requestList.find(r => r.id === id);
     if (!item) return;
 
+    // Ghi nhận thời điểm cán bộ chủ trì xem hồ sơ được phân công (không ảnh hưởng quyền thu hồi của lãnh đạo)
+    if (!readOnlyView && BTNN_WF.markViewed(item, getMe())) saveItem(item);
+
     document.getElementById('detailRequestId').value = id;
     document.getElementById('dtCode').innerText = item.code;
-    document.getElementById('dtCaseName').innerText = getCaseName(item);
 
-    // Display rejection details if status is Bị từ chối
+    // Thông báo theo trạng thái
+    const notice = document.getElementById('dtNoticeBlock');
+    let noticeHtml = '';
+    if (item.status === 'Bị trả lại' && item.returned) {
+        noticeHtml = `<div style="font-weight:700; color:#b91c1c; margin-bottom:4px;"><i class="fa-solid fa-rotate-left"></i> HỒ SƠ BỊ TRẢ LẠI</div><div><strong>${escapeHtml(BTNN_WF.userName(item.returned.by))}</strong> (${escapeHtml(BTNN_WF.unitName(item.returned.unitId))}) từ chối phê duyệt lúc ${escapeHtml(item.returned.at)}.</div><div><strong>Lý do:</strong> ${escapeHtml(item.returned.reason)}</div><div style="margin-top:4px;">Cán bộ chủ trì cập nhật hồ sơ và trình lại; luồng phê duyệt bắt đầu lại từ cấp phê duyệt đầu tiên.</div>`;
+        notice.style.cssText += 'background:#FEF2F2; border-left:4px solid #dc2626;';
+    } else if (item.status === 'Yêu cầu bổ sung') {
+        const reason = item.supplementReason || (item.approval && item.approval.content) || '';
+        noticeHtml = `<div style="font-weight:700; color:#c2410c; margin-bottom:4px;"><i class="fa-solid fa-file-circle-question"></i> YÊU CẦU BỔ SUNG HỒ SƠ</div><div>${escapeHtml(reason)}</div>`;
+        notice.style.cssText += 'background:#FFF7ED; border-left:4px solid #f97316;';
+    } else if (readOnlyView) {
+        noticeHtml = `<i class="fa-solid fa-eye"></i> Chế độ xem: mở từ liên kết hồ sơ liên quan, không thực hiện thao tác xử lý.`;
+        notice.style.cssText += 'background:#EFF6FF; border-left:4px solid #3b82f6;';
+    }
+    notice.innerHTML = noticeHtml;
+    notice.style.display = noticeHtml ? 'block' : 'none';
+
     const rejectionBlock = document.getElementById('dtRejectionBlock');
     if (rejectionBlock) {
         if (item.status === 'Bị từ chối') {
             rejectionBlock.style.display = 'block';
-            document.getElementById('dtRejectionReason').innerText = item.rejectionReason || item.procReason || 'Không có lý do.';
-            const fileLink = document.getElementById('dtRejectionFileLink');
-            const fileVal = item.rejectionFile || item.procDecisionFile;
-            if (fileVal) {
-                fileLink.innerHTML = `
-                    <span style="font-weight: 600; color: #0F766E;">
-                        <i class="fa-solid fa-file-pdf"></i> ${fileVal}
-                        <a href="#" target="_blank" style="margin-left: 12px; color: var(--secondary-color); text-decoration: none;"><i class="fa-solid fa-up-right-from-square"></i> Xem file</a>
-                    </span>
-                `;
-            } else {
-                fileLink.innerHTML = `<span style="color: var(--text-muted); font-style: italic;">Không có tệp đính kèm</span>`;
-            }
+            document.getElementById('dtRejectionReason').innerText = item.rejectionReason || (item.approval && item.approval.content) || item.procReason || 'Không có lý do.';
+            const files = item.rejectionFile ? [{ name: item.rejectionFile }] : ((item.approval && item.approval.files) || []);
+            document.getElementById('dtRejectionFileLink').innerHTML = fileLinksHtml(files);
         } else {
             rejectionBlock.style.display = 'none';
         }
     }
-    document.getElementById('dtHinhThucTiepNhan').innerText = item.hinhThucTiepNhan;
-    document.getElementById('dtLinhVuc').innerText = item.linhVuc;
-    document.getElementById('dtNYCName').innerText = item.nycName;
-    document.getElementById('dtNYCRole').innerText = item.nycRole;
-    document.getElementById('dtNYCGenderDob').innerText = `${item.nycGender} / ${item.nycDob}`;
-    document.getElementById('dtNYCDocInfo').innerText = `${item.nycDocType} - Số: ${item.nycDocNo} (Cấp ngày: ${item.nycDocDate} tại ${item.nycDocPlace})`;
-    document.getElementById('dtNYCPhone').innerText = item.nycPhone;
+    document.getElementById('dtHinhThucTiepNhan').innerText = item.hinhThucTiepNhan || 'Trực tiếp';
+    document.getElementById('dtLinhVuc').innerText = item.linhVuc || '';
+    document.getElementById('dtNYCName').innerText = item.nycName || '';
+    document.getElementById('dtNYCRole').innerText = item.nycRole || '';
+    document.getElementById('dtNYCGenderDob').innerText = `${item.nycGender || '--'} / ${item.nycDob || '--'}`;
+    document.getElementById('dtNYCDocInfo').innerText = item.nycDocNo ? `${item.nycDocType} - Số: ${item.nycDocNo}${item.nycDocDate ? ` (Cấp ngày: ${item.nycDocDate}${item.nycDocPlace ? ' tại ' + item.nycDocPlace : ''})` : ''}` : '--';
+    document.getElementById('dtNYCPhone').innerText = item.nycPhone || 'Chưa cung cấp';
     document.getElementById('dtNYCEmail').innerText = item.nycEmail || 'Chưa cung cấp';
-
-    const city = item.nycCountry === 'Việt Nam' ? item.nycTinhThanh : item.nycTinhThanh;
     const ward = item.nycPhuongXa ? `${item.nycPhuongXa}, ` : '';
-    document.getElementById('dtNYCAddress').innerText = `${item.nycAddressDetail}, ${ward}${city}, ${item.nycCountry}`;
+    document.getElementById('dtNYCAddress').innerText = [item.nycAddressDetail, `${ward}${item.nycTinhThanh || ''}`, item.nycCountry].filter(Boolean).join(', ');
 
-    // Attached file
     const attachedDocs = item.attachedDocs && item.attachedDocs.length ? item.attachedDocs : (item.attachedFile ? [{ name: 'Tài liệu đính kèm', file: item.attachedFile }] : []);
-    if (attachedDocs.length) {
-        document.getElementById('dtFileAttachment').innerHTML = `
-            ${attachedDocs.map(doc => `
-                <div style="font-weight: 600; color: #0F766E; margin-bottom: 6px;">
-                    <i class="fa-solid fa-file-pdf"></i> ${escapeHtml(doc.name || 'Tài liệu')} - ${escapeHtml(doc.file || 'Chưa có file')}
-                    ${doc.file ? `<a href="#" target="_blank" style="margin-left: 12px; color: var(--secondary-color); text-decoration: none;"><i class="fa-solid fa-up-right-from-square"></i> Xem file</a>` : ''}
-                </div>
-            `).join('')}
-        `;
+    document.getElementById('dtFileAttachment').innerHTML = attachedDocs.length
+        ? attachedDocs.map(doc => `
+            <div style="font-weight: 600; color: #0F766E; margin-bottom: 6px;">
+                <i class="fa-solid fa-file-pdf"></i> ${escapeHtml(doc.name || 'Tài liệu')} - ${escapeHtml(doc.file || 'Chưa có file')}
+                ${doc.addedBy ? `<span style="font-weight:400; color:var(--text-muted);">(Phối hợp: ${escapeHtml(BTNN_WF.userName(doc.addedBy))})</span>` : ''}
+                ${doc.file ? `<a href="#" onclick="event.preventDefault(); previewNamedFile('${escapeAttr(doc.file)}');" style="margin-left: 12px; color: var(--secondary-color); text-decoration: none;"><i class="fa-solid fa-up-right-from-square"></i> Xem file</a>` : ''}
+            </div>`).join('')
+        : `<span style="color: var(--text-muted); font-style: italic;">Không có file đính kèm</span>`;
+
+    // Người bị thiệt hại
+    const nb = item.nbth;
+    const nbBlock = document.getElementById('dtNbthBlock');
+    if (nb && nb.name && item.nycRole !== 'Người bị thiệt hại') {
+        nbBlock.style.display = 'block';
+        document.getElementById('dtNbthName').innerText = nb.name;
+        document.getElementById('dtNbthGenderDob').innerText = `${nb.gender || '--'} / ${nb.dob || '--'}`;
+        document.getElementById('dtNbthDoc').innerText = `${nb.docType || ''} - Số: ${nb.docNo || '--'}${nb.docDate ? ` (Cấp ngày: ${nb.docDate}${nb.docPlace ? ' tại ' + nb.docPlace : ''})` : ''}`;
+        document.getElementById('dtNbthContact').innerText = [nb.phone, nb.email].filter(Boolean).join(' / ') || 'Chưa cung cấp';
+        document.getElementById('dtNbthAddress').innerText = [nb.address, nb.ward, nb.city, nb.country].filter(Boolean).join(', ') || 'Chưa cung cấp';
     } else {
-        document.getElementById('dtFileAttachment').innerHTML = `<span style="color: var(--text-muted); font-style: italic;">Không có file đính kèm</span>`;
+        nbBlock.style.display = 'none';
     }
 
-    document.getElementById('dtHanhVi').innerText = item.hanhVi;
-    document.getElementById('dtHinhThucNhan').innerText = item.hinhThucNhan;
+    document.getElementById('dtHanhVi').innerText = item.hanhVi || '';
+    document.getElementById('dtHinhThucNhan').innerText = item.hinhThucNhan === 'Hồ sơ giấy' ? 'Hồ sơ giấy' : 'Phương thức điện tử (Email, Zalo, SMS...)';
+    document.getElementById('dtStatus').innerHTML = `<span class="badge ${statusBadgeClass(item.status)}">${item.status}</span>`;
 
-
-    // Status Badge
-    let badgeClass = 'badge-draft';
-    if (item.status === 'Chờ tiếp nhận') badgeClass = 'badge-pending';
-    else if (item.status === 'Yêu cầu bổ sung') badgeClass = 'badge-warning';
-    else if (item.status === 'Đang xác minh') badgeClass = 'badge-verifying';
-    else if (item.status === 'Bị từ chối') badgeClass = 'badge-rejected';
-    else if (item.status === 'Hoàn thành') badgeClass = 'badge-success';
-    document.getElementById('dtStatus').innerHTML = `<span class="badge ${badgeClass}">${item.status}</span>`;
-
-    // Verification Result block
+    // Kết quả xác định
     const verificationBlock = document.getElementById('dtVerificationResultBlock');
-    if (['Hoàn thành', 'Đã hoàn thành xác định', 'Đã có kết quả', 'Đang xác minh'].includes(item.status)) {
+    if (item.procBasis || item.procTargetAgency || ['Chờ phê duyệt', 'Chờ chuyển CQGQBT', 'Hoàn thành'].includes(item.status)) {
         verificationBlock.style.display = 'block';
-        document.getElementById('dtProcBasis').innerText = item.procBasis || 'Đang xác minh, chưa có căn cứ';
-        document.getElementById('dtProcTargetAgency').innerText = item.procTargetAgency || 'Đang tiến hành chỉ định';
-        document.getElementById('dtProcReason').innerText = item.procReason || 'Đang cập nhật báo cáo kết luận...';
-
-        if (item.procDecisionFile) {
-            document.getElementById('dtProcDecisionFile').innerHTML = `
-                <div style="font-weight: 600; color: #0F766E;">
-                    <i class="fa-solid fa-file-pdf"></i> ${item.procDecisionFile}
-                    <a href="#" target="_blank" style="margin-left: 12px; color: var(--secondary-color); text-decoration: none;"><i class="fa-solid fa-up-right-from-square"></i> Xem file</a>
-                </div>
-            `;
-        } else {
-            document.getElementById('dtProcDecisionFile').innerHTML = `<span style="color: var(--text-muted); font-style: italic;">Chưa đính kèm quyết định</span>`;
-        }
-
-        const claimRow = document.getElementById('dtClaimCodeRow');
-        if (item.status === 'Hoàn thành' && item.claimCode && item.claimCode !== '-') {
-            claimRow.style.display = 'grid';
-            document.getElementById('dtClaimCode').innerText = item.claimCode;
-        } else {
-            claimRow.style.display = 'none';
-        }
+        document.getElementById('dtProcBasis').innerText = item.procBasis || 'Chưa cập nhật';
+        document.getElementById('dtProcTargetAgency').innerText = item.procTargetAgency || 'Chưa cập nhật';
+        document.getElementById('dtProcReason').innerText = item.procReason || 'Chưa cập nhật';
+        document.getElementById('dtProcDecisionFile').innerHTML = item.procDecisionFile ? fileLinksHtml([{ name: item.procDecisionFile }]) : `<span style="color: var(--text-muted); font-style: italic;">Chưa đính kèm quyết định</span>`;
     } else {
         verificationBlock.style.display = 'none';
     }
 
-    // Populate Footer Workflow buttons
+    // Kết quả chuyển CQGQBT
+    const transferBlock = document.getElementById('dtTransferBlock');
+    if (item.transfer || (item.claimCode && item.claimCode !== '-')) {
+        transferBlock.style.display = 'block';
+        const tr = item.transfer || {};
+        document.getElementById('dtTransferAgency').innerText = tr.targetUnitId ? BTNN_WF.unitName(tr.targetUnitId) : (item.procTargetAgency || '--');
+        document.getElementById('dtTransferContent').innerText = tr.content || '--';
+        document.getElementById('dtTransferFiles').innerHTML = fileLinksHtml(tr.files || []);
+        document.getElementById('dtTransferAt').innerText = tr.at ? `${tr.at} - ${BTNN_WF.userName(tr.by)}` : '--';
+        document.getElementById('dtClaimCode').innerHTML = `${escapeHtml(item.claimCode)} <a href="#" onclick="event.preventDefault(); openYcbtRecord('${escapeAttr(item.claimCode)}');" style="margin-left:10px; font-weight:500; color:var(--secondary-color); text-decoration:none;"><i class="fa-solid fa-up-right-from-square"></i> Xem hồ sơ YCBT</a>`;
+    } else {
+        transferBlock.style.display = 'none';
+    }
+
+    // Thông tin xử lý
+    document.getElementById('dtRootUnit').innerText = BTNN_WF.unitName(item.rootUnitId);
+    document.getElementById('dtChuTri').innerText = item.chuTri ? BTNN_WF.userLabel(item.chuTri) : 'Chưa phân công';
+    document.getElementById('dtPhoiHop').innerText = (item.phoiHop || []).length ? item.phoiHop.map(BTNN_WF.userName).join(', ') : 'Không có';
+    document.getElementById('dtApprovalWrap').style.display = item.approval ? 'block' : 'none';
+    document.getElementById('dtApproval').innerHTML = item.approval ? BTNN_WF.renderApprovalHtml(item) : '';
+    document.getElementById('dtRoutes').innerHTML = BTNN_WF.renderRoutesHtml(item);
+    document.getElementById('dtHistory').innerHTML = BTNN_WF.renderHistoryHtml(item);
+
+    // Nút thao tác theo trạng thái và vai trò
     const footer = document.getElementById('detailWorkflowActions');
     footer.innerHTML = `<button class="btn btn-secondary" onclick="closeDetailOrReturn()">Đóng</button>`;
+    if (readOnlyView) return;
+
+    if (isPhoiHop(item) && !['Hoàn thành', 'Bị từ chối'].includes(item.status)) {
+        footer.innerHTML += `<button class="btn btn-secondary" onclick="openCoopDocModal('${item.id}')"><i class="fa-solid fa-paperclip"></i> Bổ sung tài liệu</button>`;
+    }
+    if (!isChuTri(item) && !(item.status === 'Lưu nháp' && item.createdBy === getMe())) return;
 
     if (item.status === 'Chờ tiếp nhận') {
-        footer.innerHTML += `<button class="btn btn-secondary" onclick="openRejectAcceptanceModal('${item.id}', 'supplement')"><i class="fa-solid fa-file-circle-question"></i> Yêu cầu bổ sung</button>`;
-        footer.innerHTML += `<button class="btn btn-danger" onclick="openRejectAcceptanceModal('${item.id}', 'reject')"><i class="fa-solid fa-ban"></i> Từ chối</button>`;
         footer.innerHTML += `<button class="btn btn-success" onclick="acceptRequest('${item.id}', true)"><i class="fa-solid fa-file-import"></i> Tiếp nhận</button>`;
-    } else if (item.status === 'Đang xác minh') {
-        footer.innerHTML += `<button class="btn btn-primary" onclick="showProcessScreen('${item.id}')"><i class="fa-solid fa-balance-scale"></i> Cập nhật kết quả xác minh</button>`;
-    } else if (item.status === 'Hoàn thành') {
-        const isClaimed = item.claimCode && item.claimCode !== '-';
-        footer.innerHTML += `<button class="btn btn-success" ${isClaimed ? 'disabled style="opacity:0.5; cursor:not-allowed;"' : `onclick="showCreateClaimScreen('${item.id}')"`}><i class="fa-solid fa-file-invoice"></i> Tạo hồ sơ YCBT</button>`;
+    } else if (item.status === 'Đang thực hiện' || item.status === 'Bị trả lại') {
+        footer.innerHTML += `<button class="btn btn-secondary" onclick="showFormScreen('${item.id}', 'edit')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật thông tin</button>`;
+        footer.innerHTML += `<button class="btn btn-secondary" onclick="showProcessScreen('${item.id}')"><i class="fa-solid fa-balance-scale"></i> Cập nhật kết quả xác định</button>`;
+        footer.innerHTML += `<button class="btn btn-primary" onclick="openSubmitApprovalModal('${item.id}')"><i class="fa-solid fa-paper-plane"></i> ${item.status === 'Bị trả lại' ? 'Trình lại' : 'Trình phê duyệt'}</button>`;
+    } else if (item.status === 'Chờ chuyển CQGQBT') {
+        footer.innerHTML += `<button class="btn btn-primary" onclick="openTransferModal('${item.id}')"><i class="fa-solid fa-share-from-square"></i> Chuyển CQGQBT</button>`;
     } else if (item.status === 'Lưu nháp') {
         footer.innerHTML += `<button class="btn btn-primary" onclick="submitDraft('${item.id}')"><i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu</button>`;
     } else if (item.status === 'Yêu cầu bổ sung') {
         footer.innerHTML += `<button class="btn btn-secondary" onclick="printSupplementNotice('${item.id}')"><i class="fa-solid fa-print"></i> In Phiếu Bổ sung</button>`;
+        footer.innerHTML += `<button class="btn btn-primary" onclick="receiveSupplement('${item.id}')"><i class="fa-solid fa-file-circle-check"></i> Tiếp nhận hồ sơ bổ sung</button>`;
     }
 }
 
-function showCreateClaimScreen(id) {
-    document.getElementById('screenList').style.display = 'none';
-    document.getElementById('screenForm').style.display = 'none';
-    document.getElementById('screenProcess').style.display = 'none';
-    document.getElementById('screenDetail').style.display = 'none';
-    document.getElementById('screenCreateClaim').style.display = 'block';
-
-    const item = requestList.find(r => r.id === id);
-    if (!item) return;
-
-    document.getElementById('claimSourceRequestId').value = id;
-    document.getElementById('claimTargetAgency').value = item.procTargetAgency || 'Chưa xác định';
-    document.getElementById('claimNYCName').value = item.nycName;
-    document.getElementById('claimNYCRole').value = item.nycRole;
-    document.getElementById('claimNYCPhone').value = item.nycPhone;
-    document.getElementById('claimNYCEmail').value = item.nycEmail || 'Không có';
-
-    const city = item.nycCountry === 'Việt Nam' ? item.nycTinhThanh : item.nycTinhThanh;
-    const ward = item.nycPhuongXa ? `${item.nycPhuongXa}, ` : '';
-    document.getElementById('claimNYCAddress').value = `${item.nycAddressDetail}, ${ward}${city}, ${item.nycCountry}`;
-
-    document.getElementById('claimDocBase').value = `Quyết định chuyển giao cơ quan GQBT số 04/QĐ-XĐCQ đính kèm: ${item.procDecisionFile || 'QD.pdf'}`;
-    document.getElementById('claimHanhVi').value = item.hanhVi;
-
-    document.getElementById('claimTotalAmount').value = '';
-    clearAttachedFile('claimFile', 'claimFileAttachmentInfo');
-}
 
 // Action methods
 function acceptRequest(id, fromDetail = false) {
@@ -959,19 +1034,31 @@ function acceptRequest(id, fromDetail = false) {
 function submitDraft(id) {
     const item = requestList.find(r => r.id === id);
     if (item && item.status === 'Lưu nháp') {
-        item.status = 'Đang xác minh';
-        showToast("Đã gửi yêu cầu xác định cơ quan thành công!", "success");
+        const err = validateRequestItem(item);
+        if (err) { showToast(err, "error"); showFormScreen(id); return; }
+        item.status = 'Đang thực hiện';
+        BTNN_WF.addHistory(item, 'Gửi yêu cầu', 'Hồ sơ chuyển [Đang thực hiện].');
+        saveItem(item);
+        showToast("Đã gửi yêu cầu. Hồ sơ chuyển sang [Đang thực hiện]!", "success");
         showDetailScreen(id);
     }
+}
+
+// Kiểm tra nhanh các trường bắt buộc khi gửi từ màn chi tiết
+function validateRequestItem(item) {
+    if (!item.nycName || !item.nycDob || !item.nycDocNo || !item.hanhVi) return "Vui lòng nhập đầy đủ thông tin bắt buộc trước khi gửi yêu cầu!";
+    if (!item.nycPhone && !item.nycEmail) return "Nhập ít nhất một trong hai: Số điện thoại liên hệ hoặc Thư điện tử (Email)!";
+    return '';
 }
 
 function deleteRequest(id) {
     const index = requestList.findIndex(r => r.id === id);
     if (index !== -1 && requestList[index].status === 'Lưu nháp') {
         showConfirmModal("Bạn có chắc chắn muốn xóa yêu cầu Lưu nháp này không?", () => {
+            BTNN_WF.removeRecord(requestList[index].code);
             requestList.splice(index, 1);
             showToast("Xóa hồ sơ đã lưu nháp thành công!", "success");
-            renderTable();
+            filterData();
         });
     }
 }
@@ -1167,11 +1254,17 @@ function clearValidation() {
 }
 
 // Save Main Creation/Edition form (Removed references to formHinhThucThuLy)
+function markInvalid(el, firstInvalid) {
+    el.classList.add('is-invalid');
+    const err = el.closest('.form-group').querySelector('.error-message');
+    if (err) err.style.display = 'block';
+    return firstInvalid || el;
+}
+
 function saveForm(isDraft) {
     clearValidation();
 
     const formRequestId = document.getElementById('formRequestId').value;
-    const caseName = document.getElementById('formCaseName').value.trim();
     const name = document.getElementById('formNYCName').value.trim();
     const dob = document.getElementById('formNYCDob').value.trim();
     const docNo = document.getElementById('formNYCDocNo').value.trim();
@@ -1187,235 +1280,127 @@ function saveForm(isDraft) {
         ? document.getElementById('formNYCPhuongXa').value.trim()
         : document.getElementById('formNYCPhuongXaText').value.trim();
     const addressDetail = document.getElementById('formNYCAddressDetail').value.trim();
-    const isEmailRequired = document.querySelector('input[name="formHinhThucNhan"]:checked').value === 'Phương thức điện tử';
     const hanhVi = document.getElementById('formHanhVi').value.trim();
+    const role = document.getElementById('formNYCRole').value;
+    const hasNbth = role !== 'Người bị thiệt hại';
+    const nbth = hasNbth ? readNbth() : null;
     const cleanDocs = formDocRows
         .filter(doc => (doc.name || '').trim() || (doc.file || '').trim())
         .map(doc => ({ name: (doc.name || '').trim(), file: doc.file || '' }));
 
     if (!isDraft) {
         let firstInvalid = null;
-
-        if (!caseName) {
-            const el = document.getElementById('formCaseName');
-            el.classList.add('is-invalid');
-            el.closest('.form-group').querySelector('.error-message').style.display = 'block';
-            if (!firstInvalid) firstInvalid = el;
+        const req = [['formNYCName', name], ['formNYCDob', dob], ['formNYCDocNo', docNo], ['formNYCDocDate', docDate], ['formNYCDocPlace', docPlace], ['formNYCAddressDetail', addressDetail], ['formHanhVi', hanhVi]];
+        req.forEach(([fid, val]) => { if (!val) firstInvalid = markInvalid(document.getElementById(fid), firstInvalid); });
+        if (!city) firstInvalid = markInvalid(country === 'Việt Nam' ? document.getElementById('formNYCTinhThanh') : document.getElementById('formNYCTinhThanhText'), firstInvalid);
+        if (!ward) firstInvalid = markInvalid(country === 'Việt Nam' ? document.getElementById('formNYCPhuongXa') : document.getElementById('formNYCPhuongXaText'), firstInvalid);
+        // Bắt buộc ít nhất một thông tin liên hệ
+        if (!phone && !email) {
+            firstInvalid = markInvalid(document.getElementById('formNYCPhone'), firstInvalid);
+            markInvalid(document.getElementById('formNYCEmail'), firstInvalid);
         }
-        if (!name) {
-            const el = document.getElementById('formNYCName');
-            el.classList.add('is-invalid');
-            el.closest('.form-group').querySelector('.error-message').style.display = 'block';
-            if (!firstInvalid) firstInvalid = el;
+        if (hasNbth) {
+            [['nbthName', nbth.name], ['nbthDob', nbth.dob], ['nbthDocNo', nbth.docNo]].forEach(([fid, val]) => { if (!val) firstInvalid = markInvalid(document.getElementById(fid), firstInvalid); });
         }
-        if (!dob) {
-            const el = document.getElementById('formNYCDob');
-            el.classList.add('is-invalid');
-            el.closest('.form-group').querySelector('.error-message').style.display = 'block';
-            if (!firstInvalid) firstInvalid = el;
-        }
-        if (!docNo) {
-            const el = document.getElementById('formNYCDocNo');
-            el.classList.add('is-invalid');
-            el.closest('.form-group').querySelector('.error-message').style.display = 'block';
-            if (!firstInvalid) firstInvalid = el;
-        }
-        if (!docDate) {
-            const el = document.getElementById('formNYCDocDate');
-            el.classList.add('is-invalid');
-            el.closest('.form-group').querySelector('.error-message').style.display = 'block';
-            if (!firstInvalid) firstInvalid = el;
-        }
-        if (!docPlace) {
-            const el = document.getElementById('formNYCDocPlace');
-            el.classList.add('is-invalid');
-            el.closest('.form-group').querySelector('.error-message').style.display = 'block';
-            if (!firstInvalid) firstInvalid = el;
-        }
-        if (!phone) {
-            const el = document.getElementById('formNYCPhone');
-            el.classList.add('is-invalid');
-            el.closest('.form-group').querySelector('.error-message').style.display = 'block';
-            if (!firstInvalid) firstInvalid = el;
-        }
-        if (isEmailRequired && !email) {
-            const el = document.getElementById('formNYCEmail');
-            el.classList.add('is-invalid');
-            el.closest('.form-group').querySelector('.error-message').style.display = 'block';
-            if (!firstInvalid) firstInvalid = el;
-        }
-        if (!city) {
-            const el = country === 'Việt Nam' ? document.getElementById('formNYCTinhThanh') : document.getElementById('formNYCTinhThanhText');
-            el.classList.add('is-invalid');
-            el.closest('.form-group').querySelector('.error-message').style.display = 'block';
-            if (!firstInvalid) firstInvalid = el;
-        }
-        if (!ward) {
-            const el = country === 'Việt Nam' ? document.getElementById('formNYCPhuongXa') : document.getElementById('formNYCPhuongXaText');
-            el.classList.add('is-invalid');
-            el.closest('.form-group').querySelector('.error-message').style.display = 'block';
-            if (!firstInvalid) firstInvalid = el;
-        }
-        if (!addressDetail) {
-            const el = document.getElementById('formNYCAddressDetail');
-            el.classList.add('is-invalid');
-            el.closest('.form-group').querySelector('.error-message').style.display = 'block';
-            if (!firstInvalid) firstInvalid = el;
-        }
-        if (!hanhVi) {
-            const el = document.getElementById('formHanhVi');
-            el.classList.add('is-invalid');
-            el.closest('.form-group').querySelector('.error-message').style.display = 'block';
-            if (!firstInvalid) firstInvalid = el;
-        }
-
         if (firstInvalid) {
+            showToast("Vui lòng nhập đầy đủ thông tin bắt buộc!", "error");
             firstInvalid.focus();
             return;
         }
     }
 
-    if (formRequestId) {
-        // Edit
-        const item = requestList.find(r => r.id === formRequestId);
-        if (item) {
-            item.hinhThucTiepNhan = document.getElementById('formHinhThucTiepNhan').value;
-            item.linhVuc = document.getElementById('formLinhVuc').value;
-            item.caseName = caseName;
-            item.nycName = name;
-            item.nycRole = document.getElementById('formNYCRole').value;
-            item.nycGender = document.getElementById('formNYCGender').value;
-            item.nycDob = dob;
-            item.nycDocType = document.getElementById('formNYCDocType').value;
-            item.nycDocNo = docNo;
-            item.nycDocDate = docDate;
-            item.nycDocPlace = docPlace;
-            item.nycPhone = phone;
-            item.nycEmail = email;
-            item.nycCountry = country;
-            item.nycTinhThanh = city;
-            item.nycPhuongXa = ward;
-            item.nycAddressDetail = addressDetail;
-            item.hanhVi = hanhVi;
-            item.hinhThucNhan = document.querySelector('input[name="formHinhThucNhan"]:checked').value;
-            item.attachedDocs = cleanDocs;
-            item.attachedFile = cleanDocs[0] ? cleanDocs[0].file : "";
-            if (isDraft) {
-                item.status = formMode === 'accept' ? 'Chờ tiếp nhận' : 'Lưu nháp';
-            } else {
-                item.status = 'Đang xác minh';
-            }
-            showToast(isDraft ? "Đã lưu nháp cập nhật hồ sơ thành công!" : "Đã gửi yêu cầu. Hồ sơ chuyển sang [Đang xác minh]!", "success");
-        }
-    } else {
-        // Create
-        const newId = "REQ" + (requestList.length + 1);
-        const newCode = "XD-2026-" + String(requestList.length + 1).padStart(3, '0');
-        const today = new Date();
+    const data = {
+        hinhThucTiepNhan: document.getElementById('formHinhThucTiepNhan').value,
+        linhVuc: document.getElementById('formLinhVuc').value,
+        nycName: name, nycRole: role,
+        nycGender: document.getElementById('formNYCGender').value,
+        nycDob: dob, nycDocType: document.getElementById('formNYCDocType').value, nycDocNo: docNo, nycDocDate: docDate, nycDocPlace: docPlace,
+        nycPhone: phone, nycEmail: email, nycCountry: country, nycTinhThanh: city, nycPhuongXa: ward, nycAddressDetail: addressDetail,
+        nbth: nbth,
+        hanhVi: hanhVi,
+        hinhThucNhan: document.querySelector('input[name="formHinhThucNhan"]:checked').value,
+        attachedDocs: cleanDocs,
+        attachedFile: cleanDocs[0] ? cleanDocs[0].file : ""
+    };
 
-        requestList.unshift({
-            id: newId,
+    if (formRequestId) {
+        const item = requestList.find(r => r.id === formRequestId);
+        if (!item) return;
+        Object.assign(item, data);
+        if (formMode === 'accept') {
+            if (!isDraft) {
+                item.status = 'Đang thực hiện';
+                const r = BTNN_WF.latestRoute(item);
+                if (r) r.state = 'Đã xử lý';
+                BTNN_WF.addHistory(item, 'Tiếp nhận hồ sơ', 'Cán bộ chủ trì tiếp nhận, nhập liệu hồ sơ. Hồ sơ chuyển [Đang thực hiện].');
+            }
+        } else if (formMode === 'editDraft') {
+            item.status = isDraft ? 'Lưu nháp' : 'Đang thực hiện';
+            if (!isDraft) BTNN_WF.addHistory(item, 'Gửi yêu cầu', 'Hồ sơ chuyển [Đang thực hiện].');
+        } else {
+            BTNN_WF.addHistory(item, 'Cập nhật thông tin', 'Cập nhật thông tin hồ sơ.');
+        }
+        saveItem(item);
+        showToast(isDraft ? "Đã lưu nháp hồ sơ thành công!" : `Đã lưu hồ sơ ${item.code}. Trạng thái: [${item.status}]!`, "success");
+    } else {
+        const me = BTNN_WF.getCurrentUser();
+        const newCode = BTNN_WF.nextCode('XD');
+        const item = Object.assign({
+            id: 'WF-' + newCode,
             code: newCode,
-            date: String(today.getDate()).padStart(2, '0') + '/' + String(today.getMonth() + 1).padStart(2, '0') + '/' + today.getFullYear(),
-            hinhThucTiepNhan: document.getElementById('formHinhThucTiepNhan').value,
-            linhVuc: document.getElementById('formLinhVuc').value,
-            caseName: caseName,
-            nycName: name,
-            nycRole: document.getElementById('formNYCRole').value,
-            nycGender: document.getElementById('formNYCGender').value,
-            nycDob: dob,
-            nycDocType: document.getElementById('formNYCDocType').value,
-            nycDocNo: docNo,
-            nycDocDate: docDate,
-            nycDocPlace: docPlace,
-            nycPhone: phone,
-            nycEmail: email,
-            nycCountry: country,
-            nycTinhThanh: city,
-            nycPhuongXa: ward,
-            nycAddressDetail: addressDetail,
-            hanhVi: hanhVi,
-            hinhThucNhan: document.querySelector('input[name="formHinhThucNhan"]:checked').value,
-            attachedFile: cleanDocs[0] ? cleanDocs[0].file : "",
-            attachedDocs: cleanDocs,
-            status: isDraft ? 'Lưu nháp' : 'Đang xác minh',
-            procBasis: "",
-            procTargetAgency: "",
-            procReason: "",
-            procDecisionFile: "",
-            claimCode: "-"
-        });
-        showToast(isDraft ? "Đã lưu nháp hồ sơ yêu cầu thành công!" : "Gửi yêu cầu thành công. Hồ sơ chuyển sang [Đang xác minh]!", "success");
+            module: 'XD',
+            loaiYeuCau: REQUEST_TYPE_XDCQ,
+            source: 'Tạo trực tiếp',
+            date: formatDateValue(new Date()),
+            receivedAt: BTNN_WF.nowText(),
+            receivedBy: me.name,
+            rootUnitId: BTNN_WF.getRootId(me.unitId),
+            currentUnitId: me.unitId,
+            createdBy: me.id,
+            chuTri: me.id,
+            phoiHop: [],
+            routes: [],
+            approval: null,
+            history: [],
+            status: isDraft ? 'Lưu nháp' : 'Đang thực hiện',
+            procBasis: "", procTargetAgency: "", procReason: "", procDecisionFile: "", claimCode: "-"
+        }, data);
+        BTNN_WF.addHistory(item, 'Tạo yêu cầu', `Cán bộ tạo trực tiếp, đồng thời là cán bộ chủ trì. Trạng thái: [${item.status}].`);
+        saveItem(item);
+        requestList.unshift(item);
+        showToast(isDraft ? "Đã lưu nháp hồ sơ yêu cầu thành công!" : `Gửi yêu cầu thành công. Hồ sơ ${newCode} chuyển sang [Đang thực hiện]!`, "success");
     }
     showListScreen();
 }
 
 // Save verification results
-function saveProcessResult(isComplete) {
+// Lưu kết quả xác định; khi chọn "Lưu và trình phê duyệt" thì mở popup Trình phê duyệt
+function saveProcessResult(andSubmit) {
     const id = document.getElementById('processRequestId').value;
     const basis = document.getElementById('procBasis').value.trim();
-
-    // Support either select choice or custom inputted values in searchable dropdown
     let agency = document.getElementById('procTargetAgency').value;
-    if (!agency) {
-        agency = document.getElementById('procTargetAgencyInput').value.trim();
-    }
-
+    if (!agency) agency = document.getElementById('procTargetAgencyInput').value.trim();
     const reason = document.getElementById('procReason').value.trim();
     const file = fileCache['procDecisionFile'];
 
-    if (!basis) {
-        showToast("Căn cứ pháp lý xác định thẩm quyền bắt buộc phải nhập!", "error");
-        return;
-    }
-
-    if (!agency) {
-        showToast("Cơ quan chỉ định giải quyết bắt buộc phải nhập!", "error");
-        return;
-    }
-
-    if (!reason) {
-        showToast("Nhận định lý do xác định chi tiết bắt buộc phải nhập!", "error");
-        return;
-    }
+    if (!basis) { showToast("Căn cứ pháp lý xác định thẩm quyền bắt buộc phải nhập!", "error"); return; }
+    if (!agency) { showToast("Cơ quan chỉ định giải quyết bắt buộc phải nhập!", "error"); return; }
+    if (!reason) { showToast("Nhận định lý do xác định chi tiết bắt buộc phải nhập!", "error"); return; }
 
     const item = requestList.find(r => r.id === id);
-    if (item) {
-        item.procBasis = basis;
-        item.procTargetAgency = agency;
-        item.procReason = reason;
-        item.procDecisionFile = file || "Quyet_dinh_chuyen_giao.pdf";
-
-        if (isComplete) {
-            item.status = 'Hoàn thành';
-            showToast("Hoàn thành xác minh! Hồ sơ đã sáng nút [Tạo yêu cầu bồi thường].", "success");
-            showDetailScreen(id);
-        } else {
-            item.status = 'Đang xác minh';
-            showToast("Đã lưu tạm tiến trình xác minh thành công!", "success");
-            showListScreen();
-        }
-    }
+    if (!item) return;
+    item.procBasis = basis;
+    item.procTargetAgency = agency;
+    item.procReason = reason;
+    if (file) item.procDecisionFile = file;
+    BTNN_WF.addHistory(item, 'Cập nhật kết quả xác định', `Cơ quan được chỉ định: ${agency}.`);
+    saveItem(item);
+    showToast("Đã lưu kết quả xác định cơ quan giải quyết bồi thường!", "success");
+    showDetailScreen(id);
+    if (andSubmit) openSubmitApprovalModal(id, 'Hoàn thành xác định');
 }
 
 // Save spawned claim
-function saveCreatedClaim() {
-    const reqId = document.getElementById('claimSourceRequestId').value;
-    const amount = document.getElementById('claimTotalAmount').value;
-
-    if (!amount || amount <= 0) {
-        showToast("Tổng số tiền yêu cầu bồi thường bắt buộc phải lớn hơn 0!", "error");
-        return;
-    }
-
-    const item = requestList.find(r => r.id === reqId);
-    if (item) {
-        const claimCode = "BT-2026-" + String(Math.floor(Math.random() * 900) + 100);
-        item.claimCode = claimCode;
-        showToast(`Đã khởi tạo Hồ sơ bồi thường liên thông thành công! Mã hồ sơ: ${claimCode}`, "success");
-        showListScreen();
-    }
-}
 
 // Search & Pagination Logic
 function applyFilters() {
@@ -1426,25 +1411,15 @@ function applyFilters() {
 function resetFilters() {
     document.getElementById('filterCode').value = '';
     document.getElementById('filterClaimCode').value = '';
-    document.getElementById('filterCaseName').value = '';
     document.getElementById('filterName').value = '';
     document.getElementById('filterLinhVuc').value = '';
     document.getElementById('filterStatus').value = '';
-
-    // Reset dates to defaults (3 months range)
+    document.getElementById('filterRole').value = '';
     const today = new Date();
     const threeMonthsAgo = new Date();
     threeMonthsAgo.setMonth(today.getMonth() - 3);
-
-    const formatDate = (date) => {
-        const d = String(date.getDate()).padStart(2, '0');
-        const m = String(date.getMonth() + 1).padStart(2, '0');
-        const y = date.getFullYear();
-        return `${d}/${m}/${y}`;
-    };
-    document.getElementById('filterFromDate').value = formatDate(threeMonthsAgo);
-    document.getElementById('filterToDate').value = formatDate(today);
-
+    document.getElementById('filterFromDate').value = formatDateValue(threeMonthsAgo);
+    document.getElementById('filterToDate').value = formatDateValue(today);
     currentPage = 1;
     filterData();
 }
@@ -1452,36 +1427,28 @@ function resetFilters() {
 function filterData() {
     const code = document.getElementById('filterCode').value.trim().toLowerCase();
     const claimCode = document.getElementById('filterClaimCode').value.trim().toLowerCase();
-    const caseName = document.getElementById('filterCaseName').value.trim().toLowerCase();
     const name = document.getElementById('filterName').value.trim().toLowerCase();
     const lv = document.getElementById('filterLinhVuc').value;
     const status = document.getElementById('filterStatus').value;
+    const role = document.getElementById('filterRole').value;
 
-    const fromStr = document.getElementById('filterFromDate').value;
-    const toStr = document.getElementById('filterToDate').value;
-
-    // Parse dates
     const parseDate = (str) => {
         if (!str) return null;
-        const p = String(str).split(' ')[0].split('/');
-        if (p.length === 3) {
-            return new Date(p[2], p[1] - 1, p[0]);
-        }
-        return null;
+        const p = String(str).trim().split(' ').pop().split('/');
+        return p.length === 3 ? new Date(p[2], p[1] - 1, p[0]) : null;
     };
-
-    const fromDate = parseDate(fromStr);
-    const toDate = parseDate(toStr);
+    const fromDate = parseDate(document.getElementById('filterFromDate').value);
+    const toDate = parseDate(document.getElementById('filterToDate').value);
 
     filteredList = requestList.filter(item => {
         if (code && !item.code.toLowerCase().includes(code)) return false;
         if (claimCode && !(item.claimCode || '').toLowerCase().includes(claimCode)) return false;
-        if (caseName && !getCaseName(item).toLowerCase().includes(caseName)) return false;
         if (name && !(item.nycName || '').toLowerCase().includes(name)) return false;
         if (lv && item.linhVuc !== lv) return false;
         if (status && item.status !== status) return false;
-
-        const itemDate = parseDate(item.date);
+        if (role === 'chuTri' && !isChuTri(item)) return false;
+        if (role === 'phoiHop' && !isPhoiHop(item)) return false;
+        const itemDate = parseDate(item.receivedAt || item.date);
         if (itemDate) {
             if (fromDate && itemDate < fromDate) return false;
             if (toDate && itemDate > toDate) return false;
@@ -1516,9 +1483,7 @@ function renderTable() {
     const endIdx = Math.min(startIdx + pageSize, total);
     document.getElementById('rangeText').innerText = `Hiển thị ${startIdx + 1}-${endIdx} trong số ${total} bản ghi`;
 
-    const pageData = filteredList.slice(startIdx, endIdx);
-
-    pageData.forEach((item, index) => {
+    filteredList.slice(startIdx, endIdx).forEach((item, index) => {
         const tr = document.createElement('tr');
         tr.style.cursor = 'pointer';
         tr.onclick = (e) => {
@@ -1526,30 +1491,21 @@ function renderTable() {
                 showDetailScreen(item.id);
             }
         };
-
-        // Status Badges
-        let badgeClass = 'badge-draft';
-        if (item.status === 'Chờ tiếp nhận') badgeClass = 'badge-pending';
-        else if (item.status === 'Yêu cầu bổ sung') badgeClass = 'badge-warning';
-        else if (item.status === 'Đang xác minh') badgeClass = 'badge-verifying';
-        else if (item.status === 'Bị từ chối') badgeClass = 'badge-rejected';
-        else if (item.status === 'Hoàn thành') badgeClass = 'badge-success';
-
-        const actionButtons = getActionButtons(item);
-
+        const hanhVi = item.hanhVi || '';
+        const roleTag = isChuTri(item) ? '<span class="role-tag">Chủ trì</span>' : isPhoiHop(item) ? '<span class="role-tag coop">Phối hợp</span>' : '';
         tr.innerHTML = `
             <td style="text-align:center;">${startIdx + index + 1}</td>
-            <td style="text-align:center;"><strong>${item.code}</strong></td>
-            <td><strong>${getCaseName(item)}</strong></td>
-            <td><strong>${item.nycName || '(Chưa nhập)'}</strong></td>
-            <td style="text-align:center;">${item.nycPhone || '(Chưa nhập)'}</td>
-            <td style="font-size:12px; color:var(--text-muted);">${item.linhVuc.replace("TRONG HOẠT ĐỘNG ", "")}</td>
-            <td style="font-size:12px; color:var(--text-muted);" title="${item.hanhVi}">${item.hanhVi.length > 50 ? item.hanhVi.slice(0, 50) + "..." : item.hanhVi}</td>
-            <td style="text-align:center;">${item.date}</td>
-            <td style="text-align:center; font-weight:700; color:#8B5CF6;">${item.claimCode}</td>
-            <td style="text-align:center;"><span class="badge ${badgeClass}">${item.status}</span></td>
+            <td style="text-align:center;"><strong>${escapeHtml(item.code)}</strong></td>
+            <td><strong>${escapeHtml(item.nycName || '(Chưa nhập)')}</strong></td>
+            <td style="text-align:center;">${escapeHtml(item.nycPhone || '(Chưa nhập)')}</td>
+            <td style="font-size:12px; color:var(--text-muted);">${escapeHtml((item.linhVuc || '').replace("TRONG HOẠT ĐỘNG ", ""))}</td>
+            <td style="font-size:12px; color:var(--text-muted);" title="${escapeAttr(hanhVi)}">${escapeHtml(hanhVi.length > 50 ? hanhVi.slice(0, 50) + "..." : hanhVi)}</td>
+            <td style="text-align:center;">${escapeHtml(item.date || '')}</td>
+            <td>${escapeHtml(item.chuTri ? BTNN_WF.userName(item.chuTri) : '--')}${roleTag}</td>
+            <td style="text-align:center; font-weight:700; color:#8B5CF6;">${escapeHtml(item.claimCode || '-')}</td>
+            <td style="text-align:center;"><span class="badge ${statusBadgeClass(item.status)}">${escapeHtml(item.status)}</span></td>
             <td class="action-cell">
-                <div class="action-flex">${actionButtons || '<span class="muted-action">-</span>'}</div>
+                <div class="action-flex">${getActionButtons(item) || '<span class="muted-action">-</span>'}</div>
             </td>
         `;
         tbody.appendChild(tr);
@@ -1559,30 +1515,37 @@ function renderTable() {
 }
 
 function getActionButtons(item) {
+    if (readOnlyView) return '';
     let html = '';
+    const owner = isChuTri(item);
     switch (item.status) {
         case 'Chờ tiếp nhận':
-            html += `<button class="icon-btn accept" title="Tiếp nhận" onclick="acceptRequest('${item.id}')"><i class="fa-solid fa-file-import"></i></button>`;
-            html += `<button class="icon-btn edit" title="Yêu cầu bổ sung" onclick="openRejectAcceptanceModal('${item.id}', 'supplement')"><i class="fa-solid fa-file-circle-question"></i></button>`;
-            html += `<button class="icon-btn reject" title="Từ chối" onclick="openRejectAcceptanceModal('${item.id}', 'reject')"><i class="fa-solid fa-ban"></i></button>`;
+            if (owner) html += `<button class="icon-btn accept" title="Tiếp nhận" onclick="acceptRequest('${item.id}')"><i class="fa-solid fa-file-import"></i></button>`;
             break;
         case 'Lưu nháp':
-            html += `<button class="icon-btn edit" title="Chỉnh sửa thông tin" onclick="showFormScreen('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
-            html += `<button class="icon-btn delete" title="Xóa yêu cầu" onclick="deleteRequest('${item.id}')"><i class="fa-solid fa-trash"></i></button>`;
+            if (item.createdBy === getMe()) {
+                html += `<button class="icon-btn edit" title="Chỉnh sửa thông tin" onclick="showFormScreen('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                html += `<button class="icon-btn delete" title="Xóa yêu cầu" onclick="deleteRequest('${item.id}')"><i class="fa-solid fa-trash"></i></button>`;
+            }
             break;
-        case 'Đang xác minh':
-            html += `<button class="icon-btn edit" title="Cập nhật kết quả xác minh" onclick="showProcessScreen('${item.id}')"><i class="fa-solid fa-clipboard-check"></i></button>`;
+        case 'Đang thực hiện':
+        case 'Bị trả lại':
+            if (owner) {
+                html += `<button class="icon-btn edit" title="Cập nhật kết quả xác định" onclick="showProcessScreen('${item.id}')"><i class="fa-solid fa-clipboard-check"></i></button>`;
+                html += `<button class="icon-btn submit" title="${item.status === 'Bị trả lại' ? 'Trình lại' : 'Trình phê duyệt'}" onclick="openSubmitApprovalModal('${item.id}')"><i class="fa-solid fa-paper-plane"></i></button>`;
+            }
+            break;
+        case 'Chờ chuyển CQGQBT':
+            if (owner) html += `<button class="icon-btn transfer" title="Chuyển CQGQBT" onclick="openTransferModal('${item.id}')"><i class="fa-solid fa-share-from-square"></i></button>`;
             break;
         case 'Yêu cầu bổ sung':
-            html += `<button class="icon-btn edit" title="In Phiếu Bổ sung" onclick="printSupplementNotice('${item.id}')"><i class="fa-solid fa-print"></i></button>`;
-            break;
-        case 'Hoàn thành':
-            if (!item.claimCode || item.claimCode === '-') {
-                html += `<button class="icon-btn claim" title="Tạo yêu cầu bồi thường" onclick="showCreateClaimScreen('${item.id}')"><i class="fa-solid fa-file-invoice"></i></button>`;
-            }
+            if (owner) html += `<button class="icon-btn edit" title="In Phiếu Bổ sung" onclick="printSupplementNotice('${item.id}')"><i class="fa-solid fa-print"></i></button>`;
             break;
         default:
             break;
+    }
+    if (isPhoiHop(item) && !['Hoàn thành', 'Bị từ chối'].includes(item.status)) {
+        html += `<button class="icon-btn edit" title="Bổ sung tài liệu" onclick="openCoopDocModal('${item.id}')"><i class="fa-solid fa-paperclip"></i></button>`;
     }
     return html;
 }
@@ -1729,145 +1692,163 @@ document.addEventListener('click', function (event) {
 });
 
 
-let currentRejectFile = null;
-let rejectAcceptanceMode = 'reject';
 
-function handleRejectFileUpload(input) {
-    if (input.files && input.files[0]) {
-        const file = input.files[0];
-        currentRejectFile = file.name;
-        
-        const container = document.getElementById('rejectAcceptanceFilesContainer');
-        container.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 10px; font-size: 13px; margin-top: 5px; background: #F3F4F6; padding: 6px 12px; border-radius: var(--border-radius-sm); border: 1px solid var(--border-color); width: fit-content;">
-                <i class="fa-solid fa-file-pdf" style="color: #EF4444;"></i>
-                <span style="font-weight: 500;">${file.name}</span>
-                <a href="#" onclick="event.preventDefault(); previewNamedFile('${escapeAttr(file.name)}');" style="color: var(--secondary-color); text-decoration: none; font-weight: 500; font-size: 12px; margin-left: 10px;">Xem file</a>
-                <a href="#" title="Xóa file" onclick="event.preventDefault(); removeRejectFile();" style="color: var(--danger-color); text-decoration: none; font-weight: 500; font-size: 12px; margin-left: 5px;"><i class="fa-solid fa-trash"></i> Xóa file</a>
-            </div>
-        `;
-    }
-}
 
-function removeRejectFile() {
-    currentRejectFile = null;
-    document.getElementById('rejectAcceptanceFileInput').value = '';
-    document.getElementById('rejectAcceptanceFilesContainer').innerHTML = '';
-}
 
-function clearRejectAcceptanceValidation() {
-    const el = document.getElementById('rejectAcceptanceReason');
-    if (el) {
-        el.classList.remove('is-invalid');
-        const parent = el.closest('.form-group');
-        if (parent) {
-            const errMsg = parent.querySelector('.error-message');
-            if (errMsg) errMsg.style.display = 'none';
-        }
-    }
-}
 
-function openRejectAcceptanceModal(id, mode = 'reject') {
-    rejectAcceptanceMode = mode;
-    document.getElementById('modalRejectRequestId').value = id;
-    document.getElementById('rejectAcceptanceReason').value = '';
-    const isSupplement = mode === 'supplement';
-    const title = document.getElementById('rejectAcceptanceTitle');
-    const reasonLabel = document.getElementById('rejectAcceptanceReasonLabel');
-    const fileLabel = document.getElementById('rejectAcceptanceFileLabel');
-    const submitBtn = document.getElementById('rejectAcceptanceSubmitBtn');
-    if (title) {
-        title.style.color = isSupplement ? 'var(--warning-color)' : 'var(--danger-color)';
-        title.innerHTML = isSupplement
-            ? `<i class="fa-solid fa-file-circle-question"></i> Yêu cầu bổ sung hồ sơ`
-            : `<i class="fa-solid fa-circle-xmark"></i> Từ chối tiếp nhận hồ sơ`;
-    }
-    if (reasonLabel) {
-        reasonLabel.innerHTML = isSupplement
-            ? `Nội dung yêu cầu bổ sung<span class="required">*</span>`
-            : `Lý do từ chối tiếp nhận<span class="required">*</span>`;
-    }
-    const reasonInput = document.getElementById('rejectAcceptanceReason');
-    if (reasonInput) {
-        reasonInput.placeholder = isSupplement
-            ? 'Nhập nội dung yêu cầu bổ sung hồ sơ...'
-            : 'Nhập lý do chi tiết từ chối tiếp nhận hồ sơ...';
-    }
-    if (fileLabel) {
-        fileLabel.textContent = isSupplement ? 'Văn bản yêu cầu bổ sung đính kèm' : 'Văn bản thông báo từ chối đính kèm';
-    }
-    if (submitBtn) {
-        submitBtn.textContent = isSupplement ? 'Xác nhận yêu cầu bổ sung' : 'Xác nhận từ chối';
-        submitBtn.className = isSupplement ? 'btn btn-secondary' : 'btn btn-danger';
-        submitBtn.style.backgroundColor = isSupplement ? '#fff' : '#ef4444';
-        submitBtn.style.borderColor = isSupplement ? '#cbd5e1' : '#ef4444';
-        submitBtn.style.color = isSupplement ? '#475569' : '#fff';
-    }
-    removeRejectFile();
-    clearRejectAcceptanceValidation();
-    
-    const modal = document.getElementById('rejectAcceptanceModal');
+
+
+// ---------------- Popup dùng chung: Trình phê duyệt / Chuyển CQGQBT / Bổ sung tài liệu ----------------
+const modalFiles = { submit: [], transfer: [], coop: [] };
+
+function openXdModal(id) {
+    const modal = document.getElementById(id);
     modal.style.display = 'flex';
-    setTimeout(() => {
-        modal.classList.add('visible');
-    }, 10);
+    setTimeout(() => modal.classList.add('visible'), 10);
 }
 
-function closeRejectAcceptanceModal() {
-    const modal = document.getElementById('rejectAcceptanceModal');
+function closeXdModal(id) {
+    const modal = document.getElementById(id);
     modal.classList.remove('visible');
-    setTimeout(() => {
-        modal.style.display = 'none';
-        clearRejectAcceptanceValidation();
-    }, 200);
+    setTimeout(() => { modal.style.display = 'none'; }, 200);
 }
 
-function submitRejectAcceptance() {
-    clearRejectAcceptanceValidation();
-    const reason = document.getElementById('rejectAcceptanceReason').value.trim();
-    if (!reason) {
-        const el = document.getElementById('rejectAcceptanceReason');
-        el.classList.add('is-invalid');
-        const parent = el.closest('.form-group');
-        if (parent) {
-            const errMsg = parent.querySelector('.error-message');
-            if (errMsg) errMsg.style.display = 'block';
-        }
-        el.focus();
+function addModalFiles(kind, input) {
+    const files = Array.from(input.files || []).map(f => ({ name: f.name }));
+    modalFiles[kind] = kind === 'coop' ? files.slice(0, 1) : modalFiles[kind].concat(files);
+    input.value = '';
+    renderModalFiles(kind);
+}
+
+function removeModalFile(kind, idx) {
+    modalFiles[kind].splice(idx, 1);
+    renderModalFiles(kind);
+}
+
+function renderModalFiles(kind) {
+    const box = document.getElementById(`${kind}FilesList`);
+    box.innerHTML = modalFiles[kind].map((f, i) => `<div class="wf-file-item"><i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i><span style="font-weight:500;">${escapeHtml(f.name)}</span><a href="#" onclick="event.preventDefault(); previewNamedFile('${escapeAttr(f.name)}');" style="color:var(--secondary-color); text-decoration:none; font-size:12px;">Xem file</a><a href="#" onclick="event.preventDefault(); removeModalFile('${kind}', ${i});" style="color:var(--danger-color); text-decoration:none; font-size:12px;"><i class="fa-solid fa-trash"></i> Xóa file</a></div>`).join('');
+    const err = document.getElementById(`${kind}FileError`);
+    if (err && modalFiles[kind].length) err.style.display = 'none';
+}
+
+function openSubmitApprovalModal(id, kind) {
+    const item = requestList.find(r => r.id === id);
+    if (!item || !isChuTri(item)) return;
+    clearValidation();
+    document.getElementById('submitRequestId').value = id;
+    document.querySelector(`input[name="submitKind"][value="${kind || 'Hoàn thành xác định'}"]`).checked = true;
+    document.getElementById('submitContent').value = '';
+    modalFiles.submit = [];
+    renderModalFiles('submit');
+    const path = BTNN_WF.computeApprovalPath(item);
+    document.getElementById('submitPathInfo').innerHTML = path.length
+        ? `<strong>Luồng phê duyệt (ngược chiều luồng phân công):</strong> ${path.map((u, i) => `${i + 1}. ${escapeHtml(BTNN_WF.unitName(u))}`).join(' → ')}<br>Sau khi cấp cuối phê duyệt: Hoàn thành xác định → [Chờ chuyển CQGQBT]; Yêu cầu bổ sung → [Yêu cầu bổ sung]; Từ chối → [Bị từ chối].${item.status === 'Bị trả lại' ? '<br>Hồ sơ trình lại bắt đầu từ cấp phê duyệt đầu tiên.' : ''}`
+        : '<span style="color:#b91c1c;">Chưa xác định được cấp phê duyệt. Vui lòng liên hệ Quản trị hệ thống.</span>';
+    openXdModal('submitApprovalModal');
+}
+
+function confirmSubmitApproval() {
+    clearValidation();
+    const id = document.getElementById('submitRequestId').value;
+    const item = requestList.find(r => r.id === id);
+    const kind = document.querySelector('input[name="submitKind"]:checked').value;
+    const contentEl = document.getElementById('submitContent');
+    const content = contentEl.value.trim();
+    if (!content) { markInvalid(contentEl); contentEl.focus(); return; }
+    if (kind === 'Hoàn thành xác định' && !(item.procBasis && item.procTargetAgency && item.procReason)) {
+        showToast("Vui lòng cập nhật kết quả xác định (căn cứ, cơ quan được chỉ định, lý do) trước khi trình Hoàn thành xác định!", "error");
         return;
     }
-    
-    const id = document.getElementById('modalRejectRequestId').value;
+    const res = BTNN_WF.submitForApproval(item.code, kind, content, modalFiles.submit.slice());
+    closeXdModal('submitApprovalModal');
+    if (!res.ok) { showToast(res.message, 'error'); return; }
+    if (kind === 'Yêu cầu bổ sung') res.record.supplementReason = content;
+    if (kind === 'Từ chối') res.record.rejectionReason = content;
+    BTNN_WF.upsertRecord(res.record);
+    reloadRequestList();
+    showToast(`Đã trình phê duyệt hồ sơ ${item.code}. Trạng thái: [Chờ phê duyệt].`, "success");
+    const fresh = requestList.find(r => r.code === item.code);
+    if (fresh) showDetailScreen(fresh.id); else showListScreen();
+}
+
+function openTransferModal(id) {
     const item = requestList.find(r => r.id === id);
-    if (item) {
-        if (rejectAcceptanceMode === 'supplement') {
-            item.status = 'Yêu cầu bổ sung';
-            item.supplementReason = reason;
-            item.supplementFile = currentRejectFile;
+    if (!item || !isChuTri(item)) return;
+    clearValidation();
+    document.getElementById('transferRequestId').value = id;
+    document.getElementById('transferAgency').value = item.procTargetAgency || '';
+    document.getElementById('transferContent').value = '';
+    document.getElementById('transferError').style.display = 'none';
+    document.getElementById('transferFileError').style.display = 'none';
+    modalFiles.transfer = [];
+    renderModalFiles('transfer');
+    openXdModal('transferModal');
+}
 
-            // Ghi một dòng lịch sử yêu cầu bổ sung
-            if (!item.supplementLog) item.supplementLog = [];
-            item.supplementLog.push({
-                date: new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
-                officer: item.officer || 'Nguyễn Văn Chuyên Viên',
-                action: 'Yêu cầu bổ sung hồ sơ',
-                reason: reason
-            });
-
-            showToast("Đã gửi yêu cầu bổ sung hồ sơ thành công", "success");
-            // Tự động mở tiếp popup In Phiếu yêu cầu bổ sung để in giao ngay cho người yêu cầu
-            setTimeout(() => printSupplementNotice(item.id), 350);
-        } else {
-            item.status = 'Bị từ chối';
-            item.rejectionReason = reason;
-            item.rejectionFile = currentRejectFile;
-            showToast("Đã từ chối tiếp nhận hồ sơ thành công", "success");
-        }
-        
-        closeRejectAcceptanceModal();
-        showListScreen();
-        renderTable();
+function confirmTransfer() {
+    clearValidation();
+    const id = document.getElementById('transferRequestId').value;
+    const item = requestList.find(r => r.id === id);
+    const contentEl = document.getElementById('transferContent');
+    const content = contentEl.value.trim();
+    let invalid = false;
+    if (!content) { markInvalid(contentEl); invalid = true; }
+    if (!modalFiles.transfer.length) { document.getElementById('transferFileError').style.display = 'block'; invalid = true; }
+    if (invalid) return;
+    const res = BTNN_WF.transferToAgency(item.code, content, modalFiles.transfer.slice());
+    if (!res.ok) {
+        const box = document.getElementById('transferError');
+        box.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${escapeHtml(res.message)}`;
+        box.style.display = 'block';
+        return;
     }
+    closeXdModal('transferModal');
+    reloadRequestList();
+    showToast(`Đã chuyển CQGQBT. Hồ sơ ${item.code} chuyển [Hoàn thành]; tạo hồ sơ YCBT ${res.ycbtCode} chờ lãnh đạo ${BTNN_WF.unitName(res.record.transfer.targetUnitId)} phân công.`, "success");
+    const fresh = requestList.find(r => r.code === item.code);
+    if (fresh) showDetailScreen(fresh.id); else showListScreen();
+}
+
+function openCoopDocModal(id) {
+    clearValidation();
+    document.getElementById('coopRequestId').value = id;
+    document.getElementById('coopDocName').value = '';
+    document.getElementById('coopFileError').style.display = 'none';
+    modalFiles.coop = [];
+    renderModalFiles('coop');
+    openXdModal('coopDocModal');
+}
+
+function confirmCoopDoc() {
+    clearValidation();
+    const id = document.getElementById('coopRequestId').value;
+    const item = requestList.find(r => r.id === id);
+    const nameEl = document.getElementById('coopDocName');
+    let invalid = false;
+    if (!nameEl.value.trim()) { markInvalid(nameEl); invalid = true; }
+    if (!modalFiles.coop.length) { document.getElementById('coopFileError').style.display = 'block'; invalid = true; }
+    if (invalid || !item) return;
+    if (!item.attachedDocs) item.attachedDocs = [];
+    item.attachedDocs.push({ name: nameEl.value.trim(), file: modalFiles.coop[0].name, addedBy: getMe() });
+    BTNN_WF.addHistory(item, 'Bổ sung tài liệu', `Cán bộ phối hợp bổ sung tài liệu: ${nameEl.value.trim()}.`);
+    saveItem(item);
+    closeXdModal('coopDocModal');
+    showToast("Đã bổ sung tài liệu vào hồ sơ!", "success");
+    showDetailScreen(id);
+}
+
+// Người yêu cầu đã nộp hồ sơ bổ sung: cán bộ chủ trì tiếp nhận để tiếp tục thực hiện
+function receiveSupplement(id) {
+    const item = requestList.find(r => r.id === id);
+    if (!item || !isChuTri(item)) return;
+    showConfirmModal(`Xác nhận đã nhận hồ sơ bổ sung của yêu cầu ${item.code}? Hồ sơ chuyển [Đang thực hiện].`, () => {
+        item.status = 'Đang thực hiện';
+        BTNN_WF.addHistory(item, 'Tiếp nhận hồ sơ bổ sung', 'Hồ sơ chuyển [Đang thực hiện].');
+        saveItem(item);
+        showToast("Đã tiếp nhận hồ sơ bổ sung!", "success");
+        showDetailScreen(id);
+    });
 }
 
 // In Phiếu hướng dẫn bổ sung hồ sơ xác định cơ quan
@@ -1989,7 +1970,7 @@ function printSupplementNotice(id) {
     if (dateEl) dateEl.innerText = dateStr;
 
     const signerEl = document.getElementById('supplementNoticeSigner');
-    if (signerEl) signerEl.innerText = item.officer || "Nguyễn Văn Chuyên Viên";
+    if (signerEl) signerEl.innerText = item.chuTri ? BTNN_WF.userName(item.chuTri) : (item.officer || "Nguyễn Văn Chuyên Viên");
 
     const reason = item.supplementReason || "Hồ sơ yêu cầu xác định cơ quan còn thiếu văn bản, tài liệu căn cứ chứng minh hành vi trái pháp luật của người thi hành công vụ theo quy định.";
 
@@ -2010,9 +1991,9 @@ function printSupplementNotice(id) {
             { name: 'Mau_van_ban_bo_sung_thong_tin.docx', size: '42 KB' }
         ];
     const ngayTiepNhan = item.receivedAt || item.date || '01/03/2026';
-    const canBo = item.officer || "Nguyễn Văn Chuyên Viên";
+    const canBo = item.chuTri ? BTNN_WF.userName(item.chuTri) : (item.officer || "Nguyễn Văn Chuyên Viên");
     const chucVu = "Chuyên viên Phòng Bồi thường nhà nước";
-    const donVi = item.agency || "Sở Tư pháp TP. Hà Nội";
+    const donVi = item.rootUnitId ? BTNN_WF.unitName(item.rootUnitId) : (item.agency || "Sở Tư pháp TP. Hà Nội");
 
     const headerAgencyEl = document.getElementById('supplementHeaderAgency');
     if (headerAgencyEl) headerAgencyEl.innerText = donVi.toUpperCase();
@@ -2022,7 +2003,7 @@ function printSupplementNotice(id) {
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:13.5px; font-family:sans-serif;">
                 <div><strong style="color:#475569;">Mã yêu cầu:</strong> <span style="font-weight:700; color:#1e3a8a;">${escapeHtml(item.code)}</span></div>
                 <div><strong style="color:#475569;">Ngày tiếp nhận:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(ngayTiepNhan)}</span></div>
-                <div style="grid-column: span 2;"><strong style="color:#475569;">Tên vụ việc:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(getCaseName(item))}</span></div>
+                <div style="grid-column: span 2;"><strong style="color:#475569;">Người yêu cầu:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(item.nycName || '')}</span></div>
                 <div><strong style="color:#475569;">Cán bộ xử lý:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(canBo)}</span></div>
                 <div><strong style="color:#475569;">Chức vụ:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(chucVu)}</span></div>
                 <div style="grid-column: span 2;"><strong style="color:#475569;">Đơn vị:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(donVi)}</span></div>
@@ -2036,7 +2017,7 @@ function printSupplementNotice(id) {
         </div>
         <div style="margin-bottom: 15px;">
             <p>Căn cứ Luật Trách nhiệm bồi thường của Nhà nước năm 2017;</p>
-            <p>Sau khi tiếp nhận yêu cầu xác định cơ quan giải quyết bồi thường mã số: <strong>${escapeHtml(item.code)}</strong> liên quan đến vụ việc: <em>"${escapeHtml(getCaseName(item))}"</em>;</p>
+            <p>Sau khi tiếp nhận yêu cầu xác định cơ quan giải quyết bồi thường mã số: <strong>${escapeHtml(item.code)}</strong> của Ông/Bà <strong>${escapeHtml(item.nycName || '')}</strong>;</p>
             <p>Cơ quan tiếp nhận hướng dẫn Ông/Bà hoàn thiện, bổ sung hồ sơ với các nội dung sau:</p>
         </div>
         <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:15px; margin-bottom:15px; font-family:sans-serif;">
@@ -2217,7 +2198,7 @@ function doSaveAndPrintXdcqSupplement(item, reasonInput, deadlineInput, reasonPr
             deadline: deadlineVal
         });
 
-        if (typeof saveRequestList === 'function') saveRequestList();
+        saveItem(item);
     }
 
     if (reasonPrint) reasonPrint.textContent = reasonVal;

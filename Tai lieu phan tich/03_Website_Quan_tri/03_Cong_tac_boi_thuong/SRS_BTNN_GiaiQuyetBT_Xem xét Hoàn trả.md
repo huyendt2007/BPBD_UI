@@ -122,7 +122,7 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Khởi tạo hồ sơ | Button | Khi người dùng click nút Khởi tạo hồ sơ trên một dòng vụ việc, hệ thống thực hiện kiểm tra và xử lý:<br>- **TH Vụ việc không còn đủ điều kiện** (đã có hồ sơ hoàn trả do người dùng khác vừa khởi tạo): Hệ thống hiển thị thông báo [MSG-ERR-BTNN-HT-009], làm mới lại danh sách trong popup và không khởi tạo hồ sơ.<br>- **TH Hợp lệ**: Hệ thống thực hiện tuần tự các bước:<br>+ Bước 1: Tự động sinh `Mã hồ sơ` theo quy tắc `HT-<năm>-<số thứ tự 3 chữ số>` (Ví dụ: `HT-2026-001`).<br>+ Bước 2: Lưu hồ sơ hoàn trả vào cơ sở dữ liệu ở trạng thái `Chờ thành lập hội đồng`, tự động kế thừa các thông tin từ vụ việc gốc gồm: Mã vụ việc, Tên vụ việc, Nội dung vụ việc, Đơn vị chi trả bồi thường, Tổng số tiền đã chi trả, Ngày hoàn thành chi trả.<br>+ Bước 3: Ghi Audit Log thao tác khởi tạo hồ sơ hoàn trả.<br>+ Bước 4: Hiển thị thông báo thành công [MSG-SUC-BTNN-HT-001].<br>+ Bước 5: Đóng popup và điều hướng sang `Màn hình Cập nhật hồ sơ hoàn trả` tại Bước 1: Thành lập Hội đồng xem xét trách nhiệm hoàn trả. |
+| 1 | Khởi tạo hồ sơ | Button | Khi người dùng click nút Khởi tạo hồ sơ trên một dòng vụ việc, hệ thống thực hiện kiểm tra và xử lý:<br>- **TH Vụ việc không còn đủ điều kiện** (đã có hồ sơ hoàn trả do người dùng khác vừa khởi tạo): Hệ thống hiển thị thông báo [MSG-ERR-BTNN-HT-009], làm mới lại danh sách trong popup và không khởi tạo hồ sơ.<br>- **TH Hợp lệ**: Hệ thống thực hiện tuần tự các bước:<br>+ Bước 1: Tự động sinh `Mã hồ sơ` theo quy tắc `HT-<năm>-<số thứ tự 3 chữ số>` (Ví dụ: `HT-2026-001`).<br>+ Bước 2: Lưu hồ sơ hoàn trả vào cơ sở dữ liệu ở trạng thái `Chờ thành lập hội đồng`, tự động kế thừa các thông tin từ vụ việc gốc gồm: Mã vụ việc, Nội dung vụ việc, Đơn vị chi trả bồi thường, Tổng số tiền đã chi trả, Ngày hoàn thành chi trả.<br>+ Bước 3: Ghi Audit Log thao tác khởi tạo hồ sơ hoàn trả.<br>+ Bước 4: Hiển thị thông báo thành công [MSG-SUC-BTNN-HT-001].<br>+ Bước 5: Đóng popup và điều hướng sang `Màn hình Cập nhật hồ sơ hoàn trả` tại Bước 1: Thành lập Hội đồng xem xét trách nhiệm hoàn trả. |
 | 2 | Đóng | Button | Khi người dùng click nút Đóng hoặc biểu tượng `×` trên tiêu đề popup, hệ thống đóng popup và quay lại [MH01 - Màn hình Danh sách hồ sơ xem xét trách nhiệm hoàn trả](#mh01-danh-sach-ho-so-hoan-tra), không thay đổi dữ liệu. |
 
 ---
@@ -142,10 +142,9 @@ flowchart TD
 | Đường dẫn điều hướng | String(255) | - | - | Control UI: Breadcrumb (Read-only).<br>- Hiển thị `Quản lý xem xét trách nhiệm hoàn trả / Cập nhật hồ sơ <Mã hồ sơ>`. |
 | Tiêu đề hồ sơ | String(50) | Có | Theo dữ liệu | Control UI: Text heading (Read-only).<br>- Hiển thị `Hồ sơ trách nhiệm hoàn trả: <Mã hồ sơ>`. |
 | Trạng thái | Enum(String(50)) | Có | Theo dữ liệu | Control UI: Badge (Read-only).<br>- Hiển thị trạng thái hiện tại của hồ sơ hoàn trả (chỉ đọc). Theo thông tin hồ sơ. |
-| Vụ việc bồi thường gốc | String(50) | Có | Theo dữ liệu | Control UI: Text link (Read-only).<br>- Hiển thị mã vụ việc bồi thường nhà nước gốc kèm nhãn `[Xem hồ sơ gốc]` và tên vụ việc. |
+| Vụ việc bồi thường gốc | String(50) | Có | Theo dữ liệu | Control UI: Text link (Read-only).<br>- Hiển thị mã vụ việc bồi thường nhà nước gốc kèm nhãn `[Xem hồ sơ gốc]`. |
 | **II. Thông tin vụ việc** | Section | - | - | Control UI: Info card (Read-only). Kế thừa toàn bộ thông tin từ vụ việc bồi thường gốc. |
 | Mã vụ việc | String(50) | Có | Theo dữ liệu | Control UI: Text link (Read-only).<br>- Hiển thị mã vụ việc bồi thường nhà nước gốc. |
-| Tên vụ việc | String(255) | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Hiển thị tên vụ việc bồi thường nhà nước gốc. Theo thông tin Hồ sơ vụ việc. |
 | Ngày QĐ giải quyết bồi thường | Date | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Định dạng `dd/mm/yyyy`. Theo thông tin Hồ sơ vụ việc. |
 | Ngày hoàn thành chi trả | Date | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Định dạng `dd/mm/yyyy`. Theo thông tin Hồ sơ vụ việc. |
 | Lĩnh vực phát sinh thiệt hại | String(255) | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo thông tin Hồ sơ vụ việc. |
@@ -327,7 +326,6 @@ flowchart TD
 | Vụ việc bồi thường gốc | String(50) | - | Theo dữ liệu | Control UI: Text link (Read-only).<br>- Chỉ đọc. Theo thông tin hồ sơ. |
 | **II. Thông tin vụ việc** | Section | - | - | Control UI: Info card. Kế thừa toàn bộ thông tin từ vụ việc bồi thường gốc. |
 | Mã vụ việc | String(50) | - | Theo dữ liệu | Control UI: Text link (Read-only).<br>- Chỉ đọc. Theo thông tin hồ sơ. |
-| Tên vụ việc | String(255) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Chỉ đọc. Theo thông tin hồ sơ. |
 | Ngày QĐ giải quyết bồi thường | Date | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Định dạng `dd/mm/yyyy`. Chỉ đọc. Theo thông tin hồ sơ. |
 | Ngày hoàn thành chi trả | Date | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Định dạng `dd/mm/yyyy`. Chỉ đọc. Theo thông tin hồ sơ. |
 | Lĩnh vực phát sinh thiệt hại | String(255) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Chỉ đọc. Theo thông tin hồ sơ. |

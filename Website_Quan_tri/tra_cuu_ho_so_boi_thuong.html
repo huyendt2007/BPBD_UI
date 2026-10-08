@@ -366,10 +366,6 @@
                         <input type="text" class="form-control" id="phddCode" placeholder="Nhập mã vụ việc...">
                     </div>
                     <div class="form-block">
-                        <label class="form-label" for="phddTitle">Tên vụ việc</label>
-                        <input type="text" class="form-control" id="phddTitle" placeholder="Nhập tên vụ việc...">
-                    </div>
-                    <div class="form-block">
                         <label class="form-label" for="phddNyc">Người yêu cầu/người bị thiệt hại</label>
                         <input type="text" class="form-control" id="phddNyc" placeholder="Nhập họ và tên...">
                     </div>
@@ -423,7 +419,6 @@
                             <tr>
                                 <th style="width:52px; text-align:center;">STT</th>
                                 <th style="width:132px; text-align:center;">Mã vụ việc</th>
-                                <th style="min-width:180px;">Tên vụ việc</th>
                                 <th style="min-width:145px;">Người yêu cầu</th>
                                 <th style="width:110px;">Tỉnh/TP</th>
                                 <th style="min-width:220px;">Địa chỉ chi tiết</th>
@@ -458,10 +453,6 @@
                     <div class="form-block">
                         <label class="form-label" for="ycbtCode">Mã vụ việc</label>
                         <input type="text" class="form-control" id="ycbtCode" placeholder="Nhập mã vụ việc...">
-                    </div>
-                    <div class="form-block">
-                        <label class="form-label" for="ycbtTitle">Tên vụ việc</label>
-                        <input type="text" class="form-control" id="ycbtTitle" placeholder="Nhập tên vụ việc...">
                     </div>
                     <div class="form-block">
                         <label class="form-label" for="ycbtNyc">Tên người yêu cầu</label>
@@ -538,7 +529,6 @@
                             <tr>
                                 <th style="width:52px; text-align:center;">STT</th>
                                 <th style="width:132px; text-align:center;">Mã vụ việc</th>
-                                <th style="min-width:180px;">Tên vụ việc</th>
                                 <th style="min-width:140px;">Tên người yêu cầu</th>
                                 <th style="width:110px;">Tỉnh/TP</th>
                                 <th style="min-width:220px;">Địa chỉ chi tiết</th>
@@ -633,8 +623,8 @@
         // Đổi khoá khi thay đổi bộ tiêu chí mặc định, để bộ lọc cũ đã lưu trong phiên
         // (ví dụ Trạng thái = 'Hoàn thành') không làm danh sách rỗng khi mở lại màn hình.
         const FILTER_STORAGE_KEY = 'traCuuVuViec_filterState_v2';
-        const phddFilterFields = ['phddCode', 'phddTitle', 'phddNyc', 'phddAgency', 'phddStatus', 'phddStatusGroup', 'phddType', 'phddFromDate', 'phddToDate'];
-        const ycbtFilterFields = ['ycbtCode', 'ycbtTitle', 'ycbtNyc', 'ycbtAgency', 'ycbtFieldGroup', 'ycbtNopKenh', 'ycbtStatus', 'ycbtStatusGroup', 'ycbtFromDate', 'ycbtToDate', 'ycbtDeadlineFrom', 'ycbtDeadlineTo'];
+        const phddFilterFields = ['phddCode', 'phddNyc', 'phddAgency', 'phddStatus', 'phddStatusGroup', 'phddType', 'phddFromDate', 'phddToDate'];
+        const ycbtFilterFields = ['ycbtCode', 'ycbtNyc', 'ycbtAgency', 'ycbtFieldGroup', 'ycbtNopKenh', 'ycbtStatus', 'ycbtStatusGroup', 'ycbtFromDate', 'ycbtToDate', 'ycbtDeadlineFrom', 'ycbtDeadlineTo'];
 
         document.addEventListener('DOMContentLoaded', () => {
             populateStatusSelects();
@@ -899,7 +889,6 @@
         function searchPhdd() {
             saveFilterState('phdd');
             const code = normalizeText(document.getElementById('phddCode').value);
-            const title = normalizeText(document.getElementById('phddTitle').value);
             const nyc = normalizeText(document.getElementById('phddNyc').value);
             const agency = normalizeText(document.getElementById('phddAgency').value);
             const status = document.getElementById('phddStatus').value;
@@ -910,7 +899,6 @@
 
             phddFiltered = phddList.filter(item => {
                 if (code && !normalizeText(item.code).includes(code)) return false;
-                if (title && !normalizeText(item.title).includes(title)) return false;
                 if (nyc && !normalizeText(item.nyc).includes(nyc)) return false;
                 if (agency && !normalizeText(item.agency).includes(agency)) return false;
                 if (!matchesStatus(item, status, group)) return false;
@@ -926,7 +914,7 @@
         }
 
         function resetPhddFilters() {
-            ['phddCode', 'phddTitle', 'phddNyc', 'phddAgency', 'phddStatusGroup', 'phddType'].forEach(id => document.getElementById(id).value = '');
+            ['phddCode', 'phddNyc', 'phddAgency', 'phddStatusGroup', 'phddType'].forEach(id => document.getElementById(id).value = '');
             setDefaultDates();
             searchPhdd();
             showToast('Đã xóa bộ lọc phục hồi danh dự');
@@ -959,7 +947,7 @@
             const end = Math.min(start + phddPageSize, total);
             document.getElementById('phddRange').innerText = total ? `${start + 1}-${end}` : '0-0';
             if (!total) {
-                tbody.innerHTML = '<tr><td colspan="11" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc phục hồi danh dự phù hợp</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc phục hồi danh dự phù hợp</td></tr>';
                 renderPages('phddPages', phddPage, totalPages, page => { phddPage = page; renderPhdd(); });
                 return;
             }
@@ -970,7 +958,6 @@
                 tr.innerHTML = `
                     <td style="text-align:center;">${start + idx + 1}</td>
                     <td class="code-cell">${escapeHtml(item.code)}</td>
-                    <td><strong>${escapeHtml(item.title || '--')}</strong></td>
                     <td>${escapeHtml(item.nyc || '--')}</td>
                     <td>${escapeHtml(item.nycTinhThanh || '--')}</td>
                     <td title="${escapeHtml(item.address || '')}">${escapeHtml(shortText(item.address || '--', 62))}</td>
@@ -994,7 +981,6 @@
         function searchYcbt() {
             saveFilterState('ycbt');
             const code = normalizeText(document.getElementById('ycbtCode').value);
-            const title = normalizeText(document.getElementById('ycbtTitle').value);
             const nyc = normalizeText(document.getElementById('ycbtNyc').value);
             const agency = normalizeText(document.getElementById('ycbtAgency').value);
             const fieldGroup = document.getElementById('ycbtFieldGroup').value;
@@ -1008,7 +994,6 @@
 
             ycbtFiltered = ycbtList.filter(item => {
                 if (code && !normalizeText(item.code).includes(code)) return false;
-                if (title && !normalizeText(item.title).includes(title)) return false;
                 if (nyc && !normalizeText(item.nyc).includes(nyc)) return false;
                 if (agency && !normalizeText(item.agency).includes(agency)) return false;
                 if (fieldGroup && item.fieldGroup !== fieldGroup) return false;
@@ -1028,7 +1013,7 @@
         }
 
         function resetYcbtFilters() {
-            ['ycbtCode', 'ycbtTitle', 'ycbtNyc', 'ycbtAgency', 'ycbtFieldGroup', 'ycbtStatusGroup', 'ycbtDeadlineFrom', 'ycbtDeadlineTo', 'ycbtNopKenh'].forEach(id => document.getElementById(id).value = '');
+            ['ycbtCode', 'ycbtNyc', 'ycbtAgency', 'ycbtFieldGroup', 'ycbtStatusGroup', 'ycbtDeadlineFrom', 'ycbtDeadlineTo', 'ycbtNopKenh'].forEach(id => document.getElementById(id).value = '');
             setDefaultDates();
             searchYcbt();
             showToast('Đã xóa bộ lọc yêu cầu bồi thường');
@@ -1061,7 +1046,7 @@
             const end = Math.min(start + ycbtPageSize, total);
             document.getElementById('ycbtRange').innerText = total ? `${start + 1}-${end}` : '0-0';
             if (!total) {
-                tbody.innerHTML = '<tr><td colspan="14" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc yêu cầu bồi thường phù hợp</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="13" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc yêu cầu bồi thường phù hợp</td></tr>';
                 renderPages('ycbtPages', ycbtPage, totalPages, page => { ycbtPage = page; renderYcbt(); });
                 return;
             }
@@ -1072,7 +1057,6 @@
                 tr.innerHTML = `
                     <td style="text-align:center;">${start + idx + 1}</td>
                     <td class="code-cell">${escapeHtml(item.code)}</td>
-                    <td><strong>${escapeHtml(item.title || '--')}</strong></td>
                     <td>${escapeHtml(item.nyc || '--')}</td>
                     <td>${escapeHtml(item.nycTinhThanh || '--')}</td>
                     <td title="${escapeHtml(item.address || '')}">${escapeHtml(shortText(item.address || '--', 60))}</td>

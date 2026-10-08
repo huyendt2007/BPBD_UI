@@ -2714,7 +2714,6 @@ function clearClaimDetails() {
     document.getElementById('formNycCountry').value = 'Việt Nam';
     document.getElementById('formNycCity').value = 'Hà Nội';
     document.getElementById('formNycWard').value = '';
-    document.getElementById('formClaimName').value = '';
     document.getElementById('formNycAddress').value = '';
 
     document.getElementById('formProposalNotes').value = '';
@@ -2802,17 +2801,15 @@ function openFundingClaimLookupModal(prefillCode = '') {
     if (!overlay) return;
 
     const codeInput = document.getElementById('fundingClaimSearchCode');
-    const nameInput = document.getElementById('fundingClaimSearchName');
     const requesterInput = document.getElementById('fundingClaimSearchRequester');
 
     if (codeInput) codeInput.value = prefillCode || '';
-    if (nameInput) nameInput.value = '';
     if (requesterInput) requesterInput.value = '';
 
     renderFundingClaimLookupResults();
     overlay.style.display = 'flex';
     overlay.classList.add('visible');
-    setTimeout(() => (prefillCode && codeInput ? codeInput : nameInput)?.focus(), 60);
+    setTimeout(() => codeInput?.focus(), 60);
 }
 
 function closeFundingClaimLookupModal() {
@@ -2824,7 +2821,6 @@ function closeFundingClaimLookupModal() {
 
 function clearFundingClaimLookupFilters() {
     document.getElementById('fundingClaimSearchCode').value = '';
-    document.getElementById('fundingClaimSearchName').value = '';
     document.getElementById('fundingClaimSearchRequester').value = '';
     renderFundingClaimLookupResults();
 }
@@ -2834,19 +2830,17 @@ function renderFundingClaimLookupResults() {
     if (!tbody) return;
 
     const code = normalizeFundingLookupText(document.getElementById('fundingClaimSearchCode')?.value);
-    const name = normalizeFundingLookupText(document.getElementById('fundingClaimSearchName')?.value);
     const requester = normalizeFundingLookupText(document.getElementById('fundingClaimSearchRequester')?.value);
 
     const rows = getFundingClaimLookupRows().filter(row =>
         (!code || normalizeFundingLookupText(row.code).includes(code)) &&
-        (!name || normalizeFundingLookupText(row.caseName).includes(name)) &&
         (!requester || normalizeFundingLookupText(row.requester).includes(requester))
     );
 
     if (!rows.length) {
         tbody.innerHTML = `
             <tr>
-                <td colspan="7" style="text-align:center; color: var(--text-muted); padding: 20px;">
+                <td colspan="6" style="text-align:center; color: var(--text-muted); padding: 20px;">
                     Không tìm thấy vụ việc phù hợp
                 </td>
             </tr>
@@ -2857,7 +2851,6 @@ function renderFundingClaimLookupResults() {
     tbody.innerHTML = rows.map(row => `
         <tr>
             <td style="font-weight:700; color: var(--primary-light); white-space:nowrap;">${row.code}</td>
-            <td>${row.caseName}</td>
             <td>${row.requester}</td>
             <td>${row.agency}</td>
             <td style="text-align:right; font-weight:700; white-space:nowrap;">${row.amount.toLocaleString('vi-VN')} VNĐ</td>
@@ -2946,7 +2939,6 @@ function handleClaimSelected(code) {
         document.getElementById('formNycCountry').value = claim.country || "Việt Nam";
         document.getElementById('formNycCity').value = claim.city || "Hà Nội";
         document.getElementById('formNycWard').value = claim.ward || 'Phường Dịch Vọng';
-        document.getElementById('formClaimName').value = claim.caseName || ('Vụ việc yêu cầu bồi thường của ' + (claim.nyc || ''));
         document.getElementById('formNycAddress').value = claim.address;
 
         // Tạm ứng
@@ -3992,7 +3984,6 @@ function viewProposalDetail(id) {
     document.getElementById('formNycCountry').value = claimDetails.country || "Việt Nam";
     document.getElementById('formNycCity').value = claimDetails.city || "Hà Nội";
     document.getElementById('formNycWard').value = claimDetails.ward || 'Phường Dịch Vọng';
-    document.getElementById('formClaimName').value = claimDetails.caseName || ('Vụ việc yêu cầu bồi thường của ' + (claimDetails.nyc || ''));
     document.getElementById('formNycAddress').value = claimDetails.address;
 
     // Disable claimant fields

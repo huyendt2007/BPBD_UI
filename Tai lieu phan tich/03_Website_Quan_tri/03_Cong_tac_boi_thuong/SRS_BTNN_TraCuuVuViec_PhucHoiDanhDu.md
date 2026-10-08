@@ -1,4 +1,4 @@
-﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
+### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
 
 #### 4.3.3.5. UC434-437 - Tra cứu phục hồi danh dự
 
@@ -66,7 +66,6 @@ Nguồn UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/phuc_hoi_danh_du.html`
 | Bảng danh sách hồ sơ phục hồi danh dự | List(Object) | Không | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- Sắp xếp mặc định: Sắp xếp theo "Ngày cập nhật" giảm dần (mới nhất hiển thị lên đầu).<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
 | STT | Integer(10) | Không | Theo trang hiện tại | Control UI: Cột lưới dữ liệu (chỉ đọc).<br>- Hiển thị số thứ tự bản ghi trên trang hiện tại. |
 | Mã vụ việc | String(50) | Không | Theo dữ liệu vụ việc | Control UI: Cột lưới dữ liệu (chỉ đọc), dạng liên kết.<br>- Tham chiếu/mở **Module Giải quyết yêu cầu bồi thường - 4.3.3.1.5. MH03 - Màn hình Xem chi tiết và xử lý hồ sơ yêu cầu bồi thường** trong cùng tab và focus vào Tab Phục hồi danh dự.<br>- Hỗ trợ sắp xếp. |
-| Tên vụ việc | String(255) | Không | Theo dữ liệu vụ việc | Control UI: Cột lưới dữ liệu (chỉ đọc).<br>- Hiển thị tên vụ việc.<br>- Hỗ trợ sắp xếp. |
 | Người yêu cầu | String(255) | Không | Theo dữ liệu hồ sơ | Control UI: Cột lưới dữ liệu (chỉ đọc).<br>- Hiển thị người bị thiệt hại/người yêu cầu trong hồ sơ.<br>- Hỗ trợ sắp xếp. |
 | Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Theo dữ liệu vụ việc | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
 | Phường/Xã | Enum(String(100)) / String(100) | Không | Theo dữ liệu vụ việc | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
@@ -94,7 +93,7 @@ Nguồn UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/phuc_hoi_danh_du.html`
 |  |  |  | **TH Hợp lệ:** Hệ thống kết xuất danh sách kết quả tra cứu hiện hành ra tệp Excel theo đúng tiêu chí lọc/sắp xếp hiện tại, áp dụng [BR-EXP-040] và hiển thị [MSG-SUC-BTNN-PHDD-003]. |
 | 4 | Sắp xếp cột | Header cột | Khi người dùng click tiêu đề cột, hệ thống xử lý theo các trường hợp bên dưới. |
 |  |  |  | **TH1 (Chọn lại cột đang sắp xếp):** Hệ thống đảo chiều sắp xếp tăng dần/giảm dần của cột được chọn và cập nhật icon sắp xếp trên tiêu đề cột. |
-|  |  |  | **TH2 (Chọn cột khác):** Hệ thống đặt cột được chọn làm cột sắp xếp hiện hành, mặc định chiều sắp xếp tăng dần và cập nhật danh sách. Các cột hỗ trợ sắp xếp gồm `Mã vụ việc`, `Tên vụ việc`, `Người yêu cầu`, `Ngày tiếp nhận`, `Ngày cập nhật`. |
+|  |  |  | **TH2 (Chọn cột khác):** Hệ thống đặt cột được chọn làm cột sắp xếp hiện hành, mặc định chiều sắp xếp tăng dần và cập nhật danh sách. Các cột hỗ trợ sắp xếp gồm `Mã vụ việc`, `Người yêu cầu`, `Ngày tiếp nhận`, `Ngày cập nhật`. |
 | 5 | Số dòng hiển thị | Select | Khi người dùng chọn `10`, `20`, `50` hoặc `100`, hệ thống cập nhật số bản ghi hiển thị trên mỗi trang, đưa trang hiện tại về trang 1 và tải lại lưới dữ liệu; mặc định chọn sẵn `20`. |
 | 6 | Chuyển trang | Pagination | Hệ thống chuyển đến trang đầu (&#124;&lt;&lt;), trang trước (&lt;), trang được chọn, trang sau (&gt;) hoặc trang cuối (&gt;&gt;&#124;) theo thao tác người dùng; dữ liệu hiển thị giữ nguyên tiêu chí lọc/sắp xếp hiện hành và cấu hình mặc định 20 bản ghi/trang. |
 | 7 | Click dòng dữ liệu | Row click | Hệ thống tham chiếu/mở **Module Giải quyết yêu cầu bồi thường - 4.3.3.1.5. MH03 - Màn hình Xem chi tiết và xử lý hồ sơ yêu cầu bồi thường** tương ứng trong cùng tab và focus vào Tab Phục hồi danh dự. |

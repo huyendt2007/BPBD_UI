@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -648,6 +648,10 @@
                     <label class="form-label">Trực thuộc (Danh mục cha)</label>
                     <input type="text" id="detParent" class="form-control" readonly>
                 </div>
+                <div class="form-group" id="detUnitGroup" style="display:none;">
+                    <label class="form-label">Đơn vị áp dụng</label>
+                    <div id="detUnits" class="form-control" style="height:auto; min-height:38px; background:#f8fafc; line-height:1.7;"></div>
+                </div>
                 <div class="form-group">
                     <label class="form-label">Mô tả / Ghi chú</label>
                     <textarea id="detNotes" class="form-control" rows="2" readonly></textarea>
@@ -713,6 +717,14 @@
                         </select>
                     </div>
 
+                    <!-- Đơn vị áp dụng: chỉ dùng cho loại danh mục Loại yêu cầu (DM_54) -->
+                    <div class="form-group" id="unitGroup" style="display:none;">
+                        <label class="form-label">Đơn vị áp dụng <span class="required-mark">*</span></label>
+                        <div id="inpUnitsTree" style="border:1px solid var(--border-color, #e2e8f0); border-radius:6px; padding:10px 12px; max-height:220px; overflow-y:auto; font-size:13px; display:flex; flex-direction:column; gap:5px;"></div>
+                        <div style="font-size:12px; color:#64748b; margin-top:4px;">Chọn đơn vị cha thì áp dụng cho toàn bộ đơn vị trực thuộc. Chỉ người dùng thuộc đơn vị áp dụng mới thấy giá trị này tại các ô chọn và bộ lọc Loại yêu cầu.</div>
+                        <div class="error-message" id="errUnits">Vui lòng chọn ít nhất một đơn vị áp dụng.</div>
+                    </div>
+
                     <div class="form-group">
                         <label class="form-label" for="inpNotes">Mô tả / Ghi chú</label>
                         <textarea id="inpNotes" class="form-control" rows="2" placeholder="Ghi chú nội bộ dành cho Quản trị viên"></textarea>
@@ -764,6 +776,7 @@
     <!-- CUSTOM FLOATING TOOLTIP -->
     <div id="customTooltip" class="custom-tooltip"></div>
 
+    <script src="btnn_luong_xu_ly.js"></script>
     <script>
         // Custom Tooltip functions
         function showCellTooltip(event, text) {
@@ -826,7 +839,8 @@
             { code: "DM_17", name: "Danh mục Người yêu cầu đăng ký", status: "Đang hoạt động" },
             { code: "DM_19", name: "Danh mục Căn cứ xóa đăng ký", status: "Đang hoạt động" },
             { code: "DM_20", name: "Danh mục Căn cứ hủy đăng ký", status: "Đang hoạt động" },
-            { code: "DM_21", name: "Loại văn bản quy phạm pháp luật", status: "Đang hoạt động" }
+            { code: "DM_21", name: "Loại văn bản quy phạm pháp luật", status: "Đang hoạt động" },
+            { code: "DM_54", name: "Loại yêu cầu", status: "Đang hoạt động" }
         ];
 
         // All simulated categories containing full values from 04_Danh_muc_va_Phu_luc.md (Table 5 & Table 6)
@@ -968,7 +982,10 @@
             { typeCode: "DM_21", code: "VB_05", name: "Nghị quyết", nameEn: "Resolution", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             { typeCode: "DM_21", code: "VB_06", name: "Chỉ thị", nameEn: "Directive", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             { typeCode: "DM_21", code: "VB_07", name: "Thông tư liên tịch", nameEn: "Joint Circular", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
-            { typeCode: "DM_21", code: "VB_08", name: "Khác", nameEn: "Other", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" }
+            { typeCode: "DM_21", code: "VB_08", name: "Khác", nameEn: "Other", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            // DM_54 (Loại yêu cầu) - phân quyền theo Đơn vị áp dụng
+            { typeCode: "DM_54", code: "LYC_01", name: "Xác định cơ quan giải quyết bồi thường", nameEn: "Determination of the compensation-settling agency", val: "", valEn: "", parentCode: "", notes: "Chỉ Bộ Tư pháp và Sở Tư pháp xử lý", status: "Hoạt động", donViApDung: ["BTP-01", "STP-HN", "STP-HCM"] },
+            { typeCode: "DM_54", code: "LYC_02", name: "Yêu cầu bồi thường", nameEn: "Compensation claim", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động", donViApDung: ["BTP-01", "STP-HN", "STP-HCM", "UBND-CG", "THADS-LD", "UBND-HK", "TAND-LD"] }
         ];
 
         // State variables
@@ -998,8 +1015,15 @@
                 localStorage.setItem('categoryTypes', JSON.stringify(DEFAULT_TYPES));
                 localStorage.setItem('masterCategories', JSON.stringify(INITIAL_CATEGORIES));
             }
-            typeList = JSON.parse(localStorage.getItem('categoryTypes')).filter(t => t.status === 'Đang hoạt động');
-            catList = JSON.parse(localStorage.getItem('masterCategories'));
+            // Bổ sung loại danh mục mới (DM_54 Loại yêu cầu) vào dữ liệu đã lưu, không làm mất dữ liệu cũ
+            const savedTypes = JSON.parse(localStorage.getItem('categoryTypes'));
+            const savedCats = JSON.parse(localStorage.getItem('masterCategories'));
+            DEFAULT_TYPES.filter(d => !savedTypes.some(s => s.code === d.code)).forEach(d => savedTypes.push(d));
+            INITIAL_CATEGORIES.filter(d => d.typeCode === 'DM_54' && !savedCats.some(s => s.typeCode === d.typeCode && s.code === d.code)).forEach(d => savedCats.push(JSON.parse(JSON.stringify(d))));
+            localStorage.setItem('categoryTypes', JSON.stringify(savedTypes));
+            localStorage.setItem('masterCategories', JSON.stringify(savedCats));
+            typeList = savedTypes.filter(t => t.status === 'Đang hoạt động');
+            catList = savedCats;
 
             populateFilterTypeDropdown();
             populateFormDropdowns();
@@ -1210,6 +1234,9 @@
                 valEnRequiredMark.style.display = 'none';
             }
 
+            document.getElementById('unitGroup').style.display = typeCode === 'DM_54' ? 'block' : 'none';
+            if (typeCode === 'DM_54') renderUnitTree(formUnits);
+
             const parentTypeCode = getParentTypeCode(typeCode);
             if (parentTypeCode) {
                 parentGroup.style.display = 'block';
@@ -1225,6 +1252,39 @@
                 parentGroup.style.display = 'none';
                 inpParent.innerHTML = '';
             }
+        }
+
+        // ---------- Đơn vị áp dụng (cây Cơ cấu tổ chức) ----------
+        let formUnits = [];
+
+        function isUnitCoveredByParent(unitId, selected) {
+            return BTNN_WF.getAncestors(unitId).slice(1).some(a => selected.includes(a));
+        }
+
+        function renderUnitTree(selected) {
+            const box = document.getElementById('inpUnitsTree');
+            const rows = [];
+            (function walk(units, depth) {
+                units.forEach(u => {
+                    const covered = isUnitCoveredByParent(u.id, selected);
+                    const checked = covered || selected.includes(u.id);
+                    rows.push(`<label style="display:flex; gap:6px; align-items:center; padding-left:${depth * 20}px; cursor:${covered ? 'default' : 'pointer'}; color:${covered ? '#64748b' : 'inherit'};"><input type="checkbox" ${checked ? 'checked' : ''} ${covered ? 'disabled' : ''} onchange="toggleUnit('${u.id}', this.checked)"> ${u.name}${covered ? ' <i style="font-size:11.5px;">(áp dụng theo đơn vị cha)</i>' : ''}</label>`);
+                    walk(BTNN_WF.getChildren(u.id), depth + 1);
+                });
+            })(BTNN_WF.getRootUnits(), 0);
+            box.innerHTML = rows.join('');
+        }
+
+        function toggleUnit(unitId, on) {
+            formUnits = formUnits.filter(u => u !== unitId);
+            if (on) {
+                formUnits.push(unitId);
+                // Đơn vị con đã được bao bởi đơn vị cha thì không lưu riêng
+                const desc = BTNN_WF.getDescendants(unitId);
+                formUnits = formUnits.filter(u => !desc.includes(u));
+            }
+            document.getElementById('errUnits').style.display = 'none';
+            renderUnitTree(formUnits);
         }
 
         // Event Helpers
@@ -1277,6 +1337,8 @@
             document.getElementById('detParentGroup').style.display = getParentTypeCode(item.typeCode) ? 'block' : 'none';
 
             document.getElementById('detNotes').value = item.notes || 'Không có';
+            document.getElementById('detUnitGroup').style.display = item.typeCode === 'DM_54' ? 'block' : 'none';
+            document.getElementById('detUnits').innerHTML = (item.donViApDung || []).map(u => `• ${BTNN_WF.unitName(u)}${BTNN_WF.getDescendants(u).length ? ' (gồm đơn vị trực thuộc)' : ''}`).join('<br>') || 'Chưa chọn';
             document.getElementById('detStatus').value = item.status;
 
             document.getElementById('detailModal').classList.add('active');
@@ -1308,6 +1370,8 @@
             document.getElementById('inpVal').value = '';
             document.getElementById('inpValEn').value = '';
             document.getElementById('inpNotes').value = '';
+            formUnits = [];
+            document.getElementById('errUnits').style.display = 'none';
             document.querySelector('input[name="status"][value="Hoạt động"]').checked = true;
 
             document.getElementById('errType').style.display = 'none';
@@ -1340,6 +1404,8 @@
             document.getElementById('inpVal').value = item.val || '';
             document.getElementById('inpValEn').value = item.valEn || '';
             document.getElementById('inpNotes').value = item.notes || '';
+            formUnits = Array.isArray(item.donViApDung) ? item.donViApDung.slice() : [];
+            document.getElementById('errUnits').style.display = 'none';
             document.querySelector(`input[name="status"][value="${item.status}"]`).checked = true;
 
             document.getElementById('errType').style.display = 'none';
@@ -1421,6 +1487,11 @@
                 document.getElementById('errValEn').style.display = 'none';
             }
 
+            if (typeCode === 'DM_54' && !formUnits.length) {
+                document.getElementById('errUnits').style.display = 'block';
+                valid = false;
+            }
+
             if (activeEditIndex === null && typeCode && code) {
                 const exists = catList.some(x => x.typeCode === typeCode && x.code.toLowerCase() === code.toLowerCase());
                 if (exists) {
@@ -1452,7 +1523,8 @@
                     valEn,
                     parentCode,
                     notes,
-                    status
+                    status,
+                    donViApDung: typeCode === 'DM_54' ? formUnits.slice() : undefined
                 });
                 showToast("Thêm mới danh mục thành công!", "success");
             } else {
@@ -1465,6 +1537,7 @@
                     item.parentCode = parentCode;
                     item.notes = notes;
                     item.status = status;
+                    if (item.typeCode === 'DM_54') item.donViApDung = formUnits.slice();
                 }
                 showToast("Cập nhật danh mục thành công!", "success");
             }

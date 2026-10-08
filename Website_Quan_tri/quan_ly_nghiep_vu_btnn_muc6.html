@@ -725,14 +725,10 @@
                 <button class="icon-btn" onclick="closeRelatedClaimSearchModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
-                <div class="grid-4">
+                <div class="grid-3">
                     <div class="form-group">
                         <span class="form-label">Mã vụ việc</span>
                         <input class="form-control" id="claimSearchCode" placeholder="Nhập mã vụ việc...">
-                    </div>
-                    <div class="form-group">
-                        <span class="form-label">Tên vụ việc</span>
-                        <input class="form-control" id="claimSearchName" placeholder="Nhập tên vụ việc...">
                     </div>
                     <div class="form-group">
                         <span class="form-label">Người yêu cầu/Cán bộ liên quan</span>
@@ -762,7 +758,6 @@
                         <thead>
                             <tr>
                                 <th class="nowrap">Mã vụ việc</th>
-                                <th>Tên vụ việc</th>
                                 <th>Người yêu cầu/Cán bộ liên quan</th>
                                 <th class="nowrap">Số giấy tờ/Số QĐ</th>
                                 <th class="nowrap">Số văn bản/QĐ gốc</th>
@@ -1477,10 +1472,9 @@
 
         function openRelatedLookupModal(fieldId, type, prefillCode = null) {
             const codeInput = document.getElementById('claimSearchCode');
-            const nameInput = document.getElementById('claimSearchName');
             const requesterInput = document.getElementById('claimSearchRequester');
             const statusInput = document.getElementById('claimSearchStatus');
-            if (!codeInput || !nameInput || !requesterInput || !statusInput) return;
+            if (!codeInput || !requesterInput || !statusInput) return;
             activeRelatedLookup = { fieldId, type };
             document.getElementById('relatedLookupTitle').innerText = lookupDefinitions[type]?.title || 'Tìm kiếm vụ việc liên quan';
             if (prefillCode !== null) {
@@ -1488,7 +1482,6 @@
             } else {
                 codeInput.value = '';
             }
-            nameInput.value = '';
             requesterInput.value = '';
             statusInput.value = '';
             renderRelatedClaimSearchResults();
@@ -1500,7 +1493,7 @@
         }
 
         function clearRelatedClaimSearch() {
-            ['claimSearchCode', 'claimSearchName', 'claimSearchRequester', 'claimSearchStatus'].forEach(id => {
+            ['claimSearchCode', 'claimSearchRequester', 'claimSearchStatus'].forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.value = '';
             });
@@ -1509,14 +1502,12 @@
 
         function renderRelatedClaimSearchResults() {
             const code = normalizeSearchText(document.getElementById('claimSearchCode')?.value);
-            const name = normalizeSearchText(document.getElementById('claimSearchName')?.value);
             const requester = normalizeSearchText(document.getElementById('claimSearchRequester')?.value);
             const status = document.getElementById('claimSearchStatus')?.value || '';
             const body = document.getElementById('relatedClaimSearchBody');
             const lookup = lookupDefinitions[activeRelatedLookup.type] || lookupDefinitions.claimSearch;
             const filtered = lookup.data.filter(item => {
                 if (code && !normalizeSearchText(item.code).includes(code)) return false;
-                if (name && !normalizeSearchText(item.name).includes(name)) return false;
                 if (requester && !normalizeSearchText(item.requester).includes(requester)) return false;
                 if (status && item.status !== status) return false;
                 return true;
@@ -1526,7 +1517,6 @@
                     <td class="nowrap">
                         <a href="javascript:void(0)" onclick="event.stopPropagation(); openRelatedLookupDetail('${item.code}', '${item.detailType}')">${item.code}</a>
                     </td>
-                    <td>${item.name}</td>
                     <td>${item.requester}</td>
                     <td class="nowrap">${item.idNo}</td>
                     <td class="nowrap">${item.originDocNo}</td>
@@ -1538,7 +1528,7 @@
                 </tr>
             `).join('');
             if (filtered.length === 0) {
-                body.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:26px;">Không tìm thấy vụ việc gốc hợp lệ để liên kết</td></tr>`;
+                body.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:26px;">Không tìm thấy vụ việc gốc hợp lệ để liên kết</td></tr>`;
             }
         }
 
@@ -1561,7 +1551,7 @@
             wrapper.style.display = 'block';
             wrapper.innerHTML = `
                 <a class="related-claim-link" href="javascript:void(0)" onclick="openRelatedLookupDetail('${item.code}', '${item.detailType}')">
-                    <i class="fa-solid fa-link"></i> ${lookup.linkPrefix}: ${item.code} - ${item.name}
+                    <i class="fa-solid fa-link"></i> ${lookup.linkPrefix}: ${item.code} - ${item.requester}
                 </a>
             `;
         }

@@ -100,6 +100,7 @@ Danh sách các danh mục dùng chung (Master Data) áp dụng xuyên suốt to
 | **[DM_51]** | Nhiệm vụ thành viên Hội đồng xem xét trách nhiệm hoàn trả | \- Chủ tịch Hội đồng<br>- Phó Chủ tịch Hội đồng<br>- Thư ký Hội đồng<br>- Ủy viên<br>- Khác (người dùng nhập tên nhiệm vụ cụ thể) |
 | **[DM_52]** | Lý do hoãn thực hiện nghĩa vụ hoàn trả | \- Đang mắc bệnh hiểm nghèo cần điều trị nội trú lâu dài<br>- Nữ đang mang thai hoặc đang nuôi con nhỏ dưới 36 tháng tuổi<br>- Hoàn cảnh gia đình đặc biệt khó khăn (mất mùa, thiên tai)<br>- Lý do bất khả kháng khác được cơ quan có thẩm quyền xác nhận |
 | **[DM_53]** | Hình thức ban hành văn bản | \- Ký số trên hệ thống<br>- Ký ngoài hệ thống |
+| **[DM_54]** | Loại yêu cầu | \- Xác định cơ quan giải quyết bồi thường (LYC_01)<br>- Yêu cầu bồi thường (LYC_02)<br>*Mỗi giá trị có Đơn vị áp dụng (bắt buộc, chọn nhiều trên cây Cơ cấu tổ chức; chọn đơn vị cha thì áp dụng cho đơn vị trực thuộc). Chỉ người dùng thuộc Đơn vị áp dụng mới thấy giá trị tại ô chọn, bộ lọc Loại yêu cầu. LYC_01 chỉ áp dụng cho Bộ Tư pháp và các Sở Tư pháp.* |
 
 
 ## 3.3. Các Quy tắc Xử lý Dùng chung (Common Processing Rules)
