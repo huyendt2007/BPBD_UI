@@ -1,4 +1,4 @@
-### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
+﻿### 4.3.3. Dành cho Cán bộ Công tác bồi thường nhà nước
 
 #### 4.3.3.1. Tiếp nhận yêu cầu
 
@@ -108,7 +108,10 @@ c. Trạng thái hồ sơ tại màn hình Tiếp nhận yêu cầu
 | Tỉnh/Thành phố | Enum(String(100)) | Không | Trống | Control UI: Combobox có tìm kiếm.<br>- Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]; placeholder `Gõ Mã hoặc Tên Tỉnh/Thành phố...`. |
 | Phường/Xã | String(100) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập phường/xã...`. |
 | Địa chỉ chi tiết | String(500) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập địa chỉ chi tiết...`. |
-| **III. Bảng tài liệu đính kèm** | List(Object) | Không | Trống | Cho phép nhập nhiều tài liệu liên quan đến bước tiếp nhận. Mỗi dòng gồm tên tài liệu và file đính kèm. |
+| **III. VĂN BẢN LÀM CĂN CỨ YÊU CẦU BỒI THƯỜNG** | Section | Không | - | Control UI: Section header.<br>- Khối thông tin văn bản làm căn cứ yêu cầu bồi thường (không bắt buộc).<br>- Tự động kế thừa từ hồ sơ Xác định cơ quan giải quyết bồi thường tương ứng nếu đã được nhập trước đó.<br>- Cho phép cán bộ tiếp nhận nhập tên văn bản căn cứ và đính kèm file tài liệu. |
+| Tên văn bản làm căn cứ yêu cầu bồi thường | String(255) | Không | Trống / Kế thừa | Control UI: Input text.<br>- Placeholder: `Nhập tên văn bản làm căn cứ...`. |
+| File văn bản căn cứ | File | Không | Trống / Kế thừa | Control UI: File upload trigger (`Tải lên`). Cho phép chọn file văn bản căn cứ (định dạng `.pdf`, `.doc`, `.docx`, `.jpg`, `.png`; tối đa 20MB/file). Hiển thị tên file kèm nút `Xem file` và `Xóa`. |
+| **IV. Bảng tài liệu đính kèm** | List(Object) | Không | Trống | Cho phép nhập nhiều tài liệu liên quan đến bước tiếp nhận. Mỗi dòng gồm tên tài liệu và file đính kèm. |
 | STT | Integer(10) | - | Tự tăng | Căn giữa, tăng theo số dòng tài liệu. |
 | Tên tài liệu | String(255) | Có khi thêm dòng | Trống | Người dùng nhập tên tài liệu (placeholder `Nhập tên tài liệu...`). Bắt buộc khi dòng tài liệu có file. Khi tải file lên mà chưa nhập tên, hệ thống lấy tên file (bỏ phần mở rộng) làm tên tài liệu. |
 | File đính kèm | File | Không | Trống | Cho phép chọn file tài liệu liên quan theo quy tắc file dùng chung (định dạng `.pdf`, `.doc`, `.docx`, `.jpg`, `.png`; tối đa 20MB/file). |
@@ -154,6 +157,7 @@ c. Trạng thái hồ sơ tại màn hình Tiếp nhận yêu cầu
 | Phường/Xã | String(100) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Hiển thị theo dữ liệu bản ghi. |
 | Địa chỉ chi tiết | String(500) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Hiển thị theo dữ liệu bản ghi. |
 | Thông tin người bị thiệt hại | Object | - | Ẩn | Control UI: Nhóm Text (Read-only).<br>- Chỉ hiển thị khi `Tư cách người yêu cầu` khác `Người bị thiệt hại`.<br>- Gồm: `Họ và tên người bị thiệt hại`, `Ngày sinh`, `Loại giấy tờ thân nhân`, `Số giấy tờ thân nhân`, `Tỉnh/Thành phố`, `Phường/Xã`, `Địa chỉ chi tiết`. |
+| Văn bản làm căn cứ yêu cầu bồi thường | Object | Không | Theo hồ sơ | Control UI: Text + Link (Read-only).<br>- Hiển thị tên văn bản làm căn cứ yêu cầu bồi thường kèm liên kết `Xem file` và `Tải xuống` (nếu có file đính kèm); chưa có thì hiển thị `--`. |
 | Bảng tài liệu đính kèm | List(Object) | - | Theo dữ liệu | Danh sách các tài liệu ban đầu đã đính kèm theo vụ việc ở dạng chỉ đọc. Không có tài liệu thì hiển thị *"Không có tài liệu đính kèm nào."* |
 | STT | Integer(10) | - | Tự tăng | Số thứ tự dòng tài liệu. |
 | Tên tài liệu | String(255) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Hiển thị tên tài liệu theo dữ liệu bản ghi. |
@@ -194,6 +198,7 @@ Popup mở ra khi người dùng click thao tác `In Phiếu tiếp nhận` tạ
 | Đơn vị tiếp nhận | String(255) | - | Theo dữ liệu | Control UI: Text (Chỉ đọc). |
 | Cán bộ tiếp nhận | String(100) | - | Theo dữ liệu | Control UI: Text (Chỉ đọc). Họ và tên cán bộ đã thực hiện tiếp nhận hồ sơ. |
 | Hình thức tiếp nhận | Enum(String(50)) | - | Theo dữ liệu | Control UI: Text (Chỉ đọc). `Trực tiếp` hoặc `Nhận qua bưu điện/bưu chính`, hiển thị trong phần nội dung Phiếu. |
+| Văn bản làm căn cứ yêu cầu bồi thường | String(255) | - | Theo dữ liệu | Control UI: Text (Chỉ đọc). Hiển thị tên văn bản làm căn cứ yêu cầu bồi thường (nếu có); trường hợp không có thì hiển thị `Không có`. |
 
 ###### 4.3.3.1.5.3. Chức năng trên màn hình
 

@@ -7355,9 +7355,7 @@
                     ${canTiepNhan
                         ? `<button class="icon-btn reject" title="Từ chối" onclick="event.stopPropagation(); triggerRejectClaim('${item.id}', 'Bị từ chối')"><i class="fa-solid fa-ban"></i></button>`
                         : disabled('fa-solid fa-ban', 'Chỉ áp dụng khi vụ việc ở trạng thái Chờ tiếp nhận')}
-                    ${canBoSungHoSo
-                        ? `<button class="icon-btn print" title="In Phiếu Bổ sung" onclick="event.stopPropagation(); printSupplementNotice('${item.id}')"><i class="fa-solid fa-print"></i></button>`
-                        : disabled('fa-solid fa-print', 'Chỉ áp dụng khi vụ việc ở trạng thái Yêu cầu bổ sung')}
+                    ${disabled('fa-solid fa-print', 'Đã bỏ chức năng in phiếu tại yêu cầu bổ sung')}
                     ${canBoSungHoSo
                         ? `<button class="icon-btn edit" title="Cập nhật hồ sơ" onclick="event.stopPropagation(); openInlineClaimForm('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`
                         : disabled('fa-solid fa-pen-to-square', 'Chỉ áp dụng khi vụ việc ở trạng thái Yêu cầu bổ sung')}
@@ -7776,9 +7774,6 @@
                     });
 
                     changeStatus(claimId, type, `Đã chuyển hồ sơ sang trạng thái [Yêu cầu bổ sung]!`);
-
-                    // Tự động mở tiếp popup In Phiếu yêu cầu bổ sung để cán bộ in giao ngay cho người yêu cầu
-                    setTimeout(() => printSupplementNotice(claimId), 350);
                 }
             });
         }
@@ -10086,11 +10081,10 @@
                     }
                     break;
 
-                // MH05 chức năng 4-5: Cập nhật hồ sơ / In Phiếu Bổ sung - chỉ khi Yêu cầu bổ sung
+                // MH05 chức năng 4-5: Cập nhật hồ sơ - chỉ khi Yêu cầu bổ sung
                 case 'yeu cau bo sung':
                     buttonsHtml = `
                         <button class="btn btn-primary" onclick="openInlineClaimForm('${claim.id}')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật hồ sơ</button>
-                        <button class="btn btn-secondary" onclick="printSupplementNotice('${claim.id}')"><i class="fa-solid fa-print"></i> In Phiếu Bổ sung</button>
                     `;
                     break;
 

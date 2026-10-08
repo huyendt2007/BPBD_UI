@@ -126,7 +126,7 @@
                             <th style="min-width: 150px;">Cán bộ chủ trì</th>
                             <th style="width: 130px; text-align: center;">Mã hồ sơ YCBT</th>
                             <th style="width: 140px; text-align: center;">Trạng thái</th>
-                            <th style="width: 128px; text-align: center; min-width: 128px;">Thao tác</th>
+                            <th style="width: 140px; text-align: center; min-width: 140px;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -159,6 +159,25 @@
         <div id="screenForm" class="card-section" style="display: none;">
             <div class="section-title">
                 <span id="formScreenTitle"><i class="fa-solid fa-file-signature"></i> THÊM MỚI YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG</span>
+            </div>
+
+            <!-- Khối Lý do bị trả lại (Chỉ hiển thị khi cập nhật hồ sơ trạng thái Bị trả lại) -->
+            <div id="formReturnedAlertBlock" style="display: none; margin-bottom: 20px; padding: 16px 20px; background: #fff1f2; border: 1px solid #fecdd3; border-left: 5px solid #e11d48; border-radius: var(--border-radius-md);">
+                <div style="display: flex; align-items: flex-start; gap: 14px;">
+                    <i class="fa-solid fa-rotate-left" style="font-size: 22px; color: #e11d48; margin-top: 3px;"></i>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 700; color: #9f1239; font-size: 15px; margin-bottom: 4px;">
+                            HỒ SƠ BỊ TRẢ LẠI - YÊU CẦU CẬP NHẬT LẠI
+                        </div>
+                        <div id="formReturnedMeta" style="font-size: 13px; color: #881337; margin-bottom: 6px;"></div>
+                        <div style="font-size: 13.5px; color: #4c0519; line-height: 1.5; background: #ffe4e6; padding: 10px 14px; border-radius: 6px; border: 1px dashed #fda4af;">
+                            <strong>Lý do bị trả lại:</strong> <span id="formReturnedReason"></span>
+                        </div>
+                        <div style="font-size: 12.5px; color: #9f1239; margin-top: 8px; font-style: italic;">
+                            <i class="fa-solid fa-circle-info"></i> Cán bộ vui lòng kiểm tra, hoàn thiện lại các thông tin hồ sơ theo ý kiến chỉ đạo ở trên trước khi lưu hoặc trình lại.
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <input type="hidden" id="formRequestId">
@@ -458,7 +477,33 @@
                 </div>
             </div>
 
-            <div class="sub-section-title">IV. BẢNG TÀI LIỆU ĐÍNH KÈM</div>
+            <!-- Basis document section -->
+            <div class="sub-section-title">IV. VĂN BẢN LÀM CĂN CỨ YÊU CẦU BỒI THƯỜNG</div>
+            <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: 20px; margin-bottom: 20px;">
+                <div class="grid-2" style="gap: 20px; align-items: start;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <span class="form-label">Tên văn bản làm căn cứ yêu cầu bồi thường</span>
+                        <input type="text" class="form-control" id="formVanBanCanCuTen" placeholder="Nhập tên văn bản làm căn cứ (Bản án, Quyết định giải quyết khiếu nại...)...">
+                        <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;"><i class="fa-solid fa-circle-info"></i> Không bắt buộc. Trường hợp đã có văn bản xác định hành vi trái pháp luật thì nhập tại đây.</div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <span class="form-label">Tệp đính kèm văn bản làm căn cứ</span>
+                        <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
+                            <input type="file" id="formVanBanCanCuFile" style="display: none;" onchange="handleXdcqVanBanCanCuUpload(this)" accept=".pdf,.doc,.docx,.jpg,.png">
+                            <button type="button" class="btn btn-secondary btn-sm" id="btnUploadXdcqVanBanCanCu" onclick="document.getElementById('formVanBanCanCuFile').click()">
+                                <i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp đính kèm
+                            </button>
+                            <span id="formVanBanCanCuFileName" style="font-size: 13px; color: #64748b; font-style: italic;">Chưa chọn tệp</span>
+                        </div>
+                        <div id="formVanBanCanCuActions" style="display: none; margin-top: 6px; font-size: 13px; gap: 12px;">
+                            <a href="javascript:void(0)" onclick="viewXdcqVanBanCanCuFile()" style="color: var(--primary-color); font-weight: 500; text-decoration: none;"><i class="fa-solid fa-eye"></i> Xem file</a>
+                            <a href="javascript:void(0)" id="btnRemoveXdcqVanBanCanCu" onclick="removeXdcqVanBanCanCuFile()" style="color: #ef4444; font-weight: 500; text-decoration: none;"><i class="fa-solid fa-trash-can"></i> Xóa file</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sub-section-title">V. BẢNG TÀI LIỆU ĐÍNH KÈM</div>
             <div class="table-container">
                 <table class="custom-table" style="min-width: 760px;">
                     <thead>
@@ -672,6 +717,14 @@
                     <div class="detail-label">Phương thức nhận kết quả</div>
                     <div class="detail-value" id="dtHinhThucNhan"></div>
                 </div>
+                <div class="detail-row">
+                    <div class="detail-label">Văn bản làm căn cứ YCBT</div>
+                    <div class="detail-value" id="dtVanBanCanCuTen" style="font-weight: 500;">Chưa cung cấp</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Tệp văn bản căn cứ đính kèm</div>
+                    <div class="detail-value" id="dtVanBanCanCuFile">Không có</div>
+                </div>
 
                 <!-- Visible only if verifying or completed -->
                 <div id="dtVerificationResultBlock" style="display: none;">
@@ -852,48 +905,70 @@
             </div>
         </div>
     </div>
-    <!-- Preview Modal for Phiếu hướng dẫn bổ sung hồ sơ xác định cơ quan -->
+    <!-- Modal Yêu cầu bổ sung hồ sơ xác định cơ quan (Đã bỏ phần In phiếu) -->
     <div id="previewModalSupplement" class="confirm-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
-        <div class="sticky-modal-container" style="background:#fff; width:800px; max-width:95%; border-radius:8px; display:flex; flex-direction:column; max-height:90vh; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+        <div class="sticky-modal-container" style="background:#fff; width:720px; max-width:95%; border-radius:8px; display:flex; flex-direction:column; max-height:90vh; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
             <div class="confirm-modal-header" style="color:var(--primary-color); background-color:#f8fafc; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; padding:24px 24px 16px 24px;">
                 <div style="display:flex; align-items:center; gap:10px; font-size:16px; font-weight:700; color:var(--primary-color); text-transform:uppercase;">
-                    <i class="fa-solid fa-print"></i> IN PHIẾU YÊU CẦU BỔ SUNG HỒ SƠ
+                    <i class="fa-solid fa-file-circle-question"></i> YÊU CẦU BỔ SUNG HỒ SƠ
                 </div>
                 <span onclick="closePreviewSupplementModal()" style="cursor:pointer; font-size:24px; font-weight:bold; color:#64748b; line-height:1;" title="Đóng">&times;</span>
             </div>
-            <div class="sticky-modal-body" id="printSupplementBody" style="padding:24px 32px; overflow-y:auto; flex:1; font-family:'Times New Roman', Times, serif; font-size:14.5px; line-height:1.6; color:#111;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                    <div style="text-align:center;">
-                        <div style="font-weight:bold; font-size:13px; text-transform:uppercase;" id="supplementHeaderAgency">SỞ TƯ PHÁP TP. HÀ NỘI</div>
-                        <div style="font-weight:bold; font-size:13px;">BỘ PHẬN TIẾP NHẬN VÀ TRẢ KẾT QUẢ</div>
-                        <div style="border-bottom:1px solid #000; width:130px; margin:4px auto;"></div>
+            <div class="sticky-modal-body" style="padding:24px; overflow-y:auto; flex:1; font-size:14px; line-height:1.6; color:#1e293b;">
+                <div id="supplementNoticeContent">
+                    <!-- Dynamic form injected by JS -->
+                </div>
+            </div>
+            <div class="modal-footer" style="padding:16px 24px 24px 24px; border-top:1px solid var(--border-color); display:flex; justify-content:flex-end; gap:10px; background:#f8fafc; flex-shrink:0;">
+                <button type="button" class="btn btn-secondary" onclick="closePreviewSupplementModal()">Hủy bỏ</button>
+                <button type="button" class="btn btn-primary" onclick="executeSaveSupplement()"><i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu bổ sung</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Từ chối yêu cầu xác định cơ quan -->
+    <div id="rejectModal" class="confirm-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
+        <div class="sticky-modal-container" style="background:#fff; width:680px; max-width:95%; border-radius:8px; display:flex; flex-direction:column; max-height:90vh; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+            <div class="confirm-modal-header" style="color:#b91c1c; background-color:#fff1f2; border-bottom:1px solid #fecdd3; display:flex; justify-content:space-between; align-items:center; padding:24px 24px 16px 24px;">
+                <div style="display:flex; align-items:center; gap:10px; font-size:16px; font-weight:700; color:#b91c1c; text-transform:uppercase;">
+                    <i class="fa-solid fa-ban"></i> TỪ CHỐI YÊU CẦU XÁC ĐỊNH CƠ QUAN
+                </div>
+                <span onclick="closeRejectModal()" style="cursor:pointer; font-size:24px; font-weight:bold; color:#64748b; line-height:1;" title="Đóng">&times;</span>
+            </div>
+            <div class="sticky-modal-body" style="padding:24px; overflow-y:auto; flex:1; font-size:14px; line-height:1.6; color:#1e293b;">
+                <input type="hidden" id="rejectRequestId">
+                <div id="rejectSummaryBox" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:14px 18px; margin-bottom:18px;">
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:13.5px;">
+                        <div><strong style="color:#475569;">Mã yêu cầu:</strong> <span id="rejectReqCode" style="font-weight:700; color:#1e3a8a;"></span></div>
+                        <div><strong style="color:#475569;">Người yêu cầu:</strong> <span id="rejectReqNyc" style="font-weight:600; color:#0f172a;"></span></div>
+                        <div style="grid-column: span 2;"><strong style="color:#475569;">Lĩnh vực:</strong> <span id="rejectReqLinhVuc" style="font-weight:500;"></span></div>
                     </div>
-                    <div style="text-align:center;">
-                        <div style="font-weight:bold; font-size:13.5px; text-transform:uppercase;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
-                        <div style="font-weight:bold; font-size:13px; font-style:italic;">Độc lập - Tự do - Hạnh phúc</div>
-                        <div style="border-bottom:1px solid #000; width:160px; margin:4px auto;"></div>
+                </div>
+
+                <div class="form-group">
+                    <span class="form-label">Lý do từ chối<span class="required">*</span></span>
+                    <textarea class="form-control" id="rejectReasonInput" rows="4" placeholder="Nhập căn cứ, lý do chi tiết từ chối yêu cầu xác định cơ quan..." oninput="clearValidation()"></textarea>
+                    <div class="error-message" id="rejectReasonError" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
+                </div>
+
+                <div class="form-group" style="margin-bottom:0;">
+                    <span class="form-label">Văn bản / Thông báo từ chối đính kèm</span>
+                    <div style="display:flex; align-items:center; gap:10px; margin-top:4px;">
+                        <input type="file" id="rejectFileInput" style="display:none;" onchange="handleRejectFileUpload(this)" accept=".pdf,.doc,.docx,.jpg,.png">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('rejectFileInput').click()">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp đính kèm
+                        </button>
+                        <span id="rejectFileName" style="font-size:13px; color:#64748b; font-style:italic;">Chưa chọn tệp</span>
                     </div>
-                </div>
-                <div style="text-align:center; margin:20px 0 15px 0;">
-                    <h3 style="font-size:17px; font-weight:bold; text-transform:uppercase; margin:0 0 5px 0; color:#0f172a;">PHIẾU HƯỚNG DẪN BỔ SUNG HỒ SƠ</h3>
-                    <div style="font-style:italic; font-size:13.5px; color:#475569;">(Về việc yêu cầu xác định cơ quan giải quyết bồi thường)</div>
-                </div>
-                <div id="supplementNoticeContent" style="margin-top:16px;">
-                    <!-- Content injected by JS -->
-                </div>
-                <div style="display:flex; justify-content:flex-end; margin-top:35px; text-align:center;">
-                    <div style="width:45%;">
-                        <div style="font-style:italic; font-size:13.5px; color:#475569;" id="supplementNoticeDate">Hà Nội, ngày ... tháng ... năm 2026</div>
-                        <div style="font-weight:bold; margin-top:5px; text-transform:uppercase;">NGƯỜI HƯỚNG DẪN BỔ SUNG</div>
-                        <div style="font-style:italic; font-size:13px; color:#64748b;">(Ký và ghi rõ họ tên)</div>
-                        <div style="height:75px;"></div>
-                        <div style="font-weight:bold; color:#0f172a;" id="supplementNoticeSigner">Nguyễn Văn Chuyên Viên</div>
+                    <div id="rejectFileActions" style="display:none; margin-top:6px; font-size:13px; gap:12px;">
+                        <a href="javascript:void(0)" onclick="viewRejectFile()" style="color:var(--primary-color); font-weight:500; text-decoration:none;"><i class="fa-solid fa-eye"></i> Xem file</a>
+                        <a href="javascript:void(0)" onclick="removeRejectFile()" style="color:#ef4444; font-weight:500; text-decoration:none;"><i class="fa-solid fa-trash-can"></i> Xóa file</a>
                     </div>
                 </div>
             </div>
             <div class="modal-footer" style="padding:16px 24px 24px 24px; border-top:1px solid var(--border-color); display:flex; justify-content:flex-end; gap:10px; background:#f8fafc; flex-shrink:0;">
-                <button type="button" class="btn btn-secondary" onclick="closePreviewSupplementModal()">Đóng</button>
-                <button type="button" class="btn btn-primary" onclick="executePrintSupplement()"><i class="fa-solid fa-print"></i> In phiếu</button>
+                <button type="button" class="btn btn-secondary" onclick="closeRejectModal()">Hủy bỏ</button>
+                <button type="button" class="btn btn-danger" onclick="confirmRejectRequest()"><i class="fa-solid fa-ban"></i> Từ chối yêu cầu</button>
             </div>
         </div>
     </div>

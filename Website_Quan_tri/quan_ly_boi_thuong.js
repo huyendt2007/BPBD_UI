@@ -1598,10 +1598,7 @@
                     }
                 }
 
-                let printSuppBtn = `<button class="icon-btn print" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chỉ in phiếu bổ sung khi hồ sơ ở trạng thái Yêu cầu bổ sung"><i class="fa-solid fa-print"></i></button>`;
-                if (item.status === 'Yêu cầu bổ sung') {
-                    printSuppBtn = `<button class="icon-btn print" title="In Phiếu Bổ sung" onclick="event.stopPropagation(); printSupplementNotice('${item.id}')"><i class="fa-solid fa-print"></i></button>`;
-                }
+                let printSuppBtn = `<button class="icon-btn print" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Đã bỏ chức năng in phiếu tại yêu cầu bổ sung"><i class="fa-solid fa-print"></i></button>`;
 
                 let actionsHtml = '';
                 if (currentRole === 'thu-truong') {
@@ -3643,7 +3640,6 @@
                     } else {
                         buttonsHtml = `
                             <button class="btn btn-primary" onclick="switchToEditMode('bosung')"><i class="fa-solid fa-circle-check"></i> Bổ sung hồ sơ</button>
-                            <button class="btn btn-secondary" onclick="printSupplementNotice('${claim.id}')"><i class="fa-solid fa-print"></i> In Phiếu Bổ sung</button>
                         `;
                     }
                     break;

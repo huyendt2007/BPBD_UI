@@ -505,7 +505,32 @@
                     </div>
                 </div>
 
-                <div class="info-group-title">III. Bảng tài liệu đính kèm</div>
+                <div class="info-group-title">III. Văn bản làm căn cứ yêu cầu bồi thường</div>
+                <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px; padding:16px 20px; margin-bottom:20px;">
+                    <div class="grid-2" style="gap:20px; align-items:start;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Tên văn bản làm căn cứ yêu cầu bồi thường</span>
+                            <input id="formBasisDocName" class="form-control" placeholder="Nhập tên văn bản làm căn cứ (Bản án, Quyết định giải quyết khiếu nại...)...">
+                            <div style="font-size:12px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-circle-info"></i> Không bắt buộc. Tự động kế thừa nếu hồ sơ Xác định cơ quan đã nhập.</div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Tệp đính kèm văn bản làm căn cứ</span>
+                            <div id="basisDocUploadWrap" style="display:flex; align-items:center; gap:10px; margin-top:4px;">
+                                <input type="file" id="formBasisDocFile" style="display:none;" onchange="handleBasisDocUpload(this)" accept=".pdf,.doc,.docx,.jpg,.png">
+                                <button type="button" class="btn btn-secondary btn-sm" id="btnUploadBasisDoc" onclick="document.getElementById('formBasisDocFile').click()">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp đính kèm
+                                </button>
+                                <span id="formBasisDocFileName" style="font-size:13px; color:#64748b; font-style:italic;">Chưa chọn tệp</span>
+                            </div>
+                            <div id="basisDocFileActions" style="display:none; margin-top:6px; font-size:13px; gap:12px;">
+                                <a href="javascript:void(0)" onclick="viewBasisDocFile()" style="color:var(--primary-color); font-weight:500; text-decoration:none;"><i class="fa-solid fa-eye"></i> Xem file</a>
+                                <a href="javascript:void(0)" id="btnRemoveBasisDoc" onclick="removeBasisDocFile()" style="color:#ef4444; font-weight:500; text-decoration:none;"><i class="fa-solid fa-trash-can"></i> Xóa file</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-group-title">IV. Bảng tài liệu đính kèm</div>
                 <div class="table-container">
                     <table class="custom-table" style="min-width:760px;">
                         <thead>
@@ -572,8 +597,7 @@
                 <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
                     <div style="text-align:center;">
                         <div style="font-weight:bold; font-size:13px; text-transform:uppercase;" id="receiptHeaderAgency">SỞ TƯ PHÁP TP. HÀ NỘI</div>
-                        <div style="font-weight:bold; font-size:13px;">BỘ PHẬN TIẾP NHẬN VÀ TRẢ KẾT QUẢ</div>
-                        <div style="border-bottom:1px solid #000; width:140px; margin:4px auto;"></div>
+                        <div style="border-bottom:1px solid #000; width:140px; margin:6px auto 4px auto;"></div>
                     </div>
                     <div style="text-align:center;">
                         <div style="font-weight:bold; font-size:13.5px; text-transform:uppercase;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
@@ -582,7 +606,7 @@
                     </div>
                 </div>
                 <div style="text-align:center; margin:20px 0 15px 0;">
-                    <h3 style="font-size:17px; font-weight:bold; text-transform:uppercase; margin:0 0 5px 0; color:#0f172a;">GIẤY TIẾP NHẬN HỒ SƠ VÀ HẸN TRẢ KẾT QUẢ</h3>
+                    <h3 style="font-size:17px; font-weight:bold; text-transform:uppercase; margin:0 0 5px 0; color:#0f172a;">GIẤY TIẾP NHẬN HỒ SƠ</h3>
                     <div style="font-style:italic; font-size:13.5px; color:#475569;" id="receiptSubTitle">(Về việc yêu cầu bồi thường nhà nước / xác định cơ quan giải quyết bồi thường)</div>
                 </div>
                 <div id="receptionReceiptContent" style="margin-top:16px;">
@@ -1592,6 +1616,21 @@
             updateWardOptions(claim ? (claim.nycPhuongXa || "") : "");
             setValue("formAddress", claim ? (claim.nycAddressDetail || claim.address || "") : "");
 
+            // Thông tin Văn bản làm căn cứ yêu cầu bồi thường (Kế thừa từ Xác định cơ quan nếu có)
+            let basisName = claim ? (claim.vanBanCanCuTen || "") : "";
+            let basisFile = claim ? (claim.vanBanCanCuFile || "") : "";
+            if (!basisName && claim && (claim.xdCode || claim.requestType === REQUEST_TYPE_XDCQ)) {
+                const xdRec = typeof BTNN_WF !== "undefined" && BTNN_WF.getRecord ? BTNN_WF.getRecord(claim.xdCode || claim.code) : null;
+                if (xdRec) {
+                    basisName = xdRec.vanBanCanCuTen || basisName;
+                    basisFile = xdRec.vanBanCanCuFile || basisFile;
+                }
+            }
+            setValue("formBasisDocName", basisName);
+            setBasisDocUI(basisFile, isReadOnly);
+            const basisNameInput = document.getElementById("formBasisDocName");
+            if (basisNameInput) basisNameInput.disabled = isReadOnly;
+
             // Toggle input disable state
             const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress"];
             controlIds.forEach(ctrlId => {
@@ -1615,6 +1654,12 @@
         function closeReceptionForm() {
             editingId = null;
             isFormReadOnly = false;
+            removeBasisDocFile();
+            const basisNameInput = document.getElementById("formBasisDocName");
+            if (basisNameInput) {
+                basisNameInput.value = "";
+                basisNameInput.disabled = false;
+            }
             const formView = document.getElementById("formView");
             if (formView) formView.classList.remove("readonly-mode");
             const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress"];
@@ -1665,6 +1710,9 @@
                 .filter(doc => (doc.name || "").trim() || (doc.file || "").trim())
                 .map(doc => ({ name: doc.name.trim(), file: doc.file || "" }));
 
+            const vanBanCanCuTenVal = getValue("formBasisDocName");
+            const vanBanCanCuFileVal = currentBasisDocFile || "";
+
             if (editingId) {
                 const claim = claimsList.find(item => item.id === editingId);
                 if (!claim) return;
@@ -1685,6 +1733,8 @@
                 claim.nycPhuongXa = getValue("formWard");
                 claim.nycAddressDetail = getValue("formAddress");
                 claim.address = getValue("formAddress");
+                claim.vanBanCanCuTen = vanBanCanCuTenVal;
+                claim.vanBanCanCuFile = vanBanCanCuFileVal;
                 claim.receptionDocs = cleanDocs;
                 claim.files = cleanDocs.filter(doc => doc.file).map(doc => ({ name: doc.file, url: "#" }));
                 if (!claim.timeline) claim.timeline = [];
@@ -1697,6 +1747,8 @@
                 if (wfCurrent) {
                     const data = buildWorkflowData(claim);
                     ["id", "code", "receivedAt", "date", "createdBy", "receivedBy"].forEach(k => delete data[k]);
+                    data.vanBanCanCuTen = vanBanCanCuTenVal;
+                    data.vanBanCanCuFile = vanBanCanCuFileVal;
                     Object.assign(wfCurrent, data);
                     BTNN_WF.addHistory(wfCurrent, "Cập nhật thông tin tiếp nhận", "Cán bộ tiếp nhận cập nhật thông tin hồ sơ.");
                     BTNN_WF.upsertRecord(wfCurrent);
@@ -1726,6 +1778,8 @@
                 nycPhuongXa: getValue("formWard"),
                 nycAddressDetail: getValue("formAddress"),
                 address: getValue("formAddress"),
+                vanBanCanCuTen: vanBanCanCuTenVal,
+                vanBanCanCuFile: vanBanCanCuFileVal,
                 status: "Chờ phân công",
                 agency: BTNN_WF.unitName(CURRENT_ROOT_UNIT),
                 totalNum: 0,
@@ -2021,6 +2075,70 @@
             return escapeHtml(value);
         }
 
+        let currentBasisDocFile = "";
+
+        function handleBasisDocUpload(input) {
+            if (!input.files || input.files.length === 0) return;
+            currentBasisDocFile = input.files[0].name;
+            const nameEl = document.getElementById("formBasisDocFileName");
+            if (nameEl) {
+                nameEl.innerHTML = `<i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:4px;"></i><strong>${escapeHtml(currentBasisDocFile)}</strong>`;
+                nameEl.style.fontStyle = "normal";
+                nameEl.style.color = "#0f172a";
+            }
+            const actionsEl = document.getElementById("basisDocFileActions");
+            if (actionsEl) actionsEl.style.display = "inline-flex";
+            const inputNameEl = document.getElementById("formBasisDocName");
+            if (inputNameEl && !inputNameEl.value.trim()) {
+                inputNameEl.value = currentBasisDocFile.replace(/\.[^.]+$/, "");
+            }
+        }
+
+        function removeBasisDocFile() {
+            currentBasisDocFile = "";
+            const fileInput = document.getElementById("formBasisDocFile");
+            if (fileInput) fileInput.value = "";
+            const nameEl = document.getElementById("formBasisDocFileName");
+            if (nameEl) {
+                nameEl.innerHTML = "Chưa chọn tệp";
+                nameEl.style.fontStyle = "italic";
+                nameEl.style.color = "#64748b";
+            }
+            const actionsEl = document.getElementById("basisDocFileActions");
+            if (actionsEl) actionsEl.style.display = "none";
+        }
+
+        function viewBasisDocFile() {
+            if (!currentBasisDocFile) return;
+            showToast(`Giả lập mở file văn bản căn cứ: ${currentBasisDocFile}`, "info");
+        }
+
+        function setBasisDocUI(fileName, isReadOnly) {
+            currentBasisDocFile = fileName || "";
+            const nameEl = document.getElementById("formBasisDocFileName");
+            const actionsEl = document.getElementById("basisDocFileActions");
+            const btnUpload = document.getElementById("btnUploadBasisDoc");
+            const btnRemove = document.getElementById("btnRemoveBasisDoc");
+
+            if (nameEl) {
+                if (currentBasisDocFile) {
+                    nameEl.innerHTML = `<i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:4px;"></i><strong>${escapeHtml(currentBasisDocFile)}</strong>`;
+                    nameEl.style.fontStyle = "normal";
+                    nameEl.style.color = "#0f172a";
+                } else {
+                    nameEl.innerHTML = isReadOnly ? "<span style='color:var(--text-muted); font-style:italic;'>Không có tệp đính kèm</span>" : "Chưa chọn tệp";
+                    nameEl.style.fontStyle = "italic";
+                    nameEl.style.color = "#64748b";
+                }
+            }
+
+            if (actionsEl) {
+                actionsEl.style.display = currentBasisDocFile ? "inline-flex" : "none";
+            }
+            if (btnUpload) btnUpload.style.display = isReadOnly ? "none" : "inline-flex";
+            if (btnRemove) btnRemove.style.display = isReadOnly ? "none" : "inline-block";
+        }
+
         // In Phiếu tiếp nhận yêu cầu bồi thường (MH03)
         function printCurrentReceptionReceipt() {
             if (editingId) printReceptionReceipt(editingId);
@@ -2083,11 +2201,10 @@
             const loaiYeuCau = claim.requestType || (claim.code && claim.code.startsWith("XD") ? REQUEST_TYPE_XDCQ : REQUEST_TYPE_YCBT);
             const linhVuc = formatLinhVuc(claim.fieldGroup || claim.linhVuc || claim.sector);
             const fullAddress = getFullAddress(claim);
-            const donViTiepNhan = (claim.agency && claim.agency !== "Chưa xác định") ? claim.agency : "Sở Tư pháp TP. Hà Nội - Bộ phận Tiếp nhận và Trả kết quả";
+            const donViTiepNhan = (claim.agency && claim.agency !== "Chưa xác định") ? claim.agency : "Sở Tư pháp TP. Hà Nội";
             const canBoTiepNhan = claim.receivedBy || CURRENT_OFFICER;
             const caseCode = claim.code || "VVBT-2026-001";
 
-            
             // Ngày tiếp nhận định dạng dd/mm/yyyy
             let ngayTiepNhan = "01/03/2026";
             let gioTiepNhan = "08:30";
@@ -2110,6 +2227,14 @@
             }
 
             // Bố cục thông tin 2 cột chuẩn hóa theo mô tả tài liệu SRS MH03
+            const vanBanCanCuHtml = claim.vanBanCanCuTen ? `
+                <div style="grid-column: span 2;">
+                    <span style="color:#64748b; font-size:12.5px; display:block;">Văn bản làm căn cứ yêu cầu bồi thường</span>
+                    <strong style="color:#0f172a; font-size:13.5px;">${escapeHtml(claim.vanBanCanCuTen)}</strong>
+                    ${claim.vanBanCanCuFile ? `<span style="margin-left:8px; font-size:12.5px; color:#475569;">(Đính kèm: <i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> ${escapeHtml(claim.vanBanCanCuFile)})</span>` : ''}
+                </div>
+            ` : '';
+
             container.innerHTML = `
                 <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px; padding:16px 20px; margin:16px 0 20px 0; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
                     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px 24px; font-size:13.5px; line-height:1.5;">
@@ -2146,20 +2271,17 @@
                             <span style="color:#64748b; font-size:12.5px; display:block;">Đơn vị tiếp nhận</span>
                             <span style="color:#1e293b; font-weight:500;">${escapeHtml(donViTiepNhan)}</span>
                         </div>
+                        ${vanBanCanCuHtml}
                     </div>
                 </div>
 
                 <div style="margin: 16px 0; font-size:14.5px; line-height:1.7;">
-                    <p style="margin:4px 0;">Hôm nay, vào hồi <strong>${escapeHtml(gioTiepNhan)}</strong> ngày <strong>${escapeHtml(ngayTiepNhan)}</strong>, tại Bộ phận Tiếp nhận và Trả kết quả.</p>
+                    <p style="margin:4px 0;">Hôm nay, vào hồi <strong>${escapeHtml(gioTiepNhan)}</strong> ngày <strong>${escapeHtml(ngayTiepNhan)}</strong>.</p>
                     <p style="margin:4px 0;">Chúng tôi gồm:</p>
                     <p style="margin:4px 0 4px 16px;">- <strong>Người tiếp nhận:</strong> Ông/Bà <strong>${escapeHtml(canBoTiepNhan)}</strong> - Cán bộ tiếp nhận.</p>
                     <p style="margin:4px 0 4px 16px;">- <strong>Người nộp hồ sơ:</strong> Ông/Bà <strong>${escapeHtml(claim.nyc || 'Nguyễn Văn A')}</strong>.</p>
                     <p style="margin:4px 0 4px 16px;">- <strong>Hình thức tiếp nhận:</strong> ${escapeHtml(normalizeReceiveMethod(claim.nopKenh))}.</p>
                     <p style="margin:8px 0 4px 0;">Đã tiếp nhận hồ sơ yêu cầu theo đúng các nội dung thông tin được ghi nhận ở trên.</p>
-                </div>
-
-                <div style="margin: 16px 0; padding:12px 16px; background:#eff6ff; border-left:4px solid #3b82f6; border-radius:0 4px 4px 0; font-size:14px; line-height:1.6; color:#1e40af;">
-                    <strong>Thời hạn giải quyết / Hẹn trả kết quả:</strong> Hồ sơ sẽ được kiểm tra tính hợp lệ và thông báo kết quả giải quyết/thụ lý trong thời hạn <strong>02 ngày làm việc</strong> kể từ ngày tiếp nhận theo quy định tại Luật Trách nhiệm bồi thường của Nhà nước.
                 </div>
             `;
 

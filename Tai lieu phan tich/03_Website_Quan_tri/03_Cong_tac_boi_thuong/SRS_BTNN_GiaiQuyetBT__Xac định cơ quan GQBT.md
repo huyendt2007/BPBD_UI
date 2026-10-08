@@ -1,4 +1,4 @@
-### 4.3.3. Dành cho Cán bộ nghiệp vụ bồi thường nhà nước
+﻿### 4.3.3. Dành cho Cán bộ nghiệp vụ bồi thường nhà nước
 
 #### 4.3.3.1. Nhóm tính năng Xác định cơ quan giải quyết bồi thường
 
@@ -14,25 +14,18 @@
 *a. Phân quyền*
 
 \- Chỉ người dùng thuộc đơn vị được áp dụng giá trị `Xác định cơ quan giải quyết bồi thường` trong [Danh mục Loại yêu cầu - Quản lý danh mục - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Quan_ly_danh_muc.md) [DM_54] (trường `Đơn vị áp dụng`) mới xử lý được loại yêu cầu này. Theo cấu hình danh mục, giá trị này chỉ áp dụng cho Bộ Tư pháp và các Sở Tư pháp.
-+ Đơn vị áp dụng tính cả đơn vị cha: khi chọn đơn vị cha trong `Đơn vị áp dụng` thì toàn bộ đơn vị trực thuộc được áp dụng.
-+ Người dùng thuộc đơn vị không được áp dụng: màn hình danh sách hiển thị thông báo *"Loại yêu cầu "Xác định cơ quan giải quyết bồi thường" không áp dụng cho đơn vị [Tên đơn vị] (Danh mục Loại yêu cầu - Đơn vị áp dụng). Chỉ Bộ Tư pháp và Sở Tư pháp được xử lý loại yêu cầu này."* và không hiển thị nút `Tạo yêu cầu`.
-
-\- Quyền thao tác trên từng hồ sơ xác định theo vai trò của người dùng với hồ sơ:
-
-| Vai trò | Quyền |
-| :--- | :--- |
-| Cán bộ chủ trì | Được lãnh đạo chỉ định khi phân công (01 người) hoặc là người tạo hồ sơ trực tiếp. Thực hiện toàn bộ thao tác xử lý: Tiếp nhận, Cập nhật thông tin, Cập nhật kết quả xác định, Trình phê duyệt/Trình lại, In Phiếu Bổ sung, Tiếp nhận hồ sơ bổ sung, Chuyển CQGQBT. |
++ Đơn vị áp dụng tính cả đơn vị cha: khi chọn đơn vị cha trong `Đơn vị �| Cán bộ chủ trì | Được lãnh đạo chỉ định khi phân công (01 người) hoặc là người tạo hồ sơ trực tiếp. Thực hiện toàn bộ thao tác xử lý: Tiếp nhận, Yêu cầu bổ sung, Từ chối, Cập nhật thông tin, Cập nhật kết quả xác định, Trình phê duyệt/Trình lại, Tiếp nhận hồ sơ bổ sung, Chuyển CQGQBT. |
 | Cán bộ phối hợp | Được lãnh đạo chỉ định khi phân công (nhiều người). Chỉ được xem hồ sơ và `Bổ sung tài liệu`; không được trình phê duyệt và không thực hiện các thao tác xử lý khác. |
 | Người tạo | Với hồ sơ `Lưu nháp`: chỉ người tạo nhìn thấy và được Chỉnh sửa, Xóa, Gửi yêu cầu. |
 | Lãnh đạo các đơn vị trên luồng | Lãnh đạo (thuộc Nhóm lãnh đạo) của các đơn vị đã chuyển/phân công hồ sơ và các đơn vị trên luồng phê duyệt được xem hồ sơ tại danh sách. Thao tác phân công, phê duyệt, từ chối phê duyệt, thu hồi thực hiện tại [Màn hình Việc chờ lãnh đạo xử lý - Việc chờ lãnh đạo xử lý - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_ViecChoLanhDaoXuLy.md). |
 
-\- Nhóm lãnh đạo, đơn vị được chuyển và cán bộ được phân công của từng đơn vị lấy theo [Cấu hình luồng xử lý - Cấu hình luồng xử lý - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Cau_hinh_luong_xu_ly.md).
+- Nhóm lãnh đạo, đơn vị được chuyển và cán bộ được phân công của từng đơn vị lấy theo [Cấu hình luồng xử lý - Cấu hình luồng xử lý - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Cau_hinh_luong_xu_ly.md).
 
 *b. Điều kiện thực hiện*
 
-\- Người dùng truy cập màn hình `Xác định cơ quan giải quyết bồi thường` trên Website quản trị.
+- Người dùng truy cập màn hình `Xác định cơ quan giải quyết bồi thường` trên Website quản trị.
 
-\- Người dùng được phân quyền thực hiện tính năng.
+- Người dùng được phân quyền thực hiện tính năng.
 
 *c. Trạng thái hồ sơ*
 
@@ -52,31 +45,31 @@
 
 *d. Quy tắc trình - phê duyệt*
 
-\- **Luồng phê duyệt**: là luồng ngược chiều luồng phân công thực tế của chính hồ sơ. Hệ thống lấy danh sách các đơn vị đã chuyển/phân công hồ sơ theo thứ tự trong `Quá trình phân công`, đảo ngược và loại bỏ đơn vị trùng (ví dụ phân công Bộ Tư pháp → Cục → Phòng thì phê duyệt Phòng → Cục → Bộ Tư pháp).
+- **Luồng phê duyệt**: là luồng ngược chiều luồng phân công thực tế của chính hồ sơ. Hệ thống lấy danh sách các đơn vị đã chuyển/phân công hồ sơ theo thứ tự trong `Quá trình phân công`, đảo ngược và loại bỏ đơn vị trùng (ví dụ phân công Bộ Tư pháp → Cục → Phòng thì phê duyệt Phòng → Cục → Bộ Tư pháp).
 
-\- **Hồ sơ tạo trực tiếp** (không có lượt phân công): luồng phê duyệt đi từ đơn vị của cán bộ chủ trì lên đơn vị gốc theo cây Cơ cấu tổ chức, chỉ gồm các đơn vị có Nhóm lãnh đạo trong Cấu hình luồng xử lý. Nếu không xác định được cấp phê duyệt nào, hệ thống không cho trình và hiển thị *"Chưa xác định được cấp phê duyệt. Vui lòng liên hệ Quản trị hệ thống."*
+- **Hồ sơ tạo trực tiếp** (không có lượt phân công): luồng phê duyệt đi từ đơn vị của cán bộ chủ trì lên đơn vị gốc theo cây Cơ cấu tổ chức, chỉ gồm các đơn vị có Nhóm lãnh đạo trong Cấu hình luồng xử lý. Nếu không xác định được cấp phê duyệt nào, hệ thống không cho trình và hiển thị *"Chưa xác định được cấp phê duyệt. Vui lòng liên hệ Quản trị hệ thống."*
 
-\- **Phê duyệt tại từng cấp**: bất kỳ tài khoản nào thuộc Nhóm lãnh đạo của đơn vị đang đến lượt đều được xử lý, tại tab `Chờ duyệt` của màn hình Việc chờ lãnh đạo xử lý:
+- **Phê duyệt tại từng cấp**: bất kỳ tài khoản nào thuộc Nhóm lãnh đạo của đơn vị đang đến lượt đều được xử lý, tại tab `Chờ duyệt` của màn hình Việc chờ lãnh đạo xử lý:
 + `Phê duyệt` (Ý kiến phê duyệt, không bắt buộc): nếu chưa phải cấp cuối, hồ sơ chuyển cấp phê duyệt tiếp theo, giữ trạng thái `Chờ phê duyệt`; nếu là cấp cuối, hồ sơ chuyển trạng thái theo nội dung trình: `Hoàn thành xác định` → `Chờ chuyển CQGQBT`; `Yêu cầu bổ sung` → `Yêu cầu bổ sung`; `Từ chối` → `Bị từ chối`.
 + `Từ chối` (Lý do từ chối phê duyệt, bắt buộc) tại bất kỳ cấp nào: hồ sơ chuyển `Bị trả lại` về cán bộ chủ trì, ghi nhận người trả lại, đơn vị, thời điểm và lý do. Lịch sử xử lý ghi hành động `Từ chối phê duyệt` để phân biệt với nội dung trình `Từ chối` yêu cầu. Khi cán bộ chủ trì trình lại, luồng phê duyệt bắt đầu lại từ cấp phê duyệt đầu tiên.
 + Lãnh đạo cấp dưới được thu hồi kết quả phê duyệt đã chuyển cấp trên khi cấp trên chưa phê duyệt/từ chối.
 + `Phê duyệt` là quyết định phê duyệt thuần túy. Việc ký số văn bản (nếu có) là bước riêng, không gộp vào thao tác `Phê duyệt`.
 
-\- **Kiểm tra đồng thời**: mọi thao tác phân công, phê duyệt, từ chối, thu hồi đều được hệ thống kiểm tra lại trạng thái hồ sơ tại máy chủ trước khi ghi nhận. Nếu hồ sơ đã được người khác xử lý, hệ thống hiển thị *"Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phân công/phê duyệt. Vui lòng tải lại danh sách."*
+- **Kiểm tra đồng thời**: mọi thao tác phân công, phê duyệt, từ chối, thu hồi đều được hệ thống kiểm tra lại trạng thái hồ sơ tại máy chủ trước khi ghi nhận. Nếu hồ sơ đã được người khác xử lý, hệ thống hiển thị *"Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phân công/phê duyệt. Vui lòng tải lại danh sách."*
 
 *e. Ghi chú các quy tắc đang áp dụng theo mặc định (chờ xác nhận nghiệp vụ)*
 
-\- Chọn đơn vị cha trong `Đơn vị áp dụng` của Danh mục Loại yêu cầu thì áp dụng cho toàn bộ đơn vị trực thuộc.
+- Chọn đơn vị cha trong `Đơn vị áp dụng` của Danh mục Loại yêu cầu thì áp dụng cho toàn bộ đơn vị trực thuộc.
 
-\- Không cho `Chuyển CQGQBT` khi cơ quan được chỉ định chưa được cấu hình luồng phân công.
+- Không cho `Chuyển CQGQBT` khi cơ quan được chỉ định chưa được cấu hình luồng phân công.
 
-\- Bắt buộc nhập ít nhất một thông tin liên hệ của người yêu cầu (Số điện thoại liên hệ hoặc Thư điện tử (Email)).
+- Bắt buộc nhập ít nhất một thông tin liên hệ của người yêu cầu (Số điện thoại liên hệ hoặc Thư điện tử (Email)).
 
-\- Cán bộ phối hợp chỉ được xem hồ sơ và bổ sung tài liệu, không được trình phê duyệt.
+- Cán bộ phối hợp chỉ được xem hồ sơ và bổ sung tài liệu, không được trình phê duyệt.
 
-\- Hồ sơ tạo trực tiếp tại phân hệ bỏ qua bước phân công, người tạo là cán bộ chủ trì; luồng phê duyệt theo cây đơn vị của người tạo.
+- Hồ sơ tạo trực tiếp tại phân hệ bỏ qua bước phân công, người tạo là cán bộ chủ trì; luồng phê duyệt theo cây đơn vị của người tạo.
 
-\- Sau khi `Yêu cầu bổ sung` được phê duyệt, cán bộ chủ trì thực hiện `Tiếp nhận hồ sơ bổ sung` để chuyển hồ sơ về `Đang thực hiện`.
+- Sau khi `Yêu cầu bổ sung` được phê duyệt, cán bộ chủ trì thực hiện `Tiếp nhận hồ sơ bổ sung` để chuyển hồ sơ về `Đang thực hiện`.
 
 ---
 
@@ -93,17 +86,17 @@ flowchart TD
     C -->|"Lưu nháp"| D["Lưu nháp"]
     D -->|"Gửi yêu cầu"| DTH["Đang thực hiện"]
     C -->|"Gửi yêu cầu (bỏ qua phân công, người tạo là cán bộ chủ trì)"| DTH
-    CTN -->|"Tiếp nhận (cán bộ chủ trì)"| DTH
+    CTN -->|"Tiếp nhận / Yêu cầu bổ sung / Từ chối (cán bộ chủ trì)"| DTH
     DTH --> KQ["Cập nhật thông tin / Cập nhật kết quả xác định"]
     KQ --> DTH
     DTH -->|"Trình phê duyệt"| CPD["Chờ phê duyệt"]
     CPD --> PD{"Lãnh đạo từng cấp trên luồng phê duyệt"}
     PD -->|"Từ chối phê duyệt ở bất kỳ cấp"| BTL["Bị trả lại"]
-    BTL -->|"Cập nhật, Trình lại từ cấp đầu tiên"| CPD
+    BTL -->|"Cập nhật / Yêu cầu bổ sung / Từ chối / Trình lại"| CPD
     PD -->|"Cấp cuối phê duyệt: Hoàn thành xác định"| CC["Chờ chuyển CQGQBT"]
     PD -->|"Cấp cuối phê duyệt: Yêu cầu bổ sung"| YCBS["Yêu cầu bổ sung"]
     PD -->|"Cấp cuối phê duyệt: Từ chối"| BTC["Bị từ chối"]
-    YCBS -->|"In Phiếu Bổ sung; Tiếp nhận hồ sơ bổ sung"| DTH
+    YCBS -->|"Tiếp nhận hồ sơ bổ sung"| DTH
     CC -->|"Chuyển CQGQBT"| HT["Hoàn thành"]
     HT -.->|"Tự động tạo hồ sơ Yêu cầu bồi thường - Chờ phân công tại cơ quan được chỉ định"| YC["Việc chờ lãnh đạo xử lý của cơ quan giải quyết bồi thường"]
     CTN -.-> A
@@ -143,7 +136,7 @@ flowchart TD
 | Cán bộ chủ trì | String(100) | - | Theo dữ liệu | Control UI: Text hiển thị (Read-only) kèm nhãn vai trò.<br>- Hiển thị họ tên cán bộ chủ trì của hồ sơ; chưa có thì hiển thị `--`.<br>- Kèm nhãn `Chủ trì` khi người dùng là cán bộ chủ trì, nhãn `Phối hợp` khi người dùng là cán bộ phối hợp của hồ sơ. |
 | Mã hồ sơ YCBT | String(50) | - | Theo dữ liệu | Control UI: Text hiển thị (Read-only).<br>- Căn giữa.<br>- Hiển thị mã hồ sơ yêu cầu bồi thường được tạo khi `Chuyển CQGQBT`.<br>- Nếu chưa có mã hồ sơ YCBT: Hiển thị `-`.<br>- Liên kết mở hồ sơ YCBT đặt tại [MH04 - Màn hình Chi tiết yêu cầu xác định cơ quan giải quyết bồi thường](#43316-mh04---màn-hình-chi-tiết-yêu-cầu-xác-định-cơ-quan-giải-quyết-bồi-thường). |
 | Trạng thái | Enum(String(50)) | - | Theo dữ liệu | Control UI: Badge trạng thái.<br>- Hiển thị badge theo trạng thái hồ sơ (danh sách trạng thái xem tại mục Trạng thái hồ sơ của [Mục đích](#43311-mục-đích)). |
-| Thao tác | String(255) | - | Theo trạng thái và vai trò | Control UI: Action Buttons.<br>- Chỉ hiển thị thao tác áp dụng cho trạng thái hồ sơ và vai trò của người dùng; thao tác không áp dụng thì Ẩn. Không có thao tác nào thì hiển thị `-`.<br>- **Tiếp nhận**: Hồ sơ `Chờ tiếp nhận`, người dùng là cán bộ chủ trì.<br>- **Chỉnh sửa thông tin**, **Xóa yêu cầu**: Hồ sơ `Lưu nháp`, người dùng là người tạo.<br>- **Cập nhật kết quả xác định**, **Trình phê duyệt** (hiển thị `Trình lại` khi hồ sơ `Bị trả lại`): Hồ sơ `Đang thực hiện` hoặc `Bị trả lại`, người dùng là cán bộ chủ trì.<br>- **Chuyển CQGQBT**: Hồ sơ `Chờ chuyển CQGQBT`, người dùng là cán bộ chủ trì.<br>- **In Phiếu Bổ sung**: Hồ sơ `Yêu cầu bổ sung`, người dùng là cán bộ chủ trì.<br>- **Bổ sung tài liệu**: Người dùng là cán bộ phối hợp, hồ sơ không ở trạng thái `Hoàn thành`, `Bị từ chối`.<br>- Hồ sơ `Chờ phê duyệt`, `Hoàn thành`, `Bị từ chối` không có thao tác xử lý tại danh sách. |
+| Thao tác | String(255) | - | Theo trạng thái và vai trò | Control UI: Action Buttons (Cột Thao tác cố định 04 nút theo chuẩn Fixed-Slot Alignment; các thao tác không khả dụng với trạng thái dòng được hiển thị mờ ẩn disabled kèm tooltip hướng dẫn).<br>- **Hồ sơ `Chờ tiếp nhận`** (Cán bộ chủ trì):<br>+ Slot 1: `Tiếp nhận`<br>+ Slot 2: `Yêu cầu bổ sung`<br>+ Slot 3: `Từ chối`<br>+ Slot 4: Nút mờ (Disabled)<br>- **Hồ sơ `Bị trả lại`** (Cán bộ chủ trì):<br>+ Slot 1: `Cập nhật` (Mở form cập nhật với Khối lý do bị trả lại hiển thị trên cùng)<br>+ Slot 2: `Yêu cầu bổ sung`<br>+ Slot 3: `Từ chối`<br>+ Slot 4: `Trình lại`<br>- **Hồ sơ `Lưu nháp`** (Người tạo):<br>+ Slot 1: `Chỉnh sửa thông tin`<br>+ Slot 2: `Xóa yêu cầu`<br>+ Slot 3, 4: Nút mờ (Disabled)<br>- **Hồ sơ `Đang thực hiện`** (Cán bộ chủ trì):<br>+ Slot 1: `Cập nhật kết quả xác định`<br>+ Slot 2: `Trình phê duyệt`<br>+ Slot 3: `Yêu cầu bổ sung`<br>+ Slot 4: Nút mờ (Disabled)<br>- **Hồ sơ `Chờ chuyển CQGQBT`** (Cán bộ chủ trì):<br>+ Slot 1: `Chuyển CQGQBT`<br>+ Slot 2, 3, 4: Nút mờ (Disabled)<br>- **Hồ sơ `Yêu cầu bổ sung`** (Cán bộ chủ trì):<br>+ Slot 1: `Tiếp nhận hồ sơ bổ sung` (Đã bỏ chức năng in phiếu tại yêu cầu bổ sung)<br>+ Slot 2, 3, 4: Nút mờ (Disabled)<br>- **Cán bộ phối hợp**: Hiển thị thao tác `Bổ sung tài liệu` tại Slot 4 khi hồ sơ chưa kết thúc (`Hoàn thành`, `Bị từ chối`). |
 | Phân trang | Pagination | - | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị (10, 20, 50, 100); mặc định 20 bản ghi/trang.<br>- Hiển thị dải bản ghi: "Hiển thị [từ]-[đến] trong số [tổng số] bản ghi" (khi không có dữ liệu hiển thị 0-0 trong số 0).<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;). |
 
 ###### 4.3.3.1.3.3. Chức năng trên màn hình
@@ -181,6 +174,7 @@ flowchart TD
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề màn hình | String(255) | - | Theo ngữ cảnh | Control UI: Text heading (Read-only).<br>- Khi mở form do `Tiếp nhận` hồ sơ `Chờ tiếp nhận` đã được phân công: hiển thị `TIẾP NHẬN YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`.<br>- Khi `Tạo yêu cầu` trực tiếp tại phân hệ Xác định cơ quan: hiển thị `THÊM MỚI YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`.<br>- Khi chỉnh sửa hồ sơ `Lưu nháp` hoặc `Cập nhật thông tin` hồ sơ `Đang thực hiện`/`Bị trả lại`: hiển thị `CHỈNH SỬA YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`. |
+| **LÝ DO HỒ SƠ BỊ TRẢ LẠI** | Alert Banner | - | Ẩn | Control UI: Alert banner (Màu cảnh báo nổi bật ở trên cùng form).<br>- Chỉ hiển thị khi mở form cập nhật hồ sơ ở trạng thái `Bị trả lại`.<br>- Hiển thị nội dung lý do trả lại hồ sơ của lãnh đạo kèm họ tên và thời điểm trả lại để cán bộ tiếp thu, cập nhật lại thông tin hồ sơ. |
 | **I. THÔNG TIN CHUNG** | String(255) | - | - | Control UI: Section header.<br>- Khối thông tin chung của yêu cầu. |
 | Trạng thái hồ sơ | Enum(String(50)) | - | Ẩn khi Thêm mới | Control UI: Badge trạng thái (Read-only).<br>- Khi mở ở chế độ Thêm mới trực tiếp: **không hiển thị**.<br>- Các chế độ còn lại: hiển thị badge trạng thái hiện tại của hồ sơ (`Chờ tiếp nhận`, `Lưu nháp`, `Đang thực hiện` hoặc `Bị trả lại`). |
 | Hình thức tiếp nhận hồ sơ | Enum(String(50)) | Có | `Trực tiếp` | Control UI: Combobox.<br>- Giá trị gồm:<br>+ `Trực tiếp`<br>+ `Nhận qua bưu điện/bưu chính`<br>- Trường được điền sẵn theo dữ liệu kế thừa khi mở form từ `Tiếp nhận`; hồ sơ có giá trị cũ chứa "bưu" được hiển thị là `Nhận qua bưu điện/bưu chính`, các giá trị khác hiển thị là `Trực tiếp`. Cán bộ được phép chọn lại. |
@@ -217,7 +211,10 @@ flowchart TD
 | **III. HÀNH VI GÂY THIỆT HẠI & PHƯƠNG THỨC NHẬN KẾT QUẢ** | Text(2000) | - | - | Control UI: Section header.<br>- Khối thông tin hành vi và cách nhận kết quả. |
 | Hành vi gây thiệt hại của người thi hành công vụ gây thiệt hại | Text(2000) | Có | Trống | Control UI: Textarea.<br>- Placeholder: `Nhập tóm tắt hành vi gây thiệt hại và cơ quan gây thiệt hại...`.<br>- Nhập nội dung hành vi bị phản ánh gây thiệt hại. |
 | Hình thức nhận kết quả giải quyết | Enum(String(50)) | Có | `Phương thức điện tử (Email, Zalo, SMS...)` | Control UI: Radio button.<br>- Giá trị gồm:<br>+ `Phương thức điện tử (Email, Zalo, SMS...)`<br>+ `Hồ sơ giấy`<br>- Lựa chọn hình thức nhận kết quả không làm thay đổi tính bắt buộc của `Thư điện tử (Email)`; áp dụng quy tắc nhập ít nhất một thông tin liên hệ. |
-| **IV. BẢNG TÀI LIỆU ĐÍNH KÈM** | List(Object) | Không | Theo hồ sơ tiếp nhận / Trống | Control UI: Data grid.<br>- Cho phép đính kèm nhiều tài liệu liên quan đến hồ sơ yêu cầu xác định cơ quan.<br>- **Quy tắc kế thừa**: Đối với trường hợp mở form do `Tiếp nhận` hồ sơ `Chờ tiếp nhận`, hệ thống tự động kế thừa toàn bộ danh sách tài liệu đã có từ phân hệ **Tiếp nhận yêu cầu** gồm tên tài liệu và file đính kèm.<br>- Cán bộ có thể bấm `Xem file`, `Xóa` file cũ hoặc bấm `Thêm dòng tài liệu` để đính kèm bổ sung tài liệu mới.<br>- Khi tạo mới trực tiếp, bảng có 01 dòng trống; khi chỉnh sửa, bảng hiển thị danh sách tài liệu đã lưu trong bản ghi. |
+| **IV. VĂN BẢN LÀM CĂN CỨ YÊU CẦU BỒI THƯỜNG** | Section | Không | - | Control UI: Section header.<br>- Khối thông tin văn bản làm căn cứ yêu cầu bồi thường (không bắt buộc).<br>- Cho phép cán bộ nhập tên văn bản và đính kèm tệp tin căn cứ.<br>- Tự động kế thừa từ phân hệ Tiếp nhận yêu cầu nếu hồ sơ tiếp nhận đã có thông tin này. |
+| Tên văn bản làm căn cứ yêu cầu bồi thường | String(255) | Không | Trống / Kế thừa | Control UI: Input text.<br>- Placeholder: `Nhập tên văn bản làm căn cứ...`. |
+| File văn bản căn cứ | File | Không | Trống / Kế thừa | Control UI: File upload trigger (`Tải lên`). Cho phép chọn tệp tin văn bản căn cứ (định dạng `.pdf`, `.doc`, `.docx`, `.jpg`, `.png`; tối đa 20MB/file). Hiển thị tên file kèm liên kết `Xem file` và `Xóa`. |
+| **V. BẢNG TÀI LIỆU ĐÍNH KÈM** | List(Object) | Không | Theo hồ sơ tiếp nhận / Trống | Control UI: Data grid.<br>- Cho phép đính kèm nhiều tài liệu liên quan đến hồ sơ yêu cầu xác định cơ quan.<br>- **Quy tắc kế thừa**: Đối với trường hợp mở form do `Tiếp nhận` hồ sơ `Chờ tiếp nhận`, hệ thống tự động kế thừa toàn bộ danh sách tài liệu đã có từ phân hệ **Tiếp nhận yêu cầu** gồm tên tài liệu và file đính kèm.<br>- Cán bộ có thể bấm `Xem file`, `Xóa` file cũ hoặc bấm `Thêm dòng tài liệu` để đính kèm bổ sung tài liệu mới.<br>- Khi tạo mới trực tiếp, bảng có 01 dòng trống; khi chỉnh sửa, bảng hiển thị danh sách tài liệu đã lưu trong bản ghi. |
 | STT | Integer(10) | - | Tự tăng | Control UI: Text (Read-only). Căn giữa, tự tăng theo số dòng tài liệu. |
 | Tên tài liệu | String(255) | Có khi thêm dòng | Trống | Control UI: Input text. Placeholder `Nhập tên tài liệu...`. Khi tải file lên mà chưa nhập tên, hệ thống lấy tên file (bỏ phần mở rộng) làm tên tài liệu. |
 | File đính kèm | File | Không | Trống | Control UI: File upload trigger (`Tải lên`). Cho phép chọn file tài liệu liên quan theo quy tắc file dùng chung (định dạng `.pdf`, `.doc`, `.docx`, `.jpg`, `.png`; tối đa 20MB/file). |
@@ -342,6 +339,7 @@ flowchart TD
 | Tệp đính kèm | File | - | Theo hồ sơ | Dạng chỉ đọc. Danh sách tệp đã đính kèm khi chuyển, kèm liên kết "Xem file". |
 | Thời điểm chuyển | Datetime | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị `[hh:mm dd/mm/yyyy] - [Họ tên người chuyển]`. |
 | Mã hồ sơ yêu cầu bồi thường | String(50) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị mã hồ sơ yêu cầu bồi thường được hệ thống tạo khi chuyển, kèm liên kết `Xem hồ sơ YCBT`. |
+| Văn bản làm căn cứ yêu cầu bồi thường | Object | Không | Theo hồ sơ | Control UI: Text + Link (Read-only).<br>- Hiển thị tên văn bản làm căn cứ; kèm liên kết `Xem file` và `Tải xuống` nếu có đính kèm file; nếu không có hiển thị `--`. |
 | **THÔNG TIN XỬ LÝ** | Section | - | - | Control UI: Section header.<br>- Thông tin xử lý theo luồng phân công - phê duyệt. |
 | Đơn vị tiếp nhận | String(255) | - | Theo hồ sơ | Dạng chỉ đọc. Đơn vị gốc tiếp nhận hồ sơ (đơn vị gốc của cán bộ tiếp nhận hoặc của người tạo trực tiếp). |
 | Cán bộ chủ trì | String(255) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị `[Họ tên] - [Chức danh]`; chưa có thì hiển thị `Chưa phân công`. |
@@ -357,15 +355,16 @@ flowchart TD
 | 1 | Đóng | Button | Hệ thống đóng màn hình chi tiết và quay về [MH01 - Màn hình Danh sách yêu cầu xác định cơ quan giải quyết bồi thường](#43313-mh01---màn-hình-danh-sách-yêu-cầu-xác-định-cơ-quan-giải-quyết-bồi-thường); trường hợp mở từ màn hình khác thì quay về màn hình đã mở. |
 | 2 | Bổ sung tài liệu | Button | Chỉ hiển thị cho cán bộ phối hợp khi hồ sơ không ở trạng thái `Hoàn thành`, `Bị từ chối`. Khi click, hệ thống mở [Popup Bổ sung tài liệu](#43319-popup-bổ-sung-tài-liệu). |
 | 3 | Tiếp nhận | Button | Chỉ hiển thị cho cán bộ chủ trì khi trạng thái `Chờ tiếp nhận`. Khi click, hệ thống mở [MH02 - Màn hình Thêm mới/Chỉnh sửa yêu cầu xác định cơ quan giải quyết bồi thường](#43314-mh02---màn-hình-thêm-mớichỉnh-sửa-yêu-cầu-xác-định-cơ-quan-giải-quyết-bồi-thường) ở chế độ tiếp nhận và kế thừa dữ liệu từ bước **Tiếp nhận yêu cầu**. |
-| 4 | Cập nhật thông tin | Button | Chỉ hiển thị cho cán bộ chủ trì khi trạng thái `Đang thực hiện` hoặc `Bị trả lại`. Khi click, hệ thống mở [MH02 - Màn hình Thêm mới/Chỉnh sửa yêu cầu xác định cơ quan giải quyết bồi thường](#43314-mh02---màn-hình-thêm-mớichỉnh-sửa-yêu-cầu-xác-định-cơ-quan-giải-quyết-bồi-thường) ở chế độ cập nhật thông tin (nút chính `Lưu thông tin`, không có `Lưu nháp`). |
-| 5 | Cập nhật kết quả xác định | Button | Chỉ hiển thị cho cán bộ chủ trì khi trạng thái `Đang thực hiện` hoặc `Bị trả lại`. Khi click, hệ thống mở [MH03 - Màn hình Cập nhật kết quả xác định cơ quan giải quyết bồi thường](#43315-mh03---màn-hình-cập-nhật-kết-quả-xác-định-cơ-quan-giải-quyết-bồi-thường). |
-| 6 | Trình phê duyệt / Trình lại | Button | Chỉ hiển thị cho cán bộ chủ trì khi trạng thái `Đang thực hiện` (nhãn `Trình phê duyệt`) hoặc `Bị trả lại` (nhãn `Trình lại`). Khi click, hệ thống mở [Popup Trình phê duyệt](#43317-popup-trình-phê-duyệt). |
-| 7 | Chuyển CQGQBT | Button | Chỉ hiển thị cho cán bộ chủ trì khi trạng thái `Chờ chuyển CQGQBT`. Khi click, hệ thống mở [Popup Chuyển cơ quan giải quyết bồi thường](#43318-popup-chuyển-cơ-quan-giải-quyết-bồi-thường). |
-| 8 | Gửi yêu cầu | Button | Chỉ hiển thị cho người tạo khi trạng thái `Lưu nháp`. Khi click, hệ thống kiểm tra dữ liệu:<br>- **TH1 - Thiếu thông tin bắt buộc**: hiển thị thông báo *"Vui lòng nhập đầy đủ thông tin bắt buộc trước khi gửi yêu cầu!"* hoặc *"Nhập ít nhất một trong hai: Số điện thoại liên hệ hoặc Thư điện tử (Email)!"* và mở [MH02 - Màn hình Thêm mới/Chỉnh sửa yêu cầu xác định cơ quan giải quyết bồi thường](#43314-mh02---màn-hình-thêm-mớichỉnh-sửa-yêu-cầu-xác-định-cơ-quan-giải-quyết-bồi-thường) để bổ sung.<br>- **TH2 - Hợp lệ**: chuyển trạng thái sang `Đang thực hiện`, ghi Lịch sử xử lý `Gửi yêu cầu`, hiển thị thông báo *"Đã gửi yêu cầu. Hồ sơ chuyển sang [Đang thực hiện]!"* và tải lại màn hình chi tiết. |
-| 9 | In Phiếu Bổ sung | Button | - **Điều kiện hiển thị**: Cán bộ chủ trì, hồ sơ ở trạng thái `Yêu cầu bổ sung`.<br>- **Hành vi**: Hệ thống mở [Popup In Phiếu yêu cầu bổ sung hồ sơ](#433110-popup-in-phiếu-yêu-cầu-bổ-sung-hồ-sơ) để kiểm tra thông tin, quản lý tài liệu kèm theo và thực hiện in Phiếu hướng dẫn bổ sung hồ sơ. |
-| 10 | Tiếp nhận hồ sơ bổ sung | Button | - **Điều kiện hiển thị**: Cán bộ chủ trì, hồ sơ ở trạng thái `Yêu cầu bổ sung`.<br>- **Hành vi**: Hệ thống mở Custom Confirmation Modal *"Xác nhận đã nhận hồ sơ bổ sung của yêu cầu [Mã yêu cầu]? Hồ sơ chuyển [Đang thực hiện]."*. Nếu chọn `Đồng ý`: hồ sơ chuyển `Đang thực hiện`, ghi Lịch sử xử lý `Tiếp nhận hồ sơ bổ sung`, hiển thị thông báo *"Đã tiếp nhận hồ sơ bổ sung!"*. Nếu chọn `Hủy bỏ`: đóng modal, giữ nguyên trạng thái. |
-| 11 | Xem file | Link | Cho phép xem file tại một tab riêng. |
-| 12 | Xem hồ sơ YCBT | Text link | Khi người dùng click liên kết `Xem hồ sơ YCBT` cạnh `Mã hồ sơ yêu cầu bồi thường`:<br>- Hệ thống mở [MH05 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#43317-mh05---màn-hình-xem-chi-tiết-hồ-sơ-yêu-cầu-bồi-thường) tương ứng với mã hồ sơ.<br>- Thanh Menu Sidebar bên trái tự động chuyển trạng thái active/focus vào đúng chức năng **`Giải quyết yêu cầu bồi thường`**. |
+| 4 | Cập nhật thông tin | Button | Chỉ hiển thị cho cán bộ chủ trì khi trạng thái `Đang thực hiện` hoặc `Bị trả lại`. Khi click, hệ thống mở [MH02 - Màn hình Thêm mới/Chỉnh sửa yêu cầu xác định cơ quan giải quyết bồi thường](#43314-mh02---màn-hình-thêm-mớichỉnh-sửa-yêu-cầu-xác-định-cơ-quan-giải-quyết-bồi-thường) ở chế độ cập nhật thông tin (với hồ sơ `Bị trả lại`, hệ thống hiển thị Khối cảnh báo lý do bị trả lại nổi bật trên đầu form; nút chính `Lưu thông tin`, không có `Lưu nháp`). |
+| 5 | Yêu cầu bổ sung | Button | - **Điều kiện hiển thị**: Cán bộ chủ trì khi hồ sơ ở trạng thái `Chờ tiếp nhận`, `Đang thực hiện` hoặc `Bị trả lại`.<br>- **Hành vi**: Hệ thống mở [Popup Yêu cầu bổ sung hồ sơ](#433110-popup-yêu-cầu-bổ-sung-hồ-sơ) để cán bộ nhập nội dung yêu cầu bổ sung, ấn định thời hạn bổ sung và đính kèm tài liệu hướng dẫn (nếu có). Đã loại bỏ hoàn toàn tính năng in phiếu. |
+| 6 | Từ chối | Button | - **Điều kiện hiển thị**: Cán bộ chủ trì khi hồ sơ ở trạng thái `Chờ tiếp nhận` hoặc `Bị trả lại`.<br>- **Hành vi**: Hệ thống mở [Popup Từ chối yêu cầu xác định cơ quan](#433111-popup-từ-chối-yêu-cầu-xác-định-cơ-quan) để cán bộ nhập lý do từ chối và đính kèm văn bản từ chối giải quyết. |
+| 7 | Cập nhật kết quả xác định | Button | Chỉ hiển thị cho cán bộ chủ trì khi trạng thái `Đang thực hiện` hoặc `Bị trả lại`. Khi click, hệ thống mở [MH03 - Màn hình Cập nhật kết quả xác định cơ quan giải quyết bồi thường](#43315-mh03---màn-hình-cập-nhật-kết-quả-xác-định-cơ-quan-giải-quyết-bồi-thường). |
+| 8 | Trình phê duyệt / Trình lại | Button | Chỉ hiển thị cho cán bộ chủ trì khi trạng thái `Đang thực hiện` (nhãn `Trình phê duyệt`) hoặc `Bị trả lại` (nhãn `Trình lại`). Khi click, hệ thống mở [Popup Trình phê duyệt](#43317-popup-trình-phê-duyệt). |
+| 9 | Chuyển CQGQBT | Button | Chỉ hiển thị cho cán bộ chủ trì khi trạng thái `Chờ chuyển CQGQBT`. Khi click, hệ thống mở [Popup Chuyển cơ quan giải quyết bồi thường](#43318-popup-chuyển-cơ-quan-giải-quyết-bồi-thường). |
+| 10 | Gửi yêu cầu | Button | Chỉ hiển thị cho người tạo khi trạng thái `Lưu nháp`. Khi click, hệ thống kiểm tra dữ liệu:<br>- **TH1 - Thiếu thông tin bắt buộc**: hiển thị thông báo *"Vui lòng nhập đầy đủ thông tin bắt buộc trước khi gửi yêu cầu!"* hoặc *"Nhập ít nhất một trong hai: Số điện thoại liên hệ hoặc Thư điện tử (Email)!"* và mở [MH02 - Màn hình Thêm mới/Chỉnh sửa yêu cầu xác định cơ quan giải quyết bồi thường](#43314-mh02---màn-hình-thêm-mớichỉnh-sửa-yêu-cầu-xác-định-cơ-quan-giải-quyết-bồi-thường) để bổ sung.<br>- **TH2 - Hợp lệ**: chuyển trạng thái sang `Đang thực hiện`, ghi Lịch sử xử lý `Gửi yêu cầu`, hiển thị thông báo *"Đã gửi yêu cầu. Hồ sơ chuyển sang [Đang thực hiện]!"* và tải lại màn hình chi tiết. |
+| 11 | Tiếp nhận hồ sơ bổ sung | Button | - **Điều kiện hiển thị**: Cán bộ chủ trì, hồ sơ ở trạng thái `Yêu cầu bổ sung`.<br>- **Hành vi**: Hệ thống mở Custom Confirmation Modal *"Xác nhận đã nhận hồ sơ bổ sung của yêu cầu [Mã yêu cầu]? Hồ sơ chuyển [Đang thực hiện]."*. Nếu chọn `Đồng ý`: hồ sơ chuyển `Đang thực hiện`, ghi Lịch sử xử lý `Tiếp nhận hồ sơ bổ sung`, hiển thị thông báo *"Đã tiếp nhận hồ sơ bổ sung!"*. Nếu chọn `Hủy bỏ`: đóng modal, giữ nguyên trạng thái. |
+| 12 | Xem file | Link | Cho phép xem file tại một tab riêng. |
+| 13 | Xem hồ sơ YCBT | Text link | Khi người dùng click liên kết `Xem hồ sơ YCBT` cạnh `Mã hồ sơ yêu cầu bồi thường`:<br>- Hệ thống mở [MH05 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#43317-mh05---màn-hình-xem-chi-tiết-hồ-sơ-yêu-cầu-bồi-thường) tương ứng với mã hồ sơ.<br>- Thanh Menu Sidebar bên trái tự động chuyển trạng thái active/focus vào đúng chức năng **`Giải quyết yêu cầu bồi thường`**. |
 
 ---
 
@@ -463,39 +462,61 @@ flowchart TD
 
 ---
 
-##### 4.3.3.1.10. Popup In Phiếu yêu cầu bổ sung hồ sơ
+##### 4.3.3.1.10. Popup Yêu cầu bổ sung hồ sơ
 
 ###### 4.3.3.1.10.1. Màn hình
 
-![Popup In Phiếu yêu cầu bổ sung hồ sơ](images/UC484_486_POPUP_In_phieu_yeu_cau_bo_sung.png)
-
-\- Popup mở khi cán bộ chủ trì click `In Phiếu Bổ sung` tại MH01 hoặc MH04 đối với hồ sơ `Yêu cầu bổ sung` (sau khi nội dung trình `Yêu cầu bổ sung` đã được cấp phê duyệt cuối cùng phê duyệt).
+Popup mở ra khi người dùng click thao tác `Yêu cầu bổ sung` tại [MH01 - Màn hình Danh sách yêu cầu xác định cơ quan giải quyết bồi thường](#43313-mh01---màn-hình-danh-sách-yêu-cầu-xác-định-cơ-quan-giải-quyết-bồi-thường) hoặc click nút `Yêu cầu bổ sung` tại [MH04 - Màn hình Chi tiết yêu cầu xác định cơ quan giải quyết bồi thường](#43316-mh04---màn-hình-chi-tiết-yêu-cầu-xác-định-cơ-quan-giải-quyết-bồi-thường) đối với các hồ sơ ở trạng thái `Chờ tiếp nhận`, `Đang thực hiện` hoặc `Bị trả lại`. Popup cho phép cán bộ chủ trì nhập nội dung hướng dẫn bổ sung, ấn định thời hạn và đính kèm tài liệu hướng dẫn (nếu có) để gửi thông báo cho người nộp hồ sơ. Đã loại bỏ hoàn toàn tính năng in phiếu tại bước này theo quy chuẩn điện tử hóa.
 
 ###### 4.3.3.1.10.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Tiêu đề popup | String(255) | - | `IN PHIẾU YÊU CẦU BỔ SUNG HỒ SƠ` | Control UI: Heading text (Chỉ đọc). |
-| Mã yêu cầu | String(50) | - | Theo dữ liệu | Control UI: Text (Chỉ đọc). Mã yêu cầu xác định cơ quan giải quyết bồi thường (ví dụ: `XD-2026-016`). |
-| Ngày tiếp nhận | Date | - | Theo dữ liệu | Control UI: Text (Chỉ đọc). Hiển thị Ngày tiếp nhận của hồ sơ (định dạng `dd/mm/yyyy`). |
+| Tiêu đề popup | String(255) | - | `YÊU CẦU BỔ SUNG HỒ SƠ` | Control UI: Heading text (Chỉ đọc). Tiêu đề popup nghiệp vụ bổ sung hồ sơ. |
+| Mã yêu cầu | String(50) | - | Theo dữ liệu | Control UI: Text (Chỉ đọc). Mã yêu cầu xác định cơ quan. |
 | Người yêu cầu | String(100) | - | Theo dữ liệu | Control UI: Text (Chỉ đọc). Họ và tên người yêu cầu. |
 | Cán bộ xử lý | String(100) | - | Theo dữ liệu | Control UI: Text (Chỉ đọc). Họ và tên cán bộ chủ trì của hồ sơ. |
-| Chức vụ | String(100) | - | Theo dữ liệu | Control UI: Text (Chỉ đọc). Chức vụ của cán bộ chủ trì. |
-| Đơn vị | String(255) | - | Theo dữ liệu | Control UI: Text (Chỉ đọc). Đơn vị tiếp nhận hồ sơ (đơn vị gốc, ví dụ: `Bộ Tư pháp`); đồng thời hiển thị in hoa tại phần đầu Phiếu. |
-| Nội dung yêu cầu bổ sung | Text(2000) | Có | Theo dữ liệu | Control UI: Textarea.<br>- Nhãn hiển thị: `1. Nội dung yêu cầu bổ sung:` kèm dấu `*` bắt buộc.<br>- **Kế thừa dữ liệu**: Khi mở popup, hệ thống luôn nạp `Nội dung yêu cầu bổ sung` hiện hành của hồ sơ - chính là `Ý kiến trình / Nội dung đề xuất` của lần trình `Yêu cầu bổ sung` đã được phê duyệt (nhập tại [Popup Trình phê duyệt](#43317-popup-trình-phê-duyệt)) hoặc nội dung đã được chỉnh sửa tại lần in gần nhất. Đây là một trường dữ liệu duy nhất dùng chung, không tạo bản sao riêng cho Phiếu in.<br>- **Điều kiện chỉnh sửa**: Chỉ cho phép chỉnh sửa khi hồ sơ còn ở trạng thái `Yêu cầu bổ sung`; khi hồ sơ đã chuyển trạng thái khác thì hiển thị ở chế độ Chỉ đọc.<br>- Khi kết xuất bản in: ô nhập được thay bằng nội dung văn bản thuần, căn đều hai bên, giữ nguyên các dấu xuống dòng đã nhập. |
-| Thời hạn bổ sung | Date | Có | Ngày hiện tại + 15 ngày | Control UI: Datepicker, định dạng `dd/mm/yyyy`.<br>- Nhãn hiển thị: `2. Thời hạn bổ sung:` kèm dấu `*` bắt buộc.<br>- Là ngày cuối cùng người yêu cầu phải hoàn thành việc bổ sung tài liệu hồ sơ theo quy định.<br>- **Kế thừa dữ liệu**: Khi mở popup, hệ thống nạp giá trị `Thời hạn bổ sung` đã lưu của hồ sơ; trường hợp hồ sơ chưa từng ấn định thời hạn thì hệ thống tự động đề xuất `Ngày hiện tại + 15 ngày`.<br>- **Điều kiện chỉnh sửa**: Áp dụng cùng điều kiện với trường `Nội dung yêu cầu bổ sung`.<br>- `Thời hạn bổ sung` phải lớn hơn ngày lập Phiếu (ngày hiện tại); datepicker chỉ cho chọn từ ngày kế tiếp.<br>- Khi kết xuất bản in: ô nhập được thay bằng câu văn hoàn chỉnh *"Trong thời hạn đến hết ngày [Thời hạn bổ sung], đề nghị Ông/Bà hoàn thiện và gửi lại hồ sơ về Cơ quan tiếp nhận."* |
-| Tài liệu kèm theo  | List(File) | Không | Trống | Control UI: Multi-file upload. Khối đính kèm tài liệu kèm theo phiếu hướng dẫn bổ sung.<br>- Cho phép tải lên nhiều file (định dạng: `.pdf`, `.doc`, `.docx`, `.jpg`, `.png`, tối đa 20MB/file).<br>- Danh sách file đã chọn hiển thị tên file kèm theo các thao tác: `Xem file`, `Tải file về`, `Xóa file`. |
+| Đơn vị | String(255) | - | Theo dữ liệu | Control UI: Text (Chỉ đọc). Đơn vị xử lý hồ sơ. |
+| Nội dung yêu cầu bổ sung | Text(2000) | Có | Theo dữ liệu / Trống | Control UI: Textarea.<br>- Nhãn hiển thị: `Nội dung yêu cầu bổ sung:` kèm dấu `*` bắt buộc.<br>- Placeholder: `Nhập chi tiết các nội dung, tài liệu cần người yêu cầu bổ sung, làm rõ...`.<br>- Cán bộ nhập rõ ràng, cụ thể các tài liệu hoặc nội dung cần người yêu cầu hoàn thiện. |
+| Thời hạn bổ sung | Date | Có | Ngày hiện tại + 15 ngày | Control UI: Datepicker, định dạng `dd/mm/yyyy`.<br>- Nhãn hiển thị: `Thời hạn bổ sung:` kèm dấu `*` bắt buộc.<br>- Là ngày cuối cùng người yêu cầu phải hoàn thành việc bổ sung tài liệu hồ sơ theo quy định.<br>- Mặc định gợi ý `Ngày hiện tại + 15 ngày`. Phải lớn hơn ngày hiện tại. |
+| Tài liệu kèm theo | List(File) | Không | Trống | Control UI: Multi-file upload. Khối đính kèm tài liệu hướng dẫn (mẫu đơn, văn bản hướng dẫn...).<br>- Cho phép tải lên nhiều file (định dạng: `.pdf`, `.doc`, `.docx`, `.jpg`, `.png`, tối đa 20MB/file).<br>- Danh sách file đã chọn hiển thị tên file kèm theo các thao tác: `Xem file`, `Xóa file`. |
 
 ###### 4.3.3.1.10.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tải file (Upload) | Button | Cho phép người dùng chọn và tải lên một hoặc nhiều tệp tin tài liệu kèm theo từ máy tính. Hệ thống kiểm tra định dạng và dung lượng file:<br>- **TH1 - Sai định dạng file**: Nếu tệp tin không thuộc các định dạng `.pdf`, `.doc`, `.docx`, `.jpg`, `.png`, hệ thống hiển thị thông báo lỗi và không tiếp nhận tệp.<br>- **TH2 - File vượt quá dung lượng**: Nếu dung lượng tệp tin vượt quá 20MB, hệ thống hiển thị thông báo lỗi và không tiếp nhận tệp.<br>- **TH3 - Hợp lệ**: Hệ thống bổ sung tệp tin vào cuối danh sách `Tài liệu kèm theo`, hiển thị tên file kèm dung lượng và nhóm thao tác tương ứng, đồng thời hiển thị thông báo thành công. |
+| 1 | Tải file (Upload) | Button | Cho phép người dùng chọn và tải lên một hoặc nhiều tệp tin tài liệu kèm theo từ máy tính theo quy chuẩn định dạng và dung lượng tối đa 20MB/file. Hiển thị tên file kèm liên kết `Xem file` và icon `Xóa`. |
 | 2 | Xem file | Link | Mở tệp tin tài liệu đã tải lên tại tab trình duyệt mới để xem trước nội dung. |
-| 3 | Tải file về (Download) | Link/Icon | Tải tệp tin tài liệu kèm theo về máy tính cá nhân của người dùng. |
-| 4 | Xóa file | Link/Icon | Khi người dùng click icon Xóa file, hệ thống hiển thị Custom Confirmation Modal xác nhận xóa [MSG-CFM-BTNN-XDCQ-002]. Sau khi người dùng chọn "Đồng ý", hệ thống gỡ bỏ file đính kèm khỏi danh sách. |
-| 5 | In phiếu | Button | Khi người dùng click nút, hệ thống kiểm tra tính hợp lệ của dữ liệu và xử lý theo các trường hợp bên dưới:<br>- **TH1 - Bỏ trống trường bắt buộc**: Nếu bỏ trống `Nội dung yêu cầu bổ sung` hoặc `Thời hạn bổ sung`, hệ thống tô viền đỏ ô nhập lỗi, hiển thị cảnh báo lỗi (*"Đây là trường bắt buộc"*) ngay dưới ô nhập, tự động focus con trỏ vào ô nhập lỗi đầu tiên và không kích hoạt hộp thoại in.<br>- **TH2 - Thời hạn bổ sung không hợp lệ**: Nếu `Thời hạn bổ sung` nhỏ hơn hoặc bằng ngày lập Phiếu (ngày hiện tại), hệ thống hiển thị *"Thời hạn bổ sung phải lớn hơn ngày lập Phiếu"* ngay dưới ô nhập, tự động focus con trỏ và không kích hoạt hộp thoại in.<br>- **TH3 - Chỉnh sửa nội dung của Phiếu đã in**: Trường hợp hồ sơ đã in Phiếu ít nhất một lần VÀ cán bộ có chỉnh sửa `Nội dung yêu cầu bổ sung` hoặc `Thời hạn bổ sung` so với lần in gần nhất, hệ thống hiển thị Custom Confirmation Modal với nội dung: *"Phiếu hướng dẫn bổ sung của yêu cầu này đã được in ngày [Ngày in gần nhất]. Việc chỉnh sửa nội dung sẽ được ghi nhận vào Lịch sử yêu cầu bổ sung. Bạn có chắc chắn muốn tiếp tục?"*.<br>+ Nếu chọn `Hủy bỏ`: đóng hộp thoại xác nhận, giữ nguyên nội dung đang chỉnh sửa và không thực hiện in.<br>+ Nếu chọn `Đồng ý`: tiếp tục xử lý theo TH4.<br>- **TH4 - Hợp lệ**: Hệ thống thực hiện tuần tự các xử lý:<br>+ Lưu `Nội dung yêu cầu bổ sung`, `Thời hạn bổ sung` và danh sách `Tài liệu kèm theo` vào hồ sơ. `Nội dung yêu cầu bổ sung` được ghi đè trực tiếp lên trường dữ liệu dùng chung nên nội dung hiển thị tại màn chi tiết yêu cầu luôn thống nhất với nội dung in trên Phiếu.<br>+ Ghi nhận một dòng vào Lịch sử yêu cầu bổ sung gồm: thời điểm in, người thực hiện, nội dung yêu cầu bổ sung và thời hạn bổ sung ấn định tại lần in này. Các dòng lịch sử của những lần in trước được giữ nguyên, không bị ghi đè.<br>+ Kết xuất nội dung Phiếu hướng dẫn bổ sung hồ sơ theo đúng mẫu quy định: các ô nhập liệu được thay bằng nội dung văn bản thuần, ẩn thanh tiêu đề popup, thanh nút chân popup, nút `Tải file` và các liên kết thao tác trên tài liệu; sau đó kích hoạt hộp thoại in của trình duyệt (Window Print) để in trực tiếp hoặc xuất file PDF. |
-| 6 | Đóng | Button | Hệ thống đóng popup và quay lại màn hình làm việc hiện tại. Các nội dung cán bộ vừa chỉnh sửa trên popup mà chưa thực hiện chức năng `In phiếu` sẽ không được lưu; dữ liệu hồ sơ giữ nguyên như trước khi mở popup. Chức năng tương đương khi người dùng click biểu tượng `×` trên thanh tiêu đề popup. |
+| 3 | Xóa file | Link/Icon | Mở Custom Confirmation Modal xác nhận gỡ file. Khi người dùng chọn "Đồng ý", hệ thống gỡ bỏ file đính kèm. |
+| 4 | Gửi yêu cầu bổ sung | Button | Khi người dùng click nút, hệ thống kiểm tra tính hợp lệ của dữ liệu và xử lý:<br>- **TH1 - Bỏ trống trường bắt buộc**: Nếu bỏ trống `Nội dung yêu cầu bổ sung` hoặc `Thời hạn bổ sung`, hệ thống tô viền đỏ ô nhập lỗi (`.is-invalid`), hiển thị cảnh báo đỏ *"Đây là trường bắt buộc"* ngay dưới ô nhập, tự động focus con trỏ vào ô nhập lỗi đầu tiên.<br>- **TH2 - Thời hạn bổ sung không hợp lệ**: Nếu `Thời hạn bổ sung` nhỏ hơn hoặc bằng ngày hiện tại, hệ thống hiển thị *"Thời hạn bổ sung phải lớn hơn ngày hiện tại"* ngay dưới ô nhập và auto-focus.<br>- **TH3 - Hợp lệ**: Hệ thống cập nhật hồ sơ chuyển trạng thái `Yêu cầu bổ sung`, lưu thông tin nội dung bổ sung, thời hạn và tài liệu đính kèm; ghi nhận vào Lịch sử xử lý `Yêu cầu bổ sung hồ sơ`; hiển thị thông báo *"Đã gửi yêu cầu bổ sung hồ sơ thành công!"*; đóng popup và tải lại danh sách/màn hình chi tiết. |
+| 5 | Đóng | Button | Đóng popup, không lưu các thông tin vừa nhập trên biểu mẫu. |
+
+##### 4.3.3.1.11. Popup Từ chối yêu cầu xác định cơ quan
+
+###### 4.3.3.1.11.1. Màn hình
+
+Popup mở ra khi người dùng click thao tác `Từ chối` tại [MH01 - Màn hình Danh sách yêu cầu xác định cơ quan giải quyết bồi thường](#43313-mh01---màn-hình-danh-sách-yêu-cầu-xác-định-cơ-quan-giải-quyết-bồi-thường) hoặc click nút `Từ chối` tại [MH04 - Màn hình Chi tiết yêu cầu xác định cơ quan giải quyết bồi thường](#43316-mh04---màn-hình-chi-tiết-yêu-cầu-xác-định-cơ-quan-giải-quyết-bồi-thường) đối với các hồ sơ ở trạng thái `Chờ tiếp nhận` hoặc `Bị trả lại`. Popup cho phép cán bộ chủ trì lập lý do từ chối giải quyết yêu cầu và đính kèm văn bản thông báo từ chối.
+
+###### 4.3.3.1.11.2. Mô tả thông tin trên màn hình
+
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| Tiêu đề popup | String(255) | - | `TỪ CHỐI YÊU CẦU XÁC ĐỊNH CƠ QUAN` | Control UI: Heading text (Chỉ đọc). Tiêu đề popup nghiệp vụ từ chối yêu cầu. |
+| Mã yêu cầu | String(50) | - | Theo dữ liệu | Control UI: Text (Chỉ đọc). Mã yêu cầu xác định cơ quan. |
+| Người yêu cầu | String(100) | - | Theo dữ liệu | Control UI: Text (Chỉ đọc). Họ và tên người yêu cầu. |
+| Cán bộ xử lý | String(100) | - | Theo dữ liệu | Control UI: Text (Chỉ đọc). Họ và tên cán bộ chủ trì đang xử lý. |
+| Lý do từ chối | Text(2000) | Có | Trống | Control UI: Textarea.<br>- Nhãn hiển thị: `Lý do từ chối:` kèm dấu `*` bắt buộc.<br>- Placeholder: `Nhập chi tiết căn cứ, lý do từ chối tiếp nhận/giải quyết yêu cầu xác định cơ quan...`. |
+| Văn bản thông báo từ chối | File | Không | Trống | Control UI: File upload trigger (`Tải lên văn bản`). Đính kèm file công văn/thông báo từ chối (định dạng `.pdf`, `.doc`, `.docx`, tối đa 20MB). Hiển thị tên file kèm nút `Xem file` và `Xóa`. |
+
+###### 4.3.3.1.11.3. Chức năng trên màn hình
+
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Tải file đính kèm | Button | Cho phép cán bộ chọn file văn bản thông báo từ chối từ máy tính. Sau khi tải lên thành công, hiển thị tên file kèm nút `Xem file` và icon `Xóa`. |
+| 2 | Xem file | Link | Mở xem nội dung file văn bản từ chối đã tải lên tại tab mới. |
+| 3 | Xóa file | Link/Icon | Mở Custom Confirmation Modal xác nhận gỡ file. Khi người dùng chọn "Đồng ý", hệ thống gỡ bỏ file đính kèm. |
+| 4 | Xác nhận từ chối | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu:<br>- **TH1 - Bỏ trống Lý do từ chối**: Tô viền đỏ ô nhập (`.is-invalid`), hiển thị thông báo lỗi đỏ *"Đây là trường bắt buộc"* ngay dưới ô nhập và auto-focus vào ô nhập.<br>- **TH2 - Hợp lệ**: Hiển thị Custom Confirmation Modal *"Bạn có chắc chắn muốn từ chối yêu cầu xác định cơ quan này không?"*.<br>+ Nếu người dùng chọn `Hủy bỏ`: Đóng modal xác nhận, giữ nguyên popup.<br>+ Nếu người dùng chọn `Đồng ý`: Hệ thống cập nhật hồ sơ chuyển trạng thái `Bị từ chối`, lưu lý do từ chối và văn bản đính kèm; ghi nhận vào Lịch sử xử lý `Từ chối yêu cầu xác định cơ quan`; hiển thị thông báo thành công *"Đã từ chối yêu cầu xác định cơ quan!"*; đóng popup và làm mới danh sách/màn hình chi tiết. |
+| 5 | Đóng | Button | Đóng popup, giữ nguyên trạng thái hồ sơ. |
 
 ---
 
