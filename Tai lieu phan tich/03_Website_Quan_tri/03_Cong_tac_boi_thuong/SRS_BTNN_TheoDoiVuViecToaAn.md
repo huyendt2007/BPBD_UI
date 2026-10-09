@@ -26,7 +26,9 @@
 
 \- Nhóm quyền "Theo dõi vụ việc tại Tòa án" gồm: Tra cứu vụ việc tại Tòa án; Thêm mới vụ việc tại Tòa án; Cập nhật vụ việc tại Tòa án; Xóa vụ việc tại Tòa án.
 
-\- Thêm mới, Cập nhật, Xóa: chỉ cán bộ thuộc đơn vị được áp dụng Loại yêu cầu "Yêu cầu bồi thường" theo [Đơn vị áp dụng của Loại yêu cầu - Quản lý danh mục dùng chung - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Quan_ly_danh_muc.md#dm-don-vi-ap-dung).
+\- Thêm mới: chỉ cán bộ thuộc đơn vị được áp dụng Loại yêu cầu "Yêu cầu bồi thường" theo [Đơn vị áp dụng của Loại yêu cầu - Quản lý danh mục dùng chung - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Quan_ly_danh_muc.md#dm-don-vi-ap-dung).
+
+\- Cập nhật, Xóa: được thực hiện trên mọi vụ việc hiển thị trong danh sách, không phân biệt cơ quan bị khởi kiện và trạng thái (kể cả trạng thái kết thúc).
 
 *b. Điều kiện thực hiện*
 
@@ -41,7 +43,7 @@
 | :-- | :--- | :--- |
 | 1 | Cơ quan bị khởi kiện | Cơ quan bị khởi kiện (bị đơn) của vụ việc là đơn vị gốc (đơn vị cấp cao nhất trên cây Cơ cấu tổ chức) của cán bộ thêm mới vụ việc. Hệ thống tự gán, không cho sửa. |
 | 2 | Phạm vi xem | Cán bộ xem vụ việc có Cơ quan bị khởi kiện là đơn vị gốc của mình.<br>- Cán bộ thuộc Bộ Tư pháp xem vụ việc của mọi cơ quan. |
-| 3 | Quyền nhập liệu | Một Loại yêu cầu áp dụng cho người dùng khi Đơn vị áp dụng chứa đơn vị của người dùng hoặc một đơn vị cấp trên của đơn vị đó.<br>- Đơn vị không được áp dụng Loại yêu cầu "Yêu cầu bồi thường": nút "Thêm mới" và thao tác Cập nhật, Xóa hiển thị mờ; màn hình hiển thị thông báo "Đơn vị của bạn chưa được áp dụng Loại yêu cầu "Yêu cầu bồi thường" nên không được thêm mới, cập nhật hoặc xóa vụ việc tại Tòa án."<br>- Cập nhật, Xóa chỉ áp dụng cho vụ việc có Cơ quan bị khởi kiện là đơn vị gốc của người dùng. Mọi cán bộ của cơ quan có quyền nhập liệu đều được cập nhật, không giới hạn người tạo. |
+| 3 | Quyền nhập liệu | Một Loại yêu cầu áp dụng cho người dùng khi Đơn vị áp dụng chứa đơn vị của người dùng hoặc một đơn vị cấp trên của đơn vị đó.<br>- Đơn vị không được áp dụng Loại yêu cầu "Yêu cầu bồi thường": nút "Thêm mới" hiển thị mờ (thao tác Cập nhật, Xóa trên các vụ việc vẫn được thực hiện); màn hình hiển thị thông báo "Đơn vị của bạn chưa được áp dụng Loại yêu cầu "Yêu cầu bồi thường" nên không được thêm mới, cập nhật hoặc xóa vụ việc tại Tòa án."<br>- Cập nhật, Xóa chỉ áp dụng cho vụ việc có Cơ quan bị khởi kiện là đơn vị gốc của người dùng. Mọi cán bộ của cơ quan có quyền nhập liệu đều được cập nhật, không giới hạn người tạo. |
 | 4 | Mã vụ việc | Sinh khi Lưu theo quy tắc chung BT-yyyy-nnn: yyyy là năm hiện tại; nnn là số thứ tự lớn nhất trong năm cộng 1, xét đồng thời mã vụ việc tại Giải quyết yêu cầu bồi thường, hồ sơ luồng phân công Bồi thường nhà nước và module này; không trùng mã đã có. |
 | 5 | Tự tách vụ việc "Yêu cầu cả hai" | Khi thêm mới với Loại yêu cầu "Yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự)", hệ thống tạo 02 vụ việc với 02 Mã vụ việc liên tiếp:<br>+ Vụ việc thứ nhất: "Bồi thường thiệt hại bằng tiền", lưu bảng Thiệt hại yêu cầu bồi thường.<br>+ Vụ việc thứ hai: "Phục hồi danh dự", lưu Hình thức đề nghị phục hồi danh dự.<br>- Hai vụ việc dùng chung các thông tin còn lại, liên kết qua lại (Vụ việc liên quan) và cùng nằm trong module này.<br>- Sau khi tách, mỗi vụ việc được cập nhật trạng thái độc lập.<br>- Xóa một vụ việc thì gỡ liên kết ở vụ việc còn lại và ghi lịch sử "Gỡ liên kết". |
 | 6 | Loại yêu cầu sau khi lưu | Loại yêu cầu chỉ chọn khi thêm mới; sau khi lưu hiển thị chỉ đọc. |
@@ -101,7 +103,7 @@
 | Ngày hiệu lực bản án/QĐ | Date | - | Theo dữ liệu | dd/mm/yyyy, căn giữa; chưa có: "--". |
 | Cơ quan bị khởi kiện | String(255) | - | Theo dữ liệu | Tên đơn vị gốc của vụ việc. |
 | Trạng thái | String(50) | - | Theo dữ liệu | Control UI: Badge theo trạng thái. |
-| Thao tác | - | - | - | Icon "Cập nhật", icon "Xóa". Hiển thị mờ, không cho click khi vụ việc không thuộc cơ quan của người dùng hoặc đơn vị của người dùng không có quyền nhập liệu; tooltip nêu lý do. |
+| Thao tác | - | - | - | Icon "Cập nhật", icon "Xóa". Luôn cho phép thao tác trên mọi vụ việc trong danh sách (kể cả vụ việc của cơ quan khác hoặc ở trạng thái kết thúc). Xóa vẫn áp dụng quy tắc 12 khi vụ việc đã có Đề nghị cấp kinh phí. |
 
 ##### 4.3.3.30.4.3. Chức năng trên màn hình
 
@@ -189,7 +191,7 @@
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :-- | :--- | :--- | :--- |
 | 1 | Đóng | Nút | - Đóng màn hình, quay lại MH01. |
-| 2 | Cập nhật | Nút | - Hiển thị khi người dùng được cập nhật vụ việc (quy tắc 3, 7 tại [Quy tắc chung](#tdta-quy-tac-chung)). Mở [MH02](#tdta-mh02) ở chế độ cập nhật. |
+| 2 | Cập nhật | Nút | - Luôn hiển thị. Mở [MH02](#tdta-mh02) ở chế độ cập nhật; vụ việc ở trạng thái kết thúc thì ô Trạng thái bị khóa (quy tắc 7 tại [Quy tắc chung](#tdta-quy-tac-chung)). |
 | 3 | Xóa | Nút | - Hiển thị cùng điều kiện với Cập nhật. Xử lý như chức năng Xóa tại [MH01](#tdta-mh01). |
 | 4 | Mở bằng tham số | URL | - Mở màn hình kèm tham số Mã vụ việc (VD từ liên kết Mã vụ việc tại màn hình Cấp kinh phí tạm ứng/Bồi thường): mở sẵn MH03 của vụ việc tương ứng. |
 

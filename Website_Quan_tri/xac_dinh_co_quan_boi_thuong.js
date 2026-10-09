@@ -3,7 +3,7 @@ const LEGACY_SEED = [
     {
         id: "REQ1",
         code: "XD-2026-001",
-        date: "01/07/2026",
+        date: "01/10/2026",
         nycName: "Nguyễn Văn Nam",
         nycRole: "Người bị thiệt hại",
         nycGender: "Nam",
@@ -149,7 +149,7 @@ const LEGACY_SEED = [
         linhVuc: "TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ",
         hanhVi: "Kê biên tài sản nhà đất duy nhất vượt quá nghĩa vụ thi hành án của Chi cục THADS Quận 1.",
         hinhThucNhan: "Phương thức điện tử",
-        status: "Lưu nháp",
+        status: "Đang thực hiện",
         attachedFile: "Don_luu_nhap_btnn.pdf",
         procBasis: "",
         procTargetAgency: "",
@@ -160,7 +160,7 @@ const LEGACY_SEED = [
     {
         id: "REQ6",
         code: "XD-2026-006",
-        date: "28/06/2026",
+        date: "02/10/2026",
         nycName: "Hoàng Quốc Anh",
         nycRole: "Người đại diện theo pháp luật của người bị thiệt hại",
         nycGender: "Nam",
@@ -265,7 +265,7 @@ const LEGACY_SEED = [
         linhVuc: "TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ",
         hanhVi: "Kéo dài quá hạn thời gian xét xử tranh chấp đất đai kiều bào gây thiệt hại chi phí đi lại.",
         hinhThucNhan: "Phương thức điện tử",
-        status: "Lưu nháp",
+        status: "Đang thực hiện",
         attachedFile: "",
         procBasis: "",
         procTargetAgency: "",
@@ -363,7 +363,7 @@ const LEGACY_SEED = [
     {
         id: "REQ13",
         code: "XD-2026-013",
-        date: "04/08/2026",
+        date: "04/10/2026",
         nycName: "Nguyễn Thị Mai Hoa",
         nycRole: "Người bị thiệt hại",
         nycGender: "Nữ",
@@ -392,7 +392,7 @@ const LEGACY_SEED = [
     {
         id: "REQ14",
         code: "XD-2026-014",
-        date: "05/08/2026",
+        date: "05/10/2026",
         nycName: "Trương Văn Dũng",
         nycRole: "Người bị thiệt hại",
         nycGender: "Nam",
@@ -421,7 +421,7 @@ const LEGACY_SEED = [
     {
         id: "REQ15",
         code: "XD-2026-015",
-        date: "06/08/2026",
+        date: "06/10/2026",
         nycName: "Hoàng Minh Tâm",
         nycRole: "Cá nhân, pháp nhân được ủy quyền hợp pháp",
         nycGender: "Nam",
@@ -573,10 +573,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Phạm vi xem: cán bộ chủ trì, cán bộ phối hợp, người tạo (Lưu nháp), lãnh đạo các đơn vị trên luồng phân công/phê duyệt.
-// Hồ sơ Chờ phân công/Đang phân công nằm tại Tiếp nhận yêu cầu và Việc chờ lãnh đạo xử lý.
+// Phạm vi xem: cán bộ chủ trì, cán bộ phối hợp, người tạo, lãnh đạo các đơn vị trên luồng phân công/phê duyệt.
+// Hồ sơ Chờ phân công/Đang phân công nằm tại Tiếp nhận yêu cầu và Hồ sơ trình Lãnh đạo.
 let readOnlyView = false;
-const LEGACY_FLAG = 'btnn_xd_legacy_seed_v1';
+const LEGACY_FLAG = 'btnn_xd_legacy_seed_v2';
 
 function initWorkflowData() {
     migrateLegacySeed();
@@ -612,7 +612,6 @@ function isVisibleToMe(rec) {
     const me = getMe();
     if (rec.module !== 'XD') return false;
     if ([BTNN_WF.STATUS.CHO_PHAN_CONG, BTNN_WF.STATUS.DANG_PHAN_CONG].includes(rec.status)) return false;
-    if (rec.status === BTNN_WF.STATUS.LUU_NHAP) return rec.createdBy === me;
     if (rec.chuTri === me || (rec.phoiHop || []).includes(me) || rec.createdBy === me) return true;
     const units = (rec.routes || []).map(r => r.fromUnitId).concat(rec.approval ? rec.approval.path : []);
     return units.some(u => BTNN_WF.isLeaderOf(me, u));
@@ -663,6 +662,8 @@ function normalizeRequestData() {
     requestList.forEach(item => {
         if (item.status === "Chờ nhập liệu") item.status = "Chờ tiếp nhận";
         if (item.status === "Đang xác minh") item.status = "Đang thực hiện";
+        // Phân hệ BTNN không còn trạng thái Lưu nháp: hồ sơ nháp cũ chuyển về Đang thực hiện
+        if (item.status === "Lưu nháp") { item.status = "Đang thực hiện"; saveItem(item); }
         if (!item.nycPhuongXa) item.nycPhuongXa = inferWard(item.nycTinhThanh);
         if (!item.attachedDocs) {
             item.attachedDocs = item.attachedFile ? [{ name: "Tài liệu đính kèm", file: item.attachedFile }] : [];
@@ -853,7 +854,7 @@ function showFormScreen(id = null, mode = null) {
     const title = document.getElementById('formScreenTitle');
     const formRequestId = document.getElementById('formRequestId');
     const item = id ? requestList.find(r => r.id === id) : null;
-    formMode = mode || (!id ? 'create' : item && item.status === 'Chờ tiếp nhận' ? 'accept' : item && item.status === 'Lưu nháp' ? 'editDraft' : 'edit');
+    formMode = mode || (!id ? 'create' : item && item.status === 'Chờ tiếp nhận' ? 'accept' : 'edit');
 
     formRequestId.value = id || '';
 
@@ -881,12 +882,11 @@ function showFormScreen(id = null, mode = null) {
     }
     const submitBtn = document.getElementById('btnFormSubmit');
     if (submitBtn) {
+        // Tiếp nhận hồ sơ được phân công: "Tiếp nhận"; Thêm mới / Cập nhật: "Trình duyệt" (lưu rồi mở popup Trình phê duyệt)
         submitBtn.innerHTML = formMode === 'accept'
             ? '<i class="fa-solid fa-file-import"></i> Tiếp nhận'
-            : formMode === 'edit' ? '<i class="fa-solid fa-floppy-disk"></i> Lưu thông tin' : '<i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu';
+            : '<i class="fa-solid fa-paper-plane"></i> Trình duyệt';
     }
-    const draftBtn = document.querySelector('#screenForm .form-footer button[onclick="saveForm(true)"]');
-    if (draftBtn) draftBtn.style.display = formMode === 'edit' ? 'none' : 'inline-flex';
 
     document.getElementById('formHinhThucTiepNhan').value = 'Trực tiếp';
     document.getElementById('formLinhVuc').value = 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH';
@@ -1151,7 +1151,7 @@ function showDetailScreen(id) {
     if (isPhoiHop(item) && !['Hoàn thành', 'Bị từ chối'].includes(item.status)) {
         footer.innerHTML += `<button class="btn btn-secondary" onclick="openCoopDocModal('${item.id}')"><i class="fa-solid fa-paperclip"></i> Bổ sung tài liệu</button>`;
     }
-    if (!isChuTri(item) && !(item.status === 'Lưu nháp' && item.createdBy === getMe())) return;
+    if (!isChuTri(item)) return;
 
     if (item.status === 'Chờ tiếp nhận') {
         footer.innerHTML += `<button class="btn btn-success" onclick="acceptRequest('${item.id}', true)"><i class="fa-solid fa-file-import"></i> Tiếp nhận</button>`;
@@ -1162,15 +1162,12 @@ function showDetailScreen(id) {
         footer.innerHTML += `<button class="btn btn-warning" onclick="openSupplementModal('${item.id}')" style="background:#f59e0b; color:#fff; border:none;"><i class="fa-solid fa-file-circle-question"></i> Yêu cầu bổ sung</button>`;
         footer.innerHTML += `<button class="btn btn-danger" onclick="openRejectModal('${item.id}')" style="background:#ef4444; color:#fff; border:none;"><i class="fa-solid fa-ban"></i> Từ chối</button>`;
         footer.innerHTML += `<button class="btn btn-secondary" onclick="showProcessScreen('${item.id}')"><i class="fa-solid fa-balance-scale"></i> Cập nhật kết quả xác định</button>`;
-        footer.innerHTML += `<button class="btn btn-primary" onclick="openSubmitApprovalModal('${item.id}')"><i class="fa-solid fa-paper-plane"></i> Trình lại</button>`;
     } else if (item.status === 'Đang thực hiện') {
-        footer.innerHTML += `<button class="btn btn-secondary" onclick="showFormScreen('${item.id}', 'edit')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật thông tin</button>`;
-        footer.innerHTML += `<button class="btn btn-secondary" onclick="showProcessScreen('${item.id}')"><i class="fa-solid fa-balance-scale"></i> Cập nhật kết quả xác định</button>`;
-        footer.innerHTML += `<button class="btn btn-primary" onclick="openSubmitApprovalModal('${item.id}')"><i class="fa-solid fa-paper-plane"></i> Trình phê duyệt</button>`;
+        // Đang thực hiện: chỉ Cập nhật kết quả (màn hình cập nhật có "Lưu kết quả" / "Lưu và trình phê duyệt")
+        footer.innerHTML += `<button class="btn btn-primary" onclick="showProcessScreen('${item.id}')"><i class="fa-solid fa-balance-scale"></i> Cập nhật kết quả</button>`;
     } else if (item.status === 'Chờ chuyển CQGQBT') {
         footer.innerHTML += `<button class="btn btn-primary" onclick="openTransferModal('${item.id}')"><i class="fa-solid fa-share-from-square"></i> Chuyển CQGQBT</button>`;
-    } else if (item.status === 'Lưu nháp') {
-        footer.innerHTML += `<button class="btn btn-primary" onclick="submitDraft('${item.id}')"><i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu</button>`;
+
     } else if (item.status === 'Yêu cầu bổ sung') {
         // Đã bỏ nút In Phiếu Bổ sung theo yêu cầu
         footer.innerHTML += `<button class="btn btn-primary" onclick="receiveSupplement('${item.id}')"><i class="fa-solid fa-file-circle-check"></i> Tiếp nhận hồ sơ bổ sung</button>`;
@@ -1183,36 +1180,11 @@ function acceptRequest(id, fromDetail = false) {
     showFormScreen(id, 'accept');
 }
 
-function submitDraft(id) {
-    const item = requestList.find(r => r.id === id);
-    if (item && item.status === 'Lưu nháp') {
-        const err = validateRequestItem(item);
-        if (err) { showToast(err, "error"); showFormScreen(id); return; }
-        item.status = 'Đang thực hiện';
-        BTNN_WF.addHistory(item, 'Gửi yêu cầu', 'Hồ sơ chuyển [Đang thực hiện].');
-        saveItem(item);
-        showToast("Đã gửi yêu cầu. Hồ sơ chuyển sang [Đang thực hiện]!", "success");
-        showDetailScreen(id);
-    }
-}
-
 // Kiểm tra nhanh các trường bắt buộc khi gửi từ màn chi tiết
 function validateRequestItem(item) {
     if (!item.nycName || !item.nycDob || !item.nycDocNo || !item.hanhVi) return "Vui lòng nhập đầy đủ thông tin bắt buộc trước khi gửi yêu cầu!";
     if (!item.nycPhone && !item.nycEmail) return "Nhập ít nhất một trong hai: Số điện thoại liên hệ hoặc Thư điện tử (Email)!";
     return '';
-}
-
-function deleteRequest(id) {
-    const index = requestList.findIndex(r => r.id === id);
-    if (index !== -1 && requestList[index].status === 'Lưu nháp') {
-        showConfirmModal("Bạn có chắc chắn muốn xóa yêu cầu Lưu nháp này không?", () => {
-            BTNN_WF.removeRecord(requestList[index].code);
-            requestList.splice(index, 1);
-            showToast("Xóa hồ sơ đã lưu nháp thành công!", "success");
-            filterData();
-        });
-    }
 }
 
 function addFormDocRow() {
@@ -1413,6 +1385,7 @@ function markInvalid(el, firstInvalid) {
     return firstInvalid || el;
 }
 
+let submitAfterSaveId = null;
 function saveForm(isDraft) {
     clearValidation();
 
@@ -1487,14 +1460,12 @@ function saveForm(isDraft) {
                 if (r) r.state = 'Đã xử lý';
                 BTNN_WF.addHistory(item, 'Tiếp nhận hồ sơ', 'Cán bộ chủ trì tiếp nhận, nhập liệu hồ sơ. Hồ sơ chuyển [Đang thực hiện].');
             }
-        } else if (formMode === 'editDraft') {
-            item.status = isDraft ? 'Lưu nháp' : 'Đang thực hiện';
-            if (!isDraft) BTNN_WF.addHistory(item, 'Gửi yêu cầu', 'Hồ sơ chuyển [Đang thực hiện].');
         } else {
             BTNN_WF.addHistory(item, 'Cập nhật thông tin', 'Cập nhật thông tin hồ sơ.');
         }
         saveItem(item);
-        showToast(isDraft ? "Đã lưu nháp hồ sơ thành công!" : `Đã lưu hồ sơ ${item.code}. Trạng thái: [${item.status}]!`, "success");
+        showToast(`Đã lưu hồ sơ ${item.code}. Trạng thái: [${item.status}]!`, "success");
+        if (formMode !== 'accept') submitAfterSaveId = item.id;
     } else {
         const me = BTNN_WF.getCurrentUser();
         const newCode = BTNN_WF.nextCode('XD');
@@ -1515,15 +1486,22 @@ function saveForm(isDraft) {
             routes: [],
             approval: null,
             history: [],
-            status: isDraft ? 'Lưu nháp' : 'Đang thực hiện',
+            status: 'Đang thực hiện',
             procBasis: "", procTargetAgency: "", procReason: "", procDecisionFile: "", claimCode: "-"
         }, data);
         BTNN_WF.addHistory(item, 'Tạo yêu cầu', `Cán bộ tạo trực tiếp, đồng thời là cán bộ chủ trì. Trạng thái: [${item.status}].`);
         saveItem(item);
         requestList.unshift(item);
-        showToast(isDraft ? "Đã lưu nháp hồ sơ yêu cầu thành công!" : `Gửi yêu cầu thành công. Hồ sơ ${newCode} chuyển sang [Đang thực hiện]!`, "success");
+        showToast(`Đã lưu hồ sơ ${newCode}. Trạng thái: [Đang thực hiện]!`, "success");
+        submitAfterSaveId = item.id;
     }
     showListScreen();
+    // Nút "Trình duyệt": sau khi lưu mở popup Trình phê duyệt của hồ sơ
+    if (submitAfterSaveId) {
+        const target = submitAfterSaveId;
+        submitAfterSaveId = null;
+        openSubmitApprovalModal(target);
+    }
 }
 
 // Save verification results
@@ -1667,109 +1645,47 @@ function renderTable() {
     renderPagination(totalPages);
 }
 
+// Lưới danh sách: 05 thao tác cố định theo thứ tự Tiếp nhận | Yêu cầu bổ sung | Từ chối | Cập nhật | Chuyển CQGQBT.
+// Thao tác không khả dụng vẫn hiển thị nhưng mờ (disabled), kèm chú thích lý do.
 function getActionButtons(item) {
     if (readOnlyView) return '';
     const owner = isChuTri(item);
-    const me = getMe();
-
-    // Chuẩn 4 Slot cố định (Rule 3)
-    const disabledBtn = (title, icon = 'fa-solid fa-minus') =>
-        `<button class="icon-btn" title="${escapeAttr(title)}" style="opacity: 0.25; pointer-events: none; cursor: not-allowed;"><i class="${icon}"></i></button>`;
-
-    let slot1 = disabledBtn('Không có thao tác khả dụng');
-    let slot2 = disabledBtn('Không có thao tác khả dụng');
-    let slot3 = disabledBtn('Không có thao tác khả dụng');
-    let slot4 = disabledBtn('Không có thao tác khả dụng');
-
-    switch (item.status) {
-        case 'Chờ tiếp nhận':
-            if (owner) {
-                slot1 = `<button class="icon-btn accept" title="Tiếp nhận" onclick="acceptRequest('${item.id}')"><i class="fa-solid fa-file-import"></i></button>`;
-                slot2 = `<button class="icon-btn edit" title="Yêu cầu bổ sung" onclick="openSupplementModal('${item.id}')"><i class="fa-solid fa-file-circle-question"></i></button>`;
-                slot3 = `<button class="icon-btn delete" title="Từ chối yêu cầu" onclick="openRejectModal('${item.id}')"><i class="fa-solid fa-ban"></i></button>`;
-            } else {
-                slot1 = disabledBtn('Chỉ cán bộ chủ trì mới được tiếp nhận');
-                slot2 = disabledBtn('Chỉ cán bộ chủ trì mới được yêu cầu bổ sung');
-                slot3 = disabledBtn('Chỉ cán bộ chủ trì mới được từ chối');
-            }
-            break;
-
-        case 'Bị trả lại':
-            if (owner) {
-                // Tại bản ghi Bị trả lại được phép thực hiện: Cập nhật, Yêu cầu bổ sung, Từ chối, Trình lại
-                slot1 = `<button class="icon-btn edit" title="Cập nhật yêu cầu bị trả lại" onclick="showFormScreen('${item.id}', 'edit')"><i class="fa-solid fa-pen-to-square"></i></button>`;
-                slot2 = `<button class="icon-btn edit" title="Yêu cầu bổ sung" onclick="openSupplementModal('${item.id}')"><i class="fa-solid fa-file-circle-question"></i></button>`;
-                slot3 = `<button class="icon-btn delete" title="Từ chối yêu cầu" onclick="openRejectModal('${item.id}')"><i class="fa-solid fa-ban"></i></button>`;
-                slot4 = `<button class="icon-btn submit" title="Trình lại phê duyệt" onclick="openSubmitApprovalModal('${item.id}')"><i class="fa-solid fa-paper-plane"></i></button>`;
-            } else {
-                slot1 = disabledBtn('Chỉ cán bộ chủ trì mới được cập nhật');
-                slot2 = disabledBtn('Chỉ cán bộ chủ trì mới được yêu cầu bổ sung');
-                slot3 = disabledBtn('Chỉ cán bộ chủ trì mới được từ chối');
-                slot4 = disabledBtn('Chỉ cán bộ chủ trì mới được trình lại');
-            }
-            break;
-
-        case 'Lưu nháp':
-            if (item.createdBy === me) {
-                slot1 = `<button class="icon-btn edit" title="Chỉnh sửa thông tin" onclick="showFormScreen('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
-                slot2 = `<button class="icon-btn delete" title="Xóa yêu cầu" onclick="deleteRequest('${item.id}')"><i class="fa-solid fa-trash"></i></button>`;
-            } else {
-                slot1 = disabledBtn('Chỉ người tạo mới được chỉnh sửa nháp');
-                slot2 = disabledBtn('Chỉ người tạo mới được xóa nháp');
-            }
-            break;
-
-        case 'Đang thực hiện':
-            if (owner) {
-                slot1 = `<button class="icon-btn edit" title="Cập nhật kết quả xác định" onclick="showProcessScreen('${item.id}')"><i class="fa-solid fa-clipboard-check"></i></button>`;
-                slot2 = `<button class="icon-btn submit" title="Trình phê duyệt" onclick="openSubmitApprovalModal('${item.id}')"><i class="fa-solid fa-paper-plane"></i></button>`;
-                slot3 = `<button class="icon-btn edit" title="Yêu cầu bổ sung" onclick="openSupplementModal('${item.id}')"><i class="fa-solid fa-file-circle-question"></i></button>`;
-            } else {
-                slot1 = disabledBtn('Chỉ cán bộ chủ trì mới được cập nhật');
-                slot2 = disabledBtn('Chỉ cán bộ chủ trì mới được trình phê duyệt');
-                slot3 = disabledBtn('Chỉ cán bộ chủ trì mới được yêu cầu bổ sung');
-            }
-            break;
-
-        case 'Chờ chuyển CQGQBT':
-            if (owner) {
-                slot1 = `<button class="icon-btn transfer" title="Chuyển CQGQBT" onclick="openTransferModal('${item.id}')"><i class="fa-solid fa-share-from-square"></i></button>`;
-            } else {
-                slot1 = disabledBtn('Chỉ cán bộ chủ trì mới được chuyển CQGQBT');
-            }
-            break;
-
-        case 'Yêu cầu bổ sung':
-            if (owner) {
-                slot1 = `<button class="icon-btn edit" title="Tiếp nhận hồ sơ bổ sung" onclick="receiveSupplement('${item.id}')"><i class="fa-solid fa-file-circle-check"></i></button>`;
-            } else {
-                slot1 = disabledBtn('Hồ sơ đang chờ người yêu cầu bổ sung');
-            }
-            break;
-
-        case 'Chờ phê duyệt':
-            slot1 = disabledBtn('Đang chờ phê duyệt', 'fa-solid fa-clock');
-            break;
-
-        case 'Hoàn thành':
-            slot1 = disabledBtn('Đã hoàn thành xác định', 'fa-solid fa-circle-check');
-            break;
-
-        case 'Bị từ chối':
-            slot1 = disabledBtn('Đã từ chối yêu cầu', 'fa-solid fa-ban');
-            break;
-
-        default:
-            break;
+    const ACTIONS = {
+        accept: { icon: 'fa-solid fa-file-import', cls: 'accept', title: 'Tiếp nhận' },
+        supplement: { icon: 'fa-solid fa-file-circle-question', cls: 'edit', title: 'Yêu cầu bổ sung' },
+        reject: { icon: 'fa-solid fa-ban', cls: 'delete', title: 'Từ chối' },
+        update: { icon: 'fa-solid fa-pen-to-square', cls: 'edit', title: 'Cập nhật' },
+        transfer: { icon: 'fa-solid fa-share-from-square', cls: 'transfer', title: 'Chuyển CQGQBT' }
+    };
+    const on = (key, onclick, title) => `<button class="icon-btn ${ACTIONS[key].cls}" title="${escapeAttr(title || ACTIONS[key].title)}" onclick="${onclick}"><i class="${ACTIONS[key].icon}"></i></button>`;
+    const off = (key, reason) => `<button class="icon-btn disabled-action" title="${escapeAttr(ACTIONS[key].title + ': ' + reason)}" style="opacity: 0.3; pointer-events: none; cursor: not-allowed;"><i class="${ACTIONS[key].icon}"></i></button>`;
+    const notOwner = 'Chỉ cán bộ chủ trì được thực hiện';
+    const id = item.id;
+    const s = item.status;
+    const slots = {
+        accept: off('accept', 'Chỉ khả dụng khi hồ sơ Chờ tiếp nhận hoặc Yêu cầu bổ sung'),
+        supplement: off('supplement', 'Chỉ khả dụng khi hồ sơ Chờ tiếp nhận hoặc Bị trả lại'),
+        reject: off('reject', 'Chỉ khả dụng khi hồ sơ Chờ tiếp nhận hoặc Bị trả lại'),
+        update: off('update', 'Chỉ khả dụng khi hồ sơ Đang thực hiện hoặc Bị trả lại'),
+        transfer: off('transfer', 'Chỉ khả dụng khi hồ sơ Chờ chuyển CQGQBT')
+    };
+    if (s === 'Chờ tiếp nhận') {
+        slots.accept = owner ? on('accept', `acceptRequest('${id}')`) : off('accept', notOwner);
+        slots.supplement = owner ? on('supplement', `openSupplementModal('${id}')`) : off('supplement', notOwner);
+        slots.reject = owner ? on('reject', `openRejectModal('${id}')`) : off('reject', notOwner);
+    } else if (s === 'Yêu cầu bổ sung') {
+        slots.accept = owner ? on('accept', `receiveSupplement('${id}')`, 'Tiếp nhận hồ sơ bổ sung') : off('accept', notOwner);
+    } else if (s === 'Đang thực hiện') {
+        slots.update = owner ? on('update', `showProcessScreen('${id}')`, 'Cập nhật kết quả xác định') : off('update', notOwner);
+    } else if (s === 'Bị trả lại') {
+        slots.supplement = owner ? on('supplement', `openSupplementModal('${id}')`) : off('supplement', notOwner);
+        slots.reject = owner ? on('reject', `openRejectModal('${id}')`) : off('reject', notOwner);
+        slots.update = owner ? on('update', `showFormScreen('${id}', 'edit')`, 'Cập nhật và trình duyệt lại') : off('update', notOwner);
+    } else if (s === 'Chờ chuyển CQGQBT') {
+        slots.transfer = owner ? on('transfer', `openTransferModal('${id}')`) : off('transfer', notOwner);
     }
-
-    if (isPhoiHop(item) && !['Hoàn thành', 'Bị từ chối'].includes(item.status)) {
-        slot4 = `<button class="icon-btn edit" title="Bổ sung tài liệu" onclick="openCoopDocModal('${item.id}')"><i class="fa-solid fa-paperclip"></i></button>`;
-    }
-
-    return slot1 + slot2 + slot3 + slot4;
+    return slots.accept + slots.supplement + slots.reject + slots.update + slots.transfer;
 }
-
 function renderPagination(totalPages) {
     const container = document.getElementById('paginationPages');
     container.innerHTML = '';
@@ -1957,7 +1873,8 @@ function openSubmitApprovalModal(id, kind) {
     if (!item || !isChuTri(item)) return;
     clearValidation();
     document.getElementById('submitRequestId').value = id;
-    document.querySelector(`input[name="submitKind"][value="${kind || 'Hoàn thành xác định'}"]`).checked = true;
+    const presetKind = kind || (item.returned && item.returned.kind) || (item.approval && item.approval.kind) || 'Hoàn thành xác định';
+    document.querySelector(`input[name="submitKind"][value="${presetKind}"]`).checked = true;
     document.getElementById('submitContent').value = '';
     modalFiles.submit = [];
     renderModalFiles('submit');
@@ -2173,6 +2090,10 @@ function clearXdcqSupplementInputError(inputEl, errorElId) {
     }
 }
 
+// Popup Yêu cầu bổ sung hồ sơ: cán bộ chủ trì soạn nội dung, hệ thống sinh văn bản dự thảo theo mẫu,
+// cán bộ có thể tải về (Word) để chỉnh sửa rồi đính lại; nút "Trình Lãnh đạo" gửi phê duyệt.
+let supplementDraftUpload = '';
+let supplementDraftChoice = ''; // 'generated' | 'uploaded' - bắt buộc chọn trước khi Trình Lãnh đạo
 function openSupplementModal(id) {
     const item = requestList.find(r => r.id === id);
     if (!item) return;
@@ -2182,15 +2103,9 @@ function openSupplementModal(id) {
     if (!modal || !container) return;
 
     xdcqSupplementPrintId = item.id;
+    supplementDraftUpload = '';
+    supplementDraftChoice = '';
     const reason = item.supplementReason || "Hồ sơ yêu cầu xác định cơ quan còn thiếu văn bản, tài liệu căn cứ chứng minh theo quy định.";
-
-    // Thời hạn bổ sung: lấy giá trị đã lưu, nếu chưa có thì đề xuất ngày hiện tại + 15 ngày
-    let deadlineValue = item.supplementDeadline;
-    if (!deadlineValue) {
-        const d = new Date();
-        d.setDate(d.getDate() + 15);
-        deadlineValue = `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
-    }
 
     currentXdcqSupplementFiles = Array.isArray(item.supplementFiles)
         ? item.supplementFiles.slice()
@@ -2222,17 +2137,6 @@ function openSupplementModal(id) {
             <div class="error-message" id="xdcqSupplementReasonError" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
         </div>
 
-        <div style="margin-bottom:16px;">
-            <label style="display:block; font-weight:600; color:#1e293b; margin-bottom:6px; font-size:13.5px;">
-                Thời hạn bổ sung: <span style="color:#dc2626;">*</span>
-            </label>
-            <div class="date-input-wrapper">
-                <input type="text" id="xdcqSupplementDeadlineInput" class="form-control" value="${escapeHtml(deadlineValue)}" style="width:100%; box-sizing:border-box; border:1px solid #cbd5e1; border-radius:6px; padding:8px 12px; font-family:sans-serif; font-size:13.5px;" placeholder="dd/mm/yyyy" oninput="clearXdcqSupplementInputError(this, 'xdcqSupplementDeadlineError')">
-                <i class="fa-regular fa-calendar-days"></i>
-            </div>
-            <div class="error-message" id="xdcqSupplementDeadlineError" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
-        </div>
-
         <!-- Khối Tài liệu kèm theo (Nếu có) -->
         <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:15px; margin-bottom:15px; font-family:sans-serif;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -2247,27 +2151,92 @@ function openSupplementModal(id) {
             <div id="supplementAttachedFilesList"></div>
         </div>
 
-        <div style="margin-bottom:0;">
-            <p style="font-style:italic; font-size:12.5px; color:#64748b; margin:0;"><i class="fa-solid fa-circle-info"></i> Sau khi gửi yêu cầu bổ sung, trạng thái hồ sơ sẽ chuyển sang <strong>[Yêu cầu bổ sung]</strong> để người yêu cầu hoàn thiện tài liệu.</p>
+        <!-- Khối Văn bản dự thảo trình Lãnh đạo (bắt buộc): Mẫu số 08/BTNN do hệ thống sinh hoặc bản đã chỉnh sửa -->
+        <div id="supplementDraftCard" style="border:2px solid #2563eb; background:#eff6ff; border-radius:8px; padding:15px; font-family:sans-serif;">
+            <p style="font-weight:700; color:#1e3a8a; margin:0 0 10px 0; font-size:14px;"><i class="fa-solid fa-file-signature"></i> Văn bản dự thảo trình Lãnh đạo <span style="color:#dc2626;">*</span></p>
+            <div id="supplementDraftBlock"></div>
         </div>
     `;
 
     renderXdcqSupplementFilesList();
-
-    if (typeof flatpickr === 'function') {
-        const tomorrow = new Date();
-        tomorrow.setDate(tomorrow.getDate() + 1);
-        flatpickr('#xdcqSupplementDeadlineInput', {
-            dateFormat: 'd/m/Y',
-            allowInput: true,
-            minDate: tomorrow
-        });
-    }
+    renderSupplementDraftBlock();
 
     modal.style.display = 'flex';
     modal.classList.add('visible');
 }
 
+function currentSupplementRecord() {
+    const item = requestList.find(r => r.id === xdcqSupplementPrintId);
+    return item || null;
+}
+
+function currentSupplementContent() {
+    const el = document.getElementById('xdcqSupplementReasonInput');
+    return el ? el.value.trim() : '';
+}
+
+function renderSupplementDraftBlock() {
+    const box = document.getElementById('supplementDraftBlock');
+    const item = currentSupplementRecord();
+    if (!box || !item) return;
+    const generated = BTNN_WF.draftBaseName(item) + '.doc';
+    const chosen = supplementDraftChoice === 'generated' ? generated : (supplementDraftChoice === 'uploaded' ? supplementDraftUpload : '');
+    const optStyle = (on) => `display:block; border:1px solid ${on ? '#2563eb' : '#cbd5e1'}; background:${on ? '#fff' : '#f8fafc'}; border-radius:6px; padding:10px 12px; margin-bottom:8px; cursor:pointer;`;
+    box.innerHTML = `
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-bottom:12px; font-size:13px;">
+            <span style="color:#475569; font-weight:600;">Văn bản theo Mẫu số 08/BTNN:</span>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="previewSupplementDraft()"><i class="fa-solid fa-up-right-from-square"></i> Xem dự thảo</button>
+            ${BTNN_WF.downloadSelectHtml('downloadSupplementDraft')}
+        </div>
+        <div style="font-size:13px; font-weight:600; color:#1e293b; margin-bottom:6px;">Chọn văn bản trình Lãnh đạo:</div>
+        <label style="${optStyle(supplementDraftChoice === 'generated')}">
+            <input type="radio" name="supplementDraftChoice" value="generated" ${supplementDraftChoice === 'generated' ? 'checked' : ''} onchange="chooseSupplementDraft('generated')">
+            <b>Dùng văn bản hệ thống sinh theo Mẫu số 08/BTNN</b>
+            ${supplementDraftChoice === 'generated' ? `<div style="margin:6px 0 0 22px; font-size:12.5px; color:#334155;"><i class="fa-solid fa-file-word" style="color:#2563eb;"></i> ${escapeHtml(generated)} <span style="color:#64748b;">(sinh theo nội dung đang nhập tại thời điểm trình)</span></div>` : ''}
+        </label>
+        <label style="${optStyle(supplementDraftChoice === 'uploaded')}">
+            <input type="radio" name="supplementDraftChoice" value="uploaded" ${supplementDraftChoice === 'uploaded' ? 'checked' : ''} onchange="chooseSupplementDraft('uploaded')">
+            <b>Dùng văn bản đã chỉnh sửa (tải về Word, chỉnh sửa rồi đính kèm lại)</b>
+            ${supplementDraftChoice === 'uploaded' ? `<div style="margin:6px 0 0 22px; display:flex; flex-wrap:wrap; align-items:center; gap:10px; font-size:12.5px;">
+                ${supplementDraftUpload
+                    ? `<span><i class="fa-solid fa-file-word" style="color:#16a34a;"></i> <b>${escapeHtml(supplementDraftUpload)}</b></span>
+                       <a href="#" onclick="event.preventDefault(); previewNamedFile('${escapeAttr(supplementDraftUpload)}');" style="color:var(--secondary-color); text-decoration:none;">Xem file</a>
+                       <a href="#" onclick="event.preventDefault(); removeSupplementDraftUpload();" style="color:var(--danger-color); text-decoration:none;"><i class="fa-solid fa-trash"></i> Xóa file</a>`
+                    : `<span style="color:#b45309;">Chưa đính kèm văn bản</span>`}
+                <input type="file" id="supplementDraftUploadInput" style="display:none;" accept=".doc,.docx,.pdf" onchange="uploadSupplementDraft(this)">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="event.preventDefault(); document.getElementById('supplementDraftUploadInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> ${supplementDraftUpload ? 'Thay văn bản' : 'Tải lên văn bản đã chỉnh sửa'}</button>
+            </div>` : ''}
+        </label>
+        <div style="margin-top:4px; padding:8px 10px; border-radius:6px; background:${chosen ? '#dcfce7' : '#fff7ed'}; color:${chosen ? '#166534' : '#9a3412'}; font-size:13px;">
+            <i class="fa-solid ${chosen ? 'fa-circle-check' : 'fa-triangle-exclamation'}"></i> Văn bản sẽ trình Lãnh đạo: <b>${chosen ? escapeHtml(chosen) : 'Chưa xác định'}</b>
+        </div>
+        <div class="error-message" id="supplementDraftError" style="display:none; color:#dc2626; font-size:12px; margin-top:6px;"></div>`;
+}
+
+function chooseSupplementDraft(choice) {
+    supplementDraftChoice = choice;
+    renderSupplementDraftBlock();
+}
+function previewSupplementDraft() {
+    const item = currentSupplementRecord();
+    if (item) BTNN_WF.previewDraftDoc(item, currentSupplementContent(), currentXdcqSupplementFiles);
+}
+
+function downloadSupplementDraft(format) {
+    const item = currentSupplementRecord();
+    if (item) BTNN_WF.downloadDraftDoc(item, currentSupplementContent(), currentXdcqSupplementFiles, format);
+}
+function uploadSupplementDraft(input) {
+    if (!input.files || !input.files[0]) return;
+    supplementDraftUpload = input.files[0].name;
+    input.value = '';
+    renderSupplementDraftBlock();
+}
+
+function removeSupplementDraftUpload() {
+    supplementDraftUpload = '';
+    renderSupplementDraftBlock();
+}
 // Giữ alias tương thích
 function printSupplementNotice(id) {
     openSupplementModal(id);
@@ -2281,105 +2250,56 @@ function closePreviewSupplementModal() {
     }
 }
 
+// Trình Lãnh đạo phê duyệt yêu cầu bổ sung; Lãnh đạo phê duyệt cấp cuối thì hồ sơ chuyển [Yêu cầu bổ sung]
 function executeSaveSupplement() {
     const reasonInput = document.getElementById('xdcqSupplementReasonInput');
-    const deadlineInput = document.getElementById('xdcqSupplementDeadlineInput');
     const reasonErr = document.getElementById('xdcqSupplementReasonError');
-    const deadlineErr = document.getElementById('xdcqSupplementDeadlineError');
-
-    let hasError = false;
-    let firstErrorElement = null;
-
-    if (reasonInput) {
-        if (!reasonInput.value.trim()) {
-            reasonInput.classList.add('is-invalid');
-            if (reasonErr) reasonErr.style.display = 'block';
-            hasError = true;
-            if (!firstErrorElement) firstErrorElement = reasonInput;
-        } else {
-            reasonInput.classList.remove('is-invalid');
-            if (reasonErr) reasonErr.style.display = 'none';
-        }
-    }
-
-    if (deadlineInput) {
-        if (!deadlineInput.value.trim()) {
-            deadlineInput.classList.add('is-invalid');
-            if (deadlineErr) {
-                deadlineErr.textContent = 'Đây là trường bắt buộc';
-                deadlineErr.style.display = 'block';
-            }
-            hasError = true;
-            if (!firstErrorElement) firstErrorElement = deadlineInput;
-        } else {
-            deadlineInput.classList.remove('is-invalid');
-            if (deadlineErr) deadlineErr.style.display = 'none';
-        }
-    }
-
-    if (hasError) {
-        if (firstErrorElement) firstErrorElement.focus();
+    const reasonVal = reasonInput ? reasonInput.value.trim() : '';
+    if (!reasonVal) {
+        reasonInput.classList.add('is-invalid');
+        if (reasonErr) reasonErr.style.display = 'block';
+        reasonInput.focus();
         return;
     }
-
-    // Thời hạn bổ sung phải lớn hơn ngày hiện tại
-    if (deadlineInput) {
-        const parts = deadlineInput.value.trim().split('/');
-        const deadlineDate = (parts.length === 3)
-            ? new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]))
-            : null;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        if (!deadlineDate || isNaN(deadlineDate.getTime()) || deadlineDate <= today) {
-            deadlineInput.classList.add('is-invalid');
-            if (deadlineErr) {
-                deadlineErr.textContent = 'Thời hạn bổ sung phải lớn hơn ngày hiện tại';
-                deadlineErr.style.display = 'block';
-            }
-            deadlineInput.focus();
-            return;
-        }
-    }
-
-    const item = requestList.find(r => r.id === xdcqSupplementPrintId);
+    const item = currentSupplementRecord();
     if (!item) return;
 
-    const reasonVal = reasonInput.value.trim();
-    const deadlineVal = deadlineInput.value.trim();
-    const nowStr = new Date().toLocaleDateString('vi-VN') + ' ' +
-        new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+    // Bắt buộc có văn bản dự thảo trình Lãnh đạo
+    const draftErr = document.getElementById('supplementDraftError');
+    const draftCard = document.getElementById('supplementDraftCard');
+    const failDraft = (msg) => {
+        if (draftErr) { draftErr.textContent = msg; draftErr.style.display = 'block'; }
+        if (draftCard) { draftCard.style.borderColor = '#dc2626'; draftCard.scrollIntoView({ block: 'nearest' }); }
+        showToast(msg, 'error');
+    };
+    if (!supplementDraftChoice) { failDraft('Vui lòng chọn văn bản dự thảo trình Lãnh đạo.'); return; }
+    if (supplementDraftChoice === 'uploaded' && !supplementDraftUpload) { failDraft('Vui lòng đính kèm văn bản đã chỉnh sửa trước khi trình Lãnh đạo.'); return; }
 
-    item.status = 'Yêu cầu bổ sung';
+    const draftDoc = {
+        source: supplementDraftChoice,
+        generatedName: BTNN_WF.draftBaseName(item) + '.doc',
+        uploadedName: supplementDraftChoice === 'uploaded' ? supplementDraftUpload : '',
+        generatedAt: BTNN_WF.nowText()
+    };
+    const files = currentXdcqSupplementFiles.map(f => ({ name: f.name }));
+    files.push({ name: draftDoc.source === 'uploaded' ? draftDoc.uploadedName : draftDoc.generatedName });
+
+    // Lưu nội dung trước khi trình để văn bản dự thảo phía Lãnh đạo sinh đúng nội dung
     item.supplementReason = reasonVal;
-    item.supplementDeadline = deadlineVal;
     item.supplementFiles = currentXdcqSupplementFiles.slice();
-    item.supplementSentAt = nowStr;
-
-    if (!item.supplementLog) item.supplementLog = [];
-    item.supplementLog.push({
-        date: nowStr,
-        officer: item.chuTri ? BTNN_WF.userName(item.chuTri) : (item.officer || 'Nguyễn Văn Chuyên Viên'),
-        action: 'Gửi yêu cầu bổ sung',
-        reason: reasonVal,
-        deadline: deadlineVal
-    });
-
-    BTNN_WF.addHistory(item, 'Yêu cầu bổ sung', `Cán bộ gửi yêu cầu bổ sung hồ sơ đến hết ngày ${deadlineVal}. Nội dung: ${reasonVal}`);
     saveItem(item);
-    BTNN_WF.saveRecord(item);
+
+    const res = BTNN_WF.submitForApproval(item.code, 'Yêu cầu bổ sung', reasonVal, files, { draftDoc });
+    if (!res.ok) { showToast(res.message, 'error'); return; }
 
     closePreviewSupplementModal();
-    showToast(`Đã gửi yêu cầu bổ sung hồ sơ ${item.code} thành công!`, 'success');
-
-    const fresh = requestList.find(r => r.id === item.id);
+    reloadRequestList();
+    showToast(`Đã trình Lãnh đạo phê duyệt yêu cầu bổ sung hồ sơ ${item.code}. Trạng thái: [Chờ phê duyệt].`, 'success');
+    const fresh = requestList.find(r => r.code === item.code);
     const detailScreen = document.getElementById('screenDetail');
-    if (detailScreen && detailScreen.style.display !== 'none') {
-        showDetailScreen(item.id);
-    } else {
-        filterData();
-    }
+    if (fresh && detailScreen && detailScreen.style.display !== 'none') showDetailScreen(fresh.id);
+    else filterData();
 }
-
 // ---------------- Logic Modal Từ chối yêu cầu xác định cơ quan ----------------
 let currentRejectFile = null;
 
@@ -2491,7 +2411,6 @@ function confirmRejectRequest() {
 
     BTNN_WF.addHistory(item, 'Từ chối yêu cầu', `Cán bộ từ chối yêu cầu xác định cơ quan. Lý do: ${reason}`);
     saveItem(item);
-    BTNN_WF.saveRecord(item);
 
     closeRejectModal();
     showToast(`Đã từ chối yêu cầu xác định cơ quan ${item.code}!`, 'success');

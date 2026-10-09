@@ -64,7 +64,7 @@ flowchart TD
 | Nút: Xóa bộ lọc | Button | Không | Hiển thị | Control UI: Button.<br>Luôn hiển thị ở trạng thái khả dụng. |
 | Nút: Tìm kiếm | Button | Không | Hiển thị | Control UI: Button.<br>Luôn hiển thị ở trạng thái khả dụng. |
 | **III. Thanh công cụ Toolbar Mẫu 01** | | | | |
-| Nút: Đồng bộ từ hệ thống | Button | Không | Hiển thị | Control UI: Button (icon `fa-rotate`).<br>- Hiển thị khả dụng với cán bộ nghiệp vụ BTNN khi kỳ báo cáo ở trạng thái `Đang nhập liệu` hoặc `Nháp`.<br>- Khóa mờ khi kỳ báo cáo ở trạng thái `Đã gửi chờ duyệt`, `Đã duyệt` hoặc `Hoàn thành`. |
+| Nút: Đồng bộ từ hệ thống | Button | Không | Hiển thị | Control UI: Button (icon `fa-rotate`).<br>- Hiển thị khả dụng với cán bộ nghiệp vụ BTNN khi kỳ báo cáo ở trạng thái `Đang nhập liệu` hoặc `Yêu cầu chỉnh lý`.<br>- Khóa mờ khi kỳ báo cáo ở trạng thái `Đã gửi chờ duyệt`, `Đã duyệt` hoặc `Hoàn thành`. |
 | Nút: Chọn vụ việc từ hệ thống | Button | Không | Hiển thị | Control UI: Button (icon `fa-list-check`).<br>- Hiển thị khả dụng khi kỳ báo cáo ở trạng thái cho phép nhập liệu.<br>- Khóa mờ khi kỳ báo cáo đã gửi hoặc đã duyệt. |
 | Nút: Thêm vụ việc thủ công | Button | Không | Hiển thị | Control UI: Button (icon `fa-plus`).<br>- Hiển thị khả dụng khi kỳ báo cáo ở trạng thái cho phép nhập liệu.<br>- Khóa mờ khi kỳ báo cáo đã gửi hoặc đã duyệt. |
 | Nút: Nhập từ Excel | Button | Không | Hiển thị | Control UI: Button (icon `fa-file-import`).<br>- Hiển thị khả dụng khi kỳ báo cáo ở trạng thái cho phép nhập liệu.<br>- Khóa mờ khi kỳ báo cáo đã gửi hoặc đã duyệt. |

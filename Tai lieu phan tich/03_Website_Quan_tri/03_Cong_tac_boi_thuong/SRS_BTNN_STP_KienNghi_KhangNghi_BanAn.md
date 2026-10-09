@@ -8,7 +8,7 @@
 
 *a. Phân quyền*
 
-\- Cán bộ Sở Tư pháp: được tra cứu, xem chi tiết, thêm mới, chỉnh sửa, xóa bản ghi ở trạng thái "Lưu nháp" do chính mình tạo; được gửi kiến nghị và cập nhật kết quả phản hồi cho bản ghi do mình tạo.
+\- Cán bộ Sở Tư pháp: được tra cứu, xem chi tiết, thêm mới và gửi kiến nghị; chỉnh sửa, xóa bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" (chưa cập nhật kết quả phản hồi) do chính mình tạo; cập nhật kết quả phản hồi cho bản ghi do mình tạo.
 
 *b. Điều kiện thực hiện*
 
@@ -16,7 +16,7 @@
 
 \- Người dùng được phân quyền truy cập màn hình `Kiến nghị kháng nghị bản án, quyết định của Tòa án có nội dung GQBT`.
 
-\- Trạng thái xử lý kiến nghị Tham chiếu Danh mục Trạng thái xử lý trách nhiệm hoàn trả [DM_42].
+\- Trạng thái xử lý kiến nghị gồm: "Đã gửi - Chờ phản hồi", "Đã có phản hồi", "Đã thực hiện", "Không thực hiện". Bản ghi được lưu và gửi trong cùng một thao tác nên trạng thái khởi tạo là "Đã gửi - Chờ phản hồi".
 
 \- Người/cơ quan có thẩm quyền kháng nghị tham chiếu Danh mục các đơn vị trên hệ thống `[DM_DON_VI]`.
 
@@ -28,17 +28,16 @@
 flowchart TD
     A[Danh sách kiến nghị kháng nghị bản án] --> B[Tìm kiếm / Xóa bộ lọc / Phân trang]
     A --> C[Thêm mới kiến nghị]
-    C --> D["Lưu nháp"]
     C --> E[Gửi kiến nghị]
     E --> F["Đã gửi - Chờ phản hồi"]
-    A --> G[Chỉnh sửa bản ghi Lưu nháp]
-    G --> D
-    G --> E
+    A --> G[Chỉnh sửa bản ghi chưa có phản hồi]
+    G --> N[Lưu thông tin]
+    N --> F
     F --> H[Cập nhật kết quả phản hồi]
     H --> I["Đã có phản hồi"]
     H --> J["Đã thực hiện"]
     H --> K["Không thực hiện"]
-    A --> L[Xóa bản ghi Lưu nháp]
+    A --> L[Xóa bản ghi chưa có phản hồi]
     A --> M[Click dòng dữ liệu / Xem]
 ```
 
@@ -57,17 +56,17 @@ flowchart TD
 | **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Số văn bản kiến nghị | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số văn bản kiến nghị...".<br>- Tìm gần đúng theo Số văn bản kiến nghị; không phân biệt hoa thường, có dấu/không dấu. |
 | Số Bản án/Quyết định | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số Bản án/Quyết định...".<br>- Tìm gần đúng theo Số Bản án/Quyết định; không phân biệt hoa thường, có dấu/không dấu. |
-| Trạng thái | Enum(String(50)) | Không | Tất cả | Tham chiếu Danh mục Trạng thái xử lý trách nhiệm hoàn trả [DM_42]. |
+| Trạng thái | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Đã gửi - Chờ phản hồi<br>+ Đã có phản hồi<br>+ Đã thực hiện<br>+ Không thực hiện |
 | Từ ngày gửi | Date | Không | Theo dữ liệu hệ thống | Định dạng `dd/mm/yyyy`. |
 | Đến ngày gửi | Date | Không | Theo dữ liệu hệ thống | Định dạng `dd/mm/yyyy`. Áp dụng rule khoảng ngày [BR-VAL-007]. |
 | **II. Bảng danh sách kết quả** | - | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- Sắp xếp mặc định: Sắp xếp theo "Ngày tạo" giảm dần (mới nhất hiển thị lên đầu).<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
 | Cột: STT | Integer(10) | Không | Theo trang hiện tại | Chỉ đọc. Căn giữa, tăng theo phân trang. |
-| Cột: Số văn bản kiến nghị | String(50) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị `-` khi chưa gửi. |
+| Cột: Số văn bản kiến nghị | String(50) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
 | Cột: Số Bản án/Quyết định bị kiến nghị | String(50) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
 | Cột: Người/cơ quan có thẩm quyền kháng nghị | String(255) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
-| Cột: Ngày gửi | Date | Không | Theo dữ liệu hệ thống | Chỉ đọc. Định dạng `dd/mm/yyyy`; hiển thị `-` khi chưa gửi. |
-| Cột: Trạng thái | Enum(String(50)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị badge màu theo Danh mục Trạng thái xử lý trách nhiệm hoàn trả [DM_42]. |
-| Cột: Thao tác | String(255) | Không | Theo trạng thái | Chỉ đọc. Gồm icon `Chỉnh sửa`, `Xóa`, `Gửi kiến nghị`, `Cập nhật phản hồi`; icon không đủ điều kiện hiển thị dạng mờ, không cho thao tác. |
+| Cột: Ngày gửi | Date | Không | Theo dữ liệu hệ thống | Chỉ đọc. Định dạng `dd/mm/yyyy`. |
+| Cột: Trạng thái | Enum(String(50)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị badge màu theo trạng thái xử lý. |
+| Cột: Thao tác | String(255) | Không | Theo trạng thái | Chỉ đọc. Gồm icon `Chỉnh sửa`, `Xóa`, `Cập nhật phản hồi`; icon không đủ điều kiện hiển thị dạng mờ, không cho thao tác. |
 | Phân trang | String(255) | Không | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị trên mỗi trang gồm: 10, 20, 50, 100 bản ghi/trang; mặc định chọn sẵn 20 bản ghi/trang.<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;).<br>- Hiển thị dải bản ghi: "Hiển thị [từ] - [đến] của [tổng số] bản ghi". |
 
 ###### 4.3.3.11.3.3. Chức năng trên màn hình
@@ -79,12 +78,11 @@ flowchart TD
 |  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống lọc và hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí tìm kiếm/lọc đã nhập/chọn, hiển thị kết quả lên bảng và đưa về Trang 1. |
 |  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
 | 2 | Xóa bộ lọc | Button | Hệ thống đặt lại toàn bộ tiêu chí lọc về giá trị mặc định và tải lại danh sách. |
-| 3 | Thêm mới | Button | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa kiến nghị kháng nghị bản án** ở chế độ thêm mới, trạng thái khởi tạo "Lưu nháp". |
-| 4 | Chỉnh sửa | Icon button | Chỉ hiển thị với bản ghi ở trạng thái "Lưu nháp" do cán bộ đăng nhập tạo. Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa kiến nghị kháng nghị bản án** ở chế độ chỉnh sửa. |
-| 5 | Gửi kiến nghị | Icon button | Chỉ hiển thị với bản ghi ở trạng thái "Lưu nháp". Hệ thống mở **Popup Xác nhận** với nội dung [MSG-CFM-SYS-001]. Nếu xác nhận, hệ thống chuyển trạng thái sang "Đã gửi - Chờ phản hồi", ghi nhận ngày gửi là ngày hiện tại và hiển thị [MSG-SUC-SYS-003]. |
-| 6 | Cập nhật phản hồi | Icon button | Chỉ hiển thị với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" hoặc "Đã có phản hồi". Hệ thống mở **Popup Cập nhật kết quả phản hồi**. |
-| 7 | Xóa | Icon button | Chỉ hiển thị với bản ghi ở trạng thái "Lưu nháp" do cán bộ đăng nhập tạo. Hệ thống mở **Popup Xác nhận** với nội dung [MSG-CFM-SYS-001]. Nếu xác nhận, hệ thống xóa vĩnh viễn bản ghi khỏi hệ thống và hiển thị [MSG-SUC-SYS-002]. |
-| 8 | Click dòng dữ liệu | Row click | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa kiến nghị kháng nghị bản án** ở chế độ chỉ xem. |
+| 3 | Thêm mới | Button | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa kiến nghị kháng nghị bản án** ở chế độ thêm mới. |
+| 4 | Chỉnh sửa | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" (chưa cập nhật kết quả phản hồi) do cán bộ đăng nhập tạo. Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa kiến nghị kháng nghị bản án** ở chế độ chỉnh sửa. |
+| 5 | Cập nhật phản hồi | Icon button | Chỉ hiển thị với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" hoặc "Đã có phản hồi". Hệ thống mở **Popup Cập nhật kết quả phản hồi**. |
+| 6 | Xóa | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" (chưa cập nhật kết quả phản hồi) do cán bộ đăng nhập tạo. Hệ thống mở **Popup Xác nhận** với nội dung [MSG-CFM-SYS-001]. Nếu xác nhận, hệ thống xóa vĩnh viễn bản ghi khỏi hệ thống và hiển thị [MSG-SUC-SYS-002]. |
+| 7 | Click dòng dữ liệu | Row click | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa kiến nghị kháng nghị bản án** ở chế độ chỉ xem. |
 
 ---
 
@@ -99,7 +97,7 @@ flowchart TD
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề màn hình | String(255) | - | Theo ngữ cảnh | Chỉ đọc. Hiển thị `THÊM MỚI KIẾN NGHỊ KHÁNG NGHỊ BẢN ÁN` hoặc `CHỈNH SỬA KIẾN NGHỊ KHÁNG NGHỊ BẢN ÁN`. |
-| Trạng thái | Enum(String(50)) | - | `Lưu nháp` | Chỉ đọc. Tham chiếu Danh mục Trạng thái xử lý trách nhiệm hoàn trả [DM_42]; hệ thống tự chuyển trạng thái theo thao tác, không cho chỉnh sửa trực tiếp. |
+| Trạng thái | Enum(String(50)) | - | `Đang nhập` | Chỉ đọc. Khi thêm mới hiển thị `Đang nhập` (bản ghi chưa được lưu); khi chỉnh sửa/xem hiển thị trạng thái hiện hành của bản ghi; hệ thống tự chuyển trạng thái theo thao tác, không cho chỉnh sửa trực tiếp. |
 | **I. Thông tin Bản án/Quyết định bị kiến nghị** | String(255) | - | - | Khối thông tin bản án/quyết định của Tòa án có nội dung GQBT. |
 | Số Bản án/Quyết định | String(50) | Có | Trống | Áp dụng rule bắt buộc [BR-VAL-001]. |
 | Tòa án ban hành | Enum(String(255)) | Có | Trống | Tham chiếu Danh mục Cơ quan, Đơn vị giải quyết [DM_DON_VI]. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng. Áp dụng rule bắt buộc [BR-VAL-001]. |
@@ -117,20 +115,20 @@ flowchart TD
 | Chức vụ | String(100) | Có theo điều kiện | Trống | Bắt buộc nhập khi thực hiện `Gửi kiến nghị`. |
 | Tài liệu kiến nghị đính kèm | File | Không | Trống | Áp dụng [BR-FILE-010]. |
 | Hủy bỏ | - | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
-| Lưu nháp | - | Không | Hiển thị khi trạng thái "Lưu nháp" | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
-| Gửi kiến nghị | - | Không | Hiển thị khi trạng thái "Lưu nháp" | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
+| Lưu thông tin | - | Không | Hiển thị ở chế độ chỉnh sửa | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
+| Gửi kiến nghị | - | Không | Hiển thị ở chế độ thêm mới | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
 
 ###### 4.3.3.11.4.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Hủy bỏ | Button | Hệ thống đóng màn hình, không lưu dữ liệu và quay lại **MH01 - Danh sách kiến nghị kháng nghị bản án**. |
-| 2 | Lưu nháp | Button | TH1 (Bỏ trống trường bắt buộc của bước Lưu nháp, gồm `Số Bản án/Quyết định`, `Tòa án ban hành`, `Ngày Bản án/Quyết định có hiệu lực`, `Nội dung GQBT bị kiến nghị kháng nghị`, `Người/cơ quan có thẩm quyền kháng nghị`, `Căn cứ pháp lý kiến nghị`, `Nội dung kiến nghị`): Vi phạm [BR-VAL-001]. Hệ thống tô viền đỏ ô trống đầu tiên và hiển thị [MSG-ERR-VAL-001]. Không cho phép lưu. |
+| 2 | Lưu thông tin | Button | Chỉ áp dụng ở chế độ chỉnh sửa. TH1 (Bỏ trống trường bắt buộc, gồm `Số Bản án/Quyết định`, `Tòa án ban hành`, `Ngày Bản án/Quyết định có hiệu lực`, `Nội dung GQBT bị kiến nghị kháng nghị`, `Người/cơ quan có thẩm quyền kháng nghị`, `Căn cứ pháp lý kiến nghị`, `Nội dung kiến nghị` và các trường thông tin văn bản đã gửi): Vi phạm [BR-VAL-001]. Hệ thống tô viền đỏ ô trống đầu tiên và hiển thị [MSG-ERR-VAL-001]. Không cho phép lưu. |
 |  |  |  | TH2 (`Ngày Bản án/Quyết định có hiệu lực` lớn hơn ngày hiện tại): Vi phạm [BR-VAL-008], hiển thị [MSG-ERR-VAL-008]. Không cho phép lưu. |
-|  |  |  | TH3 (Hợp lệ): Hệ thống lưu bản ghi ở trạng thái "Lưu nháp", đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-SYS-001]. |
-| 3 | Gửi kiến nghị | Button | TH1 (Bỏ trống trường bắt buộc, bao gồm cả `Số văn bản kiến nghị`, `Ngày lập văn bản`, `Người ký`, `Chức vụ`): Vi phạm [BR-VAL-001]. Hệ thống tô viền đỏ ô trống đầu tiên và hiển thị [MSG-ERR-VAL-001]. Không cho phép gửi. |
+|  |  |  | TH3 (Hợp lệ): Hệ thống lưu thông tin đã chỉnh sửa, giữ nguyên trạng thái "Đã gửi - Chờ phản hồi" và ngày gửi, đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-SYS-002]. |
+| 3 | Gửi kiến nghị | Button | Chỉ áp dụng ở chế độ thêm mới. TH1 (Bỏ trống trường bắt buộc, bao gồm cả `Số văn bản kiến nghị`, `Ngày lập văn bản`, `Người ký`, `Chức vụ`): Vi phạm [BR-VAL-001]. Hệ thống tô viền đỏ ô trống đầu tiên và hiển thị [MSG-ERR-VAL-001]. Không cho phép gửi. |
 |  |  |  | TH2 (`Ngày lập văn bản` lớn hơn ngày hiện tại): Vi phạm [BR-VAL-008], hiển thị [MSG-ERR-VAL-008]. Không cho phép gửi. |
-|  |  |  | TH3 (Hợp lệ): Hệ thống lưu bản ghi, chuyển trạng thái sang "Đã gửi - Chờ phản hồi", ghi nhận ngày gửi là ngày hiện tại, đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-SYS-003]. |
+|  |  |  | TH3 (Hợp lệ): Hệ thống mở **Popup Xác nhận** với nội dung [MSG-CFM-SYS-001]. Nếu xác nhận, hệ thống lưu bản ghi trực tiếp ở trạng thái "Đã gửi - Chờ phản hồi" (không có bước lưu tạm), ghi nhận ngày gửi là ngày hiện tại, đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-SYS-003]. |
 | 4 | Tìm kiếm (Vụ việc yêu cầu bồi thường liên quan) | Button | Khi người dùng click nút, hệ thống mở popup tìm kiếm hồ sơ liên quan và xử lý theo các trường hợp bên dưới: |
 |  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống tự điền giá trị đang nhập tại trường liên quan vào tiêu chí tìm kiếm tương ứng, hiển thị danh sách bản ghi phù hợp trên popup để người dùng lựa chọn. |
 |  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
@@ -199,9 +197,9 @@ flowchart TD
 
 ##### 4.3.3.11.7. Ghi chú phạm vi đặc tả
 
-\- Bản ghi kiến nghị áp dụng cơ chế xóa vĩnh viễn (hard delete), chỉ áp dụng cho bản ghi ở trạng thái "Lưu nháp" (chưa gửi).
+\- Bản ghi kiến nghị áp dụng cơ chế xóa vĩnh viễn (hard delete), chỉ áp dụng cho bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" chưa cập nhật kết quả phản hồi, do chính cán bộ đăng nhập tạo.
 
-\- Sau khi đã "Gửi kiến nghị", bản ghi không còn cho phép xóa hoặc chỉnh sửa nội dung kiến nghị gốc; chỉ cho phép cập nhật khối kết quả phản hồi.
+\- Hệ thống không có bước lưu tạm: bản ghi được lưu và gửi trong cùng thao tác "Gửi kiến nghị". Sau khi đã cập nhật kết quả phản hồi, bản ghi không còn cho phép xóa hoặc chỉnh sửa nội dung kiến nghị gốc; chỉ cho phép cập nhật khối kết quả phản hồi.
 
 \- `Số Bản án/Quyết định`, `Tòa án ban hành`, `Ngày Bản án/Quyết định có hiệu lực` là thông tin bản án/quyết định nguồn của Tòa án bị kiến nghị kháng nghị, không phải số quyết định mới phát sinh từ module này.
 

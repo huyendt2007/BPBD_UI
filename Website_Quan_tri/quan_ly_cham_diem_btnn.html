@@ -1239,8 +1239,6 @@
                         class="fa-solid fa-arrow-left"></i> Quay lại</button>
             </div>
             <div style="display: flex; gap: 10px;">
-                <button class="btn btn-outline-primary" onclick="saveDraft()"><i class="fa-solid fa-floppy-disk"></i>
-                    Lưu nháp</button>
                 <button class="btn btn-primary" id="btnStepNext" onclick="moveStep(1)">Tiếp tục <i
                         class="fa-solid fa-arrow-right"></i></button>
             </div>
@@ -1307,9 +1305,6 @@
             <div class="card-section"
                 style="margin-bottom: 0; padding: 10px 15px; display: flex; flex-direction: column; justify-content: center; gap: 6px;">
                 <div style="display: flex; gap: 8px; width: 100%;">
-                    <button class="btn btn-outline-primary" style="flex: 1; font-size:12.5px; padding: 6px 12px;"
-                        id="btnBtpSaveDraft" onclick="saveBtpDraft()"><i class="fa-solid fa-floppy-disk"></i> Lưu
-                        nháp</button>
                     <button class="btn btn-outline-info" style="flex: 1; font-size:12.5px; padding: 6px 12px;"
                         onclick="exportBtpReport()"><i class="fa-solid fa-file-word"></i> Xuất Phụ lục II</button>
                 </div>
@@ -1443,10 +1438,10 @@
         // MOCK DATA FOR 63 STP UNITS PERIODS LIST (at least 2 pages)
         const initialMockPeriods = [
             // Hà Nội (12 bản ghi)
-            { id: 1, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "Đang tự chấm", selfScore: 45, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: { "I.1": 6, "I.2": 6 }, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 1, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "Đang tự chấm", selfScore: 0, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
             { id: 2, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "Chưa bắt đầu", selfScore: 0, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
             { id: 3, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "Đã gửi BTP", selfScore: 85, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Không", "V.1": 0, "V.2": 0, "V.3": 0 }, bonus: [], penalty: 0, stpApproved: true, btpApproved: false },
-            { id: 4, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "BTP đang đánh giá", selfScore: 88, btpScore: 82, grade: "Chưa xếp loại", deadline: "08/12/2026", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Có", "V.1": 4, "V.2": 3, "V.3": 3 }, bonus: [], penalty: 5, stpApproved: true, btpApproved: false },
+            { id: 4, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "BTP đang đánh giá", selfScore: 88, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Có", "V.1": 4, "V.2": 3, "V.3": 3 }, bonus: [], penalty: 5, stpApproved: true, btpApproved: false },
             { id: 5, year: "2026", unit: "Sở Tư pháp Hà Nội", status: "Không đánh giá", selfScore: 0, btpScore: 0, grade: "Không đánh giá", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
             { id: 6, year: "2025", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 86, btpScore: 81, grade: "Khá", deadline: "08/12/2025", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Có", "V.1": 4, "V.2": 3, "V.3": 3 }, bonus: [], penalty: 5, stpApproved: true, btpApproved: true },
             { id: 7, year: "2025", unit: "Sở Tư pháp Hà Nội", status: "Hoàn thành", selfScore: 95, btpScore: 95, grade: "Tốt", deadline: "08/12/2025", details: { "I.1": 6, "I.2": 6, "I.3a": 2, "I.3b": 2, "I.4": 6, "I.5a": 3, "I.5b": 3, "I.6": 5, "I.7": 6, "I.8a": 4, "I.8b": 4, "I.9": 3, "II.1": 20, "III.1": 5, "III.2": 5, "IV.1": 4, "IV.2a": 2, "IV.2b": 2, "IV.2c": 2, "funding": "Có", "V.1": 4, "V.2": 3, "V.3": 3 }, bonus: [{ name: "Ứng dụng số hóa tra cứu YCBT", decNo: "32/QĐ-STP", date: "10/05/2025", file: "QD32_SoHoa.pdf" }], penalty: 0, stpApproved: true, btpApproved: true },
@@ -1458,10 +1453,10 @@
 
             // Các đơn vị khác (13 bản ghi)
             { id: 13, year: "2026", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Đã gửi BTP", selfScore: 82, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: false },
-            { id: 14, year: "2026", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "BTP đang đánh giá", selfScore: 85, btpScore: 79, grade: "Chưa xếp loại", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: false },
+            { id: 14, year: "2026", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "BTP đang đánh giá", selfScore: 85, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: false },
             { id: 15, year: "2026", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Chưa bắt đầu", selfScore: 0, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
             { id: 16, year: "2026", unit: "Sở Tư pháp Đà Nẵng", status: "Chưa bắt đầu", selfScore: 0, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
-            { id: 17, year: "2026", unit: "Sở Tư pháp Đà Nẵng", status: "Đang tự chấm", selfScore: 50, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
+            { id: 17, year: "2026", unit: "Sở Tư pháp Đà Nẵng", status: "Đang tự chấm", selfScore: 0, btpScore: 0, grade: "Chưa xếp loại", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
             { id: 18, year: "2026", unit: "Sở Tư pháp Hải Phòng", status: "Hoàn thành", selfScore: 92, btpScore: 92, grade: "Tốt", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
             { id: 19, year: "2026", unit: "Sở Tư pháp Cần Thơ", status: "Không đánh giá", selfScore: 0, btpScore: 0, grade: "Không đánh giá", deadline: "08/12/2026", details: {}, bonus: [], penalty: 0, stpApproved: false, btpApproved: false },
             { id: 20, year: "2025", unit: "Sở Tư pháp TP. Hồ Chí Minh", status: "Hoàn thành", selfScore: 78, btpScore: 78, grade: "Khá", deadline: "08/12/2025", details: {}, bonus: [], penalty: 0, stpApproved: true, btpApproved: true },
@@ -1759,6 +1754,17 @@
             if (!allData || !Array.isArray(allData) || allData.length === 0) {
                 localStorage.setItem('btnn_scoring_periods_v5', JSON.stringify(initialMockPeriods));
                 allData = initialMockPeriods;
+            } else {
+                // Bỏ dữ liệu chấm dở được lưu tạm trước đây: bảng điểm chỉ được lưu khi Gửi BTP / Hoàn thành đánh giá
+                let changed = false;
+                allData.forEach(p => {
+                    if (p.status === 'Đang tự chấm' && (p.selfScore || (p.details && Object.keys(p.details).length))) {
+                        p.details = {}; p.selfScore = 0; p.bonus = []; p.grade = 'Chưa xếp loại'; changed = true;
+                    } else if (p.status === 'BTP đang đánh giá' && (p.btpDetails || p.btpScore)) {
+                        delete p.btpDetails; p.btpScore = 0; changed = true;
+                    }
+                });
+                if (changed) localStorage.setItem('btnn_scoring_periods_v5', JSON.stringify(allData));
             }
             currentPeriods = allData;
 
@@ -2118,7 +2124,7 @@
                 else if (item.status === 'Không đánh giá') badgeClass = "badge-red";
 
                 // Thao tac slots action buttons
-                // Slot 2: Tu cham diem (Active for STP when status is draft/not started)
+                // Slot 2: Tu cham diem (Active for STP when status is not started/self-scoring)
                 let btnScore = "";
                 const isStpAllowed = (activeRole === 'stp' && item.unit === "Sở Tư pháp Hà Nội" && (item.status === 'Chưa bắt đầu' || item.status === 'Đang tự chấm'));
                 if (isStpAllowed) {
@@ -2149,7 +2155,7 @@
                     <td class="text-center"><strong>Kỳ chấm năm ${item.year}</strong></td>
                     <td class="text-center">${item.unit}</td>
                     <td class="text-center"><span class="badge ${badgeClass}">${item.status}</span></td>
-                    <td class="text-center" style="font-weight: 500;">${item.status === 'Chưa bắt đầu' ? '-' : item.selfScore + '/100'}</td>
+                    <td class="text-center" style="font-weight: 500;">${(item.status === 'Chưa bắt đầu' || item.status === 'Đang tự chấm') ? '-' : item.selfScore + '/100'}</td>
                     <td class="text-center" style="font-weight: 500;">${item.status !== 'Hoàn thành' ? '-' : item.btpScore + '/100'}</td>
                     <td class="text-center" style="font-weight: 600;">${item.grade}</td>
                     <td class="text-center">${item.deadline}</td>
@@ -3166,7 +3172,6 @@
                     </table>
                 </div>
                 <div style="margin-top: 15px; display: flex; justify-content: flex-end; gap: 10px;">
-                    <button class="btn btn-outline-primary" onclick="saveDraft()"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp bảng điểm</button>
                     <button class="btn btn-primary" onclick="toggleViewMode()"><i class="fa-solid fa-chevron-left"></i> Quay lại tự chấm từng bước</button>
                 </div>
             `;
@@ -3175,23 +3180,6 @@
                 document.getElementById('screenStpScoring').appendChild(wrapper);
             }
 
-
-            // SAVE DRAFT
-            function saveDraft() {
-                const allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods_v5'));
-                const idx = allPeriods.findIndex(p => p.id === selectedPeriod.id);
-                if (idx !== -1) {
-                    allPeriods[idx].details = scoringData;
-                    allPeriods[idx].selfScore = selectedPeriod.selfScore;
-                    allPeriods[idx].grade = selectedPeriod.grade;
-                    allPeriods[idx].bonus = initiativeList;
-                    allPeriods[idx].status = "Đang tự chấm";
-
-                    localStorage.setItem('btnn_scoring_periods_v5', JSON.stringify(allPeriods));
-                    showToast("Đã lưu nháp bảng tự chấm điểm thành công!", "success");
-                    filterData();
-                }
-            }
 
             // SUBMIT TO BTP
             function submitToBtp() {
@@ -3267,7 +3255,7 @@
 
                 initiativeList = selectedPeriod.bonus || [];
 
-                // Load BTP evaluation draft or fallback to STP self scores
+                // Default BTP scores to STP self scores (BTP results are only stored on completion)
                 if (!selectedPeriod.btpDetails) {
                     selectedPeriod.btpDetails = {};
                     // Default BTP scores to STP self scores
@@ -3281,7 +3269,6 @@
 
                 // Toggle buttons visibility
                 document.getElementById('btnBtpStartEval').style.display = 'none';
-                document.getElementById('btnBtpSaveDraft').style.display = 'block';
                 document.getElementById('btnBtpComplete').style.display = 'block';
                 document.getElementById('alertBannerContainer').style.display = 'none';
 
@@ -3364,7 +3351,6 @@
                 isBtpEvaluationMode = true;
                 document.getElementById('btpEvalTitle').innerText = `Đánh giá kỳ chấm điểm: ${selectedPeriod.year} - ${selectedPeriod.unit}`;
                 document.getElementById('btnBtpStartEval').style.display = 'none';
-                document.getElementById('btnBtpSaveDraft').style.display = 'block';
                 document.getElementById('btnBtpComplete').style.display = 'block';
                 document.getElementById('alertBannerContainer').style.display = 'none';
 
@@ -3576,19 +3562,6 @@
                 selectedPeriod.btpDetails[`note_${code}`] = val;
             }
 
-            // SAVE BTP DRAFT
-            function saveBtpDraft() {
-                const allPeriods = JSON.parse(localStorage.getItem('btnn_scoring_periods_v5'));
-                const idx = allPeriods.findIndex(p => p.id === selectedPeriod.id);
-                if (idx !== -1) {
-                    allPeriods[idx].btpDetails = selectedPeriod.btpDetails;
-                    allPeriods[idx].status = "BTP đang đánh giá";
-                    localStorage.setItem('btnn_scoring_periods_v5', JSON.stringify(allPeriods));
-                    showToast("Đã lưu nháp kết quả thẩm định của BTP!", "success");
-                    filterData();
-                }
-            }
-
             // COMPLETE BTP EVALUATION
             function completeBtpEvaluation() {
                 // Validate: check if notes are filled for all mismatches
@@ -3683,7 +3656,6 @@
                 // Toggle buttons visibility
                 const isBtpAllowed = (activeRole === 'btp' && (selectedPeriod.status === 'Đã gửi BTP' || selectedPeriod.status === 'BTP đang đánh giá'));
                 document.getElementById('btnBtpStartEval').style.display = isBtpAllowed ? 'block' : 'none';
-                document.getElementById('btnBtpSaveDraft').style.display = 'none';
                 document.getElementById('btnBtpComplete').style.display = 'none';
                 document.getElementById('alertBannerContainer').style.display = 'none';
 

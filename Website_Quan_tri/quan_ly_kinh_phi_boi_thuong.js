@@ -334,7 +334,7 @@ let proposalsList = [
         status: "Chờ lập đề nghị",
         source: "Tạm ứng kinh phí Bộ Tài chính",
         cqCap: "Sở Tư pháp Hà Nội",
-        notes: "Tờ trình nháp cấp tạm ứng bồi thường chi phí y tế khẩn cấp.",
+        notes: "Tờ trình cấp tạm ứng bồi thường chi phí y tế khẩn cấp.",
         files: [],
         advApproveTinhThan: 30000000,
         advApproveKhac: 20000000
@@ -352,7 +352,7 @@ let proposalsList = [
         status: "Chờ lập đề nghị",
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tài chính Hà Nội",
-        notes: "Tờ trình nháp kinh phí bồi thường theo Quyết định 104/QĐ-BT.",
+        notes: "Tờ trình kinh phí bồi thường theo Quyết định 104/QĐ-BT.",
         files: [],
         approvedDamages: {
             taiSan: 50000000,
@@ -1072,6 +1072,28 @@ function exportExcelKinhPhi() {
 
 const CURRENT_PROPOSALS_VERSION = 'v36_sep2026_all8statuses';
 
+// Migration dữ liệu cũ: phân hệ BTNN đã bỏ trạng thái trung gian (lưu tạm) của đề nghị kinh phí.
+// Bản ghi cũ còn trạng thái này trong localStorage chuyển về "Chờ lập đề nghị" (chưa trình phê duyệt,
+// chuyên viên tiếp tục Lập đề nghị hoặc Xóa). Đây là nơi duy nhất còn giữ giá trị trạng thái cũ.
+const LEGACY_DRAFT_STATUS = 'Lưu nháp';
+const LEGACY_DRAFT_NOTE_PREFIX = 'Tờ trình nháp ';
+function migrateLegacyDraftProposals() {
+    if (!Array.isArray(proposalsList)) return;
+    let changed = false;
+    proposalsList.forEach(p => {
+        if (!p) return;
+        if (p.status === LEGACY_DRAFT_STATUS) {
+            p.status = 'Chờ lập đề nghị';
+            changed = true;
+        }
+        if (typeof p.notes === 'string' && p.notes.startsWith(LEGACY_DRAFT_NOTE_PREFIX)) {
+            p.notes = 'Tờ trình ' + p.notes.slice(LEGACY_DRAFT_NOTE_PREFIX.length);
+            changed = true;
+        }
+    });
+    if (changed) localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
+}
+
 // Sync claimsList and proposalsList from localStorage on DOMContentLoaded
 function syncFromLocalStorage() {
     // Force reset if version is old to fetch updated files and statuses
@@ -1096,6 +1118,7 @@ function syncFromLocalStorage() {
             localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
         }
     }
+    migrateLegacyDraftProposals();
 
     // 2. Load claimsList and map to mockClaims
     const localClaims = localStorage.getItem('claimsList');
@@ -2561,7 +2584,7 @@ function renderProposalsTable() {
 
             if (item.status === 'Chờ lập đề nghị') {
                 fillBtn = `<button class="icon-btn edit" title="Lập đề nghị kinh phí" onclick="fillProposalDirect('${item.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
-                deleteBtn = `<button class="icon-btn delete" title="Xóa tờ trình nháp" onclick="event.stopPropagation(); deleteProposal('${item.id}')"><i class="fa-regular fa-trash-can"></i></button>`;
+                deleteBtn = `<button class="icon-btn delete" title="Xóa tờ trình" onclick="event.stopPropagation(); deleteProposal('${item.id}')"><i class="fa-regular fa-trash-can"></i></button>`;
             } else if (item.status === FUNDING_STATUS_INPUT) {
                 // Bản ghi tự tạo từ Theo dõi vụ việc tại Tòa án: Nhập liệu tiếp; không được xóa
                 fillBtn = `<button class="icon-btn edit" title="Nhập liệu" onclick="event.stopPropagation(); inputProposalDirect('${item.id}')"><i class="fa-solid fa-keyboard"></i></button>`;
@@ -3631,8 +3654,7 @@ function openCreateProposalForm() {
     // Hide Leader Panel
     document.getElementById('sectionLeaderApproval').style.display = 'none';
 
-    // Show footer buttons for writing (Hide save draft as requested)
-    document.getElementById('btnSaveDraft').style.display = 'none';
+    // Show footer buttons for writing (only "Trình phê duyệt")
     document.getElementById('btnSubmitProposal').style.display = 'inline-flex';
     document.getElementById('btnCompletePayout').style.display = 'none';
     document.getElementById('btnLeaderReject').style.display = 'none';
@@ -3727,7 +3749,9 @@ function closeCreateProposalForm() {
     renderProposalsTable();
 }
 
-function saveProposal(statusStr) {
+// Lưu đề nghị kinh phí: chỉ có 01 thao tác "Trình phê duyệt" -> trạng thái Chờ duyệt (không có trạng thái trung gian).
+function saveProposal() {
+    const statusStr = 'Chờ duyệt';
     clearFieldErrors();
 
     const proposalCode = document.getElementById('formProposalCodeVal').value.trim();
@@ -3773,18 +3797,16 @@ function saveProposal(statusStr) {
 
         const claim = mockClaims.find(c => c.code === ycbtCode);
 
-        if (statusStr === 'Chờ duyệt') {
-            const minTinhThan = claim.advanceTinhThan * 0.5;
-            const minKhac = claim.advanceKhac * 0.5;
+        const minTinhThan = claim.advanceTinhThan * 0.5;
+        const minKhac = claim.advanceKhac * 0.5;
 
-            if (tinhThanApprove < minTinhThan) {
-                showFieldError('advApproveTinhThan', `Số tiền duyệt phải tối thiểu bằng 50% mức yêu cầu (${minTinhThan.toLocaleString('vi-VN')} VNĐ)`);
-                return;
-            }
-            if (khacApprove < minKhac) {
-                showFieldError('advApproveKhac', `Số tiền duyệt phải tối thiểu bằng 50% mức yêu cầu (${minKhac.toLocaleString('vi-VN')} VNĐ)`);
-                return;
-            }
+        if (tinhThanApprove < minTinhThan) {
+            showFieldError('advApproveTinhThan', `Số tiền duyệt phải tối thiểu bằng 50% mức yêu cầu (${minTinhThan.toLocaleString('vi-VN')} VNĐ)`);
+            return;
+        }
+        if (khacApprove < minKhac) {
+            showFieldError('advApproveKhac', `Số tiền duyệt phải tối thiểu bằng 50% mức yêu cầu (${minKhac.toLocaleString('vi-VN')} VNĐ)`);
+            return;
         }
 
         amount = tinhThanApprove + khacApprove;
@@ -3802,7 +3824,7 @@ function saveProposal(statusStr) {
             const valStr = input.value.replace(/\D/g, '');
             const val = parseFloat(valStr) || 0;
             const maxVal = parseFloat(input.dataset.max) || 0;
-            if (statusStr === 'Chờ duyệt' && val > maxVal && !overCapField) {
+            if (val > maxVal && !overCapField) {
                 overCapField = { input, maxVal, label: input.dataset.label };
             }
             approvedDamages[key] = val;
@@ -3832,9 +3854,9 @@ function saveProposal(statusStr) {
 
     const nycName = document.getElementById('formNycName').value;
 
-    // Attached files check (if submitting, need at least 1 document uploaded)
+    // Attached files check (need at least 1 document uploaded)
     const validFiles = proposalAttachedDocs.filter(d => d.file !== null);
-    if (statusStr === 'Chờ duyệt' && validFiles.length === 0) {
+    if (validFiles.length === 0) {
         showToast("Vui lòng đính kèm ít nhất 1 tài liệu/tờ trình gửi kèm!", "error");
         return;
     }
@@ -3858,7 +3880,7 @@ function saveProposal(statusStr) {
                 item[key] = customFields[key];
             }
         }
-        showToast(`Cập nhật đề nghị ${proposalCode} thành công dưới dạng ${statusStr}!`, "success");
+        showToast(`Cập nhật đề nghị ${proposalCode} thành công và chuyển sang trạng thái ${statusStr}!`, "success");
     } else {
         // Insert
         const newItem = {
@@ -3942,8 +3964,7 @@ function fillProposalDirect(id) {
         calculateKinhPhiApproveTotal();
     }
 
-    // Custom buttons for Lập đề nghị: Hide save draft, show submit proposal
-    document.getElementById('btnSaveDraft').style.display = 'none';
+    // Custom buttons for Lập đề nghị: show submit proposal
     document.getElementById('btnSubmitProposal').style.display = 'inline-flex';
     document.getElementById('btnSubmitProposal').innerHTML = `<i class="fa-solid fa-paper-plane"></i> Trình phê duyệt`;
     document.getElementById('btnCompletePayout').style.display = 'none';
@@ -4052,8 +4073,7 @@ function updateProposalDirect(id) {
         if (el) el.style.display = 'none';
     });
 
-    // Custom buttons for edit mode: Hide save draft, show submit proposal
-    document.getElementById('btnSaveDraft').style.display = 'none';
+    // Custom buttons for edit mode: show submit proposal
     document.getElementById('btnSubmitProposal').style.display = 'inline-flex';
     document.getElementById('btnSubmitProposal').innerHTML = `<i class="fa-solid fa-paper-plane"></i> Trình phê duyệt`;
     document.getElementById('btnCompletePayout').style.display = 'none';
@@ -4093,8 +4113,7 @@ function viewProposalDetail(id) {
     selectedProposalId = id;
     formEditingMode = false;
 
-    // Hide standard save draft and submit proposal buttons during detailed viewing
-    document.getElementById('btnSaveDraft').style.display = 'none';
+    // Hide submit proposal button during detailed viewing
     document.getElementById('btnSubmitProposal').style.display = 'none';
 
     document.getElementById('formProposalTitle').innerHTML = `<i class="fa-solid fa-circle-info"></i> CHI TIẾT ĐỀ NGHỊ KINH PHÍ: ${item.code}`;
@@ -4466,7 +4485,6 @@ function viewProposalDetail(id) {
     if (isLeader && isPending) {
         if (b7) b7.style.display = 'none';
         document.getElementById('sectionLeaderApproval').style.display = 'none';
-        document.getElementById('btnSaveDraft').style.display = 'none';
         document.getElementById('btnSubmitProposal').style.display = 'none';
         document.getElementById('btnLeaderReject').style.display = 'inline-flex';
         document.getElementById('btnLeaderApprove').style.display = 'inline-flex';
@@ -4476,7 +4494,6 @@ function viewProposalDetail(id) {
 
         // If it is in Read-only or Approved status, hide form actions too except cancel
         if (item.status === 'Hoàn thành' || item.status === 'Chờ chi trả' || isSungQuy || item.status === 'Bị từ chối' || isLeader) {
-            document.getElementById('btnSaveDraft').style.display = 'none';
             document.getElementById('btnSubmitProposal').style.display = 'none';
 
             if (item.leaderOpinion || item.status === 'Chờ chi trả' || item.status === 'Hoàn thành' || isSungQuy) {
@@ -4919,7 +4936,6 @@ function payProposalDirect(id) {
         document.getElementById('payoutFileLink').style.color = 'var(--text-color)';
 
         // Show payout buttons in footer
-        document.getElementById('btnSaveDraft').style.display = 'none';
         document.getElementById('btnSubmitProposal').style.display = 'none';
         document.getElementById('btnCompletePayout').style.display = 'inline-flex';
         const btnCancel = document.getElementById('btnCancelForm');

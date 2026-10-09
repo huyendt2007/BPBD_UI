@@ -59,7 +59,6 @@
                     <span class="form-label">Trạng thái</span>
                     <select class="form-control" id="filterStatus">
                         <option value="">Tất cả trạng thái</option>
-                        <option value="Lưu nháp">Lưu nháp</option>
                         <option value="Chờ tiếp nhận">Chờ tiếp nhận</option>
                         <option value="Đang thực hiện">Đang thực hiện</option>
                         <option value="Chờ phê duyệt">Chờ phê duyệt</option>
@@ -126,7 +125,7 @@
                             <th style="min-width: 150px;">Cán bộ chủ trì</th>
                             <th style="width: 130px; text-align: center;">Mã hồ sơ YCBT</th>
                             <th style="width: 140px; text-align: center;">Trạng thái</th>
-                            <th style="width: 140px; text-align: center; min-width: 140px;">Thao tác</th>
+                            <th style="width: 220px; text-align: center; min-width: 220px;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -473,7 +472,7 @@
             </div>
             <div style="margin-top: 10px; margin-bottom: 18px;">
                 <button type="button" class="btn btn-secondary btn-sm" onclick="addBasisRow()">
-                    <i class="fa-solid fa-plus"></i> Thêm dòng
+                    <i class="fa-solid fa-plus"></i> Thêm dòng tài liệu
                 </button>
             </div>
 
@@ -520,8 +519,7 @@
 
             <div class="form-footer">
                 <button class="btn btn-secondary" onclick="showListScreen()">Hủy bỏ</button>
-                <button class="btn btn-secondary" onclick="saveForm(true)"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>
-                <button class="btn btn-primary" id="btnFormSubmit" onclick="saveForm(false)"><i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu</button>
+                <button class="btn btn-primary" id="btnFormSubmit" onclick="saveForm(false)"><i class="fa-solid fa-paper-plane"></i> Trình duyệt</button>
             </div>
         </div>
 
@@ -864,7 +862,6 @@
                     <div id="transferFilesList" class="wf-file-list"></div>
                     <div class="error-message" id="transferFileError">Vui lòng đính kèm ít nhất một tệp</div>
                 </div>
-                <div class="wf-path-box">Sau khi chuyển: hồ sơ này chuyển [Hoàn thành]; hệ thống tạo hồ sơ Yêu cầu bồi thường ở trạng thái [Chờ phân công] và chuyển Lãnh đạo cơ quan được chỉ định phân công xử lý.</div>
             </div>
             <div class="wf-modal-foot">
                 <button class="btn btn-secondary" onclick="closeXdModal('transferModal')">Hủy bỏ</button>
@@ -914,7 +911,7 @@
             </div>
             <div class="modal-footer" style="padding:16px 24px 24px 24px; border-top:1px solid var(--border-color); display:flex; justify-content:flex-end; gap:10px; background:#f8fafc; flex-shrink:0;">
                 <button type="button" class="btn btn-secondary" onclick="closePreviewSupplementModal()">Hủy bỏ</button>
-                <button type="button" class="btn btn-primary" onclick="executeSaveSupplement()"><i class="fa-solid fa-paper-plane"></i> Gửi yêu cầu bổ sung</button>
+                <button type="button" class="btn btn-primary" onclick="executeSaveSupplement()"><i class="fa-solid fa-paper-plane"></i> Trình Lãnh đạo</button>
             </div>
         </div>
     </div>
@@ -973,7 +970,7 @@
                 <i class="fa-solid fa-circle-exclamation"></i> Xác nhận xóa
             </div>
             <div class="confirm-modal-body" id="customConfirmMessage">
-                Bạn có chắc chắn muốn xóa yêu cầu Lưu nháp này không?
+                Bạn có chắc chắn muốn thực hiện thao tác này không?
             </div>
             <div class="confirm-modal-footer">
                 <button class="btn btn-secondary btn-sm" onclick="closeConfirmModal(false)">Hủy bỏ</button>

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Việc chờ lãnh đạo xử lý</title>
+    <title>Hồ sơ trình Lãnh đạo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="quan_ly_boi_thuong.css">
@@ -16,11 +16,13 @@
         .filter-card { padding: 16px; }
         .filter-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 16px; }
         .filter-actions { border-top: 1px dashed var(--border-color); display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; padding-top: 12px; }
-        .wf-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border-color); padding: 0 12px; }
+        .tabs-card { background: #fff; border-radius: var(--border-radius-md); padding: 0 20px; margin-bottom: 12px; margin-right: 360px; box-shadow: var(--box-shadow); }
+        .wf-tabs { display: flex; gap: 8px; align-items: center; border-bottom: 1px solid var(--border-color); overflow-x: auto; overflow-y: hidden; }
         .wf-tab { background: none; border: 0; border-bottom: 3px solid transparent; padding: 12px 16px; font: 600 13.5px Inter, sans-serif; color: #475569; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
         .wf-tab.active { color: var(--primary-light); border-bottom-color: var(--primary-light); }
         .wf-count { background: #e2e8f0; color: #334155; border-radius: 999px; padding: 1px 8px; font-size: 12px; min-width: 22px; text-align: center; }
-        .wf-tab.active .wf-count { background: var(--primary-light); color: #fff; }
+        .tab-btn.active .wf-count { background: var(--secondary-color); color: #fff; }
+        .wf-tab-note { padding-bottom: 10px; }
         .wf-tab-note { color: var(--text-muted); font-size: 12.5px; padding: 10px 16px 0; }
         #taskTable { min-width: 1250px; }
         #taskTable tbody tr { cursor: pointer; }
@@ -49,15 +51,19 @@
         .check-list { display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 12px; max-height: 180px; overflow-y: auto; }
         .error-text { color: #dc2626; font-size: 12px; margin-top: 4px; display: none; }
         .hint { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
-        @media (max-width: 900px) { .filter-grid { grid-template-columns: 1fr; } .page-heading { padding-right: 0; padding-top: 40px; } .info-grid { grid-template-columns: 1fr; } }
+        @media (max-width: 900px) { .filter-grid { grid-template-columns: 1fr; } .tabs-card { margin-right: 0; margin-top: 40px; } .info-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 
 <body>
     <main>
-        <div class="page-heading">
-            <h2><i class="fa-solid fa-user-tie"></i> VIỆC CHỜ LÃNH ĐẠO XỬ LÝ</h2>
-            <div class="muted" id="userContext" style="margin-top:6px;"></div>
+        <!-- Tab nghiệp vụ đặt trên đầu trang (theo bố cục Giải quyết yêu cầu bồi thường) -->
+        <div class="tabs-card">
+            <div class="wf-tabs">
+                <button class="tab-btn active" data-tab="assign" onclick="switchTab('assign')"><i class="fa-solid fa-diagram-project"></i> Chờ phân công <span class="wf-count" id="cntAssign">0</span></button>
+                <button class="tab-btn" data-tab="approve" onclick="switchTab('approve')"><i class="fa-solid fa-file-signature"></i> Chờ duyệt <span class="wf-count" id="cntApprove">0</span></button>
+                <button class="tab-btn" data-tab="done" onclick="switchTab('done')"><i class="fa-solid fa-clock-rotate-left"></i> Đã xử lý <span class="wf-count" id="cntDone">0</span></button>
+            </div>
         </div>
 
         <div class="filter-card">
@@ -82,11 +88,6 @@
         </div>
 
         <div class="list-card">
-            <div class="wf-tabs">
-                <button class="wf-tab active" data-tab="assign" onclick="switchTab('assign')"><i class="fa-solid fa-diagram-project"></i> Chờ phân công <span class="wf-count" id="cntAssign">0</span></button>
-                <button class="wf-tab" data-tab="approve" onclick="switchTab('approve')"><i class="fa-solid fa-file-signature"></i> Chờ duyệt <span class="wf-count" id="cntApprove">0</span></button>
-                <button class="wf-tab" data-tab="done" onclick="switchTab('done')"><i class="fa-solid fa-clock-rotate-left"></i> Đã xử lý <span class="wf-count" id="cntDone">0</span></button>
-            </div>
             <div class="wf-tab-note" id="tabNote"></div>
             <div class="table-container" style="border:0; border-radius:0;">
                 <table class="custom-table" id="taskTable">
@@ -215,7 +216,6 @@
         function init() {
             WF.mountUserSwitcher();
             const me = WF.getCurrentUser();
-            document.getElementById('userContext').textContent = `Đơn vị: ${WF.unitName(me.unitId)} | Lãnh đạo đơn vị: ${WF.isLeaderOf(me.id, me.unitId) ? 'Có' : 'Không (không có việc chờ xử lý)'}`;
             const types = WF.getRequestTypesForUser(me.id);
             document.getElementById('fType').innerHTML = `<option value="">Tất cả</option>` + types.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('');
             const tab = new URLSearchParams(location.search).get('tab');
@@ -230,7 +230,7 @@
 
         function switchTab(tab) {
             activeTab = tab;
-            document.querySelectorAll('.wf-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+            document.querySelectorAll('.wf-tabs .tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
             document.getElementById('tabNote').textContent = TAB_NOTES[tab];
             renderAll();
         }
@@ -406,7 +406,7 @@
             const isLast = a.level === a.path.length - 1;
             const after = mode === 'approve' ? (isLast ? `Cấp phê duyệt cuối cùng. Sau khi phê duyệt, hồ sơ chuyển [${WF.SUBMIT_KINDS[a.kind]}].` : `Sau khi phê duyệt, hồ sơ chuyển ${WF.unitName(a.path[a.level + 1])} phê duyệt.`) : 'Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị trả lại] cho cán bộ chủ trì.';
             document.getElementById('decTitle').innerHTML = mode === 'approve' ? `<i class="fa-solid fa-circle-check"></i> Phê duyệt hồ sơ ${esc(code)}` : `<i class="fa-solid fa-circle-xmark" style="color:#dc2626;"></i> Từ chối phê duyệt hồ sơ ${esc(code)}`;
-            document.getElementById('decContext').innerHTML = `<div><strong>Nội dung trình:</strong> ${esc(a.kind)} - ${esc(WF.userName(a.submittedBy))}</div>${a.content ? `<div class="muted">${esc(a.content)}</div>` : ''}<div style="margin-top:6px;"><strong>Cấp phê duyệt:</strong> ${a.level + 1}/${a.path.length} - ${esc(WF.unitName(a.path[a.level]))}</div><div class="hint">${esc(after)}</div>`;
+            document.getElementById('decContext').innerHTML = WF.renderDraftDocHtml(rec) + `<div><strong>Nội dung trình:</strong> ${esc(a.kind)} - ${esc(WF.userName(a.submittedBy))}</div>${a.content ? `<div class="muted">${esc(a.content)}</div>` : ''}<div style="margin-top:6px;"><strong>Cấp phê duyệt:</strong> ${a.level + 1}/${a.path.length} - ${esc(WF.unitName(a.path[a.level]))}</div><div class="hint">${esc(after)}</div>`;
             document.getElementById('decLabel').innerHTML = mode === 'approve' ? 'Ý kiến phê duyệt' : 'Lý do từ chối phê duyệt<span class="required">*</span>';
             document.getElementById('decNote').placeholder = mode === 'approve' ? 'Nhập ý kiến phê duyệt...' : 'Nhập lý do từ chối phê duyệt...';
             document.getElementById('decNote').value = '';

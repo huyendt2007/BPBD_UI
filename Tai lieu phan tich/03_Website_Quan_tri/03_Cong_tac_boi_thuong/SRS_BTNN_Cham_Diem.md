@@ -12,9 +12,9 @@
 
 *a. Phân quyền*
 
-\- Cán bộ Sở Tư pháp: được xem danh sách kỳ chấm điểm của đơn vị mình, tự chấm điểm đối với kỳ ở trạng thái "Chưa bắt đầu" hoặc "Đang tự chấm", lưu nháp, gửi Bộ Tư pháp duyệt và xuất Phụ lục I.
+\- Cán bộ Sở Tư pháp: được xem danh sách kỳ chấm điểm của đơn vị mình, tự chấm điểm đối với kỳ ở trạng thái "Chưa bắt đầu" hoặc "Đang tự chấm", gửi Bộ Tư pháp duyệt và xuất Phụ lục I. Bảng tự chấm chỉ được lưu khi gửi Bộ Tư pháp duyệt; hệ thống không hỗ trợ lưu tạm bảng tự chấm đang nhập.
 
-\- Cán bộ nghiệp vụ Bộ Tư pháp: được xem danh sách kỳ chấm điểm của các Sở Tư pháp, khởi tạo kỳ chấm điểm mới, đánh giá/xếp loại kỳ ở trạng thái "Đã gửi BTP" hoặc "BTP đang đánh giá", lưu nháp kết quả thẩm định và xuất Phụ lục II.
+\- Cán bộ nghiệp vụ Bộ Tư pháp: được xem danh sách kỳ chấm điểm của các Sở Tư pháp, khởi tạo kỳ chấm điểm mới, đánh giá/xếp loại kỳ ở trạng thái "Đã gửi BTP" hoặc "BTP đang đánh giá" và xuất Phụ lục II. Kết quả thẩm định chỉ được lưu khi hoàn thành đánh giá và xếp loại; hệ thống không hỗ trợ lưu tạm kết quả thẩm định đang nhập.
 
 *b. Điều kiện thực hiện*
 
@@ -22,7 +22,19 @@
 
 \- Nguồn giao diện: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_cham_diem_btnn.html`.
 
-\- Trạng thái kỳ chấm điểm tham chiếu danh mục [DM_32].
+\- Trạng thái kỳ chấm điểm gồm:
+
+\+ Chưa bắt đầu: kỳ chấm điểm mới khởi tạo, Sở Tư pháp chưa mở bảng tự chấm.
+
+\+ Đang tự chấm: Sở Tư pháp đã mở bảng tự chấm nhưng chưa gửi Bộ Tư pháp; hệ thống chưa lưu dữ liệu tự chấm.
+
+\+ Đã gửi BTP: Sở Tư pháp đã gửi bảng tự chấm, chờ Bộ Tư pháp đánh giá.
+
+\+ BTP đang đánh giá: Bộ Tư pháp đã mở chế độ đánh giá nhưng chưa hoàn thành; hệ thống chưa lưu kết quả thẩm định.
+
+\+ Hoàn thành: Bộ Tư pháp đã hoàn thành đánh giá và xếp loại.
+
+\+ Không đánh giá: Sở Tư pháp không được đánh giá, xếp loại do gửi kết quả tự chấm quá thời hạn theo [BR-BTNN-CD-004].
 
 \- Xếp loại kỳ chấm điểm tham chiếu danh mục [DM_33].
 
@@ -42,16 +54,14 @@ flowchart TD
     A --> C[Kết xuất Excel]
     A --> D{Nhóm quyền tài khoản}
     D -->|Cán bộ Sở Tư pháp| E[Tự chấm điểm]
-    E --> F[Lưu nháp bảng tự chấm]
-    F --> G["Đang tự chấm"]
-    E --> H[Tổng kết và cam đoan số liệu]
+    E --> G["Đang tự chấm"]
+    G --> H[Tổng kết và cam đoan số liệu]
     H --> I[Gửi Bộ Tư pháp duyệt]
     I --> J["Đã gửi BTP"]
     D -->|Cán bộ nghiệp vụ Bộ Tư pháp| K[Khởi tạo kỳ chấm điểm mới]
     D -->|Cán bộ nghiệp vụ Bộ Tư pháp| L[Đánh giá và xếp loại]
-    L --> M[Lưu nháp kết quả thẩm định]
-    M --> N["BTP đang đánh giá"]
-    L --> O[Hoàn thành đánh giá và xếp loại]
+    L --> N["BTP đang đánh giá"]
+    N --> O[Hoàn thành đánh giá và xếp loại]
     O --> P["Hoàn thành"]
     A --> Q[Click dòng dữ liệu]
     Q --> R{Kỳ đã gửi/chấm xong?}
@@ -73,7 +83,7 @@ Nguồn UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_cham_diem_btnn.html
 | :--- | :--- | :--- | :--- | :--- |
 | Năm đánh giá | Enum(String(10)) | Không | Tất cả | - Giá trị UI gồm:<br>+ Tất cả<br>+ 2026<br>+ 2025<br>+ 2024 |
 | Đơn vị Sở Tư pháp | Enum(String(255)) | Không | Theo tài khoản đăng nhập | - Chỉ hiển thị với tài khoản Cán bộ nghiệp vụ Bộ Tư pháp.<br>- Với tài khoản Cán bộ Sở Tư pháp, hệ thống tự lọc theo đơn vị của tài khoản đăng nhập và không hiển thị bộ lọc này.<br>- Giá trị UI gồm:<br>+ Tất cả<br>+ Sở Tư pháp Hà Nội<br>+ Sở Tư pháp TP. Hồ Chí Minh<br>+ Sở Tư pháp Đà Nẵng<br>+ Sở Tư pháp Hải Phòng<br>+ Sở Tư pháp Cần Thơ |
-| Trạng thái | Enum(String(50)) | Không | Tất cả | - Tham chiếu danh mục Trạng thái kỳ chấm điểm công tác BTNN [DM_32].<br>- Giá trị lọc gồm `Tất cả` và các giá trị thuộc [DM_32]. |
+| Trạng thái | Enum(String(50)) | Không | Tất cả | - Giá trị UI gồm:<br>+ Tất cả<br>+ Chưa bắt đầu<br>+ Đang tự chấm<br>+ Đã gửi BTP<br>+ BTP đang đánh giá<br>+ Hoàn thành<br>+ Không đánh giá |
 | Xếp loại | Enum(String(50)) | Không | Tất cả | - Tham chiếu danh mục Xếp loại chấm điểm công tác BTNN [DM_33].<br>- Giá trị lọc gồm `Tất cả` và các giá trị thuộc [DM_33], trừ giá trị "Không đánh giá" nếu không phát sinh trong bộ lọc UI. |
 | Hạn nộp từ ngày | Date | Không | Ngày đầu tháng hiện tại | - Định dạng `dd/mm/yyyy`.<br>- Dùng để nhập điều kiện lọc hạn nộp bắt đầu.<br>- Áp dụng rule khoảng ngày [BR-VAL-007]. |
 | Hạn nộp đến ngày | Date | Không | Ngày hiện tại | - Định dạng `dd/mm/yyyy`.<br>- Dùng để nhập điều kiện lọc hạn nộp kết thúc.<br>- Áp dụng rule khoảng ngày [BR-VAL-007]. |
@@ -82,8 +92,8 @@ Nguồn UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_cham_diem_btnn.html
 | Cột: STT | Integer(10) | Không | Theo trang hiện tại | - Chỉ đọc.<br>- Hiển thị số thứ tự bản ghi theo phân trang. |
 | Cột: Kỳ đánh giá | String(50) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị dạng `Kỳ chấm năm [Năm]`.<br>- Hỗ trợ sắp xếp theo năm đánh giá. |
 | Cột: Đơn vị STP | String(255) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị tên Sở Tư pháp của kỳ chấm điểm. |
-| Cột: Trạng thái | Enum(String(50)) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị trạng thái kỳ chấm điểm dưới dạng badge màu.<br>- Tham chiếu [DM_32]. |
-| Cột: Điểm tự chấm | Decimal(5,1) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị điểm tự chấm trên thang 100.<br>- Hiển thị `-` nếu kỳ ở trạng thái "Chưa bắt đầu". |
+| Cột: Trạng thái | Enum(String(50)) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị trạng thái kỳ chấm điểm dưới dạng badge màu.<br>- Giá trị theo danh sách trạng thái kỳ chấm điểm tại mục Điều kiện thực hiện. |
+| Cột: Điểm tự chấm | Decimal(5,1) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị điểm tự chấm trên thang 100.<br>- Hiển thị `-` nếu kỳ ở trạng thái "Chưa bắt đầu" hoặc "Đang tự chấm". |
 | Cột: Điểm BTP đánh giá | Decimal(5,1) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị điểm Bộ Tư pháp đánh giá trên thang 100.<br>- Hiển thị `-` nếu kỳ chưa ở trạng thái "Hoàn thành". |
 | Cột: Xếp loại | Enum(String(50)) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Hiển thị xếp loại theo Danh mục Xếp loại chấm điểm công tác BTNN [DM_33]. |
 | Cột: Hạn nộp | Date | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Định dạng `dd/mm/yyyy`.<br>- Hỗ trợ sắp xếp theo hạn nộp. |
@@ -147,7 +157,7 @@ Nguồn UI: `screenStpScoring` trong `quan_ly_cham_diem_btnn.html`.
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Quay lại danh sách | Button | Hệ thống đóng màn hình tự chấm điểm và quay về **MH01 - Màn hình Danh sách kỳ chấm điểm công tác BTNN**. |
+| 1 | Quay lại danh sách | Button | Hệ thống đóng màn hình tự chấm điểm và quay về **MH01 - Màn hình Danh sách kỳ chấm điểm công tác BTNN**. Dữ liệu tự chấm đang nhập chưa gửi Bộ Tư pháp không được lưu; kỳ chấm điểm giữ trạng thái "Đang tự chấm". |
 | 2 | Chế độ Bảng tổng hợp | Button | Hệ thống chuyển sang chế độ tự chấm nhanh dạng bảng Phụ lục I, hiển thị các cột `STT`, `Tiêu chí đánh giá`, `Điểm tối đa`, `Tự chấm`, `Tài liệu kiểm chứng`, `Cơ sở chứng minh / Diễn giải`. |
 | 3 | Chế độ Từng bước | Button | Hệ thống quay lại chế độ tự chấm theo từng nhóm tiêu chí. |
 | 4 | Hướng dẫn chi tiết | Icon button | Hệ thống mở **Popup Hướng dẫn chấm điểm tiêu chí** theo tiêu chí đang chọn. |
@@ -161,11 +171,10 @@ Nguồn UI: `screenStpScoring` trong `quan_ly_cham_diem_btnn.html`.
 | 9 | Xem file | Link | Cho phép xem file tại một tab riêng. |
 | 10 | Xóa | Link | Hệ thống yêu cầu xác nhận xóa tệp kiểm chứng; nếu người dùng xác nhận, hệ thống xóa tệp khỏi danh sách và hiển thị [MSG-SUC-BTNN-CD-009]. |
 | 11 | Thêm sáng kiến | Button | Hệ thống mở **Popup Thêm mới Sáng kiến / Giải pháp bồi thường nhà nước**. |
-| 12 | Lưu nháp | Button | Hệ thống lưu dữ liệu tự chấm, điểm tự chấm, xếp loại dự kiến, danh sách sáng kiến; cập nhật kỳ chấm điểm sang trạng thái "Đang tự chấm" và hiển thị [MSG-SUC-BTNN-CD-003]. |
-| 13 | Quay lại | Button | Hệ thống chuyển về bước trước trong quy trình tự chấm. Nút bị vô hiệu khi đang ở bước đầu tiên. |
-| 14 | Tiếp tục | Button | Hệ thống chuyển sang bước tiếp theo trong quy trình tự chấm. Tại bước cuối, nút hiển thị nhãn `Tổng kết & Gửi` và không cho chuyển tiếp. |
-| 15 | Xuất Phụ lục I (Bảng điểm) | Button | Hệ thống kết xuất báo cáo Phụ lục I theo bảng điểm tự chấm hiện hành và hiển thị [MSG-SUC-BTNN-CD-006]. |
-| 16 | Gửi Bộ Tư pháp duyệt | Button | TH1 (Chưa tích cam đoan thông tin số liệu): Hệ thống hiển thị [MSG-ERR-BTNN-CD-004] và không gửi bảng tự chấm. |
+| 12 | Quay lại | Button | Hệ thống chuyển về bước trước trong quy trình tự chấm. Nút bị vô hiệu khi đang ở bước đầu tiên. |
+| 13 | Tiếp tục | Button | Hệ thống chuyển sang bước tiếp theo trong quy trình tự chấm. Tại bước cuối, nút hiển thị nhãn `Tổng kết & Gửi` và không cho chuyển tiếp. |
+| 14 | Xuất Phụ lục I (Bảng điểm) | Button | Hệ thống kết xuất báo cáo Phụ lục I theo bảng điểm tự chấm hiện hành và hiển thị [MSG-SUC-BTNN-CD-006]. |
+| 15 | Gửi Bộ Tư pháp duyệt | Button | TH1 (Chưa tích cam đoan thông tin số liệu): Hệ thống hiển thị [MSG-ERR-BTNN-CD-004] và không gửi bảng tự chấm. |
 |  |  |  | TH2 (Gửi sau 07 ngày làm việc kể từ ngày 08/12 của năm tự đánh giá): Theo [BR-BTNN-CD-004], hệ thống lưu dữ liệu tự chấm, ghi nhận ngày gửi, chuyển kỳ chấm điểm sang trạng thái "Không đánh giá", xếp loại "Không đánh giá" và hiển thị [MSG-WRN-BTNN-CD-024]. |
 |  |  |  | TH Hợp lệ: Hệ thống lưu dữ liệu tự chấm, ghi nhận ngày gửi và điểm trừ nộp muộn theo [BR-BTNN-CD-004] (trừ 05 điểm nếu gửi sau 05 ngày làm việc kể từ ngày 08/12), chuyển kỳ chấm điểm sang trạng thái "Đã gửi BTP", đánh dấu đã gửi Bộ Tư pháp và hiển thị [MSG-SUC-BTNN-CD-005]. |
 
@@ -199,15 +208,14 @@ Nguồn UI: `screenBtpEvaluation` trong `quan_ly_cham_diem_btnn.html`.
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Quay lại danh sách | Button | Hệ thống đóng màn hình xem chi tiết/đánh giá và quay về **MH01 - Màn hình Danh sách kỳ chấm điểm công tác BTNN**. |
+| 1 | Quay lại danh sách | Button | Hệ thống đóng màn hình xem chi tiết/đánh giá và quay về **MH01 - Màn hình Danh sách kỳ chấm điểm công tác BTNN**. Ở chế độ đánh giá, kết quả thẩm định đang nhập chưa hoàn thành không được lưu; kỳ chấm điểm giữ trạng thái "BTP đang đánh giá". |
 | 2 | Tiến hành đánh giá | Button | Chỉ hiển thị với tài khoản Cán bộ nghiệp vụ Bộ Tư pháp khi mở kỳ ở trạng thái "Đã gửi BTP" hoặc "BTP đang đánh giá" từ chế độ xem chi tiết. Hệ thống chuyển màn hình sang chế độ đánh giá theo [BR-BTNN-CD-002]. |
 | 3 | Xem file | Link | Cho phép xem file tại một tab riêng. |
 | 4 | Đính kèm file BTP | Button | TH1 (Tệp vượt quá 10MB): Hệ thống hiển thị [MSG-ERR-BTNN-CD-007] và không lưu tệp. |
 |  |  |  | TH Hợp lệ: Hệ thống thêm tệp vào danh sách tài liệu thẩm định của BTP và hiển thị [MSG-SUC-BTNN-CD-008]. |
 | 5 | Xóa | Link | Hệ thống xóa tệp thẩm định của BTP khỏi tiêu chí đang chọn và hiển thị [MSG-SUC-BTNN-CD-009]. |
-| 6 | Lưu nháp | Button | Hệ thống lưu điểm và ghi chú thẩm định của BTP, chuyển kỳ chấm điểm sang trạng thái "BTP đang đánh giá" và hiển thị [MSG-SUC-BTNN-CD-014]. |
-| 7 | Xuất Phụ lục II | Button | Hệ thống kết xuất báo cáo Phụ lục II kết quả chấm điểm của các Sở Tư pháp và hiển thị [MSG-SUC-BTNN-CD-017]. |
-| 8 | Hoàn thành đánh giá & Xếp loại | Button | TH1 (Có tiêu chí chênh lệch điểm nhưng chưa nhập ý kiến BTP): Vi phạm [BR-BTNN-CD-005]. Hệ thống tô viền đỏ ô ghi chú tương ứng, hiển thị [MSG-ERR-BTNN-CD-015] và không hoàn thành đánh giá. |
+| 6 | Xuất Phụ lục II | Button | Hệ thống kết xuất báo cáo Phụ lục II kết quả chấm điểm của các Sở Tư pháp và hiển thị [MSG-SUC-BTNN-CD-017]. |
+| 7 | Hoàn thành đánh giá & Xếp loại | Button | TH1 (Có tiêu chí chênh lệch điểm nhưng chưa nhập ý kiến BTP): Vi phạm [BR-BTNN-CD-005]. Hệ thống tô viền đỏ ô ghi chú tương ứng, hiển thị [MSG-ERR-BTNN-CD-015] và không hoàn thành đánh giá. |
 |  |  |  | TH Hợp lệ: Hệ thống lưu kết quả thẩm định, tính tổng điểm/xếp loại theo [BR-BTNN-CD-003], chuyển kỳ chấm điểm sang trạng thái "Hoàn thành" và hiển thị [MSG-SUC-BTNN-CD-016]. |
 
 ---

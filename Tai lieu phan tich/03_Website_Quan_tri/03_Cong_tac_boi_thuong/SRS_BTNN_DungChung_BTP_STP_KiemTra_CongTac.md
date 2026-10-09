@@ -45,7 +45,7 @@ flowchart TD
 | Cơ quan được kiểm tra | String(255) | Không | Trống | Tìm gần đúng theo tên cơ quan thuộc đối tượng kiểm tra. |
 | Hình thức kiểm tra | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>- Kiểm tra định kỳ<br>- Kiểm tra đột xuất |
 | Nội dung kiểm tra | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Giải quyết yêu cầu bồi thường<br>+ Xác định và thực hiện trách nhiệm hoàn trả<br>+ Quản lý nhà nước về công tác BTNN<br>+ Tổ chức thi hành pháp luật về trách nhiệm bồi thường của Nhà nước |
-| Trạng thái | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Lưu nháp<br>+ Đang thực hiện kiểm tra<br>+ Theo dõi xử lý sau kiểm tra<br>+ Hoàn thành |
+| Trạng thái | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Đang thực hiện kiểm tra<br>+ Theo dõi xử lý sau kiểm tra<br>+ Hoàn thành |
 | Từ ngày | Date | Không | Trống | Ngày lập kế hoạch từ, áp dụng [BR-VAL-007]. |
 | Đến ngày | Date | Không | Trống | Ngày lập kế hoạch đến, áp dụng [BR-VAL-007]. |
 | Thêm mới | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
@@ -60,7 +60,7 @@ flowchart TD
 | Thời gian kiểm tra | String(100) | Không | Theo dữ liệu | Hiển thị khoảng thời gian kiểm tra. |
 | Trưởng đoàn kiểm tra | String(255) | Không | Theo dữ liệu | Hiển thị trưởng đoàn kiểm tra. |
 | Trạng thái | Enum(String(50)) | Không | Theo dữ liệu | Hiển thị dạng badge. |
-| Thao tác | String(255) | Không | Theo trạng thái | Không hiển thị row click chi tiết; xem bằng row click. Hiển thị `Sửa`, `Cập nhật kết quả`, `Cập nhật xử lý sau kiểm tra` theo trạng thái; nút không đủ điều kiện hiển thị mờ. |
+| Thao tác | String(255) | Không | Theo trạng thái | Không hiển thị row click chi tiết; xem bằng row click. Hiển thị `Sửa`, `Cập nhật kết quả`, `Cập nhật xử lý sau kiểm tra` theo trạng thái; nút không đủ điều kiện hiển thị mờ. `Sửa` cho phép với hồ sơ chưa ở trạng thái "Hoàn thành". |
 | Phân trang | String(255) | Không | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị trên mỗi trang gồm: 10, 20, 50, 100 bản ghi/trang; mặc định chọn sẵn 20 bản ghi/trang.<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;).<br>- Hiển thị dải bản ghi: "Hiển thị [từ] - [đến] của [tổng số] bản ghi". |
 
 ###### 4.3.3.9.3.3. Chức năng trên màn hình
@@ -106,7 +106,6 @@ flowchart TD
 | Tài liệu kết quả/kết luận | File/List(File) | Không | Trống | Cho phép đính kèm nhiều file; hỗ trợ `Xem file`, `Xóa`. |
 | Lịch sử xử lý | String(255) | Không | Theo dữ liệu | Hiển thị thời gian, người thực hiện, thao tác, nội dung xử lý. |
 | Hủy bỏ | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
-| Lưu nháp | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
 | Lưu kế hoạch kiểm tra | String(100) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
 | Cập nhật kết quả | String(100) | Không | Hiển thị khi trạng thái "Đang thực hiện kiểm tra" | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
 | Lưu kết luận kiểm tra | String(100) | Không | Hiển thị sau khi có kết luận | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
@@ -117,12 +116,11 @@ flowchart TD
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Hủy bỏ | Button | Đóng màn hình và quay lại danh sách, không tự động lưu dữ liệu đang nhập. |
-| 2 | Lưu nháp | Button | TH1 (Dữ liệu không hợp lệ): Vi phạm [BR-VAL-001], [BR-VAL-007] hoặc [BR-FILE-010], hệ thống hiển thị lỗi inline và không cho lưu. |
-|  |  |  | TH Hợp lệ: Hệ thống lưu hồ sơ ở trạng thái "Lưu nháp", ghi lịch sử xử lý. |
-| 3 | Lưu kế hoạch kiểm tra | Button | TH1 (Bỏ trống trường bắt buộc): Vi phạm [BR-VAL-001], hệ thống hiển thị lỗi inline và không cho lưu kế hoạch. |
-|  |  |  | TH Hợp lệ: Hệ thống lưu kế hoạch kiểm tra, chuyển hồ sơ sang trạng thái "Đang thực hiện kiểm tra", ghi lịch sử xử lý. |
-| 4 | Cập nhật kết quả | Button | Lưu biên bản kiểm tra, tài liệu kết quả và chuyển hồ sơ sang bước lập kết luận kiểm tra. |
-| 5 | Lưu kết luận kiểm tra | Button | TH1 (Chưa nhập kết luận kiểm tra): Vi phạm [BR-VAL-001], hệ thống không cho lưu kết luận. |
+| 2 | Lưu kế hoạch kiểm tra | Button | TH1 (Bỏ trống trường bắt buộc): Vi phạm [BR-VAL-001], hệ thống hiển thị lỗi inline và không cho lưu kế hoạch. |
+|  |  |  | TH2 (Dữ liệu không hợp lệ): Vi phạm [BR-VAL-007] hoặc [BR-FILE-010], hệ thống hiển thị lỗi inline và không cho lưu kế hoạch. |
+|  |  |  | TH Hợp lệ: Hệ thống lưu kế hoạch kiểm tra trực tiếp ở trạng thái "Đang thực hiện kiểm tra" (không có bước lưu tạm kế hoạch), ghi lịch sử xử lý. |
+| 3 | Cập nhật kết quả | Button | Lưu biên bản kiểm tra, tài liệu kết quả và chuyển hồ sơ sang bước lập kết luận kiểm tra. |
+| 4 | Lưu kết luận kiểm tra | Button | TH1 (Chưa nhập kết luận kiểm tra): Vi phạm [BR-VAL-001], hệ thống không cho lưu kết luận. |
 |  |  |  | TH Hợp lệ: Hệ thống lưu kết luận kiểm tra và chuyển hồ sơ sang trạng thái "Theo dõi xử lý sau kiểm tra". |
-| 6 | Hoàn thành | Button | Hệ thống chuyển hồ sơ sang trạng thái "Hoàn thành" sau khi đã cập nhật kết quả xử lý sau kiểm tra. |
-| 7 | Xem file | Link | Cho phép xem file tại một tab riêng. |
+| 5 | Hoàn thành | Button | Hệ thống chuyển hồ sơ sang trạng thái "Hoàn thành" sau khi đã cập nhật kết quả xử lý sau kiểm tra. |
+| 6 | Xem file | Link | Cho phép xem file tại một tab riêng. |

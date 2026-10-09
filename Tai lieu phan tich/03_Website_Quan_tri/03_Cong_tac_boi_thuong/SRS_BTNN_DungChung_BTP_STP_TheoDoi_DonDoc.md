@@ -25,7 +25,6 @@ flowchart TD
     A[Danh sách theo dõi, đôn đốc] --> B[Tìm kiếm / Xóa bộ lọc / Kết xuất Excel]
     A --> C[Thêm mới]
     C --> D[Nhập thông tin theo dõi hoặc đôn đốc]
-    D --> E[Lưu nháp]
     D --> F[Gửi đôn đốc / Lưu theo dõi]
     F --> G[Đã gửi hoặc Đang theo dõi phản hồi]
     G --> H[Cập nhật phản hồi/kết quả thực hiện]
@@ -48,7 +47,7 @@ flowchart TD
 | Cơ quan liên quan | String(255) | Không | Trống | Tìm gần đúng theo tên cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại/cơ quan được đôn đốc. |
 | Nội dung công tác | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Giải quyết yêu cầu bồi thường<br>+ Tham gia tố tụng<br>+ Cấp kinh phí bồi thường và chi trả tiền bồi thường<br>+ Xác định và thực hiện trách nhiệm hoàn trả<br>- Xử lý kỷ luật<br>- Quản lý nhà nước về công tác BTNN<br>- Phục hồi danh dự |
 | Hình thức/căn cứ | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Báo cáo<br>+ Bản án, quyết định của Tòa án<br>+ Quyết định giải quyết bồi thường<br>+ Đề nghị hướng dẫn/giải đáp<br>+ Kết quả kiểm tra/thanh tra<br>+ Thông tin báo chí<br>+ Khiếu nại, tố cáo, phản ánh, kiến nghị<br>+ Căn cứ khác |
-| Trạng thái | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Lưu nháp<br>+ Đã gửi<br>+ Đang theo dõi phản hồi<br>+ Hoàn thành |
+| Trạng thái | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Đã gửi<br>+ Đang theo dõi phản hồi<br>+ Hoàn thành |
 | Từ ngày | Date | Không | Trống | Ngày lập từ, áp dụng [BR-VAL-007]. |
 | Đến ngày | Date | Không | Trống | Ngày lập đến, áp dụng [BR-VAL-007]. |
 | Thêm mới | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
@@ -63,7 +62,7 @@ flowchart TD
 | Hạn phản hồi | Date | Không | Theo dữ liệu | Hiển thị với hồ sơ đôn đốc hoặc yêu cầu báo cáo. |
 | Cán bộ xử lý | String(255) | Không | Theo dữ liệu | Hiển thị cán bộ phụ trách. |
 | Trạng thái | Enum(String(50)) | Không | Theo dữ liệu | Hiển thị dạng badge. |
-| Thao tác | String(255) | Không | Theo trạng thái | Không hiển thị row click chi tiết; xem bằng row click. Hiển thị `Sửa`, `Cập nhật phản hồi`, `Hoàn thành` theo trạng thái; nút không đủ điều kiện hiển thị mờ. |
+| Thao tác | String(255) | Không | Theo trạng thái | Không hiển thị row click chi tiết; xem bằng row click. Hiển thị `Sửa`, `Cập nhật phản hồi`, `Hoàn thành` theo trạng thái; nút không đủ điều kiện hiển thị mờ. `Sửa` cho phép với hồ sơ chưa ở trạng thái "Hoàn thành". |
 | Phân trang | String(255) | Không | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị trên mỗi trang gồm: 10, 20, 50, 100 bản ghi/trang; mặc định chọn sẵn 20 bản ghi/trang.<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;).<br>- Hiển thị dải bản ghi: "Hiển thị [từ] - [đến] của [tổng số] bản ghi". |
 
 ###### 4.3.3.8.3.3. Chức năng trên màn hình
@@ -105,7 +104,6 @@ flowchart TD
 | Tài liệu liên quan | File/List(File) | Không | Trống | Cho phép nhập tên tài liệu và đính kèm nhiều file; hỗ trợ `Xem file`, `Xóa`. |
 | Lịch sử xử lý | String(255) | Không | Theo dữ liệu | Hiển thị thời gian, người thực hiện, thao tác, nội dung xử lý. |
 | Hủy bỏ | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
-| Lưu nháp | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
 | Gửi đôn đốc / Lưu theo dõi | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
 | Hoàn thành | String(50) | Không | Hiển thị khi đã có kết quả thực hiện | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
 
@@ -114,10 +112,9 @@ flowchart TD
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Hủy bỏ | Button | Đóng màn hình và quay lại danh sách, không tự động lưu dữ liệu đang nhập. |
-| 2 | Lưu nháp | Button | TH1 (Dữ liệu không hợp lệ): Vi phạm [BR-VAL-001], [BR-VAL-007] hoặc [BR-FILE-010], hệ thống hiển thị lỗi inline và không cho lưu. |
-|  |  |  | TH Hợp lệ: Hệ thống lưu hồ sơ ở trạng thái "Lưu nháp", ghi lịch sử xử lý. |
-| 3 | Gửi đôn đốc / Lưu theo dõi | Button | TH1 (Bỏ trống trường bắt buộc): Vi phạm [BR-VAL-001], hệ thống hiển thị lỗi inline và không cho thực hiện. |
-|  |  |  | TH Hợp lệ: Với nhóm `Đôn đốc công tác BTNN`, hệ thống chuyển hồ sơ sang trạng thái "Đã gửi"; với nhóm `Theo dõi công tác BTNN`, hệ thống chuyển hồ sơ sang trạng thái "Đang theo dõi phản hồi"; ghi lịch sử xử lý. |
-| 4 | Hoàn thành | Button | TH1 (Chưa có nội dung phản hồi/kết quả thực hiện): Vi phạm [BR-VAL-001], hệ thống không cho hoàn thành. |
+| 2 | Gửi đôn đốc / Lưu theo dõi | Button | TH1 (Bỏ trống trường bắt buộc): Vi phạm [BR-VAL-001], hệ thống hiển thị lỗi inline và không cho thực hiện. |
+|  |  |  | TH2 (Dữ liệu không hợp lệ): Vi phạm [BR-VAL-007] hoặc [BR-FILE-010], hệ thống hiển thị lỗi inline và không cho thực hiện. |
+|  |  |  | TH Hợp lệ: Hồ sơ thêm mới được lưu trực tiếp vào trạng thái xử lý, không có bước lưu tạm: với nhóm `Đôn đốc công tác BTNN`, hệ thống lưu hồ sơ ở trạng thái "Đã gửi"; với nhóm `Theo dõi công tác BTNN`, hệ thống lưu hồ sơ ở trạng thái "Đang theo dõi phản hồi". Hồ sơ đang cập nhật giữ nguyên trạng thái hiện hành. Hệ thống ghi lịch sử xử lý. |
+| 3 | Hoàn thành | Button | TH1 (Chưa có nội dung phản hồi/kết quả thực hiện): Vi phạm [BR-VAL-001], hệ thống không cho hoàn thành. |
 |  |  |  | TH Hợp lệ: Hệ thống chuyển hồ sơ sang trạng thái "Hoàn thành" và ghi lịch sử xử lý. |
-| 5 | Xem file | Link | Cho phép xem file tại một tab riêng. |
+| 4 | Xem file | Link | Cho phép xem file tại một tab riêng. |

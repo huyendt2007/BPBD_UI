@@ -546,7 +546,7 @@
             </div>
             <div>
                 <div class="info-label">Trạng thái</div>
-                <div class="info-value" id="formStatus">Lưu nháp</div>
+                <div class="info-value" id="formStatus">Đang nhập</div>
             </div>
             <div>
                 <div class="info-label">Cán bộ xử lý</div>
@@ -599,7 +599,7 @@
     <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
 
     <script>
-        const commonStatusOptions = ['Tất cả', 'Lưu nháp', 'Đang xử lý', 'Hoàn thành'];
+        const commonStatusOptions = ['Tất cả', 'Đang xử lý', 'Hoàn thành'];
         const workContentOptions = [
             'Giải quyết yêu cầu bồi thường',
             'Cấp kinh phí bồi thường và chi trả tiền bồi thường',
@@ -642,13 +642,13 @@
                 rows: [
                     ['HD-BTNN-2026-001', 'Sở Tư pháp TP. Hà Nội', 'Hướng dẫn nghiệp vụ', 'Văn bản', '02/08/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
                     ['HD-BTNN-2026-002', 'UBND tỉnh Lâm Đồng', 'Giải đáp vướng mắc', 'Hòm thư điện tử', '31/07/2026', 'Trần Thị Minh', 'Hoàn thành'],
-                    ['HD-BTNN-2026-003', 'Cục THADS TP. Hải Phòng', 'Hướng dẫn nghiệp vụ', 'Họp liên ngành', '25/07/2026', 'Nguyễn Văn Cán Bộ', 'Lưu nháp'],
+                    ['HD-BTNN-2026-003', 'Cục THADS TP. Hải Phòng', 'Hướng dẫn nghiệp vụ', 'Họp liên ngành', '25/07/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
                     ['HD-BTNN-2026-004', 'Sở Tư pháp TP. Hồ Chí Minh', 'Hướng dẫn nghiệp vụ', 'Văn bản', '22/07/2026', 'Lê Văn Nam', 'Hoàn thành'],
                     ['HD-BTNN-2026-005', 'UBND tỉnh Đồng Nai', 'Giải đáp vướng mắc', 'Cổng thông tin điện tử', '18/07/2026', 'Trần Thị Minh', 'Đang xử lý'],
                     ['HD-BTNN-2026-006', 'Sở Tư pháp tỉnh Quảng Ninh', 'Hướng dẫn nghiệp vụ', 'Trực tiếp', '15/07/2026', 'Nguyễn Văn Cán Bộ', 'Hoàn thành'],
                     ['HD-BTNN-2026-007', 'TAND tỉnh Nghệ An', 'Giải đáp vướng mắc', 'Văn bản', '10/07/2026', 'Lê Văn Nam', 'Đang xử lý'],
                     ['HD-BTNN-2026-008', 'UBND TP. Đà Nẵng', 'Hướng dẫn nghiệp vụ', 'Hòm thư điện tử', '05/07/2026', 'Trần Thị Minh', 'Hoàn thành'],
-                    ['HD-BTNN-2026-009', 'Sở Tư pháp tỉnh Thanh Hóa', 'Giải đáp vướng mắc', 'Họp liên ngành', '28/06/2026', 'Nguyễn Văn Cán Bộ', 'Lưu nháp'],
+                    ['HD-BTNN-2026-009', 'Sở Tư pháp tỉnh Thanh Hóa', 'Giải đáp vướng mắc', 'Họp liên ngành', '28/06/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
                     ['HD-BTNN-2026-010', 'Cục THADS TP. Cần Thơ', 'Hướng dẫn nghiệp vụ', 'Văn bản', '20/06/2026', 'Lê Văn Nam', 'Hoàn thành'],
                     ['HD-BTNN-2026-011', 'Sở Tư pháp tỉnh Bình Dương', 'Giải đáp vướng mắc', 'Trực tiếp', '15/06/2026', 'Trần Thị Minh', 'Đang xử lý'],
                     ['HD-BTNN-2026-012', 'UBND tỉnh Bắc Ninh', 'Hướng dẫn nghiệp vụ', 'Cổng thông tin điện tử', '10/06/2026', 'Nguyễn Văn Cán Bộ', 'Hoàn thành'],
@@ -668,7 +668,7 @@
                     ['agency', 'Cơ quan liên quan', 'Nhập cơ quan liên quan...'],
                     ['content', 'Nội dung công tác', ['Tất cả', ...workContentOptions]],
                     ['basis', 'Hình thức/căn cứ', ['Tất cả', 'Báo cáo', 'Bản án, quyết định của Tòa án', 'Quyết định giải quyết bồi thường', 'Đề nghị hướng dẫn/giải đáp', 'Kết quả kiểm tra/thanh tra', 'Thông tin báo chí', 'Khiếu nại, tố cáo, phản ánh, kiến nghị', 'Căn cứ khác']],
-                    ['status', 'Trạng thái', ['Tất cả', 'Lưu nháp', 'Đã gửi', 'Đang theo dõi phản hồi', 'Hoàn thành']],
+                    ['status', 'Trạng thái', ['Tất cả', 'Đã gửi', 'Đang theo dõi phản hồi', 'Hoàn thành']],
                     ['fromDate', 'Từ ngày', 'date'],
                     ['toDate', 'Đến ngày', 'date']
                 ],
@@ -688,14 +688,14 @@
                 rows: [
                     ['TDDD-BTNN-2026-001', 'Sở Tư pháp TP. Hà Nội', 'Giải quyết yêu cầu bồi thường', '15/08/2026', 'Nguyễn Văn Cán Bộ', 'Đang theo dõi phản hồi'],
                     ['TDDD-BTNN-2026-002', 'UBND tỉnh Lâm Đồng', 'Xác định và thực hiện trách nhiệm hoàn trả', '20/08/2026', 'Trần Thị Minh', 'Đã gửi'],
-                    ['TDDD-BTNN-2026-003', 'Sở Tư pháp TP. Hải Phòng', 'Quản lý nhà nước về công tác BTNN', '—', 'Nguyễn Văn Cán Bộ', 'Lưu nháp'],
+                    ['TDDD-BTNN-2026-003', 'Sở Tư pháp TP. Hải Phòng', 'Quản lý nhà nước về công tác BTNN', '—', 'Nguyễn Văn Cán Bộ', 'Đang theo dõi phản hồi'],
                     ['TDDD-BTNN-2026-004', 'UBND TP. Hồ Chí Minh', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', '25/08/2026', 'Lê Văn Nam', 'Đang theo dõi phản hồi'],
                     ['TDDD-BTNN-2026-005', 'Sở Tư pháp tỉnh Đồng Nai', 'Phục hồi danh dự', '30/08/2026', 'Trần Thị Minh', 'Hoàn thành'],
                     ['TDDD-BTNN-2026-006', 'TAND tỉnh Bình Thuận', 'Giải quyết yêu cầu bồi thường', '10/09/2026', 'Nguyễn Văn Cán Bộ', 'Đã gửi'],
                     ['TDDD-BTNN-2026-007', 'UBND tỉnh Bà Rịa - Vũng Tàu', 'Xử lý kỷ luật', '15/09/2026', 'Lê Văn Nam', 'Đang theo dõi phản hồi'],
                     ['TDDD-BTNN-2026-008', 'Sở Tư pháp tỉnh Nghệ An', 'Xác định và thực hiện trách nhiệm hoàn trả', '05/08/2026', 'Trần Thị Minh', 'Hoàn thành'],
                     ['TDDD-BTNN-2026-009', 'Cục THADS tỉnh Thanh Hóa', 'Giải quyết yêu cầu bồi thường', '18/09/2026', 'Nguyễn Văn Cán Bộ', 'Đã gửi'],
-                    ['TDDD-BTNN-2026-010', 'UBND TP. Đà Nẵng', 'Quản lý nhà nước về công tác BTNN', '—', 'Lê Văn Nam', 'Lưu nháp'],
+                    ['TDDD-BTNN-2026-010', 'UBND TP. Đà Nẵng', 'Quản lý nhà nước về công tác BTNN', '—', 'Lê Văn Nam', 'Đang theo dõi phản hồi'],
                     ['TDDD-BTNN-2026-011', 'Sở Tư pháp tỉnh Quảng Nam', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', '22/09/2026', 'Trần Thị Minh', 'Đang theo dõi phản hồi'],
                     ['TDDD-BTNN-2026-012', 'UBND tỉnh Thái Bình', 'Giải quyết yêu cầu bồi thường', '12/07/2026', 'Nguyễn Văn Cán Bộ', 'Hoàn thành'],
                     ['TDDD-BTNN-2026-013', 'Sở Tư pháp tỉnh Khánh Hòa', 'Phục hồi danh dự', '28/09/2026', 'Lê Văn Nam', 'Đã gửi'],
@@ -714,7 +714,7 @@
                     ['agency', 'Cơ quan được kiểm tra', 'Nhập cơ quan được kiểm tra...'],
                     ['type', 'Hình thức kiểm tra', ['Tất cả', 'Kiểm tra định kỳ', 'Kiểm tra đột xuất']],
                     ['content', 'Nội dung kiểm tra', ['Tất cả', 'Giải quyết yêu cầu bồi thường', 'Xác định và thực hiện trách nhiệm hoàn trả', 'Quản lý nhà nước về công tác BTNN', 'Tổ chức thi hành pháp luật về trách nhiệm bồi thường của Nhà nước']],
-                    ['status', 'Trạng thái', ['Tất cả', 'Lưu nháp', 'Đang thực hiện kiểm tra', 'Theo dõi xử lý sau kiểm tra', 'Hoàn thành']],
+                    ['status', 'Trạng thái', ['Tất cả', 'Đang thực hiện kiểm tra', 'Theo dõi xử lý sau kiểm tra', 'Hoàn thành']],
                     ['fromDate', 'Từ ngày', 'date'],
                     ['toDate', 'Đến ngày', 'date']
                 ],
@@ -734,18 +734,18 @@
                 mainContentLabel: 'Phạm vi kiểm tra',
                 resultLabel: 'Biên bản/Kết luận/Kết quả xử lý sau kiểm tra',
                 rows: [
-                    ['KT-BTNN-2026-001', 'Sở Tư pháp TP. Hà Nội', 'Kiểm tra định kỳ', '12/08/2026 - 14/08/2026', 'Lê Minh Châu', 'Lưu nháp'],
+                    ['KT-BTNN-2026-001', 'Sở Tư pháp TP. Hà Nội', 'Kiểm tra định kỳ', '12/08/2026 - 14/08/2026', 'Lê Minh Châu', 'Đang thực hiện kiểm tra'],
                     ['KT-BTNN-2026-002', 'UBND tỉnh Lâm Đồng', 'Kiểm tra đột xuất', '20/08/2026 - 21/08/2026', 'Nguyễn Văn Bình', 'Đang thực hiện kiểm tra'],
                     ['KT-BTNN-2026-003', 'Sở Tư pháp TP. Hải Phòng', 'Kiểm tra định kỳ', '05/09/2026 - 06/09/2026', 'Phạm Thị Hoa', 'Theo dõi xử lý sau kiểm tra'],
                     ['KT-BTNN-2026-004', 'UBND tỉnh Đồng Nai', 'Kiểm tra đột xuất', '15/07/2026 - 16/07/2026', 'Lê Minh Châu', 'Hoàn thành'],
                     ['KT-BTNN-2026-005', 'Sở Tư pháp TP. Hồ Chí Minh', 'Kiểm tra định kỳ', '10/09/2026 - 12/09/2026', 'Nguyễn Văn Bình', 'Đang thực hiện kiểm tra'],
                     ['KT-BTNN-2026-006', 'UBND tỉnh Quảng Ninh', 'Kiểm tra định kỳ', '18/09/2026 - 19/09/2026', 'Phạm Thị Hoa', 'Theo dõi xử lý sau kiểm tra'],
-                    ['KT-BTNN-2026-007', 'Sở Tư pháp tỉnh Nghệ An', 'Kiểm tra đột xuất', '25/09/2026 - 26/09/2026', 'Lê Minh Châu', 'Lưu nháp'],
+                    ['KT-BTNN-2026-007', 'Sở Tư pháp tỉnh Nghệ An', 'Kiểm tra đột xuất', '25/09/2026 - 26/09/2026', 'Lê Minh Châu', 'Đang thực hiện kiểm tra'],
                     ['KT-BTNN-2026-008', 'UBND TP. Cần Thơ', 'Kiểm tra định kỳ', '01/07/2026 - 03/07/2026', 'Nguyễn Văn Bình', 'Hoàn thành'],
                     ['KT-BTNN-2026-009', 'Sở Tư pháp tỉnh Bình Dương', 'Kiểm tra định kỳ', '02/10/2026 - 04/10/2026', 'Phạm Thị Hoa', 'Đang thực hiện kiểm tra'],
                     ['KT-BTNN-2026-010', 'UBND tỉnh Thanh Hóa', 'Kiểm tra đột xuất', '08/10/2026 - 09/10/2026', 'Lê Minh Châu', 'Theo dõi xử lý sau kiểm tra'],
                     ['KT-BTNN-2026-011', 'Sở Tư pháp TP. Đà Nẵng', 'Kiểm tra định kỳ', '15/06/2026 - 17/06/2026', 'Nguyễn Văn Bình', 'Hoàn thành'],
-                    ['KT-BTNN-2026-012', 'UBND tỉnh Bắc Giang', 'Kiểm tra định kỳ', '15/10/2026 - 16/10/2026', 'Phạm Thị Hoa', 'Lưu nháp'],
+                    ['KT-BTNN-2026-012', 'UBND tỉnh Bắc Giang', 'Kiểm tra định kỳ', '15/10/2026 - 16/10/2026', 'Phạm Thị Hoa', 'Đang thực hiện kiểm tra'],
                     ['KT-BTNN-2026-013', 'Sở Tư pháp tỉnh Vĩnh Phúc', 'Kiểm tra đột xuất', '22/10/2026 - 23/10/2026', 'Lê Minh Châu', 'Đang thực hiện kiểm tra'],
                     ['KT-BTNN-2026-014', 'UBND tỉnh Thái Nguyên', 'Kiểm tra định kỳ', '20/05/2026 - 22/05/2026', 'Phạm Thị Hoa', 'Hoàn thành']
                 ]
@@ -762,7 +762,7 @@
                     ['agency', 'Người/cơ quan gửi', 'Nhập người/cơ quan gửi...'],
                     ['type', 'Loại nội dung', ['Tất cả', 'Khiếu nại', 'Tố cáo', 'Phản ánh', 'Kiến nghị', 'Xử lý vi phạm']],
                     ['content', 'Nhóm nghiệp vụ liên quan', ['Tất cả', ...workContentOptions, 'Kiểm tra công tác BTNN', 'Đôn đốc công tác BTNN']],
-                    ['status', 'Trạng thái', ['Tất cả', 'Lưu nháp', 'Đang xử lý', 'Hoàn thành']],
+                    ['status', 'Trạng thái', ['Tất cả', 'Đang xử lý', 'Hoàn thành']],
                     ['fromDate', 'Từ ngày', 'date'],
                     ['toDate', 'Đến ngày', 'date']
                 ],
@@ -787,12 +787,12 @@
                     ['KNTC-BTNN-2026-003', 'Công dân phản ánh qua Cổng TTĐT', 'Phản ánh', 'Đôn đốc công tác BTNN', 'BT-2026-021', '28/07/2026', 'Nguyễn Văn Cán Bộ', 'Hoàn thành'],
                     ['KNTC-BTNN-2026-004', 'Bà Lê Thị Hương', 'Tố cáo', 'Xử lý kỷ luật', 'BT-2026-008', '25/07/2026', 'Lê Văn Nam', 'Đang xử lý'],
                     ['KNTC-BTNN-2026-005', 'Công ty TNHH Hưng Phát', 'Khiếu nại', 'Xác định và thực hiện trách nhiệm hoàn trả', 'BT-2026-015', '20/07/2026', 'Trần Thị Minh', 'Hoàn thành'],
-                    ['KNTC-BTNN-2026-006', 'Ông Vũ Đình Trọng', 'Phản ánh', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', 'BT-2026-025', '15/07/2026', 'Nguyễn Văn Cán Bộ', 'Lưu nháp'],
+                    ['KNTC-BTNN-2026-006', 'Ông Vũ Đình Trọng', 'Phản ánh', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', 'BT-2026-025', '15/07/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
                     ['KNTC-BTNN-2026-007', 'Sở Tư pháp tỉnh Bình Thuận', 'Kiến nghị', 'Quản lý nhà nước về công tác BTNN', '—', '10/07/2026', 'Lê Văn Nam', 'Hoàn thành'],
                     ['KNTC-BTNN-2026-008', 'Bà Phạm Thị Mai', 'Khiếu nại', 'Giải quyết yêu cầu bồi thường', 'BT-2026-030', '05/07/2026', 'Trần Thị Minh', 'Đang xử lý'],
                     ['KNTC-BTNN-2026-009', 'UBND huyện Đan Phượng', 'Xử lý vi phạm', 'Giải quyết yêu cầu bồi thường', 'BT-2026-018', '28/06/2026', 'Nguyễn Văn Cán Bộ', 'Đang xử lý'],
                     ['KNTC-BTNN-2026-010', 'Ông Đỗ Quốc Cường', 'Tố cáo', 'Phục hồi danh dự', 'BT-2026-022', '22/06/2026', 'Lê Văn Nam', 'Hoàn thành'],
-                    ['KNTC-BTNN-2026-011', 'Công ty CP Đầu tư Vĩnh An', 'Khiếu nại', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', 'BT-2026-019', '18/06/2026', 'Trần Thị Minh', 'Lưu nháp'],
+                    ['KNTC-BTNN-2026-011', 'Công ty CP Đầu tư Vĩnh An', 'Khiếu nại', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', 'BT-2026-019', '18/06/2026', 'Trần Thị Minh', 'Đang xử lý'],
                     ['KNTC-BTNN-2026-012', 'Công dân gửi đơn qua Bưu điện', 'Phản ánh', 'Giải quyết yêu cầu bồi thường', 'BT-2026-014', '12/06/2026', 'Nguyễn Văn Cán Bộ', 'Hoàn thành'],
                     ['KNTC-BTNN-2026-013', 'Ông Hoàng Minh Tuấn', 'Khiếu nại', 'Xác định và thực hiện trách nhiệm hoàn trả', 'BT-2026-027', '05/06/2026', 'Lê Văn Nam', 'Đang xử lý'],
                     ['KNTC-BTNN-2026-014', 'Bà Nguyễn Thu Trang', 'Kiến nghị', 'Quản lý nhà nước về công tác BTNN', '—', '01/06/2026', 'Trần Thị Minh', 'Hoàn thành']
@@ -842,7 +842,8 @@
 
         function actionButtons(row) {
             const status = row[row.length - 1];
-            const canEdit = status === 'Lưu nháp';
+            // Hồ sơ được lưu thẳng vào trạng thái xử lý, cho phép sửa khi chưa Hoàn thành
+            const canEdit = status !== 'Hoàn thành';
             const canUpdate = status.includes('Đang') || status === 'Đã gửi' || status === 'Đang theo dõi phản hồi' || status === 'Theo dõi xử lý sau kiểm tra';
             const canFinish = status.includes('Đang') || status === 'Đã gửi' || status === 'Theo dõi xử lý sau kiểm tra';
             return `
@@ -1009,7 +1010,7 @@
             document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${isNew ? 'Thêm mới' : 'Thêm mới/Cập nhật'} ${currentConfig.title.toLowerCase()}`;
             document.getElementById('codeLabel').innerText = currentConfig.codeLabel;
             document.getElementById('formCode').innerText = isNew ? 'Hệ thống tự sinh' : code;
-            document.getElementById('formStatus').innerText = row ? row[row.length - 1] : 'Lưu nháp';
+            document.getElementById('formStatus').innerText = row ? row[row.length - 1] : 'Đang nhập';
             document.getElementById('formOfficer').innerText = row ? row[row.length - 2] : 'Nguyễn Văn Cán Bộ';
             document.getElementById('formFields').innerHTML = currentConfig.fields.map(fieldControl).join('');
             document.getElementById('mainContentLabel').innerHTML = `${currentConfig.mainContentLabel}<span class="required">*</span>`;
@@ -1019,7 +1020,7 @@
                 { name: 'Tài liệu xử lý', file: '' }
             ];
             renderDocuments();
-            renderFormActions(row ? row[row.length - 1] : 'Lưu nháp');
+            renderFormActions(row ? row[row.length - 1] : '');
             document.getElementById('detailPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
@@ -1035,7 +1036,8 @@
             } else if (moduleKey === 'kiem_tra') {
                 primaryLabel = status === 'Đang thực hiện kiểm tra' ? 'Lưu kết luận kiểm tra' : 'Lưu kế hoạch kiểm tra';
             } else if (moduleKey === 'khieu_nai') {
-                primaryLabel = status === 'Đang xử lý' ? 'Hoàn thành' : 'Lưu và xử lý';
+                // Hồ sơ "Đang xử lý" mở bằng Sửa vẫn cần nút lưu; Hoàn thành hiển thị thành nút riêng
+                primaryLabel = 'Lưu và xử lý';
             }
             const showFinishButton = primaryLabel !== 'Hoàn thành' && status !== 'Hoàn thành';
             const primaryIcon = primaryLabel === 'Hoàn thành' ? 'fa-circle-check' : 'fa-floppy-disk';
@@ -1045,7 +1047,6 @@
             }
             actions.innerHTML = `
                 <button type="button" class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
-                <button type="button" class="btn btn-secondary" onclick="showToast('Đã lưu nháp thông tin.')"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>
                 <button type="button" class="btn ${primaryClass}" onclick="showToast('Đã thực hiện thao tác ${primaryLabel}.')"><i class="fa-solid ${primaryIcon}"></i> ${primaryLabel}</button>
                 ${showFinishButton ? `<button type="button" class="btn btn-success" onclick="showToast('Đã hoàn thành hồ sơ.')"><i class="fa-solid fa-circle-check"></i> Hoàn thành</button>` : ''}
             `;

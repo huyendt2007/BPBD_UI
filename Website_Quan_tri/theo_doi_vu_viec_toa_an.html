@@ -1087,7 +1087,8 @@
         // ===== Quyền =====
         function isTerminal(rec) { return TERMINAL_STATUSES.includes(rec.status); }
         function canEditCase(rec) {
-            return !!rec && CAN_INPUT && rec.rootUnitId === CURRENT_ROOT_UNIT;
+            // Mọi bản ghi đang hiển thị đều được Cập nhật / Xóa (kể cả trạng thái kết thúc)
+            return !!rec && !rec.deleted;
         }
         function visibleCases() {
             return cases.filter(r => !r.deleted && (VIEW_ALL || r.rootUnitId === CURRENT_ROOT_UNIT));
@@ -1128,9 +1129,7 @@
             } else {
                 tbody.innerHTML = pageRows.map((r, idx) => {
                     const editable = canEditCase(r);
-                    const reason = !CAN_INPUT ? "Đơn vị chưa được áp dụng Loại yêu cầu Yêu cầu bồi thường"
-                        : (r.rootUnitId !== CURRENT_ROOT_UNIT ? "Chỉ cán bộ của cơ quan bị khởi kiện được thao tác"
-                        : "Vụ việc đã ở trạng thái kết thúc");
+                    const reason = "Vụ việc đã bị xóa";
                     const dis = editable ? "" : " disabled-action";
                     const linked = r.linkedCode ? `<div class="muted">Liên kết: ${escapeHtml(r.linkedCode)}</div>` : "";
                     const funding = r.fundingCode ? `<div class="muted">Kinh phí: ${escapeHtml(r.fundingCode)}</div>` : "";
@@ -1466,7 +1465,7 @@
         function saveCase() {
             clearValidation();
             const rec = editingId ? cases.find(c => c.id === editingId) : null;
-            if (!CAN_INPUT || (rec && !canEditCase(rec))) { showToast("Bạn không có quyền lưu vụ việc này!", "error"); return; }
+            if ((!rec && !CAN_INPUT) || (rec && !canEditCase(rec))) { showToast("Bạn không có quyền lưu vụ việc này!", "error"); return; }
             const status = getValue("caseStatus");
             let firstInvalid = null;
             const need = ["caseStatus", "caseVerdictSource", "caseLawsuitCase", "caseAcceptDate", "claimNYCName", "claimNYCBirth", "claimNYCPhone", "claimNYCCardNo", "claimNYCCardDate", "claimNYCCardPlace", "claimNYCAddress", "claimHanhVi", "claimNhanQua"];

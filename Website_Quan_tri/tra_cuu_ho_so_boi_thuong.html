@@ -569,7 +569,6 @@
     <script>
         const allStatuses = [
             'Chờ nhập liệu',
-            'Chờ kiểm tra',
             'Yêu cầu bổ sung',
             'Bị từ chối',
             'Chờ thụ lý',
@@ -588,7 +587,7 @@
 
         const statusGroups = {
             '': allStatuses,
-            'Đang xử lý': ['Chờ nhập liệu', 'Yêu cầu bổ sung', 'Chờ kiểm tra', 'Chờ thụ lý', 'Đang xác minh thiệt hại', 'Đang thương lượng', 'Thương lượng không thành công', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Đang thực thi theo bản án'],
+            'Đang xử lý': ['Chờ nhập liệu', 'Yêu cầu bổ sung', 'Chờ thụ lý', 'Đang xác minh thiệt hại', 'Đang thương lượng', 'Thương lượng không thành công', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Đang thực thi theo bản án'],
             'Tạm dừng': ['Hoãn giải quyết', 'Tạm đình chỉ giải quyết'],
             'Kết thúc': ['Bị từ chối', 'Từ chối thụ lý', 'Đình chỉ giải quyết', 'Hoàn thành']
         };
@@ -596,7 +595,7 @@
         const fallbackClaims = [
             { id: 'HS_WAIT_INPUT', code: 'BT-2026-020', date: '01/08/2026', updatedDate: '05/08/2026', nyc: 'Công ty An Phú', nycTinhThanh: 'Hà Nội', address: 'Số 12 Nguyễn Chí Thanh, Ba Đình, Hà Nội', hanhVi: 'Thu hồi giấy phép kinh doanh không đúng căn cứ pháp luật.', fieldGroup: 'hành chính', agency: 'Sở Tư pháp Hà Nội', assignedOfficer: '', status: 'Chờ nhập liệu', deadline: '30/08/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 0, restoreHonor: false },
             { id: 'HS_SUPPLEMENT', code: 'BT-2026-021', date: '02/08/2026', updatedDate: '06/08/2026', nyc: 'Nguyễn Văn D', nycTinhThanh: 'Đà Nẵng', address: 'Tổ 8 phường Hải Châu, Đà Nẵng', hanhVi: 'Cưỡng chế hành chính sai đối tượng.', fieldGroup: 'hành chính', agency: 'UBND Quận Hải Châu', assignedOfficer: 'Lê Văn Chuyên Viên', status: 'Yêu cầu bổ sung', deadline: '25/08/2026', nopKenh: 'Dịch vụ công', totalNum: 65000000, restoreHonor: false },
-            { id: 'HS_CHECK', code: 'BT-2026-022', date: '03/08/2026', updatedDate: '06/08/2026', nyc: 'Công ty Hòa Bình', nycTinhThanh: 'Hải Phòng', address: 'Số 7 Lạch Tray, Ngô Quyền, Hải Phòng', hanhVi: 'Kê biên tài sản của bên thứ ba không có nghĩa vụ.', fieldGroup: 'thi hành án dân sự', agency: 'Cục Thi hành án dân sự TP. Hải Phòng', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Chờ kiểm tra', deadline: '28/08/2026', nopKenh: 'Nhận qua bưu điện/Bưu chính', totalNum: 185000000, restoreHonor: false },
+            { id: 'HS_CHECK', code: 'BT-2026-022', date: '03/08/2026', updatedDate: '06/08/2026', nyc: 'Công ty Hòa Bình', nycTinhThanh: 'Hải Phòng', address: 'Số 7 Lạch Tray, Ngô Quyền, Hải Phòng', hanhVi: 'Kê biên tài sản của bên thứ ba không có nghĩa vụ.', fieldGroup: 'thi hành án dân sự', agency: 'Cục Thi hành án dân sự TP. Hải Phòng', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Chờ thụ lý', deadline: '28/08/2026', nopKenh: 'Nhận qua bưu điện/Bưu chính', totalNum: 185000000, restoreHonor: false },
             { id: 'HS_REJECT', code: 'BT-2026-023', date: '25/07/2026', updatedDate: '02/08/2026', nyc: 'Vũ Văn L', nycTinhThanh: 'Bắc Ninh', address: 'Phường Võ Cường, Bắc Ninh', hanhVi: 'Yêu cầu chưa có văn bản làm căn cứ yêu cầu bồi thường.', fieldGroup: 'hành chính', agency: 'Sở Tư pháp Bắc Ninh', assignedOfficer: 'Phạm Minh Chuyên Viên', status: 'Bị từ chối', deadline: '15/08/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 0, restoreHonor: false },
             { id: 'HS_THULY', code: 'BT-2026-018', date: '22/07/2026', updatedDate: '03/08/2026', nyc: 'Lê Văn H', nycTinhThanh: 'Hà Nội', address: 'Số 41 Trần Phú, Hà Đông, Hà Nội', hanhVi: 'Tạm giữ người không đúng trình tự tố tụng.', fieldGroup: 'hình sự', agency: 'Viện kiểm sát nhân dân TP. Hà Nội', assignedOfficer: '', status: 'Chờ thụ lý', deadline: '18/08/2026', nopKenh: 'Cán bộ chủ động nhập theo tố tụng/thi hành án', totalNum: 210000000, restoreHonor: false },
             { id: 'HS_VERIFY', code: 'BT-2026-007', date: '15/07/2026', updatedDate: '04/08/2026', nyc: 'Hoàng Văn R', nycTinhThanh: 'Khánh Hòa', address: 'Phường Phước Hải, Nha Trang, Khánh Hòa', hanhVi: 'Tạm giữ phương tiện kinh doanh trái quy định.', fieldGroup: 'hành chính', agency: 'Tòa án nhân dân TP. Nha Trang', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Đang xác minh thiệt hại', deadline: '26/09/2026', nopKenh: 'Dịch vụ công', totalNum: 90000000, restoreHonor: false },
@@ -769,6 +768,8 @@
             const legacyReject = 'Từ chối ' + 'tiếp nhận';
             if (status === 'Lưu nháp' || status === legacyWait) return 'Chờ nhập liệu';
             if (status === legacyReject) return 'Bị từ chối';
+            // Bỏ bước kiểm tra riêng tại Giải quyết yêu cầu bồi thường: dữ liệu cũ chuyển sang Chờ thụ lý
+            if (status === 'Chờ ' + 'kiểm tra') return 'Chờ thụ lý';
             return status || 'Chờ nhập liệu';
         }
 
@@ -1119,7 +1120,7 @@
             let cls = 'badge-info';
             if (status === 'Hoàn thành') cls = 'badge-success';
             else if (status === 'Chờ nhập liệu') cls = 'badge-draft';
-            else if (['Chờ kiểm tra', 'Chờ thụ lý'].includes(status)) cls = 'badge-pending';
+            else if (status === 'Chờ thụ lý') cls = 'badge-pending';
             else if (['Yêu cầu bổ sung', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Hoãn giải quyết', 'Tạm đình chỉ giải quyết', 'Đang thực thi theo bản án'].includes(status)) cls = 'badge-warning';
             else if (['Bị từ chối', 'Từ chối thụ lý', 'Thương lượng không thành công', 'Đình chỉ giải quyết'].includes(status)) cls = 'badge-danger';
             return `<span class="badge ${cls}">${escapeHtml(status)}</span>`;

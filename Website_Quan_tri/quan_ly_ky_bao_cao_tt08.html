@@ -2910,7 +2910,6 @@ function renderDetailActionBar(ky, mode, readOnlyWhole) {
     if (mode === 'own' && ky.level === 1) {
         if (!readOnlyWhole) {
             html += `<button class="btn btn-secondary" onclick="closeDetail()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>`;
-            html += `<button class="btn btn-secondary" onclick="saveDraft()"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>`;
             html += `<button class="btn btn-primary" onclick="submitToParent()"><i class="fa-solid fa-paper-plane"></i> ${getLatestRevisionRequest(ky) ? 'Gửi lại báo cáo' : 'Gửi báo cáo'}</button>`;
         } else if (ky.status === 'da_gui') {
             html += `<div class="alert-box alert-info" style="margin:0;"><i class="fa-solid fa-clock" style="margin-top:2px;"></i> Kỳ báo cáo đã gửi, đang chờ ${ky.parentUnit} duyệt.</div>`;
@@ -2943,16 +2942,6 @@ function renderDetailActionBar(ky, mode, readOnlyWhole) {
         }
     }
     bar.innerHTML = html;
-}
-
-function saveDraft() {
-    const ky = findKy(currentDetailId);
-    // Kỳ đang bị Yêu cầu chỉnh lý thì giữ nguyên trạng thái cho tới khi Gửi lại báo cáo,
-    // để cảnh báo lý do chỉnh lý không bị mất khi cán bộ lưu nháp giữa chừng.
-    if (ky.status !== 'yeu_cau_chinh_ly') ky.status = 'dang_nhap_lieu';
-    ky.history.push({ time: nowLog(), text: `${currentActorName()} lưu nháp kỳ báo cáo.` });
-    showToast('Đã lưu nháp kỳ báo cáo.', 'success');
-    openDetail(ky.id);
 }
 
 function submitToParent() {

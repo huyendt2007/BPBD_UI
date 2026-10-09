@@ -3103,11 +3103,11 @@ const systemPermissions = [
                                               },
 {
  "id":  "WebAdmin-10-03",
- "name":  "Việc chờ lãnh đạo xử lý",
+ "name":  "Hồ sơ trình Lãnh đạo",
  "children":  [
 {
  "id":  "WebAdmin-10-03-01",
- "name":  "Tra cứu việc chờ lãnh đạo xử lý",
+ "name":  "Tra cứu hồ sơ trình Lãnh đạo",
  "children":  [
 
  ]

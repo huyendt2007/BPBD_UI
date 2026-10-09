@@ -1,4 +1,4 @@
-### 4.3.3.29. Việc chờ lãnh đạo xử lý
+### 4.3.3.29. Hồ sơ trình Lãnh đạo
 
 #### 4.3.3.29.1. Mục đích
 
@@ -6,9 +6,9 @@
 
 \- Gồm 06 chức năng:
 
-\+ Tra cứu danh sách việc chờ lãnh đạo xử lý theo tab: Chờ phân công, Chờ duyệt, Đã xử lý.
+\+ Tra cứu danh sách hồ sơ trình Lãnh đạo theo tab: Chờ phân công, Chờ duyệt, Đã xử lý.
 
-\+ Xem chi tiết hồ sơ, quá trình phân công, trình phê duyệt và lịch sử xử lý.
+\+ Xem chi tiết hồ sơ, quá trình phân công, trình phê duyệt (kèm Văn bản dự thảo, nếu lần trình có) và lịch sử xử lý.
 
 \+ Phân công xử lý hồ sơ: chuyển đơn vị cấp dưới hoặc phân công cán bộ chủ trì, cán bộ phối hợp.
 
@@ -22,7 +22,7 @@
 
 *a. Phân quyền*
 
-\- Menu "Việc chờ lãnh đạo xử lý" thuộc phân hệ Bồi thường nhà nước, đặt ngay dưới menu "Tiếp nhận yêu cầu".
+\- Menu "Hồ sơ trình Lãnh đạo" thuộc phân hệ Bồi thường nhà nước, đặt ngay dưới menu "Tiếp nhận yêu cầu".
 
 \- Vai trò thực hiện: Lãnh đạo đơn vị, là tài khoản thuộc Nhóm lãnh đạo của đơn vị tại Cấu hình luồng xử lý.
 
@@ -30,7 +30,7 @@
 
 *b. Điều kiện thực hiện*
 
-\- Người dùng đã đăng nhập Website Quản trị và được phân quyền chức năng "Việc chờ lãnh đạo xử lý".
+\- Người dùng đã đăng nhập Website Quản trị và được phân quyền chức năng "Hồ sơ trình Lãnh đạo".
 
 \- Đơn vị gốc của hồ sơ đã được cấu hình luồng xử lý.
 
@@ -51,16 +51,17 @@
 | 8 | Luồng phê duyệt | Luồng phê duyệt đi ngược chiều luồng phân công thực tế của chính hồ sơ: lấy các đơn vị đã chuyển hoặc phân công theo thứ tự lượt chuyển, đảo ngược, bỏ đơn vị trùng.<br>- VD: Bộ Tư pháp → Cục → Phòng → Cán bộ thì luồng phê duyệt là Phòng → Cục → Bộ Tư pháp.<br>- Hồ sơ do cán bộ tạo trực tiếp tại phân hệ (không qua phân công): luồng phê duyệt đi từ đơn vị của cán bộ chủ trì lên đơn vị gốc, chỉ gồm các đơn vị có Nhóm lãnh đạo.<br>- Luồng phê duyệt được xác định khi cán bộ chủ trì trình và giữ nguyên cho lần trình đó. |
 | 9 | Kết quả phê duyệt | Phê duyệt ở cấp chưa phải cấp cuối: hồ sơ giữ "Chờ phê duyệt", chuyển cấp phê duyệt tiếp theo.<br>- Phê duyệt ở cấp cuối, theo Nội dung trình:<br>+ Hoàn thành xác định → "Chờ chuyển CQGQBT".<br>+ Yêu cầu bổ sung → "Yêu cầu bổ sung".<br>+ Từ chối → "Bị từ chối". |
 | 10 | Từ chối phê duyệt | Từ chối phê duyệt ở bất kỳ cấp nào: hồ sơ chuyển "Bị trả lại" về cán bộ chủ trì; lưu người trả lại, đơn vị, thời điểm, lý do.<br>- Cán bộ chủ trì trình lại thì luồng phê duyệt bắt đầu lại từ cấp phê duyệt đầu tiên.<br>- Lịch sử xử lý ghi thao tác "Từ chối phê duyệt" để phân biệt với "Từ chối" yêu cầu. |
-| 11 | Phê duyệt và ký số | "Phê duyệt" là quyết định thuần túy của lãnh đạo (ghi kết quả, chuyển trạng thái, ghi lịch sử). Ký số văn bản (nếu có) là bước riêng, không gộp vào thao tác Phê duyệt. |
+| 11 | Phê duyệt là quyết định thuần túy | "Phê duyệt" và "Từ chối phê duyệt" là quyết định thuần túy của lãnh đạo (ghi kết quả, chuyển trạng thái, ghi lịch sử).<br>- Phân hệ Bồi thường nhà nước không sử dụng ký số. Văn bản (nếu có) được xử lý theo hình thức ký duyệt + đính file, không gộp vào thao tác Phê duyệt. |
 | 12 | Kiểm tra đồng thời | Mọi thao tác Phân công, Phê duyệt, Từ chối phê duyệt, Thu hồi đều kiểm tra lại trạng thái hồ sơ và quyền của người dùng tại máy chủ ngay khi xác nhận.<br>- Khi mở popup thao tác mà hồ sơ đã được xử lý: hiển thị "Hồ sơ đã được xử lý bởi người khác. Danh sách đã được tải lại." và tải lại danh sách.<br>- Khi xác nhận Phân công mà không còn hợp lệ: "Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phân công. Vui lòng tải lại danh sách."<br>- Khi xác nhận Phê duyệt, Từ chối phê duyệt mà không còn hợp lệ: "Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phê duyệt. Vui lòng tải lại danh sách."<br>- Khi Thu hồi mà bên nhận đã xử lý: "Không thể thu hồi: bên nhận đã xử lý hồ sơ." |
 | 13 | Lịch sử xử lý | Mỗi thao tác ghi 01 dòng lịch sử gồm Thao tác, Người thực hiện, Thời điểm, Nội dung. Thao tác tại màn hình này: Chuyển đơn vị; Phân công cán bộ; Thu hồi; Phê duyệt; Từ chối phê duyệt; Thu hồi phê duyệt. |
+| 14 | Văn bản dự thảo | Lần trình có Văn bản dự thảo khi cán bộ chủ trì trình "Yêu cầu bổ sung" tại [Popup Yêu cầu bổ sung hồ sơ - Xác định cơ quan giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#433110-popup-yêu-cầu-bổ-sung-hồ-sơ) (nút "Trình Lãnh đạo"). Hồ sơ trình từ trạng thái "Chờ tiếp nhận" hoặc "Bị trả lại" và chuyển "Chờ phê duyệt" theo cùng luồng phê duyệt tại quy tắc 8.<br>- Văn bản dự thảo gồm: Văn bản theo mẫu (Thông báo yêu cầu bổ sung hồ sơ, file "Thong_bao_yeu_cau_bo_sung_[Mã hồ sơ].doc", hệ thống sinh theo thông tin hồ sơ, Nội dung yêu cầu bổ sung và danh sách tài liệu kèm theo) và Văn bản trình Lãnh đạo (bản đã chỉnh sửa do cán bộ đính kèm; không có thì dùng Văn bản theo mẫu).<br>- Lãnh đạo xem chi tiết hồ sơ kèm Văn bản dự thảo tại [MH02 - Popup Xem chi tiết hồ sơ](#vcld-mh02) hoặc [MH04 - Popup Phê duyệt / Từ chối phê duyệt](#vcld-mh04), sau đó thực hiện "Phê duyệt" hoặc "Từ chối phê duyệt". Lãnh đạo không chỉnh sửa Văn bản dự thảo trên màn hình này.<br>- Cấp cuối phê duyệt: hồ sơ chuyển "Yêu cầu bổ sung". Bất kỳ cấp nào từ chối phê duyệt: hồ sơ chuyển "Bị trả lại". |
 
 ---
 
 <a id="vcld-trang-thai"></a>
 #### 4.3.3.29.3. Trạng thái hồ sơ liên quan
 
-\- Luồng chính: Chờ phân công → Đang phân công → Chờ tiếp nhận → Đang thực hiện → Chờ phê duyệt → Bị trả lại / Chờ chuyển CQGQBT / Yêu cầu bổ sung / Bị từ chối. Chi tiết các bước của cán bộ chủ trì (Tiếp nhận, Trình phê duyệt, Chuyển CQGQBT) mô tả tại [Xác định cơ quan giải quyết bồi thường - Xác định cơ quan giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md).
+\- Luồng chính: Chờ phân công → Đang phân công → Chờ tiếp nhận → Đang thực hiện → Chờ phê duyệt → Bị trả lại / Chờ chuyển CQGQBT / Yêu cầu bổ sung / Bị từ chối. Trình "Yêu cầu bổ sung" kèm Văn bản dự thảo được thực hiện ngay từ "Chờ tiếp nhận" hoặc "Bị trả lại" → "Chờ phê duyệt" (quy tắc 14 tại [Quy tắc chung](#vcld-quy-tac-chung)). Chi tiết các bước của cán bộ chủ trì (Tiếp nhận, Yêu cầu bổ sung, Trình phê duyệt, Chuyển CQGQBT) mô tả tại [Xác định cơ quan giải quyết bồi thường - Xác định cơ quan giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md).
 
 | Trạng thái | Ý nghĩa | Hiển thị tại màn hình này |
 | :--- | :--- | :--- |
@@ -74,7 +75,7 @@
 ---
 
 <a id="vcld-mh01"></a>
-#### 4.3.3.29.4. MH01 - Màn hình Việc chờ lãnh đạo xử lý
+#### 4.3.3.29.4. MH01 - Màn hình Hồ sơ trình Lãnh đạo
 
 ##### 4.3.3.29.4.1. Màn hình
 
@@ -88,8 +89,7 @@
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Tiêu đề màn hình | String(255) | - | - | Hiển thị "VIỆC CHỜ LÃNH ĐẠO XỬ LÝ". |
-| Thông tin người dùng | String(500) | - | Theo tài khoản | Dòng dưới tiêu đề: "Đơn vị: [Tên đơn vị] \| Lãnh đạo đơn vị: Có" hoặc "Lãnh đạo đơn vị: Không (không có việc chờ xử lý)" khi người dùng không thuộc Nhóm lãnh đạo của đơn vị mình. |
+| **Thanh tab nghiệp vụ** | Tab | - | `Chờ phân công` | Control UI: Thanh tab đặt trên cùng màn hình, phía trên khối bộ lọc (bố cục như màn Giải quyết yêu cầu bồi thường).<br>- Gồm 03 tab: `Chờ phân công` \| `Chờ duyệt` \| `Đã xử lý`; mỗi tab hiển thị số hồ sơ của tab.<br>- Màn hình không hiển thị dòng thông tin đơn vị/vai trò của người dùng. |
 | **I. Lọc, tìm kiếm thông tin** | - | - | - | Control UI: Khối bộ lọc; các điều kiện kết hợp theo điều kiện AND; áp dụng cho tab đang chọn. |
 | Mã hồ sơ | String(50) | Không | Trống | Control UI: Input text, placeholder "Nhập mã hồ sơ...".<br>- Tìm gần đúng, không phân biệt hoa thường, không phân biệt dấu. |
 | Họ và tên người yêu cầu | String(100) | Không | Trống | Control UI: Input text, placeholder "Nhập họ và tên người yêu cầu...".<br>- Tìm gần đúng, không phân biệt hoa thường, không phân biệt dấu. |
@@ -155,6 +155,7 @@
 | Cán bộ chủ trì | String(255) | - | Theo dữ liệu | "[Họ tên] - [Chức danh]"; chưa phân công: "Chưa phân công". |
 | Cán bộ phối hợp | String(1000) | - | Theo dữ liệu | Danh sách họ tên; không có: "Không có". |
 | **II. Trình phê duyệt** | - | - | - | Chỉ hiển thị khi hồ sơ đã được trình phê duyệt. |
+| Văn bản dự thảo | Object | - | Ẩn | Control UI: Info box "Văn bản dự thảo", hiển thị đầu khối Trình phê duyệt.<br>- Chỉ hiển thị khi lần trình có Văn bản dự thảo (quy tắc 14 tại [Quy tắc chung](#vcld-quy-tac-chung)).<br>- Dòng 1: "Văn bản theo mẫu: [Thong_bao_yeu_cau_bo_sung_[Mã hồ sơ].doc]" kèm liên kết "Xem văn bản dự thảo" và "Tải về (Word)".<br>- Dòng 2: "Văn bản trình Lãnh đạo: [Tên file]" kèm nhãn nguồn: "(Bản đã chỉnh sửa do cán bộ đính kèm)" và liên kết "Xem file" khi cán bộ đã tải lên bản chỉnh sửa; "(Dùng văn bản theo mẫu)" khi không có bản chỉnh sửa. |
 | Nội dung trình | String(1000) | - | Theo dữ liệu | "[Nội dung trình] - [Người trình] - [Thời điểm trình]" và Ý kiến trình. |
 | Bảng cấp phê duyệt | Table | - | Theo dữ liệu | Cột: Cấp; Đơn vị phê duyệt; Nhóm lãnh đạo; Kết quả.<br>- Kết quả: "Phê duyệt - [Người] - [Thời điểm] ([Ý kiến])" / "Từ chối phê duyệt - [Người] - [Thời điểm] ([Lý do])" / "Đang chờ phê duyệt" / "Đang chờ phê duyệt - Đã xem lúc hh:mm dd/mm/yyyy" / "Chưa đến lượt". |
 | **III. Quá trình phân công** | - | - | - | Control UI: Bảng; chưa có lượt chuyển: "Chưa có lượt chuyển.". |
@@ -172,8 +173,11 @@
 | 2 | Mở hồ sơ trong phân hệ | Nút | - Hiển thị khi hồ sơ Loại yêu cầu "Xác định cơ quan giải quyết bồi thường" không ở "Chờ phân công", "Đang phân công".<br>- Mở chi tiết hồ sơ tại [Xác định cơ quan giải quyết bồi thường - Xác định cơ quan giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md) ở chế độ chỉ xem. |
 | 3 | Phân công | Nút | - Hiển thị khi người dùng được phân công hồ sơ (quy tắc 3 tại [Quy tắc chung](#vcld-quy-tac-chung)).<br>- Đóng popup, mở [MH03 - Popup Phân công xử lý hồ sơ](#vcld-mh03). |
 | 4 | Từ chối | Nút | - Hiển thị khi người dùng được phê duyệt cấp hiện tại.<br>- Đóng popup, mở [MH04 - Popup Phê duyệt / Từ chối phê duyệt](#vcld-mh04) ở chế độ Từ chối phê duyệt. |
-| 5 | Phê duyệt | Nút | - Hiển thị khi người dùng được phê duyệt cấp hiện tại.<br>- Đóng popup, mở [MH04 - Popup Phê duyệt / Từ chối phê duyệt](#vcld-mh04) ở chế độ Phê duyệt. |
+| 5 | Phê duyệt | Nút | - Hiển thị khi người dùng được phê duyệt cấp hiện tại.<br>- Đóng popup, mở [MH04 - Popup Phê duyệt / Từ chối phê duyệt](#vcld-mh04) ở chế độ Phê duyệt.<br>- Lãnh đạo xem chi tiết hồ sơ kèm Văn bản dự thảo (nếu có) rồi chọn "Phê duyệt" hoặc "Từ chối". Đây là quyết định thuần túy, không ký số. |
 | 6 | Thu hồi | Nút | - Hiển thị khi hồ sơ thỏa điều kiện thu hồi đối với người dùng.<br>- Đóng popup, mở [MH05 - Popup Xác nhận thu hồi](#vcld-mh05). |
+| 7 | Xem văn bản dự thảo | Liên kết | - Hiển thị trong khối Văn bản dự thảo.<br>- Hệ thống sinh Văn bản theo mẫu "Thông báo yêu cầu bổ sung hồ sơ" từ thông tin hồ sơ, Ý kiến trình (Nội dung yêu cầu bổ sung) và danh sách tài liệu kèm theo đã lưu của hồ sơ; mở popup "Xem văn bản dự thảo - Thong_bao_yeu_cau_bo_sung_[Mã hồ sơ].doc" hiển thị toàn văn văn bản.<br>- Popup xem có nút "Tải về (Word)" (xử lý như chức năng Tải về (Word)) và "Đóng" / Đóng (x) (đóng popup xem, giữ nguyên popup chi tiết). |
+| 8 | Tải về (Word) | Liên kết | - Hiển thị trong khối Văn bản dự thảo.<br>- Tải về máy file "Thong_bao_yeu_cau_bo_sung_[Mã hồ sơ].doc" (định dạng Word) của Văn bản theo mẫu. |
+| 9 | Xem file | Liên kết | - Chỉ hiển thị khi cán bộ đã tải lên bản chỉnh sửa.<br>- Mở xem file Văn bản trình Lãnh đạo (bản đã chỉnh sửa). |
 
 ---
 
@@ -221,6 +225,7 @@
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề popup | String(255) | - | Theo chế độ | Phê duyệt: "Phê duyệt hồ sơ [Mã hồ sơ]".<br>- Từ chối: "Từ chối phê duyệt hồ sơ [Mã hồ sơ]". |
+| Văn bản dự thảo | Object | - | Ẩn | Control UI: Info box "Văn bản dự thảo", hiển thị trên cùng phần thông tin của popup, ở cả chế độ Phê duyệt và Từ chối.<br>- Chỉ hiển thị khi lần trình có Văn bản dự thảo (quy tắc 14 tại [Quy tắc chung](#vcld-quy-tac-chung)).<br>- Nội dung và liên kết giống trường Văn bản dự thảo tại [MH02 - Popup Xem chi tiết hồ sơ](#vcld-mh02): "Văn bản theo mẫu: [Tên file]" kèm "Xem văn bản dự thảo", "Tải về (Word)"; "Văn bản trình Lãnh đạo: [Tên file]" kèm nhãn nguồn và "Xem file" (khi có bản đã chỉnh sửa).<br>- Lãnh đạo xem Văn bản dự thảo trước khi xác nhận; thao tác Phê duyệt / Từ chối phê duyệt không thay đổi Văn bản dự thảo. |
 | Nội dung trình | String(1000) | - | Theo hồ sơ | Chỉ đọc: "[Nội dung trình] - [Cán bộ chủ trì]" và Ý kiến trình. |
 | Cấp phê duyệt | String(255) | - | Theo hồ sơ | Chỉ đọc: "[n]/[tổng số cấp] - [Đơn vị phê duyệt cấp hiện tại]". |
 | Hướng dẫn kết quả | String(500) | - | Theo chế độ | Phê duyệt, chưa phải cấp cuối: "Sau khi phê duyệt, hồ sơ chuyển [Đơn vị cấp tiếp theo] phê duyệt."<br>- Phê duyệt, cấp cuối: "Cấp phê duyệt cuối cùng. Sau khi phê duyệt, hồ sơ chuyển [Trạng thái theo Nội dung trình]."<br>- Từ chối: "Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị trả lại] cho cán bộ chủ trì." |
@@ -231,9 +236,10 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :-- | :--- | :--- | :--- |
-| 1 | Phê duyệt | Nút (chế độ Phê duyệt) | - TH1 (Hồ sơ không còn chờ cấp này phê duyệt hoặc người dùng không còn thuộc Nhóm lãnh đạo): "Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phê duyệt. Vui lòng tải lại danh sách."<br>- TH2 (Chưa phải cấp cuối): ghi kết quả "Phê duyệt" của cấp hiện tại; hồ sơ giữ "Chờ phê duyệt", chuyển cấp tiếp theo; ghi lịch sử "Phê duyệt" với nội dung "Phê duyệt cấp [Đơn vị]; chuyển [Đơn vị cấp tiếp theo]. Ý kiến: [Nội dung]"; hiển thị "Hồ sơ [Mã hồ sơ]: [Chờ phê duyệt] - chuyển [Đơn vị cấp tiếp theo]."<br>- TH3 (Cấp cuối): hồ sơ chuyển trạng thái theo Nội dung trình (Hoàn thành xác định → "Chờ chuyển CQGQBT"; Yêu cầu bổ sung → "Yêu cầu bổ sung"; Từ chối → "Bị từ chối"); ghi lịch sử "Phê duyệt" với nội dung "Phê duyệt cấp cuối ([Đơn vị]): [Nội dung trình]. Hồ sơ chuyển [Trạng thái]."; hiển thị "Hồ sơ [Mã hồ sơ]: [Trạng thái]."<br>- Thao tác không ký số; ký số văn bản (nếu có) thực hiện ở bước riêng.<br>- Sau khi xử lý: đóng popup, tải lại danh sách. |
-| 2 | Từ chối phê duyệt | Nút (chế độ Từ chối) | - TH1 (Bỏ trống Lý do từ chối phê duyệt): hiển thị "Đây là trường bắt buộc" dưới trường, không lưu.<br>- TH2 (Hồ sơ không còn hợp lệ): "Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phê duyệt. Vui lòng tải lại danh sách."<br>- TH Hợp lệ: ghi kết quả "Từ chối phê duyệt" của cấp hiện tại; hồ sơ chuyển "Bị trả lại" về cán bộ chủ trì, lưu người trả lại, đơn vị, thời điểm, lý do; ghi lịch sử "Từ chối phê duyệt" với nội dung "Trả lại cán bộ chủ trì. Lý do: [Lý do]"; đóng popup, tải lại danh sách, hiển thị "Hồ sơ [Mã hồ sơ]: [Bị trả lại]." |
+| 1 | Phê duyệt | Nút (chế độ Phê duyệt) | - TH1 (Hồ sơ không còn chờ cấp này phê duyệt hoặc người dùng không còn thuộc Nhóm lãnh đạo): "Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phê duyệt. Vui lòng tải lại danh sách."<br>- TH2 (Chưa phải cấp cuối): ghi kết quả "Phê duyệt" của cấp hiện tại; hồ sơ giữ "Chờ phê duyệt", chuyển cấp tiếp theo; ghi lịch sử "Phê duyệt" với nội dung "Phê duyệt cấp [Đơn vị]; chuyển [Đơn vị cấp tiếp theo]. Ý kiến: [Nội dung]"; hiển thị "Hồ sơ [Mã hồ sơ]: [Chờ phê duyệt] - chuyển [Đơn vị cấp tiếp theo]."<br>- TH3 (Cấp cuối): hồ sơ chuyển trạng thái theo Nội dung trình (Hoàn thành xác định → "Chờ chuyển CQGQBT"; Yêu cầu bổ sung → "Yêu cầu bổ sung"; Từ chối → "Bị từ chối"); ghi lịch sử "Phê duyệt" với nội dung "Phê duyệt cấp cuối ([Đơn vị]): [Nội dung trình]. Hồ sơ chuyển [Trạng thái]."; hiển thị "Hồ sơ [Mã hồ sơ]: [Trạng thái]."<br>- Phê duyệt là quyết định thuần túy, không ký số (quy tắc 11 tại [Quy tắc chung](#vcld-quy-tac-chung)).<br>- Sau khi xử lý: đóng popup, tải lại danh sách. |
+| 2 | Từ chối phê duyệt | Nút (chế độ Từ chối) | - TH1 (Bỏ trống Lý do từ chối phê duyệt): hiển thị "Đây là trường bắt buộc" dưới trường, không lưu.<br>- TH2 (Hồ sơ không còn hợp lệ): "Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phê duyệt. Vui lòng tải lại danh sách."<br>- TH Hợp lệ: ghi kết quả "Từ chối phê duyệt" của cấp hiện tại; hồ sơ chuyển "Bị trả lại" về cán bộ chủ trì, lưu người trả lại, đơn vị, thời điểm, lý do; ghi lịch sử "Từ chối phê duyệt" với nội dung "Trả lại cán bộ chủ trì. Lý do: [Lý do]"; đóng popup, tải lại danh sách, hiển thị "Hồ sơ [Mã hồ sơ]: [Bị trả lại]."<br>- Từ chối phê duyệt là quyết định thuần túy, không ký số. |
 | 3 | Hủy bỏ / Đóng (x) | Nút / Icon | - Đóng popup, không lưu. |
+| 4 | Xem văn bản dự thảo / Tải về (Word) / Xem file | Liên kết | - Hiển thị trong khối Văn bản dự thảo (khi lần trình có Văn bản dự thảo).<br>- Xử lý như chức năng cùng tên tại [MH02 - Popup Xem chi tiết hồ sơ](#vcld-mh02); popup xem văn bản dự thảo mở chồng lên popup Phê duyệt / Từ chối phê duyệt, đóng popup xem thì giữ nguyên dữ liệu đang nhập. |
 
 ---
 

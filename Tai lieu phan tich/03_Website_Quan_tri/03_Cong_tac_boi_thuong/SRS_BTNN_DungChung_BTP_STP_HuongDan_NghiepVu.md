@@ -10,7 +10,7 @@
 
 *a. Phân quyền*:
 
-\- Cán bộ xử lý: Được tra cứu, thêm mới, cập nhật, lưu nháp, hoàn thành xử lý và đính kèm tài liệu.
+\- Cán bộ xử lý: Được tra cứu, thêm mới, cập nhật, hoàn thành xử lý và đính kèm tài liệu.
 
 *b. Điều kiện thực hiện*:
 
@@ -25,9 +25,9 @@ flowchart TD
     A[Danh sách hướng dẫn/giải đáp] --> B[Tìm kiếm / Xóa bộ lọc / Kết xuất Excel]
     A --> C[Thêm mới]
     C --> D[Nhập thông tin yêu cầu và tài liệu]
-    D --> E[Lưu nháp]
     D --> F[Lưu thông tin xử lý]
-    F --> G[Hoàn thành]
+    F --> E[Đang xử lý]
+    E --> G[Hoàn thành]
     A --> J[Click dòng xem chi tiết]
 ```
 
@@ -46,7 +46,7 @@ flowchart TD
 | Cơ quan/cá nhân đề nghị | String(255) | Không | Trống | Tìm gần đúng theo tên cơ quan, tổ chức, cá nhân đề nghị. |
 | Loại nội dung | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Hướng dẫn nghiệp vụ<br>+ Giải đáp vướng mắc |
 | Hình thức thực hiện | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Văn bản<br>+ Trực tiếp<br>+ Cổng thông tin điện tử<br>+ Hòm thư điện tử<br>+ Họp liên ngành |
-| Trạng thái | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Lưu nháp<br>+ Đang xử lý<br>+ Hoàn thành |
+| Trạng thái | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Đang xử lý<br>+ Hoàn thành |
 | Từ ngày | Date | Không | Trống | Ngày tiếp nhận từ, áp dụng [BR-VAL-007]. |
 | Đến ngày | Date | Không | Trống | Ngày tiếp nhận đến, áp dụng [BR-VAL-007]. |
 | Thêm mới | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
@@ -77,7 +77,7 @@ flowchart TD
 | 3 | Xóa bộ lọc | Button | Hệ thống xóa các tiêu chí lọc, đưa về giá trị mặc định và tải lại danh sách. |
 | 4 | Kết xuất Excel | Button | Kết xuất danh sách theo kết quả tìm kiếm hiện hành, áp dụng [BR-EXP-040]. |
 | 5 | Click dòng dữ liệu | Row click | Mở **MH02 - Thêm mới/Cập nhật hướng dẫn nghiệp vụ, giải đáp vướng mắc** ở chế độ xem chi tiết. |
-| 6 | Sửa | Icon/Button | Mở **MH02 - Thêm mới/Cập nhật hướng dẫn nghiệp vụ, giải đáp vướng mắc** ở chế độ cập nhật khi người dùng có quyền và hồ sơ ở trạng thái cho phép sửa. |
+| 6 | Sửa | Icon/Button | Mở **MH02 - Thêm mới/Cập nhật hướng dẫn nghiệp vụ, giải đáp vướng mắc** ở chế độ cập nhật khi người dùng có quyền và hồ sơ ở trạng thái "Đang xử lý". Hồ sơ ở trạng thái "Hoàn thành" không cho phép sửa (icon hiển thị mờ). |
 
 ##### 4.3.3.7.4. MH02 - Màn hình Thêm mới/Cập nhật hướng dẫn nghiệp vụ, giải đáp vướng mắc
 
@@ -105,7 +105,6 @@ flowchart TD
 | Tài liệu liên quan | File/List(File) | Không | Trống | Cho phép nhập tên tài liệu và đính kèm nhiều file; hỗ trợ `Xem file`, `Xóa`. |
 | Lịch sử xử lý | String(255) | Không | Theo dữ liệu | Hiển thị thời gian, người thực hiện, thao tác, nội dung xử lý. |
 | Hủy bỏ | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
-| Lưu nháp | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
 | Lưu thông tin xử lý | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
 | Hoàn thành | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
 
@@ -114,10 +113,9 @@ flowchart TD
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Hủy bỏ | Button | Đóng màn hình và quay lại danh sách, không tự động lưu dữ liệu đang nhập. |
-| 2 | Lưu nháp | Button | TH1 (Dữ liệu không hợp lệ): Vi phạm [BR-VAL-001], [BR-VAL-007] hoặc [BR-FILE-010], hệ thống hiển thị lỗi inline và không cho lưu. |
-|  |  |  | TH Hợp lệ: Hệ thống lưu hồ sơ ở trạng thái "Lưu nháp", ghi lịch sử xử lý. |
-| 3 | Lưu thông tin xử lý | Button | TH1 (Bỏ trống trường bắt buộc khi lưu xử lý): Vi phạm [BR-VAL-001], hệ thống hiển thị lỗi inline và không cho lưu. |
-|  |  |  | TH Hợp lệ: Hệ thống lưu thông tin hướng dẫn/giải đáp, chuyển hồ sơ sang trạng thái "Đang xử lý" nếu chưa hoàn thành và ghi lịch sử xử lý. |
-| 4 | Hoàn thành | Button | TH1 (Chưa nhập `Nội dung hướng dẫn/giải đáp` hoặc `Căn cứ pháp luật`): Vi phạm [BR-VAL-001], hệ thống hiển thị lỗi inline và không cho hoàn thành. |
+| 2 | Lưu thông tin xử lý | Button | TH1 (Bỏ trống trường bắt buộc khi lưu xử lý): Vi phạm [BR-VAL-001], hệ thống hiển thị lỗi inline và không cho lưu. |
+|  |  |  | TH2 (Dữ liệu không hợp lệ): Vi phạm [BR-VAL-007] hoặc [BR-FILE-010], hệ thống hiển thị lỗi inline và không cho lưu. |
+|  |  |  | TH Hợp lệ: Hệ thống lưu thông tin hướng dẫn/giải đáp và ghi lịch sử xử lý. Hồ sơ thêm mới được lưu trực tiếp ở trạng thái "Đang xử lý"; hồ sơ đang cập nhật giữ nguyên trạng thái hiện hành. Hệ thống không có bước lưu tạm hồ sơ trước khi xử lý. |
+| 3 | Hoàn thành | Button | TH1 (Chưa nhập `Nội dung hướng dẫn/giải đáp` hoặc `Căn cứ pháp luật`): Vi phạm [BR-VAL-001], hệ thống hiển thị lỗi inline và không cho hoàn thành. |
 |  |  |  | TH Hợp lệ: Hệ thống chuyển hồ sơ sang trạng thái "Hoàn thành" và ghi lịch sử xử lý. |
-| 5 | Xem file | Link | Cho phép xem file tại một tab riêng. |
+| 4 | Xem file | Link | Cho phép xem file tại một tab riêng. |

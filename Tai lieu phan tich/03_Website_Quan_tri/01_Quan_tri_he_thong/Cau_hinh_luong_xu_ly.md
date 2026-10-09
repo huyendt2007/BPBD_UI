@@ -6,7 +6,7 @@ Cho phép Quản trị hệ thống cấu hình luồng phân công - phê duy�
 - Cấu hình hướng xử lý của từng đơn vị: chuyển đơn vị cấp dưới trực tiếp và/hoặc phân công cán bộ.
 - Xem trước các nhánh luồng phân công suy ra từ cấu hình.
 
-Cấu hình được dùng tại [Việc chờ lãnh đạo xử lý - Việc chờ lãnh đạo xử lý - Bồi thường nhà nước (Website Quản trị)](../03_Cong_tac_boi_thuong/SRS_BTNN_ViecChoLanhDaoXuLy.md) và khi Chuyển CQGQBT tại phân hệ Xác định cơ quan giải quyết bồi thường. Cấu hình áp dụng chung cho cả 02 Loại yêu cầu "Xác định cơ quan giải quyết bồi thường" và "Yêu cầu bồi thường".
+Cấu hình được dùng tại [Hồ sơ trình Lãnh đạo - Hồ sơ trình Lãnh đạo - Bồi thường nhà nước (Website Quản trị)](../03_Cong_tac_boi_thuong/SRS_BTNN_ViecChoLanhDaoXuLy.md) và khi Chuyển CQGQBT tại phân hệ Xác định cơ quan giải quyết bồi thường. Cấu hình áp dụng chung cho cả 02 Loại yêu cầu "Xác định cơ quan giải quyết bồi thường" và "Yêu cầu bồi thường".
 
 *a. Phân quyền*
 - Quản trị hệ thống (QTHT).

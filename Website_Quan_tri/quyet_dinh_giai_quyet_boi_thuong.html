@@ -1154,7 +1154,6 @@
                     <span class="form-label">Trạng thái quyết định</span>
                     <select class="form-control" id="searchDecStatus">
                         <option value="">Tất cả</option>
-                        <option value="Lưu nháp">Lưu nháp</option>
                         <option value="Chờ ký">Chờ ký</option>
                         <option value="Bị từ chối">Bị từ chối</option>
                         <option value="Đã ban hành">Đã ban hành</option>
@@ -1952,8 +1951,6 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
             style="display:flex;justify-content:flex-end;gap:8px;border-top:1px solid var(--border-color);padding:16px 20px;">
             <button class="btn btn-secondary" id="adjustPreviewBtn" onclick="previewAdjustmentDecisionDocument()"><i
                     class="fa-solid fa-file-pdf"></i> Xem trước Quyết định</button>
-            <button class="btn btn-secondary" onclick="saveAdjustmentDraft()"><i class="fa-solid fa-floppy-disk"></i>
-                Lưu nháp</button>
             <button class="btn btn-primary" id="adjustSubmitBtn" onclick="submitAdjustmentDecision()"><i
                     class="fa-solid fa-paper-plane"></i> Trình ký</button>
             <button class="btn btn-primary" id="adjustIssueBtn" style="display:none;"
@@ -2024,7 +2021,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                                 <div style="font-size:11px; color:var(--text-muted); font-style:italic; margin-top:4px;">
                                     Chỉ tra cứu các vụ việc ở trạng thái Chờ ban hành QĐ.</div>
                             </div>
-                            <!-- Mã vụ việc dạng HyperLink khi không còn ở trạng thái tạo mới/Lưu nháp -->
+                            <!-- Mã vụ việc dạng HyperLink khi không ở chế độ tạo mới -->
                             <div class="dtl-item" id="decFormClaimCodeReadonly" style="display:none; margin-bottom:14px;">
                                 <span class="dtl-label">Mã vụ việc</span>
                                 <span class="dtl-value"><a id="decFormClaimCodeLink"
@@ -2707,7 +2704,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                 advAmount: 10000000,
                 phdd: false,
                 files: [],
-                status: "Lưu nháp",
+                status: "Chờ ký",
                 rejectReason: ""
             },
             {
@@ -2866,7 +2863,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                 advAmount: 200000000,
                 phdd: false,
                 files: [{ name: "Du_thao_huy_quyet_dinh_08_BTNN.docx", url: "#" }],
-                status: "Lưu nháp",
+                status: "Chờ ký",
                 rejectReason: "",
                 cancelReason: "Phát hiện căn cứ xác định thiệt hại chưa phù hợp với hồ sơ chứng minh bổ sung."
             },
@@ -3094,7 +3091,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
             }
         ];
 
-        // Generate additional mock data (15 pending, 3 drafts)
+        // Generate additional mock data (20 bản ghi Chờ ký)
         const pendingRequesterNames = ['Nguyễn Văn An', 'Trần Thị Bình', 'Lê Văn Cường', 'Phạm Thị Dung', 'Hoàng Văn Đức', 'Vũ Thị Hà', 'Đặng Văn Hùng', 'Bùi Thị Lan', 'Đỗ Văn Long', 'Ngô Thị Mai', 'Dương Văn Nam', 'Lý Thị Oanh', 'Phan Văn Phúc', 'Trịnh Thị Quỳnh', 'Mai Văn Sơn'];
         for (let i = 1; i <= 15; i++) {
             decisionsList.push({
@@ -3123,7 +3120,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
         
         for (let j = 1; j <= 5; j++) {
             decisionsList.push({
-                id: "D_draft_" + j,
+                id: "D_wait_" + j,
                 decNo: "Chưa cấp số",
                 agency: "Tòa án nhân dân TP. Hà Nội",
                 approver: "Lê Hoàng Quân (Phó giám đốc)",
@@ -3141,7 +3138,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                 advAmount: 0,
                 phdd: true,
                 files: [],
-                status: "Lưu nháp",
+                status: "Chờ ký",
                 rejectReason: ""
             });
         }
@@ -3496,7 +3493,6 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                 // Vai trò Lãnh đạo: CHỈ có Ký số và Từ chối.
                 // Vai trò Cán bộ: tất cả thao tác TRỪ Ký số và Từ chối.
                 // Mỗi thao tác chỉ hiển thị khi thỏa điều kiện trạng thái, không hiển thị nút khóa mờ.
-                const isDraft = item.status === 'Lưu nháp';
                 const isPending = item.status === 'Chờ ký';
                 const isRejected = item.status === 'Bị từ chối';
                 const isSigned = item.status === 'Đã ký' || item.status === 'Đã ban hành';
@@ -3525,8 +3521,8 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                         ? 'Quyết định đã hủy không thể thao tác'
                         : 'Chỉ áp dụng cho Quyết định giải quyết bồi thường đã ban hành, vụ việc chưa tất toán kinh phí';
                     actionHtml =
-                        slotBtn('edit', 'fa-pen-to-square', 'Cập nhật quyết định', isDraft || isRejected, `editDecision('${item.id}')`, 'Chỉ áp dụng cho quyết định Lưu nháp hoặc Bị từ chối')
-                        + slotBtn('delete', 'fa-trash-can', 'Xóa quyết định', isDraft, `deleteDecision('${item.id}')`, 'Chỉ áp dụng cho quyết định Lưu nháp')
+                        slotBtn('edit', 'fa-pen-to-square', 'Cập nhật quyết định', isRejected, `editDecision('${item.id}')`, 'Chỉ áp dụng cho quyết định Bị từ chối')
+                        + slotBtn('delete', 'fa-trash-can', 'Xóa quyết định', isRejected, `deleteDecision('${item.id}')`, 'Chỉ áp dụng cho quyết định Bị từ chối')
                         + slotBtn('accept', 'fa-file-pen', 'Sửa chữa, bổ sung', canAdjust, `openAdjustmentDecisionForm('${item.id}', 'amend')`, adjustReason)
                         + slotBtn('reject', 'fa-file-circle-xmark', 'Hủy quyết định', canAdjust, `openAdjustmentDecisionForm('${item.id}', 'cancel')`, adjustReason);
                 }
@@ -3824,7 +3820,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
             if (selEl) selEl.style.display = 'none';
         }
 
-        // Mã vụ việc dạng HyperLink khi Quyết định không còn ở trạng thái tạo mới/Lưu nháp
+        // Mã vụ việc: ô nhập + Tìm kiếm khi tạo mới; dạng HyperLink khi cập nhật Quyết định đã lập (Bị từ chối)
         function setDecFormClaimCodeMode(editable, code) {
             const block = document.getElementById('autofillClaimBlock');
             const readonlyWrap = document.getElementById('decFormClaimCodeReadonly');
@@ -4360,7 +4356,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                 originDecisionDate: item.date,
                 ycbtCode: item.ycbtCode,
                 nyc: item.ycbtNyc || '',
-                status: signMode === 'Ký bên ngoài' ? 'Đã ban hành' : 'Lưu nháp',
+                status: signMode === 'Ký bên ngoài' ? 'Đã ban hành' : 'Chờ ký',
                 amendChanges: isCancel ? [] : collectAmendChanges()
             };
         }
@@ -4397,13 +4393,13 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                 ? 'Quyết định hủy quyết định giải quyết bồi thường'
                 : 'Quyết định sửa chữa, bổ sung quyết định giải quyết bồi thường';
             const nextNo = decisionsList.filter(item => (item.decisionType || '') === typeText).length + 31;
-            const signedExternally = signMode === 'Ký bên ngoài' && status !== 'Lưu nháp';
+            const signedExternally = signMode === 'Ký bên ngoài';
             const decNo = signedExternally
                 ? (document.getElementById('adjustDecisionNo').value.trim() || `${nextNo}${getAdjustmentDecisionNumberSuffix(currentAdjustmentMode)}`)
-                : (status === 'Lưu nháp' || status === 'Chờ ký' ? 'Chưa cấp số' : `${nextNo}${getAdjustmentDecisionNumberSuffix(currentAdjustmentMode)}`);
+                : (status === 'Chờ ký' ? 'Chưa cấp số' : `${nextNo}${getAdjustmentDecisionNumberSuffix(currentAdjustmentMode)}`);
             const decDate = signedExternally
                 ? (document.getElementById('adjustDecisionDate').value.trim() || `${d}/${m}/${y}`)
-                : (status === 'Lưu nháp' || status === 'Chờ ký' ? 'Chưa ban hành' : `${d}/${m}/${y}`);
+                : (status === 'Chờ ký' ? 'Chưa ban hành' : `${d}/${m}/${y}`);
             const reason = isCancel
                 ? (document.getElementById('adjustCancelReason').value.trim() || 'Hủy quyết định gốc để xử lý lại theo căn cứ hồ sơ bổ sung.')
                 : (document.getElementById('adjustAmendContent').value.trim() || 'Sửa chữa, bổ sung nội dung quyết định gốc theo kết quả rà soát.');
@@ -4432,8 +4428,8 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                 originDecisionNo: origin.decNo,
                 originDecisionId: origin.id,
                 excerpt: isCancel
-                    ? `${status === 'Lưu nháp' ? 'Dự thảo ' : ''}Quyết định hủy Quyết định giải quyết bồi thường số ${origin.decNo} theo Mẫu 11/BTNN.`
-                    : `${status === 'Lưu nháp' ? 'Dự thảo ' : ''}Quyết định sửa chữa, bổ sung Quyết định giải quyết bồi thường số ${origin.decNo} theo Mẫu 12/BTNN.`,
+                    ? `Quyết định hủy Quyết định giải quyết bồi thường số ${origin.decNo} theo Mẫu 11/BTNN.`
+                    : `Quyết định sửa chữa, bổ sung Quyết định giải quyết bồi thường số ${origin.decNo} theo Mẫu 12/BTNN.`,
                 ycbtCode: origin.ycbtCode,
                 ycbtNyc: origin.ycbtNyc,
                 ycbtAmount: origin.ycbtAmount,
@@ -4465,7 +4461,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                 historyLogs: [{
                     time: `${d}/${m}/${y} ${String(today.getHours()).padStart(2, '0')}:${String(today.getMinutes()).padStart(2, '0')}`,
                     actor: 'Lê Thị Chuyên Viên',
-                    action: status === 'Lưu nháp' ? 'Lưu nháp' : (status === 'Chờ ký' ? 'Trình ký' : 'Ban hành QĐ (ký bên ngoài)'),
+                    action: status === 'Chờ ký' ? 'Trình ký' : 'Ban hành QĐ (ký bên ngoài)',
                     content: isCancel ? 'Tạo quyết định hủy quyết định giải quyết bồi thường.' : 'Tạo quyết định sửa chữa, bổ sung quyết định giải quyết bồi thường.'
                 }]
             };
@@ -4538,17 +4534,6 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                 showToast('Vui lòng nhập đầy đủ các trường bắt buộc trước khi tiếp tục.', 'error');
             }
             return isValid;
-        }
-
-        function saveAdjustmentDraft() {
-            if (!validateAdjustmentBeforeSubmit(false)) return;
-            const draft = buildAdjustmentDecision('Lưu nháp');
-            if (!draft) return;
-            decisionsList.unshift(draft);
-            showToast(currentAdjustmentMode === 'cancel' ? 'Đã lưu nháp dự thảo Quyết định hủy quyết định!' : 'Đã lưu nháp dự thảo Quyết định sửa chữa, bổ sung!', 'success');
-            closeAdjustmentDecisionForm();
-            currentDecPage = 1;
-            renderDecTable();
         }
 
         // [MSG-CFM-BTNN-QD-004] Cảnh báo xác nhận trước khi Trình ký / Ban hành Quyết định hủy
@@ -4760,7 +4745,6 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
             footer.style.display = 'flex';
             footer.innerHTML = `
                 <button class="btn btn-primary" id="btnPreviewDecision" onclick="previewDecisionDocument()" style="background-color:#0284c7; border-color:#0284c7;"><i class="fa-solid fa-file-magnifying-glass"></i> Xem Trước Quyết định</button>
-                <button class="btn btn-secondary" onclick="saveDecision('Lưu nháp')" style="background-color:#f1f5f9; border-color:#cbd5e1;"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>
                 <button class="btn btn-success" id="btnSubmitDecision" onclick="saveDecision('Chờ ký')"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>
                 <button class="btn btn-success" id="btnIssueDecision" style="display:none;" onclick="saveDecision('Đã ban hành')"><i class="fa-solid fa-circle-check"></i> Ban hành QĐ</button>
                 <button class="btn btn-secondary" onclick="closeCreateDecForm()"><i class="fa-solid fa-arrow-left-long"></i> Hủy bỏ</button>
@@ -5212,7 +5196,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                         });
                     }
                 }
-                showToast(finalStatus === 'Chờ ký' ? `Đã trình ký quyết định bồi thường lên lãnh đạo!` : (finalStatus === 'Đã ban hành' ? `Đã xác nhận quyết định ký bên ngoài!` : `Đã cập nhật dự thảo quyết định bồi thường!`), "success");
+                showToast(finalStatus === 'Đã ban hành' ? `Đã xác nhận quyết định ký bên ngoài!` : `Đã trình ký quyết định bồi thường lên lãnh đạo!`, "success");
             } else {
                 // Insert
                 decisionsList.unshift({
@@ -5251,13 +5235,13 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                         content: `Ghi nhận quyết định ký bên ngoài số ${savedNo} theo ${documentBook}`
                     }] : [])
                 });
-                showToast(finalStatus === 'Chờ ký' ? `Tạo mới và trình ký quyết định bồi thường thành công!` : (finalStatus === 'Đã ban hành' ? `Tạo mới và xác nhận quyết định ký bên ngoài thành công!` : `Lưu nháp quyết định bồi thường thành công!`), "success");
+                showToast(finalStatus === 'Đã ban hành' ? `Tạo mới và xác nhận quyết định ký bên ngoài thành công!` : `Tạo mới và trình ký quyết định bồi thường thành công!`, "success");
             }
 
             closeCreateDecForm();
         }
 
-        // Edit draft/rejected decisions
+        // Edit rejected decisions
         // Hiển thị khối Lý do bị từ chối ở đầu form MH02 (SRS 4.3.3.3.4.2)
         function renderDecFormRejectBlock(item) {
             const block = document.getElementById('decFormRejectBlock');
@@ -5290,7 +5274,8 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
             document.getElementById('formDecTitle').innerHTML = isRejected
                 ? `<i class="fa-solid fa-pen-to-square"></i> CẬP NHẬT QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG: ${item.decNo}`
                 : `<i class="fa-solid fa-pen-to-square"></i> CẬP NHẬT QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG: ${item.decNo}`;
-            setDecFormClaimCodeMode(item.status === 'Lưu nháp', item.ycbtCode);
+            // Quyết định đã lập (Bị từ chối): Mã vụ việc hiển thị dạng HyperLink, không cho đổi vụ việc
+            setDecFormClaimCodeMode(false, item.ycbtCode);
 
             // Khối Lý do bị từ chối: chỉ hiển thị với quyết định ở trạng thái Bị từ chối
             renderDecFormRejectBlock(item);
@@ -5298,7 +5283,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
             populateFormInputs(item);
         }
 
-        // Delete draft decisions
+        // Delete rejected decisions (dự thảo bị Lãnh đạo từ chối, chưa cấp số)
         function deleteDecision(id) {
             const index = decisionsList.findIndex(d => d.id === id);
             if (index !== -1) {
@@ -5340,7 +5325,6 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
             // ===== Badge trạng thái quyết định =====
             const statusBadge = document.getElementById('detailStatusBadge');
             const statusIconMap = {
-                'Lưu nháp': ['fa-floppy-disk', 'badge-draft'],
                 'Chờ ký': ['fa-clock', 'badge-pending'],
                 'Bị từ chối': ['fa-circle-xmark', 'badge-danger'],
                 'Đã ban hành': ['fa-check-circle', 'badge-approved'],
@@ -5515,7 +5499,6 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
             // ===== Thanh thao tác - đúng điều kiện hiển thị theo SRS =====
             // Vai trò Lãnh đạo: chỉ Ký số / Từ chối. Vai trò Cán bộ: Cập nhật / Xóa / Hủy quyết định / Sửa chữa, bổ sung.
             const footer = document.getElementById('detailDecFooter');
-            const dIsDraft = item.status === 'Lưu nháp';
             const dIsPending = item.status === 'Chờ ký';
             const dIsRejected = item.status === 'Bị từ chối';
             const dIsOriginType = detailType === 'Quyết định giải quyết bồi thường';
@@ -5534,10 +5517,8 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                     footerHtml += `<button class="btn btn-success" onclick="openSignDecisionModal('${item.id}')"><i class="fa-solid fa-file-signature"></i> Ký số</button>`;
                 }
             } else {
-                if (dIsDraft || dIsRejected) {
+                if (dIsRejected) {
                     footerHtml += `<button class="btn btn-primary" onclick="editDecision('${item.id}')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>`;
-                }
-                if (dIsDraft) {
                     footerHtml += `<button class="btn btn-danger" onclick="deleteDecisionFromDetail('${item.id}')"><i class="fa-solid fa-trash-can"></i> Xóa</button>`;
                 }
                 if (dCanAdjust) {
@@ -5616,10 +5597,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
             const officer = item.officerName || 'Lê Thị Chuyên Viên';
             const leader = item.approver || item.signer || 'Lãnh đạo cơ quan';
             const baseDate = (item.date && item.date !== 'Chưa ban hành') ? item.date : '01/07/2026';
-            const logs = [{ time: baseDate + ' 08:30', actor: officer, content: 'Lập dự thảo Quyết định và lưu nháp.' }];
-            if (item.status !== 'Lưu nháp') {
-                logs.push({ time: baseDate + ' 09:15', actor: officer, content: 'Trình ký dự thảo Quyết định lên Lãnh đạo.' });
-            }
+            const logs = [{ time: baseDate + ' 09:15', actor: officer, content: 'Lập dự thảo Quyết định và trình ký lên Lãnh đạo.' }];
             if (item.status === 'Bị từ chối') {
                 logs.push({
                     time: baseDate + ' 10:05', actor: leader,
@@ -6083,7 +6061,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
 
             const restoreBenefits = document.getElementById('decFormRestoreBenefits') ? document.getElementById('decFormRestoreBenefits').value.trim() : "";
 
-            let paperStatus = "Lưu nháp";
+            let paperStatus = "Chờ ký";
             if (typeof selectedDecId !== 'undefined' && selectedDecId) {
                 const item = decisionsList.find(d => d.id === selectedDecId);
                 if (item) paperStatus = item.status;
@@ -6230,7 +6208,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                 payMethod: normalizeDecPayMethod(item.payMethod),
                 restoreBenefits: item.restoreBenefits || '',
                 rejectReason: item.rejectReason || '',
-                status: item.status || 'Lưu nháp',
+                status: item.status || 'Chờ ký',
                 amendChanges: item.amendChanges || []
             };
         }
@@ -6273,7 +6251,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                 originDecisionDate: item.originDecisionDate || '',
                 ycbtCode: item.ycbtCode || '',
                 nyc: item.ycbtNyc || '',
-                status: item.status || 'Lưu nháp',
+                status: item.status || 'Chờ ký',
                 amendChanges: item.amendChanges || []
             };
         }
@@ -6739,7 +6717,7 @@ Hồ sơ vụ việc và Quyết định giải quyết bồi thường gốc</t
                 <i id="customConfirmIcon" class="fa-solid fa-circle-exclamation" style="color: #ef4444;"></i> <span id="customConfirmTitle">Xác nhận xóa</span>
             </div>
             <div class="confirm-modal-body" id="customConfirmMessage">
-                Bạn có chắc chắn muốn xóa quyết định lưu nháp này không?
+                Bạn có chắc chắn muốn xóa quyết định này không?
             </div>
             <div class="confirm-modal-footer">
                 <button class="btn btn-secondary btn-sm" onclick="closeConfirmModal(false)">Hủy bỏ</button>

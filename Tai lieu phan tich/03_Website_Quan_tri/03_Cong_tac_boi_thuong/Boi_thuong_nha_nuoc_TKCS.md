@@ -81,7 +81,6 @@ Có nút Tạo yêu cầu. Khi Chọn thì mở ra màn hình Nhập thông tin 
  Cơ quan giải quyết|Ngày tiếp nhận|Hạn xử lý|Trạng thái|Thao tác
  
  Trong đó Trạng thái bao gồm:
- - Lưu nháp
  - Chờ tiếp nhận
  - Yêu cầu bổ sung
  - Chờ thụ lý
@@ -95,8 +94,7 @@ Có nút Tạo yêu cầu. Khi Chọn thì mở ra màn hình Nhập thông tin 
 
 Trong đó cột Thao tác bao gồm:
 - Xem: Khi chọn vào mở ra form mục 1.2dưới đây, là màn xem chi tiết
-- Cập nhật: Chỉ hiển thị nếu Hồ sơ ở trạng thái Lưu nháp, Yêu cầu bổ sung, Đang xác minh thiệt hại, Đang thương lượng, Chờ ban hành QĐ, Chờ thực thi. Khi mở vào thì Hiển thị màn 1.3 Cập nhật thông tin ở phía dưới
--Xóa (Chỉ hiển thị nếu Trạng thái là Lưu nháp)
+- Cập nhật: Chỉ hiển thị nếu Hồ sơ ở trạng thái Yêu cầu bổ sung, Đang xác minh thiệt hại, Đang thương lượng, Chờ ban hành QĐ, Chờ thực thi. Khi mở vào thì Hiển thị màn 1.3 Cập nhật thông tin ở phía dưới
 - Tiếp nhận: (Chỉ hiển thị nếu trạng thái là Chờ tiếp nhận) Khi chọn vào Sẽ chuyển sang trạng thái Chờ thụ lý|Trạng
 - Yêu cầu bổ sung:(Chỉ hiển thị nếu trạng thái là Chờ tiếp nhận). Khi chọn vào chuyển sang trạng thái Yêu cầu bổ sung
 - Từ chối: Chỉ hiển thị nếu trạng thái là Chờ tiếp nhận
@@ -170,7 +168,6 @@ Trong đó cột Thao tác bao gồm:
 
 1.2 Màn Xem chi tiết hồ sơ
 Nếu Hồ sơ không phải ở trạng thái Hoàn thành, Hiển thị thêm nút Cập nhật. Cho phép mở ra form Cập nhật hồ sơ mục 1.3, giao diện cập nhật sẽ hiển thị tương ứng với trạng thái của từng hồ sơ
-Đối với Hồ sơ ở trạng thái Lưu nháp. Khi mở ra chỉ hiển thị duy nhất 1 màn hình chứa Thông tin chung: Bao gồm toàn bộ thông tin như khi Tạo mới yêu cầu giải quyết ở mục 1.1
 Nếu hồ sơ ở các trạng thái khác, sẽ hiển thị thông tin giống hệt với Phần Cập nhật hồ sơ. Tuy nhiên, thông tin chỉ đọc,không cho phép chỉnh sửa.
 Bạn bám theo đúng các thông tin như phần Cập nhật hồ sơ mục 1.3
 Nếu các Hồ sơ ở trạng thái khác khi mở Xem chi tiết sẽ hiển thị thành 2 tab thông tin gồm:
@@ -201,8 +198,7 @@ Lưu ý, đảm bảo phải hiển thị được lịch sử xử lý của t�
 
 1.3 Cập nhật hồ sơ
 Khi chọn thì tùy trạng thái của Hồ sơ là gì, Hệ thống sẽ hiển thị form cập nhật tương ứng:
-- Hồ sơ ở trạng thái Lưu nháp: Form Cập nhật sẽ giống như form thêm mới Yêu cầu giải quyết bồi thường mục 1.1 Kèm nút Cập nhật, Hủy bỏ.  Khi chọn Cập nhật Hệ thống chuyển sang trạng thái Chờ tiếp nhận/Cập
-- Nếu hồ sơ không phải ở trạng thái Lưu nháp sẽ hiển thị thành 2 tab thông tin gồm:
+- Form Cập nhật hiển thị thành 2 tab thông tin gồm:
 - Thông tin chung: Toàn bộ thông tin như Khi thêm mới Yêu cầu mục 2.1. Bạn bố trí các thông tin hiển thị cho phù hợp
 - Chi tiết xử lý yêu cầu: Hiển thị khối thông tin tương ứng, cho phép cán bộ cập nhật thông tin kết quả xử lý tương ứng
 Chia thành 2 khối thông tin chính bao gồm 2 Tab thông tin : Kết quả xử lý và Phục hồi danh dự 
@@ -253,7 +249,6 @@ Trạng thái thương lượng*: : Thương lượng Thành công/Thương lư�
  Trên Form  Hiển thị nút Thêm mới QĐ (chỉ hiển thi nút này nếu chưa có QĐ giải quyết bồi thường nào được thêm vào, nếu thêm rồi thì sẽ ẩn nút)
 Khi chọn sẽ mở ra Form Thêm mới QĐ giải quyết bồi thường. Cho phép Cán bộ nhập mới các thông tin về QĐ giải quyết bồi thường, Trình tới LĐ ký duyệt của Module Quyết định giải quyết bồi thường
 Kèm các nút trên form Thêm mới QĐ: 
-+ Lưu nháp: Hệ thống lưu nháp lại các thông tin QĐ đã nhập , Quyết định ở trạng thái Lưu nháp
 + Gửi duyệt: Hệ thống Validate thông tin, gửi duyệt đến lãnh đạo, Quyết định ở trạng thái Chờ ký
 + Hủy bỏ: Tắt bỏ form Thêm mới QĐ. Không xử lý bất cứ hành động gì
 Khi thực hiện các thao tác này. Hệ thống tự động tạo thông tin bản ghi mới thuộc Module Quyết định giải quyết bồi thường
@@ -307,7 +302,6 @@ Kèm nút
 - Ở phía dưới của Form cập nhật sẽ hiển thị các nút thao tác:
 + Hủy bỏ: Tắt form cập nhật, không lưu dữ liệu, không đổi trạng thái của hồ sơ
 + Các nút thao tác tùy theo từng trạng thái:
- ++ Lưu nháp: Hiển thị nút Cập nhật: Sau khi chọn Hồ sơ chuyển sang trạng thái Chờ tiếp nhận
  ++ Yêu cầu bổ sung: Hiển thị nút: Hiển thị nút Cập nhật: Sau khi chọn Hồ sơ chuyển sang trạng thái Chờ tiếp nhận. Đồng thời ghi lại vết lịch sử yêu cầu bổ sung và chi tiết kết quả bổ sung
  ++ Đang xác minh thiệt hại: Hiển thị nút: Hoàn thành xác minh -> Khi chọn Hồ sơ sẽ chuyển sang trạng thái Đang thương lượng
  ++ Đang thương lượng: Hiển thị nút Hoàn thành thương lượng => Khi

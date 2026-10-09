@@ -1,7 +1,7 @@
 /*
  * Luồng phân công - phê duyệt dùng chung cho phân hệ Bồi thường nhà nước (mockup).
  * Dùng bởi: Tiếp nhận yêu cầu, Xác định cơ quan giải quyết bồi thường, Giải quyết yêu cầu bồi thường,
- * Việc chờ lãnh đạo xử lý, Cấu hình luồng xử lý, Quản lý danh mục (Đơn vị áp dụng của Loại yêu cầu).
+ * Hồ sơ trình Lãnh đạo, Cấu hình luồng xử lý, Quản lý danh mục (Đơn vị áp dụng của Loại yêu cầu).
  * Dữ liệu giả lập lưu tại localStorage.
  */
 (function (global) {
@@ -11,7 +11,7 @@
     const KEY_FLOW = 'btnn_flow_config_v1';
     const KEY_USER = 'btnn_demo_user_v1';
     const KEY_SEED = 'btnn_wf_seed_version';
-    const SEED_VERSION = 'v1';
+    const SEED_VERSION = 'v2';
     const CATALOG_TYPE = 'DM_54';
 
     const REQUEST_TYPE_XD = 'Xác định cơ quan giải quyết bồi thường';
@@ -447,14 +447,21 @@
         }
         return path.filter((u, i) => path.indexOf(u) === i);
     }
-    function submitForApproval(code, kind, content, files) {
+    // extra.draftDoc: { generatedName, uploadedName } - văn bản dự thảo trình kèm (VD Thông báo yêu cầu bổ sung)
+    function submitForApproval(code, kind, content, files, extra) {
         const rec = getRecord(code);
         const me = getCurrentUserId();
         if (!rec || rec.chuTri !== me) return { ok: false, message: 'Chỉ cán bộ chủ trì được trình phê duyệt.' };
-        if (![STATUS.DANG_THUC_HIEN, STATUS.BI_TRA_LAI].includes(rec.status)) return { ok: false, message: 'Trạng thái hồ sơ không cho phép trình phê duyệt.' };
+        // Yêu cầu bổ sung được trình ngay từ khi hồ sơ Chờ tiếp nhận
+        const allowed = [STATUS.DANG_THUC_HIEN, STATUS.BI_TRA_LAI].concat(kind === 'Yêu cầu bổ sung' || kind === 'Từ chối' ? [STATUS.CHO_TIEP_NHAN] : []);
+        if (!allowed.includes(rec.status)) return { ok: false, message: 'Trạng thái hồ sơ không cho phép trình phê duyệt.' };
         const path = computeApprovalPath(rec);
         if (!path.length) return { ok: false, message: 'Chưa xác định được cấp phê duyệt. Vui lòng liên hệ Quản trị hệ thống.' };
-        rec.approval = { kind, content: content || '', files: files || [], path, level: 0, steps: [], submittedBy: me, submittedAt: nowText(), pending: { since: nowText() } };
+        if (rec.status === STATUS.CHO_TIEP_NHAN) {
+            const r = latestRoute(rec);
+            if (r) r.state = 'Đã xử lý';
+        }
+        rec.approval = { kind, content: content || '', files: files || [], draftDoc: (extra && extra.draftDoc) || null, path, level: 0, steps: [], submittedBy: me, submittedAt: nowText(), pending: { since: nowText() } };
         rec.status = STATUS.CHO_PHE_DUYET;
         addHistory(rec, 'Trình phê duyệt', `${kind}. Trình ${unitName(path[0])}.${content ? ' Nội dung: ' + content : ''}`);
         upsertRecord(rec);
@@ -593,6 +600,148 @@
     function renderApprovalHtml(rec) {
         const a = rec.approval;
         if (!a) return `<div style="color:#64748b; font-style:italic;">Chưa trình phê duyệt.</div>`;
+        return renderDraftDocHtml(rec) + renderApprovalTableHtml(rec);
+    }
+
+    // ---------------- Văn bản dự thảo: Mẫu số 08/BTNN (xem ở tab mới, tải về Word/PDF) ----------------
+    function draftDocName(rec) { return `Thong_bao_yeu_cau_bo_sung_${rec.code}.doc`; }
+    function draftBaseName(rec) { return `Thong_bao_yeu_cau_bo_sung_${rec.code}`; }
+    function submittedDraftName(rec) {
+        const d = rec.approval && rec.approval.draftDoc;
+        return d ? (d.source === 'uploaded' ? d.uploadedName : (d.uploadedName && !d.source ? d.uploadedName : d.generatedName)) : '';
+    }
+    // Cơ quan chủ quản (nếu có) của cơ quan ban hành thông báo
+    const GOVERNING_BODY = { 'STP-HN': 'UBND THÀNH PHỐ HÀ NỘI', 'STP-HCM': 'UBND THÀNH PHỐ HỒ CHÍ MINH', 'STP-HP': 'UBND THÀNH PHỐ HẢI PHÒNG' };
+    function issuerAbbr(unitId) {
+        if (/^BTP/.test(unitId || '')) return 'BTP';
+        if (/^STP/.test(unitId || '')) return 'STP';
+        const words = unitName(unitId).split(/[\s,]+/).filter(w => /^[A-ZĐÀ-Ỹ]/.test(w));
+        return words.map(w => w[0]).join('').slice(0, 6) || '...';
+    }
+    function placeOf(unitId) {
+        const m = unitName(unitId).match(/(Thành phố|tỉnh|Tỉnh)\s+([^,]+)$/);
+        return m ? m[2].trim() : 'Hà Nội';
+    }
+    function dateParts(text) {
+        const m = String(text || '').match(/(\d{2})\/(\d{2})\/(\d{4})/);
+        return m ? { d: m[1], m: m[2], y: m[3] } : null;
+    }
+    // Nội dung Thông báo theo Mẫu số 08/BTNN
+    function buildSupplementDraftHtml(rec, content, attachments) {
+        const now = new Date();
+        const root = rec.rootUnitId;
+        const issuer = unitName(root);
+        const governing = GOVERNING_BODY[root] || '';
+        const recv = dateParts(rec.receivedAt || rec.date);
+        const items = String(content || '').split(/\r?\n/).map(s => s.replace(/^\s*\d+[.)]\s*/, '').trim()).filter(Boolean);
+        const address = [rec.nycAddressDetail, rec.nycPhuongXa, rec.nycTinhThanh].filter(Boolean).join(', ');
+        const att = (attachments || []).map(f => esc(f.name || f)).filter(Boolean);
+        return `<div class="m08" style="font-family:'Times New Roman',serif; font-size:14pt; line-height:1.5; color:#000;">
+            <div style="text-align:right; font-style:italic;">Mẫu số 08/BTNN</div>
+            <table style="width:100%; border-collapse:collapse; margin-top:6pt;"><tr>
+                <td style="width:40%; text-align:center; vertical-align:top; font-size:13pt;">
+                    ${governing ? `${esc(governing)}<br>` : ''}<b>${esc(issuer.toUpperCase())}</b><br><span style="display:inline-block; width:35%; border-top:1px solid #000;"></span><br>Số: ......./TB-${esc(issuerAbbr(root))}
+                </td>
+                <td style="text-align:center; vertical-align:top; font-size:13pt;">
+                    <b style="white-space:nowrap;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</b><br><b>Độc lập - Tự do - Hạnh phúc</b><br><span style="display:inline-block; width:45%; border-top:1px solid #000;"></span><br>
+                    <i>${esc(placeOf(root))}, ngày ${pad(now.getDate())} tháng ${pad(now.getMonth() + 1)} năm ${now.getFullYear()}</i>
+                </td>
+            </tr></table>
+            <p style="text-align:center; margin:18pt 0 6pt;"><b>THÔNG BÁO</b><br><b>Về việc cung cấp tài liệu, chứng cứ phục vụ xác minh thiệt hại</b></p>
+            <p style="margin:6pt 0;">Kính gửi: ${esc(rec.nycName || '')}</p>
+            <p style="margin:6pt 0;">Địa chỉ: ${esc(address)}</p>
+            <p style="margin:6pt 0;">Điện thoại: ${esc(rec.nycPhone || '')}</p>
+            <p style="margin:6pt 0; text-align:justify; text-indent:1cm;">Ngày ${recv ? recv.d : '....'} tháng ${recv ? recv.m : '....'} năm ${recv ? recv.y : '......'}, ${esc(issuer)} đã nhận được hồ sơ yêu cầu bồi thường của Ông/Bà.</p>
+            <p style="margin:6pt 0; text-align:justify; text-indent:1cm;">${esc(issuer)} đã tiến hành xem xét hồ sơ yêu cầu bồi thường và xác minh thiệt hại. Trong quá trình xác minh thiệt hại, chúng tôi nhận thấy vụ việc yêu cầu bồi thường của Ông/bà cần phải một số tài liệu, chứng cứ làm cơ sở để xác minh thiệt hại.</p>
+            <p style="margin:6pt 0; text-align:justify; text-indent:1cm;">Căn cứ quy định tại khoản 1 Điều 45 Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14 (được sửa đổi, bổ sung bởi Luật số 15/2026/QH16), ${esc(issuer)} yêu cầu Ông/Bà bổ sung tài liệu chứng cứ phục vụ xác minh thiệt hại, cụ thể như sau:</p>
+            ${(items.length ? items : ['................................................']).map((it, i) => `<p style="margin:3pt 0; text-indent:1cm;">${i + 1}. ${esc(it)}</p>`).join('')}
+            ${att.length ? `<p style="margin:6pt 0; text-indent:1cm;">Tài liệu, biểu mẫu hướng dẫn kèm theo: ${att.join('; ')}.</p>` : ''}
+            <table style="width:100%; border-collapse:collapse; margin-top:18pt;"><tr>
+                <td style="width:50%; vertical-align:top; font-size:12pt;"><b><i>Nơi nhận:</i></b><br>- Như trên;<br>- Lưu: VT, HSVV.</td>
+                <td style="text-align:center; vertical-align:top;"><b>THỦ TRƯỞNG CƠ QUAN</b><br><i>(Ký, ghi rõ họ tên, đóng dấu)</i></td>
+            </tr></table>
+        </div>`;
+    }
+    function draftSourceOf(rec) {
+        const a = rec.approval || {};
+        return { content: a.content || rec.supplementReason || '', attachments: rec.supplementFiles || [] };
+    }
+    function draftFullHtml(rec, content, attachments, withToolbar) {
+        const body = buildSupplementDraftHtml(rec, content, attachments);
+        const toolbar = withToolbar ? `<div class="toolbar">
+                <b style="margin-right:auto;">Văn bản dự thảo - ${esc(draftBaseName(rec))}</b>
+                <button onclick="dlWord()">Tải về Word (.doc)</button>
+                <button onclick="dlPdf()">Tải về PDF (.pdf)</button>
+                <button onclick="window.print()">In</button>
+            </div>
+            <script>
+                function dlWord(){var h='<html><head><meta charset="utf-8"></head><body>'+document.getElementById('doc').innerHTML+'</body></html>';var b=new Blob(['\\ufeff',h],{type:'application/msword'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=${JSON.stringify(draftBaseName(rec) + '.doc')};document.body.appendChild(a);a.click();a.remove();}
+                function dlPdf(){var go=function(){html2pdf().set({margin:[15,20,15,20],filename:${JSON.stringify(draftBaseName(rec) + '.pdf')},html2canvas:{scale:2},jsPDF:{unit:'mm',format:'a4'}}).from(document.getElementById('doc')).save();};if(window.html2pdf){go();return;}var s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';s.onload=go;s.onerror=function(){alert('Không tải được thư viện PDF, vui lòng dùng In > Lưu dưới dạng PDF.');window.print();};document.head.appendChild(s);}
+            <\/script>` : '';
+        return `<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><title>${esc(draftBaseName(rec))}</title>
+            <style>body{margin:0;background:#e5e7eb;font-family:system-ui,sans-serif}.toolbar{position:sticky;top:0;display:flex;gap:8px;align-items:center;padding:10px 20px;background:#1e3a8a;color:#fff}.toolbar button{border:0;border-radius:6px;padding:7px 12px;font-weight:600;cursor:pointer}.page{background:#fff;width:210mm;min-height:297mm;margin:20px auto;padding:20mm 20mm 20mm 30mm;box-sizing:border-box;box-shadow:0 4px 16px rgba(0,0,0,.15)}@media print{.toolbar{display:none}body{background:#fff}.page{margin:0;box-shadow:none;width:auto;min-height:0}}</style>
+            </head><body>${toolbar}<div class="page" id="doc">${body}</div></body></html>`;
+    }
+    // Xem dự thảo: mở ở tab mới
+    function previewDraftDoc(rec, content, attachments) {
+        const win = window.open('', '_blank');
+        if (!win) { alert('Trình duyệt đang chặn mở tab mới. Vui lòng cho phép cửa sổ bật lên.'); return; }
+        win.document.open();
+        win.document.write(draftFullHtml(rec, content, attachments, true));
+        win.document.close();
+    }
+    // Tải về theo định dạng: 'word' (.doc) hoặc 'pdf' (.pdf)
+    function downloadDraftDoc(rec, content, attachments, format) {
+        if (format === 'pdf') {
+            const holder = document.createElement('div');
+            holder.style.cssText = 'position:fixed; left:-10000px; top:0; width:170mm; background:#fff;';
+            holder.innerHTML = buildSupplementDraftHtml(rec, content, attachments);
+            document.body.appendChild(holder);
+            const go = () => window.html2pdf().set({ margin: [15, 20, 15, 30], filename: draftBaseName(rec) + '.pdf', html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4' } }).from(holder).save().then(() => holder.remove(), () => holder.remove());
+            if (window.html2pdf) { go(); return; }
+            const s = document.createElement('script');
+            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+            s.onload = go;
+            s.onerror = () => { holder.remove(); alert('Không tải được thư viện PDF. Vui lòng mở Xem dự thảo và chọn In > Lưu dưới dạng PDF.'); };
+            document.head.appendChild(s);
+            return;
+        }
+        const html = `<html><head><meta charset="utf-8"><title>${esc(draftBaseName(rec))}</title></head><body>${buildSupplementDraftHtml(rec, content, attachments)}</body></html>`;
+        const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = draftBaseName(rec) + '.doc';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    }
+    // Ô chọn định dạng tải về (Word / PDF)
+    function downloadSelectHtml(jsCall) {
+        return `<select class="form-control" style="display:inline-block; width:auto; min-width:150px; height:32px; padding:4px 8px; font-size:12.5px;" onchange="if(this.value){${jsCall}(this.value); this.value='';}">
+            <option value="">Tải về...</option><option value="word">Word (.doc)</option><option value="pdf">PDF (.pdf)</option></select>`;
+    }
+    function previewDraftDocByCode(code) { const r = getRecord(code); if (r) { const s = draftSourceOf(r); previewDraftDoc(r, s.content, s.attachments); } }
+    function downloadDraftDocByCode(code, format) { const r = getRecord(code); if (r) { const s = draftSourceOf(r); downloadDraftDoc(r, s.content, s.attachments, format); } }
+    // Khối Văn bản dự thảo phía Lãnh đạo / màn chi tiết
+    function renderDraftDocHtml(rec) {
+        const d = rec.approval && rec.approval.draftDoc;
+        if (!d) return '';
+        const code = esc(rec.code);
+        const isUploaded = d.source === 'uploaded' || (!d.source && d.uploadedName);
+        const submitted = isUploaded ? d.uploadedName : d.generatedName;
+        const link = (label, js) => `<a href="javascript:void(0)" onclick="${js}" style="color:#2563eb; text-decoration:none; margin-left:12px; white-space:nowrap;">${label}</a>`;
+        return `<div style="border:2px solid #2563eb; background:#eff6ff; border-radius:8px; padding:12px 14px; margin-bottom:10px; font-size:13px;">
+            <div style="font-weight:700; color:#1e3a8a; margin-bottom:8px;"><i class="fa-solid fa-file-signature"></i> Văn bản dự thảo trình Lãnh đạo</div>
+            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; background:#fff; border:1px solid #bfdbfe; border-radius:6px; padding:8px 10px;">
+                <i class="fa-solid fa-file-word" style="color:#2563eb; font-size:18px;"></i> <b>${esc(submitted)}</b>
+                <span style="background:${isUploaded ? '#dcfce7; color:#15803d' : '#e0e7ff; color:#3730a3'}; border-radius:999px; padding:1px 8px; font-size:11.5px; font-weight:600;">${isUploaded ? 'Bản đã chỉnh sửa' : 'Hệ thống sinh theo Mẫu số 08/BTNN'}</span>
+                ${isUploaded ? link('<i class="fa-solid fa-eye"></i> Xem file', `alert('Giả lập mở file: ${esc(d.uploadedName)}')`) : link('<i class="fa-solid fa-eye"></i> Xem dự thảo', `BTNN_WF.previewDraftDocByCode('${code}')`)}
+            </div>
+            <div style="margin-top:8px; color:#475569;">Văn bản theo Mẫu số 08/BTNN: ${link('<i class="fa-solid fa-up-right-from-square"></i> Xem dự thảo', `BTNN_WF.previewDraftDocByCode('${code}')`)} <span style="margin-left:12px;">${downloadSelectHtml(`BTNN_WF.downloadDraftDocByCode.bind(null,'${code}')`)}</span></div>
+        </div>`;
+    }
+    function renderApprovalTableHtml(rec) {
+        const a = rec.approval;
         const rows = a.path.map((u, i) => {
             const step = a.steps[i];
             let state = 'Chưa đến lượt';
@@ -629,8 +778,26 @@
     function ensureSeed() {
         let version = null;
         try { version = localStorage.getItem(KEY_SEED); } catch (e) { version = null; }
-        if (version === SEED_VERSION && readJson(KEY_RECORDS, null)) return;
-        writeJson(KEY_RECORDS, buildSeed());
+        const existing = readJson(KEY_RECORDS, null);
+        if (version === SEED_VERSION && existing && existing.length) return;
+        const seed = buildSeed();
+        if (!existing || !existing.length) {
+            writeJson(KEY_RECORDS, seed);
+        } else {
+            const existingMap = new Map();
+            existing.forEach(r => existingMap.set(r.code, r));
+            const merged = [];
+            seed.forEach(s => {
+                if (existingMap.has(s.code)) {
+                    merged.push(existingMap.get(s.code));
+                    existingMap.delete(s.code);
+                } else {
+                    merged.push(s);
+                }
+            });
+            existingMap.forEach(r => merged.push(r));
+            writeJson(KEY_RECORDS, merged);
+        }
         try { localStorage.setItem(KEY_SEED, SEED_VERSION); } catch (e) { /* bỏ qua */ }
     }
     function person(name, dob, docNo, phone, email, city, ward, addr) {
@@ -641,6 +808,7 @@
             id: 'WF-' + code, code, module: 'XD', loaiYeuCau: REQUEST_TYPE_XD, rootUnitId: 'BTP-01', currentUnitId: 'PLN-02',
             nycRole: 'Người bị thiệt hại', hinhThucTiepNhan: 'Trực tiếp', linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH',
             hinhThucNhan: 'Phương thức điện tử', attachedDocs: [{ name: 'Đơn yêu cầu xác định cơ quan giải quyết bồi thường', file: `Don_yeu_cau_${code}.pdf` }],
+            vanBanCanCu: [],
             procBasis: '', procTargetAgency: '', procReason: '', procDecisionFile: '', claimCode: '-',
             routes: [], chuTri: null, phoiHop: [], approval: null, history: [], receivedBy: 'Nguyễn Văn Cán Bộ', source: 'Tiếp nhận'
         }, extra);
@@ -665,9 +833,59 @@
                 history: [h('Tiếp nhận yêu cầu', 'canbonv', '10:15 04/10/2026', 'Chuyển lãnh đạo Bộ Tư pháp phân công xử lý.'), h('Chuyển đơn vị', 'oanhdh', '15:00 04/10/2026', 'Chuyển Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước phân công. Ý kiến chỉ đạo: Giao Cục xem xét.')]
             })),
             base('XD-2026-103', Object.assign(person('Phan Văn Lực', '22/11/1979', '001079003311', '0912000103', 'luc.pv@gmail.com', 'Thành phố Hà Nội', '00010 - Phường Thanh Xuân', 'Số 5 Nguyễn Trãi'), {
-                status: STATUS.CHO_TIEP_NHAN, date: '02/09/2026', receivedAt: '08:00 02/09/2026', chuTri: 'canbonv', phoiHop: ['hatt'],
-                hanhVi: 'Bị tạm giữ hành chính quá thời hạn.', routes: btpRoutes('canbonv', ['hatt'], 'Chưa xử lý'),
-                history: [h('Tiếp nhận yêu cầu', 'canbonv', '08:00 02/09/2026'), h('Chuyển đơn vị', 'oanhdh', '08:30 02/09/2026'), h('Chuyển đơn vị', 'cuctruong', '14:00 02/09/2026'), h('Phân công cán bộ', 'tpbt', '09:15 03/09/2026', 'Chủ trì: Nguyễn Văn Cán Bộ; Phối hợp: Trần Thị Thu Hà.')]
+                status: STATUS.CHO_TIEP_NHAN, date: '02/10/2026', receivedAt: '08:00 02/10/2026', chuTri: 'canbonv', phoiHop: ['hatt'],
+                hanhVi: 'Bị tạm giữ hành chính quá thời hạn quy định.', routes: btpRoutes('canbonv', ['hatt'], 'Chưa xử lý'),
+                vanBanCanCu: [{ name: 'Quyết định tạm giữ hành chính số 15/QĐ-TG ngày 12/08/2026', file: 'Quyet_dinh_tam_giu_15.pdf' }],
+                history: [h('Tiếp nhận yêu cầu', 'canbonv', '08:00 02/10/2026'), h('Chuyển đơn vị', 'oanhdh', '08:30 02/10/2026'), h('Chuyển đơn vị', 'cuctruong', '14:00 02/10/2026'), h('Phân công cán bộ', 'tpbt', '09:15 03/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ; Phối hợp: Trần Thị Thu Hà.')]
+            })),
+            base('XD-2026-111', Object.assign(person('Trần Đình Trọng', '18/05/1983', '001083006789', '0912111222', 'trong.td@gmail.com', 'Thành phố Hà Nội', '00007 - Phường Cầu Giấy', 'Số 45 Dịch Vọng Hậu'), {
+                status: STATUS.CHO_TIEP_NHAN, date: '08/10/2026', receivedAt: '08:15 08/10/2026', chuTri: 'canbonv', phoiHop: ['ducpm'],
+                linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', nycRole: 'Người bị thiệt hại',
+                hanhVi: 'Cưỡng chế tháo dỡ công trình xây dựng khi văn bản đình chỉ chưa có hiệu lực pháp luật.',
+                vanBanCanCu: [
+                    { name: 'Quyết định số 88/QĐ-UBND ngày 15/05/2026 của UBND quận Cầu Giấy', file: 'Quyet_dinh_88_UBND_CG.pdf' },
+                    { name: 'Biên bản kiểm tra hiện trạng công trình ngày 20/05/2026', file: 'Bien_ban_kiem_tra_hien_trang.pdf' }
+                ],
+                attachedDocs: [{ name: 'Đơn yêu cầu xác định cơ quan giải quyết bồi thường', file: 'Don_yeu_cau_XD-2026-111.pdf' }],
+                routes: btpRoutes('canbonv', ['ducpm'], 'Chưa xử lý'),
+                history: [h('Tiếp nhận yêu cầu', 'canbonv', '08:15 08/10/2026', 'Tiếp nhận hồ sơ trực tiếp tại Bộ phận một cửa.'), h('Chuyển đơn vị', 'oanhdh', '09:00 08/10/2026', 'Giao Cục Đăng ký Giao dịch bảo đảm và BTNN.'), h('Chuyển đơn vị', 'cuctruong', '13:30 08/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '15:00 08/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ; Phối hợp: Phạm Minh Đức.')]
+            })),
+            base('XD-2026-112', Object.assign(person('Nguyễn Phương Thảo', '24/11/1991', '001191008822', '0983456789', 'thao.np@outlook.com', 'Thành phố Hà Nội', '00004 - Phường Hoàn Kiếm', 'Số 16 Hàng Bông'), {
+                status: STATUS.CHO_TIEP_NHAN, date: '07/10/2026', receivedAt: '09:30 07/10/2026', chuTri: 'canbonv', phoiHop: [], nycGender: 'Nữ',
+                linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', nycRole: 'Người thừa kế của người bị thiệt hại',
+                nbth: { name: 'Nguyễn Văn Hùng', gender: 'Nam', dob: '10/02/1955', docType: 'CCCD', docNo: '001055003344', docDate: '15/03/2021', docPlace: 'Cục Cảnh sát QLHC về trật tự xã hội', phone: '', email: '', country: 'Việt Nam', city: 'Thành phố Hà Nội', ward: '00004 - Phường Hoàn Kiếm', address: 'Số 16 Hàng Bông' },
+                hanhVi: 'Khởi tố, bắt tạm giam oan sai người bị thiệt hại trong vụ án kinh tế đã được đình chỉ điều tra bị can.',
+                vanBanCanCu: [
+                    { name: 'Quyết định đình chỉ điều tra bị can số 12/QĐ-ĐCĐT ngày 10/06/2026 của Cơ quan CSĐT', file: 'Quyet_dinh_dinh_chi_12_CSDT.pdf' },
+                    { name: 'Văn bản xác nhận quyền thừa kế hợp pháp số 45/VB-CC ngày 20/08/2026', file: 'Van_ban_thua_ke_45.pdf' }
+                ],
+                attachedDocs: [{ name: 'Đơn yêu cầu xác định cơ quan giải quyết bồi thường', file: 'Don_yeu_cau_XD-2026-112.pdf' }],
+                routes: btpRoutes('canbonv', [], 'Chưa xử lý'),
+                history: [h('Tiếp nhận yêu cầu', 'canbonv', '09:30 07/10/2026', 'Tiếp nhận hồ sơ trực tiếp.'), h('Chuyển đơn vị', 'oanhdh', '10:15 07/10/2026', 'Giao Cục Đăng ký Giao dịch bảo đảm và BTNN xử lý.'), h('Chuyển đơn vị', 'cuctruong', '14:20 07/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '16:00 07/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ.')]
+            })),
+            base('XD-2026-113', Object.assign(person('Lê Hoàng Long', '12/08/1976', '001076004455', '0904556677', 'long.lh@fecon.vn', 'Tỉnh Lâm Đồng', '24778 - Phường Xuân Hương - Đà Lạt', 'Số 58 đường Trần Phú'), {
+                status: STATUS.CHO_TIEP_NHAN, date: '06/10/2026', receivedAt: '10:00 06/10/2026', chuTri: 'canbonv', phoiHop: ['hatt'],
+                linhVuc: 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ', nycRole: 'Người bị thiệt hại',
+                hanhVi: 'Kê biên, bán đấu giá tài sản nhà đất duy nhất vượt quá nghĩa vụ phải thi hành án dân sự.',
+                vanBanCanCu: [
+                    { name: 'Kết luận giải quyết tố cáo số 06/KL-CTHADS ngày 28/07/2026 của Cục THADS', file: 'Ket_luan_to_cao_06_THADS.pdf' }
+                ],
+                attachedDocs: [{ name: 'Đơn yêu cầu xác định cơ quan giải quyết bồi thường', file: 'Don_yeu_cau_XD-2026-113.pdf' }],
+                routes: btpRoutes('canbonv', ['hatt'], 'Chưa xử lý'),
+                history: [h('Tiếp nhận yêu cầu', 'canbonv', '10:00 06/10/2026', 'Tiếp nhận qua đường Bưu điện/bưu chính.'), h('Chuyển đơn vị', 'oanhdh', '11:00 06/10/2026', 'Giao Cục Đăng ký Giao dịch bảo đảm và BTNN.'), h('Chuyển đơn vị', 'cuctruong', '15:10 06/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '17:00 06/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ; Phối hợp: Trần Thị Thu Hà.')]
+            })),
+            base('XD-2026-114', Object.assign(person('Phạm Quốc Bảo', '03/04/1988', '001088009911', '0978990011', 'baopq@vingroup.net', 'Thành phố Hà Nội', '00001 - Phường Ba Đình', 'Số 88 đường Liễu Giai'), {
+                status: STATUS.CHO_TIEP_NHAN, date: '05/10/2026', receivedAt: '14:20 05/10/2026', chuTri: 'canbonv', phoiHop: [],
+                linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ', nycRole: 'Cá nhân, pháp nhân được ủy quyền hợp pháp',
+                nbth: { name: 'Công ty Cổ phần Xây dựng & Thương mại Phúc An', gender: 'Khác', dob: '15/09/2015', docType: 'ĐKKD', docNo: '0106899234', docDate: '15/09/2015', docPlace: 'Sở Kế hoạch và Đầu tư Hà Nội', phone: '02438889999', email: 'contact@phucan.vn', country: 'Việt Nam', city: 'Thành phố Hà Nội', ward: '00001 - Phường Ba Đình', address: 'Số 88 đường Liễu Giai' },
+                hanhVi: 'Tòa án áp dụng biện pháp khẩn cấp tạm thời phong tỏa toàn bộ tài khoản thanh toán của doanh nghiệp trái pháp luật gây thiệt hại lớn cho hoạt động kinh doanh.',
+                vanBanCanCu: [
+                    { name: 'Quyết định hủy bỏ biện pháp khẩn cấp tạm thời số 09/2026/QĐ-BPKCTT', file: 'Quyet_dinh_huy_BPKCTT_09.pdf' },
+                    { name: 'Hợp đồng ủy quyền giải quyết bồi thường số 18/2026/HĐUQ', file: 'Hop_dong_uy_quyen_18.pdf' }
+                ],
+                attachedDocs: [{ name: 'Đơn yêu cầu xác định cơ quan giải quyết bồi thường', file: 'Don_yeu_cau_XD-2026-114.pdf' }],
+                routes: btpRoutes('canbonv', [], 'Chưa xử lý'),
+                history: [h('Tiếp nhận yêu cầu', 'canbonv', '14:20 05/10/2026', 'Tiếp nhận yêu cầu trực tiếp.'), h('Chuyển đơn vị', 'oanhdh', '15:30 05/10/2026', 'Giao Cục Đăng ký Giao dịch bảo đảm và BTNN.'), h('Chuyển đơn vị', 'cuctruong', '08:30 06/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '09:00 06/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ.')]
             })),
             base('XD-2026-104', Object.assign(person('Vũ Đức Anh', '15/06/1985', '001085002934', '0912000104', 'anh.vd@gmail.com', 'Thành phố Hà Nội', '00001 - Phường Ba Đình', 'Số 15 Kim Mã'), {
                 status: STATUS.DANG_THUC_HIEN, date: '01/09/2026', receivedAt: '09:00 01/09/2026', chuTri: 'canbonv', phoiHop: ['ducpm'],
@@ -746,6 +964,7 @@
         getRecallInfo, recall, computeApprovalPath, submitForApproval, canApprove, approve, rejectApproval,
         transferToAgency, getLeaderTasks,
         statusBadge, routeText, routeStateText, renderRoutesHtml, renderHistoryHtml, renderApprovalHtml,
+        draftDocName, draftBaseName, submittedDraftName, buildSupplementDraftHtml, previewDraftDoc, downloadDraftDoc, downloadSelectHtml, previewDraftDocByCode, downloadDraftDocByCode, renderDraftDocHtml,
         mountUserSwitcher, nowText, dateText, esc
     };
 })(window);

@@ -570,6 +570,6 @@
 
 
 |  | WebAdmin-402 | Quản lý kỳ báo cáo, nhập liệu biểu mẫu Thông tư 08/2019/TT-BTP (Mẫu 01/03/04/05) theo mô hình 3 cấp | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_QuanLyBaoCao_TT08.md | UCPS023 |  | Review | Bổ sung theo yêu cầu cho phép UBND cấp tỉnh/huyện/xã, Sở Tư pháp, Bộ ngành nhập liệu trực tiếp biểu mẫu TT08 |
-|  | WebAdmin-403 | Việc chờ lãnh đạo xử lý (phân công, phê duyệt, thu hồi hồ sơ BTNN) | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_ViecChoLanhDaoXuLy.md |  |  | Review | Menu mới thuộc phân hệ Bồi thường nhà nước, ngay dưới "Tiếp nhận yêu cầu" |
+|  | WebAdmin-403 | Hồ sơ trình Lãnh đạo (phân công, phê duyệt, thu hồi hồ sơ BTNN) | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_ViecChoLanhDaoXuLy.md |  |  | Review | Menu mới thuộc phân hệ Bồi thường nhà nước, ngay dưới "Tiếp nhận yêu cầu" |
 |  | WebAdmin-404 | Cấu hình luồng xử lý | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Cau_hinh_luong_xu_ly.md |  |  | Review | Menu mới thuộc Quản trị hệ thống, sau "Quản lý cấu hình" |
 |  | WebAdmin-405 | Theo dõi vụ việc tại Tòa án (bị đơn khai báo vụ việc YCBT do Tòa án thụ lý; tự tạo đề nghị cấp kinh phí Chờ nhập liệu) | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_TheoDoiVuViecToaAn.md |  |  | Review | Menu mới thuộc Bồi thường nhà nước → Giải quyết bồi thường, sau "Giải quyết yêu cầu bồi thường" |

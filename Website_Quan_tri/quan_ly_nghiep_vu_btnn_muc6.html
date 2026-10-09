@@ -624,7 +624,7 @@
         <div class="info-strip">
             <div>
                 <div class="info-label" id="statusLabel">Trạng thái</div>
-                <div class="info-value" id="formStatus">Lưu nháp</div>
+                <div class="info-value" id="formStatus">Đang nhập</div>
             </div>
             <div>
                 <div class="info-label">Người tạo/Cán bộ phụ trách</div>
@@ -779,7 +779,7 @@
     <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
 
     <script>
-        const statusOptions = ['Tất cả', 'Lưu nháp', 'Đã gửi - Chờ phản hồi', 'Đã có phản hồi', 'Đã thực hiện', 'Không thực hiện'];
+        const statusOptions = ['Tất cả', 'Đã gửi - Chờ phản hồi', 'Đã có phản hồi', 'Đã thực hiện', 'Không thực hiện'];
         const agencies = ['Sở Tư pháp Hà Nội', 'Sở Tư pháp Lâm Đồng', 'UBND Quận Cầu Giấy', 'Tòa án nhân dân cấp cao tại Hà Nội', 'Viện kiểm sát nhân dân tối cao', 'Tòa án nhân dân tối cao', 'Cục Bồi thường nhà nước'];
         const qpplTypes = ['Luật', 'Nghị định', 'Thông tư', 'Quyết định', 'Văn bản khác'];
         const countries = ['Nhật Bản', 'Hàn Quốc', 'Pháp', 'Đức', 'Úc', 'Hoa Kỳ'];
@@ -855,17 +855,17 @@
                 ],
                 rows: [
                     ['12/KN-STP', 'UBND Quận Cầu Giấy', 'BT-2026-003', '02/08/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['-', 'Sở Tài nguyên và Môi trường Hà Nội', 'QĐ 22/QĐ-GQBT', '-', 'Lưu nháp'],
+                    ['24/KN-STP', 'Sở Tài nguyên và Môi trường Hà Nội', 'QĐ 22/QĐ-GQBT', '01/08/2026', 'Đã gửi - Chờ phản hồi'],
                     ['08/KN-STP', 'Cục Thi hành án dân sự Hà Nội', 'HT-2026-001', '20/07/2026', 'Đã thực hiện'],
                     ['14/KN-STP', 'UBND huyện Đan Phượng', 'BT-2026-008', '25/07/2026', 'Đã có phản hồi'],
                     ['15/KN-STP', 'Sở Kế hoạch và Đầu tư Hà Nội', 'BT-2026-011', '18/07/2026', 'Đã gửi - Chờ phản hồi'],
                     ['16/KN-STP', 'UBND Quận Ba Đình', 'QĐ 15/QĐ-GQBT', '12/07/2026', 'Đã thực hiện'],
-                    ['-', 'UBND huyện Thạch Thất', 'BT-2026-014', '-', 'Lưu nháp'],
+                    ['21/KN-STP', 'UBND huyện Thạch Thất', 'BT-2026-014', '08/07/2026', 'Đã gửi - Chờ phản hồi'],
                     ['17/KN-STP', 'Chi cục THADS Quận Nam Từ Liêm', 'HT-2026-004', '05/07/2026', 'Không thực hiện'],
                     ['18/KN-STP', 'Sở Xây dựng TP. Hà Nội', 'BT-2026-016', '28/06/2026', 'Đã có phản hồi'],
                     ['19/KN-STP', 'UBND Quận Hoàng Mai', 'BT-2026-019', '20/06/2026', 'Đã gửi - Chờ phản hồi'],
                     ['20/KN-STP', 'Sở Giao thông Vận tải', 'QĐ 30/QĐ-GQBT', '15/06/2026', 'Đã thực hiện'],
-                    ['-', 'UBND huyện Gia Lâm', 'BT-2026-023', '-', 'Lưu nháp'],
+                    ['25/KN-STP', 'UBND huyện Gia Lâm', 'BT-2026-023', '10/06/2026', 'Đã gửi - Chờ phản hồi'],
                     ['22/KN-STP', 'Chi cục THADS huyện Đông Anh', 'HT-2026-006', '08/06/2026', 'Đã có phản hồi'],
                     ['23/KN-STP', 'UBND Quận Tây Hồ', 'BT-2026-027', '01/06/2026', 'Đã gửi - Chờ phản hồi']
                 ]
@@ -896,17 +896,17 @@
                 ],
                 rows: [
                     ['15/KN-STP', '12/2026/HC-ST', 'Tòa án nhân dân cấp cao tại Hà Nội', '04/08/2026', 'Đã có phản hồi'],
-                    ['-', '09/2026/DS-PT', 'Viện kiểm sát nhân dân tối cao', '-', 'Lưu nháp'],
+                    ['26/KN-STP', '09/2026/DS-PT', 'Viện kiểm sát nhân dân tối cao', '28/07/2026', 'Đã gửi - Chờ phản hồi'],
                     ['10/KN-STP', '03/2026/HS-ST', 'Chánh án Tòa án nhân dân tối cao', '21/07/2026', 'Không thực hiện'],
                     ['16/KN-STP', '18/2026/HC-ST', 'TAND cấp cao tại TP. Hồ Chí Minh', '15/07/2026', 'Đã gửi - Chờ phản hồi'],
                     ['17/KN-STP', '22/2026/DS-ST', 'Viện trưởng VKSND cấp cao tại Hà Nội', '10/07/2026', 'Đã có phản hồi'],
                     ['18/KN-STP', '05/2026/HC-PT', 'Chánh án Tòa án nhân dân tối cao', '02/07/2026', 'Đã thực hiện'],
-                    ['-', '14/2026/HS-PT', 'Viện kiểm sát nhân dân tối cao', '-', 'Lưu nháp'],
+                    ['23/KN-STP', '14/2026/HS-PT', 'Viện kiểm sát nhân dân tối cao', '29/06/2026', 'Đã gửi - Chờ phản hồi'],
                     ['19/KN-STP', '27/2026/HC-ST', 'Tòa án nhân dân cấp cao tại Đà Nẵng', '25/06/2026', 'Đã gửi - Chờ phản hồi'],
                     ['20/KN-STP', '31/2026/DS-PT', 'Viện trưởng VKSND cấp cao tại Đà Nẵng', '18/06/2026', 'Đã có phản hồi'],
                     ['21/KN-STP', '08/2026/HC-ST', 'Tòa án nhân dân tối cao', '12/06/2026', 'Đã thực hiện'],
                     ['22/KN-STP', '19/2026/DS-ST', 'Chánh án TAND cấp cao tại Hà Nội', '05/06/2026', 'Không thực hiện'],
-                    ['-', '25/2026/HC-PT', 'Viện kiểm sát nhân dân tối cao', '-', 'Lưu nháp'],
+                    ['27/KN-STP', '25/2026/HC-PT', 'Viện kiểm sát nhân dân tối cao', '01/06/2026', 'Đã gửi - Chờ phản hồi'],
                     ['24/KN-STP', '02/2026/HS-ST', 'Chánh án Tòa án nhân dân tối cao', '28/05/2026', 'Đã gửi - Chờ phản hồi'],
                     ['25/KN-STP', '11/2026/HC-ST', 'Tòa án nhân dân cấp cao tại Hà Nội', '20/05/2026', 'Đã có phản hồi']
                 ]
@@ -937,17 +937,17 @@
                 ],
                 rows: [
                     ['18/YC-STP', '22/QĐ-GQBT', 'Sở Tư pháp Hà Nội', '05/08/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['-', '15/QĐ-GQBT', 'UBND Quận Cầu Giấy', '-', 'Lưu nháp'],
+                    ['29/YC-STP', '15/QĐ-GQBT', 'UBND Quận Cầu Giấy', '28/07/2026', 'Đã gửi - Chờ phản hồi'],
                     ['11/YC-STP', '08/QĐ-GQBT', 'Cục Thi hành án dân sự Hà Nội', '18/07/2026', 'Đã thực hiện'],
                     ['19/YC-STP', '31/QĐ-GQBT', 'UBND Quận Đống Đa', '12/07/2026', 'Đã có phản hồi'],
                     ['20/YC-STP', '19/QĐ-GQBT', 'Sở Tài nguyên và Môi trường', '08/07/2026', 'Đã gửi - Chờ phản hồi'],
                     ['21/YC-STP', '05/QĐ-GQBT', 'UBND huyện Thanh Trì', '01/07/2026', 'Đã thực hiện'],
-                    ['-', '42/QĐ-GQBT', 'Cục Hải quan TP. Hà Nội', '-', 'Lưu nháp'],
+                    ['26/YC-STP', '42/QĐ-GQBT', 'Cục Hải quan TP. Hà Nội', '27/06/2026', 'Đã gửi - Chờ phản hồi'],
                     ['22/YC-STP', '14/QĐ-GQBT', 'UBND Quận Long Biên', '24/06/2026', 'Không thực hiện'],
                     ['23/YC-STP', '27/QĐ-GQBT', 'Chi cục THADS huyện Hoài Đức', '16/06/2026', 'Đã có phản hồi'],
                     ['24/YC-STP', '33/QĐ-GQBT', 'UBND Quận Hà Đông', '10/06/2026', 'Đã thực hiện'],
                     ['25/YC-STP', '17/QĐ-GQBT', 'Sở Xây dựng TP. Hà Nội', '02/06/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['-', '50/QĐ-GQBT', 'UBND huyện Sóc Sơn', '-', 'Lưu nháp'],
+                    ['30/YC-STP', '50/QĐ-GQBT', 'UBND huyện Sóc Sơn', '29/05/2026', 'Đã gửi - Chờ phản hồi'],
                     ['27/YC-STP', '09/QĐ-GQBT', 'UBND Quận Nam Từ Liêm', '26/05/2026', 'Đã có phản hồi'],
                     ['28/YC-STP', '12/QĐ-GQBT', 'Chi cục THADS Quận Hai Bà Trưng', '18/05/2026', 'Đã thực hiện']
                 ]
@@ -986,17 +986,17 @@
                 ],
                 rows: [
                     ['21/KN-STP', 'Quyết định hoàn trả', '89/QĐ-HT', 'Sở Tư pháp Hà Nội', '06/08/2026', 'Đã gửi - Chờ phản hồi'],
-                    ['-', 'Quyết định giảm mức hoàn trả', '12/QĐ-GMHT', 'UBND Quận Cầu Giấy', '-', 'Lưu nháp'],
+                    ['32/KN-STP', 'Quyết định giảm mức hoàn trả', '12/QĐ-GMHT', 'UBND Quận Cầu Giấy', '30/07/2026', 'Đã gửi - Chờ phản hồi'],
                     ['16/KN-STP', 'Quyết định hoàn trả', '45/QĐ-HT', 'Cục Thi hành án dân sự Hà Nội', '22/07/2026', 'Đã có phản hồi'],
                     ['22/KN-STP', 'Quyết định hoàn trả', '52/QĐ-HT', 'UBND Quận Ba Đình', '17/07/2026', 'Đã thực hiện'],
                     ['23/KN-STP', 'Quyết định giảm mức hoàn trả', '08/QĐ-GMHT', 'Sở Nông nghiệp và PTNT', '11/07/2026', 'Đã gửi - Chờ phản hồi'],
                     ['24/KN-STP', 'Quyết định hoàn trả', '60/QĐ-HT', 'UBND huyện Gia Lâm', '04/07/2026', 'Không thực hiện'],
-                    ['-', 'Quyết định hoàn trả', '71/QĐ-HT', 'Sở Giao thông Vận tải', '-', 'Lưu nháp'],
+                    ['29/KN-STP', 'Quyết định hoàn trả', '71/QĐ-HT', 'Sở Giao thông Vận tải', '30/06/2026', 'Đã gửi - Chờ phản hồi'],
                     ['25/KN-STP', 'Quyết định giảm mức hoàn trả', '15/QĐ-GMHT', 'UBND Quận Hoàng Mai', '26/06/2026', 'Đã có phản hồi'],
                     ['26/KN-STP', 'Quyết định hoàn trả', '82/QĐ-HT', 'Chi cục THADS huyện Mê Linh', '20/06/2026', 'Đã thực hiện'],
                     ['27/KN-STP', 'Quyết định hoàn trả', '39/QĐ-HT', 'UBND Quận Bắc Từ Liêm', '14/06/2026', 'Đã gửi - Chờ phản hồi'],
                     ['28/KN-STP', 'Quyết định giảm mức hoàn trả', '20/QĐ-GMHT', 'Sở Y tế TP. Hà Nội', '07/06/2026', 'Đã có phản hồi'],
-                    ['-', 'Quyết định hoàn trả', '95/QĐ-HT', 'UBND huyện Chương Mỹ', '-', 'Lưu nháp'],
+                    ['33/KN-STP', 'Quyết định hoàn trả', '95/QĐ-HT', 'UBND huyện Chương Mỹ', '03/06/2026', 'Đã gửi - Chờ phản hồi'],
                     ['30/KN-STP', 'Quyết định hoàn trả', '104/QĐ-HT', 'UBND Quận Thanh Xuân', '29/05/2026', 'Đã thực hiện'],
                     ['31/KN-STP', 'Quyết định giảm mức hoàn trả', '25/QĐ-GMHT', 'Cục Thuế TP. Hà Nội', '21/05/2026', 'Đã gửi - Chờ phản hồi']
                 ]
@@ -1582,7 +1582,7 @@
 
         function getStatusClass(status) {
             if (!status) return 'draft';
-            if (status.includes('Lưu nháp') || status.includes('Đang xây dựng')) return 'draft';
+            if (status.includes('Đang xây dựng')) return 'draft';
             if (status.includes('Chờ') || status.includes('Đang hỗ trợ')) return 'waiting';
             if (status.includes('Đã gửi') || status.includes('Đang triển khai') || status.includes('Đã có phản hồi')) return 'active';
             if (status.includes('Đã thực hiện') || status.includes('Đã hoàn thành') || status.includes('Đã hướng dẫn xong') || status.includes('Đã ban hành') || status.includes('Hoàn thành') || status.includes('Người dân đã nộp')) return 'done';
@@ -1604,7 +1604,8 @@
                 `;
             }
             const status = row[row.length - 1];
-            const canEdit = status === 'Lưu nháp';
+            // Bản ghi được gửi ngay khi thêm mới; chỉ cho sửa/xóa khi chưa có phản hồi
+            const canEdit = status === 'Đã gửi - Chờ phản hồi';
             const canRespond = status === 'Đã gửi - Chờ phản hồi' || status === 'Đã có phản hồi';
             const editDisabled = canEdit ? '' : 'disabled';
             const responseDisabled = canRespond ? '' : 'disabled';
@@ -1612,7 +1613,6 @@
                 <div style="display:flex; gap:6px; justify-content:center;">
                     <button data-admin-icon-normalized="1" class="icon-btn edit ${editDisabled}" ${editDisabled} title="Chỉnh sửa" onclick="event.stopPropagation(); openForm('edit', ${index})"><i class="fa-solid fa-pen-to-square"></i></button>
                     <button data-admin-icon-normalized="1" class="icon-btn delete ${editDisabled}" ${editDisabled} title="Xóa" onclick="event.stopPropagation(); confirmDelete(${index})"><i class="fa-solid fa-trash"></i></button>
-                    <button data-admin-icon-normalized="1" class="icon-btn submit ${editDisabled}" ${editDisabled} title="${config.sendLabel || 'Gửi kiến nghị'}" onclick="event.stopPropagation(); sendWorkflow(${index})"><i class="fa-solid fa-paper-plane"></i></button>
                     <button data-admin-icon-normalized="1" class="icon-btn sign ${responseDisabled}" ${responseDisabled} title="Cập nhật phản hồi" onclick="event.stopPropagation(); openResponseModal(${index})"><i class="fa-solid fa-reply"></i></button>
                 </div>
             `;
@@ -1793,7 +1793,7 @@
             document.getElementById('detailPanel').classList.add('visible');
             document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${mode === 'new' ? 'Thêm mới' : mode === 'edit' ? 'Chỉnh sửa' : 'Xem chi tiết'} ${config.title.toLowerCase()}`;
             document.getElementById('formMode').innerText = mode === 'new' ? 'Thêm mới' : mode === 'edit' ? 'Chỉnh sửa' : 'Chỉ xem';
-            document.getElementById('formStatus').innerText = row ? row[row.length - 1] : (config.simple ? 'Đang nhập' : 'Lưu nháp');
+            document.getElementById('formStatus').innerText = row ? row[row.length - 1] : 'Đang nhập';
             document.getElementById('formFields').innerHTML = config.fields.map(renderField).join('');
             document.getElementById('textareaFields').innerHTML = (config.textareas || []).map(renderTextareaField).join('');
             documents = [
@@ -1802,7 +1802,7 @@
             ];
             docReadOnly = mode === 'view';
             renderDocuments();
-            renderFormActions(row ? row[row.length - 1] : (config.simple ? 'Đang nhập' : 'Lưu nháp'), mode);
+            renderFormActions(row ? row[row.length - 1] : 'Đang nhập', mode);
             prepareRelatedLookupLinks(rowIndex, mode);
             document.getElementById('detailPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
@@ -1825,9 +1825,12 @@
                 `;
                 return;
             }
-            actions.innerHTML = `
+            // Thêm mới: lưu và gửi ngay (trạng thái "Đã gửi - Chờ phản hồi"); Chỉnh sửa: lưu thông tin, giữ nguyên trạng thái
+            actions.innerHTML = mode === 'edit' ? `
                 <button class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
-                <button class="btn btn-secondary" onclick="saveDraft()"><i class="fa-solid fa-floppy-disk"></i> Lưu nháp</button>
+                <button class="btn btn-primary" onclick="saveWorkflowRecord()"><i class="fa-solid fa-floppy-disk"></i> Lưu thông tin</button>
+            ` : `
+                <button class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> Hủy bỏ</button>
                 <button class="btn btn-primary" onclick="sendFromForm()"><i class="fa-solid fa-paper-plane"></i> ${config.sendLabel || 'Gửi kiến nghị'}</button>
             `;
         }
@@ -1838,26 +1841,17 @@
             renderTable();
         }
 
-        function saveDraft() {
-            showToast('Đã lưu nháp.');
+        function saveWorkflowRecord() {
+            showToast('Đã lưu thông tin.');
             closeForm();
             renderTable();
         }
 
         function sendFromForm() {
-            if (selectedRowIndex !== null && rows[selectedRowIndex]) {
-                rows[selectedRowIndex][rows[selectedRowIndex].length - 1] = 'Đã gửi - Chờ phản hồi';
-            }
-            showToast(`Đã ${config.sendLabel ? config.sendLabel.toLowerCase() : 'gửi kiến nghị'}.`);
-            closeForm();
-            renderTable();
-        }
-
-        function sendWorkflow(index) {
             confirmCallback = () => {
-                rows[index][rows[index].length - 1] = 'Đã gửi - Chờ phản hồi';
-                renderTable();
                 showToast(`Đã ${config.sendLabel ? config.sendLabel.toLowerCase() : 'gửi kiến nghị'}.`);
+                closeForm();
+                renderTable();
             };
             document.getElementById('confirmText').innerText = `Bạn có chắc chắn muốn ${config.sendLabel ? config.sendLabel.toLowerCase() : 'gửi kiến nghị'} này không?`;
             document.getElementById('confirmModal').classList.add('visible');

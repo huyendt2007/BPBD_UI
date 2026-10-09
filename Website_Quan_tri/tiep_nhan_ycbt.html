@@ -506,7 +506,6 @@
                 </div>
 
                 <div class="info-group-title">III. Văn bản làm căn cứ yêu cầu bồi thường</div>
-                <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px;"><i class="fa-solid fa-circle-info"></i> Không bắt buộc. Tự động kế thừa nếu hồ sơ Xác định cơ quan đã nhập.</div>
                 <div class="table-container">
                     <table class="custom-table" style="min-width:760px;">
                         <thead>
@@ -1961,7 +1960,7 @@
         function renderStatusBadge(status) {
             let cls = "badge-draft";
             if (status === "Chờ phân công" || status === "Đang phân công") return BTNN_WF.statusBadge(status);
-            if (status === "Chờ tiếp nhận" || status === "Chờ kiểm tra" || status === "Chờ thụ lý") cls = "badge-pending";
+            if (status === "Chờ tiếp nhận" || status === "Chờ thụ lý") cls = "badge-pending";
             if (status === "Yêu cầu bổ sung") cls = "badge-warning";
             if (status === "Bị từ chối") cls = "badge-danger";
             if (status === "Đang xác minh thiệt hại") cls = "badge-info";
