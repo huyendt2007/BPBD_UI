@@ -633,9 +633,19 @@
         const issuer = unitName(root);
         const governing = GOVERNING_BODY[root] || '';
         const recv = dateParts(rec.receivedAt || rec.date);
-        const items = String(content || '').split(/\r?\n/).map(s => s.replace(/^\s*\d+[.)]\s*/, '').trim()).filter(Boolean);
+        const rawLines = String(content || '').split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+        const items = rawLines.map(s => s.replace(/^(\d+[.)]|-|\+)\s*/, '').trim()).filter(Boolean);
         const address = [rec.nycAddressDetail, rec.nycPhuongXa, rec.nycTinhThanh].filter(Boolean).join(', ');
-        const att = (attachments || []).map(f => esc(f.name || f)).filter(Boolean);
+        
+        let contentHtml = '';
+        if (items.length > 1) {
+            contentHtml = items.map((it, i) => `<p style="margin:4pt 0; text-indent:1cm; text-align:justify;">${i + 1}. ${esc(it)}</p>`).join('');
+        } else if (items.length === 1) {
+            contentHtml = `<p style="margin:4pt 0; text-indent:1cm; text-align:justify;">${esc(items[0])}</p>`;
+        } else {
+            contentHtml = `<p style="margin:4pt 0; text-indent:1cm; font-style:italic; color:#666;">................................................</p>`;
+        }
+
         return `<div class="m08" style="font-family:'Times New Roman',serif; font-size:14pt; line-height:1.5; color:#000;">
             <div style="text-align:right; font-style:italic;">Mẫu số 08/BTNN</div>
             <table style="width:100%; border-collapse:collapse; margin-top:6pt;"><tr>
@@ -654,8 +664,7 @@
             <p style="margin:6pt 0; text-align:justify; text-indent:1cm;">Ngày ${recv ? recv.d : '....'} tháng ${recv ? recv.m : '....'} năm ${recv ? recv.y : '......'}, ${esc(issuer)} đã nhận được hồ sơ yêu cầu bồi thường của Ông/Bà.</p>
             <p style="margin:6pt 0; text-align:justify; text-indent:1cm;">${esc(issuer)} đã tiến hành xem xét hồ sơ yêu cầu bồi thường và xác minh thiệt hại. Trong quá trình xác minh thiệt hại, chúng tôi nhận thấy vụ việc yêu cầu bồi thường của Ông/bà cần phải một số tài liệu, chứng cứ làm cơ sở để xác minh thiệt hại.</p>
             <p style="margin:6pt 0; text-align:justify; text-indent:1cm;">Căn cứ quy định tại khoản 1 Điều 45 Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14 (được sửa đổi, bổ sung bởi Luật số 15/2026/QH16), ${esc(issuer)} yêu cầu Ông/Bà bổ sung tài liệu chứng cứ phục vụ xác minh thiệt hại, cụ thể như sau:</p>
-            ${(items.length ? items : ['................................................']).map((it, i) => `<p style="margin:3pt 0; text-indent:1cm;">${i + 1}. ${esc(it)}</p>`).join('')}
-            ${att.length ? `<p style="margin:6pt 0; text-indent:1cm;">Tài liệu, biểu mẫu hướng dẫn kèm theo: ${att.join('; ')}.</p>` : ''}
+            ${contentHtml}
             <table style="width:100%; border-collapse:collapse; margin-top:18pt;"><tr>
                 <td style="width:50%; vertical-align:top; font-size:12pt;"><b><i>Nơi nhận:</i></b><br>- Như trên;<br>- Lưu: VT, HSVV.</td>
                 <td style="text-align:center; vertical-align:top;"><b>THỦ TRƯỞNG CƠ QUAN</b><br><i>(Ký, ghi rõ họ tên, đóng dấu)</i></td>

@@ -1658,16 +1658,16 @@ function getActionButtons(item) {
         transfer: { icon: 'fa-solid fa-share-from-square', cls: 'transfer', title: 'Chuyển CQGQBT' }
     };
     const on = (key, onclick, title) => `<button class="icon-btn ${ACTIONS[key].cls}" title="${escapeAttr(title || ACTIONS[key].title)}" onclick="${onclick}"><i class="${ACTIONS[key].icon}"></i></button>`;
-    const off = (key, reason) => `<button class="icon-btn disabled-action" title="${escapeAttr(ACTIONS[key].title + ': ' + reason)}" style="opacity: 0.3; pointer-events: none; cursor: not-allowed;"><i class="${ACTIONS[key].icon}"></i></button>`;
+    const off = () => '';
     const notOwner = 'Chỉ cán bộ chủ trì được thực hiện';
     const id = item.id;
     const s = item.status;
     const slots = {
-        accept: off('accept', 'Chỉ khả dụng khi hồ sơ Chờ tiếp nhận hoặc Yêu cầu bổ sung'),
-        supplement: off('supplement', 'Chỉ khả dụng khi hồ sơ Chờ tiếp nhận hoặc Bị trả lại'),
-        reject: off('reject', 'Chỉ khả dụng khi hồ sơ Chờ tiếp nhận hoặc Bị trả lại'),
-        update: off('update', 'Chỉ khả dụng khi hồ sơ Đang thực hiện hoặc Bị trả lại'),
-        transfer: off('transfer', 'Chỉ khả dụng khi hồ sơ Chờ chuyển CQGQBT')
+        accept: '',
+        supplement: '',
+        reject: '',
+        update: '',
+        transfer: ''
     };
     if (s === 'Chờ tiếp nhận') {
         slots.accept = owner ? on('accept', `acceptRequest('${id}')`) : off('accept', notOwner);
@@ -2094,6 +2094,28 @@ function clearXdcqSupplementInputError(inputEl, errorElId) {
 // cán bộ có thể tải về (Word) để chỉnh sửa rồi đính lại; nút "Trình Lãnh đạo" gửi phê duyệt.
 let supplementDraftUpload = '';
 let supplementDraftChoice = ''; // 'generated' | 'uploaded' - bắt buộc chọn trước khi Trình Lãnh đạo
+
+function clearXdcqSupplementInputError(el, errId) {
+    if (el) el.classList.remove('is-invalid');
+    const err = document.getElementById(errId);
+    if (err) err.style.display = 'none';
+}
+
+function validateSupplementContent() {
+    const input = document.getElementById('xdcqSupplementReasonInput');
+    const err = document.getElementById('xdcqSupplementReasonError');
+    const val = input ? input.value.trim() : '';
+    if (!val) {
+        if (input) {
+            input.classList.add('is-invalid');
+            input.focus();
+        }
+        if (err) err.style.display = 'block';
+        return false;
+    }
+    return true;
+}
+
 function openSupplementModal(id) {
     const item = requestList.find(r => r.id === id);
     if (!item) return;
@@ -2105,14 +2127,9 @@ function openSupplementModal(id) {
     xdcqSupplementPrintId = item.id;
     supplementDraftUpload = '';
     supplementDraftChoice = '';
-    const reason = item.supplementReason || "Hồ sơ yêu cầu xác định cơ quan còn thiếu văn bản, tài liệu căn cứ chứng minh theo quy định.";
+    const reason = item.supplementReason || '';
 
-    currentXdcqSupplementFiles = Array.isArray(item.supplementFiles)
-        ? item.supplementFiles.slice()
-        : [
-            { name: 'Huong_dan_ho_so_xac_dinh_co_quan.pdf', size: '180 KB' },
-            { name: 'Mau_van_ban_bo_sung_thong_tin.docx', size: '42 KB' }
-        ];
+    currentXdcqSupplementFiles = [];
 
     const ngayTiepNhan = item.receivedAt || item.date || '01/03/2026';
     const canBo = item.chuTri ? BTNN_WF.userName(item.chuTri) : (item.officer || "Nguyễn Văn Chuyên Viên");
@@ -2137,20 +2154,6 @@ function openSupplementModal(id) {
             <div class="error-message" id="xdcqSupplementReasonError" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
         </div>
 
-        <!-- Khối Tài liệu kèm theo (Nếu có) -->
-        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:15px; margin-bottom:15px; font-family:sans-serif;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <p style="font-weight:600; color:#1e293b; margin:0; font-size:13.5px;"><i class="fa-solid fa-paperclip"></i> Tài liệu, biểu mẫu hướng dẫn kèm theo (Nếu có):</p>
-                <div>
-                    <input type="file" id="supplementFileInput" multiple style="display:none;" onchange="handleXdcqSupplementFilesUpload(this)" accept=".pdf,.doc,.docx,.jpg,.png">
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('supplementFileInput').click()" style="padding:5px 12px; font-size:12.5px;">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> Tải file
-                    </button>
-                </div>
-            </div>
-            <div id="supplementAttachedFilesList"></div>
-        </div>
-
         <!-- Khối Văn bản dự thảo trình Lãnh đạo (bắt buộc): Mẫu số 08/BTNN do hệ thống sinh hoặc bản đã chỉnh sửa -->
         <div id="supplementDraftCard" style="border:2px solid #2563eb; background:#eff6ff; border-radius:8px; padding:15px; font-family:sans-serif;">
             <p style="font-weight:700; color:#1e3a8a; margin:0 0 10px 0; font-size:14px;"><i class="fa-solid fa-file-signature"></i> Văn bản dự thảo trình Lãnh đạo <span style="color:#dc2626;">*</span></p>
@@ -2158,7 +2161,6 @@ function openSupplementModal(id) {
         </div>
     `;
 
-    renderXdcqSupplementFilesList();
     renderSupplementDraftBlock();
 
     modal.style.display = 'flex';
@@ -2196,7 +2198,7 @@ function renderSupplementDraftBlock() {
         </label>
         <label style="${optStyle(supplementDraftChoice === 'uploaded')}">
             <input type="radio" name="supplementDraftChoice" value="uploaded" ${supplementDraftChoice === 'uploaded' ? 'checked' : ''} onchange="chooseSupplementDraft('uploaded')">
-            <b>Dùng văn bản đã chỉnh sửa (tải về Word, chỉnh sửa rồi đính kèm lại)</b>
+            <b>Tải file</b>
             ${supplementDraftChoice === 'uploaded' ? `<div style="margin:6px 0 0 22px; display:flex; flex-wrap:wrap; align-items:center; gap:10px; font-size:12.5px;">
                 ${supplementDraftUpload
                     ? `<span><i class="fa-solid fa-file-word" style="color:#16a34a;"></i> <b>${escapeHtml(supplementDraftUpload)}</b></span>
@@ -2204,12 +2206,13 @@ function renderSupplementDraftBlock() {
                        <a href="#" onclick="event.preventDefault(); removeSupplementDraftUpload();" style="color:var(--danger-color); text-decoration:none;"><i class="fa-solid fa-trash"></i> Xóa file</a>`
                     : `<span style="color:#b45309;">Chưa đính kèm văn bản</span>`}
                 <input type="file" id="supplementDraftUploadInput" style="display:none;" accept=".doc,.docx,.pdf" onchange="uploadSupplementDraft(this)">
-                <button type="button" class="btn btn-secondary btn-sm" onclick="event.preventDefault(); document.getElementById('supplementDraftUploadInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> ${supplementDraftUpload ? 'Thay văn bản' : 'Tải lên văn bản đã chỉnh sửa'}</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="event.preventDefault(); document.getElementById('supplementDraftUploadInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> ${supplementDraftUpload ? 'Thay file' : 'Tải file'}</button>
             </div>` : ''}
         </label>
-        <div style="margin-top:4px; padding:8px 10px; border-radius:6px; background:${chosen ? '#dcfce7' : '#fff7ed'}; color:${chosen ? '#166534' : '#9a3412'}; font-size:13px;">
-            <i class="fa-solid ${chosen ? 'fa-circle-check' : 'fa-triangle-exclamation'}"></i> Văn bản sẽ trình Lãnh đạo: <b>${chosen ? escapeHtml(chosen) : 'Chưa xác định'}</b>
-        </div>
+        ${chosen ? `
+        <div style="margin-top:4px; padding:8px 10px; border-radius:6px; background:#dcfce7; color:#166534; font-size:13px;">
+            <i class="fa-solid fa-circle-check"></i> Văn bản sẽ trình Lãnh đạo: <b>${escapeHtml(chosen)}</b>
+        </div>` : ''}
         <div class="error-message" id="supplementDraftError" style="display:none; color:#dc2626; font-size:12px; margin-top:6px;"></div>`;
 }
 
@@ -2218,11 +2221,13 @@ function chooseSupplementDraft(choice) {
     renderSupplementDraftBlock();
 }
 function previewSupplementDraft() {
+    if (!validateSupplementContent()) return;
     const item = currentSupplementRecord();
     if (item) BTNN_WF.previewDraftDoc(item, currentSupplementContent(), currentXdcqSupplementFiles);
 }
 
 function downloadSupplementDraft(format) {
+    if (!validateSupplementContent()) return;
     const item = currentSupplementRecord();
     if (item) BTNN_WF.downloadDraftDoc(item, currentSupplementContent(), currentXdcqSupplementFiles, format);
 }

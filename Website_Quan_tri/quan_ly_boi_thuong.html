@@ -1597,7 +1597,7 @@
                             <th style="width: 110px; text-align: center;">Hạn xử lý</th>
                             <th style="width: 140px; text-align: center;">Nguồn hồ sơ</th>
                             <th style="width: 140px; text-align: center;">Trạng thái</th>
-                            <th id="claimsActionColHeader" style="width: 190px; text-align: center; min-width: 190px;">Thao tác</th>
+                            <th id="claimsActionColHeader" style="width: 130px; text-align: center; min-width: 120px;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="claimsTableBody">
@@ -6345,7 +6345,7 @@
                 id: "HS_KT1",
                 code: "BT-2026-029",
                 fieldGroup: "hành chính",
-                date: "10/08/2026",
+                date: "02/10/2026",
                 nyc: "Đỗ Thị Ngọc",
                 cardType: "Cá nhân",
                 cardNo: "001091223344",
@@ -6360,21 +6360,26 @@
                 advanceNum: 0,
                 slaDays: 3,
                 slaStatus: "normal",
-                slaText: "Đã tiếp nhận, chờ thụ lý hồ sơ",
+                slaText: "Đã tiếp nhận, chờ Thủ trưởng phê duyệt thụ lý",
                 restoreHonor: false,
                 agency: "UBND Quận Cầu Giấy",
-                deadline: "10/09/2026",
+                deadline: "12/10/2026",
+                nguonHoSo: "Dịch vụ công",
                 files: [{ name: "Don_yeu_cau_boi_thuong_KT1.pdf", url: "#" }],
                 timeline: [
-                    { title: "Nộp hồ sơ bồi thường", date: "05/08/2026", desc: "Hồ sơ tiếp nhận trực tuyến qua cổng dịch vụ công.", status: "completed" },
-                    { title: "Tiếp nhận hồ sơ vụ việc", date: "10/08/2026", desc: "Cán bộ đã tiếp nhận hồ sơ, chuyển sang bước thụ lý.", status: "active" }
+                    { title: "Nộp hồ sơ bồi thường", date: "28/09/2026", desc: "Hồ sơ tiếp nhận trực tuyến qua cổng dịch vụ công.", status: "completed" },
+                    { title: "Tiếp nhận hồ sơ vụ việc", date: "02/10/2026", desc: "Cán bộ đã tiếp nhận hồ sơ, chuyển sang bước thụ lý.", status: "active" }
+                ],
+                thietHaiList: [
+                    { type: 1, calc: "Thiệt hại về hàng hóa bị hư hỏng: 50.000.000 đ", val: 50000000 },
+                    { type: 2, calc: "Thu nhập thực tế bị mất trong 15 ngày: 28.000.000 đ", val: 28000000 }
                 ]
             },
             {
                 id: "HS_KT2",
                 code: "BT-2026-030",
                 fieldGroup: "hình sự",
-                date: "12/08/2026",
+                date: "04/10/2026",
                 nyc: "Bùi Văn Khánh",
                 cardType: "Cá nhân",
                 cardNo: "001092556677",
@@ -6389,21 +6394,26 @@
                 advanceNum: 0,
                 slaDays: 4,
                 slaStatus: "normal",
-                slaText: "Đã tiếp nhận, chờ thụ lý hồ sơ",
+                slaText: "Đã tiếp nhận, chờ Thủ trưởng phê duyệt thụ lý",
                 restoreHonor: true,
                 agency: "Công an Quận Hoàng Mai",
-                deadline: "12/09/2026",
+                deadline: "14/10/2026",
+                nguonHoSo: "Tiếp nhận trực tiếp",
                 files: [{ name: "Don_yeu_cau_boi_thuong_KT2.pdf", url: "#" }],
                 timeline: [
-                    { title: "Nộp hồ sơ bồi thường", date: "07/08/2026", desc: "Hồ sơ tiếp nhận trực tiếp tại bộ phận một cửa.", status: "completed" },
-                    { title: "Tiếp nhận hồ sơ vụ việc", date: "12/08/2026", desc: "Cán bộ đã tiếp nhận hồ sơ, chuyển sang bước thụ lý.", status: "active" }
+                    { title: "Nộp hồ sơ bồi thường", date: "30/09/2026", desc: "Hồ sơ tiếp nhận trực tiếp tại bộ phận một cửa.", status: "completed" },
+                    { title: "Tiếp nhận hồ sơ vụ việc", date: "04/10/2026", desc: "Cán bộ đã tiếp nhận hồ sơ, chuyển sang bước thụ lý.", status: "active" }
+                ],
+                thietHaiList: [
+                    { type: 2, calc: "Thu nhập bị mất trong 10 ngày tạm giam: 15.000.000 đ", val: 15000000 },
+                    { type: 5, calc: "Bồi thường tổn thất tinh thần: 30.000.000 đ", val: 30000000 }
                 ]
             },
             {
                 id: "HS_KT3",
                 code: "BT-2026-031",
                 fieldGroup: "thi hành án dân sự",
-                date: "14/08/2026",
+                date: "05/10/2026",
                 nyc: "Công ty TNHH Phát Đạt",
                 cardType: "Tổ chức",
                 cardNo: "0102567890",
@@ -6418,14 +6428,265 @@
                 advanceNum: 0,
                 slaDays: 2,
                 slaStatus: "warning",
-                slaText: "Đã tiếp nhận, chờ thụ lý hồ sơ (sắp đến hạn)",
+                slaText: "Đã tiếp nhận, chờ Thủ trưởng phê duyệt thụ lý (sắp đến hạn)",
                 restoreHonor: false,
                 agency: "Chi cục Thi hành án dân sự Thanh Trì",
-                deadline: "20/08/2026",
+                deadline: "15/10/2026",
+                nguonHoSo: "Nhận qua bưu điện/Bưu chính",
                 files: [{ name: "Don_yeu_cau_boi_thuong_KT3.pdf", url: "#" }],
                 timeline: [
-                    { title: "Nộp hồ sơ bồi thường", date: "09/08/2026", desc: "Hồ sơ tiếp nhận qua bưu điện/bưu chính.", status: "completed" },
-                    { title: "Tiếp nhận hồ sơ vụ việc", date: "14/08/2026", desc: "Cán bộ đã tiếp nhận hồ sơ, chuyển sang bước thụ lý.", status: "active" }
+                    { title: "Nộp hồ sơ bồi thường", date: "01/10/2026", desc: "Hồ sơ tiếp nhận qua bưu điện/bưu chính.", status: "completed" },
+                    { title: "Tiếp nhận hồ sơ vụ việc", date: "05/10/2026", desc: "Cán bộ đã tiếp nhận hồ sơ, chuyển sang bước thụ lý.", status: "active" }
+                ],
+                thietHaiList: [
+                    { type: 1, calc: "Thiệt hại dây chuyền ngưng trệ hư hỏng vật tư: 120.000.000 đ", val: 120000000 },
+                    { type: 2, calc: "Thu nhập thực tế bị mất do hủy đơn hàng: 200.000.000 đ", val: 200000000 }
+                ]
+            },
+            {
+                id: "HS_TT4",
+                code: "BT-2026-051",
+                fieldGroup: "hành chính",
+                date: "08/10/2026",
+                nyc: "Nguyễn Thị Phương Thảo",
+                cardType: "Cá nhân",
+                cardNo: "001198003456",
+                address: "Số 45 phố Lý Thường Kiệt, Hoàn Kiếm, Hà Nội",
+                phone: "0912889900",
+                role: "Người bị thiệt hại",
+                docBase: "Kết luận nội dung tố cáo số 102/KL-STP xác định hành vi chậm trễ trái quy định",
+                hanhVi: "Chậm trễ cấp phiếu lý lịch tư pháp làm mất cơ hội ký hợp đồng lao động tại nước ngoài.",
+                nhanQua: "Mất thu nhập từ hợp đồng lao động quốc tế trị giá 48.000.000 đ.",
+                status: "Chờ thụ lý",
+                totalNum: 48000000,
+                advanceNum: 0,
+                slaDays: 5,
+                slaStatus: "normal",
+                slaText: "Đã tiếp nhận, chờ Thủ trưởng phê duyệt thụ lý",
+                restoreHonor: false,
+                agency: "Sở Tư pháp TP. Hà Nội",
+                deadline: "18/10/2026",
+                nguonHoSo: "Dịch vụ công",
+                files: [{ name: "Don_yeu_cau_boi_thuong_TT4.pdf", url: "#" }, { name: "Ket_luan_to_cao_102.pdf", url: "#" }],
+                timeline: [
+                    { title: "Nộp hồ sơ bồi thường", date: "03/10/2026", desc: "Hồ sơ tiếp nhận trực tuyến qua cổng dịch vụ công.", status: "completed" },
+                    { title: "Tiếp nhận hồ sơ vụ việc", date: "08/10/2026", desc: "Cán bộ đã tiếp nhận hồ sơ, chuyển sang bước thụ lý.", status: "active" }
+                ],
+                thietHaiList: [
+                    { type: 2, calc: "Thu nhập thực tế bị mất do lỡ hợp đồng: 48.000.000 đ", val: 48000000 }
+                ]
+            },
+            {
+                id: "HS_TT5",
+                code: "BT-2026-052",
+                fieldGroup: "hành chính",
+                date: "07/10/2026",
+                nyc: "Trần Đình Trọng",
+                cardType: "Cá nhân",
+                cardNo: "001094005678",
+                address: "Phường Dịch Vọng Hậu, Cầu Giấy, Hà Nội",
+                phone: "0934567890",
+                role: "Người bị thiệt hại",
+                docBase: "Quyết định hủy Quyết định thu hồi giấy phép kinh doanh số 67/QĐ-UBND",
+                hanhVi: "Thu hồi giấy phép kinh doanh ăn uống không đúng trình tự, gây đình trệ chuỗi nhà hàng.",
+                nhanQua: "Thiệt hại doanh thu và chi phí thuê mặt bằng kinh doanh trong 45 ngày.",
+                status: "Chờ thụ lý",
+                totalNum: 185000000,
+                advanceNum: 0,
+                slaDays: 6,
+                slaStatus: "normal",
+                slaText: "Đã tiếp nhận, chờ Thủ trưởng phê duyệt thụ lý",
+                restoreHonor: false,
+                agency: "UBND Quận Cầu Giấy",
+                deadline: "17/10/2026",
+                nguonHoSo: "Tiếp nhận trực tiếp",
+                files: [{ name: "Don_yeu_cau_boi_thuong_TT5.pdf", url: "#" }, { name: "Quyet_dinh_huy_thu_hoi_GPKD.pdf", url: "#" }],
+                timeline: [
+                    { title: "Nộp hồ sơ bồi thường", date: "02/10/2026", desc: "Hồ sơ tiếp nhận trực tiếp tại bộ phận một cửa.", status: "completed" },
+                    { title: "Tiếp nhận hồ sơ vụ việc", date: "07/10/2026", desc: "Cán bộ đã tiếp nhận hồ sơ, chuyển sang bước thụ lý.", status: "active" }
+                ],
+                thietHaiList: [
+                    { type: 1, calc: "Chi phí thuê mặt bằng trong thời gian bị thu hồi GPKD: 95.000.000 đ", val: 95000000 },
+                    { type: 2, calc: "Thu nhập thực tế bị mất: 90.000.000 đ", val: 90000000 }
+                ]
+            },
+            {
+                id: "HS_TT6",
+                code: "BT-2026-053",
+                fieldGroup: "hành chính",
+                date: "06/10/2026",
+                nyc: "Công ty Cổ phần Vận tải Thăng Long",
+                cardType: "Tổ chức",
+                cardNo: "0109887766",
+                address: "Phường Giáp Bát, Hoàng Mai, Hà Nội",
+                phone: "0243888777",
+                role: "Người bị thiệt hại",
+                docBase: "Quyết định giải quyết khiếu nại số 54/QĐ-GQKN kết luận việc tạm giữ sai luật",
+                hanhVi: "Tạm giữ đoàn xe vận tải hàng hóa nông sản quá thời hạn quy định làm hư hỏng hàng hóa.",
+                nhanQua: "Hàng hóa nông sản tươi sống bị thối rữa và phương tiện bị hư hỏng hệ thống làm lạnh.",
+                status: "Chờ thụ lý",
+                totalNum: 420000000,
+                advanceNum: 50000000,
+                advanceRecKenh: "chuyen-khoan",
+                advanceBankUser: "CTCP VAN TAI THANG LONG",
+                advanceBankAccount: "19028889998888",
+                advanceBankName: "Techcombank",
+                advanceBankBranch: "Chi nhánh Hoàng Mai",
+                advanceTinhThan: 0,
+                advanceKhac: 50000000,
+                advanceKhacName: "Tạm ứng thiệt hại hàng hóa hư hỏng",
+                slaDays: 4,
+                slaStatus: "normal",
+                slaText: "Đã tiếp nhận, chờ Thủ trưởng phê duyệt thụ lý",
+                restoreHonor: false,
+                agency: "UBND Quận Hoàng Mai",
+                deadline: "16/10/2026",
+                nguonHoSo: "Dịch vụ công",
+                files: [{ name: "Don_yeu_cau_boi_thuong_TT6.pdf", url: "#" }, { name: "Bien_ban_giai_quyet_khieu_nai.pdf", url: "#" }],
+                timeline: [
+                    { title: "Nộp hồ sơ bồi thường", date: "01/10/2026", desc: "Hồ sơ tiếp nhận trực tuyến qua cổng dịch vụ công.", status: "completed" },
+                    { title: "Tiếp nhận hồ sơ vụ việc", date: "06/10/2026", desc: "Cán bộ đã tiếp nhận hồ sơ, chuyển sang bước thụ lý.", status: "active" }
+                ],
+                thietHaiList: [
+                    { type: 1, calc: "Thiệt hại hàng hóa nông sản bị thối rữa: 280.000.000 đ", val: 280000000 },
+                    { type: 1, calc: "Chi phí sửa chữa hệ thống làm lạnh xe tải: 60.000.000 đ", val: 60000000 },
+                    { type: 2, calc: "Thu nhập thực tế bị mất do xe ngừng hoạt động: 80.000.000 đ", val: 80000000 }
+                ]
+            },
+            {
+                id: "HS_TT7",
+                code: "BT-2026-054",
+                fieldGroup: "hình sự",
+                date: "05/10/2026",
+                nyc: "Vũ Quang Vinh",
+                cardType: "Cá nhân",
+                cardNo: "001097008899",
+                address: "Phường Khương Đình, Thanh Xuân, Hà Nội",
+                phone: "0976554433",
+                role: "Người bị thiệt hại",
+                docBase: "Quyết định đình chỉ vụ án và giải tỏa kê biên số 89/QĐ-ĐC",
+                hanhVi: "Kê biên phong tỏa xe ô tô con cá nhân kéo dài 4 tháng trong vụ án đã đình chỉ.",
+                nhanQua: "Phương tiện bị rỉ sét, xuống cấp và người yêu cầu phải thuê xe đi lại phục vụ công tác.",
+                status: "Chờ thụ lý",
+                totalNum: 62000000,
+                advanceNum: 0,
+                restoreHonor: true,
+                slaDays: 3,
+                slaStatus: "normal",
+                slaText: "Đã tiếp nhận, chờ Thủ trưởng phê duyệt thụ lý",
+                agency: "Công an Quận Thanh Xuân",
+                deadline: "15/10/2026",
+                nguonHoSo: "Nhận qua bưu điện/Bưu chính",
+                files: [{ name: "Don_yeu_cau_boi_thuong_TT7.pdf", url: "#" }, { name: "Quyet_dinh_dinh_chi_89.pdf", url: "#" }],
+                timeline: [
+                    { title: "Nộp hồ sơ bồi thường", date: "30/09/2026", desc: "Hồ sơ tiếp nhận qua đường bưu điện.", status: "completed" },
+                    { title: "Tiếp nhận hồ sơ vụ việc", date: "05/10/2026", desc: "Cán bộ đã tiếp nhận hồ sơ, chuyển sang bước thụ lý.", status: "active" }
+                ],
+                thietHaiList: [
+                    { type: 1, calc: "Chi phí bảo dưỡng phục hồi xe ô tô bị xuống cấp: 32.000.000 đ", val: 32000000 },
+                    { type: 6, calc: "Chi phí thuê phương tiện đi lại trong 4 tháng: 30.000.000 đ", val: 30000000 }
+                ]
+            },
+            {
+                id: "HS_TT8",
+                code: "BT-2026-055",
+                fieldGroup: "hành chính",
+                date: "04/10/2026",
+                nyc: "Lê Minh Tuấn",
+                cardType: "Cá nhân",
+                cardNo: "001091003322",
+                address: "Số 88 đường Láng Hạ, Đống Đa, Hà Nội",
+                phone: "0903221100",
+                role: "Người bị thiệt hại",
+                docBase: "Bản án hành chính phúc thẩm số 34/2026/HC-PT tuyên hủy quyết định cưỡng chế",
+                hanhVi: "Cưỡng chế thu hồi ki-ốt kinh doanh thương mại trái quy định tại khu vực chợ tạm.",
+                nhanQua: "Ki-ốt bị phá dỡ, hàng hóa thiết bị điện gia dụng bên trong bị hư hỏng hoàn toàn.",
+                status: "Chờ thụ lý",
+                totalNum: 135000000,
+                advanceNum: 0,
+                slaDays: 2,
+                slaStatus: "warning",
+                slaText: "Đã tiếp nhận, chờ Thủ trưởng phê duyệt thụ lý (sắp đến hạn)",
+                restoreHonor: false,
+                agency: "UBND Quận Đống Đa",
+                deadline: "14/10/2026",
+                nguonHoSo: "Tiếp nhận trực tiếp",
+                files: [{ name: "Don_yeu_cau_boi_thuong_TT8.pdf", url: "#" }, { name: "Ban_an_phuc_tham_34.pdf", url: "#" }],
+                timeline: [
+                    { title: "Nộp hồ sơ bồi thường", date: "29/09/2026", desc: "Hồ sơ tiếp nhận trực tiếp tại bộ phận một cửa.", status: "completed" },
+                    { title: "Tiếp nhận hồ sơ vụ việc", date: "04/10/2026", desc: "Cán bộ đã tiếp nhận hồ sơ, chuyển sang bước thụ lý.", status: "active" }
+                ],
+                thietHaiList: [
+                    { type: 1, calc: "Thiệt hại tài sản ki-ốt và trang thiết bị hư hỏng: 85.000.000 đ", val: 85000000 },
+                    { type: 2, calc: "Thu nhập thực tế bị mất trong 2 tháng ngừng buôn bán: 50.000.000 đ", val: 50000000 }
+                ]
+            },
+            {
+                id: "HS_TT9",
+                code: "BT-2026-056",
+                fieldGroup: "thi hành án dân sự",
+                date: "03/10/2026",
+                nyc: "Ngô Thị Bích Liên",
+                cardType: "Cá nhân",
+                cardNo: "001095004455",
+                address: "Phường Quan Hoa, Cầu Giấy, Hà Nội",
+                phone: "0982334455",
+                role: "Người bị thiệt hại",
+                docBase: "Quyết định hủy bỏ biện pháp kê biên tài sản số 11/QĐ-THADS",
+                hanhVi: "Kê biên phong tỏa nhà đất thuộc sở hữu riêng của người yêu cầu bồi thường không thuộc diện phải thi hành án.",
+                nhanQua: "Không thực hiện được giao dịch chuyển nhượng bất động sản đã ký đặt cọc, bị phạt cọc 200.000.000 đ.",
+                status: "Chờ thụ lý",
+                totalNum: 210000000,
+                advanceNum: 0,
+                slaDays: 1,
+                slaStatus: "warning",
+                slaText: "Đã tiếp nhận, chờ Thủ trưởng phê duyệt thụ lý (sắp đến hạn)",
+                restoreHonor: false,
+                agency: "Chi cục Thi hành án dân sự Cầu Giấy",
+                deadline: "13/10/2026",
+                nguonHoSo: "Dịch vụ công",
+                files: [{ name: "Don_yeu_cau_boi_thuong_TT9.pdf", url: "#" }, { name: "Hop_dong_dat_coc_phat_coc.pdf", url: "#" }],
+                timeline: [
+                    { title: "Nộp hồ sơ bồi thường", date: "28/09/2026", desc: "Hồ sơ tiếp nhận trực tuyến qua cổng dịch vụ công.", status: "completed" },
+                    { title: "Tiếp nhận hồ sơ vụ việc", date: "03/10/2026", desc: "Cán bộ đã tiếp nhận hồ sơ, chuyển sang bước thụ lý.", status: "active" }
+                ],
+                thietHaiList: [
+                    { type: 1, calc: "Thiệt hại do bị phạt cọc hợp đồng chuyển nhượng nhà đất: 200.000.000 đ", val: 200000000 },
+                    { type: 6, calc: "Chi phí công chứng và thẩm định pháp lý: 10.000.000 đ", val: 10000000 }
+                ]
+            },
+            {
+                id: "HS_TT10",
+                code: "BT-2026-057",
+                fieldGroup: "hành chính",
+                date: "02/10/2026",
+                nyc: "Đặng Hoàng Nam",
+                cardType: "Cá nhân",
+                cardNo: "001093007788",
+                address: "Phường Phan Chu Trinh, Hoàn Kiếm, Hà Nội",
+                phone: "0916778899",
+                role: "Người bị thiệt hại",
+                docBase: "Quyết định hủy bỏ biện pháp khẩn cấp tạm thời số 09/QĐ-TA",
+                hanhVi: "Áp dụng biện pháp khẩn cấp tạm thời cấm xuất cảnh trái pháp luật làm lỡ chuyến công tác ký kết hợp đồng.",
+                nhanQua: "Thiệt hại tiền vé máy bay, khách sạn đã thanh toán không hoàn lại và mất hợp đồng hợp tác.",
+                status: "Chờ thụ lý",
+                totalNum: 95000000,
+                advanceNum: 0,
+                slaDays: 3,
+                slaStatus: "normal",
+                slaText: "Đã tiếp nhận, chờ Thủ trưởng phê duyệt thụ lý",
+                restoreHonor: false,
+                agency: "Tòa án nhân dân Thành phố Hà Nội",
+                deadline: "12/10/2026",
+                nguonHoSo: "Tiếp nhận trực tiếp",
+                files: [{ name: "Don_yeu_cau_boi_thuong_TT10.pdf", url: "#" }, { name: "Quyet_dinh_huy_cam_xuat_canh.pdf", url: "#" }],
+                timeline: [
+                    { title: "Nộp hồ sơ bồi thường", date: "27/09/2026", desc: "Hồ sơ tiếp nhận trực tiếp tại bộ phận một cửa.", status: "completed" },
+                    { title: "Tiếp nhận hồ sơ vụ việc", date: "02/10/2026", desc: "Cán bộ đã tiếp nhận hồ sơ, chuyển sang bước thụ lý.", status: "active" }
+                ],
+                thietHaiList: [
+                    { type: 1, calc: "Thiệt hại chi phí vé máy bay, khách sạn không hoàn lại: 45.000.000 đ", val: 45000000 },
+                    { type: 2, calc: "Thu nhập thực tế bị mất từ hợp đồng thương mại: 50.000.000 đ", val: 50000000 }
                 ]
             },
             {
@@ -7389,10 +7650,13 @@
             // Dynamically assign mock dates in current month so they bypass the default date filters on load
             claimsList.forEach((claim, idx) => {
                 if (claim.id && claim.id.startsWith('HS')) {
-                    const d = String((idx % 5) + 1).padStart(2, '0');
+                    const dayNum = (idx % 8) + 1;
+                    const d = String(dayNum).padStart(2, '0');
                     const m = String(today.getMonth() + 1).padStart(2, '0');
                     const y = today.getFullYear();
                     claim.date = `${d}/${m}/${y}`;
+                    const dlDay = String(Math.min(dayNum + 10, 28)).padStart(2, '0');
+                    claim.deadline = `${dlDay}/${m}/${y}`;
                     if (claim.timeline && claim.timeline.length > 0) {
                         claim.timeline.forEach((item) => {
                             item.date = `${d}/${m}/${y}`;
@@ -7572,34 +7836,30 @@
             const isAssignedToOther = isClaimAssignedToOther(item, currentRole, currentOfficer);
             const esc = v => String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             const on = (key, onclick, title) => `<button class="icon-btn ${CLAIM_LIST_ACTIONS[key].cls}" data-action="${key}" title="${esc(title || CLAIM_LIST_ACTIONS[key].title)}" onclick="event.stopPropagation(); ${onclick}"><i class="${CLAIM_LIST_ACTIONS[key].icon}"></i></button>`;
-            const off = (key, reason) => `<button class="icon-btn disabled-action" data-action="${key}" data-disabled="1" title="${esc(CLAIM_LIST_ACTIONS[key].title + ': ' + reason)}" style="opacity: 0.3; pointer-events: none; cursor: not-allowed;"><i class="${CLAIM_LIST_ACTIONS[key].icon}"></i></button>`;
 
-            const NOT_OFFICER = 'Chỉ Cán bộ xử lý hồ sơ được thực hiện';
-            const NOT_LEADER = 'Chỉ Thủ trưởng cơ quan giải quyết bồi thường được thực hiện';
-            const slots = {
-                accept: off('accept', 'Chỉ khả dụng khi vụ việc ở trạng thái Chờ tiếp nhận hoặc Yêu cầu bổ sung'),
-                supplement: off('supplement', 'Chỉ khả dụng khi vụ việc ở trạng thái Chờ tiếp nhận hoặc Yêu cầu bổ sung'),
-                reject: off('reject', 'Chỉ khả dụng khi vụ việc ở trạng thái Chờ tiếp nhận, Yêu cầu bổ sung hoặc Chờ thụ lý'),
-                thuly: off('thuly', 'Chỉ khả dụng khi vụ việc ở trạng thái Chờ thụ lý'),
-                update: off('update', 'Chỉ khả dụng khi vụ việc đang trong quá trình giải quyết (từ Đang xác minh thiệt hại đến Chờ thực thi, Hoãn/Tạm đình chỉ giải quyết)')
-            };
-
+            // Quyết định: Ẩn hoàn toàn các nút thao tác không được phép, không hiển thị dạng mờ
             if (isAssignedToOther) {
-                const lockReason = `Vụ việc được cử cho cán bộ ${getClaimOfficerNamesText(item)} giải quyết. Bạn chỉ có quyền xem`;
-                Object.keys(slots).forEach(k => { slots[k] = off(k, lockReason); });
-            } else if (status === 'Chờ tiếp nhận' || status === 'Yêu cầu bổ sung') {
-                // Tiếp nhận: mở màn nhập liệu/tiếp nhận hồ sơ; với hồ sơ Yêu cầu bổ sung, màn hình hiển thị kèm thông tin yêu cầu bổ sung đã nhập
-                slots.accept = isLeader ? off('accept', NOT_OFFICER) : on('accept', `openInlineClaimForm('${id}')`, status === 'Yêu cầu bổ sung' ? 'Tiếp nhận hồ sơ bổ sung' : 'Tiếp nhận');
-                slots.supplement = isLeader ? off('supplement', NOT_OFFICER) : on('supplement', `triggerRequireAdditionClaim('${id}')`);
-                slots.reject = isLeader ? off('reject', NOT_OFFICER) : on('reject', `triggerRejectClaim('${id}', 'Bị từ chối')`);
-            } else if (status === 'Chờ thụ lý') {
-                // Thụ lý: mở bước Cử người giải quyết; Từ chối: Từ chối thụ lý - thao tác của Thủ trưởng cơ quan giải quyết
-                slots.thuly = isLeader ? on('thuly', `triggerLeaderAcceptClaim('${id}')`, 'Thụ lý (Cử người giải quyết)') : off('thuly', NOT_LEADER);
-                slots.reject = isLeader ? on('reject', `triggerRejectClaim('${id}', 'Từ chối thụ lý')`, 'Từ chối thụ lý') : off('reject', NOT_LEADER);
-            } else if (CLAIM_UPDATE_PROFILE_STATES.includes(status)) {
-                slots.update = isLeader ? off('update', NOT_OFFICER) : on('update', `showCaseDetail('${id}', true)`);
+                return '';
             }
-            return slots.accept + slots.supplement + slots.reject + slots.thuly + slots.update;
+
+            let buttonsHtml = '';
+            if (status === 'Chờ tiếp nhận' || status === 'Yêu cầu bổ sung') {
+                if (!isLeader) {
+                    buttonsHtml += on('accept', `openInlineClaimForm('${id}')`, status === 'Yêu cầu bổ sung' ? 'Tiếp nhận hồ sơ bổ sung' : 'Tiếp nhận');
+                    buttonsHtml += on('supplement', `triggerRequireAdditionClaim('${id}')`);
+                    buttonsHtml += on('reject', `triggerRejectClaim('${id}', 'Bị từ chối')`);
+                }
+            } else if (status === 'Chờ thụ lý') {
+                if (isLeader) {
+                    buttonsHtml += on('thuly', `triggerLeaderAcceptClaim('${id}')`, 'Thụ lý (Cử người giải quyết)');
+                    buttonsHtml += on('reject', `triggerRejectClaim('${id}', 'Từ chối thụ lý')`, 'Từ chối thụ lý');
+                }
+            } else if (CLAIM_UPDATE_PROFILE_STATES.includes(status)) {
+                if (!isLeader) {
+                    buttonsHtml += on('update', `showCaseDetail('${id}', true)`);
+                }
+            }
+            return buttonsHtml;
         }
 
         // RENDER CLAIMS TABLE
