@@ -3134,6 +3134,40 @@ const systemPermissions = [
  ]
  }
  ]
+ },
+{
+ "id":  "WebAdmin-10-04",
+ "name":  "Theo dõi vụ việc tại Tòa án",
+ "children":  [
+{
+ "id":  "WebAdmin-10-04-01",
+ "name":  "Tra cứu vụ việc tại Tòa án",
+ "children":  [
+
+ ]
+ },
+{
+ "id":  "WebAdmin-10-04-02",
+ "name":  "Thêm mới vụ việc tại Tòa án",
+ "children":  [
+
+ ]
+ },
+{
+ "id":  "WebAdmin-10-04-03",
+ "name":  "Cập nhật vụ việc tại Tòa án",
+ "children":  [
+
+ ]
+ },
+{
+ "id":  "WebAdmin-10-04-04",
+ "name":  "Xóa vụ việc tại Tòa án",
+ "children":  [
+
+ ]
+ }
+ ]
  }
                                           ]
                          },

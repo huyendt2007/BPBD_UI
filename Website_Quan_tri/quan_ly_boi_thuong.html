@@ -4318,7 +4318,314 @@
 
     <!-- Luồng phân công - phê duyệt dùng chung BTNN: nguồn hồ sơ YCBT nhận từ Xác định CQGQBT -->
     <script src="btnn_luong_xu_ly.js"></script>
-    <!-- MAIN DATA AND LOGIC SCRIPTS -->
+    <!-- Cử người giải quyết (nhiều cán bộ theo Cơ cấu tổ chức), Xác minh thiệt hại nhiều lần, Văn bản làm căn cứ yêu cầu bồi thường -->
+    <script>
+        function ycEsc(v) {
+            return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        // ---------- Cơ quan giải quyết bồi thường -> đơn vị gốc trong Cơ cấu tổ chức (BTNN_WF) ----------
+        // Tên cơ quan trong dữ liệu mẫu được viết tắt/khác cách viết so với tên đơn vị nên dùng bảng ánh xạ tường minh,
+        // sau đó mới so khớp theo tên đơn vị gốc.
+        const CLAIM_AGENCY_UNIT_MAP = {
+            'so tu phap ha noi': 'STP-HN',
+            'so tu phap tp. ha noi': 'STP-HN',
+            'so tu phap tp ha noi': 'STP-HN',
+            'so tu phap thanh pho ha noi': 'STP-HN',
+            'ubnd quan cau giay': 'UBND-CG',
+            'ubnd quan hoang mai': 'UBND-HM',
+            'cong an quan thanh xuan': 'CA-TX',
+            'toa an nhan dan tp. ha noi': 'TAND-HN',
+            'toa an nhan dan thanh pho ha noi': 'TAND-HN',
+            'toa an nhan dan quan hoan kiem': 'TAND-HK',
+            'so tu phap hai phong': 'STP-HP',
+            'cuc thi hanh an dan su tp. hai phong': 'THADS-HP',
+            'ubnd tinh lam dong': 'UBND-LD',
+            'ubnd quan dong da': 'UBND-DD',
+            'toa an nhan dan tinh lam dong': 'TAND-LD',
+            'cuc thi hanh an dan su ha noi': 'THADS-HN',
+            'vien kiem sat nhan dan toi cao': 'VKSNDTC',
+            'ubnd thanh pho ha noi': 'UBND-HN',
+            'vien kiem sat nhan dan quan 1': 'VKS-Q1',
+            'chi cuc thi hanh an dan su binh tan': 'CCTHADS-BT',
+            'chi cuc thuy san binh dinh': 'CCTS-BD',
+            'toa an nhan dan quan lien chieu': 'TAND-LC',
+            'chi cuc thi hanh an dan su cau giay': 'CCTHADS-CG',
+            'toa an nhan dan thanh pho nha trang': 'TAND-NT',
+            'cong an quan hoang mai': 'CA-HM',
+            'chi cuc thi hanh an dan su thanh tri': 'CCTHADS-TT',
+            'vien kiem sat nhan dan tp. hai phong': 'VKS-HP',
+            'cuc thi hanh an dan su tinh lam dong': 'THADS-LD',
+            'ubnd quan hoan kiem': 'UBND-HK'
+        };
+
+        function normalizeAgencyKey(name) {
+            return String(name || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/đ/g, 'd').replace(/\s+/g, ' ').trim();
+        }
+
+        function resolveClaimAgencyUnit(agencyName) {
+            const W = window.BTNN_WF;
+            if (!W || !agencyName) return null;
+            const key = normalizeAgencyKey(agencyName);
+            if (CLAIM_AGENCY_UNIT_MAP[key]) {
+                const u = W.getUnit(CLAIM_AGENCY_UNIT_MAP[key]);
+                if (u) return u;
+            }
+            const byName = W.findRootUnitByName(agencyName);
+            if (byName) return byName;
+            const simplify = s => normalizeAgencyKey(s).replace(/\btp\.\s*/g, 'thanh pho ').replace(/[,.]/g, ' ').replace(/\s+/g, ' ').trim();
+            const target = simplify(agencyName);
+            return W.getRootUnits().find(u => simplify(u.name) === target || simplify(u.name).startsWith(target + ' ')) || null;
+        }
+
+        // Email tài khoản cán bộ: lấy theo tài khoản nếu có, nếu không suy ra từ mã tài khoản
+        function getOfficerAccountEmail(user) {
+            if (!user) return '';
+            return user.email || `${user.id}@moj.gov.vn`;
+        }
+
+        // Bổ sung tài khoản cán bộ theo Cơ cấu tổ chức vào ô "Cán bộ đang đăng nhập" (giả lập), nhóm theo đơn vị gốc
+        function populateOfficerSelectorFromOrg() {
+            const W = window.BTNN_WF;
+            const sel = document.getElementById('currentOfficerSelector');
+            if (!W || !sel) return;
+            const existing = Array.from(sel.options).map(o => o.value);
+            W.getRootUnits().forEach(root => {
+                const users = W.usersInUnitTree(root.id).filter(u => !existing.includes(u.name));
+                if (!users.length) return;
+                const group = document.createElement('optgroup');
+                group.label = root.name;
+                users.forEach(u => {
+                    const opt = document.createElement('option');
+                    opt.value = u.name;
+                    opt.textContent = `${u.name} - ${u.title}`;
+                    group.appendChild(opt);
+                    existing.push(u.name);
+                });
+                sel.appendChild(group);
+            });
+        }
+
+        function renderAppointedOfficersTableHtml(claim) {
+            const list = getClaimAppointedOfficers(claim);
+            if (!list.length) return '<div style="font-size:12.5px; color:#94a3b8; font-style:italic;">Chưa cử người giải quyết.</div>';
+            return `<table class="custom-table" style="background:white; font-size:12.5px;">
+                <thead><tr style="background-color:#f8fafc;">
+                    <th style="width:50px; text-align:center;">STT</th><th>Họ và tên</th><th>Chức vụ</th><th>Email</th><th>Đơn vị</th><th style="width:140px; text-align:center;">Thời điểm cử</th>
+                </tr></thead>
+                <tbody>${list.map((o, i) => `<tr>
+                    <td style="text-align:center;">${i + 1}</td>
+                    <td style="font-weight:600;">${ycEsc(o.name)}</td>
+                    <td>${ycEsc(o.position || '--')}</td>
+                    <td>${ycEsc(o.email || '--')}</td>
+                    <td>${ycEsc(o.unit || '--')}</td>
+                    <td style="text-align:center;">${ycEsc(o.appointedAt || '--')}</td>
+                </tr>`).join('')}</tbody></table>`;
+        }
+
+        // ---------- Xác minh thiệt hại: tài liệu bắt buộc & lịch sử các lần xác minh ----------
+        const XM_REQUIRED_DOC_LABELS = { thuly: 'Văn bản thụ lý', cuNguoi: 'Quyết định cử người giải quyết' };
+        let xmRequiredDocsDraft = { thuly: '', cuNguoi: '' };
+
+        function renderXmRequiredDocs() {
+            Object.keys(XM_REQUIRED_DOC_LABELS).forEach(key => {
+                const box = document.getElementById(`xmReqDocBox_${key}`);
+                if (!box) return;
+                const file = xmRequiredDocsDraft[key];
+                box.innerHTML = file
+                    ? `<i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i><span style="font-weight:600; color:#1e3a8a; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${ycEsc(file)}">${ycEsc(file)}</span>
+                       <a href="javascript:void(0)" onclick="viewPhddMockFile('${ycEsc(file)}')" style="color:#1e40af; font-weight:600; text-decoration:none; font-size:12px;">Xem file</a>
+                       <a href="javascript:void(0)" onclick="removeXmRequiredDoc('${key}')" style="color:#dc2626; font-weight:600; text-decoration:none; font-size:12px;"><i class="fa-solid fa-trash-can"></i> Xóa</a>`
+                    : `<button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('xmReqDocInput_${key}').click()"><i class="fa-solid fa-paperclip"></i> Chọn file</button>
+                       <span style="font-size:12px; color:#64748b;">Chưa đính kèm</span>`;
+            });
+        }
+
+        function markXmRequiredDocInvalid(key, invalid) {
+            const box = document.getElementById(`xmReqDocBox_${key}`);
+            if (box) box.style.borderColor = invalid ? '#ef4444' : '#cbd5e1';
+        }
+
+        function setXmRequiredDocsError(msg) {
+            const el = document.getElementById('xmRequiredDocsError');
+            if (!el) return;
+            el.innerText = msg || '';
+            el.style.display = msg ? 'block' : 'none';
+        }
+
+        function handleXmRequiredDoc(key, input) {
+            if (!input || !input.files || !input.files.length) return;
+            xmRequiredDocsDraft[key] = input.files[0].name;
+            input.value = '';
+            markXmRequiredDocInvalid(key, false);
+            setXmRequiredDocsError('');
+            renderXmRequiredDocs();
+            showToast(`Đã đính kèm ${XM_REQUIRED_DOC_LABELS[key]}.`, 'success');
+        }
+
+        function removeXmRequiredDoc(key) {
+            xmRequiredDocsDraft[key] = '';
+            renderXmRequiredDocs();
+        }
+
+        // Lịch sử các lần xác minh; hồ sơ cũ (đã hoàn thành xác minh trước khi có lịch sử) được quy đổi thành 01 lần xác minh
+        function getXmHistory(claim) {
+            if (!claim) return [];
+            if (Array.isArray(claim.xmHistory)) return claim.xmHistory;
+            if (claim.xmTotalAmount === undefined) return [];
+            return [{
+                lan: 1,
+                at: (claim.timeline || []).filter(t => /Xác minh/i.test(t.title || '')).map(t => t.date).pop() || '--',
+                by: getClaimOfficerNamesText(claim) || '--',
+                items: (claim.thietHaiList || []).map(item => ({
+                    type: item.type, name: getThietHaiName(item.type), xmVal: item.xmVal !== undefined ? item.xmVal : item.val, xmNote: item.xmNote || '',
+                    xmDate: item.xmDate || '', xmPlace: item.xmPlace || '', xmMembers: item.xmMembers || '', xmMethodText: item.xmMethodText || '', xmCalculation: item.xmCalculation || ''
+                })),
+                total: claim.xmTotalAmount,
+                timeExtension: claim.xmTimeExtension || '',
+                otherInfo: claim.xmOtherRelatedInfo || '',
+                files: (claim.xmFiles || []).map(f => ({ name: f.name })),
+                completed: true,
+                legacy: true
+            }];
+        }
+
+        function renderXmHistoryContent(round) {
+            const items = (round.items || []).map(it => {
+                const parts = [];
+                if (it.xmDate) parts.push(`Ngày tiến hành: ${ycEsc(it.xmDate)}`);
+                if (it.xmPlace) parts.push(`Địa điểm: ${ycEsc(it.xmPlace)}`);
+                if (it.xmMembers) parts.push(`Thành phần: ${ycEsc(it.xmMembers)}`);
+                if (it.xmMethodText) parts.push(`Cách thức: ${ycEsc(it.xmMethodText)}`);
+                if (it.xmCalculation) parts.push(`Cách tính: ${ycEsc(it.xmCalculation)}`);
+                const money = (Number(it.xmVal) || 0).toLocaleString('vi-VN');
+                return `<li><strong>${ycEsc(it.name)}</strong>: đề xuất ${money} đ${it.xmNote ? ` (${ycEsc(it.xmNote)})` : ''}${parts.length ? `<br><span style="color:#475569;">${parts.join('; ')}</span>` : ''}</li>`;
+            }).join('');
+            return `<ul style="margin:0; padding-left:16px;">${items}</ul>
+                ${round.timeExtension ? `<div style="margin-top:4px;"><strong>Thỏa thuận kéo dài thời gian xác minh:</strong> ${ycEsc(round.timeExtension)}</div>` : ''}
+                ${round.otherInfo ? `<div style="margin-top:2px;"><strong>Nội dung khác:</strong> ${ycEsc(round.otherInfo)}</div>` : ''}
+                <div style="margin-top:4px; font-weight:600;">Tổng số tiền đề xuất: ${(Number(round.total) || 0).toLocaleString('vi-VN')} đ${round.completed ? ' - <span style="color:#15803d;">Hoàn thành xác minh</span>' : ''}</div>`;
+        }
+
+        function renderXmHistoryHtml(claim) {
+            const hist = getXmHistory(claim);
+            const title = `<span style="font-weight:700; font-size:12.5px; color:#1e293b; display:block; margin:12px 0 6px;"><i class="fa-solid fa-clock-rotate-left"></i> LỊCH SỬ CÁC LẦN XÁC MINH:</span>`;
+            if (!hist.length) {
+                return `${title}<div id="xmHistoryEmpty" style="font-size:12.5px; color:var(--text-muted); font-style:italic;">Chưa có lần lưu kết quả xác minh nào.</div>`;
+            }
+            const rows = hist.slice().reverse().map(r => `<tr class="xm-history-row">
+                <td style="text-align:center; font-weight:600;">${r.lan}</td>
+                <td style="white-space:nowrap;">${ycEsc(r.at || '--')}</td>
+                <td>${ycEsc(r.by || '--')}</td>
+                <td style="font-size:12px; line-height:1.5;">${renderXmHistoryContent(r)}</td>
+                <td>${(r.files || []).length ? r.files.map(f => `<div><i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> <a href="#" onclick="event.preventDefault(); viewPhddMockFile('${ycEsc(f.name)}')" class="action-link view-link">${ycEsc(f.name)}</a></div>`).join('') : '<span style="color:#94a3b8; font-style:italic;">Không có</span>'}</td>
+            </tr>`).join('');
+            return `${title}<table class="custom-table" id="xmHistoryTable" style="background:white; font-size:12.5px;">
+                <thead><tr style="background-color:#f8fafc;">
+                    <th style="width:50px; text-align:center;">Lần</th><th style="width:130px;">Thời điểm lưu</th><th style="width:160px;">Người lưu</th><th>Nội dung/Kết quả xác minh</th><th style="width:220px;">Tài liệu kèm theo</th>
+                </tr></thead><tbody>${rows}</tbody></table>`;
+        }
+
+        function renderXmRequiredDocsReadHtml(claim) {
+            const docs = claim.xmRequiredDocs || {};
+            const fileLink = name => name
+                ? `<i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> <a href="#" onclick="event.preventDefault(); viewPhddMockFile('${ycEsc(name)}')" class="action-link view-link">${ycEsc(name)}</a>`
+                : '<span style="color:#94a3b8; font-style:italic;">Chưa đính kèm</span>';
+            return `<div style="display:flex; flex-wrap:wrap; gap:6px 24px; margin-top:6px;">
+                <div><strong>Văn bản thụ lý:</strong> ${fileLink(docs.thuly)}</div>
+                <div><strong>Quyết định cử người giải quyết:</strong> ${fileLink(docs.cuNguoi)}</div>
+            </div>`;
+        }
+
+        // ---------- Văn bản làm căn cứ yêu cầu bồi thường (không bắt buộc) ----------
+        let vanBanCanCuRows = [{ name: '', file: '' }];
+
+        function normalizeVanBanCanCuList(list) {
+            return (Array.isArray(list) ? list : []).map(v => ({ name: String((v && v.name) || ''), file: String((v && (v.file || v.fileName)) || '') }));
+        }
+
+        function loadVanBanCanCuRows(list) {
+            const rows = normalizeVanBanCanCuList(list);
+            vanBanCanCuRows = rows.length ? rows : [{ name: '', file: '' }];
+            renderVanBanCanCuRows();
+        }
+
+        function renderVanBanCanCuRows() {
+            const tbody = document.getElementById('claimVanBanCanCuBody');
+            if (!tbody) return;
+            tbody.innerHTML = vanBanCanCuRows.map((row, idx) => `
+                <tr>
+                    <td style="text-align:center;">${idx + 1}</td>
+                    <td><input type="text" class="form-control" id="vbccName_${idx}" value="${ycEsc(row.name)}" placeholder="Nhập tên văn bản, căn cứ" oninput="updateVanBanCanCuName(${idx}, this.value)"></td>
+                    <td>
+                        ${row.file
+                            ? `<span title="${ycEsc(row.file)}" style="font-weight:500;"><i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:6px;"></i>${ycEsc(row.file)}</span>`
+                            : `<button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('vbccFile_${idx}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>`}
+                        <input type="file" id="vbccFile_${idx}" style="display:none;" onchange="uploadVanBanCanCuFile(${idx}, this)">
+                    </td>
+                    <td style="text-align:center; white-space:nowrap;">
+                        ${row.file
+                            ? `<a href="javascript:void(0)" onclick="viewVanBanCanCuFile(${idx})" style="color:var(--primary-color); font-weight:500; text-decoration:none; margin-right:12px;"><i class="fa-solid fa-eye"></i> Xem file</a>`
+                            : `<span style="color:#cbd5e1; margin-right:12px;" title="Chưa có file"><i class="fa-solid fa-eye"></i> Xem file</span>`}
+                        <a href="javascript:void(0)" onclick="deleteVanBanCanCuRow(${idx})" style="color:#ef4444; font-weight:500; text-decoration:none;"><i class="fa-solid fa-trash-can"></i> Xóa</a>
+                    </td>
+                </tr>`).join('');
+        }
+
+        function updateVanBanCanCuName(idx, value) {
+            if (vanBanCanCuRows[idx]) vanBanCanCuRows[idx].name = value;
+        }
+
+        function addVanBanCanCuRow() {
+            vanBanCanCuRows.push({ name: '', file: '' });
+            renderVanBanCanCuRows();
+            const el = document.getElementById(`vbccName_${vanBanCanCuRows.length - 1}`);
+            if (el) el.focus();
+        }
+
+        function uploadVanBanCanCuFile(idx, input) {
+            if (!vanBanCanCuRows[idx] || !input.files || !input.files.length) return;
+            vanBanCanCuRows[idx].file = input.files[0].name;
+            if (!vanBanCanCuRows[idx].name) vanBanCanCuRows[idx].name = input.files[0].name.replace(/\.[^.]+$/, '');
+            renderVanBanCanCuRows();
+            showToast('Tải file văn bản căn cứ thành công!', 'success');
+        }
+
+        function viewVanBanCanCuFile(idx) {
+            const row = vanBanCanCuRows[idx];
+            if (!row || !row.file) return;
+            showToast(`Đang mở file ${row.file}...`, 'success');
+        }
+
+        function deleteVanBanCanCuRow(idx) {
+            if (vanBanCanCuRows.length <= 1) {
+                vanBanCanCuRows = [{ name: '', file: '' }];
+            } else {
+                vanBanCanCuRows.splice(idx, 1);
+            }
+            renderVanBanCanCuRows();
+        }
+
+        function collectVanBanCanCuRows() {
+            return vanBanCanCuRows.map(r => ({ name: String(r.name || '').trim(), file: r.file || '' })).filter(r => r.name || r.file);
+        }
+
+        function renderVanBanCanCuReadOnlyHtml(claim) {
+            const list = normalizeVanBanCanCuList(claim && claim.vanBanCanCu).filter(r => r.name || r.file);
+            const body = list.length
+                ? list.map((r, i) => `<tr>
+                    <td style="text-align:center;">${i + 1}</td>
+                    <td>${ycEsc(r.name || '--')}</td>
+                    <td>${r.file ? `<i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:6px;"></i>${ycEsc(r.file)}` : '<span style="color:#94a3b8;">--</span>'}</td>
+                    <td style="text-align:center;">${r.file ? `<a href="#" onclick="event.preventDefault(); showToast('Đang mở file ${ycEsc(r.file)}...', 'success')" class="action-link view-link"><i class="fa-solid fa-eye"></i> Xem file</a>` : '--'}</td>
+                </tr>`).join('')
+                : '<tr><td colspan="4" style="text-align:center; color:var(--text-muted); font-style:italic; padding:12px;">Không có văn bản làm căn cứ yêu cầu bồi thường.</td></tr>';
+            return `<div style="grid-column: span 3;" id="readOnlyVanBanCanCu"><strong style="color:var(--text-muted);">Văn bản làm căn cứ yêu cầu bồi thường:</strong>
+                <div class="table-container" style="margin-top:6px;"><table class="custom-table" style="font-size:12.5px;">
+                    <thead><tr style="background-color:#f8fafc;"><th style="width:50px; text-align:center;">STT</th><th>Tên văn bản, căn cứ</th><th style="width:260px;">File đính kèm</th><th style="width:110px; text-align:center;">Thao tác</th></tr></thead>
+                    <tbody>${body}</tbody></table></div></div>`;
+        }
+    </script>    <!-- MAIN DATA AND LOGIC SCRIPTS -->
     <script>
         // Synchronize Role Selectors and update table
         function syncRole(el) {
@@ -6696,6 +7003,7 @@
                 xdCode: rec.xdCode || '',
                 transferContent: rec.transferContent || '',
                 transferFiles: (rec.transferFiles || []).map(f => ({ name: f.name })),
+                vanBanCanCu: normalizeVanBanCanCuList(rec.vanBanCanCu).filter(v => v.name || v.file),
                 totalNum: 0,
                 advanceNum: 0,
                 restoreHonor: false,
@@ -7130,6 +7438,7 @@
             migrateAllClaimsForSrs();
             // Nhận hồ sơ YCBT từ luồng BTNN (Xác định CQGQBT -> Chuyển CQGQBT -> lãnh đạo phân công cán bộ).
             // Chạy lại mỗi lần tải trang; không tạo trùng theo Mã vụ việc nên không bị mất khi claimsList được nạp lại.
+            populateOfficerSelectorFromOrg();
             syncClaimsFromWorkflow();
             migrateAllClaimsForSrs();
             localStorage.setItem('claimsList', JSON.stringify(claimsList));
@@ -7934,6 +8243,7 @@
             claim.agency = cqNhan || "Chưa phân công";
             claim.totalNum = total;
             Object.assign(claim, verdictInfo);
+            claim.vanBanCanCu = collectVanBanCanCuRows();
 
             const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : 'Nguyễn Văn Chuyên Viên (Cán bộ thụ lý)';
             const todayStr = new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
@@ -8403,6 +8713,7 @@
                 currentClaimOfficers = [];
                 renderClaimOfficerTable();
             }
+            loadVanBanCanCuRows(claim ? claim.vanBanCanCu : null);
             toggleAdvanceByLinhVuc(document.getElementById('claimFieldGroup').value);
             initRequestDocDatePickers();
         }
@@ -9615,6 +9926,7 @@
                     claim.requestType = requestType;
                     claim.victimAlive = victimAlive;
                     Object.assign(claim, verdictInfo);
+                    claim.vanBanCanCu = collectVanBanCanCuRows();
 
                     claim.officers = JSON.parse(JSON.stringify(currentClaimOfficers));
                     if (currentClaimOfficers.length > 0) {
@@ -9729,6 +10041,7 @@
                 requestType: requestType,
                 victimAlive: victimAlive,
                 ...verdictInfo,
+                vanBanCanCu: collectVanBanCanCuRows(),
                 officers: JSON.parse(JSON.stringify(currentClaimOfficers)),
                 officerName: currentClaimOfficers.length > 0 ? currentClaimOfficers[0].name : "",
                 officerPosition: currentClaimOfficers.length > 0 ? currentClaimOfficers[0].position : "",
@@ -10798,6 +11111,7 @@
                         <div style="grid-column: span 2;"><strong style="color:var(--text-muted);">Pháp luật áp dụng để giải quyết bồi thường:</strong> <br>${claim.applicableLaw || '--'}</div>
                         <div style="grid-column: span 3;"><strong style="color:var(--text-muted);">Hành vi gây thiệt hại của người thi hành công vụ:</strong> <br><span style="color:var(--text-main); font-style:italic;">${claim.hanhVi}</span></div>
                         <div style="grid-column: span 3;"><strong style="color:var(--text-muted);">Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại:</strong> <br><span style="color:var(--text-main); font-style:italic;">${claim.nhanQua}</span></div>
+                        ${renderVanBanCanCuReadOnlyHtml(claim)}
                         
                     </div>
                 </div>
@@ -11488,7 +11802,7 @@
 
                 // Populate dynamic table
                 let tableHtml = '';
-                claim.thietHaiList.forEach((item, idx) => {
+                (claim.thietHaiList || []).forEach((item, idx) => {
                     const claimedVal = item.val;
                     const verifiedVal = item.xmVal !== undefined ? item.xmVal : claimedVal;
                     const verifiedNote = item.xmNote || 'Xác minh đúng thực tế';
@@ -11565,7 +11879,7 @@
                     let comparisonRowsHtml = '';
                     let totalClaimed = 0;
                     let totalVerified = 0;
-                    claim.thietHaiList.forEach((item, idx) => {
+                    (claim.thietHaiList || []).forEach((item, idx) => {
                         const claimedVal = item.val;
                         const verifiedVal = item.xmVal !== undefined ? item.xmVal : claimedVal;
                         const diff = verifiedVal - claimedVal;
@@ -14402,118 +14716,145 @@
             }
         }
 
+        // Hoàn thành xác minh: lưu kết quả lần xác minh hiện tại và chuyển hồ sơ sang [Đang thương lượng]
         function submitXacMinhUpdate() {
+            saveXacMinhRound(true);
+        }
+
+        // Lưu kết quả xác minh thiệt hại (cho phép lưu nhiều lần).
+        // - Bảng "Tổng số tiền theo từng hạng mục" là duy nhất: giá trị đề xuất/ghi chú của từng hạng mục được ghi đè.
+        // - Nội dung chi tiết của lần lưu được ghi thêm 01 dòng vào "Lịch sử các lần xác minh".
+        // - complete = true: sau khi lưu, chuyển hồ sơ sang [Đang thương lượng] (Hoàn thành xác minh).
+        function saveXacMinhRound(complete) {
             const claim = claimsList.find(c => c.id === selectedClaimId);
-            if (claim) {
-                let calculatedTotal = 0;
-                let hasValidationErrors = false;
-                let firstInvalidEl = null;
-                let firstInvalidIdx = -1;
+            if (!claim) return;
 
-                // First pass: validation
-                claim.thietHaiList.forEach((item, idx) => {
-                    const xmDateEl = document.getElementById(`editXmDate_${idx}`);
-                    const xmPlaceEl = document.getElementById(`editXmPlace_${idx}`);
-                    const xmMembersEl = document.getElementById(`editXmMembers_${idx}`);
-                    const xmMethodTextEl = document.getElementById(`editXmMethodText_${idx}`);
-                    const xmCalculationEl = document.getElementById(`editXmCalculation_${idx}`);
+            // 1. Tài liệu bắt buộc
+            const missingDocs = [];
+            if (!xmRequiredDocsDraft.thuly) missingDocs.push('Văn bản thụ lý');
+            if (!xmRequiredDocsDraft.cuNguoi) missingDocs.push('Quyết định cử người giải quyết');
+            markXmRequiredDocInvalid('thuly', !xmRequiredDocsDraft.thuly);
+            markXmRequiredDocInvalid('cuNguoi', !xmRequiredDocsDraft.cuNguoi);
+            if (missingDocs.length) {
+                const msg = `Vui lòng đính kèm đầy đủ tài liệu bắt buộc trước khi lưu kết quả xác minh: ${missingDocs.join(', ')}.`;
+                setXmRequiredDocsError(msg);
+                showToast(msg, 'error');
+                const box = document.getElementById('xmRequiredDocsBox');
+                if (box && box.scrollIntoView) box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                return;
+            }
+            setXmRequiredDocsError('');
 
-                    const xmDate = xmDateEl.value.trim();
-                    const xmPlace = xmPlaceEl.value.trim();
-                    const xmMembers = xmMembersEl.value.trim();
-                    const xmMethodText = xmMethodTextEl.value.trim();
-                    const xmCalculation = xmCalculationEl.value.trim();
-
-                    const fields = [
-                        { el: xmDateEl, val: xmDate },
-                        { el: xmPlaceEl, val: xmPlace },
-                        { el: xmMembersEl, val: xmMembers },
-                        { el: xmMethodTextEl, val: xmMethodText },
-                        { el: xmCalculationEl, val: xmCalculation }
-                    ];
-
-                    fields.forEach(field => {
-                        if (!field.val) {
-                            field.el.classList.add('is-invalid');
-                            const errWrapper = field.el.closest('.form-group');
-                            if (errWrapper) {
-                                const errMsg = errWrapper.querySelector('.error-message');
-                                if (errMsg) errMsg.style.display = 'block';
-                            }
-                            hasValidationErrors = true;
-                            if (!firstInvalidEl) {
-                                firstInvalidEl = field.el;
-                                firstInvalidIdx = idx;
-                            }
-                        } else {
-                            field.el.classList.remove('is-invalid');
-                            const errWrapper = field.el.closest('.form-group');
-                            if (errWrapper) {
-                                const errMsg = errWrapper.querySelector('.error-message');
-                                if (errMsg) errMsg.style.display = 'none';
-                            }
-                        }
-                    });
+            // 2. Kiểm tra các trường chi tiết bắt buộc của từng hạng mục
+            let hasValidationErrors = false;
+            let firstInvalidEl = null;
+            let firstInvalidIdx = -1;
+            (claim.thietHaiList || []).forEach((item, idx) => {
+                ['editXmDate_', 'editXmPlace_', 'editXmMembers_', 'editXmMethodText_', 'editXmCalculation_'].forEach(prefix => {
+                    const el = document.getElementById(prefix + idx);
+                    if (!el) return;
+                    const errWrapper = el.closest('.form-group');
+                    const errMsg = errWrapper ? errWrapper.querySelector('.error-message') : null;
+                    if (!el.value.trim()) {
+                        el.classList.add('is-invalid');
+                        if (errMsg) errMsg.style.display = 'block';
+                        hasValidationErrors = true;
+                        if (!firstInvalidEl) { firstInvalidEl = el; firstInvalidIdx = idx; }
+                    } else {
+                        el.classList.remove('is-invalid');
+                        if (errMsg) errMsg.style.display = 'none';
+                    }
                 });
-
-                if (hasValidationErrors) {
-                    // Auto-expand the collapsible row containing the first error
-                    if (firstInvalidIdx !== -1) {
-                        const detailRow = document.getElementById(`xmDetailRow_${firstInvalidIdx}`);
-                        const icon = document.getElementById(`xmDetailIcon_${firstInvalidIdx}`);
-                        if (detailRow && detailRow.style.display === 'none') {
-                            detailRow.style.display = 'table-row';
-                            if (icon) {
-                                icon.classList.remove('fa-chevron-down');
-                                icon.classList.add('fa-chevron-up');
-                            }
-                        }
+            });
+            if (hasValidationErrors) {
+                if (firstInvalidIdx !== -1) {
+                    const detailRow = document.getElementById(`xmDetailRow_${firstInvalidIdx}`);
+                    const icon = document.getElementById(`xmDetailIcon_${firstInvalidIdx}`);
+                    if (detailRow && detailRow.style.display === 'none') {
+                        detailRow.style.display = 'table-row';
+                        if (icon) { icon.classList.remove('fa-chevron-down'); icon.classList.add('fa-chevron-up'); }
                     }
-                    if (firstInvalidEl) {
-                        firstInvalidEl.focus();
-                    }
-                    return;
                 }
+                showToast('Vui lòng nhập đầy đủ thông tin chi tiết quá trình xác minh của từng hạng mục thiệt hại.', 'error');
+                if (firstInvalidEl) firstInvalidEl.focus();
+                return;
+            }
 
-                // Second pass: save values
-                claim.thietHaiList.forEach((item, idx) => {
-                    const rawVal = document.getElementById(`editXmVal_${idx}`).value;
-                    const inputVal = parseFloat(rawVal.replace(/\./g, '').replace(/,/g, '')) || 0;
-                    const inputNote = document.getElementById(`editXmNote_${idx}`).value.trim();
-
-                    item.xmVal = inputVal;
-                    item.xmNote = inputNote;
-                    item.xmDate = document.getElementById(`editXmDate_${idx}`).value.trim();
-                    item.xmPlace = document.getElementById(`editXmPlace_${idx}`).value.trim();
-                    item.xmMembers = document.getElementById(`editXmMembers_${idx}`).value.trim();
-                    item.xmMethodText = document.getElementById(`editXmMethodText_${idx}`).value.trim();
-                    item.xmCalculation = document.getElementById(`editXmCalculation_${idx}`).value.trim();
-
-                    calculatedTotal += inputVal;
+            // 3. Ghi đè bảng Tổng số tiền theo từng hạng mục và ghi lịch sử lần xác minh
+            let calculatedTotal = 0;
+            const roundItems = [];
+            (claim.thietHaiList || []).forEach((item, idx) => {
+                const rawVal = document.getElementById(`editXmVal_${idx}`).value;
+                const inputVal = parseFloat(rawVal.replace(/\./g, '').replace(/,/g, '')) || 0;
+                item.xmVal = inputVal;
+                item.xmNote = document.getElementById(`editXmNote_${idx}`).value.trim();
+                item.xmDate = document.getElementById(`editXmDate_${idx}`).value.trim();
+                item.xmPlace = document.getElementById(`editXmPlace_${idx}`).value.trim();
+                item.xmMembers = document.getElementById(`editXmMembers_${idx}`).value.trim();
+                item.xmMethodText = document.getElementById(`editXmMethodText_${idx}`).value.trim();
+                item.xmCalculation = document.getElementById(`editXmCalculation_${idx}`).value.trim();
+                calculatedTotal += inputVal;
+                roundItems.push({
+                    type: item.type, name: getThietHaiName(item.type), xmVal: inputVal, xmNote: item.xmNote,
+                    xmDate: item.xmDate, xmPlace: item.xmPlace, xmMembers: item.xmMembers,
+                    xmMethodText: item.xmMethodText, xmCalculation: item.xmCalculation
                 });
+            });
 
+            if (!Array.isArray(claim.xmHistory)) claim.xmHistory = getXmHistory(claim).slice();
+            const now = new Date();
+            const atText = now.toLocaleDateString('vi-VN') + ' ' + now.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+            const roundNo = claim.xmHistory.length + 1;
+            const timeExtension = document.getElementById('editXacMinhTimeExtension').value.trim();
+            const otherInfo = document.getElementById('editXacMinhOtherRelatedInfo').value.trim();
+            const roundFiles = xmSelectedFiles.map(f => ({ name: f.name, url: f.url || '#' }));
+            claim.xmHistory.push({
+                lan: roundNo,
+                at: atText,
+                by: getCurrentSimulatedOfficer(),
+                items: roundItems,
+                total: calculatedTotal,
+                timeExtension,
+                otherInfo,
+                files: roundFiles,
+                completed: !!complete
+            });
+
+            claim.xmRequiredDocs = Object.assign({}, xmRequiredDocsDraft);
+            claim.xmTotalAmount = calculatedTotal;
+            claim.xmTimeExtension = timeExtension;
+            claim.xmOtherRelatedInfo = otherInfo;
+            const allFiles = (claim.xmFiles || []).slice();
+            roundFiles.forEach(f => { if (!allFiles.some(x => x.name === f.name)) allFiles.push(f); });
+            claim.xmFiles = allFiles;
+
+            if (!claim.timeline) claim.timeline = [];
+            if (complete) {
                 claim.status = 'Đang thương lượng';
-                claim.xmTotalAmount = calculatedTotal;
-                claim.xmTimeExtension = document.getElementById('editXacMinhTimeExtension').value.trim();
-                claim.xmOtherRelatedInfo = document.getElementById('editXacMinhOtherRelatedInfo').value.trim();
-                claim.xmFiles = [...xmSelectedFiles];
-
                 claim.timeline.push({
                     title: "Xác minh thiệt hại",
-                    date: new Date().toLocaleDateString('vi-VN'),
-                    desc: `Hoàn thành báo cáo xác minh thiệt hại thực tế. Tổng số tiền đề xuất: ${calculatedTotal.toLocaleString('vi-VN')} đ.`,
+                    date: now.toLocaleDateString('vi-VN'),
+                    desc: `Hoàn thành xác minh thiệt hại thực tế (lần ${roundNo}). Tổng số tiền đề xuất: ${calculatedTotal.toLocaleString('vi-VN')} đ.`,
                     status: "completed"
                 });
-
                 claim.tlTimeExp = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toLocaleString('vi-VN');
                 claim.tlVenueExp = "Phòng họp cơ quan giải quyết bồi thường";
                 claim.tlMembersExp = "Đại diện cơ quan, ông/bà " + claim.nyc;
-
+                saveClaimsToLocal();
                 showToast("Hoàn thành xác minh thiệt hại. Hồ sơ chuyển sang [Đang thương lượng]!", "success");
                 showCaseDetail(selectedClaimId, false);
+            } else {
+                claim.timeline.push({
+                    title: "Lưu kết quả xác minh thiệt hại",
+                    date: now.toLocaleDateString('vi-VN'),
+                    desc: `Lưu kết quả xác minh thiệt hại lần ${roundNo}. Tổng số tiền đề xuất hiện hành: ${calculatedTotal.toLocaleString('vi-VN')} đ.`,
+                    status: "completed"
+                });
+                saveClaimsToLocal();
+                showToast(`Đã lưu kết quả xác minh thiệt hại lần ${roundNo}. Hồ sơ giữ trạng thái [Đang xác minh thiệt hại].`, "success");
+                showCaseDetail(selectedClaimId, true, 'xacminh');
             }
         }
-
         function submitTlDraftUpdate() {
             const claim = claimsList.find(c => c.id === selectedClaimId);
             if (claim) {
@@ -16147,7 +16488,7 @@
 
     <!-- Custom Officer Appointment Modal HTML -->
     <div id="officerSelectOverlay" class="confirm-modal-overlay">
-        <div class="sticky-modal-container" style="width: 980px; max-width: 96%;">
+        <div class="sticky-modal-container" style="width: 1120px; max-width: 96%;">
             <div class="confirm-modal-header"
                 style="color: var(--primary-light); background-color: #f8fafc; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding: 24px 24px 16px 24px;">
                 <div style="display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600;">
@@ -16165,13 +16506,13 @@
                     <div><strong style="color:var(--text-muted);">Cơ quan giải quyết bồi thường:</strong> <span id="appointAgencyName">--</span></div>
                 </div>
                 <div class="table-container" style="margin-bottom:10px;">
-                    <table class="custom-table" id="appointOfficersTable" style="min-width: 900px;">
+                    <table class="custom-table" id="appointOfficersTable" style="width: 100%;">
                         <thead>
                             <tr style="background-color: var(--table-header-bg);">
                                 <th style="width: 50px; text-align: center;">STT</th>
-                                <th style="min-width: 240px;">Họ và tên<span class="required">*</span></th>
-                                <th style="min-width: 150px;">Chức vụ</th>
-                                <th style="min-width: 190px;">Email</th>
+                                <th style="min-width: 260px;">Họ và tên<span class="required">*</span></th>
+                                <th style="width: 150px;">Chức vụ</th>
+                                <th style="width: 190px;">Email</th>
                                 <th style="min-width: 220px;">Đơn vị</th>
                                 <th style="width: 80px; text-align: center;">Thao tác</th>
                             </tr>

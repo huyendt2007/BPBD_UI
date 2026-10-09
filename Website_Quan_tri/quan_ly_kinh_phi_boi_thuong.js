@@ -1218,9 +1218,9 @@ function mapCourtCaseToClaim(c) {
         email: n.email || '',
         country: n.country || 'Việt Nam',
         city: n.city || '',
-        ward: '',
+        ward: '-',
         address: n.address || '',
-        agency: courtCaseUnitName(c.rootUnitId),
+        agency: c.agency || courtCaseUnitName(c.rootUnitId),
         field: 'Theo dõi vụ việc tại Tòa án',
         amount: total,
         status: c.status,
@@ -1311,6 +1311,13 @@ function inputProposalDirect(id) {
     fillProposalDirect(id);
     document.getElementById('formProposalTitle').innerHTML = `<i class="fa-solid fa-keyboard"></i> NHẬP LIỆU ĐỀ NGHỊ CẤP KINH PHÍ BỒI THƯỜNG: ${item.code}`;
     const setVal = (elId, val) => { const el = document.getElementById(elId); if (el) el.value = val; };
+    // Hiển thị Loại đề nghị (khóa) và Số/Ngày Bản án/QĐ làm căn cứ; ẩn ô tìm kiếm vụ việc
+    const selectorBlock = document.getElementById('formSelectorBlock');
+    if (selectorBlock) selectorBlock.style.display = 'block';
+    const searchWrapper = document.getElementById('formClaimSearchWrapper');
+    if (searchWrapper) searchWrapper.style.display = 'none';
+    const selectorGrid = document.getElementById('formSelectorGrid');
+    if (selectorGrid) selectorGrid.style.gridTemplateColumns = '1fr 1fr 1fr';
     setVal('formBaseDecisionNo', item.baseDecisionNo || '');
     setVal('formBaseDecisionDate', item.baseDecisionDate || '');
     // Số tiền đề nghị mặc định theo thiệt hại yêu cầu của vụ việc
@@ -1793,6 +1800,16 @@ function filterTreasuryEligible() {
 }
 
 function openLinkedClaimDetail(ycbtCode) {
+    // Vụ việc tại Tòa án: mở chi tiết tại màn hình Theo dõi vụ việc tại Tòa án
+    if (isCourtCaseCode(ycbtCode)) {
+        const courtUrl = `theo_doi_vu_viec_toa_an.html?code=${encodeURIComponent(ycbtCode)}`;
+        if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === 'function') {
+            window.parent.openAdminModule(courtUrl, 'theo_doi_vu_viec_toa_an.html');
+            return;
+        }
+        window.location.href = courtUrl;
+        return;
+    }
     const detailUrl = `quan_ly_boi_thuong.html?id=${encodeURIComponent(ycbtCode)}&from=kinh_phi&returnUrl=${encodeURIComponent('quan_ly_kinh_phi_boi_thuong.html')}`;
     const shellDetailUrl = detailUrl;
     const activeClaimUrl = 'quan_ly_boi_thuong.html';
@@ -2494,7 +2511,7 @@ function renderProposalsTable() {
     if (isLeader) {
         pendingCount = proposalsList.filter(p => p.status === 'Chờ duyệt').length;
     } else {
-        pendingCount = proposalsList.filter(p => p.status === 'Chờ lập đề nghị' || p.status === 'Bị từ chối' || p.status === 'Chờ chi trả').length;
+        pendingCount = proposalsList.filter(p => p.status === 'Chờ lập đề nghị' || p.status === FUNDING_STATUS_INPUT || p.status === 'Bị từ chối' || p.status === 'Chờ chi trả').length;
     }
     const headerBadge = document.getElementById('headerProposalBadge');
     if (headerBadge) {
@@ -2517,6 +2534,7 @@ function renderProposalsTable() {
         else if (item.status === 'Sung quỹ nhà nước' || item.status === 'Đã sung quỹ') badgeClass = 'badge-success';
         else if (item.status === 'Bị từ chối') badgeClass = 'badge-danger';
         else if (item.status === 'Chờ lập đề nghị') badgeClass = 'badge-info';
+        else if (item.status === FUNDING_STATUS_INPUT) badgeClass = 'badge-draft';
         else if (item.status === 'Chờ thu hồi') badgeClass = 'badge-warning';
         else if (item.status === 'Đã hủy') badgeClass = 'badge-danger';
         const treasuryInfo = getTreasuryInfo(item);
@@ -2544,6 +2562,9 @@ function renderProposalsTable() {
             if (item.status === 'Chờ lập đề nghị') {
                 fillBtn = `<button class="icon-btn edit" title="Lập đề nghị kinh phí" onclick="fillProposalDirect('${item.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
                 deleteBtn = `<button class="icon-btn delete" title="Xóa tờ trình nháp" onclick="event.stopPropagation(); deleteProposal('${item.id}')"><i class="fa-regular fa-trash-can"></i></button>`;
+            } else if (item.status === FUNDING_STATUS_INPUT) {
+                // Bản ghi tự tạo từ Theo dõi vụ việc tại Tòa án: Nhập liệu tiếp; không được xóa
+                fillBtn = `<button class="icon-btn edit" title="Nhập liệu" onclick="event.stopPropagation(); inputProposalDirect('${item.id}')"><i class="fa-solid fa-keyboard"></i></button>`;
             } else if (item.status === 'Bị từ chối') {
                 updateBtn = `<button class="icon-btn edit" title="Cập nhật đề nghị" onclick="updateProposalDirect('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
             } else if (item.status === 'Chờ chi trả') {
@@ -2680,7 +2701,7 @@ function validateClaimForProposalType(claimCode, proposalType) {
     if (!claim) return { valid: false, code: 'ERR_NOT_FOUND', message: `Không tìm thấy thông tin vụ việc [${claimCode}] trên hệ thống!` };
 
     // Active status lists according to system dropdown
-    const ACTIVE_KINH_PHI_STATUSES = ['Chờ lập đề nghị', 'Chờ duyệt', 'Chờ chi trả', 'Hoàn thành', 'Sung quỹ nhà nước'];
+    const ACTIVE_KINH_PHI_STATUSES = ['Chờ lập đề nghị', FUNDING_STATUS_INPUT, 'Chờ duyệt', 'Chờ chi trả', 'Hoàn thành', 'Sung quỹ nhà nước'];
     const ACTIVE_TAM_UNG_STATUSES = ['Chờ lập đề nghị', 'Chờ duyệt', 'Chờ chi trả', 'Hoàn thành'];
 
     // Check existing proposals in proposalsList for this claim
@@ -2733,7 +2754,9 @@ function validateClaimForProposalType(claimCode, proposalType) {
             };
         }
         // [BR-KP-STATUS-001]: Status must be 'Chờ thực thi'
-        if (claim.status !== 'Chờ thực thi') {
+        // (vụ việc tại Tòa án: đủ điều kiện khi Đã có bản án/QĐ)
+        const courtEligible = claim.source === 'court' && claim.status === COURT_STATUS_VERDICT;
+        if (claim.status !== 'Chờ thực thi' && !courtEligible) {
             return {
                 valid: false,
                 code: 'ERR_INVALID_STATUS_COMPENSATION',
@@ -2869,7 +2892,7 @@ function clearClaimDetails() {
     document.getElementById('formNycBirth').value = '';
 
     const radios = document.getElementsByName('formNycVictimAlive');
-    radios[0].checked = true;
+    if (radios[0]) radios[0].checked = true;
 
     document.getElementById('formNycPhone').value = '';
     document.getElementById('formNycEmail').value = '';
@@ -3090,9 +3113,9 @@ function handleClaimSelected(code) {
 
         const radios = document.getElementsByName('formNycVictimAlive');
         if (claim.nycVictimAlive === 'no') {
-            radios[1].checked = true;
+            if (radios[1]) radios[1].checked = true;
         } else {
-            radios[0].checked = true;
+            if (radios[0]) radios[0].checked = true;
         }
 
         document.getElementById('formNycPhone').value = claim.phone;
@@ -3901,7 +3924,7 @@ function fillProposalDirect(id) {
     document.getElementById('formProposalCqCap').value = item.cqCap || 'Sở Tư pháp Hà Nội';
     document.getElementById('formProposalNotes').value = item.notes || '';
     // Fill approved values from the item instead of the claim default values
-    if (typeSelect.value === 'Cấp tạm ứng') {
+    if (document.getElementById('formProposalType').value === 'Cấp tạm ứng') {
         document.getElementById('advApproveTinhThan').value = (item.advApproveTinhThan || 0).toLocaleString('vi-VN');
         document.getElementById('advApproveKhac').value = (item.advApproveKhac || 0).toLocaleString('vi-VN');
         calculateAdvanceApproveTotal();
@@ -3968,7 +3991,7 @@ function updateProposalDirect(id) {
     document.getElementById('formProposalNotes').value = item.notes || '';
 
     // Fill approved values from the item instead of the claim default values
-    if (typeSelect.value === 'Cấp tạm ứng') {
+    if (document.getElementById('formProposalType').value === 'Cấp tạm ứng') {
         document.getElementById('advApproveTinhThan').value = (item.advApproveTinhThan || 0).toLocaleString('vi-VN');
         document.getElementById('advApproveKhac').value = (item.advApproveKhac || 0).toLocaleString('vi-VN');
         calculateAdvanceApproveTotal();
@@ -4135,9 +4158,9 @@ function viewProposalDetail(id) {
 
     const radios = document.getElementsByName('formNycVictimAlive');
     if (claimDetails.nycVictimAlive === 'no') {
-        radios[1].checked = true;
+        if (radios[1]) radios[1].checked = true;
     } else {
-        radios[0].checked = true;
+        if (radios[0]) radios[0].checked = true;
     }
 
     document.getElementById('formNycPhone').value = claimDetails.phone;
@@ -4511,9 +4534,13 @@ function viewProposalDetail(id) {
     document.getElementById('btnCompleteTreasuryForfeit').style.display = 'none';
 
     const isSpecialist = activeRole === 'chuyen-vien';
+    const btnFill = document.getElementById('btnViewActionFill');
+    btnFill.innerHTML = item.status === FUNDING_STATUS_INPUT
+        ? '<i class="fa-solid fa-keyboard"></i> Nhập liệu'
+        : '<i class="fa-solid fa-file-signature"></i> Lập đề nghị';
     if (isSpecialist) {
-        if (item.status === 'Chờ lập đề nghị') {
-            document.getElementById('btnViewActionFill').style.display = 'inline-flex';
+        if (item.status === 'Chờ lập đề nghị' || item.status === FUNDING_STATUS_INPUT) {
+            btnFill.style.display = 'inline-flex';
         } else if (item.status === 'Bị từ chối') {
             document.getElementById('btnViewActionUpdate').style.display = 'inline-flex';
         } else if (item.status === 'Chờ chi trả' || item.status === 'Chi trả một phần') {
@@ -4534,7 +4561,9 @@ function startActionFromView(actionType) {
     if (!selectedProposalId) return;
     
     if (actionType === 'Lập đề nghị') {
-        fillProposalDirect(selectedProposalId);
+        const cur = proposalsList.find(p => p.id === selectedProposalId);
+        if (cur && cur.status === FUNDING_STATUS_INPUT) inputProposalDirect(selectedProposalId);
+        else fillProposalDirect(selectedProposalId);
     } else if (actionType === 'Cập nhật đề nghị') {
         updateProposalDirect(selectedProposalId);
     } else if (actionType === 'Cập nhật chi trả') {
@@ -5338,7 +5367,7 @@ function renderFundingDecisionLookupResults() {
     const kAgency = norm(document.getElementById('fundingDecSearchAgency') && document.getElementById('fundingDecSearchAgency').value);
 
     // Loại trừ các Quyết định mà vụ việc đã có Đề nghị cấp kinh phí bồi thường còn hiệu lực
-    const EFFECTIVE = ['Chờ lập đề nghị', 'Chờ duyệt', 'Chờ chi trả', 'Chờ thu hồi', 'Hoàn thành', 'Sung quỹ nhà nước', 'Đã sung quỹ'];
+    const EFFECTIVE = ['Chờ lập đề nghị', 'Chờ nhập liệu', 'Chờ duyệt', 'Chờ chi trả', 'Chờ thu hồi', 'Hoàn thành', 'Sung quỹ nhà nước', 'Đã sung quỹ'];
     const sourceList = (typeof proposalsList !== 'undefined') ? proposalsList : [];
     const usedClaims = new Set(
         sourceList

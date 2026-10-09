@@ -85,7 +85,7 @@
         }
 
         #courtTable {
-            min-width: 1400px;
+            min-width: 1300px;
             table-layout: fixed;
         }
 
@@ -251,6 +251,12 @@
 
         #formView.readonly-mode .form-control:disabled::placeholder {
             color: transparent;
+            -webkit-text-fill-color: transparent;
+        }
+
+        textarea.form-control {
+            font-family: inherit;
+            resize: vertical;
         }
 
         .doc-actions {
@@ -380,11 +386,11 @@
                                 <th style="width:54px; text-align:center;">STT</th>
                                 <th style="width:130px; text-align:center;">Mã vụ việc</th>
                                 <th style="width:170px;">Họ và tên người yêu cầu</th>
-                                <th style="width:190px;">Loại yêu cầu</th>
-                                <th style="width:260px;">Nguồn phát sinh bản án</th>
+                                <th style="width:170px;">Loại yêu cầu</th>
+                                <th style="width:230px;">Nguồn phát sinh bản án</th>
                                 <th style="width:110px; text-align:center;">Ngày thụ lý</th>
                                 <th style="width:130px; text-align:center;">Ngày hiệu lực bản án/QĐ</th>
-                                <th style="width:200px;">Cơ quan bị khởi kiện</th>
+                                <th style="width:180px;">Cơ quan bị khởi kiện</th>
                                 <th style="width:150px; text-align:center;">Trạng thái</th>
                                 <th style="width:110px; text-align:center;">Thao tác</th>
                             </tr>
@@ -1507,6 +1513,7 @@
                         requestKind: k,
                         originalKind: kind,
                         rootUnitId: CURRENT_ROOT_UNIT,
+                        agency: BTNN_WF.unitName(CURRENT_ROOT_UNIT),
                         createdAt: now,
                         createdBy: CURRENT_USER.id,
                         createdByName: CURRENT_USER.name,
@@ -1699,7 +1706,7 @@
                 id: "TA-" + code, code, originalKind: extra.requestKind, linkedCode: null, fieldGroup: "hành chính",
                 verdictNo: "", effectiveDate: "", nbth: null, damages: [], honorForms: null, history: [],
                 nhanQua: "Thiệt hại phát sinh trực tiếp từ hành vi trái pháp luật của người thi hành công vụ."
-            }, extra);
+            }, extra, { agency: BTNN_WF.unitName(extra.rootUnitId) });
             const dmg = (key, amount, calc) => {
                 const it = DAMAGE_ITEMS.find(x => x.key === key);
                 return { key, label: it.label, calc, amount };

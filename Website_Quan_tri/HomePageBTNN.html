@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ thống Quản lý Bồi thường nhà nước & Quản trị hệ thống - Bộ Tư pháp</title>
+    <title>Hệ thống Quản lý Bồi thường nhà nước, Quản lý nhà nước & Quản trị hệ thống - Bộ Tư pháp</title>
     <link rel="shortcut icon" href="#">
     <script>
         // Suppress benign browser extension message port / channel closing errors
@@ -646,7 +646,7 @@
         <div class="sidebar-brand" id="brandLogo">
             <i class="fa-solid fa-scale-balanced"></i>
             <div class="sidebar-brand-title">
-                <h1>Bồi thường nhà nước<br>& Quản trị hệ thống</h1>
+                <h1>Bồi thường nhà nước<br>& Quản lý nhà nước</h1>
                 <p>Cổng Quản trị Nghiệp vụ</p>
             </div>
         </div>
@@ -656,7 +656,7 @@
         </nav>
 
         <div class="sidebar-footer">
-            Hệ thống Quản lý Bồi thường nhà nước<br>&copy; 2026 Bộ Tư pháp Việt Nam
+            Hệ thống Quản lý Nghiệp vụ & Quản trị<br>&copy; 2026 Bộ Tư pháp Việt Nam
         </div>
     </aside>
 
@@ -666,7 +666,7 @@
         <!-- HEADER -->
         <header class="admin-header">
             <div class="header-title-section">
-                <h2>Hệ thống Quản lý Bồi thường nhà nước & Quản trị hệ thống</h2>
+                <h2>Hệ thống Quản lý Bồi thường nhà nước, Quản lý nhà nước & Quản trị hệ thống</h2>
                 <p>Ứng dụng quản trị nghiệp vụ liên thông dành cho cán bộ công chức</p>
             </div>
 
@@ -760,7 +760,7 @@
                     <div class="avatar">CB</div>
                     <div class="user-info">
                         <div class="user-name">Nguyễn Văn Cán Bộ</div>
-                        <div class="user-role">Cán bộ xử lý bồi thường</div>
+                        <div class="user-role">Cán bộ quản lý</div>
                     </div>
                     <i class="fa fa-caret-down" style="font-size: 10px; color: #8c8c8c; margin-left: 4px;"></i>
 
@@ -803,7 +803,7 @@
     </div>
 
     <script>
-        // Menu Data Model: Chỉ hiển thị Bồi thường nhà nước và Quản trị hệ thống
+        // Menu Data Model: Bồi thường nhà nước, Quản lý nhà nước & Quản trị hệ thống
         const menuData = [
             {
                 title: "Bồi thường nhà nước",
@@ -817,6 +817,7 @@
                         badge: 7,
                         children: [
                             { title: "Giải quyết yêu cầu bồi thường", badge: 7, url: "quan_ly_boi_thuong.html?v=1" },
+                            { title: "Theo dõi vụ việc tại Tòa án", url: "theo_doi_vu_viec_toa_an.html" },
                             { title: "Quyết định giải quyết bồi thường", url: "quyet_dinh_giai_quyet_boi_thuong.html?v=1" },
                             { title: "Cấp kinh phí tạm ứng/Bồi thường", url: "quan_ly_kinh_phi_boi_thuong.html?v=1" }
                         ]
@@ -824,19 +825,6 @@
                     { title: "Xem xét trách nhiệm hoàn trả", url: "xem_xet_trach_nhiem_hoan_tra.html" },
                     { title: "Tra cứu vụ việc", url: "tra_cuu_ho_so_boi_thuong.html?v=1" },
                     { title: "Quản lý chấm điểm công tác BTNN", url: "quan_ly_cham_diem_btnn.html" },
-                    {
-                        title: "Dashboard & Báo cáo trực quan",
-                        children: [
-                            { title: "Màn hình trực quan thông tin chung BTNN", url: "dashboard_btnn.html?module=tong_quan" },
-                            { title: "Cấu hình lựa chọn hình thức hiển thị BTNN", url: "dashboard_btnn.html?module=cau_hinh" },
-                            { title: "Phân tích tình hình đánh giá BTNN theo thời gian", url: "dashboard_btnn.html?module=pt_thoi_gian" },
-                            { title: "Phân tích tình hình đánh giá BTNN theo địa phương", url: "dashboard_btnn.html?module=pt_dia_phuong" },
-                            { title: "Phân tích tình hình đánh giá BTNN theo phạm vi", url: "dashboard_btnn.html?module=pt_pham_vi" },
-                            { title: "Phân tích tình hình đánh giá BTNN theo cơ quan", url: "dashboard_btnn.html?module=pt_co_quan" },
-                            { title: "Phân tích tình hình đánh giá BTNN theo cấp", url: "dashboard_btnn.html?module=pt_cap" },
-                            { title: "Phân tích tình hình giải quyết vụ việc cả nước", url: "dashboard_btnn.html?module=pt_ca_nuoc" }
-                        ]
-                    },
                     {
                         title: "Hỗ trợ & thông tin tư liệu BTNN",
                         children: [
@@ -877,7 +865,7 @@
                         ]
                     },
                     {
-                        title: "Báo cáo quản lý BTNN",
+                        title: "Báo cáo quản lý BTNN (TT08)",
                         children: [
                             { title: "Quản lý kỳ báo cáo & Nhập liệu (TT08)", url: "quan_ly_ky_bao_cao_tt08.html" },
                             { title: "Thống kê số lượng vụ việc YCBT theo thời gian", url: "bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_thoi_gian" },
@@ -888,6 +876,90 @@
                             { title: "Báo cáo tổng hợp kết quả đánh giá xếp loại", url: "bao_cao_thong_ke_btnn_tt08.html?module=xep_loai" },
                             { title: "Báo cáo chi tiết đánh giá công tác BTNN các năm", url: "../temp_placeholder.html" },
                             { title: "Báo cáo chi tiết giải quyết vụ việc tồn đọng, kéo dài", url: "../temp_placeholder.html" }
+                        ]
+                    }
+                ]
+            },
+            {
+                title: "Quản lý nhà nước",
+                icon: "fa-solid fa-chart-line",
+                children: [
+                    {
+                        title: "Dashboard trực quan về đăng ký BPBĐ",
+                        children: [
+                            { title: "Xem màn hình trực quan thông tin chung", url: "../temp_placeholder.html" },
+                            { title: "Cấu hình lựa chọn hình thức hiển thị", url: "../temp_placeholder.html" },
+                            { title: "Phân tích tình hình chung đăng ký", url: "../temp_placeholder.html" },
+                            { title: "Phân tích tình hình thu phí đăng ký", url: "../temp_placeholder.html" },
+                            { title: "Phân tích tình hình cung cấp thông tin", url: "../temp_placeholder.html" },
+                            { title: "Phân tích tình hình cấp mã số sử dụng CSDL", url: "../temp_placeholder.html" },
+                            { title: "Phân tích thống kê số lượng hồ sơ theo người dùng", url: "../temp_placeholder.html" },
+                            { title: "Phân tích thống kê số lượng hồ sơ theo tài sản", url: "../temp_placeholder.html" },
+                            { title: "Xem danh sách tổ chức/cá nhân tiêu biểu (TOP 10)", url: "../temp_placeholder.html" },
+                            { title: "Xem báo cáo về đăng ký BPBĐ dạng biểu đồ", url: "../temp_placeholder.html" },
+                            { title: "Xem báo cáo về cấp văn bản chứng nhận dạng biểu đồ", url: "../temp_placeholder.html" }
+                        ]
+                    },
+                    {
+                        title: "Dashboard trực quan về quản lý BTNN",
+                        children: [
+                            { title: "Xem màn hình trực quan thông tin chung BTNN", url: "dashboard_btnn.html?module=tong_quan" },
+                            { title: "Cấu hình lựa chọn hình thức hiển thị BTNN", url: "dashboard_btnn.html?module=cau_hinh" },
+                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo thời gian", url: "dashboard_btnn.html?module=pt_thoi_gian" },
+                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo địa phương", url: "dashboard_btnn.html?module=pt_dia_phuong" },
+                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo phạm vi", url: "dashboard_btnn.html?module=pt_pham_vi" },
+                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo cơ quan", url: "dashboard_btnn.html?module=pt_co_quan" },
+                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo cấp", url: "dashboard_btnn.html?module=pt_cap" },
+                            { title: "Phân tích tình hình giải quyết vụ việc cả nước", url: "dashboard_btnn.html?module=pt_ca_nuoc" }
+                        ]
+                    },
+                    {
+                        title: "Báo cáo hỗ trợ quyết định về nghiệp vụ ĐKBPBĐ",
+                        children: [
+                            { title: "Báo cáo thống kê đăng ký, cung cấp thông tin", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo tổng hợp biện pháp bảo đảm cả nước", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo thống kê từ chối/hủy đăng ký", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo thống kê tổ chức/cá nhân tiêu biểu (TOP 10)", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo thống kê số lượng hồ sơ theo tài sản", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo thống kê số lượng hồ sơ theo người dùng", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo nguồn thu phí, lệ phí về đăng ký, cung cấp thông tin", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo nguồn thu phí về cấp mã số sử dụng CSDL", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo thống kê cá nhân/tổ chức sử dụng dịch vụ", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo xây dựng thể chế chính sách, pháp luật ĐKBPBĐ", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo tổ chức thi hành pháp luật ĐKBPBĐ", url: "../temp_placeholder.html" }
+                        ]
+                    },
+                    {
+                        title: "Báo cáo hỗ trợ quyết định về nghiệp vụ BTNN",
+                        children: [
+                            { title: "Báo cáo chi tiết đánh giá công tác BTNN các năm", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo chi tiết giải quyết vụ việc tồn đọng, kéo dài", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo thông tin đầu mối thực hiện công tác BTNN", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo thông tin tích hợp từ các CSDL liên quan", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo xây dựng thể chế chính sách, pháp luật BTNN", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo tổ chức thi hành pháp luật BTNN", url: "../temp_placeholder.html" }
+                        ]
+                    },
+                    {
+                        title: "Quản lý theo dõi, giám sát ĐKBPBĐ & BTNN",
+                        children: [
+                            { title: "Hỗ trợ kiểm duyệt các hồ sơ đăng ký BPBĐ", url: "../temp_placeholder.html" },
+                            { title: "Hỗ trợ kiểm tra thông tin hồ sơ theo tiêu chí", url: "../temp_placeholder.html" },
+                            { title: "Hỗ trợ kiểm tra nội dung theo cấu hình", url: "../temp_placeholder.html" },
+                            { title: "Hỗ trợ xác định, so sánh nội dung thay đổi", url: "../temp_placeholder.html" }
+                        ]
+                    },
+                    {
+                        title: "Quản lý nhà nước về ĐKBPBĐ Bộ/Ngành khác",
+                        children: [
+                            { title: "Báo cáo thống kê BPBĐ bằng quyền sử dụng đất", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo tổng hợp BPBĐ bằng quyền sử dụng đất", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo thống kê BPBĐ bằng tàu bay", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo tổng hợp BPBĐ bằng tàu bay", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo thống kê BPBĐ bằng tàu biển", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo tổng hợp BPBĐ bằng tàu biển", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo thống kê BPBĐ bằng chứng khoán lưu ký", url: "../temp_placeholder.html" },
+                            { title: "Báo cáo tổng hợp BPBĐ bằng chứng khoán lưu ký", url: "../temp_placeholder.html" }
                         ]
                     }
                 ]
