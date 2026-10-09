@@ -985,7 +985,7 @@
                         <th style="width: 105px; text-align:center; cursor:pointer;" onclick="sortRefundTable('code')" title="Sắp xếp theo Mã hồ sơ">Mã hồ sơ <i class="fa-solid fa-sort" id="sortIcon_code" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="min-width: 210px; width: 20%; cursor:pointer;" onclick="sortRefundTable('officer')" title="Sắp xếp theo Cán bộ">Cán bộ gây sai phạm <i class="fa-solid fa-sort" id="sortIcon_officer" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="width: 135px; cursor:pointer;" onclick="sortRefundTable('agency')" title="Sắp xếp theo Đơn vị">Đơn vị công tác <i class="fa-solid fa-sort" id="sortIcon_agency" style="font-size:11px; opacity:0.4;"></i></th>
-                        <th style="width: 105px; text-align:center; cursor:pointer;" onclick="sortRefundTable('claimCode')" title="Sắp xếp theo Mã vụ việc">Mã vụ việc <i class="fa-solid fa-sort" id="sortIcon_claimCode" style="font-size:11px; opacity:0.4;"></i></th>
+                        <th style="width: 170px; text-align:center; cursor:pointer;" onclick="sortRefundTable('claimCode')" title="Sắp xếp theo Mã vụ việc">Mã vụ việc <i class="fa-solid fa-sort" id="sortIcon_claimCode" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="text-align:right; width: 125px; cursor:pointer;" onclick="sortRefundTable('claimAmt')" title="Sắp xếp theo Số tiền bồi thường">Tiền bồi thường (đ) <i class="fa-solid fa-sort" id="sortIcon_claimAmt" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="text-align:right; width: 125px; cursor:pointer;" onclick="sortRefundTable('refundTotal')" title="Sắp xếp theo Số tiền phải hoàn trả">Tiền hoàn trả (đ) <i class="fa-solid fa-sort" id="sortIcon_refundTotal" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="width: 145px; cursor:pointer;" onclick="sortRefundTable('progress')" title="Sắp xếp theo Tiến độ">Tiến độ thu hồi <i class="fa-solid fa-sort" id="sortIcon_progress" style="font-size:11px; opacity:0.4;"></i></th>
@@ -1687,6 +1687,9 @@
     <!-- JAVASCRIPT CONTROLLERS -->
     <!-- ============================================== -->
     <script>
+        // Nhận diện vụ việc bồi thường gốc: Mã vụ việc - Họ và tên người yêu cầu (theo dữ liệu Giải quyết YCBT)
+        const CLAIMANT_BY_CODE = { 'BT-2026-001': 'Nguyễn Văn A', 'BT-2026-008': 'Lê Văn D', 'BT-2026-015': 'Vũ Thị L' };
+        function claimLabel(code) { return code ? (CLAIMANT_BY_CODE[code] ? `${code} - ${CLAIMANT_BY_CODE[code]}` : code) : '-'; }
         function openLinkedClaimDetail(claimCode) {
             const returnUrl = 'xem_xet_trach_nhiem_hoan_tra.html';
             const detailUrl = `quan_ly_boi_thuong.html?id=${encodeURIComponent(claimCode)}&from=hoan_tra&returnUrl=${encodeURIComponent(returnUrl)}`;
@@ -1714,7 +1717,6 @@
                 id: "HT-2026-001",
                 code: "HT-2026-001",
                 claimCode: "BT-2026-001",
-                claimTitle: "Cưỡng chế tháo dỡ nhà ở tại Cầu Giấy",
                 claimSummary: "Cưỡng chế tháo dỡ nhà ở khi chưa có quyết định hành chính có hiệu lực pháp luật.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 150000000,
@@ -1747,7 +1749,6 @@
                 id: "HT-2026-002",
                 code: "HT-2026-002",
                 claimCode: "BT-2026-008",
-                claimTitle: "Thu hồi đất sai quy định tại Đà Lạt",
                 claimSummary: "Thu hồi đất nông nghiệp vượt quá hạn mức quy định gây thiệt hại cây trồng.",
                 agency: "UBND Tỉnh Lâm Đồng",
                 claimAmt: 180000000,
@@ -1776,7 +1777,6 @@
                 id: "HT-2026-003",
                 code: "HT-2026-003",
                 claimCode: "BT-2026-001",
-                claimTitle: "Từ chối đăng ký kết hôn trái luật tại Hoàn Kiếm",
                 claimSummary: "Công chức tư pháp cố ý gây khó dễ trì hoãn cấp giấy đăng ký kết hôn.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 150000000,
@@ -1804,7 +1804,6 @@
                 id: "HT-2026-004",
                 code: "HT-2026-004",
                 claimCode: "BT-2026-001",
-                claimTitle: "Chậm trễ cấp giấy khai sinh tại Cầu Giấy",
                 claimSummary: "Trì hoãn giải quyết thủ tục hành chính làm lỡ hạn nhập học của trẻ.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 150000000,
@@ -1832,7 +1831,6 @@
                 id: "HT-2026-005",
                 code: "HT-2026-005",
                 claimCode: "BT-2026-008",
-                claimTitle: "Kê biên sai tài sản thi hành án tại Lâm Đồng",
                 claimSummary: "Cưỡng chế kê biên nhà xưởng của bên thứ ba không liên quan vụ án.",
                 agency: "UBND Tỉnh Lâm Đồng",
                 claimAmt: 180000000,
@@ -1858,7 +1856,6 @@
                 id: "HT-2026-006",
                 code: "HT-2026-006",
                 claimCode: "BT-2026-008",
-                claimTitle: "Tạm giữ xe kinh doanh trái luật tại Bảo Lộc",
                 claimSummary: "Tạm giữ phương tiện vận tải quá thời hạn gây thiệt hại kinh tế.",
                 agency: "UBND Tỉnh Lâm Đồng",
                 claimAmt: 180000000,
@@ -1884,7 +1881,6 @@
                 id: "HT-2026-007",
                 code: "HT-2026-007",
                 claimCode: "BT-2026-015",
-                claimTitle: "Cấp sai giấy chứng nhận quyền sử dụng đất",
                 claimSummary: "Cấp giấy chứng nhận không đúng hồ sơ địa chính gây thiệt hại ngân sách.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 200000000,
@@ -1910,7 +1906,6 @@
                 id: "HT-2026-008",
                 code: "HT-2026-008",
                 claimCode: "BT-2026-001",
-                claimTitle: "Thu hồi đất trái thẩm quyền tại Tây Hồ",
                 claimSummary: "Thu hồi đất không đúng thẩm quyền của UBND phường.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 120000000,
@@ -1936,7 +1931,6 @@
                 id: "HT-2026-009",
                 code: "HT-2026-009",
                 claimCode: "BT-2026-001",
-                claimTitle: "Hủy hoại tài sản khi thi hành công vụ",
                 claimSummary: "Làm hư hỏng phương tiện khi niêm phong kho vật chứng.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 90000000,
@@ -1962,7 +1956,6 @@
                 id: "HT-2026-010",
                 code: "HT-2026-010",
                 claimCode: "BT-2026-008",
-                claimTitle: "Xử phạt vi phạm hành chính sai đối tượng",
                 claimSummary: "Ban hành quyết định xử phạt vi phạm hành chính sai cá nhân gây thiệt hại.",
                 agency: "UBND Tỉnh Lâm Đồng",
                 claimAmt: 60000000,
@@ -1988,7 +1981,6 @@
                 id: "HT-2026-011",
                 code: "HT-2026-011",
                 claimCode: "BT-2026-015",
-                claimTitle: "Cưỡng chế sai tại Ba Đình",
                 claimSummary: "Người thi hành công vụ không có lỗi do chấp hành đúng quyết định của cấp trên.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 70000000,
@@ -2014,7 +2006,6 @@
                 id: "HT-2026-012",
                 code: "HT-2026-012",
                 claimCode: "BT-2026-001",
-                claimTitle: "Cưỡng chế phá dỡ tài sản tại Đống Đa",
                 claimSummary: "Cán bộ thi hành công vụ đã chết trong quá trình xem xét nghĩa vụ hoàn trả.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 100000000,
@@ -2040,7 +2031,6 @@
                 id: "HT-2026-013",
                 code: "HT-2026-013",
                 claimCode: "BT-2026-001",
-                claimTitle: "Chậm chi trả bồi thường cho công dân tại Hoàn Kiếm",
                 claimSummary: "Chậm thực hiện nghĩa vụ theo bản án hành chính đã có hiệu lực pháp luật.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 140000000,
@@ -2066,7 +2056,6 @@
                 id: "HT-2026-014",
                 code: "HT-2026-014",
                 claimCode: "BT-2026-008",
-                claimTitle: "Thu hồi giấy phép lái xe trái thẩm quyền tại Đà Lạt",
                 claimSummary: "Tước quyền sử dụng giấy phép lái xe sai lỗi hành chính gây gián đoạn kinh doanh.",
                 agency: "UBND Tỉnh Lâm Đồng",
                 claimAmt: 85000000,
@@ -2092,7 +2081,6 @@
                 id: "HT-2026-015",
                 code: "HT-2026-015",
                 claimCode: "BT-2026-015",
-                claimTitle: "Cưỡng chế tháo dỡ công trình phụ tại Hải Phòng",
                 claimSummary: "Cưỡng chế sai chỉ giới xây dựng cấp phép.",
                 agency: "UBND TP Hải Phòng",
                 claimAmt: 160000000,
@@ -2118,7 +2106,6 @@
                 id: "HT-2026-016",
                 code: "HT-2026-016",
                 claimCode: "BT-2026-001",
-                claimTitle: "Cấp chứng thư giám định sai lệch tại Cầu Giấy",
                 claimSummary: "Giám định tài sản không đúng tiêu chuẩn gây bồi thường chênh lệch.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 220000000,
@@ -2144,7 +2131,6 @@
                 id: "HT-2026-017",
                 code: "HT-2026-017",
                 claimCode: "BT-2026-008",
-                claimTitle: "Tịch thu hàng hóa kinh doanh trái luật tại Đà Lạt",
                 claimSummary: "Tịch thu nông sản khi không đủ căn cứ vi phạm.",
                 agency: "UBND Tỉnh Lâm Đồng",
                 claimAmt: 110000000,
@@ -2170,7 +2156,6 @@
                 id: "HT-2026-018",
                 code: "HT-2026-018",
                 claimCode: "BT-2026-001",
-                claimTitle: "Chậm thi hành phán quyết của Tòa án tại Tây Hồ",
                 claimSummary: "Chậm giải tỏa phong tỏa tài sản sau khi có quyết định hủy bỏ biện pháp khẩn cấp.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 95000000,
@@ -2196,7 +2181,6 @@
                 id: "HT-2026-019",
                 code: "HT-2026-019",
                 claimCode: "BT-2026-001",
-                claimTitle: "Phá dỡ nhà tạm ngăn chặn cháy lan tại Ba Đình",
                 claimSummary: "Thực hiện biện pháp khẩn cấp trong tình thế phòng cháy chữa cháy cấp thiết.",
                 agency: "UBND Quận Ba Đình",
                 claimAmt: 65000000,
@@ -2222,7 +2206,6 @@
                 id: "HT-2026-020",
                 code: "HT-2026-020",
                 claimCode: "BT-2026-008",
-                claimTitle: "Quyết định xử phạt quá thẩm quyền tại Bảo Lộc",
                 claimSummary: "Cán bộ ban hành quyết định đã từ trần, cơ quan ban hành QĐ chấm dứt thu hồi theo Luật BTNN.",
                 agency: "UBND Tỉnh Lâm Đồng",
                 claimAmt: 80000000,
@@ -2248,7 +2231,6 @@
                 id: "HT-2026-021",
                 code: "HT-2026-021",
                 claimCode: "BT-2026-001",
-                claimTitle: "Thu hồi đất trái thẩm quyền tại Long Biên",
                 claimSummary: "Cán bộ ký ban hành quyết định thu hồi đất không đúng thẩm quyền gây thiệt hại cho người dân.",
                 agency: "Sở Tư pháp Hà Nội",
                 claimAmt: 200000000,
@@ -2831,7 +2813,7 @@
                     <td style="text-align:center; font-weight:700; color:var(--primary-color);">${d.code}</td>
                     <td>${getOfficersColumnHtml(d.refundOfficers)}</td>
                     <td style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:135px;" title="${agencyDisplay.replace(/<[^>]*>?/gm, '')}">${agencyDisplay}</td>
-                    <td style="text-align:center; font-weight:600;"><a href="quan_ly_boi_thuong.html?id=${d.claimCode}&from=hoan_tra&returnUrl=${encodeURIComponent('xem_xet_trach_nhiem_hoan_tra.html')}" onclick="event.stopPropagation(); openLinkedClaimDetail('${d.claimCode}'); return false;" style="color: var(--secondary-color); text-decoration: underline; font-weight: 700;">${d.claimCode}</a></td>
+                    <td style="text-align:center; font-weight:600;"><a href="quan_ly_boi_thuong.html?id=${d.claimCode}&from=hoan_tra&returnUrl=${encodeURIComponent('xem_xet_trach_nhiem_hoan_tra.html')}" onclick="event.stopPropagation(); openLinkedClaimDetail('${d.claimCode}'); return false;" style="color: var(--secondary-color); text-decoration: underline; font-weight: 700;">${claimLabel(d.claimCode)}</a></td>
                     <td style="text-align:right; font-weight:600;">${d.claimAmt.toLocaleString('vi-VN')}</td>
                     <td style="text-align:right; font-weight:600; color:var(--danger-color);">${d.refundTotal > 0 ? d.refundTotal.toLocaleString('vi-VN') : '--'}</td>
                     <td>
@@ -2924,7 +2906,6 @@
         function getClaimSeedData(claimCode) {
             const map = {
                 "BT-2026-001": {
-                    claimTitle: "Cưỡng chế tháo dỡ nhà ở tại Cầu Giấy",
                     claimSummary: "Cưỡng chế tháo dỡ nhà ở khi chưa có quyết định hành chính có hiệu lực pháp luật.",
                     agency: "Sở Tư pháp Hà Nội",
                     claimAmt: 150000000,
@@ -2933,7 +2914,6 @@
                     officerRole: "Chuyên viên thụ lý"
                 },
                 "BT-2026-008": {
-                    claimTitle: "Kê biên sai tài sản thi hành án tại Lâm Đồng",
                     claimSummary: "Cưỡng chế kê biên nhà xưởng của bên thứ ba không liên quan vụ án.",
                     agency: "UBND Tỉnh Lâm Đồng",
                     claimAmt: 180000000,
@@ -2942,7 +2922,6 @@
                     officerRole: "Chấp hành viên Chi cục"
                 },
                 "BT-2026-015": {
-                    claimTitle: "Cấp sai giấy chứng nhận quyền sử dụng đất",
                     claimSummary: "Cấp giấy chứng nhận quyền sử dụng đất không đúng hồ sơ địa chính gây thiệt hại ngân sách.",
                     agency: "Bộ Tư pháp",
                     claimAmt: 200000000,
@@ -2966,7 +2945,6 @@
                 id: code,
                 code,
                 claimCode,
-                claimTitle: seed.claimTitle,
                 claimSummary: seed.claimSummary,
                 agency: seed.agency,
                 claimAmt: seed.claimAmt,
@@ -3413,7 +3391,7 @@
             document.getElementById('refundObligationForm').reset();
             document.getElementById('refundObligationMode').value = mode;
             document.getElementById('refundObligationCode').innerText = dossier.code;
-            document.getElementById('refundObligationClaim').innerText = dossier.claimCode;
+            document.getElementById('refundObligationClaim').innerText = claimLabel(dossier.claimCode);
             document.getElementById('refundObligationRemain').innerText = outstanding.toLocaleString('vi-VN') + ' đ';
             document.getElementById('refundObligationDate').value = new Date().toLocaleDateString('vi-VN');
             document.getElementById('refundObligationAmount').value = '';
@@ -3569,7 +3547,7 @@
             currentApproveDossier = dossier;
 
             document.getElementById('approveDossierCode').innerText = dossier.code;
-            document.getElementById('approveClaimCode').innerText = dossier.claimCode;
+            document.getElementById('approveClaimCode').innerText = claimLabel(dossier.claimCode);
             document.getElementById('approvePinInput').value = '';
             document.getElementById('approvePinInput').classList.remove('is-invalid');
             document.getElementById('approvePinError').style.display = 'none';
@@ -3633,7 +3611,7 @@
 
             document.getElementById('rejectDossierId').value = dossier.id;
             document.getElementById('rejectDossierCode').innerText = dossier.code;
-            document.getElementById('rejectClaimCode').innerText = dossier.claimCode;
+            document.getElementById('rejectClaimCode').innerText = claimLabel(dossier.claimCode);
             document.getElementById('rejectReasonInput').value = '';
             document.getElementById('rejectReasonInput').classList.remove('is-invalid');
             document.getElementById('rejectReasonError').style.display = 'none';

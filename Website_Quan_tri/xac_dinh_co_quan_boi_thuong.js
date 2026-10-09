@@ -21,8 +21,7 @@ const LEGACY_SEED = [
         linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH",
         hanhVi: "Cưỡng chế tháo dỡ nhà khi chưa có quyết định hành chính có hiệu lực pháp luật của UBND quận Cầu Giấy.",
         hinhThucNhan: "Phương thức điện tử",
-        vanBanCanCuTen: "Bản án hành chính sơ thẩm số 12/2026/HC-ST ngày 20/03/2026 của TAND quận Cầu Giấy",
-        vanBanCanCuFile: "Ban_an_12_2026_HCST.pdf",
+        vanBanCanCu: [{ name: "Bản án hành chính sơ thẩm số 12/2026/HC-ST ngày 20/03/2026 của TAND quận Cầu Giấy", file: "Ban_an_12_2026_HCST.pdf" }],
         status: "Chờ tiếp nhận",
         attachedFile: "Don_yeu_cau_cua_nam.pdf",
         procBasis: "",
@@ -52,8 +51,7 @@ const LEGACY_SEED = [
         linhVuc: "TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ",
         hanhVi: "Bị tạm giam giữ trái pháp luật của Công an tỉnh Lâm Đồng làm suy sụp sức khỏe nghiêm trọng.",
         hinhThucNhan: "Hồ sơ giấy",
-        vanBanCanCuTen: "Quyết định đình chỉ điều tra bị can do hành vi không cấu thành tội phạm số 05/QĐ-ĐCĐT",
-        vanBanCanCuFile: "Quyet_dinh_dinh_chi_05.pdf",
+        vanBanCanCu: [{ name: "Quyết định đình chỉ điều tra bị can do hành vi không cấu thành tội phạm số 05/QĐ-ĐCĐT", file: "Quyet_dinh_dinh_chi_05.pdf" }],
         status: "Đang thực hiện",
         attachedFile: "Ho_so_yeu_cau_xac_dinh_co_quan_2.pdf",
         procBasis: "Khoản 2 Điều 40 - Có sự tham gia của nhiều cơ quan cùng gây thiệt hại",
@@ -501,8 +499,7 @@ const LEGACY_SEED = [
         linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH",
         hanhVi: "Xử phạt vi phạm trật tự xây dựng và tạm đình chỉ kinh doanh sai quy định.",
         hinhThucNhan: "Phương thức điện tử",
-        vanBanCanCuTen: "Quyết định xử phạt VPHC số 128/QĐ-XPHC ngày 10/02/2026 của UBND quận Hoàn Kiếm",
-        vanBanCanCuFile: "Quyet_dinh_xu_phat_128.pdf",
+        vanBanCanCu: [{ name: "Quyết định xử phạt VPHC số 128/QĐ-XPHC ngày 10/02/2026 của UBND quận Hoàn Kiếm", file: "Quyet_dinh_xu_phat_128.pdf" }],
         status: "Bị trả lại",
         chuTri: "cv_so",
         returned: {
@@ -760,64 +757,91 @@ function closeDetailOrReturn() {
     showListScreen();
 }
 
-let currentXdcqVanBanCanCuFile = '';
+// Văn bản làm căn cứ yêu cầu bồi thường: bảng nhiều dòng (STT | Tên văn bản, căn cứ | Tải file | Thao tác)
+let basisRows = [];
 
-function handleXdcqVanBanCanCuUpload(input) {
-    if (!input.files || input.files.length === 0) return;
-    currentXdcqVanBanCanCuFile = input.files[0].name;
-    const nameEl = document.getElementById('formVanBanCanCuFileName');
-    if (nameEl) {
-        nameEl.innerHTML = `<i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:4px;"></i><strong>${escapeHtml(currentXdcqVanBanCanCuFile)}</strong>`;
-        nameEl.style.fontStyle = 'normal';
-        nameEl.style.color = '#0f172a';
-    }
-    const actionsEl = document.getElementById('formVanBanCanCuActions');
-    if (actionsEl) actionsEl.style.display = 'inline-flex';
-    const inputNameEl = document.getElementById('formVanBanCanCuTen');
-    if (inputNameEl && !inputNameEl.value.trim()) {
-        inputNameEl.value = currentXdcqVanBanCanCuFile.replace(/\.[^.]+$/, '');
-    }
+// Chuyển dữ liệu cũ (01 văn bản) sang danh sách
+function getBasisDocs(item) {
+    if (!item) return [];
+    if (Array.isArray(item.vanBanCanCu)) return item.vanBanCanCu;
+    if (item.vanBanCanCuTen || item.vanBanCanCuFile) return [{ name: item.vanBanCanCuTen || '', file: item.vanBanCanCuFile || '' }];
+    return [];
 }
 
-function removeXdcqVanBanCanCuFile() {
-    currentXdcqVanBanCanCuFile = '';
-    const fileInput = document.getElementById('formVanBanCanCuFile');
-    if (fileInput) fileInput.value = '';
-    const nameEl = document.getElementById('formVanBanCanCuFileName');
-    if (nameEl) {
-        nameEl.innerHTML = 'Chưa chọn tệp';
-        nameEl.style.fontStyle = 'italic';
-        nameEl.style.color = '#64748b';
-    }
-    const actionsEl = document.getElementById('formVanBanCanCuActions');
-    if (actionsEl) actionsEl.style.display = 'none';
+function renderBasisRows() {
+    const tbody = document.getElementById('formBasisTableBody');
+    if (!tbody) return;
+    if (!basisRows.length) basisRows = [{ name: "", file: "" }];
+    tbody.innerHTML = basisRows.map((doc, idx) => `
+        <tr>
+            <td style="text-align: center;">${idx + 1}</td>
+            <td>
+                <input class="form-control" id="basisName_${idx}" value="${escapeAttr(doc.name || '')}" placeholder="Nhập tên văn bản, căn cứ..." oninput="updateBasisName(${idx}, this.value)">
+            </td>
+            <td>
+                ${doc.file
+                    ? `<span style="font-weight: 600; color: #0F766E;"><i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i> ${escapeHtml(doc.file)}</span>`
+                    : `<button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('basisFile_${idx}').click()"><i class="fa-solid fa-file-arrow-up"></i> Tải file</button>`}
+                <input type="file" id="basisFile_${idx}" style="display:none;" accept=".pdf,.doc,.docx,.jpg,.png" onchange="uploadBasisFile(${idx}, this)">
+            </td>
+            <td style="text-align: center;">
+                <div class="action-flex">
+                    <button type="button" class="icon-btn view" ${doc.file ? '' : 'style="opacity:0.35; pointer-events:none;"'} title="Xem file" onclick="viewBasisFile(${idx})"><i class="fa-solid fa-eye"></i></button>
+                    <button type="button" class="icon-btn delete" title="Xóa" onclick="deleteBasisRow(${idx})"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
 }
 
-function viewXdcqVanBanCanCuFile() {
-    if (!currentXdcqVanBanCanCuFile) return;
-    previewNamedFile(currentXdcqVanBanCanCuFile);
+function addBasisRow() {
+    basisRows.push({ name: "", file: "" });
+    renderBasisRows();
 }
 
-function setXdcqVanBanCanCuUI(fileName) {
-    currentXdcqVanBanCanCuFile = fileName || '';
-    const nameEl = document.getElementById('formVanBanCanCuFileName');
-    const actionsEl = document.getElementById('formVanBanCanCuActions');
-    if (nameEl) {
-        if (currentXdcqVanBanCanCuFile) {
-            nameEl.innerHTML = `<i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:4px;"></i><strong>${escapeHtml(currentXdcqVanBanCanCuFile)}</strong>`;
-            nameEl.style.fontStyle = 'normal';
-            nameEl.style.color = '#0f172a';
-        } else {
-            nameEl.innerHTML = 'Chưa chọn tệp';
-            nameEl.style.fontStyle = 'italic';
-            nameEl.style.color = '#64748b';
-        }
-    }
-    if (actionsEl) {
-        actionsEl.style.display = currentXdcqVanBanCanCuFile ? 'inline-flex' : 'none';
-    }
+function updateBasisName(index, value) {
+    if (basisRows[index]) basisRows[index].name = value;
 }
 
+function uploadBasisFile(index, input) {
+    if (!basisRows[index] || !input.files || !input.files[0]) return;
+    const fileName = input.files[0].name;
+    basisRows[index].file = fileName;
+    if (!basisRows[index].name) basisRows[index].name = fileName.replace(/\.[^.]+$/, '');
+    renderBasisRows();
+    showToast(`Đính kèm tập tin: ${fileName} thành công!`, "success");
+}
+
+function viewBasisFile(index) {
+    const doc = basisRows[index];
+    if (doc && doc.file) previewNamedFile(doc.file);
+}
+
+function deleteBasisRow(index) {
+    const doc = basisRows[index];
+    const remove = () => {
+        if (basisRows.length === 1) basisRows = [{ name: "", file: "" }];
+        else basisRows.splice(index, 1);
+        renderBasisRows();
+    };
+    if (doc && (doc.name || doc.file)) showConfirmModal("Bạn có chắc chắn muốn xóa văn bản, căn cứ này khỏi bảng không?", remove);
+    else remove();
+}
+
+function getCleanBasisRows() {
+    return basisRows
+        .filter(doc => (doc.name || '').trim() || (doc.file || '').trim())
+        .map(doc => ({ name: (doc.name || '').trim(), file: doc.file || '' }));
+}
+
+// Bảng chỉ đọc tại màn chi tiết
+function basisTableHtml(docs) {
+    if (!docs.length) return `<span style="color: var(--text-muted); font-style: italic;">Chưa cung cấp</span>`;
+    return `<table class="custom-table" style="min-width: 520px;">
+        <thead><tr><th style="width: 50px; text-align: center;">STT</th><th>Tên văn bản, căn cứ</th><th style="width: 220px;">Tải file</th><th style="width: 110px; text-align: center;">Thao tác</th></tr></thead>
+        <tbody>${docs.map((d, i) => `<tr><td style="text-align: center;">${i + 1}</td><td>${escapeHtml(d.name || '--')}</td><td>${d.file ? `<i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i> ${escapeHtml(d.file)}` : '<span style="color: var(--text-muted);">Không có</span>'}</td><td style="text-align: center;">${d.file ? `<a href="#" onclick="event.preventDefault(); previewNamedFile('${escapeAttr(d.file)}');" style="color: var(--secondary-color); text-decoration: none;"><i class="fa-solid fa-eye"></i> Xem file</a>` : '-'}</td></tr>`).join('')}</tbody>
+    </table>`;
+}
 function showFormScreen(id = null, mode = null) {
     document.getElementById('screenList').style.display = 'none';
     document.getElementById('screenForm').style.display = 'block';
@@ -889,8 +913,8 @@ function showFormScreen(id = null, mode = null) {
     fillNbth(null);
 
     // Nạp thông tin Văn bản làm căn cứ yêu cầu bồi thường
-    document.getElementById('formVanBanCanCuTen').value = item ? (item.vanBanCanCuTen || '') : '';
-    setXdcqVanBanCanCuUI(item ? (item.vanBanCanCuFile || '') : '');
+    basisRows = getBasisDocs(item).map(d => ({ name: d.name || '', file: d.file || '' }));
+    renderBasisRows();
 
     formDocRows = [{ name: "", file: "" }];
     renderFormDocs();
@@ -1081,8 +1105,7 @@ function showDetailScreen(id) {
 
     document.getElementById('dtHanhVi').innerText = item.hanhVi || '';
     document.getElementById('dtHinhThucNhan').innerText = item.hinhThucNhan === 'Hồ sơ giấy' ? 'Hồ sơ giấy' : 'Phương thức điện tử (Email, Zalo, SMS...)';
-    document.getElementById('dtVanBanCanCuTen').innerText = item.vanBanCanCuTen || 'Chưa cung cấp';
-    document.getElementById('dtVanBanCanCuFile').innerHTML = item.vanBanCanCuFile ? fileLinksHtml([{ name: item.vanBanCanCuFile }]) : `<span style="color: var(--text-muted); font-style: italic;">Không có</span>`;
+    document.getElementById('dtVanBanCanCu').innerHTML = basisTableHtml(getBasisDocs(item));
     document.getElementById('dtStatus').innerHTML = `<span class="badge ${statusBadgeClass(item.status)}">${item.status}</span>`;
 
     // Kết quả xác định
@@ -1447,8 +1470,7 @@ function saveForm(isDraft) {
         nycPhone: phone, nycEmail: email, nycCountry: country, nycTinhThanh: city, nycPhuongXa: ward, nycAddressDetail: addressDetail,
         nbth: nbth,
         hanhVi: hanhVi,
-        vanBanCanCuTen: document.getElementById('formVanBanCanCuTen').value.trim(),
-        vanBanCanCuFile: currentXdcqVanBanCanCuFile || '',
+        vanBanCanCu: getCleanBasisRows(),
         hinhThucNhan: document.querySelector('input[name="formHinhThucNhan"]:checked').value,
         attachedDocs: cleanDocs,
         attachedFile: cleanDocs[0] ? cleanDocs[0].file : ""

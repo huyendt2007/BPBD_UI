@@ -479,31 +479,27 @@
 
             <!-- Basis document section -->
             <div class="sub-section-title">IV. VĂN BẢN LÀM CĂN CỨ YÊU CẦU BỒI THƯỜNG</div>
-            <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--border-radius-lg); padding: 20px; margin-bottom: 20px;">
-                <div class="grid-2" style="gap: 20px; align-items: start;">
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <span class="form-label">Tên văn bản làm căn cứ yêu cầu bồi thường</span>
-                        <input type="text" class="form-control" id="formVanBanCanCuTen" placeholder="Nhập tên văn bản làm căn cứ (Bản án, Quyết định giải quyết khiếu nại...)...">
-                        <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;"><i class="fa-solid fa-circle-info"></i> Không bắt buộc. Trường hợp đã có văn bản xác định hành vi trái pháp luật thì nhập tại đây.</div>
-                    </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <span class="form-label">Tệp đính kèm văn bản làm căn cứ</span>
-                        <div style="display: flex; align-items: center; gap: 10px; margin-top: 4px;">
-                            <input type="file" id="formVanBanCanCuFile" style="display: none;" onchange="handleXdcqVanBanCanCuUpload(this)" accept=".pdf,.doc,.docx,.jpg,.png">
-                            <button type="button" class="btn btn-secondary btn-sm" id="btnUploadXdcqVanBanCanCu" onclick="document.getElementById('formVanBanCanCuFile').click()">
-                                <i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp đính kèm
-                            </button>
-                            <span id="formVanBanCanCuFileName" style="font-size: 13px; color: #64748b; font-style: italic;">Chưa chọn tệp</span>
-                        </div>
-                        <div id="formVanBanCanCuActions" style="display: none; margin-top: 6px; font-size: 13px; gap: 12px;">
-                            <a href="javascript:void(0)" onclick="viewXdcqVanBanCanCuFile()" style="color: var(--primary-color); font-weight: 500; text-decoration: none;"><i class="fa-solid fa-eye"></i> Xem file</a>
-                            <a href="javascript:void(0)" id="btnRemoveXdcqVanBanCanCu" onclick="removeXdcqVanBanCanCuFile()" style="color: #ef4444; font-weight: 500; text-decoration: none;"><i class="fa-solid fa-trash-can"></i> Xóa file</a>
-                        </div>
-                    </div>
-                </div>
+            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;"><i class="fa-solid fa-circle-info"></i> Không bắt buộc. Trường hợp đã có văn bản xác định hành vi trái pháp luật (Bản án, Quyết định giải quyết khiếu nại...) thì nhập tại đây.</div>
+            <div class="table-container">
+                <table class="custom-table" style="min-width: 760px;">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px; text-align: center;">STT</th>
+                            <th>Tên văn bản, căn cứ</th>
+                            <th style="width: 260px;">Tải file</th>
+                            <th style="width: 180px; text-align: center;">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody id="formBasisTableBody"></tbody>
+                </table>
+            </div>
+            <div style="margin-top: 10px; margin-bottom: 18px;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="addBasisRow()">
+                    <i class="fa-solid fa-plus"></i> Thêm dòng
+                </button>
             </div>
 
-            <div class="sub-section-title">V. BẢNG TÀI LIỆU ĐÍNH KÈM</div>
+<div class="sub-section-title">V. BẢNG TÀI LIỆU ĐÍNH KÈM</div>
             <div class="table-container">
                 <table class="custom-table" style="min-width: 760px;">
                     <thead>
@@ -719,11 +715,7 @@
                 </div>
                 <div class="detail-row">
                     <div class="detail-label">Văn bản làm căn cứ YCBT</div>
-                    <div class="detail-value" id="dtVanBanCanCuTen" style="font-weight: 500;">Chưa cung cấp</div>
-                </div>
-                <div class="detail-row">
-                    <div class="detail-label">Tệp văn bản căn cứ đính kèm</div>
-                    <div class="detail-value" id="dtVanBanCanCuFile">Không có</div>
+                    <div class="detail-value" id="dtVanBanCanCu"></div>
                 </div>
 
                 <!-- Visible only if verifying or completed -->

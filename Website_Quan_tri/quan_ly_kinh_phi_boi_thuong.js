@@ -1160,6 +1160,170 @@ function syncFromLocalStorage() {
             console.error("Error parsing localClaims:", err);
         }
     }
+
+    // 3. Liên thông Theo dõi vụ việc tại Tòa án: tạo bản ghi "Chờ nhập liệu" cho vụ việc Đã có bản án/QĐ
+    syncCourtCaseFundingRecords();
+}
+
+// ===================== Liên thông Theo dõi vụ việc tại Tòa án =====================
+// Vụ việc có yêu cầu bồi thường bằng tiền chuyển "Đã có bản án/QĐ" -> 01 Đề nghị cấp kinh phí bồi thường
+// ở trạng thái "Chờ nhập liệu". Khóa chống trùng: courtCaseCode (Mã vụ việc), tạo đúng 01 lần.
+const COURT_CASES_KEY = 'btnn_court_cases_v1';
+const COURT_STATUS_VERDICT = 'Đã có bản án/QĐ';
+const FUNDING_STATUS_INPUT = 'Chờ nhập liệu';
+const COURT_DAMAGE_KEYS = ['taiSan', 'thuNhap', 'tuVong', 'sucKhoe', 'tinhThan', 'chiPhiKhac'];
+
+function loadCourtCases() {
+    try {
+        const raw = localStorage.getItem(COURT_CASES_KEY);
+        const list = raw ? JSON.parse(raw) : [];
+        return Array.isArray(list) ? list : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+function isCourtCaseNeedingFunding(c) {
+    return !!c && !c.deleted && c.requestKind === 'money' && c.status === COURT_STATUS_VERDICT;
+}
+
+function courtCaseDamageMap(c) {
+    const out = {};
+    COURT_DAMAGE_KEYS.forEach(k => { out[k] = 0; });
+    (c.damages || []).forEach(d => { if (d && d.key) out[d.key] = Number(d.amount) || 0; });
+    return out;
+}
+
+function courtCaseUnitName(unitId) {
+    return (window.BTNN_WF && typeof window.BTNN_WF.unitName === 'function') ? window.BTNN_WF.unitName(unitId) : (unitId || '');
+}
+
+function mapCourtCaseToClaim(c) {
+    const n = c.nyc || {};
+    const damages = courtCaseDamageMap(c);
+    const total = COURT_DAMAGE_KEYS.reduce((s, k) => s + damages[k], 0);
+    return {
+        code: c.code,
+        source: 'court',
+        nyc: n.name || '',
+        role: n.role || 'Người bị thiệt hại',
+        gender: n.gender || 'Nam',
+        birth: n.birth || '',
+        nycVictimAlive: n.victimAlive || 'yes',
+        cardType: n.cardType || 'CCCD',
+        cardNo: n.cardNo || '',
+        cardDate: n.cardDate || '',
+        cardPlace: n.cardPlace || '',
+        phone: n.phone || '',
+        email: n.email || '',
+        country: n.country || 'Việt Nam',
+        city: n.city || '',
+        ward: '',
+        address: n.address || '',
+        agency: courtCaseUnitName(c.rootUnitId),
+        field: 'Theo dõi vụ việc tại Tòa án',
+        amount: total,
+        status: c.status,
+        suggestedAdvance: 0,
+        advanceTinhThan: 0,
+        advanceKhac: 0,
+        advanceRecKenh: 'tien-mat',
+        selectedDamages: damages,
+        verdictNo: c.verdictNo || '',
+        effectiveDate: c.effectiveDate || ''
+    };
+}
+
+function nextKinhPhiCode() {
+    const year = new Date().getFullYear();
+    const re = new RegExp(`^KP-${year}-(\\d+)$`);
+    let max = 0;
+    proposalsList.forEach(p => {
+        const m = String((p && p.code) || '').match(re);
+        if (m) max = Math.max(max, parseInt(m[1], 10));
+    });
+    return `KP-${year}-${String(max + 1).padStart(3, '0')}`;
+}
+
+function buildCourtFundingRecord(c) {
+    const claim = mapCourtCaseToClaim(c);
+    const d = new Date();
+    const pad = v => String(v).padStart(2, '0');
+    return {
+        id: 'P_TA_' + c.code,
+        code: nextKinhPhiCode(),
+        type: 'Cấp kinh phí bồi thường',
+        ycbtCode: c.code,
+        courtCaseCode: c.code,
+        origin: 'Theo dõi vụ việc tại Tòa án',
+        nycName: claim.nyc,
+        nycRole: claim.role,
+        amount: claim.amount,
+        user: c.updatedByName || c.createdByName || '',
+        date: `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`,
+        status: FUNDING_STATUS_INPUT,
+        source: '',
+        cqCap: '',
+        agency: claim.agency,
+        notes: '',
+        baseDecisionNo: c.verdictNo || '',
+        baseDecisionDate: c.effectiveDate || '',
+        verdictSource: c.verdictSource || '',
+        selectedDamages: claim.selectedDamages,
+        files: (c.docs || []).filter(x => x && x.file).map(x => ({ name: x.name, file: x.file })),
+        createdAt: `${pad(d.getHours())}:${pad(d.getMinutes())} ${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`
+    };
+}
+
+function syncCourtCaseFundingRecords() {
+    const courtCases = loadCourtCases();
+    if (!courtCases.length) return;
+    let proposalsChanged = false;
+    let casesChanged = false;
+    courtCases.filter(isCourtCaseNeedingFunding).forEach(c => {
+        if (!mockClaims.some(m => m.code === c.code)) mockClaims.push(mapCourtCaseToClaim(c));
+        let p = proposalsList.find(x => x && x.courtCaseCode === c.code);
+        if (!p) {
+            p = buildCourtFundingRecord(c);
+            proposalsList.unshift(p);
+            proposalsChanged = true;
+        }
+        if (c.fundingCode !== p.code) {
+            c.fundingCode = p.code;
+            c.fundingCreatedAt = p.createdAt;
+            if (!Array.isArray(c.history)) c.history = [];
+            c.history.push({ at: p.createdAt, userName: 'Hệ thống', action: 'Tạo đề nghị cấp kinh phí', note: `Hệ thống tạo Đề nghị cấp kinh phí bồi thường ${p.code} ở trạng thái Chờ nhập liệu.` });
+            casesChanged = true;
+        }
+    });
+    if (proposalsChanged) localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
+    if (casesChanged) localStorage.setItem(COURT_CASES_KEY, JSON.stringify(courtCases));
+}
+
+function isCourtCaseCode(code) {
+    return loadCourtCases().some(c => c && c.code === code);
+}
+
+// Nhập liệu bản ghi "Chờ nhập liệu": mở form Lập đề nghị, nạp sẵn dữ liệu từ vụ việc tại Tòa án
+function inputProposalDirect(id) {
+    const item = proposalsList.find(p => p.id === id);
+    if (!item || item.status !== FUNDING_STATUS_INPUT) return;
+    fillProposalDirect(id);
+    document.getElementById('formProposalTitle').innerHTML = `<i class="fa-solid fa-keyboard"></i> NHẬP LIỆU ĐỀ NGHỊ CẤP KINH PHÍ BỒI THƯỜNG: ${item.code}`;
+    const setVal = (elId, val) => { const el = document.getElementById(elId); if (el) el.value = val; };
+    setVal('formBaseDecisionNo', item.baseDecisionNo || '');
+    setVal('formBaseDecisionDate', item.baseDecisionDate || '');
+    // Số tiền đề nghị mặc định theo thiệt hại yêu cầu của vụ việc
+    document.querySelectorAll('.kp-approve-input').forEach(input => {
+        const max = parseFloat(input.dataset.max) || 0;
+        input.value = max.toLocaleString('vi-VN');
+    });
+    if (typeof calculateKinhPhiApproveTotal === 'function') calculateKinhPhiApproveTotal();
+    if (!item.notes) {
+        setVal('formProposalNotes', `Đề nghị cấp kinh phí bồi thường cho vụ việc ${item.ycbtCode} - ${item.nycName} theo Bản án/Quyết định${item.baseDecisionNo ? ' số ' + item.baseDecisionNo : ''}${item.baseDecisionDate ? ' có hiệu lực ngày ' + item.baseDecisionDate : ''}.`);
+    }
+    proposalAttachedDocs = item.files ? item.files.map(f => ({ name: f.name, file: f.file })) : [];
+    renderProposalAttachedDocs();
 }
 
 let lastProcessedUrl = '';
@@ -1201,7 +1365,9 @@ function checkAndHandleUrlParams() {
     }
 
     if (prop) {
-        if (actionType === 'payout' || actionType === 'pay') {
+        if (prop.status === FUNDING_STATUS_INPUT && (actionType === 'input' || actionType === 'update')) {
+            inputProposalDirect(prop.id);
+        } else if (actionType === 'payout' || actionType === 'pay') {
             payProposalDirect(prop.id);
         } else if (actionType === 'update') {
             updateProposalDirect(prop.id);
@@ -2787,7 +2953,6 @@ function getFundingClaimLookupRows() {
             const amount = selectedType === 'Cấp tạm ứng' ? (claim.suggestedAdvance || 0) : (claim.amount || 0);
             return {
                 code: claim.code,
-                caseName: claim.caseName || `Vụ việc yêu cầu bồi thường của ${claim.nyc || ''}`,
                 requester: claim.nyc || '',
                 agency: claim.agency || '',
                 amount: amount,

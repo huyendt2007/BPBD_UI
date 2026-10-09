@@ -34,8 +34,7 @@ Khi Ban hành QĐ hoặc Ký duyệt QĐ, hệ thống tự động sinh 01 bả
 | Trạng thái | `Chờ lập đề nghị` |
 | **Số Quyết định làm căn cứ** | Số quyết định của Quyết định vừa ban hành *(trường mới, xem mục 4)* |
 | **Ngày Quyết định làm căn cứ** | Ngày quyết định của Quyết định vừa ban hành *(trường mới, xem mục 4)* |
-| Mã vụ việc gốc | Mã vụ việc trên Quyết định. Hiển thị dạng HyperLink, click vào thì mở ra màn Xem chi tiết vụ việc |
-| Tên vụ việc | Tên vụ việc trên Quyết định |
+| Mã vụ việc gốc | Mã vụ việc trên Quyết định. Hiển thị dạng HyperLink `Mã vụ việc - Họ và tên người yêu cầu`, click vào thì mở ra màn Xem chi tiết vụ việc |
 | Họ và tên người yêu cầu bồi thường | Lấy theo Quyết định đã ban hành |
 | Địa chỉ chi tiết / Phường, Xã / Tỉnh, Thành phố | Lấy theo Quyết định đã ban hành |
 | Tổng số tiền bồi thường | Lấy theo Quyết định đã ban hành |
@@ -220,7 +219,6 @@ Sau khi lưu thông tin cấu hình, với cấu hình flow ở trạng thái Ho
 Sửa lại đúng theo tài liệu đã đặc tả, bảng lưới gồm các cột:
 - `STT`
 - `Mã vụ việc` (dạng HyperLink, click mở màn Xem chi tiết vụ việc tại tab mới, không đóng popup đang mở)
-- `Tên vụ việc`
 - `Người yêu cầu`
 - `Lĩnh vực phát sinh thiệt hại`
 - `Tỉnh/Thành phố`
@@ -238,7 +236,7 @@ Sửa lại đúng theo tài liệu đã đặc tả, bảng lưới gồm các 
   + Trường `Quyết định gốc` hiển thị dạng HyperLink, click mở màn Xem chi tiết Quyết định gốc. Hiển thị mỗi thông tin trên 01 dòng riêng: Số quyết định gốc, Ngày ban hành, Trạng thái (dạng Badge), Cơ quan ban hành.
   + Trường `Mã vụ việc` hiển thị dạng HyperLink, click mở màn Xem chi tiết vụ việc.
   + Bổ sung **Khối cảnh báo liên thông kinh phí** đặt phía trên khối thông tin chung: hiển thị Mã đề xuất kinh phí, Loại đề nghị, Trạng thái, Số tiền của các đề nghị kinh phí hiện có của vụ việc. Chỉ dựng giao diện hiển thị, không cần xử lý logic chặn.
-  + Bổ sung **Khối Chi tiết nội dung quyết định sau sửa chữa, bổ sung**, chỉ hiển thị khi loại là Sửa chữa, bổ sung. Kế thừa đầy đủ từ Quyết định gốc và cho phép cập nhật, gồm: `Tên vụ việc`, `Người yêu cầu bồi thường`, `Địa chỉ chi tiết`, `Phường/Xã`, `Tỉnh/Thành phố`, `Cơ quan quản lý người thi hành công vụ`, `Ngày thương lượng`, `Tổng số tiền bồi thường`, `Số tiền bồi thường đã tạm ứng`, `Số tiền bồi thường còn lại`, `Phương thức chi trả tiền bồi thường`, `Chủ tài khoản`, `Số tài khoản`, `Tên ngân hàng`, `Chi nhánh ngân hàng`, `Các quyền, lợi ích hợp pháp khác được khôi phục`.
+  + Bổ sung **Khối Chi tiết nội dung quyết định sau sửa chữa, bổ sung**, chỉ hiển thị khi loại là Sửa chữa, bổ sung. Kế thừa đầy đủ từ Quyết định gốc và cho phép cập nhật, gồm: `Người yêu cầu bồi thường`, `Địa chỉ chi tiết`, `Phường/Xã`, `Tỉnh/Thành phố`, `Cơ quan quản lý người thi hành công vụ`, `Ngày thương lượng`, `Tổng số tiền bồi thường`, `Số tiền bồi thường đã tạm ứng`, `Số tiền bồi thường còn lại`, `Phương thức chi trả tiền bồi thường`, `Chủ tài khoản`, `Số tài khoản`, `Tên ngân hàng`, `Chi nhánh ngân hàng`, `Các quyền, lợi ích hợp pháp khác được khôi phục`.
 - **Màn Xem chi tiết Quyết định**: Bổ sung 02 trường hiển thị `Trạng thái vụ việc gốc` (dạng Badge) và `Đề nghị kinh phí liên quan` (danh sách liên kết gồm Mã đề xuất kinh phí, Loại đề nghị, Trạng thái, Số tiền; click mở màn Xem chi tiết đề nghị cấp kinh phí).
 
 ## 7.5. Bổ sung dữ liệu giả lập cho Đề nghị cấp kinh phí
@@ -275,10 +273,9 @@ Báo cáo lại các điểm còn thiếu hoặc còn lệch giữa giao diện 
 
 ## 8.1. MH01 - Màn hình Danh sách quyết định
 
-**Khối Bộ lọc tìm kiếm** — chuẩn hóa đúng 10 tiêu chí theo SRS:
+**Khối Bộ lọc tìm kiếm** — chuẩn hóa đúng 09 tiêu chí theo SRS:
 - Số quyết định
 - Mã vụ việc
-- Tên vụ việc
 - Loại quyết định (3 giá trị: Quyết định giải quyết bồi thường / Quyết định hủy quyết định giải quyết bồi thường / Quyết định sửa chữa, bổ sung quyết định giải quyết bồi thường)
 - Người ký quyết định
 - Trạng thái quyết định (Lưu nháp / Chờ ký / Bị từ chối / Đã ban hành / Đã hủy)
@@ -287,9 +284,9 @@ Báo cáo lại các điểm còn thiếu hoặc còn lệch giữa giao diện 
 - Ban hành: Từ ngày
 - Ban hành: Đến ngày
 
-**Bảng danh sách** — chuẩn hóa đúng 13 cột theo SRS, dùng chung cho cả 02 vai trò:
+**Bảng danh sách** — chuẩn hóa đúng 12 cột theo SRS, dùng chung cho cả 02 vai trò:
 
-`STT` · `Số quyết định` · `Ngày ban hành` · `Loại quyết định` · `Người ký` · `Cán bộ xử lý` · `Hình thức ban hành` · `Đơn vị ban hành` · `Trích yếu quyết định` · `Mã vụ việc` · `Tên vụ việc` · `Trạng thái` · `Thao tác`
+`STT` · `Số quyết định` · `Ngày ban hành` · `Loại quyết định` · `Người ký` · `Cán bộ xử lý` · `Hình thức ban hành` · `Đơn vị ban hành` · `Trích yếu quyết định` · `Mã vụ việc` · `Trạng thái` · `Thao tác`
 
 - Bỏ cột `Ngày hiệu lực` (không có trong SRS).
 - Bổ sung cột `Người ký` cho vai trò Lãnh đạo và cột `Cán bộ xử lý` cho vai trò Cán bộ — hiện mỗi vai trò đang thiếu một cột.

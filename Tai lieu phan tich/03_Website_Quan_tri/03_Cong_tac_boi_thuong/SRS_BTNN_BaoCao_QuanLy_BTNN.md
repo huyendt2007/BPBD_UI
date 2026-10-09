@@ -20,7 +20,7 @@
 
 \- Người dùng được phân quyền truy cập nhóm menu `Báo cáo quản lý BTNN`.
 
-\- Dữ liệu vụ việc YCBT đã phát sinh tại các module Tiếp nhận YCBT, Giải quyết yêu cầu bồi thường, Quyết định giải quyết bồi thường, Cấp kinh phí tạm ứng/Bồi thường, Xem xét trách nhiệm hoàn trả.
+\- Dữ liệu vụ việc YCBT đã phát sinh tại các module Tiếp nhận YCBT, Giải quyết yêu cầu bồi thường, Quyết định giải quyết bồi thường, Cấp kinh phí tạm ứng/Bồi thường, Xem xét trách nhiệm hoàn trả, Theo dõi vụ việc tại Tòa án.
 
 \- Số tiền trên màn hình báo cáo hiển thị theo đơn vị `nghìn đồng`, hệ thống tự động quy đổi từ dữ liệu nghiệp vụ lưu theo đơn vị đồng.
 
@@ -42,6 +42,8 @@ Các báo cáo từ mục 4.3.3.24.4 đến 4.3.3.24.8 dùng chung bộ chỉ ti
 | Tổng tiền đã chi trả | Decimal(18,0) | - | Hệ thống tính | Tổng số tiền thực tế đã chi trả trong kỳ báo cáo, đơn vị nghìn đồng. |
 | Tổng tiền còn phải chi trả | Decimal(18,0) | - | Hệ thống tính | Tổng số tiền còn phải chi trả theo quyết định/bản án có hiệu lực, đơn vị nghìn đồng. |
 | Tỷ lệ giải quyết | Decimal(5,2) | - | Hệ thống tính | Công thức: `Số vụ đã giải quyết xong / (Số vụ thụ lý mới + Số vụ kỳ trước chuyển sang) * 100`. Nếu mẫu số bằng 0 thì hiển thị `0%`. |
+
+\- Quy tắc loại trừ: Vụ việc tại Tòa án ở trạng thái `Trả lại đơn khởi kiện` (theo dõi tại [Theo dõi vụ việc tại Tòa án - Theo dõi vụ việc tại Tòa án - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_TheoDoiVuViecToaAn.md)) không được tính vào số liệu thống kê, áp dụng cho mọi chỉ tiêu của bộ chỉ tiêu trên và mọi chiều nhóm dữ liệu. Vụ việc tại Tòa án ở các trạng thái còn lại được tổng hợp theo `Ngày thụ lý` và trạng thái của vụ việc. Sau khi tổng hợp, thông báo tổng hợp thành công phía trên bảng kết quả hiển thị kèm nội dung *"Không tính các vụ việc tại Tòa án ở trạng thái "Trả lại đơn khởi kiện"."*
 
 ---
 

@@ -355,6 +355,8 @@
 
 <script>
     const FIELDS = ['I. Trong hoạt động quản lý hành chính', 'II. Trong hoạt động tố tụng hình sự', 'III. Trong hoạt động tố tụng dân sự', 'IV. Trong hoạt động tố tụng hành chính', 'V. Trong hoạt động thi hành án hình sự', 'VI. Trong hoạt động thi hành án dân sự'];
+    // Quy tắc thống kê: vụ việc tại Tòa án ở trạng thái "Trả lại đơn khởi kiện" không được tính vào số liệu
+    const COURT_EXCLUSION_NOTE = ' Không tính các vụ việc tại Tòa án ở trạng thái "Trả lại đơn khởi kiện".';
 
     // ===================== BM03 - Mẫu số 03/BTNN =====================
     const BM03_INDICATORS = [
@@ -746,7 +748,7 @@
         html += '</tr></tbody></table>';
 
         document.getElementById('reportTableWrap').innerHTML = html;
-        document.getElementById('alertArea').innerHTML = `<div class="alert-box alert-success"><i class="fa-solid fa-circle-check"></i> Dữ liệu đã được tổng hợp theo bộ chỉ tiêu cốt lõi và chiều nhóm "${meta.groupLabel}".</div>`;
+        document.getElementById('alertArea').innerHTML = `<div class="alert-box alert-success"><i class="fa-solid fa-circle-check"></i> Dữ liệu đã được tổng hợp theo bộ chỉ tiêu cốt lõi và chiều nhóm "${meta.groupLabel}".${COURT_EXCLUSION_NOTE}</div>`;
     }
 
     function renderLocal03Report() {
@@ -835,7 +837,7 @@
         html += '</tr></tbody></table>';
 
         document.getElementById('reportTableWrap').innerHTML = html;
-        document.getElementById('alertArea').innerHTML = `<div class="alert-box alert-success"><i class="fa-solid fa-circle-check"></i> Dữ liệu đã được tổng hợp theo từng địa phương, tái sử dụng cấu trúc chỉ tiêu Mẫu số 03/BTNN.</div>`;
+        document.getElementById('alertArea').innerHTML = `<div class="alert-box alert-success"><i class="fa-solid fa-circle-check"></i> Dữ liệu đã được tổng hợp theo từng địa phương, tái sử dụng cấu trúc chỉ tiêu Mẫu số 03/BTNN.${COURT_EXCLUSION_NOTE}</div>`;
     }
 
     function getUnitFilterText() {
@@ -1132,7 +1134,7 @@
         html += '</tr></tbody></table>';
 
         document.getElementById('reportTableWrap').innerHTML = html;
-        document.getElementById('alertArea').innerHTML = `<div class="alert-box alert-success"><i class="fa-solid fa-circle-check"></i> Dữ liệu đã được tổng hợp theo đúng bố cục Mẫu số 03/BTNN ban hành kèm Thông tư 08/2019/TT-BTP.</div>`;
+        document.getElementById('alertArea').innerHTML = `<div class="alert-box alert-success"><i class="fa-solid fa-circle-check"></i> Dữ liệu đã được tổng hợp theo đúng bố cục Mẫu số 03/BTNN ban hành kèm Thông tư 08/2019/TT-BTP.${COURT_EXCLUSION_NOTE}</div>`;
     }
 
     function getMau04Value(row, no) {

@@ -396,7 +396,7 @@
                 <!-- Thanh công cụ Toolbar Mẫu 01 -->
                 <div class="toolbar-row" id="mau01Toolbar" style="justify-content:space-between; margin-top:8px; margin-bottom:12px;">
                     <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                        <button class="btn btn-secondary btn-sm" id="btnSyncSystem" onclick="syncMau01FromSystem()" title="Đồng bộ lại dữ liệu hồ sơ BTNN mới phát sinh trong kỳ">
+                        <button class="btn btn-secondary btn-sm" id="btnSyncSystem" onclick="syncMau01FromSystem()" title="Đồng bộ lại dữ liệu hồ sơ BTNN mới phát sinh trong kỳ (không tính vụ việc tại Tòa án ở trạng thái Trả lại đơn khởi kiện)">
                             <i class="fa-solid fa-rotate"></i> Đồng bộ từ hệ thống
                         </button>
                     </div>
@@ -756,7 +756,7 @@ const BM04_INDICATORS = [
     { no: 15, name: 'Số tiền còn phải hoàn trả', unit: 'Nghìn đồng', isMoney: true }
 ];
 
-const MAU05_COLUMNS = ['Mã vụ việc', 'Tên vụ việc', 'Ngày thụ lý', 'Họ tên, địa chỉ', 'Văn bản làm căn cứ', 'Cử người giải quyết', 'Tạm ứng kinh phí', 'Xác minh thiệt hại', 'Thương lượng', 'Quyết định giải quyết', 'Cấp kinh phí', 'Chi trả', 'Hoãn/Tạm đình chỉ/Đình chỉ', 'Khởi kiện Tòa án', 'Phục hồi danh dự'];
+const MAU05_COLUMNS = ['Mã vụ việc', 'Ngày thụ lý', 'Họ tên, địa chỉ', 'Văn bản làm căn cứ', 'Cử người giải quyết', 'Tạm ứng kinh phí', 'Xác minh thiệt hại', 'Thương lượng', 'Quyết định giải quyết', 'Cấp kinh phí', 'Chi trả', 'Hoãn/Tạm đình chỉ/Đình chỉ', 'Khởi kiện Tòa án', 'Phục hồi danh dự'];
 
 // ===================== Dữ liệu mẫu kỳ báo cáo (mock) =====================
 let nextId = 100;
@@ -770,7 +770,7 @@ const KY_BAO_CAO = [
         sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
         mau01Rows: {
             'I. Trong hoạt động quản lý hành chính': [
-                { code: 'BT-2026-041', origin: 'system', name: 'Yêu cầu bồi thường của Ngô Văn R', requester: 'Ngô Văn R', address: 'Số 3 phố Lê Thái Tổ, phường Hàng Trống, Thành phố Hà Nội', agency: 'UBND Thành phố Hà Nội', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017', situation: 'Đã thụ lý ngày 08/07/2026, đang xác minh thiệt hại.', payment: 'Chưa chi trả.', vuongMac: '', note: '' }
+                { code: 'BT-2026-041', origin: 'system', requester: 'Ngô Văn R', address: 'Số 3 phố Lê Thái Tổ, phường Hàng Trống, Thành phố Hà Nội', agency: 'UBND Thành phố Hà Nội', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017', situation: 'Đã thụ lý ngày 08/07/2026, đang xác minh thiệt hại.', payment: 'Chưa chi trả.', vuongMac: '', note: '' }
             ],
             'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': []
         },
@@ -778,7 +778,7 @@ const KY_BAO_CAO = [
         mau04Values: { 'I. Trong hoạt động quản lý hành chính': [0, null,0,0,0, 0,0, 0,0, 0, null,0,0, 0] },
         mau05Rows: {
             'I. Trong hoạt động quản lý hành chính': [
-                { code: 'BT-2026-041', origin: 'system', name: 'Yêu cầu bồi thường của Ngô Văn R', dateThuLy: '08/07/2026', requesterInfo: 'Ngô Văn R - Số 3 phố Lê Thái Tổ' }
+                { code: 'BT-2026-041', origin: 'system', dateThuLy: '08/07/2026', requesterInfo: 'Ngô Văn R - Số 3 phố Lê Thái Tổ' }
             ],
             'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': []
         },
@@ -803,8 +803,8 @@ const KY_BAO_CAO = [
         sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
         mau01Rows: {
             'I. Trong hoạt động quản lý hành chính': [
-                { code: 'BT-2026-031', origin: 'system', name: 'Yêu cầu bồi thường của Vũ Văn P', requester: 'Vũ Văn P', address: 'Số 21 phố Lý Thường Kiệt, phường Cửa Nam, Thành phố Hà Nội', agency: 'Sở Tài nguyên và Môi trường Thành phố Hà Nội', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017', situation: 'Đã thụ lý ngày 02/07/2026, đang xác minh thiệt hại.', payment: 'Chưa chi trả.', vuongMac: '', note: '' },
-                { code: 'BT-2026-032', origin: 'system', name: 'Yêu cầu bồi thường của Hoàng Thị Q', requester: 'Hoàng Thị Q', address: 'Số 5 ngõ 12 phố Khâm Thiên, phường Văn Miếu, Thành phố Hà Nội', agency: 'Sở Tài nguyên và Môi trường Thành phố Hà Nội', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017', situation: 'Đã thương lượng thành ngày 20/07/2026, chờ ban hành quyết định.', payment: 'Chưa chi trả.', vuongMac: '', note: '' }
+                { code: 'BT-2026-031', origin: 'system', requester: 'Vũ Văn P', address: 'Số 21 phố Lý Thường Kiệt, phường Cửa Nam, Thành phố Hà Nội', agency: 'Sở Tài nguyên và Môi trường Thành phố Hà Nội', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017', situation: 'Đã thụ lý ngày 02/07/2026, đang xác minh thiệt hại.', payment: 'Chưa chi trả.', vuongMac: '', note: '' },
+                { code: 'BT-2026-032', origin: 'system', requester: 'Hoàng Thị Q', address: 'Số 5 ngõ 12 phố Khâm Thiên, phường Văn Miếu, Thành phố Hà Nội', agency: 'Sở Tài nguyên và Môi trường Thành phố Hà Nội', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017', situation: 'Đã thương lượng thành ngày 20/07/2026, chờ ban hành quyết định.', payment: 'Chưa chi trả.', vuongMac: '', note: '' }
             ],
             'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': []
         },
@@ -812,8 +812,8 @@ const KY_BAO_CAO = [
         mau04Values: { 'I. Trong hoạt động quản lý hành chính': [0, null,0,0,0, 0,0, 0,0, 0, null,0,0, 0] },
         mau05Rows: {
             'I. Trong hoạt động quản lý hành chính': [
-                { code: 'BT-2026-031', origin: 'system', name: 'Yêu cầu bồi thường của Vũ Văn P', dateThuLy: '02/07/2026', requesterInfo: 'Vũ Văn P - Số 21 phố Lý Thường Kiệt' },
-                { code: 'BT-2026-032', origin: 'system', name: 'Yêu cầu bồi thường của Hoàng Thị Q', dateThuLy: '10/07/2026', requesterInfo: 'Hoàng Thị Q - Số 5 ngõ 12 phố Khâm Thiên' }
+                { code: 'BT-2026-031', origin: 'system', dateThuLy: '02/07/2026', requesterInfo: 'Vũ Văn P - Số 21 phố Lý Thường Kiệt' },
+                { code: 'BT-2026-032', origin: 'system', dateThuLy: '10/07/2026', requesterInfo: 'Hoàng Thị Q - Số 5 ngõ 12 phố Khâm Thiên' }
             ],
             'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': []
         },
@@ -830,7 +830,7 @@ const KY_BAO_CAO = [
         sources: { mau01: 'thu_cong', mau03: 'thu_cong', mau04: 'thu_cong', mau05: 'thu_cong' },
         mau01Rows: {
             'I. Trong hoạt động quản lý hành chính': [
-                { code: 'TC-2026-001', origin: 'manual', name: 'Yêu cầu bồi thường của Đỗ Thị N', requester: 'Đỗ Thị N', address: 'Số 8 phố Châu Long, phường Trúc Bạch, Thành phố Hà Nội', agency: 'UBND phường Trúc Bạch', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017', situation: 'Đã thụ lý, đang xác minh thiệt hại.', payment: 'Chưa chi trả.', vuongMac: 'Chưa thu thập đủ tài liệu chứng minh thiệt hại.', note: 'Vụ việc phát sinh ngoài phần mềm, nhập tay.' }
+                { code: 'TC-2026-001', origin: 'manual', requester: 'Đỗ Thị N', address: 'Số 8 phố Châu Long, phường Trúc Bạch, Thành phố Hà Nội', agency: 'UBND phường Trúc Bạch', law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017', situation: 'Đã thụ lý, đang xác minh thiệt hại.', payment: 'Chưa chi trả.', vuongMac: 'Chưa thu thập đủ tài liệu chứng minh thiệt hại.', note: 'Vụ việc phát sinh ngoài phần mềm, nhập tay.' }
             ],
             'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': []
         },
@@ -838,7 +838,7 @@ const KY_BAO_CAO = [
         mau04Values: { 'I. Trong hoạt động quản lý hành chính': [0, null,0,0,0, 0,0, 0,0, 0, null,0,0, 0] },
         mau05Rows: {
             'I. Trong hoạt động quản lý hành chính': [
-                { code: 'TC-2026-001', origin: 'manual', name: 'Yêu cầu bồi thường của Đỗ Thị N', dateThuLy: '12/07/2026', requesterInfo: 'Đỗ Thị N - Số 8 phố Châu Long' }
+                { code: 'TC-2026-001', origin: 'manual', dateThuLy: '12/07/2026', requesterInfo: 'Đỗ Thị N - Số 8 phố Châu Long' }
             ],
             'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': []
         },
@@ -853,7 +853,7 @@ const KY_BAO_CAO = [
         sources: { mau01: 'thu_cong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'thu_cong' },
         mau01Rows: {
             'I. Trong hoạt động quản lý hành chính': [
-                { code: 'BT-2026-012', name: 'Yêu cầu bồi thường của Lê Văn H', requester: 'Lê Văn H', agency: 'Sở Tư pháp Thành phố Hà Nội', law: 'Luật TNBTCNN 2017', situation: 'Đã ban hành QĐ 02/08/2026.', payment: 'Đã chi trả 850.000.000đ.', vuongMac: 'Khó xác minh thiệt hại.', note: '' }
+                { code: 'BT-2026-012', requester: 'Lê Văn H', agency: 'Sở Tư pháp Thành phố Hà Nội', law: 'Luật TNBTCNN 2017', situation: 'Đã ban hành QĐ 02/08/2026.', payment: 'Đã chi trả 850.000.000đ.', vuongMac: 'Khó xác minh thiệt hại.', note: '' }
             ],
             'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': []
         },
@@ -861,7 +861,7 @@ const KY_BAO_CAO = [
         mau04Values: { 'I. Trong hoạt động quản lý hành chính': [720000, null,2,180000,1, 0,0, 1,20000, 0, null,90000,40000, 30000] },
         mau05Rows: {
             'I. Trong hoạt động quản lý hành chính': [
-                { code: 'BT-2026-012', name: 'Yêu cầu bồi thường của Lê Văn H', dateThuLy: '05/07/2026', requesterInfo: 'Lê Văn H - Số 12 Ngõ 5, Hà Nội', vanBanCanCu: 'Đơn ngày 01/07/2026', cuNguoi: 'QĐ 10/QĐ-STP ngày 06/07/2026', tamUng: '', xacMinh: 'Báo cáo xác minh 20/07/2026', thuongLuong: '', quyetDinh: 'QĐ 25/QĐ-STP ngày 02/08/2026', capKinhPhi: '', chiTra: '06/08/2026', hoan: '', khoiKien: '', phucHoi: '' }
+                { code: 'BT-2026-012', dateThuLy: '05/07/2026', requesterInfo: 'Lê Văn H - Số 12 Ngõ 5, Hà Nội', vanBanCanCu: 'Đơn ngày 01/07/2026', cuNguoi: 'QĐ 10/QĐ-STP ngày 06/07/2026', tamUng: '', xacMinh: 'Báo cáo xác minh 20/07/2026', thuongLuong: '', quyetDinh: 'QĐ 25/QĐ-STP ngày 02/08/2026', capKinhPhi: '', chiTra: '06/08/2026', hoan: '', khoiKien: '', phucHoi: '' }
             ],
             'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': []
         },
@@ -871,11 +871,11 @@ const KY_BAO_CAO = [
         id: 2, level: 1, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'UBND phường Cầu Giấy', unitCode: 'HN-P.CG', reportScope: 'don_vi', parentUnit: 'UBND Thành phố Hà Nội',
         status: 'yeu_cau_chinh_ly', submittedDate: '18/07/2026', submittedBy: 'Trần Thị B',
         sources: { mau01: 'thu_cong', mau03: 'thu_cong', mau04: 'tu_dong', mau05: 'thu_cong' },
-        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-045', name: 'Yêu cầu bồi thường của Phạm Văn K', requester: 'Phạm Văn K', agency: 'UBND phường Cầu Giấy', law: 'Luật TNBTCNN 2017', situation: 'Đang thương lượng.', payment: '', vuongMac: '', note: '' } ],
+        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-045', requester: 'Phạm Văn K', agency: 'UBND phường Cầu Giấy', law: 'Luật TNBTCNN 2017', situation: 'Đang thương lượng.', payment: '', vuongMac: '', note: '' } ],
             'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
         mau03Values: { 'I. Trong hoạt động quản lý hành chính': [null,2,0,0,0, 1,0,0,0, null,0,0,0,0, 0, null,3,0,0,0, 0,0, 0,0,0, ''] },
         mau04Values: { 'I. Trong hoạt động quản lý hành chính': [0, null,0,0,0, 0,0, 0,0, 0, null,0,0, 0] },
-        mau05Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-045', name: 'Yêu cầu bồi thường của Phạm Văn K', dateThuLy: '10/07/2026', requesterInfo: 'Phạm Văn K', vanBanCanCu: '', cuNguoi: '', tamUng: '', xacMinh: '', thuongLuong: '15/07/2026', quyetDinh: '', capKinhPhi: '', chiTra: '', hoan: '', khoiKien: '', phucHoi: '' } ],
+        mau05Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-045', dateThuLy: '10/07/2026', requesterInfo: 'Phạm Văn K', vanBanCanCu: '', cuNguoi: '', tamUng: '', xacMinh: '', thuongLuong: '15/07/2026', quyetDinh: '', capKinhPhi: '', chiTra: '', hoan: '', khoiKien: '', phucHoi: '' } ],
             'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
         history: [
             { time: '18/07/2026 14:00', text: 'Trần Thị B gửi kỳ báo cáo lên UBND Thành phố Hà Nội.' },
@@ -886,11 +886,11 @@ const KY_BAO_CAO = [
         id: 3, level: 1, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'Tòa án nhân dân Thành phố Hà Nội', unitCode: 'HN-TAND', reportScope: 'don_vi', parentUnit: 'UBND Thành phố Hà Nội',
         status: 'da_duyet', submittedDate: '15/07/2026', submittedBy: 'Lê Thị C',
         sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
-        mau01Rows: { 'II. Trong hoạt động tố tụng hình sự': [ { code: 'BT-2026-030', name: 'Yêu cầu bồi thường của Hoàng Văn R', requester: 'Hoàng Văn R', agency: 'Tòa án nhân dân Thành phố Hà Nội', law: 'Luật TNBTCNN 2017', situation: 'Đã có bản án có hiệu lực.', payment: 'Đã chi trả.', vuongMac: '', note: '' } ],
+        mau01Rows: { 'II. Trong hoạt động tố tụng hình sự': [ { code: 'BT-2026-030', requester: 'Hoàng Văn R', agency: 'Tòa án nhân dân Thành phố Hà Nội', law: 'Luật TNBTCNN 2017', situation: 'Đã có bản án có hiệu lực.', payment: 'Đã chi trả.', vuongMac: '', note: '' } ],
             'I. Trong hoạt động quản lý hành chính': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
         mau03Values: { 'II. Trong hoạt động tố tụng hình sự': [null,0,3,1,0, 0,1,0,0, null,0,3,1,0, 640000, null,0,0,0,0, 0,0, 3,0,420000, ''] },
         mau04Values: { 'II. Trong hoạt động tố tụng hình sự': [420000, null,1,90000,0, 1,0, 0,0, 1, null,60000,0, 30000] },
-        mau05Rows: { 'II. Trong hoạt động tố tụng hình sự': [ { code: 'BT-2026-030', name: 'Yêu cầu bồi thường của Hoàng Văn R', dateThuLy: '01/06/2026', requesterInfo: 'Hoàng Văn R - Lâm Đồng', vanBanCanCu: 'Đơn khởi kiện', cuNguoi: '', tamUng: '', xacMinh: '', thuongLuong: '', quyetDinh: 'Bản án 12/2026/DS-ST', capKinhPhi: '', chiTra: '10/07/2026', hoan: '', khoiKien: '01/06/2026', phucHoi: '' } ],
+        mau05Rows: { 'II. Trong hoạt động tố tụng hình sự': [ { code: 'BT-2026-030', dateThuLy: '01/06/2026', requesterInfo: 'Hoàng Văn R - Lâm Đồng', vanBanCanCu: 'Đơn khởi kiện', cuNguoi: '', tamUng: '', xacMinh: '', thuongLuong: '', quyetDinh: 'Bản án 12/2026/DS-ST', capKinhPhi: '', chiTra: '10/07/2026', hoan: '', khoiKien: '01/06/2026', phucHoi: '' } ],
             'I. Trong hoạt động quản lý hành chính': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
         history: [
             { time: '15/07/2026 10:00', text: 'Lê Thị C gửi kỳ báo cáo lên UBND Thành phố Hà Nội.' },
@@ -952,7 +952,7 @@ const KY_BAO_CAO = [
         status: 'da_duyet', submittedDate: '23/07/2026', submittedBy: 'Bộ Công an',
         sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
         childUnits: [],
-        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-BCA-01', name: 'Yêu cầu bồi thường thuộc Bộ Công an', requester: 'Nguyễn Văn C', agency: 'Bộ Công an', law: 'Luật TNBTCNN 2017', situation: 'Đã giải quyết xong.', payment: 'Đã chi trả 120.000.000đ.', vuongMac: '', note: '' } ],
+        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-BCA-01', requester: 'Nguyễn Văn C', agency: 'Bộ Công an', law: 'Luật TNBTCNN 2017', situation: 'Đã giải quyết xong.', payment: 'Đã chi trả 120.000.000đ.', vuongMac: '', note: '' } ],
             'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
         mau03Values: { 'I. Trong hoạt động quản lý hành chính': [null,1,0,0,0, 0,0,0,0, null,1,0,0,0, 120000, null,0,0,0,0, 0,0, 1,120000,0, ''] },
         mau04Values: { 'I. Trong hoạt động quản lý hành chính': [120000, null,1,30000,0, 0,0, 0,0, 0, null,20000,10000, 0] },
@@ -973,11 +973,11 @@ const KY_BAO_CAO = [
         id: 6, level: 1, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'Cục Thi hành án dân sự Thành phố Hà Nội', unitCode: 'HN-THADS', reportScope: 'don_vi', parentUnit: 'UBND Thành phố Hà Nội',
         status: 'da_duyet', submittedDate: '17/07/2026', submittedBy: 'Phạm Thị D',
         sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
-        mau01Rows: { 'VI. Trong hoạt động thi hành án dân sự': [ { code: 'BT-2026-066', name: 'Yêu cầu bồi thường trong thi hành án dân sự', requester: 'Công ty Minh Phát', agency: 'Cục Thi hành án dân sự Thành phố Hà Nội', law: 'Luật TNBTCNN 2017', situation: 'Đang xác minh thiệt hại.', payment: '', vuongMac: '', note: '' } ],
+        mau01Rows: { 'VI. Trong hoạt động thi hành án dân sự': [ { code: 'BT-2026-066', requester: 'Công ty Minh Phát', agency: 'Cục Thi hành án dân sự Thành phố Hà Nội', law: 'Luật TNBTCNN 2017', situation: 'Đang xác minh thiệt hại.', payment: '', vuongMac: '', note: '' } ],
             'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [] },
         mau03Values: { 'VI. Trong hoạt động thi hành án dân sự': [null,1,0,0,0, 0,0,0,0, null,0,0,0,0, 0, null,1,0,0,0, 0,0, 0,0,0, ''] },
         mau04Values: { 'VI. Trong hoạt động thi hành án dân sự': [0, null,0,0,0, 0,0, 0,0, 0, null,0,0, 0] },
-        mau05Rows: { 'VI. Trong hoạt động thi hành án dân sự': [ { code: 'BT-2026-066', name: 'Yêu cầu bồi thường trong thi hành án dân sự', dateThuLy: '12/07/2026', requesterInfo: 'Công ty Minh Phát - Hà Nội', vanBanCanCu: 'Đơn ngày 10/07/2026', cuNguoi: '', tamUng: '', xacMinh: 'Đang xác minh', thuongLuong: '', quyetDinh: '', capKinhPhi: '', chiTra: '', hoan: '', khoiKien: '', phucHoi: '' } ],
+        mau05Rows: { 'VI. Trong hoạt động thi hành án dân sự': [ { code: 'BT-2026-066', dateThuLy: '12/07/2026', requesterInfo: 'Công ty Minh Phát - Hà Nội', vanBanCanCu: 'Đơn ngày 10/07/2026', cuNguoi: '', tamUng: '', xacMinh: 'Đang xác minh', thuongLuong: '', quyetDinh: '', capKinhPhi: '', chiTra: '', hoan: '', khoiKien: '', phucHoi: '' } ],
             'I. Trong hoạt động quản lý hành chính': [], 'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [] },
         history: [{ time: '17/07/2026 15:00', text: 'Phạm Thị D gửi kỳ báo cáo lên UBND Thành phố Hà Nội.' }, { time: '18/07/2026 09:00', text: 'UBND Thành phố Hà Nội đã duyệt kỳ báo cáo.' }]
     },
@@ -985,11 +985,11 @@ const KY_BAO_CAO = [
         id: 7, level: 1, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'UBND phường Ba Đình', unitCode: 'HN-P.BD', reportScope: 'don_vi', parentUnit: 'UBND Thành phố Hà Nội',
         status: 'da_duyet', submittedDate: '19/07/2026', submittedBy: 'Ngô Văn E',
         sources: { mau01: 'thu_cong', mau03: 'thu_cong', mau04: 'thu_cong', mau05: 'thu_cong' },
-        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-077', name: 'Yêu cầu bồi thường của Nguyễn Thị N', requester: 'Nguyễn Thị N', agency: 'UBND phường Ba Đình', law: 'Luật TNBTCNN 2017', situation: 'Đã đình chỉ giải quyết.', payment: '', vuongMac: '', note: '' } ],
+        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-077', requester: 'Nguyễn Thị N', agency: 'UBND phường Ba Đình', law: 'Luật TNBTCNN 2017', situation: 'Đã đình chỉ giải quyết.', payment: '', vuongMac: '', note: '' } ],
             'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
         mau03Values: { 'I. Trong hoạt động quản lý hành chính': [null,1,0,0,0, 0,0,0,0, null,0,0,0,0, 0, null,0,0,0,0, 1,0, 0,0,0, ''] },
         mau04Values: { 'I. Trong hoạt động quản lý hành chính': [0, null,0,0,0, 0,0, 0,0, 0, null,0,0, 0] },
-        mau05Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-077', name: 'Yêu cầu bồi thường của Nguyễn Thị N', dateThuLy: '13/07/2026', requesterInfo: 'Nguyễn Thị N - Hà Nội', vanBanCanCu: 'Đơn ngày 11/07/2026', cuNguoi: 'QĐ cử người giải quyết', tamUng: '', xacMinh: 'Đã xác minh', thuongLuong: '', quyetDinh: '', capKinhPhi: '', chiTra: '', hoan: 'Đình chỉ 19/07/2026', khoiKien: '', phucHoi: '' } ],
+        mau05Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-077', dateThuLy: '13/07/2026', requesterInfo: 'Nguyễn Thị N - Hà Nội', vanBanCanCu: 'Đơn ngày 11/07/2026', cuNguoi: 'QĐ cử người giải quyết', tamUng: '', xacMinh: 'Đã xác minh', thuongLuong: '', quyetDinh: '', capKinhPhi: '', chiTra: '', hoan: 'Đình chỉ 19/07/2026', khoiKien: '', phucHoi: '' } ],
             'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
         history: [{ time: '19/07/2026 10:00', text: 'Ngô Văn E gửi kỳ báo cáo lên UBND Thành phố Hà Nội.' }, { time: '19/07/2026 16:00', text: 'UBND Thành phố Hà Nội đã duyệt kỳ báo cáo.' }]
     },
@@ -998,8 +998,8 @@ const KY_BAO_CAO = [
         status: 'da_duyet', submittedDate: '21/07/2026', submittedBy: 'UBND Thành phố Hải Phòng',
         sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
         childUnits: [9,10],
-        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-091', name: 'Yêu cầu bồi thường của Lê Hoàng P', requester: 'Lê Hoàng P', agency: 'Sở Tư pháp Thành phố Hải Phòng', law: 'Luật TNBTCNN 2017', situation: 'Đã ban hành quyết định giải quyết.', payment: 'Đã chi trả 240.000.000đ.', vuongMac: '', note: '' } ],
-            'II. Trong hoạt động tố tụng hình sự': [ { code: 'BT-2026-092', name: 'Yêu cầu bồi thường của Trần Văn Q', requester: 'Trần Văn Q', agency: 'Tòa án nhân dân Thành phố Hải Phòng', law: 'Luật TNBTCNN 2017', situation: 'Đang giải quyết.', payment: '', vuongMac: '', note: '' } ],
+        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-091', requester: 'Lê Hoàng P', agency: 'Sở Tư pháp Thành phố Hải Phòng', law: 'Luật TNBTCNN 2017', situation: 'Đã ban hành quyết định giải quyết.', payment: 'Đã chi trả 240.000.000đ.', vuongMac: '', note: '' } ],
+            'II. Trong hoạt động tố tụng hình sự': [ { code: 'BT-2026-092', requester: 'Trần Văn Q', agency: 'Tòa án nhân dân Thành phố Hải Phòng', law: 'Luật TNBTCNN 2017', situation: 'Đang giải quyết.', payment: '', vuongMac: '', note: '' } ],
             'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
         mau03Values: { 'I. Trong hoạt động quản lý hành chính': [null,2,0,0,0, 1,0,0,0, null,2,0,0,0, 240000, null,1,0,0,0, 0,0, 2,240000,0, ''],
             'II. Trong hoạt động tố tụng hình sự': [null,0,1,0,0, 0,0,0,0, null,0,0,0,0, 0, null,0,1,0,0, 0,0, 0,0,0, ''] },
@@ -1011,7 +1011,7 @@ const KY_BAO_CAO = [
         id: 9, level: 1, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'Sở Tư pháp Thành phố Hải Phòng', unitCode: 'HP-STP', reportScope: 'don_vi', parentUnit: 'UBND Thành phố Hải Phòng',
         status: 'da_duyet', submittedDate: '18/07/2026', submittedBy: 'Sở Tư pháp Thành phố Hải Phòng',
         sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
-        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-091', name: 'Yêu cầu bồi thường của Lê Hoàng P', requester: 'Lê Hoàng P', agency: 'Sở Tư pháp Thành phố Hải Phòng', law: 'Luật TNBTCNN 2017', situation: 'Đã ban hành quyết định giải quyết.', payment: 'Đã chi trả 240.000.000đ.', vuongMac: '', note: '' } ],
+        mau01Rows: { 'I. Trong hoạt động quản lý hành chính': [ { code: 'BT-2026-091', requester: 'Lê Hoàng P', agency: 'Sở Tư pháp Thành phố Hải Phòng', law: 'Luật TNBTCNN 2017', situation: 'Đã ban hành quyết định giải quyết.', payment: 'Đã chi trả 240.000.000đ.', vuongMac: '', note: '' } ],
             'II. Trong hoạt động tố tụng hình sự': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
         mau03Values: { 'I. Trong hoạt động quản lý hành chính': [null,2,0,0,0, 1,0,0,0, null,2,0,0,0, 240000, null,1,0,0,0, 0,0, 2,240000,0, ''] },
         mau04Values: { 'I. Trong hoạt động quản lý hành chính': [240000, null,1,60000,0, 0,0, 0,0, 0, null,30000,30000, 0] },
@@ -1022,7 +1022,7 @@ const KY_BAO_CAO = [
         id: 10, level: 1, year: 2026, periodType: 'thuc_te', reportType: 'tt08_all', unit: 'Tòa án nhân dân Thành phố Hải Phòng', unitCode: 'HP-TAND', reportScope: 'don_vi', parentUnit: 'UBND Thành phố Hải Phòng',
         status: 'da_duyet', submittedDate: '18/07/2026', submittedBy: 'Tòa án nhân dân Thành phố Hải Phòng',
         sources: { mau01: 'tu_dong', mau03: 'tu_dong', mau04: 'tu_dong', mau05: 'tu_dong' },
-        mau01Rows: { 'II. Trong hoạt động tố tụng hình sự': [ { code: 'BT-2026-092', name: 'Yêu cầu bồi thường của Trần Văn Q', requester: 'Trần Văn Q', agency: 'Tòa án nhân dân Thành phố Hải Phòng', law: 'Luật TNBTCNN 2017', situation: 'Đang giải quyết.', payment: '', vuongMac: '', note: '' } ],
+        mau01Rows: { 'II. Trong hoạt động tố tụng hình sự': [ { code: 'BT-2026-092', requester: 'Trần Văn Q', agency: 'Tòa án nhân dân Thành phố Hải Phòng', law: 'Luật TNBTCNN 2017', situation: 'Đang giải quyết.', payment: '', vuongMac: '', note: '' } ],
             'I. Trong hoạt động quản lý hành chính': [], 'III. Trong hoạt động tố tụng dân sự': [], 'IV. Trong hoạt động tố tụng hành chính': [], 'V. Trong hoạt động thi hành án hình sự': [], 'VI. Trong hoạt động thi hành án dân sự': [] },
         mau03Values: { 'II. Trong hoạt động tố tụng hình sự': [null,0,1,0,0, 0,0,0,0, null,0,0,0,0, 0, null,0,1,0,0, 0,0, 0,0,0, ''] },
         mau04Values: { 'II. Trong hoạt động tố tụng hình sự': [0, null,0,0,0, 0,0, 0,0, 0, null,0,0, 0] },
@@ -2090,6 +2090,51 @@ const SYSTEM_CASE_POOL = [
     }
 ];
 
+// Vụ việc tại Tòa án (module Theo dõi vụ việc tại Tòa án) được quét cùng CSDL hồ sơ BTNN khi Đồng bộ/Chọn vụ việc.
+// Vụ việc ở trạng thái "Trả lại đơn khởi kiện" không được tính vào số liệu thống kê.
+const COURT_CASES_KEY = 'btnn_court_cases_v1';
+const COURT_STATUS_EXCLUDED = 'Trả lại đơn khởi kiện';
+function loadCourtCases() {
+    try { const v = JSON.parse(localStorage.getItem(COURT_CASES_KEY) || '[]'); return Array.isArray(v) ? v.filter(c => c && c.code) : []; } catch (e) { return []; }
+}
+function courtCaseField(c) {
+    const s = String(c.linhVuc || c.fieldGroup || c.field || '').toLowerCase();
+    if (s.includes('thi hành án dân sự')) return FIELDS[5];
+    if (s.includes('thi hành án hình sự')) return FIELDS[4];
+    if (s.includes('tố tụng hành chính')) return FIELDS[3];
+    if (s.includes('dân sự')) return FIELDS[2];
+    if (s.includes('hình sự')) return FIELDS[1];
+    return FIELDS[0];
+}
+// Thụ lý trong kỳ: ngày thụ lý thuộc năm báo cáo và không muộn hơn ngày chốt của loại kỳ
+function courtCaseInPeriod(c, ky) {
+    const m = String(c.ngayThuLy || '').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (!m) return false;
+    const end = ky.periodType === 'thuc_te' ? '1031' : '1231';
+    return +m[3] === +ky.year && (m[2] + m[1]) <= end;
+}
+function courtCaseToPoolItem(c) {
+    return {
+        code: c.code, origin: 'system', isOverridden: false, field: courtCaseField(c),
+        requester: c.nyc || c.nycName || c.requester || c.requesterName || '',
+        address: c.address || c.nycAddressDetail || c.nycAddress || '',
+        agency: c.agency || c.coQuan || c.coQuanGiaiQuyet || c.agencyName || '',
+        law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017',
+        situation: `Vụ việc tại Tòa án, thụ lý ngày ${c.ngayThuLy}. Trạng thái: ${c.status || ''}.`,
+        payment: 'Chưa chi trả.', vuongMac: '', note: ''
+    };
+}
+function getSystemCasePool(ky) {
+    const codes = new Set(SYSTEM_CASE_POOL.map(c => c.code));
+    const court = loadCourtCases()
+        .filter(c => c.status !== COURT_STATUS_EXCLUDED && courtCaseInPeriod(c, ky) && !codes.has(c.code))
+        .map(courtCaseToPoolItem);
+    return SYSTEM_CASE_POOL.concat(court);
+}
+function getReturnedCourtCaseCodes() {
+    return new Set(loadCourtCases().filter(c => c.status === COURT_STATUS_EXCLUDED).map(c => c.code));
+}
+
 function renderMau01(ky, readOnly) {
     const editable = ky.status === 'dang_nhap_lieu' || ky.status === 'yeu_cau_chinh_ly';
     const colCount = 10;
@@ -2211,12 +2256,21 @@ function renderMau01(ky, readOnly) {
 function syncMau01FromSystem() {
     const ky = findKy(currentDetailId);
     let added = 0;
+    // Loại khỏi danh mục các vụ việc tại Tòa án đã chuyển sang trạng thái Trả lại đơn khởi kiện
+    const returnedCodes = getReturnedCourtCaseCodes();
+    let removed = 0;
+    FIELDS.forEach(f => {
+        const before = (ky.mau01Rows[f] || []).length;
+        if (!before) return;
+        ky.mau01Rows[f] = ky.mau01Rows[f].filter(r => !(r.origin === 'system' && returnedCodes.has(r.code)));
+        removed += before - ky.mau01Rows[f].length;
+    });
     const existingCodes = new Set();
     FIELDS.forEach(f => {
         (ky.mau01Rows[f] || []).forEach(r => existingCodes.add(r.code));
     });
 
-    SYSTEM_CASE_POOL.forEach(poolItem => {
+    getSystemCasePool(ky).forEach(poolItem => {
         if (!existingCodes.has(poolItem.code)) {
             const f = poolItem.field || FIELDS[0];
             if (!ky.mau01Rows[f]) ky.mau01Rows[f] = [];
@@ -2232,8 +2286,11 @@ function syncMau01FromSystem() {
         }
     });
 
+    const removedMsg = removed > 0 ? ` Đã loại ${removed} vụ việc tại Tòa án ở trạng thái Trả lại đơn khởi kiện.` : '';
     if (added > 0) {
-        showToast(`Đã quét tự động và nạp thêm ${added} vụ việc từ CSDL Hồ sơ BTNN vào Mẫu 01!`, 'success');
+        showToast(`Đã quét tự động và nạp thêm ${added} vụ việc từ CSDL Hồ sơ BTNN vào Mẫu 01!${removedMsg}`, 'success');
+    } else if (removed > 0) {
+        showToast(removedMsg.trim(), 'success');
     } else {
         showToast('Tất cả vụ việc từ hệ thống đã có đầy đủ trong Mẫu 01.', 'info');
     }
@@ -2249,7 +2306,7 @@ function openCasePickerModal() {
 
     const tbody = document.getElementById('casePickerTableBody');
     if (tbody) {
-        tbody.innerHTML = SYSTEM_CASE_POOL.map(c => {
+        tbody.innerHTML = getSystemCasePool(ky).map(c => {
             const isExists = existingCodes.has(c.code);
             return `
                 <tr style="${isExists ? 'opacity:0.5; background:#F8FAFC;' : ''}">
@@ -2281,8 +2338,9 @@ function submitCasePicker() {
     }
 
     let added = 0;
+    const pool = getSystemCasePool(ky);
     checked.forEach(code => {
-        const item = SYSTEM_CASE_POOL.find(c => c.code === code);
+        const item = pool.find(c => c.code === code);
         if (item) {
             const f = item.field || FIELDS[0];
             if (!ky.mau01Rows[f]) ky.mau01Rows[f] = [];
@@ -2467,7 +2525,7 @@ function restoreMau01Original(field, idx) {
         tone: 'warning',
         okText: 'Khôi phục nguyên bản',
         okIcon: 'fa-rotate-left',
-        message: `Toàn bộ nội dung thuyết minh tại Cột (5) đến Cột (8) của vụ việc <strong>${escapeHtml(row.code || '')}</strong> sẽ được nạp lại nguyên bản từ hệ thống. Các nội dung bạn đã hiệu chỉnh sẽ bị ghi đè.`,
+        message: `Toàn bộ nội dung thuyết minh tại Cột (5) đến Cột (8) của vụ việc <strong>${escapeHtml([row.code, row.requester].filter(Boolean).join(' - '))}</strong> sẽ được nạp lại nguyên bản từ hệ thống. Các nội dung bạn đã hiệu chỉnh sẽ bị ghi đè.`,
         onConfirm: () => {
             row.situation = row.originalData.situation || '';
             row.payment = row.originalData.payment || '';
@@ -2495,7 +2553,7 @@ function deleteMau01Row(field, idx) {
         tone: 'danger',
         okText: 'Xóa vụ việc',
         okIcon: 'fa-trash-can',
-        message: `Bạn có chắc chắn muốn xóa vụ việc <strong>${escapeHtml(row.requester || row.code || '')}</strong> khỏi danh mục Mẫu 01 không? Số liệu liên thông sang Mẫu 03/04/05 sẽ được tính lại.`,
+        message: `Bạn có chắc chắn muốn xóa vụ việc <strong>${escapeHtml([row.code, row.requester].filter(Boolean).join(' - '))}</strong> khỏi danh mục Mẫu 01 không? Số liệu liên thông sang Mẫu 03/04/05 sẽ được tính lại.`,
         onConfirm: () => {
             ky.mau01Rows[field].splice(idx, 1);
             renderMau01(ky, false);
@@ -2549,7 +2607,7 @@ function syncMau05FromSystem() {
             if (src.origin !== 'system' || existing.has(src.code)) return;
             if (!ky.mau05Rows[field]) ky.mau05Rows[field] = [];
             ky.mau05Rows[field].push({
-                code: src.code, name: src.requester || '', dateThuLy: '', requesterInfo: src.address || '',
+                code: src.code, dateThuLy: '', requesterInfo: [src.requester, src.address].filter(Boolean).join(' - '),
                 vanBanCanCu: '', cuNguoi: '', tamUng: '', xacMinh: '', thuongLuong: '',
                 quyetDinh: '', capKinhPhi: '', chiTra: src.payment || '', hoan: '', khoiKien: '', phucHoi: ''
             });
@@ -2768,11 +2826,11 @@ function renderMau05(ky, readOnly) {
     if (editable) html += '<th style="width:50px;"></th>';
     html += '</tr></thead><tbody>';
     let total = 0;
-    const keys = ['code','name','dateThuLy','requesterInfo','vanBanCanCu','cuNguoi','tamUng','xacMinh','thuongLuong','quyetDinh','capKinhPhi','chiTra','hoan','khoiKien','phucHoi'];
+    const keys = ['code','dateThuLy','requesterInfo','vanBanCanCu','cuNguoi','tamUng','xacMinh','thuongLuong','quyetDinh','capKinhPhi','chiTra','hoan','khoiKien','phucHoi'];
     FIELDS.forEach(field => {
         const rows = ky.mau05Rows[field] || [];
         total += rows.length;
-        html += `<tr class="group-header"><td colspan="${editable ? 16 : 15}" class="text-left">${field} (${rows.length} vụ việc)</td></tr>`;
+        html += `<tr class="group-header"><td colspan="${MAU05_COLUMNS.length + (editable ? 1 : 0)}" class="text-left">${field} (${rows.length} vụ việc)</td></tr>`;
         rows.forEach((row, idx) => {
             html += '<tr>';
             keys.forEach(k => {
@@ -2786,23 +2844,28 @@ function renderMau05(ky, readOnly) {
             html += '</tr>';
         });
         if (editable) {
-            html += `<tr><td colspan="16" style="text-align:left; background:#F8FAFC;"><button class="btn btn-secondary btn-sm" onclick="addMau05Row('${field}')"><i class="fa-solid fa-plus"></i> Thêm dòng</button></td></tr>`;
+            html += `<tr><td colspan="${MAU05_COLUMNS.length + 1}" style="text-align:left; background:#F8FAFC;"><button class="btn btn-secondary btn-sm" onclick="addMau05Row('${field}')"><i class="fa-solid fa-plus"></i> Thêm dòng</button></td></tr>`;
         }
     });
-    html += `<tr class="total-row"><td colspan="${editable ? 16 : 15}" class="text-left">Tổng cộng: ${total} vụ việc</td></tr>`;
+    html += `<tr class="total-row"><td colspan="${MAU05_COLUMNS.length + (editable ? 1 : 0)}" class="text-left">Tổng cộng: ${total} vụ việc</td></tr>`;
     html += '</tbody></table>';
     document.getElementById('mau05TableWrap').innerHTML = html;
 }
 
 function addMau05Row(field) {
     const ky = findKy(currentDetailId);
-    ky.mau05Rows[field].push({ code: '', name: '', dateThuLy: '', requesterInfo: '', vanBanCanCu: '', cuNguoi: '', tamUng: '', xacMinh: '', thuongLuong: '', quyetDinh: '', capKinhPhi: '', chiTra: '', hoan: '', khoiKien: '', phucHoi: '' });
+    ky.mau05Rows[field].push({ code: '', dateThuLy: '', requesterInfo: '', vanBanCanCu: '', cuNguoi: '', tamUng: '', xacMinh: '', thuongLuong: '', quyetDinh: '', capKinhPhi: '', chiTra: '', hoan: '', khoiKien: '', phucHoi: '' });
     renderMau05(ky, false);
     showToast('Đã thêm 01 dòng vào sổ thụ lý.', 'success');
 }
 function updateMau05Field(field, idx, key, value) {
     const ky = findKy(currentDetailId);
     ky.mau05Rows[field][idx][key] = value;
+}
+// Định danh vụ việc trên sổ thụ lý: Mã vụ việc - Họ và tên người yêu cầu (lấy từ cột Họ tên, địa chỉ)
+function getMau05CaseLabel(row) {
+    const requester = String((row && row.requesterInfo) || '').split(' - ')[0].trim();
+    return [row && row.code, requester].filter(Boolean).join(' - ');
 }
 function deleteMau05Row(field, idx) {
     const ky = findKy(currentDetailId);
@@ -2813,7 +2876,7 @@ function deleteMau05Row(field, idx) {
         tone: 'danger',
         okText: 'Xóa vụ việc',
         okIcon: 'fa-trash-can',
-        message: `Bạn có chắc chắn muốn xóa vụ việc <strong>${escapeHtml(row.name || row.code || '')}</strong> khỏi sổ thụ lý Mẫu 05 không?`,
+        message: `Bạn có chắc chắn muốn xóa vụ việc <strong>${escapeHtml(getMau05CaseLabel(row))}</strong> khỏi sổ thụ lý Mẫu 05 không?`,
         onConfirm: () => {
             ky.mau05Rows[field].splice(idx, 1);
             renderMau05(ky, false);
@@ -3070,7 +3133,7 @@ function closeProcessModal() {
                         </div>
                         <div>
                             <strong>Bước 2. Nạp số liệu Mẫu 01 (3 cách):</strong><br>
-                            • <span style="color:#2563EB; font-weight:600;"><i class="fa-solid fa-rotate"></i> Đồng bộ từ hệ thống</span>: Quét tự động hồ sơ thụ lý trong kỳ.<br>
+                            • <span style="color:#2563EB; font-weight:600;"><i class="fa-solid fa-rotate"></i> Đồng bộ từ hệ thống</span>: Quét tự động hồ sơ thụ lý trong kỳ, gồm cả vụ việc tại Tòa án (không tính vụ việc ở trạng thái Trả lại đơn khởi kiện).<br>
                             • <span style="color:#059669; font-weight:600;"><i class="fa-solid fa-list-check"></i> Chọn vụ việc</span>: Tích chọn vụ việc từ CSDL kho lưu trữ.<br>
                             • <span style="color:#D97706; font-weight:600;"><i class="fa-solid fa-plus"></i> Thêm thủ công</span>: Nhập vụ việc ngoài phần mềm.
                         </div>

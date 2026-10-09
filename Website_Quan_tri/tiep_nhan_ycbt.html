@@ -506,30 +506,25 @@
                 </div>
 
                 <div class="info-group-title">III. Văn bản làm căn cứ yêu cầu bồi thường</div>
-                <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px; padding:16px 20px; margin-bottom:20px;">
-                    <div class="grid-2" style="gap:20px; align-items:start;">
-                        <div class="form-group" style="margin-bottom:0;">
-                            <span class="form-label">Tên văn bản làm căn cứ yêu cầu bồi thường</span>
-                            <input id="formBasisDocName" class="form-control" placeholder="Nhập tên văn bản làm căn cứ (Bản án, Quyết định giải quyết khiếu nại...)...">
-                            <div style="font-size:12px; color:var(--text-muted); margin-top:4px;"><i class="fa-solid fa-circle-info"></i> Không bắt buộc. Tự động kế thừa nếu hồ sơ Xác định cơ quan đã nhập.</div>
-                        </div>
-                        <div class="form-group" style="margin-bottom:0;">
-                            <span class="form-label">Tệp đính kèm văn bản làm căn cứ</span>
-                            <div id="basisDocUploadWrap" style="display:flex; align-items:center; gap:10px; margin-top:4px;">
-                                <input type="file" id="formBasisDocFile" style="display:none;" onchange="handleBasisDocUpload(this)" accept=".pdf,.doc,.docx,.jpg,.png">
-                                <button type="button" class="btn btn-secondary btn-sm" id="btnUploadBasisDoc" onclick="document.getElementById('formBasisDocFile').click()">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp đính kèm
-                                </button>
-                                <span id="formBasisDocFileName" style="font-size:13px; color:#64748b; font-style:italic;">Chưa chọn tệp</span>
-                            </div>
-                            <div id="basisDocFileActions" style="display:none; margin-top:6px; font-size:13px; gap:12px;">
-                                <a href="javascript:void(0)" onclick="viewBasisDocFile()" style="color:var(--primary-color); font-weight:500; text-decoration:none;"><i class="fa-solid fa-eye"></i> Xem file</a>
-                                <a href="javascript:void(0)" id="btnRemoveBasisDoc" onclick="removeBasisDocFile()" style="color:#ef4444; font-weight:500; text-decoration:none;"><i class="fa-solid fa-trash-can"></i> Xóa file</a>
-                            </div>
-                        </div>
-                    </div>
+                <div style="font-size:12px; color:var(--text-muted); margin-bottom:8px;"><i class="fa-solid fa-circle-info"></i> Không bắt buộc. Tự động kế thừa nếu hồ sơ Xác định cơ quan đã nhập.</div>
+                <div class="table-container">
+                    <table class="custom-table" style="min-width:760px;">
+                        <thead>
+                            <tr>
+                                <th style="width:60px; text-align:center;">STT</th>
+                                <th>Tên văn bản, căn cứ</th>
+                                <th style="width:260px;">Tải file</th>
+                                <th style="width:160px; text-align:center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="basisTableBody"></tbody>
+                    </table>
                 </div>
-
+                <div id="addBasisBtnWrapper" style="margin-top:10px; margin-bottom:20px;">
+                    <button class="btn btn-secondary btn-sm" onclick="addBasisRow()">
+                        <i class="fa-solid fa-plus"></i> Thêm dòng
+                    </button>
+                </div>
                 <div class="info-group-title">IV. Bảng tài liệu đính kèm</div>
                 <div class="table-container">
                     <table class="custom-table" style="min-width:760px;">
@@ -1215,6 +1210,7 @@
                 hanhVi: "",
                 hinhThucNhan: "Phương thức điện tử",
                 attachedDocs: (claim.receptionDocs || []).map(d => ({ name: d.name, file: d.file })),
+                vanBanCanCu: getBasisDocs(claim).map(d => ({ name: d.name, file: d.file })),
                 procBasis: "", procTargetAgency: "", procReason: "", procDecisionFile: "", claimCode: "-"
             };
         }
@@ -1617,19 +1613,15 @@
             setValue("formAddress", claim ? (claim.nycAddressDetail || claim.address || "") : "");
 
             // Thông tin Văn bản làm căn cứ yêu cầu bồi thường (Kế thừa từ Xác định cơ quan nếu có)
-            let basisName = claim ? (claim.vanBanCanCuTen || "") : "";
-            let basisFile = claim ? (claim.vanBanCanCuFile || "") : "";
-            if (!basisName && claim && (claim.xdCode || claim.requestType === REQUEST_TYPE_XDCQ)) {
+            let basisDocs = getBasisDocs(claim);
+            if (!basisDocs.length && claim && (claim.xdCode || claim.requestType === REQUEST_TYPE_XDCQ)) {
                 const xdRec = typeof BTNN_WF !== "undefined" && BTNN_WF.getRecord ? BTNN_WF.getRecord(claim.xdCode || claim.code) : null;
-                if (xdRec) {
-                    basisName = xdRec.vanBanCanCuTen || basisName;
-                    basisFile = xdRec.vanBanCanCuFile || basisFile;
-                }
+                if (xdRec) basisDocs = getBasisDocs(xdRec);
             }
-            setValue("formBasisDocName", basisName);
-            setBasisDocUI(basisFile, isReadOnly);
-            const basisNameInput = document.getElementById("formBasisDocName");
-            if (basisNameInput) basisNameInput.disabled = isReadOnly;
+            basisRows = basisDocs.map(d => ({ name: d.name || "", file: d.file || "" }));
+            if (!basisRows.length && !isReadOnly) basisRows = [{ name: "", file: "" }];
+            document.getElementById("addBasisBtnWrapper").style.display = isReadOnly ? "none" : "block";
+            renderBasisRows();
 
             // Toggle input disable state
             const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress"];
@@ -1654,12 +1646,7 @@
         function closeReceptionForm() {
             editingId = null;
             isFormReadOnly = false;
-            removeBasisDocFile();
-            const basisNameInput = document.getElementById("formBasisDocName");
-            if (basisNameInput) {
-                basisNameInput.value = "";
-                basisNameInput.disabled = false;
-            }
+            basisRows = [];
             const formView = document.getElementById("formView");
             if (formView) formView.classList.remove("readonly-mode");
             const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress"];
@@ -1710,8 +1697,7 @@
                 .filter(doc => (doc.name || "").trim() || (doc.file || "").trim())
                 .map(doc => ({ name: doc.name.trim(), file: doc.file || "" }));
 
-            const vanBanCanCuTenVal = getValue("formBasisDocName");
-            const vanBanCanCuFileVal = currentBasisDocFile || "";
+            const vanBanCanCuVal = getCleanBasisRows();
 
             if (editingId) {
                 const claim = claimsList.find(item => item.id === editingId);
@@ -1733,8 +1719,9 @@
                 claim.nycPhuongXa = getValue("formWard");
                 claim.nycAddressDetail = getValue("formAddress");
                 claim.address = getValue("formAddress");
-                claim.vanBanCanCuTen = vanBanCanCuTenVal;
-                claim.vanBanCanCuFile = vanBanCanCuFileVal;
+                claim.vanBanCanCu = vanBanCanCuVal;
+                delete claim.vanBanCanCuTen;
+                delete claim.vanBanCanCuFile;
                 claim.receptionDocs = cleanDocs;
                 claim.files = cleanDocs.filter(doc => doc.file).map(doc => ({ name: doc.file, url: "#" }));
                 if (!claim.timeline) claim.timeline = [];
@@ -1747,8 +1734,7 @@
                 if (wfCurrent) {
                     const data = buildWorkflowData(claim);
                     ["id", "code", "receivedAt", "date", "createdBy", "receivedBy"].forEach(k => delete data[k]);
-                    data.vanBanCanCuTen = vanBanCanCuTenVal;
-                    data.vanBanCanCuFile = vanBanCanCuFileVal;
+                    data.vanBanCanCu = vanBanCanCuVal;
                     Object.assign(wfCurrent, data);
                     BTNN_WF.addHistory(wfCurrent, "Cập nhật thông tin tiếp nhận", "Cán bộ tiếp nhận cập nhật thông tin hồ sơ.");
                     BTNN_WF.upsertRecord(wfCurrent);
@@ -1778,8 +1764,7 @@
                 nycPhuongXa: getValue("formWard"),
                 nycAddressDetail: getValue("formAddress"),
                 address: getValue("formAddress"),
-                vanBanCanCuTen: vanBanCanCuTenVal,
-                vanBanCanCuFile: vanBanCanCuFileVal,
+                vanBanCanCu: vanBanCanCuVal,
                 status: "Chờ phân công",
                 agency: BTNN_WF.unitName(CURRENT_ROOT_UNIT),
                 totalNum: 0,
@@ -2075,70 +2060,81 @@
             return escapeHtml(value);
         }
 
-        let currentBasisDocFile = "";
+        // Văn bản làm căn cứ yêu cầu bồi thường: bảng nhiều dòng (STT | Tên văn bản, căn cứ | Tải file | Thao tác)
+        let basisRows = [];
 
-        function handleBasisDocUpload(input) {
-            if (!input.files || input.files.length === 0) return;
-            currentBasisDocFile = input.files[0].name;
-            const nameEl = document.getElementById("formBasisDocFileName");
-            if (nameEl) {
-                nameEl.innerHTML = `<i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:4px;"></i><strong>${escapeHtml(currentBasisDocFile)}</strong>`;
-                nameEl.style.fontStyle = "normal";
-                nameEl.style.color = "#0f172a";
-            }
-            const actionsEl = document.getElementById("basisDocFileActions");
-            if (actionsEl) actionsEl.style.display = "inline-flex";
-            const inputNameEl = document.getElementById("formBasisDocName");
-            if (inputNameEl && !inputNameEl.value.trim()) {
-                inputNameEl.value = currentBasisDocFile.replace(/\.[^.]+$/, "");
-            }
+        // Chuyển dữ liệu cũ (01 văn bản) sang danh sách
+        function getBasisDocs(item) {
+            if (!item) return [];
+            if (Array.isArray(item.vanBanCanCu)) return item.vanBanCanCu;
+            if (item.vanBanCanCuTen || item.vanBanCanCuFile) return [{ name: item.vanBanCanCuTen || "", file: item.vanBanCanCuFile || "" }];
+            return [];
         }
 
-        function removeBasisDocFile() {
-            currentBasisDocFile = "";
-            const fileInput = document.getElementById("formBasisDocFile");
-            if (fileInput) fileInput.value = "";
-            const nameEl = document.getElementById("formBasisDocFileName");
-            if (nameEl) {
-                nameEl.innerHTML = "Chưa chọn tệp";
-                nameEl.style.fontStyle = "italic";
-                nameEl.style.color = "#64748b";
+        function renderBasisRows() {
+            const tbody = document.getElementById("basisTableBody");
+            if (!tbody) return;
+            if (isFormReadOnly && !basisRows.length) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); font-style:italic; padding:16px;">Không có văn bản làm căn cứ.</td></tr>`;
+                return;
             }
-            const actionsEl = document.getElementById("basisDocFileActions");
-            if (actionsEl) actionsEl.style.display = "none";
+            tbody.innerHTML = basisRows.map((doc, idx) => `
+                <tr>
+                    <td style="text-align:center;">${idx + 1}</td>
+                    <td>
+                        ${isFormReadOnly
+                            ? `<span style="font-weight:500; color:#1e293b;">${escapeHtml(doc.name || "--")}</span>`
+                            : `<input id="basisName_${idx}" class="form-control" value="${escapeAttr(doc.name)}" placeholder="Nhập tên văn bản, căn cứ..." oninput="updateBasisName(${idx}, this.value)">`}
+                    </td>
+                    <td>
+                        ${doc.file
+                            ? `<span class="file-name"><i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> ${escapeHtml(doc.file)}</span>`
+                            : (isFormReadOnly ? `<span class="muted">Không có</span>` : `<button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('basisFile_${idx}').click()"><i class="fa-solid fa-file-arrow-up"></i> Tải file</button>`)}
+                        <input type="file" id="basisFile_${idx}" style="display:none;" accept=".pdf,.doc,.docx,.jpg,.png" onchange="uploadBasisFile(${idx}, this)">
+                    </td>
+                    <td style="text-align:center;">
+                        <div class="doc-actions">
+                            <a href="javascript:void(0)" class="action-link view-link${doc.file ? "" : " disabled-action"}" onclick="viewBasisFile(${idx})"><i class="fa-solid fa-eye"></i> Xem file</a>
+                            ${isFormReadOnly ? "" : `<a href="javascript:void(0)" class="action-link delete-link" onclick="deleteBasisRow(${idx})"><i class="fa-solid fa-trash-can"></i> Xóa</a>`}
+                        </div>
+                    </td>
+                </tr>
+            `).join("");
         }
 
-        function viewBasisDocFile() {
-            if (!currentBasisDocFile) return;
-            showToast(`Giả lập mở file văn bản căn cứ: ${currentBasisDocFile}`, "info");
+        function addBasisRow() {
+            basisRows.push({ name: "", file: "" });
+            renderBasisRows();
         }
 
-        function setBasisDocUI(fileName, isReadOnly) {
-            currentBasisDocFile = fileName || "";
-            const nameEl = document.getElementById("formBasisDocFileName");
-            const actionsEl = document.getElementById("basisDocFileActions");
-            const btnUpload = document.getElementById("btnUploadBasisDoc");
-            const btnRemove = document.getElementById("btnRemoveBasisDoc");
-
-            if (nameEl) {
-                if (currentBasisDocFile) {
-                    nameEl.innerHTML = `<i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:4px;"></i><strong>${escapeHtml(currentBasisDocFile)}</strong>`;
-                    nameEl.style.fontStyle = "normal";
-                    nameEl.style.color = "#0f172a";
-                } else {
-                    nameEl.innerHTML = isReadOnly ? "<span style='color:var(--text-muted); font-style:italic;'>Không có tệp đính kèm</span>" : "Chưa chọn tệp";
-                    nameEl.style.fontStyle = "italic";
-                    nameEl.style.color = "#64748b";
-                }
-            }
-
-            if (actionsEl) {
-                actionsEl.style.display = currentBasisDocFile ? "inline-flex" : "none";
-            }
-            if (btnUpload) btnUpload.style.display = isReadOnly ? "none" : "inline-flex";
-            if (btnRemove) btnRemove.style.display = isReadOnly ? "none" : "inline-block";
+        function updateBasisName(idx, value) {
+            if (basisRows[idx]) basisRows[idx].name = value;
         }
 
+        function uploadBasisFile(idx, input) {
+            if (!basisRows[idx] || !input.files || !input.files[0]) return;
+            const fileName = input.files[0].name;
+            basisRows[idx].file = fileName;
+            if (!basisRows[idx].name) basisRows[idx].name = fileName.replace(/\.[^.]+$/, "");
+            renderBasisRows();
+        }
+
+        function viewBasisFile(idx) {
+            const doc = basisRows[idx];
+            if (doc && doc.file) showToast(`Giả lập mở file văn bản căn cứ: ${doc.file}`, "info");
+        }
+
+        function deleteBasisRow(idx) {
+            if (basisRows.length === 1) basisRows = [{ name: "", file: "" }];
+            else basisRows.splice(idx, 1);
+            renderBasisRows();
+        }
+
+        function getCleanBasisRows() {
+            return basisRows
+                .filter(doc => (doc.name || "").trim() || (doc.file || "").trim())
+                .map(doc => ({ name: (doc.name || "").trim(), file: doc.file || "" }));
+        }
         // In Phiếu tiếp nhận yêu cầu bồi thường (MH03)
         function printCurrentReceptionReceipt() {
             if (editingId) printReceptionReceipt(editingId);
@@ -2227,11 +2223,11 @@
             }
 
             // Bố cục thông tin 2 cột chuẩn hóa theo mô tả tài liệu SRS MH03
-            const vanBanCanCuHtml = claim.vanBanCanCuTen ? `
+            const basisList = getBasisDocs(claim);
+            const vanBanCanCuHtml = basisList.length ? `
                 <div style="grid-column: span 2;">
                     <span style="color:#64748b; font-size:12.5px; display:block;">Văn bản làm căn cứ yêu cầu bồi thường</span>
-                    <strong style="color:#0f172a; font-size:13.5px;">${escapeHtml(claim.vanBanCanCuTen)}</strong>
-                    ${claim.vanBanCanCuFile ? `<span style="margin-left:8px; font-size:12.5px; color:#475569;">(Đính kèm: <i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> ${escapeHtml(claim.vanBanCanCuFile)})</span>` : ''}
+                    ${basisList.map((d, i) => `<div><strong style="color:#0f172a; font-size:13.5px;">${i + 1}. ${escapeHtml(d.name || "--")}</strong>${d.file ? `<span style="margin-left:8px; font-size:12.5px; color:#475569;">(Đính kèm: <i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> ${escapeHtml(d.file)})</span>` : ''}</div>`).join('')}
                 </div>
             ` : '';
 

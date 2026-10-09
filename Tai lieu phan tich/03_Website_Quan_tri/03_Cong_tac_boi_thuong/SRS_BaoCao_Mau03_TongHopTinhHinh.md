@@ -20,7 +20,7 @@
 
 \- Loại cơ quan báo cáo Tham chiếu Danh mục Loại cơ quan báo cáo [DM_43]. Loại kỳ báo cáo Tham chiếu Danh mục Loại kỳ báo cáo [DM_44]. Lĩnh vực phát sinh thiệt hại Tham chiếu Danh mục Lĩnh vực phát sinh thiệt hại [DM_22].
 
-\- Phân loại nguồn thụ lý của từng vụ việc (tại cơ quan trực tiếp quản lý người thi hành công vụ/tại Tòa án theo điểm a khoản 1 Điều 52/theo điểm b khoản 1 và khoản 2 Điều 52/trong quá trình tố tụng hình sự-hành chính theo Điều 55) được suy ra từ các trường `Tình trạng pháp lý hồ sơ`, `Nguồn phát sinh bản án`, `Trường hợp khởi kiện` đã đặc tả tại SRS Giải quyết yêu cầu bồi thường; không yêu cầu nhập liệu bổ sung.
+\- Phân loại nguồn thụ lý của từng vụ việc (tại cơ quan trực tiếp quản lý người thi hành công vụ/tại Tòa án theo điểm a khoản 1 Điều 52/theo điểm b khoản 1 và khoản 2 Điều 52/trong quá trình tố tụng hình sự-hành chính theo Điều 55) được suy ra từ các trường `Tình trạng pháp lý hồ sơ`, `Nguồn phát sinh bản án`, `Trường hợp khởi kiện` đã đặc tả tại SRS Giải quyết yêu cầu bồi thường; không yêu cầu nhập liệu bổ sung. Đối với vụ việc khai báo tại [Theo dõi vụ việc tại Tòa án - Theo dõi vụ việc tại Tòa án - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_TheoDoiVuViecToaAn.md), nguồn thụ lý tại Tòa án được suy ra từ các trường `Nguồn phát sinh bản án`, `Trường hợp khởi kiện` của vụ việc đó.
 
 \- Số tiền trên biểu mẫu kết xuất quy đổi theo đơn vị `nghìn đồng`; hệ thống tự động quy đổi từ dữ liệu nghiệp vụ lưu theo đơn vị đồng.
 
@@ -112,6 +112,8 @@ flowchart TD
 ##### 4.3.3.22.4. Ghi chú phạm vi đặc tả
 
 \- Một `Mã vụ việc` chỉ được tính một lần trong cùng kỳ báo cáo, cùng lĩnh vực phát sinh thiệt hại và cùng cột số liệu; hệ thống tự loại trùng khi tổng hợp.
+
+\- Vụ việc tại Tòa án ở trạng thái `Trả lại đơn khởi kiện` (theo dõi tại [Theo dõi vụ việc tại Tòa án - Theo dõi vụ việc tại Tòa án - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_TheoDoiVuViecToaAn.md)) không được tính vào bất kỳ cột số liệu nào của Mẫu số 03/BTNN. Sau khi tổng hợp, thông báo tổng hợp thành công phía trên bảng hiển thị kèm nội dung *"Không tính các vụ việc tại Tòa án ở trạng thái "Trả lại đơn khởi kiện"."*
 
 \- Kỳ tổng hợp ở trạng thái `Nháp` cho phép bấm `Tổng hợp số liệu` để tính lại khi dữ liệu nghiệp vụ thay đổi; sau khi chuyển `Đã kết xuất`, lần kết xuất tiếp theo tạo phiên bản file mới, không ghi đè phiên bản đã kết xuất trước đó.
 

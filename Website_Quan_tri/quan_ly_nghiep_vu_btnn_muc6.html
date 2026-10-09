@@ -731,7 +731,7 @@
                         <input class="form-control" id="claimSearchCode" placeholder="Nhập mã vụ việc...">
                     </div>
                     <div class="form-group">
-                        <span class="form-label">Người yêu cầu/Cán bộ liên quan</span>
+                        <span class="form-label">Họ và tên người yêu cầu</span>
                         <input class="form-control" id="claimSearchRequester" placeholder="Nhập họ tên...">
                     </div>
                     <div class="form-group">
@@ -758,7 +758,7 @@
                         <thead>
                             <tr>
                                 <th class="nowrap">Mã vụ việc</th>
-                                <th>Người yêu cầu/Cán bộ liên quan</th>
+                                <th>Họ và tên người yêu cầu</th>
                                 <th class="nowrap">Số giấy tờ/Số QĐ</th>
                                 <th class="nowrap">Số văn bản/QĐ gốc</th>
                                 <th class="nowrap">Trạng thái</th>
@@ -816,20 +816,20 @@
                     ['supportContent', 'Nội dung đã hướng dẫn/hỗ trợ', true]
                 ],
                 rows: [
-                    ['Nguyễn Văn D', '0901234567', 'Trực tiếp tại trụ sở', 'BT-2026-021', '05/08/2026', 'Nguyễn Văn Cán Bộ', 'Người dân đã nộp YCBT'],
+                    ['Nguyễn Văn D', '0901234567', 'Trực tiếp tại trụ sở', 'BT-2026-021 - Nguyễn Văn D', '05/08/2026', 'Nguyễn Văn Cán Bộ', 'Người dân đã nộp YCBT'],
                     ['Lê Thị H', '0912345678', 'Qua điện thoại', '-', '03/08/2026', 'Trần Thị Minh', 'Đã hướng dẫn xong'],
-                    ['Công ty ABC', '02433334444', 'Qua văn bản/email', 'BT-2026-003', '01/08/2026', 'Nguyễn Văn Cán Bộ', 'Đang hỗ trợ'],
-                    ['Trần Văn Hưng', '0988112233', 'Trực tiếp tại trụ sở', 'BT-2026-005', '28/07/2026', 'Lê Văn Nam', 'Người dân đã nộp YCBT'],
+                    ['Công ty ABC', '02433334444', 'Qua văn bản/email', 'BT-2026-003 - Công ty ABC', '01/08/2026', 'Nguyễn Văn Cán Bộ', 'Đang hỗ trợ'],
+                    ['Trần Văn Hưng', '0988112233', 'Trực tiếp tại trụ sở', 'BT-2026-005 - Trần Văn Hưng', '28/07/2026', 'Lê Văn Nam', 'Người dân đã nộp YCBT'],
                     ['Phạm Thị Lan', '0977223344', 'Qua điện thoại', '-', '25/07/2026', 'Trần Thị Minh', 'Đã hướng dẫn xong'],
-                    ['Hoàng Đình Trọng', '0966334455', 'Qua văn bản/email', 'BT-2026-012', '22/07/2026', 'Nguyễn Văn Cán Bộ', 'Đang hỗ trợ'],
+                    ['Hoàng Đình Trọng', '0966334455', 'Qua văn bản/email', 'BT-2026-012 - Hoàng Đình Trọng', '22/07/2026', 'Nguyễn Văn Cán Bộ', 'Đang hỗ trợ'],
                     ['Vũ Minh Tuấn', '0944556677', 'Trực tiếp tại trụ sở', '-', '18/07/2026', 'Lê Văn Nam', 'Không liên hệ được'],
-                    ['Bà Đỗ Thị Mai', '0933667788', 'Qua điện thoại', 'BT-2026-015', '15/07/2026', 'Trần Thị Minh', 'Đã hướng dẫn xong'],
-                    ['Ông Bùi Văn Hải', '0922778899', 'Trực tiếp tại trụ sở', 'BT-2026-018', '10/07/2026', 'Nguyễn Văn Cán Bộ', 'Người dân đã nộp YCBT'],
-                    ['Công ty TNHH Vĩnh Phát', '02838889999', 'Qua văn bản/email', 'BT-2026-022', '05/07/2026', 'Lê Văn Nam', 'Đang hỗ trợ'],
+                    ['Bà Đỗ Thị Mai', '0933667788', 'Qua điện thoại', 'BT-2026-015 - Đỗ Thị Mai', '15/07/2026', 'Trần Thị Minh', 'Đã hướng dẫn xong'],
+                    ['Ông Bùi Văn Hải', '0922778899', 'Trực tiếp tại trụ sở', 'BT-2026-018 - Bùi Văn Hải', '10/07/2026', 'Nguyễn Văn Cán Bộ', 'Người dân đã nộp YCBT'],
+                    ['Công ty TNHH Vĩnh Phát', '02838889999', 'Qua văn bản/email', 'BT-2026-022 - Công ty TNHH Vĩnh Phát', '05/07/2026', 'Lê Văn Nam', 'Đang hỗ trợ'],
                     ['Nguyễn Thị Cúc', '0911889900', 'Qua điện thoại', '-', '28/06/2026', 'Trần Thị Minh', 'Đã hướng dẫn xong'],
-                    ['Phan Quốc Dũng', '0909001122', 'Trực tiếp tại trụ sở', 'BT-2026-025', '20/06/2026', 'Nguyễn Văn Cán Bộ', 'Người dân đã nộp YCBT'],
+                    ['Phan Quốc Dũng', '0909001122', 'Trực tiếp tại trụ sở', 'BT-2026-025 - Phan Quốc Dũng', '20/06/2026', 'Nguyễn Văn Cán Bộ', 'Người dân đã nộp YCBT'],
                     ['Lương Văn Thịnh', '0989113355', 'Qua điện thoại', '-', '15/06/2026', 'Lê Văn Nam', 'Không liên hệ được'],
-                    ['Dương Thị Quyên', '0978224466', 'Trực tiếp tại trụ sở', 'BT-2026-028', '08/06/2026', 'Trần Thị Minh', 'Đã hướng dẫn xong']
+                    ['Dương Thị Quyên', '0978224466', 'Trực tiếp tại trụ sở', 'BT-2026-028 - Dương Thị Quyên', '08/06/2026', 'Trần Thị Minh', 'Đã hướng dẫn xong']
                 ]
             },
             kien_nghi_xu_ly_vi_pham: {
@@ -1301,7 +1301,6 @@
         const relatedClaimMockRows = [
             {
                 code: 'BT-2026-012',
-                name: 'Yêu cầu bồi thường của Lê Văn H',
                 requester: 'Lê Văn H',
                 idNo: '001086012345',
                 originDocNo: '22/QĐ-GQBT',
@@ -1311,7 +1310,6 @@
             },
             {
                 code: 'BT-2026-021',
-                name: 'Yêu cầu bồi thường trong hoạt động tố tụng của Hoàng Văn R',
                 requester: 'Hoàng Văn R',
                 idNo: '079078045612',
                 originDocNo: '15/QĐ-GQBT',
@@ -1321,7 +1319,6 @@
             },
             {
                 code: 'BT-2026-003-A',
-                name: 'Yêu cầu bồi thường của Công ty ABC',
                 requester: 'Công ty ABC',
                 idNo: '0101187788',
                 originDocNo: '08/QĐ-GQBT',
@@ -1331,7 +1328,6 @@
             },
             {
                 code: 'BT-2026-010-TDC',
-                name: 'Yêu cầu bồi thường của Đặng Văn T',
                 requester: 'Đặng Văn T',
                 idNo: '030083991245',
                 originDocNo: '03/QĐ-GQBT',
@@ -1343,8 +1339,7 @@
         const relatedRefundMockRows = [
             {
                 code: 'HT-2026-001',
-                name: 'Hoàn trả liên quan vụ việc BT-2026-012',
-                requester: 'Nguyễn Văn M',
+                requester: 'Lê Văn H',
                 idNo: '89/QĐ-HT',
                 originDocNo: 'BT-2026-012',
                 status: 'Đang thu hồi',
@@ -1353,8 +1348,7 @@
             },
             {
                 code: 'HT-2026-004',
-                name: 'Hoàn trả liên quan vụ việc BT-2026-003-A',
-                requester: 'Trần Thị P',
+                requester: 'Công ty ABC',
                 idNo: '12/QĐ-GMHT',
                 originDocNo: 'BT-2026-003-A',
                 status: 'Đã giảm mức hoàn trả',
@@ -1363,8 +1357,7 @@
             },
             {
                 code: 'HT-2026-007',
-                name: 'Hoàn trả liên quan vụ việc BT-2026-021',
-                requester: 'Lê Hoàng K',
+                requester: 'Hoàng Văn R',
                 idNo: '45/QĐ-HT',
                 originDocNo: 'BT-2026-021',
                 status: 'Chờ ban hành quyết định',
@@ -1377,8 +1370,7 @@
             ...relatedRefundMockRows,
             {
                 code: 'QĐ 22/QĐ-GQBT',
-                name: 'Quyết định GQBT liên quan vụ việc BT-2026-012',
-                requester: 'Sở Tư pháp Hà Nội',
+                requester: 'Lê Văn H',
                 idNo: '22/QĐ-GQBT',
                 originDocNo: 'BT-2026-012',
                 status: 'Đã ban hành',

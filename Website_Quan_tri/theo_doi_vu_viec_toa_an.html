@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theo dõi vụ việc tại Tòa án</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="quan_ly_boi_thuong.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        body {
+            background: var(--bg-body);
+            padding: 20px;
+        }
+
+        .page-heading {
+            align-items: flex-start;
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .page-heading h2 {
+            align-items: center;
+            color: var(--primary-light);
+            display: flex;
+            font-size: 20px;
+            font-weight: 700;
+            gap: 10px;
+            line-height: 1.3;
+            margin: 0;
+        }
+
+        .page-heading p {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .filter-card,
+        .list-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 16px;
+        }
+
+        .filter-card {
+            padding: 16px;
+        }
+
+        .filter-actions {
+            border-top: 1px dashed var(--border-color);
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+            margin-top: 14px;
+            padding-top: 12px;
+        }
+
+        .list-header {
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 16px;
+        }
+
+        .list-title {
+            align-items: center;
+            color: var(--primary-light);
+            display: flex;
+            font-size: 14px;
+            font-weight: 700;
+            gap: 8px;
+        }
+
+        .result-count {
+            color: var(--text-muted);
+            font-size: 12.5px;
+        }
+
+        #courtTable {
+            min-width: 1400px;
+            table-layout: fixed;
+        }
+
+        #courtTable th {
+            white-space: normal;
+            line-height: 1.25;
+        }
+
+        #courtTable tbody tr {
+            cursor: pointer;
+        }
+
+        .code-cell {
+            color: var(--primary-light);
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .muted {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+
+        .disabled-action {
+            cursor: not-allowed;
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .notice-box {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            border-radius: var(--border-radius-md);
+            color: #9a3412;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+            padding: 12px 16px;
+        }
+
+        .meta-grid {
+            background: #f8fafc;
+            border: 1px dashed var(--border-color);
+            border-radius: var(--border-radius-sm);
+            display: grid;
+            gap: 12px;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            margin-bottom: 16px;
+            padding: 12px;
+        }
+
+        .meta-item label {
+            color: var(--text-muted);
+            display: block;
+            font-size: 11.5px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .meta-item strong {
+            color: var(--text-main);
+            font-size: 13px;
+        }
+
+        .court-block {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 2px solid #93c5fd;
+            border-radius: var(--border-radius-md);
+            margin-bottom: 20px;
+            padding: 20px;
+        }
+
+        .court-block .block-title {
+            color: #1e3a8a;
+            font-size: 13.5px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sub-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #334155;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 6px;
+            margin-bottom: 16px;
+        }
+
+        .panel-col {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            height: 100%;
+        }
+
+        .panel-col-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .radio-line {
+            cursor: pointer;
+            font-size: 13px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .linked-box {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: var(--border-radius-md);
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            padding: 12px 16px;
+        }
+
+        .linked-box a {
+            color: var(--secondary-color);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .history-item {
+            border-left: 3px solid #2563eb;
+            padding: 6px 12px;
+            background: #f8fafc;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        #formView.readonly-mode .required {
+            display: none !important;
+        }
+
+        #formView.readonly-mode .form-control:disabled {
+            background-color: #f8fafc;
+            color: #0f172a;
+            font-weight: 500;
+            border-color: #cbd5e1;
+            cursor: default;
+            opacity: 1;
+            -webkit-text-fill-color: #0f172a;
+        }
+
+        #formView.readonly-mode .form-control:disabled::placeholder {
+            color: transparent;
+        }
+
+        .doc-actions {
+            align-items: center;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            white-space: nowrap;
+        }
+
+        .inline-form-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color);
+            background-color: #FAFBFD;
+            position: sticky;
+            bottom: 0;
+            z-index: 20;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        @media (max-width: 1100px) {
+            .grid-4-cols {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .grid-3-cols {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .page-heading {
+                flex-direction: column;
+            }
+
+            .grid-4-cols,
+            .grid-2,
+            .meta-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <section id="listView">
+            <div class="page-heading">
+                <div>
+                    <h2><i class="fa-solid fa-scale-balanced"></i> THEO DÕI VỤ VIỆC TẠI TÒA ÁN</h2>
+                    <p id="pageSubtitle">Cơ quan nhà nước bị khởi kiện (bị đơn) khai báo và theo dõi các vụ việc yêu cầu bồi thường do Tòa án thụ lý.</p>
+                </div>
+            </div>
+
+            <div id="noPermissionNotice" class="notice-box" style="display:none;">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                Đơn vị của bạn chưa được áp dụng Loại yêu cầu "Yêu cầu bồi thường" nên không được thêm mới, cập nhật hoặc xóa vụ việc tại Tòa án.
+            </div>
+
+            <div class="filter-card">
+                <div class="grid-4-cols">
+                    <div class="form-group">
+                        <span class="form-label">Mã vụ việc</span>
+                        <input id="filterCode" class="form-control" placeholder="Nhập mã vụ việc...">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Họ và tên người yêu cầu</span>
+                        <input id="filterRequester" class="form-control" placeholder="Nhập họ và tên...">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Loại yêu cầu</span>
+                        <select id="filterKind" class="form-control">
+                            <option value="">Tất cả</option>
+                            <option value="money">Bồi thường thiệt hại bằng tiền</option>
+                            <option value="honor">Phục hồi danh dự</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Trạng thái</span>
+                        <select id="filterStatus" class="form-control">
+                            <option value="">Tất cả</option>
+                            <option value="Đã thụ lý">Đã thụ lý</option>
+                            <option value="Đang giải quyết">Đang giải quyết</option>
+                            <option value="Đã có bản án/QĐ">Đã có bản án/QĐ</option>
+                            <option value="Trả lại đơn khởi kiện">Trả lại đơn khởi kiện</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <span class="form-label">Nguồn phát sinh bản án</span>
+                        <select id="filterSource" class="form-control">
+                            <option value="">Tất cả</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Ngày thụ lý từ ngày</span>
+                        <input id="filterFromDate" class="form-control" placeholder="dd/mm/yyyy" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Ngày thụ lý đến ngày</span>
+                        <input id="filterToDate" class="form-control" placeholder="dd/mm/yyyy" autocomplete="off">
+                    </div>
+                </div>
+                <div class="filter-actions">
+                    <button class="btn btn-secondary" onclick="resetFilters()">
+                        <i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc
+                    </button>
+                    <button class="btn btn-primary" onclick="currentPage = 1; renderTable()">
+                        <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                    </button>
+                </div>
+            </div>
+
+            <div class="list-card">
+                <div class="list-header">
+                    <div>
+                        <div class="list-title"><i class="fa-solid fa-table-list"></i> Danh sách vụ việc tại Tòa án</div>
+                        <div class="result-count" id="resultCount">Hiển thị 0 bản ghi</div>
+                    </div>
+                    <button class="btn btn-primary" id="btnAddNew" onclick="openCaseForm()">
+                        <i class="fa-solid fa-plus"></i> Thêm mới
+                    </button>
+                </div>
+                <div class="table-container" style="border:0; border-radius:0;">
+                    <table class="custom-table" id="courtTable">
+                        <thead>
+                            <tr>
+                                <th style="width:54px; text-align:center;">STT</th>
+                                <th style="width:130px; text-align:center;">Mã vụ việc</th>
+                                <th style="width:170px;">Họ và tên người yêu cầu</th>
+                                <th style="width:190px;">Loại yêu cầu</th>
+                                <th style="width:260px;">Nguồn phát sinh bản án</th>
+                                <th style="width:110px; text-align:center;">Ngày thụ lý</th>
+                                <th style="width:130px; text-align:center;">Ngày hiệu lực bản án/QĐ</th>
+                                <th style="width:200px;">Cơ quan bị khởi kiện</th>
+                                <th style="width:150px; text-align:center;">Trạng thái</th>
+                                <th style="width:110px; text-align:center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="courtTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination-bar">
+                    <div class="pagination-left">
+                        <span>Số dòng hiển thị:</span>
+                        <select class="page-size-select" id="pageSize" onchange="changePageSize(this.value)">
+                            <option value="10">10</option>
+                            <option value="20" selected>20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                        <span id="pageInfo">Hiển thị 0-0 trong tổng số 0 bản ghi</span>
+                    </div>
+                    <div class="pagination-pages" id="paginationPages"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="formView" class="inline-form-panel">
+            <div class="inline-form-header">
+                <div class="inline-form-title" id="formTitle">
+                    <i class="fa-solid fa-file-circle-plus"></i> THÊM MỚI VỤ VIỆC TẠI TÒA ÁN
+                </div>
+            </div>
+            <div class="inline-form-body">
+                <div class="meta-grid" id="formMetaGrid" style="display:none;">
+                    <div class="meta-item">
+                        <label>Mã vụ việc</label>
+                        <strong id="formCodeText" style="color:var(--primary-light);">Tự sinh sau khi lưu</strong>
+                    </div>
+                    <div class="meta-item">
+                        <label>Cơ quan bị khởi kiện</label>
+                        <strong id="formAgencyText">--</strong>
+                    </div>
+                    <div class="meta-item">
+                        <label>Cán bộ tạo / Thời điểm tạo</label>
+                        <strong id="formCreatedText">--</strong>
+                    </div>
+                    <div class="meta-item">
+                        <label>Trạng thái</label>
+                        <div id="formStatusBadge">--</div>
+                    </div>
+                </div>
+
+                <div id="linkedInfoBox" class="linked-box" style="display:none;"></div>
+                <div id="fundingInfoBox" class="linked-box" style="display:none; background:#faf5ff; border-color:#e9d5ff;"></div>
+
+                <div class="info-group-title">Thông tin vụ việc tại Tòa án</div>
+                <div class="court-block">
+                    <div class="grid-2" style="gap:24px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label" style="font-weight:700; color:#1e3a8a; margin-bottom:8px;">Loại yêu cầu giải quyết bồi thường <span class="required">*</span></span>
+                            <div style="display:flex; flex-direction:column; gap:12px;">
+                                <label class="radio-line">
+                                    <input type="radio" name="caseRequestKind" value="both" checked onchange="handleKindChange(this.value)">
+                                    Yêu cầu cả hai (Bồi thường tiền &amp; Phục hồi danh dự)
+                                </label>
+                                <label class="radio-line">
+                                    <input type="radio" name="caseRequestKind" value="money" onchange="handleKindChange(this.value)">
+                                    Chỉ yêu cầu bồi thường thiệt hại bằng tiền
+                                </label>
+                                <label class="radio-line">
+                                    <input type="radio" name="caseRequestKind" value="honor" onchange="handleKindChange(this.value)">
+                                    Chỉ yêu cầu phục hồi danh dự
+                                </label>
+                            </div>
+                            <div id="kindSplitHint" style="font-size:12px; color:#1d4ed8; margin-top:10px;"><i class="fa-solid fa-circle-info"></i> Khi lưu, hệ thống tự tách thành 02 vụ việc: Bồi thường thiệt hại bằng tiền và Phục hồi danh dự.</div>
+                        </div>
+                        <div>
+                            <div class="form-group">
+                                <span class="form-label">Trạng thái<span class="required">*</span></span>
+                                <select id="caseStatus" class="form-control" onchange="handleStatusChange()"></select>
+                                <div class="error-message">Đây là trường bắt buộc</div>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <span class="form-label">Lĩnh vực phát sinh thiệt hại</span>
+                                <select class="form-control" id="caseFieldGroup">
+                                    <option value="hành chính">Trong hoạt động quản lý hành chính</option>
+                                    <option value="hình sự">Trong hoạt động tố tụng hình sự</option>
+                                    <option value="dân sự">Trong hoạt động tố tụng dân sự</option>
+                                    <option value="tố tụng hành chính">Trong hoạt động tố tụng hành chính</option>
+                                    <option value="thi hành án hình sự">Trong hoạt động thi hành án hình sự</option>
+                                    <option value="thi hành án dân sự">Trong hoạt động thi hành án dân sự</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background-color:#f8fafc; padding:16px; border:1px solid var(--border-color); border-radius:var(--border-radius-md); margin-bottom:20px;">
+                    <div class="grid-2" style="gap:16px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Nguồn phát sinh bản án<span class="required">*</span></span>
+                            <select class="form-control" id="caseVerdictSource"></select>
+                            <div class="error-message">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Trường hợp khởi kiện<span class="required">*</span></span>
+                            <select class="form-control" id="caseLawsuitCase"></select>
+                            <div class="error-message">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Ngày thụ lý<span class="required">*</span></span>
+                            <input type="text" class="form-control" id="caseAcceptDate" placeholder="dd/mm/yyyy" autocomplete="off">
+                            <div class="error-message">Đây là trường bắt buộc</div>
+                        </div>
+                        <div></div>
+                        <div class="form-group verdict-field" style="margin-bottom:0;">
+                            <span class="form-label">Số Bản án/Quyết định</span>
+                            <input type="text" class="form-control" id="caseVerdictNo" placeholder="Nhập số Bản án/Quyết định...">
+                        </div>
+                        <div class="form-group verdict-field" style="margin-bottom:0;">
+                            <span class="form-label">Ngày Bản án/Quyết định có hiệu lực<span class="required">*</span></span>
+                            <input type="text" class="form-control" id="caseEffectiveDate" placeholder="dd/mm/yyyy" autocomplete="off">
+                            <div class="error-message">Đây là trường bắt buộc</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- THÔNG TIN CHI TIẾT NGƯỜI YÊU CẦU BỒI THƯỜNG (giống Giải quyết yêu cầu bồi thường) -->
+                <div class="sub-title">THÔNG TIN CHI TIẾT NGƯỜI YÊU CẦU BỒI THƯỜNG</div>
+                <div class="grid-2" style="gap:24px; align-items:stretch; margin-bottom:20px;">
+                    <div class="panel-col">
+                        <div class="panel-col-title"><i class="fa-solid fa-user"></i> Thông tin cá nhân &amp; Liên hệ</div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Họ và tên người yêu cầu bồi thường<span class="required">*</span></span>
+                            <input type="text" class="form-control" id="claimNYCName" placeholder="Nhập họ và tên...">
+                            <div class="error-message">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Tư cách người yêu cầu bồi thường<span class="required">*</span></span>
+                            <select class="form-control" id="claimNYCRole" onchange="toggleNbthBlock(this.value)">
+                                <option value="Người bị thiệt hại">Người bị thiệt hại</option>
+                                <option value="Người thừa kế của người bị thiệt hại">Người thừa kế của người bị thiệt hại</option>
+                                <option value="Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại">Tổ chức kế thừa quyền, nghĩa vụ...</option>
+                                <option value="Người đại diện theo pháp luật của người bị thiệt hại">Người đại diện theo pháp luật...</option>
+                                <option value="Cá nhân, pháp nhân được ủy quyền hợp pháp">Cá nhân, pháp nhân được ủy quyền hợp pháp</option>
+                            </select>
+                        </div>
+                        <div class="grid-2" style="gap:12px;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <span class="form-label">Giới tính<span class="required">*</span></span>
+                                <select class="form-control" id="claimNYCGender">
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <span class="form-label">Ngày tháng năm sinh<span class="required">*</span></span>
+                                <input type="text" class="form-control" id="claimNYCBirth" placeholder="dd/mm/yyyy" autocomplete="off">
+                                <div class="error-message">Đây là trường bắt buộc</div>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Trạng thái người bị thiệt hại <span class="required">*</span></span>
+                            <div style="display:flex; gap:20px; align-items:center; height:38px; padding-left:5px;">
+                                <label style="cursor:pointer; font-size:13px; display:inline-flex; align-items:center; gap:6px; font-weight:500;">
+                                    <input type="radio" name="claimVictimAlive" value="yes" checked onchange="handleVictimAliveChange(this.value)"> Còn sống
+                                </label>
+                                <label style="cursor:pointer; font-size:13px; display:inline-flex; align-items:center; gap:6px; font-weight:500;">
+                                    <input type="radio" name="claimVictimAlive" value="no" onchange="handleVictimAliveChange(this.value)"> Đã mất
+                                </label>
+                            </div>
+                        </div>
+                        <div class="grid-2" style="gap:12px;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <span class="form-label">Số điện thoại liên hệ<span class="required">*</span></span>
+                                <input type="text" class="form-control" id="claimNYCPhone" placeholder="Nhập số điện thoại...">
+                                <div class="error-message">Đây là trường bắt buộc</div>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <span class="form-label">Thư điện tử (Email)</span>
+                                <input type="email" class="form-control" id="claimNYCEmail" placeholder="Nhập email...">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-col">
+                        <div class="panel-col-title"><i class="fa-solid fa-address-book"></i> Giấy tờ pháp lý &amp; Địa chỉ</div>
+                        <div class="grid-2" style="gap:12px;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <span class="form-label">Loại giấy tờ thân nhân<span class="required">*</span></span>
+                                <select class="form-control" id="claimNYCCardType">
+                                    <option value="CCCD">Căn cước công dân (CCCD)</option>
+                                    <option value="CMND">Chứng minh nhân dân (CMND)</option>
+                                    <option value="HoChieu">Hộ chiếu</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <span class="form-label">Số giấy tờ thân nhân<span class="required">*</span></span>
+                                <input type="text" class="form-control" id="claimNYCCardNo" placeholder="Nhập số giấy tờ...">
+                                <div class="error-message">Đây là trường bắt buộc</div>
+                            </div>
+                        </div>
+                        <div class="grid-2" style="gap:12px;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <span class="form-label">Ngày cấp<span class="required">*</span></span>
+                                <input type="text" class="form-control" id="claimNYCCardDate" placeholder="dd/mm/yyyy" autocomplete="off">
+                                <div class="error-message">Đây là trường bắt buộc</div>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <span class="form-label">Nơi cấp<span class="required">*</span></span>
+                                <input type="text" class="form-control" id="claimNYCCardPlace" placeholder="Nhập nơi cấp...">
+                                <div class="error-message">Đây là trường bắt buộc</div>
+                            </div>
+                        </div>
+                        <div class="grid-2" style="gap:12px;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <span class="form-label">Quốc gia<span class="required">*</span></span>
+                                <select class="form-control" id="claimNYCCountry" onchange="toggleClaimCountrySelect(this.value)">
+                                    <option value="Việt Nam">Việt Nam</option>
+                                    <option value="Khác">Quốc gia khác</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <span class="form-label">Tỉnh / Thành phố<span class="required">*</span></span>
+                                <div id="claimCityDropdownWrapper">
+                                    <select class="form-control" id="claimNYCCity">
+                                        <option value="Hà Nội">Thành phố Hà Nội</option>
+                                        <option value="Hải Phòng">Thành phố Hải Phòng</option>
+                                        <option value="Đà Nẵng">Thành phố Đà Nẵng</option>
+                                        <option value="TP. Hồ Chí Minh">Thành phố Hồ Chí Minh</option>
+                                        <option value="Thái Bình">Tỉnh Thái Bình</option>
+                                        <option value="Lâm Đồng">Tỉnh Lâm Đồng</option>
+                                    </select>
+                                </div>
+                                <div id="claimCityInputWrapper" style="display:none;">
+                                    <input type="text" class="form-control" id="claimNYCCityText" placeholder="Nhập tỉnh/thành phố...">
+                                </div>
+                                <div class="error-message">Đây là trường bắt buộc</div>
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Địa chỉ chi tiết<span class="required">*</span></span>
+                            <input type="text" class="form-control" id="claimNYCAddress" placeholder="Nhập địa chỉ nhà, tên đường, phường/xã...">
+                            <div class="error-message">Đây là trường bắt buộc</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- THÔNG TIN NGƯỜI BỊ THIỆT HẠI: hiển thị khi Tư cách người yêu cầu khác "Người bị thiệt hại"; không bắt buộc trường nào -->
+                <div id="claimNbthBlock" style="display:none;">
+                    <div class="sub-title">THÔNG TIN NGƯỜI BỊ THIỆT HẠI</div>
+                    <div class="grid-2" style="gap:24px; align-items:stretch; margin-bottom:20px;">
+                        <div class="panel-col">
+                            <div class="panel-col-title"><i class="fa-solid fa-user-injured"></i> Thông tin cá nhân &amp; Liên hệ</div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <span class="form-label">Họ và tên người bị thiệt hại</span>
+                                <input type="text" class="form-control" id="claimNbthName" placeholder="Nhập họ và tên...">
+                            </div>
+                            <div class="grid-2" style="gap:12px;">
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <span class="form-label">Giới tính</span>
+                                    <select class="form-control" id="claimNbthGender">
+                                        <option value="Nam">Nam</option>
+                                        <option value="Nữ">Nữ</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <span class="form-label">Ngày tháng năm sinh</span>
+                                    <input type="text" class="form-control" id="claimNbthBirth" placeholder="dd/mm/yyyy" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="grid-2" style="gap:12px;">
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <span class="form-label">Số điện thoại liên hệ</span>
+                                    <input type="text" class="form-control" id="claimNbthPhone" placeholder="Nhập số điện thoại...">
+                                </div>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <span class="form-label">Thư điện tử (Email)</span>
+                                    <input type="email" class="form-control" id="claimNbthEmail" placeholder="Nhập email...">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-col">
+                            <div class="panel-col-title"><i class="fa-solid fa-address-book"></i> Giấy tờ pháp lý &amp; Địa chỉ</div>
+                            <div class="grid-2" style="gap:12px;">
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <span class="form-label">Loại giấy tờ thân nhân</span>
+                                    <select class="form-control" id="claimNbthCardType">
+                                        <option value="CCCD">Căn cước công dân (CCCD)</option>
+                                        <option value="CMND">Chứng minh nhân dân (CMND)</option>
+                                        <option value="HoChieu">Hộ chiếu</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <span class="form-label">Số giấy tờ thân nhân</span>
+                                    <input type="text" class="form-control" id="claimNbthCardNo" placeholder="Nhập số giấy tờ...">
+                                </div>
+                            </div>
+                            <div class="grid-2" style="gap:12px;">
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <span class="form-label">Ngày cấp</span>
+                                    <input type="text" class="form-control" id="claimNbthCardDate" placeholder="dd/mm/yyyy" autocomplete="off">
+                                </div>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <span class="form-label">Nơi cấp</span>
+                                    <input type="text" class="form-control" id="claimNbthCardPlace" placeholder="Nhập nơi cấp...">
+                                </div>
+                            </div>
+                            <div class="grid-2" style="gap:12px;">
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <span class="form-label">Quốc gia</span>
+                                    <select class="form-control" id="claimNbthCountry">
+                                        <option value="Việt Nam">Việt Nam</option>
+                                        <option value="Khác">Quốc gia khác</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <span class="form-label">Tỉnh / Thành phố</span>
+                                    <input type="text" class="form-control" id="claimNbthCity" placeholder="Chọn hoặc nhập tỉnh/thành phố..." list="claimNbthCityList">
+                                    <datalist id="claimNbthCityList">
+                                        <option value="Hà Nội"></option>
+                                        <option value="Hải Phòng"></option>
+                                        <option value="Đà Nẵng"></option>
+                                        <option value="TP. Hồ Chí Minh"></option>
+                                        <option value="Thái Bình"></option>
+                                        <option value="Lâm Đồng"></option>
+                                    </datalist>
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <span class="form-label">Địa chỉ chi tiết</span>
+                                <input type="text" class="form-control" id="claimNbthAddress" placeholder="Nhập địa chỉ nhà, tên đường, phường/xã...">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <span class="form-label">Hành vi gây thiệt hại của người thi hành công vụ<span class="required">*</span></span>
+                    <textarea class="form-control" id="claimHanhVi" rows="2" placeholder="Nhập hành vi gây thiệt hại của người thi hành công vụ..."></textarea>
+                    <div class="error-message">Đây là trường bắt buộc</div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại<span class="required">*</span></span>
+                    <textarea class="form-control" id="claimNhanQua" rows="2" placeholder="Nhập mối quan hệ nhân quả giữa thiệt hại và hành vi gây thiệt hại..."></textarea>
+                    <div class="error-message">Đây là trường bắt buộc</div>
+                </div>
+
+                <!-- THIỆT HẠI YÊU CẦU BỒI THƯỜNG -->
+                <div id="claimMoneySection">
+                    <div class="info-group-title">Thiệt hại yêu cầu bồi thường</div>
+                    <div class="table-container" style="margin-bottom:20px;">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:50px; text-align:center;">STT</th>
+                                    <th style="width:250px;">Mục thiệt hại yêu cầu bồi thường</th>
+                                    <th style="min-width:300px;">Cách tính / Diễn giải công thức áp dụng</th>
+                                    <th style="width:200px; text-align:right;">Số tiền yêu cầu bồi thường (đồng)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="damageTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- YÊU CẦU PHỤC HỒI DANH DỰ -->
+                <div id="claimHonorSection" style="background-color:#ECFEFF; border:2px solid #06B6D4; padding:20px; border-radius:var(--border-radius-md); margin-bottom:20px;">
+                    <div style="font-weight:700; color:#0891B2; font-size:14px; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-ribbon" style="font-size:16px;"></i> YÊU CẦU PHỤC HỒI DANH DỰ
+                    </div>
+                    <div style="margin-bottom:6px; font-weight:700; color:#0e7490; font-size:12.5px;">Hình thức đề nghị phục hồi danh dự mong muốn (Điều 56):</div>
+                    <div style="display:flex; flex-direction:column; gap:8px; margin-left:10px;">
+                        <label style="cursor:pointer; font-size:13.5px; display:flex; align-items:center; gap:8px; color:#334155;">
+                            <input type="checkbox" id="claimPhddFormApology" checked> Trực tiếp xin lỗi và cải chính công khai tại nơi cư trú / trụ sở (Điều 58)
+                        </label>
+                        <label style="cursor:pointer; font-size:13.5px; display:flex; align-items:center; gap:8px; color:#334155;">
+                            <input type="checkbox" id="claimPhddFormNews"> Đăng báo xin lỗi và cải chính công khai (Điều 59)
+                        </label>
+                    </div>
+                </div>
+
+                <div class="info-group-title">Tài liệu kèm theo<span class="required" style="color:var(--danger-color);">*</span></div>
+                <div class="table-container" style="margin-bottom:10px;">
+                    <table class="custom-table" style="min-width:760px;">
+                        <thead>
+                            <tr>
+                                <th style="width:50px; text-align:center;">STT</th>
+                                <th>Tên tài liệu</th>
+                                <th style="width:320px;">File đính kèm</th>
+                                <th style="width:180px; text-align:center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="docsTableBody"></tbody>
+                    </table>
+                </div>
+                <div id="docsError" class="error-message" style="margin-bottom:10px;">Vui lòng đính kèm ít nhất 01 tài liệu kèm theo</div>
+                <div id="addDocBtnWrapper" style="margin-bottom:20px;">
+                    <button type="button" class="btn btn-outline-primary" style="width:100%; border-style:dashed; border-width:2px; padding:12px; font-weight:600; justify-content:center;" onclick="addDocRow()">
+                        <i class="fa-solid fa-circle-plus" style="font-size:16px;"></i> Thêm tài liệu
+                    </button>
+                </div>
+
+                <div id="historyBlock" style="display:none;">
+                    <div class="info-group-title">Lịch sử cập nhật</div>
+                    <div id="historyList"></div>
+                </div>
+            </div>
+            <div class="inline-form-footer">
+                <div style="display:flex; justify-content:flex-end; gap:10px;">
+                    <button class="btn btn-secondary" id="btnFormCancel" onclick="closeCaseForm()">
+                        <i class="fa-solid fa-xmark"></i> Hủy bỏ
+                    </button>
+                    <button class="btn btn-secondary" id="btnFormBack" style="display:none;" onclick="closeCaseForm()">
+                        <i class="fa-solid fa-xmark"></i> Đóng
+                    </button>
+                    <button class="btn btn-primary" id="btnFormEdit" style="display:none;" onclick="switchToEditMode()">
+                        <i class="fa-solid fa-pen-to-square"></i> Cập nhật
+                    </button>
+                    <button class="btn btn-danger" id="btnFormDelete" style="display:none; background-color:#ef4444; color:#fff; border:none;" onclick="confirmDeleteCase(editingId)">
+                        <i class="fa-solid fa-trash-can"></i> Xóa
+                    </button>
+                    <button class="btn btn-primary" id="btnFormSave" onclick="saveCase()">
+                        <i class="fa-solid fa-floppy-disk"></i> Lưu thông tin
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="toast" class="toast-notif"></div>
+
+    <div id="confirmOverlay" class="confirm-modal-overlay">
+        <div class="confirm-modal-container">
+            <div class="confirm-modal-header" id="confirmTitle">
+                <i class="fa-solid fa-circle-exclamation"></i> Xác nhận
+            </div>
+            <div class="confirm-modal-body" id="confirmMessage"></div>
+            <div class="confirm-modal-footer">
+                <button class="btn btn-secondary btn-sm" onclick="closeConfirm(false)">Hủy bỏ</button>
+                <button class="btn btn-danger btn-sm" id="confirmOkBtn" onclick="closeConfirm(true)">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="btnn_luong_xu_ly.js"></script>
+    <script>
+        // ===== Cấu hình =====
+        const STORE_KEY = "btnn_court_cases_v1";
+        const SEED_KEY = "btnn_court_cases_seed";
+        const SEED_VERSION = "v1";
+        const FUNDING_KEY = "proposalsList";
+        const REQUEST_TYPE_YCBT = "Yêu cầu bồi thường";
+        const NBTH_ROLE = "Người bị thiệt hại";
+
+        const STATUS_THU_LY = "Đã thụ lý";
+        const STATUS_DANG_GQ = "Đang giải quyết";
+        const STATUS_BAN_AN = "Đã có bản án/QĐ";
+        const STATUS_TRA_LAI = "Trả lại đơn khởi kiện";
+        const STATUSES = [STATUS_THU_LY, STATUS_DANG_GQ, STATUS_BAN_AN, STATUS_TRA_LAI];
+        const TERMINAL_STATUSES = [STATUS_BAN_AN, STATUS_TRA_LAI];
+        const STATUS_STYLE = {
+            "Đã thụ lý": ["#eff6ff", "#1d4ed8"],
+            "Đang giải quyết": ["#fffbeb", "#b45309"],
+            "Đã có bản án/QĐ": ["#ecfdf5", "#047857"],
+            "Trả lại đơn khởi kiện": ["#f1f5f9", "#475569"]
+        };
+
+        const VERDICT_SOURCES = [
+            "Khởi kiện yêu cầu bồi thường theo thủ tục tố tụng dân sự (Khoản 1 Điều 52)",
+            "Khởi kiện theo thủ tục tố tụng dân sự sau khi giải quyết tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại (Khoản 2 Điều 52)",
+            "Giải quyết YCBT trong quá trình tố tụng hình sự, tố tụng hành chính tại toà (Điều 55)"
+        ];
+        const LAWSUIT_CASES = [
+            "Đã yêu cầu cơ quan giải quyết trước khi khởi kiện (điểm b khoản 1 và khoản 2 Điều 52)",
+            "Khởi kiện thẳng ra Tòa án, chưa từng yêu cầu cơ quan giải quyết (điểm a khoản 1 Điều 52)",
+            "Kết hợp giải quyết YCBT trong quá trình tố tụng hình sự, tố tụng hành chính tại toà"
+        ];
+        const KIND_LABEL = { money: "Bồi thường thiệt hại bằng tiền", honor: "Phục hồi danh dự" };
+        const DAMAGE_ITEMS = [
+            { key: "taiSan", label: "1. Tài sản bị xâm phạm", placeholder: "Nhập cách tính thiệt hại tài sản..." },
+            { key: "thuNhap", label: "2. Thu nhập thực tế bị mất/giảm sút", placeholder: "Nhập cách tính thu nhập bị mất/giảm sút..." },
+            { key: "tuVong", label: "3. Vật chất do người bị thiệt hại chết", placeholder: "Nhập cách tính thiệt hại vật chất..." },
+            { key: "sucKhoe", label: "4. Vật chất do sức khỏe bị xâm phạm", placeholder: "Nhập cách tính chi phí điều trị..." },
+            { key: "tinhThan", label: "5. Thiệt hại về tinh thần", placeholder: "Nhập cách tính thiệt hại tinh thần..." },
+            { key: "chiPhiKhac", label: "6. Các chi phí hợp lý khác", placeholder: "Nhập cách tính chi phí hợp lý khác..." }
+        ];
+        const FIELD_GROUP_NAMES = {
+            "hành chính": "Trong hoạt động quản lý hành chính",
+            "hình sự": "Trong hoạt động tố tụng hình sự",
+            "dân sự": "Trong hoạt động tố tụng dân sự",
+            "tố tụng hành chính": "Trong hoạt động tố tụng hành chính",
+            "thi hành án hình sự": "Trong hoạt động thi hành án hình sự",
+            "thi hành án dân sự": "Trong hoạt động thi hành án dân sự"
+        };
+
+        // ===== Người dùng giả lập =====
+        const CURRENT_USER = BTNN_WF.getCurrentUser();
+        const CURRENT_ROOT_UNIT = BTNN_WF.getRootId(CURRENT_USER.unitId);
+        const CAN_INPUT = BTNN_WF.getRequestTypesForUser(CURRENT_USER.id).includes(REQUEST_TYPE_YCBT);
+        // Bộ Tư pháp (quản lý nhà nước về công tác bồi thường) xem được vụ việc của mọi cơ quan
+        const VIEW_ALL = CURRENT_ROOT_UNIT === "BTP-01";
+
+        let cases = [];
+        let currentPage = 1;
+        let pageSize = 20;
+        let editingId = null;
+        let isFormReadOnly = false;
+        let docRows = [];
+        let pendingConfirmCallback = null;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            BTNN_WF.mountUserSwitcher();
+            initOptions();
+            initDatePickers();
+            buildDamageRows();
+            loadCases();
+            ensureAllFundingRecords();
+            applyPermissionUI();
+            renderTable();
+            const params = new URLSearchParams(location.search);
+            const code = params.get("code");
+            if (code) {
+                const rec = cases.find(c => c.code === code);
+                if (rec) openCaseForm(rec.id, true);
+            }
+        });
+
+        function initOptions() {
+            document.getElementById("caseStatus").innerHTML = STATUSES.map(s => `<option value="${escapeAttr(s)}">${escapeHtml(s)}</option>`).join("");
+            document.getElementById("caseVerdictSource").innerHTML = `<option value="">Chọn nguồn phát sinh bản án...</option>` + VERDICT_SOURCES.map(s => `<option value="${escapeAttr(s)}">${escapeHtml(s)}</option>`).join("");
+            document.getElementById("caseLawsuitCase").innerHTML = `<option value="">Chọn trường hợp khởi kiện...</option>` + LAWSUIT_CASES.map(s => `<option value="${escapeAttr(s)}">${escapeHtml(s)}</option>`).join("");
+            document.getElementById("filterSource").innerHTML = `<option value="">Tất cả</option>` + VERDICT_SOURCES.map(s => `<option value="${escapeAttr(s)}">${escapeHtml(s)}</option>`).join("");
+        }
+
+        function initDatePickers() {
+            if (typeof flatpickr === "undefined") return;
+            const vi = { firstDayOfWeek: 1, weekdays: { shorthand: ["CN", "T2", "T3", "T4", "T5", "T6", "T7"], longhand: ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"] }, months: { shorthand: ["Th1", "Th2", "Th3", "Th4", "Th5", "Th6", "Th7", "Th8", "Th9", "Th10", "Th11", "Th12"], longhand: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"] } };
+            ["#filterFromDate", "#filterToDate", "#caseAcceptDate", "#caseEffectiveDate", "#claimNYCBirth", "#claimNYCCardDate", "#claimNbthBirth", "#claimNbthCardDate"].forEach(sel => {
+                flatpickr(sel, { dateFormat: "d/m/Y", allowInput: true, locale: vi });
+            });
+        }
+
+        function applyPermissionUI() {
+            document.getElementById("noPermissionNotice").style.display = CAN_INPUT ? "none" : "block";
+            const btn = document.getElementById("btnAddNew");
+            btn.disabled = !CAN_INPUT;
+            btn.classList.toggle("disabled-action", !CAN_INPUT);
+            btn.title = CAN_INPUT ? "Thêm mới vụ việc tại Tòa án" : "Đơn vị chưa được áp dụng Loại yêu cầu \"Yêu cầu bồi thường\"";
+            document.getElementById("pageSubtitle").textContent = `Cơ quan nhà nước bị khởi kiện (bị đơn) khai báo và theo dõi các vụ việc yêu cầu bồi thường do Tòa án thụ lý. Đơn vị: ${BTNN_WF.unitName(CURRENT_ROOT_UNIT)}.`;
+        }
+
+        // ===== Kho dữ liệu =====
+        function readJson(key, fallback) {
+            try { const raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; } catch (e) { return fallback; }
+        }
+        function writeJson(key, value) {
+            try { localStorage.setItem(key, JSON.stringify(value)); } catch (e) { /* bỏ qua */ }
+        }
+        function loadCases() {
+            let list = readJson(STORE_KEY, null);
+            let seedVer = null;
+            try { seedVer = localStorage.getItem(SEED_KEY); } catch (e) { seedVer = null; }
+            if (!Array.isArray(list) || seedVer !== SEED_VERSION) {
+                list = buildSeed();
+                writeJson(STORE_KEY, list);
+                try { localStorage.setItem(SEED_KEY, SEED_VERSION); } catch (e) { /* bỏ qua */ }
+            }
+            cases = list;
+        }
+        function saveCases() { writeJson(STORE_KEY, cases); }
+        function reloadCases() { const list = readJson(STORE_KEY, null); if (Array.isArray(list)) cases = list; }
+
+        // Mã vụ việc BT-yyyy-nnn: không trùng với Giải quyết YCBT (claimsList), kho luồng BTNN_WF và module này
+        function maxCaseNumber(year) {
+            const re = new RegExp(`^BT-${year}-(\\d+)$`);
+            let max = 0;
+            const scan = code => { const m = String(code || "").match(re); if (m) max = Math.max(max, parseInt(m[1], 10)); };
+            (readJson("claimsList", []) || []).forEach(c => c && scan(c.code));
+            (BTNN_WF.loadRecords() || []).forEach(r => scan(r.code));
+            (readJson(STORE_KEY, []) || []).forEach(r => scan(r.code));
+            cases.forEach(r => scan(r.code));
+            (readJson(FUNDING_KEY, []) || []).forEach(p => p && scan(p.ycbtCode));
+            return max;
+        }
+        function nextCaseCodes(count) {
+            const year = new Date().getFullYear();
+            const max = maxCaseNumber(year);
+            return Array.from({ length: count }, (_, i) => `BT-${year}-${String(max + 1 + i).padStart(3, "0")}`);
+        }
+
+        // ===== Liên thông Cấp kinh phí tạm ứng/Bồi thường =====
+        function needsFunding(rec) {
+            return !!rec && !rec.deleted && rec.requestKind === "money" && rec.status === STATUS_BAN_AN;
+        }
+        function damageTotal(rec) {
+            return (rec.damages || []).reduce((s, d) => s + (Number(d.amount) || 0), 0);
+        }
+        function selectedDamagesOf(rec) {
+            const out = {};
+            DAMAGE_ITEMS.forEach(it => { out[it.key] = 0; });
+            (rec.damages || []).forEach(d => { if (d.key) out[d.key] = Number(d.amount) || 0; });
+            return out;
+        }
+        function nextFundingCode(list) {
+            const year = new Date().getFullYear();
+            const re = new RegExp(`^KP-${year}-(\\d+)$`);
+            let max = 0;
+            list.forEach(p => { const m = String(p && p.code || "").match(re); if (m) max = Math.max(max, parseInt(m[1], 10)); });
+            return `KP-${year}-${String(max + 1).padStart(3, "0")}`;
+        }
+        function buildFundingRecord(rec, list) {
+            return {
+                id: "P_TA_" + rec.code,
+                code: nextFundingCode(list),
+                type: "Cấp kinh phí bồi thường",
+                ycbtCode: rec.code,
+                courtCaseCode: rec.code,
+                origin: "Theo dõi vụ việc tại Tòa án",
+                nycName: rec.nyc.name,
+                nycRole: rec.nyc.role || NBTH_ROLE,
+                amount: damageTotal(rec),
+                user: rec.updatedByName || rec.createdByName || CURRENT_USER.name,
+                date: BTNN_WF.dateText(),
+                status: "Chờ nhập liệu",
+                source: "",
+                cqCap: "",
+                agency: BTNN_WF.unitName(rec.rootUnitId),
+                notes: "",
+                baseDecisionNo: rec.verdictNo || "",
+                baseDecisionDate: rec.effectiveDate || "",
+                verdictSource: rec.verdictSource || "",
+                selectedDamages: selectedDamagesOf(rec),
+                files: (rec.docs || []).filter(d => d.file).map(d => ({ name: d.name, file: d.file })),
+                createdAt: BTNN_WF.nowText()
+            };
+        }
+        // Tạo bản ghi Chờ nhập liệu đúng 01 lần cho mỗi vụ việc (khóa theo Mã vụ việc).
+        // Chỉ ghi khi kho Cấp kinh phí đã được khởi tạo; nếu chưa, màn hình Cấp kinh phí tự tạo khi tải trang.
+        function ensureFundingRecord(rec) {
+            if (!needsFunding(rec)) return null;
+            const list = readJson(FUNDING_KEY, null);
+            if (!Array.isArray(list) || !list.length) return null;
+            let p = list.find(x => x && x.courtCaseCode === rec.code);
+            if (!p) {
+                p = buildFundingRecord(rec, list);
+                list.unshift(p);
+                writeJson(FUNDING_KEY, list);
+            }
+            if (rec.fundingCode !== p.code) {
+                rec.fundingCode = p.code;
+                rec.fundingCreatedAt = p.createdAt || BTNN_WF.nowText();
+                addHistory(rec, "Tạo đề nghị cấp kinh phí", `Hệ thống tạo Đề nghị cấp kinh phí bồi thường ${p.code} ở trạng thái Chờ nhập liệu.`, "Hệ thống");
+                return p;
+            }
+            return null;
+        }
+        function ensureAllFundingRecords() {
+            let changed = false;
+            cases.forEach(rec => { if (ensureFundingRecord(rec)) changed = true; });
+            if (changed) saveCases();
+        }
+        function getFundingOf(rec) {
+            const list = readJson(FUNDING_KEY, []) || [];
+            return list.find(p => p && p.courtCaseCode === rec.code) || null;
+        }
+
+        // ===== Quyền =====
+        function isTerminal(rec) { return TERMINAL_STATUSES.includes(rec.status); }
+        function canEditCase(rec) {
+            return !!rec && CAN_INPUT && rec.rootUnitId === CURRENT_ROOT_UNIT && !isTerminal(rec);
+        }
+        function visibleCases() {
+            return cases.filter(r => !r.deleted && (VIEW_ALL || r.rootUnitId === CURRENT_ROOT_UNIT));
+        }
+
+        // ===== Danh sách =====
+        function getFilteredRows() {
+            const code = normalize(getValue("filterCode"));
+            const req = normalize(getValue("filterRequester"));
+            const kind = getValue("filterKind");
+            const status = getValue("filterStatus");
+            const source = getValue("filterSource");
+            const from = parseDate(getValue("filterFromDate"));
+            const to = parseDate(getValue("filterToDate"));
+            return visibleCases().filter(r => {
+                if (code && !normalize(r.code).includes(code)) return false;
+                if (req && !normalize(r.nyc && r.nyc.name).includes(req)) return false;
+                if (kind && r.requestKind !== kind) return false;
+                if (status && r.status !== status) return false;
+                if (source && r.verdictSource !== source) return false;
+                const d = parseDate(r.acceptDate);
+                if (from && (!d || d < from)) return false;
+                if (to && (!d || d > to)) return false;
+                return true;
+            }).sort((a, b) => String(b.code).localeCompare(String(a.code)));
+        }
+
+        function renderTable() {
+            const rows = getFilteredRows();
+            const total = rows.length;
+            const totalPages = Math.max(1, Math.ceil(total / pageSize));
+            if (currentPage > totalPages) currentPage = totalPages;
+            const start = (currentPage - 1) * pageSize;
+            const pageRows = rows.slice(start, start + pageSize);
+            const tbody = document.getElementById("courtTableBody");
+            if (!pageRows.length) {
+                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color:var(--text-muted); padding:28px; font-style:italic;">Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</td></tr>`;
+            } else {
+                tbody.innerHTML = pageRows.map((r, idx) => {
+                    const editable = canEditCase(r);
+                    const reason = !CAN_INPUT ? "Đơn vị chưa được áp dụng Loại yêu cầu Yêu cầu bồi thường"
+                        : (r.rootUnitId !== CURRENT_ROOT_UNIT ? "Chỉ cán bộ của cơ quan bị khởi kiện được thao tác"
+                        : "Vụ việc đã ở trạng thái kết thúc");
+                    const dis = editable ? "" : " disabled-action";
+                    const linked = r.linkedCode ? `<div class="muted">Liên kết: ${escapeHtml(r.linkedCode)}</div>` : "";
+                    const funding = r.fundingCode ? `<div class="muted">Kinh phí: ${escapeHtml(r.fundingCode)}</div>` : "";
+                    return `
+                        <tr onclick="openCaseForm('${escapeAttr(r.id)}', true)">
+                            <td style="text-align:center;">${start + idx + 1}</td>
+                            <td class="code-cell">${escapeHtml(r.code)}</td>
+                            <td><strong>${escapeHtml(r.nyc.name || "--")}</strong></td>
+                            <td>${escapeHtml(KIND_LABEL[r.requestKind] || "--")}${linked}${funding}</td>
+                            <td><span class="muted" style="font-size:12.5px; color:#334155;">${escapeHtml(r.verdictSource || "--")}</span></td>
+                            <td style="text-align:center;">${escapeHtml(r.acceptDate || "--")}</td>
+                            <td style="text-align:center;">${escapeHtml(r.effectiveDate || "--")}</td>
+                            <td>${escapeHtml(BTNN_WF.unitName(r.rootUnitId))}</td>
+                            <td style="text-align:center;">${statusBadge(r.status)}</td>
+                            <td style="text-align:center;">
+                                <div class="action-flex">
+                                    <button class="icon-btn edit${dis}" title="${editable ? "Cập nhật" : escapeAttr(reason)}" onclick="event.stopPropagation(); openCaseForm('${escapeAttr(r.id)}', false)"><i class="fa-solid fa-pen-to-square"></i></button>
+                                    <button class="icon-btn delete${dis}" title="${editable ? "Xóa" : escapeAttr(reason)}" onclick="event.stopPropagation(); confirmDeleteCase('${escapeAttr(r.id)}')"><i class="fa-solid fa-trash-can"></i></button>
+                                </div>
+                            </td>
+                        </tr>`;
+                }).join("");
+            }
+            document.getElementById("resultCount").textContent = `Hiển thị ${total} bản ghi`;
+            const end = total === 0 ? 0 : Math.min(start + pageSize, total);
+            document.getElementById("pageInfo").textContent = `Hiển thị ${total === 0 ? 0 : start + 1}-${end} trong tổng số ${total} bản ghi`;
+            renderPagination(totalPages);
+        }
+
+        function renderPagination(totalPages) {
+            document.getElementById("paginationPages").innerHTML = `
+                <button class="btn btn-secondary btn-sm" ${currentPage === 1 ? "disabled" : ""} onclick="goToPage(1)">|&lt;&lt;</button>
+                <button class="btn btn-secondary btn-sm" ${currentPage === 1 ? "disabled" : ""} onclick="goToPage(${currentPage - 1})">&lt;</button>
+                ${Array.from({ length: totalPages }, (_, i) => i + 1).map(p => `<button class="btn ${p === currentPage ? "btn-primary" : "btn-secondary"} btn-sm" onclick="goToPage(${p})">${p}</button>`).join("")}
+                <button class="btn btn-secondary btn-sm" ${currentPage === totalPages ? "disabled" : ""} onclick="goToPage(${currentPage + 1})">&gt;</button>
+                <button class="btn btn-secondary btn-sm" ${currentPage === totalPages ? "disabled" : ""} onclick="goToPage(${totalPages})">&gt;&gt;|</button>`;
+        }
+        function goToPage(p) { currentPage = Math.max(1, p); renderTable(); }
+        function changePageSize(v) { pageSize = Number(v) || 20; currentPage = 1; renderTable(); }
+        function resetFilters() {
+            ["filterCode", "filterRequester", "filterKind", "filterStatus", "filterSource", "filterFromDate", "filterToDate"].forEach(id => setValue(id, ""));
+            currentPage = 1;
+            renderTable();
+        }
+
+        // ===== Biểu mẫu =====
+        function buildDamageRows() {
+            document.getElementById("damageTableBody").innerHTML = DAMAGE_ITEMS.map((it, i) => `
+                <tr>
+                    <td style="text-align:center;"><input type="checkbox" id="dmgCb_${i}" onchange="toggleDamageRow(${i})"></td>
+                    <td>${escapeHtml(it.label)}</td>
+                    <td><textarea class="form-control" id="dmgCalc_${i}" rows="1" placeholder="${escapeAttr(it.placeholder)}" disabled></textarea></td>
+                    <td><input type="text" class="form-control" style="text-align:right;" id="dmgVal_${i}" placeholder="0" oninput="formatCurrencyInput(this)" disabled></td>
+                </tr>`).join("") + `
+                <tr style="background-color:#F8FAFC; font-weight:700;">
+                    <td colspan="3" style="text-align:right;">TỔNG CỘNG SỐ TIỀN YÊU CẦU BỒI THƯỜNG:</td>
+                    <td>
+                        <div style="display:flex; flex-direction:column; gap:4px; text-align:right;">
+                            <div style="font-size:16px; color:var(--danger-color);" id="damageTotalText">0 đồng</div>
+                            <div style="font-size:11.5px; font-style:italic; font-weight:normal; color:var(--text-muted);" id="damageTotalWord">Viết bằng chữ: Không đồng</div>
+                        </div>
+                    </td>
+                </tr>`;
+        }
+        function toggleDamageRow(i) {
+            const cb = document.getElementById(`dmgCb_${i}`);
+            const calc = document.getElementById(`dmgCalc_${i}`);
+            const val = document.getElementById(`dmgVal_${i}`);
+            calc.disabled = !cb.checked || isFormReadOnly;
+            val.disabled = !cb.checked || isFormReadOnly;
+            if (!cb.checked) { calc.value = ""; val.value = ""; }
+            sumDamages();
+        }
+        function formatCurrencyInput(input) {
+            const v = input.value.replace(/\D/g, "");
+            input.value = v ? parseInt(v, 10).toLocaleString("vi-VN").replace(/,/g, ".") : "";
+            sumDamages();
+        }
+        function parseMoney(v) { return parseFloat(String(v || "").replace(/\D/g, "")) || 0; }
+        function sumDamages() {
+            let total = 0;
+            DAMAGE_ITEMS.forEach((_, i) => { if (document.getElementById(`dmgCb_${i}`).checked) total += parseMoney(getValue(`dmgVal_${i}`)); });
+            document.getElementById("damageTotalText").textContent = `${total.toLocaleString("vi-VN")} đồng`;
+            document.getElementById("damageTotalWord").textContent = `Viết bằng chữ: ${numberToVietnameseWords(total)} đồng`;
+        }
+        function readDamages() {
+            const out = [];
+            DAMAGE_ITEMS.forEach((it, i) => {
+                if (document.getElementById(`dmgCb_${i}`).checked) out.push({ key: it.key, label: it.label, calc: getValue(`dmgCalc_${i}`), amount: parseMoney(getValue(`dmgVal_${i}`)) });
+            });
+            return out;
+        }
+        function fillDamages(list) {
+            const map = {};
+            (list || []).forEach(d => { map[d.key] = d; });
+            DAMAGE_ITEMS.forEach((it, i) => {
+                const d = map[it.key];
+                document.getElementById(`dmgCb_${i}`).checked = !!d;
+                setValue(`dmgCalc_${i}`, d ? d.calc || "" : "");
+                setValue(`dmgVal_${i}`, d && d.amount ? Number(d.amount).toLocaleString("vi-VN").replace(/,/g, ".") : "");
+            });
+            sumDamages();
+        }
+
+        function getKindRadio() {
+            const r = document.querySelector('input[name="caseRequestKind"]:checked');
+            return r ? r.value : "both";
+        }
+        function setKindRadio(v) {
+            document.querySelectorAll('input[name="caseRequestKind"]').forEach(r => { r.checked = r.value === v; });
+        }
+        function handleKindChange(v) {
+            document.getElementById("claimMoneySection").style.display = v === "honor" ? "none" : "block";
+            document.getElementById("claimHonorSection").style.display = v === "money" ? "none" : "block";
+            document.getElementById("kindSplitHint").style.display = v === "both" && !editingId ? "block" : "none";
+        }
+        function handleStatusChange() {
+            const isVerdict = getValue("caseStatus") === STATUS_BAN_AN;
+            document.querySelectorAll(".verdict-field").forEach(el => { el.style.display = isVerdict ? "" : "none"; });
+        }
+        function toggleNbthBlock(role) {
+            const r = role || getValue("claimNYCRole") || NBTH_ROLE;
+            document.getElementById("claimNbthBlock").style.display = r !== NBTH_ROLE ? "block" : "none";
+        }
+        function toggleClaimCountrySelect(val) {
+            document.getElementById("claimCityDropdownWrapper").style.display = val === "Việt Nam" ? "block" : "none";
+            document.getElementById("claimCityInputWrapper").style.display = val === "Việt Nam" ? "none" : "block";
+        }
+        function handleVictimAliveChange(val) {
+            const apology = document.getElementById("claimPhddFormApology");
+            const news = document.getElementById("claimPhddFormNews");
+            if (val === "no") {
+                apology.checked = false; apology.disabled = true;
+                news.checked = true; news.disabled = true;
+            } else if (!isFormReadOnly) {
+                apology.disabled = false; news.disabled = false;
+            }
+        }
+
+        function readRequester() {
+            const country = getValue("claimNYCCountry");
+            const alive = document.querySelector('input[name="claimVictimAlive"]:checked');
+            return {
+                name: getValue("claimNYCName"), role: getValue("claimNYCRole"), gender: getValue("claimNYCGender"), birth: getValue("claimNYCBirth"),
+                victimAlive: alive ? alive.value : "yes", phone: getValue("claimNYCPhone"), email: getValue("claimNYCEmail"),
+                cardType: getValue("claimNYCCardType"), cardNo: getValue("claimNYCCardNo"), cardDate: getValue("claimNYCCardDate"), cardPlace: getValue("claimNYCCardPlace"),
+                country, city: country === "Việt Nam" ? getValue("claimNYCCity") : getValue("claimNYCCityText"), address: getValue("claimNYCAddress")
+            };
+        }
+        function fillRequester(n) {
+            n = n || {};
+            setValue("claimNYCName", n.name || "");
+            setValue("claimNYCRole", n.role || NBTH_ROLE);
+            setValue("claimNYCGender", n.gender || "Nam");
+            setValue("claimNYCBirth", n.birth || "");
+            document.querySelectorAll('input[name="claimVictimAlive"]').forEach(r => { r.checked = r.value === (n.victimAlive || "yes"); });
+            setValue("claimNYCPhone", n.phone || "");
+            setValue("claimNYCEmail", n.email || "");
+            setValue("claimNYCCardType", n.cardType || "CCCD");
+            setValue("claimNYCCardNo", n.cardNo || "");
+            setValue("claimNYCCardDate", n.cardDate || "");
+            setValue("claimNYCCardPlace", n.cardPlace || "");
+            const isVn = !n.country || n.country === "Việt Nam";
+            setValue("claimNYCCountry", isVn ? "Việt Nam" : "Khác");
+            toggleClaimCountrySelect(isVn ? "Việt Nam" : "Khác");
+            setValue("claimNYCCity", isVn ? (n.city || "Hà Nội") : "Hà Nội");
+            setValue("claimNYCCityText", isVn ? "" : (n.city || ""));
+            setValue("claimNYCAddress", n.address || "");
+        }
+        function readNbth(role) {
+            if (!role || role === NBTH_ROLE) return null;
+            return {
+                name: getValue("claimNbthName"), gender: getValue("claimNbthGender"), dob: getValue("claimNbthBirth"), phone: getValue("claimNbthPhone"), email: getValue("claimNbthEmail"),
+                docType: getValue("claimNbthCardType"), docNo: getValue("claimNbthCardNo"), docDate: getValue("claimNbthCardDate"), docPlace: getValue("claimNbthCardPlace"),
+                country: getValue("claimNbthCountry"), city: getValue("claimNbthCity"), address: getValue("claimNbthAddress")
+            };
+        }
+        function fillNbth(d) {
+            d = d || {};
+            setValue("claimNbthName", d.name || ""); setValue("claimNbthGender", d.gender || "Nam"); setValue("claimNbthBirth", d.dob || "");
+            setValue("claimNbthPhone", d.phone || ""); setValue("claimNbthEmail", d.email || ""); setValue("claimNbthCardType", d.docType || "CCCD");
+            setValue("claimNbthCardNo", d.docNo || ""); setValue("claimNbthCardDate", d.docDate || ""); setValue("claimNbthCardPlace", d.docPlace || "");
+            setValue("claimNbthCountry", d.country === "Khác" ? "Khác" : "Việt Nam"); setValue("claimNbthCity", d.city || ""); setValue("claimNbthAddress", d.address || "");
+        }
+
+        function openCaseForm(id = null, readOnly = false) {
+            if (!id && !CAN_INPUT) { showToast("Đơn vị chưa được áp dụng Loại yêu cầu \"Yêu cầu bồi thường\", không được thêm mới vụ việc!", "error"); return; }
+            reloadCases();
+            const rec = id ? cases.find(c => c.id === id) : null;
+            if (id && !rec) return;
+            if (rec && !readOnly && !canEditCase(rec)) {
+                showToast(isTerminal(rec) ? "Vụ việc đã ở trạng thái kết thúc, không được cập nhật!" : "Bạn không có quyền cập nhật vụ việc này!", "error");
+                readOnly = true;
+            }
+            editingId = id;
+            isFormReadOnly = readOnly;
+            clearValidation();
+
+            document.getElementById("listView").style.display = "none";
+            const formView = document.getElementById("formView");
+            formView.style.display = "flex";
+            formView.classList.toggle("readonly-mode", readOnly);
+            document.getElementById("formTitle").innerHTML = readOnly
+                ? `<i class="fa-solid fa-circle-info"></i> CHI TIẾT VỤ VIỆC TẠI TÒA ÁN`
+                : (rec ? `<i class="fa-solid fa-pen-to-square"></i> CẬP NHẬT VỤ VIỆC TẠI TÒA ÁN` : `<i class="fa-solid fa-file-circle-plus"></i> THÊM MỚI VỤ VIỆC TẠI TÒA ÁN`);
+
+            document.getElementById("formMetaGrid").style.display = rec ? "grid" : "none";
+            setText("formCodeText", rec ? rec.code : "Tự sinh sau khi lưu");
+            setText("formAgencyText", BTNN_WF.unitName(rec ? rec.rootUnitId : CURRENT_ROOT_UNIT));
+            setText("formCreatedText", rec ? `${rec.createdByName || "--"} - ${rec.createdAt || "--"}` : "--");
+            document.getElementById("formStatusBadge").innerHTML = rec ? statusBadge(rec.status) : "--";
+
+            // Vụ việc liên quan (tách từ Yêu cầu cả hai)
+            const linkBox = document.getElementById("linkedInfoBox");
+            const linked = rec && rec.linkedCode ? cases.find(c => c.code === rec.linkedCode && !c.deleted) : null;
+            if (linked) {
+                linkBox.style.display = "block";
+                linkBox.innerHTML = `<i class="fa-solid fa-link" style="color:#16a34a;"></i> Vụ việc được tách từ yêu cầu cả hai (Bồi thường tiền &amp; Phục hồi danh dự). Vụ việc liên quan: <a href="javascript:void(0)" onclick="openCaseForm('${escapeAttr(linked.id)}', true)">${escapeHtml(linked.code)} - ${escapeHtml(linked.nyc.name)}</a> (${escapeHtml(KIND_LABEL[linked.requestKind])}) ${statusBadge(linked.status)}`;
+            } else { linkBox.style.display = "none"; linkBox.innerHTML = ""; }
+
+            // Đề nghị cấp kinh phí đã tạo
+            const fundBox = document.getElementById("fundingInfoBox");
+            const funding = rec ? getFundingOf(rec) : null;
+            if (rec && (funding || rec.fundingCode)) {
+                fundBox.style.display = "block";
+                fundBox.innerHTML = `<i class="fa-solid fa-sack-dollar" style="color:#7c3aed;"></i> Đề nghị cấp kinh phí bồi thường: <a href="javascript:void(0)" onclick="openFunding('${escapeAttr(rec.code)}')">${escapeHtml(funding ? funding.code : rec.fundingCode)}</a> - Trạng thái: <strong>${escapeHtml(funding ? funding.status : "Chờ nhập liệu")}</strong>`;
+            } else if (rec && needsFunding(rec)) {
+                fundBox.style.display = "block";
+                fundBox.innerHTML = `<i class="fa-solid fa-sack-dollar" style="color:#7c3aed;"></i> Đề nghị cấp kinh phí bồi thường sẽ được tạo ở trạng thái Chờ nhập liệu khi mở màn hình Cấp kinh phí tạm ứng/Bồi thường.`;
+            } else { fundBox.style.display = "none"; fundBox.innerHTML = ""; }
+
+            // Loại yêu cầu: chọn khi thêm mới; khóa sau khi lưu
+            setKindRadio(rec ? rec.requestKind : "both");
+            document.querySelectorAll('input[name="caseRequestKind"]').forEach(r => { r.disabled = !!rec || readOnly; });
+            handleKindChange(rec ? rec.requestKind : "both");
+
+            // Trạng thái
+            setValue("caseStatus", rec ? rec.status : STATUS_THU_LY);
+            setValue("caseFieldGroup", rec ? rec.fieldGroup || "hành chính" : "hành chính");
+            setValue("caseVerdictSource", rec ? rec.verdictSource || "" : "");
+            setValue("caseLawsuitCase", rec ? rec.lawsuitCase || "" : "");
+            setDate("caseAcceptDate", rec ? rec.acceptDate || "" : "");
+            setValue("caseVerdictNo", rec ? rec.verdictNo || "" : "");
+            setDate("caseEffectiveDate", rec ? rec.effectiveDate || "" : "");
+            handleStatusChange();
+
+            fillRequester(rec ? rec.nyc : null);
+            fillNbth(rec ? rec.nbth : null);
+            toggleNbthBlock(rec ? rec.nyc.role : NBTH_ROLE);
+            setValue("claimHanhVi", rec ? rec.hanhVi || "" : "");
+            setValue("claimNhanQua", rec ? rec.nhanQua || "" : "");
+            fillDamages(rec ? rec.damages : []);
+            const hf = rec && rec.honorForms ? rec.honorForms : { apology: true, news: false };
+            document.getElementById("claimPhddFormApology").checked = !!hf.apology;
+            document.getElementById("claimPhddFormNews").checked = !!hf.news;
+
+            docRows = rec ? (rec.docs || []).map(d => ({ name: d.name || "", file: d.file || "" })) : [{ name: "", file: "" }];
+            if (!readOnly && !docRows.length) docRows = [{ name: "", file: "" }];
+            renderDocRows();
+
+            // Khóa/Mở trường nhập
+            document.querySelectorAll("#formView .inline-form-body input, #formView .inline-form-body select, #formView .inline-form-body textarea").forEach(el => {
+                if (el.name === "caseRequestKind") return;
+                el.disabled = readOnly;
+            });
+            if (!readOnly) {
+                DAMAGE_ITEMS.forEach((_, i) => {
+                    const on = document.getElementById(`dmgCb_${i}`).checked;
+                    document.getElementById(`dmgCalc_${i}`).disabled = !on;
+                    document.getElementById(`dmgVal_${i}`).disabled = !on;
+                });
+                handleVictimAliveChange(rec ? rec.nyc.victimAlive : "yes");
+            }
+            document.getElementById("addDocBtnWrapper").style.display = readOnly ? "none" : "block";
+
+            // Lịch sử
+            document.getElementById("historyBlock").style.display = rec ? "block" : "none";
+            document.getElementById("historyList").innerHTML = rec ? renderHistory(rec) : "";
+
+            // Nút
+            const canEdit = rec && canEditCase(rec);
+            document.getElementById("btnFormCancel").style.display = readOnly ? "none" : "inline-flex";
+            document.getElementById("btnFormBack").style.display = readOnly ? "inline-flex" : "none";
+            document.getElementById("btnFormEdit").style.display = readOnly && canEdit ? "inline-flex" : "none";
+            document.getElementById("btnFormDelete").style.display = readOnly && canEdit ? "inline-flex" : "none";
+            document.getElementById("btnFormSave").style.display = readOnly ? "none" : "inline-flex";
+            window.scrollTo(0, 0);
+        }
+
+        function switchToEditMode() { if (editingId) openCaseForm(editingId, false); }
+        function closeCaseForm() {
+            editingId = null;
+            isFormReadOnly = false;
+            document.getElementById("formView").style.display = "none";
+            document.getElementById("formView").classList.remove("readonly-mode");
+            document.getElementById("listView").style.display = "block";
+            renderTable();
+        }
+
+        function markInvalid(id) {
+            const el = document.getElementById(id);
+            if (!el) return null;
+            el.classList.add("is-invalid");
+            const g = el.closest(".form-group");
+            const err = g ? g.querySelector(".error-message") : null;
+            if (err) err.style.display = "block";
+            return el;
+        }
+        function setFieldError(id, message) {
+            const el = markInvalid(id);
+            const g = el ? el.closest(".form-group") : null;
+            const err = g ? g.querySelector(".error-message") : null;
+            if (err) err.textContent = message;
+            return el;
+        }
+        function clearValidation() {
+            document.querySelectorAll("#formView .is-invalid").forEach(el => el.classList.remove("is-invalid"));
+            document.querySelectorAll("#formView .error-message").forEach(el => { el.style.display = "none"; if (el.id !== "docsError") el.textContent = "Đây là trường bắt buộc"; });
+        }
+
+        function saveCase() {
+            clearValidation();
+            const rec = editingId ? cases.find(c => c.id === editingId) : null;
+            if (!CAN_INPUT || (rec && !canEditCase(rec))) { showToast("Bạn không có quyền lưu vụ việc này!", "error"); return; }
+            const status = getValue("caseStatus");
+            let firstInvalid = null;
+            const need = ["caseStatus", "caseVerdictSource", "caseLawsuitCase", "caseAcceptDate", "claimNYCName", "claimNYCBirth", "claimNYCPhone", "claimNYCCardNo", "claimNYCCardDate", "claimNYCCardPlace", "claimNYCAddress", "claimHanhVi", "claimNhanQua"];
+            if (getValue("claimNYCCountry") !== "Việt Nam") need.push("claimNYCCityText");
+            need.forEach(id => { if (!getValue(id)) { const el = markInvalid(id); if (!firstInvalid) firstInvalid = el; } });
+
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            const acc = parseDate(getValue("caseAcceptDate"));
+            if (getValue("caseAcceptDate") && !acc) { const el = setFieldError("caseAcceptDate", "Ngày không hợp lệ (dd/mm/yyyy)"); if (!firstInvalid) firstInvalid = el; }
+            else if (acc && acc > today) { const el = setFieldError("caseAcceptDate", "Ngày thụ lý không được lớn hơn ngày hiện tại"); if (!firstInvalid) firstInvalid = el; }
+
+            let effMissing = false;
+            if (status === STATUS_BAN_AN) {
+                const effRaw = getValue("caseEffectiveDate");
+                const eff = parseDate(effRaw);
+                if (!effRaw) { effMissing = true; const el = markInvalid("caseEffectiveDate"); if (!firstInvalid) firstInvalid = el; }
+                else if (!eff) { const el = setFieldError("caseEffectiveDate", "Ngày không hợp lệ (dd/mm/yyyy)"); if (!firstInvalid) firstInvalid = el; }
+                else if (acc && eff < acc) { const el = setFieldError("caseEffectiveDate", "Ngày hiệu lực bản án/QĐ không được nhỏ hơn Ngày thụ lý"); if (!firstInvalid) firstInvalid = el; }
+            }
+
+            const cleanDocs = docRows.filter(d => (d.name || "").trim() || d.file).map(d => ({ name: (d.name || "").trim() || d.file.replace(/\.[^.]+$/, ""), file: d.file || "" }));
+            const docsOk = cleanDocs.some(d => d.file);
+            if (!docsOk) document.getElementById("docsError").style.display = "block";
+
+            if (firstInvalid || !docsOk) {
+                if (effMissing) showToast("Vui lòng nhập Ngày Bản án/Quyết định có hiệu lực khi trạng thái là Đã có bản án/QĐ!", "error");
+                else if (!firstInvalid) showToast("Vui lòng đính kèm ít nhất 01 tài liệu kèm theo!", "error");
+                else showToast("Vui lòng nhập đầy đủ thông tin bắt buộc!", "error");
+                if (firstInvalid) firstInvalid.focus();
+                return;
+            }
+
+            const doSave = () => persistCase(rec, status, cleanDocs);
+            if (TERMINAL_STATUSES.includes(status)) {
+                showConfirm(`Trạng thái "${status}" là trạng thái kết thúc. Sau khi lưu, vụ việc không được thay đổi trạng thái, cập nhật hoặc xóa. Bạn có chắc chắn muốn lưu?`, doSave, "Xác nhận lưu");
+            } else {
+                doSave();
+            }
+        }
+
+        function persistCase(rec, status, cleanDocs) {
+            // Kiểm tra lại dữ liệu mới nhất (cán bộ khác có thể đã chuyển trạng thái kết thúc)
+            reloadCases();
+            if (rec) {
+                const latest = cases.find(c => c.id === rec.id);
+                if (!latest || !canEditCase(latest)) { showToast("Vụ việc đã được cập nhật sang trạng thái kết thúc hoặc đã bị xóa. Danh sách đã được tải lại.", "error"); closeCaseForm(); return; }
+                rec = latest;
+            }
+            const role = getValue("claimNYCRole");
+            const common = {
+                status,
+                fieldGroup: getValue("caseFieldGroup"),
+                verdictSource: getValue("caseVerdictSource"),
+                lawsuitCase: getValue("caseLawsuitCase"),
+                acceptDate: getValue("caseAcceptDate"),
+                verdictNo: status === STATUS_BAN_AN ? getValue("caseVerdictNo") : "",
+                effectiveDate: status === STATUS_BAN_AN ? getValue("caseEffectiveDate") : "",
+                nyc: readRequester(),
+                nbth: readNbth(role),
+                hanhVi: getValue("claimHanhVi"),
+                nhanQua: getValue("claimNhanQua"),
+                docs: cleanDocs,
+                updatedAt: BTNN_WF.nowText(),
+                updatedBy: CURRENT_USER.id,
+                updatedByName: CURRENT_USER.name
+            };
+            const damages = readDamages();
+            const honorForms = { apology: document.getElementById("claimPhddFormApology").checked, news: document.getElementById("claimPhddFormNews").checked };
+            const created = [];
+
+            if (rec) {
+                const prevStatus = rec.status;
+                Object.assign(rec, common);
+                if (rec.requestKind === "money") rec.damages = damages; else rec.honorForms = honorForms;
+                addHistory(rec, "Cập nhật vụ việc", prevStatus !== status ? `Chuyển trạng thái: ${prevStatus} → ${status}.` : "Cập nhật thông tin vụ việc.");
+                created.push(rec);
+            } else {
+                const kind = getKindRadio();
+                const kinds = kind === "both" ? ["money", "honor"] : [kind];
+                const codes = nextCaseCodes(kinds.length);
+                const now = BTNN_WF.nowText();
+                kinds.forEach((k, i) => {
+                    const r = Object.assign({
+                        id: "TA-" + codes[i],
+                        code: codes[i],
+                        requestKind: k,
+                        originalKind: kind,
+                        rootUnitId: CURRENT_ROOT_UNIT,
+                        createdAt: now,
+                        createdBy: CURRENT_USER.id,
+                        createdByName: CURRENT_USER.name,
+                        damages: k === "money" ? damages : [],
+                        honorForms: k === "honor" ? honorForms : null,
+                        linkedCode: kinds.length === 2 ? codes[1 - i] : null,
+                        history: []
+                    }, JSON.parse(JSON.stringify(common)));
+                    addHistory(r, "Thêm mới vụ việc", kinds.length === 2
+                        ? `Tách từ yêu cầu cả hai: ${KIND_LABEL[k]}. Vụ việc liên quan ${codes[1 - i]}. Trạng thái: ${status}.`
+                        : `Trạng thái: ${status}.`);
+                    cases.unshift(r);
+                    created.push(r);
+                });
+            }
+
+            const funded = [];
+            created.forEach(r => { const p = ensureFundingRecord(r); if (p) funded.push(p); });
+            saveCases();
+            closeCaseForm();
+
+            const codesText = created.map(r => r.code).join(", ");
+            let msg = rec ? `Đã cập nhật vụ việc ${codesText}.` : (created.length === 2 ? `Đã lưu và tách thành 02 vụ việc: ${created[0].code} (Bồi thường thiệt hại bằng tiền), ${created[1].code} (Phục hồi danh dự).` : `Đã lưu vụ việc ${codesText}.`);
+            if (funded.length) msg += ` Đã tạo Đề nghị cấp kinh phí bồi thường ${funded.map(p => p.code).join(", ")} ở trạng thái Chờ nhập liệu.`;
+            else if (created.some(needsFunding) && created.some(r => !r.fundingCode)) msg += " Đề nghị cấp kinh phí bồi thường sẽ được tạo ở trạng thái Chờ nhập liệu tại màn hình Cấp kinh phí tạm ứng/Bồi thường.";
+            showToast(msg, "success");
+        }
+
+        function confirmDeleteCase(id) {
+            const rec = cases.find(c => c.id === id);
+            if (!rec || !canEditCase(rec)) return;
+            showConfirm(`Bạn có chắc chắn muốn xóa vụ việc ${rec.code} - ${rec.nyc.name} không?`, () => {
+                reloadCases();
+                const latest = cases.find(c => c.id === id);
+                if (!latest || !canEditCase(latest)) { showToast("Vụ việc đã được cập nhật sang trạng thái kết thúc hoặc đã bị xóa. Danh sách đã được tải lại.", "error"); closeCaseForm(); return; }
+                latest.deleted = true;
+                latest.deletedAt = BTNN_WF.nowText();
+                latest.deletedBy = CURRENT_USER.name;
+                const partner = latest.linkedCode ? cases.find(c => c.code === latest.linkedCode) : null;
+                if (partner) {
+                    partner.linkedCode = null;
+                    addHistory(partner, "Gỡ liên kết", `Vụ việc liên quan ${latest.code} đã bị xóa.`);
+                }
+                saveCases();
+                closeCaseForm();
+                showToast(`Đã xóa vụ việc ${latest.code}!`, "success");
+            }, "Xác nhận xóa");
+        }
+
+        function openFunding(code) {
+            const url = `quan_ly_kinh_phi_boi_thuong.html?viewCode=${encodeURIComponent(code)}`;
+            if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === "function") {
+                window.parent.openAdminModule(url, "quan_ly_kinh_phi_boi_thuong.html?v=1");
+                return;
+            }
+            window.location.href = url;
+        }
+
+        // ===== Tài liệu kèm theo =====
+        function addDocRow() { docRows.push({ name: "", file: "" }); renderDocRows(); }
+        function renderDocRows() {
+            const tbody = document.getElementById("docsTableBody");
+            if (!docRows.length) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); font-style:italic; padding:16px;">Không có tài liệu đính kèm.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = docRows.map((d, i) => `
+                <tr>
+                    <td style="text-align:center;">${i + 1}</td>
+                    <td>${isFormReadOnly ? `<span style="font-weight:500;">${escapeHtml(d.name || "--")}</span>` : `<input id="docName_${i}" class="form-control" value="${escapeAttr(d.name)}" placeholder="Nhập tên tài liệu..." oninput="docRows[${i}].name = this.value">`}</td>
+                    <td>${d.file
+                        ? `<span class="file-name" style="display:inline-flex; align-items:center; max-width:280px;" title="${escapeAttr(d.file)}"><i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:6px;"></i>${escapeHtml(d.file)}</span>`
+                        : (isFormReadOnly ? `<span class="muted">--</span>` : `<button class="btn-upload-rust" onclick="document.getElementById('docFile_${i}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Chọn file</button>`)}
+                        <input id="docFile_${i}" type="file" style="display:none;" onchange="uploadDocFile(${i}, this)">
+                    </td>
+                    <td>
+                        <div class="doc-actions">
+                            <a href="javascript:void(0)" class="action-link view-link ${d.file ? "" : "disabled-action"}" onclick="showToast('Giả lập mở file: ${escapeAttr(d.file)}', 'info')">Xem file</a>
+                            ${isFormReadOnly ? "" : `<span style="color:#cbd5e1;">|</span><a href="javascript:void(0)" class="action-link delete-link" onclick="deleteDocRow(${i})"><i class="fa-solid fa-trash-can"></i> Xóa</a>`}
+                        </div>
+                    </td>
+                </tr>`).join("");
+        }
+        function uploadDocFile(i, input) {
+            if (!docRows[i] || !input.files || !input.files.length) return;
+            docRows[i].file = input.files[0].name;
+            if (!docRows[i].name) docRows[i].name = input.files[0].name.replace(/\.[^.]+$/, "");
+            document.getElementById("docsError").style.display = "none";
+            renderDocRows();
+        }
+        function deleteDocRow(i) {
+            docRows.splice(i, 1);
+            if (!docRows.length) docRows = [{ name: "", file: "" }];
+            renderDocRows();
+        }
+
+        // ===== Lịch sử =====
+        function addHistory(rec, action, note, userName) {
+            if (!rec.history) rec.history = [];
+            rec.history.push({ at: BTNN_WF.nowText(), userName: userName || CURRENT_USER.name, action, note: note || "" });
+        }
+        function renderHistory(rec) {
+            const h = (rec.history || []).slice().reverse();
+            if (!h.length) return `<div class="muted" style="font-style:italic;">Chưa có lịch sử cập nhật.</div>`;
+            return h.map(x => `<div class="history-item"><div style="font-weight:600; color:#0f172a;">${escapeHtml(x.action)} <span style="font-weight:400; color:#64748b;">- ${escapeHtml(x.userName)} - ${escapeHtml(x.at)}</span></div>${x.note ? `<div style="color:#334155; margin-top:2px;">${escapeHtml(x.note)}</div>` : ""}</div>`).join("");
+        }
+
+        // ===== Xác nhận / Thông báo =====
+        function showConfirm(message, callback, title) {
+            pendingConfirmCallback = callback;
+            document.getElementById("confirmTitle").innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> ${escapeHtml(title || "Xác nhận")}`;
+            document.getElementById("confirmMessage").textContent = message;
+            const overlay = document.getElementById("confirmOverlay");
+            overlay.style.display = "flex";
+            setTimeout(() => overlay.classList.add("visible"), 10);
+        }
+        function closeConfirm(ok) {
+            const overlay = document.getElementById("confirmOverlay");
+            overlay.classList.remove("visible");
+            overlay.style.display = "none";
+            const cb = pendingConfirmCallback;
+            pendingConfirmCallback = null;
+            if (ok && cb) cb();
+        }
+        function showToast(message, type = "success") {
+            const toast = document.getElementById("toast");
+            const icon = type === "error" ? "fa-circle-xmark" : type === "info" ? "fa-circle-info" : "fa-circle-check";
+            toast.className = `toast-notif ${type}`;
+            toast.innerHTML = `<i class="fa-solid ${icon}"></i> ${escapeHtml(message)}`;
+            setTimeout(() => toast.classList.add("visible"), 20);
+            clearTimeout(showToast._t);
+            showToast._t = setTimeout(() => toast.classList.remove("visible"), 3600);
+        }
+        function statusBadge(s) {
+            const c = STATUS_STYLE[s] || ["#f1f5f9", "#475569"];
+            return `<span class="badge" style="background:${c[0]}; color:${c[1]}; border:1px solid ${c[1]}33; white-space:nowrap;">${escapeHtml(s || "--")}</span>`;
+        }
+
+        // ===== Tiện ích =====
+        function getValue(id) { const el = document.getElementById(id); return el ? String(el.value || "").trim() : ""; }
+        function setValue(id, v) { const el = document.getElementById(id); if (el) el.value = v == null ? "" : v; }
+        function setDate(id, v) { const el = document.getElementById(id); if (!el) return; if (el._flatpickr) { if (v) el._flatpickr.setDate(v, false, "d/m/Y"); else el._flatpickr.clear(); } el.value = v || ""; }
+        function setText(id, v) { const el = document.getElementById(id); if (el) el.textContent = v; }
+        function normalize(v) { return String(v || "").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase().trim(); }
+        function parseDate(v) {
+            const m = String(v || "").match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+            if (!m) return null;
+            const d = new Date(+m[3], +m[2] - 1, +m[1]);
+            return d.getMonth() === +m[2] - 1 ? d : null;
+        }
+        function escapeHtml(v) { return String(v == null ? "" : v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;"); }
+        function escapeAttr(v) { return escapeHtml(v); }
+        function numberToVietnameseWords(n) {
+            n = Math.floor(Number(n) || 0);
+            if (n === 0) return "Không";
+            const ds = ["không", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín"];
+            const read3 = (x, full) => {
+                const h = Math.floor(x / 100), t = Math.floor((x % 100) / 10), u = x % 10;
+                let s = "";
+                if (full || h) s += ds[h] + " trăm ";
+                if (t > 1) s += ds[t] + " mươi ";
+                else if (t === 1) s += "mười ";
+                else if ((full || h) && u) s += "lẻ ";
+                if (u === 5 && t >= 1) s += "lăm";
+                else if (u === 1 && t > 1) s += "mốt";
+                else if (u) s += ds[u];
+                return s.trim();
+            };
+            const units = ["", " nghìn", " triệu", " tỷ"];
+            const groups = [];
+            while (n > 0) { groups.push(n % 1000); n = Math.floor(n / 1000); }
+            const parts = [];
+            for (let i = groups.length - 1; i >= 0; i--) {
+                if (groups[i] === 0) continue;
+                parts.push(read3(groups[i], i < groups.length - 1) + units[i % 4]);
+            }
+            const s = parts.join(" ").replace(/\s+/g, " ").trim();
+            return s.charAt(0).toUpperCase() + s.slice(1);
+        }
+
+        // ===== Dữ liệu giả lập =====
+        function buildSeed() {
+            const person = (name, gender, birth, cardNo, phone, city, address, role) => ({
+                name, role: role || NBTH_ROLE, gender, birth, victimAlive: "yes", phone, email: "", cardType: "CCCD", cardNo,
+                cardDate: "10/05/2021", cardPlace: "Cục Cảnh sát QLHC về trật tự xã hội", country: "Việt Nam", city, address
+            });
+            const h = (action, at, userName, note) => ({ at, userName, action, note: note || "" });
+            const doc = (name, file) => ({ name, file });
+            const base = (code, extra) => Object.assign({
+                id: "TA-" + code, code, originalKind: extra.requestKind, linkedCode: null, fieldGroup: "hành chính",
+                verdictNo: "", effectiveDate: "", nbth: null, damages: [], honorForms: null, history: [],
+                nhanQua: "Thiệt hại phát sinh trực tiếp từ hành vi trái pháp luật của người thi hành công vụ."
+            }, extra);
+            const dmg = (key, amount, calc) => {
+                const it = DAMAGE_ITEMS.find(x => x.key === key);
+                return { key, label: it.label, calc, amount };
+            };
+            const nycHoa = person("Đinh Thị Hoa", "Nữ", "14/03/1979", "001179004561", "0913100302", "Hà Nội", "Số 18 Hàng Gai, Hoàn Kiếm");
+            return [
+                base("BT-2026-301", {
+                    requestKind: "money", rootUnitId: "UBND-CG", status: STATUS_THU_LY,
+                    verdictSource: VERDICT_SOURCES[0], lawsuitCase: LAWSUIT_CASES[1], acceptDate: "15/09/2026",
+                    nyc: person("Nguyễn Văn Khải", "Nam", "02/07/1981", "001081003210", "0912300301", "Hà Nội", "Số 9 Trần Thái Tông, Cầu Giấy"),
+                    hanhVi: "Cưỡng chế tháo dỡ công trình khi quyết định cưỡng chế chưa có hiệu lực.",
+                    damages: [dmg("taiSan", 320000000, "Giá trị công trình bị tháo dỡ theo chứng thư thẩm định giá")],
+                    docs: [doc("Thông báo thụ lý vụ án", "Thong_bao_thu_ly_BT-2026-301.pdf"), doc("Đơn khởi kiện", "Don_khoi_kien_BT-2026-301.pdf")],
+                    createdAt: "09:10 16/09/2026", createdBy: "cv_cg1", createdByName: "Kiều Văn Nam",
+                    history: [h("Thêm mới vụ việc", "09:10 16/09/2026", "Kiều Văn Nam", "Trạng thái: Đã thụ lý.")]
+                }),
+                base("BT-2026-302", {
+                    requestKind: "money", originalKind: "both", linkedCode: "BT-2026-303", rootUnitId: "STP-HN", status: STATUS_DANG_GQ,
+                    verdictSource: VERDICT_SOURCES[1], lawsuitCase: LAWSUIT_CASES[0], acceptDate: "02/09/2026", fieldGroup: "hành chính",
+                    nyc: nycHoa, hanhVi: "Ra quyết định xử phạt vi phạm hành chính sai thẩm quyền, tạm giữ phương tiện kinh doanh.",
+                    damages: [dmg("thuNhap", 85000000, "Thu nhập bị mất trong 05 tháng tạm giữ phương tiện"), dmg("tinhThan", 30000000, "Thiệt hại tinh thần theo quy định")],
+                    docs: [doc("Thông báo thụ lý vụ án", "Thong_bao_thu_ly_BT-2026-302.pdf")],
+                    createdAt: "14:00 03/09/2026", createdBy: "cv_hn1", createdByName: "Đỗ Văn Chung",
+                    history: [h("Thêm mới vụ việc", "14:00 03/09/2026", "Đỗ Văn Chung", "Tách từ yêu cầu cả hai: Bồi thường thiệt hại bằng tiền. Vụ việc liên quan BT-2026-303. Trạng thái: Đã thụ lý."), h("Cập nhật vụ việc", "10:30 25/09/2026", "Ngô Thị Lan", "Chuyển trạng thái: Đã thụ lý → Đang giải quyết.")]
+                }),
+                base("BT-2026-303", {
+                    requestKind: "honor", originalKind: "both", linkedCode: "BT-2026-302", rootUnitId: "STP-HN", status: STATUS_DANG_GQ,
+                    verdictSource: VERDICT_SOURCES[1], lawsuitCase: LAWSUIT_CASES[0], acceptDate: "02/09/2026", fieldGroup: "hành chính",
+                    nyc: nycHoa, hanhVi: "Ra quyết định xử phạt vi phạm hành chính sai thẩm quyền, tạm giữ phương tiện kinh doanh.",
+                    honorForms: { apology: true, news: false },
+                    docs: [doc("Thông báo thụ lý vụ án", "Thong_bao_thu_ly_BT-2026-302.pdf")],
+                    createdAt: "14:00 03/09/2026", createdBy: "cv_hn1", createdByName: "Đỗ Văn Chung",
+                    history: [h("Thêm mới vụ việc", "14:00 03/09/2026", "Đỗ Văn Chung", "Tách từ yêu cầu cả hai: Phục hồi danh dự. Vụ việc liên quan BT-2026-302. Trạng thái: Đã thụ lý."), h("Cập nhật vụ việc", "10:35 25/09/2026", "Ngô Thị Lan", "Chuyển trạng thái: Đã thụ lý → Đang giải quyết.")]
+                }),
+                base("BT-2026-304", {
+                    requestKind: "money", rootUnitId: "THADS-LD", status: STATUS_BAN_AN, fieldGroup: "thi hành án dân sự",
+                    verdictSource: VERDICT_SOURCES[0], lawsuitCase: LAWSUIT_CASES[1], acceptDate: "10/06/2026",
+                    verdictNo: "25/2026/DS-ST", effectiveDate: "28/09/2026",
+                    nyc: person("Phạm Quốc Bảo", "Nam", "21/11/1975", "068075001234", "0918300304", "Lâm Đồng", "Số 12 Phan Chu Trinh, Đà Lạt"),
+                    hanhVi: "Kê biên, bán đấu giá tài sản không thuộc sở hữu của người phải thi hành án.",
+                    damages: [dmg("taiSan", 450000000, "Giá trị tài sản bị bán đấu giá sai đối tượng"), dmg("chiPhiKhac", 12000000, "Chi phí đi lại, thuê luật sư")],
+                    docs: [doc("Bản án sơ thẩm có hiệu lực", "Ban_an_25_2026_DS_ST.pdf"), doc("Thông báo thụ lý vụ án", "Thong_bao_thu_ly_BT-2026-304.pdf")],
+                    createdAt: "08:45 12/06/2026", createdBy: "cv_thads1", createdByName: "Trịnh Thu Trang",
+                    history: [h("Thêm mới vụ việc", "08:45 12/06/2026", "Trịnh Thu Trang", "Trạng thái: Đã thụ lý."), h("Cập nhật vụ việc", "16:20 30/09/2026", "Trịnh Thu Trang", "Chuyển trạng thái: Đang giải quyết → Đã có bản án/QĐ.")]
+                }),
+                base("BT-2026-305", {
+                    requestKind: "honor", rootUnitId: "UBND-HK", status: STATUS_BAN_AN,
+                    verdictSource: VERDICT_SOURCES[2], lawsuitCase: LAWSUIT_CASES[2], acceptDate: "20/05/2026", fieldGroup: "tố tụng hành chính",
+                    verdictNo: "08/2026/HC-ST", effectiveDate: "15/08/2026",
+                    nyc: person("Lê Thị Thu", "Nữ", "09/09/1988", "001188007788", "0915300305", "Hà Nội", "Số 3 Lý Thái Tổ, Hoàn Kiếm"),
+                    hanhVi: "Công bố thông tin sai sự thật về hành vi vi phạm của người yêu cầu.", honorForms: { apology: true, news: true },
+                    docs: [doc("Bản án hành chính sơ thẩm", "Ban_an_08_2026_HC_ST.pdf")],
+                    createdAt: "10:00 22/05/2026", createdBy: "cv_hk1", createdByName: "Tạ Quang Vinh",
+                    history: [h("Thêm mới vụ việc", "10:00 22/05/2026", "Tạ Quang Vinh", "Trạng thái: Đã thụ lý."), h("Cập nhật vụ việc", "09:00 18/08/2026", "Tạ Quang Vinh", "Chuyển trạng thái: Đang giải quyết → Đã có bản án/QĐ.")]
+                }),
+                base("BT-2026-306", {
+                    requestKind: "money", rootUnitId: "BTP-01", status: STATUS_TRA_LAI,
+                    verdictSource: VERDICT_SOURCES[0], lawsuitCase: LAWSUIT_CASES[1], acceptDate: "05/08/2026",
+                    nyc: person("Trương Minh Tâm", "Nam", "17/01/1990", "001090006655", "0916300306", "Hà Nội", "Số 60 Trần Phú, Ba Đình"),
+                    hanhVi: "Từ chối cấp giấy phép hành nghề trái quy định.",
+                    damages: [dmg("thuNhap", 60000000, "Thu nhập bị mất 06 tháng")],
+                    docs: [doc("Quyết định trả lại đơn khởi kiện", "QD_tra_lai_don_BT-2026-306.pdf")],
+                    createdAt: "11:15 06/08/2026", createdBy: "hatt", createdByName: "Trần Thị Thu Hà",
+                    history: [h("Thêm mới vụ việc", "11:15 06/08/2026", "Trần Thị Thu Hà", "Trạng thái: Đã thụ lý."), h("Cập nhật vụ việc", "15:00 20/08/2026", "Trần Thị Thu Hà", "Chuyển trạng thái: Đã thụ lý → Trả lại đơn khởi kiện.")]
+                }),
+                base("BT-2026-307", {
+                    requestKind: "money", rootUnitId: "BTP-01", status: STATUS_DANG_GQ, fieldGroup: "hình sự",
+                    verdictSource: VERDICT_SOURCES[2], lawsuitCase: LAWSUIT_CASES[2], acceptDate: "12/08/2026",
+                    nyc: person("Võ Thanh Liêm", "Nam", "30/04/1984", "001084002345", "0917300307", "Hà Nội", "Số 22 Nguyễn Trãi, Thanh Xuân", "Người thừa kế của người bị thiệt hại"),
+                    nbth: { name: "Võ Văn Thắng", gender: "Nam", dob: "", phone: "", email: "", docType: "CCCD", docNo: "", docDate: "", docPlace: "", country: "Việt Nam", city: "Hà Nội", address: "" },
+                    hanhVi: "Tạm giam quá thời hạn trong quá trình điều tra vụ án hình sự.",
+                    damages: [dmg("tinhThan", 180000000, "Quy đổi số ngày bị tạm giam"), dmg("thuNhap", 40000000, "Thu nhập bị mất trong thời gian tạm giam")],
+                    docs: [doc("Thông báo thụ lý yêu cầu bồi thường", "Thong_bao_thu_ly_BT-2026-307.pdf")],
+                    createdAt: "08:30 13/08/2026", createdBy: "canbonv", createdByName: "Nguyễn Văn Cán Bộ",
+                    history: [h("Thêm mới vụ việc", "08:30 13/08/2026", "Nguyễn Văn Cán Bộ", "Trạng thái: Đã thụ lý."), h("Cập nhật vụ việc", "14:10 02/10/2026", "Nguyễn Văn Cán Bộ", "Chuyển trạng thái: Đã thụ lý → Đang giải quyết.")]
+                }),
+                base("BT-2026-308", {
+                    requestKind: "money", rootUnitId: "BTP-01", status: STATUS_THU_LY,
+                    verdictSource: VERDICT_SOURCES[1], lawsuitCase: LAWSUIT_CASES[0], acceptDate: "01/10/2026",
+                    nyc: person("Hoàng Văn Sơn", "Nam", "11/12/1970", "001070008899", "0919300308", "Hà Nội", "Số 5 Kim Mã, Ba Đình"),
+                    hanhVi: "Thu hồi giấy chứng nhận đăng ký doanh nghiệp không đúng quy định.",
+                    damages: [dmg("taiSan", 95000000, "Hàng hóa hư hỏng trong thời gian đình chỉ hoạt động")],
+                    docs: [doc("Thông báo thụ lý vụ án", "Thong_bao_thu_ly_BT-2026-308.pdf")],
+                    createdAt: "09:00 02/10/2026", createdBy: "canbonv", createdByName: "Nguyễn Văn Cán Bộ",
+                    history: [h("Thêm mới vụ việc", "09:00 02/10/2026", "Nguyễn Văn Cán Bộ", "Trạng thái: Đã thụ lý.")]
+                })
+            ];
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="bpbd_filter_toggle.js"></script>
+    <script src="filter_toggle_auto.js"></script>
+</body>
+
+</html>

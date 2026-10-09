@@ -6793,7 +6793,7 @@ function printSupplementNotice(id) {
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:13.5px; font-family:sans-serif;">
                 <div><strong style="color:#475569;">Mã vụ việc:</strong> <span style="font-weight:700; color:#1e3a8a;">${escapeHtml(claim.code)}</span></div>
                 <div><strong style="color:#475569;">Ngày tiếp nhận:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(ngayTiepNhan)}</span></div>
-                <div style="grid-column: span 2;"><strong style="color:#475569;">Tên vụ việc:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(claim.caseName || claim.hanhVi || 'Yêu cầu bồi thường thiệt hại')}</span></div>
+                <div style="grid-column: span 2;"><strong style="color:#475569;">Họ và tên người yêu cầu:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(claim.nyc || '--')}</span></div>
                 <div><strong style="color:#475569;">Cán bộ xử lý:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(canBo)}</span></div>
                 <div><strong style="color:#475569;">Chức vụ:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(chucVu)}</span></div>
                 <div style="grid-column: span 2;"><strong style="color:#475569;">Đơn vị:</strong> <span style="font-weight:600; color:#0f172a;">${escapeHtml(donVi)}</span></div>
@@ -6807,7 +6807,7 @@ function printSupplementNotice(id) {
         </div>
         <div style="margin-bottom: 15px;">
             <p>Căn cứ Luật Trách nhiệm bồi thường của Nhà nước năm 2017;</p>
-            <p>Sau khi tiếp nhận và kiểm tra hồ sơ yêu cầu bồi thường mang mã số: <strong>${escapeHtml(claim.code)}</strong> liên quan đến vụ việc <em>"${escapeHtml(claim.caseName || claim.hanhVi || 'Yêu cầu bồi thường thiệt hại')}"</em>;</p>
+            <p>Sau khi tiếp nhận và kiểm tra hồ sơ yêu cầu bồi thường của vụ việc <strong>${escapeHtml(claim.code)} - ${escapeHtml(claim.nyc || '--')}</strong>;</p>
             <p>Cơ quan giải quyết bồi thường thông báo và hướng dẫn Ông/Bà thực hiện bổ sung các nội dung, tài liệu sau đây để đủ điều kiện thụ lý giải quyết:</p>
         </div>
         <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:15px; margin-bottom:15px; font-family:sans-serif;">

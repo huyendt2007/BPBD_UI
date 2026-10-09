@@ -1558,16 +1558,6 @@
                 <option value="thu-truong">Thủ trưởng Cơ quan giải quyết</option>
             </select>
         </div>
-        <div id="currentOfficerSelectorWrapper" style="display: inline-block;">
-            <span style="font-size:12px; font-weight:600; color:var(--text-muted); margin-left: 10px;">Cán bộ đang đăng
-                nhập:</span>
-            <select class="role-selector" id="currentOfficerSelector" onchange="renderClaimsTable()"
-                style="padding: 6px 10px; font-size: 12.5px;">
-                <option value="Nguyễn Văn Chuyên Viên">Nguyễn Văn Chuyên Viên (CB1)</option>
-                <option value="Trần Thị Chuyên Viên">Trần Thị Chuyên Viên (CB2)</option>
-                <option value="Lê Văn Chuyên Viên">Lê Văn Chuyên Viên (CB3)</option>
-            </select>
-        </div>
     </div>
 
     <!-- MAIN CONTAINER -->
@@ -1679,6 +1669,18 @@
                         <option value="chuyen-vien">Cán bộ xử lý hồ sơ</option>
                         <option value="thu-truong">Thủ trưởng cơ quan giải quyết</option>
                     </select>
+                    <!-- Cán bộ đang đăng nhập (giả lập): danh sách gồm cán bộ mẫu và tài khoản cán bộ theo Cơ cấu tổ chức -->
+                    <span id="currentOfficerSelectorWrapper" style="display: inline-flex; align-items: center; gap: 6px; margin-left: 10px;">
+                        <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Cán bộ đang đăng nhập</span>
+                        <select class="role-selector" id="currentOfficerSelector" onchange="renderClaimsTable()"
+                            style="padding: 6px 10px; font-size: 12.5px; max-width: 320px;">
+                            <optgroup label="Cán bộ mẫu">
+                                <option value="Nguyễn Văn Chuyên Viên">Nguyễn Văn Chuyên Viên (CB1)</option>
+                                <option value="Trần Thị Chuyên Viên">Trần Thị Chuyên Viên (CB2)</option>
+                                <option value="Lê Văn Chuyên Viên">Lê Văn Chuyên Viên (CB3)</option>
+                            </optgroup>
+                        </select>
+                    </span>
                 </div>
                 <div style="display: flex; gap: 8px; align-items: center;">
                     <!-- Chỉ hiển thị tại Tab "Vụ việc chờ tiếp nhận": mở màn nhập liệu hồ sơ ở chế độ tạo mới -->
@@ -1862,7 +1864,7 @@
                 <div
                     style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border: 2px solid #86efac; padding: 20px; border-radius: var(--border-radius-md); margin-bottom: 24px; box-shadow: 0 4px 6px -1px rgba(22, 163, 74, 0.1);">
 
-                    <div class="grid-2" style="gap: 24px;">
+                    <div>
                         <!-- LOẠI YÊU CẦU BỒI THƯỜNG -->
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label" style="font-weight: 700; color: #14532d; margin-bottom: 8px;">Loại
@@ -1888,103 +1890,9 @@
                                 </label>
                             </div>
                         </div>
-
-                        <!-- TÌNH TRẠNG BẢN ÁN -->
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label" style="font-weight: 700; color: #14532d; margin-bottom: 8px;">Tình
-                                trạng Pháp lý <span class="required">*</span></span>
-                            <div style="display: flex; flex-direction: column; gap: 12px;">
-                                <label
-                                    style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--text-main);">
-                                    <input type="radio" name="claimHasVerdictRadio" value="false" checked
-                                        onchange="toggleVerdictFields(false)">
-                                    Chưa có Bản án/Quyết định
-                                </label>
-                                <label
-                                    style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--primary-color);">
-                                    <input type="radio" name="claimHasVerdictRadio" value="true"
-                                        onchange="toggleVerdictFields(true)">
-                                    Đã có Bản án/Quyết định
-                                </label>
-                            </div>
-                        </div>
                     </div>
                 </div>
-
-                <div id="verdictFieldsBlock"
-                    style="display: none; background-color: #f8fafc; padding: 16px; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); margin-bottom: 20px;">
-                    <div class="grid-2" style="gap: 16px;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Nguồn phát sinh bản án<span class="required">*</span></span>
-                            <select class="form-control" id="verdictSource" onchange="toggleVerdictSource(this.value)">
-                                <option value="Điều 52">Khởi kiện sau khi đã nộp đơn cho cơ quan (Điều 52)</option>
-                                <option value="Điều 55">Giải quyết trong quá trình tố tụng (Điều 55)</option>
-                            </select>
-                        </div>
-                        <div class="form-group" id="verdictLawsuitCaseGroup" style="margin-bottom: 0;">
-                            <span class="form-label">Trường hợp khởi kiện<span class="required">*</span></span>
-                            <select class="form-control" id="verdictLawsuitCase"
-                                onchange="toggleVerdictLawsuitCase(this.value)">
-                                <option value="diem-b">Đã yêu cầu cơ quan giải quyết trước khi khởi kiện (điểm b khoản 1 và khoản 2 Điều 52)</option>
-                                <option value="diem-a">Khởi kiện thẳng ra Tòa án, chưa từng yêu cầu cơ quan giải quyết (điểm a khoản 1 Điều 52)</option>
-                            </select>
-                        </div>
-                        <div class="form-group" id="verdictOriginClaimGroup" style="grid-column: span 2; margin-bottom: 0;">
-                            <span class="form-label">Vụ việc yêu cầu bồi thường gốc liên quan</span>
-                            <div id="verdictOriginClaimSearchGroup" style="display:flex; gap:10px; align-items:center;">
-                                <input type="text" class="form-control" id="verdictOriginClaim"
-                                    placeholder="Nhập mã vụ việc gốc..." list="originClaimList"
-                                    onchange="handleVerdictOriginChange(this.value)">
-                                <datalist id="originClaimList">
-                                    <option value="BT-2026-022"></option>
-                                    <option value="BT-2026-023"></option>
-                                </datalist>
-                                <button type="button" class="btn btn-primary" onclick="quickFillOriginClaim()"
-                                    style="height:38px; white-space:nowrap;"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
-                                <button type="button" class="btn btn-secondary" onclick="openOriginClaimSearchModal()"
-                                    style="height:38px; white-space:nowrap;"><i class="fa-solid fa-magnifying-glass-plus"></i> Tìm kiếm nâng cao</button>
-                            </div>
-                            <div id="mockOriginLinkWrapper" style="display:none; margin-top:10px;"></div>
-                            <label style="display:flex; align-items:center; gap:8px; margin-top:10px; font-size:13px; cursor:pointer;">
-                                <input type="checkbox" id="verdictNoOriginClaim" onchange="toggleNoOriginClaim(this.checked)">
-                                Không có hồ sơ gốc trên hệ thống
-                            </label>
-                        </div>
-                        <div id="verdictNoOriginFields" class="grid-3-cols"
-                            style="display:none; grid-column: span 2; gap: 12px; background:#fff7ed; border:1px solid #fed7aa; border-radius: var(--border-radius-sm); padding:12px;">
-                            <div class="form-group" style="margin-bottom: 0;">
-                                <span class="form-label">Số quyết định/biên bản/đơn xin rút yêu cầu gốc<span class="required">*</span></span>
-                                <input type="text" class="form-control" id="verdictOriginDocNo"
-                                    placeholder="Nhập số văn bản/hồ sơ gốc...">
-                            </div>
-                            <div class="form-group" style="margin-bottom: 0;">
-                                <span class="form-label">Ngày ban hành (hồ sơ gốc)<span class="required">*</span></span>
-                                <input type="text" class="form-control" id="verdictOriginDocDate" placeholder="dd/mm/yyyy">
-                            </div>
-                            <div class="form-group" style="margin-bottom: 0;">
-                                <span class="form-label">Cơ quan đã giải quyết trước đó<span class="required">*</span></span>
-                                <input type="text" class="form-control" id="verdictOriginAgency"
-                                    placeholder="Nhập cơ quan đã giải quyết...">
-                            </div>
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Số Bản án/Quyết định<span class="required">*</span></span>
-                            <input type="text" class="form-control" id="verdictNumber"
-                                placeholder="Nhập số Bản án/Quyết định...">
-
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Ngày Bản án/Quyết định có hiệu lực<span
-                                    class="required">*</span></span>
-                            <div class="date-input-wrapper">
-                                <input type="text" class="form-control" id="verdictEffectiveDate"
-                                    placeholder="dd/mm/yyyy">
-                                <i class="fa-regular fa-calendar-days"></i>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
+                <!-- Khối "Tình trạng pháp lý" và thông tin bản án đã bỏ khỏi form nhập liệu: vụ việc do tòa án thụ lý được khai báo tại chức năng "Theo dõi vụ việc tại Tòa án" -->
 
                 <div class="grid-2" style="margin-bottom: 16px;">
                     <div class="form-group">
@@ -2474,6 +2382,29 @@
                     }
                 </script>
 
+                <!-- VĂN BẢN LÀM CĂN CỨ YÊU CẦU BỒI THƯỜNG (không bắt buộc) -->
+                <div id="claimVanBanCanCuSection" style="margin-bottom: 20px;">
+                    <div class="info-group-title">Văn bản làm căn cứ yêu cầu bồi thường</div>
+                    <div class="table-container">
+                        <table class="custom-table" id="claimVanBanCanCuTable" style="min-width: 760px;">
+                            <thead>
+                                <tr style="background-color: var(--table-header-bg);">
+                                    <th style="width: 60px; text-align: center;">STT</th>
+                                    <th>Tên văn bản, căn cứ</th>
+                                    <th style="width: 280px;">Tải file</th>
+                                    <th style="width: 170px; text-align: center;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="claimVanBanCanCuBody"></tbody>
+                        </table>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <button type="button" class="btn btn-secondary btn-sm" id="btnAddVanBanCanCu" onclick="addVanBanCanCuRow()">
+                            <i class="fa-solid fa-plus"></i> Thêm dòng
+                        </button>
+                    </div>
+                </div>
+
                 <!-- II. THIỆT HẠI YÊU CẦU BỒI THƯỜNG -->
                 <div id="claimMoneySection">
                     <div class="info-group-title">II. Thiệt hại yêu cầu bồi thường</div>
@@ -2913,39 +2844,9 @@
                                     <input type="text" class="form-control" id="detThulyOfficer" disabled>
                                 </div>
                             </div>
-                            <div class="grid-2-cols">
-                                <div class="form-group">
-                                    <span class="form-label">Chức vụ cán bộ giải quyết</span>
-                                    <input type="text" class="form-control" id="detThulyOfficerPosition" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <span class="form-label">Đơn vị cán bộ giải quyết</span>
-                                    <input type="text" class="form-control" id="detThulyOfficerUnit" disabled>
-                                </div>
-                            </div>
-                            <div class="grid-2-cols">
-                                <div class="form-group">
-                                    <span class="form-label">Đơn vị ban hành QĐ</span>
-                                    <input type="text" class="form-control" id="detThulyDecisionIssuingUnit" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <span class="form-label">Người ký/Chức vụ QĐ</span>
-                                    <input type="text" class="form-control" id="detThulyDecisionSigner" disabled>
-                                </div>
-                            </div>
-                            <div class="grid-3-cols">
-                                <div class="form-group">
-                                    <span class="form-label">Số QĐ cử người giải quyết</span>
-                                    <input type="text" class="form-control" id="detThulyDecisionNo" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <span class="form-label">Ngày QĐ</span>
-                                    <input type="text" class="form-control" id="detThulyDecisionDate" disabled>
-                                </div>
-                                <div class="form-group">
-                                    <span class="form-label">Tài liệu đính kèm</span>
-                                    <div id="detThulyDecisionFile" class="form-control" style="height:auto; min-height:38px; background:#f1f5f9;"></div>
-                                </div>
+                            <div class="form-group">
+                                <span class="form-label">Danh sách cán bộ được cử giải quyết</span>
+                                <div id="detThulyOfficersTable" class="table-container"></div>
                             </div>
                             <div id="detThulyRejectBlock"
                                 style="display: none; background-color: #FEF2F2; border: 1.5px solid #FCA5A5; padding: 15px; border-radius: var(--border-radius-md); margin-top: 15px;">
@@ -3056,9 +2957,28 @@
                             </div>
                             <div id="xacminhEditBlock"
                                 style="display: none; background-color: #EFF6FF; border: 1px solid #93C5FD; padding: 15px; border-radius: var(--border-radius-md);">
+                                <!-- Tài liệu bắt buộc trước khi lưu kết quả xác minh -->
+                                <div id="xmRequiredDocsBox" style="background:#fff; border:1px solid #bfdbfe; border-radius:6px; padding:12px 14px; margin-bottom:14px;">
+                                    <span class="form-label" style="color: var(--secondary-color); font-weight: 700; font-size:13.5px;">TÀI LIỆU BẮT BUỘC</span>
+                                    <div class="grid-2-cols" style="gap:12px; margin-top:8px;">
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <span class="form-label">Văn bản thụ lý<span class="required">*</span></span>
+                                            <div id="xmReqDocBox_thuly" style="min-height:40px; display:flex; align-items:center; gap:10px; border:1px solid #cbd5e1; border-radius:4px; padding:6px 10px; background:#fff; flex-wrap:wrap;"></div>
+                                            <input type="file" id="xmReqDocInput_thuly" style="display:none;" onchange="handleXmRequiredDoc('thuly', this)">
+                                        </div>
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <span class="form-label">Quyết định cử người giải quyết<span class="required">*</span></span>
+                                            <div id="xmReqDocBox_cuNguoi" style="min-height:40px; display:flex; align-items:center; gap:10px; border:1px solid #cbd5e1; border-radius:4px; padding:6px 10px; background:#fff; flex-wrap:wrap;"></div>
+                                            <input type="file" id="xmReqDocInput_cuNguoi" style="display:none;" onchange="handleXmRequiredDoc('cuNguoi', this)">
+                                        </div>
+                                    </div>
+                                    <div id="xmRequiredDocsError" style="display:none; color:#dc2626; font-size:12.5px; margin-top:8px;"></div>
+                                </div>
+                                <!-- Lịch sử các lần xác minh đã lưu (chỉ đọc) -->
+                                <div id="xmEditHistoryBlock" style="margin-bottom:14px;"></div>
                                 <span class="form-label"
-                                    style="color: var(--secondary-color); font-weight: 700; font-size:13.5px;">BẢNG ĐỐI
-                                    SOÁT & XÁC MINH CÁC KHOẢN THIỆT HẠI BỒI THƯỜNG:</span>
+                                    style="color: var(--secondary-color); font-weight: 700; font-size:13.5px;">TỔNG SỐ TIỀN THEO TỪNG HẠNG MỤC</span>
+                                <div style="font-size:12px; color:#475569; margin-top:2px;">Bảng là duy nhất cho hồ sơ: mỗi lần lưu kết quả xác minh, số tiền đề xuất và ghi chú của từng hạng mục được ghi đè bằng giá trị mới; nội dung chi tiết của từng lần lưu được ghi vào Lịch sử các lần xác minh.</div>
                                 <table class="custom-table" style="margin: 10px 0; background: white;">
                                     <thead>
                                         <tr style="background-color: var(--table-header-bg);">
@@ -3090,7 +3010,7 @@
                                 </div>
 
                                 <div class="form-group" style="margin-top: 15px;">
-                                    <span class="form-label">Tải lên Báo cáo kết quả xác minh (biên bản định giá, giám
+                                    <span class="form-label">Tài liệu kèm theo lần xác minh (báo cáo kết quả xác minh, biên bản định giá, giám
                                         định...)</span>
                                     <div style="margin-top: 6px;">
                                         <label class="btn btn-sm"
@@ -4410,7 +4330,7 @@
 
             const wrapper = document.getElementById('currentOfficerSelectorWrapper');
             if (wrapper) {
-                wrapper.style.display = val === 'chuyen-vien' ? 'inline-block' : 'none';
+                wrapper.style.display = val === 'chuyen-vien' ? 'inline-flex' : 'none';
             }
 
             // Vai trò Lãnh đạo (Thủ trưởng CQ giải quyết) chỉ được xem Tab 3 "Vụ việc chờ xử lý";
@@ -6537,11 +6457,6 @@
             return status || 'Chờ tiếp nhận';
         }
 
-        function getClaimDisplayName(claim) {
-            if (!claim) return '--';
-            return claim.caseName || claim.tenVuViec || `Vụ việc yêu cầu bồi thường của ${claim.nyc || 'người yêu cầu'}`;
-        }
-
         // Định danh vụ việc trên giao diện: Mã vụ việc + Họ và tên người yêu cầu
         function getClaimRequesterName(claim) {
             return (claim && (claim.nyc || claim.nycName)) || '--';
@@ -6855,6 +6770,11 @@
         }
 
         function collectVerdictFormData() {
+            // Form nhập liệu không còn khối "Tình trạng pháp lý"/thông tin bản án: chỉ thu thập liên kết hồ sơ
+            // Xác định cơ quan, không ghi đè thông tin bản án của hồ sơ cũ (dữ liệu mẫu) khi lưu lại.
+            if (!document.querySelector('input[name="claimHasVerdictRadio"]')) {
+                return { linkedXdAgencyCode: getInputValue('quickFillCode') };
+            }
             const hasVerdictRadio = document.querySelector('input[name="claimHasVerdictRadio"]:checked');
             const hasVerdict = hasVerdictRadio && hasVerdictRadio.value === 'true';
             const noOriginClaim = !!(document.getElementById('verdictNoOriginClaim') && document.getElementById('verdictNoOriginClaim').checked);
@@ -7016,7 +6936,9 @@
 
         function migrateClaimForSrs(claim, idx = 0) {
             claim.status = canonicalClaimStatus(claim.status);
-            claim.caseName = getClaimDisplayName(claim);
+            // Vụ việc chỉ được định danh bằng Mã vụ việc - Họ và tên người yêu cầu (bỏ thuộc tính caseName/tenVuViec cũ)
+            delete claim.caseName;
+            delete claim.tenVuViec;
             // Chuyển "Hình thức tiếp nhận" (nopKenh) cũ sang "Nguồn hồ sơ" (nguonHoSo)
             if (claim.nopKenh === LEGACY_CAN_BO_CHU_DONG_NHAP) claim.canBoChuDongNhap = true;
             claim.nguonHoSo = normalizeNguonHoSo(claim.nguonHoSo || claim.nopKenh);
@@ -7255,10 +7177,47 @@
             return 'badge-info';
         }
 
+        // Danh sách cán bộ được cử giải quyết hồ sơ: ưu tiên danh sách nhiều cán bộ (cử tại popup Cử người giải quyết);
+        // hồ sơ cũ chỉ có 01 cán bộ (assignedOfficer) được quy đổi thành danh sách 01 phần tử
+        function getClaimAppointedOfficers(claim) {
+            if (!claim) return [];
+            if (Array.isArray(claim.appointedOfficers) && claim.appointedOfficers.length) return claim.appointedOfficers;
+            if (claim.assignedOfficer) {
+                return [{ userId: '', name: claim.assignedOfficer, position: claim.assignedOfficerPosition || '', email: claim.assignedOfficerEmail || '', unit: claim.assignedOfficerUnit || '' }];
+            }
+            return [];
+        }
+
+        function isClaimAppointedTo(claim, officerName) {
+            const nCurrent = normalizeStatusText(officerName || '');
+            if (!nCurrent) return false;
+            return getClaimAppointedOfficers(claim).some(o => normalizeStatusText(o.name) === nCurrent);
+        }
+
+        function getClaimOfficerNamesText(claim) {
+            return getClaimAppointedOfficers(claim).map(o => o.name).join(', ');
+        }
+
+        // Hồ sơ đã cử người giải quyết (danh sách nhiều cán bộ): chỉ cán bộ được cử mới được xem và cập nhật
+        function isClaimRestrictedToAppointed(claim) {
+            return !!(claim && Array.isArray(claim.appointedOfficers) && claim.appointedOfficers.length);
+        }
+
         function isClaimAssignedToOther(claim, currentRole, currentOfficer) {
-            const nAssigned = normalizeStatusText(claim.assignedOfficer || '');
-            const nCurrent = normalizeStatusText(currentOfficer || '');
-            return currentRole === 'chuyen-vien' && nAssigned && nCurrent && nAssigned !== nCurrent;
+            if (currentRole !== 'chuyen-vien') return false;
+            if (!normalizeStatusText(currentOfficer || '')) return false;
+            if (!getClaimAppointedOfficers(claim).length) return false;
+            return !isClaimAppointedTo(claim, currentOfficer);
+        }
+
+        function getCurrentSimulatedOfficer() {
+            const sel = document.getElementById('currentOfficerSelector');
+            return sel ? sel.value : 'Nguyễn Văn Chuyên Viên';
+        }
+
+        function getCurrentSimulatedRole() {
+            const selMain = document.getElementById('roleSelectorMain');
+            return selMain ? selMain.value : 'chuyen-vien';
         }
 
         function claimInActiveWorkflowTab(item, currentRole, currentOfficer) {
@@ -7337,7 +7296,7 @@
             }
 
             if (isAssignedToOther) {
-                return disabled('fa-solid fa-lock', `Vụ việc được giao cho cán bộ ${item.assignedOfficer}. Bạn chỉ có quyền xem.`);
+                return disabled('fa-solid fa-lock', `Vụ việc được giao cho cán bộ ${getClaimOfficerNamesText(item)}. Bạn chỉ có quyền xem.`);
             }
 
             if (status === 'Chờ tiếp nhận' || status === 'Yêu cầu bổ sung') {
@@ -7526,7 +7485,7 @@
                     <td title="${item.hanhVi}">${shortenedHanhVi}</td>
                     <td style="font-size:12px; color:var(--text-muted);">${getFieldGroupName(item.fieldGroup)}</td>
                     <td style="font-size:12px; color:var(--text-muted);">${item.agency || "Chưa phân công"}</td>
-                    <td style="font-size:12px; color:var(--text-muted); font-weight: 500;">${item.assignedOfficer || '<span style="color:#94a3b8; font-style:italic;">Chưa phân công</span>'}</td>
+                    <td style="font-size:12px; color:var(--text-muted); font-weight: 500;">${getClaimOfficerNamesText(item) || '<span style="color:#94a3b8; font-style:italic;">Chưa phân công</span>'}</td>
                     <td style="text-align:center;">${item.date}</td>
                     <td style="text-align:center; font-weight: 500; color: #b45309;">${item.deadline || "--"}</td>
                     <td style="text-align:center;">${renderNguonHoSoBadge(item.nguonHoSo)}</td>
@@ -7670,21 +7629,23 @@
             showOfficerSelectModal(id, (claimId, assignment) => {
                 const claim = claimsList.find(c => c.id === claimId);
                 if (claim) {
+                    const officers = Array.isArray(assignment.officers) ? assignment.officers : [];
+                    const appointedAt = new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+                    // Danh sách cán bộ được cử (nhiều cán bộ); các trường đơn cũ giữ đồng bộ theo cán bộ đầu tiên
+                    claim.appointedOfficers = officers.map(o => Object.assign({}, o, { appointedAt }));
                     claim.assignedOfficer = assignment.name;
                     claim.assignedOfficerPosition = assignment.position;
                     claim.assignedOfficerUnit = assignment.unit;
-                    claim.appointDecisionIssuingUnit = assignment.decisionIssuingUnit;
-                    claim.appointDecisionSigner = assignment.decisionSigner;
-                    claim.appointDecisionNo = assignment.decisionNo;
-                    claim.appointDecisionDate = assignment.decisionDate;
-                    claim.appointDecisionFile = assignment.decisionFile;
+                    claim.assignedOfficerEmail = assignment.email;
+                    claim.officer = assignment.name;
                     const todayStr = new Date().toLocaleDateString('vi-VN');
                     claim.reporting = {
                         ...getClaimReport(claim),
                         thulyDate: getClaimReport(claim).thulyDate || todayStr,
                         noticeDate: getClaimReport(claim).noticeDate || todayStr
                     };
-                    changeStatus(claimId, 'Đang xác minh thiệt hại', `Đã thụ lý hồ sơ giải quyết bồi thường và cử ${assignment.name} giải quyết hồ sơ!`);
+                    const officerNames = (officers.length ? officers.map(o => o.name) : [assignment.name]).join(', ');
+                    changeStatus(claimId, 'Đang xác minh thiệt hại', `Đã thụ lý hồ sơ giải quyết bồi thường và cử ${officerNames} giải quyết hồ sơ!`);
                 }
             });
         }
@@ -9858,15 +9819,21 @@
 
             const selMain = document.getElementById('roleSelectorMain');
             const currentRole = selMain ? selMain.value : 'chuyen-vien';
-            const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : 'Nguyễn Văn Chuyên Viên';
-            const nAssigned = claim.assignedOfficer ? claim.assignedOfficer.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/đ/g, 'd').trim() : '';
-            const nCurrent = currentOfficer ? currentOfficer.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/đ/g, 'd').trim() : '';
-            const isAssignedToOther = (currentRole === 'chuyen-vien') && nAssigned && (nAssigned !== nCurrent);
+            const currentOfficer = getCurrentSimulatedOfficer();
+            const isAssignedToOther = isClaimAssignedToOther(claim, currentRole, currentOfficer);
+
+            // Hồ sơ đã cử người giải quyết: cán bộ không thuộc danh sách được cử không được xem hồ sơ
+            if (isAssignedToOther && isClaimRestrictedToAppointed(claim)) {
+                selectedClaimId = null;
+                isDetailEditMode = false;
+                showToast(`Bạn không thuộc danh sách cán bộ được cử giải quyết hồ sơ ${claim.code}. Không thể xem và cập nhật hồ sơ.`, "error");
+                return;
+            }
 
             if (isAssignedToOther && editMode) {
                 editMode = false;
                 isDetailEditMode = false;
-                showToast(`Hồ sơ được giao cho cán bộ khác (${claim.assignedOfficer}). Bạn chỉ có quyền Xem.`, "error");
+                showToast(`Hồ sơ được giao cho cán bộ khác (${getClaimOfficerNamesText(claim)}). Bạn chỉ có quyền Xem.`, "error");
             }
 
             document.getElementById('subTabContentResolver').style.display = 'none';
@@ -10017,10 +9984,8 @@
 
             const selMain = document.getElementById('roleSelectorMain');
             const currentRole = selMain ? selMain.value : 'chuyen-vien';
-            const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : 'Nguyễn Văn Chuyên Viên';
-            const nAssigned = claim.assignedOfficer ? claim.assignedOfficer.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/đ/g, 'd').trim() : '';
-            const nCurrent = currentOfficer ? currentOfficer.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/đ/g, 'd').trim() : '';
-            const isAssignedToOther = (currentRole === 'chuyen-vien') && nAssigned && (nAssigned !== nCurrent);
+            const currentOfficer = getCurrentSimulatedOfficer();
+            const isAssignedToOther = isClaimAssignedToOther(claim, currentRole, currentOfficer);
 
             // Close button (only shown in read-only mode)
             const closeBtnHtml = `<button class="btn btn-secondary" onclick="closeCaseDetailWithCheck()"><i class="fa-solid fa-circle-xmark"></i> Đóng</button>`;
@@ -10114,6 +10079,7 @@
                 case 'dang xac minh thiet hai':
                     if (isDetailEditMode) {
                         buttonsHtml = `
+                            <button class="btn btn-outline-primary" onclick="saveXacMinhRound(false)"><i class="fa-regular fa-floppy-disk"></i> Lưu kết quả xác minh</button>
                             <button class="btn btn-success" onclick="submitXacMinhUpdate()"><i class="fa-solid fa-circle-check"></i> Hoàn thành xác minh</button>
                             ${cancelActionBtnHtml}
                         `;
@@ -11389,16 +11355,8 @@
             document.getElementById('detThulyDate').value = claim.date;
             document.getElementById('detThulyHan').value = claim.deadline;
             document.getElementById('detThulyAgency').value = claim.agency;
-            document.getElementById('detThulyOfficer').value = claim.assignedOfficer || "Chưa phân công";
-            document.getElementById('detThulyOfficerPosition').value = claim.assignedOfficerPosition || "--";
-            document.getElementById('detThulyOfficerUnit').value = claim.assignedOfficerUnit || "--";
-            document.getElementById('detThulyDecisionIssuingUnit').value = claim.appointDecisionIssuingUnit || "--";
-            document.getElementById('detThulyDecisionSigner').value = claim.appointDecisionSigner || "--";
-            document.getElementById('detThulyDecisionNo').value = claim.appointDecisionNo || "--";
-            document.getElementById('detThulyDecisionDate').value = claim.appointDecisionDate || "--";
-            document.getElementById('detThulyDecisionFile').innerHTML = claim.appointDecisionFile
-                ? `<a href="javascript:void(0)" style="color:#1d4ed8; font-weight:600; text-decoration:none;" onclick="showToast('Đang mở tài liệu ${claim.appointDecisionFile}', 'success')"><i class="fa-solid fa-paperclip"></i> ${claim.appointDecisionFile}</a>`
-                : '<span style="color:#94a3b8;">Chưa đính kèm</span>';
+            document.getElementById('detThulyOfficer').value = getClaimOfficerNamesText(claim) || "Chưa phân công";
+            document.getElementById('detThulyOfficersTable').innerHTML = renderAppointedOfficersTableHtml(claim);
 
             const claimStatus = canonicalClaimStatus(claim.status);
             const isRejected = (claimStatus === 'Bị từ chối' || claimStatus === 'Từ chối thụ lý');
@@ -11513,9 +11471,16 @@
                 xmEdit.style.display = 'block';
                 const xmTable = document.getElementById('editXacMinhTableBody');
 
-                // Initialize files list
-                xmSelectedFiles = claim.xmFiles ? [...claim.xmFiles] : [];
+                // Tài liệu kèm theo thuộc từng lần xác minh: mỗi lần lưu bắt đầu với danh sách trống
+                xmSelectedFiles = [];
                 renderXmFiles();
+
+                // Tài liệu bắt buộc (Văn bản thụ lý, Quyết định cử người giải quyết) và Lịch sử các lần xác minh
+                xmRequiredDocsDraft = Object.assign({ thuly: '', cuNguoi: '' }, claim.xmRequiredDocs || {});
+                renderXmRequiredDocs();
+                setXmRequiredDocsError('');
+                const xmEditHistory = document.getElementById('xmEditHistoryBlock');
+                if (xmEditHistory) xmEditHistory.innerHTML = renderXmHistoryHtml(claim);
 
                 // Populate other fields
                 document.getElementById('editXacMinhTimeExtension').value = claim.xmTimeExtension || '';
@@ -11595,7 +11560,7 @@
                     flatpickr('.datepicker-input', { dateFormat: 'd/m/Y' });
                 }
             } else {
-                if (claim.xmTotalAmount !== undefined || ['Đang thương lượng', 'Thương lượng không thành công', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Hoàn thành'].includes(claim.status)) {
+                if (claim.xmTotalAmount !== undefined || getXmHistory(claim).length > 0 || ['Đang thương lượng', 'Thương lượng không thành công', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Hoàn thành'].includes(claim.status)) {
                     // Render comparison table
                     let comparisonRowsHtml = '';
                     let totalClaimed = 0;
@@ -11645,7 +11610,7 @@
 
                     const comparisonTableHtml = `
                         <div style="margin-top: 10px; margin-bottom: 15px;">
-                            <span style="font-weight:700; font-size:12.5px; color:#1e293b; display:block; margin-bottom:6px;"><i class="fa-solid fa-list-check"></i> KẾT QUẢ ĐỐI SOÁT CHI TIẾT CÁC KHOẢN THIỆT HẠI:</span>
+                            <span style="font-weight:700; font-size:12.5px; color:#1e293b; display:block; margin-bottom:6px;"><i class="fa-solid fa-list-check"></i> TỔNG SỐ TIỀN THEO TỪNG HẠNG MỤC (giá trị hiện hành):</span>
                             <table class="custom-table" style="background: white; width:100%; border-collapse:collapse; font-size:12.5px;">
                                 <thead style="background-color:#f8fafc;">
                                     <tr>
@@ -11674,32 +11639,12 @@
                         </div>
                     `;
 
-                    let filesHtml = '';
-                    if (claim.xmFiles && claim.xmFiles.length > 0) {
-                        claim.xmFiles.forEach(file => {
-                            filesHtml += `
-                                <div style="display: flex; align-items: center; gap: 8px; margin-top: 4px;">
-                                    <i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i>
-                                    <a href="#" onclick="event.preventDefault(); viewPhddMockFile('${file.name}')" class="action-link view-link" style="font-weight:500;">${file.name}</a>
-                                </div>
-                            `;
-                        });
-                    } else {
-                        filesHtml = '<span style="font-style:italic; color:#64748b;">Không có tệp báo cáo đính kèm</span>';
-                    }
-
                     xmRead.innerHTML = `
                         <div style="font-size:13px; line-height:1.6;">
                             <p><strong>Tổng tiền bồi thường đề xuất:</strong> <span style="font-weight:700; color:var(--danger-color); font-size:14px;">${(claim.xmTotalAmount || totalVerified).toLocaleString('vi-VN')} đ</span></p>
                             ${comparisonTableHtml}
-                            <p style="margin-top:8px;"><strong>Thỏa thuận việc kéo dài thời gian xác minh:</strong> ${claim.xmTimeExtension || 'Không có'}</p>
-                            <p><strong>Các nội dung khác liên quan đến quá trình xác minh thiệt hại:</strong> ${claim.xmOtherRelatedInfo || 'Không có'}</p>
-                            <div style="margin-top: 8px;">
-                                <strong>Báo cáo kết quả xác minh đính kèm:</strong>
-                                <div style="margin-top: 4px; display:flex; flex-direction:column; gap:4px;">
-                                    ${filesHtml}
-                                </div>
-                            </div>
+                            ${renderXmRequiredDocsReadHtml(claim)}
+                            ${renderXmHistoryHtml(claim)}
                         </div>`;
                 } else {
                     xmRead.innerHTML = `<div style="font-size:12.5px; color:var(--text-muted); font-style:italic;">Chưa tiến hành xác minh thiệt hại</div>`;
@@ -15292,7 +15237,9 @@
 
         let officerSelectCallback = null;
         let officerSelectId = null;
-        let appointedDecisionFile = '';
+        // Danh sách tài khoản cán bộ đang chọn trên popup Cử người giải quyết (mỗi phần tử là mã tài khoản)
+        let appointOfficerRows = [''];
+        let appointOfficerUnit = null;
 
         function renderModalOfficers(list) {
             const tbody = document.getElementById('modalOfficerTableBody');
@@ -15336,31 +15283,44 @@
             return "Thiệt hại yêu cầu";
         }
 
+        // ===== Popup Cử người giải quyết hồ sơ: chọn nhiều cán bộ từ tài khoản cán bộ của cơ quan giải quyết =====
+        function getAppointOfficerCandidates() {
+            const W = window.BTNN_WF;
+            if (!W || !appointOfficerUnit) return [];
+            return W.usersInUnitTree(appointOfficerUnit.id);
+        }
+
+        function buildAppointOfficerInfo(userId) {
+            const W = window.BTNN_WF;
+            const u = W ? W.getUser(userId) : null;
+            if (!u) return null;
+            return {
+                userId: u.id,
+                name: u.name,
+                position: u.title || '',
+                email: getOfficerAccountEmail(u),
+                unitId: u.unitId,
+                unit: W.unitName(u.unitId)
+            };
+        }
+
         function showOfficerSelectModal(id, callback) {
             officerSelectId = id;
             officerSelectCallback = callback;
 
-            ['appointedOfficerName', 'appointedOfficerPosition', 'appointedOfficerUnit', 'appointDecisionNo', 'appointDecisionDate'].forEach(fieldId => {
-                const el = document.getElementById(fieldId);
-                if (el) {
-                    el.value = '';
-                    el.classList.remove('is-invalid');
-                }
-            });
-            document.getElementById('appointDecisionIssuingUnit').value = 'Sở Tư pháp Hà Nội';
-            document.getElementById('appointDecisionSigner').value = 'Ngô Anh Tuấn - Giám đốc Sở Tư pháp Hà Nội';
-            appointedDecisionFile = '';
-            const fileInput = document.getElementById('appointDecisionFile');
-            if (fileInput) fileInput.value = '';
-            renderAppointDecisionFileState();
-            const fileBox = document.getElementById('appointDecisionFileBox');
-            if (fileBox) fileBox.style.borderColor = '#cbd5e1';
-            const today = new Date().toLocaleDateString('vi-VN');
-            const decisionDate = document.getElementById('appointDecisionDate');
-            if (decisionDate) decisionDate.value = today;
-            if (window.flatpickr && decisionDate && !decisionDate._flatpickr) {
-                flatpickr(decisionDate, { dateFormat: "d/m/Y", allowInput: true });
+            const claim = claimsList.find(c => c.id === id);
+            appointOfficerUnit = claim ? resolveClaimAgencyUnit(claim.agency) : null;
+            appointOfficerRows = [''];
+            const lbl = document.getElementById('appointClaimLabel');
+            if (lbl) lbl.innerText = claim ? `${claim.code} - ${getClaimRequesterName(claim)}` : '--';
+            const agencyEl = document.getElementById('appointAgencyName');
+            if (agencyEl) {
+                agencyEl.innerText = claim ? (claim.agency || '--') : '--';
             }
+            renderAppointOfficerRows();
+            setAppointOfficerError(appointOfficerUnit && getAppointOfficerCandidates().length
+                ? ''
+                : `Cơ quan giải quyết bồi thường "${claim ? (claim.agency || '--') : '--'}" chưa có tài khoản cán bộ trên hệ thống. Vui lòng liên hệ Quản trị hệ thống.`);
 
             const overlay = document.getElementById('officerSelectOverlay');
             overlay.style.display = 'flex';
@@ -15369,82 +15329,106 @@
             }, 10);
         }
 
-        function handleAppointDecisionFile(input) {
-            appointedDecisionFile = input.files && input.files[0] ? input.files[0].name : '';
-            renderAppointDecisionFileState();
-            const fileBox = document.getElementById('appointDecisionFileBox');
-            if (fileBox) fileBox.style.borderColor = appointedDecisionFile ? '#cbd5e1' : '#ef4444';
+        function setAppointOfficerError(msg) {
+            const el = document.getElementById('appointOfficersError');
+            if (!el) return;
+            el.innerText = msg || '';
+            el.style.display = msg ? 'block' : 'none';
         }
 
-        function renderAppointDecisionFileState() {
-            const fileName = document.getElementById('appointDecisionFileName');
-            const fileActions = document.getElementById('appointDecisionFileActions');
-            if (fileName) {
-                fileName.innerText = appointedDecisionFile || 'Chưa chọn tài liệu';
-                fileName.style.color = appointedDecisionFile ? '#1e3a8a' : '#64748b';
-                fileName.style.fontWeight = appointedDecisionFile ? '600' : '400';
+        function renderAppointOfficerRows() {
+            const tbody = document.getElementById('appointOfficersBody');
+            if (!tbody) return;
+            const candidates = getAppointOfficerCandidates();
+            const W = window.BTNN_WF;
+            tbody.innerHTML = appointOfficerRows.map((userId, idx) => {
+                const info = userId ? buildAppointOfficerInfo(userId) : null;
+                const options = candidates.map(u => {
+                    const takenByOther = appointOfficerRows.some((v, j) => j !== idx && v === u.id);
+                    return `<option value="${u.id}" ${u.id === userId ? 'selected' : ''} ${takenByOther ? 'disabled' : ''}>${u.name} - ${u.title}${W ? ' (' + W.unitName(u.unitId) + ')' : ''}</option>`;
+                }).join('');
+                const canDelete = appointOfficerRows.length > 1;
+                return `
+                    <tr>
+                        <td style="text-align:center;">${idx + 1}</td>
+                        <td>
+                            <select class="form-control" id="appointOfficerSel_${idx}" onchange="changeAppointOfficer(${idx}, this.value)">
+                                <option value="">Chọn cán bộ</option>
+                                ${options}
+                            </select>
+                        </td>
+                        <td><input type="text" class="form-control" id="appointOfficerPos_${idx}" value="${info ? info.position : ''}" readonly disabled></td>
+                        <td><input type="text" class="form-control" id="appointOfficerEmail_${idx}" value="${info ? info.email : ''}" readonly disabled></td>
+                        <td><input type="text" class="form-control" id="appointOfficerUnit_${idx}" value="${info ? info.unit : ''}" readonly disabled></td>
+                        <td style="text-align:center;">
+                            <button type="button" class="icon-btn reject" title="${canDelete ? 'Xóa dòng' : 'Phải cử tối thiểu 01 cán bộ'}" ${canDelete ? `onclick="removeAppointOfficerRow(${idx})"` : 'disabled style="opacity:0.35; cursor:not-allowed;"'}><i class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                    </tr>`;
+            }).join('');
+        }
+
+        function changeAppointOfficer(idx, userId) {
+            if (userId && appointOfficerRows.some((v, j) => j !== idx && v === userId)) {
+                const info = buildAppointOfficerInfo(userId);
+                showToast(`Cán bộ ${info ? info.name : ''} đã được chọn. Mỗi cán bộ chỉ được cử 01 lần.`, 'error');
+                renderAppointOfficerRows();
+                return;
             }
-            if (fileActions) {
-                fileActions.style.display = appointedDecisionFile ? 'inline-flex' : 'none';
+            appointOfficerRows[idx] = userId || '';
+            setAppointOfficerError('');
+            renderAppointOfficerRows();
+        }
+
+        function addAppointOfficerRow() {
+            const candidates = getAppointOfficerCandidates();
+            if (appointOfficerRows.length >= candidates.length) {
+                showToast('Đã chọn hết tài khoản cán bộ của cơ quan giải quyết bồi thường.', 'error');
+                return;
             }
+            appointOfficerRows.push('');
+            renderAppointOfficerRows();
         }
 
-        function viewAppointDecisionFile() {
-            if (!appointedDecisionFile) return;
-            showToast(`Đang mở file ${appointedDecisionFile}...`, 'success');
-        }
-
-        function removeAppointDecisionFile() {
-            appointedDecisionFile = '';
-            const fileInput = document.getElementById('appointDecisionFile');
-            if (fileInput) fileInput.value = '';
-            renderAppointDecisionFileState();
-            const fileBox = document.getElementById('appointDecisionFileBox');
-            if (fileBox) fileBox.style.borderColor = '#ef4444';
-        }
-
-        function markAppointmentInvalid(id, invalid) {
-            const el = document.getElementById(id);
-            if (el) el.classList.toggle('is-invalid', invalid);
+        function removeAppointOfficerRow(idx) {
+            if (appointOfficerRows.length <= 1) return;
+            appointOfficerRows.splice(idx, 1);
+            renderAppointOfficerRows();
         }
 
         function closeOfficerSelectModal(success) {
             const overlay = document.getElementById('officerSelectOverlay');
 
             if (success && officerSelectCallback) {
-                const assignment = {
-                    name: (document.getElementById('appointedOfficerName')?.value || '').trim(),
-                    position: (document.getElementById('appointedOfficerPosition')?.value || '').trim(),
-                    unit: (document.getElementById('appointedOfficerUnit')?.value || '').trim(),
-                    decisionIssuingUnit: (document.getElementById('appointDecisionIssuingUnit')?.value || '').trim(),
-                    decisionSigner: (document.getElementById('appointDecisionSigner')?.value || '').trim(),
-                    decisionNo: (document.getElementById('appointDecisionNo')?.value || '').trim(),
-                    decisionDate: (document.getElementById('appointDecisionDate')?.value || '').trim(),
-                    decisionFile: appointedDecisionFile
-                };
-                const requiredChecks = [
-                    ['appointedOfficerName', assignment.name],
-                    ['appointedOfficerPosition', assignment.position],
-                    ['appointedOfficerUnit', assignment.unit],
-                    ['appointDecisionIssuingUnit', assignment.decisionIssuingUnit],
-                    ['appointDecisionSigner', assignment.decisionSigner],
-                    ['appointDecisionNo', assignment.decisionNo],
-                    ['appointDecisionDate', assignment.decisionDate]
-                ];
-                let hasError = false;
-                requiredChecks.forEach(([id, value]) => {
-                    const invalid = !value;
-                    markAppointmentInvalid(id, invalid);
-                    if (invalid) hasError = true;
-                });
-                const fileBox = document.getElementById('appointDecisionFileBox');
-                if (fileBox) fileBox.style.borderColor = assignment.decisionFile ? '#cbd5e1' : '#ef4444';
-                if (!assignment.decisionFile) hasError = true;
-                if (hasError) {
-                    showToast('Vui lòng nhập đầy đủ thông tin cử người giải quyết và đính kèm QĐ.', 'error');
+                if (!getAppointOfficerCandidates().length) {
+                    showToast('Cơ quan giải quyết bồi thường chưa có tài khoản cán bộ trên hệ thống. Vui lòng liên hệ Quản trị hệ thống.', 'error');
                     return;
                 }
-                officerSelectCallback(officerSelectId, assignment);
+                let firstInvalid = null;
+                appointOfficerRows.forEach((userId, idx) => {
+                    const sel = document.getElementById(`appointOfficerSel_${idx}`);
+                    if (sel) sel.classList.toggle('is-invalid', !userId);
+                    if (!userId && !firstInvalid) firstInvalid = sel;
+                });
+                if (firstInvalid) {
+                    setAppointOfficerError('Đây là trường bắt buộc. Vui lòng chọn cán bộ được cử giải quyết cho từng dòng hoặc xóa dòng trống.');
+                    showToast('Vui lòng chọn cán bộ được cử giải quyết hồ sơ.', 'error');
+                    firstInvalid.focus();
+                    return;
+                }
+                const unique = new Set(appointOfficerRows);
+                if (unique.size !== appointOfficerRows.length) {
+                    showToast('Danh sách cán bộ được cử có cán bộ bị trùng. Mỗi cán bộ chỉ được cử 01 lần.', 'error');
+                    return;
+                }
+                const officers = appointOfficerRows.map(buildAppointOfficerInfo).filter(Boolean);
+                const first = officers[0];
+                officerSelectCallback(officerSelectId, {
+                    officers,
+                    name: first.name,
+                    position: first.position,
+                    unit: first.unit,
+                    email: first.email
+                });
             }
 
             overlay.classList.remove('visible');
@@ -15454,7 +15438,6 @@
             officerSelectCallback = null;
             officerSelectId = null;
         }
-
         let rejectionSelectId = null;
         let rejectionSelectType = '';
         let rejectionCallback = null;
@@ -16164,7 +16147,7 @@
 
     <!-- Custom Officer Appointment Modal HTML -->
     <div id="officerSelectOverlay" class="confirm-modal-overlay">
-        <div class="sticky-modal-container" style="width: 760px; max-width: 96%;">
+        <div class="sticky-modal-container" style="width: 980px; max-width: 96%;">
             <div class="confirm-modal-header"
                 style="color: var(--primary-light); background-color: #f8fafc; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; padding: 24px 24px 16px 24px;">
                 <div style="display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 600;">
@@ -16174,78 +16157,32 @@
                     style="cursor: pointer; font-size: 20px; font-weight: bold; color: #64748b; line-height: 1;">&times;</span>
             </div>
             <div class="sticky-modal-body" style="padding: 24px;">
-                <p style="margin-bottom: 12px; font-weight: 500; color: #334155; font-size: 13.5px;">
-                    Nhập thông tin cán bộ được cử giải quyết hồ sơ bồi thường và thông tin Quyết định cử người giải quyết:
+                <p style="margin-bottom: 10px; font-weight: 500; color: #334155; font-size: 13.5px;">
+                    Chọn cán bộ được cử giải quyết hồ sơ từ danh sách tài khoản cán bộ của cơ quan giải quyết bồi thường (cho phép cử nhiều cán bộ):
                 </p>
-                <div class="grid-2-cols" style="gap:12px; margin-bottom:14px;">
-                    <div class="form-group">
-                        <span class="form-label">Họ và tên cán bộ<span class="required">*</span></span>
-                        <input type="text" id="appointedOfficerName" class="form-control" placeholder="Nhập họ và tên cán bộ...">
-                    </div>
-                    <div class="form-group">
-                        <span class="form-label">Chức vụ<span class="required">*</span></span>
-                        <input type="text" id="appointedOfficerPosition" class="form-control" placeholder="Nhập chức vụ...">
-                    </div>
+                <div style="display:flex; flex-wrap:wrap; gap:6px 18px; font-size:13px; background:#f8fafc; border:1px solid var(--border-color); border-radius:6px; padding:10px 12px; margin-bottom:12px;">
+                    <div><strong style="color:var(--text-muted);">Hồ sơ:</strong> <span id="appointClaimLabel">--</span></div>
+                    <div><strong style="color:var(--text-muted);">Cơ quan giải quyết bồi thường:</strong> <span id="appointAgencyName">--</span></div>
                 </div>
-                <div class="grid-2-cols" style="gap:12px; margin-bottom:14px;">
-                    <div class="form-group">
-                        <span class="form-label">Đơn vị<span class="required">*</span></span>
-                        <select id="appointedOfficerUnit" class="form-control">
-                            <option value="">Chọn đơn vị...</option>
-                            <option value="Cục Bồi thường nhà nước">Cục Bồi thường nhà nước</option>
-                            <option value="Cục Bồi thường nhà nước / Phòng Giải quyết bồi thường">-- Phòng Giải quyết bồi thường</option>
-                            <option value="Cục Bồi thường nhà nước / Phòng Xem xét trách nhiệm hoàn trả">-- Phòng Xem xét trách nhiệm hoàn trả</option>
-                            <option value="Sở Tư pháp Hà Nội">Sở Tư pháp Hà Nội</option>
-                            <option value="Sở Tư pháp Hà Nội / Phòng Hành chính tư pháp">-- Phòng Hành chính tư pháp</option>
-                            <option value="Sở Tư pháp Hà Nội / Phòng Bồi thường nhà nước">-- Phòng Bồi thường nhà nước</option>
-                            <option value="UBND Quận Cầu Giấy">UBND Quận Cầu Giấy</option>
-                            <option value="UBND Quận Cầu Giấy / Phòng Tư pháp">-- Phòng Tư pháp</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <span class="form-label">Email cán bộ<span class="required">*</span></span>
-                        <input type="email" id="appointedOfficerEmail" class="form-control" placeholder="Nhập email cán bộ...">
-                    </div>
+                <div class="table-container" style="margin-bottom:10px;">
+                    <table class="custom-table" id="appointOfficersTable" style="min-width: 900px;">
+                        <thead>
+                            <tr style="background-color: var(--table-header-bg);">
+                                <th style="width: 50px; text-align: center;">STT</th>
+                                <th style="min-width: 240px;">Họ và tên<span class="required">*</span></th>
+                                <th style="min-width: 150px;">Chức vụ</th>
+                                <th style="min-width: 190px;">Email</th>
+                                <th style="min-width: 220px;">Đơn vị</th>
+                                <th style="width: 80px; text-align: center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointOfficersBody"></tbody>
+                    </table>
                 </div>
-                <div class="grid-2-cols" style="gap:12px; margin-bottom:14px;">
-                    <div class="form-group">
-                        <span class="form-label">Đơn vị ban hành QĐ<span class="required">*</span></span>
-                        <select id="appointDecisionIssuingUnit" class="form-control">
-                            <option value="Sở Tư pháp Hà Nội">Sở Tư pháp Hà Nội</option>
-                            <option value="Cục Bồi thường nhà nước">Cục Bồi thường nhà nước</option>
-                            <option value="UBND Quận Cầu Giấy">UBND Quận Cầu Giấy</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <span class="form-label">Người ký/Chức vụ QĐ<span class="required">*</span></span>
-                        <input type="text" id="appointDecisionSigner" class="form-control" value="Ngô Anh Tuấn - Giám đốc Sở Tư pháp Hà Nội">
-                    </div>
-                </div>
-                <div class="grid-2-cols" style="gap:12px; margin-bottom:14px;">
-                    <div class="form-group">
-                        <span class="form-label">Số QĐ<span class="required">*</span></span>
-                        <input type="text" id="appointDecisionNo" class="form-control" placeholder="Nhập số quyết định...">
-                    </div>
-                    <div class="form-group">
-                        <span class="form-label">Ngày QĐ<span class="required">*</span></span>
-                        <input type="text" id="appointDecisionDate" class="form-control" placeholder="dd/mm/yyyy">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <span class="form-label">Tài liệu đính kèm<span class="required">*</span></span>
-                    <div id="appointDecisionFileBox"
-                        style="min-height:44px; display:flex; align-items:center; gap:10px; border:1px solid #cbd5e1; border-radius:4px; padding:8px 10px; background:#fff; flex-wrap:wrap;">
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('appointDecisionFile').click()">
-                            <i class="fa-solid fa-paperclip"></i> Chọn file
-                        </button>
-                        <span id="appointDecisionFileName" style="font-size:12px; color:#64748b; min-width:180px; flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Chưa chọn tài liệu</span>
-                        <span id="appointDecisionFileActions" style="display:none; align-items:center; gap:10px; font-size:12px;">
-                            <a href="javascript:void(0)" onclick="viewAppointDecisionFile()" style="color:#1e40af; font-weight:600; text-decoration:none;">Xem file</a>
-                            <a href="javascript:void(0)" onclick="removeAppointDecisionFile()" style="color:#dc2626; font-weight:600; text-decoration:none;"><i class="fa-solid fa-trash-can"></i> Xóa</a>
-                        </span>
-                        <input type="file" id="appointDecisionFile" style="display:none;" onchange="handleAppointDecisionFile(this)">
-                    </div>
-                </div>
+                <div id="appointOfficersError" style="display:none; color:#dc2626; font-size:12.5px; margin-bottom:8px;"></div>
+                <button type="button" class="btn btn-secondary btn-sm" id="btnAddAppointOfficer" onclick="addAppointOfficerRow()">
+                    <i class="fa-solid fa-plus"></i> Thêm cán bộ
+                </button>
             </div>
             <div class="confirm-modal-footer"
                 style="padding: 16px 24px 24px 24px; display: flex; justify-content: flex-end; gap: 10px; background-color: #f8fafc; border-top: 1px solid var(--border-color);">
