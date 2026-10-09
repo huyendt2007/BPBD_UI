@@ -307,7 +307,6 @@
             <div class="page-heading">
                 <div>
                     <h2><i class="fa-solid fa-scale-balanced"></i> THEO DÕI VỤ VIỆC TẠI TÒA ÁN</h2>
-                    <p id="pageSubtitle">Cơ quan nhà nước bị khởi kiện (bị đơn) khai báo và theo dõi các vụ việc yêu cầu bồi thường do Tòa án thụ lý.</p>
                 </div>
             </div>
 
@@ -504,8 +503,9 @@
                         </div>
                         <div></div>
                         <div class="form-group verdict-field" style="margin-bottom:0;">
-                            <span class="form-label">Số Bản án/Quyết định</span>
+                            <span class="form-label">Số Bản án/Quyết định<span class="required">*</span></span>
                             <input type="text" class="form-control" id="caseVerdictNo" placeholder="Nhập số Bản án/Quyết định...">
+                            <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
                         <div class="form-group verdict-field" style="margin-bottom:0;">
                             <span class="form-label">Ngày Bản án/Quyết định có hiệu lực<span class="required">*</span></span>
@@ -724,6 +724,27 @@
                     </div>
                 </div>
 
+                <!-- VĂN BẢN LÀM CĂN CỨ YÊU CẦU BỒI THƯỜNG -->
+                <div class="info-group-title">Văn bản làm căn cứ yêu cầu bồi thường</div>
+                <div class="table-container" style="margin-bottom:10px;">
+                    <table class="custom-table" style="min-width:760px;">
+                        <thead>
+                            <tr>
+                                <th style="width:50px; text-align:center;">STT</th>
+                                <th>Tên văn bản, căn cứ</th>
+                                <th style="width:320px;">Tải file</th>
+                                <th style="width:180px; text-align:center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="basisTableBody"></tbody>
+                    </table>
+                </div>
+                <div id="addBasisBtnWrapper" style="margin-bottom:20px;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="addBasisRow()">
+                        <i class="fa-solid fa-plus"></i> Thêm dòng
+                    </button>
+                </div>
+
                 <div class="form-group">
                     <span class="form-label">Hành vi gây thiệt hại của người thi hành công vụ<span class="required">*</span></span>
                     <textarea class="form-control" id="claimHanhVi" rows="2" placeholder="Nhập hành vi gây thiệt hại của người thi hành công vụ..."></textarea>
@@ -936,7 +957,6 @@
             btn.disabled = !CAN_INPUT;
             btn.classList.toggle("disabled-action", !CAN_INPUT);
             btn.title = CAN_INPUT ? "Thêm mới vụ việc tại Tòa án" : "Đơn vị chưa được áp dụng Loại yêu cầu \"Yêu cầu bồi thường\"";
-            document.getElementById("pageSubtitle").textContent = `Cơ quan nhà nước bị khởi kiện (bị đơn) khai báo và theo dõi các vụ việc yêu cầu bồi thường do Tòa án thụ lý. Đơn vị: ${BTNN_WF.unitName(CURRENT_ROOT_UNIT)}.`;
         }
 
         // ===== Kho dữ liệu =====
@@ -1049,6 +1069,16 @@
             cases.forEach(rec => { if (ensureFundingRecord(rec)) changed = true; });
             if (changed) saveCases();
         }
+        // Đề nghị kinh phí còn Chờ nhập liệu: cập nhật lại thông tin kế thừa theo vụ việc
+        function syncFundingDraft(rec) {
+            const list = readJson(FUNDING_KEY, null);
+            if (!Array.isArray(list)) return;
+            const p = list.find(x => x && x.courtCaseCode === rec.code);
+            if (!p || p.status !== "Chờ nhập liệu") return;
+            const fresh = buildFundingRecord(rec, list);
+            ["nycName", "nycRole", "amount", "agency", "baseDecisionNo", "baseDecisionDate", "verdictSource", "selectedDamages", "files"].forEach(k => { p[k] = fresh[k]; });
+            writeJson(FUNDING_KEY, list);
+        }
         function getFundingOf(rec) {
             const list = readJson(FUNDING_KEY, []) || [];
             return list.find(p => p && p.courtCaseCode === rec.code) || null;
@@ -1057,7 +1087,7 @@
         // ===== Quyền =====
         function isTerminal(rec) { return TERMINAL_STATUSES.includes(rec.status); }
         function canEditCase(rec) {
-            return !!rec && CAN_INPUT && rec.rootUnitId === CURRENT_ROOT_UNIT && !isTerminal(rec);
+            return !!rec && CAN_INPUT && rec.rootUnitId === CURRENT_ROOT_UNIT;
         }
         function visibleCases() {
             return cases.filter(r => !r.deleted && (VIEW_ALL || r.rootUnitId === CURRENT_ROOT_UNIT));
@@ -1292,7 +1322,7 @@
             const rec = id ? cases.find(c => c.id === id) : null;
             if (id && !rec) return;
             if (rec && !readOnly && !canEditCase(rec)) {
-                showToast(isTerminal(rec) ? "Vụ việc đã ở trạng thái kết thúc, không được cập nhật!" : "Bạn không có quyền cập nhật vụ việc này!", "error");
+                showToast("Bạn không có quyền cập nhật vụ việc này!", "error");
                 readOnly = true;
             }
             editingId = id;
@@ -1357,6 +1387,10 @@
             document.getElementById("claimPhddFormApology").checked = !!hf.apology;
             document.getElementById("claimPhddFormNews").checked = !!hf.news;
 
+            basisRows = rec ? (rec.vanBanCanCu || []).map(d => ({ name: d.name || "", file: d.file || "" })) : [];
+            if (!readOnly && !basisRows.length) basisRows = [{ name: "", file: "" }];
+            document.getElementById("addBasisBtnWrapper").style.display = readOnly ? "none" : "block";
+            renderBasisRows();
             docRows = rec ? (rec.docs || []).map(d => ({ name: d.name || "", file: d.file || "" })) : [{ name: "", file: "" }];
             if (!readOnly && !docRows.length) docRows = [{ name: "", file: "" }];
             renderDocRows();
@@ -1375,6 +1409,14 @@
                 handleVictimAliveChange(rec ? rec.nyc.victimAlive : "yes");
             }
             document.getElementById("addDocBtnWrapper").style.display = readOnly ? "none" : "block";
+            // Vụ việc ở trạng thái kết thúc: vẫn được cập nhật thông tin, nhưng không được đổi trạng thái
+            const statusSel = document.getElementById("caseStatus");
+            if (statusSel && rec && isTerminal(rec)) {
+                statusSel.disabled = true;
+                statusSel.title = "Trạng thái kết thúc, không được thay đổi";
+            } else if (statusSel) {
+                statusSel.title = "";
+            }
 
             // Lịch sử
             document.getElementById("historyBlock").style.display = rec ? "block" : "none";
@@ -1440,6 +1482,7 @@
             if (status === STATUS_BAN_AN) {
                 const effRaw = getValue("caseEffectiveDate");
                 const eff = parseDate(effRaw);
+                if (!getValue("caseVerdictNo")) { effMissing = true; const el = markInvalid("caseVerdictNo"); if (!firstInvalid) firstInvalid = el; }
                 if (!effRaw) { effMissing = true; const el = markInvalid("caseEffectiveDate"); if (!firstInvalid) firstInvalid = el; }
                 else if (!eff) { const el = setFieldError("caseEffectiveDate", "Ngày không hợp lệ (dd/mm/yyyy)"); if (!firstInvalid) firstInvalid = el; }
                 else if (acc && eff < acc) { const el = setFieldError("caseEffectiveDate", "Ngày hiệu lực bản án/QĐ không được nhỏ hơn Ngày thụ lý"); if (!firstInvalid) firstInvalid = el; }
@@ -1450,16 +1493,17 @@
             if (!docsOk) document.getElementById("docsError").style.display = "block";
 
             if (firstInvalid || !docsOk) {
-                if (effMissing) showToast("Vui lòng nhập Ngày Bản án/Quyết định có hiệu lực khi trạng thái là Đã có bản án/QĐ!", "error");
+                if (effMissing) showToast("Vui lòng nhập Số Bản án/Quyết định và Ngày Bản án/Quyết định có hiệu lực khi trạng thái là Đã có bản án/QĐ!", "error");
                 else if (!firstInvalid) showToast("Vui lòng đính kèm ít nhất 01 tài liệu kèm theo!", "error");
                 else showToast("Vui lòng nhập đầy đủ thông tin bắt buộc!", "error");
                 if (firstInvalid) firstInvalid.focus();
                 return;
             }
 
+            if (rec && isTerminal(rec) && status !== rec.status) { showToast("Vụ việc đã ở trạng thái kết thúc, không được thay đổi trạng thái!", "error"); return; }
             const doSave = () => persistCase(rec, status, cleanDocs);
-            if (TERMINAL_STATUSES.includes(status)) {
-                showConfirm(`Trạng thái "${status}" là trạng thái kết thúc. Sau khi lưu, vụ việc không được thay đổi trạng thái, cập nhật hoặc xóa. Bạn có chắc chắn muốn lưu?`, doSave, "Xác nhận lưu");
+            if (TERMINAL_STATUSES.includes(status) && !(rec && isTerminal(rec))) {
+                showConfirm(`Trạng thái "${status}" là trạng thái kết thúc. Sau khi lưu, vụ việc không được thay đổi sang trạng thái khác (vẫn được cập nhật thông tin và xóa). Bạn có chắc chắn muốn lưu?`, doSave, "Xác nhận lưu");
             } else {
                 doSave();
             }
@@ -1470,7 +1514,8 @@
             reloadCases();
             if (rec) {
                 const latest = cases.find(c => c.id === rec.id);
-                if (!latest || !canEditCase(latest)) { showToast("Vụ việc đã được cập nhật sang trạng thái kết thúc hoặc đã bị xóa. Danh sách đã được tải lại.", "error"); closeCaseForm(); return; }
+                if (!latest || latest.deleted || !canEditCase(latest)) { showToast("Vụ việc đã bị xóa hoặc bạn không còn quyền cập nhật. Danh sách đã được tải lại.", "error"); closeCaseForm(); return; }
+                if (isTerminal(latest) && status !== latest.status) { showToast("Vụ việc đã chuyển sang trạng thái kết thúc, không được thay đổi trạng thái. Danh sách đã được tải lại.", "error"); closeCaseForm(); return; }
                 rec = latest;
             }
             const role = getValue("claimNYCRole");
@@ -1487,6 +1532,7 @@
                 hanhVi: getValue("claimHanhVi"),
                 nhanQua: getValue("claimNhanQua"),
                 docs: cleanDocs,
+                vanBanCanCu: basisRows.filter(d => (d.name || "").trim() || d.file).map(d => ({ name: (d.name || "").trim(), file: d.file || "" })),
                 updatedAt: BTNN_WF.nowText(),
                 updatedBy: CURRENT_USER.id,
                 updatedByName: CURRENT_USER.name
@@ -1532,6 +1578,7 @@
 
             const funded = [];
             created.forEach(r => { const p = ensureFundingRecord(r); if (p) funded.push(p); });
+            if (rec) syncFundingDraft(rec);
             saveCases();
             closeCaseForm();
 
@@ -1545,10 +1592,16 @@
         function confirmDeleteCase(id) {
             const rec = cases.find(c => c.id === id);
             if (!rec || !canEditCase(rec)) return;
-            showConfirm(`Bạn có chắc chắn muốn xóa vụ việc ${rec.code} - ${rec.nyc.name} không?`, () => {
+            const fundNote = getFundingOf(rec) && getFundingOf(rec).status === "Chờ nhập liệu" ? ` Đề nghị cấp kinh phí ${getFundingOf(rec).code} (Chờ nhập liệu) cũng bị xóa theo.` : "";
+            showConfirm(`Bạn có chắc chắn muốn xóa vụ việc ${rec.code} - ${rec.nyc.name} không?${fundNote}`, () => {
                 reloadCases();
                 const latest = cases.find(c => c.id === id);
-                if (!latest || !canEditCase(latest)) { showToast("Vụ việc đã được cập nhật sang trạng thái kết thúc hoặc đã bị xóa. Danh sách đã được tải lại.", "error"); closeCaseForm(); return; }
+                if (!latest || latest.deleted || !canEditCase(latest)) { showToast("Vụ việc đã bị xóa hoặc bạn không còn quyền xóa. Danh sách đã được tải lại.", "error"); closeCaseForm(); return; }
+                // Đề nghị kinh phí đã sinh: còn Chờ nhập liệu thì xóa theo; đã xử lý tiếp thì không cho xóa vụ việc
+                const fundList = readJson(FUNDING_KEY, null);
+                const fund = Array.isArray(fundList) ? fundList.find(p => p && p.courtCaseCode === latest.code) : null;
+                if (fund && fund.status !== "Chờ nhập liệu") { showToast(`Đề nghị cấp kinh phí ${fund.code} đang ở trạng thái ${fund.status}, không được xóa vụ việc!`, "error"); return; }
+                if (fund) writeJson(FUNDING_KEY, fundList.filter(p => p !== fund));
                 latest.deleted = true;
                 latest.deletedAt = BTNN_WF.nowText();
                 latest.deletedBy = CURRENT_USER.name;
@@ -1573,6 +1626,44 @@
         }
 
         // ===== Tài liệu kèm theo =====
+        // ===== Văn bản làm căn cứ yêu cầu bồi thường: STT | Tên văn bản, căn cứ | Tải file | Thao tác (Xem file/Xóa) =====
+        let basisRows = [];
+        function addBasisRow() { basisRows.push({ name: "", file: "" }); renderBasisRows(); }
+        function renderBasisRows() {
+            const tbody = document.getElementById("basisTableBody");
+            if (!basisRows.length) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); font-style:italic; padding:16px;">Không có văn bản làm căn cứ.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = basisRows.map((d, i) => `
+                <tr>
+                    <td style="text-align:center;">${i + 1}</td>
+                    <td>${isFormReadOnly ? `<span style="font-weight:500;">${escapeHtml(d.name || "--")}</span>` : `<input id="basisName_${i}" class="form-control" value="${escapeAttr(d.name)}" placeholder="Nhập tên văn bản, căn cứ..." oninput="basisRows[${i}].name = this.value">`}</td>
+                    <td>${d.file
+                        ? `<span class="file-name" style="display:inline-flex; align-items:center; max-width:280px;" title="${escapeAttr(d.file)}"><i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:6px;"></i>${escapeHtml(d.file)}</span>`
+                        : (isFormReadOnly ? `<span class="muted">--</span>` : `<button class="btn-upload-rust" onclick="document.getElementById('basisFile_${i}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>`)}
+                        <input id="basisFile_${i}" type="file" style="display:none;" accept=".pdf,.doc,.docx,.jpg,.png" onchange="uploadBasisFile(${i}, this)">
+                    </td>
+                    <td>
+                        <div class="doc-actions">
+                            <a href="javascript:void(0)" class="action-link view-link ${d.file ? "" : "disabled-action"}" onclick="showToast('Giả lập mở file: ${escapeAttr(d.file)}', 'info')">Xem file</a>
+                            ${isFormReadOnly ? "" : `<span style="color:#cbd5e1;">|</span><a href="javascript:void(0)" class="action-link delete-link" onclick="deleteBasisRow(${i})"><i class="fa-solid fa-trash-can"></i> Xóa</a>`}
+                        </div>
+                    </td>
+                </tr>`).join("");
+        }
+        function uploadBasisFile(i, input) {
+            if (!basisRows[i] || !input.files || !input.files.length) return;
+            basisRows[i].file = input.files[0].name;
+            if (!basisRows[i].name) basisRows[i].name = input.files[0].name.replace(/\.[^.]+$/, "");
+            renderBasisRows();
+        }
+        function deleteBasisRow(i) {
+            basisRows.splice(i, 1);
+            if (!basisRows.length) basisRows = [{ name: "", file: "" }];
+            renderBasisRows();
+        }
+
         function addDocRow() { docRows.push({ name: "", file: "" }); renderDocRows(); }
         function renderDocRows() {
             const tbody = document.getElementById("docsTableBody");

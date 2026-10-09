@@ -4381,7 +4381,7 @@
         // Email tài khoản cán bộ: lấy theo tài khoản nếu có, nếu không suy ra từ mã tài khoản
         function getOfficerAccountEmail(user) {
             if (!user) return '';
-            return user.email || `${user.id}@moj.gov.vn`;
+            return user.email || '';
         }
 
         // Bổ sung tài khoản cán bộ theo Cơ cấu tổ chức vào ô "Cán bộ đang đăng nhập" (giả lập), nhóm theo đơn vị gốc
@@ -5724,8 +5724,8 @@
                 ]
             },
             {
-                id: "HS6",
-                code: "BT-2026-006",
+                id: "HS106",
+                code: "BT-2026-040",
                 fieldGroup: "thi hành án dân sự",
                 date: "18/06/2026",
                 nyc: "Phạm Minh K",
@@ -5753,8 +5753,8 @@
                 ]
             },
             {
-                id: "HS7",
-                code: "BT-2026-007",
+                id: "HS107",
+                code: "BT-2026-042",
                 fieldGroup: "thi hành án dân sự",
                 date: "15/06/2026",
                 nyc: "Vũ Văn L",
@@ -5790,8 +5790,8 @@
                 ]
             },
             {
-                id: "HS8",
-                code: "BT-2026-008",
+                id: "HS108",
+                code: "BT-2026-043",
                 fieldGroup: "hành chính",
                 date: "18/06/2026",
                 nyc: "Hoàng Thị M",
@@ -7017,6 +7017,23 @@
 
         // Đồng bộ hồ sơ YCBT từ kho luồng BTNN: chỉ lấy hồ sơ đã được lãnh đạo phân công cán bộ
         // (khác "Chờ phân công", "Đang phân công"); không tạo trùng theo Mã vụ việc
+        // Dữ liệu đã lưu có thể còn id/mã trùng (HS6-HS8, BT-2026-006..008): bản ghi thứ hai được gán lại id và Mã vụ việc duy nhất
+        const DUPLICATE_CODE_FIX = { 'BT-2026-006': ['HS106', 'BT-2026-040'], 'BT-2026-007': ['HS107', 'BT-2026-042'], 'BT-2026-008': ['HS108', 'BT-2026-043'] };
+        function ensureUniqueClaimIds() {
+            const seenIds = new Set();
+            const seenCodes = new Set();
+            claimsList.forEach(claim => {
+                if (!claim) return;
+                if (claim.code && seenCodes.has(claim.code) && DUPLICATE_CODE_FIX[claim.code]) {
+                    const [newId, newCode] = DUPLICATE_CODE_FIX[claim.code];
+                    claim.id = newId;
+                    claim.code = newCode;
+                }
+                if (claim.id && seenIds.has(claim.id)) claim.id = `HS-${claim.code || Date.now()}`;
+                if (claim.id) seenIds.add(claim.id);
+                if (claim.code) seenCodes.add(claim.code);
+            });
+        }
         function syncClaimsFromWorkflow() {
             const W = window.BTNN_WF;
             if (!W || typeof W.loadRecords !== 'function') return 0;
@@ -7439,6 +7456,7 @@
             // Nhận hồ sơ YCBT từ luồng BTNN (Xác định CQGQBT -> Chuyển CQGQBT -> lãnh đạo phân công cán bộ).
             // Chạy lại mỗi lần tải trang; không tạo trùng theo Mã vụ việc nên không bị mất khi claimsList được nạp lại.
             populateOfficerSelectorFromOrg();
+            ensureUniqueClaimIds();
             syncClaimsFromWorkflow();
             migrateAllClaimsForSrs();
             localStorage.setItem('claimsList', JSON.stringify(claimsList));

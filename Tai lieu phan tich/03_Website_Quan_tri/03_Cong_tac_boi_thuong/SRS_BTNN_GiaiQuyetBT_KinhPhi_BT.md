@@ -83,6 +83,10 @@ flowchart TD
 
 ![Màn hình danh sách đề nghị](images/UC450_List.png)
 
+![Danh sách lọc trạng thái Chờ nhập liệu - đề nghị tạo từ vụ việc tại Tòa án](images/KP_Cho_nhap_lieu_Danh_sach.png)
+
+![Nhập liệu đề nghị cấp kinh phí bồi thường từ vụ việc tại Tòa án](images/KP_Cho_nhap_lieu_Form_Nhap_lieu.png)
+
 ###### 4.3.3.2.3.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |

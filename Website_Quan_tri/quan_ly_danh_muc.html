@@ -985,7 +985,7 @@
             { typeCode: "DM_21", code: "VB_08", name: "Khác", nameEn: "Other", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             // DM_54 (Loại yêu cầu) - phân quyền theo Đơn vị áp dụng
             { typeCode: "DM_54", code: "LYC_01", name: "Xác định cơ quan giải quyết bồi thường", nameEn: "Determination of the compensation-settling agency", val: "", valEn: "", parentCode: "", notes: "Chỉ Bộ Tư pháp và Sở Tư pháp xử lý", status: "Hoạt động", donViApDung: ["BTP-01", "STP-HN", "STP-HCM"] },
-            { typeCode: "DM_54", code: "LYC_02", name: "Yêu cầu bồi thường", nameEn: "Compensation claim", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động", donViApDung: ["BTP-01", "STP-HN", "STP-HCM", "UBND-CG", "THADS-LD", "UBND-HK", "TAND-LD"] }
+            { typeCode: "DM_54", code: "LYC_02", name: "Yêu cầu bồi thường", nameEn: "Compensation claim", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động", donViApDung: BTNN_WF.getRootUnits().map(u => u.id) }
         ];
 
         // State variables
@@ -1020,6 +1020,9 @@
             const savedCats = JSON.parse(localStorage.getItem('masterCategories'));
             DEFAULT_TYPES.filter(d => !savedTypes.some(s => s.code === d.code)).forEach(d => savedTypes.push(d));
             INITIAL_CATEGORIES.filter(d => d.typeCode === 'DM_54' && !savedCats.some(s => s.typeCode === d.typeCode && s.code === d.code)).forEach(d => savedCats.push(JSON.parse(JSON.stringify(d))));
+            // Bổ sung các đơn vị gốc mới vào Đơn vị áp dụng của Yêu cầu bồi thường (dữ liệu lưu từ phiên bản trước)
+            const lyc02 = savedCats.find(c => c.typeCode === 'DM_54' && c.code === 'LYC_02');
+            if (lyc02 && !lyc02.donViApDungV2) { lyc02.donViApDung = BTNN_WF.getRootUnits().map(u => u.id); lyc02.donViApDungV2 = true; }
             localStorage.setItem('categoryTypes', JSON.stringify(savedTypes));
             localStorage.setItem('masterCategories', JSON.stringify(savedCats));
             typeList = savedTypes.filter(t => t.status === 'Đang hoạt động');

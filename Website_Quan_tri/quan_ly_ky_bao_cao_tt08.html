@@ -2108,7 +2108,7 @@ function courtCaseField(c) {
 }
 // Thụ lý trong kỳ: ngày thụ lý thuộc năm báo cáo và không muộn hơn ngày chốt của loại kỳ
 function courtCaseInPeriod(c, ky) {
-    const m = String(c.ngayThuLy || '').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    const m = String(c.acceptDate || c.ngayThuLy || '').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
     if (!m) return false;
     const end = ky.periodType === 'thuc_te' ? '1031' : '1231';
     return +m[3] === +ky.year && (m[2] + m[1]) <= end;
@@ -2116,11 +2116,12 @@ function courtCaseInPeriod(c, ky) {
 function courtCaseToPoolItem(c) {
     return {
         code: c.code, origin: 'system', isOverridden: false, field: courtCaseField(c),
-        requester: c.nyc || c.nycName || c.requester || c.requesterName || '',
-        address: c.address || c.nycAddressDetail || c.nycAddress || '',
+        // Module Theo dõi vụ việc tại Tòa án lưu người yêu cầu dạng đối tượng { name, address, city, ... }
+        requester: (c.nyc && typeof c.nyc === 'object' ? c.nyc.name : c.nyc) || c.nycName || c.requester || c.requesterName || '',
+        address: (c.nyc && typeof c.nyc === 'object' ? [c.nyc.address, c.nyc.city].filter(Boolean).join(', ') : '') || c.address || c.nycAddressDetail || c.nycAddress || '',
         agency: c.agency || c.coQuan || c.coQuanGiaiQuyet || c.agencyName || '',
         law: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017',
-        situation: `Vụ việc tại Tòa án, thụ lý ngày ${c.ngayThuLy}. Trạng thái: ${c.status || ''}.`,
+        situation: `Vụ việc tại Tòa án, thụ lý ngày ${c.acceptDate || c.ngayThuLy || ''}. Trạng thái: ${c.status || ''}.`,
         payment: 'Chưa chi trả.', vuongMac: '', note: ''
     };
 }
