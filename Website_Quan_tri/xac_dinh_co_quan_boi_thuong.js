@@ -828,6 +828,64 @@ function toggleFormEmailRequired() {
     label.innerHTML = 'Thư điện tử (Email)';
 }
 
+const NOTIFY_METHOD_DEFAULT = 'Qua Cổng Dịch vụ công quốc gia, ứng dụng định danh quốc gia (VNeID) hoặc phương tiện điện tử khác';
+
+function normalizeNotifyMethod(val) {
+    if (!val || val === 'Phương thức điện tử' || val === 'Phương thức điện tử (Email, Zalo, SMS...)') {
+        return NOTIFY_METHOD_DEFAULT;
+    }
+    if (val === 'Hồ sơ giấy') return 'Qua dịch vụ bưu chính';
+    return val;
+}
+
+function handleNotifyMethodChange(method, scope = 'xd') {
+    const labelEl = document.getElementById(scope === 'xd' ? 'formDiaChiNhanLabel' : 'claimNotifyAddressLabel');
+    const inputEl = document.getElementById(scope === 'xd' ? 'formDiaChiNhan' : 'claimNotifyAddress');
+    if (!labelEl || !inputEl) return;
+
+    inputEl.classList.remove('is-invalid');
+    const errEl = document.getElementById(scope === 'xd' ? 'errFormDiaChiNhan' : 'errClaimNotifyAddress');
+    if (errEl) errEl.style.display = 'none';
+
+    if (method === 'Trực tiếp') {
+        labelEl.innerHTML = `Địa chỉ, đầu mối nhận thông báo (Trực tiếp tại trụ sở) <span class="required">*</span>`;
+        inputEl.placeholder = `Nhận trực tiếp tại trụ sở cơ quan giải quyết (hoặc thông tin người nhận)...`;
+        if (!inputEl.value.trim() || inputEl.dataset.autofilled === '1') {
+            inputEl.value = 'Nhận trực tiếp tại trụ sở cơ quan giải quyết bồi thường';
+            inputEl.dataset.autofilled = '1';
+        }
+    } else if (method === 'Qua dịch vụ bưu chính') {
+        labelEl.innerHTML = `Địa chỉ nhận thông báo qua dịch vụ bưu chính <span class="required">*</span>`;
+        inputEl.placeholder = `Nhập địa chỉ chi tiết nhận thông báo qua dịch vụ bưu chính...`;
+        if (!inputEl.value.trim() || inputEl.dataset.autofilled === '1') {
+            const addr = scope === 'xd'
+                ? [document.getElementById('formNYCAddressDetail')?.value, document.getElementById('formNYCPhuongXa')?.value, document.getElementById('formNYCTinhThanh')?.value].filter(Boolean).join(', ')
+                : [document.getElementById('claimNYCAddress')?.value, document.getElementById('claimNYCCity')?.value].filter(Boolean).join(', ');
+            inputEl.value = addr || '';
+            inputEl.dataset.autofilled = addr ? '1' : '0';
+        }
+    } else if (method === 'Qua thư điện tử') {
+        labelEl.innerHTML = `Thư điện tử (Email) nhận thông báo <span class="required">*</span>`;
+        inputEl.placeholder = `Nhập địa chỉ thư điện tử nhận thông báo (ví dụ: nguyenvanan@gmail.com)...`;
+        if (!inputEl.value.trim() || inputEl.dataset.autofilled === '1') {
+            const email = scope === 'xd' ? document.getElementById('formNYCEmail')?.value : document.getElementById('claimNYCEmail')?.value;
+            inputEl.value = email || '';
+            inputEl.dataset.autofilled = email ? '1' : '0';
+        }
+    } else {
+        // Mặc định: Qua Cổng Dịch vụ công quốc gia, ứng dụng định danh quốc gia (VNeID) hoặc phương tiện điện tử khác
+        labelEl.innerHTML = `Địa chỉ, đầu mối nhận thông báo (Số ĐDCN/VNeID, SĐT hoặc TK Cổng DVC) <span class="required">*</span>`;
+        inputEl.placeholder = `Nhập số định danh VNeID, số điện thoại hoặc tài khoản DVC nhận thông báo...`;
+        if (!inputEl.value.trim() || inputEl.dataset.autofilled === '1') {
+            const docNo = scope === 'xd' ? document.getElementById('formNYCDocNo')?.value : document.getElementById('claimNYCCardNo')?.value;
+            const phone = scope === 'xd' ? document.getElementById('formNYCPhone')?.value : document.getElementById('claimNYCPhone')?.value;
+            const text = [docNo ? `VNeID/ĐDCN: ${docNo}` : '', phone ? `SĐT: ${phone}` : ''].filter(Boolean).join(' / ');
+            inputEl.value = text || 'VNeID / Cổng Dịch vụ công quốc gia';
+            inputEl.dataset.autofilled = '1';
+        }
+    }
+}
+
 // Hiển thị khối Người bị thiệt hại khi người yêu cầu không phải là người bị thiệt hại
 function toggleNbthBlock() {
     const role = document.getElementById('formNYCRole').value;
@@ -1031,7 +1089,17 @@ function showFormScreen(id = null, mode = null) {
     document.getElementById('formNYCPhuongXaText').value = '';
     document.getElementById('formNYCAddressDetail').value = '';
     document.getElementById('formHanhVi').value = '';
-    document.querySelector('input[name="formHinhThucNhan"][value="Phương thức điện tử"]').checked = true;
+    const defaultRadio = document.querySelector(`input[name="formHinhThucNhan"][value="${NOTIFY_METHOD_DEFAULT}"]`);
+    if (defaultRadio) defaultRadio.checked = true;
+    const diaChiNhanEl = document.getElementById('formDiaChiNhan');
+    if (diaChiNhanEl) {
+        diaChiNhanEl.value = '';
+        diaChiNhanEl.dataset.autofilled = '1';
+        diaChiNhanEl.classList.remove('is-invalid');
+    }
+    const errDiaChiNhan = document.getElementById('errFormDiaChiNhan');
+    if (errDiaChiNhan) errDiaChiNhan.style.display = 'none';
+    handleNotifyMethodChange(NOTIFY_METHOD_DEFAULT, 'xd');
     toggleFormEmailRequired();
     fillNbth(null);
 
@@ -1072,8 +1140,20 @@ function showFormScreen(id = null, mode = null) {
         }
         document.getElementById('formNYCAddressDetail').value = item.nycAddressDetail || '';
         document.getElementById('formHanhVi').value = item.hanhVi || '';
-        const receiveValue = item.hinhThucNhan === 'Hồ sơ giấy' ? 'Hồ sơ giấy' : 'Phương thức điện tử';
-        document.querySelector(`input[name="formHinhThucNhan"][value="${receiveValue}"]`).checked = true;
+        const receiveValue = normalizeNotifyMethod(item.hinhThucNhan);
+        const targetRadio = document.querySelector(`input[name="formHinhThucNhan"][value="${receiveValue}"]`);
+        if (targetRadio) targetRadio.checked = true;
+        else {
+            const fallback = document.querySelector(`input[name="formHinhThucNhan"][value="${NOTIFY_METHOD_DEFAULT}"]`);
+            if (fallback) fallback.checked = true;
+        }
+        const editDiaChiEl = document.getElementById('formDiaChiNhan');
+        if (editDiaChiEl) {
+            editDiaChiEl.value = item.diaChiNhanThongBao || '';
+            editDiaChiEl.dataset.autofilled = item.diaChiNhanThongBao ? '0' : '1';
+            handleNotifyMethodChange(targetRadio ? receiveValue : NOTIFY_METHOD_DEFAULT, 'xd');
+            if (item.diaChiNhanThongBao) editDiaChiEl.value = item.diaChiNhanThongBao;
+        }
         fillNbth(item.nbth);
 
         formDocRows = item.attachedDocs && item.attachedDocs.length
@@ -1263,7 +1343,9 @@ function showDetailScreen(id) {
     }
 
     document.getElementById('dtHanhVi').innerText = item.hanhVi || '';
-    document.getElementById('dtHinhThucNhan').innerText = item.hinhThucNhan === 'Hồ sơ giấy' ? 'Hồ sơ giấy' : 'Phương thức điện tử (Email, Zalo, SMS...)';
+    document.getElementById('dtHinhThucNhan').innerText = normalizeNotifyMethod(item.hinhThucNhan);
+    const dtDiaChiEl = document.getElementById('dtDiaChiNhan');
+    if (dtDiaChiEl) dtDiaChiEl.innerText = item.diaChiNhanThongBao || (item.hinhThucNhan === 'Trực tiếp' ? 'Nhận trực tiếp tại trụ sở cơ quan giải quyết bồi thường' : 'VNeID / Cổng Dịch vụ công quốc gia');
     document.getElementById('dtVanBanCanCu').innerHTML = basisTableHtml(getBasisDocs(item));
     document.getElementById('dtStatus').innerHTML = statusCellHtml(item);
 
@@ -1595,11 +1677,20 @@ function saveForm(isDraft) {
         if (!leader) {
             firstInvalid = markInvalid(document.getElementById('formLeaderSelect'), firstInvalid);
         }
+        const diaChiNhanEl = document.getElementById('formDiaChiNhan');
+        const diaChiNhan = (diaChiNhanEl ? diaChiNhanEl.value : '').trim();
+        if (!diaChiNhan) {
+            firstInvalid = markInvalid(diaChiNhanEl, firstInvalid);
+        }
         if (firstInvalid) {
             firstInvalid.focus();
             return;
         }
     }
+
+    const notifyRadio = document.querySelector('input[name="formHinhThucNhan"]:checked');
+    const notifyMethod = notifyRadio ? notifyRadio.value : NOTIFY_METHOD_DEFAULT;
+    const diaChiNhan = (document.getElementById('formDiaChiNhan')?.value || '').trim();
 
     const data = {
         hinhThucTiepNhan: document.getElementById('formHinhThucTiepNhan').value,
@@ -1611,7 +1702,8 @@ function saveForm(isDraft) {
         nbth: nbth,
         hanhVi: hanhVi,
         vanBanCanCu: getCleanBasisRows(),
-        hinhThucNhan: document.querySelector('input[name="formHinhThucNhan"]:checked').value,
+        hinhThucNhan: notifyMethod,
+        diaChiNhanThongBao: diaChiNhan,
         attachedDocs: cleanDocs,
         attachedFile: cleanDocs[0] ? cleanDocs[0].file : ""
     };

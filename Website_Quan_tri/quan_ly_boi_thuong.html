@@ -2231,6 +2231,40 @@
                     <div class="error-message">Đây là trường bắt buộc</div>
                 </div>
 
+                <!-- PHƯƠNG THỨC ĐỀ NGHỊ NHẬN THÔNG BÁO VỀ VIỆC GIẢI QUYẾT YÊU CẦU BỒI THƯỜNG -->
+                <div class="section-card" style="margin-bottom: 20px; border: 1px solid #bfdbfe; background: #f8fafc; border-radius: 8px; padding: 18px 20px;">
+                    <div style="font-size: 13.5px; font-weight: 700; color: #1e3a8a; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-bell" style="color: #2563eb;"></i>
+                        <span>PHƯƠNG THỨC ĐỀ NGHỊ NHẬN THÔNG BÁO VỀ VIỆC GIẢI QUYẾT YÊU CẦU BỒI THƯỜNG</span>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <span class="form-label" style="font-weight: 600;">Phương thức nhận thông báo<span class="required">*</span></span>
+                        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px;">
+                            <label style="display: flex; align-items: flex-start; gap: 8px; cursor: pointer; font-size: 13.5px; font-weight: normal; margin-bottom: 0;">
+                                <input type="radio" name="claimNotifyMethod" value="Qua Cổng Dịch vụ công quốc gia, ứng dụng định danh quốc gia (VNeID) hoặc phương tiện điện tử khác" checked onchange="handleClaimNotifyMethodChange(this.value)" style="margin-top: 3px;">
+                                <span>Qua Cổng Dịch vụ công quốc gia, ứng dụng định danh quốc gia (VNeID) hoặc phương tiện điện tử khác</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13.5px; font-weight: normal; margin-bottom: 0;">
+                                <input type="radio" name="claimNotifyMethod" value="Trực tiếp" onchange="handleClaimNotifyMethodChange(this.value)">
+                                <span>Trực tiếp</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13.5px; font-weight: normal; margin-bottom: 0;">
+                                <input type="radio" name="claimNotifyMethod" value="Qua dịch vụ bưu chính" onchange="handleClaimNotifyMethodChange(this.value)">
+                                <span>Qua dịch vụ bưu chính</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13.5px; font-weight: normal; margin-bottom: 0;">
+                                <input type="radio" name="claimNotifyMethod" value="Qua thư điện tử" onchange="handleClaimNotifyMethodChange(this.value)">
+                                <span>Qua thư điện tử</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <span class="form-label" id="claimNotifyAddressLabel" style="font-weight: 600;">Địa chỉ, đầu mối nhận thông báo (Số ĐDCN/VNeID, SĐT hoặc TK Cổng DVC)<span class="required">*</span></span>
+                        <input type="text" class="form-control" id="claimNotifyAddress" placeholder="Nhập số ĐDCN/VNeID, số điện thoại hoặc tài khoản Cổng DVC nhận thông báo...">
+                        <div class="error-message" id="errClaimNotifyAddress">Đây là trường bắt buộc</div>
+                    </div>
+                </div>
+
                 <!-- ADDED: THÔNG TIN NGƯỜI THI HÀNH CÔNG VỤ GÂY THIỆT HẠI -->
                 <div id="claimOfficerContainerForm" style="display: none;">
                     <div
@@ -9122,6 +9156,49 @@
             }
         }
 
+        const NOTIFY_METHOD_DEFAULT_CLAIM = 'Qua Cổng Dịch vụ công quốc gia, ứng dụng định danh quốc gia (VNeID) hoặc phương tiện điện tử khác';
+
+        function handleClaimNotifyMethodChange(method) {
+            const label = document.getElementById('claimNotifyAddressLabel');
+            const input = document.getElementById('claimNotifyAddress');
+            if (!label || !input) return;
+
+            const phone = document.getElementById('claimNYCPhone') ? document.getElementById('claimNYCPhone').value.trim() : '';
+            const email = document.getElementById('claimNYCEmail') ? document.getElementById('claimNYCEmail').value.trim() : '';
+            const cardNo = document.getElementById('claimNYCCardNo') ? document.getElementById('claimNYCCardNo').value.trim() : '';
+            const address = document.getElementById('claimNYCAddress') ? document.getElementById('claimNYCAddress').value.trim() : '';
+            const city = document.getElementById('claimNYCCity') ? document.getElementById('claimNYCCity').value.trim() : '';
+
+            if (method === 'Trực tiếp') {
+                label.innerHTML = 'Địa chỉ, đầu mối nhận thông báo (Trực tiếp tại trụ sở) <span class="required">*</span>';
+                input.placeholder = 'Nhập địa chỉ hoặc ghi nhận trực tiếp tại trụ sở cơ quan giải quyết bồi thường...';
+                if (!input.value || input.value.includes('Cổng DVC') || input.value.includes('VNeID') || input.value.includes('@') || input.value.includes('trụ sở')) {
+                    input.value = 'Nhận trực tiếp tại trụ sở cơ quan giải quyết bồi thường';
+                }
+            } else if (method === 'Qua dịch vụ bưu chính') {
+                label.innerHTML = 'Địa chỉ nhận thông báo qua dịch vụ bưu chính <span class="required">*</span>';
+                input.placeholder = 'Nhập địa chỉ nhận thư/bưu phẩm...';
+                const fullAddress = [address, city].filter(Boolean).join(', ');
+                if (fullAddress && (!input.value || input.value.includes('trụ sở') || input.value.includes('VNeID') || input.value.includes('Cổng DVC') || input.value.includes('@'))) {
+                    input.value = fullAddress;
+                }
+            } else if (method === 'Qua thư điện tử') {
+                label.innerHTML = 'Thư điện tử (Email) nhận thông báo <span class="required">*</span>';
+                input.placeholder = 'Nhập địa chỉ email nhận thông báo...';
+                if (email && (!input.value || input.value.includes('trụ sở') || input.value.includes('VNeID') || input.value.includes('Cổng DVC'))) {
+                    input.value = email;
+                }
+            } else {
+                // Qua Cổng Dịch vụ công quốc gia, ứng dụng định danh quốc gia (VNeID) hoặc phương tiện điện tử khác
+                label.innerHTML = 'Địa chỉ, đầu mối nhận thông báo (Số ĐDCN/VNeID, SĐT hoặc TK Cổng DVC) <span class="required">*</span>';
+                input.placeholder = 'Nhập số ĐDCN/VNeID, số điện thoại hoặc tài khoản Cổng DVC nhận thông báo...';
+                const vneidContact = [cardNo ? `VNeID/CCCD: ${cardNo}` : '', phone ? `SĐT: ${phone}` : ''].filter(Boolean).join(' - ');
+                if (vneidContact && (!input.value || input.value.includes('trụ sở') || input.value.includes('@'))) {
+                    input.value = vneidContact;
+                }
+            }
+        }
+
         // UC438 INLINE FORM LOGIC
         function openInlineClaimForm(id = null) {
             document.getElementById('subTabContentResolver').style.display = 'none';
@@ -9243,6 +9320,15 @@
                 document.getElementById('claimNYCAddress').value = getClaimAddressDetail(claim);
                 document.getElementById('claimHanhVi').value = claim.hanhVi || '';
                 document.getElementById('claimNhanQua').value = claim.nhanQua || '';
+                const editNotifyMethod = claim.notifyMethod || NOTIFY_METHOD_DEFAULT_CLAIM;
+                const editNotifyRadios = document.getElementsByName('claimNotifyMethod');
+                editNotifyRadios.forEach(r => {
+                    r.checked = (r.value === editNotifyMethod);
+                });
+                handleClaimNotifyMethodChange(editNotifyMethod);
+                if (claim.notifyAddress) {
+                    document.getElementById('claimNotifyAddress').value = claim.notifyAddress;
+                }
                 document.getElementById('claimCqNhan').value = claim.agency || '';
                 populateClaimReportForm(claim);
                 applyVerdictFormData(claim);
@@ -9373,6 +9459,13 @@
                 document.getElementById('claimNYCAddress').value = '';
                 document.getElementById('claimHanhVi').value = '';
                 document.getElementById('claimNhanQua').value = '';
+                const defNotifyMethod = NOTIFY_METHOD_DEFAULT_CLAIM;
+                const defNotifyRadios = document.getElementsByName('claimNotifyMethod');
+                defNotifyRadios.forEach(r => {
+                    r.checked = (r.value === defNotifyMethod);
+                });
+                document.getElementById('claimNotifyAddress').value = '';
+                handleClaimNotifyMethodChange(defNotifyMethod);
                 document.getElementById('claimCqNhan').value = '';
                 populateClaimReportForm({});
                 applyVerdictFormData({});
@@ -9538,6 +9631,16 @@
             }
             document.getElementById('claimNYCAddress').value = found.nycAddressDetail;
             document.getElementById('claimHanhVi').value = found.hanhVi;
+
+            const xdNotifyMethod = found.notifyMethod || found.hinhThucNhan || NOTIFY_METHOD_DEFAULT_CLAIM;
+            const xdNotifyRadios = document.getElementsByName('claimNotifyMethod');
+            xdNotifyRadios.forEach(r => {
+                r.checked = (r.value === xdNotifyMethod);
+            });
+            handleClaimNotifyMethodChange(xdNotifyMethod);
+            if (found.notifyAddress || found.diaChiNhanThongBao) {
+                document.getElementById('claimNotifyAddress').value = found.notifyAddress || found.diaChiNhanThongBao;
+            }
 
             // Populate Officer Fields
             document.getElementById('claimOfficerContainerForm').style.display = 'block';
@@ -10363,6 +10466,8 @@
             const address = document.getElementById('claimNYCAddress').value.trim();
             const hanhVi = document.getElementById('claimHanhVi').value.trim();
             const nhanQua = document.getElementById('claimNhanQua').value.trim();
+            const notifyMethod = (document.querySelector('input[name="claimNotifyMethod"]:checked') || {}).value || NOTIFY_METHOD_DEFAULT_CLAIM;
+            const notifyAddress = document.getElementById('claimNotifyAddress') ? document.getElementById('claimNotifyAddress').value.trim() : '';
 
             let firstInvalid = null;
 
@@ -10437,6 +10542,15 @@
                 el.classList.add('is-invalid');
                 el.closest('.form-group').querySelector('.error-message').style.display = 'block';
                 if (!firstInvalid) firstInvalid = el;
+            }
+            if (!notifyAddress) {
+                const el = document.getElementById('claimNotifyAddress');
+                if (el) {
+                    el.classList.add('is-invalid');
+                    const err = document.getElementById('errClaimNotifyAddress');
+                    if (err) err.style.display = 'block';
+                    if (!firstInvalid) firstInvalid = el;
+                }
             }
 
             const nbthInvalid = validateNbthForm(role);
@@ -10637,6 +10751,8 @@
                     claim.role = role;
                     claim.hanhVi = hanhVi || "Hành vi gây thiệt hại chưa tóm tắt";
                     claim.nhanQua = nhanQua || "Mối quan hệ nhân quả chưa mô tả";
+                    claim.notifyMethod = notifyMethod;
+                    claim.notifyAddress = notifyAddress;
                     // Tiếp nhận hồ sơ (kể cả hồ sơ đã bổ sung theo yêu cầu): lưu thông tin rồi mở popup Trình duyệt;
                     // trạng thái chỉ chuyển [Chờ duyệt] khi trình, Lãnh đạo phê duyệt cấp cuối -> [Chờ thụ lý]
                     if (!claim.timeline) claim.timeline = [];
@@ -10782,6 +10898,8 @@
                 role: role,
                 hanhVi: hanhVi || "Hành vi gây thiệt hại chưa tóm tắt",
                 nhanQua: nhanQua || "Mối quan hệ nhân quả chưa mô tả",
+                notifyMethod: notifyMethod,
+                notifyAddress: notifyAddress,
                 status: "Chờ tiếp nhận",
                 agency: cqNhan || "Chưa phân công",
                 nguonHoSo: nguonHoSo,
@@ -11577,6 +11695,15 @@
                         <div style="grid-column: span 2;"><strong style="color:var(--text-muted);">Pháp luật áp dụng để giải quyết bồi thường:</strong> <br>${claim.applicableLaw || '--'}</div>
                         <div style="grid-column: span 3;"><strong style="color:var(--text-muted);">Hành vi gây thiệt hại của người thi hành công vụ:</strong> <br><span style="color:var(--text-main); font-style:italic;">${claim.hanhVi}</span></div>
                         <div style="grid-column: span 3;"><strong style="color:var(--text-muted);">Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại:</strong> <br><span style="color:var(--text-main); font-style:italic;">${claim.nhanQua}</span></div>
+                        <div style="grid-column: span 3; margin-top: 6px; padding-top: 8px; border-top: 1px dashed var(--border-color);">
+                            <span style="font-weight: 700; color: var(--primary-color); display: block; margin-bottom: 6px;">
+                                <i class="fa-solid fa-bell"></i> PHƯƠNG THỨC ĐỀ NGHỊ NHẬN THÔNG BÁO VỀ VIỆC GIẢI QUYẾT YÊU CẦU BỒI THƯỜNG
+                            </span>
+                            <div class="grid-2-cols" style="gap: 12px 20px; font-size: 13px;">
+                                <div><strong style="color:var(--text-muted);">Phương thức nhận thông báo:</strong> <br><span class="badge badge-info" style="font-size:12px; font-weight:600; padding:4px 8px;">${claim.notifyMethod || NOTIFY_METHOD_DEFAULT_CLAIM}</span></div>
+                                <div><strong style="color:var(--text-muted);">Địa chỉ, đầu mối nhận thông báo:</strong> <br><span style="font-weight:600; color:var(--text-main);">${claim.notifyAddress || (claim.cardNo ? ('Tài khoản VNeID (Số ĐDĐT: ' + (claim.nycCardNo || claim.cardNo) + (claim.phone ? ' - SĐT: ' + claim.phone : '') + ')') : 'Tài khoản Cổng Dịch vụ công / VNeID')}</span></div>
+                            </div>
+                        </div>
                         ${renderVanBanCanCuReadOnlyHtml(claim)}
                         
                     </div>

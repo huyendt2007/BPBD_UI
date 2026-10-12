@@ -718,7 +718,10 @@
             { code: "DM_17", name: "Danh mục Người yêu cầu đăng ký", status: "Hoạt động" },
             { code: "DM_19", name: "Danh mục Căn cứ xóa đăng ký", status: "Hoạt động" },
             { code: "DM_20", name: "Danh mục Căn cứ hủy đăng ký", status: "Hoạt động" },
-            { code: "DM_21", name: "Loại văn bản quy phạm pháp luật", status: "Hoạt động" }
+            { code: "DM_21", name: "Loại văn bản quy phạm pháp luật", status: "Hoạt động" },
+            { code: "DM_26", name: "Tư cách người yêu cầu bồi thường", status: "Hoạt động" },
+            { code: "DM_54", name: "Loại yêu cầu", status: "Hoạt động" },
+            { code: "DM_55", name: "Lý do không thụ lý hồ sơ yêu cầu bồi thường", status: "Hoạt động" }
         ];
 
         // Default Mock Data for Categories (to check if Category Type is in use before deleting)
@@ -860,7 +863,13 @@
             { typeCode: "DM_21", code: "VB_05", name: "Nghị quyết", nameEn: "Resolution", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             { typeCode: "DM_21", code: "VB_06", name: "Chỉ thị", nameEn: "Directive", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             { typeCode: "DM_21", code: "VB_07", name: "Thông tư liên tịch", nameEn: "Joint Circular", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
-            { typeCode: "DM_21", code: "VB_08", name: "Khác", nameEn: "Other", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" }
+            { typeCode: "DM_21", code: "VB_08", name: "Khác", nameEn: "Other", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            // DM_26 (Tư cách người yêu cầu bồi thường) - Căn cứ Điều 5 Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14
+            { typeCode: "DM_26", code: "TCNYC_01", name: "Người bị thiệt hại", nameEn: "Aggrieved person", val: "", valEn: "", parentCode: "", notes: "Người trực tiếp bị thiệt hại do người thi hành công vụ gây ra", status: "Hoạt động" },
+            { typeCode: "DM_26", code: "TCNYC_02", name: "Người thừa kế của người bị thiệt hại", nameEn: "Heir of the aggrieved person", val: "", valEn: "", parentCode: "", notes: "Trường hợp người bị thiệt hại chết thì người thừa kế của họ có quyền yêu cầu bồi thường", status: "Hoạt động" },
+            { typeCode: "DM_26", code: "TCNYC_03", name: "Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại", nameEn: "Successor organization to rights and obligations of dissolved organization", val: "", valEn: "", parentCode: "", notes: "Trường hợp tổ chức bị thiệt hại đã chấm dứt tồn tại thì tổ chức kế thừa quyền, nghĩa vụ có quyền yêu cầu bồi thường", status: "Hoạt động" },
+            { typeCode: "DM_26", code: "TCNYC_04", name: "Người đại diện theo pháp luật của người bị thiệt hại", nameEn: "Legal representative of the aggrieved person", val: "", valEn: "", parentCode: "", notes: "Trường hợp người bị thiệt hại chưa thành niên, mất năng lực hành vi dân sự, có khó khăn trong nhận thức, làm chủ hành vi, bị hạn chế năng lực hành vi dân sự", status: "Hoạt động" },
+            { typeCode: "DM_26", code: "TCNYC_05", name: "Cá nhân, pháp nhân được ủy quyền hợp pháp", nameEn: "Lawfully authorized individual or legal entity", val: "", valEn: "", parentCode: "", notes: "Cá nhân, pháp nhân được những người quy định tại các khoản 1, 2, 3 Điều 5 ủy quyền hợp pháp thực hiện quyền yêu cầu bồi thường", status: "Hoạt động" }
         ];
 
 
@@ -890,7 +899,11 @@
                 localStorage.setItem('categoryTypes', JSON.stringify(DEFAULT_TYPES));
                 localStorage.setItem('masterCategories', JSON.stringify(DEFAULT_CATEGORIES));
             }
-            dataList = JSON.parse(localStorage.getItem('categoryTypes'));
+            // Bổ sung các loại danh mục mới vào localStorage nếu chưa có
+            const savedTypes = JSON.parse(localStorage.getItem('categoryTypes')) || [];
+            DEFAULT_TYPES.filter(d => !savedTypes.some(s => s.code === d.code)).forEach(d => savedTypes.push(d));
+            localStorage.setItem('categoryTypes', JSON.stringify(savedTypes));
+            dataList = savedTypes;
             // Normalize any legacy 'Đang hoạt động' status to 'Hoạt động'
             if (Array.isArray(dataList)) {
                 let hasChanges = false;

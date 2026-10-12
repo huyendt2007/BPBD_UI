@@ -111,7 +111,7 @@ flowchart TD
 | Loại đề nghị | Enum(String(50)) | - | Theo dữ liệu | Control UI: Badge.<br>Gồm:<br>+ Đề nghị tạm ứng<br>+ Đề nghị cấp kinh phí bồi thường |
 | Mã vụ việc | String(50) | - | Theo dữ liệu | Control UI: Text link (Hyperlink). Cho phép click mở màn hình Chi tiết vụ việc yêu cầu bồi thường liên kết tại module Giải quyết yêu cầu bồi thường. |
 | Tên người yêu cầu | String(100) | - | Theo dữ liệu | Hiển thị họ tên người yêu cầu bồi thường. |
-| Tư cách người yêu cầu | Enum(String(100)) | - | Theo dữ liệu | Chỉ đọc.<br>Tham chiếu danh mục Tư cách người yêu cầu. |
+| Tư cách người yêu cầu | Enum(String(100)) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Chỉ đọc. Tham chiếu [Danh mục Tư cách người yêu cầu bồi thường - Quản lý danh mục - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Quan_ly_danh_muc.md) [DM_26]. |
 | Số tiền đề nghị (VNĐ) | Decimal(18,0) | - | Theo dữ liệu | Chỉ đọc.<br>Căn lề phải.<br>Định dạng phân cách hàng nghìn bằng dấu chấm (ví dụ: `150.000.000 VNĐ`). |
 | Cán bộ xử lý | String(255) | - | Theo dữ liệu | Hiển thị họ tên cán bộ lập hoặc xử lý đề nghị gần nhất. |
 | Ngày đề nghị | Date | - | Theo dữ liệu | Hiển thị ngày lập đề nghị theo định dạng `dd/mm/yyyy`. |

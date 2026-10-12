@@ -11,7 +11,7 @@
     const KEY_FLOW = 'btnn_flow_config_v1';
     const KEY_USER = 'btnn_demo_user_v1';
     const KEY_SEED = 'btnn_wf_seed_version';
-    const SEED_VERSION = 'v3a';
+    const SEED_VERSION = 'v4_cuc_only';
     const CATALOG_TYPE = 'DM_54';
 
     const REQUEST_TYPE_XD = 'Xác định cơ quan giải quyết bồi thường';
@@ -369,6 +369,22 @@
             if (r.status === 'Chờ phê duyệt') { r.status = STATUS.CHO_PHE_DUYET; changed = true; }
             if (r.approval && OLD_KQXD.includes(r.approval.kind)) { r.approval.kind = KIND_KQXD; changed = true; }
             if (r.returned && OLD_KQXD.includes(r.returned.kind)) { r.returned.kind = KIND_KQXD; changed = true; }
+            // Chuẩn hóa luồng phê duyệt: chỉ tới Cục Đăng ký giao dịch bảo đảm và BTNN, không gửi đến Bộ Tư pháp
+            if (r.approval && Array.isArray(r.approval.path) && r.approval.path.includes('CĐK-01') && r.approval.path.includes('BTP-01')) {
+                r.approval.path = r.approval.path.filter(u => u !== 'BTP-01');
+                if (Array.isArray(r.approval.steps)) {
+                    r.approval.steps = r.approval.steps.filter(s => s.unitId !== 'BTP-01');
+                }
+                if (Array.isArray(r.approval.assignees)) {
+                    r.approval.assignees = r.approval.assignees.slice(0, r.approval.path.length);
+                }
+                if (r.approval.level >= r.approval.path.length) {
+                    r.approval.level = r.approval.path.length - 1;
+                    r.approval.done = true;
+                    r.approval.pending = null;
+                }
+                changed = true;
+            }
         });
         if (changed) writeJson(KEY_RECORDS, list);
         return list;
@@ -536,7 +552,12 @@
             const cb = getUser(rec.chuTri || rec.createdBy);
             path = cb ? getAncestors(cb.unitId).filter(u => getLeaders(u).length) : [];
         }
-        return path.filter((u, i) => path.indexOf(u) === i);
+        path = path.filter((u, i) => path.indexOf(u) === i);
+        // UI giả định: Luồng phê duyệt qua Cục Đăng ký giao dịch bảo đảm và BTNN chỉ tới Cục, không gửi đến Bộ Tư pháp
+        if (path.includes('CĐK-01')) {
+            path = path.filter(u => u !== 'BTP-01');
+        }
+        return path;
     }
     // extra.draftDoc: { generatedName, uploadedName } - văn bản dự thảo trình kèm (VD Thông báo yêu cầu bổ sung)
     // extra: { assignee: Lãnh đạo phê duyệt cấp 1 (bắt buộc khi cấp 1 có nhóm lãnh đạo), draftDoc: văn bản dự thảo/đính kèm trình,
@@ -903,9 +924,9 @@
     }
     function renderRoutesHtml(rec) {
         const routes = rec.routes || [];
-        if (!routes.length) return `<div style="color:#64748b; font-style:italic;">Chưa có lượt chuyển.</div>`;
+        if (!routes.length) return `<div style="color:#64748b; font-style:italic;">Chưa có nội dung phân công.</div>`;
         return `<table style="width:100%; border-collapse:collapse; font-size:13px;">
-            <thead><tr style="background:#f8fafc;"><th style="padding:8px; border:1px solid #e2e8f0; width:44px;">STT</th><th style="padding:8px; border:1px solid #e2e8f0; text-align:left;">Lượt chuyển</th><th style="padding:8px; border:1px solid #e2e8f0; width:140px;">Thời điểm</th><th style="padding:8px; border:1px solid #e2e8f0; width:230px;">Tình trạng</th></tr></thead>
+            <thead><tr style="background:#f8fafc;"><th style="padding:8px; border:1px solid #e2e8f0; width:44px;">STT</th><th style="padding:8px; border:1px solid #e2e8f0; text-align:left;">Nội dung phân công</th><th style="padding:8px; border:1px solid #e2e8f0; width:140px;">Thời điểm</th><th style="padding:8px; border:1px solid #e2e8f0; width:230px;">Tình trạng</th></tr></thead>
             <tbody>${routes.map((r, i) => `<tr><td style="padding:8px; border:1px solid #e2e8f0; text-align:center;">${i + 1}</td><td style="padding:8px; border:1px solid #e2e8f0;">${esc(routeText(r))}${r.note ? `<div style="color:#64748b; margin-top:2px;">Ý kiến chỉ đạo: ${esc(r.note)}</div>` : ''}</td><td style="padding:8px; border:1px solid #e2e8f0; text-align:center;">${esc(r.at)}</td><td style="padding:8px; border:1px solid #e2e8f0;">${esc(routeStateText(r))}</td></tr>`).join('')}</tbody></table>`;
     }
     function renderHistoryHtml(rec) {
@@ -1160,7 +1181,7 @@
         const existing = readJson(KEY_RECORDS, null);
         if (version === SEED_VERSION && existing && existing.length) return;
         const seed = buildSeed();
-        if (!existing || !existing.length) {
+        if (!existing || !existing.length || version !== SEED_VERSION) {
             writeJson(KEY_RECORDS, seed);
         } else {
             const existingMap = new Map();
@@ -1276,21 +1297,21 @@
                 status: STATUS.CHO_PHE_DUYET, date: '28/08/2026', receivedAt: '08:20 28/08/2026', chuTri: 'canbonv', phoiHop: [], linhVuc: 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ',
                 hanhVi: 'Kê biên, bán đấu giá tài sản không đúng quy định.', routes: btpRoutes('canbonv', []),
                 procBasis: 'Khoản 2 Điều 40 Luật TNBTCNN', procTargetAgency: 'Cục Thi hành án dân sự tỉnh Lâm Đồng', procReason: 'Chấp hành viên thuộc Cục THADS tỉnh Lâm Đồng tổ chức thi hành.',
-                approval: { kind: 'Hoàn thành xác định', content: 'Trình phê duyệt kết quả xác định cơ quan giải quyết bồi thường.', files: [], path: ['PLN-02', 'CĐK-01', 'BTP-01'], level: 0, steps: [], submittedBy: 'canbonv', submittedAt: '16:00 06/10/2026', pending: { since: '16:00 06/10/2026' } },
+                approval: { kind: 'Hoàn thành xác định', content: 'Trình phê duyệt kết quả xác định cơ quan giải quyết bồi thường.', files: [], path: ['PLN-02', 'CĐK-01'], level: 0, steps: [], submittedBy: 'canbonv', submittedAt: '16:00 06/10/2026', pending: { since: '16:00 06/10/2026' } },
                 history: [h('Tiếp nhận yêu cầu', 'canbonv', '08:20 28/08/2026'), h('Phân công cán bộ', 'tpbt', '09:15 03/09/2026'), h('Tiếp nhận hồ sơ', 'canbonv', '10:00 03/09/2026'), h('Trình phê duyệt', 'canbonv', '16:00 06/10/2026', 'Hoàn thành xác định. Trình Phòng Quản lý nghiệp vụ về bồi thường nhà nước.')]
             })),
             base('XD-2026-106', Object.assign(person('Đặng Thu Hương', '19/02/1992', '001192004455', '0912000106', 'huong.dt@gmail.com', 'Thành phố Hà Nội', '00007 - Phường Cầu Giấy', 'Số 40 Xuân Thủy'), {
                 status: STATUS.CHO_PHE_DUYET, date: '25/08/2026', receivedAt: '08:10 25/08/2026', chuTri: 'canbonv', phoiHop: [], nycGender: 'Nữ',
                 hanhVi: 'Thu hồi đất không đúng trình tự.', routes: btpRoutes('canbonv', []),
                 procBasis: 'Khoản 1 Điều 35 Luật TNBTCNN', procTargetAgency: 'UBND quận Cầu Giấy, Thành phố Hà Nội', procReason: 'Quyết định thu hồi đất do UBND quận Cầu Giấy ban hành.',
-                approval: { kind: 'Hoàn thành xác định', content: 'Kính trình phê duyệt.', files: [], path: ['PLN-02', 'CĐK-01', 'BTP-01'], level: 1, steps: [{ unitId: 'PLN-02', userId: 'tpbt', action: 'Phê duyệt', note: '', at: '09:00 07/10/2026' }], submittedBy: 'canbonv', submittedAt: '17:00 06/10/2026', pending: { since: '09:00 07/10/2026' } },
+                approval: { kind: 'Hoàn thành xác định', content: 'Kính trình phê duyệt.', files: [], path: ['PLN-02', 'CĐK-01'], level: 1, steps: [{ unitId: 'PLN-02', userId: 'tpbt', action: 'Phê duyệt', note: '', at: '09:00 07/10/2026' }], submittedBy: 'canbonv', submittedAt: '17:00 06/10/2026', pending: { since: '09:00 07/10/2026' } },
                 history: [h('Tiếp nhận yêu cầu', 'canbonv', '08:10 25/08/2026'), h('Trình phê duyệt', 'canbonv', '17:00 06/10/2026', 'Hoàn thành xác định.'), h('Phê duyệt', 'tpbt', '09:00 07/10/2026', 'Phê duyệt cấp Phòng Quản lý nghiệp vụ về bồi thường nhà nước; chuyển Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.')]
             })),
             base('XD-2026-107', Object.assign(person('Ngô Quang Vinh', '30/03/1980', '001080007788', '0912000107', '', 'Thành phố Hà Nội', '00001 - Phường Ba Đình', 'Số 2 Đội Cấn'), {
                 status: STATUS.BI_TRA_LAI, date: '20/08/2026', receivedAt: '08:00 20/08/2026', chuTri: 'canbonv', phoiHop: [],
                 hanhVi: 'Bị buộc thôi việc trái pháp luật.', routes: btpRoutes('canbonv', []),
                 procBasis: 'Khoản 1 Điều 35 Luật TNBTCNN', procTargetAgency: 'UBND quận Hoàn Kiếm, Thành phố Hà Nội', procReason: 'Quyết định buộc thôi việc do UBND quận Hoàn Kiếm ban hành.',
-                approval: { kind: 'Hoàn thành xác định', content: '', files: [], path: ['PLN-02', 'CĐK-01', 'BTP-01'], level: 1, steps: [{ unitId: 'PLN-02', userId: 'tpbt', action: 'Phê duyệt', note: '', at: '10:00 05/10/2026' }, { unitId: 'CĐK-01', userId: 'cuctruong', action: 'Từ chối phê duyệt', note: 'Bổ sung căn cứ xác định người thi hành công vụ.', at: '15:00 05/10/2026' }], submittedBy: 'canbonv', submittedAt: '08:00 05/10/2026', pending: null },
+                approval: { kind: 'Hoàn thành xác định', content: '', files: [], path: ['PLN-02', 'CĐK-01'], level: 1, steps: [{ unitId: 'PLN-02', userId: 'tpbt', action: 'Phê duyệt', note: '', at: '10:00 05/10/2026' }, { unitId: 'CĐK-01', userId: 'cuctruong', action: 'Từ chối phê duyệt', note: 'Bổ sung căn cứ xác định người thi hành công vụ.', at: '15:00 05/10/2026' }], submittedBy: 'canbonv', submittedAt: '08:00 05/10/2026', pending: null },
                 returned: { reason: 'Bổ sung căn cứ xác định người thi hành công vụ.', by: 'cuctruong', unitId: 'CĐK-01', at: '15:00 05/10/2026', kind: 'Hoàn thành xác định' },
                 history: [h('Trình phê duyệt', 'canbonv', '08:00 05/10/2026', 'Hoàn thành xác định.'), h('Phê duyệt', 'tpbt', '10:00 05/10/2026'), h('Từ chối phê duyệt', 'cuctruong', '15:00 05/10/2026', 'Trả lại cán bộ chủ trì. Lý do: Bổ sung căn cứ xác định người thi hành công vụ.')]
             })),
@@ -1298,15 +1319,15 @@
                 status: STATUS.CHO_CHUYEN, date: '15/08/2026', receivedAt: '08:00 15/08/2026', chuTri: 'canbonv', phoiHop: [], nycGender: 'Nữ', linhVuc: 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ',
                 hanhVi: 'Cưỡng chế giao tài sản không đúng đối tượng.', routes: btpRoutes('canbonv', []),
                 procBasis: 'Khoản 2 Điều 40 Luật TNBTCNN', procTargetAgency: 'Cục Thi hành án dân sự tỉnh Lâm Đồng', procReason: 'Hành vi do Chấp hành viên Cục THADS tỉnh Lâm Đồng thực hiện.',
-                approval: { kind: 'Hoàn thành xác định', content: '', files: [], path: ['PLN-02', 'CĐK-01', 'BTP-01'], level: 2, done: true, steps: [{ unitId: 'PLN-02', userId: 'tpbt', action: 'Phê duyệt', note: '', at: '09:00 01/10/2026' }, { unitId: 'CĐK-01', userId: 'cuctruong', action: 'Phê duyệt', note: '', at: '14:00 01/10/2026' }, { unitId: 'BTP-01', userId: 'oanhdh', action: 'Phê duyệt', note: '', at: '09:00 02/10/2026' }], submittedBy: 'canbonv', submittedAt: '08:00 01/10/2026', pending: null },
-                history: [h('Trình phê duyệt', 'canbonv', '08:00 01/10/2026', 'Hoàn thành xác định.'), h('Phê duyệt', 'tpbt', '09:00 01/10/2026'), h('Phê duyệt', 'cuctruong', '14:00 01/10/2026'), h('Phê duyệt', 'oanhdh', '09:00 02/10/2026', 'Phê duyệt cấp cuối (Bộ Tư pháp): Hoàn thành xác định. Hồ sơ chuyển [Chờ chuyển CQGQBT].')]
+                approval: { kind: 'Hoàn thành xác định', content: '', files: [], path: ['PLN-02', 'CĐK-01'], level: 1, done: true, steps: [{ unitId: 'PLN-02', userId: 'tpbt', action: 'Phê duyệt', note: '', at: '09:00 01/10/2026' }, { unitId: 'CĐK-01', userId: 'cuctruong', action: 'Phê duyệt', note: '', at: '14:00 01/10/2026' }], submittedBy: 'canbonv', submittedAt: '08:00 01/10/2026', pending: null },
+                history: [h('Trình phê duyệt', 'canbonv', '08:00 01/10/2026', 'Hoàn thành xác định.'), h('Phê duyệt', 'tpbt', '09:00 01/10/2026'), h('Phê duyệt', 'cuctruong', '14:00 01/10/2026', 'Phê duyệt cấp cuối (Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước): Hoàn thành xác định. Hồ sơ chuyển [Chờ chuyển CQGQBT].')]
             })),
             base('XD-2026-109', Object.assign(person('Mạc Văn Toàn', '05/05/1970', '001070001199', '0912000109', '', 'Tỉnh Lâm Đồng', '24784 - Xã Đức Trọng', 'Thôn 3'), {
                 status: STATUS.CHO_CHUYEN, date: '12/08/2026', receivedAt: '08:00 12/08/2026', chuTri: 'canbonv', phoiHop: [], linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ',
                 hanhVi: 'Áp dụng biện pháp khẩn cấp tạm thời không đúng.', routes: btpRoutes('canbonv', []),
                 procBasis: 'Khoản 2 Điều 40 Luật TNBTCNN', procTargetAgency: 'Tòa án nhân dân tỉnh Lâm Đồng', procReason: 'Thẩm phán Tòa án nhân dân tỉnh Lâm Đồng ra quyết định áp dụng.',
-                approval: { kind: 'Hoàn thành xác định', content: '', files: [], path: ['PLN-02', 'CĐK-01', 'BTP-01'], level: 2, done: true, steps: [{ unitId: 'PLN-02', userId: 'tpbt', action: 'Phê duyệt', note: '', at: '09:00 28/09/2026' }, { unitId: 'CĐK-01', userId: 'cuctruong', action: 'Phê duyệt', note: '', at: '10:00 28/09/2026' }, { unitId: 'BTP-01', userId: 'khoiml', action: 'Phê duyệt', note: '', at: '15:00 28/09/2026' }], submittedBy: 'canbonv', submittedAt: '08:00 28/09/2026', pending: null },
-                history: [h('Phê duyệt', 'khoiml', '15:00 28/09/2026', 'Phê duyệt cấp cuối (Bộ Tư pháp): Hoàn thành xác định. Hồ sơ chuyển [Chờ chuyển CQGQBT].')]
+                approval: { kind: 'Hoàn thành xác định', content: '', files: [], path: ['PLN-02', 'CĐK-01'], level: 1, done: true, steps: [{ unitId: 'PLN-02', userId: 'tpbt', action: 'Phê duyệt', note: '', at: '09:00 28/09/2026' }, { unitId: 'CĐK-01', userId: 'cuctruong', action: 'Phê duyệt', note: '', at: '10:00 28/09/2026' }], submittedBy: 'canbonv', submittedAt: '08:00 28/09/2026', pending: null },
+                history: [h('Trình phê duyệt', 'canbonv', '08:00 28/09/2026', 'Hoàn thành xác định.'), h('Phê duyệt', 'tpbt', '09:00 28/09/2026'), h('Phê duyệt', 'cuctruong', '10:00 28/09/2026', 'Phê duyệt cấp cuối (Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước): Hoàn thành xác định. Hồ sơ chuyển [Chờ chuyển CQGQBT].')]
             })),
             base('XD-2026-110', Object.assign(person('Tô Thị Hạnh', '14/07/1987', '001187005566', '0912000110', 'hanh.tt@gmail.com', 'Thành phố Hà Nội', '00010 - Phường Thanh Xuân', 'Số 70 Nguyễn Tuân'), {
                 status: STATUS.HOAN_THANH, date: '01/08/2026', receivedAt: '08:00 01/08/2026', chuTri: 'canbonv', phoiHop: [], nycGender: 'Nữ',
@@ -1328,7 +1349,7 @@
             }),
             // Phiếu trình mẫu của phân hệ Giải quyết yêu cầu bồi thường (Chờ duyệt / Bị trả lại theo từng Nội dung trình)
             ...(() => {
-                const P = ['PLN-02', 'CĐK-01', 'BTP-01'];
+                const P = ['PLN-02', 'CĐK-01'];
                 const gq = (code, nyc, status, extra) => Object.assign({
                     id: 'WF-' + code, code, module: 'YCBT', loaiYeuCau: REQUEST_TYPE_YCBT, nguonHoSo: 'Tiếp nhận', nycName: nyc, nyc,
                     rootUnitId: 'BTP-01', currentUnitId: 'PLN-02', status, chuTri: 'canbonv', phoiHop: [], routes: btpRoutes('canbonv'),
