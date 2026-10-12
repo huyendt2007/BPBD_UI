@@ -22,7 +22,10 @@
         DANG_PHAN_CONG: 'Đang phân công',
         CHO_TIEP_NHAN: 'Chờ tiếp nhận',
         DANG_THUC_HIEN: 'Đang thực hiện',
-        CHO_PHE_DUYET: 'Chờ phê duyệt',
+        CHO_PHE_DUYET: 'Chờ duyệt', // trạng thái chung khi hồ sơ đang có phiếu trình; loại việc xem tại Nội dung trình
+        KHONG_THU_LY: 'Không thụ lý',
+        DA_CHUYEN: 'Đã chuyển CQGQBT',
+        CHO_PHAT_HANH: 'Chờ phát hành văn bản',
         BI_TRA_LAI: 'Bị trả lại',
         CHO_CHUYEN: 'Chờ chuyển CQGQBT',
         YC_BO_SUNG: 'Yêu cầu bổ sung',
@@ -32,11 +35,32 @@
     };
 
     // Loại trình phê duyệt của cán bộ chủ trì -> trạng thái sau khi cấp phê duyệt cuối cùng đồng ý
+    // Nội dung trình -> trạng thái mặc định khi cấp phê duyệt cuối cùng đồng ý (phân hệ có thể truyền resultStatus riêng)
     const SUBMIT_KINDS = {
+        'Kết quả xác định': STATUS.CHO_CHUYEN,
         'Hoàn thành xác định': STATUS.CHO_CHUYEN,
         'Yêu cầu bổ sung': STATUS.YC_BO_SUNG,
-        'Từ chối': STATUS.BI_TU_CHOI
+        'Từ chối': STATUS.BI_TU_CHOI,
+        'Không thụ lý': STATUS.KHONG_THU_LY,
+        'Chuyển CQGQBT': STATUS.DA_CHUYEN,
+        'Tiếp nhận hồ sơ': 'Chờ thụ lý'
     };
+    // Danh sách Nội dung trình theo phân hệ (bộ lọc "Nội dung trình")
+    const APPROVAL_KINDS = {
+        XD: ['Yêu cầu bổ sung', 'Từ chối', 'Kết quả xác định'],
+        YCBT: ['Tiếp nhận hồ sơ', 'Yêu cầu bổ sung', 'Không thụ lý', 'Chuyển CQGQBT', 'Quyết định GQBT', 'Hủy QĐ', 'Sửa chữa, đính chính QĐ']
+    };
+    // Danh mục Lý do không thụ lý (DM_55) - Điều 43 Luật TNBTCNN số 10/2017/QH14
+    const KTL_CATALOG_TYPE = 'DM_55';
+    const DEFAULT_KTL_REASONS = [
+        { code: 'KTL_01', name: 'Yêu cầu bồi thường không thuộc thẩm quyền giải quyết của mình (Điểm a Khoản 1 Điều 43)' },
+        { code: 'KTL_02', name: 'Thời hiệu yêu cầu bồi thường đã hết (Điểm b Khoản 1 Điều 43)' },
+        { code: 'KTL_03', name: 'Yêu cầu bồi thường không thuộc phạm vi trách nhiệm bồi thường của Nhà nước được quy định tại Chương II của Luật này (Điểm c Khoản 1 Điều 43)' },
+        { code: 'KTL_04', name: 'Người yêu cầu bồi thường không phải là người có quyền yêu cầu bồi thường theo quy định tại Điều 5 của Luật này (Điểm d Khoản 1 Điều 43)' },
+        { code: 'KTL_05', name: 'Hồ sơ không đầy đủ theo quy định tại Điều 41 của Luật này mà người yêu cầu bồi thường không bổ sung trong thời hạn quy định tại khoản 3 Điều 42 của Luật này (Điểm đ Khoản 1 Điều 43)' },
+        { code: 'KTL_06', name: 'Yêu cầu bồi thường đã được thực hiện theo quy định tại điểm a khoản 1 Điều 52 của Luật này và đã được Tòa án có thẩm quyền thụ lý theo thủ tục tố tụng dân sự (Điểm e Khoản 1 Điều 43)' },
+        { code: 'KTL_07', name: 'Yêu cầu bồi thường đã được Tòa án có thẩm quyền chấp nhận theo quy định tại khoản 1 Điều 55 của Luật này (Điểm g Khoản 1 Điều 43)' }
+    ];
 
     // ---------------- Cơ cấu tổ chức (trích từ Quản lý đơn vị) ----------------
     const ORG_UNITS = [
@@ -119,9 +143,9 @@
         { id: 'cv_hp2', name: 'Quách Minh Tuấn', unitId: 'STP-HP-HCTP', title: 'Chuyên viên', email: 'cv_hp2@stp.haiphong.gov.vn' },
         { id: 'ct_thadshp', name: 'Vi Văn Thành', unitId: 'THADS-HP', title: 'Cục trưởng', email: 'ct_thadshp@thads.moj.gov.vn' },
         { id: 'chv_thadshp1', name: 'Lục Thị Hoa', unitId: 'THADS-HP', title: 'Chấp hành viên', email: 'chv_thadshp1@thads.moj.gov.vn' },
-        { id: 'ct_ubndld', name: 'Kha Văn Sang', unitId: 'UBND-LD', title: 'Chủ tịch UBND', email: 'ct_ubndld@lamdong.gov.vn hanoi.gov.vn' },
-        { id: 'cv_ubndld1', name: 'Ông Thị Thảo', unitId: 'UBND-LD', title: 'Chuyên viên', email: 'cv_ubndld1@lamdong.gov.vn hanoi.gov.vn' },
-        { id: 'cv_ubndld2', name: 'Lò Văn Dũng', unitId: 'UBND-LD', title: 'Chuyên viên', email: 'cv_ubndld2@lamdong.gov.vn hanoi.gov.vn' },
+        { id: 'ct_ubndld', name: 'Kha Văn Sang', unitId: 'UBND-LD', title: 'Chủ tịch UBND', email: 'ct_ubndld@lamdong.gov.vn' },
+        { id: 'cv_ubndld1', name: 'Ông Thị Thảo', unitId: 'UBND-LD', title: 'Chuyên viên', email: 'cv_ubndld1@lamdong.gov.vn' },
+        { id: 'cv_ubndld2', name: 'Lò Văn Dũng', unitId: 'UBND-LD', title: 'Chuyên viên', email: 'cv_ubndld2@lamdong.gov.vn' },
         { id: 'ct_dd', name: 'Thân Văn Quý', unitId: 'UBND-DD', title: 'Chủ tịch UBND', email: 'ct_dd@hanoi.gov.vn' },
         { id: 'cv_dd1', name: 'Khổng Thị Yến', unitId: 'UBND-DD', title: 'Công chức tư pháp', email: 'cv_dd1@hanoi.gov.vn' },
         { id: 'ct_thadshn', name: 'Giang Văn Phúc', unitId: 'THADS-HN', title: 'Cục trưởng', email: 'ct_thadshn@thads.moj.gov.vn' },
@@ -173,12 +197,21 @@
         },
         'THADS-LD': {
             'THADS-LD': { leaders: ['ct_thads'], allowUnit: false, units: [], allowOfficer: true, officers: ['cv_thads1'] }
+        },
+        // UBND cấp tỉnh: có thẩm quyền Xác định CQGQBT và giải quyết bồi thường
+        'UBND-HN': {
+            'UBND-HN': { leaders: ['ct_ubndhn'], allowUnit: false, units: [], allowOfficer: true, officers: ['cv_ubndhn1'] }
+        },
+        'UBND-LD': {
+            'UBND-LD': { leaders: ['ct_ubndld'], allowUnit: false, units: [], allowOfficer: true, officers: ['cv_ubndld1', 'cv_ubndld2'] }
         }
     };
+    // Cơ quan có thẩm quyền Xác định CQGQBT: Bộ Tư pháp, Sở Tư pháp, UBND cấp tỉnh
+    const XD_AUTHORITY_UNITS = ['BTP-01', 'STP-HN', 'STP-HCM', 'UBND-HN', 'UBND-LD'];
 
     // Danh mục Loại yêu cầu (DM_54) - Đơn vị áp dụng; chọn đơn vị cha thì áp dụng cho toàn bộ đơn vị con
     const DEFAULT_REQUEST_TYPES = [
-        { code: 'LYC_01', name: REQUEST_TYPE_XD, units: ['BTP-01', 'STP-HN', 'STP-HCM'] },
+        { code: 'LYC_01', name: REQUEST_TYPE_XD, units: XD_AUTHORITY_UNITS.slice() },
         // Yêu cầu bồi thường áp dụng cho mọi đơn vị gốc (Bộ Tư pháp, Sở Tư pháp và các cơ quan giải quyết bồi thường)
         { code: 'LYC_02', name: REQUEST_TYPE_YCBT, units: ORG_UNITS.filter(u => !u.parentId).map(u => u.id) }
     ];
@@ -249,7 +282,13 @@
     // ---------------- Cấu hình luồng ----------------
     function getFlowConfig() {
         const cfg = readJson(KEY_FLOW, null);
-        if (cfg && typeof cfg === 'object') return cfg;
+        if (cfg && typeof cfg === 'object') {
+            // Bổ sung cấu hình mặc định của đơn vị gốc mới (VD UBND cấp tỉnh) vào cấu hình đã lưu
+            let changed = false;
+            Object.keys(DEFAULT_FLOW).forEach(root => { if (!cfg[root]) { cfg[root] = JSON.parse(JSON.stringify(DEFAULT_FLOW[root])); changed = true; } });
+            if (changed) writeJson(KEY_FLOW, cfg);
+            return cfg;
+        }
         const copy = JSON.parse(JSON.stringify(DEFAULT_FLOW));
         writeJson(KEY_FLOW, copy);
         return copy;
@@ -280,10 +319,34 @@
     function getRequestTypeCatalog() {
         const cats = readJson('masterCategories', null);
         if (Array.isArray(cats)) {
+            // Xác định CQGQBT: bổ sung UBND cấp tỉnh vào Đơn vị áp dụng của dữ liệu đã lưu
+            const xd = cats.find(c => c.typeCode === CATALOG_TYPE && c.code === 'LYC_01');
+            if (xd && !xd.ubndTinhV1) {
+                xd.donViApDung = Array.from(new Set((xd.donViApDung || []).concat(['UBND-HN', 'UBND-LD'])));
+                xd.ubndTinhV1 = true;
+                writeJson('masterCategories', cats);
+            }
             const rows = cats.filter(c => c.typeCode === CATALOG_TYPE && c.status === 'Hoạt động');
             if (rows.length) return rows.map(r => ({ code: r.code, name: r.name, units: Array.isArray(r.donViApDung) ? r.donViApDung : [] }));
         }
         return DEFAULT_REQUEST_TYPES.map(t => ({ code: t.code, name: t.name, units: t.units.slice() }));
+    }
+    // Danh mục Lý do không thụ lý (DM_55); fallback danh sách mặc định Điều 43
+    function getKtlReasons() {
+        const cats = readJson('masterCategories', null);
+        if (Array.isArray(cats)) {
+            const rows = cats.filter(c => c.typeCode === KTL_CATALOG_TYPE && c.status === 'Hoạt động');
+            if (rows.length) return rows.map(r => ({ code: r.code, name: r.name }));
+        }
+        return DEFAULT_KTL_REASONS.map(r => ({ code: r.code, name: r.name }));
+    }
+    // Loại cơ quan có thẩm quyền Xác định CQGQBT của đơn vị gốc
+    function xdAuthorityType(unitId) {
+        const root = getRootId(unitId) || unitId;
+        if (/^BTP/.test(root)) return 'Bộ Tư pháp';
+        if (/^STP/.test(root)) return 'Sở Tư pháp';
+        if (XD_AUTHORITY_UNITS.includes(root) && /^UBND/.test(root)) return 'UBND cấp tỉnh';
+        return '';
     }
     function getRequestTypesForUser(userId) {
         const user = getUser(userId || getCurrentUserId());
@@ -295,7 +358,30 @@
     // ---------------- Kho hồ sơ luồng ----------------
     function loadRecords() {
         ensureSeed();
-        return readJson(KEY_RECORDS, []);
+        const list = readJson(KEY_RECORDS, []);
+        // Chuẩn hóa dữ liệu cũ: "Chờ phê duyệt" -> "Chờ duyệt"; Nội dung trình "Hoàn thành xác định" -> "Kết quả xác định"
+        let changed = false;
+        list.forEach(r => {
+            if (r.status === 'Chờ phê duyệt') { r.status = STATUS.CHO_PHE_DUYET; changed = true; }
+            if (r.approval && r.approval.kind === 'Hoàn thành xác định') { r.approval.kind = 'Kết quả xác định'; changed = true; }
+            if (r.returned && r.returned.kind === 'Hoàn thành xác định') { r.returned.kind = 'Kết quả xác định'; changed = true; }
+        });
+        if (changed) writeJson(KEY_RECORDS, list);
+        return list;
+    }
+    // Tạo/cập nhật hồ sơ luồng cho vụ việc YCBT đang quản lý tại phân hệ Giải quyết YCBT (để trình duyệt qua Hồ sơ trình Lãnh đạo)
+    function ensureClaimRecord(data) {
+        const existing = getRecord(data.code);
+        if (existing) {
+            Object.keys(data).forEach(k => { if (data[k] !== undefined && !['routes', 'approval', 'history', 'status'].includes(k)) existing[k] = data[k]; });
+            if (data.status && existing.status !== STATUS.CHO_PHE_DUYET) existing.status = data.status;
+            upsertRecord(existing);
+            return existing;
+        }
+        const rec = Object.assign({ module: 'YCBT', loaiYeuCau: REQUEST_TYPE_YCBT, routes: [], phoiHop: [], approval: null, history: [] }, data);
+        if (!rec.currentUnitId) rec.currentUnitId = rec.rootUnitId;
+        upsertRecord(rec);
+        return rec;
     }
     function saveRecords(list) { writeJson(KEY_RECORDS, list); }
     function getRecord(code) { return loadRecords().find(r => r.code === code) || null; }
@@ -404,7 +490,7 @@
         if (!rec) return null;
         if (rec.status === STATUS.CHO_PHE_DUYET && rec.approval && rec.approval.level > 0) {
             const last = rec.approval.steps[rec.approval.steps.length - 1];
-            if (last && isLeaderOf(userId, last.unitId)) return { kind: 'approval', step: last };
+            if (last && last.userId === userId) return { kind: 'approval', step: last };
             return null;
         }
         const r = latestRoute(rec);
@@ -448,47 +534,120 @@
         return path.filter((u, i) => path.indexOf(u) === i);
     }
     // extra.draftDoc: { generatedName, uploadedName } - văn bản dự thảo trình kèm (VD Thông báo yêu cầu bổ sung)
+    // extra: { assignee: Lãnh đạo phê duyệt cấp 1 (bắt buộc khi cấp 1 có nhóm lãnh đạo), draftDoc: văn bản dự thảo/đính kèm trình,
+    //          resultStatus: trạng thái khi cấp cuối phê duyệt, action: { type: 'transfer', targetUnitId, content, files } }
     function submitForApproval(code, kind, content, files, extra) {
+        extra = extra || {};
         const rec = getRecord(code);
         const me = getCurrentUserId();
         if (!rec || rec.chuTri !== me) return { ok: false, message: 'Chỉ cán bộ chủ trì được trình phê duyệt.' };
-        // Yêu cầu bổ sung được trình ngay từ khi hồ sơ Chờ tiếp nhận
-        const allowed = [STATUS.DANG_THUC_HIEN, STATUS.BI_TRA_LAI].concat(kind === 'Yêu cầu bổ sung' || kind === 'Từ chối' ? [STATUS.CHO_TIEP_NHAN] : []);
-        if (!allowed.includes(rec.status)) return { ok: false, message: 'Trạng thái hồ sơ không cho phép trình phê duyệt.' };
+        const closed = [STATUS.CHO_PHE_DUYET, STATUS.HOAN_THANH, STATUS.BI_TU_CHOI, STATUS.KHONG_THU_LY, STATUS.DA_CHUYEN, STATUS.CHO_PHAN_CONG, STATUS.DANG_PHAN_CONG];
+        if (closed.includes(rec.status)) return { ok: false, message: 'Trạng thái hồ sơ không cho phép trình phê duyệt.' };
         const path = computeApprovalPath(rec);
         if (!path.length) return { ok: false, message: 'Chưa xác định được cấp phê duyệt. Vui lòng liên hệ Quản trị hệ thống.' };
+        const firstLeaders = getLeaders(path[0]);
+        if (firstLeaders.length && !extra.assignee) return { ok: false, message: 'Vui lòng chọn Lãnh đạo phê duyệt.' };
+        if (extra.assignee && firstLeaders.length && !firstLeaders.includes(extra.assignee)) return { ok: false, message: 'Lãnh đạo phê duyệt không thuộc nhóm lãnh đạo của cấp phê duyệt đầu tiên.' };
         if (rec.status === STATUS.CHO_TIEP_NHAN) {
             const r = latestRoute(rec);
             if (r) r.state = 'Đã xử lý';
         }
-        rec.approval = { kind, content: content || '', files: files || [], draftDoc: (extra && extra.draftDoc) || null, path, level: 0, steps: [], submittedBy: me, submittedAt: nowText(), pending: { since: nowText() } };
+        rec.approval = {
+            kind, content: content || '', files: files || [], draftDoc: extra.draftDoc || null,
+            resultStatus: extra.resultStatus || '', action: extra.action || null, prevStatus: rec.status,
+            path, level: 0, steps: [], assignees: [extra.assignee || ''],
+            submittedBy: me, submittedAt: nowText(), pending: { since: nowText() }
+        };
         rec.status = STATUS.CHO_PHE_DUYET;
-        addHistory(rec, 'Trình phê duyệt', `${kind}. Trình ${unitName(path[0])}.${content ? ' Nội dung: ' + content : ''}`);
+        addHistory(rec, 'Trình phê duyệt', `${kind}. Trình ${extra.assignee ? userName(extra.assignee) + ' - ' : ''}${unitName(path[0])}.${content ? ' Nội dung: ' + content : ''}`);
         upsertRecord(rec);
         return { ok: true, record: rec };
     }
+    // Lãnh đạo được giao đích danh tại cấp hiện tại; nếu cấp chưa giao đích danh thì cả nhóm lãnh đạo của cấp đó
     function canApprove(rec, userId) {
-        return !!rec && rec.status === STATUS.CHO_PHE_DUYET && rec.approval && isLeaderOf(userId, rec.approval.path[rec.approval.level]);
+        if (!rec || rec.status !== STATUS.CHO_PHE_DUYET || !rec.approval) return false;
+        const a = rec.approval;
+        const assignee = (a.assignees || [])[a.level];
+        if (assignee) return assignee === userId;
+        return isLeaderOf(userId, a.path[a.level]);
     }
-    function approve(code, note) {
+    function isLastApprovalLevel(rec) { return !!rec && !!rec.approval && rec.approval.level >= rec.approval.path.length - 1; }
+    function nextLevelLeaders(rec) {
+        if (!rec || !rec.approval || isLastApprovalLevel(rec)) return [];
+        return getLeaders(rec.approval.path[rec.approval.level + 1]);
+    }
+    // Nhóm lãnh đạo của cấp phê duyệt đầu tiên (dùng cho ô "Lãnh đạo phê duyệt" khi trình)
+    function firstLevelLeaders(recLike) {
+        const path = computeApprovalPath(recLike || {});
+        return path.length ? getLeaders(path[0]) : [];
+    }
+    // Nội dung trình của hồ sơ Chờ duyệt / Bị trả lại
+    function approvalKindOf(rec) {
+        if (!rec) return '';
+        if (rec.status === STATUS.CHO_PHE_DUYET && rec.approval) return rec.approval.kind;
+        if (rec.status === STATUS.BI_TRA_LAI && rec.returned) return rec.returned.kind || '';
+        return '';
+    }
+    // Nhãn phụ hiển thị dưới trạng thái: "[Nội dung trình] · Cấp i/n"
+    function approvalLabel(rec) {
+        const kind = approvalKindOf(rec);
+        if (!kind) return '';
+        if (rec.status === STATUS.CHO_PHE_DUYET) return `${kind} · Cấp ${rec.approval.level + 1}/${rec.approval.path.length}`;
+        return kind;
+    }
+    // nextAssignee: Lãnh đạo phê duyệt cấp tiếp theo (bắt buộc khi chưa phải cấp cuối và cấp tiếp theo có nhóm lãnh đạo)
+    function approve(code, note, nextAssignee) {
         const rec = getRecord(code);
         const me = getCurrentUserId();
         if (!canApprove(rec, me)) return { ok: false, message: 'Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phê duyệt. Vui lòng tải lại danh sách.' };
         const a = rec.approval;
         const unitId = a.path[a.level];
-        a.steps.push({ unitId, userId: me, action: 'Phê duyệt', note: note || '', at: nowText() });
+        if (!a.assignees) a.assignees = [];
         if (a.level < a.path.length - 1) {
+            const nextLeaders = getLeaders(a.path[a.level + 1]);
+            if (nextLeaders.length && !nextAssignee) return { ok: false, message: 'Vui lòng chọn Lãnh đạo phê duyệt cấp tiếp theo.' };
+            if (nextAssignee && nextLeaders.length && !nextLeaders.includes(nextAssignee)) return { ok: false, message: 'Lãnh đạo được chọn không thuộc nhóm lãnh đạo của cấp tiếp theo.' };
+            a.steps.push({ unitId, userId: me, action: 'Phê duyệt', note: note || '', at: nowText() });
             a.level += 1;
+            a.assignees[a.level] = nextAssignee || '';
             a.pending = { since: nowText() };
-            addHistory(rec, 'Phê duyệt', `Phê duyệt cấp ${unitName(unitId)}; chuyển ${unitName(a.path[a.level])}.${note ? ' Ý kiến: ' + note : ''}`);
+            addHistory(rec, 'Phê duyệt', `${a.kind}: phê duyệt cấp ${unitName(unitId)}; chuyển ${nextAssignee ? userName(nextAssignee) + ' - ' : ''}${unitName(a.path[a.level])}.${note ? ' Ý kiến: ' + note : ''}`);
         } else {
-            rec.status = SUBMIT_KINDS[a.kind] || STATUS.DANG_THUC_HIEN;
+            a.steps.push({ unitId, userId: me, action: 'Phê duyệt', note: note || '', at: nowText() });
+            rec.status = a.resultStatus || SUBMIT_KINDS[a.kind] || a.prevStatus || STATUS.DANG_THUC_HIEN;
             a.done = true;
             a.pending = null;
+            if (a.action && a.action.type === 'transfer') performTransfer(rec, a.action);
             addHistory(rec, 'Phê duyệt', `Phê duyệt cấp cuối (${unitName(unitId)}): ${a.kind}. Hồ sơ chuyển [${rec.status}].${note ? ' Ý kiến: ' + note : ''}`);
         }
         upsertRecord(rec);
         return { ok: true, record: rec };
+    }
+    // Chuyển hồ sơ YCBT sang cơ quan giải quyết khác: cơ quan mới nhận hồ sơ ở trạng thái Chờ phân công (bắt đầu lại từ bước tiếp nhận)
+    function performTransfer(rec, action) {
+        const target = getUnit(action.targetUnitId);
+        if (!target) return null;
+        const newCode = nextCode('BT');
+        const copy = JSON.parse(JSON.stringify(rec));
+        ['routes', 'approval', 'history', 'returned', 'transfer', 'transferTo', 'chuTri', 'phoiHop', 'status', 'currentUnitId', 'code', 'id', 'appointedOfficers'].forEach(k => delete copy[k]);
+        createPendingRecord(Object.assign(copy, {
+            id: 'YC' + Date.now().toString(36),
+            code: newCode,
+            module: 'YCBT',
+            loaiYeuCau: REQUEST_TYPE_YCBT,
+            rootUnitId: target.id,
+            receivedAt: nowText(),
+            date: dateText(),
+            createdBy: rec.chuTri,
+            transferFromCode: rec.code,
+            transferFromUnitId: rec.rootUnitId,
+            transferContent: action.content || '',
+            transferFiles: action.files || [],
+            historyAction: 'Nhận hồ sơ chuyển CQGQBT',
+            historyNote: `Hồ sơ ${rec.code} do ${unitName(rec.rootUnitId)} chuyển đến. Chờ lãnh đạo ${target.name} phân công.`
+        }));
+        rec.transferTo = { targetUnitId: target.id, code: newCode, content: action.content || '', files: action.files || [], at: nowText() };
+        return newCode;
     }
     function rejectApproval(code, reason) {
         const rec = getRecord(code);
@@ -497,7 +656,7 @@
         if (!reason) return { ok: false, message: 'Vui lòng nhập lý do từ chối phê duyệt.' };
         const a = rec.approval;
         a.steps.push({ unitId: a.path[a.level], userId: me, action: 'Từ chối phê duyệt', note: reason, at: nowText() });
-        rec.returned = { reason, by: me, unitId: a.path[a.level], at: nowText(), kind: a.kind };
+        rec.returned = { reason, by: me, unitId: a.path[a.level], at: nowText(), kind: a.kind, prevStatus: a.prevStatus || '' };
         rec.status = STATUS.BI_TRA_LAI;
         a.pending = null;
         addHistory(rec, 'Từ chối phê duyệt', `Trả lại cán bộ chủ trì. Lý do: ${reason}`);
@@ -561,7 +720,15 @@
         'Đang phân công': ['#eff6ff', '#1d4ed8'],
         'Chờ tiếp nhận': ['#fef9c3', '#a16207'],
         'Đang thực hiện': ['#e0f2fe', '#0369a1'],
+        'Chờ duyệt': ['#ede9fe', '#6d28d9'],
         'Chờ phê duyệt': ['#ede9fe', '#6d28d9'],
+        'Chờ thụ lý': ['#fef9c3', '#a16207'],
+        'Chờ phát hành văn bản': ['#e0e7ff', '#3730a3'],
+        'Chờ ban hành': ['#e0e7ff', '#3730a3'],
+        'Đã ban hành': ['#dcfce7', '#15803d'],
+        'Không thụ lý': ['#fee2e2', '#991b1b'],
+        'Đã chuyển CQGQBT': ['#ccfbf1', '#0f766e'],
+        'Đã hủy': ['#f1f5f9', '#475569'],
         'Bị trả lại': ['#fee2e2', '#b91c1c'],
         'Chờ chuyển CQGQBT': ['#ccfbf1', '#0f766e'],
         'Yêu cầu bổ sung': ['#ffedd5', '#c2410c'],
@@ -671,6 +838,43 @@
             </tr></table>
         </div>`;
     }
+    // Phần đầu văn bản hành chính: cơ quan chủ quản, tên cơ quan, số ký hiệu, quốc hiệu, địa danh ngày tháng
+    function docHeaderHtml(unitId, formNo, docType) {
+        const now = new Date();
+        const root = getRootId(unitId) || unitId;
+        const governing = GOVERNING_BODY[root] || '';
+        return `${formNo ? `<div style="text-align:right; font-style:italic;">${esc(formNo)}</div>` : ''}
+            <table style="width:100%; border-collapse:collapse; margin-top:6pt;"><tr>
+                <td style="width:40%; text-align:center; vertical-align:top; font-size:13pt;">${governing ? `${esc(governing)}<br>` : ''}<b>${esc(unitName(root).toUpperCase())}</b><br><span style="display:inline-block; width:35%; border-top:1px solid #000;"></span><br>Số: ......./${esc(docType || 'TB')}-${esc(issuerAbbr(root))}</td>
+                <td style="text-align:center; vertical-align:top; font-size:13pt;"><b style="white-space:nowrap;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</b><br><b>Độc lập - Tự do - Hạnh phúc</b><br><span style="display:inline-block; width:45%; border-top:1px solid #000;"></span><br><i>${esc(placeOf(root))}, ngày ${pad(now.getDate())} tháng ${pad(now.getMonth() + 1)} năm ${now.getFullYear()}</i></td>
+            </tr></table>`;
+    }
+    function docPageHtml(bodyHtml, baseName, withToolbar) {
+        const toolbar = withToolbar ? `<div class="toolbar"><b style="margin-right:auto;">Văn bản dự thảo - ${esc(baseName)}</b><button onclick="dlWord()">Tải file (Word .doc)</button><button onclick="window.print()">In</button></div>
+            <script>function dlWord(){var h='<html><head><meta charset="utf-8"></head><body>'+document.getElementById('doc').innerHTML+'</body></html>';var b=new Blob(['\\ufeff',h],{type:'application/msword'});var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=${JSON.stringify(baseName + '.doc')};document.body.appendChild(a);a.click();a.remove();}<\/script>` : '';
+        return `<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><title>${esc(baseName)}</title>
+            <style>body{margin:0;background:#e5e7eb;font-family:system-ui,sans-serif}.toolbar{position:sticky;top:0;display:flex;gap:8px;align-items:center;padding:10px 20px;background:#1e3a8a;color:#fff}.toolbar button{border:0;border-radius:6px;padding:7px 12px;font-weight:600;cursor:pointer}.page{background:#fff;width:210mm;min-height:297mm;margin:20px auto;padding:20mm 20mm 20mm 30mm;box-sizing:border-box;box-shadow:0 4px 16px rgba(0,0,0,.15)}.page>div{font-family:'Times New Roman',serif;font-size:14pt;line-height:1.5;color:#000}@media print{.toolbar{display:none}body{background:#fff}.page{margin:0;box-shadow:none;width:auto;min-height:0}}</style>
+            </head><body>${toolbar}<div class="page" id="doc"><div>${bodyHtml}</div></div></body></html>`;
+    }
+    // Xem dự thảo ở tab mới (trang A4)
+    function openDocTab(bodyHtml, baseName) {
+        const win = window.open('', '_blank');
+        if (!win) { alert('Trình duyệt đang chặn mở tab mới. Vui lòng cho phép cửa sổ bật lên.'); return; }
+        win.document.open();
+        win.document.write(docPageHtml(bodyHtml, baseName, true));
+        win.document.close();
+    }
+    // Tải file Word (.doc)
+    function downloadDocWord(bodyHtml, baseName) {
+        const html = `<html><head><meta charset="utf-8"><title>${esc(baseName)}</title></head><body style="font-family:'Times New Roman',serif; font-size:14pt;">${bodyHtml}</body></html>`;
+        const blob = new Blob(['\ufeff', html], { type: 'application/msword' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = baseName + '.doc';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    }
     function draftSourceOf(rec) {
         const a = rec.approval || {};
         return { content: a.content || rec.supplementReason || '', attachments: rec.supplementFiles || [] };
@@ -732,21 +936,32 @@
     function previewDraftDocByCode(code) { const r = getRecord(code); if (r) { const s = draftSourceOf(r); previewDraftDoc(r, s.content, s.attachments); } }
     function downloadDraftDocByCode(code, format) { const r = getRecord(code); if (r) { const s = draftSourceOf(r); downloadDraftDoc(r, s.content, s.attachments, format); } }
     // Khối Văn bản dự thảo phía Lãnh đạo / màn chi tiết
+    // draftDoc: { source:'generated'|'uploaded', generatedName, uploadedName, formNo (VD 'Mẫu số 04/BTNN'), bodyHtml (bản sinh tại thời điểm trình) }
+    function previewSubmittedDraft(code) {
+        const r = getRecord(code); const d = r && r.approval && r.approval.draftDoc; if (!d) return;
+        if (d.bodyHtml) openDocTab(d.bodyHtml, (d.generatedName || 'Van_ban_du_thao').replace(/\.docx?$/i, ''));
+        else previewDraftDocByCode(code);
+    }
+    function downloadSubmittedDraft(code) {
+        const r = getRecord(code); const d = r && r.approval && r.approval.draftDoc; if (!d) return;
+        if (d.bodyHtml) downloadDocWord(d.bodyHtml, (d.generatedName || 'Van_ban_du_thao').replace(/\.docx?$/i, ''));
+        else downloadDraftDocByCode(code, 'word');
+    }
     function renderDraftDocHtml(rec) {
         const d = rec.approval && rec.approval.draftDoc;
         if (!d) return '';
         const code = esc(rec.code);
         const isUploaded = d.source === 'uploaded' || (!d.source && d.uploadedName);
         const submitted = isUploaded ? d.uploadedName : d.generatedName;
+        const formNo = d.formNo || 'Mẫu số 08/BTNN';
         const link = (label, js) => `<a href="javascript:void(0)" onclick="${js}" style="color:#2563eb; text-decoration:none; margin-left:12px; white-space:nowrap;">${label}</a>`;
         return `<div style="border:2px solid #2563eb; background:#eff6ff; border-radius:8px; padding:12px 14px; margin-bottom:10px; font-size:13px;">
             <div style="font-weight:700; color:#1e3a8a; margin-bottom:8px;"><i class="fa-solid fa-file-signature"></i> Văn bản dự thảo trình Lãnh đạo</div>
             <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; background:#fff; border:1px solid #bfdbfe; border-radius:6px; padding:8px 10px;">
                 <i class="fa-solid fa-file-word" style="color:#2563eb; font-size:18px;"></i> <b>${esc(submitted)}</b>
-                <span style="background:${isUploaded ? '#dcfce7; color:#15803d' : '#e0e7ff; color:#3730a3'}; border-radius:999px; padding:1px 8px; font-size:11.5px; font-weight:600;">${isUploaded ? 'Bản đã chỉnh sửa' : 'Hệ thống sinh theo Mẫu số 08/BTNN'}</span>
-                ${isUploaded ? link('<i class="fa-solid fa-eye"></i> Xem file', `alert('Giả lập mở file: ${esc(d.uploadedName)}')`) : link('<i class="fa-solid fa-eye"></i> Xem dự thảo', `BTNN_WF.previewDraftDocByCode('${code}')`)}
+                <span style="background:${isUploaded ? '#dcfce7; color:#15803d' : '#e0e7ff; color:#3730a3'}; border-radius:999px; padding:1px 8px; font-size:11.5px; font-weight:600;">${isUploaded ? 'Tệp đính kèm' : 'Hệ thống sinh theo ' + esc(formNo)}</span>
+                ${isUploaded ? `<span style="margin-left:12px; color:#64748b;">(Giả lập: tệp đính kèm khi trình)</span>` : link('<i class="fa-solid fa-up-right-from-square"></i> Xem dự thảo', `BTNN_WF.previewSubmittedDraft('${code}')`) + link('<i class="fa-solid fa-download"></i> Tải file', `BTNN_WF.downloadSubmittedDraft('${code}')`)}
             </div>
-            <div style="margin-top:8px; color:#475569;">Văn bản theo Mẫu số 08/BTNN: ${link('<i class="fa-solid fa-up-right-from-square"></i> Xem dự thảo', `BTNN_WF.previewDraftDocByCode('${code}')`)} <span style="margin-left:12px;">${downloadSelectHtml(`BTNN_WF.downloadDraftDocByCode.bind(null,'${code}')`)}</span></div>
         </div>`;
     }
     function renderApprovalTableHtml(rec) {
@@ -756,6 +971,8 @@
             let state = 'Chưa đến lượt';
             if (step) state = `${step.action} - ${userName(step.userId)} - ${step.at}${step.note ? ' (' + step.note + ')' : ''}`;
             else if (i === a.level && rec.status === STATUS.CHO_PHE_DUYET) state = a.pending && a.pending.viewedAt ? `Đang chờ phê duyệt - Đã xem lúc ${a.pending.viewedAt}` : 'Đang chờ phê duyệt';
+            const assigned = (a.assignees || [])[i];
+            if (assigned && !step) state += ` (Giao: ${userName(assigned)})`;
             return `<tr><td style="padding:8px; border:1px solid #e2e8f0; text-align:center;">${i + 1}</td><td style="padding:8px; border:1px solid #e2e8f0;">${esc(unitName(u))}</td><td style="padding:8px; border:1px solid #e2e8f0;">${esc(getLeaders(u).map(userName).join(', ') || '--')}</td><td style="padding:8px; border:1px solid #e2e8f0;">${esc(state)}</td></tr>`;
         }).join('');
         return `<div style="margin-bottom:8px; font-size:13px;"><strong>Nội dung trình:</strong> ${esc(a.kind)} - ${esc(userName(a.submittedBy))} - ${esc(a.submittedAt)}${a.content ? `<div style="color:#334155; margin-top:2px;">${esc(a.content)}</div>` : ''}</div>
@@ -961,19 +1178,20 @@
 
     global.BTNN_WF = {
         KEYS: { RECORDS: KEY_RECORDS, FLOW: KEY_FLOW, USER: KEY_USER },
-        CATALOG_TYPE, STATUS, SUBMIT_KINDS, REQUEST_TYPE_XD, REQUEST_TYPE_YCBT,
+        CATALOG_TYPE, STATUS, SUBMIT_KINDS, APPROVAL_KINDS, KTL_CATALOG_TYPE, DEFAULT_KTL_REASONS, XD_AUTHORITY_UNITS, REQUEST_TYPE_XD, REQUEST_TYPE_YCBT,
         ORG_UNITS, USERS, DEFAULT_REQUEST_TYPES,
         getUnit, unitName, getChildren, getRootId, getAncestors, getDescendants, getRootUnits,
         getUser, userName, userLabel, usersInUnitTree,
         getCurrentUserId, getCurrentUser, setCurrentUser,
         getFlowConfig, saveFlowConfig, resetFlowConfig, getNodeConfig, getLeaders, isLeaderOf, isUnitConfigured, findRootUnitByName,
-        getRequestTypeCatalog, getRequestTypesForUser,
+        getRequestTypeCatalog, getRequestTypesForUser, getKtlReasons, xdAuthorityType, ensureClaimRecord,
         loadRecords, saveRecords, getRecord, upsertRecord, removeRecord, addHistory, nextCode, createPendingRecord,
         latestRoute, canEditAtReception, canAssign, markViewed, assignToUnit, assignToOfficers,
-        getRecallInfo, recall, computeApprovalPath, submitForApproval, canApprove, approve, rejectApproval,
+        getRecallInfo, recall, computeApprovalPath, submitForApproval, canApprove, isLastApprovalLevel, nextLevelLeaders, firstLevelLeaders, approvalKindOf, approvalLabel, approve, rejectApproval, performTransfer,
         transferToAgency, getLeaderTasks,
         statusBadge, routeText, routeStateText, renderRoutesHtml, renderHistoryHtml, renderApprovalHtml,
-        draftDocName, draftBaseName, submittedDraftName, buildSupplementDraftHtml, previewDraftDoc, downloadDraftDoc, downloadSelectHtml, previewDraftDocByCode, downloadDraftDocByCode, renderDraftDocHtml,
+        docHeaderHtml, docPageHtml, openDocTab, downloadDocWord,
+        draftDocName, draftBaseName, submittedDraftName, buildSupplementDraftHtml, previewDraftDoc, downloadDraftDoc, downloadSelectHtml, previewDraftDocByCode, downloadDraftDocByCode, renderDraftDocHtml, previewSubmittedDraft, downloadSubmittedDraft,
         mountUserSwitcher, nowText, dateText, esc
     };
 })(window);

@@ -15,13 +15,21 @@
 
 \- Màn hình chỉ phục vụ tra cứu, xem chi tiết liên kết và kết xuất danh sách; không cho phép thêm mới, cập nhật, phê duyệt hoặc thực hiện thao tác xử lý nghiệp vụ trực tiếp trên lưới.
 
-*a. Phân quyền*
+*a. Phân quyền và Phạm vi dữ liệu*
 
 \- Người dùng có quyền tra cứu công tác bồi thường nhà nước được truy cập menu `Tra cứu vụ việc`.
 
-\- Người dùng chỉ xem được các vụ việc thuộc phạm vi cơ quan/đơn vị hoặc phạm vi dữ liệu được phân quyền.
-
 \- Chuyên viên, Lãnh đạo và người dùng quản trị nghiệp vụ có thể cùng sử dụng màn hình tra cứu; phạm vi dữ liệu hiển thị phụ thuộc cấu hình phân quyền, không phụ thuộc trạng thái xử lý hiện tại của vụ việc.
+
+\- **Quy định chi tiết về Phạm vi dữ liệu tra cứu theo cấp đơn vị của người dùng**:
+  + **Đối với Bộ Tư pháp (BTP)**:
+    - **Phạm vi dữ liệu tra cứu**: Được tra cứu **Toàn quốc** (toàn bộ các vụ việc bồi thường trên cả nước của tất cả các cơ quan, địa phương).
+    - **Quyền xem chi tiết**: Cho phép mở xem **toàn trình** quá trình xử lý vụ việc (từ Tiếp nhận, Thụ lý, Xác minh, Thương lượng, Quyết định GQBT đến Chi trả, Hoàn trả...) ở chế độ **CHỈ XEM (Read-only)**, tuyệt đối không có các nút thao tác can thiệp vào hồ sơ.
+  + **Đối với Sở Tư pháp (STP)**:
+    - **Phạm vi dữ liệu tra cứu**: Giới hạn theo phạm vi quản lý địa phương, bao gồm:
+      1. Toàn bộ các vụ việc bồi thường **thuộc tỉnh/thành phố quản lý** (do các cơ quan, đơn vị cấp quận/huyện, sở/ngành trên địa bàn tỉnh thụ lý, giải quyết).
+      2. Các vụ việc bồi thường **do chính Sở Tư pháp đó tiếp nhận ban đầu**.
+    - **Quyền xem chi tiết**: Mở xem **toàn trình** các vụ việc trong phạm vi được tra cứu ở chế độ **CHỈ XEM (Read-only)**, không có các nút thao tác can thiệp ngoài thẩm quyền.
 
 *b. Điều kiện thực hiện*
 

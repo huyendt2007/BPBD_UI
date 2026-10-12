@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <!-- External stylesheet -->
-    <link rel="stylesheet" href="xac_dinh_co_quan_boi_thuong.css?v=20261009_v2">
+    <link rel="stylesheet" href="xac_dinh_co_quan_boi_thuong.css?v=20261012">
 </head>
 
 <body>
@@ -61,12 +61,24 @@
                         <option value="">Tất cả trạng thái</option>
                         <option value="Chờ tiếp nhận">Chờ tiếp nhận</option>
                         <option value="Đang thực hiện">Đang thực hiện</option>
-                        <option value="Chờ phê duyệt">Chờ phê duyệt</option>
+                        <option value="Chờ duyệt">Chờ duyệt</option>
                         <option value="Bị trả lại">Bị trả lại</option>
                         <option value="Chờ chuyển CQGQBT">Chờ chuyển CQGQBT</option>
                         <option value="Yêu cầu bổ sung">Yêu cầu bổ sung</option>
                         <option value="Bị từ chối">Bị từ chối</option>
                         <option value="Hoàn thành">Hoàn thành</option>
+                    </select>
+                </div>
+                <div>
+                    <span class="form-label">Nội dung trình</span>
+                    <select class="form-control" id="filterApprovalKind" title="Áp dụng cho hồ sơ Chờ duyệt và Bị trả lại">
+                        <option value="">Tất cả</option>
+                    </select>
+                </div>
+                <div>
+                    <span class="form-label">Cơ quan xử lý</span>
+                    <select class="form-control" id="filterUnit">
+                        <option value="">Tất cả cơ quan</option>
                     </select>
                 </div>
                 <div>
@@ -122,6 +134,7 @@
                             <th style="min-width: 170px;">Lĩnh vực thiệt hại</th>
                             <th style="min-width: 200px;">Hành vi gây thiệt hại</th>
                             <th style="width: 130px; text-align: center;">Ngày tiếp nhận</th>
+                            <th style="min-width: 170px;">Cơ quan xử lý</th>
                             <th style="min-width: 150px;">Cán bộ chủ trì</th>
                             <th style="width: 130px; text-align: center;">Mã hồ sơ YCBT</th>
                             <th style="width: 140px; text-align: center;">Trạng thái</th>
@@ -554,6 +567,7 @@
                 <span class="form-label">Căn cứ pháp lý xác định thẩm quyền<span class="required">*</span></span>
                 <!-- Converted to text input as requested -->
                 <input type="text" class="form-control" id="procBasis" placeholder="Nhập căn cứ pháp lý xác định thẩm quyền...">
+                <div class="error-message">Đây là trường bắt buộc</div>
             </div>
             <div class="form-group">
                 <span class="form-label">Chỉ định Cơ quan có thẩm quyền giải quyết bồi thường<span class="required">*</span></span>
@@ -569,10 +583,12 @@
                     </div>
                     <input type="hidden" id="procTargetAgency" value="">
                 </div>
+                <div class="error-message">Đây là trường bắt buộc</div>
             </div>
             <div class="form-group">
                 <span class="form-label">Nhận định lý do xác định chi tiết<span class="required">*</span></span>
                 <textarea class="form-control" id="procReason" rows="4" placeholder="Nhập lập luận, phân tích lý do chỉ định cơ quan giải quyết này dựa trên hồ sơ xác minh..."></textarea>
+                <div class="error-message">Đây là trường bắt buộc</div>
             </div>
 
             <div class="form-group">
@@ -594,7 +610,7 @@
             <div class="form-footer">
                 <button class="btn btn-secondary" onclick="showListScreen()">Hủy bỏ</button>
                 <button class="btn btn-secondary" onclick="saveProcessResult(false)"><i class="fa-solid fa-floppy-disk"></i> Lưu kết quả</button>
-                <button class="btn btn-primary" onclick="saveProcessResult(true)"><i class="fa-solid fa-paper-plane"></i> Lưu và trình phê duyệt</button>
+                <button class="btn btn-primary" onclick="saveProcessResult(true)"><i class="fa-solid fa-paper-plane"></i> Lưu và trình duyệt</button>
             </div>
         </div>
 
@@ -805,36 +821,41 @@
         <span>Thông báo thành công!</span>
     </div>
 
-    <!-- Popup Trình phê duyệt -->
+    <!-- Popup Trình duyệt (Nội dung trình: Kết quả xác định) -->
     <div id="submitApprovalModal" class="confirm-modal-overlay">
         <div class="confirm-modal-container wf-modal-box">
-            <div class="wf-modal-head"><h3><i class="fa-solid fa-paper-plane"></i> Trình phê duyệt</h3><span class="wf-modal-x" onclick="closeXdModal('submitApprovalModal')">&times;</span></div>
+            <div class="wf-modal-head"><h3><i class="fa-solid fa-paper-plane"></i> Trình duyệt</h3><span class="wf-modal-x" onclick="closeXdModal('submitApprovalModal')" title="Đóng">&times;</span></div>
             <div class="wf-modal-content">
                 <input type="hidden" id="submitRequestId">
+                <input type="hidden" id="submitKindValue" value="Kết quả xác định">
+                <div class="wf-summary-box" id="submitSummary"></div>
                 <div class="form-group">
-                    <span class="form-label">Nội dung trình<span class="required">*</span></span>
-                    <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:6px;">
-                        <label class="wf-radio"><input type="radio" name="submitKind" value="Hoàn thành xác định" checked> Hoàn thành xác định</label>
-                        <label class="wf-radio"><input type="radio" name="submitKind" value="Yêu cầu bổ sung"> Yêu cầu bổ sung</label>
-                        <label class="wf-radio"><input type="radio" name="submitKind" value="Từ chối"> Từ chối</label>
-                    </div>
+                    <span class="form-label">Nội dung trình</span>
+                    <input type="text" class="form-control" id="submitKindText" value="Kết quả xác định" readonly style="font-weight:600; background:#f8fafc;">
                 </div>
                 <div class="form-group">
-                    <span class="form-label">Ý kiến trình / Nội dung đề xuất<span class="required">*</span></span>
-                    <textarea class="form-control" id="submitContent" rows="4" placeholder="Nhập ý kiến trình..."></textarea>
+                    <span class="form-label">Ý kiến trình<span class="required">*</span></span>
+                    <textarea class="form-control" id="submitContent" rows="4" placeholder="Nhập ý kiến trình Lãnh đạo..."></textarea>
                     <div class="error-message">Đây là trường bắt buộc</div>
                 </div>
                 <div class="form-group">
                     <span class="form-label">Tệp đính kèm</span>
-                    <input type="file" id="submitFileInput" multiple style="display:none;" onchange="addModalFiles('submit', this)">
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('submitFileInput').click()"><i class="fa-solid fa-file-arrow-up"></i> Chọn tệp đính kèm...</button>
-                    <div id="submitFilesList" class="wf-file-list"></div>
+                    <div class="wf-upload-box" id="submitFileBox">
+                        <input type="file" id="submitFileInput" multiple style="display:none;" onchange="addModalFiles('submit', this)">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('submitFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>
+                        <div id="submitFilesList" class="wf-file-list"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Lãnh đạo phê duyệt<span class="required">*</span></span>
+                    <select class="form-control" id="submitLeader"></select>
+                    <div class="error-message">Đây là trường bắt buộc</div>
                 </div>
                 <div class="wf-path-box" id="submitPathInfo"></div>
             </div>
             <div class="wf-modal-foot">
                 <button class="btn btn-secondary" onclick="closeXdModal('submitApprovalModal')">Hủy bỏ</button>
-                <button class="btn btn-primary" onclick="confirmSubmitApproval()"><i class="fa-solid fa-paper-plane"></i> Trình phê duyệt</button>
+                <button class="btn btn-primary" onclick="confirmSubmitApproval()"><i class="fa-solid fa-paper-plane"></i> Trình Lãnh đạo</button>
             </div>
         </div>
     </div>
@@ -842,7 +863,7 @@
     <!-- Popup Chuyển CQGQBT -->
     <div id="transferModal" class="confirm-modal-overlay">
         <div class="confirm-modal-container wf-modal-box">
-            <div class="wf-modal-head"><h3><i class="fa-solid fa-share-from-square"></i> Chuyển cơ quan giải quyết bồi thường</h3><span class="wf-modal-x" onclick="closeXdModal('transferModal')">&times;</span></div>
+            <div class="wf-modal-head"><h3><i class="fa-solid fa-share-from-square"></i> Chuyển cơ quan giải quyết bồi thường</h3><span class="wf-modal-x" onclick="closeXdModal('transferModal')" title="Đóng">&times;</span></div>
             <div class="wf-modal-content">
                 <input type="hidden" id="transferRequestId">
                 <div id="transferError" class="wf-error-box" style="display:none;"></div>
@@ -857,10 +878,12 @@
                 </div>
                 <div class="form-group">
                     <span class="form-label">Tệp đính kèm<span class="required">*</span></span>
-                    <input type="file" id="transferFileInput" multiple style="display:none;" onchange="addModalFiles('transfer', this)">
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('transferFileInput').click()"><i class="fa-solid fa-file-arrow-up"></i> Chọn tệp đính kèm...</button>
-                    <div id="transferFilesList" class="wf-file-list"></div>
-                    <div class="error-message" id="transferFileError">Vui lòng đính kèm ít nhất một tệp</div>
+                    <div class="wf-upload-box" id="transferFileBox">
+                        <input type="file" id="transferFileInput" multiple style="display:none;" onchange="addModalFiles('transfer', this)">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('transferFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>
+                        <div id="transferFilesList" class="wf-file-list"></div>
+                    </div>
+                    <div class="error-message" id="transferFileError">Đây là trường bắt buộc</div>
                 </div>
             </div>
             <div class="wf-modal-foot">
@@ -872,8 +895,8 @@
 
     <!-- Popup Bổ sung tài liệu (cán bộ phối hợp) -->
     <div id="coopDocModal" class="confirm-modal-overlay">
-        <div class="confirm-modal-container wf-modal-box" style="max-width:560px;">
-            <div class="wf-modal-head"><h3><i class="fa-solid fa-paperclip"></i> Bổ sung tài liệu</h3><span class="wf-modal-x" onclick="closeXdModal('coopDocModal')">&times;</span></div>
+        <div class="confirm-modal-container wf-modal-box">
+            <div class="wf-modal-head"><h3><i class="fa-solid fa-paperclip"></i> Bổ sung tài liệu</h3><span class="wf-modal-x" onclick="closeXdModal('coopDocModal')" title="Đóng">&times;</span></div>
             <div class="wf-modal-content">
                 <input type="hidden" id="coopRequestId">
                 <div class="form-group">
@@ -883,10 +906,12 @@
                 </div>
                 <div class="form-group">
                     <span class="form-label">Tệp đính kèm<span class="required">*</span></span>
-                    <input type="file" id="coopFileInput" style="display:none;" onchange="addModalFiles('coop', this)">
-                    <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('coopFileInput').click()"><i class="fa-solid fa-file-arrow-up"></i> Chọn tệp đính kèm...</button>
-                    <div id="coopFilesList" class="wf-file-list"></div>
-                    <div class="error-message" id="coopFileError">Vui lòng đính kèm tệp</div>
+                    <div class="wf-upload-box" id="coopFileBox">
+                        <input type="file" id="coopFileInput" style="display:none;" onchange="addModalFiles('coop', this)">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('coopFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>
+                        <div id="coopFilesList" class="wf-file-list"></div>
+                    </div>
+                    <div class="error-message" id="coopFileError">Đây là trường bắt buộc</div>
                 </div>
             </div>
             <div class="wf-modal-foot">
@@ -895,70 +920,73 @@
             </div>
         </div>
     </div>
-    <!-- Modal Yêu cầu bổ sung hồ sơ xác định cơ quan (Đã bỏ phần In phiếu) -->
-    <div id="previewModalSupplement" class="confirm-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
-        <div class="sticky-modal-container" style="background:#fff; width:720px; max-width:95%; border-radius:8px; display:flex; flex-direction:column; max-height:90vh; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
-            <div class="confirm-modal-header" style="color:var(--primary-color); background-color:#f8fafc; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; padding:24px 24px 16px 24px;">
-                <div style="display:flex; align-items:center; gap:10px; font-size:16px; font-weight:700; color:var(--primary-color); text-transform:uppercase;">
-                    <i class="fa-solid fa-file-circle-question"></i> YÊU CẦU BỔ SUNG HỒ SƠ
+
+    <!-- Popup Yêu cầu bổ sung hồ sơ: trình Lãnh đạo phê duyệt (văn bản do cán bộ tải lên, không sinh tự động) -->
+    <div id="supplementModal" class="confirm-modal-overlay">
+        <div class="confirm-modal-container wf-modal-box">
+            <div class="wf-modal-head"><h3><i class="fa-solid fa-file-circle-question"></i> Yêu cầu bổ sung hồ sơ</h3><span class="wf-modal-x" onclick="closeSupplementModal()" title="Đóng">&times;</span></div>
+            <div class="wf-modal-content">
+                <input type="hidden" id="supplementRequestId">
+                <div class="wf-summary-box" id="supplementSummary"></div>
+                <div class="form-group">
+                    <span class="form-label">Nội dung yêu cầu bổ sung<span class="required">*</span></span>
+                    <textarea class="form-control" id="supplementContent" rows="4" placeholder="Nhập chi tiết nội dung, tài liệu cần bổ sung..."></textarea>
+                    <div class="error-message">Đây là trường bắt buộc</div>
                 </div>
-                <span onclick="closePreviewSupplementModal()" style="cursor:pointer; font-size:24px; font-weight:bold; color:#64748b; line-height:1;" title="Đóng">&times;</span>
-            </div>
-            <div class="sticky-modal-body" style="padding:24px; overflow-y:auto; flex:1; font-size:14px; line-height:1.6; color:#1e293b;">
-                <div id="supplementNoticeContent">
-                    <!-- Dynamic form injected by JS -->
+                <div class="form-group">
+                    <span class="form-label">Văn bản đính kèm trình Lãnh đạo<span class="required">*</span></span>
+                    <div class="wf-upload-box" id="supplementFileBox">
+                        <input type="file" id="supplementFileInput" multiple style="display:none;" accept=".pdf,.doc,.docx,.jpg,.png" onchange="addModalFiles('supplement', this)">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('supplementFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>
+                        <div id="supplementFilesList" class="wf-file-list"></div>
+                    </div>
+                    <div class="error-message" id="supplementFileError">Đây là trường bắt buộc</div>
                 </div>
+                <div class="form-group">
+                    <span class="form-label">Lãnh đạo phê duyệt<span class="required">*</span></span>
+                    <select class="form-control" id="supplementLeader"></select>
+                    <div class="error-message">Đây là trường bắt buộc</div>
+                </div>
+                <div class="wf-path-box" id="supplementPathInfo"></div>
             </div>
-            <div class="modal-footer" style="padding:16px 24px 24px 24px; border-top:1px solid var(--border-color); display:flex; justify-content:flex-end; gap:10px; background:#f8fafc; flex-shrink:0;">
-                <button type="button" class="btn btn-secondary" onclick="closePreviewSupplementModal()">Hủy bỏ</button>
-                <button type="button" class="btn btn-primary" onclick="executeSaveSupplement()"><i class="fa-solid fa-paper-plane"></i> Trình Lãnh đạo</button>
+            <div class="wf-modal-foot">
+                <button type="button" class="btn btn-secondary" onclick="closeSupplementModal()">Hủy bỏ</button>
+                <button type="button" class="btn btn-primary" onclick="confirmSupplement()"><i class="fa-solid fa-paper-plane"></i> Trình Lãnh đạo</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal Từ chối yêu cầu xác định cơ quan -->
-    <div id="rejectModal" class="confirm-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
-        <div class="sticky-modal-container" style="background:#fff; width:680px; max-width:95%; border-radius:8px; display:flex; flex-direction:column; max-height:90vh; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
-            <div class="confirm-modal-header" style="color:#b91c1c; background-color:#fff1f2; border-bottom:1px solid #fecdd3; display:flex; justify-content:space-between; align-items:center; padding:24px 24px 16px 24px;">
-                <div style="display:flex; align-items:center; gap:10px; font-size:16px; font-weight:700; color:#b91c1c; text-transform:uppercase;">
-                    <i class="fa-solid fa-ban"></i> TỪ CHỐI YÊU CẦU XÁC ĐỊNH CƠ QUAN
-                </div>
-                <span onclick="closeRejectModal()" style="cursor:pointer; font-size:24px; font-weight:bold; color:#64748b; line-height:1;" title="Đóng">&times;</span>
-            </div>
-            <div class="sticky-modal-body" style="padding:24px; overflow-y:auto; flex:1; font-size:14px; line-height:1.6; color:#1e293b;">
+    <!-- Popup Từ chối yêu cầu xác định cơ quan: trình Lãnh đạo phê duyệt -->
+    <div id="rejectModal" class="confirm-modal-overlay">
+        <div class="confirm-modal-container wf-modal-box">
+            <div class="wf-modal-head"><h3 style="color:#b91c1c;"><i class="fa-solid fa-ban"></i> Từ chối yêu cầu xác định cơ quan</h3><span class="wf-modal-x" onclick="closeRejectModal()" title="Đóng">&times;</span></div>
+            <div class="wf-modal-content">
                 <input type="hidden" id="rejectRequestId">
-                <div id="rejectSummaryBox" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:14px 18px; margin-bottom:18px;">
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-size:13.5px;">
-                        <div><strong style="color:#475569;">Mã yêu cầu:</strong> <span id="rejectReqCode" style="font-weight:700; color:#1e3a8a;"></span></div>
-                        <div><strong style="color:#475569;">Người yêu cầu:</strong> <span id="rejectReqNyc" style="font-weight:600; color:#0f172a;"></span></div>
-                        <div style="grid-column: span 2;"><strong style="color:#475569;">Lĩnh vực:</strong> <span id="rejectReqLinhVuc" style="font-weight:500;"></span></div>
-                    </div>
-                </div>
-
+                <div class="wf-summary-box" id="rejectSummary"></div>
                 <div class="form-group">
                     <span class="form-label">Lý do từ chối<span class="required">*</span></span>
-                    <textarea class="form-control" id="rejectReasonInput" rows="4" placeholder="Nhập căn cứ, lý do chi tiết từ chối yêu cầu xác định cơ quan..." oninput="clearValidation()"></textarea>
-                    <div class="error-message" id="rejectReasonError" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
+                    <textarea class="form-control" id="rejectReasonInput" rows="4" placeholder="Nhập căn cứ, lý do chi tiết từ chối yêu cầu xác định cơ quan..."></textarea>
+                    <div class="error-message">Đây là trường bắt buộc</div>
                 </div>
-
-                <div class="form-group" style="margin-bottom:0;">
-                    <span class="form-label">Văn bản / Thông báo từ chối đính kèm</span>
-                    <div style="display:flex; align-items:center; gap:10px; margin-top:4px;">
-                        <input type="file" id="rejectFileInput" style="display:none;" onchange="handleRejectFileUpload(this)" accept=".pdf,.doc,.docx,.jpg,.png">
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('rejectFileInput').click()">
-                            <i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp đính kèm
-                        </button>
-                        <span id="rejectFileName" style="font-size:13px; color:#64748b; font-style:italic;">Chưa chọn tệp</span>
+                <div class="form-group">
+                    <span class="form-label">Văn bản đính kèm trình Lãnh đạo<span class="required">*</span></span>
+                    <div class="wf-upload-box" id="rejectFileBox">
+                        <input type="file" id="rejectFileInput" multiple style="display:none;" accept=".pdf,.doc,.docx,.jpg,.png" onchange="addModalFiles('reject', this)">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('rejectFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>
+                        <div id="rejectFilesList" class="wf-file-list"></div>
                     </div>
-                    <div id="rejectFileActions" style="display:none; margin-top:6px; font-size:13px; gap:12px;">
-                        <a href="javascript:void(0)" onclick="viewRejectFile()" style="color:var(--primary-color); font-weight:500; text-decoration:none;"><i class="fa-solid fa-eye"></i> Xem file</a>
-                        <a href="javascript:void(0)" onclick="removeRejectFile()" style="color:#ef4444; font-weight:500; text-decoration:none;"><i class="fa-solid fa-trash-can"></i> Xóa file</a>
-                    </div>
+                    <div class="error-message" id="rejectFileError">Đây là trường bắt buộc</div>
                 </div>
+                <div class="form-group">
+                    <span class="form-label">Lãnh đạo phê duyệt<span class="required">*</span></span>
+                    <select class="form-control" id="rejectLeader"></select>
+                    <div class="error-message">Đây là trường bắt buộc</div>
+                </div>
+                <div class="wf-path-box" id="rejectPathInfo"></div>
             </div>
-            <div class="modal-footer" style="padding:16px 24px 24px 24px; border-top:1px solid var(--border-color); display:flex; justify-content:flex-end; gap:10px; background:#f8fafc; flex-shrink:0;">
+            <div class="wf-modal-foot">
                 <button type="button" class="btn btn-secondary" onclick="closeRejectModal()">Hủy bỏ</button>
-                <button type="button" class="btn btn-danger" onclick="confirmRejectRequest()"><i class="fa-solid fa-ban"></i> Từ chối yêu cầu</button>
+                <button type="button" class="btn btn-danger" onclick="confirmRejectRequest()" style="background:#ef4444; color:#fff; border:none;"><i class="fa-solid fa-paper-plane"></i> Trình Lãnh đạo</button>
             </div>
         </div>
     </div>
@@ -980,11 +1008,11 @@
     </div>
 
     <!-- External javascript logic -->
-    <script src="btnn_luong_xu_ly.js?v=20261009_v2"></script>
-    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261009_v2"></script>
-    <script src="admin-ui-standardizer.js?v=20261009_v2"></script>
-    <script src="bpbd_filter_toggle.js?v=20261009_v2"></script>
-    <script src="filter_toggle_auto.js?v=20261009_v2"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261012"></script>
+    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261012"></script>
+    <script src="admin-ui-standardizer.js?v=20261012"></script>
+    <script src="bpbd_filter_toggle.js?v=20261012"></script>
+    <script src="filter_toggle_auto.js?v=20261012"></script>
 </body>
 
 </html>

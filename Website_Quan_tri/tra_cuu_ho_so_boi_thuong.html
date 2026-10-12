@@ -342,10 +342,18 @@
 
 <body>
     <div class="lookup-shell">
-        <div class="page-header">
+        <div class="page-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
             <div class="page-title">
                 <h2><i class="fa-solid fa-magnifying-glass-chart"></i>Tra cứu vụ việc bồi thường nhà nước</h2>
-                <p>Tra cứu tập trung vụ việc phục hồi danh dự và yêu cầu bồi thường. Màn hình chỉ phục vụ tra cứu, xem chi tiết và kết xuất danh sách.</p>
+                <p>Tra cứu tập trung vụ việc phục hồi danh dự và yêu cầu bồi thường. Màn hình chỉ phục vụ tra cứu, xem chi tiết toàn trình (Chế độ chỉ xem) và kết xuất danh sách.</p>
+            </div>
+            <div class="user-scope-box" style="display:flex; align-items:center; gap:8px; background:#fff; padding:6px 12px; border-radius:6px; border:1px solid #cbd5e1; font-size:13px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                <span style="color:#475569; font-weight:600;"><i class="fa-solid fa-building-shield" style="color:var(--primary-color);"></i> Cơ quan tra cứu:</span>
+                <select id="userScopeSelect" class="form-control" style="font-size:13px; font-weight:600; color:#1e3a8a; padding:5px 10px; height:auto; border:1px solid #94a3b8;" onchange="changeLookupScope(this.value)">
+                    <option value="BTP" selected>Bộ Tư pháp (Phạm vi: Toàn quốc - Toàn trình)</option>
+                    <option value="STP_HANOI">Sở Tư pháp Hà Nội (Thuộc TP. Hà Nội quản lý & do STP tiếp nhận)</option>
+                    <option value="STP_BACNINH">Sở Tư pháp Bắc Ninh (Thuộc tỉnh Bắc Ninh quản lý & do STP tiếp nhận)</option>
+                </select>
             </div>
         </div>
 
@@ -880,6 +888,31 @@
             return true;
         }
 
+        function matchesScope(item) {
+            const scopeEl = document.getElementById('userScopeSelect');
+            const scope = scopeEl ? scopeEl.value : 'BTP';
+            if (scope === 'BTP') return true; // Bộ Tư pháp: xem toàn quốc
+            const normAgency = normalizeText(item.agency || '');
+            const normCity = normalizeText(item.nycTinhThanh || item.city || '');
+            const normAddr = normalizeText(item.address || '');
+            if (scope === 'STP_HANOI') {
+                // Sở Tư pháp Hà Nội: các vụ việc thuộc TP. Hà Nội quản lý hoặc do STP Hà Nội tiếp nhận
+                return normAgency.includes('ha noi') || normCity.includes('ha noi') || normAddr.includes('ha noi');
+            }
+            if (scope === 'STP_BACNINH') {
+                // Sở Tư pháp Bắc Ninh: các vụ việc thuộc tỉnh Bắc Ninh quản lý hoặc do STP Bắc Ninh tiếp nhận
+                return normAgency.includes('bac ninh') || normCity.includes('bac ninh') || normAddr.includes('bac ninh');
+            }
+            return true;
+        }
+
+        function changeLookupScope(scope) {
+            searchPhdd();
+            searchYcbt();
+            const scopeName = scope === 'BTP' ? 'Bộ Tư pháp (Toàn quốc - Toàn trình)' : (scope === 'STP_HANOI' ? 'Sở Tư pháp Hà Nội (Phạm vi TP. Hà Nội)' : 'Sở Tư pháp Bắc Ninh (Phạm vi tỉnh Bắc Ninh)');
+            showToast(`Đã chuyển phạm vi dữ liệu: ${scopeName}`);
+        }
+
         function searchPhdd() {
             saveFilterState('phdd');
             const code = normalizeText(document.getElementById('phddCode').value);
@@ -892,6 +925,7 @@
             const toDate = parseDateVi(document.getElementById('phddToDate').value);
 
             phddFiltered = phddList.filter(item => {
+                if (!matchesScope(item)) return false;
                 if (code && !normalizeText(item.code).includes(code)) return false;
                 if (nyc && !normalizeText(item.nyc).includes(nyc)) return false;
                 if (agency && !normalizeText(item.agency).includes(agency)) return false;
@@ -987,6 +1021,7 @@
             const deadlineTo = parseDateVi(document.getElementById('ycbtDeadlineTo').value);
 
             ycbtFiltered = ycbtList.filter(item => {
+                if (!matchesScope(item)) return false;
                 if (code && !normalizeText(item.code).includes(code)) return false;
                 if (nyc && !normalizeText(item.nyc).includes(nyc)) return false;
                 if (agency && !normalizeText(item.agency).includes(agency)) return false;
@@ -1152,7 +1187,9 @@
             const params = new URLSearchParams({
                 id: code,
                 returnUrl,
-                returnActiveUrl: 'tra_cuu_ho_so_boi_thuong.html'
+                returnActiveUrl: 'tra_cuu_ho_so_boi_thuong.html',
+                readonly: '1',
+                mode: 'detail'
             });
             if (tab === 'phdd') params.set('focusTab', 'phdd');
             return `quan_ly_boi_thuong.html?${params.toString()}`;

@@ -7,14 +7,14 @@
     <title>Hồ sơ trình Lãnh đạo</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="quan_ly_boi_thuong.css">
+    <link rel="stylesheet" href="quan_ly_boi_thuong.css?v=20261012">
     <style>
         body { background: var(--bg-body); padding: 20px; }
         .page-heading { margin-bottom: 16px; padding-right: 360px; }
         .page-heading h2 { color: var(--primary-light); display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; margin: 0; }
         .filter-card, .list-card { background: #fff; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); box-shadow: var(--box-shadow); margin-bottom: 16px; }
         .filter-card { padding: 16px; }
-        .filter-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 16px; }
+        .filter-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px 16px; }
         .filter-actions { border-top: 1px dashed var(--border-color); display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; padding-top: 12px; }
         .tabs-card { background: #fff; border-radius: var(--border-radius-md); padding: 0 20px; margin-bottom: 12px; margin-right: 360px; box-shadow: var(--box-shadow); }
         .wf-tabs { display: flex; gap: 8px; align-items: center; border-bottom: 1px solid var(--border-color); overflow-x: auto; overflow-y: hidden; }
@@ -79,6 +79,10 @@
                 <div class="form-group">
                     <span class="form-label">Loại yêu cầu</span>
                     <select id="fType" class="form-control"></select>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Nội dung trình</span>
+                    <select id="fKind" class="form-control"></select>
                 </div>
             </div>
             <div class="filter-actions">
@@ -171,6 +175,11 @@
             </div>
             <div class="wf-modal-body">
                 <div id="decContext" style="margin-bottom:12px;"></div>
+                <div class="form-group" id="decNextGroup" style="display:none;">
+                    <span class="form-label">Lãnh đạo phê duyệt cấp tiếp theo<span class="required">*</span></span>
+                    <select id="decNext" class="form-control"></select>
+                    <div class="error-text" id="decNextErr">Đây là trường bắt buộc</div>
+                </div>
                 <div class="form-group">
                     <span class="form-label" id="decLabel">Ý kiến phê duyệt</span>
                     <textarea id="decNote" class="form-control" rows="4"></textarea>
@@ -198,7 +207,7 @@
 
     <div id="toast" class="toast-notif"></div>
 
-    <script src="btnn_luong_xu_ly.js"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261012"></script>
     <script>
         const WF = BTNN_WF;
         let activeTab = 'assign';
@@ -218,13 +227,15 @@
             const me = WF.getCurrentUser();
             const types = WF.getRequestTypesForUser(me.id);
             document.getElementById('fType').innerHTML = `<option value="">Tất cả</option>` + types.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('');
+            const kinds = Array.from(new Set([].concat(WF.APPROVAL_KINDS.XD, WF.APPROVAL_KINDS.YCBT)));
+            document.getElementById('fKind').innerHTML = `<option value="">Tất cả</option>` + kinds.map(k => `<option value="${esc(k)}">${esc(k)}</option>`).join('');
             const tab = new URLSearchParams(location.search).get('tab');
             if (['assign', 'approve', 'done'].includes(tab)) activeTab = tab;
             switchTab(activeTab);
         }
 
         function resetFilters() {
-            ['fCode', 'fName', 'fType'].forEach(id => document.getElementById(id).value = '');
+            ['fCode', 'fName', 'fType', 'fKind'].forEach(id => document.getElementById(id).value = '');
             renderAll();
         }
 
@@ -259,7 +270,10 @@
             const code = norm(document.getElementById('fCode').value);
             const name = norm(document.getElementById('fName').value);
             const type = document.getElementById('fType').value;
-            return tasks[tab].filter(r => (!code || norm(r.code).includes(code)) && (!name || norm(r.nycName).includes(name)) && (!type || r.loaiYeuCau === type));
+            const kind = document.getElementById('fKind').value;
+            // Nội dung trình: theo phiếu trình hiện tại (Chờ duyệt), phiếu bị trả lại hoặc phiếu gần nhất
+            const kindOf = r => WF.approvalKindOf(r) || (r.approval ? r.approval.kind : '');
+            return tasks[tab].filter(r => (!code || norm(r.code).includes(code)) && (!name || norm(r.nycName).includes(name)) && (!type || r.loaiYeuCau === type) && (!kind || kindOf(r) === kind));
         }
 
         function renderAll() {
@@ -288,7 +302,7 @@
                     <td>${esc(contentText(rec))}</td>
                     <td>${esc(s.who)}</td>
                     <td style="text-align:center;">${esc(s.at)}</td>
-                    <td style="text-align:center;">${WF.statusBadge(rec.status)}</td>
+                    <td style="text-align:center;">${WF.statusBadge(rec.status)}${WF.approvalLabel(rec) ? `<div class="muted" style="margin-top:4px;">${esc(WF.approvalLabel(rec))}</div>` : ''}</td>
                     <td><div class="act-flex">${acts}</div></td>
                 </tr>`;
             }).join('');
@@ -404,13 +418,17 @@
             decisionMode = mode;
             const a = rec.approval;
             const isLast = a.level === a.path.length - 1;
-            const after = mode === 'approve' ? (isLast ? `Cấp phê duyệt cuối cùng. Sau khi phê duyệt, hồ sơ chuyển [${WF.SUBMIT_KINDS[a.kind]}].` : `Sau khi phê duyệt, hồ sơ chuyển ${WF.unitName(a.path[a.level + 1])} phê duyệt.`) : 'Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị trả lại] cho cán bộ chủ trì.';
+            const after = mode === 'approve' ? (isLast ? `Cấp phê duyệt cuối cùng. Sau khi phê duyệt, hồ sơ chuyển [${a.resultStatus || WF.SUBMIT_KINDS[a.kind] || a.prevStatus || ''}].` : `Sau khi phê duyệt, hồ sơ chuyển ${WF.unitName(a.path[a.level + 1])} phê duyệt.`) : 'Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị trả lại] cho cán bộ chủ trì.';
             document.getElementById('decTitle').innerHTML = mode === 'approve' ? `<i class="fa-solid fa-circle-check"></i> Phê duyệt hồ sơ ${esc(code)}` : `<i class="fa-solid fa-circle-xmark" style="color:#dc2626;"></i> Từ chối phê duyệt hồ sơ ${esc(code)}`;
             document.getElementById('decContext').innerHTML = WF.renderDraftDocHtml(rec) + `<div><strong>Nội dung trình:</strong> ${esc(a.kind)} - ${esc(WF.userName(a.submittedBy))}</div>${a.content ? `<div class="muted">${esc(a.content)}</div>` : ''}<div style="margin-top:6px;"><strong>Cấp phê duyệt:</strong> ${a.level + 1}/${a.path.length} - ${esc(WF.unitName(a.path[a.level]))}</div><div class="hint">${esc(after)}</div>`;
             document.getElementById('decLabel').innerHTML = mode === 'approve' ? 'Ý kiến phê duyệt' : 'Lý do từ chối phê duyệt<span class="required">*</span>';
             document.getElementById('decNote').placeholder = mode === 'approve' ? 'Nhập ý kiến phê duyệt...' : 'Nhập lý do từ chối phê duyệt...';
             document.getElementById('decNote').value = '';
             document.getElementById('decErr').style.display = 'none';
+            const nextLeaders = mode === 'approve' ? WF.nextLevelLeaders(rec) : [];
+            document.getElementById('decNextGroup').style.display = nextLeaders.length ? 'block' : 'none';
+            document.getElementById('decNextErr').style.display = 'none';
+            document.getElementById('decNext').innerHTML = `<option value="">Chọn Lãnh đạo ${esc(nextLeaders.length ? WF.unitName(a.path[a.level + 1]) : '')}...</option>` + nextLeaders.map(u => `<option value="${esc(u)}">${esc(WF.userLabel(u))}</option>`).join('');
             const btn = document.getElementById('decSubmit');
             btn.textContent = mode === 'approve' ? 'Phê duyệt' : 'Từ chối phê duyệt';
             btn.className = mode === 'approve' ? 'btn btn-primary' : 'btn btn-danger';
@@ -420,9 +438,12 @@
         function submitDecision() {
             const note = document.getElementById('decNote').value.trim();
             if (decisionMode === 'reject' && !note) { document.getElementById('decErr').style.display = 'block'; return; }
-            const res = decisionMode === 'approve' ? WF.approve(actingCode, note) : WF.rejectApproval(actingCode, note);
+            const next = document.getElementById('decNext').value;
+            if (decisionMode === 'approve' && document.getElementById('decNextGroup').style.display !== 'none' && !next) { document.getElementById('decNextErr').style.display = 'block'; return; }
+            const res = decisionMode === 'approve' ? WF.approve(actingCode, note, next) : WF.rejectApproval(actingCode, note);
             closeOverlay('decideOverlay');
-            showToast(res.ok ? `Hồ sơ ${actingCode}: [${res.record.status}]${res.record.status === 'Chờ phê duyệt' ? ' - chuyển ' + WF.unitName(res.record.approval.path[res.record.approval.level]) : ''}.` : res.message, res.ok ? 'success' : 'error');
+            const nextText = res.ok && res.record.status === WF.STATUS.CHO_PHE_DUYET ? ' - chuyển ' + (next ? WF.userName(next) + ' - ' : '') + WF.unitName(res.record.approval.path[res.record.approval.level]) : '';
+            showToast(res.ok ? `Hồ sơ ${actingCode}: [${res.record.status}]${nextText}.` : res.message, res.ok ? 'success' : 'error');
             renderAll();
         }
 
@@ -454,7 +475,7 @@
 
         document.addEventListener('DOMContentLoaded', init);
     </script>
-    <script src="admin-ui-standardizer.js"></script>
+    <script src="admin-ui-standardizer.js?v=20261012"></script>
 </body>
 
 </html>
