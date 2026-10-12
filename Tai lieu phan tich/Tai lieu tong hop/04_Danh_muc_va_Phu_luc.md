@@ -306,6 +306,7 @@ Dưới đây là danh sách các thông báo (MessageList - MSG) chuẩn hóa h
 | **[MSG-INF-BTNN-GQBT-001]** | Thông tin | `"Không tìm thấy vụ việc xác định cơ quan phù hợp"` | Inline tại bảng kết quả tìm kiếm trong popup | Không |
 | **[MSG-INF-BTNN-GQBT-002]** | Thông tin | `"Không tìm thấy vụ việc gốc hợp lệ để liên kết"` | Inline tại bảng kết quả tìm kiếm trong popup | Không |
 | **[MSG-SUC-BTNN-TN-001]** | Thành công | `"Xóa vụ việc tiếp nhận thành công!"` | Toast | Không |
+| **[MSG-SUC-BTNN-TN-002]** | Thành công | `"Đã cập nhật thông tin tiếp nhận!"` | Toast | Không |
 | **[MSG-INF-BTNN-LXL-001]** | Thông tin | `"Loại yêu cầu "Xác định cơ quan giải quyết bồi thường" không áp dụng cho đơn vị [Tên đơn vị] (Danh mục Loại yêu cầu - Đơn vị áp dụng). Chỉ Bộ Tư pháp, Sở Tư pháp và Ủy ban nhân dân cấp tỉnh được xử lý loại yêu cầu này."` | Inline (Khung thông báo đầu màn hình Xác định cơ quan giải quyết bồi thường) | Không |
 | **[MSG-SUC-BTNN-LXL-001]** | Thành công | `"Đã lưu thông tin. Hồ sơ [Mã hồ sơ] chuyển Lãnh đạo [Đơn vị gốc] phân công [Chờ phân công]!"` | Toast | Không |
 | **[MSG-SUC-BTNN-LXL-002]** | Thành công | `"Đã thu hồi hồ sơ [Mã hồ sơ]. Trạng thái: [Trạng thái]."` | Toast | Không |
