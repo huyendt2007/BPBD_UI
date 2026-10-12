@@ -1272,16 +1272,24 @@
             <div id="qdFormReturnedBlock" style="display:none; background:#FEF2F2; border:1px solid #FECACA; border-left:4px solid #DC2626; border-radius:8px; padding:14px 16px; margin-bottom:16px;"></div>
 
             <!-- Vụ việc -->
-            <div class="dtl-card">
+            <div class="dtl-card" id="qdClaimSearchCard">
                 <div class="dtl-card-head"><i class="fa-solid fa-folder-open"></i> Vụ việc yêu cầu bồi thường</div>
                 <div class="dtl-card-body">
                     <div class="grid-2-cols">
-                        <div class="form-group">
-                            <span class="form-label">Mã vụ việc - Người yêu cầu<span class="required">*</span></span>
-                            <select class="form-control" id="qdClaim" onchange="onClaimChange(this.value)"></select>
-                            <div style="font-size:11px; color:var(--text-muted); font-style:italic; margin-top:4px;">Chỉ hiển thị vụ việc ở trạng thái Chờ ban hành QĐ, chưa có Quyết định giải quyết bồi thường còn hiệu lực.</div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Mã vụ việc liên kết<span class="required">*</span></span>
+                            <div style="display:flex; gap:8px; align-items:center;">
+                                <input type="text" class="form-control" id="formClaimSearchInput" placeholder="Nhập mã vụ việc..." style="flex:1;">
+                                <button type="button" class="btn btn-primary" id="btnSearchClaim" onclick="searchClaimByCode()" style="height:38px; padding:0 16px; font-weight:600; display:inline-flex; align-items:center; gap:6px; white-space:nowrap;"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                                <button type="button" class="btn btn-secondary" id="btnAdvSearchClaim" onclick="openClaimLookupModal()" style="height:38px; padding:0 16px; font-weight:600; display:inline-flex; align-items:center; gap:6px; white-space:nowrap;"><i class="fa-solid fa-magnifying-glass-plus"></i> Tìm kiếm nâng cao</button>
+                            </div>
+                            <div class="field-error" id="formClaimSearchError">Đây là trường bắt buộc</div>
+                            <div id="selectedClaimBadge" style="display:none; margin-top:8px; align-items:center; gap:8px;">
+                                <span class="badge badge-pending" id="selectedClaimText" style="font-size:12.5px; padding:6px 12px; border-radius:6px;"></span>
+                                <button type="button" id="btnResetClaimSelection" class="btn btn-secondary btn-sm" onclick="resetClaimSelection()" title="Chọn lại vụ việc khác" style="height:28px; padding:0 8px;"><i class="fa-solid fa-rotate-left"></i> Đổi vụ việc</button>
+                            </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="margin-bottom:0;">
                             <span class="form-label">Cơ quan giải quyết bồi thường</span>
                             <div class="readonly-box" id="qdUnitText">--</div>
                         </div>
@@ -1290,24 +1298,19 @@
             </div>
 
             <!-- (1) Lãnh đạo ký duyệt -->
-            <div class="dtl-card">
+            <div class="dtl-card" id="qdLeaderCard">
                 <div class="dtl-card-head"><i class="fa-solid fa-user-tie"></i> Lãnh đạo ký duyệt</div>
                 <div class="dtl-card-body">
-                    <div class="grid-2-cols">
-                        <div class="form-group" style="margin-bottom:0;">
-                            <span class="form-label">Lãnh đạo ký duyệt<span class="required">*</span></span>
-                            <select class="form-control" id="qdLeader"></select>
-                        </div>
-                        <div class="form-group" style="margin-bottom:0;">
-                            <span class="form-label">Luồng ký duyệt</span>
-                            <div class="readonly-box" id="qdPathText">--</div>
-                        </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <span class="form-label">Lãnh đạo ký duyệt<span class="required">*</span></span>
+                        <select class="form-control" id="qdLeader"></select>
+                        <div id="qdPathLine"></div>
                     </div>
                 </div>
             </div>
 
             <!-- (2) Người yêu cầu bồi thường -->
-            <div class="dtl-card">
+            <div class="dtl-card" id="qdNycCard">
                 <div class="dtl-card-head"><i class="fa-solid fa-user"></i> Thông tin người yêu cầu bồi thường</div>
                 <div class="dtl-card-body">
                     <div class="grid-2-cols">
@@ -1324,7 +1327,7 @@
             </div>
 
             <!-- (3) Bảng đề xuất bồi thường -->
-            <div class="dtl-card">
+            <div class="dtl-card" id="qdItemsCard">
                 <div class="dtl-card-head"><i class="fa-solid fa-coins"></i> Bảng nội dung đề xuất bồi thường</div>
                 <div class="dtl-card-body">
                     <div class="src-note" id="qdSourceNote">Chọn vụ việc để hệ thống tự động điền dữ liệu đề xuất bồi thường.</div>
@@ -1358,7 +1361,7 @@
             </div>
 
             <!-- (4) Người nhận tiền bồi thường -->
-            <div class="dtl-card">
+            <div class="dtl-card" id="qdRecCard">
                 <div class="dtl-card-head"><i class="fa-solid fa-hand-holding-dollar"></i> Người nhận tiền bồi thường</div>
                 <div class="dtl-card-body">
                     <div class="grid-2-cols">
@@ -1370,24 +1373,60 @@
                             <span class="form-label">Số định danh cá nhân/CCCD<span class="required">*</span></span>
                             <input type="text" class="form-control" id="qdRecIdNo" maxlength="20">
                         </div>
-                        <div class="form-group">
-                            <span class="form-label">Số tài khoản<span class="required">*</span></span>
-                            <input type="text" class="form-control" id="qdRecAccount" maxlength="50">
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Ngân hàng<span class="required">*</span></span>
-                            <input type="text" class="form-control" id="qdRecBank" maxlength="255">
-                        </div>
-                        <div class="form-group" style="margin-bottom:0;">
-                            <span class="form-label">Chi nhánh</span>
-                            <input type="text" class="form-control" id="qdRecBranch" maxlength="255">
+                        <div class="form-group" style="margin-bottom:0; grid-column:1/-1;">
+                            <span class="form-label">Mối quan hệ với người bị thiệt hại</span>
+                            <input type="text" class="form-control" id="qdRecRelation" maxlength="255" placeholder="VD: Bản thân người bị thiệt hại, Người đại diện theo ủy quyền...">
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- (5) Thời điểm có hiệu lực -->
-            <div class="dtl-card">
+            <!-- (5) Phương thức chi trả tiền bồi thường -->
+            <div class="dtl-card" id="qdPayoutCard">
+                <div class="dtl-card-head"><i class="fa-solid fa-money-bill-transfer"></i> Phương thức chi trả tiền bồi thường</div>
+                <div class="dtl-card-body">
+                    <div class="form-group" style="margin-bottom:14px;">
+                        <span class="form-label">Phương thức nhận tiền<span class="required">*</span></span>
+                        <select class="form-control" id="qdPayoutMethod" onchange="onPayoutMethodChange(this.value)" style="max-width:320px;">
+                            <option value="Nhận qua chuyển khoản">Nhận qua chuyển khoản</option>
+                            <option value="Nhận tiền mặt">Nhận tiền mặt</option>
+                        </select>
+                    </div>
+                    <!-- Thông tin chuyển khoản -->
+                    <div id="qdPayoutTransferGroup" class="grid-2-cols">
+                        <div class="form-group">
+                            <span class="form-label">Chủ tài khoản<span class="required">*</span></span>
+                            <input type="text" class="form-control" id="qdPayoutAccHolder" maxlength="255" placeholder="Nhập họ và tên chủ tài khoản...">
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Số tài khoản ngân hàng<span class="required">*</span></span>
+                            <input type="text" class="form-control" id="qdRecAccount" maxlength="50" placeholder="Nhập số tài khoản...">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Tên ngân hàng<span class="required">*</span></span>
+                            <input type="text" class="form-control" id="qdRecBank" maxlength="255" placeholder="VD: Vietcombank, BIDV, Agribank...">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Chi nhánh ngân hàng</span>
+                            <input type="text" class="form-control" id="qdRecBranch" maxlength="255" placeholder="VD: Chi nhánh Thăng Long...">
+                        </div>
+                    </div>
+                    <!-- Thông tin tiền mặt -->
+                    <div id="qdPayoutCashGroup" class="grid-2-cols" style="display:none;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Cơ quan / Địa chỉ chi trả tiền mặt<span class="required">*</span></span>
+                            <input type="text" class="form-control" id="qdPayoutCashPlace" maxlength="255" placeholder="VD: Kho bạc Nhà nước Thành phố Hà Nội...">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <span class="form-label">Số biên lai / Ghi chú chi trả</span>
+                            <input type="text" class="form-control" id="qdPayoutCashNote" maxlength="255" placeholder="Ghi chú nhận tiền mặt hoặc số biên lai chi trả...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- (6) Thời điểm có hiệu lực -->
+            <div class="dtl-card" id="qdEffectiveCard">
                 <div class="dtl-card-head"><i class="fa-solid fa-calendar-check"></i> Hiệu lực của Quyết định</div>
                 <div class="dtl-card-body">
                     <div class="form-group" style="margin-bottom:0;">
@@ -1397,26 +1436,46 @@
                 </div>
             </div>
 
-            <!-- (6) Văn bản dự thảo trình Lãnh đạo -->
-            <div class="dtl-card" style="margin-bottom:0;">
+            <!-- (7) Văn bản dự thảo trình Lãnh đạo -->
+            <div class="dtl-card" id="qdDraftCard" style="margin-bottom:0;">
                 <div class="dtl-card-head"><i class="fa-solid fa-file-word"></i> Văn bản dự thảo trình Lãnh đạo</div>
                 <div class="dtl-card-body">
                     <span class="form-label">Văn bản dự thảo trình Lãnh đạo<span class="required">*</span></span>
                     <div class="draft-choice-box" id="qdDraftBox">
-                        <div class="draft-choice">
-                            <label><input type="radio" name="qdDraftSrc" value="generated" onchange="onFormDraftChange()"> Theo Mẫu 18/BTNN do hệ thống tự động sinh</label>
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="previewFormDraft()"><i class="fa-solid fa-up-right-from-square"></i> Xem dự thảo QĐ</button>
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="downloadFormDraft()"><i class="fa-solid fa-download"></i> Tải file</button>
+                        <!-- Lựa chọn 1: Mẫu 18/BTNN -->
+                        <div class="draft-option-group" style="padding:10px 0; border-bottom:1px dashed var(--border-color);">
+                            <div style="font-size:13.5px;">
+                                <label style="display:inline-flex; align-items:center; gap:8px; cursor:pointer;">
+                                    <input type="radio" name="qdDraftSrc" value="generated" onchange="onFormDraftChange()" style="width:16px; height:16px; cursor:pointer;">
+                                    <span style="font-weight:700; color:var(--text-main);">Theo Mẫu 18/BTNN do hệ thống tự động sinh</span>
+                                </label>
+                            </div>
+                            <div style="margin-left:26px; margin-top:8px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="previewFormDraft()"><i class="fa-solid fa-up-right-from-square"></i> Xem dự thảo QĐ</button>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="downloadFormDraft()"><i class="fa-solid fa-download"></i> Tải file</button>
+                                <span id="qdGenDocHint" style="font-size:12px; color:var(--text-muted); font-style:italic;">Mau_18_BTNN_Quyet_dinh_giai_quyet_boi_thuong_[Mã].doc (sinh theo nội dung đang nhập)</span>
+                            </div>
                         </div>
-                        <div class="draft-choice">
-                            <label><input type="radio" name="qdDraftSrc" value="uploaded" onchange="onFormDraftChange()"> Tải file</label>
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('qdDraftFile').click()"><i class="fa-solid fa-folder-open"></i> Chọn tệp</button>
-                            <span id="qdDraftFileName" style="font-size:12.5px; color:var(--text-muted);">Chưa chọn tệp</span>
-                            <input type="file" id="qdDraftFile" accept=".doc,.docx,.pdf" style="display:none;" onchange="onFormDraftFile(this)">
+                        <!-- Lựa chọn 2: Tải file -->
+                        <div class="draft-option-group" style="padding:10px 0 2px 0;">
+                            <div style="font-size:13.5px;">
+                                <label style="display:inline-flex; align-items:center; gap:8px; cursor:pointer;">
+                                    <input type="radio" name="qdDraftSrc" value="uploaded" onchange="onFormDraftChange()" style="width:16px; height:16px; cursor:pointer;">
+                                    <span style="font-weight:700; color:var(--text-main);">Tải file</span>
+                                </label>
+                            </div>
+                            <div style="margin-left:26px; margin-top:8px; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('qdDraftFile').click()"><i class="fa-solid fa-folder-open"></i> Chọn tệp</button>
+                                <span id="qdDraftFileName" style="font-size:12.5px; color:var(--text-muted);">Chưa chọn tệp</span>
+                                <span id="qdDraftFileActions" style="display:none; gap:8px; align-items:center;">
+                                    <a href="javascript:void(0)" class="action-link view-link" onclick="previewUploadedFile()" style="font-size:12px;"><i class="fa-solid fa-eye"></i> Xem file</a>
+                                    <a href="javascript:void(0)" class="action-link delete-link" onclick="removeUploadedFile()" style="font-size:12px;"><i class="fa-solid fa-trash-can"></i> Xóa</a>
+                                </span>
+                                <input type="file" id="qdDraftFile" accept=".doc,.docx,.pdf" style="display:none;" onchange="onFormDraftFile(this)">
+                            </div>
                         </div>
                     </div>
                     <div class="field-error" id="qdDraftError">Đây là trường bắt buộc</div>
-                    <div class="draft-target" id="qdDraftTarget"></div>
                     <div class="form-group" style="margin-top:14px; margin-bottom:0;">
                         <span class="form-label">Ý kiến trình</span>
                         <textarea class="form-control" id="qdNote" rows="2" maxlength="2000" placeholder="Nhập ý kiến trình Lãnh đạo (nếu có)..."></textarea>
@@ -1458,11 +1517,11 @@
                         </div>
                     </div>
                     <div class="field-error" id="qdReqDraftError">Đây là trường bắt buộc</div>
-                    <div class="draft-target" id="qdReqDraftTarget"></div>
                 </div>
                 <div class="form-group" style="margin-bottom:0;">
                     <span class="form-label">Lãnh đạo phê duyệt<span class="required">*</span></span>
                     <select class="form-control" id="qdReqLeader"></select>
+                    <div id="qdReqPathLine"></div>
                 </div>
             </div>
             <div class="qd-modal-foot">
@@ -1528,6 +1587,61 @@
             <div class="qd-modal-foot">
                 <button class="btn btn-secondary" onclick="closeModal('qdApproveModal')">Hủy bỏ</button>
                 <button class="btn btn-primary" id="qdApproveBtn" onclick="confirmApproveAction()">Phê duyệt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- MH02a - POPUP TÌM KIẾM NÂNG CAO VỤ VIỆC LIÊN KẾT -->
+    <!-- ======================================================== -->
+    <div class="qd-modal" id="qdClaimLookupModal">
+        <div class="qd-modal-box" style="width:980px; max-width:96vw; max-height:88vh;">
+            <div class="qd-modal-head">
+                <span><i class="fa-solid fa-magnifying-glass-plus"></i> Tìm kiếm nâng cao vụ việc yêu cầu bồi thường liên kết</span>
+                <button class="qd-close" onclick="closeClaimLookupModal()">&times;</button>
+            </div>
+            <div class="qd-modal-body" style="overflow-y:auto; max-height:76vh;">
+                <div class="grid-2-cols" style="margin-bottom:14px;">
+                    <div class="form-group">
+                        <span class="form-label">Mã vụ việc</span>
+                        <input type="text" class="form-control" id="lookupClaimCode" placeholder="Nhập mã vụ việc...">
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Người yêu cầu</span>
+                        <input type="text" class="form-control" id="lookupClaimNyc" placeholder="Nhập họ và tên người yêu cầu...">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <span class="form-label">Người bị thiệt hại</span>
+                        <input type="text" class="form-control" id="lookupClaimNbth" placeholder="Nhập họ và tên người bị thiệt hại...">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <span class="form-label">Số giấy tờ</span>
+                        <input type="text" class="form-control" id="lookupClaimCardNo" placeholder="Nhập số CCCD/CMND/Hộ chiếu...">
+                    </div>
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:8px; margin-bottom:14px;">
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="clearClaimLookupFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                    <button type="button" class="btn btn-primary btn-sm" onclick="renderClaimLookupResults()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                </div>
+                <div class="table-container" style="max-height:360px; overflow-y:auto;">
+                    <table class="custom-table" style="min-width:920px;">
+                        <thead>
+                            <tr>
+                                <th style="width:120px; text-align:center;">Mã vụ việc</th>
+                                <th style="width:160px;">Người yêu cầu</th>
+                                <th style="width:160px;">Người bị thiệt hại</th>
+                                <th style="width:180px;">Cơ quan giải quyết</th>
+                                <th style="width:150px; text-align:right;">Tổng số tiền đề xuất</th>
+                                <th style="width:130px; text-align:center;">Trạng thái vụ việc</th>
+                                <th style="width:90px; text-align:center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="claimLookupResultsBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="qd-modal-foot">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="closeClaimLookupModal()">Hủy bỏ</button>
             </div>
         </div>
     </div>
@@ -1658,17 +1772,17 @@
         // Dữ liệu mẫu dự phòng khi trình duyệt chưa có claimsList
         const FALLBACK_CLAIMS = [
             {
-                id: 'HS31', code: 'BT-2026-031', nyc: 'Nguyễn Thị Hồng Nhung', status: 'Chờ ban hành QĐ', agency: 'Bộ Tư pháp',
+                id: 'HS31', code: 'BT-2026-031', nyc: 'Nguyễn Thị Hồng Nhung', nbth: 'Nguyễn Thị Hồng Nhung', status: 'Chờ ban hành QĐ', agency: 'Bộ Tư pháp',
                 nycCardNo: '001190012345', nycAddressDetail: 'Số 12 ngõ 45 Hoàng Quốc Việt', nycPhuongXa: '00166 - Phường Nghĩa Đô', nycTinhThanh: 'Thành phố Hà Nội',
                 linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: 'Thu hồi giấy phép kinh doanh trái pháp luật.', advanceNum: 20000000,
-                payoutRecName: 'Nguyễn Thị Hồng Nhung', payoutBankAccount: '0011004455667', payoutBankName: 'Vietcombank', payoutBankBranch: 'Chi nhánh Thăng Long',
+                payoutMethod: 'Nhận qua chuyển khoản', payoutRecName: 'Nguyễn Thị Hồng Nhung', payoutBankAccount: '0011004455667', payoutBankName: 'Vietcombank', payoutBankBranch: 'Chi nhánh Thăng Long',
                 verifiedItems: [
                     { key: 'TS', label: 'Tài sản bị xâm phạm', proposed: 120000000, verified: 100000000, note: 'Đối chiếu hóa đơn, chứng từ' },
                     { key: 'TN', label: 'Thu nhập thực tế bị mất/giảm sút', proposed: 60000000, verified: 45000000, note: 'Tính theo thu nhập bình quân 6 tháng' },
                     { key: 'TT', label: 'Thiệt hại về tinh thần', proposed: 30000000, verified: 20000000, note: 'Theo mức lương cơ sở' }
                 ],
                 negotiation: {
-                    decision: 'Đồng ý thương lượng', date: '05/10/2026', place: 'Phòng họp số 2 - Bộ Tư pháp',
+                    participation: 'DONG_Y', decision: 'Đồng ý thương lượng', date: '05/10/2026', place: 'Phòng họp số 2 - Bộ Tư pháp',
                     participants: [{ name: 'Nguyễn Văn Cán Bộ', position: 'Chuyên viên', unit: 'Phòng Quản lý nghiệp vụ về bồi thường nhà nước' }],
                     items: [
                         { key: 'TS', label: 'Tài sản bị xâm phạm', proposed: 120000000, verified: 100000000, agreed: 95000000, status: 'Thành công', reason: 'Hai bên thống nhất mức bồi thường.' },
@@ -1679,22 +1793,66 @@
                 }
             },
             {
-                id: 'HS32', code: 'BT-2026-032', nyc: 'Đỗ Mạnh Cường', status: 'Chờ ban hành QĐ', agency: 'Bộ Tư pháp',
+                id: 'HS32', code: 'BT-2026-032', nyc: 'Đỗ Mạnh Cường', nbth: 'Đỗ Mạnh Cường', status: 'Chờ ban hành QĐ', agency: 'Bộ Tư pháp',
                 nycCardNo: '001085006789', nycAddressDetail: 'Số 8 phố Trần Duy Hưng', nycPhuongXa: '00175 - Phường Trung Hòa', nycTinhThanh: 'Thành phố Hà Nội',
                 linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', hanhVi: 'Tạm giữ hình sự trái pháp luật.', advanceNum: 0,
+                payoutMethod: 'Nhận tiền mặt', payoutCashPlace: 'Kho bạc Nhà nước Thành phố Hà Nội', payoutCashNote: 'Chi trả tiền mặt tại cơ quan giải quyết bồi thường',
                 verifiedItems: [
                     { key: 'TN', label: 'Thu nhập thực tế bị mất/giảm sút', proposed: 40000000, verified: 36000000, note: '' },
                     { key: 'TT', label: 'Thiệt hại về tinh thần', proposed: 50000000, verified: 42000000, note: '' }
                 ],
-                negotiation: { decision: 'Từ chối thương lượng', items: [] }
+                negotiation: {
+                    participation: 'TU_CHOI', decision: 'Người yêu cầu bồi thường từ chối thương lượng', reason: 'Người yêu cầu có văn bản từ chối thương lượng ngày 02/10/2026.',
+                    docs: [{ name: 'Văn bản từ chối thương lượng của người yêu cầu', file: 'Van_ban_tu_choi_thuong_luong_BT-2026-032.pdf' }], items: []
+                }
             },
             {
-                id: 'HS22', code: 'BT-2026-022', nyc: 'Trần Văn Phú', status: 'Chờ ban hành QĐ', agency: 'Sở Tư pháp Hà Nội',
+                id: 'HS33', code: 'BT-2026-033', nyc: 'Hoàng Thị Lan', nbth: 'Hoàng Thị Lan', status: 'Chờ ban hành QĐ', agency: 'Bộ Tư pháp', requestType: 'money',
+                nycCardNo: '001192007788', nycAddressDetail: 'Số 21 phố Kim Mã', nycPhuongXa: '00118 - Phường Giảng Võ', nycTinhThanh: 'Thành phố Hà Nội',
+                linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: 'Cưỡng chế tháo dỡ công trình trái pháp luật.', advanceNum: 10000000,
+                payoutMethod: 'Nhận qua chuyển khoản', payoutRecName: 'Hoàng Thị Lan', payoutBankAccount: '0451000778899', payoutBankName: 'Vietinbank', payoutBankBranch: 'Chi nhánh Ba Đình',
+                verifiedItems: [
+                    { key: 'TS', label: 'Tài sản bị xâm phạm', proposed: 80000000, verified: 72000000, note: 'Theo biên bản định giá' },
+                    { key: 'TT', label: 'Thiệt hại về tinh thần', proposed: 20000000, verified: 15000000, note: '' }
+                ],
+                negotiation: {
+                    participation: 'TU_CHOI_GIAY_MOI_2_LAN', decision: 'Người yêu cầu bồi thường hai lần từ chối nhận giấy mời tham gia thương lượng', reason: 'Bưu tá xác nhận người yêu cầu từ chối nhận giấy mời ngày 01/10/2026 và 06/10/2026.',
+                    docs: [{ name: 'Biên bản giao giấy mời có xác nhận của bưu tá', file: 'Bien_ban_giao_giay_moi_BT-2026-033.pdf' }], items: []
+                }
+            },
+            {
+                id: 'HS34', code: 'BT-2026-034', nyc: 'Vũ Đình Khoa', nbth: 'Vũ Đình Toàn (bố đẻ)', status: 'Chờ ban hành QĐ', agency: 'Bộ Tư pháp', requestType: 'money',
+                nycCardNo: '001087005566', nycAddressDetail: 'Số 3 ngõ 10 Láng Hạ', nycPhuongXa: '00199 - Phường Láng', nycTinhThanh: 'Thành phố Hà Nội',
+                linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', hanhVi: 'Khám xét chỗ ở trái pháp luật.', advanceNum: 0,
+                payoutMethod: 'Nhận qua chuyển khoản', payoutRecName: 'Vũ Đình Khoa', payoutBankAccount: '1903355667788', payoutBankName: 'Techcombank', payoutBankBranch: 'Chi nhánh Hoàn Kiếm',
+                thietHaiList: [
+                    { type: 1, val: 50000000, xmVal: 45000000, xmNote: 'Theo hóa đơn sửa chữa' },
+                    { type: 5, val: 30000000, xmVal: 25000000, xmNote: 'Theo mức lương cơ sở' }
+                ],
+                negotiation: {
+                    participation: 'VANG_MAT_2_LAN', decision: 'Người yêu cầu bồi thường hai lần không đến địa điểm thương lượng khi đã nhận giấy mời mà không có lý do chính đáng', reason: 'Người yêu cầu vắng mặt tại phiên thương lượng ngày 03/10/2026 và 08/10/2026.',
+                    docs: [{ name: 'Biên bản xác nhận vắng mặt 2 lần', file: 'Bien_ban_vang_mat_BT-2026-034.pdf' }], items: []
+                }
+            },
+            {
+                id: 'PHDD31', code: 'PHDD-2026-031', nyc: 'Nguyễn Thị Hồng Nhung', nbth: 'Nguyễn Thị Hồng Nhung', status: 'Chờ ban hành QĐ', agency: 'Bộ Tư pháp', requestType: 'honor', relatedCode: 'BT-2026-031'
+            },
+            {
+                id: 'HS22', code: 'BT-2026-022', nyc: 'Trần Văn Phú', nbth: 'Trần Văn Phú', status: 'Chờ ban hành QĐ', agency: 'Sở Tư pháp Hà Nội',
                 cardNo: '001088002931', address: 'Số 120 đường Nguyễn Trãi, Thanh Xuân, Hà Nội', advanceNum: 0, totalNum: 180000000,
+                payoutMethod: 'Nhận qua chuyển khoản', payoutRecName: 'Trần Văn Phú', payoutBankAccount: '1018899223344', payoutBankName: 'BIDV', payoutBankBranch: 'Chi nhánh Cầu Giấy',
                 tlResult: 'Thương lượng thành công',
                 thietHaiList: [
                     { type: 2, val: 120000000, xmVal: 110000000, xmNote: 'Lương và phụ cấp thực tế' },
                     { type: 5, val: 60000000, xmVal: 50000000, xmNote: 'Theo mức lương cơ sở' }
+                ]
+            },
+            {
+                id: 'HS15', code: 'BT-2026-015', nyc: 'Phạm Thanh Sơn', nbth: 'Phạm Minh Tuấn (con trai)', status: 'Chờ ban hành QĐ', agency: 'UBND quận Cầu Giấy',
+                nycCardNo: '031089004455', nycAddressDetail: 'Số 45 phố Nguyễn Phong Sắc', nycPhuongXa: 'Phường Dịch Vọng Hậu', nycTinhThanh: 'Thành phố Hà Nội',
+                advanceNum: 15000000, payoutMethod: 'Nhận tiền mặt', payoutCashPlace: 'UBND quận Cầu Giấy, Thành phố Hà Nội', payoutCashNote: 'Nhận tiền mặt tại phòng Kế toán ngân sách',
+                verifiedItems: [
+                    { key: 'TS', label: 'Tài sản bị xâm phạm', proposed: 150000000, verified: 135000000, note: 'Theo kết quả xác minh thực tế' }
                 ]
             }
         ];
@@ -1704,6 +1862,17 @@
         }
         function claimByCode(code) { return loadClaims().find(c => c.code === code) || null; }
         function claimName(c) { return (c && (c.nyc || c.nycName)) || '(Chưa có tên)'; }
+        function claimNbth(c) { return (c && (c.nbth || c.nbthName || c.victimName)) || claimName(c); }
+        function claimCardNo(c) { return (c && (c.nycCardNo || c.cardNo || c.idNo)) || ''; }
+        function claimAgency(c) { return (c && (c.agency || c.unitName)) || (c && c.unitId ? W.unitName(c.unitId) : '--'); }
+        function claimPayoutMethod(c) { return (c && (c.payoutMethod || c.recKenh)) || 'Nhận qua chuyển khoản'; }
+        function claimProposedTotal(c) {
+            const prop = resolveProposal(c);
+            if (prop && prop.items && prop.items.length) {
+                return prop.items.reduce((s, it) => s + num(it.amount !== undefined ? it.amount : (it.sourceAmount || it.verified || it.proposed)), 0);
+            }
+            return num(c && (c.totalNum !== undefined ? c.totalNum : (c.xmTotalAmount || 0)));
+        }
         function damageLabel(it) {
             if (it.label) return it.label;
             if (it.name) return it.name;
@@ -1722,10 +1891,43 @@
             if (!parts.length) push(c.address);
             return parts.join(', ');
         }
+        // Tình trạng tham gia thương lượng (Điều 46 Luật TNBTNN) - mã lưu tại claim.negotiation.participation
+        const NEG_PARTICIPATION = {
+            TU_CHOI: 'Người yêu cầu bồi thường từ chối thương lượng',
+            TU_CHOI_GIAY_MOI_2_LAN: 'Người yêu cầu bồi thường hai lần từ chối nhận giấy mời tham gia thương lượng',
+            VANG_MAT_2_LAN: 'Người yêu cầu bồi thường hai lần không đến địa điểm thương lượng khi đã nhận giấy mời mà không có lý do chính đáng',
+            DONG_Y: 'Đồng ý thương lượng'
+        };
+        const SRC_NOTE_VERIFY = 'Số tiền được xác định căn cứ theo Báo cáo kết quả xác minh thiệt hại do Người yêu cầu không tiến hành thương lượng theo quy định tại khoản 7 Điều 46 Luật TNBTNN';
+        const SRC_NOTE_NEG = 'Số tiền được xác định căn cứ theo Biên bản thương lượng giải quyết bồi thường';
+        // Nhận diện mã tình trạng tham gia thương lượng; tương thích dữ liệu cũ (decision 'Từ chối thương lượng' / 'Đồng ý thương lượng') và decision là nhãn mới đầy đủ
+        function negParticipation(neg) {
+            if (!neg) return '';
+            const code = String(neg.participation || '').trim().toUpperCase();
+            if (NEG_PARTICIPATION[code]) return code;
+            const dec = String(neg.decision || '').trim();
+            if (dec === 'Từ chối thương lượng') return 'TU_CHOI';
+            if (dec === 'Đồng ý thương lượng') return 'DONG_Y';
+            return Object.keys(NEG_PARTICIPATION).find(k => NEG_PARTICIPATION[k].toLowerCase() === dec.toLowerCase()) || '';
+        }
+        function verifiedRows(c) {
+            if (Array.isArray(c && c.verifiedItems) && c.verifiedItems.length) {
+                return c.verifiedItems.map((it, i) => ({ key: it.key || ('V' + i), label: damageLabel(it), proposed: num(it.proposed), verified: num(it.verified), note: it.note || '' }));
+            }
+            if (Array.isArray(c && c.thietHaiList) && c.thietHaiList.length) {
+                return c.thietHaiList.map((it, i) => ({ key: 'T' + (it.type || i), label: damageLabel(it), proposed: num(it.val), verified: it.xmVal !== undefined && it.xmVal !== null && it.xmVal !== '' ? num(it.xmVal) : num(it.val), note: it.xmNote || '' }));
+            }
+            return [];
+        }
         // Quy tắc tự động điền Bảng đề xuất bồi thường theo vụ việc
+        // Kịch bản B (DONG_Y): theo Biên bản thương lượng - mục Thành công lấy Mức tiền đã thương lượng, mục Không thành công lấy Mức xác minh.
+        // Kịch bản A (TU_CHOI / TU_CHOI_GIAY_MOI_2_LAN / VANG_MAT_2_LAN / không có kết quả thương lượng): theo Báo cáo kết quả xác minh thiệt hại.
         function resolveProposal(c) {
             const neg = c && c.negotiation;
-            if (neg && neg.decision === 'Đồng ý thương lượng' && Array.isArray(neg.items) && neg.items.length) {
+            const participation = negParticipation(neg);
+            const participationLabel = participation ? NEG_PARTICIPATION[participation] : '';
+            const base = { participation, participationLabel };
+            if (participation === 'DONG_Y' && Array.isArray(neg.items) && neg.items.length) {
                 let ok = 0, fail = 0;
                 const items = neg.items.map((it, i) => {
                     const success = it.status === 'Thành công';
@@ -1735,21 +1937,32 @@
                         negStatus: success ? 'Thành công' : 'Không thành công', sourceAmount: success ? num(it.agreed) : num(it.verified)
                     };
                 });
-                return { sourceType: 'negotiation', sourceLabel: 'Kết quả thương lượng', summary: `Đồng ý thương lượng: ${ok} mục thương lượng thành công, ${fail} mục thương lượng không thành công. Số tiền mục thành công lấy theo Mức tiền bồi thường đã thương lượng; mục không thành công lấy theo Mức xác minh.`, success: ok, fail, items };
+                return Object.assign(base, { scenario: 'B', sourceType: 'negotiation', sourceLabel: 'Kết quả thương lượng', sourceNote: SRC_NOTE_NEG, summary: `${ok} mục thương lượng thành công, ${fail} mục thương lượng không thành công. Mục thành công lấy theo Mức tiền bồi thường đã thương lượng; mục không thành công lấy theo Mức xác minh.`, success: ok, fail, items });
             }
-            let verified = [];
-            if (Array.isArray(c && c.verifiedItems) && c.verifiedItems.length) {
-                verified = c.verifiedItems.map((it, i) => ({ key: it.key || ('V' + i), label: damageLabel(it), proposed: num(it.proposed), verified: num(it.verified), note: it.note || '' }));
-            } else if (Array.isArray(c && c.thietHaiList) && c.thietHaiList.length) {
-                verified = c.thietHaiList.map((it, i) => ({ key: 'T' + (it.type || i), label: damageLabel(it), proposed: num(it.val), verified: it.xmVal !== undefined ? num(it.xmVal) : num(it.val), note: it.xmNote || '' }));
-            }
-            const reason = neg && neg.decision === 'Từ chối thương lượng' ? 'Từ chối thương lượng' : 'Không có kết quả thương lượng theo từng mục thiệt hại';
+            // Đồng ý thương lượng nhưng chưa có kết quả từng mục: tạm lấy theo Mức xác minh, không áp dụng ghi chú khoản 7 Điều 46
+            const noteA = participation === 'DONG_Y' ? '' : SRC_NOTE_VERIFY;
+            const verified = verifiedRows(c);
             if (verified.length) {
                 verified.forEach(v => { v.sourceAmount = v.verified; });
-                return { sourceType: 'verification', sourceLabel: 'Kết quả xác minh thiệt hại', summary: `${reason}: số tiền lấy theo Mức xác minh của Kết quả xác minh thiệt hại (${verified.length} mục).`, items: verified };
+                return Object.assign(base, { scenario: participation === 'DONG_Y' ? '' : 'A', sourceType: 'verification', sourceLabel: 'Kết quả xác minh thiệt hại', sourceNote: noteA, summary: participation === 'DONG_Y' ? `Chưa có kết quả thương lượng theo từng mục thiệt hại: số tiền tạm lấy theo Mức xác minh (${verified.length} mục).` : `Số tiền lấy theo Mức xác minh của Kết quả xác minh thiệt hại (${verified.length} mục).`, items: verified });
             }
             const total = num(c && (c.xmTotalAmount !== undefined ? c.xmTotalAmount : c.totalNum));
-            return { sourceType: 'none', sourceLabel: 'Hồ sơ vụ việc', summary: 'Vụ việc chưa có kết quả xác minh/thương lượng theo từng mục: lấy theo tổng số tiền của vụ việc.', items: total ? [{ key: 'TOTAL', label: 'Thiệt hại yêu cầu bồi thường', proposed: num(c.totalNum), verified: total, sourceAmount: total }] : [] };
+            return Object.assign(base, { scenario: participation === 'DONG_Y' ? '' : 'A', sourceType: 'none', sourceLabel: 'Hồ sơ vụ việc', sourceNote: noteA, summary: 'Vụ việc chưa có kết quả xác minh theo từng mục: lấy theo tổng số tiền của vụ việc.', items: total ? [{ key: 'TOTAL', label: 'Thiệt hại yêu cầu bồi thường', proposed: num(c.totalNum), verified: total, sourceAmount: total }] : [] });
+        }
+        // Khối Nguồn dữ liệu (MH02/MH03): Nguồn dữ liệu, Tình trạng tham gia thương lượng, Ghi chú nguồn
+        function sourceNoteHtml(s) {
+            if (!s) return '';
+            const lines = [`<div><b>Nguồn dữ liệu:</b> ${esc(s.sourceLabel || '')}${s.summary ? '. ' + esc(s.summary) : ''}</div>`];
+            lines.push(`<div><b>Tình trạng tham gia thương lượng:</b> ${esc(s.participationLabel || (s.legacy ? '-' : 'Chưa có kết quả thương lượng'))}</div>`);
+            if (s.sourceNote) lines.push(`<div><b>Ghi chú nguồn:</b> <i>${esc(s.sourceNote)}</i></div>`);
+            return lines.join('');
+        }
+        function decSourceInfo(d) {
+            return { sourceLabel: d.sourceLabel, summary: d.sourceSummary || '', participationLabel: d.participationLabel || '', sourceNote: d.sourceNote || '', legacy: d.participation === undefined };
+        }
+        // Chỉ vụ việc bồi thường tiền (mã BT-, loại yêu cầu khác 'honor'); loại trừ vụ việc Phục hồi danh dự (PHDD-)
+        function isMoneyClaim(c) {
+            return !!c && !/^PHDD-/i.test(String(c.code || '')) && c.requestType !== 'honor';
         }
         function updateClaimInStorage(code, patch) {
             const list = readJson('claimsList', null);
@@ -2025,6 +2238,11 @@
             const rows = itemsForDoc(d);
             const p = s => `<p style="margin:4pt 0; text-align:justify; text-indent:1cm;">${s}</p>`;
             const r = d.recipient || {};
+            const po = d.payout || {};
+            const isCash = po.method === 'Nhận tiền mặt';
+            const payoutSentence = isCash
+                ? `Tiền bồi thường được chi trả bằng tiền mặt tại ${esc(po.cashPlace || 'Cơ quan giải quyết bồi thường')}.`
+                : `Tiền bồi thường được chi trả vào tài khoản số ${esc(po.account || r.account || '')} tại ${esc(po.bank || r.bank || '')}${(po.branch || r.branch) ? ' - ' + esc(po.branch || r.branch) : ''} (chủ tài khoản: ${esc(po.accHolder || r.name || '')}).`;
             const itemsHtml = rows.length > 1 ? rows.map((it, i) => p(`${i + 1}. ${esc(it.label)}: ${fmt(it.amount)} đồng.`)).join('') : '';
             const adv = num(d.advance);
             return `<div style="font-family:'Times New Roman',serif; font-size:14pt; line-height:1.5; color:#000;">
@@ -2034,14 +2252,14 @@
                 ${p('Căn cứ Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14;')}
                 ${p('Căn cứ Nghị định số 68/2018/NĐ-CP ngày 15 tháng 5 năm 2018 của Chính phủ quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước;')}
                 ${p(`Căn cứ hồ sơ yêu cầu bồi thường mã ${esc(d.claimCode)} của ông/bà ${esc(d.nycName || '')};`)}
-                ${p(d.sourceType === 'negotiation' ? 'Căn cứ Biên bản kết quả thương lượng việc bồi thường;' : 'Căn cứ Báo cáo xác minh thiệt hại;')}
+                ${p(d.sourceType === 'negotiation' ? 'Căn cứ Biên bản thương lượng giải quyết bồi thường;' : 'Căn cứ Báo cáo kết quả xác minh thiệt hại;')}
                 ${p(`Theo đề nghị của cán bộ được cử giải quyết bồi thường.`)}
                 <p style="text-align:center; margin:10pt 0;"><b>QUYẾT ĐỊNH:</b></p>
                 ${p(`<b>Điều 1.</b> Bồi thường cho ông/bà ${esc(d.nycName || '')}; địa chỉ: ${esc(d.nycAddress || '')}.`)}
                 ${p(`Tổng số tiền bồi thường: ${fmt(d.total)} đồng (Viết bằng chữ: ${esc(numberToWords(d.total))}).`)}
                 ${rows.length > 1 ? p('Trong đó:') + itemsHtml : (rows.length === 1 ? p(`Khoản thiệt hại được bồi thường: ${esc(rows[0].label)}.`) : '')}
                 ${adv > 0 ? p(`Số tiền đã tạm ứng: ${fmt(adv)} đồng; số tiền còn lại phải chi trả: ${fmt(num(d.total) - adv)} đồng.`) : ''}
-                ${p(`<b>Điều 2.</b> Người nhận tiền bồi thường: ông/bà ${esc(r.name || '')}, số định danh cá nhân/CCCD: ${esc(r.idNo || '')}. Tiền bồi thường được chi trả vào tài khoản số ${esc(r.account || '')} tại ${esc(r.bank || '')}${r.branch ? ' - ' + esc(r.branch) : ''}.`)}
+                ${p(`<b>Điều 2.</b> Người nhận tiền bồi thường: ông/bà ${esc(r.name || '')}, số định danh cá nhân/CCCD: ${esc(r.idNo || '')}. ${payoutSentence}`)}
                 ${p(`<b>Điều 3.</b> Quyết định này có hiệu lực ${esc(d.effectiveText || '')}.`)}
                 ${p(`<b>Điều 4.</b> ${esc(unit)}, ông/bà ${esc(d.nycName || '')} và các cơ quan, tổ chức, cá nhân có liên quan chịu trách nhiệm thi hành Quyết định này./.`)}
                 ${signerBlock(d)}
@@ -2108,6 +2326,8 @@
             const d = getDec(id); if (!d) return;
             detailId = id;
             const r = d.recipient || {};
+            const payout = d.payout || {};
+            const payoutMethod = payout.method || (r.account ? 'Nhận qua chuyển khoản' : 'Nhận tiền mặt');
             const t = itemsTableHtml(d, false);
             const rec = W.getRecord(d.claimCode);
             const showFlow = rec && rec.approval && (rec.approval.kind === d.wfKind || rec.approval.kind === d.lastKind);
@@ -2134,7 +2354,7 @@
                     ${dtlItem('Họ và tên', esc(d.nycName))}${dtlItem('Địa chỉ', esc(d.nycAddress))}
                 </div></div></div>
                 <div class="dtl-card"><div class="dtl-card-head"><i class="fa-solid fa-coins"></i> Bảng nội dung đề xuất bồi thường</div><div class="dtl-card-body">
-                    <div class="src-note">Nguồn dữ liệu: ${esc(d.sourceLabel || '')}${d.sourceSummary ? ' - ' + esc(d.sourceSummary) : ''}</div>
+                    <div class="src-note">${sourceNoteHtml(decSourceInfo(d))}</div>
                     <div class="table-container"><table class="custom-table compact-table" style="min-width:760px;"><thead>${t.head}</thead><tbody>${t.body}</tbody></table></div>
                     <div class="dtl-money-grid" style="margin-top:14px;">
                         <div class="dtl-money-box"><span class="dtl-label">Tổng số tiền bồi thường (VNĐ)</span><span class="dtl-value" style="color:var(--primary-light);">${fmt(d.total)}</span><span class="dtl-value" style="font-style:italic; font-weight:500; font-size:12.5px; color:var(--text-muted);">(Viết bằng chữ: ${esc(numberToWords(d.total))})</span></div>
@@ -2144,7 +2364,14 @@
                     ${d.adjustReason ? `<div style="margin-top:12px; background:#FFFBEB; border:1px solid #FDE68A; border-left:4px solid var(--warning-color); border-radius:6px; padding:10px 14px; font-size:13px; color:#92400E;"><b>Lý do điều chỉnh:</b> ${esc(d.adjustReason)}</div>` : ''}
                 </div></div>
                 <div class="dtl-card"><div class="dtl-card-head"><i class="fa-solid fa-hand-holding-dollar"></i> Người nhận tiền bồi thường</div><div class="dtl-card-body"><div class="dtl-grid cols-3">
-                    ${dtlItem('Họ và tên người nhận', esc(r.name || '-'))}${dtlItem('Số định danh cá nhân/CCCD', esc(r.idNo || '-'))}${dtlItem('Số tài khoản', esc(r.account || '-'))}${dtlItem('Ngân hàng', esc(r.bank || '-'))}${dtlItem('Chi nhánh', esc(r.branch || '-'))}
+                    ${dtlItem('Họ và tên người nhận', esc(r.name || '-'))}${dtlItem('Số định danh cá nhân/CCCD', esc(r.idNo || '-'))}${dtlItem('Mối quan hệ với người bị thiệt hại', esc(r.relation || 'Bản thân người bị thiệt hại'))}
+                </div></div></div>
+                <div class="dtl-card"><div class="dtl-card-head"><i class="fa-solid fa-money-bill-transfer"></i> Phương thức chi trả tiền bồi thường</div><div class="dtl-card-body"><div class="dtl-grid cols-3">
+                    ${dtlItem('Phương thức nhận tiền', `<span class="badge ${payoutMethod === 'Nhận qua chuyển khoản' ? 'badge-pending' : 'badge-draft'}">${esc(payoutMethod)}</span>`)}
+                    ${payoutMethod === 'Nhận qua chuyển khoản'
+                        ? `${dtlItem('Chủ tài khoản', esc(payout.accHolder || r.name || '-'))}${dtlItem('Số tài khoản', esc(payout.account || r.account || '-'))}${dtlItem('Ngân hàng', esc(payout.bank || r.bank || '-'))}${dtlItem('Chi nhánh', esc(payout.branch || r.branch || '-'))}`
+                        : `${dtlItem('Cơ quan / Địa chỉ chi trả tiền mặt', esc(payout.cashPlace || '-'))}${dtlItem('Số biên lai / Ghi chú chi trả', esc(payout.cashNote || '-'))}`
+                    }
                 </div></div></div>
                 ${amend}
                 ${showFlow ? `<div class="dtl-card"><div class="dtl-card-head"><i class="fa-solid fa-sitemap"></i> Luồng phê duyệt</div><div class="dtl-card-body approval-table-wrap">${approvalTableOnly(rec)}</div></div>` : ''}
@@ -2184,7 +2411,7 @@
         // ---------------- MH02 - Lập / Cập nhật Quyết định ----------------
         let form = null; // { id, claimCode, unitId, proposal, items, advance, uploadedName }
         function eligibleClaims() {
-            return loadClaims().filter(c => c.status === 'Chờ ban hành QĐ' && !decisions.some(d => d.claimCode === c.code && d.status !== ST.DA_HUY));
+            return loadClaims().filter(c => isMoneyClaim(c) && c.status === 'Chờ ban hành QĐ' && !decisions.some(d => d.claimCode === c.code && d.status !== ST.DA_HUY));
         }
         function claimUnitId(code, claim) {
             const rec = W.getRecord(code);
@@ -2209,6 +2436,34 @@
             sel.value = leaders.includes(selected) ? selected : '';
             return recLike;
         }
+        function toggleDecisionCards(show) {
+            const displayStyle = show ? 'block' : 'none';
+            ['qdLeaderCard', 'qdNycCard', 'qdItemsCard', 'qdRecCard', 'qdPayoutCard', 'qdEffectiveCard', 'qdDraftCard'].forEach(id => {
+                const el = $(id);
+                if (el) el.style.display = displayStyle;
+            });
+            const submitBtn = $('qdSubmitBtn');
+            if (submitBtn) submitBtn.style.display = show ? 'inline-flex' : 'none';
+        }
+        function onPayoutMethodChange(method) {
+            const isTransfer = method === 'Nhận qua chuyển khoản';
+            $('qdPayoutTransferGroup').style.display = isTransfer ? 'grid' : 'none';
+            $('qdPayoutCashGroup').style.display = isTransfer ? 'none' : 'grid';
+        }
+        function previewUploadedFile() {
+            if (form && form.uploadedName) {
+                showToast('Giả lập mở tệp dự thảo: ' + form.uploadedName, 'info');
+            }
+        }
+        function removeUploadedFile() {
+            if (form) form.uploadedName = '';
+            $('qdDraftFile').value = '';
+            $('qdDraftFileName').innerText = 'Chưa chọn tệp';
+            $('qdDraftFileActions').style.display = 'none';
+            const r = document.querySelector('input[name="qdDraftSrc"][value="uploaded"]');
+            if (r) r.checked = false;
+            onFormDraftChange();
+        }
         function openForm(id) {
             syncFromWorkflow();
             const d = id ? getDec(id) : null;
@@ -2216,15 +2471,7 @@
             form = { id: d ? d.id : null, claimCode: d ? d.claimCode : '', unitId: d ? d.unitId : '', items: [], advance: 0, uploadedName: '' };
             clearInvalid($('qdFormPanel'));
             $('qdFormTitle').innerHTML = `<i class="fa-solid fa-file-invoice"></i> ${d ? 'CẬP NHẬT QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG' : 'TẠO MỚI QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG'}`;
-            const sel = $('qdClaim');
-            if (d) {
-                sel.innerHTML = `<option value="${esc(d.claimCode)}">${esc(d.claimCode)} - ${esc(d.nycName)}</option>`;
-                sel.disabled = true;
-            } else {
-                const list = eligibleClaims();
-                sel.innerHTML = '<option value="">-- Chọn vụ việc --</option>' + list.map(c => `<option value="${esc(c.code)}">${esc(c.code)} - ${esc(claimName(c))}</option>`).join('');
-                sel.disabled = false;
-            }
+
             const rb = $('qdFormReturnedBlock');
             if (d && d.returned) {
                 rb.style.display = 'block';
@@ -2233,25 +2480,63 @@
             document.querySelectorAll('input[name="qdDraftSrc"]').forEach(r => { r.checked = false; });
             $('qdDraftFile').value = '';
             $('qdDraftFileName').innerText = 'Chưa chọn tệp';
+            $('qdDraftFileActions').style.display = 'none';
             $('qdNote').value = '';
+
             if (d) {
+                // Chế độ Cập nhật: khóa ô tìm kiếm, hiển thị các khối ngay
+                $('formClaimSearchInput').value = d.claimCode;
+                $('formClaimSearchInput').disabled = true;
+                $('btnSearchClaim').disabled = true;
+                $('btnAdvSearchClaim').disabled = true;
+                $('selectedClaimBadge').style.display = 'none';
+                toggleDecisionCards(true);
+
                 form.items = JSON.parse(JSON.stringify(d.items || []));
                 form.advance = num(d.advance);
-                form.proposal = { sourceType: d.sourceType, sourceLabel: d.sourceLabel, summary: d.sourceSummary || '' };
+                form.proposal = { sourceType: d.sourceType, sourceLabel: d.sourceLabel, summary: d.sourceSummary || '', scenario: d.scenario || '', participation: d.participation, participationLabel: d.participationLabel || '', sourceNote: d.sourceNote || '', legacy: d.participation === undefined };
                 $('qdNycName').value = d.nycName || '';
                 $('qdNycAddress').value = d.nycAddress || '';
                 const r = d.recipient || {};
-                $('qdRecName').value = r.name || ''; $('qdRecIdNo').value = r.idNo || ''; $('qdRecAccount').value = r.account || ''; $('qdRecBank').value = r.bank || ''; $('qdRecBranch').value = r.branch || '';
+                $('qdRecName').value = r.name || '';
+                $('qdRecIdNo').value = r.idNo || '';
+                $('qdRecRelation').value = r.relation || 'Bản thân người bị thiệt hại';
+
+                const po = d.payout || {};
+                const pm = po.method || (r.account ? 'Nhận qua chuyển khoản' : 'Nhận tiền mặt');
+                $('qdPayoutMethod').value = pm;
+                onPayoutMethodChange(pm);
+                $('qdPayoutAccHolder').value = po.accHolder || r.name || '';
+                $('qdRecAccount').value = po.account || r.account || '';
+                $('qdRecBank').value = po.bank || r.bank || '';
+                $('qdRecBranch').value = po.branch || r.branch || '';
+                $('qdPayoutCashPlace').value = po.cashPlace || '';
+                $('qdPayoutCashNote').value = po.cashNote || '';
+
                 $('qdEffective').value = d.effectiveText || '';
                 $('qdAdjustReason').value = d.adjustReason || '';
                 if (d.draftDoc) {
                     const radio = document.querySelector(`input[name="qdDraftSrc"][value="${d.draftDoc.source}"]`);
                     if (radio) radio.checked = true;
-                    if (d.draftDoc.source === 'uploaded') { form.uploadedName = d.draftDoc.uploadedName || ''; $('qdDraftFileName').innerText = form.uploadedName || 'Chưa chọn tệp'; }
+                    if (d.draftDoc.source === 'uploaded') {
+                        form.uploadedName = d.draftDoc.uploadedName || '';
+                        $('qdDraftFileName').innerText = form.uploadedName || 'Chưa chọn tệp';
+                        $('qdDraftFileActions').style.display = form.uploadedName ? 'inline-flex' : 'none';
+                    }
                 }
                 applyClaimContext(d.claimCode, d.leaderId);
             } else {
-                ['qdNycName', 'qdNycAddress', 'qdRecName', 'qdRecIdNo', 'qdRecAccount', 'qdRecBank', 'qdRecBranch', 'qdAdjustReason'].forEach(f => { $(f).value = ''; });
+                // Chế độ Tạo mới: ô tìm kiếm mở, mặc định ẨN TOÀN BỘ các khối chi tiết
+                $('formClaimSearchInput').value = '';
+                $('formClaimSearchInput').disabled = false;
+                $('btnSearchClaim').disabled = false;
+                $('btnAdvSearchClaim').disabled = false;
+                $('selectedClaimBadge').style.display = 'none';
+                toggleDecisionCards(false);
+
+                ['qdNycName', 'qdNycAddress', 'qdRecName', 'qdRecIdNo', 'qdRecRelation', 'qdPayoutAccHolder', 'qdRecAccount', 'qdRecBank', 'qdRecBranch', 'qdPayoutCashPlace', 'qdPayoutCashNote', 'qdAdjustReason'].forEach(f => { if ($(f)) $(f).value = ''; });
+                $('qdPayoutMethod').value = 'Nhận qua chuyển khoản';
+                onPayoutMethodChange('Nhận qua chuyển khoản');
                 $('qdEffective').value = 'Kể từ ngày ký';
                 form.proposal = null;
                 applyClaimContext('', '');
@@ -2267,21 +2552,67 @@
             if (!code) {
                 $('qdUnitText').innerText = '--';
                 $('qdLeader').innerHTML = '<option value="">-- Chọn vụ việc trước --</option>';
-                $('qdPathText').innerText = '--';
+                $('qdPathLine').innerHTML = '';
                 return;
             }
             const claim = claimByCode(code);
             form.unitId = form.unitId || claimUnitId(code, claim);
             $('qdUnitText').innerText = W.unitName(form.unitId);
             const recLike = fillLeaderSelect('qdLeader', code, leaderId);
-            const path = W.computeApprovalPath(recLike);
-            $('qdPathText').innerText = path.length ? path.map((u, i) => `Cấp ${i + 1}: ${W.unitName(u)}`).join(' → ') : 'Chưa xác định được cấp phê duyệt';
+            $('qdPathLine').innerHTML = W.approvalPathLineHtml(recLike);
+        }
+        // Xử lý Tìm kiếm nhanh vụ việc
+        function searchClaimByCode() {
+            const input = $('formClaimSearchInput');
+            const val = input.value.trim();
+            if (!val) {
+                markInvalid(input, true, 'Đây là trường bắt buộc');
+                input.focus();
+                return;
+            }
+            const eligible = eligibleClaims();
+            const found = eligible.find(c => c.code.toLowerCase() === val.toLowerCase());
+            if (found) {
+                markInvalid(input, false);
+                selectClaim(found.code);
+            } else {
+                markInvalid(input, true, 'Không tìm thấy vụ việc bồi thường phù hợp hoặc vụ việc chưa đủ điều kiện lập quyết định');
+                input.focus();
+            }
+        }
+        // Chọn vụ việc và nạp dữ liệu
+        function selectClaim(code) {
+            const c = claimByCode(code);
+            if (!c) return;
+            form.claimCode = code;
+            $('formClaimSearchInput').value = code;
+            markInvalid($('formClaimSearchInput'), false);
+            $('selectedClaimText').innerHTML = `<i class="fa-solid fa-check"></i> Đã chọn: <b>${esc(code)}</b> - ${esc(claimName(c))}`;
+            $('selectedClaimBadge').style.display = 'inline-flex';
+            onClaimChange(code);
+            toggleDecisionCards(true);
+        }
+        // Đổi vụ việc (reset về trạng thái ban đầu)
+        function resetClaimSelection() {
+            form.claimCode = '';
+            form.unitId = '';
+            form.items = [];
+            form.proposal = null;
+            $('formClaimSearchInput').value = '';
+            $('formClaimSearchInput').disabled = false;
+            $('btnSearchClaim').disabled = false;
+            $('btnAdvSearchClaim').disabled = false;
+            $('selectedClaimBadge').style.display = 'none';
+            markInvalid($('formClaimSearchInput'), false);
+            applyClaimContext('', '');
+            toggleDecisionCards(false);
+            $('formClaimSearchInput').focus();
         }
         // Tự động điền khi chọn Mã vụ việc
         function onClaimChange(code) {
             form.claimCode = code;
             form.unitId = '';
-            markInvalid($('qdClaim'), false);
+            markInvalid($('formClaimSearchInput'), false);
             if (!code) { form.items = []; form.proposal = null; applyClaimContext('', ''); renderItems(); return; }
             const c = claimByCode(code);
             const prop = resolveProposal(c);
@@ -2291,22 +2622,92 @@
             $('qdNycName').value = claimName(c);
             $('qdNycAddress').value = composeAddress(c);
             $('qdRecName').value = (c && (c.payoutRecName || c.recName)) || claimName(c);
-            $('qdRecIdNo').value = (c && (c.nycCardNo || c.cardNo)) || '';
+            $('qdRecIdNo').value = claimCardNo(c);
+            $('qdRecRelation').value = 'Bản thân người bị thiệt hại';
+
+            const method = claimPayoutMethod(c);
+            $('qdPayoutMethod').value = method;
+            onPayoutMethodChange(method);
+            $('qdPayoutAccHolder').value = (c && (c.payoutRecName || c.recName)) || claimName(c);
             $('qdRecAccount').value = (c && (c.payoutBankAccount || c.recBankAccount)) || '';
             $('qdRecBank').value = (c && (c.payoutBankName || c.recBankName)) || '';
             $('qdRecBranch').value = (c && (c.payoutBankBranch || c.recBankBranch)) || '';
+            $('qdPayoutCashPlace').value = (c && c.payoutCashPlace) || 'Kho bạc Nhà nước Thành phố Hà Nội';
+            $('qdPayoutCashNote').value = (c && c.payoutCashNote) || 'Chi trả trực tiếp bằng tiền mặt';
+
             $('qdAdjustReason').value = '';
-            ['qdNycName', 'qdNycAddress', 'qdRecName', 'qdRecIdNo', 'qdRecAccount', 'qdRecBank'].forEach(f => { if ($(f).value) markInvalid($(f), false); });
+            $('qdGenDocHint').innerText = `Mau_18_BTNN_Quyet_dinh_giai_quyet_boi_thuong_${code}.doc (sinh theo nội dung đang nhập)`;
+            ['qdNycName', 'qdNycAddress', 'qdRecName', 'qdRecIdNo', 'qdPayoutAccHolder', 'qdRecAccount', 'qdRecBank', 'qdPayoutCashPlace'].forEach(f => { if ($(f) && $(f).value) markInvalid($(f), false); });
             applyClaimContext(code, '');
             renderItems();
             onFormDraftChange();
         }
+        // ---------------- MH02a - Popup Tìm kiếm nâng cao vụ việc ----------------
+        function openClaimLookupModal() {
+            $('lookupClaimCode').value = '';
+            $('lookupClaimNyc').value = '';
+            $('lookupClaimNbth').value = '';
+            $('lookupClaimCardNo').value = '';
+            renderClaimLookupResults();
+            openModal('qdClaimLookupModal');
+        }
+        function closeClaimLookupModal() {
+            closeModal('qdClaimLookupModal');
+        }
+        function clearClaimLookupFilters() {
+            $('lookupClaimCode').value = '';
+            $('lookupClaimNyc').value = '';
+            $('lookupClaimNbth').value = '';
+            $('lookupClaimCardNo').value = '';
+            renderClaimLookupResults();
+        }
+        function renderClaimLookupResults() {
+            const codeQuery = $('lookupClaimCode').value.trim().toLowerCase();
+            const nycQuery = $('lookupClaimNyc').value.trim().toLowerCase();
+            const nbthQuery = $('lookupClaimNbth').value.trim().toLowerCase();
+            const idQuery = $('lookupClaimCardNo').value.trim().toLowerCase();
+
+            const list = eligibleClaims().filter(c => {
+                if (codeQuery && !c.code.toLowerCase().includes(codeQuery)) return false;
+                if (nycQuery && !claimName(c).toLowerCase().includes(nycQuery)) return false;
+                if (nbthQuery && !claimNbth(c).toLowerCase().includes(nbthQuery)) return false;
+                if (idQuery && !claimCardNo(c).toLowerCase().includes(idQuery)) return false;
+                return true;
+            });
+
+            const tbody = $('claimLookupResultsBody');
+            if (!list.length) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px; font-style:italic; color:var(--text-muted);">Không tìm thấy vụ việc bồi thường phù hợp với điều kiện tìm kiếm.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = list.map(c => {
+                const total = claimProposedTotal(c);
+                return `<tr>
+                    <td style="text-align:center; font-weight:700; color:var(--primary-light);">${esc(c.code)}</td>
+                    <td style="font-weight:600;">${esc(claimName(c))}</td>
+                    <td>${esc(claimNbth(c))}</td>
+                    <td>${esc(claimAgency(c))}</td>
+                    <td style="text-align:right; font-weight:600; color:var(--primary-color);">${fmt(total)}</td>
+                    <td style="text-align:center;"><span class="badge badge-wait">${esc(c.status || 'Chờ ban hành QĐ')}</span></td>
+                    <td style="text-align:center;">
+                        <button type="button" class="btn btn-primary btn-sm" onclick="selectClaimFromLookup('${esc(c.code)}')"><i class="fa-solid fa-check"></i> Chọn</button>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+        function selectClaimFromLookup(code) {
+            selectClaim(code);
+            closeClaimLookupModal();
+        }
+
         function renderItems() {
             const d = { sourceType: form.proposal ? form.proposal.sourceType : '', items: form.items };
             const t = itemsTableHtml(d, true);
             $('qdItemsHead').innerHTML = t.head;
             $('qdItemsBody').innerHTML = form.claimCode ? t.body : '<tr><td colspan="5" style="text-align:center; font-style:italic; color:var(--text-muted);">Chọn vụ việc để hệ thống tự động điền dữ liệu.</td></tr>';
-            $('qdSourceNote').innerText = form.proposal ? `Nguồn dữ liệu: ${form.proposal.sourceLabel}. ${form.proposal.summary || ''}` : 'Chọn vụ việc để hệ thống tự động điền dữ liệu đề xuất bồi thường.';
+            $('qdSourceNote').innerHTML = form.proposal ? sourceNoteHtml(form.proposal) : '';
+            $('qdSourceNote').style.display = form.proposal ? '' : 'none';
             recalcTotals();
         }
         function onAmountInput(i, val) {
@@ -2329,10 +2730,6 @@
         function formDraftSource() { const r = document.querySelector('input[name="qdDraftSrc"]:checked'); return r ? r.value : ''; }
         function onFormDraftChange() {
             const src = formDraftSource();
-            const target = $('qdDraftTarget');
-            const name = src === 'generated' ? (form && form.claimCode ? qdBaseName(form.claimCode) + '.doc' : '') : (src === 'uploaded' ? (form && form.uploadedName) || '' : '');
-            target.style.display = name ? 'block' : 'none';
-            target.innerHTML = name ? `<i class="fa-solid fa-file-word"></i> Văn bản sẽ trình Lãnh đạo: <b>${esc(name)}</b>` : '';
             if (src) { $('qdDraftBox').classList.remove('is-invalid'); $('qdDraftError').style.display = 'none'; }
         }
         function onFormDraftFile(input) {
@@ -2341,6 +2738,7 @@
             if (!/\.(doc|docx|pdf)$/i.test(f.name)) { showToast('Tệp không đúng định dạng (chỉ chấp nhận .doc, .docx, .pdf).', 'error'); input.value = ''; return; }
             form.uploadedName = f.name;
             $('qdDraftFileName').innerText = f.name;
+            $('qdDraftFileActions').style.display = 'inline-flex';
             const r = document.querySelector('input[name="qdDraftSrc"][value="uploaded"]'); if (r) r.checked = true;
             onFormDraftChange();
         }
@@ -2352,26 +2750,77 @@
                 nycName: $('qdNycName').value.trim(), nycAddress: $('qdNycAddress').value.trim(),
                 items: form.items.map(it => Object.assign({}, it)), total, advance: num(form.advance), net: total - num(form.advance),
                 sourceType: form.proposal ? form.proposal.sourceType : '', sourceLabel: form.proposal ? form.proposal.sourceLabel : '', sourceSummary: form.proposal ? form.proposal.summary : '',
+                scenario: form.proposal ? form.proposal.scenario || '' : '', participation: form.proposal ? form.proposal.participation || '' : '', participationLabel: form.proposal ? form.proposal.participationLabel || '' : '', sourceNote: form.proposal ? form.proposal.sourceNote || '' : '',
                 adjustReason: isAdjusted() ? $('qdAdjustReason').value.trim() : '',
-                recipient: { name: $('qdRecName').value.trim(), idNo: $('qdRecIdNo').value.trim(), account: $('qdRecAccount').value.trim(), bank: $('qdRecBank').value.trim(), branch: $('qdRecBranch').value.trim() },
+                recipient: {
+                    name: $('qdRecName').value.trim(),
+                    idNo: $('qdRecIdNo').value.trim(),
+                    relation: $('qdRecRelation') ? $('qdRecRelation').value.trim() : 'Bản thân người bị thiệt hại',
+                    account: $('qdRecAccount').value.trim(),
+                    bank: $('qdRecBank').value.trim(),
+                    branch: $('qdRecBranch').value.trim()
+                },
+                payout: {
+                    method: $('qdPayoutMethod').value,
+                    accHolder: $('qdPayoutAccHolder').value.trim(),
+                    account: $('qdRecAccount').value.trim(),
+                    bank: $('qdRecBank').value.trim(),
+                    branch: $('qdRecBranch').value.trim(),
+                    cashPlace: $('qdPayoutCashPlace').value.trim(),
+                    cashNote: $('qdPayoutCashNote').value.trim()
+                },
                 effectiveText: $('qdEffective').value.trim(),
                 draftDoc: src === 'generated' ? { source: 'generated', generatedName: qdBaseName(form.claimCode) + '.doc' } : (src === 'uploaded' ? { source: 'uploaded', uploadedName: form.uploadedName, generatedName: qdBaseName(form.claimCode) + '.doc' } : null),
                 note: $('qdNote').value.trim()
             };
         }
+        // Focus ô lỗi đầu tiên (theo thứ tự hiển thị) trong phạm vi
+        function focusFirstInvalid(scope) {
+            const el = scope.querySelector('input.is-invalid, select.is-invalid, textarea.is-invalid');
+            if (el) { el.scrollIntoView({ block: 'center' }); el.focus(); }
+        }
+        // Validate các trường cấu thành văn bản Mẫu 18/BTNN trước khi Xem dự thảo QĐ / Tải file (không toast, không mở tab khi thiếu)
+        function validateDocFields() {
+            const panel = $('qdFormPanel');
+            clearInvalid(panel);
+            let ok = true;
+            if (!form || !form.claimCode) {
+                markInvalid($('formClaimSearchInput'), true, 'Đây là trường bắt buộc');
+                ok = false;
+            }
+            ['qdNycName', 'qdNycAddress', 'qdRecName', 'qdRecIdNo'].forEach(id => { if (!requireField(id)) ok = false; });
+            (form ? form.items : []).forEach((it, i) => { const el = $('qdAmt_' + i); if (el && !String(el.value).trim()) { markInvalid(el, true); ok = false; } });
+            if (form && isAdjusted() && !requireField('qdAdjustReason')) ok = false;
+            const method = $('qdPayoutMethod') ? $('qdPayoutMethod').value : 'Nhận qua chuyển khoản';
+            if (method === 'Nhận qua chuyển khoản') {
+                ['qdPayoutAccHolder', 'qdRecAccount', 'qdRecBank'].forEach(id => { if (!requireField(id)) ok = false; });
+            } else {
+                if (!requireField('qdPayoutCashPlace')) ok = false;
+            }
+            if (!requireField('qdEffective')) ok = false;
+            if (!ok) focusFirstInvalid(panel);
+            return ok;
+        }
         function previewFormDraft() {
-            if (!form || !form.claimCode) { markInvalid($('qdClaim'), true); showToast('Vui lòng chọn vụ việc trước khi xem dự thảo.', 'error'); return; }
+            if (!validateDocFields()) return;
             W.openDocTab(buildQdDocHtml(collectForm()), qdBaseName(form.claimCode));
         }
         function downloadFormDraft() {
-            if (!form || !form.claimCode) { markInvalid($('qdClaim'), true); showToast('Vui lòng chọn vụ việc trước khi tải dự thảo.', 'error'); return; }
+            if (!validateDocFields()) return;
             W.downloadDocWord(buildQdDocHtml(collectForm()), qdBaseName(form.claimCode));
         }
         function validateForm() {
             clearInvalid($('qdFormPanel'));
             let ok = true;
-            if (!form.claimCode) { markInvalid($('qdClaim'), true); ok = false; }
-            ['qdLeader', 'qdNycName', 'qdNycAddress', 'qdRecName', 'qdRecIdNo', 'qdRecAccount', 'qdRecBank', 'qdEffective'].forEach(id => { if (!requireField(id)) ok = false; });
+            if (!form.claimCode) { markInvalid($('formClaimSearchInput'), true, 'Đây là trường bắt buộc'); ok = false; }
+            ['qdLeader', 'qdNycName', 'qdNycAddress', 'qdRecName', 'qdRecIdNo'].forEach(id => { if (!requireField(id)) ok = false; });
+            const method = $('qdPayoutMethod') ? $('qdPayoutMethod').value : 'Nhận qua chuyển khoản';
+            if (method === 'Nhận qua chuyển khoản') {
+                ['qdPayoutAccHolder', 'qdRecAccount', 'qdRecBank'].forEach(id => { if (!requireField(id)) ok = false; });
+            } else {
+                if (!requireField('qdPayoutCashPlace')) ok = false;
+            }
+            if (!requireField('qdEffective')) ok = false;
             if (form.claimCode && !form.items.length) { showToast('Vụ việc chưa có dữ liệu đề xuất bồi thường.', 'error'); ok = false; }
             form.items.forEach((it, i) => { const el = $('qdAmt_' + i); if (el && !String(el.value).trim()) { markInvalid(el, true); ok = false; } });
             if (isAdjusted() && !requireField('qdAdjustReason')) ok = false;
@@ -2382,6 +2831,7 @@
                 $('qdDraftError').style.display = 'block';
                 ok = false;
             }
+            if (!ok) focusFirstInvalid($('qdFormPanel'));
             return ok;
         }
         // Bảo đảm vụ việc có hồ sơ luồng (module YCBT) để trình qua Hồ sơ trình Lãnh đạo
@@ -2455,15 +2905,10 @@
             onReqDraftChange();
             openModal('qdRequestModal');
         }
-        function ensureWorkflowPreviewLeaders(d, selected) { fillLeaderSelect('qdReqLeader', d.claimCode, selected); }
+        function ensureWorkflowPreviewLeaders(d, selected) { const recLike = fillLeaderSelect('qdReqLeader', d.claimCode, selected); $('qdReqPathLine').innerHTML = W.approvalPathLineHtml(recLike); }
         function reqDraftSource() { const r = document.querySelector('input[name="qdReqDraftSrc"]:checked'); return r ? r.value : ''; }
         function onReqDraftChange() {
-            const d = reqCtx && getDec(reqCtx.id);
             const src = reqDraftSource();
-            const name = src === 'generated' && d ? reqBaseName(reqCtx.kind, d.claimCode) + '.doc' : (src === 'uploaded' ? reqCtx.uploadedName : '');
-            const t = $('qdReqDraftTarget');
-            t.style.display = name ? 'block' : 'none';
-            t.innerHTML = name ? `<i class="fa-solid fa-file-word"></i> Văn bản sẽ trình Lãnh đạo: <b>${esc(name)}</b>` : '';
             if (src) { $('qdReqDraftBox').classList.remove('is-invalid'); $('qdReqDraftError').style.display = 'none'; }
         }
         function onReqDraftFile(input) {
@@ -2475,8 +2920,16 @@
             const r = document.querySelector('input[name="qdReqDraftSrc"][value="uploaded"]'); if (r) r.checked = true;
             onReqDraftChange();
         }
-        function previewReqDraft() { const d = getDec(reqCtx.id); W.openDocTab(buildRequestDocHtml(d, reqCtx.kind, $('qdReqContent').value), reqBaseName(reqCtx.kind, d.claimCode)); }
-        function downloadReqDraft() { const d = getDec(reqCtx.id); W.downloadDocWord(buildRequestDocHtml(d, reqCtx.kind, $('qdReqContent').value), reqBaseName(reqCtx.kind, d.claimCode)); }
+        // Validate Lý do hủy / Nội dung sửa chữa, đính chính trước khi Xem dự thảo / Tải file
+        function validateReqDocFields() {
+            const el = $('qdReqContent');
+            const ok = !!el.value.trim();
+            markInvalid(el, !ok);
+            if (!ok) el.focus();
+            return ok;
+        }
+        function previewReqDraft() { if (!validateReqDocFields()) return; const d = getDec(reqCtx.id); W.openDocTab(buildRequestDocHtml(d, reqCtx.kind, $('qdReqContent').value), reqBaseName(reqCtx.kind, d.claimCode)); }
+        function downloadReqDraft() { if (!validateReqDocFields()) return; const d = getDec(reqCtx.id); W.downloadDocWord(buildRequestDocHtml(d, reqCtx.kind, $('qdReqContent').value), reqBaseName(reqCtx.kind, d.claimCode)); }
         function submitRequest() {
             const d = getDec(reqCtx.id); if (!d) return;
             const m = $('qdRequestModal');
@@ -2578,7 +3031,7 @@
             const last = W.isLastApprovalLevel(rec);
             $('qdApproveTitle').innerText = mode === 'approve' ? `Phê duyệt - ${rec.approval.kind}` : `Từ chối phê duyệt - ${rec.approval.kind}`;
             const docName = draftDocName(rec.approval.draftDoc);
-            $('qdApproveSummary').innerHTML = `<div><span style="color:#64748b;">Nội dung trình:</span> <b>${esc(rec.approval.kind)}</b> · Cấp ${rec.approval.level + 1}/${rec.approval.path.length}</div><div><span style="color:#64748b;">Mã vụ việc - Người yêu cầu:</span> <b>${esc(d.claimCode)} - ${esc(d.nycName)}</b></div><div><span style="color:#64748b;">${d.request ? (d.request.kind === KIND_HUY ? 'Lý do hủy' : 'Nội dung sửa chữa, đính chính') : 'Tổng số tiền bồi thường'}:</span> <b>${d.request ? esc(d.request.content) : fmt(d.total) + ' đồng'}</b></div><div><span style="color:#64748b;">Văn bản dự thảo trình:</span> <b>${esc(docName || '-')}</b> <a href="javascript:void(0)" onclick="viewDraft('${d.id}','${d.request ? 'request' : 'qd'}')">Xem dự thảo</a></div>`;
+            $('qdApproveSummary').innerHTML = `<div><span style="color:#64748b;">Nội dung trình:</span> <b>${esc(rec.approval.kind)}</b></div><div><span style="color:#64748b;">Mã vụ việc - Người yêu cầu:</span> <b>${esc(d.claimCode)} - ${esc(d.nycName)}</b></div><div><span style="color:#64748b;">${d.request ? (d.request.kind === KIND_HUY ? 'Lý do hủy' : 'Nội dung sửa chữa, đính chính') : 'Tổng số tiền bồi thường'}:</span> <b>${d.request ? esc(d.request.content) : fmt(d.total) + ' đồng'}</b></div><div><span style="color:#64748b;">Văn bản dự thảo trình:</span> <b>${esc(docName || '-')}</b> <a href="javascript:void(0)" onclick="viewDraft('${d.id}','${d.request ? 'request' : 'qd'}')">Xem dự thảo</a></div>`;
             $('qdApproveTable').innerHTML = approvalTableOnly(rec);
             const nextGroup = $('qdApproveNextGroup');
             if (mode === 'approve' && !last) {
@@ -2628,11 +3081,38 @@
             }
             W.mountUserSwitcher();
             showList();
+            // Lắng nghe phím Enter cho ô tìm kiếm vụ việc
+            const formClaimInput = $('formClaimSearchInput');
+            if (formClaimInput) {
+                formClaimInput.addEventListener('keydown', e => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        searchClaimByCode();
+                    }
+                });
+            }
+            ['lookupClaimCode', 'lookupClaimNyc', 'lookupClaimNbth', 'lookupClaimCardNo'].forEach(id => {
+                const el = $(id);
+                if (el) {
+                    el.addEventListener('keydown', e => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            renderClaimLookupResults();
+                        }
+                    });
+                }
+            });
+
             const q = new URLSearchParams(location.search);
             const id = q.get('id'), decNo = q.get('decNo'), claim = q.get('claim');
             const target = id ? getDec(id) : (decNo ? decisions.find(x => x.decNo === decNo) : null);
-            if (target) openDetail(target.id);
-            else if (claim) { openForm(); if (Array.from($('qdClaim').options).some(o => o.value === claim)) { $('qdClaim').value = claim; onClaimChange(claim); } }
+            if (target) {
+                openDetail(target.id);
+            } else if (claim) {
+                openForm();
+                $('formClaimSearchInput').value = claim;
+                searchClaimByCode();
+            }
         });
         window.addEventListener('storage', e => { if (e.key === W.KEYS.RECORDS || e.key === KEY_DEC) { decisions = loadDecisions(); if ($('contentListDecisions').style.display !== 'none') showList(); } });
     </script>
