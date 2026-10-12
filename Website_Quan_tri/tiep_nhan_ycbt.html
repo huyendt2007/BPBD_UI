@@ -468,27 +468,25 @@
                     <div class="info-group-title">Thông tin người bị thiệt hại</div>
                     <div class="grid-3-cols">
                         <div class="form-group">
-                            <span class="form-label">Họ và tên người bị thiệt hại<span class="required">*</span></span>
+                            <span class="form-label">Họ và tên người bị thiệt hại</span>
                             <input id="nbthName" class="form-control" placeholder="Nhập họ và tên người bị thiệt hại...">
-                            <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
                         <div class="form-group">
-                            <span class="form-label">Ngày sinh<span class="required">*</span></span>
+                            <span class="form-label">Ngày sinh</span>
                             <input id="nbthDob" class="form-control" placeholder="dd/mm/yyyy" autocomplete="off">
-                            <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
                         <div class="form-group">
-                            <span class="form-label">Loại giấy tờ thân nhân<span class="required">*</span></span>
+                            <span class="form-label">Loại giấy tờ thân nhân</span>
                             <select id="nbthDocType" class="form-control">
+                                <option value="">-- Chọn loại giấy tờ --</option>
                                 <option value="CCCD">Căn cước công dân / Thẻ căn cước</option>
                                 <option value="Chứng minh nhân dân">Chứng minh nhân dân</option>
                                 <option value="Hộ chiếu">Hộ chiếu</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <span class="form-label">Số giấy tờ thân nhân<span class="required">*</span></span>
+                            <span class="form-label">Số giấy tờ thân nhân</span>
                             <input id="nbthDocNo" class="form-control" placeholder="Nhập số giấy tờ thân nhân...">
-                            <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
                         <div class="form-group">
                             <span class="form-label">Tỉnh/Thành phố</span>
@@ -1152,7 +1150,7 @@
             nb = nb || {};
             setValue("nbthName", nb.name || "");
             setValue("nbthDob", nb.dob || "");
-            setValue("nbthDocType", nb.docType || "CCCD");
+            setValue("nbthDocType", nb.docType || "");
             setValue("nbthDocNo", nb.docNo || "");
             setValue("nbthCity", nb.city || "");
             setValue("nbthWard", nb.ward || "");
@@ -1661,8 +1659,7 @@
         function saveReceptionInfo() {
             clearFormValidation();
             const requiredIds = ["formRequestType", "formFieldGroup", "formRequester", "formCity", "formWard", "formAddress"];
-            // Khối Người bị thiệt hại: bắt buộc Họ và tên, Ngày sinh, Loại giấy tờ thân nhân, Số giấy tờ thân nhân
-            if (getValue("formRequesterRole") !== "Người bị thiệt hại") requiredIds.push("nbthName", "nbthDob", "nbthDocType", "nbthDocNo");
+            // Khối Người bị thiệt hại tại Tiếp nhận yêu cầu: không bắt buộc trường nào (bắt buộc tại Nhập liệu hồ sơ vụ việc)
             let firstInvalid = null;
             requiredIds.forEach(id => {
                 if (!getValue(id)) {

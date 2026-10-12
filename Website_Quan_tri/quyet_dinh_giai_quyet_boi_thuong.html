@@ -1286,7 +1286,6 @@
                             <div class="field-error" id="formClaimSearchError">Đây là trường bắt buộc</div>
                             <div id="selectedClaimBadge" style="display:none; margin-top:8px; align-items:center; gap:8px;">
                                 <span class="badge badge-pending" id="selectedClaimText" style="font-size:12.5px; padding:6px 12px; border-radius:6px;"></span>
-                                <button type="button" id="btnResetClaimSelection" class="btn btn-secondary btn-sm" onclick="resetClaimSelection()" title="Chọn lại vụ việc khác" style="height:28px; padding:0 8px;"><i class="fa-solid fa-rotate-left"></i> Đổi vụ việc</button>
                             </div>
                         </div>
                         <div class="form-group" style="margin-bottom:0;">
@@ -1330,7 +1329,6 @@
             <div class="dtl-card" id="qdItemsCard">
                 <div class="dtl-card-head"><i class="fa-solid fa-coins"></i> Bảng nội dung đề xuất bồi thường</div>
                 <div class="dtl-card-body">
-                    <div class="src-note" id="qdSourceNote">Chọn vụ việc để hệ thống tự động điền dữ liệu đề xuất bồi thường.</div>
                     <div class="table-container">
                         <table class="custom-table compact-table" style="min-width:760px;">
                             <thead id="qdItemsHead"></thead>
@@ -2309,11 +2307,11 @@
         function dtlItem(label, value, full) { return `<div class="dtl-item${full ? ' full' : ''}"><span class="dtl-label">${label}</span><span class="dtl-value">${value}</span></div>`; }
         function itemsTableHtml(d, editable) {
             const neg = d.sourceType === 'negotiation';
-            const head = `<tr style="background:#F8FAFC;"><th style="width:50px; text-align:center;">STT</th><th>Thiệt hại yêu cầu bồi thường</th><th style="text-align:right;">Mức đề xuất</th><th style="text-align:right;">Mức xác minh</th>${neg ? '<th style="text-align:right;">Mức tiền đã thương lượng</th><th style="text-align:center;">Trạng thái thương lượng</th>' : ''}<th style="text-align:right; width:190px;">Số tiền bồi thường (VNĐ)${editable ? '<span class="required" style="color:var(--danger-color);">*</span>' : ''}</th></tr>`;
+            const head = `<tr style="background:#F8FAFC;"><th style="width:50px; text-align:center;">STT</th><th>Thiệt hại yêu cầu bồi thường</th><th style="text-align:right;">Mức đề xuất (đ)</th><th style="text-align:right;">Mức xác minh (đ)</th><th style="text-align:right; width:190px;">Mức bồi thường (đ)${editable ? '<span class="required" style="color:var(--danger-color);">*</span>' : ''}</th>${neg ? '<th style="text-align:center; width:170px;">Trạng thái thương lượng</th>' : ''}</tr>`;
             const body = (d.items || []).map((it, i) => {
                 const adjusted = num(it.amount) !== num(it.sourceAmount);
-                return `<tr class="${adjusted ? 'row-adjusted' : ''}"><td style="text-align:center;">${i + 1}</td><td style="font-weight:600;">${esc(it.label)}</td><td style="text-align:right;">${fmt(it.proposed)}</td><td style="text-align:right;">${fmt(it.verified)}</td>${neg ? `<td style="text-align:right;">${it.negStatus === 'Thành công' ? fmt(it.agreed) : '-'}</td><td style="text-align:center;"><span class="badge ${it.negStatus === 'Thành công' ? 'badge-success' : 'badge-danger'}">${esc(it.negStatus || '')}</span></td>` : ''}<td style="text-align:right;">${editable ? `<input type="text" class="form-control money-input" id="qdAmt_${i}" value="${fmt(it.amount)}" oninput="formatMoneyInput(this); onAmountInput(${i}, this.value)">` : `<strong>${fmt(it.amount)}</strong>${adjusted ? `<div style="font-size:11px; color:#92400E;">Giá trị nguồn: ${fmt(it.sourceAmount)}</div>` : ''}`}</td></tr>`;
-            }).join('') || `<tr><td colspan="${neg ? 7 : 5}" style="text-align:center; font-style:italic; color:var(--text-muted);">Chưa có dữ liệu đề xuất bồi thường.</td></tr>`;
+                return `<tr class="${adjusted ? 'row-adjusted' : ''}"><td style="text-align:center;">${i + 1}</td><td style="font-weight:600;">${esc(it.label)}</td><td style="text-align:right;">${fmt(it.proposed)}</td><td style="text-align:right;">${fmt(it.verified)}</td><td style="text-align:right;">${editable ? `<input type="text" class="form-control money-input" id="qdAmt_${i}" value="${fmt(it.amount)}" oninput="formatMoneyInput(this); onAmountInput(${i}, this.value)">` : `<strong>${fmt(it.amount)}</strong>${adjusted ? `<div style="font-size:11px; color:#92400E;">Giá trị nguồn: ${fmt(it.sourceAmount)}</div>` : ''}`}</td>${neg ? `<td style="text-align:center;"><span class="badge ${it.negStatus === 'Thành công' ? 'badge-success' : 'badge-danger'}">${esc(it.negStatus || '')}</span></td>` : ''}</tr>`;
+            }).join('') || `<tr><td colspan="${neg ? 6 : 5}" style="text-align:center; font-style:italic; color:var(--text-muted);">Chưa có dữ liệu đề xuất bồi thường.</td></tr>`;
             return { head, body };
         }
         function approvalTableOnly(rec) {
@@ -2354,7 +2352,6 @@
                     ${dtlItem('Họ và tên', esc(d.nycName))}${dtlItem('Địa chỉ', esc(d.nycAddress))}
                 </div></div></div>
                 <div class="dtl-card"><div class="dtl-card-head"><i class="fa-solid fa-coins"></i> Bảng nội dung đề xuất bồi thường</div><div class="dtl-card-body">
-                    <div class="src-note">${sourceNoteHtml(decSourceInfo(d))}</div>
                     <div class="table-container"><table class="custom-table compact-table" style="min-width:760px;"><thead>${t.head}</thead><tbody>${t.body}</tbody></table></div>
                     <div class="dtl-money-grid" style="margin-top:14px;">
                         <div class="dtl-money-box"><span class="dtl-label">Tổng số tiền bồi thường (VNĐ)</span><span class="dtl-value" style="color:var(--primary-light);">${fmt(d.total)}</span><span class="dtl-value" style="font-style:italic; font-weight:500; font-size:12.5px; color:var(--text-muted);">(Viết bằng chữ: ${esc(numberToWords(d.total))})</span></div>
@@ -2706,8 +2703,7 @@
             const t = itemsTableHtml(d, true);
             $('qdItemsHead').innerHTML = t.head;
             $('qdItemsBody').innerHTML = form.claimCode ? t.body : '<tr><td colspan="5" style="text-align:center; font-style:italic; color:var(--text-muted);">Chọn vụ việc để hệ thống tự động điền dữ liệu.</td></tr>';
-            $('qdSourceNote').innerHTML = form.proposal ? sourceNoteHtml(form.proposal) : '';
-            $('qdSourceNote').style.display = form.proposal ? '' : 'none';
+            if ($('qdSourceNote')) $('qdSourceNote').style.display = 'none';
             recalcTotals();
         }
         function onAmountInput(i, val) {

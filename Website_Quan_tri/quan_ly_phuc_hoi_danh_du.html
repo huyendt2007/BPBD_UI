@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <!-- Shared stylesheet -->
-    <link rel="stylesheet" href="quan_ly_boi_thuong.css">
+    <link rel="stylesheet" href="quan_ly_boi_thuong.css?v=20261012">
 
     <style>
         .filter-panel {
@@ -66,7 +66,7 @@
             <div class="page-title">
                 <h2><i class="fa-solid fa-ribbon" style="color: #1e3a8a; margin-right: 8px;"></i>TRA CỨU TIẾN TRÌNH PHỤC
                     HỒI DANH DỰ</h2>
-                <p>Danh sách hồ sơ bồi thường nhà nước yêu cầu tổ chức phục hồi danh dự cho người bị thiệt hại</p>
+                <p>Danh sách vụ việc Phục hồi danh dự (mã PHDD-yyyy-xxx) tổ chức phục hồi danh dự cho người bị thiệt hại</p>
             </div>
         </div>
 
@@ -74,8 +74,8 @@
         <div class="filter-panel">
             <div class="grid-4-cols" style="margin-bottom: 16px;">
                 <div>
-                    <span class="form-label">Mã hồ sơ</span>
-                    <input type="text" class="form-control" id="filterCode" placeholder="Nhập mã hồ sơ...">
+                    <span class="form-label">Mã vụ việc</span>
+                    <input type="text" class="form-control" id="filterCode" placeholder="Nhập mã vụ việc PHDD-/BT-...">
                 </div>
                 <div>
                     <span class="form-label">Người bị thiệt hại</span>
@@ -162,7 +162,8 @@
                 <thead>
                     <tr>
                         <th style="width: 50px; text-align: center;">STT</th>
-                        <th style="width: 120px; text-align: center;">Mã hồ sơ</th>
+                        <th style="width: 130px; text-align: center;">Mã vụ việc</th>
+                        <th style="width: 150px; text-align: center;">Vụ việc Bồi thường tiền liên quan</th>
                         <th style="min-width: 140px;">Người bị thiệt hại</th>
                         <th style="min-width: 240px;">Cơ quan giải quyết bồi thường</th>
                         <th style="min-width: 160px;">Hình thức</th>
@@ -206,56 +207,157 @@
     </div>
 
     <script>
-        // Initial Mock Data (12 records for 2 pages pagination testing)
-        let mockDataList = [
-            { id: "HS1", code: "BT-2026-001", nyc: "Nguyễn Văn A", agency: "Sở Tư pháp Hà Nội", type: "Cả hai hình thức", status: "Hoàn thành", deadline: "10/08/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "10/07/2026" },
-            { id: "HS2", code: "BT-2026-002", nyc: "Trần Thị B", agency: "Tòa án nhân dân TP. Hà Nội", type: "Đăng báo xin lỗi", status: "Chờ phản hồi", deadline: "15/07/2026", deadlineStatus: "🟡 Sắp hết hạn (5 ngày)", updatedDate: "08/07/2026" },
-            { id: "HS3", code: "BT-2026-003", nyc: "Công ty Hải Phát", agency: "UBND thành phố Hà Nội", type: "Trực tiếp xin lỗi", status: "Hoàn thành", deadline: "25/07/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "25/06/2026" },
-            { id: "HS5", code: "BT-2026-005", nyc: "Lê Văn D", agency: "Sở Tư pháp Hải Phòng", type: "Cả hai hình thức", status: "Chờ thực hiện", deadline: "18/07/2026", deadlineStatus: "🟡 Sắp hết hạn (8 ngày)", updatedDate: "10/07/2026" },
-            { id: "HS11", code: "BT-2026-011", nyc: "Trần Thị G", agency: "Sở Tư pháp Hà Nội", type: "Đăng báo xin lỗi", status: "Chờ thông báo", deadline: "22/07/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "09/07/2026" },
-            { id: "HS12", code: "BT-2026-012", nyc: "Lê Văn H", agency: "Cục Thi hành án dân sự Hà Nội", type: "Đăng báo xin lỗi", status: "Hoàn thành", deadline: "28/07/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "20/07/2026" },
-            { id: "HS15", code: "BT-2026-015", nyc: "Phạm Văn C", agency: "UBND Quận Cầu Giấy", type: "Trực tiếp xin lỗi", status: "Chờ thông báo", deadline: "02/08/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "02/07/2026" },
-            { id: "HS16", code: "BT-2026-016", nyc: "Hoàng Văn K", agency: "Sở Tư pháp Hà Nội", type: "Đăng báo xin lỗi", status: "Từ chối", deadline: "12/06/2026", deadlineStatus: "🔴 Quá hạn", updatedDate: "15/06/2026" },
-            { id: "HS21", code: "BT-2026-021", nyc: "Đỗ Văn L", agency: "Tòa án nhân dân TP. Hà Nội", type: "Trực tiếp xin lỗi", status: "Chờ phản hồi", deadline: "13/07/2026", deadlineStatus: "🟡 Sắp hết hạn (3 ngày)", updatedDate: "10/07/2026" },
-            { id: "HS22", code: "BT-2026-022", nyc: "Nguyễn Thị M", agency: "Viện kiểm sát nhân dân Tối cao", type: "Đăng báo xin lỗi", status: "Tạm hoãn", deadline: "12/07/2026", deadlineStatus: "🟢 Tạm hoãn", updatedDate: "10/07/2026" },
-            { id: "HS23", code: "BT-2026-023", nyc: "Vũ Văn N", agency: "Sở Tư pháp Hải Dương", type: "Trực tiếp xin lỗi", status: "Chờ thực hiện", deadline: "12/07/2026", deadlineStatus: "🟡 Sắp hết hạn (2 ngày)", updatedDate: "10/07/2026" },
-            { id: "HS24", code: "BT-2026-024", nyc: "Phan Văn O", agency: "UBND tỉnh Quảng Ninh", type: "Cả hai hình thức", status: "Hoàn thành", deadline: "30/08/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "10/07/2026" }
+        // Dữ liệu mẫu dự phòng (chỉ dùng khi localStorage chưa có claimsList).
+        // Vụ việc Phục hồi danh dự độc lập mã PHDD-2026-9xx (dải riêng của trang này, không trùng PHDD-2026-001..010
+        // do màn Giải quyết YCBT cấp), liên kết vụ việc Bồi thường tiền qua relatedCode (BT-...). Không chứa thông tin tiền.
+        const FALLBACK_PHDD_LIST = [
+            { id: "PHDD-2026-901", code: "PHDD-2026-901", relatedCode: "BT-2026-001", nyc: "Nguyễn Văn A", agency: "Sở Tư pháp Hà Nội", type: "Cả hai hình thức", status: "Hoàn thành", deadline: "10/08/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "10/07/2026" },
+            { id: "PHDD-2026-902", code: "PHDD-2026-902", relatedCode: "BT-2026-002", nyc: "Trần Thị B", agency: "Tòa án nhân dân TP. Hà Nội", type: "Đăng báo xin lỗi", status: "Chờ phản hồi", deadline: "15/07/2026", deadlineStatus: "🟡 Sắp hết hạn (5 ngày)", updatedDate: "08/07/2026" },
+            { id: "PHDD-2026-903", code: "PHDD-2026-903", relatedCode: "BT-2026-003", nyc: "Công ty Hải Phát", agency: "UBND thành phố Hà Nội", type: "Trực tiếp xin lỗi", status: "Hoàn thành", deadline: "25/07/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "25/06/2026" },
+            { id: "PHDD-2026-905", code: "PHDD-2026-905", relatedCode: "BT-2026-005", nyc: "Lê Văn D", agency: "Sở Tư pháp Hải Phòng", type: "Cả hai hình thức", status: "Chờ thực hiện", deadline: "18/07/2026", deadlineStatus: "🟡 Sắp hết hạn (8 ngày)", updatedDate: "10/07/2026" },
+            { id: "PHDD-2026-911", code: "PHDD-2026-911", relatedCode: "BT-2026-011", nyc: "Trần Thị G", agency: "Sở Tư pháp Hà Nội", type: "Đăng báo xin lỗi", status: "Chờ thông báo", deadline: "22/07/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "09/07/2026" },
+            { id: "PHDD-2026-912", code: "PHDD-2026-912", relatedCode: "BT-2026-012", nyc: "Lê Văn H", agency: "Cục Thi hành án dân sự Hà Nội", type: "Đăng báo xin lỗi", status: "Hoàn thành", deadline: "28/07/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "20/07/2026" },
+            { id: "PHDD-2026-915", code: "PHDD-2026-915", relatedCode: "BT-2026-015", nyc: "Phạm Văn C", agency: "UBND Quận Cầu Giấy", type: "Trực tiếp xin lỗi", status: "Chờ thông báo", deadline: "02/08/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "02/07/2026" },
+            { id: "PHDD-2026-916", code: "PHDD-2026-916", relatedCode: "BT-2026-016", nyc: "Hoàng Văn K", agency: "Sở Tư pháp Hà Nội", type: "Đăng báo xin lỗi", status: "Từ chối", deadline: "12/06/2026", deadlineStatus: "🔴 Quá hạn", updatedDate: "15/06/2026" },
+            { id: "PHDD-2026-921", code: "PHDD-2026-921", relatedCode: "BT-2026-021", nyc: "Đỗ Văn L", agency: "Tòa án nhân dân TP. Hà Nội", type: "Trực tiếp xin lỗi", status: "Chờ phản hồi", deadline: "13/07/2026", deadlineStatus: "🟡 Sắp hết hạn (3 ngày)", updatedDate: "10/07/2026" },
+            { id: "PHDD-2026-922", code: "PHDD-2026-922", relatedCode: "BT-2026-022", nyc: "Nguyễn Thị M", agency: "Viện kiểm sát nhân dân Tối cao", type: "Đăng báo xin lỗi", status: "Tạm hoãn", deadline: "12/07/2026", deadlineStatus: "🟢 Tạm hoãn", updatedDate: "10/07/2026" },
+            { id: "PHDD-2026-923", code: "PHDD-2026-923", relatedCode: "BT-2026-023", nyc: "Vũ Văn N", agency: "Sở Tư pháp Hải Dương", type: "Trực tiếp xin lỗi", status: "Chờ thực hiện", deadline: "12/07/2026", deadlineStatus: "🟡 Sắp hết hạn (2 ngày)", updatedDate: "10/07/2026" },
+            { id: "PHDD-2026-924", code: "PHDD-2026-924", relatedCode: "BT-2026-024", nyc: "Phan Văn O", agency: "UBND tỉnh Quảng Ninh", type: "Cả hai hình thức", status: "Hoàn thành", deadline: "30/08/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "10/07/2026" }
         ];
 
+        let mockDataList = FALLBACK_PHDD_LIST.map(x => Object.assign({}, x));
         let filteredList = [...mockDataList];
         let currentPage = 1;
         let pageSize = 10;
         let isSortAsc = false;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // Check if claimsList is in local storage to keep state sync
-            const storedClaims = localStorage.getItem('claimsList');
-            if (storedClaims) {
-                const claims = JSON.parse(storedClaims);
-                // Update our mock list using status & PHDD values from claimsList if they match
-                mockDataList.forEach(item => {
-                    const c = claims.find(claim => claim.code === item.code);
-                    if (c) {
-                        item.nyc = c.nyc;
-                        item.agency = c.agency || item.agency;
+        const PHDD_STATUSES = ['Chờ thông báo', 'Chờ phản hồi', 'Chờ thực hiện', 'Tạm hoãn', 'Từ chối', 'Hoàn thành'];
 
-                        // Map claimsList state to PHDD states
-                        if (c.status === 'Hoàn thành') {
-                            item.status = 'Hoàn thành';
-                        }
-                        if (c.phddStep1No && c.phddStep1Date) {
-                            if (item.status === 'Chờ thông báo') item.status = 'Chờ phản hồi';
-                        }
-                        if (c.phddStep2Opinion) {
-                            if (c.phddStep2Opinion === 'Từ chối') item.status = 'Từ chối';
-                            else if (c.phddStep2Opinion === 'Chưa thực hiện') item.status = 'Tạm hoãn';
-                            else if (item.status === 'Chờ phản hồi') item.status = 'Chờ thực hiện';
-                        }
-                        if (c.phddStep4DateAct) {
-                            item.status = 'Hoàn thành';
-                        }
-                    }
-                });
+        function isPhddCode(code) { return typeof code === 'string' && code.toUpperCase().indexOf('PHDD-') === 0; }
+        function isBtCode(code) { return typeof code === 'string' && code.toUpperCase().indexOf('BT-') === 0; }
+
+        function escHtml(v) {
+            return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+        }
+
+        // Chuẩn hóa ngày về dd/mm/yyyy (chấp nhận dd/mm/yyyy[ hh:mm] hoặc ISO)
+        function toViDate(v) {
+            if (!v) return '';
+            const s = String(v).trim();
+            const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+            if (m) return `${m[1].padStart(2, '0')}/${m[2].padStart(2, '0')}/${m[3]}`;
+            const d = new Date(s);
+            return isNaN(d.getTime()) ? '' : formatDateVi(d);
+        }
+
+        // Hình thức phục hồi danh dự (Điều 58/59) từ dữ liệu vụ việc
+        function phddTypeOf(c) {
+            let a = c.phddFormApology, n = c.phddFormNews;
+            if (a === undefined && n === undefined) {
+                const s = String(c.HinhThucPhucHoi || c.phddForm || c.phddType || c.phddStep3Type || '');
+                if (s.includes('Cả hai')) { a = true; n = true; }
+                else { a = s.includes('Trực tiếp'); n = s.includes('Đăng báo'); }
+            }
+            if (a && n) return 'Cả hai hình thức';
+            if (a) return 'Trực tiếp xin lỗi';
+            if (n) return 'Đăng báo xin lỗi';
+            return '--';
+        }
+
+        // Trạng thái tiến trình phục hồi danh dự
+        function phddStatusOf(c) {
+            let st = PHDD_STATUSES.includes(c.phddStatus) ? c.phddStatus
+                : (PHDD_STATUSES.includes(c.status) ? c.status : 'Chờ thông báo');
+            if (c.phddStep1No && c.phddStep1Date && st === 'Chờ thông báo') st = 'Chờ phản hồi';
+            if (c.phddStep2Opinion) {
+                if (c.phddStep2Opinion === 'Từ chối') st = 'Từ chối';
+                else if (c.phddStep2Opinion === 'Chưa thực hiện') st = 'Tạm hoãn';
+                else if (st === 'Chờ phản hồi' || st === 'Chờ thông báo') st = 'Chờ thực hiện';
+            }
+            if (c.phddStep4DateAct) st = 'Hoàn thành';
+            return st;
+        }
+
+        // Ngày cập nhật = ngày mới nhất trong các mốc của vụ việc
+        function phddUpdatedDateOf(c) {
+            const cands = [c.updatedAt, c.phddUpdatedAt, c.phddStep4DateAct, c.phddStep3Date, c.phddStep2ReceiveDate, c.phddStep1SendDate, c.phddStep1Date, c.date];
+            [c.phddTimeline, c.phddHistory, c.timeline].forEach(arr => { if (Array.isArray(arr)) arr.forEach(t => t && cands.push(t.date)); });
+            let best = null, bestStr = '';
+            cands.forEach(v => {
+                const s = toViDate(v); const d = parseDateVi(s);
+                if (d && !isNaN(d.getTime()) && (!best || d > best)) { best = d; bestStr = s; }
+            });
+            return bestStr;
+        }
+
+        function deadlineStatusOf(status, deadline) {
+            if (status === 'Hoàn thành') return 'Đã hoàn thành';
+            if (status === 'Tạm hoãn') return '🟢 Tạm hoãn';
+            const d = parseDateVi(deadline);
+            if (!d) return '--';
+            const t = new Date(); t.setHours(0, 0, 0, 0);
+            const days = Math.round((d - t) / 86400000);
+            if (days < 0) return '🔴 Quá hạn';
+            if (days <= 10) return `🟡 Sắp hết hạn (${days} ngày)`;
+            return '🟢 Còn hạn';
+        }
+
+        // Dòng tra cứu từ 1 vụ việc; displayCode/relatedCode cho phép hiển thị theo mã PHDD- khi nguồn là vụ việc BT- chưa tách
+        function buildPhddRow(c, displayCode, relatedCode) {
+            const status = phddStatusOf(c);
+            const deadline = toViDate(c.phddDeadline || c.deadline);
+            return {
+                id: c.id || displayCode,
+                code: displayCode,
+                relatedCode: relatedCode || '',
+                nyc: c.nyc || c.victimName || '',
+                agency: c.agency || '',
+                type: phddTypeOf(c),
+                status,
+                deadline,
+                deadlineStatus: deadlineStatusOf(status, deadline),
+                updatedDate: phddUpdatedDateOf(c)
+            };
+        }
+
+        // Danh sách tra cứu PHDD từ claimsList:
+        // - Vụ việc PHDD-yyyy-xxx (requestType 'honor'): hiển thị theo mã PHDD-, cột liên quan = relatedCode (BT-).
+        // - Vụ việc BT- có relatedCode PHDD- mà claimsList chưa có vụ việc PHDD- đó: hiển thị theo mã PHDD- tương ứng.
+        // - Vụ việc BT- cũ (requestType 'both'/chưa có, có yêu cầu PHDD) chưa tách, chưa có relatedCode: hiển thị theo mã BT- như cũ.
+        function buildPhddListFromClaims(claims) {
+            const rows = [];
+            const seen = new Set();
+            const phddCodes = new Set(claims.filter(c => c && isPhddCode(c.code)).map(c => c.code.toUpperCase()));
+            claims.forEach(c => {
+                if (!c || !c.code) return;
+                const rel = c.relatedCode || '';
+                if (isPhddCode(c.code) || c.requestType === 'honor') {
+                    if (seen.has(c.code.toUpperCase())) return;
+                    seen.add(c.code.toUpperCase());
+                    rows.push(buildPhddRow(c, c.code, isBtCode(rel) ? rel : ''));
+                    return;
+                }
+                if (isPhddCode(rel)) {
+                    if (phddCodes.has(rel.toUpperCase()) || seen.has(rel.toUpperCase())) return;
+                    seen.add(rel.toUpperCase());
+                    rows.push(buildPhddRow(c, rel, c.code));
+                    return;
+                }
+                if (c.requestType !== 'money' && c.restoreHonor === true) {
+                    if (seen.has(c.code.toUpperCase())) return;
+                    seen.add(c.code.toUpperCase());
+                    rows.push(buildPhddRow(c, c.code, ''));
+                }
+            });
+            return rows;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Đồng bộ với dữ liệu vụ việc của màn Giải quyết YCBT (localStorage claimsList); chưa có thì dùng dữ liệu mẫu dự phòng
+            let claims = null;
+            try { claims = JSON.parse(localStorage.getItem('claimsList') || 'null'); } catch (e) { claims = null; }
+            if (Array.isArray(claims) && claims.length) {
+                mockDataList = buildPhddListFromClaims(claims);
             }
 
             // Set up date pickers
@@ -316,9 +418,9 @@
             const toDate = parseDateVi(document.getElementById('filterToDate').value);
 
             filteredList = mockDataList.filter(item => {
-                if (code && !item.code.toLowerCase().includes(code)) return false;
-                if (nyc && !item.nyc.toLowerCase().includes(nyc)) return false;
-                if (agency && !item.agency.toLowerCase().includes(agency)) return false;
+                if (code && !item.code.toLowerCase().includes(code) && !(item.relatedCode || '').toLowerCase().includes(code)) return false;
+                if (nyc && !(item.nyc || '').toLowerCase().includes(nyc)) return false;
+                if (agency && !(item.agency || '').toLowerCase().includes(agency)) return false;
                 if (status && item.status !== status) return false;
                 if (type && !item.type.includes(type)) return false;
 
@@ -375,7 +477,7 @@
             document.getElementById('currentRange').innerText = total > 0 ? `${startIdx + 1}-${endIdx}` : '0-0';
 
             if (total === 0) {
-                tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--text-muted); font-style: italic; padding: 24px;">Không tìm thấy dữ liệu phục hồi danh dự phù hợp</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--text-muted); font-style: italic; padding: 24px;">Không tìm thấy dữ liệu phục hồi danh dự phù hợp</td></tr>`;
                 renderPagination(maxPages);
                 return;
             }
@@ -399,23 +501,31 @@
                 const tr = document.createElement('tr');
                 tr.style.cursor = 'pointer';
                 tr.onclick = (e) => {
-                    if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'I' && !e.target.closest('.icon-btn')) {
+                    if (e.target.tagName !== 'BUTTON' && !e.target.closest('a') && !e.target.closest('.icon-btn')) {
                         goToDetail(item.code);
                     }
                 };
+                const detailHref = buildDetailUrl(item.code, isBtCode(item.code));
+                const relatedCell = item.relatedCode
+                    ? `<a href="${escHtml(buildDetailUrl(item.relatedCode))}" class="related-bt-link" title="Mở chi tiết vụ việc Bồi thường tiền liên quan" style="color:var(--primary-light); text-decoration:none;">${escHtml(item.relatedCode)}</a>`
+                    : '<span style="color:var(--text-muted);">--</span>';
                 tr.innerHTML = `
                     <td style="text-align: center;">${i + 1}</td>
-                    <td style="text-align: center; font-weight:600; color:var(--primary-light);">${item.code}</td>
-                    <td>${item.nyc}</td>
-                    <td>${item.agency}</td>
-                    <td>${item.type}</td>
+                    <td style="text-align: center; font-weight:600;"><a href="${escHtml(detailHref)}" class="phdd-code-link" style="color:var(--primary-light); text-decoration:none;">${escHtml(item.code)}</a></td>
+                    <td style="text-align: center;">${relatedCell}</td>
+                    <td>${escHtml(item.nyc)}</td>
+                    <td>${escHtml(item.agency)}</td>
+                    <td>${escHtml(item.type)}</td>
                     <td style="text-align: center;">${statusBadge}</td>
                     <td style="text-align: center;">${limitBadge}</td>
-                    <td style="text-align: center;">${item.updatedDate}</td>
+                    <td style="text-align: center;">${escHtml(item.updatedDate)}</td>
                     <td style="text-align: center;">
                         <span style="color:var(--text-muted); font-size:12px; font-style:italic;">Chọn dòng để xem</span>
                     </td>
                 `;
+                // Xem chi tiết = click dòng (quy ước admin-ui-standardizer: không dùng nút "Xem chi tiết" riêng trong cột Thao tác)
+                tr.dataset.detailHref = detailHref;
+                tr.title = 'Xem chi tiết vụ việc ' + item.code;
                 tbody.appendChild(tr);
             }
 
@@ -467,8 +577,18 @@
         }
 
         // NAVIGATION REDIRECT
+        // Hợp đồng URL mở chi tiết tại Giải quyết YCBT: quan_ly_boi_thuong.html?id=<Mã vụ việc>
+        // - PHDD-...: mở view chi tiết vụ việc Phục hồi danh dự độc lập.
+        // - BT-... cũ chưa tách (dòng hiển thị theo mã BT-): kèm focusTab=phdd để focus nội dung phục hồi danh dự.
+        // - Mã ở cột "Vụ việc Bồi thường tiền liên quan": chỉ ?id=<BT-...>.
+        function buildDetailUrl(code, focusPhdd) {
+            let url = `quan_ly_boi_thuong.html?id=${encodeURIComponent(code)}`;
+            if (focusPhdd) url += '&focusTab=phdd';
+            return url;
+        }
+
         function goToDetail(code) {
-            window.location.href = `quan_ly_boi_thuong.html?viewCode=${code}&subTab=phdd`;
+            window.location.href = buildDetailUrl(code, isBtCode(code));
         }
 
         // MOCK EXPORT
@@ -489,9 +609,9 @@
             }, 3000);
         }
     </script>
-    <script src="admin-ui-standardizer.js"></script>
-    <script src="bpbd_filter_toggle.js"></script>
-    <script src="filter_toggle_auto.js"></script>
+    <script src="admin-ui-standardizer.js?v=20261012"></script>
+    <script src="bpbd_filter_toggle.js?v=20261012"></script>
+    <script src="filter_toggle_auto.js?v=20261012"></script>
 </body>
 
 </html>

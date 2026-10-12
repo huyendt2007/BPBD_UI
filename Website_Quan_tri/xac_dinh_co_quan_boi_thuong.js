@@ -506,7 +506,7 @@ const LEGACY_SEED = [
             by: "ld_so",
             unitId: "u_so",
             at: "09/08/2026 10:30",
-            kind: "Kết quả xác định",
+            kind: BTNN_WF.KIND_KQXD,
             reason: "Hồ sơ chưa làm rõ căn cứ xác định cơ quan trực tiếp gây thiệt hại; thiếu văn bản tài liệu chứng minh thời điểm phát sinh hành vi trái pháp luật. Yêu cầu chuyên viên kiểm tra, thu thập thêm tài liệu và cập nhật lại."
         },
         attachedFile: "Don_yeu_cau_hung_lv.pdf",
@@ -1008,10 +1008,7 @@ function showFormScreen(id = null, mode = null) {
     }
     const submitBtn = document.getElementById('btnFormSubmit');
     if (submitBtn) {
-        // Tiếp nhận hồ sơ được phân công: "Tiếp nhận"; Thêm mới / Cập nhật: "Trình duyệt" (lưu rồi mở popup Trình phê duyệt)
-        submitBtn.innerHTML = formMode === 'accept'
-            ? '<i class="fa-solid fa-file-import"></i> Tiếp nhận'
-            : '<i class="fa-solid fa-paper-plane"></i> Trình duyệt';
+        submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Trình duyệt';
     }
 
     document.getElementById('formHinhThucTiepNhan').value = 'Trực tiếp';
@@ -1086,6 +1083,36 @@ function showFormScreen(id = null, mode = null) {
     } else {
         title.innerHTML = `<i class="fa-solid fa-file-signature"></i> THÊM MỚI YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`;
     }
+
+    // Thiết lập thông tin trình Lãnh đạo phê duyệt theo luồng cấu hình của đơn vị
+    const leaderTarget = item || {
+        chuTri: BTNN_WF.getCurrentUserId(),
+        createdBy: BTNN_WF.getCurrentUserId(),
+        rootUnitId: BTNN_WF.getRootId(BTNN_WF.getCurrentUser().unitId)
+    };
+    const leaderIds = BTNN_WF.firstLevelLeaders(leaderTarget);
+    const leaderSel = document.getElementById('formLeaderSelect');
+    if (leaderSel) {
+        leaderSel.innerHTML = '<option value="">-- Chọn Lãnh đạo phê duyệt --</option>' + leaderIds.map(uid => {
+            return `<option value="${escapeAttr(uid)}">${escapeHtml(BTNN_WF.userLabel(uid))}</option>`;
+        }).join('');
+        if (item && item.approval && item.approval.assignees && item.approval.assignees[0]) {
+            leaderSel.value = item.approval.assignees[0];
+        } else if (leaderIds.length === 1) {
+            leaderSel.value = leaderIds[0];
+        } else {
+            leaderSel.value = '';
+        }
+    }
+    const pathInfoEl = document.getElementById('formLeaderPathInfo');
+    if (pathInfoEl) {
+        pathInfoEl.innerHTML = BTNN_WF.approvalPathLineHtml(leaderTarget);
+    }
+    const noteEl = document.getElementById('formLeaderNote');
+    if (noteEl) {
+        noteEl.value = (item && item.approval && item.approval.content) ? item.approval.content : '';
+    }
+
     toggleNbthBlock();
 }
 
@@ -1131,7 +1158,7 @@ function statusBadgeClass(status) {
     }
 }
 
-// Badge trạng thái + dòng phụ Nội dung trình (Chờ duyệt: "Nội dung trình · Cấp i/n"; Bị trả lại: Nội dung trình)
+// Badge trạng thái + dòng phụ: chỉ hiển thị tên Nội dung trình (Chờ duyệt / Bị trả lại)
 function statusCellHtml(item) {
     const label = BTNN_WF.approvalLabel(item);
     return `<span class="badge ${statusBadgeClass(item.status)}">${escapeHtml(item.status)}</span>${label ? `<div class="approval-sub">${escapeHtml(label)}</div>` : ''}`;
@@ -1242,7 +1269,7 @@ function showDetailScreen(id) {
 
     // Kết quả xác định
     const verificationBlock = document.getElementById('dtVerificationResultBlock');
-    if (item.procBasis || item.procTargetAgency || ['Chờ chuyển CQGQBT', 'Hoàn thành'].includes(item.status) || BTNN_WF.approvalKindOf(item) === 'Kết quả xác định') {
+    if (item.procBasis || item.procTargetAgency || ['Chờ chuyển CQGQBT', 'Hoàn thành'].includes(item.status) || BTNN_WF.approvalKindOf(item) === BTNN_WF.KIND_KQXD) {
         verificationBlock.style.display = 'block';
         document.getElementById('dtProcBasis').innerText = item.procBasis || 'Chưa cập nhật';
         document.getElementById('dtProcTargetAgency').innerText = item.procTargetAgency || 'Chưa cập nhật';
@@ -1547,6 +1574,9 @@ function saveForm(isDraft) {
         .filter(doc => (doc.name || '').trim() || (doc.file || '').trim())
         .map(doc => ({ name: (doc.name || '').trim(), file: doc.file || '' }));
 
+    const leader = document.getElementById('formLeaderSelect') ? document.getElementById('formLeaderSelect').value : '';
+    const leaderNote = document.getElementById('formLeaderNote') ? document.getElementById('formLeaderNote').value.trim() : '';
+
     if (!isDraft) {
         let firstInvalid = null;
         const req = [['formNYCName', name], ['formNYCDob', dob], ['formNYCDocNo', docNo], ['formNYCDocDate', docDate], ['formNYCDocPlace', docPlace], ['formNYCAddressDetail', addressDetail], ['formHanhVi', hanhVi]];
@@ -1561,8 +1591,11 @@ function saveForm(isDraft) {
         if (hasNbth) {
             [['nbthName', nbth.name], ['nbthDob', nbth.dob], ['nbthDocNo', nbth.docNo]].forEach(([fid, val]) => { if (!val) firstInvalid = markInvalid(document.getElementById(fid), firstInvalid); });
         }
+        // Bắt buộc chọn Lãnh đạo phê duyệt theo cấu hình luồng của đơn vị
+        if (!leader) {
+            firstInvalid = markInvalid(document.getElementById('formLeaderSelect'), firstInvalid);
+        }
         if (firstInvalid) {
-            showToast("Vui lòng nhập đầy đủ thông tin bắt buộc!", "error");
             firstInvalid.focus();
             return;
         }
@@ -1587,19 +1620,19 @@ function saveForm(isDraft) {
         const item = requestList.find(r => r.id === formRequestId);
         if (!item) return;
         Object.assign(item, data);
-        if (formMode === 'accept') {
-            if (!isDraft) {
-                item.status = 'Đang thực hiện';
-                const r = BTNN_WF.latestRoute(item);
-                if (r) r.state = 'Đã xử lý';
-                BTNN_WF.addHistory(item, 'Tiếp nhận hồ sơ', 'Cán bộ chủ trì tiếp nhận, nhập liệu hồ sơ. Hồ sơ chuyển [Đang thực hiện].');
+        if (!isDraft) {
+            const res = BTNN_WF.submitForApproval(item.code, 'Tiếp nhận yêu cầu', leaderNote, cleanDocs, { assignee: leader, resultStatus: 'Đang thực hiện' });
+            if (!res.ok) {
+                showToast(res.message, "error");
+                return;
             }
+            saveItem(item);
+            showToast(`Đã trình Lãnh đạo ${BTNN_WF.userName(leader)} phê duyệt tiếp nhận yêu cầu ${item.code}!`, "success");
         } else {
             BTNN_WF.addHistory(item, 'Cập nhật thông tin', 'Cập nhật thông tin hồ sơ.');
+            saveItem(item);
+            showToast(`Đã lưu hồ sơ ${item.code}!`, "success");
         }
-        saveItem(item);
-        showToast(`Đã lưu hồ sơ ${item.code}. Trạng thái: [${item.status}]!`, "success");
-        if (formMode !== 'accept') submitAfterSaveId = item.id;
     } else {
         const me = BTNN_WF.getCurrentUser();
         const newCode = BTNN_WF.nextCode('XD');
@@ -1623,19 +1656,23 @@ function saveForm(isDraft) {
             status: 'Đang thực hiện',
             procBasis: "", procTargetAgency: "", procReason: "", procDecisionFile: "", claimCode: "-"
         }, data);
-        BTNN_WF.addHistory(item, 'Tạo yêu cầu', `Cán bộ tạo trực tiếp, đồng thời là cán bộ chủ trì. Trạng thái: [${item.status}].`);
         saveItem(item);
         requestList.unshift(item);
-        showToast(`Đã lưu hồ sơ ${newCode}. Trạng thái: [Đang thực hiện]!`, "success");
-        submitAfterSaveId = item.id;
+        if (!isDraft) {
+            const res = BTNN_WF.submitForApproval(item.code, 'Tiếp nhận yêu cầu', leaderNote, cleanDocs, { assignee: leader, resultStatus: 'Đang thực hiện' });
+            if (!res.ok) {
+                showToast(res.message, "error");
+                return;
+            }
+            saveItem(item);
+            showToast(`Đã tạo và trình Lãnh đạo ${BTNN_WF.userName(leader)} phê duyệt yêu cầu ${newCode}!`, "success");
+        } else {
+            BTNN_WF.addHistory(item, 'Tạo yêu cầu', `Cán bộ tạo trực tiếp, đồng thời là cán bộ chủ trì.`);
+            saveItem(item);
+            showToast(`Đã lưu hồ sơ ${newCode}!`, "success");
+        }
     }
     showListScreen();
-    // Nút "Trình duyệt": sau khi lưu mở popup Trình phê duyệt của hồ sơ
-    if (submitAfterSaveId) {
-        const target = submitAfterSaveId;
-        submitAfterSaveId = null;
-        openSubmitApprovalModal(target);
-    }
 }
 
 // Save verification results
@@ -1665,7 +1702,7 @@ function saveProcessResult(andSubmit) {
     saveItem(item);
     showToast("Đã lưu kết quả xác định cơ quan giải quyết bồi thường!", "success");
     showDetailScreen(id);
-    if (andSubmit) openSubmitApprovalModal(id, 'Kết quả xác định');
+    if (andSubmit) openSubmitApprovalModal(id, BTNN_WF.KIND_KQXD);
 }
 
 // Save spawned claim
@@ -2060,15 +2097,10 @@ function fillLeaderSelect(selectId, item) {
     return leaders;
 }
 
-const KIND_RESULT_STATUS = { 'Kết quả xác định': 'Chờ chuyển CQGQBT', 'Yêu cầu bổ sung': 'Yêu cầu bổ sung', 'Từ chối': 'Bị từ chối' };
-
-function approvalPathHtml(item, kind) {
-    const path = BTNN_WF.computeApprovalPath(item);
-    if (!path.length) return '<span style="color:#b91c1c;">Chưa xác định được cấp phê duyệt. Vui lòng liên hệ Quản trị hệ thống.</span>';
-    return `<strong>Luồng phê duyệt (ngược chiều luồng phân công):</strong> ${path.map((u, i) => `Cấp ${i + 1}. ${escapeHtml(BTNN_WF.unitName(u))}`).join(' → ')}`
-        + `<br>Cán bộ chọn Lãnh đạo phê duyệt cấp 1; Lãnh đạo cấp trước phê duyệt và chọn Lãnh đạo phê duyệt cấp tiếp theo. Hồ sơ chuyển [Chờ duyệt] trong thời gian trình.`
-        + `<br>Sau khi cấp cuối phê duyệt: hồ sơ chuyển [${escapeHtml(KIND_RESULT_STATUS[kind] || '')}]. Lãnh đạo từ chối phê duyệt: hồ sơ chuyển [Bị trả lại].`
-        + (item.status === 'Bị trả lại' ? '<br>Hồ sơ trình lại bắt đầu từ cấp phê duyệt đầu tiên.' : '');
+// Dòng "Luồng phê duyệt" (chỉ đọc, một dòng) đặt ngay dưới ô "Lãnh đạo phê duyệt"
+function approvalPathHtml(item) {
+    return BTNN_WF.approvalPathLineHtml(item)
+        || '<div class="wf-path-line" style="font-size:12.5px; color:#b91c1c; margin:4px 0 0;"><b>Luồng phê duyệt:</b> Chưa xác định được cấp phê duyệt.</div>';
 }
 
 // Kiểm tra các trường bắt buộc của popup trình Lãnh đạo; trả về null nếu còn trường bắt buộc rỗng
@@ -2107,11 +2139,11 @@ function afterSubmitted(code, message) {
     else showListScreen();
 }
 
-// Popup Trình duyệt (Nội dung trình: Kết quả xác định; trình lại hồ sơ Bị trả lại theo Nội dung trình bị trả lại)
+// Popup Trình duyệt (Nội dung trình: Kết quả xác định CQGQBT; trình lại hồ sơ Bị trả lại theo Nội dung trình bị trả lại)
 function openSubmitApprovalModal(id, kind) {
     const item = requestList.find(r => r.id === id);
     if (!item || !isChuTri(item)) return;
-    const presetKind = kind || (item.status === 'Bị trả lại' && item.returned && item.returned.kind) || 'Kết quả xác định';
+    const presetKind = kind || (item.status === 'Bị trả lại' && item.returned && item.returned.kind) || BTNN_WF.KIND_KQXD;
     // Nội dung trình Yêu cầu bổ sung / Từ chối: trình qua popup tương ứng (bắt buộc Văn bản đính kèm trình Lãnh đạo)
     if (presetKind === 'Yêu cầu bổ sung') { openSupplementModal(id); return; }
     if (presetKind === 'Từ chối') { openRejectModal(id); return; }
@@ -2121,14 +2153,14 @@ function openSubmitApprovalModal(id, kind) {
     }
     clearValidation();
     document.getElementById('submitRequestId').value = id;
-    document.getElementById('submitKindValue').value = 'Kết quả xác định';
-    document.getElementById('submitKindText').value = 'Kết quả xác định';
+    document.getElementById('submitKindValue').value = BTNN_WF.KIND_KQXD;
+    document.getElementById('submitKindText').value = BTNN_WF.KIND_KQXD;
     document.getElementById('submitSummary').innerHTML = approvalSummaryHtml(item);
     document.getElementById('submitContent').value = '';
     modalFiles.submit = [];
     renderModalFiles('submit');
     fillLeaderSelect('submitLeader', item);
-    document.getElementById('submitPathInfo').innerHTML = approvalPathHtml(item, 'Kết quả xác định');
+    document.getElementById('submitPathInfo').innerHTML = approvalPathHtml(item);
     openXdModal('submitApprovalModal');
 }
 
@@ -2136,7 +2168,7 @@ function confirmSubmitApproval() {
     const id = document.getElementById('submitRequestId').value;
     const item = requestList.find(r => r.id === id);
     if (!item) return;
-    const kind = document.getElementById('submitKindValue').value || 'Kết quả xác định';
+    const kind = document.getElementById('submitKindValue').value || BTNN_WF.KIND_KQXD;
     const data = collectApprovalForm({ contentId: 'submitContent', fileKind: 'submit', fileRequired: false, leaderId: 'submitLeader' });
     if (!data) return;
     const res = BTNN_WF.submitForApproval(item.code, kind, data.content, modalFiles.submit.slice(), { assignee: data.assignee });
@@ -2157,7 +2189,7 @@ function openSupplementModal(id) {
     modalFiles.supplement = resubmit && item.approval ? (item.approval.files || []).map(f => ({ name: f.name || f })) : [];
     renderModalFiles('supplement');
     fillLeaderSelect('supplementLeader', item);
-    document.getElementById('supplementPathInfo').innerHTML = approvalPathHtml(item, 'Yêu cầu bổ sung');
+    document.getElementById('supplementPathInfo').innerHTML = approvalPathHtml(item);
     openXdModal('supplementModal');
 }
 
@@ -2193,7 +2225,7 @@ function openRejectModal(id) {
     modalFiles.reject = resubmit && item.approval ? (item.approval.files || []).map(f => ({ name: f.name || f })) : [];
     renderModalFiles('reject');
     fillLeaderSelect('rejectLeader', item);
-    document.getElementById('rejectPathInfo').innerHTML = approvalPathHtml(item, 'Từ chối');
+    document.getElementById('rejectPathInfo').innerHTML = approvalPathHtml(item);
     openXdModal('rejectModal');
 }
 
@@ -2217,12 +2249,36 @@ function confirmRejectRequest() {
 }
 
 // ---------------- Popup Chuyển CQGQBT ----------------
+// Cơ quan tiếp nhận: chọn dạng cây (Tree-Select) có tìm kiếm theo Tên / Mã đơn vị; khóa đơn vị hiện tại của hồ sơ XĐ
+let transferTreeCtl = null;
+function getTransferTree() {
+    if (!transferTreeCtl) {
+        transferTreeCtl = BTNN_WF.mountUnitTree(document.getElementById('transferAgencyTree'), {
+            inputId: 'transferAgencyUnit',
+            placeholder: '-- Chọn cơ quan tiếp nhận --',
+            onChange: id => {
+                if (id) document.getElementById('transferAgencyError').style.display = 'none';
+                document.getElementById('transferError').style.display = 'none';
+            }
+        });
+    }
+    return transferTreeCtl;
+}
+
 function openTransferModal(id) {
     const item = requestList.find(r => r.id === id);
     if (!item || !isChuTri(item)) return;
     clearValidation();
     document.getElementById('transferRequestId').value = id;
-    document.getElementById('transferAgency').value = item.procTargetAgency || '';
+    const ctl = getTransferTree();
+    ctl.close();
+    ctl.setDisabled([item.rootUnitId, item.currentUnitId].filter(Boolean));
+    const suggested = BTNN_WF.findRootUnitByName(item.procTargetAgency);
+    ctl.setValue(suggested ? suggested.id : '');
+    ctl.setInvalid(false);
+    document.getElementById('transferAgencyHint').innerHTML = item.procTargetAgency
+        ? `<i class="fa-solid fa-circle-info"></i> Cơ quan được chỉ định trong kết quả xác định: <b>${escapeHtml(item.procTargetAgency)}</b>`
+        : '';
     document.getElementById('transferContent').value = '';
     document.getElementById('transferError').style.display = 'none';
     modalFiles.transfer = [];
@@ -2237,26 +2293,45 @@ function markFileRequired(kind) {
     if (err) err.style.display = 'block';
 }
 
+function showTransferError(message) {
+    const box = document.getElementById('transferError');
+    box.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${escapeHtml(message)}`;
+    box.style.display = 'block';
+}
+
+// Chuyển hồ sơ sang đơn vị được chọn: hồ sơ YCBT mới thuộc đơn vị gốc của đơn vị được chọn,
+// chờ lãnh đạo của chính đơn vị được chọn phân công (currentUnitId = đơn vị được chọn)
+// Chuyển hồ sơ sang đơn vị được chọn trên cây đơn vị (lõi kiểm tra cấu hình luồng theo đơn vị gốc của đơn vị được chọn)
+function transferXdToUnit(item, unitId, content, files) {
+    return BTNN_WF.transferToAgency(item.code, content, files, unitId);
+}
+
 function confirmTransfer() {
     clearValidation();
+    document.getElementById('transferError').style.display = 'none';
     const id = document.getElementById('transferRequestId').value;
     const item = requestList.find(r => r.id === id);
+    if (!item) return;
+    const ctl = getTransferTree();
+    const unitId = ctl.getValue();
     const contentEl = document.getElementById('transferContent');
     const content = contentEl.value.trim();
     let invalid = false;
-    if (!content) { markInvalid(contentEl); invalid = true; }
-    if (!modalFiles.transfer.length) { markFileRequired('transfer'); invalid = true; }
-    if (invalid) { showToast("Vui lòng nhập đầy đủ thông tin bắt buộc!", "error"); return; }
-    const res = BTNN_WF.transferToAgency(item.code, content, modalFiles.transfer.slice());
-    if (!res.ok) {
-        const box = document.getElementById('transferError');
-        box.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ${escapeHtml(res.message)}`;
-        box.style.display = 'block';
-        return;
+    let focusFn = null;
+    if (!unitId) {
+        ctl.setInvalid(true);
+        document.getElementById('transferAgencyError').style.display = 'block';
+        invalid = true;
+        focusFn = () => ctl.focus();
     }
+    if (!content) { markInvalid(contentEl); invalid = true; if (!focusFn) focusFn = () => contentEl.focus(); }
+    if (!modalFiles.transfer.length) { markFileRequired('transfer'); invalid = true; }
+    if (invalid) { if (focusFn) focusFn(); showToast("Vui lòng nhập đầy đủ thông tin bắt buộc!", "error"); return; }
+    const res = transferXdToUnit(item, unitId, content, modalFiles.transfer.slice());
+    if (!res.ok) { showTransferError(res.message); return; }
     closeXdModal('transferModal');
     reloadRequestList();
-    showToast(`Đã chuyển CQGQBT. Hồ sơ ${item.code} chuyển [Hoàn thành]; tạo hồ sơ YCBT ${res.ycbtCode} chờ lãnh đạo ${BTNN_WF.unitName(res.record.transfer.targetUnitId)} phân công.`, "success");
+    showToast(`Đã chuyển CQGQBT. Hồ sơ ${item.code} chuyển [Hoàn thành]; tạo hồ sơ YCBT ${res.ycbtCode} chờ lãnh đạo ${BTNN_WF.unitName(unitId)} phân công.`, "success");
     const fresh = requestList.find(r => r.code === item.code);
     if (fresh) showDetailScreen(fresh.id); else showListScreen();
 }

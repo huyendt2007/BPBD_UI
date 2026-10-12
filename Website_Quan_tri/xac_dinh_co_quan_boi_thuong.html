@@ -529,6 +529,19 @@
                     <i class="fa-solid fa-plus"></i> Thêm dòng tài liệu
                 </button>
             </div>
+            <div class="sub-section-title">THÔNG TIN TRÌNH LÃNH ĐẠO PHÊ DUYỆT</div>
+            <div class="grid-2" style="background: #f8fafc; padding: 20px; border-radius: var(--border-radius-lg); border: 1px solid var(--border-color); margin-bottom: 20px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <span class="form-label">Lãnh đạo phê duyệt<span class="required">*</span></span>
+                    <select class="form-control" id="formLeaderSelect"></select>
+                    <div class="error-message" id="errFormLeaderSelect">Đây là trường bắt buộc</div>
+                    <div id="formLeaderPathInfo" style="margin-top: 6px;"></div>
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <span class="form-label">Ý kiến / Ghi chú trình</span>
+                    <textarea class="form-control" id="formLeaderNote" rows="3" placeholder="Nhập tóm tắt đề xuất hoặc ý kiến trình Lãnh đạo phê duyệt..."></textarea>
+                </div>
+            </div>
 
             <div class="form-footer">
                 <button class="btn btn-secondary" onclick="showListScreen()">Hủy bỏ</button>
@@ -821,17 +834,17 @@
         <span>Thông báo thành công!</span>
     </div>
 
-    <!-- Popup Trình duyệt (Nội dung trình: Kết quả xác định) -->
+    <!-- Popup Trình duyệt kết quả xác định CQGQBT (Nội dung trình: Kết quả xác định CQGQBT) -->
     <div id="submitApprovalModal" class="confirm-modal-overlay">
         <div class="confirm-modal-container wf-modal-box">
-            <div class="wf-modal-head"><h3><i class="fa-solid fa-paper-plane"></i> Trình duyệt</h3><span class="wf-modal-x" onclick="closeXdModal('submitApprovalModal')" title="Đóng">&times;</span></div>
+            <div class="wf-modal-head"><h3><i class="fa-solid fa-paper-plane"></i> Trình duyệt kết quả xác định CQGQBT</h3><span class="wf-modal-x" onclick="closeXdModal('submitApprovalModal')" title="Đóng">&times;</span></div>
             <div class="wf-modal-content">
                 <input type="hidden" id="submitRequestId">
-                <input type="hidden" id="submitKindValue" value="Kết quả xác định">
+                <input type="hidden" id="submitKindValue" value="Kết quả xác định CQGQBT">
                 <div class="wf-summary-box" id="submitSummary"></div>
                 <div class="form-group">
                     <span class="form-label">Nội dung trình</span>
-                    <input type="text" class="form-control" id="submitKindText" value="Kết quả xác định" readonly style="font-weight:600; background:#f8fafc;">
+                    <input type="text" class="form-control" id="submitKindText" value="Kết quả xác định CQGQBT" readonly style="font-weight:600; background:#f8fafc;">
                 </div>
                 <div class="form-group">
                     <span class="form-label">Ý kiến trình<span class="required">*</span></span>
@@ -850,8 +863,8 @@
                     <span class="form-label">Lãnh đạo phê duyệt<span class="required">*</span></span>
                     <select class="form-control" id="submitLeader"></select>
                     <div class="error-message">Đây là trường bắt buộc</div>
+                    <div id="submitPathInfo"></div>
                 </div>
-                <div class="wf-path-box" id="submitPathInfo"></div>
             </div>
             <div class="wf-modal-foot">
                 <button class="btn btn-secondary" onclick="closeXdModal('submitApprovalModal')">Hủy bỏ</button>
@@ -868,8 +881,10 @@
                 <input type="hidden" id="transferRequestId">
                 <div id="transferError" class="wf-error-box" style="display:none;"></div>
                 <div class="form-group">
-                    <span class="form-label">Cơ quan giải quyết bồi thường được chỉ định</span>
-                    <input type="text" class="form-control" id="transferAgency" readonly style="font-weight:700; color:var(--primary-color);">
+                    <span class="form-label">Cơ quan tiếp nhận<span class="required">*</span></span>
+                    <div id="transferAgencyTree"></div>
+                    <div class="xd-transfer-hint" id="transferAgencyHint"></div>
+                    <div class="error-message" id="transferAgencyError">Đây là trường bắt buộc</div>
                 </div>
                 <div class="form-group">
                     <span class="form-label">Nội dung chuyển xử lý<span class="required">*</span></span>
@@ -946,8 +961,8 @@
                     <span class="form-label">Lãnh đạo phê duyệt<span class="required">*</span></span>
                     <select class="form-control" id="supplementLeader"></select>
                     <div class="error-message">Đây là trường bắt buộc</div>
+                    <div id="supplementPathInfo"></div>
                 </div>
-                <div class="wf-path-box" id="supplementPathInfo"></div>
             </div>
             <div class="wf-modal-foot">
                 <button type="button" class="btn btn-secondary" onclick="closeSupplementModal()">Hủy bỏ</button>
@@ -981,8 +996,8 @@
                     <span class="form-label">Lãnh đạo phê duyệt<span class="required">*</span></span>
                     <select class="form-control" id="rejectLeader"></select>
                     <div class="error-message">Đây là trường bắt buộc</div>
+                    <div id="rejectPathInfo"></div>
                 </div>
-                <div class="wf-path-box" id="rejectPathInfo"></div>
             </div>
             <div class="wf-modal-foot">
                 <button type="button" class="btn btn-secondary" onclick="closeRejectModal()">Hủy bỏ</button>

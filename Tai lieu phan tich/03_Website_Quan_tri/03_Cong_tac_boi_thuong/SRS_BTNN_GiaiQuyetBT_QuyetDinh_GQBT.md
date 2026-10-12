@@ -58,12 +58,7 @@ Tương thích dữ liệu cũ: kết quả thương lượng cũ "Từ chối t
 | 3 | `Đồng ý thương lượng` nhưng chưa có kết quả thương lượng từng thiệt hại | Kết quả xác minh thiệt hại như trường hợp 1. | Mức xác minh. | Không hiển thị. |
 | 4 | Vụ việc không có danh sách thiệt hại | 01 dòng "Thiệt hại yêu cầu bồi thường". | Tổng số tiền đã xác minh của vụ việc; không có thì Tổng số tiền yêu cầu. | Theo trường hợp 1 hoặc 3 tương ứng với Tình trạng tham gia thương lượng. |
 
-Khối Nguồn dữ liệu (trên Bảng nội dung đề xuất bồi thường) gồm 03 dòng:
-- `Nguồn dữ liệu: [Kết quả thương lượng / Kết quả xác minh thiệt hại / Hồ sơ vụ việc]` kèm diễn giải (Kịch bản B: số mục thương lượng thành công, không thành công).
-- `Tình trạng tham gia thương lượng: [nhãn tình trạng]`; vụ việc không có kết quả thương lượng hiển thị "Chưa có kết quả thương lượng".
-- `Ghi chú nguồn: [câu ghi chú theo bảng trên]` (không hiển thị dòng này ở trường hợp 3).
-
-Tình trạng tham gia thương lượng và Ghi chú nguồn được lưu cùng quyết định khi trình, dùng cho màn hình chi tiết và phần Căn cứ của văn bản Mẫu 18/BTNN.
+Tình trạng tham gia thương lượng và Ghi chú nguồn được hệ thống tự động xác định ngầm để lưu cùng quyết định khi trình và phục vụ phần Căn cứ của văn bản Mẫu 18/BTNN; trên giao diện form bảng đề xuất bồi thường không hiển thị các dòng nhãn ghi chú nguồn này để đảm bảo giao diện gọn gàng.
 
 Các trường khác:
 - Họ và tên người yêu cầu: Họ và tên người yêu cầu bồi thường của vụ việc.
@@ -170,25 +165,24 @@ flowchart TD
 | **Tiêu đề** | String(200) | - | Theo ngữ cảnh | + Tạo mới: `TẠO MỚI QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG`.<br>+ Cập nhật: `CẬP NHẬT QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG`. |
 | **Khối Lý do bị trả lại** | Section | - | Ẩn | Chỉ hiển thị khi cập nhật quyết định `Bị trả lại`: Người trả lại, Thời điểm, Lý do (chỉ đọc). |
 | **Khối Vụ việc yêu cầu bồi thường** | Section | - | - | |
-| Mã vụ việc liên kết | String(100) | Có | Trống | Control UI: Cụm tìm kiếm và chọn vụ việc gồm:<br>+ Ô nhập mã vụ việc: Input text, placeholder `Nhập mã vụ việc...`. Tự động cắt khoảng trắng đầu/cuối. Hỗ trợ bấm phím `Enter` để tìm kiếm nhanh.<br>+ Nút `Tìm kiếm` (icon `fa-magnifying-glass`): tìm nhanh vụ việc theo mã đã nhập.<br>+ Nút `Tìm kiếm nâng cao` (icon `fa-magnifying-glass-plus`): mở [MH02a - Popup Tìm kiếm nâng cao vụ việc liên kết](#qd-mh02a).<br>+ Badge thông tin vụ việc đã chọn: hiển thị `[Mã vụ việc] - [Người yêu cầu]`, kèm nút xóa chọn `×` (icon `fa-xmark`) để hủy và chọn lại.<br>- Chỉ gồm vụ việc bồi thường bằng tiền (mã `BT-yyyy-xxx`, loại yêu cầu khác Phục hồi danh dự) ở trạng thái `Chờ ban hành QĐ`, chưa có quyết định còn hiệu lực; không gồm vụ việc Phục hồi danh dự (mã `PHDD-yyyy-xxx`).<br>- Khi chọn thành công: tự động điền dữ liệu theo [Quy tắc tự động điền khi chọn Mã vụ việc - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-tu-dong-dien) và hiển thị các khối (1) đến (7) cùng nút Trình Lãnh đạo.<br>- Khi chưa chọn: ẩn toàn bộ các khối chi tiết (1) đến (7) theo quy tắc 12.<br>- Chế độ cập nhật: khóa ô tìm kiếm, không cho đổi vụ việc. |
+| Mã vụ việc liên kết | String(100) | Có | Trống | Control UI: Cụm tìm kiếm và chọn vụ việc gồm:<br>+ Ô nhập mã vụ việc: Input text, placeholder `Nhập mã vụ việc...`. Tự động cắt khoảng trắng đầu/cuối. Hỗ trợ bấm phím `Enter` để tìm kiếm nhanh.<br>+ Nút `Tìm kiếm` (icon `fa-magnifying-glass`): tìm nhanh vụ việc theo mã đã nhập.<br>+ Nút `Tìm kiếm nâng cao` (icon `fa-magnifying-glass-plus`): mở [MH02a - Popup Tìm kiếm nâng cao vụ việc liên kết](#qd-mh02a).<br>+ Badge thông tin vụ việc đã chọn: hiển thị `[Mã vụ việc] - [Người yêu cầu]`.<br>- Chỉ gồm vụ việc bồi thường bằng tiền (mã `BT-yyyy-xxx`, loại yêu cầu khác Phục hồi danh dự) ở trạng thái `Chờ ban hành QĐ`, chưa có quyết định còn hiệu lực; không gồm vụ việc Phục hồi danh dự (mã `PHDD-yyyy-xxx`).<br>- Khi chọn thành công: tự động điền dữ liệu theo [Quy tắc tự động điền khi chọn Mã vụ việc - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-tu-dong-dien) và hiển thị các khối (1) đến (7) cùng nút Trình Lãnh đạo.<br>- Khi chưa chọn: ẩn toàn bộ các khối chi tiết (1) đến (7) theo quy tắc 12.<br>- Chế độ cập nhật: khóa ô tìm kiếm, không cho đổi vụ việc. |
 | Cơ quan giải quyết bồi thường | String(255) | - | Theo vụ việc | Control UI: Label. Cơ quan ban hành quyết định. |
 | **(1) Lãnh đạo ký duyệt** | Enum(String(255)) | Có | Trống | Control UI: Dropdown, hiển thị "[Họ tên] - [Chức vụ]". Danh sách = nhóm lãnh đạo của cấp phê duyệt đầu tiên theo quy tắc 5 tại [Quy tắc chung - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-chung). Chưa chọn vụ việc: hiển thị "-- Chọn vụ việc trước --". |
 | Luồng phê duyệt | String(500) | - | Theo vụ việc | Control UI: Label chỉ đọc, một dòng ngay dưới ô Lãnh đạo ký duyệt. Hiển thị động theo quy tắc 5 tại [Quy tắc chung - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-chung). Chưa chọn vụ việc: không hiển thị. |
 | **(2) Thông tin người yêu cầu bồi thường** | Section | - | - | |
 | Họ và tên | String(255) | Có | Theo vụ việc | Control UI: Input text, cho phép sửa. |
 | Địa chỉ | String(1000) | Có | Theo vụ việc | Control UI: Input text, tự ghép từ số nhà/đường, Phường/Xã, Tỉnh/Thành phố; cho phép sửa. |
-| **(3) Bảng nội dung đề xuất bồi thường** | List(Object) | Có | Theo vụ việc | Control UI: Data grid. Sau khi chọn vụ việc, trên bảng có khối Nguồn dữ liệu gồm các dòng "Nguồn dữ liệu", "Tình trạng tham gia thương lượng" và "Ghi chú nguồn" theo [Quy tắc tự động điền khi chọn Mã vụ việc - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-tu-dong-dien); chưa chọn vụ việc: ẩn khối này. |
+| **(3) Bảng nội dung đề xuất bồi thường** | List(Object) | Có | Theo vụ việc | Control UI: Data grid hiển thị danh sách các khoản thiệt hại đề xuất bồi thường. |
 | STT | Integer | - | Tự tăng | |
 | Thiệt hại yêu cầu bồi thường | String(255) | - | Theo vụ việc | Chỉ đọc. |
-| Mức đề xuất | Decimal(18,0) | - | Theo vụ việc | Chỉ đọc, căn phải. |
-| Mức xác minh | Decimal(18,0) | - | Theo vụ việc | Chỉ đọc, căn phải. |
-| Mức tiền đã thương lượng | Decimal(18,0) | - | Theo vụ việc | Chỉ hiển thị khi nguồn là Kết quả thương lượng; mục không thành công hiển thị `-`. |
+| Mức đề xuất (đ) | Decimal(18,0) | - | Theo vụ việc | Chỉ đọc, căn phải. |
+| Mức xác minh (đ) | Decimal(18,0) | - | Theo vụ việc | Chỉ đọc, căn phải. |
+| Mức bồi thường (đ) | Decimal(18,0) | Có | Giá trị nguồn | Control UI: Input text số, phân cách hàng nghìn bằng dấu chấm, căn phải. Nằm ngay sau cột Mức xác minh. Mặc định bằng giá trị nguồn theo quy tắc tự động điền; cho phép sửa. Dòng có số tiền khác giá trị nguồn được tô vàng. |
 | Trạng thái thương lượng | Enum(String(50)) | - | Theo vụ việc | Chỉ hiển thị khi nguồn là Kết quả thương lượng. Badge:<br>+ `Thành công`<br>+ `Không thành công` |
-| Số tiền bồi thường (VNĐ) | Decimal(18,0) | Có | Giá trị nguồn | Control UI: Input text số, phân cách hàng nghìn bằng dấu chấm, căn phải. Mặc định bằng giá trị nguồn theo quy tắc tự động điền; cho phép sửa. Dòng có số tiền khác giá trị nguồn được tô vàng. |
-| Tổng số tiền bồi thường (VNĐ) | Decimal(18,0) | - | Hệ thống tính | Tổng cột Số tiền bồi thường; kèm "(Viết bằng chữ: ...)" khi lớn hơn 0. |
+| Tổng số tiền bồi thường (VNĐ) | Decimal(18,0) | - | Hệ thống tính | Tổng cột Mức bồi thường; kèm "(Viết bằng chữ: ...)" khi lớn hơn 0. |
 | Số tiền bồi thường đã tạm ứng (VNĐ) | Decimal(18,0) | - | Theo vụ việc | Chỉ đọc. |
 | Số tiền bồi thường còn lại sau khi đã tạm ứng (VNĐ) | Decimal(18,0) | - | Hệ thống tính | Tổng số tiền bồi thường trừ Số tiền đã tạm ứng. |
-| Lý do điều chỉnh | Text(2000) | Có điều kiện | Trống | Control UI: Textarea. Chỉ hiển thị và bắt buộc khi có ít nhất 01 dòng Số tiền bồi thường khác giá trị nguồn; kèm cảnh báo "Số tiền bồi thường đã được điều chỉnh khác với giá trị nguồn (các dòng tô vàng)." |
+| Lý do điều chỉnh | Text(2000) | Có điều kiện | Trống | Control UI: Textarea. Chỉ hiển thị và bắt buộc khi có ít nhất 01 dòng Mức bồi thường khác giá trị nguồn; kèm cảnh báo "Số tiền bồi thường đã được điều chỉnh khác với giá trị nguồn (các dòng tô vàng)." |
 | **(4) Người nhận tiền bồi thường** | Section | - | - | |
 | Họ và tên người nhận | String(255) | Có | Theo vụ việc | Control UI: Input text. |
 | Số định danh cá nhân/CCCD | String(20) | Có | Theo vụ việc | Control UI: Input text. |

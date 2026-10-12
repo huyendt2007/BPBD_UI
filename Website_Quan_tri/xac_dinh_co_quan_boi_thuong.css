@@ -772,7 +772,6 @@ body {
 .wf-radio { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-weight: 500; font-size: 13.5px; }
 .wf-file-list { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
 .wf-file-item { display: flex; align-items: center; gap: 10px; font-size: 13px; background: #f3f4f6; border: 1px solid var(--border-color); border-radius: 6px; padding: 6px 12px; width: fit-content; }
-.wf-path-box { background: #eff6ff; border: 1px dashed #93c5fd; border-radius: 8px; padding: 10px 14px; font-size: 12.5px; color: #1e3a8a; line-height: 1.6; }
 .wf-error-box { background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c; border-radius: 8px; padding: 10px 14px; font-size: 13px; margin-bottom: 12px; }
 .badge-approval { background-color: #EDE9FE; color: #6D28D9; }
 .badge-returned { background-color: #FEE2E2; color: #B91C1C; }
@@ -798,3 +797,7 @@ body {
 #requestsTable td .authority-tag { margin-left: 0; margin-top: 4px; }
 .icon-btn.is-disabled, .icon-btn:disabled { opacity: .3; cursor: not-allowed; pointer-events: auto; filter: grayscale(1); }
 .icon-btn.is-disabled:hover, .icon-btn:disabled:hover { background: transparent; transform: none; }
+/* Popup Chuyển CQGQBT: Cơ quan tiếp nhận dạng cây */
+#transferAgencyTree .wf-utree-display.is-invalid, #transferAgencyTree.is-invalid .wf-utree-display { border-color: #ef4444; background: #fef2f2; }
+.xd-transfer-hint { margin-top: 6px; font-size: 12.5px; color: #475569; }
+.xd-transfer-hint i { color: #2563eb; margin-right: 4px; }

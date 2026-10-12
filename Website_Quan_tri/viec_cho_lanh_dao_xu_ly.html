@@ -260,7 +260,7 @@
         function contentText(rec) {
             const me = WF.getCurrentUserId();
             if (activeTab === 'assign') return `Phân công xử lý tại ${WF.unitName(rec.currentUnitId)}`;
-            if (activeTab === 'approve') return `Phê duyệt: ${rec.approval.kind} (cấp ${rec.approval.level + 1}/${rec.approval.path.length})`;
+            if (activeTab === 'approve') return `Phê duyệt: ${rec.approval.kind}`;
             const mine = (rec.history || []).filter(h => h.userId === me).pop();
             return mine ? `${mine.action}: ${mine.note}` : '--';
         }
