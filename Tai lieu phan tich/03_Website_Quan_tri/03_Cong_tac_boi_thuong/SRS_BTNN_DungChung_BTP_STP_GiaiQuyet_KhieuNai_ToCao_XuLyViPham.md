@@ -4,7 +4,7 @@
 
 ##### 4.3.3.10.1. Mục đích
 
-\- Cho phép quản lý thông tin khiếu nại, tố cáo, phản ánh, kiến nghị liên quan đến công tác bồi thường nhà nước; theo dõi quá trình xử lý, kết quả xử lý và biện pháp khắc phục/xử lý vi phạm.
+\- Cho phép quản lý thông tin khiếu nại, tố cáo, phản ánh, kiến nghị liên quan đến công tác bồi thường nhà nước; theo dõi quá trình xử lý, kết quả xử lý và biện pháp khắc phục/xử lý vi phạm, theo khoản 5 Điều 44 (Bộ Tư pháp) và khoản 4 Điều 45 (Ủy ban nhân dân cấp tỉnh, Sở Tư pháp giúp thực hiện) dự thảo Nghị định quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước (bản gửi lấy ý kiến ngày 28/9/2026).
 
 \- Cho phép liên kết hồ sơ với vụ việc yêu cầu bồi thường, hồ sơ hoàn trả, hồ sơ theo dõi/đôn đốc hoặc hồ sơ kiểm tra khi nội dung phát sinh từ các nghiệp vụ này.
 
@@ -44,8 +44,8 @@ flowchart TD
 | Tiêu đề màn hình | String(255) | Không | Khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN | Hiển thị tên màn hình. |
 | Mã hồ sơ | String(50) | Không | Trống | Tìm gần đúng theo mã hồ sơ. |
 | Người/cơ quan gửi | String(255) | Không | Trống | Tìm gần đúng theo người/cơ quan gửi khiếu nại, tố cáo, phản ánh, kiến nghị. |
-| Loại nội dung | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Khiếu nại<br>+ Tố cáo<br>+ Phản ánh<br>+ Kiến nghị<br>- Xử lý vi phạm |
-| Nhóm nghiệp vụ liên quan | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Giải quyết yêu cầu bồi thường<br>+ Cấp kinh phí bồi thường và chi trả tiền bồi thường<br>+ Xác định trách nhiệm hoàn trả<br>- Xử lý kỷ luật<br>- Quản lý nhà nước về công tác BTNN<br>- Kiểm tra công tác BTNN<br>- Đôn đốc công tác BTNN |
+| Loại nội dung | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Khiếu nại<br>+ Tố cáo<br>+ Phản ánh<br>+ Kiến nghị<br>+ Xử lý vi phạm |
+| Nhóm nghiệp vụ liên quan | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Giải quyết yêu cầu bồi thường<br>+ Cấp kinh phí bồi thường và chi trả tiền bồi thường<br>+ Xác định trách nhiệm hoàn trả<br>+ Xử lý kỷ luật<br>+ Quản lý nhà nước về công tác BTNN<br>+ Kiểm tra công tác BTNN<br>+ Đôn đốc công tác BTNN |
 | Trạng thái | Enum(String(50)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Đang xử lý<br>+ Hoàn thành |
 | Từ ngày | Date | Không | Trống | Ngày tiếp nhận từ, áp dụng [BR-VAL-007]. |
 | Đến ngày | Date | Không | Trống | Ngày tiếp nhận đến, áp dụng [BR-VAL-007]. |
@@ -91,7 +91,7 @@ flowchart TD
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Mã hồ sơ | String(50) | Không | Hệ thống tự sinh | Chỉ đọc sau khi lưu lần đầu. |
-| Loại nội dung | Enum(String(100)) | Có | Khiếu nại | Gồm:<br>+ Khiếu nại<br>+ Tố cáo<br>+ Phản ánh<br>+ Kiến nghị<br>- Xử lý vi phạm |
+| Loại nội dung | Enum(String(100)) | Có | Khiếu nại | Gồm:<br>+ Khiếu nại<br>+ Tố cáo<br>+ Phản ánh<br>+ Kiến nghị<br>+ Xử lý vi phạm |
 | Ngày tiếp nhận | Date | Có | Ngày hiện tại | Áp dụng [BR-VAL-001]. |
 | Người/cơ quan gửi | String(255) | Có | Trống | Tên người, cơ quan, tổ chức gửi nội dung. |
 | Thông tin liên hệ | String(255) | Không | Trống | Số điện thoại, email hoặc địa chỉ liên hệ nếu có. |
@@ -100,12 +100,12 @@ flowchart TD
 | Cơ quan/cá nhân bị phản ánh | String(255) | Không | Trống | Cơ quan, tổ chức, cá nhân liên quan đến nội dung phản ánh/khiếu nại/tố cáo. |
 | Nội dung tiếp nhận | Text(4000) | Có | Trống | Nội dung khiếu nại, tố cáo, phản ánh, kiến nghị hoặc nội dung vi phạm cần xử lý. |
 | Mức độ ưu tiên | Enum(String(50)) | Có | Bình thường | Gồm:<br>+ Bình thường<br>+ Khẩn<br>+ Rất khẩn |
-| Đơn vị/cán bộ xử lý | String(255) | Có khi lưu và xử lý | Trống | Đơn vị hoặc cán bộ được phân công xử lý. |
+| Đơn vị/cán bộ xử lý | String(255) | Có | Trống | Đơn vị hoặc cán bộ được phân công xử lý. |
 | Hạn xử lý | Date | Không | Trống | Hạn xử lý nội dung tiếp nhận. |
 | Kết quả xác minh/xử lý | Text(4000) | Có khi hoàn thành | Trống | Kết quả xử lý nội dung khiếu nại, tố cáo, phản ánh, kiến nghị hoặc vi phạm. |
 | Biện pháp xử lý/khắc phục | Text(4000) | Không | Trống | Ghi nhận biện pháp xử lý vi phạm, kiến nghị xử lý hoặc khắc phục hậu quả nếu có. |
 | Kết quả thực hiện biện pháp | Text(4000) | Không | Trống | Cập nhật tình hình thực hiện biện pháp xử lý/khắc phục. |
-| Tài liệu liên quan | File/List(File) | Không | Trống | Cho phép nhập tên tài liệu và đính kèm nhiều file; hỗ trợ `Xem file`, `Xóa`. |
+| Tài liệu liên quan | List(File) | Không | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu`, `File đính kèm`, `Thao tác tài liệu`; nút `+ Thêm dòng` dưới bảng.<br>- Cột `File đính kèm`: khi dòng chưa có file hiển thị nút `Tải lên`; khi đã có file hiển thị tên file.<br>- Cột `Thao tác tài liệu` gồm link `Xem file` (khóa mờ khi dòng chưa có file) và link `Xóa` (kèm icon thùng rác).<br>- Ở chế độ xem chi tiết: ẩn link `Xóa` và nút `+ Thêm dòng`; chỉ cho phép `Xem file`.<br>- Áp dụng [BR-FILE-010]. |
 | Lịch sử xử lý | String(255) | Không | Theo dữ liệu | Hiển thị thời gian, người thực hiện, thao tác, nội dung xử lý. |
 | Hủy bỏ | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
 | Lưu và xử lý | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
@@ -121,4 +121,6 @@ flowchart TD
 |  |  |  | TH Hợp lệ: Hệ thống lưu thông tin tiếp nhận trực tiếp ở trạng thái "Đang xử lý" (không có bước lưu tạm hồ sơ), ghi nhận đơn vị/cán bộ xử lý và lịch sử xử lý. |
 | 3 | Hoàn thành | Button | TH1 (Chưa nhập kết quả xác minh/xử lý): Vi phạm [BR-VAL-001], hệ thống không cho hoàn thành. |
 |  |  |  | TH Hợp lệ: Hệ thống chuyển hồ sơ sang trạng thái "Hoàn thành" và ghi lịch sử xử lý. |
-| 4 | Xem file | Link | Cho phép xem file tại một tab riêng. |
+| 4 | Xem file | Link | Hệ thống mở file của dòng tài liệu tại một tab trình duyệt mới. Link khóa mờ khi dòng chưa có file. |
+| 5 | Tải lên | Button | Hệ thống mở trình chọn file cho dòng tài liệu tương ứng; sau khi chọn, hiển thị tên file tại cột `File đính kèm`. |
+| 6 | Xóa | Link | Hệ thống mở **Popup Xác nhận** với nội dung [MSG-CFM-SYS-001]. Nếu chọn `Đồng ý`, hệ thống xóa dòng tài liệu khỏi bảng; nếu chọn `Hủy bỏ`, hệ thống đóng popup và giữ nguyên dòng tài liệu. Link không hiển thị ở chế độ xem chi tiết. |

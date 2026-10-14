@@ -1559,7 +1559,7 @@
                 if (btnFormEdit) btnFormEdit.style.display = "none";
                 if (btnFormDelete) btnFormDelete.style.display = "none";
 
-                // In Phiếu tiếp nhận: hiển thị khi chỉnh sửa hồ sơ đã tồn tại
+                // In Phiếu tiếp nhận: hiển thị khi sửa hồ sơ đã tồn tại
                 const showPrint = claim && RECEPTION_STATUSES.includes(claim.status || "Chờ phân công");
                 if (btnFormPrint) btnFormPrint.style.display = showPrint ? "inline-flex" : "none";
             }
@@ -1581,7 +1581,7 @@
             } else {
                 formView.classList.remove("readonly-mode");
                 document.getElementById("formTitle").innerHTML = claim
-                    ? `<i class="fa-solid fa-pen-to-square"></i> CHỈNH SỬA THÔNG TIN TIẾP NHẬN`
+                    ? `<i class="fa-solid fa-pen-to-square"></i> SỬA THÔNG TIN TIẾP NHẬN`
                     : `<i class="fa-solid fa-file-circle-plus"></i> TIẾP NHẬN YÊU CẦU`;
             }
 

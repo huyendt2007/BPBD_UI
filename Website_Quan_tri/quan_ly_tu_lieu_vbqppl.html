@@ -406,7 +406,7 @@
             transform: translateY(-1px);
         }
 
-        /* 3. Tác vụ Gửi phê duyệt / Phê duyệt (Màu xanh lá) */
+        /* 3. Tác vụ thành công (Màu xanh lá) */
         .icon-btn.send, .icon-btn.accept, .icon-btn.success {
             background-color: #ECFDF5;
             color: #10B981;
@@ -417,7 +417,7 @@
             transform: translateY(-1px);
         }
 
-        /* 4. Tác vụ Xóa / Từ chối (Màu đỏ) */
+        /* 4. Tác vụ Xóa (Màu đỏ) */
         .icon-btn.delete, .icon-btn.reject {
             background-color: #FEF2F2;
             color: #EF4444;
@@ -748,6 +748,8 @@
         .toast.warning i {
             color: #F59E0B;
         }
+            /* Chế độ xem chi tiết: chỉ hiển thị thông tin, ẩn vùng tải lên, thanh định dạng và dấu bắt buộc */
+        .modal-content.view-mode .upload-area, .modal-content.view-mode .rich-text-toolbar, .modal-content.view-mode .form-label > span[style*="danger"] { display: none !important; }
     </style>
 </head>
 <body>
@@ -757,15 +759,7 @@
         <div class="page-header">
             <div>
                 <h1>Quản lý thông tin tư liệu VBQPPL</h1>
-                <p>Quản lý tài liệu pháp quy, văn bản quy phạm pháp luật và phê duyệt tài liệu nội bộ</p>
-            </div>
-            <!-- Switch Role to test UI -->
-            <div class="role-switch-container">
-                <span>Vai trò kiểm thử:</span>
-                <select id="roleSelector" onchange="switchRole()">
-                    <option value="officer" selected>Cán bộ nghiệp vụ</option>
-                    <option value="approver">Cán bộ phê duyệt (Có thẩm quyền)</option>
-                </select>
+                <p>Quản lý tài liệu pháp quy, văn bản quy phạm pháp luật phục vụ tra cứu nghiệp vụ</p>
             </div>
         </div>
 
@@ -794,16 +788,15 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">Cơ quan ban hành</label>
-                    <input type="text" id="filterIssuer" class="form-control" placeholder="Ví dụ: Chính phủ, Bộ Tư pháp...">
+                    <input type="text" id="filterIssuer" class="form-control" placeholder="Nhập cơ quan ban hành...">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Trạng thái</label>
+                    <label class="form-label">Tình trạng hiệu lực</label>
                     <select id="filterStatus" class="form-select">
-                        <option value="">-- Tất cả --</option>
-                        <option value="Lưu nháp">Lưu nháp</option>
-                        <option value="Chờ duyệt">Chờ duyệt</option>
-                        <option value="Đã duyệt">Đã duyệt</option>
-                        <option value="Từ chối">Từ chối</option>
+                        <option value="">Tất cả</option>
+                        <option value="Còn hiệu lực">Còn hiệu lực</option>
+                        <option value="Hết hiệu lực">Hết hiệu lực</option>
+                        <option value="Bị sửa đổi bổ sung">Bị sửa đổi bổ sung</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -835,11 +828,14 @@
                     <button class="stat-badge-btn active" onclick="filterByKpi('all')" id="kpiBtnAll">
                         Tất cả <span class="count" id="countAll">0</span>
                     </button>
-                    <button class="stat-badge-btn" onclick="filterByKpi('Chờ duyệt')" id="kpiBtnPending">
-                        Chờ duyệt <span class="count" id="countPending">0</span>
+                    <button class="stat-badge-btn" onclick="filterByKpi('Còn hiệu lực')" id="kpiBtnActive">
+                        Còn hiệu lực <span class="count" id="countActive">0</span>
                     </button>
-                    <button class="stat-badge-btn" onclick="filterByKpi('Từ chối')" id="kpiBtnRejected">
-                        Từ chối <span class="count" id="countRejected">0</span>
+                    <button class="stat-badge-btn" onclick="filterByKpi('Hết hiệu lực')" id="kpiBtnExpired">
+                        Hết hiệu lực <span class="count" id="countExpired">0</span>
+                    </button>
+                    <button class="stat-badge-btn" onclick="filterByKpi('Bị sửa đổi bổ sung')" id="kpiBtnAmended">
+                        Bị sửa đổi bổ sung <span class="count" id="countAmended">0</span>
                     </button>
                 </div>
                 
@@ -863,8 +859,8 @@
                         <th class="sortable" onclick="sortTable('coquanBanhanh')">Cơ quan ban hành <i class="fa-solid fa-sort" id="sort_coquanBanhanh"></i></th>
                         <th class="sortable cell-center" onclick="sortTable('ngayBanhanh')" style="width: 130px;">Ngày ban hành <i class="fa-solid fa-sort" id="sort_ngayBanhanh"></i></th>
                         <th class="sortable cell-center" onclick="sortTable('ngayCoHieuLuc')" style="width: 130px;">Ngày có hiệu lực <i class="fa-solid fa-sort" id="sort_ngayCoHieuLuc"></i></th>
-                        <th class="cell-center" style="width: 120px;">Trạng thái</th>
-                        <th class="cell-center" style="width: 160px; min-width: 160px;">Thao tác</th>
+                        <th class="cell-center" style="width: 150px;">Tình trạng</th>
+                        <th class="cell-center" style="width: 140px; min-width: 140px;">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -880,9 +876,10 @@
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <span>Số bản ghi:</span>
                     <select id="pageSizeSelector" class="form-select" style="width: 70px; padding: 4px;" onchange="changePageSize()">
-                        <option value="5" selected>5</option>
                         <option value="10">10</option>
-                        <option value="20">20</option>
+                        <option value="20" selected>20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
                     </select>
                 </div>
                 <div class="pagination-buttons" id="paginationBtns">
@@ -914,13 +911,13 @@
                             <div class="form-group" style="grid-column: span 2;">
                                 <label class="form-label">Tên văn bản <span style="color: var(--danger-color);">*</span></label>
                                 <input type="text" id="docName" class="form-control">
-                                <span class="field-error-text" id="error_docName">Tên văn bản không được để trống</span>
+                                <span class="field-error-text" id="error_docName">Đây là trường bắt buộc</span>
                             </div>
                             
                             <div class="form-group">
                                 <label class="form-label">Số hiệu văn bản <span style="color: var(--danger-color);">*</span></label>
                                 <input type="text" id="docNum" class="form-control">
-                                <span class="field-error-text" id="error_docNum">Số hiệu văn bản không được để trống</span>
+                                <span class="field-error-text" id="error_docNum">Đây là trường bắt buộc</span>
                             </div>
                             
                             <div class="form-group">
@@ -934,13 +931,13 @@
                                     <option value="Quyết định">Quyết định</option>
                                     <option value="Thông tư liên tịch">Thông tư liên tịch</option>
                                 </select>
-                                <span class="field-error-text" id="error_docType">Vui lòng chọn loại văn bản</span>
+                                <span class="field-error-text" id="error_docType">Đây là trường bắt buộc</span>
                             </div>
 
                             <div class="form-group">
                                 <label class="form-label">Cơ quan ban hành <span style="color: var(--danger-color);">*</span></label>
                                 <input type="text" id="docIssuer" class="form-control">
-                                <span class="field-error-text" id="error_docIssuer">Cơ quan ban hành không được để trống</span>
+                                <span class="field-error-text" id="error_docIssuer">Đây là trường bắt buộc</span>
                             </div>
                             
                             <div class="form-group">
@@ -960,21 +957,17 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">Tags / Từ khóa</label>
-                                <input type="text" id="docTags" class="form-control" placeholder="Tối đa 10 tags, phân tách bằng dấu phẩy...">
+                                <label class="form-label">Tình trạng <span style="color: var(--danger-color);">*</span></label>
+                                <select id="docStatus" class="form-select">
+                                    <option value="">-- Lựa chọn --</option>
+                                    <option value="Còn hiệu lực">Còn hiệu lực</option>
+                                    <option value="Hết hiệu lực">Hết hiệu lực</option>
+                                    <option value="Bị sửa đổi bổ sung">Bị sửa đổi bổ sung</option>
+                                </select>
+                                <div id="docStatusBadge" style="display: none; padding-top: 6px;"></div>
+                                <span class="field-error-text" id="error_docStatus">Đây là trường bắt buộc</span>
                             </div>
 
-                            <div class="form-group">
-                                <label class="form-label">Người ký <span style="color: var(--danger-color);">*</span></label>
-                                <input type="text" id="docSigner" class="form-control" placeholder="Ví dụ: Phạm Minh Chính">
-                                <span class="field-error-text" id="error_docSigner">Người ký không được để trống</span>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="form-label">Chức danh <span style="color: var(--danger-color);">*</span></label>
-                                <input type="text" id="docSignerTitle" class="form-control" placeholder="Ví dụ: Thủ tướng">
-                                <span class="field-error-text" id="error_docSignerTitle">Chức danh không được để trống</span>
-                            </div>
                         </div>
 
                         <div class="form-group" style="margin-bottom: 15px;">
@@ -989,73 +982,48 @@
                             <i class="fa-solid fa-file-arrow-up"></i> Tài liệu đính kèm
                         </div>
                         
-                        <div class="grid-layout" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px;">
-                            <div style="min-width: 0;">
-                                <label class="form-label" style="font-weight: 600;">File dữ liệu văn bản (PDF, DOCX) <span style="color: var(--danger-color);">*</span></label>
-                                <div class="upload-area" onclick="triggerFileInput('docFileInput')">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i>
-                                    <p>Kéo thả hoặc Click để tải lên</p>
-                                    <span>Định dạng: PDF, DOCX (Tối đa 10MB/file, tối đa 10 file)</span>
-                                </div>
-                                <input type="file" id="docFileInput" style="display: none;" multiple accept=".pdf,.docx" onchange="handleFileSelected(this, 'doc')">
-                                <div class="progress-container" id="docProgressContainer">
-                                    <div class="progress-bar-fill" id="docProgressBar"></div>
-                                </div>
-                                <div id="docFilesList" style="margin-top: 10px;"></div>
-                                <span class="field-error-text" id="error_docFiles">Bắt buộc đính kèm ít nhất 1 file dữ liệu văn bản</span>
+                        <div style="min-width: 0;">
+                            <label class="form-label" style="font-weight: 600;">Văn bản QPPL <span style="color: var(--danger-color);">*</span></label>
+                            <div class="upload-area" onclick="triggerFileInput('docFileInput')">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <p>Kéo thả hoặc Click để tải lên</p>
+                                <span>Chỉ nhận tệp PDF (Tối đa 10MB/file, tối đa 10 file)</span>
                             </div>
-                            
-                            <div style="min-width: 0;">
-                                <label class="form-label" style="font-weight: 600;">File media đính kèm (MP4, MP3, JPG, PNG)</label>
-                                <div class="upload-area" onclick="triggerFileInput('mediaFileInput')">
-                                    <i class="fa-solid fa-photo-film"></i>
-                                    <p>Kéo thả hoặc Click để tải lên</p>
-                                    <span>Định dạng: MP4, MP3, JPG, PNG (Tối đa 50MB/file, tối đa 5 file)</span>
-                                </div>
-                                <input type="file" id="mediaFileInput" style="display: none;" multiple accept="audio/*,video/*,image/*" onchange="handleFileSelected(this, 'media')">
-                                <div class="progress-container" id="mediaProgressContainer">
-                                    <div class="progress-bar-fill" id="mediaProgressBar"></div>
-                                </div>
-                                <div id="mediaFilesList" style="margin-top: 10px;"></div>
+                            <input type="file" id="docFileInput" style="display: none;" multiple accept=".pdf,application/pdf" onchange="handleFileSelected(this, 'doc')">
+                            <div class="progress-container" id="docProgressContainer">
+                                <div class="progress-bar-fill" id="docProgressBar"></div>
                             </div>
+                            <div id="docFilesList" style="margin-top: 10px;"></div>
+                            <span class="field-error-text" id="error_docFiles">Đây là trường bắt buộc</span>
                         </div>
                     </div>
 
-                    <!-- Section 3: Approver Decision controls -->
-                    <div class="form-section" id="approveSection" style="display: none; background-color: #FFFBEB; border: 1px solid #FEF3C7; padding: 15px; border-radius: var(--border-radius-md);">
-                        <div class="form-section-title" style="color: #D97706; border-bottom-color: #FEF3C7;">
-                            <i class="fa-solid fa-gavel"></i> Cán bộ phê duyệt hồ sơ
-                        </div>
-                        
-                        <div class="grid-layout" style="grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 10px;">
-                            <div class="form-group">
-                                <label class="form-label">Người tạo / gửi duyệt</label>
-                                <input type="text" id="creatorName" class="form-control" readOnly style="background-color: #E2E8F0;">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Ngày gửi duyệt</label>
-                                <input type="text" id="submitDate" class="form-control" readOnly style="background-color: #E2E8F0;">
-                            </div>
-</div>
-
-                        <div class="form-group">
-                            <label class="form-label">Lý do từ chối (Bắt buộc khi chọn Từ chối)</label>
-                            <textarea id="rejectReason" class="form-control" rows="2" placeholder="Nhập lý do từ chối phê duyệt..."></textarea>
-                            <span class="field-error-text" id="error_rejectReason">Lý do từ chối là bắt buộc</span>
-                        </div>
-                    </div>
                 </form>
             </div>
             
             <div class="modal-footer">
                 <!-- Close/Cancel -->
                 <button class="btn btn-secondary" onclick="closeModal()" id="btnCancel">Hủy</button>
-                <!-- Draft and Submit Actions for Officer -->
-                <button class="btn btn-outline-primary" onclick="saveData('Lưu nháp')" id="btnSaveDraft">Lưu nháp</button>
-                <button class="btn btn-primary" onclick="saveData('Chờ duyệt')" id="btnSubmitApproval">Gửi duyệt</button>
-                <!-- Approver Actions -->
-                <button class="btn btn-danger" onclick="approveDecision('Từ chối')" id="btnReject" style="display: none;"><i class="fa-solid fa-ban"></i> Từ chối</button>
-                <button class="btn btn-primary" style="background-color: var(--success-color); border-color: var(--success-color);" onclick="approveDecision('Đã duyệt')" id="btnApprove" style="display: none;"><i class="fa-solid fa-file-signature"></i> Phê duyệt</button>
+                <button class="btn btn-outline-danger" id="btnDeleteInView" style="display: none;" onclick="deleteDocFromView()"><i class="fa-solid fa-trash-can"></i> Xóa</button>
+                <button class="btn btn-primary" id="btnEditInView" style="display: none;" onclick="editDocFromView()"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>
+                <button class="btn btn-primary" onclick="saveData()" id="btnSave"><i class="fa-solid fa-floppy-disk"></i> Lưu thông tin</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirmation Modal (xác nhận xóa bản ghi / xóa tệp đính kèm) -->
+    <div class="modal-overlay" id="confirmModal" style="z-index: 3000;">
+        <div class="modal-content" style="max-width: 480px;">
+            <div class="modal-header">
+                <h3 id="confirmTitle">Xác nhận</h3>
+                <button class="modal-close-btn" onclick="closeConfirm()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="padding: 24px;">
+                <p id="confirmMessage" style="margin: 0; font-size: 14px; line-height: 1.6;"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeConfirm()">Hủy</button>
+                <button class="btn btn-danger" id="confirmOkBtn"><i class="fa-solid fa-trash-can"></i> Xóa</button>
             </div>
         </div>
     </div>
@@ -1068,32 +1036,35 @@
 
     <!-- JavaScript logic -->
     <script>
-        // MOCK DATA INITIALIZATION - Unified 20 documents matching client portal default states and statuses
+        // Trang dùng chung BPBĐ/BTNN: menu BTNN mở kèm ?system=btnn; BTNN dùng nhãn thao tác 'Sửa', BPBĐ giữ 'Chỉnh sửa'
+        const VBQPPL_SYSTEM = (new URLSearchParams(window.location.search).get('system') || 'bpbd').toLowerCase();
+        const EDIT_LABEL = VBQPPL_SYSTEM === 'btnn' ? 'Sửa' : 'Chỉnh sửa';
+        // MOCK DATA INITIALIZATION - 20 văn bản mẫu; tinhTrang: Còn hiệu lực | Hết hiệu lực | Bị sửa đổi bổ sung
         let initialMockDocs = [
-            { id: 1, tenVanban: "Nghị định về đăng ký biện pháp bảo đảm", soHieu: "99/2022/NĐ-CP", loaiVanban: "Nghị định", coquanBanhanh: "Chính phủ", ngayBanhanh: "30/11/2022", ngayCoHieuLuc: "15/01/2023", tomTat: "Quy định chi tiết quy trình đăng ký biện pháp bảo đảm bằng tài sản...", tags: "đăng ký, biện pháp bảo đảm, động sản", trangThai: "Đã duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "30/11/2022", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "01/12/2022", lyDoTuChoi: "", nguoiKy: "Phạm Minh Chính", chucDanh: "Thủ tướng", files: ["Nghidinh_99_2022_BPBD.pdf"], media: [], isDeleted: 0 },
-            { id: 2, tenVanban: "Nghị định về đăng ký biện pháp bảo đảm (hết hiệu lực một phần)", soHieu: "102/2017/NĐ-CP", loaiVanban: "Nghị định", coquanBanhanh: "Chính phủ", ngayBanhanh: "01/09/2017", ngayCoHieuLuc: "15/09/2017", tomTat: "Quy định khung pháp lý về đăng ký giao dịch bảo đảm bằng động sản trước đây...", tags: "đăng ký, thế chấp, giao dịch bảo đảm", trangThai: "Đã duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "01/09/2017", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "02/09/2017", lyDoTuChoi: "", nguoiKy: "Nguyễn Xuân Phúc", chucDanh: "Thủ tướng", files: ["Nghidinh_102_2017_BPBD.pdf"], media: [], isDeleted: 0 },
-            { id: 3, tenVanban: "Hướng dẫn một số nội dung về đăng ký biện pháp bảo đảm bằng tàu bay, tàu biển", soHieu: "07/2019/TT-BTP", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "25/11/2019", ngayCoHieuLuc: "10/01/2020", tomTat: "Hướng dẫn các biểu mẫu và hồ sơ thế chấp tàu bay, tàu biển...", tags: "thông tư, tàu bay, tàu biển, bộ tư pháp", trangThai: "Đã duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "25/11/2019", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "26/11/2019", lyDoTuChoi: "", nguoiKy: "Lê Thành Long", chucDanh: "Bộ trưởng", files: ["Thongtu_07_2019_TT_BTP.pdf"], media: [], isDeleted: 0 },
-            { id: 4, tenVanban: "Quy định chi tiết một số điều của Nghị định số 102/2017/NĐ-CP", soHieu: "05/2020/TT-BTP", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "28/08/2020", ngayCoHieuLuc: "15/10/2020", tomTat: "Sửa đổi bổ sung biểu mẫu và trình tự xử lý đơn...", tags: "biểu mẫu, thủ tục hành chính, sửa đổi", trangThai: "Đã duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "28/08/2020", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "29/08/2020", lyDoTuChoi: "", nguoiKy: "Lê Thành Long", chucDanh: "Bộ trưởng", files: ["Thongtu_05_2020_TT_BTP.pdf"], media: ["Video_huongdan_nghiepvu.mp4"], isDeleted: 0 },
-            { id: 5, tenVanban: "Luật sửa đổi, bổ sung một số điều của Luật Giao dịch điện tử", soHieu: "91/2018/QH14", loaiVanban: "Luật", coquanBanhanh: "Quốc hội", ngayBanhanh: "20/06/2018", ngayCoHieuLuc: "01/01/2019", tomTat: "Quy định về giá trị pháp lý của thông điệp dữ liệu và chữ ký số...", tags: "luật, giao dịch điện tử, chữ ký số", trangThai: "Đã duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "20/06/2018", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "21/06/2018", lyDoTuChoi: "", nguoiKy: "Nguyễn Thị Kim Ngân", chucDanh: "Chủ tịch Quốc hội", files: ["Luat_91_2018_QH14.pdf"], media: [], isDeleted: 0 },
-            { id: 6, tenVanban: "Luật Trách nhiệm bồi thường của Nhà nước", soHieu: "11/2017/QH14", loaiVanban: "Luật", coquanBanhanh: "Quốc hội", ngayBanhanh: "20/06/2017", ngayCoHieuLuc: "01/07/2018", tomTat: "Quy định trách nhiệm bồi thường của Nhà nước đối với cá nhân, tổ chức bị thiệt hại do người thi hành công vụ gây ra...", tags: "bồi thường nhà nước, trách nhiệm, luật", trangThai: "Đã duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "20/06/2017", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "21/06/2017", lyDoTuChoi: "", nguoiKy: "Nguyễn Thị Kim Ngân", chucDanh: "Chủ tịch Quốc hội", files: ["Luat_TrachNhiemBoiThuong_2017.pdf", "Huongdan_Nghiepvu_BoiThuong.docx"], media: [], isDeleted: 0 },
-            { id: 7, tenVanban: "Quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước", soHieu: "68/2018/NĐ-CP", loaiVanban: "Nghị định", coquanBanhanh: "Chính phủ", ngayBanhanh: "15/05/2018", ngayCoHieuLuc: "01/07/2018", tomTat: "Hướng dẫn xác định thiệt hại, cơ quan giải quyết bồi thường và thủ tục chi trả...", tags: "nghị định, bồi thường nhà nước, thi hành", trangThai: "Đã duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "15/05/2018", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "16/05/2018", lyDoTuChoi: "", nguoiKy: "Nguyễn Xuân Phúc", chucDanh: "Thủ tướng", files: ["Nghidinh_68_2018_ND_CP.pdf", "Phuluc_Bieumau_68.docx", "Huongdan_thithanh_68.pdf"], media: ["Video_gioi_thieu_luat_tnbtnn.mp4"], isDeleted: 0 },
-            { id: 8, tenVanban: "Ban hành một số biểu mẫu trong hoạt động giải quyết bồi thường của Nhà nước", soHieu: "04/2018/TT-BTP", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "17/05/2018", ngayCoHieuLuc: "01/07/2018", tomTat: "Ban hành các biểu mẫu phục vụ việc thụ lý, xác minh và thương lượng bồi thường...", tags: "biểu mẫu, thông tư, bồi thường nhà nước", trangThai: "Đã duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "17/05/2018", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "18/05/2018", lyDoTuChoi: "", nguoiKy: "Lê Thành Long", chucDanh: "Bộ trưởng", files: ["Thongtu_04_2018_TT_BTP.pdf", "Bieumau_Thongtu_04.docx"], media: [], isDeleted: 0 },
-            { id: 9, tenVanban: "Biện pháp thực hiện hoạt động quản lý nhà nước về công tác bồi thường nhà nước", soHieu: "09/2019/TT-BTP", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "10/12/2019", ngayCoHieuLuc: "25/01/2020", tomTat: "Quy định cơ chế báo cáo, kiểm tra liên ngành và thống kê số liệu công tác bồi thường...", tags: "quản lý nhà nước, báo cáo, bồi thường", trangThai: "Đã duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "10/12/2019", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "11/12/2019", lyDoTuChoi: "", nguoiKy: "Lê Thành Long", chucDanh: "Bộ trưởng", files: ["Thongtu_09_2019_TT_BTP.pdf", "Tailieu_Huongdan_09.pdf"], media: [], isDeleted: 0 },
-            { id: 10, tenVanban: "Hướng dẫn nghiệp vụ giải quyết bồi thường nhà nước và kỹ năng hỗ trợ người bị thiệt hại", soHieu: "02/2023/TT-BTP", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "15/03/2023", ngayCoHieuLuc: "01/05/2023", tomTat: "Kỹ năng xác minh, thương lượng và hướng dẫn người bị hại hoàn thiện hồ sơ yêu cầu bồi thường...", tags: "nghiệp vụ, bồi thường nhà nước, hỗ trợ", trangThai: "Đã duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "15/03/2023", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "16/03/2023", lyDoTuChoi: "", nguoiKy: "Lê Thành Long", chucDanh: "Bộ trưởng", files: ["Thongtu_02_2023_TT_BTP.pdf", "Slide_huong_dan_nghiep_vu.pdf", "Bieumau_YeuCau_BoiThuong.docx"], media: ["Slide_huong_dan_nghiep_vu.pdf"], isDeleted: 0 },
-            { id: 11, tenVanban: "Thông tư sửa đổi bổ sung biểu mẫu lệ phí đăng ký giao dịch bảo đảm", soHieu: "05/2026/TT-BTC", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tài chính", ngayBanhanh: "15/03/2026", ngayCoHieuLuc: "", tomTat: "Cập nhật mức thu, chế độ thu, nộp và quản lý lệ phí đăng ký biện pháp bảo đảm động sản.", tags: "biểu mẫu, lệ phí, bộ tài chính", trangThai: "Lưu nháp", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "15/03/2026", nguoiDuyet: "", ngayDuyet: "", lyDoTuChoi: "", nguoiKy: "Hồ Đức Phớc", chucDanh: "Bộ trưởng", files: [], media: [], isDeleted: 0 },
-            { id: 12, tenVanban: "Thông tư liên tịch về cơ chế ngăn chặn giao dịch tài sản đang thế chấp tranh chấp", soHieu: "01/2026/TTLT-BTP-BCA", loaiVanban: "Thông tư liên tịch", coquanBanhanh: "Bộ Tư pháp - Bộ Công an", ngayBanhanh: "15/04/2026", ngayCoHieuLuc: "", tomTat: "Phối hợp chia sẻ dữ liệu trực tuyến về tài sản thi hành án và tài sản đang bị kê biên điều tra hình sự.", tags: "liên tịch, ngăn chặn giao dịch, công an", trangThai: "Lưu nháp", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "15/04/2026", nguoiDuyet: "", ngayDuyet: "", lyDoTuChoi: "", nguoiKy: "Nguyễn Duy Ngọc", chucDanh: "Thứ trưởng", files: ["TTLT_Nganchan_Giaodich.pdf"], media: [], isDeleted: 0 },
-            { id: 13, tenVanban: "Quyết định phê duyệt quy trình số hóa hồ sơ giao dịch bảo đảm", soHieu: "120/QĐ-BTP", loaiVanban: "Quyết định", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "01/04/2026", ngayCoHieuLuc: "01/04/2026", tomTat: "Quy chuẩn hóa quy trình quét, gắn mã vạch và số hóa toàn bộ kho hồ sơ thế chấp cũ bằng giấy.", tags: "số hóa, quy trình, quyết định", trangThai: "Chờ duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "01/04/2026", nguoiDuyet: "", ngayDuyet: "", lyDoTuChoi: "", nguoiKy: "Lê Thành Long", chucDanh: "Bộ trưởng", files: ["Quyetdinh_120_SoHoaHoso.pdf"], media: ["Hinh_minh_hoa_quy_trinh.png"], isDeleted: 0 },
-            { id: 14, tenVanban: "Thông tư hướng dẫn quản lý tài chính trong bồi thường nhà nước", soHieu: "15/2026/TT-BTC", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tài chính", ngayBanhanh: "18/05/2026", ngayCoHieuLuc: "01/07/2026", tomTat: "Phân bổ ngân sách trung ương chi trả các khoản bồi thường do công chức hành chính gây thiệt hại.", tags: "bồi thường nhà nước, tài chính, bộ tài chính", trangThai: "Chờ duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "18/05/2026", nguoiDuyet: "", ngayDuyet: "", lyDoTuChoi: "", nguoiKy: "Hồ Đức Phớc", chucDanh: "Bộ trưởng", files: ["TT15_BTC_BoiThuong.pdf"], media: [], isDeleted: 0 },
-            { id: 15, tenVanban: "Quyết định ban hành cẩm nang nghiệp vụ Đăng ký giao dịch bảo đảm", soHieu: "45/QĐ-CĐKGDBĐ", loaiVanban: "Quyết định", coquanBanhanh: "Cục Đăng ký giao dịch bảo đảm", ngayBanhanh: "10/05/2026", ngayCoHieuLuc: "10/05/2026", tomTat: "Sách cẩm nang giải thích và hướng dẫn chi tiết nghiệp vụ thực tế cho cán bộ xử lý tại một cửa.", tags: "cẩm nang, nghiệp vụ, một cửa", trangThai: "Từ chối", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "10/05/2026", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "12/05/2026", lyDoTuChoi: "Cần bổ sung phần phụ lục các tình huống thực tế thường gặp tại Chi nhánh Văn phòng đăng ký đất đai.", nguoiKy: "Nguyễn Hồng Hải", chucDanh: "Cục trưởng", files: ["Camnang_Nghiepvu_GDBD_V1.pdf"], media: [], isDeleted: 0 },
-            { id: 16, tenVanban: "Nghị định quy định xử phạt vi phạm hành chính trong đăng ký bảo đảm", soHieu: "55/2026/NĐ-CP", loaiVanban: "Nghị định", coquanBanhanh: "Chính phủ", ngayBanhanh: "20/05/2026", ngayCoHieuLuc: "20/05/2026", tomTat: "Quy định mức phạt tiền từ 5 triệu đến 50 triệu đồng đối với hành vi giả mạo thông tin tài sản thế chấp.", tags: "xử phạt, vi phạm hành chính, nghị định", trangThai: "Từ chối", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "20/05/2026", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "21/05/2026", lyDoTuChoi: "Nội dung cần làm rõ hành vi cố ý che giấu thông tin tài sản đang bị ngăn chặn giao dịch.", nguoiKy: "Phạm Minh Chính", chucDanh: "Thủ tướng", files: ["ND55_XuPhat_BPBD.pdf"], media: [], isDeleted: 0 },
-            { id: 17, tenVanban: "Quyết định ban hành Quy chế chi tiêu nội bộ của các Trung tâm Đăng ký", soHieu: "18/QĐ-CụcĐK", loaiVanban: "Quyết định", coquanBanhanh: "Cục Đăng ký giao dịch bảo đảm", ngayBanhanh: "12/05/2026", ngayCoHieuLuc: "12/05/2026", tomTat: "Nội dung quy định định mức công tác phí và định mức bồi dưỡng nghiệp vụ cho đăng ký viên.", tags: "chi tiêu nội bộ, trung tâm đăng ký", trangThai: "Lưu nháp", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "12/05/2026", nguoiKy: "Nguyễn Hồng Hải", chucDanh: "Cục trưởng", files: ["QD18_QuyCheChiTieu.pdf"], media: [], isDeleted: 0 },
-            { id: 18, tenVanban: "Nghị quyết phê chuẩn Quy chế phối hợp liên ngành tư pháp - tài nguyên môi trường", soHieu: "99/2026/NQ-BTP-BTNMT", loaiVanban: "Nghị quyết", coquanBanhanh: "Bộ Tư pháp - Bộ Tài nguyên Môi trường", ngayBanhanh: "25/05/2026", ngayCoHieuLuc: "25/05/2026", tomTat: "Thông qua quy chế phối hợp liên thông cơ sở dữ liệu đất đai và cơ sở dữ liệu quốc gia giao dịch bảo đảm.", tags: "nghị quyết, đất đai, liên thông", trangThai: "Từ chối", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "25/05/2026", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "26/05/2026", lyDoTuChoi: "Bản sao quy chế chưa đầy đủ chữ ký của hai bên đại diện Bộ.", nguoiKy: "Lê Thành Long", chucDanh: "Bộ trưởng", files: ["NQ99_LienNganh.pdf"], media: [], isDeleted: 0 },
-            { id: 19, tenVanban: "Thông tư quy định về thời hạn số hóa tài liệu hồ sơ của Cục ĐKGDBĐ", soHieu: "12/2026/TT-BTP", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "22/05/2026", ngayCoHieuLuc: "10/07/2026", tomTat: "Quy định về thời hạn bảo quản và quy trình tiêu hủy hồ sơ đăng ký thế chấp bằng giấy đã số hóa.", tags: "thời hạn, lưu trữ, số hóa", trangThai: "Lưu nháp", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "22/05/2026", nguoiKy: "Lê Thành Long", chucDanh: "Bộ trưởng", files: ["TT12_BTP_LuuTru.docx"], media: [], isDeleted: 0 },
-            { id: 20, tenVanban: "Thông tư quy định về cấp chứng chỉ nghiệp vụ cho Đăng ký viên biện pháp bảo đảm", soHieu: "16/2026/TT-BTP", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "28/05/2026", ngayCoHieuLuc: "01/08/2026", tomTat: "Khung đào tạo, thi tuyển và thu hồi thẻ đăng ký viên biện pháp bảo đảm trên phạm vi toàn quốc.", tags: "đăng ký viên, chứng chỉ nghiệp vụ", trangThai: "Chờ duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "28/05/2026", nguoiKy: "Lê Thành Long", chucDanh: "Bộ trưởng", files: ["TT16_BTP_DangKyVien.docx"], media: [], isDeleted: 0 }
+            { id: 1, tenVanban: "Nghị định về đăng ký biện pháp bảo đảm", soHieu: "99/2022/NĐ-CP", loaiVanban: "Nghị định", coquanBanhanh: "Chính phủ", ngayBanhanh: "30/11/2022", ngayCoHieuLuc: "15/01/2023", tomTat: "Quy định chi tiết quy trình đăng ký biện pháp bảo đảm bằng tài sản...", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "30/11/2022", files: ["Nghidinh_99_2022_BPBD.pdf"], isDeleted: 0 },
+            { id: 2, tenVanban: "Nghị định về đăng ký biện pháp bảo đảm (hết hiệu lực một phần)", soHieu: "102/2017/NĐ-CP", loaiVanban: "Nghị định", coquanBanhanh: "Chính phủ", ngayBanhanh: "01/09/2017", ngayCoHieuLuc: "15/09/2017", tomTat: "Quy định khung pháp lý về đăng ký giao dịch bảo đảm bằng động sản trước đây...", tinhTrang: "Hết hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "01/09/2017", files: ["Nghidinh_102_2017_BPBD.pdf"], isDeleted: 0 },
+            { id: 3, tenVanban: "Hướng dẫn một số nội dung về đăng ký biện pháp bảo đảm bằng tàu bay, tàu biển", soHieu: "07/2019/TT-BTP", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "25/11/2019", ngayCoHieuLuc: "10/01/2020", tomTat: "Hướng dẫn các biểu mẫu và hồ sơ thế chấp tàu bay, tàu biển...", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "25/11/2019", files: ["Thongtu_07_2019_TT_BTP.pdf"], isDeleted: 0 },
+            { id: 4, tenVanban: "Quy định chi tiết một số điều của Nghị định số 102/2017/NĐ-CP", soHieu: "05/2020/TT-BTP", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "28/08/2020", ngayCoHieuLuc: "15/10/2020", tomTat: "Sửa đổi bổ sung biểu mẫu và trình tự xử lý đơn...", tinhTrang: "Hết hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "28/08/2020", files: ["Thongtu_05_2020_TT_BTP.pdf"], isDeleted: 0 },
+            { id: 5, tenVanban: "Luật sửa đổi, bổ sung một số điều của Luật Giao dịch điện tử", soHieu: "91/2018/QH14", loaiVanban: "Luật", coquanBanhanh: "Quốc hội", ngayBanhanh: "20/06/2018", ngayCoHieuLuc: "01/01/2019", tomTat: "Quy định về giá trị pháp lý của thông điệp dữ liệu và chữ ký số...", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "20/06/2018", files: ["Luat_91_2018_QH14.pdf"], isDeleted: 0 },
+            { id: 6, tenVanban: "Luật Trách nhiệm bồi thường của Nhà nước", soHieu: "11/2017/QH14", loaiVanban: "Luật", coquanBanhanh: "Quốc hội", ngayBanhanh: "20/06/2017", ngayCoHieuLuc: "01/07/2018", tomTat: "Quy định trách nhiệm bồi thường của Nhà nước đối với cá nhân, tổ chức bị thiệt hại do người thi hành công vụ gây ra...", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "20/06/2017", files: ["Luat_TrachNhiemBoiThuong_2017.pdf", "Huongdan_Nghiepvu_BoiThuong.pdf"], isDeleted: 0 },
+            { id: 7, tenVanban: "Quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước", soHieu: "68/2018/NĐ-CP", loaiVanban: "Nghị định", coquanBanhanh: "Chính phủ", ngayBanhanh: "15/05/2018", ngayCoHieuLuc: "01/07/2018", tomTat: "Hướng dẫn xác định thiệt hại, cơ quan giải quyết bồi thường và thủ tục chi trả...", tinhTrang: "Bị sửa đổi bổ sung", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "15/05/2018", files: ["Nghidinh_68_2018_ND_CP.pdf", "Phuluc_Bieumau_68.pdf", "Huongdan_thithanh_68.pdf"], isDeleted: 0 },
+            { id: 8, tenVanban: "Ban hành một số biểu mẫu trong hoạt động giải quyết bồi thường của Nhà nước", soHieu: "04/2018/TT-BTP", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "17/05/2018", ngayCoHieuLuc: "01/07/2018", tomTat: "Ban hành các biểu mẫu phục vụ việc thụ lý, xác minh và thương lượng bồi thường...", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "17/05/2018", files: ["Thongtu_04_2018_TT_BTP.pdf", "Bieumau_Thongtu_04.pdf"], isDeleted: 0 },
+            { id: 9, tenVanban: "Biện pháp thực hiện hoạt động quản lý nhà nước về công tác bồi thường nhà nước", soHieu: "09/2019/TT-BTP", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "10/12/2019", ngayCoHieuLuc: "25/01/2020", tomTat: "Quy định cơ chế báo cáo, kiểm tra liên ngành và thống kê số liệu công tác bồi thường...", tinhTrang: "Bị sửa đổi bổ sung", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "10/12/2019", files: ["Thongtu_09_2019_TT_BTP.pdf", "Tailieu_Huongdan_09.pdf"], isDeleted: 0 },
+            { id: 10, tenVanban: "Hướng dẫn nghiệp vụ giải quyết bồi thường nhà nước và kỹ năng hỗ trợ người bị thiệt hại", soHieu: "02/2023/TT-BTP", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "15/03/2023", ngayCoHieuLuc: "01/05/2023", tomTat: "Kỹ năng xác minh, thương lượng và hướng dẫn người bị hại hoàn thiện hồ sơ yêu cầu bồi thường...", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "15/03/2023", files: ["Thongtu_02_2023_TT_BTP.pdf", "Slide_huong_dan_nghiep_vu.pdf", "Bieumau_YeuCau_BoiThuong.pdf"], isDeleted: 0 },
+            { id: 11, tenVanban: "Thông tư sửa đổi bổ sung biểu mẫu lệ phí đăng ký giao dịch bảo đảm", soHieu: "05/2026/TT-BTC", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tài chính", ngayBanhanh: "15/03/2026", ngayCoHieuLuc: "", tomTat: "Cập nhật mức thu, chế độ thu, nộp và quản lý lệ phí đăng ký biện pháp bảo đảm động sản.", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "15/03/2026", files: [], isDeleted: 0 },
+            { id: 12, tenVanban: "Thông tư liên tịch về cơ chế ngăn chặn giao dịch tài sản đang thế chấp tranh chấp", soHieu: "01/2026/TTLT-BTP-BCA", loaiVanban: "Thông tư liên tịch", coquanBanhanh: "Bộ Tư pháp - Bộ Công an", ngayBanhanh: "15/04/2026", ngayCoHieuLuc: "", tomTat: "Phối hợp chia sẻ dữ liệu trực tuyến về tài sản thi hành án và tài sản đang bị kê biên điều tra hình sự.", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "15/04/2026", files: ["TTLT_Nganchan_Giaodich.pdf"], isDeleted: 0 },
+            { id: 13, tenVanban: "Quyết định phê duyệt quy trình số hóa hồ sơ giao dịch bảo đảm", soHieu: "120/QĐ-BTP", loaiVanban: "Quyết định", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "01/04/2026", ngayCoHieuLuc: "01/04/2026", tomTat: "Quy chuẩn hóa quy trình quét, gắn mã vạch và số hóa toàn bộ kho hồ sơ thế chấp cũ bằng giấy.", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "01/04/2026", files: ["Quyetdinh_120_SoHoaHoso.pdf"], isDeleted: 0 },
+            { id: 14, tenVanban: "Thông tư hướng dẫn quản lý tài chính trong bồi thường nhà nước", soHieu: "15/2026/TT-BTC", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tài chính", ngayBanhanh: "18/05/2026", ngayCoHieuLuc: "01/07/2026", tomTat: "Phân bổ ngân sách trung ương chi trả các khoản bồi thường do công chức hành chính gây thiệt hại.", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "18/05/2026", files: ["TT15_BTC_BoiThuong.pdf"], isDeleted: 0 },
+            { id: 15, tenVanban: "Quyết định ban hành cẩm nang nghiệp vụ Đăng ký giao dịch bảo đảm", soHieu: "45/QĐ-CĐKGDBĐ", loaiVanban: "Quyết định", coquanBanhanh: "Cục Đăng ký giao dịch bảo đảm", ngayBanhanh: "10/05/2026", ngayCoHieuLuc: "10/05/2026", tomTat: "Sách cẩm nang giải thích và hướng dẫn chi tiết nghiệp vụ thực tế cho cán bộ xử lý tại một cửa.", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "10/05/2026", files: ["Camnang_Nghiepvu_GDBD_V1.pdf"], isDeleted: 0 },
+            { id: 16, tenVanban: "Nghị định quy định xử phạt vi phạm hành chính trong đăng ký bảo đảm", soHieu: "55/2026/NĐ-CP", loaiVanban: "Nghị định", coquanBanhanh: "Chính phủ", ngayBanhanh: "20/05/2026", ngayCoHieuLuc: "20/05/2026", tomTat: "Quy định mức phạt tiền từ 5 triệu đến 50 triệu đồng đối với hành vi giả mạo thông tin tài sản thế chấp.", tinhTrang: "Bị sửa đổi bổ sung", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "20/05/2026", files: ["ND55_XuPhat_BPBD.pdf"], isDeleted: 0 },
+            { id: 17, tenVanban: "Quyết định ban hành Quy chế chi tiêu nội bộ của các Trung tâm Đăng ký", soHieu: "18/QĐ-CụcĐK", loaiVanban: "Quyết định", coquanBanhanh: "Cục Đăng ký giao dịch bảo đảm", ngayBanhanh: "12/05/2026", ngayCoHieuLuc: "12/05/2026", tomTat: "Nội dung quy định định mức công tác phí và định mức bồi dưỡng nghiệp vụ cho đăng ký viên.", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "12/05/2026", files: ["QD18_QuyCheChiTieu.pdf"], isDeleted: 0 },
+            { id: 18, tenVanban: "Nghị quyết phê chuẩn Quy chế phối hợp liên ngành tư pháp - tài nguyên môi trường", soHieu: "99/2026/NQ-BTP-BTNMT", loaiVanban: "Nghị quyết", coquanBanhanh: "Bộ Tư pháp - Bộ Tài nguyên Môi trường", ngayBanhanh: "25/05/2026", ngayCoHieuLuc: "25/05/2026", tomTat: "Thông qua quy chế phối hợp liên thông cơ sở dữ liệu đất đai và cơ sở dữ liệu quốc gia giao dịch bảo đảm.", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "25/05/2026", files: ["NQ99_LienNganh.pdf"], isDeleted: 0 },
+            { id: 19, tenVanban: "Thông tư quy định về thời hạn số hóa tài liệu hồ sơ của Cục ĐKGDBĐ", soHieu: "12/2026/TT-BTP", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "22/05/2026", ngayCoHieuLuc: "10/07/2026", tomTat: "Quy định về thời hạn bảo quản và quy trình tiêu hủy hồ sơ đăng ký thế chấp bằng giấy đã số hóa.", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "22/05/2026", files: ["TT12_BTP_LuuTru.pdf"], isDeleted: 0 },
+            { id: 20, tenVanban: "Thông tư quy định về cấp chứng chỉ nghiệp vụ cho Đăng ký viên biện pháp bảo đảm", soHieu: "16/2026/TT-BTP", loaiVanban: "Thông tư", coquanBanhanh: "Bộ Tư pháp", ngayBanhanh: "28/05/2026", ngayCoHieuLuc: "01/08/2026", tomTat: "Khung đào tạo, thi tuyển và thu hồi thẻ đăng ký viên biện pháp bảo đảm trên phạm vi toàn quốc.", tinhTrang: "Còn hiệu lực", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "28/05/2026", files: ["TT16_BTP_DangKyVien.pdf"], isDeleted: 0 }
         ];
 
         // LOCAL STORAGE STORAGE FOR CRUD STATE WITH VERSION BUSTER TO CLEAN OLD STALE MOCK DATA
-        const DB_VERSION = "v5";
+        const DB_VERSION = "v7";
         try {
             if (localStorage.getItem('vbqppl_documents_version') !== DB_VERSION) {
                 localStorage.setItem('vbqppl_documents', JSON.stringify(initialMockDocs));
@@ -1114,6 +1085,15 @@
             console.error("Lỗi parse vbqppl_documents từ localStorage:", e);
         }
         
+        // Chuẩn hóa dữ liệu cũ: bỏ trạng thái phê duyệt, bổ sung Tình trạng hiệu lực
+        documents.forEach(d => {
+            if (!d.tinhTrang) d.tinhTrang = 'Còn hiệu lực';
+            delete d.trangThai; delete d.nguoiDuyet; delete d.ngayDuyet; delete d.lyDoTuChoi;
+            // Bỏ Tags/Từ khóa, Người ký, Chức danh, File media; Văn bản QPPL chỉ nhận PDF
+            delete d.tags; delete d.nguoiKy; delete d.chucDanh; delete d.media;
+            d.files = (d.files || []).filter(n => /\.pdf$/i.test(n));
+        });
+
         if (!documents || documents.length === 0) {
             documents = [...initialMockDocs];
             try {
@@ -1126,17 +1106,15 @@
         // DYNAMIC SHIFT DATES TO CURRENT MONTH (guarantees results are visible under default filters)
         shiftDatesToCurrentMonth();
 
-        let currentRole = "officer"; 
         let activeKpiFilter = "all"; 
         
         let currentPage = 1;
-        let pageSize = 5;
+        let pageSize = 20;
         let sortColumn = "ngayBanhanh";
         let sortOrder = "desc";
 
         // Current temporary files list in Modal
         let tempDocFiles = [];
-        let tempMediaFiles = [];
 
         // DYNAMIC DATE SHIFTING HELPER
         function shiftDatesToCurrentMonth() {
@@ -1154,9 +1132,7 @@
                 if (doc.ngayCoHieuLuc) {
                     doc.ngayCoHieuLuc = `${dayStr}/${currentMonth}/${currentYear}`;
                 }
-                if (doc.ngayDuyet) {
-                    doc.ngayDuyet = `${dayStr}/${currentMonth}/${currentYear}`;
-                }
+
             });
         }
 
@@ -1173,24 +1149,6 @@
             const parts = isoStr.split('-');
             if (parts.length !== 3) return "";
             return `${parts[2]}/${parts[1]}/${parts[0]}`;
-        }
-
-        function openApproveModal(id) {
-            openDetailModal(id);
-            setTimeout(() => {
-                const approveSec = document.getElementById('approveSection');
-                if (approveSec) approveSec.scrollIntoView({ behavior: 'smooth' });
-            }, 300);
-        }
-
-        function openRejectModal(id) {
-            openDetailModal(id);
-            setTimeout(() => {
-                const approveSec = document.getElementById('approveSection');
-                if (approveSec) approveSec.scrollIntoView({ behavior: 'smooth' });
-                const reasonInput = document.getElementById('rejectReason');
-                if (reasonInput && !reasonInput.disabled) reasonInput.focus();
-            }, 300);
         }
 
         // ON LOAD INITIALIZATION
@@ -1220,44 +1178,32 @@
                 flatpickr("#filterToDate", { dateFormat: "d/m/Y", allowInput: true, onChange: refreshTable });
             }
 
-            switchRole(); // Initialize visual controls according to role
             refreshTable();
         });
 
-        // ROLE SWITCH FUNCTION
-        function switchRole() {
-            currentRole = document.getElementById('roleSelector').value;
-            refreshTable();
+        // KPI REFRESH & COUNTER UPDATES (đếm theo Tình trạng hiệu lực)
+        const STATUS_LIST = ['Còn hiệu lực', 'Hết hiệu lực', 'Bị sửa đổi bổ sung'];
+        const KPI_BTN = { 'all': 'kpiBtnAll', 'Còn hiệu lực': 'kpiBtnActive', 'Hết hiệu lực': 'kpiBtnExpired', 'Bị sửa đổi bổ sung': 'kpiBtnAmended' };
+        function statusBadgeHtml(st) {
+            const cls = st === 'Còn hiệu lực' ? 'badge-success' : (st === 'Bị sửa đổi bổ sung' ? 'badge-warning' : 'badge-danger');
+            return `<span class="badge ${cls}">${st || '—'}</span>`;
         }
-
-        // KPI REFRESH & COUNTER UPDATES
         function updateKpiCounters() {
             const list = documents.filter(d => !d.isDeleted);
-            
-            // All
             document.getElementById('countAll').innerText = list.length;
-            // Pending
-            document.getElementById('countPending').innerText = list.filter(d => d.trangThai === 'Chờ duyệt').length;
-            // Rejected
-            document.getElementById('countRejected').innerText = list.filter(d => d.trangThai === 'Từ chối').length;
+            document.getElementById('countActive').innerText = list.filter(d => d.tinhTrang === 'Còn hiệu lực').length;
+            document.getElementById('countExpired').innerText = list.filter(d => d.tinhTrang === 'Hết hiệu lực').length;
+            document.getElementById('countAmended').innerText = list.filter(d => d.tinhTrang === 'Bị sửa đổi bổ sung').length;
         }
 
         function filterByKpi(status) {
             activeKpiFilter = status;
             document.querySelectorAll('.stat-badge-btn').forEach(btn => btn.classList.remove('active'));
-            
-            if (status === 'all') {
-                document.getElementById('kpiBtnAll').classList.add('active');
-            } else if (status === 'Chờ duyệt') {
-                document.getElementById('kpiBtnPending').classList.add('active');
-            } else if (status === 'Từ chối') {
-                document.getElementById('kpiBtnRejected').classList.add('active');
-            }
-            
+            const btn = document.getElementById(KPI_BTN[status] || 'kpiBtnAll');
+            if (btn) btn.classList.add('active');
             currentPage = 1;
             refreshTable();
         }
-
         // DATE UTILS
         function parseDate(dateStr) {
             if (!dateStr) return null;
@@ -1299,7 +1245,7 @@
                 list = list.filter(d => d.coquanBanhanh.toLowerCase().includes(issuer));
             }
             if (status) {
-                list = list.filter(d => d.trangThai === status);
+                list = list.filter(d => d.tinhTrang === status);
             }
             if (fromD) {
                 list = list.filter(d => {
@@ -1316,7 +1262,7 @@
 
             // 2. Apply KPI quick status filter
             if (activeKpiFilter !== 'all') {
-                list = list.filter(d => d.trangThai === activeKpiFilter);
+                list = list.filter(d => d.tinhTrang === activeKpiFilter);
             }
 
             // Update the counters
@@ -1396,7 +1342,9 @@
 
                 // Document Name
                 const tdName = document.createElement('td');
-                tdName.innerHTML = `<a href="javascript:void(0)" onclick="openDetailModal(${doc.id})" style="color: var(--primary-color); font-weight: 500; text-decoration: none;">${doc.tenVanban}</a>`;
+                // BTNN: Tên văn bản hiển thị dạng văn bản thường; xem chi tiết bằng Row click
+                if (VBQPPL_SYSTEM === 'btnn') tdName.innerText = doc.tenVanban;
+                else tdName.innerHTML = `<a href="javascript:void(0)" onclick="openDetailModal(${doc.id})" style="color: var(--primary-color); font-weight: 500; text-decoration: none;">${doc.tenVanban}</a>`;
                 tr.appendChild(tdName);
 
                 // Number/Code
@@ -1429,60 +1377,19 @@
                 // Status Badge
                 const tdStatus = document.createElement('td');
                 tdStatus.className = "cell-center";
-                let badgeClass = "badge-secondary";
-                if (doc.trangThai === "Chờ duyệt") badgeClass = "badge-warning";
-                else if (doc.trangThai === "Đã duyệt") badgeClass = "badge-success";
-                else if (doc.trangThai === "Từ chối") badgeClass = "badge-danger";
-                tdStatus.innerHTML = `<span class="badge ${badgeClass}">${doc.trangThai}</span>`;
+                tdStatus.innerHTML = statusBadgeHtml(doc.tinhTrang);
                 tr.appendChild(tdStatus);
 
                 // Action Column Fixed Slots alignment
                 const tdActions = document.createElement('td');
                 tdActions.className = "cell-center";
                 
-                if (currentRole === 'officer') {
-                    // Cán bộ nghiệp vụ (4 slots: Xem, Sửa, Xóa, Gửi duyệt)
-                    let editBtn = '';
-                    if (doc.trangThai === 'Lưu nháp' || doc.trangThai === 'Từ chối') {
-                        editBtn = `<button class="icon-btn edit" title="Chỉnh sửa" onclick="openEditModal(${doc.id})"><i class="fa-solid fa-pen-to-square"></i></button>`;
-                    } else {
-                        editBtn = `<button class="icon-btn edit" title="Chỉ chỉnh sửa khi ở trạng thái Lưu nháp hoặc Từ chối" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-pen-to-square"></i></button>`;
-                    }
-
-                    let delBtn = '';
-                    if (doc.trangThai === 'Lưu nháp') {
-                        delBtn = `<button class="icon-btn delete" title="Xóa tài liệu" onclick="deleteDoc(${doc.id})"><i class="fa-solid fa-trash-can"></i></button>`;
-                    } else {
-                        delBtn = `<button class="icon-btn delete" title="Chỉ được xóa hồ sơ ở trạng thái Lưu nháp" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-trash-can"></i></button>`;
-                    }
-
-                    let sendBtn = '';
-                    if (doc.trangThai === 'Lưu nháp' || doc.trangThai === 'Từ chối') {
-                        sendBtn = `<button class="icon-btn send" title="Gửi phê duyệt" onclick="sendToApproval(${doc.id})"><i class="fa-solid fa-paper-plane"></i></button>`;
-                    } else {
-                        sendBtn = `<button class="icon-btn send" title="Chỉ được gửi phê duyệt hồ sơ Lưu nháp hoặc Từ chối" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-paper-plane"></i></button>`;
-                    }
-
-                    tdActions.innerHTML = `<div class="action-flex">${editBtn}${delBtn}${sendBtn}</div>`;
-                } else {
-                    // Cán bộ phê duyệt (3 slots: Xem, Phê duyệt, Từ chối)
-                    let approveBtn = '';
-                    if (doc.trangThai === 'Chờ duyệt') {
-                        approveBtn = `<button class="icon-btn send" style="color: var(--success-color); border-color: var(--success-color);" title="Phê duyệt" onclick="openApproveModal(${doc.id})"><i class="fa-solid fa-file-signature"></i></button>`;
-                    } else {
-                        approveBtn = `<button class="icon-btn send" title="Chỉ phê duyệt hồ sơ ở trạng thái Chờ duyệt" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-file-signature"></i></button>`;
-                    }
-
-                    let rejectBtn = '';
-                    if (doc.trangThai === 'Chờ duyệt') {
-                        rejectBtn = `<button class="icon-btn delete" style="color: var(--danger-color); border-color: var(--danger-color);" title="Từ chối" onclick="openRejectModal(${doc.id})"><i class="fa-solid fa-ban"></i></button>`;
-                    } else {
-                        rejectBtn = `<button class="icon-btn delete" title="Chỉ từ chối hồ sơ ở trạng thái Chờ duyệt" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-ban"></i></button>`;
-                    }
-
-                    tdActions.innerHTML = `<div class="action-flex">${approveBtn}${rejectBtn}</div>`;
-                }
-
+                // Cán bộ nghiệp vụ trực tiếp quản lý: 3 thao tác cố định Xem chi tiết | Chỉnh sửa | Xóa
+                tdActions.innerHTML = `<div class="action-flex">
+                    <button class="icon-btn view" title="Xem chi tiết" onclick="openDetailModal(${doc.id})"><i class="fa-solid fa-eye"></i></button>
+                    <button class="icon-btn edit" title="${EDIT_LABEL}" onclick="openEditModal(${doc.id})"><i class="fa-solid fa-pen-to-square"></i></button>
+                    <button class="icon-btn delete" title="Xóa" onclick="deleteDoc(${doc.id})"><i class="fa-solid fa-trash-can"></i></button>
+                </div>`;
                 tr.appendChild(tdActions);
                 tbody.appendChild(tr);
             });
@@ -1616,35 +1523,36 @@
             showToast("Đã kết xuất Excel danh sách tư liệu VBQPPL thành công", "success");
         }
 
+        // CUSTOM CONFIRMATION MODAL
+        let confirmCallback = null;
+        // opts: { okLabel, okClass, okIcon } - mặc định là nút Xóa (đỏ)
+        function openConfirm(message, onOk, title, opts) {
+            const o = opts || {};
+            document.getElementById('confirmTitle').innerText = title || 'Xác nhận xóa';
+            document.getElementById('confirmMessage').innerText = message;
+            const okBtn = document.getElementById('confirmOkBtn');
+            okBtn.className = 'btn ' + (o.okClass || 'btn-danger');
+            okBtn.innerHTML = `<i class="fa-solid ${o.okIcon || 'fa-trash-can'}"></i> ${o.okLabel || 'Xóa'}`;
+            confirmCallback = onOk;
+            document.getElementById('confirmOkBtn').onclick = () => { const cb = confirmCallback; closeConfirm(); if (cb) cb(); };
+            document.getElementById('confirmModal').classList.add('active');
+        }
+        function closeConfirm() {
+            confirmCallback = null;
+            document.getElementById('confirmModal').classList.remove('active');
+        }
+
         // DELETING DOCUMENT (SOFT DELETE)
         function deleteDoc(id) {
-            if (confirm("Bạn có chắc chắn muốn xóa bản ghi tư liệu văn bản này không?")) {
-                const index = documents.findIndex(d => d.id === id);
-                if (index !== -1) {
-                    documents[index].isDeleted = 1;
-                    localStorage.setItem('vbqppl_documents', JSON.stringify(documents));
-                    refreshTable();
-                    showToast("Đã xóa bản ghi thành công", "success");
-                }
-            }
-        }
-
-        // QUICK SEND TO APPROVAL
-        function sendToApproval(id) {
-            const index = documents.findIndex(d => d.id === id);
-            if (index !== -1) {
-                documents[index].trangThai = "Chờ duyệt";
-                documents[index].ngayTao = formatDateToString(new Date());
+            const doc = documents.find(d => d.id === id);
+            if (!doc) return;
+            openConfirm(`Bạn có chắc chắn muốn xóa văn bản "${doc.soHieu} - ${doc.tenVanban}" không?`, () => {
+                doc.isDeleted = 1;
                 localStorage.setItem('vbqppl_documents', JSON.stringify(documents));
-                
-                // Keep dates aligned to current month
-                shiftDatesToCurrentMonth();
-                
                 refreshTable();
-                showToast("Đã gửi hồ sơ lên Cán bộ phê duyệt", "success");
-            }
+                showToast("Xóa văn bản thành công", "success");
+            });
         }
-
         // MODAL MANAGEMENT
         function triggerFileInput(inputId) {
             const input = document.getElementById(inputId);
@@ -1659,6 +1567,24 @@
             
             if (input.files.length === 0) return;
 
+            // Văn bản QPPL chỉ nhận tệp PDF, tối đa 10MB/tệp, tối đa 10 tệp
+            const errEl = document.getElementById('error_docFiles');
+            const picked = Array.from(input.files);
+            const badType = picked.find(fl => !/\.pdf$/i.test(fl.name));
+            const tooBig = picked.find(fl => fl.size > 10 * 1024 * 1024);
+            let fileErr = '';
+            if (badType) fileErr = 'Định dạng tệp không hợp lệ. Văn bản QPPL chỉ nhận tệp .pdf.';
+            else if (tooBig) fileErr = 'Dung lượng tệp không được vượt quá 10MB.';
+            else if (tempDocFiles.length + picked.length > 10) fileErr = 'Hệ thống chỉ hỗ trợ tối đa 10 tệp Văn bản QPPL.';
+            if (fileErr) {
+                errEl.innerText = fileErr;
+                errEl.style.display = 'block';
+                input.value = '';
+                return;
+            }
+            errEl.style.display = 'none';
+            errEl.innerText = 'Đây là trường bắt buộc';
+
             // Show Mock progress bar animation
             progressContainer.style.display = 'block';
             progressBar.style.width = '0%';
@@ -1672,12 +1598,9 @@
                         // Add files to list
                         for (let i = 0; i < input.files.length; i++) {
                             const file = input.files[i];
-                            if (type === 'doc') {
-                                tempDocFiles.push(file.name);
-                            } else {
-                                tempMediaFiles.push(file.name);
-                            }
+                            tempDocFiles.push(file.name);
                         }
+                        input.value = '';
                         renderUploadedFiles();
                         showToast("Tải lên tệp thành công", "success");
                     }, 300);
@@ -1716,40 +1639,16 @@
                 docsContainer.appendChild(item);
             });
 
-            // Render Media List
-            const mediaContainer = document.getElementById('mediaFilesList');
-            mediaContainer.innerHTML = '';
-            tempMediaFiles.forEach((file, index) => {
-                const item = document.createElement('div');
-                item.className = "attachment-item";
-                item.style.display = "flex";
-                item.style.alignItems = "center";
-                item.style.justifyContent = "space-between";
-                item.style.gap = "10px";
-                item.style.minWidth = "0";
-                item.style.width = "100%";
-                item.innerHTML = `
-                    <div class="attachment-item-info" style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
-                        <i class="fa-regular fa-file-image" style="flex-shrink: 0;"></i>
-                        <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; width: 100%;" title="${file}">${file}</span>
-                    </div>
-                    <div class="attachment-actions" style="flex-shrink: 0; white-space: nowrap;">
-                        <a href="#" target="_blank">Xem file</a>
-                        ${!isViewOnly ? ` <span style="color: var(--border-color); margin: 0 4px;">|</span> <button type="button" onclick="removeFile('media', ${index})">Xóa</button>` : ''}
-                    </div>
-                `;
-                mediaContainer.appendChild(item);
-            });
         }
 
         function removeFile(type, index) {
-            if (type === 'doc') {
-                tempDocFiles.splice(index, 1);
-            } else {
-                tempMediaFiles.splice(index, 1);
-            }
-            renderUploadedFiles();
-            showToast("Đã xóa file đính kèm", "success");
+            const list = tempDocFiles;
+            const name = list[index];
+            openConfirm(`Bạn có chắc chắn muốn xóa tệp đính kèm "${name}" không?`, () => {
+                list.splice(index, 1);
+                renderUploadedFiles();
+                showToast("Xóa tệp đính kèm thành công", "success");
+            });
         }
 
         function clearErrors() {
@@ -1760,88 +1659,56 @@
         function showModal(title, viewMode = false, editMode = false) {
             document.getElementById('modalTitle').innerText = title;
             clearErrors();
-            
-            // Set enabled states
+
             const inputs = [
                 'docName', 'docNum', 'docType', 'docIssuer', 'docIssueDate',
-                'docEffectDate', 'docSummary', 'docTags', 'docSigner', 'docSignerTitle'
+                'docEffectDate', 'docSummary', 'docStatus'
             ];
-            
             inputs.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.disabled = viewMode;
             });
-
-            // File inputs disabling
             document.getElementById('docFileInput').disabled = viewMode;
-            document.getElementById('mediaFileInput').disabled = viewMode;
+            document.getElementById('modalTitle').closest('.modal-content').classList.toggle('view-mode', viewMode);
 
-            // Form Footer button rules based on Mode and Role
+            // Tình trạng: chế độ xem hiển thị Badge chỉ đọc
+            const statusSel = document.getElementById('docStatus');
+            const statusBadge = document.getElementById('docStatusBadge');
+            statusSel.style.display = viewMode ? 'none' : '';
+            statusBadge.style.display = viewMode ? 'block' : 'none';
+            statusBadge.innerHTML = viewMode ? statusBadgeHtml(statusSel.value) : '';
+
             const isDraftEmpty = (documents.filter(d => !d.isDeleted).length === 0);
-            
-            // Nút Hủy (Cancel button) logic on Form
-            // Hidden if table is empty on new creation
             const btnCancel = document.getElementById('btnCancel');
-            if (isDraftEmpty && !editMode && !viewMode) {
-                btnCancel.style.display = 'none';
-            } else {
-                btnCancel.style.display = 'inline-flex';
+            btnCancel.style.display = (isDraftEmpty && !editMode && !viewMode) ? 'none' : 'inline-flex';
+            btnCancel.innerText = viewMode ? 'Đóng' : 'Hủy';
+            document.getElementById('btnSave').style.display = viewMode ? 'none' : 'inline-flex';
+            const btnDeleteInView = document.getElementById('btnDeleteInView');
+            const btnEditInView = document.getElementById('btnEditInView');
+            if (btnDeleteInView) btnDeleteInView.style.display = viewMode ? 'inline-flex' : 'none';
+            if (btnEditInView) {
+                btnEditInView.style.display = viewMode ? 'inline-flex' : 'none';
+                btnEditInView.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${EDIT_LABEL}`;
             }
-
-            // Reset decision fields
-            document.getElementById('rejectReason').value = '';
-
-            if (viewMode) {
-                document.getElementById('btnSaveDraft').style.display = 'none';
-                document.getElementById('btnSubmitApproval').style.display = 'none';
-                
-                const currentDocId = parseInt(document.getElementById('docId').value);
-                const currentDoc = documents.find(d => d.id === currentDocId);
-
-                // Show approval section if Chờ duyệt
-                if (currentDoc && currentDoc.trangThai === 'Chờ duyệt') {
-                    if (currentRole === 'approver') {
-                        document.getElementById('approveSection').style.display = 'block';
-                        document.getElementById('creatorName').value = currentDoc.nguoiTao || "Cán bộ nghiệp vụ";
-                        document.getElementById('submitDate').value = currentDoc.ngayTao || formatDateToString(new Date());
-                        
-                        document.getElementById('btnApprove').style.display = 'inline-flex';
-                        document.getElementById('btnReject').style.display = 'inline-flex';
-                    } else {
-                        document.getElementById('approveSection').style.display = 'none';
-                        document.getElementById('btnApprove').style.display = 'none';
-                        document.getElementById('btnReject').style.display = 'none';
-                    }
-                } else if (currentDoc && currentDoc.trangThai === 'Từ chối') {
-                    // Show rejected reasons
-                    document.getElementById('approveSection').style.display = 'block';
-                    document.getElementById('creatorName').value = currentDoc.nguoiTao || "Cán bộ nghiệp vụ";
-                    document.getElementById('submitDate').value = currentDoc.ngayTao || "";
-                    document.getElementById('rejectReason').value = currentDoc.lyDoTuChoi;
-                    document.getElementById('rejectReason').disabled = true;
-                    
-                    document.getElementById('btnApprove').style.display = 'none';
-                    document.getElementById('btnReject').style.display = 'none';
-                } else {
-                    document.getElementById('approveSection').style.display = 'none';
-                    document.getElementById('btnApprove').style.display = 'none';
-                    document.getElementById('btnReject').style.display = 'none';
-                }
-            } else {
-                // Creation or editing mode for Officer
-                document.getElementById('approveSection').style.display = 'none';
-                document.getElementById('btnApprove').style.display = 'none';
-                document.getElementById('btnReject').style.display = 'none';
-
-                document.getElementById('btnSaveDraft').style.display = 'inline-flex';
-                document.getElementById('btnSubmitApproval').style.display = 'inline-flex';
-            }
+            renderUploadedFiles(); // vẽ lại danh sách tệp theo chế độ xem/sửa
 
             document.getElementById('docModal').classList.add('active');
         }
-
         function closeModal() {
             document.getElementById('docModal').classList.remove('active');
+        }
+
+        function editDocFromView() {
+            const id = parseInt(document.getElementById('docId').value);
+            if (!id) return;
+            openEditModal(id);
+        }
+
+        function deleteDocFromView() {
+            const id = parseInt(document.getElementById('docId').value);
+            if (!id) return;
+            closeModal();
+            deleteDoc(id);
         }
 
         // OPEN MODAL FOR CREATION
@@ -1850,7 +1717,7 @@
             document.getElementById('docId').value = '';
             
             tempDocFiles = [];
-            tempMediaFiles = [];
+            document.getElementById('docStatus').value = 'Còn hiệu lực';
             renderUploadedFiles();
 
             showModal("Thêm mới thông tin tư liệu văn bản quy phạm pháp luật", false, false);
@@ -1868,13 +1735,10 @@
             document.getElementById('docIssuer').value = doc.coquanBanhanh;
             document.getElementById('docIssueDate').value = convertDateToIso(doc.ngayBanhanh);
             document.getElementById('docEffectDate').value = convertDateToIso(doc.ngayCoHieuLuc);
-            document.getElementById('docTags').value = doc.tags;
             document.getElementById('docSummary').value = doc.tomTat;
-            document.getElementById('docSigner').value = doc.nguoiKy || "";
-            document.getElementById('docSignerTitle').value = doc.chucDanh || "";
+            document.getElementById('docStatus').value = doc.tinhTrang || 'Còn hiệu lực';
 
-            tempDocFiles = [...doc.files];
-            tempMediaFiles = [...doc.media];
+            tempDocFiles = [...(doc.files || [])];
             renderUploadedFiles();
 
             showModal("Chi tiết thông tin tư liệu văn bản quy phạm pháp luật", true, false);
@@ -1892,22 +1756,26 @@
             document.getElementById('docIssuer').value = doc.coquanBanhanh;
             document.getElementById('docIssueDate').value = convertDateToIso(doc.ngayBanhanh);
             document.getElementById('docEffectDate').value = convertDateToIso(doc.ngayCoHieuLuc);
-            document.getElementById('docTags').value = doc.tags;
             document.getElementById('docSummary').value = doc.tomTat;
-            document.getElementById('docSigner').value = doc.nguoiKy || "";
-            document.getElementById('docSignerTitle').value = doc.chucDanh || "";
+            document.getElementById('docStatus').value = doc.tinhTrang || 'Còn hiệu lực';
 
-            tempDocFiles = [...doc.files];
-            tempMediaFiles = [...doc.media];
+            tempDocFiles = [...(doc.files || [])];
             renderUploadedFiles();
 
-            showModal("Chỉnh sửa thông tin tư liệu văn bản quy phạm pháp luật", false, true);
+            showModal(`${EDIT_LABEL} thông tin tư liệu văn bản quy phạm pháp luật`, false, true);
         }
 
-        // VALIDATION & SAVING
-        function saveData(status) {
+        // VALIDATION & SAVING (Lưu thông tin trực tiếp, không qua phê duyệt)
+        function saveData() {
             clearErrors();
-            let isValid = true;
+            let firstInvalid = null;
+            const markErr = (fieldId, errId, msg) => {
+                const el = document.getElementById(fieldId);
+                if (el) el.classList.add('is-invalid');
+                const er = document.getElementById(errId);
+                if (er) { if (msg) er.innerText = msg; er.style.display = 'block'; }
+                if (!firstInvalid) firstInvalid = el || er;
+            };
 
             const name = document.getElementById('docName').value.trim();
             const num = document.getElementById('docNum').value.trim();
@@ -1915,172 +1783,106 @@
             const issuer = document.getElementById('docIssuer').value.trim();
             const issueDateRaw = document.getElementById('docIssueDate').value;
             const effectDateRaw = document.getElementById('docEffectDate').value;
-            const signer = document.getElementById('docSigner').value.trim();
-            const signerTitle = document.getElementById('docSignerTitle').value.trim();
+            const tinhTrang = document.getElementById('docStatus').value;
 
-            if (!name) {
-                document.getElementById('docName').classList.add('is-invalid');
-                document.getElementById('error_docName').style.display = 'block';
-                isValid = false;
+            if (!name) markErr('docName', 'error_docName', 'Đây là trường bắt buộc');
+            // BTNN: văn bản trùng khi trùng đồng thời Tên văn bản, Số hiệu văn bản, Ngày ban hành, Loại văn bản
+            // (so sánh sau khi bỏ khoảng trắng thừa, không phân biệt hoa thường; bỏ qua chính bản ghi đang sửa và bản ghi đã xóa)
+            if (VBQPPL_SYSTEM === 'btnn' && name && num && type && issueDateRaw) {
+                const norm = s => String(s || '').trim().replace(/\s+/g, ' ').toLowerCase();
+                const curId = document.getElementById('docId').value;
+                const issueStr = convertIsoToDate(issueDateRaw);
+                const dup = documents.some(d => !d.isDeleted && String(d.id) !== String(curId)
+                    && norm(d.tenVanban) === norm(name) && norm(d.soHieu) === norm(num)
+                    && norm(d.loaiVanban) === norm(type) && d.ngayBanhanh === issueStr);
+                if (dup) {
+                    markErr('docName', 'error_docName', 'Văn bản đã tồn tại trong hệ thống (trùng Tên văn bản, Số hiệu văn bản, Ngày ban hành và Loại văn bản)');
+                    ['docNum', 'docType', 'docIssueDate'].forEach(id => document.getElementById(id).classList.add('is-invalid'));
+                }
             }
-            if (!num) {
-                document.getElementById('docNum').classList.add('is-invalid');
-                document.getElementById('error_docNum').style.display = 'block';
-                isValid = false;
-            }
-            if (!type) {
-                document.getElementById('docType').classList.add('is-invalid');
-                document.getElementById('error_docType').style.display = 'block';
-                isValid = false;
-            }
-            if (!issuer) {
-                document.getElementById('docIssuer').classList.add('is-invalid');
-                document.getElementById('error_docIssuer').style.display = 'block';
-                isValid = false;
-            }
-            if (!signer) {
-                document.getElementById('docSigner').classList.add('is-invalid');
-                document.getElementById('error_docSigner').style.display = 'block';
-                isValid = false;
-            }
-            if (!signerTitle) {
-                document.getElementById('docSignerTitle').classList.add('is-invalid');
-                document.getElementById('error_docSignerTitle').style.display = 'block';
-                isValid = false;
-            }
+            if (!num) markErr('docNum', 'error_docNum');
+            if (!type) markErr('docType', 'error_docType');
+            if (!issuer) markErr('docIssuer', 'error_docIssuer');
 
             let issueDate = null;
             if (!issueDateRaw) {
-                document.getElementById('docIssueDate').classList.add('is-invalid');
-                document.getElementById('error_docIssueDate').style.display = 'block';
-                isValid = false;
+                markErr('docIssueDate', 'error_docIssueDate', 'Đây là trường bắt buộc');
             } else {
                 issueDate = new Date(issueDateRaw);
                 const today = new Date();
                 today.setHours(23, 59, 59, 999);
                 if (isNaN(issueDate.getTime()) || issueDate > today) {
-                    document.getElementById('docIssueDate').classList.add('is-invalid');
-                    document.getElementById('error_docIssueDate').style.display = 'block';
-                    isValid = false;
+                    markErr('docIssueDate', 'error_docIssueDate', 'Ngày ban hành không hợp lệ hoặc lớn hơn ngày hiện tại');
                 }
             }
-
             if (effectDateRaw) {
                 const effectDate = new Date(effectDateRaw);
                 if (isNaN(effectDate.getTime()) || (issueDate && effectDate < issueDate)) {
-                    document.getElementById('docEffectDate').classList.add('is-invalid');
-                    document.getElementById('error_docEffectDate').style.display = 'block';
-                    isValid = false;
+                    markErr('docEffectDate', 'error_docEffectDate');
                 }
             }
+            if (!tinhTrang) markErr('docStatus', 'error_docStatus');
+            if (tempDocFiles.length === 0) markErr('docFileInput', 'error_docFiles', 'Đây là trường bắt buộc');
 
-            if (tempDocFiles.length === 0) {
-                document.getElementById('error_docFiles').style.display = 'block';
-                isValid = false;
-            }
-
-            if (!isValid) {
-                showToast("Vui lòng sửa các trường thông tin sai lệch", "error");
+            if (firstInvalid) {
+                const focusEl = firstInvalid.id === 'docFileInput' ? document.getElementById('error_docFiles') : firstInvalid;
+                if (focusEl.scrollIntoView) focusEl.scrollIntoView({ block: 'center' });
+                if (focusEl.focus) focusEl.focus();
                 return;
             }
 
+            const persist = () => {
             const issueDateStr = convertIsoToDate(issueDateRaw);
             const effectDateStr = convertIsoToDate(effectDateRaw);
+            const fields = {
+                tenVanban: name,
+                soHieu: num,
+                loaiVanban: type,
+                coquanBanhanh: issuer,
+                ngayBanhanh: issueDateStr,
+                ngayCoHieuLuc: effectDateStr,
+                tinhTrang: tinhTrang,
+                tomTat: document.getElementById('docSummary').value.trim(),
+                files: [...tempDocFiles]
+            };
 
             const id = document.getElementById('docId').value;
             if (id) {
-                // Update
                 const idx = documents.findIndex(d => d.id === parseInt(id));
                 if (idx !== -1) {
-                    let newStatus = status;
-                    if (documents[idx].trangThai === 'Từ chối' && status === 'Lưu nháp') {
-                        newStatus = 'Lưu nháp';
-                    }
-
-                    documents[idx].tenVanban = name;
-                    documents[idx].soHieu = num;
-                    documents[idx].loaiVanban = type;
-                    documents[idx].coquanBanhanh = issuer;
-                    documents[idx].ngayBanhanh = issueDateStr;
-                    documents[idx].ngayCoHieuLuc = effectDateStr;
-                    documents[idx].tomTat = document.getElementById('docSummary').value.trim();
-                    documents[idx].tags = document.getElementById('docTags').value.trim();
-                    documents[idx].nguoiKy = signer;
-                    documents[idx].chucDanh = signerTitle;
-                    documents[idx].files = [...tempDocFiles];
-                    documents[idx].media = [...tempMediaFiles];
-                    documents[idx].trangThai = newStatus;
-                    documents[idx].ngayTao = formatDateToString(new Date());
+                    Object.assign(documents[idx], fields, {
+                        nguoiCapNhat: "Nguyễn Văn Cán Bộ",
+                        ngayCapNhat: formatDateToString(new Date())
+                    });
                 }
             } else {
-                // Create new
-                const newDoc = {
-                    id: Date.now(),
-                    tenVanban: name,
-                    soHieu: num,
-                    loaiVanban: type,
-                    coquanBanhanh: issuer,
-                    ngayBanhanh: issueDateStr,
-                    ngayCoHieuLuc: effectDateStr,
-                    tomTat: document.getElementById('docSummary').value.trim(),
-                    tags: document.getElementById('docTags').value.trim(),
-                    nguoiKy: signer,
-                    chucDanh: signerTitle,
-                    files: [...tempDocFiles],
-                    media: [...tempMediaFiles],
-                    trangThai: status,
+                documents.push(Object.assign({ id: Date.now() }, fields, {
                     nguoiTao: "Nguyễn Văn Cán Bộ",
                     ngayTao: formatDateToString(new Date()),
-                    nguoiDuyet: "",
-                    ngayDuyet: "",
-                    lyDoTuChoi: "",
                     isDeleted: 0
-                };
-                documents.push(newDoc);
+                }));
             }
 
             localStorage.setItem('vbqppl_documents', JSON.stringify(documents));
-            
-            // Re-shift on load state
             shiftDatesToCurrentMonth();
-            
             closeModal();
             refreshTable();
-            showToast(status === 'Lưu nháp' ? "Đã lưu nháp hồ sơ thành công" : "Đã gửi hồ sơ lên Cán bộ phê duyệt thành công", "success");
-        }
+            showToast(id ? "Cập nhật văn bản thành công" : "Thêm mới văn bản thành công", "success");
+            };
 
-        // APPROVER DECISION (Phê duyệt / Từ chối)
-        function approveDecision(decisionStatus) {
-            clearErrors();
-            const rejectReason = document.getElementById('rejectReason').value.trim();
-            
-            if (decisionStatus === 'Từ chối' && !rejectReason) {
-                document.getElementById('rejectReason').classList.add('is-invalid');
-                document.getElementById('error_rejectReason').style.display = 'block';
-                showToast("Lý do từ chối là bắt buộc", "error");
-                return;
-            }
-
-            const id = parseInt(document.getElementById('docId').value);
-            const idx = documents.findIndex(d => d.id === id);
-            
-            if (idx !== -1) {
-                documents[idx].trangThai = decisionStatus;
-                documents[idx].nguoiDuyet = "Trần Minh Cục Trưởng";
-                documents[idx].ngayDuyet = formatDateToString(new Date());
-                if (decisionStatus === 'Từ chối') {
-                    documents[idx].lyDoTuChoi = rejectReason;
-                } else {
-                    documents[idx].lyDoTuChoi = "";
+            // BTNN: chỉ trùng Số hiệu văn bản (không trùng đủ 04 thông tin) -> cảnh báo, người dùng chọn tiếp tục lưu hoặc quay lại sửa
+            if (VBQPPL_SYSTEM === 'btnn') {
+                const normNo = s => String(s || '').trim().replace(/\s+/g, ' ').toLowerCase();
+                const curId = document.getElementById('docId').value;
+                const sameNo = documents.filter(d => !d.isDeleted && String(d.id) !== String(curId) && normNo(d.soHieu) === normNo(num));
+                if (sameNo.length) {
+                    const list = sameNo.map(d => `- ${d.tenVanban} (${d.loaiVanban}, ban hành ngày ${d.ngayBanhanh})`).join('\n');
+                    openConfirm(`Số hiệu văn bản "${num}" đã tồn tại ở văn bản:\n${list}\n\nBạn có muốn tiếp tục lưu không?`, persist, 'Cảnh báo trùng số hiệu văn bản', { okLabel: 'Tiếp tục lưu', okClass: 'btn-primary', okIcon: 'fa-floppy-disk' });
+                    return;
                 }
-
-                localStorage.setItem('vbqppl_documents', JSON.stringify(documents));
-                closeModal();
-                refreshTable();
-                showToast(decisionStatus === 'Đã duyệt' ? "Đã phê duyệt tài liệu thành công" : "Đã từ chối phê duyệt tài liệu", "success");
             }
+            persist();
         }
-
         // CUSTOM TOAST MESSAGE
         function showToast(message, type = 'info') {
             const toast = document.getElementById('toast');
@@ -2109,7 +1911,7 @@
     </script>
     <!-- Flatpickr JS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="bpbd_filter_toggle.js"></script>
-    <script src="admin-ui-standardizer.js"></script>
+    <script src="bpbd_filter_toggle.js?v=20261013"></script>
+    <script src="admin-ui-standardizer.js?v=20261013"></script>
 </body>
 </html>

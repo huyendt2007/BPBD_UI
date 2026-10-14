@@ -2212,7 +2212,7 @@ function renderMau01(ky, readOnly) {
                     ? '<span class="badge badge-warning" style="font-size:10px; margin-left:4px;" title="Đã có hiệu chỉnh thuyết minh"><i class="fa-solid fa-pencil"></i> Đã hiệu chỉnh</span>' 
                     : '';
 
-                // Thao tác cố định 2 slot theo Rule #3. Không còn slot Chỉnh sửa vì toàn bộ
+                // Thao tác cố định 2 slot theo Rule #3. Không còn slot Sửa vì toàn bộ
                 // ô dữ liệu đã cho nhập/sửa trực tiếp ngay trên lưới.
                 const btnSlot1 = (isSys && row.isOverridden)
                     ? `<button class="icon-btn" style="color:var(--warning-color);" title="Khôi phục nguyên bản từ hệ thống" onclick="restoreMau01Original('${escapeJs(field)}', ${idx})"><i class="fa-solid fa-rotate-left"></i></button>`
@@ -2220,7 +2220,7 @@ function renderMau01(ky, readOnly) {
                 
                 const btnSlot2 = canEditRows
                     ? `<button class="icon-btn danger" title="Xóa vụ việc này" onclick="deleteMau01Row('${escapeJs(field)}', ${idx})"><i class="fa-solid fa-trash-can"></i></button>`
-                    : `<button class="icon-btn danger" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Kỳ báo cáo không còn được chỉnh sửa"><i class="fa-solid fa-trash-can"></i></button>`;
+                    : `<button class="icon-btn danger" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Kỳ báo cáo không còn được sửa"><i class="fa-solid fa-trash-can"></i></button>`;
 
                 html += `<tr>
                     <td>${order + 1}</td>
@@ -2406,7 +2406,7 @@ function openEditMau01Row(field, idx) {
     const isSys = row.origin === 'system';
     document.getElementById('m01_modal_title').textContent = isSys
         ? `Hiệu chỉnh thuyết minh vụ việc hệ thống [${row.code}]`
-        : `Chỉnh sửa vụ việc nhập tay [${row.code}]`;
+        : `Sửa vụ việc nhập tay [${row.code}]`;
 
     // Vụ việc lấy từ hệ thống: khóa toàn bộ trường định danh và pháp lý (Lĩnh vực, Cột 1-4);
     // chỉ mở 04 nhóm thuyết minh là Cột (5) Tình hình, (6) Chi trả, (7) Vướng mắc, (8) Ghi chú.

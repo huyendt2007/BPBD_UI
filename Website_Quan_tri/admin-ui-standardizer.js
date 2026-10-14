@@ -400,6 +400,7 @@
         const candidates = document.querySelectorAll('.card, .card-section, .filter-card, .filter-section, .search-panel, .search-box, .search-container, form');
         candidates.forEach(el => {
             if (el.classList.contains(COMPACT_FILTER_CLASS)) return;
+            if (el.id === 'businessForm' || el.closest('.detail-panel, #detailPanel, .modal, .modal-body')) return;
             const fieldCount = el.querySelectorAll('input, select, textarea').length;
             const hasSearchAction = Array.from(el.querySelectorAll('button, .btn')).some(btn => /tim kiem|loc|xoa bo loc|tra cuu/i.test(normalizeKey(btn.textContent)));
             if (fieldCount >= 2 && hasSearchAction) el.classList.add(COMPACT_FILTER_CLASS);

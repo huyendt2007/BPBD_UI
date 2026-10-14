@@ -2,13 +2,15 @@
 
 ##### 4.3.3.19.1. Mục đích
 
-\- Cho phép cán bộ nghiệp vụ BTNN (Bộ Tư pháp) ghi nhận, quản lý và tra cứu danh sách đầu mối Lãnh đạo và công chức trực tiếp thực hiện công tác bồi thường nhà nước (BTNN) tại các Sở Tư pháp địa phương, phục vụ liên hệ, phối hợp công tác và theo dõi công tác BTNN theo Điều 8-15 Thông tư 08/2019/TT-BTP.
+\- Cho phép cán bộ nghiệp vụ BTNN (Bộ Tư pháp) ghi nhận, quản lý và tra cứu danh sách đầu mối Lãnh đạo và công chức trực tiếp thực hiện công tác bồi thường nhà nước (BTNN) tại các Sở Tư pháp địa phương, phục vụ liên hệ, phối hợp công tác và theo dõi công tác BTNN theo Điều 8 đến Điều 15 Thông tư 08/2019/TT-BTP.
+
+\- Mỗi Tỉnh/Thành phố có thể có nhiều đầu mối (01 Lãnh đạo phụ trách và một hoặc nhiều Công chức đầu mối).
 
 \- Nội dung chỉ phục vụ nội bộ cán bộ quản lý, không công khai ra Website khách hàng.
 
 *a. Phân quyền*
 
-\- Cán bộ nghiệp vụ BTNN (Bộ Tư pháp): được tra cứu, xem chi tiết, thêm mới, chỉnh sửa, xóa bản ghi.
+\- Cán bộ nghiệp vụ BTNN (Bộ Tư pháp): được tra cứu, xem chi tiết, thêm mới, sửa, xóa bản ghi.
 
 *b. Điều kiện thực hiện*
 
@@ -16,7 +18,9 @@
 
 \- Người dùng được phân quyền truy cập màn hình `Quản lý thông tin đầu mối Lãnh đạo, công chức thực hiện công tác BTNN tại địa phương`.
 
-\- Tỉnh/Thành phố Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Đơn vị tham chiếu Danh mục các đơn vị trên hệ thống `[DM_DON_VI]`.
+\- Phạm vi dữ liệu toàn quốc: cán bộ Bộ Tư pháp quản lý đầu mối của tất cả Tỉnh/Thành phố; Tỉnh/Thành phố và Đơn vị không phụ thuộc đơn vị của người dùng đăng nhập.
+
+\- Tỉnh/Thành phố tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Đơn vị tham chiếu Danh mục các đơn vị trên hệ thống `[DM_DON_VI]` (màn hình Quản lý cơ cấu tổ chức), lọc theo Tỉnh/Thành phố đã chọn.
 
 ---
 
@@ -24,131 +28,207 @@
 
 ```mermaid
 flowchart TD
-    A[Danh sách đầu mối Lãnh đạo, công chức BTNN] --> B[Tìm kiếm / Xóa bộ lọc / Phân trang]
-    A --> C[Thêm mới]
-    C --> D[Lưu thông tin]
-    A --> E[Chỉnh sửa]
-    E --> D
-    A --> F[Xóa]
-    A --> G[Click dòng dữ liệu / Xem]
+    A[Danh sách đầu mối Lãnh đạo, công chức BTNN] --> B[Tìm kiếm / Xóa bộ lọc / Sắp xếp / Phân trang]
+    A --> G[Row click] --> K[Xem chi tiết]
+    K --> E
+    K --> F
+    A --> C[Thêm mới] --> D[Lưu thông tin]
+    A --> E[Sửa] --> D
+    D --> W{Trùng Số điện thoại?}
+    W -->|Có| P[Popup Cảnh báo trùng số điện thoại]
+    W -->|Không| S[Lưu và hiển thị trên danh sách]
+    P -->|Tiếp tục lưu| S
+    A --> F[Xóa] --> X[Popup Xác nhận xóa]
 ```
 
 ---
 
-##### 4.3.3.19.3. MH01 - Màn hình Danh sách đầu mối Lãnh đạo, công chức thực hiện công tác BTNN
+##### 4.3.3.19.3. MH01 - Màn hình Danh sách đầu mối Lãnh đạo, công chức BTNN
 
 ###### 4.3.3.19.3.1. Màn hình
 
-![MH01 - Màn hình Danh sách đầu mối Lãnh đạo, công chức thực hiện công tác BTNN](images/UC501_502_MH01_Danh_sach_dau_moi_btnn.png)
+![MH01 - Màn hình Danh sách đầu mối Lãnh đạo, công chức BTNN](images/UC501_502_MH01_Danh_sach_dau_moi_btnn.png)
 
 ###### 4.3.3.19.3.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
-| Họ và tên | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập họ và tên...".<br>- Tìm gần đúng theo Họ và tên; không phân biệt hoa thường, có dấu/không dấu. |
-| Số điện thoại | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số điện thoại...".<br>- Tìm gần đúng theo Số điện thoại; không phân biệt hoa thường, có dấu/không dấu. |
-| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Tất cả | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
-| Phường/Xã | Enum(String(100)) / String(100) | Không | Tất cả | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
-| Vai trò phụ trách | Enum(String(50)) | Không | Tất cả | \- Giá trị gồm:<br>+ Tất cả<br>+ Lãnh đạo phụ trách công tác BTNN<br>+ Công chức đầu mối |
-| Trạng thái | Enum(String(50)) | Không | Tất cả | \- Giá trị gồm:<br>+ Tất cả<br>+ Đang phụ trách<br>+ Đã ngừng phụ trách |
-| **II. Bảng danh sách kết quả** | - | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- Sắp xếp mặc định: Sắp xếp theo "Ngày tạo" giảm dần (mới nhất hiển thị lên đầu).<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
-| Cột: STT | Integer(10) | Không | Theo trang hiện tại | Chỉ đọc. Căn giữa, tăng theo phân trang. |
-| Cột: Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị Tỉnh/Thành phố; tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. |
-| Cột: Phường/Xã | Enum(String(100)) / String(100) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị Phường/Xã; tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15], phụ thuộc vào Tỉnh/Thành phố. |
-| Cột: Đơn vị | String(255) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
-| Cột: Họ và tên | String(100) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
-| Cột: Chức vụ | String(100) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
-| Cột: Vai trò phụ trách | Enum(String(50)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
-| Cột: Số điện thoại | String(20) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
-| Cột: Email | String(255) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị `-` nếu chưa nhập. |
-| Cột: Trạng thái | Enum(String(50)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị badge màu theo giá trị. |
-| Cột: Thao tác | String(255) | Không | Theo dữ liệu | Chỉ đọc. Gồm icon `Chỉnh sửa`, `Xóa`. |
-| Phân trang | String(255) | Không | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị trên mỗi trang gồm: 10, 20, 50, 100 bản ghi/trang; mặc định chọn sẵn 20 bản ghi/trang.<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;).<br>- Hiển thị dải bản ghi: "Hiển thị [từ] - [đến] của [tổng số] bản ghi". |
+| Họ và tên | String(255) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập họ và tên...".<br>- Tìm gần đúng; không phân biệt hoa thường, có dấu/không dấu. |
+| Số điện thoại | String(50) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập số điện thoại...".<br>- Tìm gần đúng; không phân biệt hoa thường, có dấu/không dấu. |
+| Tỉnh/Thành phố | Enum(String(100)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. |
+| Vai trò phụ trách | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Lãnh đạo phụ trách công tác BTNN<br>+ Công chức đầu mối |
+| Trạng thái | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Đang phụ trách<br>+ Đã ngừng phụ trách |
+| **II. Bảng danh sách kết quả** | - | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải Trang 1.<br>- Sắp xếp mặc định: theo "Ngày tạo" giảm dần.<br>- Trạng thái không có dữ liệu (Empty State): bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
+| STT | Integer(10) | Không | Theo trang hiện tại | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
+| Tỉnh/Thành phố | Enum(String(100)) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
+| Đơn vị | String(255) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
+| Họ và tên | String(100) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
+| Chức vụ | String(100) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
+| Vai trò phụ trách | Enum(String(50)) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
+| Số điện thoại | String(20) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
+| Email | String(255) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi.<br>- Hiển thị `-` nếu chưa nhập. |
+| Trạng thái | Enum(String(50)) | Không | Theo dữ liệu hệ thống | Control UI: Badge.<br>- Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
+| Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Xóa |
+| Phân trang | - | - | 20 bản ghi/trang | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
 
 ###### 4.3.3.19.3.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra điều kiện dữ liệu và thực hiện tìm kiếm theo các trường hợp bên dưới: |
-|  |  |  | **TH1 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
-|  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống lọc và hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí tìm kiếm/lọc đã nhập/chọn, hiển thị kết quả lên bảng và đưa về Trang 1. |
-|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
-| 2 | Xóa bộ lọc | Button | Hệ thống đặt lại toàn bộ tiêu chí lọc về giá trị mặc định và tải lại danh sách. |
-| 3 | Thêm mới | Button | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa đầu mối Lãnh đạo, công chức BTNN** ở chế độ thêm mới. |
-| 4 | Chỉnh sửa | Icon button | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa đầu mối Lãnh đạo, công chức BTNN** ở chế độ chỉnh sửa. |
-| 5 | Xóa | Icon button | Hệ thống mở **Popup Xác nhận** với nội dung [MSG-CFM-SYS-001]. Nếu xác nhận, hệ thống xóa vĩnh viễn bản ghi khỏi hệ thống và hiển thị [MSG-SUC-SYS-002]. |
-| 6 | Click dòng dữ liệu | Row click | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa đầu mối Lãnh đạo, công chức BTNN** ở chế độ chỉ xem. |
+|  |  |  | **TH1 - Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí đã nhập/chọn và đưa về Trang 1. |
+|  |  |  | **TH2 - Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa (`colspan`), in nghiêng với nội dung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 trong tổng số 0 bản ghi"*, các nút điều hướng trang ở trạng thái khóa mờ. |
+| 2 | Xóa bộ lọc | Button | Hệ thống xóa toàn bộ tiêu chí tìm kiếm đã nhập/chọn, thiết lập các ô lọc về giá trị mặc định. |
+| 3 | Thêm mới | Button | Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa đầu mối Lãnh đạo, công chức BTNN](#433195-mh03---màn-hình-thêm-mớisửa-đầu-mối-lãnh-đạo-công-chức-btnn) ở chế độ Thêm mới với form thông tin để trống. |
+| 4 | Sắp xếp cột | Header cột | Áp dụng trên các cột:<br>+ Tỉnh/Thành phố<br>+ Đơn vị<br>+ Họ và tên |
+|  |  |  | **TH1 - Chọn lại cột đang sắp xếp**: Hệ thống đảo chiều sắp xếp tăng dần/giảm dần và cập nhật icon mũi tên trên tiêu đề cột. |
+|  |  |  | **TH2 - Chọn cột khác**: Hệ thống sắp xếp danh sách theo cột được chọn. |
+| 5 | Row click | Row click | Khi người dùng click vào bất kỳ vị trí nào trên dòng dữ liệu (trừ các nút thao tác), hệ thống mở [MH02 - Màn hình Chi tiết đầu mối Lãnh đạo, công chức BTNN](#433194-mh02---màn-hình-chi-tiết-đầu-mối-lãnh-đạo-công-chức-btnn). |
+| 6 | Sửa | Icon button | Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa đầu mối Lãnh đạo, công chức BTNN](#433195-mh03---màn-hình-thêm-mớisửa-đầu-mối-lãnh-đạo-công-chức-btnn) ở chế độ Sửa với dữ liệu hiện tại của bản ghi được điền sẵn. |
+| 7 | Xóa | Icon button | Hệ thống mở [Popup Xác nhận xóa](#433196-popup-xác-nhận-xóa). |
+| 8 | Phân trang & chuyển trang | Pagination | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
 
 ---
 
-##### 4.3.3.19.4. MH02 - Màn hình Thêm mới/Chỉnh sửa đầu mối Lãnh đạo, công chức BTNN
+##### 4.3.3.19.4. MH02 - Màn hình Chi tiết đầu mối Lãnh đạo, công chức BTNN
 
 ###### 4.3.3.19.4.1. Màn hình
 
-![MH02 - Màn hình Thêm mới/Chỉnh sửa đầu mối Lãnh đạo, công chức BTNN](images/UC501_502_MH02_Nhap_lieu_dau_moi_btnn.png)
+![MH02 - Màn hình Chi tiết đầu mối Lãnh đạo, công chức BTNN](images/UC501_502_MH02_Chi_tiet_dau_moi_btnn.png)
 
 ###### 4.3.3.19.4.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Tiêu đề màn hình | String(255) | - | Theo ngữ cảnh | Chỉ đọc. Hiển thị `THÊM MỚI ĐẦU MỐI LÃNH ĐẠO, CÔNG CHỨC BTNN` hoặc `CHỈNH SỬA ĐẦU MỐI LÃNH ĐẠO, CÔNG CHỨC BTNN`. |
-| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Có | Trống | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
-| Phường/Xã | Enum(String(100)) / String(100) | Có | Trống | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
-| Đơn vị | Enum(String(255)) | Có | Trống | Tham chiếu Danh mục Cơ quan, Đơn vị giải quyết [DM_DON_VI]. Cho phép tìm kiếm nhanh theo `Mã đơn vị` hoặc `Tên đơn vị`; áp dụng tìm gần đúng. Áp dụng rule bắt buộc [BR-VAL-001]. |
-| Họ và tên | String(100) | Có | Trống | Áp dụng rule bắt buộc [BR-VAL-001]. |
-| Chức vụ | String(100) | Có | Trống | Áp dụng rule bắt buộc [BR-VAL-001]. |
-| Vai trò phụ trách | Enum(String(50)) | Có | `Công chức đầu mối` | \- Giá trị gồm:<br>+ Lãnh đạo phụ trách công tác BTNN<br>+ Công chức đầu mối |
-| Số điện thoại liên hệ | String(20) | Có | Trống | Áp dụng rule số điện thoại [BR-VAL-003]. |
-| Email | String(255) | Không | Trống | Áp dụng rule Email [BR-VAL-002] khi có dữ liệu. |
-| Ngày bắt đầu phụ trách | Date | Có | Ngày hiện tại | Áp dụng rule ngày quá khứ [BR-VAL-008]. |
-| Trạng thái | Enum(String(50)) | Có | `Đang phụ trách` | \- Giá trị gồm:<br>+ Đang phụ trách<br>+ Đã ngừng phụ trách |
-| Ghi chú | Text(500) | Không | Trống | Ghi chú thêm nếu cần. |
-| Hủy bỏ | - | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
-| Lưu thông tin | - | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
+| Tiêu đề màn hình | - | - | - | Control UI: Label<br>Hiển thị "Xem chi tiết thông tin đầu mối Lãnh đạo, công chức thực hiện công tác BTNN tại địa phương". |
+| **I. Thông tin chung** |  |  |  |  |
+| Trạng thái | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi (giá trị `Trạng thái`). |
+| Người tạo/Cán bộ phụ trách | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Ngày tạo/cập nhật | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Chế độ | - | - | - | Control UI: Label<br>Hiển thị "Chỉ xem". |
+| **II. Thông tin đầu mối** |  |  |  |  |
+| Tỉnh/Thành phố | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Đơn vị | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Họ và tên | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Chức vụ | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Vai trò phụ trách | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Số điện thoại liên hệ | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Email | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Ngày bắt đầu phụ trách | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Trạng thái | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Ghi chú | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| **III. Tài liệu đính kèm** |  |  |  |  |
+| Tài liệu đính kèm | - | - | - | Control UI: File link<br>Theo dữ liệu bản ghi. |
 
 ###### 4.3.3.19.4.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Hủy bỏ | Button | Hệ thống đóng màn hình, không lưu dữ liệu và quay lại **MH01 - Danh sách đầu mối Lãnh đạo, công chức thực hiện công tác BTNN**. |
-| 2 | Lưu thông tin | Button | TH1 (Bỏ trống trường bắt buộc): Vi phạm [BR-VAL-001]. Hệ thống tô viền đỏ ô trống đầu tiên và hiển thị [MSG-ERR-VAL-001]. Không cho phép lưu. |
-|  |  |  | TH2 (`Số điện thoại liên hệ` không đúng định dạng): Vi phạm [BR-VAL-003], hiển thị [MSG-ERR-VAL-003]. Không cho phép lưu. |
-|  |  |  | TH3 (`Email` có dữ liệu nhưng không đúng định dạng): Vi phạm [BR-VAL-002], hiển thị [MSG-ERR-VAL-002]. Không cho phép lưu. |
-|  |  |  | TH4 (`Ngày bắt đầu phụ trách` lớn hơn ngày hiện tại): Vi phạm [BR-VAL-008], hiển thị [MSG-ERR-VAL-008]. Không cho phép lưu. |
-|  |  |  | TH5 (Hợp lệ - thêm mới): Hệ thống lưu bản ghi, đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-SYS-003]. |
-|  |  |  | TH6 (Hợp lệ - chỉnh sửa): Hệ thống cập nhật bản ghi, đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-SYS-002]. |
+| 1 | Xem file | Link | Khi click vào liên kết "Xem file" của tài liệu đính kèm, hệ thống mở nội dung file tại một tab trình duyệt mới. |
+| 2 | Sửa | Button | Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa đầu mối Lãnh đạo, công chức BTNN](#433195-mh03---màn-hình-thêm-mớisửa-đầu-mối-lãnh-đạo-công-chức-btnn) ở chế độ Sửa với dữ liệu hiện tại của bản ghi được điền sẵn. |
+| 3 | Xóa | Button | Hệ thống mở [Popup Xác nhận xóa](#433196-popup-xác-nhận-xóa); nếu người dùng chọn `Đồng ý`, hệ thống xóa bản ghi, đóng màn hình chi tiết và quay lại [MH01 - Màn hình Danh sách đầu mối Lãnh đạo, công chức BTNN](#433193-mh01---màn-hình-danh-sách-đầu-mối-lãnh-đạo-công-chức-btnn). |
+| 4 | Đóng | Button | Khi người dùng click nút "Đóng" ở góc phải tiêu đề hoặc ở chân màn hình, hệ thống đóng màn hình chi tiết và quay lại [MH01 - Màn hình Danh sách đầu mối Lãnh đạo, công chức BTNN](#433193-mh01---màn-hình-danh-sách-đầu-mối-lãnh-đạo-công-chức-btnn). |
 
 ---
 
-##### 4.3.3.19.5. Popup Xác nhận
+##### 4.3.3.19.5. MH03 - Màn hình Thêm mới/Sửa đầu mối Lãnh đạo, công chức BTNN
 
 ###### 4.3.3.19.5.1. Màn hình
 
-![Popup Xác nhận](images/UC501_502_POPUP_Xac_nhan.png)
+![MH03 - Màn hình Thêm mới/Sửa đầu mối Lãnh đạo, công chức BTNN](images/UC501_502_MH03_Them_moi_sua_dau_moi_btnn.png)
 
 ###### 4.3.3.19.5.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Tiêu đề popup | String(255) | - | Theo thao tác | Chỉ đọc. Hiển thị icon cảnh báo và nội dung xác nhận theo thao tác đang thực hiện. |
-| Nội dung xác nhận | Text(2000) | - | Theo thao tác | Chỉ đọc. Áp dụng message xác nhận [MSG-CFM-SYS-001]. |
-| Hủy bỏ | - | Không | Hiển thị | Đóng popup, không thực hiện callback. |
-| Đồng ý | - | Không | Hiển thị | Xác nhận thực hiện callback của thao tác đã gọi popup. |
+| Tiêu đề màn hình | - | - | Theo ngữ cảnh | Control UI: Label<br>Hiển thị "Thêm mới thông tin đầu mối Lãnh đạo, công chức thực hiện công tác BTNN tại địa phương" hoặc "Sửa thông tin đầu mối Lãnh đạo, công chức thực hiện công tác BTNN tại địa phương". |
+| **I. Thông tin chung** |  |  |  |  |
+| Trạng thái | - | - | Theo ngữ cảnh | Control UI: Label<br>Thêm mới hiển thị "Đang nhập"; Sửa hiển thị theo dữ liệu bản ghi. |
+| Người tạo/Cán bộ phụ trách | - | - | Theo tài khoản đăng nhập | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Ngày tạo/cập nhật | - | - | Theo dữ liệu hệ thống | Control UI: Label<br>Định dạng `dd/mm/yyyy`. |
+| Chế độ | - | - | Theo ngữ cảnh | Control UI: Label<br>Hiển thị "Thêm mới" hoặc "Sửa". |
+| **II. Thông tin đầu mối** |  |  |  |  |
+| Tỉnh/Thành phố | Enum(String(100)) | Có | Trống | Control UI: Combobox.<br>- Tham chiếu Danh mục Tỉnh/Thành phố [DM_13], hiển thị toàn bộ Tỉnh/Thành phố trên toàn quốc.<br>- Không lấy theo đơn vị của người dùng đăng nhập; cán bộ Bộ Tư pháp chọn Tỉnh/Thành phố nơi đầu mối công tác. |
+| Đơn vị | Enum(String(255)) | Có | Sở Tư pháp của Tỉnh/Thành phố đã chọn | Control UI: Combobox.<br>- Tham chiếu Danh mục các đơn vị trên hệ thống [DM_DON_VI], lọc theo quy tắc chọn Đơn vị bên dưới.<br>- Khóa, hiển thị "-- Chọn Tỉnh/Thành phố trước --" khi chưa chọn `Tỉnh/Thành phố`. |
+| Họ và tên | String(100) | Có | Trống | Control UI: Text input.<br>- Placeholder: "Nhập họ và tên...". |
+| Chức vụ | String(100) | Có | Trống | Control UI: Text input.<br>- Placeholder: "Nhập chức vụ...". |
+| Vai trò phụ trách | Enum(String(50)) | Có | Lãnh đạo phụ trách công tác BTNN | Control UI: Combobox.<br>Gồm:<br>+ Lãnh đạo phụ trách công tác BTNN<br>+ Công chức đầu mối |
+| Số điện thoại liên hệ | String(20) | Có | Trống | Control UI: Text input.<br>- Placeholder: "Nhập số điện thoại liên hệ...".<br>- Áp dụng rule số điện thoại [BR-VAL-003]. |
+| Email | String(255) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập email...".<br>- Áp dụng rule Email [BR-VAL-002] khi có dữ liệu. |
+| Ngày bắt đầu phụ trách | Date | Có | Trống | Control UI: Date input.<br>- Placeholder: "dd/mm/yyyy".<br>- Không lớn hơn ngày hiện tại theo [BR-VAL-008]. |
+| Trạng thái | Enum(String(50)) | Có | Đang phụ trách | Control UI: Combobox.<br>Gồm:<br>+ Đang phụ trách<br>+ Đã ngừng phụ trách |
+| Ghi chú | Text(500) | Không | Trống | Control UI: Textarea.<br>- Placeholder: "Nhập ghi chú...". |
+| **III. Tài liệu đính kèm** |  |  |  |  |
+| Tài liệu đính kèm | List(File) | Không | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu`, `File đính kèm`, `Thao tác tài liệu`; nút `+ Thêm dòng` dưới bảng.<br>- Cột `Tên tài liệu`: Text input. Placeholder: "Nhập tên tài liệu...".<br>- Cột `File đính kèm`: khi dòng chưa có file hiển thị nút `Tải lên`; khi đã có file hiển thị tên file.<br>- Cột `Thao tác tài liệu` gồm:<br>+ Xem file (khóa mờ khi dòng chưa có file)<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
+
+**Quy tắc chọn Đơn vị theo Tỉnh/Thành phố**
+
+\- Danh sách `Đơn vị` chỉ gồm các đơn vị trong Cơ cấu tổ chức [DM_DON_VI] có `Tỉnh/Thành phố` trùng với `Tỉnh/Thành phố` đã chọn và `Cấp đơn vị` là `Cấp Tỉnh/Thành phố` hoặc `Đơn vị trực thuộc/Phòng ban` thuộc các đơn vị cấp tỉnh đó.
+
+\- Khi người dùng chọn hoặc đổi `Tỉnh/Thành phố`, hệ thống tải lại danh sách `Đơn vị` và tự chọn Sở Tư pháp của Tỉnh/Thành phố mới; người dùng được chọn lại đơn vị khác trong danh sách.
+
+\- Khi người dùng xóa giá trị `Tỉnh/Thành phố`, hệ thống xóa giá trị `Đơn vị` và khóa ô `Đơn vị`.
+
+\- Ở chế độ Sửa, hệ thống giữ nguyên `Đơn vị` đã lưu nếu đơn vị đó thuộc `Tỉnh/Thành phố` của bản ghi.
 
 ###### 4.3.3.19.5.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Hủy bỏ | Button | Hệ thống đóng popup xác nhận và không thực hiện thao tác. |
-| 2 | Đồng ý | Button | Hệ thống đóng popup xác nhận và xóa vĩnh viễn bản ghi. |
+| 1 | Lưu thông tin | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới: |
+|  |  |  | **TH1 - Bỏ trống trường bắt buộc**: Vi phạm [BR-VAL-001] (chưa nhập/chọn các trường có dấu `*`). Hệ thống viền đỏ các ô lỗi, hiển thị "Đây là trường bắt buộc" ngay dưới từng ô và focus vào ô lỗi đầu tiên. |
+|  |  |  | **TH2 - Dữ liệu không đúng định dạng**: `Số điện thoại liên hệ` sai định dạng vi phạm [BR-VAL-003], hiển thị [MSG-ERR-VAL-003]; `Email` có dữ liệu nhưng sai định dạng vi phạm [BR-VAL-002], hiển thị [MSG-ERR-VAL-002]; `Ngày bắt đầu phụ trách` lớn hơn ngày hiện tại vi phạm [BR-VAL-008], hiển thị [MSG-ERR-VAL-008]. Hệ thống không cho phép lưu. |
+|  |  |  | **TH3 - Trùng bản ghi**: Bản ghi được xác định bởi các thông tin `Họ và tên`, `Đơn vị`, `Vai trò phụ trách`. Nếu các thông tin này trùng với một bản ghi khác đang tồn tại, hệ thống viền đỏ các ô tương ứng, hiển thị cảnh báo "Đầu mối đã tồn tại trong hệ thống (trùng Họ và tên, Đơn vị và Vai trò phụ trách)" dưới ô `Họ và tên` và không cho phép lưu.<br>- So sánh sau khi bỏ khoảng trắng thừa, không phân biệt hoa thường.<br>- Ở chế độ Sửa, hệ thống bỏ qua chính bản ghi đang sửa. |
+|  |  |  | **TH4 - Trùng Số điện thoại liên hệ**: Dữ liệu hợp lệ, không trùng đủ thông tin xác định nhưng `Số điện thoại liên hệ` trùng với một hoặc nhiều bản ghi khác (so sánh sau khi bỏ khoảng trắng thừa, không phân biệt hoa thường). Hệ thống không chặn lưu, mở [Popup Cảnh báo trùng số điện thoại](#433197-popup-cảnh-báo-trùng-số-điện-thoại) để người dùng quyết định:<br>+ Tiếp tục lưu: hệ thống lưu như trường hợp Hợp lệ.<br>+ Hủy bỏ: hệ thống đóng popup, giữ nguyên dữ liệu đang nhập để người dùng sửa. |
+|  |  |  | **TH5 - Hợp lệ - Thêm mới**: Hệ thống lưu bản ghi, đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-SYS-003]. |
+|  |  |  | **TH6 - Hợp lệ - Sửa**: Hệ thống cập nhật bản ghi, đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-SYS-002]. |
+| 2 | Tải lên | Button | Hệ thống mở trình chọn file cho dòng tài liệu tương ứng; sau khi chọn, hiển thị tên file tại cột `File đính kèm`. |
+| 3 | Xem file | Link | Hệ thống mở file của dòng tài liệu tại một tab trình duyệt mới. |
+| 4 | Xóa | Link | Hệ thống mở [Popup Xác nhận xóa](#433196-popup-xác-nhận-xóa). Nếu chọn `Đồng ý`, hệ thống xóa dòng tài liệu khỏi bảng; nếu chọn `Hủy bỏ`, hệ thống giữ nguyên dòng tài liệu. |
+| 5 | Thêm dòng | Button | Hệ thống thêm 01 dòng tài liệu trống vào cuối bảng tài liệu đính kèm. |
+| 6 | Hủy bỏ | Button | Khi người dùng click nút "Hủy bỏ" ở chân màn hình hoặc nút "Đóng" ở góc phải tiêu đề, hệ thống đóng màn hình, không lưu dữ liệu và quay lại [MH01 - Màn hình Danh sách đầu mối Lãnh đạo, công chức BTNN](#433193-mh01---màn-hình-danh-sách-đầu-mối-lãnh-đạo-công-chức-btnn). |
 
 ---
 
-##### 4.3.3.19.6. Ghi chú phạm vi đặc tả
+##### 4.3.3.19.6. Popup Xác nhận xóa
 
-\- Bản ghi áp dụng cơ chế xóa vĩnh viễn (hard delete), không lưu lại lịch sử sau khi xóa.
+###### 4.3.3.19.6.1. Màn hình
 
-\- Màn hình chỉ phục vụ nội bộ cán bộ quản lý trên Website quản trị, không hiển thị trên Website khách hàng.
+![Popup Xác nhận xóa](images/UC501_502_POPUP_Xac_nhan.png)
 
-\- Mỗi Tỉnh/Thành phố có thể có nhiều bản ghi đầu mối (1 Lãnh đạo phụ trách và một hoặc nhiều Công chức đầu mối); hệ thống không giới hạn số lượng bản ghi theo từng Tỉnh/Thành phố.
+###### 4.3.3.19.6.2. Mô tả thông tin trên màn hình
+
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| Tiêu đề popup | - | - | - | Control UI: Label<br>Hiển thị "Xác nhận". |
+| Nội dung xác nhận | - | - | - | Control UI: Label<br>Áp dụng message xác nhận [MSG-CFM-SYS-001]. |
+
+###### 4.3.3.19.6.3. Chức năng trên màn hình
+
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Đồng ý | Button | Hệ thống đóng popup và thực hiện xóa:<br>+ Xóa bản ghi: xóa vĩnh viễn bản ghi khỏi hệ thống, tải lại danh sách và hiển thị [MSG-SUC-SYS-002].<br>+ Xóa tài liệu đính kèm: xóa dòng tài liệu khỏi bảng. |
+| 2 | Hủy bỏ | Button | Khi người dùng click nút "Hủy bỏ" hoặc biểu tượng đóng ở góc phải tiêu đề popup, hệ thống đóng popup và không thực hiện thao tác. |
+
+---
+
+##### 4.3.3.19.7. Popup Cảnh báo trùng số điện thoại
+
+###### 4.3.3.19.7.1. Màn hình
+
+![Popup Cảnh báo trùng số điện thoại](images/UC501_502_POPUP_Canh_bao_trung_so_dien_thoai.png)
+
+###### 4.3.3.19.7.2. Mô tả thông tin trên màn hình
+
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| Tiêu đề popup | - | - | - | Control UI: Label<br>Hiển thị "Cảnh báo trùng số điện thoại". |
+| Nội dung cảnh báo | - | - | - | Control UI: Label<br>Hiển thị "Số điện thoại "[Số điện thoại đang nhập]" đã tồn tại ở:", tiếp theo mỗi bản ghi trùng hiển thị 01 dòng dạng "- [Họ và tên] ([Đơn vị], [Vai trò phụ trách])", cuối cùng là câu hỏi "Bạn có muốn tiếp tục lưu không?". |
+
+###### 4.3.3.19.7.3. Chức năng trên màn hình
+
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Tiếp tục lưu | Button | Hệ thống đóng popup cảnh báo và lưu bản ghi theo trường hợp Hợp lệ - Thêm mới hoặc Hợp lệ - Sửa của chức năng `Lưu thông tin` tại [MH03 - Màn hình Thêm mới/Sửa đầu mối Lãnh đạo, công chức BTNN](#433195-mh03---màn-hình-thêm-mớisửa-đầu-mối-lãnh-đạo-công-chức-btnn). |
+| 2 | Hủy bỏ | Button | Khi người dùng click nút "Hủy bỏ" hoặc biểu tượng đóng ở góc phải tiêu đề popup, hệ thống đóng popup cảnh báo, không lưu và giữ nguyên dữ liệu đang nhập tại [MH03 - Màn hình Thêm mới/Sửa đầu mối Lãnh đạo, công chức BTNN](#433195-mh03---màn-hình-thêm-mớisửa-đầu-mối-lãnh-đạo-công-chức-btnn). |

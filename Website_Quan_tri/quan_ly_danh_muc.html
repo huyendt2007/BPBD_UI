@@ -648,6 +648,10 @@
                     <label class="form-label">Trực thuộc (Danh mục cha)</label>
                     <input type="text" id="detParent" class="form-control" readonly>
                 </div>
+                <div class="form-group" id="detMgrGroup" style="display:none;">
+                    <label class="form-label">Cơ quan quản lý mặc định</label>
+                    <input type="text" id="detMgr" class="form-control" readonly>
+                </div>
                 <div class="form-group" id="detUnitGroup" style="display:none;">
                     <label class="form-label">Đơn vị áp dụng</label>
                     <div id="detUnits" class="form-control" style="height:auto; min-height:38px; background:#f8fafc; line-height:1.7;"></div>
@@ -723,6 +727,13 @@
                         <div id="inpUnitsTree" style="border:1px solid var(--border-color, #e2e8f0); border-radius:6px; padding:10px 12px; max-height:220px; overflow-y:auto; font-size:13px; display:flex; flex-direction:column; gap:5px;"></div>
                         <div style="font-size:12px; color:#64748b; margin-top:4px;">Chọn đơn vị cha thì áp dụng cho toàn bộ đơn vị trực thuộc. Chỉ người dùng thuộc đơn vị áp dụng mới thấy giá trị này tại các ô chọn và bộ lọc Loại yêu cầu.</div>
                         <div class="error-message" id="errUnits">Vui lòng chọn ít nhất một đơn vị áp dụng.</div>
+                    </div>
+
+                    <!-- Cơ quan quản lý mặc định: chỉ dùng cho loại danh mục Loại CSDL nguồn (DM_56) -->
+                    <div class="form-group" id="mgrGroup" style="display:none;">
+                        <label class="form-label">Cơ quan quản lý mặc định</label>
+                        <div id="inpMgrTree"></div>
+                        <div style="font-size:12px; color:#64748b; margin-top:4px;">Chọn 01 đơn vị trên cây Cơ cấu tổ chức; hệ thống tự điền cơ quan này khi người dùng chọn Loại CSDL nguồn tương ứng.</div>
                     </div>
 
                     <div class="form-group">
@@ -842,7 +853,8 @@
             { code: "DM_21", name: "Loại văn bản quy phạm pháp luật", status: "Đang hoạt động" },
             { code: "DM_26", name: "Tư cách người yêu cầu bồi thường", status: "Đang hoạt động" },
             { code: "DM_54", name: "Loại yêu cầu", status: "Đang hoạt động" },
-            { code: "DM_55", name: "Lý do không thụ lý hồ sơ yêu cầu bồi thường", status: "Đang hoạt động" }
+            { code: "DM_55", name: "Lý do không thụ lý hồ sơ yêu cầu bồi thường", status: "Đang hoạt động" },
+            { code: "DM_56", name: "Loại CSDL nguồn", status: "Đang hoạt động" }
         ];
 
         // All simulated categories containing full values from 04_Danh_muc_va_Phu_luc.md (Table 5 & Table 6)
@@ -1002,6 +1014,11 @@
             { typeCode: "DM_55", code: "KTL_05", name: "Hồ sơ không đầy đủ theo quy định tại Điều 41 của Luật này mà người yêu cầu bồi thường không bổ sung trong thời hạn quy định tại khoản 3 Điều 42 của Luật này (Điểm đ Khoản 1 Điều 43)", nameEn: "Incomplete dossier not supplemented within the time limit (Point dd, Clause 1, Article 43)", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             { typeCode: "DM_55", code: "KTL_06", name: "Yêu cầu bồi thường đã được thực hiện theo quy định tại điểm a khoản 1 Điều 52 của Luật này và đã được Tòa án có thẩm quyền thụ lý theo thủ tục tố tụng dân sự (Điểm e Khoản 1 Điều 43)", nameEn: "The claim has been accepted by a competent court under civil procedure (Point e, Clause 1, Article 43)", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             { typeCode: "DM_55", code: "KTL_07", name: "Yêu cầu bồi thường đã được Tòa án có thẩm quyền chấp nhận theo quy định tại khoản 1 Điều 55 của Luật này (Điểm g Khoản 1 Điều 43)", nameEn: "The claim has been accepted by a competent court under Clause 1, Article 55 (Point g, Clause 1, Article 43)", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            // DM_56 (Loại CSDL nguồn) - khoản 9 Điều 44 dự thảo Nghị định; thuộc tính Cơ quan quản lý mặc định chọn trên cây Cơ cấu tổ chức
+            { typeCode: "DM_56", code: "CSDL_01", name: "CSDL về bản án, quyết định của Tòa án", nameEn: "Database of court judgments and decisions", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động", coQuanQuanLy: "TANDTC" },
+            { typeCode: "DM_56", code: "CSDL_02", name: "CSDL quốc gia về thủ tục hành chính (TTHC)", nameEn: "National database on administrative procedures", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động", coQuanQuanLy: "VPCP" },
+            { typeCode: "DM_56", code: "CSDL_03", name: "CSDL quốc gia về khiếu nại, tố cáo", nameEn: "National database on complaints and denunciations", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động", coQuanQuanLy: "TTCP" },
+            { typeCode: "DM_56", code: "CSDL_04", name: "Khác", nameEn: "Other", val: "", valEn: "", parentCode: "", notes: "Người dùng nhập Tên CSDL nguồn khác khi chọn giá trị này", status: "Hoạt động", coQuanQuanLy: "" },
         ];
 
         // State variables
@@ -1035,7 +1052,7 @@
             const savedTypes = JSON.parse(localStorage.getItem('categoryTypes'));
             const savedCats = JSON.parse(localStorage.getItem('masterCategories'));
             DEFAULT_TYPES.filter(d => !savedTypes.some(s => s.code === d.code)).forEach(d => savedTypes.push(d));
-            INITIAL_CATEGORIES.filter(d => ['DM_26', 'DM_54', 'DM_55'].includes(d.typeCode) && !savedCats.some(s => s.typeCode === d.typeCode && s.code === d.code)).forEach(d => savedCats.push(JSON.parse(JSON.stringify(d))));
+            INITIAL_CATEGORIES.filter(d => ['DM_26', 'DM_54', 'DM_55', 'DM_56'].includes(d.typeCode) && !savedCats.some(s => s.typeCode === d.typeCode && s.code === d.code)).forEach(d => savedCats.push(JSON.parse(JSON.stringify(d))));
             // Bổ sung các đơn vị gốc mới vào Đơn vị áp dụng của Yêu cầu bồi thường (dữ liệu lưu từ phiên bản trước)
             const lyc02 = savedCats.find(c => c.typeCode === 'DM_54' && c.code === 'LYC_02');
             if (lyc02 && !lyc02.donViApDungV2) { lyc02.donViApDung = BTNN_WF.getRootUnits().map(u => u.id); lyc02.donViApDungV2 = true; }
@@ -1255,6 +1272,8 @@
 
             document.getElementById('unitGroup').style.display = typeCode === 'DM_54' ? 'block' : 'none';
             if (typeCode === 'DM_54') renderUnitTree(formUnits);
+            document.getElementById('mgrGroup').style.display = typeCode === 'DM_56' ? 'block' : 'none';
+            if (typeCode === 'DM_56') mgrTree();
 
             const parentTypeCode = getParentTypeCode(typeCode);
             if (parentTypeCode) {
@@ -1275,6 +1294,11 @@
 
         // ---------- Đơn vị áp dụng (cây Cơ cấu tổ chức) ----------
         let formUnits = [];
+        // Cây chọn Cơ quan quản lý mặc định (DM_56), dùng component dùng chung BTNN_WF.mountUnitTree
+        function mgrTree() {
+            const box = document.getElementById('inpMgrTree');
+            return box.__utree || BTNN_WF.mountUnitTree(box, { placeholder: '-- Chọn cơ quan quản lý --' });
+        }
 
         function isUnitCoveredByParent(unitId, selected) {
             return BTNN_WF.getAncestors(unitId).slice(1).some(a => selected.includes(a));
@@ -1357,6 +1381,8 @@
 
             document.getElementById('detNotes').value = item.notes || 'Không có';
             document.getElementById('detUnitGroup').style.display = item.typeCode === 'DM_54' ? 'block' : 'none';
+            document.getElementById('detMgrGroup').style.display = item.typeCode === 'DM_56' ? 'block' : 'none';
+            document.getElementById('detMgr').value = item.coQuanQuanLy ? BTNN_WF.unitTreeLabel(item.coQuanQuanLy) : 'Không có';
             document.getElementById('detUnits').innerHTML = (item.donViApDung || []).map(u => `• ${BTNN_WF.unitName(u)}${BTNN_WF.getDescendants(u).length ? ' (gồm đơn vị trực thuộc)' : ''}`).join('<br>') || 'Chưa chọn';
             document.getElementById('detStatus').value = item.status;
 
@@ -1390,6 +1416,7 @@
             document.getElementById('inpValEn').value = '';
             document.getElementById('inpNotes').value = '';
             formUnits = [];
+            mgrTree().setValue('');
             document.getElementById('errUnits').style.display = 'none';
             document.querySelector('input[name="status"][value="Hoạt động"]').checked = true;
 
@@ -1424,6 +1451,7 @@
             document.getElementById('inpValEn').value = item.valEn || '';
             document.getElementById('inpNotes').value = item.notes || '';
             formUnits = Array.isArray(item.donViApDung) ? item.donViApDung.slice() : [];
+            mgrTree().setValue(item.coQuanQuanLy || '');
             document.getElementById('errUnits').style.display = 'none';
             document.querySelector(`input[name="status"][value="${item.status}"]`).checked = true;
 
@@ -1543,7 +1571,8 @@
                     parentCode,
                     notes,
                     status,
-                    donViApDung: typeCode === 'DM_54' ? formUnits.slice() : undefined
+                    donViApDung: typeCode === 'DM_54' ? formUnits.slice() : undefined,
+                    coQuanQuanLy: typeCode === 'DM_56' ? mgrTree().getValue() : undefined
                 });
                 showToast("Thêm mới danh mục thành công!", "success");
             } else {
@@ -1557,6 +1586,7 @@
                     item.notes = notes;
                     item.status = status;
                     if (item.typeCode === 'DM_54') item.donViApDung = formUnits.slice();
+                    if (item.typeCode === 'DM_56') item.coQuanQuanLy = mgrTree().getValue();
                 }
                 showToast("Cập nhật danh mục thành công!", "success");
             }

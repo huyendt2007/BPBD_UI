@@ -102,7 +102,13 @@
         { id: 'TAND-NT', name: 'Tòa án nhân dân thành phố Nha Trang, tỉnh Khánh Hòa', parentId: null },
         { id: 'CA-HM', name: 'Công an quận Hoàng Mai, Thành phố Hà Nội', parentId: null },
         { id: 'CCTHADS-TT', name: 'Chi cục Thi hành án dân sự huyện Thanh Trì, Thành phố Hà Nội', parentId: null },
-        { id: 'VKS-HP', name: 'Viện kiểm sát nhân dân Thành phố Hải Phòng', parentId: null }
+        { id: 'VKS-HP', name: 'Viện kiểm sát nhân dân Thành phố Hải Phòng', parentId: null },
+        // Cơ quan quản lý CSDL có liên quan đến công tác BTNN (dữ liệu mẫu module Thông tin từ các CSDL liên quan)
+        { id: 'TANDTC', name: 'Tòa án nhân dân tối cao', parentId: null },
+        { id: 'VPCP', name: 'Văn phòng Chính phủ', parentId: null },
+        { id: 'TTCP', name: 'Thanh tra Chính phủ', parentId: null },
+        // Bộ quản lý ngành (dữ liệu mẫu module Theo dõi, đôn đốc công tác BTNN)
+        { id: 'BTC', name: 'Bộ Tài chính', parentId: null }
     ];
 
     const USERS = [
@@ -702,7 +708,7 @@
     function transferToAgency(code, content, files, unitId) {
         const rec = getRecord(code);
         const me = getCurrentUserId();
-        if (!rec || rec.chuTri !== me) return { ok: false, message: 'Chỉ cán bộ chủ trì được chuyển cơ quan giải quyết bồi thường.' };
+        if (!rec || rec.chuTri !== me) return { ok: false, message: 'Chỉ cán bộ xử lý được chuyển cơ quan giải quyết bồi thường.' };
         if (rec.status !== STATUS.CHO_CHUYEN) return { ok: false, message: 'Hồ sơ không ở trạng thái Chờ chuyển CQGQBT.' };
         const target = unitId ? getUnit(unitId) : findRootUnitByName(rec.procTargetAgency);
         const targetName = target ? target.name : (rec.procTargetAgency || '--');
@@ -795,12 +801,12 @@
         ].join('\n');
         document.head.appendChild(st);
     }
-    // options: { inputId, value, disabledIds: [], placeholder, onChange(id) }
+    // options: { inputId, value, disabledIds: [], disabledTitle, placeholder, onChange(id) }
     // Ô hiển thị "[Mã đơn vị] - [Tên đơn vị]" kèm nút x; giá trị lưu ở input ẩn (id = inputId); controller gắn tại container.__utree
     function mountUnitTree(container, options) {
         if (!container) return null;
         ensureUnitTreeCss();
-        const o = Object.assign({ inputId: '', value: '', disabledIds: [], placeholder: '-- Chọn đơn vị --' }, options || {});
+        const o = Object.assign({ inputId: '', value: '', disabledIds: [], disabledTitle: 'Đơn vị hiện tại của vụ việc, không được chọn', placeholder: '-- Chọn đơn vị --' }, options || {});
         let value = '';
         let disabled = new Set(o.disabledIds || []);
         const expanded = new Set();
@@ -836,7 +842,7 @@
                     const isOpen = found ? kids.length > 0 : expanded.has(u.id);
                     const isDis = disabled.has(u.id);
                     const cls = 'wf-utree-node' + (u.id === value ? ' selected' : '') + (isDis ? ' disabled' : '');
-                    rows.push(`<div class="${cls}" data-id="${esc(u.id)}" style="padding-left:${6 + depth * 18}px;"${isDis ? ' title="Đơn vị hiện tại của vụ việc, không được chọn"' : ''}>` +
+                    rows.push(`<div class="${cls}" data-id="${esc(u.id)}" style="padding-left:${6 + depth * 18}px;"${isDis ? ` title="${esc(o.disabledTitle)}"` : ''}>` +
                         `<span class="wf-utree-tg" data-toggle="${kids.length ? esc(u.id) : ''}">${kids.length ? `<i class="fa-solid fa-chevron-${isOpen ? 'down' : 'right'}"></i>` : ''}</span>` +
                         `<i class="fa-solid ${icon(depth)} wf-utree-ic"></i><span>${esc(u.name)}</span><span class="wf-utree-code">${esc(u.id)}</span></div>`);
                     if (kids.length && isOpen) walk(kids, depth + 1);

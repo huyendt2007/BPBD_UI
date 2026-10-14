@@ -126,7 +126,15 @@ const LEGACY_SEED = [
         procTargetAgency: "UBND quận Cầu Giấy, Thành phố Hà Nội",
         procReason: "Hành vi gây thiệt hại bắt nguồn từ Quyết định hành chính ban hành bởi UBND Quận Cầu Giấy, đã được Tòa án tuyên hủy tại bản án hành chính sơ thẩm.",
         procDecisionFile: "Quyet_dinh_chi_dinh_co_quan_so_04.pdf",
-        claimCode: "BT-2026-081"
+        claimCode: "BT-2026-081",
+        phddCode: null,
+        transfer: {
+            targetUnitId: 'UBND-HN',
+            content: 'Chuyển hồ sơ yêu cầu bồi thường thiệt hại sang UBND quận Cầu Giấy để giải quyết theo thẩm quyền.',
+            files: [{ name: 'CV_chuyen_ho_so_kem_quyet_dinh_04.pdf' }],
+            at: '14:20 15/07/2026',
+            by: 'canbonv'
+        }
     },
     {
         id: "REQ5",
@@ -242,7 +250,15 @@ const LEGACY_SEED = [
         procTargetAgency: "Sở Tư pháp Thành phố Hà Nội",
         procReason: "Cơ quan điều tra đã khởi tố ban đầu đã được giải thể, chuyển giao thẩm quyền pháp lý sang văn phòng cơ quan CSĐT cấp tỉnh.",
         procDecisionFile: "Quyet_dinh_chi_dinh_viet.pdf",
-        claimCode: "-"
+        claimCode: "BT-2026-003",
+        phddCode: "PHDD-2026-001",
+        transfer: {
+            targetUnitId: 'STP-HN',
+            content: 'Chuyển toàn bộ hồ sơ yêu cầu bồi thường và phục hồi danh dự sang Sở Tư pháp Thành phố Hà Nội thụ lý, giải quyết cả hai nội dung bồi thường thiệt hại và phục hồi danh dự theo quy định.',
+            files: [{ name: 'CV_chuyen_ho_so_STP_HN.pdf' }, { name: 'Ban_an_hinh_su_tuyen_oan.pdf' }],
+            at: '10:15 12/07/2026',
+            by: 'canbonv'
+        }
     },
     {
         id: "REQ9",
@@ -511,6 +527,42 @@ const LEGACY_SEED = [
         },
         attachedFile: "Don_yeu_cau_hung_lv.pdf",
         claimCode: "-"
+    },
+    {
+        id: "REQ18",
+        code: "XD-2026-018",
+        date: "12/08/2026",
+        nycName: "Ngô Quốc Tuấn",
+        nycRole: "Người bị thiệt hại",
+        nycGender: "Nam",
+        nycDob: "15/05/1979",
+        nycDocType: "CCCD",
+        nycDocNo: "001079003456",
+        nycDocDate: "05/03/2021",
+        nycDocPlace: "Cục Cảnh sát QLHC về trật tự xã hội",
+        nycPhone: "0983112233",
+        nycEmail: "tuan.nq@gmail.com",
+        nycCountry: "Việt Nam",
+        nycTinhThanh: "Thành phố Hà Nội",
+        nycAddressDetail: "Số 45 Thụy Khuê, Tây Hồ",
+        hinhThucTiepNhan: "Trực tiếp",
+        linhVuc: "TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ",
+        hanhVi: "Kê biên tài sản và thông báo vi phạm sai đối tượng gây tổn hại nghiêm trọng uy tín danh dự cá nhân.",
+        hinhThucNhan: "Phương thức điện tử",
+        status: "Hoàn thành",
+        procBasis: "Khoản 2 Điều 40 - Trường hợp có sự phân định cơ quan trực tiếp gây thiệt hại",
+        procTargetAgency: "Sở Tư pháp Thành phố Hà Nội",
+        procReason: "Hồ sơ chỉ yêu cầu phục hồi danh dự cho người bị thiệt hại, thuộc thẩm quyền giải quyết của Sở Tư pháp.",
+        procDecisionFile: "Quyet_dinh_chi_dinh_tuan.pdf",
+        claimCode: null,
+        phddCode: "PHDD-2026-005",
+        transfer: {
+            targetUnitId: 'STP-HN',
+            content: 'Chuyển hồ sơ yêu cầu phục hồi danh dự của ông Ngô Quốc Tuấn sang Sở Tư pháp Thành phố Hà Nội thụ lý, tổ chức trực tiếp xin lỗi và đăng báo cải chính theo quy định.',
+            files: [{ name: 'CV_chuyen_ho_so_PHDD_STP_HN.pdf' }],
+            at: '16:00 18/08/2026',
+            by: 'canbonv'
+        }
     }
 ];
 
@@ -534,6 +586,10 @@ function buildUbndSeed() {
             status: 'Đang thực hiện', nycName: 'Kiều Văn Thịnh', nycDob: '14/02/1979', nycDocNo: '001079006611', nycPhone: '0913221144', nycEmail: 'thinh.kv@gmail.com',
             nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: '00001 - Phường Ba Đình', nycAddressDetail: 'Số 12 Phan Đình Phùng',
             linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: 'Thu hồi đất, cưỡng chế giải phóng mặt bằng khi chưa có quyết định thu hồi đất có hiệu lực của UBND cấp huyện.',
+            procBasis: 'Khoản 1 Điều 35 Luật Trách nhiệm bồi thường của Nhà nước',
+            procTargetAgency: 'UBND quận Cầu Giấy, Thành phố Hà Nội',
+            procReason: 'Người thi hành công vụ gây thiệt hại thuộc UBND quận Cầu Giấy quản lý.',
+            procDecisionFile: 'Quyet_dinh_xac_dinh_CQGQBT_XD-2026-121.pdf',
             routes: route('UBND-HN', 'ct_ubndhn', 'cv_ubndhn1', '09:00 06/10/2026', 'Đã xử lý'),
             history: [h('Tiếp nhận yêu cầu', 'cv_ubndhn1', '08:30 06/10/2026', 'Chuyển lãnh đạo UBND Thành phố Hà Nội phân công xử lý.'), h('Phân công cán bộ', 'ct_ubndhn', '09:00 06/10/2026', 'Chủ trì: Mẫn Thị Hạnh.'), h('Tiếp nhận hồ sơ', 'cv_ubndhn1', '10:00 06/10/2026', 'Cán bộ chủ trì tiếp nhận, nhập liệu hồ sơ. Hồ sơ chuyển [Đang thực hiện].')]
         }),
@@ -770,7 +826,7 @@ function renderApprovalKindOptions() {
 // Lịch sử xử lý: mỗi dòng kèm cơ quan và loại cơ quan của người thực hiện (thể hiện vai trò Bộ Tư pháp / Sở Tư pháp / UBND cấp tỉnh)
 function renderXdHistoryHtml(rec) {
     const list = (rec.history || []).slice().reverse();
-    if (!list.length) return `<div style="color:#64748b; font-style:italic;">Chưa có lịch sử xử lý.</div>`;
+    if (!list.length) return '';
     return `<div style="display:flex; flex-direction:column; gap:10px;">${list.map(x => {
         const user = BTNN_WF.getUser(x.userId);
         const root = user ? BTNN_WF.getRootId(user.unitId) : '';
@@ -828,10 +884,10 @@ function toggleFormEmailRequired() {
     label.innerHTML = 'Thư điện tử (Email)';
 }
 
-const NOTIFY_METHOD_DEFAULT = 'Qua Cổng Dịch vụ công quốc gia, ứng dụng định danh quốc gia (VNeID) hoặc phương tiện điện tử khác';
+const NOTIFY_METHOD_DEFAULT = 'Qua Cổng Dịch vụ công quốc gia';
 
 function normalizeNotifyMethod(val) {
-    if (!val || val === 'Phương thức điện tử' || val === 'Phương thức điện tử (Email, Zalo, SMS...)') {
+    if (!val || val === 'Phương thức điện tử' || val === 'Phương thức điện tử (Email, Zalo, SMS...)' || val.includes('Cổng Dịch vụ công quốc gia, ứng dụng') || val.includes('hoặc phương tiện điện tử khác')) {
         return NOTIFY_METHOD_DEFAULT;
     }
     if (val === 'Hồ sơ giấy') return 'Qua dịch vụ bưu chính';
@@ -872,17 +928,30 @@ function handleNotifyMethodChange(method, scope = 'xd') {
             inputEl.value = email || '';
             inputEl.dataset.autofilled = email ? '1' : '0';
         }
-    } else {
-        // Mặc định: Qua Cổng Dịch vụ công quốc gia, ứng dụng định danh quốc gia (VNeID) hoặc phương tiện điện tử khác
-        labelEl.innerHTML = `Địa chỉ, đầu mối nhận thông báo (Số ĐDCN/VNeID, SĐT hoặc TK Cổng DVC) <span class="required">*</span>`;
-        inputEl.placeholder = `Nhập số định danh VNeID, số điện thoại hoặc tài khoản DVC nhận thông báo...`;
+    } else if (method.includes('Cổng Dịch vụ công') || method.includes('VNeID')) {
+        labelEl.innerHTML = `Địa chỉ, đầu mối nhận thông báo (Tài khoản Cổng DVC / Số ĐDCN / VNeID) <span class="required">*</span>`;
+        inputEl.placeholder = `Nhập số định danh cá nhân / tài khoản VNeID hoặc tài khoản Cổng DVC nhận thông báo...`;
         if (!inputEl.value.trim() || inputEl.dataset.autofilled === '1') {
             const docNo = scope === 'xd' ? document.getElementById('formNYCDocNo')?.value : document.getElementById('claimNYCCardNo')?.value;
             const phone = scope === 'xd' ? document.getElementById('formNYCPhone')?.value : document.getElementById('claimNYCPhone')?.value;
-            const text = [docNo ? `VNeID/ĐDCN: ${docNo}` : '', phone ? `SĐT: ${phone}` : ''].filter(Boolean).join(' / ');
+            const text = [docNo ? `CCCD/ĐDCN: ${docNo}` : '', phone ? `SĐT: ${phone}` : ''].filter(Boolean).join(' / ');
             inputEl.value = text || 'VNeID / Cổng Dịch vụ công quốc gia';
             inputEl.dataset.autofilled = '1';
         }
+    } else if (method === 'Qua phương tiện điện tử khác') {
+        labelEl.innerHTML = `Địa chỉ, đầu mối nhận thông báo qua phương tiện điện tử khác <span class="required">*</span>`;
+        inputEl.placeholder = `Nhập thông tin phương tiện điện tử khác (số điện thoại, tài khoản số...)...`;
+        if (!inputEl.value.trim() || inputEl.dataset.autofilled === '1') {
+            const phone = scope === 'xd' ? document.getElementById('formNYCPhone')?.value : document.getElementById('claimNYCPhone')?.value;
+            const email = scope === 'xd' ? document.getElementById('formNYCEmail')?.value : document.getElementById('claimNYCEmail')?.value;
+            const text = [phone ? `SĐT: ${phone}` : '', email ? `Email: ${email}` : ''].filter(Boolean).join(' / ');
+            inputEl.value = text || '';
+            inputEl.dataset.autofilled = text ? '1' : '0';
+        }
+    } else {
+        // Mặc định
+        labelEl.innerHTML = `Địa chỉ, đầu mối nhận thông báo <span class="required">*</span>`;
+        inputEl.placeholder = `Nhập địa chỉ, đầu mối nhận thông báo...`;
     }
 }
 
@@ -1115,7 +1184,7 @@ function showFormScreen(id = null, mode = null) {
             ? `<i class="fa-solid fa-file-import"></i> TIẾP NHẬN YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`
             : item.status === 'Bị trả lại'
             ? `<i class="fa-solid fa-rotate-left"></i> CẬP NHẬT LẠI HỒ SƠ BỊ TRẢ LẠI`
-            : `<i class="fa-solid fa-file-pen"></i> CHỈNH SỬA YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`;
+            : `<i class="fa-solid fa-file-pen"></i> SỬA YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`;
         const method = item.hinhThucTiepNhan === 'Nhận qua bưu điện/bưu chính' || item.hinhThucTiepNhan === 'Bưu chính' ? 'Nhận qua bưu điện/bưu chính' : 'Trực tiếp';
         document.getElementById('formHinhThucTiepNhan').value = method;
         document.getElementById('formLinhVuc').value = item.linhVuc;
@@ -1249,19 +1318,43 @@ function fileLinksHtml(files) {
     return files.map(f => `<div style="font-weight: 600; color: #0F766E; margin-bottom: 4px;"><i class="fa-solid fa-file-pdf"></i> ${escapeHtml(f.name || f)} <a href="#" onclick="event.preventDefault(); previewNamedFile('${escapeAttr(f.name || f)}');" style="margin-left: 12px; color: var(--secondary-color); text-decoration: none;"><i class="fa-solid fa-up-right-from-square"></i> Xem file</a></div>`).join('');
 }
 
-function openYcbtRecord(code) {
-    // Hồ sơ YCBT chỉ có tại phân hệ Giải quyết YCBT sau khi lãnh đạo cơ quan được chỉ định phân công cán bộ
-    const ycbt = BTNN_WF.getRecord(code);
-    if (ycbt && [BTNN_WF.STATUS.CHO_PHAN_CONG, BTNN_WF.STATUS.DANG_PHAN_CONG].includes(ycbt.status)) {
-        showToast(`Hồ sơ ${code} đang [${ycbt.status}] tại ${BTNN_WF.unitName(ycbt.currentUnitId)}; chưa có tại phân hệ Giải quyết yêu cầu bồi thường.`, "info");
-        return;
-    }
+function getClaimCodeLinkHtml(code) {
+    if (!code || code === '-' || code === '--') return '';
     const url = `quan_ly_boi_thuong.html?id=${encodeURIComponent(code)}`;
-    if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === 'function') {
-        window.parent.openAdminModule(url, 'quan_ly_boi_thuong.html?v=1');
-    } else {
-        window.location.href = url;
-    }
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="ycbt-hyperlink" title="Click để mở chi tiết Giải quyết yêu cầu bồi thường ở tab mới" style="display:inline-flex; align-items:center; gap:6px; font-weight:700; color:#7c3aed; text-decoration:none; padding:4px 10px; background:#f5f3ff; border:1px solid #ddd6fe; border-radius:6px; font-size:13px; transition:all 0.2s;" onmouseover="this.style.background='#ede9fe'; this.style.borderColor='#c4b5fd';" onmouseout="this.style.background='#f5f3ff'; this.style.borderColor='#ddd6fe';">
+        <i class="fa-solid fa-scale-balanced" style="color:#7c3aed;"></i>
+        <span>${escapeHtml(code)}</span>
+        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px; opacity:0.8;"></i>
+    </a>`;
+}
+
+function getPhddCodeLinkHtml(code) {
+    if (!code || code === '-' || code === '--') return '';
+    const url = `quan_ly_phuc_hoi_danh_du.html?id=${encodeURIComponent(code)}`;
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="ycbt-hyperlink" title="Click để mở chi tiết Phục hồi danh dự ở tab mới" style="display:inline-flex; align-items:center; gap:6px; font-weight:700; color:#059669; text-decoration:none; padding:4px 10px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:6px; font-size:13px; transition:all 0.2s;" onmouseover="this.style.background='#d1fae5'; this.style.borderColor='#6ee7b7';" onmouseout="this.style.background='#ecfdf5'; this.style.borderColor='#a7f3d0';">
+        <i class="fa-solid fa-award" style="color:#059669;"></i>
+        <span>${escapeHtml(code)}</span>
+        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px; opacity:0.8;"></i>
+    </a>`;
+}
+
+function renderYcbtCodesCell(item) {
+    if (item.status !== 'Hoàn thành') return '-';
+    const hasClaim = Boolean(item.claimCode && item.claimCode !== '-' && item.claimCode !== '--');
+    const hasPhdd = Boolean(item.phddCode && item.phddCode !== '-' && item.phddCode !== '--');
+    if (!hasClaim && !hasPhdd) return '-';
+    const parts = [];
+    if (hasClaim) parts.push(`<div style="font-weight:700; color:#7c3aed;" title="Mã Giải quyết YCBT">${escapeHtml(item.claimCode)}</div>`);
+    if (hasPhdd) parts.push(`<div style="font-weight:700; color:#059669;" title="Mã Phục hồi danh dự">${escapeHtml(item.phddCode)}</div>`);
+    return parts.join('');
+}
+
+function openYcbtRecord(code) {
+    window.open(`quan_ly_boi_thuong.html?id=${encodeURIComponent(code)}`, '_blank');
+}
+
+function openPhddRecord(code) {
+    window.open(`quan_ly_phuc_hoi_danh_du.html?id=${encodeURIComponent(code)}`, '_blank');
 }
 
 function showDetailScreen(id) {
@@ -1283,7 +1376,7 @@ function showDetailScreen(id) {
     const notice = document.getElementById('dtNoticeBlock');
     let noticeHtml = '';
     if (item.status === 'Bị trả lại' && item.returned) {
-        noticeHtml = `<div style="font-weight:700; color:#b91c1c; margin-bottom:4px;"><i class="fa-solid fa-rotate-left"></i> HỒ SƠ BỊ TRẢ LẠI</div><div><strong>${escapeHtml(BTNN_WF.userName(item.returned.by))}</strong> (${escapeHtml(BTNN_WF.unitName(item.returned.unitId))}) từ chối phê duyệt lúc ${escapeHtml(item.returned.at)}.</div>${item.returned.kind ? `<div><strong>Nội dung trình:</strong> ${escapeHtml(item.returned.kind)}</div>` : ''}<div><strong>Lý do:</strong> ${escapeHtml(item.returned.reason)}</div><div style="margin-top:4px;">Cán bộ chủ trì cập nhật hồ sơ và trình lại; luồng phê duyệt bắt đầu lại từ cấp phê duyệt đầu tiên.</div>`;
+        noticeHtml = `<div style="font-weight:700; color:#b91c1c; margin-bottom:4px;"><i class="fa-solid fa-rotate-left"></i> HỒ SƠ BỊ TRẢ LẠI</div><div><strong>${escapeHtml(BTNN_WF.userName(item.returned.by))}</strong> (${escapeHtml(BTNN_WF.unitName(item.returned.unitId))}) từ chối phê duyệt lúc ${escapeHtml(item.returned.at)}.</div>${item.returned.kind ? `<div><strong>Nội dung trình:</strong> ${escapeHtml(item.returned.kind)}</div>` : ''}<div><strong>Lý do:</strong> ${escapeHtml(item.returned.reason)}</div>`;
         notice.style.cssText += 'background:#FEF2F2; border-left:4px solid #dc2626;';
     } else if (item.status === 'Yêu cầu bổ sung') {
         const reason = item.supplementReason || (item.approval && item.approval.content) || '';
@@ -1361,16 +1454,39 @@ function showDetailScreen(id) {
         verificationBlock.style.display = 'none';
     }
 
-    // Kết quả chuyển CQGQBT
+    // Kết quả chuyển CQGQBT: Chỉ hiển thị khi hồ sơ ở trạng thái Hoàn thành và hệ thống đã sinh thành công Mã vụ việc YCBT tương ứng (Có thể là mã Phục hồi danh dự, Mã Giải quyết YCBT hoặc cả 2 mã)
     const transferBlock = document.getElementById('dtTransferBlock');
-    if (item.transfer || (item.claimCode && item.claimCode !== '-')) {
+    const isCompleted = item.status === 'Hoàn thành';
+    const hasClaimCode = Boolean(item.claimCode && item.claimCode !== '-' && item.claimCode !== '--');
+    const hasPhddCode = Boolean(item.phddCode && item.phddCode !== '-' && item.phddCode !== '--');
+    const hasGeneratedYcbtCode = hasClaimCode || hasPhddCode;
+
+    if (isCompleted && hasGeneratedYcbtCode) {
         transferBlock.style.display = 'block';
         const tr = item.transfer || {};
         document.getElementById('dtTransferAgency').innerText = tr.targetUnitId ? BTNN_WF.unitName(tr.targetUnitId) : (item.procTargetAgency || '--');
         document.getElementById('dtTransferContent').innerText = tr.content || '--';
         document.getElementById('dtTransferFiles').innerHTML = fileLinksHtml(tr.files || []);
         document.getElementById('dtTransferAt').innerText = tr.at ? `${tr.at} - ${BTNN_WF.userName(tr.by)}` : '--';
-        document.getElementById('dtClaimCode').innerHTML = `${escapeHtml(item.claimCode)} <a href="#" onclick="event.preventDefault(); openYcbtRecord('${escapeAttr(item.claimCode)}');" style="margin-left:10px; font-weight:500; color:var(--secondary-color); text-decoration:none;"><i class="fa-solid fa-up-right-from-square"></i> Xem hồ sơ YCBT</a>`;
+
+        const codeChips = [];
+        if (hasClaimCode) {
+            codeChips.push(`
+                <div style="display:inline-flex; align-items:center; gap:8px;">
+                    <span style="font-size:13px; color:#475569; font-weight:600;">Mã Giải quyết YCBT:</span>
+                    ${getClaimCodeLinkHtml(item.claimCode)}
+                </div>
+            `);
+        }
+        if (hasPhddCode) {
+            codeChips.push(`
+                <div style="display:inline-flex; align-items:center; gap:8px;">
+                    <span style="font-size:13px; color:#475569; font-weight:600;">Mã Phục hồi danh dự:</span>
+                    ${getPhddCodeLinkHtml(item.phddCode)}
+                </div>
+            `);
+        }
+        document.getElementById('dtClaimCode').innerHTML = `<div style="display:flex; flex-direction:column; gap:8px; align-items:flex-start;">${codeChips.join('')}</div>`;
     } else {
         transferBlock.style.display = 'none';
     }
@@ -1379,7 +1495,7 @@ function showDetailScreen(id) {
     document.getElementById('dtRootUnit').innerHTML = unitWithTypeHtml(item.rootUnitId);
     document.getElementById('dtChuTri').innerText = item.chuTri ? BTNN_WF.userLabel(item.chuTri) : 'Chưa phân công';
     document.getElementById('dtPhoiHop').innerText = (item.phoiHop || []).length ? item.phoiHop.map(BTNN_WF.userName).join(', ') : 'Không có';
-    document.getElementById('dtApprovalWrap').style.display = item.approval ? 'block' : 'none';
+    if (document.getElementById('dtApprovalWrap')) document.getElementById('dtApprovalWrap').style.display = 'none';
     const approvalFiles = item.approval && (item.approval.files || []).length
         ? `<div style="margin-top:8px; font-size:13px;"><strong>Văn bản đính kèm trình Lãnh đạo:</strong>${fileLinksHtml(item.approval.files)}</div>` : '';
     document.getElementById('dtApproval').innerHTML = item.approval ? BTNN_WF.renderApprovalHtml(item) + approvalFiles : '';
@@ -1391,9 +1507,6 @@ function showDetailScreen(id) {
     footer.innerHTML = `<button class="btn btn-secondary" onclick="closeDetailOrReturn()">Đóng</button>`;
     if (readOnlyView) return;
 
-    if (isPhoiHop(item) && !['Hoàn thành', 'Bị từ chối'].includes(item.status)) {
-        footer.innerHTML += `<button class="btn btn-secondary" onclick="openCoopDocModal('${item.id}')"><i class="fa-solid fa-paperclip"></i> Bổ sung tài liệu</button>`;
-    }
     if (!isChuTri(item)) return;
 
     if (item.status === 'Chờ tiếp nhận') {
@@ -1410,10 +1523,6 @@ function showDetailScreen(id) {
         footer.innerHTML += `<button class="btn btn-primary" onclick="showProcessScreen('${item.id}')"><i class="fa-solid fa-balance-scale"></i> Cập nhật kết quả</button>`;
     } else if (item.status === 'Chờ chuyển CQGQBT') {
         footer.innerHTML += `<button class="btn btn-primary" onclick="openTransferModal('${item.id}')"><i class="fa-solid fa-share-from-square"></i> Chuyển CQGQBT</button>`;
-
-    } else if (item.status === 'Yêu cầu bổ sung') {
-        // Đã bỏ nút In Phiếu Bổ sung theo yêu cầu
-        footer.innerHTML += `<button class="btn btn-primary" onclick="receiveSupplement('${item.id}')"><i class="fa-solid fa-file-circle-check"></i> Tiếp nhận hồ sơ bổ sung</button>`;
     }
 }
 
@@ -1843,7 +1952,7 @@ function filterData() {
 
     filteredList = requestList.filter(item => {
         if (code && !item.code.toLowerCase().includes(code)) return false;
-        if (claimCode && !(item.claimCode || '').toLowerCase().includes(claimCode)) return false;
+        if (claimCode && !((item.claimCode || '') + ' ' + (item.phddCode || '')).toLowerCase().includes(claimCode)) return false;
         if (name && !(item.nycName || '').toLowerCase().includes(name)) return false;
         if (lv && item.linhVuc !== lv) return false;
         if (status && item.status !== status) return false;
@@ -1910,7 +2019,7 @@ function renderTable() {
             <td style="text-align:center;">${escapeHtml(item.date || '')}</td>
             <td>${unitWithTypeHtml(item.rootUnitId, true)}</td>
             <td>${escapeHtml(item.chuTri ? BTNN_WF.userName(item.chuTri) : '--')}${roleTag}</td>
-            <td style="text-align:center; font-weight:700; color:#8B5CF6;">${escapeHtml(item.claimCode || '-')}</td>
+            <td style="text-align:center;">${renderYcbtCodesCell(item)}</td>
             <td style="text-align:center;">${statusCellHtml(item)}</td>
             <td class="action-cell">
                 <div class="action-flex">${getActionButtons(item) || '<span class="muted-action">-</span>'}</div>
@@ -1923,7 +2032,7 @@ function renderTable() {
 }
 
 // Lưới danh sách: 05 thao tác cố định theo thứ tự Tiếp nhận | Yêu cầu bổ sung | Từ chối | Cập nhật | Chuyển CQGQBT.
-// Thao tác không khả dụng vẫn hiển thị nhưng mờ (disabled), kèm chú thích lý do.
+// Thao tác chưa đủ điều kiện thực hiện vẫn hiển thị nhưng mờ (disabled), kèm chú thích lý do.
 function getActionButtons(item) {
     if (readOnlyView) return '';
     const owner = isChuTri(item);
@@ -1935,8 +2044,8 @@ function getActionButtons(item) {
         transfer: { icon: 'fa-solid fa-share-from-square', cls: 'transfer', title: 'Chuyển CQGQBT' }
     };
     const on = (key, onclick, title) => `<button class="icon-btn ${ACTIONS[key].cls}" title="${escapeAttr(title || ACTIONS[key].title)}" onclick="${onclick}"><i class="${ACTIONS[key].icon}"></i></button>`;
-    const off = (key, title) => `<button class="icon-btn ${ACTIONS[key].cls} is-disabled" title="${escapeAttr(title || (ACTIONS[key].title + ' - Không khả dụng ở trạng thái hiện tại'))}" disabled><i class="${ACTIONS[key].icon}"></i></button>`;
-    const notOwner = 'Chỉ cán bộ chủ trì được thực hiện';
+    const off = (key, title) => `<button class="icon-btn ${ACTIONS[key].cls} is-disabled" title="${escapeAttr(title || (ACTIONS[key].title + ' - Không áp dụng ở trạng thái hiện tại'))}" disabled><i class="${ACTIONS[key].icon}"></i></button>`;
+    const notOwner = 'Chỉ cán bộ xử lý được thực hiện';
     const id = item.id;
     const s = item.status;
     const slots = {
@@ -1950,8 +2059,6 @@ function getActionButtons(item) {
         slots.accept = owner ? on('accept', `acceptRequest('${id}')`) : off('accept', notOwner);
         slots.supplement = owner ? on('supplement', `openSupplementModal('${id}')`) : off('supplement', notOwner);
         slots.reject = owner ? on('reject', `openRejectModal('${id}')`) : off('reject', notOwner);
-    } else if (s === 'Yêu cầu bổ sung') {
-        slots.accept = owner ? on('accept', `receiveSupplement('${id}')`, 'Tiếp nhận hồ sơ bổ sung') : off('accept', notOwner);
     } else if (s === 'Đang thực hiện') {
         slots.update = owner ? on('update', `showProcessScreen('${id}')`, 'Cập nhật kết quả xác định') : off('update', notOwner);
     } else if (s === 'Bị trả lại') {
@@ -2168,12 +2275,16 @@ function renderModalFiles(kind) {
 
 // Khối tóm tắt hồ sơ trong popup trình Lãnh đạo
 function approvalSummaryHtml(item) {
-    return `<div class="wf-summary-grid">
-        <div style="grid-column: span 2;"><span>Mã yêu cầu - Người yêu cầu:</span> <b style="color:#1e3a8a;">${escapeHtml(getCaseName(item))}</b></div>
-        <div><span>Ngày tiếp nhận:</span> <b>${escapeHtml(item.receivedAt || item.date || '--')}</b></div>
-        <div><span>Trạng thái:</span> ${statusCellHtml(item)}</div>
-        <div><span>Cán bộ xử lý:</span> <b>${escapeHtml(item.chuTri ? BTNN_WF.userName(item.chuTri) : '--')}</b></div>
-        <div><span>Đơn vị:</span> <b>${unitWithTypeHtml(item.rootUnitId)}</b></div>
+    return `<div style="font-weight: 700; color: #1e3a8a; margin-bottom: 8px; font-size: 13px; text-transform: uppercase;">
+        <i class="fa-solid fa-file-lines"></i> Tóm tắt hồ sơ yêu cầu
+    </div>
+    <div class="wf-summary-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px;">
+        <div><span style="color:#64748b;">Mã yêu cầu:</span> <b style="color:#1e3a8a;">${escapeHtml(item.code || '--')}</b></div>
+        <div><span style="color:#64748b;">Người yêu cầu:</span> <b style="color:#1e3a8a;">${escapeHtml(item.nycName || item.claimant || item.name || '--')}</b></div>
+        <div><span style="color:#64748b;">Ngày tiếp nhận:</span> <b>${escapeHtml(item.date || item.receivedAt || '--')}</b></div>
+        <div><span style="color:#64748b;">Trạng thái:</span> ${statusCellHtml(item)}</div>
+        <div><span style="color:#64748b;">Cán bộ xử lý:</span> <b>${escapeHtml(item.chuTri ? BTNN_WF.userName(item.chuTri) : '--')}</b></div>
+        <div><span style="color:#64748b;">Đơn vị tiếp nhận:</span> <b>${unitWithTypeHtml(item.rootUnitId)}</b></div>
     </div>`;
 }
 
@@ -2428,43 +2539,4 @@ function confirmTransfer() {
     if (fresh) showDetailScreen(fresh.id); else showListScreen();
 }
 
-// ---------------- Popup Bổ sung tài liệu (cán bộ phối hợp) ----------------
-function openCoopDocModal(id) {
-    clearValidation();
-    document.getElementById('coopRequestId').value = id;
-    document.getElementById('coopDocName').value = '';
-    modalFiles.coop = [];
-    renderModalFiles('coop');
-    openXdModal('coopDocModal');
-}
 
-function confirmCoopDoc() {
-    clearValidation();
-    const id = document.getElementById('coopRequestId').value;
-    const item = requestList.find(r => r.id === id);
-    const nameEl = document.getElementById('coopDocName');
-    let invalid = false;
-    if (!nameEl.value.trim()) { markInvalid(nameEl); invalid = true; }
-    if (!modalFiles.coop.length) { markFileRequired('coop'); invalid = true; }
-    if (invalid || !item) return;
-    if (!item.attachedDocs) item.attachedDocs = [];
-    item.attachedDocs.push({ name: nameEl.value.trim(), file: modalFiles.coop[0].name, addedBy: getMe() });
-    BTNN_WF.addHistory(item, 'Bổ sung tài liệu', `Cán bộ phối hợp bổ sung tài liệu: ${nameEl.value.trim()}.`);
-    saveItem(item);
-    closeXdModal('coopDocModal');
-    showToast("Đã bổ sung tài liệu vào hồ sơ!", "success");
-    showDetailScreen(id);
-}
-
-// Người yêu cầu đã nộp hồ sơ bổ sung: cán bộ chủ trì tiếp nhận để tiếp tục thực hiện
-function receiveSupplement(id) {
-    const item = requestList.find(r => r.id === id);
-    if (!item || !isChuTri(item)) return;
-    showConfirmModal(`Xác nhận đã nhận hồ sơ bổ sung của yêu cầu ${item.code}? Hồ sơ chuyển [Đang thực hiện].`, () => {
-        item.status = 'Đang thực hiện';
-        BTNN_WF.addHistory(item, 'Tiếp nhận hồ sơ bổ sung', 'Hồ sơ chuyển [Đang thực hiện].');
-        saveItem(item);
-        showToast("Đã tiếp nhận hồ sơ bổ sung!", "success");
-        showDetailScreen(id);
-    });
-}

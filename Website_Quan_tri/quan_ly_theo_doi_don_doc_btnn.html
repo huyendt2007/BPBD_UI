@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theo dõi, đôn đốc công tác BTNN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --primary-hover: #172554;
+            --primary-light: #eff6ff;
+            --secondary-color: #0284c7;
+            --success-color: #16a34a;
+            --warning-color: #d97706;
+            --danger-color: #dc2626;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-main: #f8fafc;
+            --border-color: #e2e8f0;
+            --radius: 6px;
+            --shadow: 0 4px 12px rgba(15, 23, 42, 0.07);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Inter, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            padding: 24px;
+            line-height: 1.5;
+        }
+
+        .page-header,
+        .section {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .page-header {
+            padding: 18px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .page-title h1 {
+            font-size: 20px;
+            line-height: 1.3;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .page-title p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .section {
+            padding: 20px;
+            margin-bottom: 18px;
+        }
+
+        .section-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .grid-4,
+        .grid-3,
+        .grid-2 {
+            display: grid;
+            gap: 14px;
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 6px;
+        }
+
+        /* Bảng tài liệu đính kèm và popup xác nhận - đồng nhất với màn Tiếp nhận yêu cầu */
+        .action-link { font-size: 12px; font-weight: 600; text-decoration: none; }
+        .action-link.view-link { color: var(--secondary-color); }
+        .action-link.delete-link { color: var(--danger-color); }
+        .doc-actions { align-items: center; display: flex; gap: 10px; justify-content: center; white-space: nowrap; }
+        .disabled-action { cursor: not-allowed; opacity: 0.35; pointer-events: none; }
+        .file-name { font-weight: 600; color: #166534; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; display: inline-block; max-width: 100%; }
+        .btn-upload-rust { background-color: #C27857; color: white; border: none; border-radius: 4px; padding: 6px 16px; font-size: 12.5px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-upload-rust:hover { background-color: #A96241; }
+        .btn.btn-sm { height: 32px; padding: 0 12px; font-size: 12.5px; }
+        .btn-danger { background: var(--danger-color); color: #fff; }
+        .modal-backdrop { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.45); z-index: 1000; padding: 20px; }
+        .modal-backdrop.visible { display: flex; }
+        .modal { width: min(560px, 100%); display: flex; flex-direction: column; background: #fff; border-radius: 8px; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.24); border: 1px solid var(--border-color); overflow: hidden; }
+        .modal-head, .modal-foot { padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .modal-foot { justify-content: flex-end; border-top: 1px solid var(--border-color); }
+        .modal-head { border-bottom: 1px solid var(--border-color); }
+        .modal-body { padding: 18px; overflow: auto; min-height: 0; }
+
+        .form-control.is-invalid {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.12);
+        }
+
+        .invalid-feedback {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .required {
+            color: var(--danger-color);
+            margin-left: 2px;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 38px;
+            border: 1px solid #cbd5e1;
+            border-radius: var(--radius);
+            padding: 8px 10px;
+            font-size: 13.5px;
+            color: var(--text-main);
+            background: #fff;
+            outline: none;
+        }
+
+        textarea.form-control {
+            height: 90px;
+            resize: vertical;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.14);
+        }
+
+        .btn {
+            height: 38px;
+            border-radius: var(--radius);
+            border: 1px solid transparent;
+            padding: 8px 14px;
+            font-size: 13.5px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background: #fff;
+            border-color: var(--border-color);
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #f1f5f9;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: #fff;
+        }
+
+        .icon-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            background: #fff;
+            color: #475569;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .icon-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary-color);
+            border-color: #bfdbfe;
+        }
+
+        .icon-btn.disabled {
+            opacity: 0.35;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        .tabs {
+            display: none;
+            gap: 6px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 16px;
+        }
+
+        .tab-btn {
+            border: none;
+            background: transparent;
+            padding: 10px 14px;
+            color: #64748b;
+            font-size: 13.5px;
+            font-weight: 800;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .table-wrap {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 980px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #475569;
+            text-align: left;
+            font-weight: 800;
+            padding: 11px 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        tbody tr {
+            cursor: pointer;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            min-height: 22px;
+            border-radius: 999px;
+            padding: 3px 9px;
+            font-size: 11.5px;
+            font-weight: 800;
+            border: 1px solid transparent;
+        }
+
+        .badge.draft {
+            background: #f1f5f9;
+            color: #475569;
+            border-color: #e2e8f0;
+        }
+
+        .badge.pending {
+            background: #fef3c7;
+            color: #a16207;
+            border-color: #fde68a;
+        }
+
+        .badge.active {
+            background: #e0f2fe;
+            color: #0369a1;
+            border-color: #bae6fd;
+        }
+
+        .badge.done {
+            background: #dcfce7;
+            color: #15803d;
+            border-color: #bbf7d0;
+        }
+
+        .badge.returned {
+            background: #fee2e2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+
+        .badge.group-td {
+            background: #e0f2fe;
+            color: #0369a1;
+            border-color: #bae6fd;
+        }
+
+        .badge.group-yc {
+            background: #f3e8ff;
+            color: #7e22ce;
+            border-color: #e9d5ff;
+        }
+
+        .badge.group-dd {
+            background: #fef3c7;
+            color: #b45309;
+            border-color: #fde68a;
+        }
+
+        .detail-panel {
+            display: none;
+            border-top: 3px solid var(--primary-color);
+        }
+
+        .detail-panel.visible {
+            display: block;
+        }
+
+        .info-strip {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            font-size: 11.5px;
+            font-weight: 700;
+        }
+
+        .info-value {
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: 800;
+            margin-top: 3px;
+        }
+
+        .doc-table {
+            min-width: 760px;
+        }
+
+        /* Pagination Bar (Rule 4) */
+        .pagination-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: #f8fafc;
+            border-top: 1px solid var(--border-color);
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            margin-top: 10px;
+            font-size: 12.5px;
+        }
+
+        .pagination-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .page-size-select {
+            height: 28px;
+            padding: 2px 6px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            font-size: 12px;
+            background: white;
+        }
+
+        .pagination-pages {
+            display: flex;
+            gap: 4px;
+        }
+
+        .page-item {
+            min-width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 6px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: white;
+            color: var(--text-main);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
+        }
+
+        .page-item:hover:not(.disabled) {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background-color: #eff6ff;
+        }
+
+        .page-item.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .page-item.disabled {
+            color: #cbd5e1;
+            background-color: #f8fafc;
+            cursor: not-allowed;
+            border-color: #e2e8f0;
+            pointer-events: none;
+        }
+
+        .footer-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .toast {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            background: #0f172a;
+            color: #fff;
+            padding: 12px 14px;
+            border-radius: 8px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.24);
+            z-index: 9999;
+        }
+
+        @media (max-width: 1100px) {
+            .grid-4 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .info-strip {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 720px) {
+            body {
+                padding: 14px;
+            }
+
+            .page-header,
+            .section-head,
+            .footer-actions {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .grid-4,
+            .grid-3,
+            .grid-2,
+            .info-strip {
+                grid-template-columns: 1fr;
+            }
+        }
+        .form-group:has(> input.is-invalid) .wf-utree-display { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+        .view-mode .wf-utree-display { pointer-events: none; background: #f8fafc; }
+        .view-mode .wf-utree-clear, .view-mode .wf-utree-display .fa-chevron-down, .view-mode .unit-chip button { display: none !important; }
+        .unit-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+        .unit-chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 6px 3px 10px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 999px; font-size: 12px; color: #1e3a8a; }
+        .unit-chip button { border: none; background: transparent; color: #64748b; cursor: pointer; padding: 0 2px; }
+        .case-lookup { display: flex; gap: 8px; align-items: center; }
+        .case-lookup .form-control { flex: 1; }
+        .case-link { display: inline-block; margin-top: 6px; font-size: 13px; color: #1d4ed8; text-decoration: underline; cursor: pointer; }
+        .tab-count { display: inline-block; min-width: 20px; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: #e2e8f0; color: #334155; font-size: 11px; font-weight: 700; }
+        .tab-btn.active .tab-count { background: #fff; color: var(--primary-color); }
+        .code-cell { font-weight: 800; color: var(--primary-color); white-space: nowrap; }
+        .overdue { color: #dc2626; font-size: 11px; font-weight: 700; }
+        .row-actions { display: flex; gap: 6px; justify-content: center; }
+        .check-list { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; min-height: 38px; }
+        .check-list.is-invalid { border-color: #ef4444; background: #fef2f2; }
+        .check-item { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+        .response-box { margin: 6px 0 14px; padding: 12px 14px; border: 1px solid #bfdbfe; background: #f8fbff; border-radius: 8px; }
+        .response-title { font-weight: 700; color: var(--primary-color); margin-bottom: 10px; }
+        .muted { color: #64748b; font-size: 13px; font-weight: 400; }
+        .history-list { border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 12px; background: #f8fafc; font-size: 13px; line-height: 1.7; }
+        .has-error .wf-utree-display { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+        .form-group .wf-utree-search input.is-invalid { border-color: #cbd5e1; background: #fff; }    </style>
+</head>
+
+<body>
+    <div class="page-header">
+        <div class="page-title">
+            <h1 id="pageTitle"><i class="fa-solid fa-list-check"></i> Theo dõi, đôn đốc công tác BTNN</h1>
+            <p id="pageSubtitle">Cán bộ Bộ Tư pháp, Sở Tư pháp ghi nhận, quản lý thông tin theo dõi, yêu cầu báo cáo và đôn đốc công tác bồi thường nhà nước theo Mục 2, Mục 3 Chương II Thông tư 08/2019/TT-BTP.</p>
+        </div>
+        <button class="btn btn-secondary" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
+    </div>
+
+    <div class="section">
+        <div class="section-head">
+            <div class="section-title"><i class="fa-solid fa-filter"></i> Lọc, tìm kiếm thông tin</div>
+        </div>
+        <div class="tabs" id="moduleTabs" style="display:flex;"></div>
+        <div class="grid-4" id="filterGrid"></div>
+        <div class="footer-actions" style="margin-top:12px;">
+            <button class="btn btn-secondary" onclick="resetFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+            <button class="btn btn-primary" onclick="searchList()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-head">
+            <div class="section-title"><i class="fa-solid fa-table-list"></i> Bảng kết quả tìm kiếm</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+                <button class="btn btn-primary" id="btnAddNew" onclick="openForm('new')"><i class="fa-solid fa-circle-plus"></i> Thêm mới</button>
+                <button class="btn btn-secondary" onclick="showToast('Hệ thống đang kết xuất Excel theo kết quả tìm kiếm hiện hành.')"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead id="tableHead"></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+        <div class="pagination-bar" id="paginationBar">
+            <div class="pagination-left">
+                <span>Số dòng hiển thị:</span>
+                <select class="page-size-select" id="pageSizeSelect" onchange="changePageSize(this.value)">
+                    <option value="10">10</option>
+                    <option value="20" selected>20</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+                <span>Hiển thị <span id="currentRange" style="font-weight:600;">0-0</span> trong tổng số <span id="totalCount" style="font-weight:600;">0</span> bản ghi</span>
+            </div>
+            <div class="pagination-pages" id="paginationPages"></div>
+        </div>
+    </div>
+
+    <div class="section detail-panel" id="detailPanel">
+        <div class="section-head">
+            <div class="section-title" id="formTitle"><i class="fa-solid fa-pen-to-square"></i> Thêm mới</div>
+            <button class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> Đóng</button>
+        </div>
+        <div class="info-strip">
+            <div><div class="info-label">Mã hồ sơ</div><div class="info-value" id="formCode">Hệ thống tự sinh</div></div>
+            <div><div class="info-label">Trạng thái</div><div class="info-value" id="formStatus">Đang nhập</div></div>
+            <div><div class="info-label" id="formSenderLabel">Cơ quan lập</div><div class="info-value" id="formSender">-</div></div>
+            <div><div class="info-label">Cán bộ xử lý</div><div class="info-value" id="formOfficer">-</div></div>
+        </div>
+        <form id="businessForm" onsubmit="return false;">
+            <div class="grid-3" id="formFields"></div>
+            <div class="grid-2" id="formTexts"></div>
+            <div id="responseBlock"></div>
+            <div class="form-group" id="historyGroup">
+                <span class="form-label">Lịch sử xử lý</span>
+                <div id="historyList" class="history-list"></div>
+            </div>
+        </form>
+        <div class="section-title" style="margin:10px 0 12px 0;"><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm</div>
+        <div class="table-wrap">
+            <table class="doc-table">
+                <thead><tr><th style="width:60px; text-align:center;">STT</th><th>Tên tài liệu</th><th style="width:260px;">File đính kèm</th><th style="width:160px; text-align:center;">Thao tác tài liệu</th></tr></thead>
+                <tbody id="documentRows"></tbody>
+            </table>
+        </div>
+        <div style="margin-top:10px;" id="addDocBtnWrapper">
+            <button class="btn btn-secondary btn-sm" onclick="addDocumentRow()"><i class="fa-solid fa-plus"></i> Thêm dòng</button>
+        </div>
+        <div class="footer-actions" id="formActions"></div>
+    </div>
+
+    <div class="modal-backdrop" id="confirmModal">
+        <div class="modal">
+            <div class="modal-head">
+                <strong><i class="fa-solid fa-circle-question"></i> Xác nhận</strong>
+                <button class="icon-btn" onclick="closeConfirm(false)"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="confirmText">Bạn có chắc chắn muốn thực hiện thao tác này?</div>
+            <div class="modal-foot">
+                <button class="btn btn-secondary" onclick="closeConfirm(false)">Hủy bỏ</button>
+                <button class="btn btn-primary" onclick="closeConfirm(true)">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
+
+    <script src="btnn_luong_xu_ly.js"></script>
+    <script src="btnn_tim_kiem_vu_viec.js"></script>
+    <script>
+        const W = window.BTNN_WF, CASE = window.BTNN_CASE;
+        const STORE_KEY = 'btnn_tddd_records_v3';
+        const G = { TD: 'Theo dõi công tác BTNN', YC: 'Yêu cầu báo cáo', DD: 'Đôn đốc công tác BTNN' };
+        // ===== Danh sách giá trị theo Thông tư 08/2019/TT-BTP =====
+        // Nội dung theo dõi - khoản 2 Điều 8
+        const TD_CONTENT = ['Giải quyết yêu cầu bồi thường', 'Tham gia tố tụng của cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', 'Xác định và thực hiện trách nhiệm hoàn trả của người thi hành công vụ gây thiệt hại', 'Xử lý kỷ luật người thi hành công vụ gây thiệt hại', 'Quản lý nhà nước về công tác bồi thường nhà nước'];
+        // Căn cứ theo dõi - khoản 1 Điều 9
+        const TD_BASIS = ['Báo cáo về việc giải quyết yêu cầu bồi thường, xác định trách nhiệm hoàn trả và việc xử lý kỷ luật người thi hành công vụ gây thiệt hại', 'Báo cáo việc thực hiện công tác bồi thường nhà nước', 'Bản án, quyết định của Tòa án về giải quyết vụ án dân sự, hình sự, hành chính có nội dung giải quyết bồi thường', 'Quyết định giải quyết bồi thường của cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại', 'Đề nghị hướng dẫn nghiệp vụ, giải đáp vướng mắc hoặc đề nghị hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường', 'Kết quả hoạt động kiểm tra, thanh tra công tác bồi thường nhà nước', 'Thông tin báo chí về công tác bồi thường nhà nước', 'Khiếu nại, tố cáo, phản ánh, kiến nghị của cơ quan, tổ chức, cá nhân về công tác bồi thường nhà nước', 'Căn cứ khác có thông tin liên quan đến công tác bồi thường nhà nước'];
+        // Nội dung yêu cầu báo cáo - Điều 11
+        const YC_CONTENT = ['Việc giải quyết yêu cầu bồi thường', 'Việc thực hiện trách nhiệm hoàn trả', 'Việc xử lý kỷ luật người thi hành công vụ'];
+        // Nội dung đôn đốc - khoản 2 Điều 13
+        const DD_CONTENT = ['Giải quyết yêu cầu bồi thường tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại', 'Phục hồi danh dự', 'Cấp kinh phí bồi thường và chi trả tiền bồi thường', 'Xác định và thực hiện trách nhiệm hoàn trả của người thi hành công vụ gây thiệt hại', 'Quản lý nhà nước về công tác bồi thường nhà nước'];
+        // Căn cứ đôn đốc - Điều 14
+        const DD_BASIS = ['Khiếu nại, tố cáo, kiến nghị, phản ánh của người yêu cầu bồi thường, cơ quan, tổ chức, cá nhân có liên quan', 'Kiến nghị của cơ quan quản lý nhà nước, kiến nghị, yêu cầu của cơ quan, tổ chức, cá nhân có liên quan', 'Kết quả hướng dẫn nghiệp vụ, giải đáp vướng mắc, theo dõi, kiểm tra, thanh tra công tác bồi thường nhà nước, hỗ trợ, hướng dẫn người bị thiệt hại', 'Quyết định giải quyết bồi thường hoặc bản án, quyết định của Tòa án về giải quyết yêu cầu bồi thường có hiệu lực pháp luật', 'Quyết định có liên quan về trách nhiệm hoàn trả', 'Báo cáo việc thực hiện công tác bồi thường nhà nước của TAND tối cao, VKSND tối cao, các Bộ, UBND cấp tỉnh', 'Báo cáo về việc giải quyết yêu cầu bồi thường, xác định trách nhiệm hoàn trả của cơ quan giải quyết bồi thường'];
+        // Hình thức đôn đốc - khoản 3, khoản 4 Điều 13; hình thức phối hợp - khoản 2 Điều 15; kết quả xử lý đề nghị - khoản 3 Điều 15
+        const DD_FORMS = ['Đôn đốc trực tiếp', 'Đề nghị cơ quan có thẩm quyền đôn đốc'];
+        const COOP_FORMS = ['Đề nghị bằng văn bản', 'Họp liên ngành'];
+        const PROPOSAL_RESULTS = ['Thống nhất, đã ban hành văn bản đôn đốc', 'Không thống nhất'];
+        const ST = { TRACKING: 'Đang theo dõi', SENT: 'Chờ phản hồi', REPLIED: 'Đã có phản hồi', DONE: 'Hoàn thành' };
+
+        // ===== Đơn vị: cấp người dùng, phạm vi chọn theo Điều 11, Điều 13 =====
+        const unitName = id => (id && W.unitName(id)) || '';
+        const myUser = () => W.getCurrentUser();
+        const myRoot = () => W.getRootId(myUser().unitId);
+        const myScope = () => CASE.scope();
+        const TW_IDS = ['TANDTC', 'VKSNDTC', 'VPCP', 'TTCP', 'BTC'];
+        // TAND tối cao, VKSND tối cao, các Bộ, cơ quan trung ương, UBND cấp tỉnh
+        function isTopLevel(id) {
+            if (TW_IDS.includes(id)) return true;
+            const u = W.getUnit(id);
+            return !!u && !u.parentId && /^UBND (tỉnh|Thành phố)/.test(u.name);
+        }
+        // Đơn vị thuộc phạm vi quản lý của cơ quan được đề nghị đôn đốc
+        function managedBy(proposedId, id) {
+            if (!proposedId || isTopLevel(id) || W.getRootId(id) === 'BTP-01') return false;
+            const name = unitName(id);
+            if (proposedId === 'TANDTC') return /^Tòa án/.test(name);
+            if (proposedId === 'VKSNDTC') return /^Viện kiểm sát/.test(name);
+            const p = CASE.provinceOfUnit(proposedId);
+            if (p) return (CASE.provinceOfUnit(id) || {}).key === p.key;
+            return true;
+        }
+        function allowedUnits(kind, rec) {
+            const s = myScope();
+            const btp = s.level === 'BTP';
+            const notSelf = id => W.getRootId(id) !== myRoot();
+            switch (kind) {
+                case 'tdTarget': return id => s.allowUnit(id) && notSelf(id);
+                // Sở Tư pháp giúp UBND cấp tỉnh: đối tượng là cơ quan ở địa phương, không gồm UBND cấp tỉnh
+                case 'ycTarget': return btp ? isTopLevel : (id => s.allowUnit(id) && notSelf(id) && !isTopLevel(id));
+                case 'ddProposed': return isTopLevel;
+                case 'ddTarget':
+                    if (rec.form === DD_FORMS[1]) return id => managedBy(rec.proposedId, id);
+                    if (btp) return id => isTopLevel(id) || (rec.prevProposal && id === (findRec(rec.prevProposal) || {}).targetId);
+                    return id => s.allowUnit(id) && notSelf(id) && !isTopLevel(id);
+            }
+            return () => true;
+        }
+        const disabledFor = test => W.ORG_UNITS.filter(u => !test(u.id)).map(u => u.id);
+        // Cơ quan nhận văn bản (văn bản ban hành, gửi ngoài hệ thống): Yêu cầu báo cáo, Đôn đốc trực tiếp -> cơ quan đối tượng; Đề nghị đôn đốc -> cơ quan được đề nghị
+        const receiverOf = r => r.group === G.TD ? '' : (r.group === G.DD && r.form === DD_FORMS[1] ? r.proposedId : r.targetId);
+
+        // ===== Dữ liệu =====
+        const today = () => { const d = new Date(); return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`; };
+        const parseDate = s => { const p = String(s || '').split('/'); return p.length === 3 ? new Date(p[2], p[1] - 1, p[0]) : null; };
+        const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const hist = (at, by, action, note) => ({ at, by, action, note: note || '' });
+        function seed() {
+            const b = 'Nguyễn Văn Cán Bộ', s = 'Đỗ Văn Chung';
+            return [
+                { code: 'TDDD-BTNN-2026-001', group: G.TD, senderId: 'BTP-01', officer: b, createdAt: '05/08/2026', targetId: 'UBND-LD', content: [TD_CONTENT[0]], basis: TD_BASIS[3], basisDocNo: '25/QĐ-GQBT', basisDocDate: '30/07/2026', caseCode: 'BT-2026-052', mainContent: 'Theo dõi việc thực hiện Quyết định giải quyết bồi thường số 25/QĐ-GQBT.', result: '', status: ST.TRACKING, history: [hist('05/08/2026 09:00', b, 'Lưu theo dõi')] },
+                { code: 'TDDD-BTNN-2026-002', group: G.YC, senderId: 'BTP-01', officer: b, createdAt: '01/10/2026', targetId: 'UBND-HN', content: [YC_CONTENT[0], YC_CONTENT[1]], docNo: '125/BTP-BTNN', docDate: '01/10/2026', deadline: '30/10/2026', mainContent: 'Đề nghị UBND Thành phố Hà Nội báo cáo việc giải quyết yêu cầu bồi thường và thực hiện trách nhiệm hoàn trả 9 tháng đầu năm 2026.', status: ST.SENT, history: [hist('01/10/2026 10:00', b, 'Lưu thông tin yêu cầu báo cáo')] },
+                { code: 'TDDD-BTNN-2026-003', group: G.YC, senderId: 'BTP-01', officer: b, createdAt: '10/09/2026', targetId: 'VKSNDTC', content: [YC_CONTENT[0]], docNo: '110/BTP-BTNN', docDate: '10/09/2026', deadline: '30/09/2026', mainContent: 'Đề nghị báo cáo việc giải quyết yêu cầu bồi thường trong hoạt động tố tụng hình sự.', status: ST.REPLIED, response: { date: '25/09/2026', docNo: '58/VKSTC-V7', content: 'Đã giải quyết 12 vụ việc, đang giải quyết 03 vụ việc.', by: b }, history: [hist('10/09/2026 08:30', b, 'Lưu thông tin yêu cầu báo cáo'), hist('26/09/2026 08:30', b, 'Cập nhật phản hồi')] },
+                { code: 'TDDD-BTNN-2026-004', group: G.DD, senderId: 'BTP-01', officer: b, createdAt: '20/09/2026', form: DD_FORMS[0], targetId: 'UBND-LD', content: [DD_CONTENT[2]], basis: DD_BASIS[0], docNo: '118/BTP-BTNN', docDate: '20/09/2026', deadline: '10/10/2026', legalBasis: 'Khoản 3 Điều 13, Điều 15 Thông tư 08/2019/TT-BTP', mainContent: 'Đôn đốc UBND tỉnh Lâm Đồng chỉ đạo cấp kinh phí và chi trả tiền bồi thường theo quyết định đã có hiệu lực.', status: ST.SENT, history: [hist('20/09/2026 14:00', b, 'Lưu thông tin đôn đốc')] },
+                { code: 'TDDD-BTNN-2026-005', group: G.DD, senderId: 'BTP-01', officer: b, createdAt: '15/09/2026', form: DD_FORMS[1], coopForm: COOP_FORMS[0], proposedId: 'UBND-HN', targetId: 'UBND-CG', content: [DD_CONTENT[0]], basis: DD_BASIS[0], caseCode: 'BT-2026-012', docNo: '112/BTP-BTNN', docDate: '15/09/2026', deadline: '30/09/2026', legalBasis: 'Điểm c khoản 3 Điều 13, khoản 3 Điều 15 Thông tư 08/2019/TT-BTP', mainContent: 'Đề nghị UBND Thành phố Hà Nội đôn đốc UBND quận Cầu Giấy giải quyết yêu cầu bồi thường đúng thời hạn.', status: ST.REPLIED, response: { date: '28/09/2026', docNo: '305/UBND-NC', result: PROPOSAL_RESULTS[0], issuedDocNo: '306/UBND-NC', issuedDocDate: '28/09/2026', content: 'Đã ban hành văn bản đôn đốc UBND quận Cầu Giấy.', by: b }, history: [hist('15/09/2026 09:00', b, 'Lưu thông tin đề nghị đôn đốc'), hist('29/09/2026 09:00', b, 'Cập nhật phản hồi', 'Thống nhất, đã ban hành văn bản đôn đốc')] },
+                { code: 'TDDD-BTNN-2026-006', group: G.DD, senderId: 'BTP-01', officer: b, createdAt: '02/08/2026', form: DD_FORMS[0], targetId: 'TANDTC', content: [DD_CONTENT[4]], basis: DD_BASIS[5], docNo: '95/BTP-BTNN', docDate: '02/08/2026', deadline: '20/08/2026', legalBasis: 'Điểm a khoản 3 Điều 13 Thông tư 08/2019/TT-BTP', mainContent: 'Đôn đốc gửi báo cáo công tác bồi thường nhà nước 6 tháng đầu năm 2026.', status: ST.DONE, response: { date: '15/08/2026', docNo: '210/TANDTC-KHTC', content: 'Đã gửi báo cáo.', by: b }, history: [hist('02/08/2026 09:00', b, 'Lưu thông tin đôn đốc'), hist('15/08/2026 10:00', b, 'Cập nhật phản hồi'), hist('16/08/2026 08:00', b, 'Hoàn thành')] },
+                { code: 'TDDD-BTNN-2026-007', group: G.DD, senderId: 'STP-HN', officer: s, createdAt: '03/10/2026', form: DD_FORMS[0], targetId: 'UBND-CG', content: [DD_CONTENT[0]], basis: DD_BASIS[0], caseCode: 'BT-2026-014', docNo: '1520/STP-HCTP', docDate: '03/10/2026', deadline: '20/10/2026', legalBasis: 'Khoản 4 Điều 13 Thông tư 08/2019/TT-BTP', mainContent: 'Đôn đốc UBND quận Cầu Giấy ban hành quyết định giải quyết bồi thường vụ việc BT-2026-014.', status: ST.SENT, history: [hist('03/10/2026 10:00', s, 'Lưu thông tin đôn đốc')] },
+                { code: 'TDDD-BTNN-2026-008', group: G.TD, senderId: 'STP-HN', officer: s, createdAt: '12/09/2026', targetId: 'THADS-HN', content: [TD_CONTENT[3]], basis: TD_BASIS[0], basisDocNo: '45/BC-THADS', basisDocDate: '10/09/2026', mainContent: 'Theo dõi việc xác định trách nhiệm hoàn trả tại Cục Thi hành án dân sự Thành phố Hà Nội.', result: 'Cơ quan đã ban hành quyết định hoàn trả.', status: ST.DONE, history: [hist('12/09/2026 09:00', s, 'Lưu theo dõi'), hist('30/09/2026 16:00', s, 'Hoàn thành')] },
+                { code: 'TDDD-BTNN-2026-009', group: G.YC, senderId: 'STP-HN', officer: s, createdAt: '07/10/2026', targetId: 'CA-TX', content: [YC_CONTENT[0]], docNo: '1534/STP-HCTP', docDate: '07/10/2026', deadline: '21/10/2026', mainContent: 'Đề nghị báo cáo việc giải quyết yêu cầu bồi thường vụ việc BT-2026-038.', caseCode: 'BT-2026-038', status: ST.SENT, history: [hist('07/10/2026 09:30', s, 'Lưu thông tin yêu cầu báo cáo')] },
+                { code: 'TDDD-BTNN-2026-010', group: G.DD, senderId: 'BTP-01', officer: b, createdAt: '08/10/2026', form: DD_FORMS[1], coopForm: COOP_FORMS[1], proposedId: 'VKSNDTC', targetId: 'VKS-Q1', content: [DD_CONTENT[0]], basis: DD_BASIS[1], docNo: '130/BTP-BTNN', docDate: '08/10/2026', deadline: '22/10/2026', legalBasis: 'Điểm b khoản 3 Điều 13, khoản 4 Điều 15 Thông tư 08/2019/TT-BTP', mainContent: 'Đề nghị VKSND tối cao đôn đốc VKSND Quận 1 giải quyết yêu cầu bồi thường.', status: ST.SENT, history: [hist('08/10/2026 11:00', b, 'Lưu thông tin đề nghị đôn đốc')] }
+            ];
+        }
+        let records = [];
+        function load() { try { records = JSON.parse(localStorage.getItem(STORE_KEY)) || null; } catch (e) { records = null; } if (!records) { records = seed(); save(); } }
+        function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(records)); } catch (e) { /* bỏ qua */ } }
+        const findRec = code => records.find(r => r.code === code);
+        function nextCode() { const n = records.reduce((m, r) => Math.max(m, parseInt(r.code.split('-').pop(), 10) || 0), 0) + 1; return `TDDD-BTNN-${new Date().getFullYear()}-${String(n).padStart(3, '0')}`; }
+
+        // ===== Danh sách =====
+        const canCreate = () => ['BTP', 'STP'].includes(myScope().level);
+        const tabs = () => [G.TD, G.YC, G.DD];
+        let currentTab = '';
+        let currentPage = 1, pageSize = 20;
+        const docKind = r => r.group === G.YC ? 'Văn bản yêu cầu báo cáo' : (r.form === DD_FORMS[1] ? 'Văn bản đề nghị đôn đốc' : 'Văn bản đôn đốc');
+        const statusOptionsOf = tab => tab === G.TD ? [ST.TRACKING, ST.DONE] : [ST.SENT, ST.REPLIED, ST.DONE];
+        function renderTabs() {
+            document.getElementById('moduleTabs').innerHTML = tabs().map(t => `<button class="tab-btn ${t === currentTab ? 'active' : ''}" data-tab="${esc(t)}" onclick="switchTab('${esc(t)}')">${esc(t)} <span class="tab-count">${listOf(t).length}</span></button>`).join('');
+        }
+        function renderFilters() {
+            const contentOpts = currentTab === G.TD ? TD_CONTENT : currentTab === G.YC ? YC_CONTENT : currentTab === G.DD ? DD_CONTENT : null;
+            const agencyLabel = currentTab === G.TD ? 'Cơ quan được theo dõi' : currentTab === G.YC ? 'Cơ quan được yêu cầu báo cáo' : 'Cơ quan được đôn đốc';
+            const sel = (id, label, opts) => `<div class="form-group"><span class="form-label">${label}</span><select class="form-control" id="filter_${id}"><option value="">Tất cả</option>${opts.map(o => `<option>${esc(o)}</option>`).join('')}</select></div>`;
+            const txt = (id, label, ph) => `<div class="form-group"><span class="form-label">${label}</span><input class="form-control" id="filter_${id}" placeholder="${ph}"></div>`;
+            document.getElementById('filterGrid').innerHTML = [
+                txt('code', 'Mã hồ sơ', 'Nhập mã hồ sơ...'),
+                txt('agency', agencyLabel, `Nhập ${agencyLabel.toLowerCase()}...`),
+                sel('content', currentTab === G.TD ? 'Nội dung theo dõi' : currentTab === G.YC ? 'Nội dung yêu cầu báo cáo' : 'Nội dung đôn đốc', contentOpts),
+                currentTab === G.DD ? sel('form', 'Hình thức đôn đốc', DD_FORMS) : '',
+                sel('status', 'Trạng thái', statusOptionsOf(currentTab)),
+                `<div class="form-group"><span class="form-label">Từ ngày</span><input class="form-control" id="filter_from" placeholder="dd/mm/yyyy"></div>`,
+                `<div class="form-group"><span class="form-label">Đến ngày</span><input class="form-control" id="filter_to" placeholder="dd/mm/yyyy"></div>`
+            ].join('');
+            initDatePickers(document.getElementById('filterGrid'));
+        }
+        function listOf(tab) {
+            const root = myRoot();
+            return records.filter(r => r.group === tab && r.senderId === root);
+        }
+        const isOverdue = r => [ST.SENT].includes(r.status) && parseDate(r.deadline) && parseDate(r.deadline) < parseDate(today());
+        const deadlineCell = r => r.deadline ? `${esc(r.deadline)}${isOverdue(r) ? '<div class="overdue">Quá hạn</div>' : ''}` : '-';
+        function columns() {
+            const code = { h: 'Mã hồ sơ', v: r => `<span class="code-cell">${esc(r.code)}</span>` };
+            const status = { h: 'Trạng thái', v: r => `<span class="badge ${statusClass(r.status)}">${esc(r.status)}</span>` };
+            const content = { h: 'Nội dung', v: r => esc((r.content || []).join('; ')) };
+            const doc = { h: 'Số văn bản', v: r => esc(r.docNo || '-') };
+            if (currentTab === G.TD) return [code, { h: 'Cơ quan được theo dõi', v: r => esc(unitName(r.targetId)) }, { h: 'Nội dung theo dõi', v: content.v }, { h: 'Căn cứ theo dõi', v: r => esc(r.basis) }, { h: 'Ngày lập', v: r => esc(r.createdAt) }, { h: 'Cán bộ xử lý', v: r => esc(r.officer) }, status];
+            if (currentTab === G.YC) return [code, { h: 'Cơ quan được yêu cầu báo cáo', v: r => esc(unitName(r.targetId)) }, { h: 'Nội dung yêu cầu báo cáo', v: content.v }, doc, { h: 'Ngày văn bản', v: r => esc(r.docDate) }, { h: 'Hạn báo cáo', v: deadlineCell }, status];
+            if (currentTab === G.DD) return [code, { h: 'Hình thức đôn đốc', v: r => esc(r.form) }, { h: 'Cơ quan nhận văn bản', v: r => esc(unitName(receiverOf(r))) }, { h: 'Cơ quan được đôn đốc', v: r => esc(unitName(r.targetId)) }, { h: 'Nội dung đôn đốc', v: content.v }, { h: 'Hạn phản hồi', v: deadlineCell }, status];
+        }
+        function statusClass(s) { return s === ST.DONE ? 'done' : s === ST.REPLIED ? 'pending' : 'active'; }
+        function actionButtons(r) {
+            const btn = (cls, icon, title, on, call) => `<button class="icon-btn ${cls} ${on ? '' : 'disabled'}" title="${title}" onclick="event.stopPropagation(); ${call}"><i class="fa-solid ${icon}"></i></button>`;
+            if (r.group === G.TD) return `<div class="row-actions">${btn('edit', 'fa-pen-to-square', 'Sửa', r.status !== ST.DONE, `openForm('edit','${r.code}')`)}${btn('sign', 'fa-circle-check', 'Hoàn thành', r.status !== ST.DONE, `openForm('finish','${r.code}')`)}</div>`;
+            return `<div class="row-actions">${btn('edit', 'fa-pen-to-square', 'Sửa', r.status === ST.SENT, `openForm('edit','${r.code}')`)}${btn('submit', 'fa-reply', 'Cập nhật phản hồi', [ST.SENT, ST.REPLIED].includes(r.status), `openForm('respond','${r.code}')`)}${btn('sign', 'fa-circle-check', 'Hoàn thành', r.status === ST.REPLIED, `finishSent('${r.code}')`)}</div>`;
+        }
+        function filtered() {
+            const v = id => (document.getElementById(`filter_${id}`)?.value || '').trim().toLowerCase();
+            const from = parseDate(document.getElementById('filter_from')?.value), to = parseDate(document.getElementById('filter_to')?.value);
+            return listOf(currentTab).filter(r => {
+                if (v('code') && !r.code.toLowerCase().includes(v('code'))) return false;
+                const ag = unitName(r.targetId) + ' ' + unitName(r.proposedId);
+                if (v('agency') && !ag.toLowerCase().includes(v('agency'))) return false;
+                if (v('content') && !(r.content || []).some(c => c.toLowerCase() === v('content'))) return false;
+                if (v('form') && (r.form || '').toLowerCase() !== v('form')) return false;
+                if (v('status') && r.status.toLowerCase() !== v('status')) return false;
+                const d = parseDate(r.group === G.TD ? r.createdAt : r.docDate);
+                if (from && d && d < from) return false;
+                if (to && d && d > to) return false;
+                return true;
+            }).sort((a, b) => b.code.localeCompare(a.code));
+        }
+        function searchList() {
+            const from = parseDate(document.getElementById('filter_from').value), to = parseDate(document.getElementById('filter_to').value);
+            if (from && to && from > to) { showToast('Từ ngày không được lớn hơn Đến ngày. [MSG-ERR-VAL-007]'); return; }
+            currentPage = 1; renderTable();
+        }
+        function renderTable() {
+            const cols = columns();
+            document.getElementById('tableHead').innerHTML = `<tr><th style="width:56px; text-align:center;">STT</th>${cols.map(c => `<th>${c.h}</th>`).join('')}<th style="width:120px; text-align:center;">Thao tác</th></tr>`;
+            const list = filtered();
+            const total = list.length, maxPages = Math.ceil(total / pageSize) || 1;
+            if (currentPage > maxPages) currentPage = maxPages;
+            const start = (currentPage - 1) * pageSize, end = Math.min(start + pageSize, total);
+            document.getElementById('totalCount').innerText = total;
+            document.getElementById('currentRange').innerText = total ? `${start + 1}-${end}` : '0-0';
+            document.getElementById('tableBody').innerHTML = total ? list.slice(start, end).map((r, i) => `
+                <tr onclick="openForm('view','${r.code}')">
+                    <td style="text-align:center;">${start + i + 1}</td>
+                    ${cols.map(c => `<td>${c.v(r)}</td>`).join('')}
+                    <td style="text-align:center;">${actionButtons(r)}</td>
+                </tr>`).join('') : `<tr><td colspan="${cols.length + 2}" style="text-align:center; color:var(--text-muted); font-style:italic; padding:26px;">Không tìm thấy dữ liệu phù hợp. [MSG-INF-SYS-001]</td></tr>`;
+            renderPaginationPages(maxPages);
+            document.getElementById('btnAddNew').style.display = canCreate() ? '' : 'none';
+        }
+        function renderPaginationPages(maxPages) {
+            const item = (label, on, call, active) => `<span class="page-item ${active ? 'active' : ''} ${on ? '' : 'disabled'}" onclick="${on ? call : ''}">${label}</span>`;
+            let h = item('&verbar;&lt;&lt;', currentPage > 1, 'goPage(1)') + item('&lt;', currentPage > 1, `goPage(${currentPage - 1})`);
+            for (let i = 1; i <= maxPages; i++) h += item(i, true, `goPage(${i})`, i === currentPage);
+            h += item('&gt;', currentPage < maxPages, `goPage(${currentPage + 1})`) + item('&gt;&gt;&verbar;', currentPage < maxPages, `goPage(${maxPages})`);
+            document.getElementById('paginationPages').innerHTML = h;
+        }
+        function goPage(p) { currentPage = p; renderTable(); }
+        function changePageSize(v) { pageSize = parseInt(v, 10); currentPage = 1; renderTable(); }
+        function switchTab(t) { currentTab = t; currentPage = 1; renderTabs(); renderFilters(); renderTable(); closeForm(); }
+        function resetFilters() { renderFilters(); currentPage = 1; renderTable(); }
+
+        // ===== Biểu mẫu =====
+        let formMode = 'new', formRec = null, documentRows = [], docReadOnly = false;
+        const fg = (id, label, req, inner, span) => `<div class="form-group" id="fg_${id}"${span ? ` style="grid-column: span ${span};"` : ''}><span class="form-label">${label}${req ? '<span class="required">*</span>' : ''}</span>${inner}</div>`;
+        const selectCtl = (id, opts, val, ph) => `<select class="form-control" id="f_${id}">${ph !== undefined ? `<option value="">${ph}</option>` : ''}${opts.map(o => `<option ${o === val ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select>`;
+        const textCtl = (id, val, ph) => `<input class="form-control" id="f_${id}" value="${esc(val || '')}" placeholder="${ph}">`;
+        const dateCtl = (id, val) => `<input class="form-control" id="f_${id}" value="${esc(val || '')}" placeholder="dd/mm/yyyy">`;
+        const areaCtl = (id, val, ph) => `<textarea class="form-control" id="f_${id}" placeholder="${ph}">${esc(val || '')}</textarea>`;
+        const checksCtl = (id, opts, vals) => `<div class="check-list" id="f_${id}">${opts.map((o, i) => `<label class="check-item"><input type="checkbox" value="${esc(o)}" ${(vals || []).includes(o) ? 'checked' : ''}> ${esc(o)}</label>`).join('')}</div>`;
+        const treeCtl = id => `<div id="utree_${id}"></div>`;
+        const caseCtl = val => `<div class="case-lookup"><input type="text" class="form-control" id="f_caseCode" value="${esc(val || '')}" placeholder="Nhập mã vụ việc (BT-yyyy-xxx)..." oninput="onCaseInput()"><button type="button" class="btn btn-primary case-btn" onclick="openCaseLookup(true)"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button><button type="button" class="btn btn-secondary case-btn" onclick="openCaseLookup(false)"><i class="fa-solid fa-magnifying-glass-plus"></i> Tìm kiếm nâng cao</button></div><a class="case-link" id="caseLink" style="display:none;"></a>`;
+
+        function draftFromForm() {
+            const v = id => document.getElementById(`f_${id}`)?.value?.trim() || '';
+            const r = Object.assign({}, formRec || {});
+            r.group = v('group') || r.group;
+            ['basis', 'basisDocNo', 'basisDocDate', 'docNo', 'docDate', 'deadline', 'legalBasis', 'mainContent', 'result', 'form', 'coopForm', 'prevProposal'].forEach(k => { if (document.getElementById(`f_${k}`)) r[k] = v(k); });
+            if (r.group === G.TD && document.getElementById('f_tdContent')) r.content = [v('tdContent')].filter(Boolean);
+            if (r.group === G.DD && document.getElementById('f_ddContent')) r.content = [v('ddContent')].filter(Boolean);
+            const checks = document.getElementById('f_ycContent');
+            if (r.group === G.YC && checks) r.content = Array.from(checks.querySelectorAll('input:checked')).map(c => c.value);
+            r.targetId = trees.target ? trees.target.getValue() : r.targetId;
+            r.proposedId = trees.proposed ? trees.proposed.getValue() : r.proposedId;
+            r.caseCode = caseSelected || '';
+            return r;
+        }
+        let trees = {}, caseSelected = '';
+        function renderFormFields(r) {
+            const ro = formMode === 'view' || formMode === 'respond';
+            const lockGroup = formMode !== 'new';
+            const grp = r.group;
+            const s = myScope();
+            const f = [], t = [];
+            // Một biểu mẫu chung; thứ tự trường thống nhất cho 03 nhóm, trường cùng vị trí đổi nhãn theo Nhóm nghiệp vụ
+            const td = grp === G.TD, yc = grp === G.YC, dd = grp === G.DD;
+            const form = r.form || DD_FORMS[0];
+            const proposal = dd && form === DD_FORMS[1];
+            f.push(fg('group', 'Nhóm nghiệp vụ', true, selectCtl('group', [G.TD, G.YC, G.DD], grp)));
+            if (dd) {
+                f.push(fg('form', 'Hình thức đôn đốc', true, selectCtl('form', s.level === 'BTP' ? DD_FORMS : [DD_FORMS[0]], form)));
+                if (proposal) {
+                    f.push(fg('coopForm', 'Hình thức phối hợp', true, selectCtl('coopForm', COOP_FORMS, r.coopForm || COOP_FORMS[0])));
+                    f.push(fg('proposed', 'Cơ quan được đề nghị đôn đốc', true, treeCtl('proposed')));
+                } else if (s.level === 'BTP') {
+                    const props = records.filter(x => x.senderId === myRoot() && x.group === G.DD && x.form === DD_FORMS[1] && x.status !== ST.SENT);
+                    f.push(fg('prevProposal', 'Hồ sơ đề nghị đôn đốc trước đó', false, selectCtl('prevProposal', props.map(x => x.code), r.prevProposal, '-- Không chọn --')));
+                }
+            }
+            f.push(fg('target', td ? 'Cơ quan được theo dõi' : yc ? 'Cơ quan được yêu cầu báo cáo' : 'Cơ quan được đôn đốc', true, treeCtl('target')));
+            if (yc) f.push(fg('ycContent', 'Nội dung yêu cầu báo cáo', true, checksCtl('ycContent', YC_CONTENT, r.content), 2));
+            else f.push(fg(td ? 'tdContent' : 'ddContent', td ? 'Nội dung theo dõi' : 'Nội dung đôn đốc', true, selectCtl(td ? 'tdContent' : 'ddContent', td ? TD_CONTENT : DD_CONTENT, (r.content || [])[0], td ? '-- Chọn nội dung theo dõi --' : '-- Chọn nội dung đôn đốc --'), 2));
+            if (!yc) f.push(fg('basis', td ? 'Căn cứ theo dõi' : 'Căn cứ đôn đốc', true, selectCtl('basis', td ? TD_BASIS : DD_BASIS, r.basis, td ? '-- Chọn căn cứ theo dõi --' : '-- Chọn căn cứ đôn đốc --'), 3));
+            if (td) {
+                f.push(fg('basisDocNo', 'Số văn bản căn cứ', false, textCtl('basisDocNo', r.basisDocNo, 'Nhập số văn bản căn cứ...')));
+                f.push(fg('basisDocDate', 'Ngày văn bản căn cứ', false, dateCtl('basisDocDate', r.basisDocDate)));
+            } else {
+                const kind = yc ? 'yêu cầu' : proposal ? 'đề nghị' : 'đôn đốc';
+                f.push(fg('docNo', `Số văn bản ${kind}`, true, textCtl('docNo', r.docNo, 'Nhập số văn bản...')));
+                f.push(fg('docDate', `Ngày văn bản ${kind}`, true, dateCtl('docDate', r.docDate)));
+                f.push(fg('deadline', yc ? 'Hạn báo cáo' : 'Hạn phản hồi', true, dateCtl('deadline', r.deadline)));
+            }
+            if (dd) f.push(fg('legalBasis', 'Căn cứ pháp luật', true, textCtl('legalBasis', r.legalBasis, 'Nhập căn cứ pháp luật...'), 3));
+            f.push(fg('caseCode', 'Mã vụ việc liên quan', false, caseCtl(r.caseCode), 2));
+            const mainLabel = td ? 'Nội dung cần theo dõi' : yc ? 'Nội dung chi tiết yêu cầu báo cáo' : 'Nhiệm vụ công tác bồi thường nhà nước phải thực hiện';
+            t.push(fg('mainContent', mainLabel, true, areaCtl('mainContent', r.mainContent, `Nhập ${mainLabel.toLowerCase()}...`)));
+            if (td) t.push(fg('result', 'Kết quả theo dõi', formMode === 'finish', areaCtl('result', r.result, 'Nhập kết quả theo dõi...')));
+            document.getElementById('formFields').innerHTML = f.join('');
+            document.getElementById('formTexts').innerHTML = t.join('');
+            if (lockGroup) document.getElementById('f_group').disabled = true;
+            // Cây đơn vị theo phạm vi
+            trees = {};
+            const mount = (key, kind, val, ph) => {
+                const box = document.getElementById(`utree_${key}`);
+                if (!box) return;
+                trees[key] = W.mountUnitTree(box, { value: val || '', disabledIds: disabledFor(allowedUnits(kind, r)), disabledTitle: 'Đơn vị ngoài phạm vi được chọn', placeholder: ph, onChange: () => { clearErr(box.closest('.form-group')); if (key === 'proposed') refreshForm(); } });
+            };
+            mount('proposed', 'ddProposed', r.proposedId, '-- Chọn cơ quan được đề nghị đôn đốc --');
+            mount('target', grp === G.TD ? 'tdTarget' : grp === G.YC ? 'ycTarget' : 'ddTarget', r.targetId, '-- Chọn đơn vị trên cây cơ cấu tổ chức --');
+            caseSelected = r.caseCode || '';
+            renderCaseLink(caseSelected);
+            initDatePickers(document.getElementById('businessForm'));
+            // Trường điều khiển: đổi nhóm, hình thức, hồ sơ đề nghị trước đó -> dựng lại biểu mẫu, giữ dữ liệu đã nhập
+            ['group', 'form', 'prevProposal'].forEach(id => { const el = document.getElementById(`f_${id}`); if (el) el.addEventListener('change', () => { if (id === 'prevProposal') { const p = findRec(el.value); if (p) { formRec = Object.assign(draftFromForm(), { targetId: p.targetId }); renderFormFields(formRec); return; } } refreshForm(); }); });
+            if (ro) lockForm();
+        }
+        function refreshForm() { formRec = draftFromForm(); if (formRec.group === G.DD && formRec.form !== DD_FORMS[1]) formRec.proposedId = ''; renderFormFields(formRec); }
+        function lockForm() {
+            document.querySelectorAll('#formFields input, #formFields select, #formFields textarea, #formTexts textarea, #formFields .case-btn').forEach(el => { el.disabled = true; });
+            document.getElementById('detailPanel').classList.add('view-mode');
+        }
+        // Khối phản hồi: bên nhận nhập khi Cập nhật phản hồi; bên gửi và chế độ xem chỉ đọc
+        function renderResponse(r) {
+            const box = document.getElementById('responseBlock');
+            if (r.group === G.TD || !r.status || r.status === 'Đang nhập') { box.innerHTML = ''; return; }
+            const resp = r.response || {};
+            const proposal = r.group === G.DD && r.form === DD_FORMS[1];
+            const edit = formMode === 'respond';
+            const title = r.group === G.YC ? `Báo cáo nhận được từ ${esc(unitName(r.targetId))}` : proposal ? `Trả lời đề nghị đôn đốc nhận được từ ${esc(unitName(r.proposedId))}` : `Phản hồi nhận được từ ${esc(unitName(r.targetId))}`;
+            if (!edit && !r.response) { box.innerHTML = `<div class="response-box"><div class="response-title"><i class="fa-solid fa-reply"></i> ${title}</div><div class="muted">Chưa có phản hồi.</div></div>`; return; }
+            const f = [];
+            f.push(fg('respDate', 'Ngày nhận phản hồi', true, dateCtl('respDate', resp.date || (edit ? today() : ''))));
+            f.push(fg('respDocNo', 'Số văn bản phản hồi', false, textCtl('respDocNo', resp.docNo, 'Nhập số văn bản phản hồi...')));
+            if (proposal) {
+                f.push(fg('respResult', 'Kết quả xử lý đề nghị', true, selectCtl('respResult', PROPOSAL_RESULTS, resp.result, '-- Chọn kết quả --')));
+                const agreed = resp.result === PROPOSAL_RESULTS[0];
+                if (agreed) {
+                    f.push(fg('issuedDocNo', 'Số văn bản đôn đốc đã ban hành', true, textCtl('issuedDocNo', resp.issuedDocNo, 'Nhập số văn bản đôn đốc...')));
+                    f.push(fg('issuedDocDate', 'Ngày văn bản đôn đốc', true, dateCtl('issuedDocDate', resp.issuedDocDate)));
+                }
+            }
+            const contentLabel = r.group === G.YC ? 'Nội dung báo cáo' : proposal && resp.result === PROPOSAL_RESULTS[1] ? 'Lý do không thống nhất' : 'Nội dung phản hồi';
+            box.innerHTML = `<div class="response-box"><div class="response-title"><i class="fa-solid fa-reply"></i> ${title}${resp.by ? ` <span class="muted">- Cán bộ cập nhật: ${esc(resp.by)}</span>` : ''}</div><div class="grid-3">${f.join('')}</div>${fg('respContent', contentLabel, true, areaCtl('respContent', resp.content, `Nhập ${contentLabel.toLowerCase()}...`))}</div>`;
+            initDatePickers(box);
+            if (edit) {
+                const rs = document.getElementById('f_respResult');
+                if (rs) rs.addEventListener('change', () => { formRec.response = Object.assign(readResponse(), { result: rs.value }); renderResponse(formRec); });
+            } else box.querySelectorAll('input, select, textarea').forEach(el => { el.disabled = true; });
+        }
+        function readResponse() {
+            const v = id => document.getElementById(`f_${id}`)?.value?.trim() || '';
+            return { date: v('respDate'), docNo: v('respDocNo'), result: v('respResult'), issuedDocNo: v('issuedDocNo'), issuedDocDate: v('issuedDocDate'), content: v('respContent') };
+        }
+        function renderHistory(r) {
+            const h = (r.history || []);
+            document.getElementById('historyList').innerHTML = h.length ? h.map(x => `<div class="history-item"><b>${esc(x.at)}</b> - ${esc(x.by)}: ${esc(x.action)}${x.note ? ` (${esc(x.note)})` : ''}</div>`).join('') : '<div class="muted">Chưa có lịch sử xử lý.</div>';
+        }
+        function openForm(mode, code) {
+            formMode = mode;
+            const rec = code ? findRec(code) : null;
+            const user = myUser();
+            formRec = rec ? JSON.parse(JSON.stringify(rec)) : { group: currentTab, status: 'Đang nhập', senderId: myRoot(), officer: user.name, content: [] };
+            const titles = { new: 'Thêm mới', edit: 'Sửa', view: 'Xem chi tiết', respond: 'Cập nhật phản hồi', finish: 'Hoàn thành' };
+            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${titles[mode]} hồ sơ theo dõi, đôn đốc công tác BTNN`;
+            document.getElementById('formCode').innerText = rec ? rec.code : 'Hệ thống tự sinh';
+            document.getElementById('formStatus').innerText = formRec.status;
+            document.getElementById('formSender').innerText = unitName(formRec.senderId);
+            document.getElementById('formOfficer').innerText = formRec.officer || user.name;
+            document.getElementById('detailPanel').classList.remove('view-mode');
+            renderFormFields(formRec);
+            renderResponse(formRec);
+            renderHistory(formRec);
+            documentRows = rec ? [{ name: rec.group === G.TD ? 'Văn bản căn cứ theo dõi' : docKind(rec), file: 'van_ban.pdf' }] : [{ name: '', file: '' }];
+            docReadOnly = mode === 'view';
+            renderDocuments();
+            renderActions();
+            document.getElementById('detailPanel').classList.add('visible');
+            document.getElementById('detailPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        function closeForm() { document.getElementById('detailPanel').classList.remove('visible'); }
+        function renderActions() {
+            const r = formRec, a = [`<button type="button" class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> ${formMode === 'view' ? 'Đóng' : 'Hủy bỏ'}</button>`];
+            if (formMode === 'new' || formMode === 'edit') a.push(r.group === G.TD ? `<button type="button" class="btn btn-primary" onclick="saveTracking()"><i class="fa-solid fa-floppy-disk"></i> Lưu theo dõi</button>` : `<button type="button" class="btn btn-primary" onclick="saveSent()"><i class="fa-solid fa-floppy-disk"></i> Lưu thông tin</button>`);
+            if (formMode === 'finish') a.push(`<button type="button" class="btn btn-success" onclick="finishTracking()"><i class="fa-solid fa-circle-check"></i> Hoàn thành</button>`);
+            if (formMode === 'respond') a.push(`<button type="button" class="btn btn-primary" onclick="saveResponse()"><i class="fa-solid fa-floppy-disk"></i> Lưu phản hồi</button>`);
+            if (formMode === 'view' && r.group !== G.TD && [ST.SENT, ST.REPLIED].includes(r.status)) a.push(`<button type="button" class="btn btn-primary" onclick="openForm('respond','${r.code}')"><i class="fa-solid fa-reply"></i> Cập nhật phản hồi</button>`);
+            if (formMode === 'view' && r.group !== G.TD && r.status === ST.REPLIED) a.push(`<button type="button" class="btn btn-success" onclick="finishSent('${r.code}')"><i class="fa-solid fa-circle-check"></i> Hoàn thành</button>`);
+            document.getElementById('formActions').innerHTML = a.join('');
+        }
+        // ===== Kiểm tra dữ liệu =====
+        function clearErr(group) { if (!group) return; group.querySelectorAll('.is-invalid').forEach(e => e.classList.remove('is-invalid')); group.classList.remove('has-error'); const e = group.querySelector('.invalid-feedback'); if (e) e.remove(); }
+        function markErr(id, msg) {
+            const g = document.getElementById(`fg_${id}`);
+            if (!g) return null;
+            g.classList.add('has-error');
+            const ctl = g.querySelector('.wf-utree-display, .check-list, select, textarea, input:not([type=hidden])');
+            if (ctl) ctl.classList.add('is-invalid');
+            if (!g.querySelector('.invalid-feedback')) { const e = document.createElement('div'); e.className = 'invalid-feedback'; e.innerText = msg || 'Đây là trường bắt buộc'; g.appendChild(e); }
+            return g;
+        }
+        function validate(r, extra) {
+            document.querySelectorAll('#businessForm .form-group').forEach(clearErr);
+            const errs = [];
+            const need = (id, ok, msg) => { if (!ok) { const g = markErr(id, msg); if (g) errs.push(g); } };
+            need('target', !!r.targetId);
+            if (r.group === G.TD) { need('tdContent', (r.content || []).length); need('basis', !!r.basis); }
+            if (r.group === G.YC) { need('ycContent', (r.content || []).length); need('docNo', !!r.docNo); need('docDate', !!r.docDate); need('deadline', !!r.deadline); }
+            if (r.group === G.DD) {
+                need('form', !!r.form);
+                if (r.form === DD_FORMS[1]) { need('proposed', !!r.proposedId); need('coopForm', !!r.coopForm); }
+                need('ddContent', (r.content || []).length); need('basis', !!r.basis); need('docNo', !!r.docNo); need('docDate', !!r.docDate); need('deadline', !!r.deadline); need('legalBasis', !!r.legalBasis);
+            }
+            need('mainContent', !!r.mainContent);
+            if (r.deadline && r.docDate && parseDate(r.deadline) < parseDate(r.docDate)) need('deadline', false, 'Hạn không được nhỏ hơn ngày văn bản. [MSG-ERR-VAL-007]');
+            const cv = document.getElementById('f_caseCode')?.value.trim();
+            if (cv && (cv !== caseSelected || !CASE.findInScope(cv))) need('caseCode', false, 'Vụ việc chưa được chọn từ danh sách tìm kiếm. Vui lòng bấm Tìm kiếm để chọn vụ việc hoặc để trống.');
+            (extra || []).forEach(([id, ok, msg]) => need(id, ok, msg));
+            if (errs.length) { errs[0].scrollIntoView({ block: 'center' }); return false; }
+            return true;
+        }
+        // ===== Thao tác =====
+        const nowText = () => { const d = new Date(); return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')} ${today()}`; };
+        function upsert(r) { const i = records.findIndex(x => x.code === r.code); if (i >= 0) records[i] = r; else records.unshift(r); save(); }
+        function saveTracking() {
+            const r = draftFromForm();
+            if (!validate(r)) return;
+            if (!r.code) { r.code = nextCode(); r.createdAt = today(); r.status = ST.TRACKING; r.history = [hist(nowText(), myUser().name, 'Lưu theo dõi')]; }
+            else r.history = [...(r.history || []), hist(nowText(), myUser().name, 'Cập nhật thông tin theo dõi')];
+            upsert(r); closeForm(); renderTabs(); renderTable(); showToast('Lưu thông tin theo dõi thành công. [MSG-SUC-SYS-003]');
+        }
+        function finishTracking() {
+            const r = draftFromForm();
+            if (!validate(r, [['result', !!r.result]])) return;
+            r.status = ST.DONE; r.history = [...(r.history || []), hist(nowText(), myUser().name, 'Hoàn thành')];
+            upsert(r); closeForm(); renderTabs(); renderTable(); showToast('Đã hoàn thành hồ sơ theo dõi.');
+        }
+        // Ghi nhận văn bản yêu cầu báo cáo/đôn đốc/đề nghị đôn đốc đã ban hành (gửi ngoài hệ thống)
+        function saveSent() {
+            const r = draftFromForm();
+            if (!validate(r)) return;
+            const label = r.group === G.YC ? 'yêu cầu báo cáo' : r.form === DD_FORMS[1] ? 'đề nghị đôn đốc' : 'đôn đốc';
+            if (!r.code) { r.code = nextCode(); r.createdAt = today(); r.status = ST.SENT; r.history = [hist(nowText(), myUser().name, `Lưu thông tin ${label}`, `Cơ quan nhận văn bản: ${unitName(receiverOf(r))}`)]; }
+            else r.history = [...(r.history || []), hist(nowText(), myUser().name, `Cập nhật thông tin ${label}`)];
+            upsert(r); closeForm(); renderTabs(); renderTable(); showToast('Lưu thông tin thành công. [MSG-SUC-SYS-003]');
+        }
+        function saveResponse() {
+            const r = formRec, resp = readResponse();
+            const proposal = r.group === G.DD && r.form === DD_FORMS[1];
+            const extra = [['respDate', !!resp.date], ['respContent', !!resp.content]];
+            if (proposal) { extra.push(['respResult', !!resp.result]); if (resp.result === PROPOSAL_RESULTS[0]) { extra.push(['issuedDocNo', !!resp.issuedDocNo]); extra.push(['issuedDocDate', !!resp.issuedDocDate]); } }
+            document.querySelectorAll('#responseBlock .form-group').forEach(clearErr);
+            const errs = extra.filter(x => !x[1]).map(x => markErr(x[0])).filter(Boolean);
+            if (errs.length) { errs[0].scrollIntoView({ block: 'center' }); return; }
+            const rec = findRec(r.code);
+            rec.response = Object.assign(resp, { by: myUser().name });
+            rec.status = ST.REPLIED;
+            rec.history = [...(rec.history || []), hist(nowText(), rec.response.by, 'Cập nhật phản hồi', resp.result || '')];
+            save(); closeForm(); renderTabs(); renderTable(); showToast('Lưu phản hồi thành công. [MSG-SUC-SYS-002]');
+        }
+        function finishSent(code) {
+            const rec = findRec(code);
+            if (!rec || rec.status !== ST.REPLIED) return;
+            openConfirm(`Bạn có chắc chắn muốn hoàn thành hồ sơ ${code} không?`, () => {
+                rec.status = ST.DONE; rec.history = [...(rec.history || []), hist(nowText(), myUser().name, 'Hoàn thành')];
+                save(); closeForm(); renderTabs(); renderTable(); showToast(`Đã hoàn thành hồ sơ ${code}.`);
+            });
+        }
+        // ===== Tìm kiếm vụ việc (Popup chuẩn, phạm vi theo cấp người dùng) =====
+        function renderCaseLink(code) {
+            const link = document.getElementById('caseLink');
+            if (!link) return;
+            const item = code ? CASE.findInScope(code) || CASE.CASES.find(c => c.code === code) : null;
+            link.style.display = item ? 'inline-block' : 'none';
+            link.innerHTML = item ? `<i class="fa-solid fa-link"></i> Liên kết hồ sơ vụ việc: ${esc(item.code)} - ${esc(item.requester)}` : '';
+            link.onclick = item ? () => CASE.openDetail(item.code) : null;
+        }
+        function onCaseInput() { caseSelected = ''; renderCaseLink(''); }
+        function pickCase(item) { caseSelected = item.code; document.getElementById('f_caseCode').value = item.code; clearErr(document.getElementById('fg_caseCode')); renderCaseLink(item.code); showToast('Đã chọn vụ việc liên quan.'); }
+        function openCaseLookup(quick) {
+            const code = document.getElementById('f_caseCode').value.trim();
+            if (quick && code) { const hits = CASE.casesInScope().filter(r => r.code.toLowerCase().includes(code.toLowerCase())); if (hits.length === 1) { pickCase(hits[0]); return; } }
+            CASE.open({ title: 'Tìm kiếm vụ việc BTNN liên quan', prefill: quick ? code : '', onSelect: pickCase });
+        }
+        // ===== Tiện ích =====
+        function initDatePickers(root) {
+            if (typeof flatpickr !== 'function') return;
+            root.querySelectorAll('input[placeholder="dd/mm/yyyy"]').forEach(el => { if (!el._flatpickr) flatpickr(el, { dateFormat: 'd/m/Y', allowInput: true, locale: (flatpickr.l10ns && flatpickr.l10ns.vn) || 'default' }); });
+        }
+        function renderDocuments() {
+            document.getElementById('addDocBtnWrapper').style.display = docReadOnly ? 'none' : '';
+            document.getElementById('documentRows').innerHTML = documentRows.map((d, i) => `<tr>
+                <td style="text-align:center;">${i + 1}</td>
+                <td>${docReadOnly ? esc(d.name || '--') : `<input class="form-control" value="${esc(d.name)}" placeholder="Nhập tên tài liệu..." oninput="documentRows[${i}].name=this.value">`}</td>
+                <td>${d.file ? `<span class="file-name"><i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:6px;"></i>${esc(d.file)}</span>` : (docReadOnly ? '--' : `<button type="button" class="btn-upload-rust" onclick="documentRows[${i}].file='tai_lieu_${i + 1}.pdf'; renderDocuments();"><i class="fa-solid fa-cloud-arrow-up"></i> Tải lên</button>`)}</td>
+                <td><div class="doc-actions"><a href="javascript:void(0)" class="action-link view-link ${d.file ? '' : 'disabled-action'}" onclick="showToast('Đang mở file tại tab mới.')">Xem file</a>${docReadOnly ? '' : `<a href="javascript:void(0)" class="action-link delete-link" onclick="removeDocumentRow(${i})"><i class="fa-solid fa-trash-can"></i> Xóa</a>`}</div></td>
+            </tr>`).join('');
+        }
+        function addDocumentRow() { documentRows.push({ name: '', file: '' }); renderDocuments(); }
+        function removeDocumentRow(i) { openConfirm('Bạn có chắc chắn muốn xóa tài liệu này không? [MSG-CFM-SYS-001]', () => { documentRows.splice(i, 1); if (!documentRows.length) documentRows = [{ name: '', file: '' }]; renderDocuments(); }); }
+        let confirmCb = null;
+        function openConfirm(text, cb) { confirmCb = cb; document.getElementById('confirmText').innerText = text; document.getElementById('confirmModal').classList.add('visible'); }
+        function closeConfirm(ok) { document.getElementById('confirmModal').classList.remove('visible'); const cb = confirmCb; confirmCb = null; if (ok && cb) cb(); }
+        function showToast(text) { const t = document.getElementById('toast'); document.getElementById('toastText').innerText = text; t.style.display = 'flex'; clearTimeout(window.__tt); window.__tt = setTimeout(() => t.style.display = 'none', 2200); }
+
+        function init() {
+            load();
+            currentTab = tabs()[0];
+            renderTabs(); renderFilters(); renderTable();
+            W.mountUserSwitcher();
+        }
+        init();
+    </script>
+    <script src="admin-ui-standardizer.js"></script>
+    <script src="bpbd_filter_toggle.js"></script>
+    <script src="filter_toggle_auto.js"></script>
+</body>
+
+</html>

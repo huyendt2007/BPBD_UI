@@ -326,7 +326,7 @@
     <div class="sticky-modal-container" style="width: 520px; max-width: 95%;">
         <div class="confirm-modal-header">
             <div style="display:flex; align-items:center; gap:8px; font-size:15px; font-weight:600; color:var(--primary-color);">
-                <i class="fa-solid fa-note-sticky"></i> <span id="noteTitle">Chỉnh sửa ghi chú</span>
+                <i class="fa-solid fa-note-sticky"></i> <span id="noteTitle">Sửa ghi chú</span>
             </div>
             <span onclick="closeNoteModal()" style="cursor:pointer; font-size:20px; font-weight:bold; color:#64748b; line-height:1;">&times;</span>
         </div>
@@ -1295,7 +1295,7 @@
                     <td class="text-left">${c.situation}</td>
                     <td class="text-left">${c.payment}</td>
                     <td class="text-left">${c.vuongMac || '<span style="color:var(--text-muted);">(Không có)</span>'}</td>
-                    <td class="text-left">${c.note || ''} <button class="icon-btn" title="Chỉnh sửa ghi chú" onclick="openNoteModal('${f}', '${c.code}')"><i class="fa-solid fa-pen"></i></button></td>
+                    <td class="text-left">${c.note || ''} <button class="icon-btn" title="Sửa ghi chú" onclick="openNoteModal('${f}', '${c.code}')"><i class="fa-solid fa-pen"></i></button></td>
                 </tr>`;
             });
         });

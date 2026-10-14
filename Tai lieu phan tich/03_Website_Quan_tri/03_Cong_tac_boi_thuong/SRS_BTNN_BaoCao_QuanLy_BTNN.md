@@ -12,7 +12,7 @@
 
 \- Cán bộ nghiệp vụ BTNN: Được chọn kỳ báo cáo, tổng hợp số liệu, tra cứu bảng kết quả và kết xuất báo cáo.
 
-\- Lãnh đạo: Được tra cứu, xem số liệu tổng hợp và kết xuất báo cáo; không chỉnh sửa số liệu.
+\- Lãnh đạo: Được tra cứu, xem số liệu tổng hợp và kết xuất báo cáo; không sửa số liệu.
 
 *b. Điều kiện thực hiện*
 

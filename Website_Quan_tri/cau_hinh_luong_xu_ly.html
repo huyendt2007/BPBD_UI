@@ -69,7 +69,7 @@
     <script>
         const WF = BTNN_WF;
         let selectedRoot = 'BTP-01';
-        let draft = null; // cấu hình đang chỉnh sửa của đơn vị gốc được chọn
+        let draft = null; // cấu hình đang sửa của đơn vị gốc được chọn
 
         function esc(v) { return WF.esc(v); }
 
@@ -135,7 +135,7 @@
             renderPreview();
         }
 
-        // Sơ đồ các nhánh xử lý suy ra từ cấu hình đang chỉnh sửa
+        // Sơ đồ các nhánh xử lý suy ra từ cấu hình đang sửa
         function renderPreview() {
             const lines = [];
             (function walk(unitId, prefix, seen) {

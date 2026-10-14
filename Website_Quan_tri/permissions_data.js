@@ -2700,13 +2700,6 @@ const systemPermissions = [
                                                                                             "children":  [
 
                                                                                                          ]
-                                                                                        },
-                                                                                        {
-                                                                                            "id":  "WebAdmin-08-09-02-05",
-                                                                                            "name":  "Phê duyệt thông tin tư liệu VBQPPL",
-                                                                                            "children":  [
-
-                                                                                                         ]
                                                                                         }
                                                                                     ]
                                                                    },
@@ -2738,13 +2731,6 @@ const systemPermissions = [
                                                                                         {
                                                                                             "id":  "WebAdmin-08-09-03-04",
                                                                                             "name":  "Xóa câu hỏi và trả lời thường gặp",
-                                                                                            "children":  [
-
-                                                                                                         ]
-                                                                                        },
-                                                                                        {
-                                                                                            "id":  "WebAdmin-08-09-03-05",
-                                                                                            "name":  "Phê duyệt câu hỏi và trả lời thường gặp",
                                                                                             "children":  [
 
                                                                                                          ]
@@ -3047,61 +3033,6 @@ const systemPermissions = [
                                                                ]
                                               },
                                               {
-                                                  "id":  "WebAdmin-10-02",
-                                                  "name":  "Phục hồi danh dự",
-                                                  "children":  [
-                                                                   {
-                                                                       "id":  "WebAdmin-10-02-01",
-                                                                       "name":  "Tra cứu thông tin về việc phục hồi danh dự",
-                                                                       "children":  [
-
-                                                                                    ]
-                                                                   },
-                                                                   {
-                                                                       "id":  "WebAdmin-10-02-02",
-                                                                       "name":  "Nhập thông tin về việc phục hồi danh dự",
-                                                                       "children":  [
-
-                                                                                    ]
-                                                                   },
-                                                                   {
-                                                                       "id":  "WebAdmin-10-02-03",
-                                                                       "name":  "Cập nhật thông tin về việc phục hồi danh dự",
-                                                                       "children":  [
-
-                                                                                    ]
-                                                                   },
-                                                                   {
-                                                                       "id":  "WebAdmin-10-02-04",
-                                                                       "name":  "Xóa thông tin về việc phục hồi danh dự",
-                                                                       "children":  [
-
-                                                                                    ]
-                                                                   },
-                                                                   {
-                                                                       "id":  "WebAdmin-10-02-05",
-                                                                       "name":  "Thông báo tổ chức thực hiện phục hồi danh dự",
-                                                                       "children":  [
-
-                                                                                    ]
-                                                                   },
-                                                                   {
-                                                                       "id":  "WebAdmin-10-02-06",
-                                                                       "name":  "Nhập thông tin ý kiến của người bị thiệt hại",
-                                                                       "children":  [
-
-                                                                                    ]
-                                                                   },
-                                                                   {
-                                                                       "id":  "WebAdmin-10-02-07",
-                                                                       "name":  "Cập nhật kết quả việc thực hiện phục hồi danh dự",
-                                                                       "children":  [
-
-                                                                                    ]
-                                                                   }
-                                                               ]
-                                              },
-{
  "id":  "WebAdmin-10-03",
  "name":  "Hồ sơ trình Lãnh đạo",
  "children":  [
@@ -3175,7 +3106,27 @@ const systemPermissions = [
                              "id":  "WebAdmin-11",
                              "name":  "Giải quyết yêu cầu bồi thường",
                              "children":  [
+                                                           {
+                                                               "id":  "WebAdmin-11-01",
+                                                               "name":  "Thông báo tổ chức thực hiện phục hồi danh dự",
+                                                               "children":  [
 
+                                                                            ]
+                                                           },
+                                                           {
+                                                               "id":  "WebAdmin-11-02",
+                                                               "name":  "Nhập thông tin ý kiến của người bị thiệt hại",
+                                                               "children":  [
+
+                                                                            ]
+                                                           },
+                                                           {
+                                                               "id":  "WebAdmin-11-03",
+                                                               "name":  "Cập nhật kết quả việc thực hiện phục hồi danh dự",
+                                                               "children":  [
+
+                                                                            ]
+                                                           }
                                           ]
                          },
                          {
@@ -3297,13 +3248,6 @@ const systemPermissions = [
                                                                        "children":  [
 
                                                                                     ]
-                                                                   },
-                                                                   {
-                                                                       "id":  "WebAdmin-24-01-05",
-                                                                       "name":  "Phê duyệt thông tin tư liệu VBQPPL",
-                                                                       "children":  [
-
-                                                                                    ]
                                                                    }
                                                                ]
                                               },
@@ -3335,13 +3279,6 @@ const systemPermissions = [
                                                                    {
                                                                        "id":  "WebAdmin-24-02-04",
                                                                        "name":  "Xóa câu hỏi và trả lời thường gặp",
-                                                                       "children":  [
-
-                                                                                    ]
-                                                                   },
-                                                                   {
-                                                                       "id":  "WebAdmin-24-02-05",
-                                                                       "name":  "Phê duyệt câu hỏi và trả lời thường gặp",
                                                                        "children":  [
 
                                                                                     ]
@@ -3435,7 +3372,7 @@ const systemPermissions = [
                                                                    },
                                                                    {
                                                                        "id":  "WebAdmin-26-01-02",
-                                                                       "name":  "Văn bản, biểu mẫu, sổ sách theo thẩm quyền",
+                                                                        "name":  "Ban hành văn bản, biểu mẫu, sổ sách về công tác BTNN theo thẩm quyền",
                                                                        "children":  [
                                                                                         {
                                                                                             "id":  "WebAdmin-26-01-02-01",
@@ -3607,11 +3544,11 @@ const systemPermissions = [
                                                   "children":  [
                                                                    {
                                                                        "id":  "WebAdmin-26-03-01",
-                                                                       "name":  "Hỗ trợ người bị thiệt hại thực hiện thủ tục YCBT",
+                                                                       "name":  "Hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục YCBT",
                                                                        "children":  [
                                                                                         {
                                                                                             "id":  "WebAdmin-26-03-01-01",
-                                                                                            "name":  "Nhập thông tin hỗ trợ người bị thiệt hại thực hiện thủ tục YCBT",
+                                                                                            "name":  "Nhập thông tin hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục YCBT",
                                                                                             "children":  [
 
                                                                                                          ]
@@ -3689,22 +3626,21 @@ const systemPermissions = [
                                                                        "id":  "WebAdmin-26-03-05",
                                                                        "name":  "Kiến nghị Thủ trưởng cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại xem xét lại quyết định hoàn trả, quyết định giảm mức hoàn trả",
                                                                        "children":  [
+                                                                                        {
+                                                                                            "id":  "WebAdmin-26-03-05-01",
+                                                                                            "name":  "Nhập thông tin kiến nghị Thủ trưởng cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại xem xét lại quyết định hoàn trả, quyết định giảm mức hoàn trả",
+                                                                                            "children":  [
 
-                                                                                    ]
-                                                                   },
-                                                                   {
-                                                                       "id":  "WebAdmin-26-03-06",
-                                                                       "name":  "Nhập thông tin kiến nghị Thủ trưởng cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại xem xét lại quyết định hoàn trả, quyết định giảm mức hoàn trả",
-                                                                       "children":  [
+                                                                                                         ]
+                                                                                        },
+                                                                                        {
+                                                                                            "id":  "WebAdmin-26-03-05-02",
+                                                                                            "name":  "Tra cứu thông tin kiến nghị Thủ trưởng cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại xem xét lại quyết định hoàn trả, quyết định giảm mức hoàn trả",
+                                                                                            "children":  [
 
-                                                                                    ]
-                                                                   },
-                                                                   {
-                                                                       "id":  "WebAdmin-26-03-07",
-                                                                       "name":  "Tra cứu thông tin kiến nghị Thủ trưởng cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại xem xét lại quyết định hoàn trả, quyết định giảm mức hoàn trả",
-                                                                       "children":  [
-
-                                                                                    ]
+                                                                                                         ]
+                                                                                        }
+                                                                                   ]
                                                                    }
                                                                ]
                                               }

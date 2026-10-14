@@ -12,7 +12,7 @@
 
 \- Cán bộ nghiệp vụ Bộ Tư pháp: Được tra cứu, tổng hợp số liệu, xem chi tiết kỳ chấm điểm và kết xuất báo cáo theo toàn bộ phạm vi dữ liệu được phân quyền.
 
-\- Lãnh đạo Bộ Tư pháp: Được tra cứu, xem số liệu tổng hợp, xem chi tiết kỳ chấm điểm và kết xuất báo cáo; không chỉnh sửa dữ liệu chấm điểm/xếp loại.
+\- Lãnh đạo Bộ Tư pháp: Được tra cứu, xem số liệu tổng hợp, xem chi tiết kỳ chấm điểm và kết xuất báo cáo; không sửa dữ liệu chấm điểm/xếp loại.
 
 \- Cán bộ Sở Tư pháp: Được tra cứu, xem số liệu và kết xuất báo cáo đối với đơn vị của mình theo phạm vi được phân quyền; không xem dữ liệu chi tiết của đơn vị khác.
 

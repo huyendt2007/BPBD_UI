@@ -1,22 +1,18 @@
-#### 4.3.3.9. UC479-480 - Hỗ trợ người bị thiệt hại thực hiện thủ tục YCBT
+#### 4.3.3.9. UC479-480 - Hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục YCBT
 
 ##### 4.3.3.9.1. Mục đích
 
-\- Cho phép cán bộ Sở Tư pháp ghi nhận, theo dõi và thống kê các trường hợp đã hướng dẫn, hỗ trợ người bị thiệt hại (hoặc người đại diện/người thừa kế hợp pháp) thực hiện thủ tục yêu cầu bồi thường nhà nước (chuẩn bị hồ sơ, xác định cơ quan có trách nhiệm giải quyết, hướng dẫn trình tự/thủ tục theo Luật Trách nhiệm bồi thường của Nhà nước 2017).
-
-\- Cho phép cán bộ thêm mới, chỉnh sửa, xóa bản ghi hỗ trợ do mình phụ trách.
+\- Cho phép cán bộ Sở Tư pháp ghi nhận, theo dõi và thống kê các trường hợp đã hướng dẫn, hỗ trợ người bị thiệt hại (hoặc người đại diện/người thừa kế hợp pháp) thực hiện thủ tục yêu cầu bồi thường nhà nước (chuẩn bị hồ sơ, xác định cơ quan có trách nhiệm giải quyết, hướng dẫn trình tự/thủ tục theo Luật Trách nhiệm bồi thường của Nhà nước), theo khoản 3 Điều 45 dự thảo Nghị định quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước (bản gửi lấy ý kiến ngày 28/9/2026).
 
 *a. Phân quyền*
 
-\- Cán bộ Sở Tư pháp: được tra cứu, xem chi tiết, thêm mới, chỉnh sửa, xóa bản ghi hỗ trợ do chính mình tạo.
+\- Cán bộ Sở Tư pháp: được tra cứu, xem chi tiết, thêm mới; sửa, xóa bản ghi hỗ trợ do chính mình tạo.
 
 *b. Điều kiện thực hiện*
 
 \- Người dùng đã đăng nhập thành công vào Website quản trị.
 
-\- Người dùng được phân quyền truy cập màn hình `Hỗ trợ người bị thiệt hại thực hiện thủ tục YCBT`.
-
-\- Hình thức hỗ trợ Tham chiếu Danh mục Hình thức tiếp nhận hồ sơ bồi thường [DM_25] (dùng chung với Hình thức tiếp nhận hồ sơ bồi thường) đối với các giá trị trùng khớp; bổ sung riêng giá trị `Qua điện thoại` cho đặc thù nghiệp vụ hỗ trợ.
+\- Người dùng được phân quyền truy cập màn hình `Hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục YCBT`.
 
 ---
 
@@ -24,132 +20,173 @@
 
 ```mermaid
 flowchart TD
-    A[Danh sách hỗ trợ người bị thiệt hại] --> B[Tìm kiếm / Xóa bộ lọc / Phân trang]
-    A --> C[Thêm mới bản ghi hỗ trợ]
-    C --> D[Lưu thông tin]
-    A --> E[Click dòng dữ liệu / Xem]
-    A --> F[Chỉnh sửa]
-    F --> D
-    A --> G[Xóa bản ghi]
+    A[Danh sách hỗ trợ, hướng dẫn người bị thiệt hại] --> B[Tìm kiếm / Xóa bộ lọc / Sắp xếp / Phân trang]
+    A --> G[Row click] --> K[Xem chi tiết]
+    K --> E
+    K --> F
+    A --> C[Thêm mới] --> D[Lưu thông tin]
+    A --> E[Sửa] --> D
+    A --> F[Xóa] --> X[Popup Xác nhận xóa]
 ```
 
 ---
 
-##### 4.3.3.9.3. MH01 - Màn hình Danh sách hỗ trợ người bị thiệt hại
+##### 4.3.3.9.3. MH01 - Màn hình Danh sách hỗ trợ, hướng dẫn người bị thiệt hại
 
 ###### 4.3.3.9.3.1. Màn hình
 
-![MH01 - Màn hình Danh sách hỗ trợ người bị thiệt hại](images/UC479_480_MH01_Danh_sach_ho_tro.png)
+![MH01 - Màn hình Danh sách hỗ trợ, hướng dẫn người bị thiệt hại](images/UC479_480_MH01_Danh_sach_ho_tro.png)
 
 ###### 4.3.3.9.3.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
-| Họ và tên người được hỗ trợ | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập họ và tên người được hỗ trợ...".<br>- Tìm gần đúng theo Họ và tên người được hỗ trợ; không phân biệt hoa thường, có dấu/không dấu. |
-| Số điện thoại | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: "Nhập số điện thoại...".<br>- Tìm gần đúng theo Số điện thoại; không phân biệt hoa thường, có dấu/không dấu. |
-| Hình thức hỗ trợ | Enum(String(50)) | Không | Tất cả | \- Giá trị gồm:<br>+ Tất cả<br>+ Trực tiếp tại trụ sở<br>+ Qua điện thoại<br>+ Qua văn bản/email<br>+ Khác |
-| Kết quả hỗ trợ | Enum(String(50)) | Không | Tất cả | \- Giá trị gồm:<br>+ Tất cả<br>+ Đang hỗ trợ<br>+ Đã hướng dẫn xong<br>+ Người dân đã nộp YCBT<br>+ Không liên hệ được |
-| Từ ngày hỗ trợ | Date | Không | Theo dữ liệu hệ thống | Định dạng `dd/mm/yyyy`. |
-| Đến ngày hỗ trợ | Date | Không | Theo dữ liệu hệ thống | Định dạng `dd/mm/yyyy`. Áp dụng rule khoảng ngày [BR-VAL-007]. |
-| **II. Bảng danh sách kết quả** | - | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- Sắp xếp mặc định: Sắp xếp theo "Ngày tạo" giảm dần (mới nhất hiển thị lên đầu).<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
-| Cột: STT | Integer(10) | Không | Theo trang hiện tại | Chỉ đọc. Căn giữa, tăng theo phân trang. |
-| Cột: Họ và tên người được hỗ trợ | String(100) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
-| Cột: Số điện thoại | String(20) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
-| Cột: Hình thức hỗ trợ | Enum(String(50)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
-| Cột: Vụ việc liên quan | String(50) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị `-` nếu chưa gắn mã vụ việc. |
-| Cột: Ngày hỗ trợ | Date | Không | Theo dữ liệu hệ thống | Chỉ đọc. Định dạng `dd/mm/yyyy`. |
-| Cột: Cán bộ hỗ trợ | String(100) | Không | Theo dữ liệu hệ thống | Chỉ đọc. |
-| Cột: Kết quả hỗ trợ | Enum(String(50)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị dạng badge màu theo giá trị. |
-| Cột: Thao tác | String(255) | Không | Theo trạng thái | Chỉ đọc. Gồm icon `Chỉnh sửa`, `Xóa`; hiển thị theo trạng thái bản ghi. |
-| Phân trang | String(255) | Không | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị trên mỗi trang gồm: 10, 20, 50, 100 bản ghi/trang; mặc định chọn sẵn 20 bản ghi/trang.<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;).<br>- Hiển thị dải bản ghi: "Hiển thị [từ] - [đến] của [tổng số] bản ghi". |
+| Họ và tên người được hỗ trợ | String(255) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập họ và tên người được hỗ trợ...".<br>- Tìm gần đúng; không phân biệt hoa thường, có dấu/không dấu. |
+| Số điện thoại | String(50) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập số điện thoại...".<br>- Tìm gần đúng; không phân biệt hoa thường, có dấu/không dấu. |
+| Hình thức hỗ trợ | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Trực tiếp tại trụ sở<br>+ Qua điện thoại<br>+ Qua văn bản/email<br>+ Khác |
+| Kết quả hỗ trợ | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Đang hỗ trợ<br>+ Đã hướng dẫn xong<br>+ Người dân đã nộp YCBT<br>+ Không liên hệ được |
+| Từ ngày hỗ trợ | Date | Không | Trống | Control UI: Date input.<br>- Placeholder: "dd/mm/yyyy". |
+| Đến ngày hỗ trợ | Date | Không | Trống | Control UI: Date input.<br>- Placeholder: "dd/mm/yyyy". |
+| **II. Bảng danh sách kết quả** | - | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải Trang 1.<br>- Sắp xếp mặc định: theo "Ngày tạo" giảm dần.<br>- Trạng thái không có dữ liệu (Empty State): bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
+| STT | Integer(10) | Không | Theo trang hiện tại | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
+| Họ và tên người được hỗ trợ | String(100) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
+| Số điện thoại | String(20) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
+| Hình thức hỗ trợ | Enum(String(50)) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
+| Vụ việc liên quan | String(50) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi.<br>- Hiển thị `-` nếu chưa gắn mã vụ việc. |
+| Ngày hỗ trợ | Date | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Định dạng `dd/mm/yyyy`. |
+| Cán bộ hỗ trợ | String(100) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
+| Kết quả hỗ trợ | Enum(String(50)) | Không | Theo dữ liệu hệ thống | Control UI: Badge.<br>- Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
+| Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Xóa |
+| Phân trang | - | - | 20 bản ghi/trang | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
 
 ###### 4.3.3.9.3.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống kiểm tra điều kiện dữ liệu và thực hiện tìm kiếm theo các trường hợp bên dưới: |
-|  |  |  | **TH1 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày` lớn hơn `Đến ngày`, vi phạm [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
-|  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống lọc và hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí tìm kiếm/lọc đã nhập/chọn, hiển thị kết quả lên bảng và đưa về Trang 1. |
-|  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
-| 2 | Xóa bộ lọc | Button | Hệ thống đặt lại toàn bộ tiêu chí lọc về giá trị mặc định và tải lại danh sách. |
-| 3 | Thêm mới | Button | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa hỗ trợ người bị thiệt hại** ở chế độ thêm mới. |
-| 4 | Chỉnh sửa | Icon button | Chỉ hiển thị với bản ghi do cán bộ đăng nhập tạo. Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa hỗ trợ người bị thiệt hại** ở chế độ chỉnh sửa. |
-| 5 | Xóa | Icon button | Chỉ hiển thị với bản ghi do cán bộ đăng nhập tạo. Hệ thống mở **Popup Xác nhận** với nội dung [MSG-CFM-SYS-001]. Nếu xác nhận, hệ thống xóa vĩnh viễn bản ghi khỏi hệ thống và hiển thị [MSG-SUC-SYS-002]. |
-| 6 | Click dòng dữ liệu | Row click | Hệ thống mở **MH02 - Thêm mới/Chỉnh sửa hỗ trợ người bị thiệt hại** ở chế độ chỉ xem. |
+|  |  |  | **TH1 - Khoảng ngày không hợp lệ**: Nếu `Từ ngày hỗ trợ` lớn hơn `Đến ngày hỗ trợ`, vi phạm [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm. |
+|  |  |  | **TH2 - Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí đã nhập/chọn và đưa về Trang 1. |
+|  |  |  | **TH3 - Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa (`colspan`), in nghiêng với nội dung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 trong tổng số 0 bản ghi"*, các nút điều hướng trang ở trạng thái khóa mờ. |
+| 2 | Xóa bộ lọc | Button | Hệ thống xóa toàn bộ tiêu chí tìm kiếm đã nhập/chọn, thiết lập các ô lọc về giá trị mặc định. |
+| 3 | Thêm mới | Button | Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa hỗ trợ, hướng dẫn người bị thiệt hại](#43395-mh03---màn-hình-thêm-mớisửa-hỗ-trợ-hướng-dẫn-người-bị-thiệt-hại) ở chế độ Thêm mới với form thông tin để trống. |
+| 4 | Sắp xếp cột | Header cột | Áp dụng trên các cột:<br>+ Họ và tên người được hỗ trợ<br>+ Số điện thoại<br>+ Hình thức hỗ trợ |
+|  |  |  | **TH1 - Chọn lại cột đang sắp xếp**: Hệ thống đảo chiều sắp xếp tăng dần/giảm dần và cập nhật icon mũi tên trên tiêu đề cột. |
+|  |  |  | **TH2 - Chọn cột khác**: Hệ thống sắp xếp danh sách theo cột được chọn. |
+| 5 | Row click | Row click | Khi người dùng click vào bất kỳ vị trí nào trên dòng dữ liệu (trừ các nút thao tác), hệ thống mở [MH02 - Màn hình Chi tiết hỗ trợ, hướng dẫn người bị thiệt hại](#43394-mh02---màn-hình-chi-tiết-hỗ-trợ-hướng-dẫn-người-bị-thiệt-hại). |
+| 6 | Sửa | Icon button | Chỉ cho phép với bản ghi do cán bộ đăng nhập tạo.<br>- Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa hỗ trợ, hướng dẫn người bị thiệt hại](#43395-mh03---màn-hình-thêm-mớisửa-hỗ-trợ-hướng-dẫn-người-bị-thiệt-hại) ở chế độ Sửa với dữ liệu hiện tại của bản ghi được điền sẵn. |
+| 7 | Xóa | Icon button | Chỉ cho phép với bản ghi do cán bộ đăng nhập tạo.<br>- Hệ thống mở [Popup Xác nhận xóa](#43396-popup-xác-nhận-xóa). |
+| 8 | Phân trang & chuyển trang | Pagination | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
 
 ---
 
-##### 4.3.3.9.4. MH02 - Màn hình Thêm mới/Chỉnh sửa hỗ trợ người bị thiệt hại
+##### 4.3.3.9.4. MH02 - Màn hình Chi tiết hỗ trợ, hướng dẫn người bị thiệt hại
 
 ###### 4.3.3.9.4.1. Màn hình
 
-![MH02 - Màn hình Thêm mới/Chỉnh sửa hỗ trợ người bị thiệt hại](images/UC479_480_MH02_Nhap_lieu_ho_tro.png)
+![MH02 - Màn hình Chi tiết hỗ trợ, hướng dẫn người bị thiệt hại](images/UC479_480_MH02_Chi_tiet_ho_tro.png)
 
 ###### 4.3.3.9.4.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Tiêu đề màn hình | String(255) | - | Theo ngữ cảnh | Chỉ đọc. Hiển thị `THÊM MỚI HỖ TRỢ NGƯỜI BỊ THIỆT HẠI` hoặc `CHỈNH SỬA HỖ TRỢ NGƯỜI BỊ THIỆT HẠI` theo ngữ cảnh mở màn hình. |
-| **I. Thông tin người được hỗ trợ** | String(100) | - | - | Khối thông tin người dân được hướng dẫn/hỗ trợ. |
-| Họ và tên người được hỗ trợ | String(100) | Có | Trống | Áp dụng rule bắt buộc [BR-VAL-001]. |
-| Số điện thoại liên hệ | String(20) | Có | Trống | Áp dụng rule số điện thoại [BR-VAL-003]. |
-| Địa chỉ liên hệ | Text(1000) | Không | Trống | \- Ghi địa chỉ liên hệ của người được hỗ trợ. |
-| Số giấy tờ thân nhân | String(20) | Không | Trống | Nhập nếu đã xác định được nhân thân người được hỗ trợ. |
-| **II. Nội dung hỗ trợ** | Text(2000) | - | - | Khối ghi nhận nội dung hỗ trợ. |
-| Hình thức hỗ trợ | Enum(String(50)) | Có | `Trực tiếp tại trụ sở` | \- Giá trị gồm:<br>+ Trực tiếp tại trụ sở<br>+ Qua điện thoại<br>+ Qua văn bản/email<br>+ Khác |
-| Ngày hỗ trợ | Date | Có | Ngày hiện tại | Áp dụng rule ngày quá khứ [BR-VAL-008]. |
-| Cán bộ hỗ trợ | String(100) | - | Theo tài khoản đăng nhập | Chỉ đọc. Tự động điền theo cán bộ đang đăng nhập. |
-| Nội dung yêu cầu hỗ trợ | Text(2000) | Có | Trống | Ghi tóm tắt nội dung/vướng mắc mà người dân cần hỗ trợ. Áp dụng rule bắt buộc [BR-VAL-001]. |
-| Nội dung đã hướng dẫn/hỗ trợ | Text(2000) | Có | Trống | Ghi cụ thể nội dung đã hướng dẫn (thủ tục, hồ sơ, cơ quan có trách nhiệm giải quyết...). Áp dụng rule bắt buộc [BR-VAL-001]. |
-| Vụ việc yêu cầu bồi thường liên quan | String(50) | Không | Trống | Không bắt buộc liên kết với vụ việc trong hệ thống. Cán bộ có thể nhập mã vụ việc nếu người dân đã nộp yêu cầu bồi thường phát sinh từ lần hỗ trợ này; để trống nếu người dân chưa nộp hoặc chưa xác định. |
-| Kết quả hỗ trợ | Enum(String(50)) | Có | `Đang hỗ trợ` | \- Giá trị gồm:<br>+ Đang hỗ trợ<br>+ Đã hướng dẫn xong<br>+ Người dân đã nộp YCBT<br>+ Không liên hệ được |
-| Tài liệu hỗ trợ đính kèm | File | Không | Trống | Áp dụng [BR-FILE-010]. |
-| Hủy bỏ | - | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
-| Lưu thông tin | - | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
+| Tiêu đề màn hình | - | - | - | Control UI: Label<br>Hiển thị "Xem chi tiết hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục YCBT". |
+| **I. Thông tin chung** |  |  |  |  |
+| Trạng thái | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi (giá trị `Kết quả hỗ trợ`). |
+| Người tạo/Cán bộ phụ trách | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Ngày tạo/cập nhật | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Chế độ | - | - | - | Control UI: Label<br>Hiển thị "Chỉ xem". |
+| **II. Thông tin hỗ trợ** |  |  |  |  |
+| Họ và tên người được hỗ trợ | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Số điện thoại liên hệ | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Địa chỉ liên hệ | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Số giấy tờ thân nhân | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Hình thức hỗ trợ | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Ngày hỗ trợ | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Cán bộ hỗ trợ | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Vụ việc yêu cầu bồi thường liên quan | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Kết quả hỗ trợ | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Nội dung yêu cầu hỗ trợ | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Nội dung đã hướng dẫn/hỗ trợ | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| **III. Tài liệu hỗ trợ đính kèm** |  |  |  |  |
+| Tài liệu hỗ trợ đính kèm | - | - | - | Control UI: File link<br>Theo dữ liệu bản ghi. |
 
 ###### 4.3.3.9.4.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Hủy bỏ | Button | Hệ thống đóng màn hình, không lưu dữ liệu và quay lại **MH01 - Danh sách hỗ trợ người bị thiệt hại**. |
-| 2 | Lưu thông tin | Button | TH1 (Bỏ trống trường bắt buộc): Vi phạm [BR-VAL-001]. Hệ thống tô viền đỏ ô trống đầu tiên và hiển thị [MSG-ERR-VAL-001]. Không cho phép lưu. |
-|  |  |  | TH2 (`Số điện thoại liên hệ` không đúng định dạng): Vi phạm [BR-VAL-003], hiển thị [MSG-ERR-VAL-003]. Không cho phép lưu. |
-|  |  |  | TH3 (`Ngày hỗ trợ` lớn hơn ngày hiện tại): Vi phạm [BR-VAL-008], hiển thị [MSG-ERR-VAL-008]. Không cho phép lưu. |
-|  |  |  | TH4 (Hợp lệ - thêm mới): Hệ thống lưu bản ghi hỗ trợ, ghi nhận cán bộ tạo/ngày tạo, đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-SYS-003]. |
-|  |  |  | TH5 (Hợp lệ - chỉnh sửa): Hệ thống cập nhật bản ghi hỗ trợ, đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-SYS-002]. |
-| 3 | Tải lên | Button | Hệ thống mở trình chọn file cho `Tài liệu hỗ trợ đính kèm`. |
-| 4 | Xem file | Link | Cho phép xem file tại một tab riêng. |
-| 5 | Xóa | Link | Hệ thống gỡ file khỏi danh sách file đã chọn trên màn hình trước khi lưu. |
+| 1 | Xem file | Link | Khi click vào liên kết "Xem file" của tài liệu đính kèm, hệ thống mở nội dung file tại một tab trình duyệt mới. |
+| 2 | Sửa | Button | Chỉ cho phép với bản ghi do cán bộ đăng nhập tạo.<br>- Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa hỗ trợ, hướng dẫn người bị thiệt hại](#43395-mh03---màn-hình-thêm-mớisửa-hỗ-trợ-hướng-dẫn-người-bị-thiệt-hại) ở chế độ Sửa với dữ liệu hiện tại của bản ghi được điền sẵn. |
+| 3 | Xóa | Button | Chỉ cho phép với bản ghi do cán bộ đăng nhập tạo.<br>- Hệ thống mở [Popup Xác nhận xóa](#43396-popup-xác-nhận-xóa); nếu người dùng chọn `Đồng ý`, hệ thống xóa bản ghi, đóng màn hình chi tiết và quay lại [MH01 - Màn hình Danh sách hỗ trợ, hướng dẫn người bị thiệt hại](#43393-mh01---màn-hình-danh-sách-hỗ-trợ-hướng-dẫn-người-bị-thiệt-hại). |
+| 4 | Đóng | Button | Khi người dùng click nút "Đóng" ở góc phải tiêu đề hoặc ở chân màn hình, hệ thống đóng màn hình chi tiết và quay lại [MH01 - Màn hình Danh sách hỗ trợ, hướng dẫn người bị thiệt hại](#43393-mh01---màn-hình-danh-sách-hỗ-trợ-hướng-dẫn-người-bị-thiệt-hại). |
 
 ---
 
-##### 4.3.3.9.5. Popup Xác nhận
+##### 4.3.3.9.5. MH03 - Màn hình Thêm mới/Sửa hỗ trợ, hướng dẫn người bị thiệt hại
 
 ###### 4.3.3.9.5.1. Màn hình
 
-![Popup Xác nhận](images/UC479_480_POPUP_Xac_nhan.png)
+![MH03 - Màn hình Thêm mới/Sửa hỗ trợ, hướng dẫn người bị thiệt hại](images/UC479_480_MH03_Them_moi_sua_ho_tro.png)
 
 ###### 4.3.3.9.5.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Tiêu đề popup | String(255) | - | Theo thao tác | Chỉ đọc. Hiển thị icon cảnh báo và nội dung xác nhận theo thao tác đang thực hiện. |
-| Nội dung xác nhận | Text(2000) | - | Theo thao tác | Chỉ đọc. Áp dụng message xác nhận [MSG-CFM-SYS-001]. |
-| Hủy bỏ | - | Không | Hiển thị | Đóng popup, không thực hiện callback. |
-| Đồng ý | - | Không | Hiển thị | Xác nhận thực hiện callback của thao tác đã gọi popup. |
+| Tiêu đề màn hình | - | - | Theo ngữ cảnh | Control UI: Label<br>Hiển thị "Thêm mới hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục YCBT" hoặc "Sửa hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục YCBT". |
+| **I. Thông tin chung** |  |  |  |  |
+| Trạng thái | - | - | Theo ngữ cảnh | Control UI: Label<br>Thêm mới hiển thị "Đang nhập"; Sửa hiển thị theo dữ liệu bản ghi. |
+| Người tạo/Cán bộ phụ trách | - | - | Theo tài khoản đăng nhập | Control UI: Label<br>Theo dữ liệu bản ghi. |
+| Ngày tạo/cập nhật | - | - | Theo dữ liệu hệ thống | Control UI: Label<br>Định dạng `dd/mm/yyyy`. |
+| Chế độ | - | - | Theo ngữ cảnh | Control UI: Label<br>Hiển thị "Thêm mới" hoặc "Sửa". |
+| **II. Thông tin hỗ trợ** |  |  |  |  |
+| Họ và tên người được hỗ trợ | String(100) | Có | Trống | Control UI: Text input.<br>- Placeholder: "Nhập họ và tên người được hỗ trợ...". |
+| Số điện thoại liên hệ | String(20) | Có | Trống | Control UI: Text input.<br>- Placeholder: "Nhập số điện thoại liên hệ...".<br>- Áp dụng rule số điện thoại [BR-VAL-003]. |
+| Địa chỉ liên hệ | Text(1000) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập địa chỉ liên hệ...". |
+| Số giấy tờ thân nhân | String(20) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập số giấy tờ thân nhân...". |
+| Hình thức hỗ trợ | Enum(String(50)) | Có | Trực tiếp tại trụ sở | Control UI: Combobox.<br>Gồm:<br>+ Trực tiếp tại trụ sở<br>+ Qua điện thoại<br>+ Qua văn bản/email<br>+ Khác |
+| Ngày hỗ trợ | Date | Có | Trống | Control UI: Date input.<br>- Placeholder: "dd/mm/yyyy".<br>- Không lớn hơn ngày hiện tại theo [BR-VAL-008]. |
+| Cán bộ hỗ trợ | String(100) | - | Theo tài khoản đăng nhập | Control UI: Label.<br>- Tự động điền theo cán bộ đang đăng nhập. |
+| Vụ việc yêu cầu bồi thường liên quan | String(50) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập vụ việc yêu cầu bồi thường liên quan...".<br>- Ghi mã vụ việc nếu người dân đã nộp yêu cầu bồi thường; không kiểm tra tồn tại trên hệ thống. |
+| Kết quả hỗ trợ | Enum(String(50)) | Có | Đang hỗ trợ | Control UI: Combobox.<br>Gồm:<br>+ Đang hỗ trợ<br>+ Đã hướng dẫn xong<br>+ Người dân đã nộp YCBT<br>+ Không liên hệ được |
+| Nội dung yêu cầu hỗ trợ | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Placeholder: "Nhập nội dung yêu cầu hỗ trợ...". |
+| Nội dung đã hướng dẫn/hỗ trợ | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Placeholder: "Nhập nội dung đã hướng dẫn/hỗ trợ...". |
+| **III. Tài liệu hỗ trợ đính kèm** |  |  |  |  |
+| Tài liệu hỗ trợ đính kèm | List(File) | Không | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu`, `File đính kèm`, `Thao tác tài liệu`; nút `+ Thêm dòng` dưới bảng.<br>- Cột `Tên tài liệu`: Text input. Placeholder: "Nhập tên tài liệu...".<br>- Cột `File đính kèm`: khi dòng chưa có file hiển thị nút `Tải lên`; khi đã có file hiển thị tên file.<br>- Cột `Thao tác tài liệu` gồm:<br>+ Xem file (khóa mờ khi dòng chưa có file)<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
 
 ###### 4.3.3.9.5.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Hủy bỏ | Button | Hệ thống đóng popup xác nhận và không thực hiện thao tác. |
-| 2 | Đồng ý | Button | Hệ thống đóng popup xác nhận và thực hiện callback tương ứng (xóa vĩnh viễn bản ghi). |
+| 1 | Lưu thông tin | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới: |
+|  |  |  | **TH1 - Bỏ trống trường bắt buộc**: Vi phạm [BR-VAL-001] (chưa nhập/chọn các trường có dấu `*`). Hệ thống viền đỏ các ô lỗi, hiển thị "Đây là trường bắt buộc" ngay dưới từng ô và focus vào ô lỗi đầu tiên. |
+|  |  |  | **TH2 - Dữ liệu không hợp lệ**: `Số điện thoại liên hệ` sai định dạng vi phạm [BR-VAL-003], hiển thị [MSG-ERR-VAL-003]; `Ngày hỗ trợ` lớn hơn ngày hiện tại vi phạm [BR-VAL-008], hiển thị [MSG-ERR-VAL-008]. Hệ thống không cho phép lưu. |
+|  |  |  | **TH3 - Trùng bản ghi**: Bản ghi được xác định bởi các thông tin `Họ và tên người được hỗ trợ`, `Số điện thoại liên hệ`, `Ngày hỗ trợ`. Nếu các thông tin này trùng với một bản ghi khác đang tồn tại, hệ thống viền đỏ các ô tương ứng, hiển thị cảnh báo "Bản ghi hỗ trợ đã tồn tại trong hệ thống (trùng Họ và tên người được hỗ trợ, Số điện thoại liên hệ và Ngày hỗ trợ)" dưới ô `Họ và tên người được hỗ trợ` và không cho phép lưu.<br>- So sánh sau khi bỏ khoảng trắng thừa, không phân biệt hoa thường.<br>- Ở chế độ Sửa, hệ thống bỏ qua chính bản ghi đang sửa. |
+|  |  |  | **TH4 - Hợp lệ - Thêm mới**: Hệ thống lưu bản ghi, đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-SYS-003]. |
+|  |  |  | **TH5 - Hợp lệ - Sửa**: Hệ thống cập nhật bản ghi, đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-SYS-002]. |
+| 2 | Tải lên | Button | Hệ thống mở trình chọn file cho dòng tài liệu tương ứng; sau khi chọn, hiển thị tên file tại cột `File đính kèm`. |
+| 3 | Xem file | Link | Hệ thống mở file của dòng tài liệu tại một tab trình duyệt mới. |
+| 4 | Xóa | Link | Hệ thống mở [Popup Xác nhận xóa](#43396-popup-xác-nhận-xóa). Nếu chọn `Đồng ý`, hệ thống xóa dòng tài liệu khỏi bảng; nếu chọn `Hủy bỏ`, hệ thống giữ nguyên dòng tài liệu. |
+| 5 | Thêm dòng | Button | Hệ thống thêm 01 dòng tài liệu trống vào cuối bảng tài liệu đính kèm. |
+| 6 | Hủy bỏ | Button | Khi người dùng click nút "Hủy bỏ" ở chân màn hình hoặc nút "Đóng" ở góc phải tiêu đề, hệ thống đóng màn hình, không lưu dữ liệu và quay lại [MH01 - Màn hình Danh sách hỗ trợ, hướng dẫn người bị thiệt hại](#43393-mh01---màn-hình-danh-sách-hỗ-trợ-hướng-dẫn-người-bị-thiệt-hại). |
 
 ---
 
-##### 4.3.3.9.6. Ghi chú phạm vi đặc tả
+##### 4.3.3.9.6. Popup Xác nhận xóa
 
-\- Bản ghi hỗ trợ áp dụng cơ chế xóa vĩnh viễn (hard delete): khi cán bộ xác nhận xóa, dữ liệu bị loại bỏ hoàn toàn khỏi hệ thống, không lưu lại lịch sử.
+###### 4.3.3.9.6.1. Màn hình
 
-\- Trường `Vụ việc yêu cầu bồi thường liên quan` chỉ mang tính ghi chú tham khảo, không thực hiện autofill hoặc kiểm tra tồn tại trong hệ thống.
+![Popup Xác nhận xóa](images/UC479_480_POPUP_Xac_nhan.png)
+
+###### 4.3.3.9.6.2. Mô tả thông tin trên màn hình
+
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| Tiêu đề popup | - | - | - | Control UI: Label<br>Hiển thị "Xác nhận". |
+| Nội dung xác nhận | - | - | - | Control UI: Label<br>Áp dụng message xác nhận [MSG-CFM-SYS-001]. |
+
+###### 4.3.3.9.6.3. Chức năng trên màn hình
+
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Đồng ý | Button | Hệ thống đóng popup và thực hiện xóa:<br>+ Xóa bản ghi: xóa vĩnh viễn bản ghi khỏi hệ thống, tải lại danh sách và hiển thị [MSG-SUC-SYS-002].<br>+ Xóa tài liệu đính kèm: xóa dòng tài liệu khỏi bảng. |
+| 2 | Hủy bỏ | Button | Khi người dùng click nút "Hủy bỏ" hoặc biểu tượng đóng ở góc phải tiêu đề popup, hệ thống đóng popup và không thực hiện thao tác. |

@@ -748,19 +748,62 @@
         .toast.warning i {
             color: #F59E0B;
         }
+        /* System Switcher Tabs */
+        .system-tabs-container {
+            display: inline-flex;
+            gap: 6px;
+            margin-bottom: 18px;
+            padding: 4px;
+            background: #e2e8f0;
+            border-radius: 8px;
+        }
+        .system-tab-btn {
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+            color: #64748b;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .system-tab-btn:hover {
+            color: var(--primary-color);
+        }
+        .system-tab-btn.active {
+            background: #ffffff;
+            color: var(--primary-color);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+        }
+            /* Chế độ xem chi tiết: chỉ hiển thị thông tin, ẩn vùng tải lên, thanh định dạng và dấu bắt buộc */
+        .modal-content.view-mode .upload-area, .modal-content.view-mode .rich-text-toolbar, .modal-content.view-mode .form-label > span[style*="danger"] { display: none !important; }
     </style>
 </head>
 <body>
 
     <div class="container">
+        <!-- System Switcher Tabs -->
+        <div class="system-tabs-container" id="systemTabsContainer">
+            <button type="button" class="system-tab-btn" id="tabBtnn" onclick="switchSystem('btnn')">
+                <i class="fa-solid fa-scale-balanced"></i> Bồi thường nhà nước (BTNN)
+            </button>
+            <button type="button" class="system-tab-btn" id="tabBpbd" onclick="switchSystem('bpbd')">
+                <i class="fa-solid fa-shield-halved"></i> Biện pháp bảo đảm (BPBD)
+            </button>
+        </div>
+
         <!-- Page Header -->
         <div class="page-header">
             <div>
-                <h1>Quản lý câu hỏi và trả lời thường gặp (FAQ)</h1>
-                <p>Quản lý danh sách câu hỏi hướng dẫn nghiệp vụ ĐKBPBĐ và phê duyệt xuất bản FAQ</p>
+                <h1 id="pageMainTitle">Quản lý câu hỏi và trả lời thường gặp (FAQ)</h1>
+                <p id="pageSubTitle">Quản lý danh sách câu hỏi hướng dẫn nghiệp vụ; câu hỏi được lưu và áp dụng ngay</p>
             </div>
-            <!-- Switch Role to test UI -->
-            <div class="role-switch-container">
+            <!-- Switch Role to test UI (Chỉ dùng cho BPBD) -->
+            <div class="role-switch-container" id="roleSelectorBox" style="display: none;">
                 <span>Vai trò kiểm thử:</span>
                 <select id="roleSelector" onchange="switchRole()">
                     <option value="officer" selected>Cán bộ nghiệp vụ</option>
@@ -771,7 +814,7 @@
 
         <!-- Filter Panel -->
         <div class="card-section search-filters-box" data-bpbd-filter>
-            <div class="grid-layout" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="grid-layout" id="filterGrid" style="grid-template-columns: repeat(2, 1fr);">
                 <div class="form-group">
                     <label class="form-label">Nội dung câu hỏi</label>
                     <input type="text" id="filterQuestion" class="form-control" placeholder="Nhập nội dung câu hỏi...">
@@ -780,7 +823,7 @@
                     <label class="form-label">Nội dung câu trả lời</label>
                     <input type="text" id="filterAnswer" class="form-control" placeholder="Nhập nội dung câu trả lời...">
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="filterTopicGroup" style="display: none;">
                     <label class="form-label">Nhóm chủ đề</label>
                     <select id="filterTopic" class="form-select">
                         <option value="">-- Tất cả --</option>
@@ -790,7 +833,7 @@
                         <option value="Xử lý hồ sơ và biểu mẫu">Xử lý hồ sơ và biểu mẫu</option>
                     </select>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="filterStatusGroup" style="display: none;">
                     <label class="form-label">Trạng thái</label>
                     <select id="filterStatus" class="form-select">
                         <option value="">-- Tất cả --</option>
@@ -823,16 +866,16 @@
 
         <!-- KPI Quick Filters & Action Buttons -->
         <div class="card-section" style="padding: 15px 20px; border-bottom-left-radius: 0; border-bottom-right-radius: 0; margin-bottom: 0;">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+            <div id="kpiCardFlex" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
                 <!-- KPI Filter Buttons -->
                 <div class="stats-badge-row" id="kpiStatsRow">
                     <button class="stat-badge-btn active" onclick="filterByKpi('all')" id="kpiBtnAll">
                         Tất cả <span class="count" id="countAll">0</span>
                     </button>
-                    <button class="stat-badge-btn" onclick="filterByKpi('Chờ duyệt')" id="kpiBtnPending">
+                    <button class="stat-badge-btn" onclick="filterByKpi('Chờ duyệt')" id="kpiBtnPending" style="display: none;">
                         Chờ duyệt <span class="count" id="countPending">0</span>
                     </button>
-                    <button class="stat-badge-btn" onclick="filterByKpi('Từ chối')" id="kpiBtnRejected">
+                    <button class="stat-badge-btn" onclick="filterByKpi('Từ chối')" id="kpiBtnRejected" style="display: none;">
                         Từ chối <span class="count" id="countRejected">0</span>
                     </button>
                 </div>
@@ -840,6 +883,7 @@
                 <!-- Action Buttons Toolbar -->
                 <div class="action-toolbar" style="margin-top: 0; margin-bottom: 0;">
                     <button class="btn btn-primary" onclick="openCreateModal()"><i class="fa fa-plus"></i> Thêm mới</button>
+                    <button class="btn btn-outline-primary" onclick="openImportModal()"><i class="fa-solid fa-file-import"></i> Nhận Excel</button>
                     <button class="btn btn-outline-success" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
                 </div>
             </div>
@@ -852,11 +896,11 @@
                     <tr>
                         <th class="cell-center" style="width: 50px;">STT</th>
                         <th class="sortable" onclick="sortTable('cauHoi')">Câu hỏi <i class="fa-solid fa-sort" id="sort_cauHoi"></i></th>
-                        <th class="sortable" onclick="sortTable('nhomChuDe')" style="width: 250px;">Nhóm chủ đề <i class="fa-solid fa-sort" id="sort_nhomChuDe"></i></th>
+                        <th class="sortable" onclick="sortTable('nhomChuDe')" style="width: 250px; display: none;" id="th_nhomChuDe">Nhóm chủ đề <i class="fa-solid fa-sort" id="sort_nhomChuDe"></i></th>
                         <th class="sortable cell-center" onclick="sortTable('thuTuHienThi')" style="width: 130px;">Thứ tự hiển thị <i class="fa-solid fa-sort" id="sort_thuTuHienThi"></i></th>
                         <th class="sortable cell-center" onclick="sortTable('ngayTao')" style="width: 130px;">Ngày tạo <i class="fa-solid fa-sort" id="sort_ngayTao"></i></th>
-                        <th class="cell-center" style="width: 120px;">Trạng thái</th>
-                        <th class="cell-center" style="width: 160px; min-width: 160px;">Thao tác</th>
+                        <th class="cell-center" style="width: 120px; display: none;" id="th_trangThai">Trạng thái</th>
+                        <th class="cell-center" style="width: 140px; min-width: 140px;">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -872,9 +916,10 @@
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <span>Số bản ghi:</span>
                     <select id="pageSizeSelector" class="form-select" style="width: 70px; padding: 4px;" onchange="changePageSize()">
-                        <option value="5" selected>5</option>
                         <option value="10">10</option>
-                        <option value="20">20</option>
+                        <option value="20" selected>20</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
                     </select>
                 </div>
                 <div class="pagination-buttons" id="paginationBtns">
@@ -923,8 +968,8 @@
                             <span class="field-error-text" id="error_faqAnswer">Nội dung câu trả lời không được để trống</span>
                         </div>
                         
-                        <div class="grid-layout" style="grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 15px;">
-                            <div class="form-group">
+                        <div class="grid-layout" id="modalMetaGrid" style="grid-template-columns: 1fr; gap: 15px; margin-bottom: 15px;">
+                            <div class="form-group" id="faqTopicGroup" style="display: none;">
                                 <label class="form-label">Nhóm chủ đề <span style="color: var(--danger-color);">*</span></label>
                                 <select id="faqTopic" class="form-select">
                                     <option value="">-- Lựa chọn --</option>
@@ -933,16 +978,16 @@
                                     <option value="Tài khoản và phân quyền">Tài khoản và phân quyền</option>
                                     <option value="Xử lý hồ sơ và biểu mẫu">Xử lý hồ sơ và biểu mẫu</option>
                                 </select>
-                                <span class="field-error-text" id="error_faqTopic">Vui lòng chọn nhóm chủ đề</span>
+                                <span class="field-error-text" id="error_faqTopic">Đây là trường bắt buộc</span>
                             </div>
                             
-                            <div class="form-group">
+                            <div class="form-group" id="faqOrderGroup">
                                 <label class="form-label">Thứ tự hiển thị</label>
-                                <input type="number" id="faqOrder" class="form-control" min="1" placeholder="Ví dụ: 1, 2, 3...">
+                                <input type="number" id="faqOrder" class="form-control" min="1" placeholder="Nhập thứ tự hiển thị...">
                                 <span class="field-error-text" id="error_faqOrder">Thứ tự hiển thị phải là số nguyên dương</span>
                             </div>
 
-                            <div class="form-group" style="grid-column: span 2;">
+                            <div class="form-group" id="faqTagsGroup" style="grid-column: span 2; display: none;">
                                 <label class="form-label">Tags / Từ khóa</label>
                                 <input type="text" id="faqTags" class="form-control" placeholder="Tối đa 10 tags, phân tách bằng dấu phẩy...">
                             </div>
@@ -1015,12 +1060,95 @@
             <div class="modal-footer">
                 <!-- Close/Cancel -->
                 <button class="btn btn-secondary" onclick="closeModal()" id="btnCancel">Hủy</button>
-                <!-- Draft and Submit Actions for Officer -->
+                <button class="btn btn-outline-danger" id="btnDeleteInView" style="display: none;" onclick="deleteFaqFromView()"><i class="fa-solid fa-trash-can"></i> Xóa</button>
+                <button class="btn btn-primary" id="btnEditInView" style="display: none;" onclick="editFaqFromView()"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>
+                <!-- Direct Save Button for BTNN Officer -->
+                <button class="btn btn-primary" onclick="saveDataBtnn()" id="btnSaveBtnn" style="display: none;"><i class="fa-solid fa-floppy-disk"></i> Lưu thông tin</button>
+                <!-- Draft and Submit Actions for BPBD Officer -->
                 <button class="btn btn-outline-primary" onclick="saveData('Lưu nháp')" id="btnSaveDraft">Lưu nháp</button>
                 <button class="btn btn-primary" onclick="saveData('Chờ duyệt')" id="btnSubmitApproval">Gửi duyệt</button>
-                <!-- Approver Actions -->
+                <!-- Approver Actions for BPBD -->
                 <button class="btn btn-danger" onclick="approveDecision('Từ chối')" id="btnReject" style="display: none;"><i class="fa-solid fa-ban"></i> Từ chối</button>
                 <button class="btn btn-primary" style="background-color: var(--success-color); border-color: var(--success-color);" onclick="approveDecision('Đã duyệt')" id="btnApprove" style="display: none;"><i class="fa-solid fa-file-signature"></i> Phê duyệt</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nhận Excel: Nhận dữ liệu câu hỏi thường gặp từ Excel -->
+    <div class="modal-overlay" id="importModal">
+        <div class="modal-content" style="max-width: 680px;">
+            <div class="modal-header">
+                <h3 style="display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-file-import" style="color: var(--primary-color);"></i>
+                    <span>Nhận dữ liệu câu hỏi thường gặp từ Excel</span>
+                </h3>
+                <button class="modal-close-btn" onclick="closeImportModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="modal-body" style="padding: 20px 24px;">
+                <div style="background-color: #F0F9FF; border: 1px solid #BAE6FD; border-radius: 8px; padding: 12px 16px; display: flex; gap: 12px; align-items: flex-start; margin-bottom: 16px;">
+                    <i class="fa-solid fa-circle-info" style="color: #0284c7; font-size: 18px; margin-top: 2px;"></i>
+                    <div style="font-size: 13px; color: #0C4A6E; line-height: 1.5;">
+                        <strong>Hướng dẫn nạp dữ liệu:</strong> Vui lòng tải file biểu mẫu chuẩn, nhập đầy đủ thông tin nội dung câu hỏi, câu trả lời, thứ tự hiển thị và thực hiện tải tệp lên hệ thống.
+                    </div>
+                </div>
+
+                <!-- Template download row -->
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: #F8FAFC; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 16px;">
+                    <div>
+                        <div style="font-weight: 600; font-size: 13px; color: var(--text-main);">File biểu mẫu nhập liệu chuẩn</div>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">Định dạng chuẩn .xlsx gồm các cột: STT, Câu hỏi (*), Câu trả lời (*), Thứ tự hiển thị</div>
+                    </div>
+                    <button type="button" class="btn btn-outline-primary" onclick="downloadImportTemplate()" style="white-space: nowrap; font-size: 12.5px; padding: 6px 14px;">
+                        <i class="fa-solid fa-file-arrow-down"></i> Tải file mẫu
+                    </button>
+                </div>
+
+                <!-- Upload dropzone -->
+                <div id="importDropzone" onclick="triggerImportFileInput()" style="border: 2px dashed #CBD5E1; border-radius: 10px; padding: 28px 20px; text-align: center; background: #FAFBFD; cursor: pointer; transition: all 0.2s; margin-bottom: 12px;">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 36px; color: var(--primary-color); margin-bottom: 8px; display: block;"></i>
+                    <div style="font-size: 13.5px; font-weight: 600; color: var(--text-main);">Kéo thả tệp tin vào đây hoặc <span style="color: var(--primary-color); text-decoration: underline;">chọn tệp từ máy tính</span></div>
+                    <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Chỉ chấp nhận tệp định dạng .xlsx, .xls (Dung lượng tối đa 10MB)</div>
+                    <input type="file" id="importFileInput" accept=".xls,.xlsx" style="display: none;" onchange="handleImportFileSelected(this)">
+                </div>
+
+                <!-- Selected file info -->
+                <div id="importFileInfo" style="display: none; align-items: center; justify-content: space-between; padding: 12px 16px; background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 8px; margin-bottom: 16px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-file-excel" style="font-size: 26px; color: #10B981;"></i>
+                        <div>
+                            <div id="lblImportFileName" style="font-weight: 600; font-size: 13px; color: #065F46;">Mau_Import_CauHoi_ThuongGap.xlsx</div>
+                            <div id="lblImportFileSize" style="font-size: 11.5px; color: #047857;">45.2 KB • Đã sẵn sàng nhận dữ liệu</div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn" onclick="removeImportFile()" style="padding: 4px 10px; font-size: 12px; color: #EF4444; border: 1px solid #FECACA; background: #FFFFFF; cursor: pointer; border-radius: 4px;">
+                        <i class="fa-regular fa-trash-can"></i> Xóa tệp
+                    </button>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeImportModal()">Hủy</button>
+                <button type="button" class="btn btn-primary" id="btnSubmitImport" onclick="processImportData()" disabled>
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Thực hiện nhận dữ liệu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirmation Modal (xác nhận xóa bản ghi / xóa tệp đính kèm) -->
+    <div class="modal-overlay" id="confirmModal" style="z-index: 3000;">
+        <div class="modal-content" style="max-width: 480px;">
+            <div class="modal-header">
+                <h3 id="confirmTitle">Xác nhận</h3>
+                <button class="modal-close-btn" onclick="closeConfirm()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="padding: 24px;">
+                <p id="confirmMessage" style="margin: 0; font-size: 14px; line-height: 1.6;"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeConfirm()">Hủy</button>
+                <button class="btn btn-danger" id="confirmOkBtn"><i class="fa-solid fa-trash-can"></i> Xóa</button>
             </div>
         </div>
     </div>
@@ -1033,8 +1161,13 @@
 
     <!-- JavaScript logic -->
     <script>
-        // MOCK DATA INITIALIZATION - Expanded to 20 records with all statuses
-        let initialMockFaqs = [
+        // SYSTEM DETECTION FROM URL (?system=btnn or ?system=bpbd)
+        const urlParams = new URLSearchParams(window.location.search);
+        let currentSystem = (urlParams.get('system') || 'btnn').toLowerCase();
+        if (currentSystem !== 'bpbd' && currentSystem !== 'btnn') currentSystem = 'btnn';
+
+        // MOCK DATA INITIALIZATION - BPBD (20 records with topics & approval flow)
+        const initialMockFaqsBpbd = [
             { id: 1, cauHoi: "Quy trình đăng ký biện pháp bảo đảm bằng ô tô trực tuyến cần những giấy tờ gì?", nhomChuDe: "Đăng ký biện pháp bảo đảm", thuTuHienThi: 1, ngayTao: "15/01/2026", tomTat: "Hướng dẫn chuẩn hồ sơ đính kèm và biểu mẫu đăng ký thế chấp ô tô trên cổng dịch vụ công.", tags: "ô tô, đăng ký thế chấp, trực tuyến", files: ["Huongdan_Dangky_Oto.pdf"], media: [], trangThai: "Đã duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "15/01/2026", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "16/01/2026", lyDoTuChoi: "", isDeleted: 0, traLoi: "Để đăng ký thế chấp ô tô trực tuyến, bạn cần chuẩn bị:<br>1. Bản scan Phiếu yêu cầu đăng ký theo mẫu quy định (PDF).<br>2. Hợp đồng thế chấp hoặc văn bản thỏa thuận thế chấp tài sản.<br>3. Bản scan Giấy chứng nhận đăng ký xe ô tô (cả 2 mặt).<br>Tất cả tải lên hệ thống dịch vụ công và thực hiện ký số trực tuyến." },
             { id: 2, cauHoi: "Làm thế nào để thanh toán phí đăng ký biện pháp bảo đảm qua thẻ nội địa/mã QR?", nhomChuDe: "Lệ phí và thanh toán", thuTuHienThi: 2, ngayTao: "20/01/2026", tomTat: "Giải thích các phương thức thanh toán trực tuyến qua Napas và VNPay.", tags: "thanh toán, lệ phí, Napas, QR", files: [], media: ["Video_huongdan_thanhtoan.mp4"], trangThai: "Đã duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "20/01/2026", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "21/01/2026", lyDoTuChoi: "", isDeleted: 0, traLoi: "Hệ thống hỗ trợ thanh toán phí thông qua cổng thanh toán VNPay. Bạn có thể chọn quét mã QR ngân hàng hoặc nhập thông tin thẻ ATM nội địa để trừ tiền trực tiếp. Biên lai điện tử sẽ được phát hành ngay khi giao dịch thành công." },
             { id: 3, cauHoi: "Tài khoản khách hàng bị khóa do nhập sai mật khẩu quá 5 lần thì xử lý thế nào?", nhomChuDe: "Tài khoản và phân quyền", thuTuHienThi: 1, ngayTao: "10/02/2026", tomTat: "Quy trình kích hoạt lại tài khoản khách hàng thông qua email và xác thực OTP.", tags: "tài khoản bị khóa, quên mật khẩu", files: ["Huongdan_Laylai_Matkhau.pdf"], media: [], trangThai: "Chờ duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "10/02/2026", nguoiDuyet: "", ngayDuyet: "", lyDoTuChoi: "", isDeleted: 0, traLoi: "Hệ thống tự động khóa tài khoản trong 30 phút để bảo mật. Khách hàng có thể nhấn vào liên kết 'Quên mật khẩu' trên màn hình đăng nhập để tự khôi phục thông qua địa chỉ email đã đăng ký." },
@@ -1047,7 +1180,6 @@
             { id: 10, cauHoi: "Đăng ký thay đổi thông tin bên bảo đảm do sáp nhập doanh nghiệp?", nhomChuDe: "Xử lý hồ sơ và biểu mẫu", thuTuHienThi: 2, ngayTao: "05/04/2026", tomTat: "Hồ sơ thay đổi chủ thể khi thực hiện sáp nhập ngân hàng hoặc công ty.", tags: "sáp nhập doanh nghiệp, đăng ký thay đổi", files: ["Huongdan_SapNhap_DoanhNghiep.pdf"], media: [], trangThai: "Đã duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "05/04/2026", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "06/04/2026", lyDoTuChoi: "", isDeleted: 0, traLoi: "Bên nhận thế chấp nộp hồ sơ đăng ký thay đổi chủ thể kèm theo Quyết định sáp nhập của cơ quan có thẩm quyền để hệ thống cập nhật đồng loạt thông tin chủ sở hữu tài sản bảo đảm." },
             { id: 11, cauHoi: "Sử dụng chữ ký số cá nhân để phê duyệt hồ sơ đăng ký biện pháp bảo đảm?", nhomChuDe: "Tài khoản và phân quyền", thuTuHienThi: 4, ngayTao: "12/04/2026", tomTat: "Quy chuẩn sử dụng chữ ký số cá nhân SmartOTP hoặc USB Token.", tags: "chữ ký số cá nhân, SmartOTP", files: [], media: [], trangThai: "Đã duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "12/04/2026", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "13/04/2026", lyDoTuChoi: "", isDeleted: 0, traLoi: "Khách hàng cá nhân có thể sử dụng chữ ký số cá nhân do các nhà cung cấp CA công cộng cấp dưới dạng SIM ký số, USB Token hoặc ứng dụng SmartCA tương thích cổng dịch vụ công quốc gia." },
             { id: 12, cauHoi: "Cán bộ nghiệp vụ một cửa từ chối hồ sơ thế chấp khi thiếu giấy tờ gì?", nhomChuDe: "Xử lý hồ sơ và biểu mẫu", thuTuHienThi: 6, ngayTao: "15/04/2026", tomTat: "Các trường hợp bắt buộc phải trả lại hồ sơ đăng ký.", tags: "từ chối hồ sơ, trả lại hồ sơ", files: [], media: [], trangThai: "Từ chối", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "15/04/2026", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "18/04/2026", lyDoTuChoi: "Nội dung câu trả lời cần bổ sung thêm liên kết tải 5 mẫu văn bản từ chối chuẩn ban hành kèm theo Thông tư.", isDeleted: 0, traLoi: "Hồ sơ sẽ bị cán bộ từ chối tiếp nhận nếu thiếu chữ ký hợp lệ của bên thế chấp, thông tin tài sản mô tả bị sai lệch số hiệu hoặc không đính kèm giấy chứng nhận sở hữu tài sản." },
-            // Additional Mock records to hit 20 records (ensure 5+ records per status for 2-page pagination testing)
             { id: 13, cauHoi: "Xử lý giao dịch thế chấp bị trùng lặp số khung xe máy trên Cổng thông tin?", nhomChuDe: "Đăng ký biện pháp bảo đảm", thuTuHienThi: 6, ngayTao: "16/04/2026", tomTat: "Quy trình kiểm tra số khung thực tế và xác minh tính hợp pháp của đăng ký xe.", tags: "số khung, xe máy, trùng lặp", files: ["Huongdan_Trunghop_Sokhung.pdf"], media: [], trangThai: "Từ chối", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "16/04/2026", nguoiDuyet: "Trần Minh Cục Trưởng", ngayDuyet: "18/04/2026", lyDoTuChoi: "Bản hướng dẫn chưa có sơ đồ xử lý trực quan đối với đăng ký viên.", isDeleted: 0, traLoi: "Cán bộ một cửa cần yêu cầu bên nhận thế chấp bổ sung hồ sơ gốc xe máy của cơ quan Công an cấp để kiểm tra xem có sự sai lệch ký tự số khung trong nhập liệu hay không." },
             { id: 14, cauHoi: "Làm thế nào để đăng ký bổ sung tài sản thế chấp mới vào hợp đồng hiện hữu?", nhomChuDe: "Đăng ký biện pháp bảo đảm", thuTuHienThi: 7, ngayTao: "18/04/2026", tomTat: "Đăng ký thay đổi nội dung biện pháp bảo đảm đã đăng ký.", tags: "đăng ký bổ sung, hợp đồng thế chấp", files: [], media: [], trangThai: "Lưu nháp", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "18/04/2026", nguoiDuyet: "", ngayDuyet: "", lyDoTuChoi: "", isDeleted: 0, traLoi: "Người nộp hồ sơ chọn thủ tục 'Đăng ký thay đổi nội dung biện pháp bảo đảm đã đăng ký', tích chọn ô 'Bổ sung tài sản bảo đảm' và nhập thông tin tài sản mới vào hệ thống." },
             { id: 15, cauHoi: "Cấp lại biên lai thu phí đăng ký biện pháp bảo đảm do bị mất?", nhomChuDe: "Lệ phí và thanh toán", thuTuHienThi: 4, ngayTao: "20/04/2026", tomTat: "Thủ tục xin cấp lại biên lai/hóa đơn điện tử thu phí đăng ký.", tags: "cấp lại biên lai, hóa đơn điện tử", files: ["Huongdan_CapLai_BienLai.pdf"], media: [], trangThai: "Chờ duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "20/04/2026", nguoiDuyet: "", ngayDuyet: "", lyDoTuChoi: "", isDeleted: 0, traLoi: "Do hệ thống phát hành hóa đơn điện tử e-Invoice, khách hàng chỉ cần đăng nhập tài khoản, vào Lịch sử giao dịch để tải về file PDF hóa đơn gốc bất cứ lúc nào." },
@@ -1058,22 +1190,59 @@
             { id: 20, cauHoi: "Đăng ký thay đổi thông tin tài sản thế chấp do thay đổi số khung số máy sau khi cải tạo xe?", nhomChuDe: "Đăng ký biện pháp bảo đảm", thuTuHienThi: 9, ngayTao: "30/04/2026", tomTat: "Quy trình đổi số hiệu xe cải tạo trong CSDL quốc gia.", tags: "cải tạo xe, đổi số máy, đăng ký thay đổi", files: [], media: [], trangThai: "Chờ duyệt", nguoiTao: "Nguyễn Văn Cán Bộ", ngayTao: "30/04/2026", nguoiDuyet: "", ngayDuyet: "", lyDoTuChoi: "", isDeleted: 0, traLoi: "Bên nhận thế chấp thực hiện nộp hồ sơ đăng ký thay đổi thông tin tài sản bảo đảm, cung cấp văn bản xác nhận thay đổi số khung/số máy do Cơ quan Đăng ký xe của Công an cấp." }
         ];
 
-        // LOCAL STORAGE STORAGE FOR CRUD STATE
-        if (!localStorage.getItem('faq_documents')) {
-            localStorage.setItem('faq_documents', JSON.stringify(initialMockFaqs));
+        // MOCK DATA INITIALIZATION - BTNN (20 records on Luật TNBTCNN 2017, NO topic, NO approval status)
+        const initialMockFaqsBtnn = [
+            { id: 101, cauHoi: "Thời hiệu yêu cầu bồi thường nhà nước là bao lâu kể từ ngày nhận được văn bản làm căn cứ?", thuTuHienThi: 1, ngayTao: "15/01/2026", traLoi: "Theo khoản 1 Điều 6 Luật Trách nhiệm bồi thường của Nhà nước 2017, thời hiệu yêu cầu bồi thường là 03 năm kể từ ngày người có quyền yêu cầu nhận được văn bản làm căn cứ yêu cầu bồi thường, trừ trường hợp yêu cầu bồi thường trong quá trình tố tụng hình sự hoặc có trở ngại khách quan.", tags: "thời hiệu, yêu cầu bồi thường, Điều 6", files: ["Luat_TNBTCNN_2017.pdf"], media: [], isDeleted: 0 },
+            { id: 102, cauHoi: "Cơ quan nào có trách nhiệm giải quyết bồi thường trong hoạt động quản lý hành chính?", thuTuHienThi: 2, ngayTao: "18/01/2026", traLoi: "Theo Điều 33 Luật TNBTCNN 2017, cơ quan giải quyết bồi thường trong quản lý hành chính là cơ quan quản lý trực tiếp người thi hành công vụ gây thiệt hại tại thời điểm thụ lý hồ sơ yêu cầu bồi thường.", tags: "cơ quan giải quyết bồi thường, quản lý hành chính, Điều 33", files: [], media: [], isDeleted: 0 },
+            { id: 103, cauHoi: "Hồ sơ yêu cầu bồi thường nhà nước bao gồm những tài liệu gì?", thuTuHienThi: 3, ngayTao: "22/01/2026", traLoi: "Hồ sơ yêu cầu bồi thường theo Điều 41 Luật TNBTCNN gồm:<br>1. Văn bản yêu cầu bồi thường (theo mẫu quy định).<br>2. Văn bản làm căn cứ yêu cầu bồi thường.<br>3. Giấy tờ chứng minh nhân thân, tư cách đại diện.<br>4. Tài liệu, chứng cứ chứng minh thiệt hại thực tế phát sinh.", tags: "hồ sơ bồi thường, văn bản yêu cầu, Điều 41", files: ["Mau_VanBan_YeuCau_BoiThuong.pdf"], media: [], isDeleted: 0 },
+            { id: 104, cauHoi: "Các khoản thiệt hại nào được Nhà nước bồi thường theo quy định?", thuTuHienThi: 4, ngayTao: "25/01/2026", traLoi: "Nhà nước bồi thường các khoản thiệt hại quy định tại Mục 2 Chương II Luật TNBTCNN gồm: Thiệt hại do tài sản bị xâm phạm; Thiệt hại do thu nhập thực tế bị mất hoặc giảm sút; Thiệt hại về vật chất do người bị thiệt hại chết hoặc bị tổn hại sức khỏe; Thiệt hại về tinh thần; và Các chi phí hợp lý khác phát sinh.", tags: "phạm vi bồi thường, thiệt hại tinh thần, chi phí hợp lý", files: [], media: [], isDeleted: 0 },
+            { id: 105, cauHoi: "Việc tạm ứng kinh phí bồi thường được thực hiện trong những trường hợp nào?", thuTuHienThi: 5, ngayTao: "28/01/2026", traLoi: "Theo Điều 44 Luật TNBTCNN, cơ quan giải quyết bồi thường thực hiện tạm ứng kinh phí bồi thường đối với các khoản thiệt hại về tinh thần, thiệt hại do tính mạng, sức khỏe bị xâm phạm khi người yêu cầu có đơn đề nghị tạm ứng.", tags: "tạm ứng kinh phí, Điều 44", files: [], media: [], isDeleted: 0 },
+            { id: 106, cauHoi: "Thời hạn thương lượng việc bồi thường thiệt hại được quy định là bao nhiêu ngày?", thuTuHienThi: 6, ngayTao: "02/02/2026", traLoi: "Theo khoản 1 Điều 46 Luật TNBTCNN, thời hạn thương lượng bồi thường tối đa không quá 20 ngày; đối với vụ việc phức tạp, thời hạn thương lượng có thể được gia hạn một lần nhưng không quá 15 ngày.", tags: "thời hạn thương lượng, gia hạn thương lượng, Điều 46", files: ["QuyTrinh_ThuongLuong_BoiThuong.pdf"], media: [], isDeleted: 0 },
+            { id: 107, cauHoi: "Phục hồi danh dự cho người bị thiệt hại trong tố tụng hình sự được thực hiện theo những hình thức nào?", thuTuHienThi: 7, ngayTao: "06/02/2026", traLoi: "Theo Điều 56 Luật TNBTCNN, phục hồi danh dự được thực hiện bằng 02 hình thức:<br>1. Trực tiếp xin lỗi và cải chính công khai tại nơi cư trú hoặc nơi làm việc của người bị thiệt hại.<br>2. Đăng báo xin lỗi và cải chính công khai trên 01 tờ báo trung ương và 01 tờ báo địa phương trong 03 số liên tiếp.", tags: "phục hồi danh dự, xin lỗi cải chính, đăng báo, Điều 56", files: [], media: [], isDeleted: 0 },
+            { id: 108, cauHoi: "Thời hạn chi trả tiền bồi thường sau khi có quyết định giải quyết bồi thường có hiệu lực pháp luật?", thuTuHienThi: 8, ngayTao: "10/02/2026", traLoi: "Theo Điều 54 Luật TNBTCNN, trong thời hạn 02 ngày làm việc kể từ ngày nhận được kinh phí từ cơ quan tài chính, cơ quan giải quyết bồi thường phải thực hiện chi trả ngay cho người bị thiệt hại hoặc người đại diện hợp pháp.", tags: "chi trả tiền bồi thường, thời hạn cấp phát, Điều 54", files: [], media: [], isDeleted: 0 },
+            { id: 109, cauHoi: "Trách nhiệm hoàn trả của người thi hành công vụ có lỗi gây ra thiệt hại được xác định ra sao?", thuTuHienThi: 9, ngayTao: "15/02/2026", traLoi: "Theo Điều 65 Luật TNBTCNN, người thi hành công vụ có lỗi cố ý gây thiệt hại mà chưa đến mức bị truy cứu trách nhiệm hình sự thì mức hoàn trả từ 30 đến 50 tháng lương của người đó. Nếu có lỗi vô ý thì mức hoàn trả từ 03 đến 05 tháng lương.", tags: "trách nhiệm hoàn trả, lỗi cố ý, mức lương hoàn trả, Điều 65", files: ["NghiDinh_QuyDinh_HoanTra.pdf"], media: [], isDeleted: 0 },
+            { id: 110, cauHoi: "Người yêu cầu bồi thường có phải nộp án phí khi khởi kiện ra Tòa án giải quyết bồi thường không?", thuTuHienThi: 10, ngayTao: "20/02/2026", traLoi: "Theo khoản 3 Điều 52 Luật TNBTCNN, người yêu cầu bồi thường không phải nộp tiền án phí, lệ phí Tòa án khi khởi kiện yêu cầu Tòa án giải quyết bồi thường nhà nước.", tags: "án phí, miễn lệ phí Tòa án, Điều 52", files: [], media: [], isDeleted: 0 },
+            { id: 111, cauHoi: "Trường hợp văn bản làm căn cứ yêu cầu bồi thường bị hủy bỏ hoặc đình chỉ thì xử lý như thế nào?", thuTuHienThi: 11, ngayTao: "24/02/2026", traLoi: "Theo Điều 10 Luật TNBTCNN, cơ quan giải quyết bồi thường phải tạm đình chỉ hoặc đình chỉ việc giải quyết bồi thường khi văn bản làm căn cứ yêu cầu bồi thường đang bị khiếu nại, kháng nghị hoặc bị cơ quan có thẩm quyền tạm đình chỉ thi hành.", tags: "tạm đình chỉ, hủy bỏ văn bản căn cứ, Điều 10", files: [], media: [], isDeleted: 0 },
+            { id: 112, cauHoi: "Người yêu cầu bồi thường có được ủy quyền cho luật sư nộp hồ sơ và tham gia thương lượng không?", thuTuHienThi: 12, ngayTao: "28/02/2026", traLoi: "Có. Theo khoản 2 Điều 41 Luật TNBTCNN, người yêu cầu bồi thường có quyền ủy quyền bằng văn bản công chứng/chứng thực cho luật sư hoặc người đại diện hợp pháp để thực hiện các thủ tục yêu cầu bồi thường và tham gia phiên thương lượng.", tags: "ủy quyền, luật sư, người đại diện hợp pháp", files: ["Mau_GiayUyQuyen_LuatSu.pdf"], media: [], isDeleted: 0 },
+            { id: 113, cauHoi: "Cơ quan nào giải quyết bồi thường khi có nhiều người thuộc các cơ quan khác nhau cùng thi hành công vụ gây thiệt hại?", thuTuHienThi: 13, ngayTao: "03/03/2026", traLoi: "Theo Điều 38 Luật TNBTCNN, cơ quan chủ trì thực hiện nhiệm vụ công vụ là cơ quan có trách nhiệm thụ lý và giải quyết bồi thường. Các cơ quan khác có trách nhiệm phối hợp và đóng góp kinh phí bồi thường theo tỷ lệ lỗi.", tags: "nhiều cơ quan cùng gây thiệt hại, cơ quan chủ trì, Điều 38", files: [], media: [], isDeleted: 0 },
+            { id: 114, cauHoi: "Khi nào người bị thiệt hại có quyền khởi kiện yêu cầu Tòa án giải quyết bồi thường?", thuTuHienThi: 14, ngayTao: "08/03/2026", traLoi: "Theo Điều 52 Luật TNBTCNN, người bị thiệt hại có quyền khởi kiện ra Tòa án trong thời hạn 15 ngày kể từ ngày nhận được quyết định giải quyết bồi thường mà không đồng ý, hoặc kể từ ngày hết thời hạn ra quyết định mà cơ quan giải quyết không ban hành quyết định.", tags: "khởi kiện Tòa án, thời hạn khởi kiện, Điều 52", files: [], media: [], isDeleted: 0 },
+            { id: 115, cauHoi: "Mức bồi thường thiệt hại về tinh thần trong trường hợp bị tạm giữ, tạm giam oan sai được tính thế nào?", thuTuHienThi: 15, ngayTao: "12/03/2026", traLoi: "Theo khoản 1 Điều 27 Luật TNBTCNN, thiệt hại về tinh thần do bị tạm giữ, tạm giam, chấp hành hình phạt tù oan được xác định bằng 01 ngày tạm giữ, tạm giam bằng 03 ngày lương cơ sở do Nhà nước quy định tại thời điểm thụ lý.", tags: "tạm giam oan, thiệt hại tinh thần, lương cơ sở, Điều 27", files: [], media: [], isDeleted: 0 },
+            { id: 116, cauHoi: "Thời hạn xem xét, ra quyết định hoàn trả của người thi hành công vụ là bao lâu?", thuTuHienThi: 16, ngayTao: "18/03/2026", traLoi: "Theo Điều 66 Luật TNBTCNN, trong thời hạn 20 ngày kể từ ngày hoàn thành việc chi trả tiền bồi thường, Thủ trưởng cơ quan giải quyết bồi thường phải thành lập Hội đồng xem xét trách nhiệm hoàn trả và ban hành quyết định hoàn trả.", tags: "Hội đồng hoàn trả, quyết định hoàn trả, Điều 66", files: [], media: [], isDeleted: 0 },
+            { id: 117, cauHoi: "Hồ sơ đề nghị cơ quan tài chính cấp kinh phí chi trả bồi thường bao gồm những tài liệu gì?", thuTuHienThi: 17, ngayTao: "22/03/2026", traLoi: "Hồ sơ cấp kinh phí gửi cơ quan tài chính gồm: Văn bản đề nghị cấp kinh phí; Bản sao Quyết định giải quyết bồi thường hoặc Bản án có hiệu lực pháp luật; và Biên bản thương lượng thành (nếu có).", tags: "cấp phát kinh phí bồi thường, cơ quan tài chính", files: ["Mau_HoSo_XinCapKinhPhi.pdf"], media: [], isDeleted: 0 },
+            { id: 118, cauHoi: "Các trường hợp Nhà nước không chịu trách nhiệm bồi thường theo Điều 32 Luật TNBTCNN?", thuTuHienThi: 18, ngayTao: "26/03/2026", traLoi: "Nhà nước không bồi thường trong các trường hợp: Thiệt hại xảy ra hoàn toàn do lỗi của người bị thiệt hại; Thiệt hại xảy ra trong trường hợp bất khả kháng hoặc tình thế cấp thiết theo quy định của Bộ luật Dân sự; Người bị thiệt hại cố ý khai báo gian dối để nhận bồi thường.", tags: "miễn trách nhiệm bồi thường, bất khả kháng, Điều 32", files: [], media: [], isDeleted: 0 },
+            { id: 119, cauHoi: "Thủ tục xin lỗi và cải chính công khai tại nơi cư trú của người bị oan được tiến hành như thế nào?", thuTuHienThi: 19, ngayTao: "30/03/2026", traLoi: "Theo Điều 58 Luật TNBTCNN, trong thời hạn 15 ngày kể từ ngày văn bản làm căn cứ phục hồi danh dự có hiệu lực, cơ quan có thẩm quyền phải phối hợp với UBND cấp xã nơi người bị thiệt hại cư trú để tổ chức buổi trực tiếp xin lỗi và cải chính công khai với sự tham gia của đại diện chính quyền, đoàn thể và người dân.", tags: "thủ tục xin lỗi công khai, UBND cấp xã, Điều 58", files: [], media: [], isDeleted: 0 },
+            { id: 200, cauHoi: "Cơ quan quản lý nhà nước về công tác bồi thường ở địa phương là cơ quan nào và có nhiệm vụ gì?", thuTuHienThi: 20, ngayTao: "05/04/2026", traLoi: "Theo Điều 74 Luật TNBTCNN, Ủy ban nhân dân cấp tỉnh thực hiện quản lý nhà nước về công tác bồi thường tại địa phương; Sở Tư pháp là cơ quan chuyên môn giúp UBND cấp tỉnh thực hiện nhiệm vụ theo dõi, đôn đốc, kiểm tra và thống kê công tác bồi thường nhà nước trên địa bàn tỉnh.", tags: "quản lý nhà nước, Sở Tư pháp, Điều 74", files: ["HuongDan_NghiepVu_STP.pdf"], media: [], isDeleted: 0 }
+        ];
+
+        // Ensure storage for both systems
+        if (!localStorage.getItem('faq_documents_bpbd')) {
+            localStorage.setItem('faq_documents_bpbd', JSON.stringify(initialMockFaqsBpbd));
+        }
+        if (!localStorage.getItem('faq_documents_btnn')) {
+            localStorage.setItem('faq_documents_btnn', JSON.stringify(initialMockFaqsBtnn));
         }
 
-        // STATE VARIABLES
-        let documents = JSON.parse(localStorage.getItem('faq_documents'));
+        // Active documents storage pointer
+        let documents = [];
 
-        // DYNAMIC SHIFT DATES TO CURRENT MONTH (guarantees results are visible under default filters)
-        shiftDatesToCurrentMonth();
+        function loadSystemDocuments() {
+            const key = currentSystem === 'bpbd' ? 'faq_documents_bpbd' : 'faq_documents_btnn';
+            documents = JSON.parse(localStorage.getItem(key)) || (currentSystem === 'bpbd' ? initialMockFaqsBpbd : initialMockFaqsBtnn);
+            shiftDatesToCurrentMonth();
+        }
+
+        function saveSystemDocuments() {
+            const key = currentSystem === 'bpbd' ? 'faq_documents_bpbd' : 'faq_documents_btnn';
+            localStorage.setItem(key, JSON.stringify(documents));
+        }
+
+        loadSystemDocuments();
 
         let currentRole = "officer"; 
         let activeKpiFilter = "all"; 
         
         let currentPage = 1;
-        let pageSize = 5;
+        let pageSize = 20;
         let sortColumn = "ngayTao";
         let sortOrder = "desc";
 
@@ -1097,6 +1266,88 @@
                     doc.ngayDuyet = `${dayStr}/${currentMonth}/${currentYear}`;
                 }
             });
+        }
+
+        function switchSystem(sys) {
+            currentSystem = sys;
+            const newUrl = window.location.pathname + '?system=' + sys;
+            window.history.pushState({ path: newUrl }, '', newUrl);
+            loadSystemDocuments();
+            applySystemUI();
+            currentPage = 1;
+            refreshTable();
+        }
+
+        function applySystemUI() {
+            const isBtnn = currentSystem === 'btnn';
+            
+            // Switcher Tabs
+            const tabBtnn = document.getElementById('tabBtnn');
+            const tabBpbd = document.getElementById('tabBpbd');
+            if (tabBtnn && tabBpbd) {
+                if (isBtnn) {
+                    tabBtnn.classList.add('active');
+                    tabBpbd.classList.remove('active');
+                } else {
+                    tabBpbd.classList.add('active');
+                    tabBtnn.classList.remove('active');
+                }
+            }
+
+            // Page Titles
+            const titleEl = document.getElementById('pageMainTitle');
+            const subTitleEl = document.getElementById('pageSubTitle');
+            if (isBtnn) {
+                document.title = "Quản lý câu hỏi và trả lời thường gặp (FAQ) - Bồi thường nhà nước";
+                if (titleEl) titleEl.innerText = "Quản lý câu hỏi và trả lời thường gặp (FAQ) - Bồi thường nhà nước";
+                if (subTitleEl) subTitleEl.innerText = "Biên tập, quản lý và tra cứu các câu hỏi thường gặp về nghiệp vụ bồi thường của Nhà nước.";
+            } else {
+                document.title = "Quản lý câu hỏi và trả lời thường gặp (FAQ) - Đăng ký BPBĐ";
+                if (titleEl) titleEl.innerText = "Quản lý câu hỏi và trả lời thường gặp (FAQ)";
+                if (subTitleEl) subTitleEl.innerText = "Tiếp nhận, biên tập và quản lý các câu hỏi thường gặp của khách hàng để hỗ trợ tra cứu.";
+            }
+
+            // Role selector
+            const roleBox = document.getElementById('roleSelectorBox');
+            if (roleBox) roleBox.style.display = isBtnn ? 'none' : 'flex';
+
+            // Filters
+            const filterTopicGroup = document.getElementById('filterTopicGroup');
+            const filterStatusGroup = document.getElementById('filterStatusGroup');
+            if (filterTopicGroup) filterTopicGroup.style.display = isBtnn ? 'none' : 'flex';
+            if (filterStatusGroup) filterStatusGroup.style.display = isBtnn ? 'none' : 'flex';
+
+            const filterGrid = document.getElementById('filterGrid');
+            if (filterGrid) {
+                filterGrid.style.gridTemplateColumns = isBtnn ? 'repeat(2, minmax(0, 1fr))' : 'repeat(4, minmax(0, 1fr))';
+            }
+
+            // KPI status buttons
+            const kpiStatsRow = document.getElementById('kpiStatsRow');
+            if (kpiStatsRow) kpiStatsRow.style.display = isBtnn ? 'none' : 'flex';
+            const kpiCardFlex = document.getElementById('kpiCardFlex');
+            if (kpiCardFlex) kpiCardFlex.style.justifyContent = isBtnn ? 'flex-end' : 'space-between';
+            const kpiPending = document.getElementById('kpiBtnPending');
+            const kpiRejected = document.getElementById('kpiBtnRejected');
+            if (kpiPending) kpiPending.style.display = isBtnn ? 'none' : 'inline-flex';
+            if (kpiRejected) kpiRejected.style.display = isBtnn ? 'none' : 'inline-flex';
+
+            // Table headers
+            const thTopic = document.getElementById('th_nhomChuDe');
+            const thStatus = document.getElementById('th_trangThai');
+            if (thTopic) thTopic.style.display = isBtnn ? 'none' : '';
+            if (thStatus) thStatus.style.display = isBtnn ? 'none' : '';
+
+            // Modal Fields
+            const modalTopic = document.getElementById('faqTopicGroup');
+            const modalTags = document.getElementById('faqTagsGroup');
+            if (modalTopic) modalTopic.style.display = isBtnn ? 'none' : 'flex';
+            if (modalTags) modalTags.style.display = isBtnn ? 'none' : 'flex';
+
+            const modalMetaGrid = document.getElementById('modalMetaGrid');
+            if (modalMetaGrid) {
+                modalMetaGrid.style.gridTemplateColumns = isBtnn ? '1fr' : '2fr 1fr 2fr';
+            }
         }
 
         function openApproveModal(id) {
@@ -1144,7 +1395,8 @@
                 flatpickr("#filterToDate", { dateFormat: "d/m/Y", allowInput: true, onChange: refreshTable });
             }
 
-            switchRole(); // Initialize visual controls according to role
+            applySystemUI();
+            if (currentSystem === 'bpbd') switchRole();
             refreshTable();
         });
 
@@ -1160,10 +1412,12 @@
             
             // All
             document.getElementById('countAll').innerText = list.length;
-            // Pending
-            document.getElementById('countPending').innerText = list.filter(d => d.trangThai === 'Chờ duyệt').length;
-            // Rejected
-            document.getElementById('countRejected').innerText = list.filter(d => d.trangThai === 'Từ chối').length;
+            if (currentSystem === 'bpbd') {
+                // Pending
+                document.getElementById('countPending').innerText = list.filter(d => d.trangThai === 'Chờ duyệt').length;
+                // Rejected
+                document.getElementById('countRejected').innerText = list.filter(d => d.trangThai === 'Từ chối').length;
+            }
         }
 
         function filterByKpi(status) {
@@ -1200,12 +1454,11 @@
         // FILTER, SORT, PAGINATE & RENDER
         function refreshTable() {
             let list = documents.filter(d => !d.isDeleted);
+            const isBtnn = currentSystem === 'btnn';
 
             // 1. Apply Filter panel criteria
             const question = document.getElementById('filterQuestion').value.trim().toLowerCase();
             const answer = document.getElementById('filterAnswer').value.trim().toLowerCase();
-            const topic = document.getElementById('filterTopic').value;
-            const status = document.getElementById('filterStatus').value;
             const fromD = parseDate(document.getElementById('filterFromDate').value);
             const toD = parseDate(document.getElementById('filterToDate').value);
 
@@ -1215,12 +1468,18 @@
             if (answer) {
                 list = list.filter(d => d.traLoi.toLowerCase().includes(answer));
             }
-            if (topic) {
-                list = list.filter(d => d.nhomChuDe === topic);
+
+            if (!isBtnn) {
+                const topic = document.getElementById('filterTopic').value;
+                const status = document.getElementById('filterStatus').value;
+                if (topic) {
+                    list = list.filter(d => d.nhomChuDe === topic);
+                }
+                if (status) {
+                    list = list.filter(d => d.trangThai === status);
+                }
             }
-            if (status) {
-                list = list.filter(d => d.trangThai === status);
-            }
+
             if (fromD) {
                 list = list.filter(d => {
                     const dDate = parseDate(d.ngayTao);
@@ -1234,8 +1493,8 @@
                 });
             }
 
-            // 2. Apply KPI quick status filter
-            if (activeKpiFilter !== 'all') {
+            // 2. Apply KPI quick status filter (only for BPBD)
+            if (!isBtnn && activeKpiFilter !== 'all') {
                 list = list.filter(d => d.trangThai === activeKpiFilter);
             }
 
@@ -1285,12 +1544,13 @@
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
 
+            const colSpanTotal = isBtnn ? 5 : 7;
             if (paginatedList.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="7" class="cell-center" style="color: var(--text-muted); padding: 30px;">
+                        <td colspan="${colSpanTotal}" class="cell-center" style="color: var(--text-muted); padding: 30px;">
                             <i class="fa-solid fa-folder-open" style="font-size: 24px; margin-bottom: 8px; display: block;"></i>
-                            Không tìm thấy câu hỏi FAQ nào phù hợp.
+                            Không tìm thấy câu hỏi FAQ nào phù hợp. [MSG-INF-SYS-001]
                         </td>
                     </tr>
                 `;
@@ -1319,13 +1579,17 @@
 
                 // FAQ Question Name
                 const tdQuestion = document.createElement('td');
-                tdQuestion.innerHTML = `<a href="javascript:void(0)" onclick="openDetailModal(${faq.id})" style="color: var(--primary-color); font-weight: 500; text-decoration: none;">${faq.cauHoi}</a>`;
+                // BTNN: Câu hỏi hiển thị dạng văn bản thường; xem chi tiết bằng Row click
+                if (currentSystem === 'btnn') tdQuestion.innerText = faq.cauHoi;
+                else tdQuestion.innerHTML = `<a href="javascript:void(0)" onclick="openDetailModal(${faq.id})" style="color: var(--primary-color); font-weight: 500; text-decoration: none;">${faq.cauHoi}</a>`;
                 tr.appendChild(tdQuestion);
 
-                // Topic
-                const tdTopic = document.createElement('td');
-                tdTopic.innerText = faq.nhomChuDe;
-                tr.appendChild(tdTopic);
+                // Topic (Only for BPBD)
+                if (!isBtnn) {
+                    const tdTopic = document.createElement('td');
+                    tdTopic.innerText = faq.nhomChuDe || '—';
+                    tr.appendChild(tdTopic);
+                }
 
                 // Display order
                 const tdOrder = document.createElement('td');
@@ -1339,22 +1603,29 @@
                 tdDate.innerText = faq.ngayTao;
                 tr.appendChild(tdDate);
 
-                // Status Badge
-                const tdStatus = document.createElement('td');
-                tdStatus.className = "cell-center";
-                let badgeClass = "badge-secondary";
-                if (faq.trangThai === "Chờ duyệt") badgeClass = "badge-warning";
-                else if (faq.trangThai === "Đã duyệt") badgeClass = "badge-success";
-                else if (faq.trangThai === "Từ chối") badgeClass = "badge-danger";
-                tdStatus.innerHTML = `<span class="badge ${badgeClass}">${faq.trangThai}</span>`;
-                tr.appendChild(tdStatus);
+                // Status Badge (Only for BPBD)
+                if (!isBtnn) {
+                    const tdStatus = document.createElement('td');
+                    tdStatus.className = "cell-center";
+                    let badgeClass = "badge-secondary";
+                    if (faq.trangThai === "Chờ duyệt") badgeClass = "badge-warning";
+                    else if (faq.trangThai === "Đã duyệt") badgeClass = "badge-success";
+                    else if (faq.trangThai === "Từ chối") badgeClass = "badge-danger";
+                    tdStatus.innerHTML = `<span class="badge ${badgeClass}">${faq.trangThai}</span>`;
+                    tr.appendChild(tdStatus);
+                }
 
                 // Action Column Fixed Slots alignment
                 const tdActions = document.createElement('td');
                 tdActions.className = "cell-center";
                 
-                if (currentRole === 'officer') {
-                    // Cán bộ nghiệp vụ (4 slots: Xem, Sửa, Xóa, Gửi duyệt)
+                if (isBtnn) {
+                    // BTNN: Cán bộ quản lý trực tiếp (2 slots: Sửa, Xóa)
+                    const editBtn = `<button class="icon-btn edit" title="Sửa câu hỏi FAQ" onclick="openEditModal(${faq.id})"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                    const delBtn = `<button class="icon-btn delete" title="Xóa câu hỏi FAQ" onclick="deleteFaq(${faq.id})"><i class="fa-solid fa-trash-can"></i></button>`;
+                    tdActions.innerHTML = `<div class="action-flex">${editBtn}${delBtn}</div>`;
+                } else if (currentRole === 'officer') {
+                    // Cán bộ nghiệp vụ BPBD (3 slots: Sửa, Xóa, Gửi duyệt)
                     let editBtn = '';
                     if (faq.trangThai === 'Lưu nháp' || faq.trangThai === 'Từ chối') {
                         editBtn = `<button class="icon-btn edit" title="Chỉnh sửa" onclick="openEditModal(${faq.id})"><i class="fa-solid fa-pen-to-square"></i></button>`;
@@ -1378,7 +1649,7 @@
 
                     tdActions.innerHTML = `<div class="action-flex">${editBtn}${delBtn}${sendBtn}</div>`;
                 } else {
-                    // Cán bộ phê duyệt (3 slots: Xem, Phê duyệt, Từ chối)
+                    // Cán bộ phê duyệt BPBD (2 slots: Phê duyệt, Từ chối)
                     let approveBtn = '';
                     if (faq.trangThai === 'Chờ duyệt') {
                         approveBtn = `<button class="icon-btn send" style="color: var(--success-color); border-color: var(--success-color);" title="Phê duyệt" onclick="openApproveModal(${faq.id})"><i class="fa-solid fa-file-signature"></i></button>`;
@@ -1528,17 +1799,35 @@
             showToast("Đã kết xuất Excel danh sách câu hỏi FAQ thành công", "success");
         }
 
+        // CUSTOM CONFIRMATION MODAL & DELETE
+        let confirmCallback = null;
+        function openConfirm(message, onOk, opts) {
+            const o = opts || {};
+            document.getElementById('confirmTitle').innerText = o.title || 'Xác nhận';
+            document.getElementById('confirmMessage').innerText = message;
+            const okBtn = document.getElementById('confirmOkBtn');
+            okBtn.className = 'btn ' + (o.okClass || 'btn-danger');
+            okBtn.innerHTML = `<i class="fa-solid ${o.okIcon || 'fa-trash-can'}"></i> ${o.okLabel || 'Xóa'}`;
+            confirmCallback = onOk;
+            document.getElementById('confirmOkBtn').onclick = () => { const cb = confirmCallback; closeConfirm(); if (cb) cb(); };
+            document.getElementById('confirmModal').classList.add('active');
+        }
+        function closeConfirm() {
+            confirmCallback = null;
+            document.getElementById('confirmModal').classList.remove('active');
+        }
+
         // DELETING FAQ (SOFT DELETE)
         function deleteFaq(id) {
-            if (confirm("Bạn có chắc chắn muốn xóa câu hỏi FAQ này không?")) {
-                const index = documents.findIndex(d => d.id === id);
-                if (index !== -1) {
-                    documents[index].isDeleted = 1;
-                    localStorage.setItem('faq_documents', JSON.stringify(documents));
-                    refreshTable();
-                    showToast("Đã xóa bản ghi thành công", "success");
-                }
-            }
+            const index = documents.findIndex(d => d.id === id);
+            if (index === -1) return;
+            const faq = documents[index];
+            openConfirm(`Bạn có chắc chắn muốn xóa câu hỏi "${faq.cauHoi}" không? [MSG-CFM-SYS-001]`, () => {
+                faq.isDeleted = 1;
+                saveSystemDocuments();
+                refreshTable();
+                showToast("Xóa câu hỏi FAQ thành công. [MSG-SUC-SYS-002]", "success");
+            });
         }
 
         // QUICK SEND TO APPROVAL
@@ -1686,6 +1975,8 @@
             // File inputs disabling
             document.getElementById('docFileInput').disabled = viewMode;
             document.getElementById('mediaFileInput').disabled = viewMode;
+            document.getElementById('modalTitle').closest('.modal-content').classList.toggle('view-mode', viewMode);
+            renderUploadedFiles(); // vẽ lại danh sách tệp theo chế độ xem/sửa (chế độ xem không có link Xóa)
 
             // Form Footer button rules
             const isDraftEmpty = (documents.filter(d => !d.isDeleted).length === 0);
@@ -1693,6 +1984,7 @@
             // Nút Hủy (Cancel button) logic on Form
             // Hidden if table is empty on new creation
             const btnCancel = document.getElementById('btnCancel');
+            btnCancel.innerText = viewMode ? 'Đóng' : 'Hủy';
             if (isDraftEmpty && !editMode && !viewMode) {
                 btnCancel.style.display = 'none';
             } else {
@@ -1702,15 +1994,17 @@
             // Reset decision fields
             document.getElementById('rejectReason').value = '';
 
+            const isBtnn = currentSystem === 'btnn';
             if (viewMode) {
+                document.getElementById('btnSaveBtnn').style.display = 'none';
                 document.getElementById('btnSaveDraft').style.display = 'none';
                 document.getElementById('btnSubmitApproval').style.display = 'none';
                 
                 const currentFaqId = parseInt(document.getElementById('faqId').value);
                 const currentDoc = documents.find(d => d.id === currentFaqId);
 
-                // Show approval section if Chờ duyệt
-                if (currentDoc && currentDoc.trangThai === 'Chờ duyệt') {
+                // Show approval section if Chờ duyệt (only for BPBD)
+                if (!isBtnn && currentDoc && currentDoc.trangThai === 'Chờ duyệt') {
                     if (currentRole === 'approver') {
                         document.getElementById('approveSection').style.display = 'block';
                         document.getElementById('creatorName').value = currentDoc.nguoiTao || "Cán bộ nghiệp vụ";
@@ -1723,7 +2017,7 @@
                         document.getElementById('btnApprove').style.display = 'none';
                         document.getElementById('btnReject').style.display = 'none';
                     }
-                } else if (currentDoc && currentDoc.trangThai === 'Từ chối') {
+                } else if (!isBtnn && currentDoc && currentDoc.trangThai === 'Từ chối') {
                     // Show rejected reasons
                     document.getElementById('approveSection').style.display = 'block';
                     document.getElementById('creatorName').value = currentDoc.nguoiTao || "Cán bộ nghiệp vụ";
@@ -1738,14 +2032,34 @@
                     document.getElementById('btnApprove').style.display = 'none';
                     document.getElementById('btnReject').style.display = 'none';
                 }
+
+                const btnDeleteInView = document.getElementById('btnDeleteInView');
+                const btnEditInView = document.getElementById('btnEditInView');
+                if (btnDeleteInView) btnDeleteInView.style.display = 'inline-flex';
+                if (btnEditInView) {
+                    btnEditInView.style.display = 'inline-flex';
+                    btnEditInView.innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${isBtnn ? 'Sửa' : 'Chỉnh sửa'}`;
+                }
             } else {
-                // Creation or editing mode for Officer
+                // Creation or editing mode
                 document.getElementById('approveSection').style.display = 'none';
                 document.getElementById('btnApprove').style.display = 'none';
                 document.getElementById('btnReject').style.display = 'none';
 
-                document.getElementById('btnSaveDraft').style.display = 'inline-flex';
-                document.getElementById('btnSubmitApproval').style.display = 'inline-flex';
+                const btnDeleteInView = document.getElementById('btnDeleteInView');
+                const btnEditInView = document.getElementById('btnEditInView');
+                if (btnDeleteInView) btnDeleteInView.style.display = 'none';
+                if (btnEditInView) btnEditInView.style.display = 'none';
+
+                if (isBtnn) {
+                    document.getElementById('btnSaveBtnn').style.display = 'inline-flex';
+                    document.getElementById('btnSaveDraft').style.display = 'none';
+                    document.getElementById('btnSubmitApproval').style.display = 'none';
+                } else {
+                    document.getElementById('btnSaveBtnn').style.display = 'none';
+                    document.getElementById('btnSaveDraft').style.display = 'inline-flex';
+                    document.getElementById('btnSubmitApproval').style.display = 'inline-flex';
+                }
             }
 
             document.getElementById('faqModal').classList.add('active');
@@ -1754,6 +2068,19 @@
         // CLOSE MODAL
         function closeModal() {
             document.getElementById('faqModal').classList.remove('active');
+        }
+
+        function editFaqFromView() {
+            const id = parseInt(document.getElementById('faqId').value);
+            if (!id) return;
+            openEditModal(id);
+        }
+
+        function deleteFaqFromView() {
+            const id = parseInt(document.getElementById('faqId').value);
+            if (!id) return;
+            closeModal();
+            deleteFaq(id);
         }
 
         // OPEN MODAL FOR CREATION
@@ -1767,6 +2094,71 @@
             renderUploadedFiles();
 
             showModal("Thêm mới câu hỏi thường gặp (FAQ)", false, false);
+        }
+
+        // IMPORT EXCEL MODAL FUNCTIONS
+        function openImportModal() {
+            removeImportFile();
+            document.getElementById('importModal').classList.add('active');
+        }
+
+        function closeImportModal() {
+            document.getElementById('importModal').classList.remove('active');
+        }
+
+        function triggerImportFileInput() {
+            document.getElementById('importFileInput').click();
+        }
+
+        function handleImportFileSelected(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                document.getElementById('lblImportFileName').innerText = file.name;
+                document.getElementById('lblImportFileSize').innerText = (file.size / 1024).toFixed(1) + ' KB • Đã sẵn sàng nhận dữ liệu';
+                document.getElementById('importFileInfo').style.display = 'flex';
+                document.getElementById('btnSubmitImport').removeAttribute('disabled');
+            }
+        }
+
+        function removeImportFile() {
+            document.getElementById('importFileInput').value = '';
+            document.getElementById('importFileInfo').style.display = 'none';
+            document.getElementById('btnSubmitImport').setAttribute('disabled', 'true');
+        }
+
+        function downloadImportTemplate() {
+            showToast('Đang tải file biểu mẫu: Mau_Import_CauHoi_ThuongGap_BTNN.xlsx', 'info');
+        }
+
+        function processImportData() {
+            const newRecord1 = {
+                id: Date.now(),
+                cauHoi: "Trường hợp nào được gia hạn thời gian thụ lý hồ sơ yêu cầu bồi thường?",
+                thuTuHienThi: 21,
+                ngayTao: new Date().toLocaleDateString('vi-VN'),
+                traLoi: "Theo quy định, đối với vụ việc có tính chất phức tạp cần xác minh thêm thiệt hại hoặc chờ kết quả trưng cầu giám định, cơ quan giải quyết có thể gia hạn một lần không quá 15 ngày.",
+                tags: "thụ lý hồ sơ, gia hạn, bồi thường",
+                files: [],
+                media: [],
+                isDeleted: 0
+            };
+            const newRecord2 = {
+                id: Date.now() + 1,
+                cauHoi: "Cá nhân có quyền yêu cầu cơ quan nào giải quyết bồi thường khi cơ quan trực tiếp gây thiệt hại đã giải thể?",
+                thuTuHienThi: 22,
+                ngayTao: new Date().toLocaleDateString('vi-VN'),
+                traLoi: "Trường hợp cơ quan trực tiếp gây thiệt hại đã giải thể, cơ quan kế thừa chức năng, nhiệm vụ hoặc cơ quan cấp trên trực tiếp có trách nhiệm giải quyết bồi thường.",
+                tags: "cơ quan giải thể, kế thừa trách nhiệm",
+                files: [],
+                media: [],
+                isDeleted: 0
+            };
+            documents.unshift(newRecord1, newRecord2);
+            saveSystemDocuments();
+            closeImportModal();
+            showToast('Nhận Excel thành công: Đã nạp thành công 02 bản ghi câu hỏi thường gặp vào hệ thống!', 'success');
+            currentPage = 1;
+            refreshTable();
         }
 
         // OPEN MODAL FOR VIEW DETAIL
@@ -1804,7 +2196,7 @@
             tempMediaFiles = [...faq.media];
             renderUploadedFiles();
 
-            showModal("Chỉnh sửa câu hỏi thường gặp", false, true);
+            showModal(currentSystem === 'btnn' ? "Sửa câu hỏi thường gặp" : "Chỉnh sửa câu hỏi thường gặp", false, true);
         }
 
         // VALIDATION & SAVING
@@ -1888,7 +2280,7 @@
                 documents.push(newFaq);
             }
 
-            localStorage.setItem('faq_documents', JSON.stringify(documents));
+            saveSystemDocuments();
             
             // Re-align dates on load state
             shiftDatesToCurrentMonth();
@@ -1896,6 +2288,93 @@
             closeModal();
             refreshTable();
             showToast(status === 'Lưu nháp' ? "Đã lưu nháp câu hỏi thành công" : "Đã gửi câu hỏi lên Cán bộ phê duyệt thành công", "success");
+        }
+
+        // BTNN DIRECT SAVE (Rule 9: No toast for empty required fields, highlight red & message)
+        function saveDataBtnn() {
+            clearErrors();
+            let isValid = true;
+            let firstInvalid = null;
+
+            const question = document.getElementById('faqQuestion').value.trim();
+            const answer = document.getElementById('faqAnswer').innerHTML.trim();
+            const orderStr = document.getElementById('faqOrder').value.trim();
+
+            const errQuestion = document.getElementById('error_faqQuestion');
+            if (!question) {
+                const el = document.getElementById('faqQuestion');
+                el.classList.add('is-invalid');
+                errQuestion.innerText = 'Đây là trường bắt buộc';
+                errQuestion.style.display = 'block';
+                if (!firstInvalid) firstInvalid = el;
+                isValid = false;
+            } else {
+                // Không cho trùng nội dung Câu hỏi (không phân biệt hoa thường) với câu hỏi khác chưa bị xóa
+                const curId = document.getElementById('faqId').value;
+                const dup = documents.some(d => !d.isDeleted && String(d.id) !== String(curId) && String(d.cauHoi || '').trim().toLowerCase() === question.toLowerCase());
+                if (dup) {
+                    const el = document.getElementById('faqQuestion');
+                    el.classList.add('is-invalid');
+                    errQuestion.innerText = 'Nội dung câu hỏi đã tồn tại trong hệ thống';
+                    errQuestion.style.display = 'block';
+                    if (!firstInvalid) firstInvalid = el;
+                    isValid = false;
+                }
+            }
+            if (!answer || answer === '<br>' || answer === '') {
+                const el = document.getElementById('faqAnswer');
+                document.getElementById('error_faqAnswer').style.display = 'block';
+                if (!firstInvalid) firstInvalid = el;
+                isValid = false;
+            }
+            if (orderStr) {
+                const order = parseInt(orderStr);
+                if (isNaN(order) || order <= 0) {
+                    const el = document.getElementById('faqOrder');
+                    el.classList.add('is-invalid');
+                    document.getElementById('error_faqOrder').style.display = 'block';
+                    if (!firstInvalid) firstInvalid = el;
+                    isValid = false;
+                }
+            }
+
+            if (!isValid) {
+                if (firstInvalid) firstInvalid.focus();
+                return;
+            }
+
+            const id = document.getElementById('faqId').value;
+            if (id) {
+                // Update
+                const idx = documents.findIndex(d => d.id === parseInt(id));
+                if (idx !== -1) {
+                    documents[idx].cauHoi = question;
+                    documents[idx].traLoi = answer;
+                    documents[idx].thuTuHienThi = orderStr ? parseInt(orderStr) : "";
+                    documents[idx].files = [...tempDocFiles];
+                    documents[idx].media = [...tempMediaFiles];
+                    documents[idx].ngayTao = formatDateToString(new Date());
+                }
+            } else {
+                // Create new
+                const newFaq = {
+                    id: Date.now(),
+                    cauHoi: question,
+                    traLoi: answer,
+                    thuTuHienThi: orderStr ? parseInt(orderStr) : (documents.length + 1),
+                    files: [...tempDocFiles],
+                    media: [...tempMediaFiles],
+                    nguoiTao: "Nguyễn Văn Cán Bộ",
+                    ngayTao: formatDateToString(new Date()),
+                    isDeleted: 0
+                };
+                documents.unshift(newFaq);
+            }
+
+            saveSystemDocuments();
+            closeModal();
+            refreshTable();
+            showToast(id ? "Cập nhật câu hỏi FAQ thành công. [MSG-SUC-SYS-002]" : "Thêm mới câu hỏi FAQ thành công. [MSG-SUC-SYS-003]", "success");
         }
 
         // APPROVER DECISION (Phê duyệt / Từ chối)
@@ -1923,7 +2402,7 @@
                     documents[idx].lyDoTuChoi = "";
                 }
 
-                localStorage.setItem('faq_documents', JSON.stringify(documents));
+                saveSystemDocuments();
                 closeModal();
                 refreshTable();
                 showToast(decisionStatus === 'Đã duyệt' ? "Đã phê duyệt FAQ thành công" : "Đã từ chối phê duyệt FAQ", "success");

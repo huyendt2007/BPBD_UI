@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiểm tra công tác BTNN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/vn.js"></script>
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --primary-hover: #172554;
+            --primary-light: #eff6ff;
+            --secondary-color: #0284c7;
+            --success-color: #16a34a;
+            --warning-color: #d97706;
+            --danger-color: #dc2626;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-main: #f8fafc;
+            --border-color: #e2e8f0;
+            --radius: 6px;
+            --shadow: 0 4px 12px rgba(15, 23, 42, 0.07);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Inter, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-main);
+            padding: 24px;
+            line-height: 1.5;
+        }
+
+        .page-header,
+        .section {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .page-header {
+            padding: 18px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .page-title h1 {
+            font-size: 20px;
+            line-height: 1.3;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .page-title p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .section {
+            padding: 20px;
+            margin-bottom: 18px;
+        }
+
+        .section-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--primary-color);
+        }
+
+        .grid-4,
+        .grid-3,
+        .grid-2 {
+            display: grid;
+            gap: 14px;
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .grid-3 {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 6px;
+        }
+
+        /* Bảng tài liệu đính kèm và popup xác nhận - đồng nhất với màn Tiếp nhận yêu cầu */
+        .action-link { font-size: 12px; font-weight: 600; text-decoration: none; }
+        .action-link.view-link { color: var(--secondary-color); }
+        .action-link.delete-link { color: var(--danger-color); }
+        .doc-actions { align-items: center; display: flex; gap: 10px; justify-content: center; white-space: nowrap; }
+        .disabled-action { cursor: not-allowed; opacity: 0.35; pointer-events: none; }
+        .file-name { font-weight: 600; color: #166534; text-overflow: ellipsis; white-space: nowrap; overflow: hidden; display: inline-block; max-width: 100%; }
+        .btn-upload-rust { background-color: #C27857; color: white; border: none; border-radius: 4px; padding: 6px 16px; font-size: 12.5px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-upload-rust:hover { background-color: #A96241; }
+        .btn.btn-sm { height: 32px; padding: 0 12px; font-size: 12.5px; }
+        .btn-danger { background: var(--danger-color); color: #fff; }
+        .modal-backdrop { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.45); z-index: 1000; padding: 20px; }
+        .modal-backdrop.visible { display: flex; }
+        .modal { width: min(560px, 100%); display: flex; flex-direction: column; background: #fff; border-radius: 8px; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.24); border: 1px solid var(--border-color); overflow: hidden; }
+        .modal-head, .modal-foot { padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .modal-foot { justify-content: flex-end; border-top: 1px solid var(--border-color); }
+        .modal-head { border-bottom: 1px solid var(--border-color); }
+        .modal-body { padding: 18px; overflow: auto; min-height: 0; }
+
+        .form-control.is-invalid {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.12);
+        }
+
+        .invalid-feedback {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .required {
+            color: var(--danger-color);
+            margin-left: 2px;
+        }
+
+        .form-control {
+            width: 100%;
+            height: 38px;
+            border: 1px solid #cbd5e1;
+            border-radius: var(--radius);
+            padding: 8px 10px;
+            font-size: 13.5px;
+            color: var(--text-main);
+            background: #fff;
+            outline: none;
+        }
+
+        textarea.form-control {
+            height: 90px;
+            resize: vertical;
+        }
+
+        .form-control:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.14);
+        }
+
+        .btn {
+            height: 38px;
+            border-radius: var(--radius);
+            border: 1px solid transparent;
+            padding: 8px 14px;
+            font-size: 13.5px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+        }
+
+        .btn-secondary {
+            background: #fff;
+            border-color: var(--border-color);
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background: #f1f5f9;
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: #fff;
+        }
+
+        .icon-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border-color);
+            background: #fff;
+            color: #475569;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .icon-btn:hover {
+            background: var(--primary-light);
+            color: var(--primary-color);
+            border-color: #bfdbfe;
+        }
+
+        .icon-btn.disabled {
+            opacity: 0.35;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        .tabs {
+            display: none;
+            gap: 6px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 16px;
+        }
+
+        .tab-btn {
+            border: none;
+            background: transparent;
+            padding: 10px 14px;
+            color: #64748b;
+            font-size: 13.5px;
+            font-weight: 800;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .table-wrap {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            min-width: 980px;
+        }
+
+        th {
+            background: #f1f5f9;
+            color: #475569;
+            text-align: left;
+            font-weight: 800;
+            padding: 11px 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        tbody tr {
+            cursor: pointer;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            min-height: 22px;
+            border-radius: 999px;
+            padding: 3px 9px;
+            font-size: 11.5px;
+            font-weight: 800;
+            border: 1px solid transparent;
+        }
+
+        .badge.draft {
+            background: #f1f5f9;
+            color: #475569;
+            border-color: #e2e8f0;
+        }
+
+        .badge.pending {
+            background: #fef3c7;
+            color: #a16207;
+            border-color: #fde68a;
+        }
+
+        .badge.active {
+            background: #e0f2fe;
+            color: #0369a1;
+            border-color: #bae6fd;
+        }
+
+        .badge.done {
+            background: #dcfce7;
+            color: #15803d;
+            border-color: #bbf7d0;
+        }
+
+        .badge.returned {
+            background: #fee2e2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+
+        .badge.group-td {
+            background: #e0f2fe;
+            color: #0369a1;
+            border-color: #bae6fd;
+        }
+
+        .badge.group-yc {
+            background: #f3e8ff;
+            color: #7e22ce;
+            border-color: #e9d5ff;
+        }
+
+        .badge.group-dd {
+            background: #fef3c7;
+            color: #b45309;
+            border-color: #fde68a;
+        }
+
+        .detail-panel {
+            display: none;
+            border-top: 3px solid var(--primary-color);
+        }
+
+        .detail-panel.visible {
+            display: block;
+        }
+
+        .info-strip {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+        }
+
+        .info-label {
+            color: var(--text-muted);
+            font-size: 11.5px;
+            font-weight: 700;
+        }
+
+        .info-value {
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: 800;
+            margin-top: 3px;
+        }
+
+        .doc-table {
+            min-width: 760px;
+        }
+
+        /* Pagination Bar (Rule 4) */
+        .pagination-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 16px;
+            background-color: #f8fafc;
+            border-top: 1px solid var(--border-color);
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            margin-top: 10px;
+            font-size: 12.5px;
+        }
+
+        .pagination-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .page-size-select {
+            height: 28px;
+            padding: 2px 6px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            font-size: 12px;
+            background: white;
+        }
+
+        .pagination-pages {
+            display: flex;
+            gap: 4px;
+        }
+
+        .page-item {
+            min-width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 6px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: white;
+            color: var(--text-main);
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s;
+        }
+
+        .page-item:hover:not(.disabled) {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            background-color: #eff6ff;
+        }
+
+        .page-item.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .page-item.disabled {
+            color: #cbd5e1;
+            background-color: #f8fafc;
+            cursor: not-allowed;
+            border-color: #e2e8f0;
+            pointer-events: none;
+        }
+
+        .footer-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .toast {
+            position: fixed;
+            right: 22px;
+            bottom: 22px;
+            background: #0f172a;
+            color: #fff;
+            padding: 12px 14px;
+            border-radius: 8px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.24);
+            z-index: 9999;
+        }
+
+        @media (max-width: 1100px) {
+            .grid-4 {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .info-strip {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 720px) {
+            body {
+                padding: 14px;
+            }
+
+            .page-header,
+            .section-head,
+            .footer-actions {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .grid-4,
+            .grid-3,
+            .grid-2,
+            .info-strip {
+                grid-template-columns: 1fr;
+            }
+        }
+        .form-group:has(> input.is-invalid) .wf-utree-display { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+        .view-mode .wf-utree-display { pointer-events: none; background: #f8fafc; }
+        .view-mode .wf-utree-clear, .view-mode .wf-utree-display .fa-chevron-down, .view-mode .unit-chip button { display: none !important; }
+        .unit-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+        .unit-chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 6px 3px 10px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 999px; font-size: 12px; color: #1e3a8a; }
+        .unit-chip button { border: none; background: transparent; color: #64748b; cursor: pointer; padding: 0 2px; }
+        .case-lookup { display: flex; gap: 8px; align-items: center; }
+        .case-lookup .form-control { flex: 1; }
+        .case-link { display: inline-block; margin-top: 6px; font-size: 13px; color: #1d4ed8; text-decoration: underline; cursor: pointer; }
+        .tab-count { display: inline-block; min-width: 20px; padding: 0 6px; margin-left: 4px; border-radius: 999px; background: #e2e8f0; color: #334155; font-size: 11px; font-weight: 700; }
+        .tab-btn.active .tab-count { background: #fff; color: var(--primary-color); }
+        .code-cell { font-weight: 800; color: var(--primary-color); white-space: nowrap; }
+        .overdue { color: #dc2626; font-size: 11px; font-weight: 700; }
+        .row-actions { display: flex; gap: 6px; justify-content: center; }
+        .check-list { display: flex; flex-wrap: wrap; gap: 8px 18px; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; min-height: 38px; }
+        .check-list.is-invalid { border-color: #ef4444; background: #fef2f2; }
+        .check-item { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+        .response-box { margin: 6px 0 14px; padding: 12px 14px; border: 1px solid #bfdbfe; background: #f8fbff; border-radius: 8px; }
+        .response-title { font-weight: 700; color: var(--primary-color); margin-bottom: 10px; }
+        .muted { color: #64748b; font-size: 13px; font-weight: 400; }
+        .history-list { border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px 12px; background: #f8fafc; font-size: 13px; line-height: 1.7; }
+        .has-error .wf-utree-display { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+        .form-group .wf-utree-search input.is-invalid { border-color: #cbd5e1; background: #fff; }        .kt-block { border: 1px solid #dbe3ef; border-radius: 10px; padding: 14px 16px 16px; margin-bottom: 16px; background: #fff; }
+        .kt-block.kt-result { border-color: #bbf7d0; background: #fbfefc; }
+        .kt-block-title { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 800; color: var(--primary-color); margin-bottom: 12px; }
+        .kt-result .kt-block-title { color: #15803d; }
+        .kt-step { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; background: var(--primary-color); color: #fff; font-size: 13px; }
+        .kt-result .kt-step { background: #16a34a; }
+        .kt-sub-title { font-weight: 700; color: #334155; margin: 14px 0 8px; font-size: 13px; }
+        .member-table td { vertical-align: middle; }
+        .member-table .is-invalid { border-color: #ef4444 !important; background: #fef2f2 !important; }    </style>
+</head>
+
+<body>
+    <div class="page-header">
+        <div class="page-title">
+            <h1><i class="fa-solid fa-clipboard-check"></i> Kiểm tra công tác BTNN</h1>
+            <p>Lập kế hoạch kiểm tra và cập nhật kết quả kiểm tra công tác bồi thường nhà nước theo Mục 4 Chương II Thông tư 08/2019/TT-BTP.</p>
+        </div>
+        <button class="btn btn-secondary" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
+    </div>
+
+    <div class="section">
+        <div class="section-head">
+            <div class="section-title"><i class="fa-solid fa-filter"></i> Lọc, tìm kiếm thông tin</div>
+        </div>
+        <div class="grid-4" id="filterGrid"></div>
+        <div class="footer-actions" style="margin-top:12px;">
+            <button class="btn btn-secondary" onclick="resetFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+            <button class="btn btn-primary" onclick="searchList()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-head">
+            <div class="section-title"><i class="fa-solid fa-table-list"></i> Bảng kết quả tìm kiếm</div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+                <button class="btn btn-primary" onclick="openForm('new')"><i class="fa-solid fa-circle-plus"></i> Thêm mới</button>
+                <button class="btn btn-secondary" onclick="showToast('Hệ thống đang kết xuất Excel theo kết quả tìm kiếm hiện hành.')"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead id="tableHead"></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+        <div class="pagination-bar">
+            <div class="pagination-left">
+                <span>Số dòng hiển thị:</span>
+                <select class="page-size-select" onchange="changePageSize(this.value)">
+                    <option value="10">10</option><option value="20" selected>20</option><option value="50">50</option><option value="100">100</option>
+                </select>
+                <span>Hiển thị <span id="currentRange" style="font-weight:600;">0-0</span> trong tổng số <span id="totalCount" style="font-weight:600;">0</span> bản ghi</span>
+            </div>
+            <div class="pagination-pages" id="paginationPages"></div>
+        </div>
+    </div>
+
+    <div class="section detail-panel" id="detailPanel">
+        <div class="section-head">
+            <div class="section-title" id="formTitle"><i class="fa-solid fa-pen-to-square"></i> Thêm mới</div>
+            <button class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> Đóng</button>
+        </div>
+        <div class="info-strip">
+            <div><div class="info-label">Mã cuộc kiểm tra</div><div class="info-value" id="formCode">Hệ thống tự sinh</div></div>
+            <div><div class="info-label">Trạng thái</div><div class="info-value" id="formStatus">Đang nhập</div></div>
+            <div><div class="info-label">Cơ quan kiểm tra</div><div class="info-value" id="formSender">-</div></div>
+            <div><div class="info-label">Cán bộ xử lý</div><div class="info-value" id="formOfficer">-</div></div>
+        </div>
+        <form id="businessForm" onsubmit="return false;">
+            <div class="kt-block" id="planBlock">
+                <div class="kt-block-title"><span class="kt-step">I</span> Kế hoạch kiểm tra <span class="muted" id="planNote"></span></div>
+                <div class="grid-3" id="planFields"></div>
+                <div class="kt-sub-title">Đoàn kiểm tra<span class="required">*</span></div>
+                <div class="table-wrap">
+                    <table class="doc-table member-table">
+                        <thead><tr><th style="width:56px; text-align:center;">STT</th><th>Họ và tên<span class="required">*</span></th><th>Chức vụ<span class="required">*</span></th><th style="width:34%;">Đơn vị<span class="required">*</span></th><th style="width:150px;">Vai trò<span class="required">*</span></th><th style="width:90px; text-align:center;" class="edit-only">Thao tác</th></tr></thead>
+                        <tbody id="memberRows"></tbody>
+                    </table>
+                </div>
+                <div id="memberError" class="invalid-feedback" style="display:none;"></div>
+                <div style="margin-top:8px;" class="edit-only" id="addMemberWrap"><button type="button" class="btn btn-secondary btn-sm" onclick="addMember()"><i class="fa-solid fa-plus"></i> Thêm thành viên</button></div>
+                <div class="kt-sub-title">Tài liệu kèm theo kế hoạch</div>
+                <div class="table-wrap"><table class="doc-table"><thead><tr><th style="width:60px; text-align:center;">STT</th><th>Tên tài liệu</th><th style="width:260px;">File đính kèm</th><th style="width:160px; text-align:center;">Thao tác tài liệu</th></tr></thead><tbody id="planDocs"></tbody></table></div>
+                <div style="margin-top:8px;" id="addPlanDocWrap"><button type="button" class="btn btn-secondary btn-sm" onclick="addDoc('plan')"><i class="fa-solid fa-plus"></i> Thêm dòng</button></div>
+            </div>
+
+            <div class="kt-block kt-result" id="resultBlock">
+                <div class="kt-block-title"><span class="kt-step">II</span> Kết quả kiểm tra <span class="muted" id="resultNote"></span></div>
+                <div id="resultBody">
+                    <div class="grid-3" id="resultFields"></div>
+                    <div class="kt-sub-title">Tài liệu kèm theo</div>
+                    <div class="table-wrap"><table class="doc-table"><thead><tr><th style="width:60px; text-align:center;">STT</th><th>Tên tài liệu</th><th style="width:260px;">File đính kèm</th><th style="width:160px; text-align:center;">Thao tác tài liệu</th></tr></thead><tbody id="resultDocs"></tbody></table></div>
+                    <div style="margin-top:8px;" id="addResultDocWrap"><button type="button" class="btn btn-secondary btn-sm" onclick="addDoc('result')"><i class="fa-solid fa-plus"></i> Thêm dòng</button></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <span class="form-label">Lịch sử xử lý</span>
+                <div id="historyList" class="history-list"></div>
+            </div>
+        </form>
+        <div class="footer-actions" id="formActions"></div>
+    </div>
+
+    <div class="modal-backdrop" id="confirmModal">
+        <div class="modal">
+            <div class="modal-head">
+                <strong><i class="fa-solid fa-circle-question"></i> Xác nhận</strong>
+                <button class="icon-btn" onclick="closeConfirm(false)"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="confirmText">Bạn có chắc chắn muốn thực hiện thao tác này?</div>
+            <div class="modal-foot">
+                <button class="btn btn-secondary" onclick="closeConfirm(false)">Hủy bỏ</button>
+                <button class="btn btn-primary" onclick="closeConfirm(true)">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
+
+    <script src="btnn_luong_xu_ly.js"></script>
+    <script src="btnn_tim_kiem_vu_viec.js"></script>
+    <script>
+        const W = window.BTNN_WF, CASE = window.BTNN_CASE;
+        const STORE_KEY = 'btnn_kiem_tra_records_v1';
+        // ===== Danh sách giá trị theo Thông tư 08/2019/TT-BTP =====
+        // Hình thức kiểm tra - Điều 18
+        const KT_FORMS = ['Kiểm tra định kỳ', 'Kiểm tra đột xuất'];
+        // Căn cứ kiểm tra - Điều 17
+        const KT_BASIS = ['Kiến nghị, phản ánh, khiếu nại, tố cáo của cá nhân, cơ quan, tổ chức về công tác bồi thường nhà nước', 'Kết quả của hoạt động hướng dẫn nghiệp vụ; theo dõi, đôn đốc; hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục yêu cầu bồi thường', 'Kết quả thống kê việc thực hiện công tác bồi thường nhà nước hằng năm', 'Theo hướng dẫn của cơ quan quản lý nhà nước ở trung ương'];
+        // Thành phần đoàn kiểm tra - khoản 1 Điều 20
+        const ROLES = ['Trưởng đoàn', 'Thành viên'];
+        const ST = { PLANNED: 'Chờ kiểm tra', DONE: 'Đã kiểm tra' };
+
+        const unitName = id => (id && W.unitName(id)) || '';
+        const myUser = () => W.getCurrentUser();
+        const myRoot = () => W.getRootId(myUser().unitId);
+        const TW_IDS = ['TANDTC', 'VKSNDTC', 'VPCP', 'TTCP', 'BTC'];
+        function isTopLevel(id) { if (TW_IDS.includes(id)) return true; const u = W.getUnit(id); return !!u && !u.parentId && /^UBND (tỉnh|Thành phố)/.test(u.name); }
+        // Cơ quan được kiểm tra: đơn vị cấp dưới thuộc phạm vi quản lý (Bộ Tư pháp: toàn quốc; Sở Tư pháp: cơ quan trên địa bàn tỉnh, không gồm UBND cấp tỉnh)
+        function allowTarget(id) {
+            const s = CASE.scope();
+            if (W.getRootId(id) === myRoot()) return false;
+            if (s.level === 'BTP') return true;
+            return s.allowUnit(id) && !isTopLevel(id);
+        }
+        const disabledFor = test => W.ORG_UNITS.filter(u => !test(u.id)).map(u => u.id);
+
+        // ===== Dữ liệu =====
+        const today = () => { const d = new Date(); return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`; };
+        const nowText = () => { const d = new Date(); return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')} ${today()}`; };
+        const parseDate = s => { const p = String(s || '').split('/'); return p.length === 3 ? new Date(p[2], p[1] - 1, p[0]) : null; };
+        const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        const hist = (at, by, action) => ({ at, by, action });
+        const mem = (name, position, unitId, role) => ({ name, position, unitId, role });
+        function seed() {
+            const b = 'Nguyễn Văn Cán Bộ', s = 'Đỗ Văn Chung';
+            const plan = (o) => Object.assign({ planDocs: [{ name: 'Kế hoạch kiểm tra', file: 'ke_hoach_kiem_tra.pdf' }], resultDocs: [] }, o);
+            return [
+                plan({ code: 'KT-BTNN-2026-001', senderId: 'BTP-01', officer: b, createdAt: '20/03/2026', form: KT_FORMS[0], basis: KT_BASIS[2], targetId: 'UBND-LD', content: 'Kiểm tra việc giải quyết yêu cầu bồi thường và quản lý nhà nước về công tác bồi thường nhà nước tại tỉnh Lâm Đồng.', periodFrom: '01/01/2025', periodTo: '31/12/2025', scopeNote: 'Các vụ việc thụ lý trong năm 2025.', planFrom: '12/08/2026', planTo: '14/08/2026', planPlace: 'Trụ sở UBND tỉnh Lâm Đồng', members: [mem('Trần Văn Bồi Thường', 'Trưởng phòng', 'PLN-02', ROLES[0]), mem('Nguyễn Văn Cán Bộ', 'Chuyên viên', 'PLN-02', ROLES[1]), mem('Kha Văn Sang', 'Chủ tịch UBND', 'UBND-LD', ROLES[1])], status: ST.DONE, result: { from: '12/08/2026', to: '15/08/2026', place: 'Trụ sở UBND tỉnh Lâm Đồng và Cục Thi hành án dân sự tỉnh Lâm Đồng', content: 'Đã kiểm tra 05 vụ việc; 01 vụ việc quá thời hạn giải quyết. Đoàn kiểm tra đã ban hành kết luận kiểm tra.' }, resultDocs: [{ name: 'Biên bản kiểm tra', file: 'bien_ban_kiem_tra.pdf' }, { name: 'Kết luận kiểm tra', file: 'ket_luan_kiem_tra.pdf' }], history: [hist('20/03/2026 09:00', b, 'Lập kế hoạch kiểm tra'), hist('16/08/2026 15:00', b, 'Cập nhật kết quả kiểm tra')] }),
+                plan({ code: 'KT-BTNN-2026-002', senderId: 'BTP-01', officer: b, createdAt: '05/10/2026', form: KT_FORMS[1], basis: KT_BASIS[0], targetId: 'UBND-HN', content: 'Kiểm tra đột xuất việc giải quyết yêu cầu bồi thường có thời hạn kéo dài.', periodFrom: '01/01/2026', periodTo: '30/09/2026', scopeNote: '', planFrom: '20/10/2026', planTo: '21/10/2026', planPlace: 'Trụ sở UBND Thành phố Hà Nội', members: [mem('Phạm Thị Hồng Vân', 'Phó Cục trưởng', 'CĐK-01', ROLES[0]), mem('Trần Thị Thu Hà', 'Chuyên viên', 'PLN-02', ROLES[1])], status: ST.PLANNED, history: [hist('05/10/2026 10:00', b, 'Lập kế hoạch kiểm tra')] }),
+                plan({ code: 'KT-BTNN-2026-003', senderId: 'BTP-01', officer: b, createdAt: '25/03/2026', form: KT_FORMS[0], basis: KT_BASIS[1], targetId: 'VKSNDTC', content: 'Kiểm tra tổ chức thi hành pháp luật về trách nhiệm bồi thường của Nhà nước.', periodFrom: '01/01/2025', periodTo: '31/12/2025', scopeNote: '', planFrom: '10/11/2026', planTo: '12/11/2026', planPlace: 'Trụ sở Viện kiểm sát nhân dân tối cao', members: [mem('Nguyễn Văn Cục Trưởng', 'Cục trưởng', 'CĐK-01', ROLES[0]), mem('Phạm Minh Đức', 'Chuyên viên', 'PLN-02', ROLES[1])], status: ST.PLANNED, history: [hist('25/03/2026 08:30', b, 'Lập kế hoạch kiểm tra')] }),
+                plan({ code: 'KT-BTNN-2026-004', senderId: 'STP-HN', officer: s, createdAt: '15/03/2026', form: KT_FORMS[0], basis: KT_BASIS[2], targetId: 'UBND-CG', content: 'Kiểm tra việc giải quyết yêu cầu bồi thường và xác định trách nhiệm hoàn trả tại UBND quận Cầu Giấy.', periodFrom: '01/01/2025', periodTo: '31/12/2025', scopeNote: '', planFrom: '15/09/2026', planTo: '16/09/2026', planPlace: 'Trụ sở UBND quận Cầu Giấy', members: [mem('Phạm Quang Huy', 'Giám đốc Sở', 'STP-HN', ROLES[0]), mem('Đỗ Văn Chung', 'Chuyên viên', 'STP-HN-HCTP', ROLES[1])], status: ST.DONE, result: { from: '15/09/2026', to: '16/09/2026', place: 'Trụ sở UBND quận Cầu Giấy', content: 'Đơn vị thực hiện đúng trình tự, thủ tục giải quyết yêu cầu bồi thường.' }, resultDocs: [{ name: 'Kết luận kiểm tra', file: 'ket_luan_kt_cau_giay.pdf' }], history: [hist('15/03/2026 09:00', s, 'Lập kế hoạch kiểm tra'), hist('18/09/2026 10:00', s, 'Cập nhật kết quả kiểm tra')] }),
+                plan({ code: 'KT-BTNN-2026-005', senderId: 'STP-HN', officer: s, createdAt: '01/10/2026', form: KT_FORMS[1], basis: KT_BASIS[0], targetId: 'CA-TX', content: 'Kiểm tra đột xuất việc thụ lý hồ sơ yêu cầu bồi thường.', periodFrom: '01/06/2026', periodTo: '30/09/2026', scopeNote: 'Vụ việc BT-2026-038.', planFrom: '22/10/2026', planTo: '22/10/2026', planPlace: 'Trụ sở Công an quận Thanh Xuân', members: [mem('Vũ Thị Thanh', 'Trưởng phòng', 'STP-HN-HCTP', ROLES[0]), mem('Ngô Thị Lan', 'Chuyên viên', 'STP-HN-HCTP', ROLES[1])], status: ST.PLANNED, history: [hist('01/10/2026 14:00', s, 'Lập kế hoạch kiểm tra')] })
+            ];
+        }
+        let records = [];
+        function load() { try { records = JSON.parse(localStorage.getItem(STORE_KEY)) || null; } catch (e) { records = null; } if (!records) { records = seed(); save(); } }
+        function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(records)); } catch (e) { /* bỏ qua */ } }
+        const findRec = code => records.find(r => r.code === code);
+        function nextCode() { const n = records.reduce((m, r) => Math.max(m, parseInt(r.code.split('-').pop(), 10) || 0), 0) + 1; return `KT-BTNN-${new Date().getFullYear()}-${String(n).padStart(3, '0')}`; }
+        const leaderOf = r => ((r.members || []).find(m => m.role === ROLES[0]) || {}).name || '-';
+
+        // ===== Danh sách =====
+        let currentPage = 1, pageSize = 20;
+        function renderFilters() {
+            const sel = (id, label, opts) => `<div class="form-group"><span class="form-label">${label}</span><select class="form-control" id="filter_${id}"><option value="">Tất cả</option>${opts.map(o => `<option>${esc(o)}</option>`).join('')}</select></div>`;
+            const txt = (id, label, ph) => `<div class="form-group"><span class="form-label">${label}</span><input class="form-control" id="filter_${id}" placeholder="${ph}"></div>`;
+            document.getElementById('filterGrid').innerHTML = [
+                txt('code', 'Mã cuộc kiểm tra', 'Nhập mã cuộc kiểm tra...'),
+                txt('agency', 'Cơ quan được kiểm tra', 'Nhập cơ quan được kiểm tra...'),
+                sel('form', 'Hình thức kiểm tra', KT_FORMS),
+                sel('status', 'Trạng thái', [ST.PLANNED, ST.DONE]),
+                `<div class="form-group"><span class="form-label">Từ ngày</span><input class="form-control" id="filter_from" placeholder="dd/mm/yyyy"></div>`,
+                `<div class="form-group"><span class="form-label">Đến ngày</span><input class="form-control" id="filter_to" placeholder="dd/mm/yyyy"></div>`
+            ].join('');
+            initDatePickers(document.getElementById('filterGrid'));
+        }
+        const myList = () => records.filter(r => r.senderId === myRoot());
+        function filtered() {
+            const v = id => (document.getElementById(`filter_${id}`)?.value || '').trim().toLowerCase();
+            const from = parseDate(document.getElementById('filter_from')?.value), to = parseDate(document.getElementById('filter_to')?.value);
+            return myList().filter(r => {
+                if (v('code') && !r.code.toLowerCase().includes(v('code'))) return false;
+                if (v('agency') && !unitName(r.targetId).toLowerCase().includes(v('agency'))) return false;
+                if (v('form') && r.form.toLowerCase() !== v('form')) return false;
+                if (v('status') && r.status.toLowerCase() !== v('status')) return false;
+                const d = parseDate(r.planFrom);
+                if (from && d && d < from) return false;
+                if (to && d && d > to) return false;
+                return true;
+            }).sort((a, b) => b.code.localeCompare(a.code));
+        }
+        function searchList() {
+            const from = parseDate(document.getElementById('filter_from').value), to = parseDate(document.getElementById('filter_to').value);
+            if (from && to && from > to) { showToast('Từ ngày không được lớn hơn Đến ngày. [MSG-ERR-VAL-007]'); return; }
+            currentPage = 1; renderTable();
+        }
+        const statusClass = s => s === ST.DONE ? 'done' : 'active';
+        function renderTable() {
+            const cols = [
+                ['Mã cuộc kiểm tra', r => `<span class="code-cell">${esc(r.code)}</span>`],
+                ['Cơ quan được kiểm tra', r => esc(unitName(r.targetId))],
+                ['Hình thức kiểm tra', r => esc(r.form)],
+                ['Thời gian kiểm tra theo kế hoạch', r => `${esc(r.planFrom)} - ${esc(r.planTo)}`],
+                ['Thời gian kiểm tra thực tế', r => r.result ? `${esc(r.result.from)} - ${esc(r.result.to)}` : '-'],
+                ['Trưởng đoàn kiểm tra', r => esc(leaderOf(r))],
+                ['Trạng thái', r => `<span class="badge ${statusClass(r.status)}">${esc(r.status)}</span>`]
+            ];
+            document.getElementById('tableHead').innerHTML = `<tr><th style="width:56px; text-align:center;">STT</th>${cols.map(c => `<th>${c[0]}</th>`).join('')}<th style="width:110px; text-align:center;">Thao tác</th></tr>`;
+            const list = filtered(), total = list.length, maxPages = Math.ceil(total / pageSize) || 1;
+            if (currentPage > maxPages) currentPage = maxPages;
+            const start = (currentPage - 1) * pageSize, end = Math.min(start + pageSize, total);
+            document.getElementById('totalCount').innerText = total;
+            document.getElementById('currentRange').innerText = total ? `${start + 1}-${end}` : '0-0';
+            const btn = (cls, icon, title, on, call) => `<button class="icon-btn ${cls} ${on ? '' : 'disabled'}" title="${title}" onclick="event.stopPropagation(); ${call}"><i class="fa-solid ${icon}"></i></button>`;
+            document.getElementById('tableBody').innerHTML = total ? list.slice(start, end).map((r, i) => `
+                <tr onclick="openForm('view','${r.code}')">
+                    <td style="text-align:center;">${start + i + 1}</td>
+                    ${cols.map(c => `<td>${c[1](r)}</td>`).join('')}
+                    <td style="text-align:center;"><div class="row-actions">${btn('edit', 'fa-pen-to-square', 'Sửa kế hoạch', r.status === ST.PLANNED, `openForm('edit','${r.code}')`)}${btn('submit', 'fa-clipboard-check', 'Cập nhật kết quả', true, `openForm('result','${r.code}')`)}</div></td>
+                </tr>`).join('') : `<tr><td colspan="${cols.length + 2}" style="text-align:center; color:var(--text-muted); font-style:italic; padding:26px;">Không tìm thấy dữ liệu phù hợp. [MSG-INF-SYS-001]</td></tr>`;
+            const item = (label, on, call, active) => `<span class="page-item ${active ? 'active' : ''} ${on ? '' : 'disabled'}" onclick="${on ? call : ''}">${label}</span>`;
+            let h = item('&verbar;&lt;&lt;', currentPage > 1, 'goPage(1)') + item('&lt;', currentPage > 1, `goPage(${currentPage - 1})`);
+            for (let p = 1; p <= maxPages; p++) h += item(p, true, `goPage(${p})`, p === currentPage);
+            document.getElementById('paginationPages').innerHTML = h + item('&gt;', currentPage < maxPages, `goPage(${currentPage + 1})`) + item('&gt;&gt;&verbar;', currentPage < maxPages, `goPage(${maxPages})`);
+        }
+        function goPage(p) { currentPage = p; renderTable(); }
+        function changePageSize(v) { pageSize = parseInt(v, 10); currentPage = 1; renderTable(); }
+        function resetFilters() { renderFilters(); currentPage = 1; renderTable(); }
+
+        // ===== Biểu mẫu: I. Kế hoạch kiểm tra / II. Kết quả kiểm tra =====
+        let formMode = 'new', formRec = null, targetTree = null, memberTrees = [];
+        const fg = (id, label, req, inner, span) => `<div class="form-group" id="fg_${id}"${span ? ` style="grid-column: span ${span};"` : ''}><span class="form-label">${label}${req ? '<span class="required">*</span>' : ''}</span>${inner}</div>`;
+        const selectCtl = (id, opts, val, ph) => `<select class="form-control" id="f_${id}">${ph !== undefined ? `<option value="">${ph}</option>` : ''}${opts.map(o => `<option ${o === val ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select>`;
+        const textCtl = (id, val, ph) => `<input class="form-control" id="f_${id}" value="${esc(val || '')}" placeholder="${ph}">`;
+        const dateCtl = (id, val) => `<input class="form-control" id="f_${id}" value="${esc(val || '')}" placeholder="dd/mm/yyyy">`;
+        const areaCtl = (id, val, ph) => `<textarea class="form-control" id="f_${id}" placeholder="${ph}">${esc(val || '')}</textarea>`;
+        const planEditable = () => formMode === 'new' || formMode === 'edit';
+        const resultEditable = () => formMode === 'result';
+        function renderPlan(r) {
+            document.getElementById('planFields').innerHTML = [
+                fg('form', 'Hình thức kiểm tra', true, selectCtl('form', KT_FORMS, r.form || KT_FORMS[0])),
+                fg('basis', 'Căn cứ kiểm tra', true, selectCtl('basis', KT_BASIS, r.basis, '-- Chọn căn cứ kiểm tra --'), 2),
+                fg('target', 'Cơ quan được kiểm tra', true, '<div id="utree_target"></div>'),
+                fg('planFrom', 'Thời gian kiểm tra dự kiến từ ngày', true, dateCtl('planFrom', r.planFrom)),
+                fg('planTo', 'Thời gian kiểm tra dự kiến đến ngày', true, dateCtl('planTo', r.planTo)),
+                fg('planPlace', 'Địa điểm kiểm tra dự kiến', true, textCtl('planPlace', r.planPlace, 'Nhập địa điểm kiểm tra dự kiến...'), 3),
+                fg('content', 'Nội dung kiểm tra', true, areaCtl('content', r.content, 'Nhập nội dung kiểm tra...'), 3),
+                fg('periodFrom', 'Phạm vi kiểm tra - Thời kỳ từ ngày', true, dateCtl('periodFrom', r.periodFrom)),
+                fg('periodTo', 'Phạm vi kiểm tra - Thời kỳ đến ngày', true, dateCtl('periodTo', r.periodTo)),
+                fg('scopeNote', 'Phạm vi kiểm tra khác', false, textCtl('scopeNote', r.scopeNote, 'Nhập phạm vi kiểm tra khác (đối tượng, vụ việc cụ thể)...'))
+            ].join('');
+            targetTree = W.mountUnitTree(document.getElementById('utree_target'), { value: r.targetId || '', disabledIds: disabledFor(allowTarget), disabledTitle: 'Đơn vị ngoài phạm vi quản lý', placeholder: '-- Chọn đơn vị trên cây cơ cấu tổ chức --', onChange: () => clearErr(document.getElementById('fg_target')) });
+            renderMembers(r.members && r.members.length ? r.members : [mem('', '', '', ROLES[0])]);
+            renderDocs('plan', r.planDocs && r.planDocs.length ? r.planDocs : [{ name: '', file: '' }]);
+            document.getElementById('planNote').innerText = planEditable() ? '' : '(chỉ đọc)';
+            if (!planEditable()) lockArea('planBlock');
+        }
+        function renderMembers(list) {
+            const edit = planEditable();
+            memberTrees = [];
+            document.getElementById('memberRows').innerHTML = list.map((m, i) => `<tr data-i="${i}">
+                <td style="text-align:center;">${i + 1}</td>
+                <td><input class="form-control m-name" value="${esc(m.name)}" placeholder="Nhập họ và tên..."></td>
+                <td><input class="form-control m-position" value="${esc(m.position)}" placeholder="Nhập chức vụ..."></td>
+                <td><div class="m-unit" id="munit_${i}"></div></td>
+                <td>${selectCtl(`role_${i}`, ROLES, m.role || ROLES[1]).replace('class="form-control"', 'class="form-control m-role"')}</td>
+                <td style="text-align:center;" class="edit-only"><button type="button" class="icon-btn delete" title="Xóa thành viên" onclick="removeMember(${i})"><i class="fa-solid fa-trash-can"></i></button></td>
+            </tr>`).join('');
+            list.forEach((m, i) => { memberTrees[i] = W.mountUnitTree(document.getElementById(`munit_${i}`), { value: m.unitId || '', placeholder: '-- Chọn đơn vị --' }); });
+            document.querySelectorAll('#planBlock .edit-only').forEach(el => { el.style.display = edit ? '' : 'none'; });
+        }
+        function readMembers() {
+            return Array.from(document.querySelectorAll('#memberRows tr')).map((tr, i) => ({ name: tr.querySelector('.m-name').value.trim(), position: tr.querySelector('.m-position').value.trim(), unitId: memberTrees[i] ? memberTrees[i].getValue() : '', role: tr.querySelector('.m-role').value }));
+        }
+        function addMember() { const l = readMembers(); l.push(mem('', '', '', ROLES[1])); renderMembers(l); }
+        function removeMember(i) { const l = readMembers(); l.splice(i, 1); renderMembers(l.length ? l : [mem('', '', '', ROLES[0])]); }
+        function renderResult(r) {
+            const block = document.getElementById('resultBlock');
+            const has = !!r.result;
+            if (!resultEditable() && !has) {
+                block.style.display = formMode === 'view' ? '' : 'none';
+                document.getElementById('resultBody').style.display = 'none';
+                document.getElementById('resultNote').innerText = '(chưa cập nhật kết quả kiểm tra)';
+                return;
+            }
+            block.style.display = '';
+            document.getElementById('resultBody').style.display = '';
+            const res = r.result || { from: r.planFrom, to: r.planTo, place: r.planPlace };
+            document.getElementById('resultFields').innerHTML = [
+                fg('resFrom', 'Thời gian kiểm tra thực tế từ ngày', true, dateCtl('resFrom', res.from)),
+                fg('resTo', 'Thời gian kiểm tra thực tế đến ngày', true, dateCtl('resTo', res.to)),
+                fg('resPlace', 'Địa điểm kiểm tra thực tế', true, textCtl('resPlace', res.place, 'Nhập địa điểm kiểm tra thực tế...')),
+                fg('resContent', 'Kết quả kiểm tra', true, areaCtl('resContent', res.content, 'Nhập kết quả kiểm tra...'), 3)
+            ].join('');
+            renderDocs('result', r.resultDocs && r.resultDocs.length ? r.resultDocs : [{ name: '', file: '' }]);
+            document.getElementById('resultNote').innerText = resultEditable() ? '' : '(chỉ đọc)';
+            if (!resultEditable()) lockArea('resultBlock');
+        }
+        function lockArea(id) {
+            const box = document.getElementById(id);
+            box.classList.add('view-mode');
+            box.querySelectorAll('input, select, textarea').forEach(el => { el.disabled = true; });
+        }
+        // Tài liệu kèm theo (kế hoạch / kết quả)
+        const docs = { plan: [], result: [] };
+        function renderDocs(kind, list) {
+            if (list) docs[kind] = list.map(d => Object.assign({}, d));
+            const ro = kind === 'plan' ? !planEditable() : !resultEditable();
+            document.getElementById(kind === 'plan' ? 'addPlanDocWrap' : 'addResultDocWrap').style.display = ro ? 'none' : '';
+            document.getElementById(kind === 'plan' ? 'planDocs' : 'resultDocs').innerHTML = docs[kind].map((d, i) => `<tr>
+                <td style="text-align:center;">${i + 1}</td>
+                <td>${ro ? esc(d.name || '--') : `<input class="form-control" value="${esc(d.name)}" placeholder="Nhập tên tài liệu..." oninput="docs.${kind}[${i}].name=this.value">`}</td>
+                <td>${d.file ? `<span class="file-name"><i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:6px;"></i>${esc(d.file)}</span>` : (ro ? '--' : `<button type="button" class="btn-upload-rust" onclick="docs.${kind}[${i}].file='tai_lieu_${i + 1}.pdf'; renderDocs('${kind}');"><i class="fa-solid fa-cloud-arrow-up"></i> Tải lên</button>`)}</td>
+                <td><div class="doc-actions"><a href="javascript:void(0)" class="action-link view-link ${d.file ? '' : 'disabled-action'}" onclick="showToast('Đang mở file tại tab mới.')">Xem file</a>${ro ? '' : `<a href="javascript:void(0)" class="action-link delete-link" onclick="removeDoc('${kind}', ${i})"><i class="fa-solid fa-trash-can"></i> Xóa</a>`}</div></td>
+            </tr>`).join('');
+        }
+        function addDoc(kind) { docs[kind].push({ name: '', file: '' }); renderDocs(kind); }
+        function removeDoc(kind, i) { openConfirm('Bạn có chắc chắn muốn xóa tài liệu này không? [MSG-CFM-SYS-001]', () => { docs[kind].splice(i, 1); if (!docs[kind].length) docs[kind] = [{ name: '', file: '' }]; renderDocs(kind); }); }
+
+        function openForm(mode, code) {
+            formMode = mode;
+            const rec = code ? findRec(code) : null;
+            formRec = rec ? JSON.parse(JSON.stringify(rec)) : { status: 'Đang nhập', senderId: myRoot(), officer: myUser().name };
+            const titles = { new: 'Thêm mới kế hoạch kiểm tra', edit: 'Sửa kế hoạch kiểm tra', view: 'Xem chi tiết cuộc kiểm tra', result: 'Cập nhật kết quả kiểm tra' };
+            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> ${titles[mode]}`;
+            document.getElementById('formCode').innerText = rec ? rec.code : 'Hệ thống tự sinh';
+            document.getElementById('formStatus').innerText = formRec.status;
+            document.getElementById('formSender').innerText = unitName(formRec.senderId);
+            document.getElementById('formOfficer').innerText = formRec.officer;
+            ['planBlock', 'resultBlock'].forEach(id => document.getElementById(id).classList.remove('view-mode'));
+            renderPlan(formRec);
+            renderResult(formRec);
+            const h = formRec.history || [];
+            document.getElementById('historyList').innerHTML = h.length ? h.map(x => `<div class="history-item"><b>${esc(x.at)}</b> - ${esc(x.by)}: ${esc(x.action)}</div>`).join('') : '<div class="muted">Chưa có lịch sử xử lý.</div>';
+            const a = [`<button type="button" class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-xmark"></i> ${mode === 'view' ? 'Đóng' : 'Hủy bỏ'}</button>`];
+            if (planEditable()) a.push(`<button type="button" class="btn btn-primary" onclick="savePlan()"><i class="fa-solid fa-floppy-disk"></i> Lưu kế hoạch</button>`);
+            if (resultEditable()) a.push(`<button type="button" class="btn btn-primary" onclick="saveResult()"><i class="fa-solid fa-floppy-disk"></i> Lưu kết quả kiểm tra</button>`);
+            if (mode === 'view') {
+                if (formRec.status === ST.PLANNED) a.push(`<button type="button" class="btn btn-secondary" onclick="openForm('edit','${code}')"><i class="fa-solid fa-pen-to-square"></i> Sửa kế hoạch</button>`);
+                a.push(`<button type="button" class="btn btn-primary" onclick="openForm('result','${code}')"><i class="fa-solid fa-clipboard-check"></i> Cập nhật kết quả</button>`);
+            }
+            document.getElementById('formActions').innerHTML = a.join('');
+            initDatePickers(document.getElementById('businessForm'));
+            document.getElementById('detailPanel').classList.add('visible');
+            document.getElementById('detailPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        function closeForm() { document.getElementById('detailPanel').classList.remove('visible'); }
+
+        // ===== Kiểm tra dữ liệu =====
+        function clearErr(g) { if (!g) return; g.classList.remove('has-error'); g.querySelectorAll('.is-invalid').forEach(e => e.classList.remove('is-invalid')); const e = g.querySelector('.invalid-feedback'); if (e) e.remove(); }
+        function markErr(id, msg) {
+            const g = document.getElementById(`fg_${id}`);
+            if (!g) return null;
+            g.classList.add('has-error');
+            const ctl = g.querySelector('.wf-utree-display, select, textarea, input:not([type=hidden])');
+            if (ctl) ctl.classList.add('is-invalid');
+            if (!g.querySelector('.invalid-feedback')) { const e = document.createElement('div'); e.className = 'invalid-feedback'; e.innerText = msg || 'Đây là trường bắt buộc'; g.appendChild(e); }
+            return g;
+        }
+        const v = id => document.getElementById(`f_${id}`)?.value?.trim() || '';
+        function checkRange(a, b, errs) { const x = parseDate(v(a)), y = parseDate(v(b)); if (x && y && x > y) { const g = markErr(b, 'Đến ngày không được nhỏ hơn Từ ngày. [MSG-ERR-VAL-007]'); if (g) errs.push(g); } }
+        function savePlan() {
+            document.querySelectorAll('#planBlock .form-group').forEach(clearErr);
+            const errs = [];
+            ['form', 'basis', 'planFrom', 'planTo', 'planPlace', 'content', 'periodFrom', 'periodTo'].forEach(id => { if (!v(id)) { const g = markErr(id); if (g) errs.push(g); } });
+            if (!targetTree.getValue()) { const g = markErr('target'); if (g) errs.push(g); }
+            checkRange('planFrom', 'planTo', errs); checkRange('periodFrom', 'periodTo', errs);
+            // Đoàn kiểm tra: đủ thông tin từng dòng, có đúng 01 Trưởng đoàn (khoản 1 Điều 20)
+            const members = readMembers();
+            const memErr = document.getElementById('memberError');
+            document.querySelectorAll('#memberRows .is-invalid').forEach(e => e.classList.remove('is-invalid'));
+            let msg = '';
+            members.forEach((m, i) => { const tr = document.querySelectorAll('#memberRows tr')[i]; if (!m.name) tr.querySelector('.m-name').classList.add('is-invalid'); if (!m.position) tr.querySelector('.m-position').classList.add('is-invalid'); if (!m.unitId) tr.querySelector('.wf-utree-display').classList.add('is-invalid'); if (!m.name || !m.position || !m.unitId) msg = 'Vui lòng nhập đầy đủ Họ và tên, Chức vụ, Đơn vị của thành viên đoàn kiểm tra.'; });
+            const leaders = members.filter(m => m.role === ROLES[0]).length;
+            if (!msg && leaders !== 1) msg = 'Đoàn kiểm tra phải có đúng 01 Trưởng đoàn.';
+            memErr.style.display = msg ? 'block' : 'none'; memErr.innerText = msg;
+            if (errs.length || msg) { (errs[0] || memErr).scrollIntoView({ block: 'center' }); return; }
+            const r = formRec;
+            Object.assign(r, { form: v('form'), basis: v('basis'), targetId: targetTree.getValue(), planFrom: v('planFrom'), planTo: v('planTo'), planPlace: v('planPlace'), content: v('content'), periodFrom: v('periodFrom'), periodTo: v('periodTo'), scopeNote: v('scopeNote'), members, planDocs: docs.plan });
+            if (!r.code) { r.code = nextCode(); r.createdAt = today(); r.status = ST.PLANNED; r.resultDocs = []; r.history = [hist(nowText(), myUser().name, 'Lập kế hoạch kiểm tra')]; records.unshift(r); }
+            else { r.history = [...(r.history || []), hist(nowText(), myUser().name, 'Sửa kế hoạch kiểm tra')]; records[records.findIndex(x => x.code === r.code)] = r; }
+            save(); closeForm(); renderTable(); showToast('Lưu kế hoạch kiểm tra thành công. [MSG-SUC-SYS-003]');
+        }
+        function saveResult() {
+            document.querySelectorAll('#resultBlock .form-group').forEach(clearErr);
+            const errs = [];
+            ['resFrom', 'resTo', 'resPlace', 'resContent'].forEach(id => { if (!v(id)) { const g = markErr(id); if (g) errs.push(g); } });
+            checkRange('resFrom', 'resTo', errs);
+            if (errs.length) { errs[0].scrollIntoView({ block: 'center' }); return; }
+            const r = findRec(formRec.code);
+            const first = !r.result;
+            r.result = { from: v('resFrom'), to: v('resTo'), place: v('resPlace'), content: v('resContent') };
+            r.resultDocs = docs.result;
+            r.status = ST.DONE;
+            r.history = [...(r.history || []), hist(nowText(), myUser().name, first ? 'Cập nhật kết quả kiểm tra' : 'Sửa kết quả kiểm tra')];
+            save(); closeForm(); renderTable(); showToast('Lưu kết quả kiểm tra thành công. [MSG-SUC-SYS-002]');
+        }
+
+        // ===== Tiện ích =====
+        function initDatePickers(root) {
+            if (typeof flatpickr !== 'function') return;
+            root.querySelectorAll('input[placeholder="dd/mm/yyyy"]').forEach(el => { if (!el._flatpickr && !el.disabled) flatpickr(el, { dateFormat: 'd/m/Y', allowInput: true, locale: (flatpickr.l10ns && flatpickr.l10ns.vn) || 'default' }); });
+        }
+        let confirmCb = null;
+        function openConfirm(text, cb) { confirmCb = cb; document.getElementById('confirmText').innerText = text; document.getElementById('confirmModal').classList.add('visible'); }
+        function closeConfirm(ok) { document.getElementById('confirmModal').classList.remove('visible'); const cb = confirmCb; confirmCb = null; if (ok && cb) cb(); }
+        function showToast(text) { const t = document.getElementById('toast'); document.getElementById('toastText').innerText = text; t.style.display = 'flex'; clearTimeout(window.__tt); window.__tt = setTimeout(() => t.style.display = 'none', 2200); }
+
+        load(); renderFilters(); renderTable(); W.mountUserSwitcher();
+    </script>
+    <script src="admin-ui-standardizer.js"></script>
+    <script src="bpbd_filter_toggle.js"></script>
+    <script src="filter_toggle_auto.js"></script>
+</body>
+
+</html>

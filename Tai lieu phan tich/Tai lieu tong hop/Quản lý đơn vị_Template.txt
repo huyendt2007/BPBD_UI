@@ -1,0 +1,77 @@
+HỆ THỐNG CƠ QUAN NHÀ NƯỚC (ROOT)
+│
+├── I. KHỐI CHÍNH PHỦ (14 Bộ & 3 Cơ quan ngang Bộ)
+│   │
+│   ├── 1. Khối 14 Bộ
+│   │   ├── 01. Bộ Quốc phòng
+│   │   ├── 02. Bộ Công an
+│   │   ├── 03. Bộ Ngoại giao
+│   │   ├── 04. Bộ Nội vụ
+│   │   │   ├── [Khối Quản lý nhà nước trực thuộc Bộ]
+│   │   │   │   ├── Vụ và tương đương (Gọi chung là Vụ)
+│   │   │   │   ├── Văn phòng (nếu có)
+│   │   │   │   ├── Thanh tra (nếu có)
+│   │   │   │   └── Cục và tương đương (Gọi chung là Cục)
+│   │   │   └── [Khối Đơn vị sự nghiệp công lập trực thuộc Bộ]
+│   │   │       ├── Đơn vị nghiên cứu chiến lược, chính sách về ngành, lĩnh vực
+│   │   │       ├── Báo, tạp chí; Trung tâm Thông tin
+│   │   │       └── Trường, Trung tâm hoặc Học viện đào tạo, bồi dưỡng CB, CC, VC
+│   │   │
+│   │   ├── 05. Bộ Tư pháp
+│   │   │   ├── Vụ và tương đương
+│   │   │   ├── Văn phòng (nếu có)
+│   │   │   ├── Thanh tra (nếu có)
+│   │   │   ├── Cục và tương đương
+│   │   │   └── Đơn vị sự nghiệp công lập thuộc Bộ (ĐV nghiên cứu; Báo/Tạp chí/TT Thông tin; Trường/TT/Học viện đào tạo)
+│   │   │
+│   │   ├── 06. Bộ Tài chính (Cấu trúc đơn vị con tương tự theo Điều 5 NĐ 303/2025/NĐ-CP)
+│   │   ├── 07. Bộ Công Thương (Cấu trúc đơn vị con tương tự...)
+│   │   ├── 08. Bộ Nông nghiệp và Môi trường (Cấu trúc đơn vị con tương tự...)
+│   │   ├── 09. Bộ Xây dựng (Cấu trúc đơn vị con tương tự...)
+│   │   ├── 10. Bộ Văn hóa, Thể thao và Du lịch (Cấu trúc đơn vị con tương tự...)
+│   │   ├── 11. Bộ Khoa học và Công nghệ (Cấu trúc đơn vị con tương tự...)
+│   │   ├── 12. Bộ Giáo dục và Đào tạo (Cấu trúc đơn vị con tương tự...)
+│   │   ├── 13. Bộ Y tế (Cấu trúc đơn vị con tương tự...)
+│   │   └── 14. Bộ Dân tộc và Tôn giáo (Cấu trúc đơn vị con tương tự...)
+│   │
+│   └── 2. Khối 03 Cơ quan ngang Bộ
+│       ├── 01. Ngân hàng Nhà nước Việt Nam
+│       │   ├── Vụ và tương đương
+│       │   ├── Văn phòng (nếu có)
+│       │   ├── Thanh tra (nếu có)
+│       │   ├── Cục và tương đương
+│       │   └── Đơn vị sự nghiệp công lập trực thuộc (ĐV nghiên cứu; Báo/Tạp chí/TT Thông tin; Trường/TT/Học viện đào tạo)
+│       ├── 02. Thanh tra Chính phủ (Cấu trúc đơn vị con tương tự...)
+│       └── 03. Văn phòng Chính phủ (Cấu trúc đơn vị con tương tự...)
+│
+├── II. KHỐI CHÍNH QUYỀN ĐỊA PHƯƠNG (ỦY BAN NHÂN DÂN CÁC CẤP)
+│   └── UBND Tỉnh, Thành phố trực thuộc Trung ương (Cấp Tỉnh)
+│       ├── 1. Sở, Ban, Ngành (Cơ quan chuyên môn thuộc UBND Tỉnh/TP)
+│       │   ├── Các Sở (Sở Nội vụ, Sở Tư pháp, Sở Tài chính, Sở Xây dựng...)
+│       │   ├── Văn phòng UBND Tỉnh/TP, Thanh tra Tỉnh/TP
+│       │   └── Ban Quản lý, Đơn vị sự nghiệp trực thuộc UBND Tỉnh/TP
+│       └── 2. UBND Phường / Xã (Trực thuộc thẳng Tỉnh/Thành phố)
+│           └── [Các bộ phận chuyên môn / Trung tâm Phục vụ hành chính công Phường/Xã]
+│
+├── III. HỆ THỐNG TÒA ÁN NHÂN DÂN (Đơn vị đỉnh: Tòa án nhân dân tối cao)
+│   └── Tòa án nhân dân tối cao (Quản lý toàn hệ thống)
+│       ├── 1. Tòa án nhân dân cấp cao
+│       ├── 2. Tòa án nhân dân tỉnh, thành phố trực thuộc TW
+│       │   └── Tòa án nhân dân cấp Phường/Xã (hoặc TAND khu vực phụ trách cụm Phường/Xã)
+│       ├── 3. Tòa án nhân dân sơ thẩm chuyên biệt
+│       │   ├── TAND sơ thẩm chuyên biệt Hành chính
+│       │   ├── TAND sơ thẩm chuyên biệt Sở hữu trí tuệ
+│       │   └── TAND chuyên biệt Phá sản
+│       └── 4. Hệ thống Tòa án quân sự
+│           └── Tòa án quân sự Trung ương
+│               └── Tòa án quân sự quân khu và tương đương
+│                   └── Tòa án quân sự khu vực
+│
+└── IV. HỆ THỐNG VIỆN KIM SÁT NHÂN DÂN (Đơn vị đỉnh: Viện kiểm sát nhân dân tối cao)
+    └── Viện kiểm sát nhân dân tối cao (Quản lý, chỉ đạo, điều hành toàn hệ thống)
+        ├── 1. Viện kiểm sát nhân dân tỉnh, thành phố trực thuộc TW (34 đơn vị)
+        │   └── Viện kiểm sát nhân dân khu vực / Phường, Xã (355 đơn vị)
+        └── 2. Hệ thống Viện kiểm sát quân sự
+            └── Viện kiểm sát quân sự Trung ương
+                └── Viện kiểm sát quân sự quân khu và tương đương
+                    └── Viện kiểm sát quân sự khu vực

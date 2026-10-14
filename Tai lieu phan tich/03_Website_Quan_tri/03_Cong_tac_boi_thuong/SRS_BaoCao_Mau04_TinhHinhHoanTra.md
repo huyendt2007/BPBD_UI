@@ -10,7 +10,7 @@
 
 \- Cán bộ nghiệp vụ BTNN: được tra cứu, tổng hợp số liệu, nhập giải trình chênh lệch và kết xuất biểu mẫu.
 
-\- Lãnh đạo: được tra cứu, xem chi tiết và kết xuất biểu mẫu; không chỉnh sửa số liệu hoặc giải trình.
+\- Lãnh đạo: được tra cứu, xem chi tiết và kết xuất biểu mẫu; không sửa số liệu hoặc giải trình.
 
 *b. Điều kiện thực hiện*
 

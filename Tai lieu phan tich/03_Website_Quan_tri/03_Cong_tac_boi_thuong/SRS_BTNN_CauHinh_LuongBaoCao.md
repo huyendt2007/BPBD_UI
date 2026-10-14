@@ -12,7 +12,7 @@ a. Phân quyền
 Hệ thống phân quyền thao tác theo vai trò và quyền hạn được cấp:
 - Xem: Tra cứu danh sách cấu hình luồng báo cáo, xem chi tiết cấu hình.
 - Tạo mới: Khai báo cấu hình luồng báo cáo mới.
-- Chỉnh sửa: Cập nhật thông tin cấu hình luồng báo cáo đã khai báo.
+- Sửa: Cập nhật thông tin cấu hình luồng báo cáo đã khai báo.
 - Xóa: Xóa cấu hình luồng báo cáo chưa từng được áp dụng cho kỳ báo cáo nào.
 - Thay đổi trạng thái: Chuyển cấu hình giữa `Hoạt động` và `Tạm ngưng`.
 
@@ -90,7 +90,7 @@ flowchart TD
 | Cột: Từ ngày | Date | - | Theo dữ liệu | Control UI: Text.<br>Chỉ đọc. Căn giữa. Định dạng `dd/mm/yyyy`. Hiển thị `-` khi không khai báo. |
 | Cột: Đến ngày | Date | - | Theo dữ liệu | Control UI: Text.<br>Chỉ đọc. Căn giữa. Định dạng `dd/mm/yyyy`. Hiển thị `-` khi không khai báo. |
 | Cột: Trạng thái | Enum(String(50)) | - | Theo dữ liệu | Control UI: Badge.<br>Chỉ đọc. Gồm:<br>+ `Hoạt động` (màu xanh lá)<br>+ `Tạm ngưng` (màu xám) |
-| Cột: Thao tác | Action buttons | - | Theo quy chuẩn cố định 3 slots | Control UI: Fixed-slot group icon button (3 slot):<br>+ Slot 1 `Cập nhật` (icon `fa-pen-to-square`): Luôn khả dụng với người dùng có quyền Chỉnh sửa.<br>+ Slot 2 `Đổi trạng thái` (icon `fa-toggle-on` khi đang `Hoạt động`, icon `fa-toggle-off` khi đang `Tạm ngưng`): Luôn khả dụng với người dùng có quyền Thay đổi trạng thái.<br>+ Slot 3 `Xóa` (icon `fa-trash-can`): Chỉ khả dụng với cấu hình chưa từng được áp dụng cho kỳ báo cáo nào theo [BR-BTNN-CHBC-007]; khóa mờ với các trường hợp còn lại. |
+| Cột: Thao tác | Action buttons | - | Theo quy chuẩn cố định 3 slots | Control UI: Fixed-slot group icon button (3 slot):<br>+ Slot 1 `Cập nhật` (icon `fa-pen-to-square`): Luôn khả dụng với người dùng có quyền Sửa.<br>+ Slot 2 `Đổi trạng thái` (icon `fa-toggle-on` khi đang `Hoạt động`, icon `fa-toggle-off` khi đang `Tạm ngưng`): Luôn khả dụng với người dùng có quyền Thay đổi trạng thái.<br>+ Slot 3 `Xóa` (icon `fa-trash-can`): Chỉ khả dụng với cấu hình chưa từng được áp dụng cho kỳ báo cáo nào theo [BR-BTNN-CHBC-007]; khóa mờ với các trường hợp còn lại. |
 | Thanh phân trang | Panel | - | 10 bản ghi/trang | Control UI: Pagination bar.<br>- Bên trái: Combobox chọn số lượng bản ghi trên trang gồm các giá trị:<br>+ 10<br>+ 20<br>+ 50<br>+ 100<br>kèm dòng thông tin `Đang xem [từ] đến [đến] trong tổng số [tổng] bản ghi`.<br>- Bên phải: Nút `Trang trước`, các nút số trang và nút `Trang sau`. |
 
 #### 3. Chức năng trên màn hình
@@ -164,7 +164,7 @@ Toàn bộ thông tin hiển thị tại màn hình Xem chi tiết ở chế đ�
 | Ghi chú | Text(1000) | - | Theo dữ liệu | Control UI: Text.<br>Chỉ đọc. |
 | **Khối Kỳ báo cáo đã áp dụng cấu hình** | List(Object) | - | Ẩn nếu không có | Control UI: Data grid.<br>- Chỉ hiển thị khi cấu hình đã được áp dụng để tổng hợp cho ít nhất 01 kỳ báo cáo.<br>- Gồm các cột: `STT`, `Năm báo cáo`, `Loại kỳ báo cáo`, `Đơn vị lập báo cáo`, `Ngày tổng hợp`.<br>- Khối này là căn cứ xác định cấu hình không còn được phép xóa theo [BR-BTNN-CHBC-007]. |
 | **Khối Lịch sử thay đổi** | List(Object) | - | Theo dữ liệu | Control UI: Timeline.<br>Chỉ đọc. Hiển thị các mốc thay đổi cấu hình gồm: Thời điểm thực hiện (định dạng `dd/mm/yyyy HH:mm`), Người thực hiện, Nội dung thay đổi. |
-| Nút: Cập nhật | Button | Không | Hiển thị | Control UI: Button.<br>Chỉ hiển thị với người dùng được cấp quyền Chỉnh sửa. |
+| Nút: Cập nhật | Button | Không | Hiển thị | Control UI: Button.<br>Chỉ hiển thị với người dùng được cấp quyền Sửa. |
 | Nút: Đóng | Button | Không | Hiển thị | Control UI: Button.<br>Luôn hiển thị khả dụng. |
 
 #### 3. Chức năng trên màn hình
