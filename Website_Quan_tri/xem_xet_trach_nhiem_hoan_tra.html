@@ -846,7 +846,7 @@
         }
         .ht-tabs-card { display: flex; gap: 8px; align-items: center; background: #fff; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); padding: 0 16px; margin-bottom: 12px; }
         .ht-tab { border: 0; background: transparent; padding: 12px 16px; font-size: 13.5px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; display: inline-flex; align-items: center; gap: 8px; }
-        .ht-tab.active { color: var(--primary-light); border-bottom-color: var(--primary-light); }
+        .ht-tab.active { color: #1e3a8a; border-bottom-color: #1e3a8a; }
         .ht-tab-count { min-width: 20px; padding: 1px 7px; border-radius: 10px; background: #e2e8f0; color: #334155; font-size: 11.5px; font-weight: 700; text-align: center; }
     </style>
 </head>
@@ -2276,18 +2276,51 @@
         let currentSortDirection = 'asc';
         let activeKpiFilterRefund = 'all';
 
-        // ===== 02 tab Chờ xử lý / Đã xử lý =====
-        // - Cán bộ xử lý / Cán bộ tra cứu: Chờ xử lý = hồ sơ chưa kết thúc; Đã xử lý = Hoàn thành, Hoàn tất, Không xem xét trách nhiệm hoàn trả, Chấm dứt thu hồi.
-        // - Lãnh đạo phê duyệt: Chờ xử lý = hồ sơ chờ Lãnh đạo duyệt; Đã xử lý = hồ sơ đã qua bước duyệt.
-        const HT_DONE_STATES = ['Hoàn thành', 'Hoàn tất', 'Không xem xét trách nhiệm hoàn trả', 'Chấm dứt thu hồi'];
+        // ===== 02 tab Chờ xử lý / Đã xử lý theo bước xử lý (gate) của người dùng =====
+        // - Chờ xử lý: hồ sơ đang chờ chính vai trò của người dùng thao tác.
+        //   + Cán bộ xử lý: Chờ thành lập hội đồng, Bị từ chối thành lập HĐ, Đang họp hội đồng, Chờ ban hành QĐ hoàn trả, Bị từ chối QĐ hoàn trả, Đang thi hành.
+        //   + Lãnh đạo phê duyệt: Chờ duyệt QĐ thành lập, Chờ duyệt thành lập hội đồng, Chờ duyệt QĐ hoàn trả.
+        // - Đã xử lý: hồ sơ người dùng đã qua ít nhất 01 bước xử lý và không còn chờ người dùng thao tác
+        //   (VD Lãnh đạo đã ký duyệt QĐ thành lập Hội đồng: hồ sơ ở tab Đã xử lý của Lãnh đạo, ở tab Chờ xử lý của Cán bộ).
         const HT_APPROVAL_STATES = ['Chờ duyệt QĐ thành lập', 'Chờ duyệt thành lập hội đồng', 'Chờ duyệt QĐ hoàn trả'];
+        const HT_CB_ACTION_STATES = ['Chờ thành lập hội đồng', 'Bị từ chối thành lập HĐ', 'Đang họp hội đồng', 'Chờ ban hành QĐ hoàn trả', 'Bị từ chối QĐ hoàn trả', 'Đang thi hành'];
+        const HT_AFTER_COUNCIL = ['Chờ ban hành QĐ hoàn trả', 'Chờ duyệt QĐ hoàn trả', 'Bị từ chối QĐ hoàn trả', 'Đang thi hành', 'Hoàn thành', 'Hoàn tất', 'Chấm dứt thu hồi', 'Không xem xét trách nhiệm hoàn trả'];
+        const HT_AFTER_REFUND_SUBMIT = ['Chờ duyệt QĐ hoàn trả', 'Bị từ chối QĐ hoàn trả', 'Đang thi hành', 'Hoàn thành', 'Hoàn tất', 'Chấm dứt thu hồi'];
+        const HT_AFTER_REFUND_SIGN = ['Bị từ chối QĐ hoàn trả', 'Đang thi hành', 'Hoàn thành', 'Hoàn tất', 'Chấm dứt thu hồi'];
+        const HT_CLOSED = ['Hoàn thành', 'Hoàn tất', 'Chấm dứt thu hồi'];
         let htTab = 'pending';
-        function htInTab(tab, d) {
-            if (currentMockRole === 'lanh_dao') {
-                if (tab === 'pending') return HT_APPROVAL_STATES.includes(d.status);
-                return !HT_APPROVAL_STATES.includes(d.status) && d.status !== 'Chờ thành lập hội đồng';
+        function htRoleKey() { return currentMockRole === 'lanh_dao' ? 'lanh_dao' : 'chuyen_vien'; }
+        // Các bước (gate) vai trò đã xử lý: suy ra theo tiến trình hồ sơ và nhật ký thao tác trên giao diện (gateLog)
+        function htGates(d, role) {
+            const s = d.status;
+            const list = [];
+            if (role === 'lanh_dao') {
+                if (!['Chờ thành lập hội đồng', ...HT_APPROVAL_STATES].includes(s) || HT_AFTER_COUNCIL.includes(s))
+                    list.push({ gate: 'Ký duyệt QĐ thành lập Hội đồng', result: s === 'Bị từ chối thành lập HĐ' ? 'Từ chối' : 'Phê duyệt' });
+                if (HT_AFTER_REFUND_SIGN.includes(s))
+                    list.push({ gate: 'Ký duyệt QĐ hoàn trả', result: s === 'Bị từ chối QĐ hoàn trả' ? 'Từ chối' : 'Phê duyệt' });
+            } else {
+                if (s !== 'Chờ thành lập hội đồng') list.push({ gate: 'Trình ký QĐ thành lập Hội đồng' });
+                if (HT_AFTER_COUNCIL.includes(s)) list.push({ gate: 'Cập nhật kết luận Hội đồng' });
+                if (HT_AFTER_REFUND_SUBMIT.includes(s)) list.push({ gate: 'Trình ký QĐ hoàn trả' });
+                if (HT_CLOSED.includes(s)) list.push({ gate: s === 'Chấm dứt thu hồi' ? 'Chấm dứt thu hồi' : 'Hoàn tất thu hồi' });
             }
-            return tab === 'pending' ? !HT_DONE_STATES.includes(d.status) : HT_DONE_STATES.includes(d.status);
+            (d.gateLog || []).filter(g => g.role === role).forEach(g => {
+                const found = list.find(x => x.gate === g.gate);
+                if (found) { found.result = g.result || found.result; found.at = g.at; } else list.push({ gate: g.gate, result: g.result, at: g.at });
+            });
+            return list;
+        }
+        function htInTab(tab, d) {
+            const role = htRoleKey();
+            const pending = role === 'lanh_dao' ? HT_APPROVAL_STATES.includes(d.status) : HT_CB_ACTION_STATES.includes(d.status);
+            if (tab === 'pending') return pending;
+            return !pending && htGates(d, role).length > 0;
+        }
+        function htGatesHtml(d) {
+            const gates = htGates(d, htRoleKey());
+            if (!gates.length) return '';
+            return `<div style="margin-top:6px; text-align:left; font-size:11.5px; color:#475569; white-space:normal; line-height:1.5;">${gates.map(g => `<div><i class="fa-solid fa-check" style="color:#16a34a;"></i> ${g.gate}${g.result ? ` (${g.result})` : ''}</div>`).join('')}</div>`;
         }
         function switchRefundTab(tab) {
             htTab = tab === 'done' ? 'done' : 'pending';
@@ -2589,6 +2622,8 @@
                 deleteTooltip = 'Cán bộ tra cứu không có quyền xóa';
             }
 
+            // Chú thích nút theo tên thao tác; thao tác không được phép hiển thị khóa mờ
+            updateTooltip = 'Cập nhật'; approveTooltip = 'Phê duyệt'; rejectTooltip = 'Từ chối'; deleteTooltip = 'Xóa';
             const disabledStyle = 'opacity: 0.35; pointer-events: none; cursor: not-allowed;';
 
             // Slot 1: Cập nhật
@@ -2874,7 +2909,7 @@
                         ` : '<span style="color:var(--text-muted); font-style:italic; font-size:11px;">Chưa ban hành QĐ</span>'}
                     </td>
                     <td style="text-align:center; vertical-align:middle; white-space:nowrap;">
-                        ${statusBadge}
+                        ${statusBadge}${htTab === 'done' ? htGatesHtml(d) : ''}
                     </td>
                     <td style="text-align:center; vertical-align:middle;">
                         ${deadlineHtml}
@@ -3592,8 +3627,9 @@
             if (!dossier) return;
             currentApproveDossier = dossier;
 
-            document.getElementById('approveDossierCode').innerText = dossier.code;
-            document.getElementById('approveClaimCode').innerText = claimLabel(dossier.claimCode);
+            document.getElementById('approveDossierId').value = dossier.id;
+            const codeEl = document.getElementById('approveDossierCode'); if (codeEl) codeEl.innerText = dossier.code;
+            const claimEl = document.getElementById('approveClaimCode'); if (claimEl) claimEl.innerText = claimLabel(dossier.claimCode);
             document.getElementById('approvePinInput').value = '';
             document.getElementById('approvePinInput').classList.remove('is-invalid');
             document.getElementById('approvePinError').style.display = 'none';
@@ -3624,6 +3660,8 @@
             }
 
             if (!currentApproveDossier) return;
+            currentApproveDossier.gateLog = currentApproveDossier.gateLog || [];
+            currentApproveDossier.gateLog.push({ role: 'lanh_dao', gate: currentApproveDossier.status === 'Chờ duyệt QĐ thành lập' ? 'Ký duyệt QĐ thành lập Hội đồng' : 'Ký duyệt QĐ hoàn trả', result: 'Phê duyệt', at: new Date().toLocaleString('vi-VN') });
             
             if (currentApproveDossier.status === 'Chờ duyệt QĐ thành lập') {
                 currentApproveDossier.status = 'Đang họp hội đồng';
@@ -3760,6 +3798,7 @@
 
             if (!currentRejectDossier) return;
 
+            if (currentRejectDossier) { currentRejectDossier.gateLog = currentRejectDossier.gateLog || []; currentRejectDossier.gateLog.push({ role: 'lanh_dao', gate: currentRejectDossier.status === 'Chờ duyệt QĐ thành lập' ? 'Ký duyệt QĐ thành lập Hội đồng' : 'Ký duyệt QĐ hoàn trả', result: 'Từ chối', at: new Date().toLocaleString('vi-VN') }); }
             if (currentRejectDossier.status === 'Chờ duyệt QĐ thành lập') {
                 currentRejectDossier.status = 'Bị từ chối thành lập HĐ';
                 (currentRejectDossier.refundOfficers || []).forEach(o => {

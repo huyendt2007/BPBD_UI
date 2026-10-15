@@ -25,11 +25,21 @@ Cho phép quản lý toàn diện tiến trình xem xét, xác định và thự
 <a id="ht-tab-xu-ly"></a>
 *c. Quy tắc 02 tab Chờ xử lý / Đã xử lý*
 
+- Tab được xác định theo **bước xử lý (gate) của người dùng**, không cố định theo trạng thái hồ sơ: hồ sơ đang chờ chính vai trò của người dùng thao tác nằm ở tab `Chờ xử lý`; hồ sơ người dùng đã qua ít nhất 01 bước xử lý và không còn chờ người dùng thao tác nằm ở tab `Đã xử lý`.
+- Ví dụ: hồ sơ `Chờ duyệt QĐ thành lập` được Lãnh đạo ký duyệt chuyển trạng thái tiếp theo: với Cán bộ xử lý, hồ sơ ở tab `Chờ xử lý` (cán bộ thực hiện bước tiếp theo); với Lãnh đạo, hồ sơ ở tab `Đã xử lý`.
+
 | Vai trò | Tab `Chờ xử lý` | Tab `Đã xử lý` |
 | :--- | :--- | :--- |
-| Cán bộ xử lý / Cán bộ tra cứu | Hồ sơ chưa kết thúc: `Chờ thành lập hội đồng`, `Chờ duyệt QĐ thành lập`, `Bị từ chối thành lập HĐ`, `Đang họp hội đồng`, `Chờ ban hành QĐ hoàn trả`, `Chờ duyệt QĐ hoàn trả`, `Bị từ chối QĐ hoàn trả`, `Đang thi hành` | Hồ sơ đã kết thúc: `Hoàn thành`, `Không xem xét trách nhiệm hoàn trả`, `Chấm dứt thu hồi` |
-| Lãnh đạo phê duyệt | Hồ sơ chờ Lãnh đạo duyệt: `Chờ duyệt QĐ thành lập`, `Chờ duyệt thành lập hội đồng`, `Chờ duyệt QĐ hoàn trả` | Hồ sơ đã qua bước duyệt (trừ hồ sơ chờ duyệt và hồ sơ `Chờ thành lập hội đồng`) |
+| Cán bộ xử lý / Cán bộ tra cứu | Hồ sơ chờ cán bộ thao tác: `Chờ thành lập hội đồng`, `Bị từ chối thành lập HĐ`, `Đang họp hội đồng`, `Chờ ban hành QĐ hoàn trả`, `Bị từ chối QĐ hoàn trả`, `Đang thi hành` | Hồ sơ cán bộ đã trình chờ Lãnh đạo duyệt hoặc đã kết thúc (`Chờ duyệt QĐ thành lập`, `Chờ duyệt QĐ hoàn trả`, `Hoàn thành`, `Không xem xét trách nhiệm hoàn trả`, `Chấm dứt thu hồi`) |
+| Lãnh đạo phê duyệt | Hồ sơ chờ Lãnh đạo duyệt: `Chờ duyệt QĐ thành lập`, `Chờ duyệt thành lập hội đồng`, `Chờ duyệt QĐ hoàn trả` | Hồ sơ Lãnh đạo đã Ký duyệt / Từ chối ít nhất 01 bước và không còn chờ Lãnh đạo duyệt |
 
+- Tab `Đã xử lý`: cột `Trạng thái` hiển thị thêm danh sách bước người dùng đã xử lý, mỗi dòng "✓ [Tên bước] ([Kết quả])":
+  + Cán bộ xử lý: Trình ký QĐ thành lập Hội đồng; Cập nhật kết luận Hội đồng; Trình ký QĐ hoàn trả; Hoàn tất thu hồi / Chấm dứt thu hồi.
+  + Lãnh đạo phê duyệt: Ký duyệt QĐ thành lập Hội đồng (Phê duyệt / Từ chối); Ký duyệt QĐ hoàn trả (Phê duyệt / Từ chối).
+- Cột `Thao tác` theo vai trò, ở vị trí cố định; thao tác không được phép hiển thị dạng khóa mờ, không cho phép thao tác:
+  + Cán bộ xử lý: `Cập nhật`, `Xóa` (hồ sơ `Chờ duyệt QĐ thành lập`, `Chờ duyệt QĐ hoàn trả`: cả 02 nút khóa mờ).
+  + Lãnh đạo phê duyệt: `Phê duyệt`, `Từ chối` (chỉ được phép với hồ sơ chờ Lãnh đạo duyệt).
+  + Cán bộ tra cứu: chỉ xem.
 - Mỗi tab hiển thị số bản ghi; mặc định mở tab `Chờ xử lý`. Đổi vai trò hoặc mở màn hình kèm tham số `tab=done` thì danh sách nạp lại theo tab tương ứng.
 - Trường `Trạng thái` của bộ lọc chỉ gồm các trạng thái của tab đang chọn.
 - Số hồ sơ chờ Lãnh đạo duyệt hiển thị tại khối `Chờ duyệt Xem xét hoàn trả` của [MH01 - Màn hình Dashboard Lãnh đạo - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_ViecChoLanhDaoXuLy.md#vcld-mh01); click khối mở tab `Chờ xử lý` của màn hình này ở vai trò Lãnh đạo phê duyệt.
@@ -94,7 +104,7 @@ flowchart TD
 | Tiến độ thu hồi | Decimal(5,2) | Không | Theo dữ liệu | Control UI: Progress bar (Read-only).<br>- Hiển thị số tiền đã thu và tỷ lệ phần trăm `Đã thu / Số tiền phải hoàn trả`.<br>- Hiển thị `-` khi hồ sơ chưa ban hành Quyết định hoàn trả. |
 | Trạng thái | Enum(String(50)) | Có | Theo dữ liệu | Control UI: Badge (Read-only).<br>- Theo giá trị tại khối bộ lọc tìm kiếm. |
 | Hạn xử lý | String(50) | Không | Theo dữ liệu | Control UI: Badge (Read-only).<br>- Hiển thị chuẩn 02 dòng:<br>+ Dòng 1: Ngày hạn xử lý định dạng `dd/mm/yyyy`.<br>+ Dòng 2: Badge trạng thái:<br>  * `Còn N ngày` (Badge xanh lá): Khi còn > 3 ngày.<br>  * `Còn N ngày` (Badge vàng cam): Khi còn từ 1 đến 3 ngày.<br>  * `Quá hạn N ngày` (Badge đỏ): Khi đã quá ngày quy định.<br>- Quy định thời hạn theo trạng thái:<br>+ `Chờ thành lập hội đồng`, `Chờ duyệt QĐ thành lập`, `Bị từ chối thành lập HĐ` : Thời hạn thành lập HĐ (theo [BR-BTNN-HT-014]).<br>+ Các trạng thái còn lại: Hiển thị `-`. |
-| Thao tác | Action | Không | - | Control UI: Nhóm nút thao tác.<br>Gồm các nút:<br>- **Cập nhật**: Chỉ hiển thị khi hồ sơ ở các trạng thái:<br>+ `Bị từ chối thành lập HĐ`<br>+ `Đang họp hội đồng`<br>+ `Bị từ chối QĐ hoàn trả`<br>+ `Đang thi hành`<br>- **Phê duyệt/Từ chối**:<br>+ Chỉ hiển thị khi người dùng được phân quyền Lãnh đạo phê duyệt.<br>+ Chỉ hiển thị khi hồ sơ ở trạng thái:<br>  * `Chờ duyệt QĐ thành lập`<br>  * `Chờ duyệt QĐ hoàn trả`<br>- **Xóa**: Chỉ hiển thị khi hồ sơ ở trạng thái:<br>+ `Chờ thành lập hội đồng` |
+| Thao tác | Action | Không | - | Control UI: Nhóm nút thao tác, vị trí cố định theo vai trò (Cán bộ xử lý: Cập nhật, Xóa; Lãnh đạo phê duyệt: Phê duyệt, Từ chối; Cán bộ tra cứu: chỉ xem); thao tác không được phép hiển thị dạng khóa mờ, không cho phép thao tác.<br>Gồm các nút:<br>- **Cập nhật** (Cán bộ xử lý): Chỉ hiển thị khi hồ sơ ở các trạng thái:<br>+ `Bị từ chối thành lập HĐ`<br>+ `Đang họp hội đồng`<br>+ `Bị từ chối QĐ hoàn trả`<br>+ `Đang thi hành`<br>- **Phê duyệt/Từ chối**:<br>+ Chỉ hiển thị khi người dùng được phân quyền Lãnh đạo phê duyệt.<br>+ Chỉ hiển thị khi hồ sơ ở trạng thái:<br>  * `Chờ duyệt QĐ thành lập`<br>  * `Chờ duyệt QĐ hoàn trả`<br>- **Xóa** (Cán bộ xử lý): Chỉ hiển thị khi hồ sơ ở trạng thái:<br>+ `Chờ thành lập hội đồng` |
 
 ##### 4.3.3.5.3.3. Chức năng trên màn hình
 
