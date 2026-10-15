@@ -2,6 +2,8 @@
 
 #### 4.3.3.5. UC434-437 - Tra cứu phục hồi danh dự
 
+> **KHÔNG CÒN SỬ DỤNG (13/10/2026).** Bỏ menu "Phục hồi danh dự". Phục hồi danh dự là nhánh giải quyết trong vụ việc (01 Mã vụ việc `BT-yyyy-xxx`), tiếp nhận, thụ lý và cập nhật tiến trình tại [Vụ việc gồm 02 nhánh giải quyết - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-vu-viec-hai-nhanh) (lọc theo `Loại yêu cầu`, `Trạng thái Phục hồi danh dự`); tra cứu chỉ đọc tại tab Phục hồi danh dự của [Tra cứu vụ việc - Tra cứu vụ việc - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_TraCuu_VuViec.md). Nội dung bên dưới giữ để tham khảo.
+
 ##### 4.3.3.5.1. Mục đích
 
 \- Cho phép người dùng trên Website quản trị tra cứu danh sách tiến trình của các vụ việc Phục hồi danh dự. Vụ việc Phục hồi danh dự là hồ sơ độc lập, mã `PHDD-yyyy-xxx`, được tạo tại [MH02 - Màn hình Nhập liệu hồ sơ vụ việc - Giải quyết yêu cầu bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#43314-mh02---màn-hình-nhập-liệu-hồ-sơ-vụ-việc) khi yêu cầu chỉ có phục hồi danh dự hoặc được tách ra từ yêu cầu có cả bồi thường tiền và phục hồi danh dự.

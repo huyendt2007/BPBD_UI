@@ -1446,7 +1446,7 @@
             <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Quyền xem Cán bộ:</span>
             <select class="role-selector" id="roleSelectorMain" onchange="syncRole(this)">
                 <option value="chuyen-vien">Chuyên viên Thụ lý nghiệp vụ</option>
-                <option value="thu-truong">Thủ trưởng Cơ quan giải quyết</option>
+                <option value="thu-truong">Lãnh đạo đơn vị</option>
             </select>
         </div>
     </div>
@@ -1456,6 +1456,35 @@
 
         <!-- SUB-TAB CONTENT PANEL -->
         <div id="subTabContentResolver" style="display: block;">
+
+            <!-- GIẢ LẬP ĐĂNG NHẬP: Quyền giả lập / Cán bộ (Lãnh đạo) đang đăng nhập - đặt đầu màn hình -->
+                    <div class="role-switch-container"
+                        style="display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; margin: 0 0 12px auto; width: fit-content; max-width: 100%; padding: 6px 12px; background: #FFFBEB; border: 1px dashed #F59E0B;">
+                        <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Quyền giả lập</span>
+                        <select class="role-selector" id="roleSelectorGiaLap" onchange="syncRole(this)"
+                            style="padding: 6px 10px; font-size: 12.5px;">
+                            <option value="chuyen-vien">Cán bộ xử lý hồ sơ</option>
+                            <option value="thu-truong">Lãnh đạo đơn vị</option>
+                        </select>
+                        <!-- Cán bộ đang đăng nhập (giả lập): danh sách gồm cán bộ mẫu và tài khoản cán bộ theo Cơ cấu tổ chức -->
+                        <span id="currentOfficerSelectorWrapper" style="display: inline-flex; align-items: center; gap: 6px; margin-left: 10px;">
+                            <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Cán bộ đang đăng nhập</span>
+                            <select class="role-selector" id="currentOfficerSelector" onchange="renderClaimsTable()"
+                                style="padding: 6px 10px; font-size: 12.5px; max-width: 320px;">
+                                <optgroup label="Cán bộ mẫu">
+                                    <option value="Nguyễn Văn Chuyên Viên">Nguyễn Văn Chuyên Viên (CB1)</option>
+                                    <option value="Trần Thị Chuyên Viên">Trần Thị Chuyên Viên (CB2)</option>
+                                    <option value="Lê Văn Chuyên Viên">Lê Văn Chuyên Viên (CB3)</option>
+                                </optgroup>
+                            </select>
+                        </span>
+                        <!-- Lãnh đạo đang đăng nhập (giả lập): thành viên Nhóm lãnh đạo theo Cấu hình luồng xử lý -->
+                        <span id="currentLeaderSelectorWrapper" style="display: none; align-items: center; gap: 6px; margin-left: 10px;">
+                            <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Lãnh đạo đang đăng nhập</span>
+                            <select class="role-selector" id="currentLeaderSelector" onchange="renderClaimsTable()"
+                                style="padding: 6px 10px; font-size: 12.5px; max-width: 360px;"></select>
+                        </span>
+                    </div>
 
             <!-- SEARCH FILTERS CARD -->
             <div class="card-section"
@@ -1534,9 +1563,9 @@
                             <option value="Nhận qua bưu điện/bưu chính">Nhận qua bưu điện/bưu chính</option>
                         </select>
                     </div>
-                    <div>
+                    <div id="searchApprovalKindGroup" style="display: none;">
                         <span class="form-label">Nội dung trình</span>
-                        <!-- Áp dụng cho hồ sơ Chờ duyệt / Bị trả lại; danh sách lấy theo BTNN_WF.APPROVAL_KINDS.YCBT -->
+                        <!-- Chỉ hiển thị khi Trạng thái vụ việc = Chờ duyệt / Bị trả lại; danh sách lấy theo BTNN_WF.APPROVAL_KINDS.YCBT -->
                         <select class="form-control" id="searchApprovalKind">
                             <option value="">Tất cả</option>
                         </select>
@@ -1557,12 +1586,7 @@
                         <span class="form-label">Trạng thái Phục hồi danh dự</span>
                         <select class="form-control" id="searchPhddStatus">
                             <option value="">Tất cả</option>
-                            <option value="Đang thực hiện">Đang thực hiện</option>
-                            <option value="Chờ phản hồi">Chờ phản hồi</option>
-                            <option value="Chờ thực thi">Chờ thực hiện</option>
-                            <option value="Tạm hoãn">Tạm hoãn</option>
-                            <option value="Yêu cầu bổ sung">Yêu cầu bổ sung</option>
-                            <option value="Từ chối">Từ chối</option>
+                            <option value="Đang phục hồi danh dự">Đang phục hồi danh dự</option>
                             <option value="Hoàn thành">Hoàn thành</option>
                             <option value="Đình chỉ giải quyết">Đình chỉ giải quyết</option>
                         </select>
@@ -1581,27 +1605,12 @@
             <!-- GRID HEADER & ACTION BUTTONS -->
             <div
                 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; margin-top: 24px;">
-                <div class="role-switch-container"
-                    style="display: inline-flex; align-items: center; gap: 6px; margin-bottom: 0;">
-                    <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Quyền giả lập</span>
-                    <select class="role-selector" id="roleSelectorGiaLap" onchange="syncRole(this)"
-                        style="padding: 6px 10px; font-size: 12.5px;">
-                        <option value="chuyen-vien">Cán bộ xử lý hồ sơ</option>
-                        <option value="thu-truong">Thủ trưởng cơ quan giải quyết</option>
-                    </select>
-                    <!-- Cán bộ đang đăng nhập (giả lập): danh sách gồm cán bộ mẫu và tài khoản cán bộ theo Cơ cấu tổ chức -->
-                    <span id="currentOfficerSelectorWrapper" style="display: inline-flex; align-items: center; gap: 6px; margin-left: 10px;">
-                        <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Cán bộ đang đăng nhập</span>
-                        <select class="role-selector" id="currentOfficerSelector" onchange="renderClaimsTable()"
-                            style="padding: 6px 10px; font-size: 12.5px; max-width: 320px;">
-                            <optgroup label="Cán bộ mẫu">
-                                <option value="Nguyễn Văn Chuyên Viên">Nguyễn Văn Chuyên Viên (CB1)</option>
-                                <option value="Trần Thị Chuyên Viên">Trần Thị Chuyên Viên (CB2)</option>
-                                <option value="Lê Văn Chuyên Viên">Lê Văn Chuyên Viên (CB3)</option>
-                            </optgroup>
-                        </select>
-                    </span>
-                </div>
+            <!-- LỌC NHANH THEO LOẠI YÊU CẦU (áp dụng tại cả 2 tab; đồng bộ với trường Loại yêu cầu của bộ lọc) -->
+            <div id="claimsQuickKindBar" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:0;">
+                <button type="button" class="quick-kind-chip" data-kind="" onclick="setClaimsQuickKind('')">Tất cả <span class="chip-count" id="quickKindCountAll">0</span></button>
+                <button type="button" class="quick-kind-chip" data-kind="money" onclick="setClaimsQuickKind('money')">Bồi thường thiệt hại <span class="chip-count" id="quickKindCountMoney">0</span></button>
+                <button type="button" class="quick-kind-chip" data-kind="has-phdd" onclick="setClaimsQuickKind('has-phdd')"><i class="fa-solid fa-ribbon"></i> Phục hồi danh dự <span class="chip-count" id="quickKindCountPhdd">0</span></button>
+            </div>
                 <div style="display: flex; gap: 8px; align-items: center;">
                     <!-- Chỉ hiển thị tại Tab "Vụ việc chờ xử lý" (vai trò Cán bộ xử lý): mở màn nhập liệu hồ sơ ở chế độ tạo mới -->
                     <button class="btn btn-primary" id="btnCreateClaimRequest" onclick="openInlineClaimForm(null)"><i
@@ -1610,6 +1619,13 @@
                         Kết xuất Excel</button>
                 </div>
             </div>
+            <style>
+                .quick-kind-chip { display:inline-flex; align-items:center; gap:8px; padding:8px 18px; font-size:13.5px; font-weight:500; border:1px solid #cbd5e1; border-radius:999px; background:#fff; color:#334155; cursor:pointer; }
+                .quick-kind-chip:hover { border-color:#1e3a8a; color:#1e3a8a; }
+                .quick-kind-chip.active { background:#1e3a8a; border-color:#1e3a8a; color:#fff; }
+                .quick-kind-chip .chip-count { min-width:22px; padding:1px 8px; border-radius:999px; background:#e2e8f0; color:#334155; font-size:11.5px; font-weight:700; text-align:center; }
+                .quick-kind-chip.active .chip-count { background:#fff; color:#1e3a8a; }
+            </style>
 
             <!-- DATA TABLE -->
             <div class="table-container" style="max-height: 60vh; overflow: auto;">
@@ -1619,7 +1635,6 @@
                             <th style="width: 50px; text-align: center;">STT</th>
                             <th style="width: 120px; text-align: center;">Mã vụ việc</th>
                             <th style="min-width: 170px;">Họ và tên người yêu cầu</th>
-                            <th style="width: 135px; text-align: center;">Số giấy tờ</th>
                             <th style="min-width: 220px;">Hành vi gây thiệt hại</th>
                             <th style="min-width: 160px;">Lĩnh vực phát sinh thiệt hại</th>
                             <th style="min-width: 150px;">Cơ quan giải quyết</th>
@@ -1630,7 +1645,7 @@
                             <th style="width: 110px; text-align: center;">Hạn xử lý</th>
                             <th style="width: 140px; text-align: center;">Nguồn hồ sơ</th>
                             <th style="width: 140px; text-align: center;">Trạng thái</th>
-                            <th id="claimsActionColHeader" style="width: 130px; text-align: center; min-width: 120px;">Thao tác</th>
+                            <th id="claimsActionColHeader" style="width: 190px; text-align: center; min-width: 180px;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="claimsTableBody">
@@ -1754,7 +1769,7 @@
                 </div>
 
                 <!-- I. THÔNG TIN HỒ SƠ YÊU CẦU -->
-                <div class="info-group-title">I. Thông tin Hồ sơ yêu cầu</div>
+                <div class="info-group-title">Thông tin Hồ sơ yêu cầu</div>
 
                 <!-- Khối hồ sơ nhận từ Xác định CQGQBT (chỉ hiển thị khi hồ sơ có xdCode) -->
                 <div id="claimXdTransferInfo" style="display:none; background:#eff6ff; border:1px solid #bfdbfe; border-radius: var(--border-radius-md); padding: 14px 16px; margin-bottom: 16px; font-size: 13px; line-height: 1.6;"></div>
@@ -2349,7 +2364,7 @@
 
                 <!-- II. THIỆT HẠI YÊU CẦU BỒI THƯỜNG -->
                 <div id="claimMoneySection">
-                    <div class="info-group-title">II. Thiệt hại yêu cầu bồi thường</div>
+                    <div class="info-group-title">Thiệt hại yêu cầu bồi thường</div>
                     <div class="table-container" style="margin-bottom: 20px;">
                         <table class="custom-table">
                             <thead>
@@ -2447,7 +2462,7 @@
 
                 <!-- III. ĐỀ NGHỊ TẠM ỨNG KINH PHÍ -->
                 <div id="advancePaymentSection" style="margin-bottom: 20px;">
-                    <div class="info-group-title">III. Đề nghị tạm ứng kinh phí</div>
+                    <div class="info-group-title">Đề nghị tạm ứng kinh phí</div>
                     <div
                         style="background-color: #FAF5FF; border: 1px solid #E9D5FF; padding: 18px; border-radius: var(--border-radius-md);">
                         <label
@@ -2544,7 +2559,7 @@
 
                 <!-- IV. THÔNG TIN NGƯỜI NHẬN & PHƯƠNG THỨC CHI TRẢ -->
                 <div id="claimRecInfoSection" style="display: none; margin-bottom: 20px;">
-                    <div class="info-group-title">IV. THÔNG TIN NGƯỜI NHẬN & PHƯƠNG THỨC CHI TRẢ</div>
+                    <div class="info-group-title">THÔNG TIN NGƯỜI NHẬN & PHƯƠNG THỨC CHI TRẢ</div>
                     <div
                         style="background-color: #FAFBFD; border: 1px solid var(--border-color); padding: 18px; border-radius: var(--border-radius-md);">
                         <div class="grid-3-cols" style="margin-bottom: 12px;">
@@ -2612,7 +2627,7 @@
                 </div>
 
                 <!-- V. CÁC NỘI DUNG KHÁC -->
-                <div class="info-group-title">V. Nội dung khác & Tài liệu đính kèm</div>
+                <div class="info-group-title">Nội dung khác & Tài liệu đính kèm</div>
 
                 <!-- PHẦN YÊU CẦU PHỤC HỒI DANH DỰ -->
                 <div id="claimHonorSection"
@@ -3819,7 +3834,7 @@
                                 <button id="btnPublishPhddStep1" class="btn btn-primary btn-sm"
                                     onclick="publishPhddStep1()"
                                     style="background: #1e3a8a; color: white; border: none; padding: 6px 16px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px;"><i
-                                        class="fa-solid fa-paper-plane"></i> Ban hành thông báo</button>
+                                        class="fa-solid fa-floppy-disk"></i> Lưu thông tin</button>
                                 <button type="button" id="btnPreviewM17" class="btn btn-secondary btn-sm"
                                     onclick="previewM17()"
                                     style="background: white; color: black; border: 1px solid #cbd5e1; padding: 6px 16px; font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 6px;">Xem thông báo</button>
@@ -3891,12 +3906,24 @@
                                                 onchange="toggleStep2OpinionFields(this.value)">
                                             <span>Đề nghị chưa thực hiện / tạm hoãn (Khoản 4 Điều 57)</span>
                                         </label>
+                                        <!-- Không có trạng thái "Từ chối": ghi nhận ý kiến + biên bản, nhánh Phục hồi danh dự kết thúc ở Hoàn thành -->
                                         <label class="opinion-radio-label">
                                             <input type="radio" name="editPhddStep2Opinion" value="Từ chối"
                                                 onchange="toggleStep2OpinionFields(this.value)">
-                                            <span>Từ chối quyền phục hồi danh dự (Khoản 5 Điều 57)</span>
+                                            <span>Từ chối phục hồi danh dự (Khoản 5 Điều 57)</span>
+                                        </label>
+                                        <label class="opinion-radio-label">
+                                            <input type="radio" name="editPhddStep2Opinion" value="Ý kiến khác"
+                                                onchange="toggleStep2OpinionFields(this.value)">
+                                            <span>Ý kiến khác</span>
                                         </label>
                                     </div>
+                                </div>
+
+                                <div id="phddStep2OtherGroup" style="display: none;" class="form-group">
+                                    <span class="form-label">Nội dung ý kiến của người bị thiệt hại *</span>
+                                    <textarea class="form-control" id="editPhddStep2OtherText" rows="3"
+                                        placeholder="Nhập chi tiết ý kiến của người bị thiệt hại..."></textarea>
                                 </div>
 
                                 <!-- Dynamic text fields based on selection -->
@@ -4165,6 +4192,14 @@
                             </div>
                         </div>
 
+                        <!-- HOÀN THÀNH PHỤC HỒI DANH DỰ: chuyển Trạng thái Phục hồi danh dự sang Hoàn thành (chế độ cập nhật) -->
+                        <div id="phddCompleteBar"
+                            style="display: none; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--border-radius-lg); padding: 14px 20px; align-items: center; justify-content: space-between; gap: 12px;">
+                            <span id="phddCompleteHint" style="font-size: 13px; color: #166534;">Sau khi đã tổ chức thực hiện phục hồi danh dự, bấm Hoàn thành để kết thúc nhánh Phục hồi danh dự.</span>
+                            <button type="button" id="btnCompletePhdd" class="btn btn-success" onclick="completePhddProcess()"
+                                style="display: inline-flex; align-items: center; gap: 6px; white-space: nowrap;"><i class="fa-solid fa-flag-checkered"></i> Hoàn thành phục hồi danh dự</button>
+                        </div>
+
                         <!-- 6. LỊCH SỬ QUÁ TRÌNH XỬ LÝ PHỤC HỒI DANH DỰ -->
                         <div class="phdd-timeline"
                             style="background: white; border: 1px solid var(--border-color); padding: 20px; border-radius: var(--border-radius-lg); box-shadow: var(--box-shadow);">
@@ -4199,7 +4234,7 @@
     </div>
 
     <!-- Luồng phân công - phê duyệt dùng chung BTNN: nguồn hồ sơ YCBT nhận từ Xác định CQGQBT -->
-    <script src="btnn_luong_xu_ly.js?v=20261012"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261015e"></script>
     <!-- Cử người giải quyết (nhiều cán bộ theo Cơ cấu tổ chức), Xác minh thiệt hại nhiều lần, Văn bản làm căn cứ yêu cầu bồi thường -->
     <script>
         function ycEsc(v) {
@@ -4577,6 +4612,9 @@
             if (wrapper) {
                 wrapper.style.display = val === 'chuyen-vien' ? 'inline-flex' : 'none';
             }
+            const leaderWrap = document.getElementById('currentLeaderSelectorWrapper');
+            if (leaderWrap) leaderWrap.style.display = val === 'thu-truong' ? 'inline-flex' : 'none';
+            if (val === 'thu-truong') populateLeaderSelector();
 
             // Vai trò Lãnh đạo (Thủ trưởng CQ giải quyết): Tab "Vụ việc chờ xử lý" chỉ gồm hồ sơ Chờ thụ lý
             // (lọc trong claimInActiveWorkflowTab); nút Tạo yêu cầu thuộc phạm vi Cán bộ xử lý nên ẩn với Lãnh đạo.
@@ -7014,6 +7052,346 @@
                     { title: "Xác minh thiệt hại", date: "30/06/2026", desc: "Hoàn thành xác minh thiệt hại thực tế. Tổng Mức xác minh: 98.000.000 đ.", status: "completed" },
                     { title: "Thương lượng bồi thường", date: "30/07/2026", desc: "Người yêu cầu bồi thường hai lần không đến địa điểm thương lượng khi đã nhận giấy mời mà không có lý do chính đáng. Hồ sơ chuyển sang [Chờ ban hành QĐ].", status: "completed" }
                 ]
+            },
+            // Dữ liệu mẫu: vụ việc Chỉ yêu cầu phục hồi danh dự đã Thụ lý -> Đang thực hiện phục hồi danh dự (chưa lưu Thông báo tổ chức phục hồi danh dự)
+            {
+                id: "HS61",
+                assignedOfficer: "Nguyễn Văn Chuyên Viên",
+                code: "BT-2026-061",
+                requestType: "honor",
+                restoreHonor: true,
+                phddStarted: true,
+                fieldGroup: "hình sự",
+                date: "02/06/2026",
+                nyc: "Lương Văn Thành",
+                victimAlive: "yes",
+                cardType: "Cá nhân",
+                cardNo: "036088001245",
+                address: "Số 15 đường Trần Hưng Đạo, TP. Nam Định, Nam Định",
+                phone: "0912345061",
+                role: "Người bị thiệt hại",
+                docBase: "Quyết định đình chỉ điều tra bị can số 08/QĐ-CSĐT ngày 10/04/2026 của Cơ quan CSĐT Công an tỉnh Nam Định (không thực hiện hành vi phạm tội)",
+                hanhVi: "Khởi tố bị can, tạm giam 02 tháng đối với người không thực hiện hành vi phạm tội.",
+                nhanQua: "Danh dự, uy tín của người bị thiệt hại bị ảnh hưởng tại nơi cư trú và nơi làm việc.",
+                status: "Đang thực hiện",
+                phddStatus: "Đang thực hiện",
+                nopKenh: "Tiếp nhận trực tiếp",
+                thulyVenue: "cơ quan quản lý",
+                totalNum: 0,
+                advanceNum: 0,
+                slaDays: 20,
+                slaStatus: "normal",
+                slaText: "Đang thực hiện phục hồi danh dự",
+                phddForm: "Trực tiếp xin lỗi và cải chính công khai",
+                phddFormApology: true,
+                phddFormNews: false,
+                agency: "Công an tỉnh Nam Định",
+                deadline: "30/07/2026",
+                files: [{ name: "Don_yeu_cau_phuc_hoi_danh_du.pdf", url: "#" }, { name: "QD_dinh_chi_dieu_tra_08.pdf", url: "#" }],
+                timeline: [
+                    { title: "Tiếp nhận hồ sơ", date: "02/06/2026", desc: "Tiếp nhận yêu cầu phục hồi danh dự trực tiếp", status: "completed" },
+                    { title: "Thụ lý hồ sơ yêu cầu phục hồi danh dự", date: "05/06/2026", desc: "Cử cán bộ giải quyết, bắt đầu tiến trình phục hồi danh dự", status: "completed" }
+                ]
+            },
+            // Dữ liệu mẫu: vụ việc Chỉ yêu cầu phục hồi danh dự -> Chờ phản hồi phục hồi danh dự (đã lưu Thông báo, chờ ý kiến người bị thiệt hại)
+            {
+                id: "HS62",
+                assignedOfficer: "Nguyễn Văn Chuyên Viên",
+                code: "BT-2026-062",
+                requestType: "honor",
+                restoreHonor: true,
+                phddStarted: true,
+                fieldGroup: "hành chính",
+                date: "03/06/2026",
+                nyc: "Phan Thị Mai Anh",
+                victimAlive: "yes",
+                cardType: "Cá nhân",
+                cardNo: "001190007788",
+                address: "Số 27 phố Kim Mã, Ba Đình, Hà Nội",
+                phone: "0983456062",
+                role: "Người bị thiệt hại",
+                docBase: "Quyết định hủy Quyết định xử phạt vi phạm hành chính số 112/QĐ-XPHC ngày 05/03/2026 của Chủ tịch UBND quận Ba Đình",
+                hanhVi: "Ra quyết định xử phạt vi phạm hành chính và công bố công khai thông tin vi phạm không đúng đối tượng.",
+                nhanQua: "Thông tin vi phạm được đăng trên cổng thông tin điện tử của quận, ảnh hưởng uy tín nghề nghiệp.",
+                status: "Chờ phản hồi",
+                phddStatus: "Chờ phản hồi",
+                nopKenh: "Dịch vụ công",
+                thulyVenue: "cơ quan quản lý",
+                totalNum: 0,
+                advanceNum: 0,
+                slaDays: 15,
+                slaStatus: "normal",
+                slaText: "Chờ ý kiến người bị thiệt hại",
+                phddForm: "Đăng báo xin lỗi và cải chính công khai",
+                phddFormApology: false,
+                phddFormNews: true,
+                agency: "UBND quận Ba Đình",
+                deadline: "02/08/2026",
+                files: [{ name: "Don_yeu_cau_phuc_hoi_danh_du_HS62.pdf", url: "#" }],
+                phddStep1No: "21/TB-UBND",
+                phddStep1Date: "12/06/2026",
+                phddStep1Signer: "Trần Quang Huy",
+                phddStep1Position: "Chủ tịch UBND quận",
+                phddStep1SendDate: "13/06/2026",
+                phddStep1Files: [{ name: "Thong_bao_to_chuc_PHDD_HS62.pdf", size: "180 KB" }],
+                timeline: [
+                    { title: "Tiếp nhận hồ sơ", date: "03/06/2026", desc: "Tiếp nhận yêu cầu phục hồi danh dự qua Dịch vụ công", status: "completed" },
+                    { title: "Thụ lý hồ sơ yêu cầu phục hồi danh dự", date: "06/06/2026", desc: "Cử cán bộ giải quyết", status: "completed" },
+                    { title: "Lưu thông tin thông báo tổ chức phục hồi danh dự", date: "12/06/2026", desc: "Thông báo số 21/TB-UBND do Trần Quang Huy (Chủ tịch UBND quận) ký.", status: "completed" }
+                ]
+            },
+            // Dữ liệu mẫu: vụ việc Chỉ yêu cầu phục hồi danh dự -> Chờ thực hiện phục hồi danh dự (người bị thiệt hại đồng ý)
+            {
+                id: "HS63",
+                assignedOfficer: "Nguyễn Văn Chuyên Viên",
+                code: "BT-2026-063",
+                requestType: "honor",
+                restoreHonor: true,
+                phddStarted: true,
+                fieldGroup: "dân sự",
+                date: "04/06/2026",
+                nyc: "Vũ Đức Long",
+                victimAlive: "yes",
+                cardType: "Cá nhân",
+                cardNo: "034085009912",
+                address: "Thôn Đông, xã Vũ Thư, Thái Bình",
+                phone: "0868123063",
+                role: "Người bị thiệt hại",
+                docBase: "Bản án phúc thẩm số 44/2026/DS-PT ngày 20/03/2026 của TAND tỉnh Thái Bình hủy quyết định áp dụng biện pháp khẩn cấp tạm thời",
+                hanhVi: "Áp dụng biện pháp khẩn cấp tạm thời không đúng, công bố tại địa phương.",
+                nhanQua: "Uy tín cá nhân tại địa phương bị ảnh hưởng.",
+                status: "Chờ thực thi",
+                phddStatus: "Chờ thực thi",
+                nopKenh: "Nhận qua bưu điện/Bưu chính",
+                thulyVenue: "tòa án tố tụng",
+                totalNum: 0,
+                advanceNum: 0,
+                slaDays: 10,
+                slaStatus: "normal",
+                slaText: "Chờ tổ chức phục hồi danh dự",
+                phddForm: "Trực tiếp xin lỗi và cải chính công khai",
+                phddFormApology: true,
+                phddFormNews: false,
+                agency: "Tòa án nhân dân tỉnh Thái Bình",
+                deadline: "05/08/2026",
+                files: [{ name: "Don_yeu_cau_phuc_hoi_danh_du_HS63.pdf", url: "#" }],
+                phddStep1No: "09/TB-TA",
+                phddStep1Date: "15/06/2026",
+                phddStep1Signer: "Lê Minh Tuấn",
+                phddStep1Position: "Chánh án",
+                phddStep1SendDate: "16/06/2026",
+                phddStep1Files: [{ name: "Thong_bao_to_chuc_PHDD_HS63.pdf", size: "210 KB" }],
+                phddStep2ReceiveDate: "25/06/2026",
+                phddStep2Opinion: "Đồng ý thực hiện",
+                timeline: [
+                    { title: "Tiếp nhận hồ sơ", date: "04/06/2026", desc: "Tiếp nhận yêu cầu phục hồi danh dự qua bưu chính", status: "completed" },
+                    { title: "Thụ lý hồ sơ yêu cầu phục hồi danh dự", date: "08/06/2026", desc: "Cử cán bộ giải quyết", status: "completed" },
+                    { title: "Lưu thông tin thông báo tổ chức phục hồi danh dự", date: "15/06/2026", desc: "Thông báo số 09/TB-TA do Lê Minh Tuấn (Chánh án) ký.", status: "completed" },
+                    { title: "Cập nhật ý kiến người bị thiệt hại", date: "25/06/2026", desc: "Người bị hại phản hồi: Đồng ý thực hiện.", status: "completed" }
+                ]
+            },
+            // Dữ liệu mẫu: Sung quỹ nhà nước - quá 03 năm kể từ ngày nhận thông báo, người yêu cầu không đến nhận tiền bồi thường
+            {
+                id: "HS64",
+                assignedOfficer: "Nguyễn Văn Chuyên Viên",
+                code: "BT-2026-064",
+                fieldGroup: "thi hành án dân sự",
+                date: "05/06/2026",
+                nyc: "Đỗ Văn Khải",
+                victimAlive: "yes",
+                cardType: "Cá nhân",
+                cardNo: "027080004431",
+                address: "Số 9 đường Lê Lợi, TP. Bắc Ninh, Bắc Ninh",
+                phone: "0977654064",
+                role: "Người bị thiệt hại",
+                docBase: "Quyết định hủy Quyết định cưỡng chế thi hành án số 05/QĐ-CCTHADS",
+                hanhVi: "Cưỡng chế kê biên tài sản không đúng quy định.",
+                nhanQua: "Tài sản bị kê biên, thu nhập bị giảm sút.",
+                status: "Sung quỹ nhà nước",
+                nopKenh: "Tiếp nhận trực tiếp",
+                thulyVenue: "cơ quan quản lý",
+                totalNum: 85000000,
+                advanceNum: 0,
+                slaDays: 0,
+                slaStatus: "normal",
+                slaText: "Đã sung quỹ nhà nước",
+                restoreHonor: false,
+                agency: "Cục Thi hành án dân sự tỉnh Bắc Ninh",
+                deadline: "05/09/2026",
+                files: [{ name: "Don_yeu_cau_boi_thuong_HS64.pdf", url: "#" }],
+                thietHaiList: [
+                    { type: 1, calc: "Thiệt hại do tài sản bị xâm phạm: 50.000.000 đ", val: 50000000 },
+                    { type: 2, calc: "Thu nhập thực tế bị mất hoặc bị giảm sút: 35.000.000 đ", val: 35000000 }
+                ],
+                decStatus: "Hoàn thành",
+                decNo: "07/QĐ-BT",
+                decDate: "20/06/2026",
+                decContent: "Bồi thường cho ông Đỗ Văn Khải số tiền 85.000.000 đ do cưỡng chế kê biên tài sản không đúng quy định.",
+                decPublishDate: "20/06/2026",
+                decEffectiveDate: "05/07/2026",
+                decSigner: "Nguyễn Hữu Thắng",
+                decPosition: "Cục trưởng",
+                sungQuyNoticeDate: "10/07/2026",
+                sungQuyNoticeFile: "Bien_ban_thong_bao_nhan_tien_HS64.pdf",
+                sungQuyDocNo: "15/QĐ-SQ",
+                sungQuyDate: "12/07/2029",
+                sungQuyAmount: 85000000,
+                sungQuyAccount: "3511 - Kho bạc Nhà nước tỉnh Bắc Ninh",
+                sungQuyTransactionCode: "KBNN-BN-2029-000815",
+                timeline: [
+                    { title: "Tiếp nhận hồ sơ", date: "05/06/2026", desc: "Tiếp nhận trực tiếp", status: "completed" },
+                    { title: "Ban hành Quyết định giải quyết bồi thường", date: "20/06/2026", desc: "Quyết định số 07/QĐ-BT", status: "completed" },
+                    { title: "Sung quỹ nhà nước", date: "12/07/2029", desc: "Quá 03 năm kể từ ngày nhận thông báo, người yêu cầu không đến nhận tiền bồi thường. Khoản tiền được nộp sung quỹ nhà nước.", status: "completed" }
+                ]
+            },
+            // Dữ liệu mẫu tab "Vụ việc đã xử lý": Đã chuyển CQGQBT (Không thụ lý lý do KTL_01, chuyển cơ quan có thẩm quyền)
+            {
+                id: "HS65",
+                assignedOfficer: "Nguyễn Văn Chuyên Viên",
+                code: "BT-2026-065",
+                fieldGroup: "hành chính",
+                date: "10/06/2026",
+                nyc: "Trịnh Văn Hòa",
+                victimAlive: "yes",
+                cardType: "Cá nhân",
+                cardNo: "001086003377",
+                address: "Số 45 phố Nguyễn Trãi, Thanh Xuân, Hà Nội",
+                phone: "0915777065",
+                role: "Người bị thiệt hại",
+                docBase: "Quyết định hủy Quyết định xử phạt số 210/QĐ-XPHC của Công an quận Thanh Xuân",
+                hanhVi: "Tạm giữ phương tiện vi phạm hành chính quá thời hạn quy định.",
+                nhanQua: "Không sử dụng được phương tiện kinh doanh trong 45 ngày.",
+                status: "Đã chuyển CQGQBT",
+                nopKenh: "Tiếp nhận trực tiếp",
+                totalNum: 42000000,
+                advanceNum: 0,
+                slaDays: 0,
+                slaStatus: "normal",
+                slaText: "Đã chuyển cơ quan giải quyết bồi thường",
+                restoreHonor: false,
+                agency: "UBND Quận Hoàng Mai",
+                deadline: "10/07/2026",
+                files: [{ name: "Don_yeu_cau_boi_thuong_HS65.pdf", url: "#" }],
+                ktlReasonCode: "KTL_01",
+                ktlReasonName: "Yêu cầu bồi thường không thuộc trách nhiệm giải quyết của mình",
+                ktlDetail: "Người thi hành công vụ gây thiệt hại thuộc Công an quận Thanh Xuân.",
+                rejectType: "Không thụ lý",
+                transferRequest: { targetName: "Công an quận Thanh Xuân, Thành phố Hà Nội", content: "Chuyển hồ sơ để Công an quận Thanh Xuân giải quyết theo thẩm quyền (khoản 1 Điều 43 Luật TNBTCNN)." },
+                timeline: [
+                    { title: "Tiếp nhận hồ sơ", date: "10/06/2026", desc: "Tiếp nhận trực tiếp", status: "completed" },
+                    { title: "Đã chuyển CQGQBT", date: "18/06/2026", desc: "Không thụ lý (KTL_01), chuyển hồ sơ đến Công an quận Thanh Xuân, Thành phố Hà Nội.", status: "completed" }
+                ]
+            },
+            // Dữ liệu mẫu tab "Vụ việc đã xử lý": vụ việc Chỉ yêu cầu phục hồi danh dự - Hoàn thành
+            {
+                id: "HS66",
+                assignedOfficer: "Nguyễn Văn Chuyên Viên",
+                code: "BT-2026-066",
+                requestType: "honor",
+                restoreHonor: true,
+                phddStarted: true,
+                fieldGroup: "hình sự",
+                date: "12/05/2026",
+                nyc: "Mai Thị Thu Hằng",
+                victimAlive: "yes",
+                cardType: "Cá nhân",
+                cardNo: "036190004455",
+                address: "Số 3 đường Hùng Vương, TP. Nam Định, Nam Định",
+                phone: "0936111066",
+                role: "Người bị thiệt hại",
+                docBase: "Quyết định đình chỉ vụ án số 12/QĐ-VKS ngày 01/03/2026 (bị can không thực hiện hành vi phạm tội)",
+                hanhVi: "Khởi tố bị can đối với người không thực hiện hành vi phạm tội.",
+                nhanQua: "Danh dự, uy tín bị ảnh hưởng tại nơi làm việc.",
+                status: "Hoàn thành",
+                phddStatus: "Hoàn thành",
+                nopKenh: "Tiếp nhận trực tiếp",
+                totalNum: 0,
+                advanceNum: 0,
+                slaDays: 0,
+                slaStatus: "normal",
+                slaText: "Đã hoàn thành phục hồi danh dự",
+                phddForm: "Trực tiếp xin lỗi và cải chính công khai",
+                phddFormApology: true,
+                phddFormNews: false,
+                agency: "Công an tỉnh Nam Định",
+                deadline: "12/07/2026",
+                files: [{ name: "Don_yeu_cau_phuc_hoi_danh_du_HS66.pdf", url: "#" }],
+                phddStep1No: "05/TB-CA",
+                phddStep1Date: "20/05/2026",
+                phddStep1Signer: "Nguyễn Đức Thịnh",
+                phddStep1Position: "Giám đốc Công an tỉnh",
+                phddStep1SendDate: "21/05/2026",
+                phddStep1Files: [{ name: "Thong_bao_to_chuc_PHDD_HS66.pdf", size: "190 KB" }],
+                phddStep2ReceiveDate: "28/05/2026",
+                phddStep2Opinion: "Đồng ý thực hiện",
+                phddStep3DateExp: "09:00, 10/06/2026",
+                phddStep3DirectVenue: "Hội trường UBND phường Lộc Hạ",
+                phddStep4DateAct: "10/06/2026",
+                phddStep4VenueAct: "Hội trường UBND phường Lộc Hạ",
+                phddStep4ResultDesc: "Đã tổ chức trực tiếp xin lỗi và cải chính công khai theo đúng kế hoạch.",
+                timeline: [
+                    { title: "Tiếp nhận hồ sơ", date: "12/05/2026", desc: "Tiếp nhận yêu cầu phục hồi danh dự trực tiếp", status: "completed" },
+                    { title: "Thụ lý hồ sơ yêu cầu phục hồi danh dự", date: "15/05/2026", desc: "Cử cán bộ giải quyết", status: "completed" },
+                    { title: "Hoàn thành phục hồi danh dự", date: "10/06/2026", desc: "Đã tổ chức trực tiếp xin lỗi và cải chính công khai.", status: "completed" }
+                ]
+            },
+            // Dữ liệu mẫu tab "Vụ việc đã xử lý": vụ việc Yêu cầu cả hai - Hoàn thành (cả 02 nhánh đã hoàn thành)
+            {
+                id: "HS67",
+                assignedOfficer: "Nguyễn Văn Chuyên Viên",
+                code: "BT-2026-067",
+                restoreHonor: true,
+                phddStarted: true,
+                fieldGroup: "hình sự",
+                date: "02/04/2026",
+                nyc: "Kiều Văn Đông",
+                victimAlive: "yes",
+                cardType: "Cá nhân",
+                cardNo: "001080002299",
+                address: "Số 18 phố Huế, Hai Bà Trưng, Hà Nội",
+                phone: "0904222067",
+                role: "Người bị thiệt hại",
+                docBase: "Bản án hình sự phúc thẩm số 33/2026/HS-PT tuyên không phạm tội",
+                hanhVi: "Tạm giam 05 tháng đối với người không thực hiện hành vi phạm tội.",
+                nhanQua: "Mất thu nhập, tổn hại tinh thần, danh dự.",
+                status: "Hoàn thành",
+                phddStatus: "Hoàn thành",
+                nopKenh: "Tiếp nhận trực tiếp",
+                thulyVenue: "tòa án tố tụng",
+                totalNum: 260000000,
+                advanceNum: 0,
+                slaDays: 0,
+                slaStatus: "normal",
+                slaText: "Đã hoàn thành",
+                phddForm: "Trực tiếp xin lỗi và cải chính công khai",
+                phddFormApology: true,
+                phddFormNews: false,
+                agency: "Tòa án nhân dân TP. Hà Nội",
+                deadline: "02/07/2026",
+                files: [{ name: "Don_yeu_cau_boi_thuong_HS67.pdf", url: "#" }],
+                decStatus: "Hoàn thành",
+                decNo: "22/QĐ-BT",
+                decDate: "20/05/2026",
+                decContent: "Bồi thường cho ông Kiều Văn Đông số tiền 260.000.000 đ và tổ chức xin lỗi, cải chính công khai.",
+                decPublishDate: "20/05/2026",
+                decEffectiveDate: "04/06/2026",
+                decSigner: "Vương Minh Khang",
+                decPosition: "Chánh án",
+                phddStep1No: "14/TB-TA",
+                phddStep1Date: "25/05/2026",
+                phddStep1Signer: "Vương Minh Khang",
+                phddStep1Position: "Chánh án",
+                phddStep1SendDate: "26/05/2026",
+                phddStep2ReceiveDate: "01/06/2026",
+                phddStep2Opinion: "Đồng ý thực hiện",
+                phddStep4DateAct: "15/06/2026",
+                phddStep4VenueAct: "Trụ sở Tòa án nhân dân TP. Hà Nội",
+                phddStep4ResultDesc: "Đã tổ chức trực tiếp xin lỗi và cải chính công khai.",
+                timeline: [
+                    { title: "Tiếp nhận hồ sơ", date: "02/04/2026", desc: "Tiếp nhận trực tiếp", status: "completed" },
+                    { title: "Ban hành Quyết định giải quyết bồi thường", date: "20/05/2026", desc: "Quyết định số 22/QĐ-BT", status: "completed" },
+                    { title: "Hoàn thành", date: "20/06/2026", desc: "Hoàn thành chi trả tiền bồi thường và phục hồi danh dự.", status: "completed" }
+                ]
             }
         ];
 
@@ -7091,6 +7469,18 @@
         let selectedClaimId = null;
         let editingClaimId = null;
         let isDetailEditMode = false;
+        // Thao tác mở từ cột Thao tác của danh sách: Hủy bỏ đóng hẳn form, quay về màn danh sách (không về màn Xem chi tiết)
+        let gqOpenedFromList = false;
+        function gqBackToListIfFromList() {
+            if (!gqOpenedFromList) return false;
+            gqOpenedFromList = false;
+            isDetailEditMode = false;
+            editingClaimId = null;
+            ['caseDetailSection', 'inlineClaimFormPanel'].forEach(idEl => { const el = document.getElementById(idEl); if (el) el.style.display = 'none'; });
+            document.getElementById('subTabContentResolver').style.display = 'block';
+            renderClaimsTable();
+            return true;
+        }
         let activeDetailTab = 'chung';
         let activeDetailSubTab = 'kq-xl';
         let activeDetailActionType = null;
@@ -7469,6 +7859,7 @@
             // Trạng thái vụ việc theo kho luồng (Chờ duyệt, Bị trả lại, Chờ thụ lý, Chờ phát hành văn bản, Không thụ lý,
             // Đã chuyển CQGQBT...) và dữ liệu nghiệp vụ đã lưu khi trình (Lý do không thụ lý, Chuyển CQGQBT, Phát hành văn bản)
             if (typeof gqRefreshClaimsFromWorkflow === 'function') gqRefreshClaimsFromWorkflow(true);
+            if (typeof gqEnsureThuLyRecords === 'function') gqEnsureThuLyRecords();
             ensureOfficerOptionsForSyncedClaims();
             return added;
         }
@@ -7756,11 +8147,14 @@
         const PHDD_STORE_KEY = 'btnn_gq_phdd_claims_v1';   // vụ việc Chỉ yêu cầu phục hồi danh dự (giữ khi tải lại trang)
         const PHDD_TRACK_KEY = 'btnn_gq_phdd_track_v1';    // dữ liệu nhánh Phục hồi danh dự theo Mã vụ việc
         const PHDD_MERGE_KEY = 'btnn_gq_phdd_merge_v1';    // mã PHDD- cũ -> mã BT- sau khi gộp
-        const PHDD_DONE_STATES = ['Hoàn thành', 'Từ chối', 'Đình chỉ giải quyết'];
+        // Không có trạng thái "Từ chối": người bị thiệt hại từ chối phục hồi danh dự -> ghi nhận ý kiến, nhánh kết thúc ở Hoàn thành
+        const PHDD_DONE_STATES = ['Hoàn thành', 'Đình chỉ giải quyết'];
         const PHDD_START_STATUS = 'Đang thực hiện';
         const CASE_PHDD_PENDING_STATUS = 'Đang phục hồi danh dự';
         const YCBT_END_STATES = ['Hoàn thành', 'Sung quỹ nhà nước'];
-        const PHDD_TRACK_FILTER_STATES = ['Đang thực hiện', 'Chờ phản hồi', 'Chờ thực thi', 'Tạm hoãn', 'Yêu cầu bổ sung', 'Từ chối', 'Hoàn thành', 'Đình chỉ giải quyết'];
+        const PHDD_TRACK_FILTER_STATES = ['Đang thực hiện', 'Chờ phản hồi', 'Chờ thực thi', 'Tạm hoãn', 'Yêu cầu bổ sung', 'Hoàn thành', 'Đình chỉ giải quyết'];
+        // Trạng thái Phục hồi danh dự chỉ gồm "Đang phục hồi danh dự" và "Hoàn thành" (Đình chỉ giải quyết áp dụng cho cả vụ việc).
+        // Các bước Thông báo / Chờ phản hồi / Chờ thực hiện / Tạm hoãn / Yêu cầu bổ sung là bước của tiến trình (phddStatus nội bộ dùng cho Stepper), không phải trạng thái.
         let phddStoreReady = false;
         // Loại yêu cầu của vụ việc
         function claimRequestKind(c) {
@@ -7779,7 +8173,25 @@
         function isPhddStarted(c) { return isPhddClaim(c) && !!c.phddStarted; }
         // Vụ việc có nhánh Phục hồi danh dự đang/đã chạy (sau Thụ lý)
         function claimHasPhddTrack(c) { return claimRequestKind(c) !== 'money' && !!c.phddStatus; }
-        function phddStatusLabel(status) { return status === 'Chờ thực thi' ? 'Chờ thực hiện' : status; }
+        function phddStatusLabel(status) {
+            if (!status) return '';
+            if (status === 'Hoàn thành' || status === 'Từ chối') return 'Hoàn thành';
+            if (status === 'Đình chỉ giải quyết') return status;
+            return CASE_PHDD_PENDING_STATUS;
+        }
+        // Tên bước hiện tại của tiến trình phục hồi danh dự (hiển thị tại Stepper / tooltip, không phải trạng thái)
+        function phddStepLabel(status) {
+            const st = phddCanonicalStatus(status);
+            return ({ 'Đang thực hiện': 'Thông báo tổ chức phục hồi danh dự', 'Chờ phản hồi': 'Chờ ý kiến phản hồi', 'Chờ thực thi': 'Tổ chức thực hiện', 'Tạm hoãn': 'Tạm hoãn theo đề nghị', 'Yêu cầu bổ sung': 'Điều chỉnh theo đề xuất', 'Hoàn thành': 'Hoàn thành' })[st] || st;
+        }
+        // Chuẩn hóa giá trị Trạng thái Phục hồi danh dự (Chờ thực hiện = Chờ thực thi; Từ chối cũ = Hoàn thành)
+        function phddCanonicalStatus(status) {
+            if (!status) return '';
+            const st = canonicalClaimStatus(status);
+            if (st === 'Chờ thực hiện') return 'Chờ thực thi';
+            if (st === 'Từ chối') return 'Hoàn thành';
+            return st;
+        }
         function setPhddStatus(c, st) {
             if (!c) return;
             c.phddStatus = st;
@@ -7794,11 +8206,14 @@
             if (YCBT_END_STATES.includes(s) && !PHDD_DONE_STATES.includes(c.phddStatus)) return CASE_PHDD_PENDING_STATUS;
             return s;
         }
+        // Tên hiển thị của trạng thái Giải quyết YCBT (giá trị lưu giữ nguyên)
+        const CLAIM_STATUS_DISPLAY = { 'Chờ phát hành văn bản': 'Chờ phát hành văn bản yêu cầu bổ sung' };
+        function claimStatusDisplayName(st) { return CLAIM_STATUS_DISPLAY[st] || st; }
         function caseStatusLabel(c) {
             const st = getClaimCaseStatus(c);
-            return isPhddStarted(c) ? phddStatusLabel(st) : st;
+            return isPhddStarted(c) ? phddStatusLabel(st) : claimStatusDisplayName(st);
         }
-        // Dòng phụ dưới Trạng thái vụ việc: tiến độ từng nhánh (vụ việc Cả hai, sau Thụ lý)
+        // Dòng phụ tiến độ từng nhánh (vụ việc Cả hai, sau Thụ lý): không dùng tại lưới danh sách (cột Trạng thái chỉ hiển thị Trạng thái vụ việc)
         function claimTrackSubHtml(c) {
             if (claimRequestKind(c) !== 'both' || !c.phddStatus) return '';
             const ycbt = canonicalClaimStatus(c.status);
@@ -7828,7 +8243,7 @@
             const op = normalizeStatusText(c.phddStep2Opinion || '');
             if (c.phddStep4DateAct || c.phddStep4ResultDesc || c.phddStep4File) return 'Hoàn thành';
             if (op) {
-                if (/tu choi/.test(op)) return 'Từ chối';
+                if (/tu choi/.test(op)) return 'Hoàn thành';
                 if (/tam hoan/.test(op)) return 'Tạm hoãn';
                 if (/bo sung/.test(op)) return 'Yêu cầu bổ sung';
                 return 'Chờ thực thi';
@@ -7848,6 +8263,9 @@
             }
             const kind = claimRequestKind(c);
             if (kind === 'money') return;
+            // Bỏ trạng thái "Từ chối": dữ liệu cũ chuyển sang Hoàn thành (đã ghi nhận ý kiến từ chối của người bị thiệt hại)
+            if (c.phddStatus === 'Từ chối') c.phddStatus = 'Hoàn thành';
+            if (kind === 'honor' && c.status === 'Từ chối') c.status = 'Hoàn thành';
             const s = canonicalClaimStatus(c.status);
             if (kind === 'honor') {
                 if (c.phddStarted) c.phddStatus = s;
@@ -7987,7 +8405,6 @@
                     <div><span style="font-size:12px; color:var(--text-muted); text-transform:uppercase; font-weight:600;">Mã vụ việc</span><h4 style="font-size:18px; font-weight:800; color:var(--primary-color); margin:2px 0 0 0;">${e(claim.code)}</h4></div>
                     <div><span style="font-size:12px; color:var(--text-muted); text-transform:uppercase; font-weight:600;">Họ và tên người yêu cầu</span><div style="font-weight:700; margin-top:2px;">${e(getClaimRequesterName(claim))}</div></div>
                     <div><span style="font-size:12px; color:var(--text-muted); text-transform:uppercase; font-weight:600;">Ngày tiếp nhận</span><div style="font-weight:600; margin-top:2px;">${e(claim.date)}</div></div>
-                    <div><span style="font-size:12px; color:var(--text-muted); text-transform:uppercase; font-weight:600; display:block; margin-bottom:4px;">Trạng thái phục hồi danh dự</span><span class="badge ${getClaimStatusBadgeClass(st)}" style="font-size:12.5px; padding:6px 14px; font-weight:700;">${e(phddStatusLabel(st))}</span></div>
                 </div>`;
             const personBody = `<div class="grid-4-cols" style="gap:12px 20px; font-size:13px; line-height:1.6;">
                     ${f('Người được phục hồi danh dự', `<span style="text-transform:uppercase; font-weight:700;">${e(person.name)}</span>`)}
@@ -8046,7 +8463,7 @@
                 ? `<i class="fa-solid fa-pen-to-square"></i> CẬP NHẬT TIẾN TRÌNH PHỤC HỒI DANH DỰ: ${ycEsc(claim.code)} - ${ycEsc(getClaimRequesterName(claim))}`
                 : `<i class="fa-solid fa-circle-info"></i> CHI TIẾT VỤ VIỆC PHỤC HỒI DANH DỰ: ${ycEsc(claim.code)} - ${ycEsc(getClaimRequesterName(claim))}`;
             const badge = document.getElementById('caseDetailStatusBadge');
-            if (badge) { badge.className = 'badge ' + getClaimStatusBadgeClass(st); badge.innerText = phddStatusLabel(st); }
+            if (badge) { badge.className = 'badge ' + getClaimStatusBadgeClass(getClaimCaseStatus(claim)); badge.innerText = caseStatusLabel(claim); badge.title = 'Trạng thái vụ việc'; }
             renderReadOnlyClaimInfo(claim);
             const t2 = document.getElementById('detailTab2Btn');
             const t3 = document.getElementById('detailTab3Btn');
@@ -8235,6 +8652,10 @@
             // Tham số requestKind (VD từ menu cũ Phục hồi danh dự: requestKind=has-phdd): lọc sẵn Loại yêu cầu
             const initKind = new URLSearchParams(window.location.search).get('requestKind');
             if (initKind && document.getElementById('searchRequestKind')) document.getElementById('searchRequestKind').value = initKind;
+            // Mở từ Dashboard Lãnh đạo: ?role=thu-truong (Lãnh đạo đơn vị) &tab=cho-xu-ly|da-xu-ly
+            const dashQ = new URLSearchParams(window.location.search);
+            if (/^(thu-truong|lanh-dao)$/.test(dashQ.get("role") || "")) { const rs = document.getElementById("roleSelectorGiaLap") || document.getElementById("roleSelectorMain"); if (rs) { rs.value = "thu-truong"; syncRole(rs); } }
+            if (dashQ.get("tab")) activeClaimsWorkflowTab = /^(done|da-xu-ly)$/.test(dashQ.get("tab")) ? "da-xu-ly" : "cho-xu-ly";
             switchClaimsWorkflowTab(activeClaimsWorkflowTab);
 
             // Mở chi tiết theo URL: ?id=<Mã vụ việc> (bí danh viewCode), tùy chọn focusTab=phdd (bí danh subTab=phdd).
@@ -8319,6 +8740,8 @@
         function claimInWorkflowTab(tab, item, currentRole, currentOfficer) {
             // Phân tab theo Trạng thái vụ việc (tổng hợp 2 nhánh)
             const status = getClaimCaseStatus(item);
+            // Lãnh đạo đơn vị: Tab "Vụ việc chờ xử lý" chỉ gồm hồ sơ cần Lãnh đạo đang đăng nhập xử lý (Chờ thụ lý / Chờ duyệt)
+            if (currentRole === 'thu-truong' && tab !== 'da-xu-ly') return leaderCanActOn(item);
             // Vụ việc Chỉ yêu cầu phục hồi danh dự sau Thụ lý: chờ xử lý đến khi Hoàn thành / Từ chối
             if (isPhddStarted(item)) {
                 const done = PHDD_DONE_STATES.includes(status);
@@ -8357,11 +8780,23 @@
             const sel = document.getElementById('searchStatus');
             if (!sel) return;
             const role = getCurrentSimulatedRole();
+            // Vụ việc Chỉ yêu cầu phục hồi danh dự đã Thụ lý: "Đang phục hồi danh dự" (tab Chờ xử lý), "Hoàn thành" (tab Đã xử lý)
             const states = tab === 'da-xu-ly'
-                ? [...CLAIM_DONE_TAB_STATES, 'Từ chối']
-                : (role === 'thu-truong' ? ['Chờ thụ lý'] : [...CLAIM_PENDING_TAB_STATES, CASE_PHDD_PENDING_STATUS, 'Đang thực hiện', 'Chờ phản hồi', 'Chờ thực hiện', 'Tạm hoãn']);
-            sel.innerHTML = `<option value="">Tất cả</option>` + states.map(s => `<option value="${s}">${s}</option>`).join('');
+                ? [...CLAIM_DONE_TAB_STATES]
+                : (role === 'thu-truong' ? ['Chờ thụ lý', 'Chờ duyệt'] : [...CLAIM_PENDING_TAB_STATES, CASE_PHDD_PENDING_STATUS]);
+            sel.innerHTML = `<option value="">Tất cả</option>` + states.map(s => `<option value="${s}">${claimStatusDisplayName(s)}</option>`).join('');
             sel.value = "";
+            syncApprovalKindFilter();
+        }
+
+        // Trường "Nội dung trình" chỉ hiển thị khi Trạng thái vụ việc = Chờ duyệt / Bị trả lại; trạng thái khác -> ẩn và xóa giá trị
+        function syncApprovalKindFilter() {
+            const st = document.getElementById('searchStatus');
+            const group = document.getElementById('searchApprovalKindGroup');
+            const sel = document.getElementById('searchApprovalKind');
+            const show = !!st && ['Chờ duyệt', 'Bị trả lại'].includes(st.value);
+            if (group) group.style.display = show ? '' : 'none';
+            if (!show && sel) sel.value = '';
         }
 
         function switchClaimsWorkflowTab(tab) {
@@ -8379,84 +8814,87 @@
             renderClaimsTable();
         }
 
-        // Cột Thao tác (chỉ có tại Tab "Vụ việc chờ xử lý"): thao tác theo trạng thái của dòng
-        // Tiếp nhận | Yêu cầu bổ sung | Không thụ lý | Chuyển CQGQBT | Thụ lý | Cập nhật (trình lại) | Phát hành | Cập nhật hồ sơ.
+        // Cột Thao tác (chỉ có tại Tab "Vụ việc chờ xử lý"): 05 thao tác ở vị trí cố định trên mọi dòng
+        // Tiếp nhận | Yêu cầu bổ sung | Không thụ lý | Cập nhật | Chuyển CQGQBT.
+        // "Cập nhật" là thao tác cập nhật kết quả chung, mở đúng nội dung theo trạng thái của hồ sơ:
+        // Bị trả lại -> cập nhật hồ sơ đã trình (hiển thị lý do trả lại); Chờ phát hành văn bản -> phát hành văn bản yêu cầu bổ sung;
+        // Đang xác minh thiệt hại ... Tạm đình chỉ giải quyết -> cập nhật kết quả giải quyết; Đang phục hồi danh dự -> cập nhật phục hồi danh dự.
         // Thao tác không áp dụng cho trạng thái của dòng, hoặc người dùng không có quyền, vẫn hiển thị nhưng mờ (disabled)
-        // với chú thích "[Tên thao tác]: [lý do]" - đồng nhất với danh sách Xác định cơ quan giải quyết bồi thường.
+        // với chú thích "[Tên thao tác]: [lý do]". Hồ sơ Chờ duyệt / Chờ thụ lý: không có thao tác.
         const CLAIM_LIST_ACTIONS = {
             accept: { icon: 'fa-solid fa-check-to-slot', cls: 'accept', title: 'Tiếp nhận' },
             supplement: { icon: 'fa-solid fa-circle-question', cls: 'supplement', title: 'Yêu cầu bổ sung' },
             reject: { icon: 'fa-solid fa-ban', cls: 'reject', title: 'Không thụ lý' },
-            transfer: { icon: 'fa-solid fa-right-left', cls: 'transfer', title: 'Chuyển cơ quan giải quyết bồi thường' },
-            thuly: { icon: 'fa-solid fa-circle-check', cls: 'accept', title: 'Thụ lý' },
-            resubmit: { icon: 'fa-solid fa-rotate', cls: 'edit', title: 'Cập nhật' },
-            publish: { icon: 'fa-solid fa-stamp', cls: 'accept', title: 'Phát hành' },
-            update: { icon: 'fa-solid fa-pen-to-square', cls: 'edit', title: 'Cập nhật hồ sơ' },
-            phdd: { icon: 'fa-solid fa-ribbon', cls: 'edit', title: 'Cập nhật Phục hồi danh dự' }
+            update: { icon: 'fa-solid fa-pen-to-square', cls: 'edit', title: 'Cập nhật' },
+            transfer: { icon: 'fa-solid fa-right-left', cls: 'transfer', title: 'Chuyển cơ quan giải quyết bồi thường' }
         };
+        const CLAIM_LIST_ACTION_ORDER = ['accept', 'supplement', 'reject', 'update', 'transfer'];
+        const CLAIM_THULY_AT_LEADER = 'Thủ trưởng cơ quan giải quyết bồi thường quyết định Thụ lý / Không thụ lý (vai trò Lãnh đạo đơn vị)';
+        const CLAIM_QD_AT_MODULE = 'Quyết định giải quyết bồi thường được lập, trình ký và ban hành tại chức năng Quyết định giải quyết bồi thường';
+
+        // Nội dung của thao tác "Cập nhật" theo trạng thái hồ sơ: { onclick, title } hoặc null (không áp dụng)
+        function claimUpdateAction(item) {
+            const id = item.id;
+            const status = canonicalClaimStatus(item.status);
+            const caseStatus = getClaimCaseStatus(item);
+            if (status === 'Bị trả lại') {
+                const rk = typeof gqApprovalKindOf === 'function' ? gqApprovalKindOf(item) : '';
+                return { onclick: `gqUpdateReturned('${id}')`, title: `Cập nhật hồ sơ bị trả lại${rk ? ' (' + rk + ')' : ''}` };
+            }
+            if (status === 'Chờ phát hành văn bản') return { onclick: `openGqPublishModal('${id}')`, title: 'Cập nhật kết quả phát hành văn bản yêu cầu bổ sung' };
+            const phddOpen = claimRequestKind(item) !== 'money' && item.phddStarted && item.phddStatus && !PHDD_DONE_STATES.includes(item.phddStatus);
+            if (isPhddStarted(item) || caseStatus === CASE_PHDD_PENDING_STATUS) {
+                return phddOpen ? { onclick: `showCaseDetail('${id}', true, 'phdd')`, title: `Cập nhật phục hồi danh dự (bước hiện tại: ${phddStepLabel(item.phddStatus)})` } : null;
+            }
+            // Chờ ban hành QĐ: không cập nhật tại phân hệ (Quyết định GQBT thực hiện tại chức năng Quyết định giải quyết bồi thường)
+            if (status === 'Chờ ban hành QĐ') return null;
+            if (CLAIM_UPDATE_PROFILE_STATES.includes(status)) return { onclick: `showCaseDetail('${id}', true)`, title: `Cập nhật kết quả giải quyết (${status})` };
+            return null;
+        }
 
         function buildClaimActionButtons(item, currentRole, currentOfficer) {
             const status = canonicalClaimStatus(item.status);
             const id = item.id;
             const isLeader = currentRole === 'thu-truong';
             const isAssignedToOther = isClaimAssignedToOther(item, currentRole, currentOfficer);
+            const honorStarted = isPhddStarted(item);
+            const statusText = caseStatusLabel(item);
             const esc = v => String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            const on = (key, onclick, title) => `<button class="icon-btn ${CLAIM_LIST_ACTIONS[key].cls}" data-action="${key}" title="${esc(title || CLAIM_LIST_ACTIONS[key].title)}" onclick="event.stopPropagation(); ${onclick}"><i class="${CLAIM_LIST_ACTIONS[key].icon}"></i></button>`;
+            const on = (key, onclick, title) => `<button class="icon-btn ${CLAIM_LIST_ACTIONS[key].cls}" data-action="${key}" title="${esc(title || CLAIM_LIST_ACTIONS[key].title)}" onclick="event.stopPropagation(); ${onclick}; gqOpenedFromList = true;"><i class="${CLAIM_LIST_ACTIONS[key].icon}"></i></button>`;
             const off = (key, reason) => `<button type="button" class="icon-btn ${CLAIM_LIST_ACTIONS[key].cls} is-disabled" data-action="${key}" aria-disabled="true" title="${esc(CLAIM_LIST_ACTIONS[key].title + ': ' + reason)}" style="opacity:0.35; cursor:not-allowed;" onclick="event.stopPropagation();"><i class="${CLAIM_LIST_ACTIONS[key].icon}"></i></button>`;
-            // Slot cố định Chuyển CQGQBT: luôn hiển thị; chỉ kích hoạt ở 5 trạng thái sau thụ lý, cán bộ xử lý
-            const transferSlot = () => {
-                if (isLeader) return off('transfer', 'Chỉ cán bộ xử lý thực hiện');
-                const reason = gqTransferBlockReason(item);
-                return reason ? off('transfer', reason) : on('transfer', `openGqTransferModal('${id}')`);
-            };
+            const allOff = reason => CLAIM_LIST_ACTION_ORDER.map(k => off(k, reason)).join('');
 
-            // Quyết định: Ẩn hoàn toàn các nút thao tác không được phép, không hiển thị dạng mờ
-            if (isAssignedToOther) {
-                return '';
+            // Lãnh đạo đơn vị: 02 thao tác Phê duyệt / Từ chối (hồ sơ Chờ thụ lý: Thụ lý / Không thụ lý; hồ sơ Chờ duyệt: phê duyệt phiếu trình)
+            if (isLeader) {
+                const can = leaderCanActOn(item);
+                const why = 'Chỉ Lãnh đạo được giao xử lý hồ sơ ở bước hiện tại';
+                const ldOn = (key, cls, icon, title, fn) => `<button class="icon-btn ${cls}" data-action="${key}" title="${esc(title)}" onclick="event.stopPropagation(); ${fn}"><i class="${icon}"></i></button>`;
+                const ldOff = (key, cls, icon, title) => `<button type="button" class="icon-btn ${cls} is-disabled" data-action="${key}" aria-disabled="true" title="${esc(title + ': ' + why)}" style="opacity:0.35; cursor:not-allowed;" onclick="event.stopPropagation();"><i class="${icon}"></i></button>`;
+                const thuLy = status === 'Chờ thụ lý';
+                const tA = thuLy ? 'Phê duyệt thụ lý (cử người giải quyết)' : 'Phê duyệt';
+                const tR = thuLy ? 'Từ chối (Không thụ lý)' : 'Từ chối phê duyệt';
+                return can
+                    ? ldOn('approve', 'accept', 'fa-solid fa-circle-check', tA, `gqLeaderApprove('${id}')`) + ldOn('reject', 'reject', 'fa-solid fa-circle-xmark', tR, `gqLeaderReject('${id}')`)
+                    : ldOff('approve', 'accept', 'fa-solid fa-circle-check', tA) + ldOff('reject', 'reject', 'fa-solid fa-circle-xmark', tR);
             }
+            if (isAssignedToOther) return allOff('Hồ sơ đã giao cán bộ khác giải quyết');
+            if (status === 'Chờ duyệt') return allOff('Hồ sơ đang chờ Lãnh đạo phê duyệt');
+            if (status === 'Chờ thụ lý') return allOff(CLAIM_THULY_AT_LEADER);
 
-            // Vụ việc Chỉ yêu cầu phục hồi danh dự sau Thụ lý: chỉ thao tác Cập nhật tiến trình phục hồi danh dự
-            if (isPhddStarted(item)) {
-                if (isLeader) return transferSlot();
-                // Giai đoạn tiếp nhận: Chờ tiếp nhận -> Tiếp nhận (nhập liệu, Trình duyệt); Chờ duyệt: không thao tác; Bị trả lại -> Cập nhật (trình lại)
-                if (status === 'Chờ tiếp nhận') return on('accept', `openInlineClaimForm('${id}')`, 'Tiếp nhận') + transferSlot();
-                if (status === 'Chờ duyệt') return transferSlot();
-                if (status === 'Bị trả lại') return on('resubmit', `gqUpdateReturned('${id}')`, 'Cập nhật (trình lại)') + transferSlot();
-                return (!PHDD_DONE_STATES.includes(status) ? on('update', `showCaseDetail('${id}', true, 'phdd')`, 'Cập nhật tiến trình phục hồi danh dự') : '') + transferSlot();
+            const notAt = `Không áp dụng ở trạng thái ${statusText}`;
+            const slots = {};
+            CLAIM_LIST_ACTION_ORDER.forEach(k => { slots[k] = off(k, notAt); });
+            if (!honorStarted && (status === 'Chờ tiếp nhận' || status === 'Yêu cầu bổ sung')) {
+                slots.accept = on('accept', `openInlineClaimForm('${id}')`, status === 'Yêu cầu bổ sung' ? 'Tiếp nhận hồ sơ bổ sung' : 'Tiếp nhận');
+                slots.supplement = on('supplement', `triggerRequireAdditionClaim('${id}')`);
+                slots.reject = on('reject', `triggerRejectClaim('${id}')`);
             }
-            // Chờ duyệt: hồ sơ đang ở Lãnh đạo (Hồ sơ trình Lãnh đạo) -> không có thao tác
-            let buttonsHtml = '';
-            if (status === 'Chờ tiếp nhận' || status === 'Yêu cầu bổ sung') {
-                if (!isLeader) {
-                    buttonsHtml += on('accept', `openInlineClaimForm('${id}')`, status === 'Yêu cầu bổ sung' ? 'Tiếp nhận hồ sơ bổ sung' : 'Tiếp nhận');
-                    buttonsHtml += on('supplement', `triggerRequireAdditionClaim('${id}')`);
-                    buttonsHtml += on('reject', `triggerRejectClaim('${id}')`);
-                }
-            } else if (status === 'Chờ thụ lý') {
-                if (isLeader) {
-                    buttonsHtml += on('thuly', `triggerLeaderAcceptClaim('${id}')`, 'Thụ lý (Cử người giải quyết)');
-                } else {
-                    buttonsHtml += on('reject', `triggerRejectClaim('${id}')`);
-                }
-            } else if (status === 'Bị trả lại') {
-                if (!isLeader) {
-                    const rk = typeof gqApprovalKindOf === 'function' ? gqApprovalKindOf(item) : '';
-                    buttonsHtml += rk === 'Chuyển CQGQBT'
-                        ? `<button class="icon-btn edit" data-action="resubmit" title="Cập nhật hồ sơ chuyển CQGQBT để trình lại" onclick="event.stopPropagation(); gqUpdateReturned('${id}')"><i class="fa-solid fa-pen-to-square"></i></button>`
-                        : on('resubmit', `gqUpdateReturned('${id}')`, 'Cập nhật (trình lại)');
-                }
-            } else if (status === 'Chờ phát hành văn bản') {
-                if (!isLeader) buttonsHtml += on('publish', `openGqPublishModal('${id}')`, 'Phát hành văn bản yêu cầu bổ sung');
-            } else if (CLAIM_UPDATE_PROFILE_STATES.includes(status)) {
-                if (!isLeader) {
-                    buttonsHtml += on('update', `showCaseDetail('${id}', true)`);
-                }
-            }
-            // Vụ việc Cả hai: cập nhật nhánh Phục hồi danh dự song song (sau Thụ lý; dừng khi Đình chỉ giải quyết)
-            if (!isLeader && claimRequestKind(item) === 'both' && item.phddStatus && !PHDD_DONE_STATES.includes(item.phddStatus)) {
-                buttonsHtml += on('phdd', `showCaseDetail('${id}', true, 'phdd')`, `Cập nhật Phục hồi danh dự (${phddStatusLabel(item.phddStatus)})`);
-            }
-            return buttonsHtml + transferSlot();
+            const upd = claimUpdateAction(item);
+            if (upd) slots.update = on('update', upd.onclick, upd.title);
+            else if (status === 'Chờ ban hành QĐ') slots.update = off('update', CLAIM_QD_AT_MODULE);
+            const transferReason = gqTransferBlockReason(item);
+            slots.transfer = transferReason ? off('transfer', transferReason) : on('transfer', `openGqTransferModal('${id}')`);
+            return CLAIM_LIST_ACTION_ORDER.map(k => slots[k]).join('');
         }
 
         // RENDER CLAIMS TABLE
@@ -8466,7 +8904,7 @@
             tbody.innerHTML = '';
 
             migrateAllClaimsForSrs();
-            // Nhận kết quả phê duyệt từ kho luồng (Lãnh đạo phê duyệt / trả lại tại màn Hồ sơ trình Lãnh đạo)
+            // Nhận kết quả phê duyệt từ kho luồng (Lãnh đạo phê duyệt / trả lại (vai trò Lãnh đạo))
             if (typeof gqRefreshClaimsFromWorkflow === 'function') gqRefreshClaimsFromWorkflow(false);
 
             const selMain = document.getElementById('roleSelectorMain');
@@ -8509,9 +8947,11 @@
             }
             if (status) {
                 // Lọc theo Trạng thái vụ việc (tổng hợp 2 nhánh)
+                // Vụ việc Chỉ yêu cầu phục hồi danh dự (sau Thụ lý) chỉ so theo tên đầy đủ "... phục hồi danh dự"
                 filtered = filtered.filter(item => {
                     if (!item.status) return false;
-                    return normalizeStatusText(caseStatusLabel(item)) === normalizeStatusText(status) || normalizeStatusText(getClaimCaseStatus(item)) === normalizeStatusText(status);
+                    if (normalizeStatusText(caseStatusLabel(item)) === normalizeStatusText(status)) return true;
+                    return !isPhddStarted(item) && normalizeStatusText(getClaimCaseStatus(item)) === normalizeStatusText(status);
                 });
             }
             if (searchNguonHoSo) {
@@ -8519,8 +8959,7 @@
             }
             const searchRequestKind = document.getElementById('searchRequestKind') ? document.getElementById('searchRequestKind').value : '';
             const searchPhddStatus = document.getElementById('searchPhddStatus') ? document.getElementById('searchPhddStatus').value : '';
-            if (searchRequestKind) filtered = filtered.filter(item => searchRequestKind === 'has-phdd' ? claimRequestKind(item) !== 'money' : claimRequestKind(item) === searchRequestKind);
-            if (searchPhddStatus) filtered = filtered.filter(item => claimRequestKind(item) !== 'money' && canonicalClaimStatus(item.phddStatus || '') === searchPhddStatus);
+            if (searchPhddStatus) filtered = filtered.filter(item => claimRequestKind(item) !== 'money' && phddStatusLabel(phddCanonicalStatus(item.phddStatus)) === searchPhddStatus);
             // Nội dung trình: áp dụng cho hồ sơ Chờ duyệt / Bị trả lại
             if (searchApprovalKind && typeof gqApprovalKindOf === 'function') {
                 filtered = filtered.filter(item => gqApprovalKindOf(item) === searchApprovalKind);
@@ -8565,6 +9004,11 @@
                 });
             }
 
+            // Loại yêu cầu (bộ lọc nâng cao) - đồng bộ với nút lọc nhanh trên lưới; số lượng nút lọc nhanh tính trên kết quả các điều kiện còn lại
+            const matchKind = (item, k) => !k || (k === 'has-phdd' ? claimRequestKind(item) !== 'money' : claimRequestKind(item) === k);
+            updateClaimsQuickKindChips(filtered, searchRequestKind);
+            if (searchRequestKind) filtered = filtered.filter(item => matchKind(item, searchRequestKind));
+
             // Sorting by date
             filtered.sort((a, b) => {
                 const dateA = parseDateVi(a.date) || new Date(0);
@@ -8584,7 +9028,7 @@
             const endIdx = Math.min(startIdx + claimsPageSize, total);
 
             if (total === 0) {
-                tbody.innerHTML = `<tr><td colspan="${showActionCol ? 13 : 12}" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy vụ việc nào phù hợp</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="${showActionCol ? 12 : 11}" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy vụ việc nào phù hợp</td></tr>`;
                 document.getElementById('claimsCurrentRange').innerText = "0-0";
                 return;
             }
@@ -8597,7 +9041,7 @@
                 tr.style.cursor = 'pointer';
                 tr.onclick = (e) => {
                     if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'I' && !e.target.closest('.icon-btn') && e.target.type !== 'checkbox') {
-                        showCaseDetail(item.id, false);
+                        showCaseDetail(item.id, false, claimOpensPhddTab(item, searchRequestKind) ? 'phdd' : null);
                     }
                 };
 
@@ -8616,7 +9060,6 @@
                     <td style="text-align:center;">${startIdx + index + 1}</td>
                     <td style="text-align:center;"><strong>${item.code}</strong></td>
                     <td><strong>${getClaimRequesterName(item)}</strong></td>
-                    <td style="text-align:center; font-family: monospace; font-size: 12.5px;">${getClaimDocNo(item)}</td>
                     <td title="${item.hanhVi}">${shortenedHanhVi}</td>
                     <td style="font-size:12px; color:var(--text-muted);">${getFieldGroupName(item.fieldGroup)}</td>
                     <td style="font-size:12px; color:var(--text-muted);">${item.agency || "Chưa phân công"}</td>
@@ -8624,7 +9067,7 @@
                     <td style="text-align:center;">${item.date}</td>
                     <td style="text-align:center; font-weight: 500; color: #b45309;">${item.deadline || "--"}</td>
                     <td style="text-align:center;">${renderNguonHoSoBadge(item.nguonHoSo)}</td>
-                    <td style="text-align:center;"><span class="badge ${badgeClass}" title="Trạng thái vụ việc">${caseStatusLabel(item)}</span>${claimTrackSubHtml(item)}${typeof gqApprovalSubLabel === 'function' ? gqApprovalSubLabel(item) : ''}</td>
+                    <td style="text-align:center;"><span class="badge ${badgeClass}" title="Trạng thái vụ việc">${caseStatusLabel(item)}</span>${typeof gqApprovalSubLabel === 'function' ? gqApprovalSubLabel(item) : ''}</td>
                     ${actionCellHtml}
                 `;
                 // admin-ui-standardizer.js (global script) re-skins/re-icons action buttons whose
@@ -8649,6 +9092,33 @@
             document.getElementById('claimsPagePrev').classList.toggle('disabled', currentClaimsPage === 1);
             document.getElementById('claimsPageLast').classList.toggle('disabled', currentClaimsPage === totalPages);
             document.getElementById('claimsPageNext').classList.toggle('disabled', currentClaimsPage === totalPages);
+        }
+
+        // Lọc nhanh theo Loại yêu cầu: Tất cả | Bồi thường thiệt hại | Có Phục hồi danh dự (Phục hồi danh dự hoặc Cả hai)
+        // Nút đang chọn = giá trị trường Loại yêu cầu; chọn "Phục hồi danh dự" / "Cả hai" tại bộ lọc -> nút "Có Phục hồi danh dự" sáng
+        function updateClaimsQuickKindChips(rows, kind) {
+            const cnt = k => rows.filter(item => !k || (k === 'has-phdd' ? claimRequestKind(item) !== 'money' : claimRequestKind(item) === k)).length;
+            const set = (id, v) => { const el = document.getElementById(id); if (el) el.innerText = v; };
+            set('quickKindCountAll', cnt(''));
+            set('quickKindCountMoney', cnt('money'));
+            set('quickKindCountPhdd', cnt('has-phdd'));
+            const activeKind = (kind === 'honor' || kind === 'both') ? 'has-phdd' : (kind || '');
+            document.querySelectorAll('#claimsQuickKindBar .quick-kind-chip').forEach(b => b.classList.toggle('active', b.dataset.kind === activeKind));
+        }
+
+        // Bấm dòng vụ việc -> mở thẳng Tab "Phục hồi danh dự" khi: vụ việc Chỉ yêu cầu phục hồi danh dự đã Thụ lý,
+        // hoặc Trạng thái vụ việc = "Đang phục hồi danh dự", hoặc đang lọc vụ việc có Phục hồi danh dự (nhánh đã bắt đầu)
+        function claimOpensPhddTab(item, kind) {
+            if (!claimHasPhddTrack(item)) return false;
+            if (isPhddStarted(item) || getClaimCaseStatus(item) === CASE_PHDD_PENDING_STATUS) return true;
+            return ['has-phdd', 'honor', 'both'].includes(kind || '');
+        }
+
+        function setClaimsQuickKind(kind) {
+            const sel = document.getElementById('searchRequestKind');
+            if (sel) sel.value = kind;
+            currentClaimsPage = 1;
+            renderClaimsTable();
         }
 
         // Sorting toggle
@@ -9673,6 +10143,7 @@
         }
 
         function closeInlineClaimForm() {
+            if (gqBackToListIfFromList()) return;
             const wasEditingFromDetail = !!editingClaimId && (editingClaimId === selectedClaimId);
             editingClaimId = null;
             document.getElementById('inlineClaimFormPanel').style.display = 'none';
@@ -10327,7 +10798,7 @@
                             <span class="field-label">Kính gửi:</span> ${cqNhan}
                         </div>
 
-                        <div class="section-title">I. Thông tin người yêu cầu bồi thường</div>
+                        <div class="section-title">Thông tin người yêu cầu bồi thường</div>
                         <div style="margin-top: 8px;">
                             <div><span class="field-label">1. Họ và tên người yêu cầu:</span> ${name}</div>
                             <div><span class="field-label">2. Ngày, tháng, năm sinh:</span> ${birth} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="field-label">Giới tính:</span> ${gender}</div>
@@ -10337,7 +10808,7 @@
                             <div><span class="field-label">6. Địa chỉ cư trú/Trụ sở:</span> ${address}, Tỉnh/Thành: ${city}, Quốc gia: ${country}</div>
                         </div>
 
-                        <div class="section-title">II. Hành vi gây thiệt hại và mối quan hệ nhân quả</div>
+                        <div class="section-title">Hành vi gây thiệt hại và mối quan hệ nhân quả</div>
                         <div style="margin-top: 8px;">
                             <div><span class="field-label">1. Hành vi gây thiệt hại của người thi hành công vụ:</span></div>
                             <div style="margin-left: 15px; font-style: italic; background-color:#f8fafc; padding: 8px; border-radius:4px; border:1px solid #e2e8f0;">${hanhVi}</div>
@@ -10347,7 +10818,7 @@
 
                         </div>
 
-                        <div class="section-title">III. Các mục thiệt hại yêu cầu bồi thường</div>
+                        <div class="section-title">Các mục thiệt hại yêu cầu bồi thường</div>
                         <table>
                             <thead>
                                 <tr>
@@ -10367,13 +10838,13 @@
                         </table>
                         <div style="font-style: italic; margin-top: 4px;"><span class="field-label">Viết bằng chữ:</span> ${numberToVietnameseWords(total)}</div>
 
-                        <div class="section-title">IV. Đề nghị tạm ứng kinh phí bồi thường</div>
+                        <div class="section-title">Đề nghị tạm ứng kinh phí bồi thường</div>
                         <div style="margin-top: 8px;">
                             <div><span class="field-label">Đề nghị tạm ứng kinh phí:</span> ${needAdvance ? "CÓ" : "KHÔNG"}</div>
                             ${needAdvance ? `<div>- Số tiền đề nghị tạm ứng: <strong style="color:#1e3a8a;">${advTotal.toLocaleString('vi-VN')} đ</strong> (Viết bằng chữ: ${numberToVietnameseWords(advTotal)})</div>` : ''}
                         </div>
 
-                        <div class="section-title">V. Yêu cầu phục hồi danh dự (Điều 57)</div>
+                        <div class="section-title">Yêu cầu phục hồi danh dự (Điều 57)</div>
                         <div style="margin-top: 8px;">
                             <div><span class="field-label">Yêu cầu Nhà nước tổ chức phục hồi danh dự:</span> ${needRestoreHonor ? "CÓ" : "KHÔNG"}</div>
                             ${needRestoreHonor ? `
@@ -11115,6 +11586,8 @@
         }
 
         function showCaseDetail(id, editMode = false, actionType = null) {
+            // Mở Xem chi tiết (chế độ xem): các thao tác tiếp theo xuất phát từ màn chi tiết
+            if (!editMode) gqOpenedFromList = false;
             selectedClaimId = id;
             isDetailEditMode = editMode;
             activeDetailActionType = actionType;
@@ -11164,7 +11637,12 @@
 
                 badgeEl.className = 'badge ' + badgeClass;
                 badgeEl.innerText = caseStatusLabel(claim);
-                badgeEl.title = 'Trạng thái vụ việc';
+                // Trạng thái vụ việc chỉ hiển thị tại góc trên bên phải; vụ việc Yêu cầu cả hai: rê chuột xem trạng thái từng nhánh
+                badgeEl.title = claimRequestKind(claim) === 'both' && claim.phddStatus
+                    ? `Trạng thái vụ việc
+Giải quyết YCBT: ${canonicalClaimStatus(claim.status)}
+Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
+                    : 'Trạng thái vụ việc';
             }
 
             // Vụ việc PHDD-: màn hình chi tiết riêng (chỉ các khối phục hồi danh dự)
@@ -11235,6 +11713,9 @@
                     } else {
                         switchDetailTab('chung');
                     }
+                } else if (actionType === 'phdd' && claimHasPhddTrack(claim)) {
+                    // Xem chi tiết từ lưới khi vụ việc đang ở nhánh Phục hồi danh dự / đang lọc vụ việc có Phục hồi danh dự
+                    switchDetailTab('phuc-hoi');
                 } else {
                     switchDetailTab('xu-ly');
                     let defaultAcc = 'thuly';
@@ -11325,29 +11806,24 @@
                 if (!claim.phddStarted) {
                     let pre = '';
                     if (currentRole === 'chuyen-vien' && phddSt === 'Chờ tiếp nhận') pre = `<button class="btn btn-primary" id="btnPhddReceive" onclick="openInlineClaimForm('${claim.id}')"><i class="fa-solid fa-check-to-slot"></i> Tiếp nhận</button>`;
-                    if (currentRole === 'chuyen-vien' && phddSt === 'Bị trả lại') pre = `<button class="btn btn-primary" id="btnPhddResubmit" onclick="gqUpdateReturned('${claim.id}')"><i class="fa-solid fa-rotate"></i> Cập nhật (trình lại)</button>`;
+                    if (currentRole === 'chuyen-vien' && phddSt === 'Bị trả lại') pre = `<button class="btn btn-primary" id="btnPhddResubmit" onclick="gqUpdateReturned('${claim.id}')" title="Cập nhật hồ sơ bị trả lại để trình lại"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>`;
                     bar.innerHTML = pre + closeBtnHtml;
                     return;
                 }
                 const phddDone = PHDD_DONE_STATES.includes(phddSt);
                 bar.innerHTML = isDetailEditMode
                     ? cancelActionBtnHtml
-                    : ((!phddDone && currentRole === 'chuyen-vien') ? `<button class="btn btn-primary" id="btnPhddUpdateProgress" onclick="switchToEditMode('phdd')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật tiến trình phục hồi danh dự</button>` : '') + closeBtnHtml;
+                    : ((currentRole === 'chuyen-vien' && gqCanTransfer(claim)) ? `<button class="btn btn-outline-primary detail-secondary-action" onclick="openGqTransferModal('${claim.id}')"><i class="fa-solid fa-right-left"></i> Chuyển CQGQBT</button>` : '') + ((!phddDone && currentRole === 'chuyen-vien') ? `<button class="btn btn-primary" id="btnPhddUpdateProgress" onclick="switchToEditMode('phdd')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật tiến trình phục hồi danh dự</button>` : '') + closeBtnHtml;
                 return;
             }
 
             const pauseActionBtnHtml = `<button class="btn btn-outline-warning detail-secondary-action" onclick="openSpecialStatusAction('${claim.id}', 'Hoãn giải quyết')"><i class="fa-solid fa-pause"></i> Hoãn giải quyết</button>`;
             const suspendActionBtnHtml = `<button class="btn btn-outline-warning detail-secondary-action" onclick="openSpecialStatusAction('${claim.id}', 'Tạm đình chỉ giải quyết')"><i class="fa-solid fa-circle-pause"></i> Tạm đình chỉ giải quyết</button>`;
             const stopActionBtnHtml = `<button class="btn btn-outline-danger detail-secondary-action" onclick="openSpecialStatusAction('${claim.id}', 'Đình chỉ giải quyết')"><i class="fa-solid fa-ban"></i> Đình chỉ giải quyết</button>`;
-            // Chuyển CQGQBT: 5 trạng thái sau thụ lý, trước khi ban hành chính thức Quyết định GQBT
+            // Chuyển CQGQBT: mọi trạng thái sau Chờ thụ lý, trừ hồ sơ đã kết thúc xử lý
             const transferActionBtnHtml = (currentRole === 'chuyen-vien' && gqCanTransfer(claim)) ? `<button class="btn btn-outline-primary detail-secondary-action" onclick="openGqTransferModal('${claim.id}')"><i class="fa-solid fa-right-left"></i> Chuyển CQGQBT</button>` : '';
 
-            // MH05 chức năng 13: Xem chi tiết kinh phí - chỉ ở Chờ thực thi / Hoàn thành / Sung quỹ nhà nước
-            const firstFundCode = (claim.fundRequests && claim.fundRequests.length > 0) ? claim.fundRequests[0].code : '';
-            // Hồ sơ chưa phát sinh đề nghị kinh phí thì ẩn hẳn nút, không hiển thị dạng mờ
-            const fundDetailBtnHtml = firstFundCode
-                ? `<button class="btn btn-secondary" onclick="openFundDetailModule('${firstFundCode}')"><i class="fa-solid fa-money-check-dollar"></i> Xem chi tiết kinh phí</button>`
-                : '';
+            // Màn Xem chi tiết không có nút "Xem chi tiết kinh phí" (kinh phí tra cứu tại phân hệ Kinh phí bồi thường)
             let buttonsHtml = '';
             let showCloseButton = true; // by default we show Close button in read-only
 
@@ -11378,24 +11854,14 @@
                     }
                     break;
 
-                // Chờ thụ lý: Thủ trưởng cơ quan giải quyết Thụ lý (Cử người giải quyết); Cán bộ xử lý Không thụ lý / Chuyển CQGQBT (trình Lãnh đạo)
+                // Chờ thụ lý: không có thao tác tại phân hệ; Thủ trưởng cơ quan giải quyết bồi thường Thụ lý / Không thụ lý (vai trò Lãnh đạo đơn vị)
                 case 'cho thu ly':
-                    if (currentRole === 'thu-truong') {
-                        buttonsHtml = `
-                            <button class="btn btn-success" onclick="triggerLeaderAcceptClaim('${claim.id}')"><i class="fa-solid fa-circle-check"></i> Thụ lý</button>
-                        `;
-                    } else {
-                        buttonsHtml = `
-                            <button class="btn btn-danger" onclick="triggerRejectClaim('${claim.id}')"><i class="fa-solid fa-ban"></i> Không thụ lý</button>
-                            ${transferActionBtnHtml}
-                        `;
-                    }
                     break;
 
                 // Bị trả lại: cán bộ Cập nhật theo Nội dung trình bị trả lại rồi trình lại (phê duyệt lại từ cấp đầu tiên)
                 case 'bi tra lai':
                     if (currentRole === 'chuyen-vien') {
-                        buttonsHtml = `<button class="btn btn-primary" onclick="gqUpdateReturned('${claim.id}')"><i class="fa-solid fa-rotate"></i> Cập nhật (trình lại)</button>`;
+                        buttonsHtml = `<button class="btn btn-primary" onclick="gqUpdateReturned('${claim.id}')" title="Cập nhật hồ sơ bị trả lại để trình lại"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>`;
                     }
                     break;
 
@@ -11450,22 +11916,14 @@
                     break;
 
                 case 'cho ban hanh qd':
-                    if (currentRole === 'thu-truong' && claim.decStatus === 'Chờ ký') {
-                        buttonsHtml = `
-                            <button class="btn btn-success" onclick="approveAndSignDecision('${claim.id}')"><i class="fa-solid fa-file-signature"></i> Phê duyệt QĐ</button>
+                    // Chờ ban hành QĐ: không cập nhật kết quả, không phê duyệt QĐ tại phân hệ (thực hiện tại chức năng Quyết định giải quyết bồi thường)
+                    buttonsHtml = currentRole === 'chuyen-vien' ? `
+                            ${transferActionBtnHtml}
                             ${pauseActionBtnHtml}
                             ${suspendActionBtnHtml}
                             ${stopActionBtnHtml}
                             <button class="btn btn-secondary" onclick="closeCaseDetail()"><i class="fa-solid fa-circle-xmark"></i> Đóng</button>
-                        `;
-                    } else {
-                        buttonsHtml = `
-                            ${pauseActionBtnHtml}
-                            ${suspendActionBtnHtml}
-                            ${stopActionBtnHtml}
-                            <button class="btn btn-secondary" onclick="closeCaseDetail()"><i class="fa-solid fa-circle-xmark"></i> Đóng</button>
-                        `;
-                    }
+                        ` : `<button class="btn btn-secondary" onclick="closeCaseDetail()"><i class="fa-solid fa-circle-xmark"></i> Đóng</button>`;
                     showCloseButton = false;
                     break;
 
@@ -11486,23 +11944,14 @@
                     } else {
                         buttonsHtml = `
                             <button class="btn btn-primary" onclick="switchToEditMode('thucthi')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật kết quả thực thi</button>
-                            ${fundDetailBtnHtml}
                         `;
                     }
                     break;
 
                 case 'hoan thanh':
-                    // MH05 chức năng 13: Xem chi tiết kinh phí
-                    buttonsHtml = fundDetailBtnHtml;
-                    break;
-
                 case 'dinh chi giai quyet':
-                    // Only Close button
-                    break;
-
                 case 'sung quy nha nuoc':
-                    // MH05 chức năng 13: Xem chi tiết kinh phí
-                    buttonsHtml = fundDetailBtnHtml;
+                    // Only Close button
                     break;
             }
 
@@ -11512,7 +11961,7 @@
         function renderDetailActionBar(claim) {
             renderDetailActionBarBase(claim);
             const bar = document.getElementById('detailActionBar');
-            if (!bar || isDetailEditMode || !claim || claimRequestKind(claim) !== 'both' || !claim.phddStatus || PHDD_DONE_STATES.includes(claim.phddStatus)) return;
+            if (!bar || isDetailEditMode || !claim || claimRequestKind(claim) !== 'both' || !claim.phddStatus || PHDD_DONE_STATES.includes(claim.phddStatus) || canonicalClaimStatus(claim.status) === 'Chờ duyệt') return;
             if (getCurrentSimulatedRole() !== 'chuyen-vien' || isClaimAssignedToOther(claim, getCurrentSimulatedRole(), getCurrentSimulatedOfficer())) return;
             bar.insertAdjacentHTML('afterbegin', `<button class="btn btn-outline-primary detail-secondary-action" id="btnCaseUpdatePhdd" onclick="showCaseDetail('${claim.id}', true, 'phdd')"><i class="fa-solid fa-ribbon"></i> Cập nhật Phục hồi danh dự</button>`);
         }
@@ -11662,7 +12111,7 @@
                 advanceSectionHtml = `
                     <div style="margin-top: 15px; border-top: 1px dashed var(--border-color); padding-top: 15px;">
                         <span style="font-weight:700; color:var(--primary-color); display:block; margin-bottom:8px; font-size:13px;">
-                            <i class="fa-solid fa-hand-holding-dollar"></i> IV. ĐỀ NGHỊ TẠM ỨNG KINH PHÍ BỒI THƯỜNG (ĐIỀU 44)
+                            <i class="fa-solid fa-hand-holding-dollar"></i> ĐỀ NGHỊ TẠM ỨNG KINH PHÍ BỒI THƯỜNG (ĐIỀU 44)
                         </span>
                         <div class="grid-3-cols" style="gap: 12px; font-size: 13px;">
                             <div><strong>Tạm ứng thiệt hại tinh thần:</strong> ${(claim.advanceTinhThan || 0).toLocaleString('vi-VN')} đ</div>
@@ -11671,7 +12120,7 @@
                         </div>
                         <div style="font-size:11.5px; font-style:italic; margin-top:4px; color:var(--text-muted);">Viết bằng chữ: ${numberToVietnameseWords(claim.advanceNum)}</div>
                         
-                        <div style="font-weight:700; color:var(--primary-color); font-size:12.5px; margin-top:12px;">V. THÔNG TIN NGƯỜI NHẬN & PHƯƠNG THỨC CHI TRẢ:</div>
+                        <div style="font-weight:700; color:var(--primary-color); font-size:12.5px; margin-top:12px;">THÔNG TIN NGƯỜI NHẬN & PHƯƠNG THỨC CHI TRẢ:</div>
                         <div class="grid-4-cols" style="gap: 10px; font-size: 13px; margin-top:4px;">
                             <div><strong>Họ và tên người nhận:</strong> ${claim.advanceRecName || claim.nyc}</div>
                             <div><strong>Số giấy tờ người nhận:</strong> ${claim.advanceRecCard || claim.nycCardNo}</div>
@@ -11684,7 +12133,7 @@
             } else {
                 advanceSectionHtml = `
                     <div style="margin-top: 15px; border-top: 1px dashed var(--border-color); padding-top: 15px; font-size: 13px;">
-                        <strong>IV. ĐỀ NGHỊ TẠM ỨNG KINH PHÍ BỒI THƯỜNG:</strong> <span style="color:var(--text-muted); font-style:italic;">Không đề nghị tạm ứng kinh phí</span>
+                        <strong>ĐỀ NGHỊ TẠM ỨNG KINH PHÍ BỒI THƯỜNG:</strong> <span style="color:var(--text-muted); font-style:italic;">Không đề nghị tạm ứng kinh phí</span>
                     </div>
                 `;
             }
@@ -11750,16 +12199,7 @@
                         <span style="font-size:12px; color:var(--text-muted); text-transform:uppercase; font-weight:600; letter-spacing:0.5px;">Thời điểm tiếp nhận</span>
                         <div style="font-weight:600; color:var(--text-main); margin-top:2px;">${claim.date}</div>
                     </div>
-                    <div>
-                        <span style="font-size:12px; color:var(--text-muted); text-transform:uppercase; font-weight:600; letter-spacing:0.5px;">Hạn giải quyết bồi thường</span>
-                        <div style="font-weight:600; color:#b45309; margin-top:2px;">${claim.deadline || '--'}</div>
                     </div>
-                    <div>
-                        <span style="font-size:12px; color:var(--text-muted); text-transform:uppercase; font-weight:600; letter-spacing:0.5px; display:block; margin-bottom:4px;">Trạng thái vụ việc</span>
-                        <span class="badge ${getClaimStatusBadgeClass(getClaimCaseStatus(claim))}" style="font-size:12.5px; padding:6px 14px; font-weight:700;">${caseStatusLabel(claim)}</span>
-                        ${claimTrackSubHtml(claim)}
-                    </div>
-                </div>
 
                 ${relatedClaimBannerHtml(claim)}
 
@@ -11870,6 +12310,7 @@
         }
 
         window.switchToReadOnlyMode = function () {
+            if (gqBackToListIfFromList()) return;
             isDetailEditMode = false;
             showCaseDetail(selectedClaimId, false);
         };
@@ -13085,6 +13526,7 @@
 
                 document.getElementById('editPhddStep2AdjustText').value = claim.phddStep2AdjustText || "";
                 document.getElementById('editPhddStep2DelayReason').value = claim.phddStep2DelayReason || "";
+                if (document.getElementById('editPhddStep2OtherText')) document.getElementById('editPhddStep2OtherText').value = claim.phddStep2OtherText || "";
 
                 toggleStep2OpinionFields(opinion);
 
@@ -13328,9 +13770,41 @@
             const delayGroup = document.getElementById('phddStep2DelayGroup');
             const declineGroup = document.getElementById('phddStep2DeclineGroup');
 
+            const otherGroup = document.getElementById('phddStep2OtherGroup');
+
             if (adjustGroup) adjustGroup.style.display = value === 'Không đồng ý' ? 'block' : 'none';
             if (delayGroup) delayGroup.style.display = value === 'Đề nghị tạm hoãn' ? 'block' : 'none';
             if (declineGroup) declineGroup.style.display = value === 'Từ chối' ? 'block' : 'none';
+            if (otherGroup) otherGroup.style.display = value === 'Ý kiến khác' ? 'block' : 'none';
+        }
+        // Khối 2 đang chọn ý kiến nào thì chỉ hiển thị trường nhập của ý kiến đó (áp dụng cả chế độ xem và cập nhật)
+        function syncStep2OpinionFields() {
+            const checked = document.querySelector('input[name="editPhddStep2Opinion"]:checked');
+            toggleStep2OpinionFields(checked ? checked.value : 'Đồng ý thực hiện');
+        }
+
+        // Hoàn thành phục hồi danh dự: Trạng thái Phục hồi danh dự -> Hoàn thành
+        // (vụ việc Chỉ yêu cầu phục hồi danh dự: Trạng thái vụ việc đồng thời chuyển Hoàn thành)
+        function completePhddProcess() {
+            const claim = claimsList.find(c => c.id === selectedClaimId);
+            if (!claim || PHDD_DONE_STATES.includes(claim.phddStatus)) return;
+            if (!claim.phddStep3Saved) {
+                showToast('Vui lòng lưu thông tin tổ chức thực hiện phục hồi danh dự (khối 3) trước khi hoàn thành.', 'error');
+                return;
+            }
+            const honorOnly = isPhddClaim(claim);
+            showConfirmModal(`Xác nhận hoàn thành phục hồi danh dự cho vụ việc ${claim.code}? Trạng thái Phục hồi danh dự chuyển [Hoàn thành]${honorOnly ? ', Trạng thái vụ việc chuyển [Hoàn thành]' : ''}.`, () => {
+                const today = new Date().toLocaleDateString('vi-VN');
+                setPhddStatus(claim, 'Hoàn thành');
+                claim.phddCompletedDate = today;
+                if (!claim.phddTimeline) claim.phddTimeline = [];
+                claim.phddTimeline.push({ title: 'Hoàn thành phục hồi danh dự', date: today, desc: `Cán bộ xác nhận hoàn thành phục hồi danh dự. Trạng thái Phục hồi danh dự chuyển [Hoàn thành].` });
+                if (!Array.isArray(claim.timeline)) claim.timeline = [];
+                claim.timeline.push({ title: 'Hoàn thành phục hồi danh dự', date: today, desc: `Trạng thái vụ việc: [${caseStatusLabel(claim)}].`, status: 'completed' });
+                saveClaimsToLocal();
+                showToast(`Hoàn thành phục hồi danh dự vụ việc ${claim.code}. Trạng thái vụ việc: [${caseStatusLabel(claim)}].`, 'success');
+                showCaseDetail(claim.id, false, 'phdd');
+            }, { title: 'Hoàn thành phục hồi danh dự', btnYesText: 'Hoàn thành', btnYesClass: 'btn-success' });
         }
 
         function toggleNewsLevelFields(value) {
@@ -13504,7 +13978,7 @@
             const claim = phddSelectedClaim();
             const op = claim ? String(claim.phddStep2Opinion || '').trim() : '';
             if (!op) return '-';
-            return [op, claim.phddStep2AdjustText, claim.phddStep2DelayReason].filter(Boolean).join(' - ');
+            return [op, claim.phddStep2AdjustText, claim.phddStep2DelayReason, claim.phddStep2OtherText].filter(Boolean).join(' - ');
         }
         // Thông tin dự kiến tổ chức trong Thông báo tổ chức PHDD (khối 1): lưu theo vụ việc, nạp lại đúng dữ liệu của vụ việc
         function phddReadStep1Expected(claim) {
@@ -13830,9 +14304,9 @@
             // Add timeline event
             if (!claim.phddTimeline) claim.phddTimeline = [];
             claim.phddTimeline.push({
-                title: "Ban hành thông báo tổ chức phục hồi danh dự",
+                title: "Lưu thông tin thông báo tổ chức phục hồi danh dự",
                 date: claim.phddStep1Date,
-                desc: `Ban hành Thông báo số ${claim.phddStep1No} do ${claim.phddStep1Signer} (${claim.phddStep1Position}) ký.`
+                desc: `Thông báo số ${claim.phddStep1No} do ${claim.phddStep1Signer} (${claim.phddStep1Position}) ký.`
             });
 
             // Check if deceased bypass is active
@@ -13846,7 +14320,7 @@
             }
 
             saveClaimsToLocal();
-            showToast("Ban hành thông báo thành công!", "success");
+            showToast("Lưu thông tin thành công!", "success");
             renderHonorRestorationTab(claim);
         }
 
@@ -13878,6 +14352,7 @@
             let firstInvalid = null;
             let adjustText = '';
             let delayReason = '';
+            let otherText = '';
 
             if (opinion === 'Không đồng ý') {
                 adjustText = document.getElementById('editPhddStep2AdjustText').value.trim();
@@ -13899,6 +14374,13 @@
                     invalid = true;
                     firstInvalid = document.getElementById('phddStep2DeclineUploadContainer');
                 }
+            } else if (opinion === 'Ý kiến khác') {
+                otherText = document.getElementById('editPhddStep2OtherText').value.trim();
+                if (!otherText) {
+                    validatePhddInput('editPhddStep2OtherText', true);
+                    invalid = true;
+                    firstInvalid = document.getElementById('editPhddStep2OtherText');
+                }
             }
 
             if (invalid) {
@@ -13913,17 +14395,19 @@
             claim.phddStep2ReceiveDate = receiveDate;
             claim.phddStep2Opinion = opinion;
             claim.phddStep2AdjustText = adjustText;
+            claim.phddStep2OtherText = otherText;
             claim.phddStep2DelayReason = delayReason;
 
             // Change status based on opinion
-            if (opinion === 'Đồng ý thực hiện') {
+            if (opinion === 'Đồng ý thực hiện' || opinion === 'Ý kiến khác') {
                 setPhddStatus(claim, 'Chờ thực thi');
             } else if (opinion === 'Không đồng ý') {
                 setPhddStatus(claim, 'Yêu cầu bổ sung');
             } else if (opinion === 'Đề nghị tạm hoãn') {
                 setPhddStatus(claim, 'Tạm hoãn');
             } else if (opinion === 'Từ chối') {
-                setPhddStatus(claim, 'Từ chối');
+                // Người bị thiệt hại từ chối phục hồi danh dự: ghi nhận ý kiến + biên bản, kết thúc nhánh ở Hoàn thành
+                setPhddStatus(claim, 'Hoàn thành');
             }
 
             // Add timeline event
@@ -13931,7 +14415,7 @@
             claim.phddTimeline.push({
                 title: "Cập nhật ý kiến người bị thiệt hại",
                 date: receiveDate,
-                desc: `Người bị hại phản hồi: ${opinion}.`
+                desc: `Người bị hại phản hồi: ${opinion}${opinion === 'Ý kiến khác' && otherText ? ': ' + otherText : ''}.`
             });
 
             saveClaimsToLocal();
@@ -14123,19 +14607,19 @@
             }
             claim.phddUploadedFiles = [...phddUploadedFiles];
 
-            // Change status
-            setPhddStatus(claim, 'Hoàn thành');
+            // Lưu kết quả tổ chức thực hiện; Trạng thái Phục hồi danh dự chỉ chuyển Hoàn thành khi cán bộ bấm "Hoàn thành phục hồi danh dự"
+            claim.phddStep3Saved = true;
 
             // Add timeline event
             if (!claim.phddTimeline) claim.phddTimeline = [];
             claim.phddTimeline.push({
-                title: "Hoàn thành tổ chức phục hồi danh dự",
+                title: "Lưu thông tin tổ chức thực hiện phục hồi danh dự",
                 date: claim.phddStep3DateExp || new Date().toLocaleDateString('vi-VN'),
-                desc: `Thực hiện thành công phục hồi danh dự bằng hình thức: ${claim.phddForm}.`
+                desc: `Ghi nhận kết quả tổ chức thực hiện phục hồi danh dự bằng hình thức: ${claim.phddForm}.`
             });
 
             saveClaimsToLocal();
-            showToast("Hoàn thành thực thi phục hồi danh dự!", "success");
+            showToast("Lưu thông tin thành công!", "success");
             renderHonorRestorationTab(claim);
         }
 
@@ -14224,6 +14708,8 @@
                 if (disabled) fileLabel.style.display = 'none';
                 else fileLabel.style.display = '';
             }
+            // Chỉ hiển thị trường nhập của ý kiến đang chọn (vòng lặp trên đã hiển thị lại toàn bộ nhóm trường)
+            syncStep2OpinionFields();
         }
 
         function updatePhddStep2NoLock() {
@@ -14246,6 +14732,8 @@
                 const opinion = opinionEl ? opinionEl.value : "Đồng ý thực hiện";
                 const adjustText = document.getElementById('editPhddStep2AdjustText').value.trim();
                 const delayReason = document.getElementById('editPhddStep2DelayReason').value.trim();
+                const otherEl = document.getElementById('editPhddStep2OtherText');
+                const otherText = otherEl ? otherEl.value.trim() : '';
 
                 let invalid = false;
                 let firstInvalid = null;
@@ -14278,6 +14766,12 @@
                     invalid = true;
                 }
 
+                if (opinion === 'Ý kiến khác' && !otherText) {
+                    validatePhddInput('editPhddStep2OtherText', true);
+                    invalid = true;
+                    if (!firstInvalid) firstInvalid = otherEl;
+                }
+
                 if (invalid) {
                     if (firstInvalid) {
                         firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -14290,23 +14784,25 @@
                 claim.phddStep2Opinion = opinion;
                 claim.phddStep2AdjustText = adjustText;
                 claim.phddStep2DelayReason = delayReason;
+                claim.phddStep2OtherText = opinion === 'Ý kiến khác' ? otherText : '';
 
                 // Add timeline event
                 if (!claim.phddTimeline) claim.phddTimeline = [];
                 claim.phddTimeline.push({
                     title: "Cập nhật ý kiến người bị thiệt hại",
                     date: receiveDate,
-                    desc: `Người bị hại phản hồi: ${opinion}.`
+                    desc: `Người bị hại phản hồi: ${opinion}${opinion === 'Ý kiến khác' && otherText ? ': ' + otherText : ''}.`
                 });
 
-                if (opinion === 'Đồng ý thực hiện') {
+                if (opinion === 'Đồng ý thực hiện' || opinion === 'Ý kiến khác') {
                     setPhddStatus(claim, 'Chờ thực thi');
                 } else if (opinion === 'Không đồng ý') {
                     setPhddStatus(claim, 'Yêu cầu bổ sung');
                 } else if (opinion === 'Đề nghị tạm hoãn') {
                     setPhddStatus(claim, 'Tạm hoãn');
                 } else if (opinion === 'Từ chối') {
-                    setPhddStatus(claim, 'Từ chối');
+                    // Người bị thiệt hại từ chối phục hồi danh dự: ghi nhận ý kiến + biên bản, kết thúc nhánh ở Hoàn thành
+                    setPhddStatus(claim, 'Hoàn thành');
                 }
 
                 saveClaimsToLocal();
@@ -14595,7 +15091,7 @@
             // Event 2: Section 1 Ban hanh
             if (claim.phddStep1No && claim.phddStep1Date) {
                 events.push({
-                    title: "Ban hành thông báo tổ chức phục hồi danh dự",
+                    title: "Lưu thông tin thông báo tổ chức phục hồi danh dự",
                     date: claim.phddStep1Date,
                     desc: `Thông báo số ${claim.phddStep1No} do ${claim.phddStep1Signer} (${claim.phddStep1Position}) ký.`,
                     officer: claim.phddStep1Signer || claim.assignedOfficer || "Chuyên viên Lê Văn Chuyên Viên"
@@ -14657,7 +15153,7 @@
 
             const statusBadge = document.getElementById('phddCardStatusBadge');
             if (statusBadge) {
-                statusBadge.innerText = (claim.phddStatus === 'Chờ thực thi') ? 'Chờ thực hiện' : claim.phddStatus;
+                statusBadge.innerText = phddStatusLabel(claim.phddStatus);
                 statusBadge.className = 'badge ' + (
                     claim.phddStatus === 'Hoàn thành' ? 'bg-success' :
                         claim.phddStatus === 'Chờ thực hiện' ? 'bg-warning' :
@@ -14735,6 +15231,7 @@
 
                 document.getElementById('editPhddStep2AdjustText').value = claim.phddStep2AdjustText || "";
                 document.getElementById('editPhddStep2DelayReason').value = claim.phddStep2DelayReason || "";
+                if (document.getElementById('editPhddStep2OtherText')) document.getElementById('editPhddStep2OtherText').value = claim.phddStep2OtherText || "";
 
                 toggleStep2OpinionFields(opinion);
 
@@ -14908,7 +15405,19 @@
 
             // Button Logic for Section 3
             if (claim.phddStatus !== 'Hoàn thành') {
-                if (claim.phddStatus === 'Chờ thực thi') {
+                if (claim.phddStatus === 'Chờ thực thi' && claim.phddStep3Saved) {
+                    // Đã lưu thông tin tổ chức thực hiện: chế độ xem, cho phép Cập nhật thông tin
+                    setSection3InputsDisabled(true);
+                    sec3.style.pointerEvents = 'auto'; sec3.style.opacity = '1';
+                    if (footers[3]) footers[3].style.display = 'flex';
+                    if (btnComplete3) btnComplete3.style.display = 'none';
+                    if (btnCancel3) btnCancel3.style.display = 'none';
+                    if (btnUpdate3) {
+                        btnUpdate3.style.display = 'flex';
+                        btnUpdate3.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> Cập nhật thông tin';
+                        btnUpdate3.style.background = '#f59e0b';
+                    }
+                } else if (claim.phddStatus === 'Chờ thực thi') {
                     setSection3InputsDisabled(false);
                     sec3.style.pointerEvents = 'auto'; sec3.style.opacity = '1';
                     if (footers[3]) footers[3].style.display = 'flex';
@@ -14934,6 +15443,18 @@
                 if (document.getElementById('phddMultiUploadZone')) document.getElementById('phddMultiUploadZone').style.display = 'none';
             }
 
+            // Thanh "Hoàn thành phục hồi danh dự": chế độ cập nhật, nhánh Phục hồi danh dự chưa kết thúc; kích hoạt khi đã lưu khối 3
+            const completeBar = document.getElementById('phddCompleteBar');
+            if (completeBar) {
+                const showBar = isDetailEditMode && !PHDD_DONE_STATES.includes(claim.phddStatus) && claim.phddStatus !== 'Đình chỉ giải quyết';
+                completeBar.style.display = showBar ? 'flex' : 'none';
+                const btnDone = document.getElementById('btnCompletePhdd');
+                const ready = !!claim.phddStep3Saved;
+                if (btnDone) { btnDone.disabled = !ready; btnDone.style.opacity = ready ? '1' : '0.5'; btnDone.style.cursor = ready ? 'pointer' : 'not-allowed'; btnDone.title = ready ? 'Chuyển Trạng thái Phục hồi danh dự sang Hoàn thành' : 'Cần lưu thông tin tổ chức thực hiện phục hồi danh dự (khối 3) trước khi hoàn thành'; }
+                const hint = document.getElementById('phddCompleteHint');
+                if (hint) hint.textContent = ready ? 'Đã lưu thông tin tổ chức thực hiện. Bấm "Hoàn thành phục hồi danh dự" để kết thúc nhánh Phục hồi danh dự.' : 'Lưu thông tin tổ chức thực hiện phục hồi danh dự (khối 3) để hoàn thành nhánh Phục hồi danh dự.';
+            }
+
             // Render Timeline
             renderPhddTimeline(claim);
                     // Vụ việc đã Đình chỉ giải quyết: dừng nhánh Phục hồi danh dự, chỉ xem
@@ -14944,6 +15465,7 @@
         }
 
         function cancelActionUpdate() {
+            if (gqBackToListIfFromList()) return;
             showCaseDetail(selectedClaimId, false);
         }
 
@@ -18539,7 +19061,7 @@
         </div>
     </div>
     <!-- GQ YCBT: Trình duyệt Tiếp nhận / Yêu cầu bổ sung (Mẫu 03/BTNN) - Phát hành / Không thụ lý (Mẫu 04/BTNN) / Chuyển CQGQBT
-         Trình phê duyệt nhiều cấp qua luồng dùng chung BTNN_WF (Hồ sơ trình Lãnh đạo); trạng thái vụ việc đồng bộ từ kho luồng. -->
+         Trình phê duyệt nhiều cấp qua luồng dùng chung BTNN_WF; trạng thái vụ việc đồng bộ từ kho luồng. -->
     <style>
         .gq-modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.5); z-index: 10060; display: flex; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box; }
         .gq-modal { background: #fff; border-radius: 10px; width: 760px; min-width: 650px; max-width: 850px; max-height: calc(100vh - 32px); display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(15, 23, 42, 0.3); font-family: Inter, system-ui, sans-serif; }
@@ -18582,16 +19104,19 @@
         // Trạng thái cho phép thao tác (cột Thao tác + thanh thao tác màn chi tiết)
         const GQ_YCBS_STATES = ['Chờ tiếp nhận', 'Yêu cầu bổ sung'];
         const GQ_KTL_STATES = ['Chờ tiếp nhận', 'Yêu cầu bổ sung', 'Chờ thụ lý'];
-        // Chuyển CQGQBT: tại các bước Tiếp nhận, Thụ lý, Xác minh thiệt hại, Thương lượng (trước khi có Quyết định GQBT)
-        // Chuyển CQGQBT (thao tác độc lập): chỉ hồ sơ đã thụ lý, trước khi ban hành chính thức QĐ GQBT.
+        // Chuyển CQGQBT (thao tác độc lập): mọi trạng thái sau Chờ thụ lý (hồ sơ đã thụ lý), trừ hồ sơ đã kết thúc xử lý
+        // (Không thụ lý, Đã chuyển CQGQBT, Đình chỉ giải quyết, Sung quỹ nhà nước, Hoàn thành).
         // Trước thụ lý (Chờ tiếp nhận / Yêu cầu bổ sung / Chờ thụ lý): chuyển cơ quan qua Không thụ lý - lý do KTL_01.
-        const GQ_TRANSFER_STATES = ['Đang xác minh thiệt hại', 'Đang thương lượng', 'Chờ ban hành QĐ', 'Hoãn giải quyết', 'Tạm đình chỉ giải quyết'];
+        const GQ_TRANSFER_STATES = ['Đang xác minh thiệt hại', 'Đang thương lượng', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Hoãn giải quyết', 'Tạm đình chỉ giải quyết'];
         function gqTransferBlockReason(claim) {
             const st = canonicalClaimStatus(claim.status);
-            if (typeof isPhddStarted === 'function' && isPhddStarted(claim)) return 'Vụ việc chỉ yêu cầu phục hồi danh dự không áp dụng Chuyển CQGQBT';
+            const caseSt = typeof getClaimCaseStatus === 'function' ? getClaimCaseStatus(claim) : st;
+            if (CLAIM_DONE_TAB_STATES.includes(caseSt)) return `Không áp dụng ở trạng thái ${caseSt}`;
+            // Đang phục hồi danh dự (Chỉ yêu cầu phục hồi danh dự hoặc Cả hai): hồ sơ đã thụ lý, chưa kết thúc
+            const phddOpen = typeof isPhddStarted === 'function' && isPhddStarted(claim) && claim.phddStatus && !PHDD_DONE_STATES.includes(claim.phddStatus);
+            if (caseSt === CASE_PHDD_PENDING_STATUS || phddOpen) return '';
             if (['Chờ tiếp nhận', 'Yêu cầu bổ sung', 'Chờ thụ lý'].includes(st)) return 'Hồ sơ chưa thụ lý: chuyển cơ quan qua thao tác Không thụ lý với lý do KTL_01';
             if (!GQ_TRANSFER_STATES.includes(st)) return `Không áp dụng ở trạng thái ${st}`;
-            if (claim.decStatus === 'Đã ban hành') return 'Quyết định giải quyết bồi thường đã ban hành chính thức';
             return '';
         }
         function gqCanTransfer(claim) { return !gqTransferBlockReason(claim); }
@@ -18675,7 +19200,14 @@
             if (!st) return false;
             const cur = canonicalClaimStatus(c.status);
             if (cur === st) return false;
-            if (!(full || st === 'Chờ duyệt' || cur === 'Chờ duyệt')) return false;
+            // Kết quả Thụ lý / Không thụ lý của Thủ trưởng (vai trò Lãnh đạo đơn vị) được nhận cả khi không tải lại trang
+            const fromThuLy = cur === 'Chờ thụ lý' && !!r.thuLy;
+            if (!(full || fromThuLy || st === 'Chờ duyệt' || cur === 'Chờ duyệt')) return false;
+            if (fromThuLy && !full && r.gqData) Object.assign(c, JSON.parse(JSON.stringify(r.gqData)));
+            if (fromThuLy && !r.thuLy.rejected) {
+                const d = String(r.thuLy.at || '').replace(/^\d{2}:\d{2}\s+/, '') || gqToday();
+                c.reporting = Object.assign({}, getClaimReport(c), { thulyDate: getClaimReport(c).thulyDate || d, noticeDate: getClaimReport(c).noticeDate || d });
+            }
             c.status = st;
             if (!Array.isArray(c.timeline)) c.timeline = [];
             const last = (r.history || [])[(r.history || []).length - 1];
@@ -18685,7 +19217,10 @@
             // Vụ việc PHDD-: Lãnh đạo phê duyệt tiếp nhận -> bắt đầu tiến trình phục hồi danh dự (Bước 1 - Thông báo tổ chức PHDD)
             if (st === PHDD_START_STATUS && isPhddClaim(c)) {
                 if (!Array.isArray(c.phddTimeline)) c.phddTimeline = [];
-                c.phddTimeline.push({ title: 'Phê duyệt tiếp nhận hồ sơ', date: atDate, desc: 'Lãnh đạo phê duyệt tiếp nhận hồ sơ. Bắt đầu tiến trình phục hồi danh dự (Bước 1 - Thông báo tổ chức phục hồi danh dự).' });
+                c.phddStarted = true;
+                c.phddTimeline.push(r.thuLy
+                    ? { title: 'Thụ lý hồ sơ', date: atDate, desc: 'Thủ trưởng cơ quan giải quyết bồi thường thụ lý hồ sơ, cử người giải quyết. Bắt đầu tiến trình phục hồi danh dự (Bước 1 - Thông báo tổ chức phục hồi danh dự).' }
+                    : { title: 'Phê duyệt tiếp nhận hồ sơ', date: atDate, desc: 'Lãnh đạo phê duyệt tiếp nhận hồ sơ. Bắt đầu tiến trình phục hồi danh dự (Bước 1 - Thông báo tổ chức phục hồi danh dự).' });
             }
             return true;
         }
@@ -18718,7 +19253,7 @@
             rec.gqData = Object.assign({}, rec.gqData || {}, JSON.parse(JSON.stringify(patch)));
             W.upsertRecord(rec);
         }
-        // Tạo/cập nhật hồ sơ luồng (module YCBT) cho vụ việc để trình qua "Hồ sơ trình Lãnh đạo"
+        // Tạo/cập nhật hồ sơ luồng (module YCBT) cho vụ việc để trình Lãnh đạo
         function gqEnsureRecord(claim) {
             const W = gqW();
             const rec = gqRecord(claim);
@@ -18729,7 +19264,7 @@
                     linhVuc: getFieldGroupName(claim.fieldGroup), hanhVi: claim.hanhVi || '',
                     nycPhone: claim.nycPhone || '', nycAddressDetail: claim.nycAddressDetail || '', nycTinhThanh: claim.nycTinhThanh || '',
                     nguonHoSo: claim.nguonHoSo || '', date: claim.date || gqToday(), receivedAt: claim.date || gqToday(),
-                    chuTri: acting, createdBy: acting, rootUnitId: gqClaimUnitId(claim, null), status: canonicalClaimStatus(claim.status)
+                    chuTri: acting, createdBy: acting, rootUnitId: gqClaimUnitId(claim, null), status: canonicalClaimStatus(claim.status), requestKind: claimRequestKind(claim)
                 };
                 // Vụ việc PHDD- (Chỉ phục hồi danh dự) chuyển từ hồ sơ đã phân công: kế thừa đơn vị gốc, cán bộ chủ trì, lượt phân công
                 const src = gqConvertedSourceRecord(claim);
@@ -18740,10 +19275,170 @@
                 });
                 return W.ensureClaimRecord(data);
             }
-            const data = { code: claim.code, gqClaimId: claim.id };
+            const data = { code: claim.code, gqClaimId: claim.id, requestKind: claimRequestKind(claim) };
             const st = canonicalClaimStatus(claim.status);
             if (rec.status !== 'Chờ duyệt' && gqMapWfStatus(rec.status, claim) && rec.status !== st) data.status = st;
             return W.ensureClaimRecord(data);
+        }
+        // Vụ việc "Chờ thụ lý" chưa có hồ sơ luồng: tạo hồ sơ luồng để Thủ trưởng cơ quan giải quyết bồi thường thụ lý (vai trò Lãnh đạo đơn vị).
+        // Cán bộ chủ trì mặc định = cán bộ đầu tiên được cấu hình tại đơn vị gốc của cơ quan giải quyết (xác định cấp thụ lý theo luồng phê duyệt)
+        function gqEnsureThuLyRecords() {
+            const W = gqW();
+            if (!W) return;
+            claimsList.forEach(c => {
+                if (!c || canonicalClaimStatus(c.status) !== 'Chờ thụ lý' || gqRecord(c)) return;
+                const root = gqClaimUnitId(c, null);
+                if (!root) return;
+                const node = W.getNodeConfig(root) || {};
+                const chuTri = (node.officers || [])[0] || W.thuLyOfficerOptions({ rootUnitId: root })[0] || '';
+                if (!chuTri) return;
+                W.ensureClaimRecord({
+                    code: c.code, gqClaimId: c.id, nycName: getClaimRequesterName(c), nyc: getClaimRequesterName(c),
+                    linhVuc: getFieldGroupName(c.fieldGroup), hanhVi: c.hanhVi || '', nguonHoSo: c.nguonHoSo || '',
+                    date: c.date || gqToday(), receivedAt: c.date || gqToday(), chuTri, createdBy: chuTri,
+                    rootUnitId: root, currentUnitId: root, status: 'Chờ thụ lý', requestKind: claimRequestKind(c)
+                });
+            });
+        }
+        // ---------- Quyền giả lập Lãnh đạo đơn vị: Phê duyệt / Từ chối hồ sơ Chờ thụ lý, Chờ duyệt ----------
+        // Danh sách Lãnh đạo đang đăng nhập = thành viên Nhóm lãnh đạo các đơn vị tại Cấu hình luồng xử lý
+        function populateLeaderSelector() {
+            const W = gqW();
+            const sel = document.getElementById('currentLeaderSelector');
+            if (!W || !sel || sel.options.length) return;
+            const cfg = W.getFlowConfig();
+            const seen = new Set();
+            const groups = [];
+            Object.keys(cfg).forEach(root => {
+                const ids = [];
+                Object.keys(cfg[root]).forEach(unit => (cfg[root][unit].leaders || []).forEach(u => { if (!seen.has(u)) { seen.add(u); ids.push(u); } }));
+                if (ids.length) groups.push(`<optgroup label="${gqE(W.unitName(root))}">${ids.map(u => { const usr = W.getUser(u); return `<option value="${gqE(u)}">${gqE(usr ? usr.name + ' - ' + usr.title + ' (' + W.unitName(usr.unitId) + ')' : u)}</option>`; }).join('')}</optgroup>`);
+            });
+            sel.innerHTML = groups.join('');
+            const curWf = W.getCurrentUserId();
+            sel.value = seen.has(curWf) ? curWf : (seen.has('tpbt') ? 'tpbt' : (sel.options[0] ? sel.options[0].value : ''));
+        }
+        function gqLeaderId() {
+            const sel = document.getElementById('currentLeaderSelector');
+            return sel && sel.value ? sel.value : '';
+        }
+        // Hồ sơ cần Lãnh đạo đang đăng nhập xử lý: Chờ thụ lý (Thủ trưởng cơ quan giải quyết) hoặc Chờ duyệt (Lãnh đạo được giao cấp hiện tại)
+        function leaderCanActOn(item) {
+            const W = gqW();
+            const me = gqLeaderId();
+            if (!W || !me) return false;
+            const st = canonicalClaimStatus(item.status);
+            const rec = gqRecord(item);
+            if (!rec) return false;
+            if (st === 'Chờ thụ lý') return W.canThuLy(rec, me);
+            // Phiếu trình Quyết định GQBT / Hủy QĐ / Sửa chữa QĐ: ký duyệt tại chức năng Quyết định giải quyết bồi thường
+            if (st === 'Chờ duyệt') return W.canApprove(rec, me) && !(W.QD_KINDS || []).includes(W.approvalKindOf(rec));
+            return false;
+        }
+        function gqAsLeader() { const W = gqW(); const me = gqLeaderId(); if (W && me && W.getCurrentUserId() !== me) W.setCurrentUser(me); return me; }
+        function gqAfterLeaderAction(msg, ok) {
+            gqCloseModal();
+            showToast(msg, ok ? 'success' : 'error');
+            gqRefreshClaimsFromWorkflow(false);
+            saveClaimsToLocal();
+            renderClaimsTable();
+        }
+        // Phê duyệt: Chờ duyệt -> phê duyệt phiếu trình; Chờ thụ lý -> Thụ lý (cử người giải quyết)
+        function gqLeaderApprove(id) {
+            const claim = gqClaim(id);
+            if (!claim || !leaderCanActOn(claim)) { showToast('Hồ sơ đã được xử lý hoặc bạn không có quyền xử lý.', 'error'); renderClaimsTable(); return; }
+            const W = gqW();
+            const rec = gqRecord(claim);
+            const head = `<div class="gq-info" style="margin-bottom:10px;"><b>${gqE(claim.code)}</b> - ${gqE(getClaimRequesterName(claim))}</div>`;
+            if (canonicalClaimStatus(claim.status) === 'Chờ thụ lý') {
+                const opts = W.thuLyOfficerOptions(rec);
+                gqOpenModal('Phê duyệt thụ lý hồ sơ - Cử người giải quyết', 'fa-solid fa-gavel', head + `
+                    <div class="gq-field"><label class="gq-label">Cán bộ chủ trì giải quyết <span class="gq-req">*</span></label>
+                        <select id="gqTlChuTri" class="form-control">${opts.map(u => `<option value="${gqE(u)}" ${u === rec.chuTri ? 'selected' : ''}>${gqE(W.userLabel(u))}</option>`).join('')}</select></div>
+                    <div class="gq-field"><label class="gq-label">Cán bộ cùng giải quyết</label>
+                        <div id="gqTlPhoiHop" style="display:flex; flex-direction:column; gap:4px; border:1px solid var(--border-color); border-radius:6px; padding:8px 10px; max-height:150px; overflow:auto;">${opts.map(u => `<label style="font-weight:500;"><input type="checkbox" value="${gqE(u)}"> ${gqE(W.userLabel(u))}</label>`).join('')}</div></div>
+                    <div class="gq-field"><label class="gq-label">Ý kiến chỉ đạo</label><textarea id="gqTlNote" class="form-control" rows="2"></textarea></div>`,
+                    `<button class="btn btn-secondary" onclick="gqCloseModal()">Hủy bỏ</button><button class="btn btn-primary" onclick="gqSubmitLeaderThuLy('${gqE(id)}')"><i class="fa-solid fa-check"></i> Phê duyệt thụ lý</button>`, 640);
+                return;
+            }
+            const a = rec.approval;
+            const next = W.nextLevelLeaders(rec);
+            const isLast = W.isLastApprovalLevel(rec);
+            gqOpenModal(`Phê duyệt: ${gqE(a.kind)}`, 'fa-solid fa-circle-check', head + W.renderDraftDocHtml(rec) + `
+                <div class="gq-info"><b>Nội dung trình:</b> ${gqE(a.kind)} - ${gqE(W.userName(a.submittedBy))}${a.content ? `<div>${gqE(a.content)}</div>` : ''}<div><b>Cấp phê duyệt:</b> ${a.level + 1}/${a.path.length} - ${gqE(W.unitName(a.path[a.level]))}</div>
+                <div style="color:var(--text-muted);">${isLast ? `Cấp phê duyệt cuối cùng. Sau khi phê duyệt, hồ sơ chuyển [${gqE(a.resultStatus || W.SUBMIT_KINDS[a.kind] || '')}].` : `Sau khi phê duyệt, hồ sơ chuyển ${gqE(W.unitName(a.path[a.level + 1]))} phê duyệt.`}</div></div>
+                ${next.length ? `<div class="gq-field"><label class="gq-label">Lãnh đạo phê duyệt cấp tiếp theo <span class="gq-req">*</span></label><select id="gqLdNext" class="form-control"><option value="">-- Chọn Lãnh đạo --</option>${next.map(u => `<option value="${gqE(u)}">${gqE(W.userLabel(u))}</option>`).join('')}</select></div>` : ''}
+                <div class="gq-field"><label class="gq-label">Ý kiến phê duyệt</label><textarea id="gqLdNote" class="form-control" rows="2"></textarea></div>`,
+                `<button class="btn btn-secondary" onclick="gqCloseModal()">Hủy bỏ</button><button class="btn btn-primary" onclick="gqSubmitLeaderApprove('${gqE(id)}')"><i class="fa-solid fa-check"></i> Phê duyệt</button>`, 720);
+        }
+        function gqSubmitLeaderThuLy(id) {
+            const W = gqW();
+            const claim = gqClaim(id);
+            const chuTri = gqVal('gqTlChuTri');
+            if (!chuTri) { gqFooterMsg('Vui lòng chọn Cán bộ chủ trì giải quyết.'); return; }
+            const others = Array.from(document.querySelectorAll('#gqTlPhoiHop input:checked')).map(x => x.value).filter(u => u !== chuTri);
+            gqAsLeader();
+            const res = W.acceptCase(claim.code, [chuTri].concat(others), gqVal('gqTlNote'));
+            gqAfterLeaderAction(res.ok ? `Đã thụ lý hồ sơ ${claim.code}, cử ${[chuTri].concat(others).map(W.userName).join(', ')} giải quyết.` : res.message, res.ok);
+        }
+        function gqSubmitLeaderApprove(id) {
+            const W = gqW();
+            const claim = gqClaim(id);
+            const nextSel = document.getElementById('gqLdNext');
+            if (nextSel && !nextSel.value) { gqFooterMsg('Vui lòng chọn Lãnh đạo phê duyệt cấp tiếp theo.'); return; }
+            gqAsLeader();
+            const res = W.approve(claim.code, gqVal('gqLdNote'), nextSel ? nextSel.value : '');
+            gqAfterLeaderAction(res.ok ? `Hồ sơ ${claim.code}: [${res.record.status}].` : res.message, res.ok);
+        }
+        // Từ chối: Chờ duyệt -> từ chối phê duyệt (Bị trả lại); Chờ thụ lý -> Không thụ lý
+        function gqLeaderReject(id) {
+            const claim = gqClaim(id);
+            if (!claim || !leaderCanActOn(claim)) { showToast('Hồ sơ đã được xử lý hoặc bạn không có quyền xử lý.', 'error'); renderClaimsTable(); return; }
+            const W = gqW();
+            const head = `<div class="gq-info" style="margin-bottom:10px;"><b>${gqE(claim.code)}</b> - ${gqE(getClaimRequesterName(claim))}</div>`;
+            if (canonicalClaimStatus(claim.status) === 'Chờ thụ lý') {
+                gqOpenModal('Từ chối - Không thụ lý hồ sơ', 'fa-solid fa-ban', head + `
+                    <div class="gq-field"><label class="gq-label">Lý do không thụ lý <span class="gq-req">*</span></label>
+                        <select id="gqLdKtl" class="form-control" onchange="document.getElementById('gqLdKtlTransfer').style.display = this.value === 'KTL_01' ? 'block' : 'none'"><option value="">-- Chọn lý do --</option>${W.getKtlReasons().map(r => `<option value="${gqE(r.code)}">${gqE(r.code)} - ${gqE(r.name)}</option>`).join('')}</select></div>
+                    <div class="gq-field"><label class="gq-label">Diễn giải</label><textarea id="gqLdKtlDetail" class="form-control" rows="2"></textarea></div>
+                    <div id="gqLdKtlTransfer" style="display:none;">
+                        <div class="gq-field"><label class="gq-label">Cơ quan tiếp nhận mới <span class="gq-req">*</span></label><div id="gqLdKtlUnit"></div></div>
+                        <div class="gq-field"><label class="gq-label">Nội dung/Căn cứ chuyển <span class="gq-req">*</span></label><textarea id="gqLdKtlContent" class="form-control" rows="2"></textarea></div>
+                    </div>`,
+                    `<button class="btn btn-secondary" onclick="gqCloseModal()">Hủy bỏ</button><button class="btn btn-danger" onclick="gqSubmitLeaderKtl('${gqE(id)}')"><i class="fa-solid fa-ban"></i> Không thụ lý</button>`, 680);
+                const rec = gqRecord(claim);
+                W.mountUnitTree(document.getElementById('gqLdKtlUnit'), { inputId: 'gqLdKtlUnitId', disabledIds: [rec.rootUnitId], placeholder: '-- Chọn cơ quan tiếp nhận mới --' });
+                return;
+            }
+            gqOpenModal('Từ chối phê duyệt', 'fa-solid fa-circle-xmark', head + `<div class="gq-info"><b>Nội dung trình:</b> ${gqE(W.approvalKindOf(gqRecord(claim)))}<div style="color:var(--text-muted);">Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị trả lại] cho cán bộ chủ trì.</div></div>
+                <div class="gq-field"><label class="gq-label">Lý do từ chối phê duyệt <span class="gq-req">*</span></label><textarea id="gqLdReason" class="form-control" rows="3"></textarea></div>`,
+                `<button class="btn btn-secondary" onclick="gqCloseModal()">Hủy bỏ</button><button class="btn btn-danger" onclick="gqSubmitLeaderReject('${gqE(id)}')"><i class="fa-solid fa-xmark"></i> Từ chối phê duyệt</button>`, 640);
+        }
+        function gqSubmitLeaderKtl(id) {
+            const W = gqW();
+            const claim = gqClaim(id);
+            const code = gqVal('gqLdKtl');
+            if (!code) { gqFooterMsg('Vui lòng chọn Lý do không thụ lý.'); return; }
+            let transfer = null;
+            if (code === 'KTL_01') {
+                const unit = gqVal('gqLdKtlUnitId');
+                const content = gqVal('gqLdKtlContent');
+                if (!unit || !content) { gqFooterMsg('Vui lòng chọn Cơ quan tiếp nhận mới và nhập Nội dung/Căn cứ chuyển.'); return; }
+                transfer = { targetUnitId: unit, content };
+            }
+            gqAsLeader();
+            const res = W.rejectCase(claim.code, code, gqVal('gqLdKtlDetail'), transfer);
+            if (!res.ok && /cấu hình luồng/.test(res.message)) { gqFooterMsg(res.message); return; }
+            gqAfterLeaderAction(res.ok ? `Hồ sơ ${claim.code}: [${res.record.status}].` : res.message, res.ok);
+        }
+        function gqSubmitLeaderReject(id) {
+            const W = gqW();
+            const claim = gqClaim(id);
+            const reason = gqVal('gqLdReason');
+            if (!reason) { gqFooterMsg('Vui lòng nhập Lý do từ chối phê duyệt.'); return; }
+            gqAsLeader();
+            const res = W.rejectApproval(claim.code, reason);
+            gqAfterLeaderAction(res.ok ? `Hồ sơ ${claim.code}: [Bị trả lại].` : res.message, res.ok);
         }
         function gqApprovalKindOf(claim) {
             const W = gqW();
@@ -18952,7 +19647,7 @@
         function gqDraftDocValue() {
             const s = gqState;
             const v = { source: s.draftChoice, formNo: s.formNo, generatedName: gqDocBaseName() + '.doc', uploadedName: s.draftChoice === 'uploaded' ? s.draftUpload : '' };
-            // Thân văn bản hệ thống sinh tại thời điểm trình: Lãnh đạo xem lại đúng văn bản tại màn Hồ sơ trình Lãnh đạo
+            // Thân văn bản hệ thống sinh tại thời điểm trình: Lãnh đạo xem lại đúng văn bản (vai trò Lãnh đạo)
             if (s.draftChoice === 'generated') v.bodyHtml = gqDraftBodyHtml();
             return v;
         }
@@ -19343,6 +20038,9 @@
             const sel = document.getElementById('searchApprovalKind');
             const W = gqW();
             if (sel && W && W.APPROVAL_KINDS) sel.innerHTML = '<option value="">Tất cả</option>' + W.APPROVAL_KINDS.YCBT.map(k => `<option value="${gqE(k)}">${gqE(k)}</option>`).join('');
+            const st = document.getElementById('searchStatus');
+            if (st) st.addEventListener('change', syncApprovalKindFilter);
+            syncApprovalKindFilter();
         });
     </script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>

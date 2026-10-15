@@ -22,7 +22,20 @@ Cho phép quản lý toàn diện tiến trình xem xét, xác định và thự
 
 ---
 
+<a id="ht-tab-xu-ly"></a>
+*c. Quy tắc 02 tab Chờ xử lý / Đã xử lý*
+
+| Vai trò | Tab `Chờ xử lý` | Tab `Đã xử lý` |
+| :--- | :--- | :--- |
+| Cán bộ xử lý / Cán bộ tra cứu | Hồ sơ chưa kết thúc: `Chờ thành lập hội đồng`, `Chờ duyệt QĐ thành lập`, `Bị từ chối thành lập HĐ`, `Đang họp hội đồng`, `Chờ ban hành QĐ hoàn trả`, `Chờ duyệt QĐ hoàn trả`, `Bị từ chối QĐ hoàn trả`, `Đang thi hành` | Hồ sơ đã kết thúc: `Hoàn thành`, `Không xem xét trách nhiệm hoàn trả`, `Chấm dứt thu hồi` |
+| Lãnh đạo phê duyệt | Hồ sơ chờ Lãnh đạo duyệt: `Chờ duyệt QĐ thành lập`, `Chờ duyệt thành lập hội đồng`, `Chờ duyệt QĐ hoàn trả` | Hồ sơ đã qua bước duyệt (trừ hồ sơ chờ duyệt và hồ sơ `Chờ thành lập hội đồng`) |
+
+- Mỗi tab hiển thị số bản ghi; mặc định mở tab `Chờ xử lý`. Đổi vai trò hoặc mở màn hình kèm tham số `tab=done` thì danh sách nạp lại theo tab tương ứng.
+- Trường `Trạng thái` của bộ lọc chỉ gồm các trạng thái của tab đang chọn.
+- Số hồ sơ chờ Lãnh đạo duyệt hiển thị tại khối `Chờ duyệt Xem xét hoàn trả` của [MH01 - Màn hình Dashboard Lãnh đạo - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_ViecChoLanhDaoXuLy.md#vcld-mh01); click khối mở tab `Chờ xử lý` của màn hình này ở vai trò Lãnh đạo phê duyệt.
+
 #### 4.3.3.5.2. Sơ đồ luồng nghiệp vụ theo giao diện
+
 
 ```mermaid
 flowchart TD
@@ -56,6 +69,7 @@ flowchart TD
 | :--- | :--- | :--- | :--- | :--- |
 | **I. Khối thông tin chung màn hình** | Section | - | - | Vùng tiêu đề và số liệu tổng quan phía trên màn hình. |
 | Tiêu đề màn hình | String(255) | - | - | Control UI: Text heading (Read-only).<br>- Hiển thị `Quản lý xem xét trách nhiệm hoàn trả`. |
+| **Tab danh sách** | Tab | - | `Chờ xử lý` | Control UI: 02 tab đặt phía trên khối bộ lọc tìm kiếm, mỗi tab kèm số bản ghi:<br>+ Chờ xử lý<br>+ Đã xử lý<br>- Bản ghi của từng tab theo [Quy tắc 02 tab Chờ xử lý / Đã xử lý - Xem xét trách nhiệm hoàn trả - Công tác bồi thường nhà nước (Website Quản trị)](#ht-tab-xu-ly). |
 | Số hồ sơ hoàn trả | Integer(10) | - | Theo dữ liệu | Control UI: Stat card (Read-only).<br>- Đếm số hồ sơ thỏa mãn điều kiện lọc hiện tại. |
 | Tổng số tiền phải hoàn trả | Decimal(18,0) | - | Theo dữ liệu | Control UI: Stat card (Read-only).<br>- Tổng `Số tiền phải hoàn trả` của các hồ sơ thỏa mãn điều kiện lọc hiện tại.<br>- Định dạng số có dấu phân cách hàng nghìn, đơn vị `VNĐ`. |
 | Số tiền đã thu hồi thực tế | Decimal(18,0) | - | Theo dữ liệu | Control UI: Stat card (Read-only).<br>- Tổng số tiền đã nộp thực tế ghi nhận trên sổ giao dịch của các hồ sơ thỏa mãn điều kiện lọc hiện tại.<br>- Định dạng số có dấu phân cách hàng nghìn, đơn vị `VNĐ`. |
@@ -64,7 +78,7 @@ flowchart TD
 | Mã vụ việc | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập mã vụ việc...`.<br>- Tìm kiếm theo mã vụ việc bồi thường gốc (`BT-...`). |
 | Cán bộ gây sai phạm | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập họ tên cán bộ...`.<br>- Tìm kiếm gần đúng theo họ và tên cán bộ chịu trách nhiệm hoàn trả thuộc hồ sơ. |
 | Đơn vị công tác | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập đơn vị công tác của cán bộ...`.<br>- Tìm kiếm gần đúng trên đơn vị công tác của các cán bộ chịu trách nhiệm hoàn trả thuộc hồ sơ. |
-| Trạng thái | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Chờ thành lập hội đồng<br>+ Chờ duyệt QĐ thành lập<br>+ Bị từ chối thành lập HĐ<br>+ Đang họp hội đồng<br>+ Chờ ban hành QĐ hoàn trả<br>+ Chờ duyệt QĐ hoàn trả<br>+ Bị từ chối QĐ hoàn trả<br>+ Đang thi hành<br>+ Hoàn thành<br>+ Không xem xét trách nhiệm hoàn trả<br>+ Chấm dứt thu hồi |
+| Trạng thái | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Chỉ gồm `Tất cả` và các trạng thái của tab đang chọn, trong các giá trị:<br>+ Tất cả<br>+ Chờ thành lập hội đồng<br>+ Chờ duyệt QĐ thành lập<br>+ Bị từ chối thành lập HĐ<br>+ Đang họp hội đồng<br>+ Chờ ban hành QĐ hoàn trả<br>+ Chờ duyệt QĐ hoàn trả<br>+ Bị từ chối QĐ hoàn trả<br>+ Đang thi hành<br>+ Hoàn thành<br>+ Không xem xét trách nhiệm hoàn trả<br>+ Chấm dứt thu hồi |
 | Xóa bộ lọc | Button | Không | - | Control UI: Button. |
 | Tìm kiếm | Button | Không | - | Control UI: Button. |
 | **III. Khối bảng kết quả tìm kiếm** | Section | - | 10 bản ghi/trang | Control UI: Data grid.<br>- Khi truy cập màn hình, hệ thống tự động tải toàn bộ hồ sơ hoàn trả thuộc phạm vi dữ liệu được phân quyền, sắp xếp mặc định theo ngày khởi tạo hồ sơ giảm dần.<br>- Riêng người dùng có quyền Lãnh đạo phê duyệt: mặc định áp dụng sẵn bộ lọc `Trạng thái` gồm `Chờ duyệt QĐ thành lập` và `Chờ duyệt QĐ hoàn trả`, sắp xếp theo `Hạn xử lý` tăng dần.<br>- Phân trang tuân thủ [BR-UI-001]. |
@@ -86,6 +100,7 @@ flowchart TD
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
+| 0 | Chuyển tab | Tab | Hiển thị danh sách của tab `Chờ xử lý` hoặc `Đã xử lý`, nạp lại bộ lọc `Trạng thái` theo tab và đưa về Trang 1. |
 | 1 | Tìm kiếm | Button | Khi người dùng click nút Tìm kiếm, hệ thống lọc dữ liệu theo các điều kiện đã nhập/chọn.<br>- **TH Không trả về dữ liệu**: Bảng kết quả hiển thị 01 dòng thông báo [MSG-INF-SYS-001]; thanh phân trang hiển thị `0-0 của 0 bản ghi`; toàn bộ thẻ số liệu tổng quan đang hiển thị đều trả về giá trị `0`; nút `Kết xuất Excel` khóa mờ kèm tooltip `Không có dữ liệu để kết xuất`.<br>- **TH Trả về dữ liệu**: Hệ thống hiển thị danh sách hồ sơ hoàn trả theo phân trang, cập nhật lại toàn bộ thẻ số liệu tổng quan đang hiển thị theo đúng tập dữ liệu sau lọc và đưa con trỏ phân trang về trang 1. |
 | 2 | Xóa bộ lọc | Button | Khi người dùng click nút Xóa bộ lọc, hệ thống xóa toàn bộ giá trị đã nhập/chọn trên khối bộ lọc, khôi phục giá trị mặc định của các combobox, tải lại danh sách mặc định theo phạm vi dữ liệu được phân quyền và đưa con trỏ phân trang về trang 1. |
 | 3 | Lập hồ sơ hoàn trả mới | Button | Khi người dùng click nút Lập hồ sơ hoàn trả mới, hệ thống mở [Popup Chọn vụ việc bồi thường để lập hồ sơ hoàn trả](#mh02-popup-chon-vu-viec-boi-thuong) và tải danh sách vụ việc bồi thường thỏa mãn đồng thời: đã hoàn tất chi trả kinh phí bồi thường, chưa phát sinh hồ sơ xem xét trách nhiệm hoàn trả và thuộc phạm vi dữ liệu được phân quyền của người dùng đăng nhập. |

@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tra cứu Phục hồi danh dự</title>
+    <title>Quản lý Phục hồi danh dự - Bồi thường nhà nước</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -16,6 +16,20 @@
     <link rel="stylesheet" href="quan_ly_boi_thuong.css?v=20261012">
 
     <style>
+        :root {
+            --primary-color: #0b1528;
+            --primary-light: #1e3a8a;
+            --primary-hover: #1e40af;
+            --secondary-color: #2563EB;
+            --accent-color: #F59E0B;
+            --accent-hover: #D97706;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --warning-color: #F59E0B;
+            --info-color: #3B82F6;
+            --border-radius-md: 6px;
+        }
+
         .filter-panel {
             background-color: #fafafa;
             border: 1px solid #e2e8f0;
@@ -25,8 +39,11 @@
         }
 
         .page-container {
-            max-width: 1400px;
-            margin: 0 auto;
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 20px 24px;
+            box-sizing: border-box;
         }
 
         th.sortable {
@@ -37,11 +54,368 @@
         th.sortable:hover {
             background-color: #f1f5f9;
         }
+
+        /* TAB NAVIGATION STYLES */
+        .tab-nav-container {
+            display: flex;
+            gap: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 20px;
+        }
+
+        .tab-nav-btn {
+            background: none;
+            border: none;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab-nav-btn:hover {
+            color: var(--primary-light);
+        }
+
+        .tab-nav-btn.active {
+            color: var(--primary-light);
+            border-bottom-color: var(--primary-light);
+        }
+
+        .tab-counter-badge {
+            background-color: #e2e8f0;
+            color: #475569;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .tab-nav-btn.active .tab-counter-badge {
+            background-color: #eff6ff;
+            color: var(--primary-light);
+            border: 1px solid #bfdbfe;
+        }
+
+        /* ACTION BUTTONS IN TABLE */
+        .action-cell {
+            display: inline-flex;
+            gap: 6px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            color: #334155;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .icon-btn:hover {
+            background: #f1f5f9;
+            color: var(--primary-light);
+            border-color: #94a3b8;
+        }
+
+        .icon-btn.view { color: #2563eb; }
+        .icon-btn.edit { color: #d97706; }
+        .icon-btn.print { color: #16a34a; }
+
+        /* MODAL STYLES (STICKY HEADER & FOOTER) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(15, 23, 42, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9990;
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .modal-header {
+            padding: 24px 24px 16px 24px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            flex-shrink: 0;
+        }
+
+        .modal-header h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-light);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: color 0.15s;
+        }
+
+        .modal-close-btn:hover {
+            color: #ef4444;
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            flex: 1;
+            max-height: 80vh;
+        }
+
+        .modal-footer {
+            padding: 16px 24px 24px 24px;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            background: #f8fafc;
+            flex-shrink: 0;
+        }
+
+        /* FORM SECTION CARD */
+        .form-section-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 18px;
+            margin-bottom: 20px;
+        }
+
+        .form-section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-light);
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* VALIDATION RED ERROR (RULE 9) */
+        .is-invalid {
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+        }
+
+        .invalid-feedback-text {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .invalid-feedback-text.show {
+            display: block;
+        }
+
+        /* STEPPER STYLES FOR MH04 */
+        .phdd-stepper {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 16px 24px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .stepper-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .stepper-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #cbd5e1;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 6px;
+            transition: all 0.2s;
+        }
+
+        .stepper-item.active .stepper-circle {
+            border-color: #2563eb;
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        .stepper-item.completed .stepper-circle {
+            border-color: #10b981;
+            background: #10b981;
+            color: white;
+        }
+
+        .stepper-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .stepper-item.active .stepper-label {
+            color: #2563eb;
+            font-weight: 700;
+        }
+
+        .stepper-item.completed .stepper-label {
+            color: #0f172a;
+        }
+
+        .stepper-line {
+            height: 2px;
+            background: #cbd5e1;
+            flex: 1;
+            margin-bottom: 22px;
+            transition: all 0.2s;
+        }
+
+        .stepper-line.completed {
+            background: #10b981;
+        }
+
+        /* VIEW SWITCHER TRANSITIONS (RULE 2) */
+        .view-panel {
+            display: none;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        .view-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* SUB TABS IN DETAIL PAGE (2 TABS: HỒ SƠ YÊU CẦU & XỬ LÝ HỒ SƠ) */
+        .detail-tabs-bar {
+            display: flex;
+            gap: 8px;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 20px;
+            background: #f8fafc;
+            padding: 8px 12px 0 12px;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .detail-tab-btn {
+            padding: 10px 18px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #64748b;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+
+        .detail-tab-btn:hover {
+            color: var(--primary-light);
+        }
+
+        .detail-tab-btn.active {
+            color: var(--primary-light);
+            border-bottom-color: var(--primary-light);
+            background: white;
+            border-radius: 4px 4px 0 0;
+        }
+
+        /* READ-ONLY FIELD DISPLAY */
+        .info-field-group {
+            margin-bottom: 12px;
+        }
+
+        .info-field-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        .info-field-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1e293b;
+            word-break: break-word;
+        }
+
+        .info-field-value.highlight {
+            font-weight: 700;
+            color: var(--primary-light);
+        }
     </style>
 </head>
 
 <body>
-    <div class="page-container">
+    <div class="page-container view-panel active" id="mainListView">
         <!-- TOP NAVIGATION PORTAL HEADER -->
         <div class="role-switch-container" style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
             <div>
@@ -52,8 +426,7 @@
                 </select>
             </div>
             <div>
-                <span style="font-size:12px; font-weight:600; color:var(--text-muted); margin-left: 10px;">Cán bộ đang
-                    đăng nhập:</span>
+                <span style="font-size:12px; font-weight:600; color:var(--text-muted); margin-left: 10px;">Cán bộ đang đăng nhập:</span>
                 <select class="role-selector" id="currentOfficerSelector">
                     <option value="Nguyễn Văn Chuyên Viên">Nguyễn Văn Chuyên Viên (CB1)</option>
                     <option value="Trần Thị Chuyên Viên">Trần Thị Chuyên Viên (CB2)</option>
@@ -62,12 +435,22 @@
             </div>
         </div>
 
-        <div class="page-header">
+        <div class="page-header" style="margin-bottom: 16px;">
             <div class="page-title">
-                <h2><i class="fa-solid fa-ribbon" style="color: #1e3a8a; margin-right: 8px;"></i>TRA CỨU TIẾN TRÌNH PHỤC
-                    HỒI DANH DỰ</h2>
-                <p>Danh sách vụ việc Phục hồi danh dự (mã PHDD-yyyy-xxx) tổ chức phục hồi danh dự cho người bị thiệt hại</p>
+                <h2><i class="fa-solid fa-ribbon" style="color: #1e3a8a; margin-right: 8px;"></i>QUẢN LÝ PHỤC HỒI DANH DỰ</h2>
             </div>
+        </div>
+
+        <!-- 2 TAB NAVIGATION (VỤ VIỆC CHỜ XỬ LÝ & ĐÃ XỬ LÝ) -->
+        <div class="tab-nav-container">
+            <button class="tab-nav-btn active" id="tabBtnPending" onclick="switchMainTab('pending')">
+                <i class="fa-solid fa-clock-rotate-left"></i> Vụ việc chờ xử lý
+                <span class="tab-counter-badge" id="badgePendingCount">0</span>
+            </button>
+            <button class="tab-nav-btn" id="tabBtnCompleted" onclick="switchMainTab('completed')">
+                <i class="fa-solid fa-circle-check"></i> Vụ việc đã xử lý
+                <span class="tab-counter-badge" id="badgeCompletedCount">0</span>
+            </button>
         </div>
 
         <!-- BỘ LỌC NÂNG CAO (FAFAFA Background) -->
@@ -83,26 +466,24 @@
                 </div>
                 <div>
                     <span class="form-label">Cơ quan giải quyết bồi thường</span>
-                    <input type="text" class="form-control" id="filterAgency" list="agencySuggestions"
-                        placeholder="Nhập cơ quan giải quyết...">
-                    <datalist id="agencySuggestions">
-                        <option value="Sở Tư pháp Hà Nội">
-                        <option value="Tòa án nhân dân TP. Hà Nội">
-                        <option value="Sở Tư pháp Hải Phòng">
-                        <option value="Cục Thi hành án dân sự Hà Nội">
-                        <option value="Viện kiểm sát nhân dân Tối cao">
-                    </datalist>
+                    <select class="form-control" id="filterAgency">
+                        <option value="">Tất cả cơ quan</option>
+                        <option value="Sở Tư pháp Hà Nội">Sở Tư pháp Hà Nội</option>
+                        <option value="Tòa án nhân dân TP. Hà Nội">Tòa án nhân dân TP. Hà Nội</option>
+                        <option value="Sở Tư pháp Hải Phòng">Sở Tư pháp Hải Phòng</option>
+                        <option value="Cục Thi hành án dân sự Hà Nội">Cục Thi hành án dân sự Hà Nội</option>
+                        <option value="Viện kiểm sát nhân dân Tối cao">Viện kiểm sát nhân dân Tối cao</option>
+                        <option value="Tòa án nhân dân Quận Đống Đa">Tòa án nhân dân Quận Đống Đa</option>
+                    </select>
                 </div>
                 <div>
                     <span class="form-label">Trạng thái</span>
                     <select class="form-control" id="filterStatus">
-                        <option value="">Tất cả</option>
+                        <option value="">Tất cả trạng thái</option>
                         <option value="Chờ thông báo">Chờ thông báo</option>
                         <option value="Chờ phản hồi">Chờ phản hồi</option>
                         <option value="Chờ thực hiện">Chờ thực hiện</option>
                         <option value="Tạm hoãn">Tạm hoãn</option>
-                        <option value="Từ chối">Từ chối</option>
-                        <option value="Hoàn thành">Hoàn thành</option>
                     </select>
                 </div>
             </div>
@@ -110,7 +491,7 @@
                 <div>
                     <span class="form-label">Hình thức phục hồi danh dự</span>
                     <select class="form-control" id="filterType">
-                        <option value="">Tất cả</option>
+                        <option value="">Tất cả hình thức</option>
                         <option value="Trực tiếp xin lỗi">Trực tiếp xin lỗi</option>
                         <option value="Đăng báo xin lỗi">Đăng báo xin lỗi</option>
                         <option value="Cả hai hình thức">Cả hai hình thức</option>
@@ -120,16 +501,14 @@
                     <span class="form-label">Thời điểm cập nhật: Từ ngày</span>
                     <div style="position: relative;">
                         <input type="text" class="form-control" id="filterFromDate" placeholder="dd/mm/yyyy">
-                        <i class="fa-solid fa-calendar"
-                            style="position: absolute; right: 10px; top: 12px; color: #64748b; pointer-events: none;"></i>
+                        <i class="fa-solid fa-calendar" style="position: absolute; right: 10px; top: 12px; color: #64748b; pointer-events: none;"></i>
                     </div>
                 </div>
                 <div>
                     <span class="form-label">Thời điểm cập nhật: Đến ngày</span>
                     <div style="position: relative;">
                         <input type="text" class="form-control" id="filterToDate" placeholder="dd/mm/yyyy">
-                        <i class="fa-solid fa-calendar"
-                            style="position: absolute; right: 10px; top: 12px; color: #64748b; pointer-events: none;"></i>
+                        <i class="fa-solid fa-calendar" style="position: absolute; right: 10px; top: 12px; color: #64748b; pointer-events: none;"></i>
                     </div>
                 </div>
             </div>
@@ -144,12 +523,14 @@
         </div>
 
         <!-- GRID HEADER & ACTION BUTTONS -->
-        <div
-            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; margin-top: 24px;">
-            <div style="font-weight: 600; color: #475569;">
-                Danh sách kết quả tra cứu tiến trình PHDD
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; margin-top: 24px;">
+            <div style="font-weight: 600; color: #475569; font-size: 14px;" id="gridTitleText">
+                Danh sách vụ việc phục hồi danh dự: Vụ việc chờ xử lý
             </div>
-            <div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-primary" onclick="openCreatePage()">
+                    <i class="fa-solid fa-plus"></i> Tạo yêu cầu
+                </button>
                 <button class="btn btn-secondary" onclick="exportToExcel()">
                     <i class="fa-solid fa-file-excel" style="color: #16a34a;"></i> Kết xuất Excel
                 </button>
@@ -162,17 +543,21 @@
                 <thead>
                     <tr>
                         <th style="width: 50px; text-align: center;">STT</th>
-                        <th style="width: 130px; text-align: center;">Mã vụ việc</th>
-                        <th style="width: 150px; text-align: center;">Vụ việc Bồi thường tiền liên quan</th>
-                        <th style="min-width: 140px;">Người bị thiệt hại</th>
-                        <th style="min-width: 240px;">Cơ quan giải quyết bồi thường</th>
-                        <th style="min-width: 160px;">Hình thức</th>
+                        <th style="width: 130px; text-align: center;" class="sortable" onclick="toggleSort('code')">
+                            Mã vụ việc <i class="fa-solid fa-sort" id="sortIconCode" style="margin-left: 4px;"></i>
+                        </th>
+                        <th style="width: 150px; text-align: center;">Vụ việc BT liên quan</th>
+                        <th style="min-width: 140px;" class="sortable" onclick="toggleSort('nyc')">
+                            Người bị thiệt hại <i class="fa-solid fa-sort" id="sortIconNyc" style="margin-left: 4px;"></i>
+                        </th>
+                        <th style="min-width: 230px;">Cơ quan giải quyết bồi thường</th>
+                        <th style="min-width: 150px;">Hình thức</th>
                         <th style="width: 130px; text-align: center;">Trạng thái</th>
                         <th style="width: 140px; text-align: center;">Thời hạn thực hiện</th>
-                        <th style="width: 150px; text-align: center;" class="sortable" onclick="toggleSort()">
-                            Ngày cập nhật <i class="fa-solid fa-sort" id="sortIcon" style="margin-left: 4px;"></i>
+                        <th style="width: 130px; text-align: center;" class="sortable" onclick="toggleSort('updatedDate')">
+                            Ngày cập nhật <i class="fa-solid fa-sort" id="sortIconUpdated" style="margin-left: 4px;"></i>
                         </th>
-                        <th style="width: 100px; text-align: center;">Thao tác</th>
+                        <th style="width: 100px; text-align: center; min-width: 100px;">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody id="gridBody">
@@ -187,11 +572,12 @@
                 <span>Số dòng hiển thị:</span>
                 <select class="page-size-select" onchange="changePageSize(this.value)">
                     <option value="10">10</option>
-                    <option value="30">30</option>
+                    <option value="20" selected>20</option>
                     <option value="50">50</option>
+                    <option value="100">100</option>
                 </select>
                 <span>Hiển thị <span id="currentRange" style="font-weight: 600;">1-10</span> trong tổng số
-                    <span id="totalCount" style="font-weight: 600;">12</span> bản ghi</span>
+                    <span id="totalCount" style="font-weight: 600;">0</span> bản ghi</span>
             </div>
             <div class="pagination-pages" id="pageContainer">
                 <!-- Pages buttons -->
@@ -199,186 +585,1240 @@
         </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div class="toast-notif success" id="toast"
-        style="position: fixed; bottom: 20px; right: 20px; display: none; z-index: 9999;">
-        <i class="fa-solid fa-circle-check"></i>
+    <!-- ========================================================================= -->
+    <!-- VIEW 2: MH02 - TIẾP NHẬN YÊU CẦU PHỤC HỒI DANH DỰ (DẠNG PAGE)           -->
+    <!-- ========================================================================= -->
+    <div class="page-container view-panel" id="createPageView" style="display: none;">
+        <!-- Header Page -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
+            <div>
+                <button type="button" class="btn btn-secondary" onclick="backToList()" style="margin-bottom: 10px;">
+                    <i class="fa-solid fa-arrow-left"></i> Quay lại danh sách
+                </button>
+                <h2 style="font-size: 20px; font-weight: 700; color: var(--primary-light); margin: 0;">
+                    <i class="fa-solid fa-file-circle-plus" style="color: #2563eb; margin-right: 8px;"></i>TIẾP NHẬN YÊU CẦU PHỤC HỒI DANH DỰ / BỒI THƯỜNG
+                </h2>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <button type="button" class="btn btn-secondary" onclick="backToList()">
+                    <i class="fa-solid fa-xmark"></i> Hủy bỏ
+                </button>
+                <button type="button" class="btn btn-primary" onclick="submitCreateClaim()">
+                    <i class="fa-solid fa-paper-plane"></i> Trình duyệt
+                </button>
+            </div>
+        </div>
+
+        <!-- THÔNG TIN TỔNG QUAN VỤ VIỆC -->
+        <div class="form-section-card" style="border-left: 4px solid var(--primary-light);">
+            <div class="form-section-title">
+                <i class="fa-solid fa-circle-info"></i> THÔNG TIN TỔNG QUAN VỤ VIỆC
+            </div>
+            <div class="grid-3-cols" style="margin-bottom: 14px;">
+                <div>
+                    <span class="form-label">Loại yêu cầu giải quyết bồi thường *</span>
+                    <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
+                        <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+                            <input type="radio" name="createRequestType" value="honor" checked onchange="toggleCreateRequestType('honor')">
+                            <span>Chỉ yêu cầu phục hồi danh dự</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+                            <input type="radio" name="createRequestType" value="both" onchange="toggleCreateRequestType('both')">
+                            <span>Yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự)</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <span class="form-label">Hình thức tiếp nhận hồ sơ *</span>
+                    <select class="form-control" id="cReceiveMethod">
+                        <option value="Trực tiếp" selected>Trực tiếp</option>
+                        <option value="Nhận qua bưu điện/bưu chính">Nhận qua bưu điện/bưu chính</option>
+                    </select>
+                </div>
+                <div>
+                    <span class="form-label">Lĩnh vực phát sinh thiệt hại *</span>
+                    <select class="form-control" id="cFieldArea">
+                        <option value="">-- Chọn lĩnh vực phát sinh thiệt hại --</option>
+                        <option value="Quản lý hành chính">Quản lý hành chính</option>
+                        <option value="Tố tụng hình sự" selected>Tố tụng hình sự</option>
+                        <option value="Tố tụng dân sự">Tố tụng dân sự</option>
+                        <option value="Tố tụng hành chính">Tố tụng hành chính</option>
+                        <option value="Thi hành án hình sự">Thi hành án hình sự</option>
+                        <option value="Thi hành án dân sự">Thi hành án dân sự</option>
+                    </select>
+                    <div class="invalid-feedback-text" id="err_cFieldArea">Đây là trường bắt buộc</div>
+                </div>
+            </div>
+            <div id="noticeBothWrapper" style="display: none; padding: 10px 14px; background-color: #eff6ff; border-radius: 6px; border: 1px solid #bfdbfe; font-size: 13px; color: #1e40af;">
+                <i class="fa-solid fa-circle-info"></i> Hệ thống sẽ tự động tách và tạo 02 hồ sơ liên kết độc lập: Vụ việc bồi thường tiền (mã <b>BT-2026-xxx</b>) và Vụ việc phục hồi danh dự (mã <b>PHDD-2026-xxx</b>).
+            </div>
+        </div>
+
+        <!-- Khối Thông tin Người yêu cầu bồi thường -->
+        <div class="form-section-card">
+            <div class="form-section-title">
+                <i class="fa-solid fa-user-shield"></i> THÔNG TIN NGƯỜI YÊU CẦU BỒI THƯỜNG
+            </div>
+            <div class="grid-3-cols" style="margin-bottom: 12px;">
+                <div class="form-group">
+                    <span class="form-label">Tư cách người yêu cầu bồi thường *</span>
+                    <select class="form-control" id="cVictimRole" onchange="toggleVictimSubSection(this.value)">
+                        <option value="Người bị thiệt hại" selected>Người bị thiệt hại</option>
+                        <option value="Người thừa kế của người bị thiệt hại">Người thừa kế của người bị thiệt hại</option>
+                        <option value="Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại">Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại</option>
+                        <option value="Người đại diện theo pháp luật của người bị thiệt hại">Người đại diện theo pháp luật của người bị thiệt hại</option>
+                        <option value="Cá nhân, pháp nhân được ủy quyền hợp pháp">Cá nhân, pháp nhân được ủy quyền hợp pháp</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Họ và tên người yêu cầu bồi thường *</span>
+                    <input type="text" class="form-control" id="cVictimName" placeholder="Ví dụ: Nguyễn Văn A">
+                    <div class="invalid-feedback-text" id="err_cVictimName">Đây là trường bắt buộc</div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Giới tính *</span>
+                    <select class="form-control" id="cVictimGender">
+                        <option value="Nam" selected>Nam</option>
+                        <option value="Nữ">Nữ</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid-3-cols" style="margin-bottom: 12px;">
+                <div class="form-group">
+                    <span class="form-label">Ngày tháng năm sinh *</span>
+                    <input type="text" class="form-control date-picker-input" id="cVictimDob" placeholder="dd/mm/yyyy">
+                    <div class="invalid-feedback-text" id="err_cVictimDob">Đây là trường bắt buộc</div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Trạng thái người bị thiệt hại *</span>
+                    <select class="form-control" id="cVictimStatus">
+                        <option value="Còn sống" selected>Còn sống</option>
+                        <option value="Đã chết">Đã chết</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Số điện thoại liên hệ *</span>
+                    <input type="text" class="form-control" id="cVictimPhone" placeholder="Ví dụ: 0912345678">
+                    <div class="invalid-feedback-text" id="err_cVictimPhone">Đây là trường bắt buộc</div>
+                </div>
+            </div>
+            <div class="grid-3-cols" style="margin-bottom: 12px;">
+                <div class="form-group">
+                    <span class="form-label">Địa chỉ Email</span>
+                    <input type="email" class="form-control" id="cVictimEmail" placeholder="example@gmail.com">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Loại giấy tờ thân nhân *</span>
+                    <select class="form-control" id="cVictimDocType">
+                        <option value="Căn cước công dân (CCCD)" selected>Căn cước công dân (CCCD)</option>
+                        <option value="Chứng minh nhân dân (CMND)">Chứng minh nhân dân (CMND)</option>
+                        <option value="Hộ chiếu">Hộ chiếu</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Số giấy tờ thân nhân *</span>
+                    <input type="text" class="form-control" id="cVictimDocNo" placeholder="12 chữ số...">
+                    <div class="invalid-feedback-text" id="err_cVictimDocNo">Đây là trường bắt buộc</div>
+                </div>
+            </div>
+            <div class="grid-3-cols" style="margin-bottom: 12px;">
+                <div class="form-group">
+                    <span class="form-label">Ngày cấp *</span>
+                    <input type="text" class="form-control date-picker-input" id="cVictimDocDate" placeholder="dd/mm/yyyy" value="15/05/2021">
+                    <div class="invalid-feedback-text" id="err_cVictimDocDate">Đây là trường bắt buộc</div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Nơi cấp *</span>
+                    <input type="text" class="form-control" id="cVictimDocPlace" placeholder="Cục CSQLHC về TTXH" value="Cục CSQLHC về TTXH">
+                    <div class="invalid-feedback-text" id="err_cVictimDocPlace">Đây là trường bắt buộc</div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Quốc gia *</span>
+                    <select class="form-control" id="cVictimCountry">
+                        <option value="Việt Nam" selected>Việt Nam</option>
+                        <option value="Quốc gia khác">Quốc gia khác</option>
+                    </select>
+                </div>
+            </div>
+            <div class="grid-3-cols">
+                <div class="form-group">
+                    <span class="form-label">Tỉnh / Thành phố *</span>
+                    <select class="form-control" id="cVictimProvince">
+                        <option value="TP. Hà Nội">TP. Hà Nội</option>
+                        <option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</option>
+                        <option value="TP. Đà Nẵng">TP. Đà Nẵng</option>
+                        <option value="TP. Hải Phòng">TP. Hải Phòng</option>
+                        <option value="Tỉnh Long An">Tỉnh Long An</option>
+                        <option value="Tỉnh Bình Dương">Tỉnh Bình Dương</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Phường / Xã *</span>
+                    <input type="text" class="form-control" id="cVictimWard" placeholder="Phường Dịch Vọng..." value="Phường Dịch Vọng">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Địa chỉ chi tiết *</span>
+                    <input type="text" class="form-control" id="cVictimAddress" placeholder="Số nhà, đường phố, thôn/xóm...">
+                    <div class="invalid-feedback-text" id="err_cVictimAddress">Đây là trường bắt buộc</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Khối Thông tin người bị thiệt hại (Tách riêng biệt thành 1 Card độc lập, chỉ hiển thị khi Tư cách khác Người bị thiệt hại) -->
+        <div class="form-section-card" id="cVictimCard" style="display: none;">
+            <div class="form-section-title">
+                <i class="fa-solid fa-user-injured"></i> THÔNG TIN NGƯỜI BỊ THIỆT HẠI
+            </div>
+            <div class="grid-3-cols" style="margin-bottom: 12px;">
+                <div class="form-group">
+                    <span class="form-label">Họ và tên người bị thiệt hại *</span>
+                    <input type="text" class="form-control" id="cVictimActualName" placeholder="Họ và tên...">
+                    <div class="invalid-feedback-text" id="err_cVictimActualName">Đây là trường bắt buộc</div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Giới tính (người bị thiệt hại)</span>
+                    <select class="form-control" id="cVictimActualGender">
+                        <option value="Nam" selected>Nam</option>
+                        <option value="Nữ">Nữ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Ngày tháng năm sinh (người bị thiệt hại) *</span>
+                    <input type="text" class="form-control date-picker-input" id="cVictimActualDob" placeholder="dd/mm/yyyy">
+                    <div class="invalid-feedback-text" id="err_cVictimActualDob">Đây là trường bắt buộc</div>
+                </div>
+            </div>
+            <div class="grid-3-cols" style="margin-bottom: 12px;">
+                <div class="form-group">
+                    <span class="form-label">Số điện thoại liên hệ (người bị thiệt hại)</span>
+                    <input type="text" class="form-control" id="cVictimActualPhone" placeholder="Số điện thoại...">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Địa chỉ Email (người bị thiệt hại)</span>
+                    <input type="email" class="form-control" id="cVictimActualEmail" placeholder="email@example.com">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Loại giấy tờ thân nhân (người bị thiệt hại) *</span>
+                    <select class="form-control" id="cVictimActualDocType">
+                        <option value="">-- Chọn loại giấy tờ --</option>
+                        <option value="Căn cước công dân (CCCD)" selected>Căn cước công dân (CCCD)</option>
+                        <option value="Chứng minh nhân dân (CMND)">Chứng minh nhân dân (CMND)</option>
+                        <option value="Hộ chiếu">Hộ chiếu</option>
+                    </select>
+                    <div class="invalid-feedback-text" id="err_cVictimActualDocType">Đây là trường bắt buộc</div>
+                </div>
+            </div>
+            <div class="grid-3-cols" style="margin-bottom: 12px;">
+                <div class="form-group">
+                    <span class="form-label">Số giấy tờ thân nhân (người bị thiệt hại) *</span>
+                    <input type="text" class="form-control" id="cVictimActualDocNo" placeholder="12 chữ số...">
+                    <div class="invalid-feedback-text" id="err_cVictimActualDocNo">Đây là trường bắt buộc</div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Ngày cấp (người bị thiệt hại)</span>
+                    <input type="text" class="form-control date-picker-input" id="cVictimActualDocDate" placeholder="dd/mm/yyyy">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Nơi cấp (người bị thiệt hại)</span>
+                    <input type="text" class="form-control" id="cVictimActualDocPlace" placeholder="Nơi cấp...">
+                </div>
+            </div>
+            <div class="grid-3-cols">
+                <div class="form-group">
+                    <span class="form-label">Quốc gia (người bị thiệt hại)</span>
+                    <select class="form-control" id="cVictimActualCountry">
+                        <option value="Việt Nam" selected>Việt Nam</option>
+                        <option value="Quốc gia khác">Quốc gia khác</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Tỉnh/Thành phố (người bị thiệt hại)</span>
+                    <input type="text" class="form-control" id="cVictimActualProvince" placeholder="Tỉnh/Thành phố...">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Địa chỉ chi tiết (người bị thiệt hại)</span>
+                    <input type="text" class="form-control" id="cVictimActualAddress" placeholder="Số nhà, đường phố, thôn/xóm...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Khối Văn bản làm căn cứ yêu cầu bồi thường & Hành vi gây thiệt hại -->
+        <div class="form-section-card">
+            <div class="form-section-title">
+                <i class="fa-solid fa-scale-balanced"></i> VĂN BẢN LÀM CĂN CỨ YÊU CẦU BỒI THƯỜNG & HÀNH VI GÂY THIỆT HẠI
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+                <span class="form-label" style="font-weight: 700; margin-bottom: 6px; display: block;">Văn bản làm căn cứ yêu cầu bồi thường:</span>
+                <div class="table-container" style="margin-top: 8px;">
+                    <table class="custom-table" id="createLegalDocsTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px; text-align: center;">STT</th>
+                                <th>Tên văn bản, căn cứ</th>
+                                <th style="width: 260px;">Tải file</th>
+                                <th style="width: 100px; text-align: center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="createLegalDocsTableBody">
+                            <tr>
+                                <td style="text-align: center;">1</td>
+                                <td><input type="text" class="form-control" placeholder="Nhập tên văn bản, căn cứ..." value="Bản án hình sự phúc thẩm số 58/2026/HS-PT"></td>
+                                <td>
+                                    <input type="file" style="display: none;" id="cLegalFile_1" onchange="handleLegalDocUpload(this, 1)">
+                                    <button type="button" class="btn btn-secondary" style="font-size: 12px; padding: 4px 10px;" onclick="document.getElementById('cLegalFile_1').click()">
+                                        <i class="fa-solid fa-upload"></i> Tải file
+                                    </button>
+                                    <span id="cLegalFileName_1" style="font-size: 12px; color: #1e40af; margin-left: 8px;">Ban_an_58_2026.pdf</span>
+                                </td>
+                                <td style="text-align: center;">
+                                    <a href="javascript:void(0)" onclick="removeLegalDocRow(this)" style="color: #ef4444; font-weight: 500; font-size: 13px;">Xóa</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <button type="button" class="btn btn-secondary" style="margin-top: 8px; font-size: 12px; padding: 6px 12px;" onclick="addLegalDocRow()">
+                    <i class="fa-solid fa-plus"></i> Thêm dòng
+                </button>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 16px;">
+                <span class="form-label">Hành vi gây thiệt hại của người thi hành công vụ *</span>
+                <textarea class="form-control" id="cLegalDocAction" rows="3" placeholder="Nhập mô tả hành vi gây thiệt hại của người thi hành công vụ...">Khởi tố và bắt tạm giam oan sai người không có hành vi vi phạm pháp luật hình sự trong vụ án kinh tế.</textarea>
+                <div class="invalid-feedback-text" id="err_cLegalDocAction">Đây là trường bắt buộc</div>
+            </div>
+
+            <div class="form-group">
+                <span class="form-label">Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại *</span>
+                <textarea class="form-control" id="cLegalDocCausality" rows="3" placeholder="Nhập mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại...">Việc bắt giam oan sai trực tiếp dẫn đến việc công dân bị tạm giam 180 ngày, bị tổn hại nghiêm trọng về sức khỏe, danh dự, uy tín và mất thu nhập thực tế trong thời gian bị tạm giam.</textarea>
+                <div class="invalid-feedback-text" id="err_cLegalDocCausality">Đây là trường bắt buộc</div>
+            </div>
+        </div>
+
+        <!-- Khối Hình thức đề nghị phục hồi danh dự -->
+        <div class="form-section-card">
+            <div class="form-section-title">
+                <i class="fa-solid fa-bullhorn"></i> HÌNH THỨC ĐỀ NGHỊ PHỤC HỒI DANH DỰ (ĐIỀU 58, 59) *
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: 500; cursor: pointer;">
+                    <input type="checkbox" id="cFormApology" checked>
+                    <span>Trực tiếp xin lỗi và cải chính công khai tại nơi cư trú / nơi làm việc (Điều 58)</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 8px; font-weight: 500; cursor: pointer;">
+                    <input type="checkbox" id="cFormNews" checked>
+                    <span>Đăng báo xin lỗi và cải chính công khai trên 01 báo Trung ương và 01 báo Địa phương trong 03 số liên tiếp (Điều 59)</span>
+                </label>
+                <div class="invalid-feedback-text" id="err_cFormTypes">Phải chọn ít nhất 01 hình thức phục hồi danh dự</div>
+            </div>
+        </div>
+
+        <!-- Khối Thông tin bồi thường bằng tiền (Chỉ hiện khi chọn Yêu cầu cả hai) -->
+        <div class="form-section-card" id="createMoneySection" style="display: none; background-color: #fdfdfd; border-color: #cbd5e1;">
+            <div class="form-section-title">
+                <i class="fa-solid fa-coins"></i> THÔNG TIN BỒI THƯỜNG BẰNG TIỀN (YÊU CẦU CẢ HAI)
+            </div>
+            <div class="grid-2-cols">
+                <div class="form-group">
+                    <span class="form-label">Tổng số tiền yêu cầu bồi thường (VNĐ) *</span>
+                    <input type="text" class="form-control" id="cTotalMoney" placeholder="Ví dụ: 500,000,000">
+                    <div class="invalid-feedback-text" id="err_cTotalMoney">Đây là trường bắt buộc</div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Tài khoản ngân hàng nhận tiền bồi thường</span>
+                    <input type="text" class="form-control" id="cBankAccount" placeholder="Số tài khoản - Ngân hàng - Chi nhánh...">
+                </div>
+            </div>
+        </div>
+
+        <!-- Khối Bảng tài liệu đính kèm hồ sơ yêu cầu -->
+        <div class="form-section-card">
+            <div class="form-section-title">
+                <i class="fa-solid fa-paperclip"></i> BẢNG TÀI LIỆU ĐÍNH KÈM HỒ SƠ YÊU CẦU
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 12px;">
+                <input type="file" id="cFileInput" style="display: none;" onchange="handleCreateFiles(this)">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('cFileInput').click()">
+                    <i class="fa-solid fa-upload"></i> Chọn tệp tin đính kèm
+                </button>
+                <span style="font-size: 12px; color: #64748b;">Hỗ trợ định dạng .pdf, .doc, .docx, tối đa 20MB/tệp</span>
+            </div>
+            <div id="cFileListContainer" style="display: flex; flex-direction: column; gap: 8px;">
+                <div class="file-item" style="display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 13px;">
+                    <span><i class="fa-solid fa-file-pdf" style="color: #ef4444; margin-right: 8px;"></i> Don_yeu_cau_phuc_hoi_danh_du.pdf</span>
+                    <div style="display: flex; gap: 12px;">
+                        <a href="javascript:void(0)" onclick="viewDummyFile('Don_yeu_cau_phuc_hoi_danh_du.pdf')" style="color: #2563eb; text-decoration: none; font-weight: 500;">Xem file</a>
+                        <a href="javascript:void(0)" onclick="confirmDeleteFile(this)" style="color: #ef4444; text-decoration: none; font-weight: 500;">Xóa</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Action Bar -->
+        <div style="display: flex; justify-content: flex-end; gap: 12px; padding: 16px 0; border-top: 1px solid #e2e8f0; margin-top: 24px;">
+            <button type="button" class="btn btn-secondary" onclick="backToList()">
+                <i class="fa-solid fa-xmark"></i> Hủy bỏ
+            </button>
+            <button type="button" class="btn btn-primary" onclick="submitCreateClaim()">
+                <i class="fa-solid fa-paper-plane"></i> Trình duyệt
+            </button>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 3: MH03 - XEM CHI TIẾT VỤ VIỆC PHỤC HỒI DANH DỰ (DẠNG PAGE 2 TAB)   -->
+    <!-- ========================================================================= -->
+    <div class="page-container view-panel" id="detailPageView" style="display: none;">
+        <!-- Top Navigation Header -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; border-bottom: 1px solid #e2e8f0; padding-bottom: 14px;">
+            <div>
+                <button type="button" class="btn btn-secondary" onclick="backToList()" style="margin-bottom: 8px;">
+                    <i class="fa-solid fa-arrow-left"></i> Quay lại danh sách
+                </button>
+                <h2 style="font-size: 20px; font-weight: 700; color: var(--primary-light); margin: 0 0 6px 0;" id="dpHeaderTitle">
+                    <i class="fa-solid fa-ribbon" style="color: #1e3a8a; margin-right: 8px;"></i>CHI TIẾT VỤ VIỆC PHỤC HỒI DANH DỰ: <span id="dpCodeTitle">--</span> - <span id="dpNycTitle">--</span>
+                </h2>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px; margin-top: 32px;">
+                <div id="dpStatusBadgeContainer"></div>
+                <button type="button" class="btn btn-primary" id="dpBtnGoToUpdate" onclick="triggerUpdateFromDetail()">
+                    <i class="fa-solid fa-pen-to-square"></i> Cập nhật tiến trình PHDD
+                </button>
+            </div>
+        </div>
+
+        <!-- 2 TAB NAVIGATION (ĐỒNG BỘ VỚI XEM CHI TIẾT GIẢI QUYẾT YCBT) -->
+        <div class="detail-tabs-bar">
+            <button class="detail-tab-btn active" id="dpTabBtn1" onclick="switchDetailTab(1)">
+                <i class="fa-solid fa-folder-open"></i> Tab 1: Thông tin Hồ sơ yêu cầu
+            </button>
+            <button class="detail-tab-btn" id="dpTabBtn2" onclick="switchDetailTab(2)">
+                <i class="fa-solid fa-list-check"></i> Tab 2: Chi tiết xử lý hồ sơ
+            </button>
+        </div>
+
+        <!-- TAB 1 CONTENT: THÔNG TIN HỒ SƠ YÊU CẦU -->
+        <div id="dpTabContent1">
+            <!-- Tổng quan vụ việc -->
+            <div class="form-section-card" style="background-color: #f8fafc;">
+                <div class="form-section-title">
+                    <i class="fa-solid fa-circle-info"></i> TỔNG QUAN VỤ VIỆC
+                </div>
+                <div class="grid-4-cols" style="margin-bottom: 12px;">
+                    <div class="info-field-group">
+                        <span class="info-field-label">Mã vụ việc:</span>
+                        <div class="info-field-value highlight" id="dpCode" style="font-size: 16px;">--</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Vụ việc BT liên quan:</span>
+                        <div class="info-field-value" id="dpRelatedCode">--</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Trạng thái tiến trình:</span>
+                        <div class="info-field-value" id="dpStatusText">--</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Thời hạn thực hiện:</span>
+                        <div class="info-field-value" id="dpDeadlineBadge">--</div>
+                    </div>
+                </div>
+                <div class="grid-4-cols">
+                    <div class="info-field-group">
+                        <span class="info-field-label">Cơ quan giải quyết bồi thường:</span>
+                        <div class="info-field-value" id="dpAgency">--</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Hình thức tiếp nhận:</span>
+                        <div class="info-field-value" id="dpReceiveMethod">--</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Lĩnh vực phát sinh thiệt hại:</span>
+                        <div class="info-field-value" id="dpFieldArea">--</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Ngày cập nhật gần nhất:</span>
+                        <div class="info-field-value" id="dpUpdatedDate">--</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- THÔNG TIN NGƯỜI YÊU CẦU PHỤC HỒI DANH DỰ -->
+            <div class="form-section-card">
+                <div class="form-section-title">
+                    <i class="fa-solid fa-user-shield"></i> THÔNG TIN NGƯỜI YÊU CẦU PHỤC HỒI DANH DỰ
+                </div>
+                <div class="grid-4-cols" style="margin-bottom: 12px;">
+                    <div class="info-field-group">
+                        <span class="info-field-label">Tư cách người yêu cầu:</span>
+                        <div class="info-field-value" id="dpVictimRole">Người bị thiệt hại</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Họ và tên người yêu cầu:</span>
+                        <div class="info-field-value" style="font-weight: 700; color: #1e3a8a;" id="dpVictimName">--</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Giới tính:</span>
+                        <div class="info-field-value" id="dpVictimGender">Nam</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Ngày sinh:</span>
+                        <div class="info-field-value" id="dpVictimDob">15/05/1978</div>
+                    </div>
+                </div>
+                <div class="grid-4-cols" style="margin-bottom: 12px;">
+                    <div class="info-field-group">
+                        <span class="info-field-label">Số điện thoại liên hệ:</span>
+                        <div class="info-field-value" id="dpVictimPhone">0988 123 456</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Địa chỉ Email:</span>
+                        <div class="info-field-value" id="dpVictimEmail">nguyenvantuan@gmail.com</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Loại giấy tờ thân nhân:</span>
+                        <div class="info-field-value" id="dpVictimDocType">Căn cước công dân (CCCD)</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Số giấy tờ thân nhân:</span>
+                        <div class="info-field-value" id="dpVictimId">001085002938</div>
+                    </div>
+                </div>
+                <div class="grid-3-cols">
+                    <div class="info-field-group">
+                        <span class="info-field-label">Ngày cấp / Nơi cấp:</span>
+                        <div class="info-field-value" id="dpVictimDocIssue">15/05/2021 - Cục CSQLHC về TTXH</div>
+                    </div>
+                    <div class="info-field-group" style="grid-column: span 2;">
+                        <span class="info-field-label">Địa chỉ cư trú chi tiết:</span>
+                        <div class="info-field-value" id="dpVictimAddress">Số 12 phố Tràng Thi, Phường Hàng Trống, Quận Hoàn Kiếm, TP. Hà Nội</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- THÔNG TIN NGƯỜI BỊ THIỆT HẠI (Card riêng biệt độc lập, chỉ hiển thị khi tư cách khác Người bị thiệt hại) -->
+            <div class="form-section-card" id="dpVictimCard" style="display: none;">
+                <div class="form-section-title">
+                    <i class="fa-solid fa-user-injured"></i> THÔNG TIN NGƯỜI BỊ THIỆT HẠI
+                </div>
+                <div class="grid-4-cols" style="margin-bottom: 12px;">
+                    <div class="info-field-group">
+                        <span class="info-field-label">Họ và tên người bị thiệt hại:</span>
+                        <div class="info-field-value" style="font-weight: 700; color: #1e3a8a;" id="dpVictimActualName">Nguyễn Văn Tuấn</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Giới tính:</span>
+                        <div class="info-field-value" id="dpVictimActualGender">Nam</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Ngày sinh:</span>
+                        <div class="info-field-value" id="dpVictimActualDob">15/05/1978</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Số điện thoại liên hệ:</span>
+                        <div class="info-field-value" id="dpVictimActualPhone">0988 123 456</div>
+                    </div>
+                </div>
+                <div class="grid-3-cols">
+                    <div class="info-field-group">
+                        <span class="info-field-label">Loại & Số giấy tờ thân nhân:</span>
+                        <div class="info-field-value" id="dpVictimActualDocInfo">CCCD - 001085002938</div>
+                    </div>
+                    <div class="info-field-group" style="grid-column: span 2;">
+                        <span class="info-field-label">Địa chỉ cư trú:</span>
+                        <div class="info-field-value" id="dpVictimActualAddress">Số 12 phố Tràng Thi, Phường Hàng Trống, TP. Hà Nội</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Văn bản làm căn cứ yêu cầu bồi thường & Hành vi gây thiệt hại -->
+            <div class="form-section-card">
+                <div class="form-section-title">
+                    <i class="fa-solid fa-scale-balanced"></i> VĂN BẢN LÀM CĂN CỨ YÊU CẦU BỒI THƯỜNG & HÀNH VI GÂY THIỆT HẠI
+                </div>
+                
+                <div style="margin-bottom: 16px;">
+                    <span class="info-field-label">Văn bản làm căn cứ yêu cầu bồi thường:</span>
+                    <div class="table-container" style="margin-top: 6px;">
+                        <table class="custom-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 60px; text-align: center;">STT</th>
+                                    <th>Tên văn bản, căn cứ</th>
+                                    <th>Tệp đính kèm</th>
+                                    <th style="width: 120px; text-align: center;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="text-align: center;">1</td>
+                                    <td style="font-weight: 600;" id="dpLegalDocTitle">Bản án hình sự phúc thẩm số 58/2026/HS-PT</td>
+                                    <td><i class="fa-solid fa-file-pdf" style="color: #ef4444; margin-right: 6px;"></i> Ban_an_hinh_su_phuc_tham_58.pdf</td>
+                                    <td style="text-align: center;">
+                                        <a href="javascript:void(0)" onclick="viewDummyFile('Ban_an_hinh_su_phuc_tham_58.pdf')" style="color: #2563eb; text-decoration: none; font-weight: 600;">Xem file</a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="info-field-group" style="margin-bottom: 14px;">
+                    <span class="info-field-label">Hành vi gây thiệt hại của người thi hành công vụ:</span>
+                    <div class="info-field-value" style="background: #f8fafc; padding: 12px; border-radius: 4px; border: 1px solid #e2e8f0; line-height: 1.6;" id="dpLegalAction">
+                        Khởi tố và bắt tạm giam oan sai người không có hành vi vi phạm pháp luật hình sự trong vụ án kinh tế.
+                    </div>
+                </div>
+
+                <div class="info-field-group">
+                    <span class="info-field-label">Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại:</span>
+                    <div class="info-field-value" style="background: #f8fafc; padding: 12px; border-radius: 4px; border: 1px solid #e2e8f0; line-height: 1.6;" id="dpLegalCausality">
+                        Việc bắt giam oan sai trực tiếp dẫn đến việc công dân bị tạm giam 180 ngày, bị tổn hại nghiêm trọng về sức khỏe, danh dự, uy tín và mất thu nhập thực tế trong thời gian bị tạm giam.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hình thức đề nghị phục hồi danh dự -->
+            <div class="form-section-card">
+                <div class="form-section-title">
+                    <i class="fa-solid fa-bullhorn"></i> HÌNH THỨC ĐỀ NGHỊ PHỤC HỒI DANH DỰ (ĐIỀU 58, 59)
+                </div>
+                <div class="grid-2-cols">
+                    <div class="info-field-group" style="padding: 12px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">
+                        <span class="info-field-label">Trực tiếp xin lỗi và cải chính công khai (Điều 58):</span>
+                        <div class="info-field-value" id="dpFormApologyCheck" style="font-weight: 600; color: #16a34a;">
+                            <i class="fa-solid fa-circle-check"></i> Có yêu cầu tổ chức trực tiếp tại nơi cư trú
+                        </div>
+                    </div>
+                    <div class="info-field-group" style="padding: 12px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">
+                        <span class="info-field-label">Đăng báo xin lỗi và cải chính công khai (Điều 59):</span>
+                        <div class="info-field-value" id="dpFormNewsCheck" style="font-weight: 600; color: #16a34a;">
+                            <i class="fa-solid fa-circle-check"></i> Có yêu cầu đăng trên 01 báo Trung ương và 01 báo Địa phương trong 03 số liên tiếp
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bảng tài liệu đính kèm hồ sơ -->
+            <div class="form-section-card">
+                <div class="form-section-title">
+                    <i class="fa-solid fa-paperclip"></i> BẢNG TÀI LIỆU ĐÍNH KÈM HỒ SƠ
+                </div>
+                <div class="table-container">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px; text-align: center;">STT</th>
+                                <th>Tên tài liệu / Văn bản</th>
+                                <th>Tệp đính kèm</th>
+                                <th style="width: 120px; text-align: center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dpAttachmentsTableBody">
+                            <!-- Dynamic rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2 CONTENT: CHI TIẾT XỬ LÝ HỒ SƠ -->
+        <div id="dpTabContent2" style="display: none;">
+            <!-- Tiếp nhận & Thụ lý hồ sơ -->
+            <div class="form-section-card">
+                <div class="form-section-title">
+                    <i class="fa-solid fa-inbox"></i> TIẾP NHẬN & THỤ LÝ HỒ SƠ
+                </div>
+                <div class="grid-4-cols" style="margin-bottom: 12px;">
+                    <div class="info-field-group">
+                        <span class="info-field-label">Kênh tiếp nhận:</span>
+                        <div class="info-field-value">Trực tiếp tại Bộ phận tiếp nhận & trả kết quả</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Ngày tiếp nhận hồ sơ:</span>
+                        <div class="info-field-value" id="dpStep1ReceiveDate">15/09/2026</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Cơ quan thụ lý giải quyết:</span>
+                        <div class="info-field-value" id="dpStep1Agency">Sở Tư pháp Hà Nội</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Cán bộ thụ lý chính:</span>
+                        <div class="info-field-value">Nguyễn Văn Chuyên Viên (CB1)</div>
+                    </div>
+                </div>
+                <div class="info-field-group">
+                    <span class="info-field-label">Văn bản thụ lý giải quyết phục hồi danh dự:</span>
+                    <div style="display: inline-flex; align-items: center; gap: 10px; padding: 6px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 13px;">
+                        <span><i class="fa-solid fa-file-pdf" style="color: #ef4444; margin-right: 6px;"></i> Quyet_dinh_thu_ly_PHDD.pdf</span>
+                        <a href="javascript:void(0)" onclick="viewDummyFile('Quyet_dinh_thu_ly_PHDD.pdf')" style="color: #2563eb; text-decoration: none; font-weight: 500;">Xem file</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thông báo tổ chức phục hồi danh dự (Điều 57) -->
+            <div class="form-section-card">
+                <div class="form-section-title">
+                    <i class="fa-solid fa-envelope-open-text"></i> THÔNG BÁO TỔ CHỨC PHỤC HỒI DANH DỰ (ĐIỀU 57)
+                </div>
+                <div class="grid-4-cols" style="margin-bottom: 12px;">
+                    <div class="info-field-group">
+                        <span class="info-field-label">Số thông báo:</span>
+                        <div class="info-field-value highlight" id="dpDocNo">--</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Ngày ban hành:</span>
+                        <div class="info-field-value" id="dpDocDate">--</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Ngày gửi thông báo:</span>
+                        <div class="info-field-value" id="dpDocSendDate">--</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Người ký / Chức vụ:</span>
+                        <div class="info-field-value" id="dpDocSigner">--</div>
+                    </div>
+                </div>
+                <div class="grid-2-cols" style="margin-bottom: 12px;">
+                    <div class="info-field-group">
+                        <span class="info-field-label">Thời gian dự kiến tổ chức trực tiếp:</span>
+                        <div class="info-field-value" id="dpExpectedTime">08 giờ 30 phút, ngày 25/10/2026</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Địa điểm dự kiến tổ chức trực tiếp:</span>
+                        <div class="info-field-value" id="dpExpectedVenue">Hội trường UBND Phường Dịch Vọng, Quận Cầu Giấy, Hà Nội</div>
+                    </div>
+                </div>
+                <div class="grid-2-cols" style="margin-bottom: 12px;">
+                    <div class="info-field-group">
+                        <span class="info-field-label">Báo Trung ương dự kiến đăng:</span>
+                        <div class="info-field-value" id="dpExpectedNewsCentral">Báo Nhân Dân (03 số liên tiếp)</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Báo Địa phương dự kiến đăng:</span>
+                        <div class="info-field-value" id="dpExpectedNewsLocal">Báo Hà Nội Mới (03 số liên tiếp)</div>
+                    </div>
+                </div>
+                <div class="info-field-group">
+                    <span class="info-field-label">Tệp thông báo đã ký ban hành:</span>
+                    <div id="dpStep1FileContainer">
+                        <!-- Dynamic file link or notice -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tiếp nhận ý kiến phản hồi của người yêu cầu -->
+            <div class="form-section-card">
+                <div class="form-section-title">
+                    <i class="fa-solid fa-comments"></i> TIẾP NHẬN Ý KIẾN PHẢN HỒI CỦA NGƯỜI YÊU CẦU
+                </div>
+                <div class="grid-3-cols" style="margin-bottom: 12px;">
+                    <div class="info-field-group">
+                        <span class="info-field-label">Ý kiến người yêu cầu:</span>
+                        <div class="info-field-value" style="font-weight: 700;" id="dpOpinionBadge">--</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Ngày nhận ý kiến:</span>
+                        <div class="info-field-value" id="dpOpinionDate">--</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Hình thức gửi phản hồi:</span>
+                        <div class="info-field-value">Văn bản gửi trực tiếp</div>
+                    </div>
+                </div>
+                <div class="info-field-group" style="margin-bottom: 12px;">
+                    <span class="info-field-label">Nội dung ý kiến chi tiết / Yêu cầu điều chỉnh:</span>
+                    <div class="info-field-value" style="background: #f8fafc; padding: 10px; border-radius: 4px; border: 1px solid #e2e8f0;" id="dpOpinionContent">
+                        --
+                    </div>
+                </div>
+                <div class="info-field-group">
+                    <span class="info-field-label">Tệp văn bản ý kiến phản hồi:</span>
+                    <div id="dpStep2FileContainer">
+                        <!-- Dynamic file link -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tổ chức thực hiện phục hồi danh dự (Điều 58, 59) -->
+            <div class="form-section-card">
+                <div class="form-section-title">
+                    <i class="fa-solid fa-award"></i> TỔ CHỨC THỰC HIỆN PHỤC HỒI DANH DỰ (ĐIỀU 58, 59)
+                </div>
+                <!-- Tiểu khối: Trực tiếp xin lỗi -->
+                <div style="margin-bottom: 16px; padding: 14px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">
+                    <div style="font-weight: 700; color: #1e3a8a; font-size: 13px; margin-bottom: 8px;">
+                        <i class="fa-solid fa-users"></i> KẾT QUẢ TRỰC TIẾP XIN LỖI VÀ CẢI CHÍNH CÔNG KHAI (ĐIỀU 58)
+                    </div>
+                    <div class="grid-3-cols" style="margin-bottom: 8px;">
+                        <div class="info-field-group">
+                            <span class="info-field-label">Ngày tổ chức thực tế:</span>
+                            <div class="info-field-value" id="dpActualApologyDate">--</div>
+                        </div>
+                        <div class="info-field-group">
+                            <span class="info-field-label">Địa điểm tổ chức thực tế:</span>
+                            <div class="info-field-value" id="dpActualApologyVenue">--</div>
+                        </div>
+                        <div class="info-field-group">
+                            <span class="info-field-label">Cơ quan chủ trì:</span>
+                            <div class="info-field-value" id="dpActualAgency">--</div>
+                        </div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Biên bản buổi trực tiếp xin lỗi:</span>
+                        <div id="dpApologyDocLink">--</div>
+                    </div>
+                </div>
+
+                <!-- Tiểu khối: Đăng báo xin lỗi -->
+                <div style="padding: 14px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">
+                    <div style="font-weight: 700; color: #1e3a8a; font-size: 13px; margin-bottom: 8px;">
+                        <i class="fa-solid fa-newspaper"></i> KẾT QUẢ ĐĂNG BÁO XIN LỖI VÀ CẢI CHÍNH CÔNG KHAI (ĐIỀU 59)
+                    </div>
+                    <div class="grid-2-cols" style="margin-bottom: 8px;">
+                        <div class="info-field-group">
+                            <span class="info-field-label">Báo Trung ương:</span>
+                            <div class="info-field-value" id="dpActualNewsCentral">--</div>
+                        </div>
+                        <div class="info-field-group">
+                            <span class="info-field-label">Báo Địa phương:</span>
+                            <div class="info-field-value" id="dpActualNewsLocal">--</div>
+                        </div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Chi tiết các số báo và ngày phát hành:</span>
+                        <div class="info-field-value" id="dpNewsIssuesDetail">--</div>
+                    </div>
+                    <div class="info-field-group" style="margin-top: 8px;">
+                        <span class="info-field-label">Bản scan các bài báo xin lỗi:</span>
+                        <div id="dpNewsScanDocLink">--</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kết thúc thực thi phục hồi danh dự -->
+            <div class="form-section-card">
+                <div class="form-section-title">
+                    <i class="fa-solid fa-flag-checkered"></i> KẾT THÚC THỰC THI PHỤC HỒI DANH DỰ
+                </div>
+                <div class="grid-3-cols" style="margin-bottom: 12px;">
+                    <div class="info-field-group">
+                        <span class="info-field-label">Ngày hoàn thành thực thi:</span>
+                        <div class="info-field-value highlight" id="dpCompletedDate">--</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Cán bộ chủ trì xác nhận:</span>
+                        <div class="info-field-value" id="dpCompletedOfficer">--</div>
+                    </div>
+                    <div class="info-field-group">
+                        <span class="info-field-label">Kết luận thực thi:</span>
+                        <div class="info-field-value" id="dpCompletedResult">--</div>
+                    </div>
+                </div>
+                <div class="info-field-group">
+                    <span class="info-field-label">Báo cáo tóm tắt kết quả thực hiện phục hồi danh dự:</span>
+                    <div class="info-field-value" style="background: #f8fafc; padding: 10px; border-radius: 4px; border: 1px solid #e2e8f0;" id="dpCompletedSummary">
+                        --
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lịch sử xử lý hồ sơ (Timeline) -->
+            <div class="form-section-card">
+                <div class="form-section-title">
+                    <i class="fa-solid fa-timeline"></i> LỊCH SỬ XỬ LÝ HỒ SƠ (TIMELINE)
+                </div>
+                <div id="dpTimelineList" style="display: flex; flex-direction: column; gap: 12px;">
+                    <!-- Dynamic timeline items -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Page -->
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-top: 1px solid #e2e8f0; margin-top: 24px;">
+            <button type="button" class="btn btn-secondary" onclick="backToList()">
+                <i class="fa-solid fa-arrow-left"></i> Quay lại danh sách
+            </button>
+            <button type="button" class="btn btn-primary" id="dpBtnGoToUpdateBottom" onclick="triggerUpdateFromDetail()">
+                <i class="fa-solid fa-pen-to-square"></i> Cập nhật tiến trình PHDD
+            </button>
+        </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- MODAL 3: MH04 - CẬP NHẬT TIẾN TRÌNH PHỤC HỒI DANH DỰ (4 BƯỚC)            -->
+    <!-- ========================================================================= -->
+    <div class="modal-overlay" id="updateModal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-pen-to-square"></i> <span id="updateModalTitle">CẬP NHẬT TIẾN TRÌNH PHỤC HỒI DANH DỰ</span></h3>
+                <button class="modal-close-btn" onclick="closeModal('updateModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="updateModalBody">
+                <!-- STEPPER 4 BƯỚC -->
+                <div class="phdd-stepper">
+                    <div class="stepper-item active" id="uStepItem1" onclick="switchUpdateStepTab(1)">
+                        <div class="stepper-circle" id="uStepCircle1">1</div>
+                        <div class="stepper-label">Thông báo (Đ.57)</div>
+                    </div>
+                    <div class="stepper-line" id="uStepLine1"></div>
+
+                    <div class="stepper-item" id="uStepItem2" onclick="switchUpdateStepTab(2)">
+                        <div class="stepper-circle" id="uStepCircle2">2</div>
+                        <div class="stepper-label">Ý kiến phản hồi</div>
+                    </div>
+                    <div class="stepper-line" id="uStepLine2"></div>
+
+                    <div class="stepper-item" id="uStepItem3" onclick="switchUpdateStepTab(3)">
+                        <div class="stepper-circle" id="uStepCircle3">3</div>
+                        <div class="stepper-label">Tổ chức thực hiện</div>
+                    </div>
+                    <div class="stepper-line" id="uStepLine3"></div>
+
+                    <div class="stepper-item" id="uStepItem4" onclick="switchUpdateStepTab(4)">
+                        <div class="stepper-circle" id="uStepCircle4">4</div>
+                        <div class="stepper-label">Hoàn thành</div>
+                    </div>
+                </div>
+
+                <!-- THÔNG BÁO TỔ CHỨC PHỤC HỒI DANH DỰ (Điều 57) -->
+                <div class="form-section-card" id="stepSection1">
+                    <div class="form-section-title">
+                        <i class="fa-solid fa-envelope-open-text"></i> THÔNG BÁO TỔ CHỨC PHỤC HỒI DANH DỰ (ĐIỀU 57)
+                    </div>
+                    <div class="grid-3-cols" style="margin-bottom: 12px;">
+                        <div class="form-group">
+                            <span class="form-label">Số thông báo *</span>
+                            <input type="text" class="form-control" id="uStep1No" placeholder="Ví dụ: 15/TB-STP">
+                            <div class="invalid-feedback-text" id="err_uStep1No">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Ngày ban hành *</span>
+                            <input type="text" class="form-control date-picker-input" id="uStep1Date" placeholder="dd/mm/yyyy">
+                            <div class="invalid-feedback-text" id="err_uStep1Date">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Ngày gửi thông báo *</span>
+                            <input type="text" class="form-control date-picker-input" id="uStep1SendDate" placeholder="dd/mm/yyyy">
+                            <div class="invalid-feedback-text" id="err_uStep1SendDate">Đây là trường bắt buộc</div>
+                        </div>
+                    </div>
+                    <div class="grid-2-cols" style="margin-bottom: 12px;">
+                        <div class="form-group">
+                            <span class="form-label">Người ký thông báo *</span>
+                            <input type="text" class="form-control" id="uStep1Signer" placeholder="Ví dụ: Giám đốc Sở...">
+                            <div class="invalid-feedback-text" id="err_uStep1Signer">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Chức vụ *</span>
+                            <input type="text" class="form-control" id="uStep1Position" placeholder="Ví dụ: Giám đốc / Phó Giám đốc">
+                            <div class="invalid-feedback-text" id="err_uStep1Position">Đây là trường bắt buộc</div>
+                        </div>
+                    </div>
+
+                    <!-- KẾ HOẠCH DỰ KIẾN TỔ CHỨC -->
+                    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px; margin-bottom: 14px;">
+                        <span style="font-weight: 600; font-size: 13px; color: var(--primary-light); display: block; margin-bottom: 8px;">
+                            <i class="fa-solid fa-calendar-check"></i> Kế hoạch dự kiến tổ chức trực tiếp & đăng báo:
+                        </span>
+                        <div class="grid-2-cols" style="margin-bottom: 8px;">
+                            <div class="form-group">
+                                <span class="form-label">Thời gian dự kiến tổ chức trực tiếp:</span>
+                                <input type="text" class="form-control date-picker-input" id="uStep1ExpectedDate" placeholder="dd/mm/yyyy">
+                            </div>
+                            <div class="form-group">
+                                <span class="form-label">Địa điểm dự kiến:</span>
+                                <input type="text" class="form-control" id="uStep1ExpectedVenue" placeholder="Trụ sở UBND xã / Nhà văn hóa...">
+                            </div>
+                        </div>
+                        <div class="grid-2-cols">
+                            <div class="form-group">
+                                <span class="form-label">Tên tờ báo Trung ương dự kiến:</span>
+                                <input type="text" class="form-control" id="uStep1ExpectedNewsCentral" placeholder="Báo Nhân Dân, Báo Pháp luật VN...">
+                            </div>
+                            <div class="form-group">
+                                <span class="form-label">Tên tờ báo Địa phương dự kiến:</span>
+                                <input type="text" class="form-control" id="uStep1ExpectedNewsLocal" placeholder="Báo Hà Nội Mới, Báo SGGP...">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <span class="form-label">Tài liệu văn bản thông báo đính kèm *</span>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="file" id="uStep1FileInput" style="display: none;" onchange="handleStep1File(this)">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('uStep1FileInput').click()">
+                                <i class="fa-solid fa-upload"></i> Tải lên thông báo đã ký (PDF)
+                            </button>
+                            <span id="uStep1FileNameText" style="font-size: 13px; font-weight: 500; color: #1e3a8a;"></span>
+                        </div>
+                        <div class="invalid-feedback-text" id="err_uStep1File">Vui lòng đính kèm văn bản thông báo</div>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 14px;">
+                        <button type="button" class="btn btn-primary" onclick="saveStep1Data()">
+                            <i class="fa-solid fa-floppy-disk"></i> Lưu thông báo
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TIẾP NHẬN Ý KIẾN PHẢN HỒI CỦA NGƯỜI YÊU CẦU -->
+                <div class="form-section-card" id="stepSection2" style="display: none;">
+                    <div class="form-section-title">
+                        <i class="fa-solid fa-comments"></i> TIẾP NHẬN Ý KIẾN PHẢN HỒI CỦA NGƯỜI YÊU CẦU
+                    </div>
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <span class="form-label">Ý kiến của người yêu cầu / người bị thiệt hại *</span>
+                        <div style="display: flex; gap: 20px; margin-top: 6px;">
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                <input type="radio" name="uStep2Opinion" value="Đồng ý" checked>
+                                <span style="color: #10b981; font-weight: 600;"><i class="fa-solid fa-circle-check"></i> Đồng ý kế hoạch</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                <input type="radio" name="uStep2Opinion" value="Chưa thực hiện">
+                                <span style="color: #f59e0b; font-weight: 600;"><i class="fa-solid fa-circle-pause"></i> Đề nghị tạm hoãn</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                <input type="radio" name="uStep2Opinion" value="Từ chối">
+                                <span style="color: #ef4444; font-weight: 600;"><i class="fa-solid fa-circle-xmark"></i> Từ chối phục hồi danh dự</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                <input type="radio" name="uStep2Opinion" value="Không có phản hồi">
+                                <span style="color: #64748b;">Không có ý kiến phản hồi</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="grid-2-cols" style="margin-bottom: 12px;">
+                        <div class="form-group">
+                            <span class="form-label">Ngày nhận được ý kiến *</span>
+                            <input type="text" class="form-control date-picker-input" id="uStep2ReceiveDate" placeholder="dd/mm/yyyy">
+                            <div class="invalid-feedback-text" id="err_uStep2Date">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Hình thức gửi phản hồi</span>
+                            <select class="form-control" id="uStep2Method">
+                                <option value="Bằng văn bản">Bằng văn bản</option>
+                                <option value="Trực tiếp tại cơ quan">Trực tiếp tại cơ quan</option>
+                                <option value="Qua bưu chính">Qua bưu chính</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <span class="form-label">Nội dung ý kiến chi tiết / Yêu cầu điều chỉnh</span>
+                        <textarea class="form-control" id="uStep2Content" rows="2" placeholder="Nội dung ý kiến của người bị thiệt hại hoặc thân nhân..."></textarea>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <span class="form-label">Tài liệu phản hồi đính kèm</span>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="file" id="uStep2FileInput" style="display: none;" onchange="handleStep2File(this)">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('uStep2FileInput').click()">
+                                <i class="fa-solid fa-upload"></i> Chọn tài liệu phản hồi
+                            </button>
+                            <span id="uStep2FileNameText" style="font-size: 13px; font-weight: 500; color: #1e3a8a;"></span>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                        <button type="button" class="btn btn-primary" onclick="saveStep2Data()">
+                            <i class="fa-solid fa-floppy-disk"></i> Lưu ý kiến phản hồi
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KẾT QUẢ TỔ CHỨC THỰC HIỆN (ĐIỀU 58, 59) -->
+                <div class="form-section-card" id="stepSection3" style="display: none;">
+                    <div class="form-section-title">
+                        <i class="fa-solid fa-users-viewfinder"></i> KẾT QUẢ TỔ CHỨC THỰC HIỆN (ĐIỀU 58, 59)
+                    </div>
+                    <!-- 1. Trực tiếp xin lỗi (Điều 58) -->
+                    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px; margin-bottom: 14px;">
+                        <span style="font-weight: 600; font-size: 13px; color: var(--primary-light); display: block; margin-bottom: 8px;">
+                            <i class="fa-solid fa-handshake"></i> Kết quả tổ chức trực tiếp xin lỗi (Điều 58):
+                        </span>
+                        <div class="grid-3-cols" style="margin-bottom: 8px;">
+                            <div class="form-group">
+                                <span class="form-label">Ngày tổ chức thực tế:</span>
+                                <input type="text" class="form-control date-picker-input" id="uStep3ActDate" placeholder="dd/mm/yyyy">
+                            </div>
+                            <div class="form-group">
+                                <span class="form-label">Địa điểm tổ chức thực tế:</span>
+                                <input type="text" class="form-control" id="uStep3ActVenue" placeholder="Trụ sở UBND / Nhà văn hóa...">
+                            </div>
+                            <div class="form-group">
+                                <span class="form-label">Cơ quan chủ trì xin lỗi:</span>
+                                <input type="text" class="form-control" id="uStep3ActAgency" placeholder="Tên cơ quan...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Thành phần tham gia (Đại diện Tòa án, VKS, Công an, Chính quyền):</span>
+                            <input type="text" class="form-control" id="uStep3ActMembers" placeholder="Ghi rõ đại diện các cơ quan...">
+                        </div>
+                    </div>
+
+                    <!-- 2. Đăng báo xin lỗi (Điều 59) -->
+                    <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 14px; margin-bottom: 14px;">
+                        <span style="font-weight: 600; font-size: 13px; color: var(--primary-light); display: block; margin-bottom: 8px;">
+                            <i class="fa-solid fa-newspaper"></i> Kết quả đăng báo xin lỗi cải chính (Điều 59):
+                        </span>
+                        <div class="grid-2-cols" style="margin-bottom: 8px;">
+                            <div class="form-group">
+                                <span class="form-label">Tên báo Trung ương đã đăng:</span>
+                                <input type="text" class="form-control" id="uStep3NewsCentral" placeholder="Báo Nhân Dân số...">
+                            </div>
+                            <div class="form-group">
+                                <span class="form-label">Tên báo Địa phương đã đăng:</span>
+                                <input type="text" class="form-control" id="uStep3NewsLocal" placeholder="Báo Hà Nội Mới số...">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Thông tin chi tiết các số báo và ngày phát hành (03 số liên tiếp):</span>
+                            <input type="text" class="form-control" id="uStep3NewsDetails" placeholder="Số báo 101, 102, 103 phát hành các ngày...">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <span class="form-label">Tài liệu biên bản xin lỗi / bản chụp bài báo đính kèm</span>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="file" id="uStep3FileInput" style="display: none;" onchange="handleStep3File(this)">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('uStep3FileInput').click()">
+                                <i class="fa-solid fa-upload"></i> Tải lên biên bản / bản scan bài báo
+                            </button>
+                            <span id="uStep3FileNameText" style="font-size: 13px; font-weight: 500; color: #1e3a8a;"></span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                        <button type="button" class="btn btn-primary" onclick="saveStep3Data()">
+                            <i class="fa-solid fa-floppy-disk"></i> Lưu kết quả thực hiện
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KẾT THÚC THỰC THI PHỤC HỒI DANH DỰ -->
+                <div class="form-section-card" id="stepSection4" style="display: none;">
+                    <div class="form-section-title">
+                        <i class="fa-solid fa-circle-check"></i> KẾT THÚC THỰC THI PHỤC HỒI DANH DỰ
+                    </div>
+                    <div class="grid-2-cols" style="margin-bottom: 12px;">
+                        <div class="form-group">
+                            <span class="form-label">Ngày hoàn thành thực thi *</span>
+                            <input type="text" class="form-control date-picker-input" id="uStep4EndDate" placeholder="dd/mm/yyyy">
+                            <div class="invalid-feedback-text" id="err_uStep4Date">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Cán bộ chủ trì xác nhận hoàn thành</span>
+                            <input type="text" class="form-control" id="uStep4Officer" value="Nguyễn Văn Chuyên Viên" readonly style="background-color: #f1f5f9;">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <span class="form-label">Báo cáo tóm tắt kết quả thực hiện</span>
+                        <textarea class="form-control" id="uStep4Summary" rows="3" placeholder="Đã hoàn tất tổ chức trực tiếp xin lỗi và đăng báo 03 kỳ liên tiếp theo đúng quy định tại Điều 58, 59 Luật BTNN..."></textarea>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                        <button type="button" class="btn btn-success" onclick="completePhddProcess()">
+                            <i class="fa-solid fa-check-double"></i> Xác nhận hoàn thành thực thi
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- STICKY FOOTER -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('updateModal')">
+                    <i class="fa-solid fa-xmark"></i> Đóng
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- ========================================================================= -->
+    <!-- CUSTOM CONFIRMATION MODAL (RULE 10)                                       -->
+    <!-- ========================================================================= -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-content" style="max-width: 480px;">
+            <div class="modal-header" style="background-color: #fef2f2;">
+                <h3 style="color: #ef4444;"><i class="fa-solid fa-triangle-exclamation"></i> Xác nhận thao tác</h3>
+                <button class="modal-close-btn" onclick="closeModal('confirmModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="padding: 20px;">
+                <p id="confirmModalMessage" style="font-size: 14px; line-height: 1.5; color: #1e293b; margin: 0;">
+                    Bạn có chắc chắn muốn thực hiện thao tác này?
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('confirmModal')">
+                    <i class="fa-solid fa-xmark"></i> Hủy bỏ
+                </button>
+                <button type="button" class="btn btn-primary" id="btnConfirmAction" style="background-color: #ef4444; border-color: #ef4444;">
+                    <i class="fa-solid fa-check"></i> Xác nhận
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div class="toast-notif success" id="toast" style="position: fixed; bottom: 20px; right: 20px; display: none; z-index: 9999;">
+        <i class="fa-solid fa-circle-check" id="toastIcon"></i>
         <span id="toastMessage">Thông báo</span>
     </div>
 
     <script>
-        // Dữ liệu mẫu dự phòng (chỉ dùng khi localStorage chưa có claimsList).
-        // Vụ việc Phục hồi danh dự độc lập mã PHDD-2026-9xx (dải riêng của trang này, không trùng PHDD-2026-001..010
-        // do màn Giải quyết YCBT cấp), liên kết vụ việc Bồi thường tiền qua relatedCode (BT-...). Không chứa thông tin tiền.
-        const FALLBACK_PHDD_LIST = [
-            { id: "PHDD-2026-901", code: "PHDD-2026-901", relatedCode: "BT-2026-001", nyc: "Nguyễn Văn A", agency: "Sở Tư pháp Hà Nội", type: "Cả hai hình thức", status: "Hoàn thành", deadline: "10/08/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "10/07/2026" },
-            { id: "PHDD-2026-902", code: "PHDD-2026-902", relatedCode: "BT-2026-002", nyc: "Trần Thị B", agency: "Tòa án nhân dân TP. Hà Nội", type: "Đăng báo xin lỗi", status: "Chờ phản hồi", deadline: "15/07/2026", deadlineStatus: "🟡 Sắp hết hạn (5 ngày)", updatedDate: "08/07/2026" },
-            { id: "PHDD-2026-903", code: "PHDD-2026-903", relatedCode: "BT-2026-003", nyc: "Công ty Hải Phát", agency: "UBND thành phố Hà Nội", type: "Trực tiếp xin lỗi", status: "Hoàn thành", deadline: "25/07/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "25/06/2026" },
-            { id: "PHDD-2026-905", code: "PHDD-2026-905", relatedCode: "BT-2026-005", nyc: "Lê Văn D", agency: "Sở Tư pháp Hải Phòng", type: "Cả hai hình thức", status: "Chờ thực hiện", deadline: "18/07/2026", deadlineStatus: "🟡 Sắp hết hạn (8 ngày)", updatedDate: "10/07/2026" },
-            { id: "PHDD-2026-911", code: "PHDD-2026-911", relatedCode: "BT-2026-011", nyc: "Trần Thị G", agency: "Sở Tư pháp Hà Nội", type: "Đăng báo xin lỗi", status: "Chờ thông báo", deadline: "22/07/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "09/07/2026" },
-            { id: "PHDD-2026-912", code: "PHDD-2026-912", relatedCode: "BT-2026-012", nyc: "Lê Văn H", agency: "Cục Thi hành án dân sự Hà Nội", type: "Đăng báo xin lỗi", status: "Hoàn thành", deadline: "28/07/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "20/07/2026" },
-            { id: "PHDD-2026-915", code: "PHDD-2026-915", relatedCode: "BT-2026-015", nyc: "Phạm Văn C", agency: "UBND Quận Cầu Giấy", type: "Trực tiếp xin lỗi", status: "Chờ thông báo", deadline: "02/08/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "02/07/2026" },
-            { id: "PHDD-2026-916", code: "PHDD-2026-916", relatedCode: "BT-2026-016", nyc: "Hoàng Văn K", agency: "Sở Tư pháp Hà Nội", type: "Đăng báo xin lỗi", status: "Từ chối", deadline: "12/06/2026", deadlineStatus: "🔴 Quá hạn", updatedDate: "15/06/2026" },
-            { id: "PHDD-2026-921", code: "PHDD-2026-921", relatedCode: "BT-2026-021", nyc: "Đỗ Văn L", agency: "Tòa án nhân dân TP. Hà Nội", type: "Trực tiếp xin lỗi", status: "Chờ phản hồi", deadline: "13/07/2026", deadlineStatus: "🟡 Sắp hết hạn (3 ngày)", updatedDate: "10/07/2026" },
-            { id: "PHDD-2026-922", code: "PHDD-2026-922", relatedCode: "BT-2026-022", nyc: "Nguyễn Thị M", agency: "Viện kiểm sát nhân dân Tối cao", type: "Đăng báo xin lỗi", status: "Tạm hoãn", deadline: "12/07/2026", deadlineStatus: "🟢 Tạm hoãn", updatedDate: "10/07/2026" },
-            { id: "PHDD-2026-923", code: "PHDD-2026-923", relatedCode: "BT-2026-023", nyc: "Vũ Văn N", agency: "Sở Tư pháp Hải Dương", type: "Trực tiếp xin lỗi", status: "Chờ thực hiện", deadline: "12/07/2026", deadlineStatus: "🟡 Sắp hết hạn (2 ngày)", updatedDate: "10/07/2026" },
-            { id: "PHDD-2026-924", code: "PHDD-2026-924", relatedCode: "BT-2026-024", nyc: "Phan Văn O", agency: "UBND tỉnh Quảng Ninh", type: "Cả hai hình thức", status: "Hoàn thành", deadline: "30/08/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "10/07/2026" }
+        // =========================================================================
+        // MOCK DATA: 14 BẢN GHI (ĐỦ CHO CẢ 2 TAB CHỜ XỬ LÝ VÀ ĐÃ XỬ LÝ)
+        // =========================================================================
+        const INITIAL_MOCK_DATA = [
+            // --- TAB VỤ VIỆC CHỜ XỬ LÝ (8 BẢN GHI) ---
+            { id: "PHDD-2026-901", code: "PHDD-2026-901", relatedCode: "BT-2026-001", nyc: "Nguyễn Văn Tuấn", agency: "Sở Tư pháp Hà Nội", type: "Cả hai hình thức", status: "Chờ thông báo", deadline: "15/11/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "12/10/2026", docNo: "", docDate: "", signer: "", opinion: "", step: 1, fieldArea: "Tố tụng hình sự", receiveMethod: "Trực tiếp" },
+            { id: "PHDD-2026-902", code: "PHDD-2026-902", relatedCode: "BT-2026-002", nyc: "Trần Thị Lan", agency: "Tòa án nhân dân TP. Hà Nội", type: "Đăng báo xin lỗi", status: "Chờ phản hồi", deadline: "20/10/2026", deadlineStatus: "🟡 Sắp hết hạn (8 ngày)", updatedDate: "10/10/2026", docNo: "12/TB-TA", docDate: "05/10/2026", signer: "Nguyễn Văn Chánh", opinion: "", step: 2, fieldArea: "Tố tụng hình sự", receiveMethod: "Nhận qua bưu điện/bưu chính" },
+            { id: "PHDD-2026-903", code: "PHDD-2026-903", relatedCode: "BT-2026-003", nyc: "Công ty Hải Phát", agency: "Tòa án nhân dân TP. Hà Nội", type: "Trực tiếp xin lỗi", status: "Chờ thực hiện", deadline: "28/10/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "08/10/2026", docNo: "45/TB-TAHN", docDate: "28/09/2026", signer: "Lê Hoàng Phúc", opinion: "Đồng ý", step: 3, fieldArea: "Tố tụng dân sự", receiveMethod: "Trực tiếp" },
+            { id: "PHDD-2026-904", code: "PHDD-2026-904", relatedCode: "", nyc: "Vũ Đình Toàn", agency: "Sở Tư pháp Hà Nội", type: "Trực tiếp xin lỗi", status: "Chờ thông báo", deadline: "30/11/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "06/10/2026", docNo: "", docDate: "", signer: "", opinion: "", step: 1, fieldArea: "Quản lý hành chính", receiveMethod: "Trực tiếp" },
+            { id: "PHDD-2026-905", code: "PHDD-2026-905", relatedCode: "BT-2026-005", nyc: "Lê Văn Dũng", agency: "Sở Tư pháp Hải Phòng", type: "Cả hai hình thức", status: "Tạm hoãn", deadline: "10/12/2026", deadlineStatus: "🟢 Tạm hoãn", updatedDate: "05/10/2026", docNo: "08/TB-STPHP", docDate: "20/09/2026", signer: "Phạm Hải", opinion: "Chưa thực hiện", step: 2, fieldArea: "Tố tụng hình sự", receiveMethod: "Nhận qua bưu điện/bưu chính" },
+            { id: "PHDD-2026-906", code: "PHDD-2026-906", relatedCode: "BT-2026-006", nyc: "Hoàng Minh Trí", agency: "Viện kiểm sát nhân dân Tối cao", type: "Đăng báo xin lỗi", status: "Chờ phản hồi", deadline: "18/10/2026", deadlineStatus: "🟡 Sắp hết hạn (6 ngày)", updatedDate: "04/10/2026", docNo: "19/TB-VKSTC", docDate: "01/10/2026", signer: "Đỗ Quốc Việt", opinion: "", step: 2, fieldArea: "Tố tụng hình sự", receiveMethod: "Trực tiếp" },
+            { id: "PHDD-2026-907", code: "PHDD-2026-907", relatedCode: "", nyc: "Phạm Văn Cường", agency: "Cục Thi hành án dân sự Hà Nội", type: "Trực tiếp xin lỗi", status: "Chờ thực hiện", deadline: "22/10/2026", deadlineStatus: "🟡 Sắp hết hạn (10 ngày)", updatedDate: "02/10/2026", docNo: "33/TB-THADS", docDate: "15/09/2026", signer: "Trịnh Bá", opinion: "Đồng ý", step: 3, fieldArea: "Thi hành án dân sự", receiveMethod: "Trực tiếp" },
+            { id: "PHDD-2026-908", code: "PHDD-2026-908", relatedCode: "BT-2026-008", nyc: "Đỗ Văn Long", agency: "Tòa án nhân dân Quận Đống Đa", type: "Cả hai hình thức", status: "Chờ thông báo", deadline: "05/12/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "01/10/2026", docNo: "", docDate: "", signer: "", opinion: "", step: 1, fieldArea: "Tố tụng hình sự", receiveMethod: "Trực tiếp" },
+
+            // --- TAB VỤ VIỆC ĐÃ XỬ LÝ (6 BẢN GHI) ---
+            { id: "PHDD-2026-911", code: "PHDD-2026-911", relatedCode: "BT-2026-011", nyc: "Trần Thị Giang", agency: "Sở Tư pháp Hà Nội", type: "Đăng báo xin lỗi", status: "Hoàn thành", deadline: "10/08/2026", deadlineStatus: "Đã hoàn thành", updatedDate: "15/08/2026", docNo: "05/TB-STP", docDate: "10/07/2026", signer: "Trần Văn Quản Lý", opinion: "Đồng ý", step: 4, fieldArea: "Quản lý hành chính", receiveMethod: "Trực tiếp" },
+            { id: "PHDD-2026-912", code: "PHDD-2026-912", relatedCode: "BT-2026-012", nyc: "Lê Văn Hùng", agency: "Cục Thi hành án dân sự Hà Nội", type: "Trực tiếp xin lỗi", status: "Hoàn thành", deadline: "28/07/2026", deadlineStatus: "Đã hoàn thành", updatedDate: "20/07/2026", docNo: "11/TB-THADS", docDate: "15/06/2026", signer: "Trịnh Bá", opinion: "Đồng ý", step: 4, fieldArea: "Thi hành án dân sự", receiveMethod: "Trực tiếp" },
+            { id: "PHDD-2026-913", code: "PHDD-2026-913", relatedCode: "BT-2026-013", nyc: "Nguyễn Thị Mai", agency: "Sở Tư pháp Hải Phòng", type: "Cả hai hình thức", status: "Hoàn thành", deadline: "30/08/2026", deadlineStatus: "Đã hoàn thành", updatedDate: "28/08/2026", docNo: "22/TB-STPHP", docDate: "02/08/2026", signer: "Lê Đức", opinion: "Đồng ý", step: 4, fieldArea: "Tố tụng hình sự", receiveMethod: "Nhận qua bưu điện/bưu chính" },
+            { id: "PHDD-2026-914", code: "PHDD-2026-914", relatedCode: "", nyc: "Vũ Văn Nam", agency: "Tòa án nhân dân Quận Đống Đa", type: "Trực tiếp xin lỗi", status: "Từ chối", deadline: "12/06/2026", deadlineStatus: "🔴 Đã từ chối", updatedDate: "15/06/2026", docNo: "07/TB-TA", docDate: "20/05/2026", signer: "Hoàng Tuấn", opinion: "Từ chối", step: 2, fieldArea: "Tố tụng hình sự", receiveMethod: "Trực tiếp" },
+            { id: "PHDD-2026-915", code: "PHDD-2026-915", relatedCode: "BT-2026-015", nyc: "Phan Văn Oanh", agency: "Viện kiểm sát nhân dân Tối cao", type: "Đăng báo xin lỗi", status: "Hoàn thành", deadline: "10/09/2026", deadlineStatus: "Đã hoàn thành", updatedDate: "08/09/2026", docNo: "50/TB-VKSTC", docDate: "10/08/2026", signer: "Ngô Quyền", opinion: "Đồng ý", step: 4, fieldArea: "Tố tụng hình sự", receiveMethod: "Nhận qua bưu điện/bưu chính" },
+            { id: "PHDD-2026-916", code: "PHDD-2026-916", relatedCode: "BT-2026-016", nyc: "Hoàng Văn Kiên", agency: "Sở Tư pháp Hà Nội", type: "Đăng báo xin lỗi", status: "Từ chối", deadline: "02/05/2026", deadlineStatus: "🔴 Đã từ chối", updatedDate: "05/05/2026", docNo: "02/TB-STP", docDate: "10/04/2026", signer: "Trần Văn Quản Lý", opinion: "Từ chối", step: 2, fieldArea: "Quản lý hành chính", receiveMethod: "Trực tiếp" }
         ];
 
-        let mockDataList = FALLBACK_PHDD_LIST.map(x => Object.assign({}, x));
-        let filteredList = [...mockDataList];
+        let phddList = [...INITIAL_MOCK_DATA];
+        let currentTab = 'pending'; // 'pending' or 'completed'
+        let filteredList = [];
         let currentPage = 1;
-        let pageSize = 10;
-        let isSortAsc = false;
+        let pageSize = 20;
+        let sortColumn = 'updatedDate';
+        let sortDirection = 'desc'; // 'asc' or 'desc'
+        let currentRecordBeingUpdated = null;
 
-        const PHDD_STATUSES = ['Chờ thông báo', 'Chờ phản hồi', 'Chờ thực hiện', 'Tạm hoãn', 'Từ chối', 'Hoàn thành'];
-
-        function isPhddCode(code) { return typeof code === 'string' && code.toUpperCase().indexOf('PHDD-') === 0; }
-        function isBtCode(code) { return typeof code === 'string' && code.toUpperCase().indexOf('BT-') === 0; }
-
-        function escHtml(v) {
-            return String(v == null ? '' : v).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
-        }
-
-        // Chuẩn hóa ngày về dd/mm/yyyy (chấp nhận dd/mm/yyyy[ hh:mm] hoặc ISO)
-        function toViDate(v) {
-            if (!v) return '';
-            const s = String(v).trim();
-            const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-            if (m) return `${m[1].padStart(2, '0')}/${m[2].padStart(2, '0')}/${m[3]}`;
-            const d = new Date(s);
-            return isNaN(d.getTime()) ? '' : formatDateVi(d);
-        }
-
-        // Hình thức phục hồi danh dự (Điều 58/59) từ dữ liệu vụ việc
-        function phddTypeOf(c) {
-            let a = c.phddFormApology, n = c.phddFormNews;
-            if (a === undefined && n === undefined) {
-                const s = String(c.HinhThucPhucHoi || c.phddForm || c.phddType || c.phddStep3Type || '');
-                if (s.includes('Cả hai')) { a = true; n = true; }
-                else { a = s.includes('Trực tiếp'); n = s.includes('Đăng báo'); }
-            }
-            if (a && n) return 'Cả hai hình thức';
-            if (a) return 'Trực tiếp xin lỗi';
-            if (n) return 'Đăng báo xin lỗi';
-            return '--';
-        }
-
-        // Trạng thái tiến trình phục hồi danh dự
-        function phddStatusOf(c) {
-            let st = PHDD_STATUSES.includes(c.phddStatus) ? c.phddStatus
-                : (PHDD_STATUSES.includes(c.status) ? c.status : 'Chờ thông báo');
-            if (c.phddStep1No && c.phddStep1Date && st === 'Chờ thông báo') st = 'Chờ phản hồi';
-            if (c.phddStep2Opinion) {
-                if (c.phddStep2Opinion === 'Từ chối') st = 'Từ chối';
-                else if (c.phddStep2Opinion === 'Chưa thực hiện') st = 'Tạm hoãn';
-                else if (st === 'Chờ phản hồi' || st === 'Chờ thông báo') st = 'Chờ thực hiện';
-            }
-            if (c.phddStep4DateAct) st = 'Hoàn thành';
-            return st;
-        }
-
-        // Ngày cập nhật = ngày mới nhất trong các mốc của vụ việc
-        function phddUpdatedDateOf(c) {
-            const cands = [c.updatedAt, c.phddUpdatedAt, c.phddStep4DateAct, c.phddStep3Date, c.phddStep2ReceiveDate, c.phddStep1SendDate, c.phddStep1Date, c.date];
-            [c.phddTimeline, c.phddHistory, c.timeline].forEach(arr => { if (Array.isArray(arr)) arr.forEach(t => t && cands.push(t.date)); });
-            let best = null, bestStr = '';
-            cands.forEach(v => {
-                const s = toViDate(v); const d = parseDateVi(s);
-                if (d && !isNaN(d.getTime()) && (!best || d > best)) { best = d; bestStr = s; }
-            });
-            return bestStr;
-        }
-
-        function deadlineStatusOf(status, deadline) {
-            if (status === 'Hoàn thành') return 'Đã hoàn thành';
-            if (status === 'Tạm hoãn') return '🟢 Tạm hoãn';
-            const d = parseDateVi(deadline);
-            if (!d) return '--';
-            const t = new Date(); t.setHours(0, 0, 0, 0);
-            const days = Math.round((d - t) / 86400000);
-            if (days < 0) return '🔴 Quá hạn';
-            if (days <= 10) return `🟡 Sắp hết hạn (${days} ngày)`;
-            return '🟢 Còn hạn';
-        }
-
-        // Dòng tra cứu từ 1 vụ việc; displayCode/relatedCode cho phép hiển thị theo mã PHDD- khi nguồn là vụ việc BT- chưa tách
-        function buildPhddRow(c, displayCode, relatedCode) {
-            const status = phddStatusOf(c);
-            const deadline = toViDate(c.phddDeadline || c.deadline);
-            return {
-                id: c.id || displayCode,
-                code: displayCode,
-                relatedCode: relatedCode || '',
-                nyc: c.nyc || c.victimName || '',
-                agency: c.agency || '',
-                type: phddTypeOf(c),
-                status,
-                deadline,
-                deadlineStatus: deadlineStatusOf(status, deadline),
-                updatedDate: phddUpdatedDateOf(c)
-            };
-        }
-
-        // Danh sách tra cứu PHDD từ claimsList:
-        // - Vụ việc PHDD-yyyy-xxx (requestType 'honor'): hiển thị theo mã PHDD-, cột liên quan = relatedCode (BT-).
-        // - Vụ việc BT- có relatedCode PHDD- mà claimsList chưa có vụ việc PHDD- đó: hiển thị theo mã PHDD- tương ứng.
-        // - Vụ việc BT- cũ (requestType 'both'/chưa có, có yêu cầu PHDD) chưa tách, chưa có relatedCode: hiển thị theo mã BT- như cũ.
-        function buildPhddListFromClaims(claims) {
-            const rows = [];
-            const seen = new Set();
-            const phddCodes = new Set(claims.filter(c => c && isPhddCode(c.code)).map(c => c.code.toUpperCase()));
-            claims.forEach(c => {
-                if (!c || !c.code) return;
-                const rel = c.relatedCode || '';
-                if (isPhddCode(c.code) || c.requestType === 'honor') {
-                    if (seen.has(c.code.toUpperCase())) return;
-                    seen.add(c.code.toUpperCase());
-                    rows.push(buildPhddRow(c, c.code, isBtCode(rel) ? rel : ''));
-                    return;
-                }
-                if (isPhddCode(rel)) {
-                    if (phddCodes.has(rel.toUpperCase()) || seen.has(rel.toUpperCase())) return;
-                    seen.add(rel.toUpperCase());
-                    rows.push(buildPhddRow(c, rel, c.code));
-                    return;
-                }
-                if (c.requestType !== 'money' && c.restoreHonor === true) {
-                    if (seen.has(c.code.toUpperCase())) return;
-                    seen.add(c.code.toUpperCase());
-                    rows.push(buildPhddRow(c, c.code, ''));
-                }
-            });
-            return rows;
-        }
-
+        // =========================================================================
+        // INITIALIZATION
+        // =========================================================================
         document.addEventListener('DOMContentLoaded', () => {
-            // Đồng bộ với dữ liệu vụ việc của màn Giải quyết YCBT (localStorage claimsList); chưa có thì dùng dữ liệu mẫu dự phòng
-            let claims = null;
-            try { claims = JSON.parse(localStorage.getItem('claimsList') || 'null'); } catch (e) { claims = null; }
-            if (Array.isArray(claims) && claims.length) {
-                mockDataList = buildPhddListFromClaims(claims);
-            }
-
-            // Set up date pickers
-            const today = new Date();
-            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-
+            // Set up flatpickr on date inputs
             flatpickr("#filterFromDate", { dateFormat: "d/m/Y", allowInput: true });
             flatpickr("#filterToDate", { dateFormat: "d/m/Y", allowInput: true });
+            flatpickr(".date-picker-input", { dateFormat: "d/m/Y", allowInput: true });
 
+            // Set default date filter: 1st of month to today
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
             document.getElementById('filterFromDate').value = formatDateVi(firstDay);
             document.getElementById('filterToDate').value = formatDateVi(today);
 
-            filteredList = [...mockDataList];
-            searchData();
+            updateStatusFilterOptions(currentTab);
+            updateTabBadges();
+            filterAndRender();
         });
 
-        function formatDateVi(date) {
-            const d = String(date.getDate()).padStart(2, '0');
-            const m = String(date.getMonth() + 1).padStart(2, '0');
-            const y = date.getFullYear();
-            return `${d}/${m}/${y}`;
+        function formatDateVi(d) {
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            return `${day}/${month}/${d.getFullYear()}`;
         }
 
         function parseDateVi(str) {
@@ -390,25 +1830,54 @@
             return null;
         }
 
-        // RESET FILTERS
-        function resetFilters() {
-            document.getElementById('filterCode').value = '';
-            document.getElementById('filterNyc').value = '';
-            document.getElementById('filterAgency').value = '';
-            document.getElementById('filterStatus').value = '';
-            document.getElementById('filterType').value = '';
+        // =========================================================================
+        // TAB SWITCHING (PENDING VS COMPLETED)
+        // =========================================================================
+        function switchMainTab(tab) {
+            currentTab = tab;
+            document.getElementById('tabBtnPending').className = `tab-nav-btn ${tab === 'pending' ? 'active' : ''}`;
+            document.getElementById('tabBtnCompleted').className = `tab-nav-btn ${tab === 'completed' ? 'active' : ''}`;
+            document.getElementById('gridTitleText').innerText = tab === 'pending'
+                ? "Danh sách vụ việc phục hồi danh dự: Vụ việc chờ xử lý"
+                : "Danh sách vụ việc phục hồi danh dự: Vụ việc đã xử lý";
 
-            const today = new Date();
-            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-            document.getElementById('filterFromDate').value = formatDateVi(firstDay);
-            document.getElementById('filterToDate').value = formatDateVi(today);
-
-            searchData();
-            showToast("Đã xóa bộ lọc tìm kiếm!", "success");
+            updateStatusFilterOptions(tab);
+            currentPage = 1;
+            filterAndRender();
         }
 
-        // SEARCH FUNCTION
-        function searchData() {
+        function updateStatusFilterOptions(tab) {
+            const statusSelect = document.getElementById('filterStatus');
+            if (!statusSelect) return;
+            if (tab === 'pending') {
+                statusSelect.innerHTML = `
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="Chờ thông báo">Chờ thông báo</option>
+                    <option value="Chờ phản hồi">Chờ phản hồi</option>
+                    <option value="Chờ thực hiện">Chờ thực hiện</option>
+                    <option value="Tạm hoãn">Tạm hoãn</option>
+                `;
+            } else {
+                statusSelect.innerHTML = `
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="Hoàn thành">Hoàn thành</option>
+                    <option value="Từ chối">Từ chối</option>
+                `;
+            }
+            statusSelect.value = '';
+        }
+
+        function updateTabBadges() {
+            const pendingCount = phddList.filter(item => item.status !== 'Hoàn thành' && item.status !== 'Từ chối').length;
+            const completedCount = phddList.filter(item => item.status === 'Hoàn thành' || item.status === 'Từ chối').length;
+            document.getElementById('badgePendingCount').innerText = pendingCount;
+            document.getElementById('badgeCompletedCount').innerText = completedCount;
+        }
+
+        // =========================================================================
+        // FILTER & SEARCH LOGIC
+        // =========================================================================
+        function filterAndRender() {
             const code = document.getElementById('filterCode').value.trim().toLowerCase();
             const nyc = document.getElementById('filterNyc').value.trim().toLowerCase();
             const agency = document.getElementById('filterAgency').value.trim().toLowerCase();
@@ -417,7 +1886,13 @@
             const fromDate = parseDateVi(document.getElementById('filterFromDate').value);
             const toDate = parseDateVi(document.getElementById('filterToDate').value);
 
-            filteredList = mockDataList.filter(item => {
+            filteredList = phddList.filter(item => {
+                // Tab filter
+                const isItemCompleted = (item.status === 'Hoàn thành' || item.status === 'Từ chối');
+                if (currentTab === 'pending' && isItemCompleted) return false;
+                if (currentTab === 'completed' && !isItemCompleted) return false;
+
+                // Search filters
                 if (code && !item.code.toLowerCase().includes(code) && !(item.relatedCode || '').toLowerCase().includes(code)) return false;
                 if (nyc && !(item.nyc || '').toLowerCase().includes(nyc)) return false;
                 if (agency && !(item.agency || '').toLowerCase().includes(agency)) return false;
@@ -433,38 +1908,90 @@
                 return true;
             });
 
-            // Default Sort
-            sortList();
-            currentPage = 1;
-            renderGrid();
+            sortFilteredList();
+            renderTable();
         }
 
-        // SORT COLUMN
-        function toggleSort() {
-            isSortAsc = !isSortAsc;
-            const icon = document.getElementById('sortIcon');
-            if (isSortAsc) {
-                icon.className = 'fa-solid fa-sort-up';
-            } else {
-                icon.className = 'fa-solid fa-sort-down';
+        function searchData() {
+            const fromDate = parseDateVi(document.getElementById('filterFromDate').value);
+            const toDate = parseDateVi(document.getElementById('filterToDate').value);
+
+            if (fromDate && toDate && fromDate > toDate) {
+                showToast("Khoảng thời gian không hợp lệ. 'Từ ngày' phải nhỏ hơn hoặc bằng 'Đến ngày'! [MSG-ERR-VAL-007]", "error");
+                return;
             }
-            sortList();
-            renderGrid();
+
+            currentPage = 1;
+            filterAndRender();
         }
 
-        function sortList() {
+        function resetFilters() {
+            document.getElementById('filterCode').value = '';
+            document.getElementById('filterNyc').value = '';
+            document.getElementById('filterAgency').value = '';
+            document.getElementById('filterStatus').value = '';
+            document.getElementById('filterType').value = '';
+
+            const today = new Date();
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            document.getElementById('filterFromDate').value = formatDateVi(firstDay);
+            document.getElementById('filterToDate').value = formatDateVi(today);
+
+            currentPage = 1;
+            filterAndRender();
+            showToast("Đã xóa bộ lọc tìm kiếm! [MSG-SUC-BTNN-PHDD-002]", "info");
+        }
+
+        // =========================================================================
+        // SORTING
+        // =========================================================================
+        function toggleSort(col) {
+            if (sortColumn === col) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = col;
+                sortDirection = 'desc';
+            }
+            updateSortIcons();
+            sortFilteredList();
+            renderTable();
+        }
+
+        function updateSortIcons() {
+            ['Code', 'Nyc', 'Updated'].forEach(c => {
+                const el = document.getElementById('sortIcon' + c);
+                if (el) el.className = 'fa-solid fa-sort';
+            });
+            let activeIcon = null;
+            if (sortColumn === 'code') activeIcon = document.getElementById('sortIconCode');
+            else if (sortColumn === 'nyc') activeIcon = document.getElementById('sortIconNyc');
+            else if (sortColumn === 'updatedDate') activeIcon = document.getElementById('sortIconUpdated');
+
+            if (activeIcon) {
+                activeIcon.className = sortDirection === 'asc' ? 'fa-solid fa-sort-up' : 'fa-solid fa-sort-down';
+            }
+        }
+
+        function sortFilteredList() {
             filteredList.sort((a, b) => {
-                const dateA = parseDateVi(a.updatedDate) || new Date(0);
-                const dateB = parseDateVi(b.updatedDate) || new Date(0);
-                return isSortAsc ? (dateA - dateB) : (dateB - dateA);
+                let valA = a[sortColumn] || '';
+                let valB = b[sortColumn] || '';
+                if (sortColumn === 'updatedDate') {
+                    valA = parseDateVi(valA) || new Date(0);
+                    valB = parseDateVi(valB) || new Date(0);
+                }
+                if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
+                if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+                return 0;
             });
         }
 
-        // RENDER DATA GRID
-        function renderGrid() {
+        // =========================================================================
+        // RENDER TABLE & FIXED-SLOT ACTION COLUMNS (RULE 3)
+        // =========================================================================
+        function renderTable() {
             const tbody = document.getElementById('gridBody');
             tbody.innerHTML = '';
-
             const total = filteredList.length;
             document.getElementById('totalCount').innerText = total;
 
@@ -473,66 +2000,75 @@
 
             const startIdx = (currentPage - 1) * pageSize;
             const endIdx = Math.min(startIdx + pageSize, total);
-
             document.getElementById('currentRange').innerText = total > 0 ? `${startIdx + 1}-${endIdx}` : '0-0';
 
             if (total === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: var(--text-muted); font-style: italic; padding: 24px;">Không tìm thấy dữ liệu phục hồi danh dự phù hợp</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; color: #64748b; font-style: italic; padding: 28px;">Không tìm thấy dữ liệu phục hồi danh dự phù hợp [MSG-INF-SYS-001]</td></tr>`;
                 renderPagination(maxPages);
                 return;
             }
 
             for (let i = startIdx; i < endIdx; i++) {
                 const item = filteredList[i];
+
+                // Badges
                 let statusBadge = '';
                 if (item.status === 'Hoàn thành') statusBadge = '<span class="badge badge-success">Hoàn thành</span>';
                 else if (item.status === 'Chờ thông báo') statusBadge = '<span class="badge badge-draft">Chờ thông báo</span>';
                 else if (item.status === 'Chờ phản hồi') statusBadge = '<span class="badge badge-pending">Chờ phản hồi</span>';
-                else if (item.status === 'Chờ thực thi' || item.status === 'Chờ thực hiện') statusBadge = '<span class="badge badge-warning">Chờ thực hiện</span>';
+                else if (item.status === 'Chờ thực hiện') statusBadge = '<span class="badge badge-warning">Chờ thực hiện</span>';
                 else if (item.status === 'Từ chối') statusBadge = '<span class="badge badge-danger">Từ chối</span>';
                 else if (item.status === 'Tạm hoãn') statusBadge = '<span class="badge badge-info">Tạm hoãn</span>';
 
                 let limitBadge = '';
-                if (item.deadlineStatus.includes('🟢')) limitBadge = `<span style="color:var(--success-color); font-weight:600;"><i class="fa-solid fa-circle" style="font-size:8px; margin-right:4px;"></i> ${item.deadlineStatus.replace('🟢 ', '')}</span>`;
-                else if (item.deadlineStatus.includes('🟡')) limitBadge = `<span style="color:var(--accent-color); font-weight:600;"><i class="fa-solid fa-circle" style="font-size:8px; margin-right:4px;"></i> ${item.deadlineStatus.replace('🟡 ', '')}</span>`;
-                else if (item.deadlineStatus.includes('🔴')) limitBadge = `<span style="color:var(--danger-color); font-weight:600;"><i class="fa-solid fa-circle" style="font-size:8px; margin-right:4px;"></i> ${item.deadlineStatus.replace('🔴 ', '')}</span>`;
-                else limitBadge = `<span style="color:var(--text-muted);">${item.deadlineStatus}</span>`;
+                if (item.deadlineStatus.includes('🟢')) limitBadge = `<span style="color:#10b981; font-weight:600;"><i class="fa-solid fa-circle" style="font-size:8px;"></i> ${item.deadlineStatus.replace('🟢 ', '')}</span>`;
+                else if (item.deadlineStatus.includes('🟡')) limitBadge = `<span style="color:#d97706; font-weight:600;"><i class="fa-solid fa-circle" style="font-size:8px;"></i> ${item.deadlineStatus.replace('🟡 ', '')}</span>`;
+                else if (item.deadlineStatus.includes('🔴')) limitBadge = `<span style="color:#ef4444; font-weight:600;"><i class="fa-solid fa-circle" style="font-size:8px;"></i> ${item.deadlineStatus.replace('🔴 ', '')}</span>`;
+                else limitBadge = `<span style="color:#64748b;">${item.deadlineStatus}</span>`;
+
+                const relatedCell = item.relatedCode
+                    ? `<a href="javascript:void(0)" onclick="openRelatedBtDetail('${item.relatedCode}')" style="color:#2563eb; text-decoration:none; font-weight:600;">${item.relatedCode}</a>`
+                    : '<span style="color:#94a3b8;">--</span>';
+
+                // Cột thao tác: Chỉ hiển thị thao tác ở Tab Vụ việc chờ xử lý (pending)
+                // Tab Vụ việc đã xử lý (completed): không có thao tác gì
+                let actionCellHtml = '<span style="color: #94a3b8;">--</span>';
+                if (currentTab === 'pending') {
+                    const canUpdate = (item.status !== 'Hoàn thành' && item.status !== 'Từ chối');
+                    actionCellHtml = canUpdate
+                        ? `<button class="icon-btn edit" title="Cập nhật tiến trình PHDD" onclick="event.stopPropagation(); openUpdateModal('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`
+                        : `<button class="icon-btn edit" title="Vụ việc ở trạng thái này không thể cập nhật" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                }
 
                 const tr = document.createElement('tr');
                 tr.style.cursor = 'pointer';
-                tr.onclick = (e) => {
-                    if (e.target.tagName !== 'BUTTON' && !e.target.closest('a') && !e.target.closest('.icon-btn')) {
-                        goToDetail(item.code);
-                    }
-                };
-                const detailHref = buildDetailUrl(item.code, isBtCode(item.code));
-                const relatedCell = item.relatedCode
-                    ? `<a href="${escHtml(buildDetailUrl(item.relatedCode))}" class="related-bt-link" title="Mở chi tiết vụ việc Bồi thường tiền liên quan" style="color:var(--primary-light); text-decoration:none;">${escHtml(item.relatedCode)}</a>`
-                    : '<span style="color:var(--text-muted);">--</span>';
+                tr.onclick = () => openDetailPage(item.id);
+                tr.title = "Click vào dòng để xem chi tiết vụ việc";
                 tr.innerHTML = `
                     <td style="text-align: center;">${i + 1}</td>
-                    <td style="text-align: center; font-weight:600;"><a href="${escHtml(detailHref)}" class="phdd-code-link" style="color:var(--primary-light); text-decoration:none;">${escHtml(item.code)}</a></td>
-                    <td style="text-align: center;">${relatedCell}</td>
-                    <td>${escHtml(item.nyc)}</td>
-                    <td>${escHtml(item.agency)}</td>
-                    <td>${escHtml(item.type)}</td>
+                    <td style="text-align: center; font-weight: 700; color: #1e3a8a;">${item.code}</td>
+                    <td style="text-align: center;">${item.relatedCode ? `<a href="javascript:void(0)" onclick="event.stopPropagation(); openRelatedBtDetail('${item.relatedCode}')" style="color:#2563eb; text-decoration:none; font-weight:600;">${item.relatedCode}</a>` : '<span style="color:#94a3b8;">--</span>'}</td>
+                    <td style="font-weight: 500;">${item.nyc}</td>
+                    <td>${item.agency}</td>
+                    <td>${item.type}</td>
                     <td style="text-align: center;">${statusBadge}</td>
                     <td style="text-align: center;">${limitBadge}</td>
-                    <td style="text-align: center;">${escHtml(item.updatedDate)}</td>
+                    <td style="text-align: center;">${item.updatedDate}</td>
                     <td style="text-align: center;">
-                        <span style="color:var(--text-muted); font-size:12px; font-style:italic;">Chọn dòng để xem</span>
+                        <div class="action-cell">
+                            ${actionCellHtml}
+                        </div>
                     </td>
                 `;
-                // Xem chi tiết = click dòng (quy ước admin-ui-standardizer: không dùng nút "Xem chi tiết" riêng trong cột Thao tác)
-                tr.dataset.detailHref = detailHref;
-                tr.title = 'Xem chi tiết vụ việc ' + item.code;
                 tbody.appendChild(tr);
             }
 
             renderPagination(maxPages);
         }
 
-        // RENDER PAGINATION
+        // =========================================================================
+        // PAGINATION (RULE 4)
+        // =========================================================================
         function renderPagination(maxPages) {
             const container = document.getElementById('pageContainer');
             container.innerHTML = '';
@@ -540,78 +2076,748 @@
             const firstBtn = document.createElement('span');
             firstBtn.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
             firstBtn.innerHTML = '|&lt;&lt;';
-            firstBtn.onclick = () => { if (currentPage > 1) { currentPage = 1; renderGrid(); } };
+            firstBtn.onclick = () => { if (currentPage > 1) { currentPage = 1; renderTable(); } };
             container.appendChild(firstBtn);
 
             const prevBtn = document.createElement('span');
             prevBtn.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
             prevBtn.innerHTML = '&lt;';
-            prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderGrid(); } };
+            prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderTable(); } };
             container.appendChild(prevBtn);
 
             for (let i = 1; i <= maxPages; i++) {
                 const pageBtn = document.createElement('span');
                 pageBtn.className = `page-item ${currentPage === i ? 'active' : ''}`;
                 pageBtn.innerText = i;
-                pageBtn.onclick = () => { currentPage = i; renderGrid(); };
+                pageBtn.onclick = () => { currentPage = i; renderTable(); };
                 container.appendChild(pageBtn);
             }
 
             const nextBtn = document.createElement('span');
             nextBtn.className = `page-item ${currentPage === maxPages ? 'disabled' : ''}`;
             nextBtn.innerHTML = '&gt;';
-            nextBtn.onclick = () => { if (currentPage < maxPages) { currentPage++; renderGrid(); } };
+            nextBtn.onclick = () => { if (currentPage < maxPages) { currentPage++; renderTable(); } };
             container.appendChild(nextBtn);
 
             const lastBtn = document.createElement('span');
             lastBtn.className = `page-item ${currentPage === maxPages ? 'disabled' : ''}`;
             lastBtn.innerHTML = '&gt;&gt;|';
-            lastBtn.onclick = () => { if (currentPage < maxPages) { currentPage = maxPages; renderGrid(); } };
+            lastBtn.onclick = () => { if (currentPage < maxPages) { currentPage = maxPages; renderTable(); } };
             container.appendChild(lastBtn);
         }
 
         function changePageSize(val) {
             pageSize = parseInt(val, 10);
             currentPage = 1;
-            renderGrid();
+            renderTable();
         }
 
-        // NAVIGATION REDIRECT
-        // Hợp đồng URL mở chi tiết tại Giải quyết YCBT: quan_ly_boi_thuong.html?id=<Mã vụ việc>
-        // - PHDD-...: mở view chi tiết vụ việc Phục hồi danh dự độc lập.
-        // - BT-... cũ chưa tách (dòng hiển thị theo mã BT-): kèm focusTab=phdd để focus nội dung phục hồi danh dự.
-        // - Mã ở cột "Vụ việc Bồi thường tiền liên quan": chỉ ?id=<BT-...>.
-        function buildDetailUrl(code, focusPhdd) {
-            let url = `quan_ly_boi_thuong.html?id=${encodeURIComponent(code)}`;
-            if (focusPhdd) url += '&focusTab=phdd';
-            return url;
+        // =========================================================================
+        // MULTI-VIEW NAVIGATION UTILITIES (PAGE-BASED VIEWS)
+        // =========================================================================
+        function showView(viewId) {
+            document.querySelectorAll('.view-panel').forEach(el => {
+                el.classList.remove('active');
+                el.style.display = 'none';
+            });
+            const target = document.getElementById(viewId);
+            if (target) {
+                target.classList.add('active');
+                target.style.display = 'block';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
 
-        function goToDetail(code) {
-            window.location.href = buildDetailUrl(code, isBtCode(code));
+        function backToList() {
+            showView('mainListView');
         }
 
-        // MOCK EXPORT
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // =========================================================================
+        // MH02: TẠO YÊU CẦU PHỤC HỒI DANH DỰ (DẠNG TRANG TOÀN DIỆN - PAGE)
+        // =========================================================================
+        function openCreatePage() {
+            clearCreateErrors();
+
+            // Set default: Chỉ yêu cầu phục hồi danh dự (Mặc định chuẩn)
+            document.querySelector('input[name="createRequestType"][value="honor"]').checked = true;
+            toggleCreateRequestType('honor');
+
+            // Reset inputs
+            document.getElementById('cReceiveMethod').value = 'Trực tiếp';
+            document.getElementById('cFieldArea').value = 'Tố tụng hình sự';
+
+            document.getElementById('cVictimRole').value = 'Người bị thiệt hại';
+            toggleVictimSubSection('Người bị thiệt hại');
+
+            document.getElementById('cVictimName').value = '';
+            document.getElementById('cVictimDob').value = '';
+            document.getElementById('cVictimDocNo').value = '';
+            document.getElementById('cVictimDocDate').value = '15/05/2021';
+            document.getElementById('cVictimDocPlace').value = 'Cục CSQLHC về TTXH';
+            document.getElementById('cVictimPhone').value = '';
+            document.getElementById('cVictimAddress').value = '';
+            document.getElementById('cVictimEmail').value = '';
+
+            document.getElementById('cVictimActualName').value = '';
+            document.getElementById('cVictimActualDob').value = '';
+            document.getElementById('cVictimActualDocNo').value = '';
+
+            document.getElementById('cLegalDocAction').value = 'Khởi tố và bắt tạm giam oan sai người không có hành vi vi phạm pháp luật hình sự trong vụ án kinh tế.';
+            document.getElementById('cLegalDocCausality').value = 'Việc bắt giam oan sai trực tiếp dẫn đến việc công dân bị tạm giam 180 ngày, bị tổn hại nghiêm trọng về sức khỏe, danh dự, uy tín và mất thu nhập thực tế trong thời gian bị tạm giam.';
+            document.getElementById('cFormApology').checked = true;
+            document.getElementById('cFormNews').checked = true;
+            document.getElementById('cTotalMoney').value = '';
+
+            showView('createPageView');
+        }
+
+        function toggleCreateRequestType(val) {
+            const moneySec = document.getElementById('createMoneySection');
+            const noticeWrapper = document.getElementById('noticeBothWrapper');
+            if (val === 'both') {
+                moneySec.style.display = 'block';
+                noticeWrapper.style.display = 'block';
+            } else {
+                moneySec.style.display = 'none';
+                noticeWrapper.style.display = 'none';
+            }
+        }
+
+        function toggleVictimSubSection(role) {
+            const victimCard = document.getElementById('cVictimCard');
+            if (victimCard) {
+                victimCard.style.display = (role !== 'Người bị thiệt hại') ? 'block' : 'none';
+            }
+        }
+
+        let legalDocRowCount = 1;
+        function addLegalDocRow() {
+            legalDocRowCount++;
+            const tbody = document.getElementById('createLegalDocsTableBody');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="text-align: center;">${tbody.children.length + 1}</td>
+                <td><input type="text" class="form-control" placeholder="Nhập tên văn bản, căn cứ..."></td>
+                <td>
+                    <input type="file" style="display: none;" id="cLegalFile_${legalDocRowCount}" onchange="handleLegalDocUpload(this, ${legalDocRowCount})">
+                    <button type="button" class="btn btn-secondary" style="font-size: 12px; padding: 4px 10px;" onclick="document.getElementById('cLegalFile_${legalDocRowCount}').click()">
+                        <i class="fa-solid fa-upload"></i> Tải file
+                    </button>
+                    <span id="cLegalFileName_${legalDocRowCount}" style="font-size: 12px; color: #1e40af; margin-left: 8px;"></span>
+                </td>
+                <td style="text-align: center;">
+                    <a href="javascript:void(0)" onclick="removeLegalDocRow(this)" style="color: #ef4444; font-weight: 500; font-size: 13px;">Xóa</a>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function removeLegalDocRow(btn) {
+            const tbody = document.getElementById('createLegalDocsTableBody');
+            if (tbody.children.length <= 1) {
+                showToast("Bảng phải có ít nhất 01 dòng căn cứ!", "info");
+                return;
+            }
+            btn.closest('tr').remove();
+            Array.from(tbody.children).forEach((row, idx) => {
+                row.cells[0].innerText = idx + 1;
+            });
+        }
+
+        function handleLegalDocUpload(input, rowId) {
+            if (input.files && input.files[0]) {
+                const span = document.getElementById(`cLegalFileName_${rowId}`);
+                if (span) span.innerText = input.files[0].name;
+                showToast(`Đã tải lên tệp: ${input.files[0].name}`, "success");
+            }
+        }
+
+        function clearCreateErrors() {
+            const inputs = document.querySelectorAll('#createPageView .is-invalid');
+            inputs.forEach(el => el.classList.remove('is-invalid'));
+            const msgs = document.querySelectorAll('#createPageView .invalid-feedback-text');
+            msgs.forEach(el => el.classList.remove('show'));
+        }
+
+        function submitCreateClaim() {
+            clearCreateErrors();
+            let hasError = false;
+            let firstErrEl = null;
+
+            function markInvalid(inputId, errId) {
+                const el = document.getElementById(inputId);
+                const msg = document.getElementById(errId);
+                if (el) el.classList.add('is-invalid');
+                if (msg) msg.classList.add('show');
+                if (!firstErrEl && el) firstErrEl = el;
+                hasError = true;
+            }
+
+            const receiveMethod = document.getElementById('cReceiveMethod').value;
+            const fieldArea = document.getElementById('cFieldArea').value;
+            if (!fieldArea) markInvalid('cFieldArea', 'err_cFieldArea');
+
+            const name = document.getElementById('cVictimName').value.trim();
+            const dob = document.getElementById('cVictimDob').value.trim();
+            const docNo = document.getElementById('cVictimDocNo').value.trim();
+            const docDate = document.getElementById('cVictimDocDate').value.trim();
+            const docPlace = document.getElementById('cVictimDocPlace').value.trim();
+            const phone = document.getElementById('cVictimPhone').value.trim();
+            const address = document.getElementById('cVictimAddress').value.trim();
+            const legalAction = document.getElementById('cLegalDocAction').value.trim();
+            const legalCausality = document.getElementById('cLegalDocCausality').value.trim();
+
+            if (!name) markInvalid('cVictimName', 'err_cVictimName');
+            if (!dob) markInvalid('cVictimDob', 'err_cVictimDob');
+            if (!docNo) markInvalid('cVictimDocNo', 'err_cVictimDocNo');
+            if (!docDate) markInvalid('cVictimDocDate', 'err_cVictimDocDate');
+            if (!docPlace) markInvalid('cVictimDocPlace', 'err_cVictimDocPlace');
+            if (!phone) markInvalid('cVictimPhone', 'err_cVictimPhone');
+            if (!address) markInvalid('cVictimAddress', 'err_cVictimAddress');
+            if (!legalAction) markInvalid('cLegalDocAction', 'err_cLegalDocAction');
+            if (!legalCausality) markInvalid('cLegalDocCausality', 'err_cLegalDocCausality');
+
+            // If role != 'Người bị thiệt hại', check 4 mandatory fields of victim
+            const role = document.getElementById('cVictimRole').value;
+            if (role !== 'Người bị thiệt hại') {
+                const actName = document.getElementById('cVictimActualName').value.trim();
+                const actDob = document.getElementById('cVictimActualDob').value.trim();
+                const actDocType = document.getElementById('cVictimActualDocType').value.trim();
+                const actDocNo = document.getElementById('cVictimActualDocNo').value.trim();
+                if (!actName) markInvalid('cVictimActualName', 'err_cVictimActualName');
+                if (!actDob) markInvalid('cVictimActualDob', 'err_cVictimActualDob');
+                if (!actDocType) markInvalid('cVictimActualDocType', 'err_cVictimActualDocType');
+                if (!actDocNo) markInvalid('cVictimActualDocNo', 'err_cVictimActualDocNo');
+            }
+
+            const formApology = document.getElementById('cFormApology').checked;
+            const formNews = document.getElementById('cFormNews').checked;
+            if (!formApology && !formNews) {
+                document.getElementById('err_cFormTypes').classList.add('show');
+                hasError = true;
+            }
+
+            const reqType = document.querySelector('input[name="createRequestType"]:checked').value;
+            if (reqType === 'both') {
+                const money = document.getElementById('cTotalMoney').value.trim();
+                if (!money) markInvalid('cTotalMoney', 'err_cTotalMoney');
+            }
+
+            // Validation Rule: highlight and focus first error, NO toast
+            if (hasError) {
+                if (firstErrEl) firstErrEl.focus();
+                return;
+            }
+
+            // Success handling: generate code and add to list
+            const newIndex = phddList.length + 1;
+            const newCode = `PHDD-2026-${String(900 + newIndex).padStart(3, '0')}`;
+            let relatedCode = "";
+            let formText = "Cả hai hình thức";
+            if (formApology && !formNews) formText = "Trực tiếp xin lỗi";
+            else if (!formApology && formNews) formText = "Đăng báo xin lỗi";
+
+            if (reqType === 'both') {
+                relatedCode = `BT-2026-${String(newIndex).padStart(3, '0')}`;
+            }
+
+            const todayStr = formatDateVi(new Date());
+            const newRecord = {
+                id: newCode,
+                code: newCode,
+                relatedCode: relatedCode,
+                nyc: name,
+                agency: "Sở Tư pháp Hà Nội",
+                receiveMethod: receiveMethod,
+                fieldArea: fieldArea,
+                type: formText,
+                status: "Chờ thông báo",
+                deadline: "30/11/2026",
+                deadlineStatus: "🟢 Còn hạn",
+                updatedDate: todayStr,
+                docNo: "",
+                docDate: "",
+                signer: "",
+                opinion: "",
+                step: 1
+            };
+
+            phddList.unshift(newRecord);
+            updateTabBadges();
+
+            // Switch to pending tab and render
+            switchMainTab('pending');
+            backToList();
+            showToast(`Đã tạo và trình duyệt yêu cầu phục hồi danh dự ${newCode} thành công! [MSG-SUC-BTNN-PHDD-001]`, 'success');
+        }
+
+        function handleCreateFiles(input) {
+            if (input.files && input.files.length) {
+                const container = document.getElementById('cFileListContainer');
+                for (let f of input.files) {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'file-item';
+                    itemDiv.style.cssText = "display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 13px;";
+                    itemDiv.innerHTML = `
+                        <span><i class="fa-solid fa-file" style="color: #2563eb; margin-right: 8px;"></i> ${f.name}</span>
+                        <div style="display: flex; gap: 12px;">
+                            <a href="javascript:void(0)" onclick="viewDummyFile('${f.name}')" style="color: #2563eb; text-decoration: none; font-weight: 500;">Xem file</a>
+                            <a href="javascript:void(0)" onclick="confirmDeleteFile(this)" style="color: #ef4444; text-decoration: none; font-weight: 500;">Xóa</a>
+                        </div>
+                    `;
+                    container.appendChild(itemDiv);
+                }
+                showToast("Đã tải lên tệp đính kèm thành công!", "success");
+            }
+        }
+
+        // =========================================================================
+        // MH03: XEM CHI TIẾT VỤ VIỆC PHỤC HỒI DANH DỰ (DẠNG TRANG 2 TAB - PAGE)
+        // =========================================================================
+        function openDetailPage(id) {
+            const item = phddList.find(x => x.id === id);
+            if (!item) return;
+
+            currentRecordBeingUpdated = item;
+
+            // Header titles
+            document.getElementById('dpCodeTitle').innerText = item.code;
+            document.getElementById('dpNycTitle').innerText = item.nyc;
+
+            // Status badge in header
+            let badgeHtml = '';
+            if (item.status === 'Hoàn thành') badgeHtml = '<span class="badge badge-success" style="font-size: 13px; padding: 6px 12px;">Hoàn thành</span>';
+            else if (item.status === 'Chờ thông báo') badgeHtml = '<span class="badge badge-draft" style="font-size: 13px; padding: 6px 12px;">Chờ thông báo</span>';
+            else if (item.status === 'Chờ phản hồi') badgeHtml = '<span class="badge badge-pending" style="font-size: 13px; padding: 6px 12px;">Chờ phản hồi</span>';
+            else if (item.status === 'Chờ thực hiện') badgeHtml = '<span class="badge badge-warning" style="font-size: 13px; padding: 6px 12px;">Chờ thực hiện</span>';
+            else if (item.status === 'Từ chối') badgeHtml = '<span class="badge badge-danger" style="font-size: 13px; padding: 6px 12px;">Từ chối</span>';
+            else if (item.status === 'Tạm hoãn') badgeHtml = '<span class="badge badge-info" style="font-size: 13px; padding: 6px 12px;">Tạm hoãn</span>';
+            document.getElementById('dpStatusBadgeContainer').innerHTML = badgeHtml;
+
+            // Button "Cập nhật tiến trình PHDD": Chỉ hiển thị đối với hồ sơ chưa hoàn thành/từ chối
+            const canUpdate = (item.status !== 'Hoàn thành' && item.status !== 'Từ chối');
+            document.getElementById('dpBtnGoToUpdate').style.display = canUpdate ? 'inline-flex' : 'none';
+            document.getElementById('dpBtnGoToUpdateBottom').style.display = canUpdate ? 'inline-flex' : 'none';
+
+            // --- TAB 1: THÔNG TIN HỒ SƠ YÊU CẦU ---
+            document.getElementById('dpCode').innerText = item.code;
+            document.getElementById('dpRelatedCode').innerHTML = item.relatedCode
+                ? `<a href="javascript:void(0)" onclick="openRelatedBtDetail('${item.relatedCode}')" style="color:#2563eb; font-weight:700;">${item.relatedCode}</a>`
+                : `<span style="color:#94a3b8;">Không có (Chỉ yêu cầu PHDD)</span>`;
+            document.getElementById('dpStatusText').innerText = item.status;
+            document.getElementById('dpDeadlineBadge').innerText = item.deadlineStatus;
+            document.getElementById('dpAgency').innerText = item.agency;
+            document.getElementById('dpReceiveMethod').innerText = item.receiveMethod || 'Trực tiếp';
+            document.getElementById('dpFieldArea').innerText = item.fieldArea || 'Tố tụng hình sự';
+            document.getElementById('dpUpdatedDate').innerText = item.updatedDate;
+
+            document.getElementById('dpVictimName').innerText = item.nyc;
+            document.getElementById('dpVictimId').innerText = "001085002938";
+            document.getElementById('dpVictimDob').innerText = "15/05/1978";
+            document.getElementById('dpVictimPhone').innerText = "0988 123 456";
+            document.getElementById('dpVictimAddress').innerText = "Số 12 phố Tràng Thi, Phường Hàng Trống, Quận Hoàn Kiếm, TP. Hà Nội";
+
+            if (document.getElementById('dpLegalDocTitle')) {
+                document.getElementById('dpLegalDocTitle').innerText = "Bản án hình sự phúc thẩm số 58/2026/HS-PT";
+            }
+            if (document.getElementById('dpLegalAction')) {
+                document.getElementById('dpLegalAction').innerText = "Khởi tố và bắt tạm giam oan sai người không có hành vi vi phạm pháp luật hình sự trong vụ án kinh tế.";
+            }
+            if (document.getElementById('dpLegalCausality')) {
+                document.getElementById('dpLegalCausality').innerText = "Việc bắt giam oan sai trực tiếp dẫn đến việc công dân bị tạm giam 180 ngày, bị tổn hại nghiêm trọng về sức khỏe, danh dự, uy tín và mất thu nhập thực tế trong thời gian bị tạm giam.";
+            }
+
+            const dpVictimCard = document.getElementById('dpVictimCard');
+            if (dpVictimCard) {
+                dpVictimCard.style.display = (item.role && item.role !== 'Người bị thiệt hại') ? 'block' : 'none';
+            }
+
+            // Hình thức checkbox display
+            const hasApology = item.type.includes("Trực tiếp") || item.type.includes("Cả hai");
+            const hasNews = item.type.includes("Đăng báo") || item.type.includes("Cả hai");
+            document.getElementById('dpFormApologyCheck').innerHTML = hasApology
+                ? `<span style="color: #16a34a; font-weight: 600;"><i class="fa-solid fa-circle-check"></i> Có yêu cầu tổ chức trực tiếp tại nơi cư trú</span>`
+                : `<span style="color: #94a3b8;"><i class="fa-solid fa-circle-xmark"></i> Không yêu cầu</span>`;
+            document.getElementById('dpFormNewsCheck').innerHTML = hasNews
+                ? `<span style="color: #16a34a; font-weight: 600;"><i class="fa-solid fa-circle-check"></i> Có yêu cầu đăng trên 01 báo Trung ương và 01 báo Địa phương (03 số liên tiếp)</span>`
+                : `<span style="color: #94a3b8;"><i class="fa-solid fa-circle-xmark"></i> Không yêu cầu</span>`;
+
+            // Bảng tài liệu đính kèm Tab 1
+            const attTableBody = document.getElementById('dpAttachmentsTableBody');
+            attTableBody.innerHTML = `
+                <tr>
+                    <td style="text-align: center;">1</td>
+                    <td style="font-weight: 600;">Đơn yêu cầu phục hồi danh dự</td>
+                    <td><i class="fa-solid fa-file-pdf" style="color: #ef4444; margin-right: 6px;"></i> Don_yeu_cau_phuc_hoi_danh_du.pdf</td>
+                    <td style="text-align: center;">
+                        <a href="javascript:void(0)" onclick="viewDummyFile('Don_yeu_cau_phuc_hoi_danh_du.pdf')" style="color: #2563eb; text-decoration: none; font-weight: 600;">Xem file</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">2</td>
+                    <td style="font-weight: 600;">Bản án hình sự phúc thẩm số 58/2026/HS-PT</td>
+                    <td><i class="fa-solid fa-file-pdf" style="color: #ef4444; margin-right: 6px;"></i> Ban_an_hinh_su_phuc_tham_58.pdf</td>
+                    <td style="text-align: center;">
+                        <a href="javascript:void(0)" onclick="viewDummyFile('Ban_an_hinh_su_phuc_tham_58.pdf')" style="color: #2563eb; text-decoration: none; font-weight: 600;">Xem file</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">3</td>
+                    <td style="font-weight: 600;">Bản sao CCCD người yêu cầu</td>
+                    <td><i class="fa-solid fa-file-image" style="color: #10b981; margin-right: 6px;"></i> CCCD_Nguyen_Van_A.jpg</td>
+                    <td style="text-align: center;">
+                        <a href="javascript:void(0)" onclick="viewDummyFile('CCCD_Nguyen_Van_A.jpg')" style="color: #2563eb; text-decoration: none; font-weight: 600;">Xem file</a>
+                    </td>
+                </tr>
+            `;
+
+            // --- TAB 2: CHI TIẾT XỬ LÝ HỒ SƠ ---
+            document.getElementById('dpStep1Agency').innerText = item.agency;
+            document.getElementById('dpDocNo').innerText = item.docNo || "Chưa ban hành";
+            document.getElementById('dpDocDate').innerText = item.docDate || "--";
+            document.getElementById('dpDocSendDate').innerText = item.docDate || "--";
+            document.getElementById('dpDocSigner').innerText = item.signer ? `${item.signer} (Giám đốc)` : "--";
+
+            // File thông báo Điều 57
+            const st1FileContainer = document.getElementById('dpStep1FileContainer');
+            if (item.docNo) {
+                st1FileContainer.innerHTML = `
+                    <div style="display: inline-flex; align-items: center; gap: 10px; padding: 6px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 13px;">
+                        <span><i class="fa-solid fa-file-pdf" style="color: #ef4444; margin-right: 6px;"></i> Thong_bao_${item.docNo.replace(/\//g, '_')}_da_ky.pdf</span>
+                        <a href="javascript:void(0)" onclick="viewDummyFile('Thong_bao_${item.docNo.replace(/\//g, '_')}_da_ky.pdf')" style="color: #2563eb; text-decoration: none; font-weight: 500;">Xem file</a>
+                    </div>
+                `;
+            } else {
+                st1FileContainer.innerHTML = `<span style="color: #f59e0b; font-style: italic;">Đang trong quá trình dự thảo văn bản thông báo</span>`;
+            }
+
+            // Mục 3: Ý kiến phản hồi
+            let opinionBadgeText = item.opinion || (item.docNo ? "Chờ phản hồi" : "Chưa đến bước");
+            document.getElementById('dpOpinionBadge').innerText = opinionBadgeText;
+            document.getElementById('dpOpinionDate').innerText = item.opinion ? "12/10/2026" : "--";
+            document.getElementById('dpOpinionContent').innerText = item.opinion === 'Đồng ý'
+                ? "Đồng ý toàn bộ với kế hoạch tổ chức trực tiếp xin lỗi tại Hội trường UBND phường và việc đăng báo theo thông báo của cơ quan giải quyết."
+                : (item.opinion === 'Chưa thực hiện' ? "Đề nghị tạm hoãn việc tổ chức do người bị thiệt hại đang đi điều trị bệnh tại nước ngoài."
+                : (item.opinion === 'Từ chối' ? "Người bị thiệt hại có văn bản từ chối nhận phục hồi danh dự công khai." : "Chưa nhận được văn bản phản hồi từ người yêu cầu."));
+
+            document.getElementById('dpStep2FileContainer').innerHTML = item.opinion
+                ? `<div style="display: inline-flex; align-items: center; gap: 10px; padding: 6px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 13px;">
+                     <span><i class="fa-solid fa-file-pdf" style="color: #ef4444; margin-right: 6px;"></i> Van_ban_phan_hoi_y_kien.pdf</span>
+                     <a href="javascript:void(0)" onclick="viewDummyFile('Van_ban_phan_hoi_y_kien.pdf')" style="color: #2563eb; text-decoration: none; font-weight: 500;">Xem file</a>
+                   </div>`
+                : `<span style="color: #94a3b8; font-style: italic;">Chưa có tệp văn bản phản hồi</span>`;
+
+            // Mục 4: Kết quả thực hiện Điều 58/59
+            const isDone = (item.status === 'Hoàn thành');
+            document.getElementById('dpActualApologyDate').innerText = isDone ? "25/10/2026" : "--";
+            document.getElementById('dpActualApologyVenue').innerText = isDone ? "Hội trường UBND Phường Dịch Vọng, Quận Cầu Giấy, Hà Nội" : "--";
+            document.getElementById('dpActualAgency').innerText = isDone ? item.agency : "--";
+            document.getElementById('dpApologyDocLink').innerHTML = isDone
+                ? `<div style="display: inline-flex; align-items: center; gap: 10px; padding: 6px 12px; background: white; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;">
+                     <span><i class="fa-solid fa-file-pdf" style="color: #ef4444; margin-right: 6px;"></i> Bien_ban_buoi_xin_loi_cong_khai.pdf</span>
+                     <a href="javascript:void(0)" onclick="viewDummyFile('Bien_ban_buoi_xin_loi_cong_khai.pdf')" style="color: #2563eb; text-decoration: none; font-weight: 500;">Xem file</a>
+                   </div>`
+                : `<span style="color: #94a3b8; font-style: italic;">Chưa tổ chức trực tiếp</span>`;
+
+            document.getElementById('dpActualNewsCentral').innerText = isDone ? "Báo Nhân Dân" : "--";
+            document.getElementById('dpActualNewsLocal').innerText = isDone ? "Báo Hà Nội Mới" : "--";
+            document.getElementById('dpNewsIssuesDetail').innerText = isDone
+                ? "Đã đăng tải liên tiếp trong 03 kỳ: Số 1205 (ngày 26/10/2026), Số 1206 (ngày 27/10/2026) và Số 1207 (ngày 28/10/2026)"
+                : "--";
+            document.getElementById('dpNewsScanDocLink').innerHTML = isDone
+                ? `<div style="display: inline-flex; align-items: center; gap: 10px; padding: 6px 12px; background: white; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 13px;">
+                     <span><i class="fa-solid fa-file-pdf" style="color: #ef4444; margin-right: 6px;"></i> Ban_chup_3_ky_bao_xin_loi.pdf</span>
+                     <a href="javascript:void(0)" onclick="viewDummyFile('Ban_chup_3_ky_bao_xin_loi.pdf')" style="color: #2563eb; text-decoration: none; font-weight: 500;">Xem file</a>
+                   </div>`
+                : `<span style="color: #94a3b8; font-style: italic;">Chưa đăng báo</span>`;
+
+            // Mục 5: Kết thúc thực thi
+            document.getElementById('dpCompletedDate').innerText = isDone ? item.updatedDate : "--";
+            document.getElementById('dpCompletedOfficer').innerText = isDone ? "Trần Văn Quản Lý (Giám đốc)" : "--";
+            document.getElementById('dpCompletedResult').innerText = isDone ? "Đạt kết quả toàn diện theo Luật TNBTCNN" : (item.status === 'Từ chối' ? "Đình chỉ theo ý kiến từ chối của người yêu cầu" : "Đang thực hiện");
+            document.getElementById('dpCompletedSummary').innerText = isDone
+                ? "Cơ quan đã chủ trì phối hợp với chính quyền địa phương tổ chức buổi trực tiếp xin lỗi và cải chính công khai trước sự chứng kiến của gia đình và bà con nhân dân; đồng thời hoàn tất đăng báo 03 kỳ liên tiếp theo đúng quy định."
+                : (item.status === 'Từ chối' ? "Người bị thiệt hại có văn bản từ chối nhận phục hồi danh dự; cơ quan đã ghi nhận và lưu hồ sơ lưu trữ." : "Hồ sơ đang trong lộ trình giải quyết theo thời hạn quy định.");
+
+            // Mục 6: Timeline lịch sử xử lý
+            const tlList = document.getElementById('dpTimelineList');
+            tlList.innerHTML = `
+                <div style="display: flex; gap: 14px; font-size: 13px; align-items: flex-start;">
+                    <div style="min-width: 140px; font-weight: 600; color: #64748b;">${item.updatedDate} 15:30</div>
+                    <div style="flex: 1;">
+                        <span style="font-weight: 700; color: #1e3a8a;">[Cập nhật tiến trình]</span> - Cán bộ thụ lý cập nhật trạng thái vụ việc: <b>${item.status}</b>
+                    </div>
+                </div>
+                ${item.docNo ? `
+                <div style="display: flex; gap: 14px; font-size: 13px; align-items: flex-start;">
+                    <div style="min-width: 140px; font-weight: 600; color: #64748b;">${item.docDate || '05/10/2026'} 09:15</div>
+                    <div style="flex: 1;">
+                        <span style="font-weight: 700; color: #1e3a8a;">[Ban hành thông báo]</span> - Thủ trưởng cơ quan đã ký ban hành Thông báo số <b>${item.docNo}</b> gửi người bị thiệt hại.
+                    </div>
+                </div>` : ''}
+                <div style="display: flex; gap: 14px; font-size: 13px; align-items: flex-start;">
+                    <div style="min-width: 140px; font-weight: 600; color: #64748b;">15/09/2026 08:30</div>
+                    <div style="flex: 1;">
+                        <span style="font-weight: 700; color: #1e3a8a;">[Thụ lý vụ việc]</span> - Tiếp nhận hồ sơ yêu cầu phục hồi danh dự và cử cán bộ thụ lý chính.
+                    </div>
+                </div>
+            `;
+
+            // Active Tab 1 mặc định
+            switchDetailTab(1);
+
+            // Mở Page view
+            showView('detailPageView');
+        }
+
+        function switchDetailTab(tabNum) {
+            document.getElementById('dpTabBtn1').className = `detail-tab-btn ${tabNum === 1 ? 'active' : ''}`;
+            document.getElementById('dpTabBtn2').className = `detail-tab-btn ${tabNum === 2 ? 'active' : ''}`;
+
+            document.getElementById('dpTabContent1').style.display = (tabNum === 1) ? 'block' : 'none';
+            document.getElementById('dpTabContent2').style.display = (tabNum === 2) ? 'block' : 'none';
+        }
+
+        function triggerUpdateFromDetail() {
+            if (currentRecordBeingUpdated) {
+                openUpdateModal(currentRecordBeingUpdated.id);
+            }
+        }
+
+        // =========================================================================
+        // MH04: CẬP NHẬT TIẾN TRÌNH PHỤC HỒI DANH DỰ (4 BƯỚC)
+        // =========================================================================
+        function openUpdateModal(id) {
+            const item = phddList.find(x => x.id === id);
+            if (!item) return;
+
+            currentRecordBeingUpdated = item;
+            document.getElementById('updateModalTitle').innerText = `CẬP NHẬT TIẾN TRÌNH PHỤC HỒI DANH DỰ: ${item.code} - ${item.nyc}`;
+
+            // Fill Step 1 data
+            document.getElementById('uStep1No').value = item.docNo || "15/TB-STP";
+            document.getElementById('uStep1Date').value = item.docDate || formatDateVi(new Date());
+            document.getElementById('uStep1SendDate').value = item.docDate || formatDateVi(new Date());
+            document.getElementById('uStep1Signer').value = item.signer || "Trần Văn Quản Lý";
+            document.getElementById('uStep1Position').value = "Giám đốc";
+            document.getElementById('uStep1ExpectedDate').value = "25/10/2026";
+            document.getElementById('uStep1ExpectedVenue').value = "Hội trường UBND Phường Dịch Vọng, Quận Cầu Giấy";
+            document.getElementById('uStep1ExpectedNewsCentral').value = "Báo Nhân Dân";
+            document.getElementById('uStep1ExpectedNewsLocal').value = "Báo Hà Nội Mới";
+            document.getElementById('uStep1FileNameText').innerText = item.docNo ? "Thong_bao_15_TB_STP_da_ky.pdf" : "";
+
+            // Fill Step 2 data
+            if (item.opinion) {
+                const rad = document.querySelector(`input[name="uStep2Opinion"][value="${item.opinion}"]`);
+                if (rad) rad.checked = true;
+            }
+            document.getElementById('uStep2ReceiveDate').value = formatDateVi(new Date());
+            document.getElementById('uStep2Content').value = item.opinion === 'Đồng ý' ? "Đồng ý toàn bộ với thời gian, địa điểm và các cơ quan báo chí theo thông báo của Sở." : "";
+
+            // Switch to step based on item status
+            let stepNum = item.step || 1;
+            if (item.status === 'Chờ phản hồi') stepNum = 2;
+            else if (item.status === 'Chờ thực hiện') stepNum = 3;
+            else if (item.status === 'Hoàn thành') stepNum = 4;
+
+            switchUpdateStepTab(stepNum);
+            openModal('updateModal');
+        }
+
+        function switchUpdateStepTab(step) {
+            for (let i = 1; i <= 4; i++) {
+                const sec = document.getElementById(`stepSection${i}`);
+                const item = document.getElementById(`uStepItem${i}`);
+                if (sec) sec.style.display = (i === step) ? 'block' : 'none';
+                if (item) {
+                    if (i === step) item.className = 'stepper-item active';
+                    else if (i < step) item.className = 'stepper-item completed';
+                    else item.className = 'stepper-item';
+                }
+            }
+        }
+
+        function handleStep1File(input) {
+            if (input.files && input.files[0]) {
+                document.getElementById('uStep1FileNameText').innerText = input.files[0].name;
+                document.getElementById('uStep1FileInput').classList.remove('is-invalid');
+                document.getElementById('err_uStep1File').classList.remove('show');
+                showToast("Đã đính kèm tệp thông báo thành công!", "success");
+            }
+        }
+
+        function handleStep2File(input) {
+            if (input.files && input.files[0]) {
+                document.getElementById('uStep2FileNameText').innerText = input.files[0].name;
+                showToast("Đã đính kèm tài liệu phản hồi thành công!", "success");
+            }
+        }
+
+        function handleStep3File(input) {
+            if (input.files && input.files[0]) {
+                document.getElementById('uStep3FileNameText').innerText = input.files[0].name;
+                showToast("Đã đính kèm biên bản/scan bài báo thành công!", "success");
+            }
+        }
+
+        function saveStep1Data() {
+            const no = document.getElementById('uStep1No').value.trim();
+            const date = document.getElementById('uStep1Date').value.trim();
+            const sendDate = document.getElementById('uStep1SendDate').value.trim();
+            const signer = document.getElementById('uStep1Signer').value.trim();
+            const pos = document.getElementById('uStep1Position').value.trim();
+
+            let hasErr = false;
+            if (!no) { document.getElementById('uStep1No').classList.add('is-invalid'); document.getElementById('err_uStep1No').classList.add('show'); hasErr = true; }
+            if (!date) { document.getElementById('uStep1Date').classList.add('is-invalid'); document.getElementById('err_uStep1Date').classList.add('show'); hasErr = true; }
+            if (!sendDate) { document.getElementById('uStep1SendDate').classList.add('is-invalid'); document.getElementById('err_uStep1SendDate').classList.add('show'); hasErr = true; }
+            if (!signer) { document.getElementById('uStep1Signer').classList.add('is-invalid'); document.getElementById('err_uStep1Signer').classList.add('show'); hasErr = true; }
+            if (!pos) { document.getElementById('uStep1Position').classList.add('is-invalid'); document.getElementById('err_uStep1Position').classList.add('show'); hasErr = true; }
+
+            if (hasErr) return;
+
+            if (currentRecordBeingUpdated) {
+                currentRecordBeingUpdated.docNo = no;
+                currentRecordBeingUpdated.docDate = date;
+                currentRecordBeingUpdated.signer = signer;
+                currentRecordBeingUpdated.status = "Chờ phản hồi";
+                currentRecordBeingUpdated.step = 2;
+                currentRecordBeingUpdated.updatedDate = formatDateVi(new Date());
+            }
+
+            filterAndRender();
+            switchUpdateStepTab(2);
+            showToast("Đã lưu thông báo tổ chức phục hồi danh dự thành công! [MSG-SUC-BTNN-PHDD-004]", "success");
+        }
+
+        function saveStep2Data() {
+            const op = document.querySelector('input[name="uStep2Opinion"]:checked').value;
+            const recDate = document.getElementById('uStep2ReceiveDate').value.trim();
+
+            if (!recDate) {
+                document.getElementById('uStep2ReceiveDate').classList.add('is-invalid');
+                document.getElementById('err_uStep2Date').classList.add('show');
+                return;
+            }
+
+            if (currentRecordBeingUpdated) {
+                currentRecordBeingUpdated.opinion = op;
+                if (op === 'Từ chối') {
+                    currentRecordBeingUpdated.status = "Từ chối";
+                    currentRecordBeingUpdated.deadlineStatus = "🔴 Đã từ chối";
+                } else if (op === 'Chưa thực hiện') {
+                    currentRecordBeingUpdated.status = "Tạm hoãn";
+                    currentRecordBeingUpdated.deadlineStatus = "🟢 Tạm hoãn";
+                } else {
+                    currentRecordBeingUpdated.status = "Chờ thực hiện";
+                    currentRecordBeingUpdated.step = 3;
+                }
+                currentRecordBeingUpdated.updatedDate = formatDateVi(new Date());
+            }
+
+            updateTabBadges();
+            filterAndRender();
+
+            if (op === 'Đồng ý') {
+                switchUpdateStepTab(3);
+            } else {
+                closeModal('updateModal');
+            }
+            showToast("Đã lưu ý kiến phản hồi của người yêu cầu thành công! [MSG-SUC-BTNN-PHDD-005]", "success");
+        }
+
+        function saveStep3Data() {
+            if (currentRecordBeingUpdated) {
+                currentRecordBeingUpdated.step = 4;
+                currentRecordBeingUpdated.updatedDate = formatDateVi(new Date());
+            }
+            filterAndRender();
+            switchUpdateStepTab(4);
+            showToast("Đã lưu kết quả thực hiện phục hồi danh dự thành công! [MSG-SUC-BTNN-PHDD-006]", "success");
+        }
+
+        function completePhddProcess() {
+            openConfirmModal("Bạn có chắc chắn muốn xác nhận hoàn thành thực thi phục hồi danh dự cho vụ việc này? Sau khi hoàn thành, vụ việc sẽ chuyển sang Tab Vụ việc đã xử lý. [MSG-CFM-BTNN-PHDD-001]", () => {
+                if (currentRecordBeingUpdated) {
+                    currentRecordBeingUpdated.status = "Hoàn thành";
+                    currentRecordBeingUpdated.deadlineStatus = "Đã hoàn thành";
+                    currentRecordBeingUpdated.step = 4;
+                    currentRecordBeingUpdated.updatedDate = formatDateVi(new Date());
+                }
+                updateTabBadges();
+                closeModal('updateModal');
+                filterAndRender();
+                showToast("Đã hoàn thành thực thi phục hồi danh dự! [MSG-SUC-BTNN-PHDD-007]", "success");
+            });
+        }
+
+        // =========================================================================
+        // CONFIRMATION MODAL & DELETE FILE (RULE 10)
+        // =========================================================================
+        let confirmCallback = null;
+
+        function openConfirmModal(message, callback) {
+            document.getElementById('confirmModalMessage').innerText = message;
+            confirmCallback = callback;
+            document.getElementById('btnConfirmAction').onclick = () => {
+                closeModal('confirmModal');
+                if (typeof confirmCallback === 'function') confirmCallback();
+            };
+            openModal('confirmModal');
+        }
+
+        function confirmDeleteFile(btnEl) {
+            openConfirmModal("Bạn có chắc chắn muốn xóa tệp đính kèm này? [MSG-CFM-SYS-001]", () => {
+                const item = btnEl.closest('.file-item');
+                if (item) item.remove();
+                showToast("Đã xóa tệp tin đính kèm!", "info");
+            });
+        }
+
+        function viewDummyFile(fileName) {
+            showToast(`Đang mở xem tệp tin: ${fileName}...`, 'info');
+        }
+
+        function openRelatedBtDetail(btCode) {
+            showToast(`Mở chi tiết vụ việc Bồi thường tiền liên quan: ${btCode}`, 'info');
+        }
+
         function exportToExcel() {
-            showToast("Đang kết xuất danh sách tiến trình Phục hồi danh dự ra Excel...", "success");
+            if (!filteredList || filteredList.length === 0) {
+                showToast("Danh sách không có dữ liệu để kết xuất Excel! [MSG-WRN-SYS-001]", "error");
+                return;
+            }
+            showToast("Đang kết xuất danh sách phục hồi danh dự ra Excel... [MSG-SUC-BTNN-PHDD-003]", "success");
         }
 
+        // =========================================================================
         // TOAST NOTIFICATION
+        // =========================================================================
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
+            const icon = document.getElementById('toastIcon');
             toast.className = `toast-notif ${type}`;
+            if (type === 'success') icon.className = 'fa-solid fa-circle-check';
+            else if (type === 'error') icon.className = 'fa-solid fa-circle-xmark';
+            else icon.className = 'fa-solid fa-circle-info';
+
             document.getElementById('toastMessage').innerText = message;
             toast.style.display = 'flex';
             toast.style.opacity = '1';
             setTimeout(() => {
                 toast.style.opacity = '0';
                 setTimeout(() => { toast.style.display = 'none'; }, 300);
-            }, 3000);
+            }, 3500);
         }
     </script>
-    <script src="admin-ui-standardizer.js?v=20261012"></script>
-    <script src="bpbd_filter_toggle.js?v=20261012"></script>
-    <script src="filter_toggle_auto.js?v=20261012"></script>
 </body>
 
 </html>

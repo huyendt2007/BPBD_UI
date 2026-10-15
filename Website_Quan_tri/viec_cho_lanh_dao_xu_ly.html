@@ -51,17 +51,23 @@
         .check-list { display: flex; flex-direction: column; gap: 6px; border: 1px solid var(--border-color); border-radius: 6px; padding: 10px 12px; max-height: 180px; overflow-y: auto; }
         .error-text { color: #dc2626; font-size: 12px; margin-top: 4px; display: none; }
         .hint { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
+        .work-chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 16px 4px; }
+        .work-chip { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border-color); background: #fff; border-radius: 999px; padding: 3px 10px 3px 4px; cursor: pointer; font: 600 12.5px Inter, sans-serif; color: #334155; }
+        .work-chip:first-of-type { padding-left: 10px; }
+        .work-chip.active { border-color: var(--primary-light); box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.18); background: #eff6ff; }
+        .work-chip .chip-count { background: #e2e8f0; color: #334155; border-radius: 999px; padding: 0 7px; font-size: 11.5px; min-width: 20px; text-align: center; }
+        .work-chip.active .chip-count { background: var(--primary-light); color: #fff; }
+        .work-badge { display: inline-flex; align-items: center; gap: 5px; border-radius: 999px; padding: 3px 9px; font-size: 12px; font-weight: 600; white-space: nowrap; }
         @media (max-width: 900px) { .filter-grid { grid-template-columns: 1fr; } .tabs-card { margin-right: 0; margin-top: 40px; } .info-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 
 <body>
     <main>
-        <!-- Tab nghiệp vụ đặt trên đầu trang (theo bố cục Giải quyết yêu cầu bồi thường) -->
+        <!-- 02 tab: việc đang chờ Lãnh đạo xử lý / việc Lãnh đạo đã xử lý (mỗi dòng là 01 công việc) -->
         <div class="tabs-card">
             <div class="wf-tabs">
-                <button class="tab-btn active" data-tab="assign" onclick="switchTab('assign')"><i class="fa-solid fa-diagram-project"></i> Chờ phân công <span class="wf-count" id="cntAssign">0</span></button>
-                <button class="tab-btn" data-tab="approve" onclick="switchTab('approve')"><i class="fa-solid fa-file-signature"></i> Chờ duyệt <span class="wf-count" id="cntApprove">0</span></button>
+                <button class="tab-btn active" data-tab="pending" onclick="switchTab('pending')"><i class="fa-solid fa-inbox"></i> Chờ xử lý <span class="wf-count" id="cntPending">0</span></button>
                 <button class="tab-btn" data-tab="done" onclick="switchTab('done')"><i class="fa-solid fa-clock-rotate-left"></i> Đã xử lý <span class="wf-count" id="cntDone">0</span></button>
             </div>
         </div>
@@ -70,11 +76,15 @@
             <div class="filter-grid">
                 <div class="form-group">
                     <span class="form-label">Mã hồ sơ</span>
-                    <input id="fCode" class="form-control" placeholder="Nhập mã hồ sơ...">
+                    <input id="fCode" class="form-control" placeholder="Nhập mã hồ sơ, mã đề nghị...">
                 </div>
                 <div class="form-group">
                     <span class="form-label">Họ và tên người yêu cầu</span>
                     <input id="fName" class="form-control" placeholder="Nhập họ và tên người yêu cầu...">
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Loại công việc</span>
+                    <select id="fWork" class="form-control" onchange="renderAll()"></select>
                 </div>
                 <div class="form-group">
                     <span class="form-label">Loại yêu cầu</span>
@@ -93,19 +103,21 @@
 
         <div class="list-card">
             <div class="wf-tab-note" id="tabNote"></div>
+            <!-- Lọc nhanh theo Loại công việc: số lượng theo tab đang chọn, đồng bộ với trường Loại công việc -->
+            <div class="work-chips" id="workChips"></div>
             <div class="table-container" style="border:0; border-radius:0;">
                 <table class="custom-table" id="taskTable">
                     <thead>
                         <tr>
                             <th style="width:54px; text-align:center;">STT</th>
-                            <th style="width:130px; text-align:center;">Mã hồ sơ</th>
-                            <th style="width:200px;">Loại yêu cầu</th>
+                            <th style="width:140px; text-align:center;">Mã hồ sơ</th>
+                            <th style="width:190px;">Loại công việc</th>
                             <th style="width:170px;">Họ và tên người yêu cầu</th>
-                            <th style="width:250px;">Nội dung cần xử lý</th>
-                            <th style="width:190px;">Người chuyển/trình</th>
-                            <th style="width:130px; text-align:center;">Thời điểm nhận</th>
+                            <th style="width:280px;" id="thDetail">Nội dung cần xử lý</th>
+                            <th style="width:190px;" id="thWho">Người chuyển/trình</th>
+                            <th style="width:130px; text-align:center;" id="thAt">Thời điểm nhận</th>
                             <th style="width:150px; text-align:center;">Trạng thái hồ sơ</th>
-                            <th style="width:190px; text-align:center;">Thao tác</th>
+                            <th style="width:200px; text-align:center;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="taskBody"></tbody>
@@ -193,6 +205,75 @@
         </div>
     </div>
 
+    <!-- Popup Thụ lý hồ sơ và Cử người giải quyết bồi thường -->
+    <div class="wf-overlay" id="thuLyOverlay">
+        <div class="wf-modal">
+            <div class="wf-modal-header">
+                <h3><i class="fa-solid fa-gavel"></i> Thụ lý hồ sơ <span id="tlCode"></span></h3>
+                <span class="wf-close" onclick="closeOverlay('thuLyOverlay')">&times;</span>
+            </div>
+            <div class="wf-modal-body">
+                <div class="muted" id="tlContext" style="margin-bottom:10px;"></div>
+                <div class="form-group">
+                    <span class="form-label">Cán bộ chủ trì giải quyết<span class="required">*</span></span>
+                    <select id="tlChuTri" class="form-control" onchange="renderThuLyPhoiHop()"></select>
+                    <div class="error-text" id="tlChuTriErr">Đây là trường bắt buộc</div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Cán bộ cùng giải quyết</span>
+                    <div class="check-list" id="tlPhoiHop"></div>
+                    <div class="hint">Hồ sơ chỉ hiển thị với các cán bộ được cử giải quyết.</div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Ý kiến chỉ đạo</span>
+                    <textarea id="tlNote" class="form-control" rows="3" placeholder="Nhập ý kiến chỉ đạo..."></textarea>
+                </div>
+            </div>
+            <div class="wf-modal-footer">
+                <button class="btn btn-secondary" onclick="closeOverlay('thuLyOverlay')">Hủy bỏ</button>
+                <button class="btn btn-primary" onclick="submitThuLy()"><i class="fa-solid fa-circle-check"></i> Xác nhận thụ lý</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Popup Không thụ lý hồ sơ -->
+    <div class="wf-overlay" id="ktlOverlay">
+        <div class="wf-modal">
+            <div class="wf-modal-header">
+                <h3><i class="fa-solid fa-ban" style="color:#dc2626;"></i> Không thụ lý hồ sơ <span id="kCode"></span></h3>
+                <span class="wf-close" onclick="closeOverlay('ktlOverlay')">&times;</span>
+            </div>
+            <div class="wf-modal-body">
+                <div class="muted" id="kContext" style="margin-bottom:10px;"></div>
+                <div class="form-group">
+                    <span class="form-label">Lý do không thụ lý<span class="required">*</span></span>
+                    <select id="kReason" class="form-control" onchange="toggleKtlTransfer()"></select>
+                    <div class="error-text" id="kReasonErr">Đây là trường bắt buộc</div>
+                </div>
+                <div class="form-group">
+                    <span class="form-label">Diễn giải</span>
+                    <textarea id="kDetail" class="form-control" rows="3" placeholder="Nhập diễn giải..."></textarea>
+                </div>
+                <div id="kTransferBlock" style="display:none;">
+                    <div class="form-group">
+                        <span class="form-label">Cơ quan tiếp nhận mới<span class="required">*</span></span>
+                        <div id="kUnitTree"></div>
+                        <div class="error-text" id="kUnitErr">Đây là trường bắt buộc</div>
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Nội dung/Căn cứ chuyển<span class="required">*</span></span>
+                        <textarea id="kContent" class="form-control" rows="3" placeholder="Nhập nội dung/căn cứ chuyển..."></textarea>
+                        <div class="error-text" id="kContentErr">Đây là trường bắt buộc</div>
+                    </div>
+                </div>
+            </div>
+            <div class="wf-modal-footer">
+                <button class="btn btn-secondary" onclick="closeOverlay('ktlOverlay')">Hủy bỏ</button>
+                <button class="btn btn-danger" style="background:#ef4444; color:#fff; border:none;" onclick="submitKtl()"><i class="fa-solid fa-ban"></i> Xác nhận không thụ lý</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Popup xác nhận -->
     <div class="wf-overlay" id="confirmOverlay">
         <div class="wf-modal" style="width:460px;">
@@ -207,20 +288,36 @@
 
     <div id="toast" class="toast-notif"></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261012"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261015e"></script>
     <script>
         const WF = BTNN_WF;
-        let activeTab = 'assign';
+        const WT = WF.WORK_TYPES;
+        let activeTab = 'pending';
         let actingCode = null;
         let decisionMode = 'approve';
+        let currentTasks = [];
         const TAB_NOTES = {
-            assign: 'Hồ sơ đang chờ lãnh đạo đơn vị phân công: chuyển đơn vị cấp dưới hoặc phân công cán bộ chủ trì, phối hợp theo Cấu hình luồng xử lý.',
-            approve: 'Hồ sơ cán bộ chủ trì đã trình. Luồng phê duyệt đi ngược chiều luồng phân công; từ chối phê duyệt ở bất kỳ cấp nào thì hồ sơ chuyển [Bị trả lại].',
-            done: 'Hồ sơ đã phân công/phê duyệt. Được Thu hồi khi bên nhận chưa xử lý; việc bên nhận đã xem hồ sơ không ảnh hưởng đến quyền thu hồi.'
+            pending: 'Công việc đang chờ Lãnh đạo xử lý: Phân công, Phê duyệt nội dung trình, Thụ lý hồ sơ, Ký duyệt Quyết định giải quyết bồi thường, Ký duyệt cấp kinh phí.',
+            done: 'Mỗi dòng là 01 lần Lãnh đạo đã xử lý. Được Thu hồi khi bên nhận chưa xử lý; việc bên nhận đã xem hồ sơ không ảnh hưởng đến quyền thu hồi.'
         };
+        // Màu nhãn Loại công việc
+        const WORK_STYLE = {};
+        WORK_STYLE[WT.PHAN_CONG] = ['#e0f2fe', '#0369a1', 'fa-diagram-project'];
+        WORK_STYLE[WT.PHE_DUYET] = ['#ede9fe', '#5b21b6', 'fa-file-signature'];
+        WORK_STYLE[WT.THU_LY] = ['#dcfce7', '#15803d', 'fa-gavel'];
+        WORK_STYLE[WT.KY_QD] = ['#fef3c7', '#a16207', 'fa-stamp'];
+        WORK_STYLE[WT.KY_KP] = ['#fee2e2', '#b91c1c', 'fa-money-check-dollar'];
 
         function esc(v) { return WF.esc(v); }
         function norm(v) { return String(v || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase().trim(); }
+        function workBadge(type) {
+            const s = WORK_STYLE[type] || ['#e2e8f0', '#334155', 'fa-circle'];
+            return `<span class="work-badge" style="background:${s[0]}; color:${s[1]};"><i class="fa-solid ${s[2]}"></i> ${esc(type)}</span>`;
+        }
+        function kpStatusBadge(st) {
+            const c = st === 'Chờ duyệt' ? ['#fef9c3', '#a16207'] : (st === 'Bị từ chối' ? ['#fee2e2', '#991b1b'] : (st === 'Chờ chi trả' ? ['#e0f2fe', '#0369a1'] : ['#dcfce7', '#15803d']));
+            return `<span class="badge wf-badge" style="background:${c[0]}; color:${c[1]}; border:1px solid ${c[1]}33; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:600; white-space:nowrap;">${esc(st)}</span>`;
+        }
 
         function init() {
             WF.mountUserSwitcher();
@@ -229,129 +326,204 @@
             document.getElementById('fType').innerHTML = `<option value="">Tất cả</option>` + types.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('');
             const kinds = Array.from(new Set([].concat(WF.APPROVAL_KINDS.XD, WF.APPROVAL_KINDS.YCBT)));
             document.getElementById('fKind').innerHTML = `<option value="">Tất cả</option>` + kinds.map(k => `<option value="${esc(k)}">${esc(k)}</option>`).join('');
+            document.getElementById('fWork').innerHTML = `<option value="">Tất cả</option>` + WF.WORK_TYPE_ORDER.map(k => `<option value="${esc(k)}">${esc(k)}</option>`).join('');
             const tab = new URLSearchParams(location.search).get('tab');
-            if (['assign', 'approve', 'done'].includes(tab)) activeTab = tab;
+            if (tab === 'done') activeTab = 'done';
             switchTab(activeTab);
         }
 
         function resetFilters() {
-            ['fCode', 'fName', 'fType', 'fKind'].forEach(id => document.getElementById(id).value = '');
+            ['fCode', 'fName', 'fType', 'fKind', 'fWork'].forEach(id => document.getElementById(id).value = '');
             renderAll();
         }
 
         function switchTab(tab) {
-            activeTab = tab;
-            document.querySelectorAll('.wf-tabs .tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
-            document.getElementById('tabNote').textContent = TAB_NOTES[tab];
+            activeTab = tab === 'done' ? 'done' : 'pending';
+            document.querySelectorAll('.wf-tabs .tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === activeTab));
+            document.getElementById('tabNote').textContent = TAB_NOTES[activeTab];
+            document.getElementById('thDetail').textContent = activeTab === 'done' ? 'Kết quả xử lý của tôi' : 'Nội dung cần xử lý';
+            document.getElementById('thWho').textContent = activeTab === 'done' ? 'Người xử lý' : 'Người chuyển/trình';
+            document.getElementById('thAt').textContent = activeTab === 'done' ? 'Thời điểm xử lý' : 'Thời điểm nhận';
             renderAll();
         }
 
-        function lastSender(rec) {
-            if (activeTab === 'approve' && rec.approval) {
-                const step = rec.approval.steps[rec.approval.steps.length - 1];
-                return step ? { who: `${WF.userName(step.userId)} (${WF.unitName(step.unitId)})`, at: step.at } : { who: `${WF.userName(rec.approval.submittedBy)} - Cán bộ chủ trì`, at: rec.approval.submittedAt };
-            }
-            const r = WF.latestRoute(rec);
-            if (r) return { who: `${WF.userName(r.fromUserId)} (${WF.unitName(r.fromUnitId)})`, at: r.at };
-            const h = (rec.history || [])[0];
-            return { who: h ? `${h.userName} - ${/Xác định CQGQBT/.test(h.action) ? 'Chuyển từ Xác định CQGQBT' : 'Cán bộ tiếp nhận'}` : '--', at: rec.receivedAt || '--' };
+        function setWorkFilter(type) {
+            document.getElementById('fWork').value = type;
+            renderAll();
         }
 
-        function contentText(rec) {
-            const me = WF.getCurrentUserId();
-            if (activeTab === 'assign') return `Phân công xử lý tại ${WF.unitName(rec.currentUnitId)}`;
-            if (activeTab === 'approve') return `Phê duyệt: ${rec.approval.kind}`;
-            const mine = (rec.history || []).filter(h => h.userId === me).pop();
-            return mine ? `${mine.action}: ${mine.note}` : '--';
-        }
-
-        function getRows(tab) {
-            const tasks = WF.getLeaderTasks();
+        // Lọc theo các điều kiện (trừ Loại công việc khi tính số lượng của nút Lọc nhanh)
+        function filterTasks(list, ignoreWork) {
             const code = norm(document.getElementById('fCode').value);
             const name = norm(document.getElementById('fName').value);
             const type = document.getElementById('fType').value;
             const kind = document.getElementById('fKind').value;
-            // Nội dung trình: theo phiếu trình hiện tại (Chờ duyệt), phiếu bị trả lại hoặc phiếu gần nhất
-            const kindOf = r => WF.approvalKindOf(r) || (r.approval ? r.approval.kind : '');
-            return tasks[tab].filter(r => (!code || norm(r.code).includes(code)) && (!name || norm(r.nycName).includes(name)) && (!type || r.loaiYeuCau === type) && (!kind || kindOf(r) === kind));
+            const work = ignoreWork ? '' : document.getElementById('fWork').value;
+            return list.filter(t => (!code || norm(t.code).includes(code) || norm(t.caseCode).includes(code))
+                && (!name || norm(t.nycName).includes(name))
+                && (!type || t.loaiYeuCau === type)
+                && (!kind || t.kind === kind)
+                && (!work || t.type === work));
         }
 
         function renderAll() {
-            const tasks = WF.getLeaderTasks();
-            document.getElementById('cntAssign').textContent = tasks.assign.length;
-            document.getElementById('cntApprove').textContent = tasks.approve.length;
-            document.getElementById('cntDone').textContent = tasks.done.length;
-            const rows = getRows(activeTab);
+            const work = WF.getLeaderWork();
+            document.getElementById('cntPending').textContent = work.pending.length;
+            document.getElementById('cntDone').textContent = work.done.length;
+            const all = work[activeTab];
+            const base = filterTasks(all, true);
+            const sel = document.getElementById('fWork').value;
+            const chip = (label, value, n) => `<button type="button" class="work-chip${sel === value ? ' active' : ''}" onclick="setWorkFilter('${esc(value)}')">${value ? workBadge(value).replace(/class="work-badge"/, 'class="work-badge chip-in"') : esc(label)} <span class="chip-count">${n}</span></button>`;
+            document.getElementById('workChips').innerHTML = `<span class="muted" style="font-weight:600;">Loại công việc:</span>` + chip('Tất cả', '', base.length) + WF.WORK_TYPE_ORDER.map(t => chip(t, t, base.filter(x => x.type === t).length)).join('');
+            const rows = filterTasks(all, false);
+            currentTasks = rows;
             const body = document.getElementById('taskBody');
             if (!rows.length) {
-                body.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:28px; font-style:italic;">Không có hồ sơ.</td></tr>`;
+                body.innerHTML = `<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:28px; font-style:italic;">Không có công việc.</td></tr>`;
                 return;
             }
             const me = WF.getCurrentUserId();
-            body.innerHTML = rows.map((rec, i) => {
-                const s = lastSender(rec);
-                let acts = `<button class="act" title="Xem chi tiết" onclick="event.stopPropagation(); openDetail('${esc(rec.code)}')"><i class="fa-solid fa-eye"></i> Xem</button>`;
-                if (activeTab === 'assign') acts += `<button class="act primary" onclick="event.stopPropagation(); openAssign('${esc(rec.code)}')"><i class="fa-solid fa-diagram-project"></i> Phân công</button>`;
-                if (activeTab === 'approve') acts += `<button class="act success" onclick="event.stopPropagation(); openDecision('${esc(rec.code)}','approve')"><i class="fa-solid fa-check"></i> Phê duyệt</button><button class="act danger" onclick="event.stopPropagation(); openDecision('${esc(rec.code)}','reject')"><i class="fa-solid fa-xmark"></i> Từ chối</button>`;
-                if (activeTab === 'done' && WF.getRecallInfo(rec, me)) acts += `<button class="act warn" onclick="event.stopPropagation(); confirmRecall('${esc(rec.code)}')"><i class="fa-solid fa-rotate-left"></i> Thu hồi</button>`;
-                return `<tr onclick="openDetail('${esc(rec.code)}')">
+            body.innerHTML = rows.map((t, i) => {
+                let acts = `<button class="act" title="Xem chi tiết công việc" onclick="event.stopPropagation(); openWork(${i})"><i class="fa-solid fa-eye"></i> Xem</button>`;
+                const c = esc(t.code);
+                if (activeTab === 'pending') {
+                    if (t.type === WT.PHAN_CONG) acts += `<button class="act primary" onclick="event.stopPropagation(); openAssign('${c}')"><i class="fa-solid fa-diagram-project"></i> Phân công</button>`;
+                    else if (t.type === WT.PHE_DUYET || t.type === WT.KY_QD) acts += `<button class="act success" onclick="event.stopPropagation(); openDecision('${c}','approve')"><i class="fa-solid fa-check"></i> ${t.type === WT.KY_QD ? 'Ký duyệt' : 'Phê duyệt'}</button><button class="act danger" onclick="event.stopPropagation(); openDecision('${c}','reject')"><i class="fa-solid fa-xmark"></i> Từ chối</button>`;
+                    else if (t.type === WT.THU_LY) acts += `<button class="act success" onclick="event.stopPropagation(); openThuLy('${c}')"><i class="fa-solid fa-gavel"></i> Thụ lý</button><button class="act danger" onclick="event.stopPropagation(); openKtl('${c}')"><i class="fa-solid fa-ban"></i> Không thụ lý</button>`;
+                    else if (t.type === WT.KY_KP) acts += `<button class="act success" onclick="event.stopPropagation(); openKpDecision('${esc(t.proposal.id)}','approve')"><i class="fa-solid fa-check"></i> Ký duyệt</button><button class="act danger" onclick="event.stopPropagation(); openKpDecision('${esc(t.proposal.id)}','reject')"><i class="fa-solid fa-xmark"></i> Từ chối</button>`;
+                } else if (t.source === 'wf' && isLatestDoneOf(t) && WF.getRecallInfo(t.rec, me)) {
+                    acts += `<button class="act warn" onclick="event.stopPropagation(); confirmRecall('${c}')"><i class="fa-solid fa-rotate-left"></i> Thu hồi</button>`;
+                }
+                const statusHtml = t.source === 'kp' ? kpStatusBadge(t.status) : WF.statusBadge(t.rec.status) + (WF.approvalLabel(t.rec) ? `<div class="muted" style="margin-top:4px;">${esc(WF.approvalLabel(t.rec))}</div>` : '');
+                const codeSub = t.source === 'kp' ? `<div class="muted">Vụ việc ${esc(t.caseCode)}</div>` : `<div class="muted">${esc(t.loaiYeuCau)}</div>`;
+                return `<tr onclick="openWork(${i})">
                     <td style="text-align:center;">${i + 1}</td>
-                    <td class="code-cell">${esc(rec.code)}</td>
-                    <td>${esc(rec.loaiYeuCau)}${rec.nguonHoSo ? `<div class="muted">Nguồn: ${esc(rec.nguonHoSo)}</div>` : ''}</td>
-                    <td><strong>${esc(rec.nycName || '--')}</strong></td>
-                    <td>${esc(contentText(rec))}</td>
-                    <td>${esc(s.who)}</td>
-                    <td style="text-align:center;">${esc(s.at)}</td>
-                    <td style="text-align:center;">${WF.statusBadge(rec.status)}${WF.approvalLabel(rec) ? `<div class="muted" style="margin-top:4px;">${esc(WF.approvalLabel(rec))}</div>` : ''}</td>
+                    <td class="code-cell">${c}${codeSub}</td>
+                    <td>${workBadge(t.type)}${t.kind ? `<div class="muted" style="margin-top:4px;">${esc(t.kind)}</div>` : ''}</td>
+                    <td><strong>${esc(t.nycName || '--')}</strong></td>
+                    <td>${esc(t.detail)}</td>
+                    <td>${esc(t.who)}</td>
+                    <td style="text-align:center;">${esc(t.at)}</td>
+                    <td style="text-align:center;">${statusHtml}</td>
                     <td><div class="act-flex">${acts}</div></td>
                 </tr>`;
             }).join('');
         }
-
-        // ---------- Chi tiết ----------
-        function openDetail(code) {
-            const rec = WF.getRecord(code);
-            if (!rec) return;
-            const me = WF.getCurrentUserId();
-            if (WF.markViewed(rec, me)) WF.upsertRecord(rec);
-            const docs = (rec.attachedDocs || []).map(d => `${esc(d.name)}${d.file ? ' - ' + esc(d.file) : ''}`).join('<br>') || '<span class="muted">Không có</span>';
-            const nb = rec.nbth;
-            const moduleUrl = rec.module === 'XD' ? `xac_dinh_co_quan_boi_thuong.html?detail=${encodeURIComponent(rec.code)}&readonly=1&returnUrl=viec_cho_lanh_dao_xu_ly.html` : '';
-            document.getElementById('dTitle').textContent = `Chi tiết hồ sơ ${rec.code}`;
-            document.getElementById('dBody').innerHTML = `
-                <div class="info-grid">
-                    <div class="k">Mã hồ sơ</div><div><strong style="color:var(--primary-light);">${esc(rec.code)}</strong></div>
-                    <div class="k">Loại yêu cầu</div><div>${esc(rec.loaiYeuCau)}</div>
-                    ${rec.nguonHoSo ? `<div class="k">Nguồn hồ sơ</div><div>${esc(rec.nguonHoSo)}${rec.xdCode ? ` - Hồ sơ Xác định CQGQBT <a href="#" onclick="openModule('xac_dinh_co_quan_boi_thuong.html?detail=${encodeURIComponent(rec.xdCode)}&readonly=1&returnUrl=viec_cho_lanh_dao_xu_ly.html'); return false;">${esc(rec.xdCode)}</a>` : ''}</div>` : ''}
-                    <div class="k">Trạng thái</div><div>${WF.statusBadge(rec.status)}</div>
-                    <div class="k">Đơn vị gốc</div><div>${esc(WF.unitName(rec.rootUnitId))}</div>
-                    <div class="k">Đơn vị đang phân công</div><div>${esc(WF.unitName(rec.currentUnitId))}</div>
-                    <div class="k">Họ và tên người yêu cầu</div><div><strong>${esc(rec.nycName || '--')}</strong>${rec.nycRole ? ` <span class="muted">(${esc(rec.nycRole)})</span>` : ''}</div>
-                    ${nb && nb.name ? `<div class="k">Người bị thiệt hại</div><div>${esc(nb.name)}${nb.dob ? ' - Ngày sinh: ' + esc(nb.dob) : ''}${nb.docNo ? ' - ' + esc(nb.docType || '') + ': ' + esc(nb.docNo) : ''}</div>` : ''}
-                    <div class="k">Hành vi gây thiệt hại</div><div>${esc(rec.hanhVi || '--')}</div>
-                    ${rec.transferContent ? `<div class="k">Nội dung chuyển xử lý</div><div>${esc(rec.transferContent)}<div class="muted">${(rec.transferFiles || []).map(f => esc(f.name)).join(', ')}</div></div>` : ''}
-                    <div class="k">Tài liệu đính kèm</div><div>${docs}</div>
-                    <div class="k">Cán bộ chủ trì</div><div>${rec.chuTri ? esc(WF.userLabel(rec.chuTri)) : '<span class="muted">Chưa phân công</span>'}</div>
-                    <div class="k">Cán bộ phối hợp</div><div>${(rec.phoiHop || []).length ? rec.phoiHop.map(id => esc(WF.userName(id))).join(', ') : '<span class="muted">Không có</span>'}</div>
-                </div>
-                ${rec.approval ? `<div class="sec-title">Trình phê duyệt</div>${WF.renderApprovalHtml(rec)}` : ''}
-                <div class="sec-title">Quá trình phân công</div>${WF.renderRoutesHtml(rec)}
-                <div class="sec-title">Lịch sử xử lý</div>${WF.renderHistoryHtml(rec)}`;
-            let footer = `<button class="btn btn-secondary" onclick="closeOverlay('detailOverlay')">Đóng</button>`;
-            if (moduleUrl && !['Chờ phân công', 'Đang phân công'].includes(rec.status)) footer += `<button class="btn btn-secondary" onclick="openModule('${moduleUrl}')"><i class="fa-solid fa-up-right-from-square"></i> Mở hồ sơ trong phân hệ</button>`;
-            if (WF.canAssign(rec, me)) footer += `<button class="btn btn-primary" onclick="closeOverlay('detailOverlay'); openAssign('${esc(rec.code)}')"><i class="fa-solid fa-diagram-project"></i> Phân công</button>`;
-            if (WF.canApprove(rec, me)) footer += `<button class="btn btn-danger" style="background:#ef4444; color:#fff; border:none;" onclick="closeOverlay('detailOverlay'); openDecision('${esc(rec.code)}','reject')">Từ chối</button><button class="btn btn-primary" onclick="closeOverlay('detailOverlay'); openDecision('${esc(rec.code)}','approve')"><i class="fa-solid fa-check"></i> Phê duyệt</button>`;
-            if (WF.getRecallInfo(rec, me)) footer += `<button class="btn btn-secondary" onclick="closeOverlay('detailOverlay'); confirmRecall('${esc(rec.code)}')"><i class="fa-solid fa-rotate-left"></i> Thu hồi</button>`;
-            document.getElementById('dFooter').innerHTML = footer;
-            openOverlay('detailOverlay');
-            renderAll();
+        // Thu hồi chỉ hiển thị trên dòng Đã xử lý gần nhất của hồ sơ
+        function isLatestDoneOf(t) {
+            const mine = (t.rec.history || []).filter(h => h.userId === WF.getCurrentUserId() && /Chuyển đơn vị|Phân công cán bộ|Phê duyệt/.test(h.action));
+            return mine.length && mine[mine.length - 1] === t.history;
         }
 
-        function openModule(url) {
-            if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === 'function') {
-                window.parent.openAdminModule(url, 'xac_dinh_co_quan_boi_thuong.html?v=20261008');
+        // ---------- Chi tiết công việc ----------
+        // Popup trình bày đúng công việc của Lãnh đạo (nội dung cần xử lý / kết quả đã xử lý) + tóm tắt hồ sơ;
+        // xem đầy đủ hồ sơ vụ việc qua nút "Xem hồ sơ vụ việc" (mở màn chi tiết vụ việc chỉ xem tại tab mới)
+        function caseUrlOf(t) {
+            if (t.source === 'wf' && t.rec.module === 'XD') {
+                return ['Chờ phân công', 'Đang phân công'].includes(t.rec.status) ? '' : `xac_dinh_co_quan_boi_thuong.html?detail=${encodeURIComponent(t.code)}&readonly=1&returnUrl=viec_cho_lanh_dao_xu_ly.html`;
+            }
+            if (t.source === 'wf' && ['Chờ phân công', 'Đang phân công'].includes(t.rec.status)) return '';
+            return `quan_ly_boi_thuong.html?id=${encodeURIComponent(t.caseCode)}&readonly=1&mode=detail&returnUrl=viec_cho_lanh_dao_xu_ly.html`;
+        }
+        function openWork(i) {
+            const t = currentTasks[i];
+            if (!t) return;
+            const me = WF.getCurrentUserId();
+            if (t.source === 'wf' && WF.markViewed(t.rec, me)) WF.upsertRecord(t.rec);
+            const row = (k, v) => `<div class="k">${esc(k)}</div><div>${v}</div>`;
+            let html = `<div class="sec-title" style="margin-top:0;">I. Thông tin công việc</div><div class="info-grid">
+                ${row('Loại công việc', workBadge(t.type) + (t.kind ? ` <span class="muted">${esc(t.kind)}</span>` : ''))}
+                ${row(activeTab === 'done' ? 'Kết quả xử lý của tôi' : 'Nội dung cần xử lý', esc(t.detail))}
+                ${row(activeTab === 'done' ? 'Người xử lý' : 'Người chuyển/trình', esc(t.who))}
+                ${row(activeTab === 'done' ? 'Thời điểm xử lý' : 'Thời điểm nhận', esc(t.at))}
+                ${row('Trạng thái hồ sơ hiện tại', t.source === 'kp' ? kpStatusBadge(t.proposal.status) : WF.statusBadge(t.rec.status))}
+            </div>`;
+            if (t.source === 'kp') {
+                const p = t.proposal;
+                html += `<div class="sec-title">II. Đề nghị cần ký duyệt</div><div class="info-grid">
+                    ${row('Mã đề nghị', `<strong>${esc(p.code)}</strong>`)}
+                    ${row('Loại đề nghị', esc(t.kind))}
+                    ${row('Mã vụ việc', esc(p.ycbtCode))}
+                    ${row('Số tiền đề nghị', `<strong>${(Number(p.amount) || 0).toLocaleString('vi-VN')} đ</strong>`)}
+                    ${row('Nguồn kinh phí', esc(p.source || '--'))}
+                    ${row('Cơ quan cấp kinh phí', esc(p.cqCap || '--'))}
+                    ${row('Cán bộ lập / Ngày lập', `${esc(p.user || '--')} - ${esc(p.date || '--')}`)}
+                    ${row('Nội dung đề nghị', esc(p.notes || '--'))}
+                    ${row('Tài liệu đính kèm', (p.files || []).map(f => esc(f.name) + (f.file ? ' - ' + esc(f.file) : '')).join('<br>') || '<span class="muted">Không có</span>')}
+                    ${p.approvedDate ? row('Ý kiến ký duyệt', `${esc(p.leaderOpinion || '--')} <span class="muted">(${esc(p.approvedLeader || '--')} - ${esc(p.approvedDate)})</span>`) : ''}
+                </div>`;
             } else {
-                location.href = url;
+                const rec = t.rec;
+                if (t.type === WT.PHAN_CONG) {
+                    html += `<div class="sec-title">II. Phân công xử lý</div><div class="info-grid">${row('Đơn vị gốc', esc(WF.unitName(rec.rootUnitId)))}${row('Đơn vị đang phân công', esc(WF.unitName(rec.currentUnitId)))}</div>${WF.renderRoutesHtml(rec)}`;
+                } else if (t.type === WT.THU_LY) {
+                    const tl = rec.thuLy;
+                    html += `<div class="sec-title">II. Thụ lý hồ sơ</div><div class="info-grid">
+                        ${row('Cơ quan giải quyết bồi thường', esc(WF.unitName(rec.rootUnitId)))}
+                        ${row('Đơn vị thụ lý', esc(WF.unitName(WF.thuLyUnitOf(rec))))}
+                        ${row('Cán bộ tiếp nhận hồ sơ', rec.chuTri && !tl ? esc(WF.userLabel(rec.chuTri)) : (tl && tl.officers ? tl.officers.map(id => esc(WF.userLabel(id))).join('<br>') : '--'))}
+                        ${tl && tl.rejected ? row('Không thụ lý', esc((rec.gqData && rec.gqData.rejectReason) || '--')) : ''}
+                        ${tl && tl.note ? row('Ý kiến chỉ đạo', esc(tl.note)) : ''}
+                    </div>`;
+                } else if (rec.approval) {
+                    html += `<div class="sec-title">II. Nội dung trình ${t.type === WT.KY_QD ? 'ký duyệt' : 'phê duyệt'}</div>${WF.renderApprovalHtml(rec)}`;
+                }
+            }
+            const rec = t.rec;
+            html += `<div class="sec-title">III. Tóm tắt hồ sơ vụ việc</div><div class="info-grid">
+                ${row('Mã vụ việc', `<strong style="color:var(--primary-light);">${esc(t.caseCode)}</strong>`)}
+                ${row('Loại yêu cầu', esc(t.loaiYeuCau) + (t.nguonHoSo ? ` <span class="muted">(Nguồn: ${esc(t.nguonHoSo)})</span>` : ''))}
+                ${row('Họ và tên người yêu cầu', `<strong>${esc(t.nycName || '--')}</strong>`)}
+                ${rec ? row('Hành vi gây thiệt hại', esc(rec.hanhVi || '--')) : ''}
+                ${rec ? row('Cán bộ chủ trì', rec.chuTri ? esc(WF.userLabel(rec.chuTri)) : '<span class="muted">Chưa phân công</span>') : ''}
+            </div>`;
+            if (rec) html += `<div class="sec-title">IV. Lịch sử xử lý</div>${WF.renderHistoryHtml(rec)}`;
+            document.getElementById('dTitle').textContent = `Chi tiết công việc: ${t.type} - ${t.code}`;
+            document.getElementById('dBody').innerHTML = html;
+            const url = caseUrlOf(t);
+            let footer = `<button class="btn btn-secondary" onclick="closeOverlay('detailOverlay')">Đóng</button>`;
+            if (url) footer += `<button class="btn btn-secondary" onclick="openModule('${url}', '${t.source === 'wf' && t.rec.module === 'XD' ? 'xac_dinh_co_quan_boi_thuong.html?v=20261008' : 'tra_cuu_ho_so_boi_thuong.html?v=1'}')"><i class="fa-solid fa-up-right-from-square"></i> Xem hồ sơ vụ việc</button>`;
+            const c = esc(t.code);
+            if (activeTab === 'pending') {
+                if (t.type === WT.PHAN_CONG && WF.canAssign(rec, me)) footer += `<button class="btn btn-primary" onclick="closeOverlay('detailOverlay'); openAssign('${c}')"><i class="fa-solid fa-diagram-project"></i> Phân công</button>`;
+                if ((t.type === WT.PHE_DUYET || t.type === WT.KY_QD) && WF.canApprove(rec, me)) footer += `<button class="btn btn-danger" style="background:#ef4444; color:#fff; border:none;" onclick="closeOverlay('detailOverlay'); openDecision('${c}','reject')">Từ chối</button><button class="btn btn-primary" onclick="closeOverlay('detailOverlay'); openDecision('${c}','approve')"><i class="fa-solid fa-check"></i> ${t.type === WT.KY_QD ? 'Ký duyệt' : 'Phê duyệt'}</button>`;
+                if (t.type === WT.THU_LY && WF.canThuLy(rec, me)) footer += `<button class="btn btn-danger" style="background:#ef4444; color:#fff; border:none;" onclick="closeOverlay('detailOverlay'); openKtl('${c}')"><i class="fa-solid fa-ban"></i> Không thụ lý</button><button class="btn btn-primary" onclick="closeOverlay('detailOverlay'); openThuLy('${c}')"><i class="fa-solid fa-gavel"></i> Thụ lý</button>`;
+                if (t.type === WT.KY_KP && t.proposal.status === 'Chờ duyệt') footer += `<button class="btn btn-danger" style="background:#ef4444; color:#fff; border:none;" onclick="closeOverlay('detailOverlay'); openKpDecision('${esc(t.proposal.id)}','reject')">Từ chối</button><button class="btn btn-primary" onclick="closeOverlay('detailOverlay'); openKpDecision('${esc(t.proposal.id)}','approve')"><i class="fa-solid fa-check"></i> Ký duyệt</button>`;
+            } else if (t.source === 'wf' && isLatestDoneOf(t) && WF.getRecallInfo(rec, me)) {
+                footer += `<button class="btn btn-secondary" onclick="closeOverlay('detailOverlay'); confirmRecall('${c}')"><i class="fa-solid fa-rotate-left"></i> Thu hồi</button>`;
+            }
+            document.getElementById('dFooter').innerHTML = footer;
+            openOverlay('detailOverlay');
+        }
+
+        // ---------- Ký duyệt cấp kinh phí (đề nghị tạm ứng / cấp kinh phí bồi thường) ----------
+        let kpActingId = null;
+        function openKpDecision(id, mode) {
+            const p = WF.loadKinhPhi().find(x => x.id === id);
+            if (!p || p.status !== 'Chờ duyệt' || !WF.kpLeaders(p).includes(WF.getCurrentUserId())) { showToast('Đề nghị đã được xử lý bởi người khác. Danh sách đã được tải lại.', 'error'); renderAll(); return; }
+            kpActingId = id;
+            decisionMode = mode === 'approve' ? 'kp-approve' : 'kp-reject';
+            const kindText = WF.isAdvanceProposal(p) ? 'Đề nghị tạm ứng' : 'Đề nghị cấp kinh phí bồi thường';
+            document.getElementById('decTitle').innerHTML = mode === 'approve' ? `<i class="fa-solid fa-circle-check"></i> Ký duyệt ${esc(kindText.toLowerCase())} ${esc(p.code)}` : `<i class="fa-solid fa-circle-xmark" style="color:#dc2626;"></i> Từ chối ${esc(kindText.toLowerCase())} ${esc(p.code)}`;
+            document.getElementById('decContext').innerHTML = `<div><strong>${esc(kindText)}:</strong> ${esc(p.code)} - Vụ việc ${esc(p.ycbtCode)} - ${esc(p.nycName || '--')}</div><div style="margin-top:4px;"><strong>Số tiền:</strong> ${(Number(p.amount) || 0).toLocaleString('vi-VN')} đ - <strong>Nguồn:</strong> ${esc(p.source || '--')}</div><div class="hint">${mode === 'approve' ? 'Sau khi ký duyệt, đề nghị chuyển [Chờ chi trả].' : 'Sau khi từ chối, đề nghị chuyển [Bị từ chối] cho cán bộ lập đề nghị.'}</div>`;
+            document.getElementById('decLabel').innerHTML = mode === 'approve' ? 'Ý kiến ký duyệt' : 'Lý do từ chối<span class="required">*</span>';
+            document.getElementById('decNote').placeholder = mode === 'approve' ? 'Nhập ý kiến ký duyệt...' : 'Nhập lý do từ chối...';
+            document.getElementById('decNote').value = '';
+            document.getElementById('decErr').style.display = 'none';
+            document.getElementById('decNextGroup').style.display = 'none';
+            const btn = document.getElementById('decSubmit');
+            btn.textContent = mode === 'approve' ? 'Ký duyệt' : 'Từ chối';
+            btn.className = mode === 'approve' ? 'btn btn-primary' : 'btn btn-danger';
+            btn.style.cssText = mode === 'approve' ? '' : 'background:#ef4444; color:#fff; border:none;';
+            openOverlay('decideOverlay');
+        }
+
+        // Mở màn hình ở tab mới của trang Quản trị (chạy độc lập: mở tab trình duyệt mới), không rời danh sách công việc
+        function openModule(url, activeUrl) {
+            if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === 'function') {
+                window.parent.openAdminModule(url, activeUrl || 'xac_dinh_co_quan_boi_thuong.html?v=20261008');
+            } else {
+                window.open(url, '_blank');
             }
         }
 
@@ -417,12 +589,14 @@
             actingCode = code;
             decisionMode = mode;
             const a = rec.approval;
+            const verb = WF.QD_KINDS.includes(a.kind) ? 'ký duyệt' : 'phê duyệt';
+            const Verb = verb.charAt(0).toUpperCase() + verb.slice(1);
             const isLast = a.level === a.path.length - 1;
-            const after = mode === 'approve' ? (isLast ? `Cấp phê duyệt cuối cùng. Sau khi phê duyệt, hồ sơ chuyển [${a.resultStatus || WF.SUBMIT_KINDS[a.kind] || a.prevStatus || ''}].` : `Sau khi phê duyệt, hồ sơ chuyển ${WF.unitName(a.path[a.level + 1])} phê duyệt.`) : 'Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị trả lại] cho cán bộ chủ trì.';
-            document.getElementById('decTitle').innerHTML = mode === 'approve' ? `<i class="fa-solid fa-circle-check"></i> Phê duyệt hồ sơ ${esc(code)}` : `<i class="fa-solid fa-circle-xmark" style="color:#dc2626;"></i> Từ chối phê duyệt hồ sơ ${esc(code)}`;
+            const after = mode === 'approve' ? (isLast ? `Cấp phê duyệt cuối cùng. Sau khi ${verb}, hồ sơ chuyển [${a.resultStatus || WF.SUBMIT_KINDS[a.kind] || a.prevStatus || ''}].` : `Sau khi ${verb}, hồ sơ chuyển ${WF.unitName(a.path[a.level + 1])} ${verb}.`) : 'Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị trả lại] cho cán bộ chủ trì.';
+            document.getElementById('decTitle').innerHTML = mode === 'approve' ? `<i class="fa-solid fa-circle-check"></i> ${Verb} hồ sơ ${esc(code)}` : `<i class="fa-solid fa-circle-xmark" style="color:#dc2626;"></i> Từ chối phê duyệt hồ sơ ${esc(code)}`;
             document.getElementById('decContext').innerHTML = WF.renderDraftDocHtml(rec) + `<div><strong>Nội dung trình:</strong> ${esc(a.kind)} - ${esc(WF.userName(a.submittedBy))}</div>${a.content ? `<div class="muted">${esc(a.content)}</div>` : ''}<div style="margin-top:6px;"><strong>Cấp phê duyệt:</strong> ${a.level + 1}/${a.path.length} - ${esc(WF.unitName(a.path[a.level]))}</div><div class="hint">${esc(after)}</div>`;
-            document.getElementById('decLabel').innerHTML = mode === 'approve' ? 'Ý kiến phê duyệt' : 'Lý do từ chối phê duyệt<span class="required">*</span>';
-            document.getElementById('decNote').placeholder = mode === 'approve' ? 'Nhập ý kiến phê duyệt...' : 'Nhập lý do từ chối phê duyệt...';
+            document.getElementById('decLabel').innerHTML = mode === 'approve' ? `Ý kiến ${verb}` : 'Lý do từ chối phê duyệt<span class="required">*</span>';
+            document.getElementById('decNote').placeholder = mode === 'approve' ? `Nhập ý kiến ${verb}...` : 'Nhập lý do từ chối phê duyệt...';
             document.getElementById('decNote').value = '';
             document.getElementById('decErr').style.display = 'none';
             const nextLeaders = mode === 'approve' ? WF.nextLevelLeaders(rec) : [];
@@ -430,13 +604,21 @@
             document.getElementById('decNextErr').style.display = 'none';
             document.getElementById('decNext').innerHTML = `<option value="">Chọn Lãnh đạo ${esc(nextLeaders.length ? WF.unitName(a.path[a.level + 1]) : '')}...</option>` + nextLeaders.map(u => `<option value="${esc(u)}">${esc(WF.userLabel(u))}</option>`).join('');
             const btn = document.getElementById('decSubmit');
-            btn.textContent = mode === 'approve' ? 'Phê duyệt' : 'Từ chối phê duyệt';
+            btn.textContent = mode === 'approve' ? Verb : 'Từ chối phê duyệt';
             btn.className = mode === 'approve' ? 'btn btn-primary' : 'btn btn-danger';
             btn.style.cssText = mode === 'approve' ? '' : 'background:#ef4444; color:#fff; border:none;';
             openOverlay('decideOverlay');
         }
         function submitDecision() {
             const note = document.getElementById('decNote').value.trim();
+            if (decisionMode === 'kp-approve' || decisionMode === 'kp-reject') {
+                if (decisionMode === 'kp-reject' && !note) { document.getElementById('decErr').style.display = 'block'; return; }
+                const r = WF.decideKinhPhi(kpActingId, decisionMode === 'kp-approve', note);
+                closeOverlay('decideOverlay');
+                showToast(r.ok ? `Đề nghị ${r.proposal.code}: [${r.proposal.status}].` : r.message, r.ok ? 'success' : 'error');
+                renderAll();
+                return;
+            }
             if (decisionMode === 'reject' && !note) { document.getElementById('decErr').style.display = 'block'; return; }
             const next = document.getElementById('decNext').value;
             if (decisionMode === 'approve' && document.getElementById('decNextGroup').style.display !== 'none' && !next) { document.getElementById('decNextErr').style.display = 'block'; return; }
@@ -444,6 +626,77 @@
             closeOverlay('decideOverlay');
             const nextText = res.ok && res.record.status === WF.STATUS.CHO_PHE_DUYET ? ' - chuyển ' + (next ? WF.userName(next) + ' - ' : '') + WF.unitName(res.record.approval.path[res.record.approval.level]) : '';
             showToast(res.ok ? `Hồ sơ ${actingCode}: [${res.record.status}]${nextText}.` : res.message, res.ok ? 'success' : 'error');
+            renderAll();
+        }
+
+        // ---------- Thụ lý / Không thụ lý (Thủ trưởng cơ quan giải quyết bồi thường, hồ sơ Chờ thụ lý) ----------
+        let ktlTree = null;
+        function thuLyGuard(code) {
+            const rec = WF.getRecord(code);
+            if (!WF.canThuLy(rec, WF.getCurrentUserId())) { showToast('Hồ sơ đã được xử lý bởi người khác. Danh sách đã được tải lại.', 'error'); renderAll(); return null; }
+            actingCode = code;
+            return rec;
+        }
+        function openThuLy(code) {
+            const rec = thuLyGuard(code);
+            if (!rec) return;
+            const opts = WF.thuLyOfficerOptions(rec);
+            document.getElementById('tlCode').textContent = code;
+            document.getElementById('tlContext').textContent = `Cơ quan giải quyết bồi thường: ${WF.unitName(rec.rootUnitId)} - Người yêu cầu: ${rec.nycName || '--'}`;
+            document.getElementById('tlChuTri').innerHTML = `<option value="">Chọn cán bộ chủ trì...</option>` + opts.map(u => `<option value="${esc(u)}" ${u === rec.chuTri ? 'selected' : ''}>${esc(WF.userLabel(u))}</option>`).join('');
+            document.getElementById('tlNote').value = '';
+            document.getElementById('tlChuTriErr').style.display = 'none';
+            renderThuLyPhoiHop();
+            openOverlay('thuLyOverlay');
+        }
+        function renderThuLyPhoiHop() {
+            const rec = WF.getRecord(actingCode);
+            const chuTri = document.getElementById('tlChuTri').value;
+            const list = WF.thuLyOfficerOptions(rec).filter(u => u !== chuTri);
+            document.getElementById('tlPhoiHop').innerHTML = list.map(u => `<label><input type="checkbox" value="${esc(u)}"> ${esc(WF.userLabel(u))}</label>`).join('') || '<span class="muted">Không có cán bộ khác.</span>';
+        }
+        function submitThuLy() {
+            const chuTri = document.getElementById('tlChuTri').value;
+            if (!chuTri) { document.getElementById('tlChuTriErr').style.display = 'block'; return; }
+            const others = Array.from(document.querySelectorAll('#tlPhoiHop input:checked')).map(x => x.value);
+            const res = WF.acceptCase(actingCode, [chuTri].concat(others), document.getElementById('tlNote').value.trim());
+            closeOverlay('thuLyOverlay');
+            showToast(res.ok ? `Đã thụ lý hồ sơ ${actingCode}. Trạng thái: [${res.record.requestKind === 'honor' ? 'Đang phục hồi danh dự' : res.record.status}].` : res.message, res.ok ? 'success' : 'error');
+            renderAll();
+        }
+        function openKtl(code) {
+            const rec = thuLyGuard(code);
+            if (!rec) return;
+            document.getElementById('kCode').textContent = code;
+            document.getElementById('kContext').textContent = `Cơ quan giải quyết bồi thường: ${WF.unitName(rec.rootUnitId)} - Người yêu cầu: ${rec.nycName || '--'}`;
+            document.getElementById('kReason').innerHTML = `<option value="">Chọn lý do không thụ lý...</option>` + WF.getKtlReasons().map(r => `<option value="${esc(r.code)}">${esc(r.code)} - ${esc(r.name)}</option>`).join('');
+            document.getElementById('kDetail').value = '';
+            document.getElementById('kContent').value = '';
+            ['kReasonErr', 'kUnitErr', 'kContentErr'].forEach(id => document.getElementById(id).style.display = 'none');
+            ktlTree = WF.mountUnitTree(document.getElementById('kUnitTree'), { inputId: 'kUnit', disabledIds: [rec.rootUnitId], placeholder: '-- Chọn cơ quan tiếp nhận mới --' });
+            toggleKtlTransfer();
+            openOverlay('ktlOverlay');
+        }
+        // Lý do KTL_01 (không thuộc thẩm quyền giải quyết): bắt buộc chọn Cơ quan tiếp nhận mới và Nội dung/Căn cứ chuyển
+        function toggleKtlTransfer() {
+            document.getElementById('kTransferBlock').style.display = document.getElementById('kReason').value === 'KTL_01' ? 'block' : 'none';
+        }
+        function submitKtl() {
+            const reason = document.getElementById('kReason').value;
+            if (!reason) { document.getElementById('kReasonErr').style.display = 'block'; return; }
+            let transfer = null;
+            if (reason === 'KTL_01') {
+                const unit = (document.getElementById('kUnit') || {}).value || '';
+                const content = document.getElementById('kContent').value.trim();
+                document.getElementById('kUnitErr').style.display = unit ? 'none' : 'block';
+                document.getElementById('kContentErr').style.display = content ? 'none' : 'block';
+                if (!unit || !content) return;
+                transfer = { targetUnitId: unit, content };
+            }
+            const res = WF.rejectCase(actingCode, reason, document.getElementById('kDetail').value.trim(), transfer);
+            if (!res.ok && /cấu hình luồng/.test(res.message)) { showToast(res.message, 'error'); return; }
+            closeOverlay('ktlOverlay');
+            showToast(res.ok ? `Hồ sơ ${actingCode}: [${res.record.status}].` : res.message, res.ok ? 'success' : 'error');
             renderAll();
         }
 

@@ -590,14 +590,20 @@
             'Đình chỉ giải quyết',
             'Chờ thực thi',
             'Đang thực thi theo bản án',
+            'Đang phục hồi danh dự',
+            'Đang thực hiện',
+            'Chờ phản hồi',
+            'Chờ thực hiện',
+            'Tạm hoãn',
+            'Từ chối',
             'Hoàn thành'
         ];
 
         const statusGroups = {
             '': allStatuses,
-            'Đang xử lý': ['Chờ nhập liệu', 'Yêu cầu bổ sung', 'Chờ thụ lý', 'Đang xác minh thiệt hại', 'Đang thương lượng', 'Thương lượng không thành công', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Đang thực thi theo bản án'],
-            'Tạm dừng': ['Hoãn giải quyết', 'Tạm đình chỉ giải quyết'],
-            'Kết thúc': ['Bị từ chối', 'Từ chối thụ lý', 'Đình chỉ giải quyết', 'Hoàn thành']
+            'Đang xử lý': ['Chờ nhập liệu', 'Yêu cầu bổ sung', 'Chờ thụ lý', 'Đang xác minh thiệt hại', 'Đang thương lượng', 'Thương lượng không thành công', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Đang thực thi theo bản án', 'Đang phục hồi danh dự', 'Đang thực hiện', 'Chờ phản hồi', 'Chờ thực hiện'],
+            'Tạm dừng': ['Hoãn giải quyết', 'Tạm đình chỉ giải quyết', 'Tạm hoãn'],
+            'Kết thúc': ['Bị từ chối', 'Từ chối thụ lý', 'Đình chỉ giải quyết', 'Từ chối', 'Hoàn thành']
         };
 
         const fallbackClaims = [
@@ -636,8 +642,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             populateStatusSelects();
             allClaims = normalizeClaims(loadClaims());
-            phddList = allClaims.filter(item => item.restoreHonor).map(buildPhddRow);
-            ycbtList = allClaims.filter(item => !item.restoreHonor);
+            // Vụ việc 02 nhánh: tab Phục hồi danh dự gồm vụ việc Chỉ PHDD + Cả hai (theo Trạng thái Phục hồi danh dự);
+            // tab Yêu cầu bồi thường gồm vụ việc Bồi thường thiệt hại + Cả hai (theo Trạng thái vụ việc)
+            phddList = allClaims.filter(item => claimKind(item) !== 'money').map(buildPhddRow);
+            ycbtList = allClaims.filter(item => claimKind(item) !== 'honor').map(item => ({ ...item, status: caseStatusOf(item) }));
             setDefaultDates();
             // Khôi phục bộ lọc đã lưu (nếu có) trước khi tìm kiếm, để khi quay lại từ màn Xem chi
             // tiết/Đóng, các tiêu chí đã lọc (bao gồm Trạng thái giải quyết) vẫn được giữ nguyên.
@@ -781,9 +789,24 @@
             return status || 'Chờ nhập liệu';
         }
 
+        // Loại yêu cầu và Trạng thái vụ việc (cùng quy tắc với Giải quyết yêu cầu bồi thường)
+        function claimKind(item) {
+            if (item.requestType === 'honor') return 'honor';
+            return item.restoreHonor ? 'both' : 'money';
+        }
+        function caseStatusOf(item) {
+            const s = item.status;
+            if (claimKind(item) !== 'both' || !item.phddStatus) return s;
+            if (s === 'Đình chỉ giải quyết') return s;
+            if ((s === 'Hoàn thành' || s === 'Sung quỹ nhà nước') && !['Hoàn thành', 'Từ chối', 'Đình chỉ giải quyết'].includes(item.phddStatus)) return 'Đang phục hồi danh dự';
+            return s;
+        }
         function buildPhddRow(item) {
+            const ph = item.phddStatus === 'Chờ thực thi' ? 'Chờ thực hiện' : item.phddStatus;
             return {
                 ...item,
+                // Trạng thái Phục hồi danh dự (chưa Thụ lý: theo trạng thái giai đoạn chung của vụ việc)
+                status: ph || item.status,
                 type: getPhddType(item),
                 deadlineText: getDeadlineText(item),
                 updatedDate: item.updatedDate || getLastTimelineDate(item) || item.date || ''

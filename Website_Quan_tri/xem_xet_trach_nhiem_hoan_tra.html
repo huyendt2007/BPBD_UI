@@ -844,6 +844,10 @@
                 transform: translateY(0);
             }
         }
+        .ht-tabs-card { display: flex; gap: 8px; align-items: center; background: #fff; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); padding: 0 16px; margin-bottom: 12px; }
+        .ht-tab { border: 0; background: transparent; padding: 12px 16px; font-size: 13.5px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; display: inline-flex; align-items: center; gap: 8px; }
+        .ht-tab.active { color: var(--primary-light); border-bottom-color: var(--primary-light); }
+        .ht-tab-count { min-width: 20px; padding: 1px 7px; border-radius: 10px; background: #e2e8f0; color: #334155; font-size: 11.5px; font-weight: 700; text-align: center; }
     </style>
 </head>
 
@@ -881,6 +885,12 @@
             <div class="stat-title">Số tiền đã thu hồi thực tế (VNĐ)</div>
             <div class="stat-val" style="color: var(--success-color);" id="statDathuRefund">85.000.000 đ</div>
         </div>
+    </div>
+
+    <!-- 02 tab: Chờ xử lý / Đã xử lý theo vai trò giả lập (Cán bộ xử lý / Lãnh đạo phê duyệt) -->
+    <div class="ht-tabs-card">
+        <button type="button" class="ht-tab active" data-tab="pending" onclick="switchRefundTab('pending')"><i class="fa-solid fa-list-check"></i> Chờ xử lý <span class="ht-tab-count" id="htCntPending">0</span></button>
+        <button type="button" class="ht-tab" data-tab="done" onclick="switchRefundTab('done')"><i class="fa-solid fa-box-archive"></i> Đã xử lý <span class="ht-tab-count" id="htCntDone">0</span></button>
     </div>
 
     <!-- FILTER SEARCH BOX -->
@@ -2266,6 +2276,40 @@
         let currentSortDirection = 'asc';
         let activeKpiFilterRefund = 'all';
 
+        // ===== 02 tab Chờ xử lý / Đã xử lý =====
+        // - Cán bộ xử lý / Cán bộ tra cứu: Chờ xử lý = hồ sơ chưa kết thúc; Đã xử lý = Hoàn thành, Hoàn tất, Không xem xét trách nhiệm hoàn trả, Chấm dứt thu hồi.
+        // - Lãnh đạo phê duyệt: Chờ xử lý = hồ sơ chờ Lãnh đạo duyệt; Đã xử lý = hồ sơ đã qua bước duyệt.
+        const HT_DONE_STATES = ['Hoàn thành', 'Hoàn tất', 'Không xem xét trách nhiệm hoàn trả', 'Chấm dứt thu hồi'];
+        const HT_APPROVAL_STATES = ['Chờ duyệt QĐ thành lập', 'Chờ duyệt thành lập hội đồng', 'Chờ duyệt QĐ hoàn trả'];
+        let htTab = 'pending';
+        function htInTab(tab, d) {
+            if (currentMockRole === 'lanh_dao') {
+                if (tab === 'pending') return HT_APPROVAL_STATES.includes(d.status);
+                return !HT_APPROVAL_STATES.includes(d.status) && d.status !== 'Chờ thành lập hội đồng';
+            }
+            return tab === 'pending' ? !HT_DONE_STATES.includes(d.status) : HT_DONE_STATES.includes(d.status);
+        }
+        function switchRefundTab(tab) {
+            htTab = tab === 'done' ? 'done' : 'pending';
+            document.querySelectorAll('.ht-tabs-card .ht-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === htTab));
+            const sel = document.getElementById('filterStatusRefund');
+            if (sel) {
+                const states = Array.from(new Set(dossiersList.filter(d => htInTab(htTab, d)).map(d => d.status)));
+                const cur = sel.value;
+                sel.innerHTML = '<option value="">Tất cả</option>' + states.map(s => `<option value="${s}">${s}</option>`).join('');
+                sel.value = states.includes(cur) ? cur : '';
+            }
+            currentPageRefund = 1;
+            renderRefundTable();
+        }
+        function updateRefundTabCounts() {
+            const p = document.getElementById('htCntPending'), d = document.getElementById('htCntDone');
+            if (p) p.textContent = dossiersList.filter(x => htInTab('pending', x)).length;
+            if (d) d.textContent = dossiersList.filter(x => htInTab('done', x)).length;
+            // Số hồ sơ chờ Lãnh đạo duyệt: dùng cho Dashboard Lãnh đạo
+            try { localStorage.setItem('btnn_hoantra_summary', JSON.stringify({ pendingApproval: dossiersList.filter(x => HT_APPROVAL_STATES.includes(x.status)).map(x => ({ code: x.code, status: x.status, claimCode: x.claimCode })) })); } catch (e) { /* bỏ qua */ }
+        }
+
         function updateKpiCountersRefund() {
             const all = dossiersList.length;
             const pending = dossiersList.filter(d => 
@@ -2347,7 +2391,7 @@
             document.getElementById('kpiBtnAll')?.classList.add('active');
 
             updateUIForRole();
-            renderRefundTable();
+            switchRefundTab('pending');
             if (newRole === 'lanh_dao') {
                 showToast("Đang giả lập vai trò: Lãnh đạo phê duyệt (Thao tác Phê duyệt / Từ chối)", "success");
             } else if (newRole === 'chuyen_vien') {
@@ -2605,7 +2649,9 @@
             const agencySearch = (document.getElementById('filterAgency')?.value || '').trim().toLowerCase();
             const statusVal = document.getElementById('filterStatusRefund')?.value || '';
 
+            updateRefundTabCounts();
             let filtered = dossiersList.filter(item => {
+                if (!htInTab(htTab, item)) return false;
                 if (codeSearch && !item.code.toLowerCase().includes(codeSearch)) return false;
                 if (claimCodeSearch && !item.claimCode.toLowerCase().includes(claimCodeSearch)) return false;
                 if (officerSearch) {
@@ -3797,7 +3843,9 @@
                 sessionStorage.setItem('mockUserRole', roleParam);
             }
             updateUIForRole();
-            renderRefundTable();
+            // Mở tab theo tham số từ Dashboard Lãnh đạo: ?tab=pending|done
+            const tabParam = params.get('tab');
+            switchRefundTab(tabParam === 'done' || tabParam === 'da-xu-ly' ? 'done' : 'pending');
 
             const idParam = params.get('id');
             if (idParam) {

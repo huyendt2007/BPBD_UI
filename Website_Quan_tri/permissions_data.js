@@ -3034,11 +3034,11 @@ const systemPermissions = [
                                               },
                                               {
  "id":  "WebAdmin-10-03",
- "name":  "Hồ sơ trình Lãnh đạo",
+ "name":  "Dashboard Lãnh đạo",
  "children":  [
 {
  "id":  "WebAdmin-10-03-01",
- "name":  "Tra cứu hồ sơ trình Lãnh đạo",
+ "name":  "Xem Dashboard Lãnh đạo",
  "children":  [
 
  ]
@@ -3555,7 +3555,7 @@ const systemPermissions = [
                                                                                         },
                                                                                         {
                                                                                             "id":  "WebAdmin-26-03-01-02",
-                                                                                            "name":  "Tra cứu thông tin hỗ trợ người bị thiệt hại thực hiện thủ tục YCBT",
+                                                                                            "name":  "Tra cứu thông tin hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục YCBT",
                                                                                             "children":  [
 
                                                                                                          ]

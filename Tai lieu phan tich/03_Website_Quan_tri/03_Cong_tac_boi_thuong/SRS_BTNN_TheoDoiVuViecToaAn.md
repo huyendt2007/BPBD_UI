@@ -8,9 +8,9 @@
 
 \+ Tra cứu danh sách vụ việc tại Tòa án.
 
-\+ Xem chi tiết vụ việc, vụ việc liên quan, đề nghị cấp kinh phí đã tạo và lịch sử cập nhật.
+\+ Xem chi tiết vụ việc, đề nghị cấp kinh phí đã tạo và lịch sử cập nhật.
 
-\+ Thêm mới vụ việc; vụ việc "Yêu cầu cả hai" được hệ thống tự tách thành 02 vụ việc.
+\+ Thêm mới vụ việc; vụ việc "Yêu cầu cả hai" được lưu thành 01 vụ việc (01 Mã vụ việc), không tách.
 
 \+ Cập nhật thông tin và trạng thái vụ việc.
 
@@ -45,15 +45,15 @@
 | 2 | Phạm vi xem | Cán bộ xem vụ việc có Cơ quan bị khởi kiện là đơn vị gốc của mình.<br>- Cán bộ thuộc Bộ Tư pháp xem vụ việc của mọi cơ quan. |
 | 3 | Quyền nhập liệu | Một Loại yêu cầu áp dụng cho người dùng khi Đơn vị áp dụng chứa đơn vị của người dùng hoặc một đơn vị cấp trên của đơn vị đó.<br>- Đơn vị không được áp dụng Loại yêu cầu "Yêu cầu bồi thường": nút "Thêm mới" hiển thị mờ (thao tác Cập nhật, Xóa trên các vụ việc vẫn được thực hiện); màn hình hiển thị thông báo "Đơn vị của bạn chưa được áp dụng Loại yêu cầu "Yêu cầu bồi thường" nên không được thêm mới, cập nhật hoặc xóa vụ việc tại Tòa án."<br>- Cập nhật, Xóa chỉ áp dụng cho vụ việc có Cơ quan bị khởi kiện là đơn vị gốc của người dùng. Mọi cán bộ của cơ quan có quyền nhập liệu đều được cập nhật, không giới hạn người tạo. |
 | 4 | Mã vụ việc | Sinh khi Lưu theo quy tắc chung BT-yyyy-nnn: yyyy là năm hiện tại; nnn là số thứ tự lớn nhất trong năm cộng 1, xét đồng thời mã vụ việc tại Giải quyết yêu cầu bồi thường, hồ sơ luồng phân công Bồi thường nhà nước và module này; không trùng mã đã có. |
-| 5 | Tự tách vụ việc "Yêu cầu cả hai" | Khi thêm mới với Loại yêu cầu "Yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự)", hệ thống tạo 02 vụ việc với 02 Mã vụ việc liên tiếp:<br>+ Vụ việc thứ nhất: "Bồi thường thiệt hại bằng tiền", lưu bảng Thiệt hại yêu cầu bồi thường.<br>+ Vụ việc thứ hai: "Phục hồi danh dự", lưu Hình thức đề nghị phục hồi danh dự.<br>- Hai vụ việc dùng chung các thông tin còn lại, liên kết qua lại (Vụ việc liên quan) và cùng nằm trong module này.<br>- Sau khi tách, mỗi vụ việc được cập nhật trạng thái độc lập.<br>- Xóa một vụ việc thì gỡ liên kết ở vụ việc còn lại và ghi lịch sử "Gỡ liên kết". |
+| 5 | Vụ việc "Yêu cầu cả hai" | Khi thêm mới với Loại yêu cầu "Yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự)", hệ thống tạo 01 vụ việc với 01 Mã vụ việc, lưu đồng thời bảng Thiệt hại yêu cầu bồi thường và Hình thức đề nghị phục hồi danh dự; vụ việc có 01 trạng thái theo dõi tại Tòa án.<br>- Báo cáo thống kê đếm 01 vụ việc.<br>- Dữ liệu cũ đã tách thành 02 vụ việc liên kết (Vụ việc liên quan): hệ thống gộp thành 01 vụ việc Loại yêu cầu "Yêu cầu cả hai" (giữ vụ việc Bồi thường thiệt hại bằng tiền, lấy Hình thức đề nghị phục hồi danh dự của vụ việc còn lại, xóa vụ việc Phục hồi danh dự) và ghi lịch sử "Gộp vụ việc". |
 | 6 | Loại yêu cầu sau khi lưu | Loại yêu cầu chỉ chọn khi thêm mới; sau khi lưu hiển thị chỉ đọc. |
 | 7 | Trạng thái kết thúc | "Đã có bản án/QĐ" và "Trả lại đơn khởi kiện" là trạng thái kết thúc. Sau khi lưu ở trạng thái kết thúc, vụ việc không được đổi sang trạng thái khác (ô Trạng thái bị khóa); cán bộ vẫn được cập nhật các thông tin khác và được xóa vụ việc. |
 | 8 | Ngày hiệu lực bản án/QĐ | Bắt buộc khi Trạng thái = "Đã có bản án/QĐ"; không nhỏ hơn Ngày thụ lý. |
-| 9 | Tự tạo đề nghị cấp kinh phí | Khi vụ việc "Bồi thường thiệt hại bằng tiền" được lưu ở trạng thái "Đã có bản án/QĐ", hệ thống tạo 01 Đề nghị cấp kinh phí bồi thường tại [Quản lý kinh phí bồi thường - Giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_KinhPhi_BT.md):<br>+ Loại đề nghị: "Đề nghị cấp kinh phí bồi thường"; Trạng thái: "Chờ nhập liệu".<br>+ Dữ liệu nạp sẵn: Mã vụ việc; thông tin người yêu cầu bồi thường; Cơ quan bị khởi kiện; Số Bản án/Quyết định và Ngày Bản án/Quyết định có hiệu lực (làm Số, Ngày Quyết định làm căn cứ); các khoản thiệt hại yêu cầu bồi thường và tổng số tiền; tài liệu kèm theo có tệp đính kèm.<br>- Mỗi vụ việc chỉ tạo 01 lần, khóa chống trùng theo Mã vụ việc. Màn hình Cấp kinh phí tạm ứng/Bồi thường kiểm tra lại khi tải và bổ sung bản ghi còn thiếu.<br>- Vụ việc "Phục hồi danh dự" không tạo đề nghị cấp kinh phí.<br>- Ghi lịch sử vụ việc "Tạo đề nghị cấp kinh phí" với nội dung "Hệ thống tạo Đề nghị cấp kinh phí bồi thường [Mã đề xuất] ở trạng thái Chờ nhập liệu.", người thực hiện "Hệ thống". |
+| 9 | Tự tạo đề nghị cấp kinh phí | Khi vụ việc có yêu cầu bồi thường thiệt hại (Loại yêu cầu "Bồi thường thiệt hại bằng tiền" hoặc "Yêu cầu cả hai") được lưu ở trạng thái "Đã có bản án/QĐ", hệ thống tạo 01 Đề nghị cấp kinh phí bồi thường tại [Quản lý kinh phí bồi thường - Giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_KinhPhi_BT.md):<br>+ Loại đề nghị: "Đề nghị cấp kinh phí bồi thường"; Trạng thái: "Chờ nhập liệu".<br>+ Dữ liệu nạp sẵn: Mã vụ việc; thông tin người yêu cầu bồi thường; Cơ quan bị khởi kiện; Số Bản án/Quyết định và Ngày Bản án/Quyết định có hiệu lực (làm Số, Ngày Quyết định làm căn cứ); các khoản thiệt hại yêu cầu bồi thường và tổng số tiền; tài liệu kèm theo có tệp đính kèm.<br>- Mỗi vụ việc chỉ tạo 01 lần, khóa chống trùng theo Mã vụ việc. Màn hình Cấp kinh phí tạm ứng/Bồi thường kiểm tra lại khi tải và bổ sung bản ghi còn thiếu.<br>- Vụ việc "Phục hồi danh dự" không tạo đề nghị cấp kinh phí.<br>- Ghi lịch sử vụ việc "Tạo đề nghị cấp kinh phí" với nội dung "Hệ thống tạo Đề nghị cấp kinh phí bồi thường [Mã đề xuất] ở trạng thái Chờ nhập liệu.", người thực hiện "Hệ thống". |
 | 10 | Báo cáo thống kê | Vụ việc có trạng thái "Trả lại đơn khởi kiện" không được đếm tại các màn hình Thống kê vụ việc yêu cầu bồi thường (TT08) và Dashboard Bồi thường nhà nước. |
 | 11 | Kiểm tra đồng thời | Khi Lưu, Xóa: hệ thống kiểm tra lại dữ liệu mới nhất của vụ việc.<br>- Vụ việc đã bị xóa hoặc người dùng không còn quyền: hiển thị "Vụ việc đã bị xóa hoặc bạn không còn quyền cập nhật. Danh sách đã được tải lại.", không lưu.<br>- Vụ việc đã chuyển trạng thái kết thúc mà dữ liệu lưu có trạng thái khác: hiển thị "Vụ việc đã chuyển sang trạng thái kết thúc, không được thay đổi trạng thái. Danh sách đã được tải lại.", không lưu. |
 | 12 | Cập nhật, xóa sau khi đã tạo đề nghị cấp kinh phí | - Cập nhật vụ việc: nếu Đề nghị cấp kinh phí bồi thường của vụ việc còn ở trạng thái "Chờ nhập liệu", hệ thống cập nhật lại các thông tin kế thừa (người yêu cầu, cơ quan, Số và Ngày Bản án/Quyết định, các khoản thiệt hại và tổng số tiền, tài liệu). Đề nghị đã chuyển trạng thái khác thì không thay đổi.<br>- Xóa vụ việc: nếu Đề nghị cấp kinh phí còn "Chờ nhập liệu" thì xóa theo (popup xác nhận nêu rõ "Đề nghị cấp kinh phí [Mã đề xuất] (Chờ nhập liệu) cũng bị xóa theo."); nếu đề nghị đã chuyển trạng thái khác thì không cho xóa, thông báo "Đề nghị cấp kinh phí [Mã đề xuất] đang ở trạng thái [Trạng thái], không được xóa vụ việc!". |
-| 13 | Lịch sử cập nhật | Mỗi thao tác ghi 01 dòng gồm Thao tác, Người thực hiện, Thời điểm (hh:mm dd/mm/yyyy), Nội dung. Thao tác: Thêm mới vụ việc; Cập nhật vụ việc; Tạo đề nghị cấp kinh phí; Gỡ liên kết. |
+| 13 | Lịch sử cập nhật | Mỗi thao tác ghi 01 dòng gồm Thao tác, Người thực hiện, Thời điểm (hh:mm dd/mm/yyyy), Nội dung. Thao tác: Thêm mới vụ việc; Cập nhật vụ việc; Tạo đề nghị cấp kinh phí; Gộp vụ việc (dữ liệu cũ). |
 | 14 | Nhận diện vụ việc | Thông báo, popup xác nhận nhận diện vụ việc bằng "[Mã vụ việc] - [Họ và tên người yêu cầu]". |
 
 ---
@@ -67,7 +67,7 @@
 | :--- | :--- | :--- | :--- |
 | Đã thụ lý | Tòa án đã thụ lý vụ việc. Giá trị mặc định khi thêm mới. | Không | Xem; Cập nhật; Xóa. |
 | Đang giải quyết | Tòa án đang giải quyết vụ việc. | Không | Xem; Cập nhật; Xóa. |
-| Đã có bản án/QĐ | Đã có Bản án/Quyết định của Tòa án có hiệu lực. Vụ việc bồi thường bằng tiền phát sinh Đề nghị cấp kinh phí bồi thường "Chờ nhập liệu". | Có | Xem; Cập nhật (trừ Trạng thái); Xóa. |
+| Đã có bản án/QĐ | Đã có Bản án/Quyết định của Tòa án có hiệu lực. Vụ việc có yêu cầu bồi thường thiệt hại (Bồi thường thiệt hại bằng tiền hoặc Yêu cầu cả hai) phát sinh Đề nghị cấp kinh phí bồi thường "Chờ nhập liệu". | Có | Xem; Cập nhật (trừ Trạng thái); Xóa. |
 | Trả lại đơn khởi kiện | Tòa án trả lại đơn khởi kiện. Không đếm trong báo cáo thống kê. | Có | Xem; Cập nhật (trừ Trạng thái); Xóa. |
 
 ---
@@ -97,7 +97,7 @@
 | STT | Integer(10) | - | Tự sinh | Tăng dần theo phân trang. |
 | Mã vụ việc | String(50) | - | Theo dữ liệu | Chữ đậm, căn giữa. |
 | Họ và tên người yêu cầu | String(100) | - | Theo dữ liệu | Chữ đậm. |
-| Loại yêu cầu | String(50) | - | Theo dữ liệu | "Bồi thường thiệt hại bằng tiền" hoặc "Phục hồi danh dự".<br>- Vụ việc tách từ yêu cầu cả hai: dòng phụ "Liên kết: [Mã vụ việc liên quan]".<br>- Vụ việc đã tạo đề nghị cấp kinh phí: dòng phụ "Kinh phí: [Mã đề xuất]". |
+| Loại yêu cầu | String(50) | - | Theo dữ liệu | Gồm:<br>+ Bồi thường thiệt hại bằng tiền<br>+ Phục hồi danh dự<br>+ Bồi thường thiệt hại và Phục hồi danh dự<br>- Vụ việc đã tạo đề nghị cấp kinh phí: dòng phụ "Kinh phí: [Mã đề xuất]". |
 | Nguồn phát sinh bản án | String(255) | - | Theo dữ liệu | |
 | Ngày thụ lý | Date | - | Theo dữ liệu | dd/mm/yyyy, căn giữa. |
 | Ngày hiệu lực bản án/QĐ | Date | - | Theo dữ liệu | dd/mm/yyyy, căn giữa; chưa có: "--". |
@@ -114,7 +114,7 @@
 | 3 | Thêm mới | Nút | - Mở [MH02 - Màn hình Thêm mới / Cập nhật vụ việc](#tdta-mh02) ở chế độ thêm mới.<br>- Đơn vị không có quyền nhập liệu: nút hiển thị mờ; nếu vẫn gọi chức năng, hiển thị "Đơn vị chưa được áp dụng Loại yêu cầu "Yêu cầu bồi thường", không được thêm mới vụ việc!". |
 | 4 | Click dòng dữ liệu | Row click | - Mở [MH03 - Màn hình Xem chi tiết vụ việc](#tdta-mh03). Click vào icon tại cột Thao tác thì chỉ thực hiện thao tác đó. |
 | 5 | Cập nhật | Icon | - Mở [MH02 - Màn hình Thêm mới / Cập nhật vụ việc](#tdta-mh02) ở chế độ cập nhật. |
-| 6 | Xóa | Icon | - Hiển thị popup "Xác nhận xóa" với nội dung "Bạn có chắc chắn muốn xóa vụ việc [Mã vụ việc] - [Họ và tên người yêu cầu] không?".<br>- Đồng ý: kiểm tra lại theo quy tắc 11 tại [Quy tắc chung](#tdta-quy-tac-chung); hợp lệ thì xóa vụ việc khỏi danh sách, gỡ liên kết ở vụ việc liên quan (nếu có), hiển thị "Đã xóa vụ việc [Mã vụ việc]!".<br>- Hủy bỏ: đóng popup, giữ nguyên dữ liệu. |
+| 6 | Xóa | Icon | - Hiển thị popup "Xác nhận xóa" với nội dung "Bạn có chắc chắn muốn xóa vụ việc [Mã vụ việc] - [Họ và tên người yêu cầu] không?".<br>- Đồng ý: kiểm tra lại theo quy tắc 11 tại [Quy tắc chung](#tdta-quy-tac-chung); hợp lệ thì xóa vụ việc khỏi danh sách, hiển thị "Đã xóa vụ việc [Mã vụ việc]!".<br>- Hủy bỏ: đóng popup, giữ nguyên dữ liệu. |
 
 ---
 
@@ -134,7 +134,7 @@
 | Tiêu đề màn hình | String(255) | - | Theo chế độ | Thêm mới: "THÊM MỚI VỤ VIỆC TẠI TÒA ÁN". Cập nhật: "CẬP NHẬT VỤ VIỆC TẠI TÒA ÁN". |
 | Khối thông tin chung | - | - | - | Chỉ hiển thị ở chế độ cập nhật, chỉ đọc: Mã vụ việc; Cơ quan bị khởi kiện; Cán bộ tạo / Thời điểm tạo; Trạng thái (Badge). |
 | **Thông tin vụ việc tại Tòa án** | - | - | - | |
-| Loại yêu cầu giải quyết bồi thường | Enum(String(100)) | Có | Yêu cầu cả hai | Control UI: Radio. Gồm:<br>+ Yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự)<br>+ Chỉ yêu cầu bồi thường thiệt hại bằng tiền<br>+ Chỉ yêu cầu phục hồi danh dự<br>- Chọn "Yêu cầu cả hai": hiển thị dòng hướng dẫn "Khi lưu, hệ thống tự tách thành 02 vụ việc: Bồi thường thiệt hại bằng tiền và Phục hồi danh dự."<br>- Chế độ cập nhật: chỉ đọc, chọn sẵn theo loại của vụ việc (tiền hoặc phục hồi danh dự). |
+| Loại yêu cầu giải quyết bồi thường | Enum(String(100)) | Có | Yêu cầu cả hai | Control UI: Radio. Gồm:<br>+ Yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự)<br>+ Chỉ yêu cầu bồi thường thiệt hại bằng tiền<br>+ Chỉ yêu cầu phục hồi danh dự<br>- Chọn "Yêu cầu cả hai": hiển thị dòng hướng dẫn "Yêu cầu cả hai được lưu thành 01 vụ việc (01 Mã vụ việc) gồm cả Danh sách thiệt hại và Hình thức phục hồi danh dự."<br>- Chế độ cập nhật: chỉ đọc, chọn sẵn theo Loại yêu cầu của vụ việc. |
 | Trạng thái | Enum(String(50)) | Có | Đã thụ lý | Control UI: Hộp chọn, gồm 04 trạng thái tại [Trạng thái vụ việc](#tdta-trang-thai). |
 | Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | Không | Trong hoạt động quản lý hành chính | Control UI: Hộp chọn. Gồm: Trong hoạt động quản lý hành chính; Trong hoạt động tố tụng hình sự; Trong hoạt động tố tụng dân sự; Trong hoạt động tố tụng hành chính; Trong hoạt động thi hành án hình sự; Trong hoạt động thi hành án dân sự. |
 | Nguồn phát sinh bản án | Enum(String(255)) | Có | Trống | Control UI: Hộp chọn, placeholder "Chọn nguồn phát sinh bản án...". Gồm:<br>+ Khởi kiện yêu cầu bồi thường theo thủ tục tố tụng dân sự (Khoản 1 Điều 52)<br>+ Khởi kiện theo thủ tục tố tụng dân sự sau khi giải quyết tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại (Khoản 2 Điều 52)<br>+ Giải quyết YCBT trong quá trình tố tụng hình sự, tố tụng hành chính tại toà (Điều 55) |
@@ -174,7 +174,6 @@
 
 ![MH03 - Chi tiết vụ việc Đã có bản án/QĐ, đã tạo đề nghị cấp kinh phí](images/TDTA_MH03_Chi_tiet_vu_viec.png)
 
-![MH03 - Chi tiết vụ việc tách từ yêu cầu cả hai](images/TDTA_MH03_Chi_tiet_vu_viec_tach.png)
 
 ##### 4.3.3.30.6.2. Mô tả thông tin trên màn hình
 
@@ -182,7 +181,6 @@
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Vụ việc liên quan | String(255) | - | Theo dữ liệu | Chỉ hiển thị với vụ việc tách từ yêu cầu cả hai: "Vụ việc được tách từ yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự). Vụ việc liên quan: [Mã vụ việc] - [Họ và tên người yêu cầu] ([Loại yêu cầu]) [Trạng thái]". Mã vụ việc dạng liên kết, mở chi tiết vụ việc liên quan. |
 | Đề nghị cấp kinh phí bồi thường | String(255) | - | Theo dữ liệu | Chỉ hiển thị với vụ việc đã tạo đề nghị: "Đề nghị cấp kinh phí bồi thường: [Mã đề xuất] - Trạng thái: [Trạng thái đề nghị]". Mã đề xuất dạng liên kết, mở chi tiết đề nghị tại màn hình Cấp kinh phí tạm ứng/Bồi thường. |
 | Lịch sử cập nhật | List | - | Theo dữ liệu | Mới nhất ở trên: "[Thao tác] - [Người thực hiện] - [Thời điểm]" và Nội dung. |
 

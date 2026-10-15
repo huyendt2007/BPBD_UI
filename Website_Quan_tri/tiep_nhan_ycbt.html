@@ -242,8 +242,13 @@
                 max-height: none !important;
             }
         }
+        .tn-tabs-card { display: flex; gap: 8px; align-items: center; background: #fff; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); padding: 0 16px; margin-bottom: 12px; }
+        .tn-tab { border: 0; background: transparent; padding: 12px 16px; font-size: 13.5px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; display: inline-flex; align-items: center; gap: 8px; }
+        .tn-tab.active { color: var(--primary-light); border-bottom-color: var(--primary-light); }
+        .tn-tab-count { min-width: 20px; padding: 1px 7px; border-radius: 10px; background: #e2e8f0; color: #334155; font-size: 11.5px; font-weight: 700; text-align: center; }
     </style>
 </head>
+
 
 <body>
     <main>
@@ -253,6 +258,12 @@
                     <h2><i class="fa-solid fa-inbox"></i> DANH SÁCH QUẢN LÝ YÊU CẦU</h2>
                     <p>Quản lý thông tin tiếp nhận ban đầu; sau khi lưu, hồ sơ chuyển Lãnh đạo đơn vị phân công xử lý theo Cấu hình luồng xử lý.</p>
                 </div>
+            </div>
+
+            <!-- 02 tab: Chờ xử lý / Đã xử lý theo người dùng đang đăng nhập (Cán bộ tiếp nhận / Lãnh đạo phân công) -->
+            <div class="tn-tabs-card">
+                <button type="button" class="tn-tab active" data-tab="pending" onclick="switchReceptionTab('pending')"><i class="fa-solid fa-list-check"></i> Chờ xử lý <span class="tn-tab-count" id="tnCntPending">0</span></button>
+                <button type="button" class="tn-tab" data-tab="done" onclick="switchReceptionTab('done')"><i class="fa-solid fa-box-archive"></i> Đã xử lý <span class="tn-tab-count" id="tnCntDone">0</span></button>
             </div>
 
             <div class="filter-card">
@@ -392,7 +403,7 @@
                     </div>
                 </div>
 
-                <div class="info-group-title">I. Thông tin tổng quan vụ việc</div>
+                <div class="info-group-title">Thông tin tổng quan vụ việc</div>
                 <div class="form-group">
                     <span class="form-label">Loại yêu cầu<span class="required">*</span></span>
                     <select id="formRequestType" class="form-control"></select>
@@ -421,7 +432,7 @@
                     </div>
                 </div>
 
-                <div class="info-group-title">II. Thông tin người yêu cầu</div>
+                <div class="info-group-title">Thông tin người yêu cầu</div>
                 <div class="grid-3-cols">
                     <div class="form-group">
                         <span class="form-label">Họ và tên người yêu cầu<span class="required">*</span></span>
@@ -503,7 +514,7 @@
                     </div>
                 </div>
 
-                <div class="info-group-title">III. Văn bản làm căn cứ yêu cầu bồi thường</div>
+                <div class="info-group-title">Văn bản làm căn cứ yêu cầu bồi thường</div>
                 <div class="table-container">
                     <table class="custom-table" style="min-width:760px;">
                         <thead>
@@ -522,7 +533,7 @@
                         <i class="fa-solid fa-plus"></i> Thêm dòng
                     </button>
                 </div>
-                <div class="info-group-title">IV. Bảng tài liệu đính kèm</div>
+                <div class="info-group-title">Bảng tài liệu đính kèm</div>
                 <div class="table-container">
                     <table class="custom-table" style="min-width:760px;">
                         <thead>
@@ -641,7 +652,8 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261015e"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261015e"></script>
     <script>
         // Người dùng đăng nhập (giả lập) - cán bộ tiếp nhận
         const CURRENT_USER = BTNN_WF.getCurrentUser();
@@ -1121,8 +1133,61 @@
             initDatePickers();
             initDates();
             loadClaims();
-            renderReceptionTable();
+            // Mở tab theo tham số từ Dashboard Lãnh đạo: ?tab=pending|done
+            const tabParam = window.BTNN_LD ? BTNN_LD.tabParam() : '';
+            switchReceptionTab(tabParam || 'pending');
         });
+
+        // ===== 02 tab Chờ xử lý / Đã xử lý =====
+        // - Chờ xử lý: hồ sơ do cán bộ đang đăng nhập tiếp nhận còn ở bước phân công (Chờ phân công / Đang phân công)
+        //   và hồ sơ Lãnh đạo đang đăng nhập được quyền Phân công (Lãnh đạo đơn vị đang phân công).
+        // - Đã xử lý: hồ sơ cán bộ đã tiếp nhận đã qua bước phân công; hồ sơ Lãnh đạo đã Phân công / Chuyển đơn vị.
+        let receptionTab = "pending";
+        function switchReceptionTab(tab) {
+            receptionTab = tab === "done" ? "done" : "pending";
+            document.querySelectorAll(".tn-tabs-card .tn-tab").forEach(b => b.classList.toggle("active", b.dataset.tab === receptionTab));
+            const sel = document.getElementById("filterStatus");
+            const states = receptionTab === "pending" ? RECEPTION_STATUSES : Array.from(new Set(getTabRows("done").map(r => r.status))).sort();
+            sel.innerHTML = `<option value="">Tất cả</option>` + states.map(s => `<option value="${escapeAttr(s)}">${escapeHtml(s)}</option>`).join("");
+            currentPage = 1;
+            renderReceptionTable();
+        }
+        // Dòng hiển thị từ hồ sơ luồng (hồ sơ không thuộc danh sách tiếp nhận của cán bộ đang đăng nhập)
+        function rowFromRecord(rec) {
+            const claim = claimsList.find(item => item.code === rec.code && !item.deleted);
+            if (claim) return claim;
+            return {
+                id: "WF:" + rec.code, code: rec.code, nyc: rec.nycName, nopKenh: normalizeReceiveMethod(rec.hinhThucTiepNhan || rec.nguonHoSo),
+                fieldGroup: "", fieldGroupName: rec.linhVuc || "", requestType: rec.loaiYeuCau, receivedAt: rec.receivedAt || rec.date,
+                date: rec.date, receivedBy: rec.receivedBy || BTNN_WF.userName(rec.createdBy), rootUnitId: rec.rootUnitId,
+                currentUnitId: rec.currentUnitId, status: rec.status, fromWorkflow: true
+            };
+        }
+        function getTabRows(tab) {
+            const me = CURRENT_USER.id;
+            const map = new Map();
+            const add = row => { if (row && !map.has(row.code)) map.set(row.code, row); };
+            const records = BTNN_WF.loadRecords();
+            const isLeader = BTNN_LD.isLeaderUser(me);
+            if (tab === "pending") {
+                // Lãnh đạo: chỉ hồ sơ Lãnh đạo được quyền Phân công
+                if (!isLeader) getReceptionRows().forEach(add);
+                records.filter(rec => BTNN_WF.canAssign(rec, me)).forEach(rec => add(rowFromRecord(rec)));
+            } else {
+                if (!isLeader) claimsList.filter(item => !item.deleted && item.rootUnitId === CURRENT_ROOT_UNIT
+                    && (item.receivedBy || CURRENT_OFFICER) === CURRENT_OFFICER
+                    && !RECEPTION_STATUSES.includes(item.status || "Chờ phân công")).forEach(add);
+                records.filter(rec => !BTNN_WF.canAssign(rec, me) && BTNN_LD.leaderActedOn(rec, me, /Chuyển đơn vị|Phân công cán bộ/)).forEach(rec => add(rowFromRecord(rec)));
+            }
+            return Array.from(map.values()).sort((a, b) => getDateSort(b.receivedAt || b.date) - getDateSort(a.receivedAt || a.date));
+        }
+        function updateReceptionTabCounts() {
+            document.getElementById("tnCntPending").textContent = getTabRows("pending").length;
+            document.getElementById("tnCntDone").textContent = getTabRows("done").length;
+        }
+        function openAssignFromList(code) { BTNN_LD.openAssign(code, afterLeaderAction); }
+        function recallFromList(code) { BTNN_LD.confirmRecall(code, afterLeaderAction); }
+        function afterLeaderAction() { syncWorkflowRecords(); saveClaims(); switchReceptionTab(receptionTab); }
 
         // Loại yêu cầu: chỉ hiển thị giá trị của Danh mục Loại yêu cầu có Đơn vị áp dụng chứa đơn vị của người dùng
         function initRequestTypeOptions() {
@@ -1357,7 +1422,7 @@
             const fromDate = parseDate(getValue("filterFromDate"));
             const toDate = parseDate(getValue("filterToDate"));
 
-            return getReceptionRows().filter(item => {
+            return getTabRows(receptionTab).filter(item => {
                 const itemDate = parseDate(item.receivedAt || item.date);
                 if (code && !normalize(item.code).includes(code)) return false;
                 if (status && item.status !== status) return false;
@@ -1372,6 +1437,7 @@
         }
 
         function renderReceptionTable() {
+            updateReceptionTabCounts();
             const rows = getFilteredRows();
             const total = rows.length;
             const totalPages = Math.max(1, Math.ceil(total / pageSize));
@@ -1384,8 +1450,15 @@
                 tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; color:var(--text-muted); padding:28px; font-style:italic;">Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</td></tr>`;
             } else {
                 tbody.innerHTML = pageRows.map((item, idx) => {
-                    const editable = canEditReception(item);
-                    const isPending = RECEPTION_STATUSES.includes(item.status);
+                    const editable = !item.fromWorkflow && canEditReception(item);
+                    const isPending = !item.fromWorkflow && RECEPTION_STATUSES.includes(item.status);
+                    const rec = BTNN_WF.getRecord(item.code);
+                    const offStyle = "opacity:0.35; pointer-events:none; cursor:not-allowed;";
+                    // Slot 4: Phân công (Lãnh đạo đơn vị đang phân công); Tab Đã xử lý: Thu hồi (bên nhận chưa xử lý)
+                    const canAssign = receptionTab === "pending" && rec && BTNN_WF.canAssign(rec, CURRENT_USER.id);
+                    const canRecall = receptionTab === "done" && BTNN_LD.canRecall(rec, CURRENT_USER.id);
+                    const assignBtn = `<button class="icon-btn accept" title="Phân công" style="${canAssign ? "" : offStyle}" onclick="event.stopPropagation(); openAssignFromList('${escapeAttr(item.code)}')"><i class="fa-solid fa-diagram-project"></i></button>`;
+                    const recallBtn = `<button class="icon-btn edit" title="Thu hồi" style="${canRecall ? "" : offStyle}" onclick="event.stopPropagation(); recallFromList('${escapeAttr(item.code)}')"><i class="fa-solid fa-rotate-left"></i></button>`;
 
                     // Slot 1: In Phiếu tiếp nhận
                     const printDisabled = !isPending;
@@ -1408,14 +1481,14 @@
                             <td class="code-cell">${escapeHtml(item.code || "--")}</td>
                             <td><strong>${escapeHtml(item.nyc || "--")}</strong></td>
                             <td><span class="badge ${getReceiveMethodBadge(item.nopKenh)}">${escapeHtml(item.nopKenh || "Trực tiếp")}</span></td>
-                            <td><span class="muted">${escapeHtml(getFieldGroupName(item.fieldGroup))}</span></td>
+                            <td><span class="muted">${escapeHtml(item.fromWorkflow ? item.fieldGroupName : getFieldGroupName(item.fieldGroup))}</span></td>
                             <td>${escapeHtml(item.requestType || REQUEST_TYPE_YCBT)}</td>
                             <td style="text-align:center;">${escapeHtml(item.receivedAt || item.date || "--")}</td>
                             <td>${escapeHtml(item.receivedBy || CURRENT_OFFICER)}</td>
                             <td>${escapeHtml(BTNN_WF.unitName(item.currentUnitId || item.rootUnitId))}</td>
                             <td style="text-align:center;">${renderStatusBadge(item.status || "Chờ phân công")}</td>
                             <td style="text-align:center;">
-                                <div class="action-flex" style="justify-content:center;">
+                                <div class="action-flex" style="justify-content:center;">${receptionTab === "done" ? recallBtn : `
                                     <button class="icon-btn print${printDisabled ? ' disabled-action' : ''}" title="${printTitle}" style="${printStyle}" onclick="event.stopPropagation(); printReceptionReceipt('${escapeAttr(item.id)}')">
                                         <i class="fa-solid fa-print"></i>
                                     </button>
@@ -1424,7 +1497,7 @@
                                     </button>
                                     <button class="icon-btn delete${deleteDisabled ? ' disabled-action' : ''}" title="${deleteTitle}" style="${deleteStyle}" onclick="event.stopPropagation(); confirmDeleteReception('${escapeAttr(item.id)}')">
                                         <i class="fa-solid fa-trash-can"></i>
-                                    </button>
+                                    </button>${assignBtn}`}
                                 </div>
                             </td>
                         </tr>
@@ -1471,6 +1544,7 @@
         let isFormReadOnly = false;
 
         function handleRowClick(id) {
+            if (String(id).indexOf("WF:") === 0) { BTNN_LD.openRecordDetail(String(id).slice(3)); return; }
             const claim = claimsList.find(item => item.id === id);
             if (!claim) return;
             openReceptionDetail(id);

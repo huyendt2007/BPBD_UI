@@ -678,7 +678,8 @@ document.addEventListener('DOMContentLoaded', () => {
     renderUnitFilterOptions();
     renderApprovalKindOptions();
     applyScopeNotice();
-    applyFilters();
+    // Mở tab theo tham số từ Dashboard Lãnh đạo: ?tab=pending|done
+    switchXdTab((window.BTNN_LD && BTNN_LD.tabParam()) || 'pending');
 
     const detailCode = params.get('detail');
     if (detailCode) {
@@ -688,7 +689,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Phạm vi xem: cán bộ chủ trì, cán bộ phối hợp, người tạo, lãnh đạo các đơn vị trên luồng phân công/phê duyệt.
-// Hồ sơ Chờ phân công/Đang phân công nằm tại Tiếp nhận yêu cầu và Hồ sơ trình Lãnh đạo.
+// Hồ sơ Chờ phân công/Đang phân công nằm tại Tiếp nhận yêu cầu (Lãnh đạo Phân công tại tab Chờ xử lý).
 let readOnlyView = false;
 const LEGACY_FLAG = 'btnn_xd_legacy_seed_v2';
 
@@ -733,6 +734,43 @@ function migrateLegacySeed() {
 }
 
 function getMe() { return BTNN_WF.getCurrentUserId(); }
+
+// ===== 02 tab Chờ xử lý / Đã xử lý =====
+// - Cán bộ xử lý: Chờ xử lý = hồ sơ còn bước xử lý; Đã xử lý = Bị từ chối, Hoàn thành.
+// - Lãnh đạo: Chờ xử lý = hồ sơ Chờ duyệt Lãnh đạo được giao ở cấp phê duyệt hiện hành; Đã xử lý = hồ sơ Lãnh đạo đã Phê duyệt / Từ chối phê duyệt.
+const XD_PENDING_STATES = ['Chờ tiếp nhận', 'Đang thực hiện', 'Chờ duyệt', 'Bị trả lại', 'Chờ chuyển CQGQBT', 'Yêu cầu bổ sung'];
+const XD_DONE_STATES = ['Bị từ chối', 'Hoàn thành'];
+let xdTab = 'pending';
+function isLeaderMe() { return !!(window.BTNN_LD && BTNN_LD.isLeaderUser(getMe())); }
+function xdInTab(tab, item) {
+    const me = getMe();
+    if (isLeaderMe()) {
+        if (tab === 'pending') return BTNN_WF.canApprove(item, me);
+        return !BTNN_WF.canApprove(item, me) && BTNN_LD.leaderActedOn(item, me, /Phê duyệt|Từ chối phê duyệt/);
+    }
+    return tab === 'pending' ? XD_PENDING_STATES.includes(item.status) : XD_DONE_STATES.includes(item.status);
+}
+function switchXdTab(tab) {
+    xdTab = tab === 'done' ? 'done' : 'pending';
+    document.querySelectorAll('.xd-tabs .xd-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === xdTab));
+    const sel = document.getElementById('filterStatus');
+    if (sel) {
+        const states = isLeaderMe()
+            ? Array.from(new Set(requestList.filter(r => xdInTab(xdTab, r)).map(r => r.status)))
+            : (xdTab === 'pending' ? XD_PENDING_STATES : XD_DONE_STATES);
+        sel.innerHTML = '<option value="">Tất cả trạng thái</option>' + states.map(s => `<option value="${escapeAttr(s)}">${escapeHtml(s)}</option>`).join('');
+    }
+    const btnCreate = document.getElementById('btnCreateRequest');
+    if (btnCreate && xdTab === 'done') btnCreate.style.display = 'none';
+    else if (btnCreate && typeof canCreateXd === 'function') btnCreate.style.display = canCreateXd() && !isLeaderMe() ? '' : 'none';
+    applyFilters();
+}
+function updateXdTabCounts() {
+    const p = document.getElementById('xdCntPending'), d = document.getElementById('xdCntDone');
+    if (p) p.textContent = requestList.filter(r => xdInTab('pending', r)).length;
+    if (d) d.textContent = requestList.filter(r => xdInTab('done', r)).length;
+}
+function afterXdLeaderAction() { reloadRequestList(); switchXdTab(xdTab); }
 
 function isVisibleToMe(rec) {
     const me = getMe();
@@ -1950,7 +1988,9 @@ function filterData() {
     const fromDate = parseDate(document.getElementById('filterFromDate').value);
     const toDate = parseDate(document.getElementById('filterToDate').value);
 
+    updateXdTabCounts();
     filteredList = requestList.filter(item => {
+        if (!xdInTab(xdTab, item)) return false;
         if (code && !item.code.toLowerCase().includes(code)) return false;
         if (claimCode && !((item.claimCode || '') + ' ' + (item.phddCode || '')).toLowerCase().includes(claimCode)) return false;
         if (name && !(item.nycName || '').toLowerCase().includes(name)) return false;
@@ -2035,6 +2075,19 @@ function renderTable() {
 // Thao tác chưa đủ điều kiện thực hiện vẫn hiển thị nhưng mờ (disabled), kèm chú thích lý do.
 function getActionButtons(item) {
     if (readOnlyView) return '';
+    // Lãnh đạo: Phê duyệt / Từ chối (tab Chờ xử lý); Thu hồi (tab Đã xử lý, khi bên nhận chưa xử lý)
+    if (isLeaderMe()) {
+        const me = getMe();
+        const off = (cls, icon, title) => `<button class="icon-btn ${cls} is-disabled" title="${escapeAttr(title)}" disabled><i class="${icon}"></i></button>`;
+        if (xdTab === 'done') {
+            return BTNN_LD.canRecall(item, me)
+                ? `<button class="icon-btn edit" title="Thu hồi" onclick="BTNN_LD.confirmRecall('${escapeAttr(item.code)}', afterXdLeaderAction)"><i class="fa-solid fa-rotate-left"></i></button>`
+                : off('edit', 'fa-solid fa-rotate-left', 'Thu hồi');
+        }
+        return BTNN_WF.canApprove(item, me)
+            ? `<button class="icon-btn accept" title="Phê duyệt" onclick="BTNN_LD.openDecision('${escapeAttr(item.code)}','approve', afterXdLeaderAction)"><i class="fa-solid fa-circle-check"></i></button><button class="icon-btn delete" title="Từ chối" onclick="BTNN_LD.openDecision('${escapeAttr(item.code)}','reject', afterXdLeaderAction)"><i class="fa-solid fa-circle-xmark"></i></button>`
+            : off('accept', 'fa-solid fa-circle-check', 'Phê duyệt') + off('delete', 'fa-solid fa-circle-xmark', 'Từ chối');
+    }
     const owner = isChuTri(item);
     const ACTIONS = {
         accept: { icon: 'fa-solid fa-file-import', cls: 'accept', title: 'Tiếp nhận' },

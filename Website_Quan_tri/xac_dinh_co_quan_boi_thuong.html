@@ -14,6 +14,12 @@
 
     <!-- External stylesheet -->
     <link rel="stylesheet" href="xac_dinh_co_quan_boi_thuong.css?v=20261012">
+    <style>
+        .xd-tabs { display: flex; gap: 8px; align-items: center; border-bottom: 1px solid var(--border-color); margin: 4px 0 16px; }
+        .xd-tab { border: 0; background: transparent; padding: 10px 16px; font-size: 13.5px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; display: inline-flex; align-items: center; gap: 8px; }
+        .xd-tab.active { color: var(--primary-light); border-bottom-color: var(--primary-light); }
+        .xd-tab-count { min-width: 20px; padding: 1px 7px; border-radius: 10px; background: #e2e8f0; color: #334155; font-size: 11.5px; font-weight: 700; text-align: center; }
+    </style>
 </head>
 
 <body>
@@ -29,6 +35,12 @@
                 <span><i class="fa-solid fa-compass"></i> DANH SÁCH YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG</span>
             </div>
 
+            <!-- 02 tab: Chờ xử lý / Đã xử lý theo người dùng đang đăng nhập (Cán bộ xử lý / Lãnh đạo phê duyệt) -->
+            <div class="xd-tabs">
+                <button type="button" class="xd-tab active" data-tab="pending" onclick="switchXdTab('pending')"><i class="fa-solid fa-list-check"></i> Chờ xử lý <span class="xd-tab-count" id="xdCntPending">0</span></button>
+                <button type="button" class="xd-tab" data-tab="done" onclick="switchXdTab('done')"><i class="fa-solid fa-box-archive"></i> Đã xử lý <span class="xd-tab-count" id="xdCntDone">0</span></button>
+            </div>
+
             <!-- SEARCH FILTERS -->
             <div class="filter-grid">
                 <div>
@@ -36,8 +48,8 @@
                     <input type="text" class="form-control" id="filterCode" placeholder="Nhập mã yêu cầu...">
                 </div>
                 <div>
-                    <span class="form-label">Mã YCBT</span>
-                    <input type="text" class="form-control" id="filterClaimCode" placeholder="Nhập mã YCBT...">
+                    <span class="form-label">Mã vụ việc YCBT</span>
+                    <input type="text" class="form-control" id="filterClaimCode" placeholder="Nhập mã vụ việc YCBT...">
                 </div>
                 <div>
                     <span class="form-label">Tên người yêu cầu</span>
@@ -135,8 +147,8 @@
                             <th style="min-width: 200px;">Hành vi gây thiệt hại</th>
                             <th style="width: 130px; text-align: center;">Ngày tiếp nhận</th>
                             <th style="min-width: 170px;">Cơ quan xử lý</th>
-                            <th style="min-width: 150px;">Cán bộ chủ trì</th>
-                            <th style="width: 130px; text-align: center;">Mã hồ sơ YCBT</th>
+                            <th style="min-width: 150px;">Cán bộ xử lý</th>
+                            <th style="width: 140px; text-align: center;">Mã vụ việc YCBT</th>
                             <th style="width: 140px; text-align: center;">Trạng thái</th>
                             <th style="width: 220px; text-align: center; min-width: 220px;">Thao tác</th>
                         </tr>
@@ -184,9 +196,6 @@
                         <div id="formReturnedMeta" style="font-size: 13px; color: #881337; margin-bottom: 6px;"></div>
                         <div style="font-size: 13.5px; color: #4c0519; line-height: 1.5; background: #ffe4e6; padding: 10px 14px; border-radius: 6px; border: 1px dashed #fda4af;">
                             <strong>Lý do bị trả lại:</strong> <span id="formReturnedReason"></span>
-                        </div>
-                        <div style="font-size: 12.5px; color: #9f1239; margin-top: 8px; font-style: italic;">
-                            <i class="fa-solid fa-circle-info"></i> Cán bộ vui lòng kiểm tra, hoàn thiện lại các thông tin hồ sơ theo ý kiến chỉ đạo ở trên trước khi lưu hoặc trình lại.
                         </div>
                     </div>
                 </div>
@@ -505,9 +514,13 @@
                 <div class="form-group" style="margin-bottom: 14px;">
                     <span class="form-label">Phương thức nhận thông báo <span class="required">*</span></span>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; margin-top: 6px;">
-                        <label style="cursor: pointer; display: inline-flex; align-items: flex-start; gap: 8px; font-size: 13px; font-weight: 500; color: var(--text-main);">
-                            <input type="radio" name="formHinhThucNhan" value="Qua Cổng Dịch vụ công quốc gia, ứng dụng định danh quốc gia (VNeID) hoặc phương tiện điện tử khác" checked onchange="handleNotifyMethodChange(this.value, 'xd')">
-                            <span>Qua Cổng Dịch vụ công quốc gia, ứng dụng định danh quốc gia (VNeID) hoặc phương tiện điện tử khác</span>
+                        <label style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--text-main);">
+                            <input type="radio" name="formHinhThucNhan" value="Qua Cổng Dịch vụ công quốc gia hoặc Ứng dụng định danh quốc gia (VNeID)" checked onchange="handleNotifyMethodChange(this.value, 'xd')">
+                            <span>Qua Cổng Dịch vụ công quốc gia hoặc Ứng dụng định danh quốc gia (VNeID)</span>
+                        </label>
+                        <label style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--text-main);">
+                            <input type="radio" name="formHinhThucNhan" value="Qua phương tiện điện tử khác" onchange="handleNotifyMethodChange(this.value, 'xd')">
+                            <span>Qua phương tiện điện tử khác</span>
                         </label>
                         <label style="cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 500; color: var(--text-main);">
                             <input type="radio" name="formHinhThucNhan" value="Trực tiếp" onchange="handleNotifyMethodChange(this.value, 'xd')">
@@ -625,7 +638,7 @@
             </div>
 
             <div class="form-group">
-                <span class="form-label">Tải lên file scan quyết định xác định cơ quan giải quyết bồi thường</span>
+                <span class="form-label">Tài liệu kèm theo</span>
                 <div class="file-upload-container">
                     <div class="file-upload-trigger" onclick="triggerFileInput('procDecisionFile')">
                         <i class="fa-solid fa-file-arrow-up"></i> Chọn tệp đính kèm +
@@ -787,7 +800,7 @@
                     </div>
                     
                     <div class="detail-row">
-                        <div class="detail-label">Quyết định chuyển giao đính kèm</div>
+                        <div class="detail-label">Tài liệu kèm theo</div>
                         <div class="detail-value" id="dtProcDecisionFile"></div>
                     </div>
                 </div>
@@ -812,8 +825,8 @@
                         <div class="detail-value" id="dtTransferAt"></div>
                     </div>
                     <div class="detail-row" id="dtClaimCodeRow">
-                        <div class="detail-label">Mã hồ sơ yêu cầu bồi thường</div>
-                        <div class="detail-value" style="font-weight: 700; color: #8B5CF6;" id="dtClaimCode"></div>
+                        <div class="detail-label">Mã vụ việc YCBT tương ứng</div>
+                        <div class="detail-value" id="dtClaimCode"></div>
                     </div>
                 </div>
 
@@ -824,15 +837,14 @@
                     <div class="detail-value" id="dtRootUnit"></div>
                 </div>
                 <div class="detail-row">
-                    <div class="detail-label">Cán bộ chủ trì</div>
+                    <div class="detail-label">Cán bộ xử lý</div>
                     <div class="detail-value" id="dtChuTri"></div>
                 </div>
                 <div class="detail-row">
                     <div class="detail-label">Cán bộ phối hợp</div>
                     <div class="detail-value" id="dtPhoiHop"></div>
                 </div>
-                <div id="dtApprovalWrap" style="margin-top: 12px;">
-                    <div style="font-weight: 600; color: var(--primary-color); margin-bottom: 8px;"><i class="fa-solid fa-file-signature"></i> Trình phê duyệt</div>
+                <div id="dtApprovalWrap" style="display: none;">
                     <div id="dtApproval"></div>
                 </div>
                 <div style="margin-top: 14px;">
@@ -932,33 +944,6 @@
         </div>
     </div>
 
-    <!-- Popup Bổ sung tài liệu (cán bộ phối hợp) -->
-    <div id="coopDocModal" class="confirm-modal-overlay">
-        <div class="confirm-modal-container wf-modal-box">
-            <div class="wf-modal-head"><h3><i class="fa-solid fa-paperclip"></i> Bổ sung tài liệu</h3><span class="wf-modal-x" onclick="closeXdModal('coopDocModal')" title="Đóng">&times;</span></div>
-            <div class="wf-modal-content">
-                <input type="hidden" id="coopRequestId">
-                <div class="form-group">
-                    <span class="form-label">Tên tài liệu<span class="required">*</span></span>
-                    <input type="text" class="form-control" id="coopDocName" placeholder="Nhập tên tài liệu...">
-                    <div class="error-message">Đây là trường bắt buộc</div>
-                </div>
-                <div class="form-group">
-                    <span class="form-label">Tệp đính kèm<span class="required">*</span></span>
-                    <div class="wf-upload-box" id="coopFileBox">
-                        <input type="file" id="coopFileInput" style="display:none;" onchange="addModalFiles('coop', this)">
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('coopFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>
-                        <div id="coopFilesList" class="wf-file-list"></div>
-                    </div>
-                    <div class="error-message" id="coopFileError">Đây là trường bắt buộc</div>
-                </div>
-            </div>
-            <div class="wf-modal-foot">
-                <button class="btn btn-secondary" onclick="closeXdModal('coopDocModal')">Hủy bỏ</button>
-                <button class="btn btn-primary" onclick="confirmCoopDoc()"><i class="fa-solid fa-floppy-disk"></i> Lưu tài liệu</button>
-            </div>
-        </div>
-    </div>
 
     <!-- Popup Yêu cầu bổ sung hồ sơ: trình Lãnh đạo phê duyệt (văn bản do cán bộ tải lên, không sinh tự động) -->
     <div id="supplementModal" class="confirm-modal-overlay">
@@ -1047,11 +1032,10 @@
     </div>
 
     <!-- External javascript logic -->
-    <script src="btnn_luong_xu_ly.js?v=20261012"></script>
-    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261012"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261015e"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261015e"></script>
+    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261015e"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="bpbd_filter_toggle.js?v=20261012"></script>
-    <script src="filter_toggle_auto.js?v=20261012"></script>
 </body>
-
 </html>

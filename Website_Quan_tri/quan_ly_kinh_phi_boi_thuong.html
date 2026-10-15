@@ -71,6 +71,12 @@
             margin-top: 2px;
         }
 
+        .kp-tab-bar { display: flex; gap: 8px; align-items: center; border-bottom: 1px solid var(--border-color); background: #fff; border-radius: var(--border-radius-md); }
+        .kp-tab { border: 0; background: transparent; padding: 12px 16px; font-size: 13.5px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; display: inline-flex; align-items: center; gap: 8px; }
+        .kp-tab.active { color: var(--primary-light, #1e3a8a); border-bottom-color: var(--primary-light, #1e3a8a); }
+        .kp-tab-count { min-width: 20px; padding: 1px 7px; border-radius: 10px; background: #e2e8f0; color: #334155; font-size: 11.5px; font-weight: 700; text-align: center; }
+        #proposalsTable.kp-done th#thProposalActions, #proposalsTable.kp-done td.kp-act-td { display: none; }
+
         .role-switch-container {
             display: flex;
             align-items: center;
@@ -874,6 +880,16 @@
 </head>
 
 <body>
+    <!-- GIẢ LẬP QUYỀN (Cán bộ xử lý / Lãnh đạo): góc phải phía trên, tách khỏi giao diện màn hình -->
+    <div style="display:flex; justify-content:flex-end; margin-bottom:8px;">
+        <div class="role-switch-container" style="background:#FFFBEB; border:1px dashed #F59E0B; padding:5px 12px;">
+            <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Quyền giả lập</span>
+            <select class="role-selector" id="roleSelector" onchange="kpOnRoleChange()">
+                <option value="chuyen-vien">Cán bộ xử lý</option>
+                <option value="lanh-dao">Lãnh đạo</option>
+            </select>
+        </div>
+    </div>
     <!-- TOP NAVIGATION PORTAL HEADER -->
     <div class="page-header">
         <div class="page-title">
@@ -882,13 +898,6 @@
                 <span id="headerProposalBadge" style="background-color: #ef4444; color: white; border-radius: 12px; padding: 2px 8px; font-size: 13px; font-weight: 700; min-width: 20px; text-align: center; line-height: 1;">0</span>
             </h2>
             <p>Hệ thống lập đề xuất cấp kinh phí bồi thường, tạm ứng và giám sát chi trả ngân sách</p>
-        </div>
-        <div class="role-switch-container">
-            <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Quyền xem Cán bộ:</span>
-            <select class="role-selector" id="roleSelector" onchange="renderProposalsTable()">
-                <option value="chuyen-vien">Chuyên viên lập đề xuất</option>
-                <option value="lanh-dao">Lãnh đạo phê duyệt</option>
-            </select>
         </div>
     </div>
 
@@ -910,6 +919,12 @@
 
     <!-- MAIN DATA LIST AND FILTER SECTION -->
     <div id="contentListProposals" style="display: block;">
+
+        <!-- 02 TAB: Chờ xử lý / Đã xử lý (theo người dùng đang đăng nhập) -->
+        <div class="card-section kp-tab-bar" style="padding: 0 16px; margin-bottom: 12px;">
+            <button type="button" class="kp-tab active" id="kpTabPending" onclick="kpSetTab('pending')"><i class="fa-solid fa-list-check"></i> Chờ xử lý <span class="kp-tab-count" id="kpTabPendingCount">0</span></button>
+            <button type="button" class="kp-tab" id="kpTabDone" onclick="kpSetTab('done')"><i class="fa-solid fa-box-archive"></i> Đã xử lý <span class="kp-tab-count" id="kpTabDoneCount">0</span></button>
+        </div>
 
         <!-- SEARCH FILTERS CARD (FAFAFA theme complying with Gen_ui rule 10) -->
         <div class="card-section"
@@ -943,6 +958,7 @@
                         <option value="Sung quỹ nhà nước">Sung quỹ nhà nước</option>
                         <option value="Bị từ chối">Bị từ chối</option>
                         <option value="Chờ thu hồi">Chờ thu hồi</option>
+                        <option value="Đã thu hồi">Đã thu hồi</option>
                         <option value="Đã hủy">Đã hủy</option>
                     </select>
                 </div>
@@ -1475,6 +1491,17 @@
                 </div>
             </div>
 
+            <!-- KHỐI 6b: VĂN BẢN QUYẾT ĐỊNH TẠM ỨNG (MẪU 07/BTNN) VÀ HÌNH THỨC KÝ - CHỈ ĐỀ NGHỊ TẠM ỨNG -->
+            <div class="accordion-item" id="block6b_SignDoc" style="display: none;">
+                <div class="accordion-header active" onclick="toggleAccordion('block6b_SignDoc')">
+                    <span><i class="fa-solid fa-file-signature" style="color: var(--primary-light); margin-right: 8px;"></i> Văn bản Quyết định tạm ứng và Hình thức ký</span>
+                    <i class="fa-solid fa-chevron-down accordion-icon rotated"></i>
+                </div>
+                <div class="accordion-body show">
+                    <div id="kpSignBlockBody"></div>
+                </div>
+            </div>
+
             <!-- KHỐI 7: THÔNG TIN XÉT DUYỆT TỜ TRÌNH -->
             <div class="accordion-item" id="block7_LeaderApproval" style="display: none;">
                 <div class="accordion-header active" onclick="toggleAccordion('block7_LeaderApproval')">
@@ -1759,7 +1786,7 @@
             <button class="btn btn-danger" id="btnLeaderReject" onclick="openRejectModal(selectedProposalId)" style="display: none;"><i
                     class="fa-solid fa-ban"></i> Từ chối</button>
             <button class="btn btn-success" id="btnLeaderApprove" onclick="openApproveModal(selectedProposalId)" style="display: none;"><i
-                    class="fa-solid fa-circle-check"></i> Phê duyệt</button>
+                    class="fa-solid fa-circle-check"></i> Ký duyệt</button>
         </div>
     </div>
 
@@ -1878,7 +1905,7 @@
 
     <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="quan_ly_kinh_phi_boi_thuong.js"></script>
+    <script src="quan_ly_kinh_phi_boi_thuong.js?v=20261015d"></script>
 
     <!-- Custom Confirmation Modal HTML -->
     <div id="customConfirmOverlay" class="confirm-modal-overlay">
@@ -1922,7 +1949,7 @@
         <div class="confirm-modal-container" style="max-width: 650px; width: 95%; max-height: 90vh; display: flex; flex-direction: column;">
             <div class="confirm-modal-header" style="background-color: var(--success-color, #10b981); color: white; display: flex; align-items: center; justify-content: space-between; padding: 24px 24px 16px 24px;">
                 <div style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px;">
-                    <i class="fa-solid fa-circle-check"></i> Xác nhận phê duyệt cấp kinh phí bồi thường
+                    <i class="fa-solid fa-circle-check"></i> Xác nhận ký duyệt cấp kinh phí bồi thường
                 </div>
                 <span onclick="closeApproveModal(false)" style="cursor: pointer; font-size: 20px; line-height: 1;">&times;</span>
             </div>
@@ -1950,6 +1977,7 @@
                             <strong id="approveModalClaim" style="color: #0f172a; margin-left: 6px;">-</strong>
                         </div>
                     </div>
+                    <div id="approveModalSignRow" style="display: none; margin-top: 12px; font-size: 13px;"></div>
                     <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #cbd5e1; display: flex; flex-direction: column; gap: 4px;">
                         <div style="display: flex; justify-content: space-between; align-items: baseline;">
                             <span style="color: #475569; font-weight: 600;">Số tiền duyệt cấp:</span>
@@ -1970,7 +1998,7 @@
             <div class="confirm-modal-footer" style="padding: 16px 24px 24px 24px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px;">
                 <button type="button" class="btn btn-secondary btn-sm" onclick="closeApproveModal(false)">Hủy bỏ</button>
                 <button type="button" class="btn btn-success btn-sm" onclick="closeApproveModal(true)" style="background-color: var(--success-color, #10b981); border: none; padding: 8px 18px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
-                    <i class="fa-solid fa-circle-check"></i> Phê duyệt
+                    <i class="fa-solid fa-circle-check"></i> Ký duyệt
                 </button>
             </div>
         </div>

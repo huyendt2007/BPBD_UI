@@ -331,6 +331,7 @@
                             <option value="">Tất cả</option>
                             <option value="money">Bồi thường thiệt hại bằng tiền</option>
                             <option value="honor">Phục hồi danh dự</option>
+                            <option value="both">Bồi thường thiệt hại và Phục hồi danh dự</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -461,7 +462,7 @@
                                     Chỉ yêu cầu phục hồi danh dự
                                 </label>
                             </div>
-                            <div id="kindSplitHint" style="font-size:12px; color:#1d4ed8; margin-top:10px;"><i class="fa-solid fa-circle-info"></i> Khi lưu, hệ thống tự tách thành 02 vụ việc: Bồi thường thiệt hại bằng tiền và Phục hồi danh dự.</div>
+                            <div id="kindSplitHint" style="font-size:12px; color:#1d4ed8; margin-top:10px;"><i class="fa-solid fa-circle-info"></i> Yêu cầu cả hai được lưu thành 01 vụ việc (01 Mã vụ việc) gồm cả Danh sách thiệt hại và Hình thức phục hồi danh dự.</div>
                         </div>
                         <div>
                             <div class="form-group">
@@ -886,7 +887,7 @@
             "Khởi kiện thẳng ra Tòa án, chưa từng yêu cầu cơ quan giải quyết (điểm a khoản 1 Điều 52)",
             "Kết hợp giải quyết YCBT trong quá trình tố tụng hình sự, tố tụng hành chính tại toà"
         ];
-        const KIND_LABEL = { money: "Bồi thường thiệt hại bằng tiền", honor: "Phục hồi danh dự" };
+        const KIND_LABEL = { money: "Bồi thường thiệt hại bằng tiền", honor: "Phục hồi danh dự", both: "Bồi thường thiệt hại và Phục hồi danh dự" };
         const DAMAGE_ITEMS = [
             { key: "taiSan", label: "1. Tài sản bị xâm phạm", placeholder: "Nhập cách tính thiệt hại tài sản..." },
             { key: "thuNhap", label: "2. Thu nhập thực tế bị mất/giảm sút", placeholder: "Nhập cách tính thu nhập bị mất/giảm sút..." },
@@ -976,6 +977,26 @@
                 try { localStorage.setItem(SEED_KEY, SEED_VERSION); } catch (e) { /* bỏ qua */ }
             }
             cases = list;
+            mergeSplitCases();
+        }
+        // Dữ liệu cũ đã tách "Yêu cầu cả hai" thành 02 vụ việc (linkedCode): gộp thành 01 vụ việc Loại yêu cầu Cả hai
+        function mergeSplitCases() {
+            let changed = false;
+            cases.forEach(r => {
+                if (!r || r.deleted || r.requestKind !== "money" || !r.linkedCode) return;
+                const partner = cases.find(c => c && c.code === r.linkedCode && c.requestKind === "honor");
+                r.requestKind = "both";
+                r.originalKind = "both";
+                if (partner) {
+                    r.honorForms = partner.honorForms || r.honorForms || { apology: true, news: false };
+                    partner.deleted = true;
+                    partner.mergedInto = r.code;
+                    addHistory(r, "Gộp vụ việc", `Gộp vụ việc ${partner.code} (Phục hồi danh dự) vào vụ việc ${r.code}: 01 vụ việc gồm Bồi thường thiệt hại và Phục hồi danh dự.`);
+                }
+                r.linkedCode = null;
+                changed = true;
+            });
+            if (changed) saveCases();
         }
         function saveCases() { writeJson(STORE_KEY, cases); }
         function reloadCases() { const list = readJson(STORE_KEY, null); if (Array.isArray(list)) cases = list; }
@@ -1000,7 +1021,7 @@
 
         // ===== Liên thông Cấp kinh phí tạm ứng/Bồi thường =====
         function needsFunding(rec) {
-            return !!rec && !rec.deleted && rec.requestKind === "money" && rec.status === STATUS_BAN_AN;
+            return !!rec && !rec.deleted && rec.requestKind !== "honor" && rec.status === STATUS_BAN_AN;
         }
         function damageTotal(rec) {
             return (rec.damages || []).reduce((s, d) => s + (Number(d.amount) || 0), 0);
@@ -1543,38 +1564,34 @@
             if (rec) {
                 const prevStatus = rec.status;
                 Object.assign(rec, common);
-                if (rec.requestKind === "money") rec.damages = damages; else rec.honorForms = honorForms;
+                if (rec.requestKind !== "honor") rec.damages = damages;
+                if (rec.requestKind !== "money") rec.honorForms = honorForms;
                 addHistory(rec, "Cập nhật vụ việc", prevStatus !== status ? `Chuyển trạng thái: ${prevStatus} → ${status}.` : "Cập nhật thông tin vụ việc.");
                 created.push(rec);
             } else {
+                // Yêu cầu cả hai: lưu thành 01 vụ việc (01 Mã vụ việc), không tách
                 const kind = getKindRadio();
-                const kinds = kind === "both" ? ["money", "honor"] : [kind];
-                const codes = nextCaseCodes(kinds.length);
+                const code = nextCaseCodes(1)[0];
                 const now = BTNN_WF.nowText();
-                kinds.forEach((k, i) => {
-                    const r = Object.assign({
-                        id: "TA-" + codes[i],
-                        code: codes[i],
-                        requestKind: k,
-                        originalKind: kind,
-                        rootUnitId: CURRENT_ROOT_UNIT,
-                        agency: BTNN_WF.unitName(CURRENT_ROOT_UNIT),
-                        createdAt: now,
-                        createdBy: CURRENT_USER.id,
-                        createdByName: CURRENT_USER.name,
-                        damages: k === "money" ? damages : [],
-                        honorForms: k === "honor" ? honorForms : null,
-                        linkedCode: kinds.length === 2 ? codes[1 - i] : null,
-                        history: []
-                    }, JSON.parse(JSON.stringify(common)));
-                    addHistory(r, "Thêm mới vụ việc", kinds.length === 2
-                        ? `Tách từ yêu cầu cả hai: ${KIND_LABEL[k]}. Vụ việc liên quan ${codes[1 - i]}. Trạng thái: ${status}.`
-                        : `Trạng thái: ${status}.`);
-                    cases.unshift(r);
-                    created.push(r);
-                });
+                const r = Object.assign({
+                    id: "TA-" + code,
+                    code,
+                    requestKind: kind,
+                    originalKind: kind,
+                    rootUnitId: CURRENT_ROOT_UNIT,
+                    agency: BTNN_WF.unitName(CURRENT_ROOT_UNIT),
+                    createdAt: now,
+                    createdBy: CURRENT_USER.id,
+                    createdByName: CURRENT_USER.name,
+                    damages: kind !== "honor" ? damages : [],
+                    honorForms: kind !== "money" ? honorForms : null,
+                    linkedCode: null,
+                    history: []
+                }, JSON.parse(JSON.stringify(common)));
+                addHistory(r, "Thêm mới vụ việc", `Loại yêu cầu: ${KIND_LABEL[kind]}. Trạng thái: ${status}.`);
+                cases.unshift(r);
+                created.push(r);
             }
-
             const funded = [];
             created.forEach(r => { const p = ensureFundingRecord(r); if (p) funded.push(p); });
             if (rec) syncFundingDraft(rec);
@@ -1582,7 +1599,7 @@
             closeCaseForm();
 
             const codesText = created.map(r => r.code).join(", ");
-            let msg = rec ? `Đã cập nhật vụ việc ${codesText}.` : (created.length === 2 ? `Đã lưu và tách thành 02 vụ việc: ${created[0].code} (Bồi thường thiệt hại bằng tiền), ${created[1].code} (Phục hồi danh dự).` : `Đã lưu vụ việc ${codesText}.`);
+            let msg = rec ? `Đã cập nhật vụ việc ${codesText}.` : `Đã lưu vụ việc ${codesText}.`;
             if (funded.length) msg += ` Đã tạo Đề nghị cấp kinh phí bồi thường ${funded.map(p => p.code).join(", ")} ở trạng thái Chờ nhập liệu.`;
             else if (created.some(needsFunding) && created.some(r => !r.fundingCode)) msg += " Đề nghị cấp kinh phí bồi thường sẽ được tạo ở trạng thái Chờ nhập liệu tại màn hình Cấp kinh phí tạm ứng/Bồi thường.";
             showToast(msg, "success");
@@ -1814,22 +1831,13 @@
                     history: [h("Thêm mới vụ việc", "09:10 16/09/2026", "Kiều Văn Nam", "Trạng thái: Đã thụ lý.")]
                 }),
                 base("BT-2026-302", {
-                    requestKind: "money", originalKind: "both", linkedCode: "BT-2026-303", rootUnitId: "STP-HN", status: STATUS_DANG_GQ,
+                    requestKind: "both", originalKind: "both", linkedCode: null, rootUnitId: "STP-HN", status: STATUS_DANG_GQ, honorForms: { apology: true, news: false },
                     verdictSource: VERDICT_SOURCES[1], lawsuitCase: LAWSUIT_CASES[0], acceptDate: "02/09/2026", fieldGroup: "hành chính",
                     nyc: nycHoa, hanhVi: "Ra quyết định xử phạt vi phạm hành chính sai thẩm quyền, tạm giữ phương tiện kinh doanh.",
                     damages: [dmg("thuNhap", 85000000, "Thu nhập bị mất trong 05 tháng tạm giữ phương tiện"), dmg("tinhThan", 30000000, "Thiệt hại tinh thần theo quy định")],
                     docs: [doc("Thông báo thụ lý vụ án", "Thong_bao_thu_ly_BT-2026-302.pdf")],
                     createdAt: "14:00 03/09/2026", createdBy: "cv_hn1", createdByName: "Đỗ Văn Chung",
-                    history: [h("Thêm mới vụ việc", "14:00 03/09/2026", "Đỗ Văn Chung", "Tách từ yêu cầu cả hai: Bồi thường thiệt hại bằng tiền. Vụ việc liên quan BT-2026-303. Trạng thái: Đã thụ lý."), h("Cập nhật vụ việc", "10:30 25/09/2026", "Ngô Thị Lan", "Chuyển trạng thái: Đã thụ lý → Đang giải quyết.")]
-                }),
-                base("BT-2026-303", {
-                    requestKind: "honor", originalKind: "both", linkedCode: "BT-2026-302", rootUnitId: "STP-HN", status: STATUS_DANG_GQ,
-                    verdictSource: VERDICT_SOURCES[1], lawsuitCase: LAWSUIT_CASES[0], acceptDate: "02/09/2026", fieldGroup: "hành chính",
-                    nyc: nycHoa, hanhVi: "Ra quyết định xử phạt vi phạm hành chính sai thẩm quyền, tạm giữ phương tiện kinh doanh.",
-                    honorForms: { apology: true, news: false },
-                    docs: [doc("Thông báo thụ lý vụ án", "Thong_bao_thu_ly_BT-2026-302.pdf")],
-                    createdAt: "14:00 03/09/2026", createdBy: "cv_hn1", createdByName: "Đỗ Văn Chung",
-                    history: [h("Thêm mới vụ việc", "14:00 03/09/2026", "Đỗ Văn Chung", "Tách từ yêu cầu cả hai: Phục hồi danh dự. Vụ việc liên quan BT-2026-302. Trạng thái: Đã thụ lý."), h("Cập nhật vụ việc", "10:35 25/09/2026", "Ngô Thị Lan", "Chuyển trạng thái: Đã thụ lý → Đang giải quyết.")]
+                    history: [h("Thêm mới vụ việc", "14:00 03/09/2026", "Đỗ Văn Chung", "Loại yêu cầu: Bồi thường thiệt hại và Phục hồi danh dự. Trạng thái: Đã thụ lý."), h("Cập nhật vụ việc", "10:30 25/09/2026", "Ngô Thị Lan", "Chuyển trạng thái: Đã thụ lý → Đang giải quyết.")]
                 }),
                 base("BT-2026-304", {
                     requestKind: "money", rootUnitId: "THADS-LD", status: STATUS_BAN_AN, fieldGroup: "thi hành án dân sự",

@@ -962,6 +962,51 @@ let proposalsList = [
         noticeReceivedDate: "21/09/2026",
         noticeProofFile: "Bien_ban_giao_nhan_thong_bao_DuongDinhTrong.pdf",
         payoutNote: "Chi trả tiền mặt tại trụ sở cơ quan, ông Dương Đình Trọng đã trực tiếp ký nhận tiền mặt."
+    },
+    // ===== HÌNH THỨC KÝ ĐỀ NGHỊ TẠM ỨNG (Quyết định tạm ứng - Mẫu 07/BTNN) & TRẠNG THÁI ĐÃ THU HỒI =====
+    {
+        id: "P95", code: "KP-2026-095", type: "Cấp tạm ứng", ycbtCode: "BT-2026-015", nycName: "Phạm Văn C", nycRole: "Người bị thiệt hại",
+        amount: 30000000, user: "Lê Văn Nam", date: "12/10/2026", status: "Chờ duyệt",
+        source: "Tạm ứng kinh phí Bộ Tài chính", cqCap: "Sở Tài chính Hà Nội",
+        notes: "Đề nghị tạm ứng kinh phí bồi thường cho ông Phạm Văn C theo yêu cầu tạm ứng đã thụ lý.",
+        advApproveTinhThan: 18000000, advApproveKhac: 12000000,
+        signMethod: "Ký số", docNo: "125/QĐ-UBND", docDate: "12/10/2026", draftDoc: "Du_thao_QD_tam_ung_KP-2026-095.doc",
+        files: [{ name: "Tờ trình đề nghị tạm ứng", file: "To_trinh_tam_ung_P95.pdf" }]
+    },
+    {
+        id: "P96", code: "KP-2026-096", type: "Cấp tạm ứng", ycbtCode: "BT-2026-015", nycName: "Phạm Văn C", nycRole: "Người bị thiệt hại",
+        amount: 25000000, user: "Lê Văn Nam", date: "08/10/2026", status: "Chờ chi trả",
+        source: "Tạm ứng kinh phí Bộ Tài chính", cqCap: "Sở Tài chính Hà Nội",
+        notes: "Đề nghị tạm ứng - Hình thức ký Ký ngoài: chờ đính kèm văn bản đã ký trước khi chi trả.",
+        advApproveTinhThan: 15000000, advApproveKhac: 10000000,
+        signMethod: "Ký ngoài", docNo: "", docDate: "", draftDoc: "Du_thao_QD_tam_ung_KP-2026-096.doc", signedFile: null,
+        leaderOpinion: "Đồng ý cấp tạm ứng kinh phí bồi thường.", approvedDate: "10/10/2026 15:20", approvedLeader: "Lãnh đạo cơ quan",
+        files: [{ name: "Tờ trình đề nghị tạm ứng", file: "To_trinh_tam_ung_P96.pdf" }]
+    },
+    {
+        id: "P97", code: "KP-2026-097", type: "Cấp tạm ứng", ycbtCode: "BT-2026-028", nycName: "Hoàng Văn Thái", nycRole: "Người bị thiệt hại",
+        amount: 45000000, user: "Lê Văn Nam", date: "06/10/2026", status: "Chờ chi trả",
+        source: "Tạm ứng kinh phí Bộ Tài chính", cqCap: "Sở Tư pháp Hà Nội",
+        notes: "Đề nghị tạm ứng - Hình thức ký Ký số trên hệ thống: Quyết định tạm ứng đã được ký số khi Lãnh đạo ký duyệt.",
+        advApproveTinhThan: 25000000, advApproveKhac: 20000000,
+        signMethod: "Ký số", docNo: "118/QĐ-TA", docDate: "07/10/2026", draftDoc: "Du_thao_QD_tam_ung_KP-2026-097.doc",
+        signedFile: "QD_tam_ung_KP-2026-097_ky_so.pdf", digitalSign: { by: "Lãnh đạo cơ quan", at: "07/10/2026 10:05", cert: "Chứng thư số của Lãnh đạo ký duyệt" },
+        leaderOpinion: "Đồng ý cấp tạm ứng kinh phí bồi thường.", approvedDate: "07/10/2026 10:05", approvedLeader: "Lãnh đạo cơ quan",
+        files: [{ name: "Tờ trình đề nghị tạm ứng", file: "To_trinh_tam_ung_P97.pdf" }]
+    },
+    {
+        id: "P98", code: "KP-2026-098", type: "Cấp tạm ứng", ycbtCode: "BT-2026-002", nycName: "Trần Thị B", nycRole: "Người thừa kế của người bị thiệt hại",
+        amount: 20000000, user: "Nguyễn Văn Thụ", date: "01/10/2026", status: "Đã thu hồi",
+        source: "Tạm ứng kinh phí Bộ Tài chính", cqCap: "Sở Tư pháp Hà Nội",
+        notes: "Khoản tạm ứng đã thu hồi đủ 100% do Quyết định giải quyết bồi thường bị hủy.",
+        advApproveTinhThan: 12000000, advApproveKhac: 8000000,
+        payoutDate: "03/10/2026", payoutAmountReal: 20000000, payoutMethod: "Chi trả qua chuyển khoản", payoutRecName: "Trần Thị B",
+        leaderOpinion: "Đồng ý cấp tạm ứng kinh phí bồi thường.", approvedDate: "02/10/2026 09:00", approvedLeader: "Lãnh đạo cơ quan",
+        statusChangeBasis: { decisionType: "Quyết định hủy quyết định giải quyết bồi thường", decisionNo: "15/QĐ-HQĐGQBT", decisionDate: "05/10/2026",
+            reason: "Hủy quyết định gốc theo kết quả xác minh bổ sung.", statusBefore: "Hoàn thành", statusAfter: "Chờ thu hồi", changedAt: "05/10/2026 10:00" },
+        recovery: { basisDecisionNo: "15/QĐ-HQĐGQBT", basisDecisionDate: "05/10/2026", amountToRecover: 20000000, amountRecovered: 20000000, amountRemain: 0,
+            recordDate: "12/10/2026", note: "Đã thu hồi đủ 100% số tiền tạm ứng.", files: [{ name: "Chứng từ thu hồi", file: "Chung_tu_thu_hoi_P98.pdf" }] },
+        files: []
     }
 ];
 
@@ -982,9 +1027,10 @@ let kpSortColumn = 'stt';
 let kpSortDirection = 'asc';
 
 function updateKpiCountersKp() {
-    const all = proposalsList.length;
-    const pending = proposalsList.filter(p => p.status === 'Chờ duyệt').length;
-    const rejected = proposalsList.filter(p => p.status === 'Bị từ chối' || (p.status && p.status.toLowerCase().includes('từ chối'))).length;
+    const scope = proposalsList.filter(kpInActiveTab);
+    const all = scope.length;
+    const pending = scope.filter(p => p.status === 'Chờ duyệt').length;
+    const rejected = scope.filter(p => p.status === 'Bị từ chối' || (p.status && p.status.toLowerCase().includes('từ chối'))).length;
 
     const countAllEl = document.getElementById('countAll');
     const countPendingEl = document.getElementById('countPending');
@@ -1070,7 +1116,7 @@ function exportExcelKinhPhi() {
     showToast("Đang kết xuất danh sách đề xuất kinh phí bồi thường ra file Excel...", "success");
 }
 
-const CURRENT_PROPOSALS_VERSION = 'v36_sep2026_all8statuses';
+const CURRENT_PROPOSALS_VERSION = 'v37_oct2026_kyso_tamung';
 
 // Migration dữ liệu cũ: phân hệ BTNN đã bỏ trạng thái trung gian (lưu tạm) của đề nghị kinh phí.
 // Bản ghi cũ còn trạng thái này trong localStorage chuyển về "Chờ lập đề nghị" (chưa trình phê duyệt,
@@ -1108,6 +1154,13 @@ function syncFromLocalStorage() {
                 let parsed = JSON.parse(localProposals);
                 if (Array.isArray(parsed) && parsed.length >= proposalsList.length) {
                     proposalsList = parsed;
+                } else if (Array.isArray(parsed) && parsed.length) {
+                    // Kho chỉ có một phần đề nghị (VD Lãnh đạo ký duyệt (vai trò Lãnh đạo đơn vị) trước khi mở phân hệ):
+                    // giữ bản ghi đã lưu theo mã, bổ sung bản ghi mẫu còn thiếu
+                    const saved = new Map(parsed.map(p => [p.id, p]));
+                    proposalsList = proposalsList.map(p => saved.has(p.id) ? Object.assign({}, p, saved.get(p.id)) : p)
+                        .concat(parsed.filter(p => !proposalsList.some(s => s.id === p.id)));
+                    localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
                 } else {
                     localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
                 }
@@ -1207,7 +1260,7 @@ function loadCourtCases() {
 }
 
 function isCourtCaseNeedingFunding(c) {
-    return !!c && !c.deleted && c.requestKind === 'money' && c.status === COURT_STATUS_VERDICT;
+    return !!c && !c.deleted && c.requestKind !== 'honor' && c.status === COURT_STATUS_VERDICT;
 }
 
 function courtCaseDamageMap(c) {
@@ -1435,6 +1488,11 @@ function initKinhPhiApp() {
     if (sFrom) sFrom.value = formatDate(firstDayOfMonth);
     if (sTo) sTo.value = formatDate(today);
     if (fDate) fDate.value = formatDate(today);
+
+    // Mở từ Dashboard Lãnh đạo: ?role=lanh-dao&tab=pending|done
+    const dashQ = new URLSearchParams(window.location.search);
+    if (dashQ.get("role") === "lanh-dao") { const rs = document.getElementById("roleSelector"); if (rs) rs.value = "lanh-dao"; }
+    if (dashQ.get("tab")) kpActiveTab = /^(done|da-xu-ly)$/.test(dashQ.get("tab")) ? "done" : "pending";
 
     // Populate table on load
     renderProposalsTable();
@@ -2382,7 +2440,9 @@ function renderProposalsTable() {
     tbody.innerHTML = '';
     renderTreasuryWarningPanel();
 
-    let filtered = [...proposalsList];
+    kpRefreshTabUi();
+    // Chỉ lấy bản ghi thuộc tab đang chọn (Chờ xử lý / Đã xử lý) theo người dùng đang đăng nhập
+    let filtered = proposalsList.filter(kpInActiveTab);
 
     const code = document.getElementById('searchProposalCode').value.trim().toLowerCase();
     const type = document.getElementById('searchProposalType').value;
@@ -2566,11 +2626,11 @@ function renderProposalsTable() {
         let actionsHtml = '';
 
         if (isLeader) {
-            let approveBtn = `<button class="icon-btn accept" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ phê duyệt đề xuất ở trạng thái Chờ duyệt"><i class="fa-solid fa-circle-check"></i></button>`;
-            let rejectBtn = `<button class="icon-btn reject" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ từ chối đề xuất ở trạng thái Chờ duyệt"><i class="fa-solid fa-ban"></i></button>`;
+            let approveBtn = `<button class="icon-btn accept" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Ký duyệt"><i class="fa-solid fa-circle-check"></i></button>`;
+            let rejectBtn = `<button class="icon-btn reject" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Từ chối"><i class="fa-solid fa-ban"></i></button>`;
 
             if (item.status === 'Chờ duyệt') {
-                approveBtn = `<button class="icon-btn accept" title="Phê duyệt đề xuất" onclick="openApproveModal('${item.id}')"><i class="fa-solid fa-circle-check"></i></button>`;
+                approveBtn = `<button class="icon-btn accept" title="Ký duyệt" onclick="openApproveModal('${item.id}')"><i class="fa-solid fa-circle-check"></i></button>`;
                 rejectBtn = `<button class="icon-btn reject" title="Từ chối phê duyệt" onclick="openRejectModal('${item.id}')"><i class="fa-solid fa-ban"></i></button>`;
             }
             actionsHtml = `${approveBtn} ${rejectBtn}`;
@@ -2596,7 +2656,7 @@ function renderProposalsTable() {
             if (treasuryInfo.isEligible) {
                 treasuryBtn = `<button class="icon-btn reject" title="Sung quỹ Nhà nước" onclick="forfeitProposalDirect('${item.id}')"><i class="fa-solid fa-building-columns"></i></button>`;
             }
-            actionsHtml = `${fillBtn} ${updateBtn} ${payBtn} ${treasuryBtn} ${deleteBtn}`;
+            actionsHtml = kpSpecialistActions(item, { fillBtn, updateBtn, payBtn, treasuryBtn, deleteBtn });
         }
 
         const amtVal = typeof item.amount === 'number' ? item.amount : parseFloat(String(item.amount).replace(/\D/g, '')) || 0;
@@ -2614,7 +2674,7 @@ function renderProposalsTable() {
             <td style="text-align:center; vertical-align:middle;">${item.date}</td>
             <td style="text-align:left; vertical-align:middle;">${treasuryHtml}</td>
             <td style="text-align:center; vertical-align:middle;"><span class="badge ${badgeClass}">${displayStatus}</span></td>
-            <td style="text-align:center; vertical-align:middle;">
+            <td class="kp-act-td" style="text-align:center; vertical-align:middle;">
                 <div class="action-flex" style="display:flex; justify-content:center; gap:4px;">
                     ${actionsHtml}
                 </div>
@@ -5485,3 +5545,465 @@ function setKpPayMethod(value) {
     });
     onKpPayMethodChange(method);
 }
+
+
+// =====================================================================================
+// 02 TAB "CHỜ XỬ LÝ" / "ĐÃ XỬ LÝ" THEO NGƯỜI DÙNG ĐĂNG NHẬP (GIẢ LẬP QUYỀN CÁN BỘ / LÃNH ĐẠO)
+// - Cán bộ xử lý: Chờ xử lý = Chờ lập đề nghị, Chờ nhập liệu, Chờ duyệt, Chờ chi trả, Bị từ chối, Chờ thu hồi;
+//   Đã xử lý = Hoàn thành, Sung quỹ nhà nước, Đã thu hồi, Đã hủy.
+// - Lãnh đạo: Chờ xử lý = đề nghị Chờ duyệt; Đã xử lý = đề nghị đã qua bước ký duyệt / từ chối.
+// =====================================================================================
+const KP_PENDING_STATES = ['Chờ lập đề nghị', FUNDING_STATUS_INPUT, 'Chờ duyệt', 'Chờ chi trả', 'Bị từ chối', 'Chờ thu hồi'];
+const KP_DONE_STATES = ['Hoàn thành', 'Sung quỹ nhà nước', 'Đã thu hồi', 'Đã hủy'];
+let kpActiveTab = 'pending';
+
+function kpRole() { const s = document.getElementById('roleSelector'); return s ? s.value : 'chuyen-vien'; }
+function kpNormStatus(st) { return st === 'Đã sung quỹ' ? 'Sung quỹ nhà nước' : (st === 'Chi trả một phần' ? 'Chờ chi trả' : st); }
+function kpInTab(tab, item) {
+    const st = kpNormStatus(item.status);
+    if (kpRole() === 'lanh-dao') {
+        if (tab === 'pending') return st === 'Chờ duyệt';
+        return ['Chờ chi trả', 'Bị từ chối', 'Chờ thu hồi', 'Hoàn thành', 'Sung quỹ nhà nước', 'Đã thu hồi'].includes(st) || (st === 'Đã hủy' && !!item.approvedDate);
+    }
+    return tab === 'pending' ? KP_PENDING_STATES.includes(st) : KP_DONE_STATES.includes(st);
+}
+function kpInActiveTab(item) { return kpInTab(kpActiveTab, item); }
+function kpTabStates(tab) {
+    if (kpRole() === 'lanh-dao') return tab === 'pending' ? ['Chờ duyệt'] : ['Chờ chi trả', 'Bị từ chối', 'Chờ thu hồi', ...KP_DONE_STATES];
+    return tab === 'pending' ? KP_PENDING_STATES : KP_DONE_STATES;
+}
+function kpRefreshTabUi() {
+    const cP = document.getElementById('kpTabPendingCount');
+    const cD = document.getElementById('kpTabDoneCount');
+    if (cP) cP.innerText = proposalsList.filter(p => kpInTab('pending', p)).length;
+    if (cD) cD.innerText = proposalsList.filter(p => kpInTab('done', p)).length;
+    document.getElementById('kpTabPending')?.classList.toggle('active', kpActiveTab === 'pending');
+    document.getElementById('kpTabDone')?.classList.toggle('active', kpActiveTab === 'done');
+    // Trạng thái đề nghị: chỉ gồm các trạng thái của tab đang chọn
+    const sel = document.getElementById('searchProposalStatus');
+    if (sel) {
+        const states = kpTabStates(kpActiveTab);
+        const key = states.join('|');
+        if (sel.dataset.kpStates !== key) {
+            const cur = sel.value;
+            sel.innerHTML = '<option value="">Tất cả</option>' + states.map(s => `<option value="${s}">${s}</option>`).join('');
+            sel.value = states.includes(cur) ? cur : '';
+            sel.dataset.kpStates = key;
+        }
+    }
+    // Lọc nhanh Chờ duyệt / Bị từ chối: chỉ tại tab Chờ xử lý của Cán bộ xử lý
+    const showKpi = kpActiveTab === 'pending' && kpRole() !== 'lanh-dao';
+    const kpiRow = document.getElementById('kpiStatsRow');
+    if (kpiRow) kpiRow.style.visibility = showKpi ? 'visible' : 'hidden';
+    if (!showKpi) activeKpiFilterKp = 'all';
+    const btnCreate = document.getElementById('btnCreateProposalTop');
+    if (btnCreate) btnCreate.style.display = (kpActiveTab === 'pending' && kpRole() !== 'lanh-dao') ? 'inline-flex' : 'none';
+    // Tab Đã xử lý chỉ xem: ẩn cột Thao tác
+    const table = document.getElementById('proposalsTable');
+    if (table) table.classList.toggle('kp-done', kpActiveTab === 'done');
+}
+function kpSetTab(tab) {
+    kpActiveTab = tab;
+    activeKpiFilterKp = 'all';
+    document.querySelectorAll('#kpiStatsRow .stat-badge-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('kpiBtnAll')?.classList.add('active');
+    const sel = document.getElementById('searchProposalStatus');
+    if (sel) sel.value = '';
+    currentPage = 1;
+    renderProposalsTable();
+}
+function kpOnRoleChange() {
+    kpActiveTab = 'pending';
+    kpSetTab('pending');
+}
+
+// =====================================================================================
+// HÌNH THỨC KÝ - VĂN BẢN QUYẾT ĐỊNH TẠM ỨNG KINH PHÍ BỒI THƯỜNG (MẪU 07/BTNN) - CHỈ ĐỀ NGHỊ TẠM ỨNG
+// - Ký số trên hệ thống (mặc định): bắt buộc Số, ký hiệu văn bản và Ngày văn bản khi Trình phê duyệt;
+//   Lãnh đạo Ký duyệt -> hệ thống ký số Quyết định tạm ứng.
+// - Ký ngoài: sau khi Lãnh đạo Ký duyệt, Cán bộ "Đính kèm văn bản đã ký" (Số, ký hiệu, Ngày ký, tệp .pdf);
+//   chưa đính kèm thì chưa được Cập nhật chi trả.
+// =====================================================================================
+const KP_SIGN_DIGITAL = 'Ký số';
+const KP_SIGN_OUTSIDE = 'Ký ngoài';
+function kpIsAdv(item) { return !!item && (item.type === 'Cấp tạm ứng' || item.type === 'Đề nghị tạm ứng'); }
+function kpEsc(v) { return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function kpSignText(m) { return m === KP_SIGN_OUTSIDE ? 'Ký ngoài' : 'Ký số trên hệ thống'; }
+function kpDraftName(code) { return `Du_thao_QD_tam_ung_${code}`; }
+function kpSignedName(item) { return item.signedFile || `QD_tam_ung_${item.code}_ky_so.pdf`; }
+// Đề nghị tạm ứng Ký ngoài đã được Lãnh đạo ký duyệt nhưng chưa đính kèm văn bản đã ký
+function kpNeedsSignedFile(item) {
+    return kpIsAdv(item) && item.signMethod === KP_SIGN_OUTSIDE && kpNormStatus(item.status) === 'Chờ chi trả' && !item.signedFile;
+}
+
+// Màn xem văn bản (popup trang A4): Tải file Word / In / Đóng
+function kpOpenDocViewer(bodyHtml, baseName) {
+    const old = document.getElementById('kpDocViewer'); if (old) old.remove();
+    const ov = document.createElement('div');
+    ov.id = 'kpDocViewer';
+    ov.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:6000;display:flex;align-items:center;justify-content:center;padding:16px;';
+    const btn = 'border:0;border-radius:6px;padding:7px 12px;font-weight:600;cursor:pointer;font-size:13px;';
+    ov.innerHTML = `<div style="background:#fff;border-radius:10px;width:min(1000px,100%);height:min(92vh,100%);display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.3);">
+        <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;background:#1e3a8a;color:#fff;font-family:system-ui,sans-serif;">
+            <b style="margin-right:auto;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">Xem văn bản - ${kpEsc(baseName)}</b>
+            <button type="button" data-act="word" style="${btn}">Tải file (Word .doc)</button>
+            <button type="button" data-act="print" style="${btn}">In</button>
+            <button type="button" data-act="close" style="${btn}background:#dc2626;color:#fff;">Đóng</button>
+        </div>
+        <iframe title="Văn bản" style="flex:1;border:0;width:100%;background:#e5e7eb;"></iframe>
+    </div>`;
+    document.body.appendChild(ov);
+    const fr = ov.querySelector('iframe');
+    fr.srcdoc = `<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8"><style>body{margin:0;background:#e5e7eb}.page{background:#fff;width:210mm;min-height:297mm;margin:20px auto;padding:20mm 20mm 20mm 30mm;box-sizing:border-box;box-shadow:0 4px 16px rgba(0,0,0,.15);font-family:'Times New Roman',serif;font-size:14pt;line-height:1.5;color:#000}@media print{body{background:#fff}.page{margin:0;box-shadow:none;width:auto;min-height:0}}</style></head><body><div class="page">${bodyHtml}</div></body></html>`;
+    const close = () => { ov.remove(); document.removeEventListener('keydown', onKey); };
+    const onKey = e => { if (e.key === 'Escape') close(); };
+    document.addEventListener('keydown', onKey);
+    ov.addEventListener('click', e => {
+        if (e.target === ov) { close(); return; }
+        const act = e.target.getAttribute && e.target.getAttribute('data-act');
+        if (act === 'close') close();
+        else if (act === 'print') { try { fr.contentWindow.focus(); fr.contentWindow.print(); } catch (err) { } }
+        else if (act === 'word') {
+            const html = `<html><head><meta charset="utf-8"></head><body style="font-family:'Times New Roman',serif;font-size:14pt;">${bodyHtml}</body></html>`;
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob(['﻿', html], { type: 'application/msword' }));
+            a.download = baseName + '.doc';
+            document.body.appendChild(a); a.click();
+            setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+        }
+    });
+}
+
+// Sinh Quyết định tạm ứng kinh phí bồi thường theo Mẫu 07_Template (giả lập nội dung mẫu trên giao diện)
+function kpBuildAdvanceDecisionHtml(d) {
+    const claim = mockClaims.find(c => c.code === d.ycbtCode) || {};
+    const agency = claim.agency || 'TÊN CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG';
+    const fmt = n => (Number(n) || 0).toLocaleString('vi-VN');
+    const p = s => `<p style="margin:4pt 0; text-align:justify; text-indent:1cm;">${s}</p>`;
+    const dp = String(d.docDate || '').split('/');
+    const dateLine = dp.length === 3 ? `Hà Nội, ngày ${dp[0]} tháng ${dp[1]} năm ${dp[2]}` : '…, ngày … tháng … năm …';
+    const payLine = d.payMethod === 'Chi trả qua chuyển khoản'
+        ? `chuyển khoản vào tài khoản số ${kpEsc(d.bankAccount || '…')} mở tại ${kpEsc(d.bankName || '…')}${d.bankBranch ? ' - ' + kpEsc(d.bankBranch) : ''}, chủ tài khoản: ${kpEsc(d.bankUser || d.nycName || '…')}`
+        : 'chi trả trực tiếp bằng tiền mặt';
+    return `<div style="font-family:'Times New Roman',serif; font-size:14pt; line-height:1.5; color:#000;">
+        <div style="text-align:right; font-style:italic; font-size:12pt; margin-bottom:4pt;">Mẫu số 07/BTNN</div>
+        <table style="width:100%; border-collapse:collapse; margin-bottom:12pt;"><tr>
+            <td style="width:42%; padding-right:14pt; text-align:center; vertical-align:top; font-size:12pt; line-height:1.35;">
+                <b>${kpEsc(String(agency).toUpperCase())}</b><br>
+                <span style="display:inline-block; width:35%; border-top:1px solid #000; margin:2pt 0 4pt;"></span><br>
+                Số: ${kpEsc(d.docNo || '…../QĐ-…')}
+            </td>
+            <td style="padding-left:6pt; text-align:center; vertical-align:top; font-size:12pt; line-height:1.35;">
+                <b style="white-space:nowrap;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</b><br>
+                <b>Độc lập - Tự do - Hạnh phúc</b><br>
+                <span style="display:inline-block; width:45%; border-top:1px solid #000; margin:2pt 0 4pt;"></span><br>
+                <i>${dateLine}</i>
+            </td>
+        </tr></table>
+        <p style="text-align:center; margin:14pt 0 4pt; font-size:15pt;"><b>QUYẾT ĐỊNH</b><br><b>Về việc tạm ứng kinh phí bồi thường</b></p>
+        <p style="text-align:center; margin:4pt 0 12pt; font-size:13pt;"><b>THỦ TRƯỞNG ${kpEsc(String(agency).toUpperCase())}</b></p>
+        ${p('<i>Căn cứ Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14;</i>')}
+        ${p(`<i>Căn cứ hồ sơ yêu cầu bồi thường mã ${kpEsc(d.ycbtCode || '…')} của ông/bà ${kpEsc(d.nycName || '…')};</i>`)}
+        <p style="text-align:center; margin:12pt 0 8pt;"><b>QUYẾT ĐỊNH:</b></p>
+        ${p(`<b>Điều 1.</b> Tạm ứng kinh phí bồi thường cho ông/bà ${kpEsc(d.nycName || '…')}, địa chỉ: ${kpEsc(claim.address || '…')}.`)}
+        ${p(`Tổng số tiền tạm ứng: ${fmt(d.amount)} đồng (Viết bằng chữ: <i>${kpEsc(docTienBangChu(Number(d.amount) || 0))}</i>), trong đó:`)}
+        <p style="margin:2pt 0 2pt 1.5cm;">- Thiệt hại về tinh thần: ${fmt(d.advTinhThan)} đồng.</p>
+        <p style="margin:2pt 0 2pt 1.5cm;">- Thiệt hại khác: ${fmt(d.advKhac)} đồng.</p>
+        ${p(`<b>Điều 2.</b> Việc chi trả tiền tạm ứng được thực hiện theo phương thức ${payLine}.`)}
+        ${p('<b>Điều 3.</b> Quyết định này có hiệu lực kể từ ngày ký.')}
+        ${p(`<b>Điều 4.</b> Ông/Bà ${kpEsc(d.nycName || '…')} và cơ quan, tổ chức, cá nhân có liên quan chịu trách nhiệm thi hành Quyết định này./.`)}
+        <table style="width:100%; border-collapse:collapse; margin-top:16pt;"><tr>
+            <td style="width:55%; vertical-align:top; font-size:12pt; line-height:1.4;"><b><i>Nơi nhận:</i></b><br>- Như Điều 4;<br>- Lưu: VT, HSVV.</td>
+            <td style="text-align:center; vertical-align:top; font-size:13pt;"><b>THỦ TRƯỞNG CƠ QUAN</b><br><i>(Ký, ghi rõ họ tên và đóng dấu)</i><br>
+                ${d.digitalSign ? `<div style="display:inline-block; margin:10pt 0; padding:6pt 10pt; border:1.5px solid #1d4ed8; color:#1d4ed8; font-size:11pt; text-align:left;">Ký số bởi: ${kpEsc(d.digitalSign.by)}<br>Thời gian ký: ${kpEsc(d.digitalSign.at)}</div><br>` : '<br><br><br><br>'}
+                <b>${kpEsc(d.approvedLeader && d.signedFile ? d.approvedLeader : '')}</b></td>
+        </tr></table>
+    </div>`;
+}
+
+// Dữ liệu văn bản lấy theo form đang nhập (MH02) hoặc theo bản ghi đã lưu
+function kpFormDocData() {
+    const val = id => (document.getElementById(id) || {}).value || '';
+    const num = id => parseFloat(String(val(id)).replace(/\D/g, '')) || 0;
+    const m = document.querySelector('input[name="kpSignMethod"]:checked');
+    const payMethod = (document.querySelector('input[name="advRecMethodRadio"]:checked') || {}).value || '';
+    return {
+        code: val('formProposalCodeVal'), ycbtCode: val('formClaimCode'), nycName: val('formNycName'),
+        amount: num('advApproveTinhThan') + num('advApproveKhac'), advTinhThan: num('advApproveTinhThan'), advKhac: num('advApproveKhac'),
+        payMethod, bankAccount: val('advBankAccount'), bankName: val('advBankName'), bankBranch: val('advBankBranch'), bankUser: val('advBankUser'),
+        signMethod: m ? m.value : KP_SIGN_DIGITAL, docNo: val('kpDocNo').trim(), docDate: val('kpDocDate').trim()
+    };
+}
+function kpItemDocData(item) {
+    return Object.assign({}, item, { advTinhThan: item.advApproveTinhThan || 0, advKhac: item.advApproveKhac || 0 });
+}
+function kpPreviewDraftFromForm() {
+    const d = kpFormDocData();
+    kpOpenDocViewer(kpBuildAdvanceDecisionHtml(d), kpDraftName(d.code || 'KP'));
+}
+function kpViewSignDoc(id, which) {
+    const item = proposalsList.find(p => p.id === id);
+    if (!item) return;
+    if (which === 'signed') {
+        kpOpenDocViewer(kpBuildAdvanceDecisionHtml(kpItemDocData(item)), String(kpSignedName(item)).replace(/\.[a-z]+$/i, ''));
+        return;
+    }
+    kpOpenDocViewer(kpBuildAdvanceDecisionHtml(Object.assign(kpItemDocData(item), { digitalSign: null, signedFile: null })), kpDraftName(item.code));
+}
+
+function kpOnSignMethodChange() {
+    const m = document.querySelector('input[name="kpSignMethod"]:checked');
+    const digital = !m || m.value === KP_SIGN_DIGITAL;
+    document.querySelectorAll('.kp-sign-req').forEach(el => { el.style.display = digital ? 'inline' : 'none'; });
+    ['kpDocNo', 'kpDocDate'].forEach(id => { const el = document.getElementById(id); if (el && !digital) { el.classList.remove('is-invalid'); const er = el.parentNode.querySelector('.error-message'); if (er) er.remove(); } });
+}
+
+// Khối "Văn bản Quyết định tạm ứng và Hình thức ký" (chỉ Đề nghị tạm ứng)
+function kpRenderSignBlock(item, readOnly) {
+    const block = document.getElementById('block6b_SignDoc');
+    const body = document.getElementById('kpSignBlockBody');
+    if (!block || !body) return;
+    const typeVal = (document.getElementById('formProposalType') || {}).value;
+    const isAdv = item ? kpIsAdv(item) : typeVal === 'Cấp tạm ứng';
+    block.style.display = isAdv ? 'block' : 'none';
+    if (!isAdv) { body.innerHTML = ''; return; }
+    setAccordionState('block6b_SignDoc', true);
+    const method = (item && item.signMethod) || KP_SIGN_DIGITAL;
+    const code = (item && item.code) || (document.getElementById('formProposalCodeVal') || {}).value || '';
+    const field = (label, html) => `<div class="form-group" style="margin-bottom:12px;"><span class="form-label">${label}</span>${html}</div>`;
+    if (!readOnly) {
+        body.innerHTML = `<div class="grid-3-cols" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;">
+            ${field('Hình thức ký <span class="required">*</span>', `<div style="display:flex; gap:18px; align-items:center; min-height:34px;">
+                <label style="display:inline-flex; gap:6px; align-items:center; cursor:pointer;"><input type="radio" name="kpSignMethod" value="${KP_SIGN_DIGITAL}" ${method !== KP_SIGN_OUTSIDE ? 'checked' : ''} onchange="kpOnSignMethodChange()"> Ký số trên hệ thống</label>
+                <label style="display:inline-flex; gap:6px; align-items:center; cursor:pointer;"><input type="radio" name="kpSignMethod" value="${KP_SIGN_OUTSIDE}" ${method === KP_SIGN_OUTSIDE ? 'checked' : ''} onchange="kpOnSignMethodChange()"> Ký ngoài</label></div>`)}
+            ${field('Số, ký hiệu văn bản <span class="required kp-sign-req">*</span>', `<input type="text" class="form-control" id="kpDocNo" maxlength="50" placeholder="VD: 125/QĐ-BTNN" value="${kpEsc(item && item.docNo || '')}">`)}
+            ${field('Ngày văn bản <span class="required kp-sign-req">*</span>', `<div class="date-input-wrapper"><input type="text" class="form-control" id="kpDocDate" placeholder="dd/mm/yyyy" value="${kpEsc(item && item.docDate || '')}"><i class="fa-regular fa-calendar-days"></i></div>`)}
+        </div>
+        ${field('Văn bản dự thảo Quyết định tạm ứng kinh phí bồi thường', `<div><a href="javascript:void(0)" onclick="kpPreviewDraftFromForm()" style="display:inline-flex; gap:8px; align-items:center; font-weight:600; color:var(--primary-light); text-decoration:none;"><i class="fa-solid fa-file-word" style="color:#2563eb;"></i> ${kpEsc(kpDraftName(code))}.doc</a></div>`)}`;
+        if (window.flatpickr) { try { flatpickr('#kpDocDate', { dateFormat: 'd/m/Y', allowInput: true }); } catch (e) { } }
+        kpOnSignMethodChange();
+        return;
+    }
+    const approved = !!item.approvedDate && ['Chờ chi trả', 'Hoàn thành', 'Sung quỹ nhà nước', 'Chờ thu hồi', 'Đã thu hồi'].includes(kpNormStatus(item.status));
+    let docHtml;
+    if (item.signedFile) {
+        docHtml = `<a href="javascript:void(0)" onclick="kpViewSignDoc('${item.id}','signed')" style="display:inline-flex; gap:8px; align-items:center; font-weight:600; color:var(--primary-light); text-decoration:none;"><i class="fa-solid fa-file-pdf" style="color:#dc2626;"></i> ${kpEsc(item.signedFile)}</a>`
+            + (item.digitalSign ? `<div style="font-size:12px; color:var(--text-muted);">Ký số bởi ${kpEsc(item.digitalSign.by)} - ${kpEsc(item.digitalSign.at)}</div>` : '');
+    } else {
+        docHtml = `<a href="javascript:void(0)" onclick="kpViewSignDoc('${item.id}','draft')" style="display:inline-flex; gap:8px; align-items:center; font-weight:600; color:var(--primary-light); text-decoration:none;"><i class="fa-solid fa-file-word" style="color:#2563eb;"></i> ${kpEsc(kpDraftName(item.code))}.doc</a>`
+            + (approved && item.signMethod === KP_SIGN_OUTSIDE ? `<div><span class="badge badge-warning" style="margin-top:6px;">Chưa đính kèm văn bản đã ký</span></div>` : '');
+    }
+    const ro = (label, v) => field(label, `<div style="font-weight:600; color:var(--text-main); min-height:20px;">${v}</div>`);
+    body.innerHTML = `<div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;">
+        ${ro('Hình thức ký', kpEsc(kpSignText(item.signMethod)))}
+        ${ro('Số, ký hiệu văn bản', kpEsc(item.docNo || '-'))}
+        ${ro('Ngày văn bản', kpEsc(item.docDate || '-'))}
+    </div>
+    ${field(item.signedFile ? 'Văn bản Quyết định tạm ứng đã ký' : 'Văn bản dự thảo Quyết định tạm ứng kinh phí bồi thường', `<div>${docHtml}</div>`)}`;
+}
+function kpSyncSignBlock() {
+    const panel = document.getElementById('inlineProposalFormPanel');
+    if (!panel || panel.style.display === 'none' || !formEditingMode) return;
+    const keep = selectedProposalId ? proposalsList.find(p => p.id === selectedProposalId) : null;
+    const typeVal = (document.getElementById('formProposalType') || {}).value;
+    kpRenderSignBlock(typeVal === 'Cấp tạm ứng' ? Object.assign({ type: 'Cấp tạm ứng' }, keep ? { code: keep.code, signMethod: keep.signMethod, docNo: keep.docNo, docDate: keep.docDate } : {}) : { type: typeVal }, false);
+}
+function kpValidateSignFields() {
+    const d = kpFormDocData();
+    if (d.signMethod !== KP_SIGN_DIGITAL) return true;
+    let firstBad = null;
+    const mark = (id, msg) => {
+        const el = document.getElementById(id); if (!el) return;
+        el.classList.add('is-invalid');
+        const host = el.closest('.form-group') || el.parentNode;
+        let er = host.querySelector('.error-message');
+        if (!er) { er = document.createElement('div'); er.className = 'error-message'; er.style.cssText = 'color:var(--danger-color); font-size:11.5px; margin-top:4px;'; host.appendChild(er); }
+        er.innerText = msg;
+        if (!firstBad) firstBad = el;
+    };
+    ['kpDocNo', 'kpDocDate'].forEach(id => { const el = document.getElementById(id); if (el) { el.classList.remove('is-invalid'); const er = (el.closest('.form-group') || el.parentNode).querySelector('.error-message'); if (er) er.remove(); } });
+    if (!d.docNo) mark('kpDocNo', 'Đây là trường bắt buộc');
+    if (!d.docDate) mark('kpDocDate', 'Đây là trường bắt buộc');
+    else if (!/^\d{2}\/\d{2}\/\d{4}$/.test(d.docDate)) mark('kpDocDate', 'Ngày văn bản không đúng định dạng dd/mm/yyyy');
+    if (firstBad) { setAccordionState('block6b_SignDoc', true); firstBad.focus(); firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' }); return false; }
+    return true;
+}
+
+// Ký số Quyết định tạm ứng khi Lãnh đạo Ký duyệt (Hình thức ký = Ký số trên hệ thống)
+function kpApplyDigitalSign(item) {
+    if (!kpIsAdv(item) || item.signMethod !== KP_SIGN_DIGITAL || kpNormStatus(item.status) !== 'Chờ chi trả') return;
+    item.signedFile = `QD_tam_ung_${item.code}_ky_so.pdf`;
+    item.digitalSign = { by: item.approvedLeader || 'Lãnh đạo cơ quan', at: item.approvedDate || formatCurrentDateTime(), cert: 'Chứng thư số của Lãnh đạo ký duyệt' };
+}
+
+// Popup Đính kèm văn bản đã ký (Hình thức ký = Ký ngoài, sau khi Lãnh đạo Ký duyệt)
+let kpSignedUploadId = null;
+let kpSignedUploadFile = '';
+function kpOpenSignedUpload(id) {
+    const item = proposalsList.find(p => p.id === id);
+    if (!item) return;
+    kpSignedUploadId = id;
+    kpSignedUploadFile = '';
+    const old = document.getElementById('kpSignedUploadOverlay'); if (old) old.remove();
+    const ov = document.createElement('div');
+    ov.id = 'kpSignedUploadOverlay';
+    ov.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,.55);z-index:5000;display:flex;align-items:center;justify-content:center;padding:16px;';
+    ov.innerHTML = `<div style="background:#fff;border-radius:10px;width:min(620px,100%);box-shadow:0 20px 50px rgba(0,0,0,.25);overflow:hidden;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--primary-color,#1e3a8a);color:#fff;font-weight:700;"><span><i class="fa-solid fa-file-arrow-up"></i> Đính kèm văn bản đã ký</span><span style="cursor:pointer;font-size:20px;" onclick="kpCloseSignedUpload()">&times;</span></div>
+        <div style="padding:18px 20px;">
+            <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:13px;line-height:1.7;">
+                Mã đề nghị: <b>${kpEsc(item.code)}</b> - Người yêu cầu: <b>${kpEsc(item.nycName)}</b><br>Lãnh đạo ký duyệt: <b>${kpEsc(item.approvedLeader || '-')}</b> - ${kpEsc(item.approvedDate || '')}
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                <div class="form-group"><span class="form-label">Số, ký hiệu văn bản <span class="required">*</span></span><input type="text" class="form-control" id="kpUpDocNo" maxlength="50" value="${kpEsc(item.docNo || '')}"></div>
+                <div class="form-group"><span class="form-label">Ngày ký <span class="required">*</span></span><div class="date-input-wrapper"><input type="text" class="form-control" id="kpUpDocDate" placeholder="dd/mm/yyyy" value="${kpEsc(item.docDate || '')}"><i class="fa-regular fa-calendar-days"></i></div></div>
+            </div>
+            <div class="form-group" style="margin-bottom:0;"><span class="form-label">Tệp văn bản đã ký (.pdf) <span class="required">*</span></span>
+                <div style="display:flex;gap:10px;align-items:center;"><button type="button" class="btn btn-outline-primary btn-sm" onclick="document.getElementById('kpUpFile').click()"><i class="fa-solid fa-upload"></i> Tải lên</button><span id="kpUpFileName" style="font-size:13px;color:var(--text-muted);font-style:italic;">Chưa chọn tệp</span></div>
+                <input type="file" id="kpUpFile" accept=".pdf" style="display:none;" onchange="kpOnSignedFilePicked(this)">
+            </div>
+            <div id="kpUpError" style="display:none;color:var(--danger-color);font-size:12px;margin-top:10px;"></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:10px;padding:12px 20px;background:#F8FAFC;border-top:1px solid #E2E8F0;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="kpCloseSignedUpload()">Hủy bỏ</button>
+            <button type="button" class="btn btn-primary btn-sm" onclick="kpSaveSignedUpload()"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>
+        </div>
+    </div>`;
+    document.body.appendChild(ov);
+    if (window.flatpickr) { try { flatpickr('#kpUpDocDate', { dateFormat: 'd/m/Y', allowInput: true }); } catch (e) { } }
+}
+function kpOnSignedFilePicked(input) {
+    const f = input.files && input.files[0];
+    if (!f) return;
+    if (!/\.pdf$/i.test(f.name)) { showToast('Chỉ cho phép tải lên tệp định dạng .pdf', 'error'); input.value = ''; return; }
+    kpSignedUploadFile = f.name;
+    const el = document.getElementById('kpUpFileName');
+    if (el) { el.innerText = f.name; el.style.fontStyle = 'normal'; el.style.color = 'var(--text-main)'; }
+}
+function kpCloseSignedUpload() { const ov = document.getElementById('kpSignedUploadOverlay'); if (ov) ov.remove(); kpSignedUploadId = null; }
+function kpSaveSignedUpload() {
+    const item = proposalsList.find(p => p.id === kpSignedUploadId);
+    if (!item) return;
+    const no = (document.getElementById('kpUpDocNo').value || '').trim();
+    const dt = (document.getElementById('kpUpDocDate').value || '').trim();
+    const errs = [];
+    if (!no) errs.push('Số, ký hiệu văn bản');
+    if (!dt) errs.push('Ngày ký');
+    if (!kpSignedUploadFile) errs.push('Tệp văn bản đã ký');
+    const er = document.getElementById('kpUpError');
+    if (errs.length) { er.innerText = 'Vui lòng nhập đầy đủ: ' + errs.join(', ') + '.'; er.style.display = 'block'; return; }
+    if (!/^\d{2}\/\d{2}\/\d{4}$/.test(dt)) { er.innerText = 'Ngày ký không đúng định dạng dd/mm/yyyy.'; er.style.display = 'block'; return; }
+    item.docNo = no;
+    item.docDate = dt;
+    item.signedFile = kpSignedUploadFile;
+    item.signedUploadedAt = formatCurrentDateTime();
+    saveProposalsToLocal();
+    kpCloseSignedUpload();
+    showToast(`Đã đính kèm văn bản đã ký cho đề nghị ${item.code}!`, 'success');
+    const panel = document.getElementById('inlineProposalFormPanel');
+    if (panel && panel.style.display !== 'none' && selectedProposalId === item.id) viewProposalDetail(item.id);
+    else renderProposalsTable();
+}
+
+// Thao tác dòng của Cán bộ xử lý: thêm "Đính kèm văn bản đã ký"; Cập nhật chi trả khóa mờ khi chưa đính kèm
+function kpSpecialistActions(item, b) {
+    const offStyle = 'opacity: 0.35; pointer-events: none; cursor: not-allowed;';
+    let attachBtn = `<button class="icon-btn" style="${offStyle}" title="Đính kèm văn bản đã ký"><i class="fa-solid fa-file-arrow-up"></i></button>`;
+    let payBtn = b.payBtn;
+    if (kpNeedsSignedFile(item)) {
+        attachBtn = `<button class="icon-btn edit" title="Đính kèm văn bản đã ký" onclick="event.stopPropagation(); kpOpenSignedUpload('${item.id}')"><i class="fa-solid fa-file-arrow-up"></i></button>`;
+        payBtn = `<button class="icon-btn accept" style="${offStyle}" title="Cập nhật chi trả"><i class="fa-solid fa-hand-holding-dollar"></i></button>`;
+    }
+    return `${b.fillBtn} ${b.updateBtn} ${attachBtn} ${payBtn} ${b.treasuryBtn} ${b.deleteBtn}`;
+}
+
+// ---------------- Bọc các chức năng sẵn có ----------------
+(function () {
+    const origOpen = openCreateProposalForm;
+    openCreateProposalForm = function () { origOpen.apply(this, arguments); kpRenderSignBlock(null, false); };
+    const origType = handleTypeChange;
+    handleTypeChange = function () { const r = origType.apply(this, arguments); kpSyncSignBlock(); return r; };
+    const origFill = fillProposalDirect;
+    fillProposalDirect = function (id) { origFill.apply(this, arguments); const it = proposalsList.find(p => p.id === id); if (it) kpRenderSignBlock(it, false); };
+    const origUpd = updateProposalDirect;
+    updateProposalDirect = function (id) { origUpd.apply(this, arguments); const it = proposalsList.find(p => p.id === id); if (it) kpRenderSignBlock(it, false); };
+    const origSave = saveProposal;
+    saveProposal = function () {
+        const isAdv = (document.getElementById('formProposalType') || {}).value === 'Cấp tạm ứng';
+        if (isAdv && !kpValidateSignFields()) return;
+        const sign = isAdv ? kpFormDocData() : null;
+        const code = document.getElementById('formProposalCodeVal').value.trim();
+        origSave.apply(this, arguments);
+        const item = proposalsList.find(p => p.code === code && p.status === 'Chờ duyệt');
+        if (item && isAdv) {
+            item.signMethod = sign.signMethod;
+            item.docNo = sign.docNo;
+            item.docDate = sign.docDate;
+            item.draftDoc = kpDraftName(code) + '.doc';
+            item.signedFile = null;
+            item.digitalSign = null;
+            saveProposalsToLocal();
+            renderProposalsTable();
+        }
+    };
+    const origView = viewProposalDetail;
+    viewProposalDetail = function (id) {
+        origView.apply(this, arguments);
+        const item = proposalsList.find(p => p.id === id);
+        if (!item) return;
+        kpRenderSignBlock(item, true);
+        // Đính kèm văn bản đã ký (Ký ngoài) tại màn chi tiết; Cập nhật chi trả ẩn khi chưa đính kèm
+        let btn = document.getElementById('btnViewActionAttachSigned');
+        if (!btn) {
+            btn = document.createElement('button');
+            btn.id = 'btnViewActionAttachSigned';
+            btn.className = 'btn btn-success';
+            btn.innerHTML = '<i class="fa-solid fa-file-arrow-up"></i> Đính kèm văn bản đã ký';
+            const pay = document.getElementById('btnViewActionPay');
+            if (pay && pay.parentNode) pay.parentNode.insertBefore(btn, pay);
+        }
+        btn.onclick = () => kpOpenSignedUpload(item.id);
+        const need = kpRole() !== 'lanh-dao' && kpNeedsSignedFile(item);
+        btn.style.display = need ? 'inline-flex' : 'none';
+        if (need) { const pay = document.getElementById('btnViewActionPay'); if (pay) pay.style.display = 'none'; }
+    };
+    const origPay = payProposalDirect;
+    payProposalDirect = function (id) {
+        const item = proposalsList.find(p => p.id === id);
+        if (item && kpNeedsSignedFile(item)) {
+            showCustomAlertModal('Đề nghị tạm ứng chọn Hình thức ký "Ký ngoài": vui lòng Đính kèm văn bản đã ký trước khi Cập nhật chi trả.', 'Chưa đính kèm văn bản đã ký', 'warning');
+            return;
+        }
+        return origPay.apply(this, arguments);
+    };
+    const origOpenApprove = openApproveModal;
+    openApproveModal = function (id) {
+        origOpenApprove.apply(this, arguments);
+        const item = proposalsList.find(p => p.id === id);
+        const row = document.getElementById('approveModalSignRow');
+        if (!row) return;
+        if (item && kpIsAdv(item) && item.signMethod) {
+            row.style.display = 'block';
+            row.innerHTML = `<span style="color:#64748b;">Hình thức ký:</span> <strong style="color:#0f172a; margin-left:6px;">${kpEsc(kpSignText(item.signMethod))}</strong>
+                <span style="margin-left:12px;"><a href="javascript:void(0)" onclick="kpViewSignDoc('${item.id}','draft')" style="font-weight:600;">Xem dự thảo Quyết định tạm ứng</a></span>
+                ${item.signMethod === KP_SIGN_DIGITAL ? '<div style="font-size:12px; color:#64748b; margin-top:4px;">Khi Ký duyệt, hệ thống ký số Quyết định tạm ứng.</div>' : '<div style="font-size:12px; color:#64748b; margin-top:4px;">Sau khi Ký duyệt, Cán bộ xử lý đính kèm văn bản đã ký ngoài.</div>'}`;
+        } else {
+            row.style.display = 'none';
+            row.innerHTML = '';
+        }
+    };
+    const origCloseApprove = closeApproveModal;
+    closeApproveModal = function (confirm) {
+        const id = approveProposalId;
+        origCloseApprove.apply(this, arguments);
+        if (!confirm || !id) return;
+        const item = proposalsList.find(p => p.id === id);
+        if (item && kpIsAdv(item) && item.signMethod === KP_SIGN_DIGITAL && !item.signedFile) {
+            kpApplyDigitalSign(item);
+            saveProposalsToLocal();
+            const panel = document.getElementById('inlineProposalFormPanel');
+            if (panel && panel.style.display !== 'none' && selectedProposalId === id) viewProposalDetail(id);
+            renderProposalsTable();
+        }
+    };
+})();

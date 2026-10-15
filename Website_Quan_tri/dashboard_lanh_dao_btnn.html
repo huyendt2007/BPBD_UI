@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Lãnh đạo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="quan_ly_boi_thuong.css?v=20261012">
+    <style>
+        body { background: var(--bg-body); padding: 20px; }
+        .dash-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; background: #fff; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); padding: 16px 20px; margin: 36px 0 16px; box-shadow: var(--box-shadow); }
+        .dash-head h2 { margin: 0; font-size: 20px; color: var(--primary-light); display: flex; align-items: center; gap: 10px; }
+        .dash-head p { margin: 4px 0 0; color: var(--text-muted); font-size: 13px; }
+        .dash-total { display: flex; align-items: baseline; gap: 8px; color: var(--text-muted); font-size: 13px; font-weight: 600; }
+        .dash-total b { font-size: 28px; color: var(--primary-light); }
+        .dash-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+        .dash-card { background: #fff; border: 1px solid var(--border-color); border-radius: 10px; box-shadow: var(--box-shadow); display: flex; flex-direction: column; cursor: pointer; transition: border-color .15s, box-shadow .15s, transform .15s; border-top: 4px solid var(--card-color); }
+        .dash-card:hover { border-color: var(--card-color); box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12); transform: translateY(-1px); }
+        .dash-card:focus-visible { outline: 2px solid var(--card-color); outline-offset: 2px; }
+        .dash-card-top { display: flex; gap: 14px; align-items: center; padding: 16px 18px 10px; }
+        .dash-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--card-color); background: var(--card-bg); flex-shrink: 0; }
+        .dash-title { font-weight: 700; font-size: 14.5px; color: #1e293b; line-height: 1.35; }
+        .dash-module { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+        .dash-count { margin-left: auto; font-size: 32px; font-weight: 700; color: var(--card-color); line-height: 1; }
+        .dash-count.zero { color: #cbd5e1; }
+        .dash-list { list-style: none; margin: 0; padding: 0 18px; flex: 1; }
+        .dash-list li { display: flex; gap: 8px; align-items: baseline; padding: 7px 0; border-top: 1px dashed var(--border-color); font-size: 12.5px; color: #334155; }
+        .dash-list li .c { font-weight: 700; color: var(--primary-light); white-space: nowrap; }
+        .dash-list li .d { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .dash-empty { padding: 10px 18px 4px; color: var(--text-muted); font-size: 12.5px; font-style: italic; }
+        .dash-foot { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px 14px; margin-top: 6px; border-top: 1px solid var(--border-color); font-size: 12.5px; font-weight: 600; color: var(--card-color); }
+        @media (max-width: 1100px) { .dash-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (max-width: 700px) { .dash-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="dash-head">
+            <div>
+                <h2><i class="fa-solid fa-gauge-high"></i> Dashboard Lãnh đạo</h2>
+                <p id="dashUser"></p>
+            </div>
+            <div class="dash-total">Tổng công việc chờ xử lý <b id="dashTotal">0</b></div>
+        </div>
+        <div class="dash-grid" id="dashGrid"></div>
+    </main>
+
+    <script src="btnn_luong_xu_ly.js?v=20261015e"></script>
+    <script>
+        const WF = BTNN_WF;
+        const WT = WF.WORK_TYPES;
+        const esc = v => WF.esc(v);
+        // Hồ sơ Xem xét trách nhiệm hoàn trả chờ Lãnh đạo duyệt (dữ liệu mẫu, dùng khi phân hệ chưa mở lần nào)
+        const HT_FALLBACK = [
+            { code: 'HT-2026-006', status: 'Chờ duyệt QĐ thành lập', claimCode: 'BT-2026-008' },
+            { code: 'HT-2026-014', status: 'Chờ duyệt QĐ thành lập', claimCode: 'BT-2026-008' },
+            { code: 'HT-2026-021', status: 'Chờ duyệt QĐ hoàn trả', claimCode: 'BT-2026-001' }
+        ];
+        // 06 khối Chờ xử lý; click khối mở tab Chờ xử lý của phân hệ tương ứng ở vai trò Lãnh đạo
+        const BLOCKS = [
+            { key: 'pc', title: 'Chờ phân công', module: 'Tiếp nhận yêu cầu', icon: 'fa-diagram-project', color: '#0369a1', bg: '#e0f2fe',
+              leaf: 'tiep_nhan_ycbt.html?v=3', url: 'tiep_nhan_ycbt.html?v=3&tab=pending' },
+            { key: 'xd', title: 'Chờ duyệt Xác định CQGQBT', module: 'Xác định cơ quan giải quyết bồi thường', icon: 'fa-compass', color: '#7c3aed', bg: '#ede9fe',
+              leaf: 'xac_dinh_co_quan_boi_thuong.html?v=20261008', url: 'xac_dinh_co_quan_boi_thuong.html?v=20261008&tab=pending' },
+            { key: 'gq', title: 'Chờ duyệt Giải quyết YCBT', module: 'Giải quyết yêu cầu bồi thường', icon: 'fa-scale-balanced', color: '#15803d', bg: '#dcfce7',
+              leaf: 'quan_ly_boi_thuong.html?v=1', url: 'quan_ly_boi_thuong.html?v=1&role=thu-truong&tab=cho-xu-ly' },
+            { key: 'qd', title: 'Chờ duyệt QĐ Giải quyết YCBT', module: 'Quyết định giải quyết bồi thường', icon: 'fa-stamp', color: '#a16207', bg: '#fef3c7',
+              leaf: 'quyet_dinh_giai_quyet_boi_thuong.html?v=1', url: 'quyet_dinh_giai_quyet_boi_thuong.html?v=1&role=lanh-dao&tab=pending' },
+            { key: 'kp', title: 'Chờ duyệt cấp kinh phí', module: 'Cấp kinh phí tạm ứng/Bồi thường', icon: 'fa-money-check-dollar', color: '#b91c1c', bg: '#fee2e2',
+              leaf: 'quan_ly_kinh_phi_boi_thuong.html?v=1', url: 'quan_ly_kinh_phi_boi_thuong.html?v=1&role=lanh-dao&tab=pending' },
+            { key: 'ht', title: 'Chờ duyệt Xem xét hoàn trả', module: 'Xem xét trách nhiệm hoàn trả', icon: 'fa-rotate-left', color: '#334155', bg: '#e2e8f0',
+              leaf: 'xem_xet_trach_nhiem_hoan_tra.html', url: 'xem_xet_trach_nhiem_hoan_tra.html?role=lanh_dao&tab=pending' }
+        ];
+
+        // Công việc của Lãnh đạo đang đăng nhập theo từng khối
+        function collectItems() {
+            const work = WF.getLeaderWork().pending;
+            const line = t => ({ code: t.code, text: [t.nycName, t.kind || t.detail].filter(Boolean).join(' - ') });
+            let ht = null;
+            try { ht = JSON.parse(localStorage.getItem('btnn_hoantra_summary') || 'null'); } catch (e) { ht = null; }
+            return {
+                pc: work.filter(t => t.type === WT.PHAN_CONG).map(line),
+                xd: work.filter(t => t.type === WT.PHE_DUYET && t.rec && t.rec.module === 'XD').map(line),
+                gq: work.filter(t => t.type === WT.THU_LY || (t.type === WT.PHE_DUYET && !(t.rec && t.rec.module === 'XD'))).map(t => ({ code: t.code, text: [t.nycName, t.type === WT.THU_LY ? 'Thụ lý hồ sơ' : t.kind].filter(Boolean).join(' - ') })),
+                qd: work.filter(t => t.type === WT.KY_QD).map(line),
+                kp: work.filter(t => t.type === WT.KY_KP).map(t => ({ code: t.code, text: [t.nycName, t.kind, (Number(t.proposal && t.proposal.amount) || 0).toLocaleString('vi-VN') + ' đ'].filter(Boolean).join(' - ') })),
+                ht: ((ht && ht.pendingApproval) || HT_FALLBACK).map(x => ({ code: x.code, text: `${x.status} - Vụ việc ${x.claimCode || '--'}` }))
+            };
+        }
+
+        function render() {
+            const me = WF.getCurrentUser();
+            document.getElementById('dashUser').textContent = `Công việc chờ xử lý của ${me.name} - ${me.title} (${WF.unitName(me.unitId)}). Chọn từng khối để mở tab Chờ xử lý của phân hệ tương ứng.`;
+            const items = collectItems();
+            let total = 0;
+            document.getElementById('dashGrid').innerHTML = BLOCKS.map((b, i) => {
+                const list = items[b.key] || [];
+                total += list.length;
+                const rows = list.slice(0, 3).map(x => `<li><span class="c">${esc(x.code)}</span><span class="d" title="${esc(x.text)}">${esc(x.text)}</span></li>`).join('');
+                return `<div class="dash-card" role="button" tabindex="0" style="--card-color:${b.color}; --card-bg:${b.bg};" onclick="openBlock(${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openBlock(${i});}">
+                    <div class="dash-card-top">
+                        <div class="dash-icon"><i class="fa-solid ${b.icon}"></i></div>
+                        <div><div class="dash-title">${esc(b.title)}</div><div class="dash-module">${esc(b.module)}</div></div>
+                        <div class="dash-count${list.length ? '' : ' zero'}">${list.length}</div>
+                    </div>
+                    ${rows ? `<ul class="dash-list">${rows}</ul>` : '<div class="dash-empty">Không có công việc chờ xử lý.</div>'}
+                    <div class="dash-foot"><span>${list.length > 3 ? `và ${list.length - 3} công việc khác` : ''}</span><span>Mở danh sách Chờ xử lý <i class="fa-solid fa-arrow-right"></i></span></div>
+                </div>`;
+            }).join('');
+            document.getElementById('dashTotal').textContent = total;
+        }
+
+        // Mở tab Chờ xử lý của phân hệ tại trang Quản trị (chọn đúng menu); chạy độc lập thì chuyển trang
+        function openBlock(i) {
+            const b = BLOCKS[i];
+            if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === 'function') {
+                window.parent.openAdminModule(b.url, b.leaf);
+            } else {
+                location.href = b.url;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            WF.mountUserSwitcher({ onChange: render });
+            render();
+        });
+        window.addEventListener('storage', render);
+    </script>
+    <script src="admin-ui-standardizer.js?v=20261012"></script>
+</body>
+
+</html>

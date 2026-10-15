@@ -150,7 +150,7 @@ Tai lieu phan tich/
     │   ├── SRS_BTNN_BTP_PhoiHop_TAND_VKSND.md   # Cơ chế phối hợp TANDTC, VKSNDTC, Bộ Quốc phòng, Bộ Công an
     │   ├── SRS_BTNN_BTP_VanBan_BieuMau_SoSach.md # Quản lý biểu mẫu nghiệp vụ và sổ sách theo dõi
     │   ├── SRS_BTNN_DungChung_BTP_STP_GiaiQuyet_KhieuNai_ToCao_XuLyViPham.md # Giải quyết KNTC vi phạm BTNN
-    │   ├── SRS_BTNN_DungChung_BTP_STP_HoTro_YCBT.md # Hỗ trợ người bị thiệt hại thực hiện thủ tục YCBT
+    │   ├── SRS_BTNN_DungChung_BTP_STP_HoTro_YCBT.md # Hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục YCBT
     │   ├── SRS_BTNN_DungChung_BTP_STP_HuongDan_NghiepVu.md # Hướng dẫn nghiệp vụ giải quyết bồi thường
     │   ├── SRS_BTNN_DungChung_BTP_STP_KiemTra_CongTac.md # Kiểm tra định kỳ / đột xuất công tác BTNN
     │   ├── SRS_BTNN_DungChung_BTP_STP_TheoDoi_DonDoc.md # Theo dõi, đôn đốc thi hành quyết định bồi thường
