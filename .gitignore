@@ -1,7 +1,16 @@
-# 1. BỎ QUA CÁC FILE CHƯA HOÀN THIỆN
-# Muốn bỏ qua 1 file cụ thể: Viết thẳng tên file (Ví dụ: matkhau.txt)
-# Muốn bỏ qua cả thư mục: Thêm dấu gạch chéo ở cuối (Ví dụ: node_modules/)
-# Muốn bỏ qua tất cả file cùng loại: Dùng dấu sao * (Ví dụ: *.mp4 sẽ bỏ qua mọi file video đuôi mp4).
+# Hệ điều hành & file tạm
 desktop.ini
+Thumbs.db
+.DS_Store
+
+# Office temporary lock files
+~$*
+
+# Scratch and temporary dev files
+temp_*
+scratch_*
+*.tmp
+
+# Các thư mục cũ hoặc chưa hoàn thiện
 Website_Khach_hang/UC*/
 Website_Quan_tri/UC*/
