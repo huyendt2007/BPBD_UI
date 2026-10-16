@@ -255,11 +255,11 @@
 |  | WebAdmin-089 | Cập nhật thông tin phối hợp công tác hợp tác quốc tế, cải cách hành chính, cải cách tư pháp trong lĩnh vực đăng ký BPBĐ |  |  |  |  |  |
 |  | WebAdmin-090 | Xóa thông tin phối hợp công tác hợp tác quốc tế, cải cách hành chính, cải cách tư pháp trong lĩnh vực đăng ký BPBĐ |  |  |  |  |  |
 |  | WebAdmin-091 | Tra cứu thông tin phối hợp công tác hợp tác quốc tế, cải cách hành chính, cải cách tư pháp trong lĩnh vực đăng ký BPBĐ trên mobile |  |  |  |  |  |
-|  | WebAdmin-092 | Quản lý thực hiện theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Co_cau_to_chuc.md | UC251, UC252 |  |  |  |
-|  | WebAdmin-093 | Thêm mới  thực hiện theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Co_cau_to_chuc.md |  |  |  |  |
-|  | WebAdmin-094 | Cập nhật thực hiện theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Co_cau_to_chuc.md |  |  |  |  |
+|  | WebAdmin-092 | Quản lý thực hiện theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_co_cau_to_chuc.md | UC251, UC252 |  |  |  |
+|  | WebAdmin-093 | Thêm mới  thực hiện theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_co_cau_to_chuc.md |  |  |  |  |
+|  | WebAdmin-094 | Cập nhật thực hiện theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_co_cau_to_chuc.md |  |  |  |  |
 |  | WebAdmin-095 | Xóa thông tin phối hợp công tác hợp tác quốc tế, cải cách hành chính, cải cách tư pháp trong lĩnh vực đăng ký BPBĐ |  |  |  |  |  |
-|  | WebAdmin-096 | Tra cứu thực hiện theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Co_cau_to_chuc.md |  |  |  |  |
+|  | WebAdmin-096 | Tra cứu thực hiện theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_co_cau_to_chuc.md |  |  |  |  |
 |  | WebAdmin-097 | Quản lý yêu cầu và hỗ trợ người dùng |  | UC256, UC257, UC258, UC259, UC261, UC262, UC263, UC264, UC266 |  |  |  |
 |  | WebAdmin-098 | Quản lý yêu cầu hỗ trợ | Tai lieu phan tich\03_Website_Quan_tri\2_Biện pháp bảo đảm\Quan_ly_tiep_nhan_ho_tro.md | UC253, UC254, UC255, UC256, UC257, UC258, UC259, UC260 | Hoàn thành |  |  |
 |  | WebAdmin-099 | Tra cứu yêu cầu hỗ trợ | Tai lieu phan tich\03_Website_Quan_tri\2_Biện pháp bảo đảm\Quan_ly_tiep_nhan_ho_tro.md | UC259 |  |  |  |
@@ -301,7 +301,7 @@
 |  | WebAdmin-137 | Báo cáo kết quả công tác theo lĩnh vực tập huấn, hội nghị, hội thảo, tọa đàm;  nghiên cứu khoa học trong lĩnh vực bảo đảm thực hiện nghĩa vụ, đăng ký BPBĐ |  | UC296 |  |  |  |
 |  | WebAdmin-138 | Báo cáo kết quả công tác theo lĩnh vực tiếp công dân, giải quyết khiếu nại, tố cáo, kiến nghị, phản ánh trong đăng ký, cung cấp thông tin về BPBĐ |  | UC297 |  |  |  |
 |  | WebAdmin-139 | Báo cáo kết quả công tác theo lĩnh vực phối hợp công tác hợp tác quốc tế, cải cách hành chính, cải cách tư pháp trong lĩnh vực đăng ký BPBĐ |  | UC298 |  |  |  |
-|  | WebAdmin-140 | Báo cáo kết quả công tác theo lĩnh vực khác theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Co_cau_to_chuc.md | UC299 |  |  |  |
+|  | WebAdmin-140 | Báo cáo kết quả công tác theo lĩnh vực khác theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_co_cau_to_chuc.md | UC299 |  |  |  |
 |  | WebAdmin-141 | Bồi thường nhà nước | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC412, UC413, UC414, UC415, UC416, UC417, UC418, UC419, UC420, UC421, UC422, UC423, UC424, UC425, UC426, UC427, UC428, UC429, UC430, UC431, UC432, UC433, UC434, UC435, UC436, UC437, UC438, UC439, UC440, UC441, UC442, UC443, UC444, UC445, UC446, UC447, UC448, UC449, UC450, UC451, UC452, UC453, UC454, UC455, UC456, UC457, UC458, UC459, UC460, UC461, UC462, UC463, UC464, UC465, UC466, UC467, UC468, UC469, UC470, UC471, UC472, UC473, UC474, UC475, UC476, UC477, UC478, UC479, UC480, UC481, UC482, UC483, UC484, UC485, UC486, UC487, UC488, UC489, UC490, UC491, UC492, UC494, UC495, UC500, UC501, UC502, UC503, UC504, UC505, UC506, UC507, UC508, UC509, UC617, UC618 |  |  |  |
 |  | WebAdmin-142 | Quản lý việc giải quyết yêu cầu bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md |  |  |  |  |
 |  | WebAdmin-143 | Xác định cơ quan giải quyết bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC412, UC413, UC659 |  |  |  |
@@ -494,7 +494,7 @@
 |  | WebAdmin-332 | Quản lý nhóm người dùng | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_nhom_nguoi_dung.md | UC013, UC014, UC015, UC016, UC559 |  |  |  |
 |  | WebAdmin-333 | Quản lý tài khoản khách hàng | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\SRS_Quan_ly_tai_khoan_khach_hang.md | UC003, UC007, UC008, UC009, UC010 |  |  |  |
 |  | WebAdmin-334 | Quản lý tài khoản cán bộ | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_tai_khoan_can_bo.md | UC553, UC554, UC555 |  |  |  |
-|  | WebAdmin-335 | Quản lý đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Co_cau_to_chuc.md | UC560 |  |  |  |
+|  | WebAdmin-335 | Quản lý cơ cấu tổ chức | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_co_cau_to_chuc.md | UC560 |  |  |  |
 |  | WebAdmin-336 | Quản lý sao lưu, phục hồi dữ liệu |  | UC561, UC562 |  |  |  |
 |  | WebAdmin-337 | Quản lý loại danh mục | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_loai_danh_muc.md |  |  |  |  |
 |  | WebAdmin-338 | Xóa loại danh mục | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_loai_danh_muc.md |  |  |  |  |

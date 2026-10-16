@@ -278,7 +278,7 @@
                     <div style="padding: 10px 16px; border-bottom: 1px solid var(--border-color); background-color: #FFFFFF;">
                         <div class="search-box">
                             <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" id="inpSearchInheritedPerm" placeholder="Tìm kiếm chức năng nhanh trên cây..." onkeyup="filterInheritedPermTree(this.value)">
+                            <input type="text" id="inpSearchInheritedPerm" placeholder="Nhập tên tính năng" onkeyup="filterInheritedPermTree(this.value)">
                         </div>
                     </div>
 
@@ -297,7 +297,7 @@
                         <div class="filter-grid">
                             <div class="filter-field">
                                 <label for="inpFilterUserCode">Mã tài khoản</label>
-                                <input type="text" id="inpFilterUserCode" placeholder="Mã tài khoản (CB0001, KH0001...)">
+                                <input type="text" id="inpFilterUserCode" placeholder="Mã tài khoản...">
                             </div>
                             <div class="filter-field">
                                 <label for="inpFilterUserName">Tên tài khoản</label>
@@ -440,7 +440,7 @@
                         <div style="padding: 8px 12px; border-bottom: 1px solid var(--border-color); background: white;">
                             <div class="search-box">
                                 <i class="fa-solid fa-magnifying-glass"></i>
-                                <input type="text" id="inpModalSearchPerm" placeholder="Tìm kiếm chức năng xem trước..." onkeyup="filterModalPreviewTree(this.value)" style="font-size: 12px; padding: 6px 10px 6px 30px;">
+                                <input type="text" id="inpModalSearchPerm" placeholder="Nhập tên tính năng" onkeyup="filterModalPreviewTree(this.value)" style="font-size: 12px; padding: 6px 10px 6px 30px;">
                             </div>
                         </div>
 
@@ -455,7 +455,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('groupModal')">Hủy</button>
-                <button class="btn btn-primary" onclick="saveGroup()"><i class="fa-solid fa-floppy-disk"></i> Lưu lại</button>
+                <button class="btn btn-primary" onclick="saveGroup()"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>
             </div>
         </div>
     </div>
@@ -577,7 +577,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('assignModal')">Hủy</button>
-                <button class="btn btn-primary" onclick="handleAssignUsers()"><i class="fa-solid fa-user-check"></i> Lưu lại</button>
+                <button class="btn btn-primary" onclick="handleAssignUsers()"><i class="fa-solid fa-user-check"></i> Lưu</button>
             </div>
         </div>
     </div>
@@ -1099,7 +1099,7 @@
             const matchedIds = new Set();
             function searchNodes(nodeList, parentMatched = false) {
                 nodeList.forEach(n => {
-                    const isSelfMatched = n.name.toLowerCase().includes(keyword) || n.id.toLowerCase().includes(keyword);
+                    const isSelfMatched = n.name.toLowerCase().includes(keyword);
                     const isMatched = isSelfMatched || parentMatched;
                     if (isMatched) {
                         matchedIds.add(n.id);
@@ -1988,7 +1988,7 @@
             const matchedIds = new Set();
             function searchNodes(nodeList, parentMatched = false) {
                 nodeList.forEach(n => {
-                    const isSelfMatched = n.name.toLowerCase().includes(keyword) || n.id.toLowerCase().includes(keyword);
+                    const isSelfMatched = n.name.toLowerCase().includes(keyword);
                     const isMatched = isSelfMatched || parentMatched;
                     if (isMatched) {
                         matchedIds.add(n.id);

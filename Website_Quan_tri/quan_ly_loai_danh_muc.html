@@ -94,7 +94,7 @@
 
         .grid-filter { 
             display: grid; 
-            grid-template-columns: 1fr 1.5fr 1fr auto; 
+            grid-template-columns: 1fr 1.5fr 1fr; 
             gap: 15px; 
             align-items: end; 
         }
@@ -531,6 +531,16 @@
             margin-top: 4px;
             display: none;
         }
+
+        /* Toggle Switch Style */
+        .switch-container { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+        .switch { position: relative; display: inline-block; width: 44px; height: 22px; margin: 0; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #CBD5E1; transition: .3s; border-radius: 22px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--success-color, #16a34a); }
+        input:checked + .slider:before { transform: translateX(22px); }
+        .switch-label-status { font-size: 13px; font-weight: 500; color: var(--text-main); }
     </style>
 </head>
 <body>
@@ -540,18 +550,18 @@
         <!-- SEARCH FILTER -->
         <section class="card-section">
             <div class="section-title">
-                <span>Bộ lọc tìm kiếm loại danh mục</span>
+                <span>Bộ lọc, tìm kiếm</span>
             </div>
             <div class="grid-filter">
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom: 0;">
                     <label class="form-label" for="filterCode">Mã loại danh mục</label>
                     <input type="text" id="filterCode" class="form-control" placeholder="Nhập mã loại danh mục...">
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom: 0;">
                     <label class="form-label" for="filterName">Tên loại danh mục</label>
                     <input type="text" id="filterName" class="form-control" placeholder="Nhập tên loại danh mục...">
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom: 0;">
                     <label class="form-label" for="filterStatus">Trạng thái</label>
                     <select id="filterStatus" class="form-select">
                         <option value="All" selected>Tất cả</option>
@@ -559,14 +569,14 @@
                         <option value="Ngừng hoạt động">Ngừng hoạt động</option>
                     </select>
                 </div>
-                <div class="form-group search-actions">
-                    <button class="btn btn-primary" onclick="searchData()">
-                        <i class="fa fa-search"></i> Tìm kiếm
-                    </button>
-                    <button class="btn btn-secondary" onclick="resetSearch()">
-                        <i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc
-                    </button>
-                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+                <button class="btn btn-primary" onclick="searchData()">
+                    <i class="fa fa-search"></i> Tìm kiếm
+                </button>
+                <button class="btn btn-secondary" onclick="resetSearch()">
+                    <i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc
+                </button>
             </div>
         </section>
 
@@ -583,12 +593,14 @@
                 <table class="custom-table" id="dataListTable">
                     <thead>
                         <tr>
-                            <th width="5%" style="text-align:center">STT</th>
-                            <th width="15%" class="sortable" onclick="handleSort('code')">Mã loại danh mục <span id="sort-code"><i class="fas fa-sort"></i></span></th>
-                            <th width="25%" class="sortable" onclick="handleSort('name')">Tên loại danh mục <span id="sort-name"><i class="fas fa-sort"></i></span></th>
-                            <th width="35%">Mô tả</th>
-                            <th width="10%" class="sortable" onclick="handleSort('status')">Trạng thái <span id="sort-status"><i class="fas fa-sort"></i></span></th>
-                            <th width="10%" style="text-align:center">Thao tác</th>
+                            <th width="4%" style="text-align:center">STT</th>
+                            <th width="14%" class="sortable" onclick="handleSort('code')">Mã loại danh mục <span id="sort-code"><i class="fas fa-sort"></i></span></th>
+                            <th width="22%" class="sortable" onclick="handleSort('name')">Tên loại danh mục <span id="sort-name"><i class="fas fa-sort"></i></span></th>
+                            <th width="20%">Mô tả</th>
+                            <th width="16%">Phụ thuộc Loại danh mục</th>
+                            <th width="8%" style="text-align:center">Phân quyền theo đơn vị</th>
+                            <th width="8%" class="sortable" onclick="handleSort('status')">Trạng thái <span id="sort-status"><i class="fas fa-sort"></i></span></th>
+                            <th width="8%" style="text-align:center">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -625,6 +637,14 @@
                     <textarea id="detDescription" class="form-control" rows="3" readonly></textarea>
                 </div>
                 <div class="form-group">
+                    <label class="form-label">Phụ thuộc Loại danh mục</label>
+                    <input type="text" id="detParentType" class="form-control" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phân quyền theo đơn vị</label>
+                    <input type="text" id="detPhanQuyen" class="form-control" readonly>
+                </div>
+                <div class="form-group">
                     <label class="form-label">Trạng thái</label>
                     <input type="text" id="detStatus" class="form-control" readonly>
                 </div>
@@ -658,6 +678,24 @@
                     <div class="form-group">
                         <label class="form-label" for="inpDescription">Mô tả</label>
                         <textarea id="inpDescription" class="form-control" rows="3" placeholder="Nhập thông tin mô tả loại danh mục"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inpParentType">Phụ thuộc Loại danh mục</label>
+                        <select id="inpParentType" class="form-select">
+                            <option value="">-- Không phụ thuộc (Danh mục độc lập) --</option>
+                        </select>
+                        <div style="font-size:12px; color:#64748b; margin-top:4px;">Chọn Loại danh mục cha nếu loại danh mục này có các giá trị phụ thuộc theo danh mục cha (ví dụ: Chức vụ phụ thuộc Loại cơ quan).</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="inpPhanQuyen">Phân quyền theo đơn vị</label>
+                        <div class="switch-container">
+                            <label class="switch">
+                                <input type="checkbox" id="inpPhanQuyen" onchange="updatePhanQuyenLabel()">
+                                <span class="slider"></span>
+                            </label>
+                            <span class="switch-label-status" id="lblPhanQuyen">Không</span>
+                        </div>
+                        <div style="font-size:12px; color:#64748b; margin-top:4px;">Có: mỗi giá trị của loại danh mục phải chọn Đơn vị áp dụng; chỉ người dùng thuộc đơn vị áp dụng mới thấy giá trị tại các ô chọn và bộ lọc.</div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Trạng thái <span class="required-mark">*</span></label>
@@ -701,28 +739,30 @@
     <script>
         // Default Mock Data for Category Types
         const DEFAULT_TYPES = [
-            { code: "DM_01", name: "Loại hình giao dịch", status: "Hoạt động" },
-            { code: "DM_02", name: "Loại biện pháp bảo đảm", status: "Hoạt động" },
-            { code: "DM_03", name: "Loại hợp đồng", status: "Hoạt động" },
-            { code: "DM_04", name: "Loại hình đăng ký", status: "Hoạt động" },
-            { code: "DM_05", name: "Trạng thái tài sản bảo đảm", status: "Hoạt động" },
-            { code: "DM_06", name: "Loại bên bảo đảm (Chủ thể)", status: "Hoạt động" },
-            { code: "DM_07", name: "Loại tài sản bảo đảm", status: "Hoạt động" },
-            { code: "DM_08", name: "Trung tâm giao dịch bảo đảm", status: "Hoạt động" },
-            { code: "DM_09", name: "Quốc tịch / Quốc gia", status: "Hoạt động" },
-            { code: "DM_10", name: "Loại giấy tờ pháp lý", status: "Hoạt động" },
-            { code: "DM_11", name: "Loại hình tổ chức", status: "Hoạt động" },
-            { code: "DM_12", name: "Quy mô bên bảo đảm", status: "Hoạt động" },
-            { code: "DM_TOOLTIP", name: "Tooltip/Hướng dẫn dùng chung", status: "Hoạt động" },
-            { code: "DM_EMAIL_TEMPLATE", name: "Mẫu email hệ thống", status: "Hoạt động" },
-            { code: "DM_17", name: "Danh mục Người yêu cầu đăng ký", status: "Hoạt động" },
-            { code: "DM_19", name: "Danh mục Căn cứ xóa đăng ký", status: "Hoạt động" },
-            { code: "DM_20", name: "Danh mục Căn cứ hủy đăng ký", status: "Hoạt động" },
-            { code: "DM_21", name: "Loại văn bản quy phạm pháp luật", status: "Hoạt động" },
-            { code: "DM_26", name: "Tư cách người yêu cầu bồi thường", status: "Hoạt động" },
-            { code: "DM_54", name: "Loại yêu cầu", status: "Hoạt động" },
-            { code: "DM_55", name: "Lý do không thụ lý hồ sơ yêu cầu bồi thường", status: "Hoạt động" },
-            { code: "DM_56", name: "Loại CSDL nguồn", status: "Hoạt động" }
+            { code: "DM_01", name: "Loại hình giao dịch", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_02", name: "Loại biện pháp bảo đảm", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_03", name: "Loại hợp đồng", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_04", name: "Loại hình đăng ký", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_05", name: "Trạng thái tài sản bảo đảm", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_06", name: "Loại bên bảo đảm (Chủ thể)", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_07", name: "Loại tài sản bảo đảm", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_08", name: "Trung tâm giao dịch bảo đảm", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_09", name: "Quốc tịch / Quốc gia", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_10", name: "Loại giấy tờ pháp lý", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_11", name: "Loại hình tổ chức", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_12", name: "Quy mô bên bảo đảm", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_TOOLTIP", name: "Tooltip/Hướng dẫn dùng chung", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_EMAIL_TEMPLATE", name: "Mẫu email hệ thống", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_17", name: "Danh mục Người yêu cầu đăng ký", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_19", name: "Danh mục Căn cứ xóa đăng ký", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_20", name: "Danh mục Căn cứ hủy đăng ký", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_21", name: "Loại văn bản quy phạm pháp luật", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_26", name: "Tư cách người yêu cầu bồi thường", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_54", name: "Loại yêu cầu", parentTypeCode: "", status: "Hoạt động", phanQuyenDonVi: true },
+            { code: "DM_55", name: "Lý do không thụ lý hồ sơ yêu cầu bồi thường", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_56", name: "Loại CSDL nguồn", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_57", name: "Loại cơ quan", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_58", name: "Chức vụ", parentTypeCode: "DM_57", status: "Hoạt động" }
         ];
 
         // Default Mock Data for Categories (to check if Category Type is in use before deleting)
@@ -903,6 +943,15 @@
             // Bổ sung các loại danh mục mới vào localStorage nếu chưa có
             const savedTypes = JSON.parse(localStorage.getItem('categoryTypes')) || [];
             DEFAULT_TYPES.filter(d => !savedTypes.some(s => s.code === d.code)).forEach(d => savedTypes.push(d));
+            // Danh mục Loại cơ quan (DM_57), Chức vụ (DM_58): đổi tên loại danh mục cho dữ liệu đã lưu
+            savedTypes.forEach(t => { if (t.code === 'DM_57') t.name = 'Loại cơ quan'; if (t.code === 'DM_58') t.name = 'Chức vụ'; });
+            // Phân quyền theo đơn vị: Loại yêu cầu (DM_54) mặc định Mở
+            savedTypes.forEach(t => { if (t.phanQuyenDonVi === undefined) t.phanQuyenDonVi = t.code === 'DM_54'; });
+            // Phụ thuộc Loại danh mục: Chức vụ (DM_58) phụ thuộc Loại cơ quan (DM_57)
+            savedTypes.forEach(t => {
+                if (t.code === 'DM_58' && !t.parentTypeCode) t.parentTypeCode = 'DM_57';
+                if (t.parentTypeCode === undefined) t.parentTypeCode = '';
+            });
             localStorage.setItem('categoryTypes', JSON.stringify(savedTypes));
             dataList = savedTypes;
             // Normalize any legacy 'Đang hoạt động' status to 'Hoạt động'
@@ -959,7 +1008,7 @@
             // Render Rows
             tableBody.innerHTML = '';
             if (pageItems.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:30px;">Không có bản ghi nào phù hợp.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:30px;">Không có bản ghi nào phù hợp.</td></tr>`;
                 renderPagination(totalItems, 0, 0, totalPages);
                 return;
             }
@@ -969,6 +1018,14 @@
                 const statusBadge = item.status === 'Hoạt động' 
                     ? `<span class="badge bg-success">Hoạt động</span>`
                     : `<span class="badge bg-danger">Ngừng hoạt động</span>`;
+
+                const parentTypeObj = item.parentTypeCode ? dataList.find(x => x.code === item.parentTypeCode) : null;
+                const parentTypeHtml = parentTypeObj 
+                    ? `<div>
+                        <div style="font-weight:500; color:var(--text-main);">${parentTypeObj.name}</div>
+                        <div style="font-size:12px; color:var(--text-muted);">${parentTypeObj.code}</div>
+                       </div>`
+                    : `<span style="color:var(--text-muted);">-</span>`;
 
                 const tr = document.createElement('tr');
                 tr.style.cursor = 'pointer';
@@ -981,6 +1038,8 @@
                     <td style="font-weight:600; color:var(--primary-color);">${item.code}</td>
                     <td style="font-weight:500;">${item.name}</td>
                     <td>${item.description || '<span style="color:var(--text-muted); font-style:italic;">Chưa cập nhật</span>'}</td>
+                    <td>${parentTypeHtml}</td>
+                    <td style="text-align:center">${item.phanQuyenDonVi ? 'Có' : 'Không'}</td>
                     <td style="text-align:center">${statusBadge}</td>
                     <td style="text-align:center">
                         <div class="action-cell">
@@ -1055,6 +1114,9 @@
             document.getElementById('detCode').value = item.code;
             document.getElementById('detName').value = item.name;
             document.getElementById('detDescription').value = item.description || 'Chưa cập nhật';
+            const parentTypeObj = item.parentTypeCode ? dataList.find(x => x.code === item.parentTypeCode) : null;
+            document.getElementById('detParentType').value = parentTypeObj ? `${parentTypeObj.name} (${parentTypeObj.code})` : 'Không (Danh mục độc lập)';
+            document.getElementById('detPhanQuyen').value = item.phanQuyenDonVi ? 'Có' : 'Không';
             document.getElementById('detStatus').value = item.status;
             document.getElementById('detailModal').classList.add('active');
         }
@@ -1093,6 +1155,19 @@
             renderTable();
         }
 
+        // Populate parent type options for dropdown
+        function populateParentTypeOptions(currentCode, selectedVal = '') {
+            const sel = document.getElementById('inpParentType');
+            sel.innerHTML = '<option value="">-- Không phụ thuộc (Danh mục độc lập) --</option>';
+            dataList.filter(x => x.code !== currentCode && (x.status === 'Hoạt động' || x.status === 'Đang hoạt động')).forEach(x => {
+                const opt = document.createElement('option');
+                opt.value = x.code;
+                opt.textContent = `${x.name} (${x.code})`;
+                if (x.code === selectedVal) opt.selected = true;
+                sel.appendChild(opt);
+            });
+        }
+
         // Form operations
         function openAddModal() {
             activeEditId = null;
@@ -1101,6 +1176,9 @@
             document.getElementById('inpCode').value = '';
             document.getElementById('inpName').value = '';
             document.getElementById('inpDescription').value = '';
+            populateParentTypeOptions(null, '');
+            document.getElementById('inpPhanQuyen').checked = false;
+            updatePhanQuyenLabel();
             document.querySelector('input[name="status"][value="Hoạt động"]').checked = true;
             
             // Clear errors
@@ -1120,6 +1198,9 @@
             document.getElementById('inpCode').readOnly = true;
             document.getElementById('inpName').value = item.name;
             document.getElementById('inpDescription').value = item.description || '';
+            populateParentTypeOptions(item.code, item.parentTypeCode || '');
+            document.getElementById('inpPhanQuyen').checked = !!item.phanQuyenDonVi;
+            updatePhanQuyenLabel();
             const statusVal = (item.status === 'Đang hoạt động' || item.status === 'Hoạt động') ? 'Hoạt động' : 'Ngừng hoạt động';
             const radioEl = document.querySelector(`input[name="status"][value="${statusVal}"]`);
             if (radioEl) radioEl.checked = true;
@@ -1131,6 +1212,11 @@
             document.getElementById('formModal').classList.add('active');
         }
 
+        // Nhãn trạng thái Toggle Phân quyền theo đơn vị
+        function updatePhanQuyenLabel() {
+            document.getElementById('lblPhanQuyen').innerText = document.getElementById('inpPhanQuyen').checked ? 'Có' : 'Không';
+        }
+
         function closeFormModal() {
             document.getElementById('formModal').classList.remove('active');
         }
@@ -1139,7 +1225,9 @@
             const code = document.getElementById('inpCode').value.trim();
             const name = document.getElementById('inpName').value.trim();
             const description = document.getElementById('inpDescription').value.trim();
+            const parentTypeCode = document.getElementById('inpParentType').value.trim();
             const status = document.querySelector('input[name="status"]:checked').value;
+            const phanQuyenDonVi = document.getElementById('inpPhanQuyen').checked;
 
             let valid = true;
 
@@ -1198,6 +1286,8 @@
                     code: verifiedCode,
                     name: name,
                     description: description,
+                    parentTypeCode: parentTypeCode,
+                    phanQuyenDonVi: phanQuyenDonVi,
                     status: status
                 });
                 showToast("Thêm mới loại danh mục thành công!", "success");
@@ -1206,6 +1296,8 @@
                 if (index !== -1) {
                     dataList[index].name = name;
                     dataList[index].description = description;
+                    dataList[index].parentTypeCode = parentTypeCode;
+                    dataList[index].phanQuyenDonVi = phanQuyenDonVi;
                     dataList[index].status = status;
                 }
                 showToast("Cập nhật loại danh mục thành công!", "success");

@@ -89,7 +89,7 @@ Tai lieu phan tich/
     │   ├── Quan_ly_nhom_nguoi_dung.md           # Quản lý nhóm người dùng
     │   ├── Quan_ly_vai_tro.md                   # Phân quyền vai trò (Role-based Access Control)
     │   ├── Quan_ly_chuc_nang.md                 # Danh mục chức năng (Menu/API Functions)
-    │   ├── Co_cau_to_chuc.md                    # Cây cơ cấu tổ chức đơn vị, phòng ban
+    │   ├── Quan_ly_co_cau_to_chuc.md                    # Cây cơ cấu tổ chức đơn vị, phòng ban
     │   ├── Quan_ly_loai_danh_muc.md             # Quản lý nhóm/loại danh mục
     │   ├── Quan_ly_danh_muc.md                  # Quản lý chi tiết dữ liệu danh mục
     │   ├── Quan_ly_bieu_phi.md                  # Cấu hình biểu mức thu phí, lệ phí

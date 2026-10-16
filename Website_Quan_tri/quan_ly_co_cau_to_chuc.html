@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý đơn vị - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</title>
+    <title>Quản lý cơ cấu tổ chức - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -677,6 +677,14 @@
             margin-top: 2px;
             color: #3B82F6;
         }
+        /* Ô gõ tìm Loại cơ quan */
+        .ldv-combo { position: relative; }
+        .ldv-dd { display: none; position: absolute; left: 0; right: 0; top: 100%; margin-top: 2px; background: #fff; border: 1px solid #e2e8f0; border-radius: 6px; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12); max-height: 240px; overflow-y: auto; z-index: 30; font-size: 13px; }
+        .ldv-dd-item { padding: 7px 10px; cursor: pointer; }
+        .ldv-dd-item:hover { background: #f1f5f9; }
+        .ldv-dd-empty { padding: 8px 10px; color: #64748b; font-style: italic; }
+        .field-hint { font-size: 12px; color: #64748b; margin-top: 4px; display: block; }
+        .field-error { font-size: 12px; color: #dc2626; margin-top: 4px; display: none; }
     </style>
 </head>
 
@@ -685,12 +693,12 @@
     <!-- PAGE HEADER -->
     <div class="page-header">
         <div class="header-title">
-            <h1><i class="fa-solid fa-sitemap"></i> Quản lý đơn vị</h1>
-            <p>Sơ đồ cơ cấu tổ chức và danh sách cán bộ trực thuộc</p>
+            <h1><i class="fa-solid fa-sitemap"></i> Quản lý cơ cấu tổ chức</h1>
+            <p>Sơ đồ cơ cấu tổ chức và danh sách cán bộ trực thuộc cơ quan, đơn vị</p>
         </div>
-        <div class="header-actions">
-            <button class="btn btn-primary" onclick="openCreateModal(true)"><i class="fa-solid fa-plus"></i> Thêm mới
-                đơn vị gốc</button>
+        <div class="header-actions" style="display:flex; gap:8px;">
+            <button class="btn btn-secondary" onclick="openImportModal()"><i class="fa-solid fa-file-import"></i> Nhận file Excel</button>
+            <button class="btn btn-primary" onclick="openCreateModal(true)"><i class="fa-solid fa-plus"></i> Thêm cơ quan, đơn vị</button>
         </div>
     </div>
 
@@ -703,7 +711,7 @@
                 <h3>Sơ đồ tổ chức</h3>
                 <div class="search-wrapper">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="treeSearch" placeholder="Tìm kiếm đơn vị nhanh..." oninput="filterTree()">
+                    <input type="text" id="treeSearch" placeholder="Nhập mã hoặc tên cơ quan, đơn vị" oninput="filterTree()">
                 </div>
             </div>
             <div class="tree-container" id="treeViewContainer">
@@ -739,40 +747,48 @@
                 <div class="tab-content active" id="tabInfoContent">
                     <div class="info-grid">
                         <div class="info-item">
-                            <span class="info-label">Mã đơn vị</span>
-                            <div class="info-value" id="dMaDonVi">CĐK01</div>
+                            <span class="info-label">Mã cơ quan, đơn vị cha</span>
+                            <div class="info-value" id="dMaCha">-</div>
                         </div>
                         <div class="info-item">
-                            <span class="info-label">Tên đầy đủ đơn vị</span>
-                            <div class="info-value" id="dTenDonVi">Cục Đăng ký quốc gia giao dịch bảo đảm</div>
+                            <span class="info-label">Mã cơ quan, đơn vị</span>
+                            <div class="info-value" id="dMaDonVi">-</div>
                         </div>
                         <div class="info-item">
-                            <span class="info-label">Loại đơn vị</span>
-                            <div class="info-value" id="dLoaiDonVi">Nội bộ</div>
+                            <span class="info-label">Tên cơ quan, đơn vị</span>
+                            <div class="info-value" id="dTenDonVi">-</div>
                         </div>
                         <div class="info-item">
-                            <span class="info-label">Cấp đơn vị</span>
-                            <div class="info-value" id="dCapDonVi">Cấp Cục/Trung tâm</div>
+                            <span class="info-label">Tên cơ quan, đơn vị viết tắt</span>
+                            <div class="info-value" id="dTenVietTat">-</div>
                         </div>
                         <div class="info-item">
-                            <span class="info-label">Mã số thuế</span>
-                            <div class="info-value" id="dMaSoThue">0102030405</div>
+                            <span class="info-label">Loại cơ quan, đơn vị</span>
+                            <div class="info-value" id="dLoaiCoQuan">-</div>
                         </div>
                         <div class="info-item">
-                            <span class="info-label">Tỉnh / Thành phố</span>
-                            <div class="info-value" id="dTinhThanh">Thành phố Hà Nội</div>
+                            <span class="info-label">Email</span>
+                            <div class="info-value" id="dEmail">-</div>
                         </div>
                         <div class="info-item">
-                            <span class="info-label">Người đại diện</span>
-                            <div class="info-value" id="dNguoiDaiDien">Nguyễn Văn Cục Trưởng</div>
+                            <span class="info-label">Số điện thoại</span>
+                            <div class="info-value" id="dSoDienThoai">-</div>
                         </div>
                         <div class="info-item">
-                            <span class="info-label">Số điện thoại liên hệ</span>
-                            <div class="info-value" id="dSoDienThoai">0243123456</div>
+                            <span class="info-label">Tỉnh/Thành phố</span>
+                            <div class="info-value" id="dTinhThanh">-</div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Phường/Xã</span>
+                            <div class="info-value" id="dPhuongXa">-</div>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Trạng thái</span>
+                            <div class="info-value" id="dTrangThai">-</div>
                         </div>
                         <div class="info-item" style="grid-column: span 2;">
-                            <span class="info-label">Địa chỉ trụ sở chính</span>
-                            <div class="info-value" id="dDiaChi">Số 57 Trần Hưng Đạo, Quận Hoàn Kiếm, Hà Nội</div>
+                            <span class="info-label">Địa chỉ chi tiết</span>
+                            <div class="info-value" id="dDiaChi">-</div>
                         </div>
                     </div>
                 </div>
@@ -781,8 +797,7 @@
                 <div class="tab-content" id="tabOfficersContent">
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h4 style="font-size: 14px; font-weight: 600; color: #1E293B;">Danh sách cán bộ thuộc đơn vị
-                        </h4>
+                        <h4 style="font-size: 14px; font-weight: 600; color: #1E293B;">Danh sách cán bộ thuộc cơ quan, đơn vị</h4>
                         <div class="search-wrapper" style="width: 250px; margin-bottom: 0;">
                             <i class="fa-solid fa-magnifying-glass"></i>
                             <input type="text" id="officerSearch" placeholder="Tìm kiếm cán bộ nhanh..."
@@ -813,12 +828,9 @@
 
             <!-- Footer Toolbar Actions -->
             <div class="detail-footer">
-                <button class="btn btn-danger" onclick="openDeleteModal()"><i class="fa-solid fa-trash-can"></i> Xóa đơn
-                    vị</button>
-                <button class="btn btn-secondary" onclick="openEditModal()"><i class="fa-solid fa-pen-to-square"></i>
-                    Chỉnh sửa</button>
-                <button class="btn btn-primary" onclick="openCreateModal(false)"><i class="fa-solid fa-plus"></i> Thêm
-                    mới đơn vị con</button>
+                <button class="btn btn-danger" onclick="openDeleteModal()"><i class="fa-solid fa-trash-can"></i> Xóa</button>
+                <button class="btn btn-secondary" onclick="openEditModal()"><i class="fa-solid fa-pen-to-square"></i> Sửa</button>
+                <button class="btn btn-primary" onclick="openCreateModal(false)"><i class="fa-solid fa-plus"></i> Thêm cơ quan, đơn vị trực thuộc</button>
             </div>
         </div>
 
@@ -828,67 +840,64 @@
     <div class="modal-overlay" id="unitModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modalTitle">Thêm mới Đơn vị con</h3>
+                <h3 id="modalTitle">Thêm cơ quan, đơn vị</h3>
                 <button class="close-modal-btn" onclick="closeModal('unitModal')"><i
                         class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
                 <div class="form-grid">
                     <div class="form-group full-width">
-                        <label class="form-label">Đơn vị cha</label>
+                        <label class="form-label">Mã cơ quan, đơn vị cha</label>
                         <input type="text" class="form-control" id="mParentUnit" readonly>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Mã đơn vị <span class="required">*</span></label>
-                        <input type="text" class="form-control" id="mMaDonVi" placeholder="Ví dụ: CĐK02">
+                        <label class="form-label">Mã cơ quan, đơn vị <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="mMaDonVi" placeholder="Nhập mã cơ quan, đơn vị">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Tên đơn vị <span class="required">*</span></label>
-                        <input type="text" class="form-control" id="mTenDonVi" placeholder="Nhập tên đầy đủ đơn vị...">
+                        <label class="form-label">Tên cơ quan, đơn vị <span class="required">*</span></label>
+                        <input type="text" class="form-control" id="mTenDonVi" placeholder="Nhập tên cơ quan, đơn vị">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Loại đơn vị <span class="required">*</span></label>
-                        <select class="form-control" id="mLoaiDonVi" onchange="handleLoaiDonViChange()">
-                            <option value="Nội bộ">Nội bộ</option>
-                            <option value="Cơ quan ngoài ngành">Cơ quan ngoài ngành</option>
-                        </select>
+                        <label class="form-label">Tên cơ quan, đơn vị viết tắt</label>
+                        <input type="text" class="form-control" id="mTenVietTat" placeholder="Nhập tên viết tắt">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Cấp đơn vị <span class="required">*</span></label>
-                        <select class="form-control" id="mCapDonVi">
-                            <option value="Cấp Trung ương">Cấp Trung ương (Bộ, Cục, Ngành...)</option>
-                            <option value="Cấp Tỉnh/Thành phố">Cấp Tỉnh/Thành phố (Tòa án tỉnh, STP...)</option>
-                            <option value="Cấp Quận/Huyện">Cấp Quận/Huyện (Tòa án huyện...)</option>
-                            <option value="Cấp Chi nhánh/Phòng ban">Cấp Chi nhánh/Phòng ban (Trung tâm đăng ký, Phòng
-                                chuyên môn...)</option>
-                        </select>
+                        <label class="form-label">Loại cơ quan, đơn vị <span class="required">*</span></label>
+                        <div class="ldv-combo">
+                            <input type="text" class="form-control" id="mLoaiCoQuanInput" placeholder="Nhập tên loại cơ quan" autocomplete="off">
+                            <input type="hidden" id="mLoaiCoQuan" value="">
+                            <div class="ldv-dd" id="mLoaiCoQuanDd"></div>
+                        </div>
+                        <span class="field-error" id="errLoaiCoQuan">Vui lòng chọn Loại cơ quan, đơn vị.</span>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Mã số thuế</label>
-                        <input type="text" class="form-control" id="mMaSoThue" placeholder="Nhập mã số thuế...">
+                        <label class="form-label">Email</label>
+                        <input type="text" class="form-control" id="mEmail" placeholder="Nhập email">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Tỉnh / Thành phố</label>
-                        <select class="form-control" id="mTinhThanh">
+                        <label class="form-label">Số điện thoại</label>
+                        <input type="text" class="form-control" id="mSoDienThoai" placeholder="Nhập số điện thoại">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tỉnh/Thành phố <span class="required">*</span></label>
+                        <select class="form-control" id="mTinhThanh" onchange="loadPhuongXa()">
                             <option value="">-- Chọn Tỉnh/Thành phố --</option>
                             <option value="Thành phố Hà Nội">Thành phố Hà Nội</option>
                             <option value="Thành phố Hồ Chí Minh">Thành phố Hồ Chí Minh</option>
                             <option value="Thành phố Đà Nẵng">Thành phố Đà Nẵng</option>
-                            <option value="Tỉnh Hải Phòng">Tỉnh Hải Phòng</option>
+                            <option value="Thành phố Hải Phòng">Thành phố Hải Phòng</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Người đại diện pháp luật</label>
-                        <input type="text" class="form-control" id="mNguoiDaiDien" placeholder="Nhập họ tên...">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Số điện thoại liên hệ</label>
-                        <input type="text" class="form-control" id="mSoDienThoai" placeholder="Nhập 10 chữ số...">
+                        <label class="form-label">Phường/Xã</label>
+                        <select class="form-control" id="mPhuongXa">
+                            <option value="">-- Chọn Phường/Xã --</option>
+                        </select>
                     </div>
                     <div class="form-group full-width">
-                        <label class="form-label">Địa chỉ trụ sở chính</label>
-                        <input type="text" class="form-control" id="mDiaChi"
-                            placeholder="Số nhà, tên đường, phường/xã...">
+                        <label class="form-label">Địa chỉ chi tiết</label>
+                        <input type="text" class="form-control" id="mDiaChi" placeholder="Nhập số nhà, tên đường">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Trạng thái <span class="required">*</span></label>
@@ -900,171 +909,99 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal('unitModal')">Hủy bỏ</button>
-                <button class="btn btn-primary" onclick="saveUnit()"><i class="fa-solid fa-save"></i> Lưu thông
-                    tin</button>
+                <button class="btn btn-secondary" onclick="closeModal('unitModal')">Hủy</button>
+                <button class="btn btn-primary" onclick="saveUnit()"><i class="fa-solid fa-save"></i> Lưu</button>
+
             </div>
         </div>
     </div>
 
-    <!-- MODAL 2: CẤU HÌNH BIẾN ĐỘNG TỔ CHỨC -->
-    <div class="modal-overlay" id="biendanModal">
-        <div class="modal-content" style="width: 700px;">
+    <!-- MODAL 3: NHẬN FILE CƠ QUAN, ĐƠN VỊ -->
+    <div class="modal-overlay" id="importModal">
+        <div class="modal-content" style="width: 900px;">
             <div class="modal-header">
-                <h3>Cấu hình Biến động & Kế thừa Đơn vị</h3>
-                <button class="close-modal-btn" onclick="closeModal('biendanModal')"><i
-                        class="fa-solid fa-xmark"></i></button>
+                <h3>Nhận file cơ quan, đơn vị</h3>
+                <button class="close-modal-btn" onclick="closeModal('importModal')"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
-                <div class="form-alert">
-                    <i class="fa-solid fa-circle-info"></i>
-                    <span><strong>Lưu ý:</strong> Việc thiết lập biến động sẽ tự động chuyển trạng thái của các đơn vị
-                        bị sáp nhập/tách/giải thể thành <strong>Ngừng hoạt động</strong> và khóa tài khoản các cán bộ
-                        trực thuộc của đơn vị cũ.</span>
-                </div>
                 <div class="form-grid">
-                    <!-- SECTION 1: THÔNG TIN PHÁP LÝ -->
                     <div class="form-group full-width">
-                        <h4
-                            style="border-left: 3px solid var(--primary-color); padding-left: 8px; margin-bottom: 5px; color: #1E293B;">
-                            I. Quyết định pháp lý</h4>
+                        <label class="form-label">Tệp dữ liệu <span class="required">*</span></label>
+                        <input type="file" class="form-control" id="importFile" accept=".xls,.xlsx" onchange="checkImportFile()">
+                        <span class="field-hint">Tải lên tệp Excel (.xls, .xlsx) theo biểu mẫu hệ thống, dung lượng tối đa 20MB. <a href="../../Tai lieu he thong/Bieu mau/Bieu_mau_nhan_file_co_quan_don_vi.xlsx" id="linkTemplate" onclick="setTemplateName()">Tải file mẫu</a></span>
+                        <span class="field-error" id="importFileError"></span>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Loại biến động <span class="required">*</span></label>
-                        <select class="form-control" id="mLoaiBienDong" onchange="handleBienDongTypeChange()">
-                            <option value="Sáp nhập">Sáp nhập (Nhiều đơn vị gộp thành 1)</option>
-                            <option value="Chia tách">Chia tách (1 đơn vị chia thành nhiều)</option>
-                            <option value="Giải thể">Giải thể (Giải thể hoàn toàn)</option>
-                            <option value="Đổi tên">Đổi tên (Thay đổi tên pháp lý)</option>
+                        <label class="form-label">Chế độ nhận dữ liệu <span class="required">*</span></label>
+                        <select class="form-control" id="importMode" onchange="renderImportCheck()">
+                            <option value="Kiểm tra dữ liệu">Kiểm tra dữ liệu</option>
+                            <option value="Thêm mới">Thêm mới</option>
+                            <option value="Cập nhật bản ghi hiện có">Cập nhật bản ghi hiện có</option>
+                            <option value="Thêm mới và cập nhật" selected>Thêm mới và cập nhật</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Số quyết định / văn bản pháp lý <span
-                                class="required">*</span></label>
-                        <input type="text" class="form-control" id="mSoVanBan" placeholder="Ví dụ: 668/QĐ-BTP">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Cơ quan ban hành quyết định <span class="required">*</span></label>
-                        <input type="text" class="form-control" id="mCoQuanBanHanh"
-                            placeholder="Ví dụ: Bộ trưởng Bộ Tư pháp">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Ngày quyết định có hiệu lực <span class="required">*</span></label>
-                        <input type="text" class="form-control" id="mNgayHieuLuc" placeholder="dd/mm/yyyy">
-                    </div>
-                    <div class="form-group full-width">
-                        <label class="form-label">Mô tả tóm tắt</label>
-                        <textarea class="form-control" id="mMoTaBienDong" rows="2"
-                            placeholder="Nhập tóm tắt văn bản pháp lý..."></textarea>
-                    </div>
-
-                    <!-- SECTION 2: THIẾT LẬP KẾ THỪA (DYNAMIC BASED ON TYPE) -->
-                    <div class="form-group full-width" style="margin-top: 10px;">
-                        <h4
-                            style="border-left: 3px solid var(--primary-color); padding-left: 8px; margin-bottom: 5px; color: #1E293B;">
-                            II. Thiết lập Kế thừa & Successor</h4>
-                    </div>
-
-                    <!-- MERGE OPTIONS -->
-                    <div class="form-group full-width dynamic-bd" id="bdSapNhap">
-                        <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 15px;">
-                            <div class="form-group">
-                                <label class="form-label">Các cơ quan bị sáp nhập (Ngừng hoạt động) <span
-                                        class="required">*</span></label>
-                                <div class="successor-checklist" id="mergeOldList">
-                                    <!-- Dynamic checklists -->
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Cơ quan mới kế thừa (Nhận bàn giao) <span
-                                        class="required">*</span></label>
-                                <select class="form-control" id="mergeNewOrg">
-                                    <!-- Dynamic dropdown -->
-                                </select>
-                            </div>
+                    <div class="form-group full-width" id="importCheck" style="display:none;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <span id="importStats" style="font-weight:600;"></span>
+                            <a href="javascript:void(0)" id="linkErrorFile" onclick="downloadErrorFile()">Tải file chi tiết lỗi</a>
                         </div>
-                    </div>
-
-                    <!-- SPLIT OPTIONS -->
-                    <div class="form-group full-width dynamic-bd" id="bdChiaTach" style="display: none;">
-                        <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 15px;">
-                            <div class="form-group">
-                                <label class="form-label">Cơ quan cũ bị chia tách (Ngừng hoạt động) <span
-                                        class="required">*</span></label>
-                                <select class="form-control" id="splitOldOrg">
-                                    <!-- Dynamic dropdown -->
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Các cơ quan mới nhận kế thừa <span
-                                        class="required">*</span></label>
-                                <div class="successor-checklist" id="splitNewList">
-                                    <!-- Dynamic checklists -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- DISSOLVE OPTIONS -->
-                    <div class="form-group full-width dynamic-bd" id="bdGiaiThe" style="display: none;">
-                        <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 15px;">
-                            <div class="form-group">
-                                <label class="form-label">Cơ quan bị giải thể (Ngừng hoạt động) <span
-                                        class="required">*</span></label>
-                                <select class="form-control" id="dissolveOrg">
-                                    <!-- Dynamic dropdown -->
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Đơn vị chịu trách nhiệm giải quyết hậu quả</label>
-                                <input type="text" class="form-control" id="dissolveReceiver" readonly
-                                    value="Cơ quan ban hành quyết định giải thể">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- RENAME OPTIONS -->
-                    <div class="form-group full-width dynamic-bd" id="bdDoiTen" style="display: none;">
-                        <div class="form-grid" style="grid-template-columns: 1fr 1fr; gap: 15px;">
-                            <div class="form-group">
-                                <label class="form-label">Đơn vị cần đổi tên <span class="required">*</span></label>
-                                <select class="form-control" id="renameOldOrg">
-                                    <!-- Dynamic dropdown -->
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Tên mới pháp lý <span class="required">*</span></label>
-                                <input type="text" class="form-control" id="renameNewName"
-                                    placeholder="Nhập tên mới...">
-                            </div>
+                        <label class="form-label">Bảng xem trước kết quả kiểm tra</label>
+                        <div class="table-container">
+                            <table class="officer-table">
+                                <thead>
+                                    <tr><th style="width:90px; text-align:center;">Dòng Excel</th><th>Mã cơ quan, đơn vị</th><th>Tên cơ quan, đơn vị</th><th>Loại cơ quan, đơn vị</th><th>Kết quả kiểm tra</th><th>Chi tiết lỗi</th></tr>
+                                </thead>
+                                <tbody id="importPreviewBody"></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-secondary" onclick="closeModal('biendanModal')">Hủy bỏ</button>
-                <button class="btn btn-primary" onclick="saveBienDong()"><i class="fa-solid fa-save"></i> Áp dụng biến
-                    động</button>
+                <button class="btn btn-secondary" onclick="closeModal('importModal')">Hủy</button>
+                <button class="btn btn-primary" id="btnImport" disabled onclick="confirmImport()"><i class="fa-solid fa-file-import"></i> Nhận dữ liệu</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL 3: XÁC NHẬN XÓA -->
+    <!-- MODAL 4: KẾT QUẢ NHẬN FILE -->
+    <div class="modal-overlay" id="importResultModal">
+        <div class="modal-content" style="width: 700px;">
+            <div class="modal-header">
+                <h3>Kết quả nhận file cơ quan, đơn vị</h3>
+                <button class="close-modal-btn" onclick="closeModal('importResultModal')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p id="resultSuccess" style="color: var(--success-color, #16a34a); font-weight:600; margin-bottom:4px;"></p>
+                <p id="resultFail" style="color: var(--danger-color, #dc2626); font-weight:600; margin-bottom:10px;"></p>
+                <div class="table-container" id="resultErrorTable">
+                    <table class="officer-table">
+                        <thead><tr><th style="width:110px;">Vị trí lỗi</th><th>Chi tiết lỗi</th></tr></thead>
+                        <tbody id="resultErrorBody"></tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="btnResultErrorFile" onclick="downloadErrorFile()"><i class="fa-solid fa-file-arrow-down"></i> Tải file chi tiết lỗi</button>
+                <button class="btn btn-primary" onclick="closeModal('importResultModal')">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: XÁC NHẬN XÓA -->
     <div class="modal-overlay" id="deleteModal">
         <div class="modal-content" style="width: 450px;">
             <div class="modal-header" style="border-bottom: none; background-color: white;">
                 <h3 style="color: var(--danger-color); display: flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Xác nhận xóa Đơn vị
+                    <i class="fa-solid fa-triangle-exclamation"></i> Xác nhận xóa cơ quan, đơn vị
                 </h3>
                 <button class="close-modal-btn" onclick="closeModal('deleteModal')"><i
                         class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body" style="padding: 10px 24px 20px 24px;">
-                <p id="deleteMsg">Bạn có chắc chắn muốn xóa đơn vị <strong>Phòng Quản lý nghiệp vụ</strong> ra khỏi sơ
-                    đồ cơ cấu tổ chức không?</p>
+                <p id="deleteMsg">Bạn có chắc chắn muốn xóa cơ quan, đơn vị này ra khỏi sơ đồ cơ cấu tổ chức không?</p>
                 <p style="color: var(--text-muted); font-size: 12px; margin-top: 10px;"><i
-                        class="fa-solid fa-circle-exclamation"></i> Việc xóa đơn vị chỉ được phép khi đơn vị không chứa
-                    đơn vị con và không có cán bộ trực thuộc.</p>
+                        class="fa-solid fa-circle-exclamation"></i> Chỉ được xóa cơ quan, đơn vị khi không có cơ quan, đơn vị trực thuộc và không có cán bộ trực thuộc.</p>
             </div>
             <div class="modal-footer" style="border-top: none; background-color: white;">
                 <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Quay lại</button>
@@ -1294,8 +1231,72 @@
         let modalMode = "create"; // create or edit
         let modalIsRoot = false;
 
+        // Loại cơ quan của cơ quan, đơn vị mẫu (Danh mục Loại cơ quan [DM_57])
+        const ORG_LOAI_MAU = { "BTP-01": "Bộ", "CĐK-01": "Cục", "VP-01": "Văn phòng", "PLN-01": "Phòng / Ban", "PLN-02": "Phòng / Ban", "PLN-03": "Phòng / Ban", "TT1-01": "Trung tâm", "TT2-01": "Trung tâm", "TT3-01": "Trung tâm", "BCA-01": "Bộ", "BCT-01": "Bộ" };
+        function initLoaiCoQuan() {
+            orgData.forEach(n => {
+                if (n.loaiCoQuan !== undefined) return;
+                const l = DM_LCQ.loaiCoQuanList().find(x => x.name === ORG_LOAI_MAU[n.id]);
+                n.loaiCoQuan = l ? l.code : "";
+            });
+        }
+        function noTone(s) { return (s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase().trim(); }
+        // Ô gõ tìm Loại cơ quan theo tên
+        function bindLoaiCoQuanCombo() {
+            const input = document.getElementById("mLoaiCoQuanInput");
+            const hidden = document.getElementById("mLoaiCoQuan");
+            const dd = document.getElementById("mLoaiCoQuanDd");
+            const pick = (it) => {
+                hidden.value = it ? it.code : "";
+                document.getElementById("errLoaiCoQuan").style.display = "none";
+            };
+            const show = () => {
+                const q = noTone(input.value);
+                const items = DM_LCQ.loaiCoQuanList().filter(l => !q || noTone(l.name).includes(q));
+                dd.innerHTML = items.length ? items.map(l => `<div class="ldv-dd-item" data-code="${l.code}">${l.name}</div>`).join("") : '<div class="ldv-dd-empty">Không tìm thấy loại cơ quan phù hợp</div>';
+                dd.style.display = "block";
+            };
+            input.addEventListener("focus", show);
+            input.addEventListener("input", () => { pick(null); show(); });
+            input.addEventListener("blur", () => setTimeout(() => { dd.style.display = "none"; }, 150));
+            dd.addEventListener("mousedown", (e) => {
+                const el = e.target.closest(".ldv-dd-item");
+                if (!el) return;
+                e.preventDefault();
+                const it = DM_LCQ.getLoai(el.dataset.code);
+                input.value = it ? it.name : "";
+                pick(it);
+                dd.style.display = "none";
+                input.blur();
+            });
+        }
+        function setLoaiCoQuanForm(loaiCode) {
+            const l = loaiCoQuan(loaiCode);
+            document.getElementById("mLoaiCoQuanInput").value = l ? l.name : "";
+            document.getElementById("mLoaiCoQuan").value = l ? l.code : "";
+            document.getElementById("errLoaiCoQuan").style.display = "none";
+        }
+        function loaiCoQuan(code) { return code ? DM_LCQ.getLoai(code) : null; }
+
+        // Phường/Xã theo Tỉnh/Thành phố (dữ liệu mẫu; thực tế lấy theo Danh mục Xã/Phường lọc theo Tỉnh/Thành phố)
+        const PHUONG_XA_MAU = {
+            "Thành phố Hà Nội": ["Phường Hoàn Kiếm", "Phường Cửa Nam", "Phường Ba Đình", "Phường Ngọc Hà"],
+            "Thành phố Hồ Chí Minh": ["Phường Sài Gòn", "Phường Bến Thành", "Phường Xuân Hòa"],
+            "Thành phố Đà Nẵng": ["Phường Hải Châu", "Phường Hòa Cường"],
+            "Thành phố Hải Phòng": ["Phường Hồng Bàng", "Phường Lê Chân"]
+        };
+        function loadPhuongXa(selected) {
+            const tinh = document.getElementById("mTinhThanh").value;
+            const sel = document.getElementById("mPhuongXa");
+            sel.innerHTML = '<option value="">-- Chọn Phường/Xã --</option>' + (PHUONG_XA_MAU[tinh] || []).map(x => `<option value="${x}">${x}</option>`).join("");
+            sel.disabled = !tinh;
+            sel.value = selected || "";
+        }
+
         // Window Init
         window.addEventListener('DOMContentLoaded', () => {
+            initLoaiCoQuan();
+            bindLoaiCoQuanCombo();
             renderTreeView();
             selectNode(selectedNodeId);
         });
@@ -1412,8 +1413,9 @@
             if (!node) return;
 
             // Load header values
+            const nodeLoai = loaiCoQuan(node.loaiCoQuan);
             document.getElementById('activeNodeTitle').innerText = node.name;
-            document.getElementById('activeNodeSubtitle').innerText = `Mã: ${node.id} | Loại: ${node.loai} | Cấp: ${node.cap}`;
+            document.getElementById('activeNodeSubtitle').innerText = `Mã: ${node.id} | Loại cơ quan, đơn vị: ${nodeLoai ? nodeLoai.name : "-"}`;
 
             const badge = document.getElementById('activeNodeStatus');
             if (node.trangThai === "Đang hoạt động") {
@@ -1424,16 +1426,19 @@
                 badge.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Ngừng hoạt động`;
             }
 
-            // Load Tab 1 values
+            // Tab Thông tin chung
+            const parentNode = orgData.find(n => n.id === node.parentId);
+            document.getElementById('dMaCha').innerText = parentNode ? parentNode.id : "-";
             document.getElementById('dMaDonVi').innerText = node.id;
             document.getElementById('dTenDonVi').innerText = node.name;
-            document.getElementById('dLoaiDonVi').innerText = node.loai;
-            document.getElementById('dCapDonVi').innerText = node.cap;
-            document.getElementById('dMaSoThue').innerText = node.maSoThue || "Không có";
-            document.getElementById('dTinhThanh').innerText = node.tinhThanh || "Chưa khai báo";
-            document.getElementById('dNguoiDaiDien').innerText = node.nguoiDaiDien || "Chưa khai báo";
-            document.getElementById('dSoDienThoai').innerText = node.dienThoai || "Chưa khai báo";
-            document.getElementById('dDiaChi').innerText = node.diaChi || "Chưa khai báo";
+            document.getElementById('dTenVietTat').innerText = node.tenVietTat || "-";
+            document.getElementById('dLoaiCoQuan').innerText = nodeLoai ? nodeLoai.name : "-";
+            document.getElementById('dEmail').innerText = node.email || "-";
+            document.getElementById('dSoDienThoai').innerText = node.dienThoai || "-";
+            document.getElementById('dTinhThanh').innerText = node.tinhThanh || "-";
+            document.getElementById('dPhuongXa').innerText = node.phuongXa || "-";
+            document.getElementById('dDiaChi').innerText = node.diaChi || "-";
+            document.getElementById('dTrangThai').innerText = node.trangThai;
 
             // Reset officer search filter
             const offSearch = document.getElementById('officerSearch');
@@ -1467,7 +1472,7 @@
             tbody.innerHTML = "";
 
             if (!officersList || officersList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Không có tài khoản cán bộ trực thuộc đơn vị này.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Không có tài khoản cán bộ trực thuộc cơ quan, đơn vị này.</td></tr>`;
                 return;
             }
 
@@ -1526,80 +1531,80 @@
             document.getElementById(id).style.display = "none";
         }
 
-        // Thêm mới đơn vị
+        // Thêm cơ quan, đơn vị (không có cơ quan, đơn vị cha) / Thêm cơ quan, đơn vị trực thuộc
         function openCreateModal(isRoot = false) {
             modalMode = "create";
             modalIsRoot = isRoot;
 
-            document.getElementById('modalTitle').innerText = isRoot ? "Thêm mới Đơn vị gốc (Hệ thống/Bộ/Ngành)" : "Thêm mới Đơn vị con";
+            document.getElementById('modalTitle').innerText = isRoot ? "Thêm cơ quan, đơn vị" : "Thêm cơ quan, đơn vị trực thuộc";
 
             const activeNode = orgData.find(n => n.id === selectedNodeId);
-            document.getElementById('mParentUnit').value = isRoot ? "Không có (Tạo đơn vị gốc mới)" : `${activeNode.id} - ${activeNode.name}`;
+            document.getElementById('mParentUnit').value = isRoot ? "Không có" : `${activeNode.id} - ${activeNode.name}`;
 
             // Clear values
-            document.getElementById('mMaDonVi').value = `DV-${Math.floor(Math.random() * 9000) + 1000}`;
+            document.getElementById('mMaDonVi').value = "";
             document.getElementById('mMaDonVi').readOnly = false;
             document.getElementById('mTenDonVi').value = "";
-            document.getElementById('mLoaiDonVi').value = isRoot ? "Nội bộ" : activeNode.loai;
-            document.getElementById('mLoaiDonVi').disabled = false;
-            document.getElementById('mCapDonVi').value = isRoot ? "Cấp Trung ương" : "Cấp Chi nhánh/Phòng ban";
-            document.getElementById('mMaSoThue').value = "";
-            document.getElementById('mTinhThanh').value = "Thành phố Hà Nội";
-            document.getElementById('mNguoiDaiDien').value = "";
+            document.getElementById('mTenVietTat').value = "";
+            setLoaiCoQuanForm("");
+            document.getElementById('mEmail').value = "";
             document.getElementById('mSoDienThoai').value = "";
+            document.getElementById('mTinhThanh').value = "";
+            loadPhuongXa("");
             document.getElementById('mDiaChi').value = "";
             document.getElementById('mTrangThai').value = "Đang hoạt động";
 
             openModal('unitModal');
         }
 
-        // Sửa đơn vị
+        // Sửa cơ quan, đơn vị
         function openEditModal() {
             modalMode = "edit";
-            document.getElementById('modalTitle').innerText = "Chỉnh sửa thông tin Đơn vị";
+            document.getElementById('modalTitle').innerText = "Sửa cơ quan, đơn vị";
 
             const node = orgData.find(n => n.id === selectedNodeId);
             if (!node) return;
 
             const parentNode = orgData.find(n => n.id === node.parentId);
-            document.getElementById('mParentUnit').value = parentNode ? `${parentNode.id} - ${parentNode.name}` : "Không có (Đơn vị gốc)";
+            document.getElementById('mParentUnit').value = parentNode ? `${parentNode.id} - ${parentNode.name}` : "Không có";
 
             // Populate
             document.getElementById('mMaDonVi').value = node.id;
-            document.getElementById('mMaDonVi').readOnly = true; // Lock code in edit mode
+            document.getElementById('mMaDonVi').readOnly = true; // Không cho sửa Mã cơ quan, đơn vị
             document.getElementById('mTenDonVi').value = node.name;
-            document.getElementById('mLoaiDonVi').value = node.loai;
-            document.getElementById('mLoaiDonVi').disabled = true; // Lock type in edit mode
-            document.getElementById('mCapDonVi').value = node.cap;
-            document.getElementById('mMaSoThue').value = node.maSoThue || "";
-            document.getElementById('mTinhThanh').value = node.tinhThanh || "";
-            document.getElementById('mNguoiDaiDien').value = node.nguoiDaiDien || "";
+            document.getElementById('mTenVietTat').value = node.tenVietTat || "";
+            setLoaiCoQuanForm(node.loaiCoQuan);
+            document.getElementById('mEmail').value = node.email || "";
             document.getElementById('mSoDienThoai').value = node.dienThoai || "";
+            document.getElementById('mTinhThanh').value = node.tinhThanh || "";
+            loadPhuongXa(node.phuongXa || "");
             document.getElementById('mDiaChi').value = node.diaChi || "";
             document.getElementById('mTrangThai').value = node.trangThai;
 
             openModal('unitModal');
         }
 
-        function handleLoaiDonViChange() {
-            // Business constraints based on type
-        }
-
-        // Save Unit
+        // Lưu cơ quan, đơn vị
         function saveUnit() {
             const idVal = document.getElementById('mMaDonVi').value.trim();
             const nameVal = document.getElementById('mTenDonVi').value.trim();
-            const loaiVal = document.getElementById('mLoaiDonVi').value;
-            const capVal = document.getElementById('mCapDonVi').value;
-            const mstVal = document.getElementById('mMaSoThue').value.trim();
-            const tinhVal = document.getElementById('mTinhThanh').value;
-            const repVal = document.getElementById('mNguoiDaiDien').value.trim();
+            const shortVal = document.getElementById('mTenVietTat').value.trim();
+            const loaiCqVal = document.getElementById('mLoaiCoQuan').value;
+            const emailVal = document.getElementById('mEmail').value.trim();
             const telVal = document.getElementById('mSoDienThoai').value.trim();
+            const tinhVal = document.getElementById('mTinhThanh').value;
+            const xaVal = document.getElementById('mPhuongXa').value;
             const addVal = document.getElementById('mDiaChi').value.trim();
             const statusVal = document.getElementById('mTrangThai').value;
 
-            if (!idVal || !nameVal) {
+            if (!loaiCqVal) document.getElementById('errLoaiCoQuan').style.display = "block";
+            if (!idVal || !nameVal || !loaiCqVal || !tinhVal) {
                 showToast("Vui lòng nhập đầy đủ các trường bắt buộc (*)", "error");
+                return;
+            }
+
+            if (emailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+                showToast("Email không đúng định dạng", "error");
                 return;
             }
 
@@ -1609,45 +1614,43 @@
             }
 
             if (modalMode === "create") {
-                // Check duplicate ID
+                // Kiểm tra trùng Mã cơ quan, đơn vị
                 if (orgData.some(n => n.id.toLowerCase() === idVal.toLowerCase())) {
-                    showToast("Mã đơn vị đã tồn tại trên hệ thống", "error");
+                    showToast("Mã cơ quan, đơn vị đã tồn tại trên hệ thống", "error");
                     return;
                 }
 
                 const activeNode = orgData.find(n => n.id === selectedNodeId);
-                const newUnit = {
+                orgData.push({
                     id: idVal,
                     name: nameVal,
+                    tenVietTat: shortVal,
                     parentId: modalIsRoot ? null : activeNode.id,
-                    loai: loaiVal,
-                    cap: capVal,
-                    maSoThue: mstVal,
-                    tinhThanh: tinhVal,
-                    nguoiDaiDien: repVal,
+                    loaiCoQuan: loaiCqVal,
+                    email: emailVal,
                     dienThoai: telVal,
+                    tinhThanh: tinhVal,
+                    phuongXa: xaVal,
                     diaChi: addVal,
                     trangThai: statusVal,
                     officers: [],
                     collapsed: false
-                };
-
-                orgData.push(newUnit);
+                });
                 selectedNodeId = idVal;
-                showToast("Thêm mới đơn vị thành công", "success");
+                showToast("Thêm cơ quan, đơn vị thành công", "success");
             } else {
-                // Edit
                 const node = orgData.find(n => n.id === selectedNodeId);
                 if (node) {
                     node.name = nameVal;
-                    node.cap = capVal;
-                    node.maSoThue = mstVal;
-                    node.tinhThanh = tinhVal;
-                    node.nguoiDaiDien = repVal;
+                    node.tenVietTat = shortVal;
+                    node.loaiCoQuan = loaiCqVal;
+                    node.email = emailVal;
                     node.dienThoai = telVal;
+                    node.tinhThanh = tinhVal;
+                    node.phuongXa = xaVal;
                     node.diaChi = addVal;
                     node.trangThai = statusVal;
-                    showToast("Cập nhật thông tin đơn vị thành công", "success");
+                    showToast("Sửa cơ quan, đơn vị thành công", "success");
                 }
             }
 
@@ -1656,12 +1659,12 @@
             selectNode(selectedNodeId);
         }
 
-        // Xóa đơn vị
+        // Xóa cơ quan, đơn vị
         function openDeleteModal() {
             const node = orgData.find(n => n.id === selectedNodeId);
             if (!node) return;
 
-            document.getElementById('deleteMsg').innerHTML = `Bạn có chắc chắn muốn xóa đơn vị <strong>${node.name}</strong> ra khỏi sơ đồ cơ cấu tổ chức không?`;
+            document.getElementById('deleteMsg').innerHTML = `Bạn có chắc chắn muốn xóa cơ quan, đơn vị <strong>${node.name}</strong> ra khỏi sơ đồ cơ cấu tổ chức không?`;
             openModal('deleteModal');
         }
 
@@ -1672,14 +1675,14 @@
             // Rule 1: Check child nodes
             const hasChildren = orgData.some(n => n.parentId === node.id);
             if (hasChildren) {
-                showToast("Không thể xóa do Đơn vị này đang chứa các đơn vị/phòng ban con", "error");
+                showToast("Không thể xóa do cơ quan, đơn vị này đang có cơ quan, đơn vị trực thuộc", "error");
                 closeModal('deleteModal');
                 return;
             }
 
             // Rule 2: Check active officers
             if (node.officers && node.officers.length > 0) {
-                showToast("Không thể xóa do Đơn vị này đang có tài khoản cán bộ trực thuộc. Vui lòng thuyên chuyển cán bộ trước khi xóa.", "error");
+                showToast("Không thể xóa do cơ quan, đơn vị này đang có tài khoản cán bộ trực thuộc. Vui lòng thuyên chuyển cán bộ trước khi xóa.", "error");
                 closeModal('deleteModal');
                 return;
             }
@@ -1687,7 +1690,7 @@
             // Proceed deleting
             const parentId = node.parentId;
             orgData = orgData.filter(n => n.id !== node.id);
-            showToast("Xóa đơn vị thành công", "success");
+            showToast("Xóa cơ quan, đơn vị thành công", "success");
 
             closeModal('deleteModal');
 
@@ -1701,153 +1704,148 @@
             selectNode(selectedNodeId);
         }
 
-        // Cấu hình Biến động tổ chức
-        function openBiendanModal() {
-            populateBienDongForm();
-            handleBienDongTypeChange();
-            openModal('biendanModal');
+        // ---------- Nhận file cơ quan, đơn vị ----------
+        // Kết quả kiểm tra dữ liệu mẫu của tệp (thực tế hệ thống đọc sheet Du_lieu và kiểm tra theo quy tắc nhận file)
+        const IMPORT_HEADERS = ["STT", "Mã cơ quan, đơn vị cha", "Mã cơ quan, đơn vị (*)", "Tên cơ quan, đơn vị (*)", "Tên cơ quan, đơn vị viết tắt", "Loại cơ quan, đơn vị (*)", "Email", "Số điện thoại", "Tỉnh/Thành phố (*)", "Phường/Xã", "Địa chỉ chi tiết", "Trạng thái"];
+        const IMPORT_SAMPLE = [
+            { row: 3, data: ["1", "", "STP-DN", "Sở Tư pháp Thành phố Đà Nẵng", "STP Đà Nẵng", "Sở", "stp@danang.gov.vn", "", "Thành phố Đà Nẵng", "Phường Hải Châu", "Số 1 đường Bạch Đằng", "Đang hoạt động"] },
+            { row: 4, data: ["2", "STP-DN", "STP-DN-HCTP", "Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Đà Nẵng", "", "Phòng / Ban", "", "", "Thành phố Đà Nẵng", "", "", ""] },
+            { row: 5, data: ["3", "", "BTP-01", "Bộ Tư pháp", "BTP", "Bộ", "", "0243823456", "Thành phố Hà Nội", "", "", "Đang hoạt động"] },
+            { row: 6, data: ["4", "", "UBND-DN", "", "", "Ủy ban nhân dân", "ubnd@danang", "", "", "", "", "Hoạt động"] }
+        ];
+        let importChecked = [];
+
+        function openImportModal() {
+            document.getElementById('importFile').value = '';
+            document.getElementById('importMode').value = 'Thêm mới và cập nhật';
+            document.getElementById('importFileError').style.display = 'none';
+            document.getElementById('importCheck').style.display = 'none';
+            document.getElementById('btnImport').disabled = true;
+            importChecked = [];
+            openModal('importModal');
         }
 
-        function handleBienDongTypeChange() {
-            const type = document.getElementById('mLoaiBienDong').value;
-
-            // Hide all dynamic panels
-            document.querySelectorAll('.dynamic-bd').forEach(el => el.style.display = "none");
-
-            if (type === "Sáp nhập") {
-                document.getElementById('bdSapNhap').style.display = "block";
-            } else if (type === "Chia tách") {
-                document.getElementById('bdChiaTach').style.display = "block";
-            } else if (type === "Giải thể") {
-                document.getElementById('bdGiaiThe').style.display = "block";
-            } else if (type === "Đổi tên") {
-                document.getElementById('bdDoiTen').style.display = "block";
-            }
+        function setTemplateName() {
+            const d = new Date();
+            const ymd = `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}${String(d.getDate()).padStart(2, '0')}`;
+            document.getElementById('linkTemplate').setAttribute('download', `${ymd}_Bieu_mau_nhan_file_co_quan_don_vi.xlsx`);
         }
 
-        function populateBienDongForm() {
-            // Load dropdowns and checklists
-            const mergeOldList = document.getElementById('mergeOldList');
-            const mergeNewOrg = document.getElementById('mergeNewOrg');
-            const splitOldOrg = document.getElementById('splitOldOrg');
-            const splitNewList = document.getElementById('splitNewList');
-            const dissolveOrg = document.getElementById('dissolveOrg');
-            const renameOldOrg = document.getElementById('renameOldOrg');
-
-            mergeOldList.innerHTML = "";
-            splitNewList.innerHTML = "";
-            mergeNewOrg.innerHTML = "";
-            splitOldOrg.innerHTML = "";
-            dissolveOrg.innerHTML = "";
-            renameOldOrg.innerHTML = "";
-
-            orgData.forEach(node => {
-                if (node.trangThai === "Đang hoạt động" && node.parentId !== null) {
-                    // Checklists for MergeOld
-                    mergeOldList.innerHTML += `
-                        <label class="checklist-item">
-                            <input type="checkbox" name="mergeOldOrgs" value="${node.id}"> ${node.name}
-                        </label>
-                    `;
-
-                    // Checklists for SplitNew
-                    splitNewList.innerHTML += `
-                        <label class="checklist-item">
-                            <input type="checkbox" name="splitNewOrgs" value="${node.id}"> ${node.name}
-                        </label>
-                    `;
-
-                    // Dropdowns
-                    mergeNewOrg.innerHTML += `<option value="${node.id}">${node.name}</option>`;
-                    splitOldOrg.innerHTML += `<option value="${node.id}">${node.name}</option>`;
-                    dissolveOrg.innerHTML += `<option value="${node.id}">${node.name}</option>`;
-                    renameOldOrg.innerHTML += `<option value="${node.id}">${node.name}</option>`;
-                }
-            });
-        }
-
-        function saveBienDong() {
-            const type = document.getElementById('mLoaiBienDong').value;
-            const docNo = document.getElementById('mSoVanBan').value.trim();
-            const issuer = document.getElementById('mCoQuanBanHanh').value.trim();
-            const dateEff = document.getElementById('mNgayHieuLuc').value.trim();
-
-            if (!docNo || !issuer || !dateEff) {
-                showToast("Vui lòng điền đầy đủ các thông tin pháp lý bắt buộc (*)", "error");
+        // Kiểm tra tệp: định dạng, dung lượng; tệp hợp lệ thì kiểm tra từng dòng dữ liệu
+        function checkImportFile() {
+            const input = document.getElementById('importFile');
+            const err = document.getElementById('importFileError');
+            const file = input.files && input.files[0];
+            err.style.display = 'none';
+            document.getElementById('importCheck').style.display = 'none';
+            document.getElementById('btnImport').disabled = true;
+            if (!file) return;
+            if (!/\.(xls|xlsx)$/i.test(file.name)) {
+                err.innerText = 'Định dạng tệp tin không hợp lệ. Chỉ chấp nhận tệp tin định dạng .xls, .xlsx.';
+                err.style.display = 'block';
                 return;
             }
-
-            if (type === "Sáp nhập") {
-                const checkedOrgs = Array.from(document.querySelectorAll('input[name="mergeOldOrgs"]:checked')).map(el => el.value);
-                const targetOrgId = document.getElementById('mergeNewOrg').value;
-
-                if (checkedOrgs.length === 0) {
-                    showToast("Vui lòng chọn ít nhất 01 cơ quan bị sáp nhập", "error");
-                    return;
-                }
-
-                if (checkedOrgs.includes(targetOrgId)) {
-                    showToast("Cơ quan mới kế thừa không thể trùng với cơ quan bị sáp nhập", "error");
-                    return;
-                }
-
-                // Execute merger background logic
-                checkedOrgs.forEach(oldId => {
-                    const node = orgData.find(n => n.id === oldId);
-                    if (node) {
-                        node.trangThai = "Ngừng hoạt động";
-                        // Deactivate all officers of this old node
-                        if (node.officers) {
-                            node.officers.forEach(off => off.status = "Khóa tài khoản (Do biến động)");
-                        }
-                    }
-                });
-
-                showToast(`Đã thiết lập sáp nhập thành công theo Quyết định ${docNo}.`, "success");
-            } else if (type === "Giải thể") {
-                const targetId = document.getElementById('dissolveOrg').value;
-                const node = orgData.find(n => n.id === targetId);
-                if (node) {
-                    node.trangThai = "Ngừng hoạt động";
-                    if (node.officers) {
-                        node.officers.forEach(off => off.status = "Khóa tài khoản (Do giải thể)");
-                    }
-                }
-                showToast(`Đã ghi nhận giải thể cơ quan ${node.name} thành công.`, "success");
-            } else if (type === "Đổi tên") {
-                const targetId = document.getElementById('renameOldOrg').value;
-                const newName = document.getElementById('renameNewName').value.trim();
-                if (!newName) {
-                    showToast("Vui lòng nhập tên mới cho đơn vị", "error");
-                    return;
-                }
-                const node = orgData.find(n => n.id === targetId);
-                if (node) {
-                    node.name = newName;
-                }
-                showToast(`Đã đổi tên cơ quan thành công sang: ${newName}.`, "success");
-            } else if (type === "Chia tách") {
-                const oldId = document.getElementById('splitOldOrg').value;
-                const checkedOrgs = Array.from(document.querySelectorAll('input[name="splitNewOrgs"]:checked')).map(el => el.value);
-
-                if (checkedOrgs.length === 0) {
-                    showToast("Vui lòng chọn các cơ quan mới nhận bàn giao kế thừa", "error");
-                    return;
-                }
-
-                const node = orgData.find(n => n.id === oldId);
-                if (node) {
-                    node.trangThai = "Ngừng hoạt động";
-                    if (node.officers) {
-                        node.officers.forEach(off => off.status = "Khóa tài khoản (Chờ thuyên chuyển)");
-                    }
-                }
-                showToast(`Đã ghi nhận chia tách cơ quan ${node.name} thành công.`, "success");
+            if (file.size > 20 * 1024 * 1024) {
+                err.innerText = 'Dung lượng tệp tin vượt quá 20MB. Vui lòng kiểm tra lại.';
+                err.style.display = 'block';
+                return;
             }
+            renderImportCheck();
+        }
 
-            closeModal('biendanModal');
+        // Kiểm tra từng dòng theo Chế độ nhận dữ liệu
+        function validateImportRow(r, mode, seenCodes) {
+            const v = r.data.map(x => (x || '').trim());
+            const [stt, parent, code, name, shortName, loai, email, tel, tinh, xa, addr, status] = v;
+            const errs = [];
+            const exists = orgData.some(n => n.id.toLowerCase() === code.toLowerCase());
+            if (parent && !orgData.some(n => n.id === parent) && !seenCodes.includes(parent)) errs.push('Mã cơ quan, đơn vị cha không tồn tại');
+            if (!code) errs.push('Mã cơ quan, đơn vị không được để trống');
+            else if (seenCodes.includes(code)) errs.push('Mã cơ quan, đơn vị bị trùng với dòng trước');
+            else if (mode === 'Thêm mới' && exists) errs.push('Mã cơ quan, đơn vị đã tồn tại trên hệ thống');
+            else if (mode === 'Cập nhật bản ghi hiện có' && !exists) errs.push('Mã cơ quan, đơn vị chưa tồn tại trên hệ thống');
+            if (code && exists && mode !== 'Thêm mới') {
+                const cur = orgData.find(n => n.id.toLowerCase() === code.toLowerCase());
+                if ((cur.parentId || '') !== parent) errs.push('Không được thay đổi Mã cơ quan, đơn vị cha khi cập nhật');
+            }
+            if (!name) errs.push('Tên cơ quan, đơn vị không được để trống');
+            if (!loai) errs.push('Loại cơ quan, đơn vị không được để trống');
+            else if (!DM_LCQ.loaiCoQuanList().some(l => l.name.toLowerCase() === loai.toLowerCase())) errs.push('Loại cơ quan, đơn vị không tồn tại hoặc đã ngừng hoạt động');
+            if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errs.push('Email không đúng định dạng');
+            if (tel && !/^\d{10}$/.test(tel)) errs.push('Số điện thoại không hợp lệ (yêu cầu 10 chữ số)');
+            if (!tinh) errs.push('Tỉnh/Thành phố không được để trống');
+            if (status && status !== 'Đang hoạt động' && status !== 'Ngừng hoạt động') errs.push('Trạng thái không hợp lệ (chỉ nhận Đang hoạt động hoặc Ngừng hoạt động)');
+            return errs;
+        }
+
+        function renderImportCheck() {
+            const file = document.getElementById('importFile').files[0];
+            if (!file || document.getElementById('importFileError').style.display === 'block') return;
+            const mode = document.getElementById('importMode').value;
+            const seen = [];
+            importChecked = IMPORT_SAMPLE.map(r => {
+                const errs = validateImportRow(r, mode, seen);
+                const code = (r.data[2] || '').trim();
+                if (code && !errs.length) seen.push(code);
+                return { row: r.row, data: r.data, errors: errs };
+            });
+            const ok = importChecked.filter(r => !r.errors.length).length;
+            const bad = importChecked.length - ok;
+            document.getElementById('importStats').innerText = `Tổng số: ${importChecked.length} dòng | Hợp lệ: ${ok} dòng | Lỗi: ${bad} dòng`;
+            document.getElementById('linkErrorFile').style.display = bad ? 'inline' : 'none';
+            document.getElementById('importPreviewBody').innerHTML = importChecked.map(r => `
+                <tr><td style="text-align:center;">${r.row}</td><td>${r.data[2] || '-'}</td><td>${r.data[3] || '-'}</td><td>${r.data[5] || '-'}</td>
+                <td>${r.errors.length ? '<span class="badge badge-danger">Lỗi</span>' : '<span class="badge badge-success">Hợp lệ</span>'}</td>
+                <td style="font-size:12.5px;">${r.errors.join('; ')}</td></tr>`).join('');
+            document.getElementById('importCheck').style.display = 'block';
+            // Nhận dữ liệu: cần ít nhất 01 dòng hợp lệ và chế độ khác Kiểm tra dữ liệu
+            document.getElementById('btnImport').disabled = !ok || mode === 'Kiểm tra dữ liệu';
+        }
+
+        function confirmImport() {
+            const mode = document.getElementById('importMode').value;
+            const okRows = importChecked.filter(r => !r.errors.length);
+            okRows.forEach(r => {
+                const d = r.data.map(x => (x || '').trim());
+                const loai = DM_LCQ.loaiCoQuanList().find(l => l.name.toLowerCase() === d[5].toLowerCase());
+                const cur = orgData.find(n => n.id.toLowerCase() === d[2].toLowerCase());
+                if (cur) {
+                    // Cập nhật: cột không bắt buộc để trống thì giữ nguyên giá trị hiện tại
+                    cur.name = d[3]; cur.loaiCoQuan = loai.code; cur.tinhThanh = d[8];
+                    if (d[4]) cur.tenVietTat = d[4]; if (d[6]) cur.email = d[6]; if (d[7]) cur.dienThoai = d[7];
+                    if (d[9]) cur.phuongXa = d[9]; if (d[10]) cur.diaChi = d[10]; if (d[11]) cur.trangThai = d[11];
+                } else if (mode !== 'Cập nhật bản ghi hiện có') {
+                    orgData.push({ id: d[2], name: d[3], tenVietTat: d[4], parentId: d[1] || null, loaiCoQuan: loai.code, email: d[6], dienThoai: d[7], tinhThanh: d[8], phuongXa: d[9], diaChi: d[10], trangThai: d[11] || 'Đang hoạt động', officers: [], collapsed: false });
+                }
+            });
+            const bad = importChecked.filter(r => r.errors.length);
+            closeModal('importModal');
+            document.getElementById('resultSuccess').innerText = `Tải lên thành công: ${okRows.length} bản ghi.`;
+            document.getElementById('resultFail').innerText = `Tải lên thất bại: ${bad.length} bản ghi.`;
+            document.getElementById('resultErrorTable').style.display = bad.length ? 'block' : 'none';
+            document.getElementById('btnResultErrorFile').style.display = bad.length ? 'inline-flex' : 'none';
+            document.getElementById('resultErrorBody').innerHTML = bad.map(r => `<tr><td>Dòng ${r.row}</td><td>${r.errors.join('; ')}</td></tr>`).join('');
+            openModal('importResultModal');
             renderTreeView();
             selectNode(selectedNodeId);
+        }
+
+        // File chi tiết lỗi: chỉ các dòng lỗi, cột Dòng Excel + 12 cột biểu mẫu + Chi tiết lỗi
+        function downloadErrorFile() {
+            const bad = importChecked.filter(r => r.errors.length);
+            if (!bad.length) return;
+            const esc = s => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
+            const head = ['Dòng Excel'].concat(IMPORT_HEADERS, ['Chi tiết lỗi']).map(h => `<th>${esc(h)}</th>`).join('');
+            const body = bad.map(r => `<tr><td>${r.row}</td>${r.data.map(x => `<td style="mso-number-format:'\\@'">${esc(x)}</td>`).join('')}<td>${esc(r.errors.join('; '))}</td></tr>`).join('');
+            const html = `<html><head><meta charset="utf-8"></head><body style="font-family:'Times New Roman'; font-size:13pt;"><table border="1"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></body></html>`;
+            const d = new Date();
+            const p = n => String(n).padStart(2, '0');
+            const name = `${d.getFullYear()}${p(d.getMonth() + 1)}${p(d.getDate())}_${p(d.getHours())}${p(d.getMinutes())}${p(d.getSeconds())}_Loi_nhan_file_co_quan_don_vi.xls`;
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob(['\ufeff' + html], { type: 'application/vnd.ms-excel' }));
+            a.download = name;
+            document.body.appendChild(a); a.click(); a.remove();
+            showToast(`Đã tải file chi tiết lỗi ${name}`, 'success');
         }
 
         // Show toast notifications
@@ -1872,6 +1870,7 @@
             }, 3000);
         }
     </script>
+    <script src="dm_loai_co_quan.js"></script>
     <script src="admin-ui-standardizer.js"></script>
 </body>
 

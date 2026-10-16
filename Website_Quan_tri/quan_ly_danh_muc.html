@@ -199,6 +199,128 @@
             gap: 10px;
         }
 
+        /* Prevent admin-ui-standardizer top border on single-row grid */
+        body .card-section .grid-4 .form-group.search-actions {
+            border-top: none !important;
+            margin-top: 0 !important;
+            padding-top: 0 !important;
+            display: flex !important;
+            align-items: flex-end !important;
+            gap: 10px !important;
+        }
+
+        /* Searchable Combobox */
+        .searchable-combobox {
+            position: relative;
+            width: 100%;
+        }
+        .combo-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .combo-input-wrapper input.combo-input {
+            padding-right: 58px !important;
+            cursor: text;
+        }
+        .combo-clear-btn {
+            position: absolute;
+            right: 32px;
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 13px;
+            padding: 4px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: color 0.15s;
+            z-index: 2;
+        }
+        .combo-clear-btn.active {
+            display: flex !important;
+        }
+        .combo-clear-btn:hover {
+            color: var(--danger-color, #ef4444);
+        }
+        .combo-toggle-btn {
+            position: absolute;
+            right: 8px;
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, color 0.15s;
+            z-index: 2;
+        }
+        .combo-toggle-btn:hover {
+            color: var(--primary-color);
+        }
+        .searchable-combobox.open .combo-toggle-btn {
+            transform: rotate(180deg);
+        }
+        .combo-dropdown {
+            position: absolute;
+            top: calc(100% + 4px);
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            max-height: 260px;
+            overflow-y: auto;
+            z-index: 1050;
+            padding: 4px 0;
+        }
+        .combo-item {
+            padding: 8px 12px;
+            font-size: 13px;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            transition: background 0.15s;
+        }
+        .combo-item:hover, .combo-item.highlighted {
+            background-color: #f1f5f9;
+            color: var(--primary-color);
+        }
+        .combo-item.selected {
+            background-color: #eff6ff;
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+        .combo-item .combo-code {
+            font-size: 11.5px;
+            color: #64748b;
+            font-weight: 500;
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
+        }
+        .combo-item.selected .combo-code {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        .combo-empty {
+            padding: 12px;
+            text-align: center;
+            font-size: 12.5px;
+            color: #94a3b8;
+            font-style: italic;
+        }
+
         /* Table */
         .table-container {
             width: 100%;
@@ -530,6 +652,27 @@
             line-height: 1.5;
             pointer-events: none;
         }
+        /* Ô chọn Đơn vị áp dụng và ô gõ tìm Loại cơ quan */
+        .up-box { border: 1px solid var(--border-color, #e2e8f0); border-radius: 6px; padding: 10px 12px; }
+        .up-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px; }
+        .up-combo { position: relative; }
+        .up-dd { display: none; position: absolute; left: 0; right: 0; top: 100%; margin-top: 2px; background: #fff; border: 1px solid var(--border-color, #e2e8f0); border-radius: 6px; box-shadow: 0 6px 18px rgba(15, 23, 42, 0.12); max-height: 220px; overflow-y: auto; z-index: 30; font-size: 13px; }
+        .up-dd-item { padding: 7px 10px; cursor: pointer; }
+        .up-dd-item:hover { background: #f1f5f9; }
+        .up-dd-empty { padding: 8px 10px; color: #64748b; font-style: italic; }
+        .up-bar { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 4px 0 6px; border-bottom: 1px solid var(--border-color, #e2e8f0); margin-bottom: 6px; }
+        .up-bar label { display: flex; align-items: center; gap: 6px; cursor: pointer; margin: 0; }
+        .up-bar a { color: var(--primary-color); text-decoration: none; }
+        .up-tree { max-height: 240px; overflow-y: auto; font-size: 13px; display: flex; flex-direction: column; gap: 4px; }
+        .up-row { display: flex; align-items: center; gap: 6px; }
+        .up-caret { width: 16px; text-align: center; cursor: pointer; color: #475569; flex-shrink: 0; }
+        .up-row label { display: flex; align-items: center; gap: 6px; margin: 0; cursor: pointer; }
+        .up-row.muted label { color: #94a3b8; cursor: default; }
+        .up-sub { font-size: 11.5px; color: #64748b; }
+        .up-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+        .up-chip { background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 4px; padding: 2px 8px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 6px; }
+        .up-chip i { cursor: pointer; color: #64748b; }
+        .up-chip.more { cursor: pointer; color: var(--primary-color); }
     </style>
 </head>
 <body>
@@ -539,37 +682,38 @@
         <!-- SEARCH FILTER -->
         <section class="card-section">
             <div class="section-title">
-                <span>Bộ lọc tìm kiếm danh mục dùng chung</span>
+                <span>Bộ lọc, tìm kiếm</span>
             </div>
-            <!-- Placed Loại danh mục selection AFTER keyword search input -->
-            <div class="grid-4">
-                <div class="form-group">
-                    <label class="form-label" for="filterKeyword">Từ khóa tìm kiếm</label>
-                    <input type="text" id="filterKeyword" class="form-control" placeholder="Mã danh mục, Tên giá trị, Nội dung...">
+            <!-- Search Filter Grid: Mã danh mục | Tên danh mục | Loại danh mục (nhập text) | Trạng thái -->
+            <div class="grid-4" style="grid-template-columns: 1fr 1.3fr 1.3fr 1fr; gap: 15px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" for="filterCode">Mã danh mục</label>
+                    <input type="text" id="filterCode" class="form-control" placeholder="Nhập mã danh mục" autocomplete="off">
                 </div>
-                <div class="form-group">
-                    <label class="form-label" for="filterType">Loại danh mục</label>
-                    <select id="filterType" class="form-select" onchange="searchData()">
-                        <option value="All" selected>-- Tất cả loại danh mục --</option>
-                        <!-- Loaded dynamically -->
-                    </select>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" for="filterKeyword">Tên danh mục</label>
+                    <input type="text" id="filterKeyword" class="form-control" placeholder="Nhập tên danh mục" autocomplete="off">
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label class="form-label" for="filterTypeInput">Loại danh mục</label>
+                    <input type="text" id="filterTypeInput" class="form-control" placeholder="Nhập loại danh mục" autocomplete="off">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
                     <label class="form-label" for="filterStatus">Trạng thái</label>
-                    <select id="filterStatus" class="form-select">
+                    <select id="filterStatus" class="form-select" onchange="searchData()">
                         <option value="All" selected>Tất cả</option>
                         <option value="Hoạt động">Hoạt động</option>
                         <option value="Ngừng hoạt động">Ngừng hoạt động</option>
                     </select>
                 </div>
-                <div class="form-group search-actions">
-                    <button class="btn btn-primary" onclick="searchData()">
-                        <i class="fa fa-search"></i> Tìm kiếm
-                    </button>
-                    <button class="btn btn-secondary" onclick="resetSearch()">
-                        <i class="fa fa-rotate-left"></i> Làm mới
-                    </button>
-                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px;">
+                <button class="btn btn-primary" onclick="searchData()">
+                    <i class="fa fa-search"></i> Tìm kiếm
+                </button>
+                <button class="btn btn-secondary" onclick="resetSearch()">
+                    <i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc
+                </button>
             </div>
         </section>
 
@@ -584,19 +728,22 @@
             </div>
 
             <div class="table-container">
-                <!-- Reorganized column ordering with explicit proportional widths to minimize empty space: 
-                     STT | Mã danh mục | Tên danh mục | Loại danh mục | Giá trị/Nội dung chi tiết | Trực thuộc | Trạng thái | Thao tác -->
+                <!-- Reorganized column ordering: 
+                     STT | Mã danh mục | Tên danh mục | Tên danh mục (EN) | Loại danh mục | Viết tắt/Mô tả | Viết tắt/Mô tả (EN) | Đơn vị áp dụng | Áp dụng theo danh mục cha | Trạng thái | Thao tác -->
                 <table class="custom-table" id="dataListTable">
                     <thead>
                         <tr>
-                            <th width="5%" style="text-align:center">STT</th>
-                            <th width="20%" class="sortable" onclick="handleSort('name')">Tên danh mục <span id="sort-name"><i class="fas fa-sort"></i></span></th>
-                            <th width="20%" class="sortable" onclick="handleSort('nameEn')">Tên danh mục (EN) <span id="sort-nameEn"><i class="fas fa-sort"></i></span></th>
-                            <th width="15%" class="sortable" onclick="handleSort('typeName')">Loại danh mục <span id="sort-typeName"><i class="fas fa-sort"></i></span></th>
-                            <th width="15%">Viết tắt/Mô tả</th>
-                            <th width="15%">Viết tắt/Mô tả (EN)</th>
+                            <th width="3.5%" style="text-align:center">STT</th>
+                            <th width="9%" class="sortable" onclick="handleSort('code')">Mã danh mục <span id="sort-code"><i class="fas fa-sort"></i></span></th>
+                            <th width="13%" class="sortable" onclick="handleSort('name')">Tên danh mục <span id="sort-name"><i class="fas fa-sort"></i></span></th>
+                            <th width="12%" class="sortable" onclick="handleSort('nameEn')">Tên danh mục (EN) <span id="sort-nameEn"><i class="fas fa-sort"></i></span></th>
+                            <th width="13%" class="sortable" onclick="handleSort('typeName')">Loại danh mục <span id="sort-typeName"><i class="fas fa-sort"></i></span></th>
+                            <th width="9.5%">Viết tắt/Mô tả</th>
+                            <th width="9.5%">Viết tắt/Mô tả (EN)</th>
+                            <th width="9.5%">Đơn vị áp dụng</th>
+                            <th width="12%" class="sortable" onclick="handleSort('parentName')">Áp dụng theo danh mục cha <span id="sort-parentName"><i class="fas fa-sort"></i></span></th>
                             <th width="8%" class="sortable" onclick="handleSort('status')">Trạng thái <span id="sort-status"><i class="fas fa-sort"></i></span></th>
-                            <th width="7%" style="text-align:center">Thao tác</th>
+                            <th width="8%" style="text-align:center; min-width: 105px;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody">
@@ -645,7 +792,7 @@
                     <textarea id="detValEn" class="form-control" rows="3" readonly></textarea>
                 </div>
                 <div class="form-group" id="detParentGroup">
-                    <label class="form-label">Trực thuộc (Danh mục cha)</label>
+                    <label class="form-label" id="detLblParent">Trực thuộc (Danh mục cha)</label>
                     <input type="text" id="detParent" class="form-control" readonly>
                 </div>
                 <div class="form-group" id="detMgrGroup" style="display:none;">
@@ -715,17 +862,36 @@
                     
                     <!-- Hierarchical parent selection -->
                     <div class="form-group" id="parentGroup" style="display:none;">
-                        <label class="form-label" for="inpParent">Danh mục cha (Trực thuộc)</label>
+                        <label class="form-label" for="inpParent" id="lblParent">Danh mục cha (Trực thuộc)</label>
                         <select id="inpParent" class="form-select">
                             <!-- Loaded dynamically based on hierarchical parent type -->
                         </select>
+                        <!-- Chức vụ: gõ tìm Loại cơ quan theo tên -->
+                        <div class="up-combo" id="parentComboWrap" style="display:none;">
+                            <input type="text" id="inpParentSearch" class="form-control" placeholder="Nhập tên loại cơ quan" autocomplete="off">
+                            <div class="up-dd" id="inpParentDd"></div>
+                        </div>
+                        <div class="error-message" id="errParent">Vui lòng chọn Loại cơ quan.</div>
                     </div>
 
-                    <!-- Đơn vị áp dụng: chỉ dùng cho loại danh mục Loại yêu cầu (DM_54) -->
+                    <!-- Đơn vị áp dụng: dùng cho loại danh mục có Phân quyền theo đơn vị = Mở -->
                     <div class="form-group" id="unitGroup" style="display:none;">
                         <label class="form-label">Đơn vị áp dụng <span class="required-mark">*</span></label>
-                        <div id="inpUnitsTree" style="border:1px solid var(--border-color, #e2e8f0); border-radius:6px; padding:10px 12px; max-height:220px; overflow-y:auto; font-size:13px; display:flex; flex-direction:column; gap:5px;"></div>
-                        <div style="font-size:12px; color:#64748b; margin-top:4px;">Chọn đơn vị cha thì áp dụng cho toàn bộ đơn vị trực thuộc. Chỉ người dùng thuộc đơn vị áp dụng mới thấy giá trị này tại các ô chọn và bộ lọc Loại yêu cầu.</div>
+                        <div class="up-box">
+                            <div class="up-filters">
+                                <div class="up-combo">
+                                    <input type="text" id="upLoai" class="form-control" placeholder="Nhập tên loại cơ quan" autocomplete="off">
+                                    <div class="up-dd" id="upLoaiDd"></div>
+                                </div>
+                                <input type="text" id="upSearch" class="form-control" placeholder="Nhập mã hoặc tên đơn vị" autocomplete="off">
+                            </div>
+                            <div class="up-bar">
+                                <label><input type="checkbox" id="upAll" onchange="upSelectAll(this.checked)"> <span id="upAllLbl">Chọn tất cả</span></label>
+                            </div>
+                            <div id="inpUnitsTree" class="up-tree"></div>
+                        </div>
+                        <div id="upChips" class="up-chips"></div>
+                        <div style="font-size:12px; color:#64748b; margin-top:4px;">Chọn đơn vị cha thì áp dụng cho toàn bộ đơn vị trực thuộc. Chỉ người dùng thuộc đơn vị áp dụng mới thấy giá trị này tại các ô chọn và bộ lọc.</div>
                         <div class="error-message" id="errUnits">Vui lòng chọn ít nhất một đơn vị áp dụng.</div>
                     </div>
 
@@ -852,9 +1018,11 @@
             { code: "DM_20", name: "Danh mục Căn cứ hủy đăng ký", status: "Đang hoạt động" },
             { code: "DM_21", name: "Loại văn bản quy phạm pháp luật", status: "Đang hoạt động" },
             { code: "DM_26", name: "Tư cách người yêu cầu bồi thường", status: "Đang hoạt động" },
-            { code: "DM_54", name: "Loại yêu cầu", status: "Đang hoạt động" },
+            { code: "DM_54", name: "Loại yêu cầu", status: "Đang hoạt động", phanQuyenDonVi: true },
             { code: "DM_55", name: "Lý do không thụ lý hồ sơ yêu cầu bồi thường", status: "Đang hoạt động" },
-            { code: "DM_56", name: "Loại CSDL nguồn", status: "Đang hoạt động" }
+            { code: "DM_56", name: "Loại CSDL nguồn", status: "Đang hoạt động" },
+            { code: "DM_57", name: "Loại cơ quan", parentTypeCode: "", status: "Đang hoạt động" },
+            { code: "DM_58", name: "Chức vụ", parentTypeCode: "DM_57", status: "Đang hoạt động" }
         ];
 
         // All simulated categories containing full values from 04_Danh_muc_va_Phu_luc.md (Table 5 & Table 6)
@@ -1019,6 +1187,309 @@
             { typeCode: "DM_56", code: "CSDL_02", name: "CSDL quốc gia về thủ tục hành chính (TTHC)", nameEn: "National database on administrative procedures", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động", coQuanQuanLy: "VPCP" },
             { typeCode: "DM_56", code: "CSDL_03", name: "CSDL quốc gia về khiếu nại, tố cáo", nameEn: "National database on complaints and denunciations", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động", coQuanQuanLy: "TTCP" },
             { typeCode: "DM_56", code: "CSDL_04", name: "Khác", nameEn: "Other", val: "", valEn: "", parentCode: "", notes: "Người dùng nhập Tên CSDL nguồn khác khi chọn giá trị này", status: "Hoạt động", coQuanQuanLy: "" },
+
+            // DM_57 (Loại cơ quan) - Danh mục Loại cơ quan và Danh mục Chức vụ.md; Ghi chú = Phạm vi áp dụng
+            { typeCode: "DM_57", code: "LDV_01", name: "Bộ", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_02", name: "Cơ quan ngang Bộ", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Văn phòng Chính phủ, Thanh tra Chính phủ, Ngân hàng Nhà nước", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_03", name: "Vụ", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thuộc Bộ, Cơ quan ngang Bộ", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_04", name: "Văn phòng", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thuộc Bộ, Cơ quan ngang Bộ, Cục", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_05", name: "Thanh tra", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thuộc Bộ, Cơ quan ngang Bộ, Cục", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_06", name: "Cục", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thuộc Bộ, Cơ quan ngang Bộ", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_07", name: "Chi cục và tương đương", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thuộc Cục ở địa phương/khu vực", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_08", name: "Phòng / Ban", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thuộc Vụ đặc thù, Văn phòng, Thanh tra, Cục, Chi cục, Đơn vị sự nghiệp, Sở", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_09", name: "Đội / Trạm", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thuộc Chi cục hoặc Cục", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_10", name: "Viện nghiên cứu", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Đơn vị sự nghiệp thuộc Bộ", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_11", name: "Học viện / Trường", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Đơn vị sự nghiệp thuộc Bộ", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_12", name: "Trung tâm", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Đơn vị sự nghiệp thuộc Bộ, Cục", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_13", name: "Báo / Tạp chí", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Đơn vị sự nghiệp thuộc Bộ", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_14", name: "TAND Tối cao", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_15", name: "Tòa Phúc thẩm TAND Tối cao", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_16", name: "Cục / Vụ / Văn phòng thuộc TAND Tối cao", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_17", name: "TAND cấp tỉnh", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Tỉnh, Thành phố trực thuộc TW", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_18", name: "TAND khu vực", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_19", name: "Tòa án chuyên biệt tại Trung tâm tài chính quốc tế", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_20", name: "Tòa chuyên trách", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thuộc TAND cấp tỉnh, TAND khu vực, Tòa Phúc thẩm", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_21", name: "Văn phòng / Phòng thuộc TAND", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thuộc Tòa Phúc thẩm, TAND cấp tỉnh, TAND khu vực", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_22", name: "Tòa án quân sự Trung ương", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_23", name: "Tòa án quân sự Quân khu và tương đương", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_24", name: "Tòa án quân sự Khu vực", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_25", name: "VKSND Tối cao", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Cấp cao nhất của hệ thống Viện kiểm sát nhân dân; Viện trưởng VKSND Tối cao quản lý, chỉ đạo, điều hành toàn bộ hệ thống Viện kiểm sát nhân dân, Viện kiểm sát quân sự các cấp", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_26", name: "Viện Công tố và Kiểm sát xét xử phúc thẩm", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Trực thuộc VKSND Tối cao", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_27", name: "Cơ quan điều tra VKSND Tối cao", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Và CQĐT VKS Quân sự Trung ương", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_28", name: "Vụ / Cục / Văn phòng / Thanh tra thuộc VKSND Tối cao", nameEn: "", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_29", name: "VKSND cấp tỉnh", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Tỉnh, Thành phố trực thuộc TW (hiện có 34 VKSND cấp tỉnh)", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_30", name: "VKSND khu vực", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Hiện có 355 VKSND khu vực", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_31", name: "Văn phòng / Phòng thuộc VKSND", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thuộc Vụ/Cục/Viện phúc thẩm/CQĐT VKSNDTC, VKSND cấp tỉnh, VKSND khu vực", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_32", name: "Viện kiểm sát quân sự Trung ương", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thuộc hệ thống Viện kiểm sát nhân dân, đặt dưới sự quản lý, chỉ đạo, điều hành của Viện trưởng VKSND Tối cao", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_33", name: "Viện kiểm sát quân sự Quân khu và tương đương", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thuộc hệ thống Viện kiểm sát nhân dân, đặt dưới sự quản lý, chỉ đạo, điều hành của Viện trưởng VKSND Tối cao", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_34", name: "Viện kiểm sát quân sự Khu vực", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thuộc hệ thống Viện kiểm sát nhân dân, đặt dưới sự quản lý, chỉ đạo, điều hành của Viện trưởng VKSND Tối cao", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_35", name: "Sở", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Thuộc UBND tỉnh, thành phố trực thuộc trung ương; gồm cơ quan chuyên môn trực thuộc Sở", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_36", name: "UBND cấp Tỉnh/Thành phố", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Tỉnh, Thành phố trực thuộc trung ương", status: "Hoạt động" },
+            { typeCode: "DM_57", code: "LDV_37", name: "UBND cấp Phường/Xã", nameEn: "", val: "", valEn: "", parentCode: "", notes: "Phường, Xã", status: "Hoạt động" },
+            // DM_58 (Chức vụ) - Danh mục cha = Loại cơ quan (DM_57)
+            { typeCode: "DM_58", code: "CV_001", name: "Bộ trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_01", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_002", name: "Thứ trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_01", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_003", name: "Bộ trưởng, Chủ nhiệm Văn phòng Chính phủ", nameEn: "", val: "", valEn: "", parentCode: "LDV_02", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_004", name: "Phó Chủ nhiệm Văn phòng Chính phủ", nameEn: "", val: "", valEn: "", parentCode: "LDV_02", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_005", name: "Tổng Thanh tra Chính phủ", nameEn: "", val: "", valEn: "", parentCode: "LDV_02", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_006", name: "Phó Tổng Thanh tra Chính phủ", nameEn: "", val: "", valEn: "", parentCode: "LDV_02", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_007", name: "Thống đốc Ngân hàng Nhà nước", nameEn: "", val: "", valEn: "", parentCode: "LDV_02", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_008", name: "Phó Thống đốc Ngân hàng Nhà nước", nameEn: "", val: "", valEn: "", parentCode: "LDV_02", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_009", name: "Vụ trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_03", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_010", name: "Phó Vụ trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_03", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_011", name: "Chuyên viên cao cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_03", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_012", name: "Chuyên viên chính", nameEn: "", val: "", valEn: "", parentCode: "LDV_03", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_013", name: "Chuyên viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_03", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_014", name: "Chánh Văn phòng", nameEn: "", val: "", valEn: "", parentCode: "LDV_04", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_015", name: "Phó Chánh Văn phòng", nameEn: "", val: "", valEn: "", parentCode: "LDV_04", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_016", name: "Thư ký (Bộ trưởng / Thủ trưởng cơ quan ngang Bộ)", nameEn: "", val: "", valEn: "", parentCode: "LDV_04", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_017", name: "Chuyên viên cao cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_04", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_018", name: "Chuyên viên chính", nameEn: "", val: "", valEn: "", parentCode: "LDV_04", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_019", name: "Chuyên viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_04", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_020", name: "Cán sự", nameEn: "", val: "", valEn: "", parentCode: "LDV_04", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_021", name: "Kế toán trưởng / Phụ trách kế toán", nameEn: "", val: "", valEn: "", parentCode: "LDV_04", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_022", name: "Kế toán viên (Chính / Kế toán viên / Trung cấp)", nameEn: "", val: "", valEn: "", parentCode: "LDV_04", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_023", name: "Văn thư viên (Chính / Văn thư viên / Trung cấp)", nameEn: "", val: "", valEn: "", parentCode: "LDV_04", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_024", name: "Lưu trữ viên (Chính / Lưu trữ viên / Trung cấp)", nameEn: "", val: "", valEn: "", parentCode: "LDV_04", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_025", name: "Nhân viên (Lái xe, Bảo vệ, Kỹ thuật, Phục vụ)", nameEn: "", val: "", valEn: "", parentCode: "LDV_04", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_026", name: "Chánh Thanh tra", nameEn: "", val: "", valEn: "", parentCode: "LDV_05", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_027", name: "Phó Chánh Thanh tra", nameEn: "", val: "", valEn: "", parentCode: "LDV_05", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_028", name: "Thanh tra viên cao cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_05", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_029", name: "Thanh tra viên chính", nameEn: "", val: "", valEn: "", parentCode: "LDV_05", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_030", name: "Thanh tra viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_05", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_031", name: "Chuyên viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_05", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_032", name: "Cục trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_06", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_033", name: "Phó Cục trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_06", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_034", name: "Chuyên viên cao cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_06", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_035", name: "Chuyên viên chính", nameEn: "", val: "", valEn: "", parentCode: "LDV_06", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_036", name: "Chuyên viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_06", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_037", name: "Cán sự", nameEn: "", val: "", valEn: "", parentCode: "LDV_06", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_038", name: "Kiểm tra viên / Kiểm soát viên / Kiểm dịch viên / Chấp hành viên (tùy theo ngành đặc thù)", nameEn: "", val: "", valEn: "", parentCode: "LDV_06", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_039", name: "Chi cục trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_07", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_040", name: "Phó Chi cục trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_07", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_041", name: "Chuyên viên chính", nameEn: "", val: "", valEn: "", parentCode: "LDV_07", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_042", name: "Chuyên viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_07", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_043", name: "Cán sự", nameEn: "", val: "", valEn: "", parentCode: "LDV_07", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_044", name: "Kiểm tra viên / Kiểm soát viên / Chấp hành viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_07", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_045", name: "Trưởng phòng (hoặc Trưởng ban)", nameEn: "", val: "", valEn: "", parentCode: "LDV_08", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_046", name: "Phó Trưởng phòng (hoặc Phó Trưởng ban)", nameEn: "", val: "", valEn: "", parentCode: "LDV_08", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_047", name: "Chuyên viên cao cấp (đối với phòng thuộc Cục/Vụ cấp Bộ)", nameEn: "", val: "", valEn: "", parentCode: "LDV_08", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_048", name: "Chuyên viên chính", nameEn: "", val: "", valEn: "", parentCode: "LDV_08", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_049", name: "Chuyên viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_08", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_050", name: "Cán sự", nameEn: "", val: "", valEn: "", parentCode: "LDV_08", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_051", name: "Kế toán viên / Văn thư viên / Lưu trữ viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_08", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_052", name: "Nhân viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_08", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_053", name: "Đội trưởng / Trạm trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_09", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_054", name: "Phó Đội trưởng / Phó Trạm trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_09", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_055", name: "Kiểm tra viên / Kiểm soát viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_09", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_056", name: "Chuyên viên / Cán sự / Nhân viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_09", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_057", name: "Viện trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_10", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_058", name: "Phó Viện trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_10", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_059", name: "Nghiên cứu viên cao cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_10", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_060", name: "Nghiên cứu viên chính", nameEn: "", val: "", valEn: "", parentCode: "LDV_10", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_061", name: "Nghiên cứu viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_10", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_062", name: "Trợ lý nghiên cứu", nameEn: "", val: "", valEn: "", parentCode: "LDV_10", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_063", name: "Chuyên viên / Kế toán viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_10", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_064", name: "Giám đốc Học viện / Hiệu trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_11", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_065", name: "Phó Giám đốc Học viện / Phó Hiệu trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_11", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_066", name: "Trưởng khoa / Phó Trưởng khoa", nameEn: "", val: "", valEn: "", parentCode: "LDV_11", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_067", name: "Giảng viên cao cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_11", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_068", name: "Giảng viên chính", nameEn: "", val: "", valEn: "", parentCode: "LDV_11", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_069", name: "Giảng viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_11", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_070", name: "Trợ giảng", nameEn: "", val: "", valEn: "", parentCode: "LDV_11", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_071", name: "Chuyên viên / Kế toán viên / Nhân viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_11", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_072", name: "Giám đốc Trung tâm", nameEn: "", val: "", valEn: "", parentCode: "LDV_12", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_073", name: "Phó Giám đốc Trung tâm", nameEn: "", val: "", valEn: "", parentCode: "LDV_12", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_074", name: "Kỹ sư (Cao cấp / Chính / Kỹ sư)", nameEn: "", val: "", valEn: "", parentCode: "LDV_12", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_075", name: "Chuyên viên (Chính / Chuyên viên)", nameEn: "", val: "", valEn: "", parentCode: "LDV_12", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_076", name: "Kỹ thuật viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_12", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_077", name: "Kế toán viên / Nhân viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_12", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_078", name: "Tổng biên tập", nameEn: "", val: "", valEn: "", parentCode: "LDV_13", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_079", name: "Phó Tổng biên tập", nameEn: "", val: "", valEn: "", parentCode: "LDV_13", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_080", name: "Biên tập viên (Cao cấp / Chính / Biên tập viên)", nameEn: "", val: "", valEn: "", parentCode: "LDV_13", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_081", name: "Phóng viên (Cao cấp / Chính / Phóng viên)", nameEn: "", val: "", valEn: "", parentCode: "LDV_13", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_082", name: "Chuyên viên / Kế toán viên / Nhân viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_13", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_083", name: "Chánh án TAND Tối cao", nameEn: "", val: "", valEn: "", parentCode: "LDV_14", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_084", name: "Phó Chánh án TAND Tối cao", nameEn: "", val: "", valEn: "", parentCode: "LDV_14", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_085", name: "Thành viên Hội đồng Thẩm phán TAND Tối cao", nameEn: "", val: "", valEn: "", parentCode: "LDV_14", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_086", name: "Thẩm phán TAND Tối cao", nameEn: "", val: "", valEn: "", parentCode: "LDV_14", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_087", name: "Thẩm phán Tòa án nhân dân", nameEn: "", val: "", valEn: "", parentCode: "LDV_14", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_088", name: "Thẩm tra viên Tòa án (Cao cấp / Chính / Thẩm tra viên)", nameEn: "", val: "", valEn: "", parentCode: "LDV_14", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_089", name: "Thư ký Tòa án (Cao cấp / Chính / Thư ký viên)", nameEn: "", val: "", valEn: "", parentCode: "LDV_14", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_090", name: "Chánh tòa Tòa Phúc thẩm TAND Tối cao", nameEn: "", val: "", valEn: "", parentCode: "LDV_15", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_091", name: "Phó Chánh tòa Tòa Phúc thẩm TAND Tối cao", nameEn: "", val: "", valEn: "", parentCode: "LDV_15", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_092", name: "Thẩm phán Tòa án nhân dân", nameEn: "", val: "", valEn: "", parentCode: "LDV_15", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_093", name: "Thẩm tra viên Tòa án (Cao cấp / Chính / Thẩm tra viên)", nameEn: "", val: "", valEn: "", parentCode: "LDV_15", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_094", name: "Thư ký Tòa án (Cao cấp / Chính / Thư ký viên)", nameEn: "", val: "", valEn: "", parentCode: "LDV_15", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_095", name: "Chuyên viên / Kế toán viên / Văn thư viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_15", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_096", name: "Cục trưởng / Phó Cục trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_16", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_097", name: "Vụ trưởng / Phó Vụ trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_16", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_098", name: "Chánh Văn phòng / Phó Chánh Văn phòng", nameEn: "", val: "", valEn: "", parentCode: "LDV_16", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_099", name: "Thẩm phán Tòa án nhân dân", nameEn: "", val: "", valEn: "", parentCode: "LDV_16", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_100", name: "Thẩm tra viên Tòa án (Cao cấp / Chính / Thẩm tra viên)", nameEn: "", val: "", valEn: "", parentCode: "LDV_16", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_101", name: "Thư ký Tòa án (Cao cấp / Chính / Thư ký viên)", nameEn: "", val: "", valEn: "", parentCode: "LDV_16", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_102", name: "Chuyên viên (Cao cấp / Chính / Chuyên viên)", nameEn: "", val: "", valEn: "", parentCode: "LDV_16", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_103", name: "Kế toán viên / Văn thư viên / Lưu trữ viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_16", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_104", name: "Chánh án TAND cấp tỉnh", nameEn: "", val: "", valEn: "", parentCode: "LDV_17", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_105", name: "Phó Chánh án TAND cấp tỉnh", nameEn: "", val: "", valEn: "", parentCode: "LDV_17", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_106", name: "Ủy viên Ủy ban Thẩm phán TAND cấp tỉnh", nameEn: "", val: "", valEn: "", parentCode: "LDV_17", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_107", name: "Thẩm phán Tòa án nhân dân", nameEn: "", val: "", valEn: "", parentCode: "LDV_17", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_108", name: "Thẩm tra viên Tòa án (Chính / Thẩm tra viên)", nameEn: "", val: "", valEn: "", parentCode: "LDV_17", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_109", name: "Thư ký Tòa án (Chính / Thư ký viên)", nameEn: "", val: "", valEn: "", parentCode: "LDV_17", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_110", name: "Hội thẩm nhân dân", nameEn: "", val: "", valEn: "", parentCode: "LDV_17", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_111", name: "Chánh án TAND khu vực", nameEn: "", val: "", valEn: "", parentCode: "LDV_18", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_112", name: "Phó Chánh án TAND khu vực", nameEn: "", val: "", valEn: "", parentCode: "LDV_18", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_113", name: "Thẩm phán Tòa án nhân dân", nameEn: "", val: "", valEn: "", parentCode: "LDV_18", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_114", name: "Thẩm tra viên Tòa án", nameEn: "", val: "", valEn: "", parentCode: "LDV_18", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_115", name: "Thư ký Tòa án", nameEn: "", val: "", valEn: "", parentCode: "LDV_18", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_116", name: "Hội thẩm nhân dân", nameEn: "", val: "", valEn: "", parentCode: "LDV_18", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_117", name: "Chuyên viên / Kế toán viên / Văn thư viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_18", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_118", name: "Chánh án Tòa án chuyên biệt", nameEn: "", val: "", valEn: "", parentCode: "LDV_19", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_119", name: "Phó Chánh án Tòa án chuyên biệt", nameEn: "", val: "", valEn: "", parentCode: "LDV_19", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_120", name: "Thẩm phán Tòa án nhân dân", nameEn: "", val: "", valEn: "", parentCode: "LDV_19", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_121", name: "Thẩm tra viên Tòa án", nameEn: "", val: "", valEn: "", parentCode: "LDV_19", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_122", name: "Thư ký Tòa án", nameEn: "", val: "", valEn: "", parentCode: "LDV_19", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_123", name: "Chuyên viên / Nhân viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_19", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_124", name: "Chánh tòa", nameEn: "", val: "", valEn: "", parentCode: "LDV_20", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_125", name: "Phó Chánh tòa", nameEn: "", val: "", valEn: "", parentCode: "LDV_20", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_126", name: "Thẩm phán Tòa án nhân dân", nameEn: "", val: "", valEn: "", parentCode: "LDV_20", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_127", name: "Thẩm tra viên Tòa án", nameEn: "", val: "", valEn: "", parentCode: "LDV_20", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_128", name: "Thư ký Tòa án", nameEn: "", val: "", valEn: "", parentCode: "LDV_20", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_129", name: "Chánh Văn phòng / Phó Chánh Văn phòng", nameEn: "", val: "", valEn: "", parentCode: "LDV_21", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_130", name: "Trưởng phòng / Phó Trưởng phòng", nameEn: "", val: "", valEn: "", parentCode: "LDV_21", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_131", name: "Thẩm tra viên Tòa án", nameEn: "", val: "", valEn: "", parentCode: "LDV_21", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_132", name: "Thư ký Tòa án", nameEn: "", val: "", valEn: "", parentCode: "LDV_21", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_133", name: "Chuyên viên / Kế toán trưởng / Kế toán viên / Văn thư viên / Nhân viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_21", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_134", name: "Chánh án TAQS Trung ương (Kiêm Phó Chánh án TAND Tối cao)", nameEn: "", val: "", valEn: "", parentCode: "LDV_22", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_135", name: "Phó Chánh án TAQS Trung ương", nameEn: "", val: "", valEn: "", parentCode: "LDV_22", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_136", name: "Ủy viên Ủy ban Thẩm phán TAQS Trung ương", nameEn: "", val: "", valEn: "", parentCode: "LDV_22", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_137", name: "Thẩm phán Tòa án nhân dân", nameEn: "", val: "", valEn: "", parentCode: "LDV_22", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_138", name: "Thẩm tra viên Tòa án", nameEn: "", val: "", valEn: "", parentCode: "LDV_22", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_139", name: "Thư ký Tòa án", nameEn: "", val: "", valEn: "", parentCode: "LDV_22", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_140", name: "Chánh án TAQS Quân khu", nameEn: "", val: "", valEn: "", parentCode: "LDV_23", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_141", name: "Phó Chánh án TAQS Quân khu", nameEn: "", val: "", valEn: "", parentCode: "LDV_23", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_142", name: "Ủy viên Ủy ban Thẩm phán TAQS Quân khu", nameEn: "", val: "", valEn: "", parentCode: "LDV_23", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_143", name: "Thẩm phán Tòa án nhân dân", nameEn: "", val: "", valEn: "", parentCode: "LDV_23", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_144", name: "Thẩm tra viên Tòa án", nameEn: "", val: "", valEn: "", parentCode: "LDV_23", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_145", name: "Thư ký Tòa án", nameEn: "", val: "", valEn: "", parentCode: "LDV_23", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_146", name: "Hội thẩm quân nhân", nameEn: "", val: "", valEn: "", parentCode: "LDV_23", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_147", name: "Chánh án TAQS Khu vực", nameEn: "", val: "", valEn: "", parentCode: "LDV_24", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_148", name: "Phó Chánh án TAQS Khu vực", nameEn: "", val: "", valEn: "", parentCode: "LDV_24", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_149", name: "Thẩm phán Tòa án nhân dân", nameEn: "", val: "", valEn: "", parentCode: "LDV_24", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_150", name: "Thẩm tra viên Tòa án", nameEn: "", val: "", valEn: "", parentCode: "LDV_24", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_151", name: "Thư ký Tòa án", nameEn: "", val: "", valEn: "", parentCode: "LDV_24", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_152", name: "Hội thẩm quân nhân", nameEn: "", val: "", valEn: "", parentCode: "LDV_24", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_153", name: "Viện trưởng VKSND Tối cao", nameEn: "", val: "", valEn: "", parentCode: "LDV_25", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_154", name: "Phó Viện trưởng VKSND Tối cao", nameEn: "", val: "", valEn: "", parentCode: "LDV_25", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_155", name: "Thành viên Ủy ban Kiểm sát VKSND Tối cao", nameEn: "", val: "", valEn: "", parentCode: "LDV_25", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_156", name: "Kiểm sát viên VKSND Tối cao", nameEn: "", val: "", valEn: "", parentCode: "LDV_25", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_157", name: "Kiểm sát viên cao cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_25", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_158", name: "Kiểm sát viên trung cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_25", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_159", name: "Kiểm sát viên sơ cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_25", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_160", name: "Kiểm tra viên cao cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_25", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_161", name: "Kiểm tra viên chính", nameEn: "", val: "", valEn: "", parentCode: "LDV_25", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_162", name: "Kiểm tra viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_25", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_163", name: "Viện trưởng Viện Công tố và Kiểm sát xét xử phúc thẩm", nameEn: "", val: "", valEn: "", parentCode: "LDV_26", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_164", name: "Phó Viện trưởng Viện Công tố và Kiểm sát xét xử phúc thẩm", nameEn: "", val: "", valEn: "", parentCode: "LDV_26", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_165", name: "Kiểm sát viên cao cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_26", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_166", name: "Kiểm sát viên trung cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_26", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_167", name: "Kiểm sát viên sơ cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_26", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_168", name: "Kiểm tra viên cao cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_26", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_169", name: "Kiểm tra viên chính", nameEn: "", val: "", valEn: "", parentCode: "LDV_26", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_170", name: "Kiểm tra viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_26", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_171", name: "Chuyên viên / Kế toán viên / Văn thư viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_26", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_172", name: "Thủ trưởng Cơ quan điều tra", nameEn: "", val: "", valEn: "", parentCode: "LDV_27", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_173", name: "Phó Thủ trưởng Cơ quan điều tra", nameEn: "", val: "", valEn: "", parentCode: "LDV_27", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_174", name: "Điều tra viên cao cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_27", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_175", name: "Điều tra viên trung cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_27", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_176", name: "Điều tra viên sơ cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_27", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_177", name: "Cán bộ điều tra", nameEn: "", val: "", valEn: "", parentCode: "LDV_27", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_178", name: "Chuyên viên / Nhân viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_27", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_179", name: "Vụ trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_28", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_180", name: "Phó Vụ trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_28", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_181", name: "Cục trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_28", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_182", name: "Phó Cục trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_28", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_183", name: "Chánh Văn phòng", nameEn: "", val: "", valEn: "", parentCode: "LDV_28", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_184", name: "Phó Chánh Văn phòng", nameEn: "", val: "", valEn: "", parentCode: "LDV_28", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_185", name: "Chánh Thanh tra", nameEn: "", val: "", valEn: "", parentCode: "LDV_28", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_186", name: "Phó Chánh Thanh tra", nameEn: "", val: "", valEn: "", parentCode: "LDV_28", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_187", name: "Kiểm sát viên cao cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_28", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_188", name: "Kiểm sát viên trung cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_28", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_189", name: "Kiểm sát viên sơ cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_28", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_190", name: "Kiểm tra viên cao cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_28", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_191", name: "Kiểm tra viên chính", nameEn: "", val: "", valEn: "", parentCode: "LDV_28", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_192", name: "Kiểm tra viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_28", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_193", name: "Thanh tra viên (Cao cấp / Chính / Thanh tra viên)", nameEn: "", val: "", valEn: "", parentCode: "LDV_28", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_194", name: "Chuyên viên (Cao cấp / Chính / Chuyên viên)", nameEn: "", val: "", valEn: "", parentCode: "LDV_28", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_195", name: "Kế toán viên / Văn thư viên / Lưu trữ viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_28", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_196", name: "Viện trưởng VKSND cấp tỉnh", nameEn: "", val: "", valEn: "", parentCode: "LDV_29", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_197", name: "Phó Viện trưởng VKSND cấp tỉnh", nameEn: "", val: "", valEn: "", parentCode: "LDV_29", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_198", name: "Ủy viên Ủy ban Kiểm sát VKSND cấp tỉnh", nameEn: "", val: "", valEn: "", parentCode: "LDV_29", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_199", name: "Kiểm sát viên cao cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_29", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_200", name: "Kiểm sát viên trung cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_29", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_201", name: "Kiểm sát viên sơ cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_29", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_202", name: "Kiểm tra viên chính", nameEn: "", val: "", valEn: "", parentCode: "LDV_29", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_203", name: "Kiểm tra viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_29", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_204", name: "Viện trưởng VKSND khu vực", nameEn: "", val: "", valEn: "", parentCode: "LDV_30", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_205", name: "Phó Viện trưởng VKSND khu vực", nameEn: "", val: "", valEn: "", parentCode: "LDV_30", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_206", name: "Kiểm sát viên trung cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_30", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_207", name: "Kiểm sát viên sơ cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_30", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_208", name: "Kiểm tra viên chính", nameEn: "", val: "", valEn: "", parentCode: "LDV_30", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_209", name: "Kiểm tra viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_30", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_210", name: "Chuyên viên / Kế toán viên / Văn thư viên / Nhân viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_30", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_211", name: "Chánh Văn phòng", nameEn: "", val: "", valEn: "", parentCode: "LDV_31", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_212", name: "Phó Chánh Văn phòng", nameEn: "", val: "", valEn: "", parentCode: "LDV_31", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_213", name: "Trưởng phòng", nameEn: "", val: "", valEn: "", parentCode: "LDV_31", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_214", name: "Phó Trưởng phòng", nameEn: "", val: "", valEn: "", parentCode: "LDV_31", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_215", name: "Kiểm sát viên cao cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_31", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_216", name: "Kiểm sát viên trung cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_31", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_217", name: "Kiểm sát viên sơ cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_31", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_218", name: "Điều tra viên cao cấp (đối với phòng thuộc CQĐT)", nameEn: "", val: "", valEn: "", parentCode: "LDV_31", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_219", name: "Điều tra viên trung cấp (đối với phòng thuộc CQĐT)", nameEn: "", val: "", valEn: "", parentCode: "LDV_31", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_220", name: "Điều tra viên sơ cấp (đối với phòng thuộc CQĐT)", nameEn: "", val: "", valEn: "", parentCode: "LDV_31", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_221", name: "Kiểm tra viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_31", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_222", name: "Cán bộ điều tra (đối với phòng thuộc CQĐT)", nameEn: "", val: "", valEn: "", parentCode: "LDV_31", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_223", name: "Chuyên viên / Kế toán trưởng / Kế toán viên / Văn thư viên / Nhân viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_31", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_224", name: "Viện trưởng VKSQS Trung ương (Kiêm Phó Viện trưởng VKSND Tối cao)", nameEn: "", val: "", valEn: "", parentCode: "LDV_32", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_225", name: "Phó Viện trưởng VKSQS Trung ương", nameEn: "", val: "", valEn: "", parentCode: "LDV_32", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_226", name: "Ủy viên Ủy ban Kiểm sát VKSQS Trung ương", nameEn: "", val: "", valEn: "", parentCode: "LDV_32", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_227", name: "Kiểm sát viên cao cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_32", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_228", name: "Kiểm sát viên trung cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_32", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_229", name: "Kiểm sát viên sơ cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_32", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_230", name: "Điều tra viên cao cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_32", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_231", name: "Điều tra viên trung cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_32", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_232", name: "Điều tra viên sơ cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_32", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_233", name: "Kiểm tra viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_32", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_234", name: "Cán bộ điều tra", nameEn: "", val: "", valEn: "", parentCode: "LDV_32", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_235", name: "Viện trưởng VKSQS Quân khu", nameEn: "", val: "", valEn: "", parentCode: "LDV_33", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_236", name: "Phó Viện trưởng VKSQS Quân khu", nameEn: "", val: "", valEn: "", parentCode: "LDV_33", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_237", name: "Ủy viên Ủy ban Kiểm sát VKSQS Quân khu", nameEn: "", val: "", valEn: "", parentCode: "LDV_33", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_238", name: "Kiểm sát viên cao cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_33", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_239", name: "Kiểm sát viên trung cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_33", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_240", name: "Kiểm sát viên sơ cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_33", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_241", name: "Kiểm tra viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_33", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_242", name: "Viện trưởng VKSQS Khu vực", nameEn: "", val: "", valEn: "", parentCode: "LDV_34", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_243", name: "Phó Viện trưởng VKSQS Khu vực", nameEn: "", val: "", valEn: "", parentCode: "LDV_34", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_244", name: "Kiểm sát viên trung cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_34", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_245", name: "Kiểm sát viên sơ cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_34", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_246", name: "Kiểm tra viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_34", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_247", name: "Giám đốc Sở", nameEn: "", val: "", valEn: "", parentCode: "LDV_35", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_248", name: "Phó Giám đốc Sở", nameEn: "", val: "", valEn: "", parentCode: "LDV_35", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_249", name: "Chi cục trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_35", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_250", name: "Phó Chi cục trưởng", nameEn: "", val: "", valEn: "", parentCode: "LDV_35", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_251", name: "Trưởng phòng và tương đương", nameEn: "", val: "", valEn: "", parentCode: "LDV_35", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_252", name: "Phó Trưởng phòng và tương đương", nameEn: "", val: "", valEn: "", parentCode: "LDV_35", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_253", name: "Thanh tra viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_35", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_254", name: "Chuyên viên cao cấp", nameEn: "", val: "", valEn: "", parentCode: "LDV_35", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_255", name: "Chuyên viên chính", nameEn: "", val: "", valEn: "", parentCode: "LDV_35", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_256", name: "Chuyên viên", nameEn: "", val: "", valEn: "", parentCode: "LDV_35", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_257", name: "Cán sự", nameEn: "", val: "", valEn: "", parentCode: "LDV_35", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_258", name: "Chủ tịch UBND", nameEn: "", val: "", valEn: "", parentCode: "LDV_36", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_259", name: "Phó Chủ tịch UBND", nameEn: "", val: "", valEn: "", parentCode: "LDV_36", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_260", name: "Ủy viên UBND", nameEn: "", val: "", valEn: "", parentCode: "LDV_36", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_261", name: "Chủ tịch UBND", nameEn: "", val: "", valEn: "", parentCode: "LDV_37", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_262", name: "Phó Chủ tịch UBND", nameEn: "", val: "", valEn: "", parentCode: "LDV_37", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_58", code: "CV_263", name: "Ủy viên UBND", nameEn: "", val: "", valEn: "", parentCode: "LDV_37", notes: "", status: "Hoạt động" },
         ];
 
         // State variables
@@ -1052,32 +1523,70 @@
             const savedTypes = JSON.parse(localStorage.getItem('categoryTypes'));
             const savedCats = JSON.parse(localStorage.getItem('masterCategories'));
             DEFAULT_TYPES.filter(d => !savedTypes.some(s => s.code === d.code)).forEach(d => savedTypes.push(d));
-            INITIAL_CATEGORIES.filter(d => ['DM_26', 'DM_54', 'DM_55', 'DM_56'].includes(d.typeCode) && !savedCats.some(s => s.typeCode === d.typeCode && s.code === d.code)).forEach(d => savedCats.push(JSON.parse(JSON.stringify(d))));
+            INITIAL_CATEGORIES.filter(d => ['DM_26', 'DM_54', 'DM_55', 'DM_56', 'DM_57', 'DM_58'].includes(d.typeCode) && !savedCats.some(s => s.typeCode === d.typeCode && s.code === d.code)).forEach(d => savedCats.push(JSON.parse(JSON.stringify(d))));
             // Bổ sung các đơn vị gốc mới vào Đơn vị áp dụng của Yêu cầu bồi thường (dữ liệu lưu từ phiên bản trước)
             const lyc02 = savedCats.find(c => c.typeCode === 'DM_54' && c.code === 'LYC_02');
             if (lyc02 && !lyc02.donViApDungV2) { lyc02.donViApDung = BTNN_WF.getRootUnits().map(u => u.id); lyc02.donViApDungV2 = true; }
+            // Danh mục Loại cơ quan (DM_57), Chức vụ (DM_58): đổi tên loại danh mục
+            savedTypes.forEach(t => {
+                if (t.code === 'DM_57') t.name = 'Loại cơ quan';
+                if (t.code === 'DM_58') t.name = 'Chức vụ';
+                if (t.code === 'DM_58' && !t.parentTypeCode) t.parentTypeCode = 'DM_57';
+            });
+            // Làm mới dữ liệu khởi tạo Loại cơ quan / Chức vụ (LDV_xx, CV_xxx) theo tài liệu danh mục; giữ giá trị do Quản trị viên thêm
+            if (localStorage.getItem('dmLoaiCoQuanSeedV') !== 'v4') {
+                for (let i = savedCats.length - 1; i >= 0; i--) {
+                    const c = savedCats[i];
+                    if ((c.typeCode === 'DM_57' && /^LDV_\d{2}$/.test(c.code)) || (c.typeCode === 'DM_58' && /^CV_\d{3}$/.test(c.code))) savedCats.splice(i, 1);
+                }
+                INITIAL_CATEGORIES.filter(d => d.typeCode === 'DM_57' || d.typeCode === 'DM_58').forEach(d => savedCats.push(JSON.parse(JSON.stringify(d))));
+                localStorage.setItem('dmLoaiCoQuanSeedV', 'v4');
+            }
+            // Phân quyền theo đơn vị (cấu hình tại Quản lý loại danh mục): Loại yêu cầu (DM_54) mặc định Mở
+            savedTypes.forEach(t => { if (t.phanQuyenDonVi === undefined) t.phanQuyenDonVi = t.code === 'DM_54'; });
             localStorage.setItem('categoryTypes', JSON.stringify(savedTypes));
             localStorage.setItem('masterCategories', JSON.stringify(savedCats));
-            typeList = savedTypes.filter(t => t.status === 'Đang hoạt động');
+            allTypes = savedTypes;
+            typeList = savedTypes.filter(t => t.status === 'Đang hoạt động' || t.status === 'Hoạt động');
             catList = savedCats;
 
-            populateFilterTypeDropdown();
             populateFormDropdowns();
+        }
+
+        let allTypes = [];
+        // Loại danh mục có Phân quyền theo đơn vị = Mở
+        function hasUnitScope(typeCode) {
+            const t = allTypes.find(x => x.code === typeCode);
+            return !!(t && t.phanQuyenDonVi);
+        }
+
+        // Tên các đơn vị áp dụng, hiển thị trên lưới
+        function unitNames(item) {
+            if (!hasUnitScope(item.typeCode)) return '';
+            return (item.donViApDung || []).map(u => BTNN_WF.unitName(u)).join('; ');
         }
 
         function saveDataToStorage() {
             localStorage.setItem('masterCategories', JSON.stringify(catList));
         }
 
-        function populateFilterTypeDropdown() {
-            const filterType = document.getElementById('filterType');
-            filterType.innerHTML = '<option value="All">-- Tất cả loại danh mục --</option>';
-            typeList.forEach(t => {
-                const opt = document.createElement('option');
-                opt.value = t.code;
-                opt.innerText = `${t.name} (${t.code})`;
-                filterType.appendChild(opt);
-            });
+        function removeVietnameseTones(str) {
+            if (!str) return '';
+            return str
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd')
+                .replace(/Đ/g, 'D')
+                .toLowerCase()
+                .trim();
+        }
+
+        let searchDebounceTimer = null;
+        function debouncedSearch() {
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(() => {
+                searchData();
+            }, 250);
         }
 
         function populateFormDropdowns() {
@@ -1093,7 +1602,8 @@
 
         // Render Table
         function renderTable() {
-            const typeFilter = document.getElementById('filterType').value;
+            const codeText = document.getElementById('filterCode').value.trim().toLowerCase();
+            const typeInputText = document.getElementById('filterTypeInput').value.trim().toLowerCase();
             const keyword = document.getElementById('filterKeyword').value.trim().toLowerCase();
             const status = document.getElementById('filterStatus').value;
             const tableBody = document.getElementById('tableBody');
@@ -1106,21 +1616,33 @@
                 const typeName = typeObj ? typeObj.name : item.typeCode;
                 item.typeName = typeName;
 
-                const matchType = typeFilter === 'All' || item.typeCode === typeFilter;
+                // Loại danh mục: tìm gần đúng theo tên loại danh mục (không phân biệt hoa thường, có dấu/không dấu)
+                const matchType = !typeInputText ||
+                                  typeName.toLowerCase().includes(typeInputText) ||
+                                  removeVietnameseTones(typeName).includes(removeVietnameseTones(typeInputText));
+
+                // Mã danh mục: tìm gần đúng theo mã
+                const matchCode = !codeText || (item.code || '').toLowerCase().includes(codeText);
+
+                // Match Status
                 const matchStatus = status === 'All' || item.status === status;
 
-                const parentObj = catList.find(c => c.code === item.parentCode && c.typeCode === getParentTypeCode(item.typeCode));
-                item.parentName = parentObj ? parentObj.name : '';
+                const parentTypeCode = getParentTypeCode(item.typeCode);
+                item.parentTypeCode = parentTypeCode;
+                if (parentTypeCode) {
+                    const parentObj = catList.find(c => c.code === item.parentCode && c.typeCode === parentTypeCode);
+                    item.parentName = parentObj ? parentObj.name : (item.parentCode || 'Mọi giá trị của loại cha');
+                } else {
+                    item.parentName = '';
+                }
+                item.unitNames = unitNames(item);
 
-                const matchKeyword = !keyword || 
-                                     item.code.toLowerCase().includes(keyword) || 
-                                     item.name.toLowerCase().includes(keyword) || 
-                                     (item.nameEn && item.nameEn.toLowerCase().includes(keyword)) || 
-                                     (item.val && item.val.toLowerCase().includes(keyword)) || 
-                                     (item.valEn && item.valEn.toLowerCase().includes(keyword)) || 
-                                     typeName.toLowerCase().includes(keyword);
+                // Tên danh mục: tìm gần đúng theo tên danh mục
+                const matchKeyword = !keyword ||
+                                     item.name.toLowerCase().includes(keyword) ||
+                                     removeVietnameseTones(item.name).includes(removeVietnameseTones(keyword));
 
-                return matchType && matchStatus && matchKeyword;
+                return matchType && matchCode && matchStatus && matchKeyword;
             });
 
             // Sort
@@ -1145,7 +1667,7 @@
             // Render Rows
             tableBody.innerHTML = '';
             if (pageItems.length === 0) {
-                tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy danh mục phù hợp.</td></tr>`;
+                tableBody.innerHTML = `<tr><td colspan="11" style="text-align:center; color:var(--text-muted); padding:30px; font-style:italic;">Không tìm thấy kết quả phù hợp với điều kiện tìm kiếm.</td></tr>`;
                 renderPagination(totalItems, 0, 0, totalPages);
                 return;
             }
@@ -1178,20 +1700,54 @@
 
                 const displayNameEn = item.nameEn || '<span style="color:var(--text-muted); font-style:italic;">-</span>';
 
+                // Đơn vị áp dụng: mỗi đơn vị 01 dòng, tối đa 02 đơn vị; còn lại hiển thị "+N đơn vị khác"
+                const unitList = item.unitNames ? item.unitNames.split('; ') : [];
+                let displayUnits = unitList.slice(0, 2).map(n => `<div>${n}</div>`).join('');
+                if (unitList.length > 2) displayUnits += `<div style="color:var(--text-muted);">+${unitList.length - 2} đơn vị khác</div>`;
+
+                // Cột Áp dụng theo danh mục cha (hiển thị 2 dòng: Dòng 1 Giá trị cha / Mọi giá trị của loại cha; Dòng 2 Loại danh mục cha)
+                const parentTypeCode = getParentTypeCode(item.typeCode);
+                let parentDisplay = '<span style="color:var(--text-muted);">-</span>';
+                if (parentTypeCode) {
+                    const parentTypeObj = (typeof allTypes !== 'undefined' ? allTypes : typeList).find(t => t.code === parentTypeCode) || typeList.find(t => t.code === parentTypeCode);
+                    const parentTypeName = parentTypeObj ? parentTypeObj.name : parentTypeCode;
+                    if (item.parentCode) {
+                        const parentObj = catList.find(c => c.code === item.parentCode && c.typeCode === parentTypeCode);
+                        const parentValName = parentObj ? parentObj.name : item.parentCode;
+                        parentDisplay = `
+                            <div>
+                                <div style="font-weight:500; color:var(--text-main);">${parentValName}</div>
+                                <div style="font-size:11.5px; color:var(--text-muted);">${parentTypeName}</div>
+                            </div>`;
+                    } else {
+                        parentDisplay = `
+                            <div>
+                                <div style="font-weight:500; color:#475569; font-style:italic;">Mọi giá trị của loại cha</div>
+                                <div style="font-size:11.5px; color:var(--text-muted);">${parentTypeName}</div>
+                            </div>`;
+                    }
+                }
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td style="text-align:center">${stt}</td>
-                    <td style="font-weight:500; color:var(--primary-color);">${item.name}</td>
+                    <td style="font-size:12.5px; font-weight:600; color:var(--primary-color);">${item.code}</td>
+                    <td style="font-weight:500; color:var(--text-main);">${item.name}</td>
                     <td style="font-weight:500; color:var(--text-main);">${displayNameEn}</td>
-                    <td style="color:var(--text-muted); font-size:12px;">${item.typeName}</td>
+                    <td style="font-size:13px;">
+                        <div style="font-weight:500; color:var(--text-main);">${item.typeName}</div>
+                        <div style="font-size:11.5px; color:var(--text-muted);">${item.typeCode}</div>
+                    </td>
                     <td style="word-break: break-word;">${displayVal}</td>
                     <td style="word-break: break-word;">${displayValEn}</td>
+                    <td style="word-break: break-word; font-size:12.5px;">${displayUnits || '<span style="color:var(--text-muted);">-</span>'}</td>
+                    <td>${parentDisplay}</td>
                     <td style="text-align:center">${statusBadge}</td>
                     <td style="text-align:center">
                         <div class="action-cell">
-                            <button class="icon-btn view" title="Xem chi tiết" onclick="openDetailModal(${item.originalIndex})">Xem</button>
-                            <button class="icon-btn edit" title="Chỉnh sửa" onclick="openEditModal(${item.originalIndex})"><i class="fa fa-edit"></i></button>
-                            <button class="icon-btn delete" title="Xóa" onclick="openConfirmDeleteModal(${item.originalIndex})"><i class="fa fa-trash"></i></button>
+                            <button class="icon-btn view" title="Xem chi tiết" onclick="openDetailModal(${item.originalIndex})"><i class="fa-solid fa-eye"></i></button>
+                            <button class="icon-btn edit" title="Chỉnh sửa" onclick="openEditModal(${item.originalIndex})"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button class="icon-btn delete" title="Xóa" onclick="openConfirmDeleteModal(${item.originalIndex})"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </td>
                 `;
@@ -1208,7 +1764,7 @@
                 return;
             }
 
-            const options = [5, 10, 20, 50].map(sz => `<option value="${sz}" ${pageSize === sz ? 'selected' : ''}>${sz}</option>`).join('');
+            const options = [10, 20, 50, 100].map(sz => `<option value="${sz}" ${pageSize === sz ? 'selected' : ''}>${sz}</option>`).join('');
 
             let html = `
                 <div class="pagination-info">
@@ -1249,8 +1805,13 @@
 
         // Helpers for Hierarchical categories
         function getParentTypeCode(typeCode) {
+            const list = (typeof allTypes !== 'undefined' && allTypes.length > 0) ? allTypes : (typeof typeList !== 'undefined' ? typeList : []);
+            const typeObj = list.find(t => t.code === typeCode);
+            if (typeObj && typeObj.parentTypeCode) return typeObj.parentTypeCode;
             if (typeCode === 'DM_14') return 'DM_13';
             if (typeCode === 'DM_15') return 'DM_14';
+            // Chức vụ gắn với Loại cơ quan
+            if (typeCode === 'DM_58') return 'DM_57';
             return null;
         }
 
@@ -1270,15 +1831,20 @@
                 valEnRequiredMark.style.display = 'none';
             }
 
-            document.getElementById('unitGroup').style.display = typeCode === 'DM_54' ? 'block' : 'none';
-            if (typeCode === 'DM_54') renderUnitTree(formUnits);
+            document.getElementById('unitGroup').style.display = hasUnitScope(typeCode) ? 'block' : 'none';
+            if (hasUnitScope(typeCode)) renderUnitTree(formUnits);
             document.getElementById('mgrGroup').style.display = typeCode === 'DM_56' ? 'block' : 'none';
             if (typeCode === 'DM_56') mgrTree();
 
             const parentTypeCode = getParentTypeCode(typeCode);
             if (parentTypeCode) {
                 parentGroup.style.display = 'block';
-                inpParent.innerHTML = `<option value="">-- Chọn danh mục cha trực thuộc --</option>`;
+                const isCv = typeCode === 'DM_58';
+                const parentTypeObj = (typeof allTypes !== 'undefined' ? allTypes : typeList).find(t => t.code === parentTypeCode) || typeList.find(t => t.code === parentTypeCode);
+                const parentTypeName = parentTypeObj ? parentTypeObj.name : 'Danh mục cha';
+                document.getElementById('lblParent').innerHTML = isCv ? 'Loại cơ quan <span class="required-mark">*</span>' : `Áp dụng theo danh mục cha (${parentTypeName})`;
+                document.getElementById('errParent').style.display = 'none';
+                inpParent.innerHTML = isCv ? `<option value="">-- Chọn loại cơ quan --</option>` : `<option value="">-- Chọn danh mục cha trực thuộc --</option>`;
                 const parents = catList.filter(c => c.typeCode === parentTypeCode && c.status === 'Hoạt động');
                 parents.forEach(p => {
                     const opt = document.createElement('option');
@@ -1286,6 +1852,10 @@
                     opt.innerText = `${p.name} (${p.code})`;
                     inpParent.appendChild(opt);
                 });
+                // Loại cơ quan: ô gõ tìm theo tên thay cho ô chọn
+                inpParent.style.display = isCv ? 'none' : '';
+                document.getElementById('parentComboWrap').style.display = isCv ? 'block' : 'none';
+                document.getElementById('inpParentSearch').value = '';
             } else {
                 parentGroup.style.display = 'none';
                 inpParent.innerHTML = '';
@@ -1304,30 +1874,149 @@
             return BTNN_WF.getAncestors(unitId).slice(1).some(a => selected.includes(a));
         }
 
-        function renderUnitTree(selected) {
+        // Loại cơ quan của đơn vị (dữ liệu mẫu; thực tế lấy theo Loại cơ quan khai báo tại Cơ cấu tổ chức)
+        const UNIT_LOAI_MAU = {
+            'BTP-01': ['Bộ'], 'BTC': ['Bộ'], 'VPCP': ['Cơ quan ngang Bộ'], 'TTCP': ['Cơ quan ngang Bộ'],
+            'CĐK-01': ['Cục'], 'PLN-02': ['Phòng / Ban'],
+            'CCTHADS-BT': ['Chi cục và tương đương'], 'CCTHADS-CG': ['Chi cục và tương đương'], 'CCTHADS-TT': ['Chi cục và tương đương'],
+            'THADS-LD': ['Cục'], 'THADS-HP': ['Cục'], 'THADS-HN': ['Cục'],
+            'STP-HN': ['Sở'], 'STP-HCM': ['Sở'], 'STP-HP': ['Sở'],
+            'STP-HN-HCTP': ['Phòng / Ban'], 'STP-HCM-HCTP': ['Phòng / Ban'], 'STP-HP-HCTP': ['Phòng / Ban'],
+            'UBND-HN': ['UBND cấp Tỉnh/Thành phố'], 'UBND-LD': ['UBND cấp Tỉnh/Thành phố'],
+            'TANDTC': ['TAND Tối cao', 'Tòa án nhân dân tối cao'],
+            'TAND-HN': ['TAND cấp tỉnh', 'Tòa án nhân dân cấp tỉnh'], 'TAND-LD': ['TAND cấp tỉnh', 'Tòa án nhân dân cấp tỉnh'],
+            'TAND-HK': ['TAND khu vực', 'Tòa án nhân dân khu vực'], 'TAND-LC': ['TAND khu vực', 'Tòa án nhân dân khu vực'], 'TAND-NT': ['TAND khu vực', 'Tòa án nhân dân khu vực'],
+            'VKSNDTC': ['VKSND Tối cao'], 'VKS-HP': ['VKSND cấp tỉnh'], 'VKS-Q1': ['VKSND khu vực']
+        };
+        function loaiDonViList() {
+            return catList.filter(c => c.typeCode === 'DM_57' && c.status === 'Hoạt động');
+        }
+        function unitLoai(unitId) {
+            const names = UNIT_LOAI_MAU[unitId] || [];
+            return loaiDonViList().find(c => names.includes(c.name)) || null;
+        }
+        function allUnits() {
+            const out = [];
+            (function walk(units) { units.forEach(u => { out.push(u); walk(BTNN_WF.getChildren(u.id)); }); })(BTNN_WF.getRootUnits());
+            return out;
+        }
+
+        // Ô gõ tìm theo tên (dùng cho Loại cơ quan): lọc gần đúng, không phân biệt hoa thường, có dấu/không dấu
+        function bindNameCombo(input, dd, getItems, onPick) {
+            const show = () => {
+                const q = removeVietnameseTones(input.value);
+                const items = getItems().filter(it => !it.code || !q || removeVietnameseTones(it.name).includes(q));
+                const real = items.filter(it => it.code);
+                dd.innerHTML = real.length
+                    ? items.map(it => `<div class="up-dd-item" data-code="${it.code}">${it.name}</div>`).join('')
+                    : '<div class="up-dd-empty">Không tìm thấy loại cơ quan phù hợp</div>';
+                dd.style.display = 'block';
+            };
+            input.addEventListener('focus', show);
+            input.addEventListener('input', () => { onPick(null); show(); });
+            input.addEventListener('blur', () => setTimeout(() => { dd.style.display = 'none'; }, 150));
+            dd.addEventListener('mousedown', (e) => {
+                const el = e.target.closest('.up-dd-item');
+                if (!el) return;
+                e.preventDefault();
+                const it = getItems().find(x => x.code === el.dataset.code) || null;
+                input.value = it && it.code ? it.name : '';
+                onPick(it && it.code ? it : null);
+                dd.style.display = 'none';
+                input.blur();
+            });
+        }
+
+        // Trạng thái ô chọn Đơn vị áp dụng
+        let upLoaiCode = '';
+        // Trạng thái thu gọn/mở rộng của từng đơn vị trên cây: true = mở rộng, false = thu gọn; chưa có thì theo mặc định
+        let upOpen = {};
+        let upShowAllChips = false;
+
+        function upMatches() {
+            const q = removeVietnameseTones(document.getElementById('upSearch').value);
+            return allUnits().filter(u => {
+                if (upLoaiCode) { const l = unitLoai(u.id); if (!l || l.code !== upLoaiCode) return false; }
+                return !q || removeVietnameseTones(u.name).includes(q) || removeVietnameseTones(u.id).includes(q);
+            });
+        }
+
+        function isUnitChecked(unitId) {
+            return formUnits.includes(unitId) || isUnitCoveredByParent(unitId, formUnits);
+        }
+
+        function renderUnitTree() {
             const box = document.getElementById('inpUnitsTree');
+            const filterOn = !!upLoaiCode || !!document.getElementById('upSearch').value.trim();
+            const matched = upMatches();
+            const matchedIds = new Set(matched.map(u => u.id));
+            const visible = new Set();
+            matched.forEach(u => BTNN_WF.getAncestors(u.id).forEach(a => visible.add(a)));
             const rows = [];
             (function walk(units, depth) {
-                units.forEach(u => {
-                    const covered = isUnitCoveredByParent(u.id, selected);
-                    const checked = covered || selected.includes(u.id);
-                    rows.push(`<label style="display:flex; gap:6px; align-items:center; padding-left:${depth * 20}px; cursor:${covered ? 'default' : 'pointer'}; color:${covered ? '#64748b' : 'inherit'};"><input type="checkbox" ${checked ? 'checked' : ''} ${covered ? 'disabled' : ''} onchange="toggleUnit('${u.id}', this.checked)"> ${u.name}${covered ? ' <i style="font-size:11.5px;">(áp dụng theo đơn vị cha)</i>' : ''}</label>`);
-                    walk(BTNN_WF.getChildren(u.id), depth + 1);
+                units.filter(u => visible.has(u.id)).forEach(u => {
+                    const kids = BTNN_WF.getChildren(u.id).filter(c => visible.has(c.id));
+                    // Mặc định: thu gọn; khi đang tìm kiếm/lọc thì mở rộng để thấy kết quả
+                    const open = u.id in upOpen ? upOpen[u.id] : filterOn;
+                    const context = !matchedIds.has(u.id);
+                    const covered = isUnitCoveredByParent(u.id, formUnits);
+                    const checked = isUnitChecked(u.id);
+                    const loai = unitLoai(u.id);
+                    const caret = kids.length ? `<span class="up-caret" title="${open ? 'Thu gọn' : 'Mở rộng'}" onclick="upToggleOpen('${u.id}', ${open})"><i class="fa-solid fa-caret-${open ? 'down' : 'right'}"></i></span>` : '<span class="up-caret"></span>';
+                    rows.push(`<div class="up-row${context || covered ? ' muted' : ''}" style="padding-left:${depth * 18}px;">${caret}<label><input type="checkbox" ${checked ? 'checked' : ''} ${covered || context ? 'disabled' : ''} onchange="toggleUnit('${u.id}', this.checked)"> <span>${u.name} (${u.id})${loai ? ` <span class="up-sub">• ${loai.name}</span>` : ''}${covered ? ' <i class="up-sub">(áp dụng theo đơn vị cha)</i>' : ''}</span></label></div>`);
+                    if (open) walk(kids, depth + 1);
                 });
             })(BTNN_WF.getRootUnits(), 0);
-            box.innerHTML = rows.join('');
+            box.innerHTML = rows.join('') || '<div class="up-dd-empty">Không tìm thấy đơn vị phù hợp</div>';
+
+            const all = document.getElementById('upAll');
+            all.checked = matched.length > 0 && matched.every(u => isUnitChecked(u.id));
+            all.disabled = matched.length === 0;
+            document.getElementById('upAllLbl').innerText = `Chọn tất cả đơn vị (${matched.length})`;
+            renderUnitChips();
+        }
+
+        function renderUnitChips() {
+            const max = 5;
+            const list = upShowAllChips ? formUnits : formUnits.slice(0, max);
+            let html = list.map(id => `<span class="up-chip">${BTNN_WF.unitName(id)}<i class="fa-solid fa-xmark" onclick="toggleUnit('${id}', false)"></i></span>`).join('');
+            if (!upShowAllChips && formUnits.length > max) html += `<span class="up-chip more" onclick="upShowAllChips = true; renderUnitChips();">+${formUnits.length - max} đơn vị</span>`;
+            document.getElementById('upChips').innerHTML = html;
+        }
+
+        // Thu gọn/mở rộng từng đơn vị trên cây
+        function upToggleOpen(unitId, isOpen) {
+            upOpen[unitId] = !isOpen;
+            renderUnitTree();
+        }
+
+        // Đơn vị con đã được bao bởi đơn vị cha thì không lưu riêng
+        function normalizeUnits(list) {
+            const uniq = Array.from(new Set(list));
+            return uniq.filter(id => !isUnitCoveredByParent(id, uniq));
+        }
+
+        // Chọn tất cả: chọn/bỏ chọn toàn bộ đơn vị thỏa điều kiện tìm kiếm hiện tại
+        function upSelectAll(on) {
+            const ids = upMatches().map(u => u.id);
+            formUnits = on ? normalizeUnits(formUnits.concat(ids)) : formUnits.filter(id => !ids.includes(id));
+            document.getElementById('errUnits').style.display = 'none';
+            renderUnitTree();
+        }
+
+        function resetUnitPicker() {
+            upLoaiCode = '';
+            upOpen = {};
+            upShowAllChips = false;
+            document.getElementById('upLoai').value = '';
+            document.getElementById('upSearch').value = '';
         }
 
         function toggleUnit(unitId, on) {
             formUnits = formUnits.filter(u => u !== unitId);
-            if (on) {
-                formUnits.push(unitId);
-                // Đơn vị con đã được bao bởi đơn vị cha thì không lưu riêng
-                const desc = BTNN_WF.getDescendants(unitId);
-                formUnits = formUnits.filter(u => !desc.includes(u));
-            }
+            if (on) formUnits = normalizeUnits(formUnits.concat(unitId));
             document.getElementById('errUnits').style.display = 'none';
-            renderUnitTree(formUnits);
+            renderUnitTree();
         }
 
         // Event Helpers
@@ -1349,7 +2038,7 @@
                 sortState.field = field;
                 sortState.dir = 'asc';
             }
-            ['typeName', 'name', 'nameEn', 'status'].forEach(f => {
+            ['code', 'typeName', 'name', 'nameEn', 'parentName', 'status'].forEach(f => {
                 const el = document.getElementById(`sort-${f}`);
                 if (el) el.innerHTML = '<i class="fas fa-sort"></i>';
             });
@@ -1374,13 +2063,17 @@
             document.getElementById('detVal').value = item.val || 'Không có';
             document.getElementById('detValEn').value = item.valEn || 'Không có';
 
-            const parentObj = catList.find(c => c.code === item.parentCode && c.typeCode === getParentTypeCode(item.typeCode));
-            document.getElementById('detParent').value = parentObj ? `${parentObj.name} (${parentObj.code})` : 'Không có';
+            const parentTypeCode = getParentTypeCode(item.typeCode);
+            const parentTypeObj = parentTypeCode ? ((typeof allTypes !== 'undefined' ? allTypes : typeList).find(t => t.code === parentTypeCode) || typeList.find(t => t.code === parentTypeCode)) : null;
+            const parentTypeName = parentTypeObj ? parentTypeObj.name : 'Danh mục cha';
+            const parentObj = catList.find(c => c.code === item.parentCode && c.typeCode === parentTypeCode);
             
-            document.getElementById('detParentGroup').style.display = getParentTypeCode(item.typeCode) ? 'block' : 'none';
+            document.getElementById('detParentGroup').style.display = parentTypeCode ? 'block' : 'none';
+            document.getElementById('detLblParent').innerText = `Áp dụng theo danh mục cha (${parentTypeName})`;
+            document.getElementById('detParent').value = parentObj ? `${parentObj.name} (${parentObj.code})` : (item.parentCode ? item.parentCode : 'Mọi giá trị của loại cha');
 
             document.getElementById('detNotes').value = item.notes || 'Không có';
-            document.getElementById('detUnitGroup').style.display = item.typeCode === 'DM_54' ? 'block' : 'none';
+            document.getElementById('detUnitGroup').style.display = hasUnitScope(item.typeCode) ? 'block' : 'none';
             document.getElementById('detMgrGroup').style.display = item.typeCode === 'DM_56' ? 'block' : 'none';
             document.getElementById('detMgr').value = item.coQuanQuanLy ? BTNN_WF.unitTreeLabel(item.coQuanQuanLy) : 'Không có';
             document.getElementById('detUnits').innerHTML = (item.donViApDung || []).map(u => `• ${BTNN_WF.unitName(u)}${BTNN_WF.getDescendants(u).length ? ' (gồm đơn vị trực thuộc)' : ''}`).join('<br>') || 'Chưa chọn';
@@ -1401,12 +2094,10 @@
             const inpType = document.getElementById('inpType');
             inpType.disabled = false;
             
-            const filterTypeVal = document.getElementById('filterType').value;
-            if (filterTypeVal !== 'All') {
-                inpType.value = filterTypeVal;
-            } else {
-                inpType.value = '';
-            }
+            // Điền sẵn Loại danh mục khi nội dung ô tìm kiếm Loại danh mục trùng đúng tên 01 loại danh mục
+            const typeText = document.getElementById('filterTypeInput').value.trim().toLowerCase();
+            const matchedType = typeText ? typeList.find(t => t.name.toLowerCase() === typeText) : null;
+            inpType.value = matchedType ? matchedType.code : '';
 
             document.getElementById('inpCode').value = '';
             document.getElementById('inpCode').readOnly = false;
@@ -1417,6 +2108,7 @@
             document.getElementById('inpNotes').value = '';
             formUnits = [];
             mgrTree().setValue('');
+            resetUnitPicker();
             document.getElementById('errUnits').style.display = 'none';
             document.querySelector('input[name="status"][value="Hoạt động"]').checked = true;
 
@@ -1451,6 +2143,7 @@
             document.getElementById('inpValEn').value = item.valEn || '';
             document.getElementById('inpNotes').value = item.notes || '';
             formUnits = Array.isArray(item.donViApDung) ? item.donViApDung.slice() : [];
+            resetUnitPicker();
             mgrTree().setValue(item.coQuanQuanLy || '');
             document.getElementById('errUnits').style.display = 'none';
             document.querySelector(`input[name="status"][value="${item.status}"]`).checked = true;
@@ -1466,6 +2159,8 @@
             const inpParent = document.getElementById('inpParent');
             if (inpParent) {
                 inpParent.value = item.parentCode || '';
+                const parentItem = catList.find(c => c.typeCode === 'DM_57' && c.code === item.parentCode);
+                if (item.typeCode === 'DM_58') document.getElementById('inpParentSearch').value = parentItem ? parentItem.name : '';
             }
 
             document.getElementById('formModal').classList.add('active');
@@ -1487,6 +2182,14 @@
             const status = document.querySelector('input[name="status"]:checked').value;
 
             let valid = true;
+
+            // Chức vụ bắt buộc gắn với 01 Loại cơ quan
+            if (typeCode === 'DM_58' && !parentCode) {
+                document.getElementById('errParent').style.display = 'block';
+                valid = false;
+            } else if (document.getElementById('errParent')) {
+                document.getElementById('errParent').style.display = 'none';
+            }
 
             if (!typeCode) {
                 document.getElementById('errType').style.display = 'block';
@@ -1534,7 +2237,7 @@
                 document.getElementById('errValEn').style.display = 'none';
             }
 
-            if (typeCode === 'DM_54' && !formUnits.length) {
+            if (hasUnitScope(typeCode) && !formUnits.length) {
                 document.getElementById('errUnits').style.display = 'block';
                 valid = false;
             }
@@ -1571,7 +2274,7 @@
                     parentCode,
                     notes,
                     status,
-                    donViApDung: typeCode === 'DM_54' ? formUnits.slice() : undefined,
+                    donViApDung: hasUnitScope(typeCode) ? formUnits.slice() : undefined,
                     coQuanQuanLy: typeCode === 'DM_56' ? mgrTree().getValue() : undefined
                 });
                 showToast("Thêm mới danh mục thành công!", "success");
@@ -1585,7 +2288,7 @@
                     item.parentCode = parentCode;
                     item.notes = notes;
                     item.status = status;
-                    if (item.typeCode === 'DM_54') item.donViApDung = formUnits.slice();
+                    if (hasUnitScope(item.typeCode)) item.donViApDung = formUnits.slice();
                     if (item.typeCode === 'DM_56') item.coQuanQuanLy = mgrTree().getValue();
                 }
                 showToast("Cập nhật danh mục thành công!", "success");
@@ -1640,7 +2343,8 @@
         }
 
         function resetSearch() {
-            document.getElementById('filterType').value = 'All';
+            document.getElementById('filterCode').value = '';
+            document.getElementById('filterTypeInput').value = '';
             document.getElementById('filterKeyword').value = '';
             document.getElementById('filterStatus').value = 'All';
             curPage = 1;
@@ -1663,6 +2367,23 @@
         window.addEventListener('DOMContentLoaded', () => {
             initData();
             renderTable();
+
+            // Ô chọn Đơn vị áp dụng: lọc theo Loại cơ quan (gõ tìm theo tên), tìm theo Mã hoặc Tên đơn vị
+            bindNameCombo(document.getElementById('upLoai'), document.getElementById('upLoaiDd'),
+                () => [{ code: '', name: '-- Tất cả loại cơ quan --' }].concat(loaiDonViList()),
+                (it) => { upLoaiCode = it ? it.code : ''; upOpen = {}; renderUnitTree(); });
+            document.getElementById('upSearch').addEventListener('input', () => { upOpen = {}; renderUnitTree(); });
+            // Chức vụ: gõ tìm Loại cơ quan theo tên
+            bindNameCombo(document.getElementById('inpParentSearch'), document.getElementById('inpParentDd'),
+                () => loaiDonViList(),
+                (it) => { document.getElementById('inpParent').value = it ? it.code : ''; if (it) document.getElementById('errParent').style.display = 'none'; });
+
+            // Tìm kiếm khi nhập Mã danh mục, Tên danh mục, Loại danh mục; Enter để tìm ngay
+            ['filterCode', 'filterKeyword', 'filterTypeInput'].forEach(id => {
+                const el = document.getElementById(id);
+                el.addEventListener('input', () => debouncedSearch());
+                el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); searchData(); } });
+            });
         });
     </script>
     <script src="admin-ui-standardizer.js"></script>

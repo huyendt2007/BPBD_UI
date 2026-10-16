@@ -14,7 +14,7 @@ Cấu hình được dùng tại [Tiếp nhận yêu cầu - Tiếp nhận yêu 
 
 *b. Điều kiện thực hiện*
 - Cán bộ quản trị đã đăng nhập thành công vào Website quản trị.
-- Cây đơn vị và tài khoản cán bộ đã được khai báo tại [Quản lý cơ cấu tổ chức (Đơn vị) - Quản lý cơ cấu tổ chức - Quản trị hệ thống (Website Quản trị)](Co_cau_to_chuc.md) và [Quản lý tài khoản cán bộ - Quản lý tài khoản cán bộ - Quản trị hệ thống (Website Quản trị)](Quan_ly_tai_khoan_can_bo.md).
+- Cây đơn vị và tài khoản cán bộ đã được khai báo tại [Quản lý cơ cấu tổ chức - Quản lý cơ cấu tổ chức - Quản trị hệ thống (Website Quản trị)](Quan_ly_co_cau_to_chuc.md) và [Quản lý tài khoản cán bộ - Quản lý tài khoản cán bộ - Quản trị hệ thống (Website Quản trị)](Quan_ly_tai_khoan_can_bo.md).
 
 ---
 

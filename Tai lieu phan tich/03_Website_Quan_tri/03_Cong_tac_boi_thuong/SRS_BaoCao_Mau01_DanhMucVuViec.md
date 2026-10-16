@@ -129,7 +129,7 @@ flowchart TD
 | Ghi chú | Text(500) | Không | Theo dữ liệu | Control UI: Textarea (2 dòng).<br>Cho phép nhập tự do thông tin bổ sung phục vụ quản lý. |
 | Nút: Khôi phục nguyên bản | Button | Không | Hiển thị | Control UI: Button (icon `fa-rotate-left`).<br>- Chỉ hiển thị với dòng hệ thống đã có hiệu chỉnh thuyết minh.<br>- Khóa mờ đối với dòng nhập tay hoặc dòng hệ thống chưa bị sửa. |
 | Nút: Hủy bỏ | Button | Không | Hiển thị | Control UI: Button.<br>Luôn hiển thị ở trạng thái khả dụng. |
-| Nút: Lưu lại | Button | Không | Hiển thị | Control UI: Button.<br>Luôn hiển thị ở trạng thái khả dụng. |
+| Nút: Lưu | Button | Không | Hiển thị | Control UI: Button.<br>Luôn hiển thị ở trạng thái khả dụng. |
 
 #### 3. Chức năng trên màn hình
 
@@ -137,7 +137,7 @@ flowchart TD
 | :--- | :--- | :--- | :--- |
 | 1 | Khôi phục nguyên bản | Button | Hệ thống hiển thị xác nhận [MSG-CFM-SYS-001]; sau khi xác nhận, hệ thống nạp lại toàn bộ nội dung tự động gốc từ Timeline và module kinh phí vào Cột (5), (6), (7), xóa cờ hiệu chỉnh và cập nhật lại form popup. |
 | 2 | Hủy bỏ | Button | Hệ thống đóng popup, không lưu bất kỳ thay đổi nào vừa nhập. |
-| 3 | Lưu lại | Button | Khi người dùng click nút, hệ thống kiểm tra tính hợp lệ dữ liệu:<br>**TH1 - Bỏ trống trường bắt buộc**: Nếu bỏ trống `Họ và tên của người yêu cầu bồi thường`, `Cơ quan giải quyết bồi thường`, `Pháp luật áp dụng để giải quyết bồi thường` hoặc `Tình hình giải quyết bồi thường`, vi phạm [BR-VAL-001], hệ thống highlight viền đỏ ô lỗi đầu tiên, hiển thị cảnh báo đỏ *"Đây là trường bắt buộc"* ngay dưới ô đó và tự động focus con trỏ vào ô lỗi.<br>**TH2 - Trùng lặp dữ liệu**: Nếu là dòng nhập tay và trùng lặp hoàn toàn thông tin Họ tên, Địa chỉ và Cơ quan giải quyết với một vụ việc đã tồn tại trong kỳ, hệ thống cảnh báo theo [BR-VAL-009].<br>**TH Hợp lệ**: Hệ thống lưu dữ liệu (đối với dòng hệ thống: ghi nhận vào bảng đè hiển thị báo cáo, giữ nguyên CSDL gốc; đối với dòng nhập tay: lưu thông tin vụ việc nhập tay), đóng popup, cập nhật lại bảng danh mục Mẫu 01 và hiển thị [MSG-SUC-SYS-002]. |
+| 3 | Lưu | Button | Khi người dùng click nút, hệ thống kiểm tra tính hợp lệ dữ liệu:<br>**TH1 - Bỏ trống trường bắt buộc**: Nếu bỏ trống `Họ và tên của người yêu cầu bồi thường`, `Cơ quan giải quyết bồi thường`, `Pháp luật áp dụng để giải quyết bồi thường` hoặc `Tình hình giải quyết bồi thường`, vi phạm [BR-VAL-001], hệ thống highlight viền đỏ ô lỗi đầu tiên, hiển thị cảnh báo đỏ *"Đây là trường bắt buộc"* ngay dưới ô đó và tự động focus con trỏ vào ô lỗi.<br>**TH2 - Trùng lặp dữ liệu**: Nếu là dòng nhập tay và trùng lặp hoàn toàn thông tin Họ tên, Địa chỉ và Cơ quan giải quyết với một vụ việc đã tồn tại trong kỳ, hệ thống cảnh báo theo [BR-VAL-009].<br>**TH Hợp lệ**: Hệ thống lưu dữ liệu (đối với dòng hệ thống: ghi nhận vào bảng đè hiển thị báo cáo, giữ nguyên CSDL gốc; đối với dòng nhập tay: lưu thông tin vụ việc nhập tay), đóng popup, cập nhật lại bảng danh mục Mẫu 01 và hiển thị [MSG-SUC-SYS-002]. |
 
 ---
 

@@ -257,7 +257,7 @@
                     <div style="padding: 10px 16px; border-bottom: 1px solid var(--border-color); background-color: #FFFFFF;">
                         <div class="search-box">
                             <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" id="inpSearchPerm" placeholder="Tìm kiếm chức năng trên cây..." onkeyup="filterPermTree(this.value)">
+                            <input type="text" id="inpSearchPerm" placeholder="Nhập tên tính năng" onkeyup="filterPermTree(this.value)">
                         </div>
                     </div>
 
@@ -281,7 +281,7 @@
                         <div class="filter-grid">
                             <div class="filter-field">
                                 <label for="inpFilterUserCode">Mã tài khoản</label>
-                                <input type="text" id="inpFilterUserCode" placeholder="Mã tài khoản (CB0001, KH0001...)">
+                                <input type="text" id="inpFilterUserCode" placeholder="Mã tài khoản...">
                             </div>
                             <div class="filter-field">
                                 <label for="inpFilterUserName">Tên tài khoản</label>
@@ -377,7 +377,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('roleModal')">Hủy</button>
-                <button class="btn btn-primary" onclick="saveRole()"><i class="fa-solid fa-floppy-disk"></i> Lưu lại</button>
+                <button class="btn btn-primary" onclick="saveRole()"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>
             </div>
         </div>
     </div>
@@ -499,7 +499,7 @@
             </div>
             <div class="modal-footer">
                 <button class="btn btn-secondary" onclick="closeModal('assignModal')">Hủy</button>
-                <button class="btn btn-primary" onclick="handleAssignUsers()"><i class="fa-solid fa-user-check"></i> Lưu lại</button>
+                <button class="btn btn-primary" onclick="handleAssignUsers()"><i class="fa-solid fa-user-check"></i> Lưu</button>
             </div>
         </div>
     </div>
@@ -1037,7 +1037,7 @@
             const matchedIds = new Set();
             function searchNodes(nodeList, parentMatched = false) {
                 nodeList.forEach(n => {
-                    const isSelfMatched = n.name.toLowerCase().includes(keyword) || n.id.toLowerCase().includes(keyword);
+                    const isSelfMatched = n.name.toLowerCase().includes(keyword);
                     const isMatched = isSelfMatched || parentMatched;
                     if (isMatched) {
                         matchedIds.add(n.id);

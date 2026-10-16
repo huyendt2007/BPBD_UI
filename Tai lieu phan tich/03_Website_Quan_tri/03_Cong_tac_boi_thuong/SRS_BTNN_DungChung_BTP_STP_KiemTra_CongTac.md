@@ -25,7 +25,7 @@
 
 \- Người dùng đã đăng nhập Website Quản trị và được phân quyền truy cập màn hình `Kiểm tra công tác BTNN`.
 
-\- Cơ quan được kiểm tra và đơn vị của thành viên đoàn kiểm tra chọn trên cây Cơ cấu tổ chức `[DM_DON_VI]` tại [MH01 - Màn hình Tra cứu sơ đồ tổ chức - Quản lý cơ cấu tổ chức (Đơn vị) - Quản trị hệ thống](../01_Quan_tri_he_thong/Co_cau_to_chuc.md#43172-mh01---màn-hình-tra-cứu-sơ-đồ-tổ-chức).
+\- Cơ quan được kiểm tra và đơn vị của thành viên đoàn kiểm tra chọn trên cây Cơ cấu tổ chức `[DM_DON_VI]` tại [MH01 - Màn hình Quản lý cơ cấu tổ chức - Quản lý cơ cấu tổ chức - Quản trị hệ thống](../01_Quan_tri_he_thong/Quan_ly_co_cau_to_chuc.md#cctc-mh01).
 
 \- Cơ quan được kiểm tra chỉ chọn đơn vị cấp dưới thuộc phạm vi quản lý: người dùng Bộ Tư pháp chọn được cơ quan trên toàn quốc; người dùng Sở Tư pháp chọn được cơ quan trên địa bàn Tỉnh/Thành phố, không gồm Ủy ban nhân dân cấp tỉnh. Cơ quan kiểm tra không chọn được chính mình; đơn vị ngoài phạm vi hiển thị mờ trên cây.
 

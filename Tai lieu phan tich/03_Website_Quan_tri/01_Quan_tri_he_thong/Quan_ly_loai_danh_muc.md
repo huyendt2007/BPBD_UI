@@ -5,6 +5,8 @@ Quản lý danh sách các Loại danh mục dùng chung (Master Data Types) tro
 - Tra cứu, tìm kiếm và hiển thị danh sách các Loại danh mục.
 - Khởi tạo mới, cập nhật thông tin và chuyển đổi trạng thái hoạt động (Hoạt động / Ngừng hoạt động) của Loại danh mục.
 - Xóa các Loại danh mục chưa phát sinh dữ liệu danh mục chi tiết liên kết.
+- Cấu hình **Phụ thuộc Loại danh mục**: cho phép chọn Loại danh mục cha mà Loại danh mục hiện tại phụ thuộc vào (ví dụ: Loại danh mục *Chức vụ [DM_58]* phụ thuộc vào Loại danh mục *Loại cơ quan [DM_57]*). Mục đích để cấu hình phân cấp và phục vụ gán giá trị phụ thuộc cho các bản ghi danh mục chi tiết tương ứng tại [Quản lý danh mục dùng chung](Quan_ly_danh_muc.md).
+- Mở / Tắt Phân quyền theo đơn vị cho từng Loại danh mục. Loại danh mục có Phân quyền theo đơn vị = `Mở` thì mỗi giá trị danh mục phải khai báo Đơn vị áp dụng tại [Phân quyền theo đơn vị và Đơn vị áp dụng - Quản lý danh mục dùng chung (Master Data) - Quản trị hệ thống (Website Quản trị)](Quan_ly_danh_muc.md#dm-don-vi-ap-dung).
 
 *a. Phân quyền*
 - Quản trị hệ thống (QTHT).
@@ -19,23 +21,25 @@ Quản lý danh sách các Loại danh mục dùng chung (Master Data Types) tro
 
 ###### 4.3.1.5.2.2.1. Màn hình
 
-![Màn hình Tra cứu loại danh mục](images/UCPS010.MH01.png)
+![Màn hình Tra cứu loại danh mục](images/MH_LoaiDanhMuc_01_Danh_sach.png)
 
 ###### 4.3.1.5.2.2.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | - | - | - | Khối điều kiện tìm kiếm loại danh mục. |
+| **I. Bộ lọc, tìm kiếm** | - | - | - | Khối điều kiện tìm kiếm loại danh mục. |
 | Mã loại danh mục | String(50) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm chính xác hoặc tương đối theo Mã loại danh mục. |
 | Tên loại danh mục | String(255) | Không | Trống | Control UI: Input text.<br>- Tìm kiếm chính xác hoặc tương đối theo Tên loại danh mục. |
 | Trạng thái | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Hoạt động<br>+ Ngừng hoạt động |
-| Tìm kiếm | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại bộ lọc. |
-| Xóa bộ lọc | String(50) | - | - | Control UI: Button.<br>- Luôn hiển thị tại bộ lọc. |
+| Tìm kiếm | String(50) | - | - | Control UI: Button.<br>- Nằm ở sát góc bên phải của vùng tìm kiếm lọc, phía dưới các ô nhập liệu tìm kiếm, không nằm cùng hàng với các trường nhập. |
+| Xóa bộ lọc | String(50) | - | - | Control UI: Button.<br>- Nằm ở sát góc bên phải của vùng tìm kiếm lọc, cạnh nút Tìm kiếm. |
 | **II. Bảng danh sách kết quả** | - | - | 20 bản ghi/trang | Control UI: Bảng/Lưới dữ liệu.<br>- Mặc định khi truy cập màn hình: Hiển thị toàn bộ danh sách các Loại danh mục trong hệ thống.<br>- Quy tắc sắp xếp mặc định: Sắp xếp theo Mã loại danh mục tăng dần. Hỗ trợ sắp xếp động (Sortable) khi click vào tiêu đề các cột.<br>- Cho phép chọn 10, 20, 50, 100 bản ghi/trang, mặc định 20.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
 | STT | Integer(10) | - | - | Control UI: Text hiển thị (Read-only). |
 | Mã loại danh mục | String(50) | - | - | Control UI: Text hiển thị (Read-only). |
 | Tên loại danh mục | String(255) | - | - | Control UI: Text hiển thị (Read-only). |
 | Mô tả | String(1000) | - | - | Control UI: Text hiển thị (Read-only). |
+| Phụ thuộc Loại danh mục | String(255) | - | - | Control UI: Text hiển thị (Read-only).<br>- Tên và Mã loại danh mục cha mà loại danh mục này phụ thuộc vào.<br>- Hiển thị 2 dòng: Dòng 1 Tên loại danh mục cha; Dòng 2 Mã loại danh mục cha (màu nhạt).<br>- Hiển thị `-` nếu là loại danh mục độc lập (không phụ thuộc loại cha nào). |
+| Phân quyền theo đơn vị | Enum(String(10)) | - | - | Control UI: Text hiển thị (Read-only).<br>Gồm:<br>+ Có<br>+ Không |
 | Trạng thái | Enum(String(50)) | - | - | Control UI: Badge/Tag hiển thị. |
 | Thao tác | String(255) | - | - | Control UI: Nhóm icon thao tác.<br>- Xem chi tiết<br>- Sửa<br>- Xóa |
 
@@ -57,7 +61,7 @@ Quản lý danh sách các Loại danh mục dùng chung (Master Data Types) tro
 
 ###### 4.3.1.5.2.3.1. Màn hình
 
-![Popup Thêm mới / Cập nhật Loại danh mục](images/UCPS010.MH02.png)
+![Popup Thêm mới / Cập nhật Loại danh mục](images/MH_LoaiDanhMuc_02_Them_sua.png)
 
 ###### 4.3.1.5.2.3.2. Mô tả thông tin trên màn hình
 
@@ -66,6 +70,8 @@ Quản lý danh sách các Loại danh mục dùng chung (Master Data Types) tro
 | Mã loại danh mục | String(50) | Không (Thêm mới) / Có (Cập nhật) | Trống (Thêm mới) / Theo bản ghi (Cập nhật) | Control UI: Input text / Read-only.<br>- Thêm mới: Người dùng tự nhập hoặc hệ thống tự động sinh mã duy nhất (định dạng `LDM_xxxx`) nếu để trống.<br>- Cập nhật: Khóa chỉ đọc (Read-only), không cho phép chỉnh sửa. |
 | Tên loại danh mục | String(255) | Có | Trống (Thêm mới) / Theo bản ghi (Cập nhật) | Control UI: Input text.<br>- Nhập tên loại danh mục.<br>- Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
 | Mô tả | Text(2000) | Không | Trống (Thêm mới) / Theo bản ghi (Cập nhật) | Control UI: Textarea.<br>- Nhập thông tin mô tả chi tiết nếu có. |
+| Phụ thuộc Loại danh mục | Enum(String(50)) | Không | Trống (Không phụ thuộc) | Control UI: Combobox.<br>- Cho phép chọn Loại danh mục cha mà Loại danh mục này phụ thuộc vào.<br>- Danh sách lựa chọn gồm: `-- Không phụ thuộc (Danh mục độc lập) --` và các Loại danh mục đang hoạt động trong hệ thống (loại trừ chính bản ghi đang cập nhật).<br>- Dòng hướng dẫn: "Chọn loại danh mục cha nếu loại danh mục này có các giá trị phụ thuộc theo danh mục cha (ví dụ: Chức vụ phụ thuộc Loại cơ quan)." |
+| Phân quyền theo đơn vị | Boolean | Không | Không (Thêm mới) / Theo bản ghi (Cập nhật) | Control UI: Toggle (Switch), bên phải hiển thị nhãn trạng thái hiện tại "Có" hoặc "Không".<br>- Click Toggle để chuyển giữa "Có" và "Không".<br>- "Có": mỗi giá trị của Loại danh mục phải khai báo Đơn vị áp dụng; chỉ người dùng thuộc đơn vị áp dụng mới thấy giá trị tại các ô chọn và bộ lọc.<br>- "Không": giá trị của Loại danh mục không có trường Đơn vị áp dụng và không bị giới hạn theo đơn vị.<br>- Dòng hướng dẫn: "Có: mỗi giá trị của loại danh mục phải chọn Đơn vị áp dụng; chỉ người dùng thuộc đơn vị áp dụng mới thấy giá trị tại các ô chọn và bộ lọc."<br>- Quy tắc chi tiết tại [Phân quyền theo đơn vị và Đơn vị áp dụng - Quản lý danh mục dùng chung (Master Data) - Quản trị hệ thống (Website Quản trị)](Quan_ly_danh_muc.md#dm-don-vi-ap-dung). |
 | Trạng thái | Enum(String(50)) | Có | Hoạt động (Thêm mới) / Theo bản ghi (Cập nhật) | Control UI: Combobox / Radio.<br>Gồm:<br>+ Hoạt động<br>+ Ngừng hoạt động |
 
 ###### 4.3.1.5.2.3.3. Chức năng trên màn hình
@@ -81,7 +87,7 @@ Quản lý danh sách các Loại danh mục dùng chung (Master Data Types) tro
 
 ###### 4.3.1.5.2.4.1. Màn hình
 
-![Popup Xem chi tiết Loại danh mục](images/UCPS010.MH03.png)
+![Popup Xem chi tiết Loại danh mục](images/MH_LoaiDanhMuc_03_Xem_chi_tiet.png)
 
 ###### 4.3.1.5.2.4.2. Mô tả thông tin trên màn hình
 
@@ -91,6 +97,8 @@ Quản lý danh sách các Loại danh mục dùng chung (Master Data Types) tro
 | Mã loại danh mục | String(50) | - | Theo thông tin bản ghi | Chỉ đọc. |
 | Tên loại danh mục | String(255) | - | Theo thông tin bản ghi | Chỉ đọc. |
 | Mô tả | Text(2000) | - | Theo thông tin bản ghi | Chỉ đọc. |
+| Phụ thuộc Loại danh mục | String(255) | - | Theo thông tin bản ghi | Chỉ đọc. Hiển thị `[Tên loại danh mục cha] ([Mã loại danh mục cha])` hoặc `Không (Danh mục độc lập)`. |
+| Phân quyền theo đơn vị | String(10) | - | Theo thông tin bản ghi | Chỉ đọc. Hiển thị "Có" hoặc "Không". |
 | Trạng thái | String(50) | - | Theo thông tin bản ghi | Chỉ đọc. |
 
 ###### 4.3.1.5.2.4.3. Chức năng trên màn hình
@@ -99,4 +107,5 @@ Quản lý danh sách các Loại danh mục dùng chung (Master Data Types) tro
 | :--- | :--- | :--- | :--- |
 | 1 | Đóng | Button / Icon | Đóng Popup Modal Xem chi tiết và quay lại màn hình chính MH01. |
 | 2 | Cập nhật | Button | Chuyển trực tiếp từ Popup Xem chi tiết sang Popup Thêm mới / Cập nhật Loại danh mục (MH02) ở chế độ Chỉnh sửa dữ liệu của bản ghi hiện tại. |
+
 

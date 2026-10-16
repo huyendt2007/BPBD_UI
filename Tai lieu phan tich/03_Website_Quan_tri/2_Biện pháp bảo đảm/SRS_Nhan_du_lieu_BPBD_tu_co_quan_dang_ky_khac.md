@@ -378,7 +378,7 @@
 
 ##### 4.3.2.25.7.2. Mô tả thông tin trên màn hình
 
-\- Cấu hình thực hiện theo [BR-NDL-011]. Nguồn đơn vị: Quản trị hệ thống > Quản lý đơn vị (chỉ đơn vị trạng thái "Hoạt động"), chi tiết tại [Mục đích - Quản lý cơ cấu tổ chức (Đơn vị) - Module Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Co_cau_to_chuc.md).
+\- Cấu hình thực hiện theo [BR-NDL-011]. Nguồn đơn vị: Quản trị hệ thống > Quản lý đơn vị (chỉ đơn vị trạng thái "Hoạt động"), chi tiết tại [Mục đích - Quản lý cơ cấu tổ chức - Module Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Quan_ly_co_cau_to_chuc.md).
 
 \- Dữ liệu lưu: Mỗi dòng cấu hình gồm Loại tài sản, Mã đơn vị (lưu theo Mã đơn vị; hiển thị Tên đơn vị hiện hành).
 

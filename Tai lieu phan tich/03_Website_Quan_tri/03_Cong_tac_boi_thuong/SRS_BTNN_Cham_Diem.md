@@ -243,7 +243,7 @@ Nguồn UI: `modalInitiative` trong `quan_ly_cham_diem_btnn.html`.
 | 1 | Chọn tệp Quyết định | Button | Hệ thống cho phép chọn tệp quyết định công nhận đính kèm và hiển thị tên tệp trong danh sách tệp đã chọn. |
 | 2 | Xóa | Link | Hệ thống xóa tệp quyết định công nhận khỏi danh sách tệp đã chọn trên popup. |
 | 3 | Hủy | Button | Hệ thống đóng popup và không lưu thông tin sáng kiến/giải pháp đang nhập. |
-| 4 | Lưu lại | Button | TH1 (Bỏ trống trường bắt buộc): Vi phạm quy tắc [BR-VAL-001]. Hệ thống hiển thị [MSG-ERR-BTNN-CD-011] và không lưu sáng kiến/giải pháp. |
+| 4 | Lưu | Button | TH1 (Bỏ trống trường bắt buộc): Vi phạm quy tắc [BR-VAL-001]. Hệ thống hiển thị [MSG-ERR-BTNN-CD-011] và không lưu sáng kiến/giải pháp. |
 |  |  |  | TH Hợp lệ: Hệ thống thêm sáng kiến/giải pháp vào bảng điểm thưởng, cộng 5 điểm/sáng kiến theo [BR-BTNN-CD-004], đóng popup và hiển thị [MSG-SUC-BTNN-CD-012]. |
 
 ---
