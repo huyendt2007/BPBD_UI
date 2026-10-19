@@ -31,7 +31,7 @@
 ### 4. Quy tắc ghép địa chỉ người yêu cầu bồi thường (Địa chỉ chi tiết)
 - **Áp dụng cho**: Biến `##DiaChiNguoiYeuCauBoiThuong##` (và các trường địa chỉ cá nhân khác như `##DiaChiNguoiBiThietHai##`, `##DiaChiNguoiNhanTien##`...).
 - **Mô tả trường**: Địa chỉ của người yêu cầu bồi thường.
-- **Nguồn dữ liệu trên Form**: Ghép 4 trường: `Địa chỉ chi tiết`, `Phường/Xã`, `Tỉnh/Thành phố`, `Quốc gia` ở trên Form chức năng tương ứng (ví dụ: đối với Biểu mẫu 02 là các trường thông tin địa chỉ tại màn hình *Tiếp nhận hồ sơ yêu cầu bồi thường*; đối với Mẫu 03, 04... là các trường tương ứng tại màn hình *Thụ lý hồ sơ* hoặc *Thông tin hồ sơ yêu cầu bồi thường*).
+- **Nguồn dữ liệu trên Form**: Ghép 4 trường: `Địa chỉ chi tiết`, `Phường/Xã`, `Tỉnh/Thành phố`, `Quốc gia` ở trên Form chức năng tương ứng (ví dụ: đối với Biểu mẫu 02 là các trường thông tin địa chỉ tại màn hình *Tiếp nhận hồ sơ*; đối với Mẫu 03, 04... là các trường tương ứng tại màn hình *Thụ lý hồ sơ* hoặc *Thông tin hồ sơ yêu cầu bồi thường*).
 - **Quy tắc ghép chuỗi tự động**:
   1. Ghép tuần tự: `[Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố]` (cách nhau bởi dấu phẩy và khoảng trắng `, `).
   2. Tự động bỏ qua các thành phần bỏ trống hoặc không có dữ liệu (không để lại dấu phẩy thừa).
@@ -40,7 +40,7 @@
 ### 5. Quy tắc số điện thoại liên hệ người yêu cầu bồi thường
 - **Áp dụng cho**: Biến `##SoDienThoaiNguoiYeuCau##`.
 - **Mô tả trường**: Số điện thoại liên hệ của người yêu cầu bồi thường.
-- **Nguồn dữ liệu trên Form**: Lấy từ trường **"Số điện thoại liên hệ"** của người yêu cầu trên form tương ứng (ví dụ: màn hình *Tiếp nhận hồ sơ yêu cầu bồi thường* đối với Mẫu 02).
+- **Nguồn dữ liệu trên Form**: Lấy từ trường **"Số điện thoại"** của người yêu cầu trên form tương ứng (ví dụ: màn hình *Tiếp nhận hồ sơ* đối với Mẫu 02).
 - **Quy tắc định dạng**: Định dạng số điện thoại chuẩn Việt Nam (chuỗi số, tự động loại bỏ khoảng trắng thừa).
 
 ---
@@ -86,20 +86,20 @@
 ### 1. MẪU SỐ 02/BTNN: GIẤY TIẾP NHẬN YÊU CẦU BỒI THƯỜNG
 - **Tên tệp template**: `Mau_02_BTNN_Template.docx`
 - **Mục đích**: Cơ quan giải quyết bồi thường lập và giao/gửi cho người yêu cầu bồi thường để xác nhận thời điểm và thành phần hồ sơ đã tiếp nhận.
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Tiếp nhận hồ sơ yêu cầu bồi thường > Chi tiết hồ sơ tiếp nhận > Thao tác "In Giấy tiếp nhận"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Tiếp nhận hồ sơ > Chi tiết hồ sơ tiếp nhận (hoặc Danh sách hồ sơ / Tiếp nhận hồ sơ) > Thao tác "In Phiếu tiếp nhận"*.
 - **Quy tắc đặt tên file tải về**: `Mau_02_BTNN_Giay_tiep_nhan_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 02/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
 |:---:|---|---|---|---|---|---|
-| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Tiếp nhận hồ sơ yêu cầu bồi thường > Form In Giấy tiếp nhận | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `02/GTN-STP` |
-| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Tiếp nhận hồ sơ yêu cầu bồi thường > Form In Giấy tiếp nhận | Ngày lập giấy tiếp nhận | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 10 tháng 03 năm 2026` |
-| 3 | Kính gửi | `##TenNguoiYeuCauBoiThuong##` | Tiếp nhận hồ sơ yêu cầu bồi thường | Họ và tên người yêu cầu bồi thường | Giữ nguyên chữ in hoa/thường theo hồ sơ | `Nguyễn Văn Nam` |
-| 4 | Dưới Kính gửi | `##DiaChiNguoiYeuCauBoiThuong##` | Tiếp nhận hồ sơ yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Địa chỉ của người yêu cầu bồi thường: Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng ", ". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Số 12 phố Hàng Bông, Phường Hàng Gai, Quận Hoàn Kiếm, TP. Hà Nội` |
-| 5 | Dưới Địa chỉ | `##SoDienThoaiNguoiYeuCau##` | Tiếp nhận hồ sơ yêu cầu bồi thường | Số điện thoại liên hệ | Số điện thoại liên hệ của người yêu cầu bồi thường. Lấy từ trường Số điện thoại liên hệ của người yêu cầu trên form. Định dạng số điện thoại chuẩn. | `0912345678` |
-| 6 | Đoạn 1 | `##NgayTiepNhan##` | Tiếp nhận hồ sơ yêu cầu bồi thường | Thời điểm tiếp nhận hồ sơ | Định dạng: `ngày dd tháng mm năm yyyy` | `ngày 10 tháng 03 năm 2026` |
-| 7 | Đoạn 1 | `##HinhThucNopHoSo##` | Tiếp nhận hồ sơ yêu cầu bồi thường | Hình thức nộp hồ sơ | Control UI: Combobox.<br>Gồm:<br>+ trực tiếp<br>+ qua dịch vụ bưu chính | Chuyển đổi giá trị hiển thị chữ thường phù hợp ngữ cảnh câu | `trực tiếp` hoặc `qua dịch vụ bưu chính` |
-| 8 | Đoạn 2 | `##DanhSachGiayToTiepNhan##` | Tiếp nhận hồ sơ yêu cầu bồi thường > Bảng tài liệu đính kèm | Danh sách tài liệu đính kèm | Đánh số thứ tự từng dòng dạng:<br>`- 1. [Tên tài liệu] (Bản chính/Bản sao)` | `- 1. Đơn yêu cầu bồi thường (Bản chính)<br>- 2. Bản án phúc thẩm số 12/2025/HSPT (Bản sao chứng thực)` |
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Tiếp nhận hồ sơ > Form In Phiếu tiếp nhận | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `02/GTN-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Tiếp nhận hồ sơ > Form In Phiếu tiếp nhận | Ngày lập phiếu tiếp nhận | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 10 tháng 03 năm 2026` |
+| 3 | Kính gửi | `##TenNguoiYeuCauBoiThuong##` | Tiếp nhận hồ sơ | Họ và tên người yêu cầu | Giữ nguyên chữ in hoa/thường theo hồ sơ | `Nguyễn Văn Nam` |
+| 4 | Dưới Kính gửi | `##DiaChiNguoiYeuCauBoiThuong##` | Tiếp nhận hồ sơ | Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Địa chỉ của người yêu cầu bồi thường: Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng ", ". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Số 12 phố Hàng Bông, Phường Hàng Gai, Quận Hoàn Kiếm, TP. Hà Nội` |
+| 5 | Dưới Địa chỉ | `##SoDienThoaiNguoiYeuCau##` | Tiếp nhận hồ sơ | Số điện thoại | Số điện thoại liên hệ của người yêu cầu bồi thường. Lấy từ trường Số điện thoại của người yêu cầu trên màn hình Tiếp nhận hồ sơ. Định dạng số điện thoại chuẩn. | `0912345678` |
+| 6 | Đoạn 1 | `##NgayTiepNhan##` | Tiếp nhận hồ sơ | Thời điểm tiếp nhận | Định dạng: `ngày dd tháng mm năm yyyy` | `ngày 10 tháng 03 năm 2026` |
+| 7 | Đoạn 1 | `##HinhThucNopHoSo##` | Tiếp nhận hồ sơ | Hình thức nộp hồ sơ | Lấy theo đúng giá trị của trường Hình thức nộp hồ sơ (hoặc Hình thức tiếp nhận) trên màn hình Tiếp nhận hồ sơ trong tài liệu (gồm "Trực tiếp" hoặc "Qua dịch vụ bưu chính"). Khi đưa vào biểu mẫu văn bản, hiển thị chữ thường: `trực tiếp` hoặc `qua dịch vụ bưu chính` | `trực tiếp` hoặc `qua dịch vụ bưu chính` |
+| 8 | Đoạn 2 | `##DanhSachGiayToTiepNhan##` | Tiếp nhận hồ sơ | Tên văn bản, căn cứ & Tên tài liệu | Lấy danh sách tài liệu từ cả 2 phần trên màn hình Tiếp nhận hồ sơ:<br>+ Phần **Văn bản làm căn cứ yêu cầu bồi thường**: Lấy theo trường `Tên văn bản, căn cứ`.<br>+ Phần **Bảng tài liệu đính kèm**: Lấy theo trường `Tên tài liệu`.<br>Tự động đánh số thứ tự liên tục từng dòng dạng:<br>`- 1. [Tên văn bản, căn cứ / Tên tài liệu]` | `- 1. Bản án hình sự phúc thẩm số 18/2025/HSPT<br>- 2. Đơn yêu cầu bồi thường<br>- 3. Giấy chứng nhận thương tật` |
 
 ---
 
