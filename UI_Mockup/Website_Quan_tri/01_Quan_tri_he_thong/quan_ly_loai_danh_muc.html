@@ -757,8 +757,9 @@
             { code: "DM_19", name: "Danh mục Căn cứ xóa đăng ký", parentTypeCode: "", status: "Hoạt động" },
             { code: "DM_20", name: "Danh mục Căn cứ hủy đăng ký", parentTypeCode: "", status: "Hoạt động" },
             { code: "DM_21", name: "Loại văn bản quy phạm pháp luật", parentTypeCode: "", status: "Hoạt động" },
+            { code: "DM_25", name: "Hình thức tiếp nhận", description: "Dùng cho phân hệ Bồi thường nhà nước", parentTypeCode: "", status: "Hoạt động" },
             { code: "DM_26", name: "Tư cách người yêu cầu bồi thường", parentTypeCode: "", status: "Hoạt động" },
-            { code: "DM_54", name: "Loại yêu cầu", parentTypeCode: "", status: "Hoạt động", phanQuyenDonVi: true },
+            { code: "DM_54", name: "Loại hồ sơ", parentTypeCode: "", status: "Hoạt động", phanQuyenDonVi: true },
             { code: "DM_55", name: "Lý do không thụ lý hồ sơ yêu cầu bồi thường", parentTypeCode: "", status: "Hoạt động" },
             { code: "DM_56", name: "Loại CSDL nguồn", parentTypeCode: "", status: "Hoạt động" },
             { code: "DM_57", name: "Loại cơ quan", parentTypeCode: "", status: "Hoạt động" },
@@ -905,6 +906,11 @@
             { typeCode: "DM_21", code: "VB_06", name: "Chỉ thị", nameEn: "Directive", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             { typeCode: "DM_21", code: "VB_07", name: "Thông tư liên tịch", nameEn: "Joint Circular", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             { typeCode: "DM_21", code: "VB_08", name: "Khác", nameEn: "Other", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            // DM_25 (Hình thức tiếp nhận) - Danh mục dùng chung phân hệ Bồi thường nhà nước
+            { typeCode: "DM_25", code: "HTTN_01", name: "Qua môi trường số (Dịch vụ Công)", nameEn: "Via digital environment (Public Service Portal)", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_25", code: "HTTN_02", name: "Trực tiếp", nameEn: "In person", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_25", code: "HTTN_03", name: "Bộ phận Một cửa", nameEn: "One-stop shop", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_25", code: "HTTN_04", name: "Qua dịch vụ bưu chính", nameEn: "Via postal service", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             // DM_26 (Tư cách người yêu cầu bồi thường) - Căn cứ Điều 5 Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14
             { typeCode: "DM_26", code: "TCNYC_01", name: "Người bị thiệt hại", nameEn: "Aggrieved person", val: "", valEn: "", parentCode: "", notes: "Người trực tiếp bị thiệt hại do người thi hành công vụ gây ra", status: "Hoạt động" },
             { typeCode: "DM_26", code: "TCNYC_02", name: "Người thừa kế của người bị thiệt hại", nameEn: "Heir of the aggrieved person", val: "", valEn: "", parentCode: "", notes: "Trường hợp người bị thiệt hại chết thì người thừa kế của họ có quyền yêu cầu bồi thường", status: "Hoạt động" },
@@ -943,9 +949,9 @@
             // Bổ sung các loại danh mục mới vào localStorage nếu chưa có
             const savedTypes = JSON.parse(localStorage.getItem('categoryTypes')) || [];
             DEFAULT_TYPES.filter(d => !savedTypes.some(s => s.code === d.code)).forEach(d => savedTypes.push(d));
-            // Danh mục Loại cơ quan (DM_57), Chức vụ (DM_58): đổi tên loại danh mục cho dữ liệu đã lưu
-            savedTypes.forEach(t => { if (t.code === 'DM_57') t.name = 'Loại cơ quan'; if (t.code === 'DM_58') t.name = 'Chức vụ'; });
-            // Phân quyền theo đơn vị: Loại yêu cầu (DM_54) mặc định Mở
+            // Danh mục Loại hồ sơ (DM_54), Loại cơ quan (DM_57), Chức vụ (DM_58): đổi tên loại danh mục cho dữ liệu đã lưu
+            savedTypes.forEach(t => { if (t.code === 'DM_54' && t.name === 'Loại yêu cầu') t.name = 'Loại hồ sơ'; if (t.code === 'DM_57') t.name = 'Loại cơ quan'; if (t.code === 'DM_58') t.name = 'Chức vụ'; });
+            // Phân quyền theo đơn vị: Loại hồ sơ (DM_54) mặc định Mở
             savedTypes.forEach(t => { if (t.phanQuyenDonVi === undefined) t.phanQuyenDonVi = t.code === 'DM_54'; });
             // Phụ thuộc Loại danh mục: Chức vụ (DM_58) phụ thuộc Loại cơ quan (DM_57)
             savedTypes.forEach(t => {

@@ -793,7 +793,6 @@ body {
 .authority-tag { display: inline-block; font-size: 11px; font-weight: 600; border-radius: 999px; padding: 1px 8px; margin-left: 6px; white-space: nowrap; }
 .authority-tag.btp { background: #dbeafe; color: #1d4ed8; }
 .authority-tag.stp { background: #dcfce7; color: #15803d; }
-.authority-tag.ubnd { background: #fef3c7; color: #b45309; }
 #requestsTable td .authority-tag { margin-left: 0; margin-top: 4px; }
 .icon-btn.is-disabled, .icon-btn:disabled { opacity: .3; cursor: not-allowed; pointer-events: auto; filter: grayscale(1); }
 .icon-btn.is-disabled:hover, .icon-btn:disabled:hover { background: transparent; transform: none; }

@@ -87,7 +87,7 @@
                     <select id="fWork" class="form-control" onchange="renderAll()"></select>
                 </div>
                 <div class="form-group">
-                    <span class="form-label">Loại yêu cầu</span>
+                    <span class="form-label">Loại hồ sơ</span>
                     <select id="fType" class="form-control"></select>
                 </div>
                 <div class="form-group">
@@ -309,6 +309,12 @@
         WORK_STYLE[WT.KY_KP] = ['#fee2e2', '#b91c1c', 'fa-money-check-dollar'];
 
         function esc(v) { return WF.esc(v); }
+        // Nguồn hồ sơ: chuẩn hóa dữ liệu cũ về 04 giá trị của SOURCES
+        function sourceText(v) {
+            v = String(v || '').trim();
+            if (Object.values(WF.SOURCES).includes(v)) return v;
+            return /quốc gia|dịch vụ công|dvc/i.test(v) ? WF.SOURCES.DVC : WF.SOURCES.TIEP_NHAN;
+        }
         function norm(v) { return String(v || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase().trim(); }
         function workBadge(type) {
             const s = WORK_STYLE[type] || ['#e2e8f0', '#334155', 'fa-circle'];
@@ -471,8 +477,9 @@
             }
             const rec = t.rec;
             html += `<div class="sec-title">III. Tóm tắt hồ sơ vụ việc</div><div class="info-grid">
-                ${row('Mã vụ việc', `<strong style="color:var(--primary-light);">${esc(t.caseCode)}</strong>`)}
-                ${row('Loại yêu cầu', esc(t.loaiYeuCau) + (t.nguonHoSo ? ` <span class="muted">(Nguồn: ${esc(t.nguonHoSo)})</span>` : ''))}
+                ${row('Mã vụ việc', `<strong style="color:var(--primary-light);">${esc((rec && rec.maVuViec) || t.caseCode)}</strong>`)}
+                ${row('Loại hồ sơ', esc(t.loaiYeuCau))}
+                ${rec ? row('Nguồn hồ sơ', esc(sourceText(rec.nguonHoSo))) : ''}
                 ${row('Họ và tên người yêu cầu', `<strong>${esc(t.nycName || '--')}</strong>`)}
                 ${rec ? row('Hành vi gây thiệt hại', esc(rec.hanhVi || '--')) : ''}
                 ${rec ? row('Cán bộ chủ trì', rec.chuTri ? esc(WF.userLabel(rec.chuTri)) : '<span class="muted">Chưa phân công</span>') : ''}
@@ -534,7 +541,7 @@
             if (!WF.canAssign(rec, me)) { showToast('Hồ sơ đã được xử lý bởi người khác. Danh sách đã được tải lại.', 'error'); renderAll(); return; }
             if (WF.markViewed(rec, me)) WF.upsertRecord(rec);
             actingCode = code;
-            const node = WF.getNodeConfig(rec.currentUnitId) || {};
+            const node = WF.getNodeConfig(rec.currentUnitId, WF.flowTypeOf(rec)) || {};
             document.getElementById('aCode').textContent = code;
             document.getElementById('aContext').textContent = `Đơn vị đang phân công: ${WF.unitName(rec.currentUnitId)} - Người yêu cầu: ${rec.nycName || '--'}`;
             const modes = [];
@@ -556,7 +563,7 @@
         }
         function renderPhoiHop() {
             const rec = WF.getRecord(actingCode);
-            const node = (rec && WF.getNodeConfig(rec.currentUnitId)) || {};
+            const node = (rec && WF.getNodeConfig(rec.currentUnitId, WF.flowTypeOf(rec))) || {};
             const chuTri = document.getElementById('aChuTri').value;
             const list = (node.officers || []).filter(u => u !== chuTri);
             document.getElementById('aPhoiHop').innerHTML = list.map(u => `<label><input type="checkbox" value="${esc(u)}"> ${esc(WF.userLabel(u))}</label>`).join('') || '<span class="muted">Không có cán bộ khác.</span>';

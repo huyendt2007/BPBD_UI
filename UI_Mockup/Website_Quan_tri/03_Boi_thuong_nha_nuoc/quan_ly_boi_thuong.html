@@ -1557,10 +1557,20 @@
                         <span class="form-label">Nguồn hồ sơ</span>
                         <select class="form-control" id="searchNguonHoSo">
                             <option value="">Tất cả</option>
+                            <option value="Tiếp nhận mới">Tiếp nhận mới</option>
+                            <option value="Dịch vụ công quốc gia">Dịch vụ công quốc gia</option>
+                            <option value="Chuyển CQGQBT">Chuyển CQGQBT</option>
                             <option value="Xác định CQGQBT">Xác định CQGQBT</option>
-                            <option value="Dịch vụ công">Dịch vụ công</option>
+                        </select>
+                    </div>
+                    <div>
+                        <span class="form-label">Hình thức tiếp nhận</span>
+                        <select class="form-control" id="searchHinhThucTiepNhan">
+                            <option value="">Tất cả</option>
+                            <option value="Qua môi trường số (Dịch vụ Công)">Qua môi trường số (Dịch vụ Công)</option>
                             <option value="Trực tiếp">Trực tiếp</option>
-                            <option value="Nhận qua bưu điện/bưu chính">Nhận qua bưu điện/bưu chính</option>
+                            <option value="Bộ phận Một cửa">Bộ phận Một cửa</option>
+                            <option value="Qua dịch vụ bưu chính">Qua dịch vụ bưu chính</option>
                         </select>
                     </div>
                     <div id="searchApprovalKindGroup" style="display: none;">
@@ -1808,15 +1818,18 @@
                 </div>
                 <!-- Khối "Tình trạng pháp lý" và thông tin bản án đã bỏ khỏi form nhập liệu: vụ việc do tòa án thụ lý được khai báo tại chức năng "Theo dõi vụ việc tại Tòa án" -->
 
-                <div class="grid-2" style="margin-bottom: 16px;">
+                <div class="grid-3-cols" style="margin-bottom: 16px;">
                     <div class="form-group">
                         <span class="form-label">Nguồn hồ sơ</span>
-                        <!-- Cán bộ chỉ được chọn 3 giá trị; "Xác định CQGQBT" do hệ thống gán và hiển thị chỉ đọc -->
-                        <select class="form-control" id="claimNguonHoSo">
+                        <!-- Chỉ đọc: tạo trực tiếp gán "Tiếp nhận mới"; hồ sơ đến từ Tiếp nhận hồ sơ giữ nguyên giá trị đã có -->
+                        <input type="text" class="form-control" id="claimNguonHoSo" value="Tiếp nhận mới" disabled>
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label">Hình thức tiếp nhận <span class="required">*</span></span>
+                        <!-- Danh mục DM_25. Tạo trực tiếp: chọn Trực tiếp / Qua dịch vụ bưu chính; hồ sơ đến từ Tiếp nhận hồ sơ hiển thị chỉ đọc -->
+                        <select class="form-control" id="claimHinhThucTiepNhan">
                             <option value="Trực tiếp">Trực tiếp</option>
-                            <option value="Nhận qua bưu điện/bưu chính">Nhận qua bưu điện/bưu chính</option>
-                            <option value="Dịch vụ công">Dịch vụ công</option>
-                            <option value="Xác định CQGQBT" id="claimNguonHoSoXdOption" hidden>Xác định CQGQBT</option>
+                            <option value="Qua dịch vụ bưu chính">Qua dịch vụ bưu chính</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -6000,7 +6013,7 @@
                 hanhVi: "Bán đấu giá tài sản kê biên trái quy định.",
                 nhanQua: "Mất tài sản sản xuất kinh doanh gây ngừng trệ nhà xưởng.",
                 status: "Hoàn thành",
-                nopKenh: "Tiếp nhận trực tiếp",
+                nguonHoSo: "Tiếp nhận mới", hinhThucTiepNhan: "Trực tiếp",
                 thulyVenue: "cơ quan quản lý",
                 totalNum: 850000000,
                 advanceNum: 100000000,
@@ -6435,7 +6448,7 @@
                 restoreHonor: false,
                 agency: "UBND Quận Cầu Giấy",
                 deadline: "12/10/2026",
-                nguonHoSo: "Dịch vụ công",
+                nguonHoSo: "Dịch vụ công quốc gia", hinhThucTiepNhan: "Qua môi trường số (Dịch vụ Công)",
                 files: [{ name: "Don_yeu_cau_boi_thuong_KT1.pdf", url: "#" }],
                 timeline: [
                     { title: "Nộp hồ sơ bồi thường", date: "28/09/2026", desc: "Hồ sơ tiếp nhận trực tuyến qua cổng dịch vụ công.", status: "completed" },
@@ -6469,7 +6482,7 @@
                 restoreHonor: true,
                 agency: "Công an Quận Hoàng Mai",
                 deadline: "14/10/2026",
-                nguonHoSo: "Tiếp nhận trực tiếp",
+                nguonHoSo: "Tiếp nhận mới", hinhThucTiepNhan: "Trực tiếp",
                 files: [{ name: "Don_yeu_cau_boi_thuong_KT2.pdf", url: "#" }],
                 timeline: [
                     { title: "Nộp hồ sơ bồi thường", date: "30/09/2026", desc: "Hồ sơ tiếp nhận trực tiếp tại bộ phận một cửa.", status: "completed" },
@@ -6503,10 +6516,10 @@
                 restoreHonor: false,
                 agency: "Chi cục Thi hành án dân sự Thanh Trì",
                 deadline: "15/10/2026",
-                nguonHoSo: "Nhận qua bưu điện/Bưu chính",
+                nguonHoSo: "Tiếp nhận mới", hinhThucTiepNhan: "Qua dịch vụ bưu chính",
                 files: [{ name: "Don_yeu_cau_boi_thuong_KT3.pdf", url: "#" }],
                 timeline: [
-                    { title: "Nộp hồ sơ bồi thường", date: "01/10/2026", desc: "Hồ sơ tiếp nhận qua bưu điện/bưu chính.", status: "completed" },
+                    { title: "Nộp hồ sơ bồi thường", date: "01/10/2026", desc: "Hồ sơ tiếp nhận qua dịch vụ bưu chính.", status: "completed" },
                     { title: "Tiếp nhận hồ sơ vụ việc", date: "05/10/2026", desc: "Cán bộ đã tiếp nhận hồ sơ, chuyển sang bước thụ lý.", status: "active" }
                 ],
                 thietHaiList: [
@@ -6537,7 +6550,7 @@
                 restoreHonor: false,
                 agency: "Sở Tư pháp TP. Hà Nội",
                 deadline: "18/10/2026",
-                nguonHoSo: "Dịch vụ công",
+                nguonHoSo: "Dịch vụ công quốc gia", hinhThucTiepNhan: "Qua môi trường số (Dịch vụ Công)",
                 files: [{ name: "Don_yeu_cau_boi_thuong_TT4.pdf", url: "#" }, { name: "Ket_luan_to_cao_102.pdf", url: "#" }],
                 timeline: [
                     { title: "Nộp hồ sơ bồi thường", date: "03/10/2026", desc: "Hồ sơ tiếp nhận trực tuyến qua cổng dịch vụ công.", status: "completed" },
@@ -6570,7 +6583,7 @@
                 restoreHonor: false,
                 agency: "UBND Quận Cầu Giấy",
                 deadline: "17/10/2026",
-                nguonHoSo: "Tiếp nhận trực tiếp",
+                nguonHoSo: "Tiếp nhận mới", hinhThucTiepNhan: "Trực tiếp",
                 files: [{ name: "Don_yeu_cau_boi_thuong_TT5.pdf", url: "#" }, { name: "Quyet_dinh_huy_thu_hoi_GPKD.pdf", url: "#" }],
                 timeline: [
                     { title: "Nộp hồ sơ bồi thường", date: "02/10/2026", desc: "Hồ sơ tiếp nhận trực tiếp tại bộ phận một cửa.", status: "completed" },
@@ -6612,7 +6625,7 @@
                 restoreHonor: false,
                 agency: "UBND Quận Hoàng Mai",
                 deadline: "16/10/2026",
-                nguonHoSo: "Dịch vụ công",
+                nguonHoSo: "Dịch vụ công quốc gia", hinhThucTiepNhan: "Qua môi trường số (Dịch vụ Công)",
                 files: [{ name: "Don_yeu_cau_boi_thuong_TT6.pdf", url: "#" }, { name: "Bien_ban_giai_quyet_khieu_nai.pdf", url: "#" }],
                 timeline: [
                     { title: "Nộp hồ sơ bồi thường", date: "01/10/2026", desc: "Hồ sơ tiếp nhận trực tuyến qua cổng dịch vụ công.", status: "completed" },
@@ -6647,10 +6660,10 @@
                 slaText: "Đã tiếp nhận, chờ Thủ trưởng phê duyệt thụ lý",
                 agency: "Công an Quận Thanh Xuân",
                 deadline: "15/10/2026",
-                nguonHoSo: "Nhận qua bưu điện/Bưu chính",
+                nguonHoSo: "Tiếp nhận mới", hinhThucTiepNhan: "Qua dịch vụ bưu chính",
                 files: [{ name: "Don_yeu_cau_boi_thuong_TT7.pdf", url: "#" }, { name: "Quyet_dinh_dinh_chi_89.pdf", url: "#" }],
                 timeline: [
-                    { title: "Nộp hồ sơ bồi thường", date: "30/09/2026", desc: "Hồ sơ tiếp nhận qua đường bưu điện.", status: "completed" },
+                    { title: "Nộp hồ sơ bồi thường", date: "30/09/2026", desc: "Hồ sơ tiếp nhận qua dịch vụ bưu chính.", status: "completed" },
                     { title: "Tiếp nhận hồ sơ vụ việc", date: "05/10/2026", desc: "Cán bộ đã tiếp nhận hồ sơ, chuyển sang bước thụ lý.", status: "active" }
                 ],
                 thietHaiList: [
@@ -6681,7 +6694,7 @@
                 restoreHonor: false,
                 agency: "UBND Quận Đống Đa",
                 deadline: "14/10/2026",
-                nguonHoSo: "Tiếp nhận trực tiếp",
+                nguonHoSo: "Tiếp nhận mới", hinhThucTiepNhan: "Trực tiếp",
                 files: [{ name: "Don_yeu_cau_boi_thuong_TT8.pdf", url: "#" }, { name: "Ban_an_phuc_tham_34.pdf", url: "#" }],
                 timeline: [
                     { title: "Nộp hồ sơ bồi thường", date: "29/09/2026", desc: "Hồ sơ tiếp nhận trực tiếp tại bộ phận một cửa.", status: "completed" },
@@ -6715,7 +6728,7 @@
                 restoreHonor: false,
                 agency: "Chi cục Thi hành án dân sự Cầu Giấy",
                 deadline: "13/10/2026",
-                nguonHoSo: "Dịch vụ công",
+                nguonHoSo: "Dịch vụ công quốc gia", hinhThucTiepNhan: "Qua môi trường số (Dịch vụ Công)",
                 files: [{ name: "Don_yeu_cau_boi_thuong_TT9.pdf", url: "#" }, { name: "Hop_dong_dat_coc_phat_coc.pdf", url: "#" }],
                 timeline: [
                     { title: "Nộp hồ sơ bồi thường", date: "28/09/2026", desc: "Hồ sơ tiếp nhận trực tuyến qua cổng dịch vụ công.", status: "completed" },
@@ -6749,7 +6762,7 @@
                 restoreHonor: false,
                 agency: "Tòa án nhân dân Thành phố Hà Nội",
                 deadline: "12/10/2026",
-                nguonHoSo: "Tiếp nhận trực tiếp",
+                nguonHoSo: "Tiếp nhận mới", hinhThucTiepNhan: "Trực tiếp",
                 files: [{ name: "Don_yeu_cau_boi_thuong_TT10.pdf", url: "#" }, { name: "Quyet_dinh_huy_cam_xuat_canh.pdf", url: "#" }],
                 timeline: [
                     { title: "Nộp hồ sơ bồi thường", date: "27/09/2026", desc: "Hồ sơ tiếp nhận trực tiếp tại bộ phận một cửa.", status: "completed" },
@@ -7075,7 +7088,7 @@
                 nhanQua: "Danh dự, uy tín của người bị thiệt hại bị ảnh hưởng tại nơi cư trú và nơi làm việc.",
                 status: "Đang thực hiện",
                 phddStatus: "Đang thực hiện",
-                nopKenh: "Tiếp nhận trực tiếp",
+                nguonHoSo: "Tiếp nhận mới", hinhThucTiepNhan: "Trực tiếp",
                 thulyVenue: "cơ quan quản lý",
                 totalNum: 0,
                 advanceNum: 0,
@@ -7115,7 +7128,7 @@
                 nhanQua: "Thông tin vi phạm được đăng trên cổng thông tin điện tử của quận, ảnh hưởng uy tín nghề nghiệp.",
                 status: "Chờ phản hồi",
                 phddStatus: "Chờ phản hồi",
-                nopKenh: "Dịch vụ công",
+                nguonHoSo: "Dịch vụ công quốc gia", hinhThucTiepNhan: "Bộ phận Một cửa",
                 thulyVenue: "cơ quan quản lý",
                 totalNum: 0,
                 advanceNum: 0,
@@ -7162,7 +7175,7 @@
                 nhanQua: "Uy tín cá nhân tại địa phương bị ảnh hưởng.",
                 status: "Chờ thực thi",
                 phddStatus: "Chờ thực thi",
-                nopKenh: "Nhận qua bưu điện/Bưu chính",
+                nguonHoSo: "Tiếp nhận mới", hinhThucTiepNhan: "Qua dịch vụ bưu chính",
                 thulyVenue: "tòa án tố tụng",
                 totalNum: 0,
                 advanceNum: 0,
@@ -7208,7 +7221,7 @@
                 hanhVi: "Cưỡng chế kê biên tài sản không đúng quy định.",
                 nhanQua: "Tài sản bị kê biên, thu nhập bị giảm sút.",
                 status: "Sung quỹ nhà nước",
-                nopKenh: "Tiếp nhận trực tiếp",
+                nguonHoSo: "Tiếp nhận mới", hinhThucTiepNhan: "Trực tiếp",
                 thulyVenue: "cơ quan quản lý",
                 totalNum: 85000000,
                 advanceNum: 0,
@@ -7262,7 +7275,7 @@
                 hanhVi: "Tạm giữ phương tiện vi phạm hành chính quá thời hạn quy định.",
                 nhanQua: "Không sử dụng được phương tiện kinh doanh trong 45 ngày.",
                 status: "Đã chuyển CQGQBT",
-                nopKenh: "Tiếp nhận trực tiếp",
+                nguonHoSo: "Tiếp nhận mới", hinhThucTiepNhan: "Trực tiếp",
                 totalNum: 42000000,
                 advanceNum: 0,
                 slaDays: 0,
@@ -7304,7 +7317,7 @@
                 nhanQua: "Danh dự, uy tín bị ảnh hưởng tại nơi làm việc.",
                 status: "Hoàn thành",
                 phddStatus: "Hoàn thành",
-                nopKenh: "Tiếp nhận trực tiếp",
+                nguonHoSo: "Tiếp nhận mới", hinhThucTiepNhan: "Trực tiếp",
                 totalNum: 0,
                 advanceNum: 0,
                 slaDays: 0,
@@ -7356,7 +7369,7 @@
                 nhanQua: "Mất thu nhập, tổn hại tinh thần, danh dự.",
                 status: "Hoàn thành",
                 phddStatus: "Hoàn thành",
-                nopKenh: "Tiếp nhận trực tiếp",
+                nguonHoSo: "Tiếp nhận mới", hinhThucTiepNhan: "Trực tiếp",
                 thulyVenue: "tòa án tố tụng",
                 totalNum: 260000000,
                 advanceNum: 0,
@@ -7396,13 +7409,16 @@
         ];
 
         // Dynamically initialize thietHaiList and verification details for mock claims
-        const nopKenhOptions = ['Tiếp nhận trực tiếp', 'Nhận qua bưu điện/Bưu chính', 'Dịch vụ công', 'Cán bộ chủ động nhập theo tố tụng/thi hành án'];
+        // Nguồn hồ sơ / Hình thức tiếp nhận mẫu; null = hồ sơ cán bộ chủ động nhập theo tố tụng/thi hành án (giá trị cũ)
+        const nopKenhOptions = [['Tiếp nhận mới', 'Trực tiếp'], ['Tiếp nhận mới', 'Qua dịch vụ bưu chính'], ['Dịch vụ công quốc gia', 'Qua môi trường số (Dịch vụ Công)'], null];
         claimsList.forEach((claim, idx) => {
-            if (!claim.nopKenh) {
+            if (!claim.nopKenh && !claim.nguonHoSo) {
                 if (claim.id === 'HS16') {
-                    claim.nopKenh = 'Tiếp nhận trực tiếp';
+                    claim.nguonHoSo = 'Tiếp nhận mới';
+                    claim.hinhThucTiepNhan = 'Trực tiếp';
                 } else if (claim.code === 'BT-2026-006' && claim.nyc === 'Hoàng Tuấn C') {
-                    claim.nopKenh = 'Dịch vụ công';
+                    claim.nguonHoSo = 'Dịch vụ công quốc gia';
+                    claim.hinhThucTiepNhan = 'Bộ phận Một cửa';
                 } else if (claim.id === 'HS5') {
                     claim.nopKenh = 'Cán bộ chủ động nhập theo tố tụng/thi hành án';
                     claim.phddForm = 'Cả hai hình thức';
@@ -7412,7 +7428,8 @@
                     claim.phddStep3DateExp = '08:00, 15/08/2026';
                     claim.phddStep1ExpectedNewsNameCentral = 'Báo Pháp luật';
                 } else {
-                    claim.nopKenh = nopKenhOptions[idx % nopKenhOptions.length];
+                    const opt = nopKenhOptions[idx % nopKenhOptions.length];
+                    if (opt) { claim.nguonHoSo = opt[0]; claim.hinhThucTiepNhan = opt[1]; } else claim.nopKenh = 'Cán bộ chủ động nhập theo tố tụng/thi hành án';
                 }
             }
             if (!claim.thietHaiList && claim.totalNum > 0) {
@@ -7590,33 +7607,58 @@
         }
 
         // ===== Nguồn hồ sơ =====
-        const NGUON_HO_SO_XD = 'Xác định CQGQBT';
-        const NGUON_HO_SO_VALUES = ['Xác định CQGQBT', 'Dịch vụ công', 'Trực tiếp', 'Nhận qua bưu điện/bưu chính'];
-        // Cán bộ chỉ được chọn 3 giá trị khi tạo thủ công; "Xác định CQGQBT" do hệ thống gán
-        const NGUON_HO_SO_MANUAL = ['Trực tiếp', 'Nhận qua bưu điện/bưu chính', 'Dịch vụ công'];
-        // Ánh xạ giá trị "Hình thức tiếp nhận" cũ sang "Nguồn hồ sơ"
+        // 04 giá trị: Tiếp nhận mới (cán bộ nhập tay), Dịch vụ công quốc gia, Chuyển CQGQBT, Xác định CQGQBT (theo BTNN_WF.SOURCES)
+        const NGUON_HO_SO_SRC = (window.BTNN_WF && window.BTNN_WF.SOURCES) || { TIEP_NHAN: 'Tiếp nhận mới', DVC: 'Dịch vụ công quốc gia', CHUYEN: 'Chuyển CQGQBT', XDCQ: 'Xác định CQGQBT' };
+        const NGUON_HO_SO_TIEP_NHAN = NGUON_HO_SO_SRC.TIEP_NHAN;
+        const NGUON_HO_SO_DVC = NGUON_HO_SO_SRC.DVC;
+        const NGUON_HO_SO_CHUYEN = NGUON_HO_SO_SRC.CHUYEN;
+        const NGUON_HO_SO_XD = NGUON_HO_SO_SRC.XDCQ;
+        const NGUON_HO_SO_VALUES = [NGUON_HO_SO_TIEP_NHAN, NGUON_HO_SO_DVC, NGUON_HO_SO_CHUYEN, NGUON_HO_SO_XD];
+        // Hình thức tiếp nhận: Danh mục DM_25 (04 giá trị); tạo trực tiếp chỉ chọn Trực tiếp / Qua dịch vụ bưu chính,
+        // Qua môi trường số (Dịch vụ Công) / Bộ phận Một cửa do hệ thống gán
+        const HTTN_SRC = (window.BTNN_WF && window.BTNN_WF.RECEIVE_METHODS) || { MOI_TRUONG_SO: 'Qua môi trường số (Dịch vụ Công)', TRUC_TIEP: 'Trực tiếp', MOT_CUA: 'Bộ phận Một cửa', BUU_CHINH: 'Qua dịch vụ bưu chính' };
+        const HTTN_VALUES = [HTTN_SRC.MOI_TRUONG_SO, HTTN_SRC.TRUC_TIEP, HTTN_SRC.MOT_CUA, HTTN_SRC.BUU_CHINH];
+        const HTTN_MANUAL = [HTTN_SRC.TRUC_TIEP, HTTN_SRC.BUU_CHINH];
+        // Ánh xạ giá trị cũ (Hình thức tiếp nhận/Nguồn hồ sơ phiên bản trước) sang Nguồn hồ sơ mới
+        // (giá trị cũ gửi qua bưu chính không có trong bảng: mặc định Tiếp nhận mới)
         const LEGACY_NOP_KENH_MAP = {
-            'Tiếp nhận trực tiếp': 'Trực tiếp',
-            'Nhận qua bưu điện/Bưu chính': 'Nhận qua bưu điện/bưu chính',
-            'Dịch vụ công': 'Dịch vụ công',
+            'Tiếp nhận trực tiếp': NGUON_HO_SO_TIEP_NHAN,
+            'Trực tiếp': NGUON_HO_SO_TIEP_NHAN,
+            'Tiếp nhận': NGUON_HO_SO_TIEP_NHAN,
+            'Dịch vụ công': NGUON_HO_SO_DVC,
             // Mặc định tạm thời, chờ người dùng xác nhận
-            'Cán bộ chủ động nhập theo tố tụng/thi hành án': 'Trực tiếp'
+            'Cán bộ chủ động nhập theo tố tụng/thi hành án': NGUON_HO_SO_TIEP_NHAN
         };
         const LEGACY_CAN_BO_CHU_DONG_NHAP = 'Cán bộ chủ động nhập theo tố tụng/thi hành án';
 
         function normalizeNguonHoSo(value) {
-            if (!value) return 'Trực tiếp';
+            if (!value) return NGUON_HO_SO_TIEP_NHAN;
             if (NGUON_HO_SO_VALUES.includes(value)) return value;
             if (LEGACY_NOP_KENH_MAP[value]) return LEGACY_NOP_KENH_MAP[value];
             const n = normalizeStatusText(value);
             const found = NGUON_HO_SO_VALUES.find(v => normalizeStatusText(v) === n);
-            return found || 'Trực tiếp';
+            if (found) return found;
+            if (/dịch vụ công|một cửa|dvc/i.test(value)) return NGUON_HO_SO_DVC;
+            return NGUON_HO_SO_TIEP_NHAN;
+        }
+
+        // Chuẩn hóa Hình thức tiếp nhận; giá trị cũ suy ra từ Nguồn hồ sơ/nopKenh cũ (Trực tiếp / bưu chính / Dịch vụ công)
+        function normalizeHinhThucTiepNhan(value, nguonCu) {
+            const W = window.BTNN_WF;
+            const norm = v => {
+                const s = String(v || '').trim();
+                if (!s) return '';
+                const r = W && typeof W.normalizeReceiveMethod === 'function' ? W.normalizeReceiveMethod(s)
+                    : (/bưu/i.test(s) ? HTTN_SRC.BUU_CHINH : /dịch vụ công|môi trường số|dvc/i.test(s) ? HTTN_SRC.MOI_TRUONG_SO : /một cửa/i.test(s) ? HTTN_SRC.MOT_CUA : /trực tiếp/i.test(s) ? HTTN_SRC.TRUC_TIEP : s);
+                return HTTN_VALUES.includes(r) ? r : '';
+            };
+            return norm(value) || norm(nguonCu) || (normalizeNguonHoSo(nguonCu) === NGUON_HO_SO_DVC ? HTTN_SRC.MOI_TRUONG_SO : HTTN_SRC.TRUC_TIEP);
         }
 
         function getNguonHoSoBadgeClass(value) {
             if (value === NGUON_HO_SO_XD) return 'badge-info';
-            if (value === 'Dịch vụ công') return 'badge-success';
-            if (value === 'Nhận qua bưu điện/bưu chính') return 'badge-warning';
+            if (value === NGUON_HO_SO_DVC) return 'badge-success';
+            if (value === NGUON_HO_SO_CHUYEN) return 'badge-warning';
             return 'badge-draft';
         }
 
@@ -7625,22 +7667,35 @@
             return `<span class="badge ${getNguonHoSoBadgeClass(v)}" style="white-space:nowrap;">${v}</span>`;
         }
 
-        // Đặt giá trị Nguồn hồ sơ trên form nhập liệu: "Xác định CQGQBT" hiển thị chỉ đọc
-        function setClaimNguonHoSoField(value) {
-            const sel = document.getElementById('claimNguonHoSo');
-            if (!sel) return;
+        // Đặt giá trị Nguồn hồ sơ (chỉ đọc) và Hình thức tiếp nhận trên form nhập liệu
+        // - Tạo trực tiếp: Nguồn = Tiếp nhận mới, cán bộ chọn Trực tiếp / Qua dịch vụ bưu chính
+        // - Hồ sơ đến từ Tiếp nhận hồ sơ (wfSynced) hoặc giá trị Qua môi trường số (Dịch vụ Công) / Bộ phận Một cửa: Hình thức tiếp nhận chỉ đọc
+        function setClaimNguonHoSoField(value, hinhThuc, fromReception) {
+            const inp = document.getElementById('claimNguonHoSo');
+            if (!inp) return;
             const v = normalizeNguonHoSo(value);
-            const xdOpt = document.getElementById('claimNguonHoSoXdOption');
-            const isXd = v === NGUON_HO_SO_XD;
-            if (xdOpt) xdOpt.hidden = !isXd;
-            sel.value = v;
-            sel.disabled = isXd;
-            sel.title = isXd ? 'Hồ sơ do hệ thống tạo khi Xác định cơ quan giải quyết bồi thường thực hiện Chuyển CQGQBT. Không cho phép thay đổi.' : '';
+            inp.value = v;
+            inp.title = v === NGUON_HO_SO_XD ? 'Hồ sơ do hệ thống tạo khi Xác định cơ quan giải quyết bồi thường thực hiện Chuyển CQGQBT. Không cho phép thay đổi.' : 'Do hệ thống gán. Không cho phép thay đổi.';
+            const sel = document.getElementById('claimHinhThucTiepNhan');
+            if (!sel) return;
+            const h = normalizeHinhThucTiepNhan(hinhThuc, value);
+            const locked = !!fromReception || v !== NGUON_HO_SO_TIEP_NHAN || !HTTN_MANUAL.includes(h);
+            // Form chỉ gồm 02 giá trị Trực tiếp / Qua dịch vụ bưu chính; giá trị khác (hệ thống gán) thêm vào để hiển thị chỉ đọc
+            sel.innerHTML = HTTN_MANUAL.concat(HTTN_MANUAL.includes(h) ? [] : [h])
+                .map(x => `<option value="${x}">${x}</option>`).join('');
+            sel.value = h;
+            sel.disabled = locked;
+            sel.title = locked ? 'Theo dữ liệu tiếp nhận. Không cho phép thay đổi.' : '';
         }
 
         function getClaimNguonHoSoField() {
-            const sel = document.getElementById('claimNguonHoSo');
-            return sel ? normalizeNguonHoSo(sel.value) : 'Trực tiếp';
+            const inp = document.getElementById('claimNguonHoSo');
+            return inp ? normalizeNguonHoSo(inp.value) : NGUON_HO_SO_TIEP_NHAN;
+        }
+
+        function getClaimHinhThucTiepNhanField() {
+            const sel = document.getElementById('claimHinhThucTiepNhan');
+            return sel ? normalizeHinhThucTiepNhan(sel.value, getClaimNguonHoSoField()) : HTTN_SRC.TRUC_TIEP;
         }
 
         // ===== Người bị thiệt hại (khi người yêu cầu không phải là người bị thiệt hại) =====
@@ -7770,6 +7825,7 @@
             (rec.attachedDocs || []).forEach(d => { if (d && (d.file || d.name)) files.push({ name: d.file || d.name, url: '#' }); });
             (rec.transferFiles || []).forEach(f => { if (f && f.name) files.push({ name: f.name, url: '#' }); });
             const nguonHoSo = normalizeNguonHoSo(rec.nguonHoSo || rec.hinhThucTiepNhan);
+            const hinhThucTiepNhan = normalizeHinhThucTiepNhan(rec.hinhThucTiepNhan, rec.nguonHoSo);
             const timeline = [];
             if (rec.xdCode) {
                 timeline.push({ title: 'Nhận hồ sơ từ Xác định CQGQBT', date: rec.date || date, desc: `Nhận hồ sơ từ Xác định CQGQBT ${rec.xdCode}: ${rec.transferContent || ''}`.trim(), status: 'completed' });
@@ -7808,6 +7864,7 @@
                 agency: W.unitName(rec.rootUnitId),
                 assignedOfficer: officer,
                 nguonHoSo,
+                hinhThucTiepNhan,
                 xdCode: rec.xdCode || '',
                 transferContent: rec.transferContent || '',
                 transferFiles: (rec.transferFiles || []).map(f => ({ name: f.name })),
@@ -8108,6 +8165,7 @@
             delete claim.tenVuViec;
             // Chuyển "Hình thức tiếp nhận" (nopKenh) cũ sang "Nguồn hồ sơ" (nguonHoSo)
             if (claim.nopKenh === LEGACY_CAN_BO_CHU_DONG_NHAP) claim.canBoChuDongNhap = true;
+            claim.hinhThucTiepNhan = normalizeHinhThucTiepNhan(claim.hinhThucTiepNhan, claim.nguonHoSo || claim.nopKenh);
             claim.nguonHoSo = normalizeNguonHoSo(claim.nguonHoSo || claim.nopKenh);
             delete claim.nopKenh;
             delete claim.claimNopKenh;
@@ -8437,6 +8495,7 @@
             const recvBody = `<div class="grid-3-cols" style="gap:12px 20px; font-size:13px; line-height:1.6;">
                     ${f('Cơ quan giải quyết', e(claim.agency))}
                     ${f('Nguồn hồ sơ', renderNguonHoSoBadge(claim.nguonHoSo))}
+                    ${f('Hình thức tiếp nhận', e(normalizeHinhThucTiepNhan(claim.hinhThucTiepNhan, claim.nguonHoSo)))}
                     ${f('Cán bộ giải quyết', e(getClaimOfficerNamesText(claim)))}
                 </div>`;
             return head + relatedClaimBannerHtml(claim)
@@ -8957,6 +9016,10 @@
             if (searchNguonHoSo) {
                 filtered = filtered.filter(item => normalizeNguonHoSo(item.nguonHoSo) === searchNguonHoSo);
             }
+            const searchHinhThucTiepNhan = document.getElementById('searchHinhThucTiepNhan') ? document.getElementById('searchHinhThucTiepNhan').value : '';
+            if (searchHinhThucTiepNhan) {
+                filtered = filtered.filter(item => normalizeHinhThucTiepNhan(item.hinhThucTiepNhan, item.nguonHoSo) === searchHinhThucTiepNhan);
+            }
             const searchRequestKind = document.getElementById('searchRequestKind') ? document.getElementById('searchRequestKind').value : '';
             const searchPhddStatus = document.getElementById('searchPhddStatus') ? document.getElementById('searchPhddStatus').value : '';
             if (searchPhddStatus) filtered = filtered.filter(item => claimRequestKind(item) !== 'money' && phddStatusLabel(phddCanonicalStatus(item.phddStatus)) === searchPhddStatus);
@@ -9136,6 +9199,7 @@
             document.getElementById('searchFieldGroup').value = '';
             updateSearchStatusOptionsByTab(activeClaimsWorkflowTab);
             if (document.getElementById('searchNguonHoSo')) document.getElementById('searchNguonHoSo').value = '';
+            if (document.getElementById('searchHinhThucTiepNhan')) document.getElementById('searchHinhThucTiepNhan').value = '';
             if (document.getElementById('searchApprovalKind')) document.getElementById('searchApprovalKind').value = '';
             if (document.getElementById('searchRequestKind')) document.getElementById('searchRequestKind').value = '';
             if (document.getElementById('searchPhddStatus')) document.getElementById('searchPhddStatus').value = '';
@@ -9532,6 +9596,7 @@
 
             claim.fieldGroup = fieldGroup;
             claim.nguonHoSo = getClaimNguonHoSoField();
+            claim.hinhThucTiepNhan = getClaimHinhThucTiepNhanField();
             claim.nyc = name;
             claim.nycRole = role;
             claim.nbth = collectNbthFromForm(role);
@@ -9862,7 +9927,7 @@
                 }
 
                 // Populate form inputs from claim
-                setClaimNguonHoSoField(claim.nguonHoSo);
+                setClaimNguonHoSoField(claim.nguonHoSo, claim.hinhThucTiepNhan, claim.wfSynced);
                 renderClaimXdTransferInfo(claim);
                 document.getElementById('claimNYCName').value = claim.nyc || '';
                 document.getElementById('claimFieldGroup').value = claim.fieldGroup || 'hành chính';
@@ -10009,7 +10074,7 @@
                 document.getElementById('defaultFormButtons').style.display = 'flex';
 
                 // Reset form inputs
-                setClaimNguonHoSoField('Trực tiếp');
+                setClaimNguonHoSoField(NGUON_HO_SO_TIEP_NHAN, HTTN_SRC.TRUC_TIEP, false);
                 renderClaimXdTransferInfo(null);
                 fillNbthForm(null);
                 document.getElementById('claimNYCRole').value = 'Người bị thiệt hại';
@@ -11014,6 +11079,7 @@
                 : 'yes';
 
             const nguonHoSo = getClaimNguonHoSoField();
+            const hinhThucTiepNhan = getClaimHinhThucTiepNhanField();
             const fieldGroup = document.getElementById('claimFieldGroup').value;
             const requestDocDate = document.getElementById('claimRequestDocDate').value.trim();
             const applicableLaw = document.getElementById('claimApplicableLaw').value;
@@ -11313,6 +11379,7 @@
                     claim.nycPhone = phone;
                     claim.nycEmail = email;
                     claim.nguonHoSo = nguonHoSo;
+                    claim.hinhThucTiepNhan = hinhThucTiepNhan;
                     claim.requestDocDate = requestDocDate;
                     claim.applicableLaw = applicableLaw;
                     claim.reporting = reporting;
@@ -11474,6 +11541,7 @@
                 status: "Chờ tiếp nhận",
                 agency: cqNhan || "Chưa phân công",
                 nguonHoSo: nguonHoSo,
+                hinhThucTiepNhan: hinhThucTiepNhan,
                 canBoChuDongNhap: !!verdictInfo.hasVerdict,
                 nbth: nbth,
                 requestDocDate: requestDocDate,
@@ -12239,6 +12307,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     </div>
                     <div class="grid-3-cols" style="gap: 12px 20px; font-size: 13px; line-height: 1.6;">
                         <div><strong style="color:var(--text-muted);">Nguồn hồ sơ:</strong> <br>${nguonHoSoBadge}</div>
+                        <div><strong style="color:var(--text-muted);">Hình thức tiếp nhận:</strong> <br><span style="font-weight:600; color:var(--text-main);">${normalizeHinhThucTiepNhan(claim.hinhThucTiepNhan, claim.nguonHoSo)}</span></div>
                         <div><strong style="color:var(--text-muted);">Lĩnh vực phát sinh thiệt hại:</strong> <br><span style="text-transform:uppercase; font-weight:600; font-size:11px; color:var(--primary-color);">TRONG HOẠT ĐỘNG ${(claim.fieldGroup || '').toUpperCase()}</span></div>
                         <div><strong style="color:var(--text-muted);">Cơ quan giải quyết bồi thường:</strong> <br>${claim.agency || '--'}</div>
                         ${xdTransferHtml}
@@ -19263,7 +19332,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     code: claim.code, gqClaimId: claim.id, nycName: getClaimRequesterName(claim),
                     linhVuc: getFieldGroupName(claim.fieldGroup), hanhVi: claim.hanhVi || '',
                     nycPhone: claim.nycPhone || '', nycAddressDetail: claim.nycAddressDetail || '', nycTinhThanh: claim.nycTinhThanh || '',
-                    nguonHoSo: claim.nguonHoSo || '', date: claim.date || gqToday(), receivedAt: claim.date || gqToday(),
+                    nguonHoSo: claim.nguonHoSo || '', hinhThucTiepNhan: claim.hinhThucTiepNhan || '', date: claim.date || gqToday(), receivedAt: claim.date || gqToday(),
                     chuTri: acting, createdBy: acting, rootUnitId: gqClaimUnitId(claim, null), status: canonicalClaimStatus(claim.status), requestKind: claimRequestKind(claim)
                 };
                 // Vụ việc PHDD- (Chỉ phục hồi danh dự) chuyển từ hồ sơ đã phân công: kế thừa đơn vị gốc, cán bộ chủ trì, lượt phân công
@@ -19294,7 +19363,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 if (!chuTri) return;
                 W.ensureClaimRecord({
                     code: c.code, gqClaimId: c.id, nycName: getClaimRequesterName(c), nyc: getClaimRequesterName(c),
-                    linhVuc: getFieldGroupName(c.fieldGroup), hanhVi: c.hanhVi || '', nguonHoSo: c.nguonHoSo || '',
+                    linhVuc: getFieldGroupName(c.fieldGroup), hanhVi: c.hanhVi || '', nguonHoSo: c.nguonHoSo || '', hinhThucTiepNhan: c.hinhThucTiepNhan || '',
                     date: c.date || gqToday(), receivedAt: c.date || gqToday(), chuTri, createdBy: chuTri,
                     rootUnitId: root, currentUnitId: root, status: 'Chờ thụ lý', requestKind: claimRequestKind(c)
                 });

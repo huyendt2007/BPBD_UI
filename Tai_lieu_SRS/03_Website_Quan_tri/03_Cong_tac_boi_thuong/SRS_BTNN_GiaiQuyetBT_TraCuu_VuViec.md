@@ -21,7 +21,7 @@ Hệ thống phân quyền thao tác theo các quyền nghiệp vụ được c�
 
 \- Người dùng được phân quyền truy cập chức năng "Tra cứu vụ việc".
 
-\- Dữ liệu vụ việc được kế thừa tự động từ các phân hệ: Tiếp nhận yêu cầu, Giải quyết yêu cầu bồi thường, Quyết định giải quyết bồi thường, Quản lý kinh phí bồi thường.
+\- Dữ liệu vụ việc được kế thừa tự động từ các phân hệ: Tiếp nhận hồ sơ, Giải quyết yêu cầu bồi thường, Quyết định giải quyết bồi thường, Quản lý kinh phí bồi thường.
 
 ---
 
@@ -44,7 +44,7 @@ Hệ thống phân quyền thao tác theo các quyền nghiệp vụ được c�
 | Tên người yêu cầu | String(100) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập họ và tên...`.<br>- Tìm kiếm gần đúng, không phân biệt hoa thường theo họ tên người yêu cầu bồi thường. |
 | Cơ quan giải quyết | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập cơ quan giải quyết...`.<br>- Tìm kiếm gần đúng, không phân biệt hoa thường theo tên cơ quan giải quyết bồi thường. |
 | Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | Không | `Tất cả` | Control UI: Combobox.<br>- Tham chiếu Danh mục Lĩnh vực phát sinh thiệt hại [DM_22]. |
-| Hình thức tiếp nhận | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Tham chiếu Danh mục Hình thức tiếp nhận hồ sơ bồi thường [DM_25]. |
+| Hình thức tiếp nhận | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Tham chiếu [Danh mục Hình thức tiếp nhận - Danh mục dữ liệu dùng chung - Tổng quan và quy tắc chung](../../Tai%20lieu%20tong%20hop/00_Tong_quan_va_Quy_tac_chung.md#danh-muc-dung-chung) [DM_25].<br>- Có thêm giá trị `Tất cả`. |
 | Trạng thái giải quyết | Enum(String(50)) | Không | `Hoàn thành` | Control UI: Combobox.<br>- Lọc theo trạng thái giải quyết của vụ việc. Cho phép chọn tất cả các trạng thái trong vòng đời vụ việc. Mặc định ưu tiên chọn sẵn `Hoàn thành`, cho phép người dùng thay đổi lại. Gồm:<br>+ `Tất cả`<br>+ `Chờ nhập liệu`<br>+ `Chờ kiểm tra`<br>+ `Yêu cầu bổ sung`<br>+ `Bị từ chối`<br>+ `Chờ thụ lý`<br>+ `Từ chối thụ lý`<br>+ `Đang xác minh thiệt hại`<br>+ `Đang thương lượng`<br>+ `Thương lượng không thành công`<br>+ `Chờ ban hành QĐ`<br>+ `Hoãn giải quyết`<br>+ `Tạm đình chỉ giải quyết`<br>+ `Đình chỉ giải quyết`<br>+ `Chờ thực thi`<br>+ `Đang thực thi theo bản án`<br>+ `Hoàn thành` |
 | Nhóm trạng thái | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Lọc nhanh danh sách theo nhóm tiến trình xử lý vụ việc. Khi chọn một nhóm, hệ thống tự động lọc các hồ sơ có trạng thái giải quyết tương ứng gồm:<br>+ `Tất cả`: Lọc toàn bộ tất cả các trạng thái trong vòng đời vụ việc.<br>+ `Đang xử lý`: Tự động lọc các vụ việc có trạng thái giải quyết là một trong các trạng thái: `Chờ nhập liệu`, `Chờ kiểm tra`, `Yêu cầu bổ sung`, `Chờ thụ lý`, `Đang xác minh thiệt hại`, `Đang thương lượng`, `Thương lượng không thành công`, `Chờ ban hành QĐ`, `Chờ thực thi`, `Đang thực thi theo bản án`.<br>+ `Tạm dừng`: Tự động lọc các vụ việc có trạng thái giải quyết là: `Hoãn giải quyết`, `Tạm đình chỉ giải quyết`.<br>+ `Kết thúc`: Tự động lọc các vụ việc có trạng thái giải quyết là: `Bị từ chối`, `Từ chối thụ lý`, `Đình chỉ giải quyết`, `Hoàn thành`.<br>- Khi người dùng chọn một nhóm trạng thái cụ thể khác `Tất cả`, trường `Trạng thái giải quyết` tự động được reset về trạng thái trống. |
 | Tiếp nhận từ ngày | Date | Không | Ngày đầu tháng của 3 tháng trước | Control UI: Datepicker `dd/mm/yyyy`.<br>- Lọc theo ngày tiếp nhận hồ sơ.<br>- Tuân thủ [BR-VAL-007]. |
@@ -65,7 +65,7 @@ Hệ thống phân quyền thao tác theo các quyền nghiệp vụ được c�
 | Cán bộ xử lý | String(255) | Không | Theo dữ liệu | Control UI: Text (Read-only).<br>- Hiển thị họ tên cán bộ thụ lý/giải quyết vụ việc. Nếu chưa phân công, để trống. |
 | Ngày tiếp nhận | DateTime | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Định dạng `dd/mm/yyyy HH:mm`. Hỗ trợ sắp xếp động (Sortable); mặc định sắp xếp giảm dần. |
 | Hạn xử lý | Date | Không | Theo dữ liệu | Control UI: Text (Read-only).<br>- Định dạng `dd/mm/yyyy`. Hiển thị hạn xử lý giải quyết vụ việc theo quy định. |
-| Hình thức tiếp nhận | Enum(String(50)) | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Tham chiếu Danh mục Hình thức tiếp nhận hồ sơ bồi thường [DM_25]. |
+| Hình thức tiếp nhận | Enum(String(50)) | Có | Theo dữ liệu | Control UI: Text (Read-only). Theo dữ liệu bản ghi. |
 | Trạng thái | Enum(String(50)) | Có | Theo dữ liệu | Control UI: Badge (Read-only).<br>- Hiển thị badge trạng thái giải quyết tương ứng của vụ việc theo dữ liệu hệ thống. |
 | Ngày cập nhật | Date | Không | Theo dữ liệu | Control UI: Text (Read-only).<br>- Định dạng `dd/mm/yyyy`. Ngày cập nhật trạng thái hoặc thông tin gần nhất của vụ việc. |
 | **III. Tab Phục hồi danh dự** | Section | - | - | Phạm vi: Các vụ việc có yêu cầu phục hồi danh dự (`Chỉ yêu cầu phục hồi danh dự`, `Yêu cầu cả hai`). Cột/bộ lọc trạng thái theo Trạng thái Phục hồi danh dự. Tra cứu chỉ đọc; cập nhật tiến trình thực hiện tại Giải quyết yêu cầu bồi thường. |

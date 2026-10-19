@@ -137,7 +137,7 @@ flowchart TD
 | Tên người yêu cầu | String(100) | Không | Trống | Control UI: Input text.<br>- Tìm gần đúng theo họ tên người yêu cầu bồi thường. |
 | Cơ quan giải quyết | String(255) | Không | Trống | Control UI: Input text/Combobox theo UI.<br>- Tìm gần đúng theo tên cơ quan giải quyết bồi thường. |
 | Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | Không | `Tất cả` | Control UI: Combobox.<br>- Tham chiếu Danh mục Lĩnh vực phát sinh thiệt hại [DM_22]. |
-| Hình thức tiếp nhận hồ sơ | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Tham chiếu Danh mục Hình thức tiếp nhận hồ sơ bồi thường [DM_25]. |
+| Hình thức tiếp nhận | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Tham chiếu [Danh mục Hình thức tiếp nhận - Danh mục dữ liệu dùng chung - Tổng quan và quy tắc chung](../../Tai%20lieu%20tong%20hop/00_Tong_quan_va_Quy_tac_chung.md#danh-muc-dung-chung) [DM_25].<br>- Có thêm giá trị `Tất cả`. |
 | Trạng thái giải quyết | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Tham chiếu Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24].<br>- Cho phép chọn từng trạng thái vụ việc. |
 | Nhóm trạng thái | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Lọc nhanh theo nhóm: `Đang xử lý`, `Tạm dừng`, `Kết thúc`. |
 | Tiếp nhận từ ngày | Date | Không | Trống | Control UI: Datepicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Lọc theo thời điểm tiếp nhận.<br>- Áp dụng [BR-VAL-007]. |
@@ -156,7 +156,7 @@ flowchart TD
 | Cán bộ xử lý | String(255) | - | Theo dữ liệu | Chỉ đọc. Hiển thị cán bộ xử lý được phân công, nếu đã có. |
 | Ngày tiếp nhận | DateTime | - | Theo dữ liệu | Định dạng `dd/mm/yyyy HH:mm`. Hỗ trợ sắp xếp. |
 | Hạn xử lý | Date | - | Theo dữ liệu | Hiển thị hạn xử lý và cảnh báo SLA theo dữ liệu hệ thống. |
-| Hình thức tiếp nhận | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị hình thức tiếp nhận theo Danh mục Hình thức tiếp nhận hồ sơ bồi thường [DM_25]. |
+| Hình thức tiếp nhận | Enum(String(50)) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo dữ liệu bản ghi. |
 | Trạng thái | Enum(String(50)) | - | Theo dữ liệu | Chỉ đọc. Hiển thị trạng thái vụ việc theo Danh mục Trạng thái vụ việc yêu cầu bồi thường [DM_24] dưới dạng badge. |
 | Ngày cập nhật | Date | - | Theo dữ liệu | Định dạng `dd/mm/yyyy`. Hỗ trợ sắp xếp; mặc định sắp xếp giảm dần. |
 

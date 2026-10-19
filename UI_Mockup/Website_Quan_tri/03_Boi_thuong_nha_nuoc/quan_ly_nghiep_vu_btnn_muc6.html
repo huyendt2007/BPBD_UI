@@ -556,7 +556,7 @@
                 grid-template-columns: 1fr;
             }
         }
-        /* Bảng tài liệu đính kèm - đồng nhất với màn Tiếp nhận yêu cầu */
+        /* Bảng tài liệu đính kèm - đồng nhất với màn Tiếp nhận hồ sơ */
         .doc-actions { align-items: center; display: flex; gap: 10px; justify-content: center; white-space: nowrap; }
         .action-link { font-size: 12px; font-weight: 600; text-decoration: none; }
         .action-link.view-link { color: var(--secondary-color); }
@@ -2160,7 +2160,7 @@
             renderPaginationPages(maxPages);
         }
 
-        // Bảng tài liệu đính kèm - đồng nhất với màn Tiếp nhận yêu cầu (Xem file, Xóa)
+        // Bảng tài liệu đính kèm - đồng nhất với màn Tiếp nhận hồ sơ (Xem file, Xóa)
         let docReadOnly = false;
         const escDoc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         function renderDocuments() {

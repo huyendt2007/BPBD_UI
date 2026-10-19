@@ -1,21 +1,37 @@
 /*
  * Luồng phân công - phê duyệt dùng chung cho phân hệ Bồi thường nhà nước (mockup).
- * Dùng bởi: Tiếp nhận yêu cầu, Xác định cơ quan giải quyết bồi thường, Giải quyết yêu cầu bồi thường,
- * Dashboard Lãnh đạo, Cấu hình luồng xử lý, Quản lý danh mục (Đơn vị áp dụng của Loại yêu cầu).
+ * Dùng bởi: Tiếp nhận hồ sơ, Xác định cơ quan giải quyết bồi thường, Giải quyết yêu cầu bồi thường,
+ * Dashboard Lãnh đạo, Cấu hình luồng xử lý, Quản lý danh mục (Đơn vị áp dụng của Loại hồ sơ).
  * Dữ liệu giả lập lưu tại localStorage.
  */
 (function (global) {
     'use strict';
 
     const KEY_RECORDS = 'btnn_wf_records_v1';
-    const KEY_FLOW = 'btnn_flow_config_v1';
+    const KEY_FLOW = 'btnn_flow_config_v2'; // { [Loại luồng]: { [đơn vị gốc]: { [đơn vị]: nút cấu hình } } }
+    const KEY_FLOW_V1 = 'btnn_flow_config_v1';
     const KEY_USER = 'btnn_demo_user_v1';
     const KEY_SEED = 'btnn_wf_seed_version';
     const SEED_VERSION = 'v4_cuc_only';
     const CATALOG_TYPE = 'DM_54';
 
     const REQUEST_TYPE_XD = 'Xác định cơ quan giải quyết bồi thường';
-    const REQUEST_TYPE_YCBT = 'Yêu cầu bồi thường';
+    const REQUEST_TYPE_YCBT = 'Giải quyết yêu cầu bồi thường';
+    const REQUEST_TYPE_YCBT_OLD = 'Yêu cầu bồi thường';
+
+    // Loại luồng tại Cấu hình luồng xử lý
+    const FLOW_TYPES = { XD_BTP: 'XD_BTP', XD_STP: 'XD_STP', GQ: 'GQ' };
+    const FLOW_TYPE_NAMES = { XD_BTP: 'Xác định CQGQBT - Bộ Tư pháp', XD_STP: 'Xác định CQGQBT - Sở Tư pháp', GQ: 'Giải quyết YCBT' };
+    const FLOW_TYPE_ORDER = ['XD_BTP', 'XD_STP', 'GQ'];
+
+    // Nguồn hồ sơ và Hình thức tiếp nhận tại Tiếp nhận hồ sơ
+    const SOURCES = { TIEP_NHAN: 'Tiếp nhận mới', DVC: 'Dịch vụ công quốc gia', CHUYEN: 'Chuyển CQGQBT', XDCQ: 'Xác định CQGQBT' };
+    // Hình thức tiếp nhận: Danh mục dùng chung DM_25 (04 giá trị); form Tiếp nhận mới chỉ gồm Trực tiếp, Qua dịch vụ bưu chính
+    const RECEIVE_METHOD_CATALOG = 'DM_25';
+    const RECEIVE_METHODS = { MOI_TRUONG_SO: 'Qua môi trường số (Dịch vụ Công)', TRUC_TIEP: 'Trực tiếp', MOT_CUA: 'Bộ phận Một cửa', BUU_CHINH: 'Qua dịch vụ bưu chính' };
+    RECEIVE_METHODS.DVC = RECEIVE_METHODS.MOI_TRUONG_SO; // tên cũ, giữ để các trang đang dùng không lỗi
+    const RECEIVE_METHOD_ORDER = [RECEIVE_METHODS.MOI_TRUONG_SO, RECEIVE_METHODS.TRUC_TIEP, RECEIVE_METHODS.MOT_CUA, RECEIVE_METHODS.BUU_CHINH];
+    const FORM_RECEIVE_METHODS = [RECEIVE_METHODS.TRUC_TIEP, RECEIVE_METHODS.BUU_CHINH];
 
     const STATUS = {
         CHO_PHAN_CONG: 'Chờ phân công',
@@ -226,13 +242,16 @@
             'UBND-LD': { leaders: ['ct_ubndld'], allowUnit: false, units: [], allowOfficer: true, officers: ['cv_ubndld1', 'cv_ubndld2'] }
         }
     };
-    // Cơ quan có thẩm quyền Xác định CQGQBT: Bộ Tư pháp, Sở Tư pháp, UBND cấp tỉnh
-    const XD_AUTHORITY_UNITS = ['BTP-01', 'STP-HN', 'STP-HCM', 'UBND-HN', 'UBND-LD'];
+    // Cơ quan tiếp nhận, xử lý Xác định CQGQBT: Bộ Tư pháp, Sở Tư pháp
+    const XD_AUTHORITY_UNITS = ['BTP-01', 'STP-HN', 'STP-HCM'];
+    // UBND cấp tỉnh chỉ xem hồ sơ Xác định CQGQBT của Sở Tư pháp trực thuộc (Sở Tư pháp là đơn vị con của UBND cấp tỉnh trên cây Cơ cấu tổ chức).
+    // Mockup giữ Sở Tư pháp là đơn vị gốc của luồng, quan hệ trực thuộc khai báo tại bảng này.
+    const UBND_TINH_STP = { 'UBND-HN': ['STP-HN'], 'UBND-LD': [] };
 
-    // Danh mục Loại yêu cầu (DM_54) - Đơn vị áp dụng; chọn đơn vị cha thì áp dụng cho toàn bộ đơn vị con
+    // Danh mục Loại hồ sơ (DM_54) - Đơn vị áp dụng; chọn đơn vị cha thì áp dụng cho toàn bộ đơn vị con
     const DEFAULT_REQUEST_TYPES = [
         { code: 'LYC_01', name: REQUEST_TYPE_XD, units: XD_AUTHORITY_UNITS.slice() },
-        // Yêu cầu bồi thường áp dụng cho mọi đơn vị gốc (Bộ Tư pháp, Sở Tư pháp và các cơ quan giải quyết bồi thường)
+        // Giải quyết yêu cầu bồi thường áp dụng cho mọi đơn vị gốc (Bộ Tư pháp, Sở Tư pháp và các cơ quan giải quyết bồi thường)
         { code: 'LYC_02', name: REQUEST_TYPE_YCBT, units: ORG_UNITS.filter(u => !u.parentId).map(u => u.id) }
     ];
 
@@ -300,34 +319,58 @@
     function setCurrentUser(id) { try { localStorage.setItem(KEY_USER, id); } catch (e) { /* bỏ qua */ } }
 
     // ---------------- Cấu hình luồng ----------------
-    function getFlowConfig() {
-        const cfg = readJson(KEY_FLOW, null);
-        if (cfg && typeof cfg === 'object') {
-            // Bổ sung cấu hình mặc định của đơn vị gốc mới (VD UBND cấp tỉnh) vào cấu hình đã lưu
-            let changed = false;
-            Object.keys(DEFAULT_FLOW).forEach(root => { if (!cfg[root]) { cfg[root] = JSON.parse(JSON.stringify(DEFAULT_FLOW[root])); changed = true; } });
-            if (changed) writeJson(KEY_FLOW, cfg);
-            return cfg;
-        }
-        const copy = JSON.parse(JSON.stringify(DEFAULT_FLOW));
-        writeJson(KEY_FLOW, copy);
-        return copy;
+    // Đơn vị gốc được cấu hình theo Loại luồng
+    function flowRootIds(ft) {
+        if (ft === FLOW_TYPES.XD_BTP) return getRootUnits().filter(u => /^BTP/.test(u.id)).map(u => u.id);
+        if (ft === FLOW_TYPES.XD_STP) return getRootUnits().filter(u => /^STP/.test(u.id)).map(u => u.id);
+        return getRootUnits().map(u => u.id);
     }
-    function saveFlowConfig(cfg) { writeJson(KEY_FLOW, cfg); }
-    function resetFlowConfig() { const copy = JSON.parse(JSON.stringify(DEFAULT_FLOW)); writeJson(KEY_FLOW, copy); return copy; }
-    function getNodeConfig(unitId) {
+    // Loại luồng của hồ sơ: Xác định CQGQBT theo Bộ Tư pháp / Sở Tư pháp; còn lại Giải quyết YCBT
+    function flowTypeOf(loaiYeuCau, rootUnitId) {
+        if (loaiYeuCau && typeof loaiYeuCau === 'object') { rootUnitId = loaiYeuCau.rootUnitId; loaiYeuCau = loaiYeuCau.loaiYeuCau; }
+        if (loaiYeuCau !== REQUEST_TYPE_XD) return FLOW_TYPES.GQ;
+        const root = getRootId(rootUnitId) || rootUnitId || '';
+        return /^STP/.test(root) ? FLOW_TYPES.XD_STP : FLOW_TYPES.XD_BTP;
+    }
+    function recFt(rec) { return rec ? flowTypeOf(rec.loaiYeuCau, rec.rootUnitId) : FLOW_TYPES.GQ; }
+    function defaultFlowAll(base) {
+        const src = base || DEFAULT_FLOW;
+        const pick = ids => { const o = {}; ids.forEach(id => { if (src[id]) o[id] = JSON.parse(JSON.stringify(src[id])); }); return o; };
+        return { XD_BTP: pick(flowRootIds(FLOW_TYPES.XD_BTP)), XD_STP: pick(flowRootIds(FLOW_TYPES.XD_STP)), GQ: JSON.parse(JSON.stringify(src)) };
+    }
+    function getFlowAll() {
+        let all = readJson(KEY_FLOW, null);
+        if (!all || typeof all !== 'object' || !all.GQ) {
+            // Chuyển cấu hình cũ (01 cấu hình chung cho mọi Loại yêu cầu) sang 03 Loại luồng
+            all = defaultFlowAll(readJson(KEY_FLOW_V1, null) || DEFAULT_FLOW);
+            writeJson(KEY_FLOW, all);
+            return all;
+        }
+        let changed = false;
+        const def = defaultFlowAll();
+        FLOW_TYPE_ORDER.forEach(ft => {
+            if (!all[ft]) { all[ft] = def[ft]; changed = true; return; }
+            Object.keys(def[ft]).forEach(root => { if (!all[ft][root]) { all[ft][root] = def[ft][root]; changed = true; } });
+        });
+        if (changed) writeJson(KEY_FLOW, all);
+        return all;
+    }
+    function getFlowConfig(ft) { return getFlowAll()[ft || FLOW_TYPES.GQ] || {}; }
+    function saveFlowConfig(cfg, ft) { const all = getFlowAll(); all[ft || FLOW_TYPES.GQ] = cfg; writeJson(KEY_FLOW, all); }
+    function resetFlowConfig(ft) { const all = getFlowAll(); const def = defaultFlowAll(); if (ft) all[ft] = def[ft]; else Object.assign(all, def); writeJson(KEY_FLOW, all); return ft ? all[ft] : all; }
+    function getNodeConfig(unitId, ft) {
         const rootId = getRootId(unitId);
-        const cfg = getFlowConfig();
+        const cfg = getFlowConfig(ft);
         return (cfg[rootId] && cfg[rootId][unitId]) || null;
     }
-    function getLeaders(unitId) {
-        const node = getNodeConfig(unitId);
+    function getLeaders(unitId, ft) {
+        const node = getNodeConfig(unitId, ft);
         return node ? (node.leaders || []) : [];
     }
-    function isLeaderOf(userId, unitId) { return getLeaders(unitId).includes(userId); }
-    // Đơn vị đã cấu hình luồng khi nút đơn vị gốc có nhóm lãnh đạo và có ít nhất một hướng xử lý
-    function isUnitConfigured(rootId) {
-        const node = getNodeConfig(rootId);
+    function isLeaderOf(userId, unitId, ft) { return getLeaders(unitId, ft).includes(userId); }
+    // Đơn vị đã cấu hình luồng khi nút đơn vị gốc có nhóm lãnh đạo và có ít nhất một hướng xử lý (mặc định luồng Giải quyết YCBT)
+    function isUnitConfigured(rootId, ft) {
+        const node = getNodeConfig(rootId, ft);
         return !!(node && node.leaders && node.leaders.length && ((node.allowUnit && node.units && node.units.length) || (node.allowOfficer && node.officers && node.officers.length)));
     }
     function findRootUnitByName(name) {
@@ -335,17 +378,21 @@
         return getRootUnits().find(u => u.name.toLowerCase() === n) || null;
     }
 
-    // ---------------- Danh mục Loại yêu cầu ----------------
+    // ---------------- Danh mục Loại hồ sơ ----------------
     function getRequestTypeCatalog() {
         const cats = readJson('masterCategories', null);
         if (Array.isArray(cats)) {
-            // Xác định CQGQBT: bổ sung UBND cấp tỉnh vào Đơn vị áp dụng của dữ liệu đã lưu
+            // Xác định CQGQBT chỉ áp dụng Bộ Tư pháp, Sở Tư pháp (UBND cấp tỉnh chỉ xem); LYC_02 đổi tên Giải quyết yêu cầu bồi thường
+            let catChanged = false;
             const xd = cats.find(c => c.typeCode === CATALOG_TYPE && c.code === 'LYC_01');
-            if (xd && !xd.ubndTinhV1) {
-                xd.donViApDung = Array.from(new Set((xd.donViApDung || []).concat(['UBND-HN', 'UBND-LD'])));
-                xd.ubndTinhV1 = true;
-                writeJson('masterCategories', cats);
+            if (xd && !xd.ubndTinhV2) {
+                xd.donViApDung = (xd.donViApDung || []).filter(u => !/^UBND/.test(u));
+                xd.ubndTinhV2 = true;
+                catChanged = true;
             }
+            const gq = cats.find(c => c.typeCode === CATALOG_TYPE && c.code === 'LYC_02');
+            if (gq && gq.name === REQUEST_TYPE_YCBT_OLD) { gq.name = REQUEST_TYPE_YCBT; catChanged = true; }
+            if (catChanged) writeJson('masterCategories', cats);
             const rows = cats.filter(c => c.typeCode === CATALOG_TYPE && c.status === 'Hoạt động');
             if (rows.length) return rows.map(r => ({ code: r.code, name: r.name, units: Array.isArray(r.donViApDung) ? r.donViApDung : [] }));
         }
@@ -365,9 +412,16 @@
         const root = getRootId(unitId) || unitId;
         if (/^BTP/.test(root)) return 'Bộ Tư pháp';
         if (/^STP/.test(root)) return 'Sở Tư pháp';
-        if (XD_AUTHORITY_UNITS.includes(root) && /^UBND/.test(root)) return 'UBND cấp tỉnh';
         return '';
     }
+    // Sở Tư pháp trực thuộc mà người dùng UBND cấp tỉnh được xem hồ sơ Xác định CQGQBT (chỉ đọc)
+    function xdViewOnlyStpRoots(userId) {
+        const user = getUser(userId || getCurrentUserId());
+        if (!user) return [];
+        const root = getRootId(user.unitId) || user.unitId;
+        return Object.prototype.hasOwnProperty.call(UBND_TINH_STP, root) ? UBND_TINH_STP[root].slice() : [];
+    }
+    function isXdViewOnlyUser(userId) { const user = getUser(userId || getCurrentUserId()); if (!user) return false; const root = getRootId(user.unitId) || user.unitId; return Object.prototype.hasOwnProperty.call(UBND_TINH_STP, root); }
     function getRequestTypesForUser(userId) {
         const user = getUser(userId || getCurrentUserId());
         if (!user) return [];
@@ -386,6 +440,14 @@
         let changed = false;
         list.forEach(r => {
             if (r.status === 'Chờ phê duyệt') { r.status = STATUS.CHO_PHE_DUYET; changed = true; }
+            // Loại hồ sơ: "Yêu cầu bồi thường" -> "Giải quyết yêu cầu bồi thường"; Hình thức tiếp nhận theo 03 giá trị mới; Mã vụ việc toàn trình
+            if (r.loaiYeuCau === REQUEST_TYPE_YCBT_OLD) { r.loaiYeuCau = REQUEST_TYPE_YCBT; changed = true; }
+            const hm = normalizeReceiveMethod(r.hinhThucTiepNhan);
+            if (r.hinhThucTiepNhan && hm !== r.hinhThucTiepNhan) { r.hinhThucTiepNhan = hm; changed = true; }
+            if (!r.maVuViec && /^VVBT-/.test(r.code || '')) { r.maVuViec = r.code; changed = true; }
+            // Nguồn hồ sơ: chuẩn hóa giá trị cũ về 04 giá trị Tiếp nhận mới / Dịch vụ công quốc gia / Chuyển CQGQBT / Xác định CQGQBT
+            const ns = normalizeSource(r.nguonHoSo);
+            if (r.nguonHoSo && ns !== r.nguonHoSo) { r.nguonHoSo = ns; changed = true; }
             if (r.approval && OLD_KQXD.includes(r.approval.kind)) { r.approval.kind = KIND_KQXD; changed = true; }
             if (r.returned && OLD_KQXD.includes(r.returned.kind)) { r.returned.kind = KIND_KQXD; changed = true; }
             // Chuẩn hóa luồng phê duyệt: chỉ tới Cục Đăng ký giao dịch bảo đảm và BTNN, không gửi đến Bộ Tư pháp
@@ -438,6 +500,32 @@
         const uidv = userId || getCurrentUserId();
         rec.history.push(Object.assign({ at: nowText(), userId: uidv, userName: userName(uidv), action, note: note || '' }, extra || {}));
     }
+    // Hình thức tiếp nhận: chuẩn hóa giá trị cũ về 04 giá trị của Danh mục DM_25
+    function normalizeReceiveMethod(v) {
+        const s = String(v || '').trim();
+        if (!s || RECEIVE_METHOD_ORDER.includes(s)) return s;
+        if (/bưu/i.test(s)) return RECEIVE_METHODS.BUU_CHINH;
+        // Giá trị cũ có "Dịch vụ công" (VD bản trước của Hình thức tiếp nhận): hồ sơ gửi qua Dịch vụ công
+        if (/dịch vụ công|môi trường số|dvc/i.test(s)) return RECEIVE_METHODS.MOI_TRUONG_SO;
+        if (/một cửa/i.test(s)) return RECEIVE_METHODS.MOT_CUA;
+        if (/trực tiếp/i.test(s)) return RECEIVE_METHODS.TRUC_TIEP;
+        return s;
+    }
+    function normalizeSource(v) {
+        const s = String(v || '').trim();
+        if (!s || Object.values(SOURCES).includes(s)) return s;
+        if (/dịch vụ công/i.test(s)) return SOURCES.DVC;
+        if (/chuyển/i.test(s)) return SOURCES.CHUYEN;
+        if (/xác định/i.test(s)) return SOURCES.XDCQ;
+        return SOURCES.TIEP_NHAN;
+    }
+    // Mã vụ việc toàn trình VVBT-yyyy-xxx, duy nhất trên hệ thống
+    function nextVuViecCode() {
+        const year = new Date().getFullYear();
+        let max = 0;
+        readJson(KEY_RECORDS, []).forEach(r => [r.maVuViec, r.code].forEach(c => { const m = String(c || '').match(new RegExp(`^VVBT-${year}-(\\d+)$`)); if (m) max = Math.max(max, parseInt(m[1], 10)); }));
+        return `VVBT-${year}-${String(max + 1).padStart(3, '0')}`;
+    }
     function nextCode(prefix) {
         const year = new Date().getFullYear();
         const list = readJson(KEY_RECORDS, []);
@@ -462,31 +550,33 @@
         }, data);
         // Chuyển tới đơn vị cấp dưới: hồ sơ thuộc đơn vị gốc, chờ lãnh đạo của chính đơn vị được chọn phân công
         rec.currentUnitId = data.targetUnitId && getUnit(data.targetUnitId) ? data.targetUnitId : rec.rootUnitId;
-        addHistory(rec, data.historyAction || 'Tiếp nhận yêu cầu', data.historyNote || `Chuyển lãnh đạo ${unitName(rec.rootUnitId)} phân công xử lý.`, data.createdBy);
+        if (!rec.nguonHoSo) rec.nguonHoSo = SOURCES.TIEP_NHAN;
+        if (!rec.maVuViec) rec.maVuViec = /^VVBT-/.test(rec.code || '') ? rec.code : nextVuViecCode();
+        addHistory(rec, data.historyAction || 'Tiếp nhận hồ sơ', data.historyNote || `Chuyển lãnh đạo ${unitName(rec.rootUnitId)} phân công xử lý.`, data.createdBy);
         delete rec.historyAction; delete rec.historyNote;
         return upsertRecord(rec);
     }
 
     function latestRoute(rec) { return rec.routes && rec.routes.length ? rec.routes[rec.routes.length - 1] : null; }
 
-    // Tiếp nhận được cập nhật/xóa khi chưa có lãnh đạo nào thao tác
+    // Tiếp nhận được sửa/xóa khi hồ sơ thuộc nguồn Tiếp nhận mới và chưa có lãnh đạo nào thao tác
     function canEditAtReception(rec) {
-        return !rec || (rec.status === STATUS.CHO_PHAN_CONG && (!rec.routes || rec.routes.length === 0));
+        return !rec || ((!rec.nguonHoSo || rec.nguonHoSo === SOURCES.TIEP_NHAN) && rec.status === STATUS.CHO_PHAN_CONG && (!rec.routes || rec.routes.length === 0));
     }
 
     // ---------------- Phân công ----------------
     function canAssign(rec, userId) {
-        return !!rec && [STATUS.CHO_PHAN_CONG, STATUS.DANG_PHAN_CONG].includes(rec.status) && isLeaderOf(userId, rec.currentUnitId);
+        return !!rec && [STATUS.CHO_PHAN_CONG, STATUS.DANG_PHAN_CONG].includes(rec.status) && isLeaderOf(userId, rec.currentUnitId, recFt(rec));
     }
     function markViewed(rec, userId) {
         const r = latestRoute(rec);
-        if (rec.status === STATUS.CHO_PHE_DUYET && rec.approval && isLeaderOf(userId, rec.approval.path[rec.approval.level])) {
+        if (rec.status === STATUS.CHO_PHE_DUYET && rec.approval && isLeaderOf(userId, rec.approval.path[rec.approval.level], recFt(rec))) {
             const p = rec.approval.pending;
             if (p && !p.viewedAt) { p.viewedAt = nowText(); p.viewedBy = userId; return true; }
             return false;
         }
         if (r && r.state === 'Chưa xử lý' && !r.viewedAt) {
-            const target = r.type === 'unit' ? isLeaderOf(userId, r.toUnitId) : (r.chuTri === userId);
+            const target = r.type === 'unit' ? isLeaderOf(userId, r.toUnitId, recFt(rec)) : (r.chuTri === userId);
             if (target) { r.viewedAt = nowText(); r.viewedBy = userId; return true; }
         }
         return false;
@@ -495,13 +585,14 @@
         const rec = getRecord(code);
         const me = getCurrentUserId();
         if (!canAssign(rec, me)) return { ok: false, message: 'Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phân công. Vui lòng tải lại danh sách.' };
-        const node = getNodeConfig(rec.currentUnitId);
+        const node = getNodeConfig(rec.currentUnitId, recFt(rec));
         if (!node || !node.allowUnit || !(node.units || []).includes(toUnitId)) return { ok: false, message: 'Đơn vị nhận không thuộc cấu hình luồng của đơn vị hiện tại.' };
         const prev = latestRoute(rec);
         if (prev) prev.state = 'Đã xử lý';
         rec.routes.push({ id: uid('R'), type: 'unit', fromUnitId: rec.currentUnitId, fromUserId: me, toUnitId, note: note || '', at: nowText(), state: 'Chưa xử lý' });
         rec.currentUnitId = toUnitId;
         rec.status = STATUS.DANG_PHAN_CONG;
+        if (!rec.receivedBy) rec.receivedBy = userName(me);
         addHistory(rec, 'Chuyển đơn vị', `Chuyển ${unitName(toUnitId)} phân công.${note ? ' Ý kiến chỉ đạo: ' + note : ''}`);
         upsertRecord(rec);
         return { ok: true, record: rec };
@@ -510,7 +601,7 @@
         const rec = getRecord(code);
         const me = getCurrentUserId();
         if (!canAssign(rec, me)) return { ok: false, message: 'Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phân công. Vui lòng tải lại danh sách.' };
-        const node = getNodeConfig(rec.currentUnitId);
+        const node = getNodeConfig(rec.currentUnitId, recFt(rec));
         if (!node || !node.allowOfficer) return { ok: false, message: 'Đơn vị hiện tại không được cấu hình phân công cán bộ.' };
         if (!chuTri) return { ok: false, message: 'Vui lòng chọn cán bộ chủ trì.' };
         const prev = latestRoute(rec);
@@ -520,6 +611,8 @@
         rec.chuTri = chuTri;
         rec.phoiHop = ph;
         rec.status = STATUS.CHO_TIEP_NHAN;
+        // Hồ sơ nguồn khác Tiếp nhận mới: người phân công đầu tiên tại Tiếp nhận hồ sơ là Cán bộ tiếp nhận
+        if (!rec.receivedBy) rec.receivedBy = userName(me);
         addHistory(rec, 'Phân công cán bộ', `Chủ trì: ${userName(chuTri)}${ph.length ? '; Phối hợp: ' + ph.map(userName).join(', ') : ''}.${note ? ' Ý kiến chỉ đạo: ' + note : ''}`);
         upsertRecord(rec);
         return { ok: true, record: rec };
@@ -535,7 +628,7 @@
             return null;
         }
         const r = latestRoute(rec);
-        if (!r || r.state !== 'Chưa xử lý' || !isLeaderOf(userId, r.fromUnitId)) return null;
+        if (!r || r.state !== 'Chưa xử lý' || !isLeaderOf(userId, r.fromUnitId, recFt(rec))) return null;
         if (r.type === 'unit' && rec.status === STATUS.DANG_PHAN_CONG && rec.currentUnitId === r.toUnitId) return { kind: 'route', route: r };
         if (r.type === 'officer' && rec.status === STATUS.CHO_TIEP_NHAN) return { kind: 'route', route: r };
         return null;
@@ -570,7 +663,7 @@
         let path = units.slice().reverse();
         if (!path.length) {
             const cb = getUser(rec.chuTri || rec.createdBy);
-            path = cb ? getAncestors(cb.unitId).filter(u => getLeaders(u).length) : [];
+            path = cb ? getAncestors(cb.unitId).filter(u => getLeaders(u, recFt(rec)).length) : [];
         }
         path = path.filter((u, i) => path.indexOf(u) === i);
         // UI giả định: Luồng phê duyệt qua Cục Đăng ký giao dịch bảo đảm và BTNN chỉ tới Cục, không gửi đến Bộ Tư pháp
@@ -591,7 +684,7 @@
         if (closed.includes(rec.status)) return { ok: false, message: 'Trạng thái hồ sơ không cho phép trình phê duyệt.' };
         const path = computeApprovalPath(rec);
         if (!path.length) return { ok: false, message: 'Chưa xác định được cấp phê duyệt. Vui lòng liên hệ Quản trị hệ thống.' };
-        const firstLeaders = getLeaders(path[0]);
+        const firstLeaders = getLeaders(path[0], recFt(rec));
         if (firstLeaders.length && !extra.assignee) return { ok: false, message: 'Vui lòng chọn Lãnh đạo phê duyệt.' };
         if (extra.assignee && firstLeaders.length && !firstLeaders.includes(extra.assignee)) return { ok: false, message: 'Lãnh đạo phê duyệt không thuộc nhóm lãnh đạo của cấp phê duyệt đầu tiên.' };
         if (rec.status === STATUS.CHO_TIEP_NHAN) {
@@ -615,17 +708,17 @@
         const a = rec.approval;
         const assignee = (a.assignees || [])[a.level];
         if (assignee) return assignee === userId;
-        return isLeaderOf(userId, a.path[a.level]);
+        return isLeaderOf(userId, a.path[a.level], recFt(rec));
     }
     function isLastApprovalLevel(rec) { return !!rec && !!rec.approval && rec.approval.level >= rec.approval.path.length - 1; }
     function nextLevelLeaders(rec) {
         if (!rec || !rec.approval || isLastApprovalLevel(rec)) return [];
-        return getLeaders(rec.approval.path[rec.approval.level + 1]);
+        return getLeaders(rec.approval.path[rec.approval.level + 1], recFt(rec));
     }
     // Nhóm lãnh đạo của cấp phê duyệt đầu tiên (dùng cho ô "Lãnh đạo phê duyệt" khi trình)
     function firstLevelLeaders(recLike) {
         const path = computeApprovalPath(recLike || {});
-        return path.length ? getLeaders(path[0]) : [];
+        return path.length ? getLeaders(path[0], recFt(recLike)) : [];
     }
     // Nội dung trình của hồ sơ Chờ duyệt / Bị trả lại
     function approvalKindOf(rec) {
@@ -656,7 +749,7 @@
         const unitId = a.path[a.level];
         if (!a.assignees) a.assignees = [];
         if (a.level < a.path.length - 1) {
-            const nextLeaders = getLeaders(a.path[a.level + 1]);
+            const nextLeaders = getLeaders(a.path[a.level + 1], recFt(rec));
             if (nextLeaders.length && !nextAssignee) return { ok: false, message: 'Vui lòng chọn Lãnh đạo phê duyệt cấp tiếp theo.' };
             if (nextAssignee && nextLeaders.length && !nextLeaders.includes(nextAssignee)) return { ok: false, message: 'Lãnh đạo được chọn không thuộc nhóm lãnh đạo của cấp tiếp theo.' };
             a.steps.push({ unitId, userId: me, action: 'Phê duyệt', note: note || '', at: nowText() });
@@ -692,6 +785,8 @@
             receivedAt: nowText(),
             date: dateText(),
             createdBy: rec.chuTri,
+            nguonHoSo: SOURCES.CHUYEN,
+            maVuViec: rec.maVuViec || '',
             transferFromCode: rec.code,
             transferFromUnitId: rec.rootUnitId,
             transferContent: action.content || '',
@@ -737,7 +832,8 @@
             code: ycbtCode,
             loaiYeuCau: REQUEST_TYPE_YCBT,
             module: 'YCBT',
-            nguonHoSo: 'Xác định CQGQBT',
+            nguonHoSo: SOURCES.XDCQ,
+            maVuViec: rec.maVuViec || '',
             xdCode: rec.code,
             rootUnitId: getRootId(target.id) || target.id,
             targetUnitId: target.id,
@@ -767,7 +863,7 @@
         const path = computeApprovalPath(rec);
         return path.length ? path[path.length - 1] : rec.rootUnitId;
     }
-    function thuLyLeaders(rec) { return getLeaders(thuLyUnitOf(rec)); }
+    function thuLyLeaders(rec) { return getLeaders(thuLyUnitOf(rec), recFt(rec)); }
     function canThuLy(rec, userId) {
         return !!rec && rec.module === 'YCBT' && rec.status === STATUS_CHO_THU_LY && thuLyLeaders(rec).includes(userId);
     }
@@ -775,7 +871,7 @@
     function thuLyOfficerOptions(rec) {
         if (!rec) return [];
         const root = getRootId(rec.rootUnitId) || rec.rootUnitId;
-        const cfg = getFlowConfig()[root] || {};
+        const cfg = getFlowConfig(FLOW_TYPES.GQ)[root] || {};
         const leaders = new Set();
         Object.values(cfg).forEach(n => (n.leaders || []).forEach(u => leaders.add(u)));
         return usersInUnitTree(root).filter(u => !leaders.has(u.id)).map(u => u.id);
@@ -1515,11 +1611,11 @@
         const HC = 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', THADS = 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ', HS = 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', DS = 'TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ';
         const seed = [
             th('BT-2026-043', 'Hoàng Thị M', 'UBND-LD', 'cv_ubndld1', 'ct_ubndld', HC, 'Áp dụng biện pháp khẩn cấp phong tỏa tài khoản ngân hàng trái luật.', '18/09/2026', 'money', 'Tiếp nhận trực tiếp'),
-            th('BT-2026-031', 'Công ty TNHH Phát Đạt', 'CCTHADS-TT', 'chv_tt1', 'cc_tt', THADS, 'Kê biên toàn bộ dây chuyền sản xuất vượt quá giá trị nghĩa vụ phải thi hành.', '05/10/2026', 'money', 'Nhận qua bưu điện/Bưu chính'),
+            th('BT-2026-031', 'Công ty TNHH Phát Đạt', 'CCTHADS-TT', 'chv_tt1', 'cc_tt', THADS, 'Kê biên toàn bộ dây chuyền sản xuất vượt quá giá trị nghĩa vụ phải thi hành.', '05/10/2026', 'money', 'Qua dịch vụ bưu chính'),
             th('BT-2026-051', 'Nguyễn Thị Phương Thảo', 'STP-HN', 'cv_hn1', 'gdso_hn', HC, 'Chậm trễ cấp phiếu lý lịch tư pháp làm mất cơ hội ký hợp đồng lao động tại nước ngoài.', '08/10/2026', 'money', 'Dịch vụ công'),
             th('BT-2026-052', 'Trần Đình Trọng', 'UBND-CG', 'cv_cg1', 'ct_cg', HC, 'Thu hồi giấy phép kinh doanh ăn uống không đúng trình tự, gây đình trệ chuỗi nhà hàng.', '07/10/2026', 'money', 'Tiếp nhận trực tiếp'),
             th('BT-2026-053', 'Công ty Cổ phần Vận tải Thăng Long', 'UBND-HM', 'cv_hm1', 'ct_hm', HC, 'Tạm giữ đoàn xe vận tải hàng hóa nông sản quá thời hạn quy định làm hư hỏng hàng hóa.', '06/10/2026', 'money', 'Dịch vụ công'),
-            th('BT-2026-054', 'Vũ Quang Vinh', 'CA-TX', 'cb_catx1', 'ld_catx', HS, 'Kê biên phong tỏa xe ô tô con cá nhân kéo dài 4 tháng trong vụ án đã đình chỉ.', '05/10/2026', 'both', 'Nhận qua bưu điện/Bưu chính'),
+            th('BT-2026-054', 'Vũ Quang Vinh', 'CA-TX', 'cb_catx1', 'ld_catx', HS, 'Kê biên phong tỏa xe ô tô con cá nhân kéo dài 4 tháng trong vụ án đã đình chỉ.', '05/10/2026', 'both', 'Qua dịch vụ bưu chính'),
             th('BT-2026-055', 'Lê Minh Tuấn', 'UBND-DD', 'cv_dd1', 'ct_dd', HC, 'Cưỡng chế thu hồi ki-ốt kinh doanh thương mại trái quy định tại khu vực chợ tạm.', '04/10/2026', 'money', 'Tiếp nhận trực tiếp'),
             th('BT-2026-056', 'Ngô Thị Bích Liên', 'CCTHADS-CG', 'chv_cg1', 'cc_cg', THADS, 'Kê biên phong tỏa nhà đất thuộc sở hữu riêng của người yêu cầu bồi thường không thuộc diện phải thi hành án.', '03/10/2026', 'money', 'Dịch vụ công'),
             th('BT-2026-057', 'Đặng Hoàng Nam', 'TAND-HN', 'tk_tandhn1', 'ca_tandhn', DS, 'Áp dụng biện pháp khẩn cấp tạm thời cấm xuất cảnh trái pháp luật làm lỡ chuyến công tác ký kết hợp đồng.', '02/10/2026', 'money', 'Tiếp nhận trực tiếp')
@@ -1610,7 +1706,7 @@
                 ],
                 attachedDocs: [{ name: 'Đơn yêu cầu xác định cơ quan giải quyết bồi thường', file: 'Don_yeu_cau_XD-2026-113.pdf' }],
                 routes: btpRoutes('canbonv', ['hatt'], 'Chưa xử lý'),
-                history: [h('Tiếp nhận yêu cầu', 'canbonv', '10:00 06/10/2026', 'Tiếp nhận qua đường Bưu điện/bưu chính.'), h('Chuyển đơn vị', 'oanhdh', '11:00 06/10/2026', 'Giao Cục Đăng ký Giao dịch bảo đảm và BTNN.'), h('Chuyển đơn vị', 'cuctruong', '15:10 06/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '17:00 06/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ; Phối hợp: Trần Thị Thu Hà.')]
+                history: [h('Tiếp nhận yêu cầu', 'canbonv', '10:00 06/10/2026', 'Tiếp nhận qua dịch vụ bưu chính.'), h('Chuyển đơn vị', 'oanhdh', '11:00 06/10/2026', 'Giao Cục Đăng ký Giao dịch bảo đảm và BTNN.'), h('Chuyển đơn vị', 'cuctruong', '15:10 06/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '17:00 06/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ; Phối hợp: Trần Thị Thu Hà.')]
             })),
             base('XD-2026-114', Object.assign(person('Phạm Quốc Bảo', '03/04/1988', '001088009911', '0978990011', 'baopq@vingroup.net', 'Thành phố Hà Nội', '00001 - Phường Ba Đình', 'Số 88 đường Liễu Giai'), {
                 status: STATUS.CHO_TIEP_NHAN, date: '05/10/2026', receivedAt: '14:20 05/10/2026', chuTri: 'canbonv', phoiHop: [],
@@ -1735,6 +1831,8 @@
     global.BTNN_WF = {
         KEYS: { RECORDS: KEY_RECORDS, FLOW: KEY_FLOW, USER: KEY_USER },
         CATALOG_TYPE, STATUS, SUBMIT_KINDS, APPROVAL_KINDS, KTL_CATALOG_TYPE, DEFAULT_KTL_REASONS, XD_AUTHORITY_UNITS, REQUEST_TYPE_XD, REQUEST_TYPE_YCBT,
+        FLOW_TYPES, FLOW_TYPE_NAMES, FLOW_TYPE_ORDER, SOURCES, RECEIVE_METHODS, RECEIVE_METHOD_CATALOG, RECEIVE_METHOD_ORDER, FORM_RECEIVE_METHODS, UBND_TINH_STP,
+        flowRootIds, flowTypeOf, normalizeReceiveMethod, normalizeSource, nextVuViecCode, xdViewOnlyStpRoots, isXdViewOnlyUser,
         ORG_UNITS, USERS, DEFAULT_REQUEST_TYPES,
         getUnit, unitName, getChildren, getRootId, getAncestors, getDescendants, getRootUnits, unitTreeLabel, searchUnits, mountUnitTree,
         getUser, userName, userLabel, usersInUnitTree,

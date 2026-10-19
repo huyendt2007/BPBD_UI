@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <!-- External stylesheet -->
-    <link rel="stylesheet" href="xac_dinh_co_quan_boi_thuong.css?v=20261012">
+    <link rel="stylesheet" href="xac_dinh_co_quan_boi_thuong.css?v=20261019">
     <style>
         .xd-tabs { display: flex; gap: 8px; align-items: center; border-bottom: 1px solid var(--border-color); margin: 4px 0 16px; }
         .xd-tab { border: 0; background: transparent; padding: 10px 16px; font-size: 13.5px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; display: inline-flex; align-items: center; gap: 8px; }
@@ -48,8 +48,8 @@
                     <input type="text" class="form-control" id="filterCode" placeholder="Nhập mã yêu cầu...">
                 </div>
                 <div>
-                    <span class="form-label">Mã vụ việc YCBT</span>
-                    <input type="text" class="form-control" id="filterClaimCode" placeholder="Nhập mã vụ việc YCBT...">
+                    <span class="form-label">Mã YCBT</span>
+                    <input type="text" class="form-control" id="filterClaimCode" placeholder="Nhập mã YCBT...">
                 </div>
                 <div>
                     <span class="form-label">Tên người yêu cầu</span>
@@ -141,6 +141,7 @@
                         <tr>
                             <th style="width: 50px; text-align: center;">STT</th>
                             <th style="width: 110px; text-align: center;">Mã yêu cầu</th>
+                            <th style="width: 130px; text-align: center;">Mã vụ việc</th>
                             <th style="min-width: 150px;">Tên người yêu cầu</th>
                             <th style="width: 110px; text-align: center;">Số điện thoại</th>
                             <th style="min-width: 170px;">Lĩnh vực thiệt hại</th>
@@ -148,7 +149,7 @@
                             <th style="width: 130px; text-align: center;">Ngày tiếp nhận</th>
                             <th style="min-width: 170px;">Cơ quan xử lý</th>
                             <th style="min-width: 150px;">Cán bộ xử lý</th>
-                            <th style="width: 140px; text-align: center;">Mã vụ việc YCBT</th>
+                            <th style="width: 140px; text-align: center;">Mã hồ sơ YCBT</th>
                             <th style="width: 140px; text-align: center;">Trạng thái</th>
                             <th style="width: 220px; text-align: center; min-width: 220px;">Thao tác</th>
                         </tr>
@@ -211,10 +212,10 @@
                     <div id="formStatusBadge" style="padding-top: 8px;"></div>
                 </div>
                 <div class="form-group">
-                    <span class="form-label">Hình thức tiếp nhận hồ sơ<span class="required">*</span></span>
+                    <span class="form-label">Hình thức tiếp nhận<span class="required">*</span></span>
                     <select class="form-control" id="formHinhThucTiepNhan">
                         <option value="Trực tiếp">Trực tiếp</option>
-                        <option value="Nhận qua bưu điện/bưu chính">Nhận qua bưu điện/bưu chính</option>
+                        <option value="Qua dịch vụ bưu chính">Qua dịch vụ bưu chính</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -693,6 +694,10 @@
                     <div class="detail-value" style="font-weight: 700; color: var(--primary-color);" id="dtCode"></div>
                 </div>
                 <div class="detail-row">
+                    <div class="detail-label">Mã vụ việc</div>
+                    <div class="detail-value" id="dtMaVuViec"></div>
+                </div>
+                <div class="detail-row">
                     <div class="detail-label">Trạng thái xử lý</div>
                     <div class="detail-value" id="dtStatus"></div>
                 </div>
@@ -825,7 +830,7 @@
                         <div class="detail-value" id="dtTransferAt"></div>
                     </div>
                     <div class="detail-row" id="dtClaimCodeRow">
-                        <div class="detail-label">Mã vụ việc YCBT tương ứng</div>
+                        <div class="detail-label">Mã hồ sơ YCBT tương ứng</div>
                         <div class="detail-value" id="dtClaimCode"></div>
                     </div>
                 </div>
@@ -1032,9 +1037,9 @@
     </div>
 
     <!-- External javascript logic -->
-    <script src="btnn_luong_xu_ly.js?v=20261015e"></script>
-    <script src="btnn_lanh_dao_actions.js?v=20261015e"></script>
-    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261015e"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261019"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261019"></script>
+    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261019"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="bpbd_filter_toggle.js?v=20261012"></script>
 </body>

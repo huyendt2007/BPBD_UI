@@ -26,7 +26,7 @@ Thao tác:
 
 Màn Thêm mới yêu cầu bao gồm các thông tin như:
 - Thông tin chung
- + Hình thức tiếp nhận hồ sơ
+ + Hình thức tiếp nhận
  + Lĩnh vực phát sinh thiệt hại(TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH/TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ/TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ/TRONG HOẠT ĐỘNG TỐ TỤNG HÀNH CHÍNH/
  TRONG HOẠT ĐỘNG THI HÀNH ÁN HÌNH SỰ/TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ)
  + Hình thức thụ lý giải quyết bồi thường (Theo Luật TNBTCNN 2017)
@@ -105,7 +105,7 @@ Trong đó cột Thao tác bao gồm:
  - Thông tin chung 
  (Nếu tạo mới hồ sơ khi nhấn nút Tạo mới trên màn Xác minh cơ quan bồi thường, thì hệ thống tự động fill giá trị các phần này vào, nếu không thì để trống)
  Ngoài ra Hệ thống hỗ trợ Nhập nhanh theo Mã yêu cầu xác định cơ quan giải quyết bồi thường ở trạng thái Hoàn thành. Khi tìm thấy sẽ tự động fill các thông tin chung xuống dưới
- + Hình thức tiếp nhận hồ sơ
+ + Hình thức tiếp nhận
  + Lĩnh vực phát sinh thiệt hại
  + Hình thức thụ lý giải quyết bồi thường (Theo Luật TNBTCNN 2017)
  + Cơ quan giải quyết: Chọn trong Danh sách, cho phép tìm kiếm theo tên

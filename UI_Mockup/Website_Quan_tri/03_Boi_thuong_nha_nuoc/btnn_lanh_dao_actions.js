@@ -1,6 +1,6 @@
 /**
  * Thao tác của Lãnh đạo dùng chung tại các phân hệ BTNN (thay cho màn Hồ sơ trình Lãnh đạo đã bỏ):
- * - Phân công (Chuyển đơn vị / Phân công cán bộ) - phân hệ Tiếp nhận yêu cầu
+ * - Phân công (Chuyển đơn vị / Phân công cán bộ) - phân hệ Tiếp nhận hồ sơ
  * - Phê duyệt / Từ chối phê duyệt phiếu trình - phân hệ Xác định cơ quan giải quyết bồi thường
  * - Thu hồi (khi bên nhận chưa xử lý)
  * Phụ thuộc: btnn_luong_xu_ly.js (BTNN_WF).
@@ -13,6 +13,7 @@
     let acting = null;
     let decisionMode = 'approve';
     let doneCb = null;
+    let assignOfficers = []; // cán bộ được phân công theo cấu hình của đơn vị đang phân công
 
     const CSS = `
     .ld-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); display: none; align-items: center; justify-content: center; z-index: 9500; }
@@ -42,13 +43,10 @@
         <div class="ld-modal-header"><h3><i class="fa-solid fa-diagram-project"></i> Phân công xử lý hồ sơ <span id="ldACode"></span></h3><span class="ld-close" data-close="ldAssignOverlay">&times;</span></div>
         <div class="ld-modal-body">
             <div class="ld-muted" id="ldAContext" style="margin-bottom:10px;"></div>
-            <span class="ld-label">Hình thức phân công<span class="ld-req">*</span></span>
-            <div class="ld-radio" id="ldAModeRow"></div>
+            <div class="ld-muted" id="ldANoConfig" style="display:none;">Đơn vị chưa được cấu hình hướng xử lý.</div>
             <div class="ld-group" id="ldAUnitBlock"><span class="ld-label">Đơn vị nhận<span class="ld-req">*</span></span><select id="ldAUnit" class="ld-input"></select><div class="ld-err" id="ldAUnitErr">Đây là trường bắt buộc</div></div>
-            <div id="ldAOfficerBlock">
-                <div class="ld-group"><span class="ld-label">Cán bộ chủ trì<span class="ld-req">*</span></span><select id="ldAChuTri" class="ld-input"></select><div class="ld-err" id="ldAChuTriErr">Đây là trường bắt buộc</div></div>
-                <div class="ld-group"><span class="ld-label">Cán bộ phối hợp</span><div class="ld-check" id="ldAPhoiHop"></div><div class="ld-hint">Cán bộ phối hợp được xem hồ sơ và bổ sung tài liệu; không được trình phê duyệt.</div></div>
-            </div>
+            <div class="ld-group" id="ldAOfficerBlock"><span class="ld-label">Cán bộ chủ trì<span class="ld-req">*</span></span><input type="text" id="ldAChuTriSearch" class="ld-input" placeholder="Tìm theo tên cán bộ..." style="margin-bottom:6px;"><select id="ldAChuTri" class="ld-input"></select><div class="ld-err" id="ldAChuTriErr">Đây là trường bắt buộc</div></div>
+            <div class="ld-hint" id="ldABothHint" style="display:none;">Chọn Đơn vị nhận hoặc Cán bộ chủ trì.</div>
             <div class="ld-group"><span class="ld-label">Ý kiến chỉ đạo</span><textarea id="ldANote" class="ld-input" rows="3" placeholder="Nhập ý kiến chỉ đạo..."></textarea></div>
         </div>
         <div class="ld-modal-footer"><button class="ld-btn" data-close="ldAssignOverlay">Hủy bỏ</button><button class="ld-btn primary" id="ldASubmit"><i class="fa-solid fa-paper-plane"></i> Xác nhận phân công</button></div>
@@ -73,7 +71,10 @@
         const st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st);
         const wrap = document.createElement('div'); wrap.innerHTML = HTML; document.body.appendChild(wrap);
         wrap.addEventListener('click', e => { const id = e.target.getAttribute && e.target.getAttribute('data-close'); if (id) close(id); });
-        document.getElementById('ldAChuTri').addEventListener('change', renderPhoiHop);
+        // Chọn một hướng thì xóa lựa chọn của hướng còn lại (đơn vị được cấu hình cả hai hướng)
+        document.getElementById('ldAUnit').addEventListener('change', e => { if (e.target.value) document.getElementById('ldAChuTri').value = ''; });
+        document.getElementById('ldAChuTri').addEventListener('change', e => { if (e.target.value) document.getElementById('ldAUnit').value = ''; });
+        document.getElementById('ldAChuTriSearch').addEventListener('input', renderChuTriOptions);
         document.getElementById('ldASubmit').addEventListener('click', submitAssign);
         document.getElementById('ldDSubmit').addEventListener('click', submitDecision);
     }
@@ -85,10 +86,20 @@
     }
     function finish() { if (typeof doneCb === 'function') doneCb(); }
 
-    // Tài khoản Lãnh đạo: thuộc Nhóm lãnh đạo của ít nhất 01 đơn vị tại Cấu hình luồng xử lý
+    // Tài khoản Lãnh đạo: thuộc Nhóm lãnh đạo của ít nhất 01 đơn vị tại Cấu hình luồng xử lý (xét cả 03 Loại luồng)
     function isLeaderUser(userId) {
-        const cfg = WF.getFlowConfig();
-        return Object.keys(cfg).some(root => Object.values(cfg[root]).some(n => (n.leaders || []).includes(userId)));
+        return WF.FLOW_TYPE_ORDER.some(ft => {
+            const cfg = WF.getFlowConfig(ft);
+            return Object.keys(cfg).some(root => Object.values(cfg[root]).some(n => (n.leaders || []).includes(userId)));
+        });
+    }
+    // Nguồn hồ sơ hiển thị: chuẩn hóa dữ liệu cũ về 04 giá trị Tiếp nhận mới / Dịch vụ công quốc gia / Chuyển CQGQBT / Xác định CQGQBT
+    function sourceOf(rec) {
+        const v = String((rec && rec.nguonHoSo) || '').trim();
+        const S = WF.SOURCES;
+        if (Object.values(S).includes(v)) return v;
+        if (/quốc gia|dịch vụ công|dvc/i.test(v)) return S.DVC;
+        return S.TIEP_NHAN;
     }
     // Lãnh đạo đã xử lý hồ sơ (phân công / chuyển đơn vị / phê duyệt / từ chối)
     function leaderActedOn(rec, userId, pattern) {
@@ -107,49 +118,51 @@
         if (!rec || !WF.canAssign(rec, me)) { notify('Hồ sơ đã được xử lý bởi người khác. Danh sách đã được tải lại.', false); finish(); return; }
         if (WF.markViewed(rec, me)) WF.upsertRecord(rec);
         acting = code;
-        const node = WF.getNodeConfig(rec.currentUnitId) || {};
+        const node = WF.getNodeConfig(rec.currentUnitId, WF.flowTypeOf(rec)) || {};
         document.getElementById('ldACode').textContent = code;
         document.getElementById('ldAContext').textContent = `Đơn vị đang phân công: ${WF.unitName(rec.currentUnitId)} - Người yêu cầu: ${rec.nycName || '--'}`;
-        const modes = [];
-        if (node.allowUnit && (node.units || []).length) modes.push(['unit', 'Chuyển đơn vị']);
-        if (node.allowOfficer && (node.officers || []).length) modes.push(['officer', 'Phân công cán bộ']);
-        const row = document.getElementById('ldAModeRow');
-        row.innerHTML = modes.map((m, i) => `<label><input type="radio" name="ldAMode" value="${m[0]}" ${i === 0 ? 'checked' : ''}> ${m[1]}</label>`).join('') || '<span class="ld-muted">Đơn vị chưa được cấu hình hướng xử lý.</span>';
-        row.querySelectorAll('input').forEach(r => r.addEventListener('change', toggleAssignMode));
+        // Hình thức phân công do hệ thống xác định theo cấu hình luồng của đơn vị đang phân công
+        const canUnit = !!(node.allowUnit && (node.units || []).length);
+        const canOfficer = !!(node.allowOfficer && (node.officers || []).length);
+        document.getElementById('ldAUnitBlock').style.display = canUnit ? 'block' : 'none';
+        document.getElementById('ldAOfficerBlock').style.display = canOfficer ? 'block' : 'none';
+        document.getElementById('ldABothHint').style.display = canUnit && canOfficer ? 'block' : 'none';
+        document.getElementById('ldANoConfig').style.display = canUnit || canOfficer ? 'none' : 'block';
+        assignOfficers = node.officers || [];
+        document.getElementById('ldAChuTriSearch').value = '';
         document.getElementById('ldAUnit').innerHTML = `<option value="">Chọn đơn vị nhận...</option>` + (node.units || []).map(u => `<option value="${esc(u)}">${esc(WF.unitName(u))}</option>`).join('');
-        document.getElementById('ldAChuTri').innerHTML = `<option value="">Chọn cán bộ chủ trì...</option>` + (node.officers || []).map(u => `<option value="${esc(u)}">${esc(WF.userLabel(u))}</option>`).join('');
+        document.getElementById('ldAChuTri').value = '';
+        renderChuTriOptions();
         document.getElementById('ldANote').value = '';
         ['ldAUnitErr', 'ldAChuTriErr'].forEach(id => { document.getElementById(id).style.display = 'none'; });
-        renderPhoiHop();
-        toggleAssignMode();
         open('ldAssignOverlay');
     }
-    function toggleAssignMode() {
-        const mode = (document.querySelector('input[name="ldAMode"]:checked') || {}).value;
-        document.getElementById('ldAUnitBlock').style.display = mode === 'unit' ? 'block' : 'none';
-        document.getElementById('ldAOfficerBlock').style.display = mode === 'officer' ? 'block' : 'none';
-    }
-    function renderPhoiHop() {
-        const rec = WF.getRecord(acting);
-        const node = (rec && WF.getNodeConfig(rec.currentUnitId)) || {};
-        const chuTri = document.getElementById('ldAChuTri').value;
-        const list = (node.officers || []).filter(u => u !== chuTri);
-        document.getElementById('ldAPhoiHop').innerHTML = list.map(u => `<label><input type="checkbox" value="${esc(u)}"> ${esc(WF.userLabel(u))}</label>`).join('') || '<span class="ld-muted">Không có cán bộ khác.</span>';
+    // Cán bộ chủ trì: lọc theo tên cán bộ, giữ lựa chọn đang có nếu vẫn khớp
+    function renderChuTriOptions() {
+        const sel = document.getElementById('ldAChuTri');
+        const cur = sel.value;
+        const q = document.getElementById('ldAChuTriSearch').value.trim().toLowerCase();
+        const list = assignOfficers.filter(u => !q || WF.userName(u).toLowerCase().includes(q));
+        sel.innerHTML = `<option value="">${list.length ? 'Chọn cán bộ chủ trì...' : 'Không tìm thấy cán bộ phù hợp'}</option>` + list.map(u => `<option value="${esc(u)}">${esc(WF.userLabel(u))}</option>`).join('');
+        if (list.includes(cur)) sel.value = cur;
     }
     function submitAssign() {
-        const mode = (document.querySelector('input[name="ldAMode"]:checked') || {}).value;
         const note = document.getElementById('ldANote').value.trim();
+        const unit = document.getElementById('ldAUnit').value;
+        const chuTri = document.getElementById('ldAChuTri').value;
+        const unitShown = document.getElementById('ldAUnitBlock').style.display !== 'none';
+        const officerShown = document.getElementById('ldAOfficerBlock').style.display !== 'none';
+        if (!unitShown && !officerShown) return;
         let res;
-        if (mode === 'unit') {
-            const unit = document.getElementById('ldAUnit').value;
-            if (!unit) { document.getElementById('ldAUnitErr').style.display = 'block'; return; }
+        if (unit) {
             res = WF.assignToUnit(acting, unit, note);
-        } else if (mode === 'officer') {
-            const chuTri = document.getElementById('ldAChuTri').value;
-            if (!chuTri) { document.getElementById('ldAChuTriErr').style.display = 'block'; return; }
-            const ph = Array.from(document.querySelectorAll('#ldAPhoiHop input:checked')).map(x => x.value);
-            res = WF.assignToOfficers(acting, chuTri, ph, note);
-        } else return;
+        } else if (chuTri) {
+            res = WF.assignToOfficers(acting, chuTri, [], note);
+        } else {
+            if (unitShown) document.getElementById('ldAUnitErr').style.display = 'block';
+            if (officerShown) document.getElementById('ldAChuTriErr').style.display = 'block';
+            return;
+        }
         close('ldAssignOverlay');
         notify(res.ok ? `Đã phân công hồ sơ ${acting}. Trạng thái: [${res.record.status}].` : res.message, res.ok);
         finish();
@@ -235,8 +248,9 @@
         const row = (k, v) => `<div style="color:#64748b; font-weight:600;">${esc(k)}</div><div>${v}</div>`;
         document.getElementById('ldDetTitle').textContent = `Chi tiết hồ sơ ${code}`;
         document.getElementById('ldDetBody').innerHTML = `<div style="display:grid; grid-template-columns:200px 1fr; gap:8px 14px; margin-bottom:14px;">
-            ${row('Mã vụ việc', `<strong style="color:#1e3a8a;">${esc(rec.code)}</strong>`)}
-            ${row('Loại yêu cầu', esc(rec.loaiYeuCau || '--'))}
+            ${row('Mã vụ việc', `<strong style="color:#1e3a8a;">${esc(rec.maVuViec || rec.code)}</strong>`)}
+            ${row('Loại hồ sơ', esc(rec.loaiYeuCau || '--'))}
+            ${row('Nguồn hồ sơ', esc(sourceOf(rec)))}
             ${row('Họ và tên người yêu cầu', `<strong>${esc(rec.nycName || '--')}</strong>`)}
             ${row('Thời điểm tiếp nhận', esc(rec.receivedAt || rec.date || '--'))}
             ${row('Đơn vị gốc', esc(WF.unitName(rec.rootUnitId)))}
@@ -254,5 +268,5 @@
         return /^(done|da-xu-ly)$/.test(t) ? 'done' : 'pending';
     }
 
-    global.BTNN_LD = { isLeaderUser, leaderActedOn, canRecall, openAssign, openDecision, confirmRecall, openRecordDetail, tabParam };
+    global.BTNN_LD = { isLeaderUser, sourceOf, leaderActedOn, canRecall, openAssign, openDecision, confirmRecall, openRecordDetail, tabParam };
 })(window);

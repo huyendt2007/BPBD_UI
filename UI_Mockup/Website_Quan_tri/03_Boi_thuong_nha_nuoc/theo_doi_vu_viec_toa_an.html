@@ -312,7 +312,7 @@
 
             <div id="noPermissionNotice" class="notice-box" style="display:none;">
                 <i class="fa-solid fa-triangle-exclamation"></i>
-                Đơn vị của bạn chưa được áp dụng Loại yêu cầu "Yêu cầu bồi thường" nên không được thêm mới, cập nhật hoặc xóa vụ việc tại Tòa án.
+                Đơn vị của bạn chưa được áp dụng Loại hồ sơ "Giải quyết yêu cầu bồi thường" nên không được thêm mới, cập nhật hoặc xóa vụ việc tại Tòa án.
             </div>
 
             <div class="filter-card">
@@ -861,7 +861,7 @@
         const SEED_KEY = "btnn_court_cases_seed";
         const SEED_VERSION = "v1";
         const FUNDING_KEY = "proposalsList";
-        const REQUEST_TYPE_YCBT = "Yêu cầu bồi thường";
+        const REQUEST_TYPE_YCBT = BTNN_WF.REQUEST_TYPE_YCBT || "Giải quyết yêu cầu bồi thường";
         const NBTH_ROLE = "Người bị thiệt hại";
 
         const STATUS_THU_LY = "Đã thụ lý";
@@ -957,7 +957,7 @@
             const btn = document.getElementById("btnAddNew");
             btn.disabled = !CAN_INPUT;
             btn.classList.toggle("disabled-action", !CAN_INPUT);
-            btn.title = CAN_INPUT ? "Thêm mới vụ việc tại Tòa án" : "Đơn vị chưa được áp dụng Loại yêu cầu \"Yêu cầu bồi thường\"";
+            btn.title = CAN_INPUT ? "Thêm mới vụ việc tại Tòa án" : "Đơn vị chưa được áp dụng Loại hồ sơ \"Giải quyết yêu cầu bồi thường\"";
         }
 
         // ===== Kho dữ liệu =====
@@ -1337,7 +1337,7 @@
         }
 
         function openCaseForm(id = null, readOnly = false) {
-            if (!id && !CAN_INPUT) { showToast("Đơn vị chưa được áp dụng Loại yêu cầu \"Yêu cầu bồi thường\", không được thêm mới vụ việc!", "error"); return; }
+            if (!id && !CAN_INPUT) { showToast("Đơn vị chưa được áp dụng Loại hồ sơ \"Giải quyết yêu cầu bồi thường\", không được thêm mới vụ việc!", "error"); return; }
             reloadCases();
             const rec = id ? cases.find(c => c.id === id) : null;
             if (id && !rec) return;

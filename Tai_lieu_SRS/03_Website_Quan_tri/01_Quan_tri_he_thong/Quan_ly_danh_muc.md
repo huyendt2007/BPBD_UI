@@ -23,7 +23,7 @@ Cho phép quản lý danh mục dữ liệu dùng chung (Master Data) của hệ
 
 ![Màn hình Tra cứu danh mục dùng chung](images/MH_DanhMuc_01_Danh_sach.png)
 
-![Màn hình Tra cứu danh mục dùng chung - Lọc Loại danh mục Loại yêu cầu](images/MH_DanhMuc_LoaiYeuCau_01_Danh_sach.png)
+![Màn hình Tra cứu danh mục dùng chung - Lọc Loại danh mục Loại hồ sơ](images/MH_DanhMuc_LoaiYeuCau_01_Danh_sach.png)
 
 ###### 4.3.1.5.2.2. Mô tả thông tin trên màn hình
 
@@ -71,7 +71,7 @@ Cho phép quản lý danh mục dữ liệu dùng chung (Master Data) của hệ
 
 ![Popup Thêm mới / Cập nhật Danh mục](images/MH_DanhMuc_02_Them_sua.png)
 
-![Popup Cập nhật Danh mục - Loại yêu cầu, trường Đơn vị áp dụng](images/MH_DanhMuc_LoaiYeuCau_02_Cap_nhat_Don_vi_ap_dung.png)
+![Popup Cập nhật Danh mục - Loại hồ sơ, trường Đơn vị áp dụng](images/MH_DanhMuc_LoaiYeuCau_02_Cap_nhat_Don_vi_ap_dung.png)
 
 ###### 4.3.1.5.3.2. Mô tả thông tin trên màn hình
 
@@ -109,7 +109,7 @@ Cho phép quản lý danh mục dữ liệu dùng chung (Master Data) của hệ
 
 ![Popup Xem chi tiết danh mục](images/MH_DanhMuc_03_Xem_chi_tiet.png)
 
-![Popup Xem chi tiết danh mục - Loại yêu cầu, trường Đơn vị áp dụng](images/MH_DanhMuc_LoaiYeuCau_03_Xem_chi_tiet.png)
+![Popup Xem chi tiết danh mục - Loại hồ sơ, trường Đơn vị áp dụng](images/MH_DanhMuc_LoaiYeuCau_03_Xem_chi_tiet.png)
 
 ###### 4.3.1.5.4.2. Mô tả thông tin trên màn hình
 
@@ -142,8 +142,8 @@ Cho phép quản lý danh mục dữ liệu dùng chung (Master Data) của hệ
 | STT | Nội dung | Quy tắc |
 | :--- | :--- | :--- |
 | 1 | Phân quyền theo đơn vị | Cấu hình theo từng Loại danh mục tại trường `Phân quyền theo đơn vị` (`Mở` / `Tắt`) của [MH02 - Popup Thêm mới / Cập nhật Loại danh mục - Quản lý loại danh mục - Quản trị hệ thống (Website Quản trị)](Quan_ly_loai_danh_muc.md).<br>- `Mở`: mỗi giá trị của Loại danh mục có trường `Đơn vị áp dụng`, bắt buộc, chọn 01 hoặc nhiều đơn vị trên cây Cơ cấu tổ chức.<br>- `Tắt`: giá trị của Loại danh mục không có trường `Đơn vị áp dụng` và không bị giới hạn theo đơn vị. |
-| 2 | Loại danh mục Loại yêu cầu | Mã `DM_54`, tên "Loại yêu cầu", dùng cho phân hệ Bồi thường nhà nước; `Phân quyền theo đơn vị` = `Mở`.<br>- Gồm 02 giá trị:<br>+ `LYC_01` - Xác định cơ quan giải quyết bồi thường.<br>+ `LYC_02` - Yêu cầu bồi thường.<br>- `LYC_01` chỉ gán cho Bộ Tư pháp và các Sở Tư pháp, nên chỉ Bộ Tư pháp và Sở Tư pháp thấy và xử lý yêu cầu Xác định cơ quan giải quyết bồi thường. |
+| 2 | Loại danh mục Loại hồ sơ | Mã `DM_54`, tên "Loại hồ sơ", dùng cho phân hệ Bồi thường nhà nước; `Phân quyền theo đơn vị` = `Mở`.<br>- Gồm 02 giá trị:<br>+ `LYC_01` - Xác định cơ quan giải quyết bồi thường.<br>+ `LYC_02` - Giải quyết yêu cầu bồi thường.<br>- `LYC_01` chỉ gán cho Bộ Tư pháp và các Sở Tư pháp, nên chỉ Bộ Tư pháp và Sở Tư pháp tiếp nhận và xử lý hồ sơ Xác định cơ quan giải quyết bồi thường. Ủy ban nhân dân cấp tỉnh chỉ xem hồ sơ Xác định cơ quan giải quyết bồi thường của Sở Tư pháp trực thuộc tại phân hệ Xác định cơ quan giải quyết bồi thường. |
 | 3 | Chọn đơn vị | Người dùng lọc cây đơn vị theo `Loại cơ quan` (Danh mục Loại cơ quan [DM_57]) và tìm theo Mã hoặc Tên đơn vị; thu gọn/mở rộng theo từng đơn vị trên cây; dùng `Chọn tất cả đơn vị` để chọn toàn bộ đơn vị thỏa điều kiện tìm kiếm. Chi tiết tại [MH02 - Popup Thêm mới / Cập nhật Danh mục - Quản lý danh mục dùng chung (Master Data) - Quản trị hệ thống (Website Quản trị)](#dm-mh02). |
 | 4 | Đơn vị cha | Chọn đơn vị cha thì giá trị áp dụng cho toàn bộ đơn vị trực thuộc các cấp.<br>- Trên cây, đơn vị con của đơn vị đã chọn hiển thị đã chọn, bị khóa, kèm nhãn "(áp dụng theo đơn vị cha)".<br>- Khi chọn đơn vị cha, các đơn vị con đã chọn riêng trước đó được bỏ khỏi dữ liệu lưu (chỉ lưu đơn vị cha). |
-| 5 | Hiệu lực tại các màn hình nghiệp vụ | Với Loại danh mục có `Phân quyền theo đơn vị` = `Mở`: ô chọn và bộ lọc dùng Loại danh mục đó ở mọi màn hình chỉ hiển thị giá trị ở trạng thái `Hoạt động` có Đơn vị áp dụng chứa đơn vị của người dùng hoặc một đơn vị cấp trên của đơn vị đó.<br>Loại yêu cầu [DM_54] áp dụng tại: [Tiếp nhận yêu cầu - Tiếp nhận yêu cầu - Bồi thường nhà nước (Website Quản trị)](../03_Cong_tac_boi_thuong/SRS_BTNN_GiaiQuyetBT_TiepNhan_YCBT.md); [Dashboard Lãnh đạo - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](../03_Cong_tac_boi_thuong/SRS_BTNN_ViecChoLanhDaoXuLy.md); [Xác định cơ quan giải quyết bồi thường - Xác định cơ quan giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](../03_Cong_tac_boi_thuong/SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md).<br>- Danh sách hồ sơ chỉ gồm hồ sơ có Loại yêu cầu áp dụng cho người dùng.<br>- Màn hình Xác định cơ quan giải quyết bồi thường: người dùng thuộc đơn vị không được áp dụng `LYC_01` thấy thông báo "Loại yêu cầu "Xác định cơ quan giải quyết bồi thường" không áp dụng cho đơn vị [Tên đơn vị] (Danh mục Loại yêu cầu - Đơn vị áp dụng). Chỉ Bộ Tư pháp và Sở Tư pháp được xử lý loại yêu cầu này." và không có nút "Tạo yêu cầu". |
+| 5 | Hiệu lực tại các màn hình nghiệp vụ | Với Loại danh mục có `Phân quyền theo đơn vị` = `Mở`: ô chọn và bộ lọc dùng Loại danh mục đó ở mọi màn hình chỉ hiển thị giá trị ở trạng thái `Hoạt động` có Đơn vị áp dụng chứa đơn vị của người dùng hoặc một đơn vị cấp trên của đơn vị đó.<br>Loại hồ sơ [DM_54] áp dụng tại: [Tiếp nhận hồ sơ - Tiếp nhận hồ sơ - Bồi thường nhà nước (Website Quản trị)](../03_Cong_tac_boi_thuong/SRS_BTNN_GiaiQuyetBT_TiepNhan_YCBT.md); [Dashboard Lãnh đạo - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](../03_Cong_tac_boi_thuong/SRS_BTNN_ViecChoLanhDaoXuLy.md); [Xác định cơ quan giải quyết bồi thường - Xác định cơ quan giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](../03_Cong_tac_boi_thuong/SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md).<br>- Danh sách hồ sơ chỉ gồm hồ sơ có Loại hồ sơ áp dụng cho người dùng.<br>- Màn hình Xác định cơ quan giải quyết bồi thường: người dùng thuộc Ủy ban nhân dân cấp tỉnh xem danh sách hồ sơ của Sở Tư pháp trực thuộc ở chế độ chỉ đọc; người dùng thuộc đơn vị khác không được áp dụng `LYC_01` thấy thông báo "Loại hồ sơ "Xác định cơ quan giải quyết bồi thường" không áp dụng cho đơn vị [Tên đơn vị] (Danh mục Loại hồ sơ - Đơn vị áp dụng). Chỉ Bộ Tư pháp và Sở Tư pháp được xử lý loại hồ sơ này." và không có nút "Tạo yêu cầu". |
 | 6 | Ghi chú | Quy tắc chọn đơn vị cha áp dụng cho đơn vị trực thuộc được áp dụng theo mặc định, chưa được xác nhận chính thức. |

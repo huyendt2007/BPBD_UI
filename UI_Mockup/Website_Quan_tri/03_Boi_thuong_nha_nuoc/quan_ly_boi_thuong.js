@@ -3858,7 +3858,7 @@
                 `;
             }
 
-            const nopKenhText = claim.claimNopKenh === 'buu-chinh' ? 'Gửi qua bưu điện/bưu chính' : claim.claimNopKenh === 'dvc' ? 'Đồng bộ từ Cổng Dịch vụ công trực tuyến' : 'Tiếp nhận trực tiếp tại một cửa';
+            const nopKenhText = claim.claimNopKenh === 'buu-chinh' ? 'Qua dịch vụ bưu chính' : claim.claimNopKenh === 'dvc' ? 'Qua môi trường số (Dịch vụ Công)' : 'Trực tiếp';
 
             container.innerHTML = `
                 <!-- Top Status Header Block -->
@@ -3910,7 +3910,7 @@
                         <i class="fa-solid fa-circle-info"></i> II. THÔNG TIN VỤ VIỆC GÂY THIỆT HẠI & CĂN CỨ
                     </div>
                     <div class="grid-3-cols" style="gap: 12px 20px; font-size: 13px; line-height: 1.6;">
-                        <div><strong style="color:var(--text-muted);">Hình thức tiếp nhận hồ sơ:</strong> <br>${nopKenhText}</div>
+                        <div><strong style="color:var(--text-muted);">Hình thức tiếp nhận:</strong> <br>${nopKenhText}</div>
                         <div><strong style="color:var(--text-muted);">Lĩnh vực phát sinh thiệt hại:</strong> <br><span style="text-transform:uppercase; font-weight:600; font-size:11px; color:var(--primary-color);">TRONG HOẠT ĐỘNG ${claim.fieldGroup.toUpperCase()}</span></div>
                         <div><strong style="color:var(--text-muted);">Cơ quan giải quyết bồi thường:</strong> <br>${claim.agency || '--'}</div>
                         <div style="grid-column: span 3;"><strong style="color:var(--text-muted);">Hành vi gây thiệt hại của người thi hành công vụ:</strong> <br><span style="color:var(--text-main); font-style:italic;">${claim.hanhVi}</span></div>

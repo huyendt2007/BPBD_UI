@@ -486,10 +486,10 @@
                         <label class="form-label" for="ycbtNopKenh">Hình thức tiếp nhận</label>
                         <select class="form-control" id="ycbtNopKenh">
                             <option value="">Tất cả</option>
-                            <option value="Tiếp nhận trực tiếp">Tiếp nhận trực tiếp</option>
-                            <option value="Nhận qua bưu điện/Bưu chính">Nhận qua bưu điện/Bưu chính</option>
-                            <option value="Dịch vụ công">Dịch vụ công</option>
-                            <option value="Cán bộ chủ động nhập theo tố tụng/thi hành án">Cán bộ chủ động nhập theo tố tụng/thi hành án</option>
+                            <option value="Qua môi trường số (Dịch vụ Công)">Qua môi trường số (Dịch vụ Công)</option>
+                            <option value="Trực tiếp">Trực tiếp</option>
+                            <option value="Bộ phận Một cửa">Bộ phận Một cửa</option>
+                            <option value="Qua dịch vụ bưu chính">Qua dịch vụ bưu chính</option>
                         </select>
                     </div>
                     <div class="form-block">
@@ -607,18 +607,18 @@
         };
 
         const fallbackClaims = [
-            { id: 'HS_WAIT_INPUT', code: 'BT-2026-020', date: '01/08/2026', updatedDate: '05/08/2026', nyc: 'Công ty An Phú', nycTinhThanh: 'Hà Nội', address: 'Số 12 Nguyễn Chí Thanh, Ba Đình, Hà Nội', hanhVi: 'Thu hồi giấy phép kinh doanh không đúng căn cứ pháp luật.', fieldGroup: 'hành chính', agency: 'Sở Tư pháp Hà Nội', assignedOfficer: '', status: 'Chờ nhập liệu', deadline: '30/08/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 0, restoreHonor: false },
-            { id: 'HS_SUPPLEMENT', code: 'BT-2026-021', date: '02/08/2026', updatedDate: '06/08/2026', nyc: 'Nguyễn Văn D', nycTinhThanh: 'Đà Nẵng', address: 'Tổ 8 phường Hải Châu, Đà Nẵng', hanhVi: 'Cưỡng chế hành chính sai đối tượng.', fieldGroup: 'hành chính', agency: 'UBND Quận Hải Châu', assignedOfficer: 'Lê Văn Chuyên Viên', status: 'Yêu cầu bổ sung', deadline: '25/08/2026', nopKenh: 'Dịch vụ công', totalNum: 65000000, restoreHonor: false },
-            { id: 'HS_CHECK', code: 'BT-2026-022', date: '03/08/2026', updatedDate: '06/08/2026', nyc: 'Công ty Hòa Bình', nycTinhThanh: 'Hải Phòng', address: 'Số 7 Lạch Tray, Ngô Quyền, Hải Phòng', hanhVi: 'Kê biên tài sản của bên thứ ba không có nghĩa vụ.', fieldGroup: 'thi hành án dân sự', agency: 'Cục Thi hành án dân sự TP. Hải Phòng', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Chờ thụ lý', deadline: '28/08/2026', nopKenh: 'Nhận qua bưu điện/Bưu chính', totalNum: 185000000, restoreHonor: false },
-            { id: 'HS_REJECT', code: 'BT-2026-023', date: '25/07/2026', updatedDate: '02/08/2026', nyc: 'Vũ Văn L', nycTinhThanh: 'Bắc Ninh', address: 'Phường Võ Cường, Bắc Ninh', hanhVi: 'Yêu cầu chưa có văn bản làm căn cứ yêu cầu bồi thường.', fieldGroup: 'hành chính', agency: 'Sở Tư pháp Bắc Ninh', assignedOfficer: 'Phạm Minh Chuyên Viên', status: 'Bị từ chối', deadline: '15/08/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 0, restoreHonor: false },
-            { id: 'HS_THULY', code: 'BT-2026-018', date: '22/07/2026', updatedDate: '03/08/2026', nyc: 'Lê Văn H', nycTinhThanh: 'Hà Nội', address: 'Số 41 Trần Phú, Hà Đông, Hà Nội', hanhVi: 'Tạm giữ người không đúng trình tự tố tụng.', fieldGroup: 'hình sự', agency: 'Viện kiểm sát nhân dân TP. Hà Nội', assignedOfficer: '', status: 'Chờ thụ lý', deadline: '18/08/2026', nopKenh: 'Cán bộ chủ động nhập theo tố tụng/thi hành án', totalNum: 210000000, restoreHonor: false },
-            { id: 'HS_VERIFY', code: 'BT-2026-007', date: '15/07/2026', updatedDate: '04/08/2026', nyc: 'Hoàng Văn R', nycTinhThanh: 'Khánh Hòa', address: 'Phường Phước Hải, Nha Trang, Khánh Hòa', hanhVi: 'Tạm giữ phương tiện kinh doanh trái quy định.', fieldGroup: 'hành chính', agency: 'Tòa án nhân dân TP. Nha Trang', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Đang xác minh thiệt hại', deadline: '26/09/2026', nopKenh: 'Dịch vụ công', totalNum: 90000000, restoreHonor: false },
-            { id: 'HS_PAUSE', code: 'BT-2026-001', date: '12/07/2026', updatedDate: '05/08/2026', nyc: 'Hoàng Thị H', nycTinhThanh: 'Hồ Chí Minh', address: 'Số 18 Nguyễn Du, Quận 1, TP. Hồ Chí Minh', hanhVi: 'Áp dụng biện pháp xử phạt và cưỡng chế trái pháp luật.', fieldGroup: 'hành chính', agency: 'Công an Quận 1, TP. HCM', assignedOfficer: 'Lê Văn Chuyên Viên', status: 'Đang thương lượng', deadline: '18/09/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 185000000, restoreHonor: false },
-            { id: 'HS_STOP', code: 'BT-2026-010', date: '08/07/2026', updatedDate: '04/08/2026', nyc: 'Công ty Minh An', nycTinhThanh: 'Hà Nội', address: 'Tầng 5, tòa nhà Vân Hồ, Hai Bà Trưng, Hà Nội', hanhVi: 'Thi hành án dân sự sai đối tượng tài sản.', fieldGroup: 'thi hành án dân sự', agency: 'Cục Thi hành án dân sự Hà Nội', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Thương lượng không thành công', deadline: '25/09/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 620000000, restoreHonor: false },
-            { id: 'HS_DONE', code: 'BT-2026-008', date: '02/06/2026', updatedDate: '05/08/2026', nyc: 'Nguyễn Văn F', nycTinhThanh: 'Hà Nội', address: 'Số 5 Nguyễn Trãi, Thanh Xuân, Hà Nội', hanhVi: 'Không thống nhất được mức tiền bồi thường sau xác minh.', fieldGroup: 'hình sự', agency: 'Công an Quận Thanh Xuân', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Hoàn thành', deadline: '15/08/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 120000000, restoreHonor: false },
-            { id: 'HS_PHDD_1', code: 'BT-2026-010-TDC', date: '07/07/2026', updatedDate: '06/08/2026', nyc: 'Đặng Văn T', nycTinhThanh: 'Hà Nội', address: 'Số 33 Kim Mã, Ba Đình, Hà Nội', hanhVi: 'Đình chỉ điều tra không đúng thời điểm làm ảnh hưởng danh dự.', fieldGroup: 'hình sự', agency: 'Viện kiểm sát nhân dân TP. Hà Nội', assignedOfficer: 'Lê Văn Chuyên Viên', status: 'Tạm đình chỉ giải quyết', deadline: '22/09/2026', nopKenh: 'Dịch vụ công', totalNum: 260000000, restoreHonor: true, phddForm: 'Cả hai hình thức', phddDateExp: '22/09/2026' },
-            { id: 'HS_PHDD_2', code: 'BT-2026-012', date: '14/06/2026', updatedDate: '05/08/2026', nyc: 'Lê Văn H', nycTinhThanh: 'Hà Nội', address: 'Số 9 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội', hanhVi: 'Bản án oan sai trong hoạt động tố tụng hình sự.', fieldGroup: 'hình sự', agency: 'Tòa án nhân dân TP. Hà Nội', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Chờ thực thi', deadline: '30/08/2026', nopKenh: 'Cán bộ chủ động nhập theo tố tụng/thi hành án', totalNum: 350000000, restoreHonor: true, phddForm: 'Đăng báo', phddDateExp: '25/08/2026' },
-            { id: 'HS_PHDD_3', code: 'BT-2026-013', date: '10/05/2026', updatedDate: '03/08/2026', nyc: 'Công ty Hải Phát', nycTinhThanh: 'Hà Nội', address: 'Khu đô thị mới Cầu Giấy, Hà Nội', hanhVi: 'Công bố thông tin xử lý vi phạm không đúng sự thật.', fieldGroup: 'hành chính', agency: 'UBND Quận Cầu Giấy', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Hoàn thành', deadline: '10/07/2026', nopKenh: 'Tiếp nhận trực tiếp', totalNum: 0, restoreHonor: true, phddForm: 'Cả hai hình thức', phddDateExp: '10/07/2026', phddStep4DateAct: '02/08/2026' }
+            { id: 'HS_WAIT_INPUT', code: 'BT-2026-020', date: '01/08/2026', updatedDate: '05/08/2026', nyc: 'Công ty An Phú', nycTinhThanh: 'Hà Nội', address: 'Số 12 Nguyễn Chí Thanh, Ba Đình, Hà Nội', hanhVi: 'Thu hồi giấy phép kinh doanh không đúng căn cứ pháp luật.', fieldGroup: 'hành chính', agency: 'Sở Tư pháp Hà Nội', assignedOfficer: '', status: 'Chờ nhập liệu', deadline: '30/08/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 0, restoreHonor: false },
+            { id: 'HS_SUPPLEMENT', code: 'BT-2026-021', date: '02/08/2026', updatedDate: '06/08/2026', nyc: 'Nguyễn Văn D', nycTinhThanh: 'Đà Nẵng', address: 'Tổ 8 phường Hải Châu, Đà Nẵng', hanhVi: 'Cưỡng chế hành chính sai đối tượng.', fieldGroup: 'hành chính', agency: 'UBND Quận Hải Châu', assignedOfficer: 'Lê Văn Chuyên Viên', status: 'Yêu cầu bổ sung', deadline: '25/08/2026', hinhThucTiepNhan: 'Qua môi trường số (Dịch vụ Công)', totalNum: 65000000, restoreHonor: false },
+            { id: 'HS_CHECK', code: 'BT-2026-022', date: '03/08/2026', updatedDate: '06/08/2026', nyc: 'Công ty Hòa Bình', nycTinhThanh: 'Hải Phòng', address: 'Số 7 Lạch Tray, Ngô Quyền, Hải Phòng', hanhVi: 'Kê biên tài sản của bên thứ ba không có nghĩa vụ.', fieldGroup: 'thi hành án dân sự', agency: 'Cục Thi hành án dân sự TP. Hải Phòng', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Chờ thụ lý', deadline: '28/08/2026', hinhThucTiepNhan: 'Qua dịch vụ bưu chính', totalNum: 185000000, restoreHonor: false },
+            { id: 'HS_REJECT', code: 'BT-2026-023', date: '25/07/2026', updatedDate: '02/08/2026', nyc: 'Vũ Văn L', nycTinhThanh: 'Bắc Ninh', address: 'Phường Võ Cường, Bắc Ninh', hanhVi: 'Yêu cầu chưa có văn bản làm căn cứ yêu cầu bồi thường.', fieldGroup: 'hành chính', agency: 'Sở Tư pháp Bắc Ninh', assignedOfficer: 'Phạm Minh Chuyên Viên', status: 'Bị từ chối', deadline: '15/08/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 0, restoreHonor: false },
+            { id: 'HS_THULY', code: 'BT-2026-018', date: '22/07/2026', updatedDate: '03/08/2026', nyc: 'Lê Văn H', nycTinhThanh: 'Hà Nội', address: 'Số 41 Trần Phú, Hà Đông, Hà Nội', hanhVi: 'Tạm giữ người không đúng trình tự tố tụng.', fieldGroup: 'hình sự', agency: 'Viện kiểm sát nhân dân TP. Hà Nội', assignedOfficer: '', status: 'Chờ thụ lý', deadline: '18/08/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 210000000, restoreHonor: false },
+            { id: 'HS_VERIFY', code: 'BT-2026-007', date: '15/07/2026', updatedDate: '04/08/2026', nyc: 'Hoàng Văn R', nycTinhThanh: 'Khánh Hòa', address: 'Phường Phước Hải, Nha Trang, Khánh Hòa', hanhVi: 'Tạm giữ phương tiện kinh doanh trái quy định.', fieldGroup: 'hành chính', agency: 'Tòa án nhân dân TP. Nha Trang', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Đang xác minh thiệt hại', deadline: '26/09/2026', hinhThucTiepNhan: 'Qua môi trường số (Dịch vụ Công)', totalNum: 90000000, restoreHonor: false },
+            { id: 'HS_PAUSE', code: 'BT-2026-001', date: '12/07/2026', updatedDate: '05/08/2026', nyc: 'Hoàng Thị H', nycTinhThanh: 'Hồ Chí Minh', address: 'Số 18 Nguyễn Du, Quận 1, TP. Hồ Chí Minh', hanhVi: 'Áp dụng biện pháp xử phạt và cưỡng chế trái pháp luật.', fieldGroup: 'hành chính', agency: 'Công an Quận 1, TP. HCM', assignedOfficer: 'Lê Văn Chuyên Viên', status: 'Đang thương lượng', deadline: '18/09/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 185000000, restoreHonor: false },
+            { id: 'HS_STOP', code: 'BT-2026-010', date: '08/07/2026', updatedDate: '04/08/2026', nyc: 'Công ty Minh An', nycTinhThanh: 'Hà Nội', address: 'Tầng 5, tòa nhà Vân Hồ, Hai Bà Trưng, Hà Nội', hanhVi: 'Thi hành án dân sự sai đối tượng tài sản.', fieldGroup: 'thi hành án dân sự', agency: 'Cục Thi hành án dân sự Hà Nội', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Thương lượng không thành công', deadline: '25/09/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 620000000, restoreHonor: false },
+            { id: 'HS_DONE', code: 'BT-2026-008', date: '02/06/2026', updatedDate: '05/08/2026', nyc: 'Nguyễn Văn F', nycTinhThanh: 'Hà Nội', address: 'Số 5 Nguyễn Trãi, Thanh Xuân, Hà Nội', hanhVi: 'Không thống nhất được mức tiền bồi thường sau xác minh.', fieldGroup: 'hình sự', agency: 'Công an Quận Thanh Xuân', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Hoàn thành', deadline: '15/08/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 120000000, restoreHonor: false },
+            { id: 'HS_PHDD_1', code: 'BT-2026-010-TDC', date: '07/07/2026', updatedDate: '06/08/2026', nyc: 'Đặng Văn T', nycTinhThanh: 'Hà Nội', address: 'Số 33 Kim Mã, Ba Đình, Hà Nội', hanhVi: 'Đình chỉ điều tra không đúng thời điểm làm ảnh hưởng danh dự.', fieldGroup: 'hình sự', agency: 'Viện kiểm sát nhân dân TP. Hà Nội', assignedOfficer: 'Lê Văn Chuyên Viên', status: 'Tạm đình chỉ giải quyết', deadline: '22/09/2026', hinhThucTiepNhan: 'Bộ phận Một cửa', totalNum: 260000000, restoreHonor: true, phddForm: 'Cả hai hình thức', phddDateExp: '22/09/2026' },
+            { id: 'HS_PHDD_2', code: 'BT-2026-012', date: '14/06/2026', updatedDate: '05/08/2026', nyc: 'Lê Văn H', nycTinhThanh: 'Hà Nội', address: 'Số 9 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội', hanhVi: 'Bản án oan sai trong hoạt động tố tụng hình sự.', fieldGroup: 'hình sự', agency: 'Tòa án nhân dân TP. Hà Nội', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Chờ thực thi', deadline: '30/08/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 350000000, restoreHonor: true, phddForm: 'Đăng báo', phddDateExp: '25/08/2026' },
+            { id: 'HS_PHDD_3', code: 'BT-2026-013', date: '10/05/2026', updatedDate: '03/08/2026', nyc: 'Công ty Hải Phát', nycTinhThanh: 'Hà Nội', address: 'Khu đô thị mới Cầu Giấy, Hà Nội', hanhVi: 'Công bố thông tin xử lý vi phạm không đúng sự thật.', fieldGroup: 'hành chính', agency: 'UBND Quận Cầu Giấy', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Hoàn thành', deadline: '10/07/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 0, restoreHonor: true, phddForm: 'Cả hai hình thức', phddDateExp: '10/07/2026', phddStep4DateAct: '02/08/2026' }
         ];
 
         let allClaims = [];
@@ -758,6 +758,17 @@
             return spreadLookupDates(fallbackClaims);
         }
 
+        // Hình thức tiếp nhận (Danh mục DM_25): 04 giá trị Qua môi trường số (Dịch vụ Công) / Trực tiếp / Bộ phận Một cửa / Qua dịch vụ bưu chính (chuẩn hóa giá trị cũ)
+        const HTTN = (window.BTNN_WF && window.BTNN_WF.RECEIVE_METHODS) || { MOI_TRUONG_SO: 'Qua môi trường số (Dịch vụ Công)', TRUC_TIEP: 'Trực tiếp', MOT_CUA: 'Bộ phận Một cửa', BUU_CHINH: 'Qua dịch vụ bưu chính' };
+        const HTTN_BADGE = { [HTTN.MOI_TRUONG_SO]: 'badge-success', [HTTN.TRUC_TIEP]: 'badge-draft', [HTTN.MOT_CUA]: 'badge-info', [HTTN.BUU_CHINH]: 'badge-warning' };
+        function normalizeHinhThucTiepNhan(v) {
+            const s = String(v || '');
+            if (/bưu/i.test(s)) return HTTN.BUU_CHINH;
+            if (/dịch vụ công|môi trường số|dvc/i.test(s)) return HTTN.MOI_TRUONG_SO;
+            if (/một cửa/i.test(s)) return HTTN.MOT_CUA;
+            return HTTN.TRUC_TIEP;
+        }
+
         function normalizeClaims(claims) {
             const seen = new Set();
             return claims.map(item => {
@@ -769,7 +780,7 @@
                     address: item.address || item.addressDetail || item.nycAddressDetail || 'Chưa có thông tin',
                     assignedOfficer: item.assignedOfficer || item.officerName || item.processor || '',
                     updatedDate: item.updatedDate || getLastTimelineDate(item) || item.date || '',
-                    nopKenh: item.nopKenh || item.receiveMethod || 'Tiếp nhận trực tiếp',
+                    hinhThucTiepNhan: normalizeHinhThucTiepNhan(item.hinhThucTiepNhan || item.nopKenh || item.receiveMethod || item.nguonHoSo),
                     status
                 };
             }).filter(item => {
@@ -1050,7 +1061,7 @@
                 if (agency && !normalizeText(item.agency).includes(agency)) return false;
                 if (fieldGroup && item.fieldGroup !== fieldGroup) return false;
                 if (!matchesStatus(item, status, group)) return false;
-                if (nopKenh && (item.nopKenh || 'Tiếp nhận trực tiếp') !== nopKenh) return false;
+                if (nopKenh && item.hinhThucTiepNhan !== nopKenh) return false;
                 const itemDate = parseDateVi(item.date);
                 if (fromDate && itemDate && itemDate < fromDate) return false;
                 if (toDate && itemDate && itemDate > toDate) return false;
@@ -1117,7 +1128,7 @@
                     <td>${escapeHtml(item.assignedOfficer || 'Chưa phân công')}</td>
                     <td style="text-align:center;">${escapeHtml(item.date || '--')}</td>
                     <td style="text-align:center; color:#b45309; font-weight:600;">${escapeHtml(item.deadline || '--')}</td>
-                    <td style="text-align:center;"><span class="badge badge-info">${escapeHtml(item.nopKenh || 'Tiếp nhận trực tiếp')}</span></td>
+                    <td style="text-align:center;"><span class="badge ${HTTN_BADGE[item.hinhThucTiepNhan] || 'badge-draft'}">${escapeHtml(item.hinhThucTiepNhan || HTTN.TRUC_TIEP)}</span></td>
                     <td style="text-align:center;">${statusBadge(item.status || '--')}</td>
                     <td style="text-align:center;">${escapeHtml(item.updatedDate || '--')}</td>
                 `;

@@ -1017,8 +1017,9 @@
             { code: "DM_19", name: "Danh mục Căn cứ xóa đăng ký", status: "Đang hoạt động" },
             { code: "DM_20", name: "Danh mục Căn cứ hủy đăng ký", status: "Đang hoạt động" },
             { code: "DM_21", name: "Loại văn bản quy phạm pháp luật", status: "Đang hoạt động" },
+            { code: "DM_25", name: "Hình thức tiếp nhận", description: "Dùng cho phân hệ Bồi thường nhà nước", status: "Đang hoạt động" },
             { code: "DM_26", name: "Tư cách người yêu cầu bồi thường", status: "Đang hoạt động" },
-            { code: "DM_54", name: "Loại yêu cầu", status: "Đang hoạt động", phanQuyenDonVi: true },
+            { code: "DM_54", name: "Loại hồ sơ", status: "Đang hoạt động", phanQuyenDonVi: true },
             { code: "DM_55", name: "Lý do không thụ lý hồ sơ yêu cầu bồi thường", status: "Đang hoạt động" },
             { code: "DM_56", name: "Loại CSDL nguồn", status: "Đang hoạt động" },
             { code: "DM_57", name: "Loại cơ quan", parentTypeCode: "", status: "Đang hoạt động" },
@@ -1165,15 +1166,20 @@
             { typeCode: "DM_21", code: "VB_06", name: "Chỉ thị", nameEn: "Directive", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             { typeCode: "DM_21", code: "VB_07", name: "Thông tư liên tịch", nameEn: "Joint Circular", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             { typeCode: "DM_21", code: "VB_08", name: "Khác", nameEn: "Other", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            // DM_25 (Hình thức tiếp nhận) - Danh mục dùng chung phân hệ Bồi thường nhà nước; form Tiếp nhận mới chỉ cho chọn Trực tiếp, Qua dịch vụ bưu chính
+            { typeCode: "DM_25", code: "HTTN_01", name: "Qua môi trường số (Dịch vụ Công)", nameEn: "Via digital environment (Public Service Portal)", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_25", code: "HTTN_02", name: "Trực tiếp", nameEn: "In person", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_25", code: "HTTN_03", name: "Bộ phận Một cửa", nameEn: "One-stop shop", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_25", code: "HTTN_04", name: "Qua dịch vụ bưu chính", nameEn: "Via postal service", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             // DM_26 (Tư cách người yêu cầu bồi thường) - Căn cứ Điều 5 Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14
             { typeCode: "DM_26", code: "TCNYC_01", name: "Người bị thiệt hại", nameEn: "Aggrieved person", val: "", valEn: "", parentCode: "", notes: "Người trực tiếp bị thiệt hại do người thi hành công vụ gây ra", status: "Hoạt động" },
             { typeCode: "DM_26", code: "TCNYC_02", name: "Người thừa kế của người bị thiệt hại", nameEn: "Heir of the aggrieved person", val: "", valEn: "", parentCode: "", notes: "Trường hợp người bị thiệt hại chết thì người thừa kế của họ có quyền yêu cầu bồi thường", status: "Hoạt động" },
             { typeCode: "DM_26", code: "TCNYC_03", name: "Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại", nameEn: "Successor organization to rights and obligations of dissolved organization", val: "", valEn: "", parentCode: "", notes: "Trường hợp tổ chức bị thiệt hại đã chấm dứt tồn tại thì tổ chức kế thừa quyền, nghĩa vụ có quyền yêu cầu bồi thường", status: "Hoạt động" },
             { typeCode: "DM_26", code: "TCNYC_04", name: "Người đại diện theo pháp luật của người bị thiệt hại", nameEn: "Legal representative of the aggrieved person", val: "", valEn: "", parentCode: "", notes: "Trường hợp người bị thiệt hại chưa thành niên, mất năng lực hành vi dân sự, có khó khăn trong nhận thức, làm chủ hành vi, bị hạn chế năng lực hành vi dân sự", status: "Hoạt động" },
             { typeCode: "DM_26", code: "TCNYC_05", name: "Cá nhân, pháp nhân được ủy quyền hợp pháp", nameEn: "Lawfully authorized individual or legal entity", val: "", valEn: "", parentCode: "", notes: "Cá nhân, pháp nhân được những người quy định tại các khoản 1, 2, 3 Điều 5 ủy quyền hợp pháp thực hiện quyền yêu cầu bồi thường", status: "Hoạt động" },
-            // DM_54 (Loại yêu cầu) - phân quyền theo Đơn vị áp dụng
-            { typeCode: "DM_54", code: "LYC_01", name: "Xác định cơ quan giải quyết bồi thường", nameEn: "Determination of the compensation-settling agency", val: "", valEn: "", parentCode: "", notes: "Bộ Tư pháp, Sở Tư pháp và UBND cấp tỉnh xử lý", status: "Hoạt động", donViApDung: ["BTP-01", "STP-HN", "STP-HCM", "UBND-HN", "UBND-LD"], ubndTinhV1: true },
-            { typeCode: "DM_54", code: "LYC_02", name: "Yêu cầu bồi thường", nameEn: "Compensation claim", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động", donViApDung: BTNN_WF.getRootUnits().map(u => u.id) },
+            // DM_54 (Loại hồ sơ) - phân quyền theo Đơn vị áp dụng
+            { typeCode: "DM_54", code: "LYC_01", name: "Xác định cơ quan giải quyết bồi thường", nameEn: "Determination of the compensation-settling agency", val: "", valEn: "", parentCode: "", notes: "Chỉ Bộ Tư pháp và Sở Tư pháp xử lý; UBND cấp tỉnh chỉ xem hồ sơ của Sở Tư pháp trực thuộc", status: "Hoạt động", donViApDung: ["BTP-01", "STP-HN", "STP-HCM"], ubndTinhV2: true },
+            { typeCode: "DM_54", code: "LYC_02", name: "Giải quyết yêu cầu bồi thường", nameEn: "Compensation claim settlement", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động", donViApDung: BTNN_WF.getRootUnits().map(u => u.id) },
             // DM_55 (Lý do không thụ lý hồ sơ yêu cầu bồi thường) - Điều 43 Luật TNBTCNN số 10/2017/QH14
             { typeCode: "DM_55", code: "KTL_01", name: "Yêu cầu bồi thường không thuộc thẩm quyền giải quyết của mình (Điểm a Khoản 1 Điều 43)", nameEn: "The claim is not under the agency's jurisdiction (Point a, Clause 1, Article 43)", val: "", valEn: "", parentCode: "", notes: "Cho phép chuyển cơ quan giải quyết bồi thường", status: "Hoạt động" },
             { typeCode: "DM_55", code: "KTL_02", name: "Thời hiệu yêu cầu bồi thường đã hết (Điểm b Khoản 1 Điều 43)", nameEn: "The statute of limitations has expired (Point b, Clause 1, Article 43)", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
@@ -1519,16 +1525,25 @@
                 localStorage.setItem('categoryTypes', JSON.stringify(DEFAULT_TYPES));
                 localStorage.setItem('masterCategories', JSON.stringify(INITIAL_CATEGORIES));
             }
-            // Bổ sung loại danh mục mới (DM_26 Tư cách người yêu cầu, DM_54 Loại yêu cầu, DM_55 Lý do không thụ lý) vào dữ liệu đã lưu, không làm mất dữ liệu cũ
+            // Bổ sung loại danh mục mới (DM_25 Hình thức tiếp nhận, DM_26 Tư cách người yêu cầu, DM_54 Loại hồ sơ, DM_55 Lý do không thụ lý) vào dữ liệu đã lưu, không làm mất dữ liệu cũ
             const savedTypes = JSON.parse(localStorage.getItem('categoryTypes'));
             const savedCats = JSON.parse(localStorage.getItem('masterCategories'));
             DEFAULT_TYPES.filter(d => !savedTypes.some(s => s.code === d.code)).forEach(d => savedTypes.push(d));
-            INITIAL_CATEGORIES.filter(d => ['DM_26', 'DM_54', 'DM_55', 'DM_56', 'DM_57', 'DM_58'].includes(d.typeCode) && !savedCats.some(s => s.typeCode === d.typeCode && s.code === d.code)).forEach(d => savedCats.push(JSON.parse(JSON.stringify(d))));
+            INITIAL_CATEGORIES.filter(d => ['DM_25', 'DM_26','DM_54', 'DM_55', 'DM_56', 'DM_57', 'DM_58'].includes(d.typeCode) && !savedCats.some(s => s.typeCode === d.typeCode && s.code === d.code)).forEach(d => savedCats.push(JSON.parse(JSON.stringify(d))));
             // Bổ sung các đơn vị gốc mới vào Đơn vị áp dụng của Yêu cầu bồi thường (dữ liệu lưu từ phiên bản trước)
             const lyc02 = savedCats.find(c => c.typeCode === 'DM_54' && c.code === 'LYC_02');
             if (lyc02 && !lyc02.donViApDungV2) { lyc02.donViApDung = BTNN_WF.getRootUnits().map(u => u.id); lyc02.donViApDungV2 = true; }
-            // Danh mục Loại cơ quan (DM_57), Chức vụ (DM_58): đổi tên loại danh mục
+            // Loại hồ sơ (DM_54): LYC_02 đổi tên Giải quyết yêu cầu bồi thường; LYC_01 chỉ áp dụng Bộ Tư pháp, Sở Tư pháp (bỏ UBND cấp tỉnh)
+            if (lyc02 && lyc02.name === 'Yêu cầu bồi thường') { lyc02.name = 'Giải quyết yêu cầu bồi thường'; lyc02.nameEn = 'Compensation claim settlement'; }
+            const lyc01 = savedCats.find(c => c.typeCode === 'DM_54' && c.code === 'LYC_01');
+            if (lyc01 && !lyc01.ubndTinhV2) {
+                lyc01.donViApDung = (lyc01.donViApDung || []).filter(u => !/^UBND/.test(u));
+                lyc01.notes = 'Chỉ Bộ Tư pháp và Sở Tư pháp xử lý; UBND cấp tỉnh chỉ xem hồ sơ của Sở Tư pháp trực thuộc';
+                lyc01.ubndTinhV2 = true;
+            }
+            // Danh mục Loại hồ sơ (DM_54), Loại cơ quan (DM_57), Chức vụ (DM_58): đổi tên loại danh mục
             savedTypes.forEach(t => {
+                if (t.code === 'DM_54' && t.name === 'Loại yêu cầu') t.name = 'Loại hồ sơ';
                 if (t.code === 'DM_57') t.name = 'Loại cơ quan';
                 if (t.code === 'DM_58') t.name = 'Chức vụ';
                 if (t.code === 'DM_58' && !t.parentTypeCode) t.parentTypeCode = 'DM_57';
@@ -1542,7 +1557,7 @@
                 INITIAL_CATEGORIES.filter(d => d.typeCode === 'DM_57' || d.typeCode === 'DM_58').forEach(d => savedCats.push(JSON.parse(JSON.stringify(d))));
                 localStorage.setItem('dmLoaiCoQuanSeedV', 'v4');
             }
-            // Phân quyền theo đơn vị (cấu hình tại Quản lý loại danh mục): Loại yêu cầu (DM_54) mặc định Mở
+            // Phân quyền theo đơn vị (cấu hình tại Quản lý loại danh mục): Loại hồ sơ (DM_54) mặc định Mở
             savedTypes.forEach(t => { if (t.phanQuyenDonVi === undefined) t.phanQuyenDonVi = t.code === 'DM_54'; });
             localStorage.setItem('categoryTypes', JSON.stringify(savedTypes));
             localStorage.setItem('masterCategories', JSON.stringify(savedCats));

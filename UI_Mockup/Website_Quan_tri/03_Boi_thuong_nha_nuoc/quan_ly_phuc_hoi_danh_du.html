@@ -629,10 +629,10 @@
                     </div>
                 </div>
                 <div>
-                    <span class="form-label">Hình thức tiếp nhận hồ sơ *</span>
+                    <span class="form-label">Hình thức tiếp nhận *</span>
                     <select class="form-control" id="cReceiveMethod">
                         <option value="Trực tiếp" selected>Trực tiếp</option>
-                        <option value="Nhận qua bưu điện/bưu chính">Nhận qua bưu điện/bưu chính</option>
+                        <option value="Qua dịch vụ bưu chính">Qua dịch vụ bưu chính</option>
                     </select>
                 </div>
                 <div>
@@ -1769,10 +1769,10 @@
         const INITIAL_MOCK_DATA = [
             // --- TAB VỤ VIỆC CHỜ XỬ LÝ (8 BẢN GHI) ---
             { id: "PHDD-2026-901", code: "PHDD-2026-901", relatedCode: "BT-2026-001", nyc: "Nguyễn Văn Tuấn", agency: "Sở Tư pháp Hà Nội", type: "Cả hai hình thức", status: "Chờ thông báo", deadline: "15/11/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "12/10/2026", docNo: "", docDate: "", signer: "", opinion: "", step: 1, fieldArea: "Tố tụng hình sự", receiveMethod: "Trực tiếp" },
-            { id: "PHDD-2026-902", code: "PHDD-2026-902", relatedCode: "BT-2026-002", nyc: "Trần Thị Lan", agency: "Tòa án nhân dân TP. Hà Nội", type: "Đăng báo xin lỗi", status: "Chờ phản hồi", deadline: "20/10/2026", deadlineStatus: "🟡 Sắp hết hạn (8 ngày)", updatedDate: "10/10/2026", docNo: "12/TB-TA", docDate: "05/10/2026", signer: "Nguyễn Văn Chánh", opinion: "", step: 2, fieldArea: "Tố tụng hình sự", receiveMethod: "Nhận qua bưu điện/bưu chính" },
+            { id: "PHDD-2026-902", code: "PHDD-2026-902", relatedCode: "BT-2026-002", nyc: "Trần Thị Lan", agency: "Tòa án nhân dân TP. Hà Nội", type: "Đăng báo xin lỗi", status: "Chờ phản hồi", deadline: "20/10/2026", deadlineStatus: "🟡 Sắp hết hạn (8 ngày)", updatedDate: "10/10/2026", docNo: "12/TB-TA", docDate: "05/10/2026", signer: "Nguyễn Văn Chánh", opinion: "", step: 2, fieldArea: "Tố tụng hình sự", receiveMethod: "Qua dịch vụ bưu chính" },
             { id: "PHDD-2026-903", code: "PHDD-2026-903", relatedCode: "BT-2026-003", nyc: "Công ty Hải Phát", agency: "Tòa án nhân dân TP. Hà Nội", type: "Trực tiếp xin lỗi", status: "Chờ thực hiện", deadline: "28/10/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "08/10/2026", docNo: "45/TB-TAHN", docDate: "28/09/2026", signer: "Lê Hoàng Phúc", opinion: "Đồng ý", step: 3, fieldArea: "Tố tụng dân sự", receiveMethod: "Trực tiếp" },
             { id: "PHDD-2026-904", code: "PHDD-2026-904", relatedCode: "", nyc: "Vũ Đình Toàn", agency: "Sở Tư pháp Hà Nội", type: "Trực tiếp xin lỗi", status: "Chờ thông báo", deadline: "30/11/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "06/10/2026", docNo: "", docDate: "", signer: "", opinion: "", step: 1, fieldArea: "Quản lý hành chính", receiveMethod: "Trực tiếp" },
-            { id: "PHDD-2026-905", code: "PHDD-2026-905", relatedCode: "BT-2026-005", nyc: "Lê Văn Dũng", agency: "Sở Tư pháp Hải Phòng", type: "Cả hai hình thức", status: "Tạm hoãn", deadline: "10/12/2026", deadlineStatus: "🟢 Tạm hoãn", updatedDate: "05/10/2026", docNo: "08/TB-STPHP", docDate: "20/09/2026", signer: "Phạm Hải", opinion: "Chưa thực hiện", step: 2, fieldArea: "Tố tụng hình sự", receiveMethod: "Nhận qua bưu điện/bưu chính" },
+            { id: "PHDD-2026-905", code: "PHDD-2026-905", relatedCode: "BT-2026-005", nyc: "Lê Văn Dũng", agency: "Sở Tư pháp Hải Phòng", type: "Cả hai hình thức", status: "Tạm hoãn", deadline: "10/12/2026", deadlineStatus: "🟢 Tạm hoãn", updatedDate: "05/10/2026", docNo: "08/TB-STPHP", docDate: "20/09/2026", signer: "Phạm Hải", opinion: "Chưa thực hiện", step: 2, fieldArea: "Tố tụng hình sự", receiveMethod: "Qua dịch vụ bưu chính" },
             { id: "PHDD-2026-906", code: "PHDD-2026-906", relatedCode: "BT-2026-006", nyc: "Hoàng Minh Trí", agency: "Viện kiểm sát nhân dân Tối cao", type: "Đăng báo xin lỗi", status: "Chờ phản hồi", deadline: "18/10/2026", deadlineStatus: "🟡 Sắp hết hạn (6 ngày)", updatedDate: "04/10/2026", docNo: "19/TB-VKSTC", docDate: "01/10/2026", signer: "Đỗ Quốc Việt", opinion: "", step: 2, fieldArea: "Tố tụng hình sự", receiveMethod: "Trực tiếp" },
             { id: "PHDD-2026-907", code: "PHDD-2026-907", relatedCode: "", nyc: "Phạm Văn Cường", agency: "Cục Thi hành án dân sự Hà Nội", type: "Trực tiếp xin lỗi", status: "Chờ thực hiện", deadline: "22/10/2026", deadlineStatus: "🟡 Sắp hết hạn (10 ngày)", updatedDate: "02/10/2026", docNo: "33/TB-THADS", docDate: "15/09/2026", signer: "Trịnh Bá", opinion: "Đồng ý", step: 3, fieldArea: "Thi hành án dân sự", receiveMethod: "Trực tiếp" },
             { id: "PHDD-2026-908", code: "PHDD-2026-908", relatedCode: "BT-2026-008", nyc: "Đỗ Văn Long", agency: "Tòa án nhân dân Quận Đống Đa", type: "Cả hai hình thức", status: "Chờ thông báo", deadline: "05/12/2026", deadlineStatus: "🟢 Còn hạn", updatedDate: "01/10/2026", docNo: "", docDate: "", signer: "", opinion: "", step: 1, fieldArea: "Tố tụng hình sự", receiveMethod: "Trực tiếp" },
@@ -1780,9 +1780,9 @@
             // --- TAB VỤ VIỆC ĐÃ XỬ LÝ (6 BẢN GHI) ---
             { id: "PHDD-2026-911", code: "PHDD-2026-911", relatedCode: "BT-2026-011", nyc: "Trần Thị Giang", agency: "Sở Tư pháp Hà Nội", type: "Đăng báo xin lỗi", status: "Hoàn thành", deadline: "10/08/2026", deadlineStatus: "Đã hoàn thành", updatedDate: "15/08/2026", docNo: "05/TB-STP", docDate: "10/07/2026", signer: "Trần Văn Quản Lý", opinion: "Đồng ý", step: 4, fieldArea: "Quản lý hành chính", receiveMethod: "Trực tiếp" },
             { id: "PHDD-2026-912", code: "PHDD-2026-912", relatedCode: "BT-2026-012", nyc: "Lê Văn Hùng", agency: "Cục Thi hành án dân sự Hà Nội", type: "Trực tiếp xin lỗi", status: "Hoàn thành", deadline: "28/07/2026", deadlineStatus: "Đã hoàn thành", updatedDate: "20/07/2026", docNo: "11/TB-THADS", docDate: "15/06/2026", signer: "Trịnh Bá", opinion: "Đồng ý", step: 4, fieldArea: "Thi hành án dân sự", receiveMethod: "Trực tiếp" },
-            { id: "PHDD-2026-913", code: "PHDD-2026-913", relatedCode: "BT-2026-013", nyc: "Nguyễn Thị Mai", agency: "Sở Tư pháp Hải Phòng", type: "Cả hai hình thức", status: "Hoàn thành", deadline: "30/08/2026", deadlineStatus: "Đã hoàn thành", updatedDate: "28/08/2026", docNo: "22/TB-STPHP", docDate: "02/08/2026", signer: "Lê Đức", opinion: "Đồng ý", step: 4, fieldArea: "Tố tụng hình sự", receiveMethod: "Nhận qua bưu điện/bưu chính" },
+            { id: "PHDD-2026-913", code: "PHDD-2026-913", relatedCode: "BT-2026-013", nyc: "Nguyễn Thị Mai", agency: "Sở Tư pháp Hải Phòng", type: "Cả hai hình thức", status: "Hoàn thành", deadline: "30/08/2026", deadlineStatus: "Đã hoàn thành", updatedDate: "28/08/2026", docNo: "22/TB-STPHP", docDate: "02/08/2026", signer: "Lê Đức", opinion: "Đồng ý", step: 4, fieldArea: "Tố tụng hình sự", receiveMethod: "Qua dịch vụ bưu chính" },
             { id: "PHDD-2026-914", code: "PHDD-2026-914", relatedCode: "", nyc: "Vũ Văn Nam", agency: "Tòa án nhân dân Quận Đống Đa", type: "Trực tiếp xin lỗi", status: "Từ chối", deadline: "12/06/2026", deadlineStatus: "🔴 Đã từ chối", updatedDate: "15/06/2026", docNo: "07/TB-TA", docDate: "20/05/2026", signer: "Hoàng Tuấn", opinion: "Từ chối", step: 2, fieldArea: "Tố tụng hình sự", receiveMethod: "Trực tiếp" },
-            { id: "PHDD-2026-915", code: "PHDD-2026-915", relatedCode: "BT-2026-015", nyc: "Phan Văn Oanh", agency: "Viện kiểm sát nhân dân Tối cao", type: "Đăng báo xin lỗi", status: "Hoàn thành", deadline: "10/09/2026", deadlineStatus: "Đã hoàn thành", updatedDate: "08/09/2026", docNo: "50/TB-VKSTC", docDate: "10/08/2026", signer: "Ngô Quyền", opinion: "Đồng ý", step: 4, fieldArea: "Tố tụng hình sự", receiveMethod: "Nhận qua bưu điện/bưu chính" },
+            { id: "PHDD-2026-915", code: "PHDD-2026-915", relatedCode: "BT-2026-015", nyc: "Phan Văn Oanh", agency: "Viện kiểm sát nhân dân Tối cao", type: "Đăng báo xin lỗi", status: "Hoàn thành", deadline: "10/09/2026", deadlineStatus: "Đã hoàn thành", updatedDate: "08/09/2026", docNo: "50/TB-VKSTC", docDate: "10/08/2026", signer: "Ngô Quyền", opinion: "Đồng ý", step: 4, fieldArea: "Tố tụng hình sự", receiveMethod: "Qua dịch vụ bưu chính" },
             { id: "PHDD-2026-916", code: "PHDD-2026-916", relatedCode: "BT-2026-016", nyc: "Hoàng Văn Kiên", agency: "Sở Tư pháp Hà Nội", type: "Đăng báo xin lỗi", status: "Từ chối", deadline: "02/05/2026", deadlineStatus: "🔴 Đã từ chối", updatedDate: "05/05/2026", docNo: "02/TB-STP", docDate: "10/04/2026", signer: "Trần Văn Quản Lý", opinion: "Từ chối", step: 2, fieldArea: "Quản lý hành chính", receiveMethod: "Trực tiếp" }
         ];
 
@@ -2382,6 +2382,15 @@
         // =========================================================================
         // MH03: XEM CHI TIẾT VỤ VIỆC PHỤC HỒI DANH DỰ (DẠNG TRANG 2 TAB - PAGE)
         // =========================================================================
+        // Hình thức tiếp nhận (Danh mục DM_25): chuẩn hóa giá trị cũ sang giá trị mới
+        function normalizePhddReceiveMethod(value) {
+            if (window.BTNN_WF && BTNN_WF.normalizeReceiveMethod) return BTNN_WF.normalizeReceiveMethod(value) || "Trực tiếp";
+            const s = String(value || "").trim();
+            if (/bưu/i.test(s)) return "Qua dịch vụ bưu chính";
+            if (/dịch vụ công|môi trường số|dvc/i.test(s)) return "Qua môi trường số (Dịch vụ Công)";
+            if (/một cửa/i.test(s)) return "Bộ phận Một cửa";
+            return s || "Trực tiếp";
+        }
         function openDetailPage(id) {
             const item = phddList.find(x => x.id === id);
             if (!item) return;
@@ -2415,7 +2424,7 @@
             document.getElementById('dpStatusText').innerText = item.status;
             document.getElementById('dpDeadlineBadge').innerText = item.deadlineStatus;
             document.getElementById('dpAgency').innerText = item.agency;
-            document.getElementById('dpReceiveMethod').innerText = item.receiveMethod || 'Trực tiếp';
+            document.getElementById('dpReceiveMethod').innerText = normalizePhddReceiveMethod(item.receiveMethod);
             document.getElementById('dpFieldArea').innerText = item.fieldArea || 'Tố tụng hình sự';
             document.getElementById('dpUpdatedDate').innerText = item.updatedDate;
 

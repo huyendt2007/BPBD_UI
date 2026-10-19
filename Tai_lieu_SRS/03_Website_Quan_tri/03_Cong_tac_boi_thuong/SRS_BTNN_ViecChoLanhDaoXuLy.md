@@ -9,7 +9,7 @@
 
 | Khối Chờ xử lý | Phân hệ mở ra (tab `Chờ xử lý`) | Thao tác của Lãnh đạo tại phân hệ |
 | :--- | :--- | :--- |
-| Chờ phân công | [Tiếp nhận yêu cầu - Tiếp nhận yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_TiepNhan_YCBT.md) | Phân công ([MH03 - Popup Phân công xử lý hồ sơ - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](#vcld-mh03)); Thu hồi tại tab `Đã xử lý` ([MH05 - Popup Xác nhận thu hồi - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](#vcld-mh05)) |
+| Chờ phân công | [Tiếp nhận hồ sơ - Tiếp nhận hồ sơ - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_TiepNhan_YCBT.md) | Phân công ([MH05 - Popup Phân công xử lý hồ sơ - Tiếp nhận hồ sơ - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_TiepNhan_YCBT.md#tn-mh05-phan-cong)); Thu hồi tại tab `Đã xử lý` ([MH05 - Popup Xác nhận thu hồi - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](#vcld-mh05)) |
 | Chờ duyệt Xác định CQGQBT | [Xác định cơ quan giải quyết bồi thường - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md) | Phê duyệt / Từ chối ([MH04 - Popup Phê duyệt / Từ chối phê duyệt - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](#vcld-mh04)); Thu hồi tại tab `Đã xử lý` |
 | Chờ duyệt Giải quyết YCBT | [Giải quyết yêu cầu bồi thường - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md) | Phê duyệt / Từ chối hồ sơ `Chờ duyệt` (MH04); hồ sơ `Chờ thụ lý`: Thụ lý ([MH06 - Popup Thụ lý hồ sơ và Cử người giải quyết bồi thường - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](#vcld-thu-ly)) / Không thụ lý ([MH07 - Popup Không thụ lý hồ sơ - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](#vcld-khong-thu-ly)) |
 | Chờ duyệt QĐ Giải quyết YCBT | [Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_QuyetDinh_GQBT.md) | Ký duyệt / Từ chối Nội dung trình `Quyết định GQBT`, `Hủy QĐ`, `Sửa chữa, bổ sung QĐ` |
@@ -22,7 +22,7 @@
 
 *a. Phân quyền*
 
-\- Menu "Dashboard Lãnh đạo" thuộc phân hệ Bồi thường nhà nước, đặt ngay dưới menu "Tiếp nhận yêu cầu".
+\- Menu "Dashboard Lãnh đạo" thuộc phân hệ Bồi thường nhà nước, đặt ngay dưới menu "Tiếp nhận hồ sơ".
 
 \- Vai trò thực hiện: Lãnh đạo đơn vị, là tài khoản thuộc Nhóm lãnh đạo của đơn vị tại Cấu hình luồng xử lý.
 
@@ -43,13 +43,13 @@
 
 | STT | Nội dung | Quy tắc |
 | :-- | :--- | :--- |
-| 1 | Phạm vi theo Loại yêu cầu | Người dùng chỉ thấy hồ sơ có Loại yêu cầu áp dụng cho đơn vị của mình theo [Đơn vị áp dụng của Loại yêu cầu - Quản lý danh mục dùng chung - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Quan_ly_danh_muc.md#dm-don-vi-ap-dung).<br>- Một Loại yêu cầu áp dụng cho người dùng khi Đơn vị áp dụng chứa đơn vị của người dùng hoặc một đơn vị cấp trên của đơn vị đó.<br>- Loại yêu cầu "Xác định cơ quan giải quyết bồi thường" chỉ áp dụng cho cơ quan có thẩm quyền Xác định cơ quan giải quyết bồi thường:<br>+ Bộ Tư pháp<br>+ Sở Tư pháp các tỉnh, thành phố trực thuộc Trung ương<br>+ Ủy ban nhân dân cấp tỉnh<br>- Lãnh đạo đơn vị khác không thấy hồ sơ loại này. |
+| 1 | Phạm vi theo Loại hồ sơ | Người dùng chỉ thấy hồ sơ có Loại hồ sơ áp dụng cho đơn vị của mình theo [Đơn vị áp dụng của Loại hồ sơ - Quản lý danh mục dùng chung - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Quan_ly_danh_muc.md#dm-don-vi-ap-dung).<br>- Một Loại hồ sơ áp dụng cho người dùng khi Đơn vị áp dụng chứa đơn vị của người dùng hoặc một đơn vị cấp trên của đơn vị đó.<br>- Loại hồ sơ "Xác định cơ quan giải quyết bồi thường" chỉ áp dụng cho:<br>+ Bộ Tư pháp<br>+ Sở Tư pháp các tỉnh, thành phố trực thuộc Trung ương<br>- Ủy ban nhân dân cấp tỉnh chỉ xem hồ sơ của Sở Tư pháp trực thuộc tại phân hệ Xác định cơ quan giải quyết bồi thường, không phân công, không phê duyệt.<br>- Lãnh đạo đơn vị khác không thấy hồ sơ loại này. |
 | 2 | Đơn vị gốc và đơn vị đang phân công | Đơn vị gốc là đơn vị cấp cao nhất trên cây Cơ cấu tổ chức chứa đơn vị của cán bộ tiếp nhận (hoặc cơ quan giải quyết bồi thường được chỉ định, với hồ sơ sinh ra khi Chuyển CQGQBT).<br>- Hồ sơ mới ở trạng thái "Chờ phân công" tại đơn vị gốc.<br>- Mỗi lần Chuyển đơn vị, "Đơn vị đang phân công" đổi thành đơn vị nhận và hồ sơ chuyển "Đang phân công". |
-| 3 | Quyền thao tác | Phân công: bất kỳ tài khoản nào trong Nhóm lãnh đạo của đơn vị đang phân công đều được phân công hồ sơ; người thao tác trước xử lý hồ sơ, hồ sơ không còn trong tab "Chờ xử lý" của Tiếp nhận yêu cầu của các thành viên khác trong nhóm.<br>- Phê duyệt, Từ chối phê duyệt: chỉ Lãnh đạo được giao đích danh ở cấp phê duyệt hiện tại (quy tắc 10).<br>- Không có chức năng ủy quyền. |
-| 4 | Hướng phân công | Chỉ dùng các hướng xử lý đã cấu hình cho đơn vị đang phân công:<br>- Chuyển đơn vị: chỉ chuyển đến đơn vị cấp dưới trực tiếp đã chọn tại cấu hình.<br>- Phân công cán bộ: chỉ chọn cán bộ đã chọn tại cấu hình.<br>- Không có thao tác "Trả lại" hồ sơ lên cấp trên; cấp trên dùng "Thu hồi". |
+| 3 | Quyền thao tác | Phân công: bất kỳ tài khoản nào trong Nhóm lãnh đạo của đơn vị đang phân công đều được phân công hồ sơ; người thao tác trước xử lý hồ sơ, hồ sơ không còn trong tab "Chờ xử lý" của Tiếp nhận hồ sơ của các thành viên khác trong nhóm.<br>- Phê duyệt, Từ chối phê duyệt: chỉ Lãnh đạo được giao đích danh ở cấp phê duyệt hiện tại (quy tắc 10).<br>- Không có chức năng ủy quyền. |
+| 4 | Hướng phân công | Chỉ dùng các hướng xử lý đã cấu hình cho đơn vị đang phân công, trong Loại luồng tương ứng với Loại hồ sơ (`Xác định CQGQBT - Bộ Tư pháp`, `Xác định CQGQBT - Sở Tư pháp` hoặc `Giải quyết YCBT`) tại Cấu hình luồng xử lý:<br>- Chuyển đơn vị: chỉ chuyển đến đơn vị cấp dưới trực tiếp đã chọn tại cấu hình.<br>- Phân công cán bộ: chỉ chọn cán bộ đã chọn tại cấu hình.<br>- Không có thao tác "Trả lại" hồ sơ lên cấp trên; cấp trên dùng "Thu hồi". |
 | 5 | Thời hạn | Không quy định thời hạn cho từng bước phân công, phê duyệt. |
 | 6 | Lượt chuyển và tình trạng | Mỗi lần Chuyển đơn vị hoặc Phân công cán bộ tạo 01 lượt chuyển, Tình trạng ban đầu "Chưa xử lý".<br>- Lượt chuyển đến đơn vị chuyển "Đã xử lý" khi lãnh đạo đơn vị nhận chuyển tiếp hoặc phân công.<br>- Lượt chuyển đến cán bộ chuyển "Đã xử lý" khi cán bộ chủ trì thực hiện "Tiếp nhận" hồ sơ tại phân hệ xử lý.<br>- Khi bên nhận mở xem hồ sơ lần đầu (lãnh đạo đơn vị nhận mở popup phân công; cán bộ chủ trì mở hồ sơ), hệ thống ghi thời điểm xem và hiển thị "Chưa xử lý - Đã xem lúc hh:mm dd/mm/yyyy". Chưa xem hiển thị "Chưa xử lý - Chưa xem".<br>- Việc xem hồ sơ không được tính là đã xử lý. |
-| 7 | Thu hồi | Thu hồi lượt chuyển gần nhất khi đồng thời:<br>+ Người dùng thuộc Nhóm lãnh đạo của đơn vị đã chuyển.<br>+ Lượt chuyển gần nhất của hồ sơ có Tình trạng "Chưa xử lý" (đơn vị nhận chưa chuyển tiếp, chưa phân công; cán bộ chủ trì chưa tiếp nhận).<br>+ Hồ sơ đang ở "Đang phân công" tại đơn vị nhận (chuyển đơn vị) hoặc "Chờ tiếp nhận" (phân công cán bộ).<br>- Bên nhận đã mở xem hồ sơ vẫn được thu hồi.<br>- Kết quả: xóa lượt chuyển gần nhất; hồ sơ trở lại đơn vị đã chuyển, trạng thái "Chờ phân công" nếu đơn vị đó là đơn vị gốc, ngược lại "Đang phân công"; lượt chuyển liền trước trở lại "Chưa xử lý"; thu hồi phân công cán bộ thì xóa cán bộ chủ trì, cán bộ phối hợp.<br>- Thu hồi kết quả phê duyệt: khi hồ sơ "Chờ duyệt", Lãnh đạo vừa phê duyệt và chuyển cấp trên được thu hồi nếu cấp trên chưa phê duyệt hoặc từ chối phê duyệt. Hồ sơ quay lại chờ chính Lãnh đạo đã thu hồi phê duyệt tại cấp đó; Lãnh đạo cấp trên đã được giao không còn thấy hồ sơ.<br>- Thao tác Thu hồi đặt tại tab "Đã xử lý" của phân hệ Tiếp nhận yêu cầu (phân công) và Xác định cơ quan giải quyết bồi thường (phê duyệt). |
+| 7 | Thu hồi | Thu hồi lượt chuyển gần nhất khi đồng thời:<br>+ Người dùng thuộc Nhóm lãnh đạo của đơn vị đã chuyển.<br>+ Lượt chuyển gần nhất của hồ sơ có Tình trạng "Chưa xử lý" (đơn vị nhận chưa chuyển tiếp, chưa phân công; cán bộ chủ trì chưa tiếp nhận).<br>+ Hồ sơ đang ở "Đang phân công" tại đơn vị nhận (chuyển đơn vị) hoặc "Chờ tiếp nhận" (phân công cán bộ).<br>- Bên nhận đã mở xem hồ sơ vẫn được thu hồi.<br>- Kết quả: xóa lượt chuyển gần nhất; hồ sơ trở lại đơn vị đã chuyển, trạng thái "Chờ phân công" nếu đơn vị đó là đơn vị gốc, ngược lại "Đang phân công"; lượt chuyển liền trước trở lại "Chưa xử lý"; thu hồi phân công cán bộ thì xóa cán bộ chủ trì, cán bộ phối hợp.<br>- Thu hồi kết quả phê duyệt: khi hồ sơ "Chờ duyệt", Lãnh đạo vừa phê duyệt và chuyển cấp trên được thu hồi nếu cấp trên chưa phê duyệt hoặc từ chối phê duyệt. Hồ sơ quay lại chờ chính Lãnh đạo đã thu hồi phê duyệt tại cấp đó; Lãnh đạo cấp trên đã được giao không còn thấy hồ sơ.<br>- Thao tác Thu hồi đặt tại tab "Đã xử lý" của phân hệ Tiếp nhận hồ sơ (phân công) và Xác định cơ quan giải quyết bồi thường (phê duyệt). |
 | 8 | Luồng phê duyệt nhiều cấp | Luồng phê duyệt đi ngược chiều luồng phân công thực tế của chính hồ sơ: lấy các đơn vị đã chuyển hoặc phân công theo thứ tự lượt chuyển, đảo ngược, bỏ đơn vị trùng.<br>- VD: Bộ Tư pháp → Cục → Phòng → Cán bộ thì luồng phê duyệt là Phòng (cấp 1) → Cục (cấp 2) → Bộ Tư pháp (cấp 3).<br>- Hồ sơ do cán bộ tạo trực tiếp tại phân hệ (không qua phân công): luồng phê duyệt đi từ đơn vị của cán bộ chủ trì lên đơn vị gốc, chỉ gồm các đơn vị có Nhóm lãnh đạo.<br>- Không xác định được cấp phê duyệt nào: chặn trình, hiển thị "Chưa xác định được cấp phê duyệt. Vui lòng liên hệ Quản trị hệ thống."<br>- Luồng phê duyệt được xác định khi cán bộ chủ trì trình và giữ nguyên cho lần trình đó; mỗi lần trình (kể cả trình lại) bắt đầu từ cấp 1. |
 | 9 | Trạng thái "Chờ duyệt" và Nội dung trình | Khi cán bộ chủ trì trình thành công, hồ sơ chuyển trạng thái chung "Chờ duyệt". Loại việc Lãnh đạo cần duyệt lưu tại trường "Nội dung trình" của phiếu trình, không tạo trạng thái riêng cho từng loại việc.<br>- Mỗi hồ sơ có tối đa 01 phiếu trình đang chờ duyệt.<br>- Nội dung trình tại Xác định cơ quan giải quyết bồi thường:<br>+ Yêu cầu bổ sung<br>+ Từ chối<br>+ Kết quả xác định CQGQBT<br>- Nội dung trình tại Giải quyết yêu cầu bồi thường:<br>+ Tiếp nhận hồ sơ<br>+ Yêu cầu bổ sung<br>+ Không thụ lý<br>+ Chuyển CQGQBT<br>+ Quyết định GQBT<br>+ Hủy QĐ<br>+ Sửa chữa, bổ sung QĐ<br>- Dưới badge trạng thái trên lưới và màn chi tiết hiển thị dòng phụ chỉ gồm tên "[Nội dung trình]", VD "Yêu cầu bổ sung"; không hiển thị cấp duyệt (Cấp i/n). Hồ sơ "Bị trả lại" hiển thị Nội dung trình của phiếu bị trả lại.<br>- Kết quả khi cấp cuối phê duyệt theo từng Nội dung trình: xem [Kết quả khi cấp cuối phê duyệt - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](#vcld-ket-qua-duyet). |
 | 10 | Lãnh đạo phê duyệt đích danh | Khi trình, cán bộ chủ trì bắt buộc chọn "Lãnh đạo phê duyệt" là 01 thành viên Nhóm lãnh đạo của đơn vị phê duyệt cấp 1 (khi đơn vị cấp 1 có Nhóm lãnh đạo). Bỏ trống: "Vui lòng chọn Lãnh đạo phê duyệt."<br>- Lãnh đạo cấp n khi Phê duyệt mà chưa phải cấp cuối: bắt buộc chọn "Lãnh đạo phê duyệt cấp tiếp theo" là 01 thành viên Nhóm lãnh đạo của đơn vị cấp n+1 (khi đơn vị cấp n+1 có Nhóm lãnh đạo).<br>- Chỉ Lãnh đạo được giao mới thấy hồ sơ tại tab "Chờ xử lý" của phân hệ, được tính tại khối tương ứng của Dashboard và được Phê duyệt, Từ chối phê duyệt. Các thành viên khác của Nhóm lãnh đạo cùng đơn vị không thấy công việc này.<br>- Lãnh đạo được chọn phải thuộc Nhóm lãnh đạo của cấp tương ứng; hệ thống kiểm tra lại khi xác nhận.<br>- Bảng cấp phê duyệt hiển thị Lãnh đạo được giao ở cấp đang chờ: "(Giao: [Họ tên])". |
@@ -72,9 +72,9 @@
 
 | Trạng thái | Ý nghĩa | Hiển thị với Lãnh đạo |
 | :--- | :--- | :--- |
-| Chờ phân công | Hồ sơ đang ở đơn vị gốc, chưa có lượt chuyển hoặc đã được thu hồi về đơn vị gốc. Gồm cả hồ sơ mới sinh ra ở cơ quan đích khi Chuyển CQGQBT. | Khối "Chờ phân công" và tab "Chờ xử lý" của Tiếp nhận yêu cầu của Nhóm lãnh đạo đơn vị gốc. |
-| Đang phân công | Hồ sơ đã được chuyển đến đơn vị cấp dưới, chờ lãnh đạo đơn vị đó phân công. | Khối "Chờ phân công" và tab "Chờ xử lý" của Tiếp nhận yêu cầu của Nhóm lãnh đạo đơn vị đang phân công; tab "Đã xử lý" của lãnh đạo đã chuyển. |
-| Chờ tiếp nhận | Hồ sơ đã được phân công cán bộ chủ trì, chờ cán bộ tiếp nhận tại phân hệ Xác định cơ quan giải quyết bồi thường hoặc Giải quyết yêu cầu bồi thường. | Tab "Đã xử lý" của Tiếp nhận yêu cầu của lãnh đạo đã phân công. |
+| Chờ phân công | Hồ sơ đang ở đơn vị gốc, chưa có lượt chuyển hoặc đã được thu hồi về đơn vị gốc. Gồm cả hồ sơ mới sinh ra ở cơ quan đích khi Chuyển CQGQBT. | Khối "Chờ phân công" và tab "Chờ xử lý" của Tiếp nhận hồ sơ của Nhóm lãnh đạo đơn vị gốc. |
+| Đang phân công | Hồ sơ đã được chuyển đến đơn vị cấp dưới, chờ lãnh đạo đơn vị đó phân công. | Khối "Chờ phân công" và tab "Chờ xử lý" của Tiếp nhận hồ sơ của Nhóm lãnh đạo đơn vị đang phân công; tab "Đã xử lý" của lãnh đạo đã chuyển. |
+| Chờ tiếp nhận | Hồ sơ đã được phân công cán bộ chủ trì, chờ cán bộ tiếp nhận tại phân hệ Xác định cơ quan giải quyết bồi thường hoặc Giải quyết yêu cầu bồi thường. | Tab "Đã xử lý" của Tiếp nhận hồ sơ của lãnh đạo đã phân công. |
 | Chờ duyệt | Cán bộ chủ trì đã trình, đang chờ Lãnh đạo được giao ở một cấp phê duyệt. Dòng phụ: "[Nội dung trình]". | Khối Chờ duyệt tương ứng và tab "Chờ xử lý" của phân hệ của Lãnh đạo được giao ở cấp hiện tại; tab "Đã xử lý" của Lãnh đạo đã phê duyệt cấp dưới. |
 | Bị trả lại | Một cấp phê duyệt đã từ chối phê duyệt. Dòng phụ: "[Nội dung trình]". | Tab "Đã xử lý" của phân hệ của lãnh đạo đã thao tác. |
 | Trạng thái sau khi cấp cuối phê duyệt | Theo Nội dung trình tại [Kết quả khi cấp cuối phê duyệt - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](#vcld-ket-qua-duyet). | Tab "Đã xử lý" của phân hệ của lãnh đạo đã thao tác. |
@@ -106,7 +106,7 @@
 
 \+ Lãnh đạo Phòng Tư pháp được giao phê duyệt, chọn Lãnh đạo phê duyệt cấp tiếp theo của UBND quận Hoàng Mai. Dòng phụ vẫn là "Không thụ lý".
 
-\+ Lãnh đạo UBND quận Hoàng Mai được giao phê duyệt (cấp cuối): hồ sơ BT-2026-015 chuyển "Đã chuyển CQGQBT"; hệ thống tạo hồ sơ mới (mã mới) tại Công an quận Thanh Xuân, trạng thái "Chờ phân công", hiển thị tại khối "Chờ phân công" của Dashboard và tab "Chờ xử lý" của Tiếp nhận yêu cầu của Nhóm lãnh đạo Công an quận Thanh Xuân. Hồ sơ mới lưu mã hồ sơ gốc, đơn vị chuyển, Nội dung chuyển xử lý và tài liệu chuyển; hồ sơ gốc lưu mã hồ sơ mới.
+\+ Lãnh đạo UBND quận Hoàng Mai được giao phê duyệt (cấp cuối): hồ sơ BT-2026-015 chuyển "Đã chuyển CQGQBT"; hệ thống tạo hồ sơ mới (mã mới) tại Công an quận Thanh Xuân, trạng thái "Chờ phân công", hiển thị tại khối "Chờ phân công" của Dashboard và tab "Chờ xử lý" của Tiếp nhận hồ sơ của Nhóm lãnh đạo Công an quận Thanh Xuân. Hồ sơ mới lưu mã hồ sơ gốc, đơn vị chuyển, Nội dung chuyển xử lý và tài liệu chuyển; hồ sơ gốc lưu mã hồ sơ mới.
 
 
 ---
@@ -134,7 +134,7 @@
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :-- | :--- | :--- | :--- |
-| 1 | Mở khối | Click khối / Enter | - Mở phân hệ tương ứng ở tab "Chờ xử lý", vai trò Lãnh đạo, theo quy tắc 19 tại [Quy tắc chung - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](#vcld-quy-tac-chung):<br>+ Chờ phân công: Tiếp nhận yêu cầu<br>+ Chờ duyệt Xác định CQGQBT: Xác định cơ quan giải quyết bồi thường<br>+ Chờ duyệt Giải quyết YCBT: Giải quyết yêu cầu bồi thường (vai trò Lãnh đạo đơn vị)<br>+ Chờ duyệt QĐ Giải quyết YCBT: Quyết định giải quyết bồi thường (vai trò Lãnh đạo)<br>+ Chờ duyệt cấp kinh phí: Quản lý kinh phí bồi thường (vai trò Lãnh đạo)<br>+ Chờ duyệt Xem xét hoàn trả: Xem xét trách nhiệm hoàn trả (vai trò Lãnh đạo phê duyệt) |
+| 1 | Mở khối | Click khối / Enter | - Mở phân hệ tương ứng ở tab "Chờ xử lý", vai trò Lãnh đạo, theo quy tắc 19 tại [Quy tắc chung - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](#vcld-quy-tac-chung):<br>+ Chờ phân công: Tiếp nhận hồ sơ<br>+ Chờ duyệt Xác định CQGQBT: Xác định cơ quan giải quyết bồi thường<br>+ Chờ duyệt Giải quyết YCBT: Giải quyết yêu cầu bồi thường (vai trò Lãnh đạo đơn vị)<br>+ Chờ duyệt QĐ Giải quyết YCBT: Quyết định giải quyết bồi thường (vai trò Lãnh đạo)<br>+ Chờ duyệt cấp kinh phí: Quản lý kinh phí bồi thường (vai trò Lãnh đạo)<br>+ Chờ duyệt Xem xét hoàn trả: Xem xét trách nhiệm hoàn trả (vai trò Lãnh đạo phê duyệt) |
 | 2 | Tải lại số liệu | Tự động | - Số công việc được tính lại mỗi lần mở màn hình và khi dữ liệu hồ sơ thay đổi. |
 
 ---
@@ -144,14 +144,14 @@
 
 ##### 4.3.3.29.5.1. Màn hình
 
-Popup chỉ xem, mở khi click dòng hồ sơ tại tab "Chờ xử lý" / "Đã xử lý" của Tiếp nhận yêu cầu mà hồ sơ không do cán bộ đang đăng nhập tiếp nhận (VD Lãnh đạo xem hồ sơ chờ phân công).
+Popup chỉ xem, mở khi click dòng hồ sơ tại tab "Chờ xử lý" / "Đã xử lý" của Tiếp nhận hồ sơ mà hồ sơ không do cán bộ đang đăng nhập tiếp nhận (VD Lãnh đạo xem hồ sơ chờ phân công).
 
 ##### 4.3.3.29.5.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề popup | String(255) | - | - | "Chi tiết hồ sơ [Mã hồ sơ]". |
-| **I. Thông tin chung** | - | - | - | Chỉ đọc: Mã vụ việc, Loại yêu cầu, Họ và tên người yêu cầu, Thời điểm tiếp nhận, Đơn vị gốc, Đơn vị đang xử lý, Cán bộ chủ trì (chưa có: "Chưa phân công"), Trạng thái. |
+| **I. Thông tin chung** | - | - | - | Chỉ đọc: Mã vụ việc, Loại hồ sơ, Nguồn hồ sơ, Họ và tên người yêu cầu, Thời điểm tiếp nhận, Đơn vị gốc, Đơn vị đang xử lý, Cán bộ chủ trì (chưa có: "Chưa phân công"), Trạng thái. |
 | **II. Quá trình phân công** | - | - | - | Bảng lượt chuyển: Lượt chuyển, Thời điểm, Tình trạng (quy tắc 6). |
 | **III. Lịch sử xử lý** | - | - | - | Danh sách thao tác của hồ sơ, mới nhất ở trên: "[Thao tác] - [Người thực hiện] - [Thời điểm]" và Nội dung; thao tác "Từ chối phê duyệt" có viền màu đỏ. |
 
@@ -166,32 +166,7 @@ Popup chỉ xem, mở khi click dòng hồ sơ tại tab "Chờ xử lý" / "Đ�
 <a id="vcld-mh03"></a>
 #### 4.3.3.29.6. MH03 - Popup Phân công xử lý hồ sơ
 
-##### 4.3.3.29.6.1. Màn hình
-
-![MH03 - Popup Phân công xử lý hồ sơ](images/VCLD_MH03_Popup_Phan_cong.png)
-
-Popup mở khi Lãnh đạo click "Phân công" tại tab "Chờ xử lý" của [Tiếp nhận yêu cầu - Tiếp nhận yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_TiepNhan_YCBT.md).
-
-##### 4.3.3.29.6.2. Mô tả thông tin trên màn hình
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| Tiêu đề popup | String(255) | - | - | "Phân công xử lý hồ sơ [Mã hồ sơ]". |
-| Thông tin ngữ cảnh | String(500) | - | Theo hồ sơ | "Đơn vị đang phân công: [Tên đơn vị] - Người yêu cầu: [Họ và tên]". |
-| Hình thức phân công | Enum(String(50)) | Có | Hình thức đầu tiên được cấu hình | Control UI: Radio.<br>- Chỉ hiển thị hình thức đã cấu hình cho đơn vị đang phân công và có dữ liệu:<br>+ Chuyển đơn vị<br>+ Phân công cán bộ<br>- Đơn vị chưa cấu hình hướng nào: hiển thị "Đơn vị chưa được cấu hình hướng xử lý." |
-| Đơn vị nhận | Enum(String(255)) | Có (Chuyển đơn vị) | Trống | Control UI: Hộp chọn, placeholder "Chọn đơn vị nhận...".<br>- Chỉ hiển thị khi chọn "Chuyển đơn vị".<br>- Danh sách: các đơn vị cấp dưới trực tiếp đã chọn tại cấu hình của đơn vị đang phân công. |
-| Cán bộ chủ trì | Enum(String(255)) | Có (Phân công cán bộ) | Trống | Control UI: Hộp chọn, chọn 01 cán bộ, placeholder "Chọn cán bộ chủ trì...".<br>- Chỉ hiển thị khi chọn "Phân công cán bộ".<br>- Danh sách: cán bộ đã chọn tại cấu hình của đơn vị đang phân công, hiển thị "[Họ tên] - [Chức danh]". |
-| Cán bộ phối hợp | List(String) | Không | Trống | Control UI: Danh sách checkbox, chọn nhiều.<br>- Chỉ hiển thị khi chọn "Phân công cán bộ".<br>- Danh sách: cán bộ đã cấu hình, trừ cán bộ chủ trì đang chọn; không có: "Không có cán bộ khác."<br>- Dòng hướng dẫn: "Cán bộ phối hợp được xem hồ sơ và bổ sung tài liệu; không được trình phê duyệt." |
-| Ý kiến chỉ đạo | Text(2000) | Không | Trống | Control UI: Textarea, placeholder "Nhập ý kiến chỉ đạo...". |
-
-##### 4.3.3.29.6.3. Chức năng trên màn hình
-
-| STT | Tên chức năng | Định dạng | Mô tả |
-| :-- | :--- | :--- | :--- |
-| 1 | Hình thức phân công | Radio | - Đổi hình thức: hiển thị trường Đơn vị nhận hoặc nhóm trường Cán bộ chủ trì, Cán bộ phối hợp. |
-| 2 | Cán bộ chủ trì | Hộp chọn | - Đổi cán bộ chủ trì: tải lại danh sách Cán bộ phối hợp, loại cán bộ chủ trì. |
-| 3 | Xác nhận phân công | Nút | - TH1 (Bỏ trống Đơn vị nhận hoặc Cán bộ chủ trì): hiển thị "Đây là trường bắt buộc" dưới trường, không lưu.<br>- TH2 (Hồ sơ không còn hợp lệ: đã được thành viên khác xử lý, đã bị thu hồi hoặc người dùng không còn thuộc Nhóm lãnh đạo): hiển thị "Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phân công. Vui lòng tải lại danh sách."<br>- TH3 (Đơn vị nhận không còn thuộc cấu hình của đơn vị đang phân công): "Đơn vị nhận không thuộc cấu hình luồng của đơn vị hiện tại."<br>- TH4 (Đơn vị đang phân công không còn được cấu hình phân công cán bộ): "Đơn vị hiện tại không được cấu hình phân công cán bộ."<br>- TH Hợp lệ - Chuyển đơn vị: lượt chuyển gần nhất (nếu có) chuyển "Đã xử lý"; tạo lượt chuyển mới "Chưa xử lý"; Đơn vị đang phân công = Đơn vị nhận; hồ sơ chuyển "Đang phân công"; ghi lịch sử "Chuyển đơn vị" với nội dung "Chuyển [Đơn vị nhận] phân công. Ý kiến chỉ đạo: [Nội dung]".<br>- TH Hợp lệ - Phân công cán bộ: lượt chuyển gần nhất (nếu có) chuyển "Đã xử lý"; tạo lượt chuyển mới "Chưa xử lý"; lưu Cán bộ chủ trì, Cán bộ phối hợp; hồ sơ chuyển "Chờ tiếp nhận" tại phân hệ tương ứng (Xác định cơ quan giải quyết bồi thường hoặc Giải quyết yêu cầu bồi thường); ghi lịch sử "Phân công cán bộ" với nội dung "Chủ trì: [Họ tên]; Phối hợp: [Họ tên]. Ý kiến chỉ đạo: [Nội dung]".<br>- Sau khi thành công: đóng popup, tải lại danh sách, hiển thị "Đã phân công hồ sơ [Mã hồ sơ]. Trạng thái: [Trạng thái]." |
-| 4 | Hủy bỏ / Đóng (x) | Nút / Icon | - Đóng popup, không lưu. |
+Mô tả tại [MH05 - Popup Phân công xử lý hồ sơ - Tiếp nhận hồ sơ - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_TiepNhan_YCBT.md#tn-mh05-phan-cong).
 
 ---
 
@@ -237,7 +212,7 @@ Popup mở khi Lãnh đạo được giao ở cấp phê duyệt hiện tại cl
 
 ![MH05 - Popup Xác nhận thu hồi](images/VCLD_MH05_Popup_Thu_hoi.png)
 
-Popup mở khi Lãnh đạo click "Thu hồi" tại tab "Đã xử lý" của Tiếp nhận yêu cầu (hồ sơ đã phân công / chuyển đơn vị) hoặc Xác định cơ quan giải quyết bồi thường (kết quả phê duyệt đã chuyển cấp trên).
+Popup mở khi Lãnh đạo click "Thu hồi" tại tab "Đã xử lý" của Tiếp nhận hồ sơ (hồ sơ đã phân công / chuyển đơn vị) hoặc Xác định cơ quan giải quyết bồi thường (kết quả phê duyệt đã chuyển cấp trên).
 
 ##### 4.3.3.29.8.2. Mô tả thông tin trên màn hình
 

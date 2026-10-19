@@ -12,6 +12,9 @@
         body { background: var(--bg-body); padding: 20px; }
         .page-heading { margin-bottom: 16px; padding-right: 360px; }
         .page-heading h2 { color: var(--primary-light); display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; margin: 0; }
+        .tn-tabs-card { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; background: #fff; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); padding: 0 16px; margin-bottom: 12px; }
+        .tn-tab { border: 0; background: transparent; padding: 12px 16px; font-size: 13.5px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; display: inline-flex; align-items: center; gap: 8px; }
+        .tn-tab.active { color: var(--primary-light); border-bottom-color: var(--primary-light); }
         .layout { display: grid; grid-template-columns: 340px 1fr; gap: 16px; align-items: start; }
         .card { background: #fff; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); box-shadow: var(--box-shadow); }
         .card-head { padding: 12px 16px; border-bottom: 1px solid var(--border-color); font-weight: 700; color: var(--primary-light); display: flex; justify-content: space-between; align-items: center; gap: 8px; }
@@ -42,6 +45,8 @@
         <div class="page-heading">
             <h2><i class="fa-solid fa-sitemap"></i> CẤU HÌNH LUỒNG XỬ LÝ</h2>
         </div>
+        <!-- 03 tab Loại luồng: Xác định CQGQBT - Bộ Tư pháp / Xác định CQGQBT - Sở Tư pháp / Giải quyết YCBT -->
+        <div class="tn-tabs-card" id="flowTabs"></div>
         <div class="layout">
             <div class="card">
                 <div class="card-head"><span><i class="fa-solid fa-building-columns"></i> Đơn vị gốc</span></div>
@@ -68,46 +73,74 @@
     <script src="btnn_luong_xu_ly.js"></script>
     <script>
         const WF = BTNN_WF;
-        let selectedRoot = 'BTP-01';
+        let flowType = WF.FLOW_TYPE_ORDER[0]; // Loại luồng đang chọn
+        let selectedRoot = '';
         let draft = null; // cấu hình đang sửa của đơn vị gốc được chọn
 
         function esc(v) { return WF.esc(v); }
 
         function init() {
             WF.mountUserSwitcher();
-            const me = WF.getCurrentUser();
-            selectedRoot = WF.getRootId(me.unitId) || 'BTP-01';
-            renderRoots();
-            selectRoot(selectedRoot);
+            renderFlowTabs();
+            // Mở sẵn tab theo tham số ?flow=XD_BTP|XD_STP|GQ
+            const ft = new URLSearchParams(location.search).get('flow');
+            switchFlowType(WF.FLOW_TYPE_ORDER.includes(ft) ? ft : WF.FLOW_TYPE_ORDER[0]);
+        }
+
+        function renderFlowTabs() {
+            document.getElementById('flowTabs').innerHTML = WF.FLOW_TYPE_ORDER.map(ft =>
+                `<button type="button" class="tn-tab ${ft === flowType ? 'active' : ''}" data-flow="${esc(ft)}" onclick="switchFlowType('${esc(ft)}')"><i class="fa-solid ${ft === 'GQ' ? 'fa-scale-balanced' : 'fa-magnifying-glass-location'}"></i> ${esc(WF.FLOW_TYPE_NAMES[ft])}</button>`).join('');
+        }
+
+        // Đổi Loại luồng: tải đơn vị gốc của Loại luồng, chọn đơn vị gốc của người dùng (nếu thuộc danh sách) hoặc đơn vị đầu tiên; bỏ thay đổi chưa lưu
+        function switchFlowType(ft) {
+            flowType = ft;
+            document.querySelectorAll('#flowTabs .tn-tab').forEach(b => b.classList.toggle('active', b.dataset.flow === ft));
+            document.getElementById('rootSearch').value = '';
+            const roots = WF.flowRootIds(ft);
+            const myRoot = WF.getRootId(WF.getCurrentUser().unitId);
+            selectRoot(roots.includes(myRoot) ? myRoot : (roots[0] || ''));
         }
 
         function renderRoots() {
             const q = document.getElementById('rootSearch').value.trim().toLowerCase();
-            document.getElementById('rootList').innerHTML = WF.getRootUnits()
+            const ids = WF.flowRootIds(flowType);
+            const rows = WF.getRootUnits()
+                .filter(u => ids.includes(u.id))
                 .filter(u => !q || u.name.toLowerCase().includes(q))
                 .map(u => `<div class="root-item ${u.id === selectedRoot ? 'active' : ''}" onclick="selectRoot('${esc(u.id)}')">
                     <div><div class="root-name">${esc(u.name)}</div><div class="muted">${WF.getDescendants(u.id).length} đơn vị trực thuộc</div></div>
-                    <span class="pill ${WF.isUnitConfigured(u.id) ? 'ok' : 'no'}">${WF.isUnitConfigured(u.id) ? 'Đã cấu hình' : 'Chưa cấu hình'}</span>
-                </div>`).join('');
+                    <span class="pill ${WF.isUnitConfigured(u.id, flowType) ? 'ok' : 'no'}">${WF.isUnitConfigured(u.id, flowType) ? 'Đã cấu hình' : 'Chưa cấu hình'}</span>
+                </div>`);
+            document.getElementById('rootList').innerHTML = rows.length ? rows.join('') : '<span class="muted">Không có đơn vị gốc phù hợp.</span>';
         }
 
         function blankNode() { return { leaders: [], allowUnit: false, units: [], allowOfficer: false, officers: [] }; }
 
         function selectRoot(id) {
             selectedRoot = id;
-            const cfg = WF.getFlowConfig();
+            renderRoots();
+            if (!id) { draft = null; renderConfig(); return; }
+            const cfg = WF.getFlowConfig(flowType);
             draft = JSON.parse(JSON.stringify(cfg[id] || {}));
             [id].concat(WF.getDescendants(id)).forEach(u => { if (!draft[u]) draft[u] = blankNode(); });
-            renderRoots();
             renderConfig();
         }
 
         function depthOf(unitId) { return WF.getAncestors(unitId).length - 1; }
 
         function renderConfig() {
+            const ftName = WF.FLOW_TYPE_NAMES[flowType];
+            if (!selectedRoot) {
+                document.getElementById('cfgTitle').innerHTML = `<i class="fa-solid fa-diagram-project"></i> Cấu hình luồng ${esc(ftName)}`;
+                document.getElementById('cfgState').innerHTML = '';
+                document.getElementById('flowPreview').innerHTML = '<span class="muted">Loại luồng chưa có đơn vị gốc.</span>';
+                document.getElementById('nodeList').innerHTML = '';
+                return;
+            }
             const root = WF.getUnit(selectedRoot);
-            document.getElementById('cfgTitle').innerHTML = `<i class="fa-solid fa-diagram-project"></i> Cấu hình luồng: ${esc(root.name)}`;
-            document.getElementById('cfgState').innerHTML = `<span class="pill ${WF.isUnitConfigured(selectedRoot) ? 'ok' : 'no'}">${WF.isUnitConfigured(selectedRoot) ? 'Đã cấu hình' : 'Chưa cấu hình'}</span>`;
+            document.getElementById('cfgTitle').innerHTML = `<i class="fa-solid fa-diagram-project"></i> Cấu hình luồng ${esc(ftName)}: ${esc(root.name)}`;
+            document.getElementById('cfgState').innerHTML = `<span class="pill ${WF.isUnitConfigured(selectedRoot, flowType) ? 'ok' : 'no'}">${WF.isUnitConfigured(selectedRoot, flowType) ? 'Đã cấu hình' : 'Chưa cấu hình'}</span>`;
             const units = [selectedRoot].concat(WF.getDescendants(selectedRoot));
             document.getElementById('nodeList').innerHTML = units.map(u => {
                 const n = draft[u];
@@ -174,20 +207,22 @@
         }
 
         function saveConfig() {
+            if (!selectedRoot || !draft) return;
             const errors = validate();
             if (errors.length) { showToast(errors[0], 'error'); return; }
-            const cfg = WF.getFlowConfig();
+            const cfg = WF.getFlowConfig(flowType);
             const clean = {};
             Object.keys(draft).forEach(u => {
                 const n = draft[u];
                 if (n.leaders.length || n.allowUnit || n.allowOfficer) clean[u] = { leaders: n.leaders.slice(), allowUnit: n.allowUnit, units: n.allowUnit ? n.units.slice() : [], allowOfficer: n.allowOfficer, officers: n.allowOfficer ? n.officers.slice() : [] };
             });
             cfg[selectedRoot] = clean;
-            WF.saveFlowConfig(cfg);
-            showToast(`Đã lưu cấu hình luồng xử lý của ${WF.unitName(selectedRoot)}.`, 'success');
+            WF.saveFlowConfig(cfg, flowType);
+            showToast(`Đã lưu cấu hình luồng ${WF.FLOW_TYPE_NAMES[flowType]} của ${WF.unitName(selectedRoot)}.`, 'success');
             selectRoot(selectedRoot);
         }
 
+        // Hủy thay đổi: tải lại cấu hình đã lưu của Loại luồng hiện tại
         function restoreSaved() { selectRoot(selectedRoot); showToast('Đã hủy các thay đổi chưa lưu.', 'info'); }
 
         function showToast(message, type) {

@@ -47,7 +47,7 @@ const LEGACY_SEED = [
         nycCountry: "Việt Nam",
         nycTinhThanh: "Tỉnh Lâm Đồng",
         nycAddressDetail: "Số 88 đường Lạch Tray",
-        hinhThucTiepNhan: "Nhận qua bưu điện/bưu chính",
+        hinhThucTiepNhan: "Qua dịch vụ bưu chính",
         linhVuc: "TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ",
         hanhVi: "Bị tạm giam giữ trái pháp luật của Công an tỉnh Lâm Đồng làm suy sụp sức khỏe nghiêm trọng.",
         hinhThucNhan: "Hồ sơ giấy",
@@ -127,7 +127,6 @@ const LEGACY_SEED = [
         procReason: "Hành vi gây thiệt hại bắt nguồn từ Quyết định hành chính ban hành bởi UBND Quận Cầu Giấy, đã được Tòa án tuyên hủy tại bản án hành chính sơ thẩm.",
         procDecisionFile: "Quyet_dinh_chi_dinh_co_quan_so_04.pdf",
         claimCode: "BT-2026-081",
-        phddCode: null,
         transfer: {
             targetUnitId: 'UBND-HN',
             content: 'Chuyển hồ sơ yêu cầu bồi thường thiệt hại sang UBND quận Cầu Giấy để giải quyết theo thẩm quyền.',
@@ -182,7 +181,7 @@ const LEGACY_SEED = [
         nycCountry: "Việt Nam",
         nycTinhThanh: "Thành phố Hải Phòng",
         nycAddressDetail: "Số 12 đường Lê Lợi, Ngô Quyền",
-        hinhThucTiepNhan: "Nhận qua bưu điện/bưu chính",
+        hinhThucTiepNhan: "Qua dịch vụ bưu chính",
         linhVuc: "TRONG HOẠT ĐỘNG THI HÀNH ÁN HÌNH SỰ",
         hanhVi: "Bắt buộc chấp hành án phạt lao động cải tạo khi đang hoãn thi hành án do bệnh lý nặng của trại giam.",
         hinhThucNhan: "Hồ sơ giấy",
@@ -251,7 +250,6 @@ const LEGACY_SEED = [
         procReason: "Cơ quan điều tra đã khởi tố ban đầu đã được giải thể, chuyển giao thẩm quyền pháp lý sang văn phòng cơ quan CSĐT cấp tỉnh.",
         procDecisionFile: "Quyet_dinh_chi_dinh_viet.pdf",
         claimCode: "BT-2026-003",
-        phddCode: "PHDD-2026-001",
         transfer: {
             targetUnitId: 'STP-HN',
             content: 'Chuyển toàn bộ hồ sơ yêu cầu bồi thường và phục hồi danh dự sang Sở Tư pháp Thành phố Hà Nội thụ lý, giải quyết cả hai nội dung bồi thường thiệt hại và phục hồi danh dự theo quy định.',
@@ -277,7 +275,7 @@ const LEGACY_SEED = [
         nycCountry: "Mỹ",
         nycTinhThanh: "",
         nycAddressDetail: "Flat 4, 12th Avenue, New York",
-        hinhThucTiepNhan: "Nhận qua bưu điện/bưu chính",
+        hinhThucTiepNhan: "Qua dịch vụ bưu chính",
         linhVuc: "TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ",
         hanhVi: "Kéo dài quá hạn thời gian xét xử tranh chấp đất đai kiều bào gây thiệt hại chi phí đi lại.",
         hinhThucNhan: "Phương thức điện tử",
@@ -306,7 +304,7 @@ const LEGACY_SEED = [
         nycCountry: "Việt Nam",
         nycTinhThanh: "Thành phố Đà Nẵng",
         nycAddressDetail: "Quận Ngũ Hành Sơn, Đà Nẵng",
-        hinhThucTiepNhan: "Nhận qua bưu điện/bưu chính",
+        hinhThucTiepNhan: "Qua dịch vụ bưu chính",
         linhVuc: "TRONG HOẠT ĐỘNG TỐ TỤNG HÀNH CHÍNH",
         hanhVi: "Quyết định xử phạt hành chính thu hồi đất dự án đầu tư sai luật của UBND thành phố.",
         hinhThucNhan: "Hồ sơ giấy",
@@ -364,7 +362,7 @@ const LEGACY_SEED = [
         nycCountry: "Việt Nam",
         nycTinhThanh: "Thành phố Hồ Chí Minh",
         nycAddressDetail: "Quận 3, TP. Hồ Chí Minh",
-        hinhThucTiepNhan: "Nhận qua bưu điện/bưu chính",
+        hinhThucTiepNhan: "Qua dịch vụ bưu chính",
         linhVuc: "TRONG HOẠT ĐỘNG THI HÀNH ÁN HÌNH SỰ",
         hanhVi: "Trì hoãn chấp hành án phạt tù làm ảnh hưởng nghiêm trọng đến tinh thần người thi hành án.",
         hinhThucNhan: "Hồ sơ giấy",
@@ -422,7 +420,7 @@ const LEGACY_SEED = [
         nycCountry: "Việt Nam",
         nycTinhThanh: "Thành phố Đà Nẵng",
         nycAddressDetail: "Số 154 Nguyễn Văn Linh, Hải Châu",
-        hinhThucTiepNhan: "Nhận qua bưu điện/bưu chính",
+        hinhThucTiepNhan: "Qua dịch vụ bưu chính",
         linhVuc: "TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ",
         hanhVi: "Kê biên tài sản phục vụ điều tra sai đối tượng đương sự.",
         hinhThucNhan: "Hồ sơ giấy",
@@ -554,8 +552,7 @@ const LEGACY_SEED = [
         procTargetAgency: "Sở Tư pháp Thành phố Hà Nội",
         procReason: "Hồ sơ chỉ yêu cầu phục hồi danh dự cho người bị thiệt hại, thuộc thẩm quyền giải quyết của Sở Tư pháp.",
         procDecisionFile: "Quyet_dinh_chi_dinh_tuan.pdf",
-        claimCode: null,
-        phddCode: "PHDD-2026-005",
+        claimCode: "BT-2026-085",
         transfer: {
             targetUnitId: 'STP-HN',
             content: 'Chuyển hồ sơ yêu cầu phục hồi danh dự của ông Ngô Quốc Tuấn sang Sở Tư pháp Thành phố Hà Nội thụ lý, tổ chức trực tiếp xin lỗi và đăng báo cải chính theo quy định.',
@@ -566,23 +563,30 @@ const LEGACY_SEED = [
     }
 ];
 
-// Dữ liệu giả lập hồ sơ Xác định CQGQBT do UBND cấp tỉnh xử lý (UBND Thành phố Hà Nội, UBND tỉnh Lâm Đồng)
-const UBND_SEED_FLAG = 'btnn_xd_ubnd_seed_v1';
-function buildUbndSeed() {
+// Dữ liệu giả lập hồ sơ Xác định CQGQBT do Sở Tư pháp xử lý (Sở Tư pháp Thành phố Hà Nội, luồng Xác định CQGQBT - Sở Tư pháp).
+// UBND Thành phố Hà Nội chỉ xem (chỉ đọc) các hồ sơ này; UBND cấp tỉnh không tiếp nhận, xử lý Xác định CQGQBT.
+const STP_SEED_FLAG = 'btnn_xd_stp_seed_v1';
+// Mã hồ sơ mẫu cũ do UBND cấp tỉnh xử lý (không còn áp dụng): gỡ khỏi kho dùng chung khi nạp dữ liệu mẫu mới
+const OLD_UBND_SEED_CODES = ['XD-2026-121', 'XD-2026-122', 'XD-2026-123', 'XD-2026-124'];
+function buildStpSeed() {
     const h = (action, userId, at, note) => ({ at, userId, userName: BTNN_WF.userName(userId), action, note: note || '' });
-    const base = (code, unitId, extra) => Object.assign({
+    const base = (code, extra) => Object.assign({
         id: 'WF-' + code, code, module: 'XD', loaiYeuCau: BTNN_WF.REQUEST_TYPE_XD, source: 'Tiếp nhận',
-        rootUnitId: unitId, currentUnitId: unitId, nycRole: 'Người bị thiệt hại', nycGender: 'Nam', nycDocType: 'CCCD',
+        rootUnitId: 'STP-HN', currentUnitId: 'STP-HN-HCTP', nycRole: 'Người bị thiệt hại', nycGender: 'Nam', nycDocType: 'CCCD',
         nycDocDate: '10/05/2021', nycDocPlace: 'Cục Cảnh sát QLHC về trật tự xã hội', nycCountry: 'Việt Nam',
         hinhThucTiepNhan: 'Trực tiếp', hinhThucNhan: 'Phương thức điện tử', vanBanCanCu: [],
         attachedDocs: [{ name: 'Đơn yêu cầu xác định cơ quan giải quyết bồi thường', file: `Don_yeu_cau_${code}.pdf` }],
         procBasis: '', procTargetAgency: '', procReason: '', procDecisionFile: '', claimCode: '-',
         phoiHop: [], approval: null
     }, extra);
-    const route = (unitId, leader, chuTri, at, state) => [{ id: 'R1', type: 'officer', fromUnitId: unitId, fromUserId: leader, chuTri, phoiHop: [], note: '', at, state }];
+    // Lượt phân công: Giám đốc Sở chuyển Phòng Hành chính tư pháp; Trưởng phòng phân công cán bộ xử lý
+    const routes = (chuTri, day, lastState) => [
+        { id: 'R1', type: 'unit', fromUnitId: 'STP-HN', fromUserId: 'gdso_hn', toUnitId: 'STP-HN-HCTP', note: 'Giao Phòng Hành chính tư pháp xem xét, xử lý.', at: `09:00 ${day}`, state: 'Đã xử lý' },
+        { id: 'R2', type: 'officer', fromUnitId: 'STP-HN-HCTP', fromUserId: 'tp_hctp_hn', chuTri, phoiHop: [], note: '', at: `14:00 ${day}`, state: lastState }
+    ];
     return [
-        base('XD-2026-121', 'UBND-HN', {
-            date: '06/10/2026', receivedAt: '08:30 06/10/2026', receivedBy: 'Mẫn Thị Hạnh', createdBy: 'cv_ubndhn1', chuTri: 'cv_ubndhn1',
+        base('XD-2026-121', {
+            maVuViec: 'VVBT-2026-121', date: '06/10/2026', receivedAt: '08:30 06/10/2026', receivedBy: 'Đỗ Văn Chung', createdBy: 'cv_hn1', chuTri: 'cv_hn1',
             status: 'Đang thực hiện', nycName: 'Kiều Văn Thịnh', nycDob: '14/02/1979', nycDocNo: '001079006611', nycPhone: '0913221144', nycEmail: 'thinh.kv@gmail.com',
             nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: '00001 - Phường Ba Đình', nycAddressDetail: 'Số 12 Phan Đình Phùng',
             linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: 'Thu hồi đất, cưỡng chế giải phóng mặt bằng khi chưa có quyết định thu hồi đất có hiệu lực của UBND cấp huyện.',
@@ -590,37 +594,16 @@ function buildUbndSeed() {
             procTargetAgency: 'UBND quận Cầu Giấy, Thành phố Hà Nội',
             procReason: 'Người thi hành công vụ gây thiệt hại thuộc UBND quận Cầu Giấy quản lý.',
             procDecisionFile: 'Quyet_dinh_xac_dinh_CQGQBT_XD-2026-121.pdf',
-            routes: route('UBND-HN', 'ct_ubndhn', 'cv_ubndhn1', '09:00 06/10/2026', 'Đã xử lý'),
-            history: [h('Tiếp nhận yêu cầu', 'cv_ubndhn1', '08:30 06/10/2026', 'Chuyển lãnh đạo UBND Thành phố Hà Nội phân công xử lý.'), h('Phân công cán bộ', 'ct_ubndhn', '09:00 06/10/2026', 'Chủ trì: Mẫn Thị Hạnh.'), h('Tiếp nhận hồ sơ', 'cv_ubndhn1', '10:00 06/10/2026', 'Cán bộ chủ trì tiếp nhận, nhập liệu hồ sơ. Hồ sơ chuyển [Đang thực hiện].')]
+            routes: routes('cv_hn1', '06/10/2026', 'Đã xử lý'),
+            history: [h('Tiếp nhận hồ sơ', 'cv_hn1', '08:30 06/10/2026', 'Chuyển lãnh đạo Sở Tư pháp Thành phố Hà Nội phân công xử lý.'), h('Chuyển đơn vị', 'gdso_hn', '09:00 06/10/2026', 'Chuyển Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Hà Nội phân công.'), h('Phân công cán bộ', 'tp_hctp_hn', '14:00 06/10/2026', 'Chủ trì: Đỗ Văn Chung.'), h('Tiếp nhận hồ sơ', 'cv_hn1', '15:00 06/10/2026', 'Cán bộ xử lý tiếp nhận, nhập liệu hồ sơ. Hồ sơ chuyển [Đang thực hiện].')]
         }),
-        base('XD-2026-122', 'UBND-HN', {
-            date: '09/10/2026', receivedAt: '14:10 09/10/2026', receivedBy: 'Mẫn Thị Hạnh', createdBy: 'cv_ubndhn1', chuTri: 'cv_ubndhn1',
-            status: 'Chờ tiếp nhận', nycName: 'Lục Thị Phương', nycGender: 'Nữ', nycDob: '21/07/1990', nycDocNo: '001190007722', nycPhone: '0936554433', nycEmail: '',
+        base('XD-2026-122', {
+            maVuViec: 'VVBT-2026-122', date: '09/10/2026', receivedAt: '08:10 09/10/2026', receivedBy: 'Ngô Thị Lan', createdBy: 'cv_hn2', chuTri: 'cv_hn2',
+            status: 'Chờ tiếp nhận', hinhThucTiepNhan: 'Qua dịch vụ bưu chính', nycName: 'Lục Thị Phương', nycGender: 'Nữ', nycDob: '21/07/1990', nycDocNo: '001190007722', nycPhone: '0936554433', nycEmail: '',
             nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: '00010 - Phường Thanh Xuân', nycAddressDetail: 'Số 7 Khương Đình',
             linhVuc: 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ', hanhVi: 'Kê biên tài sản không thuộc sở hữu của người phải thi hành án.',
-            routes: route('UBND-HN', 'ct_ubndhn', 'cv_ubndhn1', '15:00 09/10/2026', 'Chưa xử lý'),
-            history: [h('Tiếp nhận yêu cầu', 'cv_ubndhn1', '14:10 09/10/2026', 'Chuyển lãnh đạo UBND Thành phố Hà Nội phân công xử lý.'), h('Phân công cán bộ', 'ct_ubndhn', '15:00 09/10/2026', 'Chủ trì: Mẫn Thị Hạnh.')]
-        }),
-        base('XD-2026-123', 'UBND-LD', {
-            date: '03/10/2026', receivedAt: '08:15 03/10/2026', receivedBy: 'Ông Thị Thảo', createdBy: 'cv_ubndld1', chuTri: 'cv_ubndld1',
-            status: 'Chờ duyệt', nycName: 'Ka Huỳnh Đức', nycDob: '02/03/1984', nycDocNo: '068084003399', nycPhone: '0918776600', nycEmail: 'duc.kh@gmail.com',
-            nycTinhThanh: 'Tỉnh Lâm Đồng', nycPhuongXa: '24781 - Phường Lâm Viên - Đà Lạt', nycAddressDetail: 'Số 9 Bùi Thị Xuân',
-            linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: 'Xử phạt vi phạm hành chính và tịch thu phương tiện sai thẩm quyền.',
-            supplementReason: 'Đề nghị người yêu cầu bổ sung văn bản làm căn cứ yêu cầu bồi thường (quyết định hủy quyết định xử phạt).',
-            routes: route('UBND-LD', 'ct_ubndld', 'cv_ubndld1', '09:00 03/10/2026', 'Đã xử lý'),
-            approval: { kind: 'Yêu cầu bổ sung', content: 'Đề nghị người yêu cầu bổ sung văn bản làm căn cứ yêu cầu bồi thường (quyết định hủy quyết định xử phạt).', files: [{ name: 'Van_ban_yeu_cau_bo_sung_XD-2026-123.pdf' }], path: ['UBND-LD'], level: 0, steps: [], assignees: ['ct_ubndld'], prevStatus: 'Đang thực hiện', submittedBy: 'cv_ubndld1', submittedAt: '15:30 08/10/2026', pending: { since: '15:30 08/10/2026' } },
-            history: [h('Tiếp nhận yêu cầu', 'cv_ubndld1', '08:15 03/10/2026', 'Chuyển lãnh đạo UBND tỉnh Lâm Đồng phân công xử lý.'), h('Phân công cán bộ', 'ct_ubndld', '09:00 03/10/2026', 'Chủ trì: Ông Thị Thảo.'), h('Tiếp nhận hồ sơ', 'cv_ubndld1', '10:00 03/10/2026', 'Hồ sơ chuyển [Đang thực hiện].'), h('Trình phê duyệt', 'cv_ubndld1', '15:30 08/10/2026', 'Yêu cầu bổ sung. Trình Kha Văn Sang - UBND tỉnh Lâm Đồng.')]
-        }),
-        base('XD-2026-124', 'UBND-LD', {
-            date: '01/10/2026', receivedAt: '09:40 01/10/2026', receivedBy: 'Lò Văn Dũng', createdBy: 'cv_ubndld2', chuTri: 'cv_ubndld2',
-            status: 'Bị trả lại', nycName: 'Hà Thị Liên', nycGender: 'Nữ', nycDob: '19/09/1987', nycDocNo: '068187005588', nycPhone: '0977889900', nycEmail: '',
-            nycTinhThanh: 'Tỉnh Lâm Đồng', nycPhuongXa: '24784 - Xã Đức Trọng', nycAddressDetail: 'Thôn 5',
-            linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ', hanhVi: 'Áp dụng biện pháp khẩn cấp tạm thời phong tỏa tài sản vượt quá giá trị nghĩa vụ.',
-            rejectionReason: 'Yêu cầu đã được Tòa án thụ lý giải quyết theo thủ tục tố tụng dân sự.',
-            routes: route('UBND-LD', 'ct_ubndld', 'cv_ubndld2', '10:30 01/10/2026', 'Đã xử lý'),
-            approval: { kind: 'Từ chối', content: 'Yêu cầu đã được Tòa án thụ lý giải quyết theo thủ tục tố tụng dân sự.', files: [{ name: 'Du_thao_thong_bao_tu_choi_XD-2026-124.pdf' }], path: ['UBND-LD'], level: 0, steps: [{ unitId: 'UBND-LD', userId: 'ct_ubndld', action: 'Từ chối phê duyệt', note: 'Chưa có văn bản xác nhận thụ lý của Tòa án; đề nghị kiểm tra lại.', at: '16:00 07/10/2026' }], assignees: ['ct_ubndld'], prevStatus: 'Đang thực hiện', submittedBy: 'cv_ubndld2', submittedAt: '09:00 07/10/2026', pending: null },
-            returned: { reason: 'Chưa có văn bản xác nhận thụ lý của Tòa án; đề nghị kiểm tra lại.', by: 'ct_ubndld', unitId: 'UBND-LD', at: '16:00 07/10/2026', kind: 'Từ chối', prevStatus: 'Đang thực hiện' },
-            history: [h('Tiếp nhận yêu cầu', 'cv_ubndld2', '09:40 01/10/2026', 'Chuyển lãnh đạo UBND tỉnh Lâm Đồng phân công xử lý.'), h('Phân công cán bộ', 'ct_ubndld', '10:30 01/10/2026', 'Chủ trì: Lò Văn Dũng.'), h('Tiếp nhận hồ sơ', 'cv_ubndld2', '11:00 01/10/2026', 'Hồ sơ chuyển [Đang thực hiện].'), h('Trình phê duyệt', 'cv_ubndld2', '09:00 07/10/2026', 'Từ chối. Trình Kha Văn Sang - UBND tỉnh Lâm Đồng.'), h('Từ chối phê duyệt', 'ct_ubndld', '16:00 07/10/2026', 'Trả lại cán bộ chủ trì. Lý do: Chưa có văn bản xác nhận thụ lý của Tòa án; đề nghị kiểm tra lại.')]
+            routes: routes('cv_hn2', '09/10/2026', 'Chưa xử lý'),
+            history: [h('Tiếp nhận hồ sơ', 'cv_hn2', '08:10 09/10/2026', 'Chuyển lãnh đạo Sở Tư pháp Thành phố Hà Nội phân công xử lý.'), h('Chuyển đơn vị', 'gdso_hn', '09:00 09/10/2026', 'Chuyển Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Hà Nội phân công.'), h('Phân công cán bộ', 'tp_hctp_hn', '14:00 09/10/2026', 'Chủ trì: Ngô Thị Lan.')]
         })
     ];
 }
@@ -689,25 +672,26 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Phạm vi xem: cán bộ chủ trì, cán bộ phối hợp, người tạo, lãnh đạo các đơn vị trên luồng phân công/phê duyệt.
-// Hồ sơ Chờ phân công/Đang phân công nằm tại Tiếp nhận yêu cầu (Lãnh đạo Phân công tại tab Chờ xử lý).
+// Hồ sơ Chờ phân công/Đang phân công nằm tại Tiếp nhận hồ sơ (Lãnh đạo Phân công tại tab Chờ xử lý).
+// UBND cấp tỉnh: chỉ xem (chỉ đọc) hồ sơ của các Sở Tư pháp trực thuộc.
 let readOnlyView = false;
 const LEGACY_FLAG = 'btnn_xd_legacy_seed_v2';
 
 function initWorkflowData() {
     migrateLegacySeed();
-    migrateUbndSeed();
+    migrateStpSeed();
     reloadRequestList();
 }
 
-// Bổ sung một lần hồ sơ mẫu của UBND cấp tỉnh vào kho dùng chung
-function migrateUbndSeed() {
+// Bổ sung một lần hồ sơ mẫu của Sở Tư pháp vào kho dùng chung; gỡ hồ sơ mẫu cũ do UBND cấp tỉnh xử lý
+function migrateStpSeed() {
     let done = null;
-    try { done = localStorage.getItem(UBND_SEED_FLAG); } catch (e) { done = null; }
+    try { done = localStorage.getItem(STP_SEED_FLAG); } catch (e) { done = null; }
     if (done) return;
-    const records = BTNN_WF.loadRecords();
-    buildUbndSeed().forEach(rec => { if (!records.some(r => r.code === rec.code)) records.push(rec); });
+    const records = BTNN_WF.loadRecords().filter(r => !(r.module === 'XD' && OLD_UBND_SEED_CODES.includes(r.code) && /^UBND/.test(r.rootUnitId || '')));
+    buildStpSeed().forEach(rec => { if (!records.some(r => r.code === rec.code)) records.push(rec); });
     BTNN_WF.saveRecords(records);
-    try { localStorage.setItem(UBND_SEED_FLAG, '1'); } catch (e) { /* bỏ qua */ }
+    try { localStorage.setItem(STP_SEED_FLAG, '1'); } catch (e) { /* bỏ qua */ }
 }
 
 function migrateLegacySeed() {
@@ -741,7 +725,18 @@ function getMe() { return BTNN_WF.getCurrentUserId(); }
 const XD_PENDING_STATES = ['Chờ tiếp nhận', 'Đang thực hiện', 'Chờ duyệt', 'Bị trả lại', 'Chờ chuyển CQGQBT', 'Yêu cầu bổ sung'];
 const XD_DONE_STATES = ['Bị từ chối', 'Hoàn thành'];
 let xdTab = 'pending';
-function isLeaderMe() { return !!(window.BTNN_LD && BTNN_LD.isLeaderUser(getMe())); }
+// UBND cấp tỉnh: chỉ xem (chỉ đọc) hồ sơ của các Sở Tư pháp trực thuộc
+function isXdViewOnly() { return BTNN_WF.isXdViewOnlyUser(getMe()) && !canCreateXd(); }
+// Lãnh đạo: thuộc Nhóm lãnh đạo của ít nhất 01 đơn vị tại luồng Xác định CQGQBT - Bộ Tư pháp / Sở Tư pháp
+function isLeaderMe() {
+    if (isXdViewOnly()) return false;
+    const me = getMe();
+    const FT = BTNN_WF.FLOW_TYPES;
+    return [FT.XD_BTP, FT.XD_STP].some(ft => {
+        const cfg = BTNN_WF.getFlowConfig(ft) || {};
+        return Object.keys(cfg).some(root => Object.values(cfg[root] || {}).some(n => (n.leaders || []).includes(me)));
+    });
+}
 function xdInTab(tab, item) {
     const me = getMe();
     if (isLeaderMe()) {
@@ -760,9 +755,7 @@ function switchXdTab(tab) {
             : (xdTab === 'pending' ? XD_PENDING_STATES : XD_DONE_STATES);
         sel.innerHTML = '<option value="">Tất cả trạng thái</option>' + states.map(s => `<option value="${escapeAttr(s)}">${escapeHtml(s)}</option>`).join('');
     }
-    const btnCreate = document.getElementById('btnCreateRequest');
-    if (btnCreate && xdTab === 'done') btnCreate.style.display = 'none';
-    else if (btnCreate && typeof canCreateXd === 'function') btnCreate.style.display = canCreateXd() && !isLeaderMe() ? '' : 'none';
+    setCreateBtnVisible(xdTab !== 'done' && canCreateXd() && !isLeaderMe() && !readOnlyView);
     applyFilters();
 }
 function updateXdTabCounts() {
@@ -776,9 +769,12 @@ function isVisibleToMe(rec) {
     const me = getMe();
     if (rec.module !== 'XD') return false;
     if ([BTNN_WF.STATUS.CHO_PHAN_CONG, BTNN_WF.STATUS.DANG_PHAN_CONG].includes(rec.status)) return false;
+    // UBND cấp tỉnh: chỉ hồ sơ của các Sở Tư pháp trực thuộc
+    if (isXdViewOnly()) return BTNN_WF.xdViewOnlyStpRoots(me).includes(rec.rootUnitId);
     if (rec.chuTri === me || (rec.phoiHop || []).includes(me) || rec.createdBy === me) return true;
     const units = (rec.routes || []).map(r => r.fromUnitId).concat(rec.approval ? rec.approval.path : []);
-    return units.some(u => BTNN_WF.isLeaderOf(me, u));
+    const ft = BTNN_WF.flowTypeOf(rec);
+    return units.some(u => BTNN_WF.isLeaderOf(me, u, ft));
 }
 
 function reloadRequestList() {
@@ -804,6 +800,12 @@ function saveRequestList() {
     requestList.forEach(saveItem);
 }
 
+// Ẩn/hiện nút Tạo yêu cầu (inline !important để không bị CSS chuẩn hóa nút của khối lọc ghi đè)
+function setCreateBtnVisible(show) {
+    const btn = document.getElementById('btnCreateRequest');
+    if (btn) btn.style.setProperty('display', show ? 'inline-flex' : 'none', 'important');
+}
+
 function canCreateXd() {
     return BTNN_WF.getRequestTypesForUser().includes(REQUEST_TYPE_XDCQ);
 }
@@ -812,21 +814,23 @@ function applyScopeNotice() {
     const notice = document.getElementById('xdScopeNotice');
     const btn = document.getElementById('btnCreateRequest');
     const allowed = canCreateXd();
-    if (btn) btn.style.display = allowed && !readOnlyView ? 'inline-flex' : 'none';
+    // UBND cấp tỉnh (chỉ xem): không có nút Tạo yêu cầu, không hiển thị thông báo không áp dụng
+    const viewOnly = isXdViewOnly();
+    if (btn) setCreateBtnVisible(allowed && !readOnlyView);
     if (notice) {
-        notice.style.display = allowed ? 'none' : 'block';
-        notice.innerHTML = `<i class="fa-solid fa-circle-info"></i> Loại yêu cầu "Xác định cơ quan giải quyết bồi thường" không áp dụng cho đơn vị ${escapeHtml(BTNN_WF.unitName(BTNN_WF.getCurrentUser().unitId))} (Danh mục Loại yêu cầu - Đơn vị áp dụng). Chỉ Bộ Tư pháp, Sở Tư pháp và UBND cấp tỉnh được xử lý loại yêu cầu này.`;
+        notice.style.display = allowed || viewOnly ? 'none' : 'block';
+        notice.innerHTML = `<i class="fa-solid fa-circle-info"></i> Loại hồ sơ "Xác định cơ quan giải quyết bồi thường" không áp dụng cho đơn vị ${escapeHtml(BTNN_WF.unitName(BTNN_WF.getCurrentUser().unitId))} (Danh mục Loại hồ sơ - Đơn vị áp dụng). Chỉ Bộ Tư pháp và Sở Tư pháp được xử lý loại hồ sơ này.`;
     }
 }
 
-// Cơ quan xử lý hồ sơ (đơn vị gốc) và loại cơ quan có thẩm quyền: Bộ Tư pháp | Sở Tư pháp | UBND cấp tỉnh
+// Cơ quan xử lý hồ sơ (đơn vị gốc) và loại cơ quan có thẩm quyền: Bộ Tư pháp | Sở Tư pháp
 function authorityTypeOf(item) {
     return item && item.rootUnitId ? BTNN_WF.xdAuthorityType(item.rootUnitId) : '';
 }
 
 function authorityTagHtml(type) {
     if (!type) return '';
-    const cls = type === 'UBND cấp tỉnh' ? 'ubnd' : type === 'Sở Tư pháp' ? 'stp' : 'btp';
+    const cls = type === 'Sở Tư pháp' ? 'stp' : 'btp';
     return `<span class="authority-tag ${cls}">${escapeHtml(type)}</span>`;
 }
 
@@ -839,17 +843,19 @@ function unitWithTypeHtml(rootId, block) {
     return escapeHtml(name) + (tag ? (block ? `<div>${tag}</div>` : tag) : '');
 }
 
-// Bộ lọc Cơ quan xử lý: nhóm theo loại cơ quan có thẩm quyền Xác định CQGQBT
+// Bộ lọc Cơ quan xử lý: nhóm theo loại cơ quan có thẩm quyền Xác định CQGQBT (Bộ Tư pháp, Sở Tư pháp)
+// Người dùng UBND cấp tỉnh: chỉ có các Sở Tư pháp trực thuộc
 function renderUnitFilterOptions() {
     const sel = document.getElementById('filterUnit');
     if (!sel) return;
     const groups = {};
-    BTNN_WF.XD_AUTHORITY_UNITS.forEach(u => {
+    const units = isXdViewOnly() ? BTNN_WF.xdViewOnlyStpRoots(getMe()) : BTNN_WF.XD_AUTHORITY_UNITS;
+    units.forEach(u => {
         const type = BTNN_WF.xdAuthorityType(u);
         if (!type) return;
         (groups[type] = groups[type] || []).push(u);
     });
-    sel.innerHTML = '<option value="">Tất cả cơ quan</option>' + ['Bộ Tư pháp', 'Sở Tư pháp', 'UBND cấp tỉnh'].filter(t => groups[t]).map(t =>
+    sel.innerHTML = '<option value="">Tất cả cơ quan</option>' + ['Bộ Tư pháp', 'Sở Tư pháp'].filter(t => groups[t]).map(t =>
         `<optgroup label="${escapeAttr(t)}">${groups[t].length > 1 ? `<option value="type:${escapeAttr(t)}">Tất cả ${escapeHtml(t)}</option>` : ''}${groups[t].map(u => `<option value="${escapeAttr(u)}">${escapeHtml(BTNN_WF.unitName(u))}</option>`).join('')}</optgroup>`
     ).join('');
 }
@@ -861,7 +867,7 @@ function renderApprovalKindOptions() {
     sel.innerHTML = '<option value="">Tất cả</option>' + (BTNN_WF.APPROVAL_KINDS.XD || []).map(k => `<option value="${escapeAttr(k)}">${escapeHtml(k)}</option>`).join('');
 }
 
-// Lịch sử xử lý: mỗi dòng kèm cơ quan và loại cơ quan của người thực hiện (thể hiện vai trò Bộ Tư pháp / Sở Tư pháp / UBND cấp tỉnh)
+// Lịch sử xử lý: mỗi dòng kèm cơ quan và loại cơ quan của người thực hiện (thể hiện vai trò Bộ Tư pháp / Sở Tư pháp)
 function renderXdHistoryHtml(rec) {
     const list = (rec.history || []).slice().reverse();
     if (!list.length) return '';
@@ -891,6 +897,14 @@ function normalizeRequestData() {
         if (!item.hanhVi) item.hanhVi = '';
         if (!item.linhVuc) item.linhVuc = 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH';
         if (!item.date) item.date = (item.receivedAt || '').split(' ').pop() || formatDateValue(new Date());
+        // Chuyển CQGQBT chỉ sinh 01 mã BT- cho cả 03 giá trị Loại yêu cầu giải quyết bồi thường: dữ liệu cũ có mã PHDD- chuyển về BT-
+        if (item.phddCode) {
+            const seed = LEGACY_SEED.find(s => s.code === item.code);
+            const hasClaim = item.claimCode && item.claimCode !== '-' && item.claimCode !== '--';
+            if (!hasClaim) item.claimCode = (seed && seed.claimCode) || String(item.phddCode).replace(/^PHDD-/, 'BT-');
+            delete item.phddCode;
+            saveItem(item);
+        }
         if (!item.claimCode) item.claimCode = '-';
     });
 }
@@ -1176,7 +1190,7 @@ function showFormScreen(id = null, mode = null) {
         submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Trình duyệt';
     }
 
-    document.getElementById('formHinhThucTiepNhan').value = 'Trực tiếp';
+    setReceiveMethodField(BTNN_WF.RECEIVE_METHODS.TRUC_TIEP);
     document.getElementById('formLinhVuc').value = 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH';
     document.getElementById('formNYCName').value = '';
     document.getElementById('formNYCRole').value = 'Người bị thiệt hại';
@@ -1223,8 +1237,7 @@ function showFormScreen(id = null, mode = null) {
             : item.status === 'Bị trả lại'
             ? `<i class="fa-solid fa-rotate-left"></i> CẬP NHẬT LẠI HỒ SƠ BỊ TRẢ LẠI`
             : `<i class="fa-solid fa-file-pen"></i> SỬA YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`;
-        const method = item.hinhThucTiepNhan === 'Nhận qua bưu điện/bưu chính' || item.hinhThucTiepNhan === 'Bưu chính' ? 'Nhận qua bưu điện/bưu chính' : 'Trực tiếp';
-        document.getElementById('formHinhThucTiepNhan').value = method;
+        setReceiveMethodField(BTNN_WF.normalizeReceiveMethod(item.hinhThucTiepNhan));
         document.getElementById('formLinhVuc').value = item.linhVuc;
         document.getElementById('formNYCName').value = item.nycName || '';
         document.getElementById('formNYCRole').value = item.nycRole || 'Người bị thiệt hại';
@@ -1272,7 +1285,9 @@ function showFormScreen(id = null, mode = null) {
     }
 
     // Thiết lập thông tin trình Lãnh đạo phê duyệt theo luồng cấu hình của đơn vị
+    // Hồ sơ tạo mới: luồng theo Loại luồng Xác định CQGQBT của đơn vị gốc (Bộ Tư pháp / Sở Tư pháp)
     const leaderTarget = item || {
+        loaiYeuCau: REQUEST_TYPE_XDCQ,
         chuTri: BTNN_WF.getCurrentUserId(),
         createdBy: BTNN_WF.getCurrentUserId(),
         rootUnitId: BTNN_WF.getRootId(BTNN_WF.getCurrentUser().unitId)
@@ -1301,6 +1316,20 @@ function showFormScreen(id = null, mode = null) {
     }
 
     toggleNbthBlock();
+}
+
+// Hình thức tiếp nhận (DM_25): form chỉ cho chọn Trực tiếp / Qua dịch vụ bưu chính;
+// hồ sơ kế thừa có giá trị Qua môi trường số (Dịch vụ Công) / Bộ phận Một cửa hiển thị chỉ đọc
+function setReceiveMethodField(value) {
+    const sel = document.getElementById('formHinhThucTiepNhan');
+    if (!sel) return;
+    const M = BTNN_WF.RECEIVE_METHODS;
+    const formValues = BTNN_WF.FORM_RECEIVE_METHODS;
+    sel.innerHTML = formValues.map(v => `<option value="${escapeAttr(v)}">${escapeHtml(v)}</option>`).join('');
+    const isInherited = BTNN_WF.RECEIVE_METHOD_ORDER.includes(value) && !formValues.includes(value);
+    if (isInherited) sel.insertAdjacentHTML('beforeend', `<option value="${escapeAttr(value)}" data-inherited="1">${escapeHtml(value)}</option>`);
+    sel.value = isInherited || formValues.includes(value) ? value : M.TRUC_TIEP;
+    sel.disabled = isInherited;
 }
 
 function showProcessScreen(id) {
@@ -1366,33 +1395,18 @@ function getClaimCodeLinkHtml(code) {
     </a>`;
 }
 
-function getPhddCodeLinkHtml(code) {
-    if (!code || code === '-' || code === '--') return '';
-    const url = `quan_ly_phuc_hoi_danh_du.html?id=${encodeURIComponent(code)}`;
-    return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="ycbt-hyperlink" title="Click để mở chi tiết Phục hồi danh dự ở tab mới" style="display:inline-flex; align-items:center; gap:6px; font-weight:700; color:#059669; text-decoration:none; padding:4px 10px; background:#ecfdf5; border:1px solid #a7f3d0; border-radius:6px; font-size:13px; transition:all 0.2s;" onmouseover="this.style.background='#d1fae5'; this.style.borderColor='#6ee7b7';" onmouseout="this.style.background='#ecfdf5'; this.style.borderColor='#a7f3d0';">
-        <i class="fa-solid fa-award" style="color:#059669;"></i>
-        <span>${escapeHtml(code)}</span>
-        <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px; opacity:0.8;"></i>
-    </a>`;
+// Mã hồ sơ YCBT: 01 mã BT- sinh khi Chuyển CQGQBT (dùng chung cho cả hồ sơ có nhánh Phục hồi danh dự)
+function hasYcbtCode(item) {
+    return Boolean(item && item.claimCode && item.claimCode !== '-' && item.claimCode !== '--');
 }
 
 function renderYcbtCodesCell(item) {
-    if (item.status !== 'Hoàn thành') return '-';
-    const hasClaim = Boolean(item.claimCode && item.claimCode !== '-' && item.claimCode !== '--');
-    const hasPhdd = Boolean(item.phddCode && item.phddCode !== '-' && item.phddCode !== '--');
-    if (!hasClaim && !hasPhdd) return '-';
-    const parts = [];
-    if (hasClaim) parts.push(`<div style="font-weight:700; color:#7c3aed;" title="Mã Giải quyết YCBT">${escapeHtml(item.claimCode)}</div>`);
-    if (hasPhdd) parts.push(`<div style="font-weight:700; color:#059669;" title="Mã Phục hồi danh dự">${escapeHtml(item.phddCode)}</div>`);
-    return parts.join('');
+    if (item.status !== 'Hoàn thành' || !hasYcbtCode(item)) return '-';
+    return `<a href="quan_ly_boi_thuong.html?id=${encodeURIComponent(item.claimCode)}" target="_blank" rel="noopener noreferrer" style="font-weight:700; color:#7c3aed; text-decoration:none;" title="Mở chi tiết hồ sơ Giải quyết yêu cầu bồi thường ở tab mới" onclick="event.stopPropagation();">${escapeHtml(item.claimCode)}</a>`;
 }
 
 function openYcbtRecord(code) {
     window.open(`quan_ly_boi_thuong.html?id=${encodeURIComponent(code)}`, '_blank');
-}
-
-function openPhddRecord(code) {
-    window.open(`quan_ly_phuc_hoi_danh_du.html?id=${encodeURIComponent(code)}`, '_blank');
 }
 
 function showDetailScreen(id) {
@@ -1405,7 +1419,7 @@ function showDetailScreen(id) {
     if (!item) return;
 
     // Ghi nhận thời điểm cán bộ chủ trì xem hồ sơ được phân công (không ảnh hưởng quyền thu hồi của lãnh đạo)
-    if (!readOnlyView && BTNN_WF.markViewed(item, getMe())) saveItem(item);
+    if (!readOnlyView && !isXdViewOnly() && BTNN_WF.markViewed(item, getMe())) saveItem(item);
 
     document.getElementById('detailRequestId').value = id;
     document.getElementById('dtCode').innerText = item.code;
@@ -1438,7 +1452,8 @@ function showDetailScreen(id) {
             rejectionBlock.style.display = 'none';
         }
     }
-    document.getElementById('dtHinhThucTiepNhan').innerText = item.hinhThucTiepNhan || 'Trực tiếp';
+    document.getElementById('dtMaVuViec').innerText = item.maVuViec || '-';
+    document.getElementById('dtHinhThucTiepNhan').innerText = BTNN_WF.normalizeReceiveMethod(item.hinhThucTiepNhan) || BTNN_WF.RECEIVE_METHODS.TRUC_TIEP;
     document.getElementById('dtLinhVuc').innerText = item.linhVuc || '';
     document.getElementById('dtNYCName').innerText = item.nycName || '';
     document.getElementById('dtNYCRole').innerText = item.nycRole || '';
@@ -1492,14 +1507,9 @@ function showDetailScreen(id) {
         verificationBlock.style.display = 'none';
     }
 
-    // Kết quả chuyển CQGQBT: Chỉ hiển thị khi hồ sơ ở trạng thái Hoàn thành và hệ thống đã sinh thành công Mã vụ việc YCBT tương ứng (Có thể là mã Phục hồi danh dự, Mã Giải quyết YCBT hoặc cả 2 mã)
+    // Kết quả chuyển CQGQBT: Chỉ hiển thị khi hồ sơ ở trạng thái Hoàn thành và hệ thống đã sinh thành công Mã hồ sơ YCBT tương ứng (01 mã BT-)
     const transferBlock = document.getElementById('dtTransferBlock');
-    const isCompleted = item.status === 'Hoàn thành';
-    const hasClaimCode = Boolean(item.claimCode && item.claimCode !== '-' && item.claimCode !== '--');
-    const hasPhddCode = Boolean(item.phddCode && item.phddCode !== '-' && item.phddCode !== '--');
-    const hasGeneratedYcbtCode = hasClaimCode || hasPhddCode;
-
-    if (isCompleted && hasGeneratedYcbtCode) {
+    if (item.status === 'Hoàn thành' && hasYcbtCode(item)) {
         transferBlock.style.display = 'block';
         const tr = item.transfer || {};
         document.getElementById('dtTransferAgency').innerText = tr.targetUnitId ? BTNN_WF.unitName(tr.targetUnitId) : (item.procTargetAgency || '--');
@@ -1507,24 +1517,7 @@ function showDetailScreen(id) {
         document.getElementById('dtTransferFiles').innerHTML = fileLinksHtml(tr.files || []);
         document.getElementById('dtTransferAt').innerText = tr.at ? `${tr.at} - ${BTNN_WF.userName(tr.by)}` : '--';
 
-        const codeChips = [];
-        if (hasClaimCode) {
-            codeChips.push(`
-                <div style="display:inline-flex; align-items:center; gap:8px;">
-                    <span style="font-size:13px; color:#475569; font-weight:600;">Mã Giải quyết YCBT:</span>
-                    ${getClaimCodeLinkHtml(item.claimCode)}
-                </div>
-            `);
-        }
-        if (hasPhddCode) {
-            codeChips.push(`
-                <div style="display:inline-flex; align-items:center; gap:8px;">
-                    <span style="font-size:13px; color:#475569; font-weight:600;">Mã Phục hồi danh dự:</span>
-                    ${getPhddCodeLinkHtml(item.phddCode)}
-                </div>
-            `);
-        }
-        document.getElementById('dtClaimCode').innerHTML = `<div style="display:flex; flex-direction:column; gap:8px; align-items:flex-start;">${codeChips.join('')}</div>`;
+        document.getElementById('dtClaimCode').innerHTML = getClaimCodeLinkHtml(item.claimCode);
     } else {
         transferBlock.style.display = 'none';
     }
@@ -1543,7 +1536,8 @@ function showDetailScreen(id) {
     // Nút thao tác theo trạng thái và vai trò
     const footer = document.getElementById('detailWorkflowActions');
     footer.innerHTML = `<button class="btn btn-secondary" onclick="closeDetailOrReturn()">Đóng</button>`;
-    if (readOnlyView) return;
+    // UBND cấp tỉnh (chỉ xem): không có thao tác xử lý, phê duyệt
+    if (readOnlyView || isXdViewOnly()) return;
 
     if (!isChuTri(item)) return;
 
@@ -1878,6 +1872,8 @@ function saveForm(isDraft) {
         const item = Object.assign({
             id: 'WF-' + newCode,
             code: newCode,
+            // Hồ sơ tạo trực tiếp tại phân hệ: sinh Mã vụ việc toàn trình mới
+            maVuViec: BTNN_WF.nextVuViecCode(),
             module: 'XD',
             loaiYeuCau: REQUEST_TYPE_XDCQ,
             source: 'Tạo trực tiếp',
@@ -1992,7 +1988,7 @@ function filterData() {
     filteredList = requestList.filter(item => {
         if (!xdInTab(xdTab, item)) return false;
         if (code && !item.code.toLowerCase().includes(code)) return false;
-        if (claimCode && !((item.claimCode || '') + ' ' + (item.phddCode || '')).toLowerCase().includes(claimCode)) return false;
+        if (claimCode && !(item.claimCode || '').toLowerCase().includes(claimCode)) return false;
         if (name && !(item.nycName || '').toLowerCase().includes(name)) return false;
         if (lv && item.linhVuc !== lv) return false;
         if (status && item.status !== status) return false;
@@ -2029,7 +2025,7 @@ function renderTable() {
     const totalPages = Math.ceil(total / pageSize);
 
     if (total === 0) {
-        tbody.innerHTML = `<tr><td colspan="12"style="text-align:center; color:var(--text-muted); padding:30px; font-style:italic;">Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="13" style="text-align:center; color:var(--text-muted); padding:30px; font-style:italic;">Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</td></tr>`;
         document.getElementById('rangeText').innerText = "Hiển thị 0-0 trong số 0 bản ghi";
         renderPagination(0);
         return;
@@ -2052,6 +2048,7 @@ function renderTable() {
         tr.innerHTML = `
             <td style="text-align:center;">${startIdx + index + 1}</td>
             <td style="text-align:center;"><strong>${escapeHtml(item.code)}</strong></td>
+            <td style="text-align:center;">${escapeHtml(item.maVuViec || '-')}</td>
             <td><strong>${escapeHtml(item.nycName || '(Chưa nhập)')}</strong></td>
             <td style="text-align:center;">${escapeHtml(item.nycPhone || '(Chưa nhập)')}</td>
             <td style="font-size:12px; color:var(--text-muted);">${escapeHtml((item.linhVuc || '').replace("TRONG HOẠT ĐỘNG ", ""))}</td>
@@ -2074,7 +2071,8 @@ function renderTable() {
 // Lưới danh sách: 05 thao tác cố định theo thứ tự Tiếp nhận | Yêu cầu bổ sung | Từ chối | Cập nhật | Chuyển CQGQBT.
 // Thao tác chưa đủ điều kiện thực hiện vẫn hiển thị nhưng mờ (disabled), kèm chú thích lý do.
 function getActionButtons(item) {
-    if (readOnlyView) return '';
+    // UBND cấp tỉnh (chỉ xem): không có thao tác xử lý, phê duyệt, thu hồi
+    if (readOnlyView || isXdViewOnly()) return '';
     // Lãnh đạo: Phê duyệt / Từ chối (tab Chờ xử lý); Thu hồi (tab Đã xử lý, khi bên nhận chưa xử lý)
     if (isLeaderMe()) {
         const me = getMe();
@@ -2583,6 +2581,14 @@ function confirmTransfer() {
     if (!content) { markInvalid(contentEl); invalid = true; if (!focusFn) focusFn = () => contentEl.focus(); }
     if (!modalFiles.transfer.length) { markFileRequired('transfer'); invalid = true; }
     if (invalid) { if (focusFn) focusFn(); showToast("Vui lòng nhập đầy đủ thông tin bắt buộc!", "error"); return; }
+    // Cơ quan tiếp nhận phải được cấu hình luồng Giải quyết YCBT (hồ sơ mới phân công theo luồng GQ)
+    const targetRoot = BTNN_WF.getRootId(unitId) || unitId;
+    if (!BTNN_WF.isUnitConfigured(targetRoot, BTNN_WF.FLOW_TYPES.GQ)) {
+        showTransferError(`Đơn vị ${BTNN_WF.unitName(targetRoot)} chưa được cấu hình luồng phân công. Vui lòng liên hệ Quản trị hệ thống.`);
+        return;
+    }
+    // Hồ sơ YCBT sinh ra giữ nguyên Mã vụ việc: hồ sơ dữ liệu cũ chưa có mã thì cấp mã trước khi chuyển
+    if (!item.maVuViec) { item.maVuViec = BTNN_WF.nextVuViecCode(); saveItem(item); }
     const res = transferXdToUnit(item, unitId, content, modalFiles.transfer.slice());
     if (!res.ok) { showTransferError(res.message); return; }
     closeXdModal('transferModal');

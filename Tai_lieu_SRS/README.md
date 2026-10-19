@@ -125,7 +125,7 @@ Tai lieu phan tich/
     │
     ├── 03_Cong_tac_boi_thuong/                  # Quản lý Bồi thường nhà nước (Luật TNBTCNN)
     │   ├── SRS_BTNN_GiaiQuyetBT__Xac định cơ quan GQBT.md # Xác định cơ quan giải quyết bồi thường
-    │   ├── SRS_BTNN_GiaiQuyetBT_TiepNhan_YCBT.md # Tiếp nhận yêu cầu bồi thường trực tiếp / DVC
+    │   ├── SRS_BTNN_GiaiQuyetBT_TiepNhan_YCBT.md # Tiếp nhận hồ sơ (trực tiếp, bưu chính, DVC, chuyển đến)
     │   ├── SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md # Thụ lý, xác minh thiệt hại, thương lượng BTNN
     │   ├── SRS_BTNN_GiaiQuyetBT_QuyetDinh_GQBT.md # Dự thảo, trình ký Quyết định giải quyết bồi thường
     │   ├── SRS_BTNN_GiaiQuyetBT_KinhPhi_BT.md   # Lập dự toán, cấp phát, chi trả & sung quỹ kinh phí
