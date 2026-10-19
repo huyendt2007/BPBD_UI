@@ -13,6 +13,7 @@
     let acting = null;
     let decisionMode = 'approve';
     let doneCb = null;
+    let assignUnits = []; // đơn vị nhận theo cấu hình của đơn vị đang phân công
     let assignOfficers = []; // cán bộ được phân công theo cấu hình của đơn vị đang phân công
 
     const CSS = `
@@ -44,7 +45,7 @@
         <div class="ld-modal-body">
             <div class="ld-muted" id="ldAContext" style="margin-bottom:10px;"></div>
             <div class="ld-muted" id="ldANoConfig" style="display:none;">Đơn vị chưa được cấu hình luồng xử lý.</div>
-            <div class="ld-group" id="ldAUnitBlock"><span class="ld-label">Đơn vị nhận<span class="ld-req">*</span></span><select id="ldAUnit" class="ld-input"></select><div class="ld-err" id="ldAUnitErr">Đây là trường bắt buộc</div></div>
+            <div class="ld-group" id="ldAUnitBlock"><span class="ld-label">Đơn vị nhận<span class="ld-req">*</span></span><input type="text" id="ldAUnitSearch" class="ld-input" placeholder="Tìm theo mã hoặc tên đơn vị..." style="margin-bottom:6px;"><select id="ldAUnit" class="ld-input"></select><div class="ld-err" id="ldAUnitErr">Đây là trường bắt buộc</div></div>
             <div class="ld-group" id="ldAOfficerBlock"><span class="ld-label">Cán bộ chủ trì<span class="ld-req">*</span></span><input type="text" id="ldAChuTriSearch" class="ld-input" placeholder="Tìm theo tên cán bộ..." style="margin-bottom:6px;"><select id="ldAChuTri" class="ld-input"></select><div class="ld-err" id="ldAChuTriErr">Đây là trường bắt buộc</div></div>
             <div class="ld-group"><span class="ld-label">Ý kiến chỉ đạo</span><textarea id="ldANote" class="ld-input" rows="3" placeholder="Nhập ý kiến chỉ đạo..."></textarea></div>
         </div>
@@ -71,6 +72,7 @@
         const wrap = document.createElement('div'); wrap.innerHTML = HTML; document.body.appendChild(wrap);
         wrap.addEventListener('click', e => { const id = e.target.getAttribute && e.target.getAttribute('data-close'); if (id) close(id); });
         document.getElementById('ldAChuTriSearch').addEventListener('input', renderChuTriOptions);
+        document.getElementById('ldAUnitSearch').addEventListener('input', renderUnitOptions);
         document.getElementById('ldASubmit').addEventListener('click', submitAssign);
         document.getElementById('ldDSubmit').addEventListener('click', submitDecision);
     }
@@ -125,7 +127,10 @@
         document.getElementById('ldANoConfig').style.display = canUnit || canOfficer ? 'none' : 'block';
         assignOfficers = canOfficer ? node.officers : [];
         document.getElementById('ldAChuTriSearch').value = '';
-        document.getElementById('ldAUnit').innerHTML = `<option value="">Chọn đơn vị nhận...</option>` + (canUnit ? node.units : []).map(u => `<option value="${esc(u)}">${esc(WF.unitName(u))}</option>`).join('');
+        assignUnits = canUnit ? node.units : [];
+        document.getElementById('ldAUnitSearch').value = '';
+        document.getElementById('ldAUnit').value = '';
+        renderUnitOptions();
         document.getElementById('ldAChuTri').value = '';
         renderChuTriOptions();
         document.getElementById('ldANote').value = '';
@@ -133,6 +138,15 @@
         open('ldAssignOverlay');
     }
     // Cán bộ chủ trì: lọc theo tên cán bộ, giữ lựa chọn đang có nếu vẫn khớp
+    // Đơn vị nhận: lọc gần đúng, không phân biệt hoa thường theo mã hoặc tên đơn vị
+    function renderUnitOptions() {
+        const sel = document.getElementById('ldAUnit');
+        const cur = sel.value;
+        const q = document.getElementById('ldAUnitSearch').value.trim().toLowerCase();
+        const list = assignUnits.filter(u => !q || u.toLowerCase().includes(q) || WF.unitName(u).toLowerCase().includes(q));
+        sel.innerHTML = `<option value="">${list.length ? 'Chọn đơn vị nhận...' : 'Không tìm thấy đơn vị phù hợp'}</option>` + list.map(u => `<option value="${esc(u)}">${esc(WF.unitName(u))}</option>`).join('');
+        if (list.includes(cur)) sel.value = cur;
+    }
     function renderChuTriOptions() {
         const sel = document.getElementById('ldAChuTri');
         const cur = sel.value;
