@@ -780,7 +780,7 @@
 
     <!-- MAIN IFRAME CONTENT LOADER -->
         <div class="content-frame-container">
-            <iframe id="mainContentIframe" class="main-iframe" src="kiem_tra_ho_so.html"
+            <iframe id="mainContentIframe" class="main-iframe" src="../02_Bien_phap_bao_dam/kiem_tra_ho_so.html"
                 title="Nội dung chức năng"></iframe>
         </div>
     </div>
@@ -798,39 +798,39 @@
                 title: "Biện pháp bảo đảm",
                 icon: "fa-solid fa-shield-halved",
                 children: [
-                    { title: "Tiếp nhận hồ sơ", url: "tiep_nhan_ho_so.html", badge: 3, badgeType: "warning" },
+                    { title: "Tiếp nhận hồ sơ", url: "../02_Bien_phap_bao_dam/tiep_nhan_ho_so.html", badge: 3, badgeType: "warning" },
                     { title: "Nhận chuyển tiếp hồ sơ", url: "../temp_placeholder.html" },
                     {
                         title: "Kiểm tra và xử lý hồ sơ",
                         children: [
                             // Badge tính động theo dữ liệu màn Kiểm tra và xử lý hồ sơ (chỉ hiển thị khi > 0)
-                            { title: "Hồ sơ chờ xử lý", url: "kiem_tra_ho_so.html", badgeKey: "kths_pending", badgeType: "danger" },
-                            { title: "Hồ sơ đang chờ ký", url: "kiem_tra_ho_so.html?view=dang_xu_ly", badgeKey: "kths_signing", badgeType: "warning" },
-                            { title: "Hồ sơ đã xử lý", url: "kiem_tra_ho_so.html?view=da_xu_ly" }
+                            { title: "Hồ sơ chờ xử lý", url: "../02_Bien_phap_bao_dam/kiem_tra_ho_so.html", badgeKey: "kths_pending", badgeType: "danger" },
+                            { title: "Hồ sơ đang chờ ký", url: "../02_Bien_phap_bao_dam/kiem_tra_ho_so.html?view=dang_xu_ly", badgeKey: "kths_signing", badgeType: "warning" },
+                            { title: "Hồ sơ đã xử lý", url: "../02_Bien_phap_bao_dam/kiem_tra_ho_so.html?view=da_xu_ly" }
                         ]
                     },
-                    { title: "Chỉnh lý thông tin/Hủy/Khôi phục đăng ký", url: "theo_doi_xu_ly_de_nghi.html", badge: 6, badgeType: "danger" },
-                    { title: "Ký duyệt hồ sơ", url: "ky_duyet_ho_so.html", badge: 3, badgeType: "danger" },
-                    { title: "Lọc phiếu trùng lặp", url: "loc_phieu_trung_lap.html" },
-                    { title: "Tra cứu hồ sơ", url: "tra_cuu_thong_tin.html" },
+                    { title: "Chỉnh lý thông tin/Hủy/Khôi phục đăng ký", url: "../03_Boi_thuong_nha_nuoc/theo_doi_xu_ly_de_nghi.html", badge: 6, badgeType: "danger" },
+                    { title: "Ký duyệt hồ sơ", url: "../02_Bien_phap_bao_dam/ky_duyet_ho_so.html", badge: 3, badgeType: "danger" },
+                    { title: "Lọc phiếu trùng lặp", url: "../02_Bien_phap_bao_dam/loc_phieu_trung_lap.html" },
+                    { title: "Tra cứu hồ sơ", url: "../02_Bien_phap_bao_dam/tra_cuu_thong_tin.html" },
                     { title: "Quản lý cấp mã số sử dụng CSDL", url: "quan_ly_cap_ma_so_csdl.html" },
-                    { title: "Nhận dữ liệu BPBĐ từ cơ quan đăng ký khác", url: "nhan_du_lieu_bpbd.html?loai=dat" },
+                    { title: "Nhận dữ liệu BPBĐ từ cơ quan đăng ký khác", url: "../02_Bien_phap_bao_dam/nhan_du_lieu_bpbd.html?loai=dat" },
                     {
                         title: "Quản lý phí",
                         children: [
-                            { title: "Quản lý Biểu phí", url: "quan_ly_bieu_phi.html" },
-                            { title: "Quản lý thu phí/hoàn phí", url: "quan_ly_thu_phi.html", badge: 2, badgeType: "warning" },
+                            { title: "Quản lý Biểu phí", url: "../02_Bien_phap_bao_dam/quan_ly_bieu_phi.html" },
+                            { title: "Quản lý thu phí/hoàn phí", url: "../02_Bien_phap_bao_dam/quan_ly_thu_phi.html", badge: 2, badgeType: "warning" },
                             { title: "Quản lý đối soát thanh toán", url: "quan_ly_doi_soat_thanh_toan.html", badge: 3, badgeType: "danger" }
                         ]
                     },
                     {
                         title: "Quản lý nghiệp vụ chuyên ngành",
                         children: [
-                            { title: "Quản lý tham mưu xây dựng VBQPPL, chương trình, KH công tác", url: "quan_ly_tham_muu_cong_tac.html" },
-                            { title: "Quản lý kiểm tra và theo dõi thi hành pháp luật", url: "quan_ly_kiem_tra_theo_doi.html" },
-                            { title: "Quản lý hướng dẫn nghiệp vụ và thẩm định", url: "quan_ly_huong_dan_tham_dinh.html" },
-                            { title: "Quản lý tập huấn, hội nghị, hội thảo, tọa đàm; nghiên cứu khoa học", url: "quan_ly_tap_huan_nckh.html" },
-                            { title: "Quản lý tiếp công dân và giải quyết khiếu nại, tố cáo", url: "quan_ly_tiep_dan_kntc.html" },
+                            { title: "Quản lý tham mưu xây dựng VBQPPL, chương trình, KH công tác", url: "../03_Boi_thuong_nha_nuoc/quan_ly_tham_muu_cong_tac.html" },
+                            { title: "Quản lý kiểm tra và theo dõi thi hành pháp luật", url: "../03_Boi_thuong_nha_nuoc/quan_ly_kiem_tra_theo_doi.html" },
+                            { title: "Quản lý hướng dẫn nghiệp vụ và thẩm định", url: "../03_Boi_thuong_nha_nuoc/quan_ly_huong_dan_tham_dinh.html" },
+                            { title: "Quản lý tập huấn, hội nghị, hội thảo, tọa đàm; nghiên cứu khoa học", url: "../03_Boi_thuong_nha_nuoc/quan_ly_tap_huan_nckh.html" },
+                            { title: "Quản lý tiếp công dân và giải quyết khiếu nại, tố cáo", url: "../03_Boi_thuong_nha_nuoc/quan_ly_tiep_dan_kntc.html" },
                             { title: "Quản lý hợp tác quốc tế và cải cách hành chính, tư pháp", url: "../temp_placeholder.html" },
                             { title: "Quản lý thực hiện theo phân công của lãnh đạo đơn vị", url: "../temp_placeholder.html" }
                         ]
@@ -846,7 +846,7 @@
                     {
                         title: "Báo cáo quản lý",
                         children: [
-                            { title: "Thống kê số lượng hồ sơ đăng ký", url: "bao_cao_thong_ke_ho_so_dang_ky.html" },
+                            { title: "Thống kê số lượng hồ sơ đăng ký", url: "../02_Bien_phap_bao_dam/bao_cao_thong_ke_ho_so_dang_ky.html" },
                             { title: "Thống kê yêu cầu cung cấp thông tin", url: "../temp_placeholder.html" },
                             { title: "Báo cáo quy mô bên bảo đảm", url: "../temp_placeholder.html" },
                             { title: "Báo cáo yêu cầu tạm dừng, dừng đăng ký", url: "../temp_placeholder.html" },
@@ -884,22 +884,22 @@
                 title: "Bồi thường nhà nước",
                 icon: "fa-solid fa-hand-holding-dollar",
                 children: [
-                    { title: "Tiếp nhận yêu cầu", url: "tiep_nhan_ycbt.html?v=3" },
-                    { title: "Dashboard Lãnh đạo", url: "dashboard_lanh_dao_btnn.html" },
-                    { title: "Xác định cơ quan giải quyết bồi thường", badge: 7, url: "xac_dinh_co_quan_boi_thuong.html?v=20261008" },
+                    { title: "Tiếp nhận yêu cầu", url: "../03_Boi_thuong_nha_nuoc/tiep_nhan_ycbt.html?v=3" },
+                    { title: "Dashboard Lãnh đạo", url: "../03_Boi_thuong_nha_nuoc/dashboard_lanh_dao_btnn.html" },
+                    { title: "Xác định cơ quan giải quyết bồi thường", badge: 7, url: "../03_Boi_thuong_nha_nuoc/xac_dinh_co_quan_boi_thuong.html?v=20261008" },
                     {
                         title: "Giải quyết bồi thường",
                         badge: 7,
                         children: [
-                            { title: "Giải quyết yêu cầu bồi thường", badge: 7, url: "quan_ly_boi_thuong.html?v=1" },
-                            { title: "Quyết định giải quyết bồi thường", url: "quyet_dinh_giai_quyet_boi_thuong.html?v=1" },
-                            { title: "Cấp kinh phí tạm ứng/Bồi thường", url: "quan_ly_kinh_phi_boi_thuong.html?v=1" }
+                            { title: "Giải quyết yêu cầu bồi thường", badge: 7, url: "../03_Boi_thuong_nha_nuoc/quan_ly_boi_thuong.html?v=1" },
+                            { title: "Quyết định giải quyết bồi thường", url: "../03_Boi_thuong_nha_nuoc/quyet_dinh_giai_quyet_boi_thuong.html?v=1" },
+                            { title: "Cấp kinh phí tạm ứng/Bồi thường", url: "../03_Boi_thuong_nha_nuoc/quan_ly_kinh_phi_boi_thuong.html?v=1" }
                         ]
                     },
-                    { title: "Xem xét trách nhiệm hoàn trả", url: "xem_xet_trach_nhiem_hoan_tra.html" },
-                    { title: "Tra cứu vụ việc", url: "tra_cuu_ho_so_boi_thuong.html?v=1" },
-                    { title: "Theo dõi vụ việc tại Tòa án", url: "theo_doi_vu_viec_toa_an.html" },
-                    { title: "Quản lý chấm điểm công tác BTNN", url: "quan_ly_cham_diem_btnn.html" },
+                    { title: "Xem xét trách nhiệm hoàn trả", url: "../03_Boi_thuong_nha_nuoc/xem_xet_trach_nhiem_hoan_tra.html" },
+                    { title: "Tra cứu vụ việc", url: "../03_Boi_thuong_nha_nuoc/tra_cuu_ho_so_boi_thuong.html?v=1" },
+                    { title: "Theo dõi vụ việc tại Tòa án", url: "../03_Boi_thuong_nha_nuoc/theo_doi_vu_viec_toa_an.html" },
+                    { title: "Quản lý chấm điểm công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_cham_diem_btnn.html" },
                     {
                         title: "Hỗ trợ & thông tin tư liệu BTNN",
                         children: [
@@ -911,44 +911,44 @@
                     {
                         title: "Nghiệp vụ dùng cho Bộ Tư pháp",
                         children: [
-                            { title: "Xây dựng chiến lược, chính sách về công tác BTNN", url: "quan_ly_nghiep_vu_btnn_muc6.html?module=chien_luoc_chinh_sach" },
-                            { title: "Ban hành văn bản, biểu mẫu, sổ sách về công tác BTNN theo thẩm quyền", url: "quan_ly_nghiep_vu_btnn_muc6.html?module=van_ban_bieu_mau_so_sach" },
-                            { title: "Hợp tác quốc tế", url: "quan_ly_nghiep_vu_btnn_muc6.html?module=hop_tac_quoc_te" },
-                            { title: "Phối hợp với TAND tối cao, VKSND tối cao", url: "quan_ly_nghiep_vu_btnn_muc6.html?module=phoi_hop_tand_vksnd" },
-                            { title: "Giải đáp vướng mắc trong việc áp dụng pháp luật", url: "quan_ly_nghiep_vu_btnn_muc6.html?module=giai_dap_vuong_mac" },
-                            { title: "Thông tin đầu mối Lãnh đạo, công chức thực hiện công tác BTNN tại địa phương", url: "quan_ly_nghiep_vu_btnn_muc6.html?module=dau_moi_btnn" },
-                            { title: "Thông tin từ các CSDL có liên quan đến công tác BTNN", url: "quan_ly_nghiep_vu_btnn_muc6.html?module=csdl_lien_quan_btnn" }
+                            { title: "Xây dựng chiến lược, chính sách về công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=chien_luoc_chinh_sach" },
+                            { title: "Ban hành văn bản, biểu mẫu, sổ sách về công tác BTNN theo thẩm quyền", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=van_ban_bieu_mau_so_sach" },
+                            { title: "Hợp tác quốc tế", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=hop_tac_quoc_te" },
+                            { title: "Phối hợp với TAND tối cao, VKSND tối cao", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=phoi_hop_tand_vksnd" },
+                            { title: "Giải đáp vướng mắc trong việc áp dụng pháp luật", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=giai_dap_vuong_mac" },
+                            { title: "Thông tin đầu mối Lãnh đạo, công chức thực hiện công tác BTNN tại địa phương", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=dau_moi_btnn" },
+                            { title: "Thông tin từ các CSDL có liên quan đến công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=csdl_lien_quan_btnn" }
                         ]
                     },
                     {
                         title: "Nghiệp vụ dùng chung BTP & STP",
                         children: [
-                            { title: "Hướng dẫn, bồi dưỡng kỹ năng, nghiệp vụ", url: "quan_ly_nghiep_vu_btnn_tt08.html?module=huong_dan" },
-                            { title: "Theo dõi, đôn đốc công tác BTNN", url: "quan_ly_theo_doi_don_doc_btnn.html" },
-                            { title: "Kiểm tra công tác BTNN", url: "quan_ly_kiem_tra_cong_tac_btnn.html" },
-                            { title: "Giải quyết khiếu nại, tố cáo, xử lý vi phạm", url: "quan_ly_nghiep_vu_btnn_tt08.html?module=khieu_nai" }
+                            { title: "Hướng dẫn, bồi dưỡng kỹ năng, nghiệp vụ", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_tt08.html?module=huong_dan" },
+                            { title: "Theo dõi, đôn đốc công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_theo_doi_don_doc_btnn.html" },
+                            { title: "Kiểm tra công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/quan_ly_kiem_tra_cong_tac_btnn.html" },
+                            { title: "Giải quyết khiếu nại, tố cáo, xử lý vi phạm", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_tt08.html?module=khieu_nai" }
                         ]
                     },
                     {
                         title: "Nghiệp vụ dùng cho STP",
                         children: [
-                            { title: "Hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục YCBT", url: "quan_ly_nghiep_vu_btnn_muc6.html?module=ho_tro_nguoi_bi_thiet_hai" },
-                            { title: "Kiến nghị cơ quan có thẩm quyền xử lý vi phạm", url: "quan_ly_nghiep_vu_btnn_muc6.html?module=kien_nghi_xu_ly_vi_pham" },
-                            { title: "Kiến nghị người có thẩm quyền kháng nghị bản án", url: "quan_ly_nghiep_vu_btnn_muc6.html?module=kien_nghi_khang_nghi_ban_an" },
-                            { title: "Yêu cầu Thủ trưởng cơ quan hủy quyết định GQBT", url: "quan_ly_nghiep_vu_btnn_muc6.html?module=yeu_cau_huy_qd_gqbt" },
-                            { title: "Kiến nghị Thủ trưởng cơ quan xem xét lại quyết định hoàn trả", url: "quan_ly_nghiep_vu_btnn_muc6.html?module=kien_nghi_xem_xet_qd_hoan_tra" }
+                            { title: "Hỗ trợ, hướng dẫn người bị thiệt hại thực hiện thủ tục YCBT", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=ho_tro_nguoi_bi_thiet_hai" },
+                            { title: "Kiến nghị cơ quan có thẩm quyền xử lý vi phạm", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=kien_nghi_xu_ly_vi_pham" },
+                            { title: "Kiến nghị người có thẩm quyền kháng nghị bản án", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=kien_nghi_khang_nghi_ban_an" },
+                            { title: "Yêu cầu Thủ trưởng cơ quan hủy quyết định GQBT", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=yeu_cau_huy_qd_gqbt" },
+                            { title: "Kiến nghị Thủ trưởng cơ quan xem xét lại quyết định hoàn trả", url: "../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html?module=kien_nghi_xem_xet_qd_hoan_tra" }
                         ]
                     },
                     {
                         title: "Báo cáo quản lý BTNN",
                         children: [
-                            { title: "Quản lý kỳ báo cáo & Nhập liệu (TT08)", url: "quan_ly_ky_bao_cao_tt08.html" },
-                            { title: "Thống kê số lượng vụ việc YCBT theo thời gian", url: "bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_thoi_gian" },
-                            { title: "Thống kê chi tiết vụ việc YCBT theo các cấp", url: "bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_cap" },
-                            { title: "Thống kê chi tiết vụ việc YCBT theo phạm vi", url: "bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_pham_vi" },
-                            { title: "Thống kê chi tiết vụ việc YCBT theo cơ quan", url: "bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_co_quan" },
-                            { title: "Thống kê kết quả giải quyết YCBT tại địa phương", url: "bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_dia_phuong" },
-                            { title: "Báo cáo tổng hợp kết quả đánh giá xếp loại", url: "bao_cao_thong_ke_btnn_tt08.html?module=xep_loai" }
+                            { title: "Quản lý kỳ báo cáo & Nhập liệu (TT08)", url: "../03_Boi_thuong_nha_nuoc/quan_ly_ky_bao_cao_tt08.html" },
+                            { title: "Thống kê số lượng vụ việc YCBT theo thời gian", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_thoi_gian" },
+                            { title: "Thống kê chi tiết vụ việc YCBT theo các cấp", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_cap" },
+                            { title: "Thống kê chi tiết vụ việc YCBT theo phạm vi", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_pham_vi" },
+                            { title: "Thống kê chi tiết vụ việc YCBT theo cơ quan", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_co_quan" },
+                            { title: "Thống kê kết quả giải quyết YCBT tại địa phương", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_dia_phuong" },
+                            { title: "Báo cáo tổng hợp kết quả đánh giá xếp loại", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=xep_loai" }
                         ]
                     }
                 ]
@@ -976,14 +976,14 @@
                     {
                         title: "Dashboard trực quan về quản lý BTNN",
                         children: [
-                            { title: "Xem màn hình trực quan thông tin chung BTNN", url: "dashboard_btnn.html?module=tong_quan" },
-                            { title: "Cấu hình lựa chọn hình thức hiển thị BTNN", url: "dashboard_btnn.html?module=cau_hinh" },
-                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo thời gian", url: "dashboard_btnn.html?module=pt_thoi_gian" },
-                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo địa phương", url: "dashboard_btnn.html?module=pt_dia_phuong" },
-                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo phạm vi", url: "dashboard_btnn.html?module=pt_pham_vi" },
-                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo cơ quan", url: "dashboard_btnn.html?module=pt_co_quan" },
-                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo cấp", url: "dashboard_btnn.html?module=pt_cap" },
-                            { title: "Phân tích tình hình giải quyết vụ việc cả nước", url: "dashboard_btnn.html?module=pt_ca_nuoc" }
+                            { title: "Xem màn hình trực quan thông tin chung BTNN", url: "../03_Boi_thuong_nha_nuoc/dashboard_btnn.html?module=tong_quan" },
+                            { title: "Cấu hình lựa chọn hình thức hiển thị BTNN", url: "../03_Boi_thuong_nha_nuoc/dashboard_btnn.html?module=cau_hinh" },
+                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo thời gian", url: "../03_Boi_thuong_nha_nuoc/dashboard_btnn.html?module=pt_thoi_gian" },
+                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo địa phương", url: "../03_Boi_thuong_nha_nuoc/dashboard_btnn.html?module=pt_dia_phuong" },
+                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo phạm vi", url: "../03_Boi_thuong_nha_nuoc/dashboard_btnn.html?module=pt_pham_vi" },
+                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo cơ quan", url: "../03_Boi_thuong_nha_nuoc/dashboard_btnn.html?module=pt_co_quan" },
+                            { title: "Phân tích tình hình kết quả đánh giá BTNN theo cấp", url: "../03_Boi_thuong_nha_nuoc/dashboard_btnn.html?module=pt_cap" },
+                            { title: "Phân tích tình hình giải quyết vụ việc cả nước", url: "../03_Boi_thuong_nha_nuoc/dashboard_btnn.html?module=pt_ca_nuoc" }
                         ]
                     },
                     {
@@ -1052,7 +1052,7 @@
                     { title: "Quản lý danh mục", url: "quan_ly_danh_muc.html" },
                     { title: "Danh mục Địa bàn", url: "quan_ly_danh_muc_dia_ban.html" },
                     { title: "Quản lý cấu hình", url: "quan_ly_cau_hinh.html" },
-                    { title: "Cấu hình luồng xử lý", url: "cau_hinh_luong_xu_ly.html" },
+                    { title: "Cấu hình luồng xử lý", url: "../03_Boi_thuong_nha_nuoc/cau_hinh_luong_xu_ly.html" },
                     { title: "Quản lý nhật ký hệ thống", url: "../temp_placeholder.html" },
                     { title: "Quản lý sao lưu, phục hồi dữ liệu", url: "../temp_placeholder.html" }
                 ]
@@ -1079,7 +1079,7 @@
                 }
             } else if (menuParam === 'phdd' || menuParam === 'phuc_hoi_danh_du') {
                 // Menu Phục hồi danh dự đã bỏ: mở Giải quyết YCBT, lọc sẵn vụ việc có yêu cầu phục hồi danh dự
-                window.openAdminModule('quan_ly_boi_thuong.html?v=1&requestKind=has-phdd');
+                window.openAdminModule('../03_Boi_thuong_nha_nuoc/quan_ly_boi_thuong.html?v=1&requestKind=has-phdd');
             } else {
                 selectDefaultLeaf();
             }
@@ -1286,7 +1286,7 @@
         }
 
         function normalizeMenuUrl(url) {
-            return String(url || '').split('?')[0].replace(/^(\.\.\/)+/, '');
+            return String(url || '').split('?')[0].split('#')[0].split('/').pop();
         }
 
         function findMenuLeafByUrl(targetUrl) {
@@ -1322,7 +1322,75 @@
             return null;
         }
 
+        // Vị trí trang theo module (tạo từ cấu trúc thư mục): trang con có thể chỉ truyền tên tệp
+        const MODULE_PAGE_PATHS = {
+            'HomePageBTNN.html': '../03_Boi_thuong_nha_nuoc/HomePageBTNN.html',
+            'bao_cao_thong_ke_btnn_tt08.html': '../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html',
+            'bao_cao_thong_ke_ho_so_dang_ky.html': '../02_Bien_phap_bao_dam/bao_cao_thong_ke_ho_so_dang_ky.html',
+            'btnn.html': '../03_Boi_thuong_nha_nuoc/btnn.html',
+            'cau_hinh_luong_xu_ly.html': '../03_Boi_thuong_nha_nuoc/cau_hinh_luong_xu_ly.html',
+            'chi_tiet_ho_so_hoan_tra.html': '../03_Boi_thuong_nha_nuoc/chi_tiet_ho_so_hoan_tra.html',
+            'dang_ky_bpbd_can_bo.html': '../02_Bien_phap_bao_dam/dang_ky_bpbd_can_bo.html',
+            'dashboard_btnn.html': '../03_Boi_thuong_nha_nuoc/dashboard_btnn.html',
+            'dashboard_lanh_dao_btnn.html': '../03_Boi_thuong_nha_nuoc/dashboard_lanh_dao_btnn.html',
+            'du_thao_chinh_ly.html': '../02_Bien_phap_bao_dam/du_thao_chinh_ly.html',
+            'kiem_tra_ho_so.html': '../02_Bien_phap_bao_dam/kiem_tra_ho_so.html',
+            'ky_duyet_ho_so.html': '../02_Bien_phap_bao_dam/ky_duyet_ho_so.html',
+            'ky_so_chinh_ly.html': '../02_Bien_phap_bao_dam/ky_so_chinh_ly.html',
+            'lap_de_nghi_chinh_ly.html': '../02_Bien_phap_bao_dam/lap_de_nghi_chinh_ly.html',
+            'loc_phieu_trung_lap.html': '../02_Bien_phap_bao_dam/loc_phieu_trung_lap.html',
+            'loc_phieu_trung_lap_chi_tiet.html': '../02_Bien_phap_bao_dam/loc_phieu_trung_lap_chi_tiet.html',
+            'nhan_du_lieu_bpbd.html': '../02_Bien_phap_bao_dam/nhan_du_lieu_bpbd.html',
+            'nhan_du_lieu_bpbd_chi_tiet.html': '../02_Bien_phap_bao_dam/nhan_du_lieu_bpbd_chi_tiet.html',
+            'nhan_du_lieu_bpbd_form.html': '../02_Bien_phap_bao_dam/nhan_du_lieu_bpbd_form.html',
+            'nhap_lieu_ho_so_giay.html': '../02_Bien_phap_bao_dam/nhap_lieu_ho_so_giay.html',
+            'phuc_hoi_danh_du.html': '../03_Boi_thuong_nha_nuoc/phuc_hoi_danh_du.html',
+            'quan_ly_bieu_phi.html': '../02_Bien_phap_bao_dam/quan_ly_bieu_phi.html',
+            'quan_ly_boi_thuong.html': '../03_Boi_thuong_nha_nuoc/quan_ly_boi_thuong.html',
+            'quan_ly_cham_diem_btnn.html': '../03_Boi_thuong_nha_nuoc/quan_ly_cham_diem_btnn.html',
+            'quan_ly_huong_dan_tham_dinh.html': '../03_Boi_thuong_nha_nuoc/quan_ly_huong_dan_tham_dinh.html',
+            'quan_ly_khach_hang.html': '../02_Bien_phap_bao_dam/quan_ly_khach_hang.html',
+            'quan_ly_kiem_tra_cong_tac_btnn.html': '../03_Boi_thuong_nha_nuoc/quan_ly_kiem_tra_cong_tac_btnn.html',
+            'quan_ly_kiem_tra_theo_doi.html': '../03_Boi_thuong_nha_nuoc/quan_ly_kiem_tra_theo_doi.html',
+            'quan_ly_kinh_phi_boi_thuong.html': '../03_Boi_thuong_nha_nuoc/quan_ly_kinh_phi_boi_thuong.html',
+            'quan_ly_ky_bao_cao_tt08.html': '../03_Boi_thuong_nha_nuoc/quan_ly_ky_bao_cao_tt08.html',
+            'quan_ly_nghiep_vu_btnn_muc6.html': '../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html',
+            'quan_ly_nghiep_vu_btnn_tt08.html': '../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_tt08.html',
+            'quan_ly_phuc_hoi_danh_du.html': '../03_Boi_thuong_nha_nuoc/quan_ly_phuc_hoi_danh_du.html',
+            'quan_ly_tap_huan_nckh.html': '../03_Boi_thuong_nha_nuoc/quan_ly_tap_huan_nckh.html',
+            'quan_ly_tham_muu_cong_tac.html': '../03_Boi_thuong_nha_nuoc/quan_ly_tham_muu_cong_tac.html',
+            'quan_ly_theo_doi_don_doc_btnn.html': '../03_Boi_thuong_nha_nuoc/quan_ly_theo_doi_don_doc_btnn.html',
+            'quan_ly_thu_phi.html': '../02_Bien_phap_bao_dam/quan_ly_thu_phi.html',
+            'quan_ly_tiep_dan_kntc.html': '../03_Boi_thuong_nha_nuoc/quan_ly_tiep_dan_kntc.html',
+            'quyet_dinh_giai_quyet_boi_thuong.html': '../03_Boi_thuong_nha_nuoc/quyet_dinh_giai_quyet_boi_thuong.html',
+            'test_utf8.html': '../03_Boi_thuong_nha_nuoc/test_utf8.html',
+            'theo_doi_vu_viec_toa_an.html': '../03_Boi_thuong_nha_nuoc/theo_doi_vu_viec_toa_an.html',
+            'theo_doi_xu_ly_de_nghi.html': '../03_Boi_thuong_nha_nuoc/theo_doi_xu_ly_de_nghi.html',
+            'thuc_hien_chinh_ly_form.html': '../02_Bien_phap_bao_dam/thuc_hien_chinh_ly_form.html',
+            'tiep_nhan_ho_so.html': '../02_Bien_phap_bao_dam/tiep_nhan_ho_so.html',
+            'tiep_nhan_ycbt.html': '../03_Boi_thuong_nha_nuoc/tiep_nhan_ycbt.html',
+            'tra_cuu_ho_so_boi_thuong.html': '../03_Boi_thuong_nha_nuoc/tra_cuu_ho_so_boi_thuong.html',
+            'tra_cuu_srs.html': '../02_Bien_phap_bao_dam/tra_cuu_srs.html',
+            'tra_cuu_thong_tin.html': '../02_Bien_phap_bao_dam/tra_cuu_thong_tin.html',
+            'viec_cho_lanh_dao_xu_ly.html': '../03_Boi_thuong_nha_nuoc/viec_cho_lanh_dao_xu_ly.html',
+            'xac_dinh_co_quan_boi_thuong.html': '../03_Boi_thuong_nha_nuoc/xac_dinh_co_quan_boi_thuong.html',
+            'xem_chi_tiet_lich_su_can_bo.html': '../02_Bien_phap_bao_dam/xem_chi_tiet_lich_su_can_bo.html',
+            'xem_chi_tiet_thay_doi.html': '../02_Bien_phap_bao_dam/xem_chi_tiet_thay_doi.html',
+            'xem_tai_lieu_kiem_chung.html': '../03_Boi_thuong_nha_nuoc/xem_tai_lieu_kiem_chung.html',
+            'xem_xet_trach_nhiem_hoan_tra.html': '../03_Boi_thuong_nha_nuoc/xem_xet_trach_nhiem_hoan_tra.html'
+        };
+        function resolveModuleUrl(url) {
+            const s = String(url || '');
+            if (!s || s.indexOf('/') !== -1 || /^[a-z]+:/i.test(s)) return s;
+            const qIdx = s.search(/[?#]/);
+            const name = qIdx === -1 ? s : s.slice(0, qIdx);
+            const path = MODULE_PAGE_PATHS[name];
+            return path ? path + (qIdx === -1 ? '' : s.slice(qIdx)) : s;
+        }
+
         window.openAdminModule = function (url, activeUrl = url) {
+            url = resolveModuleUrl(url);
+            activeUrl = resolveModuleUrl(activeUrl);
             const match = findMenuLeafByUrl(activeUrl);
             if (!match) {
                 const iframe = document.getElementById('mainContentIframe');
