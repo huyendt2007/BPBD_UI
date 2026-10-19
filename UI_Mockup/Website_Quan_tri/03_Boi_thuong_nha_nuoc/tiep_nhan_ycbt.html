@@ -449,10 +449,40 @@
 
                 <div class="info-group-title">Thông tin người yêu cầu</div>
                 <div class="grid-3-cols">
+                    <!-- Tư cách người yêu cầu bồi thường: Danh mục DM_26 (đứng trước Loại người yêu cầu) -->
                     <div class="form-group">
-                        <span class="form-label">Họ và tên người yêu cầu<span class="required">*</span></span>
+                        <span class="form-label">Tư cách người yêu cầu bồi thường<span class="required">*</span></span>
+                        <select id="formRequesterRole" class="form-control" onchange="onRequesterRoleChange()"></select>
+                    </div>
+                    <!-- Loại người yêu cầu: ràng buộc theo Tư cách (TCNYC_03 -> Tổ chức; TCNYC_02, TCNYC_06, TCNYC_04 -> Cá nhân; khác cho phép chọn) -->
+                    <div class="form-group">
+                        <span class="form-label">Loại người yêu cầu<span class="required">*</span></span>
+                        <div class="nyc-type-radios" id="formNycTypeGroup">
+                            <label><input type="radio" name="formNycType" id="formNycTypeCaNhan" value="Cá nhân" checked onchange="toggleNycTypeFields()"> Cá nhân</label>
+                            <label><input type="radio" name="formNycType" id="formNycTypeToChuc" value="Tổ chức" onchange="toggleNycTypeFields()"> Tổ chức</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <span class="form-label"><span id="formRequesterLabel">Họ và tên</span><span class="required">*</span></span>
                         <input id="formRequester" class="form-control" placeholder="Nhập họ và tên...">
                         <div class="error-message">Đây là trường bắt buộc</div>
+                    </div>
+                    <div class="form-group nyc-ca-nhan">
+                        <span class="form-label">Loại giấy tờ thân nhân</span>
+                        <select id="formNycDocType" class="form-control">
+                            <option value="">-- Chọn loại giấy tờ --</option>
+                            <option value="CCCD">Căn cước công dân / Thẻ căn cước</option>
+                            <option value="Chứng minh nhân dân">Chứng minh nhân dân</option>
+                            <option value="Hộ chiếu">Hộ chiếu</option>
+                        </select>
+                    </div>
+                    <div class="form-group nyc-ca-nhan">
+                        <span class="form-label">Số giấy tờ thân nhân</span>
+                        <input id="formNycDocNo" class="form-control" placeholder="Nhập số giấy tờ thân nhân...">
+                    </div>
+                    <div class="form-group nyc-to-chuc" style="display:none;">
+                        <span class="form-label">Mã số tổ chức</span>
+                        <input id="formNycOrgCode" class="form-control" placeholder="Mã số doanh nghiệp / mã số thuế / mã số khác...">
                     </div>
                     <div class="form-group">
                         <span class="form-label">Số điện thoại<span class="required">*</span></span>
@@ -460,16 +490,21 @@
                         <div class="error-message" id="formPhoneError">Đây là trường bắt buộc</div>
                     </div>
                     <div class="form-group">
-                        <span class="form-label">Tư cách người yêu cầu<span class="required">*</span></span>
-                        <select id="formRequesterRole" class="form-control" onchange="toggleNbthBlock()">
-                            <option value="Người bị thiệt hại">Người bị thiệt hại</option>
-                            <option value="Người thừa kế của người bị thiệt hại">Người thừa kế của người bị thiệt hại</option>
-                            <option value="Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại">Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại</option>
-                            <option value="Người đại diện theo pháp luật của người bị thiệt hại">Người đại diện theo pháp luật của người bị thiệt hại</option>
-                            <option value="Cá nhân, pháp nhân được ủy quyền hợp pháp">Cá nhân, pháp nhân được ủy quyền hợp pháp</option>
-                        </select>
+                        <span class="form-label">Email</span>
+                        <input id="formEmail" class="form-control" placeholder="Nhập email...">
+                        <div class="error-message" id="formEmailError">Email không đúng định dạng.</div>
                     </div>
+                    <!-- Quốc gia: Danh mục DM_09, mặc định Việt Nam; Tỉnh/Thành phố, Phường/Xã là combobox khi Việt Nam, ô nhập tự do khi khác Việt Nam -->
                     <div class="form-group">
+                        <span class="form-label">Quốc gia<span class="required">*</span></span>
+                        <select id="formCountry" class="form-control" onchange="onCountryChange()"></select>
+                    </div>
+                    <!-- Màn Xem chi tiết: Địa chỉ 01 dòng [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố] -->
+                    <div class="form-group nyc-addr-view" style="display:none; grid-column: span 2;">
+                        <span class="form-label">Địa chỉ</span>
+                        <input id="formAddressFull" class="form-control" disabled>
+                    </div>
+                    <div class="form-group nyc-addr-edit">
                         <span class="form-label">Tỉnh/Thành phố<span class="required">*</span></span>
                         <input id="formCity" class="form-control" list="cityOptions" placeholder="Gõ Mã hoặc Tên Tỉnh/Thành phố..." oninput="updateWardOptions()">
                         <datalist id="cityOptions">

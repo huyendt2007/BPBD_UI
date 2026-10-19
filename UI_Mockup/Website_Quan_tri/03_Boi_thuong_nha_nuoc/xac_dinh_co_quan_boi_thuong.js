@@ -608,6 +608,111 @@ function buildStpSeed() {
     ];
 }
 
+// Dữ liệu giả lập hồ sơ có Loại người yêu cầu = Tổ chức (Bộ Tư pháp, cán bộ canbonv chủ trì).
+// Nạp một lần theo cờ riêng; không ghi đè hồ sơ đã có cùng mã.
+const ORG_SEED_FLAG = 'btnn_xd_org_seed_v1';
+function buildOrgSeed() {
+    const M = BTNN_WF.RECEIVE_METHODS;
+    const common = {
+        module: 'XD', loaiYeuCau: BTNN_WF.REQUEST_TYPE_XD, rootUnitId: 'BTP-01', currentUnitId: 'PLN-02',
+        createdBy: 'canbonv', chuTri: 'canbonv', routes: [], approval: null, nycType: 'Tổ chức', nycCountry: 'Việt Nam',
+        procBasis: '', procTargetAgency: '', procReason: '', procDecisionFile: '', claimCode: '-', vanBanCanCu: []
+    };
+    const h = (at, action, note) => ({ at, userId: 'canbonv', userName: BTNN_WF.userName('canbonv'), action, note });
+    return [
+        Object.assign({}, common, {
+            id: 'WF-XD-2026-131', code: 'XD-2026-131', maVuViec: 'VVBT-2026-131', source: 'Tạo trực tiếp',
+            date: '10/10/2026', receivedAt: '09:15 10/10/2026', receivedBy: 'Nguyễn Văn Cán Bộ', status: 'Đang thực hiện',
+            nycRole: 'Cá nhân, pháp nhân được ủy quyền hợp pháp',
+            nycName: 'Công ty Luật TNHH Minh Phúc', nycOrgCode: '0108123456', nycOrgDocNo: '', nycOrgDocDate: '', nycOrgDocPlace: '',
+            nycRepName: 'Trần Minh Phúc', nycRepPosition: 'Giám đốc', nycPhone: '0243 8256 789', nycEmail: 'lienhe@minhphuclaw.vn',
+            nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: '00007 - Phường Cầu Giấy', nycAddressDetail: 'Tầng 6, Số 18 Trần Thái Tông',
+            nbth: { name: 'Lương Văn Khải', dob: '02/03/1976', docType: 'CCCD', docNo: '001076004455', docDate: '11/05/2021', docPlace: 'Cục Cảnh sát QLHC về trật tự xã hội', phone: '0912556677', email: '', country: 'Việt Nam', city: 'Thành phố Hà Nội', ward: '00010 - Phường Thanh Xuân', address: 'Số 5 ngõ 120 Khương Trung' },
+            hinhThucTiepNhan: M.TRUC_TIEP, linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ',
+            hanhVi: 'Áp dụng biện pháp khẩn cấp tạm thời phong tỏa tài sản không đúng đối tượng của TAND quận Cầu Giấy.',
+            hinhThucNhan: 'Qua thư điện tử', diaChiNhanThongBao: 'lienhe@minhphuclaw.vn',
+            attachedDocs: [{ name: 'Đơn yêu cầu và giấy ủy quyền', file: 'Don_yeu_cau_XD-2026-131.pdf' }],
+            history: [h('09:15 10/10/2026', 'Tạo yêu cầu', 'Cán bộ tạo trực tiếp, đồng thời là cán bộ chủ trì.')]
+        }),
+        Object.assign({}, common, {
+            id: 'WF-XD-2026-132', code: 'XD-2026-132', maVuViec: 'VVBT-2026-132', source: 'Tiếp nhận',
+            date: '12/10/2026', receivedAt: '10:40 12/10/2026', receivedBy: 'Nguyễn Văn Cán Bộ', status: 'Chờ tiếp nhận',
+            nycRole: 'Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại',
+            nycName: 'Công ty Cổ phần Xây dựng Hồng Hà', nycOrgCode: '', nycOrgDocNo: '0105998877', nycOrgDocDate: '15/04/2019', nycOrgDocPlace: 'Sở Kế hoạch và Đầu tư Thành phố Hà Nội',
+            nycRepName: 'Phạm Thị Hồng', nycRepPosition: 'Tổng Giám đốc', nycPhone: '0904667788', nycEmail: '',
+            nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: '00004 - Phường Hoàn Kiếm', nycAddressDetail: 'Số 27 Lý Thái Tổ',
+            nbthOrgName: 'Công ty TNHH Thương mại Hồng Hà', nbthOrgCode: '0101234567',
+            hinhThucTiepNhan: M.MOT_CUA, linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH',
+            hanhVi: 'Thu hồi giấy chứng nhận đăng ký doanh nghiệp trái pháp luật dẫn đến tổ chức phải chấm dứt hoạt động.',
+            hinhThucNhan: 'Qua dịch vụ bưu chính', diaChiNhanThongBao: 'Số 27 Lý Thái Tổ, Phường Hoàn Kiếm, Thành phố Hà Nội',
+            attachedDocs: [{ name: 'Đơn yêu cầu xác định cơ quan giải quyết bồi thường', file: 'Don_yeu_cau_XD-2026-132.pdf' }],
+            history: [h('10:40 12/10/2026', 'Tiếp nhận hồ sơ', 'Tiếp nhận tại Bộ phận Một cửa; cán bộ chủ trì: Nguyễn Văn Cán Bộ.')]
+        })
+    ];
+}
+function migrateOrgSeed() {
+    let done = null;
+    try { done = localStorage.getItem(ORG_SEED_FLAG); } catch (e) { done = null; }
+    if (done) return;
+    const records = BTNN_WF.loadRecords();
+    buildOrgSeed().forEach(rec => { if (!records.some(r => r.code === rec.code)) records.push(rec); });
+    BTNN_WF.saveRecords(records);
+    try { localStorage.setItem(ORG_SEED_FLAG, '1'); } catch (e) { /* bỏ qua */ }
+}
+
+// ===== Người yêu cầu bồi thường: Tư cách (DM_26) và Loại người yêu cầu (Cá nhân / Tổ chức) =====
+const NYC_ROLE = {
+    NBTH: 'Người bị thiệt hại',
+    THUA_KE: 'Người thừa kế của người bị thiệt hại',
+    DD_THUA_KE: 'Người đại diện cho những người thừa kế của người bị thiệt hại',
+    TC_KE_THUA: 'Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại',
+    DD_PL: 'Người đại diện theo pháp luật của người bị thiệt hại',
+    UY_QUYEN: 'Cá nhân, pháp nhân được ủy quyền hợp pháp'
+};
+const NYC_ROLE_CODES = { TCNYC_01: NYC_ROLE.NBTH, TCNYC_02: NYC_ROLE.THUA_KE, TCNYC_06: NYC_ROLE.DD_THUA_KE, TCNYC_03: NYC_ROLE.TC_KE_THUA, TCNYC_04: NYC_ROLE.DD_PL, TCNYC_05: NYC_ROLE.UY_QUYEN };
+const NYC_TYPE = { CA_NHAN: 'Cá nhân', TO_CHUC: 'Tổ chức' };
+
+// Loại người yêu cầu bắt buộc theo Tư cách: '' = cho phép chọn
+function nycTypeConstraint(role) {
+    if (window.BTNN_WF && typeof BTNN_WF.nycTypeConstraint === 'function') {
+        try {
+            const v = BTNN_WF.nycTypeConstraint(role);
+            if (v === NYC_TYPE.CA_NHAN || v === NYC_TYPE.TO_CHUC || v === '' || v == null) return v || '';
+        } catch (e) { /* dùng quy tắc cục bộ */ }
+    }
+    const r = NYC_ROLE_CODES[role] || role;
+    if (r === NYC_ROLE.TC_KE_THUA) return NYC_TYPE.TO_CHUC;
+    if ([NYC_ROLE.THUA_KE, NYC_ROLE.DD_THUA_KE, NYC_ROLE.DD_PL].includes(r)) return NYC_TYPE.CA_NHAN;
+    return '';
+}
+
+// Dữ liệu cũ không có nycType: coi là Cá nhân (trừ Tư cách ràng buộc Tổ chức)
+function nycTypeOf(item) {
+    if (!item) return NYC_TYPE.CA_NHAN;
+    if (item.nycType === NYC_TYPE.TO_CHUC || item.nycType === NYC_TYPE.CA_NHAN) return item.nycType;
+    return nycTypeConstraint(item.nycRole) || NYC_TYPE.CA_NHAN;
+}
+
+// Địa chỉ 01 dòng: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố] (bỏ phần trống)
+function joinAddress(detail, ward, province) {
+    // Dùng hàm dùng chung khi có (chữ ký 03 tham số: chi tiết, phường/xã, tỉnh/thành phố)
+    if (window.BTNN_WF && typeof BTNN_WF.joinAddress === 'function' && BTNN_WF.joinAddress.length >= 3) {
+        try {
+            const v = BTNN_WF.joinAddress(detail, ward, province);
+            if (typeof v === 'string') return v;
+        } catch (e) { /* dùng quy tắc cục bộ */ }
+    }
+    return [detail, stripAdministrativeCode(ward), stripAdministrativeCode(province)].map(s => String(s || '').trim()).filter(Boolean).join(', ');
+}
+
+// Cột "Họ và tên người bị thiệt hại" trên lưới
+function victimNameOf(item) {
+    if (!item) return '-';
+    if ((item.nycRole || NYC_ROLE.NBTH) === NYC_ROLE.NBTH) return item.nycName || '-';
+    if (item.nycRole === NYC_ROLE.TC_KE_THUA) return item.nbthOrgName || '-';
+    return (item.nbth && item.nbth.name) || '-';
+}
+
 let requestList = [];
 
 // Active State
@@ -649,7 +754,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (pageSizeSelect) pageSizeSelect.value = String(pageSize);
 
     // Initialize flatpickr for dates
-    ["#filterFromDate", "#filterToDate", "#formNYCDob", "#formNYCDocDate", "#nbthDob", "#nbthDocDate"].forEach(sel => {
+    ["#filterFromDate", "#filterToDate", "#formNYCDob", "#formNYCDocDate", "#formNYCOrgDocDate", "#nbthDob", "#nbthDocDate"].forEach(sel => {
         if (document.querySelector(sel)) flatpickr(sel, { dateFormat: "d/m/Y", allowInput: true });
     });
 
@@ -680,6 +785,7 @@ const LEGACY_FLAG = 'btnn_xd_legacy_seed_v2';
 function initWorkflowData() {
     migrateLegacySeed();
     migrateStpSeed();
+    migrateOrgSeed();
     reloadRequestList();
 }
 
@@ -928,17 +1034,17 @@ function toggleCountrySelect(val) {
     }
 }
 
-// Toggle email requirement on Form screen
-// Phương thức điện tử (Email, Zalo, SMS...): chỉ bắt buộc có ít nhất một thông tin liên hệ (Số điện thoại hoặc Email)
+// Số điện thoại bắt buộc; Email không bắt buộc
 function toggleFormEmailRequired() {
     const label = document.querySelector("#formNYCEmail").previousElementSibling;
-    label.innerHTML = 'Thư điện tử (Email)';
+    label.innerHTML = 'Email';
 }
 
-const NOTIFY_METHOD_DEFAULT = 'Qua Cổng Dịch vụ công quốc gia';
+// Mặc định Phương thức nhận thông báo: Qua Cổng Dịch vụ công quốc gia hoặc Ứng dụng định danh quốc gia (VNeID)
+const NOTIFY_METHOD_DEFAULT = 'Qua Cổng Dịch vụ công quốc gia hoặc Ứng dụng định danh quốc gia (VNeID)';
 
 function normalizeNotifyMethod(val) {
-    if (!val || val === 'Phương thức điện tử' || val === 'Phương thức điện tử (Email, Zalo, SMS...)' || val.includes('Cổng Dịch vụ công quốc gia, ứng dụng') || val.includes('hoặc phương tiện điện tử khác')) {
+    if (!val || val === 'Phương thức điện tử' || val === 'Phương thức điện tử (Email, Zalo, SMS...)' || val === 'Qua Cổng Dịch vụ công quốc gia' || val.includes('Cổng Dịch vụ công quốc gia, ứng dụng') || val.includes('hoặc phương tiện điện tử khác')) {
         return NOTIFY_METHOD_DEFAULT;
     }
     if (val === 'Hồ sơ giấy') return 'Qua dịch vụ bưu chính';
@@ -1006,16 +1112,73 @@ function handleNotifyMethodChange(method, scope = 'xd') {
     }
 }
 
-// Hiển thị khối Người bị thiệt hại khi người yêu cầu không phải là người bị thiệt hại
+// Hiển thị khối Người bị thiệt hại khi Tư cách khác "Người bị thiệt hại";
+// Tư cách "Tổ chức kế thừa..." hiển thị khối Tổ chức bị thiệt hại đã chấm dứt tồn tại
 function toggleNbthBlock() {
     const role = document.getElementById('formNYCRole').value;
-    document.getElementById('nbthBlock').style.display = role !== 'Người bị thiệt hại' ? 'block' : 'none';
+    const isOrgVictim = role === NYC_ROLE.TC_KE_THUA;
+    document.getElementById('nbthBlock').style.display = role !== NYC_ROLE.NBTH ? 'block' : 'none';
+    document.getElementById('nbthOrgBlock').style.display = isOrgVictim ? 'grid' : 'none';
+    document.getElementById('nbthPersonBlock').style.display = isOrgVictim ? 'none' : 'grid';
+    document.getElementById('nbthBlockTitle').innerText = isOrgVictim ? 'THÔNG TIN TỔ CHỨC BỊ THIỆT HẠI ĐÃ CHẤM DỨT TỒN TẠI' : 'THÔNG TIN NGƯỜI BỊ THIỆT HẠI';
+}
+
+// Đổi Tư cách: áp ràng buộc Loại người yêu cầu và khối Người bị thiệt hại
+function onNycRoleChange() {
+    applyNycTypeConstraint();
+    toggleNbthBlock();
+}
+
+function getFormNycType() {
+    const r = document.querySelector('input[name="formNYCType"]:checked');
+    return r ? r.value : NYC_TYPE.CA_NHAN;
+}
+
+// Khóa radio Loại người yêu cầu khi Tư cách ràng buộc (TCNYC_03 → Tổ chức; TCNYC_02/06/04 → Cá nhân)
+function applyNycTypeConstraint(preferred) {
+    const role = document.getElementById('formNYCRole').value;
+    const forced = nycTypeConstraint(role);
+    const value = forced || preferred || getFormNycType();
+    document.querySelectorAll('input[name="formNYCType"]').forEach(r => {
+        r.checked = r.value === value;
+        r.disabled = Boolean(forced);
+    });
+    const hint = document.getElementById('formNYCTypeHint');
+    if (hint) {
+        hint.style.display = forced ? 'block' : 'none';
+        hint.innerHTML = forced ? `<i class="fa-solid fa-lock"></i> Tư cách "${escapeHtml(role)}" chỉ áp dụng Loại người yêu cầu: ${escapeHtml(forced)}.` : '';
+    }
+    applyNycType(value);
+}
+
+// Hiển thị trường theo Loại người yêu cầu: Cá nhân (Ngày sinh, giấy tờ thân nhân) / Tổ chức (Mã số, giấy tờ thành lập, người đại diện)
+function applyNycType(type) {
+    const isOrg = type === NYC_TYPE.TO_CHUC;
+    document.querySelectorAll('#screenForm .nyc-individual').forEach(el => { el.style.display = isOrg ? 'none' : ''; });
+    document.querySelectorAll('#screenForm .nyc-org').forEach(el => { el.style.display = isOrg ? '' : 'none'; });
+    const label = document.getElementById('formNYCNameLabel');
+    if (label) label.innerHTML = `${isOrg ? 'Tên tổ chức' : 'Họ và tên'}<span class="required">*</span>`;
+    const nameEl = document.getElementById('formNYCName');
+    if (nameEl) nameEl.placeholder = isOrg ? 'Nhập tên tổ chức...' : 'Nhập họ và tên...';
+    refreshOrgDocRequired();
+}
+
+// Số giấy tờ thành lập/đăng ký, Ngày cấp, Nơi cấp: bắt buộc khi không có Mã số tổ chức
+function refreshOrgDocRequired() {
+    const code = (document.getElementById('formNYCOrgCode')?.value || '').trim();
+    document.querySelectorAll('#screenForm .nyc-org-doc-req').forEach(el => { el.style.display = code ? 'none' : ''; });
+    if (code) ['formNYCOrgDocNo', 'formNYCOrgDocDate', 'formNYCOrgDocPlace'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.classList.remove('is-invalid');
+        const err = el.closest('.form-group').querySelector('.error-message');
+        if (err) err.style.display = 'none';
+    });
 }
 
 function fillNbth(nb) {
     nb = nb || {};
     document.getElementById('nbthName').value = nb.name || '';
-    document.getElementById('nbthGender').value = nb.gender || 'Nam';
     document.getElementById('nbthDob').value = nb.dob || '';
     document.getElementById('nbthDocType').value = nb.docType || 'CCCD';
     document.getElementById('nbthDocNo').value = nb.docNo || '';
@@ -1032,7 +1195,7 @@ function fillNbth(nb) {
 function readNbth() {
     const v = id => document.getElementById(id).value.trim();
     return {
-        name: v('nbthName'), gender: v('nbthGender'), dob: v('nbthDob'), docType: v('nbthDocType'), docNo: v('nbthDocNo'),
+        name: v('nbthName'), dob: v('nbthDob'), docType: v('nbthDocType'), docNo: v('nbthDocNo'),
         docDate: v('nbthDocDate'), docPlace: v('nbthDocPlace'), phone: v('nbthPhone'), email: v('nbthEmail'),
         country: v('nbthCountry'), city: stripAdministrativeCode(v('nbthCity')), ward: v('nbthWard'), address: v('nbthAddress')
     };
@@ -1189,11 +1352,13 @@ function showFormScreen(id = null, mode = null) {
         submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Trình duyệt';
     }
 
-    setReceiveMethodField(BTNN_WF.RECEIVE_METHODS.TRUC_TIEP);
+    setReceiveMethodField(BTNN_WF.RECEIVE_METHODS.TRUC_TIEP, false);
     document.getElementById('formLinhVuc').value = 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH';
     document.getElementById('formNYCName').value = '';
-    document.getElementById('formNYCRole').value = 'Người bị thiệt hại';
-    document.getElementById('formNYCGender').value = 'Nam';
+    document.getElementById('formNYCRole').value = NYC_ROLE.NBTH;
+    ['formNYCOrgCode', 'formNYCOrgDocNo', 'formNYCOrgDocDate', 'formNYCOrgDocPlace', 'formNYCRepName', 'formNYCRepPosition', 'nbthOrgName', 'nbthOrgCode']
+        .forEach(fid => { document.getElementById(fid).value = ''; });
+    applyNycTypeConstraint(NYC_TYPE.CA_NHAN);
     document.getElementById('formNYCDob').value = '';
     document.getElementById('formNYCDocType').value = 'CCCD';
     document.getElementById('formNYCDocNo').value = '';
@@ -1236,11 +1401,22 @@ function showFormScreen(id = null, mode = null) {
             : item.status === 'Bị trả lại'
             ? `<i class="fa-solid fa-rotate-left"></i> CẬP NHẬT LẠI HỒ SƠ BỊ TRẢ LẠI`
             : `<i class="fa-solid fa-file-pen"></i> SỬA YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG`;
-        setReceiveMethodField(BTNN_WF.normalizeReceiveMethod(item.hinhThucTiepNhan));
+        setReceiveMethodField(BTNN_WF.normalizeReceiveMethod(item.hinhThucTiepNhan), isFromReception(item));
         document.getElementById('formLinhVuc').value = item.linhVuc;
         document.getElementById('formNYCName').value = item.nycName || '';
-        document.getElementById('formNYCRole').value = item.nycRole || 'Người bị thiệt hại';
-        document.getElementById('formNYCGender').value = item.nycGender || 'Nam';
+        const roleSel = document.getElementById('formNYCRole');
+        roleSel.value = NYC_ROLE_CODES[item.nycRole] || item.nycRole || NYC_ROLE.NBTH;
+        if (!roleSel.value) roleSel.value = NYC_ROLE.NBTH;
+        applyNycTypeConstraint(nycTypeOf(item));
+        document.getElementById('formNYCOrgCode').value = item.nycOrgCode || '';
+        document.getElementById('formNYCOrgDocNo').value = item.nycOrgDocNo || '';
+        document.getElementById('formNYCOrgDocDate').value = item.nycOrgDocDate || '';
+        document.getElementById('formNYCOrgDocPlace').value = item.nycOrgDocPlace || '';
+        document.getElementById('formNYCRepName').value = item.nycRepName || '';
+        document.getElementById('formNYCRepPosition').value = item.nycRepPosition || '';
+        document.getElementById('nbthOrgName').value = item.nbthOrgName || '';
+        document.getElementById('nbthOrgCode').value = item.nbthOrgCode || '';
+        refreshOrgDocRequired();
         document.getElementById('formNYCDob').value = item.nycDob || '';
         document.getElementById('formNYCDocType').value = item.nycDocType || 'CCCD';
         document.getElementById('formNYCDocNo').value = item.nycDocNo || '';
@@ -1317,12 +1493,25 @@ function showFormScreen(id = null, mode = null) {
     toggleNbthBlock();
 }
 
-// Hình thức tiếp nhận (DM_25): form chỉ cho chọn Trực tiếp / Qua dịch vụ bưu chính;
-// hồ sơ kế thừa có giá trị Qua môi trường số (Dịch vụ Công) / Bộ phận Một cửa hiển thị chỉ đọc
-function setReceiveMethodField(value) {
+// Hồ sơ đến từ Tiếp nhận hồ sơ (không phải Thêm mới trực tiếp tại màn hình này)
+function isFromReception(item) {
+    return Boolean(item && item.source && item.source !== 'Tạo trực tiếp');
+}
+
+// Hình thức tiếp nhận (DM_25):
+// - Hồ sơ đến từ Tiếp nhận hồ sơ: mặc định theo giá trị đã tiếp nhận, cho phép điều chỉnh trong đủ 04 giá trị DM_25;
+// - Thêm mới trực tiếp: chỉ Trực tiếp / Qua dịch vụ bưu chính (hồ sơ cũ có giá trị khác hiển thị chỉ đọc).
+function setReceiveMethodField(value, fromReception) {
     const sel = document.getElementById('formHinhThucTiepNhan');
     if (!sel) return;
     const M = BTNN_WF.RECEIVE_METHODS;
+    if (fromReception) {
+        const all = BTNN_WF.RECEIVE_METHOD_ORDER;
+        sel.innerHTML = all.map(v => `<option value="${escapeAttr(v)}">${escapeHtml(v)}</option>`).join('');
+        sel.value = all.includes(value) ? value : M.TRUC_TIEP;
+        sel.disabled = false;
+        return;
+    }
     const formValues = BTNN_WF.FORM_RECEIVE_METHODS;
     sel.innerHTML = formValues.map(v => `<option value="${escapeAttr(v)}">${escapeHtml(v)}</option>`).join('');
     const isInherited = BTNN_WF.RECEIVE_METHOD_ORDER.includes(value) && !formValues.includes(value);
@@ -1454,14 +1643,25 @@ function showDetailScreen(id) {
     document.getElementById('dtMaVuViec').innerText = item.maVuViec || '-';
     document.getElementById('dtHinhThucTiepNhan').innerText = BTNN_WF.normalizeReceiveMethod(item.hinhThucTiepNhan) || BTNN_WF.RECEIVE_METHODS.TRUC_TIEP;
     document.getElementById('dtLinhVuc').innerText = item.linhVuc || '';
+    // Người yêu cầu bồi thường: Tư cách → Loại người yêu cầu → trường theo Cá nhân / Tổ chức (không hiển thị Giới tính)
+    const nycType = nycTypeOf(item);
+    const isOrg = nycType === NYC_TYPE.TO_CHUC;
+    document.getElementById('dtNYCRole').innerText = NYC_ROLE_CODES[item.nycRole] || item.nycRole || '';
+    document.getElementById('dtNYCType').innerText = nycType;
+    document.getElementById('dtNYCNameLabel').innerText = isOrg ? 'Tên tổ chức' : 'Họ và tên';
     document.getElementById('dtNYCName').innerText = item.nycName || '';
-    document.getElementById('dtNYCRole').innerText = item.nycRole || '';
-    document.getElementById('dtNYCGenderDob').innerText = `${item.nycGender || '--'} / ${item.nycDob || '--'}`;
+    document.querySelectorAll('#screenDetail .dt-nyc-individual').forEach(el => { el.style.display = isOrg ? 'none' : ''; });
+    document.querySelectorAll('#screenDetail .dt-nyc-org').forEach(el => { el.style.display = isOrg ? '' : 'none'; });
+    document.getElementById('dtNYCDob').innerText = item.nycDob || '--';
     document.getElementById('dtNYCDocInfo').innerText = item.nycDocNo ? `${item.nycDocType} - Số: ${item.nycDocNo}${item.nycDocDate ? ` (Cấp ngày: ${item.nycDocDate}${item.nycDocPlace ? ' tại ' + item.nycDocPlace : ''})` : ''}` : '--';
+    document.getElementById('dtNYCOrgCode').innerText = item.nycOrgCode || '--';
+    document.getElementById('dtNYCOrgDoc').innerText = item.nycOrgDocNo ? `Số: ${item.nycOrgDocNo}${item.nycOrgDocDate ? ` (Cấp ngày: ${item.nycOrgDocDate}${item.nycOrgDocPlace ? ' tại ' + item.nycOrgDocPlace : ''})` : ''}` : '--';
+    document.getElementById('dtNYCRepName').innerText = item.nycRepName || '--';
+    document.getElementById('dtNYCRepPosition').innerText = item.nycRepPosition || '--';
     document.getElementById('dtNYCPhone').innerText = item.nycPhone || 'Chưa cung cấp';
     document.getElementById('dtNYCEmail').innerText = item.nycEmail || 'Chưa cung cấp';
-    const ward = item.nycPhuongXa ? `${item.nycPhuongXa}, ` : '';
-    document.getElementById('dtNYCAddress').innerText = [item.nycAddressDetail, `${ward}${item.nycTinhThanh || ''}`, item.nycCountry].filter(Boolean).join(', ');
+    document.getElementById('dtNYCCountry').innerText = item.nycCountry || 'Việt Nam';
+    document.getElementById('dtNYCAddress').innerText = joinAddress(item.nycAddressDetail, item.nycPhuongXa, item.nycTinhThanh) || 'Chưa cung cấp';
 
     const attachedDocs = item.attachedDocs && item.attachedDocs.length ? item.attachedDocs : (item.attachedFile ? [{ name: 'Tài liệu đính kèm', file: item.attachedFile }] : []);
     document.getElementById('dtFileAttachment').innerHTML = attachedDocs.length
@@ -1473,15 +1673,27 @@ function showDetailScreen(id) {
         : `<span style="color: var(--text-muted); font-style: italic;">Không có file đính kèm</span>`;
 
     // Người bị thiệt hại
+    // Tư cách "Tổ chức kế thừa..." → Tổ chức bị thiệt hại đã chấm dứt tồn tại; Tư cách khác "Người bị thiệt hại" → người bị thiệt hại cá nhân
     const nb = item.nbth;
     const nbBlock = document.getElementById('dtNbthBlock');
-    if (nb && nb.name && item.nycRole !== 'Người bị thiệt hại') {
+    const isOrgVictim = item.nycRole === NYC_ROLE.TC_KE_THUA;
+    const showNb = isOrgVictim ? Boolean(item.nbthOrgName) : Boolean(nb && nb.name && (item.nycRole || NYC_ROLE.NBTH) !== NYC_ROLE.NBTH);
+    if (showNb) {
         nbBlock.style.display = 'block';
-        document.getElementById('dtNbthName').innerText = nb.name;
-        document.getElementById('dtNbthGenderDob').innerText = `${nb.gender || '--'} / ${nb.dob || '--'}`;
-        document.getElementById('dtNbthDoc').innerText = `${nb.docType || ''} - Số: ${nb.docNo || '--'}${nb.docDate ? ` (Cấp ngày: ${nb.docDate}${nb.docPlace ? ' tại ' + nb.docPlace : ''})` : ''}`;
-        document.getElementById('dtNbthContact').innerText = [nb.phone, nb.email].filter(Boolean).join(' / ') || 'Chưa cung cấp';
-        document.getElementById('dtNbthAddress').innerText = [nb.address, nb.ward, nb.city, nb.country].filter(Boolean).join(', ') || 'Chưa cung cấp';
+        document.getElementById('dtNbthTitle').innerText = isOrgVictim ? 'THÔNG TIN TỔ CHỨC BỊ THIỆT HẠI ĐÃ CHẤM DỨT TỒN TẠI' : 'THÔNG TIN NGƯỜI BỊ THIỆT HẠI';
+        nbBlock.querySelectorAll('.dt-nbth-org').forEach(el => { el.style.display = isOrgVictim ? '' : 'none'; });
+        nbBlock.querySelectorAll('.dt-nbth-person').forEach(el => { el.style.display = isOrgVictim ? 'none' : ''; });
+        if (isOrgVictim) {
+            document.getElementById('dtNbthOrgName').innerText = item.nbthOrgName || '--';
+            document.getElementById('dtNbthOrgCode').innerText = item.nbthOrgCode || '--';
+        } else {
+            document.getElementById('dtNbthName').innerText = nb.name;
+            document.getElementById('dtNbthDob').innerText = nb.dob || '--';
+            document.getElementById('dtNbthDoc').innerText = `${nb.docType || ''} - Số: ${nb.docNo || '--'}${nb.docDate ? ` (Cấp ngày: ${nb.docDate}${nb.docPlace ? ' tại ' + nb.docPlace : ''})` : ''}`;
+            document.getElementById('dtNbthPhone').innerText = nb.phone || 'Chưa cung cấp';
+            document.getElementById('dtNbthEmail').innerText = nb.email || 'Chưa cung cấp';
+            document.getElementById('dtNbthAddress').innerText = joinAddress(nb.address, nb.ward, nb.city) || 'Chưa cung cấp';
+        }
     } else {
         nbBlock.style.display = 'none';
     }
@@ -1563,8 +1775,11 @@ function acceptRequest(id, fromDetail = false) {
 
 // Kiểm tra nhanh các trường bắt buộc khi gửi từ màn chi tiết
 function validateRequestItem(item) {
-    if (!item.nycName || !item.nycDob || !item.nycDocNo || !item.hanhVi) return "Vui lòng nhập đầy đủ thông tin bắt buộc trước khi gửi yêu cầu!";
-    if (!item.nycPhone && !item.nycEmail) return "Nhập ít nhất một trong hai: Số điện thoại liên hệ hoặc Thư điện tử (Email)!";
+    const isOrg = nycTypeOf(item) === NYC_TYPE.TO_CHUC;
+    const idOk = isOrg
+        ? item.nycRepName && item.nycRepPosition && (item.nycOrgCode || (item.nycOrgDocNo && item.nycOrgDocDate && item.nycOrgDocPlace))
+        : item.nycDob && item.nycDocNo;
+    if (!item.nycName || !idOk || !item.nycPhone || !item.hanhVi) return "Vui lòng nhập đầy đủ thông tin bắt buộc trước khi gửi yêu cầu!";
     return '';
 }
 
@@ -1788,8 +2003,20 @@ function saveForm(isDraft) {
     const addressDetail = document.getElementById('formNYCAddressDetail').value.trim();
     const hanhVi = document.getElementById('formHanhVi').value.trim();
     const role = document.getElementById('formNYCRole').value;
-    const hasNbth = role !== 'Người bị thiệt hại';
+    const nycType = nycTypeConstraint(role) || getFormNycType();
+    const isOrg = nycType === NYC_TYPE.TO_CHUC;
+    const fv = fid => document.getElementById(fid).value.trim();
+    const orgCode = isOrg ? fv('formNYCOrgCode') : '';
+    const orgDocNo = isOrg ? fv('formNYCOrgDocNo') : '';
+    const orgDocDate = isOrg ? fv('formNYCOrgDocDate') : '';
+    const orgDocPlace = isOrg ? fv('formNYCOrgDocPlace') : '';
+    const repName = isOrg ? fv('formNYCRepName') : '';
+    const repPosition = isOrg ? fv('formNYCRepPosition') : '';
+    const isOrgVictim = role === NYC_ROLE.TC_KE_THUA;
+    const hasNbth = role !== NYC_ROLE.NBTH && !isOrgVictim;
     const nbth = hasNbth ? readNbth() : null;
+    const nbthOrgName = isOrgVictim ? fv('nbthOrgName') : '';
+    const nbthOrgCode = isOrgVictim ? fv('nbthOrgCode') : '';
     const cleanDocs = formDocRows
         .filter(doc => (doc.name || '').trim() || (doc.file || '').trim())
         .map(doc => ({ name: (doc.name || '').trim(), file: doc.file || '' }));
@@ -1799,15 +2026,16 @@ function saveForm(isDraft) {
 
     if (!isDraft) {
         let firstInvalid = null;
-        const req = [['formNYCName', name], ['formNYCDob', dob], ['formNYCDocNo', docNo], ['formNYCDocDate', docDate], ['formNYCDocPlace', docPlace], ['formNYCAddressDetail', addressDetail], ['formHanhVi', hanhVi]];
+        // Cá nhân: Họ và tên, Ngày sinh, giấy tờ thân nhân; Tổ chức: Tên tổ chức, người đại diện, giấy tờ thành lập/đăng ký khi không có Mã số tổ chức
+        const req = isOrg
+            ? [['formNYCName', name], ['formNYCRepName', repName], ['formNYCRepPosition', repPosition]]
+                .concat(orgCode ? [] : [['formNYCOrgDocNo', orgDocNo], ['formNYCOrgDocDate', orgDocDate], ['formNYCOrgDocPlace', orgDocPlace]])
+            : [['formNYCName', name], ['formNYCDob', dob], ['formNYCDocNo', docNo], ['formNYCDocDate', docDate], ['formNYCDocPlace', docPlace]];
+        req.push(['formNYCPhone', phone], ['formNYCAddressDetail', addressDetail], ['formHanhVi', hanhVi]);
         req.forEach(([fid, val]) => { if (!val) firstInvalid = markInvalid(document.getElementById(fid), firstInvalid); });
         if (!city) firstInvalid = markInvalid(country === 'Việt Nam' ? document.getElementById('formNYCTinhThanh') : document.getElementById('formNYCTinhThanhText'), firstInvalid);
         if (!ward) firstInvalid = markInvalid(country === 'Việt Nam' ? document.getElementById('formNYCPhuongXa') : document.getElementById('formNYCPhuongXaText'), firstInvalid);
-        // Bắt buộc ít nhất một thông tin liên hệ
-        if (!phone && !email) {
-            firstInvalid = markInvalid(document.getElementById('formNYCPhone'), firstInvalid);
-            markInvalid(document.getElementById('formNYCEmail'), firstInvalid);
-        }
+        if (isOrgVictim && !nbthOrgName) firstInvalid = markInvalid(document.getElementById('nbthOrgName'), firstInvalid);
         if (hasNbth) {
             [['nbthName', nbth.name], ['nbthDob', nbth.dob], ['nbthDocNo', nbth.docNo]].forEach(([fid, val]) => { if (!val) firstInvalid = markInvalid(document.getElementById(fid), firstInvalid); });
         }
@@ -1833,11 +2061,13 @@ function saveForm(isDraft) {
     const data = {
         hinhThucTiepNhan: document.getElementById('formHinhThucTiepNhan').value,
         linhVuc: document.getElementById('formLinhVuc').value,
-        nycName: name, nycRole: role,
-        nycGender: document.getElementById('formNYCGender').value,
-        nycDob: dob, nycDocType: document.getElementById('formNYCDocType').value, nycDocNo: docNo, nycDocDate: docDate, nycDocPlace: docPlace,
+        nycType: nycType, nycName: name, nycRole: role,
+        nycDob: isOrg ? '' : dob, nycDocType: isOrg ? '' : document.getElementById('formNYCDocType').value,
+        nycDocNo: isOrg ? '' : docNo, nycDocDate: isOrg ? '' : docDate, nycDocPlace: isOrg ? '' : docPlace,
+        nycOrgCode: orgCode, nycOrgDocNo: orgDocNo, nycOrgDocDate: orgDocDate, nycOrgDocPlace: orgDocPlace,
+        nycRepName: repName, nycRepPosition: repPosition,
         nycPhone: phone, nycEmail: email, nycCountry: country, nycTinhThanh: city, nycPhuongXa: ward, nycAddressDetail: addressDetail,
-        nbth: nbth,
+        nbth: nbth, nbthOrgName: nbthOrgName, nbthOrgCode: nbthOrgCode,
         hanhVi: hanhVi,
         vanBanCanCu: getCleanBasisRows(),
         hinhThucNhan: notifyMethod,
@@ -2042,7 +2272,7 @@ function renderTable() {
             <td style="text-align:center;"><strong>${escapeHtml(item.code)}</strong></td>
             <td style="text-align:center;">${escapeHtml(item.maVuViec || '-')}</td>
             <td><strong>${escapeHtml(item.nycName || '(Chưa nhập)')}</strong></td>
-            <td style="text-align:center;">${escapeHtml(item.nycPhone || '(Chưa nhập)')}</td>
+            <td>${escapeHtml(victimNameOf(item))}</td>
             <td style="font-size:12px; color:var(--text-muted);">${escapeHtml((item.linhVuc || '').replace("TRONG HOẠT ĐỘNG ", ""))}</td>
             <td style="font-size:12px; color:var(--text-muted);" title="${escapeAttr(hanhVi)}">${escapeHtml(hanhVi.length > 50 ? hanhVi.slice(0, 50) + "..." : hanhVi)}</td>
             <td style="text-align:center;">${escapeHtml(item.date || '')}</td>

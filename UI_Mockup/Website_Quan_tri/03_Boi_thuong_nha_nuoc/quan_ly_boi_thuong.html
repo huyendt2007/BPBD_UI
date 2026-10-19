@@ -1507,8 +1507,8 @@
                         <input type="text" class="form-control" id="searchCode" placeholder="Nhập mã vụ việc...">
                     </div>
                     <div>
-                        <span class="form-label">Họ và tên người yêu cầu</span>
-                        <input type="text" class="form-control" id="searchNyc" placeholder="Nhập họ và tên...">
+                        <span class="form-label">Tên cá nhân/Tổ chức yêu cầu</span>
+                        <input type="text" class="form-control" id="searchNyc" placeholder="Nhập tên cá nhân/tổ chức...">
                     </div>
                     <div>
                         <span class="form-label">Cơ quan giải quyết</span>
@@ -1644,7 +1644,8 @@
                         <tr>
                             <th style="width: 50px; text-align: center;">STT</th>
                             <th style="width: 120px; text-align: center;">Mã vụ việc</th>
-                            <th style="min-width: 170px;">Họ và tên người yêu cầu</th>
+                            <th style="min-width: 170px;">Tên cá nhân/Tổ chức yêu cầu</th>
+                            <th style="min-width: 170px;">Họ và tên người bị thiệt hại</th>
                             <th style="min-width: 220px;">Hành vi gây thiệt hại</th>
                             <th style="min-width: 160px;">Lĩnh vực phát sinh thiệt hại</th>
                             <th style="min-width: 150px;">Cơ quan giải quyết</th>
@@ -1979,8 +1980,35 @@
                                 1: Theo bản án)</span>
                         </div>
 
+                        <!-- Tư cách người yêu cầu bồi thường: Danh mục DM_26 (đứng trước Loại người yêu cầu) -->
                         <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Họ và tên người yêu cầu bồi thường<span
+                            <span class="form-label">Tư cách người yêu cầu bồi thường<span
+                                    class="required">*</span></span>
+                            <select class="form-control" id="claimNYCRole" onchange="toggleDocsByRole(this.value); applyNycTypeConstraint(this.value); toggleNbthBlock(this.value)">
+                                <option value="Người bị thiệt hại">Người bị thiệt hại</option>
+                                <option value="Người thừa kế của người bị thiệt hại">Người thừa kế của người bị thiệt hại</option>
+                                <option value="Người đại diện cho những người thừa kế của người bị thiệt hại">Người đại diện cho những người thừa kế của người bị thiệt hại</option>
+                                <option value="Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại">Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại</option>
+                                <option value="Người đại diện theo pháp luật của người bị thiệt hại">Người đại diện theo pháp luật của người bị thiệt hại</option>
+                                <option value="Cá nhân, pháp nhân được ủy quyền hợp pháp">Cá nhân, pháp nhân được ủy quyền hợp pháp</option>
+                            </select>
+                        </div>
+
+                        <!-- Loại người yêu cầu: Cá nhân / Tổ chức (ràng buộc theo Tư cách người yêu cầu bồi thường) -->
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <span class="form-label">Loại người yêu cầu<span class="required">*</span></span>
+                            <div id="claimNYCTypeGroup" style="display: flex; gap: 24px; align-items: center; height: 38px; padding-left: 5px;">
+                                <label style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; color: var(--text-main);">
+                                    <input type="radio" name="claimNYCType" value="Cá nhân" checked onchange="toggleNycTypeFields()"> Cá nhân
+                                </label>
+                                <label style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; color: var(--text-main);">
+                                    <input type="radio" name="claimNYCType" value="Tổ chức" onchange="toggleNycTypeFields()"> Tổ chức
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <span class="form-label"><span id="claimNYCNameLabel">Họ và tên</span><span
                                     class="required">*</span><span class="verdict-sub-label"
                                     style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối
                                     chiếu theo bản án đính kèm)</span></span>
@@ -1988,43 +2016,36 @@
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Tư cách người yêu cầu bồi thường<span
-                                    class="required">*</span></span>
-                            <select class="form-control" id="claimNYCRole" onchange="toggleDocsByRole(this.value); toggleNbthBlock(this.value)">
-                                <option value="Người bị thiệt hại">Người bị thiệt hại</option>
-                                <option value="Người thừa kế của người bị thiệt hại">Người thừa kế của người bị
-                                    thiệt hại</option>
-                                <option
-                                    value="Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại">
-                                    Tổ chức kế thừa quyền, nghĩa vụ...</option>
-                                <option value="Người đại diện theo pháp luật của người bị thiệt hại">Người đại diện
-                                    theo pháp luật...</option>
-                                <option value="Cá nhân, pháp nhân được ủy quyền hợp pháp">Cá nhân, pháp nhân được ủy
-                                    quyền hợp pháp</option>
-                            </select>
+                        <!-- Ngày sinh: chỉ hiển thị với Cá nhân -->
+                        <div class="form-group nyc-canhan-only" style="margin-bottom: 0;">
+                            <span class="form-label">Ngày sinh<span class="required">*</span><span
+                                    class="verdict-sub-label"
+                                    style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối
+                                    chiếu theo bản án đính kèm)</span></span>
+                            <input type="text" class="form-control" id="claimNYCBirth" placeholder="dd/mm/yyyy">
+                            <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
 
-                        <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
+                        <!-- Tổ chức: Mã số tổ chức, người đại diện theo pháp luật -->
+                        <div class="form-group nyc-tochuc-only" style="margin-bottom: 0; display: none;">
+                            <span class="form-label">Mã số tổ chức</span>
+                            <input type="text" class="form-control" id="claimNYCOrgCode" placeholder="Mã số doanh nghiệp / mã số thuế / mã số khác..." oninput="toggleNycOrgDocRequired()">
+                        </div>
+                        <div class="grid-2 nyc-tochuc-only" style="gap: 12px; margin-bottom: 0; display: none;">
                             <div class="form-group" style="margin-bottom: 0;">
-                                <span class="form-label">Giới tính<span class="required">*</span></span>
-                                <select class="form-control" id="claimNYCGender">
-                                    <option value="Nam">Nam</option>
-                                    <option value="Nữ">Nữ</option>
-                                </select>
+                                <span class="form-label">Họ và tên người đại diện theo pháp luật<span class="required">*</span></span>
+                                <input type="text" class="form-control" id="claimNYCRepName" placeholder="Nhập họ và tên người đại diện...">
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
-                                <span class="form-label">Ngày tháng năm sinh<span class="required">*</span><span
-                                        class="verdict-sub-label"
-                                        style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối
-                                        chiếu theo bản án đính kèm)</span></span>
-                                <input type="text" class="form-control" id="claimNYCBirth" placeholder="dd/mm/yyyy">
+                                <span class="form-label">Chức vụ người đại diện<span class="required">*</span></span>
+                                <input type="text" class="form-control" id="claimNYCRepPosition" placeholder="Nhập chức vụ...">
                                 <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                         </div>
 
-                        <!-- Trạng thái người bị thiệt hại (căn cứ Điều 57.6) -->
-                        <div class="form-group" style="margin-bottom: 0;">
+                        <!-- Trạng thái người bị thiệt hại (căn cứ Điều 57.6): áp dụng với người bị thiệt hại là cá nhân -->
+                        <div class="form-group" id="claimVictimAliveGroup" style="margin-bottom: 0;">
                             <span class="form-label">Trạng thái người bị thiệt hại <span class="required">*</span><span
                                     class="verdict-sub-label"
                                     style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối
@@ -2046,13 +2067,13 @@
 
                         <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
                             <div class="form-group" style="margin-bottom: 0;">
-                                <span class="form-label">Số điện thoại liên hệ<span class="required">*</span></span>
+                                <span class="form-label">Số điện thoại<span class="required">*</span></span>
                                 <input type="text" class="form-control" id="claimNYCPhone"
                                     placeholder="Nhập số điện thoại...">
                                 <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
-                                <span class="form-label">Thư điện tử (Email)</span>
+                                <span class="form-label">Email</span>
                                 <input type="email" class="form-control" id="claimNYCEmail" placeholder="Nhập email...">
 
                             </div>
@@ -2070,7 +2091,26 @@
                                 2: Bổ sung ngoài bản án)</span>
                         </div>
 
-                        <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
+                        <!-- Tổ chức: Giấy tờ thành lập/đăng ký (bắt buộc khi không có Mã số tổ chức) -->
+                        <div class="form-group nyc-tochuc-only" style="margin-bottom: 0; display: none;">
+                            <span class="form-label">Số giấy tờ thành lập/đăng ký<span class="required nyc-orgdoc-req">*</span></span>
+                            <input type="text" class="form-control" id="claimNYCOrgDocNo" placeholder="Nhập số giấy tờ thành lập/đăng ký...">
+                            <div class="error-message">Đây là trường bắt buộc khi không có Mã số tổ chức</div>
+                        </div>
+                        <div class="grid-2 nyc-tochuc-only" style="gap: 12px; margin-bottom: 0; display: none;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Ngày cấp<span class="required nyc-orgdoc-req">*</span></span>
+                                <input type="text" class="form-control" id="claimNYCOrgDocDate" placeholder="dd/mm/yyyy">
+                                <div class="error-message">Đây là trường bắt buộc khi không có Mã số tổ chức</div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Nơi cấp<span class="required nyc-orgdoc-req">*</span></span>
+                                <input type="text" class="form-control" id="claimNYCOrgDocPlace" placeholder="Nhập nơi cấp...">
+                                <div class="error-message">Đây là trường bắt buộc khi không có Mã số tổ chức</div>
+                            </div>
+                        </div>
+
+                        <div class="grid-2 nyc-canhan-only" style="gap: 12px; margin-bottom: 0;">
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Loại giấy tờ thân nhân<span class="required">*</span></span>
                                 <select class="form-control" id="claimNYCCardType">
@@ -2087,7 +2127,7 @@
                             </div>
                         </div>
 
-                        <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
+                        <div class="grid-2 nyc-canhan-only" style="gap: 12px; margin-bottom: 0;">
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Ngày cấp<span class="required">*</span></span>
                                 <input type="text" class="form-control" id="claimNYCCardDate" placeholder="dd/mm/yyyy">
@@ -2131,12 +2171,18 @@
                         </div>
 
                         <div class="form-group" style="margin-bottom: 0;">
+                            <span class="form-label">Phường / Xã<span class="required">*</span></span>
+                            <input type="text" class="form-control" id="claimNYCWard" placeholder="Nhập phường/xã...">
+                            <div class="error-message">Đây là trường bắt buộc</div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Địa chỉ chi tiết<span class="required">*</span><span
                                     class="verdict-sub-label"
                                     style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối
                                     chiếu theo bản án đính kèm)</span></span>
                             <input type="text" class="form-control" id="claimNYCAddress"
-                                placeholder="Nhập địa chỉ nhà, tên đường, phường/xã...">
+                                placeholder="Nhập số nhà, tên đường, thôn/tổ dân phố...">
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
                     </div>
@@ -2144,11 +2190,23 @@
 
                 <!-- THÔNG TIN NGƯỜI BỊ THIỆT HẠI: chỉ hiển thị khi Tư cách người yêu cầu khác "Người bị thiệt hại" -->
                 <div id="claimNbthBlock" style="display: none;">
-                    <div
+                    <div id="claimNbthBlockTitle"
                         style="font-size: 13.5px; font-weight: 700; color: #334155; border-bottom: 2px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 16px;">
                         THÔNG TIN NGƯỜI BỊ THIỆT HẠI
                     </div>
-                    <div class="grid-2" style="gap: 24px; align-items: stretch; margin-bottom: 20px;">
+                    <!-- Tư cách = Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại: khối Tổ chức bị thiệt hại -->
+                    <div id="claimNbthOrgBlock" class="grid-2" style="gap: 12px 24px; margin-bottom: 20px; display: none; background: #f8fafc; padding: 20px; border-radius: var(--border-radius-lg); border: 1px solid var(--border-color);">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <span class="form-label">Tên tổ chức bị thiệt hại<span class="required">*</span></span>
+                            <input type="text" class="form-control" id="claimNbthOrgName" placeholder="Nhập tên tổ chức bị thiệt hại..." oninput="this.classList.remove('is-invalid'); this.closest('.form-group').querySelector('.error-message').style.display='none';">
+                            <div class="error-message">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <span class="form-label">Mã số tổ chức</span>
+                            <input type="text" class="form-control" id="claimNbthOrgCode" placeholder="Mã số doanh nghiệp / mã số thuế / mã số khác...">
+                        </div>
+                    </div>
+                    <div id="claimNbthPersonBlock" class="grid-2" style="gap: 24px; align-items: stretch; margin-bottom: 20px;">
                         <div
                             style="background: #f8fafc; padding: 20px; border-radius: var(--border-radius-lg); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 14px; height: 100%; box-sizing: border-box;">
                             <div
@@ -2160,27 +2218,18 @@
                                 <input type="text" class="form-control" id="claimNbthName" placeholder="Nhập họ và tên..." oninput="this.classList.remove('is-invalid'); this.closest('.form-group').querySelector('.error-message').style.display='none';">
                                 <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
-                            <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
-                                <div class="form-group" style="margin-bottom: 0;">
-                                    <span class="form-label">Giới tính</span>
-                                    <select class="form-control" id="claimNbthGender">
-                                        <option value="Nam">Nam</option>
-                                        <option value="Nữ">Nữ</option>
-                                    </select>
-                                </div>
-                                <div class="form-group" style="margin-bottom: 0;">
-                                    <span class="form-label">Ngày tháng năm sinh<span class="required">*</span></span>
-                                    <input type="text" class="form-control" id="claimNbthBirth" placeholder="dd/mm/yyyy" oninput="this.classList.remove('is-invalid'); this.closest('.form-group').querySelector('.error-message').style.display='none';" onchange="this.classList.remove('is-invalid'); this.closest('.form-group').querySelector('.error-message').style.display='none';">
-                                    <div class="error-message">Đây là trường bắt buộc</div>
-                                </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Ngày sinh<span class="required">*</span></span>
+                                <input type="text" class="form-control" id="claimNbthBirth" placeholder="dd/mm/yyyy" oninput="this.classList.remove('is-invalid'); this.closest('.form-group').querySelector('.error-message').style.display='none';" onchange="this.classList.remove('is-invalid'); this.closest('.form-group').querySelector('.error-message').style.display='none';">
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
                                 <div class="form-group" style="margin-bottom: 0;">
-                                    <span class="form-label">Số điện thoại liên hệ</span>
+                                    <span class="form-label">Số điện thoại</span>
                                     <input type="text" class="form-control" id="claimNbthPhone" placeholder="Nhập số điện thoại...">
                                 </div>
                                 <div class="form-group" style="margin-bottom: 0;">
-                                    <span class="form-label">Thư điện tử (Email)</span>
+                                    <span class="form-label">Email</span>
                                     <input type="email" class="form-control" id="claimNbthEmail" placeholder="Nhập email...">
                                 </div>
                             </div>
@@ -9091,7 +9140,7 @@
             const endIdx = Math.min(startIdx + claimsPageSize, total);
 
             if (total === 0) {
-                tbody.innerHTML = `<tr><td colspan="${showActionCol ? 12 : 11}" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy vụ việc nào phù hợp</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="${showActionCol ? 13 : 12}" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy vụ việc nào phù hợp</td></tr>`;
                 document.getElementById('claimsCurrentRange').innerText = "0-0";
                 return;
             }
@@ -9123,6 +9172,7 @@
                     <td style="text-align:center;">${startIdx + index + 1}</td>
                     <td style="text-align:center;"><strong>${item.code}</strong></td>
                     <td><strong>${getClaimRequesterName(item)}</strong></td>
+                    <td>${ycEsc(getClaimVictimName(item))}</td>
                     <td title="${item.hanhVi}">${shortenedHanhVi}</td>
                     <td style="font-size:12px; color:var(--text-muted);">${getFieldGroupName(item.fieldGroup)}</td>
                     <td style="font-size:12px; color:var(--text-muted);">${item.agency || "Chưa phân công"}</td>
