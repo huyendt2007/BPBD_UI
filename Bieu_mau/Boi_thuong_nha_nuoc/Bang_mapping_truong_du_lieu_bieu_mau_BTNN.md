@@ -87,7 +87,7 @@
 - **Tên tệp template**: `Mau_02_BTNN_Template.docx`
 - **Mục đích**: Cơ quan giải quyết bồi thường lập và giao/gửi cho người yêu cầu bồi thường để xác nhận thời điểm và thành phần hồ sơ đã tiếp nhận.
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Tiếp nhận hồ sơ > Chi tiết hồ sơ tiếp nhận (hoặc Danh sách hồ sơ / Tiếp nhận hồ sơ) > Thao tác "In Phiếu tiếp nhận"*.
-- **Quy tắc đặt tên file tải về**: `Mau_02_BTNN_Giay_tiep_nhan_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_02_BTNN_Giay_tiep_nhan_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 02/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -107,7 +107,7 @@
 - **Tên tệp template**: `Mau_03_BTNN_Template.docx`
 - **Mục đích**: Thông báo cho người yêu cầu bồi thường biết các tài liệu, giấy tờ còn thiếu cần phải bổ sung trong thời hạn 15 ngày làm việc theo quy định tại khoản 3 Điều 16 Nghị định hướng dẫn.
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Thụ lý hồ sơ > Thao tác "Yêu cầu bổ sung hồ sơ"*.
-- **Quy tắc đặt tên file tải về**: `Mau_03_BTNN_Thong_bao_bo_sung_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_03_BTNN_Thong_bao_bo_sung_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 03/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -126,7 +126,7 @@
 - **Tên tệp template**: `Mau_04_BTNN_Template.docx`
 - **Mục đích**: Thông báo chính thức cho người yêu cầu về việc cơ quan có thẩm quyền thụ lý hồ sơ (đủ điều kiện) hoặc không thụ lý hồ sơ (không đủ điều kiện, kèm lý do và trả lại hồ sơ).
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Thụ lý hồ sơ > Thao tác "Thụ lý hồ sơ" HOẶC "Không thụ lý hồ sơ"*.
-- **Quy tắc đặt tên file tải về**: `Mau_04_BTNN_Thong_bao_thu_ly_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_04_BTNN_Thong_bao_thu_ly_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 04/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -145,7 +145,7 @@
 - **Tên tệp template**: `Mau_05_BTNN_Template.docx`
 - **Mục đích**: Thông báo cho người yêu cầu biết việc cơ quan GQBT dừng giải quyết yêu cầu bồi thường và trả lại hồ sơ hoặc chuyển hồ sơ đến cơ quan có thẩm quyền theo khoản 6 Điều 43 Luật TNBTCNN (sửa đổi 2026).
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác "Dừng giải quyết bồi thường"*.
-- **Quy tắc đặt tên file tải về**: `Mau_05_BTNN_Thong_bao_dung_giai_quyet_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_05_BTNN_Thong_bao_dung_giai_quyet_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 05/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -166,7 +166,7 @@
 - **Tên tệp template**: `Mau_06_BTNN_Template.docx`
 - **Mục đích**: Thủ trưởng cơ quan giải quyết bồi thường ban hành quyết định phân công công chức/cán bộ trực tiếp thụ lý, giải quyết vụ việc bồi thường theo khoản 1 Điều 43 Luật TNBTCNN.
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Thụ lý hồ sơ > Thao tác "Phân công người giải quyết"*.
-- **Quy tắc đặt tên file tải về**: `Mau_06_BTNN_Quyet_dinh_cu_nguoi_GQBT_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_06_BTNN_Quyet_dinh_cu_nguoi_GQBT_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 06/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -185,7 +185,7 @@
 - **Tên tệp template**: `Mau_07_BTNN_Template.docx`
 - **Mục đích**: Quyết định tạm ứng một phần kinh phí bồi thường đối với các thiệt hại về tính mạng, sức khỏe, tài sản hoặc thiệt hại cấp bách theo quy định tại Điều 44 Luật TNBTCNN.
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác "Lập quyết định tạm ứng"*.
-- **Quy tắc đặt tên file tải về**: `Mau_07_BTNN_Quyet_dinh_tam_ung_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_07_BTNN_Quyet_dinh_tam_ung_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 07/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -209,7 +209,7 @@
 - **Tên tệp template**: `Mau_08_BTNN_Template.docx`
 - **Mục đích**: Gửi các cơ quan, tổ chức, cá nhân có liên quan yêu cầu cung cấp hồ sơ, tài liệu, số liệu kế toán hoặc chứng cứ phục vụ việc xác minh các khoản thiệt hại theo Điều 45 Luật TNBTCNN.
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Xác minh thiệt hại > Thao tác "Yêu cầu cung cấp tài liệu"*.
-- **Quy tắc đặt tên file tải về**: `Mau_08_BTNN_Thong_bao_yeu_cau_tai_lieu_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_08_BTNN_Thong_bao_yeu_cau_tai_lieu_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 08/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -230,7 +230,7 @@
 - **Tên tệp template**: `Mau_18_BTNN_Template.docx`
 - **Mục đích**: Quyết định giải quyết bồi thường chính thức của cơ quan giải quyết bồi thường sau khi kết thúc thương lượng hoặc theo các trường hợp quy định tại khoản 1 Điều 47 Luật TNBTCNN.
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thương lượng bồi thường > Thao tác "Lập quyết định giải quyết bồi thường"*.
-- **Quy tắc đặt tên file tải về**: `Mau_18_BTNN_Quyet_dinh_giai_quyet_BTNN_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_18_BTNN_Quyet_dinh_giai_quyet_BTNN_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 18/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -261,7 +261,7 @@
 - **Tên tệp template**: `Mau_20_BTNN_Template.docx`
 - **Mục đích**: Hủy quyết định giải quyết bồi thường đã ban hành khi có một trong các căn cứ theo Điều 48 Luật TNBTCNN (để đình chỉ giải quyết hoặc giải quyết lại vụ việc).
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác "Hủy quyết định giải quyết bồi thường"*.
-- **Quy tắc đặt tên file tải về**: `Mau_20_BTNN_Quyet_dinh_huy_QDGQBT_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_20_BTNN_Quyet_dinh_huy_QDGQBT_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 20/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -284,7 +284,7 @@
 - **Tên tệp template**: `Mau_21_BTNN_Template.docx`
 - **Mục đích**: Sửa đổi, bổ sung lỗi kỹ thuật, sai sót số liệu, tài khoản ngân hàng hoặc nội dung câu chữ trong Quyết định GQBT mà không làm thay đổi bản chất vụ việc.
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác "Sửa chữa, bổ sung quyết định"*.
-- **Quy tắc đặt tên file tải về**: `Mau_21_BTNN_Quyet_dinh_sua_chua_bo_sung_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_21_BTNN_Quyet_dinh_sua_chua_bo_sung_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 21/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -303,7 +303,7 @@
 - **Tên tệp template**: `Mau_22_BTNN_Template.docx`
 - **Mục đích**: Hoãn giải quyết bồi thường khi phát sinh các sự kiện theo quy định tại khoản 1 Điều 49 Luật TNBTCNN (người yêu cầu ốm nặng, sự kiện bất khả kháng hoặc trở ngại khách quan).
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác "Hoãn giải quyết bồi thường"*.
-- **Quy tắc đặt tên file tải về**: `Mau_22_BTNN_Quyet_dinh_hoan_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_22_BTNN_Quyet_dinh_hoan_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 22/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -323,7 +323,7 @@
 - **Tên tệp template**: `Mau_23_BTNN_Template.docx`
 - **Mục đích**: Ban hành quyết định tiếp tục giải quyết bồi thường khi lý do hoãn quy định tại Điều 49 không còn, thời hạn giải quyết tiếp tục được tính.
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác "Tiếp tục giải quyết bồi thường"*.
-- **Quy tắc đặt tên file tải về**: `Mau_23_BTNN_Quyet_dinh_tiep_tuc_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_23_BTNN_Quyet_dinh_tiep_tuc_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 23/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -341,7 +341,7 @@
 - **Tên tệp template**: `Mau_24_BTNN_Template.docx`
 - **Mục đích**: Tạm dừng việc giải quyết yêu cầu bồi thường khi phát sinh các trường hợp theo quy định tại Điều 50 Luật TNBTCNN (chờ kết quả xác minh cơ quan khác, xem xét lại văn bản làm căn cứ...).
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác "Tạm đình chỉ giải quyết"*.
-- **Quy tắc đặt tên file tải về**: `Mau_24_BTNN_Quyet_dinh_tam_dinh_chi_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_24_BTNN_Quyet_dinh_tam_dinh_chi_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 24/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -359,7 +359,7 @@
 - **Tên tệp template**: `Mau_25_BTNN_Template.docx`
 - **Mục đích**: Chấm dứt việc giải quyết bồi thường theo Điều 51 Luật TNBTCNN (người yêu cầu rút đơn, người yêu cầu chết không có người thừa kế, văn bản căn cứ bị hủy...). Quyết định đồng thời thu hồi khoản kinh phí đã tạm ứng (nếu có).
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác "Đình chỉ giải quyết"*.
-- **Quy tắc đặt tên file tải về**: `Mau_25_BTNN_Quyet_dinh_dinh_chi_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_25_BTNN_Quyet_dinh_dinh_chi_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 25/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -377,7 +377,7 @@
 - **Tên tệp template**: `Mau_26_BTNN_Template.docx`
 - **Mục đích**: Thông báo cho người bị thiệt hại biết kế hoạch tổ chức trực tiếp xin lỗi, cải chính công khai hoặc đăng báo cải chính theo Điều 57 Luật TNBTCNN (sửa đổi 2026).
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Phục hồi danh dự > Thao tác "Lập kế hoạch phục hồi danh dự"*.
-- **Quy tắc đặt tên file tải về**: `Mau_26_BTNN_Thong_bao_phuc_hoi_danh_du_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_26_BTNN_Thong_bao_phuc_hoi_danh_du_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 26/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -395,7 +395,7 @@
 - **Tên tệp template**: `Mau_32_BTNN_Template.docx`
 - **Mục đích**: Thông báo cho người được bồi thường biết về thời gian, địa điểm, số tiền và các giấy tờ cần mang theo để nhận tiền chi trả bồi thường theo Điều 62 Luật TNBTCNN.
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Chi trả tiền bồi thường > Thao tác "Lập Thông báo chi trả"*.
-- **Quy tắc đặt tên file tải về**: `Mau_32_BTNN_Thong_bao_chi_tra_tien_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_32_BTNN_Thong_bao_chi_tra_tien_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 32/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -418,7 +418,7 @@
 - **Tên tệp template**: `Mau_33_BTNN_Template.docx`
 - **Mục đích**: Quyết định thành lập Hội đồng xem xét trách nhiệm hoàn trả đối với người thi hành công vụ gây thiệt hại sau khi Nhà nước đã hoàn thành chi trả tiền bồi thường theo Điều 66 Luật TNBTCNN.
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Thao tác "Thành lập Hội đồng hoàn trả"*.
-- **Quy tắc đặt tên file tải về**: `Mau_33_BTNN_Quyet_dinh_thanh_lap_hoi_dong_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_33_BTNN_Quyet_dinh_thanh_lap_hoi_dong_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 33/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -437,7 +437,7 @@
 - **Tên tệp template**: `Mau_34_BTNN_Template.docx`
 - **Mục đích**: Ghi lại toàn bộ diễn biến cuộc họp, ý kiến của các thành viên Hội đồng, lời trình bày của người thi hành công vụ và kết luận kiến nghị của Hội đồng về trách nhiệm hoàn trả.
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Cuộc họp Hội đồng > Thao tác "Lập Biên bản cuộc họp"*.
-- **Quy tắc đặt tên file tải về**: `Mau_34_BTNN_Bien_ban_hop_hoi_dong_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_34_BTNN_Bien_ban_hop_hoi_dong_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 34/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -463,7 +463,7 @@
 - **Tên tệp template**: `Mau_35_BTNN_Template.docx`
 - **Mục đích**: Hội đồng xem xét trách nhiệm hoàn trả gửi văn bản kiến nghị lên Thủ trưởng cơ quan có thẩm quyền để ban hành Quyết định hoàn trả chính thức theo Điều 66 Luật TNBTCNN.
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Báo cáo kiến nghị > Thao tác "Lập Văn bản kiến nghị"*.
-- **Quy tắc đặt tên file tải về**: `Mau_35_BTNN_Van_ban_kien_nghi_hoan_tra_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_35_BTNN_Van_ban_kien_nghi_hoan_tra_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 35/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -484,7 +484,7 @@
 - **Tên tệp template**: `Mau_36_BTNN_Template.docx`
 - **Mục đích**: Quyết định của Thủ trưởng cơ quan có thẩm quyền buộc người thi hành công vụ gây thiệt hại phải hoàn trả số tiền bồi thường vào ngân sách nhà nước theo Điều 65, 66 Luật TNBTCNN.
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Quyết định hoàn trả > Thao tác "Ban hành Quyết định hoàn trả"*.
-- **Quy tắc đặt tên file tải về**: `Mau_36_BTNN_Quyet_dinh_hoan_tra_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_36_BTNN_Quyet_dinh_hoan_tra_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 36/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -509,7 +509,7 @@
 - **Tên tệp template**: `Mau_37_BTNN_Template.docx`
 - **Mục đích**: Giảm một phần số tiền phải hoàn trả cho người thi hành công vụ khi đáp ứng các điều kiện theo khoản 4 Điều 65 Luật TNBTCNN (lỗi vô ý và hoàn cảnh kinh tế gia đình đặc biệt khó khăn).
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Xem xét giảm hoàn trả > Thao tác "Lập Quyết định giảm mức hoàn trả"*.
-- **Quy tắc đặt tên file tải về**: `Mau_37_BTNN_Quyet_dinh_giam_muc_hoan_tra_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_37_BTNN_Quyet_dinh_giam_muc_hoan_tra_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 37/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -536,7 +536,7 @@
 - **Tên tệp template**: `Mau_38_BTNN_Template.docx`
 - **Mục đích**: Miễn toàn bộ trách nhiệm hoàn trả cho người thi hành công vụ theo khoản 4a Điều 65 Luật TNBTCNN (sửa đổi 2026) khi người thi hành công vụ chết, mất tích hoặc hoàn cảnh đặc biệt hiểm nghèo.
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Xem xét miễn hoàn trả > Thao tác "Lập Quyết định miễn hoàn trả"*.
-- **Quy tắc đặt tên file tải về**: `Mau_38_BTNN_Quyet_dinh_mien_hoan_tra_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_38_BTNN_Quyet_dinh_mien_hoan_tra_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 38/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
@@ -559,7 +559,7 @@
 - **Tên tệp template**: `Mau_39_BTNN_Template.docx`
 - **Mục đích**: Đình chỉ việc xem xét trách nhiệm hoàn trả theo khoản 2 Điều 69 Luật TNBTCNN (sửa đổi 2026) khi văn bản làm căn cứ yêu cầu bồi thường đã bị cơ quan nhà nước có thẩm quyền thu hồi, sửa đổi, hủy bỏ hoặc không còn là căn cứ bồi thường.
 - **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Xem xét đình chỉ > Thao tác "Lập Quyết định đình chỉ xem xét hoàn trả"*.
-- **Quy tắc đặt tên file tải về**: `Mau_39_BTNN_Quyet_dinh_dinh_chi_xem_xet_hoan_tra_[MaHoSo].docx`
+- **Quy tắc đặt tên file tải về**: `Mau_39_BTNN_Quyet_dinh_dinh_chi_xem_xet_hoan_tra_[Mã vụ việc].docx`
 
 #### Bảng mapping chi tiết Mẫu 39/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |

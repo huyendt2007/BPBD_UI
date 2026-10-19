@@ -1588,7 +1588,7 @@
         let version = null;
         try { version = localStorage.getItem(KEY_SEED); } catch (e) { version = null; }
         const existing = readJson(KEY_RECORDS, null);
-        if (version === SEED_VERSION && existing && existing.length) { ensureThuLySeed(); return; }
+        if (version === SEED_VERSION && existing && existing.length) { ensureThuLySeed(); ensurePhongSeed(); return; }
         const seed = buildSeed();
         if (!existing || !existing.length || version !== SEED_VERSION) {
             writeJson(KEY_RECORDS, seed);
@@ -1609,9 +1609,77 @@
         }
         try { localStorage.setItem(KEY_SEED, SEED_VERSION); } catch (e) { /* bỏ qua */ }
         ensureThuLySeed();
+        ensurePhongSeed();
     }
     // Dữ liệu mẫu hồ sơ YCBT "Chờ thụ lý" (chờ Thủ trưởng cơ quan giải quyết bồi thường thụ lý (vai trò Lãnh đạo đơn vị)):
     // bổ sung theo mã hồ sơ, không ghi đè hồ sơ đã có
+    // Dữ liệu mẫu hồ sơ "Đang phân công" chờ Lãnh đạo Phòng phân công cán bộ:
+    // Bộ Tư pháp → Cục → Phòng Quản lý nghiệp vụ về BTNN (tpbt); Sở Tư pháp Hà Nội → Phòng Hành chính tư pháp (tp_hctp_hn)
+    // Bổ sung theo mã hồ sơ, không ghi đè hồ sơ đã có
+    const KEY_SEED_PHONG = 'btnn_wf_seed_phong_v1';
+    function ensurePhongSeed() {
+        try { if (localStorage.getItem(KEY_SEED_PHONG)) return; } catch (e) { return; }
+        const list = readJson(KEY_RECORDS, []);
+        const h = (action, userId, at, note) => ({ at, userId, userName: userId ? userName(userId) : 'Hệ thống', action, note: note || '' });
+        const routeBtp = (d1, d2, note) => ([
+            { id: 'R1', type: 'unit', fromUnitId: 'BTP-01', fromUserId: 'oanhdh', toUnitId: 'CĐK-01', note: note || 'Giao Cục xem xét, xử lý.', at: d1, state: 'Đã xử lý' },
+            { id: 'R2', type: 'unit', fromUnitId: 'CĐK-01', fromUserId: 'cuctruong', toUnitId: 'PLN-02', note: 'Giao Phòng phân công cán bộ xử lý.', at: d2, state: 'Chưa xử lý' }
+        ]);
+        const routeStp = (d1) => ([
+            { id: 'R1', type: 'unit', fromUnitId: 'STP-HN', fromUserId: 'gdso_hn', toUnitId: 'STP-HN-HCTP', note: 'Giao Phòng Hành chính tư pháp phân công cán bộ xử lý.', at: d1, state: 'Chưa xử lý' }
+        ]);
+        const base = (code, extra) => Object.assign({
+            id: 'WF-' + code, code, maVuViec: code, status: STATUS.DANG_PHAN_CONG, chuTri: null, approval: null,
+            nycRole: 'Người bị thiệt hại', nycCountry: 'Việt Nam', hinhThucNhan: 'Phương thức điện tử', vanBanCanCu: [],
+            attachedDocs: [{ name: 'Đơn yêu cầu bồi thường', file: `Don_yeu_cau_${code}.pdf` }]
+        }, extra);
+        const seeds = [
+            base('VVBT-2026-141', {
+                module: 'XD', loaiYeuCau: REQUEST_TYPE_XD, nguonHoSo: SOURCES.TIEP_NHAN, hinhThucTiepNhan: RECEIVE_METHODS.TRUC_TIEP,
+                rootUnitId: 'BTP-01', currentUnitId: 'PLN-02', createdBy: 'canbonv', receivedBy: userName('canbonv'),
+                nycName: 'Trịnh Văn Hưng', nycPhone: '0912456781', nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: 'Phường Kim Liên', nycAddressDetail: 'Số 15 ngõ 4 Phương Mai',
+                linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: 'Đề nghị xác định cơ quan giải quyết bồi thường đối với quyết định thu hồi đất đã bị hủy.',
+                date: '13/10/2026', receivedAt: '09:10 13/10/2026', routes: routeBtp('14:00 13/10/2026', '09:30 14/10/2026'),
+                history: [h('Tiếp nhận hồ sơ', 'canbonv', '09:10 13/10/2026', 'Chuyển lãnh đạo Bộ Tư pháp phân công xử lý.'), h('Chuyển đơn vị', 'oanhdh', '14:00 13/10/2026', 'Chuyển Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước phân công.'), h('Chuyển đơn vị', 'cuctruong', '09:30 14/10/2026', 'Chuyển Phòng Quản lý nghiệp vụ về bồi thường nhà nước phân công.')]
+            }),
+            base('VVBT-2026-142', {
+                module: 'YCBT', loaiYeuCau: REQUEST_TYPE_YCBT, nguonHoSo: SOURCES.DVC, hinhThucTiepNhan: RECEIVE_METHODS.MOI_TRUONG_SO,
+                rootUnitId: 'BTP-01', currentUnitId: 'PLN-02', receivedBy: userName('oanhdh'),
+                nycName: 'Lê Thị Bích Ngọc', nycPhone: '0983215647', nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: 'Phường Láng', nycAddressDetail: 'Số 8 phố Chùa Láng',
+                linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: 'Yêu cầu bồi thường thiệt hại do quyết định xử phạt vi phạm hành chính trái pháp luật.',
+                date: '15/10/2026', receivedAt: '08:20 15/10/2026', routes: routeBtp('10:00 15/10/2026', '15:15 15/10/2026'),
+                history: [h('Nhận hồ sơ từ Dịch vụ công quốc gia', '', '08:20 15/10/2026', 'Hồ sơ gửi từ Dịch vụ công quốc gia. Chờ lãnh đạo Bộ Tư pháp phân công.'), h('Chuyển đơn vị', 'oanhdh', '10:00 15/10/2026', 'Chuyển Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước phân công.'), h('Chuyển đơn vị', 'cuctruong', '15:15 15/10/2026', 'Chuyển Phòng Quản lý nghiệp vụ về bồi thường nhà nước phân công.')]
+            }),
+            base('VVBT-2026-143', {
+                module: 'YCBT', loaiYeuCau: REQUEST_TYPE_YCBT, nguonHoSo: SOURCES.TIEP_NHAN, hinhThucTiepNhan: RECEIVE_METHODS.BUU_CHINH,
+                rootUnitId: 'BTP-01', currentUnitId: 'PLN-02', createdBy: 'hatt', receivedBy: userName('hatt'),
+                nycName: 'Phan Minh Quân', nycPhone: '0976543218', nycTinhThanh: 'Thành phố Hải Phòng', nycPhuongXa: 'Phường Lê Chân', nycAddressDetail: 'Số 27 đường Hai Bà Trưng',
+                linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', hanhVi: 'Yêu cầu bồi thường do bị tạm giữ trái pháp luật.',
+                date: '16/10/2026', receivedAt: '10:40 16/10/2026', routes: routeBtp('14:30 16/10/2026', '08:45 17/10/2026'),
+                history: [h('Tiếp nhận hồ sơ', 'hatt', '10:40 16/10/2026', 'Chuyển lãnh đạo Bộ Tư pháp phân công xử lý.'), h('Chuyển đơn vị', 'oanhdh', '14:30 16/10/2026', 'Chuyển Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước phân công.'), h('Chuyển đơn vị', 'cuctruong', '08:45 17/10/2026', 'Chuyển Phòng Quản lý nghiệp vụ về bồi thường nhà nước phân công.')]
+            }),
+            base('VVBT-2026-144', {
+                module: 'XD', loaiYeuCau: REQUEST_TYPE_XD, nguonHoSo: SOURCES.TIEP_NHAN, hinhThucTiepNhan: RECEIVE_METHODS.TRUC_TIEP,
+                rootUnitId: 'STP-HN', currentUnitId: 'STP-HN-HCTP', createdBy: 'cv_hn1', receivedBy: userName('cv_hn1'),
+                nycName: 'Đinh Thị Hồng Nhung', nycPhone: '0904123987', nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: 'Phường Hoàng Mai', nycAddressDetail: 'Số 102 đường Tam Trinh',
+                linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: 'Đề nghị xác định cơ quan giải quyết bồi thường đối với việc cưỡng chế công trình trái pháp luật.',
+                date: '16/10/2026', receivedAt: '08:30 16/10/2026', routes: routeStp('11:00 16/10/2026'),
+                history: [h('Tiếp nhận hồ sơ', 'cv_hn1', '08:30 16/10/2026', 'Chuyển lãnh đạo Sở Tư pháp Thành phố Hà Nội phân công xử lý.'), h('Chuyển đơn vị', 'gdso_hn', '11:00 16/10/2026', 'Chuyển Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Hà Nội phân công.')]
+            }),
+            base('VVBT-2026-145', {
+                module: 'YCBT', loaiYeuCau: REQUEST_TYPE_YCBT, nguonHoSo: SOURCES.TIEP_NHAN, hinhThucTiepNhan: RECEIVE_METHODS.TRUC_TIEP,
+                rootUnitId: 'STP-HN', currentUnitId: 'STP-HN-HCTP', createdBy: 'cv_hn2', receivedBy: userName('cv_hn2'),
+                nycName: 'Vương Đức Thịnh', nycPhone: '0868321456', nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: 'Phường Cầu Giấy', nycAddressDetail: 'Số 6 ngõ 88 Trần Thái Tông',
+                linhVuc: 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ', hanhVi: 'Yêu cầu bồi thường do kê biên tài sản vượt quá nghĩa vụ phải thi hành.',
+                date: '17/10/2026', receivedAt: '14:10 17/10/2026', routes: routeStp('16:00 17/10/2026'),
+                history: [h('Tiếp nhận hồ sơ', 'cv_hn2', '14:10 17/10/2026', 'Chuyển lãnh đạo Sở Tư pháp Thành phố Hà Nội phân công xử lý.'), h('Chuyển đơn vị', 'gdso_hn', '16:00 17/10/2026', 'Chuyển Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Hà Nội phân công.')]
+            })
+        ];
+        const codes = new Set(list.map(r => r.code));
+        seeds.forEach(s => { if (!codes.has(s.code)) list.unshift(s); });
+        writeJson(KEY_RECORDS, list);
+        try { localStorage.setItem(KEY_SEED_PHONG, '1'); } catch (e) { /* bỏ qua */ }
+    }
     const KEY_SEED_THULY = 'btnn_wf_seed_thuly_v2';
     function ensureThuLySeed() {
         try { if (localStorage.getItem(KEY_SEED_THULY)) return; } catch (e) { return; }

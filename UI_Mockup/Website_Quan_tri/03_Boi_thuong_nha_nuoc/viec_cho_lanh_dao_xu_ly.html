@@ -147,7 +147,7 @@
             </div>
             <div class="wf-modal-body">
                 <div class="muted" id="aContext" style="margin-bottom:10px;"></div>
-                <span class="form-label">Hướng xử lý</span>
+                <span class="form-label">Hình thức phân công</span>
                 <div class="muted" id="aModeRow" style="margin-bottom:10px;"></div>
                 <div id="aUnitBlock" class="form-group">
                     <span class="form-label">Đơn vị nhận<span class="required">*</span></span>
@@ -283,7 +283,7 @@
 
     <div id="toast" class="toast-notif"></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261019b"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261019c"></script>
     <script>
         const WF = BTNN_WF;
         const WT = WF.WORK_TYPES;
@@ -530,7 +530,7 @@
         }
 
         // ---------- Phân công ----------
-        let assignMode = ''; // hướng xử lý theo cấu hình luồng của đơn vị đang phân công
+        let assignMode = ''; // hình thức phân công theo cấu hình luồng của đơn vị đang phân công
         function openAssign(code) {
             const rec = WF.getRecord(code);
             const me = WF.getCurrentUserId();
@@ -539,10 +539,10 @@
             actingCode = code;
             const node = WF.getNodeConfig(rec.currentUnitId, WF.flowTypeOf(rec)) || {};
             document.getElementById('aCode').textContent = code;
-            document.getElementById('aContext').textContent = `Đơn vị đang phân công: ${WF.unitName(rec.currentUnitId)} - Người yêu cầu: ${rec.nycName || '--'}`;
-            // Mỗi đơn vị chỉ có 01 hướng xử lý theo cấu hình luồng: Chuyển đơn vị hoặc Phân công cán bộ
+            document.getElementById('aContext').textContent = `Đơn vị đang phân công: ${WF.unitName(rec.currentUnitId)}`;
+            // Mỗi đơn vị chỉ có 01 hình thức phân công theo cấu hình luồng: Chuyển đơn vị hoặc Phân công cán bộ
             assignMode = node.allowUnit && (node.units || []).length ? 'unit' : node.allowOfficer && (node.officers || []).length ? 'officer' : '';
-            document.getElementById('aModeRow').innerHTML = assignMode === 'unit' ? 'Chuyển đơn vị' : assignMode === 'officer' ? 'Phân công cán bộ' : 'Đơn vị chưa được cấu hình hướng xử lý.';
+            document.getElementById('aModeRow').innerHTML = assignMode === 'unit' ? 'Chuyển đơn vị' : assignMode === 'officer' ? 'Phân công cán bộ' : 'Đơn vị chưa được cấu hình luồng xử lý.';
             document.getElementById('aUnit').innerHTML = `<option value="">Chọn đơn vị nhận...</option>` + (assignMode === 'unit' ? node.units : []).map(u => `<option value="${esc(u)}">${esc(WF.unitName(u))}</option>`).join('');
             document.getElementById('aChuTri').innerHTML = `<option value="">Chọn cán bộ chủ trì...</option>` + (assignMode === 'officer' ? node.officers : []).map(u => `<option value="${esc(u)}">${esc(WF.userLabel(u))}</option>`).join('');
             document.getElementById('aNote').value = '';

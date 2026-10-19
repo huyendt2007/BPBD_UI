@@ -263,7 +263,7 @@
             <!-- 02 tab: Chờ xử lý / Đã xử lý theo người dùng đang đăng nhập (Cán bộ tiếp nhận / Lãnh đạo phân công) -->
             <div class="tn-tabs-card">
                 <button type="button" class="tn-tab active" data-tab="pending" onclick="switchReceptionTab('pending')"><i class="fa-solid fa-list-check"></i> Chờ xử lý <span class="tn-tab-count" id="tnCntPending">0</span></button>
-                <button type="button" class="tn-tab" data-tab="done" onclick="switchReceptionTab('done')"><i class="fa-solid fa-box-archive"></i> Đã xử lý <span class="tn-tab-count" id="tnCntDone">0</span></button>
+                <button type="button" class="tn-tab" data-tab="done" onclick="switchReceptionTab('done')"><i class="fa-solid fa-box-archive"></i> Đã xử lý</button>
             </div>
 
             <div class="filter-card">
@@ -646,8 +646,8 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261019b"></script>
-    <script src="btnn_lanh_dao_actions.js?v=20261019b"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261019c"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261019c"></script>
     <script>
         // Người dùng đăng nhập (giả lập) - cán bộ tiếp nhận
         const CURRENT_USER = BTNN_WF.getCurrentUser();
@@ -1223,13 +1223,12 @@
             const allowedTypes = BTNN_WF.getRequestTypesForUser(me);
             const inReception = status => RECEPTION_STATUSES.includes(status || "Chờ phân công");
             if (tab === "pending") {
-                if (isLeader) {
-                    // Lãnh đạo: hồ sơ Chờ phân công / Đang phân công mà Lãnh đạo thuộc Nhóm lãnh đạo của đơn vị đang phân công
-                    records.filter(rec => BTNN_WF.canAssign(rec, me)).forEach(rec => add(rowFromRecord(rec)));
-                } else {
-                    getReceptionRows().filter(item => inReception(item.status)).forEach(add);
-                    records.filter(rec => isMyReceptionRecord(rec) && inReception(rec.status)).forEach(rec => add(rowFromRecord(rec)));
-                }
+                // Tab Chờ xử lý: dùng chung hàm đếm với badge menu "Tiếp nhận hồ sơ" (BTNN_WF.receptionPendingItems)
+                // - Lãnh đạo: hồ sơ Chờ phân công / Đang phân công mà Lãnh đạo thuộc Nhóm lãnh đạo của đơn vị đang phân công
+                // - Cán bộ tiếp nhận: hồ sơ mình tiếp nhận (Nguồn Tiếp nhận mới) còn Chờ phân công / Đang phân công
+                return BTNN_WF.receptionPendingItems(me, claimsList)
+                    .map(x => x.claim || rowFromRecord(x.rec))
+                    .sort((a, b) => getDateTimeSort(b.receivedAt || b.date) - getDateTimeSort(a.receivedAt || a.date));
             } else {
                 if (isLeader) {
                     records.filter(rec => !BTNN_WF.canAssign(rec, me) && BTNN_LD.leaderActedOn(rec, me, /Chuyển đơn vị|Phân công cán bộ/)).forEach(rec => add(rowFromRecord(rec)));
@@ -1243,8 +1242,15 @@
                 .sort((a, b) => getDateTimeSort(b.receivedAt || b.date) - getDateTimeSort(a.receivedAt || a.date));
         }
         function updateReceptionTabCounts() {
-            document.getElementById("tnCntPending").textContent = getTabRows("pending").length;
-            document.getElementById("tnCntDone").textContent = getTabRows("done").length;
+            // Chỉ tab Chờ xử lý có badge số lượng; tab Đã xử lý không hiển thị badge
+            const pendingCount = getTabRows("pending").length;
+            document.getElementById("tnCntPending").textContent = pendingCount;
+            // Đồng bộ badge menu trái "Tiếp nhận hồ sơ" tại trang chủ
+            try {
+                if (window.parent && window.parent !== window) {
+                    window.parent.postMessage({ type: "btnn:receptionPending", userId: CURRENT_USER.id, count: pendingCount }, "*");
+                }
+            } catch (e) { /* bỏ qua */ }
         }
         function openAssignFromList(code) { BTNN_LD.openAssign(code, afterLeaderAction); }
         function recallFromList(code) { BTNN_LD.confirmRecall(code, afterLeaderAction); }

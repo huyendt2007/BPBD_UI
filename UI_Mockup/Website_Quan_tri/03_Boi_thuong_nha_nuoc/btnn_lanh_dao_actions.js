@@ -43,7 +43,7 @@
         <div class="ld-modal-header"><h3><i class="fa-solid fa-diagram-project"></i> Phân công xử lý hồ sơ <span id="ldACode"></span></h3><span class="ld-close" data-close="ldAssignOverlay">&times;</span></div>
         <div class="ld-modal-body">
             <div class="ld-muted" id="ldAContext" style="margin-bottom:10px;"></div>
-            <div class="ld-muted" id="ldANoConfig" style="display:none;">Đơn vị chưa được cấu hình hướng xử lý.</div>
+            <div class="ld-muted" id="ldANoConfig" style="display:none;">Đơn vị chưa được cấu hình luồng xử lý.</div>
             <div class="ld-group" id="ldAUnitBlock"><span class="ld-label">Đơn vị nhận<span class="ld-req">*</span></span><select id="ldAUnit" class="ld-input"></select><div class="ld-err" id="ldAUnitErr">Đây là trường bắt buộc</div></div>
             <div class="ld-group" id="ldAOfficerBlock"><span class="ld-label">Cán bộ chủ trì<span class="ld-req">*</span></span><input type="text" id="ldAChuTriSearch" class="ld-input" placeholder="Tìm theo tên cán bộ..." style="margin-bottom:6px;"><select id="ldAChuTri" class="ld-input"></select><div class="ld-err" id="ldAChuTriErr">Đây là trường bắt buộc</div></div>
             <div class="ld-group"><span class="ld-label">Ý kiến chỉ đạo</span><textarea id="ldANote" class="ld-input" rows="3" placeholder="Nhập ý kiến chỉ đạo..."></textarea></div>
@@ -116,8 +116,8 @@
         acting = code;
         const node = WF.getNodeConfig(rec.currentUnitId, WF.flowTypeOf(rec)) || {};
         document.getElementById('ldACode').textContent = rec.maVuViec || code;
-        document.getElementById('ldAContext').textContent = `Đơn vị đang phân công: ${WF.unitName(rec.currentUnitId)} - Người yêu cầu: ${rec.nycName || '--'}`;
-        // Mỗi đơn vị chỉ có 01 hướng xử lý theo cấu hình luồng: Chuyển đơn vị (Đơn vị nhận) hoặc Phân công cán bộ (Cán bộ chủ trì)
+        document.getElementById('ldAContext').textContent = `Đơn vị đang phân công: ${WF.unitName(rec.currentUnitId)}`;
+        // Mỗi đơn vị chỉ có 01 hình thức phân công theo cấu hình luồng: Chuyển đơn vị (Đơn vị nhận) hoặc Phân công cán bộ (Cán bộ chủ trì)
         const canUnit = !!(node.allowUnit && (node.units || []).length);
         const canOfficer = !canUnit && !!(node.allowOfficer && (node.officers || []).length);
         document.getElementById('ldAUnitBlock').style.display = canUnit ? 'block' : 'none';

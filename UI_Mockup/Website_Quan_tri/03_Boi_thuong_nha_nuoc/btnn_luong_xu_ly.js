@@ -338,7 +338,7 @@
         const pick = ids => { const o = {}; ids.forEach(id => { if (src[id]) o[id] = JSON.parse(JSON.stringify(src[id])); }); return o; };
         return { XD_BTP: pick(flowRootIds(FLOW_TYPES.XD_BTP)), XD_STP: pick(flowRootIds(FLOW_TYPES.XD_STP)), GQ: JSON.parse(JSON.stringify(src)) };
     }
-    // Mỗi nút chỉ có 01 hướng xử lý: nút cũ bật cả Chuyển đơn vị và Phân công cán bộ -> giữ Chuyển đơn vị, bỏ hướng cán bộ
+    // Mỗi nút chỉ có 01 hình thức phân công: nút cũ bật cả Chuyển đơn vị và Phân công cán bộ -> giữ Chuyển đơn vị, bỏ Phân công cán bộ
     function normalizeFlowDirections(all) {
         let changed = false;
         Object.keys(all || {}).forEach(ft => Object.values(all[ft] || {}).forEach(tree => Object.values(tree || {}).forEach(node => {
@@ -377,7 +377,7 @@
         return node ? (node.leaders || []) : [];
     }
     function isLeaderOf(userId, unitId, ft) { return getLeaders(unitId, ft).includes(userId); }
-    // Đơn vị đã cấu hình luồng khi nút đơn vị gốc có nhóm lãnh đạo và có ít nhất một hướng xử lý (mặc định luồng Giải quyết YCBT)
+    // Đơn vị đã cấu hình luồng khi nút đơn vị gốc có nhóm lãnh đạo và có ít nhất một hình thức phân công (mặc định luồng Giải quyết YCBT)
     function isUnitConfigured(rootId, ft) {
         const node = getNodeConfig(rootId, ft);
         return !!(node && node.leaders && node.leaders.length && ((node.allowUnit && node.units && node.units.length) || (node.allowOfficer && node.officers && node.officers.length)));
@@ -1588,7 +1588,7 @@
         let version = null;
         try { version = localStorage.getItem(KEY_SEED); } catch (e) { version = null; }
         const existing = readJson(KEY_RECORDS, null);
-        if (version === SEED_VERSION && existing && existing.length) { ensureThuLySeed(); return; }
+        if (version === SEED_VERSION && existing && existing.length) { ensureThuLySeed(); ensurePhongSeed(); return; }
         const seed = buildSeed();
         if (!existing || !existing.length || version !== SEED_VERSION) {
             writeJson(KEY_RECORDS, seed);
@@ -1609,9 +1609,77 @@
         }
         try { localStorage.setItem(KEY_SEED, SEED_VERSION); } catch (e) { /* bỏ qua */ }
         ensureThuLySeed();
+        ensurePhongSeed();
     }
     // Dữ liệu mẫu hồ sơ YCBT "Chờ thụ lý" (chờ Thủ trưởng cơ quan giải quyết bồi thường thụ lý (vai trò Lãnh đạo đơn vị)):
     // bổ sung theo mã hồ sơ, không ghi đè hồ sơ đã có
+    // Dữ liệu mẫu hồ sơ "Đang phân công" chờ Lãnh đạo Phòng phân công cán bộ:
+    // Bộ Tư pháp → Cục → Phòng Quản lý nghiệp vụ về BTNN (tpbt); Sở Tư pháp Hà Nội → Phòng Hành chính tư pháp (tp_hctp_hn)
+    // Bổ sung theo mã hồ sơ, không ghi đè hồ sơ đã có
+    const KEY_SEED_PHONG = 'btnn_wf_seed_phong_v1';
+    function ensurePhongSeed() {
+        try { if (localStorage.getItem(KEY_SEED_PHONG)) return; } catch (e) { return; }
+        const list = readJson(KEY_RECORDS, []);
+        const h = (action, userId, at, note) => ({ at, userId, userName: userId ? userName(userId) : 'Hệ thống', action, note: note || '' });
+        const routeBtp = (d1, d2, note) => ([
+            { id: 'R1', type: 'unit', fromUnitId: 'BTP-01', fromUserId: 'oanhdh', toUnitId: 'CĐK-01', note: note || 'Giao Cục xem xét, xử lý.', at: d1, state: 'Đã xử lý' },
+            { id: 'R2', type: 'unit', fromUnitId: 'CĐK-01', fromUserId: 'cuctruong', toUnitId: 'PLN-02', note: 'Giao Phòng phân công cán bộ xử lý.', at: d2, state: 'Chưa xử lý' }
+        ]);
+        const routeStp = (d1) => ([
+            { id: 'R1', type: 'unit', fromUnitId: 'STP-HN', fromUserId: 'gdso_hn', toUnitId: 'STP-HN-HCTP', note: 'Giao Phòng Hành chính tư pháp phân công cán bộ xử lý.', at: d1, state: 'Chưa xử lý' }
+        ]);
+        const base = (code, extra) => Object.assign({
+            id: 'WF-' + code, code, maVuViec: code, status: STATUS.DANG_PHAN_CONG, chuTri: null, approval: null,
+            nycRole: 'Người bị thiệt hại', nycCountry: 'Việt Nam', hinhThucNhan: 'Phương thức điện tử', vanBanCanCu: [],
+            attachedDocs: [{ name: 'Đơn yêu cầu bồi thường', file: `Don_yeu_cau_${code}.pdf` }]
+        }, extra);
+        const seeds = [
+            base('VVBT-2026-141', {
+                module: 'XD', loaiYeuCau: REQUEST_TYPE_XD, nguonHoSo: SOURCES.TIEP_NHAN, hinhThucTiepNhan: RECEIVE_METHODS.TRUC_TIEP,
+                rootUnitId: 'BTP-01', currentUnitId: 'PLN-02', createdBy: 'canbonv', receivedBy: userName('canbonv'),
+                nycName: 'Trịnh Văn Hưng', nycPhone: '0912456781', nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: 'Phường Kim Liên', nycAddressDetail: 'Số 15 ngõ 4 Phương Mai',
+                linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: 'Đề nghị xác định cơ quan giải quyết bồi thường đối với quyết định thu hồi đất đã bị hủy.',
+                date: '13/10/2026', receivedAt: '09:10 13/10/2026', routes: routeBtp('14:00 13/10/2026', '09:30 14/10/2026'),
+                history: [h('Tiếp nhận hồ sơ', 'canbonv', '09:10 13/10/2026', 'Chuyển lãnh đạo Bộ Tư pháp phân công xử lý.'), h('Chuyển đơn vị', 'oanhdh', '14:00 13/10/2026', 'Chuyển Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước phân công.'), h('Chuyển đơn vị', 'cuctruong', '09:30 14/10/2026', 'Chuyển Phòng Quản lý nghiệp vụ về bồi thường nhà nước phân công.')]
+            }),
+            base('VVBT-2026-142', {
+                module: 'YCBT', loaiYeuCau: REQUEST_TYPE_YCBT, nguonHoSo: SOURCES.DVC, hinhThucTiepNhan: RECEIVE_METHODS.MOI_TRUONG_SO,
+                rootUnitId: 'BTP-01', currentUnitId: 'PLN-02', receivedBy: userName('oanhdh'),
+                nycName: 'Lê Thị Bích Ngọc', nycPhone: '0983215647', nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: 'Phường Láng', nycAddressDetail: 'Số 8 phố Chùa Láng',
+                linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: 'Yêu cầu bồi thường thiệt hại do quyết định xử phạt vi phạm hành chính trái pháp luật.',
+                date: '15/10/2026', receivedAt: '08:20 15/10/2026', routes: routeBtp('10:00 15/10/2026', '15:15 15/10/2026'),
+                history: [h('Nhận hồ sơ từ Dịch vụ công quốc gia', '', '08:20 15/10/2026', 'Hồ sơ gửi từ Dịch vụ công quốc gia. Chờ lãnh đạo Bộ Tư pháp phân công.'), h('Chuyển đơn vị', 'oanhdh', '10:00 15/10/2026', 'Chuyển Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước phân công.'), h('Chuyển đơn vị', 'cuctruong', '15:15 15/10/2026', 'Chuyển Phòng Quản lý nghiệp vụ về bồi thường nhà nước phân công.')]
+            }),
+            base('VVBT-2026-143', {
+                module: 'YCBT', loaiYeuCau: REQUEST_TYPE_YCBT, nguonHoSo: SOURCES.TIEP_NHAN, hinhThucTiepNhan: RECEIVE_METHODS.BUU_CHINH,
+                rootUnitId: 'BTP-01', currentUnitId: 'PLN-02', createdBy: 'hatt', receivedBy: userName('hatt'),
+                nycName: 'Phan Minh Quân', nycPhone: '0976543218', nycTinhThanh: 'Thành phố Hải Phòng', nycPhuongXa: 'Phường Lê Chân', nycAddressDetail: 'Số 27 đường Hai Bà Trưng',
+                linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', hanhVi: 'Yêu cầu bồi thường do bị tạm giữ trái pháp luật.',
+                date: '16/10/2026', receivedAt: '10:40 16/10/2026', routes: routeBtp('14:30 16/10/2026', '08:45 17/10/2026'),
+                history: [h('Tiếp nhận hồ sơ', 'hatt', '10:40 16/10/2026', 'Chuyển lãnh đạo Bộ Tư pháp phân công xử lý.'), h('Chuyển đơn vị', 'oanhdh', '14:30 16/10/2026', 'Chuyển Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước phân công.'), h('Chuyển đơn vị', 'cuctruong', '08:45 17/10/2026', 'Chuyển Phòng Quản lý nghiệp vụ về bồi thường nhà nước phân công.')]
+            }),
+            base('VVBT-2026-144', {
+                module: 'XD', loaiYeuCau: REQUEST_TYPE_XD, nguonHoSo: SOURCES.TIEP_NHAN, hinhThucTiepNhan: RECEIVE_METHODS.TRUC_TIEP,
+                rootUnitId: 'STP-HN', currentUnitId: 'STP-HN-HCTP', createdBy: 'cv_hn1', receivedBy: userName('cv_hn1'),
+                nycName: 'Đinh Thị Hồng Nhung', nycPhone: '0904123987', nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: 'Phường Hoàng Mai', nycAddressDetail: 'Số 102 đường Tam Trinh',
+                linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: 'Đề nghị xác định cơ quan giải quyết bồi thường đối với việc cưỡng chế công trình trái pháp luật.',
+                date: '16/10/2026', receivedAt: '08:30 16/10/2026', routes: routeStp('11:00 16/10/2026'),
+                history: [h('Tiếp nhận hồ sơ', 'cv_hn1', '08:30 16/10/2026', 'Chuyển lãnh đạo Sở Tư pháp Thành phố Hà Nội phân công xử lý.'), h('Chuyển đơn vị', 'gdso_hn', '11:00 16/10/2026', 'Chuyển Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Hà Nội phân công.')]
+            }),
+            base('VVBT-2026-145', {
+                module: 'YCBT', loaiYeuCau: REQUEST_TYPE_YCBT, nguonHoSo: SOURCES.TIEP_NHAN, hinhThucTiepNhan: RECEIVE_METHODS.TRUC_TIEP,
+                rootUnitId: 'STP-HN', currentUnitId: 'STP-HN-HCTP', createdBy: 'cv_hn2', receivedBy: userName('cv_hn2'),
+                nycName: 'Vương Đức Thịnh', nycPhone: '0868321456', nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: 'Phường Cầu Giấy', nycAddressDetail: 'Số 6 ngõ 88 Trần Thái Tông',
+                linhVuc: 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ', hanhVi: 'Yêu cầu bồi thường do kê biên tài sản vượt quá nghĩa vụ phải thi hành.',
+                date: '17/10/2026', receivedAt: '14:10 17/10/2026', routes: routeStp('16:00 17/10/2026'),
+                history: [h('Tiếp nhận hồ sơ', 'cv_hn2', '14:10 17/10/2026', 'Chuyển lãnh đạo Sở Tư pháp Thành phố Hà Nội phân công xử lý.'), h('Chuyển đơn vị', 'gdso_hn', '16:00 17/10/2026', 'Chuyển Phòng Hành chính tư pháp - Sở Tư pháp Thành phố Hà Nội phân công.')]
+            })
+        ];
+        const codes = new Set(list.map(r => r.code));
+        seeds.forEach(s => { if (!codes.has(s.code)) list.unshift(s); });
+        writeJson(KEY_RECORDS, list);
+        try { localStorage.setItem(KEY_SEED_PHONG, '1'); } catch (e) { /* bỏ qua */ }
+    }
     const KEY_SEED_THULY = 'btnn_wf_seed_thuly_v2';
     function ensureThuLySeed() {
         try { if (localStorage.getItem(KEY_SEED_THULY)) return; } catch (e) { return; }
@@ -1846,8 +1914,65 @@
         ];
     }
 
+    // ---------------- Tiếp nhận hồ sơ: tab Chờ xử lý (dùng chung cho badge tab và badge menu trái) ----------------
+    // Kho hồ sơ do cán bộ nhập tại màn Tiếp nhận hồ sơ (tiep_nhan_ycbt.html)
+    const KEY_RECEPTION_CLAIMS = 'receptionClaimsList_v2026';
+    const KEY_RECEPTION_SEED = 'receptionSeedVersion';
+    const RECEPTION_STATUSES = [STATUS.CHO_PHAN_CONG, STATUS.DANG_PHAN_CONG];
+    // Người dùng thuộc Nhóm lãnh đạo của ít nhất một nút cấu hình luồng
+    function isLeaderUser(userId) {
+        return FLOW_TYPE_ORDER.some(ft => {
+            const cfg = getFlowConfig(ft);
+            return Object.keys(cfg).some(root => Object.values(cfg[root]).some(n => (n.leaders || []).includes(userId)));
+        });
+    }
+    function receptionSourceOf(v) {
+        const s = String(v || '').trim();
+        if (Object.values(SOURCES).includes(s)) return s;
+        if (/quốc gia|dịch vụ công|dvc/i.test(s)) return SOURCES.DVC;
+        return SOURCES.TIEP_NHAN;
+    }
+    function receptionSeeded() {
+        try { return !!localStorage.getItem(KEY_RECEPTION_SEED); } catch (e) { return false; }
+    }
+    // Hồ sơ thuộc tab Chờ xử lý của người dùng: [{ code, claim, rec }]
+    // - Lãnh đạo: hồ sơ Chờ phân công / Đang phân công mà Lãnh đạo thuộc Nhóm lãnh đạo của đơn vị đang phân công.
+    // - Cán bộ tiếp nhận: hồ sơ mình tiếp nhận (Nguồn Tiếp nhận mới) còn Chờ phân công / Đang phân công.
+    // claims: danh sách hồ sơ tiếp nhận đang có trong trang; không truyền thì đọc kho localStorage của màn Tiếp nhận hồ sơ.
+    function receptionPendingItems(userId, claims) {
+        userId = userId || getCurrentUserId();
+        const user = getUser(userId);
+        if (!user) return [];
+        const name = user.name;
+        const root = getRootId(user.unitId);
+        const list = (Array.isArray(claims) ? claims : readJson(KEY_RECEPTION_CLAIMS, [])).filter(c => c && !c.deleted);
+        const records = loadRecords();
+        const recMap = new Map();
+        records.forEach(r => recMap.set(r.code, r));
+        const allowed = getRequestTypesForUser(userId);
+        const inReception = s => RECEPTION_STATUSES.includes(s || STATUS.CHO_PHAN_CONG);
+        const claimOf = code => list.find(c => c.code === code) || null;
+        const map = new Map();
+        const add = (code, claim, rec) => { if (code && !map.has(code)) map.set(code, { code, claim, rec }); };
+        if (isLeaderUser(userId)) {
+            records.filter(r => canAssign(r, userId)).forEach(r => add(r.code, claimOf(r.code), r));
+        } else {
+            list.forEach(c => {
+                const rec = recMap.get(c.code) || null;
+                // Trạng thái hồ sơ tiếp nhận lấy theo hồ sơ luồng phân công
+                const status = rec ? rec.status : c.status;
+                if (c.rootUnitId === root && (c.receivedBy || name) === name && allowed.includes(c.requestType) && inReception(status)) add(c.code, c, rec);
+            });
+            records.filter(r => r.source === 'Tiếp nhận' && receptionSourceOf(r.nguonHoSo) === SOURCES.TIEP_NHAN
+                && r.receivedBy === name && r.rootUnitId === root && inReception(r.status)).forEach(r => add(r.code, claimOf(r.code), r));
+        }
+        return Array.from(map.values()).filter(x => allowed.includes((x.claim ? x.claim.requestType : x.rec && x.rec.loaiYeuCau) || REQUEST_TYPE_YCBT));
+    }
+    function receptionPendingCount(userId, claims) { return receptionPendingItems(userId, claims).length; }
+
     global.BTNN_WF = {
-        KEYS: { RECORDS: KEY_RECORDS, FLOW: KEY_FLOW, USER: KEY_USER },
+        KEYS: { RECORDS: KEY_RECORDS, FLOW: KEY_FLOW, USER: KEY_USER, RECEPTION_CLAIMS: KEY_RECEPTION_CLAIMS },
+        receptionPendingItems, receptionPendingCount, receptionSeeded,
         CATALOG_TYPE, STATUS, SUBMIT_KINDS, APPROVAL_KINDS, KTL_CATALOG_TYPE, DEFAULT_KTL_REASONS, XD_AUTHORITY_UNITS, REQUEST_TYPE_XD, REQUEST_TYPE_YCBT,
         FLOW_TYPES, FLOW_TYPE_NAMES, FLOW_TYPE_ORDER, SOURCES, RECEIVE_METHODS, RECEIVE_METHOD_CATALOG, RECEIVE_METHOD_ORDER, FORM_RECEIVE_METHODS, UBND_TINH_STP,
         flowRootIds, flowTypeOf, normalizeReceiveMethod, normalizeSource, nextVuViecCode, xdViewOnlyStpRoots, isXdViewOnlyUser,
