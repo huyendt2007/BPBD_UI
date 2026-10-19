@@ -338,7 +338,7 @@
         const pick = ids => { const o = {}; ids.forEach(id => { if (src[id]) o[id] = JSON.parse(JSON.stringify(src[id])); }); return o; };
         return { XD_BTP: pick(flowRootIds(FLOW_TYPES.XD_BTP)), XD_STP: pick(flowRootIds(FLOW_TYPES.XD_STP)), GQ: JSON.parse(JSON.stringify(src)) };
     }
-    // Mỗi nút chỉ có 01 hướng xử lý: nút cũ bật cả Chuyển đơn vị và Phân công cán bộ -> giữ Chuyển đơn vị, bỏ hướng cán bộ
+    // Mỗi nút chỉ có 01 hình thức phân công: nút cũ bật cả Chuyển đơn vị và Phân công cán bộ -> giữ Chuyển đơn vị, bỏ Phân công cán bộ
     function normalizeFlowDirections(all) {
         let changed = false;
         Object.keys(all || {}).forEach(ft => Object.values(all[ft] || {}).forEach(tree => Object.values(tree || {}).forEach(node => {
@@ -377,7 +377,7 @@
         return node ? (node.leaders || []) : [];
     }
     function isLeaderOf(userId, unitId, ft) { return getLeaders(unitId, ft).includes(userId); }
-    // Đơn vị đã cấu hình luồng khi nút đơn vị gốc có nhóm lãnh đạo và có ít nhất một hướng xử lý (mặc định luồng Giải quyết YCBT)
+    // Đơn vị đã cấu hình luồng khi nút đơn vị gốc có nhóm lãnh đạo và có ít nhất một hình thức phân công (mặc định luồng Giải quyết YCBT)
     function isUnitConfigured(rootId, ft) {
         const node = getNodeConfig(rootId, ft);
         return !!(node && node.leaders && node.leaders.length && ((node.allowUnit && node.units && node.units.length) || (node.allowOfficer && node.officers && node.officers.length)));
@@ -1914,8 +1914,65 @@
         ];
     }
 
+    // ---------------- Tiếp nhận hồ sơ: tab Chờ xử lý (dùng chung cho badge tab và badge menu trái) ----------------
+    // Kho hồ sơ do cán bộ nhập tại màn Tiếp nhận hồ sơ (tiep_nhan_ycbt.html)
+    const KEY_RECEPTION_CLAIMS = 'receptionClaimsList_v2026';
+    const KEY_RECEPTION_SEED = 'receptionSeedVersion';
+    const RECEPTION_STATUSES = [STATUS.CHO_PHAN_CONG, STATUS.DANG_PHAN_CONG];
+    // Người dùng thuộc Nhóm lãnh đạo của ít nhất một nút cấu hình luồng
+    function isLeaderUser(userId) {
+        return FLOW_TYPE_ORDER.some(ft => {
+            const cfg = getFlowConfig(ft);
+            return Object.keys(cfg).some(root => Object.values(cfg[root]).some(n => (n.leaders || []).includes(userId)));
+        });
+    }
+    function receptionSourceOf(v) {
+        const s = String(v || '').trim();
+        if (Object.values(SOURCES).includes(s)) return s;
+        if (/quốc gia|dịch vụ công|dvc/i.test(s)) return SOURCES.DVC;
+        return SOURCES.TIEP_NHAN;
+    }
+    function receptionSeeded() {
+        try { return !!localStorage.getItem(KEY_RECEPTION_SEED); } catch (e) { return false; }
+    }
+    // Hồ sơ thuộc tab Chờ xử lý của người dùng: [{ code, claim, rec }]
+    // - Lãnh đạo: hồ sơ Chờ phân công / Đang phân công mà Lãnh đạo thuộc Nhóm lãnh đạo của đơn vị đang phân công.
+    // - Cán bộ tiếp nhận: hồ sơ mình tiếp nhận (Nguồn Tiếp nhận mới) còn Chờ phân công / Đang phân công.
+    // claims: danh sách hồ sơ tiếp nhận đang có trong trang; không truyền thì đọc kho localStorage của màn Tiếp nhận hồ sơ.
+    function receptionPendingItems(userId, claims) {
+        userId = userId || getCurrentUserId();
+        const user = getUser(userId);
+        if (!user) return [];
+        const name = user.name;
+        const root = getRootId(user.unitId);
+        const list = (Array.isArray(claims) ? claims : readJson(KEY_RECEPTION_CLAIMS, [])).filter(c => c && !c.deleted);
+        const records = loadRecords();
+        const recMap = new Map();
+        records.forEach(r => recMap.set(r.code, r));
+        const allowed = getRequestTypesForUser(userId);
+        const inReception = s => RECEPTION_STATUSES.includes(s || STATUS.CHO_PHAN_CONG);
+        const claimOf = code => list.find(c => c.code === code) || null;
+        const map = new Map();
+        const add = (code, claim, rec) => { if (code && !map.has(code)) map.set(code, { code, claim, rec }); };
+        if (isLeaderUser(userId)) {
+            records.filter(r => canAssign(r, userId)).forEach(r => add(r.code, claimOf(r.code), r));
+        } else {
+            list.forEach(c => {
+                const rec = recMap.get(c.code) || null;
+                // Trạng thái hồ sơ tiếp nhận lấy theo hồ sơ luồng phân công
+                const status = rec ? rec.status : c.status;
+                if (c.rootUnitId === root && (c.receivedBy || name) === name && allowed.includes(c.requestType) && inReception(status)) add(c.code, c, rec);
+            });
+            records.filter(r => r.source === 'Tiếp nhận' && receptionSourceOf(r.nguonHoSo) === SOURCES.TIEP_NHAN
+                && r.receivedBy === name && r.rootUnitId === root && inReception(r.status)).forEach(r => add(r.code, claimOf(r.code), r));
+        }
+        return Array.from(map.values()).filter(x => allowed.includes((x.claim ? x.claim.requestType : x.rec && x.rec.loaiYeuCau) || REQUEST_TYPE_YCBT));
+    }
+    function receptionPendingCount(userId, claims) { return receptionPendingItems(userId, claims).length; }
+
     global.BTNN_WF = {
-        KEYS: { RECORDS: KEY_RECORDS, FLOW: KEY_FLOW, USER: KEY_USER },
+        KEYS: { RECORDS: KEY_RECORDS, FLOW: KEY_FLOW, USER: KEY_USER, RECEPTION_CLAIMS: KEY_RECEPTION_CLAIMS },
+        receptionPendingItems, receptionPendingCount, receptionSeeded,
         CATALOG_TYPE, STATUS, SUBMIT_KINDS, APPROVAL_KINDS, KTL_CATALOG_TYPE, DEFAULT_KTL_REASONS, XD_AUTHORITY_UNITS, REQUEST_TYPE_XD, REQUEST_TYPE_YCBT,
         FLOW_TYPES, FLOW_TYPE_NAMES, FLOW_TYPE_ORDER, SOURCES, RECEIVE_METHODS, RECEIVE_METHOD_CATALOG, RECEIVE_METHOD_ORDER, FORM_RECEIVE_METHODS, UBND_TINH_STP,
         flowRootIds, flowTypeOf, normalizeReceiveMethod, normalizeSource, nextVuViecCode, xdViewOnlyStpRoots, isXdViewOnlyUser,

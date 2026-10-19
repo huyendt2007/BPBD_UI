@@ -791,6 +791,8 @@
         <span id="toastMessage">Thông báo</span>
     </div>
 
+    <!-- Luồng xử lý BTNN dùng chung: đếm hồ sơ tab Chờ xử lý cho badge menu Tiếp nhận hồ sơ -->
+    <script src="btnn_luong_xu_ly.js"></script>
     <script>
         // Menu Data Model without numerical headers in titles
         const menuData = [
@@ -884,7 +886,7 @@
                 title: "Bồi thường nhà nước",
                 icon: "fa-solid fa-hand-holding-dollar",
                 children: [
-                    { title: "Tiếp nhận hồ sơ", url: "../03_Boi_thuong_nha_nuoc/tiep_nhan_ycbt.html?v=3" },
+                    { title: "Tiếp nhận hồ sơ", url: "../03_Boi_thuong_nha_nuoc/tiep_nhan_ycbt.html?v=3", badgeKey: "btnn_reception_pending", badgeType: "danger" },
                     { title: "Dashboard Lãnh đạo", url: "../03_Boi_thuong_nha_nuoc/dashboard_lanh_dao_btnn.html" },
                     { title: "Xác định cơ quan giải quyết bồi thường", badge: 7, url: "../03_Boi_thuong_nha_nuoc/xac_dinh_co_quan_boi_thuong.html?v=20261008" },
                     {
@@ -1059,6 +1061,46 @@
             }
         ];
 
+        // ===== Badge menu "Tiếp nhận hồ sơ" (Bồi thường nhà nước) =====
+        // Số hồ sơ đang ở tab Chờ xử lý của màn Tiếp nhận hồ sơ, theo người dùng đang đăng nhập (giả lập).
+        // Dùng chung hàm đếm BTNN_WF.receptionPendingCount với badge tab Chờ xử lý. Bằng 0 thì ẩn badge.
+        function setReceptionBadge(count) {
+            const n = Number(count || 0);
+            document.querySelectorAll('.menu-badge[data-badge-key="btnn_reception_pending"]').forEach(el => {
+                el.innerText = n > 99 ? '99+' : String(n);
+                el.style.display = n > 0 ? '' : 'none';
+            });
+        }
+        function refreshReceptionBadge() {
+            if (!window.BTNN_WF || typeof BTNN_WF.receptionPendingCount !== 'function') return;
+            try { setReceptionBadge(BTNN_WF.receptionPendingCount(BTNN_WF.getCurrentUserId())); } catch (err) { }
+        }
+        // Chưa có dữ liệu giả lập của màn Tiếp nhận hồ sơ: nạp ngầm màn hình để khởi tạo dữ liệu (màn hình gửi lại số lượng sau khi nạp)
+        function ensureReceptionSeeded() {
+            if (!window.BTNN_WF || typeof BTNN_WF.receptionSeeded !== 'function' || BTNN_WF.receptionSeeded()) return;
+            // Khung nội dung chính đang mở màn Tiếp nhận hồ sơ thì màn hình tự khởi tạo dữ liệu
+            const main = document.getElementById('mainContentIframe');
+            if (main && /tiep_nhan_ycbt\.html/.test(main.getAttribute('src') || '')) return;
+            if (document.getElementById('receptionSeedFrame')) return;
+            const f = document.createElement('iframe');
+            f.id = 'receptionSeedFrame';
+            f.style.cssText = 'position:absolute; width:0; height:0; border:0; visibility:hidden;';
+            f.src = '../03_Boi_thuong_nha_nuoc/tiep_nhan_ycbt.html?v=3';
+            f.onload = () => { refreshReceptionBadge(); setTimeout(() => f.remove(), 0); };
+            document.body.appendChild(f);
+        }
+        window.addEventListener('message', (event) => {
+            const data = event.data || {};
+            if (data.type !== 'btnn:receptionPending') return;
+            // Màn Tiếp nhận hồ sơ gửi số lượng sau khi nạp và sau mỗi thao tác tạo mới / xóa / phân công / thu hồi
+            if (window.BTNN_WF && data.userId === BTNN_WF.getCurrentUserId()) setReceptionBadge(data.count); else refreshReceptionBadge();
+        });
+        // Đổi người dùng giả lập / thay đổi hồ sơ ở màn hình khác: tính lại
+        window.addEventListener('storage', (event) => {
+            if (!event.key || /^(btnn_demo_user_v1|btnn_wf_records_v1|btnn_flow_config_v2|receptionClaimsList_v2026)$/.test(event.key)) refreshReceptionBadge();
+        });
+        window.addEventListener('DOMContentLoaded', () => { setTimeout(() => { refreshReceptionBadge(); ensureReceptionSeeded(); }, 0); });
+
         // Page initialization
         window.addEventListener('DOMContentLoaded', () => {
             renderSidebarMenu();
@@ -1177,8 +1219,14 @@
                         textSpan.innerText = child.title;
                         leafLink.appendChild(textSpan);
 
-                        // Add badge if present
-                        if (child.badge) {
+                        // Add badge if present (badgeKey: số lượng cập nhật động, bằng 0 thì ẩn)
+                        if (child.badgeKey) {
+                            const badge = document.createElement('span');
+                            badge.className = `menu-badge ${child.badgeType || 'danger'}`;
+                            badge.dataset.badgeKey = child.badgeKey;
+                            badge.style.display = 'none';
+                            leafLink.appendChild(badge);
+                        } else if (child.badge) {
                             const badge = document.createElement('span');
                             badge.className = `menu-badge ${child.badgeType || 'danger'}`;
                             badge.innerText = child.badge;
@@ -1415,6 +1463,8 @@
         function applyMenuBadges(counts) {
             if (!counts) return;
             document.querySelectorAll('.menu-badge[data-badge-key]').forEach(el => {
+                // Badge của phân hệ khác (VD Tiếp nhận hồ sơ - BTNN) không thuộc gói số lượng này: giữ nguyên
+                if (el.dataset.badgeKey === 'btnn_reception_pending') return;
                 const n = Number(counts[el.dataset.badgeKey] || 0);
                 el.innerText = n > 99 ? '99+' : String(n);
                 el.style.display = n > 0 ? '' : 'none';
