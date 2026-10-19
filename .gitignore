@@ -10,6 +10,8 @@ Thumbs.db
 temp_*
 scratch_*
 *.tmp
+raw_mau/
+/*.ps1
 
 # Các thư mục cũ hoặc chưa hoàn thiện
 Website_Khach_hang/UC*/
