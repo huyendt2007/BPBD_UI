@@ -4247,7 +4247,7 @@
     </div>
 
     <!-- Luồng phân công - phê duyệt dùng chung BTNN: nguồn hồ sơ YCBT nhận từ Xác định CQGQBT -->
-    <script src="btnn_luong_xu_ly.js?v=20261015e"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261019b"></script>
     <!-- Cử người giải quyết (nhiều cán bộ theo Cơ cấu tổ chức), Xác minh thiệt hại nhiều lần, Văn bản làm căn cứ yêu cầu bồi thường -->
     <script>
         function ycEsc(v) {
@@ -19339,7 +19339,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 const src = gqConvertedSourceRecord(claim);
                 if (src) Object.assign(data, {
                     rootUnitId: src.rootUnitId || data.rootUnitId, currentUnitId: src.currentUnitId || src.rootUnitId || data.rootUnitId,
-                    chuTri: src.chuTri || acting, routes: JSON.parse(JSON.stringify(src.routes || [])), phoiHop: (src.phoiHop || []).slice(),
+                    chuTri: src.chuTri || acting, routes: JSON.parse(JSON.stringify(src.routes || [])),
                     xdCode: src.xdCode || '', phddConvertedFrom: src.code
                 });
                 return W.ensureClaimRecord(data);
@@ -19425,7 +19425,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     <div class="gq-field"><label class="gq-label">Cán bộ chủ trì giải quyết <span class="gq-req">*</span></label>
                         <select id="gqTlChuTri" class="form-control">${opts.map(u => `<option value="${gqE(u)}" ${u === rec.chuTri ? 'selected' : ''}>${gqE(W.userLabel(u))}</option>`).join('')}</select></div>
                     <div class="gq-field"><label class="gq-label">Cán bộ cùng giải quyết</label>
-                        <div id="gqTlPhoiHop" style="display:flex; flex-direction:column; gap:4px; border:1px solid var(--border-color); border-radius:6px; padding:8px 10px; max-height:150px; overflow:auto;">${opts.map(u => `<label style="font-weight:500;"><input type="checkbox" value="${gqE(u)}"> ${gqE(W.userLabel(u))}</label>`).join('')}</div></div>
+                        <div id="gqTlOthers" style="display:flex; flex-direction:column; gap:4px; border:1px solid var(--border-color); border-radius:6px; padding:8px 10px; max-height:150px; overflow:auto;">${opts.map(u => `<label style="font-weight:500;"><input type="checkbox" value="${gqE(u)}"> ${gqE(W.userLabel(u))}</label>`).join('')}</div></div>
                     <div class="gq-field"><label class="gq-label">Ý kiến chỉ đạo</label><textarea id="gqTlNote" class="form-control" rows="2"></textarea></div>`,
                     `<button class="btn btn-secondary" onclick="gqCloseModal()">Hủy bỏ</button><button class="btn btn-primary" onclick="gqSubmitLeaderThuLy('${gqE(id)}')"><i class="fa-solid fa-check"></i> Phê duyệt thụ lý</button>`, 640);
                 return;
@@ -19445,7 +19445,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const claim = gqClaim(id);
             const chuTri = gqVal('gqTlChuTri');
             if (!chuTri) { gqFooterMsg('Vui lòng chọn Cán bộ chủ trì giải quyết.'); return; }
-            const others = Array.from(document.querySelectorAll('#gqTlPhoiHop input:checked')).map(x => x.value).filter(u => u !== chuTri);
+            const others = Array.from(document.querySelectorAll('#gqTlOthers input:checked')).map(x => x.value).filter(u => u !== chuTri);
             gqAsLeader();
             const res = W.acceptCase(claim.code, [chuTri].concat(others), gqVal('gqTlNote'));
             gqAfterLeaderAction(res.ok ? `Đã thụ lý hồ sơ ${claim.code}, cử ${[chuTri].concat(others).map(W.userName).join(', ')} giải quyết.` : res.message, res.ok);

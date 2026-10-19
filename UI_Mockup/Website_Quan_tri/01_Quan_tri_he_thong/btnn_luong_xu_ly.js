@@ -206,7 +206,7 @@
     const DEFAULT_FLOW = {
         'BTP-01': {
             'BTP-01': { leaders: ['oanhdh', 'khoiml'], allowUnit: true, units: ['CĐK-01'], allowOfficer: false, officers: [] },
-            'CĐK-01': { leaders: ['cuctruong', 'cucpho'], allowUnit: true, units: ['PLN-02'], allowOfficer: true, officers: ['canbonv', 'hatt', 'ducpm'] },
+            'CĐK-01': { leaders: ['cuctruong', 'cucpho'], allowUnit: true, units: ['PLN-02'], allowOfficer: false, officers: [] },
             'PLN-02': { leaders: ['tpbt'], allowUnit: false, units: [], allowOfficer: true, officers: ['canbonv', 'hatt', 'ducpm'] }
         },
         'STP-HN': {
@@ -338,15 +338,24 @@
         const pick = ids => { const o = {}; ids.forEach(id => { if (src[id]) o[id] = JSON.parse(JSON.stringify(src[id])); }); return o; };
         return { XD_BTP: pick(flowRootIds(FLOW_TYPES.XD_BTP)), XD_STP: pick(flowRootIds(FLOW_TYPES.XD_STP)), GQ: JSON.parse(JSON.stringify(src)) };
     }
+    // Mỗi nút chỉ có 01 hướng xử lý: nút cũ bật cả Chuyển đơn vị và Phân công cán bộ -> giữ Chuyển đơn vị, bỏ hướng cán bộ
+    function normalizeFlowDirections(all) {
+        let changed = false;
+        Object.keys(all || {}).forEach(ft => Object.values(all[ft] || {}).forEach(tree => Object.values(tree || {}).forEach(node => {
+            if (node && node.allowUnit && node.allowOfficer) { node.allowOfficer = false; node.officers = []; changed = true; }
+        })));
+        return changed;
+    }
     function getFlowAll() {
         let all = readJson(KEY_FLOW, null);
         if (!all || typeof all !== 'object' || !all.GQ) {
             // Chuyển cấu hình cũ (01 cấu hình chung cho mọi Loại yêu cầu) sang 03 Loại luồng
             all = defaultFlowAll(readJson(KEY_FLOW_V1, null) || DEFAULT_FLOW);
+            normalizeFlowDirections(all);
             writeJson(KEY_FLOW, all);
             return all;
         }
-        let changed = false;
+        let changed = normalizeFlowDirections(all);
         const def = defaultFlowAll();
         FLOW_TYPE_ORDER.forEach(ft => {
             if (!all[ft]) { all[ft] = def[ft]; changed = true; return; }
@@ -356,7 +365,7 @@
         return all;
     }
     function getFlowConfig(ft) { return getFlowAll()[ft || FLOW_TYPES.GQ] || {}; }
-    function saveFlowConfig(cfg, ft) { const all = getFlowAll(); all[ft || FLOW_TYPES.GQ] = cfg; writeJson(KEY_FLOW, all); }
+    function saveFlowConfig(cfg, ft) { const all = getFlowAll(); all[ft || FLOW_TYPES.GQ] = cfg; normalizeFlowDirections(all); writeJson(KEY_FLOW, all); }
     function resetFlowConfig(ft) { const all = getFlowAll(); const def = defaultFlowAll(); if (ft) all[ft] = def[ft]; else Object.assign(all, def); writeJson(KEY_FLOW, all); return ft ? all[ft] : all; }
     function getNodeConfig(unitId, ft) {
         const rootId = getRootId(unitId);
@@ -430,6 +439,17 @@
     }
 
     // ---------------- Kho hồ sơ luồng ----------------
+    // Hàm bỏ qua dữ liệu cũ: xóa thuộc tính phoiHop của hồ sơ/lượt phân công và đoạn "; Phối hợp: ..." trong ghi chú lịch sử
+    function stripLegacyCoop(r) {
+        let changed = false;
+        if (r && 'phoiHop' in r) { delete r.phoiHop; changed = true; }
+        (r && r.routes || []).forEach(x => { if (x && 'phoiHop' in x) { delete x.phoiHop; changed = true; } });
+        (r && r.history || []).forEach(x => {
+            const n = x && typeof x.note === 'string' ? x.note.replace(/; Phối hợp: [^.]*\./g, '.') : null;
+            if (n !== null && n !== x.note) { x.note = n; changed = true; }
+        });
+        return changed;
+    }
     function loadRecords() {
         ensureSeed();
         let list = readJson(KEY_RECORDS, []);
@@ -439,6 +459,8 @@
         const OLD_KQXD = ['Hoàn thành xác định', 'Kết quả xác định'];
         let changed = false;
         list.forEach(r => {
+            // Dữ liệu cũ: phân công cán bộ chỉ còn 01 Cán bộ chủ trì, bỏ qua dữ liệu vai trò đã bỏ
+            if (stripLegacyCoop(r)) changed = true;
             if (r.status === 'Chờ phê duyệt') { r.status = STATUS.CHO_PHE_DUYET; changed = true; }
             // Loại hồ sơ: "Yêu cầu bồi thường" -> "Giải quyết yêu cầu bồi thường"; Hình thức tiếp nhận theo 03 giá trị mới; Mã vụ việc toàn trình
             if (r.loaiYeuCau === REQUEST_TYPE_YCBT_OLD) { r.loaiYeuCau = REQUEST_TYPE_YCBT; changed = true; }
@@ -479,7 +501,7 @@
             upsertRecord(existing);
             return existing;
         }
-        const rec = Object.assign({ module: 'YCBT', loaiYeuCau: REQUEST_TYPE_YCBT, routes: [], phoiHop: [], approval: null, history: [] }, data);
+        const rec = Object.assign({ module: 'YCBT', loaiYeuCau: REQUEST_TYPE_YCBT, routes: [], approval: null, history: [] }, data);
         if (!rec.currentUnitId) rec.currentUnitId = rec.rootUnitId;
         upsertRecord(rec);
         return rec;
@@ -544,7 +566,6 @@
             status: STATUS.CHO_PHAN_CONG,
             routes: [],
             chuTri: null,
-            phoiHop: [],
             approval: null,
             history: []
         }, data);
@@ -597,7 +618,7 @@
         upsertRecord(rec);
         return { ok: true, record: rec };
     }
-    function assignToOfficers(code, chuTri, phoiHop, note) {
+    function assignToOfficers(code, chuTri, note) {
         const rec = getRecord(code);
         const me = getCurrentUserId();
         if (!canAssign(rec, me)) return { ok: false, message: 'Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phân công. Vui lòng tải lại danh sách.' };
@@ -606,14 +627,12 @@
         if (!chuTri) return { ok: false, message: 'Vui lòng chọn cán bộ chủ trì.' };
         const prev = latestRoute(rec);
         if (prev) prev.state = 'Đã xử lý';
-        const ph = (phoiHop || []).filter(id => id && id !== chuTri);
-        rec.routes.push({ id: uid('R'), type: 'officer', fromUnitId: rec.currentUnitId, fromUserId: me, chuTri, phoiHop: ph, note: note || '', at: nowText(), state: 'Chưa xử lý' });
+        rec.routes.push({ id: uid('R'), type: 'officer', fromUnitId: rec.currentUnitId, fromUserId: me, chuTri, note: note || '', at: nowText(), state: 'Chưa xử lý' });
         rec.chuTri = chuTri;
-        rec.phoiHop = ph;
         rec.status = STATUS.CHO_TIEP_NHAN;
         // Hồ sơ nguồn khác Tiếp nhận mới: người phân công đầu tiên tại Tiếp nhận hồ sơ là Cán bộ tiếp nhận
         if (!rec.receivedBy) rec.receivedBy = userName(me);
-        addHistory(rec, 'Phân công cán bộ', `Chủ trì: ${userName(chuTri)}${ph.length ? '; Phối hợp: ' + ph.map(userName).join(', ') : ''}.${note ? ' Ý kiến chỉ đạo: ' + note : ''}`);
+        addHistory(rec, 'Phân công cán bộ', `Chủ trì: ${userName(chuTri)}.${note ? ' Ý kiến chỉ đạo: ' + note : ''}`);
         upsertRecord(rec);
         return { ok: true, record: rec };
     }
@@ -646,7 +665,7 @@
         } else {
             const r = rec.routes.pop();
             rec.currentUnitId = r.fromUnitId;
-            if (r.type === 'officer') { rec.chuTri = null; rec.phoiHop = []; }
+            if (r.type === 'officer') { rec.chuTri = null; }
             const prev = latestRoute(rec);
             if (prev) prev.state = 'Chưa xử lý';
             rec.status = rec.routes.length ? STATUS.DANG_PHAN_CONG : STATUS.CHO_PHAN_CONG;
@@ -774,7 +793,7 @@
         if (!target) return null;
         const newCode = nextCode('BT');
         const copy = JSON.parse(JSON.stringify(rec));
-        ['routes', 'approval', 'history', 'returned', 'transfer', 'transferTo', 'chuTri', 'phoiHop', 'status', 'currentUnitId', 'code', 'id', 'appointedOfficers'].forEach(k => delete copy[k]);
+        ['routes', 'approval', 'history', 'returned', 'transfer', 'transferTo', 'chuTri', 'status', 'currentUnitId', 'code', 'id', 'appointedOfficers'].forEach(k => delete copy[k]);
         createPendingRecord(Object.assign(copy, {
             id: 'YC' + Date.now().toString(36),
             code: newCode,
@@ -826,7 +845,7 @@
         }
         const ycbtCode = nextCode('BT');
         const copy = JSON.parse(JSON.stringify(rec));
-        ['routes', 'approval', 'history', 'returned', 'transfer', 'chuTri', 'phoiHop', 'status', 'currentUnitId', 'module', 'code', 'id'].forEach(k => delete copy[k]);
+        ['routes', 'approval', 'history', 'returned', 'transfer', 'chuTri', 'status', 'currentUnitId', 'module', 'code', 'id'].forEach(k => delete copy[k]);
         createPendingRecord(Object.assign(copy, {
             id: uid('YC'),
             code: ycbtCode,
@@ -888,7 +907,6 @@
         const officers = ids.map(id => { const u = getUser(id); return { userId: id, name: u.name, position: u.title, email: u.email || '', unit: unitName(u.unitId), appointedAt: at }; });
         rec.thuLy = { unitId: thuLyUnitOf(rec), by: me, at, officers: ids.slice(), note: note || '' };
         rec.chuTri = ids[0];
-        rec.phoiHop = ids.slice(1);
         const honorOnly = rec.requestKind === 'honor';
         rec.status = honorOnly ? STATUS.DANG_THUC_HIEN : 'Đang xác minh thiệt hại';
         const first = officers[0];
@@ -1275,7 +1293,7 @@
     }
     function routeText(r) {
         if (r.type === 'unit') return `${userName(r.fromUserId)} (${unitName(r.fromUnitId)}) chuyển ${unitName(r.toUnitId)}`;
-        return `${userName(r.fromUserId)} (${unitName(r.fromUnitId)}) phân công chủ trì ${userName(r.chuTri)}${r.phoiHop && r.phoiHop.length ? ', phối hợp ' + r.phoiHop.map(userName).join(', ') : ''}`;
+        return `${userName(r.fromUserId)} (${unitName(r.fromUnitId)}) phân công chủ trì ${userName(r.chuTri)}`;
     }
     function routeStateText(r) {
         if (r.state === 'Đã xử lý') return 'Đã xử lý';
@@ -1601,7 +1619,7 @@
         const h = (action, userId, at, note) => ({ at, userId, userName: userName(userId), action, note: note || '' });
         const th = (code, nyc, rootUnitId, chuTri, leader, linhVuc, hanhVi, date, requestKind, nguonHoSo) => ({
             id: 'WF-' + code, code, module: 'YCBT', loaiYeuCau: REQUEST_TYPE_YCBT, nguonHoSo, nycName: nyc, nyc, requestKind,
-            rootUnitId, currentUnitId: rootUnitId, status: STATUS_CHO_THU_LY, chuTri, phoiHop: [], routes: [], approval: null, returned: null,
+            rootUnitId, currentUnitId: rootUnitId, status: STATUS_CHO_THU_LY, chuTri, routes: [], approval: null, returned: null,
             linhVuc, hanhVi, date, receivedAt: '08:00 ' + date, createdBy: chuTri,
             history: [
                 h('Trình phê duyệt', chuTri, '09:00 ' + date, `Tiếp nhận hồ sơ. Trình ${userName(leader)} - ${unitName(rootUnitId)}.`),
@@ -1625,7 +1643,7 @@
         seed.push({
             id: 'WF-BT-2026-023', code: 'BT-2026-023', module: 'YCBT', loaiYeuCau: REQUEST_TYPE_YCBT, nycName: 'Phạm Văn Nam', chuTri: 'canbonv', createdBy: 'canbonv', requestKind: 'money',
             rootUnitId: 'BTP-01', currentUnitId: 'PLN-02', status: STATUS.CHO_PHE_DUYET, linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', hanhVi: 'Bắt giữ oan sai do sai sót nghiệp vụ công tố.',
-            routes: [], phoiHop: [],
+            routes: [],
             approval: { kind: 'Quyết định GQBT', content: 'Kính trình Lãnh đạo ký duyệt dự thảo Quyết định giải quyết bồi thường.', files: [], draftDoc: { source: 'uploaded', uploadedName: 'Du_thao_QD_GQBT_BT-2026-023.docx', formNo: 'Mẫu số 18/BTNN' }, resultStatus: 'Chờ ban hành', action: null, prevStatus: 'Chờ ban hành QĐ', path: ['PLN-02', 'CĐK-01'], level: 0, steps: [], assignees: ['tpbt'], submittedBy: 'canbonv', submittedAt: qdAt, pending: { since: qdAt } },
             history: [{ at: qdAt, userId: 'canbonv', userName: userName('canbonv'), action: 'Trình phê duyệt', note: 'Quyết định GQBT. Trình Trần Văn Bồi Thường - Phòng Quản lý nghiệp vụ về bồi thường nhà nước.', kind: 'Quyết định GQBT' }]
         });
@@ -1644,12 +1662,12 @@
             hinhThucNhan: 'Phương thức điện tử', attachedDocs: [{ name: 'Đơn yêu cầu xác định cơ quan giải quyết bồi thường', file: `Don_yeu_cau_${code}.pdf` }],
             vanBanCanCu: [],
             procBasis: '', procTargetAgency: '', procReason: '', procDecisionFile: '', claimCode: '-',
-            routes: [], chuTri: null, phoiHop: [], approval: null, history: [], receivedBy: 'Nguyễn Văn Cán Bộ', source: 'Tiếp nhận'
+            routes: [], chuTri: null, approval: null, history: [], receivedBy: 'Nguyễn Văn Cán Bộ', source: 'Tiếp nhận'
         }, extra);
-        const btpRoutes = (chuTri, phoiHop, lastState) => ([
+        const btpRoutes = (chuTri, lastState) => ([
             { id: 'R1', type: 'unit', fromUnitId: 'BTP-01', fromUserId: 'oanhdh', toUnitId: 'CĐK-01', note: 'Giao Cục xem xét, xử lý.', at: '08:30 02/09/2026', state: 'Đã xử lý' },
             { id: 'R2', type: 'unit', fromUnitId: 'CĐK-01', fromUserId: 'cuctruong', toUnitId: 'PLN-02', note: '', at: '14:00 02/09/2026', state: 'Đã xử lý' },
-            { id: 'R3', type: 'officer', fromUnitId: 'PLN-02', fromUserId: 'tpbt', chuTri, phoiHop: phoiHop || [], note: '', at: '09:15 03/09/2026', state: lastState || 'Đã xử lý' }
+            { id: 'R3', type: 'officer', fromUnitId: 'PLN-02', fromUserId: 'tpbt', chuTri, note: '', at: '09:15 03/09/2026', state: lastState || 'Đã xử lý' }
         ]);
         const h = (action, userId, at, note) => ({ at, userId, userName: userName(userId), action, note: note || '' });
         return [
@@ -1667,13 +1685,13 @@
                 history: [h('Tiếp nhận yêu cầu', 'canbonv', '10:15 04/10/2026', 'Chuyển lãnh đạo Bộ Tư pháp phân công xử lý.'), h('Chuyển đơn vị', 'oanhdh', '15:00 04/10/2026', 'Chuyển Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước phân công. Ý kiến chỉ đạo: Giao Cục xem xét.')]
             })),
             base('XD-2026-103', Object.assign(person('Phan Văn Lực', '22/11/1979', '001079003311', '0912000103', 'luc.pv@gmail.com', 'Thành phố Hà Nội', '00010 - Phường Thanh Xuân', 'Số 5 Nguyễn Trãi'), {
-                status: STATUS.CHO_TIEP_NHAN, date: '02/10/2026', receivedAt: '08:00 02/10/2026', chuTri: 'canbonv', phoiHop: ['hatt'],
-                hanhVi: 'Bị tạm giữ hành chính quá thời hạn quy định.', routes: btpRoutes('canbonv', ['hatt'], 'Chưa xử lý'),
+                status: STATUS.CHO_TIEP_NHAN, date: '02/10/2026', receivedAt: '08:00 02/10/2026', chuTri: 'canbonv',
+                hanhVi: 'Bị tạm giữ hành chính quá thời hạn quy định.', routes: btpRoutes('canbonv', 'Chưa xử lý'),
                 vanBanCanCu: [{ name: 'Quyết định tạm giữ hành chính số 15/QĐ-TG ngày 12/08/2026', file: 'Quyet_dinh_tam_giu_15.pdf' }],
-                history: [h('Tiếp nhận yêu cầu', 'canbonv', '08:00 02/10/2026'), h('Chuyển đơn vị', 'oanhdh', '08:30 02/10/2026'), h('Chuyển đơn vị', 'cuctruong', '14:00 02/10/2026'), h('Phân công cán bộ', 'tpbt', '09:15 03/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ; Phối hợp: Trần Thị Thu Hà.')]
+                history: [h('Tiếp nhận yêu cầu', 'canbonv', '08:00 02/10/2026'), h('Chuyển đơn vị', 'oanhdh', '08:30 02/10/2026'), h('Chuyển đơn vị', 'cuctruong', '14:00 02/10/2026'), h('Phân công cán bộ', 'tpbt', '09:15 03/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ.')]
             })),
             base('XD-2026-111', Object.assign(person('Trần Đình Trọng', '18/05/1983', '001083006789', '0912111222', 'trong.td@gmail.com', 'Thành phố Hà Nội', '00007 - Phường Cầu Giấy', 'Số 45 Dịch Vọng Hậu'), {
-                status: STATUS.CHO_TIEP_NHAN, date: '08/10/2026', receivedAt: '08:15 08/10/2026', chuTri: 'canbonv', phoiHop: ['ducpm'],
+                status: STATUS.CHO_TIEP_NHAN, date: '08/10/2026', receivedAt: '08:15 08/10/2026', chuTri: 'canbonv',
                 linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', nycRole: 'Người bị thiệt hại',
                 hanhVi: 'Cưỡng chế tháo dỡ công trình xây dựng khi văn bản đình chỉ chưa có hiệu lực pháp luật.',
                 vanBanCanCu: [
@@ -1681,11 +1699,11 @@
                     { name: 'Biên bản kiểm tra hiện trạng công trình ngày 20/05/2026', file: 'Bien_ban_kiem_tra_hien_trang.pdf' }
                 ],
                 attachedDocs: [{ name: 'Đơn yêu cầu xác định cơ quan giải quyết bồi thường', file: 'Don_yeu_cau_XD-2026-111.pdf' }],
-                routes: btpRoutes('canbonv', ['ducpm'], 'Chưa xử lý'),
-                history: [h('Tiếp nhận yêu cầu', 'canbonv', '08:15 08/10/2026', 'Tiếp nhận hồ sơ trực tiếp tại Bộ phận một cửa.'), h('Chuyển đơn vị', 'oanhdh', '09:00 08/10/2026', 'Giao Cục Đăng ký Giao dịch bảo đảm và BTNN.'), h('Chuyển đơn vị', 'cuctruong', '13:30 08/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '15:00 08/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ; Phối hợp: Phạm Minh Đức.')]
+                routes: btpRoutes('canbonv', 'Chưa xử lý'),
+                history: [h('Tiếp nhận yêu cầu', 'canbonv', '08:15 08/10/2026', 'Tiếp nhận hồ sơ trực tiếp tại Bộ phận một cửa.'), h('Chuyển đơn vị', 'oanhdh', '09:00 08/10/2026', 'Giao Cục Đăng ký Giao dịch bảo đảm và BTNN.'), h('Chuyển đơn vị', 'cuctruong', '13:30 08/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '15:00 08/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ.')]
             })),
             base('XD-2026-112', Object.assign(person('Nguyễn Phương Thảo', '24/11/1991', '001191008822', '0983456789', 'thao.np@outlook.com', 'Thành phố Hà Nội', '00004 - Phường Hoàn Kiếm', 'Số 16 Hàng Bông'), {
-                status: STATUS.CHO_TIEP_NHAN, date: '07/10/2026', receivedAt: '09:30 07/10/2026', chuTri: 'canbonv', phoiHop: [], nycGender: 'Nữ',
+                status: STATUS.CHO_TIEP_NHAN, date: '07/10/2026', receivedAt: '09:30 07/10/2026', chuTri: 'canbonv', nycGender: 'Nữ',
                 linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', nycRole: 'Người thừa kế của người bị thiệt hại',
                 nbth: { name: 'Nguyễn Văn Hùng', gender: 'Nam', dob: '10/02/1955', docType: 'CCCD', docNo: '001055003344', docDate: '15/03/2021', docPlace: 'Cục Cảnh sát QLHC về trật tự xã hội', phone: '', email: '', country: 'Việt Nam', city: 'Thành phố Hà Nội', ward: '00004 - Phường Hoàn Kiếm', address: 'Số 16 Hàng Bông' },
                 hanhVi: 'Khởi tố, bắt tạm giam oan sai người bị thiệt hại trong vụ án kinh tế đã được đình chỉ điều tra bị can.',
@@ -1694,22 +1712,22 @@
                     { name: 'Văn bản xác nhận quyền thừa kế hợp pháp số 45/VB-CC ngày 20/08/2026', file: 'Van_ban_thua_ke_45.pdf' }
                 ],
                 attachedDocs: [{ name: 'Đơn yêu cầu xác định cơ quan giải quyết bồi thường', file: 'Don_yeu_cau_XD-2026-112.pdf' }],
-                routes: btpRoutes('canbonv', [], 'Chưa xử lý'),
+                routes: btpRoutes('canbonv', 'Chưa xử lý'),
                 history: [h('Tiếp nhận yêu cầu', 'canbonv', '09:30 07/10/2026', 'Tiếp nhận hồ sơ trực tiếp.'), h('Chuyển đơn vị', 'oanhdh', '10:15 07/10/2026', 'Giao Cục Đăng ký Giao dịch bảo đảm và BTNN xử lý.'), h('Chuyển đơn vị', 'cuctruong', '14:20 07/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '16:00 07/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ.')]
             })),
             base('XD-2026-113', Object.assign(person('Lê Hoàng Long', '12/08/1976', '001076004455', '0904556677', 'long.lh@fecon.vn', 'Tỉnh Lâm Đồng', '24778 - Phường Xuân Hương - Đà Lạt', 'Số 58 đường Trần Phú'), {
-                status: STATUS.CHO_TIEP_NHAN, date: '06/10/2026', receivedAt: '10:00 06/10/2026', chuTri: 'canbonv', phoiHop: ['hatt'],
+                status: STATUS.CHO_TIEP_NHAN, date: '06/10/2026', receivedAt: '10:00 06/10/2026', chuTri: 'canbonv',
                 linhVuc: 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ', nycRole: 'Người bị thiệt hại',
                 hanhVi: 'Kê biên, bán đấu giá tài sản nhà đất duy nhất vượt quá nghĩa vụ phải thi hành án dân sự.',
                 vanBanCanCu: [
                     { name: 'Kết luận giải quyết tố cáo số 06/KL-CTHADS ngày 28/07/2026 của Cục THADS', file: 'Ket_luan_to_cao_06_THADS.pdf' }
                 ],
                 attachedDocs: [{ name: 'Đơn yêu cầu xác định cơ quan giải quyết bồi thường', file: 'Don_yeu_cau_XD-2026-113.pdf' }],
-                routes: btpRoutes('canbonv', ['hatt'], 'Chưa xử lý'),
-                history: [h('Tiếp nhận yêu cầu', 'canbonv', '10:00 06/10/2026', 'Tiếp nhận qua dịch vụ bưu chính.'), h('Chuyển đơn vị', 'oanhdh', '11:00 06/10/2026', 'Giao Cục Đăng ký Giao dịch bảo đảm và BTNN.'), h('Chuyển đơn vị', 'cuctruong', '15:10 06/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '17:00 06/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ; Phối hợp: Trần Thị Thu Hà.')]
+                routes: btpRoutes('canbonv', 'Chưa xử lý'),
+                history: [h('Tiếp nhận yêu cầu', 'canbonv', '10:00 06/10/2026', 'Tiếp nhận qua dịch vụ bưu chính.'), h('Chuyển đơn vị', 'oanhdh', '11:00 06/10/2026', 'Giao Cục Đăng ký Giao dịch bảo đảm và BTNN.'), h('Chuyển đơn vị', 'cuctruong', '15:10 06/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '17:00 06/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ.')]
             })),
             base('XD-2026-114', Object.assign(person('Phạm Quốc Bảo', '03/04/1988', '001088009911', '0978990011', 'baopq@vingroup.net', 'Thành phố Hà Nội', '00001 - Phường Ba Đình', 'Số 88 đường Liễu Giai'), {
-                status: STATUS.CHO_TIEP_NHAN, date: '05/10/2026', receivedAt: '14:20 05/10/2026', chuTri: 'canbonv', phoiHop: [],
+                status: STATUS.CHO_TIEP_NHAN, date: '05/10/2026', receivedAt: '14:20 05/10/2026', chuTri: 'canbonv',
                 linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ', nycRole: 'Cá nhân, pháp nhân được ủy quyền hợp pháp',
                 nbth: { name: 'Công ty Cổ phần Xây dựng & Thương mại Phúc An', gender: 'Khác', dob: '15/09/2015', docType: 'ĐKKD', docNo: '0106899234', docDate: '15/09/2015', docPlace: 'Sở Kế hoạch và Đầu tư Hà Nội', phone: '02438889999', email: 'contact@phucan.vn', country: 'Việt Nam', city: 'Thành phố Hà Nội', ward: '00001 - Phường Ba Đình', address: 'Số 88 đường Liễu Giai' },
                 hanhVi: 'Tòa án áp dụng biện pháp khẩn cấp tạm thời phong tỏa toàn bộ tài khoản thanh toán của doanh nghiệp trái pháp luật gây thiệt hại lớn cho hoạt động kinh doanh.',
@@ -1718,54 +1736,54 @@
                     { name: 'Hợp đồng ủy quyền giải quyết bồi thường số 18/2026/HĐUQ', file: 'Hop_dong_uy_quyen_18.pdf' }
                 ],
                 attachedDocs: [{ name: 'Đơn yêu cầu xác định cơ quan giải quyết bồi thường', file: 'Don_yeu_cau_XD-2026-114.pdf' }],
-                routes: btpRoutes('canbonv', [], 'Chưa xử lý'),
+                routes: btpRoutes('canbonv', 'Chưa xử lý'),
                 history: [h('Tiếp nhận yêu cầu', 'canbonv', '14:20 05/10/2026', 'Tiếp nhận yêu cầu trực tiếp.'), h('Chuyển đơn vị', 'oanhdh', '15:30 05/10/2026', 'Giao Cục Đăng ký Giao dịch bảo đảm và BTNN.'), h('Chuyển đơn vị', 'cuctruong', '08:30 06/10/2026', 'Giao Phòng Quản lý nghiệp vụ về BTNN.'), h('Phân công cán bộ', 'tpbt', '09:00 06/10/2026', 'Chủ trì: Nguyễn Văn Cán Bộ.')]
             })),
             base('XD-2026-104', Object.assign(person('Vũ Đức Anh', '15/06/1985', '001085002934', '0912000104', 'anh.vd@gmail.com', 'Thành phố Hà Nội', '00001 - Phường Ba Đình', 'Số 15 Kim Mã'), {
-                status: STATUS.DANG_THUC_HIEN, date: '01/09/2026', receivedAt: '09:00 01/09/2026', chuTri: 'canbonv', phoiHop: ['ducpm'],
+                status: STATUS.DANG_THUC_HIEN, date: '01/09/2026', receivedAt: '09:00 01/09/2026', chuTri: 'canbonv',
                 hanhVi: 'Quyết định xử phạt vi phạm hành chính bị hủy do sai thẩm quyền.', routes: btpRoutes('canbonv', ['ducpm']),
                 procBasis: 'Khoản 1 Điều 35 Luật TNBTCNN', procTargetAgency: 'UBND quận Cầu Giấy, Thành phố Hà Nội', procReason: 'Người thi hành công vụ gây thiệt hại thuộc UBND quận Cầu Giấy quản lý.',
                 history: [h('Tiếp nhận yêu cầu', 'canbonv', '09:00 01/09/2026'), h('Phân công cán bộ', 'tpbt', '09:15 03/09/2026'), h('Tiếp nhận hồ sơ', 'canbonv', '10:00 03/09/2026', 'Hồ sơ chuyển [Đang thực hiện].')]
             })),
             base('XD-2026-105', Object.assign(person('Trịnh Văn Hùng', '08/08/1975', '001075009876', '0912000105', '', 'Tỉnh Lâm Đồng', '24778 - Phường Xuân Hương - Đà Lạt', 'Số 3 Lê Hồng Phong'), {
-                status: STATUS.CHO_PHE_DUYET, date: '28/08/2026', receivedAt: '08:20 28/08/2026', chuTri: 'canbonv', phoiHop: [], linhVuc: 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ',
-                hanhVi: 'Kê biên, bán đấu giá tài sản không đúng quy định.', routes: btpRoutes('canbonv', []),
+                status: STATUS.CHO_PHE_DUYET, date: '28/08/2026', receivedAt: '08:20 28/08/2026', chuTri: 'canbonv', linhVuc: 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ',
+                hanhVi: 'Kê biên, bán đấu giá tài sản không đúng quy định.', routes: btpRoutes('canbonv'),
                 procBasis: 'Khoản 2 Điều 40 Luật TNBTCNN', procTargetAgency: 'Cục Thi hành án dân sự tỉnh Lâm Đồng', procReason: 'Chấp hành viên thuộc Cục THADS tỉnh Lâm Đồng tổ chức thi hành.',
                 approval: { kind: 'Hoàn thành xác định', content: 'Trình phê duyệt kết quả xác định cơ quan giải quyết bồi thường.', files: [], path: ['PLN-02', 'CĐK-01'], level: 0, steps: [], submittedBy: 'canbonv', submittedAt: '16:00 06/10/2026', pending: { since: '16:00 06/10/2026' } },
                 history: [h('Tiếp nhận yêu cầu', 'canbonv', '08:20 28/08/2026'), h('Phân công cán bộ', 'tpbt', '09:15 03/09/2026'), h('Tiếp nhận hồ sơ', 'canbonv', '10:00 03/09/2026'), h('Trình phê duyệt', 'canbonv', '16:00 06/10/2026', 'Hoàn thành xác định. Trình Phòng Quản lý nghiệp vụ về bồi thường nhà nước.')]
             })),
             base('XD-2026-106', Object.assign(person('Đặng Thu Hương', '19/02/1992', '001192004455', '0912000106', 'huong.dt@gmail.com', 'Thành phố Hà Nội', '00007 - Phường Cầu Giấy', 'Số 40 Xuân Thủy'), {
-                status: STATUS.CHO_PHE_DUYET, date: '25/08/2026', receivedAt: '08:10 25/08/2026', chuTri: 'canbonv', phoiHop: [], nycGender: 'Nữ',
-                hanhVi: 'Thu hồi đất không đúng trình tự.', routes: btpRoutes('canbonv', []),
+                status: STATUS.CHO_PHE_DUYET, date: '25/08/2026', receivedAt: '08:10 25/08/2026', chuTri: 'canbonv', nycGender: 'Nữ',
+                hanhVi: 'Thu hồi đất không đúng trình tự.', routes: btpRoutes('canbonv'),
                 procBasis: 'Khoản 1 Điều 35 Luật TNBTCNN', procTargetAgency: 'UBND quận Cầu Giấy, Thành phố Hà Nội', procReason: 'Quyết định thu hồi đất do UBND quận Cầu Giấy ban hành.',
                 approval: { kind: 'Hoàn thành xác định', content: 'Kính trình phê duyệt.', files: [], path: ['PLN-02', 'CĐK-01'], level: 1, steps: [{ unitId: 'PLN-02', userId: 'tpbt', action: 'Phê duyệt', note: '', at: '09:00 07/10/2026' }], submittedBy: 'canbonv', submittedAt: '17:00 06/10/2026', pending: { since: '09:00 07/10/2026' } },
                 history: [h('Tiếp nhận yêu cầu', 'canbonv', '08:10 25/08/2026'), h('Trình phê duyệt', 'canbonv', '17:00 06/10/2026', 'Hoàn thành xác định.'), h('Phê duyệt', 'tpbt', '09:00 07/10/2026', 'Phê duyệt cấp Phòng Quản lý nghiệp vụ về bồi thường nhà nước; chuyển Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.')]
             })),
             base('XD-2026-107', Object.assign(person('Ngô Quang Vinh', '30/03/1980', '001080007788', '0912000107', '', 'Thành phố Hà Nội', '00001 - Phường Ba Đình', 'Số 2 Đội Cấn'), {
-                status: STATUS.BI_TRA_LAI, date: '20/08/2026', receivedAt: '08:00 20/08/2026', chuTri: 'canbonv', phoiHop: [],
-                hanhVi: 'Bị buộc thôi việc trái pháp luật.', routes: btpRoutes('canbonv', []),
+                status: STATUS.BI_TRA_LAI, date: '20/08/2026', receivedAt: '08:00 20/08/2026', chuTri: 'canbonv',
+                hanhVi: 'Bị buộc thôi việc trái pháp luật.', routes: btpRoutes('canbonv'),
                 procBasis: 'Khoản 1 Điều 35 Luật TNBTCNN', procTargetAgency: 'UBND quận Hoàn Kiếm, Thành phố Hà Nội', procReason: 'Quyết định buộc thôi việc do UBND quận Hoàn Kiếm ban hành.',
                 approval: { kind: 'Hoàn thành xác định', content: '', files: [], path: ['PLN-02', 'CĐK-01'], level: 1, steps: [{ unitId: 'PLN-02', userId: 'tpbt', action: 'Phê duyệt', note: '', at: '10:00 05/10/2026' }, { unitId: 'CĐK-01', userId: 'cuctruong', action: 'Từ chối phê duyệt', note: 'Bổ sung căn cứ xác định người thi hành công vụ.', at: '15:00 05/10/2026' }], submittedBy: 'canbonv', submittedAt: '08:00 05/10/2026', pending: null },
                 returned: { reason: 'Bổ sung căn cứ xác định người thi hành công vụ.', by: 'cuctruong', unitId: 'CĐK-01', at: '15:00 05/10/2026', kind: 'Hoàn thành xác định' },
                 history: [h('Trình phê duyệt', 'canbonv', '08:00 05/10/2026', 'Hoàn thành xác định.'), h('Phê duyệt', 'tpbt', '10:00 05/10/2026'), h('Từ chối phê duyệt', 'cuctruong', '15:00 05/10/2026', 'Trả lại cán bộ chủ trì. Lý do: Bổ sung căn cứ xác định người thi hành công vụ.')]
             })),
             base('XD-2026-108', Object.assign(person('Lý Thị Ngọc', '11/12/1988', '001188003322', '0912000108', 'ngoc.lt@gmail.com', 'Tỉnh Lâm Đồng', '24781 - Phường Lâm Viên - Đà Lạt', 'Số 10 Phan Đình Phùng'), {
-                status: STATUS.CHO_CHUYEN, date: '15/08/2026', receivedAt: '08:00 15/08/2026', chuTri: 'canbonv', phoiHop: [], nycGender: 'Nữ', linhVuc: 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ',
-                hanhVi: 'Cưỡng chế giao tài sản không đúng đối tượng.', routes: btpRoutes('canbonv', []),
+                status: STATUS.CHO_CHUYEN, date: '15/08/2026', receivedAt: '08:00 15/08/2026', chuTri: 'canbonv', nycGender: 'Nữ', linhVuc: 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ',
+                hanhVi: 'Cưỡng chế giao tài sản không đúng đối tượng.', routes: btpRoutes('canbonv'),
                 procBasis: 'Khoản 2 Điều 40 Luật TNBTCNN', procTargetAgency: 'Cục Thi hành án dân sự tỉnh Lâm Đồng', procReason: 'Hành vi do Chấp hành viên Cục THADS tỉnh Lâm Đồng thực hiện.',
                 approval: { kind: 'Hoàn thành xác định', content: '', files: [], path: ['PLN-02', 'CĐK-01'], level: 1, done: true, steps: [{ unitId: 'PLN-02', userId: 'tpbt', action: 'Phê duyệt', note: '', at: '09:00 01/10/2026' }, { unitId: 'CĐK-01', userId: 'cuctruong', action: 'Phê duyệt', note: '', at: '14:00 01/10/2026' }], submittedBy: 'canbonv', submittedAt: '08:00 01/10/2026', pending: null },
                 history: [h('Trình phê duyệt', 'canbonv', '08:00 01/10/2026', 'Hoàn thành xác định.'), h('Phê duyệt', 'tpbt', '09:00 01/10/2026'), h('Phê duyệt', 'cuctruong', '14:00 01/10/2026', 'Phê duyệt cấp cuối (Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước): Hoàn thành xác định. Hồ sơ chuyển [Chờ chuyển CQGQBT].')]
             })),
             base('XD-2026-109', Object.assign(person('Mạc Văn Toàn', '05/05/1970', '001070001199', '0912000109', '', 'Tỉnh Lâm Đồng', '24784 - Xã Đức Trọng', 'Thôn 3'), {
-                status: STATUS.CHO_CHUYEN, date: '12/08/2026', receivedAt: '08:00 12/08/2026', chuTri: 'canbonv', phoiHop: [], linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ',
-                hanhVi: 'Áp dụng biện pháp khẩn cấp tạm thời không đúng.', routes: btpRoutes('canbonv', []),
+                status: STATUS.CHO_CHUYEN, date: '12/08/2026', receivedAt: '08:00 12/08/2026', chuTri: 'canbonv', linhVuc: 'TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ',
+                hanhVi: 'Áp dụng biện pháp khẩn cấp tạm thời không đúng.', routes: btpRoutes('canbonv'),
                 procBasis: 'Khoản 2 Điều 40 Luật TNBTCNN', procTargetAgency: 'Tòa án nhân dân tỉnh Lâm Đồng', procReason: 'Thẩm phán Tòa án nhân dân tỉnh Lâm Đồng ra quyết định áp dụng.',
                 approval: { kind: 'Hoàn thành xác định', content: '', files: [], path: ['PLN-02', 'CĐK-01'], level: 1, done: true, steps: [{ unitId: 'PLN-02', userId: 'tpbt', action: 'Phê duyệt', note: '', at: '09:00 28/09/2026' }, { unitId: 'CĐK-01', userId: 'cuctruong', action: 'Phê duyệt', note: '', at: '10:00 28/09/2026' }], submittedBy: 'canbonv', submittedAt: '08:00 28/09/2026', pending: null },
                 history: [h('Trình phê duyệt', 'canbonv', '08:00 28/09/2026', 'Hoàn thành xác định.'), h('Phê duyệt', 'tpbt', '09:00 28/09/2026'), h('Phê duyệt', 'cuctruong', '10:00 28/09/2026', 'Phê duyệt cấp cuối (Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước): Hoàn thành xác định. Hồ sơ chuyển [Chờ chuyển CQGQBT].')]
             })),
             base('XD-2026-110', Object.assign(person('Tô Thị Hạnh', '14/07/1987', '001187005566', '0912000110', 'hanh.tt@gmail.com', 'Thành phố Hà Nội', '00010 - Phường Thanh Xuân', 'Số 70 Nguyễn Tuân'), {
-                status: STATUS.HOAN_THANH, date: '01/08/2026', receivedAt: '08:00 01/08/2026', chuTri: 'canbonv', phoiHop: [], nycGender: 'Nữ',
-                hanhVi: 'Thu hồi giấy chứng nhận quyền sử dụng đất trái pháp luật.', routes: btpRoutes('canbonv', []),
+                status: STATUS.HOAN_THANH, date: '01/08/2026', receivedAt: '08:00 01/08/2026', chuTri: 'canbonv', nycGender: 'Nữ',
+                hanhVi: 'Thu hồi giấy chứng nhận quyền sử dụng đất trái pháp luật.', routes: btpRoutes('canbonv'),
                 procBasis: 'Khoản 1 Điều 35 Luật TNBTCNN', procTargetAgency: 'UBND quận Cầu Giấy, Thành phố Hà Nội', procReason: 'Quyết định thu hồi do UBND quận Cầu Giấy ban hành.', claimCode: 'BT-2026-201',
                 transfer: { content: 'Chuyển hồ sơ để UBND quận Cầu Giấy thụ lý giải quyết theo thẩm quyền.', files: [{ name: 'Van_ban_chuyen_ho_so_XD-2026-110.pdf' }], at: '10:00 20/09/2026', by: 'canbonv', ycbtCode: 'BT-2026-201', targetUnitId: 'UBND-CG' },
                 history: [h('Chuyển CQGQBT', 'canbonv', '10:00 20/09/2026', 'Chuyển UBND quận Cầu Giấy, Thành phố Hà Nội; tạo hồ sơ YCBT BT-2026-201.')]
@@ -1778,7 +1796,7 @@
                 date: '20/09/2026', receivedAt: '10:00 20/09/2026', createdBy: 'canbonv',
                 attachedDocs: [{ name: 'Đơn yêu cầu xác định cơ quan giải quyết bồi thường', file: 'Don_yeu_cau_XD-2026-110.pdf' }],
                 transferContent: 'Chuyển hồ sơ để UBND quận Cầu Giấy thụ lý giải quyết theo thẩm quyền.', transferFiles: [{ name: 'Van_ban_chuyen_ho_so_XD-2026-110.pdf' }],
-                routes: [], chuTri: null, phoiHop: [], approval: null,
+                routes: [], chuTri: null, approval: null,
                 history: [h('Nhận hồ sơ từ Xác định CQGQBT', 'canbonv', '10:00 20/09/2026', 'Hồ sơ XD-2026-110 chuyển đến. Chờ lãnh đạo UBND quận Cầu Giấy, Thành phố Hà Nội phân công.')]
             }),
             // Phiếu trình mẫu của phân hệ Giải quyết yêu cầu bồi thường (Chờ duyệt / Bị trả lại theo từng Nội dung trình)
@@ -1786,7 +1804,7 @@
                 const P = ['PLN-02', 'CĐK-01'];
                 const gq = (code, nyc, status, extra) => Object.assign({
                     id: 'WF-' + code, code, module: 'YCBT', loaiYeuCau: REQUEST_TYPE_YCBT, nguonHoSo: 'Tiếp nhận', nycName: nyc, nyc,
-                    rootUnitId: 'BTP-01', currentUnitId: 'PLN-02', status, chuTri: 'canbonv', phoiHop: [], routes: btpRoutes('canbonv'),
+                    rootUnitId: 'BTP-01', currentUnitId: 'PLN-02', status, chuTri: 'canbonv', routes: btpRoutes('canbonv'),
                     linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', approval: null, returned: null, history: []
                 }, extra);
                 const appr = (kind, content, level, steps, assignees, at, more) => Object.assign({

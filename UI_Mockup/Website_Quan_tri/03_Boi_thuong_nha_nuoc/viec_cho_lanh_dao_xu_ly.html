@@ -147,8 +147,8 @@
             </div>
             <div class="wf-modal-body">
                 <div class="muted" id="aContext" style="margin-bottom:10px;"></div>
-                <span class="form-label">Hình thức phân công<span class="required">*</span></span>
-                <div class="radio-row" id="aModeRow"></div>
+                <span class="form-label">Hướng xử lý</span>
+                <div class="muted" id="aModeRow" style="margin-bottom:10px;"></div>
                 <div id="aUnitBlock" class="form-group">
                     <span class="form-label">Đơn vị nhận<span class="required">*</span></span>
                     <select id="aUnit" class="form-control"></select>
@@ -157,13 +157,8 @@
                 <div id="aOfficerBlock">
                     <div class="form-group">
                         <span class="form-label">Cán bộ chủ trì<span class="required">*</span></span>
-                        <select id="aChuTri" class="form-control" onchange="renderPhoiHop()"></select>
+                        <select id="aChuTri" class="form-control"></select>
                         <div class="error-text" id="aChuTriErr">Đây là trường bắt buộc</div>
-                    </div>
-                    <div class="form-group">
-                        <span class="form-label">Cán bộ phối hợp</span>
-                        <div class="check-list" id="aPhoiHop"></div>
-                        <div class="hint">Cán bộ phối hợp được xem hồ sơ và bổ sung tài liệu; không được trình phê duyệt.</div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -216,12 +211,12 @@
                 <div class="muted" id="tlContext" style="margin-bottom:10px;"></div>
                 <div class="form-group">
                     <span class="form-label">Cán bộ chủ trì giải quyết<span class="required">*</span></span>
-                    <select id="tlChuTri" class="form-control" onchange="renderThuLyPhoiHop()"></select>
+                    <select id="tlChuTri" class="form-control" onchange="renderThuLyOthers()"></select>
                     <div class="error-text" id="tlChuTriErr">Đây là trường bắt buộc</div>
                 </div>
                 <div class="form-group">
                     <span class="form-label">Cán bộ cùng giải quyết</span>
-                    <div class="check-list" id="tlPhoiHop"></div>
+                    <div class="check-list" id="tlOthers"></div>
                     <div class="hint">Hồ sơ chỉ hiển thị với các cán bộ được cử giải quyết.</div>
                 </div>
                 <div class="form-group">
@@ -288,7 +283,7 @@
 
     <div id="toast" class="toast-notif"></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261015e"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261019b"></script>
     <script>
         const WF = BTNN_WF;
         const WT = WF.WORK_TYPES;
@@ -535,6 +530,7 @@
         }
 
         // ---------- Phân công ----------
+        let assignMode = ''; // hướng xử lý theo cấu hình luồng của đơn vị đang phân công
         function openAssign(code) {
             const rec = WF.getRecord(code);
             const me = WF.getCurrentUserId();
@@ -544,32 +540,23 @@
             const node = WF.getNodeConfig(rec.currentUnitId, WF.flowTypeOf(rec)) || {};
             document.getElementById('aCode').textContent = code;
             document.getElementById('aContext').textContent = `Đơn vị đang phân công: ${WF.unitName(rec.currentUnitId)} - Người yêu cầu: ${rec.nycName || '--'}`;
-            const modes = [];
-            if (node.allowUnit && (node.units || []).length) modes.push(['unit', 'Chuyển đơn vị']);
-            if (node.allowOfficer && (node.officers || []).length) modes.push(['officer', 'Phân công cán bộ']);
-            document.getElementById('aModeRow').innerHTML = modes.map((m, i) => `<label><input type="radio" name="aMode" value="${m[0]}" ${i === 0 ? 'checked' : ''} onchange="toggleAssignMode()"> ${m[1]}</label>`).join('') || '<span class="muted">Đơn vị chưa được cấu hình hướng xử lý.</span>';
-            document.getElementById('aUnit').innerHTML = `<option value="">Chọn đơn vị nhận...</option>` + (node.units || []).map(u => `<option value="${esc(u)}">${esc(WF.unitName(u))}</option>`).join('');
-            document.getElementById('aChuTri').innerHTML = `<option value="">Chọn cán bộ chủ trì...</option>` + (node.officers || []).map(u => `<option value="${esc(u)}">${esc(WF.userLabel(u))}</option>`).join('');
+            // Mỗi đơn vị chỉ có 01 hướng xử lý theo cấu hình luồng: Chuyển đơn vị hoặc Phân công cán bộ
+            assignMode = node.allowUnit && (node.units || []).length ? 'unit' : node.allowOfficer && (node.officers || []).length ? 'officer' : '';
+            document.getElementById('aModeRow').innerHTML = assignMode === 'unit' ? 'Chuyển đơn vị' : assignMode === 'officer' ? 'Phân công cán bộ' : 'Đơn vị chưa được cấu hình hướng xử lý.';
+            document.getElementById('aUnit').innerHTML = `<option value="">Chọn đơn vị nhận...</option>` + (assignMode === 'unit' ? node.units : []).map(u => `<option value="${esc(u)}">${esc(WF.unitName(u))}</option>`).join('');
+            document.getElementById('aChuTri').innerHTML = `<option value="">Chọn cán bộ chủ trì...</option>` + (assignMode === 'officer' ? node.officers : []).map(u => `<option value="${esc(u)}">${esc(WF.userLabel(u))}</option>`).join('');
             document.getElementById('aNote').value = '';
             ['aUnitErr', 'aChuTriErr'].forEach(id => document.getElementById(id).style.display = 'none');
-            renderPhoiHop();
             toggleAssignMode();
             openOverlay('assignOverlay');
         }
         function toggleAssignMode() {
-            const mode = (document.querySelector('input[name="aMode"]:checked') || {}).value;
+            const mode = assignMode;
             document.getElementById('aUnitBlock').style.display = mode === 'unit' ? 'block' : 'none';
             document.getElementById('aOfficerBlock').style.display = mode === 'officer' ? 'block' : 'none';
         }
-        function renderPhoiHop() {
-            const rec = WF.getRecord(actingCode);
-            const node = (rec && WF.getNodeConfig(rec.currentUnitId, WF.flowTypeOf(rec))) || {};
-            const chuTri = document.getElementById('aChuTri').value;
-            const list = (node.officers || []).filter(u => u !== chuTri);
-            document.getElementById('aPhoiHop').innerHTML = list.map(u => `<label><input type="checkbox" value="${esc(u)}"> ${esc(WF.userLabel(u))}</label>`).join('') || '<span class="muted">Không có cán bộ khác.</span>';
-        }
         function submitAssign() {
-            const mode = (document.querySelector('input[name="aMode"]:checked') || {}).value;
+            const mode = assignMode;
             const note = document.getElementById('aNote').value.trim();
             let res;
             if (mode === 'unit') {
@@ -579,8 +566,7 @@
             } else if (mode === 'officer') {
                 const chuTri = document.getElementById('aChuTri').value;
                 if (!chuTri) { document.getElementById('aChuTriErr').style.display = 'block'; return; }
-                const ph = Array.from(document.querySelectorAll('#aPhoiHop input:checked')).map(x => x.value);
-                res = WF.assignToOfficers(actingCode, chuTri, ph, note);
+                res = WF.assignToOfficers(actingCode, chuTri, note);
             } else return;
             closeOverlay('assignOverlay');
             showToast(res.ok ? `Đã phân công hồ sơ ${actingCode}. Trạng thái: [${res.record.status}].` : res.message, res.ok ? 'success' : 'error');
@@ -653,19 +639,20 @@
             document.getElementById('tlChuTri').innerHTML = `<option value="">Chọn cán bộ chủ trì...</option>` + opts.map(u => `<option value="${esc(u)}" ${u === rec.chuTri ? 'selected' : ''}>${esc(WF.userLabel(u))}</option>`).join('');
             document.getElementById('tlNote').value = '';
             document.getElementById('tlChuTriErr').style.display = 'none';
-            renderThuLyPhoiHop();
+            renderThuLyOthers();
             openOverlay('thuLyOverlay');
         }
-        function renderThuLyPhoiHop() {
+        // Cán bộ cùng giải quyết (thụ lý cử nhiều cán bộ giải quyết)
+        function renderThuLyOthers() {
             const rec = WF.getRecord(actingCode);
             const chuTri = document.getElementById('tlChuTri').value;
             const list = WF.thuLyOfficerOptions(rec).filter(u => u !== chuTri);
-            document.getElementById('tlPhoiHop').innerHTML = list.map(u => `<label><input type="checkbox" value="${esc(u)}"> ${esc(WF.userLabel(u))}</label>`).join('') || '<span class="muted">Không có cán bộ khác.</span>';
+            document.getElementById('tlOthers').innerHTML = list.map(u => `<label><input type="checkbox" value="${esc(u)}"> ${esc(WF.userLabel(u))}</label>`).join('') || '<span class="muted">Không có cán bộ khác.</span>';
         }
         function submitThuLy() {
             const chuTri = document.getElementById('tlChuTri').value;
             if (!chuTri) { document.getElementById('tlChuTriErr').style.display = 'block'; return; }
-            const others = Array.from(document.querySelectorAll('#tlPhoiHop input:checked')).map(x => x.value);
+            const others = Array.from(document.querySelectorAll('#tlOthers input:checked')).map(x => x.value);
             const res = WF.acceptCase(actingCode, [chuTri].concat(others), document.getElementById('tlNote').value.trim());
             closeOverlay('thuLyOverlay');
             showToast(res.ok ? `Đã thụ lý hồ sơ ${actingCode}. Trạng thái: [${res.record.requestKind === 'honor' ? 'Đang phục hồi danh dự' : res.record.status}].` : res.message, res.ok ? 'success' : 'error');

@@ -123,7 +123,13 @@
             if (!id) { draft = null; renderConfig(); return; }
             const cfg = WF.getFlowConfig(flowType);
             draft = JSON.parse(JSON.stringify(cfg[id] || {}));
-            [id].concat(WF.getDescendants(id)).forEach(u => { if (!draft[u]) draft[u] = blankNode(); });
+            [id].concat(WF.getDescendants(id)).forEach(u => {
+                if (!draft[u]) draft[u] = blankNode();
+                const n = draft[u];
+                // 01 hướng xử lý: không có đơn vị cấp dưới thì không Chuyển đơn vị; bật cả hai thì giữ Chuyển đơn vị
+                if (n.allowUnit && !WF.getChildren(u).length) n.allowUnit = false;
+                if (n.allowUnit && n.allowOfficer) n.allowOfficer = false;
+            });
             renderConfig();
         }
 
@@ -155,12 +161,19 @@
                             <div class="check-list">${unitUsers.length ? unitUsers.map(x => `<label><input type="checkbox" ${n.leaders.includes(x.id) ? 'checked' : ''} onchange="toggleArr('${esc(u)}','leaders','${esc(x.id)}',this.checked)"> ${esc(x.name)} <span class="muted">- ${esc(x.title)}</span></label>`).join('') : '<span class="muted">Đơn vị chưa có tài khoản cán bộ.</span>'}</div>
                         </div>
                         <div>
-                            <div class="col-title"><label style="display:flex; gap:6px; align-items:center; cursor:pointer;"><input type="checkbox" ${n.allowUnit ? 'checked' : ''} ${children.length ? '' : 'disabled'} onchange="setFlag('${esc(u)}','allowUnit',this.checked)"> Cho phép chuyển đơn vị</label></div>
-                            <div class="check-list ${n.allowUnit ? '' : 'disabled'}">${children.length ? children.map(c => `<label><input type="checkbox" ${n.units.includes(c.id) ? 'checked' : ''} onchange="toggleArr('${esc(u)}','units','${esc(c.id)}',this.checked)"> ${esc(c.name)}</label>`).join('') : '<span class="muted">Không có đơn vị cấp dưới.</span>'}</div>
+                            <div class="col-title"><i class="fa-solid fa-route"></i> Hướng xử lý</div>
+                            <div class="check-list">
+                                <label style="${children.length ? '' : 'opacity:0.45; cursor:not-allowed;'}"><input type="radio" name="dir_${esc(u)}" value="unit" ${n.allowUnit ? 'checked' : ''} ${children.length ? '' : 'disabled'} onchange="setDirection('${esc(u)}','unit')"> Chuyển đơn vị</label>
+                                <label><input type="radio" name="dir_${esc(u)}" value="officer" ${n.allowOfficer ? 'checked' : ''} onchange="setDirection('${esc(u)}','officer')"> Phân công cán bộ</label>
+                            </div>
+                            <div class="muted" style="margin-top:4px;">${children.length ? 'Mỗi đơn vị chỉ chọn 01 hướng xử lý.' : 'Không có đơn vị cấp dưới: chỉ được Phân công cán bộ.'}</div>
                         </div>
                         <div>
-                            <div class="col-title"><label style="display:flex; gap:6px; align-items:center; cursor:pointer;"><input type="checkbox" ${n.allowOfficer ? 'checked' : ''} onchange="setFlag('${esc(u)}','allowOfficer',this.checked)"> Cho phép phân công cán bộ</label></div>
-                            <div class="check-list ${n.allowOfficer ? '' : 'disabled'}">${subUsers.length ? subUsers.map(x => `<label><input type="checkbox" ${n.officers.includes(x.id) ? 'checked' : ''} onchange="toggleArr('${esc(u)}','officers','${esc(x.id)}',this.checked)"> ${esc(x.name)} <span class="muted">- ${esc(x.title)}</span></label>`).join('') : '<span class="muted">Không có cán bộ.</span>'}</div>
+                            ${n.allowUnit ? `<div class="col-title"><i class="fa-solid fa-building"></i> Đơn vị nhận</div>
+                            <div class="check-list">${children.map(c => `<label><input type="checkbox" ${n.units.includes(c.id) ? 'checked' : ''} onchange="toggleArr('${esc(u)}','units','${esc(c.id)}',this.checked)"> ${esc(c.name)}</label>`).join('')}</div>`
+                            : n.allowOfficer ? `<div class="col-title"><i class="fa-solid fa-user-check"></i> Cán bộ</div>
+                            <div class="check-list">${subUsers.length ? subUsers.map(x => `<label><input type="checkbox" ${n.officers.includes(x.id) ? 'checked' : ''} onchange="toggleArr('${esc(u)}','officers','${esc(x.id)}',this.checked)"> ${esc(x.name)} <span class="muted">- ${esc(x.title)}</span></label>`).join('') : '<span class="muted">Không có cán bộ.</span>'}</div>`
+                            : `<div class="col-title"><i class="fa-solid fa-list-check"></i> Danh sách theo hướng xử lý</div><span class="muted">Chọn hướng xử lý để chọn đơn vị nhận hoặc cán bộ.</span>`}
                         </div>
                     </div>
                 </div>`;
@@ -176,8 +189,8 @@
                 if (!n || seen.includes(unitId)) return;
                 const label = `${prefix}${prefix ? ' → ' : ''}Lãnh đạo ${WF.unitName(unitId)}${n.leaders.length ? '' : ' (chưa chọn lãnh đạo)'}`;
                 let branched = false;
-                if (n.allowOfficer && n.officers.length) { lines.push(`${label} → Cán bộ`); branched = true; }
                 if (n.allowUnit) n.units.forEach(c => { branched = true; walk(c, label, seen.concat(unitId)); });
+                else if (n.allowOfficer && n.officers.length) { lines.push(`${label} → Cán bộ`); branched = true; }
                 if (!branched) lines.push(`${label} <span style="color:#b91c1c;">(chưa có hướng xử lý)</span>`);
             })(selectedRoot, '', []);
             document.getElementById('flowPreview').innerHTML = `<div style="font-weight:700; margin-bottom:4px;"><i class="fa-solid fa-route"></i> Các nhánh luồng phân công</div>${lines.map(l => `<div>• ${l}</div>`).join('')}<div class="muted" style="margin-top:6px;">Luồng phê duyệt đi ngược chiều luồng phân công thực tế của từng hồ sơ.</div>`;
@@ -190,7 +203,14 @@
             if (!on && i >= 0) arr.splice(i, 1);
             renderPreview();
         }
-        function setFlag(unitId, field, on) { draft[unitId][field] = on; renderConfig(); }
+        // Chọn 01 hướng xử lý: Chuyển đơn vị (chỉ khi có đơn vị cấp dưới) hoặc Phân công cán bộ; danh sách của hướng kia bị xóa khi lưu
+        function setDirection(unitId, dir) {
+            const n = draft[unitId];
+            if (dir === 'unit' && !WF.getChildren(unitId).length) return;
+            n.allowUnit = dir === 'unit';
+            n.allowOfficer = dir === 'officer';
+            renderConfig();
+        }
 
         function validate() {
             const errors = [];
@@ -199,8 +219,9 @@
                 const used = u === selectedRoot || Object.values(draft).some(p => p.allowUnit && p.units.includes(u));
                 if (!used) return;
                 if (!n.leaders.length) errors.push(`${WF.unitName(u)}: chưa chọn nhóm lãnh đạo.`);
-                if (n.allowUnit && !n.units.length) errors.push(`${WF.unitName(u)}: đã chọn "Cho phép chuyển đơn vị" nhưng chưa chọn đơn vị nhận.`);
-                if (n.allowOfficer && !n.officers.length) errors.push(`${WF.unitName(u)}: đã chọn "Cho phép phân công cán bộ" nhưng chưa chọn cán bộ.`);
+                if (n.allowUnit && n.allowOfficer) errors.push(`${WF.unitName(u)}: chỉ được chọn 01 hướng xử lý (chuyển đơn vị hoặc phân công cán bộ).`);
+                if (n.allowUnit && !n.units.length) errors.push(`${WF.unitName(u)}: đã chọn hướng "Chuyển đơn vị" nhưng chưa chọn đơn vị nhận.`);
+                if (n.allowOfficer && !n.officers.length) errors.push(`${WF.unitName(u)}: đã chọn hướng "Phân công cán bộ" nhưng chưa chọn cán bộ.`);
                 if (!n.allowUnit && !n.allowOfficer) errors.push(`${WF.unitName(u)}: chưa chọn hướng xử lý (chuyển đơn vị hoặc phân công cán bộ).`);
             });
             return errors;
@@ -214,7 +235,9 @@
             const clean = {};
             Object.keys(draft).forEach(u => {
                 const n = draft[u];
-                if (n.leaders.length || n.allowUnit || n.allowOfficer) clean[u] = { leaders: n.leaders.slice(), allowUnit: n.allowUnit, units: n.allowUnit ? n.units.slice() : [], allowOfficer: n.allowOfficer, officers: n.allowOfficer ? n.officers.slice() : [] };
+                // Chỉ lưu danh sách của hướng xử lý đã chọn; danh sách của hướng còn lại bị xóa
+                const toUnit = !!n.allowUnit, toOfficer = !toUnit && !!n.allowOfficer;
+                if (n.leaders.length || toUnit || toOfficer) clean[u] = { leaders: n.leaders.slice(), allowUnit: toUnit, units: toUnit ? n.units.slice() : [], allowOfficer: toOfficer, officers: toOfficer ? n.officers.slice() : [] };
             });
             cfg[selectedRoot] = clean;
             WF.saveFlowConfig(cfg, flowType);

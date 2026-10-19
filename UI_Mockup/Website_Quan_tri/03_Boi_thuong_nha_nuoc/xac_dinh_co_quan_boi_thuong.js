@@ -577,12 +577,12 @@ function buildStpSeed() {
         hinhThucTiepNhan: 'Trực tiếp', hinhThucNhan: 'Phương thức điện tử', vanBanCanCu: [],
         attachedDocs: [{ name: 'Đơn yêu cầu xác định cơ quan giải quyết bồi thường', file: `Don_yeu_cau_${code}.pdf` }],
         procBasis: '', procTargetAgency: '', procReason: '', procDecisionFile: '', claimCode: '-',
-        phoiHop: [], approval: null
+        approval: null
     }, extra);
     // Lượt phân công: Giám đốc Sở chuyển Phòng Hành chính tư pháp; Trưởng phòng phân công cán bộ xử lý
     const routes = (chuTri, day, lastState) => [
         { id: 'R1', type: 'unit', fromUnitId: 'STP-HN', fromUserId: 'gdso_hn', toUnitId: 'STP-HN-HCTP', note: 'Giao Phòng Hành chính tư pháp xem xét, xử lý.', at: `09:00 ${day}`, state: 'Đã xử lý' },
-        { id: 'R2', type: 'officer', fromUnitId: 'STP-HN-HCTP', fromUserId: 'tp_hctp_hn', chuTri, phoiHop: [], note: '', at: `14:00 ${day}`, state: lastState }
+        { id: 'R2', type: 'officer', fromUnitId: 'STP-HN-HCTP', fromUserId: 'tp_hctp_hn', chuTri, note: '', at: `14:00 ${day}`, state: lastState }
     ];
     return [
         base('XD-2026-121', {
@@ -671,7 +671,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Phạm vi xem: cán bộ chủ trì, cán bộ phối hợp, người tạo, lãnh đạo các đơn vị trên luồng phân công/phê duyệt.
+// Phạm vi xem: cán bộ chủ trì, người tạo, lãnh đạo các đơn vị trên luồng phân công/phê duyệt.
 // Hồ sơ Chờ phân công/Đang phân công nằm tại Tiếp nhận hồ sơ (Lãnh đạo Phân công tại tab Chờ xử lý).
 // UBND cấp tỉnh: chỉ xem (chỉ đọc) hồ sơ của các Sở Tư pháp trực thuộc.
 let readOnlyView = false;
@@ -706,7 +706,7 @@ function migrateLegacySeed() {
         if (rec.status === 'Hoàn thành' && (!rec.claimCode || rec.claimCode === '-')) rec.status = BTNN_WF.STATUS.CHO_CHUYEN;
         Object.assign(rec, {
             id: 'WF-' + rec.code, module: 'XD', loaiYeuCau: BTNN_WF.REQUEST_TYPE_XD, source: 'Tạo trực tiếp',
-            rootUnitId: 'BTP-01', currentUnitId: 'PLN-02', createdBy: 'canbonv', chuTri: 'canbonv', phoiHop: [],
+            rootUnitId: 'BTP-01', currentUnitId: 'PLN-02', createdBy: 'canbonv', chuTri: 'canbonv',
             routes: [], approval: null, receivedAt: rec.receivedAt || rec.date,
             history: [{ at: (rec.date || '') , userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Tạo yêu cầu', note: `Trạng thái: ${rec.status}.` }]
         });
@@ -771,7 +771,7 @@ function isVisibleToMe(rec) {
     if ([BTNN_WF.STATUS.CHO_PHAN_CONG, BTNN_WF.STATUS.DANG_PHAN_CONG].includes(rec.status)) return false;
     // UBND cấp tỉnh: chỉ hồ sơ của các Sở Tư pháp trực thuộc
     if (isXdViewOnly()) return BTNN_WF.xdViewOnlyStpRoots(me).includes(rec.rootUnitId);
-    if (rec.chuTri === me || (rec.phoiHop || []).includes(me) || rec.createdBy === me) return true;
+    if (rec.chuTri === me || rec.createdBy === me) return true;
     const units = (rec.routes || []).map(r => r.fromUnitId).concat(rec.approval ? rec.approval.path : []);
     const ft = BTNN_WF.flowTypeOf(rec);
     return units.some(u => BTNN_WF.isLeaderOf(me, u, ft));
@@ -882,7 +882,6 @@ function renderXdHistoryHtml(rec) {
 }
 
 function isChuTri(item) { return item && item.chuTri === getMe(); }
-function isPhoiHop(item) { return item && (item.phoiHop || []).includes(getMe()); }
 
 function normalizeRequestData() {
     requestList.forEach(item => {
@@ -1469,7 +1468,6 @@ function showDetailScreen(id) {
         ? attachedDocs.map(doc => `
             <div style="font-weight: 600; color: #0F766E; margin-bottom: 6px;">
                 <i class="fa-solid fa-file-pdf"></i> ${escapeHtml(doc.name || 'Tài liệu')} - ${escapeHtml(doc.file || 'Chưa có file')}
-                ${doc.addedBy ? `<span style="font-weight:400; color:var(--text-muted);">(Phối hợp: ${escapeHtml(BTNN_WF.userName(doc.addedBy))})</span>` : ''}
                 ${doc.file ? `<a href="#" onclick="event.preventDefault(); previewNamedFile('${escapeAttr(doc.file)}');" style="margin-left: 12px; color: var(--secondary-color); text-decoration: none;"><i class="fa-solid fa-up-right-from-square"></i> Xem file</a>` : ''}
             </div>`).join('')
         : `<span style="color: var(--text-muted); font-style: italic;">Không có file đính kèm</span>`;
@@ -1525,7 +1523,6 @@ function showDetailScreen(id) {
     // Thông tin xử lý
     document.getElementById('dtRootUnit').innerHTML = unitWithTypeHtml(item.rootUnitId);
     document.getElementById('dtChuTri').innerText = item.chuTri ? BTNN_WF.userLabel(item.chuTri) : 'Chưa phân công';
-    document.getElementById('dtPhoiHop').innerText = (item.phoiHop || []).length ? item.phoiHop.map(BTNN_WF.userName).join(', ') : 'Không có';
     if (document.getElementById('dtApprovalWrap')) document.getElementById('dtApprovalWrap').style.display = 'none';
     const approvalFiles = item.approval && (item.approval.files || []).length
         ? `<div style="margin-top:8px; font-size:13px;"><strong>Văn bản đính kèm trình Lãnh đạo:</strong>${fileLinksHtml(item.approval.files)}</div>` : '';
@@ -1884,7 +1881,6 @@ function saveForm(isDraft) {
             currentUnitId: me.unitId,
             createdBy: me.id,
             chuTri: me.id,
-            phoiHop: [],
             routes: [],
             approval: null,
             history: [],
@@ -1956,7 +1952,6 @@ function resetFilters() {
     document.getElementById('filterStatus').value = '';
     document.getElementById('filterApprovalKind').value = '';
     document.getElementById('filterUnit').value = '';
-    document.getElementById('filterRole').value = '';
     const today = new Date();
     const threeMonthsAgo = new Date();
     threeMonthsAgo.setMonth(today.getMonth() - 3);
@@ -1972,7 +1967,6 @@ function filterData() {
     const name = document.getElementById('filterName').value.trim().toLowerCase();
     const lv = document.getElementById('filterLinhVuc').value;
     const status = document.getElementById('filterStatus').value;
-    const role = document.getElementById('filterRole').value;
     const approvalKind = document.getElementById('filterApprovalKind').value;
     const unit = document.getElementById('filterUnit').value;
 
@@ -1998,8 +1992,6 @@ function filterData() {
             if (unit.indexOf('type:') === 0) { if (authorityTypeOf(item) !== unit.slice(5)) return false; }
             else if (item.rootUnitId !== unit) return false;
         }
-        if (role === 'chuTri' && !isChuTri(item)) return false;
-        if (role === 'phoiHop' && !isPhoiHop(item)) return false;
         const itemDate = parseDate(item.receivedAt || item.date);
         if (itemDate) {
             if (fromDate && itemDate < fromDate) return false;
@@ -2044,7 +2036,7 @@ function renderTable() {
             }
         };
         const hanhVi = item.hanhVi || '';
-        const roleTag = isChuTri(item) ? '<span class="role-tag">Chủ trì</span>' : isPhoiHop(item) ? '<span class="role-tag coop">Phối hợp</span>' : '';
+        const roleTag = isChuTri(item) ? '<span class="role-tag">Chủ trì</span>' : '';
         tr.innerHTML = `
             <td style="text-align:center;">${startIdx + index + 1}</td>
             <td style="text-align:center;"><strong>${escapeHtml(item.code)}</strong></td>
@@ -2279,8 +2271,8 @@ document.addEventListener('click', function (event) {
 
 
 
-// ---------------- Popup dùng chung: Trình duyệt / Yêu cầu bổ sung / Từ chối / Chuyển CQGQBT / Bổ sung tài liệu ----------------
-const modalFiles = { submit: [], supplement: [], reject: [], transfer: [], coop: [] };
+// ---------------- Popup dùng chung: Trình duyệt / Yêu cầu bổ sung / Từ chối / Chuyển CQGQBT ----------------
+const modalFiles = { submit: [], supplement: [], reject: [], transfer: [] };
 
 function openXdModal(id) {
     const modal = document.getElementById(id);
@@ -2296,7 +2288,7 @@ function closeXdModal(id) {
 
 function addModalFiles(kind, input) {
     const files = Array.from(input.files || []).map(f => ({ name: f.name }));
-    modalFiles[kind] = kind === 'coop' ? files.slice(0, 1) : modalFiles[kind].concat(files);
+    modalFiles[kind] = modalFiles[kind].concat(files);
     input.value = '';
     renderModalFiles(kind);
     if (files.length) showToast(`Đính kèm tập tin: ${files.map(f => f.name).join(', ')} thành công!`, 'success');

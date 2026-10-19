@@ -455,6 +455,11 @@
                         <div class="error-message">Đây là trường bắt buộc</div>
                     </div>
                     <div class="form-group">
+                        <span class="form-label">Số điện thoại<span class="required">*</span></span>
+                        <input id="formPhone" class="form-control" placeholder="Nhập số điện thoại...">
+                        <div class="error-message" id="formPhoneError">Đây là trường bắt buộc</div>
+                    </div>
+                    <div class="form-group">
                         <span class="form-label">Tư cách người yêu cầu<span class="required">*</span></span>
                         <select id="formRequesterRole" class="form-control" onchange="toggleNbthBlock()">
                             <option value="Người bị thiệt hại">Người bị thiệt hại</option>
@@ -610,56 +615,24 @@
 
     <!-- Preview Modal for Phiếu tiếp nhận yêu cầu bồi thường (MH03) -->
     <div id="previewModalReceptionReceipt" class="confirm-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
-        <div class="sticky-modal-container" style="background:#fff; width:800px; max-width:95%; border-radius:8px; display:flex; flex-direction:column; max-height:90vh; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+        <div class="sticky-modal-container" style="background:#fff; width:900px; max-width:95%; border-radius:8px; display:flex; flex-direction:column; max-height:90vh; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
             <div class="confirm-modal-header" style="color:var(--primary-light); background-color:#f8fafc; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; padding:24px 24px 16px 24px;">
                 <div style="display:flex; align-items:center; gap:10px; font-size:16px; font-weight:700; color:var(--primary-light); text-transform:uppercase;">
                     <i class="fa-solid fa-print"></i> IN PHIẾU TIẾP NHẬN HỒ SƠ
                 </div>
                 <span onclick="closePreviewReceiptModal()" style="cursor:pointer; font-size:24px; font-weight:bold; color:#64748b; line-height:1;" title="Đóng">&times;</span>
             </div>
-            <div class="sticky-modal-body" id="printReceiptBody" style="padding:24px 32px; overflow-y:auto; flex:1; font-family:'Times New Roman', Times, serif; font-size:14.5px; line-height:1.6; color:#111;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
-                    <div style="text-align:center;">
-                        <div style="font-weight:bold; font-size:13px; text-transform:uppercase;" id="receiptHeaderAgency">SỞ TƯ PHÁP TP. HÀ NỘI</div>
-                        <div style="border-bottom:1px solid #000; width:140px; margin:6px auto 4px auto;"></div>
-                    </div>
-                    <div style="text-align:center;">
-                        <div style="font-weight:bold; font-size:13.5px; text-transform:uppercase;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
-                        <div style="font-weight:bold; font-size:13px; font-style:italic;">Độc lập - Tự do - Hạnh phúc</div>
-                        <div style="border-bottom:1px solid #000; width:160px; margin:4px auto;"></div>
-                    </div>
-                </div>
-                <div style="text-align:center; margin:20px 0 15px 0;">
-                    <h3 style="font-size:17px; font-weight:bold; text-transform:uppercase; margin:0 0 5px 0; color:#0f172a;">GIẤY TIẾP NHẬN HỒ SƠ</h3>
-                    <div style="font-style:italic; font-size:13.5px; color:#475569;" id="receiptSubTitle">(Về việc: Giải quyết yêu cầu bồi thường)</div>
-                </div>
-                <div id="receptionReceiptContent" style="margin-top:16px;">
-                    <!-- Nội dung các trường dữ liệu do JS render -->
-                </div>
-                <div style="display:flex; justify-content:space-between; margin-top:35px; text-align:center;">
-                    <div style="width:45%;">
-                        <div style="font-style:italic;">&nbsp;</div>
-                        <div style="font-weight:bold; margin-top:5px; text-transform:uppercase;">NGƯỜI NỘP HỒ SƠ</div>
-                        <div style="font-style:italic; font-size:13px; color:#64748b;">(Ký và ghi rõ họ tên)</div>
-                        <div style="height:75px;"></div>
-                        <div style="font-weight:bold; color:#0f172a;" id="receiptRequesterSigner">Người nộp</div>
-                    </div>
-                    <div style="width:45%;">
-                        <div style="font-style:italic; font-size:13.5px; color:#475569;" id="receiptNoticeDate">Hà Nội, ngày ... tháng ... năm 2026</div>
-                        <div style="font-weight:bold; margin-top:5px; text-transform:uppercase;">CÁN BỘ TIẾP NHẬN HỒ SƠ</div>
-                        <div style="font-style:italic; font-size:13px; color:#64748b;">(Ký và ghi rõ họ tên)</div>
-                        <div style="height:75px;"></div>
-                        <div style="font-weight:bold; color:#0f172a;" id="receiptOfficerSigner">Nguyễn Văn Chuyên Viên</div>
-                    </div>
-                </div>
+            <!-- Nội dung phiếu theo Mẫu số 02/BTNN - Giấy tiếp nhận yêu cầu bồi thường (JS render, dùng chung cho In phiếu và Tải file) -->
+            <div class="sticky-modal-body" id="printReceiptBody" style="padding:24px 40px; overflow-y:auto; flex:1; background:#fff; color:#000;">
+                <div id="receptionReceiptContent"></div>
             </div>
             <div class="modal-footer" style="padding:16px 24px 24px 24px; border-top:1px solid var(--border-color); display:flex; justify-content:flex-end; gap:10px; background:#f8fafc; flex-shrink:0;">
-                <button type="button" class="btn btn-secondary" onclick="closePreviewReceiptModal()">Đóng</button>
-                <button type="button" class="btn btn-primary" onclick="executePrintReceipt()"><i class="fa-solid fa-print"></i> In phiếu</button>
+                <button type="button" class="btn btn-secondary" id="btnReceiptDownload" onclick="downloadReceiptWord()"><i class="fa-solid fa-file-word"></i> Tải file</button>
+                <button type="button" class="btn btn-primary" id="btnReceiptPrint" onclick="executePrintReceipt()"><i class="fa-solid fa-print"></i> In phiếu</button>
+                <button type="button" class="btn btn-secondary" id="btnReceiptClose" onclick="closePreviewReceiptModal()">Đóng</button>
             </div>
         </div>
     </div>
-
     <div id="confirmOverlay" class="confirm-modal-overlay">
         <div class="confirm-modal-container">
             <div class="confirm-modal-header">
@@ -673,8 +646,8 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261015e"></script>
-    <script src="btnn_lanh_dao_actions.js?v=20261015e"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261019b"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261019b"></script>
     <script>
         // Người dùng đăng nhập (giả lập) - cán bộ tiếp nhận
         const CURRENT_USER = BTNN_WF.getCurrentUser();
@@ -716,6 +689,7 @@
                 code: "VVBT-2026-001",
                 requestType: REQUEST_TYPE_XDCQ,
                 nyc: "Công ty TNHH An Phú",
+                nycPhone: "0912345678",
                 nopKenh: "Trực tiếp",
                 fieldGroup: "hành chính",
                 date: "01/08/2026",
@@ -736,6 +710,7 @@
                 code: "VVBT-2026-002",
                 requestType: REQUEST_TYPE_YCBT,
                 nyc: "Nguyễn Văn Bình",
+                nycPhone: "0983456712",
                 nopKenh: "Trực tiếp",
                 fieldGroup: "hình sự",
                 date: "03/08/2026",
@@ -756,6 +731,7 @@
                 code: "VVBT-2026-003",
                 requestType: REQUEST_TYPE_YCBT,
                 nyc: "Trần Minh Tuấn",
+                nycPhone: "0904123987",
                 nopKenh: "Qua dịch vụ bưu chính",
                 fieldGroup: "thi hành án dân sự",
                 date: "04/08/2026",
@@ -776,6 +752,7 @@
                 code: "YCXD-2026-001",
                 requestType: REQUEST_TYPE_XDCQ,
                 nyc: "Nguyễn Văn An",
+                nycPhone: "0936789012",
                 nopKenh: "Trực tiếp",
                 fieldGroup: "hành chính",
                 date: "05/08/2026",
@@ -796,6 +773,7 @@
                 code: "YCXD-2026-002",
                 requestType: REQUEST_TYPE_XDCQ,
                 nyc: "Trần Thị Bình",
+                nycPhone: "0977112233",
                 nopKenh: "Trực tiếp",
                 fieldGroup: "thi hành án dân sự",
                 date: "06/08/2026",
@@ -816,6 +794,7 @@
                 code: "YCXD-2026-003",
                 requestType: REQUEST_TYPE_XDCQ,
                 nyc: "Lê Hoàng Long",
+                nycPhone: "0868234567",
                 nopKenh: "Qua dịch vụ bưu chính",
                 fieldGroup: "hành chính",
                 date: "07/08/2026",
@@ -836,6 +815,7 @@
                 code: "VVBT-2026-004",
                 requestType: REQUEST_TYPE_YCBT,
                 nyc: "Phạm Hồng Quân",
+                nycPhone: "0915667788",
                 nopKenh: "Trực tiếp",
                 fieldGroup: "hành chính",
                 date: "08/08/2026",
@@ -856,6 +836,7 @@
                 code: "VVBT-2026-005",
                 requestType: REQUEST_TYPE_YCBT,
                 nyc: "Hoàng Đức Thịnh",
+                nycPhone: "0905443322",
                 nopKenh: "Trực tiếp",
                 fieldGroup: "hành chính",
                 date: "09/08/2026",
@@ -876,6 +857,7 @@
                 code: "VVBT-2026-006",
                 requestType: REQUEST_TYPE_YCBT,
                 nyc: "Đỗ Thị Mai Lan",
+                nycPhone: "0987654321",
                 nopKenh: "Trực tiếp",
                 fieldGroup: "hành chính",
                 date: "10/08/2026",
@@ -896,6 +878,7 @@
                 code: "YCXD-2026-004",
                 requestType: REQUEST_TYPE_XDCQ,
                 nyc: "Vũ Đình Trọng",
+                nycPhone: "0948123456",
                 nopKenh: "Trực tiếp",
                 fieldGroup: "hành chính",
                 date: "11/08/2026",
@@ -916,6 +899,7 @@
                 code: "VVBT-2026-007",
                 requestType: REQUEST_TYPE_YCBT,
                 nyc: "Ngô Quang Huy",
+                nycPhone: "0326789123",
                 nopKenh: "Qua dịch vụ bưu chính",
                 fieldGroup: "hình sự",
                 date: "12/08/2026",
@@ -936,6 +920,7 @@
                 code: "VVBT-2026-008",
                 requestType: REQUEST_TYPE_YCBT,
                 nyc: "Bùi Thị Bích Ngọc",
+                nycPhone: "0909876543",
                 nopKenh: "Trực tiếp",
                 fieldGroup: "dân sự",
                 date: "13/08/2026",
@@ -956,6 +941,7 @@
                 code: "YCXD-2026-005",
                 requestType: REQUEST_TYPE_XDCQ,
                 nyc: "Nguyễn Thành Nam",
+                nycPhone: "0913579246",
                 nopKenh: "Trực tiếp",
                 fieldGroup: "hành chính",
                 date: "14/08/2026",
@@ -976,6 +962,7 @@
                 code: "VVBT-2026-009",
                 requestType: REQUEST_TYPE_YCBT,
                 nyc: "Đinh Trọng Hưng",
+                nycPhone: "0962468135",
                 nopKenh: "Trực tiếp",
                 fieldGroup: "thi hành án dân sự",
                 date: "15/08/2026",
@@ -996,6 +983,7 @@
                 code: "VVBT-2026-010",
                 requestType: REQUEST_TYPE_YCBT,
                 nyc: "Lê Thu Thảo",
+                nycPhone: "0358246791",
                 nopKenh: "Qua dịch vụ bưu chính",
                 fieldGroup: "tố tụng hành chính",
                 date: "16/08/2026",
@@ -1016,6 +1004,7 @@
                 code: "YCXD-2026-006",
                 requestType: REQUEST_TYPE_XDCQ,
                 nyc: "Trịnh Văn Minh",
+                nycPhone: "0931357924",
                 nopKenh: "Trực tiếp",
                 fieldGroup: "hành chính",
                 date: "17/08/2026",
@@ -1036,6 +1025,7 @@
                 code: "VVBT-2026-011",
                 requestType: REQUEST_TYPE_YCBT,
                 nyc: "Phạm Quốc Toàn",
+                nycPhone: "0941122334",
                 nopKenh: "Trực tiếp",
                 fieldGroup: "dân sự",
                 date: "18/08/2026",
@@ -1056,6 +1046,7 @@
                 code: "VVBT-2026-012",
                 requestType: REQUEST_TYPE_YCBT,
                 nyc: "Nguyễn Mai Phương",
+                nycPhone: "0976543210",
                 nopKenh: "Trực tiếp",
                 fieldGroup: "hành chính",
                 date: "19/08/2026",
@@ -1076,6 +1067,7 @@
                 code: "YCXD-2026-007",
                 requestType: REQUEST_TYPE_XDCQ,
                 nyc: "Phan Văn Hùng",
+                nycPhone: "0389988776",
                 nopKenh: "Trực tiếp",
                 fieldGroup: "hành chính",
                 date: "20/08/2026",
@@ -1096,6 +1088,7 @@
                 code: "VVBT-2026-013",
                 requestType: REQUEST_TYPE_YCBT,
                 nyc: "Trần Đình Trọng",
+                nycPhone: "0916778899",
                 nopKenh: "Qua dịch vụ bưu chính",
                 fieldGroup: "thi hành án dân sự",
                 date: "21/08/2026",
@@ -1116,6 +1109,7 @@
                 code: "VVBT-2026-014",
                 requestType: REQUEST_TYPE_YCBT,
                 nyc: "Đỗ Minh Khang",
+                nycPhone: "0902334455",
                 nopKenh: "Trực tiếp",
                 fieldGroup: "hình sự",
                 date: "22/08/2026",
@@ -1136,6 +1130,7 @@
                 code: "YCXD-2026-008",
                 requestType: REQUEST_TYPE_XDCQ,
                 nyc: "Hà Thị Cẩm Tú",
+                nycPhone: "0964556677",
                 nopKenh: "Trực tiếp",
                 fieldGroup: "hành chính",
                 date: "23/08/2026",
@@ -1204,7 +1199,7 @@
             const claim = claimsList.find(item => item.code === rec.code && !item.deleted);
             if (claim) return claim;
             return {
-                id: "WF:" + rec.code, code: rec.code, maVuViec: rec.maVuViec || "", nyc: rec.nycName,
+                id: "WF:" + rec.code, code: rec.code, maVuViec: rec.maVuViec || "", nyc: rec.nycName, nycPhone: rec.nycPhone || "",
                 nguonHoSo: getSourceOf(rec), nopKenh: getRecordReceiveMethod(rec),
                 fieldGroup: "", fieldGroupName: rec.linhVuc || "", linhVuc: rec.linhVuc || "", requestType: rec.loaiYeuCau,
                 receivedAt: fromWfTime(rec.receivedAt) || rec.date, date: rec.date,
@@ -1273,20 +1268,25 @@
         // Hồ sơ từ các nguồn khác Tiếp nhận mới (dữ liệu mẫu): hệ thống tự tạo ở trạng thái Chờ phân công tại đơn vị gốc
         // của đơn vị tiếp nhận; chưa có Cán bộ tiếp nhận (gán người đầu tiên thao tác Phân công).
         const OTHER_SOURCE_SEEDS = [
-            { key: "DVC-1", nguon: SOURCES.DVC, root: "BTP-01", nyc: "Lương Văn Toàn", city: "Thành phố Hà Nội", ward: "00007 - Phường Cầu Giấy", addr: "Số 18 Trần Đăng Ninh", linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Thu hồi giấy phép hoạt động không đúng thẩm quyền.", days: 1, time: "09:20" },
-            { key: "DVC-2", nguon: SOURCES.DVC, root: "BTP-01", nyc: "Công ty TNHH Minh Khang", city: "Thành phố Hồ Chí Minh", ward: "26737 - Phường Sài Gòn", addr: "Số 27 Lê Thánh Tôn", linhVuc: "TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ", hanhVi: "Kê biên tài sản vượt quá nghĩa vụ phải thi hành án.", days: 5, time: "14:05" },
-            { key: "DVC-3", nguon: SOURCES.DVC, root: "STP-HN", nyc: "Nguyễn Thị Hồng Nhung", city: "Thành phố Hà Nội", ward: "00010 - Phường Thanh Xuân", addr: "Số 9 Vũ Trọng Phụng", method: RECEIVE_METHODS.MOT_CUA, linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Chậm cấp Phiếu lý lịch tư pháp quá thời hạn quy định.", days: 2, time: "10:40" },
-            { key: "CHUYEN-1", nguon: SOURCES.CHUYEN, root: "BTP-01", from: "UBND-HM", method: RECEIVE_METHODS.BUU_CHINH, nyc: "Đào Văn Hiển", city: "Thành phố Hà Nội", ward: "00004 - Phường Hoàn Kiếm", addr: "Số 3 Hàng Gai", linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Xử phạt vi phạm hành chính không đúng thẩm quyền.", days: 4, time: "08:50" },
-            { key: "CHUYEN-2", nguon: SOURCES.CHUYEN, root: "STP-HN", from: "UBND-CG", method: RECEIVE_METHODS.TRUC_TIEP, nyc: "Phùng Thị Lan Anh", city: "Thành phố Hà Nội", ward: "00007 - Phường Cầu Giấy", addr: "Số 66 Xuân Thủy", linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Từ chối chứng thực hợp đồng trái quy định.", days: 6, time: "15:30" },
-            { key: "XDCQ-1", nguon: SOURCES.XDCQ, root: "STP-HN", from: "BTP-01", method: RECEIVE_METHODS.TRUC_TIEP, nyc: "Hồ Văn Khiêm", city: "Thành phố Hà Nội", ward: "00001 - Phường Ba Đình", addr: "Số 11 Đội Cấn", linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Hủy kết quả đăng ký hộ tịch trái pháp luật.", days: 3, time: "11:15" },
-            { key: "XDCQ-2", nguon: SOURCES.XDCQ, root: "BTP-01", from: "STP-HCM", method: RECEIVE_METHODS.BUU_CHINH, nyc: "Trương Minh Đức", city: "Thành phố Hồ Chí Minh", ward: "26740 - Phường Tân Định", addr: "Số 140 Hai Bà Trưng", linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Thu hồi chứng chỉ hành nghề không đúng trình tự.", days: 7, time: "09:00" }
+            { key: "DVC-1", nguon: SOURCES.DVC, root: "BTP-01", nyc: "Lương Văn Toàn", phone: "0912003456", city: "Thành phố Hà Nội", ward: "00007 - Phường Cầu Giấy", addr: "Số 18 Trần Đăng Ninh", linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Thu hồi giấy phép hoạt động không đúng thẩm quyền.", days: 1, time: "09:20" },
+            { key: "DVC-2", nguon: SOURCES.DVC, root: "BTP-01", nyc: "Công ty TNHH Minh Khang", phone: "0283822991", city: "Thành phố Hồ Chí Minh", ward: "26737 - Phường Sài Gòn", addr: "Số 27 Lê Thánh Tôn", linhVuc: "TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ", hanhVi: "Kê biên tài sản vượt quá nghĩa vụ phải thi hành án.", days: 5, time: "14:05" },
+            { key: "DVC-3", nguon: SOURCES.DVC, root: "STP-HN", nyc: "Nguyễn Thị Hồng Nhung", phone: "0904556123", city: "Thành phố Hà Nội", ward: "00010 - Phường Thanh Xuân", addr: "Số 9 Vũ Trọng Phụng", method: RECEIVE_METHODS.MOT_CUA, linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Chậm cấp Phiếu lý lịch tư pháp quá thời hạn quy định.", days: 2, time: "10:40" },
+            { key: "CHUYEN-1", nguon: SOURCES.CHUYEN, root: "BTP-01", from: "UBND-HM", method: RECEIVE_METHODS.BUU_CHINH, nyc: "Đào Văn Hiển", phone: "0913224455", city: "Thành phố Hà Nội", ward: "00004 - Phường Hoàn Kiếm", addr: "Số 3 Hàng Gai", linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Xử phạt vi phạm hành chính không đúng thẩm quyền.", days: 4, time: "08:50" },
+            { key: "CHUYEN-2", nguon: SOURCES.CHUYEN, root: "STP-HN", from: "UBND-CG", method: RECEIVE_METHODS.TRUC_TIEP, nyc: "Phùng Thị Lan Anh", phone: "0967332211", city: "Thành phố Hà Nội", ward: "00007 - Phường Cầu Giấy", addr: "Số 66 Xuân Thủy", linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Từ chối chứng thực hợp đồng trái quy định.", days: 6, time: "15:30" },
+            { key: "XDCQ-1", nguon: SOURCES.XDCQ, root: "STP-HN", from: "BTP-01", method: RECEIVE_METHODS.TRUC_TIEP, nyc: "Hồ Văn Khiêm", phone: "0985117788", city: "Thành phố Hà Nội", ward: "00001 - Phường Ba Đình", addr: "Số 11 Đội Cấn", linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Hủy kết quả đăng ký hộ tịch trái pháp luật.", days: 3, time: "11:15" },
+            { key: "XDCQ-2", nguon: SOURCES.XDCQ, root: "BTP-01", from: "STP-HCM", method: RECEIVE_METHODS.BUU_CHINH, nyc: "Trương Minh Đức", phone: "0909112244", city: "Thành phố Hồ Chí Minh", ward: "26740 - Phường Tân Định", addr: "Số 140 Hai Bà Trưng", linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Thu hồi chứng chỉ hành nghề không đúng trình tự.", days: 7, time: "09:00" }
         ];
         function seedOtherSourceRecords() {
             const records = BTNN_WF.loadRecords();
             const now = new Date();
             OTHER_SOURCE_SEEDS.forEach(s => {
                 const seedKey = "TN-" + s.key;
-                if (records.some(r => r.seedKey === seedKey)) return;
+                const existed = records.find(r => r.seedKey === seedKey);
+                if (existed) {
+                    // Dữ liệu đã tạo trước khi có trường Số điện thoại: bổ sung số điện thoại mẫu
+                    if (!existed.nycPhone && s.phone) { existed.nycPhone = s.phone; BTNN_WF.upsertRecord(existed); }
+                    return;
+                }
                 const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - s.days);
                 const date = formatDate(d);
                 const at = `${s.time} ${date}`;
@@ -1302,8 +1302,8 @@
                     id: "WF-" + code, code, maVuViec, seedKey, module: "YCBT", loaiYeuCau: REQUEST_TYPE_YCBT,
                     nguonHoSo: s.nguon, hinhThucTiepNhan: s.method || RECEIVE_METHODS.MOI_TRUONG_SO,
                     rootUnitId: s.root, currentUnitId: s.root, status: "Chờ phân công",
-                    routes: [], chuTri: null, phoiHop: [], approval: null,
-                    nycName: s.nyc, nycRole: "Người bị thiệt hại", nycCountry: "Việt Nam",
+                    routes: [], chuTri: null, approval: null,
+                    nycName: s.nyc, nycPhone: s.phone || "", nycRole: "Người bị thiệt hại", nycCountry: "Việt Nam",
                     nycTinhThanh: s.city, nycPhuongXa: s.ward, nycAddressDetail: s.addr,
                     linhVuc: s.linhVuc, hanhVi: s.hanhVi, hinhThucNhan: "Phương thức điện tử",
                     attachedDocs: [{ name: "Đơn yêu cầu bồi thường", file: `Don_yeu_cau_boi_thuong_${code}.pdf` }], vanBanCanCu: [],
@@ -1379,6 +1379,7 @@
                 receivedBy: claim.receivedBy,
                 createdBy: findUserIdByName(claim.receivedBy),
                 nycName: claim.nyc,
+                nycPhone: claim.nycPhone || "",
                 nycRole: claim.nycRole || "Người bị thiệt hại",
                 nbth: claim.nbth || null,
                 nycCountry: "Việt Nam",
@@ -1408,6 +1409,11 @@
                     // Dữ liệu cũ lưu Hình thức tiếp nhận tại trường Nguồn hồ sơ: hồ sơ nhập tại màn hình này có Nguồn Tiếp nhận mới
                     rec.nguonHoSo = SOURCES.TIEP_NHAN;
                     if (!rec.maVuViec) rec.maVuViec = /^VVBT-/.test(rec.code || "") ? rec.code : BTNN_WF.nextVuViecCode();
+                    BTNN_WF.upsertRecord(rec);
+                }
+                // Số điện thoại người yêu cầu: bổ sung cho hồ sơ luồng tạo trước khi có trường này
+                if (!rec.nycPhone && item.nycPhone) {
+                    rec.nycPhone = item.nycPhone;
                     BTNN_WF.upsertRecord(rec);
                 }
                 item.status = rec.status;
@@ -1515,8 +1521,14 @@
 
             // Bổ sung các bản ghi giả lập còn thiếu (nếu người dùng đã xoá bớt)
             const existingCodes = new Set(claimsList.map(item => item.code));
-            buildSeedClaims().forEach(item => {
+            const seedList = buildSeedClaims();
+            seedList.forEach(item => {
                 if (!existingCodes.has(item.code)) claimsList.push(item);
+            });
+            // Bản ghi mẫu lưu trước khi có trường Số điện thoại: bổ sung số điện thoại mẫu
+            seedList.forEach(seed => {
+                const item = claimsList.find(c => c.code === seed.code);
+                if (item && !item.nycPhone && seed.nycPhone) item.nycPhone = seed.nycPhone;
             });
 
             claimsList.forEach(item => {
@@ -1909,6 +1921,8 @@
             document.getElementById("wfRoutes").innerHTML = wfRec ? unifyEmptyText(BTNN_WF.renderRoutesHtml(wfRec)) : EMPTY_HTML;
             document.getElementById("wfHistory").innerHTML = wfRec ? unifyEmptyText(BTNN_WF.renderHistoryHtml(wfRec)) : EMPTY_HTML;
             setValue("formRequester", claim ? (claim.nyc || "") : "");
+            // Số điện thoại người yêu cầu: màn Xem chi tiết không có dữ liệu hiển thị "-"
+            setValue("formPhone", claim ? (claim.nycPhone || (isReadOnly ? "-" : "")) : "");
             setValue("formCity", claim ? normalizeCityOption(claim.nycTinhThanh || claim.city || "") : "");
             updateWardOptions(claim ? (claim.nycPhuongXa || "") : "");
             setValue("formAddress", claim ? (claim.nycAddressDetail || claim.address || "") : "");
@@ -1921,7 +1935,7 @@
             renderBasisRows();
 
             // Toggle input disable state
-            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress"];
+            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formPhone", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress"];
             controlIds.forEach(ctrlId => {
                 const el = document.getElementById(ctrlId);
                 if (el) el.disabled = isReadOnly;
@@ -1946,7 +1960,7 @@
             basisRows = [];
             const formView = document.getElementById("formView");
             if (formView) formView.classList.remove("readonly-mode");
-            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress"];
+            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formPhone", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress"];
             controlIds.forEach(ctrlId => {
                 const el = document.getElementById(ctrlId);
                 if (el) el.disabled = false;
@@ -1958,15 +1972,21 @@
 
         function saveReceptionInfo() {
             clearFormValidation();
-            const requiredIds = ["formRequestType", "formFieldGroup", "formRequester", "formCity", "formWard", "formAddress"];
+            const requiredIds = ["formRequestType", "formFieldGroup", "formRequester", "formPhone", "formCity", "formWard", "formAddress"];
+            setText("formPhoneError", "Đây là trường bắt buộc");
             // Khối Người bị thiệt hại tại Tiếp nhận hồ sơ: không bắt buộc trường nào (bắt buộc tại Nhập liệu hồ sơ vụ việc)
             let firstInvalid = null;
             requiredIds.forEach(id => {
-                if (!getValue(id)) {
+                // Số điện thoại: kiểm tra định dạng số điện thoại Việt Nam khi đã nhập
+                const phoneInvalid = id === "formPhone" && getValue(id) && !isValidVnPhone(getValue(id));
+                if (!getValue(id) || phoneInvalid) {
                     const el = document.getElementById(id);
                     el.classList.add("is-invalid");
                     const error = el.closest(".form-group").querySelector(".error-message");
-                    if (error) error.style.display = "block";
+                    if (error) {
+                        if (phoneInvalid) error.textContent = "Số điện thoại không đúng định dạng.";
+                        error.style.display = "block";
+                    }
                     if (!firstInvalid) firstInvalid = el;
                 }
             });
@@ -2011,6 +2031,7 @@
                 claim.nopKenh = getValue("formReceiveMethod");
                 claim.fieldGroup = getValue("formFieldGroup");
                 claim.nyc = getValue("formRequester");
+                claim.nycPhone = normalizeVnPhone(getValue("formPhone"));
                 claim.nycTinhThanh = stripAdministrativeCode(getValue("formCity"));
                 claim.nycPhuongXa = getValue("formWard");
                 claim.nycAddressDetail = getValue("formAddress");
@@ -2050,6 +2071,7 @@
                 nguonHoSo: SOURCES.TIEP_NHAN,
                 requestType: getValue("formRequestType"),
                 nyc: getValue("formRequester"),
+                nycPhone: normalizeVnPhone(getValue("formPhone")),
                 nycRole: getValue("formRequesterRole"),
                 nbth: readNbth(),
                 rootUnitId: CURRENT_ROOT_UNIT,
@@ -2466,32 +2488,61 @@
             if (editingId) printReceptionReceipt(editingId);
         }
 
-        function formatLinhVuc(fg) {
-            if (!fg) return "Trong hoạt động quản lý hành chính";
-            const map = {
-                "hành chính": "Trong hoạt động quản lý hành chính",
-                "quản lý hành chính": "Trong hoạt động quản lý hành chính",
-                "hình sự": "Trong hoạt động tố tụng hình sự",
-                "dân sự": "Trong hoạt động tố tụng dân sự",
-                "tố tụng hành chính": "Trong hoạt động tố tụng hành chính",
-                "thi hành án hình sự": "Trong hoạt động thi hành án hình sự",
-                "thi hành án dân sự": "Trong hoạt động thi hành án dân sự"
-            };
-            return map[fg.toLowerCase()] || fg;
+        // Số điện thoại Việt Nam: chỉ gồm chữ số, 10 số, bắt đầu bằng 0 (bỏ khoảng trắng)
+        function normalizeVnPhone(value) {
+            return String(value || "").replace(/\s+/g, "");
+        }
+        function isValidVnPhone(value) {
+            return /^0\d{9}$/.test(normalizeVnPhone(value));
         }
 
-        function getFullAddress(claim) {
-            const addressDetail = (claim.nycAddressDetail || claim.address || "").trim();
-            let phuongXa = (claim.nycPhuongXa || claim.phuongXa || "").trim();
-            if (phuongXa.includes(" - ")) {
-                phuongXa = phuongXa.split(" - ")[1].trim();
-            }
-            let tinhThanh = (claim.nycTinhThanh || claim.tinhThanh || claim.city || "").trim();
-            if (tinhThanh.includes(" - ")) {
-                tinhThanh = tinhThanh.split(" - ")[1].trim();
-            }
-            const parts = [addressDetail, phuongXa, tinhThanh].filter(Boolean);
-            return parts.length > 0 ? parts.join(", ") : "Số 123 Đường Cầu Giấy, Phường Dịch Vọng Hậu, Thành phố Hà Nội";
+        // Phiếu tiếp nhận đang xem (dùng cho Tải file)
+        let currentReceipt = null;
+
+        // Địa chỉ người yêu cầu theo bảng mapping Mẫu 02/BTNN: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố] (+ [Quốc gia] nếu khác Việt Nam)
+        function getReceiptAddress(claim) {
+            const strip = v => String(v || "").replace(/^\d+\s*-\s*/, "").trim();
+            const parts = [strip(claim.nycAddressDetail || claim.address), strip(claim.nycPhuongXa), strip(claim.nycTinhThanh || claim.city)];
+            const country = String(claim.nycCountry || "").trim();
+            if (country && country !== "Việt Nam") parts.push(country);
+            return parts.filter(Boolean).join(", ");
+        }
+
+        // Nội dung Mẫu số 02/BTNN - Giấy tiếp nhận yêu cầu bồi thường (HTML dùng chung cho popup, In phiếu, Tải file Word)
+        function buildReceiptForm02Html(claim) {
+            const esc = escapeHtml;
+            const DOTS = "……";
+            const rootId = claim.rootUnitId || CURRENT_ROOT_UNIT;
+            // (1) Tên cơ quan tiếp nhận: đơn vị gốc nhận hồ sơ
+            const coQuan = BTNN_WF.unitName(rootId);
+            // Ngày tiếp nhận: dd/mm/yyyy
+            const ngayMatch = String(claim.receivedAt || claim.date || "").match(/(\d{2})\/(\d{2})\/(\d{4})/);
+            const ngayTiepNhan = ngayMatch ? `${ngayMatch[1]}/${ngayMatch[2]}/${ngayMatch[3]}` : `${DOTS}/${DOTS}/${DOTS}`;
+            // (3) Hình thức tiếp nhận: chữ thường; bỏ chữ "qua" ở đầu giá trị để không lặp với câu chữ của mẫu
+            const hinhThuc = String(claim.nopKenh || RECEIVE_METHODS.TRUC_TIEP).toLowerCase().replace(/^qua\s+/, "");
+            // Hồ sơ yêu cầu bồi thường gồm: Bảng tài liệu đính kèm và Văn bản làm căn cứ yêu cầu bồi thường
+            const names = [];
+            (claim.receptionDocs || []).concat(getBasisDocs(claim)).forEach(d => {
+                const n = String((d && (d.name || d.file)) || "").trim();
+                if (n && !names.includes(n)) names.push(n);
+            });
+            const p = (html, extra) => `<p style="margin:6pt 0;${extra || ""}">${html}</p>`;
+            const docsHtml = names.length
+                ? p("Hồ sơ yêu cầu bồi thường gồm:", " text-align:justify; text-indent:1cm;") + names.map(n => p(`- ${esc(n)}`, " text-indent:1cm;")).join("")
+                : "";
+            return `<div style="font-family:'Times New Roman',serif; font-size:14pt; line-height:1.5; color:#000;">
+            ${BTNN_WF.docHeaderHtml(rootId, "", "TB")}
+            <p style="text-align:center; margin:18pt 0 12pt;"><b>GIẤY TIẾP NHẬN YÊU CẦU BỒI THƯỜNG</b></p>
+            ${p(`Kính gửi: ${esc(claim.nyc || DOTS)}`)}
+            ${p(`Địa chỉ: ${esc(getReceiptAddress(claim) || DOTS)}`)}
+            ${p(`Điện thoại: ${esc(claim.nycPhone || DOTS)}`)}
+            ${p(`Ngày ${esc(ngayTiepNhan)}, ${esc(coQuan)} đã nhận được văn bản yêu cầu bồi thường/hồ sơ yêu cầu bồi thường của Ông/Bà qua ${esc(hinhThuc)}. Chúng tôi sẽ xử lý yêu cầu bồi thường của Ông/bà theo quy định.`, " text-align:justify; text-indent:1cm;")}
+            ${docsHtml}
+            <table style="width:100%; border-collapse:collapse; margin-top:18pt;"><tr>
+                <td style="width:50%; vertical-align:top; font-size:12pt;"><b><i>Nơi nhận:</i></b><br><span style="font-size:11pt;">- Như trên;<br>- ${esc(coQuan)} (để biết);<br>- Lưu: VT, HSVV.</span></td>
+                <td style="text-align:center; vertical-align:top;"><b>THỦ TRƯỞNG CƠ QUAN</b><br><i>(Ký, ghi rõ họ tên, đóng dấu)</i></td>
+            </tr></table>
+        </div>`;
         }
 
         function printReceptionReceipt(id) {
@@ -2508,113 +2559,19 @@
                 return;
             }
 
-            const today = new Date();
-            const dayStr = String(today.getDate()).padStart(2, "0");
-            const monthStr = String(today.getMonth() + 1).padStart(2, "0");
-            const yearStr = today.getFullYear();
-            const dateStr = `Hà Nội, ngày ${dayStr} tháng ${monthStr} năm ${yearStr}`;
-
-            const dateEl = document.getElementById("receiptNoticeDate");
-            if (dateEl) dateEl.innerText = dateStr;
-
-            const officerEl = document.getElementById("receiptOfficerSigner");
-            if (officerEl) officerEl.innerText = claim.receivedBy || CURRENT_OFFICER;
-
-            const reqEl = document.getElementById("receiptRequesterSigner");
-            if (reqEl) reqEl.innerText = claim.nyc || "Người nộp";
-
-            // Loại hồ sơ (DM_54)
-            const loaiYeuCau = claim.requestType || (claim.code && claim.code.startsWith("XD") ? REQUEST_TYPE_XDCQ : REQUEST_TYPE_YCBT);
-            const linhVuc = formatLinhVuc(claim.fieldGroup || claim.linhVuc || claim.sector);
-            const fullAddress = getFullAddress(claim);
-            // Đơn vị tiếp nhận: đơn vị gốc nhận hồ sơ
-            const donViTiepNhan = claim.rootUnitId ? BTNN_WF.unitName(claim.rootUnitId) : "Sở Tư pháp Thành phố Hà Nội";
-            const canBoTiepNhan = claim.receivedBy || CURRENT_OFFICER;
-            const caseCode = claim.maVuViec || claim.code || "VVBT-2026-001";
-
-            // Ngày tiếp nhận định dạng dd/mm/yyyy
-            let ngayTiepNhan = "01/03/2026";
-            let gioTiepNhan = "08:30";
-            if (claim.receivedAt) {
-                const parts = claim.receivedAt.split(" ");
-                ngayTiepNhan = parts[0] || ngayTiepNhan;
-                gioTiepNhan = parts[1] || gioTiepNhan;
-            } else if (claim.date) {
-                ngayTiepNhan = claim.date;
-            }
-
-            // Đồng bộ tiêu đề phụ và cơ quan trên văn bản
-            const headerAgencyEl = document.getElementById("receiptHeaderAgency");
-            if (headerAgencyEl) {
-                headerAgencyEl.innerText = donViTiepNhan.toUpperCase();
-            }
-            const subTitleEl = document.getElementById("receiptSubTitle");
-            if (subTitleEl) {
-                subTitleEl.innerText = `(Về việc: ${loaiYeuCau})`;
-            }
-
-            // Bố cục thông tin 2 cột chuẩn hóa theo mô tả tài liệu SRS MH03
-            const basisList = getBasisDocs(claim);
-            const vanBanCanCuHtml = basisList.length ? `
-                <div style="grid-column: span 2;">
-                    <span style="color:#64748b; font-size:12.5px; display:block;">Văn bản làm căn cứ yêu cầu bồi thường</span>
-                    ${basisList.map((d, i) => `<div><strong style="color:#0f172a; font-size:13.5px;">${i + 1}. ${escapeHtml(d.name || "--")}</strong>${d.file ? `<span style="margin-left:8px; font-size:12.5px; color:#475569;">(Đính kèm: <i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> ${escapeHtml(d.file)})</span>` : ''}</div>`).join('')}
-                </div>
-            ` : '';
-
-            container.innerHTML = `
-                <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px; padding:16px 20px; margin:16px 0 20px 0; font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px 24px; font-size:13.5px; line-height:1.5;">
-                        <div>
-                            <span style="color:#64748b; font-size:12.5px; display:block;">Mã vụ việc</span>
-                            <span style="font-weight:700; color:#1e3a8a; font-size:14px; background:#e0e7ff; padding:2px 8px; border-radius:4px; display:inline-block;">${escapeHtml(caseCode)}</span>
-                        </div>
-                        <div>
-                            <span style="color:#64748b; font-size:12.5px; display:block;">Ngày tiếp nhận</span>
-                            <strong style="color:#0f172a; font-size:14px;">${escapeHtml(ngayTiepNhan)}</strong>
-                        </div>
-
-                        <div>
-                            <span style="color:#64748b; font-size:12.5px; display:block;">Loại hồ sơ</span>
-                            <span style="font-weight:600; color:#0f172a;">${escapeHtml(loaiYeuCau)}</span>
-                        </div>
-                        <div>
-                            <span style="color:#64748b; font-size:12.5px; display:block;">Lĩnh vực phát sinh thiệt hại</span>
-                            <span style="font-weight:600; color:#0f172a;">${escapeHtml(linhVuc)}</span>
-                        </div>
-                        <div>
-                            <span style="color:#64748b; font-size:12.5px; display:block;">Họ và tên người yêu cầu</span>
-                            <strong style="color:#0f172a; font-size:14px;">${escapeHtml(claim.nyc || 'Nguyễn Văn A')}</strong>
-                        </div>
-                        <div>
-                            <span style="color:#64748b; font-size:12.5px; display:block;">Cán bộ tiếp nhận</span>
-                            <strong style="color:#0f172a; font-size:14px;">${escapeHtml(canBoTiepNhan)}</strong>
-                        </div>
-                        <div style="grid-column: span 2;">
-                            <span style="color:#64748b; font-size:12.5px; display:block;">Địa chỉ người yêu cầu ([Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố])</span>
-                            <span style="color:#1e293b; font-weight:500;">${escapeHtml(fullAddress)}</span>
-                        </div>
-                        <div style="grid-column: span 2;">
-                            <span style="color:#64748b; font-size:12.5px; display:block;">Đơn vị tiếp nhận</span>
-                            <span style="color:#1e293b; font-weight:500;">${escapeHtml(donViTiepNhan)}</span>
-                        </div>
-                        ${vanBanCanCuHtml}
-                    </div>
-                </div>
-
-                <div style="margin: 16px 0; font-size:14.5px; line-height:1.7;">
-                    <p style="margin:4px 0;">Hôm nay, vào hồi <strong>${escapeHtml(gioTiepNhan)}</strong> ngày <strong>${escapeHtml(ngayTiepNhan)}</strong>.</p>
-                    <p style="margin:4px 0;">Chúng tôi gồm:</p>
-                    <p style="margin:4px 0 4px 16px;">- <strong>Người tiếp nhận:</strong> Ông/Bà <strong>${escapeHtml(canBoTiepNhan)}</strong> - Cán bộ tiếp nhận.</p>
-                    <p style="margin:4px 0 4px 16px;">- <strong>Người nộp hồ sơ:</strong> Ông/Bà <strong>${escapeHtml(claim.nyc || 'Nguyễn Văn A')}</strong>.</p>
-                    <p style="margin:4px 0 4px 16px;">- <strong>Hình thức tiếp nhận:</strong> ${escapeHtml(RECEIVE_METHODS.TRUC_TIEP)}.</p>
-                    <p style="margin:8px 0 4px 0;">Đã tiếp nhận hồ sơ yêu cầu theo đúng các nội dung thông tin được ghi nhận ở trên.</p>
-                </div>
-            `;
+            const html = buildReceiptForm02Html(claim);
+            currentReceipt = { html, code: claim.maVuViec || claim.code || "" };
+            container.innerHTML = html;
 
             modal.style.display = "flex";
             // .confirm-modal-overlay mặc định opacity:0, phải thêm class "visible" thì popup mới hiển thị
             setTimeout(() => modal.classList.add("visible"), 10);
+        }
+
+        // Tải file: phiếu Mẫu 02/BTNN dạng Word (.doc)
+        function downloadReceiptWord() {
+            if (!currentReceipt) return;
+            BTNN_WF.downloadDocWord(currentReceipt.html, `Mau_02_BTNN_Giay_tiep_nhan_${currentReceipt.code}`);
         }
 
         function closePreviewReceiptModal() {
@@ -2623,7 +2580,6 @@
             modal.classList.remove("visible");
             modal.style.display = "none";
         }
-
         function executePrintReceipt() {
             window.print();
         }

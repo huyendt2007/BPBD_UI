@@ -65,470 +65,515 @@
 
 ### 7. Bảng trường thông tin dùng chung (Shared Header & Footer)
 
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Góc trên cùng | `##SoHieuNghiDinh##` | Số ký hiệu Nghị định hướng dẫn Luật TNBTCNN | Cấu hình tham số hệ thống | `SYS_CONFIG.NGHI_DINH_SO` | Giá trị cố định toàn hệ thống. Nếu chưa ban hành: thay bằng `.../.../NĐ-CP` | `.../.../NĐ-CP` |
-| 2 | Góc trên cùng | `##NgayBanHanhNghiDinh##` | Ngày ban hành Nghị định | Cấu hình tham số hệ thống | `SYS_CONFIG.NGHI_DINH_NGAY` | Định dạng `dd/mm/yyyy`. Nếu chưa ban hành: thay bằng `.../.../...` | `.../.../...` |
-| 3 | Bảng đầu trang - Ô trái | `##TenCoQuanChuQuan##` | Tên cơ quan, đơn vị chủ quản cấp trên | Quản lý cơ cấu tổ chức > Danh mục đơn vị | `DonVi.TenDonViCha` | In hoa toàn bộ. Nếu không có cơ quan cấp trên: ẩn hẳn dòng | `ỦY BAN NHÂN DÂN THÀNH PHỐ HÀ NỘI` |
-| 4 | Bảng đầu trang - Ô trái | `##TenCoQuanGiaiQuyetBoiThuong##` | Tên cơ quan giải quyết bồi thường | Hồ sơ yêu cầu bồi thường / Đơn vị người dùng đăng nhập | `HoSo.TenCoQuanGQBT` | In hoa, in đậm toàn bộ | `SỞ TƯ PHÁP THÀNH PHỐ HÀ NỘI` |
-| 5 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Số, ký hiệu của văn bản | Form nhập khi sinh văn bản / Cấp số văn thư | `VanBan.SoKyHieu` | Giữ nguyên giá trị nhập. Chưa nhập: thay bằng `……` | `125/TB-STP` hoặc `45/QĐ-UBND` |
-| 6 | Bảng đầu trang - Ô phải | `##DiaDanh##` | Địa danh nơi cơ quan GQBT đặt trụ sở | Quản lý cơ cấu tổ chức > Đơn vị | `DonVi.TinhThanhPho` (hoặc `QuanHuyen`) | Bỏ tiền tố \"Tỉnh\", \"Thành phố\". Cơ quan cấp xã: lấy tên xã/phường | `Hà Nội` |
-| 7 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Ngày tháng năm ban hành văn bản | Form nhập khi sinh văn bản | `VanBan.NgayBanHanh` | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 16 tháng 10 năm 2026` |
-| 8 | Bảng ký - Ô phải | `##ChucVuNguoiDungDau##` | Chức vụ người đứng đầu cơ quan GQBT | Quản lý danh mục > Danh mục chức vụ [DM_58] | `ChucVu.TenChucVu` | In hoa toàn bộ | `GIÁM ĐỐC` hoặc `CHỦ TỊCH` |
-| 9 | Bảng ký - Ô phải | `##HoTenNguoiKy##` | Họ và tên người ký ban hành văn bản | Form nhập khi trình duyệt / Thông tin người ký | `NguoiDung.HoTen` | In hoa, in đậm dưới phần chữ ký | `NGUYỄN VĂN AN` |
-| 10 | Bảng nơi nhận / Thân | `##TenCoQuanQuanLyNhaNuocBTNN##` | Cơ quan QLNN về công tác BTNN | Cấu hình hệ thống / Hồ sơ yêu cầu bồi thường | `CoQuanQLNN.Ten` | Phụ thuộc cấp cơ quan: Bộ Tư pháp / Cục BTNN (cấp TW) hoặc Sở Tư pháp (cấp tỉnh) | `Sở Tư pháp thành phố Hà Nội` |
+> [!NOTE]
+> Các thông tin **Số, ký hiệu văn bản (`##SoKyHieuVanBan##`)** và **Ngày tháng năm ban hành văn bản (`##NgayThangNamBanHanh##`)** theo từng biểu mẫu phải nhập trực tiếp trên Form tương ứng của từng màn hình, do đó không nằm ở bảng thông tin dùng chung này mà được đặc tả chi tiết tại từng biểu mẫu ở Phần II.
+
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Góc trên cùng | `##SoHieuNghiDinh##` | Cấu hình tham số hệ thống | Số ký hiệu Nghị định | Giá trị cố định toàn hệ thống. Nếu chưa ban hành: thay bằng `.../.../NĐ-CP` | `.../.../NĐ-CP` |
+| 2 | Góc trên cùng | `##NgayBanHanhNghiDinh##` | Cấu hình tham số hệ thống | Ngày ban hành Nghị định | Định dạng `dd/mm/yyyy`. Nếu chưa ban hành: thay bằng `.../.../...` | `.../.../...` |
+| 3 | Bảng đầu trang - Ô trái (dòng trên) | `##TenCoQuanChuQuan##` | Quản lý cơ cấu tổ chức > Quản lý đơn vị | Tên cơ quan, đơn vị | Tên đơn vị mà cán bộ đang đăng nhập. Lấy theo thông tin Tên cơ quan, đơn vị trong phần Quản lý cơ cấu tổ chức. Viết in hoa toàn bộ. Nếu cơ quan không có cơ quan chủ quản cấp trên thì để trống dòng này | `ỦY BAN NHÂN DÂN THÀNH PHỐ HÀ NỘI` |
+| 4 | Bảng đầu trang - Ô trái (dòng dưới) | `##TenCoQuanGiaiQuyetBoiThuong##` | Quản lý cơ cấu tổ chức > Quản lý đơn vị | Tên cơ quan, đơn vị | Tên đơn vị mà cán bộ đang đăng nhập (Cơ quan giải quyết bồi thường). Lấy theo thông tin Tên cơ quan, đơn vị trong phần Quản lý cơ cấu tổ chức. Viết in hoa, in đậm toàn bộ | `SỞ TƯ PHÁP THÀNH PHỐ HÀ NỘI` |
+| 5 | Bảng đầu trang - Ô phải | `##DiaDanh##` | Quản lý cơ cấu tổ chức > Quản lý đơn vị | Tỉnh/Thành phố | Lấy theo Tỉnh/Thành phố của đơn vị Tên đơn vị mà cán bộ đang đăng nhập ở phần Quản lý cơ cấu tổ chức Hoặc Phường/Xã... tùy theo Loại cơ quan, đơn vị. Quy tắc: Bỏ các tiền tố "Tỉnh", "Thành phố", "Phường", "Xã" | `Hà Nội` |
+| 6 | Bảng ký - Ô phải | `##ChucVuNguoiDungDau##` | Quản lý cơ cấu tổ chức > Danh mục chức vụ [DM_58] | Tên chức vụ | Chức vụ của người đứng đầu cơ quan giải quyết bồi thường hoặc người có thẩm quyền ký ban hành văn bản. In hoa toàn bộ | `GIÁM ĐỐC` hoặc `CHỦ TỊCH` |
+| 7 | Bảng ký - Ô phải | `##HoTenNguoiKy##` | Quản lý tài khoản cán bộ / Form ký ban hành | Họ và tên người ký | Họ và tên của cán bộ, lãnh đạo ký văn bản. In hoa, in đậm dưới phần chữ ký | `NGUYỄN VĂN AN` |
+| 8 | Bảng nơi nhận / Thân văn bản | `##TenCoQuanQuanLyNhaNuocBTNN##` | Cấu hình hệ thống > Danh mục cơ quan QLNN về BTNN | Tên cơ quan quản lý nhà nước về công tác BTNN | Phụ thuộc cấp cơ quan giải quyết bồi thường: Cấp Trung ương là Cục Bồi thường nhà nước - Bộ Tư pháp; Cấp địa phương là Sở Tư pháp tỉnh/thành phố | `Sở Tư pháp thành phố Hà Nội` |
 
 ---
 
 ## PHẦN II. ĐẶC TẢ CHI TIẾT MAPPING TỪNG BIỂU MẪU
 
-### 1. MẪU SỐ 02/BTNN: GIẤY TIẾP NHẬN HỒ SƠ YÊU CẦU BỒI THƯỜNG
+### 1. MẪU SỐ 02/BTNN: GIẤY TIẾP NHẬN YÊU CẦU BỒI THƯỜNG
 - **Tên tệp template**: `Mau_02_BTNN_Template.docx`
 - **Mục đích**: Cơ quan giải quyết bồi thường lập và giao/gửi cho người yêu cầu bồi thường để xác nhận thời điểm và thành phần hồ sơ đã tiếp nhận.
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Tiếp nhận hồ sơ yêu cầu bồi thường > Chi tiết hồ sơ tiếp nhận > Thao tác \"In Giấy tiếp nhận\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Tiếp nhận hồ sơ yêu cầu bồi thường > Chi tiết hồ sơ tiếp nhận > Thao tác "In Giấy tiếp nhận"*.
 - **Quy tắc đặt tên file tải về**: `Mau_02_BTNN_Giay_tiep_nhan_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 02/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Kính gửi | `##TenNguoiYeuCauBoiThuong##` | Họ và tên người yêu cầu bồi thường | Tiếp nhận hồ sơ yêu cầu bồi thường | `HoSo.NguoiYeuCau_HoTen` | Giữ nguyên chữ in hoa/thường theo hồ sơ | `Nguyễn Văn Nam` |
-| 2 | Dưới Kính gửi | `##DiaChiNguoiYeuCauBoiThuong##` | Địa chỉ của người yêu cầu bồi thường | Tiếp nhận hồ sơ yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng \", \". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Số 12 phố Hàng Bông, Phường Hàng Gai, Quận Hoàn Kiếm, TP. Hà Nội` |
-| 3 | Dưới Địa chỉ | `##SoDienThoaiNguoiYeuCau##` | Số điện thoại liên hệ của người yêu cầu bồi thường | Tiếp nhận hồ sơ yêu cầu bồi thường | Thông tin người yêu cầu > Số điện thoại liên hệ | Lấy từ trường Số điện thoại liên hệ của người yêu cầu trên form. Định dạng số điện thoại chuẩn. | `0912345678` |
-| 4 | Đoạn 1 | `##NgayTiepNhan##` | Ngày nhận hồ sơ yêu cầu bồi thường | Tiếp nhận hồ sơ yêu cầu bồi thường | `HoSo.ThoiDiemTiepNhan` | Định dạng: `ngày dd tháng mm năm yyyy` | `ngày 10 tháng 03 năm 2026` |
-| 5 | Đoạn 1 | `##HinhThucNopHoSo##` | Hình thức nộp hồ sơ | Tiếp nhận hồ sơ yêu cầu bồi thường | Control UI: Combobox.<br>Gồm:<br>+ trực tiếp<br>+ qua dịch vụ bưu chính | Chuyển đổi giá trị hiển thị chữ thường phù hợp ngữ cảnh câu | `trực tiếp` hoặc `qua dịch vụ bưu chính` |
-| 6 | Đoạn 2 | `##DanhSachGiayToTiepNhan##` | Danh sách giấy tờ, tài liệu tiếp nhận | Tiếp nhận hồ sơ yêu cầu bồi thường > Bảng tài liệu đính kèm | Danh sách `HoSo_TaiLieu` | Đánh số thứ tự từng dòng dạng:<br>`- 1. [Tên tài liệu] (Bản chính/Bản sao)` | `- 1. Đơn yêu cầu bồi thường (Bản chính)<br>- 2. Bản án phúc thẩm số 12/2025/HSPT (Bản sao chứng thực)` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Tiếp nhận hồ sơ yêu cầu bồi thường > Form In Giấy tiếp nhận | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `02/GTN-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Tiếp nhận hồ sơ yêu cầu bồi thường > Form In Giấy tiếp nhận | Ngày lập giấy tiếp nhận | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 10 tháng 03 năm 2026` |
+| 3 | Kính gửi | `##TenNguoiYeuCauBoiThuong##` | Tiếp nhận hồ sơ yêu cầu bồi thường | Họ và tên người yêu cầu bồi thường | Giữ nguyên chữ in hoa/thường theo hồ sơ | `Nguyễn Văn Nam` |
+| 4 | Dưới Kính gửi | `##DiaChiNguoiYeuCauBoiThuong##` | Tiếp nhận hồ sơ yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Địa chỉ của người yêu cầu bồi thường: Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng ", ". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Số 12 phố Hàng Bông, Phường Hàng Gai, Quận Hoàn Kiếm, TP. Hà Nội` |
+| 5 | Dưới Địa chỉ | `##SoDienThoaiNguoiYeuCau##` | Tiếp nhận hồ sơ yêu cầu bồi thường | Số điện thoại liên hệ | Số điện thoại liên hệ của người yêu cầu bồi thường. Lấy từ trường Số điện thoại liên hệ của người yêu cầu trên form. Định dạng số điện thoại chuẩn. | `0912345678` |
+| 6 | Đoạn 1 | `##NgayTiepNhan##` | Tiếp nhận hồ sơ yêu cầu bồi thường | Thời điểm tiếp nhận hồ sơ | Định dạng: `ngày dd tháng mm năm yyyy` | `ngày 10 tháng 03 năm 2026` |
+| 7 | Đoạn 1 | `##HinhThucNopHoSo##` | Tiếp nhận hồ sơ yêu cầu bồi thường | Hình thức nộp hồ sơ | Control UI: Combobox.<br>Gồm:<br>+ trực tiếp<br>+ qua dịch vụ bưu chính | Chuyển đổi giá trị hiển thị chữ thường phù hợp ngữ cảnh câu | `trực tiếp` hoặc `qua dịch vụ bưu chính` |
+| 8 | Đoạn 2 | `##DanhSachGiayToTiepNhan##` | Tiếp nhận hồ sơ yêu cầu bồi thường > Bảng tài liệu đính kèm | Danh sách tài liệu đính kèm | Đánh số thứ tự từng dòng dạng:<br>`- 1. [Tên tài liệu] (Bản chính/Bản sao)` | `- 1. Đơn yêu cầu bồi thường (Bản chính)<br>- 2. Bản án phúc thẩm số 12/2025/HSPT (Bản sao chứng thực)` |
 
 ---
 
 ### 2. MẪU SỐ 03/BTNN: THÔNG BÁO VỀ VIỆC BỔ SUNG HỒ SƠ YÊU CẦU BỒI THƯỜNG
 - **Tên tệp template**: `Mau_03_BTNN_Template.docx`
 - **Mục đích**: Thông báo cho người yêu cầu bồi thường biết các tài liệu, giấy tờ còn thiếu cần phải bổ sung trong thời hạn 15 ngày làm việc theo quy định tại khoản 3 Điều 16 Nghị định hướng dẫn.
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Thụ lý hồ sơ > Thao tác \"Yêu cầu bổ sung hồ sơ\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Thụ lý hồ sơ > Thao tác "Yêu cầu bổ sung hồ sơ"*.
 - **Quy tắc đặt tên file tải về**: `Mau_03_BTNN_Thong_bao_bo_sung_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 03/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Kính gửi | `##TenNguoiYeuCauBoiThuong##` | Họ tên người yêu cầu bồi thường | Thông tin hồ sơ thụ lý | `HoSo.NguoiYeuCau_HoTen` | Giữ nguyên họ tên người yêu cầu | `Trần Thị Mai` |
-| 2 | Dưới Kính gửi | `##DiaChiNguoiYeuCauBoiThuong##` | Địa chỉ của người yêu cầu bồi thường | Thông tin hồ sơ thụ lý | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng \", \". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Số 45 đường Lê Lợi, Phường Máy Tơ, Quận Ngô Quyền, TP. Hải Phòng` |
-| 3 | Thân văn bản | `##NgayTiepNhan##` | Ngày cơ quan tiếp nhận hồ sơ ban đầu | Thông tin hồ sơ | `HoSo.ThoiDiemTiepNhan` | Định dạng: `dd/mm/yyyy` | `05/03/2026` |
-| 4 | Thân văn bản | `##HinhThucNopHoSo##` | Hình thức nộp hồ sơ | Thông tin hồ sơ | Control UI: Radio.<br>Gồm:<br>+ trực tiếp<br>+ qua dịch vụ bưu chính | Chữ thường: `trực tiếp` hoặc `qua dịch vụ bưu chính` | `qua dịch vụ bưu chính` |
-| 5 | Thân văn bản | `##DanhSachGiayToBoSung##` | Danh sách giấy tờ cần bổ sung | Popup Yêu cầu bổ sung > Ô nhập nội dung | Form nhập `NoiDungYeuCauBoSung` | Mỗi dòng chuyển thành dạng `1. [Tên giấy tờ]`. Loại bỏ dòng trống | `1. Bản sao có chứng thực giấy tờ tùy thân<br>2. Hóa đơn chứng từ chứng minh thiệt hại thực tế` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Thụ lý hồ sơ > Form Yêu cầu bổ sung hồ sơ | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `15/TB-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Thụ lý hồ sơ > Form Yêu cầu bổ sung hồ sơ | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 05 tháng 03 năm 2026` |
+| 3 | Kính gửi | `##TenNguoiYeuCauBoiThuong##` | Thụ lý hồ sơ | Họ và tên người yêu cầu bồi thường | Giữ nguyên họ tên người yêu cầu theo hồ sơ | `Trần Thị Mai` |
+| 4 | Dưới Kính gửi | `##DiaChiNguoiYeuCauBoiThuong##` | Thụ lý hồ sơ | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Địa chỉ của người yêu cầu bồi thường: Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng ", ". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Số 45 đường Lê Lợi, Phường Máy Tơ, Quận Ngô Quyền, TP. Hải Phòng` |
+| 5 | Thân văn bản | `##NgayTiepNhan##` | Thụ lý hồ sơ | Thời điểm tiếp nhận hồ sơ | Định dạng: `dd/mm/yyyy` | `05/03/2026` |
+| 6 | Thân văn bản | `##HinhThucNopHoSo##` | Thụ lý hồ sơ | Hình thức nộp hồ sơ | Control UI: Radio.<br>Gồm:<br>+ trực tiếp<br>+ qua dịch vụ bưu chính | Chữ thường: `trực tiếp` hoặc `qua dịch vụ bưu chính` | `qua dịch vụ bưu chính` |
+| 7 | Thân văn bản | `##DanhSachGiayToBoSung##` | Thụ lý hồ sơ > Form Yêu cầu bổ sung hồ sơ | Nội dung yêu cầu bổ sung | Mỗi dòng chuyển thành dạng `1. [Tên giấy tờ]`. Loại bỏ dòng trống | `1. Bản sao có chứng thực giấy tờ tùy thân<br>2. Hóa đơn chứng từ chứng minh thiệt hại thực tế` |
 
 ---
 
 ### 3. MẪU SỐ 04/BTNN: THÔNG BÁO VỀ VIỆC THỤ LÝ / KHÔNG THỤ LÝ HỒ SƠ YÊU CẦU BỒI THƯỜNG
 - **Tên tệp template**: `Mau_04_BTNN_Template.docx`
 - **Mục đích**: Thông báo chính thức cho người yêu cầu về việc cơ quan có thẩm quyền thụ lý hồ sơ (đủ điều kiện) hoặc không thụ lý hồ sơ (không đủ điều kiện, kèm lý do và trả lại hồ sơ).
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Thụ lý hồ sơ > Thao tác \"Thụ lý hồ sơ\" HOẶC \"Không thụ lý hồ sơ\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Thụ lý hồ sơ > Thao tác "Thụ lý hồ sơ" HOẶC "Không thụ lý hồ sơ"*.
 - **Quy tắc đặt tên file tải về**: `Mau_04_BTNN_Thong_bao_thu_ly_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 04/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Tiêu đề trích yếu | `##TieuDeThongBaoThuLy##` | Trích yếu nội dung thụ lý | Màn hình Thụ lý hồ sơ | Control UI: Radio.<br>Gồm:<br>+ thụ lý hồ sơ yêu cầu bồi thường<br>+ không thụ lý hồ sơ yêu cầu bồi thường | Chữ thường, hiển thị theo kết quả phê duyệt | `thụ lý hồ sơ yêu cầu bồi thường` |
-| 2 | Kính gửi | `##TenNguoiYeuCauBoiThuong##` | Họ tên người yêu cầu | Thông tin hồ sơ yêu cầu bồi thường | `HoSo.NguoiYeuCau_HoTen` | Giữ nguyên họ tên | `Lê Văn Chung` |
-| 3 | Dưới Kính gửi | `##DiaChiNguoiYeuCauBoiThuong##` | Địa chỉ của người yêu cầu bồi thường | Thông tin hồ sơ yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng \", \". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Số 88 đường Giải Phóng, TP. Nam Định` |
-| 4 | Thân văn bản | `##NgayTiepNhan##` | Ngày nhận hồ sơ yêu cầu bồi thường | Thông tin hồ sơ yêu cầu bồi thường | `HoSo.ThoiDiemTiepNhan` | Định dạng `ngày dd/mm/yyyy` | `ngày 12/03/2026` |
-| 5 | Thân văn bản | `##NoiDungThongBaoThuLy##` | Nội dung chi tiết kết luận thụ lý / không thụ lý | Màn hình Thụ lý hồ sơ | Quyết định thụ lý hoặc từ chối thụ lý | - Trường hợp Thụ lý: sinh câu văn thụ lý theo khoản 1 Điều 43.<br>- Trường hợp Không thụ lý: viện dẫn điểm/khoản Điều 43, nêu rõ lý do và thông báo trả lại hồ sơ | *\"Hồ sơ của Ông/Bà đầy đủ điều kiện thụ lý theo quy định...\"* HOẶC *\"Căn cứ điểm b khoản 2 Điều 43 Luật TNBTCNN, không thụ lý do...\"* |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Thụ lý hồ sơ > Form Ban hành thông báo thụ lý / không thụ lý | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `24/TB-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Thụ lý hồ sơ > Form Ban hành thông báo thụ lý / không thụ lý | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 12 tháng 03 năm 2026` |
+| 3 | Tiêu đề trích yếu | `##TieuDeThongBaoThuLy##` | Thụ lý hồ sơ | Kết quả thụ lý | Control UI: Radio.<br>Gồm:<br>+ thụ lý hồ sơ yêu cầu bồi thường<br>+ không thụ lý hồ sơ yêu cầu bồi thường | Chữ thường, hiển thị theo kết quả phê duyệt | `thụ lý hồ sơ yêu cầu bồi thường` |
+| 4 | Kính gửi | `##TenNguoiYeuCauBoiThuong##` | Thụ lý hồ sơ | Họ và tên người yêu cầu bồi thường | Giữ nguyên họ tên | `Lê Văn Chung` |
+| 5 | Dưới Kính gửi | `##DiaChiNguoiYeuCauBoiThuong##` | Thụ lý hồ sơ | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Địa chỉ của người yêu cầu bồi thường: Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng ", ". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Số 88 đường Giải Phóng, TP. Nam Định` |
+| 6 | Thân văn bản | `##NgayTiepNhan##` | Thụ lý hồ sơ | Thời điểm tiếp nhận hồ sơ | Định dạng `ngày dd/mm/yyyy` | `ngày 12/03/2026` |
+| 7 | Thân văn bản | `##NoiDungThongBaoThuLy##` | Thụ lý hồ sơ > Form Ban hành thông báo thụ lý / không thụ lý | Nội dung kết luận thụ lý / lý do không thụ lý | - Trường hợp Thụ lý: sinh câu văn thụ lý theo khoản 1 Điều 43.<br>- Trường hợp Không thụ lý: viện dẫn điểm/khoản Điều 43, nêu rõ lý do và thông báo trả lại hồ sơ | *"Hồ sơ của Ông/Bà đầy đủ điều kiện thụ lý theo quy định..."* HOẶC *"Căn cứ điểm b khoản 2 Điều 43 Luật TNBTCNN, không thụ lý do..."* |
 
 ---
 
 ### 4. MẪU SỐ 05/BTNN: THÔNG BÁO VỀ VIỆC DỪNG GIẢI QUYẾT YÊU CẦU BỒI THƯỜNG
 - **Tên tệp template**: `Mau_05_BTNN_Template.docx`
 - **Mục đích**: Thông báo cho người yêu cầu biết việc cơ quan GQBT dừng giải quyết yêu cầu bồi thường và trả lại hồ sơ hoặc chuyển hồ sơ đến cơ quan có thẩm quyền theo khoản 6 Điều 43 Luật TNBTCNN (sửa đổi 2026).
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác \"Dừng giải quyết bồi thường\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác "Dừng giải quyết bồi thường"*.
 - **Quy tắc đặt tên file tải về**: `Mau_05_BTNN_Thong_bao_dung_giai_quyet_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 05/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Kính gửi | `##TenNguoiYeuCauBoiThuong##` | Họ tên người yêu cầu bồi thường | Thông tin hồ sơ yêu cầu bồi thường | `HoSo.NguoiYeuCau_HoTen` | Giữ nguyên họ tên | `Hoàng Văn Phúc` |
-| 2 | Dưới Kính gửi | `##DiaChiNguoiYeuCauBoiThuong##` | Địa chỉ của người yêu cầu bồi thường | Thông tin hồ sơ yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng \", \". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Xã Tân Triều, Huyện Thanh Trì, TP. Hà Nội` |
-| 3 | Đoạn 1 | `##SoThongBaoThuLy##` | Số Thông báo thụ lý trước đó | Quá trình giải quyết hồ sơ | `VanBan_ThuLy.SoKyHieu` | Lấy từ văn bản thụ lý đã ban hành | `24/TB-STP` |
-| 4 | Đoạn 1 | `##NgayThongBaoThuLy##` | Ngày ban hành Thông báo thụ lý | Quá trình giải quyết hồ sơ | `VanBan_ThuLy.NgayBanHanh` | Định dạng `dd/mm/yyyy` | `15/02/2026` |
-| 5 | Đoạn 1 | `##LyDoDungGiaiQuyet##` | Lý do dừng việc giải quyết | Popup Dừng giải quyết | Form nhập `LyDoDung` | Nêu rõ lý do tương ứng khoản 2 hoặc khoản 4 Điều 43 | `yêu cầu bồi thường không thuộc phạm vi trách nhiệm bồi thường của Nhà nước` |
-| 6 | Đoạn 1 | `##CanCuDungGiaiQuyet##` | Điểm, khoản căn cứ dừng giải quyết | Popup Dừng giải quyết | Control UI: Combobox.<br>Gồm:<br>+ điểm a khoản 2<br>+ điểm b khoản 2<br>+ điểm c khoản 2<br>+ khoản 4 | Chọn điều khoản tương ứng căn cứ pháp lý | `điểm b khoản 2` |
-| 7 | Đoạn 2 | `##BienPhapXuLyTiepTheo##` | Biện pháp xử lý hồ sơ tiếp theo | Popup Dừng giải quyết | Control UI: Radio.<br>Gồm:<br>+ trả lại hồ sơ yêu cầu bồi thường cho Ông/Bà (gửi kèm Thông báo này)<br>+ chuyển hồ sơ đến cơ quan có thẩm quyền giải quyết | Tùy chọn theo căn cứ dừng: trả lại hồ sơ HOẶC chuyển tiếp hồ sơ kèm tên cơ quan tiếp nhận | `trả lại hồ sơ yêu cầu bồi thường cho Ông/Bà (gửi kèm Thông báo này)` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Quá trình giải quyết > Form Dừng giải quyết bồi thường | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `30/TB-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Quá trình giải quyết > Form Dừng giải quyết bồi thường | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 18 tháng 03 năm 2026` |
+| 3 | Kính gửi | `##TenNguoiYeuCauBoiThuong##` | Thông tin hồ sơ yêu cầu bồi thường | Họ và tên người yêu cầu bồi thường | Giữ nguyên họ tên theo hồ sơ | `Hoàng Văn Phúc` |
+| 4 | Dưới Kính gửi | `##DiaChiNguoiYeuCauBoiThuong##` | Thông tin hồ sơ yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Địa chỉ của người yêu cầu bồi thường: Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng ", ". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Xã Tân Triều, Huyện Thanh Trì, TP. Hà Nội` |
+| 5 | Đoạn 1 | `##SoThongBaoThuLy##` | Quá trình giải quyết hồ sơ | Số thông báo thụ lý trước đó | Lấy từ văn bản thông báo thụ lý đã ban hành của hồ sơ | `24/TB-STP` |
+| 6 | Đoạn 1 | `##NgayThongBaoThuLy##` | Quá trình giải quyết hồ sơ | Ngày ban hành thông báo thụ lý | Định dạng `dd/mm/yyyy` | `15/02/2026` |
+| 7 | Đoạn 1 | `##LyDoDungGiaiQuyet##` | Quá trình giải quyết > Form Dừng giải quyết bồi thường | Lý do dừng giải quyết | Nêu rõ lý do tương ứng khoản 2 hoặc khoản 4 Điều 43 | `yêu cầu bồi thường không thuộc phạm vi trách nhiệm bồi thường của Nhà nước` |
+| 8 | Đoạn 1 | `##CanCuDungGiaiQuyet##` | Quá trình giải quyết > Form Dừng giải quyết bồi thường | Căn cứ dừng giải quyết | Control UI: Combobox.<br>Gồm:<br>+ điểm a khoản 2<br>+ điểm b khoản 2<br>+ điểm c khoản 2<br>+ khoản 4 | Chọn điều khoản tương ứng căn cứ pháp lý | `điểm b khoản 2` |
+| 9 | Đoạn 2 | `##BienPhapXuLyTiepTheo##` | Quá trình giải quyết > Form Dừng giải quyết bồi thường | Biện pháp xử lý hồ sơ tiếp theo | Control UI: Radio.<br>Gồm:<br>+ trả lại hồ sơ yêu cầu bồi thường cho Ông/Bà (gửi kèm Thông báo này)<br>+ chuyển hồ sơ đến cơ quan có thẩm quyền giải quyết | Tùy chọn theo căn cứ dừng: trả lại hồ sơ HOẶC chuyển tiếp hồ sơ kèm tên cơ quan tiếp nhận | `trả lại hồ sơ yêu cầu bồi thường cho Ông/Bà (gửi kèm Thông báo này)` |
 
 ---
 
 ### 5. MẪU SỐ 06/BTNN: QUYẾT ĐỊNH CỬ NGƯỜI GIẢI QUYẾT BỒI THƯỜNG
 - **Tên tệp template**: `Mau_06_BTNN_Template.docx`
 - **Mục đích**: Thủ trưởng cơ quan giải quyết bồi thường ban hành quyết định phân công công chức/cán bộ trực tiếp thụ lý, giải quyết vụ việc bồi thường theo khoản 1 Điều 43 Luật TNBTCNN.
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Thụ lý hồ sơ > Thao tác \"Phân công người giải quyết\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Thụ lý hồ sơ > Thao tác "Phân công người giải quyết"*.
 - **Quy tắc đặt tên file tải về**: `Mau_06_BTNN_Quyet_dinh_cu_nguoi_GQBT_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 06/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Căn cứ & Điều 1 | `##TenNguoiYeuCauBoiThuong##` | Họ tên người yêu cầu bồi thường | Thông tin hồ sơ yêu cầu bồi thường | `HoSo.NguoiYeuCau_HoTen` | Giữ nguyên chữ hoa/thường | `Phạm Minh Tuấn` |
-| 2 | Điều 1 | `##DiaChiNguoiYeuCauBoiThuong##` | Địa chỉ của người yêu cầu bồi thường | Thông tin hồ sơ yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng \", \". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Phường Hàng Đào, Quận Hoàn Kiếm, TP. Hà Nội` |
-| 3 | Điều 1, 2, 4 | `##HoTenNguoiGiaiQuyet##` | Họ và tên cán bộ được cử GQBT | Phân công người giải quyết | `CanBo.HoTen` | Điền vào Điều 1, 2 và Điều 4 | `Nguyễn Thị Lan` |
-| 4 | Điều 1 | `##ChucVuNguoiGiaiQuyet##` | Chức vụ cán bộ được cử GQBT | Phân công người giải quyết | `CanBo.TenChucVu` | Chức danh công tác | `Chuyên viên chính` |
-| 5 | Điều 1 | `##DonViCongTacNguoiGQ##` | Đơn vị phòng ban công tác của cán bộ | Phân công người giải quyết | `CanBo.TenPhongBan` | Tên phòng ban trực thuộc cơ quan GQBT | `Phòng Bổ trợ tư pháp` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Thụ lý hồ sơ > Form Phân công người giải quyết | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `16/QĐ-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Thụ lý hồ sơ > Form Phân công người giải quyết | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 15 tháng 03 năm 2026` |
+| 3 | Căn cứ & Điều 1 | `##TenNguoiYeuCauBoiThuong##` | Thụ lý hồ sơ | Họ và tên người yêu cầu bồi thường | Giữ nguyên chữ hoa/thường theo hồ sơ | `Phạm Minh Tuấn` |
+| 4 | Điều 1 | `##DiaChiNguoiYeuCauBoiThuong##` | Thụ lý hồ sơ | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Địa chỉ của người yêu cầu bồi thường: Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng ", ". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Phường Hàng Đào, Quận Hoàn Kiếm, TP. Hà Nội` |
+| 5 | Điều 1, 2, 4 | `##HoTenNguoiGiaiQuyet##` | Thụ lý hồ sơ > Form Phân công người giải quyết | Người giải quyết được phân công | Điền vào Điều 1, 2 và Điều 4 | `Nguyễn Thị Lan` |
+| 6 | Điều 1 | `##ChucVuNguoiGiaiQuyet##` | Thụ lý hồ sơ > Form Phân công người giải quyết | Chức vụ cán bộ được phân công | Chức danh công tác của cán bộ | `Chuyên viên chính` |
+| 7 | Điều 1 | `##DonViCongTacNguoiGQ##` | Thụ lý hồ sơ > Form Phân công người giải quyết | Đơn vị, phòng ban công tác | Tên phòng ban trực thuộc cơ quan giải quyết | `Phòng Bổ trợ tư pháp` |
 
 ---
 
 ### 6. MẪU SỐ 07/BTNN: QUYẾT ĐỊNH TẠM ỨNG KINH PHÍ BỒI THƯỜNG
 - **Tên tệp template**: `Mau_07_BTNN_Template.docx`
 - **Mục đích**: Quyết định tạm ứng một phần kinh phí bồi thường đối với các thiệt hại về tính mạng, sức khỏe, tài sản hoặc thiệt hại cấp bách theo quy định tại Điều 44 Luật TNBTCNN.
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác \"Lập quyết định tạm ứng\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác "Lập quyết định tạm ứng"*.
 - **Quy tắc đặt tên file tải về**: `Mau_07_BTNN_Quyet_dinh_tam_ung_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 07/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Căn cứ | `##SoKyHieuVanBanCanCu##` | Số hiệu văn bản làm căn cứ hồ sơ yêu cầu bồi thường | Thông tin hồ sơ yêu cầu bồi thường | `VanBanCanCu.SoKyHieu` | Giữ nguyên số hiệu văn bản căn cứ | `05/2025/HSST` |
-| 2 | Căn cứ | `##NgayBanHanhVanBanCanCu##` | Ngày ban hành văn bản làm căn cứ | Thông tin hồ sơ yêu cầu bồi thường | `VanBanCanCu.NgayBanHanh` | Định dạng `dd/mm/yyyy` | `15/08/2025` |
-| 3 | Căn cứ | `##CoQuanBanHanhVanBanCanCu##` | Cơ quan ban hành văn bản làm căn cứ | Thông tin hồ sơ yêu cầu bồi thường | `VanBanCanCu.CoQuanBanHanh` | Tên cơ quan ban hành | `Tòa án nhân dân tỉnh Vĩnh Phúc` |
-| 4 | Căn cứ | `##NgayYeuCauTamUng##` | Ngày người yêu cầu nộp đơn xin tạm ứng | Hồ sơ yêu cầu tạm ứng | `DonTamUng.NgayYeuCau` | Định dạng `dd/mm/yyyy` | `20/02/2026` |
-| 5 | Điều 1 | `##TongSoTienTamUng##` | Tổng số tiền tạm ứng bằng số | Form Lập quyết định tạm ứng | `QDTamUng.SoTienTamUng` | Định dạng phân cách hàng nghìn bằng dấu chấm | `50.000.000` |
-| 6 | Điều 1 | `##TongSoTienTamUngBangChu##` | Tổng số tiền tạm ứng bằng chữ | Form Lập quyết định tạm ứng | Tự động chuyển đổi | Chuyển đổi từ số tiền, viết hoa chữ cái đầu, có chữ \"đồng\" | `Năm mươi triệu đồng` |
-| 7 | Điều 1 | `##ChiTietCacKhoanTamUng##` | Chi tiết nội dung các khoản tạm ứng | Form Lập quyết định tạm ứng | `QDTamUng.ChiTietKhoanMuc` | Liệt kê chi phí: chi phí cứu chữa, bồi dưỡng sức khỏe, phục hồi chức năng... | `chi phí khám chữa bệnh: 30.000.000 đồng; chi phí thu nhập thực tế bị mất: 20.000.000 đồng` |
-| 8 | Điều 2 | `##PhuongThucChiTraTamUng##` | Phương thức chi trả tiền tạm ứng | Form Lập quyết định tạm ứng | Control UI: Radio.<br>Gồm:<br>+ chuyển khoản<br>+ tiền mặt | Ghi rõ hình thức chi trả | `chuyển khoản qua tài khoản ngân hàng` |
-| 9 | Điều 2 | `##ThongTinTaiKhoanNhanTamUng##` | Thông tin tài khoản nhận tiền tạm ứng | Form Lập quyết định tạm ứng | Ghép STK, Chủ TK, Ngân hàng | Nếu chuyển khoản: ghi rõ `Số TK: ..., Chủ TK: ..., Mở tại: ...`. Nếu tiền mặt: ghi `tại trụ sở cơ quan giải quyết bồi thường` | `Số tài khoản: 19028888888, Chủ tài khoản: Nguyễn Văn A, Ngân hàng TMCP Ngoại thương Việt Nam (Vietcombank) - Chi nhánh Hà Nội` |
-| 10 | Nơi nhận | `##TenCoQuanTaiChinh##` | Cơ quan tài chính / Kho bạc cấp phát | Cấu hình quản lý đơn vị | `DonVi.CoQuanTaiChinh` | Tên cơ quan cấp phát kinh phí bồi thường | `Sở Tài chính thành phố Hà Nội` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Quá trình giải quyết > Form Quyết định tạm ứng kinh phí | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `25/QĐ-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Quá trình giải quyết > Form Quyết định tạm ứng kinh phí | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 22 tháng 03 năm 2026` |
+| 3 | Căn cứ | `##SoKyHieuVanBanCanCu##` | Thông tin hồ sơ yêu cầu bồi thường | Số, ký hiệu văn bản làm căn cứ | Giữ nguyên số hiệu văn bản căn cứ | `05/2025/HSST` |
+| 4 | Căn cứ | `##NgayBanHanhVanBanCanCu##` | Thông tin hồ sơ yêu cầu bồi thường | Ngày ban hành văn bản làm căn cứ | Định dạng `dd/mm/yyyy` | `15/08/2025` |
+| 5 | Căn cứ | `##CoQuanBanHanhVanBanCanCu##` | Thông tin hồ sơ yêu cầu bồi thường | Cơ quan ban hành văn bản làm căn cứ | Tên cơ quan ban hành | `Tòa án nhân dân tỉnh Vĩnh Phúc` |
+| 6 | Căn cứ | `##NgayYeuCauTamUng##` | Quá trình giải quyết > Đơn yêu cầu tạm ứng | Ngày nộp đơn yêu cầu tạm ứng | Định dạng `dd/mm/yyyy` | `20/02/2026` |
+| 7 | Điều 1 | `##TongSoTienTamUng##` | Quá trình giải quyết > Form Quyết định tạm ứng kinh phí | Tổng số tiền tạm ứng | Định dạng phân cách hàng nghìn bằng dấu chấm | `50.000.000` |
+| 8 | Điều 1 | `##TongSoTienTamUngBangChu##` | Quá trình giải quyết > Form Quyết định tạm ứng kinh phí | Tổng số tiền tạm ứng bằng chữ | Chuyển đổi từ số tiền, viết hoa chữ cái đầu, có chữ "đồng" | `Năm mươi triệu đồng` |
+| 9 | Điều 1 | `##ChiTietCacKhoanTamUng##` | Quá trình giải quyết > Form Quyết định tạm ứng kinh phí | Nội dung chi tiết các khoản tạm ứng | Liệt kê chi phí: chi phí cứu chữa, bồi dưỡng sức khỏe, phục hồi chức năng... | `chi phí khám chữa bệnh: 30.000.000 đồng; chi phí thu nhập thực tế bị mất: 20.000.000 đồng` |
+| 10 | Điều 2 | `##PhuongThucChiTraTamUng##` | Quá trình giải quyết > Form Quyết định tạm ứng kinh phí | Phương thức chi trả tiền tạm ứng | Control UI: Radio.<br>Gồm:<br>+ chuyển khoản<br>+ tiền mặt | Ghi rõ hình thức chi trả | `chuyển khoản qua tài khoản ngân hàng` |
+| 11 | Điều 2 | `##ThongTinTaiKhoanNhanTamUng##` | Quá trình giải quyết > Form Quyết định tạm ứng kinh phí | Ghép các trường: Số tài khoản, Chủ tài khoản, Ngân hàng | Nếu chuyển khoản: ghi rõ `Số TK: ..., Chủ TK: ..., Mở tại: ...`. Nếu tiền mặt: ghi `tại trụ sở cơ quan giải quyết bồi thường` | `Số tài khoản: 19028888888, Chủ tài khoản: Nguyễn Văn A, Ngân hàng TMCP Ngoại thương Việt Nam (Vietcombank) - Chi nhánh Hà Nội` |
+| 12 | Nơi nhận | `##TenCoQuanTaiChinh##` | Quản lý cơ cấu tổ chức > Quản lý đơn vị | Cơ quan tài chính cấp phát kinh phí | Tên cơ quan cấp phát kinh phí bồi thường | `Sở Tài chính thành phố Hà Nội` |
 
 ---
 
 ### 7. MẪU SỐ 08/BTNN: THÔNG BÁO YÊU CẦU CUNG CẤP TÀI LIỆU, CHỨNG CỨ PHỤC VỤ XÁC MINH THIỆT HẠI
 - **Tên tệp template**: `Mau_08_BTNN_Template.docx`
 - **Mục đích**: Gửi các cơ quan, tổ chức, cá nhân có liên quan yêu cầu cung cấp hồ sơ, tài liệu, số liệu kế toán hoặc chứng cứ phục vụ việc xác minh các khoản thiệt hại theo Điều 45 Luật TNBTCNN.
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Xác minh thiệt hại > Thao tác \"Yêu cầu cung cấp tài liệu\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Xác minh thiệt hại > Thao tác "Yêu cầu cung cấp tài liệu"*.
 - **Quy tắc đặt tên file tải về**: `Mau_08_BTNN_Thong_bao_yeu_cau_tai_lieu_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 08/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Kính gửi | `##TenCoQuanToChucNhanYeuCau##` | Tên cơ quan, tổ chức nhận yêu cầu | Popup Yêu cầu tài liệu | Form nhập `TenDonViNhan` | Tên cơ quan lưu giữ tài liệu, chứng cứ | `Bệnh viện Đa khoa tỉnh Hà Nam` |
-| 2 | Dưới Kính gửi | `##DiaChiCoQuanToChucNhanYeuCau##` | Địa chỉ cơ quan nhận yêu cầu | Popup Yêu cầu tài liệu | Form nhập `DiaChiDonViNhan` | Địa chỉ nhận công văn | `Số 15 đường Trần Hưng Đạo, TP. Phủ Lý, Tỉnh Hà Nam` |
-| 3 | Đoạn 1 | `##TenNguoiYeuCauBoiThuong##` | Họ tên người yêu cầu bồi thường | Thông tin hồ sơ yêu cầu bồi thường | `HoSo.NguoiYeuCau_HoTen` | Họ tên người yêu cầu | `Bùi Văn Hùng` |
-| 4 | Đoạn 1 | `##TrichYeuVuViecYeuCau##` | Trích yếu nội dung vụ việc hồ sơ yêu cầu bồi thường | Thông tin hồ sơ yêu cầu bồi thường | `HoSo.TrichYeuNoiDung` | Tóm tắt ngắn gọn nội dung vụ việc | `yêu cầu bồi thường thiệt hại do bị tạm giam oan từ ngày 01/01/2023 đến 01/01/2024` |
-| 5 | Đoạn 2 | `##DanhSachTaiLieuChungCuYeuCau##` | Danh mục tài liệu, chứng cứ cần cung cấp | Popup Yêu cầu tài liệu | Form nhập `DanhSachTaiLieu` | Đánh số thứ tự từng tài liệu cần trích lục, sao y | `1. Bệnh án điều trị ngoại trú số 452/BA từ ngày 10/02/2024 đến 25/03/2024.<br>2. Toàn bộ hóa đơn, phiếu thu tiền thuốc và viện phí kèm theo.` |
-| 6 | Đoạn 3 | `##DiaChiCoQuanGiaiQuyetBoiThuong##` | Địa chỉ gửi văn bản phản hồi | Quản lý cơ cấu tổ chức | `DonVi.DiaChiTruSo` | Địa chỉ trụ sở cơ quan giải quyết | `Số 221 phố Trần Phú, Quận Hà Đông, TP. Hà Nội` |
-| 7 | Đoạn 3 | `##ThoiHanCungCapTaiLieu##` | Thời hạn gửi tài liệu về cơ quan | Popup Yêu cầu tài liệu | Form nhập `HanCungCap` | Định dạng `dd/mm/yyyy` | `15/04/2026` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Quá trình giải quyết > Xác minh thiệt hại > Form Yêu cầu tài liệu | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `32/TB-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Quá trình giải quyết > Xác minh thiệt hại > Form Yêu cầu tài liệu | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 25 tháng 03 năm 2026` |
+| 3 | Kính gửi | `##TenCoQuanToChucNhanYeuCau##` | Quá trình giải quyết > Xác minh thiệt hại > Form Yêu cầu tài liệu | Tên cơ quan, tổ chức nhận yêu cầu | Tên cơ quan lưu giữ tài liệu, chứng cứ | `Bệnh viện Đa khoa tỉnh Hà Nam` |
+| 4 | Dưới Kính gửi | `##DiaChiCoQuanToChucNhanYeuCau##` | Quá trình giải quyết > Xác minh thiệt hại > Form Yêu cầu tài liệu | Địa chỉ cơ quan, tổ chức nhận yêu cầu | Địa chỉ gửi công văn yêu cầu | `Số 15 đường Trần Hưng Đạo, TP. Phủ Lý, Tỉnh Hà Nam` |
+| 5 | Đoạn 1 | `##TenNguoiYeuCauBoiThuong##` | Thông tin hồ sơ yêu cầu bồi thường | Họ và tên người yêu cầu bồi thường | Họ tên người yêu cầu theo hồ sơ | `Bùi Văn Hùng` |
+| 6 | Đoạn 1 | `##TrichYeuVuViecYeuCau##` | Thông tin hồ sơ yêu cầu bồi thường | Trích yếu nội dung vụ việc yêu cầu bồi thường | Tóm tắt ngắn gọn nội dung vụ việc | `yêu cầu bồi thường thiệt hại do bị tạm giam oan từ ngày 01/01/2023 đến 01/01/2024` |
+| 7 | Đoạn 2 | `##DanhSachTaiLieuChungCuYeuCau##` | Quá trình giải quyết > Xác minh thiệt hại > Form Yêu cầu tài liệu | Danh mục tài liệu, chứng cứ cần cung cấp | Đánh số thứ tự từng tài liệu cần trích lục, sao y | `1. Bệnh án điều trị ngoại trú số 452/BA từ ngày 10/02/2024 đến 25/03/2024.<br>2. Toàn bộ hóa đơn, phiếu thu tiền thuốc và viện phí kèm theo.` |
+| 8 | Đoạn 3 | `##DiaChiCoQuanGiaiQuyetBoiThuong##` | Quản lý cơ cấu tổ chức > Quản lý đơn vị | Địa chỉ trụ sở cơ quan giải quyết | Địa chỉ trụ sở cơ quan giải quyết bồi thường | `Số 221 phố Trần Phú, Quận Hà Đông, TP. Hà Nội` |
+| 9 | Đoạn 3 | `##ThoiHanCungCapTaiLieu##` | Quá trình giải quyết > Xác minh thiệt hại > Form Yêu cầu tài liệu | Thời hạn cung cấp tài liệu | Định dạng `dd/mm/yyyy` | `15/04/2026` |
 
 ---
 
 ### 8. MẪU SỐ 18/BTNN: QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG
 - **Tên tệp template**: `Mau_18_BTNN_Template.docx`
 - **Mục đích**: Quyết định giải quyết bồi thường chính thức của cơ quan giải quyết bồi thường sau khi kết thúc thương lượng hoặc theo các trường hợp quy định tại khoản 1 Điều 47 Luật TNBTCNN.
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thương lượng bồi thường > Thao tác \"Lập quyết định giải quyết bồi thường\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thương lượng bồi thường > Thao tác "Lập quyết định giải quyết bồi thường"*.
 - **Quy tắc đặt tên file tải về**: `Mau_18_BTNN_Quyet_dinh_giai_quyet_BTNN_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 18/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Căn cứ | `##SoKyHieuVanBanCanCu##` | Văn bản làm căn cứ hồ sơ yêu cầu bồi thường | Thông tin hồ sơ yêu cầu bồi thường | `VanBanCanCu.SoKyHieu` | Số hiệu, ngày ban hành và cơ quan ban hành | `Bản án hình sự phúc thẩm số 18/2025/HSPT ngày 10/11/2025 của Tòa án nhân dân cấp cao tại Hà Nội` |
-| 2 | Căn cứ | `##SoQDTamUng##` | Quyết định tạm ứng kinh phí (nếu có) | Quá trình giải quyết hồ sơ | `QDTamUng.SoKyHieu` | Nếu có tạm ứng thì hiển thị căn cứ này, không có thì bỏ căn cứ | `Quyết định số 12/QĐ-STP ngày 25/01/2026 của Giám đốc Sở Tư pháp` |
-| 3 | Căn cứ | `##NgayLapBienBanThuongLuong##` | Ngày lập Biên bản kết quả thương lượng | Kết quả thương lượng | `BienBanThuongLuong.NgayLap` | Định dạng `dd/mm/yyyy` | `28/03/2026` |
-| 4 | Điều 1 | `##TongSoTienBoiThuong##` | Tổng số tiền bồi thường bằng số | Kết quả thương lượng / Form QĐ | `QDGQBT.TongTienBoiThuong` | Định dạng số phân cách hàng nghìn bằng dấu chấm | `350.000.000` |
-| 5 | Điều 1 | `##TongSoTienBoiThuongBangChu##` | Tổng số tiền bồi thường bằng chữ | Kết quả thương lượng / Form QĐ | Chuyển đổi tự động | Chữ tiếng Việt chuẩn | `Ba trăm năm mươi triệu đồng` |
-| 6 | Điều 1 | `##ThietHaiTaiSan##` | Thiệt hại do tài sản bị xâm phạm | Bảng chi tiết thiệt hại | `QDGQBT.TienThietHaiTaiSan` | Số tiền (định dạng dấu chấm) | `50.000.000` |
-| 7 | Điều 1 | `##ThietHaiThuNhap##` | Thiệt hại do thu nhập bị mất/giảm sút | Bảng chi tiết thiệt hại | `QDGQBT.TienThietHaiThuNhap` | Số tiền (định dạng dấu chấm) | `120.000.000` |
-| 8 | Điều 1 | `##ThietHaiTinhThan##` | Thiệt hại về tinh thần | Bảng chi tiết thiệt hại | `QDGQBT.TienThietHaiTinhThan` | Số tiền (định dạng dấu chấm) | `150.000.000` |
-| 9 | Điều 1 | `##ThietHaiKhac##` | Các chi phí thiệt hại khác | Bảng chi tiết thiệt hại | `QDGQBT.TienThietHaiKhac` | Số tiền (chi phí đi lại, thuê luật sư...) | `30.000.000` |
-| 10 | Điều 1 | `##SoTienDaTamUng##` | Số tiền đã tạm ứng trước đó | Bảng thanh toán kinh phí | `QDGQBT.SoTienDaTamUng` | Số tiền tạm ứng (nếu có, không có thì ghi `0`) | `50.000.000` |
-| 11 | Điều 1 | `##SoTienConLaiPhaiChiTra##` | Số tiền còn lại thực tế phải chi trả | Bảng thanh toán kinh phí | `TongSoTienBoiThuong - SoTienDaTamUng` | Số tiền còn lại phải thanh toán | `300.000.000` |
-| 12 | Điều 1 | `##SoTienConLaiBangChu##` | Số tiền còn lại viết bằng chữ | Bảng thanh toán kinh phí | Chuyển đổi tự động | Viết bằng chữ số tiền còn lại | `Ba trăm triệu đồng` |
-| 13 | Điều 2 | `##PhuongThucChiTraBoiThuong##` | Phương thức chi trả tiền bồi thường | Kết quả thương lượng | Control UI: Radio.<br>Gồm:<br>+ chi trả qua chuyển khoản ngân hàng<br>+ chi trả trực tiếp bằng tiền mặt | Phương thức thanh toán thỏa thuận | `chi trả qua chuyển khoản ngân hàng` |
-| 14 | Điều 2 | `##ThongTinTaiKhoanChiTra##` | Chi tiết tài khoản nhận tiền chi trả | Kết quả thương lượng | Ghép: Số TK, Tên TK, Ngân hàng | Chi tiết tài khoản hoặc địa điểm chi trả | `Số tài khoản: 001100222333, Chủ tài khoản: Nguyễn Văn Nam, tại Ngân hàng Ngoại thương Việt Nam` |
-| 15 | Điều 3 | `##QuyenLoiIchHopPhapKhac##` | Quyền, lợi ích hợp pháp khác khôi phục | Kết quả thương lượng | `QDGQBT.QuyenLoiIchKhac` | Căn cứ Điều 29 Luật TNBTCNN (khôi phục chức vụ, trả lại giấy tờ, bằng cấp...). Nếu không có ghi: `Không` | `Khôi phục quyền sử dụng đất và cấp lại Giấy chứng nhận quyền sử dụng đất đối với thửa đất số 45` |
-| 16 | Điều 5 | `##ThoiDiemHieuLucQuyetDinh##` | Thời điểm Quyết định có hiệu lực | Form Lập Quyết định | Thỏa thuận hoặc luật định | Theo thỏa thuận tại biên bản thương lượng hoặc ghi `sau 60 ngày kể từ ngày người yêu cầu bồi thường nhận được Quyết định này` | `sau 15 ngày kể từ ngày ký` |
-| 17 | Nơi nhận | `##TenNguoiThiHanhCongVuGayThietHai##` | Người thi hành công vụ gây thiệt hại | Thông tin hồ sơ yêu cầu bồi thường | `HoSo.NguoiThiHanhCongVu_HoTen` | Họ tên cán bộ gây thiệt hại gửi để biết và thực hiện trách nhiệm hoàn trả | `Ông Vũ Đình Trọng (cựu Điều tra viên)` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Quá trình giải quyết > Form Quyết định giải quyết bồi thường | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `18/QĐ-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Quá trình giải quyết > Form Quyết định giải quyết bồi thường | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 28 tháng 03 năm 2026` |
+| 3 | Căn cứ | `##SoKyHieuVanBanCanCu##` | Thông tin hồ sơ yêu cầu bồi thường | Văn bản làm căn cứ yêu cầu bồi thường | Số hiệu, ngày ban hành và cơ quan ban hành | `Bản án hình sự phúc thẩm số 18/2025/HSPT ngày 10/11/2025 của Tòa án nhân dân cấp cao tại Hà Nội` |
+| 4 | Căn cứ | `##SoQDTamUng##` | Quá trình giải quyết hồ sơ | Số quyết định tạm ứng kinh phí | Nếu có tạm ứng thì hiển thị căn cứ này, không có thì bỏ căn cứ | `Quyết định số 12/QĐ-STP ngày 25/01/2026 của Giám đốc Sở Tư pháp` |
+| 5 | Căn cứ | `##NgayLapBienBanThuongLuong##` | Quá trình giải quyết > Kết quả thương lượng | Ngày lập biên bản thương lượng | Định dạng `dd/mm/yyyy` | `28/03/2026` |
+| 6 | Điều 1 | `##TongSoTienBoiThuong##` | Quá trình giải quyết > Form Quyết định giải quyết bồi thường | Tổng số tiền bồi thường | Định dạng số phân cách hàng nghìn bằng dấu chấm | `350.000.000` |
+| 7 | Điều 1 | `##TongSoTienBoiThuongBangChu##` | Quá trình giải quyết > Form Quyết định giải quyết bồi thường | Tổng số tiền bồi thường bằng chữ | Chữ tiếng Việt chuẩn có chữ "đồng" | `Ba trăm năm mươi triệu đồng` |
+| 8 | Điều 1 | `##ThietHaiTaiSan##` | Quá trình giải quyết > Bảng chi tiết thiệt hại | Thiệt hại do tài sản bị xâm phạm | Số tiền (định dạng dấu chấm) | `50.000.000` |
+| 9 | Điều 1 | `##ThietHaiThuNhap##` | Quá trình giải quyết > Bảng chi tiết thiệt hại | Thiệt hại do thu nhập bị mất hoặc giảm sút | Số tiền (định dạng dấu chấm) | `120.000.000` |
+| 10 | Điều 1 | `##ThietHaiTinhThan##` | Quá trình giải quyết > Bảng chi tiết thiệt hại | Thiệt hại về tinh thần | Số tiền (định dạng dấu chấm) | `150.000.000` |
+| 11 | Điều 1 | `##ThietHaiKhac##` | Quá trình giải quyết > Bảng chi tiết thiệt hại | Các chi phí thiệt hại khác | Số tiền (chi phí đi lại, thuê luật sư...) | `30.000.000` |
+| 12 | Điều 1 | `##SoTienDaTamUng##` | Quá trình giải quyết > Bảng thanh toán kinh phí | Số tiền đã tạm ứng trước đó | Số tiền tạm ứng (nếu có, không có thì ghi `0`) | `50.000.000` |
+| 13 | Điều 1 | `##SoTienConLaiPhaiChiTra##` | Quá trình giải quyết > Bảng thanh toán kinh phí | Số tiền còn lại thực tế phải chi trả | Số tiền còn lại phải thanh toán | `300.000.000` |
+| 14 | Điều 1 | `##SoTienConLaiBangChu##` | Quá trình giải quyết > Bảng thanh toán kinh phí | Số tiền còn lại viết bằng chữ | Viết bằng chữ số tiền còn lại | `Ba trăm triệu đồng` |
+| 15 | Điều 2 | `##PhuongThucChiTraBoiThuong##` | Quá trình giải quyết > Kết quả thương lượng | Phương thức chi trả tiền bồi thường | Control UI: Radio.<br>Gồm:<br>+ chi trả qua chuyển khoản ngân hàng<br>+ chi trả trực tiếp bằng tiền mặt | Phương thức thanh toán thỏa thuận | `chi trả qua chuyển khoản ngân hàng` |
+| 16 | Điều 2 | `##ThongTinTaiKhoanChiTra##` | Quá trình giải quyết > Kết quả thương lượng | Ghép các trường: Số tài khoản, Chủ tài khoản, Ngân hàng | Chi tiết tài khoản nhận chi trả hoặc địa điểm nhận tiền mặt | `Số tài khoản: 001100222333, Chủ tài khoản: Nguyễn Văn Nam, tại Ngân hàng Ngoại thương Việt Nam` |
+| 17 | Điều 3 | `##QuyenLoiIchHopPhapKhac##` | Quá trình giải quyết > Kết quả thương lượng | Quyền, lợi ích hợp pháp khác được khôi phục | Căn cứ Điều 29 Luật TNBTCNN (khôi phục chức vụ, trả lại giấy tờ, bằng cấp...). Nếu không có ghi: `Không` | `Khôi phục quyền sử dụng đất và cấp lại Giấy chứng nhận quyền sử dụng đất đối với thửa đất số 45` |
+| 18 | Điều 5 | `##ThoiDiemHieuLucQuyetDinh##` | Quá trình giải quyết > Form Quyết định giải quyết bồi thường | Thời điểm quyết định có hiệu lực | Theo thỏa thuận tại biên bản thương lượng hoặc ghi `sau 60 ngày kể từ ngày người yêu cầu bồi thường nhận được Quyết định này` | `sau 15 ngày kể từ ngày ký` |
+| 19 | Nơi nhận | `##TenNguoiThiHanhCongVuGayThietHai##` | Thông tin hồ sơ yêu cầu bồi thường | Họ và tên người thi hành công vụ gây thiệt hại | Họ tên cán bộ gây thiệt hại gửi để biết và thực hiện trách nhiệm hoàn trả | `Ông Vũ Đình Trọng (cựu Điều tra viên)` |
 
 ---
 
 ### 9. MẪU SỐ 20/BTNN: QUYẾT ĐỊNH HỦY QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG
 - **Tên tệp template**: `Mau_20_BTNN_Template.docx`
 - **Mục đích**: Hủy quyết định giải quyết bồi thường đã ban hành khi có một trong các căn cứ theo Điều 48 Luật TNBTCNN (để đình chỉ giải quyết hoặc giải quyết lại vụ việc).
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác \"Hủy quyết định giải quyết bồi thường\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác "Hủy quyết định giải quyết bồi thường"*.
 - **Quy tắc đặt tên file tải về**: `Mau_20_BTNN_Quyet_dinh_huy_QDGQBT_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 20/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Căn cứ | `##CanCuKhoanDieu48##` | Khoản điều làm căn cứ hủy QĐ | Popup Hủy quyết định | Control UI: Combobox.<br>Gồm:<br>+ khoản 1, 2 và 5<br>+ khoản 3, 3a và 5 | - Hủy để đình chỉ: ghi `khoản 1, 2 và 5`.<br>- Hủy để giải quyết lại: ghi `khoản 3, 3a và 5` | `khoản 3, 3a và 5` |
-| 2 | Căn cứ | `##SoKyHieuVanBanXacDinh##` | Văn bản xác định trường hợp hủy | Popup Hủy quyết định | Form nhập `VanBanXacDinh_So` | Số hiệu văn bản kết luận thanh tra / bản án hủy | `Kết luận thanh tra số 45/KL-TTr ngày 10/02/2026 của Thanh tra Bộ Tư pháp` |
-| 3 | Điều 1 | `##SoQDGiaiQuyetBiHuy##` | Số Quyết định GQBT bị hủy | Thông tin hồ sơ yêu cầu bồi thường | `QDGQBT.SoKyHieu` | Lấy số hiệu Quyết định đã ban hành trước đó | `18/QĐ-STP` |
-| 4 | Điều 1 | `##NgayBanHanhQDBiHuy##` | Ngày ban hành Quyết định bị hủy | Thông tin hồ sơ yêu cầu bồi thường | `QDGQBT.NgayBanHanh` | Định dạng `dd/mm/yyyy` | `15/01/2026` |
-| 5 | Điều 1 | `##CoQuanBanHanhQDBiHuy##` | Tên cơ quan đã ban hành QĐ bị hủy | Thông tin hồ sơ yêu cầu bồi thường | `QDGQBT.CoQuanBanHanh` | Tên cơ quan ban hành | `Giám đốc Sở Tư pháp thành phố Hà Nội` |
-| 6 | Điều 1 | `##LyDoHuyQuyetDinh##` | Lý do hủy quyết định | Popup Hủy quyết định | Form nhập `LyDoHuy` | Ghi lý do tương ứng từng điểm tại khoản 1 hoặc khoản 3 Điều 48 | `có hành vi cố ý làm sai lệch hồ sơ giải quyết bồi thường dẫn đến xác định sai mức thiệt hại` |
-| 7 | Điều 2 | `##HauQuaPhapLyVaBienPhapXuLy##` | Hậu quả pháp lý và biện pháp xử lý | Popup Hủy quyết định | Control UI: Radio.<br>Gồm:<br>+ Đình chỉ việc giải quyết bồi thường<br>+ Giải quyết lại | Tùy chọn: `Đình chỉ việc giải quyết bồi thường` HOẶC `Giải quyết lại` | `Giải quyết lại` |
-| 8 | Điều 2 | `##NoiDungGiaiQuyetLaiChiTiet##` | Nội dung giải quyết lại cụ thể | Popup Hủy quyết định | Form nhập `ChiTietGiaiQuyetLai` | Nếu giải quyết lại: ghi `Việc giải quyết lại từ việc: [nêu rõ công việc/thủ tục bắt đầu lại]`. Nếu đình chỉ: để trống | `Việc giải quyết lại từ việc xác minh thiệt hại đối với các khoản thiệt hại về tài sản.` |
-| 9 | Điều 3 | `##NgayHieuLucQDHuy##` | Ngày có hiệu lực của Quyết định hủy | Popup Hủy quyết định | Form nhập `NgayHieuLuc` | Định dạng `ngày dd/mm/yyyy` | `ngày 15/04/2026` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Quá trình giải quyết > Form Hủy quyết định giải quyết bồi thường | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `20/QĐ-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Quá trình giải quyết > Form Hủy quyết định giải quyết bồi thường | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 10 tháng 04 năm 2026` |
+| 3 | Căn cứ | `##CanCuKhoanDieu48##` | Quá trình giải quyết > Form Hủy quyết định giải quyết bồi thường | Khoản, điều căn cứ hủy quyết định | Control UI: Combobox.<br>Gồm:<br>+ khoản 1, 2 và 5<br>+ khoản 3, 3a và 5 | - Hủy để đình chỉ: ghi `khoản 1, 2 và 5`.<br>- Hủy để giải quyết lại: ghi `khoản 3, 3a và 5` | `khoản 3, 3a và 5` |
+| 4 | Căn cứ | `##SoKyHieuVanBanXacDinh##` | Quá trình giải quyết > Form Hủy quyết định giải quyết bồi thường | Văn bản xác định trường hợp hủy quyết định | Số hiệu văn bản kết luận thanh tra / bản án hủy | `Kết luận thanh tra số 45/KL-TTr ngày 10/02/2026 của Thanh tra Bộ Tư pháp` |
+| 5 | Điều 1 | `##SoQDGiaiQuyetBiHuy##` | Thông tin hồ sơ yêu cầu bồi thường | Số quyết định giải quyết bồi thường bị hủy | Lấy số hiệu Quyết định đã ban hành trước đó | `18/QĐ-STP` |
+| 6 | Điều 1 | `##NgayBanHanhQDBiHuy##` | Thông tin hồ sơ yêu cầu bồi thường | Ngày ban hành quyết định bị hủy | Định dạng `dd/mm/yyyy` | `15/01/2026` |
+| 7 | Điều 1 | `##CoQuanBanHanhQDBiHuy##` | Thông tin hồ sơ yêu cầu bồi thường | Cơ quan ban hành quyết định bị hủy | Tên cơ quan ban hành | `Giám đốc Sở Tư pháp thành phố Hà Nội` |
+| 8 | Điều 1 | `##LyDoHuyQuyetDinh##` | Quá trình giải quyết > Form Hủy quyết định giải quyết bồi thường | Lý do hủy quyết định | Ghi lý do tương ứng từng điểm tại khoản 1 hoặc khoản 3 Điều 48 | `có hành vi cố ý làm sai lệch hồ sơ giải quyết bồi thường dẫn đến xác định sai mức thiệt hại` |
+| 9 | Điều 2 | `##HauQuaPhapLyVaBienPhapXuLy##` | Quá trình giải quyết > Form Hủy quyết định giải quyết bồi thường | Hậu quả pháp lý và biện pháp xử lý | Control UI: Radio.<br>Gồm:<br>+ Đình chỉ việc giải quyết bồi thường<br>+ Giải quyết lại | Tùy chọn: `Đình chỉ việc giải quyết bồi thường` HOẶC `Giải quyết lại` | `Giải quyết lại` |
+| 10 | Điều 2 | `##NoiDungGiaiQuyetLaiChiTiet##` | Quá trình giải quyết > Form Hủy quyết định giải quyết bồi thường | Nội dung giải quyết lại cụ thể | Nếu giải quyết lại: ghi `Việc giải quyết lại từ việc: [nêu rõ công việc/thủ tục bắt đầu lại]`. Nếu đình chỉ: để trống | `Việc giải quyết lại từ việc xác minh thiệt hại đối với các khoản thiệt hại về tài sản.` |
+| 11 | Điều 3 | `##NgayHieuLucQDHuy##` | Quá trình giải quyết > Form Hủy quyết định giải quyết bồi thường | Ngày có hiệu lực của quyết định hủy | Định dạng `ngày dd/mm/yyyy` | `ngày 15/04/2026` |
 
 ---
 
 ### 10. MẪU SỐ 21/BTNN: QUYẾT ĐỊNH SỬA CHỮA, BỔ SUNG QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG
 - **Tên tệp template**: `Mau_21_BTNN_Template.docx`
 - **Mục đích**: Sửa đổi, bổ sung lỗi kỹ thuật, sai sót số liệu, tài khoản ngân hàng hoặc nội dung câu chữ trong Quyết định GQBT mà không làm thay đổi bản chất vụ việc.
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác \"Sửa chữa, bổ sung quyết định\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác "Sửa chữa, bổ sung quyết định"*.
 - **Quy tắc đặt tên file tải về**: `Mau_21_BTNN_Quyet_dinh_sua_chua_bo_sung_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 21/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Căn cứ & Điều 1 | `##SoQDDuocSuaDoiBoSung##` | Số Quyết định GQBT được sửa đổi | Thông tin hồ sơ yêu cầu bồi thường | `QDGQBT.SoKyHieu` | Số hiệu quyết định gốc | `18/QĐ-STP` |
-| 2 | Căn cứ & Điều 1 | `##NgayBanHanhQDCu##` | Ngày ban hành quyết định gốc | Thông tin hồ sơ yêu cầu bồi thường | `QDGQBT.NgayBanHanh` | Định dạng `dd/mm/yyyy` | `20/01/2026` |
-| 3 | Căn cứ & Điều 1 | `##CoQuanBanHanhQDCu##` | Cơ quan ban hành quyết định gốc | Thông tin hồ sơ yêu cầu bồi thường | `QDGQBT.CoQuanBanHanh` | Tên cơ quan ban hành | `Giám đốc Sở Tư pháp thành phố Hà Nội` |
-| 4 | Căn cứ | `##LyDoSuaChuaBoSung##` | Lý do cần sửa chữa, bổ sung | Popup Sửa chữa bổ sung | Form nhập `LyDoSuaChua` | Nêu rõ sai sót kỹ thuật / nhầm lẫn | `nhầm lẫn về thông tin số tài khoản ngân hàng của người yêu cầu bồi thường tại Điều 2` |
-| 5 | Điều 1 | `##NoiDungSuaChuaBoSung##` | Nội dung chi tiết sửa đổi, bổ sung | Popup Sửa chữa bổ sung | Form nhập `NoiDungSuaChua` | Trình bày rõ: Sửa đổi đoạn/khoản nào thành nội dung nào | `Sửa đổi đoạn 2 Điều 2 như sau: \"Phương thức chi trả qua chuyển khoản vào số tài khoản: 19039999999 mang tên Nguyễn Văn Nam mở tại Ngân hàng Techcombank Chi nhánh Ba Đình\".` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Quá trình giải quyết > Form Sửa chữa, bổ sung quyết định | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `21/QĐ-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Quá trình giải quyết > Form Sửa chữa, bổ sung quyết định | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 12 tháng 04 năm 2026` |
+| 3 | Căn cứ & Điều 1 | `##SoQDDuocSuaDoiBoSung##` | Thông tin hồ sơ yêu cầu bồi thường | Số quyết định giải quyết bồi thường được sửa đổi | Số hiệu quyết định gốc | `18/QĐ-STP` |
+| 4 | Căn cứ & Điều 1 | `##NgayBanHanhQDCu##` | Thông tin hồ sơ yêu cầu bồi thường | Ngày ban hành quyết định gốc | Định dạng `dd/mm/yyyy` | `20/01/2026` |
+| 5 | Căn cứ & Điều 1 | `##CoQuanBanHanhQDCu##` | Thông tin hồ sơ yêu cầu bồi thường | Cơ quan ban hành quyết định gốc | Tên cơ quan ban hành | `Giám đốc Sở Tư pháp thành phố Hà Nội` |
+| 6 | Căn cứ | `##LyDoSuaChuaBoSung##` | Quá trình giải quyết > Form Sửa chữa, bổ sung quyết định | Lý do cần sửa chữa, bổ sung | Nêu rõ sai sót kỹ thuật / nhầm lẫn | `nhầm lẫn về thông tin số tài khoản ngân hàng của người yêu cầu bồi thường tại Điều 2` |
+| 7 | Điều 1 | `##NoiDungSuaChuaBoSung##` | Quá trình giải quyết > Form Sửa chữa, bổ sung quyết định | Nội dung chi tiết sửa đổi, bổ sung | Trình bày rõ: Sửa đổi đoạn/khoản nào thành nội dung nào | `Sửa đổi đoạn 2 Điều 2 như sau: "Phương thức chi trả qua chuyển khoản vào số tài khoản: 19039999999 mang tên Nguyễn Văn Nam mở tại Ngân hàng Techcombank Chi nhánh Ba Đình".` |
 
 ---
 
 ### 11. MẪU SỐ 22/BTNN: QUYẾT ĐỊNH HOÃN GIẢI QUYẾT BỒI THƯỜNG
 - **Tên tệp template**: `Mau_22_BTNN_Template.docx`
 - **Mục đích**: Hoãn giải quyết bồi thường khi phát sinh các sự kiện theo quy định tại khoản 1 Điều 49 Luật TNBTCNN (người yêu cầu ốm nặng, sự kiện bất khả kháng hoặc trở ngại khách quan).
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác \"Hoãn giải quyết bồi thường\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác "Hoãn giải quyết bồi thường"*.
 - **Quy tắc đặt tên file tải về**: `Mau_22_BTNN_Quyet_dinh_hoan_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 22/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Căn cứ | `##NgayXacDinhLyDoHoan##` | Ngày xác định tài liệu, căn cứ hoãn | Popup Hoãn giải quyết | Form nhập `NgayCanCuHoan` | Định dạng `dd/mm/yyyy` | `10/03/2026` |
-| 2 | Điều 1 | `##TenNguoiYeuCauBoiThuong##` | Họ tên người yêu cầu bồi thường | Thông tin hồ sơ yêu cầu bồi thường | `HoSo.NguoiYeuCau_HoTen` | Giữ nguyên họ tên | `Đỗ Quốc Hưng` |
-| 3 | Điều 1 | `##DiaChiNguoiYeuCauBoiThuong##` | Địa chỉ của người yêu cầu bồi thường | Thông tin hồ sơ yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng \", \". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Số 12 phố Thợ Nhuộm, Quận Hoàn Kiếm, TP. Hà Nội` |
-| 4 | Điều 1 | `##LyDoHoanGiaiQuyet##` | Lý do hoãn giải quyết | Popup Hoãn giải quyết | Control UI: Combobox.<br>Gồm:<br>+ người yêu cầu bồi thường bị ốm nặng có xác nhận của cơ sở y tế<br>+ vì lý do bất khả kháng do thiên tai, bão lũ<br>+ trở ngại khách quan khác | Nêu cụ thể sự kiện dẫn đến phải hoãn | `Người yêu cầu bồi thường bị ốm nặng phải điều trị nội trú tại bệnh viện theo Giấy xác nhận số 88/GCN của Bệnh viện Bạch Mai` |
-| 5 | Điều 1 | `##ThoiGianHoanDuKien##` | Thời gian hoãn dự kiến | Popup Hoãn giải quyết | Form nhập `ThoiGianHoan` | Ghi khoảng thời gian hoặc điều kiện kết thúc | `30 ngày kể từ ngày ký Quyết định này` HOẶC `cho đến khi người yêu cầu bồi thường hồi phục sức khỏe` |
-| 6 | Nơi nhận | `##HoTenNguoiGiaiQuyet##` | Cán bộ trực tiếp giải quyết bồi thường | Thông tin hồ sơ yêu cầu bồi thường | `HoSo.NguoiGiaiQuyet_HoTen` | Gửi để nắm thời hạn giải quyết | `Đ/c Lê Thị Dung (Chuyên viên)` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Quá trình giải quyết > Form Hoãn giải quyết bồi thường | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `22/QĐ-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Quá trình giải quyết > Form Hoãn giải quyết bồi thường | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 10 tháng 03 năm 2026` |
+| 3 | Căn cứ | `##NgayXacDinhLyDoHoan##` | Quá trình giải quyết > Form Hoãn giải quyết bồi thường | Ngày xác định tài liệu, căn cứ hoãn | Định dạng `dd/mm/yyyy` | `10/03/2026` |
+| 4 | Điều 1 | `##TenNguoiYeuCauBoiThuong##` | Thông tin hồ sơ yêu cầu bồi thường | Họ và tên người yêu cầu bồi thường | Giữ nguyên họ tên | `Đỗ Quốc Hưng` |
+| 5 | Điều 1 | `##DiaChiNguoiYeuCauBoiThuong##` | Thông tin hồ sơ yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Địa chỉ của người yêu cầu bồi thường: Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng ", ". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Số 12 phố Thợ Nhuộm, Quận Hoàn Kiếm, TP. Hà Nội` |
+| 6 | Điều 1 | `##LyDoHoanGiaiQuyet##` | Quá trình giải quyết > Form Hoãn giải quyết bồi thường | Lý do hoãn giải quyết | Control UI: Combobox.<br>Gồm:<br>+ người yêu cầu bồi thường bị ốm nặng có xác nhận của cơ sở y tế<br>+ vì lý do bất khả kháng do thiên tai, bão lũ<br>+ trở ngại khách quan khác | Nêu cụ thể sự kiện dẫn đến phải hoãn | `Người yêu cầu bồi thường bị ốm nặng phải điều trị nội trú tại bệnh viện theo Giấy xác nhận số 88/GCN của Bệnh viện Bạch Mai` |
+| 7 | Điều 1 | `##ThoiGianHoanDuKien##` | Quá trình giải quyết > Form Hoãn giải quyết bồi thường | Thời gian hoãn dự kiến | Ghi khoảng thời gian hoặc điều kiện kết thúc | `30 ngày kể từ ngày ký Quyết định này` HOẶC `cho đến khi người yêu cầu bồi thường hồi phục sức khỏe` |
+| 8 | Nơi nhận | `##HoTenNguoiGiaiQuyet##` | Thông tin hồ sơ yêu cầu bồi thường | Cán bộ trực tiếp giải quyết bồi thường | Gửi để nắm thời hạn giải quyết | `Đ/c Lê Thị Dung (Chuyên viên)` |
 
 ---
 
 ### 12. MẪU SỐ 23/BTNN: QUYẾT ĐỊNH TIẾP TỤC GIẢI QUYẾT BỒI THƯỜNG
 - **Tên tệp template**: `Mau_23_BTNN_Template.docx`
 - **Mục đích**: Ban hành quyết định tiếp tục giải quyết bồi thường khi lý do hoãn quy định tại Điều 49 không còn, thời hạn giải quyết tiếp tục được tính.
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác \"Tiếp tục giải quyết bồi thường\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác "Tiếp tục giải quyết bồi thường"*.
 - **Quy tắc đặt tên file tải về**: `Mau_23_BTNN_Quyet_dinh_tiep_tuc_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 23/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Căn cứ | `##SoQDHoanGiaiQuyet##` | Số Quyết định hoãn ban hành trước đó | Quá trình giải quyết hồ sơ | `QDHoan.SoKyHieu` | Số hiệu quyết định hoãn | `15/QĐ-STP` |
-| 2 | Căn cứ | `##NgayBanHanhQDHoan##` | Ngày ban hành quyết định hoãn | Quá trình giải quyết hồ sơ | `QDHoan.NgayBanHanh` | Định dạng `dd/mm/yyyy` | `12/03/2026` |
-| 3 | Căn cứ | `##CoQuanBanHanhQDHoan##` | Cơ quan ban hành quyết định hoãn | Quá trình giải quyết hồ sơ | `QDHoan.CoQuanBanHanh` | Tên cơ quan đã ký QĐ hoãn | `Giám đốc Sở Tư pháp thành phố Hà Nội` |
-| 4 | Điều 1 | `##LyDoTiepTucGiaiQuyet##` | Lý do tiếp tục giải quyết bồi thường | Popup Tiếp tục giải quyết | Form nhập `LyDoTiepTuc` | Nêu rõ căn cứ lý do hoãn đã hết | `lý do hoãn giải quyết bồi thường không còn (Người yêu cầu bồi thường đã xuất viện và có đơn đề nghị tiếp tục giải quyết)` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Quá trình giải quyết > Form Tiếp tục giải quyết bồi thường | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `23/QĐ-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Quá trình giải quyết > Form Tiếp tục giải quyết bồi thường | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 10 tháng 04 năm 2026` |
+| 3 | Căn cứ | `##SoQDHoanGiaiQuyet##` | Quá trình giải quyết hồ sơ | Số quyết định hoãn ban hành trước đó | Số hiệu quyết định hoãn | `15/QĐ-STP` |
+| 4 | Căn cứ | `##NgayBanHanhQDHoan##` | Quá trình giải quyết hồ sơ | Ngày ban hành quyết định hoãn | Định dạng `dd/mm/yyyy` | `12/03/2026` |
+| 5 | Căn cứ | `##CoQuanBanHanhQDHoan##` | Quá trình giải quyết hồ sơ | Cơ quan ban hành quyết định hoãn | Tên cơ quan đã ký QĐ hoãn | `Giám đốc Sở Tư pháp thành phố Hà Nội` |
+| 6 | Điều 1 | `##LyDoTiepTucGiaiQuyet##` | Quá trình giải quyết > Form Tiếp tục giải quyết bồi thường | Lý do tiếp tục giải quyết bồi thường | Nêu rõ căn cứ lý do hoãn đã hết | `lý do hoãn giải quyết bồi thường không còn (Người yêu cầu bồi thường đã xuất viện và có đơn đề nghị tiếp tục giải quyết)` |
 
 ---
 
 ### 13. MẪU SỐ 24/BTNN: QUYẾT ĐỊNH TẠM ĐÌNH CHỈ GIẢI QUYẾT YÊU CẦU BỒI THƯỜNG
 - **Tên tệp template**: `Mau_24_BTNN_Template.docx`
 - **Mục đích**: Tạm dừng việc giải quyết yêu cầu bồi thường khi phát sinh các trường hợp theo quy định tại Điều 50 Luật TNBTCNN (chờ kết quả xác minh cơ quan khác, xem xét lại văn bản làm căn cứ...).
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác \"Tạm đình chỉ giải quyết\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác "Tạm đình chỉ giải quyết"*.
 - **Quy tắc đặt tên file tải về**: `Mau_24_BTNN_Quyet_dinh_tam_dinh_chi_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 24/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Căn cứ | `##NgayXacDinhLyDoTamDinhChi##` | Ngày xác định tài liệu tạm đình chỉ | Popup Tạm đình chỉ | Form nhập `NgayCanCu` | Định dạng `dd/mm/yyyy` | `15/03/2026` |
-| 2 | Điều 1 | `##TenNguoiYeuCauBoiThuong##` | Họ tên người yêu cầu bồi thường | Thông tin hồ sơ yêu cầu bồi thường | `HoSo.NguoiYeuCau_HoTen` | Giữ nguyên họ tên | `Phan Thành Đạt` |
-| 3 | Điều 1 | `##DiaChiNguoiYeuCauBoiThuong##` | Địa chỉ của người yêu cầu bồi thường | Thông tin hồ sơ yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng \", \". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Thị trấn Sóc Sơn, Huyện Sóc Sơn, TP. Hà Nội` |
-| 4 | Điều 1 | `##LyDoTamDinhChi##` | Lý do tạm đình chỉ theo Điều 50 | Popup Tạm đình chỉ | Control UI: Combobox.<br>Gồm:<br>+ cần chờ kết quả giám định thiệt hại<br>+ cần chờ kết quả xử lý của cơ quan có thẩm quyền khác<br>+ văn bản làm căn cứ đang được xem xét lại theo trình tự giám đốc thẩm | Ghi rõ lý do tạm đình chỉ tương ứng Điều 50 Luật TNBTCNN | `Văn bản làm căn cứ yêu cầu bồi thường đang được Tòa án nhân dân tối cao xem xét lại theo thủ tục giám đốc thẩm` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Quá trình giải quyết > Form Tạm đình chỉ giải quyết | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `24/QĐ-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Quá trình giải quyết > Form Tạm đình chỉ giải quyết | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 15 tháng 03 năm 2026` |
+| 3 | Căn cứ | `##NgayXacDinhLyDoTamDinhChi##` | Quá trình giải quyết > Form Tạm đình chỉ giải quyết | Ngày xác định tài liệu tạm đình chỉ | Định dạng `dd/mm/yyyy` | `15/03/2026` |
+| 4 | Điều 1 | `##TenNguoiYeuCauBoiThuong##` | Thông tin hồ sơ yêu cầu bồi thường | Họ và tên người yêu cầu bồi thường | Giữ nguyên họ tên | `Phan Thành Đạt` |
+| 5 | Điều 1 | `##DiaChiNguoiYeuCauBoiThuong##` | Thông tin hồ sơ yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Địa chỉ của người yêu cầu bồi thường: Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng ", ". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Thị trấn Sóc Sơn, Huyện Sóc Sơn, TP. Hà Nội` |
+| 6 | Điều 1 | `##LyDoTamDinhChi##` | Quá trình giải quyết > Form Tạm đình chỉ giải quyết | Lý do tạm đình chỉ | Control UI: Combobox.<br>Gồm:<br>+ cần chờ kết quả giám định thiệt hại<br>+ cần chờ kết quả xử lý của cơ quan có thẩm quyền khác<br>+ văn bản làm căn cứ đang được xem xét lại theo trình tự giám đốc thẩm | Ghi rõ lý do tạm đình chỉ tương ứng Điều 50 Luật TNBTCNN | `Văn bản làm căn cứ yêu cầu bồi thường đang được Tòa án nhân dân tối cao xem xét lại theo thủ tục giám đốc thẩm` |
 
 ---
 
 ### 14. MẪU SỐ 25/BTNN: QUYẾT ĐỊNH ĐÌNH CHỈ GIẢI QUYẾT YÊU CẦU BỒI THƯỜNG
 - **Tên tệp template**: `Mau_25_BTNN_Template.docx`
 - **Mục đích**: Chấm dứt việc giải quyết bồi thường theo Điều 51 Luật TNBTCNN (người yêu cầu rút đơn, người yêu cầu chết không có người thừa kế, văn bản căn cứ bị hủy...). Quyết định đồng thời thu hồi khoản kinh phí đã tạm ứng (nếu có).
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác \"Đình chỉ giải quyết\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Thao tác "Đình chỉ giải quyết"*.
 - **Quy tắc đặt tên file tải về**: `Mau_25_BTNN_Quyet_dinh_dinh_chi_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 25/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Điều 1 | `##LyDoDinhChi##` | Căn cứ đình chỉ theo Điều 51 | Popup Đình chỉ giải quyết | Control UI: Combobox.<br>Gồm:<br>+ người yêu cầu bồi thường rút yêu cầu bồi thường<br>+ người yêu cầu bồi thường chết mà không có người thừa kế<br>+ văn bản làm căn cứ không còn là văn bản làm căn cứ bồi thường | Căn cứ đình chỉ tương ứng quy định khoản 1 Điều 51 | `Người yêu cầu bồi thường có đơn tự nguyện rút toàn bộ yêu cầu bồi thường ngày 20/03/2026` |
-| 2 | Điều 3 | `##SoTienTamUngPhaiHoanTra##` | Số tiền tạm ứng người yêu cầu phải trả lại | Popup Đình chỉ giải quyết | `HoSo.SoTienTamUng` | Số tiền tạm ứng đã chi (nếu có, không có thì ghi `0 đồng`) | `50.000.000` |
-| 3 | Điều 3 | `##SoQDTamUng##` | Số Quyết định tạm ứng trước đó | Quá trình giải quyết hồ sơ | `QDTamUng.SoKyHieu` | Số Quyết định tạm ứng (nếu có) | `07/QĐ-STP` |
-| 4 | Điều 3 | `##NgayQDTamUng##` | Ngày ban hành Quyết định tạm ứng | Quá trình giải quyết hồ sơ | `QDTamUng.NgayBanHanh` | Định dạng `dd/mm/yyyy` | `10/02/2026` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Quá trình giải quyết > Form Đình chỉ giải quyết | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `25/QĐ-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Quá trình giải quyết > Form Đình chỉ giải quyết | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 22 tháng 03 năm 2026` |
+| 3 | Điều 1 | `##LyDoDinhChi##` | Quá trình giải quyết > Form Đình chỉ giải quyết | Căn cứ, lý do đình chỉ giải quyết | Control UI: Combobox.<br>Gồm:<br>+ người yêu cầu bồi thường rút yêu cầu bồi thường<br>+ người yêu cầu bồi thường chết mà không có người thừa kế<br>+ văn bản làm căn cứ không còn là văn bản làm căn cứ bồi thường | Căn cứ đình chỉ tương ứng quy định khoản 1 Điều 51 | `Người yêu cầu bồi thường có đơn tự nguyện rút toàn bộ yêu cầu bồi thường ngày 20/03/2026` |
+| 4 | Điều 3 | `##SoTienTamUngPhaiHoanTra##` | Quá trình giải quyết > Form Đình chỉ giải quyết | Số tiền tạm ứng phải hoàn trả | Số tiền tạm ứng đã chi (nếu có, không có thì ghi `0 đồng`) | `50.000.000` |
+| 5 | Điều 3 | `##SoQDTamUng##` | Quá trình giải quyết hồ sơ | Số quyết định tạm ứng kinh phí trước đó | Số Quyết định tạm ứng (nếu có) | `07/QĐ-STP` |
+| 6 | Điều 3 | `##NgayQDTamUng##` | Quá trình giải quyết hồ sơ | Ngày ban hành quyết định tạm ứng | Định dạng `dd/mm/yyyy` | `10/02/2026` |
 
 ---
 
 ### 15. MẪU SỐ 26/BTNN: THÔNG BÁO VỀ VIỆC TỔ CHỨC THỰC HIỆN PHỤC HỒI DANH DỰ
 - **Tên tệp template**: `Mau_26_BTNN_Template.docx`
 - **Mục đích**: Thông báo cho người bị thiệt hại biết kế hoạch tổ chức trực tiếp xin lỗi, cải chính công khai hoặc đăng báo cải chính theo Điều 57 Luật TNBTCNN (sửa đổi 2026).
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Phục hồi danh dự > Thao tác \"Lập kế hoạch phục hồi danh dự\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Phục hồi danh dự > Thao tác "Lập kế hoạch phục hồi danh dự"*.
 - **Quy tắc đặt tên file tải về**: `Mau_26_BTNN_Thong_bao_phuc_hoi_danh_du_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 26/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Kính gửi | `##TenNguoiBiThietHai##` | Họ tên người bị thiệt hại | Thông tin hồ sơ yêu cầu bồi thường | `HoSo.NguoiBiThietHai_HoTen` | Họ tên người được phục hồi danh dự | `Ông Nguyễn Khắc Hoài` |
-| 2 | Dưới Kính gửi | `##DiaChiNguoiBiThietHai##` | Địa chỉ của người bị thiệt hại | Thông tin hồ sơ yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng \", \". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Xã Chàng Sơn, Huyện Thạch Thất, TP. Hà Nội` |
-| 3 | Thân văn bản | `##VanBanCanCuPhucHoiDanhDu##` | Văn bản làm căn cứ phục hồi danh dự | Thông tin hồ sơ yêu cầu bồi thường | `VanBanCanCu.TrichYeu` | Tên bản án, quyết định đình chỉ làm căn cứ | `Quyết định đình chỉ điều tra vụ án đối với bị can số 02/QĐ-ĐCSHS ngày 12/01/2026 của Cơ quan CSĐT Công an TP. Hà Nội` |
-| 4 | Thân văn bản | `##KeHoachToChucPhucHoiDanhDu##` | Chi tiết kế hoạch tổ chức xin lỗi/đăng báo | Màn hình Kế hoạch phục hồi | Form nhập `ChiTietKeHoach` | - Hoạt động tố tụng hình sự: ghi rõ thời gian, địa điểm tổ chức trực tiếp và tờ báo đăng.<br>- Hoạt động quản lý hành chính: ghi rõ tờ báo và Cổng thông tin điện tử đăng tải | `Về việc tổ chức trực tiếp xin lỗi và cải chính công khai:<br>- Dự kiến thời gian: 08 giờ 30 ngày 25/04/2026.<br>- Dự kiến địa điểm: Hội trường UBND xã Chàng Sơn, Huyện Thạch Thất, TP. Hà Nội.<br>Về việc đăng báo xin lỗi và cải chính công khai:<br>- Dự kiến tờ báo đăng: Báo Hà Nội mới (03 số liên tiếp).<br>- Đăng tải trên Cổng thông tin điện tử Sở Tư pháp TP. Hà Nội.` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Quá trình giải quyết > Phục hồi danh dự > Form Lập kế hoạch | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `26/TB-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Quá trình giải quyết > Phục hồi danh dự > Form Lập kế hoạch | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 15 tháng 04 năm 2026` |
+| 3 | Kính gửi | `##TenNguoiBiThietHai##` | Thông tin hồ sơ yêu cầu bồi thường | Họ và tên người bị thiệt hại | Họ tên người được phục hồi danh dự | `Ông Nguyễn Khắc Hoài` |
+| 4 | Dưới Kính gửi | `##DiaChiNguoiBiThietHai##` | Thông tin hồ sơ yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Địa chỉ của người bị thiệt hại: Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng ", ". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Xã Chàng Sơn, Huyện Thạch Thất, TP. Hà Nội` |
+| 5 | Thân văn bản | `##VanBanCanCuPhucHoiDanhDu##` | Thông tin hồ sơ yêu cầu bồi thường | Văn bản làm căn cứ phục hồi danh dự | Tên bản án, quyết định đình chỉ làm căn cứ | `Quyết định đình chỉ điều tra vụ án đối với bị can số 02/QĐ-ĐCSHS ngày 12/01/2026 của Cơ quan CSĐT Công an TP. Hà Nội` |
+| 6 | Thân văn bản | `##KeHoachToChucPhucHoiDanhDu##` | Quá trình giải quyết > Phục hồi danh dự > Form Lập kế hoạch | Chi tiết kế hoạch tổ chức xin lỗi, cải chính | - Hoạt động tố tụng hình sự: ghi rõ thời gian, địa điểm tổ chức trực tiếp và tờ báo đăng.<br>- Hoạt động quản lý hành chính: ghi rõ tờ báo và Cổng thông tin điện tử đăng tải | `Về việc tổ chức trực tiếp xin lỗi và cải chính công khai:<br>- Dự kiến thời gian: 08 giờ 30 ngày 25/04/2026.<br>- Dự kiến địa điểm: Hội trường UBND xã Chàng Sơn, Huyện Thạch Thất, TP. Hà Nội.<br>Về việc đăng báo xin lỗi và cải chính công khai:<br>- Dự kiến tờ báo đăng: Báo Hà Nội mới (03 số liên tiếp).<br>- Đăng tải trên Cổng thông tin điện tử Sở Tư pháp TP. Hà Nội.` |
 
 ---
 
 ### 16. MẪU SỐ 32/BTNN: THÔNG BÁO VỀ VIỆC CHI TRẢ TIỀN BỒI THƯỜNG
 - **Tên tệp template**: `Mau_32_BTNN_Template.docx`
 - **Mục đích**: Thông báo cho người được bồi thường biết về thời gian, địa điểm, số tiền và các giấy tờ cần mang theo để nhận tiền chi trả bồi thường theo Điều 62 Luật TNBTCNN.
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Chi trả tiền bồi thường > Thao tác \"Lập Thông báo chi trả\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Quá trình giải quyết > Chi trả tiền bồi thường > Thao tác "Lập Thông báo chi trả"*.
 - **Quy tắc đặt tên file tải về**: `Mau_32_BTNN_Thong_bao_chi_tra_tien_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 32/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Kính gửi | `##TenNguoiNhanTienBoiThuong##` | Họ tên người nhận tiền bồi thường | Thông tin hồ sơ yêu cầu bồi thường | `HoSo.NguoiThuHuong_HoTen` | Họ tên người thụ hưởng hoặc người đại diện | `Bà Trần Thị Thơm` |
-| 2 | Dưới Kính gửi | `##DiaChiNguoiNhanTien##` | Địa chỉ của người nhận tiền bồi thường | Thông tin hồ sơ yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng \", \". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Số 56 phố Hai Bà Trưng, Quận Hoàn Kiếm, TP. Hà Nội` |
-| 3 | Căn cứ | `##SoQDGiaiQuyetBoiThuong##` | Số Quyết định GQBT hoặc Bản án | Thông tin hồ sơ yêu cầu bồi thường | `QDGQBT.SoKyHieu` | Số hiệu quyết định có hiệu lực | `18/QĐ-STP` |
-| 4 | Căn cứ | `##NgayQDGiaiQuyet##` | Ngày ban hành Quyết định GQBT | Thông tin hồ sơ yêu cầu bồi thường | `QDGQBT.NgayBanHanh` | Định dạng `dd/mm/yyyy` | `20/03/2026` |
-| 5 | Căn cứ | `##CoQuanBanHanhQDGQBT##` | Cơ quan ban hành Quyết định GQBT | Thông tin hồ sơ yêu cầu bồi thường | `QDGQBT.CoQuanBanHanh` | Tên cơ quan ban hành | `Sở Tư pháp thành phố Hà Nội` |
-| 6 | Thân văn bản | `##TongSoTienChiTra##` | Tổng số tiền thực chi trả bằng số | Màn hình Chi trả tiền | Form nhập `SoTienChiTra` | Số tiền thực trả (sau khi trừ tạm ứng nếu có) | `300.000.000` |
-| 7 | Thân văn bản | `##TongSoTienChiTraBangChu##` | Tổng số tiền thực chi trả bằng chữ | Màn hình Chi trả tiền | Chuyển đổi tự động | Viết bằng chữ số tiền chi trả | `Ba trăm triệu đồng` |
-| 8 | Thân văn bản | `##ThongTinChiTraTien##` | Chi tiết phương thức, thời gian, địa điểm | Màn hình Chi trả tiền | Form nhập `ChiTietChiTra` | Ghi rõ tài khoản chuyển khoản hoặc lịch hẹn nhận tiền mặt tại cơ quan | `Vào hồi 09 giờ 00 ngày 20/04/2026 tại Bộ phận Kế toán - Sở Tư pháp thành phố Hà Nội (Số 221 Trần Phú, Hà Đông, Hà Nội)` |
-| 9 | Thân văn bản | `##GiayToMangTheo##` | Danh mục giấy tờ tùy thân cần xuất trình | Màn hình Chi trả tiền | Form nhập `GiayToYeuCau` | Căn cước công dân, Giấy ủy quyền (nếu có)... | `Căn cước công dân (bản chính); Thông báo này; Văn bản ủy quyền nhận tiền bồi thường hợp pháp (trường hợp ủy quyền)` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Quá trình giải quyết > Chi trả tiền > Form Thông báo chi trả | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `32/TB-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Quá trình giải quyết > Chi trả tiền > Form Thông báo chi trả | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 10 tháng 04 năm 2026` |
+| 3 | Kính gửi | `##TenNguoiNhanTienBoiThuong##` | Thông tin hồ sơ yêu cầu bồi thường | Họ và tên người nhận tiền bồi thường | Họ tên người thụ hưởng hoặc người đại diện | `Bà Trần Thị Thơm` |
+| 4 | Dưới Kính gửi | `##DiaChiNguoiNhanTien##` | Thông tin hồ sơ yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Địa chỉ của người nhận tiền bồi thường: Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng ", ". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Số 56 phố Hai Bà Trưng, Quận Hoàn Kiếm, TP. Hà Nội` |
+| 5 | Căn cứ | `##SoQDGiaiQuyetBoiThuong##` | Thông tin hồ sơ yêu cầu bồi thường | Số quyết định giải quyết bồi thường hoặc bản án | Số hiệu quyết định có hiệu lực | `18/QĐ-STP` |
+| 6 | Căn cứ | `##NgayQDGiaiQuyet##` | Thông tin hồ sơ yêu cầu bồi thường | Ngày ban hành quyết định giải quyết bồi thường | Định dạng `dd/mm/yyyy` | `20/03/2026` |
+| 7 | Căn cứ | `##CoQuanBanHanhQDGQBT##` | Thông tin hồ sơ yêu cầu bồi thường | Cơ quan ban hành quyết định giải quyết | Tên cơ quan ban hành | `Sở Tư pháp thành phố Hà Nội` |
+| 8 | Thân văn bản | `##TongSoTienChiTra##` | Quá trình giải quyết > Chi trả tiền > Form Thông báo chi trả | Tổng số tiền thực tế chi trả | Số tiền thực trả (sau khi trừ tạm ứng nếu có) | `300.000.000` |
+| 9 | Thân văn bản | `##TongSoTienChiTraBangChu##` | Quá trình giải quyết > Chi trả tiền > Form Thông báo chi trả | Tổng số tiền chi trả bằng chữ | Viết bằng chữ số tiền chi trả | `Ba trăm triệu đồng` |
+| 10 | Thân văn bản | `##ThongTinChiTraTien##` | Quá trình giải quyết > Chi trả tiền > Form Thông báo chi trả | Thông tin chi tiết phương thức, thời gian, địa điểm chi trả | Ghi rõ tài khoản chuyển khoản hoặc lịch hẹn nhận tiền mặt tại cơ quan | `Vào hồi 09 giờ 00 ngày 20/04/2026 tại Bộ phận Kế toán - Sở Tư pháp thành phố Hà Nội (Số 221 Trần Phú, Hà Đông, Hà Nội)` |
+| 11 | Thân văn bản | `##GiayToMangTheo##` | Quá trình giải quyết > Chi trả tiền > Form Thông báo chi trả | Danh mục giấy tờ cần xuất trình khi nhận tiền | Căn cước công dân, Giấy ủy quyền (nếu có)... | `Căn cước công dân (bản chính); Thông báo này; Văn bản ủy quyền nhận tiền bồi thường hợp pháp (trường hợp ủy quyền)` |
 
 ---
 
 ### 17. MẪU SỐ 33/BTNN: QUYẾT ĐỊNH THÀNH LẬP HỘI ĐỒNG XEM XÉT TRÁCH NHIỆM HOÀN TRẢ
 - **Tên tệp template**: `Mau_33_BTNN_Template.docx`
 - **Mục đích**: Quyết định thành lập Hội đồng xem xét trách nhiệm hoàn trả đối với người thi hành công vụ gây thiệt hại sau khi Nhà nước đã hoàn thành chi trả tiền bồi thường theo Điều 66 Luật TNBTCNN.
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Thao tác \"Thành lập Hội đồng hoàn trả\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Thao tác "Thành lập Hội đồng hoàn trả"*.
 - **Quy tắc đặt tên file tải về**: `Mau_33_BTNN_Quyet_dinh_thanh_lap_hoi_dong_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 33/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Căn cứ | `##SoQDGiaiQuyetDaChiTra##` | Số Quyết định GQBT đã chi trả | Thông tin hồ sơ yêu cầu bồi thường | `QDGQBT.SoKyHieu` | Số hiệu quyết định chi trả bồi thường | `18/QĐ-STP` |
-| 2 | Căn cứ | `##NgayQDGiaiQuyetDaChiTra##` | Ngày ban hành Quyết định đã chi trả | Thông tin hồ sơ yêu cầu bồi thường | `QDGQBT.NgayBanHanh` | Định dạng `dd/mm/yyyy` | `20/03/2026` |
-| 3 | Căn cứ & Điều 1 | `##TenNguoiYeuCauBoiThuong##` | Họ tên người yêu cầu đã được bồi thường | Thông tin hồ sơ yêu cầu bồi thường | `HoSo.NguoiYeuCau_HoTen` | Họ tên người nhận bồi thường | `Nguyễn Văn Nam` |
-| 4 | Điều 1 | `##DanhSachThanhVienHoiDong##` | Danh sách thành viên Hội đồng | Màn hình Thành lập Hội đồng | Danh sách cán bộ được chọn | Ghi rõ Họ tên, Chức vụ, Đơn vị và vai trò:<br>1. Chủ tịch Hội đồng<br>2. Thư ký Hội đồng<br>3. Các Ủy viên | `1. Ông Trần Văn A - Phó Giám đốc Sở - Chủ tịch Hội đồng;<br>2. Bà Lê Thị B - Trưởng phòng Kế hoạch - Tài chính - Ủy viên;<br>3. Ông Phạm Văn C - Phó Trưởng phòng Bổ trợ tư pháp - Thư ký Hội đồng.` |
-| 5 | Điều 2 | `##TenNguoiThiHanhCongVuHoanTra##` | Họ tên người thi hành công vụ bị xem xét | Thông tin hồ sơ yêu cầu bồi thường | `HoSo.NguoiThiHanhCongVu_HoTen` | Cán bộ phải hoàn trả | `Ông Vũ Đình Trọng` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Trách nhiệm hoàn trả > Form Thành lập Hội đồng hoàn trả | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `33/QĐ-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Trách nhiệm hoàn trả > Form Thành lập Hội đồng hoàn trả | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 25 tháng 04 năm 2026` |
+| 3 | Căn cứ | `##SoQDGiaiQuyetDaChiTra##` | Thông tin hồ sơ yêu cầu bồi thường | Số quyết định giải quyết bồi thường đã chi trả | Số hiệu quyết định chi trả bồi thường | `18/QĐ-STP` |
+| 4 | Căn cứ | `##NgayQDGiaiQuyetDaChiTra##` | Thông tin hồ sơ yêu cầu bồi thường | Ngày ban hành quyết định đã chi trả | Định dạng `dd/mm/yyyy` | `20/03/2026` |
+| 5 | Căn cứ & Điều 1 | `##TenNguoiYeuCauBoiThuong##` | Thông tin hồ sơ yêu cầu bồi thường | Họ và tên người yêu cầu đã được bồi thường | Họ tên người nhận bồi thường | `Nguyễn Văn Nam` |
+| 6 | Điều 1 | `##DanhSachThanhVienHoiDong##` | Trách nhiệm hoàn trả > Form Thành lập Hội đồng hoàn trả | Danh sách thành viên Hội đồng hoàn trả | Ghi rõ Họ tên, Chức vụ, Đơn vị và vai trò:<br>1. Chủ tịch Hội đồng<br>2. Thư ký Hội đồng<br>3. Các Ủy viên | `1. Ông Trần Văn A - Phó Giám đốc Sở - Chủ tịch Hội đồng;<br>2. Bà Lê Thị B - Trưởng phòng Kế hoạch - Tài chính - Ủy viên;<br>3. Ông Phạm Văn C - Phó Trưởng phòng Bổ trợ tư pháp - Thư ký Hội đồng.` |
+| 7 | Điều 2 | `##TenNguoiThiHanhCongVuHoanTra##` | Thông tin hồ sơ yêu cầu bồi thường | Họ và tên người thi hành công vụ bị xem xét hoàn trả | Cán bộ phải hoàn trả | `Ông Vũ Đình Trọng` |
 
 ---
 
 ### 18. MẪU SỐ 34/BTNN: BIÊN BẢN LÀM VIỆC CỦA HỘI ĐỒNG XEM XÉT TRÁCH NHIỆM HOÀN TRẢ
 - **Tên tệp template**: `Mau_34_BTNN_Template.docx`
 - **Mục đích**: Ghi lại toàn bộ diễn biến cuộc họp, ý kiến của các thành viên Hội đồng, lời trình bày của người thi hành công vụ và kết luận kiến nghị của Hội đồng về trách nhiệm hoàn trả.
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Cuộc họp Hội đồng > Thao tác \"Lập Biên bản cuộc họp\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Cuộc họp Hội đồng > Thao tác "Lập Biên bản cuộc họp"*.
 - **Quy tắc đặt tên file tải về**: `Mau_34_BTNN_Bien_ban_hop_hoi_dong_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 34/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Mở đầu | `##ThoiGianBatDauHop##` | Thời gian bắt đầu cuộc họp | Màn hình Họp Hội đồng | Form nhập `ThoiGianBatDau` | Định dạng `... giờ ... ngày dd/mm/yyyy` | `08 giờ 30 phút ngày 10/05/2026` |
-| 2 | Mở đầu | `##DiaDiemHop##` | Địa điểm tổ chức cuộc họp | Màn hình Họp Hội đồng | Form nhập `DiaDiemHop` | Phòng họp, trụ sở cơ quan | `Phòng họp số 2, Trụ sở Sở Tư pháp TP. Hà Nội` |
-| 3 | Mở đầu | `##SoQDThanhLapHoiDong##` | Số QĐ thành lập Hội đồng | Quá trình hoàn trả | `QDThanhLapHoiDong.SoKyHieu` | Số hiệu quyết định thành lập | `33/QĐ-STP` |
-| 4 | Mở đầu | `##NgayThanhLapHoiDong##` | Ngày ký QĐ thành lập Hội đồng | Quá trình hoàn trả | `QDThanhLapHoiDong.NgayBanHanh` | Định dạng `dd/mm/yyyy` | `25/04/2026` |
-| 5 | Mở đầu | `##CoQuanThanhLapHoiDong##` | Cơ quan ban hành QĐ thành lập | Quá trình hoàn trả | `QDThanhLapHoiDong.CoQuanBanHanh` | Tên cơ quan thành lập Hội đồng | `Giám đốc Sở Tư pháp thành phố Hà Nội` |
-| 6 | Phần I | `##ThanhPhanHoiDongThamDu##` | Thành phần tham dự phiên họp | Màn hình Họp Hội đồng | Form điểm danh thành viên | Liệt kê đầy đủ người có mặt, vắng mặt | `- Có mặt: 03/03 thành viên (Ông Trần Văn A - Chủ tịch; Bà Lê Thị B - Ủy viên; Ông Phạm Văn C - Thư ký).<br>- Người thi hành công vụ có mặt: Ông Vũ Đình Trọng.` |
-| 7 | Phần II.1 | `##YKienNguoiThiHanhCongVu##` | Ý kiến trình bày của cán bộ gây thiệt hại | Màn hình Họp Hội đồng | Form nhập `YKienCanBo` | Trình bày nguyên nhân, mức độ lỗi, hoàn cảnh kinh tế gia đình | `Thừa nhận thiếu sót trong quá trình kiểm tra hồ sơ, cam kết chấp hành việc hoàn trả và đề nghị xem xét hoàn cảnh kinh tế gia đình khó khăn để xin trừ dần qua lương hàng tháng.` |
-| 8 | Phần II.2 | `##YKienCacThanhVienHoiDong##` | Ý kiến thảo luận của các thành viên | Màn hình Họp Hội đồng | Form nhập `YKienThanhVien` | Đánh giá mức độ lỗi vô ý/cố ý | `Các thành viên thống nhất đánh giá hành vi của cán bộ là lỗi vô ý do năng lực nghiệp vụ chưa theo kịp khối lượng công việc, không có động cơ vụ lợi.` |
-| 9 | Phần III | `##KetLuanMucDoLoi##` | Kết luận về mức độ lỗi của cán bộ | Màn hình Họp Hội đồng | Control UI: Combobox.<br>Gồm:<br>+ Vô ý<br>+ Cố ý | Kết luận lỗi chính thức | `Lỗi vô ý` |
-| 10 | Phần III | `##KienNghiSoTienHoanTra##` | Số tiền Hội đồng kiến nghị hoàn trả (số) | Màn hình Họp Hội đồng | Form nhập `TienHoanTra` | Định dạng phân cách hàng nghìn bằng dấu chấm | `50.000.000` |
-| 11 | Phần III | `##KienNghiSoTienHoanTraBangChu##` | Số tiền kiến nghị hoàn trả (chữ) | Màn hình Họp Hội đồng | Chuyển đổi tự động | Viết bằng chữ số tiền hoàn trả | `Năm mươi triệu đồng` |
-| 12 | Phần III | `##KienNghiPhuongThucHoanTra##` | Phương thức hoàn trả kiến nghị | Màn hình Họp Hội đồng | Control UI: Radio.<br>Gồm:<br>+ trừ dần vào lương hàng tháng (tối đa 30% lương)<br>+ nộp một lần vào ngân sách | Ghi rõ hình thức trừ lương hoặc nộp tiền | `Trừ dần vào lương hàng tháng, mức trừ 20% tổng thu nhập hàng tháng kể từ tháng 06/2026 cho đến khi hoàn thành` |
-| 13 | Kết thúc | `##ThoiGianKetThucHop##` | Thời gian kết thúc cuộc họp | Màn hình Họp Hội đồng | Form nhập `ThoiGianKetThuc` | Định dạng `... giờ ... cùng ngày` | `11 giờ 30 phút cùng ngày` |
-| 14 | Chữ ký | `##ChuTichHoiDong##` | Họ và tên Chủ tịch Hội đồng | Quá trình hoàn trả | `HoiDong.ChuTich_HoTen` | Họ tên Chủ tịch Hội đồng ký biên bản | `Trần Văn A` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Mở đầu | `##ThoiGianBatDauHop##` | Trách nhiệm hoàn trả > Cuộc họp Hội đồng > Form Lập biên bản | Thời gian bắt đầu cuộc họp | Định dạng `... giờ ... ngày dd/mm/yyyy` | `08 giờ 30 phút ngày 10/05/2026` |
+| 2 | Mở đầu | `##DiaDiemHop##` | Trách nhiệm hoàn trả > Cuộc họp Hội đồng > Form Lập biên bản | Địa điểm tổ chức cuộc họp | Phòng họp, trụ sở cơ quan | `Phòng họp số 2, Trụ sở Sở Tư pháp TP. Hà Nội` |
+| 3 | Mở đầu | `##SoQDThanhLapHoiDong##` | Trách nhiệm hoàn trả | Số quyết định thành lập Hội đồng | Số hiệu quyết định thành lập | `33/QĐ-STP` |
+| 4 | Mở đầu | `##NgayThanhLapHoiDong##` | Trách nhiệm hoàn trả | Ngày ký quyết định thành lập Hội đồng | Định dạng `dd/mm/yyyy` | `25/04/2026` |
+| 5 | Mở đầu | `##CoQuanThanhLapHoiDong##` | Trách nhiệm hoàn trả | Cơ quan ban hành quyết định thành lập Hội đồng | Tên cơ quan thành lập Hội đồng | `Giám đốc Sở Tư pháp thành phố Hà Nội` |
+| 6 | Phần I | `##ThanhPhanHoiDongThamDu##` | Trách nhiệm hoàn trả > Cuộc họp Hội đồng > Form Lập biên bản | Thành phần tham dự phiên họp | Liệt kê đầy đủ người có mặt, vắng mặt | `- Có mặt: 03/03 thành viên (Ông Trần Văn A - Chủ tịch; Bà Lê Thị B - Ủy viên; Ông Phạm Văn C - Thư ký).<br>- Người thi hành công vụ có mặt: Ông Vũ Đình Trọng.` |
+| 7 | Phần II.1 | `##YKienNguoiThiHanhCongVu##` | Trách nhiệm hoàn trả > Cuộc họp Hội đồng > Form Lập biên bản | Ý kiến trình bày của cán bộ gây thiệt hại | Trình bày nguyên nhân, mức độ lỗi, hoàn cảnh kinh tế gia đình | `Thừa nhận thiếu sót trong quá trình kiểm tra hồ sơ, cam kết chấp hành việc hoàn trả và đề nghị xem xét hoàn cảnh kinh tế gia đình khó khăn để xin trừ dần qua lương hàng tháng.` |
+| 8 | Phần II.2 | `##YKienCacThanhVienHoiDong##` | Trách nhiệm hoàn trả > Cuộc họp Hội đồng > Form Lập biên bản | Ý kiến thảo luận của các thành viên Hội đồng | Đánh giá mức độ lỗi vô ý/cố ý | `Các thành viên thống nhất đánh giá hành vi của cán bộ là lỗi vô ý do năng lực nghiệp vụ chưa theo kịp khối lượng công việc, không có động cơ vụ lợi.` |
+| 9 | Phần III | `##KetLuanMucDoLoi##` | Trách nhiệm hoàn trả > Cuộc họp Hội đồng > Form Lập biên bản | Kết luận về mức độ lỗi của cán bộ | Control UI: Combobox.<br>Gồm:<br>+ Vô ý<br>+ Cố ý | Kết luận lỗi chính thức | `Lỗi vô ý` |
+| 10 | Phần III | `##KienNghiSoTienHoanTra##` | Trách nhiệm hoàn trả > Cuộc họp Hội đồng > Form Lập biên bản | Số tiền Hội đồng kiến nghị hoàn trả | Định dạng phân cách hàng nghìn bằng dấu chấm | `50.000.000` |
+| 11 | Phần III | `##KienNghiSoTienHoanTraBangChu##` | Trách nhiệm hoàn trả > Cuộc họp Hội đồng > Form Lập biên bản | Số tiền kiến nghị hoàn trả bằng chữ | Chuyển đổi tự động | Viết bằng chữ số tiền hoàn trả | `Năm mươi triệu đồng` |
+| 12 | Phần III | `##KienNghiPhuongThucHoanTra##` | Trách nhiệm hoàn trả > Cuộc họp Hội đồng > Form Lập biên bản | Phương thức hoàn trả kiến nghị | Control UI: Radio.<br>Gồm:<br>+ trừ dần vào lương hàng tháng (tối đa 30% lương)<br>+ nộp một lần vào ngân sách | Ghi rõ hình thức trừ lương hoặc nộp tiền | `Trừ dần vào lương hàng tháng, mức trừ 20% tổng thu nhập hàng tháng kể từ tháng 06/2026 cho đến khi hoàn thành` |
+| 13 | Kết thúc | `##ThoiGianKetThucHop##` | Trách nhiệm hoàn trả > Cuộc họp Hội đồng > Form Lập biên bản | Thời gian kết thúc cuộc họp | Định dạng `... giờ ... cùng ngày` | `11 giờ 30 phút cùng ngày` |
+| 14 | Chữ ký | `##ChuTichHoiDong##` | Trách nhiệm hoàn trả | Họ và tên Chủ tịch Hội đồng | Họ tên Chủ tịch Hội đồng ký biên bản | `Trần Văn A` |
 
 ---
 
 ### 19. MẪU SỐ 35/BTNN: VĂN BẢN KIẾN NGHỊ VIỆC BAN HÀNH QUYẾT ĐỊNH HOÀN TRẢ
 - **Tên tệp template**: `Mau_35_BTNN_Template.docx`
 - **Mục đích**: Hội đồng xem xét trách nhiệm hoàn trả gửi văn bản kiến nghị lên Thủ trưởng cơ quan có thẩm quyền để ban hành Quyết định hoàn trả chính thức theo Điều 66 Luật TNBTCNN.
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Báo cáo kiến nghị > Thao tác \"Lập Văn bản kiến nghị\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Báo cáo kiến nghị > Thao tác "Lập Văn bản kiến nghị"*.
 - **Quy tắc đặt tên file tải về**: `Mau_35_BTNN_Van_ban_kien_nghi_hoan_tra_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 35/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Kính gửi | `##ThuTruongCoQuanCoThamQuyen##` | Kính gửi Thủ trưởng cơ quan | Hồ sơ hoàn trả | `DonVi.ChucVuThuTruong` | Chức vụ người đứng đầu cơ quan | `Giám đốc Sở Tư pháp thành phố Hà Nội` |
-| 2 | Căn cứ | `##NgayHopHoiDong##` | Ngày tổ chức phiên họp Hội đồng | Biên bản họp Hội đồng | `BienBanHop.NgayHop` | Định dạng `dd/mm/yyyy` | `10/05/2026` |
-| 3 | Mục 1 | `##TomTatVuViecBoiThuong##` | Tóm tắt hồ sơ vụ việc và kết quả GQBT | Báo cáo kiến nghị | Form nhập `TomTatVuViec` | Tóm tắt ngắn gọn hồ sơ vụ việc đã chi trả | `Hồ sơ yêu cầu bồi thường của Ông Nguyễn Văn Nam do hành vi giải quyết chậm trễ hồ sơ... Tổng số tiền bồi thường đã chi trả là 350.000.000 đồng theo Quyết định số 18/QĐ-STP ngày 20/03/2026.` |
-| 4 | Mục 2 | `##DanhGiaMucDoLoi##` | Đánh giá mức độ lỗi và căn cứ pháp lý | Báo cáo kiến nghị | Form nhập `DanhGiaLoi` | Nhận định về lỗi vô ý/cố ý | `Hội đồng xác định hành vi của Ông Vũ Đình Trọng là lỗi vô ý, thuộc trường hợp hoàn trả kinh phí theo quy định tại khoản 2 Điều 65 Luật TNBTCNN.` |
-| 5 | Mục 3 | `##KienNghiSoTienHoanTra##` | Kiến nghị mức tiền hoàn trả (số) | Báo cáo kiến nghị | Form nhập `SoTienKienNghi` | Số tiền hoàn trả (định dạng dấu chấm) | `50.000.000` |
-| 6 | Mục 3 | `##KienNghiSoTienHoanTraBangChu##` | Kiến nghị mức tiền hoàn trả (chữ) | Báo cáo kiến nghị | Chuyển đổi tự động | Viết bằng chữ số tiền | `Năm mươi triệu đồng` |
-| 7 | Mục 4 | `##KienNghiPhuongThucHoanTra##` | Kiến nghị phương thức hoàn trả | Báo cáo kiến nghị | Form nhập `PhuongThucKienNghi` | Nộp một lần hoặc trừ dần lương | `Khấu trừ 20% tiền lương hàng tháng của Ông Vũ Đình Trọng cho đến khi nộp đủ số tiền hoàn trả vào Ngân sách nhà nước.` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Trách nhiệm hoàn trả > Form Lập văn bản kiến nghị | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `01/KN-HĐHT` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Trách nhiệm hoàn trả > Form Lập văn bản kiến nghị | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 12 tháng 05 năm 2026` |
+| 3 | Kính gửi | `##ThuTruongCoQuanCoThamQuyen##` | Trách nhiệm hoàn trả | Chức vụ người đứng đầu cơ quan có thẩm quyền | Chức vụ người đứng đầu cơ quan nhận kiến nghị | `Giám đốc Sở Tư pháp thành phố Hà Nội` |
+| 4 | Căn cứ | `##NgayHopHoiDong##` | Trách nhiệm hoàn trả > Biên bản họp Hội đồng | Ngày tổ chức phiên họp Hội đồng | Định dạng `dd/mm/yyyy` | `10/05/2026` |
+| 5 | Mục 1 | `##TomTatVuViecBoiThuong##` | Trách nhiệm hoàn trả > Form Lập văn bản kiến nghị | Tóm tắt hồ sơ vụ việc và kết quả giải quyết | Tóm tắt ngắn gọn hồ sơ vụ việc đã chi trả | `Hồ sơ yêu cầu bồi thường của Ông Nguyễn Văn Nam do hành vi giải quyết chậm trễ hồ sơ... Tổng số tiền bồi thường đã chi trả là 350.000.000 đồng theo Quyết định số 18/QĐ-STP ngày 20/03/2026.` |
+| 6 | Mục 2 | `##DanhGiaMucDoLoi##` | Trách nhiệm hoàn trả > Form Lập văn bản kiến nghị | Đánh giá mức độ lỗi và căn cứ pháp lý | Nhận định về lỗi vô ý/cố ý | `Hội đồng xác định hành vi của Ông Vũ Đình Trọng là lỗi vô ý, thuộc trường hợp hoàn trả kinh phí theo quy định tại khoản 2 Điều 65 Luật TNBTCNN.` |
+| 7 | Mục 3 | `##KienNghiSoTienHoanTra##` | Trách nhiệm hoàn trả > Form Lập văn bản kiến nghị | Kiến nghị mức tiền hoàn trả | Số tiền hoàn trả (định dạng dấu chấm) | `50.000.000` |
+| 8 | Mục 3 | `##KienNghiSoTienHoanTraBangChu##` | Trách nhiệm hoàn trả > Form Lập văn bản kiến nghị | Kiến nghị mức tiền hoàn trả bằng chữ | Chuyển đổi tự động | Viết bằng chữ số tiền | `Năm mươi triệu đồng` |
+| 9 | Mục 4 | `##KienNghiPhuongThucHoanTra##` | Trách nhiệm hoàn trả > Form Lập văn bản kiến nghị | Kiến nghị phương thức hoàn trả | Nộp một lần hoặc trừ dần lương | `Khấu trừ 20% tiền lương hàng tháng của Ông Vũ Đình Trọng cho đến khi nộp đủ số tiền hoàn trả vào Ngân sách nhà nước.` |
 
 ---
 
 ### 20. MẪU SỐ 36/BTNN: QUYẾT ĐỊNH HOÀN TRẢ
 - **Tên tệp template**: `Mau_36_BTNN_Template.docx`
 - **Mục đích**: Quyết định của Thủ trưởng cơ quan có thẩm quyền buộc người thi hành công vụ gây thiệt hại phải hoàn trả số tiền bồi thường vào ngân sách nhà nước theo Điều 65, 66 Luật TNBTCNN.
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Quyết định hoàn trả > Thao tác \"Ban hành Quyết định hoàn trả\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Quyết định hoàn trả > Thao tác "Ban hành Quyết định hoàn trả"*.
 - **Quy tắc đặt tên file tải về**: `Mau_36_BTNN_Quyet_dinh_hoan_tra_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 36/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Căn cứ | `##SoVBKienNghi##` | Số văn bản kiến nghị của Hội đồng | Quá trình hoàn trả | `VBKienNghi.SoKyHieu` | Số hiệu văn bản kiến nghị Mẫu 35 | `01/KN-HĐHT` |
-| 2 | Căn cứ | `##NgayVBKienNghi##` | Ngày ban hành văn bản kiến nghị | Quá trình hoàn trả | `VBKienNghi.NgayBanHanh` | Định dạng `dd/mm/yyyy` | `12/05/2026` |
-| 3 | Điều 1 | `##TenNguoiThiHanhCongVu##` | Họ tên cán bộ phải hoàn trả | Hồ sơ hoàn trả | `HoSo.NguoiThiHanhCongVu_HoTen` | Họ tên người thi hành công vụ | `Ông Vũ Đình Trọng` |
-| 4 | Điều 1 | `##ChucVuNguoiThiHanhCongVu##` | Chức vụ cán bộ tại thời điểm gây thiệt hại | Hồ sơ hoàn trả | `CanBo.ChucVu` | Chức vụ công tác | `Chuyên viên chính` |
-| 5 | Điều 1 | `##DonViCongTacNguoiTHCV##` | Đơn vị phòng ban của cán bộ | Hồ sơ hoàn trả | `CanBo.DonVi` | Đơn vị công tác | `Phòng Bổ trợ tư pháp - Sở Tư pháp TP. Hà Nội` |
-| 6 | Điều 1 | `##TongSoTienPhaiHoanTra##` | Tổng số tiền phải hoàn trả bằng số | Form Quyết định hoàn trả | Form nhập `SoTienPhaiHoanTra` | Định dạng phân cách hàng nghìn bằng dấu chấm | `50.000.000` |
-| 7 | Điều 1 | `##TongSoTienPhaiHoanTraBangChu##` | Tổng số tiền phải hoàn trả bằng chữ | Form Quyết định hoàn trả | Chuyển đổi tự động | Viết bằng chữ | `Năm mươi triệu đồng` |
-| 8 | Điều 1 | `##MucDoLoi##` | Mức độ lỗi chính thức | Form Quyết định hoàn trả | Control UI: Combobox.<br>Gồm:<br>+ Lỗi vô ý<br>+ Lỗi cố ý | Kết luận lỗi | `Lỗi vô ý` |
-| 9 | Điều 1 | `##PhuongThucHoanTra##` | Phương thức hoàn trả | Form Quyết định hoàn trả | Form nhập `PhuongThuc` | Trừ lương hoặc nộp trực tiếp | `Trừ dần vào lương hàng tháng (20% lương thực lĩnh hàng tháng)` |
-| 10 | Điều 1 | `##ThoiHanHoanTra##` | Thời hạn hoàn thành nghĩa vụ hoàn trả | Form Quyết định hoàn trả | Form nhập `ThoiHan` | Hạn chót hoàn thành | `Bắt đầu từ kỳ lương tháng 06/2026 cho đến khi hoàn trả đủ số tiền` |
-| 11 | Nơi nhận | `##TenCoQuanTaiChinh##` | Cơ quan tài chính / Kho bạc nhận tiền | Cấu hình quản trị đơn vị | `DonVi.CoQuanTaiChinh` | Cơ quan theo dõi nộp ngân sách | `Kho bạc Nhà nước khu vực Hà Đông - Hà Nội` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Trách nhiệm hoàn trả > Form Ban hành Quyết định hoàn trả | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `36/QĐ-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Trách nhiệm hoàn trả > Form Ban hành Quyết định hoàn trả | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 15 tháng 05 năm 2026` |
+| 3 | Căn cứ | `##SoVBKienNghi##` | Trách nhiệm hoàn trả | Số văn bản kiến nghị của Hội đồng hoàn trả | Số hiệu văn bản kiến nghị Mẫu 35 | `01/KN-HĐHT` |
+| 4 | Căn cứ | `##NgayVBKienNghi##` | Trách nhiệm hoàn trả | Ngày ban hành văn bản kiến nghị | Định dạng `dd/mm/yyyy` | `12/05/2026` |
+| 5 | Điều 1 | `##TenNguoiThiHanhCongVu##` | Trách nhiệm hoàn trả | Họ và tên cán bộ phải hoàn trả | Họ tên người thi hành công vụ | `Ông Vũ Đình Trọng` |
+| 6 | Điều 1 | `##ChucVuNguoiThiHanhCongVu##` | Trách nhiệm hoàn trả | Chức vụ cán bộ tại thời điểm gây thiệt hại | Chức vụ công tác | `Chuyên viên chính` |
+| 7 | Điều 1 | `##DonViCongTacNguoiTHCV##` | Trách nhiệm hoàn trả | Đơn vị phòng ban công tác của cán bộ | Đơn vị công tác | `Phòng Bổ trợ tư pháp - Sở Tư pháp TP. Hà Nội` |
+| 8 | Điều 1 | `##TongSoTienPhaiHoanTra##` | Trách nhiệm hoàn trả > Form Ban hành Quyết định hoàn trả | Tổng số tiền phải hoàn trả | Định dạng phân cách hàng nghìn bằng dấu chấm | `50.000.000` |
+| 9 | Điều 1 | `##TongSoTienPhaiHoanTraBangChu##` | Trách nhiệm hoàn trả > Form Ban hành Quyết định hoàn trả | Tổng số tiền phải hoàn trả bằng chữ | Chuyển đổi tự động | Viết bằng chữ | `Năm mươi triệu đồng` |
+| 10 | Điều 1 | `##MucDoLoi##` | Trách nhiệm hoàn trả > Form Ban hành Quyết định hoàn trả | Mức độ lỗi chính thức | Control UI: Combobox.<br>Gồm:<br>+ Lỗi vô ý<br>+ Lỗi cố ý | Kết luận lỗi chính thức | `Lỗi vô ý` |
+| 11 | Điều 1 | `##PhuongThucHoanTra##` | Trách nhiệm hoàn trả > Form Ban hành Quyết định hoàn trả | Phương thức hoàn trả | Trừ lương hoặc nộp trực tiếp | `Trừ dần vào lương hàng tháng (20% lương thực lĩnh hàng tháng)` |
+| 12 | Điều 1 | `##ThoiHanHoanTra##` | Trách nhiệm hoàn trả > Form Ban hành Quyết định hoàn trả | Thời hạn hoàn thành nghĩa vụ hoàn trả | Hạn chót hoàn thành | `Bắt đầu từ kỳ lương tháng 06/2026 cho đến khi hoàn trả đủ số tiền` |
+| 13 | Nơi nhận | `##TenCoQuanTaiChinh##` | Quản lý cơ cấu tổ chức > Quản lý đơn vị | Cơ quan tài chính / Kho bạc nhận tiền hoàn trả | Cơ quan theo dõi nộp ngân sách | `Kho bạc Nhà nước khu vực Hà Đông - Hà Nội` |
 
 ---
 
 ### 21. MẪU SỐ 37/BTNN: QUYẾT ĐỊNH GIẢM MỨC HOÀN TRẢ
 - **Tên tệp template**: `Mau_37_BTNN_Template.docx`
 - **Mục đích**: Giảm một phần số tiền phải hoàn trả cho người thi hành công vụ khi đáp ứng các điều kiện theo khoản 4 Điều 65 Luật TNBTCNN (lỗi vô ý và hoàn cảnh kinh tế gia đình đặc biệt khó khăn).
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Xem xét giảm hoàn trả > Thao tác \"Lập Quyết định giảm mức hoàn trả\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Xem xét giảm hoàn trả > Thao tác "Lập Quyết định giảm mức hoàn trả"*.
 - **Quy tắc đặt tên file tải về**: `Mau_37_BTNN_Quyet_dinh_giam_muc_hoan_tra_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 37/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Căn cứ | `##SoQDHoanTraGoc##` | Số Quyết định hoàn trả đã ban hành | Hồ sơ hoàn trả | `QDHoanTra.SoKyHieu` | Số hiệu quyết định hoàn trả gốc | `36/QĐ-STP` |
-| 2 | Căn cứ | `##NgayQDHoanTraGoc##` | Ngày ký Quyết định hoàn trả gốc | Hồ sơ hoàn trả | `QDHoanTra.NgayBanHanh` | Định dạng `dd/mm/yyyy` | `15/05/2026` |
-| 3 | Căn cứ | `##CoQuanBanHanhQDHoanTraGoc##` | Cơ quan ban hành Quyết định gốc | Hồ sơ hoàn trả | `QDHoanTra.CoQuanBanHanh` | Tên cơ quan ban hành QĐ gốc | `Giám đốc Sở Tư pháp thành phố Hà Nội` |
-| 4 | Căn cứ | `##NgayDeNghiGiam##` | Ngày người thi hành công vụ nộp đơn xin giảm | Đơn xin giảm mức hoàn trả | `DonXinGiam.NgayNop` | Định dạng `dd/mm/yyyy` | `10/06/2026` |
-| 5 | Điều 1 | `##LyDoGiamMucHoanTra##` | Căn cứ giảm mức hoàn trả | Popup Giảm mức hoàn trả | Form nhập `LyDoGiam` | Căn cứ hoàn cảnh khó khăn theo khoản 4 Điều 65 | `Người thi hành công vụ có lỗi vô ý và có hoàn cảnh kinh tế gia đình đặc biệt khó khăn (vợ mắc bệnh hiểm nghèo đang điều trị dài ngày theo xác nhận của chính quyền địa phương)` |
-| 6 | Điều 1 | `##MucDoLoi##` | Mức độ lỗi của cán bộ | Hồ sơ hoàn trả | `QDHoanTra.MucDoLoi` | Xác nhận lại mức độ lỗi | `Lỗi vô ý` |
-| 7 | Điều 1 | `##SoTienHoanTraBanDau##` | Số tiền phải hoàn trả ban đầu (số) | Hồ sơ hoàn trả | `QDHoanTra.TongSoTien` | Định dạng phân cách hàng nghìn bằng dấu chấm | `50.000.000` |
-| 8 | Điều 1 | `##SoTienHoanTraBanDauBangChu##` | Số tiền phải hoàn trả ban đầu (chữ) | Hồ sơ hoàn trả | Chuyển đổi tự động | Viết bằng chữ | `Năm mươi triệu đồng` |
-| 9 | Điều 1 | `##SoTienHoanTraDuocGiam##` | Số tiền được giảm (số) | Popup Giảm hoàn trả | Form nhập `SoTienGiam` | Số tiền được miễn giảm | `20.000.000` |
-| 10 | Điều 1 | `##SoTienHoanTraDuocGiamBangChu##` | Số tiền được giảm (chữ) | Popup Giảm hoàn trả | Chuyển đổi tự động | Viết bằng chữ số tiền giảm | `Hai mươi triệu đồng` |
-| 11 | Điều 1 | `##SoTienConPhaiHoanTra##` | Số tiền còn lại phải tiếp tục hoàn trả (số) | Popup Giảm hoàn trả | `SoTienBanDau - SoTienGiam` | Số tiền còn lại thực tế phải nộp | `30.000.000` |
-| 12 | Điều 1 | `##SoTienConPhaiHoanTraBangChu##` | Số tiền còn lại phải hoàn trả (chữ) | Popup Giảm hoàn trả | Chuyển đổi tự động | Viết bằng chữ số tiền còn lại | `Ba mươi triệu đồng` |
-| 13 | Điều 1 | `##PhuongThucHoanTraConLai##` | Phương thức hoàn trả đối với số tiền còn lại | Popup Giảm hoàn trả | Form nhập `PhuongThucConLai` | Trừ lương hoặc nộp một lần | `Trừ dần vào lương 15% lương hàng tháng cho đến khi nộp đủ 30.000.000 đồng` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Trách nhiệm hoàn trả > Form Lập Quyết định giảm mức hoàn trả | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `37/QĐ-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Trách nhiệm hoàn trả > Form Lập Quyết định giảm mức hoàn trả | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 15 tháng 06 năm 2026` |
+| 3 | Căn cứ | `##SoQDHoanTraGoc##` | Trách nhiệm hoàn trả | Số quyết định hoàn trả đã ban hành | Số hiệu quyết định hoàn trả gốc | `36/QĐ-STP` |
+| 4 | Căn cứ | `##NgayQDHoanTraGoc##` | Trách nhiệm hoàn trả | Ngày ký quyết định hoàn trả gốc | Định dạng `dd/mm/yyyy` | `15/05/2026` |
+| 5 | Căn cứ | `##CoQuanBanHanhQDHoanTraGoc##` | Trách nhiệm hoàn trả | Cơ quan ban hành quyết định hoàn trả gốc | Tên cơ quan ban hành QĐ gốc | `Giám đốc Sở Tư pháp thành phố Hà Nội` |
+| 6 | Căn cứ | `##NgayDeNghiGiam##` | Trách nhiệm hoàn trả > Đơn xin giảm mức hoàn trả | Ngày cán bộ nộp đơn đề nghị giảm | Định dạng `dd/mm/yyyy` | `10/06/2026` |
+| 7 | Điều 1 | `##LyDoGiamMucHoanTra##` | Trách nhiệm hoàn trả > Form Lập Quyết định giảm mức hoàn trả | Căn cứ, lý do giảm mức hoàn trả | Căn cứ hoàn cảnh khó khăn theo khoản 4 Điều 65 | `Người thi hành công vụ có lỗi vô ý và có hoàn cảnh kinh tế gia đình đặc biệt khó khăn (vợ mắc bệnh hiểm nghèo đang điều trị dài ngày theo xác nhận của chính quyền địa phương)` |
+| 8 | Điều 1 | `##MucDoLoi##` | Trách nhiệm hoàn trả | Mức độ lỗi của cán bộ | Xác nhận lại mức độ lỗi | `Lỗi vô ý` |
+| 9 | Điều 1 | `##SoTienHoanTraBanDau##` | Trách nhiệm hoàn trả | Số tiền phải hoàn trả ban đầu | Định dạng phân cách hàng nghìn bằng dấu chấm | `50.000.000` |
+| 10 | Điều 1 | `##SoTienHoanTraBanDauBangChu##` | Trách nhiệm hoàn trả | Số tiền phải hoàn trả ban đầu bằng chữ | Viết bằng chữ | `Năm mươi triệu đồng` |
+| 11 | Điều 1 | `##SoTienHoanTraDuocGiam##` | Trách nhiệm hoàn trả > Form Lập Quyết định giảm mức hoàn trả | Số tiền được giảm | Số tiền được miễn giảm | `20.000.000` |
+| 12 | Điều 1 | `##SoTienHoanTraDuocGiamBangChu##` | Trách nhiệm hoàn trả > Form Lập Quyết định giảm mức hoàn trả | Số tiền được giảm bằng chữ | Chuyển đổi tự động | Viết bằng chữ số tiền giảm | `Hai mươi triệu đồng` |
+| 13 | Điều 1 | `##SoTienConPhaiHoanTra##` | Trách nhiệm hoàn trả > Form Lập Quyết định giảm mức hoàn trả | Số tiền còn lại phải tiếp tục hoàn trả | Số tiền còn lại thực tế phải nộp | `30.000.000` |
+| 14 | Điều 1 | `##SoTienConPhaiHoanTraBangChu##` | Trách nhiệm hoàn trả > Form Lập Quyết định giảm mức hoàn trả | Số tiền còn lại phải hoàn trả bằng chữ | Chuyển đổi tự động | Viết bằng chữ số tiền còn lại | `Ba mươi triệu đồng` |
+| 15 | Điều 1 | `##PhuongThucHoanTraConLai##` | Trách nhiệm hoàn trả > Form Lập Quyết định giảm mức hoàn trả | Phương thức hoàn trả đối với số tiền còn lại | Trừ lương hoặc nộp một lần | `Trừ dần vào lương 15% lương hàng tháng cho đến khi nộp đủ 30.000.000 đồng` |
 
 ---
 
 ### 22. MẪU SỐ 38/BTNN: QUYẾT ĐỊNH MIỄN HOÀN TRẢ
 - **Tên tệp template**: `Mau_38_BTNN_Template.docx`
 - **Mục đích**: Miễn toàn bộ trách nhiệm hoàn trả cho người thi hành công vụ theo khoản 4a Điều 65 Luật TNBTCNN (sửa đổi 2026) khi người thi hành công vụ chết, mất tích hoặc hoàn cảnh đặc biệt hiểm nghèo.
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Xem xét miễn hoàn trả > Thao tác \"Lập Quyết định miễn hoàn trả\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Xem xét miễn hoàn trả > Thao tác "Lập Quyết định miễn hoàn trả"*.
 - **Quy tắc đặt tên file tải về**: `Mau_38_BTNN_Quyet_dinh_mien_hoan_tra_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 38/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Căn cứ | `##SoQDHoanTraGoc##` | Số Quyết định hoàn trả hoặc QĐ GQBT | Hồ sơ hoàn trả | `QDHoanTra.SoKyHieu` | Số hiệu quyết định (nếu đã ban hành) | `36/QĐ-STP` |
-| 2 | Căn cứ | `##NgayQDHoanTraGoc##` | Ngày ban hành quyết định gốc | Hồ sơ hoàn trả | `QDHoanTra.NgayBanHanh` | Định dạng `dd/mm/yyyy` | `15/05/2026` |
-| 3 | Điều 1 | `##TenNguoiThiHanhCongVu##` | Họ tên người thi hành công vụ được miễn | Hồ sơ hoàn trả | `HoSo.NguoiThiHanhCongVu_HoTen` | Họ tên cán bộ | `Ông Vũ Đình Trọng` |
-| 4 | Điều 1 | `##MucDoLoi##` | Mức độ lỗi của cán bộ | Hồ sơ hoàn trả | `QDHoanTra.MucDoLoi` | Xác nhận lại mức độ lỗi | `Lỗi vô ý` |
-| 5 | Điều 1 | `##SoTienHoanTraBanDau##` | Số tiền phải hoàn trả theo QĐ ban đầu | Hồ sơ hoàn trả | `QDHoanTra.TongSoTien` | Định dạng số phân cách hàng nghìn bằng dấu chấm | `50.000.000` |
-| 6 | Điều 1 | `##SoTienHoanTraBanDauBangChu##` | Số tiền phải hoàn trả ban đầu bằng chữ | Hồ sơ hoàn trả | Chuyển đổi tự động | Viết bằng chữ | `Năm mươi triệu đồng` |
-| 7 | Điều 1 | `##SoTienHoanTraDuocMien##` | Số tiền được miễn toàn bộ (số) | Popup Miễn hoàn trả | Bằng toàn bộ số tiền ban đầu | Bằng toàn bộ số tiền phải hoàn trả | `50.000.000` |
-| 8 | Điều 1 | `##SoTienHoanTraDuocMienBangChu##` | Số tiền được miễn bằng chữ | Popup Miễn hoàn trả | Chuyển đổi tự động | Viết bằng chữ số tiền được miễn | `Năm mươi triệu đồng` |
-| 9 | Điều 1 | `##LyDoMienHoanTra##` | Căn cứ miễn hoàn trả | Popup Miễn hoàn trả | Control UI: Combobox.<br>Gồm:<br>+ người thi hành công vụ chết<br>+ người thi hành công vụ bị Tòa án tuyên bố mất tích<br>+ người thi hành công vụ mắc bệnh hiểm nghèo không còn khả năng lao động | Nêu rõ căn cứ quy định tại khoản 4a Điều 65 Luật TNBTCNN | `Người thi hành công vụ bị mắc bệnh hiểm nghèo, suy giảm khả năng lao động vĩnh viễn từ 81% trở lên theo Biên bản giám định y khoa số 12/GĐYK ngày 20/06/2026` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Trách nhiệm hoàn trả > Form Lập Quyết định miễn hoàn trả | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `38/QĐ-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Trách nhiệm hoàn trả > Form Lập Quyết định miễn hoàn trả | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 25 tháng 06 năm 2026` |
+| 3 | Căn cứ | `##SoQDHoanTraGoc##` | Trách nhiệm hoàn trả | Số quyết định hoàn trả hoặc quyết định giải quyết bồi thường | Số hiệu quyết định (nếu đã ban hành) | `36/QĐ-STP` |
+| 4 | Căn cứ | `##NgayQDHoanTraGoc##` | Trách nhiệm hoàn trả | Ngày ban hành quyết định gốc | Định dạng `dd/mm/yyyy` | `15/05/2026` |
+| 5 | Điều 1 | `##TenNguoiThiHanhCongVu##` | Trách nhiệm hoàn trả | Họ và tên cán bộ được miễn hoàn trả | Họ tên cán bộ | `Ông Vũ Đình Trọng` |
+| 6 | Điều 1 | `##MucDoLoi##` | Trách nhiệm hoàn trả | Mức độ lỗi của cán bộ | Xác nhận lại mức độ lỗi | `Lỗi vô ý` |
+| 7 | Điều 1 | `##SoTienHoanTraBanDau##` | Trách nhiệm hoàn trả | Số tiền phải hoàn trả theo quyết định ban đầu | Định dạng số phân cách hàng nghìn bằng dấu chấm | `50.000.000` |
+| 8 | Điều 1 | `##SoTienHoanTraBanDauBangChu##` | Trách nhiệm hoàn trả | Số tiền phải hoàn trả ban đầu bằng chữ | Viết bằng chữ | `Năm mươi triệu đồng` |
+| 9 | Điều 1 | `##SoTienHoanTraDuocMien##` | Trách nhiệm hoàn trả > Form Lập Quyết định miễn hoàn trả | Số tiền được miễn toàn bộ | Bằng toàn bộ số tiền phải hoàn trả | `50.000.000` |
+| 10 | Điều 1 | `##SoTienHoanTraDuocMienBangChu##` | Trách nhiệm hoàn trả > Form Lập Quyết định miễn hoàn trả | Số tiền được miễn bằng chữ | Chuyển đổi tự động | Viết bằng chữ số tiền được miễn | `Năm mươi triệu đồng` |
+| 11 | Điều 1 | `##LyDoMienHoanTra##` | Trách nhiệm hoàn trả > Form Lập Quyết định miễn hoàn trả | Căn cứ, lý do miễn hoàn trả | Control UI: Combobox.<br>Gồm:<br>+ người thi hành công vụ chết<br>+ người thi hành công vụ bị Tòa án tuyên bố mất tích<br>+ người thi hành công vụ mắc bệnh hiểm nghèo không còn khả năng lao động | Nêu rõ căn cứ quy định tại khoản 4a Điều 65 Luật TNBTCNN | `Người thi hành công vụ bị mắc bệnh hiểm nghèo, suy giảm khả năng lao động vĩnh viễn từ 81% trở lên theo Biên bản giám định y khoa số 12/GĐYK ngày 20/06/2026` |
 
 ---
 
 ### 23. MẪU SỐ 39/BTNN: QUYẾT ĐỊNH ĐÌNH CHỈ VIỆC XEM XÉT TRÁCH NHIỆM HOÀN TRẢ
 - **Tên tệp template**: `Mau_39_BTNN_Template.docx`
 - **Mục đích**: Đình chỉ việc xem xét trách nhiệm hoàn trả theo khoản 2 Điều 69 Luật TNBTCNN (sửa đổi 2026) khi văn bản làm căn cứ yêu cầu bồi thường đã bị cơ quan nhà nước có thẩm quyền thu hồi, sửa đổi, hủy bỏ hoặc không còn là căn cứ bồi thường.
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Xem xét đình chỉ > Thao tác \"Lập Quyết định đình chỉ xem xét hoàn trả\"*.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Trách nhiệm hoàn trả > Xem xét đình chỉ > Thao tác "Lập Quyết định đình chỉ xem xét hoàn trả"*.
 - **Quy tắc đặt tên file tải về**: `Mau_39_BTNN_Quyet_dinh_dinh_chi_xem_xet_hoan_tra_[MaHoSo].docx`
 
 #### Bảng mapping chi tiết Mẫu 39/BTNN:
-| STT | Vị trí trên mẫu | Trường placeholder | Mô tả trường | Màn hình / Chức năng nguồn | Trường dữ liệu trên giao diện / CSDL | Quy tắc xử lý & Định dạng | Ví dụ giá trị |
-|:---:|---|---|---|---|---|---|---|
-| 1 | Căn cứ | `##SoVBThuHoiCanCu##` | Số hiệu văn bản thu hồi, hủy bỏ căn cứ | Popup Đình chỉ hoàn trả | Form nhập `VBThuHoi_So` | Số hiệu văn bản hủy bỏ căn cứ bồi thường | `Quyết định giám đốc thẩm số 05/2026/GĐT-HS` |
-| 2 | Căn cứ | `##NgayVBThuHoiCanCu##` | Ngày ban hành văn bản thu hồi, hủy bỏ | Popup Đình chỉ hoàn trả | Form nhập `VBThuHoi_Ngay` | Định dạng `dd/mm/yyyy` | `10/06/2026` |
-| 3 | Căn cứ | `##CoQuanBanHanhVBThuHoi##` | Cơ quan ban hành văn bản thu hồi, hủy bỏ | Popup Đình chỉ hoàn trả | Form nhập `VBThuHoi_CoQuan` | Tên cơ quan ra quyết định hủy bỏ căn cứ | `Hội đồng Thẩm phán Tòa án nhân dân tối cao` |
-| 4 | Điều 1 | `##TenNguoiBiThietHai##` | Họ tên người bị thiệt hại / yêu cầu BT | Thông tin hồ sơ yêu cầu bồi thường | `HoSo.NguoiBiThietHai_HoTen` | Họ tên người bị thiệt hại trong vụ việc | `Ông Nguyễn Khắc Hoài` |
-| 5 | Điều 1 | `##SoKyHieuVanBanCanCu##` | Tên, số hiệu văn bản căn cứ trước đây | Thông tin hồ sơ yêu cầu bồi thường | `VanBanCanCu.SoKyHieu` | Số hiệu văn bản căn cứ cũ bị hủy | `Bản án hình sự phúc thẩm số 18/2025/HSPT` |
-| 6 | Điều 1 | `##NgayBanHanhVanBanCanCu##` | Ngày ban hành văn bản căn cứ cũ | Thông tin hồ sơ yêu cầu bồi thường | `VanBanCanCu.NgayBanHanh` | Định dạng `dd/mm/yyyy` | `10/11/2025` |
-| 7 | Điều 1 | `##CoQuanBanHanhVanBanCanCu##` | Cơ quan ban hành văn bản căn cứ cũ | Thông tin hồ sơ yêu cầu bồi thường | `VanBanCanCu.CoQuanBanHanh` | Tên cơ quan ban hành văn bản cũ | `Tòa án nhân dân cấp cao tại Hà Nội` |
-| 8 | Nơi nhận | `##TenNguoiThiHanhCongVu##` | Họ tên cán bộ liên quan đến hoàn trả | Hồ sơ hoàn trả | `HoSo.NguoiThiHanhCongVu_HoTen` | Gửi cán bộ để thông báo đình chỉ nghĩa vụ | `Ông Vũ Đình Trọng` |
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Trách nhiệm hoàn trả > Form Lập Quyết định đình chỉ xem xét hoàn trả | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `39/QĐ-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Trách nhiệm hoàn trả > Form Lập Quyết định đình chỉ xem xét hoàn trả | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 12 tháng 06 năm 2026` |
+| 3 | Căn cứ | `##SoVBThuHoiCanCu##` | Trách nhiệm hoàn trả > Form Lập Quyết định đình chỉ xem xét hoàn trả | Số hiệu văn bản thu hồi, hủy bỏ căn cứ | Số hiệu văn bản hủy bỏ căn cứ bồi thường | `Quyết định giám đốc thẩm số 05/2026/GĐT-HS` |
+| 4 | Căn cứ | `##NgayVBThuHoiCanCu##` | Trách nhiệm hoàn trả > Form Lập Quyết định đình chỉ xem xét hoàn trả | Ngày ban hành văn bản thu hồi, hủy bỏ căn cứ | Định dạng `dd/mm/yyyy` | `10/06/2026` |
+| 5 | Căn cứ | `##CoQuanBanHanhVBThuHoi##` | Trách nhiệm hoàn trả > Form Lập Quyết định đình chỉ xem xét hoàn trả | Cơ quan ban hành văn bản thu hồi, hủy bỏ căn cứ | Tên cơ quan ra quyết định hủy bỏ căn cứ | `Hội đồng Thẩm phán Tòa án nhân dân tối cao` |
+| 6 | Điều 1 | `##TenNguoiBiThietHai##` | Thông tin hồ sơ yêu cầu bồi thường | Họ và tên người bị thiệt hại trong vụ việc | Họ tên người bị thiệt hại trong vụ việc | `Ông Nguyễn Khắc Hoài` |
+| 7 | Điều 1 | `##SoKyHieuVanBanCanCu##` | Thông tin hồ sơ yêu cầu bồi thường | Số, ký hiệu văn bản căn cứ trước đây | Số hiệu văn bản căn cứ cũ bị hủy | `Bản án hình sự phúc thẩm số 18/2025/HSPT` |
+| 8 | Điều 1 | `##NgayBanHanhVanBanCanCu##` | Thông tin hồ sơ yêu cầu bồi thường | Ngày ban hành văn bản căn cứ cũ | Định dạng `dd/mm/yyyy` | `10/11/2025` |
+| 9 | Điều 1 | `##CoQuanBanHanhVanBanCanCu##` | Thông tin hồ sơ yêu cầu bồi thường | Cơ quan ban hành văn bản căn cứ cũ | Tên cơ quan ban hành văn bản cũ | `Tòa án nhân dân cấp cao tại Hà Nội` |
+| 10 | Nơi nhận | `##TenNguoiThiHanhCongVu##` | Trách nhiệm hoàn trả | Họ và tên cán bộ liên quan đến hoàn trả | Gửi cán bộ để thông báo đình chỉ nghĩa vụ | `Ông Vũ Đình Trọng` |
 
 ---
 
@@ -536,9 +581,9 @@
 
 1. **Quy tắc cảnh báo lỗi bỏ trống (Mandatory Field Validation)**:
    - Đối với các trường bắt buộc trên màn hình sinh văn bản (ví dụ: Số ký hiệu, Ngày ban hành, Căn cứ pháp lý, Người giải quyết, Số tiền tạm ứng/hoàn trả...):
-   - Nếu người dùng để trống và bấm \"Xem dự thảo\" hoặc \"Tải file/Ban hành\":
+   - Nếu người dùng để trống và bấm "Xem dự thảo" hoặc "Tải file/Ban hành":
      + Tuyệt đối không sử dụng thông báo Toast chung chung.
-     + Thực hiện highlight đỏ viền/nền ô nhập lỗi đầu tiên (class `.is-invalid`), hiển thị thông báo lỗi màu đỏ **\"Đây là trường bắt buộc\"** ngay phía dưới ô nhập.
+     + Thực hiện highlight đỏ viền/nền ô nhập lỗi đầu tiên (class `.is-invalid`), hiển thị thông báo lỗi màu đỏ **"Đây là trường bắt buộc"** ngay phía dưới ô nhập.
      + Tự động focus con trỏ vào ô nhập lỗi đầu tiên đó.
 
 2. **Quy tắc xác nhận thao tác (Confirmation Dialogs)**:
@@ -557,7 +602,7 @@
 
 | STT | Mã biểu mẫu | Tên biểu mẫu văn bản | Tên tệp tin phôi `.docx` |
 |:---:|---|---|---|
-| 1 | Mẫu 02/BTNN | Giấy tiếp nhận hồ sơ yêu cầu bồi thường | [Mau_02_BTNN_Template.docx](file:///g:/My%20Drive/FIS/1.%20Giao%20dich%20dam%20bao_Ca%20nhan/Giao%20dich%20bao%20dam%20va%20BTNN_Project/UI_Mockups_Git_BPBD_UI/Bieu_mau/Boi_thuong_nha_nuoc/Mau_02_BTNN_Template.docx) |
+| 1 | Mẫu 02/BTNN | Giấy tiếp nhận yêu cầu bồi thường | [Mau_02_BTNN_Template.docx](file:///g:/My%20Drive/FIS/1.%20Giao%20dich%20dam%20bao_Ca%20nhan/Giao%20dich%20bao%20dam%20va%20BTNN_Project/UI_Mockups_Git_BPBD_UI/Bieu_mau/Boi_thuong_nha_nuoc/Mau_02_BTNN_Template.docx) |
 | 2 | Mẫu 03/BTNN | Thông báo về việc bổ sung hồ sơ yêu cầu bồi thường | [Mau_03_BTNN_Template.docx](file:///g:/My%20Drive/FIS/1.%20Giao%20dich%20dam%20bao_Ca%20nhan/Giao%20dich%20bao%20dam%20va%20BTNN_Project/UI_Mockups_Git_BPBD_UI/Bieu_mau/Boi_thuong_nha_nuoc/Mau_03_BTNN_Template.docx) |
 | 3 | Mẫu 04/BTNN | Thông báo về việc thụ lý / không thụ lý hồ sơ yêu cầu bồi thường | [Mau_04_BTNN_Template.docx](file:///g:/My%20Drive/FIS/1.%20Giao%20dich%20dam%20bao_Ca%20nhan/Giao%20dich%20bao%20dam%20va%20BTNN_Project/UI_Mockups_Git_BPBD_UI/Bieu_mau/Boi_thuong_nha_nuoc/Mau_04_BTNN_Template.docx) |
 | 4 | Mẫu 05/BTNN | Thông báo về việc dừng giải quyết yêu cầu bồi thường | [Mau_05_BTNN_Template.docx](file:///g:/My%20Drive/FIS/1.%20Giao%20dich%20dam%20bao_Ca%20nhan/Giao%20dich%20bao%20dam%20va%20BTNN_Project/UI_Mockups_Git_BPBD_UI/Bieu_mau/Boi_thuong_nha_nuoc/Mau_05_BTNN_Template.docx) |
