@@ -799,7 +799,7 @@ body {
 #transferAgencyTree .wf-utree-display.is-invalid, #transferAgencyTree.is-invalid .wf-utree-display { border-color: #ef4444; background: #fef2f2; }
 .xd-transfer-hint { margin-top: 6px; font-size: 12.5px; color: #475569; }
 .xd-transfer-hint i { color: #2563eb; margin-right: 4px; }
-/* Loại người yêu cầu (Cá nhân / Tổ chức): radio ràng buộc theo Tư cách */
+/* Loại người yêu cầu (Cá nhân / Tổ chức): radio đứng trước Tư cách, danh sách Tư cách lọc theo Loại */
 .nyc-type-group { display: flex; gap: 24px; padding-top: 6px; }
 .nyc-type-radio { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13.5px; font-weight: 500; }
 .nyc-type-radio input:disabled + span { color: #94a3b8; }

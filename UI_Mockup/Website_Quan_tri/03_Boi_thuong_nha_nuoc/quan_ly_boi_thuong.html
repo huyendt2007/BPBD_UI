@@ -1686,6 +1686,7 @@
                     <!-- Chỉ hiển thị tại Tab "Vụ việc chờ xử lý" (vai trò Cán bộ xử lý): mở màn nhập liệu hồ sơ ở chế độ tạo mới -->
                     <button class="btn btn-primary" id="btnCreateClaimRequest" onclick="openInlineClaimForm(null)"><i
                             class="fa-solid fa-plus"></i> Tạo yêu cầu</button>
+                    <button type="button" class="btn btn-warning" id="btnTriggerDemoMra" style="background-color:var(--warning-color); border-color:#d97706; color:#fff; font-weight:600;" onclick="openRequireAdditionModal('HS-NEW-01')"><i class="fa-solid fa-circle-question"></i> Yêu cầu bổ sung</button>
                     <button class="btn btn-secondary" onclick="exportExcelB()"><i class="fa-solid fa-file-excel"></i>
                         Kết xuất Excel</button>
                 </div>
@@ -1706,7 +1707,7 @@
                             <th style="width: 50px; text-align: center;">STT</th>
                             <th style="width: 120px; text-align: center;">Mã vụ việc</th>
                             <th style="min-width: 170px;">Tên cá nhân/Tổ chức yêu cầu</th>
-                            <th style="min-width: 170px;">Họ và tên người bị thiệt hại</th>
+                            <th style="min-width: 170px;">Họ và tên người/Tổ chức bị thiệt hại</th>
                             <th style="min-width: 220px;">Hành vi gây thiệt hại</th>
                             <th style="min-width: 160px;">Lĩnh vực phát sinh thiệt hại</th>
                             <th style="min-width: 150px;">Cơ quan giải quyết</th>
@@ -2041,31 +2042,27 @@
                                 1: Theo bản án)</span>
                         </div>
 
-                        <!-- Tư cách người yêu cầu bồi thường: Danh mục DM_26 (đứng trước Loại người yêu cầu) -->
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Tư cách người yêu cầu bồi thường<span
-                                    class="required">*</span></span>
-                            <select class="form-control" id="claimNYCRole" onchange="toggleDocsByRole(this.value); applyNycTypeConstraint(this.value); toggleNbthBlock(this.value)">
-                                <option value="Người bị thiệt hại">Người bị thiệt hại</option>
-                                <option value="Người thừa kế của người bị thiệt hại">Người thừa kế của người bị thiệt hại</option>
-                                <option value="Người đại diện cho những người thừa kế của người bị thiệt hại">Người đại diện cho những người thừa kế của người bị thiệt hại</option>
-                                <option value="Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại">Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại</option>
-                                <option value="Người đại diện theo pháp luật của người bị thiệt hại">Người đại diện theo pháp luật của người bị thiệt hại</option>
-                                <option value="Cá nhân, pháp nhân được ủy quyền hợp pháp">Cá nhân, pháp nhân được ủy quyền hợp pháp</option>
-                            </select>
-                        </div>
-
-                        <!-- Loại người yêu cầu: Cá nhân / Tổ chức (ràng buộc theo Tư cách người yêu cầu bồi thường) -->
+                        <!-- Loại người yêu cầu: Cá nhân / Tổ chức (mặc định Cá nhân), đứng trước Tư cách -->
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Loại người yêu cầu<span class="required">*</span></span>
                             <div id="claimNYCTypeGroup" style="display: flex; gap: 24px; align-items: center; height: 38px; padding-left: 5px;">
                                 <label style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; color: var(--text-main);">
-                                    <input type="radio" name="claimNYCType" value="Cá nhân" checked onchange="toggleNycTypeFields()"> Cá nhân
+                                    <input type="radio" name="claimNYCType" value="Cá nhân" checked onchange="onClaimNycTypeChange()"> Cá nhân
                                 </label>
                                 <label style="cursor: pointer; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; font-weight: 500; color: var(--text-main);">
-                                    <input type="radio" name="claimNYCType" value="Tổ chức" onchange="toggleNycTypeFields()"> Tổ chức
+                                    <input type="radio" name="claimNYCType" value="Tổ chức" onchange="onClaimNycTypeChange()"> Tổ chức
                                 </label>
                             </div>
+                        </div>
+
+                        <!-- Tư cách người yêu cầu bồi thường: Danh mục DM_26 lọc theo Loại (Cá nhân: bỏ TCNYC_03; Tổ chức: TCNYC_01, TCNYC_03, TCNYC_05) -->
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <span class="form-label">Tư cách người yêu cầu bồi thường<span
+                                    class="required">*</span></span>
+                            <select class="form-control" id="claimNYCRole" onchange="toggleDocsByRole(this.value); toggleNbthBlock(this.value)">
+                                <option value="">-- Chọn tư cách người yêu cầu --</option>
+                            </select>
+                            <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
 
                         <div class="form-group" style="margin-bottom: 0;">
@@ -4936,6 +4933,34 @@
         // Claim Mock Data
         let currentClaimOfficers = [];
         let claimsList = [
+            {
+                id: "HS-NEW-01",
+                assignedOfficer: "Nguyễn Văn Chuyên Viên",
+                code: "BT-2026-088",
+                fieldGroup: "hành chính",
+                date: "20/10/2026",
+                nyc: "Trần Thị Mai Anh",
+                victimAlive: "yes",
+                cardType: "Cá nhân",
+                cardNo: "001092003344",
+                address: "Số 28 Liễu Giai, Ba Đình, Hà Nội",
+                phone: "0912998877",
+                role: "Người bị thiệt hại",
+                docBase: "Quyết định xử phạt hành chính số 120/QĐ-XPHC",
+                hanhVi: "Xử phạt hành chính và tạm giữ phương tiện kinh doanh trái luật.",
+                nhanQua: "Thiệt hại hàng hóa do tồn đọng và chi phí lưu kho bãi phát sinh.",
+                status: "Chờ tiếp nhận",
+                thulyVenue: "cơ quan quản lý",
+                totalNum: 165000000,
+                advanceNum: 0,
+                slaDays: 5,
+                slaStatus: "normal",
+                slaText: "Chờ tiếp nhận hồ sơ bồi thường (hạn còn 5 ngày)",
+                restoreHonor: false,
+                agency: "UBND Quận Ba Đình",
+                deadline: "25/10/2026",
+                files: [{ name: "Don_yeu_cau_boi_thuong_Mau01.pdf", url: "#" }]
+            },
             {
                 id: "HS6",
                 assignedOfficer: "Nguyễn Văn Chuyên Viên",
@@ -7883,16 +7908,41 @@
             return role === NYC_ROLE_TO_CHUC_KE_THUA || (role === NBTH_ROLE && type === NYC_TYPE_TO_CHUC);
         }
 
+        // Loại người yêu cầu của hồ sơ: suy ra theo Tư cách (TCNYC_03 -> Tổ chức; TCNYC_02/06/04 -> Cá nhân); khác theo nycType, không có coi là Cá nhân
+        function nycTypeOfGq(role, type) {
+            return nycTypeConstraintGq(role) || normalizeNycType(type);
+        }
+
+        // Danh sách tên Tư cách theo Loại người yêu cầu (Cá nhân: bỏ TCNYC_03; Tổ chức: TCNYC_01, TCNYC_03, TCNYC_05), giữ thứ tự DM_26
+        function nycRoleNamesForTypeGq(type) {
+            const W = window.BTNN_WF;
+            if (W && typeof W.nycRolesForType === 'function') {
+                try { return W.nycRolesForType(type).map(r => r.name); } catch (e) { /* dùng quy tắc cục bộ */ }
+            }
+            const all = [NBTH_ROLE, NYC_ROLES_CA_NHAN[0], NYC_ROLES_CA_NHAN[1], NYC_ROLE_TO_CHUC_KE_THUA, NYC_ROLES_CA_NHAN[2], 'Cá nhân, pháp nhân được ủy quyền hợp pháp'];
+            return all.filter(r => type === NYC_TYPE_TO_CHUC ? !NYC_ROLES_CA_NHAN.includes(r) : r !== NYC_ROLE_TO_CHUC_KE_THUA);
+        }
+
+        // Loại người yêu cầu không bị khóa: nạp danh sách Tư cách theo Loại đang chọn; chọn Tư cách role (mặc định Tư cách đang chọn) nếu hợp lệ, không hợp lệ về trống
         function applyNycTypeConstraint(role) {
-            const r = role || (document.getElementById('claimNYCRole') ? document.getElementById('claimNYCRole').value : NBTH_ROLE);
-            const c = nycTypeConstraintGq(r);
-            const radios = document.getElementsByName('claimNYCType');
-            if (c) setNycTypeOnForm(c);
-            radios.forEach(x => {
-                x.disabled = !!c;
-                x.title = c ? 'Theo Tư cách người yêu cầu bồi thường. Không cho phép thay đổi.' : '';
-            });
+            const sel = document.getElementById('claimNYCRole');
+            if (!sel) return;
+            const want = role === undefined ? sel.value : role;
+            const names = nycRoleNamesForTypeGq(getNycTypeFromForm());
+            sel.innerHTML = '<option value="">-- Chọn tư cách người yêu cầu --</option>' + names.map(n => `<option value="${ycEsc(n)}">${ycEsc(n)}</option>`).join('');
+            sel.value = names.includes(want) ? want : '';
+            document.getElementsByName('claimNYCType').forEach(x => { x.disabled = false; x.title = ''; });
             toggleNycTypeFields();
+        }
+
+        // Đổi Loại người yêu cầu: lọc lại Tư cách (Tư cách không còn hợp lệ về trống, bắt chọn lại) và cập nhật các khối phụ thuộc
+        function onClaimNycTypeChange() {
+            const sel = document.getElementById('claimNYCRole');
+            const before = sel ? sel.value : '';
+            applyNycTypeConstraint();
+            const after = sel ? sel.value : '';
+            if (after !== before) toggleDocsByRole(after);
+            toggleNbthBlock(after);
         }
 
         function toggleNycOrgDocRequired() {
@@ -8211,7 +8261,7 @@
                 nyc: rec.nycName || '(Chưa nhập)',
                 nycRole: rec.nycRole || NBTH_ROLE,
                 role: rec.nycRole || NBTH_ROLE,
-                nycType: normalizeNycType(rec.nycType),
+                nycType: nycTypeOfGq(rec.nycRole, rec.nycType),
                 nycOrgCode: rec.nycOrgCode || '',
                 nycOrgDocNo: rec.nycOrgDocNo || '',
                 nycOrgDocDate: rec.nycOrgDocDate || '',
@@ -8555,7 +8605,7 @@
             claim.nycCountry = claim.nycCountry || 'Việt Nam';
             claim.nycRole = claim.nycRole || claim.role || 'Người bị thiệt hại';
             // Dữ liệu cũ không có Loại người yêu cầu: coi là Cá nhân; Giới tính cũ bỏ qua, không hiển thị
-            claim.nycType = normalizeNycType(claim.nycType);
+            claim.nycType = nycTypeOfGq(claim.nycRole, claim.nycType);
             if (claim.notifyMethod) claim.notifyMethod = normalizeClaimNotifyMethod(claim.notifyMethod);
             claim.nycPhone = claim.nycPhone || claim.phone || '';
             claim.nycCardType = claim.nycCardType || claim.cardType || 'Cá nhân';
@@ -9014,7 +9064,7 @@
             flatpickr("#claimNbthCardDate", { dateFormat: "d/m/Y", allowInput: true });
             // Loại giấy tờ thân nhân: danh mục DM_10 trừ Mã số thuế
             if (window.BTNN_WF && typeof BTNN_WF.fillPersonalDocTypeSelect === 'function') {
-                BTNN_WF.fillPersonalDocTypeSelect('claimNYCCardType');
+                BTNN_WF.fillPersonalDocTypeSelect('claimNYCCardType', '-- Chọn loại giấy tờ --');
                 BTNN_WF.fillPersonalDocTypeSelect('claimNbthCardType', '-- Chọn loại giấy tờ --');
             }
             // Quốc gia: danh mục DM_09, mặc định Việt Nam
@@ -10314,11 +10364,12 @@
                 document.getElementById('claimFieldGroup').value = claim.fieldGroup || 'hành chính';
                 document.getElementById('claimRequestDocDate').value = claim.requestDocDate || '';
                 document.getElementById('claimApplicableLaw').value = claim.applicableLaw || 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017';
-                document.getElementById('claimNYCRole').value = claim.nycRole || claim.role || 'Người bị thiệt hại';
-                setNycTypeOnForm(claim.nycType);
+                // Loại người yêu cầu trước (lọc danh sách Tư cách), sau đó chọn Tư cách của hồ sơ
+                const claimRoleVal = claim.nycRole || claim.role || 'Người bị thiệt hại';
+                setNycTypeOnForm(nycTypeOfGq(claimRoleVal, claim.nycType));
                 fillNycOrgForm(claim);
                 fillNbthForm(claim.nbth);
-                applyNycTypeConstraint(document.getElementById('claimNYCRole').value);
+                applyNycTypeConstraint(claimRoleVal);
                 toggleNbthBlock(document.getElementById('claimNYCRole').value);
                 document.getElementById('claimNYCBirth').value = claim.nycBirth || '';
                 document.getElementById('claimNYCCardType').value = claim.cardType || 'Cá nhân';
@@ -10454,7 +10505,6 @@
                 renderClaimXdTransferInfo(null);
                 fillNbthForm(null);
                 fillNycOrgForm(null);
-                document.getElementById('claimNYCRole').value = 'Người bị thiệt hại';
                 setNycTypeOnForm(NYC_TYPE_CA_NHAN);
                 applyNycTypeConstraint('Người bị thiệt hại');
                 toggleNbthBlock('Người bị thiệt hại');
@@ -10621,11 +10671,10 @@
 
             document.getElementById('claimCqNhan').value = found.procTargetAgency;
             document.getElementById('claimNYCName').value = found.nycName;
-            document.getElementById('claimNYCRole').value = found.nycRole;
-            setNycTypeOnForm(found.nycType);
+            setNycTypeOnForm(nycTypeOfGq(found.nycRole, found.nycType));
             fillNycOrgForm(found);
             applyNycTypeConstraint(found.nycRole);
-            toggleNbthBlock(found.nycRole);
+            toggleNbthBlock(document.getElementById('claimNYCRole').value);
             document.getElementById('claimNYCBirth').value = found.nycBirth;
             document.getElementById('claimNYCCardType').value = found.nycCardType;
             document.getElementById('claimNYCCardNo').value = found.nycCardNo;
@@ -11539,6 +11588,12 @@
             }
             if (!applicableLaw) {
                 const el = document.getElementById('claimApplicableLaw');
+                el.classList.add('is-invalid');
+                el.closest('.form-group').querySelector('.error-message').style.display = 'block';
+                if (!firstInvalid) firstInvalid = el;
+            }
+            if (!role) {
+                const el = document.getElementById('claimNYCRole');
                 el.classList.add('is-invalid');
                 el.closest('.form-group').querySelector('.error-message').style.display = 'block';
                 if (!firstInvalid) firstInvalid = el;
@@ -12661,9 +12716,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         <div style="grid-column: span 3;"><strong style="color:var(--text-muted);">Tài liệu chuyển xử lý:</strong> <br>${renderXdTransferFilesHtml(claim.transferFiles)}</div>` : '';
             const dE = v => ycEsc(v === undefined || v === null || v === '' ? '--' : String(v));
             const dF = (label, value, span) => `<div${span ? ` style="grid-column: span ${span};"` : ''}><strong style="color:var(--text-muted);">${label}:</strong> <br>${value}</div>`;
-            const nycTypeDt = normalizeNycType(claim.nycType);
-            const nycIsOrg = nycTypeDt === NYC_TYPE_TO_CHUC;
             const nycRoleDt = claim.nycRole || claim.role || NBTH_ROLE;
+            const nycTypeDt = nycTypeOfGq(nycRoleDt, claim.nycType);
+            const nycIsOrg = nycTypeDt === NYC_TYPE_TO_CHUC;
             const orgVictimDt = isClaimOrgVictim(nycRoleDt, nycTypeDt);
             const nycPersonFieldsHtml = nycIsOrg
                 ? [dF('Tên tổ chức', `<span style="text-transform:uppercase; font-weight:700; color:var(--text-main);">${dE(claim.nyc)}</span>`),
@@ -12740,8 +12795,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         <i class="fa-solid fa-user-tie"></i> THÔNG TIN NGƯỜI YÊU CẦU BỒI THƯỜNG
                     </div>
                     <div class="grid-4-cols" style="gap: 12px 20px; font-size: 13px; line-height: 1.6;">
-                        <div><strong style="color:var(--text-muted);">Tư cách người yêu cầu:</strong> <br><span style="font-weight:600; color:var(--secondary-color);">${dE(nycRoleDt)}</span></div>
                         <div><strong style="color:var(--text-muted);">Loại người yêu cầu:</strong> <br><span class="badge ${nycIsOrg ? 'badge-warning' : 'badge-info'}" style="font-size:11px;">${nycTypeDt}</span></div>
+                        <div><strong style="color:var(--text-muted);">Tư cách người yêu cầu:</strong> <br><span style="font-weight:600; color:var(--secondary-color);">${dE(nycRoleDt)}</span></div>
                         ${nycPersonFieldsHtml}
                         ${orgVictimDt ? '' : dF('Trạng thái người bị hại', claim.victimAlive === 'no' ? '<span style="color:var(--danger-color); font-weight:600;">Đã mất</span>' : 'Còn sống')}
                         ${dF('Số điện thoại', dE(claim.nycPhone))}
@@ -18718,6 +18773,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         class="fa-solid fa-print"></i> In thông báo</button>
             </div>
         </div>
+    </div>
     <!-- Modal Trình ký Yêu cầu bổ sung hồ sơ (Wizard 2 bước & Định vị chữ ký) -->
     <div id="modalRequireAddition" class="confirm-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.55); z-index:9999; justify-content:center; align-items:center;">
         <div id="modalRequireAdditionContainer" class="sticky-modal-container" style="background:#fff; width:850px; max-width:96%; border-radius:10px; display:flex; flex-direction:column; max-height:92vh; overflow:hidden; box-shadow:0 15px 35px rgba(0,0,0,0.25); transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
@@ -20638,25 +20694,701 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             gqAfterSubmit(claim, 'Tiếp nhận hồ sơ');
         }
 
-        // ---------- 2. Yêu cầu bổ sung hồ sơ (Mẫu 03/BTNN) -> Chờ phát hành văn bản ----------
+        // ==========================================
+        // 📝 FORM TRÌNH KÝ YÊU CẦU BỔ SUNG & ĐỊNH VỊ CHỮ KÝ (WIZARD 2 BƯỚC)
+        // ==========================================
+        let selectedMraClaim = null;
+        let mraCurrentFile = null;
+        let mraOfflineFile = null;
+        let mraSigCoords = {
+            room: { x: 60, y: 860 },
+            agency: { x: 480, y: 860 }
+        };
+        let mraIsDragging = false;
+        let mraDragTarget = null;
+        let mraDragOffset = { x: 0, y: 0 };
+
         function openGqSupplementModal(claimId) {
-            if (typeof openRequireAdditionModal === 'function') {
-                openRequireAdditionModal(claimId);
+            openRequireAdditionModal(claimId);
+        }
+
+        function triggerRequireAdditionClaim(id) {
+            openRequireAdditionModal(id);
+        }
+
+        function openRequireAdditionModal(claimId) {
+            let claim = null;
+            if (claimId) {
+                if (typeof gqClaim === 'function') claim = gqClaim(claimId);
+                if (!claim && typeof claimsList !== 'undefined') {
+                    claim = claimsList.find(c => String(c.id) === String(claimId) || String(c.code) === String(claimId));
+                }
+            }
+            if (!claim && typeof claimsList !== 'undefined' && claimsList.length > 0) {
+                claim = claimsList[0];
+            }
+            if (!claim) {
+                console.warn('Không tìm thấy vụ việc phù hợp để mở popup Yêu cầu bổ sung.');
                 return;
             }
-            const claim = gqClaim(claimId);
-            if (!claim) return;
-            const rec = gqRecord(claim);
-            const prev = rec && rec.status === 'Bị trả lại' && rec.approval && rec.approval.kind === 'Yêu cầu bổ sung' ? rec.approval : null;
-            const d = prev && prev.draftDoc ? prev.draftDoc : null;
-            gqState = { claimId, mode: 'ycbs', formNo: GQ_FORM_03, draftChoice: d ? d.source : '', draftUpload: d && d.source === 'uploaded' ? d.uploadedName : '', draftError: '' };
-            const body = gqSummaryHtml(claim) + gqReturnedHtml(claim) +
-                gqField('gqYcbsContent', 'Nội dung yêu cầu bổ sung', true, `<textarea id="gqYcbsContent" class="form-control" rows="4" placeholder="Nhập các tài liệu, chứng cứ cần bổ sung; mỗi dòng một nội dung" oninput="gqMark(this.id,false)">${gqE(prev ? prev.content : (claim.additionRequestContent || ''))}</textarea>`) +
-                `<div id="gqDraftWrap">${gqDraftBlockHtml()}</div>` +
-                gqLeaderFieldHtml(claim, prev ? (prev.assignees || [])[0] : '');
-            gqOpenModal('Yêu cầu bổ sung hồ sơ', 'fa-solid fa-circle-question', body,
-                `<button type="button" class="btn btn-secondary" onclick="gqCloseModal()">Hủy bỏ</button>
-                 <button type="button" class="btn btn-primary" id="gqBtnSubmit" onclick="gqSubmitSupplement()"><i class="fa-solid fa-paper-plane"></i> Trình Lãnh đạo</button>`);
+            selectedMraClaim = claim;
+            mraCurrentFile = null;
+            mraOfflineFile = null;
+
+            // Set default coords
+            mraSigCoords = {
+                room: { x: 60, y: 860 },
+                agency: { x: 480, y: 860 }
+            };
+
+            // Set claim info
+            const codeEl = document.getElementById('mraClaimCode');
+            const nycEl = document.getElementById('mraClaimNYC');
+            if (codeEl) codeEl.innerText = claim.code || '--';
+            if (nycEl) nycEl.innerText = claim.nyc || '--';
+
+            // Dates & Docs
+            const d = new Date();
+            const p = n => String(n).padStart(2, '0');
+            const todayStr = `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`;
+            const docDateEl = document.getElementById('mraDocDate');
+            const docNoEl = document.getElementById('mraDocNumber');
+            if (docDateEl) docDateEl.value = todayStr;
+            if (docNoEl) docNoEl.value = `.../TB-CBTNN`;
+
+            // Reason default
+            const defaultReason = claim.rejectReason || "1. Bổ sung Giấy tờ chứng minh tư cách đại diện hợp pháp của người yêu cầu bồi thường (Bản sao chứng thực Giấy ủy quyền).\n2. Bổ sung các tài liệu, hóa đơn, chứng từ gốc chứng minh các khoản chi phí thực tế đã phát sinh để khắc phục thiệt hại.";
+            const reasonEl = document.getElementById('mraContentReason');
+            if (reasonEl) reasonEl.value = defaultReason;
+
+            // Clear errors
+            ['mraDocNumber', 'mraDocDate', 'mraContentReason', 'mraOfficerRoom', 'mraOfficerAgency'].forEach(fieldId => {
+                const el = document.getElementById(fieldId);
+                if (el) el.classList.remove('is-invalid');
+                const err = document.getElementById(fieldId + 'Error');
+                if (err) err.style.display = 'none';
+            });
+            const docFileErr = document.getElementById('mraDocFileError');
+            if (docFileErr) docFileErr.style.display = 'none';
+            const offFileErr = document.getElementById('mraOfflineFileError');
+            if (offFileErr) offFileErr.style.display = 'none';
+
+            // Reset File Ready state
+            const fEmpty = document.getElementById('mraFileEmptyState');
+            const fReady = document.getElementById('mraFileReadyState');
+            const fBadge = document.getElementById('mraDocStatusBadge');
+            if (fEmpty) fEmpty.style.display = 'block';
+            if (fReady) fReady.style.display = 'none';
+            if (fBadge) fBadge.style.display = 'none';
+
+            const offList = document.getElementById('mraOfflineFileList');
+            if (offList) {
+                offList.style.display = 'none';
+                offList.innerHTML = '';
+            }
+
+            // Default to online signing
+            const radioOnline = document.querySelector('input[name="mraSigningMethod"][value="online"]');
+            if (radioOnline) radioOnline.checked = true;
+            toggleSigningMethod('online');
+
+            // Reset step to 1
+            goToMraStep1();
+
+            // Display modal
+            const modal = document.getElementById('modalRequireAddition');
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.classList.add('active');
+                modal.classList.add('visible');
+            }
+        }
+
+        window.openRequireAdditionModal = openRequireAdditionModal;
+        window.triggerRequireAdditionClaim = triggerRequireAdditionClaim;
+
+        function closeRequireAdditionModal() {
+            const modal = document.getElementById('modalRequireAddition');
+            if (modal) {
+                modal.classList.remove('active');
+                modal.classList.remove('visible');
+                modal.style.display = 'none';
+            }
+            selectedMraClaim = null;
+        }
+
+        function toggleSigningMethod(method) {
+            const isOnline = (method === 'online');
+            const stepperBar = document.getElementById('mraStepperBar');
+            const onlineSection = document.getElementById('mraOnlineSection');
+            const offlineSection = document.getElementById('mraOfflineSection');
+            const btnSubmitOffline = document.getElementById('mraBtnSubmitOffline');
+            const btnNextStep = document.getElementById('mraBtnNextStep');
+
+            if (stepperBar) stepperBar.style.display = isOnline ? 'flex' : 'none';
+            if (onlineSection) onlineSection.style.display = isOnline ? 'block' : 'none';
+            if (offlineSection) offlineSection.style.display = isOnline ? 'none' : 'block';
+            if (btnSubmitOffline) btnSubmitOffline.style.display = isOnline ? 'none' : 'inline-flex';
+            if (btnNextStep) btnNextStep.style.display = isOnline ? 'inline-flex' : 'none';
+        }
+
+        function handleMraOfflineFileUpload(input) {
+            if (!input.files || input.files.length === 0) return;
+            const file = input.files[0];
+            mraOfflineFile = {
+                name: file.name,
+                size: (file.size / 1024).toFixed(1) + ' KB'
+            };
+            const listEl = document.getElementById('mraOfflineFileList');
+            if (listEl) {
+                listEl.style.display = 'block';
+                listEl.innerHTML = `
+                    <div style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #fef3c7; border-radius:6px; padding:8px 12px;">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <i class="fa-solid fa-file-pdf" style="color:#ef4444; font-size:18px;"></i>
+                            <span style="font-weight:600; font-size:13px; color:#1e293b;">${gqE(mraOfflineFile.name)}</span>
+                            <span style="font-size:11.5px; color:#64748b;">(${mraOfflineFile.size})</span>
+                        </div>
+                        <div style="display:flex; gap:10px;">
+                            <a href="javascript:void(0)" onclick="previewMau03InNewWindow()" style="color:#2563eb; font-size:12.5px; text-decoration:none;"><i class="fa-solid fa-eye"></i> Xem file</a>
+                            <a href="javascript:void(0)" onclick="removeMraOfflineFile()" style="color:#dc2626; font-size:12.5px; text-decoration:none;"><i class="fa-solid fa-trash"></i> Xóa</a>
+                        </div>
+                    </div>
+                `;
+            }
+            const err = document.getElementById('mraOfflineFileError');
+            if (err) err.style.display = 'none';
+        }
+
+        function removeMraOfflineFile() {
+            mraOfflineFile = null;
+            const input = document.getElementById('mraOfflineFileInput');
+            if (input) input.value = '';
+            const listEl = document.getElementById('mraOfflineFileList');
+            if (listEl) {
+                listEl.style.display = 'none';
+                listEl.innerHTML = '';
+            }
+        }
+
+        function handleMraOnlineFileUpload(input) {
+            if (!input.files || input.files.length === 0) return;
+            const file = input.files[0];
+            mraCurrentFile = {
+                name: file.name,
+                size: (file.size / 1024).toFixed(1) + ' KB',
+                source: 'uploaded'
+            };
+            displayMraReadyFile();
+        }
+
+        function generateMau03Document() {
+            if (!selectedMraClaim) return;
+            const reason = document.getElementById('mraContentReason').value.trim();
+            if (!reason) {
+                document.getElementById('mraContentReason').classList.add('is-invalid');
+                document.getElementById('mraContentReasonError').style.display = 'block';
+                document.getElementById('mraContentReason').focus();
+                showToast('Vui lòng nhập nội dung yêu cầu bổ sung trước khi tự động sinh văn bản!', 'warning');
+                return;
+            }
+
+            const fileName = `Mau_03_BTNN_Thong_bao_yeu_cau_bo_sung_${selectedMraClaim.code || 'YCBT'}.pdf`;
+            mraCurrentFile = {
+                name: fileName,
+                size: '142 KB',
+                source: 'generated'
+            };
+
+            showToast('Hệ thống đang trích xuất dữ liệu và tạo văn bản theo Mẫu 03/BTNN...', 'info');
+            setTimeout(() => {
+                displayMraReadyFile();
+                showToast('Đã tự động sinh văn bản Mẫu 03/BTNN thành công!', 'success');
+            }, 300);
+        }
+
+        function displayMraReadyFile() {
+            if (!mraCurrentFile) return;
+            const emptyEl = document.getElementById('mraFileEmptyState');
+            const readyEl = document.getElementById('mraFileReadyState');
+            const nameEl = document.getElementById('mraFileName');
+            const metaEl = document.getElementById('mraFileMeta');
+            const badgeEl = document.getElementById('mraDocStatusBadge');
+            const errEl = document.getElementById('mraDocFileError');
+
+            if (emptyEl) emptyEl.style.display = 'none';
+            if (readyEl) readyEl.style.display = 'flex';
+            if (nameEl) nameEl.innerText = mraCurrentFile.name;
+            if (metaEl) metaEl.innerText = `${mraCurrentFile.size} • ${mraCurrentFile.source === 'generated' ? 'Hệ thống tự động sinh theo Mẫu 03/BTNN' : 'Tệp tải lên từ máy tính'}`;
+            if (badgeEl) badgeEl.style.display = 'inline-flex';
+            if (errEl) errEl.style.display = 'none';
+        }
+
+        function removeMraOnlineFile() {
+            mraCurrentFile = null;
+            const input = document.getElementById('mraOnlineFileInput');
+            if (input) input.value = '';
+            const emptyEl = document.getElementById('mraFileEmptyState');
+            const readyEl = document.getElementById('mraFileReadyState');
+            const badgeEl = document.getElementById('mraDocStatusBadge');
+
+            if (emptyEl) emptyEl.style.display = 'block';
+            if (readyEl) readyEl.style.display = 'none';
+            if (badgeEl) badgeEl.style.display = 'none';
+        }
+
+        function previewMau03InNewWindow() {
+            if (!selectedMraClaim) return;
+            const docNo = document.getElementById('mraDocNumber').value.trim() || '.../TB-CBTNN';
+            const docDate = document.getElementById('mraDocDate').value.trim() || 'ngày ... tháng ... năm ...';
+            const reason = document.getElementById('mraContentReason').value.trim() || 'Chưa nhập nội dung';
+            const items = reason.split('\n').filter(r => r.trim()).map(r => `<p style="margin: 4px 0 4px 16px; text-indent: -16px;">• ${gqE(r.trim())}</p>`).join('');
+
+            const newWindow = window.open('', '_blank');
+            const startHtml = '<' + 'html><head><title>Xem văn bản - Mẫu 03/BTNN</title><style>body { font-family: \'Times New Roman\', serif; font-size: 14pt; line-height: 1.6; padding: 40px 60px; max-width: 800px; margin: 0 auto; color: #000; } .header-table { width: 100%; margin-bottom: 20px; } .text-center { text-align: center; } .bold { font-weight: bold; } .italic { font-style: italic; }</style></head><' + 'body>';
+            const endHtml = '<' + '/body><' + '/html>';
+
+            newWindow.document.write(startHtml + `
+                <table class="header-table">
+                    <tr>
+                        <td class="text-center" style="width: 45%;">
+                            <div class="bold">BỘ TƯ PHÁP</div>
+                            <div class="bold">CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM VÀ BTNN</div>
+                            <div>Số: ${gqE(docNo)}</div>
+                        </td>
+                        <td class="text-center" style="width: 55%;">
+                            <div class="bold">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                            <div class="bold italic">Độc lập - Tự do - Hạnh phúc</div>
+                            <div class="italic" style="margin-top: 5px;">Hà Nội, ${gqE(docDate)}</div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="text-center" style="margin: 30px 0 20px 0;">
+                    <h2 style="font-size: 16pt; margin: 0 0 5px 0;">THÔNG BÁO</h2>
+                    <div class="bold">VỀ VIỆC YÊU CẦU BỔ SUNG HỒ SƠ YÊU CẦU BỒI THƯỜNG</div>
+                    <div class="italic" style="font-size: 12pt;">(Mẫu số 03/BTNN ban hành kèm theo Nghị định của Chính phủ)</div>
+                </div>
+                <p><strong>Kính gửi:</strong> Ông/Bà <strong>${gqE(selectedMraClaim.nyc || '--')}</strong></p>
+                <p><strong>Địa chỉ:</strong> ${gqE(selectedMraClaim.address || 'Hà Nội')}</p>
+                <p style="text-indent: 24px;">Căn cứ Điều 41, Điều 42 Luật Trách nhiệm bồi thường của Nhà nước năm 2017;</p>
+                <p style="text-indent: 24px;">Sau khi tiếp nhận và kiểm tra hồ sơ yêu cầu bồi thường (Vụ việc: <strong>${gqE(selectedMraClaim.code)}</strong>), Cơ quan giải quyết bồi thường thông báo và yêu cầu Ông/Bà thực hiện bổ sung các nội dung, tài liệu sau đây:</p>
+                <div style="margin: 15px 0;">${items}</div>
+                <p style="text-indent: 24px;">Trong thời hạn 15 ngày làm việc kể từ ngày nhận được Thông báo này, đề nghị Ông/Bà gửi các tài liệu bổ sung về Cơ quan giải quyết bồi thường.</p>
+                <table style="width: 100%; margin-top: 50px;">
+                    <tr>
+                        <td style="width: 50%; vertical-align: top; font-size: 12pt;">
+                            <div class="bold italic">Nơi nhận:</div>
+                            <div>- Như trên;</div>
+                            <div>- Lưu: VT, HS.</div>
+                        </td>
+                        <td class="text-center" style="width: 50%; vertical-align: top;">
+                            <div class="bold">CỤC TRƯỞNG</div>
+                            <div class="italic">(Ký, ghi rõ họ tên và đóng dấu)</div>
+                            <div style="height: 80px;"></div>
+                            <div class="bold">LÊ HOÀNG NAM</div>
+                        </td>
+                    </tr>
+                </table>
+            ` + endHtml);
+            newWindow.document.close();
+        }
+
+        function downloadMau03GeneratedFile() {
+            previewMau03InNewWindow();
+        }
+
+        function goToMraStep1() {
+            // Container resize
+            const container = document.getElementById('modalRequireAdditionContainer');
+            if (container) {
+                container.style.width = '850px';
+                container.style.maxWidth = '96%';
+                container.style.height = 'auto';
+                container.style.maxHeight = '92vh';
+            }
+
+            // Stepper badges
+            const b1 = document.getElementById('mraStep1Badge');
+            const t1 = document.getElementById('mraStep1Tab');
+            const b2 = document.getElementById('mraStep2Badge');
+            const t2 = document.getElementById('mraStep2Tab');
+
+            if (b1) { b1.style.background = '#2563eb'; b1.innerHTML = '1'; }
+            if (t1) { t1.style.color = '#2563eb'; }
+            if (b2) { b2.style.background = '#cbd5e1'; b2.style.color = '#475569'; }
+            if (t2) { t2.style.color = '#64748b'; }
+
+            // Bodies
+            const body1 = document.getElementById('mraStep1Body');
+            const body2 = document.getElementById('mraStep2Body');
+            if (body1) body1.style.display = 'block';
+            if (body2) body2.style.display = 'none';
+
+            // Footer buttons
+            const btnNext = document.getElementById('mraBtnNextStep');
+            const btnBack = document.getElementById('mraBtnBackStep1');
+            const btnSubmitOnline = document.getElementById('mraBtnSubmitOnline');
+
+            if (btnNext) btnNext.style.display = 'inline-flex';
+            if (btnBack) btnBack.style.display = 'none';
+            if (btnSubmitOnline) btnSubmitOnline.style.display = 'none';
+        }
+
+        function goToMraStep2() {
+            // Validation
+            let isValid = true;
+            let firstErrEl = null;
+
+            const docNumber = document.getElementById('mraDocNumber');
+            if (!docNumber.value.trim()) {
+                docNumber.classList.add('is-invalid');
+                document.getElementById('mraDocNumberError').style.display = 'block';
+                isValid = false;
+                if (!firstErrEl) firstErrEl = docNumber;
+            } else {
+                docNumber.classList.remove('is-invalid');
+                document.getElementById('mraDocNumberError').style.display = 'none';
+            }
+
+            const docDate = document.getElementById('mraDocDate');
+            if (!docDate.value.trim()) {
+                docDate.classList.add('is-invalid');
+                document.getElementById('mraDocDateError').style.display = 'block';
+                isValid = false;
+                if (!firstErrEl) firstErrEl = docDate;
+            } else {
+                docDate.classList.remove('is-invalid');
+                document.getElementById('mraDocDateError').style.display = 'none';
+            }
+
+            const reason = document.getElementById('mraContentReason');
+            if (!reason.value.trim()) {
+                reason.classList.add('is-invalid');
+                document.getElementById('mraContentReasonError').style.display = 'block';
+                isValid = false;
+                if (!firstErrEl) firstErrEl = reason;
+            } else {
+                reason.classList.remove('is-invalid');
+                document.getElementById('mraContentReasonError').style.display = 'none';
+            }
+
+            if (!mraCurrentFile) {
+                document.getElementById('mraDocFileError').style.display = 'block';
+                isValid = false;
+                if (!firstErrEl) firstErrEl = document.getElementById('mraFileEmptyState');
+            } else {
+                document.getElementById('mraDocFileError').style.display = 'none';
+            }
+
+            const officerRoom = document.getElementById('mraOfficerRoomSelect');
+            if (!officerRoom.value) {
+                officerRoom.classList.add('is-invalid');
+                document.getElementById('mraOfficerRoomError').style.display = 'block';
+                isValid = false;
+                if (!firstErrEl) firstErrEl = officerRoom;
+            } else {
+                officerRoom.classList.remove('is-invalid');
+                document.getElementById('mraOfficerRoomError').style.display = 'none';
+            }
+
+            const officerAgency = document.getElementById('mraOfficerAgencySelect');
+            if (!officerAgency.value) {
+                officerAgency.classList.add('is-invalid');
+                document.getElementById('mraOfficerAgencyError').style.display = 'block';
+                isValid = false;
+                if (!firstErrEl) firstErrEl = officerAgency;
+            } else {
+                officerAgency.classList.remove('is-invalid');
+                document.getElementById('mraOfficerAgencyError').style.display = 'none';
+            }
+
+            if (!isValid) {
+                if (firstErrEl && typeof firstErrEl.focus === 'function') firstErrEl.focus();
+                showToast('Vui lòng hoàn tất các trường thông tin bắt buộc trước khi chuyển sang bước đặt chữ ký!', 'warning');
+                return;
+            }
+
+            // Populate Step 2 A4 Document
+            document.getElementById('mraA4DocNumber').innerText = docNumber.value.trim();
+            document.getElementById('mraA4DocDate').innerText = `Hà Nội, ngày ${docDate.value.trim()}`;
+            document.getElementById('mraA4NYC').innerText = selectedMraClaim.nyc || '--';
+            document.getElementById('mraA4Address').innerText = selectedMraClaim.address || 'Hà Nội';
+            document.getElementById('mraA4ClaimCode').innerText = selectedMraClaim.code || '--';
+            document.getElementById('mraA4ReceivedDate').innerText = selectedMraClaim.createdDate || selectedMraClaim.ngayTiepNhan || '01/10/2026';
+
+            // Items in A4
+            const lines = reason.value.trim().split('\n').filter(l => l.trim());
+            document.getElementById('mraA4AdditionItems').innerHTML = lines.map((line, idx) => `
+                <div style="margin-bottom:6px;"><strong>${idx + 1}.</strong> ${gqE(line.trim().replace(/^\\d+[\\.\\-\\)]\\s*/, ''))}</div>
+            `).join('');
+
+            // Officers info
+            const roomName = officerRoom.options[officerRoom.selectedIndex].text.split('-')[0].trim();
+            const agencyName = officerAgency.options[officerAgency.selectedIndex].text.split('-')[0].trim();
+            const agencyTitle = officerAgency.options[officerAgency.selectedIndex].text.includes('Cục trưởng') ? 'CỤC TRƯỞNG' : 'PHÓ CỤC TRƯỞNG';
+
+            document.getElementById('mraA4SignerName').innerText = agencyName.toUpperCase();
+            document.getElementById('mraA4SignerTitle').innerText = agencyTitle;
+
+            document.getElementById('mraSigBoxRoomOfficer').innerText = roomName;
+            document.getElementById('mraSigBoxAgencyOfficer').innerText = agencyName;
+            document.getElementById('mraPanelRoomName').innerText = roomName;
+            document.getElementById('mraPanelAgencyName').innerText = agencyName;
+
+            // Expand modal
+            const container = document.getElementById('modalRequireAdditionContainer');
+            container.style.width = '95vw';
+            container.style.maxWidth = '1400px';
+            container.style.height = '92vh';
+            container.style.maxHeight = '92vh';
+
+            // Stepper
+            document.getElementById('mraStep1Badge').style.background = '#10b981';
+            document.getElementById('mraStep1Badge').innerHTML = '<i class="fa-solid fa-check"></i>';
+            document.getElementById('mraStep1Tab').style.color = '#10b981';
+
+            document.getElementById('mraStep2Badge').style.background = '#2563eb';
+            document.getElementById('mraStep2Badge').style.color = '#fff';
+            document.getElementById('mraStep2Tab').style.color = '#2563eb';
+
+            // Bodies
+            document.getElementById('mraStep1Body').style.display = 'none';
+            document.getElementById('mraStep2Body').style.display = 'flex';
+
+            // Footers
+            document.getElementById('mraBtnNextStep').style.display = 'none';
+            document.getElementById('mraBtnBackStep1').style.display = 'inline-flex';
+            document.getElementById('mraBtnSubmitOnline').style.display = 'inline-flex';
+
+            // Setup draggable boxes
+            initMraDragAndDrop();
+            applySigBoxCoords();
+        }
+
+        function initMraDragAndDrop() {
+            const page = document.getElementById('mraA4Page');
+            const boxRoom = document.getElementById('mraSigBoxRoom');
+            const boxAgency = document.getElementById('mraSigBoxAgency');
+
+            function attachDrag(box, key) {
+                box.onmousedown = function(e) {
+                    if (e.button !== 0) return;
+                    e.preventDefault();
+                    mraIsDragging = true;
+                    mraDragTarget = { box, key };
+                    const rect = box.getBoundingClientRect();
+                    mraDragOffset.x = e.clientX - rect.left;
+                    mraDragOffset.y = e.clientY - rect.top;
+                    box.classList.add('dragging');
+                };
+            }
+
+            attachDrag(boxRoom, 'room');
+            attachDrag(boxAgency, 'agency');
+
+            if (!window.mraDragListenerInitialized) {
+                window.mraDragListenerInitialized = true;
+                document.addEventListener('mousemove', function(e) {
+                    if (!mraIsDragging || !mraDragTarget) return;
+                    const pageEl = document.getElementById('mraA4Page');
+                    if (!pageEl) return;
+                    const pageRect = pageEl.getBoundingClientRect();
+
+                    let newLeft = e.clientX - pageRect.left - mraDragOffset.x;
+                    let newTop = e.clientY - pageRect.top - mraDragOffset.y;
+
+                    // Bounds
+                    const maxLeft = pageEl.clientWidth - mraDragTarget.box.offsetWidth;
+                    const maxHeight = pageEl.clientHeight - mraDragTarget.box.offsetHeight;
+
+                    newLeft = Math.max(10, Math.min(newLeft, maxLeft - 10));
+                    newTop = Math.max(10, Math.min(newTop, maxHeight - 10));
+
+                    mraSigCoords[mraDragTarget.key].x = Math.round(newLeft);
+                    mraSigCoords[mraDragTarget.key].y = Math.round(newTop);
+
+                    applySigBoxCoords();
+                });
+
+                document.addEventListener('mouseup', function() {
+                    if (mraIsDragging && mraDragTarget) {
+                        mraDragTarget.box.classList.remove('dragging');
+                        mraIsDragging = false;
+                        mraDragTarget = null;
+                    }
+                });
+            }
+        }
+
+        function applySigBoxCoords() {
+            const boxRoom = document.getElementById('mraSigBoxRoom');
+            const boxAgency = document.getElementById('mraSigBoxAgency');
+
+            if (boxRoom) {
+                boxRoom.style.left = mraSigCoords.room.x + 'px';
+                boxRoom.style.top = mraSigCoords.room.y + 'px';
+                const lbl = document.getElementById('mraCoordRoomLabel');
+                const pnl = document.getElementById('mraPanelRoomCoord');
+                if (lbl) lbl.innerText = `X: ${mraSigCoords.room.x}, Y: ${mraSigCoords.room.y}`;
+                if (pnl) pnl.innerText = `Tọa độ: (${mraSigCoords.room.x}, ${mraSigCoords.room.y})`;
+            }
+
+            if (boxAgency) {
+                boxAgency.style.left = mraSigCoords.agency.x + 'px';
+                boxAgency.style.top = mraSigCoords.agency.y + 'px';
+                const lbl = document.getElementById('mraCoordAgencyLabel');
+                const pnl = document.getElementById('mraPanelAgencyCoord');
+                if (lbl) lbl.innerText = `X: ${mraSigCoords.agency.x}, Y: ${mraSigCoords.agency.y}`;
+                if (pnl) pnl.innerText = `Tọa độ: (${mraSigCoords.agency.x}, ${mraSigCoords.agency.y})`;
+            }
+        }
+
+        function placeSigBox(key, x, y) {
+            if (mraSigCoords[key]) {
+                mraSigCoords[key].x = x;
+                mraSigCoords[key].y = y;
+                applySigBoxCoords();
+            }
+        }
+
+        function autoPlaceSignaturesStandard() {
+            mraSigCoords.room = { x: 60, y: 860 };
+            mraSigCoords.agency = { x: 480, y: 860 };
+            applySigBoxCoords();
+            showToast('Đã tự động căn vị trí chữ ký theo đúng chuẩn thể thức Nghị định 30!', 'success');
+        }
+
+        function submitMraOffline() {
+            if (!selectedMraClaim) return;
+
+            let isValid = true;
+            let firstErr = null;
+            const docNo = document.getElementById('mraDocNumber');
+            const docDate = document.getElementById('mraDocDate');
+            const reason = document.getElementById('mraContentReason');
+
+            if (!docNo.value.trim()) {
+                docNo.classList.add('is-invalid');
+                document.getElementById('mraDocNumberError').style.display = 'block';
+                isValid = false;
+                if (!firstErr) firstErr = docNo;
+            }
+            if (!docDate.value.trim()) {
+                docDate.classList.add('is-invalid');
+                document.getElementById('mraDocDateError').style.display = 'block';
+                isValid = false;
+                if (!firstErr) firstErr = docDate;
+            }
+            if (!reason.value.trim()) {
+                reason.classList.add('is-invalid');
+                document.getElementById('mraContentReasonError').style.display = 'block';
+                isValid = false;
+                if (!firstErr) firstErr = reason;
+            }
+            if (!mraOfflineFile) {
+                document.getElementById('mraOfflineFileError').style.display = 'block';
+                isValid = false;
+                if (!firstErr) firstErr = document.getElementById('mraOfflineUploadPrompt');
+            }
+
+            if (!isValid) {
+                if (firstErr && typeof firstErr.focus === 'function') firstErr.focus();
+                showToast('Vui lòng nhập đầy đủ thông tin và tải lên tệp PDF đã ký!', 'warning');
+                return;
+            }
+
+            const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : "Nguyễn Văn Cán Bộ";
+            const todayStr = new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
+
+            selectedMraClaim.rejectType = 'Yêu cầu bổ sung';
+            selectedMraClaim.rejectReason = reason.value.trim();
+            selectedMraClaim.rejectDate = todayStr;
+            selectedMraClaim.rejectOfficer = currentOfficer;
+            selectedMraClaim.signingMethod = 'offline';
+            selectedMraClaim.docNumber = docNo.value.trim();
+            selectedMraClaim.docDate = docDate.value.trim();
+            selectedMraClaim.signedFile = mraOfflineFile.name;
+
+            if (!selectedMraClaim.rejectionLog) selectedMraClaim.rejectionLog = [];
+            selectedMraClaim.rejectionLog.push({
+                date: todayStr,
+                officer: currentOfficer,
+                action: 'Yêu cầu bổ sung',
+                reason: reason.value.trim(),
+                method: 'Ký ngoài',
+                file: mraOfflineFile.name
+            });
+
+            closeRequireAdditionModal();
+
+            if (typeof gqSaveData === 'function') {
+                gqSaveData(selectedMraClaim, { 
+                    additionRequestContent: reason.value.trim(),
+                    status: 'Yêu cầu bổ sung',
+                    docNumber: docNo.value.trim(),
+                    docDate: docDate.value.trim()
+                });
+            }
+            if (typeof gqAfterSubmit === 'function') {
+                selectedMraClaim.status = 'Yêu cầu bổ sung';
+                if (typeof renderClaimsTable === 'function') renderClaimsTable();
+                showToast(`Đã ban hành văn bản Yêu cầu bổ sung hồ sơ (Ký ngoài) cho vụ việc [${selectedMraClaim.code}]!`, 'success');
+            } else if (typeof changeStatus === 'function') {
+                changeStatus(selectedMraClaim.id, 'Yêu cầu bổ sung', `Đã ban hành văn bản Yêu cầu bổ sung hồ sơ (Ký ngoài) cho vụ việc [${selectedMraClaim.code}]!`);
+            }
+        }
+
+        function submitMraOnline() {
+            if (!selectedMraClaim) return;
+            const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : "Nguyễn Văn Cán Bộ";
+            const todayStr = new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
+
+            const docNo = document.getElementById('mraDocNumber').value.trim();
+            const docDate = document.getElementById('mraDocDate').value.trim();
+            const reason = document.getElementById('mraContentReason').value.trim();
+            const officerRoom = document.getElementById('mraOfficerRoomSelect').value;
+            const officerAgency = document.getElementById('mraOfficerAgencySelect').value;
+
+            const trinhDuyetData = {
+                type: 'Yêu cầu bổ sung',
+                docNumber: docNo,
+                docDate: docDate,
+                reason: reason,
+                file: mraCurrentFile,
+                officerRoom: officerRoom,
+                officerAgency: officerAgency,
+                sigCoords: {
+                    room: { ...mraSigCoords.room },
+                    agency: { ...mraSigCoords.agency }
+                },
+                submitDate: todayStr,
+                submitOfficer: currentOfficer
+            };
+
+            selectedMraClaim.trinhDuyet = trinhDuyetData;
+            selectedMraClaim.rejectType = 'Yêu cầu bổ sung';
+            selectedMraClaim.rejectReason = reason;
+
+            closeRequireAdditionModal();
+
+            if (typeof gqSubmit === 'function') {
+                const res = gqSubmit(selectedMraClaim, 'Yêu cầu bổ sung', reason, [], { 
+                    assignee: officerRoom, 
+                    draftDoc: { source: 'generated', generatedName: mraCurrentFile ? mraCurrentFile.name : 'Mau_03_BTNN.pdf' }, 
+                    resultStatus: 'Chờ duyệt' 
+                });
+                if (typeof gqSaveData === 'function') {
+                    gqSaveData(selectedMraClaim, { additionRequestContent: reason, trinhDuyet: trinhDuyetData });
+                }
+                if (typeof gqAfterSubmit === 'function') {
+                    gqAfterSubmit(selectedMraClaim, 'Yêu cầu bổ sung');
+                    return;
+                }
+            }
+
+            if (typeof changeStatus === 'function') {
+                changeStatus(selectedMraClaim.id, 'Chờ duyệt', `Đã trình Lãnh đạo phê duyệt văn bản Yêu cầu bổ sung hồ sơ vụ việc [${selectedMraClaim.code}]. Hồ sơ chuyển sang trạng thái [Chờ duyệt]!`);
+            }
         }
         function gqSubmitSupplement() {
             const claim = gqClaim(gqState.claimId);

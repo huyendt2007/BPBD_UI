@@ -126,6 +126,31 @@
             padding: 12px;
         }
 
+        /* Khối Người yêu cầu: panel chia nhóm */
+        .nyc-panel {
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            background: #fbfcfe;
+            padding: 4px 18px 6px;
+            margin-bottom: 20px;
+        }
+        .nyc-sub {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: .3px;
+            margin: 14px 0 10px;
+            padding-bottom: 6px;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+        .nyc-sub i { color: #2563eb; width: 14px; text-align: center; }
+        .nyc-span-2 { grid-column: span 2; }
+        .nyc-span-full { grid-column: 1 / -1; }
+        @media (max-width: 1100px) { .nyc-span-2 { grid-column: auto; } }
         .nyc-type-radios {
             align-items: center;
             display: flex;
@@ -468,82 +493,99 @@
                 </div>
 
                 <div class="info-group-title">Thông tin người yêu cầu</div>
-                <div class="grid-3-cols">
-                    <!-- Tư cách người yêu cầu bồi thường: Danh mục DM_26 (đứng trước Loại người yêu cầu) -->
-                    <div class="form-group">
-                        <span class="form-label">Tư cách người yêu cầu bồi thường<span class="required">*</span></span>
-                        <select id="formRequesterRole" class="form-control" onchange="onRequesterRoleChange()"></select>
-                    </div>
-                    <!-- Loại người yêu cầu: ràng buộc theo Tư cách (TCNYC_03 -> Tổ chức; TCNYC_02, TCNYC_06, TCNYC_04 -> Cá nhân; khác cho phép chọn) -->
-                    <div class="form-group">
-                        <span class="form-label">Loại người yêu cầu<span class="required">*</span></span>
-                        <div class="nyc-type-radios" id="formNycTypeGroup">
-                            <label><input type="radio" name="formNycType" id="formNycTypeCaNhan" value="Cá nhân" checked onchange="toggleNycTypeFields()"> Cá nhân</label>
-                            <label><input type="radio" name="formNycType" id="formNycTypeToChuc" value="Tổ chức" onchange="toggleNycTypeFields()"> Tổ chức</label>
+                <!-- Khối Người yêu cầu chia 04 nhóm: Đối tượng yêu cầu / Thông tin định danh / Thông tin liên hệ / Địa chỉ -->
+                <div class="nyc-panel">
+                    <div class="nyc-sub"><i class="fa-solid fa-user-tag"></i> Đối tượng yêu cầu</div>
+                    <div class="grid-3-cols">
+                        <!-- Loại người yêu cầu: Cá nhân / Tổ chức (mặc định Cá nhân), đứng trước Tư cách -->
+                        <div class="form-group">
+                            <span class="form-label">Loại người yêu cầu<span class="required">*</span></span>
+                            <div class="nyc-type-radios" id="formNycTypeGroup">
+                                <label><input type="radio" name="formNycType" id="formNycTypeCaNhan" value="Cá nhân" checked onchange="onNycTypeChange()"> Cá nhân</label>
+                                <label><input type="radio" name="formNycType" id="formNycTypeToChuc" value="Tổ chức" onchange="onNycTypeChange()"> Tổ chức</label>
+                            </div>
+                        </div>
+                        <!-- Tư cách người yêu cầu bồi thường: Danh mục DM_26 lọc theo Loại người yêu cầu (Cá nhân: bỏ TCNYC_03; Tổ chức: TCNYC_01, TCNYC_03, TCNYC_05) -->
+                        <div class="form-group nyc-span-2">
+                            <span class="form-label">Tư cách người yêu cầu bồi thường<span class="required">*</span></span>
+                            <select id="formRequesterRole" class="form-control" onchange="onRequesterRoleChange()"></select>
+                            <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <span class="form-label"><span id="formRequesterLabel">Họ và tên</span><span class="required">*</span></span>
-                        <input id="formRequester" class="form-control" placeholder="Nhập họ và tên...">
-                        <div class="error-message">Đây là trường bắt buộc</div>
+
+                    <div class="nyc-sub"><i class="fa-solid fa-id-card"></i> Thông tin định danh</div>
+                    <div class="grid-3-cols">
+                        <div class="form-group">
+                            <span class="form-label"><span id="formRequesterLabel">Họ và tên</span><span class="required">*</span></span>
+                            <input id="formRequester" class="form-control" placeholder="Nhập họ và tên...">
+                            <div class="error-message">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="form-group nyc-ca-nhan">
+                            <span class="form-label">Loại giấy tờ thân nhân</span>
+                            <select id="formNycDocType" class="form-control">
+                                <option value="">-- Chọn loại giấy tờ --</option>
+                            </select>
+                        </div>
+                        <div class="form-group nyc-ca-nhan">
+                            <span class="form-label">Số giấy tờ thân nhân</span>
+                            <input id="formNycDocNo" class="form-control" placeholder="Nhập số giấy tờ thân nhân...">
+                        </div>
+                        <div class="form-group nyc-to-chuc" style="display:none;">
+                            <span class="form-label">Mã số tổ chức</span>
+                            <input id="formNycOrgCode" class="form-control" placeholder="Mã số doanh nghiệp / mã số thuế / mã số khác...">
+                        </div>
                     </div>
-                    <div class="form-group nyc-ca-nhan">
-                        <span class="form-label">Loại giấy tờ thân nhân</span>
-                        <select id="formNycDocType" class="form-control">
-                            <option value="">-- Chọn loại giấy tờ --</option>
-                        </select>
+
+                    <div class="nyc-sub"><i class="fa-solid fa-phone"></i> Thông tin liên hệ</div>
+                    <div class="grid-3-cols">
+                        <div class="form-group">
+                            <span class="form-label">Số điện thoại<span class="required">*</span></span>
+                            <input id="formPhone" class="form-control" placeholder="Nhập số điện thoại...">
+                            <div class="error-message" id="formPhoneError">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="form-group">
+                            <span class="form-label">Email</span>
+                            <input id="formEmail" class="form-control" placeholder="Nhập email...">
+                            <div class="error-message" id="formEmailError">Email không đúng định dạng.</div>
+                        </div>
                     </div>
-                    <div class="form-group nyc-ca-nhan">
-                        <span class="form-label">Số giấy tờ thân nhân</span>
-                        <input id="formNycDocNo" class="form-control" placeholder="Nhập số giấy tờ thân nhân...">
-                    </div>
-                    <div class="form-group nyc-to-chuc" style="display:none;">
-                        <span class="form-label">Mã số tổ chức</span>
-                        <input id="formNycOrgCode" class="form-control" placeholder="Mã số doanh nghiệp / mã số thuế / mã số khác...">
-                    </div>
-                    <div class="form-group">
-                        <span class="form-label">Số điện thoại<span class="required">*</span></span>
-                        <input id="formPhone" class="form-control" placeholder="Nhập số điện thoại...">
-                        <div class="error-message" id="formPhoneError">Đây là trường bắt buộc</div>
-                    </div>
-                    <div class="form-group">
-                        <span class="form-label">Email</span>
-                        <input id="formEmail" class="form-control" placeholder="Nhập email...">
-                        <div class="error-message" id="formEmailError">Email không đúng định dạng.</div>
-                    </div>
-                    <!-- Quốc gia: Danh mục DM_09, mặc định Việt Nam; Tỉnh/Thành phố, Phường/Xã là combobox khi Việt Nam, ô nhập tự do khi khác Việt Nam -->
-                    <div class="form-group">
-                        <span class="form-label">Quốc gia<span class="required">*</span></span>
-                        <select id="formCountry" class="form-control" onchange="onCountryChange()"></select>
-                    </div>
-                    <!-- Màn Xem chi tiết: Địa chỉ 01 dòng [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố] -->
-                    <div class="form-group nyc-addr-view" style="display:none; grid-column: span 2;">
-                        <span class="form-label">Địa chỉ</span>
-                        <input id="formAddressFull" class="form-control" disabled>
-                    </div>
-                    <div class="form-group nyc-addr-edit">
-                        <span class="form-label">Tỉnh/Thành phố<span class="required">*</span></span>
-                        <input id="formCity" class="form-control" list="cityOptions" placeholder="Gõ Mã hoặc Tên Tỉnh/Thành phố..." oninput="updateWardOptions()">
-                        <datalist id="cityOptions">
-                            <option value="01 - Thành phố Hà Nội"></option>
-                            <option value="79 - Thành phố Hồ Chí Minh"></option>
-                            <option value="48 - Thành phố Đà Nẵng"></option>
-                            <option value="31 - Thành phố Hải Phòng"></option>
-                            <option value="27 - Tỉnh Bắc Ninh"></option>
-                            <option value="56 - Tỉnh Khánh Hòa"></option>
-                        </datalist>
-                        <div class="error-message">Đây là trường bắt buộc</div>
-                    </div>
-                    <div class="form-group nyc-addr-edit">
-                        <span class="form-label">Phường/Xã<span class="required">*</span></span>
-                        <input id="formWard" class="form-control" list="wardOptions" placeholder="Vui lòng chọn Tỉnh/Thành phố trước" disabled>
-                        <datalist id="wardOptions"></datalist>
-                        <div class="error-message">Đây là trường bắt buộc</div>
-                    </div>
-                    <div class="form-group nyc-addr-edit">
-                        <span class="form-label">Địa chỉ chi tiết<span class="required">*</span></span>
-                        <input id="formAddress" class="form-control" placeholder="Nhập địa chỉ chi tiết...">
-                        <div class="error-message">Đây là trường bắt buộc</div>
+
+                    <div class="nyc-sub"><i class="fa-solid fa-location-dot"></i> Địa chỉ</div>
+                    <div class="grid-3-cols">
+                        <!-- Quốc gia: Danh mục DM_09, mặc định Việt Nam; Tỉnh/Thành phố, Phường/Xã là combobox khi Việt Nam, ô nhập tự do khi khác Việt Nam -->
+                        <div class="form-group">
+                            <span class="form-label">Quốc gia<span class="required">*</span></span>
+                            <select id="formCountry" class="form-control" onchange="onCountryChange()"></select>
+                        </div>
+                        <!-- Màn Xem chi tiết: Địa chỉ 01 dòng [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố] -->
+                        <div class="form-group nyc-addr-view nyc-span-2" style="display:none;">
+                            <span class="form-label">Địa chỉ</span>
+                            <input id="formAddressFull" class="form-control" disabled>
+                        </div>
+                        <div class="form-group nyc-addr-edit">
+                            <span class="form-label">Tỉnh/Thành phố<span class="required">*</span></span>
+                            <input id="formCity" class="form-control" list="cityOptions" placeholder="Gõ Mã hoặc Tên Tỉnh/Thành phố..." oninput="updateWardOptions()">
+                            <datalist id="cityOptions">
+                                <option value="01 - Thành phố Hà Nội"></option>
+                                <option value="79 - Thành phố Hồ Chí Minh"></option>
+                                <option value="48 - Thành phố Đà Nẵng"></option>
+                                <option value="31 - Thành phố Hải Phòng"></option>
+                                <option value="27 - Tỉnh Bắc Ninh"></option>
+                                <option value="56 - Tỉnh Khánh Hòa"></option>
+                            </datalist>
+                            <div class="error-message">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="form-group nyc-addr-edit">
+                            <span class="form-label">Phường/Xã<span class="required">*</span></span>
+                            <input id="formWard" class="form-control" list="wardOptions" placeholder="Vui lòng chọn Tỉnh/Thành phố trước" disabled>
+                            <datalist id="wardOptions"></datalist>
+                            <div class="error-message">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="form-group nyc-addr-edit nyc-span-full">
+                            <span class="form-label">Địa chỉ chi tiết<span class="required">*</span></span>
+                            <input id="formAddress" class="form-control" placeholder="Nhập số nhà, tên đường, thôn/xóm...">
+                            <div class="error-message">Đây là trường bắt buộc</div>
+                        </div>
                     </div>
                 </div>
 
@@ -1399,10 +1441,10 @@
         const NYC_CA_NHAN = BTNN_WF.NYC_TYPES.CA_NHAN;
         const NYC_TO_CHUC = BTNN_WF.NYC_TYPES.TO_CHUC;
         const COUNTRY_VN = "Việt Nam";
-        // Tư cách người yêu cầu bồi thường (DM_26, đủ 06 giá trị) và Quốc gia (DM_09)
+        // Tư cách người yêu cầu bồi thường (DM_26 lọc theo Loại người yêu cầu) và Quốc gia (DM_09)
         function initNycOptions() {
             const toOpts = list => list.map(v => `<option value="${escapeAttr(v)}">${escapeHtml(v)}</option>`).join("");
-            document.getElementById("formRequesterRole").innerHTML = toOpts(BTNN_WF.getNycRoles().map(r => r.name));
+            fillRequesterRoleOptions();
             document.getElementById("formCountry").innerHTML = toOpts(BTNN_WF.getCountries());
             // Loại giấy tờ thân nhân: danh mục DM_10 trừ Mã số thuế
             BTNN_WF.fillPersonalDocTypeSelect("formNycDocType", "-- Chọn loại giấy tờ --");
@@ -1417,12 +1459,23 @@
             document.getElementById("formNycTypeToChuc").checked = value === NYC_TO_CHUC;
             document.getElementById("formNycTypeCaNhan").checked = value !== NYC_TO_CHUC;
         }
-        // Ràng buộc Loại người yêu cầu theo Tư cách: khóa radio khi bị ràng buộc
+        // Danh sách Tư cách theo Loại người yêu cầu; giữ Tư cách đang chọn nếu còn hợp lệ, không hợp lệ thì về trống (bắt chọn lại)
+        function fillRequesterRoleOptions() {
+            const sel = document.getElementById("formRequesterRole");
+            const current = sel.value;
+            const names = BTNN_WF.nycRolesForType(getNycType()).map(r => r.name);
+            sel.innerHTML = `<option value="">-- Chọn tư cách người yêu cầu --</option>` + names.map(v => `<option value="${escapeAttr(v)}">${escapeHtml(v)}</option>`).join("");
+            sel.value = names.includes(current) ? current : "";
+        }
+        // Loại người yêu cầu không bị khóa (chỉ khóa ở màn Xem chi tiết); cập nhật danh sách Tư cách và các trường phụ thuộc
         function applyNycTypeConstraint() {
-            const forced = BTNN_WF.nycTypeConstraint(getValue("formRequesterRole"));
-            if (forced) setNycType(forced);
-            ["formNycTypeCaNhan", "formNycTypeToChuc"].forEach(id => { document.getElementById(id).disabled = isFormReadOnly || !!forced; });
+            ["formNycTypeCaNhan", "formNycTypeToChuc"].forEach(id => { document.getElementById(id).disabled = isFormReadOnly; });
+            if (!isFormReadOnly) fillRequesterRoleOptions();
             toggleNycTypeFields();
+            toggleNbthBlock();
+        }
+        function onNycTypeChange() {
+            applyNycTypeConstraint();
         }
         // Nhãn tên và trường theo Loại người yêu cầu: Cá nhân (Họ và tên, giấy tờ thân nhân) / Tổ chức (Tên tổ chức, Mã số tổ chức)
         function toggleNycTypeFields() {
@@ -1433,7 +1486,6 @@
             document.querySelectorAll("#formView .nyc-to-chuc").forEach(el => { el.style.display = isOrg ? "" : "none"; });
         }
         function onRequesterRoleChange() {
-            applyNycTypeConstraint();
             toggleNbthBlock();
         }
         // Quốc gia Việt Nam: Tỉnh/Thành phố, Phường/Xã là combobox; quốc gia khác: ô nhập tự do
@@ -1493,7 +1545,7 @@
         // Thông tin người yêu cầu đọc từ form (tên trường dùng chung với hồ sơ luồng BTNN_WF)
         function readNycFields() {
             const role = getValue("formRequesterRole");
-            const type = BTNN_WF.nycTypeConstraint(role) || getNycType();
+            const type = getNycType();
             const isOrg = type === NYC_TO_CHUC;
             const orgRole = BTNN_WF.isNbthOrgRole(role);
             return {
@@ -2091,6 +2143,9 @@
                 statusBadgeEl.innerHTML = claim ? renderStatusBadge(claim.status || "Chờ phân công") : `<span class="badge badge-draft">Mới tạo</span>`;
             }
 
+            // Loại người yêu cầu (đứng trước Tư cách): dữ liệu cũ suy ra theo Tư cách, không có giá trị coi là Cá nhân; danh sách Tư cách lọc theo Loại
+            setNycType(claim ? BTNN_WF.nycTypeOf(claim) : NYC_CA_NHAN);
+            fillRequesterRoleOptions();
             if (isReadOnly && claim) {
                 // MH03: hiển thị đúng dữ liệu bản ghi (kể cả Hình thức tiếp nhận ngoài 02 giá trị của form Tiếp nhận mới)
                 setSelectDisplay("formRequestType", claim.requestType || REQUEST_TYPE_YCBT);
@@ -2107,8 +2162,6 @@
             if (isReadOnly && claim && claim.nbth && claim.nbth.docType) setSelectDisplay("nbthDocType", BTNN_WF.normalizePersonalDocType(claim.nbth.docType));
             setValue("nbthOrgName", claim ? (claim.nbthOrgName || "") : "");
             setValue("nbthOrgCode", claim ? (claim.nbthOrgCode || "") : "");
-            // Loại người yêu cầu: dữ liệu cũ không có giá trị coi là Cá nhân; ràng buộc theo Tư cách
-            setNycType(claim ? BTNN_WF.nycTypeOf(claim) : NYC_CA_NHAN);
             applyNycTypeConstraint();
             if (isReadOnly && claim && claim.nycDocType) setSelectDisplay("formNycDocType", BTNN_WF.normalizePersonalDocType(claim.nycDocType)); else setValue("formNycDocType", claim ? (claim.nycDocType || "") : "");
             setValue("formNycDocNo", claim ? (claim.nycDocNo || "") : "");
@@ -2180,7 +2233,7 @@
 
         function saveReceptionInfo() {
             clearFormValidation();
-            const requiredIds = ["formRequestType", "formFieldGroup", "formRequester", "formPhone", "formCity", "formWard", "formAddress"];
+            const requiredIds = ["formRequestType", "formFieldGroup", "formRequesterRole", "formRequester", "formPhone", "formCity", "formWard", "formAddress"];
             setText("formPhoneError", "Đây là trường bắt buộc");
             // Khối Người bị thiệt hại tại Tiếp nhận hồ sơ: không bắt buộc trường nào (bắt buộc tại Nhập liệu hồ sơ vụ việc)
             let firstInvalid = null;

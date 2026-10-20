@@ -466,6 +466,12 @@
         if (NYC_ROLE_FORCE_CA_NHAN.includes(code)) return NYC_TYPES.CA_NHAN;
         return '';
     }
+    // Danh sách Tư cách [{ code, name }] theo Loại người yêu cầu (giữ thứ tự DM_26):
+    // Cá nhân: bỏ TCNYC_03; Tổ chức: bỏ TCNYC_02, TCNYC_06, TCNYC_04 (còn TCNYC_01, TCNYC_03, TCNYC_05)
+    function nycRolesForType(type) {
+        const excluded = type === NYC_TYPES.TO_CHUC ? NYC_ROLE_FORCE_CA_NHAN : NYC_ROLE_FORCE_TO_CHUC;
+        return getNycRoles().filter(r => !excluded.includes(r.code));
+    }
     // Loại người yêu cầu của bản ghi: theo ràng buộc Tư cách; dữ liệu cũ không có nycType coi là Cá nhân
     function nycTypeOf(rec) {
         if (!rec) return NYC_TYPES.CA_NHAN;
@@ -2162,7 +2168,7 @@
         getCurrentUserId, getCurrentUser, setCurrentUser,
         getFlowConfig, saveFlowConfig, resetFlowConfig, getNodeConfig, getLeaders, isLeaderOf, isUnitConfigured, findRootUnitByName,
         getRequestTypeCatalog, getRequestTypesForUser, getKtlReasons, xdAuthorityType, ensureClaimRecord,
-        NYC_TYPES, DEFAULT_NYC_ROLES, getNycRoles, nycRoleCode, nycRoleName, nycTypeConstraint, nycTypeOf, isNbthOrgRole, joinAddress, stripAdminCode, getCountries, isValidEmail,
+        NYC_TYPES, DEFAULT_NYC_ROLES, getNycRoles, nycRoleCode, nycRoleName, nycTypeConstraint, nycTypeOf, nycRolesForType, isNbthOrgRole, joinAddress, stripAdminCode, getCountries, isValidEmail,
         DEFAULT_PERSONAL_DOC_TYPES, getPersonalDocTypes, normalizePersonalDocType, fillPersonalDocTypeSelect,
         loadRecords, saveRecords, getRecord, upsertRecord, removeRecord, addHistory, nextCode, createPendingRecord,
         latestRoute, canEditAtReception, canAssign, markViewed, assignToUnit, assignToOfficers,

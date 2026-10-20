@@ -686,11 +686,10 @@ function nycTypeConstraint(role) {
     return '';
 }
 
-// Dữ liệu cũ không có nycType: coi là Cá nhân (trừ Tư cách ràng buộc Tổ chức)
+// Loại người yêu cầu của hồ sơ: suy ra theo Tư cách (TCNYC_03 → Tổ chức; TCNYC_02/06/04 → Cá nhân); khác theo nycType, không có coi là Cá nhân
 function nycTypeOf(item) {
     if (!item) return NYC_TYPE.CA_NHAN;
-    if (item.nycType === NYC_TYPE.TO_CHUC || item.nycType === NYC_TYPE.CA_NHAN) return item.nycType;
-    return nycTypeConstraint(item.nycRole) || NYC_TYPE.CA_NHAN;
+    return nycTypeConstraint(item.nycRole) || (item.nycType === NYC_TYPE.TO_CHUC ? NYC_TYPE.TO_CHUC : NYC_TYPE.CA_NHAN);
 }
 
 // Địa chỉ 01 dòng: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố] (bỏ phần trống)
@@ -705,7 +704,7 @@ function joinAddress(detail, ward, province) {
     return [detail, stripAdministrativeCode(ward), stripAdministrativeCode(province)].map(s => String(s || '').trim()).filter(Boolean).join(', ');
 }
 
-// Cột "Họ và tên người bị thiệt hại" trên lưới
+// Cột "Họ và tên người/Tổ chức bị thiệt hại" trên lưới và bộ lọc cùng tên
 function victimNameOf(item) {
     if (!item) return '-';
     if ((item.nycRole || NYC_ROLE.NBTH) === NYC_ROLE.NBTH) return item.nycName || '-';
@@ -731,7 +730,7 @@ const wardCatalog = {
     "Thành phố Hải Phòng": ["11359 - Phường Hồng Bàng", "11362 - Phường Ngô Quyền", "11365 - Phường Lê Chân", "11368 - Phường Hải An"]
 };
 
-// Nhãn nhận diện hồ sơ: Mã yêu cầu - Họ và tên người yêu cầu
+// Nhãn nhận diện hồ sơ: Mã hồ sơ - Họ và tên người yêu cầu
 function getCaseName(item) {
     return item ? `${item.code || ''} - ${item.nycName || 'Người yêu cầu'}` : '';
 }
@@ -758,8 +757,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (document.querySelector(sel)) flatpickr(sel, { dateFormat: "d/m/Y", allowInput: true });
     });
     // Loại giấy tờ thân nhân: danh mục DM_10 trừ Mã số thuế
-    BTNN_WF.fillPersonalDocTypeSelect('formNYCDocType');
-    BTNN_WF.fillPersonalDocTypeSelect('nbthDocType');
+    BTNN_WF.fillPersonalDocTypeSelect('formNYCDocType', '-- Chọn loại giấy tờ --');
+    BTNN_WF.fillPersonalDocTypeSelect('nbthDocType', '-- Chọn loại giấy tờ --');
 
     const params = new URLSearchParams(window.location.search);
     readOnlyView = params.get('readonly') === '1';
@@ -1120,16 +1119,20 @@ function handleNotifyMethodChange(method, scope = 'xd') {
 function toggleNbthBlock() {
     const role = document.getElementById('formNYCRole').value;
     const isOrgVictim = role === NYC_ROLE.TC_KE_THUA;
-    document.getElementById('nbthBlock').style.display = role !== NYC_ROLE.NBTH ? 'block' : 'none';
+    document.getElementById('nbthBlock').style.display = role && role !== NYC_ROLE.NBTH ? 'block' : 'none';
     document.getElementById('nbthOrgBlock').style.display = isOrgVictim ? 'grid' : 'none';
     document.getElementById('nbthPersonBlock').style.display = isOrgVictim ? 'none' : 'grid';
     document.getElementById('nbthBlockTitle').innerText = isOrgVictim ? 'THÔNG TIN TỔ CHỨC BỊ THIỆT HẠI ĐÃ CHẤM DỨT TỒN TẠI' : 'THÔNG TIN NGƯỜI BỊ THIỆT HẠI';
 }
 
-// Đổi Tư cách: áp ràng buộc Loại người yêu cầu và khối Người bị thiệt hại
+// Đổi Tư cách: cập nhật khối Người bị thiệt hại
 function onNycRoleChange() {
-    applyNycTypeConstraint();
     toggleNbthBlock();
+}
+
+// Đổi Loại người yêu cầu: lọc lại danh sách Tư cách (Tư cách không còn hợp lệ về trống) và các trường phụ thuộc
+function onNycTypeChange() {
+    applyNycTypeConstraint();
 }
 
 function getFormNycType() {
@@ -1137,21 +1140,29 @@ function getFormNycType() {
     return r ? r.value : NYC_TYPE.CA_NHAN;
 }
 
-// Khóa radio Loại người yêu cầu khi Tư cách ràng buộc (TCNYC_03 → Tổ chức; TCNYC_02/06/04 → Cá nhân)
+// Danh sách tên Tư cách theo Loại người yêu cầu (Cá nhân: bỏ TCNYC_03; Tổ chức: TCNYC_01, TCNYC_03, TCNYC_05), giữ thứ tự DM_26
+function nycRoleNamesForType(type) {
+    if (window.BTNN_WF && typeof BTNN_WF.nycRolesForType === 'function') {
+        try { return BTNN_WF.nycRolesForType(type).map(r => r.name); } catch (e) { /* dùng quy tắc cục bộ */ }
+    }
+    const excluded = type === NYC_TYPE.TO_CHUC ? ['TCNYC_02', 'TCNYC_06', 'TCNYC_04'] : ['TCNYC_03'];
+    return Object.keys(NYC_ROLE_CODES).filter(c => !excluded.includes(c)).map(c => NYC_ROLE_CODES[c]);
+}
+
+// Loại người yêu cầu không bị khóa: chọn Loại (preferred hoặc đang chọn), nạp danh sách Tư cách theo Loại, giữ Tư cách nếu còn hợp lệ
 function applyNycTypeConstraint(preferred) {
-    const role = document.getElementById('formNYCRole').value;
-    const forced = nycTypeConstraint(role);
-    const value = forced || preferred || getFormNycType();
+    const value = preferred || getFormNycType();
     document.querySelectorAll('input[name="formNYCType"]').forEach(r => {
         r.checked = r.value === value;
-        r.disabled = Boolean(forced);
+        r.disabled = false;
     });
-    const hint = document.getElementById('formNYCTypeHint');
-    if (hint) {
-        hint.style.display = forced ? 'block' : 'none';
-        hint.innerHTML = forced ? `<i class="fa-solid fa-lock"></i> Tư cách "${escapeHtml(role)}" chỉ áp dụng Loại người yêu cầu: ${escapeHtml(forced)}.` : '';
-    }
+    const sel = document.getElementById('formNYCRole');
+    const current = sel.value;
+    const names = nycRoleNamesForType(value);
+    sel.innerHTML = `<option value="">-- Chọn tư cách người yêu cầu --</option>` + names.map(n => `<option value="${escapeHtml(n)}">${escapeHtml(n)}</option>`).join('');
+    sel.value = names.includes(current) ? current : '';
     applyNycType(value);
+    toggleNbthBlock();
 }
 
 // Hiển thị trường theo Loại người yêu cầu: Cá nhân (Ngày sinh, giấy tờ thân nhân) / Tổ chức (Mã số, giấy tờ thành lập, người đại diện)
@@ -1358,10 +1369,11 @@ function showFormScreen(id = null, mode = null) {
     setReceiveMethodField(BTNN_WF.RECEIVE_METHODS.TRUC_TIEP, false);
     document.getElementById('formLinhVuc').value = 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH';
     document.getElementById('formNYCName').value = '';
-    document.getElementById('formNYCRole').value = NYC_ROLE.NBTH;
     ['formNYCOrgCode', 'formNYCOrgDocNo', 'formNYCOrgDocDate', 'formNYCOrgDocPlace', 'formNYCRepName', 'formNYCRepPosition', 'nbthOrgName', 'nbthOrgCode']
         .forEach(fid => { document.getElementById(fid).value = ''; });
     applyNycTypeConstraint(NYC_TYPE.CA_NHAN);
+    document.getElementById('formNYCRole').value = NYC_ROLE.NBTH;
+    toggleNbthBlock();
     document.getElementById('formNYCDob').value = '';
     document.getElementById('formNYCDocType').value = 'CCCD';
     document.getElementById('formNYCDocNo').value = '';
@@ -1407,10 +1419,11 @@ function showFormScreen(id = null, mode = null) {
         setReceiveMethodField(BTNN_WF.normalizeReceiveMethod(item.hinhThucTiepNhan), isFromReception(item));
         document.getElementById('formLinhVuc').value = item.linhVuc;
         document.getElementById('formNYCName').value = item.nycName || '';
+        // Loại người yêu cầu trước (danh sách Tư cách lọc theo Loại), sau đó chọn Tư cách của hồ sơ
+        applyNycTypeConstraint(nycTypeOf(item));
         const roleSel = document.getElementById('formNYCRole');
         roleSel.value = NYC_ROLE_CODES[item.nycRole] || item.nycRole || NYC_ROLE.NBTH;
-        if (!roleSel.value) roleSel.value = NYC_ROLE.NBTH;
-        applyNycTypeConstraint(nycTypeOf(item));
+        toggleNbthBlock();
         document.getElementById('formNYCOrgCode').value = item.nycOrgCode || '';
         document.getElementById('formNYCOrgDocNo').value = item.nycOrgDocNo || '';
         document.getElementById('formNYCOrgDocDate').value = item.nycOrgDocDate || '';
@@ -2006,7 +2019,7 @@ function saveForm(isDraft) {
     const addressDetail = document.getElementById('formNYCAddressDetail').value.trim();
     const hanhVi = document.getElementById('formHanhVi').value.trim();
     const role = document.getElementById('formNYCRole').value;
-    const nycType = nycTypeConstraint(role) || getFormNycType();
+    const nycType = getFormNycType();
     const isOrg = nycType === NYC_TYPE.TO_CHUC;
     const fv = fid => document.getElementById(fid).value.trim();
     const orgCode = isOrg ? fv('formNYCOrgCode') : '';
@@ -2016,7 +2029,7 @@ function saveForm(isDraft) {
     const repName = isOrg ? fv('formNYCRepName') : '';
     const repPosition = isOrg ? fv('formNYCRepPosition') : '';
     const isOrgVictim = role === NYC_ROLE.TC_KE_THUA;
-    const hasNbth = role !== NYC_ROLE.NBTH && !isOrgVictim;
+    const hasNbth = Boolean(role) && role !== NYC_ROLE.NBTH && !isOrgVictim;
     const nbth = hasNbth ? readNbth() : null;
     const nbthOrgName = isOrgVictim ? fv('nbthOrgName') : '';
     const nbthOrgCode = isOrgVictim ? fv('nbthOrgCode') : '';
@@ -2034,6 +2047,7 @@ function saveForm(isDraft) {
             ? [['formNYCName', name], ['formNYCRepName', repName], ['formNYCRepPosition', repPosition]]
                 .concat(orgCode ? [] : [['formNYCOrgDocNo', orgDocNo], ['formNYCOrgDocDate', orgDocDate], ['formNYCOrgDocPlace', orgDocPlace]])
             : [['formNYCName', name], ['formNYCDob', dob], ['formNYCDocNo', docNo], ['formNYCDocDate', docDate], ['formNYCDocPlace', docPlace]];
+        req.unshift(['formNYCRole', role]);
         req.push(['formNYCPhone', phone], ['formNYCAddressDetail', addressDetail], ['formHanhVi', hanhVi]);
         req.forEach(([fid, val]) => { if (!val) firstInvalid = markInvalid(document.getElementById(fid), firstInvalid); });
         if (!city) firstInvalid = markInvalid(country === 'Việt Nam' ? document.getElementById('formNYCTinhThanh') : document.getElementById('formNYCTinhThanhText'), firstInvalid);
@@ -2179,8 +2193,10 @@ function applyFilters() {
 
 function resetFilters() {
     document.getElementById('filterCode').value = '';
+    document.getElementById('filterCaseCode').value = '';
     document.getElementById('filterClaimCode').value = '';
     document.getElementById('filterName').value = '';
+    document.getElementById('filterVictim').value = '';
     document.getElementById('filterLinhVuc').value = '';
     document.getElementById('filterStatus').value = '';
     document.getElementById('filterApprovalKind').value = '';
@@ -2198,6 +2214,8 @@ function filterData() {
     const code = document.getElementById('filterCode').value.trim().toLowerCase();
     const claimCode = document.getElementById('filterClaimCode').value.trim().toLowerCase();
     const name = document.getElementById('filterName').value.trim().toLowerCase();
+    const caseCode = document.getElementById('filterCaseCode').value.trim().toLowerCase();
+    const victim = document.getElementById('filterVictim').value.trim().toLowerCase();
     const lv = document.getElementById('filterLinhVuc').value;
     const status = document.getElementById('filterStatus').value;
     const approvalKind = document.getElementById('filterApprovalKind').value;
@@ -2217,6 +2235,8 @@ function filterData() {
         if (code && !item.code.toLowerCase().includes(code)) return false;
         if (claimCode && !(item.claimCode || '').toLowerCase().includes(claimCode)) return false;
         if (name && !(item.nycName || '').toLowerCase().includes(name)) return false;
+        if (caseCode && !(item.maVuViec || '').toLowerCase().includes(caseCode)) return false;
+        if (victim && !String(victimNameOf(item)).replace(/^-$/, '').toLowerCase().includes(victim)) return false;
         if (lv && item.linhVuc !== lv) return false;
         if (status && item.status !== status) return false;
         // Nội dung trình chỉ áp dụng cho hồ sơ Chờ duyệt / Bị trả lại
@@ -2555,7 +2575,7 @@ function approvalSummaryHtml(item) {
         <i class="fa-solid fa-file-lines"></i> Tóm tắt hồ sơ yêu cầu
     </div>
     <div class="wf-summary-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px;">
-        <div><span style="color:#64748b;">Mã yêu cầu:</span> <b style="color:#1e3a8a;">${escapeHtml(item.code || '--')}</b></div>
+        <div><span style="color:#64748b;">Mã hồ sơ:</span> <b style="color:#1e3a8a;">${escapeHtml(item.code || '--')}</b></div>
         <div><span style="color:#64748b;">Người yêu cầu:</span> <b style="color:#1e3a8a;">${escapeHtml(item.nycName || item.claimant || item.name || '--')}</b></div>
         <div><span style="color:#64748b;">Ngày tiếp nhận:</span> <b>${escapeHtml(item.date || item.receivedAt || '--')}</b></div>
         <div><span style="color:#64748b;">Trạng thái:</span> ${statusCellHtml(item)}</div>

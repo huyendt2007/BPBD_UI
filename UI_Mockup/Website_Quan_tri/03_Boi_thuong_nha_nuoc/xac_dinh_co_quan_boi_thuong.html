@@ -44,16 +44,24 @@
             <!-- SEARCH FILTERS -->
             <div class="filter-grid">
                 <div>
-                    <span class="form-label">Mã yêu cầu</span>
-                    <input type="text" class="form-control" id="filterCode" placeholder="Nhập mã yêu cầu...">
+                    <span class="form-label">Mã hồ sơ</span>
+                    <input type="text" class="form-control" id="filterCode" placeholder="Nhập mã hồ sơ...">
+                </div>
+                <div>
+                    <span class="form-label">Mã vụ việc</span>
+                    <input type="text" class="form-control" id="filterCaseCode" placeholder="Nhập mã vụ việc...">
                 </div>
                 <div>
                     <span class="form-label">Mã YCBT</span>
                     <input type="text" class="form-control" id="filterClaimCode" placeholder="Nhập mã YCBT...">
                 </div>
                 <div>
-                    <span class="form-label">Tên người yêu cầu</span>
-                    <input type="text" class="form-control" id="filterName" placeholder="Nhập tên người yêu cầu...">
+                    <span class="form-label">Tên cá nhân/Tổ chức yêu cầu</span>
+                    <input type="text" class="form-control" id="filterName" placeholder="Nhập tên cá nhân/tổ chức yêu cầu...">
+                </div>
+                <div>
+                    <span class="form-label">Họ và tên người/Tổ chức bị thiệt hại</span>
+                    <input type="text" class="form-control" id="filterVictim" placeholder="Nhập họ và tên người/tên tổ chức bị thiệt hại...">
                 </div>
                 <div>
                     <span class="form-label">Lĩnh vực phát sinh thiệt hại</span>
@@ -132,10 +140,10 @@
                     <thead>
                         <tr>
                             <th style="width: 50px; text-align: center;">STT</th>
-                            <th style="width: 110px; text-align: center;">Mã yêu cầu</th>
+                            <th style="width: 110px; text-align: center;">Mã hồ sơ</th>
                             <th style="width: 130px; text-align: center;">Mã vụ việc</th>
                             <th style="min-width: 160px;">Tên cá nhân/Tổ chức yêu cầu</th>
-                            <th style="min-width: 160px;">Họ và tên người bị thiệt hại</th>
+                            <th style="min-width: 160px;">Họ và tên người/Tổ chức bị thiệt hại</th>
                             <th style="min-width: 170px;">Lĩnh vực thiệt hại</th>
                             <th style="min-width: 200px;">Hành vi gây thiệt hại</th>
                             <th style="width: 130px; text-align: center;">Ngày tiếp nhận</th>
@@ -226,31 +234,28 @@
             <!-- Requester details section -->
             <div class="sub-section-title">THÔNG TIN CHI TIẾT NGƯỜI YÊU CẦU BỒI THƯỜNG</div>
             <div class="grid-2" style="gap: 24px; align-items: stretch; margin-bottom: 20px;">
-                <!-- Left Sub-column: Tư cách, Loại người yêu cầu, thông tin định danh & Liên hệ -->
+                <!-- Left Sub-column: Loại người yêu cầu, Tư cách, thông tin định danh & Liên hệ -->
                 <div style="background: #f8fafc; padding: 20px; border-radius: var(--border-radius-lg); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 14px; height: 100%; box-sizing: border-box;">
                     <div style="font-weight: 600; color: var(--primary-color); margin-bottom: 4px; font-size: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
                         <i class="fa-solid fa-user" style="color: var(--primary-color);"></i> Thông tin người yêu cầu & Liên hệ
                     </div>
 
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <span class="form-label">Tư cách người yêu cầu bồi thường<span class="required">*</span></span>
-                        <select class="form-control" id="formNYCRole" onchange="onNycRoleChange()">
-                            <option value="Người bị thiệt hại">Người bị thiệt hại</option>
-                            <option value="Người thừa kế của người bị thiệt hại">Người thừa kế của người bị thiệt hại</option>
-                            <option value="Người đại diện cho những người thừa kế của người bị thiệt hại">Người đại diện cho những người thừa kế của người bị thiệt hại</option>
-                            <option value="Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại">Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại</option>
-                            <option value="Người đại diện theo pháp luật của người bị thiệt hại">Người đại diện theo pháp luật của người bị thiệt hại</option>
-                            <option value="Cá nhân, pháp nhân được ủy quyền hợp pháp">Cá nhân, pháp nhân được ủy quyền hợp pháp</option>
-                        </select>
-                    </div>
-
+                    <!-- Loại người yêu cầu (mặc định Cá nhân) đứng trước Tư cách; danh sách Tư cách lọc theo Loại -->
                     <div class="form-group" style="margin-bottom: 0;">
                         <span class="form-label">Loại người yêu cầu<span class="required">*</span></span>
                         <div class="nyc-type-group" id="formNYCTypeGroup">
-                            <label class="nyc-type-radio"><input type="radio" name="formNYCType" value="Cá nhân" checked onchange="applyNycType(this.value)"> <span>Cá nhân</span></label>
-                            <label class="nyc-type-radio"><input type="radio" name="formNYCType" value="Tổ chức" onchange="applyNycType(this.value)"> <span>Tổ chức</span></label>
+                            <label class="nyc-type-radio"><input type="radio" name="formNYCType" value="Cá nhân" checked onchange="onNycTypeChange()"> <span>Cá nhân</span></label>
+                            <label class="nyc-type-radio"><input type="radio" name="formNYCType" value="Tổ chức" onchange="onNycTypeChange()"> <span>Tổ chức</span></label>
                         </div>
-                        <div class="nyc-type-hint" id="formNYCTypeHint" style="display: none;"></div>
+                    </div>
+
+                    <!-- Tư cách người yêu cầu bồi thường: DM_26 lọc theo Loại (Cá nhân: bỏ TCNYC_03; Tổ chức: TCNYC_01, TCNYC_03, TCNYC_05) -->
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <span class="form-label">Tư cách người yêu cầu bồi thường<span class="required">*</span></span>
+                        <select class="form-control" id="formNYCRole" onchange="onNycRoleChange()">
+                            <option value="">-- Chọn tư cách người yêu cầu --</option>
+                        </select>
+                        <div class="error-message">Đây là trường bắt buộc</div>
                     </div>
 
                     <div class="form-group" style="margin-bottom: 0;">
@@ -636,7 +641,7 @@
                 <h4 style="color: var(--primary-color); margin-bottom: 12px; font-size: 14px;"><i class="fa-solid fa-info-circle"></i> Tóm tắt hồ sơ yêu cầu xác định</h4>
                 <div class="grid-2" style="font-size: 13px; line-height: 1.6;">
                     <div>
-                        <p><strong>Mã yêu cầu:</strong> <span id="lblProcCode"></span></p>
+                        <p><strong>Mã hồ sơ:</strong> <span id="lblProcCode"></span></p>
                         <p><strong>Tên cá nhân/Tổ chức yêu cầu:</strong> <span id="lblProcName"></span></p>
                         <p><strong>Lĩnh vực phát sinh thiệt hại:</strong> <span id="lblProcLinhVuc"></span></p>
                     </div>
@@ -728,7 +733,7 @@
             <div class="detail-card">
                 <div class="sub-section-title" style="margin-top:0;">THÔNG TIN TIẾP NHẬN HỒ SƠ</div>
                 <div class="detail-row">
-                    <div class="detail-label">Mã yêu cầu</div>
+                    <div class="detail-label">Mã hồ sơ</div>
                     <div class="detail-value" style="font-weight: 700; color: var(--primary-color);" id="dtCode"></div>
                 </div>
                 <div class="detail-row">
@@ -750,12 +755,12 @@
 
                 <div class="sub-section-title">THÔNG TIN CHI TIẾT NGƯỜI YÊU CẦU BỒI THƯỜNG</div>
                 <div class="detail-row">
-                    <div class="detail-label">Tư cách người yêu cầu bồi thường</div>
-                    <div class="detail-value" id="dtNYCRole"></div>
-                </div>
-                <div class="detail-row">
                     <div class="detail-label">Loại người yêu cầu</div>
                     <div class="detail-value" id="dtNYCType"></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Tư cách người yêu cầu bồi thường</div>
+                    <div class="detail-value" id="dtNYCRole"></div>
                 </div>
                 <div class="detail-row">
                     <div class="detail-label" id="dtNYCNameLabel">Họ và tên</div>
