@@ -662,7 +662,7 @@ function migrateOrgSeed() {
 
 // Dữ liệu giả lập theo luồng Xác định CQGQBT mới (Xác minh CQGQBT, Trình ký 03 Nội dung trình, Không thụ lý, Đã chuyển CQGQBT)
 // cho cán bộ canbonv (Bộ Tư pháp) và cv_hn1 (Sở Tư pháp Thành phố Hà Nội). Nạp một lần theo cờ riêng; không ghi đè hồ sơ đã có cùng mã.
-const FLOW_SEED_FLAG = 'btnn_xd_flow_seed_v7';
+const FLOW_SEED_FLAG = 'btnn_xd_flow_seed_v8';
 function buildFlowSeed() {
     const h = (action, userId, at, note, kind) => Object.assign({ at, userId, userName: BTNN_WF.userName(userId), action, note: note || '' }, kind ? { kind } : {});
     const btpRoutes = day => [
@@ -764,6 +764,18 @@ function buildFlowSeed() {
                 h('Tiếp nhận hồ sơ bổ sung', 'canbonv', '09:30 09/10/2026', 'Cán bộ xử lý tiếp nhận hồ sơ bổ sung, cập nhật hồ sơ. Hồ sơ chuyển [Xác minh CQGQBT].')
             ]
         })),
+        // Bị trả lại - Loại trình Không thụ lý (Bộ Tư pháp)
+        base('XD-2026-149', true, Object.assign(p('Đặng Quốc Huy', '17/04/1982', '001082005566', '0912141149', 'Số 29 Tràng Tiền', 'Cán bộ trình dự thảo Không thụ lý do cho rằng vụ việc thuộc thẩm quyền Tòa án; Lãnh đạo yêu cầu xác minh lại cơ quan giải quyết bồi thường.'), {
+            date: '08/10/2026', receivedAt: '09:00 08/10/2026', status: XD_ST.BI_TRA_LAI, routes: btpRoutes('08/10/2026'),
+            ktlReason: 'Vụ việc đã được đương sự khởi kiện tại Tòa án nhân dân có thẩm quyền.',
+            approval: Object.assign(appr(XD_KIND.KTL, BTP, 0, [{ unitId: 'PLN-02', userId: 'tpbt', action: 'Từ chối phê duyệt', note: 'Chưa đủ căn cứ xác định thuộc thẩm quyền của Tòa án nhân dân; đề nghị cán bộ thụ lý thu thập thêm bản án/quyết định và xác minh lại cơ quan giải quyết bồi thường theo đúng Điều 40 Luật TNBTCNN.', at: '15:30 14/10/2026' }], ['tpbt'], '09:00 14/10/2026', online('Thong_bao_khong_thu_ly_XD-2026-149.pdf'), 'Vụ việc đã được đương sự khởi kiện tại Tòa án nhân dân có thẩm quyền.'), { pending: null }),
+            returned: { reason: 'Chưa đủ căn cứ xác định thuộc thẩm quyền của Tòa án nhân dân; đề nghị cán bộ thụ lý thu thập thêm bản án/quyết định và xác minh lại cơ quan giải quyết bồi thường theo đúng Điều 40 Luật TNBTCNN.', by: 'tpbt', unitId: 'PLN-02', at: '15:30 14/10/2026', kind: XD_KIND.KTL, prevStatus: XD_ST.CHO_TIEP_NHAN },
+            history: [
+                h('Tiếp nhận hồ sơ', 'canbonv', '09:00 08/10/2026', 'Tiếp nhận hồ sơ tại Bộ Tư pháp.'),
+                h('Trình phê duyệt', 'canbonv', '09:00 14/10/2026', 'Nội dung trình: Không thụ lý hồ sơ. Văn bản trình ký: Thong_bao_khong_thu_ly_XD-2026-149.pdf. Người nhận: Trần Văn Bồi Thường (Phòng Quản lý nghiệp vụ về BTNN).', XD_KIND.KTL),
+                h('Từ chối phê duyệt', 'tpbt', '15:30 14/10/2026', 'Trả lại cán bộ chủ trì. Lý do: Chưa đủ căn cứ xác định thuộc thẩm quyền của Tòa án nhân dân; đề nghị cán bộ thụ lý thu thập thêm bản án/quyết định và xác minh lại cơ quan giải quyết bồi thường theo đúng Điều 40 Luật TNBTCNN.', XD_KIND.KTL)
+            ]
+        })),
         // ----- Cán bộ cv_hn1 (Sở Tư pháp Thành phố Hà Nội) -----
         base('XD-2026-151', false, Object.assign(p('Nghiêm Thị Thu', '14/04/1992', '001192001551', '0936151151', 'Số 5 Phố Huế', 'Xử phạt vi phạm hành chính sai đối tượng của UBND phường.'), {
             nycGender: 'Nữ', date: '16/10/2026', receivedAt: '08:20 16/10/2026', status: XD_ST.CHO_TIEP_NHAN, routes: stpRoutes('16/10/2026', 'Chưa xử lý'),
@@ -817,6 +829,18 @@ function buildFlowSeed() {
             date: '01/10/2026', receivedAt: '08:00 01/10/2026', status: 'Chờ chuyển CQGQBT', routes: stpRoutes('01/10/2026'),
             approval: Object.assign(appr(XD_KIND.KQ, STP, 1, [pd('STP-HN-HCTP', 'tp_hctp_hn', '09:00 05/10/2026'), { unitId: 'STP-HN', userId: 'gdso_hn', action: 'Ký duyệt', note: '', at: '14:00 05/10/2026' }], ['tp_hctp_hn', 'gdso_hn'], '08:00 05/10/2026', Object.assign(online('Ket_qua_xac_dinh_CQGQBT_XD-2026-158.pdf'), { signedFile: 'Ket_qua_xac_dinh_CQGQBT_XD-2026-158_da_ky.pdf', signedBy: 'gdso_hn', signedAt: '14:00 05/10/2026' })), { pending: null, done: true }),
             history: [h('Trình phê duyệt', 'cv_hn1', '08:00 05/10/2026', 'Kết quả xác định CQGQBT.'), h('Phê duyệt', 'tp_hctp_hn', '09:00 05/10/2026', '', XD_KIND.KQ), h('Ký duyệt', 'gdso_hn', '14:00 05/10/2026', 'Ký duyệt cấp cuối (Sở Tư pháp Thành phố Hà Nội): Kết quả xác định CQGQBT.', XD_KIND.KQ)]
+        })),
+        // Bị trả lại - Loại trình Không thụ lý (Sở Tư pháp)
+        base('XD-2026-159', false, Object.assign(p('Ngô Thị Thu Trang', '12/11/1987', '001187001558', '0936151158', 'Số 18 Cửa Bắc', 'Cán bộ trình dự thảo Không thụ lý; Lãnh đạo Phòng từ chối do chưa tính thời gian gián đoạn do trở ngại khách quan của người yêu cầu.'), {
+            nycGender: 'Nữ', date: '07/10/2026', receivedAt: '08:30 07/10/2026', status: XD_ST.BI_TRA_LAI, routes: stpRoutes('07/10/2026'),
+            ktlReason: 'Thời hiệu yêu cầu bồi thường của người bị thiệt hại đã kết thúc theo quy định tại Điều 6 Luật TNBTCNN.',
+            approval: Object.assign(appr(XD_KIND.KTL, STP, 0, [{ unitId: 'STP-HN-HCTP', userId: 'tp_hctp_hn', action: 'Từ chối phê duyệt', note: 'Chưa tính thời gian gián đoạn do trở ngại khách quan của người yêu cầu; thời hiệu vẫn còn. Đề nghị cán bộ thụ lý chuyển tiếp nhận và xác minh cơ quan giải quyết bồi thường.', at: '16:00 12/10/2026' }], ['tp_hctp_hn'], '09:00 12/10/2026', online('Thong_bao_khong_thu_ly_XD-2026-159.pdf'), 'Thời hiệu yêu cầu bồi thường của người bị thiệt hại đã kết thúc theo quy định tại Điều 6 Luật TNBTCNN.'), { pending: null }),
+            returned: { reason: 'Chưa tính thời gian gián đoạn do trở ngại khách quan của người yêu cầu; thời hiệu vẫn còn. Đề nghị cán bộ thụ lý chuyển tiếp nhận và xác minh cơ quan giải quyết bồi thường.', by: 'tp_hctp_hn', unitId: 'STP-HN-HCTP', at: '16:00 12/10/2026', kind: XD_KIND.KTL, prevStatus: XD_ST.CHO_TIEP_NHAN },
+            history: [
+                h('Tiếp nhận hồ sơ', 'cv_hn1', '08:30 07/10/2026', 'Tiếp nhận tại Sở Tư pháp Thành phố Hà Nội; cán bộ xử lý: Đỗ Văn Chung.'),
+                h('Trình phê duyệt', 'cv_hn1', '09:00 12/10/2026', 'Nội dung trình: Không thụ lý hồ sơ. Văn bản trình ký: Thong_bao_khong_thu_ly_XD-2026-159.pdf. Người nhận: Lãnh đạo Phòng Hành chính tư pháp.', XD_KIND.KTL),
+                h('Từ chối phê duyệt', 'tp_hctp_hn', '16:00 12/10/2026', 'Trả lại cán bộ chủ trì. Lý do: Chưa tính thời gian gián đoạn do trở ngại khách quan của người yêu cầu; thời hiệu vẫn còn. Đề nghị cán bộ thụ lý chuyển tiếp nhận và xác minh cơ quan giải quyết bồi thường.', XD_KIND.KTL)
+            ]
         }))
     ];
 }
@@ -2304,18 +2328,7 @@ function parseVuViecInput(raw, excludeCode) {
 function setupVuViecFields(item) {
     const block = document.getElementById('formVuViecBlock');
     if (!block) return;
-    const isCreate = !item;
-    const canEditLienQuan = isCreate || (item.source === 'Tạo trực tiếp' && item.vvMode !== 'existing');
-    block.style.display = canEditLienQuan ? '' : 'none';
-    document.getElementById('formVvModeGroup').style.display = isCreate ? '' : 'none';
-    const exclude = item ? item.maVuViec : '';
-    document.getElementById('formVvOptions').innerHTML = listVuViecSafe().filter(v => v.code !== exclude)
-        .map(v => `<option value="${escapeHtml(v.nycName ? `${v.code} - ${v.nycName}` : v.code)}"></option>`).join('');
-    const radioNew = document.querySelector('input[name="formVvMode"][value="new"]');
-    if (radioNew) radioNew.checked = true;
-    document.getElementById('formVvExisting').value = '';
-    document.getElementById('formVvLienQuan').value = item ? vuViecLabel(item.vuViecLienQuan) : '';
-    onVvModeChange();
+    block.style.display = 'none';
 }
 function onVvModeChange() {
     const checked = document.querySelector('input[name="formVvMode"]:checked');

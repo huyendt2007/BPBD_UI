@@ -4417,7 +4417,7 @@
     </div>
 
     <!-- Luồng phân công - phê duyệt dùng chung BTNN: nguồn hồ sơ YCBT nhận từ Xác định CQGQBT -->
-    <script src="btnn_luong_xu_ly.js?v=20261020vv"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261020kd"></script>
     <!-- Cử người giải quyết (nhiều cán bộ theo Cơ cấu tổ chức), Xác minh thiệt hại nhiều lần, Văn bản làm căn cứ yêu cầu bồi thường -->
     <script>
         function ycEsc(v) {
@@ -20694,12 +20694,13 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         <select id="gqLdKtl" class="form-control" onchange="document.getElementById('gqLdKtlTransfer').style.display = this.value === 'KTL_01' ? 'block' : 'none'"><option value="">-- Chọn lý do --</option>${W.getKtlReasons().map(r => `<option value="${gqE(r.code)}">${gqE(r.code)} - ${gqE(r.name)}</option>`).join('')}</select></div>
                     <div class="gq-field"><label class="gq-label">Diễn giải</label><textarea id="gqLdKtlDetail" class="form-control" rows="2"></textarea></div>
                     <div id="gqLdKtlTransfer" style="display:none;">
-                        <div class="gq-field"><label class="gq-label">Cơ quan tiếp nhận mới <span class="gq-req">*</span></label><div id="gqLdKtlUnit"></div></div>
+                        <div class="gq-field"><label class="gq-label">Chuyển cơ quan tiếp nhận mới <span class="gq-req">*</span></label><div id="gqLdKtlUnit"></div></div>
                         <div class="gq-field"><label class="gq-label">Nội dung/Căn cứ chuyển <span class="gq-req">*</span></label><textarea id="gqLdKtlContent" class="form-control" rows="2"></textarea></div>
                     </div>`,
                     `<button class="btn btn-secondary" onclick="gqCloseModal()">Hủy bỏ</button><button class="btn btn-danger" onclick="gqSubmitLeaderKtl('${gqE(id)}')"><i class="fa-solid fa-ban"></i> Không thụ lý</button>`, 680);
                 const rec = gqRecord(claim);
-                W.mountUnitTree(document.getElementById('gqLdKtlUnit'), { inputId: 'gqLdKtlUnitId', disabledIds: [rec.rootUnitId], placeholder: '-- Chọn cơ quan tiếp nhận mới --' });
+                gqState = { claimId: id, mode: 'ldKtl' };
+                gqState.ldKtlApi = W.mountKtlTransfer(document.getElementById('gqLdKtlUnit'), { rec, name: 'gqLdKtlMode', treeInputId: 'gqLdKtlUnitId' });
                 return;
             }
             gqOpenModal('Từ chối phê duyệt', 'fa-solid fa-circle-xmark', head + `<div class="gq-info"><b>Nội dung trình:</b> ${gqE(W.approvalKindOf(gqRecord(claim)))}<div style="color:var(--text-muted);">Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị trả lại] cho cán bộ chủ trì.</div></div>
@@ -20713,14 +20714,16 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             if (!code) { gqFooterMsg('Vui lòng chọn Lý do không thụ lý.'); return; }
             let transfer = null;
             if (code === 'KTL_01') {
-                const unit = gqVal('gqLdKtlUnitId');
+                const api = gqState.ldKtlApi;
                 const content = gqVal('gqLdKtlContent');
-                if (!unit || !content) { gqFooterMsg('Vui lòng chọn Cơ quan tiếp nhận mới và nhập Nội dung/Căn cứ chuyển.'); return; }
-                transfer = { targetUnitId: unit, content };
+                if (!api || !api.getMode() || !content) { gqFooterMsg('Vui lòng chọn Chuyển cơ quan tiếp nhận mới và nhập Nội dung/Căn cứ chuyển.'); return; }
+                const tgt = api.validate();
+                if (!tgt.ok) { gqFooterMsg(tgt.message); return; }
+                transfer = { mode: tgt.mode, targetUnitId: tgt.targetUnitId, content };
             }
             gqAsLeader();
             const res = W.rejectCase(claim.code, code, gqVal('gqLdKtlDetail'), transfer);
-            if (!res.ok && /cấu hình luồng/.test(res.message)) { gqFooterMsg(res.message); return; }
+            if (!res.ok && res.transferError) { gqFooterMsg(res.message); return; }
             gqAfterLeaderAction(res.ok ? `Hồ sơ ${claim.code}: [${res.record.status}].` : res.message, res.ok);
         }
         function gqSubmitLeaderReject(id) {
@@ -20888,11 +20891,11 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         // ---------- Văn bản dự thảo trình Lãnh đạo (Mẫu 03/BTNN, Mẫu 04/BTNN) ----------
         function gqDocBaseName() {
             const claim = gqClaim(gqState.claimId);
-            return gqState.formNo === GQ_FORM_03 ? `Mau_03_BTNN_Thong_bao_yeu_cau_bo_sung_${claim.code}` : `Mau_04_BTNN_Thong_bao_khong_thu_ly_${claim.code}`;
+            return gqState.formNo === GQ_FORM_03 ? `Mau_03_BTNN_Thong_bao_yeu_cau_bo_sung_${claimVvCode(claim) || claim.code}` : `Mau_04_BTNN_Thong_bao_khong_thu_ly_${claimVvCode(claim) || claim.code}`;
         }
         function gqDraftBlockHtml() {
             const s = gqState;
-            const shortForm = s.formNo.replace('Mẫu số ', 'Mẫu ');
+            const shortForm = s.formNo.replace('Mẫu số ', 'Mẫu ') + (s.formNo === GQ_FORM_04 ? ' - Thông báo không thụ lý hồ sơ yêu cầu bồi thường' : '');
             return `<div class="gq-card" id="gqDraftCard">
                 <div class="gq-card-title"><i class="fa-solid fa-file-signature"></i> Văn bản dự thảo trình Lãnh đạo <span class="gq-req">*</span></div>
                 <div class="gq-opt ${s.draftChoice === 'generated' ? 'on' : ''}">
@@ -20949,7 +20952,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             if (gqState.formNo === GQ_FORM_03) return gqBuildMau03(claim, gqVal('gqYcbsContent'));
             const code = gqVal('gqKtlReason');
             const reason = (gqW().getKtlReasons().find(r => r.code === code) || {});
-            return gqBuildMau04(claim, reason, gqVal('gqKtlDetail'), code === 'KTL_01' ? gqVal('gqTransferUnit') : '');
+            const api = gqState.ktlApi;
+            const transfer = code === 'KTL_01' && api && api.targetUnitId() ? { targetUnitId: api.targetUnitId(), mode: api.getMode() } : null;
+            return gqBuildMau04(claim, reason, gqVal('gqKtlDetail'), transfer);
         }
         // Trường cấu thành văn bản: Mẫu 03 - Nội dung yêu cầu bổ sung; Mẫu 04 - Lý do không thụ lý
         function gqValidateDraftFields() {
@@ -20996,21 +21001,41 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 <p style="${GQ_P}">Hồ sơ bổ sung đề nghị gửi về ${gqE(p.issuer)} trong thời hạn theo quy định của Luật Trách nhiệm bồi thường của Nhà nước. Hết thời hạn trên mà Ông/Bà không bổ sung hồ sơ, ${gqE(p.issuer)} xem xét không thụ lý hồ sơ theo quy định tại Điều 43 của Luật.</p>
                 ${gqSignHtml()}`;
         }
-        // Mẫu số 04/BTNN - Thông báo về việc không thụ lý hồ sơ yêu cầu bồi thường
-        function gqBuildMau04(claim, reason, detail, targetUnitId) {
+        // Mẫu số 04/BTNN - Thông báo không thụ lý hồ sơ yêu cầu bồi thường (đoạn (7) theo Bảng mapping mục 3.2)
+        // transfer (lý do KTL_01): { targetUnitId, mode: BTP | STP | CQ }; dữ liệu cũ truyền mã đơn vị -> Chuyển trực tiếp
+        function gqBuildMau04(claim, reason, detail, transfer) {
             const p = gqDocParts(claim);
-            const target = targetUnitId ? p.W.unitName(targetUnitId) : '';
+            const t = typeof transfer === 'string' ? (transfer ? { targetUnitId: transfer, mode: 'CQ' } : null) : transfer;
+            const target = t && t.targetUnitId ? p.W.unitName(t.targetUnitId) : '';
+            const name = reason && reason.name ? String(reason.name) : '';
+            const mDk = name.match(/\(([^)]*)\)\s*$/);
+            const diemKhoan = mDk ? mDk[1].replace(/\s*Điều\s*\d+\s*$/i, '').trim().toLowerCase() : '';
+            let lyDo = name.replace(/\s*\([^)]*\)\s*$/, '').trim();
+            lyDo = lyDo ? lyDo.charAt(0).toLowerCase() + lyDo.slice(1) : '';
+            const dots = '<i style="color:#666;">................................................</i>';
+            const doan1 = `Căn cứ theo quy định tại ${diemKhoan ? gqE(diemKhoan) + ' ' : ''}Điều 43 Luật Trách nhiệm bồi thường của Nhà nước, ${gqE(p.issuer)} không thụ lý hồ sơ yêu cầu bồi thường của Ông/Bà vì ${lyDo ? gqE(lyDo) + (detail ? ': ' + gqE(detail) : '') : dots}.`;
+            const doan2 = target
+                ? gqE(p.W.ktlTransferSentence(p.issuer, t.targetUnitId, t.mode))
+                : `Do vậy, ${gqE(p.issuer)} trả lại hồ sơ yêu cầu bồi thường (gửi kèm Thông báo này) và thông báo để Ông/Bà được biết.`;
             return p.W.docHeaderHtml(p.unitId, GQ_FORM_04, 'TB') + `
                 <p style="text-align:center; margin:18pt 0 6pt;"><b>THÔNG BÁO</b><br><b>Về việc không thụ lý hồ sơ yêu cầu bồi thường</b></p>
                 <p style="margin:6pt 0;">Kính gửi: Ông/Bà ${gqE(getClaimRequesterName(claim))}</p>
                 <p style="margin:6pt 0;">Địa chỉ: ${gqE(p.address)}</p>
                 <p style="${GQ_P}">Ngày ${p.d} tháng ${p.mo} năm ${p.y}, ${gqE(p.issuer)} nhận được hồ sơ yêu cầu bồi thường của Ông/Bà (Mã vụ việc: ${gqE(claimVvCode(claim))}) đối với hành vi: ${gqE(claim.hanhVi || '')}.</p>
-                <p style="${GQ_P}">Căn cứ khoản 1 Điều 43 Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14, ${gqE(p.issuer)} thông báo không thụ lý hồ sơ yêu cầu bồi thường của Ông/Bà với lý do sau đây:</p>
-                <p style="${GQ_P}">${reason && reason.name ? gqE(reason.name) : '<i style="color:#666;">................................................</i>'}.</p>
-                ${detail ? `<p style="${GQ_P}">${gqE(detail)}</p>` : ''}
-                ${target ? `<p style="${GQ_P}">${gqE(p.issuer)} chuyển hồ sơ yêu cầu bồi thường của Ông/Bà đến ${gqE(target)} để giải quyết theo thẩm quyền.</p>` : ''}
-                <p style="${GQ_P}">Ông/Bà có quyền khiếu nại, khởi kiện theo quy định của pháp luật.</p>
+                <p style="${GQ_P}">${doan1}</p>
+                <p style="${GQ_P}">${doan2}</p>
                 ${gqSignHtml(target ? [target] : [])}`;
+        }
+        // Mẫu số 04/BTNN - Thông báo thụ lý hồ sơ yêu cầu bồi thường (đoạn (7) theo Bảng mapping mục 3.1); Số, ký hiệu và Ngày văn bản nhập tại Popup Trình duyệt tiếp nhận hồ sơ
+        function gqBuildMau04ThuLy(claim, soKyHieu, ngay) {
+            const p = gqDocParts(claim);
+            return p.W.docHeaderHtml(p.unitId, GQ_FORM_04, 'TB', { soKyHieu, ngay }) + `
+                <p style="text-align:center; margin:18pt 0 6pt;"><b>THÔNG BÁO</b><br><b>Về việc thụ lý hồ sơ yêu cầu bồi thường</b></p>
+                <p style="margin:6pt 0;">Kính gửi: Ông/Bà ${gqE(getClaimRequesterName(claim))}</p>
+                <p style="margin:6pt 0;">Địa chỉ: ${gqE(p.address)}</p>
+                <p style="${GQ_P}">Ngày ${p.d} tháng ${p.mo} năm ${p.y}, ${gqE(p.issuer)} nhận được hồ sơ yêu cầu bồi thường của Ông/Bà (Mã vụ việc: ${gqE(claimVvCode(claim))}) đối với hành vi: ${gqE(claim.hanhVi || '')}.</p>
+                <p style="${GQ_P}">Hồ sơ của Ông/Bà đầy đủ điều kiện thụ lý hồ sơ yêu cầu bồi thường theo quy định của Luật Trách nhiệm bồi thường của Nhà nước. Căn cứ quy định tại khoản 1 Điều 43 Luật Trách nhiệm bồi thường của nhà nước, ${gqE(p.issuer)} thụ lý hồ sơ yêu cầu bồi thường của Ông/Bà và thông báo để Ông/Bà được biết.</p>
+                ${gqSignHtml()}`;
         }
 
         // ---------- 1. Trình duyệt Tiếp nhận hồ sơ ----------
@@ -21019,20 +21044,77 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             if (!claim) return;
             gqState = { claimId, mode: 'reception' };
             const phddNote = '';
-            const body = gqSummaryHtml(claim) + gqReturnedHtml(claim) + phddNote + gqLeaderFieldHtml(claim, '') +
+            // Trình lại sau khi Bị trả lại: lấy Số, ký hiệu / Ngày văn bản của Thông báo thụ lý đã trình
+            const prev = claim.thongBaoThuLy || null;
+            const body = gqSummaryHtml(claim) + gqReturnedHtml(claim) + phddNote +
+                `<div class="gq-card" id="gqTbtlCard">
+                    <div class="gq-card-title"><i class="fa-solid fa-file-signature"></i> Văn bản dự thảo: Mẫu 04/BTNN - Thông báo thụ lý hồ sơ yêu cầu bồi thường</div>
+                    <div class="gq-grid">` +
+                gqField('gqTbtlNo', 'Số, ký hiệu văn bản', true, `<input type="text" id="gqTbtlNo" class="form-control" maxlength="50" placeholder="VD: 24/TB-STP" value="${gqE(prev ? prev.soKyHieu : '')}" oninput="gqMark(this.id,false)">`) +
+                gqField('gqTbtlDate', 'Ngày văn bản', true, `<input type="text" id="gqTbtlDate" class="form-control" placeholder="dd/mm/yyyy" value="${gqE(prev ? prev.ngay : '')}" oninput="gqMark(this.id,false)" onchange="gqMark(this.id,false)">`) +
+                `</div>
+                    <div class="gq-opt on" style="margin-bottom:0;">
+                        <span style="font-weight:600;"><i class="fa-solid fa-file-word" style="color:#2563eb;"></i> Theo Mẫu 04/BTNN - Thông báo thụ lý hồ sơ yêu cầu bồi thường do hệ thống tự động sinh</span>
+                        <div class="gq-opt-actions">
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="gqPreviewThuLyDraft()"><i class="fa-solid fa-up-right-from-square"></i> Xem dự thảo</button>
+                            <button type="button" class="btn btn-secondary btn-sm" onclick="gqDownloadThuLyDraft()"><i class="fa-solid fa-file-word"></i> Tải file</button>
+                        </div>
+                    </div>
+                </div>` +
+                gqLeaderFieldHtml(claim, '') +
                 gqField('gqOpinion', 'Ý kiến trình', false, `<textarea id="gqOpinion" class="form-control" rows="3" placeholder="Nhập ý kiến trình Lãnh đạo (không bắt buộc)"></textarea>`);
             gqOpenModal('Trình duyệt tiếp nhận hồ sơ', 'fa-solid fa-paper-plane', body,
                 `<button type="button" class="btn btn-secondary" onclick="gqCloseModal()">Hủy bỏ</button>
-                 <button type="button" class="btn btn-primary" id="gqBtnSubmit" onclick="gqSubmitReception()"><i class="fa-solid fa-paper-plane"></i> Trình Lãnh đạo</button>`, 680);
+                 <button type="button" class="btn btn-primary" id="gqBtnSubmit" onclick="gqSubmitReception()"><i class="fa-solid fa-paper-plane"></i> Trình Lãnh đạo</button>`, 720);
+            if (typeof flatpickr !== 'undefined') flatpickr('#gqTbtlDate', { dateFormat: 'd/m/Y', allowInput: true, onChange: () => gqMark('gqTbtlDate', false) });
         }
+        // Mẫu 04/BTNN - Thông báo thụ lý hồ sơ yêu cầu bồi thường: tên file, kiểm tra Số/Ngày văn bản, thân văn bản
+        function gqThuLyDocBaseName(claim) { return `Mau_04_BTNN_Thong_bao_thu_ly_${claimVvCode(claim) || claim.code}`; }
+        function gqValidDateText(v) {
+            const m = String(v || '').match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+            if (!m) return false;
+            const d = new Date(+m[3], +m[2] - 1, +m[1]);
+            return d.getFullYear() === +m[3] && d.getMonth() === +m[2] - 1 && d.getDate() === +m[1];
+        }
+        function gqValidateThuLyDocFields() {
+            const no = gqVal('gqTbtlNo');
+            const date = gqVal('gqTbtlDate');
+            const badDate = !date || !gqValidDateText(date);
+            gqMark('gqTbtlNo', !no);
+            gqMark('gqTbtlDate', badDate);
+            const dateField = document.getElementById('gqTbtlDate');
+            const err = dateField && dateField.closest('.gq-field') ? dateField.closest('.gq-field').querySelector('.gq-err') : null;
+            if (err) err.textContent = date && badDate ? 'Ngày văn bản không hợp lệ (dd/mm/yyyy)' : 'Đây là trường bắt buộc';
+            if (!no || badDate) { const el = document.getElementById(!no ? 'gqTbtlNo' : 'gqTbtlDate'); if (el) el.focus(); return false; }
+            return true;
+        }
+        function gqThuLyBodyHtml() { const claim = gqClaim(gqState.claimId); return claim ? gqBuildMau04ThuLy(claim, gqVal('gqTbtlNo'), gqVal('gqTbtlDate')) : ''; }
+        function gqPreviewThuLyDraft() { if (!gqValidateThuLyDocFields()) { gqFooterMsg('Vui lòng nhập Số, ký hiệu văn bản và Ngày văn bản.'); return; } gqW().openDocTab(gqThuLyBodyHtml(), gqThuLyDocBaseName(gqClaim(gqState.claimId))); }
+        function gqDownloadThuLyDraft() { if (!gqValidateThuLyDocFields()) { gqFooterMsg('Vui lòng nhập Số, ký hiệu văn bản và Ngày văn bản.'); return; } gqW().downloadDocWord(gqThuLyBodyHtml(), gqThuLyDocBaseName(gqClaim(gqState.claimId))); }
         function gqSubmitReception() {
             const claim = gqClaim(gqState.claimId);
-            if (!claim || !gqValidateLeader()) { gqFooterMsg('Vui lòng nhập đầy đủ các trường bắt buộc.'); return; }
-            const extra = { assignee: gqVal('gqLeader') };
+            if (!claim) return;
+            const docOk = gqValidateThuLyDocFields();
+            const leaderOk = gqValidateLeader();
+            if (!docOk || !leaderOk) { gqFooterMsg('Vui lòng nhập đầy đủ các trường bắt buộc.'); return; }
+            // Văn bản Thông báo thụ lý (Mẫu 04/BTNN) lưu cùng phiếu trình: Lãnh đạo xem lại đúng văn bản; ban hành khi Thủ trưởng thụ lý
+            const soKyHieu = gqVal('gqTbtlNo');
+            const ngay = gqVal('gqTbtlDate');
+            const draftDoc = { source: 'generated', formNo: GQ_FORM_04, docTitle: 'Thông báo thụ lý hồ sơ yêu cầu bồi thường', generatedName: gqThuLyDocBaseName(claim) + '.doc', uploadedName: '', soKyHieu, ngay, bodyHtml: gqThuLyBodyHtml() };
+            const extra = { assignee: gqVal('gqLeader'), draftDoc };
             // Vụ việc PHDD- (Chỉ phục hồi danh dự): cấp cuối phê duyệt -> bắt đầu tiến trình PHDD (Bước 1) thay vì Chờ thụ lý
             const res = gqSubmit(claim, 'Tiếp nhận hồ sơ', gqVal('gqOpinion'), [], extra);
             if (!res.ok) { gqFooterMsg(res.message); return; }
+            gqSaveData(claim, { thongBaoThuLy: { soKyHieu, ngay, fileName: draftDoc.generatedName, formNo: GQ_FORM_04, bodyHtml: draftDoc.bodyHtml, submittedAt: gqNow() } });
             gqAfterSubmit(claim, 'Tiếp nhận hồ sơ');
+        }
+        // Thông báo thụ lý đã ban hành (sau khi Thủ trưởng thụ lý): xem / tải tại màn chi tiết
+        function gqOpenThuLyNotice(claimId, download) {
+            const claim = gqClaim(claimId);
+            const tb = claim && claim.thongBaoThuLy;
+            if (!tb || !tb.bodyHtml) return;
+            const base = String(tb.fileName || gqThuLyDocBaseName(claim)).replace(/\.docx?$/i, '');
+            if (download) gqW().downloadDocWord(tb.bodyHtml, base); else gqW().openDocTab(tb.bodyHtml, base);
         }
 
         // ==========================================
@@ -21834,8 +21916,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     `<select id="gqKtlReason" class="form-control" onchange="gqMark(this.id,false); gqToggleKtlTransfer()"><option value="">-- Chọn lý do không thụ lý --</option>${reasons.map(r => `<option value="${gqE(r.code)}" ${r.code === selCode ? 'selected' : ''}>${gqE(r.name)}</option>`).join('')}</select>`) +
                 gqField('gqKtlDetail', 'Diễn giải', false, `<textarea id="gqKtlDetail" class="form-control" rows="3" placeholder="Nhập nội dung diễn giải (nếu có)...">${gqE(prev ? prev.content : '')}</textarea>`) +
                 `<div class="gq-card gq-card-teal" id="gqKtlTransferBlock" style="display:none;">
-                    <div class="gq-card-title"><i class="fa-solid fa-right-left"></i> Chuyển CQGQBT</div>
-                    ${gqField('gqTransferUnit', 'Cơ quan tiếp nhận mới', true, gqTargetUnitTreeHtml())}
+                    <div class="gq-card-title"><i class="fa-solid fa-right-left"></i> Chuyển cơ quan tiếp nhận mới</div>
+                    ${gqField('gqKtlModeBox', 'Chuyển cơ quan tiếp nhận mới', true, '<div id="gqKtlModeBox"></div>')}
                     ${gqField('gqTransferContent', 'Nội dung/Căn cứ chuyển', true, `<textarea id="gqTransferContent" class="form-control" rows="3" oninput="gqMark(this.id,false)">${gqE(act ? act.content : '')}</textarea>`)}
                     ${gqFilesFieldHtml('transferFiles', 'Tài liệu đính kèm', false)}
                 </div>` +
@@ -21844,7 +21926,13 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             gqOpenModal('Không thụ lý hồ sơ yêu cầu bồi thường', 'fa-solid fa-ban', body,
                 `<button type="button" class="btn btn-secondary" onclick="gqCloseModal()">Hủy bỏ</button>
                  <button type="button" class="btn btn-danger" id="gqBtnSubmit" onclick="gqSubmitKtl()"><i class="fa-solid fa-paper-plane"></i> Trình Lãnh đạo</button>`);
-            gqMountTargetUnitTree(claim, act ? act.targetUnitId : '');
+            // Radio 03 tùy chọn: Chuyển Bộ Tư pháp / Chuyển Sở Tư pháp / Chuyển trực tiếp tới Cơ quan giải quyết bồi thường (dữ liệu cũ chỉ có đơn vị -> Chuyển trực tiếp)
+            const recLike = { rootUnitId: gqClaimUnitId(claim, rec), currentUnitId: rec ? rec.currentUnitId : '' };
+            gqState.ktlApi = W.mountKtlTransfer(document.getElementById('gqKtlModeBox'), {
+                rec: recLike, name: 'gqKtlMode', treeInputId: 'gqTransferUnit',
+                mode: act ? (act.mode || (act.targetUnitId ? 'CQ' : '')) : '', unitId: act ? act.targetUnitId : '',
+                onChange: () => gqMark('gqKtlModeBox', false)
+            });
             gqToggleKtlTransfer();
         }
         function gqToggleKtlTransfer() {
@@ -21867,29 +21955,33 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             if (!claim || !W) return;
             const code = gqVal('gqKtlReason');
             const isTransfer = code === 'KTL_01';
-            const unitId = gqVal('gqTransferUnit');
+            const api = gqState.ktlApi;
             const tContent = gqVal('gqTransferContent');
             let ok = true;
+            let tgt = null;
             gqMark('gqKtlReason', !code); if (!code) ok = false;
             if (isTransfer) {
-                gqMark('gqTransferUnit', !unitId); if (!unitId) ok = false;
+                const noMode = !api || !api.getMode();
+                gqMark('gqKtlModeBox', noMode);
+                // Đơn vị nhận theo tùy chọn: Bộ Tư pháp / Sở Tư pháp quản lý (xác định theo cây đơn vị) / cơ quan chọn trên cây; kiểm tra cấu hình luồng của đơn vị nhận
+                if (!noMode) { tgt = api.validate(); if (!tgt.ok) ok = false; } else ok = false;
                 gqMark('gqTransferContent', !tContent); if (!tContent) ok = false;
             }
             if (!gqValidateDraft()) ok = false;
             if (!gqValidateLeader()) ok = false;
-            if (!ok) { gqFooterMsg('Vui lòng nhập đầy đủ các trường bắt buộc.'); return; }
-            if (isTransfer && !gqValidateTransferUnit(unitId)) return;
+            if (!ok) { gqFooterMsg(tgt && !tgt.ok ? tgt.message : 'Vui lòng nhập đầy đủ các trường bắt buộc.'); return; }
+            const unitId = tgt ? tgt.targetUnitId : '';
             const reason = W.getKtlReasons().find(r => r.code === code) || { code, name: code };
             const detail = gqVal('gqKtlDetail');
             const draftDoc = gqDraftDocValue();
             const tFiles = (gqState.transferFiles || []).map(n => ({ name: n }));
-            const action = isTransfer ? { type: 'transfer', targetUnitId: unitId, content: tContent, files: tFiles } : undefined;
+            const action = isTransfer ? { type: 'transfer', mode: tgt.mode, loaiYeuCau: tgt.loaiYeuCau, targetUnitId: unitId, content: tContent, files: tFiles } : undefined;
             const res = gqSubmit(claim, 'Không thụ lý', detail, [], { assignee: gqVal('gqLeader'), draftDoc, action, resultStatus: isTransfer ? 'Đã chuyển CQGQBT' : 'Không thụ lý' });
             if (!res.ok) { gqFooterMsg(res.message); return; }
             const officer = W.userName(gqActingUserId());
             gqSaveData(claim, {
                 ktlReasonCode: reason.code, ktlReasonName: reason.name, ktlDetail: detail, ktlDraftDoc: draftDoc,
-                transferRequest: isTransfer ? { via: 'Không thụ lý', targetUnitId: unitId, targetName: W.unitName(unitId), content: tContent, files: tFiles } : null,
+                transferRequest: isTransfer ? { via: 'Không thụ lý', mode: tgt.mode, loaiYeuCau: tgt.loaiYeuCau, targetUnitId: unitId, targetName: W.unitName(unitId), content: tContent, files: tFiles } : null,
                 rejectType: 'Không thụ lý', rejectReason: reason.name + (detail ? '. ' + detail : ''), rejectOfficer: officer, rejectDate: gqNow()
             });
             gqAfterSubmit(claim, 'Không thụ lý');
@@ -21973,10 +22065,23 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     <div><b>Lý do không thụ lý:</b> ${gqE(claim.ktlReasonName)}</div>
                     ${claim.ktlDetail ? `<div><b>Diễn giải:</b> ${gqE(claim.ktlDetail)}</div>` : ''}`);
             }
+            // Thông báo thụ lý (Mẫu 04/BTNN) sinh khi trình Tiếp nhận hồ sơ: là văn bản ban hành của hồ sơ sau khi Thủ trưởng thụ lý
+            const tb = claim.thongBaoThuLy || null;
+            if (tb && rec && rec.thuLy && !rec.thuLy.rejected) {
+                parts.push(`<h4><i class="fa-solid fa-file-circle-check"></i> Văn bản ban hành: Mẫu 04/BTNN - Thông báo thụ lý hồ sơ yêu cầu bồi thường</h4>
+                    <div><b>Số, ký hiệu văn bản:</b> ${gqE(tb.soKyHieu)} - <b>Ngày văn bản:</b> ${gqE(tb.ngay)}</div>
+                    <div><b>Tệp văn bản:</b> ${gqE(tb.fileName)}
+                        <a href="#" onclick="event.preventDefault(); gqOpenThuLyNotice('${gqE(claim.id)}')" style="margin-left:10px; color:#2563eb;"><i class="fa-solid fa-up-right-from-square"></i> Xem văn bản</a>
+                        <a href="#" onclick="event.preventDefault(); gqOpenThuLyNotice('${gqE(claim.id)}', true)" style="margin-left:10px; color:#2563eb;"><i class="fa-solid fa-download"></i> Tải file</a></div>
+                    <div style="color:#64748b;">Thụ lý: ${gqE(W.userName(rec.thuLy.by))} - ${gqE(rec.thuLy.at)}</div>`);
+            }
             const t = claim.transferTo || null;
             const tr = claim.transferRequest || null;
             if (t || tr) {
+                const mode = (t && t.mode) || (tr && tr.mode) || '';
+                const loai = (t && t.loaiYeuCau) || (tr && tr.loaiYeuCau) || '';
                 parts.push(`<h4 style="margin-top:10px;"><i class="fa-solid fa-right-left"></i> Thông tin chuyển CQGQBT</h4>
+                    ${mode ? `<div><b>Chuyển cơ quan tiếp nhận mới:</b> ${gqE((W.KTL_TRANSFER_LABELS || {})[mode] || mode)}${loai ? ` - Loại hồ sơ tại cơ quan nhận: ${gqE(loai)}` : ''}</div>` : ''}
                     <div><b>Cơ quan tiếp nhận mới:</b> ${gqE(t ? W.unitName(t.targetUnitId) : tr.targetName)}</div>
                     <div><b>Nội dung/Căn cứ chuyển:</b> ${gqE(t ? t.content : tr.content)}</div>
                     ${t ? `<div><b>Mã hồ sơ tại cơ quan tiếp nhận mới:</b> ${gqE(t.code)} - ${gqE(t.at)}</div>` : ''}`);

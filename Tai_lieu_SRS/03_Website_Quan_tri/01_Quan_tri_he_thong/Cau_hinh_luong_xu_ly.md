@@ -7,7 +7,7 @@ Cho phép Quản trị hệ thống cấu hình luồng phân công - phê duy�
 - Cấu hình luồng xử lý của từng đơn vị: chọn đúng 01 Hình thức phân công, chuyển đơn vị cấp dưới trực tiếp hoặc phân công cán bộ.
 - Xem trước các nhánh luồng phân công suy ra từ cấu hình.
 
-Cấu hình được dùng tại [Tiếp nhận hồ sơ - Tiếp nhận hồ sơ - Công tác bồi thường nhà nước (Website Quản trị)](../03_Cong_tac_boi_thuong/SRS_BTNN_GiaiQuyetBT_TiepNhan_YCBT.md#tn-luong-phan-cong) (Lãnh đạo Phân công), [Dashboard Lãnh đạo - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](../03_Cong_tac_boi_thuong/SRS_BTNN_ViecChoLanhDaoXuLy.md) và khi Chuyển CQGQBT tại phân hệ Xác định cơ quan giải quyết bồi thường, phân hệ Giải quyết yêu cầu bồi thường. Hệ thống chọn luồng theo Loại hồ sơ và đơn vị tiếp nhận hồ sơ:
+Cấu hình được dùng tại [Tiếp nhận hồ sơ - Tiếp nhận hồ sơ - Công tác bồi thường nhà nước (Website Quản trị)](../03_Cong_tac_boi_thuong/SRS_BTNN_GiaiQuyetBT_TiepNhan_YCBT.md#tn-luong-phan-cong) (Lãnh đạo Phân công), [Dashboard Lãnh đạo - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](../03_Cong_tac_boi_thuong/SRS_BTNN_ViecChoLanhDaoXuLy.md), khi chọn CQGQBT và tự động chuyển CQGQBT tại phân hệ Xác định cơ quan giải quyết bồi thường và khi Chuyển CQGQBT tại phân hệ Giải quyết yêu cầu bồi thường. Hệ thống chọn luồng theo Loại hồ sơ và đơn vị tiếp nhận hồ sơ:
 
 | Loại luồng | Áp dụng cho | Đơn vị gốc được cấu hình | Ví dụ nhánh luồng |
 | :--- | :--- | :--- | :--- |

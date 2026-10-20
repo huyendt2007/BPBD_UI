@@ -251,7 +251,7 @@
                 </div>
                 <div id="kTransferBlock" style="display:none;">
                     <div class="form-group">
-                        <span class="form-label">Cơ quan tiếp nhận mới<span class="required">*</span></span>
+                        <span class="form-label">Chuyển cơ quan tiếp nhận mới<span class="required">*</span></span>
                         <div id="kUnitTree"></div>
                         <div class="error-text" id="kUnitErr">Đây là trường bắt buộc</div>
                     </div>
@@ -283,7 +283,7 @@
 
     <div id="toast" class="toast-notif"></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261020vv"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261020kd"></script>
     <script>
         const WF = BTNN_WF;
         const WT = WF.WORK_TYPES;
@@ -389,7 +389,7 @@
                 const c = esc(t.code);
                 if (activeTab === 'pending') {
                     if (t.type === WT.PHAN_CONG) acts += `<button class="act primary" onclick="event.stopPropagation(); openAssign('${c}')"><i class="fa-solid fa-diagram-project"></i> Phân công</button>`;
-                    else if (t.type === WT.PHE_DUYET || t.type === WT.KY_QD) acts += `<button class="act success" onclick="event.stopPropagation(); openDecision('${c}','approve')"><i class="fa-solid fa-check"></i> ${t.type === WT.KY_QD ? 'Ký duyệt' : 'Phê duyệt'}</button><button class="act danger" onclick="event.stopPropagation(); openDecision('${c}','reject')"><i class="fa-solid fa-xmark"></i> Từ chối</button>`;
+                    else if (t.type === WT.PHE_DUYET || t.type === WT.KY_QD) acts += `<button class="act success" onclick="event.stopPropagation(); openDecision('${c}','approve')"><i class="fa-solid fa-check"></i> ${WF.approveVerb(t.rec)}</button><button class="act danger" onclick="event.stopPropagation(); openDecision('${c}','reject')"><i class="fa-solid fa-xmark"></i> Từ chối</button>`;
                     else if (t.type === WT.THU_LY) acts += `<button class="act success" onclick="event.stopPropagation(); openThuLy('${c}')"><i class="fa-solid fa-gavel"></i> Thụ lý</button><button class="act danger" onclick="event.stopPropagation(); openKtl('${c}')"><i class="fa-solid fa-ban"></i> Không thụ lý</button>`;
                     else if (t.type === WT.KY_KP) acts += `<button class="act success" onclick="event.stopPropagation(); openKpDecision('${esc(t.proposal.id)}','approve')"><i class="fa-solid fa-check"></i> Ký duyệt</button><button class="act danger" onclick="event.stopPropagation(); openKpDecision('${esc(t.proposal.id)}','reject')"><i class="fa-solid fa-xmark"></i> Từ chối</button>`;
                 } else if (t.source === 'wf' && isLatestDoneOf(t) && WF.getRecallInfo(t.rec, me)) {
@@ -412,7 +412,7 @@
         }
         // Thu hồi chỉ hiển thị trên dòng Đã xử lý gần nhất của hồ sơ
         function isLatestDoneOf(t) {
-            const mine = (t.rec.history || []).filter(h => h.userId === WF.getCurrentUserId() && /Chuyển đơn vị|Phân công cán bộ|Phê duyệt/.test(h.action));
+            const mine = (t.rec.history || []).filter(h => h.userId === WF.getCurrentUserId() && /Chuyển đơn vị|Phân công cán bộ|Phê duyệt|Ký duyệt/.test(h.action));
             return mine.length && mine[mine.length - 1] === t.history;
         }
 
@@ -488,7 +488,7 @@
             const c = esc(t.code);
             if (activeTab === 'pending') {
                 if (t.type === WT.PHAN_CONG && WF.canAssign(rec, me)) footer += `<button class="btn btn-primary" onclick="closeOverlay('detailOverlay'); openAssign('${c}')"><i class="fa-solid fa-diagram-project"></i> Phân công</button>`;
-                if ((t.type === WT.PHE_DUYET || t.type === WT.KY_QD) && WF.canApprove(rec, me)) footer += `<button class="btn btn-danger" style="background:#ef4444; color:#fff; border:none;" onclick="closeOverlay('detailOverlay'); openDecision('${c}','reject')">Từ chối</button><button class="btn btn-primary" onclick="closeOverlay('detailOverlay'); openDecision('${c}','approve')"><i class="fa-solid fa-check"></i> ${t.type === WT.KY_QD ? 'Ký duyệt' : 'Phê duyệt'}</button>`;
+                if ((t.type === WT.PHE_DUYET || t.type === WT.KY_QD) && WF.canApprove(rec, me)) footer += `<button class="btn btn-danger" style="background:#ef4444; color:#fff; border:none;" onclick="closeOverlay('detailOverlay'); openDecision('${c}','reject')">Từ chối</button><button class="btn btn-primary" onclick="closeOverlay('detailOverlay'); openDecision('${c}','approve')"><i class="fa-solid fa-check"></i> ${WF.approveVerb(rec)}</button>`;
                 if (t.type === WT.THU_LY && WF.canThuLy(rec, me)) footer += `<button class="btn btn-danger" style="background:#ef4444; color:#fff; border:none;" onclick="closeOverlay('detailOverlay'); openKtl('${c}')"><i class="fa-solid fa-ban"></i> Không thụ lý</button><button class="btn btn-primary" onclick="closeOverlay('detailOverlay'); openThuLy('${c}')"><i class="fa-solid fa-gavel"></i> Thụ lý</button>`;
                 if (t.type === WT.KY_KP && t.proposal.status === 'Chờ duyệt') footer += `<button class="btn btn-danger" style="background:#ef4444; color:#fff; border:none;" onclick="closeOverlay('detailOverlay'); openKpDecision('${esc(t.proposal.id)}','reject')">Từ chối</button><button class="btn btn-primary" onclick="closeOverlay('detailOverlay'); openKpDecision('${esc(t.proposal.id)}','approve')"><i class="fa-solid fa-check"></i> Ký duyệt</button>`;
             } else if (t.source === 'wf' && isLatestDoneOf(t) && WF.getRecallInfo(rec, me)) {
@@ -582,10 +582,16 @@
             actingCode = code;
             decisionMode = mode;
             const a = rec.approval;
-            const verb = WF.QD_KINDS.includes(a.kind) ? 'ký duyệt' : 'phê duyệt';
+            const verb = WF.approveVerb(rec).toLowerCase(); // Xác định CQGQBT: Ký duyệt ở mọi cấp
             const Verb = verb.charAt(0).toUpperCase() + verb.slice(1);
             const isLast = a.level === a.path.length - 1;
-            const after = mode === 'approve' ? (isLast ? `Cấp phê duyệt cuối cùng. Sau khi ${verb}, hồ sơ chuyển [${a.resultStatus || WF.SUBMIT_KINDS[a.kind] || a.prevStatus || ''}].` : `Sau khi ${verb}, hồ sơ chuyển ${WF.unitName(a.path[a.level + 1])} ${verb}.`) : 'Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị trả lại] cho cán bộ chủ trì.';
+            const isXd = WF.isXdRec(rec);
+            const isXdKq = isXd && a.kind === WF.KIND_KQXD;
+            // Chỉ cấp cuối hệ thống ký số văn bản và gán chữ ký tại vị trí đã định; cấp trước Ký duyệt = đồng ý chuyển cấp tiếp theo
+            const xdSign = isXd && a.signDoc && a.signDoc.method !== 'Ký ngoài' ? ' Hệ thống sẽ ký số và gán chữ ký vào văn bản tại vị trí chữ ký đã định (chứng thư số của Lãnh đạo).' : '';
+            const lastStatus = isXdKq ? 'Đã chuyển CQGQBT' : (a.resultStatus || WF.SUBMIT_KINDS[a.kind] || a.prevStatus || '');
+            const xdAuto = isXdKq ? ` Hệ thống tự động chuyển hồ sơ đến ${WF.unitName(WF.xdTargetUnitId(rec))}.` : '';
+            const after = mode === 'approve' ? (isLast ? `Cấp phê duyệt cuối cùng.${xdSign} Sau khi ${verb}, hồ sơ chuyển [${lastStatus}].${xdAuto}` : `Sau khi ${verb}, hồ sơ chuyển ${WF.unitName(a.path[a.level + 1])} ${verb}${isXd ? ' (cấp này không ký số văn bản)' : ''}.`) : 'Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị trả lại] cho cán bộ chủ trì.';
             document.getElementById('decTitle').innerHTML = mode === 'approve' ? `<i class="fa-solid fa-circle-check"></i> ${Verb} hồ sơ ${esc(code)}` : `<i class="fa-solid fa-circle-xmark" style="color:#dc2626;"></i> Từ chối phê duyệt hồ sơ ${esc(code)}`;
             document.getElementById('decContext').innerHTML = WF.renderDraftDocHtml(rec) + `<div><strong>Nội dung trình:</strong> ${esc(a.kind)} - ${esc(WF.userName(a.submittedBy))}</div>${a.content ? `<div class="muted">${esc(a.content)}</div>` : ''}<div style="margin-top:6px;"><strong>Cấp phê duyệt:</strong> ${a.level + 1}/${a.path.length} - ${esc(WF.unitName(a.path[a.level]))}</div><div class="hint">${esc(after)}</div>`;
             document.getElementById('decLabel').innerHTML = mode === 'approve' ? `Ý kiến ${verb}` : 'Lý do từ chối phê duyệt<span class="required">*</span>';
@@ -667,7 +673,8 @@
             document.getElementById('kDetail').value = '';
             document.getElementById('kContent').value = '';
             ['kReasonErr', 'kUnitErr', 'kContentErr'].forEach(id => document.getElementById(id).style.display = 'none');
-            ktlTree = WF.mountUnitTree(document.getElementById('kUnitTree'), { inputId: 'kUnit', disabledIds: [rec.rootUnitId], placeholder: '-- Chọn cơ quan tiếp nhận mới --' });
+            // Radio 03 tùy chọn: Chuyển Bộ Tư pháp / Chuyển Sở Tư pháp (Sở Tư pháp quản lý xác định theo cây đơn vị) / Chuyển trực tiếp tới Cơ quan giải quyết bồi thường
+            ktlTree = WF.mountKtlTransfer(document.getElementById('kUnitTree'), { rec, name: 'kMode', treeInputId: 'kUnit', onChange: () => { document.getElementById('kUnitErr').style.display = 'none'; } });
             toggleKtlTransfer();
             openOverlay('ktlOverlay');
         }
@@ -680,15 +687,18 @@
             if (!reason) { document.getElementById('kReasonErr').style.display = 'block'; return; }
             let transfer = null;
             if (reason === 'KTL_01') {
-                const unit = (document.getElementById('kUnit') || {}).value || '';
+                const mode = ktlTree ? ktlTree.getMode() : '';
                 const content = document.getElementById('kContent').value.trim();
-                document.getElementById('kUnitErr').style.display = unit ? 'none' : 'block';
+                document.getElementById('kUnitErr').style.display = mode ? 'none' : 'block';
                 document.getElementById('kContentErr').style.display = content ? 'none' : 'block';
-                if (!unit || !content) return;
-                transfer = { targetUnitId: unit, content };
+                if (!mode || !content) return;
+                // Đơn vị nhận theo tùy chọn: kiểm tra xác định được Sở Tư pháp / đã chọn cơ quan / cấu hình luồng của đơn vị nhận
+                const tgt = ktlTree.validate();
+                if (!tgt.ok) return;
+                transfer = { mode: tgt.mode, targetUnitId: tgt.targetUnitId, content };
             }
             const res = WF.rejectCase(actingCode, reason, document.getElementById('kDetail').value.trim(), transfer);
-            if (!res.ok && /cấu hình luồng/.test(res.message)) { showToast(res.message, 'error'); return; }
+            if (!res.ok && res.transferError) { showToast(res.message, 'error'); return; }
             closeOverlay('ktlOverlay');
             showToast(res.ok ? `Hồ sơ ${actingCode}: [${res.record.status}].` : res.message, res.ok ? 'success' : 'error');
             renderAll();

@@ -385,14 +385,23 @@
         decisionMode = mode === 'reject' ? 'reject' : 'approve';
         const a = rec.approval;
         const isLast = a.level === a.path.length - 1;
+        // Xác định CQGQBT: Ký duyệt ở mọi cấp; chỉ cấp cuối hệ thống ký số văn bản (Kết quả xác định CQGQBT ký xong hệ thống tự động chuyển CQGQBT)
+        const verb = WF.approveVerb ? WF.approveVerb(rec) : 'Phê duyệt';
+        const verbLc = verb.toLowerCase();
+        const isXd = WF.isXdRec && WF.isXdRec(rec);
+        const isXdKq = isXd && a.kind === WF.KIND_KQXD;
+        const signText = a.signDoc ? (a.signDoc.method === 'Ký ngoài' ? ' sử dụng văn bản ký ngoài đã tải lên;' : ' hệ thống sẽ ký số và gán chữ ký vào văn bản tại vị trí chữ ký đã định (chứng thư số của Lãnh đạo);') : '';
+        const lastText = isXdKq
+            ? `Cấp cuối cùng. Sau khi ký duyệt,${signText} hệ thống tự động chuyển hồ sơ đến ${WF.unitName(WF.xdTargetUnitId(rec))}, hồ sơ chuyển [Đã chuyển CQGQBT].`
+            : `Cấp phê duyệt cuối cùng. Sau khi ${verbLc},${signText} hồ sơ chuyển [${a.resultStatus || WF.SUBMIT_KINDS[a.kind] || a.prevStatus || ''}].`;
         const after = decisionMode === 'approve'
-            ? (isLast ? `Cấp phê duyệt cuối cùng. Sau khi phê duyệt, hồ sơ chuyển [${a.resultStatus || WF.SUBMIT_KINDS[a.kind] || a.prevStatus || ''}].` : `Sau khi phê duyệt, hồ sơ chuyển ${WF.unitName(a.path[a.level + 1])} phê duyệt.`)
+            ? (isLast ? lastText : `Sau khi ${verbLc}, hồ sơ chuyển ${WF.unitName(a.path[a.level + 1])} ${verbLc}${isXd ? ' (cấp này không ký số văn bản)' : ''}.`)
             : 'Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị trả lại] cho cán bộ chủ trì.';
-        document.getElementById('ldDTitle').innerHTML = decisionMode === 'approve' ? `<i class="fa-solid fa-circle-check"></i> Phê duyệt hồ sơ ${esc(code)}` : `<i class="fa-solid fa-circle-xmark" style="color:#dc2626;"></i> Từ chối phê duyệt hồ sơ ${esc(code)}`;
+        document.getElementById('ldDTitle').innerHTML = decisionMode === 'approve' ? `<i class="fa-solid fa-circle-check"></i> ${verb} hồ sơ ${esc(code)}` : `<i class="fa-solid fa-circle-xmark" style="color:#dc2626;"></i> Từ chối phê duyệt hồ sơ ${esc(code)}`;
         document.getElementById('ldDContext').innerHTML = WF.renderDraftDocHtml(rec) + `<div><strong>Nội dung trình:</strong> ${esc(a.kind)} - ${esc(WF.userName(a.submittedBy))}</div>${a.content ? `<div class="ld-muted">${esc(a.content)}</div>` : ''}<div style="margin-top:6px;"><strong>Cấp phê duyệt:</strong> ${a.level + 1}/${a.path.length} - ${esc(WF.unitName(a.path[a.level]))}</div><div class="ld-hint">${esc(after)}</div>`;
-        document.getElementById('ldDLabel').innerHTML = decisionMode === 'approve' ? 'Ý kiến phê duyệt' : 'Lý do từ chối phê duyệt<span class="ld-req">*</span>';
+        document.getElementById('ldDLabel').innerHTML = decisionMode === 'approve' ? `Ý kiến ${verbLc}` : 'Lý do từ chối phê duyệt<span class="ld-req">*</span>';
         const note = document.getElementById('ldDNote');
-        note.placeholder = decisionMode === 'approve' ? 'Nhập ý kiến phê duyệt...' : 'Nhập lý do từ chối phê duyệt...';
+        note.placeholder = decisionMode === 'approve' ? `Nhập ý kiến ${verbLc}...` : 'Nhập lý do từ chối phê duyệt...';
         note.value = '';
         document.getElementById('ldDErr').style.display = 'none';
         const nextLeaders = decisionMode === 'approve' ? WF.nextLevelLeaders(rec) : [];
@@ -400,7 +409,7 @@
         document.getElementById('ldDNextErr').style.display = 'none';
         document.getElementById('ldDNext').innerHTML = `<option value="">Chọn Lãnh đạo ${esc(nextLeaders.length ? WF.unitName(a.path[a.level + 1]) : '')}...</option>` + nextLeaders.map(u => `<option value="${esc(u)}">${esc(WF.userLabel(u))}</option>`).join('');
         const btn = document.getElementById('ldDSubmit');
-        btn.textContent = decisionMode === 'approve' ? 'Phê duyệt' : 'Từ chối phê duyệt';
+        btn.textContent = decisionMode === 'approve' ? verb : 'Từ chối phê duyệt';
         btn.className = decisionMode === 'approve' ? 'ld-btn primary' : 'ld-btn danger';
         open('ldDecideOverlay');
     }

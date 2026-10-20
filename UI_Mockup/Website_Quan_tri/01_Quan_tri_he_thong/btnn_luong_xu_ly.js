@@ -68,7 +68,7 @@
     };
     // Danh sách Nội dung trình theo phân hệ (bộ lọc "Nội dung trình")
     const APPROVAL_KINDS = {
-        XD: [KIND_KQXD, 'Yêu cầu bổ sung', 'Không thụ lý'],
+        XD: ['Yêu cầu bổ sung', 'Không thụ lý', KIND_KQXD],
         YCBT: ['Tiếp nhận hồ sơ', 'Yêu cầu bổ sung', 'Không thụ lý', 'Chuyển CQGQBT', 'Quyết định GQBT', 'Hủy QĐ', 'Sửa chữa, bổ sung QĐ']
     };
     // Danh mục Lý do không thụ lý (DM_55) - Điều 43 Luật TNBTCNN số 10/2017/QH14
@@ -1404,9 +1404,8 @@
         const items = list.map((e, i) => {
             const isLatest = (i === list.length - 1);
             return `<div style="background:#fff; border:1px solid #fecaca; border-left:4px solid #ef4444; border-radius:6px; padding:12px 14px; margin-top:8px; font-size:13px; line-height:1.55;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <div style="margin-bottom:6px;">
                     <div style="font-weight:700; color:#991b1b;"><i class="fa-solid fa-clock"></i> Thời điểm: ${esc(e.at || '--')}</div>
-                    ${(isLatest && current) ? '<span class="badge" style="background:#fee2e2; color:#991b1b; font-size:11px;">Đang bị trả lại</span>' : ''}
                 </div>
                 ${histRow('Lãnh đạo trả lại', `<b>${esc(userName(e.by))}</b>${e.unitId ? ' - ' + esc(unitName(e.unitId)) : ''}`)}
                 ${histRow('Nội dung trình bị từ chối', `<b style="color:#b91c1c;">${esc(e.kind || '--')}</b>`)}

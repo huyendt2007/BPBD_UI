@@ -9,7 +9,7 @@ Quản lý tập trung bước tiếp nhận ban đầu và phân công xử lý
 - Tiếp nhận mới hồ sơ: Cán bộ tiếp nhận ghi nhận thông tin tổng quan (loại hồ sơ, hình thức tiếp nhận, lĩnh vực phát sinh thiệt hại), thông tin người yêu cầu, thông tin người bị thiệt hại (khi người yêu cầu không phải là người bị thiệt hại) và đính kèm tài liệu ban đầu.
 - Nhận hồ sơ từ các nguồn khác vào danh sách để Lãnh đạo phân công:
   + Hồ sơ gửi từ Dịch vụ công quốc gia.
-  + Hồ sơ do cơ quan khác Chuyển CQGQBT đến.
+  + Hồ sơ do cơ quan khác Chuyển CQGQBT đến (thao tác Chuyển CQGQBT, hoặc Không thụ lý với lý do KTL_01 tại phân hệ Giải quyết yêu cầu bồi thường; Bộ Tư pháp / Sở Tư pháp nhận hồ sơ Loại hồ sơ `Xác định cơ quan giải quyết bồi thường` khi cơ quan chuyển chọn `Chuyển Bộ Tư pháp` / `Chuyển Sở Tư pháp`).
   + Hồ sơ do Bộ Tư pháp / Sở Tư pháp chuyển đến sau khi hoàn thành Xác định cơ quan giải quyết bồi thường.
 - Phân công: Lãnh đạo chuyển hồ sơ xuống đơn vị cấp dưới hoặc phân công trực tiếp cán bộ xử lý theo luồng tương ứng với Loại hồ sơ tại [Cấu hình luồng xử lý - Cấu hình luồng xử lý - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Cau_hinh_luong_xu_ly.md).
 - Khi phân công cán bộ, hồ sơ chuyển `Chờ tiếp nhận` tại phân hệ **Xác định cơ quan giải quyết bồi thường** hoặc phân hệ **Giải quyết yêu cầu bồi thường** theo Loại hồ sơ.
@@ -31,7 +31,7 @@ Hệ thống phân quyền thao tác theo các quyền nghiệp vụ được c�
 - **Phân công** (Lãnh đạo): Chuyển đơn vị hoặc Phân công cán bộ khi đồng thời:
   + Hồ sơ ở trạng thái `Chờ phân công` / `Đang phân công`.
   + Lãnh đạo thuộc Nhóm lãnh đạo của đơn vị đang phân công.
-- **Thu hồi** (Lãnh đạo): Thu hồi hồ sơ đã chuyển đơn vị / phân công cán bộ khi bên nhận chưa xử lý.
+- **Thu hồi** (Lãnh đạo): Thu hồi lượt Chuyển đơn vị / Phân công cán bộ gần nhất do chính đơn vị mình thực hiện, khi bên nhận chưa xử lý; chi tiết tại [Quy tắc Thu hồi - Tiếp nhận hồ sơ - Công tác bồi thường nhà nước (Website Quản trị)](#tn-thu-hoi).
 - **Loại hồ sơ theo đơn vị**:
   + Ô chọn và bộ lọc `Loại hồ sơ` chỉ hiển thị các giá trị của [Danh mục Loại hồ sơ - Quản lý danh mục - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Quan_ly_danh_muc.md) [DM_54] có `Đơn vị áp dụng` chứa đơn vị của người dùng.
   + Tính cả đơn vị cha: chọn đơn vị cha thì áp dụng cho toàn bộ đơn vị trực thuộc.
@@ -49,8 +49,8 @@ c. Nguồn hồ sơ
 | :--- | :--- | :--- | :--- | :--- |
 | `Tiếp nhận mới` | Cán bộ tiếp nhận nhập tại [MH02 - Màn hình Tiếp nhận hồ sơ](#43313-mh02---màn-hình-tiếp-nhận-hồ-sơ). | Cán bộ chọn | Cán bộ chọn `Trực tiếp` hoặc `Qua dịch vụ bưu chính`. | Người tạo hồ sơ. |
 | `Dịch vụ công quốc gia` | - Hệ thống tự tạo khi nhận hồ sơ gửi từ Dịch vụ công quốc gia.<br>- Đơn vị tiếp nhận là cơ quan giải quyết bồi thường người dân đã chọn. | `Giải quyết yêu cầu bồi thường` | Theo dữ liệu nhận từ Dịch vụ công quốc gia. | - Người đầu tiên thao tác Phân công hồ sơ tại màn hình này.<br>- Trước đó hiển thị `-`. |
-| `Chuyển CQGQBT` | - Hệ thống tự tạo khi cấp cuối phê duyệt Chuyển CQGQBT tại phân hệ Giải quyết yêu cầu bồi thường.<br>- Đơn vị tiếp nhận là cơ quan được chuyển đến. | `Giải quyết yêu cầu bồi thường` | Kế thừa từ hồ sơ gốc. | Như nguồn `Dịch vụ công quốc gia`. |
-| `Xác định CQGQBT` | - Hệ thống tự tạo khi Bộ Tư pháp / Sở Tư pháp hoàn thành Chuyển CQGQBT tại phân hệ Xác định cơ quan giải quyết bồi thường.<br>- Đơn vị tiếp nhận là cơ quan giải quyết bồi thường đã xác định. | `Giải quyết yêu cầu bồi thường` | Kế thừa từ hồ sơ gốc. | Như nguồn `Dịch vụ công quốc gia`. |
+| `Chuyển CQGQBT` | - Hệ thống tự tạo tại phân hệ Giải quyết yêu cầu bồi thường khi:<br>+ Cấp cuối phê duyệt Nội dung trình `Chuyển CQGQBT`.<br>+ Cấp cuối phê duyệt Nội dung trình `Không thụ lý` với lý do `KTL_01`, hoặc Thủ trưởng cơ quan giải quyết bồi thường xác nhận Không thụ lý lý do `KTL_01` với hồ sơ `Chờ thụ lý`; hồ sơ được chuyển theo 01 trong 03 tùy chọn tại khối `Chuyển cơ quan tiếp nhận mới` ([Không thụ lý hồ sơ yêu cầu bồi thường - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-khong-thu-ly)).<br>- Đơn vị tiếp nhận là cơ quan được chuyển đến:<br>+ `Chuyển Bộ Tư pháp`: Bộ Tư pháp.<br>+ `Chuyển Sở Tư pháp`: Sở Tư pháp quản lý đơn vị (cùng tỉnh/thành phố với đơn vị gốc của hồ sơ, theo cây Cơ cấu tổ chức).<br>+ `Chuyển trực tiếp tới Cơ quan giải quyết bồi thường` và thao tác `Chuyển CQGQBT`: đơn vị đã chọn tại `Cơ quan tiếp nhận mới`.<br>- Giữ nguyên `Mã vụ việc` của hồ sơ gốc; kèm văn bản Mẫu 04/BTNN - Thông báo không thụ lý hồ sơ yêu cầu bồi thường (với lý do `KTL_01`), Nội dung/Căn cứ chuyển, tài liệu đính kèm và toàn bộ tài liệu hồ sơ. | - `Xác định cơ quan giải quyết bồi thường`: Không thụ lý lý do `KTL_01`, tùy chọn `Chuyển Bộ Tư pháp` hoặc `Chuyển Sở Tư pháp`.<br>- `Giải quyết yêu cầu bồi thường`: thao tác `Chuyển CQGQBT`; Không thụ lý lý do `KTL_01`, tùy chọn `Chuyển trực tiếp tới Cơ quan giải quyết bồi thường`. | Kế thừa từ hồ sơ gốc. | Như nguồn `Dịch vụ công quốc gia`. |
+| `Xác định CQGQBT` | - Hệ thống tự tạo khi Lãnh đạo cấp cuối của Bộ Tư pháp / Sở Tư pháp Ký duyệt văn bản Kết quả xác định CQGQBT tại phân hệ Xác định cơ quan giải quyết bồi thường (tự động chuyển CQGQBT, theo [Tự động chuyển CQGQBT - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-tu-dong-chuyen)).<br>- Đơn vị tiếp nhận là CQGQBT đã chọn tại kết quả xác định (`Chọn CQGQBT trên hệ thống`). | `Giải quyết yêu cầu bồi thường` | Kế thừa từ hồ sơ gốc. | Như nguồn `Dịch vụ công quốc gia`. |
 
 - Hồ sơ mới của mọi nguồn ở trạng thái `Chờ phân công` tại đơn vị gốc của đơn vị tiếp nhận.
 - `Hình thức tiếp nhận` tham chiếu [Danh mục Hình thức tiếp nhận - Danh mục dữ liệu dùng chung - Tổng quan và quy tắc chung](../../Tai%20lieu%20tong%20hop/00_Tong_quan_va_Quy_tac_chung.md#danh-muc-dung-chung) [DM_25].
@@ -77,6 +77,8 @@ d. Mã vụ việc và mã hồ sơ
 | Tiếp nhận hồ sơ → Xác định CQGQBT / Giải quyết YCBT | Giữ nguyên | Sinh `XD-` / `BT-` |
 | Xác định CQGQBT → Giải quyết YCBT | Giữ nguyên | Sinh `BT-` |
 | Chuyển CQGQBT sang cơ quan khác | Giữ nguyên | Sinh `BT-` mới tại cơ quan nhận; hồ sơ cũ đóng |
+| Không thụ lý lý do `KTL_01` - `Chuyển Bộ Tư pháp` / `Chuyển Sở Tư pháp` | Giữ nguyên | Sinh `XD-` khi hồ sơ vào phân hệ Xác định cơ quan giải quyết bồi thường; hồ sơ cũ đóng |
+| Không thụ lý lý do `KTL_01` - `Chuyển trực tiếp tới Cơ quan giải quyết bồi thường` | Giữ nguyên | Sinh `BT-` mới khi hồ sơ vào phân hệ Giải quyết yêu cầu bồi thường tại cơ quan nhận; hồ sơ cũ đóng |
 | Giải quyết YCBT → Xem xét hoàn trả | Giữ nguyên | Sinh `HT-` |
 
 - 01 vụ việc chỉ có 01 hồ sơ hoàn trả; danh sách cán bộ chịu trách nhiệm hoàn trả quản lý trong hồ sơ đó.
@@ -135,6 +137,33 @@ g. Quy tắc 02 tab Chờ xử lý / Đã xử lý
 - Trường `Trạng thái` của bộ lọc chỉ gồm các trạng thái đang có của hồ sơ thuộc tab đang chọn.
 - Click dòng hồ sơ: mở [MH03 - Màn hình Xem chi tiết hồ sơ tiếp nhận](#43314-mh03---màn-hình-xem-chi-tiết-hồ-sơ-tiếp-nhận) của bản ghi.
 
+<a id="tn-thu-hoi"></a>
+h. Quy tắc Thu hồi
+
+- Thu hồi dùng để lấy lại hồ sơ Lãnh đạo đã Chuyển đơn vị hoặc Phân công cán bộ khi bên nhận chưa xử lý. Không có thao tác "Trả lại" từ cấp dưới lên cấp trên; cấp trên dùng Thu hồi.
+- **Người thực hiện**: Lãnh đạo thuộc Nhóm lãnh đạo (tại Cấu hình luồng xử lý) của đơn vị đã thực hiện lượt chuyển gần nhất của hồ sơ.
+- **Vị trí thao tác**: tab `Đã xử lý` của [MH01 - Màn hình Danh sách hồ sơ tiếp nhận](#43312-mh01---màn-hình-danh-sách-hồ-sơ-tiếp-nhận) và [MH03 - Màn hình Xem chi tiết hồ sơ tiếp nhận](#43314-mh03---màn-hình-xem-chi-tiết-hồ-sơ-tiếp-nhận).
+- **Điều kiện thu hồi** (thỏa đồng thời):
+  + Chỉ thu hồi **lượt chuyển gần nhất** trong `Quá trình phân công`; không thu hồi lượt chuyển trước đó khi đã có lượt chuyển tiếp theo.
+  + Lượt chuyển gần nhất có Tình trạng `Chưa xử lý`.
+  + Theo hình thức của lượt chuyển gần nhất:
+
+| Hình thức lượt chuyển | Hồ sơ được thu hồi khi | Hồ sơ không còn được thu hồi khi |
+| :--- | :--- | :--- |
+| `Chuyển đơn vị` | Hồ sơ `Đang phân công` tại đơn vị nhận (Lãnh đạo đơn vị nhận chưa Chuyển đơn vị / Phân công cán bộ tiếp) | Lãnh đạo đơn vị nhận đã Chuyển đơn vị hoặc Phân công cán bộ |
+| `Phân công cán bộ` | Hồ sơ `Chờ tiếp nhận` (cán bộ chủ trì chưa tiếp nhận tại phân hệ xử lý) | Cán bộ chủ trì đã thao tác trên hồ sơ tại phân hệ xử lý (Tiếp nhận, Yêu cầu bổ sung, Không thụ lý...) |
+
+  + Bên nhận đã mở xem hồ sơ vẫn được thu hồi; việc xem không tính là đã xử lý.
+- **Kết quả thu hồi**:
+  + Xóa lượt chuyển gần nhất khỏi `Quá trình phân công`.
+  + Hồ sơ trở lại đơn vị đã chuyển:
+    - Không còn lượt chuyển nào (đơn vị đã chuyển là đơn vị gốc): trạng thái `Chờ phân công`.
+    - Còn lượt chuyển trước đó: trạng thái `Đang phân công`; lượt chuyển liền trước trở lại Tình trạng `Chưa xử lý`.
+  + Thu hồi lượt `Phân công cán bộ`: xóa cán bộ chủ trì; hồ sơ không còn hiển thị tại phân hệ xử lý (Xác định cơ quan giải quyết bồi thường / Giải quyết yêu cầu bồi thường) của cán bộ đó.
+  + Hồ sơ trở lại tab `Chờ xử lý` của Lãnh đạo đã thu hồi; không còn ở tab `Chờ xử lý` của bên nhận (Lãnh đạo đơn vị nhận hoặc cán bộ chủ trì). Badge số lượng của các bên được cập nhật theo.
+  + Ghi `Lịch sử xử lý`: hành động `Thu hồi`, nội dung "Thu hồi hồ sơ đã chuyển [Tên đơn vị nhận]." (Chuyển đơn vị) hoặc "Thu hồi phân công cán bộ [Họ và tên]." (Phân công cán bộ), kèm người thực hiện và thời điểm.
+- **Kiểm tra đồng thời**: hệ thống kiểm tra lại điều kiện thu hồi tại máy chủ khi Lãnh đạo bấm `Thu hồi` và khi bấm `Đồng ý` trên popup; bên nhận đã xử lý trong lúc đó thì không thu hồi, hiển thị [MSG-ERR-BTNN-LXL-004].
+
 ---
 
 ##### 4.3.3.1.2. MH01 - Màn hình Danh sách hồ sơ tiếp nhận
@@ -186,7 +215,7 @@ g. Quy tắc 02 tab Chờ xử lý / Đã xử lý
 | 7 | Xóa | Icon button | - Hiển thị popup xác nhận xóa (Custom Confirmation Modal) với nội dung [MSG-CFM-SYS-001].<br>- Tại popup, người dùng chọn:<br>+ **Đồng ý**: Hệ thống **xóa mềm** hồ sơ (cập nhật cờ đã xóa, không xóa vật lý) để lưu vết audit log và thanh tra; gỡ hồ sơ khỏi tab `Chờ xử lý` của lãnh đạo; bản ghi không còn hiển thị trên danh sách; hiển thị thông báo thành công [MSG-SUC-BTNN-TN-001].<br>+ **Hủy bỏ**: Đóng popup, không xóa hồ sơ. |
 | 8 | Chuyển tab | Tab | - Hiển thị danh sách của tab `Chờ xử lý` hoặc `Đã xử lý`.<br>- Nạp lại bộ lọc `Trạng thái` theo tab.<br>- Đưa về Trang 1. |
 | 9 | Phân công | Icon button | - Mở [MH05 - Popup Phân công xử lý hồ sơ](#tn-mh05-phan-cong). |
-| 10 | Thu hồi | Icon button | - Mở [MH05 - Popup Xác nhận thu hồi - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_ViecChoLanhDaoXuLy.md#vcld-mh05).<br>- Thu hồi thành công: hồ sơ trở lại `Chờ phân công` / `Đang phân công` tại đơn vị đã chuyển, hiển thị lại tại tab `Chờ xử lý`. |
+| 10 | Thu hồi | Icon button | - Mở [MH06 - Popup Xác nhận thu hồi](#tn-mh06-thu-hoi).<br>- Thu hồi thành công: xử lý theo [Quy tắc Thu hồi - Tiếp nhận hồ sơ - Công tác bồi thường nhà nước (Website Quản trị)](#tn-thu-hoi). |
 
 ---
 
@@ -327,7 +356,7 @@ g. Quy tắc 02 tab Chờ xử lý / Đã xử lý
 | 3 | Sửa | Button | - **Hiển thị khi** đồng thời:<br>+ Hồ sơ có `Nguồn hồ sơ` = `Tiếp nhận mới`.<br>+ Hồ sơ do chính người dùng tiếp nhận.<br>+ Hồ sơ ở trạng thái `Chờ phân công`, chưa có lãnh đạo nào thao tác (chưa có lượt chuyển/phân công).<br>- Click nút: mở [MH02 - Màn hình Tiếp nhận hồ sơ](#43313-mh02---màn-hình-tiếp-nhận-hồ-sơ) ở chế độ sửa. |
 | 4 | Xóa | Button | - **Hiển thị khi**: Cùng điều kiện với nút `Sửa`.<br>- Click nút: hiển thị popup xác nhận xóa (Custom Confirmation Modal) với nội dung [MSG-CFM-SYS-001].<br>- Tại popup, người dùng chọn:<br>+ **Đồng ý**: Xóa mềm hồ sơ như chức năng Xóa (STT 7 của MH01); hiển thị thông báo [MSG-SUC-BTNN-TN-001]; quay về [MH01 - Màn hình Danh sách hồ sơ tiếp nhận](#43312-mh01---màn-hình-danh-sách-hồ-sơ-tiếp-nhận).<br>+ **Hủy bỏ**: Đóng popup, giữ nguyên màn hình chi tiết. |
 | 5 | Phân công | Button | - **Hiển thị khi** đồng thời:<br>+ Người dùng thuộc Nhóm lãnh đạo của đơn vị đang phân công tại Cấu hình luồng xử lý.<br>+ Hồ sơ ở trạng thái `Chờ phân công` hoặc `Đang phân công`.<br>- Click nút: mở [MH05 - Popup Phân công xử lý hồ sơ](#tn-mh05-phan-cong). |
-| 6 | Thu hồi | Button | - **Hiển thị khi** đồng thời:<br>+ Người dùng thuộc Nhóm lãnh đạo của đơn vị đã chuyển/phân công hồ sơ.<br>+ Hồ sơ thỏa điều kiện thu hồi tại quy tắc 7 của [Quy tắc chung - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_ViecChoLanhDaoXuLy.md#vcld-quy-tac-chung): hồ sơ `Đang phân công` tại đơn vị nhận, hoặc `Chờ tiếp nhận` khi cán bộ chưa tiếp nhận.<br>- Click nút: mở [MH05 - Popup Xác nhận thu hồi - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_ViecChoLanhDaoXuLy.md#vcld-mh05). |
+| 6 | Thu hồi | Button | - **Hiển thị khi** đồng thời:<br>+ Người dùng thuộc Nhóm lãnh đạo của đơn vị đã chuyển/phân công hồ sơ.<br>+ Hồ sơ thỏa điều kiện thu hồi tại [Quy tắc Thu hồi - Tiếp nhận hồ sơ - Công tác bồi thường nhà nước (Website Quản trị)](#tn-thu-hoi).<br>- Click nút: mở [MH06 - Popup Xác nhận thu hồi](#tn-mh06-thu-hoi). |
 
 - Nút không thỏa điều kiện hiển thị: không hiển thị trên thanh thao tác.
 
@@ -384,3 +413,27 @@ g. Quy tắc 02 tab Chờ xử lý / Đã xử lý
 | 2 | Hủy bỏ / Đóng (x) | Button / Icon | - Đóng popup, không lưu. |
 
 ---
+
+<a id="tn-mh06-thu-hoi"></a>
+##### 4.3.3.1.7. MH06 - Popup Xác nhận thu hồi
+
+###### 4.3.3.1.7.1. Màn hình
+
+![MH06 - Popup Xác nhận thu hồi](images/UC_Tiep_nhan_ho_so_MH06_Popup_Thu_hoi.png)
+
+- Popup mở khi Lãnh đạo click `Thu hồi` tại tab `Đã xử lý` của MH01 hoặc tại MH03.
+- Trước khi mở popup, hệ thống kiểm tra điều kiện thu hồi theo [Quy tắc Thu hồi - Tiếp nhận hồ sơ - Công tác bồi thường nhà nước (Website Quản trị)](#tn-thu-hoi); hồ sơ không còn thỏa điều kiện thì hiển thị [MSG-ERR-BTNN-LXL-004], tải lại danh sách, không mở popup.
+
+###### 4.3.3.1.7.2. Mô tả thông tin trên màn hình
+
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| Tiêu đề popup | String(50) | - | `Xác nhận` | Control UI: Heading text (Read-only). |
+| Nội dung xác nhận | String(500) | - | Theo dữ liệu bản ghi | Control UI: Text (Read-only).<br>- Nội dung theo [MSG-CFM-BTNN-LXL-001]: "Bạn có chắc chắn muốn thu hồi hồ sơ [Mã vụ việc]?".<br>- Bên nhận đã mở xem hồ sơ: thêm " Bên nhận đã xem lúc [hh:mm dd/mm/yyyy]." |
+
+###### 4.3.3.1.7.3. Chức năng trên màn hình
+
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :--- | :--- | :--- | :--- |
+| 1 | Đồng ý | Button | Khi người dùng click nút, hệ thống kiểm tra lại điều kiện thu hồi và xử lý theo các trường hợp:<br>- **TH1 - Hồ sơ không còn thỏa điều kiện thu hồi** (bên nhận đã xử lý trong lúc popup đang mở):<br>+ Đóng popup.<br>+ Hiển thị thông báo lỗi [MSG-ERR-BTNN-LXL-004].<br>+ Tải lại danh sách; hồ sơ giữ nguyên.<br>- **TH Hợp lệ**:<br>+ Thực hiện thu hồi theo Kết quả thu hồi tại [Quy tắc Thu hồi - Tiếp nhận hồ sơ - Công tác bồi thường nhà nước (Website Quản trị)](#tn-thu-hoi).<br>+ Đóng popup, hiển thị thông báo thành công [MSG-SUC-BTNN-LXL-002]: "Đã thu hồi hồ sơ [Mã vụ việc]. Trạng thái: [Trạng thái]."<br>+ Tải lại danh sách và badge số lượng; hồ sơ hiển thị tại tab `Chờ xử lý` của Lãnh đạo đã thu hồi. |
+| 2 | Hủy bỏ | Button / Icon | - Đóng popup, không thu hồi; hồ sơ giữ nguyên. |
