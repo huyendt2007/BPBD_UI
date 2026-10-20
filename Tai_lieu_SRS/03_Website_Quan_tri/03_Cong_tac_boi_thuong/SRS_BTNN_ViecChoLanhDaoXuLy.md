@@ -127,7 +127,7 @@
 | **Khối Chờ xử lý** | Card | - | - | Control UI: 06 khối dạng thẻ, bố cục 03 cột (màn hình hẹp: 02 hoặc 01 cột), mỗi khối một màu nhận diện, theo thứ tự:<br>+ Chờ phân công<br>+ Chờ duyệt Xác định CQGQBT<br>+ Chờ duyệt Giải quyết YCBT<br>+ Chờ duyệt QĐ Giải quyết YCBT<br>+ Chờ duyệt cấp kinh phí<br>+ Chờ duyệt Xem xét hoàn trả |
 | Tên khối | String(100) | - | Theo khối | Tên khối và dòng phụ là tên phân hệ tương ứng (bảng tại [Mục đích - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](#vcld-muc-dich)). |
 | Số công việc | Integer(10) | - | Hệ thống tính | Chỉ đọc, chữ lớn ở góc phải khối, theo quy tắc 18 tại [Quy tắc chung - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](#vcld-quy-tac-chung). Bằng 0: hiển thị màu nhạt. |
-| Công việc gần nhất | List(String) | - | Theo dữ liệu | Tối đa 03 dòng, mỗi dòng "[Mã hồ sơ / Mã đề nghị] [Họ và tên người yêu cầu] - [Nội dung trình / Loại đề nghị / Trạng thái]".<br>- Không có công việc: "Không có công việc chờ xử lý."<br>- Nhiều hơn 03 công việc: chân khối hiển thị "và [n] công việc khác". |
+| Công việc gần nhất | List(String) | - | Theo dữ liệu | Tối đa 03 dòng, mỗi dòng "[Mã hồ sơ / Mã đề nghị] [Tên cá nhân/Tổ chức yêu cầu] - [Nội dung trình / Loại đề nghị / Trạng thái]".<br>- Không có công việc: "Không có công việc chờ xử lý."<br>- Nhiều hơn 03 công việc: chân khối hiển thị "và [n] công việc khác". |
 | Mở danh sách Chờ xử lý | Link | - | - | Control UI: Liên kết ở chân khối "Mở danh sách Chờ xử lý →". |
 
 ##### 4.3.3.29.4.3. Chức năng trên màn hình
@@ -151,7 +151,7 @@ Popup chỉ xem, mở khi click dòng hồ sơ tại tab "Chờ xử lý" / "Đ�
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề popup | String(255) | - | - | "Chi tiết hồ sơ [Mã hồ sơ]". |
-| **I. Thông tin chung** | - | - | - | Chỉ đọc: Mã vụ việc, Loại hồ sơ, Nguồn hồ sơ, Họ và tên người yêu cầu, Thời điểm tiếp nhận, Đơn vị gốc, Đơn vị đang xử lý, Cán bộ chủ trì (chưa có: "Chưa phân công"), Trạng thái. |
+| **I. Thông tin chung** | - | - | - | Chỉ đọc: Mã vụ việc, Loại hồ sơ, Nguồn hồ sơ, Tên cá nhân/Tổ chức yêu cầu, Thời điểm tiếp nhận, Đơn vị gốc, Đơn vị đang xử lý, Cán bộ chủ trì (chưa có: "Chưa phân công"), Trạng thái. |
 | **II. Quá trình phân công** | - | - | - | Bảng lượt chuyển: Lượt chuyển, Thời điểm, Tình trạng (quy tắc 6). |
 | **III. Lịch sử xử lý** | - | - | - | Danh sách thao tác của hồ sơ, mới nhất ở trên: "[Thao tác] - [Người thực hiện] - [Thời điểm]" và Nội dung; thao tác "Từ chối phê duyệt" có viền màu đỏ. |
 

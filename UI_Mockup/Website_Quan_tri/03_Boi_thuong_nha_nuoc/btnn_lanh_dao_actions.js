@@ -254,7 +254,7 @@
             ${row('Mã vụ việc', `<strong style="color:#1e3a8a;">${esc(rec.maVuViec || rec.code)}</strong>`)}
             ${row('Loại hồ sơ', esc(rec.loaiYeuCau || '--'))}
             ${row('Nguồn hồ sơ', esc(sourceOf(rec)))}
-            ${row('Họ và tên người yêu cầu', `<strong>${esc(rec.nycName || '--')}</strong>`)}
+            ${row('Tên cá nhân/Tổ chức yêu cầu', `<strong>${esc(rec.nycName || '--')}</strong>`)}
             ${row('Thời điểm tiếp nhận', esc(rec.receivedAt || rec.date || '--'))}
             ${row('Đơn vị gốc', esc(WF.unitName(rec.rootUnitId)))}
             ${row('Đơn vị đang xử lý', esc(WF.unitName(rec.currentUnitId || rec.rootUnitId)))}

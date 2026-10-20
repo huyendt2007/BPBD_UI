@@ -490,6 +490,44 @@
         const list = rows.length ? rows : DEFAULT_COUNTRIES.slice();
         return ['Việt Nam'].concat(list.filter(n => n !== 'Việt Nam'));
     }
+    // Loại giấy tờ thân nhân (cá nhân): danh mục DM_10 trạng thái Hoạt động, trừ GT_04 Mã số thuế; fallback 04 giá trị mặc định
+    const PERSONAL_DOC_CATALOG_TYPE = 'DM_10';
+    const PERSONAL_DOC_EXCLUDED = ['GT_04'];
+    const DEFAULT_PERSONAL_DOC_TYPES = ['CMND/CCCD/Chứng minh quân đội', 'Hộ chiếu', 'Thẻ thường trú', 'Giấy tờ đi lại có giá trị quốc tế'];
+    function getPersonalDocTypes() {
+        const cats = readJson('masterCategories', null);
+        const rows = Array.isArray(cats) ? cats.filter(c => c.typeCode === PERSONAL_DOC_CATALOG_TYPE && c.status === 'Hoạt động' && !PERSONAL_DOC_EXCLUDED.includes(c.code) && c.name !== 'Mã số thuế').map(r => r.name) : [];
+        return rows.length ? rows : DEFAULT_PERSONAL_DOC_TYPES.slice();
+    }
+    // Chuẩn hóa giá trị cũ: CCCD/CMND/Căn cước công dân/Chứng minh nhân dân -> CMND/CCCD/Chứng minh quân đội; HoChieu -> Hộ chiếu
+    function normalizePersonalDocType(v) {
+        const s = String(v == null ? '' : v).trim();
+        // Dữ liệu cũ ghi nhầm Loại người yêu cầu vào trường loại giấy tờ: bỏ qua
+        if (!s || s === 'Cá nhân' || s === 'Tổ chức') return '';
+        if (/^(CCCD|CMND|Căn cước công dân( \/ Thẻ căn cước)?|Căn cước công dân \(CCCD\)|Chứng minh nhân dân( \(CMND\))?)$/i.test(s)) return DEFAULT_PERSONAL_DOC_TYPES[0];
+        if (/^(HoChieu|Hộ chiếu)$/i.test(s)) return 'Hộ chiếu';
+        return s;
+    }
+    // Nạp giá trị Loại giấy tờ thân nhân vào combobox; gán .value sẽ tự chuẩn hóa giá trị cũ
+    function fillPersonalDocTypeSelect(sel, placeholder) {
+        const el = typeof sel === 'string' ? document.getElementById(sel) : sel;
+        if (!el) return null;
+        const cur = normalizePersonalDocType(el.value);
+        const list = getPersonalDocTypes();
+        el.innerHTML = (placeholder ? `<option value="">${esc(placeholder)}</option>` : '') + list.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
+        if (!el.__pdtBound) {
+            const desc = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value');
+            Object.defineProperty(el, 'value', {
+                configurable: true,
+                get() { return desc.get.call(this); },
+                // Giá trị ngoài danh mục: về lựa chọn đầu tiên (ô trống "-- Chọn --" nếu có, ngược lại giá trị đầu danh mục)
+                set(v) { desc.set.call(this, normalizePersonalDocType(v)); if (this.selectedIndex < 0 && this.options.length) this.selectedIndex = 0; }
+            });
+            el.__pdtBound = true;
+        }
+        el.value = cur;
+        return el;
+    }
     // Kiểm tra định dạng email cơ bản
     function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || '').trim()); }
     // Loại cơ quan có thẩm quyền Xác định CQGQBT của đơn vị gốc
@@ -548,6 +586,9 @@
             if (r.nguonHoSo && ns !== r.nguonHoSo) { r.nguonHoSo = ns; changed = true; }
             // Loại người yêu cầu: dữ liệu cũ không có nycType -> theo ràng buộc Tư cách, mặc định Cá nhân
             if (r.nycType !== NYC_TYPES.CA_NHAN && r.nycType !== NYC_TYPES.TO_CHUC) { r.nycType = nycTypeOf(r); changed = true; }
+            // Loại giấy tờ thân nhân: chuẩn hóa giá trị cũ theo DM_10 (CCCD/CMND/... -> CMND/CCCD/Chứng minh quân đội)
+            if (r.nycDocType && normalizePersonalDocType(r.nycDocType) !== r.nycDocType) { r.nycDocType = normalizePersonalDocType(r.nycDocType); changed = true; }
+            if (r.nbth && r.nbth.docType && normalizePersonalDocType(r.nbth.docType) !== r.nbth.docType) { r.nbth.docType = normalizePersonalDocType(r.nbth.docType); changed = true; }
             if (r.approval && OLD_KQXD.includes(r.approval.kind)) { r.approval.kind = KIND_KQXD; changed = true; }
             if (r.returned && OLD_KQXD.includes(r.returned.kind)) { r.returned.kind = KIND_KQXD; changed = true; }
             // Chuẩn hóa luồng phê duyệt: chỉ tới Cục Đăng ký giao dịch bảo đảm và BTNN, không gửi đến Bộ Tư pháp
@@ -2122,6 +2163,7 @@
         getFlowConfig, saveFlowConfig, resetFlowConfig, getNodeConfig, getLeaders, isLeaderOf, isUnitConfigured, findRootUnitByName,
         getRequestTypeCatalog, getRequestTypesForUser, getKtlReasons, xdAuthorityType, ensureClaimRecord,
         NYC_TYPES, DEFAULT_NYC_ROLES, getNycRoles, nycRoleCode, nycRoleName, nycTypeConstraint, nycTypeOf, isNbthOrgRole, joinAddress, stripAdminCode, getCountries, isValidEmail,
+        DEFAULT_PERSONAL_DOC_TYPES, getPersonalDocTypes, normalizePersonalDocType, fillPersonalDocTypeSelect,
         loadRecords, saveRecords, getRecord, upsertRecord, removeRecord, addHistory, nextCode, createPendingRecord,
         latestRoute, canEditAtReception, canAssign, markViewed, assignToUnit, assignToOfficers,
         getRecallInfo, recall, computeApprovalPath, submitForApproval, canApprove, isLastApprovalLevel, nextLevelLeaders, firstLevelLeaders, approvalKindOf, approvalLabel, approvalPathText, approvalPathLineHtml, KIND_KQXD, approve, rejectApproval, performTransfer,

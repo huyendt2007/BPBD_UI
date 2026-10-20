@@ -79,8 +79,8 @@
                     <input id="fCode" class="form-control" placeholder="Nhập mã hồ sơ, mã đề nghị...">
                 </div>
                 <div class="form-group">
-                    <span class="form-label">Họ và tên người yêu cầu</span>
-                    <input id="fName" class="form-control" placeholder="Nhập họ và tên người yêu cầu...">
+                    <span class="form-label">Tên cá nhân/Tổ chức yêu cầu</span>
+                    <input id="fName" class="form-control" placeholder="Nhập tên cá nhân/tổ chức yêu cầu...">
                 </div>
                 <div class="form-group">
                     <span class="form-label">Loại công việc</span>
@@ -112,7 +112,7 @@
                             <th style="width:54px; text-align:center;">STT</th>
                             <th style="width:140px; text-align:center;">Mã hồ sơ</th>
                             <th style="width:190px;">Loại công việc</th>
-                            <th style="width:170px;">Họ và tên người yêu cầu</th>
+                            <th style="width:170px;">Tên cá nhân/Tổ chức yêu cầu</th>
                             <th style="width:280px;" id="thDetail">Nội dung cần xử lý</th>
                             <th style="width:190px;" id="thWho">Người chuyển/trình</th>
                             <th style="width:130px; text-align:center;" id="thAt">Thời điểm nhận</th>
@@ -475,7 +475,7 @@
                 ${row('Mã vụ việc', `<strong style="color:var(--primary-light);">${esc((rec && rec.maVuViec) || t.caseCode)}</strong>`)}
                 ${row('Loại hồ sơ', esc(t.loaiYeuCau))}
                 ${rec ? row('Nguồn hồ sơ', esc(sourceText(rec.nguonHoSo))) : ''}
-                ${row('Họ và tên người yêu cầu', `<strong>${esc(t.nycName || '--')}</strong>`)}
+                ${row('Tên cá nhân/Tổ chức yêu cầu', `<strong>${esc(t.nycName || '--')}</strong>`)}
                 ${rec ? row('Hành vi gây thiệt hại', esc(rec.hanhVi || '--')) : ''}
                 ${rec ? row('Cán bộ chủ trì', rec.chuTri ? esc(WF.userLabel(rec.chuTri)) : '<span class="muted">Chưa phân công</span>') : ''}
             </div>`;

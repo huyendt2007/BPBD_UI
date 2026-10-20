@@ -1388,6 +1388,67 @@
             /* Allow body to grow and fill available space */
         }
 
+        /* 📝 Wizard Trình ký Yêu cầu bổ sung & Định vị chữ ký số */
+        #modalRequireAddition.active {
+            display: flex !important;
+        }
+        .require-step-badge {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+        }
+        .doc-upload-highlight {
+            border: 2px dashed #3b82f6;
+            background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 100%);
+            border-radius: 8px;
+            padding: 16px;
+            transition: all 0.2s ease;
+        }
+        .doc-upload-highlight:hover {
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+        .a4-document-page {
+            width: 794px;
+            min-height: 1123px;
+            background: #ffffff;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+            padding: 50px 65px;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #111827;
+            user-select: none;
+            box-sizing: border-box;
+        }
+        .sig-drag-box {
+            position: absolute;
+            border-radius: 6px;
+            cursor: move;
+            user-select: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 8px 10px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            transition: box-shadow 0.15s ease, border-color 0.15s ease;
+            box-sizing: border-box;
+        }
+        .sig-drag-box:hover {
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2) !important;
+        }
+        .sig-drag-box.dragging {
+            opacity: 0.92;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.35) !important;
+            z-index: 99 !important;
+        }
+
         @media print {
             body * {
                 visibility: hidden !important;
@@ -1827,7 +1888,7 @@
                     </div>
                     <div class="form-group">
                         <span class="form-label">Hình thức tiếp nhận <span class="required">*</span></span>
-                        <!-- Danh mục DM_25. Tạo trực tiếp: chọn Trực tiếp / Qua dịch vụ bưu chính; hồ sơ đến từ Tiếp nhận hồ sơ hiển thị chỉ đọc -->
+                        <!-- Danh mục DM_25. Tạo trực tiếp: chọn Trực tiếp / Qua dịch vụ bưu chính; hồ sơ đến từ Tiếp nhận hồ sơ mặc định theo giá trị đã tiếp nhận, cho phép điều chỉnh (đủ 04 giá trị) -->
                         <select class="form-control" id="claimHinhThucTiepNhan">
                             <option value="Trực tiếp">Trực tiếp</option>
                             <option value="Qua dịch vụ bưu chính">Qua dịch vụ bưu chính</option>
@@ -2114,9 +2175,9 @@
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Loại giấy tờ thân nhân<span class="required">*</span></span>
                                 <select class="form-control" id="claimNYCCardType">
-                                    <option value="CCCD">Căn cước công dân (CCCD)</option>
-                                    <option value="CMND">Chứng minh nhân dân (CMND)</option>
-                                    <option value="HoChieu">Hộ chiếu</option>
+                                    <option value="CMND/CCCD/Chứng minh quân đội">CMND/CCCD/Chứng minh quân đội</option>
+                                    <option value="Hộ chiếu">Hộ chiếu</option>
+                                    <option value="Thẻ thường trú">Thẻ thường trú</option>
                                 </select>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
@@ -2147,13 +2208,12 @@
                                 <select class="form-control" id="claimNYCCountry"
                                     onchange="toggleClaimCountrySelect(this.value)">
                                     <option value="Việt Nam">Việt Nam</option>
-                                    <option value="Khác">Quốc gia khác</option>
                                 </select>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Tỉnh / Thành phố<span class="required">*</span></span>
                                 <div id="claimCityDropdownWrapper">
-                                    <select class="form-control" id="claimNYCCity">
+                                    <select class="form-control" id="claimNYCCity" onchange="updateClaimWardOptions(true)">
                                         <option value="Hà Nội">Thành phố Hà Nội</option>
                                         <option value="Hải Phòng">Thành phố Hải Phòng</option>
                                         <option value="Đà Nẵng">Thành phố Đà Nẵng</option>
@@ -2170,20 +2230,23 @@
                             </div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Phường / Xã<span class="required">*</span></span>
-                            <input type="text" class="form-control" id="claimNYCWard" placeholder="Nhập phường/xã...">
-                            <div class="error-message">Đây là trường bắt buộc</div>
-                        </div>
-
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Địa chỉ chi tiết<span class="required">*</span><span
-                                    class="verdict-sub-label"
-                                    style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối
-                                    chiếu theo bản án đính kèm)</span></span>
-                            <input type="text" class="form-control" id="claimNYCAddress"
-                                placeholder="Nhập số nhà, tên đường, thôn/tổ dân phố...">
-                            <div class="error-message">Đây là trường bắt buộc</div>
+                        <!-- Phường/Xã: Việt Nam -> combobox lọc theo Tỉnh/Thành phố; quốc gia khác -> nhập tự do (giống Xác định CQGQBT) -->
+                        <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Phường / Xã<span class="required">*</span></span>
+                                <input type="text" class="form-control" id="claimNYCWard" list="claimNYCWardList" placeholder="Gõ Mã hoặc Tên Phường/Xã..." onfocus="updateClaimWardOptions(false)" oninput="this.classList.remove('is-invalid'); this.closest('.form-group').querySelector('.error-message').style.display='none';">
+                                <datalist id="claimNYCWardList"></datalist>
+                                <div class="error-message">Đây là trường bắt buộc</div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Địa chỉ chi tiết<span class="required">*</span><span
+                                        class="verdict-sub-label"
+                                        style="display:none; color: #ea580c; font-size: 12px; font-weight: normal; margin-left: 8px;">(đối
+                                        chiếu theo bản án đính kèm)</span></span>
+                                <input type="text" class="form-control" id="claimNYCAddress"
+                                    placeholder="Nhập số nhà, tên đường/phố, thôn/xóm/ấp...">
+                                <div class="error-message">Đây là trường bắt buộc</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2245,9 +2308,9 @@
                                     <span class="form-label">Loại giấy tờ thân nhân<span class="required">*</span></span>
                                     <select class="form-control" id="claimNbthCardType" onchange="this.classList.remove('is-invalid'); this.closest('.form-group').querySelector('.error-message').style.display='none';">
                                         <option value="">-- Chọn loại giấy tờ --</option>
-                                        <option value="CCCD">Căn cước công dân (CCCD)</option>
-                                        <option value="CMND">Chứng minh nhân dân (CMND)</option>
-                                        <option value="HoChieu">Hộ chiếu</option>
+                                        <option value="CMND/CCCD/Chứng minh quân đội">CMND/CCCD/Chứng minh quân đội</option>
+                                        <option value="Hộ chiếu">Hộ chiếu</option>
+                                        <option value="Thẻ thường trú">Thẻ thường trú</option>
                                     </select>
                                     <div class="error-message">Đây là trường bắt buộc</div>
                                 </div>
@@ -2272,7 +2335,6 @@
                                     <span class="form-label">Quốc gia</span>
                                     <select class="form-control" id="claimNbthCountry">
                                         <option value="Việt Nam">Việt Nam</option>
-                                        <option value="Khác">Quốc gia khác</option>
                                     </select>
                                 </div>
                                 <div class="form-group" style="margin-bottom: 0;">
@@ -2288,10 +2350,16 @@
                                     </datalist>
                                 </div>
                             </div>
-                            <div class="form-group" style="margin-bottom: 0;">
-                                <span class="form-label">Địa chỉ chi tiết</span>
-                                <input type="text" class="form-control" id="claimNbthAddress"
-                                    placeholder="Nhập địa chỉ nhà, tên đường, phường/xã...">
+                            <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <span class="form-label">Phường / Xã</span>
+                                    <input type="text" class="form-control" id="claimNbthWard" placeholder="Nhập phường/xã...">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <span class="form-label">Địa chỉ chi tiết</span>
+                                    <input type="text" class="form-control" id="claimNbthAddress"
+                                        placeholder="Nhập số nhà, tên đường/phố, thôn/xóm/ấp...">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2343,19 +2411,8 @@
                     </div>
                     <div class="form-group" style="margin-bottom: 14px;">
                         <span class="form-label" style="font-weight: 600;">Phương thức nhận thông báo<span class="required">*</span></span>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; margin-top: 8px;">
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13.5px; font-weight: normal; margin-bottom: 0;">
-                                <input type="radio" name="claimNotifyMethod" value="Qua Cổng Dịch vụ công quốc gia" checked onchange="handleClaimNotifyMethodChange(this.value)">
-                                <span>Qua Cổng Dịch vụ công quốc gia</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13.5px; font-weight: normal; margin-bottom: 0;">
-                                <input type="radio" name="claimNotifyMethod" value="Qua ứng dụng định danh quốc gia (VNeID)" onchange="handleClaimNotifyMethodChange(this.value)">
-                                <span>Qua ứng dụng định danh quốc gia (VNeID)</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13.5px; font-weight: normal; margin-bottom: 0;">
-                                <input type="radio" name="claimNotifyMethod" value="Qua phương tiện điện tử khác" onchange="handleClaimNotifyMethodChange(this.value)">
-                                <span>Qua phương tiện điện tử khác</span>
-                            </label>
+                        <!-- Thứ tự theo Mẫu 01/BTNN; mặc định và quy tắc nhãn/placeholder giống màn Xác định cơ quan giải quyết bồi thường -->
+                        <div id="claimNotifyMethodGroup" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; margin-top: 8px;">
                             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13.5px; font-weight: normal; margin-bottom: 0;">
                                 <input type="radio" name="claimNotifyMethod" value="Trực tiếp" onchange="handleClaimNotifyMethodChange(this.value)">
                                 <span>Trực tiếp</span>
@@ -2368,11 +2425,19 @@
                                 <input type="radio" name="claimNotifyMethod" value="Qua thư điện tử" onchange="handleClaimNotifyMethodChange(this.value)">
                                 <span>Qua thư điện tử</span>
                             </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13.5px; font-weight: normal; margin-bottom: 0;">
+                                <input type="radio" name="claimNotifyMethod" value="Qua Cổng Dịch vụ công quốc gia hoặc Ứng dụng định danh quốc gia (VNeID)" checked onchange="handleClaimNotifyMethodChange(this.value)">
+                                <span>Qua Cổng Dịch vụ công quốc gia hoặc Ứng dụng định danh quốc gia (VNeID)</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13.5px; font-weight: normal; margin-bottom: 0;">
+                                <input type="radio" name="claimNotifyMethod" value="Qua phương tiện điện tử khác" onchange="handleClaimNotifyMethodChange(this.value)">
+                                <span>Qua phương tiện điện tử khác</span>
+                            </label>
                         </div>
                     </div>
                     <div class="form-group" style="margin-bottom: 0;">
-                        <span class="form-label" id="claimNotifyAddressLabel" style="font-weight: 600;">Địa chỉ, đầu mối nhận thông báo (Số ĐDCN/VNeID, SĐT hoặc TK Cổng DVC)<span class="required">*</span></span>
-                        <input type="text" class="form-control" id="claimNotifyAddress" placeholder="Nhập số ĐDCN/VNeID, số điện thoại hoặc tài khoản Cổng DVC nhận thông báo...">
+                        <span class="form-label" id="claimNotifyAddressLabel" style="font-weight: 600;">Địa chỉ, đầu mối nhận thông báo (Tài khoản Cổng DVC / Số ĐDCN / VNeID) <span class="required">*</span></span>
+                        <input type="text" class="form-control" id="claimNotifyAddress" placeholder="Nhập số định danh cá nhân / tài khoản VNeID hoặc tài khoản Cổng DVC nhận thông báo...">
                         <div class="error-message" id="errClaimNotifyAddress">Đây là trường bắt buộc</div>
                     </div>
                 </div>
@@ -7728,13 +7793,18 @@
             const sel = document.getElementById('claimHinhThucTiepNhan');
             if (!sel) return;
             const h = normalizeHinhThucTiepNhan(hinhThuc, value);
-            const locked = !!fromReception || v !== NGUON_HO_SO_TIEP_NHAN || !HTTN_MANUAL.includes(h);
-            // Form chỉ gồm 02 giá trị Trực tiếp / Qua dịch vụ bưu chính; giá trị khác (hệ thống gán) thêm vào để hiển thị chỉ đọc
-            sel.innerHTML = HTTN_MANUAL.concat(HTTN_MANUAL.includes(h) ? [] : [h])
-                .map(x => `<option value="${x}">${x}</option>`).join('');
+            // Hồ sơ đến từ Tiếp nhận hồ sơ (không phải Thêm mới trực tiếp): mặc định theo Hình thức tiếp nhận đã tiếp nhận,
+            // cho phép điều chỉnh trong đủ 04 giá trị DM_25; Thêm mới trực tiếp: chỉ Trực tiếp / Qua dịch vụ bưu chính
+            const fromReceptionLike = !!fromReception || v !== NGUON_HO_SO_TIEP_NHAN || !HTTN_MANUAL.includes(h);
+            const W = window.BTNN_WF;
+            const allValues = (W && Array.isArray(W.RECEIVE_METHOD_ORDER) && W.RECEIVE_METHOD_ORDER.length) ? W.RECEIVE_METHOD_ORDER : HTTN_VALUES;
+            const manualValues = (W && Array.isArray(W.FORM_RECEIVE_METHODS) && W.FORM_RECEIVE_METHODS.length) ? W.FORM_RECEIVE_METHODS : HTTN_MANUAL;
+            const opts = fromReceptionLike ? allValues.slice() : manualValues.slice();
+            if (!opts.includes(h)) opts.push(h);
+            sel.innerHTML = opts.map(x => `<option value="${x}">${x}</option>`).join('');
             sel.value = h;
-            sel.disabled = locked;
-            sel.title = locked ? 'Theo dữ liệu tiếp nhận. Không cho phép thay đổi.' : '';
+            sel.disabled = false;
+            sel.title = fromReceptionLike ? 'Mặc định theo Hình thức tiếp nhận của hồ sơ đã tiếp nhận. Cho phép điều chỉnh.' : '';
         }
 
         function getClaimNguonHoSoField() {
@@ -7750,17 +7820,268 @@
         // ===== Người bị thiệt hại (khi người yêu cầu không phải là người bị thiệt hại) =====
         const NBTH_ROLE = 'Người bị thiệt hại';
 
+        // ===== Khối Người yêu cầu bồi thường theo Mẫu 01/BTNN: Loại người yêu cầu (Cá nhân / Tổ chức) =====
+        const NYC_TYPE_CA_NHAN = 'Cá nhân';
+        const NYC_TYPE_TO_CHUC = 'Tổ chức';
+        // Tư cách = Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại (TCNYC_03)
+        const NYC_ROLE_TO_CHUC_KE_THUA = 'Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại';
+        // Tư cách bắt buộc Cá nhân: TCNYC_02, TCNYC_06, TCNYC_04
+        const NYC_ROLES_CA_NHAN = ['Người thừa kế của người bị thiệt hại', 'Người đại diện cho những người thừa kế của người bị thiệt hại', 'Người đại diện theo pháp luật của người bị thiệt hại'];
+
+        function normalizeNycType(v) {
+            return v === NYC_TYPE_TO_CHUC ? NYC_TYPE_TO_CHUC : NYC_TYPE_CA_NHAN;
+        }
+
+        // Ràng buộc Loại người yêu cầu theo Tư cách: trả về 'Cá nhân' | 'Tổ chức' (khóa) hoặc null (cho phép chọn)
+        function nycTypeConstraintGq(role) {
+            const W = window.BTNN_WF;
+            if (W && typeof W.nycTypeConstraint === 'function') {
+                try {
+                    const r = W.nycTypeConstraint(role);
+                    const v = r && typeof r === 'object' ? (r.type || r.value || r.locked) : r;
+                    if (v === NYC_TYPE_CA_NHAN || v === NYC_TYPE_TO_CHUC) return v;
+                } catch (e) { /* dùng quy tắc cục bộ */ }
+            }
+            if (role === NYC_ROLE_TO_CHUC_KE_THUA) return NYC_TYPE_TO_CHUC;
+            if (NYC_ROLES_CA_NHAN.includes(role)) return NYC_TYPE_CA_NHAN;
+            return null;
+        }
+
+        // Nối địa chỉ 01 dòng: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố] (bỏ phần trống)
+        function joinClaimAddress(detail, ward, city) {
+            const parts = [detail, ward, city].map(x => { const s = String(x || '').trim(); return s === '--' ? '' : s; });
+            const W = window.BTNN_WF;
+            if (W && typeof W.joinAddress === 'function') {
+                try { return W.joinAddress({ nycAddressDetail: parts[0], nycPhuongXa: parts[1], nycTinhThanh: parts[2] }); } catch (e) { /* dùng cách nối cục bộ */ }
+            }
+            return parts.filter(Boolean).join(', ');
+        }
+
+        // Loại giấy tờ thân nhân: chuẩn hóa giá trị cũ theo DM_10 (CCCD/CMND/... -> CMND/CCCD/Chứng minh quân đội)
+        function normClaimDocType(v) {
+            const W = window.BTNN_WF;
+            return W && typeof W.normalizePersonalDocType === 'function' ? W.normalizePersonalDocType(v) : String(v || '');
+        }
+
+        function getClaimNycAddressLine(claim) {
+            if (!claim) return '';
+            return joinClaimAddress(claim.nycAddressDetail || claim.address, stripWardCode(claim.nycPhuongXa), claim.nycTinhThanh);
+        }
+
+        function getNycTypeFromForm() {
+            const r = document.querySelector('input[name="claimNYCType"]:checked');
+            return normalizeNycType(r ? r.value : NYC_TYPE_CA_NHAN);
+        }
+
+        function setNycTypeOnForm(type) {
+            const t = normalizeNycType(type);
+            document.getElementsByName('claimNYCType').forEach(r => { r.checked = (r.value === t); });
+        }
+
+        // Người bị thiệt hại là tổ chức: Tư cách TCNYC_03, hoặc Tư cách Người bị thiệt hại và Loại người yêu cầu = Tổ chức
+        function isClaimOrgVictim(role, type) {
+            return role === NYC_ROLE_TO_CHUC_KE_THUA || (role === NBTH_ROLE && type === NYC_TYPE_TO_CHUC);
+        }
+
+        function applyNycTypeConstraint(role) {
+            const r = role || (document.getElementById('claimNYCRole') ? document.getElementById('claimNYCRole').value : NBTH_ROLE);
+            const c = nycTypeConstraintGq(r);
+            const radios = document.getElementsByName('claimNYCType');
+            if (c) setNycTypeOnForm(c);
+            radios.forEach(x => {
+                x.disabled = !!c;
+                x.title = c ? 'Theo Tư cách người yêu cầu bồi thường. Không cho phép thay đổi.' : '';
+            });
+            toggleNycTypeFields();
+        }
+
+        function toggleNycOrgDocRequired() {
+            const hasCode = !!getInputValue('claimNYCOrgCode');
+            document.querySelectorAll('#inlineClaimFormPanel .nyc-orgdoc-req').forEach(el => { el.style.display = hasCode ? 'none' : ''; });
+        }
+
+        function toggleNycTypeFields() {
+            const type = getNycTypeFromForm();
+            const isOrg = type === NYC_TYPE_TO_CHUC;
+            document.querySelectorAll('#inlineClaimFormPanel .nyc-canhan-only').forEach(el => { el.style.display = isOrg ? 'none' : ''; });
+            document.querySelectorAll('#inlineClaimFormPanel .nyc-tochuc-only').forEach(el => { el.style.display = isOrg ? '' : 'none'; });
+            const lbl = document.getElementById('claimNYCNameLabel');
+            if (lbl) lbl.textContent = isOrg ? 'Tên tổ chức' : 'Họ và tên';
+            const nameInp = document.getElementById('claimNYCName');
+            if (nameInp) nameInp.placeholder = isOrg ? 'Nhập tên tổ chức...' : 'Nhập họ và tên...';
+            toggleNycOrgDocRequired();
+            // Trạng thái người bị thiệt hại (Còn sống / Đã mất) chỉ áp dụng khi người bị thiệt hại là cá nhân
+            const role = document.getElementById('claimNYCRole') ? document.getElementById('claimNYCRole').value : NBTH_ROLE;
+            const aliveGroup = document.getElementById('claimVictimAliveGroup');
+            if (aliveGroup) {
+                const orgVictim = isClaimOrgVictim(role, type);
+                aliveGroup.style.display = orgVictim ? 'none' : '';
+                if (orgVictim) {
+                    const cur = document.querySelector('input[name="claimVictimAlive"]:checked');
+                    if (cur && cur.value !== 'yes') {
+                        document.getElementsByName('claimVictimAlive').forEach(x => { x.checked = (x.value === 'yes'); });
+                        if (typeof handleVictimAliveChange === 'function') handleVictimAliveChange('yes');
+                    }
+                }
+            }
+        }
+
+        function fillNycOrgForm(claim) {
+            const c = claim || {};
+            setInputValue('claimNYCOrgCode', c.nycOrgCode || '');
+            setInputValue('claimNYCOrgDocNo', c.nycOrgDocNo || '');
+            setInputValue('claimNYCOrgDocDate', c.nycOrgDocDate || '');
+            setInputValue('claimNYCOrgDocPlace', c.nycOrgDocPlace || '');
+            setInputValue('claimNYCRepName', c.nycRepName || '');
+            setInputValue('claimNYCRepPosition', c.nycRepPosition || '');
+            setInputValue('claimNYCWard', stripWardCode(c.nycPhuongXa || ''));
+            setInputValue('claimNbthOrgName', c.nbthOrgName || '');
+            setInputValue('claimNbthOrgCode', c.nbthOrgCode || '');
+        }
+
+        // Thông tin bổ sung của khối Người yêu cầu (Loại người yêu cầu, Tổ chức, Phường/Xã, Tổ chức bị thiệt hại)
+        function collectNycExtraFromForm(role) {
+            const type = getNycTypeFromForm();
+            const isOrg = type === NYC_TYPE_TO_CHUC;
+            const orgVictim = role === NYC_ROLE_TO_CHUC_KE_THUA;
+            return {
+                nycType: type,
+                nycOrgCode: isOrg ? getInputValue('claimNYCOrgCode') : '',
+                nycOrgDocNo: isOrg ? getInputValue('claimNYCOrgDocNo') : '',
+                nycOrgDocDate: isOrg ? getInputValue('claimNYCOrgDocDate') : '',
+                nycOrgDocPlace: isOrg ? getInputValue('claimNYCOrgDocPlace') : '',
+                nycRepName: isOrg ? getInputValue('claimNYCRepName') : '',
+                nycRepPosition: isOrg ? getInputValue('claimNYCRepPosition') : '',
+                nycPhuongXa: getInputValue('claimNYCWard'),
+                nbthOrgName: orgVictim ? getInputValue('claimNbthOrgName') : '',
+                nbthOrgCode: orgVictim ? getInputValue('claimNbthOrgCode') : ''
+            };
+        }
+
+        // Kiểm tra bắt buộc riêng của Tổ chức: Người đại diện, Chức vụ; Số giấy tờ thành lập/đăng ký, Ngày cấp, Nơi cấp khi không có Mã số tổ chức
+        function validateNycOrgForm() {
+            if (getNycTypeFromForm() !== NYC_TYPE_TO_CHUC) return null;
+            const ids = ['claimNYCRepName', 'claimNYCRepPosition'];
+            if (!getInputValue('claimNYCOrgCode')) ids.unshift('claimNYCOrgDocNo', 'claimNYCOrgDocDate', 'claimNYCOrgDocPlace');
+            let first = null;
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el || String(el.value || '').trim()) return;
+                el.classList.add('is-invalid');
+                const err = el.closest('.form-group') ? el.closest('.form-group').querySelector('.error-message') : null;
+                if (err) err.style.display = 'block';
+                if (!first) first = el;
+            });
+            return first;
+        }
+
+        // Lưới: Họ và tên người bị thiệt hại (Tư cách Người bị thiệt hại: tên người yêu cầu; TCNYC_03: tên tổ chức bị thiệt hại; không có: -)
+        function getClaimVictimName(claim) {
+            if (!claim) return '-';
+            const role = claim.nycRole || claim.role || NBTH_ROLE;
+            if (role === NBTH_ROLE) return getClaimRequesterName(claim) === '--' ? '-' : getClaimRequesterName(claim);
+            if (role === NYC_ROLE_TO_CHUC_KE_THUA) return claim.nbthOrgName || (claim.nbth && (claim.nbth.orgName || claim.nbth.name)) || '-';
+            return (claim.nbth && claim.nbth.name) || '-';
+        }
+
+        // Dữ liệu mẫu người yêu cầu là Tổ chức (cờ seedNycOrg): chỉ bổ sung khi chưa có id/Mã vụ việc, không ghi đè
+        function seedNycOrgSampleClaims() {
+            const samples = [
+                {
+                    id: 'HS_NYC_TC1', code: 'BT-2026-091', seedNycOrg: true,
+                    assignedOfficer: 'Nguyễn Văn Chuyên Viên',
+                    fieldGroup: 'hành chính', date: '05/07/2026',
+                    nyc: 'Công ty TNHH Thương mại Minh An', nycType: 'Tổ chức', nycRole: 'Người bị thiệt hại', role: 'Người bị thiệt hại',
+                    nycOrgCode: '0101234567', nycOrgDocNo: '', nycOrgDocDate: '', nycOrgDocPlace: '',
+                    nycRepName: 'Trần Minh An', nycRepPosition: 'Giám đốc',
+                    nycPhone: '02437654321', phone: '02437654321', nycEmail: 'lienhe@minhan.vn',
+                    nycCountry: 'Việt Nam', nycTinhThanh: 'Hà Nội', nycPhuongXa: 'Phường Cầu Giấy', nycAddressDetail: 'Số 15 Trần Thái Tông',
+                    address: 'Số 15 Trần Thái Tông',
+                    nycCardType: 'CCCD', cardType: 'CCCD', nycCardNo: '', cardNo: '',
+                    hinhThucTiepNhan: 'Trực tiếp', nguonHoSo: 'Tiếp nhận mới',
+                    notifyMethod: 'Qua thư điện tử', notifyAddress: 'lienhe@minhan.vn',
+                    requestDocDate: '01/07/2026', applicableLaw: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017',
+                    hanhVi: 'Quyết định đình chỉ hoạt động kinh doanh trái pháp luật của UBND Phường.',
+                    nhanQua: 'Doanh nghiệp phải ngừng kinh doanh 2 tháng, mất thu nhập và phát sinh chi phí lưu kho.',
+                    status: 'Chờ tiếp nhận', totalNum: 350000000, advanceNum: 0, slaDays: 5, slaStatus: 'normal', slaText: 'Chờ tiếp nhận hồ sơ bồi thường',
+                    restoreHonor: false, requestType: 'money', victimAlive: 'yes',
+                    agency: 'UBND Quận Cầu Giấy', deadline: '05/10/2026',
+                    files: [{ name: 'Van_ban_yeu_cau_boi_thuong_Mau01.pdf', url: '#' }],
+                    timeline: [{ title: 'Nộp hồ sơ bồi thường', date: '05/07/2026', desc: 'Tổ chức nộp văn bản yêu cầu bồi thường trực tiếp.', status: 'completed' }]
+                },
+                {
+                    id: 'HS_NYC_TC2', code: 'BT-2026-092', seedNycOrg: true,
+                    assignedOfficer: 'Nguyễn Văn Chuyên Viên',
+                    fieldGroup: 'thi hành án dân sự', date: '06/07/2026',
+                    nyc: 'Công ty Cổ phần Xây dựng Hồng Hà', nycType: 'Tổ chức', nycRole: 'Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại', role: 'Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại',
+                    nycOrgCode: '', nycOrgDocNo: '0102998877', nycOrgDocDate: '12/03/2015', nycOrgDocPlace: 'Sở Kế hoạch và Đầu tư TP. Hà Nội',
+                    nycRepName: 'Phạm Văn Hòa', nycRepPosition: 'Tổng Giám đốc',
+                    nbthOrgName: 'Công ty TNHH Xây dựng Hồng Phát', nbthOrgCode: '0100554433',
+                    nycPhone: '02438889999', phone: '02438889999', nycEmail: '',
+                    nycCountry: 'Việt Nam', nycTinhThanh: 'Hà Nội', nycPhuongXa: 'Phường Láng', nycAddressDetail: 'Tầng 5, số 88 Láng Hạ',
+                    address: 'Tầng 5, số 88 Láng Hạ',
+                    nycCardType: 'CCCD', cardType: 'CCCD', nycCardNo: '', cardNo: '',
+                    hinhThucTiepNhan: 'Qua dịch vụ bưu chính', nguonHoSo: 'Tiếp nhận mới',
+                    notifyMethod: 'Qua dịch vụ bưu chính', notifyAddress: 'Tầng 5, số 88 Láng Hạ, Phường Láng, Hà Nội',
+                    requestDocDate: '02/07/2026', applicableLaw: 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017',
+                    hanhVi: 'Kê biên, xử lý tài sản của tổ chức bị thiệt hại không đúng quy định.',
+                    nhanQua: 'Tài sản bị bán dưới giá trị thực tế, gây thiệt hại cho tổ chức đã chấm dứt tồn tại.',
+                    status: 'Chờ tiếp nhận', totalNum: 520000000, advanceNum: 0, slaDays: 5, slaStatus: 'normal', slaText: 'Chờ tiếp nhận hồ sơ bồi thường',
+                    restoreHonor: false, requestType: 'money', victimAlive: 'yes',
+                    agency: 'Chi cục Thi hành án dân sự Đống Đa', deadline: '06/10/2026',
+                    files: [{ name: 'Van_ban_yeu_cau_boi_thuong_Mau01.pdf', url: '#' }],
+                    timeline: [{ title: 'Nộp hồ sơ bồi thường', date: '06/07/2026', desc: 'Tổ chức kế thừa nộp văn bản yêu cầu bồi thường qua dịch vụ bưu chính.', status: 'completed' }]
+                }
+            ];
+            samples.forEach(s => {
+                if (claimsList.some(c => c && (c.id === s.id || c.code === s.code))) return;
+                claimsList.push(s);
+            });
+        }
+
+        // Phương thức nhận thông báo: 05 giá trị theo Mẫu 01/BTNN (giống màn Xác định cơ quan giải quyết bồi thường)
+        const CLAIM_NOTIFY_METHODS = ['Trực tiếp', 'Qua dịch vụ bưu chính', 'Qua thư điện tử', 'Qua Cổng Dịch vụ công quốc gia hoặc Ứng dụng định danh quốc gia (VNeID)', 'Qua phương tiện điện tử khác'];
+        function normalizeClaimNotifyMethod(val) {
+            const s = String(val || '').trim();
+            if (CLAIM_NOTIFY_METHODS.includes(s)) return s;
+            if (!s) return CLAIM_NOTIFY_METHODS[3];
+            if (s === 'Hồ sơ giấy' || /bưu/i.test(s)) return CLAIM_NOTIFY_METHODS[1];
+            if (/thư điện tử|^email/i.test(s)) return CLAIM_NOTIFY_METHODS[2];
+            if (/phương tiện điện tử khác/i.test(s) && !/Cổng Dịch vụ công/i.test(s)) return CLAIM_NOTIFY_METHODS[4];
+            if (/^trực tiếp/i.test(s)) return CLAIM_NOTIFY_METHODS[0];
+            return CLAIM_NOTIFY_METHODS[3];
+        }
+
+        function setClaimNotifyMethodOnForm(method, address) {
+            const m = normalizeClaimNotifyMethod(method);
+            document.getElementsByName('claimNotifyMethod').forEach(r => { r.checked = (r.value === m); });
+            const inp = document.getElementById('claimNotifyAddress');
+            if (inp) {
+                inp.value = address || '';
+                inp.dataset.autofilled = address ? '0' : '1';
+            }
+            handleClaimNotifyMethodChange(m);
+        }
+
         function toggleNbthBlock(role) {
             const block = document.getElementById('claimNbthBlock');
             if (!block) return;
             const r = role || (document.getElementById('claimNYCRole') ? document.getElementById('claimNYCRole').value : NBTH_ROLE);
             block.style.display = r && r !== NBTH_ROLE ? 'block' : 'none';
+            // TCNYC_03: khối Tổ chức bị thiệt hại đã chấm dứt tồn tại; Tư cách khác: khối cá nhân
+            const isOrg = r === NYC_ROLE_TO_CHUC_KE_THUA;
+            const orgBlock = document.getElementById('claimNbthOrgBlock');
+            const personBlock = document.getElementById('claimNbthPersonBlock');
+            const title = document.getElementById('claimNbthBlockTitle');
+            if (orgBlock) orgBlock.style.display = isOrg ? '' : 'none';
+            if (personBlock) personBlock.style.display = isOrg ? 'none' : '';
+            if (title) title.textContent = isOrg ? 'THÔNG TIN TỔ CHỨC BỊ THIỆT HẠI ĐÃ CHẤM DỨT TỒN TẠI' : 'THÔNG TIN NGƯỜI BỊ THIỆT HẠI';
+            if (typeof toggleNycTypeFields === 'function') toggleNycTypeFields();
         }
 
         function fillNbthForm(nbth) {
             const d = nbth || {};
             setInputValue('claimNbthName', d.name || '');
-            setInputValue('claimNbthGender', d.gender || 'Nam');
             setInputValue('claimNbthBirth', d.dob || '');
             setInputValue('claimNbthPhone', d.phone || '');
             setInputValue('claimNbthEmail', d.email || '');
@@ -7768,8 +8089,9 @@
             setInputValue('claimNbthCardNo', d.docNo || '');
             setInputValue('claimNbthCardDate', d.docDate || '');
             setInputValue('claimNbthCardPlace', d.docPlace || '');
-            setInputValue('claimNbthCountry', d.country === 'Khác' || (d.country && d.country !== 'Việt Nam') ? 'Khác' : 'Việt Nam');
+            setClaimCountry('claimNbthCountry', d.country);
             setInputValue('claimNbthCity', d.city || '');
+            setInputValue('claimNbthWard', stripWardCode(d.ward || ''));
             setInputValue('claimNbthAddress', d.address || '');
             ['claimNbthName', 'claimNbthBirth', 'claimNbthCardType', 'claimNbthCardNo'].forEach(id => {
                 const el = document.getElementById(id);
@@ -7781,11 +8103,9 @@
         }
 
         function collectNbthFromForm(role) {
-            if (!role || role === NBTH_ROLE) return null;
-            const prev = (editingClaimId && claimsList.find(c => c.id === editingClaimId) || {}).nbth || {};
+            if (!role || role === NBTH_ROLE || role === NYC_ROLE_TO_CHUC_KE_THUA) return null;
             return {
                 name: getInputValue('claimNbthName'),
-                gender: getInputValue('claimNbthGender'),
                 dob: getInputValue('claimNbthBirth'),
                 docType: getInputValue('claimNbthCardType'),
                 docNo: getInputValue('claimNbthCardNo'),
@@ -7795,7 +8115,7 @@
                 email: getInputValue('claimNbthEmail'),
                 country: getInputValue('claimNbthCountry'),
                 city: getInputValue('claimNbthCity'),
-                ward: prev.ward || '',
+                ward: getInputValue('claimNbthWard'),
                 address: getInputValue('claimNbthAddress')
             };
         }
@@ -7806,7 +8126,8 @@
             const block = document.getElementById('claimNbthBlock');
             if (!block || block.style.display === 'none') return null;
             let first = null;
-            ['claimNbthName', 'claimNbthBirth', 'claimNbthCardType', 'claimNbthCardNo'].forEach(id => {
+            const ids = role === NYC_ROLE_TO_CHUC_KE_THUA ? ['claimNbthOrgName'] : ['claimNbthName', 'claimNbthBirth', 'claimNbthCardType', 'claimNbthCardNo'];
+            ids.forEach(id => {
                 const el = document.getElementById(id);
                 if (!el) return;
                 const bad = !String(el.value || '').trim();
@@ -7869,7 +8190,7 @@
             const officer = rec.chuTri ? W.userName(rec.chuTri) : '';
             const date = getWfAssignedDate(rec);
             const ward = stripWardCode(rec.nycPhuongXa);
-            const addressDetail = [rec.nycAddressDetail, ward].filter(Boolean).join(', ');
+            const addressDetail = rec.nycAddressDetail || '';
             const files = [];
             (rec.attachedDocs || []).forEach(d => { if (d && (d.file || d.name)) files.push({ name: d.file || d.name, url: '#' }); });
             (rec.transferFiles || []).forEach(f => { if (f && f.name) files.push({ name: f.name, url: '#' }); });
@@ -7890,10 +8211,21 @@
                 nyc: rec.nycName || '(Chưa nhập)',
                 nycRole: rec.nycRole || NBTH_ROLE,
                 role: rec.nycRole || NBTH_ROLE,
-                nycGender: rec.nycGender || 'Nam',
+                nycType: normalizeNycType(rec.nycType),
+                nycOrgCode: rec.nycOrgCode || '',
+                nycOrgDocNo: rec.nycOrgDocNo || '',
+                nycOrgDocDate: rec.nycOrgDocDate || '',
+                nycOrgDocPlace: rec.nycOrgDocPlace || '',
+                nycRepName: rec.nycRepName || '',
+                nycRepPosition: rec.nycRepPosition || '',
+                nbthOrgName: rec.nbthOrgName || '',
+                nbthOrgCode: rec.nbthOrgCode || '',
+                // Phương thức nhận thông báo kế thừa từ Xác định CQGQBT (hinhThucNhan / diaChiNhanThongBao)
+                notifyMethod: (rec.notifyMethod || rec.hinhThucNhan) ? normalizeClaimNotifyMethod(rec.notifyMethod || rec.hinhThucNhan) : '',
+                notifyAddress: rec.notifyAddress || rec.diaChiNhanThongBao || '',
                 nycBirth: rec.nycDob || '',
-                nycCardType: rec.nycDocType || 'CCCD',
-                cardType: rec.nycDocType || 'CCCD',
+                nycCardType: normClaimDocType(rec.nycDocType) || 'CMND/CCCD/Chứng minh quân đội',
+                cardType: normClaimDocType(rec.nycDocType) || 'CMND/CCCD/Chứng minh quân đội',
                 nycCardNo: rec.nycDocNo || '',
                 cardNo: rec.nycDocNo || '',
                 nycCardDate: rec.nycDocDate || '',
@@ -7903,7 +8235,7 @@
                 nycEmail: rec.nycEmail || '',
                 nycCountry: rec.nycCountry || 'Việt Nam',
                 nycTinhThanh: mapWfCityToClaimCity(rec.nycTinhThanh),
-                nycPhuongXa: rec.nycPhuongXa || '',
+                nycPhuongXa: ward,
                 nycAddressDetail: addressDetail,
                 address: addressDetail,
                 nbth,
@@ -8222,6 +8554,9 @@
             claim.nycAddressDetail = getClaimAddressDetail(claim);
             claim.nycCountry = claim.nycCountry || 'Việt Nam';
             claim.nycRole = claim.nycRole || claim.role || 'Người bị thiệt hại';
+            // Dữ liệu cũ không có Loại người yêu cầu: coi là Cá nhân; Giới tính cũ bỏ qua, không hiển thị
+            claim.nycType = normalizeNycType(claim.nycType);
+            if (claim.notifyMethod) claim.notifyMethod = normalizeClaimNotifyMethod(claim.notifyMethod);
             claim.nycPhone = claim.nycPhone || claim.phone || '';
             claim.nycCardType = claim.nycCardType || claim.cardType || 'Cá nhân';
             claim.nycCardNo = claim.nycCardNo || claim.cardNo || '';
@@ -8493,8 +8828,8 @@
             const e = v => ycEsc(v === undefined || v === null || v === '' ? '--' : String(v));
             const nb = claim.nbth && claim.nycRole && claim.nycRole !== NBTH_ROLE ? claim.nbth : null;
             const person = nb
-                ? { name: nb.name, dob: nb.dob, docType: nb.docType, docNo: nb.docNo, phone: nb.phone, address: [nb.address, stripWardCode(nb.ward)].filter(Boolean).join(', ') }
-                : { name: claim.nyc, dob: claim.nycBirth, docType: claim.nycCardType, docNo: claim.nycCardNo, phone: claim.nycPhone, address: claim.nycAddressDetail };
+                ? { name: nb.name, dob: nb.dob, docType: normClaimDocType(nb.docType), docNo: nb.docNo, phone: nb.phone, address: joinClaimAddress(nb.address, stripWardCode(nb.ward), nb.city) }
+                : { name: claim.nyc, dob: claim.nycBirth, docType: normClaimDocType(claim.nycCardType), docNo: claim.nycCardNo, phone: claim.nycPhone, address: getClaimNycAddressLine(claim) };
             const forms = phddFormsOf(claim);
             const vb = normalizeVanBanCanCuList(claim.vanBanCanCu).filter(r => r.name || r.file);
             const card = (id, icon, title, body) => `<div id="${id}" style="background:white; border:1px solid var(--border-color); border-radius:8px; padding:18px; box-shadow:0 1px 3px rgba(0,0,0,0.05); margin-bottom:20px;">
@@ -8677,6 +9012,15 @@
             flatpickr("#claimNYCCardDate", { dateFormat: "d/m/Y", allowInput: true });
             flatpickr("#claimNbthBirth", { dateFormat: "d/m/Y", allowInput: true });
             flatpickr("#claimNbthCardDate", { dateFormat: "d/m/Y", allowInput: true });
+            // Loại giấy tờ thân nhân: danh mục DM_10 trừ Mã số thuế
+            if (window.BTNN_WF && typeof BTNN_WF.fillPersonalDocTypeSelect === 'function') {
+                BTNN_WF.fillPersonalDocTypeSelect('claimNYCCardType');
+                BTNN_WF.fillPersonalDocTypeSelect('claimNbthCardType', '-- Chọn loại giấy tờ --');
+            }
+            // Quốc gia: danh mục DM_09, mặc định Việt Nam
+            fillClaimCountrySelect('claimNYCCountry');
+            fillClaimCountrySelect('claimNbthCountry');
+            updateClaimWardOptions(false);
             initRequestDocDatePickers();
             flatpickr("#verdictOriginDocDate", { dateFormat: "d/m/Y", allowInput: true });
             flatpickr("#verdictEffectiveDate", { dateFormat: "d/m/Y", allowInput: true });
@@ -8727,6 +9071,8 @@
                 });
                 claimsList = loadedList;
             }
+            // Dữ liệu mẫu người yêu cầu là Tổ chức (Mẫu 01/BTNN): bổ sung nếu chưa có, không ghi đè bản ghi đã có
+            seedNycOrgSampleClaims();
 
             // Dynamically assign mock dates in current month so they bypass the default date filters on load
             claimsList.forEach((claim, idx) => {
@@ -9828,60 +10174,45 @@
             }
         }
 
-        const NOTIFY_METHOD_DEFAULT_CLAIM = 'Qua Cổng Dịch vụ công quốc gia';
+        const NOTIFY_METHOD_DEFAULT_CLAIM = 'Qua Cổng Dịch vụ công quốc gia hoặc Ứng dụng định danh quốc gia (VNeID)';
 
+        // Nhãn/placeholder "Địa chỉ, đầu mối nhận thông báo" đổi theo phương thức (cùng quy tắc màn Xác định CQGQBT)
         function handleClaimNotifyMethodChange(method) {
             const label = document.getElementById('claimNotifyAddressLabel');
             const input = document.getElementById('claimNotifyAddress');
             if (!label || !input) return;
-
-            const phone = document.getElementById('claimNYCPhone') ? document.getElementById('claimNYCPhone').value.trim() : '';
-            const email = document.getElementById('claimNYCEmail') ? document.getElementById('claimNYCEmail').value.trim() : '';
-            const cardNo = document.getElementById('claimNYCCardNo') ? document.getElementById('claimNYCCardNo').value.trim() : '';
-            const address = document.getElementById('claimNYCAddress') ? document.getElementById('claimNYCAddress').value.trim() : '';
-            const city = document.getElementById('claimNYCCity') ? document.getElementById('claimNYCCity').value.trim() : '';
-
-            if (method === 'Trực tiếp') {
+            input.classList.remove('is-invalid');
+            const errEl = document.getElementById('errClaimNotifyAddress');
+            if (errEl) errEl.style.display = 'none';
+            const m = normalizeClaimNotifyMethod(method);
+            const isOrg = getNycTypeFromForm() === NYC_TYPE_TO_CHUC;
+            const phone = getInputValue('claimNYCPhone');
+            const email = getInputValue('claimNYCEmail');
+            const docNo = isOrg ? getInputValue('claimNYCOrgCode') : getInputValue('claimNYCCardNo');
+            const country = getInputValue('claimNYCCountry');
+            const city = country === 'Việt Nam' ? getInputValue('claimNYCCity') : getInputValue('claimNYCCityText');
+            const canFill = !input.value.trim() || input.dataset.autofilled === '1';
+            const fill = (v, keep) => { if (!canFill) return; input.value = v || ''; input.dataset.autofilled = (v || keep) ? '1' : '0'; };
+            if (m === 'Trực tiếp') {
                 label.innerHTML = 'Địa chỉ, đầu mối nhận thông báo (Trực tiếp tại trụ sở) <span class="required">*</span>';
-                input.placeholder = 'Nhập địa chỉ hoặc ghi nhận trực tiếp tại trụ sở cơ quan giải quyết bồi thường...';
-                if (!input.value || input.value.includes('Cổng DVC') || input.value.includes('VNeID') || input.value.includes('@') || input.value.includes('trụ sở')) {
-                    input.value = 'Nhận trực tiếp tại trụ sở cơ quan giải quyết bồi thường';
-                }
-            } else if (method === 'Qua dịch vụ bưu chính') {
+                input.placeholder = 'Nhận trực tiếp tại trụ sở cơ quan giải quyết (hoặc thông tin người nhận)...';
+                fill('Nhận trực tiếp tại trụ sở cơ quan giải quyết bồi thường');
+            } else if (m === 'Qua dịch vụ bưu chính') {
                 label.innerHTML = 'Địa chỉ nhận thông báo qua dịch vụ bưu chính <span class="required">*</span>';
-                input.placeholder = 'Nhập địa chỉ nhận thư/bưu phẩm...';
-                const fullAddress = [address, city].filter(Boolean).join(', ');
-                if (fullAddress && (!input.value || input.value.includes('trụ sở') || input.value.includes('VNeID') || input.value.includes('Cổng DVC') || input.value.includes('@'))) {
-                    input.value = fullAddress;
-                }
-            } else if (method === 'Qua thư điện tử') {
+                input.placeholder = 'Nhập địa chỉ chi tiết nhận thông báo qua dịch vụ bưu chính...';
+                fill(joinClaimAddress(getInputValue('claimNYCAddress'), getInputValue('claimNYCWard'), city));
+            } else if (m === 'Qua thư điện tử') {
                 label.innerHTML = 'Thư điện tử (Email) nhận thông báo <span class="required">*</span>';
-                input.placeholder = 'Nhập địa chỉ email nhận thông báo...';
-                if (email && (!input.value || input.value.includes('trụ sở') || input.value.includes('VNeID') || input.value.includes('Cổng DVC'))) {
-                    input.value = email;
-                }
-            } else if (method === 'Qua ứng dụng định danh quốc gia (VNeID)') {
-                label.innerHTML = 'Địa chỉ, đầu mối nhận thông báo (Tài khoản VNeID / Số ĐDCN) <span class="required">*</span>';
-                input.placeholder = 'Nhập số định danh cá nhân / tài khoản VNeID nhận thông báo...';
-                const vneidContact = [cardNo ? `VNeID/CCCD: ${cardNo}` : '', phone ? `SĐT: ${phone}` : ''].filter(Boolean).join(' - ');
-                if (vneidContact && (!input.value || input.value.includes('trụ sở') || input.value.includes('@'))) {
-                    input.value = vneidContact;
-                }
-            } else if (method === 'Qua phương tiện điện tử khác') {
+                input.placeholder = 'Nhập địa chỉ thư điện tử nhận thông báo (ví dụ: nguyenvanan@gmail.com)...';
+                fill(email);
+            } else if (m === 'Qua phương tiện điện tử khác') {
                 label.innerHTML = 'Địa chỉ, đầu mối nhận thông báo qua phương tiện điện tử khác <span class="required">*</span>';
                 input.placeholder = 'Nhập thông tin phương tiện điện tử khác (số điện thoại, tài khoản số...)...';
-                const contact = [phone ? `SĐT: ${phone}` : '', email ? `Email: ${email}` : ''].filter(Boolean).join(' - ');
-                if (contact && (!input.value || input.value.includes('trụ sở'))) {
-                    input.value = contact;
-                }
+                fill([phone ? `SĐT: ${phone}` : '', email ? `Email: ${email}` : ''].filter(Boolean).join(' / '));
             } else {
-                // Qua Cổng Dịch vụ công quốc gia
-                label.innerHTML = 'Địa chỉ, đầu mối nhận thông báo (Tài khoản Cổng DVC / Số CCCD/ĐDCN) <span class="required">*</span>';
-                input.placeholder = 'Nhập tài khoản Cổng DVC hoặc số CCCD/ĐDCN nhận thông báo...';
-                const dvcContact = [cardNo ? `CCCD/ĐDCN: ${cardNo}` : '', phone ? `SĐT: ${phone}` : ''].filter(Boolean).join(' - ');
-                if (dvcContact && (!input.value || input.value.includes('trụ sở') || input.value.includes('@'))) {
-                    input.value = dvcContact;
-                }
+                label.innerHTML = 'Địa chỉ, đầu mối nhận thông báo (Tài khoản Cổng DVC / Số ĐDCN / VNeID) <span class="required">*</span>';
+                input.placeholder = 'Nhập số định danh cá nhân / tài khoản VNeID hoặc tài khoản Cổng DVC nhận thông báo...';
+                fill([docNo ? `${isOrg ? 'Mã số tổ chức' : 'CCCD/ĐDCN'}: ${docNo}` : '', phone ? `SĐT: ${phone}` : ''].filter(Boolean).join(' / ') || 'VNeID / Cổng Dịch vụ công quốc gia', true);
             }
         }
 
@@ -9984,8 +10315,10 @@
                 document.getElementById('claimRequestDocDate').value = claim.requestDocDate || '';
                 document.getElementById('claimApplicableLaw').value = claim.applicableLaw || 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017';
                 document.getElementById('claimNYCRole').value = claim.nycRole || claim.role || 'Người bị thiệt hại';
-                if (claim.nycGender) document.getElementById('claimNYCGender').value = claim.nycGender;
+                setNycTypeOnForm(claim.nycType);
+                fillNycOrgForm(claim);
                 fillNbthForm(claim.nbth);
+                applyNycTypeConstraint(document.getElementById('claimNYCRole').value);
                 toggleNbthBlock(document.getElementById('claimNYCRole').value);
                 document.getElementById('claimNYCBirth').value = claim.nycBirth || '';
                 document.getElementById('claimNYCCardType').value = claim.cardType || 'Cá nhân';
@@ -9994,7 +10327,7 @@
                 document.getElementById('claimNYCCardPlace').value = claim.nycCardPlace || '';
                 document.getElementById('claimNYCPhone').value = claim.phone || '';
                 document.getElementById('claimNYCEmail').value = claim.nycEmail || '';
-                document.getElementById('claimNYCCountry').value = claim.nycCountry || 'Việt Nam';
+                setClaimCountry('claimNYCCountry', claim.nycCountry);
                 toggleClaimCountrySelect(claim.nycCountry || 'Việt Nam');
                 if ((claim.nycCountry || 'Việt Nam') === 'Việt Nam') {
                     document.getElementById('claimNYCCity').value = getClaimCity(claim);
@@ -10006,15 +10339,8 @@
                 document.getElementById('claimNYCAddress').value = getClaimAddressDetail(claim);
                 document.getElementById('claimHanhVi').value = claim.hanhVi || '';
                 document.getElementById('claimNhanQua').value = claim.nhanQua || '';
-                const editNotifyMethod = claim.notifyMethod || NOTIFY_METHOD_DEFAULT_CLAIM;
-                const editNotifyRadios = document.getElementsByName('claimNotifyMethod');
-                editNotifyRadios.forEach(r => {
-                    r.checked = (r.value === editNotifyMethod);
-                });
-                handleClaimNotifyMethodChange(editNotifyMethod);
-                if (claim.notifyAddress) {
-                    document.getElementById('claimNotifyAddress').value = claim.notifyAddress;
-                }
+                // Phương thức nhận thông báo: theo hồ sơ (kế thừa từ Xác định CQGQBT nếu có), mặc định như màn Xác định CQGQBT
+                setClaimNotifyMethodOnForm(claim.notifyMethod || NOTIFY_METHOD_DEFAULT_CLAIM, claim.notifyAddress || '');
                 document.getElementById('claimCqNhan').value = claim.agency || '';
                 populateClaimReportForm(claim);
                 applyVerdictFormData(claim);
@@ -10127,7 +10453,10 @@
                 setClaimNguonHoSoField(NGUON_HO_SO_TIEP_NHAN, HTTN_SRC.TRUC_TIEP, false);
                 renderClaimXdTransferInfo(null);
                 fillNbthForm(null);
+                fillNycOrgForm(null);
                 document.getElementById('claimNYCRole').value = 'Người bị thiệt hại';
+                setNycTypeOnForm(NYC_TYPE_CA_NHAN);
+                applyNycTypeConstraint('Người bị thiệt hại');
                 toggleNbthBlock('Người bị thiệt hại');
                 document.getElementById('claimRequestDocDate').value = '';
                 document.getElementById('claimApplicableLaw').value = 'Luật Trách nhiệm bồi thường của Nhà nước năm 2017';
@@ -10145,13 +10474,7 @@
                 document.getElementById('claimNYCAddress').value = '';
                 document.getElementById('claimHanhVi').value = '';
                 document.getElementById('claimNhanQua').value = '';
-                const defNotifyMethod = NOTIFY_METHOD_DEFAULT_CLAIM;
-                const defNotifyRadios = document.getElementsByName('claimNotifyMethod');
-                defNotifyRadios.forEach(r => {
-                    r.checked = (r.value === defNotifyMethod);
-                });
-                document.getElementById('claimNotifyAddress').value = '';
-                handleClaimNotifyMethodChange(defNotifyMethod);
+                setClaimNotifyMethodOnForm(NOTIFY_METHOD_DEFAULT_CLAIM, '');
                 document.getElementById('claimCqNhan').value = '';
                 populateClaimReportForm({});
                 applyVerdictFormData({});
@@ -10299,8 +10622,10 @@
             document.getElementById('claimCqNhan').value = found.procTargetAgency;
             document.getElementById('claimNYCName').value = found.nycName;
             document.getElementById('claimNYCRole').value = found.nycRole;
+            setNycTypeOnForm(found.nycType);
+            fillNycOrgForm(found);
+            applyNycTypeConstraint(found.nycRole);
             toggleNbthBlock(found.nycRole);
-            document.getElementById('claimNYCGender').value = found.nycGender;
             document.getElementById('claimNYCBirth').value = found.nycBirth;
             document.getElementById('claimNYCCardType').value = found.nycCardType;
             document.getElementById('claimNYCCardNo').value = found.nycCardNo;
@@ -10309,7 +10634,7 @@
             document.getElementById('claimNYCPhone').value = found.nycPhone;
             document.getElementById('claimNYCEmail').value = found.nycEmail;
 
-            document.getElementById('claimNYCCountry').value = found.nycCountry;
+            setClaimCountry('claimNYCCountry', found.nycCountry);
             toggleClaimCountrySelect(found.nycCountry);
             if (found.nycCountry === 'Việt Nam') {
                 document.getElementById('claimNYCCity').value = found.nycTinhThanh;
@@ -10319,15 +10644,8 @@
             document.getElementById('claimNYCAddress').value = found.nycAddressDetail;
             document.getElementById('claimHanhVi').value = found.hanhVi;
 
-            const xdNotifyMethod = found.notifyMethod || found.hinhThucNhan || NOTIFY_METHOD_DEFAULT_CLAIM;
-            const xdNotifyRadios = document.getElementsByName('claimNotifyMethod');
-            xdNotifyRadios.forEach(r => {
-                r.checked = (r.value === xdNotifyMethod);
-            });
-            handleClaimNotifyMethodChange(xdNotifyMethod);
-            if (found.notifyAddress || found.diaChiNhanThongBao) {
-                document.getElementById('claimNotifyAddress').value = found.notifyAddress || found.diaChiNhanThongBao;
-            }
+            // Kế thừa Phương thức nhận thông báo từ hồ sơ Xác định CQGQBT
+            setClaimNotifyMethodOnForm(found.notifyMethod || found.hinhThucNhan || NOTIFY_METHOD_DEFAULT_CLAIM, found.notifyAddress || found.diaChiNhanThongBao || '');
 
             // Populate Officer Fields
             document.getElementById('claimOfficerContainerForm').style.display = 'block';
@@ -10528,6 +10846,21 @@
         }
 
         // Toggles Country selections
+        // Quốc gia lấy theo danh mục DM_09 (Việt Nam đứng đầu); giá trị cũ không có trong danh mục vẫn được giữ để hiển thị
+        function fillClaimCountrySelect(id) {
+            const sel = document.getElementById(id);
+            if (!sel) return;
+            const list = (window.BTNN_WF && typeof BTNN_WF.getCountries === 'function') ? BTNN_WF.getCountries() : ['Việt Nam'];
+            sel.innerHTML = list.map(c => `<option value="${c}">${c}</option>`).join('');
+            sel.value = 'Việt Nam';
+        }
+        function setClaimCountry(id, v) {
+            const sel = document.getElementById(id);
+            if (!sel) return;
+            const val = v && v !== 'Khác' ? v : (v === 'Khác' ? '' : 'Việt Nam');
+            if (val && !Array.from(sel.options).some(o => o.value === val)) sel.add(new Option(val, val));
+            sel.value = val || 'Việt Nam';
+        }
         function toggleClaimCountrySelect(val) {
             const drop = document.getElementById('claimCityDropdownWrapper');
             const inp = document.getElementById('claimCityInputWrapper');
@@ -10537,6 +10870,38 @@
             } else {
                 drop.style.display = 'none';
                 inp.style.display = 'block';
+            }
+            updateClaimWardOptions(false);
+        }
+
+        // Phường/Xã người yêu cầu: Việt Nam -> combobox lọc theo Tỉnh/Thành phố; quốc gia khác -> nhập tự do (giống Xác định CQGQBT)
+        const CLAIM_WARD_CATALOG = {
+            'Hà Nội': ['00001 - Phường Ba Đình', '00004 - Phường Hoàn Kiếm', '00007 - Phường Cầu Giấy', '00010 - Phường Thanh Xuân'],
+            'TP. Hồ Chí Minh': ['26734 - Phường Bến Thành', '26737 - Phường Sài Gòn', '26740 - Phường Tân Định', '26743 - Phường Chợ Lớn'],
+            'Đà Nẵng': ['20194 - Phường Hải Châu', '20197 - Phường Thanh Khê', '20200 - Phường Sơn Trà', '20203 - Phường Ngũ Hành Sơn'],
+            'Lâm Đồng': ['24778 - Phường Xuân Hương - Đà Lạt', '24781 - Phường Lâm Viên - Đà Lạt', '24784 - Xã Đức Trọng', '24787 - Xã Di Linh'],
+            'Hải Phòng': ['11359 - Phường Hồng Bàng', '11362 - Phường Ngô Quyền', '11365 - Phường Lê Chân', '11368 - Phường Hải An']
+        };
+        function updateClaimWardOptions(clearIfMismatch) {
+            const wardInput = document.getElementById('claimNYCWard');
+            const list = document.getElementById('claimNYCWardList');
+            if (!wardInput || !list) return;
+            const countryEl = document.getElementById('claimNYCCountry');
+            const isVn = !countryEl || countryEl.value === 'Việt Nam';
+            if (!isVn) {
+                wardInput.removeAttribute('list');
+                list.innerHTML = '';
+                wardInput.placeholder = 'Nhập phường/xã/khu vực nước ngoài...';
+                return;
+            }
+            wardInput.setAttribute('list', 'claimNYCWardList');
+            const cityEl = document.getElementById('claimNYCCity');
+            const wards = CLAIM_WARD_CATALOG[cityEl ? cityEl.value : ''] || [];
+            list.innerHTML = wards.map(w => `<option value="${w}"></option>`).join('');
+            wardInput.placeholder = wards.length ? 'Gõ Mã hoặc Tên Phường/Xã...' : 'Nhập phường/xã...';
+            if (clearIfMismatch && wardInput.value) {
+                const cur = stripWardCode(wardInput.value);
+                if (!wards.some(w => stripWardCode(w) === cur)) wardInput.value = '';
             }
         }
 
@@ -10691,6 +11056,7 @@
 
             // 4. Giấy tờ chứng minh nhân thân của người thừa kế, người đại diện của người bị thiệt hại
             if (role === "Người thừa kế của người bị thiệt hại" ||
+                role === "Người đại diện cho những người thừa kế của người bị thiệt hại" ||
                 role === "Người đại diện theo pháp luật của người bị thiệt hại" ||
                 role === "Cá nhân, pháp nhân được ủy quyền hợp pháp") {
                 currentDocsList.push({
@@ -10702,7 +11068,7 @@
             }
 
             // 5. Trường hợp người bị thiệt hại chết mà có di chúc thì người yêu cầu bồi thường phải cung cấp di chúc, trường hợp không có di chúc thì phải có văn bản hợp pháp về quyền thừa kế
-            if (role === "Người thừa kế của người bị thiệt hại") {
+            if (role === "Người thừa kế của người bị thiệt hại" || role === "Người đại diện cho những người thừa kế của người bị thiệt hại") {
                 currentDocsList.push({
                     name: "Trường hợp người bị thiệt hại chết mà có di chúc thì người yêu cầu bồi thường phải cung cấp di chúc, trường hợp không có di chúc thì phải có văn bản hợp pháp về quyền thừa kế",
                     required: true,
@@ -10824,8 +11190,8 @@
                 const cqNhan = document.getElementById('claimCqNhan').value || "Sở Tư pháp TP. Hà Nội";
                 const role = document.getElementById('claimNYCRole').value || "Người bị thiệt hại";
                 const name = document.getElementById('claimNYCName').value || "Nguyễn Văn A";
-                const gender = document.getElementById('claimNYCGender').value || "Nam";
-                const birth = document.getElementById('claimNYCBirth').value || "01/01/1990";
+                const nycTypePv = getNycTypeFromForm();
+                const birth =document.getElementById('claimNYCBirth').value || "01/01/1990";
                 const cardType = document.getElementById('claimNYCCardType').value || "CCCD";
                 const cardNo = document.getElementById('claimNYCCardNo').value || "001090000123";
                 const cardDate = document.getElementById('claimNYCCardDate').value || "01/01/2021";
@@ -10915,10 +11281,14 @@
 
                         <div class="section-title">Thông tin người yêu cầu bồi thường</div>
                         <div style="margin-top: 8px;">
-                            <div><span class="field-label">1. Họ và tên người yêu cầu:</span> ${name}</div>
-                            <div><span class="field-label">2. Ngày, tháng, năm sinh:</span> ${birth} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="field-label">Giới tính:</span> ${gender}</div>
+                            <div><span class="field-label">1. ${nycTypePv === NYC_TYPE_TO_CHUC ? 'Tên tổ chức yêu cầu' : 'Họ và tên người yêu cầu'}:</span> ${name}</div>
+                            ${nycTypePv === NYC_TYPE_TO_CHUC
+                                ? `<div><span class="field-label">2. Mã số tổ chức:</span> ${getInputValue('claimNYCOrgCode') || '--'} &nbsp;&nbsp;&nbsp; Người đại diện theo pháp luật: ${getInputValue('claimNYCRepName') || '--'} (${getInputValue('claimNYCRepPosition') || '--'})</div>`
+                                : `<div><span class="field-label">2. Ngày, tháng, năm sinh:</span> ${birth}</div>`}
                             <div><span class="field-label">3. Tư cách yêu cầu bồi thường:</span> ${role}</div>
-                            <div><span class="field-label">4. Giấy tờ thân nhân:</span> ${cardType} số ${cardNo} &nbsp;&nbsp;&nbsp; Ngày cấp: ${cardDate} &nbsp;&nbsp;&nbsp; Nơi cấp: ${cardPlace}</div>
+                            ${nycTypePv === NYC_TYPE_TO_CHUC
+                                ? `<div><span class="field-label">4. Giấy tờ thành lập/đăng ký:</span> số ${getInputValue('claimNYCOrgDocNo') || '--'} &nbsp;&nbsp;&nbsp; Ngày cấp: ${getInputValue('claimNYCOrgDocDate') || '--'} &nbsp;&nbsp;&nbsp; Nơi cấp: ${getInputValue('claimNYCOrgDocPlace') || '--'}</div>`
+                                : `<div><span class="field-label">4. Giấy tờ thân nhân:</span> ${cardType} số ${cardNo} &nbsp;&nbsp;&nbsp; Ngày cấp: ${cardDate} &nbsp;&nbsp;&nbsp; Nơi cấp: ${cardPlace}</div>`}
                             <div><span class="field-label">5. Số điện thoại:</span> ${phone} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="field-label">Email:</span> ${email}</div>
                             <div><span class="field-label">6. Địa chỉ cư trú/Trụ sở:</span> ${address}, Tỉnh/Thành: ${city}, Quốc gia: ${country}</div>
                         </div>
@@ -11141,8 +11511,10 @@
             const verdictInfo = collectVerdictFormData();
 
             const name = document.getElementById('claimNYCName').value.trim();
-            const gender = document.getElementById('claimNYCGender').value;
-            const birth = document.getElementById('claimNYCBirth').value.trim();
+            // Loại người yêu cầu: Cá nhân bắt buộc Ngày sinh + giấy tờ thân nhân; Tổ chức kiểm tra riêng (validateNycOrgForm)
+            const nycExtra = collectNycExtraFromForm(role);
+            const isCaNhan = nycExtra.nycType === NYC_TYPE_CA_NHAN;
+            const birth = isCaNhan ? document.getElementById('claimNYCBirth').value.trim() : '';
             const cardType = document.getElementById('claimNYCCardType').value;
             const cardNo = document.getElementById('claimNYCCardNo').value.trim();
             const cardDate = document.getElementById('claimNYCCardDate').value.trim();
@@ -11177,26 +11549,34 @@
                 el.closest('.form-group').querySelector('.error-message').style.display = 'block';
                 if (!firstInvalid) firstInvalid = el;
             }
-            if (!birth) {
+            if (isCaNhan && !birth) {
                 const el = document.getElementById('claimNYCBirth');
                 el.classList.add('is-invalid');
                 el.closest('.form-group').querySelector('.error-message').style.display = 'block';
                 if (!firstInvalid) firstInvalid = el;
             }
-            if (!cardNo) {
+            if (isCaNhan && !cardNo) {
                 const el = document.getElementById('claimNYCCardNo');
                 el.classList.add('is-invalid');
                 el.closest('.form-group').querySelector('.error-message').style.display = 'block';
                 if (!firstInvalid) firstInvalid = el;
             }
-            if (!cardDate) {
+            if (isCaNhan && !cardDate) {
                 const el = document.getElementById('claimNYCCardDate');
                 el.classList.add('is-invalid');
                 el.closest('.form-group').querySelector('.error-message').style.display = 'block';
                 if (!firstInvalid) firstInvalid = el;
             }
-            if (!cardPlace) {
+            if (isCaNhan && !cardPlace) {
                 const el = document.getElementById('claimNYCCardPlace');
+                el.classList.add('is-invalid');
+                el.closest('.form-group').querySelector('.error-message').style.display = 'block';
+                if (!firstInvalid) firstInvalid = el;
+            }
+            const orgInvalid = validateNycOrgForm();
+            if (orgInvalid && !firstInvalid) firstInvalid = orgInvalid;
+            if (!nycExtra.nycPhuongXa) {
+                const el = document.getElementById('claimNYCWard');
                 el.classList.add('is-invalid');
                 el.closest('.form-group').querySelector('.error-message').style.display = 'block';
                 if (!firstInvalid) firstInvalid = el;
@@ -11421,11 +11801,12 @@
                     claim.nycTinhThanh = city;
                     claim.nycAddressDetail = address;
                     claim.nycBirth = birth;
-                    claim.nycGender = gender;
+                    delete claim.nycGender;
+                    Object.assign(claim, nycExtra);
                     claim.nycCardType = cardType;
-                    claim.nycCardNo = cardNo;
-                    claim.nycCardDate = cardDate;
-                    claim.nycCardPlace = cardPlace;
+                    claim.nycCardNo = isCaNhan ? cardNo : '';
+                    claim.nycCardDate = isCaNhan ? cardDate : '';
+                    claim.nycCardPlace = isCaNhan ? cardPlace : '';
                     claim.nycPhone = phone;
                     claim.nycEmail = email;
                     claim.nguonHoSo = nguonHoSo;
@@ -11434,7 +11815,7 @@
                     claim.applicableLaw = applicableLaw;
                     claim.reporting = reporting;
                     claim.cardType = cardType;
-                    claim.cardNo = cardNo;
+                    claim.cardNo = isCaNhan ? cardNo : '';
                     claim.address = address;
                     claim.phone = phone;
                     claim.role = role;
@@ -11572,15 +11953,15 @@
                 nycTinhThanh: city,
                 nycAddressDetail: address,
                 nycBirth: birth,
-                nycGender: gender,
+                ...nycExtra,
                 nycCardType: cardType,
-                nycCardNo: cardNo,
-                nycCardDate: cardDate,
-                nycCardPlace: cardPlace,
+                nycCardNo: isCaNhan ? cardNo : '',
+                nycCardDate: isCaNhan ? cardDate : '',
+                nycCardPlace: isCaNhan ? cardPlace : '',
                 nycPhone: phone,
                 nycEmail: email,
                 cardType: cardType,
-                cardNo: cardNo,
+                cardNo: isCaNhan ? cardNo : '',
                 address: address,
                 phone: phone,
                 role: role,
@@ -12278,27 +12659,55 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         <div><strong style="color:var(--text-muted);">Mã hồ sơ XĐCQ liên quan:</strong> <br><span style="font-weight:700; color:#475569;">${escapeHtml(claim.xdCode)}</span> <span style="font-size:12px; color:#64748b; font-style:italic;">(Không cho phép xem lại)</span></div>
                         <div style="grid-column: span 2;"><strong style="color:var(--text-muted);">Nội dung chuyển xử lý:</strong> <br>${claim.transferContent || '--'}</div>
                         <div style="grid-column: span 3;"><strong style="color:var(--text-muted);">Tài liệu chuyển xử lý:</strong> <br>${renderXdTransferFilesHtml(claim.transferFiles)}</div>` : '';
-            const nbthData = claim.nbth && claim.nycRole !== NBTH_ROLE ? claim.nbth : null;
-            const nbthSectionHtml = nbthData ? `
+            const dE = v => ycEsc(v === undefined || v === null || v === '' ? '--' : String(v));
+            const dF = (label, value, span) => `<div${span ? ` style="grid-column: span ${span};"` : ''}><strong style="color:var(--text-muted);">${label}:</strong> <br>${value}</div>`;
+            const nycTypeDt = normalizeNycType(claim.nycType);
+            const nycIsOrg = nycTypeDt === NYC_TYPE_TO_CHUC;
+            const nycRoleDt = claim.nycRole || claim.role || NBTH_ROLE;
+            const orgVictimDt = isClaimOrgVictim(nycRoleDt, nycTypeDt);
+            const nycPersonFieldsHtml = nycIsOrg
+                ? [dF('Tên tổ chức', `<span style="text-transform:uppercase; font-weight:700; color:var(--text-main);">${dE(claim.nyc)}</span>`),
+                    dF('Mã số tổ chức', dE(claim.nycOrgCode)),
+                    dF('Số giấy tờ thành lập/đăng ký', dE(claim.nycOrgDocNo)),
+                    dF('Ngày cấp', dE(claim.nycOrgDocDate)),
+                    dF('Nơi cấp', dE(claim.nycOrgDocPlace)),
+                    dF('Họ và tên người đại diện theo pháp luật', dE(claim.nycRepName)),
+                    dF('Chức vụ người đại diện', dE(claim.nycRepPosition))].join('')
+                : [dF('Họ và tên', `<span style="text-transform:uppercase; font-weight:700; color:var(--text-main);">${dE(claim.nyc)}</span>`),
+                    dF('Ngày sinh', dE(claim.nycBirth)),
+                    dF('Loại giấy tờ thân nhân', dE(normClaimDocType(claim.nycCardType))),
+                    dF('Số giấy tờ thân nhân', dE(claim.nycCardNo)),
+                    dF('Ngày cấp', dE(claim.nycCardDate)),
+                    dF('Nơi cấp', dE(claim.nycCardPlace))].join('');
+            const nbthOrgSectionHtml = nycRoleDt === NYC_ROLE_TO_CHUC_KE_THUA ? `
+                <div style="background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 20px;">
+                    <div style="font-weight:700; color:var(--primary-color); font-size:13.5px; border-bottom:2.5px solid #F1F5F9; padding-bottom:8px; margin-bottom:12px;">
+                        <i class="fa-solid fa-building-circle-xmark"></i> THÔNG TIN TỔ CHỨC BỊ THIỆT HẠI ĐÃ CHẤM DỨT TỒN TẠI
+                    </div>
+                    <div class="grid-4-cols" style="gap: 12px 20px; font-size: 13px; line-height: 1.6;">
+                        ${dF('Tên tổ chức bị thiệt hại', `<span style="text-transform:uppercase; font-weight:700; color:var(--text-main);">${dE(claim.nbthOrgName)}</span>`, 2)}
+                        ${dF('Mã số tổ chức', dE(claim.nbthOrgCode))}
+                    </div>
+                </div>` : '';
+            const nbthData = claim.nbth && nycRoleDt !== NBTH_ROLE && nycRoleDt !== NYC_ROLE_TO_CHUC_KE_THUA ? claim.nbth : null;
+            const nbthSectionHtml = nbthOrgSectionHtml + (nbthData ? `
                 <div style="background: white; border: 1px solid var(--border-color); border-radius: 8px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 20px;">
                     <div style="font-weight:700; color:var(--primary-color); font-size:13.5px; border-bottom:2.5px solid #F1F5F9; padding-bottom:8px; margin-bottom:12px;">
                         <i class="fa-solid fa-user-injured"></i> THÔNG TIN NGƯỜI BỊ THIỆT HẠI
                     </div>
                     <div class="grid-4-cols" style="gap: 12px 20px; font-size: 13px; line-height: 1.6;">
                         <div><strong style="color:var(--text-muted);">Họ và tên:</strong> <br><span style="text-transform:uppercase; font-weight:700; color:var(--text-main);">${nbthData.name || '--'}</span></div>
-                        <div><strong style="color:var(--text-muted);">Giới tính:</strong> <br>${nbthData.gender || '--'}</div>
                         <div><strong style="color:var(--text-muted);">Ngày sinh:</strong> <br>${nbthData.dob || '--'}</div>
-                        <div><strong style="color:var(--text-muted);">Loại giấy tờ thân nhân:</strong> <br>${nbthData.docType || '--'}</div>
+                        <div><strong style="color:var(--text-muted);">Loại giấy tờ thân nhân:</strong> <br>${ycEsc(normClaimDocType(nbthData.docType)) || '--'}</div>
                         <div><strong style="color:var(--text-muted);">Số giấy tờ thân nhân:</strong> <br>${nbthData.docNo || '--'}</div>
                         <div><strong style="color:var(--text-muted);">Ngày cấp:</strong> <br>${nbthData.docDate || '--'}</div>
                         <div><strong style="color:var(--text-muted);">Nơi cấp:</strong> <br>${nbthData.docPlace || '--'}</div>
                         <div><strong style="color:var(--text-muted);">Số điện thoại:</strong> <br>${nbthData.phone || '--'}</div>
                         <div><strong style="color:var(--text-muted);">Email:</strong> <br>${nbthData.email || '--'}</div>
                         <div><strong style="color:var(--text-muted);">Quốc gia:</strong> <br>${nbthData.country || '--'}</div>
-                        <div><strong style="color:var(--text-muted);">Tỉnh / Thành phố:</strong> <br>${nbthData.city || '--'}</div>
-                        <div style="grid-column: span 4;"><strong style="color:var(--text-muted);">Địa chỉ chi tiết:</strong> <br>${[nbthData.address, stripWardCode(nbthData.ward)].filter(Boolean).join(', ') || '--'}</div>
+                        <div style="grid-column: span 4;"><strong style="color:var(--text-muted);">Địa chỉ:</strong> <br>${joinClaimAddress(nbthData.address, stripWardCode(nbthData.ward), nbthData.city) || '--'}</div>
                     </div>
-                </div>` : '';
+                </div>` : '');
             const report = getClaimReport(claim);
             const reportMoney = (value) => parseMoneyValue(value) > 0 ? `${parseMoneyValue(value).toLocaleString('vi-VN')} đồng` : '--';
 
@@ -12310,7 +12719,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         <h4 style="font-size:18px; font-weight:800; color:var(--primary-color); margin:2px 0 0 0;">${claim.code}</h4>
                     </div>
                     <div>
-                        <span style="font-size:12px; color:var(--text-muted); text-transform:uppercase; font-weight:600; letter-spacing:0.5px;">Họ và tên người yêu cầu</span>
+                        <span style="font-size:12px; color:var(--text-muted); text-transform:uppercase; font-weight:600; letter-spacing:0.5px;">Tên cá nhân/Tổ chức yêu cầu</span>
                         <div style="font-weight:700; color:var(--text-main); margin-top:2px; max-width:360px;">${getClaimRequesterName(claim)}</div>
                     </div>
                     <div>
@@ -12331,20 +12740,14 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         <i class="fa-solid fa-user-tie"></i> THÔNG TIN NGƯỜI YÊU CẦU BỒI THƯỜNG
                     </div>
                     <div class="grid-4-cols" style="gap: 12px 20px; font-size: 13px; line-height: 1.6;">
-                        <div><strong style="color:var(--text-muted);">Họ và tên:</strong> <br><span style="text-transform:uppercase; font-weight:700; color:var(--text-main);">${claim.nyc}</span></div>
-                        <div><strong style="color:var(--text-muted);">Tư cách người yêu cầu:</strong> <br><span style="font-weight:600; color:var(--secondary-color);">${claim.nycRole}</span></div>
-                        <div><strong style="color:var(--text-muted);">Giới tính:</strong> <br>${claim.nycGender}</div>
-                        <div><strong style="color:var(--text-muted);">Ngày sinh:</strong> <br>${claim.nycBirth}</div>
-                        <div><strong style="color:var(--text-muted);">Trạng thái người bị hại:</strong> <br>${claim.victimAlive === 'no' ? '<span style="color:var(--danger-color); font-weight:600;">Đã mất</span>' : 'Còn sống'}</div>
-                        <div><strong style="color:var(--text-muted);">Loại giấy tờ thân nhân:</strong> <br>${claim.nycCardType}</div>
-                        <div><strong style="color:var(--text-muted);">Số giấy tờ thân nhân:</strong> <br>${claim.nycCardNo}</div>
-                        <div><strong style="color:var(--text-muted);">Ngày cấp:</strong> <br>${claim.nycCardDate || '--'}</div>
-                        <div><strong style="color:var(--text-muted);">Nơi cấp:</strong> <br>${claim.nycCardPlace || '--'}</div>
-                        <div><strong style="color:var(--text-muted);">Số điện thoại:</strong> <br>${claim.nycPhone || '--'}</div>
-                        <div><strong style="color:var(--text-muted);">Email:</strong> <br>${claim.nycEmail || '--'}</div>
-                        <div><strong style="color:var(--text-muted);">Quốc gia:</strong> <br>${claim.nycCountry}</div>
-                        <div><strong style="color:var(--text-muted);">Tỉnh / Thành phố:</strong> <br>${claim.nycTinhThanh}</div>
-                        <div style="grid-column: span 3;"><strong style="color:var(--text-muted);">Địa chỉ chi tiết:</strong> <br>${claim.nycAddressDetail}</div>
+                        <div><strong style="color:var(--text-muted);">Tư cách người yêu cầu:</strong> <br><span style="font-weight:600; color:var(--secondary-color);">${dE(nycRoleDt)}</span></div>
+                        <div><strong style="color:var(--text-muted);">Loại người yêu cầu:</strong> <br><span class="badge ${nycIsOrg ? 'badge-warning' : 'badge-info'}" style="font-size:11px;">${nycTypeDt}</span></div>
+                        ${nycPersonFieldsHtml}
+                        ${orgVictimDt ? '' : dF('Trạng thái người bị hại', claim.victimAlive === 'no' ? '<span style="color:var(--danger-color); font-weight:600;">Đã mất</span>' : 'Còn sống')}
+                        ${dF('Số điện thoại', dE(claim.nycPhone))}
+                        ${dF('Email', dE(claim.nycEmail))}
+                        ${dF('Quốc gia', dE(claim.nycCountry))}
+                        ${dF('Địa chỉ', dE(getClaimNycAddressLine(claim)), 3)}
                     </div>
                 </div>
 
@@ -12370,7 +12773,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                                 <i class="fa-solid fa-bell"></i> PHƯƠNG THỨC ĐỀ NGHỊ NHẬN THÔNG BÁO VỀ VIỆC GIẢI QUYẾT YÊU CẦU BỒI THƯỜNG
                             </span>
                             <div class="grid-2-cols" style="gap: 12px 20px; font-size: 13px;">
-                                <div><strong style="color:var(--text-muted);">Phương thức nhận thông báo:</strong> <br><span class="badge badge-info" style="font-size:12px; font-weight:600; padding:4px 8px;">${claim.notifyMethod || NOTIFY_METHOD_DEFAULT_CLAIM}</span></div>
+                                <div><strong style="color:var(--text-muted);">Phương thức nhận thông báo:</strong> <br><span class="badge badge-info" style="font-size:12px; font-weight:600; padding:4px 8px;">${normalizeClaimNotifyMethod(claim.notifyMethod || NOTIFY_METHOD_DEFAULT_CLAIM)}</span></div>
                                 <div><strong style="color:var(--text-muted);">Địa chỉ, đầu mối nhận thông báo:</strong> <br><span style="font-weight:600; color:var(--text-main);">${claim.notifyAddress || (claim.cardNo ? ('Tài khoản VNeID (Số ĐDĐT: ' + (claim.nycCardNo || claim.cardNo) + (claim.phone ? ' - SĐT: ' + claim.phone : '') + ')') : 'Tài khoản Cổng Dịch vụ công / VNeID')}</span></div>
                             </div>
                         </div>
@@ -18315,6 +18718,379 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         class="fa-solid fa-print"></i> In thông báo</button>
             </div>
         </div>
+    <!-- Modal Trình ký Yêu cầu bổ sung hồ sơ (Wizard 2 bước & Định vị chữ ký) -->
+    <div id="modalRequireAddition" class="confirm-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.55); z-index:9999; justify-content:center; align-items:center;">
+        <div id="modalRequireAdditionContainer" class="sticky-modal-container" style="background:#fff; width:850px; max-width:96%; border-radius:10px; display:flex; flex-direction:column; max-height:92vh; overflow:hidden; box-shadow:0 15px 35px rgba(0,0,0,0.25); transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+            
+            <!-- Modal Header -->
+            <div class="confirm-modal-header" style="color:var(--primary-light); background:#f8fafc; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; padding:20px 24px 16px 24px;">
+                <div>
+                    <div style="display:flex; align-items:center; gap:10px; font-size:16px; font-weight:700; color:var(--primary-light);">
+                        <i class="fa-solid fa-file-signature" style="color:#2563eb; font-size:18px;"></i>
+                        <span id="modalRequireAdditionTitle">YÊU CẦU BỔ SUNG HỒ SƠ YÊU CẦU BỒI THƯỜNG</span>
+                    </div>
+                    <div style="font-size:12.5px; color:#64748b; margin-top:3px;" id="modalRequireAdditionSub">
+                        Vụ việc: <strong id="mraClaimCode" style="color:#0f172a;">--</strong> • Người yêu cầu: <span id="mraClaimNYC" style="font-weight:600; color:#0f172a;">--</span>
+                    </div>
+                </div>
+                <span onclick="closeRequireAdditionModal()" style="cursor:pointer; font-size:24px; font-weight:bold; color:#64748b; line-height:1;" title="Đóng">&times;</span>
+            </div>
+
+            <!-- Stepper Navigation (Only shown for Online Signing) -->
+            <div id="mraStepperBar" style="background:#f1f5f9; border-bottom:1px solid #e2e8f0; padding:10px 24px; display:flex; justify-content:center; align-items:center; gap:20px;">
+                <div id="mraStep1Tab" style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700; color:#2563eb;">
+                    <span class="require-step-badge" id="mraStep1Badge" style="background:#2563eb; color:#fff;">1</span>
+                    <span>Soạn thông tin & Chọn lãnh đạo</span>
+                </div>
+                <div style="color:#cbd5e1; font-size:14px;"><i class="fa-solid fa-chevron-right"></i></div>
+                <div id="mraStep2Tab" style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:600; color:#64748b;">
+                    <span class="require-step-badge" id="mraStep2Badge" style="background:#cbd5e1; color:#475569;">2</span>
+                    <span>Định vị chữ ký trên văn bản</span>
+                </div>
+            </div>
+
+            <!-- Modal Body Step 1 -->
+            <div id="mraStep1Body" class="sticky-modal-body" style="padding:24px; overflow-y:auto; flex:1;">
+                
+                <!-- 1. Chọn Hình thức Ký ban hành -->
+                <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:14px 18px; margin-bottom:20px;">
+                    <label style="display:block; font-weight:700; color:#1e293b; font-size:13.5px; margin-bottom:8px;">
+                        <i class="fa-solid fa-signature" style="color:#0284c7;"></i> Hình thức ký ban hành văn bản: <span style="color:#dc2626;">*</span>
+                    </label>
+                    <div style="display:flex; gap:30px; flex-wrap:wrap;">
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:600; font-size:13.5px; color:#0f172a;">
+                            <input type="radio" name="mraSigningMethod" value="offline" onchange="toggleSigningMethod('offline')">
+                            <span><i class="fa-solid fa-file-pen" style="color:#0284c7;"></i> Ký ngoài (Upload file PDF đã ký & đóng dấu)</span>
+                        </label>
+                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:600; font-size:13.5px; color:#0f172a;">
+                            <input type="radio" name="mraSigningMethod" value="online" checked onchange="toggleSigningMethod('online')">
+                            <span><i class="fa-solid fa-file-signature" style="color:#16a34a;"></i> Ký số trên hệ thống (Trình duyệt & Ký số điện tử)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Form Nhập liệu chung (Số ký hiệu, Ngày tháng) -->
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" style="font-weight:600; font-size:13px; color:#334155; margin-bottom:6px; display:block;">
+                            Số, ký hiệu văn bản <span style="color:#dc2626;">*</span>:
+                        </label>
+                        <input type="text" id="mraDocNumber" class="form-control" placeholder="Ví dụ: 03/TB-CBTNN" value=".../TB-CBTNN">
+                        <div id="mraDocNumberError" class="error-message" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" style="font-weight:600; font-size:13px; color:#334155; margin-bottom:6px; display:block;">
+                            Ngày tháng văn bản <span style="color:#dc2626;">*</span>:
+                        </label>
+                        <input type="text" id="mraDocDate" class="form-control" placeholder="dd/mm/yyyy">
+                        <div id="mraDocDateError" class="error-message" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
+                    </div>
+                </div>
+
+                <!-- Nội dung yêu cầu bổ sung -->
+                <div class="form-group" style="margin-bottom:20px;">
+                    <label class="form-label" style="font-weight:600; font-size:13px; color:#334155; margin-bottom:6px; display:block;">
+                        Nội dung yêu cầu bổ sung hồ sơ <span style="color:#dc2626;">*</span>:
+                    </label>
+                    <textarea id="mraContentReason" class="form-control" rows="4" style="width:100%; font-size:13.5px; line-height:1.5; resize:vertical;" placeholder="Nhập các tài liệu, giấy tờ hoặc nội dung cần bổ sung; mỗi dòng một nội dung..."></textarea>
+                    <div id="mraContentReasonError" class="error-message" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
+                    <small style="color:#64748b; font-size:12px; display:block; margin-top:4px;">Mỗi dòng sẽ được trình bày thành một mục đánh số trong văn bản Thông báo Mẫu 03/BTNN.</small>
+                </div>
+
+                <!-- SECTION: KHỐI KÝ NGOÀI (Chỉ hiển thị khi signingMethod === 'offline') -->
+                <div id="mraOfflineSection" style="display:none; background:#fffbeb; border:1px solid #fef3c7; border-radius:8px; padding:16px; margin-bottom:16px;">
+                    <label class="form-label" style="font-weight:700; color:#92400e; font-size:13.5px; margin-bottom:8px; display:block;">
+                        <i class="fa-solid fa-file-pdf"></i> Tệp văn bản PDF đã ký & đóng dấu giấy <span style="color:#dc2626;">*</span>:
+                    </label>
+                    <input type="file" id="mraOfflineFileInput" style="display:none;" accept=".pdf" onchange="handleMraOfflineFileUpload(this)">
+                    <div id="mraOfflineUploadPrompt">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('mraOfflineFileInput').click()">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp PDF đã ký
+                        </button>
+                        <span style="font-size:12px; color:#78350f; margin-left:10px;">Chỉ chấp nhận file định dạng .pdf (tối đa 25MB)</span>
+                    </div>
+                    <div id="mraOfflineFileList" style="margin-top:10px; display:none;"></div>
+                    <div id="mraOfflineFileError" class="error-message" style="display:none; color:#dc2626; font-size:12px; margin-top:6px;">Vui lòng tải lên tệp PDF đã ký</div>
+
+                    <div style="margin-top:14px; padding:10px 12px; background:#fef3c7; border-radius:6px; font-size:12.5px; color:#92400e; line-height:1.5;">
+                        <i class="fa-solid fa-circle-info"></i> <strong>Lưu ý:</strong> Văn bản ký ngoài sẽ ban hành trực tiếp tới người yêu cầu bồi thường và chuyển trạng thái hồ sơ sang <strong>[Yêu cầu bổ sung]</strong> ngay khi bấm Xác nhận, không qua duyệt Lãnh đạo trên hệ thống.
+                    </div>
+                </div>
+
+                <!-- SECTION: KHỐI KÝ SỐ TRÊN HỆ THỐNG (Chỉ hiển thị khi signingMethod === 'online') -->
+                <div id="mraOnlineSection">
+                    
+                    <!-- Khối Tệp văn bản trình ký NỔI BẬT -->
+                    <div class="doc-upload-highlight" style="margin-bottom:20px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                            <span style="font-weight:700; color:#1e40af; font-size:14px;">
+                                <i class="fa-solid fa-file-contract"></i> TỆP VĂN BẢN TRÌNH KÝ <span style="color:#dc2626;">*</span>
+                            </span>
+                            <span id="mraDocStatusBadge" class="badge" style="display:none; background:#10b981; color:#fff; font-size:11.5px; padding:4px 10px;">
+                                <i class="fa-solid fa-circle-check"></i> Đã sẵn sàng trình ký
+                            </span>
+                        </div>
+
+                        <!-- Trạng thái chưa có tệp -->
+                        <div id="mraFileEmptyState">
+                            <p style="font-size:13px; color:#475569; margin:0 0 12px 0;">Mặc định, bạn có thể tải lên tệp văn bản từ máy tính hoặc kích hoạt hệ thống tự động sinh văn bản theo Mẫu 03/BTNN:</p>
+                            <input type="file" id="mraOnlineFileInput" style="display:none;" accept=".pdf,.doc,.docx" onchange="handleMraOnlineFileUpload(this)">
+                            <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                                <button type="button" class="btn btn-secondary" onclick="document.getElementById('mraOnlineFileInput').click()" style="padding:7px 16px; font-size:13px;">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> Tải file từ máy tính
+                                </button>
+                                <button type="button" class="btn btn-primary" onclick="generateMau03Document()" style="padding:7px 18px; font-size:13px; background:#2563eb; border-color:#2563eb; box-shadow:0 2px 6px rgba(37,99,235,0.25);">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> Tự động sinh văn bản Mẫu 03/BTNN
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Trạng thái đã có tệp -->
+                        <div id="mraFileReadyState" style="display:none; background:#ffffff; border:1px solid #bfdbfe; border-radius:6px; padding:12px 16px; align-items:center; justify-content:space-between;">
+                            <div style="display:flex; align-items:center; gap:12px;">
+                                <i class="fa-solid fa-file-pdf" style="font-size:32px; color:#ef4444;"></i>
+                                <div>
+                                    <div id="mraFileName" style="font-weight:700; color:#1e293b; font-size:14px;">Mau_03_BTNN_Thong_bao_yeu_cau_bo_sung.pdf</div>
+                                    <div id="mraFileMeta" style="font-size:12px; color:#64748b; margin-top:2px;">142 KB • Hệ thống tự động sinh theo Mẫu 03/BTNN</div>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:8px; align-items:center;">
+                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="previewMau03InNewWindow()" title="Xem nội dung chi tiết">
+                                    <i class="fa-solid fa-eye"></i> Xem trước
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="downloadMau03GeneratedFile()" title="Tải về máy tính">
+                                    <i class="fa-solid fa-download"></i> Tải về
+                                </button>
+                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeMraOnlineFile()" title="Xóa file">
+                                    <i class="fa-solid fa-trash"></i> Xóa
+                                </button>
+                            </div>
+                        </div>
+                        <div id="mraDocFileError" class="error-message" style="display:none; color:#dc2626; font-size:12px; margin-top:8px;">Vui lòng tải lên tệp văn bản hoặc nhấn "Tự động sinh văn bản Mẫu 03/BTNN"</div>
+                    </div>
+
+                    <!-- Khối CHỌN THÔNG TIN LÃNH ĐẠO KÝ THEO CẤU HÌNH LUỒNG -->
+                    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:16px; margin-bottom:10px;">
+                        <div style="font-weight:700; color:#0f172a; margin-bottom:10px; font-size:13.5px; display:flex; align-items:center; gap:8px;">
+                            <i class="fa-solid fa-network-wired" style="color:#0284c7;"></i> Luồng phê duyệt & Ký số theo cấu hình đơn vị:
+                        </div>
+                        
+                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:14px; font-size:12px; background:#fff; padding:8px 12px; border-radius:6px; border:1px solid #e2e8f0;">
+                            <span style="background:#e0f2fe; color:#0369a1; padding:3px 8px; border-radius:4px; font-weight:600;"><i class="fa-solid fa-user-edit"></i> 1. Cán bộ thụ lý</span>
+                            <i class="fa-solid fa-arrow-right" style="color:#94a3b8; font-size:11px;"></i>
+                            <span style="background:#fef3c7; color:#92400e; padding:3px 8px; border-radius:4px; font-weight:600;"><i class="fa-solid fa-user-check"></i> 2. Lãnh đạo Phòng (Duyệt)</span>
+                            <i class="fa-solid fa-arrow-right" style="color:#94a3b8; font-size:11px;"></i>
+                            <span style="background:#dcfce7; color:#166534; padding:3px 8px; border-radius:4px; font-weight:600;"><i class="fa-solid fa-stamp"></i> 3. Lãnh đạo Đơn vị (Ký số)</span>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label" style="font-weight:600; font-size:13px; color:#334155; margin-bottom:6px; display:block;">
+                                    Lãnh đạo Phòng (Duyệt chuyển tiếp) <span style="color:#dc2626;">*</span>:
+                                </label>
+                                <select id="mraOfficerRoomSelect" class="form-control" style="font-size:13px;">
+                                    <option value="">-- Chọn Lãnh đạo Phòng duyệt --</option>
+                                    <option value="Trần Văn Hùng" selected>Trần Văn Hùng - Trưởng phòng Nghiệp vụ BTNN</option>
+                                    <option value="Nguyễn Thị Mai">Nguyễn Thị Mai - Phó Trưởng phòng Nghiệp vụ BTNN</option>
+                                </select>
+                                <div id="mraOfficerRoomError" class="error-message" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
+                                <small style="color:#64748b; font-size:11.5px; display:block; margin-top:4px;">* Ký chuyển duyệt hồ sơ, không yêu cầu chứng thư số.</small>
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label class="form-label" style="font-weight:600; font-size:13px; color:#334155; margin-bottom:6px; display:block;">
+                                    Lãnh đạo Đơn vị (Ký số & Ban hành) <span style="color:#dc2626;">*</span>:
+                                </label>
+                                <select id="mraOfficerAgencySelect" class="form-control" style="font-size:13px;">
+                                    <option value="">-- Chọn Lãnh đạo Đơn vị ký số --</option>
+                                    <option value="Lê Hoàng Nam" selected>Lê Hoàng Nam - Cục trưởng</option>
+                                    <option value="Vũ Thu Trang">Vũ Thu Trang - Phó Cục trưởng</option>
+                                </select>
+                                <div id="mraOfficerAgencyError" class="error-message" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
+                                <small style="color:#64748b; font-size:11.5px; display:block; margin-top:4px;">* Ký số điện tử bằng Token/SmartCA và đóng dấu ban hành.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Modal Body Step 2 (Signature Placement & Canvas) -->
+            <div id="mraStep2Body" style="display:none; flex:1; overflow:hidden; flex-direction:row;">
+                
+                <!-- Left: Canvas preview A4 with Draggable signature boxes -->
+                <div style="flex:1; background:#475569; overflow-y:auto; display:flex; justify-content:center; padding:30px 20px; position:relative;" id="mraCanvasContainer">
+                    <div id="mraA4Page" class="a4-document-page">
+                        
+                        <!-- Content of Mau 03/BTNN -->
+                        <div style="display:flex; justify-content:space-between; margin-bottom:20px;">
+                            <div style="text-align:center; width:45%;">
+                                <div style="font-weight:bold; font-size:13px; text-transform:uppercase;" id="mraA4HeaderAgency">BỘ TƯ PHÁP</div>
+                                <div style="font-weight:bold; font-size:13px; text-transform:uppercase;" id="mraA4HeaderUnit">CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM VÀ BTNN</div>
+                                <div style="font-size:13px; margin-top:4px;">Số: <span id="mraA4DocNumber" style="font-weight:600;">.../TB-CBTNN</span></div>
+                                <div style="border-bottom:1px solid #000; width:120px; margin:4px auto;"></div>
+                            </div>
+                            <div style="text-align:center; width:50%;">
+                                <div style="font-weight:bold; font-size:13.5px; text-transform:uppercase;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                                <div style="font-weight:bold; font-size:13px; font-style:italic;">Độc lập - Tự do - Hạnh phúc</div>
+                                <div style="border-bottom:1px solid #000; width:150px; margin:4px auto;"></div>
+                                <div style="font-style:italic; font-size:13.5px; margin-top:5px;" id="mraA4DocDate">Hà Nội, ngày ... tháng ... năm 2026</div>
+                            </div>
+                        </div>
+
+                        <div style="text-align:center; margin:30px 0 20px 0;">
+                            <h3 style="font-size:16px; font-weight:bold; text-transform:uppercase; margin:0 0 6px 0; color:#0f172a;">THÔNG BÁO</h3>
+                            <div style="font-weight:bold; font-size:14.5px; text-transform:uppercase;">VỀ VIỆC YÊU CẦU BỔ SUNG HỒ SƠ YÊU CẦU BỒI THƯỜNG</div>
+                            <div style="font-style:italic; font-size:13px; color:#475569;">(Mẫu số 03/BTNN ban hành kèm theo Nghị định của Chính phủ)</div>
+                        </div>
+
+                        <div style="margin-bottom:16px; line-height:1.7;">
+                            <p style="margin:0 0 6px 0;"><strong>Kính gửi:</strong> Ông/Bà <strong id="mraA4NYC">--</strong></p>
+                            <p style="margin:0 0 6px 0;"><strong>Địa chỉ:</strong> <span id="mraA4Address">--</span></p>
+                        </div>
+
+                        <div style="margin-bottom:16px; line-height:1.7; text-align:justify;">
+                            <p style="margin:0 0 8px 0; text-indent:24px;">Căn cứ Điều 41, Điều 42 Luật Trách nhiệm bồi thường của Nhà nước năm 2017;</p>
+                            <p style="margin:0 0 8px 0; text-indent:24px;">Sau khi tiếp nhận và kiểm tra hồ sơ yêu cầu bồi thường của Ông/Bà (Vụ việc: <strong id="mraA4ClaimCode">--</strong>, tiếp nhận ngày <span id="mraA4ReceivedDate">--</span>), Cơ quan giải quyết bồi thường thông báo và đề nghị Ông/Bà bổ sung các nội dung, tài liệu sau đây:</p>
+                            
+                            <div id="mraA4AdditionItems" style="margin:12px 0 16px 20px; line-height:1.8;">
+                                <!-- Dynamic bullet items -->
+                            </div>
+
+                            <p style="margin:0 0 8px 0; text-indent:24px;">Trong thời hạn <strong>15 ngày làm việc</strong> kể từ ngày nhận được Thông báo này, đề nghị Ông/Bà gửi các tài liệu, chứng cứ bổ sung nêu trên đến Cơ quan giải quyết bồi thường theo quy định.</p>
+                            <p style="margin:0 0 8px 0; text-indent:24px; font-style:italic; color:#334155;">Hết thời hạn trên nếu không nhận được văn bản, tài liệu bổ sung, Cơ quan giải quyết bồi thường sẽ thực hiện thủ tục không thụ lý hồ sơ theo quy định pháp luật.</p>
+                        </div>
+
+                        <!-- Footer Signer Area -->
+                        <div style="display:flex; justify-content:space-between; margin-top:50px; position:relative; min-height:180px;">
+                            <div style="width:40%; font-size:12.5px;">
+                                <div style="font-weight:bold; font-style:italic;">Nơi nhận:</div>
+                                <div>- Như trên;</div>
+                                <div>- Lãnh đạo Cục (để b/c);</div>
+                                <div>- Lưu: VT, Hồ sơ vụ việc.</div>
+                            </div>
+                            <div style="width:50%; text-align:center;">
+                                <div style="font-weight:bold; text-transform:uppercase; font-size:13.5px;" id="mraA4SignerTitle">CỤC TRƯỞNG</div>
+                                <div style="font-style:italic; font-size:12.5px; color:#475569;">(Ký, ghi rõ họ tên và đóng dấu)</div>
+                                <div style="height:90px;"></div>
+                                <div style="font-weight:bold; font-size:14px; text-transform:uppercase;" id="mraA4SignerName">LÊ HOÀNG NAM</div>
+                            </div>
+                        </div>
+
+                        <!-- DRAGGABLE SIGNATURE BOX 1: Lãnh đạo Phòng (Duyệt chuyển tiếp) -->
+                        <div id="mraSigBoxRoom" class="sig-drag-box" style="left:60px; top:860px; width:220px; height:90px; border:2px dashed #2563eb; background:rgba(239, 246, 255, 0.9); box-shadow:0 4px 12px rgba(37,99,235,0.18);">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:10.5px; font-weight:700; color:#1e40af;"><i class="fa-solid fa-pen-nib"></i> KÝ DUYỆT (LĐ PHÒNG)</span>
+                                <span class="badge" style="background:#2563eb; color:#fff; font-size:9.5px; padding:1px 5px;">Cấp 1</span>
+                            </div>
+                            <div style="text-align:center; font-weight:700; color:#1e293b; font-size:12px;" id="mraSigBoxRoomOfficer">Trần Văn Hùng</div>
+                            <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;">
+                                <span>Chữ ký nháy / Ý kiến</span>
+                                <span id="mraCoordRoomLabel">X: 60, Y: 860</span>
+                            </div>
+                        </div>
+
+                        <!-- DRAGGABLE SIGNATURE BOX 2: Lãnh đạo Đơn vị (Ký số & Đóng dấu) -->
+                        <div id="mraSigBoxAgency" class="sig-drag-box" style="left:480px; top:860px; width:245px; height:110px; border:2px dashed #dc2626; background:rgba(254, 242, 242, 0.92); box-shadow:0 4px 12px rgba(220,38,38,0.18);">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:10.5px; font-weight:700; color:#991b1b;"><i class="fa-solid fa-stamp"></i> KÝ SỐ & CON DẤU</span>
+                                <span class="badge" style="background:#dc2626; color:#fff; font-size:9.5px; padding:1px 5px;">Cấp 2 (Ký số CA)</span>
+                            </div>
+                            <div style="text-align:center; margin:3px 0;">
+                                <div style="font-weight:700; color:#1e293b; font-size:12.5px;" id="mraSigBoxAgencyOfficer">Lê Hoàng Nam</div>
+                                <div style="font-size:10.5px; color:#dc2626; font-style:italic;"><i class="fa-solid fa-certificate"></i> SmartCA / Token hợp lệ</div>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;">
+                                <span>Chữ ký số & Con dấu</span>
+                                <span id="mraCoordAgencyLabel">X: 480, Y: 860</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Right: Tool Sidebar for Signatures -->
+                <div style="width:320px; background:#f8fafc; border-left:1px solid #e2e8f0; padding:20px; display:flex; flex-direction:column; gap:16px;">
+                    <div>
+                        <div style="font-weight:700; color:#0f172a; font-size:14px; margin-bottom:4px;">
+                            <i class="fa-solid fa-stamp" style="color:#2563eb;"></i> THIẾT LẬP VỊ TRÍ CHỮ KÝ
+                        </div>
+                        <div style="font-size:12px; color:#64748b;">Kéo các thẻ chữ ký vào vị trí thẩm quyền ký trên văn bản A4.</div>
+                    </div>
+
+                    <!-- Danh sách chữ ký cần đặt -->
+                    <div style="display:flex; flex-direction:column; gap:12px;">
+                        
+                        <!-- Chữ ký 1: Lãnh đạo Phòng -->
+                        <div style="background:#fff; border:1px solid #bfdbfe; border-radius:8px; padding:12px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                <span style="font-size:12.5px; font-weight:700; color:#1e40af;"><i class="fa-solid fa-pen-nib"></i> Lãnh đạo Phòng</span>
+                                <span class="badge badge-success" style="font-size:10px; padding:2px 6px;"><i class="fa-solid fa-check"></i> Đã định vị</span>
+                            </div>
+                            <div style="font-size:12.5px; font-weight:600; color:#1e293b;" id="mraPanelRoomName">Trần Văn Hùng</div>
+                            <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Vai trò: Ký duyệt chuyển tiếp</div>
+                            <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:11px; color:#94a3b8;" id="mraPanelRoomCoord">Tọa độ: (60, 860)</span>
+                                <button type="button" class="btn btn-outline-primary btn-sm" style="font-size:11px; padding:2px 8px;" onclick="placeSigBox('room', 60, 860)">Đặt lại</button>
+                            </div>
+                        </div>
+
+                        <!-- Chữ ký 2: Lãnh đạo Đơn vị -->
+                        <div style="background:#fff; border:1px solid #fecaca; border-radius:8px; padding:12px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                <span style="font-size:12.5px; font-weight:700; color:#991b1b;"><i class="fa-solid fa-stamp"></i> Lãnh đạo Đơn vị</span>
+                                <span class="badge badge-success" style="font-size:10px; padding:2px 6px;"><i class="fa-solid fa-check"></i> Đã định vị</span>
+                            </div>
+                            <div style="font-size:12.5px; font-weight:600; color:#1e293b;" id="mraPanelAgencyName">Lê Hoàng Nam</div>
+                            <div style="font-size:11.5px; color:#dc2626; margin-top:2px; font-weight:500;">Vai trò: Ký số CA & Con dấu cơ quan</div>
+                            <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:11px; color:#94a3b8;" id="mraPanelAgencyCoord">Tọa độ: (480, 860)</span>
+                                <button type="button" class="btn btn-outline-danger btn-sm" style="font-size:11px; padding:2px 8px;" onclick="placeSigBox('agency', 480, 860)">Đặt lại</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Auto Place Button -->
+                    <button type="button" class="btn btn-outline-secondary" onclick="autoPlaceSignaturesStandard()" style="font-size:12.5px; padding:8px; display:flex; align-items:center; justify-content:center; gap:6px;">
+                        <i class="fa-solid fa-crosshairs" style="color:#2563eb;"></i> Tự động căn vị trí chuẩn Nghị định 30
+                    </button>
+
+                    <!-- User Guide -->
+                    <div style="margin-top:auto; background:#eff6ff; border:1px solid #bfdbfe; border-radius:6px; padding:12px; font-size:12px; color:#1e40af; line-height:1.5;">
+                        <strong style="display:block; margin-bottom:4px;"><i class="fa-solid fa-circle-question"></i> Hướng dẫn kéo thả:</strong>
+                        • Dùng chuột bấm giữ và kéo khung chữ ký màu xanh hoặc đỏ đến vị trí mong muốn trên trang A4.<br>
+                        • Vị trí này sẽ được hệ thống gắn tem chữ ký số tự động khi các Lãnh đạo phê duyệt.
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="confirm-modal-footer" style="padding:16px 24px 20px 24px; display:flex; justify-content:space-between; align-items:center; background:#f8fafc; border-top:1px solid var(--border-color); flex-shrink:0;">
+                <div>
+                    <button type="button" class="btn btn-secondary" onclick="closeRequireAdditionModal()">Hủy bỏ</button>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <!-- Step 1 Buttons for Offline -->
+                    <button id="mraBtnSubmitOffline" type="button" class="btn btn-primary" onclick="submitMraOffline()" style="display:none; background:#0284c7; border-color:#0284c7;">
+                        <i class="fa-solid fa-paper-plane"></i> Ban hành văn bản
+                    </button>
+                    <!-- Step 1 Button for Online -->
+                    <button id="mraBtnNextStep" type="button" class="btn btn-primary" onclick="goToMraStep2()" style="background:#2563eb; border-color:#2563eb;">
+                        <span>Tiếp tục: Đặt vị trí chữ ký</span> <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <!-- Step 2 Buttons -->
+                    <button id="mraBtnBackStep1" type="button" class="btn btn-secondary" onclick="goToMraStep1()" style="display:none;">
+                        <i class="fa-solid fa-arrow-left"></i> Quay lại
+                    </button>
+                    <button id="mraBtnSubmitOnline" type="button" class="btn btn-primary" onclick="submitMraOnline()" style="display:none; background:#16a34a; border-color:#16a34a; box-shadow:0 2px 6px rgba(22,163,74,0.3);">
+                        <i class="fa-solid fa-paper-plane"></i> Hoàn tất & Trình Lãnh đạo
+                    </button>
+                </div>
+            </div>
+
+        </div>
     </div>
 
     <!-- Preview Modal for Phiếu hướng dẫn bổ sung hồ sơ (MH14) -->
@@ -18527,7 +19303,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             setInputValue('claimHanhVi', claim.hanhVi || '');
             setInputValue('claimNhanQua', claim.nhanQua || '');
             document.getElementById('claimFieldGroup').value = claim.fieldGroup || 'hành chính';
-            document.getElementById('claimNYCCountry').value = claim.nycCountry || 'Việt Nam';
+            setClaimCountry('claimNYCCountry', claim.nycCountry);
             toggleClaimCountrySelect(claim.nycCountry || 'Việt Nam');
             if ((claim.nycCountry || 'Việt Nam') === 'Việt Nam') {
                 setInputValue('claimNYCCity', getClaimCity(claim));
@@ -19864,6 +20640,10 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
 
         // ---------- 2. Yêu cầu bổ sung hồ sơ (Mẫu 03/BTNN) -> Chờ phát hành văn bản ----------
         function openGqSupplementModal(claimId) {
+            if (typeof openRequireAdditionModal === 'function') {
+                openRequireAdditionModal(claimId);
+                return;
+            }
             const claim = gqClaim(claimId);
             if (!claim) return;
             const rec = gqRecord(claim);

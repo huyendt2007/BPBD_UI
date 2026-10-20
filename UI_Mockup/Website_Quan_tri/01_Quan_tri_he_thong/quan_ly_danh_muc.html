@@ -1099,6 +1099,7 @@
             { typeCode: "DM_10", code: "GT_02", name: "Hộ chiếu", nameEn: "Passport", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             { typeCode: "DM_10", code: "GT_03", name: "Thẻ thường trú", nameEn: "Permanent Residence Card", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
             { typeCode: "DM_10", code: "GT_04", name: "Mã số thuế", nameEn: "Tax Identification Number", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
+            { typeCode: "DM_10", code: "GT_05", name: "Giấy tờ đi lại có giá trị quốc tế", nameEn: "International Travel Document", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
 
             // DM_11 (Loại hình tổ chức)
             { typeCode: "DM_11", code: "TC_01", name: "Tổ chức nước ngoài", nameEn: "Foreign organization", val: "", valEn: "", parentCode: "", notes: "", status: "Hoạt động" },
@@ -1536,7 +1537,7 @@
                 const idx02 = savedCats.findIndex(s => s.typeCode === 'DM_26' && s.code === 'TCNYC_02');
                 if (tc06) savedCats.splice(idx02 >= 0 ? idx02 + 1 : savedCats.length, 0, JSON.parse(JSON.stringify(tc06)));
             }
-            INITIAL_CATEGORIES.filter(d => ['DM_25', 'DM_26','DM_54', 'DM_55', 'DM_56', 'DM_57', 'DM_58'].includes(d.typeCode) && !savedCats.some(s => s.typeCode === d.typeCode && s.code === d.code)).forEach(d => savedCats.push(JSON.parse(JSON.stringify(d))));
+            INITIAL_CATEGORIES.filter(d => ['DM_10', 'DM_25', 'DM_26','DM_54', 'DM_55', 'DM_56', 'DM_57', 'DM_58'].includes(d.typeCode) && !savedCats.some(s => s.typeCode === d.typeCode && s.code === d.code)).forEach(d => savedCats.push(JSON.parse(JSON.stringify(d))));
             // Bổ sung các đơn vị gốc mới vào Đơn vị áp dụng của Yêu cầu bồi thường (dữ liệu lưu từ phiên bản trước)
             const lyc02 = savedCats.find(c => c.typeCode === 'DM_54' && c.code === 'LYC_02');
             if (lyc02 && !lyc02.donViApDungV2) { lyc02.donViApDung = BTNN_WF.getRootUnits().map(u => u.id); lyc02.donViApDungV2 = true; }

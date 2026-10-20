@@ -757,6 +757,9 @@ document.addEventListener('DOMContentLoaded', () => {
     ["#filterFromDate", "#filterToDate", "#formNYCDob", "#formNYCDocDate", "#formNYCOrgDocDate", "#nbthDob", "#nbthDocDate"].forEach(sel => {
         if (document.querySelector(sel)) flatpickr(sel, { dateFormat: "d/m/Y", allowInput: true });
     });
+    // Loại giấy tờ thân nhân: danh mục DM_10 trừ Mã số thuế
+    BTNN_WF.fillPersonalDocTypeSelect('formNYCDocType');
+    BTNN_WF.fillPersonalDocTypeSelect('nbthDocType');
 
     const params = new URLSearchParams(window.location.search);
     readOnlyView = params.get('readonly') === '1';
@@ -1653,7 +1656,7 @@ function showDetailScreen(id) {
     document.querySelectorAll('#screenDetail .dt-nyc-individual').forEach(el => { el.style.display = isOrg ? 'none' : ''; });
     document.querySelectorAll('#screenDetail .dt-nyc-org').forEach(el => { el.style.display = isOrg ? '' : 'none'; });
     document.getElementById('dtNYCDob').innerText = item.nycDob || '--';
-    document.getElementById('dtNYCDocInfo').innerText = item.nycDocNo ? `${item.nycDocType} - Số: ${item.nycDocNo}${item.nycDocDate ? ` (Cấp ngày: ${item.nycDocDate}${item.nycDocPlace ? ' tại ' + item.nycDocPlace : ''})` : ''}` : '--';
+    document.getElementById('dtNYCDocInfo').innerText = item.nycDocNo ? `${BTNN_WF.normalizePersonalDocType(item.nycDocType)} - Số: ${item.nycDocNo}${item.nycDocDate ? ` (Cấp ngày: ${item.nycDocDate}${item.nycDocPlace ? ' tại ' + item.nycDocPlace : ''})` : ''}` : '--';
     document.getElementById('dtNYCOrgCode').innerText = item.nycOrgCode || '--';
     document.getElementById('dtNYCOrgDoc').innerText = item.nycOrgDocNo ? `Số: ${item.nycOrgDocNo}${item.nycOrgDocDate ? ` (Cấp ngày: ${item.nycOrgDocDate}${item.nycOrgDocPlace ? ' tại ' + item.nycOrgDocPlace : ''})` : ''}` : '--';
     document.getElementById('dtNYCRepName').innerText = item.nycRepName || '--';
@@ -1689,7 +1692,7 @@ function showDetailScreen(id) {
         } else {
             document.getElementById('dtNbthName').innerText = nb.name;
             document.getElementById('dtNbthDob').innerText = nb.dob || '--';
-            document.getElementById('dtNbthDoc').innerText = `${nb.docType || ''} - Số: ${nb.docNo || '--'}${nb.docDate ? ` (Cấp ngày: ${nb.docDate}${nb.docPlace ? ' tại ' + nb.docPlace : ''})` : ''}`;
+            document.getElementById('dtNbthDoc').innerText = `${BTNN_WF.normalizePersonalDocType(nb.docType)} - Số:${nb.docNo || '--'}${nb.docDate ? ` (Cấp ngày: ${nb.docDate}${nb.docPlace ? ' tại ' + nb.docPlace : ''})` : ''}`;
             document.getElementById('dtNbthPhone').innerText = nb.phone || 'Chưa cung cấp';
             document.getElementById('dtNbthEmail').innerText = nb.email || 'Chưa cung cấp';
             document.getElementById('dtNbthAddress').innerText = joinAddress(nb.address, nb.ward, nb.city) || 'Chưa cung cấp';

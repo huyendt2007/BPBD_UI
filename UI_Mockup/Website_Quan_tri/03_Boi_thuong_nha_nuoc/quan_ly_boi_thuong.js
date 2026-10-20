@@ -1820,29 +1820,646 @@
             });
         }
 
+        // ==========================================
+        // 📝 FORM TRÌNH KÝ YÊU CẦU BỔ SUNG & ĐỊNH VỊ CHỮ KÝ (WIZARD 2 BƯỚC)
+        // ==========================================
+        let selectedMraClaim = null;
+        let mraCurrentFile = null;
+        let mraOfflineFile = null;
+        let mraSigCoords = {
+            room: { x: 60, y: 860 },
+            agency: { x: 480, y: 860 }
+        };
+        let mraIsDragging = false;
+        let mraDragTarget = null;
+        let mraDragOffset = { x: 0, y: 0 };
+
         function triggerRequireAdditionClaim(id) {
-            showRejectionModal(id, 'Yêu cầu bổ sung', (claimId, type, reason) => {
-                const claim = claimsList.find(c => c.id === claimId);
-                if (claim) {
-                    const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : "Trần Thị Chuyên Viên (Cán bộ một cửa)";
-                    const todayStr = new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
+            openRequireAdditionModal(id);
+        }
 
-                    claim.rejectType = type;
-                    claim.rejectReason = reason;
-                    claim.rejectDate = todayStr;
-                    claim.rejectOfficer = currentOfficer;
+        function openRequireAdditionModal(claimId) {
+            const claim = claimsList.find(c => c.id === claimId);
+            if (!claim) return;
+            selectedMraClaim = claim;
+            mraCurrentFile = null;
+            mraOfflineFile = null;
 
-                    if (!claim.rejectionLog) claim.rejectionLog = [];
-                    claim.rejectionLog.push({
-                        date: todayStr,
-                        officer: currentOfficer,
-                        action: type,
-                        reason: reason
-                    });
+            // Set default coords
+            mraSigCoords = {
+                room: { x: 60, y: 860 },
+                agency: { x: 480, y: 860 }
+            };
 
-                    changeStatus(claimId, type, `Đã chuyển hồ sơ sang trạng thái [Yêu cầu bổ sung]!`);
-                }
+            // Set claim info
+            const codeEl = document.getElementById('mraClaimCode');
+            const nycEl = document.getElementById('mraClaimNYC');
+            if (codeEl) codeEl.innerText = claim.code || '--';
+            if (nycEl) nycEl.innerText = claim.nyc || '--';
+
+            // Dates & Docs
+            const d = new Date();
+            const p = n => String(n).padStart(2, '0');
+            const todayStr = `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`;
+            const docDateEl = document.getElementById('mraDocDate');
+            const docNoEl = document.getElementById('mraDocNumber');
+            if (docDateEl) docDateEl.value = todayStr;
+            if (docNoEl) docNoEl.value = `.../TB-CBTNN`;
+
+            // Reason default
+            const defaultReason = claim.rejectReason || "1. Bổ sung Giấy tờ chứng minh tư cách đại diện hợp pháp của người yêu cầu bồi thường (Bản sao chứng thực Giấy ủy quyền).\n2. Bổ sung các tài liệu, hóa đơn, chứng từ gốc chứng minh các khoản chi phí thực tế đã phát sinh để khắc phục thiệt hại.";
+            const reasonEl = document.getElementById('mraContentReason');
+            if (reasonEl) reasonEl.value = defaultReason;
+
+            // Clear errors
+            ['mraDocNumber', 'mraDocDate', 'mraContentReason', 'mraOfficerRoom', 'mraOfficerAgency'].forEach(fieldId => {
+                const el = document.getElementById(fieldId);
+                if (el) el.classList.remove('is-invalid');
+                const err = document.getElementById(fieldId + 'Error');
+                if (err) err.style.display = 'none';
             });
+            const docFileErr = document.getElementById('mraDocFileError');
+            if (docFileErr) docFileErr.style.display = 'none';
+            const offFileErr = document.getElementById('mraOfflineFileError');
+            if (offFileErr) offFileErr.style.display = 'none';
+
+            // Reset File Ready state
+            const fEmpty = document.getElementById('mraFileEmptyState');
+            const fReady = document.getElementById('mraFileReadyState');
+            const fBadge = document.getElementById('mraDocStatusBadge');
+            if (fEmpty) fEmpty.style.display = 'block';
+            if (fReady) fReady.style.display = 'none';
+            if (fBadge) fBadge.style.display = 'none';
+
+            const offList = document.getElementById('mraOfflineFileList');
+            if (offList) {
+                offList.style.display = 'none';
+                offList.innerHTML = '';
+            }
+
+            // Default to online signing
+            const radioOnline = document.querySelector('input[name="mraSigningMethod"][value="online"]');
+            if (radioOnline) radioOnline.checked = true;
+            toggleSigningMethod('online');
+
+            // Reset step to 1
+            goToMraStep1();
+
+            // Display modal
+            const modal = document.getElementById('modalRequireAddition');
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.classList.add('active');
+            }
+        }
+
+        function closeRequireAdditionModal() {
+            const modal = document.getElementById('modalRequireAddition');
+            if (modal) {
+                modal.classList.remove('active');
+                modal.style.display = 'none';
+            }
+            selectedMraClaim = null;
+        }
+
+        function toggleSigningMethod(method) {
+            const isOnline = (method === 'online');
+            const stepperBar = document.getElementById('mraStepperBar');
+            const onlineSection = document.getElementById('mraOnlineSection');
+            const offlineSection = document.getElementById('mraOfflineSection');
+            const btnSubmitOffline = document.getElementById('mraBtnSubmitOffline');
+            const btnNextStep = document.getElementById('mraBtnNextStep');
+
+            if (stepperBar) stepperBar.style.display = isOnline ? 'flex' : 'none';
+            if (onlineSection) onlineSection.style.display = isOnline ? 'block' : 'none';
+            if (offlineSection) offlineSection.style.display = isOnline ? 'none' : 'block';
+            if (btnSubmitOffline) btnSubmitOffline.style.display = isOnline ? 'none' : 'inline-flex';
+            if (btnNextStep) btnNextStep.style.display = isOnline ? 'inline-flex' : 'none';
+        }
+
+        function handleMraOfflineFileUpload(input) {
+            if (!input.files || input.files.length === 0) return;
+            const file = input.files[0];
+            mraOfflineFile = {
+                name: file.name,
+                size: (file.size / 1024).toFixed(1) + ' KB'
+            };
+            const listEl = document.getElementById('mraOfflineFileList');
+            if (listEl) {
+                listEl.style.display = 'block';
+                listEl.innerHTML = `
+                    <div style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #fef3c7; border-radius:6px; padding:8px 12px;">
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <i class="fa-solid fa-file-pdf" style="color:#ef4444; font-size:18px;"></i>
+                            <span style="font-weight:600; font-size:13px; color:#1e293b;">${escapeHtml(mraOfflineFile.name)}</span>
+                            <span style="font-size:11.5px; color:#64748b;">(${mraOfflineFile.size})</span>
+                        </div>
+                        <div style="display:flex; gap:10px;">
+                            <a href="javascript:void(0)" onclick="previewMau03InNewWindow()" style="color:#2563eb; font-size:12.5px; text-decoration:none;"><i class="fa-solid fa-eye"></i> Xem file</a>
+                            <a href="javascript:void(0)" onclick="removeMraOfflineFile()" style="color:#dc2626; font-size:12.5px; text-decoration:none;"><i class="fa-solid fa-trash"></i> Xóa</a>
+                        </div>
+                    </div>
+                `;
+            }
+            const err = document.getElementById('mraOfflineFileError');
+            if (err) err.style.display = 'none';
+        }
+
+        function removeMraOfflineFile() {
+            mraOfflineFile = null;
+            const input = document.getElementById('mraOfflineFileInput');
+            if (input) input.value = '';
+            const listEl = document.getElementById('mraOfflineFileList');
+            if (listEl) {
+                listEl.style.display = 'none';
+                listEl.innerHTML = '';
+            }
+        }
+
+        function handleMraOnlineFileUpload(input) {
+            if (!input.files || input.files.length === 0) return;
+            const file = input.files[0];
+            mraCurrentFile = {
+                name: file.name,
+                size: (file.size / 1024).toFixed(1) + ' KB',
+                source: 'uploaded'
+            };
+            displayMraReadyFile();
+        }
+
+        function generateMau03Document() {
+            if (!selectedMraClaim) return;
+            const reason = document.getElementById('mraContentReason').value.trim();
+            if (!reason) {
+                document.getElementById('mraContentReason').classList.add('is-invalid');
+                document.getElementById('mraContentReasonError').style.display = 'block';
+                document.getElementById('mraContentReason').focus();
+                showToast('Vui lòng nhập nội dung yêu cầu bổ sung trước khi tự động sinh văn bản!', 'warning');
+                return;
+            }
+
+            const fileName = `Mau_03_BTNN_Thong_bao_yeu_cau_bo_sung_${selectedMraClaim.code || 'YCBT'}.pdf`;
+            mraCurrentFile = {
+                name: fileName,
+                size: '142 KB',
+                source: 'generated'
+            };
+
+            showToast('Hệ thống đang trích xuất dữ liệu và tạo văn bản theo Mẫu 03/BTNN...', 'info');
+            setTimeout(() => {
+                displayMraReadyFile();
+                showToast('Đã tự động sinh văn bản Mẫu 03/BTNN thành công!', 'success');
+            }, 300);
+        }
+
+        function displayMraReadyFile() {
+            if (!mraCurrentFile) return;
+            const emptyEl = document.getElementById('mraFileEmptyState');
+            const readyEl = document.getElementById('mraFileReadyState');
+            const nameEl = document.getElementById('mraFileName');
+            const metaEl = document.getElementById('mraFileMeta');
+            const badgeEl = document.getElementById('mraDocStatusBadge');
+            const errEl = document.getElementById('mraDocFileError');
+
+            if (emptyEl) emptyEl.style.display = 'none';
+            if (readyEl) readyEl.style.display = 'flex';
+            if (nameEl) nameEl.innerText = mraCurrentFile.name;
+            if (metaEl) metaEl.innerText = `${mraCurrentFile.size} • ${mraCurrentFile.source === 'generated' ? 'Hệ thống tự động sinh theo Mẫu 03/BTNN' : 'Tệp tải lên từ máy tính'}`;
+            if (badgeEl) badgeEl.style.display = 'inline-flex';
+            if (errEl) errEl.style.display = 'none';
+        }
+
+        function removeMraOnlineFile() {
+            mraCurrentFile = null;
+            const input = document.getElementById('mraOnlineFileInput');
+            if (input) input.value = '';
+            const emptyEl = document.getElementById('mraFileEmptyState');
+            const readyEl = document.getElementById('mraFileReadyState');
+            const badgeEl = document.getElementById('mraDocStatusBadge');
+
+            if (emptyEl) emptyEl.style.display = 'block';
+            if (readyEl) readyEl.style.display = 'none';
+            if (badgeEl) badgeEl.style.display = 'none';
+        }
+
+        function previewMau03InNewWindow() {
+            if (!selectedMraClaim) return;
+            const docNo = document.getElementById('mraDocNumber').value.trim() || '.../TB-CBTNN';
+            const docDate = document.getElementById('mraDocDate').value.trim() || 'ngày ... tháng ... năm ...';
+            const reason = document.getElementById('mraContentReason').value.trim() || 'Chưa nhập nội dung';
+            const items = reason.split('\n').filter(r => r.trim()).map(r => `<p style="margin: 4px 0 4px 16px; text-indent: -16px;">• ${escapeHtml(r.trim())}</p>`).join('');
+
+            const newWindow = window.open('', '_blank');
+            const startHtml = '<' + 'html><head><title>Xem văn bản - Mẫu 03/BTNN</title><style>body { font-family: \'Times New Roman\', serif; font-size: 14pt; line-height: 1.6; padding: 40px 60px; max-width: 800px; margin: 0 auto; color: #000; } .header-table { width: 100%; margin-bottom: 20px; } .text-center { text-align: center; } .bold { font-weight: bold; } .italic { font-style: italic; }</style></head><' + 'body>';
+            const endHtml = '<' + '/body><' + '/html>';
+
+            newWindow.document.write(startHtml + `
+                <table class="header-table">
+                    <tr>
+                        <td class="text-center" style="width: 45%;">
+                            <div class="bold">BỘ TƯ PHÁP</div>
+                            <div class="bold">CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM VÀ BTNN</div>
+                            <div>Số: ${escapeHtml(docNo)}</div>
+                        </td>
+                        <td class="text-center" style="width: 55%;">
+                            <div class="bold">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                            <div class="bold italic">Độc lập - Tự do - Hạnh phúc</div>
+                            <div class="italic" style="margin-top: 5px;">Hà Nội, ${escapeHtml(docDate)}</div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="text-center" style="margin: 30px 0 20px 0;">
+                    <h2 style="font-size: 16pt; margin: 0 0 5px 0;">THÔNG BÁO</h2>
+                    <div class="bold">VỀ VIỆC YÊU CẦU BỔ SUNG HỒ SƠ YÊU CẦU BỒI THƯỜNG</div>
+                    <div class="italic" style="font-size: 12pt;">(Mẫu số 03/BTNN ban hành kèm theo Nghị định của Chính phủ)</div>
+                </div>
+                <p><strong>Kính gửi:</strong> Ông/Bà <strong>${escapeHtml(selectedMraClaim.nyc || '--')}</strong></p>
+                <p><strong>Địa chỉ:</strong> ${escapeHtml(selectedMraClaim.address || 'Hà Nội')}</p>
+                <p style="text-indent: 24px;">Căn cứ Điều 41, Điều 42 Luật Trách nhiệm bồi thường của Nhà nước năm 2017;</p>
+                <p style="text-indent: 24px;">Sau khi tiếp nhận và kiểm tra hồ sơ yêu cầu bồi thường (Vụ việc: <strong>${escapeHtml(selectedMraClaim.code)}</strong>), Cơ quan giải quyết bồi thường thông báo và yêu cầu Ông/Bà thực hiện bổ sung các nội dung, tài liệu sau đây:</p>
+                <div style="margin: 15px 0;">${items}</div>
+                <p style="text-indent: 24px;">Trong thời hạn 15 ngày làm việc kể từ ngày nhận được Thông báo này, đề nghị Ông/Bà gửi các tài liệu bổ sung về Cơ quan giải quyết bồi thường.</p>
+                <table style="width: 100%; margin-top: 50px;">
+                    <tr>
+                        <td style="width: 50%; vertical-align: top; font-size: 12pt;">
+                            <div class="bold italic">Nơi nhận:</div>
+                            <div>- Như trên;</div>
+                            <div>- Lưu: VT, HS.</div>
+                        </td>
+                        <td class="text-center" style="width: 50%; vertical-align: top;">
+                            <div class="bold">CỤC TRƯỞNG</div>
+                            <div class="italic">(Ký, ghi rõ họ tên và đóng dấu)</div>
+                            <div style="height: 80px;"></div>
+                            <div class="bold">LÊ HOÀNG NAM</div>
+                        </td>
+                    </tr>
+                </table>
+            ` + endHtml);
+            newWindow.document.close();
+        }
+
+        function downloadMau03GeneratedFile() {
+            previewMau03InNewWindow();
+        }
+
+        function goToMraStep1() {
+            // Container resize
+            const container = document.getElementById('modalRequireAdditionContainer');
+            if (container) {
+                container.style.width = '850px';
+                container.style.maxWidth = '96%';
+                container.style.height = 'auto';
+                container.style.maxHeight = '92vh';
+            }
+
+            // Stepper badges
+            const b1 = document.getElementById('mraStep1Badge');
+            const t1 = document.getElementById('mraStep1Tab');
+            const b2 = document.getElementById('mraStep2Badge');
+            const t2 = document.getElementById('mraStep2Tab');
+
+            if (b1) { b1.style.background = '#2563eb'; b1.innerHTML = '1'; }
+            if (t1) { t1.style.color = '#2563eb'; }
+            if (b2) { b2.style.background = '#cbd5e1'; b2.style.color = '#475569'; }
+            if (t2) { t2.style.color = '#64748b'; }
+
+            // Bodies
+            const body1 = document.getElementById('mraStep1Body');
+            const body2 = document.getElementById('mraStep2Body');
+            if (body1) body1.style.display = 'block';
+            if (body2) body2.style.display = 'none';
+
+            // Footer buttons
+            const btnNext = document.getElementById('mraBtnNextStep');
+            const btnBack = document.getElementById('mraBtnBackStep1');
+            const btnSubmitOnline = document.getElementById('mraBtnSubmitOnline');
+
+            if (btnNext) btnNext.style.display = 'inline-flex';
+            if (btnBack) btnBack.style.display = 'none';
+            if (btnSubmitOnline) btnSubmitOnline.style.display = 'none';
+        }
+
+        function goToMraStep2() {
+            // Validation
+            let isValid = true;
+            let firstErrEl = null;
+
+            const docNumber = document.getElementById('mraDocNumber');
+            if (!docNumber.value.trim()) {
+                docNumber.classList.add('is-invalid');
+                document.getElementById('mraDocNumberError').style.display = 'block';
+                isValid = false;
+                if (!firstErrEl) firstErrEl = docNumber;
+            } else {
+                docNumber.classList.remove('is-invalid');
+                document.getElementById('mraDocNumberError').style.display = 'none';
+            }
+
+            const docDate = document.getElementById('mraDocDate');
+            if (!docDate.value.trim()) {
+                docDate.classList.add('is-invalid');
+                document.getElementById('mraDocDateError').style.display = 'block';
+                isValid = false;
+                if (!firstErrEl) firstErrEl = docDate;
+            } else {
+                docDate.classList.remove('is-invalid');
+                document.getElementById('mraDocDateError').style.display = 'none';
+            }
+
+            const reason = document.getElementById('mraContentReason');
+            if (!reason.value.trim()) {
+                reason.classList.add('is-invalid');
+                document.getElementById('mraContentReasonError').style.display = 'block';
+                isValid = false;
+                if (!firstErrEl) firstErrEl = reason;
+            } else {
+                reason.classList.remove('is-invalid');
+                document.getElementById('mraContentReasonError').style.display = 'none';
+            }
+
+            if (!mraCurrentFile) {
+                document.getElementById('mraDocFileError').style.display = 'block';
+                isValid = false;
+                if (!firstErrEl) firstErrEl = document.getElementById('mraFileEmptyState');
+            } else {
+                document.getElementById('mraDocFileError').style.display = 'none';
+            }
+
+            const officerRoom = document.getElementById('mraOfficerRoomSelect');
+            if (!officerRoom.value) {
+                officerRoom.classList.add('is-invalid');
+                document.getElementById('mraOfficerRoomError').style.display = 'block';
+                isValid = false;
+                if (!firstErrEl) firstErrEl = officerRoom;
+            } else {
+                officerRoom.classList.remove('is-invalid');
+                document.getElementById('mraOfficerRoomError').style.display = 'none';
+            }
+
+            const officerAgency = document.getElementById('mraOfficerAgencySelect');
+            if (!officerAgency.value) {
+                officerAgency.classList.add('is-invalid');
+                document.getElementById('mraOfficerAgencyError').style.display = 'block';
+                isValid = false;
+                if (!firstErrEl) firstErrEl = officerAgency;
+            } else {
+                officerAgency.classList.remove('is-invalid');
+                document.getElementById('mraOfficerAgencyError').style.display = 'none';
+            }
+
+            if (!isValid) {
+                if (firstErrEl && typeof firstErrEl.focus === 'function') firstErrEl.focus();
+                showToast('Vui lòng hoàn tất các trường thông tin bắt buộc trước khi chuyển sang bước đặt chữ ký!', 'warning');
+                return;
+            }
+
+            // Populate Step 2 A4 Document
+            document.getElementById('mraA4DocNumber').innerText = docNumber.value.trim();
+            document.getElementById('mraA4DocDate').innerText = `Hà Nội, ngày ${docDate.value.trim()}`;
+            document.getElementById('mraA4NYC').innerText = selectedMraClaim.nyc || '--';
+            document.getElementById('mraA4Address').innerText = selectedMraClaim.address || 'Hà Nội';
+            document.getElementById('mraA4ClaimCode').innerText = selectedMraClaim.code || '--';
+            document.getElementById('mraA4ReceivedDate').innerText = selectedMraClaim.createdDate || selectedMraClaim.ngayTiepNhan || '01/10/2026';
+
+            // Items in A4
+            const lines = reason.value.trim().split('\n').filter(l => l.trim());
+            document.getElementById('mraA4AdditionItems').innerHTML = lines.map((line, idx) => `
+                <div style="margin-bottom:6px;"><strong>${idx + 1}.</strong> ${escapeHtml(line.trim().replace(/^\\d+[\\.\\-\\)]\\s*/, ''))}</div>
+            `).join('');
+
+            // Officers info
+            const roomName = officerRoom.options[officerRoom.selectedIndex].text.split('-')[0].trim();
+            const agencyName = officerAgency.options[officerAgency.selectedIndex].text.split('-')[0].trim();
+            const agencyTitle = officerAgency.options[officerAgency.selectedIndex].text.includes('Cục trưởng') ? 'CỤC TRƯỞNG' : 'PHÓ CỤC TRƯỞNG';
+
+            document.getElementById('mraA4SignerName').innerText = agencyName.toUpperCase();
+            document.getElementById('mraA4SignerTitle').innerText = agencyTitle;
+
+            document.getElementById('mraSigBoxRoomOfficer').innerText = roomName;
+            document.getElementById('mraSigBoxAgencyOfficer').innerText = agencyName;
+            document.getElementById('mraPanelRoomName').innerText = roomName;
+            document.getElementById('mraPanelAgencyName').innerText = agencyName;
+
+            // Expand modal
+            const container = document.getElementById('modalRequireAdditionContainer');
+            container.style.width = '95vw';
+            container.style.maxWidth = '1400px';
+            container.style.height = '92vh';
+            container.style.maxHeight = '92vh';
+
+            // Stepper
+            document.getElementById('mraStep1Badge').style.background = '#10b981';
+            document.getElementById('mraStep1Badge').innerHTML = '<i class="fa-solid fa-check"></i>';
+            document.getElementById('mraStep1Tab').style.color = '#10b981';
+
+            document.getElementById('mraStep2Badge').style.background = '#2563eb';
+            document.getElementById('mraStep2Badge').style.color = '#fff';
+            document.getElementById('mraStep2Tab').style.color = '#2563eb';
+
+            // Bodies
+            document.getElementById('mraStep1Body').style.display = 'none';
+            document.getElementById('mraStep2Body').style.display = 'flex';
+
+            // Footers
+            document.getElementById('mraBtnNextStep').style.display = 'none';
+            document.getElementById('mraBtnBackStep1').style.display = 'inline-flex';
+            document.getElementById('mraBtnSubmitOnline').style.display = 'inline-flex';
+
+            // Setup draggable boxes
+            initMraDragAndDrop();
+            applySigBoxCoords();
+        }
+
+        function initMraDragAndDrop() {
+            const page = document.getElementById('mraA4Page');
+            const boxRoom = document.getElementById('mraSigBoxRoom');
+            const boxAgency = document.getElementById('mraSigBoxAgency');
+
+            function attachDrag(box, key) {
+                box.onmousedown = function(e) {
+                    if (e.button !== 0) return;
+                    e.preventDefault();
+                    mraIsDragging = true;
+                    mraDragTarget = { box, key };
+                    const rect = box.getBoundingClientRect();
+                    mraDragOffset.x = e.clientX - rect.left;
+                    mraDragOffset.y = e.clientY - rect.top;
+                    box.classList.add('dragging');
+                };
+            }
+
+            attachDrag(boxRoom, 'room');
+            attachDrag(boxAgency, 'agency');
+
+            if (!window.mraDragListenerInitialized) {
+                window.mraDragListenerInitialized = true;
+                document.addEventListener('mousemove', function(e) {
+                    if (!mraIsDragging || !mraDragTarget) return;
+                    const pageEl = document.getElementById('mraA4Page');
+                    if (!pageEl) return;
+                    const pageRect = pageEl.getBoundingClientRect();
+
+                    let newLeft = e.clientX - pageRect.left - mraDragOffset.x;
+                    let newTop = e.clientY - pageRect.top - mraDragOffset.y;
+
+                    // Bounds
+                    const maxLeft = pageEl.clientWidth - mraDragTarget.box.offsetWidth;
+                    const maxHeight = pageEl.clientHeight - mraDragTarget.box.offsetHeight;
+
+                    newLeft = Math.max(10, Math.min(newLeft, maxLeft - 10));
+                    newTop = Math.max(10, Math.min(newTop, maxHeight - 10));
+
+                    mraSigCoords[mraDragTarget.key].x = Math.round(newLeft);
+                    mraSigCoords[mraDragTarget.key].y = Math.round(newTop);
+
+                    applySigBoxCoords();
+                });
+
+                document.addEventListener('mouseup', function() {
+                    if (mraIsDragging && mraDragTarget) {
+                        mraDragTarget.box.classList.remove('dragging');
+                        mraIsDragging = false;
+                        mraDragTarget = null;
+                    }
+                });
+            }
+        }
+
+        function applySigBoxCoords() {
+            const boxRoom = document.getElementById('mraSigBoxRoom');
+            const boxAgency = document.getElementById('mraSigBoxAgency');
+
+            if (boxRoom) {
+                boxRoom.style.left = mraSigCoords.room.x + 'px';
+                boxRoom.style.top = mraSigCoords.room.y + 'px';
+                const lbl = document.getElementById('mraCoordRoomLabel');
+                const pnl = document.getElementById('mraPanelRoomCoord');
+                if (lbl) lbl.innerText = `X: ${mraSigCoords.room.x}, Y: ${mraSigCoords.room.y}`;
+                if (pnl) pnl.innerText = `Tọa độ: (${mraSigCoords.room.x}, ${mraSigCoords.room.y})`;
+            }
+
+            if (boxAgency) {
+                boxAgency.style.left = mraSigCoords.agency.x + 'px';
+                boxAgency.style.top = mraSigCoords.agency.y + 'px';
+                const lbl = document.getElementById('mraCoordAgencyLabel');
+                const pnl = document.getElementById('mraPanelAgencyCoord');
+                if (lbl) lbl.innerText = `X: ${mraSigCoords.agency.x}, Y: ${mraSigCoords.agency.y}`;
+                if (pnl) pnl.innerText = `Tọa độ: (${mraSigCoords.agency.x}, ${mraSigCoords.agency.y})`;
+            }
+        }
+
+        function placeSigBox(key, x, y) {
+            if (mraSigCoords[key]) {
+                mraSigCoords[key].x = x;
+                mraSigCoords[key].y = y;
+                applySigBoxCoords();
+            }
+        }
+
+        function autoPlaceSignaturesStandard() {
+            mraSigCoords.room = { x: 60, y: 860 };
+            mraSigCoords.agency = { x: 480, y: 860 };
+            applySigBoxCoords();
+            showToast('Đã tự động căn vị trí chữ ký theo đúng chuẩn thể thức Nghị định 30!', 'success');
+        }
+
+        function submitMraOffline() {
+            if (!selectedMraClaim) return;
+
+            let isValid = true;
+            let firstErr = null;
+            const docNo = document.getElementById('mraDocNumber');
+            const docDate = document.getElementById('mraDocDate');
+            const reason = document.getElementById('mraContentReason');
+
+            if (!docNo.value.trim()) {
+                docNo.classList.add('is-invalid');
+                document.getElementById('mraDocNumberError').style.display = 'block';
+                isValid = false;
+                if (!firstErr) firstErr = docNo;
+            }
+            if (!docDate.value.trim()) {
+                docDate.classList.add('is-invalid');
+                document.getElementById('mraDocDateError').style.display = 'block';
+                isValid = false;
+                if (!firstErr) firstErr = docDate;
+            }
+            if (!reason.value.trim()) {
+                reason.classList.add('is-invalid');
+                document.getElementById('mraContentReasonError').style.display = 'block';
+                isValid = false;
+                if (!firstErr) firstErr = reason;
+            }
+            if (!mraOfflineFile) {
+                document.getElementById('mraOfflineFileError').style.display = 'block';
+                isValid = false;
+                if (!firstErr) firstErr = document.getElementById('mraOfflineUploadPrompt');
+            }
+
+            if (!isValid) {
+                if (firstErr && typeof firstErr.focus === 'function') firstErr.focus();
+                showToast('Vui lòng nhập đầy đủ thông tin và tải lên tệp PDF đã ký!', 'warning');
+                return;
+            }
+
+            const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : "Trần Thị Chuyên Viên (Cán bộ thụ lý)";
+            const todayStr = new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
+
+            selectedMraClaim.rejectType = 'Yêu cầu bổ sung';
+            selectedMraClaim.rejectReason = reason.value.trim();
+            selectedMraClaim.rejectDate = todayStr;
+            selectedMraClaim.rejectOfficer = currentOfficer;
+            selectedMraClaim.signingMethod = 'offline';
+            selectedMraClaim.docNumber = docNo.value.trim();
+            selectedMraClaim.docDate = docDate.value.trim();
+            selectedMraClaim.signedFile = mraOfflineFile.name;
+
+            if (!selectedMraClaim.rejectionLog) selectedMraClaim.rejectionLog = [];
+            selectedMraClaim.rejectionLog.push({
+                date: todayStr,
+                officer: currentOfficer,
+                action: 'Yêu cầu bổ sung',
+                reason: reason.value.trim(),
+                method: 'Ký ngoài',
+                file: mraOfflineFile.name
+            });
+
+            closeRequireAdditionModal();
+            changeStatus(selectedMraClaim.id, 'Yêu cầu bổ sung', `Đã ban hành văn bản Yêu cầu bổ sung hồ sơ (Ký ngoài) cho vụ việc [${selectedMraClaim.code}]!`);
+        }
+
+        function submitMraOnline() {
+            if (!selectedMraClaim) return;
+            const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : "Trần Thị Chuyên Viên (Cán bộ thụ lý)";
+            const todayStr = new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'});
+
+            const docNo = document.getElementById('mraDocNumber').value.trim();
+            const docDate = document.getElementById('mraDocDate').value.trim();
+            const reason = document.getElementById('mraContentReason').value.trim();
+            const officerRoom = document.getElementById('mraOfficerRoomSelect').value;
+            const officerAgency = document.getElementById('mraOfficerAgencySelect').value;
+
+            selectedMraClaim.trinhDuyet = {
+                type: 'Yêu cầu bổ sung',
+                docNumber: docNo,
+                docDate: docDate,
+                reason: reason,
+                file: mraCurrentFile,
+                officerRoom: officerRoom,
+                officerAgency: officerAgency,
+                sigCoords: {
+                    room: { ...mraSigCoords.room },
+                    agency: { ...mraSigCoords.agency }
+                },
+                submitDate: todayStr,
+                submitOfficer: currentOfficer
+            };
+
+            selectedMraClaim.rejectType = 'Yêu cầu bổ sung';
+            selectedMraClaim.rejectReason = reason;
+
+            closeRequireAdditionModal();
+            changeStatus(selectedMraClaim.id, 'Chờ duyệt', `Đã trình Lãnh đạo phê duyệt văn bản Yêu cầu bổ sung hồ sơ vụ việc [${selectedMraClaim.code}]. Hồ sơ chuyển sang trạng thái [Chờ duyệt]!`);
         }
 
         function submitTuChoiThulyTrinhLai() {
