@@ -37,6 +37,7 @@
         CHO_PHAN_CONG: 'Chờ phân công',
         DANG_PHAN_CONG: 'Đang phân công',
         CHO_TIEP_NHAN: 'Chờ tiếp nhận',
+        XAC_MINH: 'Xác minh CQGQBT', // Xác định CQGQBT: cán bộ đã tiếp nhận, nhập liệu hồ sơ
         DANG_THUC_HIEN: 'Đang thực hiện',
         CHO_PHE_DUYET: 'Chờ duyệt', // trạng thái chung khi hồ sơ đang có phiếu trình; loại việc xem tại Nội dung trình
         KHONG_THU_LY: 'Không thụ lý',
@@ -53,20 +54,21 @@
     // Loại trình phê duyệt của cán bộ chủ trì -> trạng thái sau khi cấp phê duyệt cuối cùng đồng ý
     // Nội dung trình -> trạng thái mặc định khi cấp phê duyệt cuối cùng đồng ý (phân hệ có thể truyền resultStatus riêng)
     const KIND_KQXD = 'Kết quả xác định CQGQBT'; // Nội dung trình kết quả xác định cơ quan giải quyết bồi thường
+    // Xác định CQGQBT: Kết quả xác định CQGQBT ký duyệt xong thì hệ thống tự động chuyển CQGQBT -> Đã chuyển CQGQBT
     const SUBMIT_KINDS = {
-        'Kết quả xác định CQGQBT': STATUS.CHO_CHUYEN,
-        'Kết quả xác định': STATUS.CHO_CHUYEN,
-        'Hoàn thành xác định': STATUS.CHO_CHUYEN,
+        'Kết quả xác định CQGQBT': STATUS.DA_CHUYEN,
+        'Kết quả xác định': STATUS.DA_CHUYEN,
+        'Hoàn thành xác định': STATUS.DA_CHUYEN,
         'Yêu cầu bổ sung': STATUS.YC_BO_SUNG,
-        'Từ chối': STATUS.BI_TU_CHOI,
+        'Từ chối': STATUS.KHONG_THU_LY,
         'Không thụ lý': STATUS.KHONG_THU_LY,
         'Chuyển CQGQBT': STATUS.DA_CHUYEN,
         'Tiếp nhận hồ sơ': 'Chờ thụ lý',
-        'Tiếp nhận yêu cầu': STATUS.DANG_THUC_HIEN
+        'Tiếp nhận yêu cầu': STATUS.XAC_MINH
     };
     // Danh sách Nội dung trình theo phân hệ (bộ lọc "Nội dung trình")
     const APPROVAL_KINDS = {
-        XD: ['Tiếp nhận yêu cầu', 'Yêu cầu bổ sung', 'Từ chối', KIND_KQXD],
+        XD: [KIND_KQXD, 'Yêu cầu bổ sung', 'Không thụ lý'],
         YCBT: ['Tiếp nhận hồ sơ', 'Yêu cầu bổ sung', 'Không thụ lý', 'Chuyển CQGQBT', 'Quyết định GQBT', 'Hủy QĐ', 'Sửa chữa, bổ sung QĐ']
     };
     // Danh mục Lý do không thụ lý (DM_55) - Điều 43 Luật TNBTCNN số 10/2017/QH14
@@ -614,6 +616,8 @@
                 changed = true;
             }
         });
+        // Xác định CQGQBT: chuẩn hóa trạng thái/Nội dung trình cũ; hồ sơ Chờ chuyển CQGQBT cũ được tự động chuyển CQGQBT
+        list.slice().forEach(r => { if (isXdRec(r) && migrateXdRecord(r, list)) changed = true; });
         // Mã vụ việc toàn trình: hồ sơ chưa có thì lấy theo sổ đăng ký (Mã hồ sơ hoặc Mã hồ sơ GQBT sinh ra) hoặc cấp mới;
         // hồ sơ XD- và hồ sơ BT- sinh ra khi Chuyển CQGQBT luôn dùng chung 01 Mã vụ việc
         list.forEach(r => {
@@ -629,6 +633,103 @@
         if (changed) writeJson(KEY_RECORDS, list);
         return list;
     }
+    // ---------------- Xác định CQGQBT: trạng thái mới, tự động chuyển CQGQBT ----------------
+    // Trạng thái cũ -> mới: Đang thực hiện -> Xác minh CQGQBT; Bị từ chối -> Không thụ lý; Hoàn thành / Chờ chuyển CQGQBT -> Đã chuyển CQGQBT
+    const XD_OLD_STATUS = { 'Đang thực hiện': 'Xác minh CQGQBT', 'Bị từ chối': 'Không thụ lý', 'Hoàn thành': 'Đã chuyển CQGQBT' };
+    function isXdRec(r) { return !!r && (r.module === 'XD' || r.loaiYeuCau === REQUEST_TYPE_XD); }
+    function hasClaimCode(r) { return !!(r && r.claimCode && /^BT-/.test(r.claimCode)); }
+    // Mã hồ sơ kế tiếp theo danh sách đang xử lý (dùng khi chuẩn hóa dữ liệu, chưa ghi kho)
+    function nextCodeIn(prefix, list) {
+        const year = new Date().getFullYear();
+        let max = 0;
+        (list || []).forEach(r => { const m = String(r && r.code || '').match(new RegExp(`^${prefix}-${year}-(\\d+)$`)); if (m) max = Math.max(max, parseInt(m[1], 10)); });
+        return `${prefix}-${year}-${String(max + 1).padStart(3, '0')}`;
+    }
+    // CQGQBT đã chọn tại Kết quả xác định (đơn vị gốc); dữ liệu cũ chỉ có tên cơ quan thì dò theo tên
+    function xdTargetUnitId(rec) {
+        if (!rec) return '';
+        if (rec.procTargetUnitId && getUnit(rec.procTargetUnitId)) return getRootId(rec.procTargetUnitId) || rec.procTargetUnitId;
+        const byName = findRootUnitByName(rec.procTargetAgency);
+        return (byName && byName.id) || resolveAgencyUnit(rec.procTargetAgency) || '';
+    }
+    // Danh sách CQGQBT được chọn: đơn vị gốc đã cấu hình luồng Giải quyết YCBT
+    function gqConfiguredRoots() { return flowRootIds(FLOW_TYPES.GQ).filter(id => isUnitConfigured(id, FLOW_TYPES.GQ)); }
+    function xdTargetConfigured(rec) { const id = xdTargetUnitId(rec); return !!id && isUnitConfigured(id, FLOW_TYPES.GQ); }
+    function xdTargetNotConfiguredMsg(rec) {
+        const id = xdTargetUnitId(rec);
+        return `Cơ quan ${id ? unitName(id) : (rec && rec.procTargetAgency) || '--'} chưa được cấu hình luồng Giải quyết YCBT. Vui lòng chọn cơ quan khác hoặc liên hệ Quản trị hệ thống.`;
+    }
+    // Tài liệu chuyển kèm: văn bản Kết quả xác định CQGQBT đã ký + toàn bộ tài liệu hồ sơ
+    function xdTransferFiles(rec) {
+        const out = [];
+        const add = n => { if (n && !out.some(f => f.name === n)) out.push({ name: n }); };
+        const sd = rec && rec.approval && rec.approval.signDoc;
+        if (sd) add(sd.signedFile || sd.file);
+        (rec.attachedDocs || []).forEach(d => add(d && d.file));
+        (rec.vanBanCanCu || []).forEach(d => add(d && d.file));
+        add(rec.procDecisionFile);
+        return out;
+    }
+    // Tự động chuyển CQGQBT: tạo hồ sơ Giải quyết YCBT Chờ phân công tại CQGQBT (giữ Mã vụ việc, sinh Mã hồ sơ BT- mới);
+    // hồ sơ XĐ chuyển Đã chuyển CQGQBT. list: danh sách đang chuẩn hóa (không ghi kho); không truyền thì ghi kho
+    function xdCreateGqRecord(rec, targetId, content, files, byUserId, list) {
+        const target = getUnit(targetId);
+        if (!target) return '';
+        const ycbtCode = list ? nextCodeIn('BT', list) : nextCode('BT');
+        const at = nowText();
+        const copy = JSON.parse(JSON.stringify(rec));
+        ['routes', 'approval', 'history', 'returned', 'transfer', 'transferTo', 'chuTri', 'status', 'currentUnitId', 'module', 'code', 'id', 'claimCode'].forEach(k => delete copy[k]);
+        const gq = Object.assign(copy, {
+            id: uid('YC'), code: ycbtCode, module: 'YCBT', loaiYeuCau: REQUEST_TYPE_YCBT, status: STATUS.CHO_PHAN_CONG,
+            routes: [], chuTri: null, approval: null, history: [],
+            nguonHoSo: SOURCES.XDCQ, maVuViec: rec.maVuViec || '', xdCode: rec.code,
+            rootUnitId: getRootId(target.id) || target.id, currentUnitId: target.id,
+            receivedAt: at, date: dateText(), createdBy: rec.chuTri || byUserId || '',
+            transferContent: content || '', transferFiles: files || []
+        });
+        gq.history.push({ at, userId: byUserId || '', userName: byUserId ? userName(byUserId) : 'Hệ thống', action: 'Nhận hồ sơ từ Xác định CQGQBT', note: `Hồ sơ ${rec.code} chuyển đến. Chờ lãnh đạo ${target.name} phân công.` });
+        if (list) list.unshift(gq); else upsertRecord(gq);
+        if (gq.maVuViec) { linkVuViec(rec.code, gq.maVuViec); linkVuViec(ycbtCode, gq.maVuViec); }
+        rec.transfer = { content: content || '', files: files || [], at, by: byUserId || '', ycbtCode, targetUnitId: target.id, auto: true };
+        rec.claimCode = ycbtCode;
+        rec.procTargetUnitId = rec.procTargetUnitId || target.id;
+        rec.status = STATUS.DA_CHUYEN;
+        return ycbtCode;
+    }
+    function migrateXdRecord(r, list) {
+        let ch = false;
+        ['approval', 'returned'].forEach(k => { if (r[k] && r[k].kind === 'Từ chối') { r[k].kind = 'Không thụ lý'; ch = true; } });
+        // Ký duyệt ở mọi cấp Lãnh đạo: dữ liệu cũ "Phê duyệt" (cấp trước) -> "Ký duyệt"
+        ((r.approval && r.approval.steps) || []).forEach(s => { if (s.action === 'Phê duyệt') { s.action = 'Ký duyệt'; ch = true; } });
+        (r.history || []).forEach(h => {
+            if (h.action !== 'Phê duyệt') return;
+            h.action = 'Ký duyệt';
+            h.note = String(h.note || '').replace(/Phê duyệt cấp/g, 'Ký duyệt cấp').replace(/phê duyệt cấp/g, 'ký duyệt cấp');
+            ch = true;
+        });
+        if (r.status === STATUS.BI_TU_CHOI && !r.ktlReason && r.rejectionReason) { r.ktlReason = r.rejectionReason; ch = true; }
+        // Nội dung trình "Tiếp nhận yêu cầu" của luồng cũ không còn áp dụng: hồ sơ về Xác minh CQGQBT
+        const oldAccept = x => x && x.kind === 'Tiếp nhận yêu cầu';
+        if ((r.status === STATUS.CHO_PHE_DUYET && oldAccept(r.approval)) || (r.status === STATUS.BI_TRA_LAI && oldAccept(r.returned))) {
+            r.status = STATUS.XAC_MINH; r.approval = null; r.returned = null; ch = true;
+        }
+        if (XD_OLD_STATUS[r.status]) { r.status = XD_OLD_STATUS[r.status]; ch = true; }
+        if (r.status === STATUS.CHO_CHUYEN || (r.status === STATUS.DA_CHUYEN && !hasClaimCode(r))) {
+            ch = true;
+            if (hasClaimCode(r)) { r.status = STATUS.DA_CHUYEN; return ch; }
+            const t = xdTargetUnitId(r);
+            if (!r.history) r.history = [];
+            if (t && isUnitConfigured(t, FLOW_TYPES.GQ)) {
+                const code = xdCreateGqRecord(r, t, `Chuyển hồ sơ để ${unitName(t)} giải quyết theo thẩm quyền theo Kết quả xác định CQGQBT đã ký duyệt.`, xdTransferFiles(r), '', list);
+                r.history.push({ at: nowText(), userId: '', userName: 'Hệ thống', action: 'Chuyển CQGQBT', note: `Hệ thống tự động chuyển ${unitName(t)}; tạo hồ sơ GQBT ${code}. Hồ sơ chuyển [${STATUS.DA_CHUYEN}].` });
+            } else {
+                r.status = STATUS.XAC_MINH;
+                r.history.push({ at: nowText(), userId: '', userName: 'Hệ thống', action: 'Chuẩn hóa trạng thái', note: `Không tự động chuyển được: ${xdTargetNotConfiguredMsg(r)} Hồ sơ chuyển [${STATUS.XAC_MINH}] để cập nhật lại Kết quả xác định CQGQBT.` });
+            }
+        }
+        return ch;
+    }
+
     // Tạo/cập nhật hồ sơ luồng cho vụ việc YCBT đang quản lý tại phân hệ Giải quyết YCBT (để trình duyệt Lãnh đạo)
     function ensureClaimRecord(data) {
         const existing = getRecord(data.code);
@@ -903,12 +1004,15 @@
         const firstLeaders = getLeaders(path[0], recFt(rec));
         if (firstLeaders.length && !extra.assignee) return { ok: false, message: 'Vui lòng chọn Lãnh đạo phê duyệt.' };
         if (extra.assignee && firstLeaders.length && !firstLeaders.includes(extra.assignee)) return { ok: false, message: 'Lãnh đạo phê duyệt không thuộc nhóm lãnh đạo của cấp phê duyệt đầu tiên.' };
+        // Xác định CQGQBT: trình Kết quả xác định CQGQBT khi CQGQBT đã chọn có cấu hình luồng Giải quyết YCBT (ký duyệt xong hệ thống tự động chuyển)
+        if (isXdRec(rec) && kind === KIND_KQXD && !xdTargetConfigured(rec)) return { ok: false, message: xdTargetNotConfiguredMsg(rec) };
         if (rec.status === STATUS.CHO_TIEP_NHAN) {
             const r = latestRoute(rec);
             if (r) r.state = 'Đã xử lý';
         }
         rec.approval = {
             kind, content: content || '', files: files || [], draftDoc: extra.draftDoc || null,
+            signDoc: extra.signDoc || null, reason: extra.reason || '',
             resultStatus: extra.resultStatus || '', action: extra.action || null, prevStatus: rec.status,
             path, level: 0, steps: [], assignees: [extra.assignee || ''],
             submittedBy: me, submittedAt: nowText(), pending: { since: nowText() }
@@ -968,11 +1072,41 @@
             const nextLeaders = getLeaders(a.path[a.level + 1], recFt(rec));
             if (nextLeaders.length && !nextAssignee) return { ok: false, message: 'Vui lòng chọn Lãnh đạo phê duyệt cấp tiếp theo.' };
             if (nextAssignee && nextLeaders.length && !nextLeaders.includes(nextAssignee)) return { ok: false, message: 'Lãnh đạo được chọn không thuộc nhóm lãnh đạo của cấp tiếp theo.' };
-            a.steps.push({ unitId, userId: me, action: 'Phê duyệt', note: note || '', at: nowText() });
+            // Xác định CQGQBT: cấp trước Ký duyệt = đồng ý chuyển cấp tiếp theo, không ký số
+            const verb = isXdRec(rec) ? 'Ký duyệt' : 'Phê duyệt';
+            a.steps.push({ unitId, userId: me, action: verb, note: note || '', at: nowText() });
             a.level += 1;
             a.assignees[a.level] = nextAssignee || '';
             a.pending = { since: nowText() };
-            addHistory(rec, 'Phê duyệt', `${a.kind}: phê duyệt cấp ${unitName(unitId)}; chuyển ${nextAssignee ? userName(nextAssignee) + ' - ' : ''}${unitName(a.path[a.level])}.${note ? ' Ý kiến: ' + note : ''}`, null, { kind: a.kind });
+            addHistory(rec, verb, `${a.kind}: ${verb.toLowerCase()} cấp ${unitName(unitId)}; chuyển ${nextAssignee ? userName(nextAssignee) + ' - ' : ''}${unitName(a.path[a.level])}.${note ? ' Ý kiến: ' + note : ''}`, null, { kind: a.kind });
+        } else if (isXdRec(rec)) {
+            // Xác định CQGQBT - cấp cuối Ký duyệt: Ký số -> hệ thống ký số văn bản tại vị trí đã định; Ký ngoài -> dùng văn bản đã ký cán bộ tải lên
+            const isKq = a.kind === KIND_KQXD;
+            if (isKq && !xdTargetConfigured(rec)) return { ok: false, message: xdTargetNotConfiguredMsg(rec) };
+            a.steps.push({ unitId, userId: me, action: 'Ký duyệt', note: note || '', at: nowText() });
+            if (a.signDoc) {
+                const sd = a.signDoc;
+                sd.signedFile = sd.method === 'Ký ngoài' ? sd.file : String(sd.file || `Van_ban_${rec.code}.pdf`).replace(/\.[^.]+$/, '') + '_da_ky.pdf';
+                sd.signedBy = me;
+                sd.signedAt = nowText();
+            }
+            a.done = true;
+            a.pending = null;
+            let extraNote = '';
+            if (isKq) {
+                const t = xdTargetUnitId(rec);
+                const code = xdCreateGqRecord(rec, t, `Chuyển hồ sơ để ${unitName(t)} giải quyết theo thẩm quyền theo Kết quả xác định CQGQBT đã ký duyệt.`, xdTransferFiles(rec), me);
+                extraNote = ` Hệ thống tự động chuyển ${unitName(t)}; tạo hồ sơ GQBT ${code}.`;
+            } else if (a.kind === 'Yêu cầu bổ sung') {
+                rec.status = STATUS.YC_BO_SUNG;
+                rec.supplementReason = a.reason || a.content || '';
+                pushSupplementHistory(rec, { reason: rec.supplementReason, method: 'Ký số', file: a.signDoc ? a.signDoc.signedFile : '', by: me, unitId });
+            } else {
+                rec.status = STATUS.KHONG_THU_LY;
+                rec.ktlReason = a.reason || a.content || '';
+            }
+            const sdNote = a.signDoc ? ` ${a.signDoc.method === 'Ký ngoài' ? 'Văn bản ký ngoài' : 'Văn bản đã ký số'}: ${a.signDoc.signedFile}.` : '';
+            addHistory(rec, 'Ký duyệt', `Ký duyệt cấp cuối (${unitName(unitId)}) - đã ký số văn bản: ${a.kind}.${sdNote}${extraNote} Hồ sơ chuyển [${rec.status}].${note ? ' Ý kiến: ' + note : ''}`, null, { kind: a.kind });
         } else {
             a.steps.push({ unitId, userId: me, action: 'Phê duyệt', note: note || '', at: nowText() });
             rec.status = a.resultStatus || SUBMIT_KINDS[a.kind] || a.prevStatus || STATUS.DANG_THUC_HIEN;
@@ -984,18 +1118,118 @@
         upsertRecord(rec);
         return { ok: true, record: rec };
     }
-    // Chuyển hồ sơ YCBT sang cơ quan giải quyết khác: cơ quan mới nhận hồ sơ ở trạng thái Chờ phân công (bắt đầu lại từ bước tiếp nhận)
+    // ---------------- Không thụ lý - lý do KTL_01: Chuyển cơ quan tiếp nhận mới (03 tùy chọn) ----------------
+    // BTP: Chuyển Bộ Tư pháp (Loại hồ sơ Xác định CQGQBT); STP: Chuyển Sở Tư pháp quản lý đơn vị (cùng tỉnh/thành phố, Loại hồ sơ Xác định CQGQBT);
+    // CQ: Chuyển trực tiếp tới Cơ quan giải quyết bồi thường chọn trên cây Cơ cấu tổ chức (Loại hồ sơ Giải quyết YCBT)
+    const KTL_TRANSFER_MODES = { BTP: 'BTP', STP: 'STP', CQ: 'CQ' };
+    const KTL_TRANSFER_LABELS = { BTP: 'Chuyển Bộ Tư pháp', STP: 'Chuyển Sở Tư pháp', CQ: 'Chuyển trực tiếp tới Cơ quan giải quyết bồi thường' };
+    // Sở Tư pháp quản lý đơn vị: Sở Tư pháp (đơn vị gốc) cùng tỉnh/thành phố với đơn vị gốc, so khớp theo tên tỉnh/thành phố trên Cơ cấu tổ chức
+    function stpOfUnit(unitId) {
+        const root = getRootId(unitId) || unitId;
+        const u = getUnit(root);
+        if (!u) return '';
+        if (/^STP-/.test(root)) return root;
+        const name = foldText(u.name).replace(/\s+/g, ' ').trim();
+        const stp = getRootUnits().filter(x => /^STP-/.test(x.id)).find(x => {
+            const prov = foldText(x.name.replace(/^Sở Tư pháp\s*/i, '')).replace(/\s+/g, ' ').trim();
+            return prov && name.endsWith(prov);
+        });
+        return stp ? stp.id : '';
+    }
+    // Đơn vị nhận + Loại hồ sơ theo tùy chọn chuyển. rec: hồ sơ hiện tại (đơn vị gốc); unitId: cơ quan chọn (tùy chọn CQ)
+    function ktlTransferTarget(rec, mode, unitId) {
+        const root = rec ? (getRootId(rec.rootUnitId) || rec.rootUnitId) : '';
+        let target = '', loai = REQUEST_TYPE_YCBT, ft = FLOW_TYPES.GQ;
+        if (mode === KTL_TRANSFER_MODES.BTP) {
+            target = (getRootUnits().find(x => /^BTP/.test(x.id)) || {}).id || '';
+            loai = REQUEST_TYPE_XD; ft = FLOW_TYPES.XD_BTP;
+        } else if (mode === KTL_TRANSFER_MODES.STP) {
+            target = stpOfUnit(root);
+            if (!target) return { ok: false, message: `Không xác định được Sở Tư pháp quản lý ${unitName(root)}. Vui lòng chọn tùy chọn khác hoặc liên hệ Quản trị hệ thống.` };
+            loai = REQUEST_TYPE_XD; ft = FLOW_TYPES.XD_STP;
+        } else if (mode === KTL_TRANSFER_MODES.CQ) {
+            target = unitId && getUnit(unitId) ? unitId : '';
+            if (!target) return { ok: false, message: 'Vui lòng chọn Cơ quan giải quyết bồi thường.' };
+        } else {
+            return { ok: false, message: 'Vui lòng chọn hình thức chuyển cơ quan tiếp nhận mới.' };
+        }
+        const tRoot = getRootId(target) || target;
+        if (!isUnitConfigured(tRoot, ft)) return { ok: false, message: `Đơn vị ${unitName(tRoot)} chưa được cấu hình luồng ${FLOW_TYPE_NAMES[ft]}. Vui lòng liên hệ Quản trị hệ thống.` };
+        return { ok: true, mode, targetUnitId: target, rootUnitId: tRoot, loaiYeuCau: loai, label: KTL_TRANSFER_LABELS[mode] };
+    }
+    // Khối "Chuyển cơ quan tiếp nhận mới" dùng chung (Popup Không thụ lý hồ sơ của cán bộ / Thủ trưởng):
+    // Radio 03 tùy chọn; Chuyển Sở Tư pháp hiển thị chỉ đọc Sở Tư pháp xác định được; Chuyển trực tiếp hiển thị cây đơn vị (khóa đơn vị gốc của hồ sơ)
+    function mountKtlTransfer(container, options) {
+        if (!container) return null;
+        const o = Object.assign({ rec: null, mode: '', unitId: '', name: 'ktlMode', treeInputId: '', onChange: null }, options || {});
+        const rec = o.rec || {};
+        const root = getRootId(rec.rootUnitId) || rec.rootUnitId || '';
+        const stp = stpOfUnit(root);
+        const radio = m => `<label style="display:flex; align-items:center; gap:8px; font-weight:600; cursor:pointer; margin:4px 0;"><input type="radio" name="${esc(o.name)}" value="${m}"> ${esc(KTL_TRANSFER_LABELS[m])}</label>`;
+        container.innerHTML = `<div class="wf-ktl-modes">
+            ${radio('BTP')}
+            ${radio('STP')}
+            <div class="wf-ktl-sub" data-for="STP" style="display:none; margin:2px 0 6px 24px; font-size:12.5px;">${stp
+                ? `<span style="color:#475569;">Sở Tư pháp quản lý:</span> <b>${esc(unitName(stp))}</b>`
+                : `<span style="color:#dc2626;">Không xác định được Sở Tư pháp quản lý ${esc(unitName(root))}.</span>`}</div>
+            ${radio('CQ')}
+            <div class="wf-ktl-sub" data-for="CQ" style="display:none; margin:2px 0 6px 24px;"><div class="wf-ktl-tree"></div></div>
+            <div class="wf-ktl-err" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;"></div>
+        </div>`;
+        const tree = mountUnitTree(container.querySelector('.wf-ktl-tree'), {
+            inputId: o.treeInputId, value: o.unitId || '', disabledIds: [root, rec.currentUnitId].filter(Boolean),
+            disabledTitle: 'Đơn vị gốc của hồ sơ, không được chọn', placeholder: '-- Chọn cơ quan giải quyết bồi thường --',
+            onChange: () => { setError(''); if (typeof o.onChange === 'function') o.onChange(api.getMode()); }
+        });
+        const errEl = container.querySelector('.wf-ktl-err');
+        function setError(msg) { errEl.textContent = msg || ''; errEl.style.display = msg ? 'block' : 'none'; }
+        function sync() {
+            const m = api.getMode();
+            container.querySelectorAll('.wf-ktl-sub').forEach(x => { x.style.display = x.getAttribute('data-for') === m ? 'block' : 'none'; });
+        }
+        container.querySelectorAll(`input[name="${o.name}"]`).forEach(r => {
+            if (r.value === o.mode) r.checked = true;
+            r.addEventListener('change', () => { setError(''); sync(); if (typeof o.onChange === 'function') o.onChange(api.getMode()); });
+        });
+        const api = {
+            getMode() { const c = container.querySelector(`input[name="${o.name}"]:checked`); return c ? c.value : ''; },
+            getUnitId() { const h = container.querySelector('.wf-ktl-tree input[type=hidden]'); return h ? h.value : ''; },
+            // Đơn vị nhận theo tùy chọn đang chọn (rỗng khi chưa xác định)
+            targetUnitId() { const r = ktlTransferTarget(rec, api.getMode(), api.getUnitId()); return r.ok ? r.targetUnitId : ''; },
+            validate() { const r = ktlTransferTarget(rec, api.getMode(), api.getUnitId()); setError(r.ok ? '' : r.message); if (!r.ok && tree && api.getMode() === 'CQ' && !api.getUnitId()) tree.setInvalid(true); return r; },
+            setError, tree
+        };
+        sync();
+        return api;
+    }
+    // Câu chuyển hồ sơ của Mẫu 04/BTNN - Thông báo không thụ lý (lý do KTL_01)
+    function ktlTransferSentence(issuer, targetUnitId, mode) {
+        const purpose = mode === KTL_TRANSFER_MODES.CQ ? 'giải quyết theo thẩm quyền' : 'xác định cơ quan giải quyết bồi thường';
+        return `Do vậy, ${issuer} chuyển hồ sơ yêu cầu bồi thường của Ông/Bà đến ${unitName(targetUnitId)} để ${purpose} và thông báo để Ông/Bà được biết.`;
+    }
+    // Chuyển hồ sơ sang cơ quan khác: cơ quan nhận tiếp nhận hồ sơ tại Tiếp nhận hồ sơ, trạng thái Chờ phân công (bắt đầu lại từ bước tiếp nhận).
+    // action.loaiYeuCau: Loại hồ sơ tại cơ quan nhận (mặc định Giải quyết YCBT; KTL_01 chuyển Bộ/Sở Tư pháp: Xác định CQGQBT). Giữ nguyên Mã vụ việc.
     function performTransfer(rec, action) {
         const target = getUnit(action.targetUnitId);
         if (!target) return null;
+        const loai = action.loaiYeuCau === REQUEST_TYPE_XD ? REQUEST_TYPE_XD : REQUEST_TYPE_YCBT;
         const newCode = nextCode('BT');
         const copy = JSON.parse(JSON.stringify(rec));
-        ['routes', 'approval', 'history', 'returned', 'transfer', 'transferTo', 'chuTri', 'status', 'currentUnitId', 'code', 'id', 'appointedOfficers'].forEach(k => delete copy[k]);
+        ['routes', 'approval', 'history', 'returned', 'transfer', 'transferTo', 'chuTri', 'status', 'currentUnitId', 'code', 'id', 'appointedOfficers', 'thuLy', 'claimCode', 'seedKey', 'gqClaimId'].forEach(k => delete copy[k]);
+        if (copy.gqData) ['ktlReasonCode', 'ktlReasonName', 'ktlDetail', 'ktlDraftDoc', 'transferRequest', 'rejectType', 'rejectReason', 'rejectOfficer', 'rejectDate', 'thongBaoThuLy'].forEach(k => delete copy.gqData[k]);
+        // Tài liệu chuyển kèm: văn bản Thông báo không thụ lý (Mẫu 04/BTNN) + tài liệu đính kèm khi chuyển + tài liệu hồ sơ
+        const files = [];
+        const addF = n => { if (n && !files.some(f => f.name === n)) files.push({ name: n }); };
+        const dd = action.noticeDoc || (rec.approval && rec.approval.kind === 'Không thụ lý' ? rec.approval.draftDoc : null);
+        if (dd) addF(dd.source === 'uploaded' ? dd.uploadedName : dd.generatedName);
+        (action.files || []).forEach(f => addF(f && (f.name || f)));
+        (rec.attachedDocs || []).forEach(d => addF(d && d.file));
+        const via = action.mode ? `Không thụ lý (KTL_01) - ${KTL_TRANSFER_LABELS[action.mode] || ''}` : 'Chuyển CQGQBT';
         createPendingRecord(Object.assign(copy, {
             id: 'YC' + Date.now().toString(36),
             code: newCode,
-            module: 'YCBT',
-            loaiYeuCau: REQUEST_TYPE_YCBT,
+            module: loai === REQUEST_TYPE_XD ? 'XD' : 'YCBT',
+            loaiYeuCau: loai,
             rootUnitId: getRootId(target.id) || target.id,
             targetUnitId: target.id,
             receivedAt: nowText(),
@@ -1003,14 +1237,17 @@
             createdBy: rec.chuTri,
             nguonHoSo: SOURCES.CHUYEN,
             maVuViec: rec.maVuViec || '',
+            vuViecLienQuan: rec.vuViecLienQuan || '',
             transferFromCode: rec.code,
             transferFromUnitId: rec.rootUnitId,
+            transferMode: action.mode || '',
             transferContent: action.content || '',
-            transferFiles: action.files || [],
+            transferFiles: files,
             historyAction: 'Nhận hồ sơ chuyển CQGQBT',
-            historyNote: `Hồ sơ ${rec.code} do ${unitName(rec.rootUnitId)} chuyển đến. Chờ lãnh đạo ${target.name} phân công.`
+            historyNote: `Hồ sơ ${rec.code} do ${unitName(rec.rootUnitId)} chuyển đến (${via}). Loại hồ sơ: ${loai}. Chờ lãnh đạo ${target.name} phân công.`
         }));
-        rec.transferTo = { targetUnitId: target.id, code: newCode, content: action.content || '', files: action.files || [], at: nowText() };
+        if (rec.maVuViec) linkVuViec(newCode, rec.maVuViec);
+        rec.transferTo = { targetUnitId: target.id, code: newCode, mode: action.mode || '', loaiYeuCau: loai, content: action.content || '', files, at: nowText() };
         return newCode;
     }
     function rejectApproval(code, reason) {
@@ -1021,6 +1258,9 @@
         const a = rec.approval;
         a.steps.push({ unitId: a.path[a.level], userId: me, action: 'Từ chối phê duyệt', note: reason, at: nowText() });
         rec.returned = { reason, by: me, unitId: a.path[a.level], at: nowText(), kind: a.kind, prevStatus: a.prevStatus || '' };
+        // Lịch sử các lần bị trả lại (dựng lại từ lịch sử xử lý trước khi ghi lần mới)
+        rec.returnHistory = returnHistoryOf(rec, true);
+        rec.returnHistory.push({ kind: a.kind, reason, by: me, unitId: a.path[a.level], at: rec.returned.at });
         rec.status = STATUS.BI_TRA_LAI;
         a.pending = null;
         addHistory(rec, 'Từ chối phê duyệt', `Trả lại cán bộ chủ trì. Lý do: ${reason}`, null, { kind: a.kind });
@@ -1028,45 +1268,176 @@
         return { ok: true, record: rec };
     }
 
-    // ---------------- Chuyển CQGQBT: sinh hồ sơ Yêu cầu bồi thường tại cơ quan giải quyết ----------------
-    // unitId (tùy chọn): đơn vị được chọn trên cây đơn vị; không truyền thì lấy đơn vị gốc theo tên cơ quan trong kết quả xác định
+    // ---------------- Chuyển CQGQBT: sinh hồ sơ Giải quyết YCBT tại cơ quan giải quyết ----------------
+    // Xác định CQGQBT không còn thao tác Chuyển CQGQBT thủ công: hệ thống tự động chuyển khi Lãnh đạo cấp cuối ký duyệt Kết quả xác định CQGQBT.
+    // Giữ hàm cho dữ liệu/trang cũ: chỉ áp dụng hồ sơ Chờ chuyển CQGQBT (dữ liệu cũ), dùng chung lõi tự động chuyển.
     function transferToAgency(code, content, files, unitId) {
         const rec = getRecord(code);
         const me = getCurrentUserId();
         if (!rec || rec.chuTri !== me) return { ok: false, message: 'Chỉ cán bộ xử lý được chuyển cơ quan giải quyết bồi thường.' };
         if (rec.status !== STATUS.CHO_CHUYEN) return { ok: false, message: 'Hồ sơ không ở trạng thái Chờ chuyển CQGQBT.' };
-        const target = unitId ? getUnit(unitId) : findRootUnitByName(rec.procTargetAgency);
-        const targetName = target ? target.name : (rec.procTargetAgency || '--');
-        if (!target || !isUnitConfigured(getRootId(target.id) || target.id)) {
-            return { ok: false, message: `Đơn vị ${targetName} chưa được cấu hình luồng phân công. Vui lòng liên hệ Quản trị hệ thống.` };
-        }
-        const ycbtCode = nextCode('BT');
-        const copy = JSON.parse(JSON.stringify(rec));
-        ['routes', 'approval', 'history', 'returned', 'transfer', 'chuTri', 'status', 'currentUnitId', 'module', 'code', 'id'].forEach(k => delete copy[k]);
-        createPendingRecord(Object.assign(copy, {
-            id: uid('YC'),
-            code: ycbtCode,
-            loaiYeuCau: REQUEST_TYPE_YCBT,
-            module: 'YCBT',
-            nguonHoSo: SOURCES.XDCQ,
-            maVuViec: rec.maVuViec || '',
-            xdCode: rec.code,
-            rootUnitId: getRootId(target.id) || target.id,
-            targetUnitId: target.id,
-            receivedAt: nowText(),
-            date: dateText(),
-            createdBy: me,
-            transferContent: content,
-            transferFiles: files || [],
-            historyAction: 'Nhận hồ sơ từ Xác định CQGQBT',
-            historyNote: `Hồ sơ ${rec.code} chuyển đến. Chờ lãnh đạo ${target.name} phân công.`
-        }));
-        rec.transfer = { content, files: files || [], at: nowText(), by: me, ycbtCode, targetUnitId: target.id };
-        rec.claimCode = ycbtCode;
-        rec.status = STATUS.HOAN_THANH;
-        addHistory(rec, 'Chuyển CQGQBT', `Chuyển ${target.name}; tạo hồ sơ YCBT ${ycbtCode}. Nội dung chuyển xử lý: ${content}`);
+        if (unitId) rec.procTargetUnitId = getRootId(unitId) || unitId;
+        if (!xdTargetConfigured(rec)) return { ok: false, message: xdTargetNotConfiguredMsg(rec) };
+        const t = xdTargetUnitId(rec);
+        const ycbtCode = xdCreateGqRecord(rec, t, content, files && files.length ? files : xdTransferFiles(rec), me);
+        addHistory(rec, 'Chuyển CQGQBT', `Chuyển ${unitName(t)}; tạo hồ sơ GQBT ${ycbtCode}.${content ? ' Nội dung chuyển xử lý: ' + content : ''}`);
         upsertRecord(rec);
         return { ok: true, record: rec, ycbtCode };
+    }
+
+    // ---------------- Xác định CQGQBT - Ký ngoài: cán bộ ban hành trực tiếp, KHÔNG trình Lãnh đạo ----------------
+    // Văn bản đã ký & đóng dấu ngoài hệ thống (PDF). Kết quả xác định CQGQBT: hệ thống tự động chuyển CQGQBT ngay;
+    // Yêu cầu bổ sung -> Yêu cầu bổ sung; Không thụ lý -> Không thụ lý. Chờ duyệt / Bị trả lại chỉ áp dụng cho Ký số.
+    function issueXdOffline(code, kind, file, reason) {
+        const rec = getRecord(code);
+        const me = getCurrentUserId();
+        if (!rec || rec.chuTri !== me) return { ok: false, message: 'Chỉ cán bộ xử lý được ban hành văn bản.' };
+        if (!file) return { ok: false, message: 'Vui lòng tải lên văn bản PDF đã ký & đóng dấu.' };
+        const isKq = kind === 'Kết quả xác định CQGQBT';
+        if (isKq && !xdTargetConfigured(rec)) return { ok: false, message: xdTargetNotConfiguredMsg(rec) };
+        const at = nowText();
+        rec.offlineDoc = { kind, method: 'Ký ngoài', file, reason: reason || '', at, by: me };
+        rec.procDecisionFile = file;
+        rec.approval = null;
+        rec.returned = null;
+        let ycbtCode = '';
+        if (isKq) {
+            addHistory(rec, 'Ban hành Kết quả xác định CQGQBT (Ký ngoài)', `Văn bản đã ký ngoài: ${file}.`);
+            const t = xdTargetUnitId(rec);
+            ycbtCode = xdCreateGqRecord(rec, t, `Chuyển hồ sơ để ${unitName(t)} giải quyết theo thẩm quyền theo Kết quả xác định CQGQBT (Ký ngoài).`, xdTransferFiles(rec), me);
+            addHistory(rec, 'Tự động chuyển CQGQBT', `Hệ thống tự động chuyển ${unitName(t)}; tạo hồ sơ GQBT ${ycbtCode}.`);
+        } else if (kind === 'Yêu cầu bổ sung') {
+            rec.status = STATUS.YC_BO_SUNG;
+            rec.supplementReason = reason || '';
+            pushSupplementHistory(rec, { reason: rec.supplementReason, method: 'Ký ngoài', file, by: me, unitId: (getUser(me) || {}).unitId || '', at });
+            addHistory(rec, 'Ban hành Yêu cầu bổ sung (Ký ngoài)', `Văn bản đã ký ngoài: ${file}.`);
+        } else {
+            rec.status = STATUS.KHONG_THU_LY;
+            rec.ktlReason = reason || '';
+            addHistory(rec, 'Ban hành Không thụ lý (Ký ngoài)', `Văn bản đã ký ngoài: ${file}.`);
+        }
+        upsertRecord(rec);
+        return { ok: true, record: rec, ycbtCode };
+    }
+
+    // ---------------- Xác định CQGQBT: lịch sử Yêu cầu bổ sung / Bị trả lại ----------------
+    // rec.supplementHistory: các lần ban hành Yêu cầu bổ sung (Ký số - Lãnh đạo cấp cuối ký duyệt; Ký ngoài - cán bộ ban hành)
+    // rec.returnHistory: các lần Lãnh đạo Từ chối phê duyệt (hồ sơ Bị trả lại). Dữ liệu cũ chưa có mảng: dựng lại từ lịch sử xử lý.
+    function timeKey(s) {
+        const m = String(s || '').match(/(\d{1,2}):(\d{2})\s+(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+        return m ? Number(m[5] + pad(m[4]) + pad(m[3]) + pad(m[1]) + m[2]) : 0;
+    }
+    function sortByTime(list) { return list.map((x, i) => [x, i]).sort((p, q) => (timeKey(p[0].at) - timeKey(q[0].at)) || (p[1] - q[1])).map(p => p[0]); }
+    // asc = true: cũ trước (để lưu); mặc định mới nhất trước (để hiển thị)
+    function returnHistoryOf(rec, asc) {
+        if (!rec) return [];
+        let list;
+        if (Array.isArray(rec.returnHistory)) list = rec.returnHistory.map(x => Object.assign({}, x));
+        else {
+            const steps = (rec.approval && rec.approval.steps) || [];
+            list = (rec.history || []).filter(h => h.action === 'Từ chối phê duyệt').map(h => {
+                const ret = rec.returned && rec.returned.at === h.at ? rec.returned : null;
+                const st = steps.find(s => s.action === 'Từ chối phê duyệt' && s.userId === h.userId && s.at === h.at);
+                const m = String(h.note || '').match(/Lý do:\s*([\s\S]*)$/);
+                return {
+                    kind: (ret && ret.kind) || historyKind(rec, h), reason: (ret && ret.reason) || (m ? m[1] : h.note || ''),
+                    by: h.userId, unitId: (ret && ret.unitId) || (st && st.unitId) || (getUser(h.userId) || {}).unitId || '', at: h.at
+                };
+            });
+            if (!list.length && rec.returned && rec.returned.reason) {
+                const r = rec.returned;
+                list = [{ kind: r.kind || '', reason: r.reason, by: r.by || '', unitId: r.unitId || '', at: r.at || '' }];
+            }
+        }
+        list = sortByTime(list);
+        return asc ? list : list.reverse();
+    }
+    function supplementHistoryOf(rec, asc) {
+        if (!rec) return [];
+        let list;
+        if (Array.isArray(rec.supplementHistory)) list = rec.supplementHistory.map(x => Object.assign({}, x));
+        else {
+            const pdf = s => (String(s || '').match(/([^\s:]+\.pdf)/i) || [])[1] || '';
+            const a = rec.approval && rec.approval.kind === 'Yêu cầu bổ sung' ? rec.approval : null;
+            list = (rec.history || []).filter(h => h.action === 'Ban hành Yêu cầu bổ sung (Ký ngoài)'
+                || (h.action === 'Ký duyệt' && /cấp cuối/.test(h.note || '') && historyKind(rec, h) === 'Yêu cầu bổ sung')).map(h => {
+                const offline = /Ký ngoài/.test(h.action + ' ' + (h.note || ''));
+                return {
+                    reason: rec.supplementReason || (a && a.reason) || '', method: offline ? 'Ký ngoài' : 'Ký số',
+                    file: pdf(h.note) || (a && a.signDoc && (a.signDoc.signedFile || a.signDoc.file)) || '',
+                    by: h.userId, unitId: (getUser(h.userId) || {}).unitId || '', at: h.at
+                };
+            });
+            if (!list.length && rec.status === STATUS.YC_BO_SUNG) {
+                const sd = a && a.signDoc;
+                const last = a && a.steps && a.steps.length ? a.steps[a.steps.length - 1] : null;
+                list = [{
+                    reason: rec.supplementReason || (a && a.reason) || '', method: sd && sd.method === 'Ký ngoài' ? 'Ký ngoài' : (sd ? 'Ký số' : 'Ký ngoài'),
+                    file: (sd && (sd.signedFile || sd.file)) || rec.supplementFile || rec.procDecisionFile || '',
+                    by: (last && last.userId) || (sd && sd.signedBy) || rec.chuTri || '', unitId: (last && last.unitId) || '', at: (last && last.at) || (sd && sd.signedAt) || ''
+                }];
+            }
+        }
+        list = sortByTime(list);
+        // Thời điểm tiếp nhận hồ sơ bổ sung: lần Tiếp nhận bổ sung đầu tiên sau lần ban hành (trước lần ban hành kế tiếp)
+        const recv = (rec.history || []).filter(h => /^Tiếp nhận (hồ sơ )?bổ sung/.test(h.action || ''));
+        list.forEach((e, i) => {
+            if (e.receivedAt) return;
+            const from = timeKey(e.at), to = i + 1 < list.length ? timeKey(list[i + 1].at) : Infinity;
+            const h = recv.find(x => timeKey(x.at) >= from && timeKey(x.at) < to);
+            if (h) { e.receivedAt = h.at; e.receivedBy = h.userId; }
+        });
+        return asc ? list : list.reverse();
+    }
+    function pushSupplementHistory(rec, e) {
+        // Dựng lại các lần trước (bỏ qua trạng thái hiện hành vừa chuyển Yêu cầu bổ sung để không tính trùng lần đang ghi)
+        rec.supplementHistory = supplementHistoryOf(Object.assign({}, rec, { status: '' }), true);
+        rec.supplementHistory.push({ reason: e.reason || '', method: e.method || 'Ký số', file: e.file || '', by: e.by || '', unitId: e.unitId || '', at: e.at || nowText() });
+    }
+    const histRow = (k, v) => `<div style="display:flex; gap:8px; margin-top:4px;"><span style="color:#64748b; min-width:170px; flex-shrink:0;">${esc(k)}:</span><span style="flex:1; min-width:0; white-space:pre-line;">${v}</span></div>`;
+    const histFileLink = name => name ? `<i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> <b>${esc(name)}</b> <a href="#" onclick="event.preventDefault(); if (window.previewNamedFile) previewNamedFile(${esc(JSON.stringify(name))});" style="color:#2563eb; text-decoration:none; margin-left:8px; white-space:nowrap; font-weight:600;"><i class="fa-solid fa-eye"></i> Xem file</a>` : '--';
+    // Khối THÔNG TIN HỒ SƠ BỊ TRẢ LẠI: kê đầy đủ các lần bị trả lại theo thứ tự thời gian; không ghi "Lần 1, Lần 2"
+    function renderXdReturnHistoryHtml(rec) {
+        const list = returnHistoryOf(rec, true);
+        if (!list.length) return '';
+        const current = rec.status === STATUS.BI_TRA_LAI;
+        const items = list.map((e, i) => {
+            const isLatest = (i === list.length - 1);
+            return `<div style="background:#fff; border:1px solid #fecaca; border-left:4px solid #ef4444; border-radius:6px; padding:12px 14px; margin-top:8px; font-size:13px; line-height:1.55;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <div style="font-weight:700; color:#991b1b;"><i class="fa-solid fa-clock"></i> Thời điểm: ${esc(e.at || '--')}</div>
+                    ${(isLatest && current) ? '<span class="badge" style="background:#fee2e2; color:#991b1b; font-size:11px;">Đang bị trả lại</span>' : ''}
+                </div>
+                ${histRow('Lãnh đạo trả lại', `<b>${esc(userName(e.by))}</b>${e.unitId ? ' - ' + esc(unitName(e.unitId)) : ''}`)}
+                ${histRow('Nội dung trình bị từ chối', `<b style="color:#b91c1c;">${esc(e.kind || '--')}</b>`)}
+                ${histRow('Lý do chi tiết', `<span style="color:#991b1b; font-weight:500;">${esc(e.reason || '--')}</span>`)}
+            </div>`;
+        }).join('');
+        return `<div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px;">
+                <div style="font-weight:700; color:#dc2626; font-size:14px;"><i class="fa-solid fa-rotate-left"></i> THÔNG TIN HỒ SƠ BỊ TRẢ LẠI</div>
+            </div>${items}`;
+    }
+    // Khối THÔNG TIN YÊU CẦU BỔ SUNG: danh sách các lần ban hành Yêu cầu bổ sung (mới nhất trước); rỗng khi hồ sơ chưa từng Yêu cầu bổ sung
+    function renderXdSupplementHistoryHtml(rec) {
+        const list = supplementHistoryOf(rec);
+        if (!list.length) return '';
+        const current = rec.status === STATUS.YC_BO_SUNG;
+        const items = list.map((e, i) => {
+            const offline = e.method === 'Ký ngoài';
+            const methodBadge = `<span class="badge" style="font-size:11px; ${offline ? 'background:#fed7aa; color:#9a3412;' : 'background:#dcfce7; color:#166534;'}">${offline ? '<i class="fa-solid fa-stamp"></i> Ký ngoài' : '<i class="fa-solid fa-signature"></i> Ký số'}</span>`;
+            return `<div style="background:#fff; border:1px solid #fed7aa; border-radius:6px; padding:10px 14px; margin-top:8px; font-size:13px; line-height:1.5;">
+                <div style="font-weight:700; color:#c2410c;">Lần ${list.length - i}</div>
+                ${histRow('Nội dung yêu cầu bổ sung', esc(e.reason || '--'))}
+                ${histRow('Hình thức ký', methodBadge)}
+                ${histRow('Văn bản đã ký', histFileLink(e.file))}
+                ${histRow('Người ban hành - thời điểm', `${esc(userName(e.by))}${e.unitId ? ' - ' + esc(unitName(e.unitId)) : ''}${e.at ? ' - ' + esc(e.at) : ''}`)}
+                ${histRow('Tiếp nhận hồ sơ bổ sung', e.receivedAt ? `<span style="color:#15803d; font-weight:600;"><i class="fa-solid fa-circle-check"></i> ${esc(e.receivedAt)}${e.receivedBy ? ' - ' + esc(userName(e.receivedBy)) : ''}</span>` : '<span style="color:#9a3412;">Chưa tiếp nhận</span>')}
+            </div>`;
+        }).join('');
+        return `<div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap;">
+                <div style="font-weight:700; color:#c2410c; font-size:14px;"><i class="fa-solid fa-file-circle-question"></i> THÔNG TIN YÊU CẦU BỔ SUNG</div>
+                <span class="badge" style="background:#ffedd5; color:#9a3412; font-size:11.5px;">${current ? '<i class="fa-solid fa-clock"></i> Đang chờ bổ sung' : '<i class="fa-solid fa-circle-check"></i> Đã tiếp nhận bổ sung'} - Số lần yêu cầu bổ sung: ${list.length}</span>
+            </div>${items}`;
     }
 
     // ---------------- Thụ lý hồ sơ Yêu cầu bồi thường (Thủ trưởng cơ quan giải quyết bồi thường) ----------------
@@ -1122,11 +1493,13 @@
         const reason = getKtlReasons().find(r => r.code === reasonCode);
         if (!reason) return { ok: false, message: 'Vui lòng chọn Lý do không thụ lý.' };
         const at = nowText();
-        const isTransfer = reason.code === 'KTL_01' && transfer && transfer.targetUnitId;
+        // KTL_01: Chuyển cơ quan tiếp nhận mới theo 01 trong 03 tùy chọn (transfer.mode); dữ liệu cũ chỉ có targetUnitId -> Chuyển trực tiếp
+        const isTransfer = reason.code === 'KTL_01' && !!transfer && !!(transfer.mode || transfer.targetUnitId);
+        let tgt = null;
         if (isTransfer) {
-            const target = getUnit(transfer.targetUnitId);
-            if (!target || !isUnitConfigured(getRootId(target.id) || target.id)) return { ok: false, message: `Đơn vị ${target ? target.name : '--'} chưa được cấu hình luồng phân công. Vui lòng liên hệ Quản trị hệ thống.` };
-            if (!transfer.content) return { ok: false, message: 'Vui lòng nhập Nội dung/Căn cứ chuyển.' };
+            tgt = ktlTransferTarget(rec, transfer.mode || KTL_TRANSFER_MODES.CQ, transfer.targetUnitId);
+            if (!tgt.ok) return { ok: false, message: tgt.message, transferError: true };
+            if (!transfer.content) return { ok: false, message: 'Vui lòng nhập Nội dung/Căn cứ chuyển.', transferError: true };
         }
         rec.thuLy = { unitId: thuLyUnitOf(rec), by: me, at, rejected: true, reasonCode: reason.code, detail: detail || '' };
         rec.gqData = Object.assign({}, rec.gqData || {}, {
@@ -1135,8 +1508,9 @@
         });
         if (isTransfer) {
             rec.status = STATUS.DA_CHUYEN;
-            const newCode = performTransfer(rec, { type: 'transfer', targetUnitId: transfer.targetUnitId, content: transfer.content, files: [] });
-            addHistory(rec, 'Không thụ lý', `${reason.name}${detail ? '. ' + detail : ''}. Chuyển ${unitName(transfer.targetUnitId)} (hồ sơ mới ${newCode}). Hồ sơ chuyển [${rec.status}].`);
+            const newCode = performTransfer(rec, { type: 'transfer', mode: tgt.mode, loaiYeuCau: tgt.loaiYeuCau, targetUnitId: tgt.targetUnitId, content: transfer.content, files: transfer.files || [] });
+            rec.gqData.transferRequest = { via: 'Không thụ lý', mode: tgt.mode, targetUnitId: tgt.targetUnitId, targetName: unitName(tgt.targetUnitId), loaiYeuCau: tgt.loaiYeuCau, content: transfer.content, files: transfer.files || [] };
+            addHistory(rec, 'Không thụ lý', `${reason.name}${detail ? '. ' + detail : ''}. ${tgt.label}: ${unitName(tgt.targetUnitId)} (hồ sơ mới ${newCode}, Loại hồ sơ ${tgt.loaiYeuCau}). Hồ sơ chuyển [${rec.status}].`);
         } else {
             rec.status = STATUS.KHONG_THU_LY;
             addHistory(rec, 'Không thụ lý', `${reason.name}${detail ? '. ' + detail : ''}. Hồ sơ chuyển [${rec.status}].`);
@@ -1154,7 +1528,7 @@
         const assign = visible.filter(r => canAssign(r, me));
         const approveList = visible.filter(r => canApprove(r, me));
         const thuly = visible.filter(r => canThuLy(r, me));
-        const done = visible.filter(r => (r.routes || []).some(x => x.fromUserId === me) || (r.approval && (r.approval.steps || []).some(s => s.userId === me)) || (r.history || []).some(h => h.userId === me && /Phê duyệt|Từ chối phê duyệt|Chuyển đơn vị|Phân công|Thụ lý/.test(h.action)));
+        const done = visible.filter(r => (r.routes || []).some(x => x.fromUserId === me) || (r.approval && (r.approval.steps || []).some(s => s.userId === me)) || (r.history || []).some(h => h.userId === me && /Phê duyệt|Ký duyệt|Từ chối phê duyệt|Chuyển đơn vị|Phân công|Thụ lý/.test(h.action)));
         return { assign, approve: approveList, thuly, done };
     }
 
@@ -1170,6 +1544,14 @@
     const WORK_TYPE_ORDER = [WORK_TYPES.PHAN_CONG, WORK_TYPES.PHE_DUYET, WORK_TYPES.THU_LY, WORK_TYPES.KY_QD, WORK_TYPES.KY_KP];
     const QD_KINDS = ['Quyết định GQBT', 'Hủy QĐ', 'Sửa chữa, bổ sung QĐ'];
     function workTypeOfKind(kind) { return QD_KINDS.includes(kind) ? WORK_TYPES.KY_QD : WORK_TYPES.PHE_DUYET; }
+    // Nhãn thao tác của Lãnh đạo tại cấp hiện hành: Ký duyệt (Quyết định GQBT; Xác định CQGQBT ở mọi cấp) / Phê duyệt
+    // Xác định CQGQBT: chỉ cấp cuối hệ thống ký số văn bản; các cấp trước Ký duyệt = đồng ý chuyển cấp tiếp theo
+    function approveVerb(rec) {
+        const a = rec && rec.approval;
+        if (!a) return isXdRec(rec) ? 'Ký duyệt' : 'Phê duyệt';
+        if (QD_KINDS.includes(a.kind)) return 'Ký duyệt';
+        return isXdRec(rec) ? 'Ký duyệt' : 'Phê duyệt';
+    }
     // Nội dung trình của 01 dòng lịch sử (dữ liệu cũ chưa lưu kind: dò theo nội dung ghi chú)
     function historyKind(rec, h) {
         if (h.kind) return h.kind;
@@ -1281,7 +1663,7 @@
                 const step = a.steps[a.steps.length - 1];
                 pending.push(Object.assign({}, base, {
                     key: 'pd:' + rec.code, type: workTypeOfKind(a.kind), kind: a.kind,
-                    detail: `${workTypeOfKind(a.kind) === WORK_TYPES.KY_QD ? 'Ký duyệt' : 'Phê duyệt'}: ${a.kind} - cấp ${a.level + 1}/${a.path.length}`,
+                    detail: `${approveVerb(rec)}: ${a.kind} - cấp ${a.level + 1}/${a.path.length}`,
                     who: step ? `${userName(step.userId)} (${unitName(step.unitId)})` : `${userName(a.submittedBy)} - Cán bộ chủ trì`,
                     at: step ? step.at : a.submittedAt
                 }));
@@ -1298,7 +1680,7 @@
                 if (h.userId !== me) return;
                 let type = '';
                 if (['Chuyển đơn vị', 'Phân công cán bộ', 'Thu hồi'].includes(h.action)) type = WORK_TYPES.PHAN_CONG;
-                else if (['Phê duyệt', 'Từ chối phê duyệt', 'Thu hồi phê duyệt'].includes(h.action)) type = workTypeOfKind(historyKind(rec, h));
+                else if (['Phê duyệt', 'Ký duyệt', 'Từ chối phê duyệt', 'Thu hồi phê duyệt'].includes(h.action)) type = workTypeOfKind(historyKind(rec, h));
                 else if (['Thụ lý', 'Không thụ lý'].includes(h.action)) type = WORK_TYPES.THU_LY;
                 if (!type) return;
                 const kind = type === WORK_TYPES.PHAN_CONG || type === WORK_TYPES.THU_LY ? '' : historyKind(rec, h);
@@ -1467,6 +1849,7 @@
         'Chờ phân công': ['#fff7ed', '#c2410c'],
         'Đang phân công': ['#eff6ff', '#1d4ed8'],
         'Chờ tiếp nhận': ['#fef9c3', '#a16207'],
+        'Xác minh CQGQBT': ['#e0f2fe', '#0369a1'],
         'Đang thực hiện': ['#e0f2fe', '#0369a1'],
         'Chờ duyệt': ['#ede9fe', '#6d28d9'],
         'Chờ phê duyệt': ['#ede9fe', '#6d28d9'],
@@ -1587,14 +1970,19 @@
         </div>`;
     }
     // Phần đầu văn bản hành chính: cơ quan chủ quản, tên cơ quan, số ký hiệu, quốc hiệu, địa danh ngày tháng
-    function docHeaderHtml(unitId, formNo, docType) {
+    // opts (tùy chọn): { soKyHieu: Số, ký hiệu văn bản; ngay: Ngày văn bản dd/mm/yyyy } nhập tại popup trình
+    function docHeaderHtml(unitId, formNo, docType, opts) {
+        opts = opts || {};
         const now = new Date();
         const root = getRootId(unitId) || unitId;
         const governing = GOVERNING_BODY[root] || '';
+        const dm = String(opts.ngay || '').match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+        const dateTxt = dm ? `ngày ${pad(dm[1])} tháng ${pad(dm[2])} năm ${dm[3]}` : `ngày ${pad(now.getDate())} tháng ${pad(now.getMonth() + 1)} năm ${now.getFullYear()}`;
+        const soTxt = opts.soKyHieu ? esc(opts.soKyHieu) : `......./${esc(docType || 'TB')}-${esc(issuerAbbr(root))}`;
         return `${formNo ? `<div style="text-align:right; font-style:italic;">${esc(formNo)}</div>` : ''}
             <table style="width:100%; border-collapse:collapse; margin-top:6pt;"><tr>
-                <td style="width:40%; text-align:center; vertical-align:top; font-size:13pt;">${governing ? `${esc(governing)}<br>` : ''}<b>${esc(unitName(root).toUpperCase())}</b><br><span style="display:inline-block; width:35%; border-top:1px solid #000;"></span><br>Số: ......./${esc(docType || 'TB')}-${esc(issuerAbbr(root))}</td>
-                <td style="text-align:center; vertical-align:top; font-size:13pt;"><b style="white-space:nowrap;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</b><br><b>Độc lập - Tự do - Hạnh phúc</b><br><span style="display:inline-block; width:45%; border-top:1px solid #000;"></span><br><i>${esc(placeOf(root))}, ngày ${pad(now.getDate())} tháng ${pad(now.getMonth() + 1)} năm ${now.getFullYear()}</i></td>
+                <td style="width:40%; text-align:center; vertical-align:top; font-size:13pt;">${governing ? `${esc(governing)}<br>` : ''}<b>${esc(unitName(root).toUpperCase())}</b><br><span style="display:inline-block; width:35%; border-top:1px solid #000;"></span><br>Số: ${soTxt}</td>
+                <td style="text-align:center; vertical-align:top; font-size:13pt;"><b style="white-space:nowrap;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</b><br><b>Độc lập - Tự do - Hạnh phúc</b><br><span style="display:inline-block; width:45%; border-top:1px solid #000;"></span><br><i>${esc(placeOf(root))}, ${dateTxt}</i></td>
             </tr></table>`;
     }
     function docPageHtml(bodyHtml, baseName, withToolbar) {
@@ -1609,7 +1997,7 @@
         const old = document.getElementById('btnnDocViewer'); if (old) old.remove();
         const ov = document.createElement('div');
         ov.id = 'btnnDocViewer';
-        ov.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:6000;display:flex;align-items:center;justify-content:center;padding:16px;';
+        ov.style.cssText = 'position:fixed;inset:0;background:rgba(15,23,42,.6);z-index:10100;display:flex;align-items:center;justify-content:center;padding:16px;';
         const btn = 'border:0;border-radius:6px;padding:7px 12px;font-weight:600;cursor:pointer;font-size:13px;';
         ov.innerHTML = `<div style="background:#fff;border-radius:10px;width:min(1000px,100%);height:min(92vh,100%);display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.3);">
             <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;background:#1e3a8a;color:#fff;font-family:system-ui,sans-serif;">
@@ -1727,9 +2115,30 @@
         if (d.bodyHtml) downloadDocWord(d.bodyHtml, (d.generatedName || 'Van_ban_du_thao').replace(/\.docx?$/i, ''));
         else downloadDraftDocByCode(code, 'word');
     }
+    // Văn bản trình ký của hồ sơ Xác định CQGQBT (Kết quả xác định CQGQBT / Yêu cầu bổ sung / Không thụ lý)
+    function renderSignDocHtml(rec) {
+        const a = rec && rec.approval;
+        const sd = a && a.signDoc;
+        if (!sd) return '';
+        const isOnline = sd.method !== 'Ký ngoài';
+        const row = (k, v) => `<div style="display:flex; gap:8px; margin-top:4px;"><span style="color:#64748b; min-width:170px;">${esc(k)}:</span><span>${v}</span></div>`;
+        const reasonLabel = a.kind === 'Yêu cầu bổ sung' ? 'Nội dung yêu cầu bổ sung' : a.kind === 'Không thụ lý' ? 'Lý do không thụ lý' : '';
+        const box = sd.sigBox ? `X: ${sd.sigBox.x}, Y: ${sd.sigBox.y} - Cỡ: ${sd.sigBox.w} x ${sd.sigBox.h} px` : '--';
+        const lastUnit = a.path && a.path.length ? unitName(a.path[a.path.length - 1]) : '--';
+        return `<div style="border:2px solid #2563eb; background:#eff6ff; border-radius:8px; padding:12px 14px; margin-bottom:10px; font-size:13px;">
+            <div style="font-weight:700; color:#1e3a8a; margin-bottom:6px;"><i class="fa-solid fa-file-signature"></i> Văn bản trình ký</div>
+            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; background:#fff; border:1px solid #bfdbfe; border-radius:6px; padding:8px 10px;">
+                <i class="fa-solid fa-file-pdf" style="color:#ef4444; font-size:18px;"></i> <b>${esc(sd.file || '--')}</b>
+                <span style="background:${isOnline ? '#dcfce7; color:#15803d' : '#fef3c7; color:#92400e'}; border-radius:999px; padding:1px 8px; font-size:11.5px; font-weight:600;">${isOnline ? 'Ký số trên hệ thống' : 'Ký ngoài'}</span>
+            </div>
+            ${reasonLabel && a.reason ? row(reasonLabel, esc(a.reason)) : ''}
+            ${isOnline ? row('Vị trí chữ ký cấp cuối', `${esc(lastUnit)} - ${esc(box)}`) : ''}
+            ${sd.signedFile ? row('Văn bản đã ký', `<b style="color:#15803d;"><i class="fa-solid fa-circle-check"></i> ${esc(sd.signedFile)}</b> - ${esc(userName(sd.signedBy))} - ${esc(sd.signedAt || '')}`) : ''}
+        </div>`;
+    }
     function renderDraftDocHtml(rec) {
         const d = rec.approval && rec.approval.draftDoc;
-        if (!d) return '';
+        if (!d) return renderSignDocHtml(rec);
         const code = esc(rec.code);
         const isUploaded = d.source === 'uploaded' || (!d.source && d.uploadedName);
         const submitted = isUploaded ? d.uploadedName : d.generatedName;
@@ -2244,8 +2653,9 @@
         DEFAULT_PERSONAL_DOC_TYPES, getPersonalDocTypes, normalizePersonalDocType, fillPersonalDocTypeSelect,
         loadRecords, saveRecords, getRecord, upsertRecord, removeRecord, addHistory, nextCode, createPendingRecord,
         latestRoute, canEditAtReception, canAssign, markViewed, assignToUnit, assignToOfficers,
-        getRecallInfo, recall, computeApprovalPath, submitForApproval, canApprove, isLastApprovalLevel, nextLevelLeaders, firstLevelLeaders, approvalKindOf, approvalLabel, approvalPathText, approvalPathLineHtml, KIND_KQXD, approve, rejectApproval, performTransfer,
-        transferToAgency, getLeaderTasks, thuLyUnitOf, thuLyLeaders, canThuLy, thuLyOfficerOptions, acceptCase, rejectCase,
+        getRecallInfo, recall, computeApprovalPath, submitForApproval, canApprove, isLastApprovalLevel, nextLevelLeaders, firstLevelLeaders, approvalKindOf, approvalLabel, approvalPathText, approvalPathLineHtml, KIND_KQXD, approve, approveVerb, isXdRec, gqConfiguredRoots, xdTargetUnitId, xdTargetConfigured, xdTargetNotConfiguredMsg, renderSignDocHtml, rejectApproval, performTransfer,
+        transferToAgency, issueXdOffline, returnHistoryOf, supplementHistoryOf, renderXdReturnHistoryHtml, renderXdSupplementHistoryHtml, getLeaderTasks, thuLyUnitOf, thuLyLeaders, canThuLy, thuLyOfficerOptions, acceptCase, rejectCase,
+        KTL_TRANSFER_MODES, KTL_TRANSFER_LABELS, stpOfUnit, ktlTransferTarget, mountKtlTransfer, ktlTransferSentence,
         WORK_TYPES, WORK_TYPE_ORDER, QD_KINDS, workTypeOfKind, resolveAgencyUnit, caseLeaders, loadKinhPhi, kpLeaders, decideKinhPhi, isAdvanceProposal, getLeaderWork,
         statusBadge, routeText, routeStateText, renderRoutesHtml, renderHistoryHtml, renderApprovalHtml,
         docHeaderHtml, docPageHtml, openDocTab, downloadDocWord,

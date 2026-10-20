@@ -3094,6 +3094,9 @@ function openSignSubmitModal(id, kind) {
     if (chkRoom) chkRoom.checked = xsState.enableRoomSig;
     xsToggleRoomSig(xsState.enableRoomSig);
 
+    // Khối THÔNG TIN HỒ SƠ BỊ TRẢ LẠI: hiển thị trên form trình ký nếu hồ sơ đang bị trả lại hoặc từng bị trả lại
+    renderXdHistoryBlock('xsReturnedAlertBlock', BTNN_WF.renderXdReturnHistoryHtml(item));
+
     xsRenderFile();
     xsApplyMethod();
     xsShowStep(1);
