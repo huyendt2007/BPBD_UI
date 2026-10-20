@@ -666,12 +666,66 @@
         if (/xác định/i.test(s)) return SOURCES.XDCQ;
         return SOURCES.TIEP_NHAN;
     }
-    // Mã vụ việc toàn trình VVBT-yyyy-xxx, duy nhất trên hệ thống
+    // ---------------- Mã vụ việc toàn trình ----------------
+    // - Mã vụ việc VVBT-yyyy-xxx: sinh 01 lần tại điểm vào đầu tiên (Tiếp nhận mới, Dịch vụ công quốc gia,
+    //   Thêm mới trực tiếp "Vụ việc mới" tại Xác định CQGQBT / Giải quyết YCBT); các bước sau kế thừa, không sinh lại.
+    // - Mỗi phân hệ có Mã hồ sơ riêng (XD- / BT- / HT-) gắn với Mã vụ việc qua sổ đăng ký KEY_VUVIEC
+    //   { [Mã hồ sơ]: Mã vụ việc }. Sổ đăng ký không bị xóa khi một phân hệ nạp lại dữ liệu mẫu nên ánh xạ luôn ổn định.
+    // - Số thứ tự đã cấp không cấp lại (kể cả khi hồ sơ bị xóa).
+    const KEY_VUVIEC = 'btnn_vuviec_registry_v1';
+    const VV_RE = /^VVBT-(\d{4})-(\d+)$/;
+    function isVuViecCode(code) { return VV_RE.test(String(code || '').trim()); }
+    function vuViecRegistry() { const m = readJson(KEY_VUVIEC, {}); return m && typeof m === 'object' && !Array.isArray(m) ? m : {}; }
+    // Mọi Mã vụ việc đã cấp: kho luồng xử lý, sổ đăng ký, hồ sơ Giải quyết YCBT (claimsList)
+    function allVuViecCodes() {
+        const set = new Set();
+        const add = c => { if (isVuViecCode(c)) set.add(String(c).trim()); };
+        readJson(KEY_RECORDS, []).forEach(r => { if (r) { add(r.maVuViec); add(r.code); add(r.vuViecLienQuan); } });
+        Object.values(vuViecRegistry()).forEach(add);
+        ['claimsList', 'btnn_gq_phdd_claims_v1', 'receptionClaimsList_v2026'].forEach(k => { const l = readJson(k, []); if (Array.isArray(l)) l.forEach(c => { if (c) { add(c.maVuViec); add(c.vuViecLienQuan); } }); });
+        const hwm = readJson(KEY_VUVIEC + '_hwm', {});
+        Object.keys(hwm || {}).forEach(y => add(`VVBT-${y}-${String(hwm[y]).padStart(3, '0')}`));
+        return set;
+    }
     function nextVuViecCode() {
         const year = new Date().getFullYear();
         let max = 0;
-        readJson(KEY_RECORDS, []).forEach(r => [r.maVuViec, r.code].forEach(c => { const m = String(c || '').match(new RegExp(`^VVBT-${year}-(\\d+)$`)); if (m) max = Math.max(max, parseInt(m[1], 10)); }));
-        return `VVBT-${year}-${String(max + 1).padStart(3, '0')}`;
+        allVuViecCodes().forEach(c => { const m = c.match(VV_RE); if (m && +m[1] === year) max = Math.max(max, parseInt(m[2], 10)); });
+        const code = `VVBT-${year}-${String(max + 1).padStart(3, '0')}`;
+        // Ghi mốc số đã cấp để không cấp lại khi hồ sơ bị xóa
+        const hwm = readJson(KEY_VUVIEC + '_hwm', {}); hwm[year] = max + 1; writeJson(KEY_VUVIEC + '_hwm', hwm);
+        return code;
+    }
+    // Gắn Mã hồ sơ (XD- / BT- / HT-) với Mã vụ việc
+    function linkVuViec(hoSoCode, maVuViec) {
+        if (!hoSoCode || !isVuViecCode(maVuViec)) return '';
+        const m = vuViecRegistry(); m[String(hoSoCode).trim()] = maVuViec; writeJson(KEY_VUVIEC, m);
+        return maVuViec;
+    }
+    // Mã vụ việc của một hồ sơ: sổ đăng ký -> hồ sơ luồng xử lý (code / claimCode) -> cấp mới (trừ khi opts.create === false)
+    function vuViecOf(hoSoCode, opts) {
+        const code = String(hoSoCode || '').trim();
+        if (!code) return '';
+        if (isVuViecCode(code)) return code;
+        const reg = vuViecRegistry();
+        if (isVuViecCode(reg[code])) return reg[code];
+        const rec = readJson(KEY_RECORDS, []).find(r => r && (r.code === code || r.claimCode === code) && isVuViecCode(r.maVuViec));
+        if (rec) return linkVuViec(code, rec.maVuViec);
+        if (opts && opts.create === false) return '';
+        return linkVuViec(code, (opts && isVuViecCode(opts.preferred)) ? opts.preferred : nextVuViecCode());
+    }
+    // Danh sách vụ việc để chọn "Vụ việc đã có Mã vụ việc" / "Vụ việc liên quan": [{ code, nycName, hoSo: [Mã hồ sơ] }]
+    function listVuViec() {
+        const map = new Map();
+        const get = c => { if (!map.has(c)) map.set(c, { code: c, nycName: '', hoSo: [] }); return map.get(c); };
+        readJson(KEY_RECORDS, []).forEach(r => {
+            if (!r || !isVuViecCode(r.maVuViec)) return;
+            const v = get(r.maVuViec); if (!v.nycName && r.nycName) v.nycName = r.nycName;
+            if (r.code && r.code !== r.maVuViec && !v.hoSo.includes(r.code)) v.hoSo.push(r.code);
+        });
+        Object.entries(vuViecRegistry()).forEach(([hs, c]) => { if (isVuViecCode(c)) { const v = get(c); if (!v.hoSo.includes(hs)) v.hoSo.push(hs); } });
+        ['claimsList', 'btnn_gq_phdd_claims_v1', 'receptionClaimsList_v2026'].forEach(k => { const l = readJson(k, []); if (Array.isArray(l)) l.forEach(c => { if (c && isVuViecCode(c.maVuViec)) { const v = get(c.maVuViec); if (!v.nycName) v.nycName = c.nycName || (c.nyc && c.nyc.name) || c.requesterName || ''; if (c.code && !v.hoSo.includes(c.code)) v.hoSo.push(c.code); } }); });
+        return Array.from(map.values()).sort((a, b) => b.code.localeCompare(a.code));
     }
     function nextCode(prefix) {
         const year = new Date().getFullYear();
@@ -2161,7 +2215,7 @@
         receptionPendingItems, receptionPendingCount, receptionSeeded,
         CATALOG_TYPE, STATUS, SUBMIT_KINDS, APPROVAL_KINDS, KTL_CATALOG_TYPE, DEFAULT_KTL_REASONS, XD_AUTHORITY_UNITS, REQUEST_TYPE_XD, REQUEST_TYPE_YCBT,
         FLOW_TYPES, FLOW_TYPE_NAMES, FLOW_TYPE_ORDER, SOURCES, RECEIVE_METHODS, RECEIVE_METHOD_CATALOG, RECEIVE_METHOD_ORDER, FORM_RECEIVE_METHODS, UBND_TINH_STP,
-        flowRootIds, flowTypeOf, normalizeReceiveMethod, normalizeSource, nextVuViecCode, xdViewOnlyStpRoots, isXdViewOnlyUser,
+        flowRootIds, flowTypeOf, normalizeReceiveMethod, normalizeSource, nextVuViecCode, isVuViecCode, linkVuViec, vuViecOf, listVuViec, xdViewOnlyStpRoots, isXdViewOnlyUser,
         ORG_UNITS, USERS, DEFAULT_REQUEST_TYPES,
         getUnit, unitName, getChildren, getRootId, getAncestors, getDescendants, getRootUnits, unitTreeLabel, searchUnits, mountUnitTree,
         getUser, userName, userLabel, usersInUnitTree,

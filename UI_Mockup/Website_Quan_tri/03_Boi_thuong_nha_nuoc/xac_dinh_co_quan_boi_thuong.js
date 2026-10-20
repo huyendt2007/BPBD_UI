@@ -1338,6 +1338,7 @@ function showFormScreen(id = null, mode = null) {
     formMode = mode || (!id ? 'create' : item && item.status === 'Chờ tiếp nhận' ? 'accept' : 'edit');
 
     formRequestId.value = id || '';
+    setupVuViecFields(item);
 
     // Khối hiển thị Lý do bị trả lại trên cùng của form khi hồ sơ Bị trả lại
     const returnedAlert = document.getElementById('formReturnedAlertBlock');
@@ -1657,6 +1658,7 @@ function showDetailScreen(id) {
         }
     }
     document.getElementById('dtMaVuViec').innerText = item.maVuViec || '-';
+    document.getElementById('dtVuViecLienQuan').innerText = vuViecLabel(item.vuViecLienQuan) || '-';
     document.getElementById('dtHinhThucTiepNhan').innerText = BTNN_WF.normalizeReceiveMethod(item.hinhThucTiepNhan) || BTNN_WF.RECEIVE_METHODS.TRUC_TIEP;
     document.getElementById('dtLinhVuc').innerText = item.linhVuc || '';
     // Người yêu cầu bồi thường: Tư cách → Loại người yêu cầu → trường theo Cá nhân / Tổ chức (không hiển thị Giới tính)
@@ -1990,6 +1992,75 @@ function clearValidation() {
 }
 
 // Save Main Creation/Edition form (Removed references to formHinhThucThuLy)
+// ---------------- Mã vụ việc khi Thêm mới trực tiếp ----------------
+// - Vụ việc mới (mặc định): hệ thống sinh Mã vụ việc khi lưu; cho chọn Vụ việc liên quan (không bắt buộc).
+// - Vụ việc đã có Mã vụ việc: bắt buộc chọn vụ việc; hồ sơ mang Mã vụ việc đã chọn, không sinh mã mới.
+// - Sửa hồ sơ tạo trực tiếp là vụ việc mới: chỉ cho cập nhật Vụ việc liên quan; Mã vụ việc chỉ đọc.
+function listVuViecSafe() { return BTNN_WF.listVuViec ? BTNN_WF.listVuViec() : []; }
+function vuViecLabel(code) {
+    if (!code) return '';
+    const v = listVuViecSafe().find(x => x.code === code);
+    return v && v.nycName ? `${code} - ${v.nycName}` : code;
+}
+// Giá trị ô chọn vụ việc -> Mã vụ việc; '' khi trống; null khi không thuộc danh sách
+function parseVuViecInput(raw, excludeCode) {
+    const text = String(raw || '').trim();
+    if (!text) return '';
+    const m = text.match(/^VVBT-\d{4}-\d+/i);
+    const code = m ? m[0].toUpperCase() : '';
+    return code && code !== excludeCode && listVuViecSafe().some(v => v.code === code) ? code : null;
+}
+function setupVuViecFields(item) {
+    const block = document.getElementById('formVuViecBlock');
+    if (!block) return;
+    const isCreate = !item;
+    const canEditLienQuan = isCreate || (item.source === 'Tạo trực tiếp' && item.vvMode !== 'existing');
+    block.style.display = canEditLienQuan ? '' : 'none';
+    document.getElementById('formVvModeGroup').style.display = isCreate ? '' : 'none';
+    const exclude = item ? item.maVuViec : '';
+    document.getElementById('formVvOptions').innerHTML = listVuViecSafe().filter(v => v.code !== exclude)
+        .map(v => `<option value="${escapeHtml(v.nycName ? `${v.code} - ${v.nycName}` : v.code)}"></option>`).join('');
+    const radioNew = document.querySelector('input[name="formVvMode"][value="new"]');
+    if (radioNew) radioNew.checked = true;
+    document.getElementById('formVvExisting').value = '';
+    document.getElementById('formVvLienQuan').value = item ? vuViecLabel(item.vuViecLienQuan) : '';
+    onVvModeChange();
+}
+function onVvModeChange() {
+    const checked = document.querySelector('input[name="formVvMode"]:checked');
+    const existing = !!checked && checked.value === 'existing';
+    document.getElementById('formVvExistingGroup').style.display = existing ? '' : 'none';
+    document.getElementById('formVvLienQuanGroup').style.display = existing ? 'none' : '';
+    ['formVvExisting', 'formVvLienQuan'].forEach(fid => {
+        const el = document.getElementById(fid);
+        el.classList.remove('is-invalid');
+        const err = el.closest('.form-group').querySelector('.error-message');
+        if (err) err.style.display = 'none';
+    });
+}
+// Đọc lựa chọn Mã vụ việc trên form; trả về { mode, maVuViec, vuViecLienQuan, invalidEl }
+function readVuViecFields(item) {
+    const block = document.getElementById('formVuViecBlock');
+    const out = { mode: item ? (item.vvMode || '') : 'new', maVuViec: '', vuViecLienQuan: item ? (item.vuViecLienQuan || '') : '', invalidEl: null };
+    if (!block || block.style.display === 'none') return out;
+    const checked = document.querySelector('input[name="formVvMode"]:checked');
+    if (!item && checked && checked.value === 'existing') {
+        out.mode = 'existing';
+        out.vuViecLienQuan = '';
+        const el = document.getElementById('formVvExisting');
+        const code = parseVuViecInput(el.value, '');
+        if (!code) {
+            document.getElementById('errFormVvExisting').textContent = el.value.trim() ? 'Vụ việc không tồn tại trên hệ thống' : 'Đây là trường bắt buộc';
+            out.invalidEl = el;
+        } else out.maVuViec = code;
+        return out;
+    }
+    const el = document.getElementById('formVvLienQuan');
+    const code = parseVuViecInput(el.value, item ? item.maVuViec : '');
+    if (code === null) out.invalidEl = el; else out.vuViecLienQuan = code;
+    return out;
+}
+
 function markInvalid(el, firstInvalid) {
     el.classList.add('is-invalid');
     const err = el.closest('.form-group').querySelector('.error-message');
@@ -2040,8 +2111,14 @@ function saveForm(isDraft) {
     const leader = document.getElementById('formLeaderSelect') ? document.getElementById('formLeaderSelect').value : '';
     const leaderNote = document.getElementById('formLeaderNote') ? document.getElementById('formLeaderNote').value.trim() : '';
 
+    // Mã vụ việc / Vụ việc liên quan: kiểm tra cả khi Lưu nháp (Mã vụ việc xác định ngay khi tạo hồ sơ)
+    const formItem = formRequestId ? requestList.find(r => r.id === formRequestId) : null;
+    const vv = readVuViecFields(formItem);
+    if (vv.invalidEl) markInvalid(vv.invalidEl, null);
+    if (isDraft && vv.invalidEl) { vv.invalidEl.focus(); return; }
+
     if (!isDraft) {
-        let firstInvalid = null;
+        let firstInvalid = vv.invalidEl;
         // Cá nhân: Họ và tên, Ngày sinh, giấy tờ thân nhân; Tổ chức: Tên tổ chức, người đại diện, giấy tờ thành lập/đăng ký khi không có Mã số tổ chức
         const req = isOrg
             ? [['formNYCName', name], ['formNYCRepName', repName], ['formNYCRepPosition', repPosition]]
@@ -2090,7 +2167,8 @@ function saveForm(isDraft) {
         hinhThucNhan: notifyMethod,
         diaChiNhanThongBao: diaChiNhan,
         attachedDocs: cleanDocs,
-        attachedFile: cleanDocs[0] ? cleanDocs[0].file : ""
+        attachedFile: cleanDocs[0] ? cleanDocs[0].file : "",
+        vuViecLienQuan: vv.vuViecLienQuan || ''
     };
 
     if (formRequestId) {
@@ -2116,8 +2194,9 @@ function saveForm(isDraft) {
         const item = Object.assign({
             id: 'WF-' + newCode,
             code: newCode,
-            // Hồ sơ tạo trực tiếp tại phân hệ: sinh Mã vụ việc toàn trình mới
-            maVuViec: BTNN_WF.nextVuViecCode(),
+            // Hồ sơ tạo trực tiếp: Vụ việc mới thì sinh Mã vụ việc toàn trình mới; Vụ việc đã có Mã vụ việc thì mang mã đã chọn
+            maVuViec: vv.mode === 'existing' && vv.maVuViec ? vv.maVuViec : BTNN_WF.nextVuViecCode(),
+            vvMode: vv.mode === 'existing' ? 'existing' : 'new',
             module: 'XD',
             loaiYeuCau: REQUEST_TYPE_XDCQ,
             source: 'Tạo trực tiếp',
@@ -2135,6 +2214,8 @@ function saveForm(isDraft) {
             procBasis: "", procTargetAgency: "", procReason: "", procDecisionFile: "", claimCode: "-"
         }, data);
         saveItem(item);
+        // Ghi sổ đăng ký: Mã hồ sơ XD- gắn với Mã vụ việc
+        BTNN_WF.linkVuViec(item.code, item.maVuViec);
         requestList.unshift(item);
         if (!isDraft) {
             const res = BTNN_WF.submitForApproval(item.code, 'Tiếp nhận yêu cầu', leaderNote, cleanDocs, { assignee: leader, resultStatus: 'Đang thực hiện' });
@@ -2833,12 +2914,15 @@ function confirmTransfer() {
         return;
     }
     // Hồ sơ YCBT sinh ra giữ nguyên Mã vụ việc: hồ sơ dữ liệu cũ chưa có mã thì cấp mã trước khi chuyển
-    if (!item.maVuViec) { item.maVuViec = BTNN_WF.nextVuViecCode(); saveItem(item); }
+    if (!item.maVuViec) { item.maVuViec = BTNN_WF.vuViecOf(item.code); saveItem(item); }
     const res = transferXdToUnit(item, unitId, content, modalFiles.transfer.slice());
     if (!res.ok) { showTransferError(res.message); return; }
+    // Ghi sổ đăng ký: Mã hồ sơ XD- và Mã hồ sơ GQBT (BT-) mới cùng gắn với Mã vụ việc của hồ sơ xác định
+    BTNN_WF.linkVuViec(item.code, item.maVuViec);
+    BTNN_WF.linkVuViec(res.ycbtCode, item.maVuViec);
     closeXdModal('transferModal');
     reloadRequestList();
-    showToast(`Đã chuyển CQGQBT. Hồ sơ ${item.code} chuyển [Hoàn thành]; tạo hồ sơ YCBT ${res.ycbtCode} chờ lãnh đạo ${BTNN_WF.unitName(unitId)} phân công.`, "success");
+    showToast(`Đã chuyển CQGQBT. Hồ sơ ${item.code} chuyển [Hoàn thành]; tạo hồ sơ GQBT ${res.ycbtCode} chờ lãnh đạo ${BTNN_WF.unitName(unitId)} phân công.`, "success");
     const fresh = requestList.find(r => r.code === item.code);
     if (fresh) showDetailScreen(fresh.id); else showListScreen();
 }

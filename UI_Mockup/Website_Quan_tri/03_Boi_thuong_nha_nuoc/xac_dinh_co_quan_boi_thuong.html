@@ -52,8 +52,8 @@
                     <input type="text" class="form-control" id="filterCaseCode" placeholder="Nhập mã vụ việc...">
                 </div>
                 <div>
-                    <span class="form-label">Mã YCBT</span>
-                    <input type="text" class="form-control" id="filterClaimCode" placeholder="Nhập mã YCBT...">
+                    <span class="form-label">Mã hồ sơ GQBT</span>
+                    <input type="text" class="form-control" id="filterClaimCode" placeholder="Nhập mã hồ sơ GQBT...">
                 </div>
                 <div>
                     <span class="form-label">Tên cá nhân/Tổ chức yêu cầu</span>
@@ -149,7 +149,7 @@
                             <th style="width: 130px; text-align: center;">Ngày tiếp nhận</th>
                             <th style="min-width: 170px;">Cơ quan xử lý</th>
                             <th style="min-width: 150px;">Cán bộ xử lý</th>
-                            <th style="width: 140px; text-align: center;">Mã hồ sơ YCBT</th>
+                            <th style="width: 140px; text-align: center;">Mã hồ sơ GQBT</th>
                             <th style="width: 140px; text-align: center;">Trạng thái</th>
                             <th style="width: 220px; text-align: center; min-width: 220px;">Thao tác</th>
                         </tr>
@@ -229,6 +229,27 @@
                         <option value="TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ">TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ</option>
                     </select>
                 </div>
+            </div>
+            <!-- Mã vụ việc: chỉ hiển thị khi Thêm mới trực tiếp. Vụ việc mới: hệ thống sinh Mã vụ việc khi lưu; Vụ việc đã có Mã vụ việc: hồ sơ mang Mã vụ việc đã chọn -->
+            <div class="grid-2" id="formVuViecBlock" style="display: none;">
+                <div class="form-group" id="formVvModeGroup">
+                    <span class="form-label">Mã vụ việc<span class="required">*</span></span>
+                    <div class="nyc-type-group">
+                        <label class="nyc-type-radio"><input type="radio" name="formVvMode" value="new" checked onchange="onVvModeChange()"> <span>Vụ việc mới</span></label>
+                        <label class="nyc-type-radio"><input type="radio" name="formVvMode" value="existing" onchange="onVvModeChange()"> <span>Vụ việc đã có Mã vụ việc</span></label>
+                    </div>
+                </div>
+                <div class="form-group" id="formVvExistingGroup" style="display: none;">
+                    <span class="form-label">Chọn vụ việc<span class="required">*</span></span>
+                    <input type="text" class="form-control" id="formVvExisting" list="formVvOptions" placeholder="Gõ Mã vụ việc hoặc Họ và tên người yêu cầu..." autocomplete="off">
+                    <div class="error-message" id="errFormVvExisting">Đây là trường bắt buộc</div>
+                </div>
+                <div class="form-group" id="formVvLienQuanGroup">
+                    <span class="form-label">Vụ việc liên quan</span>
+                    <input type="text" class="form-control" id="formVvLienQuan" list="formVvOptions" placeholder="Gõ Mã vụ việc hoặc Họ và tên người yêu cầu..." autocomplete="off">
+                    <div class="error-message" id="errFormVvLienQuan">Vụ việc không tồn tại trên hệ thống</div>
+                </div>
+                <datalist id="formVvOptions"></datalist>
             </div>
 
             <!-- Requester details section -->
@@ -741,6 +762,10 @@
                     <div class="detail-value" id="dtMaVuViec"></div>
                 </div>
                 <div class="detail-row">
+                    <div class="detail-label">Vụ việc liên quan</div>
+                    <div class="detail-value" id="dtVuViecLienQuan"></div>
+                </div>
+                <div class="detail-row">
                     <div class="detail-label">Trạng thái xử lý</div>
                     <div class="detail-value" id="dtStatus"></div>
                 </div>
@@ -909,7 +934,7 @@
                         <div class="detail-value" id="dtTransferAt"></div>
                     </div>
                     <div class="detail-row" id="dtClaimCodeRow">
-                        <div class="detail-label">Mã hồ sơ YCBT tương ứng</div>
+                        <div class="detail-label">Mã hồ sơ GQBT tương ứng</div>
                         <div class="detail-value" id="dtClaimCode"></div>
                     </div>
                 </div>

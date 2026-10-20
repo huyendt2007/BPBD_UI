@@ -126,35 +126,46 @@
             padding: 12px;
         }
 
-        /* Khối Người yêu cầu: panel chia nhóm */
-        .nyc-panel {
+        /* Form Tiếp nhận: bỏ khoảng trống thừa phía trên khi chưa có khối thông tin hồ sơ */
+        #formMetaGrid[style*="none"] + .info-group-title { margin-top: 0; }
+        /* Khối Người yêu cầu: Card form hiện đại, phân nhóm rõ ràng */
+        .nyc-form-card {
+            background: #ffffff;
             border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            background: #fbfcfe;
-            padding: 4px 18px 6px;
-            margin-bottom: 20px;
+            border-radius: 8px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
         }
-        .nyc-sub {
+        .nyc-sub-header {
+            font-size: 13px;
+            font-weight: 700;
+            color: #1e3a8a;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            color: #475569;
-            text-transform: uppercase;
-            letter-spacing: .3px;
-            margin: 14px 0 10px;
-            padding-bottom: 6px;
-            border-bottom: 1px dashed #e2e8f0;
         }
-        .nyc-sub i { color: #2563eb; width: 14px; text-align: center; }
+        .nyc-sub-header i {
+            color: #2563eb;
+            font-size: 14px;
+        }
+        .nyc-sub-divider {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px dashed #e2e8f0;
+        }
         .nyc-span-2 { grid-column: span 2; }
         .nyc-span-full { grid-column: 1 / -1; }
-        @media (max-width: 1100px) { .nyc-span-2 { grid-column: auto; } }
+        @media (max-width: 900px) {
+            .nyc-span-2 { grid-column: auto; }
+        }
         .nyc-type-radios {
             align-items: center;
             display: flex;
-            gap: 24px;
+            gap: 20px;
             min-height: 38px;
         }
 
@@ -163,7 +174,9 @@
             cursor: pointer;
             display: inline-flex;
             gap: 6px;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 13px;
+            color: #1e293b;
         }
 
         .nyc-type-radios input:disabled + span,
@@ -463,12 +476,12 @@
                     <span class="form-label">Nguồn hồ sơ</span>
                     <div id="formSourceBadge"></div>
                 </div>
+                <div class="grid-3-cols">
                 <div class="form-group">
                     <span class="form-label">Loại hồ sơ<span class="required">*</span></span>
                     <select id="formRequestType" class="form-control"></select>
                     <div class="error-message">Đây là trường bắt buộc</div>
                 </div>
-                <div class="grid-2">
                     <div class="form-group">
                         <span class="form-label">Hình thức tiếp nhận<span class="required">*</span></span>
                         <!-- Danh mục DM_25: form Tiếp nhận mới chỉ gồm Trực tiếp / Qua dịch vụ bưu chính; Qua môi trường số (Dịch vụ Công), Bộ phận Một cửa do hệ thống gán cho hồ sơ từ Dịch vụ công quốc gia -->
@@ -490,79 +503,101 @@
                         </select>
                         <div class="error-message">Đây là trường bắt buộc</div>
                     </div>
+                    <!-- Vụ việc liên quan: không bắt buộc; dùng khi hồ sơ nộp lại sau khi bị từ chối (vụ việc mới, mã mới) -->
+                    <div class="form-group">
+                        <span class="form-label">Vụ việc liên quan</span>
+                        <input id="formVuViecLienQuan" class="form-control" list="vuViecLienQuanOptions" placeholder="Gõ Mã vụ việc hoặc Họ và tên người yêu cầu..." autocomplete="off">
+                        <datalist id="vuViecLienQuanOptions"></datalist>
+                        <div class="error-message" id="formVuViecLienQuanError">Vụ việc không tồn tại trên hệ thống</div>
+                    </div>
                 </div>
 
                 <div class="info-group-title">Thông tin người yêu cầu</div>
-                <!-- Khối Người yêu cầu chia 04 nhóm: Đối tượng yêu cầu / Thông tin định danh / Thông tin liên hệ / Địa chỉ -->
-                <div class="nyc-panel">
-                    <div class="nyc-sub"><i class="fa-solid fa-user-tag"></i> Đối tượng yêu cầu</div>
-                    <div class="grid-3-cols">
+                <!-- Khối Người yêu cầu: Card form hiện đại, phân nhóm rõ ràng, tiện lợi -->
+                <div class="nyc-form-card">
+                    <!-- Phân nhóm 1: Phân loại & Tư cách người yêu cầu -->
+                    <div class="nyc-sub-header">
+                        <i class="fa-solid fa-user-tag"></i> 1. Phân loại & Tư cách người yêu cầu
+                    </div>
+                    <div class="grid-3-cols" style="gap: 18px; margin-bottom: 6px;">
                         <!-- Loại người yêu cầu: Cá nhân / Tổ chức (mặc định Cá nhân), đứng trước Tư cách -->
-                        <div class="form-group">
+                        <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Loại người yêu cầu<span class="required">*</span></span>
-                            <div class="nyc-type-radios" id="formNycTypeGroup">
-                                <label><input type="radio" name="formNycType" id="formNycTypeCaNhan" value="Cá nhân" checked onchange="onNycTypeChange()"> Cá nhân</label>
-                                <label><input type="radio" name="formNycType" id="formNycTypeToChuc" value="Tổ chức" onchange="onNycTypeChange()"> Tổ chức</label>
+                            <div class="nyc-type-radios" id="formNycTypeGroup" style="height: 38px; display: flex; align-items: center; gap: 20px; background: #f8fafc; padding: 0 14px; border: 1px solid #cbd5e1; border-radius: 4px;">
+                                <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; color: #1e293b; margin: 0;">
+                                    <input type="radio" name="formNycType" id="formNycTypeCaNhan" value="Cá nhân" checked onchange="onNycTypeChange()">
+                                    <i class="fa-solid fa-user" style="color: #2563eb; font-size: 12px;"></i> Cá nhân
+                                </label>
+                                <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; color: #1e293b; margin: 0;">
+                                    <input type="radio" name="formNycType" id="formNycTypeToChuc" value="Tổ chức" onchange="onNycTypeChange()">
+                                    <i class="fa-solid fa-building" style="color: #0284c7; font-size: 12px;"></i> Tổ chức
+                                </label>
                             </div>
                         </div>
                         <!-- Tư cách người yêu cầu bồi thường: Danh mục DM_26 lọc theo Loại người yêu cầu (Cá nhân: bỏ TCNYC_03; Tổ chức: TCNYC_01, TCNYC_03, TCNYC_05) -->
-                        <div class="form-group nyc-span-2">
+                        <div class="form-group nyc-span-2" style="margin-bottom: 0;">
                             <span class="form-label">Tư cách người yêu cầu bồi thường<span class="required">*</span></span>
                             <select id="formRequesterRole" class="form-control" onchange="onRequesterRoleChange()"></select>
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
                     </div>
 
-                    <div class="nyc-sub"><i class="fa-solid fa-id-card"></i> Thông tin định danh</div>
-                    <div class="grid-3-cols">
-                        <div class="form-group">
+                    <!-- Phân nhóm 2: Thông tin định danh & Liên hệ -->
+                    <div class="nyc-sub-header nyc-sub-divider">
+                        <i class="fa-solid fa-id-card"></i> 2. Thông tin định danh & Liên hệ
+                    </div>
+                    <!-- Dòng 1 định danh: 3 cột -->
+                    <div class="grid-3-cols" style="gap: 18px; margin-bottom: 14px;">
+                        <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label"><span id="formRequesterLabel">Họ và tên</span><span class="required">*</span></span>
                             <input id="formRequester" class="form-control" placeholder="Nhập họ và tên...">
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
-                        <div class="form-group nyc-ca-nhan">
+                        <div class="form-group nyc-ca-nhan" style="margin-bottom: 0;">
                             <span class="form-label">Loại giấy tờ thân nhân</span>
                             <select id="formNycDocType" class="form-control">
                                 <option value="">-- Chọn loại giấy tờ --</option>
                             </select>
                         </div>
-                        <div class="form-group nyc-ca-nhan">
+                        <div class="form-group nyc-ca-nhan" style="margin-bottom: 0;">
                             <span class="form-label">Số giấy tờ thân nhân</span>
                             <input id="formNycDocNo" class="form-control" placeholder="Nhập số giấy tờ thân nhân...">
                         </div>
-                        <div class="form-group nyc-to-chuc" style="display:none;">
+                        <div class="form-group nyc-to-chuc nyc-span-2" style="display:none; margin-bottom: 0;">
                             <span class="form-label">Mã số tổ chức</span>
                             <input id="formNycOrgCode" class="form-control" placeholder="Mã số doanh nghiệp / mã số thuế / mã số khác...">
                         </div>
                     </div>
-
-                    <div class="nyc-sub"><i class="fa-solid fa-phone"></i> Thông tin liên hệ</div>
-                    <div class="grid-3-cols">
-                        <div class="form-group">
+                    <!-- Dòng 2 liên hệ: 2 cột cân xứng 50% - 50% -->
+                    <div class="grid-2" style="gap: 18px; margin-bottom: 6px;">
+                        <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Số điện thoại<span class="required">*</span></span>
                             <input id="formPhone" class="form-control" placeholder="Nhập số điện thoại...">
                             <div class="error-message" id="formPhoneError">Đây là trường bắt buộc</div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Email</span>
                             <input id="formEmail" class="form-control" placeholder="Nhập email...">
                             <div class="error-message" id="formEmailError">Email không đúng định dạng.</div>
                         </div>
                     </div>
 
-                    <div class="nyc-sub"><i class="fa-solid fa-location-dot"></i> Địa chỉ</div>
-                    <div class="grid-3-cols">
-                        <!-- Quốc gia: Danh mục DM_09, mặc định Việt Nam; Tỉnh/Thành phố, Phường/Xã là combobox khi Việt Nam, ô nhập tự do khi khác Việt Nam -->
-                        <div class="form-group">
+                    <!-- Phân nhóm 3: Địa chỉ nơi cư trú / Trụ sở -->
+                    <div class="nyc-sub-header nyc-sub-divider">
+                        <i class="fa-solid fa-location-dot"></i> 3. Địa chỉ nơi cư trú / Trụ sở
+                    </div>
+                    <div class="grid-3-cols" style="gap: 18px; margin-bottom: 14px;">
+                        <!-- Quốc gia: Danh mục DM_09, mặc định Việt Nam -->
+                        <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Quốc gia<span class="required">*</span></span>
                             <select id="formCountry" class="form-control" onchange="onCountryChange()"></select>
                         </div>
                         <!-- Màn Xem chi tiết: Địa chỉ 01 dòng [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố] -->
-                        <div class="form-group nyc-addr-view nyc-span-2" style="display:none;">
-                            <span class="form-label">Địa chỉ</span>
+                        <div class="form-group nyc-addr-view nyc-span-2" style="display:none; margin-bottom: 0;">
+                            <span class="form-label">Địa chỉ đầy đủ</span>
                             <input id="formAddressFull" class="form-control" disabled>
                         </div>
-                        <div class="form-group nyc-addr-edit">
+                        <div class="form-group nyc-addr-edit" style="margin-bottom: 0;">
                             <span class="form-label">Tỉnh/Thành phố<span class="required">*</span></span>
                             <input id="formCity" class="form-control" list="cityOptions" placeholder="Gõ Mã hoặc Tên Tỉnh/Thành phố..." oninput="updateWardOptions()">
                             <datalist id="cityOptions">
@@ -575,71 +610,85 @@
                             </datalist>
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
-                        <div class="form-group nyc-addr-edit">
+                        <div class="form-group nyc-addr-edit" style="margin-bottom: 0;">
                             <span class="form-label">Phường/Xã<span class="required">*</span></span>
                             <input id="formWard" class="form-control" list="wardOptions" placeholder="Vui lòng chọn Tỉnh/Thành phố trước" disabled>
                             <datalist id="wardOptions"></datalist>
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
-                        <div class="form-group nyc-addr-edit nyc-span-full">
-                            <span class="form-label">Địa chỉ chi tiết<span class="required">*</span></span>
-                            <input id="formAddress" class="form-control" placeholder="Nhập số nhà, tên đường, thôn/xóm...">
-                            <div class="error-message">Đây là trường bắt buộc</div>
-                        </div>
+                    </div>
+                    <!-- Địa chỉ chi tiết full width -->
+                    <div class="form-group nyc-addr-edit" style="margin-bottom: 0;">
+                        <span class="form-label">Địa chỉ chi tiết (Số nhà, tên đường, thôn/xóm...)<span class="required">*</span></span>
+                        <input id="formAddress" class="form-control" placeholder="Nhập số nhà, tên đường, thôn/xóm...">
+                        <div class="error-message">Đây là trường bắt buộc</div>
                     </div>
                 </div>
 
                 <!-- Tư cách TCNYC_03: Tổ chức bị thiệt hại đã chấm dứt tồn tại (thay cho các trường cá nhân) -->
                 <div id="nbthOrgBlock" style="display:none;">
                     <div class="info-group-title">Thông tin tổ chức bị thiệt hại đã chấm dứt tồn tại</div>
-                    <div class="grid-3-cols">
-                        <div class="form-group">
-                            <span class="form-label">Tên tổ chức bị thiệt hại</span>
-                            <input id="nbthOrgName" class="form-control" placeholder="Nhập tên tổ chức bị thiệt hại...">
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Mã số tổ chức</span>
-                            <input id="nbthOrgCode" class="form-control" placeholder="Mã số doanh nghiệp / mã số thuế / mã số khác...">
+                    <div class="nyc-form-card">
+                        <div class="grid-2" style="gap: 18px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Tên tổ chức bị thiệt hại</span>
+                                <input id="nbthOrgName" class="form-control" placeholder="Nhập tên tổ chức bị thiệt hại...">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Mã số tổ chức</span>
+                                <input id="nbthOrgCode" class="form-control" placeholder="Mã số doanh nghiệp / mã số thuế / mã số khác...">
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <div id="nbthBlock" style="display:none;">
                     <div class="info-group-title">Thông tin người bị thiệt hại</div>
-                    <div class="grid-3-cols">
-                        <div class="form-group">
-                            <span class="form-label">Họ và tên người bị thiệt hại</span>
-                            <input id="nbthName" class="form-control" placeholder="Nhập họ và tên người bị thiệt hại...">
+                    <div class="nyc-form-card">
+                        <div class="nyc-sub-header">
+                            <i class="fa-solid fa-id-card"></i> 1. Thông tin định danh người bị thiệt hại
                         </div>
-                        <div class="form-group">
-                            <span class="form-label">Ngày sinh</span>
-                            <input id="nbthDob" class="form-control" placeholder="dd/mm/yyyy" autocomplete="off">
+                        <div class="grid-4-cols" style="gap: 16px; margin-bottom: 14px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Họ và tên người bị thiệt hại</span>
+                                <input id="nbthName" class="form-control" placeholder="Nhập họ và tên người bị thiệt hại...">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Ngày sinh</span>
+                                <input id="nbthDob" class="form-control" placeholder="dd/mm/yyyy" autocomplete="off">
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Loại giấy tờ thân nhân</span>
+                                <select id="nbthDocType" class="form-control">
+                                    <option value="">-- Chọn loại giấy tờ --</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Số giấy tờ thân nhân</span>
+                                <input id="nbthDocNo" class="form-control" placeholder="Nhập số giấy tờ thân nhân...">
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <span class="form-label">Loại giấy tờ thân nhân</span>
-                            <select id="nbthDocType" class="form-control">
-                                <option value="">-- Chọn loại giấy tờ --</option>
-                            </select>
+
+                        <div class="nyc-sub-header nyc-sub-divider">
+                            <i class="fa-solid fa-location-dot"></i> 2. Địa chỉ người bị thiệt hại
                         </div>
-                        <div class="form-group">
-                            <span class="form-label">Số giấy tờ thân nhân</span>
-                            <input id="nbthDocNo" class="form-control" placeholder="Nhập số giấy tờ thân nhân...">
-                        </div>
-                        <div class="form-group nbth-addr-view" style="display:none; grid-column: span 2;">
-                            <span class="form-label">Địa chỉ</span>
-                            <input id="nbthAddressFull" class="form-control" disabled>
-                        </div>
-                        <div class="form-group nbth-addr-edit">
-                            <span class="form-label">Tỉnh/Thành phố</span>
-                            <input id="nbthCity" class="form-control" list="cityOptions" placeholder="Gõ Mã hoặc Tên Tỉnh/Thành phố...">
-                        </div>
-                        <div class="form-group nbth-addr-edit">
-                            <span class="form-label">Phường/Xã</span>
-                            <input id="nbthWard" class="form-control" placeholder="Nhập phường/xã...">
-                        </div>
-                        <div class="form-group nbth-addr-edit">
-                            <span class="form-label">Địa chỉ chi tiết</span>
-                            <input id="nbthAddress" class="form-control" placeholder="Nhập địa chỉ chi tiết...">
+                        <div class="grid-3-cols" style="gap: 16px;">
+                            <div class="form-group nbth-addr-view" style="display:none; grid-column: 1 / -1; margin-bottom: 0;">
+                                <span class="form-label">Địa chỉ đầy đủ</span>
+                                <input id="nbthAddressFull" class="form-control" disabled>
+                            </div>
+                            <div class="form-group nbth-addr-edit" style="margin-bottom: 0;">
+                                <span class="form-label">Tỉnh/Thành phố</span>
+                                <input id="nbthCity" class="form-control" list="cityOptions" placeholder="Gõ Mã hoặc Tên Tỉnh/Thành phố...">
+                            </div>
+                            <div class="form-group nbth-addr-edit" style="margin-bottom: 0;">
+                                <span class="form-label">Phường/Xã</span>
+                                <input id="nbthWard" class="form-control" placeholder="Nhập phường/xã...">
+                            </div>
+                            <div class="form-group nbth-addr-edit" style="margin-bottom: 0;">
+                                <span class="form-label">Địa chỉ chi tiết</span>
+                                <input id="nbthAddress" class="form-control" placeholder="Nhập số nhà, tên đường, thôn/xóm...">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1321,7 +1370,7 @@
                 nycTinhThanh: rec.nycTinhThanh, nycPhuongXa: rec.nycPhuongXa, nycAddressDetail: rec.nycAddressDetail,
                 nycType: BTNN_WF.nycTypeOf(rec), nycDocType: rec.nycDocType || "", nycDocNo: rec.nycDocNo || "", nycOrgCode: rec.nycOrgCode || "",
                 nycEmail: rec.nycEmail || "", nycCountry: rec.nycCountry || "Việt Nam", nbthOrgName: rec.nbthOrgName || "", nbthOrgCode: rec.nbthOrgCode || "",
-                vanBanCanCu: rec.vanBanCanCu || [], agency: BTNN_WF.unitName(rec.rootUnitId), fromWorkflow: true
+                vanBanCanCu: rec.vanBanCanCu || [], vuViecLienQuan: rec.vuViecLienQuan || "", agency: BTNN_WF.unitName(rec.rootUnitId), fromWorkflow: true
             };
         }
         // Hồ sơ luồng do cán bộ đang đăng nhập tiếp nhận tại màn hình này (không có trong danh sách tiếp nhận của trình duyệt)
@@ -1586,6 +1635,27 @@
             return u ? u.id : CURRENT_USER.id;
         }
 
+        // Vụ việc liên quan: chọn từ danh sách vụ việc trên hệ thống, hiển thị "Mã vụ việc - Họ và tên người yêu cầu"
+        function vuViecLabel(code) {
+            if (!code) return "";
+            const v = (BTNN_WF.listVuViec ? BTNN_WF.listVuViec() : []).find(x => x.code === code);
+            return v && v.nycName ? `${code} - ${v.nycName}` : code;
+        }
+        function fillVuViecLienQuanOptions(excludeCode) {
+            const list = (BTNN_WF.listVuViec ? BTNN_WF.listVuViec() : []).filter(v => v.code !== excludeCode);
+            document.getElementById("vuViecLienQuanOptions").innerHTML = list
+                .map(v => `<option value="${escapeHtml(v.nycName ? `${v.code} - ${v.nycName}` : v.code)}"></option>`).join("");
+        }
+        // Trả về Mã vụ việc đã chọn; null khi giá trị nhập không thuộc danh sách
+        function readVuViecLienQuan(excludeCode) {
+            const raw = getValue("formVuViecLienQuan").trim();
+            if (!raw) return "";
+            const m = raw.match(/^VVBT-\d{4}-\d+/i);
+            const code = m ? m[0].toUpperCase() : "";
+            const ok = code && code !== excludeCode && (BTNN_WF.listVuViec ? BTNN_WF.listVuViec() : []).some(v => v.code === code);
+            return ok ? code : null;
+        }
+
         // Dữ liệu chuyển sang hồ sơ luồng (dùng chung với phân hệ Xác định CQGQBT / Giải quyết YCBT)
         function buildWorkflowData(claim) {
             return {
@@ -1596,6 +1666,7 @@
                 source: "Tiếp nhận",
                 nguonHoSo: SOURCES.TIEP_NHAN,
                 maVuViec: claim.maVuViec || undefined,
+                vuViecLienQuan: claim.vuViecLienQuan || "",
                 hinhThucTiepNhan: claim.nopKenh,
                 rootUnitId: claim.rootUnitId,
                 receivedAt: toWfTime(claim.receivedAt),
@@ -2158,6 +2229,10 @@
                 setValue("formRequesterRole", claim ? (claim.nycRole || "Người bị thiệt hại") : "Người bị thiệt hại");
                 setValue("formFieldGroup", claim ? (claim.fieldGroup || "") : "");
             }
+            // Vụ việc liên quan: Xem chi tiết hiển thị "Mã vụ việc - Họ và tên người yêu cầu", không có dữ liệu hiển thị "-"
+            fillVuViecLienQuanOptions(claim ? claim.maVuViec : "");
+            const vvlq = claim ? vuViecLabel(claim.vuViecLienQuan) : "";
+            setValue("formVuViecLienQuan", vvlq || (isReadOnly && claim ? "-" : ""));
             fillNbth(claim ? claim.nbth : null);
             if (isReadOnly && claim && claim.nbth && claim.nbth.docType) setSelectDisplay("nbthDocType", BTNN_WF.normalizePersonalDocType(claim.nbth.docType));
             setValue("nbthOrgName", claim ? (claim.nbthOrgName || "") : "");
@@ -2196,7 +2271,7 @@
             renderBasisRows();
 
             // Toggle input disable state
-            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formPhone", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress", "formNycDocType", "formNycDocNo", "formNycOrgCode", "formEmail", "formCountry", "nbthOrgName", "nbthOrgCode"];
+            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formPhone", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress", "formNycDocType", "formNycDocNo", "formNycOrgCode", "formEmail", "formCountry", "nbthOrgName", "nbthOrgCode", "formVuViecLienQuan"];
             controlIds.forEach(ctrlId => {
                 const el = document.getElementById(ctrlId);
                 if (el) el.disabled = isReadOnly;
@@ -2221,7 +2296,7 @@
             basisRows = [];
             const formView = document.getElementById("formView");
             if (formView) formView.classList.remove("readonly-mode");
-            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formPhone", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress", "formNycDocType", "formNycDocNo", "formNycOrgCode", "formEmail", "formCountry", "nbthOrgName", "nbthOrgCode"];
+            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formPhone", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress", "formNycDocType", "formNycDocNo", "formNycOrgCode", "formEmail", "formCountry", "nbthOrgName", "nbthOrgCode", "formVuViecLienQuan"];
             controlIds.forEach(ctrlId => {
                 const el = document.getElementById(ctrlId);
                 if (el) el.disabled = false;
@@ -2257,6 +2332,16 @@
                 const el = document.getElementById("formEmail");
                 el.classList.add("is-invalid");
                 document.getElementById("formEmailError").style.display = "block";
+                if (!firstInvalid) firstInvalid = el;
+            }
+
+            // Vụ việc liên quan: không bắt buộc; có dữ liệu thì phải chọn từ danh sách vụ việc trên hệ thống
+            const editingClaim = editingId ? claimsList.find(item => item.id === editingId) : null;
+            const vuViecLienQuanVal = readVuViecLienQuan(editingClaim ? editingClaim.maVuViec : "");
+            if (vuViecLienQuanVal === null) {
+                const el = document.getElementById("formVuViecLienQuan");
+                el.classList.add("is-invalid");
+                document.getElementById("formVuViecLienQuanError").style.display = "block";
                 if (!firstInvalid) firstInvalid = el;
             }
 
@@ -2306,6 +2391,7 @@
                 claim.nycAddressDetail = getValue("formAddress");
                 claim.address = getValue("formAddress");
                 claim.vanBanCanCu = vanBanCanCuVal;
+                claim.vuViecLienQuan = vuViecLienQuanVal;
                 delete claim.vanBanCanCuTen;
                 delete claim.vanBanCanCuFile;
                 claim.receptionDocs = cleanDocs;
@@ -2354,6 +2440,7 @@
                 nycAddressDetail: getValue("formAddress"),
                 address: getValue("formAddress"),
                 vanBanCanCu: vanBanCanCuVal,
+                vuViecLienQuan: vuViecLienQuanVal,
                 status: "Chờ phân công",
                 agency: BTNN_WF.unitName(CURRENT_ROOT_UNIT),
                 totalNum: 0,

@@ -371,7 +371,7 @@
                 <div class="filter-grid">
                     <div class="form-block">
                         <label class="form-label" for="phddCode">Mã vụ việc</label>
-                        <input type="text" class="form-control" id="phddCode" placeholder="Nhập mã vụ việc...">
+                        <input type="text" class="form-control" id="phddCode" placeholder="Nhập mã vụ việc (VVBT-...)">
                     </div>
                     <div class="form-block">
                         <label class="form-label" for="phddNyc">Người yêu cầu/người bị thiệt hại</label>
@@ -427,6 +427,7 @@
                             <tr>
                                 <th style="width:52px; text-align:center;">STT</th>
                                 <th style="width:132px; text-align:center;">Mã vụ việc</th>
+                                <th style="width:120px; text-align:center;">Mã hồ sơ</th>
                                 <th style="min-width:145px;">Người yêu cầu</th>
                                 <th style="width:110px;">Tỉnh/TP</th>
                                 <th style="min-width:220px;">Địa chỉ chi tiết</th>
@@ -460,7 +461,7 @@
                 <div class="filter-grid">
                     <div class="form-block">
                         <label class="form-label" for="ycbtCode">Mã vụ việc</label>
-                        <input type="text" class="form-control" id="ycbtCode" placeholder="Nhập mã vụ việc...">
+                        <input type="text" class="form-control" id="ycbtCode" placeholder="Nhập mã vụ việc (VVBT-...)">
                     </div>
                     <div class="form-block">
                         <label class="form-label" for="ycbtNyc">Tên người yêu cầu</label>
@@ -537,6 +538,7 @@
                             <tr>
                                 <th style="width:52px; text-align:center;">STT</th>
                                 <th style="width:132px; text-align:center;">Mã vụ việc</th>
+                                <th style="width:120px; text-align:center;">Mã hồ sơ</th>
                                 <th style="min-width:140px;">Tên người yêu cầu</th>
                                 <th style="width:110px;">Tỉnh/TP</th>
                                 <th style="min-width:220px;">Địa chỉ chi tiết</th>
@@ -573,6 +575,8 @@
         <i class="fa-solid fa-circle-check"></i>
         <span id="toastMessage">Thông báo</span>
     </div>
+
+    <script src="btnn_luong_xu_ly.js"></script>
 
     <script>
         const allStatuses = [
@@ -769,6 +773,52 @@
             return HTTN.TRUC_TIEP;
         }
 
+        // Mã vụ việc (VVBT-) của vụ việc: dùng chung BTNN_WF.vuViecOf theo Mã hồ sơ GQBT (BT-) để khớp với các phân hệ
+
+        function vuViecOfItem(item) {
+
+            if (!item) return '';
+
+            if (window.BTNN_WF && !(item._vvChecked)) {
+
+                item.maVuViec = BTNN_WF.isVuViecCode(item.code) ? item.code : BTNN_WF.vuViecOf(item.code, { preferred: item.maVuViec });
+
+                item._vvChecked = true;
+
+            }
+
+            return item.maVuViec || '';
+
+        }
+
+        // Các Mã hồ sơ (XD- / BT- / HT-) của vụ việc theo sổ đăng ký vụ việc
+
+        let vvHoSoCache = null;
+
+        function hoSoCodesOf(item) {
+
+            const vv = vuViecOfItem(item);
+
+            if (!vvHoSoCache) vvHoSoCache = new Map((window.BTNN_WF ? BTNN_WF.listVuViec() : []).map(v => [v.code, v.hoSo]));
+
+            const list = (vvHoSoCache.get(vv) || []).slice();
+
+            if (item.code && !list.includes(item.code)) list.push(item.code);
+
+            const order = c => /^XD-/.test(c) ? 0 : (/^BT-/.test(c) ? 1 : 2);
+
+            return list.filter(c => /^(XD|BT|HT)-/.test(c)).sort((a, b) => order(a) - order(b) || a.localeCompare(b));
+
+        }
+
+        function hoSoCodesHtml(item) {
+
+            const list = hoSoCodesOf(item);
+
+            return list.length ? list.map(c => `<div style="white-space:nowrap;">${escapeHtml(c)}</div>`).join('') : '--';
+
+        }
+
         function normalizeClaims(claims) {
             const seen = new Set();
             return claims.map(item => {
@@ -960,7 +1010,7 @@
 
             phddFiltered = phddList.filter(item => {
                 if (!matchesScope(item)) return false;
-                if (code && !normalizeText(item.code).includes(code)) return false;
+                if (code && !normalizeText(vuViecOfItem(item)).includes(code)) return false;
                 if (nyc && !normalizeText(item.nyc).includes(nyc)) return false;
                 if (agency && !normalizeText(item.agency).includes(agency)) return false;
                 if (!matchesStatus(item, status, group)) return false;
@@ -998,6 +1048,7 @@
         }
 
         function renderPhdd() {
+            vvHoSoCache = null;
             const tbody = document.getElementById('phddBody');
             tbody.innerHTML = '';
             const total = phddFiltered.length;
@@ -1009,7 +1060,7 @@
             const end = Math.min(start + phddPageSize, total);
             document.getElementById('phddRange').innerText = total ? `${start + 1}-${end}` : '0-0';
             if (!total) {
-                tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc phục hồi danh dự phù hợp</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="11" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc phục hồi danh dự phù hợp</td></tr>';
                 renderPages('phddPages', phddPage, totalPages, page => { phddPage = page; renderPhdd(); });
                 return;
             }
@@ -1019,7 +1070,8 @@
                 tr.onclick = () => goToPhddDetail(item.code);
                 tr.innerHTML = `
                     <td style="text-align:center;">${start + idx + 1}</td>
-                    <td class="code-cell">${escapeHtml(item.code)}</td>
+                    <td class="code-cell">${escapeHtml(vuViecOfItem(item) || '--')}</td>
+                    <td style="text-align:center;">${hoSoCodesHtml(item)}</td>
                     <td>${escapeHtml(item.nyc || '--')}</td>
                     <td>${escapeHtml(item.nycTinhThanh || '--')}</td>
                     <td title="${escapeHtml(item.address || '')}">${escapeHtml(shortText(item.address || '--', 62))}</td>
@@ -1056,7 +1108,7 @@
 
             ycbtFiltered = ycbtList.filter(item => {
                 if (!matchesScope(item)) return false;
-                if (code && !normalizeText(item.code).includes(code)) return false;
+                if (code && !normalizeText(vuViecOfItem(item)).includes(code)) return false;
                 if (nyc && !normalizeText(item.nyc).includes(nyc)) return false;
                 if (agency && !normalizeText(item.agency).includes(agency)) return false;
                 if (fieldGroup && item.fieldGroup !== fieldGroup) return false;
@@ -1098,6 +1150,7 @@
         }
 
         function renderYcbt() {
+            vvHoSoCache = null;
             const tbody = document.getElementById('ycbtBody');
             tbody.innerHTML = '';
             const total = ycbtFiltered.length;
@@ -1109,7 +1162,7 @@
             const end = Math.min(start + ycbtPageSize, total);
             document.getElementById('ycbtRange').innerText = total ? `${start + 1}-${end}` : '0-0';
             if (!total) {
-                tbody.innerHTML = '<tr><td colspan="13" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc yêu cầu bồi thường phù hợp</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="14" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc yêu cầu bồi thường phù hợp</td></tr>';
                 renderPages('ycbtPages', ycbtPage, totalPages, page => { ycbtPage = page; renderYcbt(); });
                 return;
             }
@@ -1119,7 +1172,8 @@
                 tr.onclick = () => goToClaimDetail(item.code);
                 tr.innerHTML = `
                     <td style="text-align:center;">${start + idx + 1}</td>
-                    <td class="code-cell">${escapeHtml(item.code)}</td>
+                    <td class="code-cell">${escapeHtml(vuViecOfItem(item) || '--')}</td>
+                    <td style="text-align:center;">${hoSoCodesHtml(item)}</td>
                     <td>${escapeHtml(item.nyc || '--')}</td>
                     <td>${escapeHtml(item.nycTinhThanh || '--')}</td>
                     <td title="${escapeHtml(item.address || '')}">${escapeHtml(shortText(item.address || '--', 60))}</td>
