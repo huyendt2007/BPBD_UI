@@ -134,6 +134,7 @@ g. Quy tắc 02 tab Chờ xử lý / Đã xử lý
 - Tab `Chờ xử lý` hiển thị badge số lượng hồ sơ chờ xử lý của người dùng đang đăng nhập; tab `Đã xử lý` không có badge.
 - Mục menu trái `Tiếp nhận hồ sơ` hiển thị badge cùng số lượng với tab `Chờ xử lý`, tính theo người dùng đang đăng nhập; bằng 0 thì không hiển thị badge.
 - Mặc định mở tab `Chờ xử lý`. Mở màn hình kèm tham số `tab=done` (từ Dashboard Lãnh đạo hoặc liên kết) thì chọn sẵn tab `Đã xử lý`.
+- Nút `Tiếp nhận mới`: chỉ hiển thị khi chọn tab `Chờ xử lý`; khi chuyển sang tab `Đã xử lý` thì hệ thống tự động ẩn nút này.
 - Trường `Trạng thái` của bộ lọc chỉ gồm các trạng thái đang có của hồ sơ thuộc tab đang chọn.
 - Click dòng hồ sơ: mở [MH03 - Màn hình Xem chi tiết hồ sơ tiếp nhận](#43314-mh03---màn-hình-xem-chi-tiết-hồ-sơ-tiếp-nhận) của bản ghi.
 
@@ -208,7 +209,7 @@ h. Quy tắc Thu hồi
 | :--- | :--- | :--- | :--- |
 | 1 | Tìm kiếm | Button | Khi người dùng click nút, hệ thống xử lý theo các trường hợp:<br>- **TH1 - Khoảng ngày không hợp lệ**: `Từ ngày` lớn hơn `Đến ngày`.<br>+ Hiển thị cảnh báo lỗi [MSG-ERR-VAL-007].<br>+ Không tìm kiếm.<br>- **TH2 - Có dữ liệu phù hợp**:<br>+ Hiển thị các bản ghi thuộc phạm vi dữ liệu của người dùng, thỏa mãn đồng thời các tiêu chí đã nhập/chọn.<br>+ Đưa về Trang 1.<br>- **TH3 - Không có dữ liệu**:<br>+ Bảng hiển thị 01 dòng căn giữa (`colspan`), in nghiêng, nội dung theo [MSG-INF-SYS-001].<br>+ Thanh phân trang hiển thị *"Hiển thị 0-0 trong tổng số 0 bản ghi"*.<br>+ Các nút điều hướng trang khóa mờ (Disabled). |
 | 2 | Xóa bộ lọc | Button | - Xóa các điều kiện lọc (gồm cả `Trạng thái`).<br>- Đưa Từ ngày, Đến ngày về khoảng 03 tháng gần nhất.<br>- Tải lại danh sách theo điều kiện mặc định. |
-| 3 | Tiếp nhận mới | Button | - Nút nằm phía trên bên phải bảng danh sách.<br>- Click nút: mở [MH02 - Màn hình Tiếp nhận hồ sơ](#43313-mh02---màn-hình-tiếp-nhận-hồ-sơ) ở trạng thái rỗng để nhập mới. |
+| 3 | Tiếp nhận mới | Button | - Nút nằm phía trên bên phải bảng danh sách.<br>- **Điều kiện hiển thị**: Chỉ hiển thị khi chọn tab `Chờ xử lý`; khi chọn tab `Đã xử lý` thì hệ thống không hiển thị nút này.<br>- Click nút: mở [MH02 - Màn hình Tiếp nhận hồ sơ](#43313-mh02---màn-hình-tiếp-nhận-hồ-sơ) ở trạng thái rỗng để nhập mới. |
 | 4 | Click dòng dữ liệu | Row click | - Click dòng dữ liệu (trừ click vào icon trong cột `Thao tác`): mở [MH03 - Màn hình Xem chi tiết hồ sơ tiếp nhận](#43314-mh03---màn-hình-xem-chi-tiết-hồ-sơ-tiếp-nhận) của bản ghi.<br>- Click icon trong cột `Thao tác`: thực hiện chức năng của icon, không kích hoạt row click. |
 | 5 | In Phiếu tiếp nhận | Icon button | - Mở [MH04 - Popup In Phiếu tiếp nhận hồ sơ](#43315-mh04---popup-in-phiếu-tiếp-nhận-hồ-sơ) để xem trước và in Phiếu tiếp nhận hồ sơ. |
 | 6 | Sửa | Icon button | - Mở [MH02 - Màn hình Tiếp nhận hồ sơ](#43313-mh02---màn-hình-tiếp-nhận-hồ-sơ) ở chế độ sửa.<br>- Tự động điền dữ liệu của bản ghi. |

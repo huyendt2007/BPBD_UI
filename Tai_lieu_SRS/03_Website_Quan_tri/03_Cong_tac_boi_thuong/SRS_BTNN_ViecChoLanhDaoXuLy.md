@@ -207,32 +207,12 @@ Popup mở khi Lãnh đạo được giao ở cấp phê duyệt hiện tại cl
 | 4 | Xem dự thảo / Tải file / Xem file | Liên kết | - Hiển thị trong khối Văn bản dự thảo (khi lần trình có Văn bản dự thảo).<br>- Xem dự thảo: mở văn bản dự thảo tại popup xem văn bản ngay trên màn hình, dạng trang A4, có nút "Tải file (Word .doc)", "In", "Mở tab mới", "Đóng".<br>- Tải file: tải văn bản dự thảo định dạng Word (.doc).<br>- Xem file: mở tệp văn bản trình do cán bộ tải lên.<br>- Giữ nguyên dữ liệu đang nhập trên popup Phê duyệt / Từ chối phê duyệt. |
 
 <a id="vcld-mh04-xd"></a>
-**Popup Ký duyệt / Từ chối phê duyệt hồ sơ Xác định cơ quan giải quyết bồi thường**
+**Ký duyệt / Từ chối phê duyệt hồ sơ Xác định cơ quan giải quyết bồi thường**
 
-- Popup tối giản: chỉ gồm tiêu đề kèm Mã hồ sơ và các trường nhập; không hiển thị lại Tệp văn bản trình ký, tóm tắt hồ sơ, văn bản dự thảo hay nội dung khác.
-- Xử lý theo [Quy tắc trình ký - phê duyệt - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-quy-tac-trinh).
-
-![Popup Ký duyệt - Lãnh đạo cấp trước cấp cuối](images/VCLD_MH04_XD_Popup_Ky_duyet_cap_truoc.png)
-
-![Popup Ký duyệt - Lãnh đạo cấp cuối (ký số)](images/VCLD_MH04_XD_Popup_Ky_duyet_cap_cuoi.png)
-
-![Popup Từ chối phê duyệt](images/VCLD_MH04_XD_Popup_Tu_choi.png)
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| Tiêu đề popup | String(255) | - | Theo chế độ | Control UI: Heading text (Read-only).<br>- Chế độ Ký duyệt: "Ký duyệt hồ sơ [Mã hồ sơ]".<br>- Chế độ Từ chối: "Từ chối phê duyệt hồ sơ [Mã hồ sơ]". |
-| Chuyển tới | String(255) | - | Lãnh đạo cấp tiếp theo do cán bộ chọn khi trình | Control UI: Label (Read-only).<br>- Chỉ hiển thị ở chế độ Ký duyệt khi Lãnh đạo không phải cấp cuối.<br>- Hiển thị "Chuyển tới: [Họ tên] - [Chức danh] (Lãnh đạo cấp tiếp theo do cán bộ chọn khi trình)".<br>- Lãnh đạo không chọn Lãnh đạo cấp tiếp theo tại popup. |
-| Nội dung phê duyệt | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Chỉ hiển thị ở chế độ Ký duyệt.<br>- Placeholder "Nhập nội dung phê duyệt...". |
-| **Ký số** | Section | - | Ẩn | Control UI: Panel.<br>- Chỉ hiển thị ở chế độ Ký duyệt khi Lãnh đạo là cấp cuối của luồng phê duyệt.<br>- Ký số thực hiện ngay trong popup, không mở thêm màn hình khác.<br>- Các trường ký số theo [Popup Ký số điện tử dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#543-popup-sign-001---popup-ký-số-điện-tử-dùng-chung-common-digital-signature-modal). |
-| Chứng thư số | Enum(String(255)) | Có | Chứng thư số hợp lệ đầu tiên | Control UI: Combobox.<br>- Danh sách chứng thư số hợp lệ của Lãnh đạo đang đăng nhập, hệ thống tự nhận diện từ thiết bị ký số / hệ thống CA.<br>- Hiển thị "[Họ tên] - [Loại chứng thư số] (hiệu lực đến dd/mm/yyyy)". |
-| Mã PIN | Password(20) | Có (khi ký bằng USB Token) | Trống | Control UI: Input password.<br>- Ẩn ký tự khi nhập.<br>- Placeholder "Nhập mã PIN USB Token...". |
-| Lý do từ chối | Text(2000) | Có | Trống | Control UI: Textarea.<br>- Chỉ hiển thị ở chế độ Từ chối; là trường duy nhất của popup Từ chối.<br>- Placeholder "Nhập lý do từ chối...". |
-
-| STT | Tên chức năng | Định dạng | Mô tả |
-| :-- | :--- | :--- | :--- |
-| 1 | Ký duyệt | Nút (chế độ Ký duyệt) | - TH1 (Bỏ trống trường bắt buộc đang hiển thị: Chứng thư số hoặc Mã PIN): hiển thị "Đây là trường bắt buộc" dưới trường, không lưu.<br>- TH2 (Hồ sơ không còn chờ cấp này hoặc người dùng không còn là Lãnh đạo được giao): hiển thị "Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phê duyệt. Vui lòng tải lại danh sách."<br>- TH3 (Cấp cuối, Loại trình "Kết quả xác định CQGQBT", CQGQBT đã chọn chưa được cấu hình luồng Giải quyết YCBT): hiển thị "Đơn vị [Tên đơn vị] chưa được cấu hình luồng phân công. Vui lòng liên hệ Quản trị hệ thống.", không ký duyệt.<br>- TH4 (Cấp cuối, ký số không thành công: thiết bị ký số chưa sẵn sàng, sai Mã PIN, chứng thư số hết hạn, lỗi kết nối CA): hồ sơ giữ "Chờ duyệt"; hiển thị thông báo lỗi ký số trong popup; giữ popup để Lãnh đạo thực hiện lại.<br>- TH Hợp lệ (chưa phải cấp cuối): ghi kết quả "Ký duyệt" của cấp hiện tại, không ký số; giao hồ sơ cho Lãnh đạo cấp tiếp theo đã được cán bộ chọn khi trình; hồ sơ giữ "Chờ duyệt"; ghi lịch sử "Ký duyệt" với nội dung "[Loại trình]: ký duyệt cấp [Đơn vị]; chuyển [Lãnh đạo cấp tiếp theo] - [Đơn vị cấp tiếp theo]. Ý kiến: [Nội dung phê duyệt]"; hiển thị "Hồ sơ [Mã hồ sơ]: [Chờ duyệt] - chuyển [Lãnh đạo cấp tiếp theo] - [Đơn vị cấp tiếp theo]."<br>- TH Hợp lệ (cấp cuối): hệ thống ký số Văn bản trình ký bằng chứng thư số đã chọn tại vị trí hộp chữ ký cán bộ đã định; gán thông tin chữ ký (họ tên, chức vụ, thời điểm ký); sinh tệp PDF đã ký số và lưu vào hồ sơ; hồ sơ chuyển trạng thái theo Loại trình: "Kết quả xác định CQGQBT" → hệ thống tự động chuyển CQGQBT, hồ sơ "Đã chuyển CQGQBT"; "Yêu cầu bổ sung" → "Yêu cầu bổ sung"; "Không thụ lý" → "Không thụ lý"; ghi lịch sử "Ký duyệt cấp cuối ([Đơn vị]) - đã ký số văn bản: [Loại trình]. Văn bản đã ký số: [Tên tệp]. Hồ sơ chuyển [Trạng thái]."; hiển thị "Hồ sơ [Mã hồ sơ]: [Trạng thái]."<br>- Sau khi xử lý thành công: đóng popup, tải lại danh sách. |
-| 2 | Từ chối | Nút (chế độ Từ chối) | - TH1 (Bỏ trống Lý do từ chối): hiển thị "Đây là trường bắt buộc" dưới trường, không lưu.<br>- TH2 (Hồ sơ không còn hợp lệ): hiển thị "Hồ sơ đã được xử lý bởi người khác hoặc bạn không có quyền phê duyệt. Vui lòng tải lại danh sách."<br>- TH Hợp lệ (áp dụng ở mọi cấp): hồ sơ trả về cán bộ xử lý đã trình (cấp đầu tiên của luồng trình), chuyển "Bị trả lại"; kết quả ký duyệt của các cấp trong lượt trình này không còn hiệu lực, lần trình ký lại bắt đầu từ cấp phê duyệt đầu tiên; ghi thêm 01 lần bị trả lại (người trả lại, đơn vị, thời điểm, lý do, Loại trình); ghi lịch sử "Từ chối phê duyệt" với nội dung "Trả lại cán bộ chủ trì. Lý do: [Lý do]"; đóng popup, tải lại danh sách, hiển thị "Hồ sơ [Mã hồ sơ]: [Bị trả lại]." |
-| 3 | Hủy bỏ / Đóng (x) | Nút / Icon | - Đóng popup, không lưu. |
+- Hồ sơ Xác định cơ quan giải quyết bồi thường dùng màn hình riêng, mô tả tại:
+  + [Màn hình Ký duyệt - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-ky-duyet): xem trước văn bản trình ký, Mã vụ việc, Cán bộ trình, Loại trình, Nội dung trình, Lịch sử trình, Nội dung phê duyệt; Lãnh đạo cấp cuối ký số ngay tại màn hình.
+  + [Màn hình Từ chối phê duyệt - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-tu-choi): xem trước văn bản trình ký, thông tin chung, Lịch sử trình (gồm các lần từ chối trước), Lý do từ chối.
+- Thao tác tại Dashboard Lãnh đạo mở đúng các màn hình trên.
 
 ---
 

@@ -412,7 +412,7 @@
                     <div>
                         <div class="list-title"><i class="fa-solid fa-table-list"></i> Bảng danh sách hồ sơ</div>
                     </div>
-                    <button class="btn btn-primary" onclick="openReceptionForm()">
+                    <button class="btn btn-primary" id="btnNewReception" onclick="openReceptionForm()">
                         <i class="fa-solid fa-plus"></i> Tiếp nhận mới
                     </button>
                 </div>
@@ -1339,6 +1339,11 @@
         function switchReceptionTab(tab) {
             receptionTab = tab === "done" ? "done" : "pending";
             document.querySelectorAll(".tn-tabs-card .tn-tab").forEach(b => b.classList.toggle("active", b.dataset.tab === receptionTab));
+            // Ẩn nút "Tiếp nhận mới" khi ở tab "Đã xử lý", chỉ hiển thị tại tab "Chờ xử lý"
+            const btnNew = document.getElementById("btnNewReception");
+            if (btnNew) {
+                btnNew.style.display = receptionTab === "done" ? "none" : "";
+            }
             // Bộ lọc Trạng thái: chỉ gồm các trạng thái đang có của hồ sơ thuộc tab đang chọn
             const sel = document.getElementById("filterStatus");
             const states = Array.from(new Set(getTabRows(receptionTab).map(r => r.status || "Chờ phân công"))).sort((a, b) => a.localeCompare(b, "vi"));
