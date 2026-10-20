@@ -1672,7 +1672,7 @@
     <!-- ============================================== -->
     <!-- JAVASCRIPT CONTROLLERS -->
     <!-- ============================================== -->
-    <script src="btnn_luong_xu_ly.js"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261020vv"></script>
     <script>
         // Họ và tên người yêu cầu theo Mã hồ sơ GQBT (dữ liệu Giải quyết YCBT)
         const CLAIMANT_BY_CODE = {
@@ -1705,7 +1705,7 @@
         }
         // Bỏ liên kết Mã hồ sơ hoàn trả khỏi sổ đăng ký vụ việc khi xóa hồ sơ
         function unlinkRefundDossier(code) {
-            try { const k = 'btnn_vuviec_registry_v1'; const m = JSON.parse(localStorage.getItem(k) || '{}'); if (m && m[code]) { delete m[code]; localStorage.setItem(k, JSON.stringify(m)); } } catch (e) { /* bỏ qua */ }
+            try { if (window.BTNN_WF && BTNN_WF.unlinkVuViec) BTNN_WF.unlinkVuViec(code); } catch (e) { /* bỏ qua */ }
             saveCreatedRefundDossiers(loadCreatedRefundDossiers().filter(d => d.code !== code));
         }
         function openLinkedClaimDetail(claimCode) {
@@ -2351,7 +2351,7 @@
             if (p) p.textContent = dossiersList.filter(x => htInTab('pending', x)).length;
             if (d) d.textContent = dossiersList.filter(x => htInTab('done', x)).length;
             // Số hồ sơ chờ Lãnh đạo duyệt: dùng cho Dashboard Lãnh đạo
-            try { localStorage.setItem('btnn_hoantra_summary', JSON.stringify({ pendingApproval: dossiersList.filter(x => HT_APPROVAL_STATES.includes(x.status)).map(x => ({ code: x.code, status: x.status, claimCode: x.claimCode, maVuViec: dossierVuViec(x) }))) })); } catch (e) { /* bỏ qua */ }
+            try { localStorage.setItem('btnn_hoantra_summary', JSON.stringify({ pendingApproval: dossiersList.filter(x => HT_APPROVAL_STATES.includes(x.status)).map(x => ({ code: x.code, status: x.status, claimCode: x.claimCode, maVuViec: dossierVuViec(x) })) })); } catch (e) { /* bỏ qua */ }
         }
 
         function updateKpiCountersRefund() {

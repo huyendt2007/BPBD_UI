@@ -476,21 +476,24 @@
                     <span class="form-label">Nguồn hồ sơ</span>
                     <div id="formSourceBadge"></div>
                 </div>
-                <div class="grid-3-cols">
-                <div class="form-group">
-                    <span class="form-label">Loại hồ sơ<span class="required">*</span></span>
-                    <select id="formRequestType" class="form-control"></select>
-                    <div class="error-message">Đây là trường bắt buộc</div>
-                </div>
-                    <div class="form-group">
+                <!-- Khối Tổng quan vụ việc: 2 dòng, mỗi dòng 2 thông tin đồng nhất -->
+                <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <span class="form-label">Loại hồ sơ<span class="required">*</span></span>
+                        <select id="formRequestType" class="form-control"></select>
+                        <div class="error-message">Đây là trường bắt buộc</div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
                         <span class="form-label">Hình thức tiếp nhận<span class="required">*</span></span>
-                        <!-- Danh mục DM_25: form Tiếp nhận mới chỉ gồm Trực tiếp / Qua dịch vụ bưu chính; Qua môi trường số (Dịch vụ Công), Bộ phận Một cửa do hệ thống gán cho hồ sơ từ Dịch vụ công quốc gia -->
+                        <!-- Danh mục DM_25: form Tiếp nhận mới chỉ gồm Trực tiếp / Qua dịch vụ bưu chính -->
                         <select id="formReceiveMethod" class="form-control">
                             <option value="Trực tiếp">Trực tiếp</option>
                             <option value="Qua dịch vụ bưu chính">Qua dịch vụ bưu chính</option>
                         </select>
                     </div>
-                    <div class="form-group">
+                </div>
+                <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
+                    <div class="form-group" style="margin-bottom: 0;">
                         <span class="form-label">Lĩnh vực phát sinh thiệt hại<span class="required">*</span></span>
                         <select id="formFieldGroup" class="form-control">
                             <option value="">Chọn lĩnh vực...</option>
@@ -503,8 +506,8 @@
                         </select>
                         <div class="error-message">Đây là trường bắt buộc</div>
                     </div>
-                    <!-- Vụ việc liên quan: không bắt buộc; dùng khi hồ sơ nộp lại sau khi bị từ chối (vụ việc mới, mã mới) -->
-                    <div class="form-group">
+                    <!-- Vụ việc liên quan: không bắt buộc; dùng khi hồ sơ nộp lại sau khi bị từ chối -->
+                    <div class="form-group" style="margin-bottom: 0;">
                         <span class="form-label">Vụ việc liên quan</span>
                         <input id="formVuViecLienQuan" class="form-control" list="vuViecLienQuanOptions" placeholder="Gõ Mã vụ việc hoặc Họ và tên người yêu cầu..." autocomplete="off">
                         <datalist id="vuViecLienQuanOptions"></datalist>
@@ -513,11 +516,10 @@
                 </div>
 
                 <div class="info-group-title">Thông tin người yêu cầu</div>
-                <!-- Khối Người yêu cầu: 1 Card form duy nhất gọn gàng, liền mạch, không đánh số -->
+                <!-- Khối Người yêu cầu: 1 Card form duy nhất, tất cả các dòng đều đúng 2 thông tin đồng nhất 50% - 50% -->
                 <div class="nyc-form-card">
-                    <!-- Dòng 1: Loại người yêu cầu & Tư cách -->
-                    <div class="grid-3-cols" style="gap: 16px; margin-bottom: 14px;">
-                        <!-- Loại người yêu cầu: Cá nhân / Tổ chức (mặc định Cá nhân), đứng trước Tư cách -->
+                    <!-- Dòng 1: Loại người yêu cầu & Tư cách (2 thông tin) -->
+                    <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Loại người yêu cầu<span class="required">*</span></span>
                             <div class="nyc-type-radios" id="formNycTypeGroup" style="height: 38px; display: flex; align-items: center; gap: 20px; background: #f8fafc; padding: 0 14px; border: 1px solid #cbd5e1; border-radius: 4px;">
@@ -531,38 +533,38 @@
                                 </label>
                             </div>
                         </div>
-                        <!-- Tư cách người yêu cầu bồi thường: Danh mục DM_26 lọc theo Loại người yêu cầu -->
-                        <div class="form-group nyc-span-2" style="margin-bottom: 0;">
+                        <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Tư cách người yêu cầu bồi thường<span class="required">*</span></span>
                             <select id="formRequesterRole" class="form-control" onchange="onRequesterRoleChange()"></select>
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
                     </div>
 
-                    <!-- Dòng 2: Họ và tên/Tên tổ chức, Loại giấy tờ, Số giấy tờ (hoặc Mã số tổ chức) -->
-                    <div class="grid-3-cols" style="gap: 16px; margin-bottom: 14px;">
+                    <!-- Dòng 2: Họ và tên/Tên tổ chức & Giấy tờ thân nhân/Mã số tổ chức (2 thông tin) -->
+                    <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label"><span id="formRequesterLabel">Họ và tên</span><span class="required">*</span></span>
                             <input id="formRequester" class="form-control" placeholder="Nhập họ và tên...">
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
+                        <!-- Khi là Cá nhân: Cột 2 gồm Loại & Số giấy tờ kết hợp liền mạch -->
                         <div class="form-group nyc-ca-nhan" style="margin-bottom: 0;">
-                            <span class="form-label">Loại giấy tờ thân nhân</span>
-                            <select id="formNycDocType" class="form-control">
-                                <option value="">-- Chọn loại giấy tờ --</option>
-                            </select>
+                            <span class="form-label">Giấy tờ thân nhân</span>
+                            <div style="display: flex; gap: 8px;">
+                                <select id="formNycDocType" class="form-control" style="width: 40%; min-width: 140px;">
+                                    <option value="">-- Loại giấy tờ --</option>
+                                </select>
+                                <input id="formNycDocNo" class="form-control" style="flex: 1;" placeholder="Nhập số giấy tờ thân nhân...">
+                            </div>
                         </div>
-                        <div class="form-group nyc-ca-nhan" style="margin-bottom: 0;">
-                            <span class="form-label">Số giấy tờ thân nhân</span>
-                            <input id="formNycDocNo" class="form-control" placeholder="Nhập số giấy tờ thân nhân...">
-                        </div>
-                        <div class="form-group nyc-to-chuc nyc-span-2" style="display:none; margin-bottom: 0;">
+                        <!-- Khi là Tổ chức: Cột 2 là Mã số tổ chức -->
+                        <div class="form-group nyc-to-chuc" style="display:none; margin-bottom: 0;">
                             <span class="form-label">Mã số tổ chức</span>
                             <input id="formNycOrgCode" class="form-control" placeholder="Mã số doanh nghiệp / mã số thuế / mã số khác...">
                         </div>
                     </div>
 
-                    <!-- Dòng 3: Số điện thoại, Email -->
+                    <!-- Dòng 3: Số điện thoại & Email (2 thông tin) -->
                     <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Số điện thoại<span class="required">*</span></span>
@@ -576,15 +578,14 @@
                         </div>
                     </div>
 
-                    <!-- Dòng 4: Quốc gia, Tỉnh/Thành phố, Phường/Xã -->
-                    <div class="grid-3-cols" style="gap: 16px; margin-bottom: 14px;">
-                        <!-- Quốc gia: Danh mục DM_09, mặc định Việt Nam -->
+                    <!-- Dòng 4: Quốc gia & Tỉnh/Thành phố (2 thông tin) -->
+                    <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Quốc gia<span class="required">*</span></span>
                             <select id="formCountry" class="form-control" onchange="onCountryChange()"></select>
                         </div>
-                        <!-- Màn Xem chi tiết: Địa chỉ 01 dòng [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố] -->
-                        <div class="form-group nyc-addr-view nyc-span-2" style="display:none; margin-bottom: 0;">
+                        <!-- Màn Xem chi tiết: Địa chỉ đầy đủ 01 dòng -->
+                        <div class="form-group nyc-addr-view" style="display:none; margin-bottom: 0;">
                             <span class="form-label">Địa chỉ đầy đủ</span>
                             <input id="formAddressFull" class="form-control" disabled>
                         </div>
@@ -601,23 +602,25 @@
                             </datalist>
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
-                        <div class="form-group nyc-addr-edit" style="margin-bottom: 0;">
+                    </div>
+
+                    <!-- Dòng 5: Phường/Xã & Địa chỉ chi tiết (2 thông tin - chỉ ở chế độ sửa/thêm) -->
+                    <div class="grid-2 nyc-addr-edit" style="gap: 16px; margin-bottom: 0;">
+                        <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Phường/Xã<span class="required">*</span></span>
                             <input id="formWard" class="form-control" list="wardOptions" placeholder="Vui lòng chọn Tỉnh/Thành phố trước" disabled>
                             <datalist id="wardOptions"></datalist>
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
-                    </div>
-
-                    <!-- Dòng 5: Địa chỉ chi tiết -->
-                    <div class="form-group nyc-addr-edit" style="margin-bottom: 0;">
-                        <span class="form-label">Địa chỉ chi tiết (Số nhà, tên đường, thôn/xóm...)<span class="required">*</span></span>
-                        <input id="formAddress" class="form-control" placeholder="Nhập số nhà, tên đường, thôn/xóm...">
-                        <div class="error-message">Đây là trường bắt buộc</div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <span class="form-label">Địa chỉ chi tiết (Số nhà, tên đường, thôn/xóm...)<span class="required">*</span></span>
+                            <input id="formAddress" class="form-control" placeholder="Nhập số nhà, tên đường, thôn/xóm...">
+                            <div class="error-message">Đây là trường bắt buộc</div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Tư cách TCNYC_03: Tổ chức bị thiệt hại đã chấm dứt tồn tại (thay cho các trường cá nhân) -->
+                <!-- Tư cách TCNYC_03: Tổ chức bị thiệt hại đã chấm dứt tồn tại (2 thông tin) -->
                 <div id="nbthOrgBlock" style="display:none;">
                     <div class="info-group-title">Thông tin tổ chức bị thiệt hại đã chấm dứt tồn tại</div>
                     <div class="nyc-form-card">
@@ -634,10 +637,12 @@
                     </div>
                 </div>
 
+                <!-- Khối Người bị thiệt hại: 1 Card form, mỗi dòng đúng 2 thông tin đồng nhất -->
                 <div id="nbthBlock" style="display:none;">
                     <div class="info-group-title">Thông tin người bị thiệt hại</div>
                     <div class="nyc-form-card">
-                        <div class="grid-4-cols" style="gap: 16px; margin-bottom: 14px;">
+                        <!-- Dòng 1: Họ tên & Ngày sinh (2 thông tin) -->
+                        <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Họ và tên người bị thiệt hại</span>
                                 <input id="nbthName" class="form-control" placeholder="Nhập họ và tên người bị thiệt hại...">
@@ -646,20 +651,20 @@
                                 <span class="form-label">Ngày sinh</span>
                                 <input id="nbthDob" class="form-control" placeholder="dd/mm/yyyy" autocomplete="off">
                             </div>
-                            <div class="form-group" style="margin-bottom: 0;">
-                                <span class="form-label">Loại giấy tờ thân nhân</span>
-                                <select id="nbthDocType" class="form-control">
-                                    <option value="">-- Chọn loại giấy tờ --</option>
-                                </select>
-                            </div>
-                            <div class="form-group" style="margin-bottom: 0;">
-                                <span class="form-label">Số giấy tờ thân nhân</span>
-                                <input id="nbthDocNo" class="form-control" placeholder="Nhập số giấy tờ thân nhân...">
-                            </div>
                         </div>
 
-                        <div class="grid-3-cols" style="gap: 16px;">
-                            <div class="form-group nbth-addr-view" style="display:none; grid-column: 1 / -1; margin-bottom: 0;">
+                        <!-- Dòng 2: Giấy tờ thân nhân & Tỉnh/Thành phố (2 thông tin) -->
+                        <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Giấy tờ thân nhân</span>
+                                <div style="display: flex; gap: 8px;">
+                                    <select id="nbthDocType" class="form-control" style="width: 40%; min-width: 140px;">
+                                        <option value="">-- Loại giấy tờ --</option>
+                                    </select>
+                                    <input id="nbthDocNo" class="form-control" style="flex: 1;" placeholder="Nhập số giấy tờ thân nhân...">
+                                </div>
+                            </div>
+                            <div class="form-group nbth-addr-view" style="display:none; margin-bottom: 0;">
                                 <span class="form-label">Địa chỉ đầy đủ</span>
                                 <input id="nbthAddressFull" class="form-control" disabled>
                             </div>
@@ -667,11 +672,15 @@
                                 <span class="form-label">Tỉnh/Thành phố</span>
                                 <input id="nbthCity" class="form-control" list="cityOptions" placeholder="Gõ Mã hoặc Tên Tỉnh/Thành phố...">
                             </div>
-                            <div class="form-group nbth-addr-edit" style="margin-bottom: 0;">
+                        </div>
+
+                        <!-- Dòng 3: Phường/Xã & Địa chỉ chi tiết (2 thông tin - chỉ ở chế độ sửa) -->
+                        <div class="grid-2 nbth-addr-edit" style="gap: 16px; margin-bottom: 0;">
+                            <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Phường/Xã</span>
                                 <input id="nbthWard" class="form-control" placeholder="Nhập phường/xã...">
                             </div>
-                            <div class="form-group nbth-addr-edit" style="margin-bottom: 0;">
+                            <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Địa chỉ chi tiết</span>
                                 <input id="nbthAddress" class="form-control" placeholder="Nhập số nhà, tên đường, thôn/xóm...">
                             </div>
@@ -791,7 +800,7 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261019c"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261020vv"></script>
     <script src="btnn_lanh_dao_actions.js?v=20261019c"></script>
     <script>
         // Người dùng đăng nhập (giả lập) - cán bộ tiếp nhận

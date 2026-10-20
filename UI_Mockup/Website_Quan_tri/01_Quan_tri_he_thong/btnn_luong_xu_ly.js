@@ -702,6 +702,12 @@
         const m = vuViecRegistry(); m[String(hoSoCode).trim()] = maVuViec; writeJson(KEY_VUVIEC, m);
         return maVuViec;
     }
+    // Bỏ liên kết Mã hồ sơ khỏi sổ đăng ký (VD xóa hồ sơ hoàn trả). Số Mã vụ việc đã cấp vẫn không cấp lại.
+    function unlinkVuViec(hoSoCode) {
+        const code = String(hoSoCode || '').trim(); if (!code) return false;
+        const m = vuViecRegistry(); if (!(code in m)) return false;
+        delete m[code]; writeJson(KEY_VUVIEC, m); return true;
+    }
     // Mã vụ việc của một hồ sơ: sổ đăng ký -> hồ sơ luồng xử lý (code / claimCode) -> cấp mới (trừ khi opts.create === false)
     function vuViecOf(hoSoCode, opts) {
         const code = String(hoSoCode || '').trim();
@@ -2215,7 +2221,7 @@
         receptionPendingItems, receptionPendingCount, receptionSeeded,
         CATALOG_TYPE, STATUS, SUBMIT_KINDS, APPROVAL_KINDS, KTL_CATALOG_TYPE, DEFAULT_KTL_REASONS, XD_AUTHORITY_UNITS, REQUEST_TYPE_XD, REQUEST_TYPE_YCBT,
         FLOW_TYPES, FLOW_TYPE_NAMES, FLOW_TYPE_ORDER, SOURCES, RECEIVE_METHODS, RECEIVE_METHOD_CATALOG, RECEIVE_METHOD_ORDER, FORM_RECEIVE_METHODS, UBND_TINH_STP,
-        flowRootIds, flowTypeOf, normalizeReceiveMethod, normalizeSource, nextVuViecCode, isVuViecCode, linkVuViec, vuViecOf, listVuViec, xdViewOnlyStpRoots, isXdViewOnlyUser,
+        flowRootIds, flowTypeOf, normalizeReceiveMethod, normalizeSource, nextVuViecCode, isVuViecCode, linkVuViec, unlinkVuViec, vuViecOf, listVuViec, xdViewOnlyStpRoots, isXdViewOnlyUser,
         ORG_UNITS, USERS, DEFAULT_REQUEST_TYPES,
         getUnit, unitName, getChildren, getRootId, getAncestors, getDescendants, getRootUnits, unitTreeLabel, searchUnits, mountUnitTree,
         getUser, userName, userLabel, usersInUnitTree,
