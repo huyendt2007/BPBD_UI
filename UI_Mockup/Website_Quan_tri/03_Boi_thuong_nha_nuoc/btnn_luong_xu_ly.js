@@ -1001,9 +1001,20 @@
         if (closed.includes(rec.status)) return { ok: false, message: 'Trạng thái hồ sơ không cho phép trình phê duyệt.' };
         const path = computeApprovalPath(rec);
         if (!path.length) return { ok: false, message: 'Chưa xác định được cấp phê duyệt. Vui lòng liên hệ Quản trị hệ thống.' };
+        // extra.assignees: Lãnh đạo được chọn cho mọi cấp theo thứ tự luồng phê duyệt (Xác định CQGQBT: cán bộ chọn tất cả cấp khi trình)
+        const preset = Array.isArray(extra.assignees) ? path.map((u, i) => extra.assignees[i] || '') : null;
+        if (preset && !extra.assignee) extra.assignee = preset[0];
         const firstLeaders = getLeaders(path[0], recFt(rec));
         if (firstLeaders.length && !extra.assignee) return { ok: false, message: 'Vui lòng chọn Lãnh đạo phê duyệt.' };
         if (extra.assignee && firstLeaders.length && !firstLeaders.includes(extra.assignee)) return { ok: false, message: 'Lãnh đạo phê duyệt không thuộc nhóm lãnh đạo của cấp phê duyệt đầu tiên.' };
+        if (preset) {
+            for (let i = 1; i < path.length; i++) {
+                const lv = getLeaders(path[i], recFt(rec));
+                if (lv.length && !preset[i]) return { ok: false, message: `Vui lòng chọn Lãnh đạo ${unitName(path[i])}.` };
+                if (preset[i] && lv.length && !lv.includes(preset[i])) return { ok: false, message: `Lãnh đạo được chọn không thuộc nhóm lãnh đạo của ${unitName(path[i])}.` };
+            }
+            preset[0] = extra.assignee || '';
+        }
         // Xác định CQGQBT: trình Kết quả xác định CQGQBT khi CQGQBT đã chọn có cấu hình luồng Giải quyết YCBT (ký duyệt xong hệ thống tự động chuyển)
         if (isXdRec(rec) && kind === KIND_KQXD && !xdTargetConfigured(rec)) return { ok: false, message: xdTargetNotConfiguredMsg(rec) };
         if (rec.status === STATUS.CHO_TIEP_NHAN) {
@@ -1014,11 +1025,12 @@
             kind, content: content || '', files: files || [], draftDoc: extra.draftDoc || null,
             signDoc: extra.signDoc || null, reason: extra.reason || '',
             resultStatus: extra.resultStatus || '', action: extra.action || null, prevStatus: rec.status,
-            path, level: 0, steps: [], assignees: [extra.assignee || ''],
+            path, level: 0, steps: [], assignees: preset || [extra.assignee || ''],
             submittedBy: me, submittedAt: nowText(), pending: { since: nowText() }
         };
         rec.status = STATUS.CHO_PHE_DUYET;
-        addHistory(rec, 'Trình phê duyệt', `${kind}. Trình ${extra.assignee ? userName(extra.assignee) + ' - ' : ''}${unitName(path[0])}.${content ? ' Nội dung: ' + content : ''}`);
+        const nextText = preset && path.length > 1 ? ' Lãnh đạo cấp tiếp theo: ' + path.slice(1).map((u, i) => (preset[i + 1] ? userName(preset[i + 1]) + ' - ' : '') + unitName(u)).join('; ') + '.' : '';
+        addHistory(rec, 'Trình phê duyệt', `${kind}. Trình ${extra.assignee ? userName(extra.assignee) + ' - ' : ''}${unitName(path[0])}.${nextText}${content ? ' Nội dung: ' + content : ''}`);
         upsertRecord(rec);
         return { ok: true, record: rec };
     }
@@ -1034,6 +1046,15 @@
     function nextLevelLeaders(rec) {
         if (!rec || !rec.approval || isLastApprovalLevel(rec)) return [];
         return getLeaders(rec.approval.path[rec.approval.level + 1], recFt(rec));
+    }
+    // Xác định CQGQBT: Lãnh đạo cấp tiếp theo do cán bộ chọn sẵn khi trình; dữ liệu cũ chưa có thì lấy Lãnh đạo đầu tiên của Nhóm lãnh đạo cấp tiếp theo
+    function xdPresetNextAssignee(rec) {
+        if (!rec || !rec.approval || !isXdRec(rec) || isLastApprovalLevel(rec)) return '';
+        const a = rec.approval;
+        const leaders = nextLevelLeaders(rec);
+        const preset = (a.assignees || [])[a.level + 1];
+        if (preset && (!leaders.length || leaders.includes(preset))) return preset;
+        return leaders[0] || '';
     }
     // Nhóm lãnh đạo của cấp phê duyệt đầu tiên (dùng cho ô "Lãnh đạo phê duyệt" khi trình)
     function firstLevelLeaders(recLike) {
@@ -1070,6 +1091,8 @@
         if (!a.assignees) a.assignees = [];
         if (a.level < a.path.length - 1) {
             const nextLeaders = getLeaders(a.path[a.level + 1], recFt(rec));
+            // Xác định CQGQBT: chuyển tới Lãnh đạo cấp tiếp theo đã được cán bộ chọn khi trình, không yêu cầu Lãnh đạo cấp trước chọn
+            if (isXdRec(rec) && !nextAssignee) nextAssignee = xdPresetNextAssignee(rec);
             if (nextLeaders.length && !nextAssignee) return { ok: false, message: 'Vui lòng chọn Lãnh đạo phê duyệt cấp tiếp theo.' };
             if (nextAssignee && nextLeaders.length && !nextLeaders.includes(nextAssignee)) return { ok: false, message: 'Lãnh đạo được chọn không thuộc nhóm lãnh đạo của cấp tiếp theo.' };
             // Xác định CQGQBT: cấp trước Ký duyệt = đồng ý chuyển cấp tiếp theo, không ký số
@@ -1408,7 +1431,7 @@
                     <div style="font-weight:700; color:#991b1b;"><i class="fa-solid fa-clock"></i> Thời điểm: ${esc(e.at || '--')}</div>
                 </div>
                 ${histRow('Lãnh đạo trả lại', `<b>${esc(userName(e.by))}</b>${e.unitId ? ' - ' + esc(unitName(e.unitId)) : ''}`)}
-                ${histRow('Nội dung trình bị từ chối', `<b style="color:#b91c1c;">${esc(e.kind || '--')}</b>`)}
+                ${histRow('Loại trình bị từ chối', `<b style="color:#b91c1c;">${esc(e.kind || '--')}</b>`)}
                 ${histRow('Lý do chi tiết', `<span style="color:#991b1b; font-weight:500;">${esc(e.reason || '--')}</span>`)}
             </div>`;
         }).join('');
@@ -2652,7 +2675,7 @@
         DEFAULT_PERSONAL_DOC_TYPES, getPersonalDocTypes, normalizePersonalDocType, fillPersonalDocTypeSelect,
         loadRecords, saveRecords, getRecord, upsertRecord, removeRecord, addHistory, nextCode, createPendingRecord,
         latestRoute, canEditAtReception, canAssign, markViewed, assignToUnit, assignToOfficers,
-        getRecallInfo, recall, computeApprovalPath, submitForApproval, canApprove, isLastApprovalLevel, nextLevelLeaders, firstLevelLeaders, approvalKindOf, approvalLabel, approvalPathText, approvalPathLineHtml, KIND_KQXD, approve, approveVerb, isXdRec, gqConfiguredRoots, xdTargetUnitId, xdTargetConfigured, xdTargetNotConfiguredMsg, renderSignDocHtml, rejectApproval, performTransfer,
+        getRecallInfo, recall, computeApprovalPath, submitForApproval, canApprove, isLastApprovalLevel, nextLevelLeaders, xdPresetNextAssignee, firstLevelLeaders, approvalKindOf, approvalLabel, approvalPathText, approvalPathLineHtml, KIND_KQXD, approve, approveVerb, isXdRec, gqConfiguredRoots, xdTargetUnitId, xdTargetConfigured, xdTargetNotConfiguredMsg, renderSignDocHtml, rejectApproval, performTransfer,
         transferToAgency, issueXdOffline, returnHistoryOf, supplementHistoryOf, renderXdReturnHistoryHtml, renderXdSupplementHistoryHtml, getLeaderTasks, thuLyUnitOf, thuLyLeaders, canThuLy, thuLyOfficerOptions, acceptCase, rejectCase,
         KTL_TRANSFER_MODES, KTL_TRANSFER_LABELS, stpOfUnit, ktlTransferTarget, mountKtlTransfer, ktlTransferSentence,
         WORK_TYPES, WORK_TYPE_ORDER, QD_KINDS, workTypeOfKind, resolveAgencyUnit, caseLeaders, loadKinhPhi, kpLeaders, decideKinhPhi, isAdvanceProposal, getLeaderWork,

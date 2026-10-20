@@ -154,7 +154,12 @@
 | 4 | Kính gửi | `##TenNguoiYeuCauBoiThuong##` | Thụ lý hồ sơ | Họ và tên / Tên tổ chức yêu cầu bồi thường | Lấy theo trường `Loại người yêu cầu`:<br>- Khi là `Cá nhân`: Lấy theo trường `Họ và tên`.<br>- Khi là `Tổ chức`: Lấy theo trường `Tên tổ chức`. | `Lê Văn Chung` hoặc `Công ty TNHH Vận tải & Xây lắp An Phát` |
 | 5 | Dưới Kính gửi | `##DiaChiNguoiYeuCauBoiThuong##` | Thụ lý hồ sơ | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Địa chỉ của người yêu cầu bồi thường (nơi cư trú đối với Cá nhân, hoặc địa chỉ trụ sở chính đối với Tổ chức): Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng ", ". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Số 88 đường Giải Phóng, TP. Nam Định` |
 | 6 | Thân văn bản | `##NgayTiepNhan##` | Thụ lý hồ sơ | Thời điểm tiếp nhận hồ sơ | Định dạng `ngày dd/mm/yyyy` | `ngày 12/03/2026` |
-| 7 | Thân văn bản | `##NoiDungThongBaoThuLy##` | Thụ lý hồ sơ > Form Ban hành thông báo thụ lý / không thụ lý | Nội dung kết luận thụ lý / lý do không thụ lý | - Trường hợp Thụ lý: sinh câu văn thụ lý theo khoản 1 Điều 43 (đối với Cá nhân: "Hồ sơ của Ông/Bà..."; đối với Tổ chức: "Hồ sơ của [Tên tổ chức]...").<br>- Trường hợp Không thụ lý: viện dẫn điểm/khoản Điều 43, nêu rõ lý do và thông báo trả lại hồ sơ | *"Hồ sơ của Ông/Bà đầy đủ điều kiện thụ lý theo quy định..."* HOẶC *"Hồ sơ của Công ty... đầy đủ điều kiện thụ lý..."* HOẶC *"Căn cứ điểm b khoản 2 Điều 43 Luật TNBTCNN, không thụ lý do..."* |
+| 7 | Thân văn bản | `##NoiDungThongBaoThuLy##` | Thụ lý hồ sơ > Form Ban hành thông báo thụ lý / không thụ lý | Nội dung kết luận thụ lý / lý do không thụ lý | - Trường hợp Thông báo này là Thông báo thụ lý hồ sơ yêu cầu bồi thường ghi: <br>
+ “Hồ sơ của Ông/Bà đầy đủ điều kiện thụ lý hồ sơ yêu cầu bồi thường theo quy định của Luật Trách nhiệm bồi thường của Nhà nước. Căn cứ quy định tại khoản 1 Điều 43 Luật Trách nhiệm bồi thường của nhà nước, ...(tên cơ quan giải quyết bồi thường)... thụ lý hồ sơ yêu cầu bồi thường của Ông/Bà và thông báo để Ông/Bà được biết”. <br>
+- Trường hợp Thông báo này là Thông báo không thụ lý hồ sơ yêu cầu bồi thường ghi: <br>
+Căn cứ theo quy định tại điểm…… khoản 2/khoản 3 Điều 43 Luật Trách nhiệm bồi thường của Nhà nước, ...(tên cơ quan giải quyết bồi thường)... không thụ lý hồ sơ yêu cầu bồi thường của Ông/Bà vì ...(ghi lý do không thụ lý hồ sơ yêu cầu bồi thường tương ứng với quy định tại các điểm của khoản 2/khoản 3 Điều 43 của Luật Trách nhiệm bồi thường của Nhà nước).<br>
+Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ sơ yêu cầu bồi thường (gửi kèm Thông báo này) và thông báo để Ông/Bà được biết”.
+ |
 
 ---
 

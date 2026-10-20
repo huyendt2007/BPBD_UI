@@ -28,7 +28,7 @@
 
 | Vai trò | Quyền trên hồ sơ |
 | :--- | :--- |
-| Cán bộ xử lý | Được lãnh đạo chỉ định khi phân công (01 người) hoặc là người tạo hồ sơ trực tiếp. Thực hiện toàn bộ thao tác xử lý theo [Thao tác theo trạng thái - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#xd-thao-tac-trang-thai): Tiếp nhận, Sửa thông tin hồ sơ, Cập nhật kết quả xác định CQGQBT, Trình ký (`Kết quả xác định CQGQBT`, `Yêu cầu bổ sung`, `Không thụ lý`) hoặc ban hành trực tiếp (Hình thức ký `Ký ngoài`), Cập nhật hồ sơ `Bị trả lại`, Tiếp nhận hồ sơ `Yêu cầu bổ sung`. |
+| Cán bộ xử lý | Được lãnh đạo chỉ định khi phân công (01 người) hoặc là người tạo hồ sơ trực tiếp. Thực hiện toàn bộ thao tác xử lý: Tiếp nhận, Sửa thông tin hồ sơ, Cập nhật kết quả xác định CQGQBT, Trình ký (`Kết quả xác định CQGQBT`, `Yêu cầu bổ sung`, `Không thụ lý`) hoặc ban hành trực tiếp (Hình thức ký `Ký ngoài`), Cập nhật hồ sơ `Bị trả lại`, Tiếp nhận hồ sơ `Yêu cầu bổ sung`. |
 | Người tạo | Hồ sơ tạo trực tiếp tại phân hệ: người tạo đồng thời là cán bộ xử lý của hồ sơ. |
 | Lãnh đạo các đơn vị trên luồng | Lãnh đạo (thuộc Nhóm lãnh đạo) của các đơn vị đã chuyển/phân công hồ sơ và các đơn vị trên luồng phê duyệt được xem hồ sơ tại danh sách. Thao tác phân công, thu hồi phân công thực hiện tại [Tiếp nhận hồ sơ - Tiếp nhận hồ sơ - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_TiepNhan_YCBT.md#tn-tab-xu-ly); Ký duyệt (mọi cấp; cấp cuối hệ thống ký số văn bản), Từ chối phê duyệt (chỉ Lãnh đạo được giao đích danh tại cấp đang đến lượt) thực hiện tại tab `Chờ xử lý` của màn hình này, Thu hồi kết quả ký duyệt tại tab `Đã xử lý` ([Quy tắc 02 tab Chờ xử lý / Đã xử lý - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#xd-tab-xu-ly)). Số hồ sơ chờ Lãnh đạo duyệt hiển thị tại khối `Chờ duyệt Xác định CQGQBT` của [MH01 - Màn hình Dashboard Lãnh đạo - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_ViecChoLanhDaoXuLy.md#vcld-mh01). |
 
@@ -40,35 +40,8 @@
 
 - Người dùng được phân quyền thực hiện tính năng.
 
-<a id="xd-trang-thai"></a>
-*c. Trạng thái hồ sơ, Loại trình và dòng phụ trạng thái*
-
-- **Trạng thái hồ sơ**:
-
-| Trạng thái | Ý nghĩa |
-| :--- | :--- |
-| `Chờ tiếp nhận` | Lãnh đạo đã phân công cán bộ xử lý tại Tiếp nhận hồ sơ; cán bộ xử lý chưa tiếp nhận. |
-| `Xác minh CQGQBT` | Cán bộ xử lý đã tiếp nhận và nhập liệu hồ sơ (`Lưu` tại MH02), hoặc đã tạo yêu cầu trực tiếp, hoặc đã tiếp nhận hồ sơ bổ sung; cán bộ đang xác minh, cập nhật kết quả xác định CQGQBT. |
-| `Chờ duyệt` | Cán bộ xử lý đã trình ký (Hình thức ký `Ký số trên hệ thống`); chờ Lãnh đạo được giao đích danh tại cấp phê duyệt hiện hành xử lý. |
-| `Bị trả lại` | Lãnh đạo đã Từ chối phê duyệt ở một cấp bất kỳ; hồ sơ trả về cán bộ xử lý. Chỉ áp dụng phiếu trình Hình thức ký `Ký số trên hệ thống`. |
-| `Yêu cầu bổ sung` | Lãnh đạo cấp cuối đã Ký duyệt văn bản yêu cầu bổ sung (hệ thống đã ký số) hoặc cán bộ xử lý đã ban hành văn bản yêu cầu bổ sung Ký ngoài; chờ người yêu cầu nộp hồ sơ bổ sung. |
-| `Không thụ lý` | Lãnh đạo cấp cuối đã Ký duyệt văn bản không thụ lý (hệ thống đã ký số) hoặc cán bộ xử lý đã ban hành văn bản không thụ lý Ký ngoài. Trạng thái kết thúc. |
-| `Đã chuyển CQGQBT` | Lãnh đạo cấp cuối đã Ký duyệt văn bản Kết quả xác định CQGQBT (hệ thống đã ký số) hoặc cán bộ xử lý đã ban hành văn bản Kết quả xác định CQGQBT Ký ngoài; hệ thống đã tự động tạo hồ sơ Giải quyết yêu cầu bồi thường tại CQGQBT đã chọn. Trạng thái kết thúc. |
-
-- **Loại trình**: loại việc cán bộ xử lý trình ký Lãnh đạo, lưu trong phiếu trình; dùng cho dòng phụ dưới badge trạng thái và bộ lọc `Loại trình` tại MH01. Mọi Loại trình đều trình tại [Popup Trình ký](#xd-popup-trinh-ky). Gồm:
-+ `Kết quả xác định CQGQBT`: cấp cuối Ký duyệt (hoặc cán bộ ban hành Ký ngoài) thì hệ thống tự động chuyển CQGQBT, hồ sơ chuyển `Đã chuyển CQGQBT`.
-+ `Yêu cầu bổ sung`: cấp cuối Ký duyệt (hoặc cán bộ ban hành Ký ngoài) thì hồ sơ chuyển `Yêu cầu bổ sung`.
-+ `Không thụ lý`: cấp cuối Ký duyệt (hoặc cán bộ ban hành Ký ngoài) thì hồ sơ chuyển `Không thụ lý`.
-
-- **Dòng phụ dưới badge trạng thái** (MH01, MH04):
-+ Hồ sơ `Chờ duyệt`: `[Loại trình]` của phiếu trình đang chờ duyệt (VD `Yêu cầu bổ sung`); dòng phụ không hiển thị cấp phê duyệt.
-+ Hồ sơ `Bị trả lại`: `[Loại trình]` của phiếu bị trả lại (VD `Không thụ lý`).
-+ Các trạng thái khác: không hiển thị dòng phụ.
-
-- **Chuyển đổi dữ liệu theo bộ trạng thái trước đây**: `Đang thực hiện` → `Xác minh CQGQBT`; `Bị từ chối` → `Không thụ lý`; `Chờ chuyển CQGQBT`, `Hoàn thành` → `Đã chuyển CQGQBT`; Loại trình `Từ chối` → `Không thụ lý`. Hồ sơ `Chờ chuyển CQGQBT` chưa có hồ sơ Giải quyết yêu cầu bồi thường thì hệ thống thực hiện [Tự động chuyển CQGQBT](#xd-tu-dong-chuyen) khi chuyển đổi.
-
 <a id="xd-quy-tac-trinh"></a>
-*d. Quy tắc trình ký - phê duyệt*
+*c. Quy tắc trình ký - phê duyệt*
 
 - **Luồng phê duyệt**: là luồng ngược chiều luồng phân công thực tế của chính hồ sơ. Hệ thống lấy danh sách các đơn vị đã chuyển/phân công hồ sơ theo thứ tự trong `Quá trình phân công`, đảo ngược và loại bỏ đơn vị trùng (ví dụ phân công Bộ Tư pháp → Cục → Phòng thì phê duyệt Phòng → Cục; luồng phê duyệt chỉ tới Cục, không gửi đến Bộ Tư pháp).
 
@@ -99,7 +72,7 @@
 
 - **Xử lý tại từng cấp**: Lãnh đạo được giao đích danh tại cấp đang đến lượt xử lý tại tab `Chờ xử lý` của màn hình này (vai trò Lãnh đạo), qua [MH04 - Popup Phê duyệt / Từ chối phê duyệt - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_ViecChoLanhDaoXuLy.md#vcld-mh04):
 + `Ký duyệt` tại các cấp trước cấp cuối (Ý kiến ký duyệt không bắt buộc): đồng ý chuyển cấp tiếp theo, không ký số; Lãnh đạo bắt buộc chọn Lãnh đạo phê duyệt cấp tiếp theo; hồ sơ chuyển cấp phê duyệt tiếp theo, giữ trạng thái `Chờ duyệt`.
-+ `Ký duyệt` tại cấp cuối: hệ thống ký số văn bản theo [Tích hợp ký số tại bước cuối của luồng](#xd-ky-so). Hồ sơ chuyển trạng thái theo Loại trình: `Kết quả xác định CQGQBT` → [Tự động chuyển CQGQBT](#xd-tu-dong-chuyen), hồ sơ chuyển `Đã chuyển CQGQBT`; `Yêu cầu bổ sung` → `Yêu cầu bổ sung`; `Không thụ lý` → `Không thụ lý`. Loại trình `Yêu cầu bổ sung`: hệ thống ghi thêm 01 lần yêu cầu bổ sung vào khối `THÔNG TIN YÊU CẦU BỔ SUNG` của hồ sơ.
++ `Ký duyệt` tại cấp cuối: hệ thống ký số văn bản theo [Tích hợp ký số tại bước cuối của luồng](#xd-ky-so). Cập nhật trạng thái hồ sơ theo Loại trình:<br>  * Loại trình `Kết quả xác định CQGQBT`: chuyển trạng thái `Đã chuyển CQGQBT` (hệ thống tự động chuyển CQGQBT theo [Tự động chuyển CQGQBT](#xd-tu-dong-chuyen)).<br>  * Loại trình `Yêu cầu bổ sung`: chuyển trạng thái `Yêu cầu bổ sung` (hệ thống ghi thêm 01 lần yêu cầu bổ sung vào khối `THÔNG TIN YÊU CẦU BỔ SUNG` của hồ sơ).<br>  * Loại trình `Không thụ lý`: chuyển trạng thái `Không thụ lý`.
 + Lịch sử xử lý ghi hành động `Ký duyệt` ở mọi cấp; cấp cuối ghi thêm nội dung *"đã ký số văn bản"* kèm tên tệp đã ký số.
 + `Từ chối` (Lý do từ chối phê duyệt, bắt buộc) tại bất kỳ cấp nào: hồ sơ chuyển `Bị trả lại` về cán bộ xử lý, ghi nhận người trả lại, đơn vị, thời điểm, lý do và Loại trình bị trả lại; hệ thống ghi thêm 01 lần bị trả lại vào khối `THÔNG TIN HỒ SƠ BỊ TRẢ LẠI` của hồ sơ. Lịch sử xử lý ghi hành động `Từ chối phê duyệt`. Khi cán bộ xử lý trình ký lại, luồng phê duyệt bắt đầu lại từ cấp phê duyệt đầu tiên và cán bộ chọn lại Lãnh đạo phê duyệt cấp 1.
 + Lãnh đạo cấp dưới được thu hồi kết quả ký duyệt đã chuyển cấp trên khi cấp trên chưa ký duyệt/từ chối.
@@ -126,7 +99,7 @@
 ---
 
 <a id="xd-tab-xu-ly"></a>
-*e. Quy tắc 02 tab Chờ xử lý / Đã xử lý*
+*d. Quy tắc 02 tab Chờ xử lý / Đã xử lý*
 
 | Vai trò | Tab `Chờ xử lý` | Tab `Đã xử lý` |
 | :--- | :--- | :--- |
@@ -137,27 +110,9 @@
 - Tab `Chờ xử lý` và menu `Xác định cơ quan giải quyết bồi thường` tại thanh menu trái (Left Menu) hiển thị Badge số lượng hồ sơ chờ xử lý tương ứng với số lượng bản ghi thực tế cần xử lý.
 - Trường `Trạng thái` của bộ lọc chỉ gồm các trạng thái của tab đang chọn.
 
-<a id="xd-thao-tac-trang-thai"></a>
-*f. Thao tác theo trạng thái*
-
-- Thao tác trên từng bản ghi (cột `Thao tác` tại MH01 và nút chức năng tại MH04) hiển thị theo trạng thái hồ sơ:
-
-| Trạng thái | Thao tác hiển thị |
-| :--- | :--- |
-| `Chờ tiếp nhận` | - Xem ([MH04 - Màn hình Chi tiết yêu cầu xác định cơ quan giải quyết bồi thường](#43316-mh04---màn-hình-chi-tiết-yêu-cầu-xác-định-cơ-quan-giải-quyết-bồi-thường))<br>- Tiếp nhận ([MH02 - Màn hình Thêm mới/Sửa yêu cầu xác định cơ quan giải quyết bồi thường](#43314-mh02---màn-hình-thêm-mớisửa-yêu-cầu-xác-định-cơ-quan-giải-quyết-bồi-thường), `Lưu` → `Xác minh CQGQBT`)<br>- Yêu cầu bổ sung ([Popup Trình ký](#xd-popup-trinh-ky))<br>- Không thụ lý ([Popup Trình ký](#xd-popup-trinh-ky)) |
-| `Xác minh CQGQBT` | - Xem<br>- Sửa ([MH02 - Màn hình Thêm mới/Sửa yêu cầu xác định cơ quan giải quyết bồi thường](#43314-mh02---màn-hình-thêm-mớisửa-yêu-cầu-xác-định-cơ-quan-giải-quyết-bồi-thường))<br>- Cập nhật kết quả ([MH03 - Màn hình Cập nhật kết quả xác định cơ quan giải quyết bồi thường](#43315-mh03---màn-hình-cập-nhật-kết-quả-xác-định-cơ-quan-giải-quyết-bồi-thường), `Lưu và trình ký` → [Popup Trình ký](#xd-popup-trinh-ky)) |
-| `Chờ duyệt` | - Xem<br>- Ký duyệt (mọi cấp; cấp cuối hệ thống ký số văn bản)<br>- Từ chối ([MH04 - Popup Phê duyệt / Từ chối phê duyệt - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_ViecChoLanhDaoXuLy.md#vcld-mh04))<br>- Thu hồi ([MH05 - Popup Xác nhận thu hồi - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_ViecChoLanhDaoXuLy.md#vcld-mh05)) |
-| `Bị trả lại` | - Xem<br>- Cập nhật theo Loại trình bị trả lại, sửa và trình ký lại: `Kết quả xác định CQGQBT` mở [MH03 - Màn hình Cập nhật kết quả xác định cơ quan giải quyết bồi thường](#43315-mh03---màn-hình-cập-nhật-kết-quả-xác-định-cơ-quan-giải-quyết-bồi-thường); `Yêu cầu bổ sung` / `Không thụ lý` mở [Popup Trình ký](#xd-popup-trinh-ky)<br>- Yêu cầu bổ sung ([Popup Trình ký](#xd-popup-trinh-ky))<br>- Không thụ lý ([Popup Trình ký](#xd-popup-trinh-ky)) |
-| `Yêu cầu bổ sung` | - Xem<br>- Tiếp nhận ([MH02 - Màn hình Thêm mới/Sửa yêu cầu xác định cơ quan giải quyết bồi thường](#43314-mh02---màn-hình-thêm-mớisửa-yêu-cầu-xác-định-cơ-quan-giải-quyết-bồi-thường) ở ngữ cảnh Tiếp nhận, `Lưu` → `Xác minh CQGQBT`) |
-| `Không thụ lý` | Xem |
-| `Đã chuyển CQGQBT` | Xem (liên kết `Mã hồ sơ GQBT`) |
-
-- `Xem`: click dòng dữ liệu tại MH01 để mở MH04 ở chế độ chỉ đọc.
-- Phân hệ không có thao tác Xóa hồ sơ và không có Lưu nháp; không có thao tác Chuyển CQGQBT thủ công (hệ thống tự động chuyển theo [Tự động chuyển CQGQBT](#xd-tu-dong-chuyen)).
-
 ##### 4.3.3.1.2. Sơ đồ luồng nghiệp vụ theo giao diện
 
-\- Luồng đi của 01 hồ sơ Xác định cơ quan giải quyết bồi thường (trạng thái hồ sơ theo [Trạng thái hồ sơ, Loại trình và dòng phụ trạng thái](#xd-trang-thai); thao tác theo [Thao tác theo trạng thái](#xd-thao-tac-trang-thai)):
+\- Luồng đi của 01 hồ sơ Xác định cơ quan giải quyết bồi thường:
 
 ```mermaid
 flowchart TD
@@ -227,7 +182,7 @@ flowchart TD
 | Cơ quan xử lý | String(255) | - | Theo dữ liệu | Theo thông tin bản ghi. |
 | Cán bộ xử lý | String(100) | - | Theo dữ liệu | Control UI: Text hiển thị (Read-only).<br>- Hiển thị họ tên cán bộ xử lý của hồ sơ; chưa có thì hiển thị `--`. |
 | Mã hồ sơ GQBT | String(50) | - | Theo dữ liệu | Control UI: Text hiển thị (Read-only) dạng Hyperlink.<br>- Căn giữa.<br>- Hiển thị `Mã hồ sơ` Giải quyết YCBT tương ứng (01 mã `BT-...` cho cả hồ sơ có nhánh Phục hồi danh dự), được sinh khi hệ thống tự động chuyển CQGQBT (hồ sơ `Đã chuyển CQGQBT`).<br>- Nếu chưa có mã: hiển thị `-`.<br>- Click mã: mở [MH05 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#43317-mh05---màn-hình-xem-chi-tiết-hồ-sơ-yêu-cầu-bồi-thường) ở tab mới. |
-| Trạng thái | Enum(String(50)) | - | Theo dữ liệu | Control UI: Badge trạng thái (Read-only).<br>- Theo dữ liệu bản ghi.<br>- Hồ sơ `Chờ duyệt`, `Bị trả lại`: kèm dòng phụ Loại trình theo [Trạng thái hồ sơ, Loại trình và dòng phụ trạng thái](#xd-trang-thai). |
+| Trạng thái | Enum(String(50)) | - | Theo dữ liệu | Control UI: Badge trạng thái (Read-only).<br>- Theo dữ liệu bản ghi.<br>- Hồ sơ `Chờ duyệt`, `Bị trả lại`: kèm dòng phụ Loại trình (`Kết quả xác định CQGQBT`, `Yêu cầu bổ sung`, `Không thụ lý`). |
 | Thao tác | String(255) | - | Theo trạng thái | Control UI: Action Buttons (Icon button).<br>Các nút thao tác hiển thị linh hoạt theo trạng thái của hồ sơ:<br>+ Tiếp nhận: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ tiếp nhận` hoặc `Yêu cầu bổ sung`.<br>+ Sửa: Chỉ hiển thị khi hồ sơ ở trạng thái `Xác minh CQGQBT`.<br>+ Cập nhật kết quả: Chỉ hiển thị khi hồ sơ ở trạng thái `Xác minh CQGQBT`.<br>+ Cập nhật: Chỉ hiển thị khi hồ sơ ở trạng thái `Bị trả lại`.<br>+ Yêu cầu bổ sung: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ tiếp nhận` hoặc `Bị trả lại`.<br>+ Không thụ lý: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ tiếp nhận` hoặc `Bị trả lại`.<br>+ Ký duyệt, Từ chối: Chỉ hiển thị khi hồ sơ ở trạng thái `Chờ duyệt`.<br>+ Thu hồi: Chỉ hiển thị khi hồ sơ ở trạng thái `Đã xử lý` (sau khi đã ký duyệt). |
 | Phân trang | Pagination | - | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị (10, 20, 50, 100); mặc định 20 bản ghi/trang.<br>- Hiển thị dải bản ghi: "Hiển thị [từ]-[đến] trong số [tổng số] bản ghi" (khi không có dữ liệu hiển thị 0-0 trong số 0).<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;). |
 
@@ -432,7 +387,7 @@ flowchart TD
 | Văn bản không thụ lý | File | - | Theo hồ sơ | Control UI: Text link (Read-only).<br>- Văn bản không thụ lý đã ký (bản đã ký số hoặc tệp Ký ngoài) kèm liên kết `Xem file`. |
 | **THÔNG TIN TIẾP NHẬN HỒ SƠ** | String(255) | - | - | Control UI: Section header.<br>- Khối thông tin tiếp nhận hồ sơ. |
 | Mã hồ sơ | String(50) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
-| Trạng thái xử lý | Enum(String(50)) | - | Theo hồ sơ | Control UI: Badge trạng thái (Read-only).<br>- Hiển thị theo trạng thái hồ sơ, kèm dòng phụ Loại trình khi hồ sơ `Chờ duyệt` hoặc `Bị trả lại` theo [Trạng thái hồ sơ, Loại trình và dòng phụ trạng thái](#xd-trang-thai). |
+| Trạng thái xử lý | Enum(String(50)) | - | Theo hồ sơ | Control UI: Badge trạng thái (Read-only).<br>- Hiển thị theo trạng thái hồ sơ, kèm dòng phụ Loại trình khi hồ sơ `Chờ duyệt` hoặc `Bị trả lại`. |
 | Hình thức tiếp nhận | Enum(String(50)) | - | Theo hồ sơ | Control UI: Text (Read-only).<br>- Theo dữ liệu bản ghi. |
 | Thời điểm tiếp nhận | Datetime | - | Ẩn khi tạo trực tiếp | Dạng chỉ đọc. Hiển thị theo hồ sơ.<br>- **Điều kiện hiển thị**: Ẩn khi hồ sơ được tạo mới trực tiếp tại phân hệ Xác định cơ quan; chỉ hiển thị khi hồ sơ được tiếp nhận từ phân hệ Tiếp nhận hồ sơ. |
 | Cán bộ tiếp nhận | String(255) | - | Theo hồ sơ | Dạng chỉ đọc. Hiển thị theo hồ sơ. |
@@ -574,49 +529,9 @@ Popup dùng chung cho 03 Loại trình; Loại trình theo nút mở popup:
 |  |  |  | **TH1 - Bỏ trống trường bắt buộc**: Xử lý như TH1 của chức năng `Tiếp tục: Đặt vị trí chữ ký`. Không cho phép trình. Khi người dùng nhập/chọn lại giá trị, viền đỏ và dòng cảnh báo của ô đó được ẩn. |
 |  |  |  | **TH2 - Không đủ điều kiện trình** (hệ thống kiểm tra lại tại máy chủ): người dùng không phải cán bộ xử lý ([MSG-ERR-BTNN-LXL-018]), trạng thái hồ sơ không còn cho phép trình Loại trình tương ứng ([MSG-ERR-BTNN-LXL-017]), không xác định được cấp phê duyệt ([MSG-ERR-BTNN-LXL-006]), chưa chọn Lãnh đạo phê duyệt ([MSG-ERR-BTNN-LXL-013]) hoặc Lãnh đạo đã chọn không còn thuộc Nhóm lãnh đạo của cấp đầu tiên ([MSG-ERR-BTNN-LXL-015]). Hệ thống hiển thị thông báo lỗi tương ứng, giữ nguyên popup và trạng thái hồ sơ. |
 |  |  |  | **TH3 - Loại trình `Kết quả xác định CQGQBT`, CQGQBT đã chọn chưa được cấu hình luồng `Giải quyết YCBT`**: Hệ thống hiển thị thông báo lỗi [MSG-ERR-BTNN-LXL-007], giữ nguyên popup và trạng thái hồ sơ. |
-|  |  |  | **TH Hợp lệ**: Hệ thống thực hiện tuần tự:<br>- **Lưu dữ liệu nghiệp vụ**:<br>+ Loại trình `Kết quả xác định CQGQBT`: lưu `Căn cứ pháp lý xác định thẩm quyền`, `Chỉ định Cơ quan có thẩm quyền giải quyết bồi thường`, `Chọn CQGQBT trên hệ thống`, `Nhận định lý do xác định chi tiết` và `Tài liệu kèm theo` đang nhập tại MH03; ghi Lịch sử xử lý `Cập nhật kết quả xác định`.<br>+ Loại trình `Yêu cầu bổ sung` / `Không thụ lý`: lưu `Nội dung yêu cầu bổ sung` / `Lý do không thụ lý` vào hồ sơ.<br>- **Tạo phiếu trình**:<br>+ Loại trình: theo nút mở popup.<br>+ Hình thức ký, Văn bản trình ký, vị trí hộp chữ ký (x, y) khi Ký số.<br>+ Loại trình do cán bộ nhập.<br>+ Luồng phê duyệt theo [Quy tắc trình ký - phê duyệt](#xd-quy-tac-trinh); giao đích danh Lãnh đạo cấp 1 đã chọn.<br>- **Cập nhật trạng thái hồ sơ**:<br>+ Hồ sơ chuyển `Chờ duyệt` tại cấp phê duyệt đầu tiên, dòng phụ `[Loại trình]`.<br>+ Hồ sơ xuất hiện tại tab `Chờ xử lý` (vai trò Lãnh đạo) của màn hình này và khối `Chờ duyệt Xác định CQGQBT` tại [MH01 - Màn hình Dashboard Lãnh đạo - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_ViecChoLanhDaoXuLy.md#vcld-mh01) của Lãnh đạo được giao.<br>+ Hồ sơ đang ở trạng thái `Chờ tiếp nhận`: lượt phân công gần nhất được cập nhật `Đã xử lý`.<br>- **Ghi nhận lịch sử và thông báo**:<br>+ Ghi Lịch sử xử lý `Trình ký` (*"[Loại trình] - [Hình thức ký]. Trình [Họ tên Lãnh đạo] - [Đơn vị cấp đầu tiên]. Nội dung: [Loại trình do cán bộ nhập]"*).<br>+ Đóng popup; hiển thị thông báo thành công theo Loại trình: `Kết quả xác định CQGQBT` [MSG-SUC-BTNN-XDCQ-019]; `Yêu cầu bổ sung` [MSG-SUC-BTNN-XDCQ-022]; `Không thụ lý` [MSG-SUC-BTNN-XDCQ-023].<br>+ Đang ở MH04 thì tải lại MH04 của hồ sơ; các trường hợp khác tải lại danh sách MH01.<br>- Ký duyệt, Từ chối phê duyệt tại từng cấp, ký số tại cấp cuối và Tự động chuyển CQGQBT theo [Quy tắc trình ký - phê duyệt](#xd-quy-tac-trinh). |
+|  |  |  | **TH Hợp lệ**: Hệ thống thực hiện tuần tự:<br>- **Lưu dữ liệu nghiệp vụ**:<br>+ Loại trình `Kết quả xác định CQGQBT`: lưu `Căn cứ pháp lý xác định thẩm quyền`, `Chỉ định Cơ quan có thẩm quyền giải quyết bồi thường`, `Chọn CQGQBT trên hệ thống`, `Nhận định lý do xác định chi tiết` và `Tài liệu kèm theo` đang nhập tại MH03; ghi Lịch sử xử lý `Cập nhật kết quả xác định`.<br>+ Loại trình `Yêu cầu bổ sung` / `Không thụ lý`: lưu `Nội dung yêu cầu bổ sung` / `Lý do không thụ lý` vào hồ sơ.<br>- **Tạo phiếu trình**:<br>+ Loại trình: theo nút mở popup.<br>+ Hình thức ký, Văn bản trình ký, vị trí hộp chữ ký (x, y) khi Ký số.<br>+ Loại trình do cán bộ nhập.<br>+ Luồng phê duyệt theo [Quy tắc trình ký - phê duyệt](#xd-quy-tac-trinh); giao đích danh Lãnh đạo cấp 1 đã chọn.<br>- **Cập nhật trạng thái hồ sơ**:<br>+ Trạng thái hồ sơ: chuyển `Chờ duyệt` tại cấp phê duyệt đầu tiên, dòng phụ `[Loại trình]`.<br>+ Tab danh sách: hồ sơ xuất hiện tại tab `Chờ xử lý` (vai trò Lãnh đạo) của màn hình này và khối `Chờ duyệt Xác định CQGQBT` tại [MH01 - Màn hình Dashboard Lãnh đạo - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_ViecChoLanhDaoXuLy.md#vcld-mh01) của Lãnh đạo được giao.<br>+ Lượt phân công: nếu hồ sơ đang ở trạng thái `Chờ tiếp nhận`, lượt phân công gần nhất được cập nhật thành `Đã xử lý`.<br>- **Ghi nhận lịch sử và thông báo**:<br>+ Ghi Lịch sử xử lý `Trình ký` (*"[Loại trình] - [Hình thức ký]. Trình [Họ tên Lãnh đạo] - [Đơn vị cấp đầu tiên]. Nội dung: [Loại trình do cán bộ nhập]"*).<br>+ Đóng popup; hiển thị thông báo thành công theo Loại trình: `Kết quả xác định CQGQBT` [MSG-SUC-BTNN-XDCQ-019]; `Yêu cầu bổ sung` [MSG-SUC-BTNN-XDCQ-022]; `Không thụ lý` [MSG-SUC-BTNN-XDCQ-023].<br>+ Đang ở MH04 thì tải lại MH04 của hồ sơ; các trường hợp khác tải lại danh sách MH01.<br>- Ký duyệt, Từ chối phê duyệt tại từng cấp, ký số tại cấp cuối và Tự động chuyển CQGQBT theo [Quy tắc trình ký - phê duyệt](#xd-quy-tac-trinh). |
 | 8 | Hủy bỏ | Button | Đóng popup, không lưu các thông tin vừa nhập, giữ nguyên trạng thái hồ sơ. Tương đương click biểu tượng `×`. |
 | 9 | Hoàn thành | Button | Chỉ hiển thị tại Bước 1 khi Hình thức ký là `Ký ngoài`. Hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới: |
 |  |  |  | **TH1 - Bỏ trống trường bắt buộc**: Chưa có văn bản PDF đã ký và đóng dấu hoặc bỏ trống `Nội dung yêu cầu bổ sung` / `Lý do không thụ lý` (khi hiển thị): hệ thống tô viền đỏ các ô/vùng lỗi, hiển thị [MSG-ERR-VAL-001] dưới từng ô/vùng lỗi và focus vào ô lỗi đầu tiên. Không ban hành. |
 |  |  |  | **TH2 - Không đủ điều kiện ban hành** (hệ thống kiểm tra lại tại máy chủ): người dùng không phải cán bộ xử lý của hồ sơ; hoặc Loại trình `Kết quả xác định CQGQBT` có CQGQBT đã chọn chưa được cấu hình luồng `Giải quyết YCBT` ([MSG-ERR-BTNN-LXL-007]). Hệ thống hiển thị thông báo lỗi, giữ nguyên popup và trạng thái hồ sơ. |
-|  |  |  | **TH Hợp lệ**: Hệ thống ban hành trực tiếp, không trình Lãnh đạo:<br>- Lưu dữ liệu nghiệp vụ như TH Hợp lệ của chức năng `Hoàn tất & Trình ký`; lưu văn bản đã ký của hồ sơ là tệp PDF cán bộ tải lên.<br>- Cập nhật trạng thái theo Loại trình: `Kết quả xác định CQGQBT` → [Tự động chuyển CQGQBT](#xd-tu-dong-chuyen), hồ sơ chuyển `Đã chuyển CQGQBT`; `Yêu cầu bổ sung` → `Yêu cầu bổ sung` và ghi thêm 01 lần vào khối `THÔNG TIN YÊU CẦU BỔ SUNG`; `Không thụ lý` → `Không thụ lý`.<br>- Ghi Lịch sử xử lý `Ban hành [Loại trình] (Ký ngoài)` kèm tên tệp đã ký.<br>- Đóng popup, hiển thị thông báo thành công *"Đã ban hành [Loại trình] (Ký ngoài) hồ sơ [Mã hồ sơ]. Trạng thái: [Trạng thái]."* (Loại trình `Kết quả xác định CQGQBT` ghi thêm CQGQBT nhận hồ sơ và Mã hồ sơ GQBT) và tải lại danh sách MH01. |
-
----
-
-##### 4.3.3.1.8. Bảng ánh xạ Business Rule và MessageList
-
-| STT | Mã thông báo | Loại thông báo | Nội dung thông báo | Vị trí áp dụng |
-| :--- | :--- | :--- | :--- | :--- |
-| 1 | `[MSG-ERR-VAL-001]` | Cảnh báo viền/dưới ô | "Đây là trường bắt buộc" | Highlight đỏ `.is-invalid` và hiển thị dưới ô nhập bị bỏ trống tại tất cả các form và popup. |
-| 2 | `[MSG-CFM-SYS-001]` | Xác nhận (Modal) | "Bạn có chắc chắn muốn xóa tệp \"[Tên file]\" không?" | Modal xác nhận gỡ tệp đính kèm tại MH02, MH03 và Popup Trình ký. |
-| 3 | `[MSG-CFM-BTNN-XDCQ-002]` | Xác nhận (Modal) | "Bạn có chắc chắn muốn hủy bỏ thao tác này không? Toàn bộ thông tin vừa nhập sẽ không được lưu." | Modal xác nhận khi bấm Hủy bỏ trên form tiếp nhận / cập nhật kết quả. |
-| 4 | `[MSG-CFM-BTNN-XDCQ-004]` | Xác nhận (Modal) | "Xác nhận đã nhận hồ sơ bổ sung của yêu cầu [Mã hồ sơ]? Hồ sơ chuyển [Xác minh CQGQBT]." | Không sử dụng: `Tiếp nhận` hồ sơ `Yêu cầu bổ sung` mở MH02 ở ngữ cảnh Tiếp nhận, không hiển thị modal xác nhận. |
-| 5 | `[MSG-SUC-BTNN-XDCQ-001]` | Thành công (Toast) | "Đã tiếp nhận hồ sơ [Mã hồ sơ]. Trạng thái: [Xác minh CQGQBT]." | Thông báo khi `Lưu` thành công tại MH02 ngữ cảnh Tiếp nhận. |
-| 6 | `[MSG-SUC-BTNN-XDCQ-002]` | Thành công (Toast) | "Đã tạo yêu cầu [Mã hồ sơ]. Trạng thái: [Xác minh CQGQBT]." | Thông báo khi `Lưu` thành công tại MH02 ngữ cảnh Tạo yêu cầu. |
-| 7 | `[MSG-SUC-BTNN-XDCQ-004]` | Thành công (Toast) | "Đính kèm tập tin: [Tên file] thành công!" | Thông báo sau khi tải lên tệp đính kèm tại tất cả các form và popup. |
-| 8 | `[MSG-SUC-BTNN-XDCQ-005]` | Thành công (Toast) | "Đã gỡ bỏ tập tin đính kèm!" | Thông báo sau khi xóa tệp đính kèm tại tất cả các form và popup. |
-| 9 | `[MSG-SUC-BTNN-XDCQ-009]` | Thành công (Toast) | "Đã cập nhật thông tin hồ sơ [Mã hồ sơ]!" | Thông báo khi `Lưu` thành công tại MH02 ngữ cảnh Sửa. |
-| 10 | `[MSG-SUC-BTNN-XDCQ-017]` | Thành công (Toast) | "Đã lưu kết quả xác định cơ quan giải quyết bồi thường!" | Thông báo khi lưu thành công kết quả xác định tại MH03. |
-| 11 | `[MSG-SUC-BTNN-XDCQ-018]` | Thành công (Toast) | "Đã tiếp nhận hồ sơ bổ sung. Hồ sơ [Mã hồ sơ] chuyển [Xác minh CQGQBT]." | Thông báo khi `Lưu` thành công tại MH02 ở ngữ cảnh Tiếp nhận hồ sơ `Yêu cầu bổ sung`. |
-| 12 | `[MSG-SUC-BTNN-XDCQ-019]` | Thành công (Toast) | "Đã trình [Họ tên Lãnh đạo] hồ sơ [Mã hồ sơ]. Trạng thái: [Chờ duyệt] - Loại trình: Kết quả xác định CQGQBT." | Thông báo khi trình ký Kết quả xác định CQGQBT tại Popup Trình ký. |
-| 13 | `[MSG-SUC-BTNN-XDCQ-020]` | Thành công (Toast) | "Đã ký duyệt. Hồ sơ [Mã hồ sơ] chuyển [Đã chuyển CQGQBT]; tạo hồ sơ GQBT [Mã hồ sơ GQBT] chờ lãnh đạo [Tên CQGQBT] phân công." | Thông báo cho Lãnh đạo cấp cuối khi Ký duyệt Kết quả xác định CQGQBT và hệ thống tự động chuyển CQGQBT thành công. |
-| 14 | `[MSG-SUC-BTNN-XDCQ-022]` | Thành công (Toast) | "Đã trình [Họ tên Lãnh đạo] hồ sơ [Mã hồ sơ]. Trạng thái: [Chờ duyệt] - Loại trình: Yêu cầu bổ sung." | Thông báo khi trình ký Yêu cầu bổ sung tại Popup Trình ký. |
-| 15 | `[MSG-SUC-BTNN-XDCQ-023]` | Thành công (Toast) | "Đã trình [Họ tên Lãnh đạo] hồ sơ [Mã hồ sơ]. Trạng thái: [Chờ duyệt] - Loại trình: Không thụ lý." | Thông báo khi trình ký Không thụ lý tại Popup Trình ký. |
-| 16 | `[MSG-INF-BTNN-LXL-001]` | Thông tin (Banner) | "Hồ sơ đang ở trạng thái chỉ đọc. Không thể thực hiện thao tác này." | Banner cảnh báo trạng thái chỉ đọc của hồ sơ. |
-| 17 | `[MSG-ERR-BTNN-LXL-002]` | Lỗi (Alert/Modal) | "Tài khoản không thuộc danh sách cán bộ được phân công xử lý hồ sơ này." | Lỗi kiểm tra phân công cán bộ khi truy cập form MH02/MH03. |
-| 18 | `[MSG-ERR-BTNN-LXL-005]` | Lỗi (Alert/Modal) | "Chỉ cán bộ xử lý mới có quyền thực hiện thao tác này." | Lỗi kiểm tra vai trò cán bộ xử lý khi thực hiện thao tác. |
-| 19 | `[MSG-ERR-BTNN-LXL-006]` | Lỗi (Alert/Modal) | "Chưa xác định được cấp phê duyệt. Vui lòng liên hệ Quản trị hệ thống." | Lỗi cấu hình luồng xử lý chưa thiết lập cấp phê duyệt. |
-| 20 | `[MSG-ERR-BTNN-LXL-007]` | Lỗi (Alert/Modal) | "Đơn vị [Tên đơn vị] chưa được cấu hình luồng phân công. Vui lòng liên hệ Quản trị hệ thống." | CQGQBT đã chọn chưa được cấu hình luồng `Giải quyết YCBT`: tại `Lưu và trình ký` (MH03), `Trình Lãnh đạo` (Popup Trình ký) và khi Lãnh đạo cấp cuối Ký duyệt Kết quả xác định CQGQBT. |
-| 21 | `[MSG-ERR-BTNN-LXL-008]` | Lỗi (Alert/Modal) | "Đơn vị chưa được cấu hình luồng tiếp nhận hồ sơ. Vui lòng liên hệ Quản trị hệ thống." | Lỗi đơn vị tiếp nhận chưa cấu hình luồng tiếp nhận tại MH02. |
-| 22 | `[MSG-ERR-BTNN-LXL-013]` | Lỗi (Alert/Modal) | "Vui lòng chọn Lãnh đạo phê duyệt." | Lỗi chưa chọn Lãnh đạo phê duyệt trên Popup Trình ký. |
-| 23 | `[MSG-ERR-BTNN-LXL-015]` | Lỗi (Alert/Modal) | "Lãnh đạo phê duyệt không thuộc nhóm lãnh đạo của cấp phê duyệt đầu tiên." | Lỗi Lãnh đạo đã chọn không còn thuộc nhóm Lãnh đạo phê duyệt. |
-| 24 | `[MSG-ERR-BTNN-LXL-017]` | Lỗi (Alert/Modal) | "Trạng thái hồ sơ không cho phép trình phê duyệt." | Lỗi trạng thái hồ sơ bị thay đổi không cho phép trình ký. |
-| 25 | `[MSG-ERR-BTNN-LXL-018]` | Lỗi (Alert/Modal) | "Chỉ cán bộ xử lý được trình phê duyệt." | Lỗi kiểm tra cán bộ xử lý khi trình ký. |
-| 26 | `[MSG-ERR-VAL-002]` | Cảnh báo dưới ô | "Địa chỉ email không đúng định dạng (ví dụ: abc@domain.com)" | Trường `Email` của người yêu cầu, người bị thiệt hại tại MH02 [BR-VAL-002]. |
-| 27 | `[MSG-ERR-VAL-003]` | Cảnh báo dưới ô | "Số điện thoại không hợp lệ (độ dài 8-15 ký tự, bắt đầu bằng 0 hoặc +)" | Trường `Số điện thoại` của người yêu cầu, người bị thiệt hại tại MH02 [BR-VAL-003]. |
-| 28 | `[MSG-ERR-FILE-001]` | Cảnh báo | Theo MessageList dùng chung | Tệp sai định dạng tại MH02, MH03 và Popup Trình ký (Ký ngoài chỉ nhận `.pdf`). |
-| 29 | `[MSG-ERR-FILE-002]` | Cảnh báo | Theo MessageList dùng chung | Tệp vượt dung lượng cho phép tại MH02, MH03 và Popup Trình ký. |
-
-- Các mã không còn sử dụng tại phân hệ (đã bỏ khỏi bảng này và khỏi [MessageList - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md)): [MSG-SUC-BTNN-XDCQ-016] (trình duyệt tiếp nhận tại MH02), [MSG-WRN-BTNN-XDCQ-001] (Trình duyệt tại MH04), [MSG-ERR-BTNN-XDCQ-001], [MSG-ERR-BTNN-XDCQ-002] (Popup Chuyển cơ quan giải quyết bồi thường).
-
----
+|  |  |  | **TH Hợp lệ**: Hệ thống ban hành trực tiếp, không trình Lãnh đạo:<br>- Lưu dữ liệu nghiệp vụ như TH Hợp lệ của chức năng `Hoàn tất & Trình ký`; lưu văn bản đã ký của hồ sơ là tệp PDF cán bộ tải lên.<br>- **Cập nhật trạng thái hồ sơ theo Loại trình**:<br>+ Loại trình `Kết quả xác định CQGQBT`: chuyển trạng thái `Đã chuyển CQGQBT` (hệ thống tự động chuyển theo [Tự động chuyển CQGQBT](#xd-tu-dong-chuyen)).<br>+ Loại trình `Yêu cầu bổ sung`: chuyển trạng thái `Yêu cầu bổ sung` (ghi thêm 01 lần vào khối `THÔNG TIN YÊU CẦU BỔ SUNG`).<br>+ Loại trình `Không thụ lý`: chuyển trạng thái `Không thụ lý`.<br>- Ghi Lịch sử xử lý `Ban hành [Loại trình] (Ký ngoài)` kèm tên tệp đã ký.<br>- Đóng popup, hiển thị thông báo thành công *"Đã ban hành [Loại trình] (Ký ngoài) hồ sơ [Mã hồ sơ]. Trạng thái: [Trạng thái]."* (Loại trình `Kết quả xác định CQGQBT` ghi thêm CQGQBT nhận hồ sơ và Mã hồ sơ GQBT) và tải lại danh sách MH01. |

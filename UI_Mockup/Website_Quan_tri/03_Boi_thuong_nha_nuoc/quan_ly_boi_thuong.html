@@ -1475,6 +1475,40 @@
             opacity: 0.8;
         }
 
+        .ktl-drop-zone {
+            border: 2px dashed #94a3b8;
+            background: #f8fafc;
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            color: #64748b;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            min-height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 10px;
+        }
+        .ktl-drop-zone.drag-over {
+            border-color: #2563eb;
+            background: #eff6ff;
+            color: #1e40af;
+            transform: scale(1.02);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+        }
+        .draggable-sig-card {
+            cursor: grab;
+            user-select: none;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .draggable-sig-card:active {
+            cursor: grabbing;
+            transform: scale(0.98);
+        }
+
         @media print {
             body * {
                 visibility: hidden !important;
@@ -1577,12 +1611,12 @@
             <div class="card-section"
                 style="padding: 0 20px 14px 20px; border-radius: var(--border-radius-md); background: white; margin-bottom: 12px;">
                 <div style="display:flex; gap: 8px; align-items:center; border-bottom:1px solid var(--border-color); overflow-x:auto; overflow-y:hidden;">
-                    <!-- 02 tab danh sách: Vụ việc chờ xử lý (còn bước xử lý tiếp theo) / Vụ việc đã xử lý (đã kết thúc, chỉ xem) -->
+                    <!-- 02 tab danh sách: Chờ xử lý (còn bước xử lý tiếp theo) / Đã xử lý (đã kết thúc, chỉ xem) -->
                     <button class="tab-btn active" id="workflowTabChoXuLy" onclick="switchClaimsWorkflowTab('cho-xu-ly')">
-                        <i class="fa-solid fa-list-check"></i> Vụ việc chờ xử lý <span class="workflow-tab-count" id="workflowTabChoXuLyCount" style="display:inline-block; min-width:20px; padding:1px 7px; margin-left:4px; border-radius:10px; background:#e2e8f0; color:#334155; font-size:11.5px; font-weight:700; text-align:center;">0</span>
+                        <i class="fa-solid fa-list-check"></i> Chờ xử lý <span class="workflow-tab-count" id="workflowTabChoXuLyCount" style="display:inline-block; min-width:20px; padding:1px 7px; margin-left:4px; border-radius:10px; background:#fee2e2; color:#b91c1c; font-size:11.5px; font-weight:700; text-align:center;">0</span>
                     </button>
                     <button class="tab-btn" id="workflowTabDaXuLy" onclick="switchClaimsWorkflowTab('da-xu-ly')">
-                        <i class="fa-solid fa-box-archive"></i> Vụ việc đã xử lý <span class="workflow-tab-count" id="workflowTabDaXuLyCount" style="display:inline-block; min-width:20px; padding:1px 7px; margin-left:4px; border-radius:10px; background:#e2e8f0; color:#334155; font-size:11.5px; font-weight:700; text-align:center;">0</span>
+                        <i class="fa-solid fa-box-archive"></i> Đã xử lý <span class="workflow-tab-count" id="workflowTabDaXuLyCount" style="display:inline-block; min-width:20px; padding:1px 7px; margin-left:4px; border-radius:10px; background:#e2e8f0; color:#334155; font-size:11.5px; font-weight:700; text-align:center;">0</span>
                     </button>
                 </div>
             </div>
@@ -1618,7 +1652,14 @@
                 <div class="grid-4-cols" style="margin-bottom: 16px;">
                     <div>
                         <span class="form-label">Trạng thái vụ việc</span>
-                        <select class="form-control" id="searchStatus">
+                        <select class="form-control" id="searchStatus" onchange="syncApprovalKindFilter()">
+                            <option value="">Tất cả</option>
+                        </select>
+                    </div>
+                    <div id="searchApprovalKindGroup" style="display: none;">
+                        <span class="form-label">Loại trình</span>
+                        <!-- Chỉ hiển thị khi Trạng thái vụ việc = Chờ duyệt / Bị trả lại; danh sách lấy theo BTNN_WF.APPROVAL_KINDS.YCBT -->
+                        <select class="form-control" id="searchApprovalKind">
                             <option value="">Tất cả</option>
                         </select>
                     </div>
@@ -1630,16 +1671,8 @@
                         <span class="form-label">Tiếp nhận: Đến ngày</span>
                         <input type="text" class="form-control" id="searchToDate" placeholder="06/07/2026">
                     </div>
-                    <div>
-                        <span class="form-label">Hạn xử lý: Từ ngày</span>
-                        <input type="text" class="form-control" id="searchFromHan" placeholder="dd/mm/yyyy">
-                    </div>
                 </div>
                 <div class="grid-4-cols" style="margin-bottom: 16px;">
-                    <div>
-                        <span class="form-label">Hạn xử lý: Đến ngày</span>
-                        <input type="text" class="form-control" id="searchToHan" placeholder="dd/mm/yyyy">
-                    </div>
                     <div>
                         <span class="form-label">Nguồn hồ sơ</span>
                         <select class="form-control" id="searchNguonHoSo">
@@ -1660,15 +1693,6 @@
                             <option value="Qua dịch vụ bưu chính">Qua dịch vụ bưu chính</option>
                         </select>
                     </div>
-                    <div id="searchApprovalKindGroup" style="display: none;">
-                        <span class="form-label">Nội dung trình</span>
-                        <!-- Chỉ hiển thị khi Trạng thái vụ việc = Chờ duyệt / Bị trả lại; danh sách lấy theo BTNN_WF.APPROVAL_KINDS.YCBT -->
-                        <select class="form-control" id="searchApprovalKind">
-                            <option value="">Tất cả</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="grid-4-cols" style="margin-bottom: 16px;">
                     <div>
                         <span class="form-label">Loại yêu cầu</span>
                         <select class="form-control" id="searchRequestKind">
@@ -1680,25 +1704,15 @@
                         </select>
                     </div>
                     <div>
-                        <span class="form-label">Trạng thái Phục hồi danh dự</span>
-                        <select class="form-control" id="searchPhddStatus">
-                            <option value="">Tất cả</option>
-                            <option value="Đang phục hồi danh dự">Đang phục hồi danh dự</option>
-                            <option value="Hoàn thành">Hoàn thành</option>
-                            <option value="Đình chỉ giải quyết">Đình chỉ giải quyết</option>
-                        </select>
-                    </div>
-                    <div>
                         <span class="form-label">Mã hồ sơ</span>
                         <input type="text" class="form-control" id="searchHoSoCode" placeholder="VD: BT-2026-001">
                     </div>
-                    <div
-                        style="display: flex; justify-content: flex-end; gap: 8px; align-items: flex-end; height: 100%;">
-                        <button class="btn btn-secondary" onclick="resetClaimsFilter()"><i
-                                class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
-                        <button class="btn btn-primary" onclick="currentClaimsPage=1; renderClaimsTable()"><i
-                                class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
-                    </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px;">
+                    <button class="btn btn-secondary" onclick="resetClaimsFilter()"><i
+                            class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                    <button class="btn btn-primary" onclick="currentClaimsPage=1; renderClaimsTable()"><i
+                            class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
                 </div>
             </div>
 
@@ -1712,10 +1726,8 @@
                 <button type="button" class="quick-kind-chip" data-kind="has-phdd" onclick="setClaimsQuickKind('has-phdd')"><i class="fa-solid fa-ribbon"></i> Phục hồi danh dự <span class="chip-count" id="quickKindCountPhdd">0</span></button>
             </div>
                 <div style="display: flex; gap: 8px; align-items: center;">
-                    <!-- Chỉ hiển thị tại Tab "Vụ việc chờ xử lý" (vai trò Cán bộ xử lý): mở màn nhập liệu hồ sơ ở chế độ tạo mới -->
                     <button class="btn btn-primary" id="btnCreateClaimRequest" onclick="openInlineClaimForm(null)"><i
                             class="fa-solid fa-plus"></i> Tạo yêu cầu</button>
-                    <button type="button" class="btn btn-warning" id="btnTriggerDemoMra" style="background-color:var(--warning-color); border-color:#d97706; color:#fff; font-weight:600;" onclick="openRequireAdditionModal('HS-NEW-01')"><i class="fa-solid fa-circle-question"></i> Yêu cầu bổ sung</button>
                     <button class="btn btn-secondary" onclick="exportExcelB()"><i class="fa-solid fa-file-excel"></i>
                         Kết xuất Excel</button>
                 </div>
@@ -1748,7 +1760,7 @@
                             <th style="width: 110px; text-align: center;">Hạn xử lý</th>
                             <th style="width: 140px; text-align: center;">Nguồn hồ sơ</th>
                             <th style="width: 140px; text-align: center;">Trạng thái</th>
-                            <th id="claimsActionColHeader" style="width: 190px; text-align: center; min-width: 180px;">Thao tác</th>
+                            <th id="claimsActionColHeader" style="width: 150px; text-align: center; min-width: 140px;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="claimsTableBody">
@@ -4417,7 +4429,7 @@
     </div>
 
     <!-- Luồng phân công - phê duyệt dùng chung BTNN: nguồn hồ sơ YCBT nhận từ Xác định CQGQBT -->
-    <script src="btnn_luong_xu_ly.js?v=20261020kd"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261020v5"></script>
     <!-- Cử người giải quyết (nhiều cán bộ theo Cơ cấu tổ chức), Xác minh thiệt hại nhiều lần, Văn bản làm căn cứ yêu cầu bồi thường -->
     <script>
         function ycEsc(v) {
@@ -9533,10 +9545,21 @@
         function updateClaimsWorkflowTabCounts(currentRole, currentOfficer) {
             // Đếm theo Mã vụ việc (01 vụ việc có thể có nhiều hồ sơ BT- khi Chuyển CQGQBT)
             const countOf = tab => new Set(claimsList.filter(item => claimInWorkflowTab(tab, item, currentRole, currentOfficer)).map(claimVvCode)).size;
+            const pendingCount = countOf('cho-xu-ly');
+            const doneCount = countOf('da-xu-ly');
             const elPending = document.getElementById('workflowTabChoXuLyCount');
             const elDone = document.getElementById('workflowTabDaXuLyCount');
-            if (elPending) elPending.innerText = countOf('cho-xu-ly');
-            if (elDone) elDone.innerText = countOf('da-xu-ly');
+            if (elPending) elPending.innerText = pendingCount;
+            if (elDone) elDone.innerText = doneCount;
+
+            // Đồng bộ sang menu cha (LeftMenu) và lưu localStorage
+            try {
+                localStorage.setItem('btnn_gq_pending_count', String(pendingCount));
+                if (window.parent && window.parent !== window) {
+                    window.parent.postMessage({ type: 'btnn:gqPending', count: pendingCount }, '*');
+                    window.parent.postMessage({ type: 'BTNN_GQ_COUNT_UPDATED', count: pendingCount }, '*');
+                }
+            } catch (err) { }
         }
 
         function updateSearchStatusOptionsByTab(tab) {
@@ -9577,8 +9600,8 @@
             renderClaimsTable();
         }
 
-        // Cột Thao tác (chỉ có tại Tab "Vụ việc chờ xử lý"): 05 thao tác ở vị trí cố định trên mọi dòng
-        // Tiếp nhận | Yêu cầu bổ sung | Không thụ lý | Cập nhật | Chuyển CQGQBT.
+        // Cột Thao tác (chỉ có tại Tab "Vụ việc chờ xử lý"): 04 thao tác ở vị trí cố định trên mọi dòng
+        // Tiếp nhận | Không thụ lý | Cập nhật | Chuyển CQGQBT (không hiển thị nút Yêu cầu bổ sung ngoài lưới).
         // "Cập nhật" là thao tác cập nhật kết quả chung, mở đúng nội dung theo trạng thái của hồ sơ:
         // Bị trả lại -> cập nhật hồ sơ đã trình (hiển thị lý do trả lại); Chờ phát hành văn bản -> phát hành văn bản yêu cầu bổ sung;
         // Đang xác minh thiệt hại ... Tạm đình chỉ giải quyết -> cập nhật kết quả giải quyết; Đang phục hồi danh dự -> cập nhật phục hồi danh dự.
@@ -9586,12 +9609,11 @@
         // với chú thích "[Tên thao tác]: [lý do]". Hồ sơ Chờ duyệt / Chờ thụ lý: không có thao tác.
         const CLAIM_LIST_ACTIONS = {
             accept: { icon: 'fa-solid fa-check-to-slot', cls: 'accept', title: 'Tiếp nhận' },
-            supplement: { icon: 'fa-solid fa-circle-question', cls: 'supplement', title: 'Yêu cầu bổ sung' },
             reject: { icon: 'fa-solid fa-ban', cls: 'reject', title: 'Không thụ lý' },
             update: { icon: 'fa-solid fa-pen-to-square', cls: 'edit', title: 'Cập nhật' },
             transfer: { icon: 'fa-solid fa-right-left', cls: 'transfer', title: 'Chuyển cơ quan giải quyết bồi thường' }
         };
-        const CLAIM_LIST_ACTION_ORDER = ['accept', 'supplement', 'reject', 'update', 'transfer'];
+        const CLAIM_LIST_ACTION_ORDER = ['accept', 'reject', 'update', 'transfer'];
         const CLAIM_THULY_AT_LEADER = 'Thủ trưởng cơ quan giải quyết bồi thường quyết định Thụ lý / Không thụ lý (vai trò Lãnh đạo đơn vị)';
         const CLAIM_QD_AT_MODULE = 'Quyết định giải quyết bồi thường được lập, trình ký và ban hành tại chức năng Quyết định giải quyết bồi thường';
 
@@ -9634,7 +9656,7 @@
                 const ldOn = (key, cls, icon, title, fn) => `<button class="icon-btn ${cls}" data-action="${key}" title="${esc(title)}" onclick="event.stopPropagation(); ${fn}"><i class="${icon}"></i></button>`;
                 const ldOff = (key, cls, icon, title) => `<button type="button" class="icon-btn ${cls} is-disabled" data-action="${key}" aria-disabled="true" title="${esc(title + ': ' + why)}" style="opacity:0.35; cursor:not-allowed;" onclick="event.stopPropagation();"><i class="${icon}"></i></button>`;
                 const thuLy = status === 'Chờ thụ lý';
-                const tA = thuLy ? 'Phê duyệt thụ lý (cử người giải quyết)' : 'Phê duyệt';
+                const tA = thuLy ? 'Phê duyệt thụ lý' : 'Phê duyệt';
                 const tR = thuLy ? 'Từ chối (Không thụ lý)' : 'Từ chối phê duyệt';
                 return can
                     ? ldOn('approve', 'accept', 'fa-solid fa-circle-check', tA, `gqLeaderApprove('${id}')`) + ldOn('reject', 'reject', 'fa-solid fa-circle-xmark', tR, `gqLeaderReject('${id}')`)
@@ -9649,7 +9671,6 @@
             CLAIM_LIST_ACTION_ORDER.forEach(k => { slots[k] = off(k, notAt); });
             if (!honorStarted && (status === 'Chờ tiếp nhận' || status === 'Yêu cầu bổ sung')) {
                 slots.accept = on('accept', `openInlineClaimForm('${id}')`, status === 'Yêu cầu bổ sung' ? 'Tiếp nhận hồ sơ bổ sung' : 'Tiếp nhận');
-                slots.supplement = on('supplement', `triggerRequireAdditionClaim('${id}')`);
                 slots.reject = on('reject', `triggerRejectClaim('${id}')`);
             }
             const upd = claimUpdateAction(item);
@@ -19194,7 +19215,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                             <input type="file" id="mraOnlineFileInput" style="display:none;" accept=".pdf,.doc,.docx" onchange="handleMraOnlineFileUpload(this)">
                             <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
                                 <button type="button" class="btn btn-secondary" onclick="document.getElementById('mraOnlineFileInput').click()" style="padding:7px 16px; font-size:13px;">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i> Tải file từ máy tính
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> Tải file
                                 </button>
                                 <button type="button" class="btn btn-primary" onclick="generateMau03Document()" style="padding:7px 18px; font-size:13px; background:#2563eb; border-color:#2563eb; box-shadow:0 2px 6px rgba(37,99,235,0.25);">
                                     <i class="fa-solid fa-wand-magic-sparkles"></i> Tự động sinh văn bản Mẫu 03/BTNN
@@ -19479,6 +19500,562 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         <i class="fa-solid fa-arrow-left"></i> Quay lại
                     </button>
                     <button id="mraBtnSubmitOnline" type="button" class="btn btn-primary" onclick="submitMraOnline()" style="display:none; background:#16a34a; border-color:#16a34a; box-shadow:0 2px 6px rgba(22,163,74,0.3);">
+                        <i class="fa-solid fa-paper-plane"></i> Hoàn tất & Trình Lãnh đạo
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal Không thụ lý hồ sơ (2-step Wizard: Mẫu 04/BTNN + Ký số / Ký ngoài) -->
+    <div id="modalGqKtl" class="confirm-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(15, 23, 42, 0.65); backdrop-filter:blur(2px); z-index:9999; justify-content:center; align-items:center;">
+        <div id="modalGqKtlContainer" class="sticky-modal-container" style="background:#fff; width:850px; max-width:96%; border-radius:10px; display:flex; flex-direction:column; max-height:94vh; overflow:hidden; box-shadow:0 20px 45px rgba(0,0,0,0.3); transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+            
+            <!-- Modal Header -->
+            <div class="confirm-modal-header" style="background:#f8fafc; border-bottom:1px solid var(--border-color); padding:18px 24px; display:flex; justify-content:space-between; align-items:flex-start; flex-shrink:0;">
+                <div>
+                    <div style="font-size:16.5px; font-weight:700; color:#1e293b; display:flex; align-items:center; gap:8px;">
+                        <span style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:50%; background:#fee2e2; color:#dc2626; font-size:14px;">
+                            <i class="fa-solid fa-ban"></i>
+                        </span>
+                        <span>KHÔNG THỤ LÝ HỒ SƠ YÊU CẦU BỒI THƯỜNG</span>
+                    </div>
+                    <div style="font-size:12.5px; color:#64748b; margin-top:4px; padding-left:38px;">
+                        Hồ sơ: <strong id="ktlClaimCode" style="color:var(--primary-color);">--</strong>
+                        <span style="margin:0 6px;">•</span> Người yêu cầu: <span id="ktlClaimNYC" style="font-weight:600; color:#334155;">--</span>
+                        <span style="margin:0 6px;">•</span> Đơn vị: <span id="ktlClaimAgency" style="font-weight:500; color:#475569;">--</span>
+                    </div>
+                </div>
+                <button type="button" onclick="closeGqKtlModal()" style="border:none; background:transparent; font-size:22px; color:#94a3b8; cursor:pointer; line-height:1; padding:4px;" title="Đóng modal">&times;</button>
+            </div>
+
+            <!-- Stepper Bar (Hiển thị khi ký số trên hệ thống) -->
+            <div id="ktlStepperBar" style="background:#f1f5f9; padding:8px 24px; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; gap:16px; flex-shrink:0;">
+                <div id="ktlStep1Tab" style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#2563eb; cursor:pointer;" onclick="goToKtlStep1()">
+                    <span style="display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background:#2563eb; color:#fff; font-size:11px;">1</span>
+                    <span>1. Lý do không thụ lý & Luồng duyệt</span>
+                </div>
+                <i class="fa-solid fa-chevron-right" style="font-size:11px; color:#94a3b8;"></i>
+                <div id="ktlStep2Tab" style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:500; color:#64748b; cursor:pointer;" onclick="goToKtlStep2()">
+                    <span id="ktlStep2Badge" style="display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background:#e2e8f0; color:#64748b; font-size:11px;">2</span>
+                    <span>2. Soát xét Mẫu 04/BTNN & Định vị chữ ký</span>
+                </div>
+            </div>
+
+            <!-- STEP 1 BODY -->
+            <div id="ktlStep1Body" class="sticky-modal-body" style="padding:22px 28px; overflow-y:auto; flex:1;">
+                
+                <!-- Báo động hồ sơ bị Lãnh đạo trả về -->
+                <div id="ktlReturnedAlertBlock" style="display:none; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:12px 16px; margin-bottom:18px;">
+                    <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b91c1c; margin-bottom:4px;">
+                        <i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TRẢ VỀ YÊU CẦU CHỈNH SỬA
+                    </div>
+                    <div style="font-size:12.5px; color:#7f1d1d; line-height:1.5;">
+                        Lý do trả về: <strong id="ktlReturnedReason">--</strong><br>
+                        Người trả về: <span id="ktlReturnedOfficer">--</span> • Thời điểm: <span id="ktlReturnedDate">--</span>
+                    </div>
+                </div>
+
+                <!-- KHỐI 1: THÔNG TIN KHÔNG THỤ LÝ -->
+                <div style="font-weight:700; font-size:13.5px; color:#1e293b; text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-file-circle-xmark" style="color:#dc2626;"></i> THÔNG TIN KHÔNG THỤ LÝ HỒ SƠ
+                </div>
+
+                <div class="row g-3">
+                    <!-- Lý do không thụ lý (Dropdown bắt buộc) -->
+                    <div class="col-12">
+                        <label class="form-label" style="font-weight:600; font-size:13px;">Lý do không thụ lý <span style="color:#dc2626;">*</span></label>
+                        <select id="ktlReason" class="form-select form-select-sm" style="font-size:13px;" onchange="handleKtlReasonChange()">
+                            <option value="">-- Chọn lý do không thụ lý (theo Điều 43 Luật TNBTCNN) --</option>
+                            <option value="KTL_01">KTL_01 - Yêu cầu bồi thường không thuộc thẩm quyền giải quyết của mình (Điểm a Khoản 1 Điều 43)</option>
+                            <option value="KTL_02">KTL_02 - Thời hiệu yêu cầu bồi thường đã hết (Điểm b Khoản 1 Điều 43)</option>
+                            <option value="KTL_03">KTL_03 - Yêu cầu bồi thường không thuộc phạm vi trách nhiệm bồi thường của Nhà nước (Điểm c Khoản 1 Điều 43)</option>
+                            <option value="KTL_04">KTL_04 - Người yêu cầu bồi thường không phải là người có quyền yêu cầu bồi thường (Điểm d Khoản 1 Điều 43)</option>
+                            <option value="KTL_05">KTL_05 - Hồ sơ không đầy đủ mà người yêu cầu không bổ sung trong thời hạn quy định (Điểm đ Khoản 1 Điều 43)</option>
+                            <option value="KTL_06">KTL_06 - Yêu cầu bồi thường đã được Tòa án có thẩm quyền thụ lý theo thủ tục tố tụng dân sự (Điểm e Khoản 1 Điều 43)</option>
+                            <option value="KTL_07">KTL_07 - Yêu cầu bồi thường đã được Tòa án có thẩm quyền chấp nhận (Điểm g Khoản 1 Điều 43)</option>
+                        </select>
+                        <div id="ktlReasonErr" class="invalid-feedback" style="display:none; font-size:12px; color:#dc2626; margin-top:3px;">
+                            <i class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc
+                        </div>
+                    </div>
+
+                    <!-- Diễn giải lý do (Không bắt buộc) -->
+                    <div class="col-12">
+                        <label class="form-label" style="font-weight:600; font-size:13px;">Diễn giải <span style="font-weight:normal; color:#64748b; font-size:12px;">(không bắt buộc)</span></label>
+                        <textarea id="ktlDetail" class="form-control form-control-sm" rows="3" style="font-size:13px;" placeholder="Nhập chi tiết căn cứ, lý do hoặc ghi chú bổ sung nếu có..."></textarea>
+                    </div>
+
+                    <!-- Khối Chuyển cơ quan tiếp nhận mới (Chỉ hiển thị khi chọn KTL_01) -->
+                    <div id="ktlTransferBlock" class="col-12" style="display:none;">
+                        <div style="background:#f0fdf4; border:1px solid #86efac; border-radius:8px; padding:16px;">
+                            <div style="font-size:13px; font-weight:700; color:#166534; display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                                <i class="fa-solid fa-right-left"></i> Chuyển cơ quan tiếp nhận mới (theo Điểm a Khoản 1 Điều 43)
+                            </div>
+                            
+                            <!-- Container cho mountKtlTransfer từ workflow JS -->
+                            <div id="gqKtlModeBox"></div>
+                            
+                            <div style="margin-top:12px;">
+                                <label class="form-label" style="font-weight:600; font-size:12.5px;">Căn cứ / Nội dung chuyển</label>
+                                <textarea id="ktlTransferNote" class="form-control form-control-sm" rows="2" style="font-size:12.5px;" placeholder="Ghi chú căn cứ pháp lý chuyển hồ sơ..."></textarea>
+                            </div>
+
+                            <div style="margin-top:12px;">
+                                <label class="form-label" style="font-weight:600; font-size:12.5px;">Tài liệu đính kèm kèm theo phiếu chuyển</label>
+                                <div style="display:flex; align-items:center; gap:10px;">
+                                    <input type="file" id="ktlTransferFileInput" style="display:none;" multiple onchange="handleKtlTransferFileUpload(this)">
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('ktlTransferFileInput').click()">
+                                        <i class="fa-solid fa-paperclip"></i> Đính kèm tài liệu
+                                    </button>
+                                    <span style="font-size:12px; color:#64748b;">(Tối đa 10MB/tệp, định dạng: PDF, DOCX, ZIP)</span>
+                                </div>
+                                <div id="ktlTransferFileList" style="margin-top:8px; display:flex; flex-direction:column; gap:4px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KHỐI 2: HÌNH THỨC KÝ BAN HÀNH VĂN BẢN -->
+                <div style="margin-top:24px; padding-top:18px; border-top:1px dashed #e2e8f0;">
+                    <div style="font-weight:700; font-size:13.5px; color:#1e293b; text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-signature" style="color:var(--primary-color);"></i> HÌNH THỨC KÝ BAN HÀNH VĂN BẢN
+                    </div>
+
+                    <div style="display:flex; gap:20px; align-items:center; background:#f8fafc; padding:12px 18px; border-radius:8px; border:1px solid #e2e8f0;">
+                        <div class="form-check" style="margin-bottom:0;">
+                            <input class="form-check-input" type="radio" name="ktlSigningMethod" id="ktlSigningMethodOnline" value="online" checked onchange="toggleKtlSigningMethod('online')">
+                            <label class="form-check-label" for="ktlSigningMethodOnline" style="font-weight:600; font-size:13px; color:#1e293b; cursor:pointer;">
+                                <i class="fa-solid fa-file-signature" style="color:#2563eb; margin-right:4px;"></i> Ký số trên hệ thống (Trình duyệt & Ký số điện tử - 2 bước)
+                            </label>
+                        </div>
+                        <div class="form-check" style="margin-bottom:0;">
+                            <input class="form-check-input" type="radio" name="ktlSigningMethod" id="ktlSigningMethodOffline" value="offline" onchange="toggleKtlSigningMethod('offline')">
+                            <label class="form-check-label" for="ktlSigningMethodOffline" style="font-weight:600; font-size:13px; color:#1e293b; cursor:pointer;">
+                                <i class="fa-solid fa-upload" style="color:#0284c7; margin-right:4px;"></i> Ký ngoài (Tải lên file PDF đã ký & đóng dấu - 1 bước)
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SECTION OFFLINE (KÝ NGOÀI) -->
+                <div id="ktlOfflineSection" style="display:none; margin-top:18px; background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:16px;">
+                    <div style="font-size:13px; font-weight:700; color:#0369a1; display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                        <i class="fa-solid fa-file-circle-check"></i> Tải lên Thông báo không thụ lý đã ký & đóng dấu giấy/ngoài hệ thống
+                    </div>
+                    <div style="font-size:12.5px; color:#0c4a6e; line-height:1.5; margin-bottom:12px;">
+                        Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu hoàn thiện. Sau khi bấm <strong>"Hoàn thành"</strong>, hồ sơ sẽ được cập nhật trạng thái không thụ lý ngay lập tức mà không cần luồng duyệt ký số trên hệ thống.
+                    </div>
+                    
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <input type="file" id="ktlOfflineFileInput" accept=".pdf" style="display:none;" onchange="handleKtlOfflineFileUpload(this)">
+                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="document.getElementById('ktlOfflineFileInput').click()">
+                            <i class="fa-solid fa-upload"></i> Chọn tệp PDF đã ký <span style="color:#dc2626;">*</span>
+                        </button>
+                    </div>
+
+                    <div id="ktlOfflineFileRow" style="display:none; margin-top:10px; background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:8px 14px; align-items:center; justify-content:space-between;">
+                        <div style="display:flex; align-items:center; gap:8px; font-size:13px;">
+                            <i class="fa-solid fa-file-pdf" style="color:#dc2626; font-size:16px;"></i>
+                            <span id="ktlOfflineFileName" style="font-weight:600; color:#1e293b;"></span>
+                            <span id="ktlOfflineFileSize" style="color:#64748b; font-size:12px;"></span>
+                        </div>
+                        <div style="display:flex; gap:10px;">
+                            <a id="ktlOfflineFileView" href="javascript:void(0)" onclick="previewKtlOfflineFile()" style="font-size:12.5px; color:#2563eb; text-decoration:none;"><i class="fa-solid fa-eye"></i> Xem file</a>
+                            <a href="javascript:void(0)" onclick="removeKtlOfflineFile()" style="font-size:12.5px; color:#dc2626; text-decoration:none;"><i class="fa-solid fa-trash-can"></i> Xóa</a>
+                        </div>
+                    </div>
+                    <div id="ktlOfflineFileErr" style="display:none; font-size:12px; color:#dc2626; margin-top:4px;">
+                        <i class="fa-solid fa-circle-exclamation"></i> Vui lòng tải lên tệp PDF thông báo đã ký
+                    </div>
+                </div>
+
+                <!-- SECTION ONLINE (KÝ SỐ TRÊN HỆ THỐNG) -->
+                <div id="ktlOnlineSection" style="margin-top:18px;">
+                    <!-- Văn bản trình ký (Mẫu 04/BTNN) -->
+                    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:14px 16px; margin-bottom:16px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <div style="font-size:13px; font-weight:700; color:#1e293b;">
+                                <i class="fa-solid fa-file-lines" style="color:#2563eb;"></i> Văn bản trình ký (Mẫu số 04/BTNN)
+                            </div>
+                            <div style="display:flex; gap:8px;">
+                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="generateMau04Document()" style="font-size:12px;">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> Tạo lại văn bản Mẫu 04/BTNN
+                                </button>
+                                <input type="file" id="ktlOnlineFileInput" accept=".pdf" style="display:none;" onchange="handleKtlOnlineFileUpload(this)">
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('ktlOnlineFileInput').click()" style="font-size:12px;">
+                                    <i class="fa-solid fa-upload"></i> Tải file khác từ máy tính
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Card file Mẫu 04 -->
+                        <div id="ktlMau04FileRow" style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between;">
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <span class="badge" style="background:#e0e7ff; color:#3730a3; font-size:11px; padding:4px 8px;">Mẫu 04/BTNN</span>
+                                <i class="fa-solid fa-file-pdf" style="color:#dc2626; font-size:18px;"></i>
+                                <div>
+                                    <div id="ktlMau04FileName" style="font-size:13px; font-weight:600; color:#1e293b;">Mau_04_BTNN_Thong_bao_khong_thu_ly.pdf</div>
+                                    <div id="ktlMau04FileSize" style="font-size:11.5px; color:#64748b;">PDF • Tự động tạo theo dữ liệu hồ sơ</div>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:12px;">
+                                <a href="javascript:void(0)" onclick="goToKtlStep2()" style="font-size:12.5px; color:#2563eb; text-decoration:none;"><i class="fa-solid fa-magnifying-glass"></i> Xem trước & Định vị chữ ký</a>
+                                <a href="javascript:void(0)" onclick="downloadMau04Pdf()" style="font-size:12.5px; color:#475569; text-decoration:none;"><i class="fa-solid fa-download"></i> Tải về</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Số văn bản & Ngày văn bản -->
+                    <div class="row g-3" style="margin-bottom:16px;">
+                        <div class="col-md-6">
+                            <label class="form-label" style="font-weight:600; font-size:13px;">Số ký hiệu văn bản <span style="color:#dc2626;">*</span></label>
+                            <input type="text" id="ktlDocNumber" class="form-control form-control-sm" style="font-size:13px;" placeholder="VD: 142/TB-CBTNN">
+                            <div id="ktlDocNumberErr" class="invalid-feedback" style="display:none; font-size:12px; color:#dc2626; margin-top:3px;">
+                                <i class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" style="font-weight:600; font-size:13px;">Ngày ban hành văn bản <span style="color:#dc2626;">*</span></label>
+                            <div style="position:relative;">
+                                <input type="text" id="ktlDocDate" class="form-control form-control-sm" style="font-size:13px; background:#fff;" placeholder="dd/mm/yyyy" readonly>
+                                <span style="position:absolute; right:10px; top:50%; transform:translateY(-50%); color:#64748b; pointer-events:none;"><i class="fa-solid fa-calendar-days"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Luồng phê duyệt (2 cấp) -->
+                    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:16px;">
+                        <div style="font-weight:700; font-size:13px; color:#1e293b; text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                            <i class="fa-solid fa-users" style="color:#2563eb;"></i> LUỒNG DUYỆT & KÝ BAN HÀNH (2 CẤP)
+                        </div>
+
+                        <div class="row g-3">
+                            <!-- Cấp 1: Lãnh đạo Phòng (Duyệt chuyển tiếp) -->
+                            <div class="col-md-6">
+                                <label class="form-label" style="font-weight:600; font-size:13px;">
+                                    1. Lãnh đạo Phòng (Duyệt chuyển tiếp) <span style="color:#dc2626;">*</span>
+                                </label>
+                                <select id="ktlOfficerRoomSelect" class="form-select form-select-sm" style="font-size:13px;" onchange="handleKtlOfficerChange()">
+                                    <option value="">-- Chọn Lãnh đạo Phòng duyệt --</option>
+                                    <option value="Trần Văn Hùng - Trưởng phòng Nghiệp vụ BTNN" data-name="Trần Văn Hùng" data-role="Trưởng phòng Nghiệp vụ BTNN" selected>Trần Văn Hùng - Trưởng phòng Nghiệp vụ BTNN</option>
+                                    <option value="Nguyễn Thị Mai - Phó Trưởng phòng Nghiệp vụ BTNN" data-name="Nguyễn Thị Mai" data-role="Phó Trưởng phòng Nghiệp vụ BTNN">Nguyễn Thị Mai - Phó Trưởng phòng Nghiệp vụ BTNN</option>
+                                </select>
+                                <div id="ktlOfficerRoomErr" class="invalid-feedback" style="display:none; font-size:12px; color:#dc2626; margin-top:3px;">
+                                    <i class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc
+                                </div>
+                                <div style="font-size:11.5px; color:#64748b; margin-top:3px;">
+                                    * Ký chuyển duyệt hồ sơ, không bắt buộc chứng thư số.
+                                </div>
+                            </div>
+
+                            <!-- Cấp 2: Lãnh đạo Đơn vị (Ký số CA) -->
+                            <div class="col-md-6">
+                                <label class="form-label" style="font-weight:600; font-size:13px;">
+                                    2. Lãnh đạo Đơn vị (Ký số & Ban hành) <span style="color:#dc2626;">*</span>
+                                </label>
+                                <select id="ktlOfficerAgencySelect" class="form-select form-select-sm" style="font-size:13px;" onchange="handleKtlOfficerChange()">
+                                    <option value="">-- Chọn Lãnh đạo Đơn vị ký số --</option>
+                                    <option value="Lê Hoàng Nam - Cục trưởng" data-name="Lê Hoàng Nam" data-role="Cục trưởng" selected>Lê Hoàng Nam - Cục trưởng</option>
+                                    <option value="Vũ Thu Trang - Phó Cục trưởng" data-name="Vũ Thu Trang" data-role="Phó Cục trưởng">Vũ Thu Trang - Phó Cục trưởng</option>
+                                </select>
+                                <div id="ktlOfficerAgencyErr" class="invalid-feedback" style="display:none; font-size:12px; color:#dc2626; margin-top:3px;">
+                                    <i class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc
+                                </div>
+                                <div style="font-size:11.5px; color:#64748b; margin-top:3px;">
+                                    * Ký số điện tử bằng Token/SmartCA và đóng dấu ban hành.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- STEP 2 BODY (Định vị chữ ký trên văn bản A4 Mẫu 04/BTNN) -->
+            <div id="ktlStep2Body" style="display:none; flex:1; overflow:hidden; flex-direction:row; background:#334155; position:relative;">
+                
+                <!-- VÙNG PREVIEW VĂN BẢN A4 (BÊN TRÁI) -->
+                <div id="ktlA4Container" style="flex:1; overflow-y:auto; overflow-x:auto; padding:30px 20px; display:flex; justify-content:center; align-items:flex-start;">
+                    
+                    <div id="ktlA4Page" class="a4-document-page" ondragover="handleKtlDragOver(event)" ondragleave="handleKtlDragLeave(event)" ondrop="handleKtlPageDrop(event)">
+                        
+                        <!-- Header Mẫu 04 -->
+                        <div style="display:flex; justify-content:space-between; margin-bottom:24px;">
+                            <div style="text-align:center; width:45%;">
+                                <div id="ktlA4AgencyHeader" style="font-weight:bold; font-size:13px; text-transform:uppercase;">BỘ TƯ PHÁP<br>CỤC ĐĂNG KÝ GIAO DỊCH BẢO ĐẢM VÀ BTNN</div>
+                                <div style="border-bottom:1px solid #000; width:100px; margin:4px auto 6px auto;"></div>
+                                <div style="font-size:13px;">Số: <span id="ktlA4DocNumber">.../TB-CBTNN</span></div>
+                            </div>
+                            <div style="text-align:center; width:52%;">
+                                <div style="font-weight:bold; font-size:13px;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                                <div style="font-weight:bold; font-size:13px;">Độc lập - Tự do - Hạnh phúc</div>
+                                <div style="border-bottom:1px solid #000; width:140px; margin:4px auto 6px auto;"></div>
+                                <div style="font-style:italic; font-size:13px;">Hà Nội, <span id="ktlA4DocDate">ngày ... tháng ... năm ...</span></div>
+                            </div>
+                        </div>
+
+                        <!-- Tiêu đề Thông báo -->
+                        <div style="text-align:center; margin-bottom:22px;">
+                            <div style="font-weight:bold; font-size:16px; text-transform:uppercase; letter-spacing:0.5px;">THÔNG BÁO</div>
+                            <div style="font-weight:bold; font-size:15px; text-transform:uppercase; margin-top:2px;">VỀ VIỆC KHÔNG THỤ LÝ HỒ SƠ YÊU CẦU BỒI THƯỜNG</div>
+                            <div style="font-style:italic; font-size:12.5px; color:#475569; margin-top:4px;">(Mẫu số 04/BTNN ban hành kèm theo Nghị định của Chính phủ)</div>
+                        </div>
+
+                        <!-- Kính gửi -->
+                        <div style="margin-bottom:18px; line-height:1.7;">
+                            <div style="display:flex;">
+                                <span style="min-width:70px; font-weight:bold;">Kính gửi:</span>
+                                <div>
+                                    <strong id="ktlA4NYC">Ông/Bà Nguyễn Văn A</strong><br>
+                                    <span>Địa chỉ: </span><span id="ktlA4Address">Số 123 Phố Huế, P. Hàng Bài, Q. Hoàn Kiếm, TP. Hà Nội</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Nội dung Thông báo -->
+                        <div style="line-height:1.75; text-align:justify; margin-bottom:24px;">
+                            <p style="text-indent:24px; margin-bottom:10px;">
+                                Căn cứ Luật Trách nhiệm bồi thường của Nhà nước năm 2017;
+                            </p>
+                            <p style="text-indent:24px; margin-bottom:10px;">
+                                Sau khi tiếp nhận và kiểm tra hồ sơ yêu cầu bồi thường (Vụ việc: <strong id="ktlA4ClaimCode">BTNN-2026-0012</strong>, tiếp nhận ngày <span id="ktlA4ReceivedDate">10/10/2026</span>);
+                            </p>
+                            <p style="text-indent:24px; margin-bottom:10px;">
+                                Căn cứ quy định tại Điều 43 Luật Trách nhiệm bồi thường của Nhà nước, Cơ quan giải quyết bồi thường thông báo <strong>không thụ lý</strong> hồ sơ yêu cầu bồi thường của Ông/Bà vì lý do sau đây:
+                            </p>
+                            
+                            <!-- Hộp lý do chính -->
+                            <div id="ktlA4ReasonContent" style="margin:12px 0 12px 24px; padding:10px 14px; background:#f8fafc; border-left:3px solid #dc2626; font-weight:600; color:#1e293b; line-height:1.6;">
+                                Yêu cầu bồi thường không thuộc phạm vi trách nhiệm bồi thường của Nhà nước theo quy định của pháp luật.
+                            </div>
+
+                            <!-- Diễn giải nếu có -->
+                            <div id="ktlA4DetailContent" style="margin:6px 0 12px 24px; font-style:italic; color:#334155; line-height:1.6;"></div>
+
+                            <!-- Đoạn thông báo chuyển cơ quan nếu KTL_01 -->
+                            <div id="ktlA4TransferNotice" style="display:none; text-indent:24px; margin-bottom:10px;">
+                                Hồ sơ yêu cầu bồi thường đã được chuyển đến: <strong id="ktlA4TransferTargetName" style="color:#166534;">--</strong> để xem xét, giải quyết theo thẩm quyền quy định.
+                            </div>
+
+                            <p style="text-indent:24px; margin-bottom:10px;">
+                                Do vậy, Cơ quan giải quyết bồi thường trả lại hồ sơ yêu cầu bồi thường (gửi kèm Thông báo này) và thông báo để Ông/Bà được biết.
+                            </p>
+                        </div>
+
+                        <!-- VÙNG KÝ TÊN VÀ NƠI NHẬN -->
+                        <div style="display:flex; justify-content:space-between; margin-top:30px; position:relative; min-height:180px;">
+                            
+                            <!-- Bên trái: Nơi nhận & Vị trí ký nháy Lãnh đạo Phòng -->
+                            <div style="width:42%;">
+                                <div style="font-weight:bold; font-size:12.5px; font-style:italic;">Nơi nhận:</div>
+                                <div style="font-size:11.5px; line-height:1.5;">
+                                    - Như trên;<br>
+                                    - Thủ trưởng cơ quan (để b/c);<br>
+                                    - Lưu: VT, Hồ sơ vụ việc.
+                                </div>
+
+                                <!-- Placeholder Drop Zone Ký nháy Lãnh đạo Phòng -->
+                                <div id="ktlDropZoneRoom" class="ktl-drop-zone" ondragover="handleKtlDragOver(event)" ondragleave="handleKtlDragLeave(event)" ondrop="handleKtlZoneDrop(event, 'room')">
+                                    <i class="fa-solid fa-pen-nib" style="color:#2563eb;"></i>
+                                    <span>Kéo thả chữ ký LĐ Phòng vào đây</span>
+                                </div>
+                            </div>
+
+                            <!-- Bên phải: Lãnh đạo Đơn vị Ký số & Đóng dấu -->
+                            <div style="width:50%; text-align:center;">
+                                <div id="ktlA4SignerTitle" style="font-weight:bold; font-size:13.5px; text-transform:uppercase;">CỤC TRƯỞNG</div>
+                                <div style="font-style:italic; font-size:12px; margin-top:2px;">(Ký, ghi rõ họ tên và đóng dấu)</div>
+
+                                <!-- Placeholder Drop Zone Ký số Lãnh đạo Đơn vị -->
+                                <div id="ktlDropZoneAgency" class="ktl-drop-zone" style="margin-top:14px; min-height:65px;" ondragover="handleKtlDragOver(event)" ondragleave="handleKtlDragLeave(event)" ondrop="handleKtlZoneDrop(event, 'agency')">
+                                    <i class="fa-solid fa-stamp" style="color:#dc2626; font-size:15px;"></i>
+                                    <span>Kéo thả chữ ký số LĐ Đơn vị vào đây</span>
+                                </div>
+
+                                <div style="height:32px;"></div>
+                                <div id="ktlA4SignerName" style="font-weight:bold; font-size:14px; text-transform:uppercase; margin-top:8px;">LÊ HOÀNG NAM</div>
+                            </div>
+                        </div>
+
+                        <!-- DRAGGABLE SIGNATURE BOX 1: Lãnh đạo Phòng (Ban đầu ẩn display:none) -->
+                        <div id="ktlSigBoxRoom" class="sig-drag-box" style="display:none; left:60px; top:860px; width:220px; height:90px; border:2px dashed #2563eb; background:rgba(239, 246, 255, 0.95); box-shadow:0 4px 14px rgba(37,99,235,0.22); z-index:10;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #bfdbfe; padding-bottom:3px; margin-bottom:4px;">
+                                <span style="font-weight:700; font-size:10.5px; color:#1e40af; text-transform:uppercase;"><i class="fa-solid fa-pen-nib"></i> KÝ DUYỆT (LĐ PHÒNG)</span>
+                                <span class="badge" style="background:#dbeafe; color:#1e40af; font-size:9.5px; padding:2px 5px;">Cấp 1</span>
+                            </div>
+                            <div style="flex:1; display:flex; flex-direction:column; justify-content:center; text-align:center;">
+                                <div id="ktlSigBoxRoomOfficer" style="font-weight:700; font-size:12px; color:#1e293b;">Trần Văn Hùng</div>
+                                <div style="font-size:10px; color:#64748b; font-style:italic;">Chữ ký nháy / Ý kiến duyệt</div>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; font-size:9.5px; color:#64748b; border-top:1px solid #e2e8f0; padding-top:2px;">
+                                <span id="ktlCoordRoomLabel">X: 60, Y: 860</span>
+                                <span onclick="removeKtlSigBox('room', event)" style="color:#dc2626; cursor:pointer;" title="Gỡ chữ ký khỏi văn bản"><i class="fa-solid fa-xmark"></i> Gỡ</span>
+                            </div>
+                            <!-- Resize handle -->
+                            <div class="sig-resize-handle" data-target="room"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>
+                        </div>
+
+                        <!-- DRAGGABLE SIGNATURE BOX 2: Lãnh đạo Đơn vị (Ban đầu ẩn display:none) -->
+                        <div id="ktlSigBoxAgency" class="sig-drag-box" style="display:none; left:480px; top:860px; width:245px; height:110px; border:2px dashed #dc2626; background:rgba(254, 242, 242, 0.95); box-shadow:0 4px 14px rgba(220,38,38,0.22); z-index:10;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #fecaca; padding-bottom:3px; margin-bottom:4px;">
+                                <span style="font-weight:700; font-size:10.5px; color:#991b1b; text-transform:uppercase;"><i class="fa-solid fa-stamp"></i> KÝ SỐ & CON DẤU</span>
+                                <span class="badge" style="background:#fee2e2; color:#991b1b; font-size:9.5px; padding:2px 5px;">Cấp 2 (Ký số CA)</span>
+                            </div>
+                            <div style="flex:1; display:flex; flex-direction:column; justify-content:center; text-align:center;">
+                                <div id="ktlSigBoxAgencyOfficer" style="font-weight:700; font-size:12.5px; color:#1e293b;">Lê Hoàng Nam</div>
+                                <div style="font-size:10.5px; color:#dc2626; font-style:italic;"><i class="fa-solid fa-certificate"></i> SmartCA / Token hợp lệ</div>
+                                <div style="font-size:10px; color:#64748b;">Chữ ký số & Con dấu cơ quan</div>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; font-size:9.5px; color:#64748b; border-top:1px solid #e2e8f0; padding-top:2px;">
+                                <span id="ktlCoordAgencyLabel">X: 480, Y: 860</span>
+                                <span onclick="removeKtlSigBox('agency', event)" style="color:#dc2626; cursor:pointer;" title="Gỡ chữ ký khỏi văn bản"><i class="fa-solid fa-xmark"></i> Gỡ</span>
+                            </div>
+                            <!-- Resize handle -->
+                            <div class="sig-resize-handle" data-target="agency"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- THANH CÔNG CỤ BÊN PHẢI (RIGHT TOOLBOX) -->
+                <div id="ktlRightToolbox" style="width:370px; min-width:370px; background:#f8fafc; border-left:1px solid #e2e8f0; padding:20px; display:flex; flex-direction:column; gap:16px; overflow-y:auto; box-shadow:-4px 0 15px rgba(0,0,0,0.05); z-index:20;">
+                    
+                    <div>
+                        <div style="font-size:13px; font-weight:700; color:#1e293b; text-transform:uppercase; display:flex; align-items:center; gap:8px;">
+                            <i class="fa-solid fa-sliders" style="color:#2563eb;"></i> THIẾT LẬP VỊ TRÍ & CHỮ KÝ
+                        </div>
+                        <div style="font-size:12px; color:#64748b; margin-top:4px;">
+                            Bấm giữ thẻ bên dưới và kéo thả vào vị trí tương ứng trên văn bản A4.
+                        </div>
+                    </div>
+
+                    <!-- Tùy chọn Ký nháy Lãnh đạo Phòng -->
+                    <div style="background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:12px 14px;">
+                        <div class="form-check form-switch" style="margin-bottom:0; display:flex; align-items:center; justify-content:space-between; padding-left:0;">
+                            <label class="form-check-label" for="ktlEnableRoomSig" style="font-size:12.5px; font-weight:600; color:#1e293b; cursor:pointer;">
+                                Áp dụng ký nháy LĐ Phòng
+                            </label>
+                            <input class="form-check-input" type="checkbox" id="ktlEnableRoomSig" checked onchange="toggleKtlEnableRoomSig(this.checked)" style="cursor:pointer; margin-left:10px;">
+                        </div>
+                        <div style="font-size:11px; color:#64748b; margin-top:4px;">
+                            Bỏ chọn nếu đơn vị không yêu cầu Lãnh đạo Phòng ký nháy trên văn bản.
+                        </div>
+                    </div>
+
+                    <!-- DRAGGABLE CARDS CONTAINER -->
+                    <div style="display:flex; flex-direction:column; gap:12px;">
+                        
+                        <!-- CARD 1: LÃNH ĐẠO PHÒNG -->
+                        <div id="ktlPanelRoomCard" class="draggable-sig-card" draggable="true" ondragstart="handleKtlCardDragStart(event, 'room')" style="background:#fff; border:1px solid #cbd5e1; border-left:4px solid #2563eb; border-radius:8px; padding:12px 14px; box-shadow:0 2px 6px rgba(0,0,0,0.04);">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                <div style="font-weight:700; font-size:12.5px; color:#1e293b; display:flex; align-items:center; gap:6px;">
+                                    <i class="fa-solid fa-pen-nib" style="color:#2563eb;"></i> 1. Lãnh đạo Phòng
+                                </div>
+                                <span id="ktlStatusBadgeRoom" class="badge" style="background:#f1f5f9; color:#64748b; font-size:10px; padding:3px 7px;">
+                                    <i class="fa-solid fa-hand-pointer"></i> Chưa định vị
+                                </span>
+                            </div>
+                            <div id="ktlPanelRoomName" style="font-size:12.5px; font-weight:600; color:#1e293b;">Trần Văn Hùng</div>
+                            <div style="font-size:11.5px; color:#64748b;">Vai trò: Ký duyệt chuyển tiếp</div>
+
+                            <!-- Controls khi đã định vị -->
+                            <div id="ktlPanelRoomControls" style="display:none; margin-top:8px; padding-top:8px; border-top:1px dashed #e2e8f0;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; font-size:11.5px; margin-bottom:6px;">
+                                    <span id="ktlPanelRoomCoord" style="color:#64748b; font-family:monospace;">Tọa độ: (60, 860)</span>
+                                    <button type="button" class="btn btn-link btn-sm p-0" onclick="removeKtlSigBox('room')" style="color:#dc2626; font-size:11.5px; text-decoration:none;">
+                                        <i class="fa-solid fa-xmark"></i> Gỡ vị trí
+                                    </button>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:6px; font-size:11.5px;">
+                                    <span style="color:#64748b;">Kích thước:</span>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setKtlSigSize('room', 180, 75)" style="font-size:10.5px; padding:1px 6px;">Nhỏ</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="setKtlSigSize('room', 220, 90)" style="font-size:10.5px; padding:1px 6px;">Chuẩn</button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setKtlSigSize('room', 260, 105)" style="font-size:10.5px; padding:1px 6px;">Lớn</button>
+                                </div>
+                            </div>
+
+                            <div id="ktlDragHintRoom" style="font-size:11px; color:#2563eb; margin-top:6px; background:#eff6ff; padding:4px 8px; border-radius:4px; display:flex; align-items:center; gap:5px;">
+                                <i class="fa-solid fa-arrows-up-down-left-right"></i> Bấm giữ và kéo thả vào văn bản
+                            </div>
+                        </div>
+
+                        <!-- CARD 2: LÃNH ĐẠO ĐƠN VỊ -->
+                        <div id="ktlPanelAgencyCard" class="draggable-sig-card" draggable="true" ondragstart="handleKtlCardDragStart(event, 'agency')" style="background:#fff; border:1px solid #cbd5e1; border-left:4px solid #dc2626; border-radius:8px; padding:12px 14px; box-shadow:0 2px 6px rgba(0,0,0,0.04);">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                <div style="font-weight:700; font-size:12.5px; color:#1e293b; display:flex; align-items:center; gap:6px;">
+                                    <i class="fa-solid fa-stamp" style="color:#dc2626;"></i> 2. Lãnh đạo Đơn vị <span style="color:#dc2626;">*</span>
+                                </div>
+                                <span id="ktlStatusBadgeAgency" class="badge" style="background:#f1f5f9; color:#64748b; font-size:10px; padding:3px 7px;">
+                                    <i class="fa-solid fa-hand-pointer"></i> Chưa định vị
+                                </span>
+                            </div>
+                            <div id="ktlPanelAgencyName" style="font-size:12.5px; font-weight:600; color:#1e293b;">Lê Hoàng Nam</div>
+                            <div style="font-size:11.5px; color:#dc2626;"><i class="fa-solid fa-certificate"></i> Ký số CA & Con dấu cơ quan</div>
+
+                            <!-- Controls khi đã định vị -->
+                            <div id="ktlPanelAgencyControls" style="display:none; margin-top:8px; padding-top:8px; border-top:1px dashed #e2e8f0;">
+                                <div style="display:flex; justify-content:space-between; align-items:center; font-size:11.5px; margin-bottom:6px;">
+                                    <span id="ktlPanelAgencyCoord" style="color:#64748b; font-family:monospace;">Tọa độ: (480, 860)</span>
+                                    <button type="button" class="btn btn-link btn-sm p-0" onclick="removeKtlSigBox('agency')" style="color:#dc2626; font-size:11.5px; text-decoration:none;">
+                                        <i class="fa-solid fa-xmark"></i> Gỡ vị trí
+                                    </button>
+                                </div>
+                                <div style="display:flex; align-items:center; gap:6px; font-size:11.5px;">
+                                    <span style="color:#64748b;">Kích thước:</span>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setKtlSigSize('agency', 200, 90)" style="font-size:10.5px; padding:1px 6px;">Nhỏ</button>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="setKtlSigSize('agency', 245, 110)" style="font-size:10.5px; padding:1px 6px;">Chuẩn</button>
+                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setKtlSigSize('agency', 290, 130)" style="font-size:10.5px; padding:1px 6px;">Lớn</button>
+                                </div>
+                            </div>
+
+                            <div id="ktlDragHintAgency" style="font-size:11px; color:#dc2626; margin-top:6px; background:#fef2f2; padding:4px 8px; border-radius:4px; display:flex; align-items:center; gap:5px;">
+                                <i class="fa-solid fa-arrows-up-down-left-right"></i> Bấm giữ và kéo thả vào văn bản
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Nút Tự động căn vị trí chuẩn -->
+                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="autoPlaceKtlSignaturesStandard()" style="font-size:12px; padding:8px 12px; display:flex; align-items:center; justify-content:center; gap:8px;">
+                        <i class="fa-solid fa-crosshairs" style="color:#2563eb;"></i> Tự động căn vị trí chuẩn Nghị định 30
+                    </button>
+
+                    <!-- Hướng dẫn thao tác -->
+                    <div style="background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:12px 14px; font-size:11.5px; color:#475569; line-height:1.6;">
+                        <div style="font-weight:700; color:#1e293b; margin-bottom:4px;"><i class="fa-solid fa-circle-info" style="color:#0284c7;"></i> Hướng dẫn thao tác:</div>
+                        <ol style="margin-bottom:0; padding-left:18px;">
+                            <li><strong>Kéo thẻ:</strong> Bấm giữ thẻ chữ ký bên trên và kéo thả vào khung nhận trên văn bản A4.</li>
+                            <li><strong>Di chuyển:</strong> Bấm giữ khung chữ ký trên trang A4 để dịch chuyển tùy ý.</li>
+                            <li><strong>Co giãn:</strong> Kéo góc dưới phải của khung chữ ký hoặc bấm Nhỏ/Chuẩn/Lớn.</li>
+                        </ol>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- MODAL FOOTER -->
+            <div id="modalGqKtlFooter" class="confirm-modal-footer" style="padding:16px 28px 18px 28px; display:flex; justify-content:space-between; align-items:center; background:#f8fafc; border-top:1px solid var(--border-color); flex-shrink:0;">
+                <div>
+                    <button type="button" class="btn btn-secondary" onclick="closeGqKtlModal()">Hủy bỏ</button>
+                </div>
+                <div style="display:flex; gap:10px;">
+                    <!-- Step 1 Offline: Hoàn thành -->
+                    <button id="ktlBtnSubmitOffline" type="button" class="btn btn-primary" onclick="submitKtlOffline()" style="display:none; background:#16a34a; border-color:#16a34a; font-weight:600; padding:8px 20px;">
+                        <i class="fa-solid fa-check"></i> Hoàn thành
+                    </button>
+                    <!-- Step 1 Online: Định vị chữ ký -->
+                    <button id="ktlBtnNextStep" type="button" class="btn btn-primary" onclick="goToKtlStep2()" style="background:#2563eb; border-color:#2563eb; font-weight:600; padding:8px 20px;">
+                        <i class="fa-solid fa-signature"></i> <span>Định vị chữ ký</span> <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                    <!-- Step 2 Online: Quay lại Step 1 -->
+                    <button id="ktlBtnBackStep1" type="button" class="btn btn-secondary" onclick="goToKtlStep1()" style="display:none;">
+                        <i class="fa-solid fa-arrow-left"></i> Quay lại
+                    </button>
+                    <!-- Step 2 Online: Hoàn tất & Trình Lãnh đạo -->
+                    <button id="ktlBtnSubmitOnline" type="button" class="btn btn-primary" onclick="submitKtlOnline()" style="display:none; background:#16a34a; border-color:#16a34a; box-shadow:0 2px 6px rgba(22,163,74,0.3); font-weight:600; padding:8px 20px;">
                         <i class="fa-solid fa-paper-plane"></i> Hoàn tất & Trình Lãnh đạo
                     </button>
                 </div>
@@ -21899,92 +22476,872 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             if (detail && detail.style.display === 'block' && selectedClaimId === claim.id) showCaseDetail(claim.id, false);
         }
 
-        // ---------- 4. Không thụ lý (Mẫu 04/BTNN); KTL_01 -> Chuyển CQGQBT ----------
+        // ==========================================
+        // 🚫 POPUP KHÔNG THỤ LÝ HỒ SƠ (WIZARD 2 BƯỚC: MẪU 04/BTNN + KÝ SỐ / KÝ NGOÀI)
+        // ==========================================
+        let selectedKtlClaim = null;
+        let ktlOfflineFile = null;
+        let ktlOnlineFile = null;
+        let ktlTransferFiles = [];
+        let ktlPlacedRoom = false; // QUY TẮC BẮT BUỘC: Mặc định KHÔNG tự điền sẵn chữ ký trên văn bản
+        let ktlPlacedAgency = false; // Người dùng phải tự kéo từ danh sách vào văn bản
+        let ktlSigCoords = {
+            room: { x: 60, y: 860 },
+            agency: { x: 480, y: 860 }
+        };
+        let ktlIsDragging = false;
+        let ktlDragTarget = null;
+        let ktlDragOffset = { x: 0, y: 0 };
+        let ktlCurrentDragKey = null;
+
+        function triggerRejectClaim(id) {
+            openGqKtlModal(id);
+        }
+        window.triggerRejectClaim = triggerRejectClaim;
+
         function openGqKtlModal(claimId) {
-            const claim = gqClaim(claimId);
-            if (!claim) return;
-            const W = gqW();
-            const rec = gqRecord(claim);
+            let claim = null;
+            if (claimId) {
+                if (typeof gqClaim === 'function') claim = gqClaim(claimId);
+                if (!claim && typeof claimsList !== 'undefined') {
+                    claim = claimsList.find(c => String(c.id) === String(claimId) || String(c.code) === String(claimId));
+                }
+            }
+            if (!claim && typeof claimsList !== 'undefined' && claimsList.length > 0) {
+                claim = claimsList[0];
+            }
+            if (!claim) {
+                console.warn('Không tìm thấy vụ việc để mở popup Không thụ lý.');
+                return;
+            }
+
+            selectedKtlClaim = claim;
+            ktlOfflineFile = null;
+            ktlOnlineFile = null;
+            ktlTransferFiles = [];
+            ktlPlacedRoom = false;
+            ktlPlacedAgency = false;
+            ktlSigCoords = {
+                room: { x: 60, y: 860 },
+                agency: { x: 480, y: 860 }
+            };
+
+            const W = typeof gqW === 'function' ? gqW() : null;
+            const rec = typeof gqRecord === 'function' ? gqRecord(claim) : null;
             const prev = rec && rec.status === 'Bị trả lại' && rec.approval && rec.approval.kind === 'Không thụ lý' ? rec.approval : null;
-            const d = prev && prev.draftDoc ? prev.draftDoc : null;
-            const act = prev && prev.action ? prev.action : null;
-            gqState = { claimId, mode: 'ktl', formNo: GQ_FORM_04, draftChoice: d ? d.source : '', draftUpload: d && d.source === 'uploaded' ? d.uploadedName : '', draftError: '', transferFiles: act ? (act.files || []).map(f => f.name || f) : [] };
-            const reasons = W.getKtlReasons();
-            const selCode = prev ? (claim.ktlReasonCode || '') : '';
-            const body = gqSummaryHtml(claim) + gqReturnedHtml(claim) +
-                gqField('gqKtlReason', 'Lý do không thụ lý', true,
-                    `<select id="gqKtlReason" class="form-control" onchange="gqMark(this.id,false); gqToggleKtlTransfer()"><option value="">-- Chọn lý do không thụ lý --</option>${reasons.map(r => `<option value="${gqE(r.code)}" ${r.code === selCode ? 'selected' : ''}>${gqE(r.name)}</option>`).join('')}</select>`) +
-                gqField('gqKtlDetail', 'Diễn giải', false, `<textarea id="gqKtlDetail" class="form-control" rows="3" placeholder="Nhập nội dung diễn giải (nếu có)...">${gqE(prev ? prev.content : '')}</textarea>`) +
-                `<div class="gq-card gq-card-teal" id="gqKtlTransferBlock" style="display:none;">
-                    <div class="gq-card-title"><i class="fa-solid fa-right-left"></i> Chuyển cơ quan tiếp nhận mới</div>
-                    ${gqField('gqKtlModeBox', 'Chuyển cơ quan tiếp nhận mới', true, '<div id="gqKtlModeBox"></div>')}
-                    ${gqField('gqTransferContent', 'Nội dung/Căn cứ chuyển', true, `<textarea id="gqTransferContent" class="form-control" rows="3" oninput="gqMark(this.id,false)">${gqE(act ? act.content : '')}</textarea>`)}
-                    ${gqFilesFieldHtml('transferFiles', 'Tài liệu đính kèm', false)}
-                </div>` +
-                `<div id="gqDraftWrap">${gqDraftBlockHtml()}</div>` +
-                gqLeaderFieldHtml(claim, prev ? (prev.assignees || [])[0] : '');
-            gqOpenModal('Không thụ lý hồ sơ yêu cầu bồi thường', 'fa-solid fa-ban', body,
-                `<button type="button" class="btn btn-secondary" onclick="gqCloseModal()">Hủy bỏ</button>
-                 <button type="button" class="btn btn-danger" id="gqBtnSubmit" onclick="gqSubmitKtl()"><i class="fa-solid fa-paper-plane"></i> Trình Lãnh đạo</button>`);
-            // Radio 03 tùy chọn: Chuyển Bộ Tư pháp / Chuyển Sở Tư pháp / Chuyển trực tiếp tới Cơ quan giải quyết bồi thường (dữ liệu cũ chỉ có đơn vị -> Chuyển trực tiếp)
-            const recLike = { rootUnitId: gqClaimUnitId(claim, rec), currentUnitId: rec ? rec.currentUnitId : '' };
-            gqState.ktlApi = W.mountKtlTransfer(document.getElementById('gqKtlModeBox'), {
-                rec: recLike, name: 'gqKtlMode', treeInputId: 'gqTransferUnit',
-                mode: act ? (act.mode || (act.targetUnitId ? 'CQ' : '')) : '', unitId: act ? act.targetUnitId : '',
-                onChange: () => gqMark('gqKtlModeBox', false)
-            });
-            gqToggleKtlTransfer();
-        }
-        function gqToggleKtlTransfer() {
-            const box = document.getElementById('gqKtlTransferBlock');
-            if (box) box.style.display = gqVal('gqKtlReason') === 'KTL_01' ? 'block' : 'none';
-        }
-        function gqValidateTransferUnit(unitId) {
-            const W = gqW();
-            const rootId = unitId ? (W.getRootId(unitId) || unitId) : '';
-            if (unitId && !W.isUnitConfigured(rootId)) {
-                gqMark('gqTransferUnit', true);
-                gqFooterMsg(`Đơn vị ${W.unitName(rootId)} chưa được cấu hình luồng phân công. Vui lòng liên hệ Quản trị hệ thống.`);
-                return false;
+
+            // Báo động nếu hồ sơ bị trả lại
+            const alertEl = document.getElementById('ktlReturnedAlertBlock');
+            if (alertEl) {
+                if (prev) {
+                    alertEl.style.display = 'block';
+                    const rRes = document.getElementById('ktlReturnedReason');
+                    const rOff = document.getElementById('ktlReturnedOfficer');
+                    const rDate = document.getElementById('ktlReturnedDate');
+                    if (rRes) rRes.innerText = prev.rejectReason || prev.note || '--';
+                    if (rOff) rOff.innerText = prev.rejectOfficer || (W ? W.userName(prev.rejectBy) : '--');
+                    if (rDate) rDate.innerText = prev.rejectAt || '--';
+                } else {
+                    alertEl.style.display = 'none';
+                }
             }
-            return true;
-        }
-        function gqSubmitKtl() {
-            const claim = gqClaim(gqState.claimId);
-            const W = gqW();
-            if (!claim || !W) return;
-            const code = gqVal('gqKtlReason');
-            const isTransfer = code === 'KTL_01';
-            const api = gqState.ktlApi;
-            const tContent = gqVal('gqTransferContent');
-            let ok = true;
-            let tgt = null;
-            gqMark('gqKtlReason', !code); if (!code) ok = false;
-            if (isTransfer) {
-                const noMode = !api || !api.getMode();
-                gqMark('gqKtlModeBox', noMode);
-                // Đơn vị nhận theo tùy chọn: Bộ Tư pháp / Sở Tư pháp quản lý (xác định theo cây đơn vị) / cơ quan chọn trên cây; kiểm tra cấu hình luồng của đơn vị nhận
-                if (!noMode) { tgt = api.validate(); if (!tgt.ok) ok = false; } else ok = false;
-                gqMark('gqTransferContent', !tContent); if (!tContent) ok = false;
+
+            // Điền thông tin hồ sơ lên Header
+            const codeEl = document.getElementById('ktlClaimCode');
+            const nycEl = document.getElementById('ktlClaimNYC');
+            const agencyEl = document.getElementById('ktlClaimAgency');
+            if (codeEl) codeEl.innerText = (typeof claimVvCode === 'function' ? claimVvCode(claim) : '') || claim.code || '--';
+            if (nycEl) nycEl.innerText = (typeof getClaimRequesterName === 'function' ? getClaimRequesterName(claim) : claim.nyc) || '--';
+            if (agencyEl) agencyEl.innerText = claim.agency || 'Cục Bồi thường nhà nước';
+
+            // Lý do & Diễn giải
+            const selReason = document.getElementById('ktlReason');
+            const txtDetail = document.getElementById('ktlDetail');
+            if (selReason) {
+                selReason.value = claim.ktlReasonCode || (prev ? prev.ktlReasonCode : '') || '';
+                selReason.classList.remove('is-invalid');
             }
-            if (!gqValidateDraft()) ok = false;
-            if (!gqValidateLeader()) ok = false;
-            if (!ok) { gqFooterMsg(tgt && !tgt.ok ? tgt.message : 'Vui lòng nhập đầy đủ các trường bắt buộc.'); return; }
-            const unitId = tgt ? tgt.targetUnitId : '';
-            const reason = W.getKtlReasons().find(r => r.code === code) || { code, name: code };
-            const detail = gqVal('gqKtlDetail');
-            const draftDoc = gqDraftDocValue();
-            const tFiles = (gqState.transferFiles || []).map(n => ({ name: n }));
-            const action = isTransfer ? { type: 'transfer', mode: tgt.mode, loaiYeuCau: tgt.loaiYeuCau, targetUnitId: unitId, content: tContent, files: tFiles } : undefined;
-            const res = gqSubmit(claim, 'Không thụ lý', detail, [], { assignee: gqVal('gqLeader'), draftDoc, action, resultStatus: isTransfer ? 'Đã chuyển CQGQBT' : 'Không thụ lý' });
-            if (!res.ok) { gqFooterMsg(res.message); return; }
-            const officer = W.userName(gqActingUserId());
-            gqSaveData(claim, {
-                ktlReasonCode: reason.code, ktlReasonName: reason.name, ktlDetail: detail, ktlDraftDoc: draftDoc,
-                transferRequest: isTransfer ? { via: 'Không thụ lý', mode: tgt.mode, loaiYeuCau: tgt.loaiYeuCau, targetUnitId: unitId, targetName: W.unitName(unitId), content: tContent, files: tFiles } : null,
-                rejectType: 'Không thụ lý', rejectReason: reason.name + (detail ? '. ' + detail : ''), rejectOfficer: officer, rejectDate: gqNow()
+            if (txtDetail) {
+                txtDetail.value = claim.ktlDetail || (prev ? prev.content : '') || '';
+            }
+            const errReason = document.getElementById('ktlReasonErr');
+            if (errReason) errReason.style.display = 'none';
+
+            // Khối chuyển cơ quan KTL_01
+            handleKtlReasonChange();
+
+            // Số văn bản & Ngày ban hành
+            const d = new Date();
+            const p = n => String(n).padStart(2, '0');
+            const todayStr = `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`;
+            const docDateEl = document.getElementById('ktlDocDate');
+            const docNoEl = document.getElementById('ktlDocNumber');
+            if (docDateEl) docDateEl.value = todayStr;
+            if (docNoEl) {
+                docNoEl.value = `.../TB-CBTNN`;
+                docNoEl.classList.remove('is-invalid');
+            }
+            const errDocNo = document.getElementById('ktlDocNumberErr');
+            if (errDocNo) errDocNo.style.display = 'none';
+
+            if (typeof flatpickr !== 'undefined' && docDateEl) {
+                flatpickr(docDateEl, { dateFormat: 'd/m/Y', allowInput: true, defaultDate: new Date() });
+            }
+
+            // Lãnh đạo
+            ['ktlOfficerRoomSelect', 'ktlOfficerAgencySelect'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.classList.remove('is-invalid');
+                    if (!el.value && el.options.length > 1) el.selectedIndex = 1;
+                }
             });
-            gqAfterSubmit(claim, 'Không thụ lý');
+            const errRoom = document.getElementById('ktlOfficerRoomErr');
+            const errAgency = document.getElementById('ktlOfficerAgencyErr');
+            if (errRoom) errRoom.style.display = 'none';
+            if (errAgency) errAgency.style.display = 'none';
+
+            // Áp dụng ký nháy LĐ Phòng
+            const chkRoom = document.getElementById('ktlEnableRoomSig');
+            if (chkRoom) {
+                chkRoom.checked = true;
+                toggleKtlEnableRoomSig(true);
+            }
+
+            // Reset vị trí chữ ký: QUY TẮC: Ẩn trên văn bản A4, hiển thị drop zones
+            resetKtlSignaturePlacement();
+
+            // Reset File Offline
+            removeKtlOfflineFile();
+
+            // Tên file Mẫu 04
+            const mau04Name = `Mau_04_BTNN_Thong_bao_khong_thu_ly_${(typeof claimVvCode === 'function' ? claimVvCode(claim) : claim.code) || 'HS'}.pdf`;
+            const elMau04Name = document.getElementById('ktlMau04FileName');
+            if (elMau04Name) elMau04Name.innerText = mau04Name;
+
+            // Hình thức ký: mặc định online
+            const radioOnline = document.getElementById('ktlSigningMethodOnline');
+            if (radioOnline) radioOnline.checked = true;
+            toggleKtlSigningMethod('online');
+
+            // Chuyển về Bước 1
+            goToKtlStep1();
+
+            // Mở Modal
+            const modal = document.getElementById('modalGqKtl');
+            if (modal) {
+                modal.style.display = 'flex';
+                modal.classList.add('active');
+            }
+        }
+        window.openGqKtlModal = openGqKtlModal;
+
+        function closeGqKtlModal() {
+            const modal = document.getElementById('modalGqKtl');
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('active');
+            }
+            selectedKtlClaim = null;
+        }
+        window.closeGqKtlModal = closeGqKtlModal;
+
+        function toggleKtlSigningMethod(method) {
+            const isOnline = (method === 'online');
+            const stepperBar = document.getElementById('ktlStepperBar');
+            const onlineSection = document.getElementById('ktlOnlineSection');
+            const offlineSection = document.getElementById('ktlOfflineSection');
+            const btnSubmitOffline = document.getElementById('ktlBtnSubmitOffline');
+            const btnNextStep = document.getElementById('ktlBtnNextStep');
+
+            if (stepperBar) stepperBar.style.display = isOnline ? 'flex' : 'none';
+            if (onlineSection) onlineSection.style.display = isOnline ? 'block' : 'none';
+            if (offlineSection) offlineSection.style.display = isOnline ? 'none' : 'block';
+            if (btnSubmitOffline) btnSubmitOffline.style.display = isOnline ? 'none' : 'inline-flex';
+            if (btnNextStep) btnNextStep.style.display = isOnline ? 'inline-flex' : 'none';
+        }
+
+        function handleKtlReasonChange() {
+            const sel = document.getElementById('ktlReason');
+            const block = document.getElementById('ktlTransferBlock');
+            const err = document.getElementById('ktlReasonErr');
+            if (sel && sel.value) {
+                sel.classList.remove('is-invalid');
+                if (err) err.style.display = 'none';
+            }
+            const isKtl01 = sel && sel.value === 'KTL_01';
+            if (block) block.style.display = isKtl01 ? 'block' : 'none';
+
+            if (isKtl01) {
+                const W = typeof gqW === 'function' ? gqW() : null;
+                const box = document.getElementById('gqKtlModeBox');
+                if (W && box && !box.hasChildNodes() && typeof W.mountKtlTransfer === 'function') {
+                    const claim = selectedKtlClaim || {};
+                    const rec = typeof gqRecord === 'function' ? gqRecord(claim) : null;
+                    const recLike = { rootUnitId: typeof gqClaimUnitId === 'function' ? gqClaimUnitId(claim, rec) : '', currentUnitId: rec ? rec.currentUnitId : '' };
+                    W.mountKtlTransfer(box, {
+                        rec: recLike,
+                        name: 'ktlTransferMode',
+                        treeInputId: 'ktlTransferTargetUnit',
+                        onChange: () => {}
+                    });
+                }
+            }
+        }
+
+        function toggleKtlEnableRoomSig(enabled) {
+            const card = document.getElementById('ktlPanelRoomCard');
+            const zone = document.getElementById('ktlDropZoneRoom');
+            const box = document.getElementById('ktlSigBoxRoom');
+            if (card) {
+                card.style.opacity = enabled ? '1' : '0.4';
+                card.style.pointerEvents = enabled ? 'auto' : 'none';
+            }
+            if (!enabled) {
+                if (zone) zone.style.display = 'none';
+                if (box) box.style.display = 'none';
+                ktlPlacedRoom = false;
+            } else {
+                if (!ktlPlacedRoom) {
+                    if (zone) zone.style.display = 'flex';
+                    if (box) box.style.display = 'none';
+                } else {
+                    if (box) box.style.display = 'flex';
+                }
+            }
+        }
+
+        function resetKtlSignaturePlacement() {
+            ktlPlacedRoom = false;
+            ktlPlacedAgency = false;
+            
+            // Ẩn 2 box chữ ký trên A4
+            const boxR = document.getElementById('ktlSigBoxRoom');
+            const boxA = document.getElementById('ktlSigBoxAgency');
+            if (boxR) boxR.style.display = 'none';
+            if (boxA) boxA.style.display = 'none';
+
+            // Hiển thị 2 placeholder drop zone trên A4
+            const zoneR = document.getElementById('ktlDropZoneRoom');
+            const zoneA = document.getElementById('ktlDropZoneAgency');
+            if (zoneR) zoneR.style.display = 'flex';
+            if (zoneA) zoneA.style.display = 'flex';
+
+            // Sidebar badges & controls
+            updateKtlSidebarCardState('room', false);
+            updateKtlSidebarCardState('agency', false);
+        }
+
+        function updateKtlSidebarCardState(key, placed) {
+            const badge = document.getElementById(key === 'room' ? 'ktlStatusBadgeRoom' : 'ktlStatusBadgeAgency');
+            const controls = document.getElementById(key === 'room' ? 'ktlPanelRoomControls' : 'ktlPanelAgencyControls');
+            const hint = document.getElementById(key === 'room' ? 'ktlDragHintRoom' : 'ktlDragHintAgency');
+            const coord = document.getElementById(key === 'room' ? 'ktlPanelRoomCoord' : 'ktlPanelAgencyCoord');
+
+            if (placed) {
+                if (badge) {
+                    badge.className = 'badge';
+                    badge.style.background = '#16a34a';
+                    badge.style.color = '#fff';
+                    badge.innerHTML = '<i class="fa-solid fa-check"></i> Đã định vị';
+                }
+                if (controls) controls.style.display = 'block';
+                if (hint) hint.style.display = 'none';
+                if (coord) coord.innerText = `Tọa độ: (${ktlSigCoords[key].x}, ${ktlSigCoords[key].y})`;
+            } else {
+                if (badge) {
+                    badge.className = 'badge';
+                    badge.style.background = '#f1f5f9';
+                    badge.style.color = '#64748b';
+                    badge.innerHTML = '<i class="fa-solid fa-hand-pointer"></i> Chưa định vị';
+                }
+                if (controls) controls.style.display = 'none';
+                if (hint) hint.style.display = 'flex';
+            }
+        }
+
+        function placeKtlSigBox(key, x, y) {
+            if (key === 'room') ktlPlacedRoom = true;
+            if (key === 'agency') ktlPlacedAgency = true;
+
+            const box = document.getElementById(key === 'room' ? 'ktlSigBoxRoom' : 'ktlSigBoxAgency');
+            const zone = document.getElementById(key === 'room' ? 'ktlDropZoneRoom' : 'ktlDropZoneAgency');
+
+            if (x != null && y != null) {
+                ktlSigCoords[key].x = Math.round(x);
+                ktlSigCoords[key].y = Math.round(y);
+            }
+
+            if (box) {
+                box.style.display = 'flex';
+                box.style.left = ktlSigCoords[key].x + 'px';
+                box.style.top = ktlSigCoords[key].y + 'px';
+                const lbl = document.getElementById(key === 'room' ? 'ktlCoordRoomLabel' : 'ktlCoordAgencyLabel');
+                if (lbl) lbl.innerText = `X: ${ktlSigCoords[key].x}, Y: ${ktlSigCoords[key].y}`;
+            }
+
+            if (zone) zone.style.display = 'none';
+
+            updateKtlSidebarCardState(key, true);
+        }
+
+        function removeKtlSigBox(key, e) {
+            if (e) e.stopPropagation();
+            if (key === 'room') ktlPlacedRoom = false;
+            if (key === 'agency') ktlPlacedAgency = false;
+
+            const box = document.getElementById(key === 'room' ? 'ktlSigBoxRoom' : 'ktlSigBoxAgency');
+            const zone = document.getElementById(key === 'room' ? 'ktlDropZoneRoom' : 'ktlDropZoneAgency');
+
+            if (box) box.style.display = 'none';
+            if (zone) zone.style.display = 'flex';
+
+            updateKtlSidebarCardState(key, false);
+            showToast(`Đã gỡ chữ ký ${key === 'room' ? 'Lãnh đạo Phòng' : 'Lãnh đạo Đơn vị'} khỏi văn bản!`, 'info');
+        }
+
+        function setKtlSigSize(key, w, h) {
+            const box = document.getElementById(key === 'room' ? 'ktlSigBoxRoom' : 'ktlSigBoxAgency');
+            if (box) {
+                box.style.width = w + 'px';
+                box.style.height = h + 'px';
+            }
+        }
+
+        function autoPlaceKtlSignaturesStandard() {
+            const chkRoom = document.getElementById('ktlEnableRoomSig');
+            if (chkRoom && chkRoom.checked) {
+                placeKtlSigBox('room', 60, 860);
+            }
+            placeKtlSigBox('agency', 480, 860);
+            showToast('Đã tự động căn vị trí chữ ký theo chuẩn Nghị định 30!', 'success');
+        }
+
+        // Drag & Drop handlers từ Sidebar Card vào A4
+        function handleKtlCardDragStart(e, key) {
+            ktlCurrentDragKey = key;
+            e.dataTransfer.setData('text/plain', key);
+            e.dataTransfer.effectAllowed = 'copyMove';
+        }
+
+        function handleKtlDragOver(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+            const target = e.currentTarget;
+            if (target && target.classList && target.classList.contains('ktl-drop-zone')) {
+                target.classList.add('drag-over');
+            }
+        }
+
+        function handleKtlDragLeave(e) {
+            const target = e.currentTarget;
+            if (target && target.classList && target.classList.contains('ktl-drop-zone')) {
+                target.classList.remove('drag-over');
+            }
+        }
+
+        function handleKtlZoneDrop(e, zoneKey) {
+            e.preventDefault();
+            e.stopPropagation();
+            const target = e.currentTarget;
+            if (target && target.classList) target.classList.remove('drag-over');
+
+            const key = e.dataTransfer.getData('text/plain') || ktlCurrentDragKey || zoneKey;
+            if (key !== zoneKey) {
+                showToast(`Vui lòng thả đúng vào khung của ${key === 'room' ? 'Lãnh đạo Phòng' : 'Lãnh đạo Đơn vị'}!`, 'warning');
+                return;
+            }
+
+            const defaultX = key === 'room' ? 60 : 480;
+            const defaultY = 860;
+            placeKtlSigBox(key, defaultX, defaultY);
+            showToast(`Đã định vị chữ ký ${key === 'room' ? 'Lãnh đạo Phòng' : 'Lãnh đạo Đơn vị'} trên văn bản!`, 'success');
+        }
+
+        function handleKtlPageDrop(e) {
+            e.preventDefault();
+            const key = e.dataTransfer.getData('text/plain') || ktlCurrentDragKey;
+            if (!key) return;
+
+            const page = document.getElementById('ktlA4Page');
+            if (!page) return;
+            const rect = page.getBoundingClientRect();
+            let x = e.clientX - rect.left - 100;
+            let y = e.clientY - rect.top - 40;
+
+            x = Math.max(20, Math.min(x, page.clientWidth - 260));
+            y = Math.max(50, Math.min(y, page.clientHeight - 130));
+
+            placeKtlSigBox(key, x, y);
+            showToast(`Đã định vị chữ ký ${key === 'room' ? 'Lãnh đạo Phòng' : 'Lãnh đạo Đơn vị'} tại tọa độ (${Math.round(x)}, ${Math.round(y)})!`, 'success');
+        }
+
+        // Khởi tạo kéo thả di chuyển tự do box trên A4
+        function initKtlDragAndDrop() {
+            const page = document.getElementById('ktlA4Page');
+            const boxRoom = document.getElementById('ktlSigBoxRoom');
+            const boxAgency = document.getElementById('ktlSigBoxAgency');
+
+            function attachDrag(box, key) {
+                if (!box) return;
+                box.onmousedown = function(e) {
+                    if (e.target.closest('.sig-resize-handle') || e.target.closest('span[onclick]')) return;
+                    if (e.button !== 0) return;
+                    e.preventDefault();
+                    ktlIsDragging = true;
+                    ktlDragTarget = { box, key };
+                    const rect = box.getBoundingClientRect();
+                    ktlDragOffset.x = e.clientX - rect.left;
+                    ktlDragOffset.y = e.clientY - rect.top;
+                    box.classList.add('dragging');
+                };
+            }
+
+            attachDrag(boxRoom, 'room');
+            attachDrag(boxAgency, 'agency');
+
+            if (!window.ktlDragListenerInitialized) {
+                window.ktlDragListenerInitialized = true;
+                document.addEventListener('mousemove', function(e) {
+                    if (!ktlIsDragging || !ktlDragTarget) return;
+                    const pageEl = document.getElementById('ktlA4Page');
+                    if (!pageEl) return;
+                    const pageRect = pageEl.getBoundingClientRect();
+
+                    let newLeft = e.clientX - pageRect.left - ktlDragOffset.x;
+                    let newTop = e.clientY - pageRect.top - ktlDragOffset.y;
+
+                    const maxLeft = pageEl.clientWidth - ktlDragTarget.box.offsetWidth;
+                    const maxHeight = pageEl.clientHeight - ktlDragTarget.box.offsetHeight;
+
+                    newLeft = Math.max(10, Math.min(newLeft, maxLeft - 10));
+                    newTop = Math.max(10, Math.min(newTop, maxHeight - 10));
+
+                    ktlSigCoords[ktlDragTarget.key].x = Math.round(newLeft);
+                    ktlSigCoords[ktlDragTarget.key].y = Math.round(newTop);
+
+                    ktlDragTarget.box.style.left = ktlSigCoords[ktlDragTarget.key].x + 'px';
+                    ktlDragTarget.box.style.top = ktlSigCoords[ktlDragTarget.key].y + 'px';
+
+                    const lbl = document.getElementById(ktlDragTarget.key === 'room' ? 'ktlCoordRoomLabel' : 'ktlCoordAgencyLabel');
+                    const pnl = document.getElementById(ktlDragTarget.key === 'room' ? 'ktlPanelRoomCoord' : 'ktlPanelAgencyCoord');
+                    if (lbl) lbl.innerText = `X: ${ktlSigCoords[ktlDragTarget.key].x}, Y: ${ktlSigCoords[ktlDragTarget.key].y}`;
+                    if (pnl) pnl.innerText = `Tọa độ: (${ktlSigCoords[ktlDragTarget.key].x}, ${ktlSigCoords[ktlDragTarget.key].y})`;
+                });
+
+                document.addEventListener('mouseup', function() {
+                    if (ktlIsDragging && ktlDragTarget) {
+                        ktlDragTarget.box.classList.remove('dragging');
+                        ktlIsDragging = false;
+                        ktlDragTarget = null;
+                    }
+                });
+            }
+        }
+
+        // Navigation Steps
+        function goToKtlStep1() {
+            const container = document.getElementById('modalGqKtlContainer');
+            if (container) {
+                container.style.width = '850px';
+                container.style.maxWidth = '96%';
+                container.style.height = 'auto';
+            }
+
+            const t1 = document.getElementById('ktlStep1Tab');
+            const t2 = document.getElementById('ktlStep2Tab');
+            if (t1) { t1.style.color = '#2563eb'; t1.style.fontWeight = '700'; }
+            if (t2) { t2.style.color = '#64748b'; t2.style.fontWeight = '500'; }
+            const b2 = document.getElementById('ktlStep2Badge');
+            if (b2) { b2.style.background = '#e2e8f0'; b2.style.color = '#64748b'; }
+
+            const s1Body = document.getElementById('ktlStep1Body');
+            const s2Body = document.getElementById('ktlStep2Body');
+            if (s1Body) s1Body.style.display = 'block';
+            if (s2Body) s2Body.style.display = 'none';
+
+            const radioOffline = document.getElementById('ktlSigningMethodOffline');
+            const isOffline = radioOffline && radioOffline.checked;
+
+            const btnNext = document.getElementById('ktlBtnNextStep');
+            const btnOff = document.getElementById('ktlBtnSubmitOffline');
+            const btnBack = document.getElementById('ktlBtnBackStep1');
+            const btnOn = document.getElementById('ktlBtnSubmitOnline');
+
+            if (btnNext) btnNext.style.display = isOffline ? 'none' : 'inline-flex';
+            if (btnOff) btnOff.style.display = isOffline ? 'inline-flex' : 'none';
+            if (btnBack) btnBack.style.display = 'none';
+            if (btnOn) btnOn.style.display = 'none';
+        }
+
+        function goToKtlStep2() {
+            // Validation Step 1
+            let isValid = true;
+            let firstErr = null;
+
+            const reasonEl = document.getElementById('ktlReason');
+            if (!reasonEl.value) {
+                reasonEl.classList.add('is-invalid');
+                document.getElementById('ktlReasonErr').style.display = 'block';
+                isValid = false;
+                if (!firstErr) firstErr = reasonEl;
+            } else {
+                reasonEl.classList.remove('is-invalid');
+                document.getElementById('ktlReasonErr').style.display = 'none';
+            }
+
+            const docNo = document.getElementById('ktlDocNumber');
+            if (!docNo.value.trim()) {
+                docNo.classList.add('is-invalid');
+                document.getElementById('ktlDocNumberErr').style.display = 'block';
+                isValid = false;
+                if (!firstErr) firstErr = docNo;
+            } else {
+                docNo.classList.remove('is-invalid');
+                document.getElementById('ktlDocNumberErr').style.display = 'none';
+            }
+
+            const offRoom = document.getElementById('ktlOfficerRoomSelect');
+            if (!offRoom.value) {
+                offRoom.classList.add('is-invalid');
+                document.getElementById('ktlOfficerRoomErr').style.display = 'block';
+                isValid = false;
+                if (!firstErr) firstErr = offRoom;
+            } else {
+                offRoom.classList.remove('is-invalid');
+                document.getElementById('ktlOfficerRoomErr').style.display = 'none';
+            }
+
+            const offAgency = document.getElementById('ktlOfficerAgencySelect');
+            if (!offAgency.value) {
+                offAgency.classList.add('is-invalid');
+                document.getElementById('ktlOfficerAgencyErr').style.display = 'block';
+                isValid = false;
+                if (!firstErr) firstErr = offAgency;
+            } else {
+                offAgency.classList.remove('is-invalid');
+                document.getElementById('ktlOfficerAgencyErr').style.display = 'none';
+            }
+
+            if (!isValid) {
+                if (firstErr && typeof firstErr.focus === 'function') firstErr.focus();
+                showToast('Vui lòng hoàn tất các trường thông tin bắt buộc trước khi chuyển sang bước đặt chữ ký!', 'warning');
+                return;
+            }
+
+            // Populate Step 2 A4 Document
+            const claim = selectedKtlClaim || {};
+            const W = typeof gqW === 'function' ? gqW() : null;
+            const docDateVal = document.getElementById('ktlDocDate').value || todayVi();
+            
+            document.getElementById('ktlA4DocNumber').innerText = docNo.value.trim();
+            document.getElementById('ktlA4DocDate').innerText = `Hà Nội, ngày ${docDateVal}`;
+            document.getElementById('ktlA4NYC').innerText = (typeof getClaimRequesterName === 'function' ? getClaimRequesterName(claim) : claim.nyc) || 'Ông/Bà';
+            document.getElementById('ktlA4Address').innerText = claim.address || claim.nycAddressDetail || 'Số 123 Phố Huế, P. Hàng Bài, Q. Hoàn Kiếm, TP. Hà Nội';
+            document.getElementById('ktlA4ClaimCode').innerText = (typeof claimVvCode === 'function' ? claimVvCode(claim) : claim.code) || '--';
+            document.getElementById('ktlA4ReceivedDate').innerText = claim.createdDate || claim.date || '01/10/2026';
+
+            // Lý do & Diễn giải
+            const rText = reasonEl.options[reasonEl.selectedIndex].text;
+            document.getElementById('ktlA4ReasonContent').innerText = rText;
+
+            const detailVal = document.getElementById('ktlDetail').value.trim();
+            const detailEl = document.getElementById('ktlA4DetailContent');
+            if (detailVal) {
+                detailEl.innerText = detailVal;
+                detailEl.style.display = 'block';
+            } else {
+                detailEl.style.display = 'none';
+            }
+
+            // Chuyển cơ quan KTL_01
+            const isKtl01 = reasonEl.value === 'KTL_01';
+            const transferNotice = document.getElementById('ktlA4TransferNotice');
+            if (isKtl01) {
+                transferNotice.style.display = 'block';
+                const targetName = 'Sở Tư pháp TP. Hà Nội';
+                document.getElementById('ktlA4TransferTargetName').innerText = targetName;
+            } else {
+                transferNotice.style.display = 'none';
+            }
+
+            // Lãnh đạo
+            const roomOpt = offRoom.options[offRoom.selectedIndex];
+            const agencyOpt = offAgency.options[offAgency.selectedIndex];
+            const rName = roomOpt.getAttribute('data-name') || roomOpt.text.split('-')[0].trim();
+            const aName = agencyOpt.getAttribute('data-name') || agencyOpt.text.split('-')[0].trim();
+            const aRole = agencyOpt.getAttribute('data-role') || (agencyOpt.text.includes('Cục trưởng') ? 'CỤC TRƯỞNG' : 'PHÓ CỤC TRƯỞNG');
+
+            document.getElementById('ktlA4SignerTitle').innerText = aRole.toUpperCase();
+            document.getElementById('ktlA4SignerName').innerText = aName.toUpperCase();
+            document.getElementById('ktlSigBoxRoomOfficer').innerText = rName;
+            document.getElementById('ktlSigBoxAgencyOfficer').innerText = aName;
+            document.getElementById('ktlPanelRoomName').innerText = rName;
+            document.getElementById('ktlPanelAgencyName').innerText = aName;
+
+            // Expand modal container
+            const container = document.getElementById('modalGqKtlContainer');
+            if (container) {
+                container.style.width = '1250px';
+                container.style.maxWidth = '98%';
+                container.style.height = '94vh';
+            }
+
+            // Stepper styling
+            document.getElementById('ktlStep1Tab').style.color = '#10b981';
+            const s1B = document.getElementById('ktlStep1Tab').querySelector('span');
+            if (s1B) { s1B.style.background = '#10b981'; s1B.innerHTML = '<i class="fa-solid fa-check"></i>'; }
+
+            document.getElementById('ktlStep2Tab').style.color = '#2563eb';
+            document.getElementById('ktlStep2Tab').style.fontWeight = '700';
+            const b2 = document.getElementById('ktlStep2Badge');
+            if (b2) { b2.style.background = '#2563eb'; b2.style.color = '#fff'; }
+
+            // Body toggle
+            document.getElementById('ktlStep1Body').style.display = 'none';
+            document.getElementById('ktlStep2Body').style.display = 'flex';
+
+            // Footer buttons
+            document.getElementById('ktlBtnNextStep').style.display = 'none';
+            document.getElementById('ktlBtnSubmitOffline').style.display = 'none';
+            document.getElementById('ktlBtnBackStep1').style.display = 'inline-flex';
+            document.getElementById('ktlBtnSubmitOnline').style.display = 'inline-flex';
+
+            // Drag setup
+            initKtlDragAndDrop();
+        }
+
+        // File Handlers
+        function handleKtlOfflineFileUpload(input) {
+            if (!input || !input.files || !input.files.length) return;
+            const file = input.files[0];
+            ktlOfflineFile = file;
+            const row = document.getElementById('ktlOfflineFileRow');
+            const nameEl = document.getElementById('ktlOfflineFileName');
+            const sizeEl = document.getElementById('ktlOfflineFileSize');
+            const err = document.getElementById('ktlOfflineFileErr');
+            if (nameEl) nameEl.innerText = file.name;
+            if (sizeEl) sizeEl.innerText = `(${(file.size / 1024).toFixed(1)} KB)`;
+            if (row) row.style.display = 'flex';
+            if (err) err.style.display = 'none';
+        }
+
+        function removeKtlOfflineFile() {
+            ktlOfflineFile = null;
+            const input = document.getElementById('ktlOfflineFileInput');
+            if (input) input.value = '';
+            const row = document.getElementById('ktlOfflineFileRow');
+            if (row) row.style.display = 'none';
+        }
+
+        function previewKtlOfflineFile() {
+            if (ktlOfflineFile) {
+                showToast(`Đang mở xem tệp [${ktlOfflineFile.name}]...`, 'info');
+            }
+        }
+
+        function handleKtlOnlineFileUpload(input) {
+            if (!input || !input.files || !input.files.length) return;
+            const file = input.files[0];
+            ktlOnlineFile = file;
+            const nameEl = document.getElementById('ktlMau04FileName');
+            const sizeEl = document.getElementById('ktlMau04FileSize');
+            if (nameEl) nameEl.innerText = file.name;
+            if (sizeEl) sizeEl.innerText = `PDF • Tải lên từ máy (${(file.size / 1024).toFixed(1)} KB)`;
+            showToast(`Đã tải lên tệp dự thảo thay thế: ${file.name}`, 'success');
+        }
+
+        function handleKtlTransferFileUpload(input) {
+            if (!input || !input.files || !input.files.length) return;
+            const files = Array.from(input.files);
+            ktlTransferFiles = ktlTransferFiles.concat(files);
+            renderKtlTransferFileList();
+            input.value = '';
+        }
+
+        function renderKtlTransferFileList() {
+            const list = document.getElementById('ktlTransferFileList');
+            if (!list) return;
+            list.innerHTML = ktlTransferFiles.map((f, i) => `
+                <div style="display:flex; align-items:center; justify-content:space-between; background:#fff; border:1px solid #cbd5e1; border-radius:4px; padding:4px 8px; font-size:12px;">
+                    <div style="display:flex; align-items:center; gap:6px;">
+                        <i class="fa-solid fa-paperclip" style="color:#2563eb;"></i>
+                        <span style="font-weight:500;">${f.name}</span>
+                        <span style="color:#64748b;">(${(f.size/1024).toFixed(1)} KB)</span>
+                    </div>
+                    <a href="javascript:void(0)" onclick="removeKtlTransferFile(${i})" style="color:#dc2626; text-decoration:none;"><i class="fa-solid fa-trash-can"></i></a>
+                </div>
+            `).join('');
+        }
+
+        function removeKtlTransferFile(idx) {
+            ktlTransferFiles.splice(idx, 1);
+            renderKtlTransferFileList();
+        }
+
+        function generateMau04Document() {
+            const claim = selectedKtlClaim || {};
+            const code = (typeof claimVvCode === 'function' ? claimVvCode(claim) : claim.code) || 'HS';
+            const mau04Name = `Mau_04_BTNN_Thong_bao_khong_thu_ly_${code}.pdf`;
+            const nameEl = document.getElementById('ktlMau04FileName');
+            const sizeEl = document.getElementById('ktlMau04FileSize');
+            if (nameEl) nameEl.innerText = mau04Name;
+            if (sizeEl) sizeEl.innerText = 'PDF • Tự động tạo theo dữ liệu hồ sơ';
+            showToast('Đã khởi tạo lại văn bản Mẫu 04/BTNN tự động theo dữ liệu hồ sơ!', 'success');
+        }
+
+        function downloadMau04Pdf() {
+            showToast('Đang tải xuống dự thảo Mẫu 04/BTNN định dạng PDF...', 'success');
+        }
+
+        // Submissions
+        function submitKtlOnline() {
+            if (!selectedKtlClaim) return;
+
+            // KIỂM TRA CHỮ KÝ: Lãnh đạo đơn vị bắt buộc phải được định vị trên A4
+            if (!ktlPlacedAgency) {
+                const cardA = document.getElementById('ktlPanelAgencyCard');
+                if (cardA) {
+                    cardA.style.borderColor = '#dc2626';
+                    cardA.style.boxShadow = '0 0 0 3px rgba(220,38,38,0.3)';
+                    setTimeout(() => {
+                        cardA.style.borderColor = '#cbd5e1';
+                        cardA.style.boxShadow = '0 2px 6px rgba(0,0,0,0.04)';
+                    }, 2000);
+                }
+                showToast('Vui lòng kéo thẻ chữ ký của Lãnh đạo Đơn vị thả vào văn bản A4 trước khi Trình Lãnh đạo!', 'warning');
+                return;
+            }
+
+            const chkRoom = document.getElementById('ktlEnableRoomSig');
+            if (chkRoom && chkRoom.checked && !ktlPlacedRoom) {
+                // Tự động định vị cho phòng nếu quên kéo
+                placeKtlSigBox('room', 60, 860);
+            }
+
+            const docNo = document.getElementById('ktlDocNumber').value.trim();
+            const docDate = document.getElementById('ktlDocDate').value.trim();
+            const reasonEl = document.getElementById('ktlReason');
+            const reasonCode = reasonEl.value;
+            const reasonText = reasonEl.options[reasonEl.selectedIndex].text;
+            const detail = document.getElementById('ktlDetail').value.trim();
+            const officerRoom = document.getElementById('ktlOfficerRoomSelect').value;
+            const officerAgency = document.getElementById('ktlOfficerAgencySelect').value;
+            const currentOfficer = typeof getCurrentSimulatedOfficer === 'function' ? getCurrentSimulatedOfficer() : 'Nguyễn Văn Cán Bộ';
+            const todayStr = new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'});
+
+            const trinhDuyetData = {
+                type: 'Không thụ lý',
+                docNumber: docNo,
+                docDate: docDate,
+                reasonCode: reasonCode,
+                reasonText: reasonText,
+                detail: detail,
+                officerRoom: officerRoom,
+                officerAgency: officerAgency,
+                sigCoords: {
+                    room: { ...ktlSigCoords.room, placed: ktlPlacedRoom },
+                    agency: { ...ktlSigCoords.agency, placed: ktlPlacedAgency }
+                },
+                submitDate: todayStr,
+                submitOfficer: currentOfficer,
+                isTransfer: reasonCode === 'KTL_01'
+            };
+
+            selectedKtlClaim.trinhDuyet = trinhDuyetData;
+            selectedKtlClaim.rejectType = 'Không thụ lý';
+            selectedKtlClaim.rejectReason = reasonText + (detail ? ': ' + detail : '');
+            selectedKtlClaim.ktlReasonCode = reasonCode;
+            selectedKtlClaim.ktlDetail = detail;
+
+            closeGqKtlModal();
+
+            if (typeof gqSubmit === 'function') {
+                const res = gqSubmit(selectedKtlClaim, 'Không thụ lý', detail, [], {
+                    assignee: officerRoom,
+                    draftDoc: { source: 'generated', formNo: GQ_FORM_04, generatedName: `Mau_04_BTNN_Thong_bao_khong_thu_ly_${claimVvCode(selectedKtlClaim)}.pdf` },
+                    resultStatus: 'Chờ duyệt'
+                });
+                if (typeof gqSaveData === 'function') {
+                    gqSaveData(selectedKtlClaim, { ktlReasonCode: reasonCode, ktlDetail: detail, trinhDuyet: trinhDuyetData });
+                }
+                if (typeof gqAfterSubmit === 'function') {
+                    gqAfterSubmit(selectedKtlClaim, 'Không thụ lý');
+                    return;
+                }
+            }
+
+            if (typeof changeStatus === 'function') {
+                changeStatus(selectedKtlClaim.id, 'Chờ duyệt', `Đã trình Lãnh đạo phê duyệt văn bản Không thụ lý hồ sơ vụ việc [${claimVvCode(selectedKtlClaim)}]. Hồ sơ chuyển sang trạng thái [Chờ duyệt]!`);
+            }
+        }
+
+        function submitKtlOffline() {
+            if (!selectedKtlClaim) return;
+
+            let isValid = true;
+            let firstErr = null;
+
+            const reasonEl = document.getElementById('ktlReason');
+            if (!reasonEl.value) {
+                reasonEl.classList.add('is-invalid');
+                document.getElementById('ktlReasonErr').style.display = 'block';
+                isValid = false;
+                if (!firstErr) firstErr = reasonEl;
+            }
+
+            if (!ktlOfflineFile) {
+                document.getElementById('ktlOfflineFileErr').style.display = 'block';
+                isValid = false;
+                if (!firstErr) firstErr = document.getElementById('ktlOfflineFileInput');
+            }
+
+            if (!isValid) {
+                if (firstErr && typeof firstErr.focus === 'function') firstErr.focus();
+                showToast('Vui lòng chọn lý do không thụ lý và tải lên tệp PDF thông báo đã ký!', 'warning');
+                return;
+            }
+
+            const currentOfficer = typeof getCurrentSimulatedOfficer === 'function' ? getCurrentSimulatedOfficer() : 'Nguyễn Văn Cán Bộ';
+            const todayStr = new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'});
+            const reasonCode = reasonEl.value;
+            const reasonText = reasonEl.options[reasonEl.selectedIndex].text;
+            const detail = document.getElementById('ktlDetail').value.trim();
+
+            selectedKtlClaim.rejectType = 'Không thụ lý';
+            selectedKtlClaim.rejectReason = reasonText + (detail ? ': ' + detail : '');
+            selectedKtlClaim.rejectDate = todayStr;
+            selectedKtlClaim.rejectOfficer = currentOfficer;
+            selectedKtlClaim.signingMethod = 'offline';
+            selectedKtlClaim.ktlReasonCode = reasonCode;
+            selectedKtlClaim.ktlDetail = detail;
+            selectedKtlClaim.signedFile = ktlOfflineFile.name;
+
+            if (!selectedKtlClaim.rejectionLog) selectedKtlClaim.rejectionLog = [];
+            selectedKtlClaim.rejectionLog.push({
+                date: todayStr,
+                officer: currentOfficer,
+                action: 'Không thụ lý',
+                reason: reasonText + (detail ? ': ' + detail : ''),
+                method: 'Ký ngoài',
+                file: ktlOfflineFile.name
+            });
+
+            closeGqKtlModal();
+
+            if (typeof gqSaveData === 'function') {
+                gqSaveData(selectedKtlClaim, {
+                    ktlReasonCode: reasonCode,
+                    ktlDetail: detail,
+                    status: 'Không thụ lý',
+                    rejectType: 'Không thụ lý',
+                    rejectReason: reasonText + (detail ? ': ' + detail : '')
+                });
+            }
+
+            selectedKtlClaim.status = 'Không thụ lý';
+            if (typeof renderClaimsTable === 'function') renderClaimsTable();
+            showToast(`Đã ban hành văn bản Không thụ lý hồ sơ (Ký ngoài) cho vụ việc [${claimVvCode(selectedKtlClaim)}]! Hồ sơ chuyển sang trạng thái [Không thụ lý].`, 'success');
         }
 
         // ---------- 5. Chuyển CQGQBT ----------

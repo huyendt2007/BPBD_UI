@@ -183,7 +183,7 @@
             <div class="wf-modal-body">
                 <div id="decContext" style="margin-bottom:12px;"></div>
                 <div class="form-group" id="decNextGroup" style="display:none;">
-                    <span class="form-label">Lãnh đạo phê duyệt cấp tiếp theo<span class="required">*</span></span>
+                    <span class="form-label"><span id="decNextLabel">Lãnh đạo phê duyệt cấp tiếp theo</span><span class="required">*</span></span>
                     <select id="decNext" class="form-control"></select>
                     <div class="error-text" id="decNextErr">Đây là trường bắt buộc</div>
                 </div>
@@ -191,6 +191,21 @@
                     <span class="form-label" id="decLabel">Ý kiến phê duyệt</span>
                     <textarea id="decNote" class="form-control" rows="4"></textarea>
                     <div class="error-text" id="decErr">Đây là trường bắt buộc</div>
+                </div>
+                <!-- Xác định CQGQBT - Lãnh đạo cấp cuối: ký số ngay trong popup -->
+                <div id="decSignBlock" style="display:none; border:1px solid #bfdbfe; background:#f8fbff; border-radius:8px; padding:12px 14px;">
+                    <div style="font-weight:700; color:#1e3a8a; margin-bottom:10px;"><i class="fa-solid fa-signature"></i> Ký số</div>
+                    <div class="form-group">
+                        <span class="form-label">Chứng thư số<span class="required">*</span></span>
+                        <select id="decCert" class="form-control"></select>
+                        <div class="error-text" id="decCertErr">Đây là trường bắt buộc</div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <span class="form-label">Mã PIN<span class="required">*</span></span>
+                        <input type="password" id="decPin" class="form-control" autocomplete="off" placeholder="Nhập mã PIN USB Token...">
+                        <div class="error-text" id="decPinErr">Đây là trường bắt buộc</div>
+                    </div>
+                    <div id="decSignErr" style="display:none; margin-top:10px; background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; border-radius:6px; padding:8px 10px; font-size:12.5px;"></div>
                 </div>
             </div>
             <div class="wf-modal-footer">
@@ -283,7 +298,7 @@
 
     <div id="toast" class="toast-notif"></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261020kd"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261020v5"></script>
     <script>
         const WF = BTNN_WF;
         const WT = WF.WORK_TYPES;
@@ -513,6 +528,8 @@
             document.getElementById('decNote').value = '';
             document.getElementById('decErr').style.display = 'none';
             document.getElementById('decNextGroup').style.display = 'none';
+            resetXdSign();
+            document.getElementById('decContext').style.display = '';
             const btn = document.getElementById('decSubmit');
             btn.textContent = mode === 'approve' ? 'Ký duyệt' : 'Từ chối';
             btn.className = mode === 'approve' ? 'btn btn-primary' : 'btn btn-danger';
@@ -586,6 +603,11 @@
             const Verb = verb.charAt(0).toUpperCase() + verb.slice(1);
             const isLast = a.level === a.path.length - 1;
             const isXd = WF.isXdRec(rec);
+            resetXdSign();
+            // Xác định CQGQBT: popup tối giản (không hiển thị lại tệp trình ký / nội dung hồ sơ); cấp cuối ký số ngay trong popup
+            if (isXd) { openXdDecision(rec, code, isLast, mode); return; }
+            document.getElementById('decNextLabel').textContent = 'Lãnh đạo phê duyệt cấp tiếp theo';
+            document.getElementById('decContext').style.display = '';
             const isXdKq = isXd && a.kind === WF.KIND_KQXD;
             // Chỉ cấp cuối hệ thống ký số văn bản và gán chữ ký tại vị trí đã định; cấp trước Ký duyệt = đồng ý chuyển cấp tiếp theo
             const xdSign = isXd && a.signDoc && a.signDoc.method !== 'Ký ngoài' ? ' Hệ thống sẽ ký số và gán chữ ký vào văn bản tại vị trí chữ ký đã định (chứng thư số của Lãnh đạo).' : '';
@@ -608,6 +630,63 @@
             btn.style.cssText = mode === 'approve' ? '' : 'background:#ef4444; color:#fff; border:none;';
             openOverlay('decideOverlay');
         }
+        // ---------- Xác định CQGQBT: popup Ký duyệt / Từ chối tối giản; Lãnh đạo cấp cuối ký số ngay trong popup ----------
+        let xdSignRequired = false;
+        // Giả lập: hệ thống tự nhận diện chứng thư số hợp lệ của Lãnh đạo đang đăng nhập
+        function xdCertOptions(userId) {
+            return [{ id: 'USB-01', label: `${WF.userName(userId)} - Chứng thư số USB Token (hiệu lực đến 31/12/2028)` }];
+        }
+        function resetXdSign() {
+            xdSignRequired = false;
+            document.getElementById('decSignBlock').style.display = 'none';
+            ['decCertErr', 'decPinErr', 'decSignErr'].forEach(id => { document.getElementById(id).style.display = 'none'; });
+            document.getElementById('decPin').value = '';
+        }
+        function openXdDecision(rec, code, isLast, mode) {
+            const a = rec.approval;
+            const approve = mode === 'approve';
+            document.getElementById('decContext').innerHTML = '';
+            document.getElementById('decContext').style.display = 'none';
+            document.getElementById('decTitle').innerHTML = approve ? `<i class="fa-solid fa-file-signature"></i> Ký duyệt hồ sơ ${esc(code)}` : `<i class="fa-solid fa-circle-xmark" style="color:#dc2626;"></i> Từ chối phê duyệt hồ sơ ${esc(code)}`;
+            document.getElementById('decLabel').innerHTML = approve ? 'Nội dung phê duyệt' : 'Lý do từ chối<span class="required">*</span>';
+            document.getElementById('decNote').placeholder = approve ? 'Nhập nội dung phê duyệt...' : 'Nhập lý do từ chối...';
+            document.getElementById('decNote').value = '';
+            document.getElementById('decErr').style.display = 'none';
+            // Lãnh đạo cấp tiếp theo do cán bộ chọn khi trình: không chọn tại popup, chỉ hiển thị dòng Chuyển tới (chỉ đọc)
+            document.getElementById('decNextGroup').style.display = 'none';
+            document.getElementById('decNext').innerHTML = '';
+            const presetNext = approve ? WF.xdPresetNextAssignee(rec) : '';
+            if (presetNext) {
+                document.getElementById('decContext').innerHTML = `<div style="font-size:13px; color:#334155; background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:8px 10px;"><strong>Chuyển tới:</strong> ${esc(WF.userLabel(presetNext))} <span style="color:#64748b;">(Lãnh đạo cấp tiếp theo do cán bộ chọn khi trình)</span></div>`;
+                document.getElementById('decContext').style.display = '';
+            }
+            xdSignRequired = approve && isLast && !(a.signDoc && a.signDoc.method === 'Ký ngoài');
+            if (xdSignRequired) {
+                document.getElementById('decCert').innerHTML = xdCertOptions(WF.getCurrentUserId()).map(c => `<option value="${esc(c.id)}">${esc(c.label)}</option>`).join('');
+                document.getElementById('decSignBlock').style.display = 'block';
+            }
+            const btn = document.getElementById('decSubmit');
+            btn.innerHTML = approve ? '<i class="fa-solid fa-file-signature"></i> Ký duyệt' : 'Từ chối';
+            btn.className = approve ? 'btn btn-primary' : 'btn btn-danger';
+            btn.style.cssText = approve ? '' : 'background:#ef4444; color:#fff; border:none;';
+            openOverlay('decideOverlay');
+        }
+        // Giả lập ký số: PIN >= 4 ký tự là hợp lệ
+        function xdSignCheck() {
+            const pin = document.getElementById('decPin').value;
+            let ok = true;
+            document.getElementById('decSignErr').style.display = 'none';
+            if (!document.getElementById('decCert').value) { document.getElementById('decCertErr').style.display = 'block'; ok = false; } else document.getElementById('decCertErr').style.display = 'none';
+            if (!pin) { document.getElementById('decPinErr').style.display = 'block'; ok = false; } else document.getElementById('decPinErr').style.display = 'none';
+            if (!ok) return false;
+            if (pin.length < 4) {
+                const e = document.getElementById('decSignErr');
+                e.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Ký số không thành công: Mã PIN không đúng. Hồ sơ giữ trạng thái [Chờ duyệt].';
+                e.style.display = 'block';
+                return false;
+            }
+            return true;
+        }
         function submitDecision() {
             const note = document.getElementById('decNote').value.trim();
             if (decisionMode === 'kp-approve' || decisionMode === 'kp-reject') {
@@ -621,9 +700,21 @@
             if (decisionMode === 'reject' && !note) { document.getElementById('decErr').style.display = 'block'; return; }
             const next = document.getElementById('decNext').value;
             if (decisionMode === 'approve' && document.getElementById('decNextGroup').style.display !== 'none' && !next) { document.getElementById('decNextErr').style.display = 'block'; return; }
+            if (decisionMode === 'approve' && xdSignRequired && !xdSignCheck()) return;
+            const certSel = document.getElementById('decCert');
+            const certLabel = xdSignRequired && certSel.selectedIndex >= 0 ? certSel.options[certSel.selectedIndex].text : '';
             const res = decisionMode === 'approve' ? WF.approve(actingCode, note, next) : WF.rejectApproval(actingCode, note);
+            // Gán thông tin chữ ký (họ tên, chức vụ, thời điểm, chứng thư số) vào văn bản đã ký số
+            if (res.ok && certLabel && res.record.approval && res.record.approval.signDoc) {
+                const me = WF.getCurrentUserId();
+                const sd = res.record.approval.signDoc;
+                sd.signCert = certLabel;
+                sd.signedName = WF.userName(me);
+                sd.signedTitle = (WF.getUser(me) || {}).title || '';
+                WF.upsertRecord(res.record);
+            }
             closeOverlay('decideOverlay');
-            const nextText = res.ok && res.record.status === WF.STATUS.CHO_PHE_DUYET ? ' - chuyển ' + (next ? WF.userName(next) + ' - ' : '') + WF.unitName(res.record.approval.path[res.record.approval.level]) : '';
+            const nextText = res.ok && res.record.status === WF.STATUS.CHO_PHE_DUYET ? ' - chuyển ' + ((next || (res.record.approval.assignees || [])[res.record.approval.level]) ? WF.userName(next || res.record.approval.assignees[res.record.approval.level]) + ' - ' : '') + WF.unitName(res.record.approval.path[res.record.approval.level]) : '';
             showToast(res.ok ? `Hồ sơ ${actingCode}: [${res.record.status}]${nextText}.` : res.message, res.ok ? 'success' : 'error');
             renderAll();
         }

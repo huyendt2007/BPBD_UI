@@ -803,7 +803,7 @@
     </div>
 
     <!-- Luồng xử lý BTNN dùng chung: đếm hồ sơ tab Chờ xử lý cho badge menu Tiếp nhận hồ sơ -->
-    <script src="btnn_luong_xu_ly.js?v=20261020kd"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261020v5"></script>
     <script>
         // Menu Data Model: Bồi thường nhà nước, Quản lý nhà nước & Quản trị hệ thống
         const menuData = [
@@ -816,9 +816,10 @@
                     { title: "Xác định cơ quan giải quyết bồi thường", badge: 7, url: "xac_dinh_co_quan_boi_thuong.html?v=20261008" },
                     {
                         title: "Giải quyết bồi thường",
-                        badge: 7,
+                        badgeKey: "btnn_gq_pending",
+                        badgeType: "danger",
                         children: [
-                            { title: "Giải quyết yêu cầu bồi thường", badge: 7, url: "quan_ly_boi_thuong.html?v=1" },
+                            { title: "Giải quyết yêu cầu bồi thường", badgeKey: "btnn_gq_pending", badgeType: "danger", url: "quan_ly_boi_thuong.html?v=1" },
                             { title: "Quyết định giải quyết bồi thường", url: "quyet_dinh_giai_quyet_boi_thuong.html?v=1" },
                             { title: "Cấp kinh phí tạm ứng/Bồi thường", url: "quan_ly_kinh_phi_boi_thuong.html?v=1" }
                         ]
@@ -1016,17 +1017,40 @@
             f.onload = () => { refreshReceptionBadge(); setTimeout(() => f.remove(), 0); };
             document.body.appendChild(f);
         }
+        // ===== Badge menu "Giải quyết yêu cầu bồi thường" (Bồi thường nhà nước) =====
+        function setGqBadge(count) {
+            const n = Number(count || 0);
+            document.querySelectorAll('.menu-badge[data-badge-key="btnn_gq_pending"]').forEach(el => {
+                el.innerText = n > 99 ? '99+' : String(n);
+                el.style.display = n > 0 ? '' : 'none';
+            });
+        }
+        function refreshGqBadge() {
+            try {
+                const stored = localStorage.getItem('btnn_gq_pending_count');
+                if (stored !== null && stored !== '') {
+                    setGqBadge(Number(stored));
+                } else {
+                    setGqBadge(7);
+                }
+            } catch (err) { }
+        }
+
         window.addEventListener('message', (event) => {
             const data = event.data || {};
-            if (data.type !== 'btnn:receptionPending') return;
-            // Màn Tiếp nhận hồ sơ gửi số lượng sau khi nạp và sau mỗi thao tác tạo mới / xóa / phân công / thu hồi
-            if (window.BTNN_WF && data.userId === BTNN_WF.getCurrentUserId()) setReceptionBadge(data.count); else refreshReceptionBadge();
+            if (data.type === 'btnn:receptionPending') {
+                // Màn Tiếp nhận hồ sơ gửi số lượng sau khi nạp và sau mỗi thao tác tạo mới / xóa / phân công / thu hồi
+                if (window.BTNN_WF && data.userId === BTNN_WF.getCurrentUserId()) setReceptionBadge(data.count); else refreshReceptionBadge();
+            } else if (data.type === 'btnn:gqPending' || data.type === 'BTNN_GQ_COUNT_UPDATED') {
+                setGqBadge(data.count);
+            }
         });
         // Đổi người dùng giả lập / thay đổi hồ sơ ở màn hình khác: tính lại
         window.addEventListener('storage', (event) => {
             if (!event.key || /^(btnn_demo_user_v1|btnn_wf_records_v1|btnn_flow_config_v2|receptionClaimsList_v2026)$/.test(event.key)) refreshReceptionBadge();
+            if (!event.key || event.key === 'btnn_gq_pending_count') refreshGqBadge();
         });
-        window.addEventListener('DOMContentLoaded', () => { setTimeout(() => { refreshReceptionBadge(); ensureReceptionSeeded(); }, 0); });
+        window.addEventListener('DOMContentLoaded', () => { setTimeout(() => { refreshReceptionBadge(); ensureReceptionSeeded(); refreshGqBadge(); }, 0); });
 
         // Page initialization
         window.addEventListener('DOMContentLoaded', () => {
@@ -1090,7 +1114,7 @@
                         subGroupBtn.onclick = () => toggleSubGroup(rootIdx, childIdx);
                         subGroupBtn.innerHTML = `
                             <span>${child.title}</span>
-                            ${child.badge ? `<span class="menu-badge ${child.badgeType || 'danger'}" style="margin-left:auto; margin-right:8px;">${child.badge}</span>` : ''}
+                            ${child.badgeKey ? `<span class="menu-badge ${child.badgeType || 'danger'}" data-badge-key="${child.badgeKey}" style="margin-left:auto; margin-right:8px; display:none;"></span>` : (child.badge ? `<span class="menu-badge ${child.badgeType || 'danger'}" style="margin-left:auto; margin-right:8px;">${child.badge}</span>` : '')}
                             <i class="fa fa-chevron-down menu-sub-group-arrow" id="subgroup-arrow-${rootIdx}-${childIdx}"></i>
                         `;
 
@@ -1109,8 +1133,14 @@
                             textSpan.innerText = leaf.title;
                             leafLink.appendChild(textSpan);
 
-                            // Add badge if present
-                            if (leaf.badge) {
+                            // Add badge if present (badgeKey hoặc badge cố định)
+                            if (leaf.badgeKey) {
+                                const badge = document.createElement('span');
+                                badge.className = `menu-badge ${leaf.badgeType || 'danger'}`;
+                                badge.dataset.badgeKey = leaf.badgeKey;
+                                badge.style.display = 'none';
+                                leafLink.appendChild(badge);
+                            } else if (leaf.badge) {
                                 const badge = document.createElement('span');
                                 badge.className = `menu-badge ${leaf.badgeType || 'danger'}`;
                                 badge.innerText = leaf.badge;
@@ -1165,6 +1195,10 @@
                 groupDiv.appendChild(subContainer);
                 container.appendChild(groupDiv);
             });
+
+            // Cập nhật giá trị badge động
+            refreshReceptionBadge();
+            refreshGqBadge();
         }
 
         // Toggle Root Modules accordion

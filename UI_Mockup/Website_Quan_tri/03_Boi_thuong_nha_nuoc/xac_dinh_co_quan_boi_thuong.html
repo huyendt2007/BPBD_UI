@@ -89,7 +89,7 @@
                     </select>
                 </div>
                 <div>
-                    <span class="form-label">Nội dung trình</span>
+                    <span class="form-label">Loại trình</span>
                     <select class="form-control" id="filterApprovalKind" title="Áp dụng cho hồ sơ Chờ duyệt và Bị trả lại">
                         <option value="">Tất cả</option>
                     </select>
@@ -662,6 +662,9 @@
                 </div>
             </div>
 
+            <!-- Chi tiết yêu cầu xác định CQGQBT (chỉ đọc, Mở rộng / Thu gọn): dùng chung khối Chi tiết hồ sơ của MH04, chuyển vào vị trí này khi mở màn -->
+            <div id="procProfileSlot"></div>
+
             <div class="sub-section-title">NỘI DUNG XÁC ĐỊNH THẨM QUYỀN (ĐIỀU 40 LUẬT TNBTCNN)</div>
             <div class="form-group">
                 <span class="form-label">Căn cứ pháp lý xác định thẩm quyền<span class="required">*</span></span>
@@ -678,7 +681,6 @@
                     <input type="hidden" id="procTargetAgency" value="">
                 </div>
                 <div class="error-message" id="procTargetAgencyError">Đây là trường bắt buộc</div>
-                <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;"><i class="fa-solid fa-circle-info"></i> Danh sách cơ quan đã được cấu hình luồng Giải quyết YCBT. Lãnh đạo cấp cuối ký duyệt Kết quả xác định CQGQBT thì hệ thống tự động chuyển hồ sơ đến cơ quan này.</div>
             </div>
             <div class="form-group">
                 <span class="form-label">Nhận định lý do xác định chi tiết<span class="required">*</span></span>
@@ -704,8 +706,7 @@
 
             <div class="form-footer">
                 <button class="btn btn-secondary" onclick="showListScreen()">Hủy bỏ</button>
-                <button class="btn btn-secondary" onclick="saveProcessResult(false)"><i class="fa-solid fa-floppy-disk"></i> Lưu</button>
-                <button class="btn btn-primary" onclick="saveProcessResult(true)"><i class="fa-solid fa-file-signature"></i> Lưu và trình ký</button>
+                <button class="btn btn-primary" onclick="saveProcessResult()"><i class="fa-solid fa-file-signature"></i> Lưu và trình ký</button>
             </div>
         </div>
 
@@ -739,7 +740,7 @@
                         <strong>Người trả lại:</strong> <span id="dtReturnedBy"></span>
                     </div>
                     <div style="margin-bottom: 4px;">
-                        <strong>Nội dung trình bị từ chối:</strong> <span id="dtReturnedKind" style="color: #b91c1c; font-weight: 600;"></span>
+                        <strong>Loại trình bị từ chối:</strong> <span id="dtReturnedKind" style="color: #b91c1c; font-weight: 600;"></span>
                     </div>
                     <div>
                         <strong>Lý do chi tiết:</strong> <span id="dtReturnedReason" style="font-style: italic; color: #991b1b;"></span>
@@ -753,7 +754,6 @@
                     <div style="font-weight: 700; color: #1e40af; font-size: 14px;">
                         <i class="fa-solid fa-file-signature"></i> TỆP VĂN BẢN TRÌNH KÝ
                     </div>
-                    <span class="badge" id="dtPendingSignBadge" style="background: #dbeafe; color: #1e40af; font-size: 11.5px;"><i class="fa-solid fa-clock"></i> Chờ Lãnh đạo ký số</span>
                 </div>
                 <div style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; border: 1px solid #dbeafe; border-radius: 6px; padding: 10px 14px; margin-top: 8px;">
                     <div style="display: flex; align-items: center; gap: 10px;">
@@ -900,16 +900,16 @@
                 </div>
             </div>
 
-            <!-- 7. CHI TIẾT HỒ SƠ XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG (Mở rộng / Thu gọn, Mặc định THU GỌN) -->
-            <div class="detail-card" style="margin-bottom: 20px; padding: 0; overflow: hidden; border: 1px solid var(--border-color);">
+            <!-- 7. CHI TIẾT HỒ SƠ XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG (Mở rộng / Thu gọn) - dùng chung tại MH03 (Chi tiết yêu cầu xác định CQGQBT) -->
+            <div id="dtProfileSlot"></div>
+            <div id="xdProfileCard" class="detail-card" style="margin-bottom: 20px; padding: 0; overflow: hidden; border: 1px solid var(--border-color);">
                 <div onclick="toggleDetailProfileSection()" style="background: #f8fafc; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; border-bottom: 1px solid var(--border-color); transition: background 0.2s;">
                     <div style="font-weight: 700; color: #1e3a8a; font-size: 13.5px; display: flex; align-items: center; gap: 8px;">
                         <i class="fa-solid fa-folder-closed" id="dtProfileFolderIcon" style="color: #2563eb;"></i>
-                        CHI TIẾT HỒ SƠ XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG
+                        <span id="dtProfileTitle">CHI TIẾT HỒ SƠ XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG</span>
                     </div>
                     <div style="display: flex; align-items: center; gap: 8px;">
                         <span id="dtProfileToggleText" style="font-size: 12.5px; color: #2563eb; font-weight: 600;">Mở rộng</span>
-                        <span class="badge" style="background: #e2e8f0; color: #475569; font-size: 11px;">Mặc định thu gọn</span>
                         <i id="dtProfileToggleIcon" class="fa-solid fa-chevron-down" style="color: #64748b; font-size: 12px; transition: transform 0.2s;"></i>
                     </div>
                 </div>
@@ -1062,12 +1062,18 @@
                 </div>
             </div>
 
-            <!-- 8. QUÁ TRÌNH PHÂN CÔNG (Hiển thị độc lập) -->
+            <!-- 8. QUÁ TRÌNH PHÂN CÔNG (Mở rộng / Thu gọn) -->
             <div class="detail-card" style="margin-bottom: 20px;">
-                <div class="sub-section-title" style="margin-top: 0; display: flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-diagram-project" style="color: var(--primary-color);"></i> QUÁ TRÌNH PHÂN CÔNG
+                <div onclick="toggleDetailRoutesSection()" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;">
+                    <div class="sub-section-title" style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-diagram-project" style="color: var(--primary-color);"></i> QUÁ TRÌNH PHÂN CÔNG
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span id="dtRoutesToggleText" style="font-size: 12.5px; color: #2563eb; font-weight: 600;">Thu gọn</span>
+                        <i id="dtRoutesToggleIcon" class="fa-solid fa-chevron-up" style="color: #64748b; font-size: 12px;"></i>
+                    </div>
                 </div>
-                <div id="dtRoutes" style="margin-top: 10px;"></div>
+                <div id="dtRoutesBody" style="margin-top: 10px;"><div id="dtRoutes"></div></div>
             </div>
 
             <!-- 9. LỊCH SỬ XỬ LÝ (Hiển thị độc lập) -->
@@ -1134,7 +1140,7 @@
                     <input type="file" id="xsFileInput" style="display:none;" accept=".pdf,.doc,.docx" onchange="xsUploadFile(this)">
                     <div id="xsFileEmpty">
                         <p style="font-size:13px; color:#475569; margin:0 0 10px 0;" id="xsFileHint"></p>
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('xsFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file từ máy tính</button>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('xsFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>
                     </div>
                     <div id="xsFileReady" class="xs-file-ready">
                         <div style="display:flex; align-items:center; gap:12px;">
@@ -1374,9 +1380,9 @@
     </div>
 
     <!-- External javascript logic -->
-    <script src="btnn_luong_xu_ly.js?v=20261020kd"></script>
-    <script src="btnn_lanh_dao_actions.js?v=20261020xd"></script>
-    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261020xd"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261020v5"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261020v5"></script>
+    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261020ks"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="bpbd_filter_toggle.js?v=20261012"></script>
 </body>
