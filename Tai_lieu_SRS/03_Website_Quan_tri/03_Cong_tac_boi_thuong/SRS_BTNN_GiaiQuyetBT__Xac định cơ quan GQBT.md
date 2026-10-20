@@ -21,7 +21,7 @@
 + Ủy ban nhân dân cấp tỉnh (UBND tỉnh, thành phố trực thuộc Trung ương), gọi tắt là UBND cấp tỉnh: chỉ xem danh sách và chi tiết hồ sơ của các Sở Tư pháp trực thuộc (Sở Tư pháp là đơn vị con của UBND cấp tỉnh trên cây Cơ cấu tổ chức) ở chế độ chỉ đọc; không có nút `Tạo yêu cầu`, không hiển thị thông báo [MSG-INF-BTNN-LXL-001], không hiển thị thao tác xử lý, phê duyệt.
 + Loại cơ quan xử lý (`Bộ Tư pháp`, `Sở Tư pháp`) được thể hiện tại cột `Cơ quan xử lý` và bộ lọc `Cơ quan xử lý` của MH01, trường `Đơn vị tiếp nhận` và `Lịch sử xử lý` của MH04.
 + Luồng phân công, phê duyệt: hồ sơ của Bộ Tư pháp theo luồng `Xác định CQGQBT - Bộ Tư pháp`; hồ sơ của Sở Tư pháp theo luồng `Xác định CQGQBT - Sở Tư pháp` tại [Cấu hình luồng xử lý - Cấu hình luồng xử lý - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Cau_hinh_luong_xu_ly.md).
-+ Mã: Mỗi hồ sơ có `Mã hồ sơ` riêng của phân hệ và mang `Mã vụ việc` toàn trình theo [Mã vụ việc và mã hồ sơ - Tiếp nhận hồ sơ - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_TiepNhan_YCBT.md#tn-ma-vu-viec). Hồ sơ tạo trực tiếp tại phân hệ được sinh `Mã vụ việc` mới; hồ sơ Giải quyết yêu cầu bồi thường sinh ra khi Chuyển CQGQBT giữ nguyên `Mã vụ việc`.
++ Mã: Mỗi hồ sơ có `Mã hồ sơ` riêng của phân hệ (`XD-yyyy-xxx`) và mang `Mã vụ việc` toàn trình theo [Mã vụ việc và mã hồ sơ - Tiếp nhận hồ sơ - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_TiepNhan_YCBT.md#tn-ma-vu-viec). Hồ sơ tạo trực tiếp tại phân hệ: chọn `Vụ việc mới` thì được sinh `Mã vụ việc` mới, chọn `Vụ việc đã có Mã vụ việc` thì mang mã đã chọn; hồ sơ Giải quyết yêu cầu bồi thường (`Mã hồ sơ GQBT`, `BT-yyyy-xxx`) sinh ra khi Chuyển CQGQBT giữ nguyên `Mã vụ việc`.
 
 \- Vai trò trên hồ sơ:
 

@@ -513,13 +513,10 @@
                 </div>
 
                 <div class="info-group-title">Thông tin người yêu cầu</div>
-                <!-- Khối Người yêu cầu: Card form hiện đại, phân nhóm rõ ràng, tiện lợi -->
+                <!-- Khối Người yêu cầu: 1 Card form duy nhất gọn gàng, liền mạch, không đánh số -->
                 <div class="nyc-form-card">
-                    <!-- Phân nhóm 1: Phân loại & Tư cách người yêu cầu -->
-                    <div class="nyc-sub-header">
-                        <i class="fa-solid fa-user-tag"></i> 1. Phân loại & Tư cách người yêu cầu
-                    </div>
-                    <div class="grid-3-cols" style="gap: 18px; margin-bottom: 6px;">
+                    <!-- Dòng 1: Loại người yêu cầu & Tư cách -->
+                    <div class="grid-3-cols" style="gap: 16px; margin-bottom: 14px;">
                         <!-- Loại người yêu cầu: Cá nhân / Tổ chức (mặc định Cá nhân), đứng trước Tư cách -->
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Loại người yêu cầu<span class="required">*</span></span>
@@ -534,7 +531,7 @@
                                 </label>
                             </div>
                         </div>
-                        <!-- Tư cách người yêu cầu bồi thường: Danh mục DM_26 lọc theo Loại người yêu cầu (Cá nhân: bỏ TCNYC_03; Tổ chức: TCNYC_01, TCNYC_03, TCNYC_05) -->
+                        <!-- Tư cách người yêu cầu bồi thường: Danh mục DM_26 lọc theo Loại người yêu cầu -->
                         <div class="form-group nyc-span-2" style="margin-bottom: 0;">
                             <span class="form-label">Tư cách người yêu cầu bồi thường<span class="required">*</span></span>
                             <select id="formRequesterRole" class="form-control" onchange="onRequesterRoleChange()"></select>
@@ -542,12 +539,8 @@
                         </div>
                     </div>
 
-                    <!-- Phân nhóm 2: Thông tin định danh & Liên hệ -->
-                    <div class="nyc-sub-header nyc-sub-divider">
-                        <i class="fa-solid fa-id-card"></i> 2. Thông tin định danh & Liên hệ
-                    </div>
-                    <!-- Dòng 1 định danh: 3 cột -->
-                    <div class="grid-3-cols" style="gap: 18px; margin-bottom: 14px;">
+                    <!-- Dòng 2: Họ và tên/Tên tổ chức, Loại giấy tờ, Số giấy tờ (hoặc Mã số tổ chức) -->
+                    <div class="grid-3-cols" style="gap: 16px; margin-bottom: 14px;">
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label"><span id="formRequesterLabel">Họ và tên</span><span class="required">*</span></span>
                             <input id="formRequester" class="form-control" placeholder="Nhập họ và tên...">
@@ -568,8 +561,9 @@
                             <input id="formNycOrgCode" class="form-control" placeholder="Mã số doanh nghiệp / mã số thuế / mã số khác...">
                         </div>
                     </div>
-                    <!-- Dòng 2 liên hệ: 2 cột cân xứng 50% - 50% -->
-                    <div class="grid-2" style="gap: 18px; margin-bottom: 6px;">
+
+                    <!-- Dòng 3: Số điện thoại, Email -->
+                    <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Số điện thoại<span class="required">*</span></span>
                             <input id="formPhone" class="form-control" placeholder="Nhập số điện thoại...">
@@ -582,11 +576,8 @@
                         </div>
                     </div>
 
-                    <!-- Phân nhóm 3: Địa chỉ nơi cư trú / Trụ sở -->
-                    <div class="nyc-sub-header nyc-sub-divider">
-                        <i class="fa-solid fa-location-dot"></i> 3. Địa chỉ nơi cư trú / Trụ sở
-                    </div>
-                    <div class="grid-3-cols" style="gap: 18px; margin-bottom: 14px;">
+                    <!-- Dòng 4: Quốc gia, Tỉnh/Thành phố, Phường/Xã -->
+                    <div class="grid-3-cols" style="gap: 16px; margin-bottom: 14px;">
                         <!-- Quốc gia: Danh mục DM_09, mặc định Việt Nam -->
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Quốc gia<span class="required">*</span></span>
@@ -617,7 +608,8 @@
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
                     </div>
-                    <!-- Địa chỉ chi tiết full width -->
+
+                    <!-- Dòng 5: Địa chỉ chi tiết -->
                     <div class="form-group nyc-addr-edit" style="margin-bottom: 0;">
                         <span class="form-label">Địa chỉ chi tiết (Số nhà, tên đường, thôn/xóm...)<span class="required">*</span></span>
                         <input id="formAddress" class="form-control" placeholder="Nhập số nhà, tên đường, thôn/xóm...">
@@ -629,7 +621,7 @@
                 <div id="nbthOrgBlock" style="display:none;">
                     <div class="info-group-title">Thông tin tổ chức bị thiệt hại đã chấm dứt tồn tại</div>
                     <div class="nyc-form-card">
-                        <div class="grid-2" style="gap: 18px;">
+                        <div class="grid-2" style="gap: 16px;">
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Tên tổ chức bị thiệt hại</span>
                                 <input id="nbthOrgName" class="form-control" placeholder="Nhập tên tổ chức bị thiệt hại...">
@@ -645,9 +637,6 @@
                 <div id="nbthBlock" style="display:none;">
                     <div class="info-group-title">Thông tin người bị thiệt hại</div>
                     <div class="nyc-form-card">
-                        <div class="nyc-sub-header">
-                            <i class="fa-solid fa-id-card"></i> 1. Thông tin định danh người bị thiệt hại
-                        </div>
                         <div class="grid-4-cols" style="gap: 16px; margin-bottom: 14px;">
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Họ và tên người bị thiệt hại</span>
@@ -669,9 +658,6 @@
                             </div>
                         </div>
 
-                        <div class="nyc-sub-header nyc-sub-divider">
-                            <i class="fa-solid fa-location-dot"></i> 2. Địa chỉ người bị thiệt hại
-                        </div>
                         <div class="grid-3-cols" style="gap: 16px;">
                             <div class="form-group nbth-addr-view" style="display:none; grid-column: 1 / -1; margin-bottom: 0;">
                                 <span class="form-label">Địa chỉ đầy đủ</span>

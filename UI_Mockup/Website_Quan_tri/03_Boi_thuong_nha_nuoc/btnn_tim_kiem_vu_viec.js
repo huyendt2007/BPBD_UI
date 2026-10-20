@@ -1,6 +1,6 @@
 /*
  * Popup chuẩn Tìm kiếm nâng cao vụ việc BTNN (mockup) - dùng chung cho các màn có trường Mã vụ việc liên quan.
- * Lưới: Mã vụ việc (mở chi tiết tab mới), Họ và tên người yêu cầu, Họ và tên người bị thiệt hại, Cơ quan giải quyết,
+ * Lưới: Mã vụ việc (VVBT-), Mã hồ sơ GQBT (BT-, mở chi tiết tab mới), Họ và tên người yêu cầu, Họ và tên người bị thiệt hại, Cơ quan giải quyết,
  * Số QĐ/Bản án, Ngày QĐ/Bản án, Trạng thái; tìm kiếm theo toàn bộ thông tin trên lưới.
  * Phạm vi dữ liệu theo cấp của người dùng đăng nhập (BTNN_WF): Bộ Tư pháp toàn quốc; Sở Tư pháp theo địa bàn tỉnh
  * và vụ việc do Sở tiếp nhận; cơ quan giải quyết bồi thường theo vụ việc do đơn vị giải quyết.
@@ -11,7 +11,7 @@
     const W = () => global.BTNN_WF;
     const unitName = id => (W() && W().unitName(id)) || id;
     const row = (code, requester, victim, agencyId, decisionNo, decisionDate, status, receivedBy = '') => ({
-        code, requester, victim: victim || requester, agencyId, decisionNo: decisionNo || '-', decisionDate: decisionDate || '-', status, receivedBy, detailType: 'claim'
+        code, hoSoCode: code, requester, victim: victim || requester, agencyId, decisionNo: decisionNo || '-', decisionDate: decisionDate || '-', status, receivedBy, detailType: 'claim'
     });
     // Vụ việc yêu cầu bồi thường mẫu (trạng thái khác Chờ tiếp nhận)
     const CASES = [
@@ -60,11 +60,31 @@
         }
         return { level: 'CQ', rootId, label: `Vụ việc do ${rootName} giải quyết`, allowCase: r => w.getRootId(r.agencyId) === rootId, allowUnit: id => w.getRootId(id) === rootId };
     }
-    function casesInScope(data) { const s = scope(); return (data || CASES).filter(s.allowCase); }
-    function findInScope(code, data) { return casesInScope(data).find(r => r.code === code) || null; }
+    // Mã vụ việc (VVBT-) theo Mã hồ sơ GQBT (BT-): dùng chung BTNN_WF.vuViecOf để khớp với các phân hệ; r.code = Mã vụ việc
+    function withVuViec(r) {
+        if (!r) return r;
+        if (!r.hoSoCode) r.hoSoCode = r.code;
+        if (!r.maVuViec && W()) r.maVuViec = W().isVuViecCode(r.hoSoCode) ? r.hoSoCode : W().vuViecOf(r.hoSoCode);
+        if (r.maVuViec) r.code = r.maVuViec;
+        return r;
+    }
+    const sameCase = (r, code) => !!code && (r.code === code || r.hoSoCode === code || r.maVuViec === code);
+    function casesInScope(data) { const s = scope(); return (data || CASES).map(withVuViec).filter(s.allowCase); }
+    function findInScope(code, data) { return casesInScope(data).find(r => sameCase(r, code)) || null; }
+    // Mã vụ việc của một mã đã lưu (VVBT- hoặc Mã hồ sơ GQBT BT- của dữ liệu cũ)
+    function toVuViec(code) {
+        if (!code) return '';
+        const r = CASES.map(withVuViec).find(x => sameCase(x, code));
+        if (r) return r.code;
+        return (W() && /^BT-/.test(code)) ? W().vuViecOf(code) : code;
+    }
 
-    // Mở xem chi tiết vụ việc tại tab trình duyệt mới
-    function openDetail(code) { global.open(`quan_ly_boi_thuong.html?id=${encodeURIComponent(code)}&mode=view`, '_blank'); }
+    // Mở xem chi tiết hồ sơ Giải quyết YCBT (theo Mã hồ sơ GQBT) tại tab trình duyệt mới
+    function openDetail(code) {
+        const r = CASES.map(withVuViec).find(x => sameCase(x, code));
+        const hoSo = r ? r.hoSoCode : code;
+        global.open(`quan_ly_boi_thuong.html?id=${encodeURIComponent(hoSo)}&mode=view`, '_blank');
+    }
 
     let state = { data: CASES, onSelect: null };
     function ensureModal() {
@@ -103,7 +123,7 @@
                 <div class="bcl-body">
                     <div class="bcl-scope"><i class="fa-solid fa-shield-halved"></i> Phạm vi dữ liệu: <b id="bclScope"></b></div>
                     <div class="bcl-grid">
-                        ${input('bclCode', 'Mã vụ việc', 'Nhập mã vụ việc...')}
+                        ${input('bclCode', 'Mã vụ việc', 'Nhập mã vụ việc (VVBT-...)')}
                         ${input('bclRequester', 'Họ và tên người yêu cầu', 'Nhập họ và tên người yêu cầu...')}
                         ${input('bclVictim', 'Họ và tên người bị thiệt hại', 'Nhập họ và tên người bị thiệt hại...')}
                         ${input('bclAgency', 'Cơ quan giải quyết', 'Nhập cơ quan giải quyết...')}
@@ -117,7 +137,7 @@
                         <button type="button" class="btn btn-primary" onclick="BTNN_CASE.search()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
                     </div>
                     <table class="bcl-table">
-                        <thead><tr><th>Mã vụ việc</th><th>Họ và tên người yêu cầu</th><th>Họ và tên người bị thiệt hại</th><th>Cơ quan giải quyết</th><th>Số QĐ/Bản án</th><th>Ngày QĐ/Bản án</th><th>Trạng thái</th><th style="text-align:center;">Thao tác</th></tr></thead>
+                        <thead><tr><th>Mã vụ việc</th><th>Mã hồ sơ GQBT</th><th>Họ và tên người yêu cầu</th><th>Họ và tên người bị thiệt hại</th><th>Cơ quan giải quyết</th><th>Số QĐ/Bản án</th><th>Ngày QĐ/Bản án</th><th>Trạng thái</th><th style="text-align:center;">Thao tác</th></tr></thead>
                         <tbody id="bclBody"></tbody>
                     </table>
                 </div>
@@ -151,7 +171,7 @@
         const body = document.getElementById('bclBody');
         if (from && to && from > to) {
             [fromEl, toEl].forEach(el => el.classList.add('is-invalid'));
-            body.innerHTML = '<tr><td colspan="8" class="bcl-empty" style="color:#dc2626;">Từ ngày QĐ/Bản án không được lớn hơn Đến ngày QĐ/Bản án. [MSG-ERR-VAL-007]</td></tr>';
+            body.innerHTML = '<tr><td colspan="9" class="bcl-empty" style="color:#dc2626;">Từ ngày QĐ/Bản án không được lớn hơn Đến ngày QĐ/Bản án. [MSG-ERR-VAL-007]</td></tr>';
             return;
         }
         const status = document.getElementById('bclStatus').value;
@@ -170,12 +190,13 @@
             return true;
         });
         body.innerHTML = list.length ? list.map(r => `<tr>
-                <td style="white-space:nowrap;"><a title="Mở xem chi tiết vụ việc tại tab mới" onclick="BTNN_CASE.openDetail('${esc(r.code)}')">${esc(r.code)}</a></td>
+                <td style="white-space:nowrap;font-weight:600;">${esc(r.code)}</td>
+                <td style="white-space:nowrap;"><a title="Mở xem chi tiết hồ sơ Giải quyết YCBT tại tab mới" onclick="BTNN_CASE.openDetail('${esc(r.hoSoCode)}')">${esc(r.hoSoCode)}</a></td>
                 <td>${esc(r.requester)}</td><td>${esc(r.victim)}</td><td>${esc(unitName(r.agencyId))}</td>
                 <td style="white-space:nowrap;">${esc(r.decisionNo)}</td><td style="white-space:nowrap;">${esc(r.decisionDate)}</td>
                 <td><span class="bcl-badge">${esc(r.status)}</span></td>
                 <td style="text-align:center;"><button type="button" class="btn btn-primary" onclick="BTNN_CASE.choose('${esc(r.code)}')"><i class="fa-solid fa-check"></i> Chọn</button></td>
-            </tr>`).join('') : '<tr><td colspan="8" class="bcl-empty">Không tìm thấy dữ liệu phù hợp. [MSG-INF-SYS-001]</td></tr>';
+            </tr>`).join('') : '<tr><td colspan="9" class="bcl-empty">Không tìm thấy dữ liệu phù hợp. [MSG-INF-SYS-001]</td></tr>';
     }
     function choose(code) {
         const item = findInScope(code, state.data);
@@ -184,5 +205,5 @@
         if (typeof state.onSelect === 'function') state.onSelect(Object.assign({ agency: unitName(item.agencyId) }, item));
     }
 
-    global.BTNN_CASE = { CASES, STATUS_OPTIONS, scope, provinceOfUnit, casesInScope, findInScope, open, close, clear, search, choose, openDetail };
+    global.BTNN_CASE = { CASES, STATUS_OPTIONS, scope, provinceOfUnit, casesInScope, findInScope, toVuViec, open, close, clear, search, choose, openDetail };
 })(window);

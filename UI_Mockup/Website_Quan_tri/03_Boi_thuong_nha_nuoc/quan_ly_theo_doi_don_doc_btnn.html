@@ -851,7 +851,7 @@
         const areaCtl = (id, val, ph) => `<textarea class="form-control" id="f_${id}" placeholder="${ph}">${esc(val || '')}</textarea>`;
         const checksCtl = (id, opts, vals) => `<div class="check-list" id="f_${id}">${opts.map((o, i) => `<label class="check-item"><input type="checkbox" value="${esc(o)}" ${(vals || []).includes(o) ? 'checked' : ''}> ${esc(o)}</label>`).join('')}</div>`;
         const treeCtl = id => `<div id="utree_${id}"></div>`;
-        const caseCtl = val => `<div class="case-lookup"><input type="text" class="form-control" id="f_caseCode" value="${esc(val || '')}" placeholder="Nhập mã vụ việc (BT-yyyy-xxx)..." oninput="onCaseInput()"><button type="button" class="btn btn-primary case-btn" onclick="openCaseLookup(true)"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button><button type="button" class="btn btn-secondary case-btn" onclick="openCaseLookup(false)"><i class="fa-solid fa-magnifying-glass-plus"></i> Tìm kiếm nâng cao</button></div><a class="case-link" id="caseLink" style="display:none;"></a>`;
+        const caseCtl = val => `<div class="case-lookup"><input type="text" class="form-control" id="f_caseCode" value="${esc(val || '')}" placeholder="Nhập mã vụ việc (VVBT-yyyy-xxx)..." oninput="onCaseInput()"><button type="button" class="btn btn-primary case-btn" onclick="openCaseLookup(true)"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button><button type="button" class="btn btn-secondary case-btn" onclick="openCaseLookup(false)"><i class="fa-solid fa-magnifying-glass-plus"></i> Tìm kiếm nâng cao</button></div><a class="case-link" id="caseLink" style="display:none;"></a>`;
 
         function draftFromForm() {
             const v = id => document.getElementById(`f_${id}`)?.value?.trim() || '';
@@ -903,7 +903,7 @@
                 f.push(fg('deadline', yc ? 'Hạn báo cáo' : 'Hạn phản hồi', true, dateCtl('deadline', r.deadline)));
             }
             if (dd) f.push(fg('legalBasis', 'Căn cứ pháp luật', true, textCtl('legalBasis', r.legalBasis, 'Nhập căn cứ pháp luật...'), 3));
-            f.push(fg('caseCode', 'Mã vụ việc liên quan', false, caseCtl(r.caseCode), 2));
+            f.push(fg('caseCode', 'Mã vụ việc liên quan', false, caseCtl(CASE.toVuViec(r.caseCode)), 2));
             const mainLabel = td ? 'Nội dung cần theo dõi' : yc ? 'Nội dung chi tiết yêu cầu báo cáo' : 'Nhiệm vụ công tác bồi thường nhà nước phải thực hiện';
             t.push(fg('mainContent', mainLabel, true, areaCtl('mainContent', r.mainContent, `Nhập ${mainLabel.toLowerCase()}...`)));
             if (td) t.push(fg('result', 'Kết quả theo dõi', formMode === 'finish', areaCtl('result', r.result, 'Nhập kết quả theo dõi...')));
@@ -919,7 +919,7 @@
             };
             mount('proposed', 'ddProposed', r.proposedId, '-- Chọn cơ quan được đề nghị đôn đốc --');
             mount('target', grp === G.TD ? 'tdTarget' : grp === G.YC ? 'ycTarget' : 'ddTarget', r.targetId, '-- Chọn đơn vị trên cây cơ cấu tổ chức --');
-            caseSelected = r.caseCode || '';
+            caseSelected = CASE.toVuViec(r.caseCode || '');
             renderCaseLink(caseSelected);
             initDatePickers(document.getElementById('businessForm'));
             // Trường điều khiển: đổi nhóm, hình thức, hồ sơ đề nghị trước đó -> dựng lại biểu mẫu, giữ dữ liệu đã nhập
