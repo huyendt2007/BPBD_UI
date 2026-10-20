@@ -614,6 +614,18 @@
                 changed = true;
             }
         });
+        // Mã vụ việc toàn trình: hồ sơ chưa có thì lấy theo sổ đăng ký (Mã hồ sơ hoặc Mã hồ sơ GQBT sinh ra) hoặc cấp mới;
+        // hồ sơ XD- và hồ sơ BT- sinh ra khi Chuyển CQGQBT luôn dùng chung 01 Mã vụ việc
+        list.forEach(r => {
+            if (!r) return;
+            const reg = vuViecRegistry();
+            if (!isVuViecCode(r.maVuViec)) {
+                r.maVuViec = (isVuViecCode(r.code) && r.code) || reg[r.code] || (r.claimCode && reg[r.claimCode]) || nextVuViecCode();
+                changed = true;
+            }
+            if (r.code && !isVuViecCode(r.code) && reg[r.code] !== r.maVuViec) linkVuViec(r.code, r.maVuViec);
+            if (r.claimCode && /^BT-/.test(r.claimCode) && reg[r.claimCode] !== r.maVuViec) linkVuViec(r.claimCode, r.maVuViec);
+        });
         if (changed) writeJson(KEY_RECORDS, list);
         return list;
     }
@@ -715,7 +727,7 @@
         if (isVuViecCode(code)) return code;
         const reg = vuViecRegistry();
         if (isVuViecCode(reg[code])) return reg[code];
-        const rec = readJson(KEY_RECORDS, []).find(r => r && (r.code === code || r.claimCode === code) && isVuViecCode(r.maVuViec));
+        const rec = loadRecords().find(r => r && (r.code === code || r.claimCode === code) && isVuViecCode(r.maVuViec));
         if (rec) return linkVuViec(code, rec.maVuViec);
         if (opts && opts.create === false) return '';
         return linkVuViec(code, (opts && isVuViecCode(opts.preferred)) ? opts.preferred : nextVuViecCode());

@@ -638,7 +638,7 @@ function buildOrgSeed() {
             id: 'WF-XD-2026-132', code: 'XD-2026-132', maVuViec: 'VVBT-2026-132', source: 'Tiếp nhận',
             date: '12/10/2026', receivedAt: '10:40 12/10/2026', receivedBy: 'Nguyễn Văn Cán Bộ', status: 'Chờ tiếp nhận',
             nycRole: 'Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại',
-            nycName: 'Công ty Cổ phần Xây dựng Hồng Hà', nycOrgCode: '', nycOrgDocNo: '0105998877', nycOrgDocDate: '15/04/2019', nycOrgDocPlace: 'Sở Kế hoạch và Đầu tư Thành phố Hà Nội',
+            nycName: 'Công ty Cổ phần Xây dựng Hồng Hà', nycOrgCode: '0105998877', nycOrgDocNo: '0105998877', nycOrgDocDate: '15/04/2019', nycOrgDocPlace: 'Sở Kế hoạch và Đầu tư Thành phố Hà Nội',
             nycRepName: 'Phạm Thị Hồng', nycRepPosition: 'Tổng Giám đốc', nycPhone: '0904667788', nycEmail: '',
             nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: '00004 - Phường Hoàn Kiếm', nycAddressDetail: 'Số 27 Lý Thái Tổ',
             nbthOrgName: 'Công ty TNHH Thương mại Hồng Hà', nbthOrgCode: '0101234567',
@@ -1177,11 +1177,10 @@ function applyNycType(type) {
     refreshOrgDocRequired();
 }
 
-// Số giấy tờ thành lập/đăng ký, Ngày cấp, Nơi cấp: bắt buộc khi không có Mã số tổ chức
+// Tổ chức: Mã số tổ chức bắt buộc; Số giấy tờ thành lập/đăng ký, Ngày cấp, Nơi cấp không bắt buộc. Nhập Mã số tổ chức thì bỏ báo lỗi
 function refreshOrgDocRequired() {
     const code = (document.getElementById('formNYCOrgCode')?.value || '').trim();
-    document.querySelectorAll('#screenForm .nyc-org-doc-req').forEach(el => { el.style.display = code ? 'none' : ''; });
-    if (code) ['formNYCOrgDocNo', 'formNYCOrgDocDate', 'formNYCOrgDocPlace'].forEach(id => {
+    if (code) ['formNYCOrgCode'].forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
         el.classList.remove('is-invalid');
@@ -1795,7 +1794,7 @@ function acceptRequest(id, fromDetail = false) {
 function validateRequestItem(item) {
     const isOrg = nycTypeOf(item) === NYC_TYPE.TO_CHUC;
     const idOk = isOrg
-        ? item.nycRepName && item.nycRepPosition && (item.nycOrgCode || (item.nycOrgDocNo && item.nycOrgDocDate && item.nycOrgDocPlace))
+        ? item.nycRepName && item.nycRepPosition && item.nycOrgCode
         : item.nycDob && item.nycDocNo;
     if (!item.nycName || !idOk || !item.nycPhone || !item.hanhVi) return "Vui lòng nhập đầy đủ thông tin bắt buộc trước khi gửi yêu cầu!";
     return '';
@@ -2119,10 +2118,9 @@ function saveForm(isDraft) {
 
     if (!isDraft) {
         let firstInvalid = vv.invalidEl;
-        // Cá nhân: Họ và tên, Ngày sinh, giấy tờ thân nhân; Tổ chức: Tên tổ chức, người đại diện, giấy tờ thành lập/đăng ký khi không có Mã số tổ chức
+        // Cá nhân: Họ và tên, Ngày sinh, giấy tờ thân nhân; Tổ chức: Tên tổ chức, Mã số tổ chức, người đại diện (giấy tờ thành lập/đăng ký không bắt buộc)
         const req = isOrg
-            ? [['formNYCName', name], ['formNYCRepName', repName], ['formNYCRepPosition', repPosition]]
-                .concat(orgCode ? [] : [['formNYCOrgDocNo', orgDocNo], ['formNYCOrgDocDate', orgDocDate], ['formNYCOrgDocPlace', orgDocPlace]])
+            ? [['formNYCName', name], ['formNYCOrgCode', orgCode], ['formNYCRepName', repName], ['formNYCRepPosition', repPosition]]
             : [['formNYCName', name], ['formNYCDob', dob], ['formNYCDocNo', docNo], ['formNYCDocDate', docDate], ['formNYCDocPlace', docPlace]];
         req.unshift(['formNYCRole', role]);
         req.push(['formNYCPhone', phone], ['formNYCAddressDetail', addressDetail], ['formHanhVi', hanhVi]);

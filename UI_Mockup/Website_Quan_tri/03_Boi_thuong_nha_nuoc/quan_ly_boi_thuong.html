@@ -2145,10 +2145,11 @@
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
 
-                        <!-- Tổ chức: Mã số tổ chức, người đại diện theo pháp luật -->
+                        <!-- Tổ chức: Mã số tổ chức (bắt buộc), người đại diện theo pháp luật -->
                         <div class="form-group nyc-tochuc-only" style="margin-bottom: 0; display: none;">
-                            <span class="form-label">Mã số tổ chức</span>
+                            <span class="form-label">Mã số tổ chức<span class="required">*</span></span>
                             <input type="text" class="form-control" id="claimNYCOrgCode" placeholder="Mã số doanh nghiệp / mã số thuế / mã số khác..." oninput="toggleNycOrgDocRequired()">
+                            <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
                         <div class="grid-2 nyc-tochuc-only" style="gap: 12px; margin-bottom: 0; display: none;">
                             <div class="form-group" style="margin-bottom: 0;">
@@ -2210,22 +2211,19 @@
                                 2: Bổ sung ngoài bản án)</span>
                         </div>
 
-                        <!-- Tổ chức: Giấy tờ thành lập/đăng ký (bắt buộc khi không có Mã số tổ chức) -->
+                        <!-- Tổ chức: Giấy tờ thành lập/đăng ký (không bắt buộc) -->
                         <div class="form-group nyc-tochuc-only" style="margin-bottom: 0; display: none;">
-                            <span class="form-label">Số giấy tờ thành lập/đăng ký<span class="required nyc-orgdoc-req">*</span></span>
+                            <span class="form-label">Số giấy tờ thành lập/đăng ký</span>
                             <input type="text" class="form-control" id="claimNYCOrgDocNo" placeholder="Nhập số giấy tờ thành lập/đăng ký...">
-                            <div class="error-message">Đây là trường bắt buộc khi không có Mã số tổ chức</div>
                         </div>
                         <div class="grid-2 nyc-tochuc-only" style="gap: 12px; margin-bottom: 0; display: none;">
                             <div class="form-group" style="margin-bottom: 0;">
-                                <span class="form-label">Ngày cấp<span class="required nyc-orgdoc-req">*</span></span>
+                                <span class="form-label">Ngày cấp</span>
                                 <input type="text" class="form-control" id="claimNYCOrgDocDate" placeholder="dd/mm/yyyy">
-                                <div class="error-message">Đây là trường bắt buộc khi không có Mã số tổ chức</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
-                                <span class="form-label">Nơi cấp<span class="required nyc-orgdoc-req">*</span></span>
+                                <span class="form-label">Nơi cấp</span>
                                 <input type="text" class="form-control" id="claimNYCOrgDocPlace" placeholder="Nhập nơi cấp...">
-                                <div class="error-message">Đây là trường bắt buộc khi không có Mã số tổ chức</div>
                             </div>
                         </div>
 
@@ -8164,8 +8162,38 @@
         }
 
         function toggleNycOrgDocRequired() {
-            const hasCode = !!getInputValue('claimNYCOrgCode');
-            document.querySelectorAll('#inlineClaimFormPanel .nyc-orgdoc-req').forEach(el => { el.style.display = hasCode ? 'none' : ''; });
+            // Nhập Mã số tổ chức thì bỏ báo lỗi bắt buộc
+            const el = document.getElementById('claimNYCOrgCode');
+            if (el && String(el.value || '').trim()) { el.classList.remove('is-invalid'); const err = el.closest('.form-group') ? el.closest('.form-group').querySelector('.error-message') : null; if (err) err.style.display = 'none'; }
+        }
+
+        // Ràng buộc nghiệp vụ: Khi Tư cách người yêu cầu là Người thừa kế hoặc đại diện những người thừa kế,
+        // Trạng thái người bị thiệt hại BẮT BUỘC là "Đã mất" và KHÔNG CHO PHÉP SỬA.
+        function applyVictimAliveRoleConstraint(role) {
+            const r = role || (document.getElementById('claimNYCRole') ? document.getElementById('claimNYCRole').value : '');
+            const isHeir = r === 'Người thừa kế của người bị thiệt hại' || 
+                           r === 'Người đại diện cho những người thừa kế của người bị thiệt hại' || 
+                           /thừa kế/i.test(r || '');
+            const radios = document.getElementsByName('claimVictimAlive');
+            if (!radios.length) return;
+
+            if (isHeir) {
+                radios.forEach(x => {
+                    x.checked = (x.value === 'no');
+                    x.disabled = true;
+                    x.title = 'Trường hợp người yêu cầu là Người thừa kế hoặc đại diện những người thừa kế, Trạng thái người bị thiệt hại bắt buộc là Đã mất.';
+                });
+                if (typeof handleVictimAliveChange === 'function') handleVictimAliveChange('no');
+            } else {
+                const type = typeof getNycTypeFromForm === 'function' ? getNycTypeFromForm() : 'Cá nhân';
+                const orgVictim = typeof isClaimOrgVictim === 'function' ? isClaimOrgVictim(r, type) : false;
+                if (!orgVictim) {
+                    radios.forEach(x => {
+                        x.disabled = false;
+                        x.title = '';
+                    });
+                }
+            }
         }
 
         function toggleNycTypeFields() {
@@ -8190,6 +8218,8 @@
                         document.getElementsByName('claimVictimAlive').forEach(x => { x.checked = (x.value === 'yes'); });
                         if (typeof handleVictimAliveChange === 'function') handleVictimAliveChange('yes');
                     }
+                } else {
+                    applyVictimAliveRoleConstraint(role);
                 }
             }
         }
@@ -8226,11 +8256,10 @@
             };
         }
 
-        // Kiểm tra bắt buộc riêng của Tổ chức: Người đại diện, Chức vụ; Số giấy tờ thành lập/đăng ký, Ngày cấp, Nơi cấp khi không có Mã số tổ chức
+        // Kiểm tra bắt buộc riêng của Tổ chức: Mã số tổ chức, Người đại diện, Chức vụ (Số giấy tờ thành lập/đăng ký, Ngày cấp, Nơi cấp không bắt buộc)
         function validateNycOrgForm() {
             if (getNycTypeFromForm() !== NYC_TYPE_TO_CHUC) return null;
-            const ids = ['claimNYCRepName', 'claimNYCRepPosition'];
-            if (!getInputValue('claimNYCOrgCode')) ids.unshift('claimNYCOrgDocNo', 'claimNYCOrgDocDate', 'claimNYCOrgDocPlace');
+            const ids = ['claimNYCOrgCode', 'claimNYCRepName', 'claimNYCRepPosition'];
             let first = null;
             ids.forEach(id => {
                 const el = document.getElementById(id);
@@ -8282,7 +8311,7 @@
                     assignedOfficer: 'Nguyễn Văn Chuyên Viên',
                     fieldGroup: 'thi hành án dân sự', date: '06/07/2026',
                     nyc: 'Công ty Cổ phần Xây dựng Hồng Hà', nycType: 'Tổ chức', nycRole: 'Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại', role: 'Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại',
-                    nycOrgCode: '', nycOrgDocNo: '0102998877', nycOrgDocDate: '12/03/2015', nycOrgDocPlace: 'Sở Kế hoạch và Đầu tư TP. Hà Nội',
+                    nycOrgCode: '0102998877', nycOrgDocNo: '0102998877', nycOrgDocDate: '12/03/2015', nycOrgDocPlace: 'Sở Kế hoạch và Đầu tư TP. Hà Nội',
                     nycRepName: 'Phạm Văn Hòa', nycRepPosition: 'Tổng Giám đốc',
                     nbthOrgName: 'Công ty TNHH Xây dựng Hồng Phát', nbthOrgCode: '0100554433',
                     nycPhone: '02438889999', phone: '02438889999', nycEmail: '',
@@ -8345,6 +8374,7 @@
             if (personBlock) personBlock.style.display = isOrg ? 'none' : '';
             if (title) title.textContent = isOrg ? 'THÔNG TIN TỔ CHỨC BỊ THIỆT HẠI ĐÃ CHẤM DỨT TỒN TẠI' : 'THÔNG TIN NGƯỜI BỊ THIỆT HẠI';
             if (typeof toggleNycTypeFields === 'function') toggleNycTypeFields();
+            applyVictimAliveRoleConstraint(r);
         }
 
         function fillNbthForm(nbth) {

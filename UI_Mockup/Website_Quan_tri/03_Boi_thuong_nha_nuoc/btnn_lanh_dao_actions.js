@@ -37,7 +37,26 @@
     .ld-muted { color: #64748b; font-size: 12.5px; }
     .ld-btn { border: 1px solid #cbd5e1; background: #fff; border-radius: 6px; padding: 8px 14px; font: 600 13px Inter, system-ui, sans-serif; cursor: pointer; color: #334155; display: inline-flex; align-items: center; gap: 6px; }
     .ld-btn.primary { background: #1e3a8a; border-color: #1e3a8a; color: #fff; }
-    .ld-btn.danger { background: #ef4444; border-color: #ef4444; color: #fff; }`;
+    .ld-btn.danger { background: #ef4444; border-color: #ef4444; color: #fff; }
+    .ld-select-box { display: flex; align-items: center; justify-content: space-between; width: 100%; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px 12px; min-height: 38px; background: #fff; cursor: pointer; transition: all 0.2s; user-select: none; }
+    .ld-select-box:hover { border-color: #94a3b8; }
+    .ld-select-box.focus, .ld-select-box:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12); outline: none; }
+    .ld-select-box.is-invalid { border-color: #dc2626 !important; background-color: #fef2f2; }
+    .ld-select-placeholder { color: #94a3b8; font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ld-select-value { color: #1e293b; font-size: 13.5px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .ld-select-arrow { color: #64748b; font-size: 12px; margin-left: 8px; transition: transform 0.2s; }
+    .ld-select-arrow.open { transform: rotate(180deg); }
+    .ld-dropdown-panel { display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #fff; border: 1px solid #cbd5e1; border-radius: 6px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 9999; flex-direction: column; }
+    .ld-dropdown-panel.open { display: flex; }
+    .ld-dropdown-search { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; position: relative; border-radius: 6px 6px 0 0; }
+    .ld-dropdown-search i { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 12px; }
+    .ld-dropdown-search input { width: 100%; box-sizing: border-box; padding: 7px 10px 7px 32px; font-size: 13px; border: 1px solid #cbd5e1; border-radius: 4px; outline: none; background: #fff; font-family: inherit; }
+    .ld-dropdown-search input:focus { border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1); }
+    .ld-dropdown-list { overflow-y: auto; max-height: 200px; padding: 4px 0; }
+    .ld-dropdown-item { padding: 8px 12px; font-size: 13.5px; color: #1e293b; cursor: pointer; transition: background 0.15s; display: flex; align-items: center; justify-content: space-between; }
+    .ld-dropdown-item:hover { background: #f1f5f9; }
+    .ld-dropdown-item.selected { background: #eff6ff; color: #1e40af; font-weight: 600; }
+    .ld-dropdown-empty { padding: 12px; font-size: 13px; color: #94a3b8; text-align: center; font-style: italic; }`;
 
     const HTML = `
     <div class="ld-overlay" id="ldAssignOverlay"><div class="ld-modal">
@@ -45,8 +64,38 @@
         <div class="ld-modal-body">
             <div class="ld-muted" id="ldAContext" style="margin-bottom:10px;"></div>
             <div class="ld-muted" id="ldANoConfig" style="display:none;">Đơn vị chưa được cấu hình luồng xử lý.</div>
-            <div class="ld-group" id="ldAUnitBlock"><span class="ld-label">Đơn vị nhận<span class="ld-req">*</span></span><input type="text" id="ldAUnitSearch" class="ld-input" placeholder="Tìm theo mã hoặc tên đơn vị..." style="margin-bottom:6px;"><select id="ldAUnit" class="ld-input"></select><div class="ld-err" id="ldAUnitErr">Đây là trường bắt buộc</div></div>
-            <div class="ld-group" id="ldAOfficerBlock"><span class="ld-label">Cán bộ chủ trì<span class="ld-req">*</span></span><input type="text" id="ldAChuTriSearch" class="ld-input" placeholder="Tìm theo tên cán bộ..." style="margin-bottom:6px;"><select id="ldAChuTri" class="ld-input"></select><div class="ld-err" id="ldAChuTriErr">Đây là trường bắt buộc</div></div>
+            <div class="ld-group" id="ldAUnitBlock" style="position:relative;">
+                <span class="ld-label">Đơn vị nhận<span class="ld-req">*</span></span>
+                <input type="hidden" id="ldAUnit" value="">
+                <div class="ld-select-box" id="ldAUnitSelectBox" tabindex="0">
+                    <span id="ldAUnitSelectedText" class="ld-select-placeholder">Chọn đơn vị nhận...</span>
+                    <i class="fa-solid fa-chevron-down ld-select-arrow" id="ldAUnitArrow"></i>
+                </div>
+                <div class="ld-dropdown-panel" id="ldAUnitDropdownPanel">
+                    <div class="ld-dropdown-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="ldAUnitSearch" placeholder="Tìm theo mã hoặc tên đơn vị..." autocomplete="off">
+                    </div>
+                    <div class="ld-dropdown-list" id="ldAUnitList"></div>
+                </div>
+                <div class="ld-err" id="ldAUnitErr">Đây là trường bắt buộc</div>
+            </div>
+            <div class="ld-group" id="ldAOfficerBlock" style="position:relative;">
+                <span class="ld-label">Cán bộ chủ trì<span class="ld-req">*</span></span>
+                <input type="hidden" id="ldAChuTri" value="">
+                <div class="ld-select-box" id="ldAChuTriSelectBox" tabindex="0">
+                    <span id="ldAChuTriSelectedText" class="ld-select-placeholder">Chọn cán bộ chủ trì...</span>
+                    <i class="fa-solid fa-chevron-down ld-select-arrow" id="ldAChuTriArrow"></i>
+                </div>
+                <div class="ld-dropdown-panel" id="ldAChuTriDropdownPanel">
+                    <div class="ld-dropdown-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="ldAChuTriSearch" placeholder="Tìm theo tên cán bộ..." autocomplete="off">
+                    </div>
+                    <div class="ld-dropdown-list" id="ldAChuTriList"></div>
+                </div>
+                <div class="ld-err" id="ldAChuTriErr">Đây là trường bắt buộc</div>
+            </div>
             <div class="ld-group"><span class="ld-label">Ý kiến chỉ đạo</span><textarea id="ldANote" class="ld-input" rows="3" placeholder="Nhập ý kiến chỉ đạo..."></textarea></div>
         </div>
         <div class="ld-modal-footer"><button class="ld-btn" data-close="ldAssignOverlay">Hủy bỏ</button><button class="ld-btn primary" id="ldASubmit"><i class="fa-solid fa-paper-plane"></i> Xác nhận phân công</button></div>
@@ -66,18 +115,77 @@
         <div class="ld-modal-footer"><button class="ld-btn" data-close="ldConfirmOverlay">Hủy bỏ</button><button class="ld-btn primary" id="ldConfirmOk">Đồng ý</button></div>
     </div></div>`;
 
+    function closeAllDropdowns() {
+        ['ldAUnitDropdownPanel', 'ldAChuTriDropdownPanel'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('open');
+        });
+        ['ldAUnitArrow', 'ldAChuTriArrow'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('open');
+        });
+    }
+
+    function toggleDropdown(panelId, arrowId, searchInputId, show) {
+        const panel = document.getElementById(panelId);
+        const arrow = document.getElementById(arrowId);
+        if (!panel) return;
+        const willOpen = show !== undefined ? show : !panel.classList.contains('open');
+        if (willOpen) {
+            closeAllDropdowns();
+            panel.classList.add('open');
+            if (arrow) arrow.classList.add('open');
+            const sInp = document.getElementById(searchInputId);
+            if (sInp) setTimeout(() => sInp.focus(), 60);
+        } else {
+            panel.classList.remove('open');
+            if (arrow) arrow.classList.remove('open');
+        }
+    }
+
     function mount() {
         if (document.getElementById('ldAssignOverlay')) return;
         const st = document.createElement('style'); st.textContent = CSS; document.head.appendChild(st);
         const wrap = document.createElement('div'); wrap.innerHTML = HTML; document.body.appendChild(wrap);
-        wrap.addEventListener('click', e => { const id = e.target.getAttribute && e.target.getAttribute('data-close'); if (id) close(id); });
-        document.getElementById('ldAChuTriSearch').addEventListener('input', renderChuTriOptions);
+        wrap.addEventListener('click', e => { 
+            const id = e.target.getAttribute && e.target.getAttribute('data-close'); 
+            if (id) {
+                closeAllDropdowns();
+                close(id); 
+            }
+        });
+        document.getElementById('ldAUnitSelectBox').addEventListener('click', (e) => {
+            e.stopPropagation();
+            toggleDropdown('ldAUnitDropdownPanel', 'ldAUnitArrow', 'ldAUnitSearch');
+        });
+        document.getElementById('ldAOfficerBlock').addEventListener('click', (e) => {
+            // Cho phép click vào trigger
+            if (e.target.closest('#ldAChuTriSelectBox')) {
+                e.stopPropagation();
+                toggleDropdown('ldAChuTriDropdownPanel', 'ldAChuTriArrow', 'ldAChuTriSearch');
+            }
+        });
+        document.getElementById('ldAUnitDropdownPanel').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+        document.getElementById('ldAChuTriDropdownPanel').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
         document.getElementById('ldAUnitSearch').addEventListener('input', renderUnitOptions);
+        document.getElementById('ldAChuTriSearch').addEventListener('input', renderChuTriOptions);
         document.getElementById('ldASubmit').addEventListener('click', submitAssign);
         document.getElementById('ldDSubmit').addEventListener('click', submitDecision);
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#ldAUnitBlock') && !e.target.closest('#ldAOfficerBlock')) {
+                closeAllDropdowns();
+            }
+        });
     }
     function open(id) { document.getElementById(id).classList.add('open'); }
-    function close(id) { document.getElementById(id).classList.remove('open'); }
+    function close(id) { 
+        closeAllDropdowns();
+        document.getElementById(id).classList.remove('open'); 
+    }
     function notify(msg, ok) {
         if (typeof global.showToast === 'function') { try { global.showToast(msg, ok ? 'success' : 'error'); return; } catch (e) { /* bỏ qua */ } }
         alert(msg);
@@ -107,6 +215,42 @@
     // Thu hồi chỉ áp dụng cho lần xử lý gần nhất của Lãnh đạo khi bên nhận chưa xử lý
     function canRecall(rec, userId) { return !!(rec && WF.getRecallInfo(rec, userId)); }
 
+    function setUnitValue(val) {
+        const hidden = document.getElementById('ldAUnit');
+        const txt = document.getElementById('ldAUnitSelectedText');
+        const sBox = document.getElementById('ldAUnitSelectBox');
+        const err = document.getElementById('ldAUnitErr');
+        if (!hidden || !txt) return;
+        hidden.value = val || '';
+        if (val) {
+            txt.textContent = WF.unitName(val);
+            txt.className = 'ld-select-value';
+            if (sBox) sBox.classList.remove('is-invalid');
+            if (err) err.style.display = 'none';
+        } else {
+            txt.textContent = 'Chọn đơn vị nhận...';
+            txt.className = 'ld-select-placeholder';
+        }
+    }
+
+    function setChuTriValue(val) {
+        const hidden = document.getElementById('ldAChuTri');
+        const txt = document.getElementById('ldAChuTriSelectedText');
+        const sBox = document.getElementById('ldAChuTriSelectBox');
+        const err = document.getElementById('ldAChuTriErr');
+        if (!hidden || !txt) return;
+        hidden.value = val || '';
+        if (val) {
+            txt.textContent = WF.userLabel(val);
+            txt.className = 'ld-select-value';
+            if (sBox) sBox.classList.remove('is-invalid');
+            if (err) err.style.display = 'none';
+        } else {
+            txt.textContent = 'Chọn cán bộ chủ trì...';
+            txt.className = 'ld-select-placeholder';
+        }
+    }
+
     // ---------- Phân công ----------
     function openAssign(code, cb) {
         mount();
@@ -129,32 +273,80 @@
         document.getElementById('ldAChuTriSearch').value = '';
         assignUnits = canUnit ? node.units : [];
         document.getElementById('ldAUnitSearch').value = '';
-        document.getElementById('ldAUnit').value = '';
+        setUnitValue('');
         renderUnitOptions();
-        document.getElementById('ldAChuTri').value = '';
+        setChuTriValue('');
         renderChuTriOptions();
+        closeAllDropdowns();
         document.getElementById('ldANote').value = '';
         ['ldAUnitErr', 'ldAChuTriErr'].forEach(id => { document.getElementById(id).style.display = 'none'; });
+        const uBox = document.getElementById('ldAUnitSelectBox');
+        if (uBox) uBox.classList.remove('is-invalid');
+        const cBox = document.getElementById('ldAChuTriSelectBox');
+        if (cBox) cBox.classList.remove('is-invalid');
         open('ldAssignOverlay');
     }
+
     // Cán bộ chủ trì: lọc theo tên cán bộ, giữ lựa chọn đang có nếu vẫn khớp
     // Đơn vị nhận: lọc gần đúng, không phân biệt hoa thường theo mã hoặc tên đơn vị
     function renderUnitOptions() {
-        const sel = document.getElementById('ldAUnit');
-        const cur = sel.value;
-        const q = document.getElementById('ldAUnitSearch').value.trim().toLowerCase();
+        const listEl = document.getElementById('ldAUnitList');
+        if (!listEl) return;
+        const cur = document.getElementById('ldAUnit') ? document.getElementById('ldAUnit').value : '';
+        const q = document.getElementById('ldAUnitSearch') ? document.getElementById('ldAUnitSearch').value.trim().toLowerCase() : '';
         const list = assignUnits.filter(u => !q || u.toLowerCase().includes(q) || WF.unitName(u).toLowerCase().includes(q));
-        sel.innerHTML = `<option value="">${list.length ? 'Chọn đơn vị nhận...' : 'Không tìm thấy đơn vị phù hợp'}</option>` + list.map(u => `<option value="${esc(u)}">${esc(WF.unitName(u))}</option>`).join('');
-        if (list.includes(cur)) sel.value = cur;
+        if (!list.length) {
+            listEl.innerHTML = '<div class="ld-dropdown-empty">Không tìm thấy đơn vị phù hợp</div>';
+            return;
+        }
+        listEl.innerHTML = list.map(u => {
+            const isSel = (u === cur);
+            return `<div class="ld-dropdown-item ${isSel ? 'selected' : ''}" data-unit="${esc(u)}" title="${esc(WF.unitName(u))}">
+                <span>${esc(WF.unitName(u))}</span>
+                ${isSel ? '<i class="fa-solid fa-check" style="color:#2563eb; font-size:12px;"></i>' : ''}
+            </div>`;
+        }).join('');
+
+        listEl.querySelectorAll('.ld-dropdown-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const u = item.getAttribute('data-unit');
+                setUnitValue(u);
+                toggleDropdown('ldAUnitDropdownPanel', 'ldAUnitArrow', 'ldAUnitSearch', false);
+                renderUnitOptions();
+            });
+        });
     }
+
     function renderChuTriOptions() {
-        const sel = document.getElementById('ldAChuTri');
-        const cur = sel.value;
-        const q = document.getElementById('ldAChuTriSearch').value.trim().toLowerCase();
+        const listEl = document.getElementById('ldAChuTriList');
+        if (!listEl) return;
+        const cur = document.getElementById('ldAChuTri') ? document.getElementById('ldAChuTri').value : '';
+        const q = document.getElementById('ldAChuTriSearch') ? document.getElementById('ldAChuTriSearch').value.trim().toLowerCase() : '';
         const list = assignOfficers.filter(u => !q || WF.userName(u).toLowerCase().includes(q));
-        sel.innerHTML = `<option value="">${list.length ? 'Chọn cán bộ chủ trì...' : 'Không tìm thấy cán bộ phù hợp'}</option>` + list.map(u => `<option value="${esc(u)}">${esc(WF.userLabel(u))}</option>`).join('');
-        if (list.includes(cur)) sel.value = cur;
+        if (!list.length) {
+            listEl.innerHTML = '<div class="ld-dropdown-empty">Không tìm thấy cán bộ phù hợp</div>';
+            return;
+        }
+        listEl.innerHTML = list.map(u => {
+            const isSel = (u === cur);
+            return `<div class="ld-dropdown-item ${isSel ? 'selected' : ''}" data-user="${esc(u)}" title="${esc(WF.userLabel(u))}">
+                <span>${esc(WF.userLabel(u))}</span>
+                ${isSel ? '<i class="fa-solid fa-check" style="color:#2563eb; font-size:12px;"></i>' : ''}
+            </div>`;
+        }).join('');
+
+        listEl.querySelectorAll('.ld-dropdown-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const u = item.getAttribute('data-user');
+                setChuTriValue(u);
+                toggleDropdown('ldAChuTriDropdownPanel', 'ldAChuTriArrow', 'ldAChuTriSearch', false);
+                renderChuTriOptions();
+            });
+        });
     }
+
     function submitAssign() {
         const note = document.getElementById('ldANote').value.trim();
         const unit = document.getElementById('ldAUnit').value;
@@ -163,8 +355,18 @@
         const officerShown = document.getElementById('ldAOfficerBlock').style.display !== 'none';
         if (!unitShown && !officerShown) return;
         // Chỉ xử lý theo hướng đã cấu hình (ô đang hiển thị)
-        if (unitShown && !unit) { document.getElementById('ldAUnitErr').style.display = 'block'; return; }
-        if (officerShown && !chuTri) { document.getElementById('ldAChuTriErr').style.display = 'block'; return; }
+        if (unitShown && !unit) { 
+            document.getElementById('ldAUnitErr').style.display = 'block'; 
+            const uBox = document.getElementById('ldAUnitSelectBox');
+            if (uBox) uBox.classList.add('is-invalid');
+            return; 
+        }
+        if (officerShown && !chuTri) { 
+            document.getElementById('ldAChuTriErr').style.display = 'block'; 
+            const cBox = document.getElementById('ldAChuTriSelectBox');
+            if (cBox) cBox.classList.add('is-invalid');
+            return; 
+        }
         const res = unitShown ? WF.assignToUnit(acting, unit, note) : WF.assignToOfficers(acting, chuTri, note);
         close('ldAssignOverlay');
         notify(res.ok ? `Đã phân công hồ sơ ${acting}. Trạng thái: [${res.record.status}].` : res.message, res.ok);

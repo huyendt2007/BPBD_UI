@@ -137,6 +137,16 @@
             margin-bottom: 24px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
         }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        @media (max-width: 992px) {
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
         .nyc-sub-header {
             font-size: 13px;
             font-weight: 700;
@@ -476,8 +486,11 @@
                     <span class="form-label">Nguồn hồ sơ</span>
                     <div id="formSourceBadge"></div>
                 </div>
-                <!-- Khối Tổng quan vụ việc: 2 dòng, mỗi dòng 2 thông tin đồng nhất -->
-                <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
+                <!-- Khối Tổng quan vụ việc: 
+                     - Khi Thêm mới: 1 dòng 3 cột (Loại hồ sơ, Hình thức tiếp nhận, Lĩnh vực phát sinh thiệt hại), không hiển thị Vụ việc liên quan.
+                     - Khi Xem chi tiết / Sửa: hiển thị 2 dòng x 2 cột (kèm Vụ việc liên quan).
+                -->
+                <div id="overviewFieldsContainer" class="grid-3" style="gap: 16px; margin-bottom: 14px;">
                     <div class="form-group" style="margin-bottom: 0;">
                         <span class="form-label">Loại hồ sơ<span class="required">*</span></span>
                         <select id="formRequestType" class="form-control"></select>
@@ -491,8 +504,6 @@
                             <option value="Qua dịch vụ bưu chính">Qua dịch vụ bưu chính</option>
                         </select>
                     </div>
-                </div>
-                <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
                     <div class="form-group" style="margin-bottom: 0;">
                         <span class="form-label">Lĩnh vực phát sinh thiệt hại<span class="required">*</span></span>
                         <select id="formFieldGroup" class="form-control">
@@ -506,8 +517,8 @@
                         </select>
                         <div class="error-message">Đây là trường bắt buộc</div>
                     </div>
-                    <!-- Vụ việc liên quan: không bắt buộc; dùng khi hồ sơ nộp lại sau khi bị từ chối -->
-                    <div class="form-group" style="margin-bottom: 0;">
+                    <!-- Vụ việc liên quan: không hiển thị khi thêm mới; dùng khi mở lại hồ sơ đã tồn tại -->
+                    <div class="form-group" id="formVuViecLienQuanGroup" style="margin-bottom: 0; display: none;">
                         <span class="form-label">Vụ việc liên quan</span>
                         <input id="formVuViecLienQuan" class="form-control" list="vuViecLienQuanOptions" placeholder="Gõ Mã vụ việc hoặc Họ và tên người yêu cầu..." autocomplete="off">
                         <datalist id="vuViecLienQuanOptions"></datalist>
@@ -559,8 +570,9 @@
                         </div>
                         <!-- Khi là Tổ chức: Cột 2 là Mã số tổ chức -->
                         <div class="form-group nyc-to-chuc" style="display:none; margin-bottom: 0;">
-                            <span class="form-label">Mã số tổ chức</span>
+                            <span class="form-label">Mã số tổ chức<span class="required">*</span></span>
                             <input id="formNycOrgCode" class="form-control" placeholder="Mã số doanh nghiệp / mã số thuế / mã số khác...">
+                            <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
                     </div>
 
@@ -2224,10 +2236,28 @@
                 setValue("formRequesterRole", claim ? (claim.nycRole || "Người bị thiệt hại") : "Người bị thiệt hại");
                 setValue("formFieldGroup", claim ? (claim.fieldGroup || "") : "");
             }
-            // Vụ việc liên quan: Xem chi tiết hiển thị "Mã vụ việc - Họ và tên người yêu cầu", không có dữ liệu hiển thị "-"
-            fillVuViecLienQuanOptions(claim ? claim.maVuViec : "");
-            const vvlq = claim ? vuViecLabel(claim.vuViecLienQuan) : "";
-            setValue("formVuViecLienQuan", vvlq || (isReadOnly && claim ? "-" : ""));
+            // Vụ việc liên quan: Bỏ đi khi thêm mới; Xem chi tiết / Sửa hiển thị theo dữ liệu bản ghi trên lưới 2 cột
+            const ovContainer = document.getElementById("overviewFieldsContainer");
+            const vvlqGroup = document.getElementById("formVuViecLienQuanGroup");
+            if (!claim) {
+                // Thêm mới: Bỏ đi thông tin Vụ việc liên quan, 3 trường tổng quan xếp thành lưới 3 cột
+                if (vvlqGroup) vvlqGroup.style.display = "none";
+                if (ovContainer) {
+                    ovContainer.classList.remove("grid-2");
+                    ovContainer.classList.add("grid-3");
+                }
+                setValue("formVuViecLienQuan", "");
+            } else {
+                // Mở lại bản ghi đã tồn tại (Sửa / Chi tiết): hiển thị Vụ việc liên quan trên lưới 2 cột
+                if (vvlqGroup) vvlqGroup.style.display = "block";
+                if (ovContainer) {
+                    ovContainer.classList.remove("grid-3");
+                    ovContainer.classList.add("grid-2");
+                }
+                fillVuViecLienQuanOptions(claim ? claim.maVuViec : "");
+                const vvlq = claim ? vuViecLabel(claim.vuViecLienQuan) : "";
+                setValue("formVuViecLienQuan", vvlq || (isReadOnly && claim ? "-" : ""));
+            }
             fillNbth(claim ? claim.nbth : null);
             if (isReadOnly && claim && claim.nbth && claim.nbth.docType) setSelectDisplay("nbthDocType", BTNN_WF.normalizePersonalDocType(claim.nbth.docType));
             setValue("nbthOrgName", claim ? (claim.nbthOrgName || "") : "");
@@ -2304,6 +2334,8 @@
         function saveReceptionInfo() {
             clearFormValidation();
             const requiredIds = ["formRequestType", "formFieldGroup", "formRequesterRole", "formRequester", "formPhone", "formCity", "formWard", "formAddress"];
+            // Tổ chức: Mã số tổ chức bắt buộc
+            if (getNycType() === "Tổ chức") requiredIds.splice(4, 0, "formNycOrgCode");
             setText("formPhoneError", "Đây là trường bắt buộc");
             // Khối Người bị thiệt hại tại Tiếp nhận hồ sơ: không bắt buộc trường nào (bắt buộc tại Nhập liệu hồ sơ vụ việc)
             let firstInvalid = null;
@@ -2330,14 +2362,17 @@
                 if (!firstInvalid) firstInvalid = el;
             }
 
-            // Vụ việc liên quan: không bắt buộc; có dữ liệu thì phải chọn từ danh sách vụ việc trên hệ thống
+            // Vụ việc liên quan: không hiển thị khi thêm mới; chỉ kiểm tra khi sửa hồ sơ đã tồn tại
             const editingClaim = editingId ? claimsList.find(item => item.id === editingId) : null;
-            const vuViecLienQuanVal = readVuViecLienQuan(editingClaim ? editingClaim.maVuViec : "");
-            if (vuViecLienQuanVal === null) {
-                const el = document.getElementById("formVuViecLienQuan");
-                el.classList.add("is-invalid");
-                document.getElementById("formVuViecLienQuanError").style.display = "block";
-                if (!firstInvalid) firstInvalid = el;
+            let vuViecLienQuanVal = "";
+            if (editingClaim) {
+                vuViecLienQuanVal = readVuViecLienQuan(editingClaim.maVuViec);
+                if (vuViecLienQuanVal === null) {
+                    const el = document.getElementById("formVuViecLienQuan");
+                    el.classList.add("is-invalid");
+                    document.getElementById("formVuViecLienQuanError").style.display = "block";
+                    if (!firstInvalid) firstInvalid = el;
+                }
             }
 
             const hasInvalidDoc = docRows.some((doc, idx) => {

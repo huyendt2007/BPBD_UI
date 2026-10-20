@@ -1271,9 +1271,31 @@
             const isVerdict = getValue("caseStatus") === STATUS_BAN_AN;
             document.querySelectorAll(".verdict-field").forEach(el => { el.style.display = isVerdict ? "" : "none"; });
         }
+        function applyVictimAliveRoleConstraint(role) {
+            const r = role || getValue("claimNYCRole") || NBTH_ROLE;
+            const isHeir = r === 'Người thừa kế của người bị thiệt hại' || 
+                           r === 'Người đại diện cho những người thừa kế của người bị thiệt hại' || 
+                           /thừa kế/i.test(r || '');
+            const radios = document.getElementsByName('claimVictimAlive');
+            if (!radios.length) return;
+            if (isHeir) {
+                radios.forEach(x => {
+                    x.checked = (x.value === 'no');
+                    x.disabled = true;
+                    x.title = 'Trường hợp người yêu cầu là Người thừa kế hoặc đại diện những người thừa kế, Trạng thái người bị thiệt hại bắt buộc là Đã mất.';
+                });
+                if (typeof handleVictimAliveChange === 'function') handleVictimAliveChange('no');
+            } else if (!isFormReadOnly) {
+                radios.forEach(x => {
+                    x.disabled = false;
+                    x.title = '';
+                });
+            }
+        }
         function toggleNbthBlock(role) {
             const r = role || getValue("claimNYCRole") || NBTH_ROLE;
             document.getElementById("claimNbthBlock").style.display = r !== NBTH_ROLE ? "block" : "none";
+            applyVictimAliveRoleConstraint(r);
         }
         function toggleClaimCountrySelect(val) {
             document.getElementById("claimCityDropdownWrapper").style.display = val === "Việt Nam" ? "block" : "none";

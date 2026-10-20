@@ -295,10 +295,11 @@
                         <div class="error-message">Đây là trường bắt buộc</div>
                     </div>
 
-                    <!-- Tổ chức: Mã số tổ chức, Người đại diện theo pháp luật -->
+                    <!-- Tổ chức: Mã số tổ chức (bắt buộc), Người đại diện theo pháp luật -->
                     <div class="form-group nyc-org" style="margin-bottom: 0; display: none;">
-                        <span class="form-label">Mã số tổ chức</span>
+                        <span class="form-label">Mã số tổ chức<span class="required">*</span></span>
                         <input type="text" class="form-control" id="formNYCOrgCode" placeholder="Nhập mã số doanh nghiệp / mã số thuế / mã số khác..." oninput="refreshOrgDocRequired()">
+                        <div class="error-message">Đây là trường bắt buộc</div>
                     </div>
                     <div class="grid-2 nyc-org" style="gap: 12px; margin-bottom: 0; display: none;">
                         <div class="form-group" style="margin-bottom: 0;">
@@ -365,25 +366,22 @@
                         </div>
                     </div>
 
-                    <!-- Tổ chức: Giấy tờ thành lập/đăng ký (bắt buộc khi không có Mã số tổ chức) -->
+                    <!-- Tổ chức: Giấy tờ thành lập/đăng ký (không bắt buộc) -->
                     <div class="form-group nyc-org" style="margin-bottom: 0; display: none;">
-                        <span class="form-label">Số giấy tờ thành lập/đăng ký<span class="required nyc-org-doc-req">*</span></span>
+                        <span class="form-label">Số giấy tờ thành lập/đăng ký</span>
                         <input type="text" class="form-control" id="formNYCOrgDocNo" placeholder="Nhập số giấy tờ thành lập/đăng ký...">
-                        <div class="error-message">Đây là trường bắt buộc khi không có Mã số tổ chức</div>
                     </div>
                     <div class="grid-2 nyc-org" style="gap: 12px; margin-bottom: 0; display: none;">
                         <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Ngày cấp<span class="required nyc-org-doc-req">*</span></span>
+                            <span class="form-label">Ngày cấp</span>
                             <div class="date-input-wrapper">
                                 <input type="text" class="form-control" id="formNYCOrgDocDate" placeholder="dd/mm/yyyy">
                                 <i class="fa-regular fa-calendar-days"></i>
                             </div>
-                            <div class="error-message">Đây là trường bắt buộc khi không có Mã số tổ chức</div>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Nơi cấp<span class="required nyc-org-doc-req">*</span></span>
+                            <span class="form-label">Nơi cấp</span>
                             <input type="text" class="form-control" id="formNYCOrgDocPlace" placeholder="Nhập nơi cấp...">
-                            <div class="error-message">Đây là trường bắt buộc khi không có Mã số tổ chức</div>
                         </div>
                     </div>
 
