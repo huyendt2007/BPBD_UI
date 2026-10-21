@@ -649,7 +649,7 @@
             <!-- Chi tiết yêu cầu xác định CQGQBT (chỉ đọc, Mở rộng / Thu gọn): dùng chung khối Chi tiết hồ sơ của MH04, chuyển vào vị trí này khi mở màn -->
             <div id="procProfileSlot"></div>
 
-            <div class="sub-section-title">NỘI DUNG XÁC ĐỊNH THẨM QUYỀN (ĐIỀU 40 LUẬT TNBTCNN)</div>
+            <div class="sub-section-title">KẾT QUẢ XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG</div>
             <div class="form-group">
                 <span class="form-label">Căn cứ pháp lý xác định thẩm quyền<span class="required">*</span></span>
                 <!-- Converted to text input as requested -->
@@ -672,20 +672,25 @@
                 <div class="error-message">Đây là trường bắt buộc</div>
             </div>
 
-            <div class="form-group">
-                <span class="form-label">Tài liệu kèm theo</span>
-                <div class="file-upload-container">
-                    <div class="file-upload-trigger" onclick="triggerFileInput('procDecisionFile')">
-                        <i class="fa-solid fa-file-arrow-up"></i> Chọn tệp đính kèm +
-                    </div>
-                    <input type="file" id="procDecisionFile" style="display: none;" onchange="handleFileSelected('procDecisionFile', 'procFileAttachmentInfo')">
-                    <div id="procFileAttachmentInfo" style="display: none;" class="attached-file-info">
-                        <span class="file-icon"><i class="fa-solid fa-file-pdf"></i></span>
-                        <span class="file-name" id="procFileName">quyet_dinh.pdf</span>
-                        <a href="#" target="_blank" class="action-link view-link" id="procFileViewLink">Xem file</a>
-                        <a href="javascript:void(0)" class="action-link delete-link" title="Xóa file" onclick="removeAttachedFile('procDecisionFile', 'procFileAttachmentInfo')"><i class="fa-solid fa-trash-can"></i> Xóa file</a>
-                    </div>
-                </div>
+            <!-- Tài liệu kèm theo: bảng nhiều dòng giống Bảng tài liệu đính kèm của MH02 -->
+            <span class="form-label">Tài liệu kèm theo</span>
+            <div class="table-container">
+                <table class="custom-table" style="min-width: 760px;">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px; text-align: center;">STT</th>
+                            <th>Tên tài liệu</th>
+                            <th style="width: 260px;">File đính kèm</th>
+                            <th style="width: 180px; text-align: center;">Thao tác tài liệu</th>
+                        </tr>
+                    </thead>
+                    <tbody id="procDocsTableBody"></tbody>
+                </table>
+            </div>
+            <div style="margin-top: 10px; margin-bottom: 18px;">
+                <button type="button" class="btn btn-secondary btn-sm" onclick="addProcDocRow()">
+                    <i class="fa-solid fa-plus"></i> Thêm dòng tài liệu
+                </button>
             </div>
 
             <div class="form-footer">
@@ -1279,7 +1284,7 @@
                     </div>
                     <div style="font-size:11.5px; color:#64748b;">Bấm <strong>Đặt chữ ký</strong> để sinh ô ký của cấp đó trên văn bản; kéo ô để đặt vị trí, kéo góc dưới phải để đổi kích thước.</div>
                     <div class="form-group" style="margin-bottom:0;" id="xsContentGroup">
-                        <span class="form-label">Nội dung trình<span class="required">*</span></span>
+                        <span class="form-label">Nội dung trình</span>
                         <textarea class="form-control" id="xsContent" rows="4" placeholder="Nhập nội dung trình Lãnh đạo..."></textarea>
                     </div>
                 </div>
@@ -1316,7 +1321,7 @@
     <!-- External javascript logic -->
     <script src="btnn_luong_xu_ly.js?v=20261020v5"></script>
     <script src="btnn_lanh_dao_actions.js?v=20261021fs"></script>
-    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261020ks"></script>
+    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261021pd"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="bpbd_filter_toggle.js?v=20261012"></script>
 </body>

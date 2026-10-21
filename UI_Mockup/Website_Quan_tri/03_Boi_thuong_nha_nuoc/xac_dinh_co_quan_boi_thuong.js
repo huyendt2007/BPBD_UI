@@ -922,6 +922,8 @@ let pageSize = 20;
 let filteredList = [];
 let formMode = 'create';
 let formDocRows = [];
+// MH03: Tài liệu kèm theo kết quả xác định (nhiều dòng)
+let procDocRows = [];
 
 const REQUEST_TYPE_XDCQ = "Xác định cơ quan giải quyết bồi thường";
 const wardCatalog = {
@@ -1301,7 +1303,7 @@ function handleNotifyMethodChange(method, scope = 'xd') {
         }
     } else if (method === 'Qua thư điện tử') {
         labelEl.innerHTML = `Thư điện tử (Email) nhận thông báo <span class="required">*</span>`;
-        inputEl.placeholder = `Nhập địa chỉ thư điện tử nhận thông báo (ví dụ: nguyenvanan@gmail.com)...`;
+        inputEl.placeholder = `Nhập địa chỉ thư điện tử nhận thông báo...`;
         if (!inputEl.value.trim() || inputEl.dataset.autofilled === '1') {
             const email = scope === 'xd' ? document.getElementById('formNYCEmail')?.value : document.getElementById('claimNYCEmail')?.value;
             inputEl.value = email || '';
@@ -1751,10 +1753,10 @@ function showProcessScreen(id) {
     // Khối THÔNG TIN HỒ SƠ BỊ TRẢ LẠI: hồ sơ đang Bị trả lại hoặc trước đó từng bị trả lại
     renderXdHistoryBlock('procReturnedNotice', BTNN_WF.renderXdReturnHistoryHtml(item));
 
-    clearAttachedFile('procDecisionFile', 'procFileAttachmentInfo');
-    if (src.procDecisionFile) {
-        displayAttachedFile('procDecisionFile', 'procFileAttachmentInfo', src.procDecisionFile);
-    }
+    procDocRows = (src.procDocs && src.procDocs.length)
+        ? src.procDocs.map(d => ({ name: d.name || '', file: d.file || '' }))
+        : (src.procDecisionFile ? [{ name: src.procDecisionFile.replace(/\.[^.]+$/, ''), file: src.procDecisionFile }] : []);
+    renderProcDocs();
 }
 
 function statusBadgeClass(status) {
@@ -2036,7 +2038,8 @@ function showDetailScreen(id) {
             document.getElementById('dtProcBasis').innerText = item.procBasis || 'Chưa cập nhật';
             document.getElementById('dtProcTargetAgency').innerText = item.procTargetAgency || 'Chưa cập nhật';
             document.getElementById('dtProcReason').innerText = item.procReason || 'Chưa cập nhật';
-            document.getElementById('dtProcDecisionFile').innerHTML = item.procDecisionFile ? fileLinksHtml([{ name: item.procDecisionFile }]) : `<span style="color: var(--text-muted); font-style: italic;">Chưa đính kèm quyết định</span>`;
+            const procFiles = (item.procDocs && item.procDocs.length) ? item.procDocs.filter(d => d.file).map(d => ({ name: d.file })) : (item.procDecisionFile ? [{ name: item.procDecisionFile }] : []);
+            document.getElementById('dtProcDecisionFile').innerHTML = procFiles.length ? fileLinksHtml(procFiles) : `<span style="color: var(--text-muted); font-style: italic;">Chưa đính kèm quyết định</span>`;
         } else {
             verificationBlock.style.display = 'none';
         }
@@ -2147,6 +2150,58 @@ function validateRequestItem(item) {
         : item.nycDob && item.nycDocNo;
     if (!item.nycName || !idOk || !item.nycPhone || !item.hanhVi) return "Vui lòng nhập đầy đủ thông tin bắt buộc trước khi gửi yêu cầu!";
     return '';
+}
+
+// ---------------- MH03: bảng Tài liệu kèm theo ----------------
+function addProcDocRow() {
+    procDocRows.push({ name: "", file: "" });
+    renderProcDocs();
+}
+
+function renderProcDocs() {
+    const tbody = document.getElementById('procDocsTableBody');
+    if (!tbody) return;
+    if (!procDocRows.length) procDocRows = [{ name: "", file: "" }];
+    tbody.innerHTML = procDocRows.map((doc, idx) => `
+        <tr>
+            <td style="text-align: center;">${idx + 1}</td>
+            <td>
+                <input class="form-control" value="${escapeAttr(doc.name || '')}" placeholder="Nhập tên tài liệu..." oninput="if (procDocRows[${idx}]) procDocRows[${idx}].name = this.value">
+            </td>
+            <td>
+                ${doc.file
+                    ? `<span style="font-weight: 600; color: #0F766E;"><i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i> ${escapeHtml(doc.file)}</span>`
+                    : `<button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('procDocFile_${idx}').click()"><i class="fa-solid fa-file-arrow-up"></i> Tải lên</button>`}
+                <input type="file" id="procDocFile_${idx}" style="display:none;" onchange="uploadProcDoc(${idx}, this)">
+            </td>
+            <td style="text-align: center;">
+                <div class="action-flex">
+                    <button type="button" class="icon-btn view" ${doc.file ? '' : 'style="opacity:0.35; pointer-events:none;"'} title="Xem file" onclick="if (procDocRows[${idx}] && procDocRows[${idx}].file) previewNamedFile(procDocRows[${idx}].file)"><i class="fa-solid fa-eye"></i></button>
+                    <button type="button" class="icon-btn delete" title="Xóa tài liệu" onclick="deleteProcDoc(${idx})"><i class="fa-solid fa-trash"></i></button>
+                </div>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function uploadProcDoc(index, input) {
+    if (!procDocRows[index] || !input.files || !input.files[0]) return;
+    const fileName = input.files[0].name;
+    procDocRows[index].file = fileName;
+    if (!procDocRows[index].name) procDocRows[index].name = fileName.replace(/\.[^.]+$/, '');
+    renderProcDocs();
+    showToast(`Đính kèm tập tin: ${fileName} thành công!`, "success");
+}
+
+function deleteProcDoc(index) {
+    const doc = procDocRows[index];
+    const remove = () => {
+        if (procDocRows.length === 1) procDocRows = [{ name: "", file: "" }];
+        else procDocRows.splice(index, 1);
+        renderProcDocs();
+    };
+    if (doc && (doc.name || doc.file)) showConfirmModal("Bạn có chắc chắn muốn xóa tài liệu này khỏi bảng không?", remove);
+    else remove();
 }
 
 function addFormDocRow() {
@@ -2561,7 +2616,7 @@ function saveForm(isDraft) {
 
 // Kết quả xác định CQGQBT đang nhập tại MH03 (Lưu và trình ký): chưa lưu vào hồ sơ, chỉ lưu khi Trình Lãnh đạo / Ban hành (Ký ngoài) thành công
 var xdProcDraft = null;
-const XD_PROC_FIELDS = ['procBasis', 'procTargetUnitId', 'procTargetAgency', 'procReason', 'procDecisionFile'];
+const XD_PROC_FIELDS = ['procBasis', 'procTargetUnitId', 'procTargetAgency', 'procReason', 'procDecisionFile', 'procDocs'];
 // Hồ sơ kèm dữ liệu đang nhập tại MH03 (nếu có): dùng để kiểm tra, hiển thị trên Popup Trình ký
 function xdProcView(item) {
     return item && xdProcDraft && xdProcDraft.id === item.id ? Object.assign({}, item, xdProcDraft.fields) : item;
@@ -2588,7 +2643,8 @@ function saveProcessResult() {
     const basis = document.getElementById('procBasis').value.trim();
     const agencyId = document.getElementById('procTargetAgency').value;
     const reason = document.getElementById('procReason').value.trim();
-    const file = fileCache['procDecisionFile'];
+    const procDocs = procDocRows.filter(d => d.name || d.file).map(d => ({ name: d.name, file: d.file }));
+    const file = (procDocs.find(d => d.file) || {}).file || '';
 
     clearValidation();
     let firstInvalid = null;
@@ -2611,7 +2667,8 @@ function saveProcessResult() {
             procTargetUnitId: agencyId,
             procTargetAgency: BTNN_WF.unitName(agencyId),
             procReason: reason,
-            procDecisionFile: file || ''
+            procDecisionFile: file || '',
+            procDocs
         }
     };
     openSignSubmitModal(id, XD_KIND.KQ);

@@ -210,8 +210,8 @@ Popup mở khi Lãnh đạo được giao ở cấp phê duyệt hiện tại cl
 **Ký duyệt / Từ chối phê duyệt hồ sơ Xác định cơ quan giải quyết bồi thường**
 
 - Hồ sơ Xác định cơ quan giải quyết bồi thường dùng màn hình riêng, mô tả tại:
-  + [Màn hình Ký duyệt - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-ky-duyet): xem trước văn bản trình ký, Mã vụ việc, Cán bộ trình, Loại trình, Nội dung trình, Lịch sử trình, Nội dung phê duyệt; Lãnh đạo cấp cuối ký số ngay tại màn hình.
-  + [Màn hình Từ chối phê duyệt - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-tu-choi): xem trước văn bản trình ký, thông tin chung, Lịch sử trình (gồm các lần từ chối trước), Lý do từ chối.
+  + [Màn hình Ký duyệt / Từ chối - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-ky-duyet): xem trước văn bản trình ký, Mã vụ việc, Cán bộ trình, Loại trình, Nội dung trình, Lịch sử trình, Nội dung phê duyệt; Lãnh đạo cấp cuối ký số ngay tại màn hình.
+  + [Màn hình Ký duyệt / Từ chối - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-tu-choi): xem trước văn bản trình ký, thông tin chung, Lịch sử trình (gồm các lần từ chối trước), Lý do từ chối.
 - Thao tác tại Dashboard Lãnh đạo mở đúng các màn hình trên.
 
 ---
