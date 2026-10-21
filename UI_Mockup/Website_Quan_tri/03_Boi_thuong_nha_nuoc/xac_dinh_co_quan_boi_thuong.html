@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <!-- External stylesheet -->
-    <link rel="stylesheet" href="xac_dinh_co_quan_boi_thuong.css?v=20261020xd">
+    <link rel="stylesheet" href="xac_dinh_co_quan_boi_thuong.css?v=20261021fs">
     <style>
         .xd-tabs { display: flex; gap: 8px; align-items: center; border-bottom: 1px solid var(--border-color); margin: 4px 0 16px; }
         .xd-tab { border: 0; background: transparent; padding: 10px 16px; font-size: 13.5px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; display: inline-flex; align-items: center; gap: 8px; }
@@ -38,7 +38,7 @@
             <!-- 02 tab: Chờ xử lý / Đã xử lý theo người dùng đang đăng nhập (Cán bộ xử lý / Lãnh đạo phê duyệt) -->
             <div class="xd-tabs">
                 <button type="button" class="xd-tab active" data-tab="pending" onclick="switchXdTab('pending')"><i class="fa-solid fa-list-check"></i> Chờ xử lý <span class="xd-tab-count" id="xdCntPending">0</span></button>
-                <button type="button" class="xd-tab" data-tab="done" onclick="switchXdTab('done')"><i class="fa-solid fa-box-archive"></i> Đã xử lý <span class="xd-tab-count" id="xdCntDone">0</span></button>
+                <button type="button" class="xd-tab" data-tab="done" onclick="switchXdTab('done')"><i class="fa-solid fa-box-archive"></i> Đã xử lý</button>
             </div>
 
             <!-- SEARCH FILTERS -->
@@ -129,7 +129,7 @@
             <div id="xdScopeNotice" style="display:none; margin-top:16px; padding:12px 16px; border-radius:8px; background:#fff7ed; border:1px solid #fed7aa; color:#9a3412; font-size:13px;"></div>
             <div style="display: flex; justify-content: flex-end; align-items: center; margin-bottom: 12px; margin-top: 16px;">
                 <button class="btn btn-primary" id="btnCreateRequest" onclick="showFormScreen(null)">
-                    <i class="fa-solid fa-plus"></i> Tạo yêu cầu
+                    <i class="fa-solid fa-plus"></i> Tạo hồ sơ
                 </button>
             </div>
 
@@ -646,22 +646,6 @@
             <!-- Hồ sơ Bị trả lại (Nội dung trình Kết quả xác định CQGQBT): lý do trả lại -->
             <div id="procReturnedNotice" style="display: none; padding: 14px 16px; border-radius: var(--border-radius-md); margin-bottom: 16px; font-size: 13px; line-height: 1.55; background: #FEF2F2; border-left: 4px solid #dc2626;"></div>
 
-            <!-- Read only request info -->
-            <div class="detail-card" style="margin-bottom: 20px;">
-                <h4 style="color: var(--primary-color); margin-bottom: 12px; font-size: 14px;"><i class="fa-solid fa-info-circle"></i> Tóm tắt hồ sơ yêu cầu xác định</h4>
-                <div class="grid-2" style="font-size: 13px; line-height: 1.6;">
-                    <div>
-                        <p><strong>Mã hồ sơ:</strong> <span id="lblProcCode"></span></p>
-                        <p><strong>Tên cá nhân/Tổ chức yêu cầu:</strong> <span id="lblProcName"></span></p>
-                        <p><strong>Lĩnh vực phát sinh thiệt hại:</strong> <span id="lblProcLinhVuc"></span></p>
-                    </div>
-                    <div>
-                        <p><strong>Số điện thoại:</strong> <span id="lblProcPhone"></span></p>
-                        <p><strong>Hành vi gây thiệt hại:</strong> <span id="lblProcHanhVi" style="color: var(--text-muted);"></span></p>
-                    </div>
-                </div>
-            </div>
-
             <!-- Chi tiết yêu cầu xác định CQGQBT (chỉ đọc, Mở rộng / Thu gọn): dùng chung khối Chi tiết hồ sơ của MH04, chuyển vào vị trí này khi mở màn -->
             <div id="procProfileSlot"></div>
 
@@ -1109,9 +1093,9 @@
 
             <!-- Stepper (chỉ hiển thị khi Hình thức ký = Ký số trên hệ thống) -->
             <div id="xsStepperBar" class="xs-stepper">
-                <div id="xsStep1Tab" class="xs-step"><span class="require-step-badge" id="xsStep1Badge">1</span><span>Soạn thông tin &amp; Chọn lãnh đạo</span></div>
+                <div id="xsStep1Tab" class="xs-step"><span class="require-step-badge" id="xsStep1Badge">1</span><span>Nhập thông tin</span></div>
                 <div class="xs-stepper-divider"></div>
-                <div id="xsStep2Tab" class="xs-step"><span class="require-step-badge" id="xsStep2Badge">2</span><span>Định vị chữ ký trên văn bản</span></div>
+                <div id="xsStep2Tab" class="xs-step"><span class="require-step-badge" id="xsStep2Badge">2</span><span>Kéo ô ký &amp; chọn Lãnh đạo</span></div>
             </div>
 
             <!-- Bước 1 -->
@@ -1158,45 +1142,6 @@
                     <div id="xsFileError" class="error-message">Đây là trường bắt buộc</div>
                 </div>
 
-                <!-- Nội dung diễn giải (chỉ hiển thị khi Ký số, không bắt buộc) -->
-                <div class="form-group" id="xsContentGroup">
-                    <span class="form-label" id="xsContentLabel">Nội dung diễn giải</span>
-                    <textarea class="form-control" id="xsContent" rows="3" placeholder="Nhập nội dung diễn giải (không bắt buộc)..."></textarea>
-                </div>
-
-                <!-- Khối LUỒNG PHÊ DUYỆT & LÃNH ĐẠO (chỉ hiển thị khi Ký số) -->
-                <div id="xsApprovalSection" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:16px; margin-bottom:0;">
-                    <div style="font-weight:700; color:#0f172a; margin-bottom:10px; font-size:13.5px; display:flex; align-items:center; gap:8px;">
-                        <i class="fa-solid fa-network-wired" style="color:#0284c7;"></i> Luồng phê duyệt &amp; Ký số theo cấu hình đơn vị:
-                    </div>
-                    
-                    <div id="xsFlowPathBadges" style="display:flex; align-items:center; gap:8px; margin-bottom:14px; font-size:12px; background:#fff; padding:8px 12px; border-radius:6px; border:1px solid #e2e8f0; flex-wrap:wrap;">
-                        <span style="background:#e0f2fe; color:#0369a1; padding:3px 8px; border-radius:4px; font-weight:600;"><i class="fa-solid fa-user-edit"></i> 1. Cán bộ thụ lý</span>
-                        <i class="fa-solid fa-arrow-right" style="color:#94a3b8; font-size:11px;"></i>
-                        <span style="background:#fef3c7; color:#92400e; padding:3px 8px; border-radius:4px; font-weight:600;"><i class="fa-solid fa-user-check"></i> 2. Lãnh đạo Phòng (Duyệt)</span>
-                        <i class="fa-solid fa-arrow-right" style="color:#94a3b8; font-size:11px;"></i>
-                        <span style="background:#dcfce7; color:#166534; padding:3px 8px; border-radius:4px; font-weight:600;"><i class="fa-solid fa-stamp"></i> 3. Lãnh đạo Đơn vị (Ký số)</span>
-                    </div>
-
-                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-                        <div class="form-group" style="margin-bottom:0;" id="xsOfficerRoomGroup">
-                            <label class="form-label" style="font-weight:600; font-size:13px; color:#334155; margin-bottom:6px; display:block;">
-                                Lãnh đạo Phòng (Duyệt chuyển tiếp) <span style="color:#dc2626;">*</span>:
-                            </label>
-                            <select id="xsOfficerRoomSelect" class="form-control" style="font-size:13px;"></select>
-                            <div id="xsOfficerRoomError" class="error-message">Đây là trường bắt buộc</div>
-                            <small style="color:#64748b; font-size:11.5px; display:block; margin-top:4px;">* Ký chuyển duyệt hồ sơ, không yêu cầu chứng thư số.</small>
-                        </div>
-                        <div class="form-group" style="margin-bottom:0;" id="xsOfficerAgencyGroup">
-                            <label class="form-label" style="font-weight:600; font-size:13px; color:#334155; margin-bottom:6px; display:block;">
-                                Lãnh đạo Đơn vị (Ký số &amp; Ban hành) <span style="color:#dc2626;">*</span>:
-                            </label>
-                            <select id="xsOfficerAgencySelect" class="form-control" style="font-size:13px;"></select>
-                            <div id="xsOfficerAgencyError" class="error-message">Đây là trường bắt buộc</div>
-                            <small style="color:#64748b; font-size:11.5px; display:block; margin-top:4px;">* Ký số điện tử bằng Token/SmartCA và đóng dấu ban hành.</small>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <!-- Bước 2: Định vị chữ ký (chỉ Ký số) -->
@@ -1282,71 +1227,60 @@
                         <div style="font-size:12px; color:#64748b;">Kéo thẻ chữ ký vào vị trí và dùng góc dưới phải để kéo to/nhỏ khung chữ ký.</div>
                     </div>
 
-                    <!-- Tùy chọn Bật/Tắt Ký nháy Lãnh đạo Phòng -->
-                    <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:6px; padding:10px 12px;">
-                        <div style="display:flex; align-items:center; justify-content:space-between;">
-                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12.5px; font-weight:600; color:#1e40af; margin:0;">
-                                <input type="checkbox" id="xsEnableRoomSig" checked onchange="xsToggleRoomSig(this.checked)">
-                                <span>Áp dụng ký nháy LĐ Phòng</span>
-                            </label>
-                            <span id="xsRoomSigStatusBadge" class="badge" style="background:#2563eb; color:#fff; font-size:10.5px;">Áp dụng</span>
-                        </div>
-                        <div style="font-size:11px; color:#64748b; margin-top:4px; line-height:1.4;">Bỏ chọn nếu đơn vị không yêu cầu Lãnh đạo Phòng ký nháy trên văn bản.</div>
-                    </div>
-
+                    <!-- Các cấp ký duyệt theo luồng đã cấu hình tại Cấu hình luồng xử lý: mỗi cấp chọn Lãnh đạo, ô ký kéo thả / đổi kích thước -->
                     <div style="display:flex; flex-direction:column; gap:12px;">
-                        <!-- Card 1: Lãnh đạo Phòng -->
-                        <div id="xsPanelRoomCard" style="background:#fff; border:1px solid #bfdbfe; border-radius:8px; padding:12px; box-shadow:0 1px 3px rgba(0,0,0,0.05); transition:opacity 0.2s;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                                <span style="font-size:12.5px; font-weight:700; color:#1e40af;"><i class="fa-solid fa-pen-nib"></i> Lãnh đạo Phòng</span>
-                                <span class="badge badge-success" style="font-size:10px; padding:2px 6px;"><i class="fa-solid fa-check"></i> Đã định vị</span>
+                        <div id="xsPanelRoomCard" style="background:#fff; border:1px solid #bfdbfe; border-left:4px solid #1d4ed8; border-radius:8px; padding:12px;">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px;">
+                                <span style="font-size:12.5px; font-weight:700; color:#1d4ed8;" id="xsPanelRoomUnit"></span>
+                                <span class="badge" style="background:#dbeafe; color:#1e40af; font-size:10.5px; white-space:nowrap;">Ký nháy</span>
                             </div>
-                            <div style="font-size:12.5px; font-weight:600; color:#1e293b;" id="xsPanelRoomName"></div>
-                            <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Vai trò: Ký duyệt chuyển tiếp</div>
-                            <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size:11px; color:#94a3b8;" id="xsPanelRoomCoord">Tọa độ: (60, 860)</span>
-                                <button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="xsPlaceSigBox('room', 60, 860)">Đặt lại</button>
+                            <div class="form-group" style="margin-bottom:8px;" id="xsOfficerRoomGroup">
+                                <select id="xsOfficerRoomSelect" class="form-control" style="font-size:13px;" onchange="xsSyncLeaderNames()"></select>
+                                <div id="xsOfficerRoomError" class="error-message">Đây là trường bắt buộc</div>
                             </div>
-                            <div style="margin-top:6px; display:flex; align-items:center; justify-content:space-between; font-size:11px; color:#64748b; border-top:1px dashed #e2e8f0; padding-top:6px;">
-                                <span>Cỡ: <strong id="xsPanelRoomSize" style="color:#0f172a;">220 x 90 px</strong></span>
-                                <div style="display:flex; gap:4px;">
-                                    <button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="xsResizeSigBox('room', 180, 75)">Nhỏ</button>
-                                    <button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="xsResizeSigBox('room', 220, 90)">Chuẩn</button>
-                                    <button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="xsResizeSigBox('room', 280, 110)">Lớn</button>
-                                </div>
+                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12.5px; color:#1e40af; margin:0 0 6px 0;">
+                                <input type="checkbox" id="xsEnableRoomSig" checked onchange="xsToggleRoomSig(this.checked)">
+                                <span>Áp dụng ký nháy Lãnh đạo cấp 1</span>
+                                <span id="xsRoomSigStatusBadge" style="display:none;"></span>
+                            </label>
+                            <button type="button" class="btn btn-secondary btn-sm" id="xsBtnPlaceRoom" onclick="xsPlaceLevel('room')" style="font-size:12px;"><i class="fa-solid fa-signature"></i> Đặt chữ ký</button>
+                            <div id="xsPanelRoomCtrls" style="display:none;">
+                            <div style="font-size:11px; color:#94a3b8; margin-bottom:6px;" id="xsPanelRoomCoord">Trang 1</div>
+                            <div style="display:flex; gap:4px; align-items:center;">
+                                <button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="xsResizeSigBox('room', 180, 75)">Nhỏ</button>
+                                <button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="xsResizeSigBox('room', 220, 90)">Vừa</button>
+                                <button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="xsResizeSigBox('room', 280, 110)">Lớn</button>
+                                <button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="xsPlaceSigBox('room', 60, 860)"><i class="fa-solid fa-rotate-left"></i> Đặt lại</button>
+                                <span style="display:none;" id="xsPanelRoomSize"></span><span style="display:none;" id="xsPanelRoomName"></span>
+                            </div>
                             </div>
                         </div>
-
-                        <!-- Card 2: Lãnh đạo Đơn vị -->
-                        <div id="xsPanelAgencyCard" style="background:#fff; border:1px solid #fecaca; border-radius:8px; padding:12px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                                <span style="font-size:12.5px; font-weight:700; color:#991b1b;"><i class="fa-solid fa-stamp"></i> Lãnh đạo Đơn vị</span>
-                                <span class="badge badge-success" style="font-size:10px; padding:2px 6px;"><i class="fa-solid fa-check"></i> Đã định vị</span>
+                        <div id="xsPanelAgencyCard" style="background:#fff; border:1px solid #fecaca; border-left:4px solid #b91c1c; border-radius:8px; padding:12px;">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px;">
+                                <span style="font-size:12.5px; font-weight:700; color:#b91c1c;" id="xsPanelAgencyUnit"></span>
+                                <span class="badge" style="background:#fee2e2; color:#991b1b; font-size:10.5px; white-space:nowrap;">Ký số &amp; con dấu</span>
                             </div>
-                            <div style="font-size:12.5px; font-weight:600; color:#1e293b;" id="xsPanelAgencyName"></div>
-                            <div style="font-size:11.5px; color:#dc2626; margin-top:2px; font-weight:500;">Vai trò: Ký số CA &amp; Con dấu cơ quan</div>
-                            <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size:11px; color:#94a3b8;" id="xsPanelAgencyCoord">Tọa độ: (480, 860)</span>
-                                <button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="xsPlaceSigBox('agency', 480, 860)">Đặt lại</button>
+                            <div class="form-group" style="margin-bottom:8px;" id="xsOfficerAgencyGroup">
+                                <select id="xsOfficerAgencySelect" class="form-control" style="font-size:13px;" onchange="xsSyncLeaderNames()"></select>
+                                <div id="xsOfficerAgencyError" class="error-message">Đây là trường bắt buộc</div>
                             </div>
-                            <div style="margin-top:6px; display:flex; align-items:center; justify-content:space-between; font-size:11px; color:#64748b; border-top:1px dashed #e2e8f0; padding-top:6px;">
-                                <span>Cỡ: <strong id="xsPanelAgencySize" style="color:#0f172a;">245 x 110 px</strong></span>
-                                <div style="display:flex; gap:4px;">
-                                    <button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="xsResizeSigBox('agency', 200, 85)">Nhỏ</button>
-                                    <button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="xsResizeSigBox('agency', 245, 110)">Chuẩn</button>
-                                    <button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="xsResizeSigBox('agency', 320, 130)">Lớn</button>
-                                </div>
+                            <button type="button" class="btn btn-secondary btn-sm" id="xsBtnPlaceAgency" onclick="xsPlaceLevel('agency')" style="font-size:12px;"><i class="fa-solid fa-signature"></i> Đặt chữ ký</button>
+                            <div id="xsPanelAgencyCtrls" style="display:none;">
+                            <div style="font-size:11px; color:#94a3b8; margin-bottom:6px;" id="xsPanelAgencyCoord">Trang 1</div>
+                            <div style="display:flex; gap:4px; align-items:center;">
+                                <button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="xsResizeSigBox('agency', 200, 85)">Nhỏ</button>
+                                <button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="xsResizeSigBox('agency', 245, 110)">Vừa</button>
+                                <button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="xsResizeSigBox('agency', 320, 130)">Lớn</button>
+                                <button type="button" class="btn btn-secondary btn-sm xs-mini" onclick="xsPlaceSigBox('agency', 480, 860)"><i class="fa-solid fa-rotate-left"></i> Đặt lại</button>
+                                <span style="display:none;" id="xsPanelAgencySize"></span><span style="display:none;" id="xsPanelAgencyName"></span>
+                            </div>
                             </div>
                         </div>
                     </div>
-
-                    <button type="button" class="btn btn-secondary" onclick="xsAutoPlaceBothSignatures()" style="font-size:12.5px; padding:9px; display:flex; align-items:center; justify-content:center; gap:6px;">
-                        <i class="fa-solid fa-crosshairs" style="color:#2563eb;"></i> Tự động căn vị trí chuẩn Nghị định 30
-                    </button>
-                    <div class="xs-guide">
-                        <strong style="display:block; margin-bottom:4px;"><i class="fa-solid fa-circle-question"></i> Hướng dẫn thao tác:</strong>
-                        • <strong>Di chuyển:</strong> Dùng chuột bấm giữ và kéo khung chữ ký màu xanh/đỏ đến vị trí mong muốn.<br>
-                        • <strong>Kéo to/nhỏ:</strong> Bấm giữ vào góc dưới bên phải của khung chữ ký để kéo dãn kích thước theo ý muốn.
+                    <div style="font-size:11.5px; color:#64748b;">Bấm <strong>Đặt chữ ký</strong> để sinh ô ký của cấp đó trên văn bản; kéo ô để đặt vị trí, kéo góc dưới phải để đổi kích thước.</div>
+                    <div class="form-group" style="margin-bottom:0;" id="xsContentGroup">
+                        <span class="form-label">Nội dung trình<span class="required">*</span></span>
+                        <textarea class="form-control" id="xsContent" rows="4" placeholder="Nhập nội dung trình Lãnh đạo..."></textarea>
                     </div>
                 </div>
             </div>
@@ -1357,7 +1291,7 @@
                     <button id="xsBtnSubmitOffline" type="button" class="btn btn-primary" onclick="xsSubmit()" style="background:#16a34a; border-color:#16a34a;"><i class="fa-solid fa-check"></i> Hoàn thành</button>
                     <button id="xsBtnNext" type="button" class="btn btn-primary" onclick="xsGoStep2()"><span>Tiếp tục</span> <i class="fa-solid fa-arrow-right"></i></button>
                     <button id="xsBtnBack" type="button" class="btn btn-secondary" onclick="xsGoStep1()"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
-                    <button id="xsBtnSubmitOnline" type="button" class="btn btn-primary" onclick="xsSubmit()" style="background:#16a34a; border-color:#16a34a;"><i class="fa-solid fa-paper-plane"></i> Hoàn tất &amp; Trình ký</button>
+                    <button id="xsBtnSubmitOnline" type="button" class="btn btn-primary" onclick="xsSubmit()" style="background:#16a34a; border-color:#16a34a;"><i class="fa-solid fa-paper-plane"></i> Trình Lãnh đạo</button>
                 </div>
             </div>
         </div>
@@ -1381,7 +1315,7 @@
 
     <!-- External javascript logic -->
     <script src="btnn_luong_xu_ly.js?v=20261020v5"></script>
-    <script src="btnn_lanh_dao_actions.js?v=20261020v5"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261021fs"></script>
     <script src="xac_dinh_co_quan_boi_thuong.js?v=20261020ks"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="bpbd_filter_toggle.js?v=20261012"></script>

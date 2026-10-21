@@ -1402,6 +1402,66 @@
             font-size: 13px;
             font-weight: 700;
         }
+        /* Popup Yêu cầu bổ sung hồ sơ / Không thụ lý hồ sơ - Bước 1 (nhóm khối, khối Tệp văn bản trình ký nổi bật) */
+        .gqx-body { padding:18px 24px; background:#f8fafc; }
+        .gqx-body.gqx-2col:not([style*="none"]) { display:grid !important; } .gqx-body.gqx-2col { grid-template-columns:minmax(0,1fr) minmax(0,1fr); grid-auto-rows:min-content 1fr; gap:14px 16px; align-content:start; align-items:start; }
+        .gqx-2col > * { grid-column:1 / -1; margin-bottom:0 !important; }
+        .gqx-2col > .gqx-col-l { grid-column:1; grid-row:span 2; }
+        .gqx-2col > .gqx-col-r { grid-column:2; }
+        .gqx-2col .gqx-sec { padding:14px 16px; }
+        .gqx-2col .gqx-sec-title { margin-bottom:12px; padding-bottom:8px; }
+        .gqx-2col .gqx-docfile { margin-top:12px; }
+        .gqx-2col .gqx-grid2[style*="none"] + .gqx-docfile { margin-top:0; }
+        @media (max-width: 900px) { .gqx-body.gqx-2col:not([style*="none"]) { display:block !important; } .gqx-2col > * { margin-bottom:14px !important; } }
+        .gqx-sec { background:#fff; border:1px solid #e2e8f0; border-radius:10px; padding:16px 18px; margin-bottom:14px; }
+        .gqx-sec:last-child { margin-bottom:0; }
+        .gqx-sec-title { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#1e293b; text-transform:uppercase; letter-spacing:.2px; margin:0 0 14px; padding-bottom:10px; border-bottom:1px solid #f1f5f9; }
+        .gqx-sec-title > i { color:#2563eb; width:16px; text-align:center; }
+        .gqx-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:0 16px; }
+        .gqx-field { margin-bottom:14px; }
+        .gqx-field:last-child, .gqx-grid2 .gqx-field { margin-bottom:0; }
+        .gqx-body .form-label { font-weight:600; font-size:13px; color:#334155; margin-bottom:6px; }
+        .gqx-req { color:#dc2626; margin-left:3px; }
+        .gqx-sec-title .gqx-req, .gqx-docfile-head .gqx-req { margin-left:-5px; }
+        .gqx-opt { font-weight:400; color:#94a3b8; font-size:12px; }
+        .gqx-body .form-control { font-family:inherit; font-size:13px; height:38px; width:100%; box-sizing:border-box; }
+        .gqx-body textarea.form-control { height:auto; line-height:1.55; resize:vertical; }
+        .gqx-body select.form-control { padding:0 10px; cursor:pointer; }
+        .gqx-date { position:relative; }
+        .gqx-date .form-control { padding-right:36px; cursor:pointer; background:#fff; }
+        .gqx-date > i { position:absolute; right:12px; top:50%; transform:translateY(-50%); color:#2563eb; cursor:pointer; font-size:15px; }
+        .gqx-hint { font-size:12px; color:#64748b; margin-top:5px; }
+        .gqx-err { display:none; color:#dc2626; font-size:12px; margin-top:4px; }
+        .gqx-methods { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+        .gqx-method { display:flex; align-items:flex-start; gap:10px; border:1.5px solid #e2e8f0; border-radius:8px; padding:10px 12px; cursor:pointer; background:#fff; transition:all .15s; margin:0; }
+        .gqx-method:hover { border-color:#93c5fd; }
+        .gqx-method:has(input:checked) { border-color:#2563eb; background:#eff6ff; }
+        .gqx-method input { margin-top:3px; accent-color:#2563eb; flex-shrink:0; }
+        .gqx-method b { display:block; font-size:13px; font-weight:600; color:#0f172a; }
+        .gqx-method small { display:block; font-size:12px; color:#64748b; margin-top:2px; }
+        .gqx-docfile { margin-top:16px; border:1.5px dashed #60a5fa; background:linear-gradient(180deg, #eff6ff 0%, #f8fbff 100%); border-radius:10px; padding:14px 16px; }
+        .gqx-docfile.signed { border-color:#fbbf24; background:linear-gradient(180deg, #fffbeb 0%, #fffdf7 100%); }
+        .gqx-docfile-head { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#1e40af; margin-bottom:10px; }
+        .gqx-docfile.signed .gqx-docfile-head { color:#92400e; }
+        .gqx-file-empty { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+        .gqx-file-hint { font-size:12.5px; color:#475569; }
+        .gqx-file-actions { display:flex; gap:8px; flex-wrap:wrap; }
+        .gqx-file-actions .btn-primary { background:#2563eb; border-color:#2563eb; }
+        .gqx-file-ready { display:flex; align-items:center; gap:12px; background:#fff; border:1px solid #bfdbfe; border-radius:8px; padding:10px 12px; }
+        .gqx-file-ico { font-size:28px; color:#2563eb; flex-shrink:0; }
+        .gqx-file-info { flex:1; min-width:0; }
+        .gqx-file-name { font-weight:700; font-size:13.5px; color:#1e293b; overflow-wrap:anywhere; }
+        .gqx-file-meta { font-size:12px; color:#64748b; margin-top:3px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+        .gqx-tag { display:inline-flex; align-items:center; gap:4px; background:#dcfce7; color:#166534; border-radius:999px; padding:1px 8px; font-size:11.5px; font-weight:600; }
+        .gqx-tag.up { background:#e0f2fe; color:#075985; }
+        .gqx-file-btns { display:flex; gap:6px; flex-shrink:0; }
+        .gqx-danger { color:#dc2626 !important; }
+        .gqx-file-more { margin-top:8px; font-size:12px; color:#64748b; }
+        .gqx-file-more a { color:#2563eb; font-weight:600; text-decoration:none; cursor:pointer; }
+        .gqx-note { margin-top:10px; font-size:12px; color:#92400e; background:#fef3c7; border-radius:6px; padding:8px 10px; line-height:1.5; }
+        .gqx-transfer { margin-top:14px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:14px 16px; }
+        .gqx-transfer-title { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#166534; margin-bottom:10px; }
+        @media (max-width: 640px) { .gqx-grid2, .gqx-methods { grid-template-columns:1fr; } .gqx-grid2 .gqx-field { margin-bottom:12px; } .gqx-file-ready { flex-wrap:wrap; } }
         .doc-upload-highlight {
             border: 2px dashed #3b82f6;
             background: linear-gradient(180deg, #eff6ff 0%, #f8fafc 100%);
@@ -9299,8 +9359,10 @@
                 const y = date.getFullYear();
                 return `${d}/${m}/${y}`;
             };
-            document.getElementById('searchFromDate').value = formatDate(firstDayOfMonth);
-            document.getElementById('searchToDate').value = formatDate(today);
+            const elFrom = document.getElementById('searchFromDate');
+            const elTo = document.getElementById('searchToDate');
+            if (elFrom) elFrom.value = formatDate(firstDayOfMonth);
+            if (elTo) elTo.value = formatDate(today);
         }
 
         function initRequestDocDatePickers() {
@@ -9320,10 +9382,10 @@
                 localStorage.setItem('claimsList_v25_supplement_print', 'true');
             }
 
-            flatpickr("#searchFromDate", { dateFormat: "d/m/Y", allowInput: true });
-            flatpickr("#searchToDate", { dateFormat: "d/m/Y", allowInput: true });
-            flatpickr("#searchFromHan", { dateFormat: "d/m/Y", allowInput: true });
-            flatpickr("#searchToHan", { dateFormat: "d/m/Y", allowInput: true });
+            if (document.querySelector("#searchFromDate")) flatpickr("#searchFromDate", { dateFormat: "d/m/Y", allowInput: true });
+            if (document.querySelector("#searchToDate")) flatpickr("#searchToDate", { dateFormat: "d/m/Y", allowInput: true });
+            if (document.querySelector("#searchFromHan")) flatpickr("#searchFromHan", { dateFormat: "d/m/Y", allowInput: true });
+            if (document.querySelector("#searchToHan")) flatpickr("#searchToHan", { dateFormat: "d/m/Y", allowInput: true });
 
             flatpickr("#claimNYCBirth", { dateFormat: "d/m/Y", allowInput: true });
             flatpickr("#claimNYCCardDate", { dateFormat: "d/m/Y", allowInput: true });
@@ -9600,8 +9662,9 @@
             renderClaimsTable();
         }
 
-        // Cột Thao tác (chỉ có tại Tab "Vụ việc chờ xử lý"): 04 thao tác ở vị trí cố định trên mọi dòng
-        // Tiếp nhận | Không thụ lý | Cập nhật | Chuyển CQGQBT (không hiển thị nút Yêu cầu bổ sung ngoài lưới).
+        // Cột Thao tác (chỉ có tại Tab "Vụ việc chờ xử lý"): 05 thao tác ở vị trí cố định trên mọi dòng
+        // Tiếp nhận | Yêu cầu bổ sung | Không thụ lý | Cập nhật | Chuyển CQGQBT.
+        // Yêu cầu bổ sung / Không thụ lý: hồ sơ Chờ tiếp nhận, Yêu cầu bổ sung, Bị trả lại (vai trò Cán bộ xử lý).
         // "Cập nhật" là thao tác cập nhật kết quả chung, mở đúng nội dung theo trạng thái của hồ sơ:
         // Bị trả lại -> cập nhật hồ sơ đã trình (hiển thị lý do trả lại); Chờ phát hành văn bản -> phát hành văn bản yêu cầu bổ sung;
         // Đang xác minh thiệt hại ... Tạm đình chỉ giải quyết -> cập nhật kết quả giải quyết; Đang phục hồi danh dự -> cập nhật phục hồi danh dự.
@@ -9609,11 +9672,12 @@
         // với chú thích "[Tên thao tác]: [lý do]". Hồ sơ Chờ duyệt / Chờ thụ lý: không có thao tác.
         const CLAIM_LIST_ACTIONS = {
             accept: { icon: 'fa-solid fa-check-to-slot', cls: 'accept', title: 'Tiếp nhận' },
+            supplement: { icon: 'fa-solid fa-circle-question', cls: 'supplement', title: 'Yêu cầu bổ sung' },
             reject: { icon: 'fa-solid fa-ban', cls: 'reject', title: 'Không thụ lý' },
             update: { icon: 'fa-solid fa-pen-to-square', cls: 'edit', title: 'Cập nhật' },
             transfer: { icon: 'fa-solid fa-right-left', cls: 'transfer', title: 'Chuyển cơ quan giải quyết bồi thường' }
         };
-        const CLAIM_LIST_ACTION_ORDER = ['accept', 'reject', 'update', 'transfer'];
+        const CLAIM_LIST_ACTION_ORDER = ['accept', 'supplement', 'reject', 'update', 'transfer'];
         const CLAIM_THULY_AT_LEADER = 'Thủ trưởng cơ quan giải quyết bồi thường quyết định Thụ lý / Không thụ lý (vai trò Lãnh đạo đơn vị)';
         const CLAIM_QD_AT_MODULE = 'Quyết định giải quyết bồi thường được lập, trình ký và ban hành tại chức năng Quyết định giải quyết bồi thường';
 
@@ -9671,6 +9735,12 @@
             CLAIM_LIST_ACTION_ORDER.forEach(k => { slots[k] = off(k, notAt); });
             if (!honorStarted && (status === 'Chờ tiếp nhận' || status === 'Yêu cầu bổ sung')) {
                 slots.accept = on('accept', `openInlineClaimForm('${id}')`, status === 'Yêu cầu bổ sung' ? 'Tiếp nhận hồ sơ bổ sung' : 'Tiếp nhận');
+                slots.supplement = on('supplement', `triggerRequireAdditionClaim('${id}')`);
+                slots.reject = on('reject', `triggerRejectClaim('${id}')`);
+            }
+            // Hồ sơ Bị trả lại: ngoài Cập nhật (trình lại), Cán bộ xử lý có thể lập Yêu cầu bổ sung / Không thụ lý
+            if (!honorStarted && status === 'Bị trả lại') {
+                slots.supplement = on('supplement', `triggerRequireAdditionClaim('${id}')`);
                 slots.reject = on('reject', `triggerRejectClaim('${id}')`);
             }
             const upd = claimUpdateAction(item);
@@ -9715,8 +9785,8 @@
 
             const fromDateInput = document.getElementById('searchFromDate').value;
             const toDateInput = document.getElementById('searchToDate').value;
-            const fromHanInput = document.getElementById('searchFromHan').value;
-            const toHanInput = document.getElementById('searchToHan').value;
+            const fromHanInput = document.getElementById('searchFromHan') ? document.getElementById('searchFromHan').value : '';
+            const toHanInput = document.getElementById('searchToHan') ? document.getElementById('searchToHan').value : '';
 
             if (code) {
                 // Mã vụ việc: tìm theo VVBT-; Mã hồ sơ: tìm theo BT-
@@ -9937,8 +10007,8 @@
             if (document.getElementById('searchRequestKind')) document.getElementById('searchRequestKind').value = '';
             if (document.getElementById('searchPhddStatus')) document.getElementById('searchPhddStatus').value = '';
             setDefaultClaimsSearchDates();
-            document.getElementById('searchFromHan').value = '';
-            document.getElementById('searchToHan').value = '';
+            if (document.getElementById('searchFromHan')) document.getElementById('searchFromHan').value = '';
+            if (document.getElementById('searchToHan')) document.getElementById('searchToHan').value = '';
 
             currentClaimsPage = 1;
             renderClaimsTable();
@@ -10382,96 +10452,10 @@
         }
 
         function triggerRejectFromEdit() {
-            const explanationEl = document.getElementById('editFormExplanationTextarea');
-            const explanation = explanationEl.value.trim();
-            if (!explanation) {
-                explanationEl.classList.add('is-invalid');
-                document.getElementById('editFormExplanationError').style.display = 'block';
-                explanationEl.focus();
-                return;
-            }
-            explanationEl.classList.remove('is-invalid');
-            document.getElementById('editFormExplanationError').style.display = 'none';
-
             const claim = claimsList.find(c => c.id === editingClaimId);
             if (!claim) return;
-
-            showRejectionModal(claim.id, 'Bị từ chối', (claimId, type, reason) => {
-                const requestType = document.querySelector('input[name="claimRequestType"]:checked')
-                    ? document.querySelector('input[name="claimRequestType"]:checked').value
-                    : 'both';
-                const fieldGroup = document.getElementById('claimFieldGroup').value;
-                const requestDocDate = document.getElementById('claimRequestDocDate').value.trim();
-                const applicableLaw = document.getElementById('claimApplicableLaw').value;
-                const cqNhan = document.getElementById('claimCqNhan').value.trim();
-                const role = document.getElementById('claimNYCRole').value;
-
-                const name = document.getElementById('claimNYCName').value.trim();
-                const birth = document.getElementById('claimNYCBirth').value.trim();
-                const cardType = document.getElementById('claimNYCCardType').value;
-                const cardNo = document.getElementById('claimNYCCardNo').value.trim();
-                const phone = document.getElementById('claimNYCPhone').value.trim();
-                const address = document.getElementById('claimNYCAddress').value.trim();
-                const hanhVi = document.getElementById('claimHanhVi').value.trim();
-                const nhanQua = document.getElementById('claimNhanQua').value.trim();
-                let total = 0;
-                if (requestType !== 'honor') {
-                    for (let i = 1; i <= 6; i++) {
-                        const checked = document.getElementById(`claimThietHaiCb_${i}`).checked;
-                        if (checked) {
-                            const valEl = document.getElementById(`claimThietHaiVal_${i}`);
-                            const cleanValStr = valEl.value.replace(/\./g, '');
-                            const val = parseFloat(cleanValStr) || 0;
-                            total += val;
-                        }
-                    }
-                }
-
-                claim.fieldGroup = fieldGroup;
-                claim.requestDocDate = requestDocDate;
-                claim.applicableLaw = applicableLaw;
-                claim.nyc = name;
-                claim.cardType = cardType;
-                claim.cardNo = cardNo;
-                claim.address = address;
-                claim.phone = phone;
-                claim.role = role;
-                claim.nycRole = role;
-                claim.nbth = collectNbthFromForm(role);
-                claim.hanhVi = hanhVi;
-                claim.nhanQua = nhanQua;
-                claim.agency = cqNhan || "Chưa phân công";
-                claim.totalNum = total;
-
-                const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : 'Nguyễn Văn Chuyên Viên (Cán bộ một cửa)';
-                const todayStr = new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-
-                claim.rejectType = type;
-                claim.rejectReason = reason;
-                claim.rejectDate = todayStr;
-                claim.rejectOfficer = currentOfficer;
-
-                if (!claim.rejectionLog) claim.rejectionLog = [];
-                claim.rejectionLog.push({
-                    date: todayStr,
-                    officer: currentOfficer,
-                    action: "Giải trình điều chỉnh",
-                    reason: explanation
-                });
-                claim.rejectionLog.push({
-                    date: todayStr,
-                    officer: currentOfficer,
-                    action: type,
-                    reason: reason
-                });
-
-                claim.status = 'Bị từ chối';
-
-                saveClaimsToLocal();
-                closeInlineClaimForm();
-                renderClaimsTable();
-                showToast(`Cán bộ đã chuyển vụ việc sang trạng thái Bị từ chối!`, "success");
-            });
+            closeInlineClaimForm();
+            openGqKtlModal(claim.id);
         }
 
         function submitTuChoiThulyTuChoiTiepNhan() {
@@ -12725,7 +12709,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 // Bị trả lại: cán bộ Cập nhật theo Nội dung trình bị trả lại rồi trình lại (phê duyệt lại từ cấp đầu tiên)
                 case 'bi tra lai':
                     if (currentRole === 'chuyen-vien') {
-                        buttonsHtml = `<button class="btn btn-primary" onclick="gqUpdateReturned('${claim.id}')" title="Cập nhật hồ sơ bị trả lại để trình lại"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>`;
+                        buttonsHtml = `<button class="btn btn-primary" onclick="gqUpdateReturned('${claim.id}')" title="Cập nhật hồ sơ bị trả lại để trình lại"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>
+                            <button class="btn btn-warning" style="background-color: var(--warning-color); color: white;" onclick="triggerRequireAdditionClaim('${claim.id}')"><i class="fa-solid fa-circle-question"></i> Yêu cầu bổ sung</button>
+                            <button class="btn btn-danger" onclick="triggerRejectClaim('${claim.id}')"><i class="fa-solid fa-ban"></i> Không thụ lý</button>`;
                     }
                     break;
 
@@ -19095,7 +19081,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     </div>
     <!-- Modal Trình ký Yêu cầu bổ sung hồ sơ (Wizard 2 bước & Định vị chữ ký) -->
     <div id="modalRequireAddition" class="confirm-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
-        <div id="modalRequireAdditionContainer" class="sticky-modal-container" style="background:#fff; width:1050px; max-width:96%; border-radius:10px; display:flex; flex-direction:column; max-height:94vh; overflow:hidden; box-shadow:0 20px 45px rgba(0,0,0,0.3); transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+        <div id="modalRequireAdditionContainer" class="sticky-modal-container" style="background:#fff; width:1180px; max-width:96%; border-radius:10px; display:flex; flex-direction:column; max-height:94vh; overflow:hidden; box-shadow:0 20px 45px rgba(0,0,0,0.3); transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
             
             <!-- Modal Header -->
             <div class="confirm-modal-header" style="color:var(--primary-light); background:#f8fafc; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; padding:18px 24px 14px 24px;">
@@ -19115,180 +19101,86 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             <div id="mraStepperBar" style="background:#f1f5f9; border-bottom:1px solid #e2e8f0; padding:10px 24px; display:flex; justify-content:center; align-items:center; gap:20px;">
                 <div id="mraStep1Tab" style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700; color:#2563eb;">
                     <span class="require-step-badge" id="mraStep1Badge" style="background:#2563eb; color:#fff;">1</span>
-                    <span>Soạn thông tin & Chọn lãnh đạo</span>
+                    <span>Nhập thông tin</span>
                 </div>
                 <div style="color:#cbd5e1; font-size:14px;"><i class="fa-solid fa-chevron-right"></i></div>
                 <div id="mraStep2Tab" style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:600; color:#64748b;">
                     <span class="require-step-badge" id="mraStep2Badge" style="background:#cbd5e1; color:#475569;">2</span>
-                    <span>Định vị chữ ký trên văn bản</span>
+                    <span>Kéo ô ký &amp; chọn Lãnh đạo</span>
                 </div>
             </div>
 
-            <!-- Modal Body Step 1 -->
-            <div id="mraStep1Body" class="sticky-modal-body" style="padding:24px 28px; overflow-y:auto; flex:1;">
-                
-                <!-- 1. Chọn Hình thức Ký ban hành -->
-                <div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:8px; padding:14px 18px; margin-bottom:20px;">
-                    <label style="display:block; font-weight:700; color:#1e293b; font-size:13.5px; margin-bottom:8px;">
-                        <i class="fa-solid fa-signature" style="color:#0284c7;"></i> Hình thức ký ban hành văn bản: <span style="color:#dc2626;">*</span>
-                    </label>
-                    <div style="display:flex; gap:30px; flex-wrap:wrap;">
-                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:600; font-size:13.5px; color:#0f172a;">
-                            <input type="radio" name="mraSigningMethod" value="offline" onchange="toggleSigningMethod('offline')">
-                            <span><i class="fa-solid fa-file-pen" style="color:#0284c7;"></i> Ký ngoài (Upload file PDF đã ký & đóng dấu)</span>
-                        </label>
-                        <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:600; font-size:13.5px; color:#0f172a;">
+            <!-- Modal Body Step 1: Thông tin nghiệp vụ / Hình thức ký / Thông tin văn bản -->
+            <div id="mraStep1Body" class="sticky-modal-body gqx-body gqx-2col" style="overflow-y:auto; flex:1;">
+
+                <!-- Khối 1: Nội dung yêu cầu bổ sung -->
+                <div class="gqx-sec gqx-col-l">
+                    <div class="gqx-sec-title"><i class="fa-solid fa-list-check"></i> Nội dung yêu cầu bổ sung hồ sơ</div>
+                    <div class="gqx-field">
+                        <label class="form-label" for="mraContentReason">Nội dung yêu cầu bổ sung hồ sơ<span class="gqx-req">*</span></label>
+                        <textarea id="mraContentReason" class="form-control" rows="4" placeholder="Nhập các tài liệu, chứng cứ cần bổ sung; mỗi dòng một nội dung..." oninput="this.classList.remove('is-invalid'); document.getElementById('mraContentReasonError').style.display='none';"></textarea>
+                        <div id="mraContentReasonError" class="gqx-err">Đây là trường bắt buộc</div>
+                        <div class="gqx-hint">Mỗi dòng được trình bày thành 01 mục đánh số trong văn bản Mẫu 03/BTNN.</div>
+                    </div>
+                </div>
+
+                <!-- Khối 2: Hình thức ký -->
+                <div class="gqx-sec gqx-col-r">
+                    <div class="gqx-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="gqx-req">*</span></div>
+                    <div class="gqx-methods">
+                        <label class="gqx-method">
                             <input type="radio" name="mraSigningMethod" value="online" checked onchange="toggleSigningMethod('online')">
-                            <span><i class="fa-solid fa-file-signature" style="color:#16a34a;"></i> Ký số trên hệ thống (Trình duyệt & Ký số điện tử)</span>
+                            <span><b>Ký số trên hệ thống</b><small>Trình Lãnh đạo duyệt &amp; ký số (02 bước)</small></span>
+                        </label>
+                        <label class="gqx-method">
+                            <input type="radio" name="mraSigningMethod" value="offline" onchange="toggleSigningMethod('offline')">
+                            <span><b>Ký ngoài</b><small>Tải lên văn bản PDF đã ký &amp; đóng dấu (01 bước)</small></span>
                         </label>
                     </div>
                 </div>
 
-                <!-- Form Nhập liệu chung (Số ký hiệu, Ngày tháng) - Chỉ hiển thị khi Ký số -->
-                <div id="mraDocMetaGroup" style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:16px;">
-                    <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label" style="font-weight:600; font-size:13px; color:#334155; margin-bottom:6px; display:block;">
-                            Số, ký hiệu văn bản <span style="color:#dc2626;">*</span>:
-                        </label>
-                        <input type="text" id="mraDocNumber" class="form-control" placeholder="Ví dụ: 03/TB-CBTNN" value=".../TB-CBTNN">
-                        <div id="mraDocNumberError" class="error-message" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
-                    </div>
-                    <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label" style="font-weight:600; font-size:13px; color:#334155; margin-bottom:6px; display:block;">
-                            Ngày tháng văn bản <span style="color:#dc2626;">*</span>:
-                        </label>
-                        <div style="position:relative;">
-                            <input type="text" id="mraDocDate" class="form-control" placeholder="dd/mm/yyyy" style="padding-right:38px; cursor:pointer;" readonly>
-                            <i class="fa-regular fa-calendar-days" id="mraDocDateIcon" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); color:#2563eb; cursor:pointer; font-size:16px;" title="Chọn ngày"></i>
+                <!-- Khối 3: Thông tin văn bản -->
+                <div class="gqx-sec gqx-col-r">
+                    <div class="gqx-sec-title"><i class="fa-solid fa-file-lines"></i> Thông tin văn bản</div>
+                    <div id="mraDocMetaGroup" class="gqx-grid2">
+                        <div class="gqx-field">
+                            <label class="form-label" for="mraDocNumber">Số, ký hiệu văn bản<span class="gqx-req">*</span></label>
+                            <input type="text" id="mraDocNumber" class="form-control" placeholder="VD: 45/TB-CBTNN" value=".../TB-CBTNN" oninput="this.classList.remove('is-invalid'); document.getElementById('mraDocNumberError').style.display='none';">
+                            <div id="mraDocNumberError" class="gqx-err">Đây là trường bắt buộc</div>
                         </div>
-                        <div id="mraDocDateError" class="error-message" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
-                    </div>
-                </div>
-
-                <!-- Nội dung yêu cầu bổ sung -->
-                <div class="form-group" style="margin-bottom:20px;">
-                    <label class="form-label" style="font-weight:600; font-size:13px; color:#334155; margin-bottom:6px; display:block;">
-                        Nội dung yêu cầu bổ sung hồ sơ <span style="color:#dc2626;">*</span>:
-                    </label>
-                    <textarea id="mraContentReason" class="form-control" rows="4" style="width:100%; font-size:13.5px; line-height:1.5; resize:vertical;" placeholder="Nhập các tài liệu, giấy tờ hoặc nội dung cần bổ sung; mỗi dòng một nội dung..."></textarea>
-                    <div id="mraContentReasonError" class="error-message" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
-                    <small style="color:#64748b; font-size:12px; display:block; margin-top:4px;">Mỗi dòng sẽ được trình bày thành một mục đánh số trong văn bản Thông báo Mẫu 03/BTNN.</small>
-                </div>
-
-                <!-- SECTION: KHỐI KÝ NGOÀI (Chỉ hiển thị khi signingMethod === 'offline') -->
-                <div id="mraOfflineSection" style="display:none; background:#fffbeb; border:1px solid #fef3c7; border-radius:8px; padding:16px; margin-bottom:16px;">
-                    <label class="form-label" style="font-weight:700; color:#92400e; font-size:13.5px; margin-bottom:8px; display:block;">
-                        <i class="fa-solid fa-file-pdf"></i> Tệp văn bản PDF đã ký & đóng dấu giấy <span style="color:#dc2626;">*</span>:
-                    </label>
-                    <input type="file" id="mraOfflineFileInput" style="display:none;" accept=".pdf" onchange="handleMraOfflineFileUpload(this)">
-                    <div id="mraOfflineUploadPrompt">
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('mraOfflineFileInput').click()">
-                            <i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp PDF đã ký
-                        </button>
-                        <span style="font-size:12px; color:#78350f; margin-left:10px;">Chỉ chấp nhận file định dạng .pdf (tối đa 25MB)</span>
-                    </div>
-                    <div id="mraOfflineFileList" style="margin-top:10px; display:none;"></div>
-                    <div id="mraOfflineFileError" class="error-message" style="display:none; color:#dc2626; font-size:12px; margin-top:6px;">Vui lòng tải lên tệp PDF đã ký</div>
-
-                    <div style="margin-top:14px; padding:10px 12px; background:#fef3c7; border-radius:6px; font-size:12.5px; color:#92400e; line-height:1.5;">
-                        <i class="fa-solid fa-circle-info"></i> <strong>Lưu ý:</strong> Văn bản ký ngoài sẽ ban hành trực tiếp tới người yêu cầu bồi thường và chuyển trạng thái hồ sơ sang <strong>[Yêu cầu bổ sung]</strong> ngay khi bấm Xác nhận, không qua duyệt Lãnh đạo trên hệ thống.
-                    </div>
-                </div>
-
-                <!-- SECTION: KHỐI KÝ SỐ TRÊN HỆ THỐNG (Chỉ hiển thị khi signingMethod === 'online') -->
-                <div id="mraOnlineSection">
-                    
-                    <!-- Khối Tệp văn bản trình ký NỔI BẬT -->
-                    <div class="doc-upload-highlight" style="margin-bottom:20px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                            <span style="font-weight:700; color:#1e40af; font-size:14px;">
-                                <i class="fa-solid fa-file-contract"></i> TỆP VĂN BẢN TRÌNH KÝ <span style="color:#dc2626;">*</span>
-                            </span>
-                            <span id="mraDocStatusBadge" class="badge" style="display:none; background:#10b981; color:#fff; font-size:11.5px; padding:4px 10px;">
-                                <i class="fa-solid fa-circle-check"></i> Đã sẵn sàng trình ký
-                            </span>
+                        <div class="gqx-field">
+                            <label class="form-label" for="mraDocDate">Ngày tháng văn bản<span class="gqx-req">*</span></label>
+                            <div class="gqx-date">
+                                <input type="text" id="mraDocDate" class="form-control" placeholder="dd/mm/yyyy" readonly>
+                                <i class="fa-regular fa-calendar-days" id="mraDocDateIcon" onclick="var i=document.getElementById('mraDocDate'); if(i._flatpickr) i._flatpickr.open();" title="Chọn ngày"></i>
+                            </div>
+                            <div id="mraDocDateError" class="gqx-err">Đây là trường bắt buộc</div>
                         </div>
+                    </div>
 
-                        <!-- Trạng thái chưa có tệp -->
-                        <div id="mraFileEmptyState">
-                            <p style="font-size:13px; color:#475569; margin:0 0 12px 0;">Mặc định, bạn có thể tải lên tệp văn bản từ máy tính hoặc kích hoạt hệ thống tự động sinh văn bản theo Mẫu 03/BTNN:</p>
-                            <input type="file" id="mraOnlineFileInput" style="display:none;" accept=".pdf,.doc,.docx" onchange="handleMraOnlineFileUpload(this)">
-                            <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-                                <button type="button" class="btn btn-secondary" onclick="document.getElementById('mraOnlineFileInput').click()" style="padding:7px 16px; font-size:13px;">
-                                    <i class="fa-solid fa-cloud-arrow-up"></i> Tải file
-                                </button>
-                                <button type="button" class="btn btn-primary" onclick="generateMau03Document()" style="padding:7px 18px; font-size:13px; background:#2563eb; border-color:#2563eb; box-shadow:0 2px 6px rgba(37,99,235,0.25);">
-                                    <i class="fa-solid fa-wand-magic-sparkles"></i> Tự động sinh văn bản Mẫu 03/BTNN
-                                </button>
+                    <!-- Ký số: Tệp văn bản trình ký (khối nổi bật) -->
+                    <div id="mraOnlineSection" class="gqx-docfile">
+                        <div class="gqx-docfile-head"><i class="fa-solid fa-file-signature"></i> Tệp văn bản trình ký<span class="gqx-req">*</span></div>
+                        <input type="file" id="mraOnlineFileInput" style="display:none;" accept=".pdf,.doc,.docx" onchange="handleMraOnlineFileUpload(this)">
+                        <div id="mraDocFileBox"></div>
+                        <div id="mraDocFileError" class="gqx-err">Đây là trường bắt buộc</div>
+                    </div>
+
+                    <!-- Ký ngoài: Tệp văn bản đã ký -->
+                    <div id="mraOfflineSection" class="gqx-docfile signed" style="display:none;">
+                        <div class="gqx-docfile-head"><i class="fa-solid fa-file-pdf"></i> Tệp văn bản PDF đã ký &amp; đóng dấu<span class="gqx-req">*</span></div>
+                        <input type="file" id="mraOfflineFileInput" style="display:none;" accept=".pdf" onchange="handleMraOfflineFileUpload(this)">
+                        <div id="mraOfflineUploadPrompt" class="gqx-file-empty">
+                            <div class="gqx-file-hint">Chỉ chấp nhận tệp .pdf (tối đa 25MB).</div>
+                            <div class="gqx-file-actions">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('mraOfflineFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>
                             </div>
                         </div>
-
-                        <!-- Trạng thái đã có tệp -->
-                        <div id="mraFileReadyState" style="display:none; background:#ffffff; border:1px solid #bfdbfe; border-radius:6px; padding:12px 16px; align-items:center; justify-content:space-between;">
-                            <div style="display:flex; align-items:center; gap:12px;">
-                                <i class="fa-solid fa-file-pdf" style="font-size:32px; color:#ef4444;"></i>
-                                <div>
-                                    <div id="mraFileName" style="font-weight:700; color:#1e293b; font-size:14px;">Mau_03_BTNN_Thong_bao_yeu_cau_bo_sung.pdf</div>
-                                    <div id="mraFileMeta" style="font-size:12px; color:#64748b; margin-top:2px;">142 KB • Hệ thống tự động sinh theo Mẫu 03/BTNN</div>
-                                </div>
-                            </div>
-                            <div style="display:flex; gap:8px; align-items:center;">
-                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="previewMau03InNewWindow()" title="Xem nội dung chi tiết">
-                                    <i class="fa-solid fa-eye"></i> Xem trước
-                                </button>
-                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="downloadMau03GeneratedFile()" title="Tải về máy tính">
-                                    <i class="fa-solid fa-download"></i> Tải về
-                                </button>
-                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeMraOnlineFile()" title="Xóa file">
-                                    <i class="fa-solid fa-trash"></i> Xóa
-                                </button>
-                            </div>
-                        </div>
-                        <div id="mraDocFileError" class="error-message" style="display:none; color:#dc2626; font-size:12px; margin-top:8px;">Vui lòng tải lên tệp văn bản hoặc nhấn "Tự động sinh văn bản Mẫu 03/BTNN"</div>
+                        <div id="mraOfflineFileList" style="margin-top:10px; display:none;"></div>
+                        <div id="mraOfflineFileError" class="gqx-err">Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu.</div>
+                        <div class="gqx-note"><i class="fa-solid fa-circle-info"></i> Văn bản ký ngoài được ban hành trực tiếp; hồ sơ chuyển trạng thái <strong>Yêu cầu bổ sung</strong> khi bấm <strong>Ban hành văn bản</strong>, không qua Lãnh đạo duyệt trên hệ thống.</div>
                     </div>
-
-                    <!-- Khối CHỌN THÔNG TIN LÃNH ĐẠO KÝ THEO CẤU HÌNH LUỒNG -->
-                    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:16px; margin-bottom:10px;">
-                        <div style="font-weight:700; color:#0f172a; margin-bottom:10px; font-size:13.5px; display:flex; align-items:center; gap:8px;">
-                            <i class="fa-solid fa-network-wired" style="color:#0284c7;"></i> Luồng phê duyệt & Ký số theo cấu hình đơn vị:
-                        </div>
-                        
-                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:14px; font-size:12px; background:#fff; padding:8px 12px; border-radius:6px; border:1px solid #e2e8f0;">
-                            <span style="background:#e0f2fe; color:#0369a1; padding:3px 8px; border-radius:4px; font-weight:600;"><i class="fa-solid fa-user-edit"></i> 1. Cán bộ thụ lý</span>
-                            <i class="fa-solid fa-arrow-right" style="color:#94a3b8; font-size:11px;"></i>
-                            <span style="background:#fef3c7; color:#92400e; padding:3px 8px; border-radius:4px; font-weight:600;"><i class="fa-solid fa-user-check"></i> 2. Lãnh đạo Phòng (Duyệt)</span>
-                            <i class="fa-solid fa-arrow-right" style="color:#94a3b8; font-size:11px;"></i>
-                            <span style="background:#dcfce7; color:#166534; padding:3px 8px; border-radius:4px; font-weight:600;"><i class="fa-solid fa-stamp"></i> 3. Lãnh đạo Đơn vị (Ký số)</span>
-                        </div>
-
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
-                            <div class="form-group" style="margin-bottom:0;">
-                                <label class="form-label" style="font-weight:600; font-size:13px; color:#334155; margin-bottom:6px; display:block;">
-                                    Lãnh đạo Phòng (Duyệt chuyển tiếp) <span style="color:#dc2626;">*</span>:
-                                </label>
-                                <select id="mraOfficerRoomSelect" class="form-control" style="font-size:13px;">
-                                    <option value="">-- Chọn Lãnh đạo Phòng duyệt --</option>
-                                    <option value="Trần Văn Hùng" selected>Trần Văn Hùng - Trưởng phòng Nghiệp vụ BTNN</option>
-                                    <option value="Nguyễn Thị Mai">Nguyễn Thị Mai - Phó Trưởng phòng Nghiệp vụ BTNN</option>
-                                </select>
-                                <div id="mraOfficerRoomError" class="error-message" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
-                                <small style="color:#64748b; font-size:11.5px; display:block; margin-top:4px;">* Ký chuyển duyệt hồ sơ, không yêu cầu chứng thư số.</small>
-                            </div>
-                            <div class="form-group" style="margin-bottom:0;">
-                                <label class="form-label" style="font-weight:600; font-size:13px; color:#334155; margin-bottom:6px; display:block;">
-                                    Lãnh đạo Đơn vị (Ký số & Ban hành) <span style="color:#dc2626;">*</span>:
-                                </label>
-                                <select id="mraOfficerAgencySelect" class="form-control" style="font-size:13px;">
-                                    <option value="">-- Chọn Lãnh đạo Đơn vị ký số --</option>
-                                    <option value="Lê Hoàng Nam" selected>Lê Hoàng Nam - Cục trưởng</option>
-                                    <option value="Vũ Thu Trang">Vũ Thu Trang - Phó Cục trưởng</option>
-                                </select>
-                                <div id="mraOfficerAgencyError" class="error-message" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
-                                <small style="color:#64748b; font-size:11.5px; display:block; margin-top:4px;">* Ký số điện tử bằng Token/SmartCA và đóng dấu ban hành.</small>
-                            </div>
-                        </div>
-                    </div>
-
+                    <!-- Lãnh đạo các cấp ký duyệt: chọn tại Bước 2 "Kéo ô ký & chọn Lãnh đạo" -->
                 </div>
 
             </div>
@@ -19358,40 +19250,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                             </div>
                         </div>
 
-                        <!-- DRAGGABLE & RESIZABLE SIGNATURE BOX 1: Lãnh đạo Phòng (Duyệt chuyển tiếp) -->
-                        <div id="mraSigBoxRoom" class="sig-drag-box" style="left:60px; top:860px; width:220px; height:90px; border:2px dashed #2563eb; background:rgba(239, 246, 255, 0.94); box-shadow:0 4px 12px rgba(37,99,235,0.18);">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size:10.5px; font-weight:700; color:#1e40af;"><i class="fa-solid fa-pen-nib"></i> KÝ DUYỆT (LĐ PHÒNG)</span>
-                                <span class="badge" style="background:#2563eb; color:#fff; font-size:9.5px; padding:1px 5px;">Cấp 1</span>
-                            </div>
-                            <div style="text-align:center; font-weight:700; color:#1e293b; font-size:12px;" id="mraSigBoxRoomOfficer">Trần Văn Hùng</div>
-                            <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;">
-                                <span>Chữ ký nháy / Ý kiến</span>
-                                <span id="mraCoordRoomLabel">X: 60, Y: 860</span>
-                            </div>
-                            <div class="sig-resize-handle" data-target="room" title="Kéo chuột để co giãn to/nhỏ khung chữ ký">
-                                <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
-                            </div>
-                        </div>
-
-                        <!-- DRAGGABLE & RESIZABLE SIGNATURE BOX 2: Lãnh đạo Đơn vị (Ký số & Đóng dấu) -->
-                        <div id="mraSigBoxAgency" class="sig-drag-box" style="left:480px; top:860px; width:245px; height:110px; border:2px dashed #dc2626; background:rgba(254, 242, 242, 0.94); box-shadow:0 4px 12px rgba(220,38,38,0.18);">
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size:10.5px; font-weight:700; color:#991b1b;"><i class="fa-solid fa-stamp"></i> KÝ SỐ & CON DẤU</span>
-                                <span class="badge" style="background:#dc2626; color:#fff; font-size:9.5px; padding:1px 5px;">Cấp 2 (Ký số CA)</span>
-                            </div>
-                            <div style="text-align:center; margin:3px 0;">
-                                <div style="font-weight:700; color:#1e293b; font-size:12.5px;" id="mraSigBoxAgencyOfficer">Lê Hoàng Nam</div>
-                                <div style="font-size:10.5px; color:#dc2626; font-style:italic;"><i class="fa-solid fa-certificate"></i> SmartCA / Token hợp lệ</div>
-                            </div>
-                            <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;">
-                                <span>Chữ ký số & Con dấu</span>
-                                <span id="mraCoordAgencyLabel">X: 480, Y: 860</span>
-                            </div>
-                            <div class="sig-resize-handle" data-target="agency" title="Kéo chuột để co giãn to/nhỏ khung chữ ký">
-                                <i class="fa-solid fa-up-right-and-down-left-from-center"></i>
-                            </div>
-                        </div>
+                        <!-- Ô ký của từng cấp chỉ sinh khi bấm "Đặt chữ ký" tại thẻ cấp tương ứng (gqSignPlace) -->
 
                     </div>
                 </div>
@@ -19405,77 +19264,13 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         <div style="font-size:12px; color:#64748b;">Kéo thẻ chữ ký vào vị trí và dùng góc dưới phải để kéo to/nhỏ khung chữ ký.</div>
                     </div>
 
-                    <!-- Tùy chọn Bật/Tắt Ký nháy Lãnh đạo Phòng -->
-                    <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:6px; padding:10px 12px;">
-                        <div style="display:flex; align-items:center; justify-content:space-between;">
-                            <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12.5px; font-weight:600; color:#1e40af; margin:0;">
-                                <input type="checkbox" id="mraEnableRoomSig" checked onchange="toggleRoomSigBox(this.checked)">
-                                <span>Áp dụng ký nháy LĐ Phòng</span>
-                            </label>
-                            <span id="mraRoomSigStatusBadge" class="badge" style="background:#2563eb; color:#fff; font-size:10.5px;">Áp dụng</span>
-                        </div>
-                        <div style="font-size:11px; color:#64748b; margin-top:4px; line-height:1.4;">Bỏ chọn nếu đơn vị không yêu cầu Lãnh đạo Phòng ký nháy trên văn bản.</div>
-                    </div>
-
-                    <!-- Danh sách chữ ký cần đặt -->
-                    <div style="display:flex; flex-direction:column; gap:12px;">
-                        
-                        <!-- Chữ ký 1: Lãnh đạo Phòng -->
-                        <div id="mraPanelRoomCard" style="background:#fff; border:1px solid #bfdbfe; border-radius:8px; padding:12px; box-shadow:0 1px 3px rgba(0,0,0,0.05); transition:opacity 0.2s;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                                <span style="font-size:12.5px; font-weight:700; color:#1e40af;"><i class="fa-solid fa-pen-nib"></i> Lãnh đạo Phòng</span>
-                                <span class="badge badge-success" style="font-size:10px; padding:2px 6px;"><i class="fa-solid fa-check"></i> Đã định vị</span>
-                            </div>
-                            <div style="font-size:12.5px; font-weight:600; color:#1e293b;" id="mraPanelRoomName">Trần Văn Hùng</div>
-                            <div style="font-size:11.5px; color:#64748b; margin-top:2px;">Vai trò: Ký duyệt chuyển tiếp</div>
-                            <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size:11px; color:#94a3b8;" id="mraPanelRoomCoord">Tọa độ: (60, 860)</span>
-                                <button type="button" class="btn btn-outline-primary btn-sm" style="font-size:11px; padding:2px 8px;" onclick="placeSigBox('room', 60, 920)">Đặt lại</button>
-                            </div>
-                            <div style="margin-top:6px; display:flex; align-items:center; justify-content:space-between; font-size:11px; color:#64748b; border-top:1px dashed #e2e8f0; padding-top:6px;">
-                                <span>Cỡ: <strong id="mraPanelRoomSize" style="color:#0f172a;">220 x 90 px</strong></span>
-                                <div style="display:flex; gap:4px;">
-                                    <button type="button" class="btn btn-outline-secondary btn-sm" style="font-size:10px; padding:1px 5px;" onclick="resizeSigBox('room', 180, 75)">Nhỏ</button>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm" style="font-size:10px; padding:1px 5px;" onclick="resizeSigBox('room', 220, 90)">Chuẩn</button>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm" style="font-size:10px; padding:1px 5px;" onclick="resizeSigBox('room', 280, 110)">Lớn</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Chữ ký 2: Lãnh đạo Đơn vị -->
-                        <div id="mraPanelAgencyCard" style="background:#fff; border:1px solid #fecaca; border-radius:8px; padding:12px; box-shadow:0 1px 3px rgba(0,0,0,0.05);">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                                <span style="font-size:12.5px; font-weight:700; color:#991b1b;"><i class="fa-solid fa-stamp"></i> Lãnh đạo Đơn vị</span>
-                                <span class="badge badge-success" style="font-size:10px; padding:2px 6px;"><i class="fa-solid fa-check"></i> Đã định vị</span>
-                            </div>
-                            <div style="font-size:12.5px; font-weight:600; color:#1e293b;" id="mraPanelAgencyName">Lê Hoàng Nam</div>
-                            <div style="font-size:11.5px; color:#dc2626; margin-top:2px; font-weight:500;">Vai trò: Ký số CA & Con dấu cơ quan</div>
-                            <div style="margin-top:8px; display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size:11px; color:#94a3b8;" id="mraPanelAgencyCoord">Tọa độ: (480, 860)</span>
-                                <button type="button" class="btn btn-outline-danger btn-sm" style="font-size:11px; padding:2px 8px;" onclick="placeSigBox('agency', 480, 920)">Đặt lại</button>
-                            </div>
-                            <div style="margin-top:6px; display:flex; align-items:center; justify-content:space-between; font-size:11px; color:#64748b; border-top:1px dashed #e2e8f0; padding-top:6px;">
-                                <span>Cỡ: <strong id="mraPanelAgencySize" style="color:#0f172a;">245 x 110 px</strong></span>
-                                <div style="display:flex; gap:4px;">
-                                    <button type="button" class="btn btn-outline-secondary btn-sm" style="font-size:10px; padding:1px 5px;" onclick="resizeSigBox('agency', 200, 85)">Nhỏ</button>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm" style="font-size:10px; padding:1px 5px;" onclick="resizeSigBox('agency', 245, 110)">Chuẩn</button>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm" style="font-size:10px; padding:1px 5px;" onclick="resizeSigBox('agency', 320, 130)">Lớn</button>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- Auto Place Button -->
-                    <button type="button" class="btn btn-outline-secondary" onclick="autoPlaceSignaturesStandard()" style="font-size:12.5px; padding:9px; display:flex; align-items:center; justify-content:center; gap:6px;">
-                        <i class="fa-solid fa-crosshairs" style="color:#2563eb;"></i> Tự động căn vị trí chuẩn Nghị định 30
-                    </button>
-
-                    <!-- User Guide -->
-                    <div style="margin-top:auto; background:#eff6ff; border:1px solid #bfdbfe; border-radius:6px; padding:12px; font-size:12px; color:#1e40af; line-height:1.5;">
-                        <strong style="display:block; margin-bottom:4px;"><i class="fa-solid fa-circle-question"></i> Hướng dẫn thao tác:</strong>
-                        • <strong>Di chuyển:</strong> Dùng chuột bấm giữ và kéo khung chữ ký màu xanh/đỏ đến vị trí mong muốn.<br>
-                        • <strong>Kéo to/nhỏ:</strong> Bấm giữ vào góc dưới bên phải của khung chữ ký để kéo dãn kích thước theo ý muốn.
+                    <!-- Các cấp ký duyệt theo luồng đã cấu hình tại Cấu hình luồng xử lý: Cấp [n] - [Đơn vị], chọn Lãnh đạo, Đặt chữ ký -->
+                    <div id="mraSignLevels" style="display:flex; flex-direction:column; gap:12px;"></div>
+                    <div style="font-size:11.5px; color:#64748b;">Bấm <strong>Đặt chữ ký</strong> để sinh ô ký của cấp đó trên văn bản; kéo ô để đặt vị trí, kéo góc dưới phải để đổi kích thước.</div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" for="mraSignContent" style="font-weight:600; font-size:13px; color:#334155; margin-bottom:6px; display:block;">Nội dung trình <span style="color:#dc2626;">*</span></label>
+                        <textarea id="mraSignContent" class="form-control" rows="4" style="font-size:13px;" placeholder="Nhập nội dung trình Lãnh đạo..." oninput="this.classList.remove('is-invalid'); var e=document.getElementById('mraSignContentErr'); if(e) e.style.display='none';"></textarea>
+                        <div id="mraSignContentErr" class="error-message" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
                     </div>
                 </div>
 
@@ -19488,19 +19283,19 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 </div>
                 <div style="display:flex; gap:10px;">
                     <!-- Step 1 Buttons for Offline -->
-                    <button id="mraBtnSubmitOffline" type="button" class="btn btn-primary" onclick="submitMraOffline()" style="display:none; background:#0284c7; border-color:#0284c7; font-weight:600; padding:8px 20px;">
+                    <button id="mraBtnSubmitOffline" type="button" class="btn btn-primary" onclick="submitMraOffline()" style="display:none; background:#16a34a; border-color:#16a34a; font-weight:600; padding:8px 20px;">
                         <i class="fa-solid fa-paper-plane"></i> Ban hành văn bản
                     </button>
                     <!-- Step 1 Button for Online -->
                     <button id="mraBtnNextStep" type="button" class="btn btn-primary" onclick="goToMraStep2()" style="background:#2563eb; border-color:#2563eb; font-weight:600; padding:8px 20px;">
-                        <i class="fa-solid fa-signature"></i> <span>Định vị chữ ký</span> <i class="fa-solid fa-arrow-right"></i>
+                        <span>Tiếp tục</span> <i class="fa-solid fa-arrow-right"></i>
                     </button>
                     <!-- Step 2 Buttons -->
                     <button id="mraBtnBackStep1" type="button" class="btn btn-secondary" onclick="goToMraStep1()" style="display:none;">
                         <i class="fa-solid fa-arrow-left"></i> Quay lại
                     </button>
                     <button id="mraBtnSubmitOnline" type="button" class="btn btn-primary" onclick="submitMraOnline()" style="display:none; background:#16a34a; border-color:#16a34a; box-shadow:0 2px 6px rgba(22,163,74,0.3);">
-                        <i class="fa-solid fa-paper-plane"></i> Hoàn tất & Trình Lãnh đạo
+                        <i class="fa-solid fa-paper-plane"></i> Trình Lãnh đạo
                     </button>
                 </div>
             </div>
@@ -19510,7 +19305,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
 
     <!-- Modal Không thụ lý hồ sơ (2-step Wizard: Mẫu 04/BTNN + Ký số / Ký ngoài) -->
     <div id="modalGqKtl" class="confirm-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(15, 23, 42, 0.65); backdrop-filter:blur(2px); z-index:9999; justify-content:center; align-items:center;">
-        <div id="modalGqKtlContainer" class="sticky-modal-container" style="background:#fff; width:850px; max-width:96%; border-radius:10px; display:flex; flex-direction:column; max-height:94vh; overflow:hidden; box-shadow:0 20px 45px rgba(0,0,0,0.3); transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+        <div id="modalGqKtlContainer" class="sticky-modal-container" style="background:#fff; width:1180px; max-width:96%; border-radius:10px; display:flex; flex-direction:column; max-height:94vh; overflow:hidden; box-shadow:0 20px 45px rgba(0,0,0,0.3); transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
             
             <!-- Modal Header -->
             <div class="confirm-modal-header" style="background:#f8fafc; border-bottom:1px solid var(--border-color); padding:18px 24px; display:flex; justify-content:space-between; align-items:flex-start; flex-shrink:0;">
@@ -19531,23 +19326,23 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             </div>
 
             <!-- Stepper Bar (Hiển thị khi ký số trên hệ thống) -->
-            <div id="ktlStepperBar" style="background:#f1f5f9; padding:8px 24px; border-bottom:1px solid #e2e8f0; display:flex; align-items:center; gap:16px; flex-shrink:0;">
+            <div id="ktlStepperBar" style="background:#f1f5f9; padding:10px 24px; border-bottom:1px solid #e2e8f0; display:flex; justify-content:center; align-items:center; gap:20px; flex-shrink:0;">
                 <div id="ktlStep1Tab" style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#2563eb; cursor:pointer;" onclick="goToKtlStep1()">
                     <span style="display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background:#2563eb; color:#fff; font-size:11px;">1</span>
-                    <span>1. Lý do không thụ lý & Luồng duyệt</span>
+                    <span>Nhập thông tin</span>
                 </div>
                 <i class="fa-solid fa-chevron-right" style="font-size:11px; color:#94a3b8;"></i>
                 <div id="ktlStep2Tab" style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:500; color:#64748b; cursor:pointer;" onclick="goToKtlStep2()">
                     <span id="ktlStep2Badge" style="display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background:#e2e8f0; color:#64748b; font-size:11px;">2</span>
-                    <span>2. Soát xét Mẫu 04/BTNN & Định vị chữ ký</span>
+                    <span>Kéo ô ký &amp; chọn Lãnh đạo</span>
                 </div>
             </div>
 
-            <!-- STEP 1 BODY -->
-            <div id="ktlStep1Body" class="sticky-modal-body" style="padding:22px 28px; overflow-y:auto; flex:1;">
-                
+            <!-- STEP 1 BODY: Thông tin không thụ lý / Hình thức ký / Thông tin văn bản -->
+            <div id="ktlStep1Body" class="sticky-modal-body gqx-body gqx-2col" style="overflow-y:auto; flex:1;">
+
                 <!-- Báo động hồ sơ bị Lãnh đạo trả về -->
-                <div id="ktlReturnedAlertBlock" style="display:none; background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:12px 16px; margin-bottom:18px;">
+                <div id="ktlReturnedAlertBlock" style="display:none; background:#fef2f2; border:1px solid #fecaca; border-left:4px solid #dc2626; border-radius:8px; padding:12px 16px; margin-bottom:14px;">
                     <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b91c1c; margin-bottom:4px;">
                         <i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TRẢ VỀ YÊU CẦU CHỈNH SỬA
                     </div>
@@ -19557,17 +19352,13 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     </div>
                 </div>
 
-                <!-- KHỐI 1: THÔNG TIN KHÔNG THỤ LÝ -->
-                <div style="font-weight:700; font-size:13.5px; color:#1e293b; text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
-                    <i class="fa-solid fa-file-circle-xmark" style="color:#dc2626;"></i> THÔNG TIN KHÔNG THỤ LÝ HỒ SƠ
-                </div>
-
-                <div class="row g-3">
-                    <!-- Lý do không thụ lý (Dropdown bắt buộc) -->
-                    <div class="col-12">
-                        <label class="form-label" style="font-weight:600; font-size:13px;">Lý do không thụ lý <span style="color:#dc2626;">*</span></label>
-                        <select id="ktlReason" class="form-select form-select-sm" style="font-size:13px;" onchange="handleKtlReasonChange()">
-                            <option value="">-- Chọn lý do không thụ lý (theo Điều 43 Luật TNBTCNN) --</option>
+                <!-- Khối 1: Thông tin không thụ lý -->
+                <div class="gqx-sec gqx-col-l">
+                    <div class="gqx-sec-title"><i class="fa-solid fa-file-circle-xmark"></i> Thông tin không thụ lý hồ sơ</div>
+                    <div class="gqx-field">
+                        <label class="form-label" for="ktlReason">Lý do không thụ lý<span class="gqx-req">*</span></label>
+                        <select id="ktlReason" class="form-control" onchange="handleKtlReasonChange()">
+                            <option value="">-- Chọn lý do không thụ lý --</option>
                             <option value="KTL_01">KTL_01 - Yêu cầu bồi thường không thuộc thẩm quyền giải quyết của mình (Điểm a Khoản 1 Điều 43)</option>
                             <option value="KTL_02">KTL_02 - Thời hiệu yêu cầu bồi thường đã hết (Điểm b Khoản 1 Điều 43)</option>
                             <option value="KTL_03">KTL_03 - Yêu cầu bồi thường không thuộc phạm vi trách nhiệm bồi thường của Nhà nước (Điểm c Khoản 1 Điều 43)</option>
@@ -19576,198 +19367,100 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                             <option value="KTL_06">KTL_06 - Yêu cầu bồi thường đã được Tòa án có thẩm quyền thụ lý theo thủ tục tố tụng dân sự (Điểm e Khoản 1 Điều 43)</option>
                             <option value="KTL_07">KTL_07 - Yêu cầu bồi thường đã được Tòa án có thẩm quyền chấp nhận (Điểm g Khoản 1 Điều 43)</option>
                         </select>
-                        <div id="ktlReasonErr" class="invalid-feedback" style="display:none; font-size:12px; color:#dc2626; margin-top:3px;">
-                            <i class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc
-                        </div>
+                        <div id="ktlReasonErr" class="gqx-err">Đây là trường bắt buộc</div>
                     </div>
-
-                    <!-- Diễn giải lý do (Không bắt buộc) -->
-                    <div class="col-12">
-                        <label class="form-label" style="font-weight:600; font-size:13px;">Diễn giải <span style="font-weight:normal; color:#64748b; font-size:12px;">(không bắt buộc)</span></label>
-                        <textarea id="ktlDetail" class="form-control form-control-sm" rows="3" style="font-size:13px;" placeholder="Nhập chi tiết căn cứ, lý do hoặc ghi chú bổ sung nếu có..."></textarea>
+                    <div class="gqx-field" style="margin-bottom:0;">
+                        <label class="form-label" for="ktlDetail">Diễn giải <span class="gqx-opt">(không bắt buộc)</span></label>
+                        <textarea id="ktlDetail" class="form-control" rows="3" placeholder="Nhập nội dung diễn giải (không bắt buộc)..."></textarea>
                     </div>
 
                     <!-- Khối Chuyển cơ quan tiếp nhận mới (Chỉ hiển thị khi chọn KTL_01) -->
-                    <div id="ktlTransferBlock" class="col-12" style="display:none;">
-                        <div style="background:#f0fdf4; border:1px solid #86efac; border-radius:8px; padding:16px;">
-                            <div style="font-size:13px; font-weight:700; color:#166534; display:flex; align-items:center; gap:8px; margin-bottom:12px;">
-                                <i class="fa-solid fa-right-left"></i> Chuyển cơ quan tiếp nhận mới (theo Điểm a Khoản 1 Điều 43)
+                    <div id="ktlTransferBlock" class="gqx-transfer" style="display:none;">
+                        <div class="gqx-transfer-title"><i class="fa-solid fa-right-left"></i> Chuyển cơ quan tiếp nhận mới</div>
+                        <!-- Container cho mountKtlTransfer từ workflow JS -->
+                        <div id="gqKtlModeBox"></div>
+                        <div class="gqx-field" style="margin-top:12px;">
+                            <label class="form-label" for="ktlTransferNote">Nội dung/Căn cứ chuyển</label>
+                            <textarea id="ktlTransferNote" class="form-control" rows="2" placeholder="Nhập căn cứ, nội dung chuyển hồ sơ..."></textarea>
+                        </div>
+                        <div class="gqx-field">
+                            <label class="form-label">Tài liệu đính kèm chuyển cơ quan</label>
+                            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                                <input type="file" id="ktlTransferFileInput" style="display:none;" multiple onchange="handleKtlTransferFileUpload(this)">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('ktlTransferFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>
+                                <span class="gqx-hint" style="margin-top:0;">Tối đa 10MB/tệp (PDF, DOCX, ZIP)</span>
                             </div>
-                            
-                            <!-- Container cho mountKtlTransfer từ workflow JS -->
-                            <div id="gqKtlModeBox"></div>
-                            
-                            <div style="margin-top:12px;">
-                                <label class="form-label" style="font-weight:600; font-size:12.5px;">Căn cứ / Nội dung chuyển</label>
-                                <textarea id="ktlTransferNote" class="form-control form-control-sm" rows="2" style="font-size:12.5px;" placeholder="Ghi chú căn cứ pháp lý chuyển hồ sơ..."></textarea>
-                            </div>
-
-                            <div style="margin-top:12px;">
-                                <label class="form-label" style="font-weight:600; font-size:12.5px;">Tài liệu đính kèm kèm theo phiếu chuyển</label>
-                                <div style="display:flex; align-items:center; gap:10px;">
-                                    <input type="file" id="ktlTransferFileInput" style="display:none;" multiple onchange="handleKtlTransferFileUpload(this)">
-                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('ktlTransferFileInput').click()">
-                                        <i class="fa-solid fa-paperclip"></i> Đính kèm tài liệu
-                                    </button>
-                                    <span style="font-size:12px; color:#64748b;">(Tối đa 10MB/tệp, định dạng: PDF, DOCX, ZIP)</span>
-                                </div>
-                                <div id="ktlTransferFileList" style="margin-top:8px; display:flex; flex-direction:column; gap:4px;"></div>
-                            </div>
+                            <div id="ktlTransferFileList" style="margin-top:8px; display:flex; flex-direction:column; gap:4px;"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- KHỐI 2: HÌNH THỨC KÝ BAN HÀNH VĂN BẢN -->
-                <div style="margin-top:24px; padding-top:18px; border-top:1px dashed #e2e8f0;">
-                    <div style="font-weight:700; font-size:13.5px; color:#1e293b; text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
-                        <i class="fa-solid fa-signature" style="color:var(--primary-color);"></i> HÌNH THỨC KÝ BAN HÀNH VĂN BẢN
-                    </div>
-
-                    <div style="display:flex; gap:20px; align-items:center; background:#f8fafc; padding:12px 18px; border-radius:8px; border:1px solid #e2e8f0;">
-                        <div class="form-check" style="margin-bottom:0;">
-                            <input class="form-check-input" type="radio" name="ktlSigningMethod" id="ktlSigningMethodOnline" value="online" checked onchange="toggleKtlSigningMethod('online')">
-                            <label class="form-check-label" for="ktlSigningMethodOnline" style="font-weight:600; font-size:13px; color:#1e293b; cursor:pointer;">
-                                <i class="fa-solid fa-file-signature" style="color:#2563eb; margin-right:4px;"></i> Ký số trên hệ thống (Trình duyệt & Ký số điện tử - 2 bước)
-                            </label>
-                        </div>
-                        <div class="form-check" style="margin-bottom:0;">
-                            <input class="form-check-input" type="radio" name="ktlSigningMethod" id="ktlSigningMethodOffline" value="offline" onchange="toggleKtlSigningMethod('offline')">
-                            <label class="form-check-label" for="ktlSigningMethodOffline" style="font-weight:600; font-size:13px; color:#1e293b; cursor:pointer;">
-                                <i class="fa-solid fa-upload" style="color:#0284c7; margin-right:4px;"></i> Ký ngoài (Tải lên file PDF đã ký & đóng dấu - 1 bước)
-                            </label>
-                        </div>
+                <!-- Khối 2: Hình thức ký -->
+                <div class="gqx-sec gqx-col-r">
+                    <div class="gqx-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="gqx-req">*</span></div>
+                    <div class="gqx-methods">
+                        <label class="gqx-method" for="ktlSigningMethodOnline">
+                            <input type="radio" name="ktlSigningMethod" id="ktlSigningMethodOnline" value="online" checked onchange="toggleKtlSigningMethod('online')">
+                            <span><b>Ký số trên hệ thống</b><small>Trình Lãnh đạo duyệt &amp; ký số (02 bước)</small></span>
+                        </label>
+                        <label class="gqx-method" for="ktlSigningMethodOffline">
+                            <input type="radio" name="ktlSigningMethod" id="ktlSigningMethodOffline" value="offline" onchange="toggleKtlSigningMethod('offline')">
+                            <span><b>Ký ngoài</b><small>Tải lên văn bản PDF đã ký &amp; đóng dấu (01 bước)</small></span>
+                        </label>
                     </div>
                 </div>
 
-                <!-- SECTION OFFLINE (KÝ NGOÀI) -->
-                <div id="ktlOfflineSection" style="display:none; margin-top:18px; background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:16px;">
-                    <div style="font-size:13px; font-weight:700; color:#0369a1; display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-                        <i class="fa-solid fa-file-circle-check"></i> Tải lên Thông báo không thụ lý đã ký & đóng dấu giấy/ngoài hệ thống
+                <!-- Khối 3: Thông tin văn bản -->
+                <div class="gqx-sec gqx-col-r">
+                    <div class="gqx-sec-title"><i class="fa-solid fa-file-lines"></i> Thông tin văn bản</div>
+                    <div id="ktlDocMetaGroup" class="gqx-grid2">
+                        <div class="gqx-field">
+                            <label class="form-label" for="ktlDocNumber">Số, ký hiệu văn bản<span class="gqx-req">*</span></label>
+                            <input type="text" id="ktlDocNumber" class="form-control" placeholder="VD: 28/TB-CBTNN" oninput="this.classList.remove('is-invalid'); document.getElementById('ktlDocNumberErr').style.display='none';">
+                            <div id="ktlDocNumberErr" class="gqx-err">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="gqx-field">
+                            <label class="form-label" for="ktlDocDate">Ngày tháng văn bản<span class="gqx-req">*</span></label>
+                            <div class="gqx-date">
+                                <input type="text" id="ktlDocDate" class="form-control" placeholder="dd/mm/yyyy" readonly>
+                                <i class="fa-regular fa-calendar-days" onclick="var i=document.getElementById('ktlDocDate'); if(i._flatpickr) i._flatpickr.open();" title="Chọn ngày"></i>
+                            </div>
+                            <div id="ktlDocDateErr" class="gqx-err">Đây là trường bắt buộc</div>
+                        </div>
                     </div>
-                    <div style="font-size:12.5px; color:#0c4a6e; line-height:1.5; margin-bottom:12px;">
-                        Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu hoàn thiện. Sau khi bấm <strong>"Hoàn thành"</strong>, hồ sơ sẽ được cập nhật trạng thái không thụ lý ngay lập tức mà không cần luồng duyệt ký số trên hệ thống.
+
+                    <!-- Ký số: Tệp văn bản trình ký (khối nổi bật) -->
+                    <div id="ktlOnlineSection" class="gqx-docfile">
+                        <div class="gqx-docfile-head"><i class="fa-solid fa-file-signature"></i> Tệp văn bản trình ký<span class="gqx-req">*</span></div>
+                        <input type="file" id="ktlOnlineFileInput" accept=".pdf,.doc,.docx" style="display:none;" onchange="handleKtlOnlineFileUpload(this)">
+                        <div id="ktlDocFileBox"></div>
+                        <div id="ktlDocFileError" class="gqx-err">Đây là trường bắt buộc</div>
                     </div>
-                    
-                    <div style="display:flex; align-items:center; gap:12px;">
+                    <!-- Lãnh đạo các cấp ký duyệt: chọn tại Bước 2 "Kéo ô ký & chọn Lãnh đạo" -->
+
+                    <!-- Ký ngoài: Tệp văn bản đã ký -->
+                    <div id="ktlOfflineSection" class="gqx-docfile signed" style="display:none;">
+                        <div class="gqx-docfile-head"><i class="fa-solid fa-file-pdf"></i> Tệp văn bản PDF đã ký &amp; đóng dấu<span class="gqx-req">*</span></div>
                         <input type="file" id="ktlOfflineFileInput" accept=".pdf" style="display:none;" onchange="handleKtlOfflineFileUpload(this)">
-                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="document.getElementById('ktlOfflineFileInput').click()">
-                            <i class="fa-solid fa-upload"></i> Chọn tệp PDF đã ký <span style="color:#dc2626;">*</span>
-                        </button>
-                    </div>
-
-                    <div id="ktlOfflineFileRow" style="display:none; margin-top:10px; background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:8px 14px; align-items:center; justify-content:space-between;">
-                        <div style="display:flex; align-items:center; gap:8px; font-size:13px;">
-                            <i class="fa-solid fa-file-pdf" style="color:#dc2626; font-size:16px;"></i>
-                            <span id="ktlOfflineFileName" style="font-weight:600; color:#1e293b;"></span>
-                            <span id="ktlOfflineFileSize" style="color:#64748b; font-size:12px;"></span>
-                        </div>
-                        <div style="display:flex; gap:10px;">
-                            <a id="ktlOfflineFileView" href="javascript:void(0)" onclick="previewKtlOfflineFile()" style="font-size:12.5px; color:#2563eb; text-decoration:none;"><i class="fa-solid fa-eye"></i> Xem file</a>
-                            <a href="javascript:void(0)" onclick="removeKtlOfflineFile()" style="font-size:12.5px; color:#dc2626; text-decoration:none;"><i class="fa-solid fa-trash-can"></i> Xóa</a>
-                        </div>
-                    </div>
-                    <div id="ktlOfflineFileErr" style="display:none; font-size:12px; color:#dc2626; margin-top:4px;">
-                        <i class="fa-solid fa-circle-exclamation"></i> Vui lòng tải lên tệp PDF thông báo đã ký
-                    </div>
-                </div>
-
-                <!-- SECTION ONLINE (KÝ SỐ TRÊN HỆ THỐNG) -->
-                <div id="ktlOnlineSection" style="margin-top:18px;">
-                    <!-- Văn bản trình ký (Mẫu 04/BTNN) -->
-                    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:14px 16px; margin-bottom:16px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <div style="font-size:13px; font-weight:700; color:#1e293b;">
-                                <i class="fa-solid fa-file-lines" style="color:#2563eb;"></i> Văn bản trình ký (Mẫu số 04/BTNN)
-                            </div>
-                            <div style="display:flex; gap:8px;">
-                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="generateMau04Document()" style="font-size:12px;">
-                                    <i class="fa-solid fa-wand-magic-sparkles"></i> Tạo lại văn bản Mẫu 04/BTNN
-                                </button>
-                                <input type="file" id="ktlOnlineFileInput" accept=".pdf" style="display:none;" onchange="handleKtlOnlineFileUpload(this)">
-                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="document.getElementById('ktlOnlineFileInput').click()" style="font-size:12px;">
-                                    <i class="fa-solid fa-upload"></i> Tải file khác từ máy tính
-                                </button>
+                        <div class="gqx-file-empty">
+                            <div class="gqx-file-hint">Chỉ chấp nhận tệp .pdf (tối đa 25MB).</div>
+                            <div class="gqx-file-actions">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('ktlOfflineFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>
                             </div>
                         </div>
-
-                        <!-- Card file Mẫu 04 -->
-                        <div id="ktlMau04FileRow" style="background:#fff; border:1px solid #cbd5e1; border-radius:6px; padding:10px 14px; display:flex; align-items:center; justify-content:space-between;">
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <span class="badge" style="background:#e0e7ff; color:#3730a3; font-size:11px; padding:4px 8px;">Mẫu 04/BTNN</span>
-                                <i class="fa-solid fa-file-pdf" style="color:#dc2626; font-size:18px;"></i>
-                                <div>
-                                    <div id="ktlMau04FileName" style="font-size:13px; font-weight:600; color:#1e293b;">Mau_04_BTNN_Thong_bao_khong_thu_ly.pdf</div>
-                                    <div id="ktlMau04FileSize" style="font-size:11.5px; color:#64748b;">PDF • Tự động tạo theo dữ liệu hồ sơ</div>
-                                </div>
+                        <div id="ktlOfflineFileRow" class="gqx-file-ready" style="display:none; margin-top:10px;">
+                            <i class="fa-solid fa-file-pdf gqx-file-ico" style="color:#dc2626;"></i>
+                            <div class="gqx-file-info">
+                                <div id="ktlOfflineFileName" class="gqx-file-name"></div>
+                                <div class="gqx-file-meta"><span id="ktlOfflineFileSize"></span></div>
                             </div>
-                            <div style="display:flex; gap:12px;">
-                                <a href="javascript:void(0)" onclick="goToKtlStep2()" style="font-size:12.5px; color:#2563eb; text-decoration:none;"><i class="fa-solid fa-magnifying-glass"></i> Xem trước & Định vị chữ ký</a>
-                                <a href="javascript:void(0)" onclick="downloadMau04Pdf()" style="font-size:12.5px; color:#475569; text-decoration:none;"><i class="fa-solid fa-download"></i> Tải về</a>
+                            <div class="gqx-file-btns">
+                                <button type="button" id="ktlOfflineFileView" class="btn btn-secondary btn-sm" onclick="previewKtlOfflineFile()"><i class="fa-solid fa-eye"></i> Xem</button>
+                                <button type="button" class="btn btn-secondary btn-sm gqx-danger" onclick="removeKtlOfflineFile()"><i class="fa-solid fa-trash"></i> Xóa</button>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Số văn bản & Ngày văn bản -->
-                    <div class="row g-3" style="margin-bottom:16px;">
-                        <div class="col-md-6">
-                            <label class="form-label" style="font-weight:600; font-size:13px;">Số ký hiệu văn bản <span style="color:#dc2626;">*</span></label>
-                            <input type="text" id="ktlDocNumber" class="form-control form-control-sm" style="font-size:13px;" placeholder="VD: 142/TB-CBTNN">
-                            <div id="ktlDocNumberErr" class="invalid-feedback" style="display:none; font-size:12px; color:#dc2626; margin-top:3px;">
-                                <i class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label" style="font-weight:600; font-size:13px;">Ngày ban hành văn bản <span style="color:#dc2626;">*</span></label>
-                            <div style="position:relative;">
-                                <input type="text" id="ktlDocDate" class="form-control form-control-sm" style="font-size:13px; background:#fff;" placeholder="dd/mm/yyyy" readonly>
-                                <span style="position:absolute; right:10px; top:50%; transform:translateY(-50%); color:#64748b; pointer-events:none;"><i class="fa-solid fa-calendar-days"></i></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Luồng phê duyệt (2 cấp) -->
-                    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:16px;">
-                        <div style="font-weight:700; font-size:13px; color:#1e293b; text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
-                            <i class="fa-solid fa-users" style="color:#2563eb;"></i> LUỒNG DUYỆT & KÝ BAN HÀNH (2 CẤP)
-                        </div>
-
-                        <div class="row g-3">
-                            <!-- Cấp 1: Lãnh đạo Phòng (Duyệt chuyển tiếp) -->
-                            <div class="col-md-6">
-                                <label class="form-label" style="font-weight:600; font-size:13px;">
-                                    1. Lãnh đạo Phòng (Duyệt chuyển tiếp) <span style="color:#dc2626;">*</span>
-                                </label>
-                                <select id="ktlOfficerRoomSelect" class="form-select form-select-sm" style="font-size:13px;" onchange="handleKtlOfficerChange()">
-                                    <option value="">-- Chọn Lãnh đạo Phòng duyệt --</option>
-                                    <option value="Trần Văn Hùng - Trưởng phòng Nghiệp vụ BTNN" data-name="Trần Văn Hùng" data-role="Trưởng phòng Nghiệp vụ BTNN" selected>Trần Văn Hùng - Trưởng phòng Nghiệp vụ BTNN</option>
-                                    <option value="Nguyễn Thị Mai - Phó Trưởng phòng Nghiệp vụ BTNN" data-name="Nguyễn Thị Mai" data-role="Phó Trưởng phòng Nghiệp vụ BTNN">Nguyễn Thị Mai - Phó Trưởng phòng Nghiệp vụ BTNN</option>
-                                </select>
-                                <div id="ktlOfficerRoomErr" class="invalid-feedback" style="display:none; font-size:12px; color:#dc2626; margin-top:3px;">
-                                    <i class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc
-                                </div>
-                                <div style="font-size:11.5px; color:#64748b; margin-top:3px;">
-                                    * Ký chuyển duyệt hồ sơ, không bắt buộc chứng thư số.
-                                </div>
-                            </div>
-
-                            <!-- Cấp 2: Lãnh đạo Đơn vị (Ký số CA) -->
-                            <div class="col-md-6">
-                                <label class="form-label" style="font-weight:600; font-size:13px;">
-                                    2. Lãnh đạo Đơn vị (Ký số & Ban hành) <span style="color:#dc2626;">*</span>
-                                </label>
-                                <select id="ktlOfficerAgencySelect" class="form-select form-select-sm" style="font-size:13px;" onchange="handleKtlOfficerChange()">
-                                    <option value="">-- Chọn Lãnh đạo Đơn vị ký số --</option>
-                                    <option value="Lê Hoàng Nam - Cục trưởng" data-name="Lê Hoàng Nam" data-role="Cục trưởng" selected>Lê Hoàng Nam - Cục trưởng</option>
-                                    <option value="Vũ Thu Trang - Phó Cục trưởng" data-name="Vũ Thu Trang" data-role="Phó Cục trưởng">Vũ Thu Trang - Phó Cục trưởng</option>
-                                </select>
-                                <div id="ktlOfficerAgencyErr" class="invalid-feedback" style="display:none; font-size:12px; color:#dc2626; margin-top:3px;">
-                                    <i class="fa-solid fa-circle-exclamation"></i> Đây là trường bắt buộc
-                                </div>
-                                <div style="font-size:11.5px; color:#64748b; margin-top:3px;">
-                                    * Ký số điện tử bằng Token/SmartCA và đóng dấu ban hành.
-                                </div>
-                            </div>
-                        </div>
+                        <div id="ktlOfflineFileErr" class="gqx-err">Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu.</div>
+                        <div class="gqx-note"><i class="fa-solid fa-circle-info"></i> Văn bản ký ngoài được ban hành trực tiếp; hồ sơ chuyển trạng thái <strong>Không thụ lý</strong> (hoặc <strong>Đã chuyển CQGQBT</strong> khi lý do KTL_01) khi bấm <strong>Ban hành văn bản</strong>, không qua Lãnh đạo duyệt trên hệ thống.</div>
                     </div>
                 </div>
 
@@ -19856,11 +19549,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                                     - Lưu: VT, Hồ sơ vụ việc.
                                 </div>
 
-                                <!-- Placeholder Drop Zone Ký nháy Lãnh đạo Phòng -->
-                                <div id="ktlDropZoneRoom" class="ktl-drop-zone" ondragover="handleKtlDragOver(event)" ondragleave="handleKtlDragLeave(event)" ondrop="handleKtlZoneDrop(event, 'room')">
-                                    <i class="fa-solid fa-pen-nib" style="color:#2563eb;"></i>
-                                    <span>Kéo thả chữ ký LĐ Phòng vào đây</span>
-                                </div>
+
                             </div>
 
                             <!-- Bên phải: Lãnh đạo Đơn vị Ký số & Đóng dấu -->
@@ -19868,53 +19557,14 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                                 <div id="ktlA4SignerTitle" style="font-weight:bold; font-size:13.5px; text-transform:uppercase;">CỤC TRƯỞNG</div>
                                 <div style="font-style:italic; font-size:12px; margin-top:2px;">(Ký, ghi rõ họ tên và đóng dấu)</div>
 
-                                <!-- Placeholder Drop Zone Ký số Lãnh đạo Đơn vị -->
-                                <div id="ktlDropZoneAgency" class="ktl-drop-zone" style="margin-top:14px; min-height:65px;" ondragover="handleKtlDragOver(event)" ondragleave="handleKtlDragLeave(event)" ondrop="handleKtlZoneDrop(event, 'agency')">
-                                    <i class="fa-solid fa-stamp" style="color:#dc2626; font-size:15px;"></i>
-                                    <span>Kéo thả chữ ký số LĐ Đơn vị vào đây</span>
-                                </div>
+                                <div style="height:60px;"></div>
 
                                 <div style="height:32px;"></div>
                                 <div id="ktlA4SignerName" style="font-weight:bold; font-size:14px; text-transform:uppercase; margin-top:8px;">LÊ HOÀNG NAM</div>
                             </div>
                         </div>
 
-                        <!-- DRAGGABLE SIGNATURE BOX 1: Lãnh đạo Phòng (Ban đầu ẩn display:none) -->
-                        <div id="ktlSigBoxRoom" class="sig-drag-box" style="display:none; left:60px; top:860px; width:220px; height:90px; border:2px dashed #2563eb; background:rgba(239, 246, 255, 0.95); box-shadow:0 4px 14px rgba(37,99,235,0.22); z-index:10;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #bfdbfe; padding-bottom:3px; margin-bottom:4px;">
-                                <span style="font-weight:700; font-size:10.5px; color:#1e40af; text-transform:uppercase;"><i class="fa-solid fa-pen-nib"></i> KÝ DUYỆT (LĐ PHÒNG)</span>
-                                <span class="badge" style="background:#dbeafe; color:#1e40af; font-size:9.5px; padding:2px 5px;">Cấp 1</span>
-                            </div>
-                            <div style="flex:1; display:flex; flex-direction:column; justify-content:center; text-align:center;">
-                                <div id="ktlSigBoxRoomOfficer" style="font-weight:700; font-size:12px; color:#1e293b;">Trần Văn Hùng</div>
-                                <div style="font-size:10px; color:#64748b; font-style:italic;">Chữ ký nháy / Ý kiến duyệt</div>
-                            </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; font-size:9.5px; color:#64748b; border-top:1px solid #e2e8f0; padding-top:2px;">
-                                <span id="ktlCoordRoomLabel">X: 60, Y: 860</span>
-                                <span onclick="removeKtlSigBox('room', event)" style="color:#dc2626; cursor:pointer;" title="Gỡ chữ ký khỏi văn bản"><i class="fa-solid fa-xmark"></i> Gỡ</span>
-                            </div>
-                            <!-- Resize handle -->
-                            <div class="sig-resize-handle" data-target="room"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>
-                        </div>
-
-                        <!-- DRAGGABLE SIGNATURE BOX 2: Lãnh đạo Đơn vị (Ban đầu ẩn display:none) -->
-                        <div id="ktlSigBoxAgency" class="sig-drag-box" style="display:none; left:480px; top:860px; width:245px; height:110px; border:2px dashed #dc2626; background:rgba(254, 242, 242, 0.95); box-shadow:0 4px 14px rgba(220,38,38,0.22); z-index:10;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #fecaca; padding-bottom:3px; margin-bottom:4px;">
-                                <span style="font-weight:700; font-size:10.5px; color:#991b1b; text-transform:uppercase;"><i class="fa-solid fa-stamp"></i> KÝ SỐ & CON DẤU</span>
-                                <span class="badge" style="background:#fee2e2; color:#991b1b; font-size:9.5px; padding:2px 5px;">Cấp 2 (Ký số CA)</span>
-                            </div>
-                            <div style="flex:1; display:flex; flex-direction:column; justify-content:center; text-align:center;">
-                                <div id="ktlSigBoxAgencyOfficer" style="font-weight:700; font-size:12.5px; color:#1e293b;">Lê Hoàng Nam</div>
-                                <div style="font-size:10.5px; color:#dc2626; font-style:italic;"><i class="fa-solid fa-certificate"></i> SmartCA / Token hợp lệ</div>
-                                <div style="font-size:10px; color:#64748b;">Chữ ký số & Con dấu cơ quan</div>
-                            </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; font-size:9.5px; color:#64748b; border-top:1px solid #e2e8f0; padding-top:2px;">
-                                <span id="ktlCoordAgencyLabel">X: 480, Y: 860</span>
-                                <span onclick="removeKtlSigBox('agency', event)" style="color:#dc2626; cursor:pointer;" title="Gỡ chữ ký khỏi văn bản"><i class="fa-solid fa-xmark"></i> Gỡ</span>
-                            </div>
-                            <!-- Resize handle -->
-                            <div class="sig-resize-handle" data-target="agency"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>
-                        </div>
+                        <!-- Ô ký của từng cấp chỉ sinh khi bấm "Đặt chữ ký" tại thẻ cấp tương ứng (gqSignPlace) -->
 
                     </div>
                 </div>
@@ -19927,109 +19577,17 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                             <i class="fa-solid fa-sliders" style="color:#2563eb;"></i> THIẾT LẬP VỊ TRÍ & CHỮ KÝ
                         </div>
                         <div style="font-size:12px; color:#64748b; margin-top:4px;">
-                            Bấm giữ thẻ bên dưới và kéo thả vào vị trí tương ứng trên văn bản A4.
+                            Kéo thẻ chữ ký vào vị trí và dùng góc dưới phải để kéo to/nhỏ khung chữ ký.
                         </div>
                     </div>
 
-                    <!-- Tùy chọn Ký nháy Lãnh đạo Phòng -->
-                    <div style="background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:12px 14px;">
-                        <div class="form-check form-switch" style="margin-bottom:0; display:flex; align-items:center; justify-content:space-between; padding-left:0;">
-                            <label class="form-check-label" for="ktlEnableRoomSig" style="font-size:12.5px; font-weight:600; color:#1e293b; cursor:pointer;">
-                                Áp dụng ký nháy LĐ Phòng
-                            </label>
-                            <input class="form-check-input" type="checkbox" id="ktlEnableRoomSig" checked onchange="toggleKtlEnableRoomSig(this.checked)" style="cursor:pointer; margin-left:10px;">
-                        </div>
-                        <div style="font-size:11px; color:#64748b; margin-top:4px;">
-                            Bỏ chọn nếu đơn vị không yêu cầu Lãnh đạo Phòng ký nháy trên văn bản.
-                        </div>
-                    </div>
-
-                    <!-- DRAGGABLE CARDS CONTAINER -->
-                    <div style="display:flex; flex-direction:column; gap:12px;">
-                        
-                        <!-- CARD 1: LÃNH ĐẠO PHÒNG -->
-                        <div id="ktlPanelRoomCard" class="draggable-sig-card" draggable="true" ondragstart="handleKtlCardDragStart(event, 'room')" style="background:#fff; border:1px solid #cbd5e1; border-left:4px solid #2563eb; border-radius:8px; padding:12px 14px; box-shadow:0 2px 6px rgba(0,0,0,0.04);">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                                <div style="font-weight:700; font-size:12.5px; color:#1e293b; display:flex; align-items:center; gap:6px;">
-                                    <i class="fa-solid fa-pen-nib" style="color:#2563eb;"></i> 1. Lãnh đạo Phòng
-                                </div>
-                                <span id="ktlStatusBadgeRoom" class="badge" style="background:#f1f5f9; color:#64748b; font-size:10px; padding:3px 7px;">
-                                    <i class="fa-solid fa-hand-pointer"></i> Chưa định vị
-                                </span>
-                            </div>
-                            <div id="ktlPanelRoomName" style="font-size:12.5px; font-weight:600; color:#1e293b;">Trần Văn Hùng</div>
-                            <div style="font-size:11.5px; color:#64748b;">Vai trò: Ký duyệt chuyển tiếp</div>
-
-                            <!-- Controls khi đã định vị -->
-                            <div id="ktlPanelRoomControls" style="display:none; margin-top:8px; padding-top:8px; border-top:1px dashed #e2e8f0;">
-                                <div style="display:flex; justify-content:space-between; align-items:center; font-size:11.5px; margin-bottom:6px;">
-                                    <span id="ktlPanelRoomCoord" style="color:#64748b; font-family:monospace;">Tọa độ: (60, 860)</span>
-                                    <button type="button" class="btn btn-link btn-sm p-0" onclick="removeKtlSigBox('room')" style="color:#dc2626; font-size:11.5px; text-decoration:none;">
-                                        <i class="fa-solid fa-xmark"></i> Gỡ vị trí
-                                    </button>
-                                </div>
-                                <div style="display:flex; align-items:center; gap:6px; font-size:11.5px;">
-                                    <span style="color:#64748b;">Kích thước:</span>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setKtlSigSize('room', 180, 75)" style="font-size:10.5px; padding:1px 6px;">Nhỏ</button>
-                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="setKtlSigSize('room', 220, 90)" style="font-size:10.5px; padding:1px 6px;">Chuẩn</button>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setKtlSigSize('room', 260, 105)" style="font-size:10.5px; padding:1px 6px;">Lớn</button>
-                                </div>
-                            </div>
-
-                            <div id="ktlDragHintRoom" style="font-size:11px; color:#2563eb; margin-top:6px; background:#eff6ff; padding:4px 8px; border-radius:4px; display:flex; align-items:center; gap:5px;">
-                                <i class="fa-solid fa-arrows-up-down-left-right"></i> Bấm giữ và kéo thả vào văn bản
-                            </div>
-                        </div>
-
-                        <!-- CARD 2: LÃNH ĐẠO ĐƠN VỊ -->
-                        <div id="ktlPanelAgencyCard" class="draggable-sig-card" draggable="true" ondragstart="handleKtlCardDragStart(event, 'agency')" style="background:#fff; border:1px solid #cbd5e1; border-left:4px solid #dc2626; border-radius:8px; padding:12px 14px; box-shadow:0 2px 6px rgba(0,0,0,0.04);">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                                <div style="font-weight:700; font-size:12.5px; color:#1e293b; display:flex; align-items:center; gap:6px;">
-                                    <i class="fa-solid fa-stamp" style="color:#dc2626;"></i> 2. Lãnh đạo Đơn vị <span style="color:#dc2626;">*</span>
-                                </div>
-                                <span id="ktlStatusBadgeAgency" class="badge" style="background:#f1f5f9; color:#64748b; font-size:10px; padding:3px 7px;">
-                                    <i class="fa-solid fa-hand-pointer"></i> Chưa định vị
-                                </span>
-                            </div>
-                            <div id="ktlPanelAgencyName" style="font-size:12.5px; font-weight:600; color:#1e293b;">Lê Hoàng Nam</div>
-                            <div style="font-size:11.5px; color:#dc2626;"><i class="fa-solid fa-certificate"></i> Ký số CA & Con dấu cơ quan</div>
-
-                            <!-- Controls khi đã định vị -->
-                            <div id="ktlPanelAgencyControls" style="display:none; margin-top:8px; padding-top:8px; border-top:1px dashed #e2e8f0;">
-                                <div style="display:flex; justify-content:space-between; align-items:center; font-size:11.5px; margin-bottom:6px;">
-                                    <span id="ktlPanelAgencyCoord" style="color:#64748b; font-family:monospace;">Tọa độ: (480, 860)</span>
-                                    <button type="button" class="btn btn-link btn-sm p-0" onclick="removeKtlSigBox('agency')" style="color:#dc2626; font-size:11.5px; text-decoration:none;">
-                                        <i class="fa-solid fa-xmark"></i> Gỡ vị trí
-                                    </button>
-                                </div>
-                                <div style="display:flex; align-items:center; gap:6px; font-size:11.5px;">
-                                    <span style="color:#64748b;">Kích thước:</span>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setKtlSigSize('agency', 200, 90)" style="font-size:10.5px; padding:1px 6px;">Nhỏ</button>
-                                    <button type="button" class="btn btn-outline-primary btn-sm" onclick="setKtlSigSize('agency', 245, 110)" style="font-size:10.5px; padding:1px 6px;">Chuẩn</button>
-                                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setKtlSigSize('agency', 290, 130)" style="font-size:10.5px; padding:1px 6px;">Lớn</button>
-                                </div>
-                            </div>
-
-                            <div id="ktlDragHintAgency" style="font-size:11px; color:#dc2626; margin-top:6px; background:#fef2f2; padding:4px 8px; border-radius:4px; display:flex; align-items:center; gap:5px;">
-                                <i class="fa-solid fa-arrows-up-down-left-right"></i> Bấm giữ và kéo thả vào văn bản
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- Nút Tự động căn vị trí chuẩn -->
-                    <button type="button" class="btn btn-outline-secondary btn-sm" onclick="autoPlaceKtlSignaturesStandard()" style="font-size:12px; padding:8px 12px; display:flex; align-items:center; justify-content:center; gap:8px;">
-                        <i class="fa-solid fa-crosshairs" style="color:#2563eb;"></i> Tự động căn vị trí chuẩn Nghị định 30
-                    </button>
-
-                    <!-- Hướng dẫn thao tác -->
-                    <div style="background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:12px 14px; font-size:11.5px; color:#475569; line-height:1.6;">
-                        <div style="font-weight:700; color:#1e293b; margin-bottom:4px;"><i class="fa-solid fa-circle-info" style="color:#0284c7;"></i> Hướng dẫn thao tác:</div>
-                        <ol style="margin-bottom:0; padding-left:18px;">
-                            <li><strong>Kéo thẻ:</strong> Bấm giữ thẻ chữ ký bên trên và kéo thả vào khung nhận trên văn bản A4.</li>
-                            <li><strong>Di chuyển:</strong> Bấm giữ khung chữ ký trên trang A4 để dịch chuyển tùy ý.</li>
-                            <li><strong>Co giãn:</strong> Kéo góc dưới phải của khung chữ ký hoặc bấm Nhỏ/Chuẩn/Lớn.</li>
-                        </ol>
+                    <!-- Các cấp ký duyệt theo luồng đã cấu hình tại Cấu hình luồng xử lý: Cấp [n] - [Đơn vị], chọn Lãnh đạo, Đặt chữ ký -->
+                    <div id="ktlSignLevels" style="display:flex; flex-direction:column; gap:12px;"></div>
+                    <div style="font-size:11.5px; color:#64748b;">Bấm <strong>Đặt chữ ký</strong> để sinh ô ký của cấp đó trên văn bản; kéo ô để đặt vị trí, kéo góc dưới phải để đổi kích thước.</div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label class="form-label" for="ktlSignContent" style="font-weight:600; font-size:13px; color:#334155; margin-bottom:6px; display:block;">Nội dung trình <span style="color:#dc2626;">*</span></label>
+                        <textarea id="ktlSignContent" class="form-control" rows="4" style="font-size:13px;" placeholder="Nhập nội dung trình Lãnh đạo..." oninput="this.classList.remove('is-invalid'); var e=document.getElementById('ktlSignContentErr'); if(e) e.style.display='none';"></textarea>
+                        <div id="ktlSignContentErr" class="error-message" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
                     </div>
 
                 </div>
@@ -20044,11 +19602,11 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 <div style="display:flex; gap:10px;">
                     <!-- Step 1 Offline: Hoàn thành -->
                     <button id="ktlBtnSubmitOffline" type="button" class="btn btn-primary" onclick="submitKtlOffline()" style="display:none; background:#16a34a; border-color:#16a34a; font-weight:600; padding:8px 20px;">
-                        <i class="fa-solid fa-check"></i> Hoàn thành
+                        <i class="fa-solid fa-paper-plane"></i> Ban hành văn bản
                     </button>
                     <!-- Step 1 Online: Định vị chữ ký -->
                     <button id="ktlBtnNextStep" type="button" class="btn btn-primary" onclick="goToKtlStep2()" style="background:#2563eb; border-color:#2563eb; font-weight:600; padding:8px 20px;">
-                        <i class="fa-solid fa-signature"></i> <span>Định vị chữ ký</span> <i class="fa-solid fa-arrow-right"></i>
+                        <span>Tiếp tục</span> <i class="fa-solid fa-arrow-right"></i>
                     </button>
                     <!-- Step 2 Online: Quay lại Step 1 -->
                     <button id="ktlBtnBackStep1" type="button" class="btn btn-secondary" onclick="goToKtlStep1()" style="display:none;">
@@ -20056,7 +19614,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     </button>
                     <!-- Step 2 Online: Hoàn tất & Trình Lãnh đạo -->
                     <button id="ktlBtnSubmitOnline" type="button" class="btn btn-primary" onclick="submitKtlOnline()" style="display:none; background:#16a34a; border-color:#16a34a; box-shadow:0 2px 6px rgba(22,163,74,0.3); font-weight:600; padding:8px 20px;">
-                        <i class="fa-solid fa-paper-plane"></i> Hoàn tất & Trình Lãnh đạo
+                        <i class="fa-solid fa-paper-plane"></i> Trình Lãnh đạo
                     </button>
                 </div>
             </div>
@@ -21561,13 +21119,13 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 <td style="text-align:center; vertical-align:top;"><b>THỦ TRƯỞNG CƠ QUAN</b><br><i>(Ký, ghi rõ họ tên, đóng dấu)</i></td></tr></table>`;
         }
         // Mẫu số 03/BTNN - Thông báo yêu cầu bổ sung hồ sơ yêu cầu bồi thường
-        function gqBuildMau03(claim, content) {
+        function gqBuildMau03(claim, content, hdr) {
             const p = gqDocParts(claim);
             const items = String(content || '').split(/\r?\n/).map(s => s.trim().replace(/^(\d+[.)]|-|\+)\s*/, '')).filter(Boolean);
             const list = items.length
                 ? items.map((it, i) => `<p style="${GQ_P}">${items.length > 1 ? (i + 1) + '. ' : ''}${gqE(it)}</p>`).join('')
                 : `<p style="${GQ_P} font-style:italic; color:#666;">................................................</p>`;
-            return p.W.docHeaderHtml(p.unitId, GQ_FORM_03, 'TB') + `
+            return p.W.docHeaderHtml(p.unitId, GQ_FORM_03, 'TB', hdr) + `
                 <p style="text-align:center; margin:18pt 0 6pt;"><b>THÔNG BÁO</b><br><b>Về việc yêu cầu bổ sung hồ sơ yêu cầu bồi thường</b></p>
                 <p style="margin:6pt 0;">Kính gửi: Ông/Bà ${gqE(getClaimRequesterName(claim))}</p>
                 <p style="margin:6pt 0;">Địa chỉ: ${gqE(p.address)}</p>
@@ -21580,7 +21138,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         }
         // Mẫu số 04/BTNN - Thông báo không thụ lý hồ sơ yêu cầu bồi thường (đoạn (7) theo Bảng mapping mục 3.2)
         // transfer (lý do KTL_01): { targetUnitId, mode: BTP | STP | CQ }; dữ liệu cũ truyền mã đơn vị -> Chuyển trực tiếp
-        function gqBuildMau04(claim, reason, detail, transfer) {
+        function gqBuildMau04(claim, reason, detail, transfer, hdr) {
             const p = gqDocParts(claim);
             const t = typeof transfer === 'string' ? (transfer ? { targetUnitId: transfer, mode: 'CQ' } : null) : transfer;
             const target = t && t.targetUnitId ? p.W.unitName(t.targetUnitId) : '';
@@ -21594,7 +21152,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const doan2 = target
                 ? gqE(p.W.ktlTransferSentence(p.issuer, t.targetUnitId, t.mode))
                 : `Do vậy, ${gqE(p.issuer)} trả lại hồ sơ yêu cầu bồi thường (gửi kèm Thông báo này) và thông báo để Ông/Bà được biết.`;
-            return p.W.docHeaderHtml(p.unitId, GQ_FORM_04, 'TB') + `
+            return p.W.docHeaderHtml(p.unitId, GQ_FORM_04, 'TB', hdr) + `
                 <p style="text-align:center; margin:18pt 0 6pt;"><b>THÔNG BÁO</b><br><b>Về việc không thụ lý hồ sơ yêu cầu bồi thường</b></p>
                 <p style="margin:6pt 0;">Kính gửi: Ông/Bà ${gqE(getClaimRequesterName(claim))}</p>
                 <p style="margin:6pt 0;">Địa chỉ: ${gqE(p.address)}</p>
@@ -21708,6 +21266,225 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         let mraDragTarget = null;
         let mraDragOffset = { x: 0, y: 0 };
 
+        // ---------- Bước 2 "Kéo ô ký & chọn Lãnh đạo" dùng chung: popup Yêu cầu bổ sung (mra) / Không thụ lý (ktl) ----------
+        // Các cấp ký duyệt theo luồng đã cấu hình tại Cấu hình luồng xử lý (số cấp theo cấu hình); mỗi cấp 01 thẻ "Cấp [n] - [Đơn vị]"
+        // có ô chọn Lãnh đạo; cấp cuối Ký số & con dấu, các cấp trước Ký nháy. Ô ký của cấp chỉ sinh khi bấm "Đặt chữ ký".
+        const gqSignState = {};
+        const GQ_SIGN_SIZES = { nhay: [[180, 75], [220, 90], [280, 110]], so: [[200, 85], [245, 110], [320, 130]] };
+        function gqSignLevels(claim) {
+            const W = gqW();
+            try {
+                if (W && claim) {
+                    const like = gqRecLike(claim);
+                    const ft = W.flowTypeOf(like);
+                    const path = W.computeApprovalPath(like) || [];
+                    if (path.length) return path.map(u => ({ unitId: u, unit: W.unitName(u), leaders: (W.getLeaders(u, ft) || []).map(id => ({ id, label: W.userLabel(id) })) }));
+                }
+            } catch (e) { }
+            return [
+                { unitId: '', unit: 'Phòng Nghiệp vụ BTNN', leaders: [{ id: 'Trần Văn Hùng', label: 'Trần Văn Hùng - Trưởng phòng' }, { id: 'Nguyễn Thị Mai', label: 'Nguyễn Thị Mai - Phó Trưởng phòng' }] },
+                { unitId: '', unit: 'Cơ quan giải quyết bồi thường', leaders: [{ id: 'Lê Hoàng Nam', label: 'Lê Hoàng Nam - Cục trưởng' }, { id: 'Vũ Thu Trang', label: 'Vũ Thu Trang - Phó Cục trưởng' }] }
+            ];
+        }
+        function gqSignIsLast(st, i) { return i === st.levels.length - 1; }
+        function gqSignDefault(st, i) {
+            const last = gqSignIsLast(st, i);
+            const sz = GQ_SIGN_SIZES[last ? 'so' : 'nhay'][1];
+            return last ? { x: 480, y: 860, w: sz[0], h: sz[1] } : { x: 60, y: Math.max(560, 860 - i * 100), w: sz[0], h: sz[1] };
+        }
+        function gqSignCardHtml(prefix, lv, i, n, prevId) {
+            const last = i === n - 1;
+            const color = last ? '#b91c1c' : '#1d4ed8';
+            const sz = GQ_SIGN_SIZES[last ? 'so' : 'nhay'];
+            const ids = lv.leaders.map(l => l.id);
+            const sel = prevId && ids.includes(prevId) ? prevId : (ids[0] || '');
+            const opts = lv.leaders.map(l => `<option value="${gqE(l.id)}" ${l.id === sel ? 'selected' : ''}>${gqE(l.label)}</option>`).join('');
+            const mini = 'font-size:10px; padding:1px 6px;';
+            return `<div id="${prefix}SignCard${i}" style="background:#fff; border:1px solid ${last ? '#fecaca' : '#bfdbfe'}; border-left:4px solid ${color}; border-radius:8px; padding:12px;">
+                <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px;">
+                    <span style="font-size:12.5px; font-weight:700; color:${color};">Cấp ${i + 1} - ${gqE(lv.unit)}</span>
+                    <span class="badge" style="background:${last ? '#fee2e2' : '#dbeafe'}; color:${last ? '#991b1b' : '#1e40af'}; font-size:10.5px; white-space:nowrap;">${last ? 'Ký số &amp; con dấu' : 'Ký nháy'}</span>
+                </div>
+                <div class="form-group" style="margin-bottom:8px;">
+                    <select id="${prefix}SignLeader${i}" class="form-control" style="font-size:13px;" onchange="this.classList.remove('is-invalid'); var e=document.getElementById('${prefix}SignLeader${i}Err'); if(e) e.style.display='none'; gqSignSyncNames('${prefix}')" ${lv.leaders.length ? '' : 'disabled'}><option value="">${lv.leaders.length ? '-- Chọn Lãnh đạo --' : 'Cấp này chưa cấu hình nhóm lãnh đạo'}</option>${opts}</select>
+                    <div id="${prefix}SignLeader${i}Err" class="error-message" style="display:none; color:#dc2626; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
+                </div>
+                ${i === 0 && !last ? `<label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12.5px; color:#1e40af; margin:0 0 6px 0;"><input type="checkbox" id="${prefix}SignNhay" checked onchange="gqSignToggleNhay('${prefix}', this.checked)"><span>Áp dụng ký nháy Lãnh đạo cấp 1</span></label>` : ''}
+                <button type="button" class="btn btn-secondary btn-sm" id="${prefix}SignPlace${i}" onclick="gqSignPlace('${prefix}', ${i})" style="font-size:12px;"><i class="fa-solid fa-signature"></i> Đặt chữ ký</button>
+                <div id="${prefix}SignCtrls${i}" style="display:none;">
+                    <div style="font-size:11px; color:#94a3b8; margin-bottom:6px;" id="${prefix}SignCoord${i}"></div>
+                    <div style="display:flex; gap:4px; align-items:center; flex-wrap:wrap;">
+                        <button type="button" class="btn btn-secondary btn-sm" style="${mini}" onclick="gqSignResize('${prefix}', ${i}, ${sz[0][0]}, ${sz[0][1]})">Nhỏ</button>
+                        <button type="button" class="btn btn-secondary btn-sm" style="${mini}" onclick="gqSignResize('${prefix}', ${i}, ${sz[1][0]}, ${sz[1][1]})">Vừa</button>
+                        <button type="button" class="btn btn-secondary btn-sm" style="${mini}" onclick="gqSignResize('${prefix}', ${i}, ${sz[2][0]}, ${sz[2][1]})">Lớn</button>
+                        <button type="button" class="btn btn-secondary btn-sm" style="${mini}" onclick="gqSignReset('${prefix}', ${i})"><i class="fa-solid fa-rotate-left"></i> Đặt lại</button>
+                    </div>
+                </div>
+            </div>`;
+        }
+        // Mở popup: dựng các thẻ cấp ký, xóa ô ký cũ trên văn bản (chưa có ô ký nào cho tới khi bấm Đặt chữ ký)
+        function gqSignInit(prefix, claim, prevAssignees) {
+            const levels = gqSignLevels(claim);
+            const st = gqSignState[prefix] = { levels, placed: {}, coords: {}, enableNhay: true };
+            levels.forEach((lv, i) => { st.coords[i] = gqSignDefault(st, i); });
+            const prev = Array.isArray(prevAssignees) ? prevAssignees : [];
+            const host = document.getElementById(prefix + 'SignLevels');
+            if (host) host.innerHTML = levels.map((lv, i) => gqSignCardHtml(prefix, lv, i, levels.length, prev[i])).join('');
+            const page = document.getElementById(prefix + 'A4Page');
+            if (page) page.querySelectorAll('.gq-sign-box').forEach(b => b.remove());
+            const ct = document.getElementById(prefix + 'SignContent');
+            if (ct) ct.classList.remove('is-invalid');
+            const ce = document.getElementById(prefix + 'SignContentErr');
+            if (ce) ce.style.display = 'none';
+            gqSignRefresh(prefix);
+        }
+        function gqSignEnsureBox(prefix, i) {
+            const page = document.getElementById(prefix + 'A4Page');
+            const st = gqSignState[prefix];
+            if (!page || !st) return null;
+            let box = document.getElementById(prefix + 'SignBox' + i);
+            if (box) return box;
+            const last = gqSignIsLast(st, i);
+            box = document.createElement('div');
+            box.id = prefix + 'SignBox' + i;
+            box.className = 'sig-drag-box gq-sign-box';
+            box.style.cssText = last
+                ? 'border:2px dashed #dc2626; background:rgba(254,242,242,0.94); box-shadow:0 4px 12px rgba(220,38,38,0.18); z-index:10;'
+                : 'border:2px dashed #2563eb; background:rgba(239,246,255,0.94); box-shadow:0 4px 12px rgba(37,99,235,0.18); z-index:10;';
+            box.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-size:10.5px; font-weight:700; color:${last ? '#991b1b' : '#1e40af'};"><i class="fa-solid ${last ? 'fa-stamp' : 'fa-pen-nib'}"></i> ${last ? 'KÝ SỐ &amp; CON DẤU' : 'KÝ NHÁY'}</span><span class="badge" style="background:${last ? '#dc2626' : '#2563eb'}; color:#fff; font-size:9.5px; padding:1px 5px;">Cấp ${i + 1}</span></div>
+                <div style="text-align:center; font-weight:700; color:#1e293b; font-size:12px;" id="${prefix}SignBoxName${i}"></div>
+                <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748b;"><span>${last ? 'Chữ ký số &amp; Con dấu' : 'Chữ ký nháy'}</span><span id="${prefix}SignBoxXY${i}"></span></div>
+                <div class="sig-resize-handle" title="Kéo chuột để co giãn khung chữ ký"><i class="fa-solid fa-up-right-and-down-left-from-center"></i></div>`;
+            page.appendChild(box);
+            box.addEventListener('mousedown', function (e) {
+                if (e.button !== 0) return;
+                e.preventDefault(); e.stopPropagation();
+                const c = gqSignState[prefix].coords[i];
+                const resize = !!(e.target.closest && e.target.closest('.sig-resize-handle'));
+                const sx = e.clientX, sy = e.clientY, ox = c.x, oy = c.y, ow = c.w, oh = c.h;
+                box.classList.add('dragging');
+                const move = ev => {
+                    if (resize) { c.w = Math.max(140, Math.round(ow + ev.clientX - sx)); c.h = Math.max(55, Math.round(oh + ev.clientY - sy)); }
+                    else {
+                        c.x = Math.max(0, Math.min(Math.round(ox + ev.clientX - sx), page.clientWidth - c.w));
+                        c.y = Math.max(0, Math.min(Math.round(oy + ev.clientY - sy), page.clientHeight - c.h));
+                    }
+                    gqSignApply(prefix, i);
+                };
+                const up = () => { box.classList.remove('dragging'); document.removeEventListener('mousemove', move); document.removeEventListener('mouseup', up); };
+                document.addEventListener('mousemove', move);
+                document.addEventListener('mouseup', up);
+            });
+            return box;
+        }
+        function gqSignApply(prefix, i) {
+            const st = gqSignState[prefix];
+            if (!st || !st.coords[i]) return;
+            const c = st.coords[i];
+            const box = document.getElementById(prefix + 'SignBox' + i);
+            if (box) { box.style.left = c.x + 'px'; box.style.top = c.y + 'px'; box.style.width = c.w + 'px'; box.style.height = c.h + 'px'; }
+            const xy = document.getElementById(prefix + 'SignBoxXY' + i);
+            if (xy) xy.textContent = `X: ${c.x}, Y: ${c.y}`;
+            const pn = document.getElementById(prefix + 'SignCoord' + i);
+            if (pn) pn.textContent = `Trang 1 • Tọa độ: (${c.x}, ${c.y}) • Cỡ: ${c.w} x ${c.h} px`;
+        }
+        function gqSignRefresh(prefix) {
+            const st = gqSignState[prefix];
+            if (!st) return;
+            st.levels.forEach((lv, i) => {
+                const nhayOff = i === 0 && st.levels.length > 1 && !st.enableNhay;
+                const on = !!st.placed[i] && !nhayOff;
+                let box = document.getElementById(prefix + 'SignBox' + i);
+                if (on && !box) box = gqSignEnsureBox(prefix, i);
+                if (box) box.style.display = on ? 'flex' : 'none';
+                const ctr = document.getElementById(prefix + 'SignCtrls' + i);
+                if (ctr) ctr.style.display = on ? 'block' : 'none';
+                const btn = document.getElementById(prefix + 'SignPlace' + i);
+                if (btn) btn.style.display = (on || nhayOff) ? 'none' : '';
+                if (on) gqSignApply(prefix, i);
+            });
+            gqSignSyncNames(prefix);
+        }
+        function gqSignPlace(prefix, i) {
+            const st = gqSignState[prefix];
+            if (!st) return;
+            st.placed[i] = true;
+            gqSignRefresh(prefix);
+            const box = document.getElementById(prefix + 'SignBox' + i);
+            if (box && box.scrollIntoView) box.scrollIntoView({ block: 'center' });
+        }
+        function gqSignResize(prefix, i, w, h) {
+            const st = gqSignState[prefix];
+            if (!st || !st.coords[i]) return;
+            st.coords[i].w = w; st.coords[i].h = h;
+            gqSignApply(prefix, i);
+        }
+        function gqSignReset(prefix, i) {
+            const st = gqSignState[prefix];
+            if (!st) return;
+            st.coords[i] = gqSignDefault(st, i);
+            gqSignApply(prefix, i);
+        }
+        function gqSignToggleNhay(prefix, on) {
+            const st = gqSignState[prefix];
+            if (!st) return;
+            st.enableNhay = !!on;
+            gqSignRefresh(prefix);
+        }
+        function gqSignLeaderText(prefix, i) {
+            const s = document.getElementById(prefix + 'SignLeader' + i);
+            return s && s.value && s.selectedIndex >= 0 ? s.options[s.selectedIndex].text : '';
+        }
+        // Tên Lãnh đạo đã chọn hiển thị trên ô ký; Lãnh đạo cấp cuối hiển thị tại dòng ký của văn bản
+        function gqSignSyncNames(prefix) {
+            const st = gqSignState[prefix];
+            if (!st) return;
+            st.levels.forEach((lv, i) => {
+                const el = document.getElementById(prefix + 'SignBoxName' + i);
+                if (el) el.textContent = gqSignLeaderText(prefix, i).split(' - ')[0].trim() || ('Cấp ' + (i + 1));
+            });
+            const t = gqSignLeaderText(prefix, st.levels.length - 1);
+            const parts = t.split(' - ');
+            const nm = document.getElementById(prefix + 'A4SignerName');
+            if (nm) nm.textContent = (parts[0] || '').trim().toUpperCase();
+            const tt = document.getElementById(prefix + 'A4SignerTitle');
+            if (tt && parts[1]) tt.textContent = parts.slice(1).join(' - ').trim().toUpperCase();
+        }
+        // Trình: Lãnh đạo từng cấp (bắt buộc với cấp đã cấu hình nhóm lãnh đạo) và Nội dung trình (bắt buộc)
+        function gqSignCollect(prefix) {
+            const st = gqSignState[prefix];
+            if (!st) return null;
+            let first = null;
+            const assignees = st.levels.map((lv, i) => {
+                const s = document.getElementById(prefix + 'SignLeader' + i);
+                const v = s ? s.value : '';
+                const bad = lv.leaders.length > 0 && !v;
+                if (s) s.classList.toggle('is-invalid', bad);
+                const er = document.getElementById(prefix + 'SignLeader' + i + 'Err');
+                if (er) er.style.display = bad ? 'block' : 'none';
+                if (bad && !first) first = s;
+                return v;
+            });
+            const ct = document.getElementById(prefix + 'SignContent');
+            const content = ct ? ct.value.trim() : '';
+            if (ct) ct.classList.toggle('is-invalid', !content);
+            const ce = document.getElementById(prefix + 'SignContentErr');
+            if (ce) ce.style.display = content ? 'none' : 'block';
+            if (!content && !first) first = ct;
+            if (first) {
+                if (first.focus) first.focus();
+                showToast('Vui lòng nhập đầy đủ các trường bắt buộc.', 'warning');
+                return null;
+            }
+            const coords = st.levels.map((lv, i) => Object.assign({ level: i + 1, unitId: lv.unitId, placed: !!st.placed[i] && !(i === 0 && st.levels.length > 1 && !st.enableNhay) }, st.coords[i]));
+            return { assignees, content, enableNhay: st.enableNhay, coords };
+        }
+        window.gqSignPlace = gqSignPlace;
+        window.gqSignResize = gqSignResize;
+        window.gqSignReset = gqSignReset;
+        window.gqSignToggleNhay = gqSignToggleNhay;
+        window.gqSignSyncNames = gqSignSyncNames;
+
         function openGqSupplementModal(claimId) {
             openRequireAdditionModal(claimId);
         }
@@ -21744,7 +21521,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             // Set claim info
             const codeEl = document.getElementById('mraClaimCode');
             const nycEl = document.getElementById('mraClaimNYC');
-            if (codeEl) codeEl.innerText = claim.code || '--';
+            if (codeEl) codeEl.innerText = (typeof claimVvCode === 'function' ? claimVvCode(claim) : '') || claim.code || '--';
             if (nycEl) nycEl.innerText = claim.nyc || '--';
 
             // Dates & Docs
@@ -21773,13 +21550,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const offFileErr = document.getElementById('mraOfflineFileError');
             if (offFileErr) offFileErr.style.display = 'none';
 
-            // Reset File Ready state
-            const fEmpty = document.getElementById('mraFileEmptyState');
-            const fReady = document.getElementById('mraFileReadyState');
-            const fBadge = document.getElementById('mraDocStatusBadge');
-            if (fEmpty) fEmpty.style.display = 'block';
-            if (fReady) fReady.style.display = 'none';
-            if (fBadge) fBadge.style.display = 'none';
+            // Khối Tệp văn bản trình ký: mặc định Tải file + Tạo văn bản theo Mẫu 03/BTNN
+            gqxRenderDocFile('mra');
+            if (typeof flatpickr !== 'undefined' && docDateEl) flatpickr(docDateEl, { dateFormat: 'd/m/Y', allowInput: true, defaultDate: docDateEl.value || new Date() });
 
             const offList = document.getElementById('mraOfflineFileList');
             if (offList) {
@@ -21791,6 +21564,13 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const radioOnline = document.querySelector('input[name="mraSigningMethod"][value="online"]');
             if (radioOnline) radioOnline.checked = true;
             toggleSigningMethod('online');
+
+            // Bước 2: các cấp ký theo luồng đã cấu hình; ô ký chỉ sinh khi bấm Đặt chữ ký
+            const mraRec = typeof gqRecord === 'function' ? gqRecord(claim) : null;
+            const mraPrev = mraRec && mraRec.status === 'Bị trả lại' && mraRec.approval && mraRec.approval.kind === 'Yêu cầu bổ sung' ? mraRec.approval.assignees : null;
+            const mraContentEl = document.getElementById('mraSignContent');
+            if (mraContentEl) mraContentEl.value = 'Kính trình Lãnh đạo xem xét, phê duyệt văn bản Thông báo yêu cầu bổ sung hồ sơ yêu cầu bồi thường.';
+            gqSignInit('mra', claim, mraPrev);
 
             // Reset step to 1
             goToMraStep1();
@@ -21819,6 +21599,10 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
 
         function toggleSigningMethod(method) {
             const isOnline = (method === 'online');
+            // Ký ngoài: chỉ tải lên tệp PDF đã ký, không nhập Số, ký hiệu văn bản và Ngày tháng văn bản
+            const metaGroup = document.getElementById('mraDocMetaGroup'); if (metaGroup) metaGroup.style.display = isOnline ? '' : 'none';
+            ['mraDocNumber', 'mraDocDate'].forEach(id => { const el = document.getElementById(id); if (el && !isOnline) el.classList.remove('is-invalid'); });
+            if (!isOnline) ['mraDocNumberError', 'mraDocDateError'].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = 'none'; });
             const stepperBar = document.getElementById('mraStepperBar');
             const onlineSection = document.getElementById('mraOnlineSection');
             const offlineSection = document.getElementById('mraOfflineSection');
@@ -21871,71 +21655,112 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             }
         }
 
-        function handleMraOnlineFileUpload(input) {
-            if (!input.files || input.files.length === 0) return;
-            const file = input.files[0];
-            mraCurrentFile = {
-                name: file.name,
-                size: (file.size / 1024).toFixed(1) + ' KB',
-                source: 'uploaded'
-            };
-            displayMraReadyFile();
-        }
+        function handleMraOnlineFileUpload(input) { gqxUpload('mra', input); }
 
-        function generateMau03Document() {
-            if (!selectedMraClaim) return;
-            const reason = document.getElementById('mraContentReason').value.trim();
-            if (!reason) {
-                document.getElementById('mraContentReason').classList.add('is-invalid');
-                document.getElementById('mraContentReasonError').style.display = 'block';
-                document.getElementById('mraContentReason').focus();
-                showToast('Vui lòng nhập nội dung yêu cầu bổ sung trước khi tự động sinh văn bản!', 'warning');
+        function generateMau03Document() { gqxGenerate('mra'); }
+
+        function displayMraReadyFile() { gqxRenderDocFile('mra'); }
+
+        function removeMraOnlineFile() { gqxRemove('mra'); }
+
+        // ---------- Khối Tệp văn bản trình ký (Ký số) dùng chung: p = 'mra' (Mẫu 03/BTNN) | 'ktl' (Mẫu 04/BTNN) ----------
+        // Mặc định: nút Tải file + Tạo văn bản theo Mẫu; có tệp: tên tệp, nhãn nguồn, Xem / Tải về / Xóa
+        const GQX_MAU = { mra: 'Mẫu 03/BTNN', ktl: 'Mẫu 04/BTNN' };
+        function gqxFile(p, v) {
+            if (v !== undefined) { if (p === 'mra') mraCurrentFile = v; else ktlOnlineFile = v; }
+            return p === 'mra' ? mraCurrentFile : ktlOnlineFile;
+        }
+        function gqxRenderDocFile(p) {
+            const box = document.getElementById(p + 'DocFileBox');
+            if (!box) return;
+            const f = gqxFile(p);
+            const mau = GQX_MAU[p];
+            const btnUp = `<button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('${p}OnlineFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>`;
+            const btnGen = `<button type="button" class="btn btn-primary btn-sm" onclick="gqxGenerate('${p}')"><i class="fa-solid fa-wand-magic-sparkles"></i> Tạo văn bản theo ${mau}</button>`;
+            if (!f) {
+                box.innerHTML = `<div class="gqx-file-empty">
+                    <div class="gqx-file-hint">Tải tệp từ máy hoặc để hệ thống tạo văn bản theo ${mau} từ thông tin đang nhập.</div>
+                    <div class="gqx-file-actions">${btnUp}${btnGen}</div></div>`;
                 return;
             }
-
-            const fileName = `Mau_03_BTNN_Thong_bao_yeu_cau_bo_sung_${selectedMraClaim.code || 'YCBT'}.pdf`;
-            mraCurrentFile = {
-                name: fileName,
-                size: '142 KB',
-                source: 'generated'
-            };
-
-            showToast('Hệ thống đang trích xuất dữ liệu và tạo văn bản theo Mẫu 03/BTNN...', 'info');
-            setTimeout(() => {
-                displayMraReadyFile();
-                showToast('Đã tự động sinh văn bản Mẫu 03/BTNN thành công!', 'success');
-            }, 300);
+            const gen = f.source === 'generated';
+            box.innerHTML = `<div class="gqx-file-ready">
+                    <i class="fa-solid ${gen ? 'fa-file-word' : 'fa-file-lines'} gqx-file-ico"></i>
+                    <div class="gqx-file-info">
+                        <div class="gqx-file-name">${gqE(f.name)}</div>
+                        <div class="gqx-file-meta">${gen ? `<span class="gqx-tag"><i class="fa-solid fa-wand-magic-sparkles"></i> Tạo tự động theo ${mau}</span>` : '<span class="gqx-tag up"><i class="fa-solid fa-cloud-arrow-up"></i> Tải lên từ máy</span>'}<span>${gqE(f.size || '')}</span></div>
+                    </div>
+                    <div class="gqx-file-btns">
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="gqxView('${p}')"><i class="fa-solid fa-eye"></i> Xem</button>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="gqxDownload('${p}')"><i class="fa-solid fa-download"></i> Tải về</button>
+                        <button type="button" class="btn btn-secondary btn-sm gqx-danger" onclick="gqxRemove('${p}')"><i class="fa-solid fa-trash"></i> Xóa</button>
+                    </div>
+                </div>
+                <div class="gqx-file-more">Tải file khác sẽ thay thế tệp hiện tại: <a onclick="document.getElementById('${p}OnlineFileInput').click()">Tải file</a>${gen ? ` · <a onclick="gqxGenerate('${p}')">Tạo lại theo ${mau}</a>` : ''}</div>`;
+            const err = document.getElementById(p + 'DocFileError');
+            if (err) err.style.display = 'none';
         }
-
-        function displayMraReadyFile() {
-            if (!mraCurrentFile) return;
-            const emptyEl = document.getElementById('mraFileEmptyState');
-            const readyEl = document.getElementById('mraFileReadyState');
-            const nameEl = document.getElementById('mraFileName');
-            const metaEl = document.getElementById('mraFileMeta');
-            const badgeEl = document.getElementById('mraDocStatusBadge');
-            const errEl = document.getElementById('mraDocFileError');
-
-            if (emptyEl) emptyEl.style.display = 'none';
-            if (readyEl) readyEl.style.display = 'flex';
-            if (nameEl) nameEl.innerText = mraCurrentFile.name;
-            if (metaEl) metaEl.innerText = `${mraCurrentFile.size} • ${mraCurrentFile.source === 'generated' ? 'Hệ thống tự động sinh theo Mẫu 03/BTNN' : 'Tệp tải lên từ máy tính'}`;
-            if (badgeEl) badgeEl.style.display = 'inline-flex';
-            if (errEl) errEl.style.display = 'none';
+        function gqxMarkErr(inputId, errId) {
+            const el = document.getElementById(inputId);
+            const err = document.getElementById(errId);
+            if (el) { el.classList.add('is-invalid'); el.focus(); }
+            if (err) err.style.display = 'block';
         }
-
-        function removeMraOnlineFile() {
-            mraCurrentFile = null;
-            const input = document.getElementById('mraOnlineFileInput');
+        // Sinh thân văn bản theo dữ liệu đang nhập (tái sử dụng gqBuildMau03 / gqBuildMau04)
+        function gqxBuildDoc(p) {
+            const val = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+            const so = val(p + 'DocNumber');
+            const hdr = { soKyHieu: so && !/^\.{3}/.test(so) ? so : '', ngay: val(p + 'DocDate') };
+            if (p === 'mra') {
+                const claim = selectedMraClaim;
+                const content = val('mraContentReason');
+                if (!claim) return null;
+                if (!content) { gqxMarkErr('mraContentReason', 'mraContentReasonError'); showToast('Vui lòng nhập Nội dung yêu cầu bổ sung hồ sơ trước khi tạo văn bản theo Mẫu 03/BTNN.', 'warning'); return null; }
+                return { html: gqBuildMau03(claim, content, hdr), base: `Mau_03_BTNN_Thong_bao_yeu_cau_bo_sung_${claimVvCode(claim) || claim.code}` };
+            }
+            const claim = selectedKtlClaim;
+            const code = val('ktlReason');
+            if (!claim) return null;
+            if (!code) { gqxMarkErr('ktlReason', 'ktlReasonErr'); showToast('Vui lòng chọn Lý do không thụ lý trước khi tạo văn bản theo Mẫu 04/BTNN.', 'warning'); return null; }
+            const sel = document.getElementById('ktlReason');
+            const reason = (gqW().getKtlReasons().find(r => r.code === code)) || { code, name: sel.options[sel.selectedIndex].text.replace(/^KTL_\d+\s*-\s*/, '') };
+            const api = window.ktlTransferApi;
+            const transfer = code === 'KTL_01' && api && api.targetUnitId() ? { targetUnitId: api.targetUnitId(), mode: api.getMode() } : null;
+            return { html: gqBuildMau04(claim, reason, val('ktlDetail'), transfer, hdr), base: `Mau_04_BTNN_Thong_bao_khong_thu_ly_${claimVvCode(claim) || claim.code}` };
+        }
+        function gqxGenerate(p) {
+            const doc = gqxBuildDoc(p);
+            if (!doc) return;
+            gqxFile(p, { name: doc.base + '.doc', size: Math.max(1, Math.round(doc.html.length / 1024)) + ' KB', source: 'generated', base: doc.base, bodyHtml: doc.html });
+            gqxRenderDocFile(p);
+            showToast(`Đã tạo văn bản theo ${GQX_MAU[p]} và gắn vào Tệp văn bản trình ký.`, 'success');
+        }
+        function gqxUpload(p, input) {
+            if (!input || !input.files || !input.files.length) return;
+            const file = input.files[0];
+            gqxFile(p, { name: file.name, size: (file.size / 1024).toFixed(1) + ' KB', source: 'uploaded' });
+            input.value = '';
+            gqxRenderDocFile(p);
+        }
+        function gqxView(p) {
+            const f = gqxFile(p);
+            if (!f) return;
+            if (f.source === 'generated') gqW().openDocTab(f.bodyHtml, f.base);
+            else showToast(`Đang mở tệp ${f.name}...`, 'info');
+        }
+        function gqxDownload(p) {
+            const f = gqxFile(p);
+            if (!f) return;
+            if (f.source === 'generated') gqW().downloadDocWord(f.bodyHtml, f.base);
+            else showToast(`Đang tải về tệp ${f.name}...`, 'success');
+        }
+        function gqxRemove(p) {
+            gqxFile(p, null);
+            const input = document.getElementById(p + 'OnlineFileInput');
             if (input) input.value = '';
-            const emptyEl = document.getElementById('mraFileEmptyState');
-            const readyEl = document.getElementById('mraFileReadyState');
-            const badgeEl = document.getElementById('mraDocStatusBadge');
-
-            if (emptyEl) emptyEl.style.display = 'block';
-            if (readyEl) readyEl.style.display = 'none';
-            if (badgeEl) badgeEl.style.display = 'none';
+            gqxRenderDocFile(p);
         }
+
 
         function previewMau03InNewWindow() {
             if (!selectedMraClaim) return;
@@ -22001,7 +21826,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             // Container resize
             const container = document.getElementById('modalRequireAdditionContainer');
             if (container) {
-                container.style.width = '850px';
+                container.style.width = '1180px';
                 container.style.maxWidth = '96%';
                 container.style.height = 'auto';
                 container.style.maxHeight = '92vh';
@@ -22080,27 +21905,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 document.getElementById('mraDocFileError').style.display = 'none';
             }
 
-            const officerRoom = document.getElementById('mraOfficerRoomSelect');
-            if (!officerRoom.value) {
-                officerRoom.classList.add('is-invalid');
-                document.getElementById('mraOfficerRoomError').style.display = 'block';
-                isValid = false;
-                if (!firstErrEl) firstErrEl = officerRoom;
-            } else {
-                officerRoom.classList.remove('is-invalid');
-                document.getElementById('mraOfficerRoomError').style.display = 'none';
-            }
 
-            const officerAgency = document.getElementById('mraOfficerAgencySelect');
-            if (!officerAgency.value) {
-                officerAgency.classList.add('is-invalid');
-                document.getElementById('mraOfficerAgencyError').style.display = 'block';
-                isValid = false;
-                if (!firstErrEl) firstErrEl = officerAgency;
-            } else {
-                officerAgency.classList.remove('is-invalid');
-                document.getElementById('mraOfficerAgencyError').style.display = 'none';
-            }
 
             if (!isValid) {
                 if (firstErrEl && typeof firstErrEl.focus === 'function') firstErrEl.focus();
@@ -22122,18 +21927,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 <div style="margin-bottom:6px;"><strong>${idx + 1}.</strong> ${gqE(line.trim().replace(/^\\d+[\\.\\-\\)]\\s*/, ''))}</div>
             `).join('');
 
-            // Officers info
-            const roomName = officerRoom.options[officerRoom.selectedIndex].text.split('-')[0].trim();
-            const agencyName = officerAgency.options[officerAgency.selectedIndex].text.split('-')[0].trim();
-            const agencyTitle = officerAgency.options[officerAgency.selectedIndex].text.includes('Cục trưởng') ? 'CỤC TRƯỞNG' : 'PHÓ CỤC TRƯỞNG';
-
-            document.getElementById('mraA4SignerName').innerText = agencyName.toUpperCase();
-            document.getElementById('mraA4SignerTitle').innerText = agencyTitle;
-
-            document.getElementById('mraSigBoxRoomOfficer').innerText = roomName;
-            document.getElementById('mraSigBoxAgencyOfficer').innerText = agencyName;
-            document.getElementById('mraPanelRoomName').innerText = roomName;
-            document.getElementById('mraPanelAgencyName').innerText = agencyName;
+            // Lãnh đạo các cấp: chọn tại Bước 2
+            gqSignSyncNames('mra');
 
             // Expand modal
             const container = document.getElementById('modalRequireAdditionContainer');
@@ -22161,8 +21956,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             document.getElementById('mraBtnSubmitOnline').style.display = 'inline-flex';
 
             // Setup draggable boxes
-            initMraDragAndDrop();
-            applySigBoxCoords();
+            gqSignRefresh('mra');
         }
 
         function initMraDragAndDrop() {
@@ -22266,19 +22060,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const docNo = document.getElementById('mraDocNumber');
             const docDate = document.getElementById('mraDocDate');
             const reason = document.getElementById('mraContentReason');
-
-            if (!docNo.value.trim()) {
-                docNo.classList.add('is-invalid');
-                document.getElementById('mraDocNumberError').style.display = 'block';
-                isValid = false;
-                if (!firstErr) firstErr = docNo;
-            }
-            if (!docDate.value.trim()) {
-                docDate.classList.add('is-invalid');
-                document.getElementById('mraDocDateError').style.display = 'block';
-                isValid = false;
-                if (!firstErr) firstErr = docDate;
-            }
+            // Ký ngoài: Số, ký hiệu văn bản và Ngày tháng văn bản không bắt buộc
             if (!reason.value.trim()) {
                 reason.classList.add('is-invalid');
                 document.getElementById('mraContentReasonError').style.display = 'block';
@@ -22319,7 +22101,10 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 file: mraOfflineFile.name
             });
 
+            // Đóng popup nhưng giữ hồ sơ đang xử lý để lưu kết quả (closeRequireAdditionModal xóa selectedMraClaim)
+            const mraOffClaim = selectedMraClaim;
             closeRequireAdditionModal();
+            selectedMraClaim = mraOffClaim;
 
             if (typeof gqSaveData === 'function') {
                 gqSaveData(selectedMraClaim, { 
@@ -22346,8 +22131,10 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const docNo = document.getElementById('mraDocNumber').value.trim();
             const docDate = document.getElementById('mraDocDate').value.trim();
             const reason = document.getElementById('mraContentReason').value.trim();
-            const officerRoom = document.getElementById('mraOfficerRoomSelect').value;
-            const officerAgency = document.getElementById('mraOfficerAgencySelect').value;
+            const sign = gqSignCollect('mra');
+            if (!sign) return;
+            const officerRoom = sign.assignees[0] || '';
+            const officerAgency = sign.assignees[sign.assignees.length - 1] || '';
 
             const trinhDuyetData = {
                 type: 'Yêu cầu bổ sung',
@@ -22357,10 +22144,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 file: mraCurrentFile,
                 officerRoom: officerRoom,
                 officerAgency: officerAgency,
-                sigCoords: {
-                    room: { ...mraSigCoords.room },
-                    agency: { ...mraSigCoords.agency }
-                },
+                sigCoords: sign.coords,
+                submitContent: sign.content,
                 submitDate: todayStr,
                 submitOfficer: currentOfficer
             };
@@ -22369,14 +22154,19 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             selectedMraClaim.rejectType = 'Yêu cầu bổ sung';
             selectedMraClaim.rejectReason = reason;
 
-            closeRequireAdditionModal();
-
             if (typeof gqSubmit === 'function') {
-                const res = gqSubmit(selectedMraClaim, 'Yêu cầu bổ sung', reason, [], { 
-                    assignee: officerRoom, 
-                    draftDoc: { source: 'generated', generatedName: mraCurrentFile ? mraCurrentFile.name : 'Mau_03_BTNN.pdf' }, 
-                    resultStatus: 'Chờ duyệt' 
+                const res = gqSubmit(selectedMraClaim, 'Yêu cầu bổ sung', sign.content, [], {
+                    assignee: officerRoom,
+                    assignees: sign.assignees,
+                    reason: reason,
+                    signDoc: { method: 'Ký số', file: mraCurrentFile ? mraCurrentFile.name : '', enableRoomSig: sign.enableNhay, sigCoords: sign.coords },
+                    draftDoc: { source: 'generated', generatedName: mraCurrentFile ? mraCurrentFile.name : 'Mau_03_BTNN.pdf' },
+                    resultStatus: 'Chờ phát hành văn bản'
                 });
+                if (res && res.ok === false) { showToast(res.message, 'error'); return; }
+                const mraOnClaim = selectedMraClaim;
+                closeRequireAdditionModal();
+                selectedMraClaim = mraOnClaim;
                 if (typeof gqSaveData === 'function') {
                     gqSaveData(selectedMraClaim, { additionRequestContent: reason, trinhDuyet: trinhDuyetData });
                 }
@@ -22588,36 +22378,18 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 flatpickr(docDateEl, { dateFormat: 'd/m/Y', allowInput: true, defaultDate: new Date() });
             }
 
-            // Lãnh đạo
-            ['ktlOfficerRoomSelect', 'ktlOfficerAgencySelect'].forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.classList.remove('is-invalid');
-                    if (!el.value && el.options.length > 1) el.selectedIndex = 1;
-                }
-            });
-            const errRoom = document.getElementById('ktlOfficerRoomErr');
-            const errAgency = document.getElementById('ktlOfficerAgencyErr');
-            if (errRoom) errRoom.style.display = 'none';
-            if (errAgency) errAgency.style.display = 'none';
-
-            // Áp dụng ký nháy LĐ Phòng
-            const chkRoom = document.getElementById('ktlEnableRoomSig');
-            if (chkRoom) {
-                chkRoom.checked = true;
-                toggleKtlEnableRoomSig(true);
-            }
-
-            // Reset vị trí chữ ký: QUY TẮC: Ẩn trên văn bản A4, hiển thị drop zones
-            resetKtlSignaturePlacement();
+            // Bước 2: các cấp ký theo luồng đã cấu hình; ô ký chỉ sinh khi bấm Đặt chữ ký
+            const ktlContentEl = document.getElementById('ktlSignContent');
+            if (ktlContentEl) ktlContentEl.value = 'Kính trình Lãnh đạo xem xét, phê duyệt văn bản Thông báo không thụ lý hồ sơ yêu cầu bồi thường.';
+            gqSignInit('ktl', claim, prev && Array.isArray(prev.assignees) ? prev.assignees : null);
 
             // Reset File Offline
             removeKtlOfflineFile();
 
-            // Tên file Mẫu 04
-            const mau04Name = `Mau_04_BTNN_Thong_bao_khong_thu_ly_${(typeof claimVvCode === 'function' ? claimVvCode(claim) : claim.code) || 'HS'}.pdf`;
-            const elMau04Name = document.getElementById('ktlMau04FileName');
-            if (elMau04Name) elMau04Name.innerText = mau04Name;
+            // Khối Tệp văn bản trình ký: mặc định Tải file + Tạo văn bản theo Mẫu 04/BTNN
+            gqxRenderDocFile('ktl');
+            ['ktlDocDateErr', 'ktlDocFileError'].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = 'none'; });
+            if (docDateEl) docDateEl.classList.remove('is-invalid');
 
             // Hình thức ký: mặc định online
             const radioOnline = document.getElementById('ktlSigningMethodOnline');
@@ -22631,7 +22403,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const modal = document.getElementById('modalGqKtl');
             if (modal) {
                 modal.style.display = 'flex';
-                modal.classList.add('active');
+                modal.classList.add('active'); modal.classList.add('visible');
             }
         }
         window.openGqKtlModal = openGqKtlModal;
@@ -22640,7 +22412,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const modal = document.getElementById('modalGqKtl');
             if (modal) {
                 modal.style.display = 'none';
-                modal.classList.remove('active');
+                modal.classList.remove('active'); modal.classList.remove('visible');
             }
             selectedKtlClaim = null;
         }
@@ -22648,6 +22420,10 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
 
         function toggleKtlSigningMethod(method) {
             const isOnline = (method === 'online');
+            // Ký ngoài: chỉ tải lên tệp PDF đã ký, không nhập Số, ký hiệu văn bản và Ngày tháng văn bản
+            const metaGroup = document.getElementById('ktlDocMetaGroup'); if (metaGroup) metaGroup.style.display = isOnline ? '' : 'none';
+            ['ktlDocNumber', 'ktlDocDate'].forEach(id => { const el = document.getElementById(id); if (el && !isOnline) el.classList.remove('is-invalid'); });
+            if (!isOnline) ['ktlDocNumberErr', 'ktlDocDateErr'].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = 'none'; });
             const stepperBar = document.getElementById('ktlStepperBar');
             const onlineSection = document.getElementById('ktlOnlineSection');
             const offlineSection = document.getElementById('ktlOfflineSection');
@@ -22679,7 +22455,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     const claim = selectedKtlClaim || {};
                     const rec = typeof gqRecord === 'function' ? gqRecord(claim) : null;
                     const recLike = { rootUnitId: typeof gqClaimUnitId === 'function' ? gqClaimUnitId(claim, rec) : '', currentUnitId: rec ? rec.currentUnitId : '' };
-                    W.mountKtlTransfer(box, {
+                    window.ktlTransferApi = W.mountKtlTransfer(box, {
                         rec: recLike,
                         name: 'ktlTransferMode',
                         treeInputId: 'ktlTransferTargetUnit',
@@ -22943,7 +22719,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         function goToKtlStep1() {
             const container = document.getElementById('modalGqKtlContainer');
             if (container) {
-                container.style.width = '850px';
+                container.style.width = '1180px';
                 container.style.maxWidth = '96%';
                 container.style.height = 'auto';
             }
@@ -23000,28 +22776,24 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 docNo.classList.remove('is-invalid');
                 document.getElementById('ktlDocNumberErr').style.display = 'none';
             }
-
-            const offRoom = document.getElementById('ktlOfficerRoomSelect');
-            if (!offRoom.value) {
-                offRoom.classList.add('is-invalid');
-                document.getElementById('ktlOfficerRoomErr').style.display = 'block';
+            const docDateK = document.getElementById('ktlDocDate');
+            if (!docDateK.value.trim()) {
+                docDateK.classList.add('is-invalid');
+                document.getElementById('ktlDocDateErr').style.display = 'block';
                 isValid = false;
-                if (!firstErr) firstErr = offRoom;
+                if (!firstErr) firstErr = docDateK;
             } else {
-                offRoom.classList.remove('is-invalid');
-                document.getElementById('ktlOfficerRoomErr').style.display = 'none';
+                docDateK.classList.remove('is-invalid');
+                document.getElementById('ktlDocDateErr').style.display = 'none';
+            }
+            if (!ktlOnlineFile) {
+                document.getElementById('ktlDocFileError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('ktlDocFileError').style.display = 'none';
             }
 
-            const offAgency = document.getElementById('ktlOfficerAgencySelect');
-            if (!offAgency.value) {
-                offAgency.classList.add('is-invalid');
-                document.getElementById('ktlOfficerAgencyErr').style.display = 'block';
-                isValid = false;
-                if (!firstErr) firstErr = offAgency;
-            } else {
-                offAgency.classList.remove('is-invalid');
-                document.getElementById('ktlOfficerAgencyErr').style.display = 'none';
-            }
+
 
             if (!isValid) {
                 if (firstErr && typeof firstErr.focus === 'function') firstErr.focus();
@@ -23065,19 +22837,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 transferNotice.style.display = 'none';
             }
 
-            // Lãnh đạo
-            const roomOpt = offRoom.options[offRoom.selectedIndex];
-            const agencyOpt = offAgency.options[offAgency.selectedIndex];
-            const rName = roomOpt.getAttribute('data-name') || roomOpt.text.split('-')[0].trim();
-            const aName = agencyOpt.getAttribute('data-name') || agencyOpt.text.split('-')[0].trim();
-            const aRole = agencyOpt.getAttribute('data-role') || (agencyOpt.text.includes('Cục trưởng') ? 'CỤC TRƯỞNG' : 'PHÓ CỤC TRƯỞNG');
-
-            document.getElementById('ktlA4SignerTitle').innerText = aRole.toUpperCase();
-            document.getElementById('ktlA4SignerName').innerText = aName.toUpperCase();
-            document.getElementById('ktlSigBoxRoomOfficer').innerText = rName;
-            document.getElementById('ktlSigBoxAgencyOfficer').innerText = aName;
-            document.getElementById('ktlPanelRoomName').innerText = rName;
-            document.getElementById('ktlPanelAgencyName').innerText = aName;
+            // Lãnh đạo các cấp: chọn tại Bước 2
+            gqSignSyncNames('ktl');
 
             // Expand modal container
             const container = document.getElementById('modalGqKtlContainer');
@@ -23107,8 +22868,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             document.getElementById('ktlBtnBackStep1').style.display = 'inline-flex';
             document.getElementById('ktlBtnSubmitOnline').style.display = 'inline-flex';
 
-            // Drag setup
-            initKtlDragAndDrop();
+            gqSignRefresh('ktl');
         }
 
         // File Handlers
@@ -23140,16 +22900,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             }
         }
 
-        function handleKtlOnlineFileUpload(input) {
-            if (!input || !input.files || !input.files.length) return;
-            const file = input.files[0];
-            ktlOnlineFile = file;
-            const nameEl = document.getElementById('ktlMau04FileName');
-            const sizeEl = document.getElementById('ktlMau04FileSize');
-            if (nameEl) nameEl.innerText = file.name;
-            if (sizeEl) sizeEl.innerText = `PDF • Tải lên từ máy (${(file.size / 1024).toFixed(1)} KB)`;
-            showToast(`Đã tải lên tệp dự thảo thay thế: ${file.name}`, 'success');
-        }
+        function handleKtlOnlineFileUpload(input) { gqxUpload('ktl', input); }
 
         function handleKtlTransferFileUpload(input) {
             if (!input || !input.files || !input.files.length) return;
@@ -23179,45 +22930,16 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             renderKtlTransferFileList();
         }
 
-        function generateMau04Document() {
-            const claim = selectedKtlClaim || {};
-            const code = (typeof claimVvCode === 'function' ? claimVvCode(claim) : claim.code) || 'HS';
-            const mau04Name = `Mau_04_BTNN_Thong_bao_khong_thu_ly_${code}.pdf`;
-            const nameEl = document.getElementById('ktlMau04FileName');
-            const sizeEl = document.getElementById('ktlMau04FileSize');
-            if (nameEl) nameEl.innerText = mau04Name;
-            if (sizeEl) sizeEl.innerText = 'PDF • Tự động tạo theo dữ liệu hồ sơ';
-            showToast('Đã khởi tạo lại văn bản Mẫu 04/BTNN tự động theo dữ liệu hồ sơ!', 'success');
-        }
+        function generateMau04Document() { gqxGenerate('ktl'); }
 
-        function downloadMau04Pdf() {
-            showToast('Đang tải xuống dự thảo Mẫu 04/BTNN định dạng PDF...', 'success');
-        }
+        function downloadMau04Pdf() { gqxDownload('ktl'); }
 
         // Submissions
         function submitKtlOnline() {
             if (!selectedKtlClaim) return;
 
-            // KIỂM TRA CHỮ KÝ: Lãnh đạo đơn vị bắt buộc phải được định vị trên A4
-            if (!ktlPlacedAgency) {
-                const cardA = document.getElementById('ktlPanelAgencyCard');
-                if (cardA) {
-                    cardA.style.borderColor = '#dc2626';
-                    cardA.style.boxShadow = '0 0 0 3px rgba(220,38,38,0.3)';
-                    setTimeout(() => {
-                        cardA.style.borderColor = '#cbd5e1';
-                        cardA.style.boxShadow = '0 2px 6px rgba(0,0,0,0.04)';
-                    }, 2000);
-                }
-                showToast('Vui lòng kéo thẻ chữ ký của Lãnh đạo Đơn vị thả vào văn bản A4 trước khi Trình Lãnh đạo!', 'warning');
-                return;
-            }
-
-            const chkRoom = document.getElementById('ktlEnableRoomSig');
-            if (chkRoom && chkRoom.checked && !ktlPlacedRoom) {
-                // Tự động định vị cho phòng nếu quên kéo
-                placeKtlSigBox('room', 60, 860);
-            }
+            const sign = gqSignCollect('ktl');
+            if (!sign) return;
 
             const docNo = document.getElementById('ktlDocNumber').value.trim();
             const docDate = document.getElementById('ktlDocDate').value.trim();
@@ -23225,8 +22947,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const reasonCode = reasonEl.value;
             const reasonText = reasonEl.options[reasonEl.selectedIndex].text;
             const detail = document.getElementById('ktlDetail').value.trim();
-            const officerRoom = document.getElementById('ktlOfficerRoomSelect').value;
-            const officerAgency = document.getElementById('ktlOfficerAgencySelect').value;
+            const officerRoom = sign.assignees[0] || '';
+            const officerAgency = sign.assignees[sign.assignees.length - 1] || '';
             const currentOfficer = typeof getCurrentSimulatedOfficer === 'function' ? getCurrentSimulatedOfficer() : 'Nguyễn Văn Cán Bộ';
             const todayStr = new Date().toLocaleDateString('vi-VN') + ' ' + new Date().toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'});
 
@@ -23239,10 +22961,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 detail: detail,
                 officerRoom: officerRoom,
                 officerAgency: officerAgency,
-                sigCoords: {
-                    room: { ...ktlSigCoords.room, placed: ktlPlacedRoom },
-                    agency: { ...ktlSigCoords.agency, placed: ktlPlacedAgency }
-                },
+                sigCoords: sign.coords,
+                submitContent: sign.content,
                 submitDate: todayStr,
                 submitOfficer: currentOfficer,
                 isTransfer: reasonCode === 'KTL_01'
@@ -23254,14 +22974,18 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             selectedKtlClaim.ktlReasonCode = reasonCode;
             selectedKtlClaim.ktlDetail = detail;
 
-            closeGqKtlModal();
-
             if (typeof gqSubmit === 'function') {
-                const res = gqSubmit(selectedKtlClaim, 'Không thụ lý', detail, [], {
+                const res = gqSubmit(selectedKtlClaim, 'Không thụ lý', sign.content, [], {
                     assignee: officerRoom,
-                    draftDoc: { source: 'generated', formNo: GQ_FORM_04, generatedName: `Mau_04_BTNN_Thong_bao_khong_thu_ly_${claimVvCode(selectedKtlClaim)}.pdf` },
-                    resultStatus: 'Chờ duyệt'
+                    assignees: sign.assignees,
+                    reason: reasonText + (detail ? ': ' + detail : ''),
+                    signDoc: { method: 'Ký số', file: `Mau_04_BTNN_Thong_bao_khong_thu_ly_${claimVvCode(selectedKtlClaim)}.pdf`, enableRoomSig: sign.enableNhay, sigCoords: sign.coords },
+                    draftDoc: { source: 'generated', formNo: GQ_FORM_04, generatedName: `Mau_04_BTNN_Thong_bao_khong_thu_ly_${claimVvCode(selectedKtlClaim)}.pdf` }
                 });
+                if (res && res.ok === false) { showToast(res.message, 'error'); return; }
+                const ktlOnClaim = selectedKtlClaim;
+                closeGqKtlModal();
+                selectedKtlClaim = ktlOnClaim;
                 if (typeof gqSaveData === 'function') {
                     gqSaveData(selectedKtlClaim, { ktlReasonCode: reasonCode, ktlDetail: detail, trinhDuyet: trinhDuyetData });
                 }
@@ -23290,6 +23014,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 if (!firstErr) firstErr = reasonEl;
             }
 
+            // Ký ngoài: Số, ký hiệu văn bản và Ngày tháng văn bản không bắt buộc
             if (!ktlOfflineFile) {
                 document.getElementById('ktlOfflineFileErr').style.display = 'block';
                 isValid = false;
@@ -23327,21 +23052,26 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 file: ktlOfflineFile.name
             });
 
+            // Đóng popup nhưng giữ hồ sơ đang xử lý để lưu kết quả (closeGqKtlModal xóa selectedKtlClaim)
+            const ktlOffClaim = selectedKtlClaim;
             closeGqKtlModal();
+            selectedKtlClaim = ktlOffClaim;
 
+            const finalStatus = (reasonCode === 'KTL_01') ? 'Đã chuyển CQGQBT' : 'Không thụ lý';
             if (typeof gqSaveData === 'function') {
                 gqSaveData(selectedKtlClaim, {
                     ktlReasonCode: reasonCode,
                     ktlDetail: detail,
-                    status: 'Không thụ lý',
-                    rejectType: 'Không thụ lý',
+                    status: finalStatus,
+                    rejectType: finalStatus,
                     rejectReason: reasonText + (detail ? ': ' + detail : '')
                 });
             }
 
-            selectedKtlClaim.status = 'Không thụ lý';
+            selectedKtlClaim.status = finalStatus;
+            if (typeof saveClaimsToLocal === 'function') saveClaimsToLocal();
             if (typeof renderClaimsTable === 'function') renderClaimsTable();
-            showToast(`Đã ban hành văn bản Không thụ lý hồ sơ (Ký ngoài) cho vụ việc [${claimVvCode(selectedKtlClaim)}]! Hồ sơ chuyển sang trạng thái [Không thụ lý].`, 'success');
+            showToast(`Đã ban hành văn bản Không thụ lý hồ sơ (Ký ngoài) cho vụ việc [${claimVvCode(selectedKtlClaim)}]! Hồ sơ chuyển sang trạng thái [${finalStatus}].`, 'success');
         }
 
         // ---------- 5. Chuyển CQGQBT ----------

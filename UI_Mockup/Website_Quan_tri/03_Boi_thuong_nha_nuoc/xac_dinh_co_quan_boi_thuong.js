@@ -1073,9 +1073,8 @@ function switchXdTab(tab) {
     applyFilters();
 }
 function updateXdTabCounts() {
-    const p = document.getElementById('xdCntPending'), d = document.getElementById('xdCntDone');
+    const p = document.getElementById('xdCntPending');
     if (p) p.textContent = requestList.filter(r => xdInTab('pending', r)).length;
-    if (d) d.textContent = requestList.filter(r => xdInTab('done', r)).length;
 }
 function afterXdLeaderAction() { reloadRequestList(); switchXdTab(xdTab); }
 
@@ -1728,11 +1727,6 @@ function showProcessScreen(id) {
     const src = xdProcView(item);
 
     document.getElementById('processRequestId').value = id;
-    document.getElementById('lblProcCode').innerText = item.code;
-    document.getElementById('lblProcName').innerText = item.nycName || '';
-    document.getElementById('lblProcLinhVuc').innerText = item.linhVuc || '';
-    document.getElementById('lblProcPhone').innerText = item.nycPhone || item.nycEmail || '';
-    document.getElementById('lblProcHanhVi').innerText = item.hanhVi || '';
 
     // Khối Chi tiết yêu cầu xác định CQGQBT (chỉ đọc): dùng chung khối Chi tiết hồ sơ của MH04, mặc định thu gọn
     mountXdProfileCard('procProfileSlot', 'CHI TIẾT YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG');
@@ -3094,6 +3088,10 @@ function fillTwoLeaderSelects(item, prevAssignees) {
     // Luồng 01 cấp: chỉ chọn Lãnh đạo Đơn vị ký số
     const roomGroup = document.getElementById('xsOfficerRoomGroup');
     if (roomGroup) roomGroup.style.display = path.length === 1 ? 'none' : '';
+    const roomCard = document.getElementById('xsPanelRoomCard');
+    if (roomCard) roomCard.style.display = path.length === 1 ? 'none' : '';
+    const unitEl = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+    if (path.length) { unitEl('xsPanelRoomUnit', 'Cấp 1 - ' + BTNN_WF.unitName(path[0])); unitEl('xsPanelAgencyUnit', 'Cấp ' + path.length + ' - ' + BTNN_WF.unitName(path[path.length - 1])); }
     const pick = (list, wanted) => (wanted && list.includes(wanted) ? wanted : list[0]);
 
     if (roomLeaders.length) {
@@ -3176,6 +3174,7 @@ function openSignSubmitModal(id, kind) {
     fillTwoLeaderSelects(item, item.status === XD_ST.BI_TRA_LAI && item.approval ? item.approval.assignees : null);
 
     const chkRoom = document.getElementById('xsEnableRoomSig');
+    xsState.placed = prevSd && prevSd.sigCoords ? { room: true, agency: true } : {};
     if (chkRoom) chkRoom.checked = xsState.enableRoomSig;
     xsToggleRoomSig(xsState.enableRoomSig);
 
@@ -3296,14 +3295,14 @@ function xsCollect() {
 
     // Lãnh đạo Phòng
     const roomEl = document.getElementById('xsOfficerRoomSelect');
-    const roomOn = !!roomEl && document.getElementById('xsOfficerRoomGroup').style.display !== 'none';
+    const roomOn = !!roomEl && !xsState.skipLeaders && document.getElementById('xsOfficerRoomGroup').style.display !== 'none';
     const roomLeader = roomOn ? roomEl.value : '';
     if (roomOn && !roomLeader) {
         firstInvalid = markInvalid(roomEl, firstInvalid);
     }
 
     // Lãnh đạo Đơn vị
-    const agencyEl = document.getElementById('xsOfficerAgencySelect');
+    const agencyEl = xsState.skipLeaders ? null : document.getElementById('xsOfficerAgencySelect');
     const agencyLeader = agencyEl ? agencyEl.value : '';
     if (agencyEl && !agencyLeader) {
         firstInvalid = markInvalid(agencyEl, firstInvalid);
@@ -3342,7 +3341,9 @@ function xsShowStep(step) {
 
 // Bước 2: văn bản trình ký (mô phỏng trang A4) và 02 hộp chữ ký Lãnh đạo Phòng & Lãnh đạo Đơn vị
 function xsGoStep2() {
+    xsState.skipLeaders = true;
     const data = xsCollect();
+    xsState.skipLeaders = false;
     if (!data) return;
     const item = requestList.find(r => r.id === xsState.id);
     if (!item) return;
@@ -3382,16 +3383,44 @@ function xsGoStep2() {
     document.getElementById('xsA4SignerTitle').textContent = agencyTitle;
     document.getElementById('xsA4SignerName').textContent = agencyName.toUpperCase();
 
-    document.getElementById('xsSigBoxRoomOfficer').textContent = roomName;
-    document.getElementById('xsSigBoxAgencyOfficer').textContent = agencyName;
-    document.getElementById('xsPanelRoomName').textContent = roomName;
-    document.getElementById('xsPanelAgencyName').textContent = agencyName;
+    xsSyncLeaderNames();
 
     xsShowStep(2);
     initXsTwoBoxDrag();
     xsApplyBothSigCoords();
+    xsRefreshPlaced();
 }
 function xsGoStep1() { xsShowStep(1); }
+
+// Ô ký của từng cấp chỉ sinh ra khi cán bộ bấm `Đặt chữ ký` ở thẻ cấp đó
+function xsRefreshPlaced() {
+    if (!xsState.placed) xsState.placed = {};
+    [['room', 'Room'], ['agency', 'Agency']].forEach(([k, K]) => {
+        const on = !!xsState.placed[k];
+        const box = document.getElementById('xsSigBox' + K); if (box) box.style.display = on ? 'block' : 'none';
+        const ctr = document.getElementById('xsPanel' + K + 'Ctrls'); if (ctr) ctr.style.display = on ? 'block' : 'none';
+        const btn = document.getElementById('xsBtnPlace' + K); if (btn) btn.style.display = on ? 'none' : '';
+    });
+}
+function xsPlaceLevel(key) {
+    if (!xsState.placed) xsState.placed = {};
+    xsState.placed[key] = true;
+    xsRefreshPlaced();
+    const box = document.getElementById(key === 'room' ? 'xsSigBoxRoom' : 'xsSigBoxAgency');
+    if (box && box.scrollIntoView) box.scrollIntoView({ block: 'center', behavior: 'smooth' });
+}
+
+
+// Bước 2: tên Lãnh đạo đã chọn hiển thị trên ô ký và dòng ký của văn bản
+function xsSyncLeaderNames() {
+    const nm = id => { const s = document.getElementById(id); return s && s.selectedIndex >= 0 && s.value ? s.options[s.selectedIndex].text.split('-')[0].trim() : ''; };
+    const room = nm('xsOfficerRoomSelect'), agency = nm('xsOfficerAgencySelect');
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set('xsSigBoxRoomOfficer', room ? 'Cấp 1 - ' + room : 'Cấp 1');
+    set('xsSigBoxAgencyOfficer', agency ? 'Cấp cuối - ' + agency : 'Cấp cuối');
+    set('xsA4SignerName', (agency || '').toUpperCase());
+}
+
 
 function xsApplyBothSigCoords() {
     const boxRoom = document.getElementById('xsSigBoxRoom');
@@ -3474,15 +3503,10 @@ function xsToggleRoomSig(enabled) {
     const card = document.getElementById('xsPanelRoomCard');
     const placeholder = document.getElementById('xsA4RoomSigPlaceholder');
 
-    if (boxRoom) boxRoom.style.display = enabled ? 'block' : 'none';
     if (placeholder) placeholder.style.display = enabled ? 'block' : 'none';
     if (badge) {
         badge.textContent = enabled ? 'Áp dụng' : 'Không áp dụng';
         badge.style.background = enabled ? '#2563eb' : '#64748b';
-    }
-    if (card) {
-        card.style.opacity = enabled ? '1' : '0.5';
-        card.style.pointerEvents = enabled ? 'auto' : 'none';
     }
 }
 
