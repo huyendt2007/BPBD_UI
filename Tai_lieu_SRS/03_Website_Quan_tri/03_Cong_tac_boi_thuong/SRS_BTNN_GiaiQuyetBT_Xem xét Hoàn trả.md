@@ -182,7 +182,7 @@ flowchart TD
 | Ngày QĐ giải quyết bồi thường | Date | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Định dạng `dd/mm/yyyy`. Theo thông tin Hồ sơ vụ việc. |
 | Ngày hoàn thành chi trả | Date | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Định dạng `dd/mm/yyyy`. Theo thông tin Hồ sơ vụ việc. |
 | Lĩnh vực phát sinh thiệt hại | String(255) | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo thông tin Hồ sơ vụ việc. |
-| Hành vi gây thiệt hại | String(500) | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo thông tin Hồ sơ vụ việc. |
+| Hành vi gây thiệt hại của người thi hành công vụ | Text(2000) | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo thông tin Hồ sơ vụ việc. |
 | Nội dung vụ việc sai phạm gây bồi thường | Text(2000) | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo thông tin Hồ sơ vụ việc. |
 | Đơn vị chi trả bồi thường | String(255) | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo thông tin Hồ sơ vụ việc. |
 | Tổng số tiền Nhà nước đã chi trả bồi thường | Decimal(18,0) | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Định dạng số có dấu phân cách hàng nghìn, đơn vị `VNĐ`. Theo thông tin Hồ sơ vụ việc. |
@@ -365,7 +365,7 @@ flowchart TD
 | Ngày QĐ giải quyết bồi thường | Date | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Định dạng `dd/mm/yyyy`. Chỉ đọc. Theo thông tin hồ sơ. |
 | Ngày hoàn thành chi trả | Date | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Định dạng `dd/mm/yyyy`. Chỉ đọc. Theo thông tin hồ sơ. |
 | Lĩnh vực phát sinh thiệt hại | String(255) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Chỉ đọc. Theo thông tin hồ sơ. |
-| Hành vi gây thiệt hại | String(500) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Chỉ đọc. Theo thông tin hồ sơ. |
+| Hành vi gây thiệt hại của người thi hành công vụ | Text(2000) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Chỉ đọc. Theo thông tin hồ sơ. |
 | Nội dung vụ việc sai phạm gây bồi thường | Text(2000) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Chỉ đọc. Theo thông tin hồ sơ. |
 | Đơn vị chi trả bồi thường | String(255) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Chỉ đọc. Theo thông tin hồ sơ. |
 | Tổng số tiền Nhà nước đã chi trả bồi thường | Decimal(18,0) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Định dạng số có dấu phân cách hàng nghìn, đơn vị `VNĐ`. Chỉ đọc. Theo thông tin hồ sơ. |

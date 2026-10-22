@@ -14,7 +14,7 @@ Màn Danh sách ở ngoài sẽ cho phép
  Tên người yêu cầu
  Số điện thoại
  Lĩnh vực phát sinh thiệt hại
- Hành vi gây thiệt hại
+ Hành vi gây thiệt hại của người thi hành công vụ
  Mã yêu cầu bồi thường
 Trạng thái
 Thao tác:
@@ -46,7 +46,7 @@ Màn Thêm mới yêu cầu bao gồm các thông tin như:
  * Quốc gia*
  * Tỉnh/Thành phố: Nếu Quốc gia là Việt Nam hiển thị dropdown chọn, Nếu là quốc gia khác hiển thị ô nhập
  * Địa chỉ chi tiết
- + Hành vi gây thiệt hại của người thi hành công vụ gây thiệt hại:..............
+ + Hành vi gây thiệt hại của người thi hành công vụ:..............
 - Hình thức nhận kết quả: (Phương thức điện tử/Hồ sơ giấy)
 Phương thức điện tử: Nếu tích chọn thì Bắt buộc nhập Email
 Hồ sơ giấy
@@ -77,7 +77,7 @@ Có nút Tạo yêu cầu. Khi Chọn thì mở ra màn hình Nhập thông tin 
  - Hạn xử lý: Từ ngày đến ngày
  - Nu
  Bảng lưới kết quả hiển thị bao gồm:
- STT|Mã yêu cầu|Tên người yêu cầu| Hành vi gây thiệt hại (Hiển thị dạng ... nếu dài quá, Khi Hover sẽ hiển thị đầy đủ|Lĩnh vực phát sinh thiệt hại|
+ STT|Mã yêu cầu|Tên người yêu cầu| Hành vi gây thiệt hại của người thi hành công vụ (Hiển thị dạng ... nếu dài quá, Khi Hover sẽ hiển thị đầy đủ|Lĩnh vực phát sinh thiệt hại|
  Cơ quan giải quyết|Ngày tiếp nhận|Hạn xử lý|Trạng thái|Thao tác
  
  Trong đó Trạng thái bao gồm:
@@ -124,7 +124,7 @@ Trong đó cột Thao tác bao gồm:
  * Quốc gia*
  * Tỉnh/Thành phố: Nếu Quốc gia là Việt Nam hiển thị dropdown chọn, Nếu là quốc gia khác hiển thị ô nhập
  * Địa chỉ chi tiết
- + Hành vi gây thiệt hại của người thi hành công vụ gây thiệt hại:..............
+ + Hành vi gây thiệt hại của người thi hành công vụ:..............
  + Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại của người thi hành công vụ:........................................................................  
 - THIỆT HẠI YÊU CẦU BỒI THƯỜNG 
  Thiết kế bảng lưới gồm 3 cột: `[Loại thiệt hại] - [Cách tính/Diễn giải công thức áp dụng] - [Số tiền yêu cầu]`.

@@ -491,7 +491,7 @@
                 ${row('Loại hồ sơ', esc(t.loaiYeuCau))}
                 ${rec ? row('Nguồn hồ sơ', esc(sourceText(rec.nguonHoSo))) : ''}
                 ${row('Tên cá nhân/Tổ chức yêu cầu', `<strong>${esc(t.nycName || '--')}</strong>`)}
-                ${rec ? row('Hành vi gây thiệt hại', esc(rec.hanhVi || '--')) : ''}
+                ${rec ? row('Hành vi gây thiệt hại của người thi hành công vụ', esc(rec.hanhVi || '--')) : ''}
                 ${rec ? row('Cán bộ chủ trì', rec.chuTri ? esc(WF.userLabel(rec.chuTri)) : '<span class="muted">Chưa phân công</span>') : ''}
             </div>`;
             if (rec) html += `<div class="sec-title">IV. Lịch sử xử lý</div>${WF.renderHistoryHtml(rec)}`;
@@ -760,7 +760,7 @@
             if (!rec) return;
             document.getElementById('kCode').textContent = code;
             document.getElementById('kContext').textContent = `Cơ quan giải quyết bồi thường: ${WF.unitName(rec.rootUnitId)} - Người yêu cầu: ${rec.nycName || '--'}`;
-            document.getElementById('kReason').innerHTML = `<option value="">Chọn lý do không thụ lý...</option>` + WF.getKtlReasons().map(r => `<option value="${esc(r.code)}">${esc(r.code)} - ${esc(r.name)}</option>`).join('');
+            document.getElementById('kReason').innerHTML = `<option value="">Chọn lý do không thụ lý...</option>` + WF.getKtlReasons().map(r => `<option value="${esc(r.code)}">${esc(r.name)}</option>`).join('');
             document.getElementById('kDetail').value = '';
             document.getElementById('kContent').value = '';
             ['kReasonErr', 'kUnitErr', 'kContentErr'].forEach(id => document.getElementById(id).style.display = 'none');

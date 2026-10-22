@@ -74,13 +74,14 @@
     // Danh mục Lý do không thụ lý (DM_55) - Điều 43 Luật TNBTCNN số 10/2017/QH14
     const KTL_CATALOG_TYPE = 'DM_55';
     const DEFAULT_KTL_REASONS = [
-        { code: 'KTL_01', name: 'Yêu cầu bồi thường không thuộc thẩm quyền giải quyết của mình (Điểm a Khoản 1 Điều 43)' },
-        { code: 'KTL_02', name: 'Thời hiệu yêu cầu bồi thường đã hết (Điểm b Khoản 1 Điều 43)' },
-        { code: 'KTL_03', name: 'Yêu cầu bồi thường không thuộc phạm vi trách nhiệm bồi thường của Nhà nước được quy định tại Chương II của Luật này (Điểm c Khoản 1 Điều 43)' },
-        { code: 'KTL_04', name: 'Người yêu cầu bồi thường không phải là người có quyền yêu cầu bồi thường theo quy định tại Điều 5 của Luật này (Điểm d Khoản 1 Điều 43)' },
-        { code: 'KTL_05', name: 'Hồ sơ không đầy đủ theo quy định tại Điều 41 của Luật này mà người yêu cầu bồi thường không bổ sung trong thời hạn quy định tại khoản 3 Điều 42 của Luật này (Điểm đ Khoản 1 Điều 43)' },
-        { code: 'KTL_06', name: 'Yêu cầu bồi thường đã được thực hiện theo quy định tại điểm a khoản 1 Điều 52 của Luật này và đã được Tòa án có thẩm quyền thụ lý theo thủ tục tố tụng dân sự (Điểm e Khoản 1 Điều 43)' },
-        { code: 'KTL_07', name: 'Yêu cầu bồi thường đã được Tòa án có thẩm quyền chấp nhận theo quy định tại khoản 1 Điều 55 của Luật này (Điểm g Khoản 1 Điều 43)' }
+        { code: 'KTL_01', name: 'Yêu cầu bồi thường không thuộc thẩm quyền giải quyết của mình (Điểm a Khoản 2 Điều 43)' },
+        { code: 'KTL_02', name: 'Thời hiệu yêu cầu bồi thường đã hết (Điểm b Khoản 2 Điều 43)' },
+        { code: 'KTL_03', name: 'Yêu cầu bồi thường không thuộc phạm vi trách nhiệm bồi thường của Nhà nước được quy định tại Chương II của Luật này (Điểm c Khoản 2 Điều 43)' },
+        { code: 'KTL_04', name: 'Người yêu cầu bồi thường không phải là người có quyền yêu cầu bồi thường theo quy định tại Điều 5 của Luật này (Điểm d Khoản 2 Điều 43)' },
+        { code: 'KTL_05', name: 'Hồ sơ không đầy đủ theo quy định tại Điều 41 của Luật này mà người yêu cầu bồi thường không bổ sung trong thời hạn quy định tại khoản 3 Điều 42 của Luật này (Điểm đ Khoản 2 Điều 43)' },
+        { code: 'KTL_06', name: 'Yêu cầu bồi thường đã được thực hiện theo quy định tại điểm a khoản 1 Điều 52 của Luật này và đã được Tòa án có thẩm quyền thụ lý theo thủ tục tố tụng dân sự (Điểm e Khoản 2 Điều 43)' },
+        { code: 'KTL_07', name: 'Yêu cầu bồi thường đã được Tòa án có thẩm quyền chấp nhận theo quy định tại khoản 1 Điều 55 của Luật này (Điểm g Khoản 2 Điều 43)' },
+        { code: 'KTL_08', name: 'Yêu cầu bồi thường đã được giải quyết bằng bản án, quyết định đã có hiệu lực pháp luật (Điểm h Khoản 2 Điều 43)' }
     ];
 
     // ---------------- Cơ cấu tổ chức (trích từ Quản lý đơn vị) ----------------
@@ -2579,7 +2580,7 @@
                     }),
                     gq('BT-2026-018', 'Trần Thu O', STATUS.CHO_PHE_DUYET, {
                         ktlReasonCode: 'KTL_02',
-                        approval: appr('Không thụ lý', 'Không thụ lý hồ sơ yêu cầu bồi thường theo khoản 1 Điều 43 Luật TNBTCNN.', 1,
+                        approval: appr('Không thụ lý', 'Không thụ lý hồ sơ yêu cầu bồi thường theo khoản 2 Điều 43 Luật TNBTCNN.', 1,
                             [{ unitId: 'PLN-02', userId: 'tpbt', action: 'Phê duyệt', note: '', at: '15:00 08/10/2026' }], ['tpbt', 'cuctruong'], '09:00 08/10/2026', { resultStatus: 'Không thụ lý' }),
                         history: [h('Trình phê duyệt', 'canbonv', '09:00 08/10/2026', 'Không thụ lý. Trình Trần Văn Bồi Thường - Phòng Quản lý nghiệp vụ về bồi thường nhà nước.'), h('Phê duyệt', 'tpbt', '15:00 08/10/2026', 'Phê duyệt cấp Phòng Quản lý nghiệp vụ về bồi thường nhà nước; chuyển Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước.')]
                     }),

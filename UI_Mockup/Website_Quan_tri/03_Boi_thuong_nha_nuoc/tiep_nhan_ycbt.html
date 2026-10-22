@@ -493,7 +493,7 @@
                 <div id="overviewFieldsContainer" class="grid-3" style="gap: 16px; margin-bottom: 14px;">
                     <div class="form-group" style="margin-bottom: 0;">
                         <span class="form-label">Loại hồ sơ<span class="required">*</span></span>
-                        <select id="formRequestType" class="form-control"></select>
+                        <select id="formRequestType" class="form-control" onchange="toggleRequestKindGroup()"></select>
                         <div class="error-message">Đây là trường bắt buộc</div>
                     </div>
                     <div class="form-group" style="margin-bottom: 0;">
@@ -524,6 +524,24 @@
                         <datalist id="vuViecLienQuanOptions"></datalist>
                         <div class="error-message" id="formVuViecLienQuanError">Vụ việc không tồn tại trên hệ thống</div>
                     </div>
+                </div>
+                <!-- Loại yêu cầu giải quyết bồi thường: chỉ hiển thị khi Loại hồ sơ = Giải quyết yêu cầu bồi thường; dòng riêng ngay dưới khối tổng quan.
+                     Giá trị lưu (requestKind) dùng chung với phân hệ Giải quyết YCBT: both | money | honor -->
+                <div class="form-group" id="formRequestKindGroup" style="display: none; margin-bottom: 14px;">
+                    <span class="form-label">Loại yêu cầu giải quyết bồi thường<span class="required">*</span></span>
+                    <div class="request-kind-radios" id="formRequestKindRadios" style="min-height: 38px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 28px; background: #f8fafc; padding: 8px 14px; border: 1px solid #cbd5e1; border-radius: 4px;">
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; color: #1e293b; margin: 0;">
+                            <input type="radio" name="formRequestKind" value="both" checked> Yêu cầu cả hai (Bồi thường tiền &amp; Phục hồi danh dự)
+                        </label>
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; color: #1e293b; margin: 0;">
+                            <input type="radio" name="formRequestKind" value="money"> Chỉ yêu cầu bồi thường thiệt hại bằng tiền
+                        </label>
+                        <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; color: #1e293b; margin: 0;">
+                            <input type="radio" name="formRequestKind" value="honor"> Chỉ yêu cầu phục hồi danh dự
+                        </label>
+                    </div>
+                    <!-- Xem chi tiết: hiển thị giá trị dạng văn bản chỉ đọc -->
+                    <input id="formRequestKindText" class="form-control" disabled style="display: none;">
                 </div>
 
                 <div class="info-group-title">Thông tin người yêu cầu</div>
@@ -700,6 +718,15 @@
                     </div>
                 </div>
 
+                <!-- Hành vi gây thiệt hại của người thi hành công vụ: không bắt buộc, mọi Loại hồ sơ; lưu hanhVi (kế thừa sang Xác định CQGQBT / Giải quyết YCBT) -->
+                <div class="info-group-title">Thông tin hành vi gây thiệt hại</div>
+                <div class="nyc-form-card">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <span class="form-label">Hành vi gây thiệt hại của người thi hành công vụ</span>
+                        <textarea id="formHanhVi" class="form-control" rows="3" maxlength="2000" style="resize: vertical; min-height: 76px; font-family: inherit; font-size: 13px;" placeholder="Tóm tắt hành vi gây thiệt hại của người thi hành công vụ"></textarea>
+                    </div>
+                </div>
+
                 <div class="info-group-title">Văn bản làm căn cứ yêu cầu bồi thường</div>
                 <div class="table-container">
                     <table class="custom-table" style="min-width:760px;">
@@ -840,6 +867,13 @@
         const REQUEST_TYPE_XDCQ = "Xác định cơ quan giải quyết bồi thường";
         const REQUEST_TYPE_YCBT = "Giải quyết yêu cầu bồi thường";
         const REQUEST_TYPE_YCBT_OLD = "Yêu cầu bồi thường";
+        // Loại yêu cầu giải quyết bồi thường (chỉ Loại hồ sơ Giải quyết YCBT): lưu requestKind, dùng chung với phân hệ Giải quyết YCBT
+        const REQUEST_KIND_DEFAULT = "both";
+        const REQUEST_KIND_LABELS = {
+            both: "Yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự)",
+            money: "Chỉ yêu cầu bồi thường thiệt hại bằng tiền",
+            honor: "Chỉ yêu cầu phục hồi danh dự"
+        };
         const wardsByCity = {
             "Thành phố Hà Nội": ["00001 - Phường Ba Đình", "00004 - Phường Hoàn Kiếm", "00007 - Phường Cầu Giấy", "00010 - Phường Thanh Xuân"],
             "Thành phố Hồ Chí Minh": ["26734 - Phường Bến Thành", "26737 - Phường Sài Gòn", "26740 - Phường Tân Định", "26743 - Phường Chợ Lớn"],
@@ -1375,14 +1409,14 @@
             return {
                 id: "WF:" + rec.code, code: rec.code, maVuViec: rec.maVuViec || "", nyc: rec.nycName, nycPhone: rec.nycPhone || "",
                 nguonHoSo: getSourceOf(rec), nopKenh: getRecordReceiveMethod(rec),
-                fieldGroup: "", fieldGroupName: rec.linhVuc || "", linhVuc: rec.linhVuc || "", requestType: rec.loaiYeuCau,
+                fieldGroup: "", fieldGroupName: rec.linhVuc || "", linhVuc: rec.linhVuc || "", requestType: rec.loaiYeuCau, requestKind: rec.requestKind || "",
                 receivedAt: fromWfTime(rec.receivedAt) || rec.date, date: rec.date,
                 // Cán bộ tiếp nhận: hồ sơ nguồn khác Tiếp nhận mới lấy người đầu tiên thao tác Phân công; chưa có hiển thị "-"
                 receivedBy: rec.receivedBy || "", rootUnitId: rec.rootUnitId, currentUnitId: rec.currentUnitId, status: rec.status,
                 nycTinhThanh: rec.nycTinhThanh, nycPhuongXa: rec.nycPhuongXa, nycAddressDetail: rec.nycAddressDetail,
                 nycType: BTNN_WF.nycTypeOf(rec), nycDocType: rec.nycDocType || "", nycDocNo: rec.nycDocNo || "", nycOrgCode: rec.nycOrgCode || "",
                 nycEmail: rec.nycEmail || "", nycCountry: rec.nycCountry || "Việt Nam", nbthOrgName: rec.nbthOrgName || "", nbthOrgCode: rec.nbthOrgCode || "",
-                vanBanCanCu: rec.vanBanCanCu || [], vuViecLienQuan: rec.vuViecLienQuan || "", agency: BTNN_WF.unitName(rec.rootUnitId), fromWorkflow: true
+                vanBanCanCu: rec.vanBanCanCu || [], vuViecLienQuan: rec.vuViecLienQuan || "", hanhVi: rec.hanhVi || "", agency: BTNN_WF.unitName(rec.rootUnitId), fromWorkflow: true
             };
         }
         // Hồ sơ luồng do cán bộ đang đăng nhập tiếp nhận tại màn hình này (không có trong danh sách tiếp nhận của trình duyệt)
@@ -1438,6 +1472,26 @@
             const opts = types.map(t => `<option value="${escapeAttr(t)}">${escapeHtml(t)}</option>`).join("");
             document.getElementById("filterRequestType").innerHTML = `<option value="">Tất cả</option>${opts}`;
             document.getElementById("formRequestType").innerHTML = `<option value="">Chọn loại hồ sơ...</option>${opts}`;
+        }
+
+        // Loại yêu cầu giải quyết bồi thường: chỉ hiển thị khi Loại hồ sơ = Giải quyết yêu cầu bồi thường
+        function isYcbtRequestType() { return getValue("formRequestType") === REQUEST_TYPE_YCBT; }
+        function toggleRequestKindGroup() {
+            document.getElementById("formRequestKindGroup").style.display = isYcbtRequestType() ? "block" : "none";
+        }
+        function getRequestKind() {
+            const checked = document.querySelector('input[name="formRequestKind"]:checked');
+            return checked ? checked.value : REQUEST_KIND_DEFAULT;
+        }
+        // Thêm mới / Sửa: chọn radio (mặc định Yêu cầu cả hai); Xem chi tiết: hiển thị văn bản, chưa có dữ liệu hiển thị "-"
+        function setRequestKind(value, isReadOnly) {
+            const kind = REQUEST_KIND_LABELS[value] ? value : REQUEST_KIND_DEFAULT;
+            document.querySelectorAll('input[name="formRequestKind"]').forEach(r => { r.checked = r.value === kind; });
+            document.getElementById("formRequestKindRadios").style.display = isReadOnly ? "none" : "flex";
+            const textEl = document.getElementById("formRequestKindText");
+            textEl.style.display = isReadOnly ? "block" : "none";
+            textEl.value = REQUEST_KIND_LABELS[value] || "-";
+            toggleRequestKindGroup();
         }
 
         // Hình thức tiếp nhận (DM_25): bộ lọc gồm Tất cả + 04 giá trị; form Tiếp nhận mới chỉ gồm Trực tiếp, Qua dịch vụ bưu chính
@@ -1674,6 +1728,7 @@
                 id: "WF-" + claim.code,
                 code: claim.code,
                 loaiYeuCau: claim.requestType,
+                requestKind: claim.requestType === REQUEST_TYPE_YCBT ? (claim.requestKind || undefined) : undefined,
                 module: claim.requestType === REQUEST_TYPE_XDCQ ? "XD" : "YCBT",
                 source: "Tiếp nhận",
                 nguonHoSo: SOURCES.TIEP_NHAN,
@@ -1701,7 +1756,7 @@
                 nycPhuongXa: claim.nycPhuongXa,
                 nycAddressDetail: claim.nycAddressDetail,
                 linhVuc: getFieldGroupName(claim.fieldGroup),
-                hanhVi: "",
+                hanhVi: claim.hanhVi || "",
                 hinhThucNhan: "Phương thức điện tử",
                 attachedDocs: (claim.receptionDocs || []).map(d => ({ name: d.name, file: d.file })),
                 vanBanCanCu: getBasisDocs(claim).map(d => ({ name: d.name, file: d.file })),
@@ -1808,6 +1863,8 @@
                 item.receivedBy = (SEED_OFFICERS[item.rootUnitId] || SEED_OFFICERS["BTP-01"])[variant.by === "other" ? 1 : 0];
                 item.nopKenh = normalizeReceiveMethod(item.nopKenh);
                 delete item.caseName;
+                // Hồ sơ mẫu Giải quyết YCBT: Loại yêu cầu giải quyết bồi thường mặc định Yêu cầu cả hai
+                if (item.requestType === REQUEST_TYPE_YCBT && !item.requestKind) item.requestKind = REQUEST_KIND_DEFAULT;
             });
             spreadReceptionDates(list);
             return list;
@@ -1849,6 +1906,12 @@
                     item.nycOrgCode = seed.nycOrgCode || "";
                     const rec = BTNN_WF.getRecord(item.code);
                     if (rec) { rec.nycType = item.nycType; rec.nycOrgCode = item.nycOrgCode; BTNN_WF.upsertRecord(rec); }
+                }
+                // Bản ghi mẫu lưu trước khi có Loại yêu cầu giải quyết bồi thường: bổ sung giá trị mẫu (đồng bộ hồ sơ luồng chưa có giá trị)
+                if (item && !item.requestKind && seed.requestKind && item.requestType === REQUEST_TYPE_YCBT) {
+                    item.requestKind = seed.requestKind;
+                    const rec = BTNN_WF.getRecord(item.code);
+                    if (rec && !rec.requestKind) { rec.requestKind = item.requestKind; BTNN_WF.upsertRecord(rec); }
                 }
             });
 
@@ -2241,6 +2304,7 @@
                 setValue("formRequesterRole", claim ? (claim.nycRole || "Người bị thiệt hại") : "Người bị thiệt hại");
                 setValue("formFieldGroup", claim ? (claim.fieldGroup || "") : "");
             }
+            setRequestKind(claim ? claim.requestKind : REQUEST_KIND_DEFAULT, isReadOnly && !!claim);
             // Vụ việc liên quan: Bỏ đi khi thêm mới; Xem chi tiết / Sửa hiển thị theo dữ liệu bản ghi trên lưới 2 cột
             const ovContainer = document.getElementById("overviewFieldsContainer");
             const vvlqGroup = document.getElementById("formVuViecLienQuanGroup");
@@ -2272,6 +2336,8 @@
             setValue("formNycDocNo", claim ? (claim.nycDocNo || "") : "");
             setValue("formNycOrgCode", claim ? (claim.nycOrgCode || "") : "");
             setValue("formEmail", claim ? (claim.nycEmail || "") : "");
+            // Hành vi gây thiệt hại của người thi hành công vụ: Xem chi tiết không có dữ liệu hiển thị "-"
+            setValue("formHanhVi", claim ? (claim.hanhVi || (isReadOnly ? "-" : "")) : "");
             if (isReadOnly && claim) setSelectDisplay("formCountry", claim.nycCountry || COUNTRY_VN); else setValue("formCountry", claim ? (claim.nycCountry || COUNTRY_VN) : COUNTRY_VN);
             // Màn Xem chi tiết: Địa chỉ hiển thị 01 dòng; Thêm mới/Sửa: Tỉnh/Thành phố, Phường/Xã, Địa chỉ chi tiết
             document.querySelectorAll("#formView .nyc-addr-view, #formView .nbth-addr-view").forEach(el => { el.style.display = isReadOnly ? "" : "none"; });
@@ -2301,7 +2367,7 @@
             renderBasisRows();
 
             // Toggle input disable state
-            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formPhone", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress", "formNycDocType", "formNycDocNo", "formNycOrgCode", "formEmail", "formCountry", "nbthOrgName", "nbthOrgCode", "formVuViecLienQuan"];
+            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formPhone", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress", "formNycDocType", "formNycDocNo", "formNycOrgCode", "formEmail", "formCountry", "nbthOrgName", "nbthOrgCode", "formVuViecLienQuan", "formHanhVi"];
             controlIds.forEach(ctrlId => {
                 const el = document.getElementById(ctrlId);
                 if (el) el.disabled = isReadOnly;
@@ -2326,7 +2392,7 @@
             basisRows = [];
             const formView = document.getElementById("formView");
             if (formView) formView.classList.remove("readonly-mode");
-            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formPhone", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress", "formNycDocType", "formNycDocNo", "formNycOrgCode", "formEmail", "formCountry", "nbthOrgName", "nbthOrgCode", "formVuViecLienQuan"];
+            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formPhone", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress", "formNycDocType", "formNycDocNo", "formNycOrgCode", "formEmail", "formCountry", "nbthOrgName", "nbthOrgCode", "formVuViecLienQuan", "formHanhVi"];
             controlIds.forEach(ctrlId => {
                 const el = document.getElementById(ctrlId);
                 if (el) el.disabled = false;
@@ -2415,6 +2481,8 @@
                     return;
                 }
                 claim.requestType = getValue("formRequestType");
+                // Loại yêu cầu giải quyết bồi thường: chỉ lưu khi Loại hồ sơ = Giải quyết yêu cầu bồi thường
+                if (claim.requestType === REQUEST_TYPE_YCBT) claim.requestKind = getRequestKind(); else delete claim.requestKind;
                 Object.assign(claim, readNycFields());
                 claim.nopKenh = getValue("formReceiveMethod");
                 claim.fieldGroup = getValue("formFieldGroup");
@@ -2427,6 +2495,7 @@
                 claim.address = getValue("formAddress");
                 claim.vanBanCanCu = vanBanCanCuVal;
                 claim.vuViecLienQuan = vuViecLienQuanVal;
+                claim.hanhVi = getValue("formHanhVi");
                 delete claim.vanBanCanCuTen;
                 delete claim.vanBanCanCuFile;
                 claim.receptionDocs = cleanDocs;
@@ -2460,6 +2529,7 @@
                 maVuViec: newCode,
                 nguonHoSo: SOURCES.TIEP_NHAN,
                 requestType: getValue("formRequestType"),
+                requestKind: isYcbtRequestType() ? getRequestKind() : undefined,
                 nyc: getValue("formRequester"),
                 nycName: getValue("formRequester"),
                 nycPhone: normalizeVnPhone(getValue("formPhone"))
@@ -2476,6 +2546,7 @@
                 address: getValue("formAddress"),
                 vanBanCanCu: vanBanCanCuVal,
                 vuViecLienQuan: vuViecLienQuanVal,
+                hanhVi: getValue("formHanhVi"),
                 status: "Chờ phân công",
                 agency: BTNN_WF.unitName(CURRENT_ROOT_UNIT),
                 totalNum: 0,

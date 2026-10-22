@@ -176,7 +176,7 @@ Màn hình được thiết kế dưới dạng **Trang nhập liệu toàn tran
 | Tên văn bản, căn cứ | String(500) | Không | Trống | Control UI: Input text, placeholder *"Nhập tên văn bản, căn cứ..."*. |
 | Tải file | File | Không | Chưa có file | Control UI: Nút `Tải file`; sau khi tải lên hiển thị tên file thay cho nút kèm liên kết xem và xóa. Áp dụng [BR-FILE-010]. |
 | Thao tác | String(255) | - | - | Gồm liên kết `Xem file` (mở tab mới) và `Xóa` (Custom Confirmation Modal). |
-| Hành vi gây thiệt hại của người thi hành công vụ | Text(2000) | Có | Trống | Control UI: Textarea. Tóm tắt hành vi khởi tố, điều tra, truy tố, xét xử hoặc thi hành án sai trái của người thi hành công vụ. Áp dụng rule bắt buộc [BR-VAL-001]. |
+| Hành vi gây thiệt hại của người thi hành công vụ | Text(2000) | Có | Trống | Control UI: Textarea.<br>- Placeholder: `Tóm tắt hành vi gây thiệt hại của người thi hành công vụ`.<br>- Tối đa 2000 ký tự. |
 | Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại | Text(2000) | Có | Trống | Control UI: Textarea. Phân tích, làm rõ mối quan hệ nhân quả giữa hành vi trái pháp luật và các tổn thất thực tế. Áp dụng rule bắt buộc [BR-VAL-001]. |
 | **HÌNH THỨC ĐỀ NGHỊ PHỤC HỒI DANH DỰ** | Section | - | - | Khối chọn hình thức (bắt buộc chọn ít nhất 01 hình thức): |
 | Trực tiếp xin lỗi và cải chính công khai (Điều 58) | Boolean | Không | Checked | Control UI: Checkbox. Tổ chức trực tiếp tại nơi cư trú / nơi làm việc. |

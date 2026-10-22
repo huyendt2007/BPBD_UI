@@ -117,6 +117,7 @@
 | 5 | Đoạn 1 | `##NgayTiepNhan##` | Tiếp nhận hồ sơ | Thời điểm tiếp nhận | Định dạng: `ngày dd tháng mm năm yyyy` | `ngày 10 tháng 03 năm 2026` |
 | 6 | Đoạn 1 | `##HinhThucNopHoSo##` | Tiếp nhận hồ sơ | Hình thức nộp hồ sơ | Lấy theo đúng giá trị của trường Hình thức nộp hồ sơ (hoặc Hình thức tiếp nhận) trên màn hình Tiếp nhận hồ sơ trong tài liệu (gồm "Trực tiếp" hoặc "Qua dịch vụ bưu chính"). Khi đưa vào biểu mẫu văn bản, hiển thị chữ thường: `trực tiếp` hoặc `qua dịch vụ bưu chính` | `trực tiếp` hoặc `qua dịch vụ bưu chính` |
 | 7 | Đoạn 2 | `##DanhSachGiayToTiepNhan##` | Tiếp nhận hồ sơ | Tên văn bản, căn cứ & Tên tài liệu | Lấy danh sách tài liệu từ cả 2 phần trên màn hình Tiếp nhận hồ sơ:<br>+ Phần **Văn bản làm căn cứ yêu cầu bồi thường**: Lấy theo trường `Tên văn bản, căn cứ`.<br>+ Phần **Bảng tài liệu đính kèm**: Lấy theo trường `Tên tài liệu` (bao gồm giấy tờ tùy thân CCCD đối với cá nhân, hoặc Giấy chứng nhận ĐKKD / quyết định thành lập, giấy ủy quyền đối với tổ chức).<br>Tự động đánh số thứ tự liên tục từng dòng dạng:<br>`- 1. [Tên văn bản, căn cứ / Tên tài liệu]` | `- 1. Bản án hình sự phúc thẩm số 18/2025/HSPT<br>- 2. Đơn yêu cầu bồi thường<br>- 3. Giấy chứng nhận thương tật (hoặc Giấy chứng nhận ĐKKD)` |
+| 8 | Nơi nhận | `##NoiNhan##` | Tiếp nhận hồ sơ > Chi tiết hồ sơ tiếp nhận (hoặc Danh sách hồ sơ / Tiếp nhận hồ sơ) > Thao tác "In Phiếu tiếp nhận" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như trên;`<br>`- Lưu: VT, HSVV.` |
 
 ---
 
@@ -136,30 +137,66 @@
 | 5 | Thân văn bản | `##NgayTiepNhan##` | Nhập liệu hồ sơ vụ việc | Ngày văn bản yêu cầu bồi thường | Lấy theo thông tin Ngày văn bản yêu cầu bồi thường trên màn hình Nhập liệu hồ sơ vụ việc. Định dạng: `ngày dd tháng mm năm yyyy` | `ngày 05 tháng 03 năm 2026` |
 | 6 | Thân văn bản | `##HinhThucNopHoSo##` | Nhập liệu hồ sơ vụ việc | Hình thức tiếp nhận | Lấy theo thông tin Hình thức tiếp nhận trên màn hình Nhập liệu hồ sơ vụ việc. Hiển thị chữ thường: `trực tiếp` hoặc `qua dịch vụ bưu chính` | `qua dịch vụ bưu chính` |
 | 7 | Thân văn bản | `##DanhSachGiayToBoSung##` | Nhập liệu hồ sơ vụ việc > Form Yêu cầu bổ sung hồ sơ | Nội dung yêu cầu bổ sung | Mỗi dòng chuyển thành dạng `1. [Tên giấy tờ]`. Loại bỏ dòng trống | `1. Bản sao có chứng thực giấy tờ tùy thân / giấy tờ pháp lý của tổ chức<br>2. Hóa đơn chứng từ chứng minh thiệt hại thực tế` |
+| 8 | Nơi nhận | `##NoiNhan##` | Nhập liệu hồ sơ vụ việc > Thao tác "Yêu cầu bổ sung hồ sơ" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như trên;`<br>`- Lưu: VT, HSVV.` |
 
 ---
 
 ### 3. MẪU SỐ 04/BTNN: THÔNG BÁO VỀ VIỆC THỤ LÝ / KHÔNG THỤ LÝ HỒ SƠ YÊU CẦU BỒI THƯỜNG
-- **Tên tệp template**: `Mau_04_BTNN_Template.docx`
-- **Mục đích**: Thông báo chính thức cho người yêu cầu về việc cơ quan có thẩm quyền thụ lý hồ sơ (đủ điều kiện) hoặc không thụ lý hồ sơ (không đủ điều kiện, kèm lý do và trả lại hồ sơ).
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Thụ lý hồ sơ > Thao tác "Thụ lý hồ sơ" HOẶC "Không thụ lý hồ sơ"*.
+- **Tên tệp template**: `Mau_04_BTNN_Template.docx` (dùng chung cho 02 trường hợp; hệ thống điền biến theo trường hợp sinh văn bản).
+- **Mục đích**: Thông báo chính thức cho người yêu cầu bồi thường về việc cơ quan giải quyết bồi thường thụ lý hoặc không thụ lý hồ sơ yêu cầu bồi thường.
+- **Phân tách trường hợp**: Mẫu 04/BTNN được sinh theo 01 trong 02 trường hợp dưới đây, mỗi trường hợp có bảng mapping riêng. Tính năng gọi Mẫu 04/BTNN phải ghi rõ trường hợp:
+  + `Mẫu 04/BTNN - Thông báo thụ lý hồ sơ yêu cầu bồi thường`: theo [3.1](#mau-04-thu-ly).
+  + `Mẫu 04/BTNN - Thông báo không thụ lý hồ sơ yêu cầu bồi thường`: theo [3.2](#mau-04-khong-thu-ly).
+- **Ghi chú (7) của mẫu**: nội dung đoạn sau câu "...nhận thấy:" ghi theo đúng 01 trong 02 trường hợp; không ghi đồng thời cả hai.
+
+<a id="mau-04-thu-ly"></a>
+#### 3.1. Trường hợp Thông báo thụ lý hồ sơ yêu cầu bồi thường
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Giải quyết yêu cầu bồi thường > Popup Trình duyệt tiếp nhận hồ sơ* (Cán bộ xử lý trình Lãnh đạo Nội dung trình `Tiếp nhận hồ sơ` sau khi Nhập liệu hồ sơ vụ việc; nút `Xem dự thảo`, `Tải file`).
+- **Lưu và ban hành**: Văn bản lưu cùng phiếu trình `Tiếp nhận hồ sơ`; khi Thủ trưởng cơ quan giải quyết bồi thường Thụ lý hồ sơ `Chờ thụ lý`, văn bản là văn bản ban hành của hồ sơ. Không có hình thức ký số.
 - **Quy tắc đặt tên file tải về**: `Mau_04_BTNN_Thong_bao_thu_ly_[Mã vụ việc].docx`
 
-#### Bảng mapping chi tiết Mẫu 04/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
 |:---:|---|---|---|---|---|---|
-| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Thụ lý hồ sơ > Form Ban hành thông báo thụ lý / không thụ lý | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `24/TB-STP` |
-| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Thụ lý hồ sơ > Form Ban hành thông báo thụ lý / không thụ lý | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 12 tháng 03 năm 2026` |
-| 3 | Tiêu đề trích yếu | `##TieuDeThongBaoThuLy##` | Thụ lý hồ sơ | Kết quả thụ lý | Control UI: Radio.<br>Gồm:<br>+ thụ lý hồ sơ yêu cầu bồi thường<br>+ không thụ lý hồ sơ yêu cầu bồi thường | Chữ thường, hiển thị theo kết quả phê duyệt | `thụ lý hồ sơ yêu cầu bồi thường` |
-| 4 | Kính gửi | `##TenNguoiYeuCauBoiThuong##` | Thụ lý hồ sơ | Họ và tên / Tên tổ chức yêu cầu bồi thường | Lấy theo trường `Loại người yêu cầu`:<br>- Khi là `Cá nhân`: Lấy theo trường `Họ và tên`.<br>- Khi là `Tổ chức`: Lấy theo trường `Tên tổ chức`. | `Lê Văn Chung` hoặc `Công ty TNHH Vận tải & Xây lắp An Phát` |
-| 5 | Dưới Kính gửi | `##DiaChiNguoiYeuCauBoiThuong##` | Thụ lý hồ sơ | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Địa chỉ của người yêu cầu bồi thường (nơi cư trú đối với Cá nhân, hoặc địa chỉ trụ sở chính đối với Tổ chức): Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng ", ". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Số 88 đường Giải Phóng, TP. Nam Định` |
-| 6 | Thân văn bản | `##NgayTiepNhan##` | Thụ lý hồ sơ | Thời điểm tiếp nhận hồ sơ | Định dạng `ngày dd/mm/yyyy` | `ngày 12/03/2026` |
-| 7 | Thân văn bản | `##NoiDungThongBaoThuLy##` | Thụ lý hồ sơ > Form Ban hành thông báo thụ lý / không thụ lý | Nội dung kết luận thụ lý / lý do không thụ lý | - Trường hợp Thông báo này là Thông báo thụ lý hồ sơ yêu cầu bồi thường ghi: <br>
- “Hồ sơ của Ông/Bà đầy đủ điều kiện thụ lý hồ sơ yêu cầu bồi thường theo quy định của Luật Trách nhiệm bồi thường của Nhà nước. Căn cứ quy định tại khoản 1 Điều 43 Luật Trách nhiệm bồi thường của nhà nước, ...(tên cơ quan giải quyết bồi thường)... thụ lý hồ sơ yêu cầu bồi thường của Ông/Bà và thông báo để Ông/Bà được biết”. <br>
-- Trường hợp Thông báo này là Thông báo không thụ lý hồ sơ yêu cầu bồi thường ghi: <br>
-Căn cứ theo quy định tại điểm…… khoản 2/khoản 3 Điều 43 Luật Trách nhiệm bồi thường của Nhà nước, ...(tên cơ quan giải quyết bồi thường)... không thụ lý hồ sơ yêu cầu bồi thường của Ông/Bà vì ...(ghi lý do không thụ lý hồ sơ yêu cầu bồi thường tương ứng với quy định tại các điểm của khoản 2/khoản 3 Điều 43 của Luật Trách nhiệm bồi thường của Nhà nước).<br>
-Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ sơ yêu cầu bồi thường (gửi kèm Thông báo này) và thông báo để Ông/Bà được biết”.
- |
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Giải quyết yêu cầu bồi thường > Popup Trình duyệt tiếp nhận hồ sơ | Số, ký hiệu văn bản | Cán bộ nhập trên popup (bắt buộc). Giữ nguyên giá trị đã nhập | `24/TB-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Giải quyết yêu cầu bồi thường > Popup Trình duyệt tiếp nhận hồ sơ | Ngày văn bản | Cán bộ chọn trên DatePicker (bắt buộc, `dd/mm/yyyy`). Định dạng trên mẫu: `ngày dd tháng mm năm yyyy` | `ngày 12 tháng 03 năm 2026` |
+| 3 | Tiêu đề trích yếu | `##TieuDeThongBaoThuLy##` | - | - | Giá trị cố định: `thụ lý hồ sơ yêu cầu bồi thường` | `thụ lý hồ sơ yêu cầu bồi thường` |
+| 4 | Kính gửi | `##TenNguoiYeuCauBoiThuong##` | Giải quyết yêu cầu bồi thường | Tên cá nhân/Tổ chức yêu cầu | Họ và tên (người yêu cầu là cá nhân) hoặc Tên tổ chức (người yêu cầu là tổ chức); giữ nguyên theo hồ sơ | `Lê Văn Chung` |
+| 5 | Dưới Kính gửi | `##DiaChiNguoiYeuCauBoiThuong##` | Giải quyết yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng ", ". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Số 88 đường Giải Phóng, TP. Nam Định` |
+| 6 | Thân văn bản | `##NgayTiepNhan##` | Giải quyết yêu cầu bồi thường | Thời điểm tiếp nhận hồ sơ | Định dạng `dd/mm/yyyy` | `12/03/2026` |
+| 7 | Thân văn bản (Ghi chú 7) | `##NoiDungThongBaoThuLy##` | - | - | Giá trị cố định, thay `[Tên CQGQBT]` bằng `##TenCoQuanGiaiQuyetBoiThuong##`:<br>*"Hồ sơ của Ông/Bà đầy đủ điều kiện thụ lý hồ sơ yêu cầu bồi thường theo quy định của Luật Trách nhiệm bồi thường của Nhà nước. Căn cứ quy định tại khoản 1 Điều 43 Luật Trách nhiệm bồi thường của nhà nước, [Tên CQGQBT] thụ lý hồ sơ yêu cầu bồi thường của Ông/Bà và thông báo để Ông/Bà được biết."* | *"Hồ sơ của Ông/Bà đầy đủ điều kiện thụ lý hồ sơ yêu cầu bồi thường theo quy định của Luật Trách nhiệm bồi thường của Nhà nước. Căn cứ quy định tại khoản 1 Điều 43 Luật Trách nhiệm bồi thường của nhà nước, Sở Tư pháp Thành phố Hà Nội thụ lý hồ sơ yêu cầu bồi thường của Ông/Bà và thông báo để Ông/Bà được biết."* |
+| 8 | Nơi nhận | `##NoiNhan##` | Giải quyết yêu cầu bồi thường > Popup Trình duyệt tiếp nhận hồ sơ | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như trên;`<br>`- Sở Tư pháp Thành phố Hà Nội (để biết);`<br>`- Lưu: VT, HSVV.` |
+
+<a id="mau-04-khong-thu-ly"></a>
+#### 3.2. Trường hợp Thông báo không thụ lý hồ sơ yêu cầu bồi thường
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Giải quyết yêu cầu bồi thường > Popup Không thụ lý hồ sơ* (Cán bộ xử lý trình Lãnh đạo; văn bản dự thảo `Theo Mẫu 04/BTNN do hệ thống tự động sinh`).
+- **Quy tắc đặt tên file tải về**: `Mau_04_BTNN_Thong_bao_khong_thu_ly_[Mã vụ việc].docx`
+- **Quy tắc riêng cho lý do `Yêu cầu bồi thường không thuộc thẩm quyền giải quyết của mình`**: Đoạn 2 của `##NoiDungThongBaoThuLy##` không ghi trả lại hồ sơ mà ghi chuyển hồ sơ cho đơn vị được chuyển đến chọn tại khối `Chuyển cơ quan tiếp nhận mới` (STT 7).
+
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Giải quyết yêu cầu bồi thường > Popup Không thụ lý hồ sơ | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `25/TB-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Giải quyết yêu cầu bồi thường > Popup Không thụ lý hồ sơ | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 12 tháng 03 năm 2026` |
+| 3 | Tiêu đề trích yếu | `##TieuDeThongBaoThuLy##` | - | - | Giá trị cố định: `không thụ lý hồ sơ yêu cầu bồi thường` | `không thụ lý hồ sơ yêu cầu bồi thường` |
+| 4 | Kính gửi | `##TenNguoiYeuCauBoiThuong##` | Giải quyết yêu cầu bồi thường | Tên cá nhân/Tổ chức yêu cầu | Họ và tên (người yêu cầu là cá nhân) hoặc Tên tổ chức (người yêu cầu là tổ chức); giữ nguyên theo hồ sơ | `Lê Văn Chung` |
+| 5 | Dưới Kính gửi | `##DiaChiNguoiYeuCauBoiThuong##` | Giải quyết yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng ", ". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Số 88 đường Giải Phóng, TP. Nam Định` |
+| 6 | Thân văn bản | `##NgayTiepNhan##` | Giải quyết yêu cầu bồi thường | Thời điểm tiếp nhận hồ sơ | Định dạng `dd/mm/yyyy` | `12/03/2026` |
+| 7 | Thân văn bản (Ghi chú 7) | `##NoiDungThongBaoThuLy##` | Giải quyết yêu cầu bồi thường > Popup Không thụ lý hồ sơ | Lý do không thụ lý, Diễn giải, Chuyển cơ quan tiếp nhận mới | Sinh 02 đoạn, thay `[Tên CQGQBT]` bằng `##TenCoQuanGiaiQuyetBoiThuong##`:<br>- Đoạn 1: *"Căn cứ theo quy định tại [Điểm, khoản] Điều 43 Luật Trách nhiệm bồi thường của Nhà nước, [Tên CQGQBT] không thụ lý hồ sơ yêu cầu bồi thường của Ông/Bà vì [Lý do không thụ lý]."*<br>+ `[Điểm, khoản]`: lấy theo căn cứ ghi kèm giá trị `Lý do không thụ lý` đã chọn, viết thường.<br>+ `[Lý do không thụ lý]`: giá trị `Lý do không thụ lý` đã chọn, viết thường chữ cái đầu, bỏ phần căn cứ trong ngoặc; có `Diễn giải` thì nối thêm `: [Diễn giải]`.<br>- Đoạn 2 (lý do khác `Yêu cầu bồi thường không thuộc thẩm quyền giải quyết của mình`): *"Do vậy, [Tên CQGQBT] trả lại hồ sơ yêu cầu bồi thường (gửi kèm Thông báo này) và thông báo để Ông/Bà được biết."*<br>- Đoạn 2 (lý do `Yêu cầu bồi thường không thuộc thẩm quyền giải quyết của mình`): *"Do vậy, [Tên CQGQBT] chuyển hồ sơ yêu cầu bồi thường của Ông/Bà cho [Tên đơn vị được chuyển đến] và thông báo để Ông/Bà được biết."*<br>+ `[Tên đơn vị được chuyển đến]`: tùy chọn `Chuyển Bộ Tư pháp`: `Bộ Tư pháp`; tùy chọn `Chuyển Sở Tư pháp`: tên Sở Tư pháp quản lý đơn vị do hệ thống xác định; tùy chọn `Chuyển trực tiếp tới Cơ quan giải quyết bồi thường`: tên đơn vị chọn tại `Cơ quan tiếp nhận mới`. | - Lý do thời hiệu đã hết: *"Căn cứ theo quy định tại điểm b khoản 2 Điều 43 Luật Trách nhiệm bồi thường của Nhà nước, Sở Tư pháp Thành phố Hà Nội không thụ lý hồ sơ yêu cầu bồi thường của Ông/Bà vì thời hiệu yêu cầu bồi thường đã hết.<br>Do vậy, Sở Tư pháp Thành phố Hà Nội trả lại hồ sơ yêu cầu bồi thường (gửi kèm Thông báo này) và thông báo để Ông/Bà được biết."*<br>- Lý do không thuộc thẩm quyền, tùy chọn `Chuyển Sở Tư pháp`: *"Căn cứ theo quy định tại điểm a khoản 2 Điều 43 Luật Trách nhiệm bồi thường của Nhà nước, Ủy ban nhân dân quận Hoàng Mai không thụ lý hồ sơ yêu cầu bồi thường của Ông/Bà vì yêu cầu bồi thường không thuộc thẩm quyền giải quyết của mình.<br>Do vậy, Ủy ban nhân dân quận Hoàng Mai chuyển hồ sơ yêu cầu bồi thường của Ông/Bà cho Sở Tư pháp Thành phố Hà Nội và thông báo để Ông/Bà được biết."* |
+| 8 | Nơi nhận | `##NoiNhan##` | Giải quyết yêu cầu bồi thường > Popup Không thụ lý hồ sơ | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như trên;`<br>`- Sở Tư pháp Thành phố Hà Nội (để biết);`<br>`- Lưu: VT, HSVV.` |
+
+
+**Đoạn 2 của `##NoiDungThongBaoThuLy##` theo từng Lý do không thụ lý:**
+
+| STT | Lý do không thụ lý | `[Điểm, khoản]` Điều 43 | Xử lý hồ sơ | Đoạn 2 |
+|:---:|---|---|---|---|
+| 1 | Yêu cầu bồi thường không thuộc thẩm quyền giải quyết của mình | `điểm a khoản 2` | Chuyển hồ sơ | *"Do vậy, [Tên CQGQBT] chuyển hồ sơ yêu cầu bồi thường của Ông/Bà cho [Tên đơn vị được chuyển đến] và thông báo để Ông/Bà được biết."* |
+| 2 | Thời hiệu yêu cầu bồi thường đã hết | `điểm b khoản 2` | Trả lại hồ sơ | *"Do vậy, [Tên CQGQBT] trả lại hồ sơ yêu cầu bồi thường (gửi kèm Thông báo này) và thông báo để Ông/Bà được biết."* |
+| 3 | Yêu cầu bồi thường không thuộc phạm vi trách nhiệm bồi thường của Nhà nước được quy định tại Chương II của Luật này | `điểm c khoản 2` | Trả lại hồ sơ | *"Do vậy, [Tên CQGQBT] trả lại hồ sơ yêu cầu bồi thường (gửi kèm Thông báo này) và thông báo để Ông/Bà được biết."* |
+| 4 | Người yêu cầu bồi thường không phải là người có quyền yêu cầu bồi thường theo quy định tại Điều 5 của Luật này | `điểm d khoản 2` | Trả lại hồ sơ | *"Do vậy, [Tên CQGQBT] trả lại hồ sơ yêu cầu bồi thường (gửi kèm Thông báo này) và thông báo để Ông/Bà được biết."* |
+| 5 | Hồ sơ không đầy đủ theo quy định tại Điều 41 của Luật này mà người yêu cầu bồi thường không bổ sung trong thời hạn quy định tại khoản 3 Điều 42 của Luật này | `điểm đ khoản 2` | Trả lại hồ sơ | *"Do vậy, [Tên CQGQBT] trả lại hồ sơ yêu cầu bồi thường (gửi kèm Thông báo này) và thông báo để Ông/Bà được biết."* |
+| 6 | Yêu cầu bồi thường đã được thực hiện theo quy định tại điểm a khoản 1 Điều 52 của Luật này và đã được Tòa án có thẩm quyền thụ lý theo thủ tục tố tụng dân sự | `điểm e khoản 2` | Trả lại hồ sơ | *"Do vậy, [Tên CQGQBT] trả lại hồ sơ yêu cầu bồi thường (gửi kèm Thông báo này) và thông báo để Ông/Bà được biết."* |
+| 7 | Yêu cầu bồi thường đã được Tòa án có thẩm quyền chấp nhận theo quy định tại khoản 1 Điều 55 của Luật này | `điểm g khoản 2` | Trả lại hồ sơ | *"Do vậy, [Tên CQGQBT] trả lại hồ sơ yêu cầu bồi thường (gửi kèm Thông báo này) và thông báo để Ông/Bà được biết."* |
+| 8 | Yêu cầu bồi thường đã được giải quyết bằng bản án, quyết định đã có hiệu lực pháp luật | `điểm h khoản 2` | Trả lại hồ sơ | *"Do vậy, [Tên CQGQBT] trả lại hồ sơ yêu cầu bồi thường (gửi kèm Thông báo này) và thông báo để Ông/Bà được biết."* |
+- `[Tên đơn vị được chuyển đến]`: tùy chọn `Chuyển Bộ Tư pháp`: `Bộ Tư pháp`; tùy chọn `Chuyển Sở Tư pháp`: tên Sở Tư pháp quản lý đơn vị do hệ thống xác định; tùy chọn `Chuyển trực tiếp tới Cơ quan giải quyết bồi thường`: tên đơn vị chọn tại `Cơ quan tiếp nhận mới`.
 
 ---
 
@@ -181,6 +218,7 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 | 7 | Đoạn 1 | `##LyDoDungGiaiQuyet##` | Quá trình giải quyết > Form Dừng giải quyết bồi thường | Lý do dừng giải quyết | Nêu rõ lý do tương ứng khoản 2 hoặc khoản 4 Điều 43 | `yêu cầu bồi thường không thuộc phạm vi trách nhiệm bồi thường của Nhà nước` |
 | 8 | Đoạn 1 | `##CanCuDungGiaiQuyet##` | Quá trình giải quyết > Form Dừng giải quyết bồi thường | Căn cứ dừng giải quyết | Control UI: Combobox.<br>Gồm:<br>+ điểm a khoản 2<br>+ điểm b khoản 2<br>+ điểm c khoản 2<br>+ khoản 4 | Chọn điều khoản tương ứng căn cứ pháp lý | `điểm b khoản 2` |
 | 9 | Đoạn 2 | `##BienPhapXuLyTiepTheo##` | Quá trình giải quyết > Form Dừng giải quyết bồi thường | Biện pháp xử lý hồ sơ tiếp theo | Control UI: Radio.<br>Gồm:<br>+ trả lại hồ sơ yêu cầu bồi thường cho Ông/Bà hoặc Quý cơ quan/tổ chức (gửi kèm Thông báo này)<br>+ chuyển hồ sơ đến cơ quan có thẩm quyền giải quyết | Tùy chọn theo căn cứ dừng: trả lại hồ sơ HOẶC chuyển tiếp hồ sơ kèm tên cơ quan tiếp nhận | `trả lại hồ sơ yêu cầu bồi thường cho Ông/Bà (gửi kèm Thông báo này)` |
+| 10 | Nơi nhận | `##NoiNhan##` | Quá trình giải quyết > Thao tác "Dừng giải quyết bồi thường" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như trên;`<br>`- Sở Tư pháp Thành phố Hà Nội (để biết);`<br>`- Lưu: VT, HSVV.` |
 
 ---
 
@@ -200,6 +238,7 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 | 5 | Điều 1, 2, 4 | `##HoTenNguoiGiaiQuyet##` | Thụ lý hồ sơ > Form Phân công người giải quyết | Người giải quyết được phân công | Điền vào Điều 1, 2 và Điều 4 | `Nguyễn Thị Lan` |
 | 6 | Điều 1 | `##ChucVuNguoiGiaiQuyet##` | Thụ lý hồ sơ > Form Phân công người giải quyết | Chức vụ cán bộ được phân công | Chức danh công tác của cán bộ | `Chuyên viên chính` |
 | 7 | Điều 1 | `##DonViCongTacNguoiGQ##` | Thụ lý hồ sơ > Form Phân công người giải quyết | Đơn vị, phòng ban công tác | Tên phòng ban trực thuộc cơ quan giải quyết | `Phòng Bổ trợ tư pháp` |
+| 8 | Nơi nhận | `##NoiNhan##` | Thụ lý hồ sơ > Thao tác "Phân công người giải quyết" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như Điều 4;`<br>`- Sở Tư pháp Thành phố Hà Nội;`<br>`- Lưu: VT, HSVV.` |
 
 ---
 
@@ -223,7 +262,7 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 | 9 | Điều 1 | `##ChiTietCacKhoanTamUng##` | Quá trình giải quyết > Form Quyết định tạm ứng kinh phí | Nội dung chi tiết các khoản tạm ứng | Liệt kê chi phí: chi phí cứu chữa, bồi dưỡng sức khỏe, phục hồi chức năng... | `chi phí khám chữa bệnh: 30.000.000 đồng; chi phí thu nhập thực tế bị mất: 20.000.000 đồng` |
 | 10 | Điều 2 | `##PhuongThucChiTraTamUng##` | Quá trình giải quyết > Form Quyết định tạm ứng kinh phí | Phương thức chi trả tiền tạm ứng | Control UI: Radio.<br>Gồm:<br>+ chuyển khoản<br>+ tiền mặt | Ghi rõ hình thức chi trả | `chuyển khoản qua tài khoản ngân hàng` |
 | 11 | Điều 2 | `##ThongTinTaiKhoanNhanTamUng##` | Quá trình giải quyết > Form Quyết định tạm ứng kinh phí | Ghép các trường: Số tài khoản, Chủ tài khoản, Ngân hàng | Nếu chuyển khoản: ghi rõ `Số TK: ..., Chủ TK: ..., Mở tại: ...`. Nếu tiền mặt: ghi `tại trụ sở cơ quan giải quyết bồi thường` | `Số tài khoản: 19028888888, Chủ tài khoản: Nguyễn Văn A (hoặc Công ty TNHH Phú Thịnh), Ngân hàng TMCP Ngoại thương Việt Nam (Vietcombank) - Chi nhánh Hà Nội` |
-| 12 | Nơi nhận | `##TenCoQuanTaiChinh##` | Quản lý cơ cấu tổ chức > Quản lý đơn vị | Cơ quan tài chính cấp phát kinh phí | Tên cơ quan cấp phát kinh phí bồi thường | `Sở Tài chính thành phố Hà Nội` |
+| 12 | Nơi nhận | `##NoiNhan##` | Quá trình giải quyết > Thao tác "Lập quyết định tạm ứng" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như Điều 4;`<br>`- Sở Tư pháp Thành phố Hà Nội;`<br>`- Kho bạc Nhà nước/Cơ quan tài chính: Sở Tài chính thành phố Hà Nội;`<br>`- Lưu: VT, HSVV.` |
 
 ---
 
@@ -245,6 +284,7 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 | 7 | Đoạn 2 | `##DanhSachTaiLieuChungCuYeuCau##` | Quá trình giải quyết > Xác minh thiệt hại > Form Yêu cầu tài liệu | Danh mục tài liệu, chứng cứ cần cung cấp | Đánh số thứ tự từng tài liệu cần trích lục, sao y | `1. Bệnh án điều trị ngoại trú số 452/BA từ ngày 10/02/2024 đến 25/03/2024.<br>2. Toàn bộ hóa đơn, phiếu thu tiền thuốc và viện phí kèm theo.` |
 | 8 | Đoạn 3 | `##DiaChiCoQuanGiaiQuyetBoiThuong##` | Quản lý cơ cấu tổ chức > Quản lý đơn vị | Địa chỉ trụ sở cơ quan giải quyết | Địa chỉ trụ sở cơ quan giải quyết bồi thường | `Số 221 phố Trần Phú, Quận Hà Đông, TP. Hà Nội` |
 | 9 | Đoạn 3 | `##ThoiHanCungCapTaiLieu##` | Quá trình giải quyết > Xác minh thiệt hại > Form Yêu cầu tài liệu | Thời hạn cung cấp tài liệu | Định dạng `dd/mm/yyyy` | `15/04/2026` |
+| 10 | Nơi nhận | `##NoiNhan##` | Quá trình giải quyết > Xác minh thiệt hại > Thao tác "Yêu cầu cung cấp tài liệu" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như trên;`<br>`- Lưu: VT, HSVV.` |
 
 ---
 
@@ -257,25 +297,23 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 #### Bảng mapping chi tiết Mẫu 18/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
 |:---:|---|---|---|---|---|---|
-| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Quá trình giải quyết > Form Quyết định giải quyết bồi thường | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `18/QĐ-STP` |
-| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Quá trình giải quyết > Form Quyết định giải quyết bồi thường | Ngày ký | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 28 tháng 03 năm 2026` |
-| 3 | Căn cứ | `##SoKyHieuVanBanCanCu##` | Thông tin hồ sơ yêu cầu bồi thường | Văn bản làm căn cứ yêu cầu bồi thường | Số hiệu, ngày ban hành và cơ quan ban hành | `Bản án hình sự phúc thẩm số 18/2025/HSPT ngày 10/11/2025 của Tòa án nhân dân cấp cao tại Hà Nội` |
-| 4 | Căn cứ | `##SoQDTamUng##` | Quá trình giải quyết hồ sơ | Số quyết định tạm ứng kinh phí | Nếu có tạm ứng thì hiển thị căn cứ này, không có thì bỏ căn cứ | `Quyết định số 12/QĐ-STP ngày 25/01/2026 của Giám đốc Sở Tư pháp` |
-| 5 | Căn cứ | `##NgayLapBienBanThuongLuong##` | Quá trình giải quyết > Kết quả thương lượng | Ngày lập biên bản thương lượng | Định dạng `dd/mm/yyyy` | `28/03/2026` |
-| 6 | Điều 1 | `##TongSoTienBoiThuong##` | Quá trình giải quyết > Form Quyết định giải quyết bồi thường | Tổng số tiền bồi thường | Định dạng số phân cách hàng nghìn bằng dấu chấm | `350.000.000` |
-| 7 | Điều 1 | `##TongSoTienBoiThuongBangChu##` | Quá trình giải quyết > Form Quyết định giải quyết bồi thường | Tổng số tiền bồi thường bằng chữ | Chữ tiếng Việt chuẩn có chữ "đồng" | `Ba trăm năm mươi triệu đồng` |
-| 8 | Điều 1 | `##ThietHaiTaiSan##` | Quá trình giải quyết > Bảng chi tiết thiệt hại | Thiệt hại do tài sản bị xâm phạm | Số tiền (định dạng dấu chấm) | `50.000.000` |
-| 9 | Điều 1 | `##ThietHaiThuNhap##` | Quá trình giải quyết > Bảng chi tiết thiệt hại | Thiệt hại do thu nhập bị mất hoặc giảm sút | Số tiền (định dạng dấu chấm) | `120.000.000` |
-| 10 | Điều 1 | `##ThietHaiTinhThan##` | Quá trình giải quyết > Bảng chi tiết thiệt hại | Thiệt hại về tinh thần | Số tiền (định dạng dấu chấm) | `150.000.000` |
-| 11 | Điều 1 | `##ThietHaiKhac##` | Quá trình giải quyết > Bảng chi tiết thiệt hại | Các chi phí thiệt hại khác | Số tiền (chi phí đi lại, thuê luật sư...) | `30.000.000` |
-| 12 | Điều 1 | `##SoTienDaTamUng##` | Quá trình giải quyết > Bảng thanh toán kinh phí | Số tiền đã tạm ứng trước đó | Số tiền tạm ứng (nếu có, không có thì ghi `0`) | `50.000.000` |
-| 13 | Điều 1 | `##SoTienConLaiPhaiChiTra##` | Quá trình giải quyết > Bảng thanh toán kinh phí | Số tiền còn lại thực tế phải chi trả | Số tiền còn lại phải thanh toán | `300.000.000` |
-| 14 | Điều 1 | `##SoTienConLaiBangChu##` | Quá trình giải quyết > Bảng thanh toán kinh phí | Số tiền còn lại viết bằng chữ | Viết bằng chữ số tiền còn lại | `Ba trăm triệu đồng` |
-| 15 | Điều 2 | `##PhuongThucChiTraBoiThuong##` | Quá trình giải quyết > Kết quả thương lượng | Phương thức chi trả tiền bồi thường | Control UI: Radio.<br>Gồm:<br>+ chi trả qua chuyển khoản ngân hàng<br>+ chi trả trực tiếp bằng tiền mặt | Phương thức thanh toán thỏa thuận | `chi trả qua chuyển khoản ngân hàng` |
-| 16 | Điều 2 | `##ThongTinTaiKhoanChiTra##` | Quá trình giải quyết > Kết quả thương lượng | Ghép các trường: Số tài khoản, Chủ tài khoản, Ngân hàng | Chi tiết tài khoản nhận chi trả (của cá nhân hoặc tổ chức) hoặc địa điểm nhận tiền mặt | `Số tài khoản: 001100222333, Chủ tài khoản: Nguyễn Văn Nam (hoặc Công ty...), tại Ngân hàng Ngoại thương Việt Nam` |
-| 17 | Điều 3 | `##QuyenLoiIchHopPhapKhac##` | Quá trình giải quyết > Kết quả thương lượng | Quyền, lợi ích hợp pháp khác được khôi phục | Căn cứ Điều 29 Luật TNBTCNN (khôi phục chức vụ, trả lại giấy tờ, bằng cấp...). Nếu không có ghi: `Không` | `Khôi phục quyền sử dụng đất và cấp lại Giấy chứng nhận quyền sử dụng đất đối với thửa đất số 45` |
-| 18 | Điều 5 | `##ThoiDiemHieuLucQuyetDinh##` | Quá trình giải quyết > Form Quyết định giải quyết bồi thường | Thời điểm quyết định có hiệu lực | Theo thỏa thuận tại biên bản thương lượng hoặc ghi `sau 60 ngày kể từ ngày người yêu cầu bồi thường (cá nhân hoặc tổ chức) nhận được Quyết định này` | `sau 15 ngày kể từ ngày ký` |
-| 19 | Nơi nhận | `##TenNguoiThiHanhCongVuGayThietHai##` | Thông tin hồ sơ yêu cầu bồi thường | Họ và tên người thi hành công vụ gây thiệt hại | Họ tên cán bộ gây thiệt hại gửi để biết và thực hiện trách nhiệm hoàn trả | `Ông Vũ Đình Trọng (cựu Điều tra viên)` |
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Quyết định giải quyết bồi thường > Popup Trình ký Quyết định | Số, ký hiệu văn bản | Cán bộ nhập trên form hoặc hệ thống tự động sinh số. Nếu chưa có: hiển thị `……` | `18/QĐ-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Quyết định giải quyết bồi thường > Popup Trình ký Quyết định | Ngày văn bản | Định dạng: `ngày dd tháng mm năm yyyy`. Chưa nhập: `ngày … tháng … năm …` | `ngày 28 tháng 03 năm 2026` |
+| 3 | Căn cứ | `##CanCu##` | Quyết định giải quyết bồi thường > Popup Trình ký Quyết định | Căn cứ | Mỗi căn cứ 01 dòng theo thứ tự nhập trên form; mặc định điền sẵn 02 căn cứ (Điều 47 Luật TNBTCNN; Nghị định hướng dẫn), cán bộ được sửa / thêm / xóa. Dòng cuối kết thúc bằng dấu `,`, các dòng khác bằng dấu `;` | `Căn cứ Điều 47 Luật Trách nhiệm bồi thường của Nhà nước...;` |
+| 4 | Điều 1 | `##TongSoTienBoiThuong##` | Quá trình giải quyết > Form Quyết định giải quyết bồi thường | Tổng số tiền bồi thường | Định dạng số phân cách hàng nghìn bằng dấu chấm | `350.000.000` |
+| 5 | Điều 1 | `##TongSoTienBoiThuongBangChu##` | Quá trình giải quyết > Form Quyết định giải quyết bồi thường | Tổng số tiền bồi thường bằng chữ | Chữ tiếng Việt chuẩn có chữ "đồng" | `Ba trăm năm mươi triệu đồng` |
+| 6 | Điều 1 | `##ThietHaiTaiSan##` | Quá trình giải quyết > Bảng chi tiết thiệt hại | Thiệt hại do tài sản bị xâm phạm | Số tiền (định dạng dấu chấm) | `50.000.000` |
+| 7 | Điều 1 | `##ThietHaiThuNhap##` | Quá trình giải quyết > Bảng chi tiết thiệt hại | Thiệt hại do thu nhập bị mất hoặc giảm sút | Số tiền (định dạng dấu chấm) | `120.000.000` |
+| 8 | Điều 1 | `##ThietHaiTinhThan##` | Quá trình giải quyết > Bảng chi tiết thiệt hại | Thiệt hại về tinh thần | Số tiền (định dạng dấu chấm) | `150.000.000` |
+| 9 | Điều 1 | `##ThietHaiKhac##` | Quá trình giải quyết > Bảng chi tiết thiệt hại | Các chi phí thiệt hại khác | Số tiền (chi phí đi lại, thuê luật sư...) | `30.000.000` |
+| 10 | Điều 1 | `##SoTienDaTamUng##` | Quá trình giải quyết > Bảng thanh toán kinh phí | Số tiền đã tạm ứng trước đó | Số tiền tạm ứng (nếu có, không có thì ghi `0`) | `50.000.000` |
+| 11 | Điều 1 | `##SoTienConLaiPhaiChiTra##` | Quá trình giải quyết > Bảng thanh toán kinh phí | Số tiền còn lại thực tế phải chi trả | Số tiền còn lại phải thanh toán | `300.000.000` |
+| 12 | Điều 1 | `##SoTienConLaiBangChu##` | Quá trình giải quyết > Bảng thanh toán kinh phí | Số tiền còn lại viết bằng chữ | Viết bằng chữ số tiền còn lại | `Ba trăm triệu đồng` |
+| 13 | Điều 2 | `##PhuongThucChiTraBoiThuong##` | Quá trình giải quyết > Kết quả thương lượng | Phương thức chi trả tiền bồi thường | Control UI: Radio.<br>Gồm:<br>+ chi trả qua chuyển khoản ngân hàng<br>+ chi trả trực tiếp bằng tiền mặt | Phương thức thanh toán thỏa thuận | `chi trả qua chuyển khoản ngân hàng` |
+| 14 | Điều 2 | `##ThongTinTaiKhoanChiTra##` | Quá trình giải quyết > Kết quả thương lượng | Ghép các trường: Số tài khoản, Chủ tài khoản, Ngân hàng | Chi tiết tài khoản nhận chi trả (của cá nhân hoặc tổ chức) hoặc địa điểm nhận tiền mặt | `Số tài khoản: 001100222333, Chủ tài khoản: Nguyễn Văn Nam (hoặc Công ty...), tại Ngân hàng Ngoại thương Việt Nam` |
+| 15 | Điều 3 | `##QuyenLoiIchHopPhapKhac##` | Quá trình giải quyết > Kết quả thương lượng | Quyền, lợi ích hợp pháp khác được khôi phục | Căn cứ Điều 29 Luật TNBTCNN (khôi phục chức vụ, trả lại giấy tờ, bằng cấp...). Nếu không có ghi: `Không` | `Khôi phục quyền sử dụng đất và cấp lại Giấy chứng nhận quyền sử dụng đất đối với thửa đất số 45` |
+| 16 | Điều 5 | `##ThoiDiemHieuLucQuyetDinh##` | Quá trình giải quyết > Form Quyết định giải quyết bồi thường | Thời điểm quyết định có hiệu lực | Theo thỏa thuận tại biên bản thương lượng hoặc ghi `sau 60 ngày kể từ ngày người yêu cầu bồi thường (cá nhân hoặc tổ chức) nhận được Quyết định này` | `sau 15 ngày kể từ ngày ký` |
+| 17 | Nơi nhận | `##NoiNhan##` | Quá trình giải quyết > Thương lượng bồi thường > Thao tác "Lập quyết định giải quyết bồi thường" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như Điều 6;`<br>`- Sở Tư pháp Thành phố Hà Nội;`<br>`- Ông Vũ Đình Trọng;`<br>`- Lưu: VT, HSVV.` |
 
 ---
 
@@ -299,6 +337,7 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 | 9 | Điều 2 | `##HauQuaPhapLyVaBienPhapXuLy##` | Quá trình giải quyết > Form Hủy quyết định giải quyết bồi thường | Hậu quả pháp lý và biện pháp xử lý | Control UI: Radio.<br>Gồm:<br>+ Đình chỉ việc giải quyết bồi thường<br>+ Giải quyết lại | Tùy chọn: `Đình chỉ việc giải quyết bồi thường` HOẶC `Giải quyết lại` | `Giải quyết lại` |
 | 10 | Điều 2 | `##NoiDungGiaiQuyetLaiChiTiet##` | Quá trình giải quyết > Form Hủy quyết định giải quyết bồi thường | Nội dung giải quyết lại cụ thể | Nếu giải quyết lại: ghi `Việc giải quyết lại từ việc: [nêu rõ công việc/thủ tục bắt đầu lại]`. Nếu đình chỉ: để trống | `Việc giải quyết lại từ việc xác minh thiệt hại đối với các khoản thiệt hại về tài sản.` |
 | 11 | Điều 3 | `##NgayHieuLucQDHuy##` | Quá trình giải quyết > Form Hủy quyết định giải quyết bồi thường | Ngày có hiệu lực của quyết định hủy | Định dạng `ngày dd/mm/yyyy` | `ngày 15/04/2026` |
+| 12 | Nơi nhận | `##NoiNhan##` | Quá trình giải quyết > Thao tác "Hủy quyết định giải quyết bồi thường" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như Điều 4;`<br>`- Sở Tư pháp Thành phố Hà Nội;`<br>`- Ông Vũ Đình Trọng;`<br>`- Lưu: VT, HSVV.` |
 
 ---
 
@@ -318,6 +357,7 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 | 5 | Căn cứ & Điều 1 | `##CoQuanBanHanhQDCu##` | Thông tin hồ sơ yêu cầu bồi thường | Cơ quan ban hành quyết định gốc | Tên cơ quan ban hành | `Giám đốc Sở Tư pháp thành phố Hà Nội` |
 | 6 | Căn cứ | `##LyDoSuaChuaBoSung##` | Quá trình giải quyết > Form Sửa chữa, bổ sung quyết định | Lý do cần sửa chữa, bổ sung | Nêu rõ sai sót kỹ thuật / nhầm lẫn | `nhầm lẫn về thông tin số tài khoản ngân hàng của người yêu cầu bồi thường (cá nhân hoặc tổ chức) tại Điều 2` |
 | 7 | Điều 1 | `##NoiDungSuaChuaBoSung##` | Quá trình giải quyết > Form Sửa chữa, bổ sung quyết định | Nội dung chi tiết sửa đổi, bổ sung | Trình bày rõ: Sửa đổi đoạn/khoản nào thành nội dung nào | `Sửa đổi đoạn 2 Điều 2 như sau: "Phương thức chi trả qua chuyển khoản vào số tài khoản: 19039999999 mang tên Nguyễn Văn Nam mở tại Ngân hàng Techcombank Chi nhánh Ba Đình".` |
+| 8 | Nơi nhận | `##NoiNhan##` | Quá trình giải quyết > Thao tác "Sửa chữa, bổ sung quyết định" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như Điều 3;`<br>`- Sở Tư pháp Thành phố Hà Nội;`<br>`- Ông Vũ Đình Trọng;`<br>`- Lưu: VT, HSVV.` |
 
 ---
 
@@ -337,7 +377,7 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 | 5 | Điều 1 | `##DiaChiNguoiYeuCauBoiThuong##` | Thông tin hồ sơ yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Địa chỉ của người yêu cầu bồi thường (nơi cư trú đối với Cá nhân, hoặc địa chỉ trụ sở chính đối với Tổ chức): Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng ", ". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Số 12 phố Thợ Nhuộm, Quận Hoàn Kiếm, TP. Hà Nội` |
 | 6 | Điều 1 | `##LyDoHoanGiaiQuyet##` | Quá trình giải quyết > Form Hoãn giải quyết bồi thường | Lý do hoãn giải quyết | Control UI: Combobox.<br>Gồm:<br>+ người yêu cầu bồi thường bị ốm nặng có xác nhận của cơ sở y tế<br>+ người đại diện theo pháp luật của tổ chức yêu cầu bồi thường gặp sự cố hoặc thay đổi cần kiện toàn<br>+ vì lý do bất khả kháng do thiên tai, bão lũ<br>+ trở ngại khách quan khác | Nêu cụ thể sự kiện dẫn đến phải hoãn | `Người yêu cầu bồi thường bị ốm nặng phải điều trị nội trú tại bệnh viện theo Giấy xác nhận số 88/GCN của Bệnh viện Bạch Mai` |
 | 7 | Điều 1 | `##ThoiGianHoanDuKien##` | Quá trình giải quyết > Form Hoãn giải quyết bồi thường | Thời gian hoãn dự kiến | Ghi khoảng thời gian hoặc điều kiện kết thúc | `30 ngày kể từ ngày ký Quyết định này` HOẶC `cho đến khi người yêu cầu bồi thường hồi phục sức khỏe` |
-| 8 | Nơi nhận | `##HoTenNguoiGiaiQuyet##` | Thông tin hồ sơ yêu cầu bồi thường | Cán bộ trực tiếp giải quyết bồi thường | Gửi để nắm thời hạn giải quyết | `Đ/c Lê Thị Dung (Chuyên viên)` |
+| 8 | Nơi nhận | `##NoiNhan##` | Quá trình giải quyết > Thao tác "Hoãn giải quyết bồi thường" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như Điều 3;`<br>`- Sở Tư pháp Thành phố Hà Nội;`<br>`- Đ/c Lê Thị Dung (Chuyên viên);`<br>`- Ông Vũ Đình Trọng;`<br>`- Lưu: VT, HSVV.` |
 
 ---
 
@@ -356,6 +396,7 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 | 4 | Căn cứ | `##NgayBanHanhQDHoan##` | Quá trình giải quyết hồ sơ | Ngày ban hành quyết định hoãn | Định dạng `dd/mm/yyyy` | `12/03/2026` |
 | 5 | Căn cứ | `##CoQuanBanHanhQDHoan##` | Quá trình giải quyết hồ sơ | Cơ quan ban hành quyết định hoãn | Tên cơ quan đã ký QĐ hoãn | `Giám đốc Sở Tư pháp thành phố Hà Nội` |
 | 6 | Điều 1 | `##LyDoTiepTucGiaiQuyet##` | Quá trình giải quyết > Form Tiếp tục giải quyết bồi thường | Lý do tiếp tục giải quyết bồi thường | Nêu rõ căn cứ lý do hoãn đã hết | `lý do hoãn giải quyết bồi thường không còn (Người yêu cầu bồi thường đã xuất viện và có đơn đề nghị tiếp tục giải quyết)` |
+| 7 | Nơi nhận | `##NoiNhan##` | Quá trình giải quyết > Thao tác "Tiếp tục giải quyết bồi thường" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như Điều 4;`<br>`- Sở Tư pháp Thành phố Hà Nội;`<br>`- Đ/c Lê Thị Dung (Chuyên viên);`<br>`- Ông Vũ Đình Trọng;`<br>`- Lưu: VT, HSVV.` |
 
 ---
 
@@ -374,6 +415,7 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 | 4 | Điều 1 | `##TenNguoiYeuCauBoiThuong##` | Thông tin hồ sơ yêu cầu bồi thường | Họ và tên / Tên tổ chức yêu cầu bồi thường | Lấy theo trường `Loại người yêu cầu`:<br>- Khi là `Cá nhân`: Lấy theo trường `Họ và tên`.<br>- Khi là `Tổ chức`: Lấy theo trường `Tên tổ chức`. | `Phan Thành Đạt` hoặc `Công ty TNHH Đầu tư Thương mại Toàn Cầu` |
 | 5 | Điều 1 | `##DiaChiNguoiYeuCauBoiThuong##` | Thông tin hồ sơ yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Địa chỉ của người yêu cầu bồi thường (nơi cư trú đối với Cá nhân, hoặc địa chỉ trụ sở chính đối với Tổ chức): Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng ", ". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Thị trấn Sóc Sơn, Huyện Sóc Sơn, TP. Hà Nội` |
 | 6 | Điều 1 | `##LyDoTamDinhChi##` | Quá trình giải quyết > Form Tạm đình chỉ giải quyết | Lý do tạm đình chỉ | Control UI: Combobox.<br>Gồm:<br>+ cần chờ kết quả giám định thiệt hại<br>+ cần chờ kết quả xử lý của cơ quan có thẩm quyền khác<br>+ văn bản làm căn cứ đang được xem xét lại theo trình tự giám đốc thẩm | Ghi rõ lý do tạm đình chỉ tương ứng Điều 50 Luật TNBTCNN | `Văn bản làm căn cứ yêu cầu bồi thường đang được Tòa án nhân dân tối cao xem xét lại theo thủ tục giám đốc thẩm` |
+| 7 | Nơi nhận | `##NoiNhan##` | Quá trình giải quyết > Thao tác "Tạm đình chỉ giải quyết" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như Điều 4;`<br>`- Sở Tư pháp Thành phố Hà Nội;`<br>`- Đ/c Lê Thị Dung (Chuyên viên);`<br>`- Ông Vũ Đình Trọng;`<br>`- Lưu: VT, HSVV.` |
 
 ---
 
@@ -392,6 +434,7 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 | 4 | Điều 3 | `##SoTienTamUngPhaiHoanTra##` | Quá trình giải quyết > Form Đình chỉ giải quyết | Số tiền tạm ứng phải hoàn trả | Số tiền tạm ứng đã chi (nếu có, không có thì ghi `0 đồng`) | `50.000.000` |
 | 5 | Điều 3 | `##SoQDTamUng##` | Quá trình giải quyết hồ sơ | Số quyết định tạm ứng kinh phí trước đó | Số Quyết định tạm ứng (nếu có) | `07/QĐ-STP` |
 | 6 | Điều 3 | `##NgayQDTamUng##` | Quá trình giải quyết hồ sơ | Ngày ban hành quyết định tạm ứng | Định dạng `dd/mm/yyyy` | `10/02/2026` |
+| 7 | Nơi nhận | `##NoiNhan##` | Quá trình giải quyết > Thao tác "Đình chỉ giải quyết" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như Điều 4;`<br>`- Sở Tư pháp Thành phố Hà Nội;`<br>`- Đ/c Lê Thị Dung (Chuyên viên);`<br>`- Ông Vũ Đình Trọng;`<br>`- Lưu: VT, HSVV.` |
 
 ---
 
@@ -410,6 +453,7 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 | 4 | Dưới Kính gửi | `##DiaChiNguoiBiThietHai##` | Thông tin hồ sơ yêu cầu bồi thường | Ghép các trường: Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia | Địa chỉ của người bị thiệt hại: Ghép theo thứ tự: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố], cách nhau bằng ", ". Bỏ qua phần không có dữ liệu. Nếu Quốc gia khác Việt Nam thì ghép thêm [Quốc gia] ở cuối. | `Xã Chàng Sơn, Huyện Thạch Thất, TP. Hà Nội` |
 | 5 | Thân văn bản | `##VanBanCanCuPhucHoiDanhDu##` | Thông tin hồ sơ yêu cầu bồi thường | Văn bản làm căn cứ phục hồi danh dự | Tên bản án, quyết định đình chỉ làm căn cứ | `Quyết định đình chỉ điều tra vụ án đối với bị can số 02/QĐ-ĐCSHS ngày 12/01/2026 của Cơ quan CSĐT Công an TP. Hà Nội` |
 | 6 | Thân văn bản | `##KeHoachToChucPhucHoiDanhDu##` | Quá trình giải quyết > Phục hồi danh dự > Form Lập kế hoạch | Chi tiết kế hoạch tổ chức xin lỗi, cải chính | - Hoạt động tố tụng hình sự: ghi rõ thời gian, địa điểm tổ chức trực tiếp và tờ báo đăng.<br>- Hoạt động quản lý hành chính: ghi rõ tờ báo và Cổng thông tin điện tử đăng tải | `Về việc tổ chức trực tiếp xin lỗi và cải chính công khai:<br>- Dự kiến thời gian: 08 giờ 30 ngày 25/04/2026.<br>- Dự kiến địa điểm: Hội trường UBND xã Chàng Sơn, Huyện Thạch Thất, TP. Hà Nội.<br>Về việc đăng báo xin lỗi và cải chính công khai:<br>- Dự kiến tờ báo đăng: Báo Hà Nội mới (03 số liên tiếp).<br>- Đăng tải trên Cổng thông tin điện tử Sở Tư pháp TP. Hà Nội.` |
+| 7 | Nơi nhận | `##NoiNhan##` | Quá trình giải quyết > Phục hồi danh dự > Thao tác "Lập kế hoạch phục hồi danh dự" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như trên;`<br>`- Lưu: VT, HSVV.` |
 
 ---
 
@@ -433,6 +477,7 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 | 9 | Thân văn bản | `##TongSoTienChiTraBangChu##` | Quá trình giải quyết > Chi trả tiền > Form Thông báo chi trả | Tổng số tiền chi trả bằng chữ | Viết bằng chữ số tiền chi trả | `Ba trăm triệu đồng` |
 | 10 | Thân văn bản | `##ThongTinChiTraTien##` | Quá trình giải quyết > Chi trả tiền > Form Thông báo chi trả | Thông tin chi tiết phương thức, thời gian, địa điểm chi trả | Ghi rõ tài khoản chuyển khoản hoặc lịch hẹn nhận tiền mặt tại cơ quan | `Vào hồi 09 giờ 00 ngày 20/04/2026 tại Bộ phận Kế toán - Sở Tư pháp thành phố Hà Nội (Số 221 Trần Phú, Hà Đông, Hà Nội)` |
 | 11 | Thân văn bản | `##GiayToMangTheo##` | Quá trình giải quyết > Chi trả tiền > Form Thông báo chi trả | Danh mục giấy tờ cần xuất trình khi nhận tiền | Căn cứ loại đối tượng nhận tiền:<br>- Khi là `Cá nhân`: CCCD/Hộ chiếu (bản chính); Thông báo chi trả; Văn bản ủy quyền hợp pháp (nếu nhận thay).<br>- Khi là `Tổ chức`: Giấy giới thiệu / Văn bản ủy quyền của người đại diện hợp pháp kèm CCCD của người đến nhận; Thông báo chi trả; Bản sao Giấy chứng nhận ĐKKD / Quyết định thành lập. | `Căn cước công dân (bản chính); Thông báo này; Văn bản ủy quyền nhận tiền bồi thường hợp pháp (trường hợp ủy quyền)` hoặc `Giấy giới thiệu/Ủy quyền của người đại diện pháp luật tổ chức; Thông báo này; Bản sao ĐKKD` |
+| 12 | Nơi nhận | `##NoiNhan##` | Quá trình giải quyết > Chi trả tiền bồi thường > Thao tác "Lập Thông báo chi trả" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như trên;`<br>`- Lưu: VT, HSVV.` |
 
 ---
 
@@ -452,6 +497,7 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 | 5 | Căn cứ & Điều 1 | `##TenNguoiYeuCauBoiThuong##` | Thông tin hồ sơ yêu cầu bồi thường | Họ và tên / Tên tổ chức yêu cầu đã được bồi thường | Lấy theo trường `Loại người yêu cầu`:<br>- Khi là `Cá nhân`: Lấy theo trường `Họ và tên` người được bồi thường.<br>- Khi là `Tổ chức`: Lấy theo trường `Tên tổ chức` được bồi thường. | `Nguyễn Văn Nam` hoặc `Công ty CP Xây dựng Đông Á` |
 | 6 | Điều 1 | `##DanhSachThanhVienHoiDong##` | Trách nhiệm hoàn trả > Form Thành lập Hội đồng hoàn trả | Danh sách thành viên Hội đồng hoàn trả | Ghi rõ Họ tên, Chức vụ, Đơn vị và vai trò:<br>1. Chủ tịch Hội đồng<br>2. Thư ký Hội đồng<br>3. Các Ủy viên | `1. Ông Trần Văn A - Phó Giám đốc Sở - Chủ tịch Hội đồng;<br>2. Bà Lê Thị B - Trưởng phòng Kế hoạch - Tài chính - Ủy viên;<br>3. Ông Phạm Văn C - Phó Trưởng phòng Bổ trợ tư pháp - Thư ký Hội đồng.` |
 | 7 | Điều 2 | `##TenNguoiThiHanhCongVuHoanTra##` | Thông tin hồ sơ yêu cầu bồi thường | Họ và tên người thi hành công vụ bị xem xét hoàn trả | Cán bộ phải hoàn trả | `Ông Vũ Đình Trọng` |
+| 8 | Nơi nhận | `##NoiNhan##` | Trách nhiệm hoàn trả > Thao tác "Thành lập Hội đồng hoàn trả" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như Điều 4;`<br>`- Sở Tư pháp Thành phố Hà Nội;`<br>`- Lưu: VT, HSVV.` |
 
 ---
 
@@ -478,6 +524,7 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 | 12 | Phần III | `##KienNghiPhuongThucHoanTra##` | Trách nhiệm hoàn trả > Cuộc họp Hội đồng > Form Lập biên bản | Phương thức hoàn trả kiến nghị | Control UI: Radio.<br>Gồm:<br>+ trừ dần vào lương hàng tháng (tối đa 30% lương)<br>+ nộp một lần vào ngân sách | Ghi rõ hình thức trừ lương hoặc nộp tiền | `Trừ dần vào lương hàng tháng, mức trừ 20% tổng thu nhập hàng tháng kể từ tháng 06/2026 cho đến khi hoàn thành` |
 | 13 | Kết thúc | `##ThoiGianKetThucHop##` | Trách nhiệm hoàn trả > Cuộc họp Hội đồng > Form Lập biên bản | Thời gian kết thúc cuộc họp | Định dạng `... giờ ... cùng ngày` | `11 giờ 30 phút cùng ngày` |
 | 14 | Chữ ký | `##ChuTichHoiDong##` | Trách nhiệm hoàn trả | Họ và tên Chủ tịch Hội đồng | Họ tên Chủ tịch Hội đồng ký biên bản | `Trần Văn A` |
+| 15 | Nơi nhận | `##NoiNhan##` | Trách nhiệm hoàn trả > Cuộc họp Hội đồng > Thao tác "Lập Biên bản cuộc họp" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Lưu: Hồ sơ Hội đồng.` |
 
 ---
 
@@ -499,6 +546,7 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 | 7 | Mục 3 | `##KienNghiSoTienHoanTra##` | Trách nhiệm hoàn trả > Form Lập văn bản kiến nghị | Kiến nghị mức tiền hoàn trả | Số tiền hoàn trả (định dạng dấu chấm) | `50.000.000` |
 | 8 | Mục 3 | `##KienNghiSoTienHoanTraBangChu##` | Trách nhiệm hoàn trả > Form Lập văn bản kiến nghị | Kiến nghị mức tiền hoàn trả bằng chữ | Chuyển đổi tự động | Viết bằng chữ số tiền | `Năm mươi triệu đồng` |
 | 9 | Mục 4 | `##KienNghiPhuongThucHoanTra##` | Trách nhiệm hoàn trả > Form Lập văn bản kiến nghị | Kiến nghị phương thức hoàn trả | Nộp một lần hoặc trừ dần lương | `Khấu trừ 20% tiền lương hàng tháng của Ông Vũ Đình Trọng cho đến khi nộp đủ số tiền hoàn trả vào Ngân sách nhà nước.` |
+| 10 | Nơi nhận | `##NoiNhan##` | Trách nhiệm hoàn trả > Báo cáo kiến nghị > Thao tác "Lập Văn bản kiến nghị" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như trên;`<br>`- Lưu: Hồ sơ Hội đồng.` |
 
 ---
 
@@ -523,7 +571,7 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 | 10 | Điều 1 | `##MucDoLoi##` | Trách nhiệm hoàn trả > Form Ban hành Quyết định hoàn trả | Mức độ lỗi chính thức | Control UI: Combobox.<br>Gồm:<br>+ Lỗi vô ý<br>+ Lỗi cố ý | Kết luận lỗi chính thức | `Lỗi vô ý` |
 | 11 | Điều 1 | `##PhuongThucHoanTra##` | Trách nhiệm hoàn trả > Form Ban hành Quyết định hoàn trả | Phương thức hoàn trả | Trừ lương hoặc nộp trực tiếp | `Trừ dần vào lương hàng tháng (20% lương thực lĩnh hàng tháng)` |
 | 12 | Điều 1 | `##ThoiHanHoanTra##` | Trách nhiệm hoàn trả > Form Ban hành Quyết định hoàn trả | Thời hạn hoàn thành nghĩa vụ hoàn trả | Hạn chót hoàn thành | `Bắt đầu từ kỳ lương tháng 06/2026 cho đến khi hoàn trả đủ số tiền` |
-| 13 | Nơi nhận | `##TenCoQuanTaiChinh##` | Quản lý cơ cấu tổ chức > Quản lý đơn vị | Cơ quan tài chính / Kho bạc nhận tiền hoàn trả | Cơ quan theo dõi nộp ngân sách | `Kho bạc Nhà nước khu vực Hà Đông - Hà Nội` |
+| 13 | Nơi nhận | `##NoiNhan##` | Trách nhiệm hoàn trả > Quyết định hoàn trả > Thao tác "Ban hành Quyết định hoàn trả" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như Điều 3;`<br>`- Sở Tư pháp Thành phố Hà Nội;`<br>`- Cơ quan tài chính / Kho bạc Nhà nước: Sở Tài chính thành phố Hà Nội;`<br>`- Lưu: VT, HSVV.` |
 
 ---
 
@@ -551,6 +599,7 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 | 13 | Điều 1 | `##SoTienConPhaiHoanTra##` | Trách nhiệm hoàn trả > Form Lập Quyết định giảm mức hoàn trả | Số tiền còn lại phải tiếp tục hoàn trả | Số tiền còn lại thực tế phải nộp | `30.000.000` |
 | 14 | Điều 1 | `##SoTienConPhaiHoanTraBangChu##` | Trách nhiệm hoàn trả > Form Lập Quyết định giảm mức hoàn trả | Số tiền còn lại phải hoàn trả bằng chữ | Chuyển đổi tự động | Viết bằng chữ số tiền còn lại | `Ba mươi triệu đồng` |
 | 15 | Điều 1 | `##PhuongThucHoanTraConLai##` | Trách nhiệm hoàn trả > Form Lập Quyết định giảm mức hoàn trả | Phương thức hoàn trả đối với số tiền còn lại | Trừ lương hoặc nộp một lần | `Trừ dần vào lương 15% lương hàng tháng cho đến khi nộp đủ 30.000.000 đồng` |
+| 16 | Nơi nhận | `##NoiNhan##` | Trách nhiệm hoàn trả > Xem xét giảm hoàn trả > Thao tác "Lập Quyết định giảm mức hoàn trả" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như Điều 1 (để thực hiện);`<br>`- Sở Tư pháp Thành phố Hà Nội;`<br>`- Lưu: VT, HSVV.` |
 
 ---
 
@@ -574,6 +623,7 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 | 9 | Điều 1 | `##SoTienHoanTraDuocMien##` | Trách nhiệm hoàn trả > Form Lập Quyết định miễn hoàn trả | Số tiền được miễn toàn bộ | Bằng toàn bộ số tiền phải hoàn trả | `50.000.000` |
 | 10 | Điều 1 | `##SoTienHoanTraDuocMienBangChu##` | Trách nhiệm hoàn trả > Form Lập Quyết định miễn hoàn trả | Số tiền được miễn bằng chữ | Chuyển đổi tự động | Viết bằng chữ số tiền được miễn | `Năm mươi triệu đồng` |
 | 11 | Điều 1 | `##LyDoMienHoanTra##` | Trách nhiệm hoàn trả > Form Lập Quyết định miễn hoàn trả | Căn cứ, lý do miễn hoàn trả | Control UI: Combobox.<br>Gồm:<br>+ người thi hành công vụ chết<br>+ người thi hành công vụ bị Tòa án tuyên bố mất tích<br>+ người thi hành công vụ mắc bệnh hiểm nghèo không còn khả năng lao động | Nêu rõ căn cứ quy định tại khoản 4a Điều 65 Luật TNBTCNN | `Người thi hành công vụ bị mắc bệnh hiểm nghèo, suy giảm khả năng lao động vĩnh viễn từ 81% trở lên theo Biên bản giám định y khoa số 12/GĐYK ngày 20/06/2026` |
+| 12 | Nơi nhận | `##NoiNhan##` | Trách nhiệm hoàn trả > Xem xét miễn hoàn trả > Thao tác "Lập Quyết định miễn hoàn trả" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Như Điều 1 (để thực hiện);`<br>`- Sở Tư pháp Thành phố Hà Nội;`<br>`- Lưu: VT, HSVV.` |
 
 ---
 
@@ -595,7 +645,7 @@ Do vậy, ...(tên cơ quan giải quyết bồi thường)... trả lại hồ 
 | 7 | Điều 1 | `##SoKyHieuVanBanCanCu##` | Thông tin hồ sơ yêu cầu bồi thường | Số, ký hiệu văn bản căn cứ trước đây | Số hiệu văn bản căn cứ cũ bị hủy | `Bản án hình sự phúc thẩm số 18/2025/HSPT` |
 | 8 | Điều 1 | `##NgayBanHanhVanBanCanCu##` | Thông tin hồ sơ yêu cầu bồi thường | Ngày ban hành văn bản căn cứ cũ | Định dạng `dd/mm/yyyy` | `10/11/2025` |
 | 9 | Điều 1 | `##CoQuanBanHanhVanBanCanCu##` | Thông tin hồ sơ yêu cầu bồi thường | Cơ quan ban hành văn bản căn cứ cũ | Tên cơ quan ban hành văn bản cũ | `Tòa án nhân dân cấp cao tại Hà Nội` |
-| 10 | Nơi nhận | `##TenNguoiThiHanhCongVu##` | Trách nhiệm hoàn trả | Họ và tên cán bộ liên quan đến hoàn trả | Gửi cán bộ để thông báo đình chỉ nghĩa vụ | `Ông Vũ Đình Trọng` |
+| 10 | Nơi nhận | `##NoiNhan##` | Trách nhiệm hoàn trả > Xem xét đình chỉ > Thao tác "Lập Quyết định đình chỉ xem xét hoàn trả" | Nơi nhận | Theo giá trị trường Nơi nhận | `- Ông Vũ Đình Trọng;`<br>`- Sở Tư pháp Thành phố Hà Nội;`<br>`- Lưu: VT, HSVV.` |
 
 ---
 

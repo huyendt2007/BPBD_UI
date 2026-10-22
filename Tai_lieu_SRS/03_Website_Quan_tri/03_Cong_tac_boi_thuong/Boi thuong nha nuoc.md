@@ -123,7 +123,7 @@ Mỗi hồ sơ yêu cầu giải quyết bồi thường được hệ thống �
     *   *Quốc gia*: String(255), Bắt buộc. Mặc định là Việt Nam
     *   *Tỉnh/TP*: String(255), Bắt buộc. Chỉ hiển thị khi Quốc gia là Việt 
     *   *Địa chỉ liên hệ*: String(500), Bắt buộc.
-    *   *Hành vi gây thiệt hại của người thi hành công vụ gây thiệt hại*: Text(1000), Bắt buộc.
+    *   *Hành vi gây thiệt hại của người thi hành công vụ*: Text(2000), Bắt buộc.
     *   *Văn bản đính kèm*: Tệp tin (PDF/Word), Bắt buộc.
 *   **Quy tắc nghiệp vụ**: 
     *   Hệ thống tự động sinh Mã hồ sơ theo quy chuẩn: `XD-[NĂM]-[STT]` (Ví dụ: `XD-2027-0015`).
@@ -218,7 +218,7 @@ Mỗi hồ sơ yêu cầu giải quyết bồi thường được hệ thống �
             *(Hệ thống tự động sinh câu chữ tương thích khi in mẫu. Nếu chọn tư cách số 3: Bắt buộc đính kèm văn bản cử đại diện và danh sách những người thừa kế còn lại).*
     2.  **Khối văn bản làm căn cứ & Hành vi gây thiệt hại**:
         *   *Văn bản làm căn cứ bồi thường*: Sub-form (Số hiệu, Ngày ban hành, Cơ quan ban hành, Trích yếu văn bản pháp lý xác định công chức làm sai).
-        *   *Hành vi gây thiệt hại*: Text(1000), Bắt buộc.
+        *   *Hành vi gây thiệt hại của người thi hành công vụ*: Text(2000), Bắt buộc.
         *   *Mối quan hệ nhân quả*: Text(1000), Bắt buộc.
     3.  **Khối I. Thiệt hại yêu cầu bồi thường (Phân loại theo Điều 23 - Điều 28)**:
         *   Thiết kế bảng lưới gồm 3 cột: `[Loại thiệt hại] - [Cách tính/Diễn giải công thức áp dụng] - [Số tiền yêu cầu]`.

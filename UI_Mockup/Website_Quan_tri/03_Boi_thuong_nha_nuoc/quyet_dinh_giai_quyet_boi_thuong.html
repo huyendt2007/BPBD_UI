@@ -318,6 +318,9 @@
             min-width: 980px;
         }
 
+        /* Danh sách Quyết định: cột Thao tác cố định bên phải */
+        #decisionsTable th:last-child, #decisionsTable td:last-child { position: sticky; right: 0; z-index: 2; background: #fff; box-shadow: -3px 0 6px rgba(15, 23, 42, 0.06); }
+        #decisionsTable thead th:last-child { z-index: 3; background: var(--table-header-bg); }
         .custom-table th {
             padding: 12px 16px;
             font-weight: 600;
@@ -1151,6 +1154,54 @@
         .dtl-sub-head i { color: var(--primary-light); }
         .qd-doc-link { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; color: var(--primary-light); text-decoration: none; cursor: pointer; }
         .qd-doc-link:hover { text-decoration: underline; }
+        /* MH07 - Popup Trình ký Quyết định giải quyết bồi thường (giống popup Không thụ lý hồ sơ) */
+        .qs-box { width: 1180px; max-width: 96vw; max-height: 94vh; }
+        .qs-box.qs-wide { width: 100vw; max-width: 100vw; height: 100vh; max-height: 100vh; border-radius: 0; }
+        .qs-sub { font-size: 12.5px; font-weight: 500; color: #64748b; margin-top: 4px; }
+        .qs-stepper { display: flex; justify-content: center; align-items: center; gap: 18px; padding: 10px 24px; background: #f1f5f9; border-bottom: 1px solid #e2e8f0; font-size: 13px; color: #64748b; }
+        .qs-step { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+        .qs-step b { display: inline-flex; width: 22px; height: 22px; border-radius: 50%; align-items: center; justify-content: center; background: #e2e8f0; color: #64748b; font-size: 11px; }
+        .qs-step.active { color: #2563eb; } .qs-step.active b { background: #2563eb; color: #fff; }
+        .qs-step.done { color: #16a34a; } .qs-step.done b { background: #16a34a; color: #fff; }
+        .qs-body { padding: 18px 24px; background: #f8fafc; overflow-y: auto; flex: 1; display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 14px 16px; align-content: start; align-items: start; }
+        .qs-sec { background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px 16px; }
+        .qs-sec-title { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #1e293b; text-transform: uppercase; margin: 0 0 12px; padding-bottom: 8px; border-bottom: 1px solid #f1f5f9; }
+        .qs-sec-title > i { color: #2563eb; }
+        .qs-req { color: #dc2626; margin-left: 2px; }
+        .qs-hint { font-size: 12px; color: #64748b; margin: -2px 0 8px; }
+        .qs-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0 14px; }
+        .qs-field { margin-bottom: 12px; }
+        .qs-field .form-label { font-weight: 600; font-size: 13px; color: #334155; margin-bottom: 6px; display: block; }
+        .qs-field .form-control { font-family: inherit; font-size: 13px; width: 100%; box-sizing: border-box; }
+        .qs-field textarea.form-control { line-height: 1.55; resize: vertical; }
+        .qs-err { display: none; color: #dc2626; font-size: 12px; margin-top: 4px; }
+        .qs-methods { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .qs-method { display: flex; gap: 10px; align-items: flex-start; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; cursor: pointer; margin: 0; }
+        .qs-method:has(input:checked) { border-color: #2563eb; background: #eff6ff; }
+        .qs-method b { display: block; font-size: 13px; color: #0f172a; } .qs-method small { display: block; font-size: 12px; color: #64748b; margin-top: 2px; }
+        .qs-cc-row { display: flex; gap: 8px; align-items: center; margin-bottom: 6px; }
+        .qs-cc-row span.qs-cc-no { width: 22px; text-align: right; font-size: 12.5px; color: #64748b; flex-shrink: 0; }
+        .qs-cc-row input { flex: 1; }
+        .qs-docfile { margin-top: 4px; border: 1.5px dashed #60a5fa; background: #f5f9ff; border-radius: 10px; padding: 12px 14px; }
+        .qs-docfile.signed { border-color: #fbbf24; background: #fffbeb; }
+        .qs-docfile-head { font-size: 13px; font-weight: 700; color: #1e40af; margin-bottom: 8px; display: flex; gap: 8px; align-items: center; }
+        .qs-docfile.signed .qs-docfile-head { color: #92400e; }
+        .qs-file-empty { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 12.5px; color: #475569; }
+        .qs-file-ready { display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 10px 12px; }
+        .qs-file-ready .qs-fname { font-weight: 700; font-size: 13px; color: #1e293b; overflow-wrap: anywhere; }
+        .qs-tag { display: inline-flex; gap: 4px; align-items: center; background: #dcfce7; color: #166534; border-radius: 999px; padding: 1px 8px; font-size: 11.5px; font-weight: 600; }
+        .qs-step2 { display: none; flex: 1; min-height: 0; overflow: hidden; }
+        .qs-preview { flex: 1; background: #334155; overflow: auto; padding: 18px; }
+        .qs-a4 { position: relative; background: #fff; width: 794px; min-height: 1123px; margin: 0 auto; padding: 50px 60px; box-sizing: border-box; box-shadow: 0 10px 30px rgba(0,0,0,.3); }
+        .qs-side { width: 420px; flex-shrink: 0; background: #f8fafc; border-left: 1px solid #e2e8f0; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .qs-card { background: #fff; border: 1px solid #bfdbfe; border-left: 4px solid #1d4ed8; border-radius: 8px; padding: 12px; }
+        .qs-card.last { border-color: #fecaca; border-left-color: #b91c1c; }
+        .qs-card-head { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 8px; font-size: 12.5px; font-weight: 700; color: #1d4ed8; }
+        .qs-card.last .qs-card-head { color: #b91c1c; }
+        .qs-sig { position: absolute; border: 2px dashed #2563eb; background: rgba(239,246,255,.92); border-radius: 6px; padding: 6px 8px; font: 11px Inter, sans-serif; color: #1e3a8a; cursor: move; user-select: none; box-sizing: border-box; }
+        .qs-sig.last { border-color: #dc2626; background: rgba(254,242,242,.92); color: #991b1b; }
+        .qs-foot { justify-content: space-between !important; }
+        @media (max-width: 900px) { .qs-body { grid-template-columns: 1fr; } }
     </style>
 </head>
 
@@ -1250,12 +1301,13 @@
                 <thead>
                     <tr>
                         <th style="width: 50px; text-align: center;">STT</th>
+                        <th style="width: 130px; text-align: center;">Mã hồ sơ</th>
                         <th style="width: 130px; text-align: center;">Số quyết định</th>
-                        <th style="width: 110px; text-align: center;">Ngày ban hành</th>
-                        <th style="min-width: 220px;">Mã vụ việc - Người yêu cầu</th>
-                        <th style="min-width: 200px;">Cơ quan ban hành</th>
-                        <th style="width: 150px; text-align: right;">Tổng tiền bồi thường (VNĐ)</th>
+                        <th style="width: 130px; text-align: center;">Ngày quyết định</th>
+                        <th style="width: 160px; text-align: right;">Tổng số tiền bồi thường (VNĐ)</th>
                         <th style="min-width: 170px;">Lãnh đạo ký duyệt</th>
+                        <th style="min-width: 200px;">Cơ quan ban hành</th>
+                        <th style="width: 140px; text-align: center;">Mã vụ việc</th>
                         <th style="width: 190px; text-align: center;">Trạng thái</th>
                         <th style="width: 200px; min-width: 190px; text-align: center;">Thao tác</th>
                     </tr>
@@ -1308,7 +1360,7 @@
                         <div class="form-group" style="margin-bottom:0;">
                             <span class="form-label">Mã vụ việc liên kết<span class="required">*</span></span>
                             <div style="display:flex; gap:8px; align-items:center;">
-                                <input type="text" class="form-control" id="formClaimSearchInput" placeholder="Nhập mã vụ việc..." style="flex:1;">
+                                <input type="text" class="form-control" id="formClaimSearchInput" list="qdClaimDatalist" autocomplete="off" placeholder="Nhập hoặc chọn mã vụ việc..." style="flex:1;" onchange="onClaimInputPick(this.value)"><datalist id="qdClaimDatalist"></datalist>
                                 <button type="button" class="btn btn-primary" id="btnSearchClaim" onclick="searchClaimByCode()" style="height:38px; padding:0 16px; font-weight:600; display:inline-flex; align-items:center; gap:6px; white-space:nowrap;"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
                                 <button type="button" class="btn btn-secondary" id="btnAdvSearchClaim" onclick="openClaimLookupModal()" style="height:38px; padding:0 16px; font-weight:600; display:inline-flex; align-items:center; gap:6px; white-space:nowrap;"><i class="fa-solid fa-magnifying-glass-plus"></i> Tìm kiếm nâng cao</button>
                             </div>
@@ -1327,7 +1379,7 @@
             </div>
 
             <!-- (1) Lãnh đạo ký duyệt -->
-            <div class="dtl-card" id="qdLeaderCard">
+            <div class="dtl-card" id="qdLeaderCard" style="display:none !important;">
                 <div class="dtl-card-head"><i class="fa-solid fa-user-tie"></i> Lãnh đạo ký duyệt</div>
                 <div class="dtl-card-body">
                     <div class="form-group" style="margin-bottom:0;">
@@ -1474,7 +1526,7 @@
             </div>
 
             <!-- (7) Văn bản dự thảo trình Lãnh đạo -->
-            <div class="dtl-card" id="qdDraftCard" style="margin-bottom:0;">
+            <div class="dtl-card" id="qdDraftCard" style="display:none !important;">
                 <div class="dtl-card-head"><i class="fa-solid fa-file-word"></i> Văn bản dự thảo trình Lãnh đạo</div>
                 <div class="dtl-card-body">
                     <span class="form-label">Văn bản dự thảo trình Lãnh đạo<span class="required">*</span></span>
@@ -1522,7 +1574,7 @@
         </div>
         <div class="inline-form-footer" style="display:flex; justify-content:flex-end; gap:8px;">
             <button class="btn btn-secondary" onclick="closeForm()"><i class="fa-solid fa-arrow-left-long"></i> Hủy bỏ</button>
-            <button class="btn btn-primary" id="qdSubmitBtn" onclick="submitForm()"><i class="fa-solid fa-paper-plane"></i> Trình Lãnh đạo</button>
+            <button class="btn btn-primary" id="qdSubmitBtn" onclick="openQdSign()">Tiếp tục <i class="fa-solid fa-arrow-right"></i></button>
         </div>
     </div>
 
@@ -1711,6 +1763,108 @@
             <div class="confirm-modal-footer">
                 <button class="btn btn-secondary btn-sm" onclick="closeConfirmModal(false)">Hủy bỏ</button>
                 <button id="customConfirmOkBtn" class="btn btn-danger btn-sm" onclick="closeConfirmModal(true)">Đồng ý</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- MH07 - POPUP TRÌNH KÝ QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG -->
+    <!-- ======================================================== -->
+    <div class="qd-modal" id="qdSignModal">
+        <div class="qd-modal-box qs-box" id="qsBox">
+            <div class="qd-modal-head">
+                <div>
+                    <span><i class="fa-solid fa-file-signature"></i> TRÌNH KÝ QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG</span>
+                    <div class="qs-sub" id="qsSub"></div>
+                </div>
+                <button class="qd-close" onclick="closeQdSign()">&times;</button>
+            </div>
+            <div class="qs-stepper" id="qsStepper">
+                <span class="qs-step active" id="qsTab1"><b>1</b> Nhập thông tin</span>
+                <i class="fa-solid fa-chevron-right" style="font-size:11px; color:#94a3b8;"></i>
+                <span class="qs-step" id="qsTab2"><b>2</b> Kéo ô ký &amp; chọn Lãnh đạo</span>
+            </div>
+
+            <!-- Bước 1: Hình thức ký / Thông tin văn bản -->
+            <div class="qs-body" id="qsStep1">
+                <div class="qs-sec">
+                    <div class="qs-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="qs-req">*</span></div>
+                    <div class="qs-methods">
+                        <label class="qs-method"><input type="radio" name="qsMethod" value="Ký số" checked onchange="qsSetMethod(this.value)"><span><b>Ký số trên hệ thống</b><small>Trình Lãnh đạo duyệt &amp; ký số (02 bước)</small></span></label>
+                        <label class="qs-method"><input type="radio" name="qsMethod" value="Ký ngoài" onchange="qsSetMethod(this.value)"><span><b>Ký ngoài</b><small>Tải lên văn bản PDF đã ký &amp; đóng dấu (01 bước)</small></span></label>
+                    </div>
+                </div>
+                <div class="qs-sec" id="qsDocSec">
+                    <div class="qs-sec-title"><i class="fa-solid fa-file-lines"></i> Thông tin văn bản</div>
+                    <div class="qs-grid2">
+                        <div class="qs-field">
+                            <label class="form-label" for="qsDocNo">Số, ký hiệu văn bản<span class="qs-req">*</span></label>
+                            <input type="text" class="form-control" id="qsDocNo" maxlength="100" placeholder="Nhập số, ký hiệu văn bản...">
+                            <div class="qs-err" id="qsDocNoErr">Đây là trường bắt buộc</div>
+                        </div>
+                        <div class="qs-field">
+                            <label class="form-label" for="qsDocDate">Ngày văn bản<span class="qs-req">*</span></label>
+                            <input type="text" class="form-control" id="qsDocDate" placeholder="dd/mm/yyyy">
+                            <div class="qs-err" id="qsDocDateErr">Đây là trường bắt buộc</div>
+                        </div>
+                    </div>
+                    <div class="qs-field">
+                        <span class="form-label">Căn cứ<span class="qs-req">*</span></span>
+                        <div class="qs-hint">Mỗi căn cứ 01 dòng, ghi đủ số hiệu, ngày tháng năm ban hành, cơ quan ban hành và trích yếu của văn bản.</div>
+                        <div id="qsCanCuList"></div>
+                        <button type="button" class="btn btn-secondary btn-sm" onclick="qsAddCanCu()"><i class="fa-solid fa-plus"></i> Thêm căn cứ</button>
+                        <div class="qs-err" id="qsCanCuErr">Đây là trường bắt buộc</div>
+                    </div>
+                    <div class="qs-field">
+                        <label class="form-label" for="qsNoiNhan">Nơi nhận<span class="qs-req">*</span></label>
+                        <textarea class="form-control" id="qsNoiNhan" rows="4" placeholder="Nhập nơi nhận, mỗi nơi nhận 01 dòng..."></textarea>
+                        <div class="qs-err" id="qsNoiNhanErr">Đây là trường bắt buộc</div>
+                    </div>
+                    <div class="qs-docfile" id="qsDocFileSec">
+                        <div class="qs-docfile-head"><i class="fa-solid fa-file-signature"></i> Tệp văn bản trình ký<span class="qs-req">*</span></div>
+                        <div id="qsDocBox"></div>
+                        <input type="file" id="qsDocInput" accept=".doc,.docx,.pdf" style="display:none;" onchange="qsUploadDoc(this)">
+                        <div class="qs-err" id="qsDocErr">Đây là trường bắt buộc</div>
+                    </div>
+                </div>
+                <div class="qs-sec" id="qsOffSec" style="display:none; grid-column:2;">
+                    <div class="qs-sec-title"><i class="fa-solid fa-file-circle-check"></i> Thông tin văn bản ban hành</div>
+                    <div class="qs-grid2">
+                        <div class="qs-field"><label class="form-label" for="qsOffNo">Số, ký hiệu văn bản<span class="qs-req">*</span></label><input type="text" class="form-control" id="qsOffNo" maxlength="100" placeholder="Nhập số, ký hiệu văn bản..."></div>
+                        <div class="qs-field"><label class="form-label" for="qsOffDate">Ngày ban hành<span class="qs-req">*</span></label><input type="text" class="form-control" id="qsOffDate" placeholder="dd/mm/yyyy"></div>
+                        <div class="qs-field"><label class="form-label" for="qsOffTotal">Tổng số tiền bồi thường (VNĐ)<span class="qs-req">*</span></label><input type="text" class="form-control" id="qsOffTotal" placeholder="Nhập tổng số tiền bồi thường..."></div>
+                        <div class="qs-field"><label class="form-label" for="qsOffLeader">Lãnh đạo ký duyệt<span class="qs-req">*</span></label><select class="form-control" id="qsOffLeader"></select></div>
+                    </div>
+                    <div class="qs-docfile signed">
+                        <div class="qs-docfile-head"><i class="fa-solid fa-file-pdf"></i> Tệp văn bản PDF đã ký &amp; đóng dấu<span class="qs-req">*</span></div>
+                        <div id="qsOffBox"></div>
+                        <input type="file" id="qsOffInput" accept=".pdf" style="display:none;" onchange="qsUploadOff(this)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bước 2: Kéo ô ký & chọn Lãnh đạo -->
+            <div class="qs-step2" id="qsStep2">
+                <div class="qs-preview"><div class="qs-a4" id="qsA4"></div></div>
+                <div class="qs-side">
+                    <div style="font-size:13px; font-weight:700; color:#1e293b;"><i class="fa-solid fa-stamp" style="color:#2563eb;"></i> THIẾT LẬP VỊ TRÍ &amp; KÍCH THƯỚC CHỮ KÝ</div>
+                    <div id="qsLevels" style="display:flex; flex-direction:column; gap:12px;"></div>
+                    <div style="font-size:11.5px; color:#64748b;">Bấm <b>Đặt chữ ký</b> để sinh ô ký của cấp đó trên văn bản; kéo ô để đặt vị trí.</div>
+                    <div class="qs-field" style="margin-bottom:0;">
+                        <label class="form-label" for="qsContent">Nội dung trình</label>
+                        <textarea class="form-control" id="qsContent" rows="4" maxlength="2000" placeholder="Nhập nội dung trình Lãnh đạo..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="qd-modal-foot qs-foot">
+                <button type="button" class="btn btn-secondary" onclick="closeQdSign()">Hủy bỏ</button>
+                <div style="display:flex; gap:8px;">
+                    <button type="button" class="btn btn-secondary" id="qsBtnBack" onclick="qsGoStep(1)" style="display:none;"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
+                    <button type="button" class="btn btn-primary" id="qsBtnNext" onclick="qsNext()">Tiếp tục <i class="fa-solid fa-arrow-right"></i></button>
+                    <button type="button" class="btn btn-primary" id="qsBtnSubmit" onclick="qsSubmit()" style="display:none; background:#16a34a; border-color:#16a34a;"><i class="fa-solid fa-paper-plane"></i> Trình Lãnh đạo</button>
+                    <button type="button" class="btn btn-primary" id="qsBtnIssue" onclick="qsIssueOffline()" style="display:none; background:#16a34a; border-color:#16a34a;"><i class="fa-solid fa-check"></i> Hoàn thành</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1910,8 +2064,24 @@
         ];
         function loadClaims() {
             const list = readJson('claimsList', null);
-            return Array.isArray(list) && list.length ? list : FALLBACK_CLAIMS;
+            if (!Array.isArray(list) || !list.length) return FALLBACK_CLAIMS;
+            // Dữ liệu mô phỏng: luôn bổ sung các vụ việc mẫu Chờ ban hành QĐ (nếu danh sách đang lưu chưa có) để chọn được Mã vụ việc
+            const codes = new Set(list.map(c => c.code));
+            return list.concat(FALLBACK_CLAIMS.filter(c => !codes.has(c.code)));
         }
+        function qdVvCode(code) { try { return W.vuViecOf ? W.vuViecOf(code) : ''; } catch (e) { return ''; } }
+        function qdFindEligible(val) {
+            const v = String(val || '').trim().split(/\s+/)[0].toLowerCase();
+            if (!v) return null;
+            return eligibleClaims().find(c => c.code.toLowerCase() === v || String(qdVvCode(c.code)).toLowerCase() === v) || null;
+        }
+        // Danh sách gợi ý: vụ việc đủ điều kiện lập Quyết định trong phạm vi đơn vị của người đăng nhập
+        function fillClaimDatalist() {
+            const dl = $('qdClaimDatalist'); if (!dl) return;
+            const mine = eligibleClaims().filter(claimInMyScope);
+            dl.innerHTML = (mine.length ? mine : eligibleClaims()).map(c => `<option value="${esc(qdVvCode(c.code))}">${esc(c.code)} - ${esc(claimName(c))}</option>`).join('');
+        }
+        function onClaimInputPick(val) { if (qdFindEligible(val)) searchClaimByCode(); }
         function claimByCode(code) { return loadClaims().find(c => c.code === code) || null; }
         function claimName(c) { return (c && (c.nyc || c.nycName)) || '(Chưa có tên)'; }
         function claimNbth(c) { return (c && (c.nbth || c.nbthName || c.victimName)) || claimName(c); }
@@ -2292,16 +2462,17 @@
             $('decCurrentRange').innerText = total ? `${start + 1}-${start + page.length}` : '0-0';
             const tbody = $('decTableBody');
             if (!total) {
-                tbody.innerHTML = '<tr><td colspan="9" style="text-align:center; color:var(--text-muted); padding:30px; font-style:italic;">Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; color:var(--text-muted); padding:30px; font-style:italic;">Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.</td></tr>';
             } else {
                 tbody.innerHTML = page.map((d, i) => `<tr data-id="${esc(d.id)}" style="cursor:pointer;" onclick="if(!event.target.closest('button,a')) openDetail('${d.id}')">
                     <td style="text-align:center;">${start + i + 1}</td>
+                    <td style="text-align:center;"><a href="javascript:void(0)" onclick="event.stopPropagation(); openLinkedClaimDetail('${esc(d.claimCode)}')" style="font-weight:600; color:var(--secondary-color); text-decoration:underline;">${esc(d.claimCode)}</a></td>
                     <td style="text-align:center;">${d.decNo ? `<strong>${esc(d.decNo)}</strong>` : '<span style="color:#94a3b8; font-style:italic;">Chưa cấp số</span>'}</td>
-                    <td style="text-align:center;">${d.issueDate ? esc(d.issueDate) : '-'}</td>
-                    <td><a href="javascript:void(0)" onclick="event.stopPropagation(); openLinkedClaimDetail('${esc(d.claimCode)}')" style="font-weight:600; color:var(--secondary-color); text-decoration:none;">${esc(d.claimCode)}</a> - ${esc(d.nycName)}</td>
-                    <td>${esc(unitLabel(d))}</td>
+                    <td style="text-align:center;">${(d.issueDate || d.decDate) ? esc(d.issueDate || d.decDate) : '<span style="color:#94a3b8; font-style:italic;">-</span>'}</td>
                     <td style="text-align:right; font-weight:600;">${fmt(d.total)}</td>
-                    <td>${d.leaderId ? esc(W.userName(d.leaderId)) : '--'}</td>
+                    <td>${(d.approvedBy || d.leaderId) ? esc(W.userName(d.approvedBy || d.leaderId)) : '-'}</td>
+                    <td>${esc(unitLabel(d))}</td>
+                    <td style="text-align:center;">${esc(qdVvCode(d.claimCode) || '-')}</td>
                     <td style="text-align:center;">${statusCell(d)}</td>
                     <td style="text-align:center;"><div class="action-flex">${rowActions(d)}</div></td>
                 </tr>`).join('');
@@ -2362,6 +2533,8 @@
             </tr></table>`;
         }
         // Quyết định giải quyết bồi thường - Biểu mẫu 18/BTNN
+        // Ngày văn bản dd/mm/yyyy -> "ngày dd tháng mm năm yyyy" (Mẫu 18/BTNN)
+        function qdDateWords(s) { const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(String(s || '').trim()); return m ? `ngày ${m[1].padStart(2, '0')} tháng ${m[2].padStart(2, '0')} năm ${m[3]}` : 'ngày … tháng … năm…'; }
         function buildQdDocHtml(d) {
             const unit = W.unitName(d.unitId) || 'CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG';
             const root = (W.getRootId && W.getRootId(d.unitId)) ? W.getRootId(d.unitId) : d.unitId;
@@ -2414,24 +2587,20 @@
                         ${governing ? esc(governing.toUpperCase()) + '<br>' : 'TÊN CƠ QUAN, TỔ CHỨC<br>CHỦ QUẢN (nếu có)<br>'}
                         <b>${unit ? esc(unit.toUpperCase()) : 'TÊN CƠ QUAN, TỔ CHỨC'}</b><br>
                         <span style="display:inline-block; width:35%; border-top:1px solid #000; margin:2pt 0 4pt;"></span><br>
-                        Số: …../QĐ-…(1)…
+                        Số: ${d.docNo ? esc(d.docNo) : '…../QĐ-…(1)…'}
                     </td>
                     <td style="padding-left:6pt; text-align:center; vertical-align:top; font-size:12pt; line-height:1.35;">
                         <b style="white-space:nowrap;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</b><br>
                         <b>Độc lập - Tự do - Hạnh phúc</b><br>
                         <span style="display:inline-block; width:45%; border-top:1px solid #000; margin:2pt 0 4pt;"></span><br>
-                        <i>…(2)…, ngày … tháng … năm…</i>
+                        <i>…(2)…, ${qdDateWords(d.docDate)}</i>
                     </td>
                 </tr></table>
 
                 <p style="text-align:center; margin:14pt 0 4pt; font-size:15pt;"><b>QUYẾT ĐỊNH</b><br><b>Giải quyết bồi thường</b></p>
                 <p style="text-align:center; margin:4pt 0 12pt; font-size:13pt;"><b>CHỨC VỤ CỦA NGƯỜI ĐỨNG ĐẦU<br>CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG (3)</b></p>
 
-                ${p('<i>Căn cứ Điều 47 Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14 đã được sửa đổi, bổ sung bởi Luật số 81/2025/QH15 và Luật số 15/2026/QH16;</i>')}
-                ${p('<i>Căn cứ Nghị định số …/…/NĐ-CP ngày …/…/… của Chính phủ quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước;</i>')}
-                ${p('<i>Căn cứ…………………..………(4)….……………..…………………….;</i>')}
-                ${p('<i>Căn cứ……………………..….(5)………………………...……..(nếu có);</i>')}
-                ${p('<i>Căn cứ ...............(6)…………………,</i>')}
+                ${(d.canCu && d.canCu.length) ? d.canCu.map((s, i) => p('<i>Căn cứ ' + esc(String(s).replace(/^Căn cứ\s*/i, '').replace(/[;,.]\s*$/, '')) + (i === d.canCu.length - 1 ? ',' : ';') + '</i>')).join('') : p('<i>Căn cứ…………………..………(4)….……………..…………………….;</i>') + p('<i>Căn cứ……………………..….(5)………………………...……..(nếu có);</i>') + p('<i>Căn cứ ...............(6)…………………,</i>')}
 
                 <p style="text-align:center; margin:12pt 0 8pt;"><b>QUYẾT ĐỊNH:</b></p>
 
@@ -2465,10 +2634,7 @@
                 <table style="width:100%; border-collapse:collapse; margin-top:16pt;"><tr>
                     <td style="width:55%; vertical-align:top; font-size:12pt; line-height:1.4;">
                         <b><i>Nơi nhận:</i></b><br>
-                        - Như Điều 6;<br>
-                        -………(12)……;<br>
-                        -..…......(13)..........;<br>
-                        - Lưu: VT, HSVV.
+                        ${(d.noiNhan && d.noiNhan.length ? d.noiNhan : ['- Như Điều 6;', '-………(12)……;', '-..…......(13)..........;', '- Lưu: VT, HSVV.']).map(esc).join('<br>')}
                     </td>
                     <td style="text-align:center; vertical-align:top; font-size:13pt;">
                         <b>Thủ trưởng cơ quan</b><br>
@@ -2670,7 +2836,7 @@
         }
         function toggleDecisionCards(show) {
             const displayStyle = show ? 'block' : 'none';
-            ['qdLeaderCard', 'qdNycCard', 'qdItemsCard', 'qdRecCard', 'qdPayoutCard', 'qdEffectiveCard', 'qdDraftCard'].forEach(id => {
+            ['qdNycCard', 'qdItemsCard', 'qdRecCard', 'qdPayoutCard', 'qdEffectiveCard'].forEach(id => {
                 const el = $(id);
                 if (el) el.style.display = displayStyle;
             });
@@ -2760,6 +2926,7 @@
                 applyClaimContext(d.claimCode, d.leaderId);
             } else {
                 // Chế độ Tạo mới: ô tìm kiếm mở, mặc định ẨN TOÀN BỘ các khối chi tiết
+                fillClaimDatalist();
                 $('formClaimSearchInput').value = '';
                 $('formClaimSearchInput').disabled = false;
                 $('btnSearchClaim').disabled = false;
@@ -2808,8 +2975,7 @@
                 input.focus();
                 return;
             }
-            const eligible = eligibleClaims();
-            const found = eligible.find(c => c.code.toLowerCase() === val.toLowerCase());
+            const found = qdFindEligible(val);
             if (found) {
                 markInvalid(input, false);
                 selectClaim(found.code);
@@ -2825,7 +2991,8 @@
             form.claimCode = code;
             $('formClaimSearchInput').value = code;
             markInvalid($('formClaimSearchInput'), false);
-            $('selectedClaimText').innerHTML = `<i class="fa-solid fa-check"></i> Đã chọn: <b>${esc(code)}</b> - ${esc(claimName(c))}`;
+            $('formClaimSearchInput').value = qdVvCode(code) || code;
+            $('selectedClaimText').innerHTML = `<i class="fa-solid fa-check"></i> Đã chọn: <b>${esc(qdVvCode(code) || code)}</b> (Mã hồ sơ ${esc(code)}) - ${esc(claimName(c))}`;
             $('selectedClaimBadge').style.display = 'inline-flex';
             onClaimChange(code);
             toggleDecisionCards(true);
@@ -2915,14 +3082,16 @@
         function renderClaimLookupResults(keepPage) {
             if (!keepPage) lookupPage = 1;
             const codeQuery = $('lookupClaimCode').value.trim().toLowerCase();
+            // Mô phỏng: người dùng không có vụ việc trong phạm vi đơn vị thì hiển thị toàn bộ vụ việc đủ điều kiện
+            const scopeOn = eligibleClaims().some(claimInMyScope);
             const nycQuery = $('lookupClaimNyc').value.trim().toLowerCase();
             const nbthQuery = $('lookupClaimNbth').value.trim().toLowerCase();
             const idQuery = $('lookupClaimCardNo').value.trim().toLowerCase();
 
             // Vụ việc Chờ ban hành QĐ trong phạm vi đơn vị của người đăng nhập; sắp xếp theo Thời gian xử lý tăng dần
             const list = eligibleClaims().filter(c => {
-                if (!claimInMyScope(c)) return false;
-                if (codeQuery && !c.code.toLowerCase().includes(codeQuery)) return false;
+                if (scopeOn && !claimInMyScope(c)) return false;
+                if (codeQuery && !c.code.toLowerCase().includes(codeQuery) && !String(qdVvCode(c.code)).toLowerCase().includes(codeQuery)) return false;
                 if (nycQuery && !claimName(c).toLowerCase().includes(nycQuery)) return false;
                 if (nbthQuery && !claimNbth(c).toLowerCase().includes(nbthQuery)) return false;
                 if (idQuery && !claimCardNo(c).toLowerCase().includes(idQuery)) return false;
@@ -2949,7 +3118,7 @@
             tbody.innerHTML = page.map(c => {
                 const amount = claimProposedTotal(c);
                 return `<tr>
-                    <td style="text-align:center; font-weight:700; color:var(--primary-light);">${esc(c.code)}</td>
+                    <td style="text-align:center; font-weight:700; color:var(--primary-light);">${esc(qdVvCode(c.code) || c.code)}<div style="font-size:11.5px; font-weight:500; color:var(--text-muted);">${esc(c.code)}</div></td>
                     <td style="font-weight:600;">${esc(claimName(c))}</td>
                     <td>${esc(claimNbth(c))}</td>
                     <td>${esc(claimAgency(c))}</td>
@@ -3081,7 +3250,7 @@
             clearInvalid($('qdFormPanel'));
             let ok = true;
             if (!form.claimCode) { markInvalid($('formClaimSearchInput'), true, 'Đây là trường bắt buộc'); ok = false; }
-            ['qdLeader', 'qdNycName', 'qdNycAddress', 'qdRecName', 'qdRecIdNo'].forEach(id => { if (!requireField(id)) ok = false; });
+            ['qdNycName', 'qdNycAddress', 'qdRecName', 'qdRecIdNo'].forEach(id => { if (!requireField(id)) ok = false; });
             const method = $('qdPayoutMethod') ? $('qdPayoutMethod').value : 'Nhận qua chuyển khoản';
             if (method === 'Nhận qua chuyển khoản') {
                 ['qdPayoutAccHolder', 'qdRecAccount', 'qdRecBank'].forEach(id => { if (!requireField(id)) ok = false; });
@@ -3092,13 +3261,6 @@
             if (form.claimCode && !form.items.length) { showToast('Vụ việc chưa có dữ liệu đề xuất bồi thường.', 'error'); ok = false; }
             form.items.forEach((it, i) => { const el = $('qdAmt_' + i); if (el && !String(el.value).trim()) { markInvalid(el, true); ok = false; } });
             if (isAdjusted() && !requireField('qdAdjustReason')) ok = false;
-            const src = formDraftSource();
-            if (!src || (src === 'uploaded' && !form.uploadedName)) {
-                $('qdDraftBox').classList.add('is-invalid');
-                $('qdDraftError').innerText = !src ? 'Đây là trường bắt buộc' : 'Vui lòng chọn tệp văn bản dự thảo';
-                $('qdDraftError').style.display = 'block';
-                ok = false;
-            }
             if (!ok) focusFirstInvalid($('qdFormPanel'));
             return ok;
         }
@@ -3132,6 +3294,229 @@
             addDecHistory(d, isNew ? 'Trình ký duyệt' : 'Trình lại', `Trình ${W.userLabel(data.leaderId)} ký duyệt dự thảo Quyết định giải quyết bồi thường. Văn bản: ${draftDocName(data.draftDoc)}.`);
             saveDecisions();
             showToast('Đã trình Lãnh đạo ký duyệt Quyết định giải quyết bồi thường.', 'success');
+            showList();
+        }
+        // Trình Lãnh đạo ký duyệt Quyết định (từ Popup Trình ký): extra = { assignees, signDoc, bodyHtml }
+        function qdSubmitDecision(data, extra) {
+            const claim = claimByCode(data.claimCode);
+            ensureWorkflowRecord(data.claimCode, data.unitId, (claim && claim.status) || 'Chờ ban hành QĐ');
+            const wfDraft = Object.assign({ formNo: 'Mẫu số 18/BTNN' }, data.draftDoc);
+            if (wfDraft.source === 'generated') wfDraft.bodyHtml = extra.bodyHtml || buildQdDocHtml(data);
+            const res = W.submitForApproval(data.claimCode, KIND_QD, data.note || 'Trình Lãnh đạo ký duyệt dự thảo Quyết định giải quyết bồi thường.', [], { assignee: data.leaderId, assignees: extra.assignees, draftDoc: wfDraft, signDoc: extra.signDoc, resultStatus: RESULT_STATUS[KIND_QD] });
+            if (!res.ok) { showToast(res.message, 'error'); return false; }
+            const isNew = !form.id;
+            let d = isNew ? null : getDec(form.id);
+            if (!d) { d = { id: 'QD-' + Date.now().toString(36), decisionType: 'Quyết định giải quyết bồi thường', amendments: [], history: [], createdBy: W.getCurrentUserId(), createdAt: W.nowText() }; decisions.unshift(d); }
+            delete data.note;
+            Object.assign(d, data, { status: ST.CHO_DUYET, wfKind: KIND_QD, wfSubmittedAt: res.record.approval.submittedAt, returned: null, request: null, decNo: '', issueDate: '', updatedAt: new Date().toISOString() });
+            addDecHistory(d, isNew ? 'Trình ký duyệt' : 'Trình lại', `Trình ${W.userLabel(data.leaderId)} ký duyệt dự thảo Quyết định giải quyết bồi thường. Văn bản: ${draftDocName(data.draftDoc)}.`);
+            saveDecisions();
+            showToast('Đã trình Lãnh đạo ký duyệt Quyết định giải quyết bồi thường.', 'success');
+            showList();
+            return true;
+        }
+        // ---------------- MH07 - Popup Trình ký Quyết định giải quyết bồi thường ----------------
+        // Bước 1: Hình thức ký, thông tin văn bản, Tệp văn bản trình ký (Tải file / Tạo văn bản theo Mẫu 18/BTNN); Bước 2: Kéo ô ký & chọn Lãnh đạo
+        const QS_NOI_NHAN_DEFAULT = '- Như Điều 6;\n-………(12)……;\n-..…......(13)..........;\n- Lưu: VT, HSVV.';
+        const QS_SIG = { w: 230, h: 90 };
+        // Căn cứ điền sẵn theo Mẫu 18/BTNN; cán bộ nhập / sửa toàn bộ căn cứ
+        const QS_CAN_CU_DEFAULT = ['Căn cứ Điều 47 Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14 đã được sửa đổi, bổ sung bởi Luật số 81/2025/QH15 và Luật số 15/2026/QH16', 'Căn cứ Nghị định số …/…/NĐ-CP ngày …/…/… của Chính phủ quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước'];
+        let qs = null;
+        function openQdSign() {
+            if (!validateForm()) { showToast('Vui lòng nhập đầy đủ các trường bắt buộc.', 'error'); return; }
+            const d = form.id ? getDec(form.id) : null;
+            const recLike = recLikeFor(form.claimCode);
+            const path = W.computeApprovalPath(recLike) || [];
+            const ft = W.flowTypeOf ? W.flowTypeOf(recLike.loaiYeuCau, recLike.rootUnitId) : undefined;
+            const levels = path.map((u, i) => ({ unitId: u, leaders: i === 0 ? W.firstLevelLeaders(recLike) : W.getLeaders(u, ft) }));
+            const sd = d && d.signDoc ? d.signDoc : {};
+            qs = { method: 'Ký số', step: 1, levels, assignees: levels.map((lv, i) => (sd.assignees && sd.assignees[i]) || lv.leaders[0] || ''), placed: {}, coords: {}, docFile: null, offFile: null };
+            const c = claimByCode(form.claimCode);
+            $('qsSub').innerHTML = `Mã vụ việc: <b>${esc(qdVvCode(form.claimCode) || form.claimCode)}</b> (Mã hồ sơ ${esc(form.claimCode)}) &bull; Người yêu cầu: <b>${esc($('qdNycName').value.trim() || claimName(c))}</b>`;
+            document.querySelectorAll('input[name="qsMethod"]').forEach(r => { r.checked = r.value === 'Ký số'; });
+            $('qsDocNo').value = sd.docNo || '';
+            $('qsDocDate').value = sd.docDate || W.dateText();
+            qs.canCu = (sd.canCu && sd.canCu.length) ? sd.canCu.slice() : QS_CAN_CU_DEFAULT.slice();
+            $('qsNoiNhan').value = sd.noiNhan || QS_NOI_NHAN_DEFAULT;
+            $('qsContent').value = '';
+            clearInvalid($('qdSignModal'));
+            document.querySelectorAll('#qdSignModal .qs-err').forEach(e => { e.style.display = 'none'; });
+            if (window.flatpickr && !$('qsDocDate')._flatpickr) flatpickr('#qsDocDate', { dateFormat: 'd/m/Y', allowInput: true });
+            $('qsOffNo').value = sd.docNo || '';
+            $('qsOffDate').value = W.dateText();
+            $('qsOffTotal').value = fmt(form.items.reduce((s, it) => s + num(it.amount), 0));
+            const offLeaders = [...new Set(levels.reduce((acc, lv) => acc.concat(lv.leaders), []))];
+            $('qsOffLeader').innerHTML = '<option value="">-- Chọn Lãnh đạo --</option>' + offLeaders.map(id => `<option value="${esc(id)}">${esc(W.userLabel(id))}</option>`).join('');
+            if (window.flatpickr && !$('qsOffDate')._flatpickr) flatpickr('#qsOffDate', { dateFormat: 'd/m/Y', allowInput: true });
+            qsRenderCanCu(); qsRenderDoc(); qsRenderOff();
+            qsSetMethod('Ký số');
+            qsGoStep(1);
+            openModal('qdSignModal');
+        }
+        function closeQdSign() { closeModal('qdSignModal'); $('qsBox').classList.remove('qs-wide'); }
+        function qsSetMethod(m) {
+            qs.method = m;
+            const on = m === 'Ký số';
+            $('qsDocSec').style.display = on ? '' : 'none';
+            $('qsOffSec').style.display = on ? 'none' : '';
+            $('qsStepper').style.display = on ? '' : 'none';
+            $('qsBtnNext').style.display = on ? '' : 'none';
+            $('qsBtnIssue').style.display = on ? 'none' : '';
+        }
+        function qsGoStep(n) {
+            qs.step = n;
+            $('qsStep1').style.display = n === 1 ? '' : 'none';
+            $('qsStep2').style.display = n === 2 ? 'flex' : 'none';
+            $('qsBox').classList.toggle('qs-wide', n === 2);
+            $('qsTab1').className = 'qs-step ' + (n === 1 ? 'active' : 'done');
+            $('qsTab2').className = 'qs-step' + (n === 2 ? ' active' : '');
+            $('qsBtnBack').style.display = n === 2 ? '' : 'none';
+            $('qsBtnNext').style.display = n === 1 && qs.method === 'Ký số' ? '' : 'none';
+            $('qsBtnSubmit').style.display = n === 2 ? '' : 'none';
+            $('qsBtnIssue').style.display = n === 1 && qs.method === 'Ký ngoài' ? '' : 'none';
+        }
+        // Căn cứ: mỗi căn cứ 01 dòng
+        function qsRenderCanCu() {
+            $('qsCanCuList').innerHTML = qs.canCu.map((v, i) => `<div class="qs-cc-row"><span class="qs-cc-no">${i + 1}.</span><input type="text" class="form-control" value="${esc(v)}" placeholder="Nhập số hiệu, ngày tháng năm ban hành, cơ quan ban hành, trích yếu..." oninput="qs.canCu[${i}] = this.value; $('qsCanCuErr').style.display='none'; this.classList.remove('is-invalid');"><button type="button" class="icon-btn delete" title="Xóa căn cứ" onclick="qsRemoveCanCu(${i})"><i class="fa-solid fa-trash"></i></button></div>`).join('');
+        }
+        function qsAddCanCu() { qs.canCu.push(''); qsRenderCanCu(); }
+        function qsRemoveCanCu(i) { qs.canCu.splice(i, 1); if (!qs.canCu.length) qs.canCu = ['']; qsRenderCanCu(); }
+        function qsErr(id, on) { const e = $(id + 'Err'); if (e) e.style.display = on ? 'block' : 'none'; const el = $(id); if (el) el.classList.toggle('is-invalid', !!on); }
+        function qsDocData() {
+            return Object.assign(collectForm(), {
+                docNo: $('qsDocNo').value.trim(), docDate: $('qsDocDate').value.trim(),
+                canCu: qs.canCu.map(s => String(s || '').trim()).filter(Boolean),
+                noiNhan: $('qsNoiNhan').value.split('\n').map(s => s.trim()).filter(Boolean)
+            });
+        }
+        // Tệp văn bản trình ký: mặc định chỉ có Tải file / Tạo văn bản theo Mẫu 18/BTNN
+        function qsRenderDoc() {
+            const f = qs.docFile;
+            $('qsDocBox').innerHTML = !f
+                ? `<div class="qs-file-empty"><span>Chưa có tệp. Tải tệp từ máy hoặc tạo văn bản theo Mẫu 18/BTNN.</span><span style="display:flex; gap:8px;"><button type="button" class="btn btn-secondary btn-sm" onclick="$('qsDocInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button><button type="button" class="btn btn-primary btn-sm" onclick="qsGenerate()"><i class="fa-solid fa-wand-magic-sparkles"></i> Tạo văn bản theo Mẫu 18/BTNN</button></span></div>`
+                : `<div class="qs-file-ready"><i class="fa-solid ${f.generated ? 'fa-file-word' : 'fa-file-lines'}" style="font-size:26px; color:#2563eb;"></i><div style="flex:1; min-width:0;"><div class="qs-fname">${esc(f.name)}</div>${f.generated ? '<span class="qs-tag"><i class="fa-solid fa-wand-magic-sparkles"></i> Tạo tự động theo Mẫu 18/BTNN</span>' : ''}</div><span style="display:flex; gap:6px;"><button type="button" class="btn btn-secondary btn-sm" onclick="qsViewDoc()"><i class="fa-solid fa-eye"></i> Xem</button><button type="button" class="btn btn-secondary btn-sm" onclick="qsDownloadDoc()"><i class="fa-solid fa-download"></i> Tải về</button><button type="button" class="btn btn-secondary btn-sm" style="color:#dc2626;" onclick="qsRemoveDoc()"><i class="fa-solid fa-trash"></i> Xóa</button></span></div>`;
+        }
+        function qsGenerate() {
+            let ok = true;
+            ['qsDocNo', 'qsDocDate', 'qsNoiNhan'].forEach(id => { const bad = !$(id).value.trim(); qsErr(id, bad); if (bad) ok = false; });
+            const ccBad = !qs.canCu.some(s => String(s || '').trim());
+            $('qsCanCuErr').style.display = ccBad ? 'block' : 'none';
+            if (ccBad) { ok = false; const inp = document.querySelector('#qsCanCuList input'); if (inp) inp.classList.add('is-invalid'); }
+            if (!ok) { const el = document.querySelector('#qsDocSec .is-invalid'); if (el) el.focus(); return; }
+            const data = qsDocData();
+            qs.docFile = { name: `Mau_18_BTNN_Quyet_dinh_giai_quyet_boi_thuong_${form.claimCode}.doc`, generated: true, html: buildQdDocHtml(data) };
+            $('qsDocErr').style.display = 'none';
+            qsRenderDoc();
+            showToast('Đã tạo văn bản theo Mẫu 18/BTNN và gắn vào Tệp văn bản trình ký.', 'success');
+        }
+        function qsUploadDoc(input) {
+            const f = input.files && input.files[0]; input.value = '';
+            if (!f) return;
+            if (!/\.(docx|doc|pdf)$/i.test(f.name)) { showToast('Tệp không đúng định dạng (chỉ chấp nhận .docx, .doc, .pdf).', 'error'); return; }
+            if (f.size > 50 * 1024 * 1024) { showToast('Tệp vượt quá dung lượng tối đa 50MB.', 'error'); return; }
+            qs.docFile = { name: f.name, generated: false };
+            $('qsDocErr').style.display = 'none';
+            qsRenderDoc();
+        }
+        function qsViewDoc() { const f = qs.docFile; if (!f) return; if (f.generated) W.openDocTab(f.html, f.name.replace(/\.doc$/, '')); else showToast('Giả lập mở tệp: ' + f.name, 'info'); }
+        function qsDownloadDoc() { const f = qs.docFile; if (!f) return; if (f.generated) W.downloadDocWord(f.html, f.name.replace(/\.doc$/, '')); else showToast('Giả lập tải tệp: ' + f.name, 'info'); }
+        function qsRemoveDoc() { qs.docFile = null; qsRenderDoc(); }
+        // Ký ngoài: chỉ tải lên tệp PDF đã ký & đóng dấu
+        function qsRenderOff() {
+            const f = qs.offFile;
+            $('qsOffBox').innerHTML = !f
+                ? `<div class="qs-file-empty"><span>Chỉ chấp nhận tệp .pdf (tối đa 50MB).</span><button type="button" class="btn btn-secondary btn-sm" onclick="$('qsOffInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button></div>`
+                : `<div class="qs-file-ready"><i class="fa-solid fa-file-pdf" style="font-size:26px; color:#dc2626;"></i><div style="flex:1; min-width:0;" class="qs-fname">${esc(f.name)}</div><button type="button" class="btn btn-secondary btn-sm" style="color:#dc2626;" onclick="qs.offFile = null; qsRenderOff();"><i class="fa-solid fa-trash"></i> Xóa</button></div>`;
+        }
+        function qsUploadOff(input) {
+            const f = input.files && input.files[0]; input.value = '';
+            if (!f) return;
+            if (!/\.pdf$/i.test(f.name)) { showToast('Tệp không đúng định dạng (chỉ chấp nhận .pdf).', 'error'); return; }
+            if (f.size > 50 * 1024 * 1024) { showToast('Tệp vượt quá dung lượng tối đa 50MB.', 'error'); return; }
+            qs.offFile = { name: f.name };
+            qsRenderOff();
+        }
+        // Tiếp tục: bắt buộc có Tệp văn bản trình ký
+        function qsNext() {
+            if (!qs.docFile) { $('qsDocErr').style.display = 'block'; return; }
+            const f = qs.docFile;
+            $('qsA4').innerHTML = f.generated ? f.html : `<div style="text-align:center; color:#64748b; padding-top:300px; font:14px Inter, sans-serif;"><i class="fa-solid fa-file-lines" style="font-size:48px;"></i><br><br>${esc(f.name)}<br>(Văn bản tải lên)</div>`;
+            qsRenderLevels();
+            qsGoStep(2);
+            qs.levels.forEach((lv, i) => { if (qs.placed[i]) qsDrawBox(i); });
+        }
+        function qsRenderLevels() {
+            const n = qs.levels.length;
+            $('qsLevels').innerHTML = qs.levels.map((lv, i) => {
+                const last = i === n - 1;
+                const opts = lv.leaders.map(id => `<option value="${esc(id)}" ${qs.assignees[i] === id ? 'selected' : ''}>${esc(W.userLabel(id))}</option>`).join('');
+                return `<div class="qs-card${last ? ' last' : ''}"><div class="qs-card-head"><span>Cấp ${i + 1} - ${esc(W.unitName(lv.unitId))}</span><span class="badge" style="font-size:10.5px;">${last ? 'Ký số &amp; con dấu' : 'Ký nháy'}</span></div>
+                    <select class="form-control" id="qsLeader${i}" style="font-size:13px;" onchange="qs.assignees[${i}] = this.value; this.classList.remove('is-invalid'); qsSyncBox(${i});"><option value="">-- Chọn Lãnh đạo --</option>${opts}</select>
+                    <div class="qs-err" id="qsLeader${i}Err">Đây là trường bắt buộc</div>
+                    <div style="margin-top:8px;" id="qsPlaceArea${i}">${qs.placed[i]
+                        ? `<span style="display:flex; gap:4px;"><button type="button" class="btn btn-secondary btn-sm" onclick="qsResize(${i},180,75)">Nhỏ</button><button type="button" class="btn btn-secondary btn-sm" onclick="qsResize(${i},230,90)">Vừa</button><button type="button" class="btn btn-secondary btn-sm" onclick="qsResize(${i},290,115)">Lớn</button><button type="button" class="btn btn-secondary btn-sm" onclick="qsResetBox(${i})"><i class="fa-solid fa-rotate-left"></i> Đặt lại</button></span>`
+                        : `<button type="button" class="btn btn-secondary btn-sm" onclick="qsPlace(${i})"><i class="fa-solid fa-signature"></i> Đặt chữ ký</button><div class="qs-err" id="qsPlace${i}Err">Chưa đặt chữ ký</div>`}</div></div>`;
+            }).join('');
+        }
+        function qsDefaultCoord(i) {
+            const a4 = $('qsA4'); const h = Math.max(a4.scrollHeight, 1123); const last = i === qs.levels.length - 1;
+            return { x: last ? 470 : 60, y: h - 230 - (last ? 0 : 0), w: QS_SIG.w, h: QS_SIG.h };
+        }
+        function qsPlace(i) { qs.placed[i] = true; qs.coords[i] = qs.coords[i] || qsDefaultCoord(i); qsRenderLevels(); qsDrawBox(i); const b = $('qsSig' + i); if (b) b.scrollIntoView({ block: 'center', behavior: 'smooth' }); }
+        function qsResetBox(i) { qs.coords[i] = qsDefaultCoord(i); qsDrawBox(i); }
+        function qsResize(i, w, h) { Object.assign(qs.coords[i], { w, h }); qsDrawBox(i); }
+        function qsSyncBox(i) { if (qs.placed[i]) qsDrawBox(i); }
+        function qsDrawBox(i) {
+            let b = $('qsSig' + i);
+            const last = i === qs.levels.length - 1;
+            if (!b) {
+                b = document.createElement('div'); b.id = 'qsSig' + i; b.className = 'qs-sig' + (last ? ' last' : '');
+                $('qsA4').appendChild(b);
+                b.addEventListener('mousedown', ev => {
+                    const c = qs.coords[i]; const sx = ev.clientX, sy = ev.clientY, ox = c.x, oy = c.y;
+                    const mv = e => { c.x = Math.max(0, ox + e.clientX - sx); c.y = Math.max(0, oy + e.clientY - sy); b.style.left = c.x + 'px'; b.style.top = c.y + 'px'; };
+                    const up = () => { document.removeEventListener('mousemove', mv); document.removeEventListener('mouseup', up); };
+                    document.addEventListener('mousemove', mv); document.addEventListener('mouseup', up); ev.preventDefault();
+                });
+            }
+            const c = qs.coords[i];
+            Object.assign(b.style, { left: c.x + 'px', top: c.y + 'px', width: c.w + 'px', height: c.h + 'px' });
+            const who = qs.assignees[i] ? W.userName(qs.assignees[i]) : '';
+            b.innerHTML = `<b>${last ? 'KÝ SỐ &amp; CON DẤU' : 'KÝ NHÁY'}</b><br>Cấp ${i + 1}${who ? ' - ' + esc(who) : ''}`;
+        }
+        // Trình Lãnh đạo: mỗi cấp chọn Lãnh đạo và đặt chữ ký
+        function qsSubmit() {
+            let ok = true;
+            qs.levels.forEach((lv, i) => {
+                const sel = $('qsLeader' + i); const bad = !sel.value; qsErr('qsLeader' + i, bad); if (bad) ok = false;
+                const pe = $('qsPlace' + i + 'Err'); if (!qs.placed[i]) { if (pe) pe.style.display = 'block'; ok = false; }
+            });
+            if (!ok) return;
+            const data = qsDocData();
+            const f = qs.docFile;
+            data.draftDoc = f.generated ? { source: 'generated', generatedName: f.name } : { source: 'uploaded', uploadedName: f.name, generatedName: '' };
+            data.leaderId = qs.assignees[0];
+            data.note = $('qsContent').value.trim();
+            data.signMethod = 'Ký số';
+            data.signDoc = { method: 'Ký số', file: f.name, docNo: data.docNo, docDate: data.docDate, canCu: data.canCu, noiNhan: $('qsNoiNhan').value, assignees: qs.assignees.slice(), sigCoords: JSON.parse(JSON.stringify(qs.coords)) };
+            if (qdSubmitDecision(data, { assignees: qs.assignees.slice(), signDoc: data.signDoc, bodyHtml: f.generated ? f.html : '' })) closeQdSign();
+        }
+        // Ký ngoài: ban hành trực tiếp, không trình Lãnh đạo
+        function qsIssueOffline() {
+            const data = collectForm();
+            const claim = claimByCode(data.claimCode);
+            ensureWorkflowRecord(data.claimCode, data.unitId, (claim && claim.status) || 'Chờ ban hành QĐ');
+            const isNew = !form.id;
+            let d = isNew ? null : getDec(form.id);
+            if (!d) { d = { id: 'QD-' + Date.now().toString(36), decisionType: 'Quyết định giải quyết bồi thường', amendments: [], history: [], createdBy: W.getCurrentUserId(), createdAt: W.nowText() }; decisions.unshift(d); }
+            delete data.note;
+            const offName = qs.offFile ? qs.offFile.name : `QD_GQBT_${data.claimCode}_da_ky.pdf`;
+            Object.assign(d, data, { signMethod: 'Ký ngoài', signDoc: { method: 'Ký ngoài', file: offName }, signedFile: offName, status: ST.DA_BH, returned: null, request: null, decNo: $('qsOffNo').value.trim(), issueDate: $('qsOffDate').value.trim() || W.dateText(), approvedBy: $('qsOffLeader').value, updatedAt: new Date().toISOString() });
+            addDecHistory(d, 'Ban hành Quyết định (Ký ngoài)', `Số ${d.decNo || '-'} ngày ${d.issueDate}. Tệp đã ký: ${offName}.`);
+            if (W.getRecord(d.claimCode)) W.ensureClaimRecord({ code: d.claimCode, status: ST.DA_BH });
+            saveDecisions();
+            closeQdSign();
+            showToast('Đã ban hành Quyết định giải quyết bồi thường (Ký ngoài).', 'success');
             showList();
         }
         function closeForm() { showList(); }
