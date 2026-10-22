@@ -1494,65 +1494,48 @@
             transform: translateY(0);
         }
 
-        /* Modern Selectable Cards cho Nguồn tệp văn bản trình ký */
-        .doc-src-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
-        .doc-src-card {
-            position: relative;
+        /* Segmented Control cho Nguồn tệp văn bản trình ký */
+        .doc-src-segmented {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 10px 14px;
-            border: 1.5px solid #cbd5e1;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
-            background: #ffffff;
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            margin: 0;
+            padding: 4px;
+            gap: 4px;
+            margin-bottom: 14px;
         }
-        .doc-src-card:hover {
-            border-color: #93c5fd;
-            background: #f8fafc;
-        }
-        .doc-src-card.active {
-            border-color: #2563eb;
-            background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
-            box-shadow: 0 2px 8px rgba(37,99,235,0.1);
-        }
-        .doc-src-card input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
-        .doc-src-content { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
-        .doc-src-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+        .doc-src-seg-btn {
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 15px;
-            flex-shrink: 0;
-            background: #f1f5f9;
-            color: #64748b;
-            transition: all 0.2s;
-        }
-        .doc-src-card.active .doc-src-icon {
-            background: #dbeafe;
-            color: #2563eb;
-        }
-        .doc-src-title {
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 6px;
             font-size: 13px;
-            font-weight: 700;
-            color: #334155;
+            font-weight: 600;
+            color: #64748b;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
         }
-        .doc-src-card.active .doc-src-title {
+        .doc-src-seg-btn:hover {
+            color: #1e293b;
+            background: rgba(255, 255, 255, 0.6);
+        }
+        .doc-src-seg-btn.active {
+            background: #ffffff;
             color: #1d4ed8;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
         }
-        .doc-src-check {
-            font-size: 16px;
-            color: #cbd5e1;
-            margin-left: 8px;
-            flex-shrink: 0;
-            transition: all 0.2s;
+        .doc-src-seg-btn i {
+            font-size: 14px;
+            color: #94a3b8;
+            transition: color 0.2s ease;
         }
-        .doc-src-card.active .doc-src-check {
+        .doc-src-seg-btn.active i {
             color: #2563eb;
         }
 
@@ -19579,33 +19562,17 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 <div class="gqx-sec gqx-col-r" id="ktlDocSection">
                     <div class="gqx-sec-title" id="ktlDocSectionTitle"><i class="fa-solid fa-file-signature"></i> Tệp văn bản trình ký<span class="gqx-req">*</span></div>
 
-                    <!-- Ký số: Chọn nguồn tệp (Selectable Source Cards) -->
+                    <!-- Ký số: Chọn nguồn tệp (Segmented Control) -->
                     <div id="ktlDocSrcGroup">
-                        <div class="doc-src-grid">
-                            <label class="doc-src-card active" id="cardSrcGen" for="ktlDocSrcGen" onclick="ktlSetDocSrc('gen')">
-                                <input type="radio" id="ktlDocSrcGen" name="ktlDocSrc" value="gen" checked onchange="ktlSetDocSrc('gen')">
-                                <div class="doc-src-content">
-                                    <div class="doc-src-icon">
-                                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-                                    </div>
-                                    <div class="doc-src-title">Sinh văn bản theo mẫu 04/BTNN</div>
-                                </div>
-                                <div class="doc-src-check">
-                                    <i class="fa-solid fa-circle-check"></i>
-                                </div>
-                            </label>
-                            <label class="doc-src-card" id="cardSrcUpload" for="ktlDocSrcUpload" onclick="ktlSetDocSrc('upload')">
-                                <input type="radio" id="ktlDocSrcUpload" name="ktlDocSrc" value="upload" onchange="ktlSetDocSrc('upload')">
-                                <div class="doc-src-content">
-                                    <div class="doc-src-icon">
-                                        <i class="fa-solid fa-cloud-arrow-up"></i>
-                                    </div>
-                                    <div class="doc-src-title">Tải file</div>
-                                </div>
-                                <div class="doc-src-check">
-                                    <i class="fa-regular fa-circle"></i>
-                                </div>
-                            </label>
+                        <div class="doc-src-segmented">
+                            <button type="button" class="doc-src-seg-btn active" id="segBtnGen" onclick="ktlSetDocSrc('gen')">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span>Sinh văn bản theo mẫu 04/BTNN</span>
+                            </button>
+                            <button type="button" class="doc-src-seg-btn" id="segBtnUpload" onclick="ktlSetDocSrc('upload')">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <span>Tải file</span>
+                            </button>
                         </div>
                     </div>
 
@@ -22682,22 +22649,13 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         const KTL_NOI_NHAN_DEFAULT = '- Như trên;\n- ….(8)......(để biết);\n- Lưu: VT, HSVV.';
         function ktlSetDocSrc(src) {
             ktlDocSrc = src;
-            document.querySelectorAll('input[name="ktlDocSrc"]').forEach(r => { r.checked = r.value === src; });
             
-            // Cập nhật giao diện Selectable Source Cards
-            const cardGen = document.getElementById('cardSrcGen');
-            const cardUpload = document.getElementById('cardSrcUpload');
+            // Cập nhật giao diện Segmented Control Tabs
+            const btnGen = document.getElementById('segBtnGen');
+            const btnUpload = document.getElementById('segBtnUpload');
             const isGen = (src === 'gen');
-            if (cardGen) {
-                cardGen.classList.toggle('active', isGen);
-                const ico = cardGen.querySelector('.doc-src-check i');
-                if (ico) ico.className = isGen ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle';
-            }
-            if (cardUpload) {
-                cardUpload.classList.toggle('active', !isGen);
-                const ico = cardUpload.querySelector('.doc-src-check i');
-                if (ico) ico.className = !isGen ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle';
-            }
+            if (btnGen) btnGen.classList.toggle('active', isGen);
+            if (btnUpload) btnUpload.classList.toggle('active', !isGen);
 
             ktlOnlineFile = null;
             ktlApplyDocMeta();
