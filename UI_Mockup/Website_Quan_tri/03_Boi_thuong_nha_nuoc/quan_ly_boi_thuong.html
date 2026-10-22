@@ -16819,7 +16819,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const box = document.getElementById('tlEditContainer');
             if (!box) return;
             const neg = tlNormalizeNegotiation(Object.assign({}, claim.negotiation || {})) || {};
-            const decided = tlParticipationOf(neg);
+            const decided = tlParticipationOf(neg) || 'DONG_Y'; // mặc định Đồng ý thương lượng
             const isAgree = decided === 'DONG_Y';
             const isNoNeg = TL_NO_NEGOTIATION_CODES.includes(decided);
             const items = getCurrentVerifiedItems(claim);
@@ -16831,7 +16831,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const err = '<div class="error-message" style="color:#dc2626; font-size:11px; display:none;">Đây là trường bắt buộc</div>';
             const rows = tlState.items.map((it, i) => {
                 const n = negItem(it.key);
-                const st = n ? n.status : '';
+                const st = n ? n.status : 'Thành công'; // mặc định Thành công
                 return `<tr data-tl-idx="${i}">
                     <td style="text-align:center;">${i + 1}</td>
                     <td style="font-weight:600;">${ptE(it.label)}</td>
