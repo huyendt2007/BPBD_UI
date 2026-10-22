@@ -1463,9 +1463,126 @@
         .gqx-docfile-head { display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#1e40af; margin-bottom:10px; }
         .gqx-docfile.signed .gqx-docfile-head { color:#92400e; }
         .gqx-file-empty { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-        .gqx-file-hint { font-size:12.5px; color:#475569; }
+        .gqx-file-hint { font-size:12.5px; color:#475569; display:flex; align-items:center; }
         .gqx-file-actions { display:flex; gap:8px; flex-wrap:wrap; }
         .gqx-file-actions .btn-primary { background:#2563eb; border-color:#2563eb; }
+
+        /* Nút Xem trước văn bản trang nhã, thanh lịch, không tranh chấp với nút Tiếp tục */
+        .btn-preview-doc {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #ffffff;
+            color: #2563eb !important;
+            border: 1px solid #93c5fd;
+            padding: 6px 14px;
+            font-size: 12.5px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+            transition: all 0.2s ease;
+        }
+        .btn-preview-doc:hover {
+            background: #eff6ff;
+            border-color: #3b82f6;
+            color: #1d4ed8 !important;
+            box-shadow: 0 2px 6px rgba(37,99,235,0.12);
+        }
+        .btn-preview-doc:active {
+            background: #dbeafe;
+            transform: translateY(0);
+        }
+
+        /* Modern Selectable Cards cho Nguồn tệp văn bản trình ký */
+        .doc-src-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+        .doc-src-card {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            background: #ffffff;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: 0;
+        }
+        .doc-src-card:hover {
+            border-color: #93c5fd;
+            background: #f8fafc;
+        }
+        .doc-src-card.active {
+            border-color: #2563eb;
+            background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+            box-shadow: 0 2px 8px rgba(37,99,235,0.1);
+        }
+        .doc-src-card input[type="radio"] { position: absolute; opacity: 0; pointer-events: none; }
+        .doc-src-content { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+        .doc-src-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            flex-shrink: 0;
+            background: #f1f5f9;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+        .doc-src-card.active .doc-src-icon {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+        .doc-src-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #334155;
+        }
+        .doc-src-card.active .doc-src-title {
+            color: #1d4ed8;
+        }
+        .doc-src-check {
+            font-size: 16px;
+            color: #cbd5e1;
+            margin-left: 8px;
+            flex-shrink: 0;
+            transition: all 0.2s;
+        }
+        .doc-src-card.active .doc-src-check {
+            color: #2563eb;
+        }
+
+        /* Nút Tải file nổi bật */
+        .btn-upload-doc {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #ffffff;
+            color: #1d4ed8 !important;
+            border: 1.5px solid #2563eb;
+            padding: 7px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(37,99,235,0.12);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-upload-doc:hover {
+            background: #2563eb;
+            color: #ffffff !important;
+            border-color: #2563eb;
+            box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+            transform: translateY(-1px);
+        }
+        .btn-upload-doc:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(37,99,235,0.15);
+        }
         .gqx-file-ready { display:flex; align-items:center; gap:12px; background:#fff; border:1px solid #bfdbfe; border-radius:8px; padding:10px 12px; }
         .gqx-file-ico { font-size:28px; color:#2563eb; flex-shrink:0; }
         .gqx-file-info { flex:1; min-width:0; }
@@ -19435,7 +19552,6 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                                 </div>
                                 <div class="sign-card-text">
                                     <div class="sign-card-title">Ký số trên hệ thống</div>
-                                    <div class="sign-card-desc">Trình duyệt &amp; ký số điện tử theo luồng Lãnh đạo trên phần mềm</div>
                                 </div>
                             </div>
                             <div class="sign-card-check">
@@ -19449,8 +19565,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                                     <i class="fa-solid fa-stamp"></i>
                                 </div>
                                 <div class="sign-card-text">
-                                    <div class="sign-card-title">Ký ngoài</div>
-                                    <div class="sign-card-desc">Tải lên văn bản PDF đã ký &amp; đóng dấu giấy ban hành trực tiếp</div>
+                                    <div class="sign-card-title">Ký ngoài (Tải lên văn bản PDF đã ký &amp; đóng dấu)</div>
                                 </div>
                             </div>
                             <div class="sign-card-check">
@@ -19464,16 +19579,32 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 <div class="gqx-sec gqx-col-r" id="ktlDocSection">
                     <div class="gqx-sec-title" id="ktlDocSectionTitle"><i class="fa-solid fa-file-signature"></i> Tệp văn bản trình ký<span class="gqx-req">*</span></div>
 
-                    <!-- Ký số: Chọn nguồn tệp -->
-                    <div id="ktlDocSrcGroup" style="margin-bottom:12px;">
-                        <div class="gqx-methods">
-                            <label class="gqx-method" for="ktlDocSrcGen">
+                    <!-- Ký số: Chọn nguồn tệp (Selectable Source Cards) -->
+                    <div id="ktlDocSrcGroup">
+                        <div class="doc-src-grid">
+                            <label class="doc-src-card active" id="cardSrcGen" for="ktlDocSrcGen" onclick="ktlSetDocSrc('gen')">
                                 <input type="radio" id="ktlDocSrcGen" name="ktlDocSrc" value="gen" checked onchange="ktlSetDocSrc('gen')">
-                                <span><b>Sinh văn bản theo mẫu 04/BTNN</b><small>Tự động điền số, ngày và nội dung vào mẫu chuẩn</small></span>
+                                <div class="doc-src-content">
+                                    <div class="doc-src-icon">
+                                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                    </div>
+                                    <div class="doc-src-title">Sinh văn bản theo mẫu 04/BTNN</div>
+                                </div>
+                                <div class="doc-src-check">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                </div>
                             </label>
-                            <label class="gqx-method" for="ktlDocSrcUpload">
+                            <label class="doc-src-card" id="cardSrcUpload" for="ktlDocSrcUpload" onclick="ktlSetDocSrc('upload')">
                                 <input type="radio" id="ktlDocSrcUpload" name="ktlDocSrc" value="upload" onchange="ktlSetDocSrc('upload')">
-                                <span><b>Tải file</b><small>Tải tệp văn bản dự thảo (.pdf, .doc, .docx)</small></span>
+                                <div class="doc-src-content">
+                                    <div class="doc-src-icon">
+                                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                                    </div>
+                                    <div class="doc-src-title">Tải file</div>
+                                </div>
+                                <div class="doc-src-check">
+                                    <i class="fa-regular fa-circle"></i>
+                                </div>
                             </label>
                         </div>
                     </div>
@@ -19524,9 +19655,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         <div class="gqx-docfile-head"><i class="fa-solid fa-file-pdf"></i> Tệp văn bản PDF đã ký &amp; đóng dấu<span class="gqx-req">*</span></div>
                         <input type="file" id="ktlOfflineFileInput" accept=".pdf" style="display:none;" onchange="handleKtlOfflineFileUpload(this)">
                         <div class="gqx-file-empty">
-                            <div class="gqx-file-hint">Chỉ chấp nhận tệp .pdf (tối đa 50MB).</div>
+                            <div class="gqx-file-hint"><i class="fa-solid fa-file-pdf" style="color:#dc2626; font-size:16px; margin-right:6px;"></i>Chỉ chấp nhận tệp .pdf (tối đa 50MB).</div>
                             <div class="gqx-file-actions">
-                                <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('ktlOfflineFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>
+                                <button type="button" class="btn-upload-doc" onclick="document.getElementById('ktlOfflineFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>
                             </div>
                         </div>
                         <div id="ktlOfflineFileRow" class="gqx-file-ready" style="display:none; margin-top:10px;">
@@ -21767,7 +21898,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             if (p === 'ktl') { ktlRenderDocBox(box); return; }
             const f = gqxFile(p);
             const mau = GQX_MAU[p];
-            const btnUp = `<button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('${p}OnlineFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>`;
+            const btnUp = `<button type="button" class="btn-upload-doc" onclick="document.getElementById('${p}OnlineFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>`;
             const btnGen = `<button type="button" class="btn btn-primary btn-sm" onclick="gqxGenerate('${p}')"><i class="fa-solid fa-wand-magic-sparkles"></i> Tạo văn bản theo ${mau}</button>`;
             if (!f) {
                 box.innerHTML = `<div class="gqx-file-empty">
@@ -21796,11 +21927,21 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         function ktlRenderDocBox(box) {
             const f = ktlOnlineFile;
             if (ktlDocSrc === 'gen') {
-                box.innerHTML = `<div class="gqx-file-empty"><div class="gqx-file-hint">Hệ thống sinh Thông báo không thụ lý theo Mẫu 04/BTNN từ thông tin đang nhập.</div><div class="gqx-file-actions"><button type="button" class="btn btn-secondary btn-sm" onclick="gqxGenerate('ktl'); gqxView('ktl');"><i class="fa-solid fa-eye"></i> Xem trước văn bản</button></div></div>`;
+                box.innerHTML = `<div class="gqx-file-empty">
+                    <div class="gqx-file-hint"><i class="fa-solid fa-file-circle-check" style="color:#2563eb; font-size:16px; margin-right:6px;"></i>Hệ thống tự động sinh Thông báo theo Mẫu 04/BTNN từ thông tin đang nhập.</div>
+                    <div class="gqx-file-actions">
+                        <button type="button" class="btn-preview-doc" onclick="gqxGenerate('ktl'); gqxView('ktl');"><i class="fa-solid fa-eye"></i> Xem trước văn bản</button>
+                    </div>
+                </div>`;
                 return;
             }
             box.innerHTML = !f
-                ? `<div class="gqx-file-empty"><div class="gqx-file-hint">Chấp nhận tệp .pdf, .doc, .docx (tối đa 50MB).</div><div class="gqx-file-actions"><button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('ktlOnlineFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button></div></div>`
+                ? `<div class="gqx-file-empty">
+                    <div class="gqx-file-hint"><i class="fa-solid fa-cloud-arrow-up" style="color:#2563eb; font-size:16px; margin-right:6px;"></i>Chấp nhận tệp .pdf, .doc, .docx (tối đa 50MB).</div>
+                    <div class="gqx-file-actions">
+                        <button type="button" class="btn-upload-doc" onclick="document.getElementById('ktlOnlineFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>
+                    </div>
+                </div>`
                 : `<div class="gqx-file-ready"><i class="fa-solid ${/\.pdf$/i.test(f.name) ? 'fa-file-pdf' : 'fa-file-word'} gqx-file-ico"></i><div class="gqx-file-info"><div class="gqx-file-name">${gqE(f.name)}</div><div class="gqx-file-meta">${gqE(f.size || '')}</div></div><div class="gqx-file-btns"><button type="button" class="btn btn-secondary btn-sm" onclick="gqxView('ktl')"><i class="fa-solid fa-eye"></i> Xem file</button><button type="button" class="btn btn-secondary btn-sm gqx-danger" onclick="gqxRemove('ktl')"><i class="fa-solid fa-trash"></i> Xóa file</button></div></div>`;
         }
         function gqxMarkErr(inputId, errId) {
@@ -22503,8 +22644,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             // Reset File Offline
             removeKtlOfflineFile();
 
-            // Khối Tệp văn bản trình ký: mặc định Tải file + Tạo văn bản theo Mẫu 04/BTNN
-            gqxRenderDocFile('ktl');
+            // Khối Tệp văn bản trình ký: mặc định Sinh văn bản theo mẫu 04/BTNN
+            ktlSetDocSrc('gen');
             ['ktlDocDateErr', 'ktlDocFileError'].forEach(id => { const e = document.getElementById(id); if (e) e.style.display = 'none'; });
             if (docDateEl) docDateEl.classList.remove('is-invalid');
 
@@ -22542,6 +22683,22 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         function ktlSetDocSrc(src) {
             ktlDocSrc = src;
             document.querySelectorAll('input[name="ktlDocSrc"]').forEach(r => { r.checked = r.value === src; });
+            
+            // Cập nhật giao diện Selectable Source Cards
+            const cardGen = document.getElementById('cardSrcGen');
+            const cardUpload = document.getElementById('cardSrcUpload');
+            const isGen = (src === 'gen');
+            if (cardGen) {
+                cardGen.classList.toggle('active', isGen);
+                const ico = cardGen.querySelector('.doc-src-check i');
+                if (ico) ico.className = isGen ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle';
+            }
+            if (cardUpload) {
+                cardUpload.classList.toggle('active', !isGen);
+                const ico = cardUpload.querySelector('.doc-src-check i');
+                if (ico) ico.className = !isGen ? 'fa-solid fa-circle-check' : 'fa-regular fa-circle';
+            }
+
             ktlOnlineFile = null;
             ktlApplyDocMeta();
             gqxRenderDocFile('ktl');
