@@ -827,13 +827,13 @@
                     { title: "Xem xét trách nhiệm hoàn trả", url: "xem_xet_trach_nhiem_hoan_tra.html" },
                     { title: "Tra cứu vụ việc", url: "tra_cuu_ho_so_boi_thuong.html?v=1" },
                     { title: "Theo dõi vụ việc tại Tòa án", url: "theo_doi_vu_viec_toa_an.html" },
-                    { title: "Quản lý chấm điểm công tác BTNN", url: "quan_ly_cham_diem_btnn.html" },
+                    { title: "Quản lý chấm điểm công tác BTNN", url: "quan_ly_cham_diem_btnn.html", hidden: true },
                     {
                         title: "Hỗ trợ & thông tin tư liệu BTNN",
                         children: [
                             { title: "Quản lý thông tin tư liệu VBQPPL", url: "../01_Quan_tri_he_thong/quan_ly_tu_lieu_vbqppl.html?system=btnn" },
                             { title: "Quản lý câu hỏi và trả lời thường gặp", url: "../01_Quan_tri_he_thong/quan_ly_cau_hoi_faq.html?system=btnn" },
-                            { title: "Kiểm tra thử nghiệm ứng dụng hỏi đáp", url: "../temp_placeholder.html" }
+                            { title: "Kiểm tra thử nghiệm ứng dụng hỏi đáp", url: "../temp_placeholder.html", hidden: true }
                         ]
                     },
                     {
@@ -886,6 +886,7 @@
             {
                 title: "Quản lý nhà nước",
                 icon: "fa-solid fa-chart-line",
+                hidden: true,
                 children: [
                     {
                         title: "Dashboard trực quan về đăng ký BPBĐ",
@@ -971,23 +972,34 @@
                 title: "Quản trị hệ thống",
                 icon: "fa-solid fa-gears",
                 children: [
-                    { title: "Quản lý nội dung (CMS)", url: "../01_Quan_tri_he_thong/quan_ly_noi_dung_cms.html" },
+                    { title: "Quản lý nội dung (CMS)", url: "../01_Quan_tri_he_thong/quan_ly_noi_dung_cms.html", hidden: true },
                     { title: "Quản lý chức năng", url: "../01_Quan_tri_he_thong/quan_ly_chuc_nang.html" },
                     { title: "Quản lý vai trò", url: "../01_Quan_tri_he_thong/quan_ly_vai_tro_phan_quyen.html" },
                     { title: "Quản lý cơ cấu tổ chức", url: "../01_Quan_tri_he_thong/quan_ly_co_cau_to_chuc.html" },
                     { title: "Quản lý nhóm người dùng", url: "../01_Quan_tri_he_thong/quan_ly_nhom_nguoi_dung.html" },
                     { title: "Quản lý tài khoản cán bộ", url: "../01_Quan_tri_he_thong/quan_ly_tk_can_bo.html" },
-                    { title: "Quản lý tài khoản khách hàng", url: "../01_Quan_tri_he_thong/quan_ly_tk_khach_hang.html" },
+                    { title: "Quản lý tài khoản khách hàng", url: "../01_Quan_tri_he_thong/quan_ly_tk_khach_hang.html", hidden: true },
                     { title: "Quản lý loại danh mục", url: "../01_Quan_tri_he_thong/quan_ly_loai_danh_muc.html" },
                     { title: "Quản lý danh mục", url: "../01_Quan_tri_he_thong/quan_ly_danh_muc.html" },
                     { title: "Danh mục Địa bàn", url: "../01_Quan_tri_he_thong/quan_ly_danh_muc_dia_ban.html" },
                     { title: "Quản lý cấu hình", url: "../01_Quan_tri_he_thong/quan_ly_cau_hinh.html" },
-                    { title: "Cấu hình luồng xử lý", url: "cau_hinh_luong_xu_ly.html" },
+                    { title: "Cấu hình luồng xử lý", url: "cau_hinh_luong_xu_ly.html", comingSoon: true },
                     { title: "Quản lý nhật ký hệ thống", url: "../temp_placeholder.html" },
-                    { title: "Quản lý sao lưu, phục hồi dữ liệu", url: "../temp_placeholder.html" }
+                    { title: "Quản lý sao lưu, phục hồi dữ liệu", url: "../temp_placeholder.html", hidden: true }
                 ]
             }
         ];
+
+        // Ẩn các chức năng chưa công bố trên Trang chủ BTNN (hidden: true)
+        (function pruneHidden(list) {
+            for (let i = list.length - 1; i >= 0; i--) {
+                if (list[i].hidden) list.splice(i, 1);
+                else if (list[i].children) pruneHidden(list[i].children);
+            }
+        })(menuData);
+
+        // Màn hình Coming Soon cho chức năng đang phát triển (comingSoon: true)
+        const COMING_SOON_HTML = '<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><style>body{margin:0;height:100vh;display:flex;align-items:center;justify-content:center;background:#f8fafc;font-family:Inter,system-ui,sans-serif;color:#1e293b}.box{text-align:center;padding:40px}.ic{font-size:56px;color:#2563eb;margin-bottom:18px}h1{margin:0 0 8px;font-size:28px;letter-spacing:.5px}p{margin:0;color:#64748b;font-size:14px}<\/style><\/head><body><div class="box"><div class="ic"><i class="fa-solid fa-person-digging"></i></div><h1>Coming Soon</h1><p>Chức năng đang được phát triển.</p></div><\/body><\/html>';
 
         // ===== Badge menu "Tiếp nhận hồ sơ" (Bồi thường nhà nước) =====
         // Số hồ sơ đang ở tab Chờ xử lý của màn Tiếp nhận hồ sơ, theo người dùng đang đăng nhập (giả lập).
@@ -1288,6 +1300,12 @@
             // Update Header & loading target in iframe
             const iframe = document.getElementById('mainContentIframe');
             if (iframe) {
+                if (leafItem && leafItem.comingSoon && !overrideUrl) {
+                    iframe.removeAttribute('src');
+                    iframe.srcdoc = COMING_SOON_HTML;
+                    return;
+                }
+                iframe.removeAttribute('srcdoc');
                 let targetUrl = overrideUrl || leafItem.url || '../temp_placeholder.html';
                 if (targetUrl !== '../temp_placeholder.html') {
                     targetUrl += (targetUrl.indexOf('?') !== -1 ? '&' : '?') + 't=' + Date.now();
