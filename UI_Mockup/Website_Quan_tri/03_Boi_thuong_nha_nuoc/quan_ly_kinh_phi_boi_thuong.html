@@ -1474,9 +1474,9 @@
                                 <thead>
                                     <tr>
                                         <th style="width: 50px; text-align: center;">STT</th>
-                                        <th style="text-align: left;">Thành phần hồ sơ / Tên tài liệu</th>
-                                        <th style="width: 250px; text-align: left;">File đính kèm</th>
-                                        <th style="width: 200px; text-align: center;">Thao tác</th>
+                                        <th style="text-align: center;">Tên tài liệu, văn bản</th>
+                                        <th style="width: 250px; text-align: center;">File đính kèm</th>
+                                        <th style="width: 110px; text-align: center;">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody id="proposalAttachedDocsBody">
@@ -1484,9 +1484,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <button type="button" class="btn btn-outline-primary" onclick="addProposalDocRow()" style="width: 100%; border-style: dashed; margin-top: 10px; font-weight: 600; display: inline-flex; align-items: center; justify-content: center; gap: 8px;">
-                            <i class="fa-solid fa-plus"></i> Thêm thành phần hồ sơ mới
-                        </button>
+                        <div style="margin-top: 10px;"><button type="button" class="tlkt-btn-add" onclick="addProposalDocRow()"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button></div>
                     </div>
                 </div>
             </div>
@@ -1547,7 +1545,7 @@
             <div class="accordion-item" id="block8_NoticeTracking" style="display: none;">
                 <div class="accordion-header active" onclick="toggleAccordion('block8_NoticeTracking')">
                     <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding-right: 12px;">
-                        <span><i class="fa-solid fa-bell" style="color: #9A3412; margin-right: 8px;"></i> 8. Thông tin thông báo nhận kinh phí và hạn 3 năm</span>
+                        <span><i class="fa-solid fa-bell" style="color: #9A3412; margin-right: 8px;"></i> 8. Thông tin thông báo chi trả tiền bồi thường và hạn nhận tiền bồi thường</span>
                         <div style="display: flex; align-items: center; gap: 8px;" onclick="event.stopPropagation();">
                             <button type="button" class="btn btn-outline-primary btn-sm" id="btnEditNoticeTracking" onclick="editNoticeTracking();" style="display: none; padding: 4px 12px; font-size: 12px; font-weight: 600;">
                                 <i class="fa-solid fa-pen-to-square"></i> Cập nhật thông báo
@@ -1574,7 +1572,7 @@
                                 <input type="text" class="form-control" id="noticeTrackingDeadline" placeholder="Tự động + 3 năm" disabled>
                             </div>
                             <div class="form-group" style="margin-bottom:0;">
-                                <span class="form-label">Tệp chứng minh đã thông báo <span class="required">*</span></span>
+                                <span class="form-label">Tài liệu kèm theo <span class="required">*</span></span>
                                 <button type="button" class="btn btn-outline-primary btn-sm" id="btnNoticeTrackingUpload" onclick="triggerNoticeTrackingUpload()" style="font-size:12px; padding:5px 10px;">
                                     <i class="fa-solid fa-paperclip"></i> Chọn file
                                 </button>
@@ -1909,15 +1907,17 @@
 
     <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="quan_ly_kinh_phi_boi_thuong.js?v=20261023kpcd"></script>
+    <script src="quan_ly_kinh_phi_boi_thuong.js?v=20261026tlkt"></script>
     <script src="btnn_luong_xu_ly.js?v=20261023kpcd"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261023bdg"></script>
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261026pdtb"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt"></script>
     <script src="quan_ly_kinh_phi_kptb.js?v=20261023kpcd"></script>
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
     <script src="quan_ly_kinh_phi_qdtu.js?v=20261023kpcd"></script>
     <script src="quan_ly_kinh_phi_kpcd.js?v=20261023kpcd"></script>
-    <script src="quan_ly_kinh_phi_kpdt.js?v=20261023kpdt"></script>
+    <script src="quan_ly_kinh_phi_kpdt.js?v=20261026tlkt"></script>
+    <script src="quan_ly_kinh_phi_kpdc.js?v=20261026kpdc"></script>
+    <script src="quan_ly_kinh_phi_kpux.js?v=20261026kpux2"></script>
 
     <!-- Custom Confirmation Modal HTML -->
     <div id="customConfirmOverlay" class="confirm-modal-overlay">

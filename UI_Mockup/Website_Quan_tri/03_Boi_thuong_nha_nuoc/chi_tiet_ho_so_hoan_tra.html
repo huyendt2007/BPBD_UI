@@ -1174,11 +1174,7 @@
             <div class="step-circle" id="stepCircle4">4</div>
             <div class="step-label">Bước 4: Thu hồi tiền hoàn trả</div>
         </div>
-
-        <div class="tracker-step" id="stepNode5" onclick="switchWorkflowStep(5)" style="cursor:pointer;" title="Bấm để mở Bước 5: Hoàn thành">
-            <div class="step-circle" id="stepCircle5"><i class="fa-solid fa-flag"></i></div>
-            <div class="step-label">Bước 5: Hoàn thành</div>
-        </div>
+        <!-- Stepper 04 bước cố định (bỏ Bước 5: Hoàn thành; kết thúc thể hiện bằng trạng thái tại Bước 4) -->
     </div>
 
     <!-- DYNAMIC STATES WORKSPACES -->
@@ -1346,63 +1342,26 @@
             </h3>
         </div>
 
-        <!-- Khối Kết luận của Hội đồng & Biên bản -->
+        <!-- Khối Ý kiến chung của Hội đồng (bỏ Kết luận "Không xem xét" - chốt 23/10; không phát sinh nghĩa vụ hoàn trả thì Đình chỉ tại thanh nút) -->
         <div class="card" id="s2ConclusionCard" style="margin-bottom: 20px;">
             <div class="card-header">
-                <div class="card-title" style="margin-bottom:0;"><i class="fa-solid fa-gavel"></i> Kết luận của Hội đồng xem xét trách nhiệm hoàn trả</div>
+                <div class="card-title" style="margin-bottom:0;"><i class="fa-solid fa-gavel"></i> Ý kiến chung của Hội đồng</div>
             </div>
             <div class="card-body">
-                <div class="form-group" style="margin-bottom:16px;">
-                    <span class="form-label">Kết luận của Hội đồng <span style="color:red;">*</span></span>
-                    <div style="display:flex; flex-direction:column; gap:10px; margin-top:6px;">
-                        <label
-                            style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; border:1px solid var(--border-color); border-radius:6px; padding:10px 12px; background:#fff;">
-                            <input type="radio" name="s2ConclusionRadio" value="co_loi" checked
-                                onchange="onS2ConclusionChange(this.value)" style="margin-top:2px;">
-                            <span style="font-size:13.5px; line-height:1.5;"><strong>Có lỗi - Kiến nghị hoàn trả</strong></span>
-                        </label>
-                        <label
-                            style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; border:1px solid var(--border-color); border-radius:6px; padding:10px 12px; background:#fff;">
-                            <input type="radio" name="s2ConclusionRadio" value="khong_co_loi"
-                                onchange="onS2ConclusionChange(this.value)" style="margin-top:2px;">
-                            <span style="font-size:13.5px; line-height:1.5;"><strong>Không xem xét</strong> - Người thi
-                                hành công vụ không có lỗi</span>
-                        </label>
-                        <label
-                            style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; border:1px solid var(--border-color); border-radius:6px; padding:10px 12px; background:#fff;">
-                            <input type="radio" name="s2ConclusionRadio" value="da_chet"
-                                onchange="onS2ConclusionChange(this.value)" style="margin-top:2px;">
-                            <span style="font-size:13.5px; line-height:1.5;"><strong>Không xem xét</strong> - Người thi
-                                hành công vụ đã chết trước khi ra quyết định hoàn trả</span>
-                        </label>
-                    </div>
-                    <input type="hidden" id="s2Conclusion" value="co_loi">
-                </div>
+                <input type="hidden" id="s2Conclusion" value="co_loi">
                 <div class="form-group" style="max-width:420px; margin-bottom:16px;">
-                    <span class="form-label">Ngày họp / Lập biên bản kiến nghị <span style="color:red;">*</span></span>
-                    <input type="text" class="form-control" id="s2ConclusionDate" placeholder="dd/mm/yyyy" style="height:38px;">
-                    <span class="invalid-feedback" id="s2DateError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
+                    <span class="form-label">Ngày họp Hội đồng <span style="color:red;">*</span></span>
+                    <input type="text" class="form-control" id="s2ConclusionDate" placeholder="dd/mm/yyyy" style="height:38px;" oninput="ht2ClearErr('s2ConclusionDate')">
+                    <span class="invalid-feedback" id="s2ConclusionDateError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
                 </div>
-                <div class="form-group" style="margin-bottom:0;">
-                    <span class="form-label">Biên bản họp Hội đồng</span>
-                    <button type="button" class="btn btn-secondary" id="btnS2UploadFile" onclick="document.getElementById('s2ConclusionFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>
-                    <input type="file" id="s2ConclusionFileInput" accept=".pdf,.doc,.docx" multiple style="display:none;" onchange="ykhdUploadField('bienBan', this)">
-                    <div id="ykhdS2FileHint" style="font-size:12px; color:var(--text-muted); margin-top:4px;">Định dạng: .pdf, .doc, .docx; cho phép nhiều tệp, mỗi tệp tối đa 50MB.</div>
-                    <span class="invalid-feedback" id="ykhdS2FileError" style="display:none; color:red; font-size:12px; margin-top:4px;"></span>
-                    <div id="ykhdBienBanList" style="display:flex; flex-direction:column; gap:6px; margin-top:8px;"></div>
+                <div class="form-group" style="margin-bottom:16px;">
+                    <span class="form-label">Ý kiến chung của Hội đồng <span style="color:red;">*</span></span>
+                    <textarea class="form-control" id="ht2YKienChung" rows="4" maxlength="4000" placeholder="Nhập ý kiến chung của Hội đồng xem xét trách nhiệm hoàn trả" oninput="ht2ClearErr('ht2YKienChung')"></textarea>
+                    <span class="invalid-feedback" id="ht2YKienChungError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
+                    <div id="ht2YKienChungView" class="info-value" style="display:none; white-space:pre-line; background:#f8fafc; padding:10px 14px; border:1px solid var(--border-color); border-radius:6px;"></div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Khối Thao tác khi kết luận Không xem xét (không có lỗi / đã chết): chốt 23/10 bỏ trạng thái "Không xem xét trách nhiệm hoàn trả" -> kết thúc hồ sơ bằng Đình chỉ (Mẫu 39) -->
-        <div class="card" id="s2NoReviewActionCard" style="display:none; border-left:4px solid var(--danger-color); margin-bottom: 20px;">
-            <div class="card-body" style="display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; padding: 20px 24px;">
-                <div class="alert-message" style="font-size:13.5px; color:#b91c1c; max-width:680px;">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Kết luận này không phát sinh nghĩa vụ hoàn trả. Thực hiện <strong>Đình chỉ</strong> để trình/ban hành Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả (Mẫu 39/BTNN); hồ sơ chuyển sang trạng thái <strong>"Đình chỉ xem xét hoàn trả"</strong> khi Quyết định được ban hành.
-                </div>
-                <div style="display:flex; gap:10px;">
-                    <button type="button" class="btn btn-danger" onclick="dchtOpenModal()"><i class="fa-solid fa-circle-stop"></i> Đình chỉ</button>
-                </div>
+                <!-- Tài liệu kèm theo (bảng chuẩn): Biên bản họp Hội đồng và tài liệu khác -->
+                <div id="ht2Tlkt"></div>
             </div>
         </div>
 
@@ -1410,13 +1369,34 @@
         <div class="card" id="s2RecommendationCard" style="margin-bottom: 20px;">
             <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
                 <div style="display:flex; align-items:center; gap:8px;">
-                    <div class="card-title" style="margin-bottom:0;"><i class="fa-solid fa-users-viewfinder"></i> Ý kiến kiến nghị của Hội đồng đối với từng cán bộ</div>
+                    <div class="card-title" style="margin-bottom:0;"><i class="fa-solid fa-users-viewfinder"></i> Danh sách cán bộ gây sai phạm</div>
                 </div>
                 <button type="button" class="btn btn-primary btn-sm" id="s2AddOfficerBtn" onclick="openAddOfficerModal()"><i class="fa-solid fa-plus"></i> Thêm cán bộ gây sai phạm</button>
             </div>
             <div class="card-body">
-                <!-- Danh sách thẻ ý kiến của Hội đồng theo từng cán bộ gây sai phạm -->
-                <div id="ykhdOfficerCardList"></div>
+                <!-- Bảng ý kiến của Hội đồng theo từng cán bộ gây sai phạm (nhiều đơn vị) -->
+                <div class="table-container" style="overflow-x:auto;">
+                    <table class="dense-table" id="ht2OfficerTable" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th style="width:45px; text-align:center;">STT</th>
+                                <th>Họ và tên</th>
+                                <th>Đơn vị quản lý cán bộ</th>
+                                <th style="width:90px;">Mức độ lỗi</th>
+                                <th style="width:130px; text-align:right;">Số tiền cần hoàn trả (đ)</th>
+                                <th style="width:150px;">Hình thức xử lý</th>
+                                <th style="width:120px; text-align:right;">Số tiền sau giảm (đ)</th>
+                                <th style="width:100px;">Phương thức hoàn trả</th>
+                                <th style="width:150px;" id="ht2ColUnitStatus">Trạng thái</th>
+                                <th style="width:110px; text-align:center;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ht2OfficerBody"></tbody>
+                    </table>
+                </div>
+                <span class="invalid-feedback" id="ht2OfficerError" style="display:none; color:red; font-size:12px; margin-top:6px;"></span>
+                <!-- Phân tách theo đơn vị quản lý cán bộ (hiển thị sau khi Hoàn thành Bước 2) -->
+                <div id="ht2UnitSplit" style="display:none; margin-top:16px;"></div>
 
                 <!-- Văn bản kiến nghị về việc ban hành quyết định hoàn trả (bắt buộc) -->
                 <div class="form-group" id="ykhdKienNghiGroup" style="margin-top:16px; margin-bottom:0;">
@@ -1947,7 +1927,6 @@
                     <!-- Khối: Văn bản liên quan -->
                     <div style="font-weight: 700; color: var(--primary-color); border-bottom: 1px solid var(--border-color); padding-bottom: 6px; margin-bottom: 16px; margin-top: 20px; font-size: 14.5px; display: flex; justify-content: space-between; align-items: center;">
                         <span><i class="fa-solid fa-paperclip"></i> Văn bản liên quan</span>
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="addCreateCouncilRelatedDocRow()"><i class="fa-solid fa-plus"></i> Thêm văn bản liên quan</button>
                     </div>
                     <div style="overflow-x:auto; border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 8px;">
                         <table class="dense-table" style="width: 100%; margin: 0;">
@@ -1965,6 +1944,8 @@
                             </tbody>
                         </table>
                     </div>
+                    <!-- [tlkt] Nút Thêm tài liệu chuẩn: đặt dưới bảng -->
+                    <div><button type="button" class="tlkt-btn-add" onclick="addCreateCouncilRelatedDocRow()"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button></div>
                 </form>
             </div>
             <div class="modal-footer" style="padding: 16px 24px 24px 24px; display: flex; justify-content: flex-end; gap: 10px;">
@@ -2627,17 +2608,17 @@
                     <div class="grid-2-cols" style="gap:16px; margin-bottom: 16px;">
                         <div class="form-group">
                             <span class="form-label">Họ và tên cán bộ <span style="color:red;">*</span></span>
-                            <input type="text" class="form-control" id="oName" placeholder="Ví dụ: Nguyễn Văn A" required>
+                            <input type="text" class="form-control" id="oName" placeholder="Nhập họ và tên cán bộ" required>
                             <span class="invalid-feedback" id="oNameError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
                         </div>
                         <div class="form-group">
                             <span class="form-label">Chức vụ <span style="color:red;">*</span></span>
-                            <input type="text" class="form-control" id="oRole" placeholder="Ví dụ: Chuyên viên" required>
+                            <input type="text" class="form-control" id="oRole" placeholder="Nhập chức vụ" required>
                             <span class="invalid-feedback" id="oRoleError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
                         </div>
                     </div>
                     <div class="form-group" style="margin-bottom: 16px; position: relative;">
-                        <span class="form-label">Đơn vị công tác <span style="color:red;">*</span></span>
+                        <span class="form-label">Đơn vị quản lý cán bộ <span style="color:red;">*</span></span>
                         <input type="hidden" id="oAgency" required>
                         <div id="oAgencySelectBox" style="display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 12px; min-height: 38px; background: #fff; cursor: pointer;" onclick="toggleAgencyDropdown(event)">
                             <span id="oAgencySelectedText" style="color: var(--text-muted); font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">-- Chọn hoặc tìm kiếm đơn vị công tác --</span>
@@ -2675,26 +2656,43 @@
                     </div>
 
                     <div class="form-group" style="margin-bottom: 16px;">
-                        <span class="form-label">Trách nhiệm hoàn trả và mức hoàn trả <span style="color:red;">*</span></span>
-                        <textarea class="form-control" id="ykhdTrachNhiem" rows="3" maxlength="2000" placeholder="Nhập ý kiến của Hội đồng về trách nhiệm hoàn trả và mức hoàn trả"></textarea>
-                        <span class="invalid-feedback" id="ykhdTrachNhiemError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
-                    </div>
-
-                    <div class="form-group" style="margin-bottom: 16px;">
-                        <span class="form-label">Số tiền phải hoàn trả (đ) <span style="color:red;">*</span></span>
-                        <input type="text" class="form-control" id="oAmt" placeholder="Ví dụ: 50.000.000" style="text-align: right; font-weight:700;" oninput="handleModalAmtInput(this.value)" required>
+                        <span class="form-label">Số tiền cần hoàn trả (đ) <span style="color:red;">*</span></span>
+                        <input type="text" class="form-control" id="oAmt" placeholder="Nhập số tiền cần hoàn trả" style="text-align: right; font-weight:700;" oninput="handleModalAmtInput(this.value); ht2ClearErr('oAmt')" required>
                         <span class="invalid-feedback" id="oAmtError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
                         <div id="oAmtText" style="font-size:12.5px; color:var(--text-muted); font-style:italic; margin-top:4px;">Chưa nhập số tiền</div>
                     </div>
 
+                    <!-- Hình thức xử lý theo ý kiến của Hội đồng -->
                     <div class="form-group" style="margin-bottom: 16px;">
-                        <span class="form-label">Giảm mức hoàn trả</span>
-                        <textarea class="form-control" id="ykhdGiamMuc" rows="2" maxlength="2000" placeholder="Nhập ý kiến của Hội đồng về giảm mức hoàn trả"></textarea>
+                        <span class="form-label">Hình thức xử lý <span style="color:red;">*</span></span>
+                        <div id="ht2XlGroup" style="display:flex; flex-wrap:wrap; gap:16px; margin-top:6px; font-size:13.5px;">
+                            <label style="display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="radio" name="ht2Xl" value="Hoàn trả" checked onchange="ht2OnXlChange()"> Hoàn trả (Không miễn/giảm)</label>
+                            <label style="display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="radio" name="ht2Xl" value="Giảm mức hoàn trả" onchange="ht2OnXlChange()"> Giảm mức hoàn trả</label>
+                            <label style="display:flex; align-items:center; gap:6px; cursor:pointer;"><input type="radio" name="ht2Xl" value="Miễn hoàn trả" onchange="ht2OnXlChange()"> Miễn hoàn trả</label>
+                        </div>
+                        <span class="invalid-feedback" id="ht2XlError" style="display:none; color:red; font-size:12px; margin-top:4px;"></span>
                     </div>
 
-                    <div class="form-group" style="margin-bottom: 16px;">
-                        <span class="form-label">Miễn hoàn trả</span>
-                        <textarea class="form-control" id="ykhdMienHoanTra" rows="2" maxlength="2000" placeholder="Nhập ý kiến của Hội đồng về miễn hoàn trả"></textarea>
+                    <div id="ht2GiamWrap" style="display:none;">
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <span class="form-label">Số tiền sau giảm (đ) <span style="color:red;">*</span></span>
+                            <input type="text" class="form-control" id="ht2Giam" placeholder="Nhập số tiền sau giảm" style="text-align: right; font-weight:700;" oninput="ht2OnMoneyInput(this, 'ht2GiamText'); ht2ClearErr('ht2Giam')">
+                            <span class="invalid-feedback" id="ht2GiamError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
+                            <div id="ht2GiamText" style="font-size:12.5px; color:var(--text-muted); font-style:italic; margin-top:4px;">Chưa nhập số tiền</div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <span class="form-label">Lý do giảm <span style="color:red;">*</span></span>
+                            <textarea class="form-control" id="ht2LyDoGiam" rows="2" maxlength="2000" placeholder="Nhập lý do giảm mức hoàn trả" oninput="ht2ClearErr('ht2LyDoGiam')"></textarea>
+                            <span class="invalid-feedback" id="ht2LyDoGiamError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
+                        </div>
+                    </div>
+
+                    <div id="ht2MienWrap" style="display:none;">
+                        <div class="form-group" style="margin-bottom: 16px;">
+                            <span class="form-label">Lý do miễn <span style="color:red;">*</span></span>
+                            <textarea class="form-control" id="ht2LyDoMien" rows="2" maxlength="2000" placeholder="Nhập lý do miễn hoàn trả" oninput="ht2ClearErr('ht2LyDoMien')"></textarea>
+                            <span class="invalid-feedback" id="ht2LyDoMienError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
+                        </div>
                     </div>
 
                     <!-- Điều kiện hoãn thực hiện việc hoàn trả (nếu có): gộp với khối Hoãn cũ; có nội dung thì cán bộ ở trạng thái Hoãn hoàn trả -->
@@ -2729,17 +2727,15 @@
                         </div>
                     </div>
 
-                    <div class="form-group" style="margin-bottom: 16px;">
+                    <!-- Phương thức hoàn trả: chỉ hiển thị khi Hình thức xử lý khác Miễn hoàn trả -->
+                    <div class="form-group" id="ht2MethodWrap" style="margin-bottom: 16px;">
                         <span class="form-label">Phương thức hoàn trả <span style="color:red;">*</span></span>
-                        <select class="form-control" id="oMethod" required>
+                        <select class="form-control" id="oMethod" required onchange="ht2ClearErr('oMethod')">
+                            <option value="">-- Chọn phương thức hoàn trả --</option>
                             <option value="Một lần">Một lần</option>
                             <option value="Nhiều lần">Nhiều lần</option>
                         </select>
-                    </div>
-
-                    <div class="form-group" style="margin-bottom: 16px;">
-                        <span class="form-label">Thông tin mô tả khác</span>
-                        <textarea class="form-control" id="oNote" rows="3" placeholder="Nhập các thông tin mô tả khác liên quan đến trách nhiệm hoàn trả của cán bộ (nếu có)..."></textarea>
+                        <span class="invalid-feedback" id="oMethodError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
                     </div>
 
                 </form>
@@ -2948,7 +2944,7 @@
 
 
         <script src="btnn_luong_xu_ly.js?v=20261020v5"></script>
-        <script src="btnn_tai_lieu_kem_theo.js?v=20261026pdtb"></script>
+        <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt"></script>
 
 
         <!-- ========================================== -->
@@ -8613,6 +8609,10 @@
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
     <script src="chi_tiet_ho_so_hoan_tra_tlhd.js?v=20261023htkd"></script>
     <script src="chi_tiet_ho_so_hoan_tra_dcht.js?v=20261023htkd"></script>
+    <!-- Bước 1 Lưu nháp / Bước 2 Ý kiến của Hội đồng, Stepper 04 bước, phạm vi người xem theo đơn vị -->
+    <script src="chi_tiet_ho_so_hoan_tra_ykhd.js?v=20261026p3"></script>
+    <!-- Bước 3: trình ký 02 tầng tại đơn vị (QĐ hoàn trả Mẫu 36; QĐ miễn Mẫu 38 / QĐ giảm Mẫu 37 theo từng cán bộ) -->
+    <script src="chi_tiet_ho_so_hoan_tra_qd.js?v=20261026p3"></script>
     <script src="admin-ui-standardizer.js"></script>
 </body>
 

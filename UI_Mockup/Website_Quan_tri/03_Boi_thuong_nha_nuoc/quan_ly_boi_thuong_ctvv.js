@@ -5,7 +5,8 @@
  * 3. Tab "Phục hồi danh dự": bắt đầu từ thanh tiến trình; bước Thông báo: Trình ký Thông báo tổ chức thực hiện phục hồi danh dự (Mẫu số 26/BTNN);
  *    Thành phần tham gia tổ chức phục hồi danh dự: 02 bảng như Thương lượng.
  * 4. Bảng "Tài liệu kèm theo" đồng nhất (chuẩn màn Cập nhật kết quả xác định cơ quan giải quyết bồi thường):
- *    STT | Tên văn bản, căn cứ | Tải file | Thao tác (Xem file / Xóa - xóa thẳng); chế độ xem: Thao tác Xem file / Tải file.
+ *    STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file / Xóa - xóa thẳng); nút Thêm tài liệu dưới bảng;
+ *    chế độ xem: Thao tác Xem file / Tải file, bảng rỗng thì không hiển thị.
  * Dùng tiện ích sẵn có của quan_ly_boi_thuong.html (gq*, ktlx*, tlkt*, pt*, phdd*) và btnn_tai_lieu_kem_theo.js.
  */
 var CTVV_KIND = 'Thông báo tổ chức thực hiện phục hồi danh dự'; // Loại trình
@@ -110,12 +111,12 @@ function ctvvDocsRender(key) {
     var body = s.rows.map(function (r, i) {
         var fileCell = r.file
             ? pdtbFileHtml(r)
-            : '<button type="button" class="tlkt-btn" id="' + s.idp + 'Btn_' + i + '" onclick="document.getElementById(\'' + s.idp + 'File_' + i + '\').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>';
+            : '<button type="button" class="tlkt-btn tlkt-btn-pri" id="' + s.idp + 'Btn_' + i + '" onclick="document.getElementById(\'' + s.idp + 'File_' + i + '\').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>';
         return '<tr data-doc-idx="' + i + '">'
             + '<td class="tlkt-c">' + (i + 1) + '</td>'
-            + '<td><input type="text" class="tlkt-name" id="' + s.idp + 'Name_' + i + '" maxlength="500" value="' + ctvvE(r.title) + '" placeholder="Nhập tên văn bản, căn cứ" oninput="ctvvDocsOnName(\'' + key + '\',' + i + ')">'
+            + '<td><input type="text" class="tlkt-name" id="' + s.idp + 'Name_' + i + '" maxlength="500" value="' + ctvvE(r.title) + '" placeholder="Nhập tên tài liệu, văn bản" oninput="ctvvDocsOnName(\'' + key + '\',' + i + ')">'
             + '<div class="tlkt-err error-message" id="' + s.idp + 'NameErr_' + i + '" style="display:none;">' + CTVV_REQ + '</div></td>'
-            + '<td><input type="file" id="' + s.idp + 'File_' + i + '" accept="' + CTVV_EXTS.join(',') + '" style="display:none;" onchange="ctvvDocsPick(\'' + key + '\',' + i + ',this)">' + fileCell
+            + '<td class="tlkt-fc"><input type="file" id="' + s.idp + 'File_' + i + '" accept="' + CTVV_EXTS.join(',') + '" style="display:none;" onchange="ctvvDocsPick(\'' + key + '\',' + i + ',this)">' + fileCell
             + '<div class="tlkt-err error-message" id="' + s.idp + 'FileErr_' + i + '" style="display:none;">' + CTVV_REQ + '</div></td>'
             + '<td class="tlkt-c"><span class="tlkt-acts">'
             + '<button type="button" data-admin-icon-normalized="1" class="tlkt-ib' + (r.file ? '' : ' is-disabled') + '" title="Xem file" aria-label="Xem file" onclick="ctvvDocsView(\'' + key + '\',' + i + ')"><i class="fa-solid fa-eye"></i></button>'
@@ -124,10 +125,10 @@ function ctvvDocsRender(key) {
     }).join('');
     host.innerHTML = '<div class="ctvv-docs tlkt-sec" id="ctvvDocs_' + key + '">'
         + (s.title ? '<div class="tlkt-sec-title"><i class="fa-solid fa-paperclip"></i> ' + ctvvE(s.title) + star + '</div>' : '')
-        + '<div class="tlkt-wrap"><table class="tlkt-table"><thead><tr><th class="tlkt-c" style="width:50px;">STT</th><th>Tên văn bản, căn cứ' + star + '</th><th style="width:40%;">Tải file' + star + '</th><th class="tlkt-c" style="width:100px;">Thao tác</th></tr></thead><tbody>'
+        + '<div class="tlkt-wrap"><table class="tlkt-table"><thead><tr><th class="tlkt-c" style="width:50px;">STT</th><th>Tên tài liệu, văn bản' + star + '</th><th style="width:40%;">File đính kèm' + star + '</th><th class="tlkt-c" style="width:100px;">Thao tác</th></tr></thead><tbody>'
         + (body || '<tr><td colspan="4" class="tlkt-empty">Chưa có tài liệu. Bấm "Thêm tài liệu" để bổ sung.</td></tr>') + '</tbody></table></div>'
         + '<div class="tlkt-err error-message" id="' + s.idp + 'Err" style="display:none;">' + CTVV_REQ + '</div>'
-        + '<button type="button" class="tlkt-btn tlkt-add" id="' + s.idp + 'Add" onclick="ctvvDocsAdd(\'' + key + '\')"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button>'
+        + '<div><button type="button" class="tlkt-btn tlkt-btn-add tlkt-add" id="' + s.idp + 'Add" onclick="ctvvDocsAdd(\'' + key + '\')"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button></div>'
         + '<div class="tlkt-hint"><i class="fa-solid fa-circle-info"></i> Chấp nhận tệp ' + CTVV_EXTS.join(', ') + ' (tối đa 50MB/tệp).</div>'
         + '</div>';
 }
@@ -213,15 +214,17 @@ function ctvvDocsViewHtml(rows, opts) {
     CTVV_VIEW[vid] = list;
     var body = list.map(function (r, i) {
         return '<tr><td class="tlkt-c">' + (i + 1) + '</td><td class="pdtb-title">' + ctvvE(r.title || String(r.file || '').replace(/\.[^.]+$/, '')) + '</td>'
-            + '<td>' + (r.file ? pdtbFileHtml(r) : '<span style="color:#94a3b8;">--</span>') + '</td>'
+            + '<td class="tlkt-fc">' + (r.file ? pdtbFileHtml(r) : '<span style="color:#94a3b8;">--</span>') + '</td>'
             + '<td class="tlkt-c">' + (r.file ? '<span class="tlkt-acts">'
                 + '<button type="button" data-admin-icon-normalized="1" class="tlkt-ib" title="Xem file" aria-label="Xem file" data-ctvv-act="view" data-ctvv-vid="' + vid + '" data-ctvv-i="' + i + '"><i class="fa-solid fa-eye"></i></button>'
                 + '<button type="button" data-admin-icon-normalized="1" class="tlkt-ib" title="Tải file" aria-label="Tải file" data-ctvv-act="dl" data-ctvv-vid="' + vid + '" data-ctvv-i="' + i + '"><i class="fa-solid fa-download"></i></button>'
                 + '</span>' : '<span style="color:#94a3b8;">--</span>') + '</td></tr>';
     }).join('');
+    // Chế độ xem: bảng rỗng thì không hiển thị
+    if (!list.length) return '';
     return '<div class="ctvv-docs tlkt-view-box"' + (opts.id ? ' id="' + ctvvE(opts.id) + '"' : '') + '>'
         + (opts.title ? '<div class="tlkt-sec-title"><i class="fa-solid fa-paperclip"></i> ' + ctvvE(opts.title) + '</div>' : '')
-        + '<div class="tlkt-wrap"><table class="tlkt-table"><thead><tr><th class="tlkt-c" style="width:50px;">STT</th><th>Tên văn bản, căn cứ</th><th style="width:40%;">Tải file</th><th class="tlkt-c" style="width:100px;">Thao tác</th></tr></thead><tbody>'
+        + '<div class="tlkt-wrap"><table class="tlkt-table"><thead><tr><th class="tlkt-c" style="width:50px;">STT</th><th>' + ctvvE(opts.nameLabel || 'Tên tài liệu, văn bản') + '</th><th style="width:40%;">File đính kèm</th><th class="tlkt-c" style="width:100px;">Thao tác</th></tr></thead><tbody>'
         + (body || '<tr><td colspan="4" class="tlkt-empty">Không có tài liệu</td></tr>') + '</tbody></table></div></div>';
 }
 // [pdtb] Ô Tải file: icon loại tệp + tên tệp 1 dòng (dài thì cắt "…", rê chuột hiện đủ tên) + dung lượng màu xám

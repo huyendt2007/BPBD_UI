@@ -91,8 +91,8 @@ function ycbsDecorateDocs() {
         if (d.ycbsTag !== 'goc') return;
         // Hồ sơ gốc: chỉ đọc, không xóa (vẫn Xem file)
         var inp = tr.cells[1].querySelector('input'); if (inp) inp.readOnly = true;
-        if (tr.cells[3]) tr.cells[3].querySelectorAll('a, span').forEach(function (a) {
-            if (/Xóa/.test(a.textContent) && !/Xem/.test(a.textContent)) { a.removeAttribute('onclick'); a.style.opacity = '0.35'; a.style.pointerEvents = 'none'; a.title = 'Tài liệu thuộc hồ sơ gốc: không xóa'; }
+        if (tr.cells[3]) tr.cells[3].querySelectorAll('a, span, button').forEach(function (a) {
+            if ((/Xóa/.test(a.textContent) && !/Xem/.test(a.textContent)) || a.title === 'Xóa') { a.removeAttribute('onclick'); a.classList.add('is-disabled'); a.style.opacity = '0.35'; a.style.pointerEvents = 'none'; a.title = 'Tài liệu thuộc hồ sơ gốc: không xóa'; }
         });
     });
 }
@@ -107,8 +107,8 @@ function ycbsDecorateVbcc() {
         tr.dataset.ycbsTag = r.ycbsTag || '';
         if (r.ycbsTag !== 'goc') return;
         if (inp) inp.readOnly = true;
-        if (tr.cells[3]) tr.cells[3].querySelectorAll('a').forEach(function (a) {
-            if (/Xóa/.test(a.textContent)) { a.removeAttribute('onclick'); a.style.opacity = '0.35'; a.style.pointerEvents = 'none'; a.title = 'Văn bản thuộc hồ sơ gốc: không xóa'; }
+        if (tr.cells[3]) tr.cells[3].querySelectorAll('a, button').forEach(function (a) {
+            if (/Xóa/.test(a.textContent) || a.title === 'Xóa') { a.classList.add('is-disabled'); a.removeAttribute('onclick'); a.style.opacity = '0.35'; a.style.pointerEvents = 'none'; a.title = 'Văn bản thuộc hồ sơ gốc: không xóa'; }
         });
     });
 }

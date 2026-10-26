@@ -552,18 +552,16 @@
                     <thead>
                         <tr>
                             <th style="width: 60px; text-align: center;">STT</th>
-                            <th>Tên văn bản, căn cứ</th>
-                            <th style="width: 260px;">Tải file</th>
-                            <th style="width: 180px; text-align: center;">Thao tác</th>
+                            <th style="text-align: center;">Tên văn bản căn cứ</th>
+                            <th style="width: 260px; text-align: center;">File đính kèm</th>
+                            <th style="width: 110px; text-align: center;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="formBasisTableBody"></tbody>
                 </table>
             </div>
             <div style="margin-top: 10px; margin-bottom: 18px;">
-                <button type="button" class="btn btn-secondary btn-sm" onclick="addBasisRow()">
-                    <i class="fa-solid fa-plus"></i> Thêm dòng tài liệu
-                </button>
+                <button type="button" class="tlkt-btn-add" onclick="addBasisRow()"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button>
             </div>
 
             <!-- Behavior & receiving method section -->
@@ -617,18 +615,16 @@
                     <thead>
                         <tr>
                             <th style="width: 60px; text-align: center;">STT</th>
-                            <th>Tên tài liệu</th>
-                            <th style="width: 260px;">File đính kèm</th>
-                            <th style="width: 180px; text-align: center;">Thao tác tài liệu</th>
+                            <th style="text-align: center;">Tên tài liệu, văn bản</th>
+                            <th style="width: 260px; text-align: center;">File đính kèm</th>
+                            <th style="width: 110px; text-align: center;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="formDocsTableBody"></tbody>
                 </table>
             </div>
             <div style="margin-top: 10px; margin-bottom: 18px;">
-                <button type="button" class="btn btn-secondary btn-sm" onclick="addFormDocRow()">
-                    <i class="fa-solid fa-plus"></i> Thêm dòng tài liệu
-                </button>
+                <button type="button" class="tlkt-btn-add" onclick="addFormDocRow()"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button>
             </div>
             <div class="form-footer">
                 <button class="btn btn-secondary" onclick="showListScreen()">Hủy bỏ</button>
@@ -682,18 +678,16 @@
                     <thead>
                         <tr>
                             <th style="width: 60px; text-align: center;">STT</th>
-                            <th>Tên tài liệu</th>
-                            <th style="width: 260px;">File đính kèm</th>
-                            <th style="width: 180px; text-align: center;">Thao tác tài liệu</th>
+                            <th style="text-align: center;">Tên tài liệu, văn bản</th>
+                            <th style="width: 260px; text-align: center;">File đính kèm</th>
+                            <th style="width: 110px; text-align: center;">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody id="procDocsTableBody"></tbody>
                 </table>
             </div>
             <div style="margin-top: 10px; margin-bottom: 18px;">
-                <button type="button" class="btn btn-secondary btn-sm" onclick="addProcDocRow()">
-                    <i class="fa-solid fa-plus"></i> Thêm dòng tài liệu
-                </button>
+                <button type="button" class="tlkt-btn-add" onclick="addProcDocRow()"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button>
             </div>
 
             <div class="form-footer">
@@ -1330,10 +1324,10 @@
 
     <!-- External javascript logic -->
     <script src="btnn_luong_xu_ly.js?v=20261023xdtl"></script>
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261026pdtb"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt"></script>
     <script src="btnn_lanh_dao_actions.js?v=20261023kdtc"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261023bdg"></script>
-    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261023gqfx"></script>
+    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261026tlkt"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="bpbd_filter_toggle.js?v=20261012"></script>
     <script>

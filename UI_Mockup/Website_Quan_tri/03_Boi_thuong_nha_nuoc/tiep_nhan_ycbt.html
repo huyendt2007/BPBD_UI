@@ -732,18 +732,16 @@
                         <thead>
                             <tr>
                                 <th style="width:60px; text-align:center;">STT</th>
-                                <th>Tên văn bản, căn cứ</th>
-                                <th style="width:260px;">Tải file</th>
-                                <th style="width:160px; text-align:center;">Thao tác</th>
+                                <th style="text-align:center;">Tên văn bản căn cứ</th>
+                                <th style="width:260px; text-align:center;">File đính kèm</th>
+                                <th style="width:110px; text-align:center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody id="basisTableBody"></tbody>
                     </table>
                 </div>
                 <div id="addBasisBtnWrapper" style="margin-top:10px; margin-bottom:20px;">
-                    <button class="btn btn-secondary btn-sm" onclick="addBasisRow()">
-                        <i class="fa-solid fa-plus"></i> Thêm dòng
-                    </button>
+                    <button type="button" class="tlkt-btn-add" onclick="addBasisRow()"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button>
                 </div>
                 <div class="info-group-title">Bảng tài liệu đính kèm</div>
                 <div class="table-container">
@@ -751,18 +749,16 @@
                         <thead>
                             <tr>
                                 <th style="width:60px; text-align:center;">STT</th>
-                                <th>Tên tài liệu</th>
-                                <th style="width:260px;">File đính kèm</th>
-                                <th style="width:160px; text-align:center;">Thao tác tài liệu</th>
+                                <th style="text-align:center;">Tên tài liệu, văn bản</th>
+                                <th style="width:260px; text-align:center;">File đính kèm</th>
+                                <th style="width:110px; text-align:center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody id="docsTableBody"></tbody>
                     </table>
                 </div>
                 <div id="addDocBtnWrapper" style="margin-top:10px;">
-                    <button class="btn btn-secondary btn-sm" id="btnAddDoc" onclick="addDocRow()">
-                        <i class="fa-solid fa-plus"></i> Thêm dòng
-                    </button>
+                    <button type="button" class="tlkt-btn-add" id="btnAddDoc" onclick="addDocRow()"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button>
                 </div>
 
                 <div id="wfInfoBlock" style="display:none;">
@@ -2582,7 +2578,7 @@
                     <td>
                         ${isFormReadOnly
                             ? `<span style="font-weight:500; color:#1e293b;">${escapeHtml(doc.name || "--")}</span>`
-                            : `<input id="docName_${idx}" class="form-control" value="${escapeAttr(doc.name)}" placeholder="Nhập tên tài liệu..." oninput="updateDocName(${idx}, this.value)">`
+                            : `<input id="docName_${idx}" class="form-control" value="${escapeAttr(doc.name)}" placeholder="Nhập tên tài liệu, văn bản" oninput="updateDocName(${idx}, this.value)">`
                         }
                     </td>
                     <td>
@@ -2590,20 +2586,17 @@
                             ? `<span class="file-name" title="${escapeAttr(doc.file)}"><i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:6px;"></i>${escapeHtml(doc.file)}</span>`
                             : (isFormReadOnly
                                 ? `<span style="color:var(--text-muted); font-style:italic;">--</span>`
-                                : `<button class="btn-upload-rust" onclick="document.getElementById('docFile_${idx}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải lên</button>`
+                                : `<button type="button" class="tlkt-btn-pri" onclick="document.getElementById('docFile_${idx}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>`
                             )}
                         <input id="docFile_${idx}" type="file" style="display:none;" onchange="uploadDocFile(${idx}, this)">
                     </td>
-                    <td>
-                        <div class="doc-actions">
-                            <a href="javascript:void(0)" class="action-link view-link ${doc.file ? "" : "disabled-action"}" onclick="viewDocFile(${idx})">
-                                Xem file
-                            </a>
-                            ${!isFormReadOnly ? `
-                            <a href="javascript:void(0)" class="action-link delete-link" onclick="deleteDocRow(${idx})">
-                                <i class="fa-solid fa-trash-can"></i> Xóa
-                            </a>` : ''}
-                        </div>
+                    <td style="text-align:center;">
+                        <span class="tlkt-acts">
+                            <button type="button" class="tlkt-ib${doc.file ? "" : " is-disabled"}" data-admin-icon-normalized="1" title="Xem file" aria-label="Xem file" onclick="viewDocFile(${idx})"><i class="fa-solid fa-eye"></i></button>
+                            ${isFormReadOnly
+                                ? `<button type="button" class="tlkt-ib${doc.file ? "" : " is-disabled"}" data-admin-icon-normalized="1" title="Tải file" aria-label="Tải file" onclick="downloadDocFile(${idx})"><i class="fa-solid fa-download"></i></button>`
+                                : `<button type="button" class="tlkt-ib tlkt-ib-del" data-admin-icon-normalized="1" title="Xóa" aria-label="Xóa" onclick="deleteDocRow(${idx})"><i class="fa-solid fa-trash"></i></button>`}
+                        </span>
                     </td>
                 </tr>
             `).join("");
@@ -2624,6 +2617,11 @@
             const doc = docRows[idx];
             if (!doc || !doc.file) return;
             showToast(`Giả lập mở file: ${doc.file}`, "info");
+        }
+
+        function downloadDocFile(idx) {
+            const doc = docRows[idx];
+            if (doc && doc.file) showToast(`Giả lập tải file: ${doc.file}`, "info");
         }
 
         function deleteDocRow(idx) {
@@ -2861,7 +2859,7 @@
             return escapeHtml(value);
         }
 
-        // Văn bản làm căn cứ yêu cầu bồi thường: bảng nhiều dòng (STT | Tên văn bản, căn cứ | Tải file | Thao tác)
+        // Văn bản làm căn cứ yêu cầu bồi thường: bảng chuẩn tài liệu (STT | Tên tài liệu, văn bản | File đính kèm | Thao tác); chế độ xem rỗng thì ẩn bảng (tlktStd)
         let basisRows = [];
 
         // Chuyển dữ liệu cũ (01 văn bản) sang danh sách
@@ -2885,19 +2883,21 @@
                     <td>
                         ${isFormReadOnly
                             ? `<span style="font-weight:500; color:#1e293b;">${escapeHtml(doc.name || "--")}</span>`
-                            : `<input id="basisName_${idx}" class="form-control" value="${escapeAttr(doc.name)}" placeholder="Nhập tên văn bản, căn cứ..." oninput="updateBasisName(${idx}, this.value)">`}
+                            : `<input id="basisName_${idx}" class="form-control" value="${escapeAttr(doc.name)}" placeholder="Nhập tên văn bản căn cứ" oninput="updateBasisName(${idx}, this.value)">`}
                     </td>
                     <td>
                         ${doc.file
                             ? `<span class="file-name"><i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> ${escapeHtml(doc.file)}</span>`
-                            : (isFormReadOnly ? `<span class="muted">-</span>` : `<button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('basisFile_${idx}').click()"><i class="fa-solid fa-file-arrow-up"></i> Tải file</button>`)}
+                            : (isFormReadOnly ? `<span class="muted">-</span>` : `<button type="button" class="tlkt-btn-pri" onclick="document.getElementById('basisFile_${idx}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>`)}
                         <input type="file" id="basisFile_${idx}" style="display:none;" accept="${BASIS_FILE_ACCEPT}" onchange="uploadBasisFile(${idx}, this)">
                     </td>
                     <td style="text-align:center;">
-                        <div class="doc-actions">
-                            <a href="javascript:void(0)" class="action-link view-link${doc.file ? "" : " disabled-action"}" onclick="viewBasisFile(${idx})"><i class="fa-solid fa-eye"></i> Xem file</a>
-                            ${isFormReadOnly ? "" : `<a href="javascript:void(0)" class="action-link delete-link" onclick="deleteBasisRow(${idx})"><i class="fa-solid fa-trash-can"></i> Xóa</a>`}
-                        </div>
+                        <span class="tlkt-acts">
+                            <button type="button" class="tlkt-ib${doc.file ? "" : " is-disabled"}" data-admin-icon-normalized="1" title="Xem file" aria-label="Xem file" onclick="viewBasisFile(${idx})"><i class="fa-solid fa-eye"></i></button>
+                            ${isFormReadOnly
+                                ? `<button type="button" class="tlkt-ib${doc.file ? "" : " is-disabled"}" data-admin-icon-normalized="1" title="Tải file" aria-label="Tải file" onclick="downloadBasisFile(${idx})"><i class="fa-solid fa-download"></i></button>`
+                                : `<button type="button" class="tlkt-ib tlkt-ib-del" data-admin-icon-normalized="1" title="Xóa" aria-label="Xóa" onclick="deleteBasisRow(${idx})"><i class="fa-solid fa-trash"></i></button>`}
+                        </span>
                     </td>
                 </tr>
             `).join("");
@@ -2930,6 +2930,11 @@
         function viewBasisFile(idx) {
             const doc = basisRows[idx];
             if (doc && doc.file) showToast(`Giả lập mở file văn bản căn cứ: ${doc.file}`, "info");
+        }
+
+        function downloadBasisFile(idx) {
+            const doc = basisRows[idx];
+            if (doc && doc.file) showToast(`Giả lập tải file: ${doc.file}`, "info");
         }
 
         function deleteBasisRow(idx) {
@@ -3048,6 +3053,8 @@
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_cot_thao_tac.js?v=20261023kpcd"></script>
+    <!-- Bảng tài liệu chuẩn BTNN: STT | Tên tài liệu, văn bản | File đính kèm | Thao tác; nút Tải file / Thêm tài liệu cùng style -->
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt"></script>
 </body>
 
 </html>

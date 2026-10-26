@@ -946,13 +946,14 @@
                     {
                         title: "Báo cáo quản lý BTNN",
                         children: [
-                            { title: "Quản lý kỳ báo cáo & Nhập liệu (TT08)", url: "../03_Boi_thuong_nha_nuoc/quan_ly_ky_bao_cao_tt08.html" },
-                            { title: "Thống kê số lượng vụ việc YCBT theo thời gian", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_thoi_gian" },
-                            { title: "Thống kê chi tiết vụ việc YCBT theo các cấp", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_cap" },
-                            { title: "Thống kê chi tiết vụ việc YCBT theo phạm vi", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_pham_vi" },
-                            { title: "Thống kê chi tiết vụ việc YCBT theo cơ quan", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_co_quan" },
-                            { title: "Thống kê kết quả giải quyết YCBT tại địa phương", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_dia_phuong" },
-                            { title: "Báo cáo tổng hợp kết quả đánh giá xếp loại", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=xep_loai" }
+                            { title: "Báo cáo Công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/bao_cao_cong_tac_btnn.html" },
+                            // Ẩn: chưa làm đợt này (6 mục dưới, hidden: true)
+                            { title: "Thống kê số lượng vụ việc YCBT theo thời gian", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_thoi_gian", hidden: true },
+                            { title: "Thống kê chi tiết vụ việc YCBT theo các cấp", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_cap", hidden: true },
+                            { title: "Thống kê chi tiết vụ việc YCBT theo phạm vi", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_pham_vi", hidden: true },
+                            { title: "Thống kê chi tiết vụ việc YCBT theo cơ quan", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_co_quan", hidden: true },
+                            { title: "Thống kê kết quả giải quyết YCBT tại địa phương", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_dia_phuong", hidden: true },
+                            { title: "Báo cáo tổng hợp kết quả đánh giá xếp loại", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=xep_loai", hidden: true }
                         ]
                     }
                 ]
@@ -1062,6 +1063,14 @@
                 ]
             }
         ];
+
+        // Ẩn các chức năng chưa làm đợt này (hidden: true)
+        (function pruneHidden(list) {
+            for (let i = list.length - 1; i >= 0; i--) {
+                if (list[i].hidden) list.splice(i, 1);
+                else if (list[i].children) pruneHidden(list[i].children);
+            }
+        })(menuData);
 
         // ===== Badge menu 06 phân hệ BTNN (Tiếp nhận hồ sơ, Xác định CQGQBT, Giải quyết YCBT, Quyết định GQBT, Tạm ứng kinh phí/Chi trả, Xem xét hoàn trả) =====
         // Badge menu = badge tab Chờ xử lý của phân hệ, theo người dùng / vai trò giả lập hiện tại; bằng 0 thì ẩn.
@@ -1369,7 +1378,7 @@
             'quan_ly_kiem_tra_cong_tac_btnn.html': '../03_Boi_thuong_nha_nuoc/quan_ly_kiem_tra_cong_tac_btnn.html',
             'quan_ly_kiem_tra_theo_doi.html': '../03_Boi_thuong_nha_nuoc/quan_ly_kiem_tra_theo_doi.html',
             'quan_ly_kinh_phi_boi_thuong.html': '../03_Boi_thuong_nha_nuoc/quan_ly_kinh_phi_boi_thuong.html',
-            'quan_ly_ky_bao_cao_tt08.html': '../03_Boi_thuong_nha_nuoc/quan_ly_ky_bao_cao_tt08.html',
+            'bao_cao_cong_tac_btnn.html': '../03_Boi_thuong_nha_nuoc/bao_cao_cong_tac_btnn.html',
             'quan_ly_nghiep_vu_btnn_muc6.html': '../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_muc6.html',
             'quan_ly_nghiep_vu_btnn_tt08.html': '../03_Boi_thuong_nha_nuoc/quan_ly_nghiep_vu_btnn_tt08.html',
             'quan_ly_phuc_hoi_danh_du.html': '../03_Boi_thuong_nha_nuoc/quan_ly_phuc_hoi_danh_du.html',

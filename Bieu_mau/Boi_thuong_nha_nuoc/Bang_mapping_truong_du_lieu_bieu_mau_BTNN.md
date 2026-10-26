@@ -7,7 +7,7 @@
 >   + Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14 (được sửa đổi, bổ sung bởi Luật số 81/2025/QH15 và Luật số 15/2026/QH16).
 >   + Dự thảo Nghị định quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước.
 >   + Nghị định số 30/2020/NĐ-CP ngày 05/03/2020 của Chính phủ về công tác văn thư.
-> - **Danh sách 23 biểu mẫu đặc tả**: Mẫu 02, 03, 04, 05, 06, 07, 08, 18, 20, 21, 22, 23, 24, 25, 26, 32, 33, 34, 35, 36, 37, 38, 39.
+> - **Danh sách 26 biểu mẫu đặc tả**: Mẫu 02, 03, 04, 05, 06, 07, 08, 18, 20, 21, 22, 23, 24, 25, 26, 32, 33, 34, 35, 36, 37, 38, 39, 41, 42, 43.
 
 ---
 
@@ -754,6 +754,93 @@
 
 ---
 
+### 24. MẪU SỐ 41/BTNN: DANH MỤC VỤ VIỆC GIẢI QUYẾT YÊU CẦU BỒI THƯỜNG
+- **Tên tệp template**: `Mau_41_BTNN_Template.docx`
+- **Mục đích**: Danh mục vụ việc giải quyết yêu cầu bồi thường theo 06 nhóm lĩnh vực, thuộc bộ Báo cáo công tác bồi thường nhà nước của Sở Tư pháp.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Báo cáo Công tác BTNN > Màn hình Chi tiết / Nhập liệu báo cáo > Tab Mẫu 41/BTNN*; sinh văn bản khi `Xem trước PDF`, `Gửi phê duyệt` (Popup Gửi phê duyệt) và khi Lãnh đạo cấp cuối Ký duyệt (văn bản ban hành).
+- **Biến dùng chung**: `##SoHieuNghiDinh##`, `##NgayBanHanhNghiDinh##` theo Bảng trường thông tin dùng chung (Phần I mục 8).
+- **Khối lặp theo nhóm lĩnh vực**: Mỗi nhóm I - VI có 01 dòng lặp, đánh dấu bằng cặp biến `##BatDauDongVuViecM41Nhom[I..VI]##` (ô STT) và `##KetThucDongVuViecM41Nhom[I..VI]##` (ô Ghi chú); mỗi vụ việc của nhóm trên giao diện sinh 01 dòng theo thứ tự nhập. Nhóm không có vụ việc: bỏ dòng lặp, giữ dòng tên nhóm. Hai biến đánh dấu không in ra văn bản.
+- **Quy tắc đặt tên file tải về**: `Mau_41_BTNN_Danh_muc_vu_viec_[Năm báo cáo]_[Mã đơn vị].pdf`
+
+#### Bảng mapping chi tiết Mẫu 41/BTNN:
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Ô "CƠ QUAN LẬP DANH MỤC" | `##TenCoQuanBaoCao##` | Quản lý cơ cấu tổ chức > Quản lý đơn vị | Tên cơ quan, đơn vị | Tên đơn vị báo cáo của bản ghi (Sở Tư pháp lập báo cáo).<br>- In hoa toàn bộ. | `SỞ TƯ PHÁP THÀNH PHỐ HÀ NỘI` |
+| 2 | Khối lặp - Đầu dòng (ô STT) | `##BatDauDongVuViecM41NhomI##` ... `##BatDauDongVuViecM41NhomVI##` | Báo cáo Công tác BTNN > Tab Mẫu 41/BTNN | Danh sách vụ việc của nhóm | Đánh dấu bắt đầu dòng lặp của nhóm tương ứng. Không in ra văn bản. | - |
+| 3 | Khối lặp - STT | `##SttVuViecM41##` | Báo cáo Công tác BTNN > Tab Mẫu 41/BTNN | STT | Theo số thứ tự dòng vụ việc trong nhóm (1, 2, 3...). | `1` |
+| 4 | Khối lặp - Cột (1) | `##HoTenNguoiYeuCauM41##` | Báo cáo Công tác BTNN > Tab Mẫu 41/BTNN | Họ và tên của người yêu cầu bồi thường (1) | Theo giá trị trường `Họ và tên của người yêu cầu bồi thường (1)` trên giao diện. | `Nguyễn Văn Hùng` |
+| 5 | Khối lặp - Cột (2) | `##DiaChiNguoiYeuCauM41##` | Báo cáo Công tác BTNN > Tab Mẫu 41/BTNN | Địa chỉ của người yêu cầu bồi thường (2) | Theo giá trị trường `Địa chỉ của người yêu cầu bồi thường (2)` trên giao diện. | `Số 10 đường Trần Phú, phường Ba Đình, Thành phố Hà Nội` |
+| 6 | Khối lặp - Cột (3) | `##CoQuanGiaiQuyetM41##` | Báo cáo Công tác BTNN > Tab Mẫu 41/BTNN | Cơ quan giải quyết bồi thường (3) | Theo giá trị trường `Cơ quan giải quyết bồi thường (3)` trên giao diện. | `UBND Thành phố Hà Nội` |
+| 7 | Khối lặp - Cột (4) | `##TinhHinhGiaiQuyetM41##` | Báo cáo Công tác BTNN > Tab Mẫu 41/BTNN | Tình hình giải quyết bồi thường (4) | Theo giá trị trường `Tình hình giải quyết bồi thường (4)` trên giao diện.<br>- Giữ nguyên xuống dòng. | `Có văn bản yêu cầu bồi thường ngày 10/03/2026; đã thụ lý, đang xác minh thiệt hại.` |
+| 8 | Khối lặp - Cột (5) | `##KhoKhanVuongMacM41##` | Báo cáo Công tác BTNN > Tab Mẫu 41/BTNN | Khó khăn, vướng mắc (5) | Theo giá trị trường `Khó khăn, vướng mắc (5)` trên giao diện. | `Chậm cung cấp tài liệu chứng minh thiệt hại.` |
+| 9 | Khối lặp - Cột (6) | `##GhiChuM41##` | Báo cáo Công tác BTNN > Tab Mẫu 41/BTNN | Ghi chú (6) | Theo giá trị trường `Ghi chú (6)` trên giao diện. | `Luật TNBTCNN năm 2017` |
+| 10 | Khối lặp - Cuối dòng (ô Ghi chú) | `##KetThucDongVuViecM41NhomI##` ... `##KetThucDongVuViecM41NhomVI##` | Báo cáo Công tác BTNN > Tab Mẫu 41/BTNN | Danh sách vụ việc của nhóm | Đánh dấu kết thúc dòng lặp của nhóm tương ứng. Không in ra văn bản. | - |
+| 11 | Dòng Tổng cộng | `##TongSoVuViecM41##` | Báo cáo Công tác BTNN > Tab Mẫu 41/BTNN | Tổng cộng | Tổng số dòng vụ việc của 06 nhóm.<br>- Định dạng `[Số] vụ việc`. | `3 vụ việc` |
+| 12 | Bảng ký - NGƯỜI LẬP DANH MỤC | `##ChuKyNguoiLap##` | Thông tin cá nhân cán bộ (Hồ sơ cá nhân) | Chữ ký hình ảnh | Ảnh chữ ký hình ảnh gán với tài khoản cán bộ lập báo cáo (cán bộ thực hiện `Gửi phê duyệt`).<br>- Chưa có ảnh chữ ký: để trống. | (ảnh chữ ký) |
+| 13 | Bảng ký - NGƯỜI LẬP DANH MỤC | `##HoTenNguoiLap##` | Thông tin cá nhân cán bộ (Hồ sơ cá nhân) | Họ và tên | Họ và tên của cán bộ lập báo cáo. | `Đỗ Văn Chung` |
+| 14 | Bảng ký - THỦ TRƯỞNG CƠ QUAN LẬP DANH MỤC | `##HoTenNguoiKy##` | Báo cáo Công tác BTNN > Popup Gửi phê duyệt (Bước 2) | Lãnh đạo (cấp ký duyệt cuối cùng) | Theo giá trị trường `Lãnh đạo` của cấp ký duyệt cuối cùng trên giao diện.<br>- Chỉ lấy Họ và tên. | `Phạm Quang Huy` |
+
+---
+
+### 25. MẪU SỐ 42/BTNN: BÁO CÁO CÔNG TÁC BỒI THƯỜNG NHÀ NƯỚC
+- **Tên tệp template**: `Mau_42_BTNN_Template.docx`
+- **Mục đích**: Báo cáo thuyết minh công tác bồi thường nhà nước năm, thuộc bộ Báo cáo công tác bồi thường nhà nước của Sở Tư pháp; mỗi mục trên mẫu là 01 ô nhập liệu.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Báo cáo Công tác BTNN > Màn hình Chi tiết / Nhập liệu báo cáo > Tab Mẫu 42/BTNN*; sinh văn bản như Mẫu 41/BTNN.
+- **Biến dùng chung**: `##SoHieuNghiDinh##`, `##NgayBanHanhNghiDinh##`, `##DiaDanh##` theo Bảng trường thông tin dùng chung (Phần I mục 8); `##DiaDanh##` lấy theo đơn vị báo cáo của bản ghi.
+- **Nội dung từng mục**: Mỗi biến nội dung được chèn thành 01 đoạn ngay dưới dòng tên mục tương ứng của mẫu; giữ nguyên xuống dòng; mục bỏ trống in `……`.
+- **Quy tắc đặt tên file tải về**: `Mau_42_BTNN_Bao_cao_cong_tac_BTNN_[Năm báo cáo]_[Mã đơn vị].pdf`
+
+#### Bảng mapping chi tiết Mẫu 42/BTNN:
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Bảng đầu trang - Ô trái "CƠ QUAN BÁO CÁO" | `##TenCoQuanBaoCao##` | Quản lý cơ cấu tổ chức > Quản lý đơn vị | Tên cơ quan, đơn vị | Tên đơn vị báo cáo của bản ghi.<br>- In hoa toàn bộ. | `SỞ TƯ PHÁP THÀNH PHỐ HÀ NỘI` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Báo cáo Công tác BTNN > Tab Mẫu 42/BTNN | Ngày báo cáo | Theo giá trị trường `Ngày báo cáo` trên giao diện.<br>Định dạng trên mẫu: `ngày dd tháng mm năm yyyy`. | `ngày 20 tháng 11 năm 2026` |
+| 3 | Tên báo cáo; Mục I; Mục I.2 dòng 1 | `##NamBaoCaoM42##` | Báo cáo Công tác BTNN > Tab Mẫu 42/BTNN | Năm báo cáo | Theo giá trị trường `Năm báo cáo` trên giao diện. | `2026` |
+| 4 | Mục II | `##NamKeHoachM42##` | Báo cáo Công tác BTNN > Tab Mẫu 42/BTNN | Năm báo cáo | Giá trị trường `Năm báo cáo` cộng 01. | `2027` |
+| 5 | Mục I.1 - dòng 1 | `##DanhGiaTinhHinhYeuCauBoiThuongM42##` | Báo cáo Công tác BTNN > Tab Mẫu 42/BTNN | Đánh giá tình hình yêu cầu bồi thường, kết quả giải quyết bồi thường | Theo giá trị trường `Đánh giá tình hình yêu cầu bồi thường, kết quả giải quyết bồi thường` trên giao diện. | `Trong kỳ, trên địa bàn phát sinh 05 yêu cầu bồi thường...` |
+| 6 | Mục I.1 - dòng 2 | `##CapPhatKinhPhiChiTraBoiThuongM42##` | Báo cáo Công tác BTNN > Tab Mẫu 42/BTNN | Việc cấp phát kinh phí và chi trả tiền bồi thường | Theo giá trị trường `Việc cấp phát kinh phí và chi trả tiền bồi thường` trên giao diện. | `Kinh phí bồi thường được cấp phát kịp thời...` |
+| 7 | Mục I.1 - dòng 3 | `##XacDinhTrachNhiemHoanTraM42##` | Báo cáo Công tác BTNN > Tab Mẫu 42/BTNN | Việc xác định trách nhiệm hoàn trả của người thi hành công vụ gây thiệt hại | Theo giá trị trường cùng tên trên giao diện. | `Đã xem xét trách nhiệm hoàn trả 01 vụ việc.` |
+| 8 | Mục I.1 - dòng 4 | `##XuLyKyLuatNguoiThiHanhCongVuM42##` | Báo cáo Công tác BTNN > Tab Mẫu 42/BTNN | Việc xử lý kỷ luật người thi hành công vụ gây thiệt hại | Theo giá trị trường cùng tên trên giao diện. | `Không phát sinh.` |
+| 9 | Mục I.2 - dòng 1 | `##KeHoachCongTacBoiThuongM42##` | Báo cáo Công tác BTNN > Tab Mẫu 42/BTNN | Xây dựng và thực hiện Kế hoạch công tác bồi thường nhà nước năm [Năm báo cáo] | Theo giá trị trường cùng tên trên giao diện. | `Ban hành Kế hoạch số 12/KH-STP ngày 15/01/2026.` |
+| 10 | Mục I.2 - dòng 2 | `##XayDungHoanThienTheCheM42##` | Báo cáo Công tác BTNN > Tab Mẫu 42/BTNN | Công tác xây dựng, hoàn thiện thể chế về trách nhiệm bồi thường của Nhà nước (đối với Bộ, ngành Trung ương) | Theo giá trị trường cùng tên trên giao diện. | `……` |
+| 11 | Mục I.2 - dòng 3 | `##PhoBienGiaoDucPhapLuatM42##` | Báo cáo Công tác BTNN > Tab Mẫu 42/BTNN | Công tác phổ biến, giáo dục pháp luật về trách nhiệm bồi thường của Nhà nước | Theo giá trị trường cùng tên trên giao diện. | `Tổ chức 02 hội nghị phổ biến Luật số 15/2026/QH16.` |
+| 12 | Mục I.2 - dòng 4 | `##QuanLyChuyenNganhBoiThuongM42##` | Báo cáo Công tác BTNN > Tab Mẫu 42/BTNN | Thực hiện quản lý chuyên ngành về bồi thường nhà nước | Theo giá trị trường cùng tên trên giao diện. | `Hướng dẫn nghiệp vụ cho 05 cơ quan giải quyết bồi thường.` |
+| 13 | Mục I.2 - dòng 5 | `##ChiDaoGiaiQuyetBoiThuongM42##` | Báo cáo Công tác BTNN > Tab Mẫu 42/BTNN | Chỉ đạo cơ quan giải quyết bồi thường thực hiện giải quyết bồi thường, xác định trách nhiệm hoàn trả... | Theo giá trị trường cùng tên trên giao diện. | `……` |
+| 14 | Mục I.2 - dòng 6 | `##ChiDaoXuLyViPhamM42##` | Báo cáo Công tác BTNN > Tab Mẫu 42/BTNN | Chỉ đạo xử lý vi phạm trong việc giải quyết bồi thường, thực hiện trách nhiệm hoàn trả | Theo giá trị trường cùng tên trên giao diện. | `……` |
+| 15 | Mục I.2 - dòng 7 | `##CongTacPhoiHopM42##` | Báo cáo Công tác BTNN > Tab Mẫu 42/BTNN | Công tác phối hợp thực hiện công tác bồi thường nhà nước | Theo giá trị trường cùng tên trên giao diện. | `……` |
+| 16 | Mục I.2 - dòng 8 | `##CongTacBaoCaoThongKeM42##` | Báo cáo Công tác BTNN > Tab Mẫu 42/BTNN | Công tác báo cáo, thống kê về công tác bồi thường nhà nước | Theo giá trị trường cùng tên trên giao diện. | `……` |
+| 17 | Mục I.3 - dòng 1 | `##KetQuaDatDuocM42##` | Báo cáo Công tác BTNN > Tab Mẫu 42/BTNN | Đánh giá chung những kết quả đạt được | Theo giá trị trường cùng tên trên giao diện. | `Công tác bồi thường được triển khai đồng bộ.` |
+| 18 | Mục I.3 - dòng 2 | `##VuongMacBatCapNguyenNhanM42##` | Báo cáo Công tác BTNN > Tab Mẫu 42/BTNN | Những vướng mắc, bất cập và nguyên nhân | Theo giá trị trường cùng tên trên giao diện. | `Việc xác minh thiệt hại còn kéo dài.` |
+| 19 | Mục II | `##NhiemVuTrongTamGiaiPhapM42##` | Báo cáo Công tác BTNN > Tab Mẫu 42/BTNN | Nhiệm vụ trọng tâm và giải pháp thực hiện công tác bồi thường nhà nước năm [Năm báo cáo + 1] | Theo giá trị trường cùng tên trên giao diện. | `Tiếp tục hướng dẫn nghiệp vụ...` |
+| 20 | Mục III | `##DeXuatKienNghiM42##` | Báo cáo Công tác BTNN > Tab Mẫu 42/BTNN | Đề xuất, kiến nghị | Theo giá trị trường `Đề xuất, kiến nghị` trên giao diện. | `Đề nghị Bộ Tư pháp tổ chức tập huấn...` |
+| 21 | Bảng ký - THỦ TRƯỞNG ĐƠN VỊ | `##HoTenNguoiKy##` | Báo cáo Công tác BTNN > Popup Gửi phê duyệt (Bước 2) | Lãnh đạo (cấp ký duyệt cuối cùng) | Theo giá trị trường `Lãnh đạo` của cấp ký duyệt cuối cùng trên giao diện.<br>- Chỉ lấy Họ và tên. | `Phạm Quang Huy` |
+
+---
+
+### 26. MẪU SỐ 43/BTNN: TỔNG HỢP TÌNH HÌNH YÊU CẦU BỒI THƯỜNG, GIẢI QUYẾT BỒI THƯỜNG VÀ CHI TRẢ TIỀN BỒI THƯỜNG
+- **Tên tệp template**: `Mau_43_BTNN_Template.docx`
+- **Mục đích**: Bảng số liệu 27 cột theo 06 nhóm lĩnh vực, thuộc bộ Báo cáo công tác bồi thường nhà nước của Sở Tư pháp.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Báo cáo Công tác BTNN > Màn hình Chi tiết / Nhập liệu báo cáo > Tab Mẫu 43/BTNN*; sinh văn bản như Mẫu 41/BTNN.
+- **Biến dùng chung**: `##SoHieuNghiDinh##`, `##NgayBanHanhNghiDinh##` theo Bảng trường thông tin dùng chung (Phần I mục 8).
+- **Quy tắc ô số liệu**: `[k]` là thứ tự nhóm (1 - I. Quản lý hành chính; 2 - II. Tố tụng hình sự; 3 - III. Tố tụng dân sự; 4 - IV. Tố tụng hành chính; 5 - V. Thi hành án hình sự; 6 - VI. Thi hành án dân sự); `[n]` là số cột từ 2 đến 27. Cột 2 = Cột 3+4+5+6+7+8+9+10; Cột 11 = Cột 12+13+14+15; Cột 17 = Cột 18+19+20+21 (hệ thống tự tính). Cột 16, 26, 27 (nghìn đồng): phân cách hàng nghìn bằng dấu chấm; các cột khác là số nguyên; giá trị 0 in `0`.
+- **Quy tắc đặt tên file tải về**: `Mau_43_BTNN_Tong_hop_tinh_hinh_[Năm báo cáo]_[Mã đơn vị].pdf`
+
+#### Bảng mapping chi tiết Mẫu 43/BTNN:
+| STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
+|:---:|---|---|---|---|---|---|
+| 1 | Dưới tên biểu - Từ ngày | `##TuNgaySoLieuM43##` | Báo cáo Công tác BTNN > Màn hình Chi tiết / Nhập liệu báo cáo | Thời gian số liệu (Từ ngày) | Theo giá trị Từ ngày của trường `Thời gian số liệu` trên giao diện.<br>Định dạng `dd/mm/yyyy`. | `01/01/2026` |
+| 2 | Dưới tên biểu - Đến ngày | `##DenNgaySoLieuM43##` | Báo cáo Công tác BTNN > Màn hình Chi tiết / Nhập liệu báo cáo | Thời gian số liệu (Đến ngày) | Theo giá trị Đến ngày của trường `Thời gian số liệu` trên giao diện.<br>Định dạng `dd/mm/yyyy`. | `31/10/2026` |
+| 3 | Dòng tổng (dưới dòng số thứ tự cột) - Cột [n] | `##M43TongCot[n]##` (`##M43TongCot2##` ... `##M43TongCot27##`) | Báo cáo Công tác BTNN > Tab Mẫu 43/BTNN | Dòng Tổng cộng - Cột [n] | Theo giá trị ô `Cột [n]` của dòng `Tổng cộng` trên giao diện (tổng 06 nhóm). | `44` |
+| 4 | Dòng số liệu của nhóm [k] - Cột [n] | `##M43Nhom[k]Cot[n]##` (`##M43Nhom1Cot2##` ... `##M43Nhom6Cot27##`) | Báo cáo Công tác BTNN > Tab Mẫu 43/BTNN | Nhóm [k] - Cột [n] | Theo giá trị ô `Cột [n]` của nhóm [k] trên giao diện. | `5` |
+| 5 | Bảng ký - Người lập biểu | `##ChuKyNguoiLap##` | Thông tin cá nhân cán bộ (Hồ sơ cá nhân) | Chữ ký hình ảnh | Ảnh chữ ký hình ảnh gán với tài khoản cán bộ lập báo cáo (cán bộ thực hiện `Gửi phê duyệt`).<br>- Chưa có ảnh chữ ký: để trống. | (ảnh chữ ký) |
+| 6 | Bảng ký - Người lập biểu | `##HoTenNguoiLap##` | Thông tin cá nhân cán bộ (Hồ sơ cá nhân) | Họ và tên | Họ và tên của cán bộ lập báo cáo. | `Đỗ Văn Chung` |
+| 7 | Bảng ký - Ngày | `##NgayLapBieuM43##` | Báo cáo Công tác BTNN > Màn hình Ký duyệt / Từ chối | Thời điểm Ký duyệt của Lãnh đạo cấp cuối | Ngày (dd) Lãnh đạo cấp cuối Ký duyệt.<br>- Văn bản dự thảo: in `........`. | `09` |
+| 8 | Bảng ký - Tháng | `##ThangLapBieuM43##` | Báo cáo Công tác BTNN > Màn hình Ký duyệt / Từ chối | Thời điểm Ký duyệt của Lãnh đạo cấp cuối | Tháng (mm) Lãnh đạo cấp cuối Ký duyệt.<br>- Văn bản dự thảo: in `........`. | `11` |
+| 9 | Bảng ký - Năm | `##NamLapBieuM43##` | Báo cáo Công tác BTNN > Màn hình Ký duyệt / Từ chối | Thời điểm Ký duyệt của Lãnh đạo cấp cuối | Năm (yyyy) Lãnh đạo cấp cuối Ký duyệt.<br>- Văn bản dự thảo: in `.......`. | `2026` |
+| 10 | Bảng ký - Thủ trưởng đơn vị | `##HoTenNguoiKy##` | Báo cáo Công tác BTNN > Popup Gửi phê duyệt (Bước 2) | Lãnh đạo (cấp ký duyệt cuối cùng) | Theo giá trị trường `Lãnh đạo` của cấp ký duyệt cuối cùng trên giao diện.<br>- Chỉ lấy Họ và tên. | `Phạm Quang Huy` |
+
+---
+
 ## PHẦN III. QUY TẮC KIỂM TRA TÍNH HỢP LỆ VÀ XỬ LÝ LỖI (VALIDATION RULES)
 
 1. **Quy tắc cảnh báo lỗi bỏ trống (Mandatory Field Validation)**:
@@ -775,7 +862,7 @@
 
 ---
 
-## PHẦN IV. DANH MỤC 23 PHÔI BIỂU MẪU .DOCX ĐÃ XÂY DỰNG
+## PHẦN IV. DANH MỤC 26 PHÔI BIỂU MẪU .DOCX ĐÃ XÂY DỰNG
 
 | STT | Mã biểu mẫu | Tên biểu mẫu văn bản | Tên tệp tin phôi `.docx` |
 |:---:|---|---|---|
@@ -802,6 +889,9 @@
 | 21 | Mẫu 37/BTNN | Quyết định giảm mức hoàn trả | [Mau_37_BTNN_Template.docx](file:///g:/My%20Drive/FIS/1.%20Giao%20dich%20dam%20bao_Ca%20nhan/Giao%20dich%20bao%20dam%20va%20BTNN_Project/UI_Mockups_Git_BPBD_UI/Bieu_mau/Boi_thuong_nha_nuoc/Mau_37_BTNN_Template.docx) |
 | 22 | Mẫu 38/BTNN | Quyết định miễn hoàn trả | [Mau_38_BTNN_Template.docx](file:///g:/My%20Drive/FIS/1.%20Giao%20dich%20dam%20bao_Ca%20nhan/Giao%20dich%20bao%20dam%20va%20BTNN_Project/UI_Mockups_Git_BPBD_UI/Bieu_mau/Boi_thuong_nha_nuoc/Mau_38_BTNN_Template.docx) |
 | 23 | Mẫu 39/BTNN | Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả | [Mau_39_BTNN_Template.docx](file:///g:/My%20Drive/FIS/1.%20Giao%20dich%20dam%20bao_Ca%20nhan/Giao%20dich%20bao%20dam%20va%20BTNN_Project/UI_Mockups_Git_BPBD_UI/Bieu_mau/Boi_thuong_nha_nuoc/Mau_39_BTNN_Template.docx) |
+| 24 | Mẫu 41/BTNN | Danh mục vụ việc giải quyết yêu cầu bồi thường | [Mau_41_BTNN_Template.docx](file:///g:/My%20Drive/FIS/1.%20Giao%20dich%20dam%20bao_Ca%20nhan/Giao%20dich%20bao%20dam%20va%20BTNN_Project/UI_Mockups_Git_BPBD_UI/Bieu_mau/Boi_thuong_nha_nuoc/Mau_41_BTNN_Template.docx) |
+| 25 | Mẫu 42/BTNN | Báo cáo công tác bồi thường nhà nước | [Mau_42_BTNN_Template.docx](file:///g:/My%20Drive/FIS/1.%20Giao%20dich%20dam%20bao_Ca%20nhan/Giao%20dich%20bao%20dam%20va%20BTNN_Project/UI_Mockups_Git_BPBD_UI/Bieu_mau/Boi_thuong_nha_nuoc/Mau_42_BTNN_Template.docx) |
+| 26 | Mẫu 43/BTNN | Tổng hợp tình hình yêu cầu bồi thường, giải quyết bồi thường và chi trả tiền bồi thường | [Mau_43_BTNN_Template.docx](file:///g:/My%20Drive/FIS/1.%20Giao%20dich%20dam%20bao_Ca%20nhan/Giao%20dich%20bao%20dam%20va%20BTNN_Project/UI_Mockups_Git_BPBD_UI/Bieu_mau/Boi_thuong_nha_nuoc/Mau_43_BTNN_Template.docx) |
 
 ---
 *Tài liệu được cập nhật tự động và đồng bộ trực tiếp với bộ mã nguồn phôi văn bản `.docx` của phân hệ Bồi thường nhà nước.*

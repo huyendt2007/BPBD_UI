@@ -874,12 +874,15 @@
         </div>
         <div style="display: flex; align-items: center; gap: 10px; background: #eff6ff; border: 1.5px solid #bfdbfe; padding: 6px 14px; border-radius: 20px; box-shadow: 0 1px 3px rgba(37,99,235,0.08);">
             <span style="font-size: 13px; font-weight: 700; color: #1e40af; display: inline-flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-user-gear"></i> Giả lập vai trò:
+                <i class="fa-solid fa-user-gear"></i> Người dùng giả lập:
             </span>
+            <!-- Giả lập theo đơn vị (xem_xet_hoan_tra_pham_vi.js): Đơn vị tạo hội đồng / Đơn vị quản lý cán bộ A, B / Sở Tư pháp / Lãnh đạo -->
             <select id="mockUserRole" class="form-control" style="width: auto; padding: 4px 12px; font-size: 13px; font-weight: 700; height: 32px; border-radius: 16px; border-color: #93c5fd; background: white; color: #1e3a8a; cursor: pointer;" onchange="changeMockRole(this.value)">
-                <option value="chuyen_vien" selected>Cán bộ xử lý (Chuyên viên)</option>
+                <option value="don_vi_chu" selected>Đơn vị tạo hội đồng</option>
+                <option value="don_vi_a">Đơn vị quản lý cán bộ A</option>
+                <option value="don_vi_b">Đơn vị quản lý cán bộ B</option>
+                <option value="stp">Sở Tư pháp</option>
                 <option value="lanh_dao">Lãnh đạo phê duyệt</option>
-                <option value="tra_cuu">Cán bộ tra cứu</option>
             </select>
         </div>
     </div>
@@ -903,34 +906,30 @@
                 <input type="text" class="form-control" id="filterClaimCode" placeholder="Nhập mã vụ việc (VVBT-...)">
             </div>
             <div>
+                <span class="form-label">Mã hồ sơ GQBT</span>
+                <input type="text" class="form-control" id="filterGqbtCode" placeholder="Nhập mã hồ sơ GQBT (BT-...)">
+            </div>
+            <div>
                 <span class="form-label">Cán bộ gây sai phạm</span>
                 <input type="text" class="form-control" id="filterOfficerName" placeholder="Nhập họ tên cán bộ...">
             </div>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 8px;">
             <div>
-                <span class="form-label">Đơn vị công tác</span>
+                <span class="form-label">Đơn vị quản lý cán bộ</span>
                 <select class="form-control" id="filterAgency" style="height:34px;">
                     <option value="">Tất cả đơn vị</option>
-                    <option value="Sở Tư pháp Hà Nội">Sở Tư pháp Hà Nội</option>
-                    <option value="UBND Tỉnh Lâm Đồng">UBND Tỉnh Lâm Đồng</option>
-                    <option value="UBND Quận Long Biên">UBND Quận Long Biên</option>
-                    <option value="UBND Huyện Cầu Giấy">UBND Huyện Cầu Giấy</option>
-                    <option value="Sở Tư pháp Hải Phòng">Sở Tư pháp Hải Phòng</option>
-                    <option value="UBND TP Hải Phòng">UBND TP Hải Phòng</option>
                 </select>
             </div>
-        </div>
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; align-items: end;">
             <div>
                 <span class="form-label">Trạng thái</span>
+                <!-- Trạng thái chung (cấp ngoài) của tab đang chọn -->
                 <select class="form-control" id="filterStatusRefund" style="height:34px;">
                     <option value="">Tất cả</option>
-                    <option value="Chờ duyệt">Chờ duyệt</option>
-                    <option value="Bị từ chối">Bị từ chối</option>
-                    <option value="Họp hội đồng">Họp hội đồng</option>
-                    <option value="Chờ ban hành QĐ hoàn trả">Chờ ban hành QĐ hoàn trả</option>
-                    <option value="Hoãn hoàn trả">Hoãn hoàn trả</option>
-                    <option value="Miễn hoàn trả">Miễn hoàn trả</option>
+                    <option value="Chờ xử lý">Chờ xử lý</option>
+                    <option value="Đang xử lý">Đang xử lý</option>
                     <option value="Thu hồi tiền hoàn trả">Thu hồi tiền hoàn trả</option>
+                    <option value="Miễn hoàn trả">Miễn hoàn trả</option>
                     <option value="Hoàn thành">Hoàn thành</option>
                     <option value="Đình chỉ xem xét hoàn trả">Đình chỉ xem xét hoàn trả</option>
                 </select>
@@ -963,18 +962,8 @@
     <!-- MAIN DATA TABLE -->
     <div class="card-section" style="padding: 14px 16px; margin-bottom: 12px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
-            <!-- KPI Quick Filters (Tương tự module Quản lý thông tin tư liệu VBQPPL) -->
-            <div class="stats-badge-row" id="kpiStatsRow">
-                <button type="button" class="stat-badge-btn active" onclick="filterByKpiRefund('all')" id="kpiBtnAll">
-                    Tất cả <span class="count" id="countAll">0</span>
-                </button>
-                <button type="button" class="stat-badge-btn" onclick="filterByKpiRefund('Chờ duyệt')" id="kpiBtnPending">
-                    Chờ duyệt <span class="count" id="countPending">0</span>
-                </button>
-                <button type="button" class="stat-badge-btn" onclick="filterByKpiRefund('Bị từ chối')" id="kpiBtnRejected">
-                    Bị từ chối <span class="count" id="countRejected">0</span>
-                </button>
-            </div>
+            <!-- Không có Lọc nhanh; Lập hồ sơ hoàn trả mới chỉ hiển thị tại tab Chờ xử lý -->
+            <div></div>
 
             <!-- Action Buttons Toolbar -->
             <div style="display: flex; gap: 8px; align-items: center;">
@@ -990,10 +979,9 @@
                         <th style="width: 44px; text-align:center; cursor:pointer;" onclick="sortRefundTable('stt')" title="Sắp xếp theo STT">STT <i class="fa-solid fa-sort" id="sortIcon_stt" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="width: 105px; text-align:center; cursor:pointer;" onclick="sortRefundTable('code')" title="Sắp xếp theo Mã hồ sơ">Mã hồ sơ <i class="fa-solid fa-sort" id="sortIcon_code" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="min-width: 210px; width: 20%; cursor:pointer;" onclick="sortRefundTable('officer')" title="Sắp xếp theo Cán bộ">Cán bộ gây sai phạm <i class="fa-solid fa-sort" id="sortIcon_officer" style="font-size:11px; opacity:0.4;"></i></th>
-                        <th style="width: 135px; cursor:pointer;" onclick="sortRefundTable('agency')" title="Sắp xếp theo Đơn vị">Đơn vị công tác <i class="fa-solid fa-sort" id="sortIcon_agency" style="font-size:11px; opacity:0.4;"></i></th>
+                        <th style="width: 135px; cursor:pointer;" onclick="sortRefundTable('agency')" title="Sắp xếp theo Đơn vị quản lý cán bộ">Đơn vị quản lý cán bộ <i class="fa-solid fa-sort" id="sortIcon_agency" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="width: 170px; text-align:center; cursor:pointer;" onclick="sortRefundTable('maVuViec')" title="Sắp xếp theo Mã vụ việc">Mã vụ việc <i class="fa-solid fa-sort" id="sortIcon_maVuViec" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="width: 120px; text-align:center; cursor:pointer;" onclick="sortRefundTable('claimCode')" title="Sắp xếp theo Mã hồ sơ GQBT">Mã hồ sơ GQBT <i class="fa-solid fa-sort" id="sortIcon_claimCode" style="font-size:11px; opacity:0.4;"></i></th>
-                        <th style="text-align:right; width: 125px; cursor:pointer;" onclick="sortRefundTable('claimAmt')" title="Sắp xếp theo Số tiền bồi thường">Tiền bồi thường (đ) <i class="fa-solid fa-sort" id="sortIcon_claimAmt" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="text-align:right; width: 125px; cursor:pointer;" onclick="sortRefundTable('refundTotal')" title="Sắp xếp theo Số tiền phải hoàn trả">Tiền hoàn trả (đ) <i class="fa-solid fa-sort" id="sortIcon_refundTotal" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="width: 145px; cursor:pointer;" onclick="sortRefundTable('progress')" title="Sắp xếp theo Tiến độ">Tiến độ thu hồi <i class="fa-solid fa-sort" id="sortIcon_progress" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="width: 145px; text-align:center; cursor:pointer;" onclick="sortRefundTable('status')" title="Sắp xếp theo Trạng thái">Trạng thái <i class="fa-solid fa-sort" id="sortIcon_status" style="font-size:11px; opacity:0.4;"></i></th>
@@ -1618,7 +1606,7 @@
     <!-- JAVASCRIPT CONTROLLERS -->
     <!-- ============================================== -->
     <script src="btnn_luong_xu_ly.js?v=20261020v5"></script>
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261026pdtb"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261023bdg"></script>
     <script>
         // Họ và tên người yêu cầu theo Mã hồ sơ GQBT (dữ liệu Giải quyết YCBT)
@@ -3916,6 +3904,8 @@
             }
         });
     </script>
+    <!-- Phạm vi dữ liệu theo đơn vị + trạng thái 02 tầng (chi tiết / chung) của màn danh sách -->
+    <script src="xem_xet_hoan_tra_pham_vi.js?v=20261026p3"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>

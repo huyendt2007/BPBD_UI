@@ -1466,7 +1466,7 @@ function closeDetailOrReturn() {
     showListScreen();
 }
 
-// Văn bản làm căn cứ yêu cầu bồi thường: bảng nhiều dòng (STT | Tên văn bản, căn cứ | Tải file | Thao tác)
+// Văn bản làm căn cứ yêu cầu bồi thường: bảng chuẩn tài liệu (STT | Tên tài liệu, văn bản | File đính kèm | Thao tác)
 let basisRows = [];
 
 // Chuyển dữ liệu cũ (01 văn bản) sang danh sách
@@ -1493,21 +1493,21 @@ function renderBasisRows() {
             <td style="text-align: center;">${idx + 1}</td>
             <td>
                 <div style="display:flex; align-items:center; gap:4px;">
-                    <input class="form-control" id="basisName_${idx}" value="${escapeAttr(doc.name || '')}" placeholder="Nhập tên văn bản, căn cứ..." oninput="updateBasisName(${idx}, this.value)">
+                    <input class="form-control" id="basisName_${idx}" value="${escapeAttr(doc.name || '')}" placeholder="Nhập tên văn bản căn cứ" oninput="updateBasisName(${idx}, this.value)">
                     ${tagHtml}
                 </div>
             </td>
             <td>
                 ${doc.file
                     ? `<span style="font-weight: 600; color: #0F766E;"><i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i> ${escapeHtml(doc.file)}</span>`
-                    : `<button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('basisFile_${idx}').click()"><i class="fa-solid fa-file-arrow-up"></i> Tải file</button>`}
+                    : `<button type="button" class="tlkt-btn-pri" onclick="document.getElementById('basisFile_${idx}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>`}
                 <input type="file" id="basisFile_${idx}" style="display:none;" accept=".pdf,.doc,.docx,.jpg,.png" onchange="uploadBasisFile(${idx}, this)">
             </td>
             <td style="text-align: center;">
-                <div class="action-flex">
-                    <button type="button" class="icon-btn view" ${doc.file ? '' : 'style="opacity:0.35; pointer-events:none;"'} title="Xem file" onclick="viewBasisFile(${idx})"><i class="fa-solid fa-eye"></i></button>
-                    <button type="button" class="icon-btn delete" title="Xóa" onclick="deleteBasisRow(${idx})"><i class="fa-solid fa-trash"></i></button>
-                </div>
+                <span class="tlkt-acts">
+                    <button type="button" class="tlkt-ib${doc.file ? '' : ' is-disabled'}" data-admin-icon-normalized="1" title="Xem file" aria-label="Xem file" onclick="viewBasisFile(${idx})"><i class="fa-solid fa-eye"></i></button>
+                    <button type="button" class="tlkt-ib tlkt-ib-del" data-admin-icon-normalized="1" title="Xóa" aria-label="Xóa" onclick="deleteBasisRow(${idx})"><i class="fa-solid fa-trash"></i></button>
+                </span>
             </td>
         </tr>
     `;
@@ -1537,15 +1537,11 @@ function viewBasisFile(index) {
     if (doc && doc.file) previewNamedFile(doc.file);
 }
 
+// Xóa thẳng dòng tài liệu, không hỏi xác nhận (chuẩn bảng tài liệu BTNN)
 function deleteBasisRow(index) {
-    const doc = basisRows[index];
-    const remove = () => {
-        if (basisRows.length === 1) basisRows = [{ name: "", file: "", isSupplement: formMode === 'supplement' }];
-        else basisRows.splice(index, 1);
-        renderBasisRows();
-    };
-    if (doc && (doc.name || doc.file)) showConfirmModal("Bạn có chắc chắn muốn xóa văn bản, căn cứ này khỏi bảng không?", remove);
-    else remove();
+    if (basisRows.length === 1) basisRows = [{ name: "", file: "", isSupplement: formMode === 'supplement' }];
+    else basisRows.splice(index, 1);
+    renderBasisRows();
 }
 
 function getCleanBasisRows() {
@@ -1555,15 +1551,16 @@ function getCleanBasisRows() {
 }
 
 // Bảng chỉ đọc tại màn chi tiết
-function basisTableHtml(docs) {
+// nameLabel: tên cột Tên (mặc định "Tên văn bản căn cứ" cho lưới Văn bản làm căn cứ; bảng tài liệu khác truyền "Tên tài liệu, văn bản")
+function basisTableHtml(docs, nameLabel) {
     if (!docs || !docs.length) return `<span style="color: var(--text-muted); font-style: italic;">Chưa cung cấp</span>`;
     return `<div style="border: 1px solid var(--border-color); border-radius: var(--border-radius-md); overflow: hidden; margin-top: 6px;">
         <table style="width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 0; background: #fff;">
             <thead>
                 <tr style="background: #f8fafc; border-bottom: 1px solid var(--border-color);">
                     <th style="width: 60px; text-align: center; border-right: 1px solid var(--border-color); padding: 11px 12px; font-weight: 600; color: #1e293b;">STT</th>
-                    <th style="border-right: 1px solid var(--border-color); padding: 11px 16px; font-weight: 600; color: #1e293b; text-align: left;">Tên văn bản, căn cứ</th>
-                    <th style="width: 280px; border-right: 1px solid var(--border-color); padding: 11px 16px; font-weight: 600; color: #1e293b; text-align: left;">Tải file</th>
+                    <th style="border-right: 1px solid var(--border-color); padding: 11px 16px; font-weight: 600; color: #1e293b; text-align: center;">${nameLabel || 'Tên văn bản căn cứ'}</th>
+                    <th style="width: 280px; border-right: 1px solid var(--border-color); padding: 11px 16px; font-weight: 600; color: #1e293b; text-align: center;">File đính kèm</th>
                     <th style="width: 120px; text-align: center; padding: 11px 12px; font-weight: 600; color: #1e293b;">Thao tác</th>
                 </tr>
             </thead>
@@ -1579,7 +1576,7 @@ function basisTableHtml(docs) {
                             ${d.file ? `<span style="font-weight: 600; color: #0f766e; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-file-pdf" style="color:#ef4444; font-size: 14px;"></i>${escapeHtml(d.file)}</span>` : '<span style="color: var(--text-muted); font-style: italic;">Không có</span>'}
                         </td>
                         <td style="text-align: center; padding: 10px 12px;">
-                            ${d.file ? `<a href="#" onclick="event.preventDefault(); previewNamedFile('${escapeAttr(d.file)}');" style="color: var(--secondary-color); text-decoration: none; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-eye"></i> Xem file</a>` : '-'}
+                            ${d.file ? `<span class="tlkt-acts"><button type="button" class="tlkt-ib" data-admin-icon-normalized="1" title="Xem file" aria-label="Xem file" data-f="${escapeAttr(d.file)}" onclick="previewNamedFile(this.dataset.f)"><i class="fa-solid fa-eye"></i></button><button type="button" class="tlkt-ib" data-admin-icon-normalized="1" title="Tải file" aria-label="Tải file" data-f="${escapeAttr(d.file)}" onclick="showToast('Giả lập tải file: ' + this.dataset.f, 'info')"><i class="fa-solid fa-download"></i></button></span>` : '-'}
                         </td>
                     </tr>
                 `).join('')}
@@ -1941,13 +1938,9 @@ function renderXdProfileBody(item) {
     document.getElementById('dtNYCAddress').innerHTML = (joinAddress(item.nycAddressDetail, item.nycPhuongXa, item.nycTinhThanh) || 'Chưa cung cấp') + getDiffBadge('nycAddressDetail');
 
     const attachedDocs = item.attachedDocs && item.attachedDocs.length ? item.attachedDocs : (item.attachedFile ? [{ name: 'Tài liệu đính kèm', file: item.attachedFile }] : []);
+    // Bảng tài liệu đính kèm (chỉ xem): cùng chuẩn bảng STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file / Tải file)
     document.getElementById('dtFileAttachment').innerHTML = attachedDocs.length
-        ? attachedDocs.map(doc => `
-            <div style="font-weight: 600; color: #0F766E; margin-bottom: 6px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-                <i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> ${escapeHtml(doc.name || 'Tài liệu')} - ${escapeHtml(doc.file || 'Chưa có file')}
-                ${doc.isSupplement ? `<span style="background:#FFF7ED; color:#C2410C; border:1px solid #FDBA74; border-radius:4px; padding:2px 7px; font-size:11px; font-weight:600; display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-circle-plus"></i> Bổ sung</span>` : ''}
-                ${doc.file ? `<a href="#" onclick="event.preventDefault(); previewNamedFile('${escapeAttr(doc.file)}');" style="margin-left: 8px; color: var(--secondary-color); text-decoration: none;"><i class="fa-solid fa-up-right-from-square"></i> Xem file</a>` : ''}
-            </div>`).join('')
+        ? basisTableHtml(attachedDocs, 'Tên tài liệu, văn bản')
         : `<span style="color: var(--text-muted); font-style: italic;">Không có file đính kèm</span>`;
 
     // Người bị thiệt hại
@@ -2247,19 +2240,19 @@ function renderProcDocs() {
         <tr>
             <td style="text-align: center;">${idx + 1}</td>
             <td>
-                <input class="form-control" value="${escapeAttr(doc.name || '')}" placeholder="Nhập tên tài liệu..." oninput="if (procDocRows[${idx}]) procDocRows[${idx}].name = this.value">
+                <input class="form-control" value="${escapeAttr(doc.name || '')}" placeholder="Nhập tên tài liệu, văn bản" oninput="if (procDocRows[${idx}]) procDocRows[${idx}].name = this.value">
             </td>
             <td>
                 ${doc.file
                     ? `<span style="font-weight: 600; color: #0F766E;"><i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i> ${escapeHtml(doc.file)}</span>`
-                    : `<button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('procDocFile_${idx}').click()"><i class="fa-solid fa-file-arrow-up"></i> Tải lên</button>`}
+                    : `<button type="button" class="tlkt-btn-pri" onclick="document.getElementById('procDocFile_${idx}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>`}
                 <input type="file" id="procDocFile_${idx}" style="display:none;" onchange="uploadProcDoc(${idx}, this)">
             </td>
             <td style="text-align: center;">
-                <div class="action-flex">
-                    <button type="button" class="icon-btn view" ${doc.file ? '' : 'style="opacity:0.35; pointer-events:none;"'} title="Xem file" onclick="if (procDocRows[${idx}] && procDocRows[${idx}].file) { if (procDocRows[${idx}].fileId && typeof tlktOpenFile === 'function') tlktOpenFile({ id: procDocRows[${idx}].fileId, name: procDocRows[${idx}].file }); else previewNamedFile(procDocRows[${idx}].file); }"><i class="fa-solid fa-eye"></i></button>
-                    <button type="button" class="icon-btn delete" title="Xóa tài liệu" onclick="deleteProcDoc(${idx})"><i class="fa-solid fa-trash"></i></button>
-                </div>
+                <span class="tlkt-acts">
+                    <button type="button" class="tlkt-ib${doc.file ? '' : ' is-disabled'}" data-admin-icon-normalized="1" aria-label="Xem file" title="Xem file" onclick="if (procDocRows[${idx}] && procDocRows[${idx}].file) { if (procDocRows[${idx}].fileId && typeof tlktOpenFile === 'function') tlktOpenFile({ id: procDocRows[${idx}].fileId, name: procDocRows[${idx}].file }); else previewNamedFile(procDocRows[${idx}].file); }"><i class="fa-solid fa-eye"></i></button>
+                    <button type="button" class="tlkt-ib tlkt-ib-del" data-admin-icon-normalized="1" title="Xóa" aria-label="Xóa" onclick="deleteProcDoc(${idx})"><i class="fa-solid fa-trash"></i></button>
+                </span>
             </td>
         </tr>
     `).join('');
@@ -2307,21 +2300,21 @@ function renderFormDocs() {
             <td style="text-align: center;">${idx + 1}</td>
             <td>
                 <div style="display:flex; align-items:center; gap:4px;">
-                    <input class="form-control" id="formDocName_${idx}" value="${escapeAttr(doc.name || '')}" placeholder="Nhập tên tài liệu..." oninput="updateFormDocName(${idx}, this.value)">
+                    <input class="form-control" id="formDocName_${idx}" value="${escapeAttr(doc.name || '')}" placeholder="Nhập tên tài liệu, văn bản" oninput="updateFormDocName(${idx}, this.value)">
                     ${tagHtml}
                 </div>
             </td>
             <td>
                 ${doc.file
                     ? `<span style="font-weight: 600; color: #0F766E;"><i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i> ${escapeHtml(doc.file)}</span>`
-                    : `<button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('formDocFile_${idx}').click()"><i class="fa-solid fa-file-arrow-up"></i> Tải lên</button>`}
+                    : `<button type="button" class="tlkt-btn-pri" onclick="document.getElementById('formDocFile_${idx}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>`}
                 <input type="file" id="formDocFile_${idx}" style="display:none;" onchange="uploadFormDoc(${idx}, this)">
             </td>
             <td style="text-align: center;">
-                <div class="action-flex">
-                    <button type="button" class="icon-btn view" ${doc.file ? '' : 'style="opacity:0.35; pointer-events:none;"'} title="Xem file" onclick="viewFormDoc(${idx})"><i class="fa-solid fa-eye"></i></button>
-                    <button type="button" class="icon-btn delete" title="Xóa tài liệu" onclick="deleteFormDoc(${idx})"><i class="fa-solid fa-trash"></i></button>
-                </div>
+                <span class="tlkt-acts">
+                    <button type="button" class="tlkt-ib${doc.file ? '' : ' is-disabled'}" data-admin-icon-normalized="1" title="Xem file" aria-label="Xem file" onclick="viewFormDoc(${idx})"><i class="fa-solid fa-eye"></i></button>
+                    <button type="button" class="tlkt-ib tlkt-ib-del" data-admin-icon-normalized="1" title="Xóa" aria-label="Xóa" onclick="deleteFormDoc(${idx})"><i class="fa-solid fa-trash"></i></button>
+                </span>
             </td>
         </tr>
     `;

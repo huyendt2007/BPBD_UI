@@ -429,6 +429,20 @@ function dcgqGoStep2() {
 }
 
 // ---------- Trình / Ban hành ----------
+// Trạng thái trước khi đình chỉ: trạng thái vụ việc lúc trình/ban hành (Yêu cầu bổ sung, Cử người giải quyết bồi thường, Xác minh thiệt hại,
+// Thương lượng, Chờ ban hành QĐ, Chờ thực thi, Hoãn giải quyết); trình lại sau "Bị từ chối": giữ trạng thái trước của lần trình đầu
+var DCGQ_STEP_SOURCE = ['Yêu cầu bổ sung', 'Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ thực thi'];
+function dcgqPrevStatus(claim) {
+    var st = typeof gqldCaseStatus === 'function' ? gqldCaseStatus(claim) : claim.status;
+    if (DCGQ_STEP_SOURCE.indexOf(st) >= 0 || st === 'Hoãn giải quyết') return st;
+    return (claim.dinhChi && claim.dinhChi.previousStatus) || claim.hgqPrevStatus || '';
+}
+// Patch lưu kèm: previousStatus (dinhChi) + hgqPrevStatus (bước tiến trình, dùng chung Hoãn/Tạm đình chỉ; nguồn Hoãn giải quyết giữ bước trước khi hoãn)
+function dcgqPrevPatch(claim, prevSt, patch) {
+    patch.dinhChi.previousStatus = prevSt;
+    if (DCGQ_STEP_SOURCE.indexOf(prevSt) >= 0) patch.hgqPrevStatus = prevSt;
+    return patch;
+}
 // Ký số: trình Lãnh đạo Loại trình "Đình chỉ giải quyết" -> hồ sơ "Chờ duyệt"; cấp cuối ký duyệt -> "Đình chỉ giải quyết"
 function dcgqSubmitOnline() {
     var claim = dcgqClaim;
@@ -436,6 +450,7 @@ function dcgqSubmitOnline() {
     var sign = gqSignCollect('dcgq');
     if (!sign) return;
     var x = dcgqFormData();
+    var prevSt = dcgqPrevStatus(claim);
     var gen = dcgqOnlineFile.source === 'generated';
     var fileName = dcgqOnlineFile.name;
     var reasonFull = x.reasonText + (x.detail ? ': ' + x.detail : '');
@@ -447,7 +462,7 @@ function dcgqSubmitOnline() {
     }, tlktGqExtra('dcgq', dcgqOnlineFile, dcgqDocSrc, sign.content));
     var res = gqSubmit(claim, DCGQ_KIND, sign.content, [], { assignee: sign.assignees[0] || '', assignees: sign.assignees, reason: reasonFull, resultStatus: DCGQ_RESULT, draftDoc: draftDoc, signDoc: signDoc });
     if (!res || res.ok === false) { showToast(res ? res.message : 'Không trình được hồ sơ.', 'error'); return; }
-    gqSaveData(claim, { dinhChi: { reasonCode: x.reasonCode, reasonText: x.reasonText, detail: x.detail, docNumber: signDoc.docNumber, docDate: signDoc.docDate, noiNhan: signDoc.noiNhan, advance: x.advance, fileName: fileName, formNo: DCGQ_FORM, signingMethod: 'Ký số', submittedAt: gqNow() } });
+    gqSaveData(claim, dcgqPrevPatch(claim, prevSt, { dinhChi: { reasonCode: x.reasonCode, reasonText: x.reasonText, detail: x.detail, docNumber: signDoc.docNumber, docDate: signDoc.docDate, noiNhan: signDoc.noiNhan, advance: x.advance, fileName: fileName, formNo: DCGQ_FORM, signingMethod: 'Ký số', submittedAt: gqNow() } }));
     closeDcgqModal();
     gqAfterSubmit(claim, DCGQ_KIND);
 }
@@ -479,6 +494,7 @@ function dcgqIssueOffline() {
     var x = dcgqFormData();
     var file = dcgqOfflineFile.name;
     var reasonFull = x.reasonText + (x.detail ? ': ' + x.detail : '');
+    var prevSt = dcgqPrevStatus(claim);
     claim.status = DCGQ_RESULT;
     claim.wfReturned = null;
     if (!Array.isArray(claim.timeline)) claim.timeline = [];
@@ -487,7 +503,7 @@ function dcgqIssueOffline() {
         var rec = gqEnsureRecord(claim) || gqRecord(claim);
         if (rec && W) { rec.status = DCGQ_RESULT; W.addHistory(rec, 'Ban hành Quyết định đình chỉ giải quyết (Ký ngoài)', 'Căn cứ: ' + reasonFull + '. Văn bản đã ký: ' + file + '.'); W.upsertRecord(rec); }
     } catch (e) { /* mockup: bỏ qua lỗi luồng */ }
-    gqSaveData(claim, { status: DCGQ_RESULT, dinhChi: { reasonCode: x.reasonCode, reasonText: x.reasonText, detail: x.detail, advance: x.advance, fileName: file, signedFile: file, formNo: DCGQ_FORM, signingMethod: 'Ký ngoài', issuedAt: gqNow() } });
+    gqSaveData(claim, dcgqPrevPatch(claim, prevSt, { status: DCGQ_RESULT, dinhChi: { reasonCode: x.reasonCode, reasonText: x.reasonText, detail: x.detail, advance: x.advance, fileName: file, signedFile: file, formNo: DCGQ_FORM, signingMethod: 'Ký ngoài', issuedAt: gqNow() } }));
     closeDcgqModal();
     saveClaimsToLocal();
     renderClaimsTable();

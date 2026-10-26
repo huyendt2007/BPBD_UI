@@ -829,9 +829,9 @@ let proposalsList = [
         id: "P96", code: "KP-2026-096", type: "Cấp tạm ứng", ycbtCode: "BT-2026-015", nycName: "Phạm Văn C", nycRole: "Người bị thiệt hại",
         amount: 25000000, user: "Lê Văn Nam", date: "08/10/2026", status: "Chờ chi trả",
         source: "Tạm ứng kinh phí Bộ Tài chính", cqCap: "Sở Tài chính Hà Nội",
-        notes: "Đề nghị tạm ứng - Hình thức ký Ký ngoài: chờ đính kèm văn bản đã ký trước khi chi trả.",
+        notes: "Đề nghị tạm ứng - Hình thức ký Ký ngoài: Quyết định tạm ứng đã ký ngoài, đã có văn bản đã ký, chờ chi trả.",
         advApproveTinhThan: 15000000, advApproveKhac: 10000000,
-        signMethod: "Ký ngoài", docNo: "", docDate: "", draftDoc: "Du_thao_QD_tam_ung_KP-2026-096.doc", signedFile: null,
+        signMethod: "Ký ngoài", docNo: "96/QĐ-STC", docDate: "10/10/2026", draftDoc: "Du_thao_QD_tam_ung_KP-2026-096.doc", signedFile: "QD_tam_ung_KP-2026-096_ky_ngoai.pdf",
         leaderOpinion: "Đồng ý cấp tạm ứng kinh phí bồi thường.", approvedDate: "10/10/2026 15:20", approvedLeader: "Lãnh đạo cơ quan",
         files: [{ name: "Tờ trình đề nghị tạm ứng", file: "To_trinh_tam_ung_P96.pdf" }]
     },
@@ -3342,63 +3342,32 @@ function renderProposalAttachedDocs() {
     const isReadOnly = addRowBtn ? (addRowBtn.style.display === 'none' || addRowBtn.disabled) : false;
 
     if (proposalAttachedDocs.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:15px;">Chưa có tài liệu đính kèm nào. Vui lòng bấm Thêm thành phần hồ sơ mới.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:15px;">Chưa có tài liệu đính kèm nào. Vui lòng bấm Thêm tài liệu.</td></tr>`;
         return;
     }
 
     proposalAttachedDocs.forEach((doc, idx) => {
         const tr = document.createElement('tr');
 
-        let fileCell = '';
-        if (doc.file) {
-            fileCell = `
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <span style="color:#EF4444;"><i class="fa-solid fa-file-pdf"></i></span>
-                    <strong>${doc.file}</strong>
-                </div>
-            `;
-        } else {
-            fileCell = `
-                <div class="file-upload-container">
-                    <label style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; background-color: #2563EB; color: white; padding: 6px 12px; border-radius: 4px; font-weight: 500; font-size: 12px; height: 32px; line-height: 20px;">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> Chọn file
-                        <input type="file" style="display: none;" onchange="uploadProposalAttachedDoc(${idx}, this)">
-                    </label>
-                </div>
-            `;
-        }
-
-        let actionsCell = '';
-        if (doc.file) {
-            actionsCell = `
-                <a href="javascript:void(0)" onclick="viewProposalAttachedDoc(${idx})" style="color:#2563EB; text-decoration:none; font-weight:500; font-size:12.5px; display:inline-flex; align-items:center; gap:4px;">Xem file</a>
-            `;
-            if (!isReadOnly) {
-                actionsCell += `
-                    <span style="color:#CBD5E1; margin: 0 6px;">|</span>
-                    <a href="javascript:void(0)" onclick="removeProposalAttachedDoc(${idx})" style="color:#EF4444; text-decoration:none; font-weight:500; font-size:12.5px; display:inline-flex; align-items:center; gap:4px;"><i class="fa-regular fa-trash-can"></i> Xóa</a>
-                `;
-            }
-        } else {
-            if (isReadOnly) {
-                actionsCell = `
-                    <span style="color:#94A3B8; font-weight:500; font-size:12.5px; opacity:0.5; cursor:not-allowed; display:inline-flex; align-items:center; gap:4px;">Xem file</span>
-                `;
-            } else {
-                actionsCell = `
-                    <span style="color:#94A3B8; font-weight:500; font-size:12.5px; opacity:0.5; cursor:not-allowed; display:inline-flex; align-items:center; gap:4px;">Xem file</span>
-                    <span style="color:#CBD5E1; margin: 0 6px;">|</span>
-                    <a href="javascript:void(0)" onclick="deleteProposalDocRow(${idx})" style="color:#EF4444; text-decoration:none; font-weight:500; font-size:12.5px; display:inline-flex; align-items:center; gap:4px;"><i class="fa-regular fa-trash-can"></i> Xóa</a>
-                `;
-            }
-        }
+        // Bảng tài liệu chuẩn BTNN: File đính kèm = nút Tải file / tên tệp (căn giữa); Thao tác = icon Xem file / Xóa (nhập), Xem file / Tải file (chỉ xem)
+        const fileCell = doc.file
+            ? `<span class="file-name" title="${doc.file}"><i class="fa-solid fa-file-pdf" style="color:#EF4444;"></i><strong>${doc.file}</strong></span>`
+            : (isReadOnly ? '<span style="color:#94A3B8;">--</span>'
+                : `<button type="button" class="tlkt-btn-pri" onclick="this.nextElementSibling.click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button><input type="file" style="display: none;" onchange="uploadProposalAttachedDoc(${idx}, this)">`);
+        const ib = (title, icon, fn, extra) => `<button type="button" class="tlkt-ib${extra || ''}" data-admin-icon-normalized="1" title="${title}" aria-label="${title}" onclick="${fn}"><i class="fa-solid ${icon}"></i></button>`;
+        const actionsCell = '<span class="tlkt-acts">'
+            + ib('Xem file', 'fa-eye', `viewProposalAttachedDoc(${idx})`, doc.file ? '' : ' is-disabled')
+            + (isReadOnly
+                ? ib('Tải file', 'fa-download', `viewProposalAttachedDoc(${idx})`, doc.file ? '' : ' is-disabled')
+                : ib('Xóa', 'fa-trash', doc.file ? `removeProposalAttachedDoc(${idx})` : `deleteProposalDocRow(${idx})`, ' tlkt-ib-del'))
+            + '</span>';
 
         tr.innerHTML = `
             <td style="text-align:center;">${idx + 1}</td>
             <td>
-                <input type="text" class="form-control" id="attachedDocName_${idx}" value="${doc.name}" oninput="updateProposalDocName(${idx}, this.value)" placeholder="Nhập tên tài liệu..." style="height:34px;" ${isReadOnly ? 'disabled' : ''}>
+                <input type="text" class="form-control" id="attachedDocName_${idx}" value="${doc.name}" oninput="updateProposalDocName(${idx}, this.value)" placeholder="Nhập tên tài liệu, văn bản" style="height:34px;" ${isReadOnly ? 'disabled' : ''}>
             </td>
-            <td>${fileCell}</td>
+            <td class="tlkt-fc">${fileCell}</td>
             <td style="text-align:center;">${actionsCell}</td>
         `;
         tbody.appendChild(tr);

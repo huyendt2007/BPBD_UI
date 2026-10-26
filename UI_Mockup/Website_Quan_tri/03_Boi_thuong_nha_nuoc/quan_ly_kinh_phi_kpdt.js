@@ -200,7 +200,7 @@ function kpdtRejHtml(item) {
 }
 
 // ---------------- Bảng Tài liệu kèm theo - chế độ xem ----------------
-// Chuẩn bảng dùng chung (như Cập nhật kết quả xác định cơ quan): STT | Tên văn bản, căn cứ | Tải file | Thao tác (Xem file / Tải file).
+// Chuẩn bảng dùng chung (như Cập nhật kết quả xác định cơ quan): STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file / Tải file); rỗng thì không hiển thị (tlktStd).
 // Dữ liệu chấp nhận: [{ name, file: { id, name, size } }] (btnn_tai_lieu_kem_theo.js), [{ name, file: 'x.pdf' }], ['x.pdf'] (dữ liệu cũ).
 const KPDT_DOCS = {};
 let kpdtDocsSeq = 0;
@@ -223,7 +223,7 @@ function kpdtDocsHtml(list, opts) {
         <td class="c">${d.file ? `<button type="button" class="ib" data-admin-icon-normalized="1" title="Xem file" onclick="kpdtDocAct('${vid}',${i},'view')"><i class="fa-solid fa-eye"></i></button><button type="button" class="ib" data-admin-icon-normalized="1" title="Tải file" onclick="kpdtDocAct('${vid}',${i},'download')"><i class="fa-solid fa-download"></i></button>` : '-'}</td></tr>`).join('')
         : '<tr><td colspan="4" class="c" style="color:#94a3b8; font-style:italic;">Không có tài liệu.</td></tr>';
     return `<div class="kpdt-docs-box">${opts.noTitle ? '' : '<div class="kpdt-docs-title"><i class="fa-solid fa-paperclip"></i> Tài liệu kèm theo</div>'}
-        <div class="kpdt-docs-wrap"><table class="kpdt-docs"><thead><tr><th class="c" style="width:48px;">STT</th><th>Tên văn bản, căn cứ</th><th style="width:38%;">Tải file</th><th class="c" style="width:96px;">Thao tác</th></tr></thead><tbody>${body}</tbody></table></div></div>`;
+        <div class="kpdt-docs-wrap"><table class="kpdt-docs"><thead><tr><th class="c" style="width:48px;">STT</th><th>Tên tài liệu, văn bản</th><th style="width:38%;">File đính kèm</th><th class="c" style="width:96px;">Thao tác</th></tr></thead><tbody>${body}</tbody></table></div></div>`;
 }
 function kpdtDocAct(vid, i, act) {
     const d = (KPDT_DOCS[vid] || [])[i]; if (!d || !d.file) return;

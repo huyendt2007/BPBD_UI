@@ -133,7 +133,7 @@ Tai lieu phan tich/
     │   ├── SRS_BTNN_GiaiQuyetBT_TraCuu_VuViec.md # Tra cứu vụ việc bồi thường (01 danh sách chung, gồm vụ việc có phục hồi danh dự)
     │   ├── SRS_BTNN_Cham_Diem.md                # Chấm điểm đánh giá công tác BTNN theo tiêu chí
     │   ├── SRS_BTNN_BaoCao_QuanLy_BTNN.md       # Báo cáo quản trị công tác BTNN toàn quốc
-    │   ├── SRS_BTNN_QuanLyBaoCao_TT08.md        # Quản lý kỳ báo cáo thống kê theo TT 08/2019/TT-BTP
+    │   ├── SRS_BTNN_BaoCao_CongTacBTNN.md       # Báo cáo Công tác BTNN (Mẫu 41, 42, 43)
     │   ├── SRS_BaoCao_Mau01_DanhMucVuViec.md    # Biểu mẫu 01/BTNN: Danh mục vụ việc bồi thường
     │   ├── SRS_BaoCao_Mau03_TongHopTinhHinh.md  # Biểu mẫu 03/BTNN: Tổng hợp tình hình BTNN
     │   ├── SRS_BaoCao_Mau04_TinhHinhHoanTra.md  # Biểu mẫu 04/BTNN: Tình hình thực hiện trách nhiệm hoàn trả
