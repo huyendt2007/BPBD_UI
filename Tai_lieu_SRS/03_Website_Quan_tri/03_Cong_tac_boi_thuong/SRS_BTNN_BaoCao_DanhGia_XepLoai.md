@@ -24,7 +24,7 @@
 
 \- Dữ liệu kỳ chấm điểm, điểm tự chấm, điểm Bộ Tư pháp đánh giá, xếp loại và điểm theo nhóm tiêu chí đã phát sinh tại module Quản lý chấm điểm công tác BTNN.
 
-\- Trạng thái kỳ chấm điểm tham chiếu danh mục [DM_32]. Xếp loại kỳ chấm điểm tham chiếu danh mục [DM_33]. Nhóm tiêu chí chấm điểm tham chiếu danh mục [DM_34]. Tỉnh/Thành phố tham chiếu [DM_13]. Đơn vị tham chiếu `[DM_DON_VI]`.
+\- Trạng thái kỳ chấm điểm tham chiếu danh mục [DM_32]. Xếp loại kỳ chấm điểm tham chiếu danh mục [DM_33]. Nhóm tiêu chí chấm điểm tham chiếu danh mục [DM_34]. Tỉnh/Thành phố tham chiếu Danh mục địa bàn (cấp Tỉnh/Thành phố). Đơn vị tham chiếu `[DM_DON_VI]`.
 
 \- Quy tắc tính tổng điểm và xếp loại công tác BTNN áp dụng [BR-BTNN-CD-003]. Quy tắc điểm thưởng sáng kiến và điểm trừ nộp muộn áp dụng [BR-BTNN-CD-004].
 
@@ -61,8 +61,8 @@ flowchart TD
 | **I. Khối lọc, tìm kiếm thông tin** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Năm đánh giá | Enum(String(10)) | Có | Năm hiện tại | Giá trị gồm 05 năm gần nhất tính đến năm hiện tại. |
 | Đơn vị Sở Tư pháp | Enum(String(255)) | Không | Theo phạm vi tài khoản đăng nhập | - Tham chiếu `[DM_DON_VI]`.<br>- Với tài khoản Cán bộ Sở Tư pháp, hệ thống tự lọc theo đơn vị của tài khoản đăng nhập và chỉ hiển thị dữ liệu đơn vị đó.<br>- Với tài khoản Bộ Tư pháp/Lãnh đạo Bộ Tư pháp, cho phép chọn `Tất cả` hoặc chọn một đơn vị cụ thể. |
-| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Tất cả | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
-| Phường/Xã | Enum(String(100)) / String(100) | Không | Tất cả | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
+| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Tất cả | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục địa bàn (cấp Tỉnh/Thành phố). Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
+| Phường/Xã | Enum(String(100)) / String(100) | Không | Tất cả | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục địa bàn (cấp Phường/Xã) (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
 | Trạng thái kỳ chấm điểm | Enum(String(50)) | Không | Hoàn thành | - Tham chiếu [DM_32].<br>- Giá trị lọc gồm `Tất cả` và các trạng thái thuộc [DM_32].<br>- Mặc định chỉ tổng hợp các kỳ đã ở trạng thái "Hoàn thành". |
 | Xếp loại | Enum(String(50)) | Không | Tất cả | - Tham chiếu [DM_33].<br>- Giá trị lọc gồm `Tất cả` và các giá trị thuộc [DM_33]. |
 | Nhóm tiêu chí | Enum(String(255)) | Không | Tất cả | - Tham chiếu [DM_34].<br>- Khi chọn một nhóm tiêu chí cụ thể, bảng tổng hợp theo nhóm tiêu chí chỉ hiển thị nhóm được chọn, bảng tổng hợp theo đơn vị vẫn hiển thị tổng điểm toàn kỳ và điểm của nhóm được chọn. |
@@ -75,8 +75,8 @@ flowchart TD
 | **III. Bảng kết quả tổng hợp theo đơn vị** | Text(4000) | Không | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- Sắp xếp mặc định: Sắp xếp theo "Ngày tạo" giảm dần (mới nhất hiển thị lên đầu).<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
 | STT | Integer(10) | Không | Theo trang hiện tại | Chỉ đọc. Hiển thị số thứ tự bản ghi theo phân trang. |
 | Đơn vị Sở Tư pháp | String(255) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị tên đơn vị được đánh giá. |
-| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Theo dữ liệu hệ thống | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
-| Phường/Xã | Enum(String(100)) / String(100) | Không | Theo dữ liệu hệ thống | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
+| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Không | Theo dữ liệu hệ thống | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục địa bàn (cấp Tỉnh/Thành phố). Cho phép gõ tìm kiếm theo Mã hoặc Tên.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản để người dùng tự do nhập. |
+| Phường/Xã | Enum(String(100)) / String(100) | Không | Theo dữ liệu hệ thống | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục địa bàn (cấp Phường/Xã) (lọc động theo Tỉnh/Thành phố đã chọn). Cho phép gõ tìm kiếm theo Mã hoặc Tên. Nếu chưa chọn Tỉnh/Thành phố thì khóa mờ (Disabled) kèm placeholder *"Vui lòng chọn Tỉnh/Thành phố trước"*.<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản (Input text) để người dùng tự do nhập. |
 | Năm đánh giá | Enum(String(10)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị năm của kỳ chấm điểm. |
 | Trạng thái kỳ chấm điểm | Enum(String(50)) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị theo Danh mục DM_32 [DM_32] dưới dạng nhãn trạng thái. |
 | Điểm tự chấm | Decimal(5,1) | Không | Theo dữ liệu hệ thống | Chỉ đọc. Hiển thị tổng điểm tự chấm của Sở Tư pháp trên thang 100. |
@@ -152,7 +152,7 @@ flowchart TD
 
 | STT | Nội dung kiểm tra | Kết quả áp dụng |
 | :--- | :--- | :--- |
-| 1 | Danh mục dùng chung | Sử dụng [DM_13], [DM_32], [DM_33], [DM_34] và `[DM_DON_VI]`; không tạo danh mục cục bộ cho trạng thái, xếp loại, nhóm tiêu chí hoặc đơn vị. |
+| 1 | Danh mục dùng chung | Sử dụng Danh mục địa bàn (cấp Tỉnh/Thành phố), [DM_32], [DM_33], [DM_34] và `[DM_DON_VI]`; không tạo danh mục cục bộ cho trạng thái, xếp loại, nhóm tiêu chí hoặc đơn vị. |
 | 2 | Nguồn dữ liệu nghiệp vụ | Lấy dữ liệu từ `SRS_BTNN_Cham_Diem.md`, gồm kỳ chấm điểm, điểm tự chấm, điểm Bộ Tư pháp đánh giá, điểm theo nhóm tiêu chí, điểm thưởng, điểm trừ, ngày gửi và ngày hoàn thành đánh giá. |
 | 3 | Quy tắc tính toán | Áp dụng [BR-BTNN-CD-003] để xác định tổng điểm/xếp loại và [BR-BTNN-CD-004] để xác định điểm thưởng/điểm trừ. |
 | 4 | Phân quyền dữ liệu | Cán bộ Sở Tư pháp chỉ xem dữ liệu của đơn vị mình; Bộ Tư pháp/Lãnh đạo Bộ Tư pháp xem theo phạm vi được phân quyền. |

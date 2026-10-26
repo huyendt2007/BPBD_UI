@@ -1010,6 +1010,14 @@
                     <td style="text-align:center;">${escapeHtml(item.date || '--')}</td>
                     <td style="text-align:center;"><input type="checkbox" class="tcvv-check" disabled ${item.hasPhdd ? 'checked' : ''} aria-label="Có phục hồi danh dự"></td>
                 `;
+                // Bấm vào dòng: mở Xem chi tiết hồ sơ (cùng hành vi bấm Mã hồ sơ GQBT); bấm link / nút / ô chọn trong dòng không mở thêm lần nữa
+                if (item.code) {
+                    tr.classList.add('lookup-row');
+                    tr.addEventListener('click', e => {
+                        if (e.target.closest('a, button, input, select, textarea, label, [role="button"], .actions')) return;
+                        tcvvOpenDetail(item.code);
+                    });
+                }
                 tbody.appendChild(tr);
             });
             renderPages('tcvvPages', tcvvPage, totalPages, page => { tcvvPage = page; tcvvRender(); });

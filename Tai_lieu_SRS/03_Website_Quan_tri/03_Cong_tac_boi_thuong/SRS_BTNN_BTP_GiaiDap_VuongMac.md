@@ -147,7 +147,7 @@ flowchart TD
 | Ngày văn bản | Date | Có | Ngày hiện tại | Control UI: Date input.<br>- Placeholder: "dd/mm/yyyy".<br>- Không lớn hơn ngày hiện tại theo [BR-VAL-008]; không nhỏ hơn `Ngày nhận đề nghị`. |
 | Phương thức gửi | Enum(String(255)) | Có | Theo Hình thức nhận đề nghị | Control UI: Combobox.<br>- Hệ thống tự chọn theo `Hình thức nhận đề nghị`:<br>+ Qua bưu chính: Gửi qua bưu chính<br>+ Trực tiếp: Nhận trực tiếp tại trụ sở<br>+ Email: Gửi qua Email<br>+ Cổng tiếp nhận ý kiến của Bộ: Gửi qua Cổng tiếp nhận ý kiến của Bộ<br>- Người dùng được chọn lại; khi `Địa chỉ chi tiết` có dữ liệu, cho phép chọn thêm `Gửi theo đường công văn qua bưu chính` hoặc `Cả hai phương thức (Trực tuyến & Bưu chính)`. |
 | **III. Tài liệu đính kèm (văn bản đầu ra)** |  |  |  |  |
-| Tài liệu đính kèm (văn bản đầu ra) | List(File) | Có | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu`, `File đính kèm`, `Thao tác tài liệu`.<br>- Cột `Tên tài liệu`: Text input. Placeholder: "Nhập tên tài liệu...".<br>- Bắt buộc tải lên ít nhất 01 tệp văn bản giải đáp đã ban hành.<br>- Chỉ nhận tệp `.pdf`, dung lượng tối đa 20MB/tệp.<br>- Cột `Thao tác tài liệu` gồm:<br>+ Xem file<br>+ Xóa |
+| Tài liệu đính kèm (văn bản đầu ra) | List(File) | Có | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Cột `Tên tài liệu, văn bản`: Text input. Placeholder: "Nhập tên tài liệu, văn bản".<br>- Bắt buộc tải lên ít nhất 01 tệp văn bản giải đáp đã ban hành.<br>- Chỉ nhận tệp `.pdf`, dung lượng tối đa 20MB/tệp.<br>- Cột `Thao tác` gồm:<br>+ Xem file<br>+ Xóa |
 
 ###### 4.3.3.18.5.3. Chức năng trên màn hình
 
@@ -161,8 +161,8 @@ flowchart TD
 |  |  |  | **TH5 - Hợp lệ - Sửa**: Hệ thống cập nhật bản ghi, đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-SYS-002]. |
 | 2 | Tải lên | Button | Hệ thống mở trình chọn file; tệp không phải `.pdf` vi phạm [BR-FILE-001], hiển thị [MSG-ERR-FILE-001]; tệp lớn hơn 20MB vi phạm [BR-FILE-002], hiển thị [MSG-ERR-FILE-002]; tệp hợp lệ được hiển thị tại cột `File đính kèm`. |
 | 3 | Xem file | Link | Hệ thống mở file của dòng tài liệu tại một tab trình duyệt mới. |
-| 4 | Xóa | Link | Hệ thống mở [Popup Xác nhận xóa](#433186-popup-xác-nhận-xóa). Nếu chọn `Đồng ý`, hệ thống xóa dòng tài liệu khỏi bảng; nếu chọn `Hủy bỏ`, hệ thống giữ nguyên dòng tài liệu. |
-| 5 | Thêm dòng | Button | Hệ thống thêm 01 dòng tài liệu trống vào cuối bảng tài liệu đính kèm. |
+| 4 | Xóa | Icon button | Hệ thống xóa dòng tài liệu khỏi bảng ngay, không hiển thị popup xác nhận. |
+| 5 | Thêm tài liệu | Button | Hệ thống thêm 01 dòng tài liệu trống vào cuối bảng tài liệu đính kèm. |
 | 6 | Hủy bỏ | Button | Khi người dùng click nút "Hủy bỏ" ở chân màn hình hoặc nút "Đóng" ở góc phải tiêu đề, hệ thống đóng màn hình, không lưu dữ liệu và quay lại [MH01 - Màn hình Danh sách giải đáp vướng mắc](#433183-mh01---màn-hình-danh-sách-giải-đáp-vướng-mắc). |
 
 ---

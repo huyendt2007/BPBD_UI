@@ -245,8 +245,8 @@
 | Quốc tịch | Enum(String(100)) | Có | Lấy từ VNeID | Control UI: Hộp chọn. |
 | Số điện thoại | String(20) | Không | Lấy từ VNeID | Cho phép bổ sung/cập nhật. |
 | Phân loại khách hàng | Enum(String(50)) | Có | Theo Quốc tịch | Tự động gợi ý: `Trong nước` (nếu Quốc tịch Việt Nam) hoặc `Nước ngoài`. |
-| Tỉnh/Thành phố | Enum(String(100)) | Có | Lấy từ VNeID nếu có | Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. |
-| Phường/Xã | Enum(String(100)) | Có | Lấy từ VNeID nếu có | Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15]. |
+| Tỉnh/Thành phố | Enum(String(100)) | Có | Lấy từ VNeID nếu có | Tham chiếu Danh mục địa bàn (cấp Tỉnh/Thành phố). |
+| Phường/Xã | Enum(String(100)) | Có | Lấy từ VNeID nếu có | Tham chiếu Danh mục địa bàn (cấp Phường/Xã). |
 | Địa chỉ chi tiết | Text(1000) | Có | Lấy từ VNeID nếu có | Nhập số nhà, tên đường/thôn xóm. Áp dụng [BR-VAL-001]. |
 | Trung tâm Đăng ký mặc định | Enum(String(100)) | Có | Theo cấu hình | Tham chiếu Danh mục Trung tâm giao dịch bảo đảm [DM_08]. |
 | Cây phân quyền | Tree/Checkbox | Có | Theo nhu cầu sử dụng | Danh sách quyền tương ứng nhóm chức năng đã chọn. |
@@ -261,8 +261,8 @@
 | Nhập lại mật khẩu | Password | Có điều kiện | Trống | Control UI: Ô nhập lại mật khẩu.<br>- Phải trùng khớp với Mật khẩu đăng nhập.<br>- Có biểu tượng con mắt để ẩn/hiện ký tự đã nhập. |
 | Quốc gia đăng ký | Enum(String(100)) | Có | Lấy từ VNeID | Control UI: Hộp chọn. |
 | Phân loại khách hàng | Enum(String(50)) | Có | Theo Quốc gia đăng ký | Gồm `Trong nước` hoặc `Nước ngoài`. |
-| Tỉnh/Thành phố | Enum(String(100)) | Có | Lấy từ VNeID nếu có | Tham chiếu [DM_13]. |
-| Phường/Xã | Enum(String(100)) | Có | Lấy từ VNeID nếu có | Tham chiếu [DM_15]. |
+| Tỉnh/Thành phố | Enum(String(100)) | Có | Lấy từ VNeID nếu có | Tham chiếu Danh mục địa bàn (cấp Tỉnh/Thành phố). |
+| Phường/Xã | Enum(String(100)) | Có | Lấy từ VNeID nếu có | Tham chiếu Danh mục địa bàn (cấp Phường/Xã). |
 | Địa chỉ chi tiết | Text(1000) | Có | Lấy từ VNeID nếu có | Áp dụng [BR-VAL-001]. |
 | Trung tâm Đăng ký mặc định | Enum(String(100)) | Có | Theo cấu hình | Tham chiếu [DM_08]. |
 | Khối Người đại diện / Chủ thể xác thực | - | - | Lấy từ VNeID | Chỉ đọc (Họ tên, Loại giấy tờ, Số giấy tờ, TechID, Vai trò). |

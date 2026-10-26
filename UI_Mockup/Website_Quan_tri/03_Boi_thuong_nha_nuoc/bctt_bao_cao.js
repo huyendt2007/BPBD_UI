@@ -10,7 +10,7 @@
     'use strict';
     var KEY = 'bctt_bao_cao_v1';
     var KEY_ROLE = 'bctt_role_v1';
-    var SEED = 's3_41_42_43';
+    var SEED = 's4b_ld_cho_duyet'; // đổi giá trị khi đổi dữ liệu mẫu: trình duyệt đang lưu bản cũ sẽ tự nạp lại
     var KIND = 'Báo cáo công tác BTNN';
     var DEMO_UNIT = 'STP-HN';
     var DEMO_SUB = 'STP-HN-HCTP';
@@ -107,6 +107,13 @@
     // ---------------- Tiện ích ----------------
     function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]; }); }
     function $(id) { return document.getElementById(id); }
+    // Bắt click ủy quyền ở pha capture: admin-ui-standardizer.js gắn stopPropagation lên mọi nút trong ô cuối/cột "Thao tác",
+    // nên handler ủy quyền gắn bằng .onclick (pha bubble) trên bảng không bao giờ nhận được click của nút (Sửa, Gửi phê duyệt, Xóa, Xem file...).
+    function onClk(el, fn) {
+        if (!el) return;
+        el.__bcttFn = fn;
+        if (!el.__bcttCap) { el.__bcttCap = 1; el.addEventListener('click', function (e) { if (el.__bcttFn) el.__bcttFn.call(el, e); }, true); }
+    }
     function pad(n) { return String(n).padStart(2, '0'); }
     function nowText() { var d = new Date(); return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()); }
     function todayText() { var d = new Date(); return pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear(); }
@@ -196,7 +203,7 @@
         r.history.push({ at: '15/10/' + year + ' 08:00', actor: r.preparer.name, action: 'Tạo báo cáo', note: '' });
         if (status !== ST.DANG) {
             var lv = flowLevels();
-            r.submit = { at: '05/11/' + year + ' 09:15', by: r.preparer.name, noiDung: 'Kính trình Lãnh đạo xem xét, ký duyệt Báo cáo công tác bồi thường nhà nước năm ' + year + '.', current: status === ST.CHO ? (i % 2) : lv.length - 1, tlkt: [],
+            r.submit = { at: '05/11/' + year + ' 09:15', by: r.preparer.name, noiDung: 'Kính trình Lãnh đạo xem xét, ký duyệt Báo cáo công tác bồi thường nhà nước năm ' + year + '.', current: status === ST.CHO ? (i % 2) : lv.length - 1, tlkt: [{ name: 'Tờ trình Báo cáo công tác bồi thường nhà nước năm ' + year, file: { name: 'To_trinh_BC_cong_tac_BTNN_' + year + '.pdf', size: 245760 } }],
                 levels: lv.map(function (l) { return { level: l.level, unitId: l.unitId, unitName: i === 0 ? l.unitName : (l.level === 1 ? 'Phòng Hành chính tư pháp' : stpName(prov)), leaderId: l.leaders[0], leaderName: i === 0 ? userName(l.leaders[0]) : (l.level === 1 ? 'Trưởng phòng HCTP - ' + diaDanh(prov) : 'Giám đốc Sở Tư pháp ' + diaDanh(prov)), kyNhay: l.kyNhay, result: null, at: '', note: '' }; }) };
             r.sentAt = r.submit.at;
             r.history.push({ at: r.submit.at, actor: r.preparer.name, action: 'Gửi phê duyệt', note: r.submit.noiDung });
@@ -217,6 +224,17 @@
             list.push(newReport(i, p, 2026, 'thuc_te', st));
         });
         var hn25 = newReport(0, PROVINCES[0], 2025, 'chinh_thuc', ST.BH); list.push(hn25);
+        // Giả lập Lãnh đạo Sở Tư pháp Hà Nội: (1) chờ Cấp 2 - Lãnh đạo Sở (Cấp 1 đã ký nháy); (2) chờ Cấp 1 - Lãnh đạo Phòng; (3) Bị từ chối
+        var c2 = newReport(0, PROVINCES[0], 2025, 'thuc_te', ST.CHO), l1 = c2.submit.levels[0];
+        l1.result = 'approved'; l1.at = '06/11/2025 10:00'; c2.submit.current = 1;
+        c2.history.push({ at: l1.at, actor: l1.leaderName, action: 'Ký duyệt và chuyển xử lý đến ' + c2.submit.levels[1].leaderName, note: '' });
+        list.push(c2);
+        list.push(newReport(0, PROVINCES[0], 2024, 'chinh_thuc', ST.CHO));
+        var tc = newReport(0, PROVINCES[0], 2024, 'thuc_te', ST.CHO), t1 = tc.submit.levels[0];
+        t1.result = 'rejected'; t1.at = '06/11/2024 15:30'; t1.note = 'Mẫu 43/BTNN: số liệu Cột 25, 26 chưa khớp với Mẫu 41/BTNN; đề nghị rà soát, bổ sung.';
+        tc.status = ST.TC; tc.reject = { reason: t1.note, byName: t1.leaderName, level: 1, at: t1.at };
+        tc.history.push({ at: t1.at, actor: t1.leaderName, action: 'Từ chối', note: t1.note });
+        list.push(tc);
         // Báo cáo năm 2026 của Hà Nội: số liệu Mẫu 42 để trống phần chưa nhập
         list[0].m42.ngay = ''; list[0].m42.items.keHoach = ''; list[0].m42.items.deXuatKienNghi = '';
         return { seed: SEED, reports: list };
@@ -358,7 +376,7 @@
     function openOv(id, html) { var e = $(id); e.innerHTML = html; e.classList.add('on'); }
 
     var view = { name: 'list', id: null, tab: 'm41' };
-    var filt = { year: '2026', period: 'all', status: 'all' };
+    var filt = { year: 'all', period: 'all', status: 'all' };
 
     function statusCell(r) {
         var sub = '';
@@ -372,22 +390,20 @@
     function showList() {
         view = { name: 'list', id: null, tab: 'm41' };
         if (!isStpRole()) { renderBtpList(); return; }
-        var years = ['2026', '2025'];
+        var years = []; DB.reports.forEach(function (r) { var y = String(r.year); if (r.unitId === DEMO_UNIT && years.indexOf(y) < 0) years.push(y); }); years.sort().reverse();
         var html = '<div class="card-section" data-bpbd-filter><div class="section-title"><span><i class="fa-solid fa-filter"></i> Bộ lọc tìm kiếm</span></div>'
             + '<div class="filter-grid">'
             + '<div class="form-group"><span class="form-label">Năm báo cáo</span><select class="form-control" id="bcttFYear"><option value="all">Tất cả</option>' + years.map(function (y) { return '<option value="' + y + '"' + (filt.year === y ? ' selected' : '') + '>' + y + '</option>'; }).join('') + '</select></div>'
             + '<div class="form-group"><span class="form-label">Loại kỳ báo cáo</span><select class="form-control" id="bcttFPeriod"><option value="all">Tất cả</option>' + Object.keys(PERIODS).map(function (k) { return '<option value="' + k + '"' + (filt.period === k ? ' selected' : '') + '>' + PERIODS[k].label + '</option>'; }).join('') + '</select></div>'
             + '<div class="form-group"><span class="form-label">Trạng thái</span><select class="form-control" id="bcttFStatus"><option value="all">Tất cả</option>' + [ST.DANG, ST.CHO, ST.TC, ST.BH].map(function (s) { return '<option' + (filt.status === s ? ' selected' : '') + '>' + s + '</option>'; }).join('') + '</select></div>'
             + '</div><div class="toolbar-row uxu-filter-actions"><button class="btn btn-secondary" id="bcttFReset"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button><button class="btn btn-primary" id="bcttFGo"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button></div></div>';
-        var rows = DB.reports.filter(function (r) { return r.unitId === DEMO_UNIT && (filt.year === 'all' || String(r.year) === filt.year) && (filt.period === 'all' || r.period === filt.period) && (filt.status === 'all' || r.status === filt.status); })
+        var rows = DB.reports.filter(function (r) { return r.unitId === DEMO_UNIT && (role === 'cb_stp' || r.status !== ST.DANG) && (filt.year === 'all' || String(r.year) === filt.year) && (filt.period === 'all' || r.period === filt.period) && (filt.status === 'all' || r.status === filt.status); })
             .sort(function (a, b) { return b.year - a.year; });
         html += '<div class="card-section"><div class="section-title"><span><i class="fa-solid fa-table-list"></i> Danh sách báo cáo công tác bồi thường nhà nước</span>'
             + (role === 'cb_stp' ? '<button class="btn btn-success btn-sm uxu-btn-tb" id="bcttCreate"><i class="fa-solid fa-plus"></i> Tạo báo cáo</button>' : '') + '</div>'
             + '<div class="table-container"><table class="custom-table" id="bcttListTable"><thead><tr><th>STT</th><th>Năm báo cáo</th><th>Loại kỳ báo cáo</th><th>Đơn vị báo cáo</th><th>Người lập</th><th>Trạng thái</th><th>Ngày gửi gần nhất</th><th>Thao tác</th></tr></thead><tbody>'
             + (rows.length ? rows.map(function (r, i) {
-                var acts = '<button class="icon-btn" title="Xem chi tiết" data-act="view" data-id="' + r.id + '"><i class="fa-solid fa-eye"></i></button>';
-                if (canEdit(r)) acts += ' <button class="icon-btn" title="Sửa" data-act="edit" data-id="' + r.id + '"><i class="fa-solid fa-pen"></i></button> <button class="icon-btn" title="Gửi phê duyệt" data-act="submit" data-id="' + r.id + '"><i class="fa-solid fa-paper-plane"></i></button>';
-                if (canApprove(r)) acts += ' <button class="icon-btn" title="Ký duyệt" data-act="approve" data-id="' + r.id + '"><i class="fa-solid fa-file-signature"></i></button> <button class="icon-btn danger" title="Từ chối" data-act="reject" data-id="' + r.id + '"><i class="fa-solid fa-ban"></i></button>';
+                var acts = '<button class="icon-btn" title="Xem chi tiết" data-act="view" data-id="' + r.id + '"><i class="fa-solid fa-eye"></i></button>' + listActs(r);
                 return '<tr class="list-row" data-id="' + r.id + '"><td>' + (i + 1) + '</td><td>' + r.year + '</td><td class="text-left">' + PERIODS[r.period].label + '</td><td class="text-left">' + esc(r.unitName) + '</td><td class="text-left">' + esc(r.preparer.name) + '</td><td>' + statusCell(r) + '</td><td>' + (r.sentAt || '--') + '</td><td>' + acts + '</td></tr>';
             }).join('') : '<tr><td colspan="8">Không có dữ liệu</td></tr>')
             + '</tbody></table></div></div>';
@@ -395,14 +411,28 @@
         $('bcttFGo').onclick = function () { filt.year = $('bcttFYear').value; filt.period = $('bcttFPeriod').value; filt.status = $('bcttFStatus').value; showList(); };
         $('bcttFReset').onclick = function () { filt = { year: 'all', period: 'all', status: 'all' }; showList(); };
         if ($('bcttCreate')) $('bcttCreate').onclick = openCreate;
-        $('bcttListTable').onclick = function (e) {
+        onClk($('bcttListTable'), function (e) {
             var b = e.target.closest('[data-act]');
             var tr = e.target.closest('tr[data-id]');
+            if (b && b.disabled) return;
             if (b) { e.stopPropagation(); var id = b.getAttribute('data-id'), a = b.getAttribute('data-act');
                 if (a === 'view' || a === 'edit') showDetail(id); else if (a === 'submit') openSubmit(id); else if (a === 'approve') openSign(id, 'approve'); else if (a === 'reject') openSign(id, 'reject'); return; }
             if (tr) showDetail(tr.getAttribute('data-id'));
-        };
+        });
         refreshShared();
+    }
+    // Cột Thao tác cố định theo vai trò giả lập; thao tác chưa đủ điều kiện vẫn hiển thị nhưng mờ (disabled), kèm chú thích lý do
+    function listActs(r) {
+        function btn(act, cls, icon, title, on, why) {
+            return ' <button class="icon-btn ' + cls + (on ? '' : ' is-disabled') + '" data-admin-icon-normalized="1" data-act="' + act + '" data-id="' + r.id + '" title="' + esc(on ? title : title + ' - ' + why) + '"' + (on ? '' : ' disabled') + '><i class="' + icon + '"></i></button>';
+        }
+        if (role === 'cb_stp') {
+            var ed = canEdit(r), why = 'Chỉ thực hiện khi báo cáo ở trạng thái Đang nhập liệu hoặc Bị từ chối';
+            return btn('edit', 'edit', 'fa-solid fa-pen-to-square', 'Cập nhật', ed, why) + btn('submit', 'submit', 'fa-solid fa-paper-plane', 'Gửi phê duyệt', ed, why);
+        }
+        var ok = canApprove(r), lv = r.status === ST.CHO && r.submit ? r.submit.levels[r.submit.current] : null;
+        var why2 = lv ? 'Báo cáo đang chờ Cấp ' + lv.level + ' - ' + lv.leaderName + ' ký duyệt' : 'Chỉ thực hiện khi báo cáo ở trạng thái Chờ duyệt';
+        return btn('approve', 'accept sign', 'fa-solid fa-file-signature', 'Ký duyệt', ok, why2) + btn('reject', 'delete reject', 'fa-solid fa-ban', 'Từ chối', ok, why2);
     }
 
     function openCreate() {
@@ -479,11 +509,11 @@
     }
     function bindFileTable(tid, r, data) {
         var t = $(tid); if (!t) return;
-        t.onclick = function (e) {
+        onClk(t, function (e) {
             var v = e.target.closest('[data-fview]'), d = e.target.closest('[data-fdl]');
             if (v) { var rr = v.getAttribute('data-rid') ? getR(v.getAttribute('data-rid')) : r; openViewer(rr, v.getAttribute('data-fview'), 'Xem file', data); }
             if (d) toast('Đã tải xuống tệp ' + d.getAttribute('data-fdl') + '.');
-        };
+        });
     }
     function switchTab(t) {
         view.tab = t;
@@ -518,11 +548,11 @@
         p.innerHTML = '<div class="toolbar-row" style="justify-content:space-between;align-items:center;"><div class="formula-hint">Cơ quan lập danh mục: <strong>' + esc(r.unitName) + '</strong>. Danh mục vụ việc theo 06 nhóm lĩnh vực.</div></div>'
             + '<div class="table-container">' + m41TableHtml(r.m41, ed) + '</div>';
         if (!ed) return;
-        p.onclick = function (e) {
+        onClk(p, function (e) {
             var a = e.target.closest('[data-add]'), d = e.target.closest('[data-del]');
             if (a) { collect(r); r.m41[a.getAttribute('data-add')].push({ hoTen: '', diaChi: '', coQuan: '', tinhHinh: '', khoKhan: '', ghiChu: '' }); renderM41Tab(r, true); }
             if (d) { collect(r); var x = d.getAttribute('data-del').split(':'); r.m41[x[0]].splice(+x[1], 1); renderM41Tab(r, true); toast('Đã xóa vụ việc khỏi danh mục.'); }
-        };
+        });
     }
     // ----- Tab Mẫu 42 -----
     function m42Head(h, m) { return h.replace('{nam}', m.nam || '……').replace('{namKeHoach}', m.nam ? String(+m.nam + 1) : '……'); }
@@ -753,7 +783,7 @@
             + '<div id="bcttSubTlkt"></div>';
         $('bcttSubBody1').innerHTML = html;
         if (typeof window.tlktMount === 'function') window.tlktMount('bctt', 'bcttSubTlkt', { rows: sub.tlkt.length ? sub.tlkt : [{ name: '', file: null }], secClass: 'bctt-sec', titleClass: 'h' });
-        $('bcttSubForms').onclick = function (e) { var v = e.target.closest('[data-fview]'); if (v) openViewer(r, v.getAttribute('data-fview'), 'Xem trước PDF'); };
+        onClk($('bcttSubForms'), function (e) { var v = e.target.closest('[data-fview]'); if (v) openViewer(r, v.getAttribute('data-fview'), 'Xem trước PDF'); });
         $('bcttSubFoot').innerHTML = '<button class="btn btn-secondary" data-close>Hủy bỏ</button><button class="btn btn-primary" id="bcttSubNext">Tiếp tục <i class="fa-solid fa-arrow-right"></i></button>';
         bindClose('bcttOv1');
         $('bcttSubNext').onclick = function () {
@@ -801,8 +831,7 @@
     function openSign(id, mode) {
         var r = getR(id); if (!canApprove(r)) { toast('Báo cáo không còn chờ bạn ký duyệt.', 'error'); return; }
         var s = r.submit, lv = s.levels[s.current];
-        var tl = typeof window.tlktViewHtml === 'function' ? window.tlktViewHtml(s.tlkt || [], { boxClass: 'bctt-card', titleClass: 'h' }) : '';
-        var html = '<div class="bctt-mh"><div><div class="tt">' + (mode === 'approve' ? 'Ký duyệt' : 'Từ chối phê duyệt') + ' báo cáo công tác bồi thường nhà nước năm ' + r.year + ' - ' + esc(r.unitName) + '</div><div class="st">Ký duyệt / Từ chối áp dụng đồng thời cho cả 03 biểu mẫu: Mẫu 41/BTNN, Mẫu 42/BTNN, Mẫu 43/BTNN</div></div><button class="bctt-x" data-close>&times;</button></div>'
+        var tl = typeof window.tlktViewHtml === 'function' ? window.tlktViewHtml(s.tlkt || [], { boxClass: 'bctt-card', titleClass: 'h' }) : '';        var html = '<div class="bctt-mh"><div><div class="tt">' + (mode === 'approve' ? 'Ký duyệt' : 'Từ chối phê duyệt') + ' báo cáo công tác bồi thường nhà nước năm ' + r.year + ' - ' + esc(r.unitName) + '</div><div class="st">Ký duyệt / Từ chối áp dụng đồng thời cho cả 03 biểu mẫu: Mẫu 41/BTNN, Mẫu 42/BTNN, Mẫu 43/BTNN</div></div><button class="bctt-x" data-close>&times;</button></div>'
             + '<div class="bctt-split">' + viewerHtml(r, 'm41', s, null, 'bcttKv')
             + '<div class="bctt-side" style="width:480px;"><div class="bctt-card"><div class="h">Thông tin tổng quan</div>'
             + '<div class="bctt-meta" style="grid-template-columns:1fr;gap:8px;"><div><label>Kỳ báo cáo</label><strong>Năm ' + r.year + ' - ' + PERIODS[r.period].label + '</strong></div><div><label>Đơn vị báo cáo</label><strong>' + esc(r.unitName) + '</strong></div>'
@@ -850,7 +879,7 @@
             + kys.map(function (k, i) { var p = k.split('|'), n = issuedOf(+p[0], p[1]).length; return '<tr class="list-row" data-ky="' + k + '"><td>' + (i + 1) + '</td><td>' + p[0] + '</td><td class="text-left">' + PERIODS[p[1]].label + '</td><td>' + n + '/' + PROVINCES.length + '</td><td><span class="badge ' + (n === PROVINCES.length ? 'badge-success' : 'badge-warning') + '">' + (n === PROVINCES.length ? 'Đủ số liệu' : 'Đang tiếp nhận') + '</span></td><td><button class="icon-btn" title="Xem tổng hợp" data-ky="' + k + '"><i class="fa-solid fa-eye"></i></button></td></tr>'; }).join('')
             + '</tbody></table></div></div>';
         $('bcttApp').innerHTML = html;
-        $('bcttBtpList').onclick = function (e) { var t = e.target.closest('[data-ky]'); if (t) { var p = t.getAttribute('data-ky').split('|'); showBtp(+p[0], p[1]); } };
+        onClk($('bcttBtpList'), function (e) { var t = e.target.closest('[data-ky]'); if (t) { var p = t.getAttribute('data-ky').split('|'); showBtp(+p[0], p[1]); } });
         refreshShared();
     }
     // Dữ liệu dùng cho tổng hợp: bản điều chỉnh của Bộ Tư pháp (nếu có), ngược lại số liệu đã ban hành
@@ -909,7 +938,7 @@
             + issued.map(function (r) { return '<option value="' + r.id + '"' + (btpState.unit41 === r.id ? ' selected' : '') + '>' + esc(r.unitName) + '</option>'; }).join('') + '</select></div><div class="formula-hint">Danh mục vụ việc tổng hợp từ Mẫu 41/BTNN đã ban hành của các Sở Tư pháp; điều chỉnh tại cột Thao tác.</div></div>'
             + '<div class="table-container">' + m41TableHtml(list41, false, { unitCol: true, adjust: true, tid: 'bcttBtpM41' }) + '</div>';
         $('bcttU41').onchange = function () { btpState.unit41 = this.value; renderBtpTabs(issued); };
-        $('bcttBtpM41').onclick = function (e) { var b = e.target.closest('[data-adj41]'); if (b) openAdj41(b.getAttribute('data-adj41'), issued); };
+        onClk($('bcttBtpM41'), function (e) { var b = e.target.closest('[data-adj41]'); if (b) openAdj41(b.getAttribute('data-adj41'), issued); });
         // Mẫu 42
         var h42 = '<div class="bctt-m42"><div class="formula-hint" style="margin-bottom:6px;">Nội dung tổng hợp ghép theo từng mục của Mẫu 42/BTNN đã ban hành; bấm "Xem chi tiết theo Sở Tư pháp" để xem, điều chỉnh nội dung của từng Sở.</div>';
         M42_SECTIONS.forEach(function (s) {
@@ -938,7 +967,7 @@
             t43.oninput = function (e) { var i = e.target.closest('input[data-c]'); if (!i) return; work[i.getAttribute('data-g')][i.getAttribute('data-c')] = num(i.value); refreshM43Formulas(work, 'bcttBtpM43'); };
             $('bcttS43Save').onclick = function () { scopeR.btp.m43 = work; logAdj(scopeR, 'm43', 'all', 'Điều chỉnh số liệu Mẫu 43/BTNN'); save(); toast('Đã lưu điều chỉnh số liệu Mẫu 43/BTNN của ' + scopeR.unitName + '.'); renderBtpTabs(issued); };
         } else {
-            t43.onclick = function (e) { var b = e.target.closest('[data-cell]'); if (b) { var x = b.getAttribute('data-cell').split(':'); openDetail43(x[0], +x[1], issued); } };
+            onClk(t43, function (e) { var b = e.target.closest('[data-cell]'); if (b) { var x = b.getAttribute('data-cell').split(':'); openDetail43(x[0], +x[1], issued); } });
         }
     }
     function logAdj(r, form, key, text) {

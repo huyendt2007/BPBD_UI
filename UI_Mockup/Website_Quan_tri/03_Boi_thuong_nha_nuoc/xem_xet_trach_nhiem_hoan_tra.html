@@ -872,19 +872,7 @@
         <div class="page-title">
             <h2 data-uxu-title>Xem xét trách nhiệm hoàn trả</h2>
         </div>
-        <div style="display: flex; align-items: center; gap: 10px; background: #eff6ff; border: 1.5px solid #bfdbfe; padding: 6px 14px; border-radius: 20px; box-shadow: 0 1px 3px rgba(37,99,235,0.08);">
-            <span style="font-size: 13px; font-weight: 700; color: #1e40af; display: inline-flex; align-items: center; gap: 6px;">
-                <i class="fa-solid fa-user-gear"></i> Người dùng giả lập:
-            </span>
-            <!-- Giả lập theo đơn vị (xem_xet_hoan_tra_pham_vi.js): Đơn vị tạo hội đồng / Đơn vị quản lý cán bộ A, B / Sở Tư pháp / Lãnh đạo -->
-            <select id="mockUserRole" class="form-control" style="width: auto; padding: 4px 12px; font-size: 13px; font-weight: 700; height: 32px; border-radius: 16px; border-color: #93c5fd; background: white; color: #1e3a8a; cursor: pointer;" onchange="changeMockRole(this.value)">
-                <option value="don_vi_chu" selected>Đơn vị tạo hội đồng</option>
-                <option value="don_vi_a">Đơn vị quản lý cán bộ A</option>
-                <option value="don_vi_b">Đơn vị quản lý cán bộ B</option>
-                <option value="stp">Sở Tư pháp</option>
-                <option value="lanh_dao">Lãnh đạo phê duyệt</option>
-            </select>
-        </div>
+        <!-- Người dùng giả lập: thanh dùng chung màn Danh sách / Chi tiết (ht_mock_role_bar.js) -->
     </div>
 
 
@@ -1606,7 +1594,7 @@
     <!-- JAVASCRIPT CONTROLLERS -->
     <!-- ============================================== -->
     <script src="btnn_luong_xu_ly.js?v=20261020v5"></script>
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt5"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261023bdg"></script>
     <script>
         // Họ và tên người yêu cầu theo Mã hồ sơ GQBT (dữ liệu Giải quyết YCBT)
@@ -2241,7 +2229,7 @@
             'Chờ duyệt QĐ thành lập': ['Chờ duyệt', 'Thành lập hội đồng'], 'Chờ duyệt thành lập hội đồng': ['Chờ duyệt', 'Thành lập hội đồng'],
             'Bị từ chối thành lập HĐ': ['Bị từ chối', 'Thành lập hội đồng'], 'Từ chối duyệt QĐ thành lập': ['Bị từ chối', 'Thành lập hội đồng'],
             'Chờ duyệt QĐ hoàn trả': ['Chờ duyệt', 'QĐ hoàn trả'], 'Bị từ chối QĐ hoàn trả': ['Bị từ chối', 'QĐ hoàn trả'],
-            'Chờ duyệt QĐ đình chỉ': ['Chờ duyệt', 'Đình chỉ xem xét hoàn trả'], 'Bị từ chối QĐ đình chỉ': ['Bị từ chối', 'Đình chỉ xem xét hoàn trả'],
+            'Chờ duyệt QĐ đình chỉ': ['Chờ duyệt', 'QĐ đình chỉ'], 'Bị từ chối QĐ đình chỉ': ['Bị từ chối', 'QĐ đình chỉ'],
             'Đang họp hội đồng': ['Họp hội đồng', ''], 'Chờ ban hành QĐ': ['Chờ ban hành QĐ hoàn trả', ''], 'Đang thu hồi': ['Thu hồi tiền hoàn trả', ''], 'Hoàn tất': ['Hoàn thành', ''],
             // Chốt 23/10: bỏ 2 trạng thái, dữ liệu cũ quy về Đình chỉ xem xét hoàn trả
             'Không xem xét trách nhiệm hoàn trả': ['Đình chỉ xem xét hoàn trả', ''], 'Chấm dứt thu hồi': ['Đình chỉ xem xét hoàn trả', '']
@@ -3905,7 +3893,9 @@
         });
     </script>
     <!-- Phạm vi dữ liệu theo đơn vị + trạng thái 02 tầng (chi tiết / chung) của màn danh sách -->
-    <script src="xem_xet_hoan_tra_pham_vi.js?v=20261026p3"></script>
+    <script src="ht_du_lieu_mau.js?v=20261026p8"></script>
+    <script src="xem_xet_hoan_tra_pham_vi.js?v=20261026p8"></script>
+    <script src="ht_mock_role_bar.js?v=20261026p8"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>

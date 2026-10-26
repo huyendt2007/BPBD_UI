@@ -631,18 +631,18 @@
                 </div>
                 <div id="memberError" class="invalid-feedback" style="display:none;"></div>
                 <div style="margin-top:8px;" class="edit-only" id="addMemberWrap"><button type="button" class="btn btn-secondary btn-sm" onclick="addMember()"><i class="fa-solid fa-plus"></i> Thêm thành viên</button></div>
-                <div class="kt-sub-title">Tài liệu kèm theo kế hoạch</div>
-                <div class="table-wrap"><table class="doc-table"><thead><tr><th style="width:60px; text-align:center;">STT</th><th>Tên tài liệu</th><th style="width:260px;">File đính kèm</th><th style="width:160px; text-align:center;">Thao tác tài liệu</th></tr></thead><tbody id="planDocs"></tbody></table></div>
-                <div style="margin-top:8px;" id="addPlanDocWrap"><button type="button" class="btn btn-secondary btn-sm" onclick="addDoc('plan')"><i class="fa-solid fa-plus"></i> Thêm dòng</button></div>
+                <div class="kt-sub-title" id="planDocsTitle">Tài liệu kèm theo kế hoạch</div>
+                <div class="table-wrap" id="planDocsWrap"><table class="doc-table"><thead><tr><th style="width:60px; text-align:center;">STT</th><th style="text-align:center;">Tên tài liệu, văn bản</th><th style="width:260px; text-align:center;">File đính kèm</th><th style="width:110px; text-align:center;">Thao tác</th></tr></thead><tbody id="planDocs"></tbody></table></div>
+                <div style="margin-top:8px;" id="addPlanDocWrap"><button type="button" class="tlkt-btn-add" onclick="addDoc('plan')"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button></div>
             </div>
 
             <div class="kt-block kt-result" id="resultBlock">
                 <div class="kt-block-title"><span class="kt-step">II</span> Kết quả kiểm tra <span class="muted" id="resultNote"></span></div>
                 <div id="resultBody">
                     <div class="grid-3" id="resultFields"></div>
-                    <div class="kt-sub-title">Tài liệu kèm theo</div>
-                    <div class="table-wrap"><table class="doc-table"><thead><tr><th style="width:60px; text-align:center;">STT</th><th>Tên tài liệu</th><th style="width:260px;">File đính kèm</th><th style="width:160px; text-align:center;">Thao tác tài liệu</th></tr></thead><tbody id="resultDocs"></tbody></table></div>
-                    <div style="margin-top:8px;" id="addResultDocWrap"><button type="button" class="btn btn-secondary btn-sm" onclick="addDoc('result')"><i class="fa-solid fa-plus"></i> Thêm dòng</button></div>
+                    <div class="kt-sub-title" id="resultDocsTitle">Tài liệu kèm theo</div>
+                    <div class="table-wrap" id="resultDocsWrap"><table class="doc-table"><thead><tr><th style="width:60px; text-align:center;">STT</th><th style="text-align:center;">Tên tài liệu, văn bản</th><th style="width:260px; text-align:center;">File đính kèm</th><th style="width:110px; text-align:center;">Thao tác</th></tr></thead><tbody id="resultDocs"></tbody></table></div>
+                    <div style="margin-top:8px;" id="addResultDocWrap"><button type="button" class="tlkt-btn-add" onclick="addDoc('result')"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button></div>
                 </div>
             </div>
 
@@ -871,15 +871,23 @@
             if (list) docs[kind] = list.map(d => Object.assign({}, d));
             const ro = kind === 'plan' ? !planEditable() : !resultEditable();
             document.getElementById(kind === 'plan' ? 'addPlanDocWrap' : 'addResultDocWrap').style.display = ro ? 'none' : '';
-            document.getElementById(kind === 'plan' ? 'planDocs' : 'resultDocs').innerHTML = docs[kind].map((d, i) => `<tr>
+            // Bảng tài liệu chuẩn BTNN; chế độ xem rỗng thì ẩn cả tiêu đề và bảng
+            const viewEmpty = ro && !docs[kind].some(d => d && (d.name || d.file));
+            document.getElementById(kind + 'DocsWrap').style.display = viewEmpty ? 'none' : '';
+            document.getElementById(kind + 'DocsTitle').style.display = viewEmpty ? 'none' : '';
+            const dis = d => d.file ? '' : ' is-disabled';
+            document.getElementById(kind === 'plan' ? 'planDocs' : 'resultDocs').innerHTML = viewEmpty ? '' : docs[kind].map((d, i) => `<tr>
                 <td style="text-align:center;">${i + 1}</td>
-                <td>${ro ? esc(d.name || '--') : `<input class="form-control" value="${esc(d.name)}" placeholder="Nhập tên tài liệu..." oninput="docs.${kind}[${i}].name=this.value">`}</td>
-                <td>${d.file ? `<span class="file-name"><i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:6px;"></i>${esc(d.file)}</span>` : (ro ? '--' : `<button type="button" class="btn-upload-rust" onclick="docs.${kind}[${i}].file='tai_lieu_${i + 1}.pdf'; renderDocs('${kind}');"><i class="fa-solid fa-cloud-arrow-up"></i> Tải lên</button>`)}</td>
-                <td><div class="doc-actions"><a href="javascript:void(0)" class="action-link view-link ${d.file ? '' : 'disabled-action'}" onclick="showToast('Đang mở file tại tab mới.')">Xem file</a>${ro ? '' : `<a href="javascript:void(0)" class="action-link delete-link" onclick="removeDoc('${kind}', ${i})"><i class="fa-solid fa-trash-can"></i> Xóa</a>`}</div></td>
+                <td>${ro ? esc(d.name || '--') : `<input class="form-control" style="width:100%;" value="${esc(d.name)}" placeholder="Nhập tên tài liệu, văn bản" oninput="docs.${kind}[${i}].name=this.value">`}</td>
+                <td class="tlkt-fc">${d.file ? `<span class="file-name"><i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i>${esc(d.file)}</span>` : (ro ? '--' : `<button type="button" class="tlkt-btn-pri" onclick="docs.${kind}[${i}].file='tai_lieu_${i + 1}.pdf'; renderDocs('${kind}');"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>`)}</td>
+                <td style="text-align:center;"><span class="tlkt-acts"><button type="button" class="tlkt-ib${dis(d)}" data-admin-icon-normalized="1" title="Xem file" aria-label="Xem file" onclick="showToast('Đang mở file tại tab mới.')"><i class="fa-solid fa-eye"></i></button>${ro
+                    ? `<button type="button" class="tlkt-ib${dis(d)}" data-admin-icon-normalized="1" title="Tải file" aria-label="Tải file" onclick="showToast('Đang tải file.')"><i class="fa-solid fa-download"></i></button>`
+                    : `<button type="button" class="tlkt-ib tlkt-ib-del" data-admin-icon-normalized="1" title="Xóa" aria-label="Xóa" onclick="removeDoc('${kind}', ${i})"><i class="fa-solid fa-trash"></i></button>`}</span></td>
             </tr>`).join('');
         }
         function addDoc(kind) { docs[kind].push({ name: '', file: '' }); renderDocs(kind); }
-        function removeDoc(kind, i) { openConfirm('Bạn có chắc chắn muốn xóa tài liệu này không? [MSG-CFM-SYS-001]', () => { docs[kind].splice(i, 1); if (!docs[kind].length) docs[kind] = [{ name: '', file: '' }]; renderDocs(kind); }); }
+        // Xóa thẳng dòng tài liệu, không hỏi xác nhận (chuẩn bảng tài liệu BTNN)
+        function removeDoc(kind, i) { docs[kind].splice(i, 1); if (!docs[kind].length) docs[kind] = [{ name: '', file: '' }]; renderDocs(kind); }
 
         function openForm(mode, code) {
             formMode = mode;
@@ -976,6 +984,8 @@
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_form_page.js?v=20261026fp"></script>
+    <!-- Bảng tài liệu chuẩn BTNN (style nút Tải file / Thêm tài liệu, icon thao tác) -->
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt5"></script>
 </body>
 
 </html>

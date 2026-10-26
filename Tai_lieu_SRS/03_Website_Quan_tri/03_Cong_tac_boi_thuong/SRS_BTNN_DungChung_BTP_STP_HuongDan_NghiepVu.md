@@ -106,7 +106,7 @@ flowchart TD
 | Cơ quan phối hợp | Text(2000) | Không | Trống | Danh sách cơ quan phối hợp nếu cần lấy ý kiến. |
 | Nội dung hướng dẫn/giải đáp | Text(4000) | Có khi hoàn thành | Trống | Nội dung trả lời chính thức. Với `Bồi dưỡng kỹ năng, nghiệp vụ` hoặc `Truyền thông, tuyên truyền, phổ biến pháp luật`, trường hiển thị nhãn `Kết quả thực hiện`. |
 | Căn cứ pháp luật | Text(4000) | Có điều kiện | Trống | Căn cứ pháp luật phải nêu trong văn bản hướng dẫn/giải đáp. Bắt buộc khi hoàn thành hồ sơ có `Loại nội dung` là `Hướng dẫn nghiệp vụ` hoặc `Giải đáp vướng mắc`. |
-| Tài liệu liên quan | List(File) | Không | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu`, `File đính kèm`, `Thao tác tài liệu`; nút `+ Thêm dòng` dưới bảng.<br>- Cột `File đính kèm`: khi dòng chưa có file hiển thị nút `Tải lên`; khi đã có file hiển thị tên file.<br>- Cột `Thao tác tài liệu` gồm link `Xem file` (khóa mờ khi dòng chưa có file) và link `Xóa` (kèm icon thùng rác).<br>- Ở chế độ xem chi tiết: ẩn link `Xóa` và nút `+ Thêm dòng`; chỉ cho phép `Xem file`.<br>- Áp dụng [BR-FILE-010]. |
+| Tài liệu liên quan | List(File) | Không | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Cột `File đính kèm`: khi dòng chưa có file hiển thị nút `Tải file`; khi đã có file hiển thị tên file.<br>- Cột `Thao tác` gồm `Xem file` (khóa khi dòng chưa có file) và `Xóa`.<br>- Ở chế độ xem chi tiết: ẩn `Xóa` và nút `Thêm tài liệu`; chỉ cho phép `Xem file`.<br>- Áp dụng [BR-FILE-010]. |
 | Lịch sử xử lý | String(255) | Không | Theo dữ liệu | Hiển thị thời gian, người thực hiện, thao tác, nội dung xử lý. |
 | Hủy bỏ | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
 | Lưu thông tin xử lý | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
@@ -146,4 +146,4 @@ flowchart TD
 |  |  |  | TH Hợp lệ: Hệ thống chuyển hồ sơ sang trạng thái "Hoàn thành" và ghi lịch sử xử lý. |
 | 4 | Xem file | Link | Hệ thống mở file của dòng tài liệu tại một tab trình duyệt mới. Link khóa mờ khi dòng chưa có file. |
 | 5 | Tải lên | Button | Hệ thống mở trình chọn file cho dòng tài liệu tương ứng; sau khi chọn, hiển thị tên file tại cột `File đính kèm`. |
-| 6 | Xóa | Link | Hệ thống mở **Popup Xác nhận** với nội dung [MSG-CFM-SYS-001]. Nếu chọn `Đồng ý`, hệ thống xóa dòng tài liệu khỏi bảng; nếu chọn `Hủy bỏ`, hệ thống đóng popup và giữ nguyên dòng tài liệu. Link không hiển thị ở chế độ xem chi tiết. |
+| 6 | Xóa | Icon button | Hệ thống xóa dòng tài liệu khỏi bảng ngay, không hiển thị popup xác nhận.<br>- Không hiển thị ở chế độ xem chi tiết. |

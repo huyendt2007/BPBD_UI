@@ -5,9 +5,9 @@
  * - Phủ đủ giá trị bộ lọc: 34 Tỉnh/Thành phố (theo Cơ quan giải quyết), 06 Lĩnh vực, 04 Nguồn hồ sơ, 15 Trạng thái,
  *   Lọc nhanh (Bồi thường thiệt hại / Phục hồi danh dự), cá nhân / tổ chức, Ngày tiếp nhận trải 3 tháng gần nhất và các năm trước.
  * Nạp sau script nội tuyến của trang: <script src="tra_cuu_seed_tcvv.js?v=20261026tcvv"></script>
+ * - Cũng nạp ở cuối quan_ly_boi_thuong.html: chỉ hoạt động khi ?readonly=1&tcvvPreview=1 (Xem chi tiết hồ sơ bổ sung, chỉ trong bộ nhớ).
  */
 (function () {
-    if (typeof window.loadClaims !== 'function') return;
 
     const HC = 'hành chính', HS = 'hình sự', DS = 'dân sự', TTHC = 'tố tụng hành chính', THAHS = 'thi hành án hình sự', THADS = 'thi hành án dân sự';
     const TN = 'Tiếp nhận mới', DVC = 'Dịch vụ công quốc gia', CH = 'Chuyển CQGQBT', XD = 'Xác định CQGQBT';
@@ -122,10 +122,69 @@
         return list;
     }
 
-    const origLoadClaims = window.loadClaims;
-    window.loadClaims = function () {
-        const base = origLoadClaims.apply(this, arguments) || [];
-        const codes = new Set(base.map(c => c && c.code).filter(Boolean));
-        return base.concat(extraClaims().filter(c => !codes.has(c.code)));
+    // ===== 1. Trang Tra cứu vụ việc: nối dữ liệu bổ sung + đánh dấu link Xem chi tiết của bản ghi bổ sung =====
+    if (typeof window.loadClaims === 'function' && typeof window.tcvvBuildDetailUrl === 'function') {
+        const origLoadClaims = window.loadClaims;
+        window.loadClaims = function () {
+            const base = origLoadClaims.apply(this, arguments) || [];
+            const codes = new Set(base.map(c => c && c.code).filter(Boolean));
+            return base.concat(extraClaims().filter(c => !codes.has(c.code)));
+        };
+        // Bản ghi bổ sung không có trong dữ liệu Giải quyết YCBT: thêm tcvvPreview=1 để màn Xem chi tiết (chỉ xem) dựng lại hồ sơ từ file này
+        const origBuildUrl = window.tcvvBuildDetailUrl;
+        window.tcvvBuildDetailUrl = function (code) {
+            const url = origBuildUrl.apply(this, arguments);
+            return extraClaims().some(c => c.code === code) ? url + '&tcvvPreview=1' : url;
+        };
+        return;
+    }
+
+    // ===== 2. Trang Giải quyết YCBT, chỉ khi Xem chi tiết mở từ Tra cứu: ?readonly=1&returnUrl=tra_cuu_ho_so_boi_thuong.html... =====
+    if (typeof window.findClaimByAnyCode !== 'function') return;
+    const q = new URLSearchParams(window.location.search);
+    if (q.get('readonly') !== '1' || !/tra_cuu_ho_so_boi_thuong\.html/.test(q.get('returnUrl') || '')) return;
+
+    // 2a. Mọi hồ sơ (kể cả hồ sơ gốc): không áp dụng giới hạn "chỉ cán bộ được cử mới được xem" ở chế độ chỉ xem
+    if (typeof window.isClaimRestrictedToAppointed === 'function') window.isClaimRestrictedToAppointed = function () { return false; };
+    // 2b. Tab mở mặc định: Phục hồi danh dự khi focusTab=phdd (Đang / Hoãn phục hồi danh dự); còn lại: Thông tin hồ sơ vụ việc
+    if (typeof window.showCaseDetail === 'function' && typeof window.switchDetailTab === 'function') {
+        const focusPhdd = (q.get('focusTab') || q.get('subTab')) === 'phdd';
+        const origShow = window.showCaseDetail;
+        window.showCaseDetail = function () {
+            const res = origShow.apply(this, arguments);
+            if (!focusPhdd) { try { switchDetailTab('chung'); } catch (e) { } }
+            return res;
+        };
+    }
+
+    // 2c. Hồ sơ giả lập riêng của Tra cứu (?tcvvPreview=1): chỉ nạp vào bộ nhớ để Xem chi tiết; không lưu vào claimsList / kho dữ liệu khác, không hiển thị ở lưới.
+    if (q.get('tcvvPreview') !== '1') return;
+    const code = String(q.get('id') || q.get('viewCode') || '').trim();
+    const claim = extraClaims().find(c => c.code === code);
+    if (!claim) return;
+    const isPreview = x => !!x && typeof x === 'object' && (x.code === code || x.claimCode === code || x.id === claim.id);
+
+    // Chặn ghi hồ sơ xem trước xuống localStorage / sessionStorage (mảng: bỏ phần tử; đối tượng: bỏ khóa theo mã / id)
+    const origSetItem = Storage.prototype.setItem;
+    Storage.prototype.setItem = function (key, value) {
+        if (typeof value === 'string' && (value.indexOf(code) >= 0 || value.indexOf(claim.id) >= 0) && key !== 'btnn_vuviec_registry_v1') {
+            try {
+                const data = JSON.parse(value);
+                if (Array.isArray(data)) value = JSON.stringify(data.filter(x => !isPreview(x)));
+                else if (data && typeof data === 'object') { delete data[code]; delete data[claim.id]; value = JSON.stringify(data); }
+            } catch (e) { }
+        }
+        return origSetItem.call(this, key, value);
+    };
+
+    const origFind = window.findClaimByAnyCode;
+    window.findClaimByAnyCode = function (c) {
+        const found = origFind.apply(this, arguments);
+        if (found || String(c || '').trim() !== code) return found;
+        try {
+            if (!claim.maVuViec && window.BTNN_WF && BTNN_WF.vuViecOf) claim.maVuViec = BTNN_WF.vuViecOf(code) || ''; // cùng Mã vụ việc đã cấp tại Tra cứu (sổ đăng ký dùng chung)
+            if (typeof claimsList !== 'undefined' && Array.isArray(claimsList) && !claimsList.some(isPreview)) claimsList.push(claim);
+        } catch (e) { }
+        return claim;
     };
 })();

@@ -1488,7 +1488,7 @@
                 let value = record ? record[field.id] : (field.defaultValue || '');
 
                 if (field.type === 'select' || field.type === 'dropdown') {
-                    // For Tỉnh thành, Quận huyện dropdowns
+                    // For Tỉnh thành, Phường xã dropdowns
                     let options = '';
                     if (field.id === 'province_code') {
                         options = `
@@ -1496,13 +1496,6 @@
                             <option value="HN" selected>Thành phố Hà Nội</option>
                             <option value="HCM">Thành phố Hồ Chí Minh</option>
                             <option value="DN">Thành phố Đà Nẵng</option>
-                        `;
-                    } else if (field.id === 'district_code') {
-                        options = `
-                            <option value="">Vui lòng lựa chọn Quận/Huyện</option>
-                            <option value="BD" selected>Quận Ba Đình</option>
-                            <option value="HK">Quận Hoàn Kiếm</option>
-                            <option value="CG">Quận Cầu Giấy</option>
                         `;
                     } else if (field.id === 'ward_code') {
                         options = `

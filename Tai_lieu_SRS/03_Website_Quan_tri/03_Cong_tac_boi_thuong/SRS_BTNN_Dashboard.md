@@ -44,7 +44,7 @@
 | :-- | :--- | :--- |
 | 1 | Nguồn dữ liệu kết quả đánh giá | Dữ liệu tại Quản lý chấm điểm công tác BTNN: điểm tự chấm, điểm Bộ Tư pháp đánh giá, xếp loại [DM_33].<br>- Phạm vi: theo từng Sở Tư pháp (01 Sở Tư pháp/01 tỉnh, thành phố).<br>- Chỉ lấy kỳ chấm điểm đã được Bộ Tư pháp đánh giá, xếp loại; xếp loại theo [BR-BTNN-CD-003].<br>- Áp dụng cho: Phân tích theo thời gian, Phân tích theo địa phương, thẻ và biểu đồ xếp loại tại màn hình tổng quan. |
 | 2 | Nguồn dữ liệu vụ việc | Dữ liệu vụ việc yêu cầu bồi thường (YCBT) trên hệ thống, dùng chung bộ chỉ tiêu với Báo cáo Mẫu số 03-TT08: Số vụ việc thụ lý, Số vụ việc đã giải quyết, Số tiền đã chi trả.<br>- Phạm vi: theo địa phương (tỉnh, thành phố nơi cơ quan giải quyết bồi thường đóng trụ sở).<br>- Áp dụng cho: Phân tích theo phạm vi trách nhiệm, theo cơ quan giải quyết, theo cấp thực hiện, Phân tích trong phạm vi cả nước và các thẻ, biểu đồ vụ việc tại màn hình tổng quan.<br>- Một vụ việc chỉ được tính một lần trong cùng kỳ, cùng chỉ tiêu.<br>- Gồm cả vụ việc tại [Theo dõi vụ việc tại Tòa án - Theo dõi vụ việc tại Tòa án - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_TheoDoiVuViecToaAn.md); vụ việc tại Tòa án ở trạng thái `Trả lại đơn khởi kiện` không được tính vào số liệu thống kê (thẻ số liệu, biểu đồ, bản đồ và Bảng số liệu).<br>- Vụ việc đếm theo Mã vụ việc và Trạng thái vụ việc (vụ việc `Yêu cầu cả hai` tính 01 vụ việc; `Đang phục hồi danh dự` chưa tính là đã giải quyết xong) theo quy tắc [Vụ việc gồm 02 nhánh giải quyết - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-vu-viec-hai-nhanh). |
-| 3 | Chiều phân tích | Thời gian: năm đánh giá.<br>- Địa phương: Sở Tư pháp/tỉnh, thành phố [DM_13].<br>- Phạm vi trách nhiệm bồi thường: Lĩnh vực phát sinh thiệt hại [DM_22].<br>- Cơ quan giải quyết bồi thường: Đơn vị giải quyết của vụ việc [DM_DON_VI].<br>- Cấp thực hiện: Loại cơ quan báo cáo [DM_43]. |
+| 3 | Chiều phân tích | Thời gian: năm đánh giá.<br>- Địa phương: Sở Tư pháp/tỉnh, thành phố theo Danh mục địa bàn (cấp Tỉnh/Thành phố).<br>- Phạm vi trách nhiệm bồi thường: Lĩnh vực phát sinh thiệt hại [DM_22].<br>- Cơ quan giải quyết bồi thường: Đơn vị giải quyết của vụ việc [DM_DON_VI].<br>- Cấp thực hiện: Loại cơ quan báo cáo [DM_43]. |
 | 4 | Kỳ số liệu | Loại kỳ báo cáo [DM_44]: Báo cáo năm số liệu thực tế (01/01 - 31/10); Số liệu thống kê năm chính thức (01/01 - 31/12). |
 | 5 | Tham số mặc định | Khi mở màn hình, bộ lọc, loại biểu đồ, chỉ tiêu lấy theo cấu hình đang "Áp dụng" tại [MH02 - Cấu hình lựa chọn hình thức hiển thị](#db-mh02); chưa có cấu hình: Biểu đồ cột, chỉ tiêu đầu tiên của màn hình.<br>- Năm mặc định: năm hiện tại đối với dữ liệu vụ việc; năm đánh giá gần nhất đã có kết quả đối với dữ liệu chấm điểm. |
 | 6 | Loại biểu đồ | Mỗi màn hình phân tích có 03 loại: Biểu đồ cột, Biểu đồ tròn, Biểu đồ hình sin (đường cong dạng sóng đi qua đúng các điểm số liệu, thể hiện xu hướng theo thời gian).<br>- Chuyển loại biểu đồ bằng nhóm nút "Cột / Tròn / Hình sin" tại góc phải khối biểu đồ, áp dụng ngay, không cần Tìm kiếm.<br>- Biểu đồ tròn thể hiện cơ cấu (tỷ trọng); chú giải hiển thị giá trị và tỷ lệ %.<br>- Di chuột vào biểu đồ hiển thị giá trị chi tiết. |
@@ -69,7 +69,7 @@
 | **I. Lọc, tìm kiếm thông tin** | - | - | - | Control UI: Khối thu gọn/mở rộng, mặc định mở rộng. |
 | Năm | Enum(Integer(4)) | Có | Năm hiện tại | Control UI: Hộp chọn, 05 năm gần nhất. |
 | Loại kỳ báo cáo | Enum(String(100)) | Có | Báo cáo năm số liệu thực tế (01/01 - 31/10) | Control UI: Hộp chọn.<br>- Tham chiếu [DM_44]. |
-| Tỉnh/Thành phố | Enum(String(100)) | Không | Toàn quốc | Control UI: Hộp chọn.<br>- Gồm: Toàn quốc và các tỉnh, thành phố [DM_13]. |
+| Tỉnh/Thành phố | Enum(String(100)) | Không | Toàn quốc | Control UI: Hộp chọn.<br>- Gồm: Toàn quốc và các tỉnh, thành phố theo Danh mục địa bàn (cấp Tỉnh/Thành phố). |
 | **II. Thẻ số liệu** | - | - | - | Control UI: Hàng thẻ số liệu. |
 | Vụ việc thụ lý | Integer(10) | - | Theo dữ liệu | Số vụ việc thụ lý trong kỳ. |
 | Đã giải quyết | Integer(10) | - | Theo dữ liệu | Số vụ việc đã giải quyết; dòng phụ "Tỷ lệ [x]%" = Đã giải quyết / Thụ lý. |
@@ -228,7 +228,7 @@
 | :--- | :--- | :--- | :--- | :--- |
 | Năm | Enum(Integer(4)) | Có | Năm hiện tại | Control UI: Hộp chọn. |
 | Loại kỳ báo cáo | Enum(String(100)) | Có | Báo cáo năm số liệu thực tế (01/01 - 31/10) | Tham chiếu [DM_44]. |
-| Tỉnh/Thành phố | Enum(String(100)) | Không | Toàn quốc | Tham chiếu [DM_13]. |
+| Tỉnh/Thành phố | Enum(String(100)) | Không | Toàn quốc | Tham chiếu Danh mục địa bàn (cấp Tỉnh/Thành phố). |
 | Cấp thực hiện | Enum(String(100)) | Không | Tất cả | Tham chiếu [DM_43]. |
 | Chỉ tiêu | Enum(String(255)) | Có | Số vụ việc thụ lý | Gồm: Số vụ việc thụ lý; Số vụ việc đã giải quyết; Số tiền đã chi trả (triệu đồng). |
 
@@ -253,7 +253,7 @@
 | :--- | :--- | :--- | :--- | :--- |
 | Năm | Enum(Integer(4)) | Có | Năm hiện tại | Control UI: Hộp chọn. |
 | Loại kỳ báo cáo | Enum(String(100)) | Có | Báo cáo năm số liệu thực tế (01/01 - 31/10) | Tham chiếu [DM_44]. |
-| Tỉnh/Thành phố | Enum(String(100)) | Không | Toàn quốc | Tham chiếu [DM_13]. |
+| Tỉnh/Thành phố | Enum(String(100)) | Không | Toàn quốc | Tham chiếu Danh mục địa bàn (cấp Tỉnh/Thành phố). |
 | Phạm vi trách nhiệm bồi thường | Enum(String(100)) | Không | Tất cả | Tham chiếu [DM_22]. |
 | Chỉ tiêu | Enum(String(255)) | Có | Số vụ việc thụ lý | Như [MH05](#db-mh05). |
 

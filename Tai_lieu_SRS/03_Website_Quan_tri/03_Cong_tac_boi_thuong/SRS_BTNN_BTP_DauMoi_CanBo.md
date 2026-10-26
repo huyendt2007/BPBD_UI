@@ -20,7 +20,7 @@
 
 \- Phạm vi dữ liệu toàn quốc: cán bộ Bộ Tư pháp quản lý đầu mối của tất cả Tỉnh/Thành phố; Tỉnh/Thành phố và Đơn vị không phụ thuộc đơn vị của người dùng đăng nhập.
 
-\- Tỉnh/Thành phố tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. Đơn vị tham chiếu Danh mục các đơn vị trên hệ thống `[DM_DON_VI]` (màn hình Quản lý cơ cấu tổ chức), lọc theo Tỉnh/Thành phố đã chọn.
+\- Tỉnh/Thành phố tham chiếu Danh mục địa bàn (cấp Tỉnh/Thành phố). Đơn vị tham chiếu Danh mục các đơn vị trên hệ thống `[DM_DON_VI]` (màn hình Quản lý cơ cấu tổ chức), lọc theo Tỉnh/Thành phố đã chọn.
 
 ---
 
@@ -56,7 +56,7 @@ flowchart TD
 | **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Họ và tên | String(255) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập họ và tên...".<br>- Tìm gần đúng; không phân biệt hoa thường, có dấu/không dấu. |
 | Số điện thoại | String(50) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập số điện thoại...".<br>- Tìm gần đúng; không phân biệt hoa thường, có dấu/không dấu. |
-| Tỉnh/Thành phố | Enum(String(100)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục Tỉnh/Thành phố [DM_13]. |
+| Tỉnh/Thành phố | Enum(String(100)) | Không | Tất cả | Control UI: Combobox.<br>- Tham chiếu Danh mục địa bàn (cấp Tỉnh/Thành phố). |
 | Vai trò phụ trách | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Lãnh đạo phụ trách công tác BTNN<br>+ Công chức đầu mối |
 | Trạng thái | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Đang phụ trách<br>+ Đã ngừng phụ trách |
 | **II. Bảng danh sách kết quả** | - | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải Trang 1.<br>- Sắp xếp mặc định: theo "Ngày tạo" giảm dần.<br>- Trạng thái không có dữ liệu (Empty State): bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
@@ -149,7 +149,7 @@ flowchart TD
 | Ngày tạo/cập nhật | - | - | Theo dữ liệu hệ thống | Control UI: Label<br>Định dạng `dd/mm/yyyy`. |
 | Chế độ | - | - | Theo ngữ cảnh | Control UI: Label<br>Hiển thị "Thêm mới" hoặc "Sửa". |
 | **II. Thông tin đầu mối** |  |  |  |  |
-| Tỉnh/Thành phố | Enum(String(100)) | Có | Trống | Control UI: Combobox.<br>- Tham chiếu Danh mục Tỉnh/Thành phố [DM_13], hiển thị toàn bộ Tỉnh/Thành phố trên toàn quốc.<br>- Không lấy theo đơn vị của người dùng đăng nhập; cán bộ Bộ Tư pháp chọn Tỉnh/Thành phố nơi đầu mối công tác. |
+| Tỉnh/Thành phố | Enum(String(100)) | Có | Trống | Control UI: Combobox.<br>- Tham chiếu Danh mục địa bàn (cấp Tỉnh/Thành phố), hiển thị toàn bộ Tỉnh/Thành phố trên toàn quốc.<br>- Không lấy theo đơn vị của người dùng đăng nhập; cán bộ Bộ Tư pháp chọn Tỉnh/Thành phố nơi đầu mối công tác. |
 | Đơn vị | Enum(String(255)) | Có | Sở Tư pháp của Tỉnh/Thành phố đã chọn | Control UI: Combobox.<br>- Tham chiếu Danh mục các đơn vị trên hệ thống [DM_DON_VI], lọc theo quy tắc chọn Đơn vị bên dưới.<br>- Khóa, hiển thị "-- Chọn Tỉnh/Thành phố trước --" khi chưa chọn `Tỉnh/Thành phố`. |
 | Họ và tên | String(100) | Có | Trống | Control UI: Text input.<br>- Placeholder: "Nhập họ và tên...". |
 | Chức vụ | String(100) | Có | Trống | Control UI: Text input.<br>- Placeholder: "Nhập chức vụ...". |
@@ -160,7 +160,7 @@ flowchart TD
 | Trạng thái | Enum(String(50)) | Có | Đang phụ trách | Control UI: Combobox.<br>Gồm:<br>+ Đang phụ trách<br>+ Đã ngừng phụ trách |
 | Ghi chú | Text(500) | Không | Trống | Control UI: Textarea.<br>- Placeholder: "Nhập ghi chú...". |
 | **III. Tài liệu đính kèm** |  |  |  |  |
-| Tài liệu đính kèm | List(File) | Không | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu`, `File đính kèm`, `Thao tác tài liệu`; nút `+ Thêm dòng` dưới bảng.<br>- Cột `Tên tài liệu`: Text input. Placeholder: "Nhập tên tài liệu...".<br>- Cột `File đính kèm`: khi dòng chưa có file hiển thị nút `Tải lên`; khi đã có file hiển thị tên file.<br>- Cột `Thao tác tài liệu` gồm:<br>+ Xem file (khóa mờ khi dòng chưa có file)<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
+| Tài liệu đính kèm | List(File) | Không | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Cột `Tên tài liệu, văn bản`: Text input. Placeholder: "Nhập tên tài liệu, văn bản".<br>- Cột `File đính kèm`: khi dòng chưa có file hiển thị nút `Tải file`; khi đã có file hiển thị tên file.<br>- Cột `Thao tác` gồm:<br>+ Xem file (khóa mờ khi dòng chưa có file)<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
 
 **Quy tắc chọn Đơn vị theo Tỉnh/Thành phố**
 
@@ -185,8 +185,8 @@ flowchart TD
 |  |  |  | **TH6 - Hợp lệ - Sửa**: Hệ thống cập nhật bản ghi, đóng màn hình, tải lại danh sách và hiển thị [MSG-SUC-SYS-002]. |
 | 2 | Tải lên | Button | Hệ thống mở trình chọn file cho dòng tài liệu tương ứng; sau khi chọn, hiển thị tên file tại cột `File đính kèm`. |
 | 3 | Xem file | Link | Hệ thống mở file của dòng tài liệu tại một tab trình duyệt mới. |
-| 4 | Xóa | Link | Hệ thống mở [Popup Xác nhận xóa](#433196-popup-xác-nhận-xóa). Nếu chọn `Đồng ý`, hệ thống xóa dòng tài liệu khỏi bảng; nếu chọn `Hủy bỏ`, hệ thống giữ nguyên dòng tài liệu. |
-| 5 | Thêm dòng | Button | Hệ thống thêm 01 dòng tài liệu trống vào cuối bảng tài liệu đính kèm. |
+| 4 | Xóa | Icon button | Hệ thống xóa dòng tài liệu khỏi bảng ngay, không hiển thị popup xác nhận. |
+| 5 | Thêm tài liệu | Button | Hệ thống thêm 01 dòng tài liệu trống vào cuối bảng tài liệu đính kèm. |
 | 6 | Hủy bỏ | Button | Khi người dùng click nút "Hủy bỏ" ở chân màn hình hoặc nút "Đóng" ở góc phải tiêu đề, hệ thống đóng màn hình, không lưu dữ liệu và quay lại [MH01 - Màn hình Danh sách đầu mối Lãnh đạo, công chức BTNN](#433193-mh01---màn-hình-danh-sách-đầu-mối-lãnh-đạo-công-chức-btnn). |
 
 ---

@@ -95,8 +95,8 @@ Cho phép quản lý và tra cứu cơ cấu tổ chức các cơ quan, đơn v�
 | Loại cơ quan, đơn vị | String(50) | Có | Trống (Thêm mới) / Theo bản ghi (Sửa) | - Control UI: Ô nhập có gợi ý (Autocomplete).<br>- Placeholder: "Nhập tên loại cơ quan".<br>- Danh sách gợi ý gồm các giá trị đang hoạt động của Danh mục Loại cơ quan [DM_57] có tên chứa nội dung đã gõ.<br>- Tìm gần đúng, không phân biệt hoa thường, nhập có dấu hoặc không dấu.<br>- Không có giá trị phù hợp: hiển thị "Không tìm thấy loại cơ quan phù hợp".<br>- Người dùng phải chọn 01 giá trị trong danh sách gợi ý.<br>- Sửa nội dung đã chọn thì bỏ giá trị đã chọn. |
 | Email | String(100) | Không | Trống (Thêm mới) / Theo bản ghi (Sửa) | - Control UI: Input text.<br>- Placeholder: "Nhập email".<br>- Nếu có nhập: phải đúng định dạng email. |
 | Số điện thoại | String(10) | Không | Trống (Thêm mới) / Theo bản ghi (Sửa) | - Control UI: Input text.<br>- Placeholder: "Nhập số điện thoại".<br>- Nếu có nhập: phải gồm đúng 10 chữ số. |
-| Tỉnh/Thành phố | Enum(String(100)) | Có | `-- Chọn Tỉnh/Thành phố --` (Thêm mới) / Theo bản ghi (Sửa) | - Control UI: Combobox.<br>- Danh sách lấy theo Danh mục Tỉnh/Thành phố [DM_13], chỉ gồm giá trị đang hoạt động.<br>- Khi thay đổi: tải lại danh sách `Phường/Xã` và đưa `Phường/Xã` về `-- Chọn Phường/Xã --`. |
-| Phường/Xã | Enum(String(100)) | Không | `-- Chọn Phường/Xã --` (Thêm mới) / Theo bản ghi (Sửa) | - Control UI: Combobox.<br>- Danh sách lấy theo Danh mục Xã/Phường [DM_15], chỉ gồm Phường/Xã thuộc `Tỉnh/Thành phố` đã chọn.<br>- Chưa chọn `Tỉnh/Thành phố`: trường bị khóa. |
+| Tỉnh/Thành phố | Enum(String(100)) | Có | `-- Chọn Tỉnh/Thành phố --` (Thêm mới) / Theo bản ghi (Sửa) | - Control UI: Combobox.<br>- Danh sách lấy theo Danh mục địa bàn (cấp Tỉnh/Thành phố), chỉ gồm giá trị đang hoạt động.<br>- Khi thay đổi: tải lại danh sách `Phường/Xã` và đưa `Phường/Xã` về `-- Chọn Phường/Xã --`. |
+| Phường/Xã | Enum(String(100)) | Không | `-- Chọn Phường/Xã --` (Thêm mới) / Theo bản ghi (Sửa) | - Control UI: Combobox.<br>- Danh sách lấy theo Danh mục địa bàn (cấp Phường/Xã), chỉ gồm Phường/Xã thuộc `Tỉnh/Thành phố` đã chọn.<br>- Chưa chọn `Tỉnh/Thành phố`: trường bị khóa. |
 | Địa chỉ chi tiết | String(500) | Không | Trống (Thêm mới) / Theo bản ghi (Sửa) | - Control UI: Input text.<br>- Placeholder: "Nhập số nhà, tên đường". |
 | Trạng thái | Enum(String(50)) | Có | Đang hoạt động (Thêm mới) / Theo bản ghi (Sửa) | - Control UI: Combobox.<br>- Gồm:<br>+ Đang hoạt động<br>+ Ngừng hoạt động |
 | Lưu | String(50) | - | - | - Control UI: Button.<br>- Luôn hiển thị tại footer popup. |
@@ -201,8 +201,8 @@ Cho phép quản lý và tra cứu cơ cấu tổ chức các cơ quan, đơn v�
 | 6 | F | Loại cơ quan, đơn vị (*) | Text(255) | Có | - Nhập đúng Tên loại cơ quan trong Danh mục Loại cơ quan [DM_57], đang hoạt động; không phân biệt hoa thường.<br>- Chọn từ danh sách thả xuống tại sheet `Du_lieu`. |
 | 7 | G | Email | Text(100) | Không | - Nếu có nhập: phải đúng định dạng email. |
 | 8 | H | Số điện thoại | Text(10) | Không | - Định dạng ô: Text, để giữ số 0 ở đầu.<br>- Nếu có nhập: phải gồm đúng 10 chữ số. |
-| 9 | I | Tỉnh/Thành phố (*) | Text(100) | Có | - Nhập đúng tên Tỉnh/Thành phố trong Danh mục Tỉnh/Thành phố [DM_13], đang hoạt động; không phân biệt hoa thường. |
-| 10 | J | Phường/Xã | Text(100) | Không | - Nếu có nhập: phải là tên Phường/Xã trong Danh mục Xã/Phường [DM_15], đang hoạt động và thuộc `Tỉnh/Thành phố` tại cột I. |
+| 9 | I | Tỉnh/Thành phố (*) | Text(100) | Có | - Nhập đúng tên Tỉnh/Thành phố trong Danh mục địa bàn (cấp Tỉnh/Thành phố), đang hoạt động; không phân biệt hoa thường. |
+| 10 | J | Phường/Xã | Text(100) | Không | - Nếu có nhập: phải là tên Phường/Xã trong Danh mục địa bàn (cấp Phường/Xã), đang hoạt động và thuộc `Tỉnh/Thành phố` tại cột I. |
 | 11 | K | Địa chỉ chi tiết | Text(500) | Không | - Tối đa 500 ký tự. |
 | 12 | L | Trạng thái | Text(50) | Không | - Chỉ nhận `Đang hoạt động` hoặc `Ngừng hoạt động`; chọn từ danh sách thả xuống.<br>- Bỏ trống: Thêm mới thì ghi nhận `Đang hoạt động`; cập nhật thì giữ nguyên trạng thái hiện tại. |
 
@@ -258,8 +258,8 @@ Cho phép quản lý và tra cứu cơ cấu tổ chức các cơ quan, đơn v�
 | 17 | Email | Vượt quá 100 ký tự | Email vượt quá 100 ký tự |
 | 18 | Số điện thoại | Có nhập nhưng không gồm đúng 10 chữ số | Số điện thoại không hợp lệ (yêu cầu 10 chữ số) |
 | 19 | Tỉnh/Thành phố | Bỏ trống | Tỉnh/Thành phố không được để trống |
-| 20 | Tỉnh/Thành phố | Không có trong Danh mục Tỉnh/Thành phố hoặc đã ngừng hoạt động | Tỉnh/Thành phố không tồn tại hoặc đã ngừng hoạt động |
-| 21 | Phường/Xã | Có nhập nhưng không có trong Danh mục Xã/Phường, đã ngừng hoạt động hoặc không thuộc Tỉnh/Thành phố đã nhập | Phường/Xã không tồn tại hoặc không thuộc Tỉnh/Thành phố đã nhập |
+| 20 | Tỉnh/Thành phố | Không có trong Danh mục địa bàn (cấp Tỉnh/Thành phố) hoặc đã ngừng hoạt động | Tỉnh/Thành phố không tồn tại hoặc đã ngừng hoạt động |
+| 21 | Phường/Xã | Có nhập nhưng không có trong Danh mục địa bàn (cấp Phường/Xã), đã ngừng hoạt động hoặc không thuộc Tỉnh/Thành phố đã nhập | Phường/Xã không tồn tại hoặc không thuộc Tỉnh/Thành phố đã nhập |
 | 22 | Địa chỉ chi tiết | Vượt quá 500 ký tự | Địa chỉ chi tiết vượt quá 500 ký tự |
 | 23 | Trạng thái | Có nhập nhưng khác `Đang hoạt động`, `Ngừng hoạt động` | Trạng thái không hợp lệ (chỉ nhận Đang hoạt động hoặc Ngừng hoạt động) |
 

@@ -1832,8 +1832,6 @@
             const list = (typeof allTypes !== 'undefined' && allTypes.length > 0) ? allTypes : (typeof typeList !== 'undefined' ? typeList : []);
             const typeObj = list.find(t => t.code === typeCode);
             if (typeObj && typeObj.parentTypeCode) return typeObj.parentTypeCode;
-            if (typeCode === 'DM_14') return 'DM_13';
-            if (typeCode === 'DM_15') return 'DM_14';
             // Chức vụ gắn với Loại cơ quan
             if (typeCode === 'DM_58') return 'DM_57';
             return null;

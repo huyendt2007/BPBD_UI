@@ -95,7 +95,7 @@
             { t: 'Trình thông báo chi trả', ic: 'fa-solid fa-paper-plane', cls: 'edit', on: tb && kptbCanSubmit(item), js: "kptbOpenSign('" + id + "')", off: 'chỉ thực hiện với bản ghi Chi trả tiền bồi thường Chờ thông báo chi trả, Đề nghị cấp bổ sung kinh phí, Bị từ chối' },
             { t: 'Đề nghị cấp bổ sung kinh phí', ic: 'fa-solid fa-file-invoice-dollar', cls: '', on: tb && st === KPTB_ST.WAIT, js: "kptbOpenSupp('" + id + "')", off: 'chỉ thực hiện với bản ghi Chi trả tiền bồi thường Chờ thông báo chi trả' },
             { t: 'Cập nhật chi trả', ic: 'fa-solid fa-hand-holding-dollar', cls: 'accept', on: st === 'Chờ chi trả' && !elig, js: "kpuxOpenPay('" + id + "')", off: (st === 'Chờ chi trả' && elig) ? 'khoản chi đã quá hạn 03 năm kể từ ngày nhận thông báo, chỉ được Sung quỹ nhà nước' : 'chỉ thực hiện với bản ghi Chờ chi trả còn trong hạn 03 năm' },
-            { t: 'Sung quỹ nhà nước', ic: 'fa-solid fa-building-columns', cls: 'reject', on: elig, js: "forfeitProposalDirect('" + id + "')", dt: tb ? "kptbOpenForfeit('" + id + "')" : "kpdtGo('forfeitProposalDirect','" + id + "')", off: 'chỉ thực hiện với bản ghi Chờ chi trả đã quá hạn 03 năm kể từ ngày nhận thông báo' }
+            { t: 'Sung quỹ nhà nước', ic: 'fa-solid fa-building-columns', cls: 'reject', on: elig, js: "kpuxOpenForfeit('" + id + "')", off: 'chỉ thực hiện với bản ghi Chờ chi trả đã quá hạn 03 năm kể từ ngày nhận thông báo' }
         ];
     }
     function actsHtml(item) {
@@ -152,7 +152,7 @@
     function headBtn(cls, icon, label, js) { return '<button type="button" class="btn ' + cls + ' btn-sm" onclick="' + js + '"><i class="fa-solid ' + icon + '"></i> ' + label + '</button>'; }
     function noticeCardHtml(item) {
         var st = kpNormStatus(item.status);
-        var canEdit = kpRole() !== 'lanh-dao' && st === 'Chờ chi trả' && !payId;
+        var canEdit = kpRole() !== 'lanh-dao' && st === 'Chờ chi trả' && !payId && !ffId;
         var editing = canEdit && ntEditId === item.id;
         var title = 'Thông tin thông báo chi trả tiền bồi thường và hạn nhận tiền bồi thường';
         var btns = editing
@@ -205,7 +205,9 @@
             tlktMount('kpuxNt', 'kpuxNtTlkt', { required: false, rows: (item.noticeFiles || []).slice(), secClass: '', titleClass: 'form-label', noLeader: true });
             if (window.flatpickr) flatpickr('#kpuxNtDate', { dateFormat: 'd/m/Y', allowInput: true, maxDate: new Date(), onChange: function () { window.kpuxNtPreview(); } });
         }
+        extraCards(item, body);
         if (payId === item.id) renderPayMode(item, body);
+        if (ffId === item.id) renderFfMode(item, body);
     }
 
     // ================= 4. Cập nhật chi trả =================
@@ -269,7 +271,7 @@
         if (kpNormStatus(item.status) !== 'Chờ chi trả') { showToast('Chỉ Cập nhật chi trả với bản ghi Chờ chi trả.', 'warning'); return; }
         if (getTreasuryInfo(item).isEligible) { showToast('Khoản chi đã quá hạn 03 năm kể từ ngày nhận thông báo, chỉ được thực hiện Sung quỹ nhà nước.', 'warning'); return; }
         if (typeof kptbCloseView === 'function') kptbCloseView();
-        payId = item.id; ntEditId = null;
+        payId = item.id; ntEditId = null; ffId = null; rcEditId = null;
         kpdtOpen(item.id, { kpuxKeep: true });
         setTimeout(focusPay, 30);
     };
@@ -355,6 +357,152 @@
         showToast('Lưu thông tin thông báo chi trả tiền bồi thường thành công!', 'success');
     };
 
+    // ================= 6. Sung quỹ nhà nước (dạng màn hình chi tiết, mọi Loại kinh phí) =================
+    var ffId = null;
+    var FF_REASON = 'Người yêu cầu bồi thường đã quá thời hạn 03 năm kể từ ngày nhận thông báo chi trả nhưng không đến nhận tiền bồi thường theo quy định của Luật Trách nhiệm bồi thường của Nhà nước.';
+    // Khối Thông tin Sung quỹ nhà nước (chỉ xem) cho Loại Tạm ứng kinh phí: cùng cấu trúc khối tại kpdtPayBody
+    function sqCardHtml(item) {
+        var g = '<div class="kpdt-grid">' + kpdtFld('Số chứng từ / quyết định sung quỹ', esc(item.treasuryVoucherNo)) + kpdtFld('Ngày sung quỹ', esc(item.treasuryForfeitDate))
+            + kpdtFld('Số tiền sung quỹ (VNĐ)', item.treasuryAmount != null ? fmt(item.treasuryAmount) : '') + kpdtFld('Căn cứ / lý do sung quỹ', esc(item.treasuryReason), true)
+            + '<div class="kpdt-full">' + kpdtDocsHtml(item.treasuryFile || []) + '</div></div>';
+        return kpdtCard('fa-building-columns', 'Thông tin Sung quỹ nhà nước', g);
+    }
+    function renderFfMode(item, body) {
+        Array.prototype.forEach.call(body.querySelectorAll(':scope > .kpdt-card'), function (c) { c.classList.add('collapsed'); });
+        var info = getTreasuryInfo(item);
+        var html = '<div class="kpdt-card kpux-pay" id="kpuxFfCard"><div class="kpdt-card-head"><i class="fa-solid fa-building-columns"></i> Thông tin sung quỹ Nhà nước</div><div class="kpdt-card-body"><div class="kpux-form">'
+            + '<div class="kpux-f"><span class="form-label">Ngày người yêu cầu nhận thông báo</span><div class="kpux-ro">' + esc(item.noticeReceivedDate || '-') + '</div></div>'
+            + '<div class="kpux-f"><span class="form-label">Hạn nhận tiền bồi thường</span><div class="kpux-ro">' + esc(info.deadlineText || '-') + '</div></div>'
+            + '<div class="kpux-f kpux-span2"><span class="form-label">Số tiền sung quỹ (VNĐ)</span><div class="kpux-ro">' + fmt(info.unpaid) + '</div></div>'
+            + fld('kpuxFfNo', 'Số chứng từ / quyết định sung quỹ', true, '', 'maxlength="100" placeholder="Nhập số chứng từ..."')
+            + fld('kpuxFfDate', 'Ngày sung quỹ', true, todayText(), 'placeholder="dd/mm/yyyy"')
+            + '<div class="kpux-f kpux-full"><label class="form-label" for="kpuxFfReason">Căn cứ / lý do sung quỹ<span class="kpux-req">*</span></label><textarea class="form-control" id="kpuxFfReason" rows="3" maxlength="2000" placeholder="Nhập căn cứ, lý do sung quỹ..." oninput="kpuxClr(this)">' + esc(FF_REASON) + '</textarea><div class="kpux-err" id="kpuxFfReasonErr">Đây là trường bắt buộc</div></div>'
+            + '<div class="kpux-f kpux-full" id="kpuxFfTlkt"></div>'
+            + '</div></div></div>';
+        var hist = el('kpdtHistCard');
+        if (hist && hist.parentNode === body) hist.insertAdjacentHTML('beforebegin', html); else body.insertAdjacentHTML('beforeend', html);
+        if (typeof tlktMount === 'function') tlktMount('kpuxFf', 'kpuxFfTlkt', { required: false, rows: [], secClass: '', titleClass: 'form-label', noLeader: true });
+        if (window.flatpickr) flatpickr('#kpuxFfDate', { dateFormat: 'd/m/Y', allowInput: true, maxDate: new Date() });
+        el('kpdtTitle').innerHTML = '<i class="fa-solid fa-building-columns"></i> CẬP NHẬT SUNG QUỸ NHÀ NƯỚC: ' + esc(item.code);
+        el('kpdtFoot').innerHTML = '<button type="button" class="btn btn-secondary" onclick="kpuxFfCancel()"><i class="fa-solid fa-xmark"></i> Hủy</button>'
+            + '<button type="button" class="btn btn-danger" onclick="kpuxFfSave()"><i class="fa-solid fa-building-columns"></i> Hoàn thành sung quỹ</button>';
+    }
+    window.kpuxOpenForfeit = function (id) {
+        var item = kpdtFind(id); if (!item) return;
+        if (!getTreasuryInfo(item).isEligible) { showToast('Khoản này chưa đủ điều kiện sung quỹ (chưa quá thời hạn 03 năm kể từ ngày nhận thông báo).', 'warning'); return; }
+        if (typeof kptbCloseView === 'function') kptbCloseView();
+        ffId = item.id; payId = null; ntEditId = null; rcEditId = null;
+        kpdtOpen(item.id, { kpuxKeep: true });
+        setTimeout(function () { var c = el('kpuxFfCard'); if (!c) return; c.scrollIntoView({ block: 'start' }); var h = c.querySelector('.kpdt-card-head'); if (h) { h.setAttribute('tabindex', '-1'); try { h.focus({ preventScroll: true }); } catch (e) { h.focus(); } } }, 30);
+    };
+    window.kpuxFfCancel = function () { var it = kpdtFind(ffId); ffId = null; if (it) { kpdtRender(it); window.scrollTo(0, 0); } };
+    window.kpuxFfSave = function () {
+        var item = kpdtFind(ffId); if (!item) return;
+        var info = getTreasuryInfo(item);
+        if (!info.isEligible) { showToast('Khoản chi này không còn đủ điều kiện sung quỹ.', 'warning'); return; }
+        var v = function (id) { return el(id) ? el(id).value.trim() : ''; };
+        var first = null;
+        ['kpuxFfNo', 'kpuxFfDate', 'kpuxFfReason'].forEach(function (id) { if (!v(id)) { mark(id); if (!first) first = id; } });
+        var d = parseDateViGlobal(v('kpuxFfDate'));
+        if (v('kpuxFfDate') && (!d || d > today())) { mark('kpuxFfDate', d ? 'Ngày sung quỹ không được lớn hơn ngày hiện tại' : 'Ngày không hợp lệ, định dạng dd/mm/yyyy'); if (!first) first = 'kpuxFfDate'; }
+        var tlOk = typeof tlktValidate === 'function' ? tlktValidate('kpuxFf') : true;
+        if (first) { el(first).focus(); return; }
+        if (!tlOk) return;
+        var files = typeof tlktGet === 'function' ? tlktGet('kpuxFf') : [];
+        var no = v('kpuxFfNo'), dt = v('kpuxFfDate'), reason = v('kpuxFfReason');
+        showConfirmModal('Xác nhận hoàn thành thủ tục nộp toàn bộ số tiền ' + fmt(info.unpaid) + ' VNĐ của bản ghi ' + esc(item.code) + ' vào ngân sách nhà nước? Sau khi xác nhận, bản ghi chuyển trạng thái Sung quỹ nhà nước.', function () {
+            item.status = 'Sung quỹ nhà nước';
+            item.treasuryForfeitDate = dt; item.treasuryVoucherNo = no; item.treasuryAmount = info.unpaid; item.treasuryReason = reason; item.treasuryFile = files;
+            item.payoutAmountReal = Math.max(0, (Number(item.amount) || 0) - info.unpaid);
+            var note = 'Số chứng từ ' + no + '; ngày ' + dt + '; số tiền ' + fmt(info.unpaid) + ' đồng.';
+            if (isTb(item)) kptbHist(item, 'Sung quỹ nhà nước', note); else if (isQd(item)) qdtuHist(item, 'Sung quỹ nhà nước', note);
+            saveProposalsToLocal();
+            ffId = null;
+            renderProposalsTable();
+            if (typeof updateBudgetStats === 'function') updateBudgetStats();
+            window.scrollTo(0, 0);
+            showToast('Cập nhật sung quỹ nhà nước thành công cho bản ghi ' + item.code + '!', 'success');
+        }, 'Xác nhận hoàn thành thủ tục sung quỹ nhà nước');
+    };
+
+    // ================= 7. Khối Thu hồi kinh phí (Chờ thu hồi / đã có dữ liệu thu hồi) =================
+    var rcEditId = null;
+    function rcBasis(item) { var r = item.recovery || {}; var b = item.statusChangeBasis || item.statusBasis || {}; return { no: r.basisDecisionNo || b.decisionNo || '', date: r.basisDecisionDate || b.decisionDate || '', type: b.decisionType || '' }; }
+    function rcData(item) {
+        var r = item.recovery || {};
+        var paid = Number(item.payoutAmountReal) || Number((item.kptbPayment || {}).amount) || 0;
+        var need = r.amountToRecover != null ? Number(r.amountToRecover) : paid;
+        var got = Number(r.amountRecovered) || 0;
+        return { need: need, got: got, remain: Math.max(0, need - got), date: r.recordDate || '', note: r.note || '', files: r.files || [] };
+    }
+    function rcVisible(item) { return !!item.recovery || kpNormStatus(item.status) === 'Chờ thu hồi'; }
+    function rcCardHtml(item) {
+        var d = rcData(item), b = rcBasis(item);
+        var canEdit = kpRole() !== 'lanh-dao' && kpNormStatus(item.status) === 'Chờ thu hồi' && !payId && !ffId;
+        var editing = canEdit && rcEditId === item.id;
+        var btns = editing
+            ? headBtn('btn-secondary', 'fa-xmark', 'Hủy', 'kpuxRcCancel()') + headBtn('btn-primary', 'fa-floppy-disk', 'Lưu', "kpuxRcSave('" + item.id + "')")
+            : (canEdit ? headBtn('btn-outline-primary', 'fa-hand-holding-dollar', 'Ghi nhận thu hồi', "kpuxRcEdit('" + item.id + "')") : '');
+        var basis = b.no ? '<a href="javascript:void(0)" style="color:var(--primary-light); text-decoration:underline;" onclick="showToast(\'Giả lập mở chi tiết Quyết định ' + esc(b.no) + '\', \'info\')">' + esc(b.no) + (b.date ? ' ngày ' + esc(b.date) : '') + '</a>' + (b.type ? '<div class="kpdt-words" style="font-style:normal;">' + esc(b.type) + '</div>' : '') : '';
+        var view = '<div class="kpdt-grid">' + kpdtFld('Căn cứ thu hồi', basis) + kpdtFld('Số tiền phải thu hồi (VNĐ)', fmt(d.need)) + kpdtFld('Số tiền đã thu hồi lũy kế (VNĐ)', fmt(d.got)) + kpdtFld('Số tiền còn phải thu hồi (VNĐ)', fmt(d.remain))
+            + (d.date ? kpdtFld('Ngày ghi nhận thu hồi gần nhất', esc(d.date)) : '') + (d.note ? kpdtFld('Ghi chú thu hồi', esc(d.note), true) : '')
+            + '<div class="kpdt-full">' + kpdtDocsHtml(d.files) + '</div></div>';
+        var form = editing ? '<div class="kpux-form" style="margin-top:14px; padding-top:12px; border-top:1px dashed #e2e8f0;">'
+            + fld('kpuxRcDate', 'Ngày ghi nhận thu hồi', true, todayText(), 'placeholder="dd/mm/yyyy"')
+            + fld('kpuxRcAmount', 'Số tiền thu hồi lần này (VNĐ)', true, '', 'maxlength="20" style="text-align:right;" oninput="formatNumberInput(this); kpuxClr(this)" placeholder="Nhập số tiền thu hồi..."')
+            + '<div class="kpux-f kpux-full"><label class="form-label" for="kpuxRcNote">Ghi chú thu hồi</label><textarea class="form-control" id="kpuxRcNote" rows="2" maxlength="1000" placeholder="Nhập diễn giải quá trình thu hồi..."></textarea></div>'
+            + '<div class="kpux-f kpux-full" id="kpuxRcTlkt"></div></div>' : '';
+        return '<div class="kpdt-card" id="kpuxRcCard"><div class="kpdt-card-head"><i class="fa-solid fa-rotate-left"></i> Thu hồi kinh phí'
+            + (btns ? '<span class="kpux-head-btns" onclick="event.stopPropagation();">' + btns + '</span>' : '') + '</div><div class="kpdt-card-body">' + view + form + '</div></div>';
+    }
+    window.kpuxRcEdit = function (id) { var it = kpdtFind(id); if (!it) return; rcEditId = id; kpdtRender(it); var c = el('kpuxRcCard'); if (c) c.scrollIntoView({ block: 'center' }); };
+    window.kpuxRcCancel = function () { var it = kpdtFind(rcEditId); rcEditId = null; if (it) kpdtRender(it); };
+    window.kpuxRcSave = function (id) {
+        var item = kpdtFind(id); if (!item) return;
+        var d = rcData(item);
+        var v = function (x) { return el(x) ? el(x).value.trim() : ''; };
+        var first = null;
+        ['kpuxRcDate', 'kpuxRcAmount'].forEach(function (x) { if (!v(x)) { mark(x); if (!first) first = x; } });
+        var dd = parseDateViGlobal(v('kpuxRcDate'));
+        if (v('kpuxRcDate') && (!dd || dd > today())) { mark('kpuxRcDate', dd ? 'Ngày ghi nhận thu hồi không được lớn hơn ngày hiện tại' : 'Ngày không hợp lệ, định dạng dd/mm/yyyy'); if (!first) first = 'kpuxRcDate'; }
+        var amt = parseFloat(v('kpuxRcAmount').replace(/\D/g, '')) || 0;
+        if (v('kpuxRcAmount') && amt <= 0) { mark('kpuxRcAmount', 'Số tiền thu hồi phải lớn hơn 0'); if (!first) first = 'kpuxRcAmount'; }
+        var tlOk = typeof tlktValidate === 'function' ? tlktValidate('kpuxRc') : true;
+        if (first) { el(first).focus(); return; }
+        if (amt > d.remain) { showToast('Số tiền thu hồi lần này vượt quá Số tiền còn phải thu hồi (' + fmt(d.remain) + ' đồng).', 'warning'); mark('kpuxRcAmount', 'Không vượt quá Số tiền còn phải thu hồi'); el('kpuxRcAmount').focus(); return; }
+        if (!tlOk) return;
+        var files = typeof tlktGet === 'function' ? tlktGet('kpuxRc') : [];
+        var b = rcBasis(item);
+        var r = item.recovery || (item.recovery = { basisDecisionNo: b.no, basisDecisionDate: b.date, amountToRecover: d.need, amountRecovered: 0, files: [] });
+        if (r.amountToRecover == null) r.amountToRecover = d.need;
+        r.amountRecovered = (Number(r.amountRecovered) || 0) + amt;
+        r.amountRemain = Math.max(0, r.amountToRecover - r.amountRecovered);
+        r.recordDate = v('kpuxRcDate'); r.note = v('kpuxRcNote') || r.note || '';
+        r.files = (r.files || []).concat(files);
+        if (!Array.isArray(r.history)) r.history = [];
+        r.history.push({ date: r.recordDate, amount: amt, note: v('kpuxRcNote'), files: files });
+        var full = r.amountRemain === 0;
+        if (full) item.status = 'Đã thu hồi';
+        var note = 'Ngày ' + r.recordDate + '; số tiền ' + fmt(amt) + ' đồng; còn phải thu hồi ' + fmt(r.amountRemain) + ' đồng.';
+        if (isTb(item)) kptbHist(item, 'Ghi nhận thu hồi', note); else if (isQd(item)) qdtuHist(item, 'Ghi nhận thu hồi', note);
+        saveProposalsToLocal();
+        rcEditId = null;
+        renderProposalsTable();
+        showToast(full ? 'Đã thu hồi đủ 100%. Bản ghi ' + item.code + ' chuyển Đã thu hồi.' : 'Ghi nhận thu hồi thành công. Còn phải thu hồi ' + fmt(r.amountRemain) + ' đồng.', 'success');
+    };
+    // Khối bổ sung trên màn chi tiết: Thông tin Sung quỹ (Tạm ứng), Thu hồi kinh phí
+    function extraCards(item, body) {
+        var hist = el('kpdtHistCard');
+        var add = function (html) { if (hist && hist.parentNode === body) hist.insertAdjacentHTML('beforebegin', html); else body.insertAdjacentHTML('beforeend', html); };
+        if (kpIsAdv(item) && kpNormStatus(item.status) === 'Sung quỹ nhà nước') add(sqCardHtml(item));
+        if (rcVisible(item)) add(rcCardHtml(item));
+        Array.prototype.slice.call(body.querySelectorAll(':scope > .kpdt-card')).forEach(function (c) { if (c.id !== 'kpdtHistCard') makeToggle(c); });
+        if (rcEditId === item.id && el('kpuxRcTlkt') && typeof tlktMount === 'function') {
+            tlktMount('kpuxRc', 'kpuxRcTlkt', { required: false, rows: [], secClass: '', titleClass: 'form-label', noLeader: true });
+            if (window.flatpickr) flatpickr('#kpuxRcDate', { dateFormat: 'd/m/Y', allowInput: true, maxDate: new Date() });
+        }
+    }
+
     // ================= Bọc chức năng sẵn có =================
     injectCss();
     // Footer chi tiết: thao tác theo trạng thái + "Đóng" (thay "Quay lại danh sách")
@@ -372,9 +520,9 @@
     var origRenderDt = kpdtRender;
     kpdtRender = function (item) { var r = origRenderDt.apply(this, arguments); try { postRender(item); } catch (e) { console.error(e); } return r; };
     var origOpen = kpdtOpen;
-    kpdtOpen = function (key, opts) { if (!(opts && opts.kpuxKeep)) { payId = null; ntEditId = null; } return origOpen.apply(this, arguments); };
+    kpdtOpen = function (key, opts) { if (!(opts && opts.kpuxKeep)) { payId = null; ntEditId = null; ffId = null; rcEditId = null; } return origOpen.apply(this, arguments); };
     var origClose = kpdtClose;
-    kpdtClose = function () { payId = null; ntEditId = null; return origClose.apply(this, arguments); };
+    kpdtClose = function () { payId = null; ntEditId = null; ffId = null; rcEditId = null; return origClose.apply(this, arguments); };
     // Tài liệu kèm theo chế độ xem: không có dữ liệu thì không hiển thị bảng
     var origDocs = kpdtDocsHtml;
     kpdtDocsHtml = function (list) { return kpdtDocsNorm(list).length ? origDocs.apply(this, arguments) : ''; };
@@ -383,6 +531,9 @@
     // Cập nhật chi trả: mọi điểm gọi dùng chung màn hình chi tiết
     payProposalDirect = function (id) { window.kpuxOpenPay(id); };
     if (typeof kptbOpenPay === 'function') kptbOpenPay = function (id) { window.kpuxOpenPay(id); };
+    // Sung quỹ nhà nước: mọi điểm gọi dùng chung màn hình chi tiết
+    forfeitProposalDirect = function (id) { window.kpuxOpenForfeit(id); };
+    if (typeof kptbOpenForfeit === 'function') kptbOpenForfeit = function (id) { window.kpuxOpenForfeit(id); };
     var origSync = syncFromLocalStorage;
     syncFromLocalStorage = function () { var r = origSync.apply(this, arguments); sanitize(); return r; };
     var origRender = renderProposalsTable;

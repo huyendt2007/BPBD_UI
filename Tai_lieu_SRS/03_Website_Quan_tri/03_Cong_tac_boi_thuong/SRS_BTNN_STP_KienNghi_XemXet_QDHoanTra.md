@@ -170,7 +170,7 @@ flowchart TD
 | Căn cứ pháp lý kiến nghị | Text(1000) | Không | Khoản 2 Điều 67 Luật Trách nhiệm bồi thường của Nhà nước; khoản 5 Điều 40 Nghị định quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước; Điều 30 Thông tư 08/2019/TT-BTP | Control UI: Textarea.<br>- Placeholder: "Nhập căn cứ pháp lý kiến nghị...".<br>- Cho phép sửa giá trị mặc định. |
 | Nội dung kiến nghị | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Placeholder: "Nhập nội dung kiến nghị...". |
 | **III. Tài liệu kiến nghị đính kèm** |  |  |  |  |
-| Tài liệu kiến nghị đính kèm | List(File) | Không | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu`, `File đính kèm`, `Thao tác tài liệu`; nút `+ Thêm dòng` dưới bảng.<br>- Cột `Tên tài liệu`: Text input. Placeholder: "Nhập tên tài liệu...".<br>- Cột `File đính kèm`: khi dòng chưa có file hiển thị nút `Tải lên`; khi đã có file hiển thị tên file.<br>- Cột `Thao tác tài liệu` gồm:<br>+ Xem file (khóa mờ khi dòng chưa có file)<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
+| Tài liệu kiến nghị đính kèm | List(File) | Không | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Cột `Tên tài liệu, văn bản`: Text input. Placeholder: "Nhập tên tài liệu, văn bản".<br>- Cột `File đính kèm`: khi dòng chưa có file hiển thị nút `Tải file`; khi đã có file hiển thị tên file.<br>- Cột `Thao tác` gồm:<br>+ Xem file (khóa mờ khi dòng chưa có file)<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
 
 ###### 4.3.3.13.5.3. Chức năng trên màn hình
 
@@ -193,8 +193,8 @@ flowchart TD
 | 5 | Liên kết hồ sơ hoàn trả | Link | Hệ thống mở [MH03 - Màn hình Xem chi tiết hồ sơ hoàn trả - SRS Xem xét hoàn trả - Giải quyết bồi thường](SRS_BTNN_GiaiQuyetBT_Xem%20xét%20Hoàn%20trả.md#43357-mh03---màn-hình-xem-chi-tiết-hồ-sơ-hoàn-trả) ở chế độ chỉ xem. |
 | 6 | Tải lên | Button | Hệ thống mở trình chọn file cho dòng tài liệu tương ứng; sau khi chọn, hiển thị tên file tại cột `File đính kèm`. |
 | 7 | Xem file | Link | Hệ thống mở file của dòng tài liệu tại một tab trình duyệt mới. |
-| 8 | Xóa | Link | Hệ thống mở [Popup Xác nhận](#433136-popup-xác-nhận). Nếu chọn `Đồng ý`, hệ thống xóa dòng tài liệu khỏi bảng; nếu chọn `Hủy bỏ`, hệ thống giữ nguyên dòng tài liệu. |
-| 9 | Thêm dòng | Button | Hệ thống thêm 01 dòng tài liệu trống vào cuối bảng tài liệu đính kèm. |
+| 8 | Xóa | Icon button | Hệ thống xóa dòng tài liệu khỏi bảng ngay, không hiển thị popup xác nhận. |
+| 9 | Thêm tài liệu | Button | Hệ thống thêm 01 dòng tài liệu trống vào cuối bảng tài liệu đính kèm. |
 | 10 | Hủy bỏ | Button | Khi người dùng click nút "Hủy bỏ" ở chân màn hình hoặc nút "Đóng" ở góc phải tiêu đề, hệ thống đóng màn hình, không lưu dữ liệu và quay lại [MH01 - Màn hình Danh sách kiến nghị xem xét lại quyết định hoàn trả](#433133-mh01---màn-hình-danh-sách-kiến-nghị-xem-xét-lại-quyết-định-hoàn-trả). |
 
 ---

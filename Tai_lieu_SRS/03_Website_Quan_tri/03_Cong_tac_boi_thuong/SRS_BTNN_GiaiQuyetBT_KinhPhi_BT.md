@@ -106,7 +106,7 @@ flowchart TD
     Q5 -->|Cập nhật Quyết định tạm ứng| B0
     T4 -->|Cập nhật chi trả - trong hạn 03 năm| L[MH03 - Màn hình Cập nhật chi trả]
     L -->|Chi trả 1 lần| T6[Trạng thái: Hoàn thành]
-    T4 -->|Quá hạn 03 năm kể từ ngày nhận thông báo - Sung quỹ nhà nước| S[MH04 / MH11 - Cập nhật sung quỹ nhà nước]
+    T4 -->|Quá hạn 03 năm kể từ ngày nhận thông báo - Sung quỹ nhà nước| S[MH04 - Cập nhật sung quỹ nhà nước]
     S --> T7[Trạng thái: Sung quỹ nhà nước]
     A[MH01 - Danh sách Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường] -->|Row Click - Tạm ứng kinh phí| V[MH23 - Màn hình Chi tiết Tạm ứng kinh phí bồi thường]
     A -->|Row Click - Chi trả tiền bồi thường| V2[MH10 - Màn hình Chi tiết Chi trả tiền bồi thường]
@@ -179,7 +179,7 @@ flowchart TD
 | 14 | Đề nghị cấp bổ sung kinh phí | Icon button | Mở MH08 - Popup Đề nghị cấp bổ sung kinh phí. |
 | 15 | Cập nhật Quyết định tạm ứng | Icon button | Mở [MH20 - Màn hình Tạo Quyết định tạm ứng kinh phí bồi thường - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#kp-mh20) ở chế độ cập nhật. |
 | 16 | Cập nhật chi trả | Icon button | Mở [MH03 - Màn hình Cập nhật chi trả - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#kp-mh03), áp dụng cho mọi Loại kinh phí. |
-| 17 | Sung quỹ nhà nước | Icon button | - Bản ghi theo luồng Chi trả tiền bồi thường: mở MH11 - Popup Cập nhật sung quỹ nhà nước.<br>- Bản ghi còn lại: mở MH04 - Màn hình Cập nhật sung quỹ nhà nước. |
+| 17 | Sung quỹ nhà nước | Icon button | Mở [MH04 - Màn hình Cập nhật sung quỹ nhà nước - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#kp-mh04), áp dụng cho mọi Loại kinh phí. |
 
 ---
 
@@ -234,81 +234,39 @@ flowchart TD
 
 ###### 4.3.3.2.5.1. Màn hình
 
-![Màn hình sung quỹ](images/UC450_StateFund.png)
+![Màn hình cập nhật sung quỹ](images/UC450_Treasury.png)
+
+- Mở từ thao tác `Sung quỹ nhà nước` tại MH01 hoặc Footer màn hình chi tiết, áp dụng cho mọi Loại kinh phí; bản ghi `Chờ chi trả` đã quá hạn 03 năm kể từ ngày người yêu cầu nhận thông báo mà chưa chi trả.
+- Dạng màn hình thay vùng danh sách, cùng màn hình chi tiết của bản ghi:
+  + Loại `Tạm ứng kinh phí`: các khối như [MH23 - Màn hình Chi tiết Tạm ứng kinh phí bồi thường - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#kp-mh23).
+  + Loại `Chi trả tiền bồi thường`: các khối như [MH10 - Màn hình Chi tiết chi trả tiền bồi thường - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#kp-mh10).
+- Các khối của màn hình chi tiết: cùng nội dung, cùng điều kiện hiển thị; mặc định thu gọn; click tiêu đề khối để mở rộng/thu gọn.
+- Khối `Thông tin sung quỹ Nhà nước` đặt sau các khối chi tiết, trước Khối Lịch sử xử lý; mở màn hình: cuộn tới và focus vào khối.
+- Footer nút cố định cuối màn hình.
 
 ###### 4.3.3.2.5.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **1. Khối Thông tin chung đề nghị kinh phí** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin. |
-| Mã đề xuất kinh phí | String(50) | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Loại đề nghị cấp kinh phí | Enum(String(100)) | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Ngày lập đề nghị | Date | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Cán bộ đề xuất xử lý | String(255) | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Cơ quan cấp phát kinh phí | Enum(String(255)) | Không | Theo đề nghị | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Trạng thái đề nghị | Enum(String(50)) | Không | `Chờ chi trả` | Control UI: Badge trạng thái. Dạng chỉ đọc - theo thông tin đề nghị. |
-| Mã vụ việc gốc | String(50) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. Hỗ trợ liên kết xem chi tiết vụ việc gốc. |
-| Cơ quan chịu trách nhiệm | String(255) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Số tiền gốc theo vụ việc (VNĐ) | Decimal(18,0) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
-| **2. Khối Thông tin người yêu cầu bồi thường** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin. |
-| Họ và tên người yêu cầu bồi thường | String(255) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Tỉnh/Thành phố | Enum(String(100)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Phường/Xã | Enum(String(100)) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Địa chỉ chi tiết | Text(1000) | Không | Theo vụ việc | Dạng chỉ đọc - theo thông tin đề nghị. |
-| **3. Khối Bảng nội dung cấp tạm ứng** | Section | - | Thu gọn | Hiển thị khi Loại đề nghị là "Đề nghị tạm ứng". Mặc định ở trạng thái Thu gọn (Collapsed). |
-| STT | Integer(10) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Nội dung tạm ứng | String(500) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Mức đề nghị trong hồ sơ gốc (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
-| Số tiền duyệt cấp tạm ứng (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
-| Tổng cộng tạm ứng (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
-| **4. Khối Bảng nội dung cấp kinh phí bồi thường** | Section | - | Thu gọn | Hiển thị khi Loại đề nghị là "Đề nghị cấp kinh phí bồi thường". Mặc định ở trạng thái Thu gọn (Collapsed). |
-| STT | Integer(10) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Loại thiệt hại được yêu cầu | Enum(String(255)) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Mức đề nghị trong hồ sơ gốc (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
-| Số tiền duyệt cấp bồi thường (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
-| Tổng kinh phí duyệt cấp (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
-| Số tiền tạm ứng đã cấp (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
-| Số tiền thực nhận còn lại (VNĐ) | Decimal(18,0) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
-| **5. Khối Người nhận bồi thường và Phương thức chi trả** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin. |
-| Họ và tên người nhận bồi thường | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Số giấy tờ thân nhân | String(50) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Địa chỉ người nhận bồi thường | Text(1000) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Phương thức chi trả tiền bồi thường | Enum(String(100)) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Số tài khoản chuyển | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Hiển thị khi phương thức là chuyển khoản. |
-| Tên chủ tài khoản nhận | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Hiển thị khi phương thức là chuyển khoản. |
-| Tên ngân hàng | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Hiển thị khi phương thức là chuyển khoản. |
-| Chi nhánh | String(255) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. Hiển thị khi phương thức là chuyển khoản. |
-| **6. Khối Nội dung tờ trình và Tài liệu gửi kèm** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin. |
-| Ý kiến đề xuất / Trích yếu nội dung tờ trình | Text(2000) | - | - | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Tài liệu kèm theo | List(Object) | - | - | Control UI: Bảng (Read-only).<br>- Chỉ hiển thị khi có dữ liệu.<br>- Theo dữ liệu bản ghi.<br>- Cột: STT, Tên tài liệu, văn bản, File đính kèm, Thao tác (Xem file, Tải file). |
-| **7. Khối Thông tin xét duyệt tờ trình** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin. |
-| Ý kiến phê duyệt tờ trình | Text(2000) | - | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Lịch sử ý kiến phê duyệt | Text(4000) | - | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. |
-| Thời gian xét duyệt | Datetime | - | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Định dạng `dd/mm/yyyy HH:mm`. |
-| Người xét duyệt | String(255) | - | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. |
-| **8. Khối Thông tin thông báo chi trả tiền bồi thường và hạn nhận tiền bồi thường** | Section | - | Thu gọn | Control UI: Section mở rộng/thu gọn.<br>- Chỉ hiển thị với Loại `Chi trả tiền bồi thường`, theo [Khối Thông tin thông báo chi trả tiền bồi thường và hạn nhận tiền bồi thường - MH10 - Màn hình Chi tiết chi trả tiền bồi thường - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#kp-mh10-thong-bao). |
+| Tiêu đề màn hình | - | - | `CẬP NHẬT SUNG QUỸ NHÀ NƯỚC: [Mã kinh phí]` | Control UI: Label.<br>- Kèm nhãn `Trạng thái` theo dữ liệu bản ghi. |
+| **Các khối thông tin chi tiết** | Section | - | Thu gọn | Control UI: Section mở rộng/thu gọn.<br>- Theo MH23 (Loại `Tạm ứng kinh phí`) hoặc MH10 (Loại `Chi trả tiền bồi thường`). |
+| **Khối Thông tin sung quỹ Nhà nước** | Section | - | Mở rộng | Control UI: Section.<br>- Mở màn hình: cuộn tới và focus vào khối. |
 | Ngày người yêu cầu nhận thông báo | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
 | Hạn nhận tiền bồi thường | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
-| Ghi chú thông báo | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
-| Tài liệu kèm theo | List(Object) | - | Theo bản ghi | Control UI: Bảng (Read-only).<br>- Chỉ hiển thị khi có dữ liệu.<br>- Cột: STT, Tên tài liệu, văn bản, File đính kèm, Thao tác (Xem file, Tải file). |
-| **9. Khối Theo dõi hạn nhận kinh phí / Sung quỹ** | Section | - | Thu gọn | Mặc định ở trạng thái Thu gọn (Collapsed). Cho phép click tiêu đề để mở rộng xem lại thông tin. Căn cứ Điều 45 Luật Trách nhiệm bồi thường của Nhà nước. |
-| Số tiền kinh phí chưa đến nhận (VNĐ) | Decimal(18,0) | - | Theo dữ liệu | Dạng chỉ đọc - theo thông tin đề nghị. Căn lề phải, định dạng phân cách hàng nghìn (VNĐ). |
-| Tình trạng hạn nhận kinh phí | Enum(String(100)) | - | Hệ thống tính | Control UI: Badge/Text.<br>Dạng chỉ đọc - hệ thống tự động tính toán.<br>Gồm:<br>+ Trong thời hạn 3 năm<br>+ Sắp đến hạn 3 năm<br>+ Đã quá hạn 3 năm (Đủ điều kiện sung quỹ)<br>+ Đã sung quỹ nhà nước |
-| Thời gian còn lại / Số ngày quá hạn | Integer(10) | - | Hệ thống tính | Dạng chỉ đọc - hệ thống tính toán. Căn lề phải. Hiển thị "Quá hạn X ngày" (chữ đỏ nổi bật theo Điều 45 Luật TNBTCNN). |
-| **11. Khối Thông tin sung quỹ Nhà nước** | Section | - | Mở rộng | Control UI: Section.<br>- Mở màn hình: focus vào khối. |
-| Số chứng từ / quyết định sung quỹ | String(100) | Có | Trống | Control UI: Input text.<br>- Số hiệu quyết định hoặc chứng từ nộp tiền vào ngân sách nhà nước.<br>- `Placeholder: Nhập số chứng từ...` |
-| Ngày sung quỹ | Date | Có | Ngày hiện tại | Control UI: Datepicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Ngày thực hiện nộp tiền sung quỹ.<br>- Không lớn hơn ngày hiện tại.<br>- `Placeholder: dd/mm/yyyy` |
-| Số tiền sung quỹ (VNĐ) | Decimal(18,0) | Có | 100% số tiền chưa nhận | Control UI: Input text (Read-only).<br>- Căn phải, phân cách hàng nghìn bằng dấu chấm.<br>- Bằng 100% số tiền chưa chi trả. |
-| Căn cứ / lý do sung quỹ | Text(2000) | Có | `Người yêu cầu bồi thường đã quá thời hạn 03 năm kể từ ngày nhận thông báo chi trả kinh phí nhưng không đến nhận tiền bồi thường theo quy định của Luật Trách nhiệm bồi thường của Nhà nước.` | Control UI: Textarea.<br>- Cho phép sửa, bổ sung căn cứ.<br>- `Placeholder: Nhập căn cứ, lý do sung quỹ...` |
-| Tài liệu kèm theo | List(Object) | Có | 01 dòng trống | Control UI: Bảng động.<br>- Quyết định sung quỹ/giấy nộp tiền vào ngân sách nhà nước.<br>- Cột, nút, cách nhập như bảng `Tài liệu kèm theo` tại [MH21 - Popup Trình ký Quyết định tạm ứng kinh phí bồi thường - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#kp-mh21).<br>- Định dạng `.pdf`; dung lượng tối đa 50MB/tệp.<br>- Bắt buộc tối thiểu 01 dòng đủ `Tên tài liệu, văn bản` và tệp. |
+| Số tiền sung quỹ (VNĐ) | - | - | 100% số tiền chưa chi trả | Control UI: Label.<br>- Phân cách hàng nghìn bằng dấu chấm. |
+| Số chứng từ / quyết định sung quỹ | String(100) | Có | Trống | Control UI: Input text.<br>- `Placeholder: Nhập số chứng từ...` |
+| Ngày sung quỹ | Date | Có | Ngày hiện tại | Control UI: Datepicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Không lớn hơn ngày hiện tại.<br>- `Placeholder: dd/mm/yyyy` |
+| Căn cứ / lý do sung quỹ | Text(2000) | Có | `Người yêu cầu bồi thường đã quá thời hạn 03 năm kể từ ngày nhận thông báo chi trả nhưng không đến nhận tiền bồi thường theo quy định của Luật Trách nhiệm bồi thường của Nhà nước.` | Control UI: Textarea.<br>- Tối đa 2000 ký tự.<br>- `Placeholder: Nhập căn cứ, lý do sung quỹ...` |
+| Tài liệu kèm theo | List(Object) | Không | 01 dòng trống | Control UI: Bảng động.<br>- Chứng từ nộp ngân sách nhà nước.<br>- Cột, nút, định dạng, dung lượng, cách nhập như bảng `Tài liệu kèm theo` tại [MH21 - Popup Trình ký Quyết định tạm ứng kinh phí bồi thường - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#kp-mh21).<br>- Dòng đã nhập phải đủ `Tên tài liệu, văn bản` và tệp. |
 
 ###### 4.3.3.2.5.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Hoàn thành sung quỹ | Button (Footer) | Kiểm tra dữ liệu sung quỹ trước khi lưu:<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không lưu.<br>- **TH2 - Hợp lệ**: Hệ thống mở Custom Confirmation Modal xác nhận nộp ngân sách với các thông tin và nội dung chi tiết:<br>  + **Tiêu đề popup**: *"Xác nhận hoàn thành thủ tục sung quỹ nhà nước"*.<br>  + **Thông tin đối chiếu hiển thị trên popup**: Mã đề xuất kinh phí (`[Mã đề xuất]`), Vụ việc liên kết (`[Mã vụ việc] - [Họ và tên người yêu cầu bồi thường]`), Số chứng từ/quyết định sung quỹ, Ngày sung quỹ (`dd/mm/yyyy`) và Số tiền sung quỹ (**`[Số tiền sung quỹ] VNĐ`**, kèm số tiền viết bằng chữ).<br>  + **Nội dung cảnh báo xác nhận**: *"Bạn có chắc chắn muốn xác nhận hoàn thành thủ tục nộp toàn bộ số tiền **[Số tiền sung quỹ] VNĐ** vào ngân sách nhà nước không?<br>Lưu ý: Sau khi xác nhận, đề xuất cấp kinh phí và Vụ việc bồi thường gốc liên kết sẽ chuyển sang trạng thái **Sung quỹ nhà nước** và không thể điều chỉnh hoặc hoàn tác."*<br>  + **Khi người dùng chọn "Đồng ý"**: Hệ thống đóng popup xác nhận, lưu thông tin sung quỹ vào CSDL, chuyển trạng thái đề xuất thành `Sung quỹ nhà nước`, đồng thời cập nhật trạng thái của Vụ việc bồi thường gốc liên kết sang `Sung quỹ nhà nước`, ghi nhật ký xử lý hệ thống, đóng modal cập nhật sung quỹ (MH04), hiển thị thông báo thành công [MSG-SUC-BTNN-KP-004] (*"Cập nhật sung quỹ nhà nước thành công!"*) và làm mới danh sách tại MH01.<br>  + **Khi người dùng chọn "Hủy bỏ"**: Đóng popup xác nhận, không lưu dữ liệu và giữ nguyên màn hình MH04 để Cán bộ tiếp tục rà soát. |
-| 2 | Thêm tài liệu / Tải file / Xem file / Xóa (Tài liệu kèm theo) | Button / Icon button | Như chức năng `Thêm tài liệu`, `Tải file (Tài liệu kèm theo)`, `Xem file / Xóa (Tài liệu kèm theo)` tại [MH21 - Popup Trình ký Quyết định tạm ứng kinh phí bồi thường - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#kp-mh21); định dạng chỉ `.pdf`. |
-| 3 | Đóng | Button (Footer) | Đóng modal cập nhật sung quỹ ngay lập tức, hủy bỏ các thay đổi đang nhập tạm. |
+| 1 | Mở rộng/Thu gọn khối | Toggle | Click tiêu đề khối để mở rộng/thu gọn. |
+| 2 | Hoàn thành sung quỹ | Button (Footer) | - **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không lưu.<br>- **TH2 - Ngày sung quỹ lớn hơn ngày hiện tại**: tô viền đỏ ô ngày, hiển thị cảnh báo dưới ô và focus vào ô; không lưu.<br>- **TH3 - Không còn đủ điều kiện sung quỹ**: hiển thị thông báo `Khoản chi này không còn đủ điều kiện sung quỹ.`; không lưu.<br>- **TH4 - Hợp lệ**: Hệ thống hiển thị popup xác nhận, tiêu đề `Xác nhận hoàn thành thủ tục sung quỹ nhà nước`, nội dung nêu số tiền sung quỹ và trạng thái `Sung quỹ nhà nước` sau xác nhận; nút `Đồng ý`, `Hủy bỏ`.<br>- Chọn `Đồng ý`: lưu thông tin sung quỹ, Tài liệu kèm theo; bản ghi chuyển `Sung quỹ nhà nước`; ghi lịch sử `Sung quỹ nhà nước`; chuyển về màn hình chi tiết của bản ghi; hiển thị thông báo thành công.<br>- Chọn `Hủy bỏ`: đóng popup xác nhận, giữ nguyên dữ liệu đang nhập. |
+| 3 | Thêm tài liệu / Tải file / Xem file / Xóa (Tài liệu kèm theo) | Button / Icon button | Như chức năng `Thêm tài liệu`, `Tải file (Tài liệu kèm theo)`, `Xem file / Xóa (Tài liệu kèm theo)` tại [MH21 - Popup Trình ký Quyết định tạm ứng kinh phí bồi thường - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#kp-mh21). |
+| 4 | Hủy | Button (Footer) | Không lưu dữ liệu đang nhập; chuyển về màn hình chi tiết của bản ghi. |
 
 ---
 
@@ -326,7 +284,7 @@ flowchart TD
 | 4 | Thao tác Lãnh đạo | - Ký duyệt, Từ chối: chỉ hiển thị với Lãnh đạo được giao tại cấp ký duyệt hiện hành của bản ghi `Chờ duyệt`; cấp chưa giao đích danh thì Nhóm lãnh đạo của cấp đó.<br>- Cán bộ xử lý không có thao tác Ký duyệt, Từ chối. |
 | 5 | Luồng ký duyệt | - Theo cấu hình luồng xử lý như Trình ký Quyết định giải quyết bồi thường: [MH02b - Popup Trình ký Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_QuyetDinh_GQBT.md).<br>- Ký số Thông báo chi trả: Thực hiện theo luồng đã cấu hình tương ứng tại [Cấu hình luồng xử lý - Cấu hình luồng xử lý - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Cau_hinh_luong_xu_ly.md). |
 | 6 | Văn bản | - Thông báo chi trả tiền bồi thường sinh theo Mẫu số 32/BTNN (`Mau_32_BTNN_Template.docx`).<br>- Tên tệp: `Mau_32_BTNN_Thong_bao_chi_tra_[Mã hồ sơ]`.<br>- Nội dung điền vào mẫu: [Mẫu 32/BTNN - Thông báo về việc chi trả tiền bồi thường - Bảng mapping trường dữ liệu biểu mẫu BTNN - Công tác bồi thường nhà nước](Bieu_mau/Bang_mapping_truong_du_lieu_bieu_mau_BTNN.md); đoạn nội dung chi trả theo `Phương thức nhận tiền` của Quyết định (`Nhận tiền mặt`: mời đến nhận tiền kèm Thời gian, Địa điểm; `Nhận qua chuyển khoản`: chi trả bằng phương thức chuyển khoản theo thông tin ghi trong Quyết định). |
-| 7 | Hạn nhận kinh phí 03 năm / Sung quỹ nhà nước | - Áp dụng như các loại đề nghị khác: Cảnh báo khoản chi quá hạn, cột `Hạn nhận/Sung quỹ`; Sung quỹ nhà nước tại MH11 - Popup Cập nhật sung quỹ nhà nước.<br>- Ngày người yêu cầu nhận thông báo (mốc bắt đầu tính hạn 03 năm): hệ thống tự gán khi bản ghi chuyển `Chờ chi trả`.<br>- Ký số: ngày Lãnh đạo cấp cuối Ký duyệt Thông báo chi trả.<br>- Ký ngoài: ngày Cán bộ Ban hành văn bản.<br>- Hạn nhận tiền bồi thường = Ngày người yêu cầu nhận thông báo + 03 năm.<br>- Cán bộ xử lý điều chỉnh Ngày người yêu cầu nhận thông báo, Ghi chú, Tài liệu kèm theo tại Khối Thông tin thông báo chi trả tiền bồi thường và hạn nhận tiền bồi thường của MH10 khi bản ghi `Chờ chi trả`.<br>- Quá hạn mà chưa chi trả: khóa Cập nhật chi trả, cho phép Sung quỹ nhà nước; Sung quỹ hợp lệ thì bản ghi chuyển `Sung quỹ nhà nước`. |
+| 7 | Hạn nhận kinh phí 03 năm / Sung quỹ nhà nước | - Áp dụng như các loại đề nghị khác: Cảnh báo khoản chi quá hạn, cột `Hạn nhận/Sung quỹ`; Sung quỹ nhà nước tại MH04 - Màn hình Cập nhật sung quỹ nhà nước.<br>- Ngày người yêu cầu nhận thông báo (mốc bắt đầu tính hạn 03 năm): hệ thống tự gán khi bản ghi chuyển `Chờ chi trả`.<br>- Ký số: ngày Lãnh đạo cấp cuối Ký duyệt Thông báo chi trả.<br>- Ký ngoài: ngày Cán bộ Ban hành văn bản.<br>- Hạn nhận tiền bồi thường = Ngày người yêu cầu nhận thông báo + 03 năm.<br>- Cán bộ xử lý điều chỉnh Ngày người yêu cầu nhận thông báo, Ghi chú, Tài liệu kèm theo tại Khối Thông tin thông báo chi trả tiền bồi thường và hạn nhận tiền bồi thường của MH10 khi bản ghi `Chờ chi trả`.<br>- Quá hạn mà chưa chi trả: khóa Cập nhật chi trả, cho phép Sung quỹ nhà nước; Sung quỹ hợp lệ thì bản ghi chuyển `Sung quỹ nhà nước`. |
 
 <a id="kp-mh06"></a>
 ###### 4.3.3.2.6.2. MH06 - Popup Trình ký thông báo chi trả
@@ -504,7 +462,7 @@ flowchart TD
 | 1 | Đề nghị cấp bổ sung kinh phí | Button | Hiển thị theo quy tắc 3; mở MH08. |
 | 2 | Trình thông báo chi trả | Button | Hiển thị theo quy tắc 3; mở MH06. |
 | 3 | Cập nhật chi trả | Button | Hiển thị theo quy tắc 3; mở [MH03 - Màn hình Cập nhật chi trả - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#kp-mh03). |
-| 4 | Sung quỹ nhà nước | Button | Hiển thị theo quy tắc 3; mở MH11. |
+| 4 | Sung quỹ nhà nước | Button | Hiển thị theo quy tắc 3; mở [MH04 - Màn hình Cập nhật sung quỹ nhà nước - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#kp-mh04). |
 | 5 | Từ chối | Button | Hiển thị theo quy tắc 4; mở MH07 với thao tác `Từ chối`. |
 | 6 | Ký duyệt | Button | Hiển thị theo quy tắc 4; mở MH07 với thao tác `Ký duyệt`. |
 | 7 | Xem file / Tải file | Button | - `Xem file`: mở tệp tại tab mới.<br>- `Tải file`: tải tệp về máy. |
@@ -514,26 +472,9 @@ flowchart TD
 | 11 | Lưu thông báo | Button (Khối thông báo) | - **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không lưu.<br>- **TH2 - Ngày người yêu cầu nhận thông báo lớn hơn ngày hiện tại**: tô viền đỏ ô ngày, hiển thị cảnh báo dưới ô và focus vào ô; không lưu.<br>- **TH3 - Hợp lệ**: lưu Ngày người yêu cầu nhận thông báo, Ghi chú thông báo, Tài liệu kèm theo; tính lại Hạn nhận tiền bồi thường và cảnh báo quá hạn 03 năm; ghi lịch sử `Cập nhật thông báo chi trả`; khối về chế độ xem; hiển thị [MSG-SUC-BTNN-KP-006]. |
 | 12 | Hủy (Khối thông báo) | Button (Khối thông báo) | Không lưu dữ liệu đang nhập; khối về chế độ xem với dữ liệu đã lưu. |
 
-###### 4.3.3.2.6.7. MH11 - Popup Cập nhật sung quỹ nhà nước
+###### 4.3.3.2.6.7. MH11 - Cập nhật sung quỹ nhà nước
 
-- Mở từ thao tác `Sung quỹ nhà nước` (dòng hoặc màn hình chi tiết) của bản ghi `Chờ chi trả` đã quá hạn 03 năm.
-- Trường thông tin, kiểm tra dữ liệu và kết quả như Khối Thông tin sung quỹ Nhà nước tại [MH04 - Màn hình Cập nhật sung quỹ nhà nước - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#kp-mh04).
-
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| Tiêu đề popup | String(100) | - | `CẬP NHẬT SUNG QUỸ NHÀ NƯỚC` | Control UI: Header popup.<br>- Dòng phụ: Mã đề nghị, Người yêu cầu. |
-| Ngày người yêu cầu nhận thông báo | Date | - | Theo dữ liệu | Control UI: Textbox chỉ đọc.<br>- Định dạng `dd/mm/yyyy`. |
-| Hạn nhận kinh phí | Date | - | Hệ thống tính | Control UI: Textbox chỉ đọc.<br>- Ngày người yêu cầu nhận thông báo + 03 năm. |
-| Số chứng từ / quyết định sung quỹ | String(100) | Có | Trống | Control UI: Textbox. |
-| Ngày sung quỹ | Date | Có | Ngày hiện tại | Control UI: Datepicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Không lớn hơn ngày hiện tại.<br>- `Placeholder: dd/mm/yyyy` |
-| Số tiền sung quỹ (VNĐ) | Decimal(18,0) | - | 100% số tiền chưa nhận | Control UI: Textbox chỉ đọc.<br>- Phân cách hàng nghìn bằng dấu chấm. |
-| Căn cứ / lý do sung quỹ | Text(2000) | Có | Gợi ý hệ thống | Control UI: Textarea.<br>- Gợi ý như MH04. |
-| Tài liệu kèm theo | List(Object) | Có | 01 dòng trống | Control UI: Bảng động.<br>- Chứng từ nộp ngân sách nhà nước.<br>- Cột, nút, cách nhập như bảng `Tài liệu kèm theo` tại [MH21 - Popup Trình ký Quyết định tạm ứng kinh phí bồi thường - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#kp-mh21).<br>- Định dạng `.pdf`; dung lượng tối đa 50MB/tệp.<br>- Bắt buộc tối thiểu 01 dòng đủ `Tên tài liệu, văn bản` và tệp. |
-
-| STT | Tên chức năng | Định dạng | Mô tả |
-| :--- | :--- | :--- | :--- |
-| 1 | Hoàn thành sung quỹ | Button | - **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên.<br>- **TH2 - Không còn đủ điều kiện sung quỹ**: thông báo "Khoản chi này không còn đủ điều kiện sung quỹ.", không lưu.<br>- **TH3 - Hợp lệ**: sau khi người dùng xác nhận, bản ghi chuyển `Sung quỹ nhà nước`; lưu thông tin sung quỹ; ghi lịch sử "Sung quỹ nhà nước"; đóng popup, hiển thị thông báo thành công. |
-| 2 | Hủy bỏ | Button | Đóng popup, không lưu. |
+- Thực hiện tại [MH04 - Màn hình Cập nhật sung quỹ nhà nước - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#kp-mh04), dùng chung cho mọi Loại kinh phí; không có popup riêng.
 
 <a id="kp-mh24"></a>
 ###### 4.3.3.2.6.8. MH24 - Màn hình Tạo thông báo chi trả
@@ -741,7 +682,7 @@ flowchart TD
 | Nơi nhận | Text(2000) | Không | Có Điều 2: `- Như Điều 5;`<br>Không có Điều 2: `- Như Điều 4;`<br>`- ……….;`<br>`- Lưu: VT, HSVV.` | Control UI: Textarea.<br>- Mỗi nơi nhận 01 dòng.<br>- Dòng gợi ý dưới ô: văn bản có / không có Điều 2 theo quy tắc 8.<br>- `Placeholder: Nhập nơi nhận, mỗi nơi nhận 01 dòng` |
 | Văn bản sinh theo mẫu | Panel | - | - | Control UI: Dòng ghi chú `Hệ thống tự động sinh Quyết định theo Mẫu 07/BTNN từ thông tin đang nhập.` cùng 01 dòng với nút `Xem trước văn bản`.<br>- Chỉ hiển thị khi `Sinh văn bản theo mẫu 07/BTNN`. |
 | Tệp văn bản trình ký (Tải lên từ máy) | File | Có | Trống | Control UI: Vùng kéo thả tệp.<br>- Chỉ hiển thị khi `Tải lên từ máy`.<br>- Chưa có tệp: nội dung `Kéo thả tệp vào đây hoặc Chọn tệp từ máy`, ghi chú `Chấp nhận tệp .pdf, .doc, .docx (tối đa 50MB)`; bấm vào vùng để mở trình chọn tệp.<br>- Tệp `.doc`, `.docx`: hệ thống chuyển đổi sang PDF; trong lúc chuyển đổi hiển thị `Đang chuyển đổi sang PDF...` và nút `Tiếp tục` bị khóa.<br>- Có tệp: Thẻ tệp gồm biểu tượng định dạng, tên tệp, dung lượng (tệp đã chuyển đổi kèm ghi chú tên tệp gốc); nút `Xem file`, `Xóa`.<br>- Định dạng `.pdf`, `.doc`, `.docx`.<br>- Dung lượng tối đa 50MB/file. |
-| Tài liệu kèm theo | List(Object) | Không | Trống (Bản ghi `Bị từ chối`: theo lần trình trước) | Control UI: Bảng động, đặt ngay dưới khối Tệp văn bản trình ký.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`.<br>- Cột: `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`: Xem file, Xóa (dạng icon).<br>- Nút `Thêm tài liệu` dưới bảng.<br>- Mặc định 01 dòng trống.<br>- Dòng đã nhập phải có đủ `Tên tài liệu, văn bản` và tệp; dòng trống không lưu.<br>- Tên tài liệu, văn bản: Input text, tối đa 500 ký tự; placeholder `Nhập tên văn bản, căn cứ`.<br>- Tải file: nút `Tải file`; có tệp thì hiển thị tên tệp, dung lượng.<br>- Định dạng `.pdf`, `.doc`, `.docx`, `.jpg`, `.jpeg`, `.png`.<br>- Dung lượng tối đa 50MB/tệp.<br>- Lưu cùng phiếu trình; Lãnh đạo xem tại [MH22 - Màn hình Ký duyệt / Từ chối Quyết định tạm ứng - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#kp-mh22). |
+| Tài liệu kèm theo | List(Object) | Không | Trống (Bản ghi `Bị từ chối`: theo lần trình trước) | Control UI: Bảng động, đặt ngay dưới khối Tệp văn bản trình ký.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`.<br>- Cột: `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`: Xem file, Xóa (dạng icon).<br>- Nút `Thêm tài liệu` dưới bảng.<br>- Mặc định 01 dòng trống.<br>- Dòng đã nhập phải có đủ `Tên tài liệu, văn bản` và tệp; dòng trống không lưu.<br>- Tên tài liệu, văn bản: Input text, tối đa 500 ký tự; placeholder `Nhập tên tài liệu, văn bản`.<br>- File đính kèm: nút `Tải file`; có tệp thì hiển thị tên tệp, dung lượng.<br>- Định dạng `.pdf`, `.doc`, `.docx`, `.jpg`, `.jpeg`, `.png`.<br>- Dung lượng tối đa 50MB/tệp.<br>- Lưu cùng phiếu trình; Lãnh đạo xem tại [MH22 - Màn hình Ký duyệt / Từ chối Quyết định tạm ứng - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#kp-mh22). |
 | Số quyết định | String(100) | Có (khi hiển thị) | Trống | Control UI: Input text.<br>- Chỉ hiển thị khi `Ký ngoài`.<br>- `Placeholder: Nhập số quyết định` |
 | Ngày quyết định | Date | Có (khi hiển thị) | Trống | Control UI: Datepicker.<br>- Chỉ hiển thị khi `Ký ngoài`.<br>- Định dạng `dd/mm/yyyy`.<br>- `Placeholder: dd/mm/yyyy` |
 | Người ký | Combobox | Có | Trống | Control UI: Combobox.<br>- Chỉ hiển thị khi `Ký ngoài`.<br>- Danh sách Lãnh đạo các cấp của luồng phê duyệt. |
@@ -845,12 +786,23 @@ flowchart TD
 | Ngày Quyết định | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
 | Tệp Quyết định | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi.<br>- Nút `Xem file`, `Tải file`.<br>- `Chờ duyệt`, `Bị từ chối`: tệp PDF dự thảo đã trình.<br>- Đã ký duyệt cấp cuối: tệp PDF đã ký số.<br>- Ban hành Ký ngoài: tệp PDF ký ngoài. |
 | **Khối Tài liệu kèm theo** | List(Object) | - | - | Control UI: Bảng (Read-only).<br>- Chỉ hiển thị khi có dữ liệu.<br>- Tài liệu kèm theo nhập tại MH21.<br>- Cột: STT, Tên tài liệu, văn bản, File đính kèm, Thao tác (Xem file, Tải file). |
-| **Khối Thu hồi kinh phí** | Section | - | Mở rộng | Control UI: Section mở rộng/thu gọn.<br>- Chỉ hiển thị khi bản ghi `Chờ thu hồi`.<br>- Nút `Ghi nhận thu hồi` tại khối: vai trò Cán bộ xử lý. |
+| **Khối Thông tin Sung quỹ nhà nước** | Section | - | Mở rộng | Control UI: Section mở rộng/thu gọn.<br>- Chỉ hiển thị khi bản ghi `Sung quỹ nhà nước`. |
+| Số chứng từ / quyết định sung quỹ | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
+| Ngày sung quỹ | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
+| Số tiền sung quỹ (VNĐ) | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
+| Căn cứ / lý do sung quỹ | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
+| Tài liệu kèm theo (sung quỹ) | List(Object) | - | Theo bản ghi | Control UI: Bảng (Read-only).<br>- Chỉ hiển thị khi có dữ liệu.<br>- Cột: STT, Tên tài liệu, văn bản, File đính kèm, Thao tác (Xem file, Tải file). |
+| **Khối Thu hồi kinh phí** | Section | - | Mở rộng | Control UI: Section mở rộng/thu gọn.<br>- Chỉ hiển thị khi bản ghi `Chờ thu hồi` hoặc đã có dữ liệu thu hồi (gồm bản ghi `Đã thu hồi`).<br>- Nút `Ghi nhận thu hồi` tại tiêu đề khối: chỉ hiển thị với vai trò Cán bộ xử lý, bản ghi `Chờ thu hồi`.<br>- Bấm `Ghi nhận thu hồi`: hiển thị các trường nhập dưới phần thông tin; tiêu đề khối hiển thị nút `Hủy`, `Lưu`. |
 | Căn cứ thu hồi | - | - | Theo bản ghi | Control UI: HyperLink.<br>- Số và Ngày Quyết định làm căn cứ: Quyết định hủy, Quyết định sửa chữa, bổ sung Quyết định giải quyết bồi thường hoặc Quyết định đình chỉ giải quyết bồi thường.<br>- Click: mở chi tiết Quyết định. |
 | Số tiền phải thu hồi (VNĐ) | - | - | Theo bản ghi | Control UI: Label.<br>- Quyết định hủy, Quyết định đình chỉ: toàn bộ số tiền tạm ứng đã chi trả thực tế.<br>- Quyết định sửa chữa, bổ sung: Số tiền tạm ứng đã chi trả thực tế trừ Tổng số tiền bồi thường sau sửa chữa, bổ sung.<br>- Phân cách hàng nghìn bằng dấu chấm. |
-| Ngày ghi nhận thu hồi | Date | Có | Ngày hiện tại | Control UI: Datepicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Không lớn hơn ngày hiện tại.<br>- `Placeholder: dd/mm/yyyy` |
-| Số tiền đã thu hồi (VNĐ) | Decimal(18,0) | Có | Trống | Control UI: Input number.<br>- Số nguyên lớn hơn 0, không vượt quá Số tiền còn phải thu hồi.<br>- Phân cách hàng nghìn bằng dấu chấm.<br>- `Placeholder: Nhập số tiền đã thu hồi...` |
+| Số tiền đã thu hồi lũy kế (VNĐ) | - | - | Theo bản ghi | Control UI: Label.<br>- Tổng số tiền các lần Ghi nhận thu hồi. |
 | Số tiền còn phải thu hồi (VNĐ) | - | - | Hệ thống tính | Control UI: Label.<br>- Số tiền phải thu hồi trừ tổng Số tiền đã thu hồi. |
+| Ngày ghi nhận thu hồi gần nhất | - | - | Theo bản ghi | Control UI: Label.<br>- Chỉ hiển thị khi có dữ liệu. |
+| Ghi chú thu hồi | - | - | Theo bản ghi | Control UI: Label.<br>- Ghi chú lần ghi nhận gần nhất.<br>- Chỉ hiển thị khi có dữ liệu. |
+| Tài liệu kèm theo (thu hồi) | List(Object) | - | Theo bản ghi | Control UI: Bảng (Read-only).<br>- Tài liệu của các lần ghi nhận thu hồi.<br>- Chỉ hiển thị khi có dữ liệu.<br>- Cột: STT, Tên tài liệu, văn bản, File đính kèm, Thao tác (Xem file, Tải file). |
+| **Nhập Ghi nhận thu hồi** | Section | - | - | Control UI: Nhóm trường nhập trong khối, chỉ hiển thị khi bấm `Ghi nhận thu hồi`. |
+| Ngày ghi nhận thu hồi | Date | Có | Ngày hiện tại | Control UI: Datepicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Không lớn hơn ngày hiện tại.<br>- `Placeholder: dd/mm/yyyy` |
+| Số tiền thu hồi lần này (VNĐ) | Decimal(18,0) | Có | Trống | Control UI: Input number.<br>- Số nguyên lớn hơn 0, không vượt quá Số tiền còn phải thu hồi.<br>- Phân cách hàng nghìn bằng dấu chấm.<br>- `Placeholder: Nhập số tiền đã thu hồi...` |
 | Ghi chú thu hồi | Text(1000) | Không | Trống | Control UI: Textarea.<br>- Tối đa 1000 ký tự.<br>- `Placeholder: Nhập diễn giải quá trình thu hồi...` |
 | Tài liệu kèm theo (thu hồi) | List(Object) | Không | 01 dòng trống | Control UI: Bảng động.<br>- Chứng từ hoàn trả.<br>- Cột, nút, định dạng, dung lượng, cách nhập như bảng `Tài liệu kèm theo` tại [MH21 - Popup Trình ký Quyết định tạm ứng kinh phí bồi thường - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](#kp-mh21). |
 | **Khối Lịch sử xử lý** | List(Object) | - | Thu gọn | Control UI: Section mở rộng/thu gọn; tiêu đề kèm số dòng.<br>- Mỗi dòng: Thời điểm, Người thực hiện, Thao tác, Nội dung.<br>- Sắp xếp giảm dần theo thời gian. |
@@ -864,5 +816,5 @@ flowchart TD
 | 5 | Ký duyệt | Button | Hiển thị theo quy tắc 5; mở MH22 với thao tác `Ký duyệt`. |
 | 6 | Xem file / Tải file | Button | - `Xem file`: mở tệp tại tab mới.<br>- `Tải file`: tải tệp về máy. |
 | 7 | Mở rộng/Thu gọn khối | Toggle | Click tiêu đề khối để mở rộng/thu gọn. |
-| 8 | Ghi nhận thu hồi | Button (Khối Thu hồi kinh phí) | - **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không lưu.<br>- **TH2 - Số tiền đã thu hồi vượt quá Số tiền còn phải thu hồi**: Hệ thống hiển thị [MSG-WRN-SYS-001]; không lưu.<br>- **TH3 - Thu hồi chưa đủ**: lưu thông tin, cập nhật Số tiền còn phải thu hồi; bản ghi giữ `Chờ thu hồi`; ghi lịch sử `Ghi nhận thu hồi`; hiển thị thông báo thành công.<br>- **TH4 - Thu hồi đủ 100%**: lưu thông tin; bản ghi chuyển `Đã thu hồi`; ghi lịch sử `Ghi nhận thu hồi`; hiển thị thông báo thành công. |
+| 8 | Ghi nhận thu hồi | Button (Khối Thu hồi kinh phí) | - **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không lưu.<br>- **TH2 - Số tiền thu hồi lần này vượt quá Số tiền còn phải thu hồi**: Hệ thống hiển thị [MSG-WRN-SYS-001]; không lưu.<br>- **TH3 - Thu hồi chưa đủ**: lưu thông tin, cập nhật Số tiền còn phải thu hồi; bản ghi giữ `Chờ thu hồi`; ghi lịch sử `Ghi nhận thu hồi`; hiển thị thông báo thành công.<br>- **TH4 - Thu hồi đủ 100%**: lưu thông tin; bản ghi chuyển `Đã thu hồi`; ghi lịch sử `Ghi nhận thu hồi`; hiển thị thông báo thành công. |
 | 9 | Đóng | Button (Footer) | Đóng màn hình chi tiết, về MH01. |

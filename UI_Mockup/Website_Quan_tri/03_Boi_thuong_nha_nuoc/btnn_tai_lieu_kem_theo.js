@@ -445,7 +445,8 @@
                 else if (iF < 0 && RE_FILE.test(tx)) iF = c;
                 else if (iA < 0 && RE_ACT.test(tx)) iA = c;
             }
-            if (iN < 0 || iF < 0 || iF < iN) continue;
+            // Chỉ bảng tài liệu (STT | Tên | File [| ...] | Thao tác, tối đa 5 cột); không đụng lưới danh sách nhiều cột
+            if (iN < 0 || iF < 0 || iF < iN || iN > 1 || ths.length > 5) continue;
             table.classList.add('tlkt-std');
             setHead(ths[iN], RE_BASIS.test(hText(ths[iN])) || table.getAttribute('data-tlkt-name') === 'basis' ? 'Tên văn bản căn cứ' : STD_NAME); setHead(ths[iF], STD_FILE); if (iA >= 0) setHead(ths[iA], STD_ACT);
             Array.prototype.forEach.call(table.tBodies, function (tb) {

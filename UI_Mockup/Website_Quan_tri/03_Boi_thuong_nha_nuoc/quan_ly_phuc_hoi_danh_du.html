@@ -854,32 +854,16 @@
                         <thead>
                             <tr>
                                 <th style="width: 60px; text-align: center;">STT</th>
-                                <th>Tên văn bản, căn cứ</th>
-                                <th style="width: 260px;">Tải file</th>
-                                <th style="width: 100px; text-align: center;">Thao tác</th>
+                                <th style="text-align: center;">Tên văn bản căn cứ</th>
+                                <th style="width: 260px; text-align: center;">File đính kèm</th>
+                                <th style="width: 110px; text-align: center;">Thao tác</th>
                             </tr>
                         </thead>
-                        <tbody id="createLegalDocsTableBody">
-                            <tr>
-                                <td style="text-align: center;">1</td>
-                                <td><input type="text" class="form-control" placeholder="Nhập tên văn bản, căn cứ..." value="Bản án hình sự phúc thẩm số 58/2026/HS-PT"></td>
-                                <td>
-                                    <input type="file" style="display: none;" id="cLegalFile_1" onchange="handleLegalDocUpload(this, 1)">
-                                    <button type="button" class="btn btn-secondary" style="font-size: 12px; padding: 4px 10px;" onclick="document.getElementById('cLegalFile_1').click()">
-                                        <i class="fa-solid fa-upload"></i> Tải file
-                                    </button>
-                                    <span id="cLegalFileName_1" style="font-size: 12px; color: #1e40af; margin-left: 8px;">Ban_an_58_2026.pdf</span>
-                                </td>
-                                <td style="text-align: center;">
-                                    <a href="javascript:void(0)" onclick="removeLegalDocRow(this)" style="color: #ef4444; font-weight: 500; font-size: 13px;">Xóa</a>
-                                </td>
-                            </tr>
-                        </tbody>
+                        <!-- Dòng mẫu dựng bằng legalDocRowHtml() khi tải trang -->
+                        <tbody id="createLegalDocsTableBody"></tbody>
                     </table>
                 </div>
-                <button type="button" class="btn btn-secondary" style="margin-top: 8px; font-size: 12px; padding: 6px 12px;" onclick="addLegalDocRow()">
-                    <i class="fa-solid fa-plus"></i> Thêm dòng
-                </button>
+                <div style="margin-top: 8px;"><button type="button" class="tlkt-btn-add" onclick="addLegalDocRow()"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button></div>
             </div>
 
             <div class="form-group" style="margin-bottom: 16px;">
@@ -1143,19 +1127,20 @@
                             <thead>
                                 <tr>
                                     <th style="width: 60px; text-align: center;">STT</th>
-                                    <th>Tên văn bản, căn cứ</th>
-                                    <th>Tệp đính kèm</th>
-                                    <th style="width: 120px; text-align: center;">Thao tác</th>
+                                    <th style="text-align: center;">Tên văn bản căn cứ</th>
+                                    <th style="text-align: center;">File đính kèm</th>
+                                    <th style="width: 110px; text-align: center;">Thao tác</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td style="text-align: center;">1</td>
                                     <td style="font-weight: 600;" id="dpLegalDocTitle">Bản án hình sự phúc thẩm số 58/2026/HS-PT</td>
-                                    <td><i class="fa-solid fa-file-pdf" style="color: #ef4444; margin-right: 6px;"></i> Ban_an_hinh_su_phuc_tham_58.pdf</td>
-                                    <td style="text-align: center;">
-                                        <a href="javascript:void(0)" onclick="viewDummyFile('Ban_an_hinh_su_phuc_tham_58.pdf')" style="color: #2563eb; text-decoration: none; font-weight: 600;">Xem file</a>
-                                    </td>
+                                    <td class="tlkt-fc"><span class="file-name"><i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i>Ban_an_hinh_su_phuc_tham_58.pdf</span></td>
+                                    <td style="text-align: center;"><span class="tlkt-acts">
+                                        <button type="button" class="tlkt-ib" data-admin-icon-normalized="1" title="Xem file" aria-label="Xem file" onclick="viewDummyFile('Ban_an_hinh_su_phuc_tham_58.pdf')"><i class="fa-solid fa-eye"></i></button>
+                                        <button type="button" class="tlkt-ib" data-admin-icon-normalized="1" title="Tải file" aria-label="Tải file" onclick="showToast('Đang tải file Ban_an_hinh_su_phuc_tham_58.pdf...', 'success')"><i class="fa-solid fa-download"></i></button>
+                                    </span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -1208,9 +1193,9 @@
                         <thead>
                             <tr>
                                 <th style="width: 60px; text-align: center;">STT</th>
-                                <th>Tên tài liệu / Văn bản</th>
-                                <th>Tệp đính kèm</th>
-                                <th style="width: 120px; text-align: center;">Thao tác</th>
+                                <th style="text-align: center;">Tên tài liệu, văn bản</th>
+                                <th style="text-align: center;">File đính kèm</th>
+                                <th style="width: 110px; text-align: center;">Thao tác</th>
                             </tr>
                         </thead>
                         <tbody id="dpAttachmentsTableBody">
@@ -2189,35 +2174,63 @@
             }
         }
 
+        // Văn bản làm căn cứ yêu cầu bồi thường: bảng chuẩn tài liệu (STT | Tên văn bản căn cứ | File đính kèm | Thao tác: Xem file / Xóa)
         let legalDocRowCount = 1;
+        function legalDocRowHtml(rowId, stt, name, file) {
+            const n = String(name || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+            const f = String(file || '').replace(/&/g, '&amp;').replace(/</g, '&lt;');
+            return `
+                <td style="text-align: center;">${stt}</td>
+                <td><input type="text" class="form-control" style="width:100%;" placeholder="Nhập tên văn bản căn cứ" value="${n}"></td>
+                <td class="tlkt-fc">
+                    <input type="file" style="display: none;" id="cLegalFile_${rowId}" onchange="handleLegalDocUpload(this, ${rowId})">
+                    <button type="button" class="tlkt-btn-pri" id="cLegalBtn_${rowId}" style="${file ? 'display:none;' : ''}" onclick="document.getElementById('cLegalFile_${rowId}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>
+                    <span class="file-name" id="cLegalFileName_${rowId}" style="${file ? '' : 'display:none;'}"><i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i><span>${f}</span></span>
+                </td>
+                <td style="text-align: center;">
+                    <span class="tlkt-acts">
+                        <button type="button" class="tlkt-ib${file ? '' : ' is-disabled'}" id="cLegalView_${rowId}" data-admin-icon-normalized="1" title="Xem file" aria-label="Xem file" onclick="viewLegalDocFile(${rowId})"><i class="fa-solid fa-eye"></i></button>
+                        <button type="button" class="tlkt-ib tlkt-ib-del" data-admin-icon-normalized="1" title="Xóa" aria-label="Xóa" onclick="removeLegalDocRow(this)"><i class="fa-solid fa-trash"></i></button>
+                    </span>
+                </td>`;
+        }
+        // Dòng bảng tài liệu chế độ xem: Thao tác Xem file / Tải file (icon)
+        function dpDocViewRowHtml(stt, name, file) {
+            const icon = /\.(jpe?g|png)$/i.test(file) ? 'fa-file-image" style="color:#10b981;' : 'fa-file-pdf" style="color:#ef4444;';
+            return `<tr>
+                    <td style="text-align: center;">${stt}</td>
+                    <td style="font-weight: 600;">${name}</td>
+                    <td class="tlkt-fc"><span class="file-name"><i class="fa-solid ${icon}"></i>${file}</span></td>
+                    <td style="text-align: center;"><span class="tlkt-acts">
+                        <button type="button" class="tlkt-ib" data-admin-icon-normalized="1" title="Xem file" aria-label="Xem file" data-f="${file}" onclick="viewDummyFile(this.dataset.f)"><i class="fa-solid fa-eye"></i></button>
+                        <button type="button" class="tlkt-ib" data-admin-icon-normalized="1" title="Tải file" aria-label="Tải file" data-f="${file}" onclick="showToast('Đang tải file ' + this.dataset.f + '...', 'success')"><i class="fa-solid fa-download"></i></button>
+                    </span></td>
+                </tr>`;
+        }
+        // Dòng mẫu ban đầu của form tạo mới
+        (function initLegalDocRows() {
+            const run = () => {
+                const tbody = document.getElementById('createLegalDocsTableBody');
+                if (!tbody || tbody.children.length) return;
+                const tr = document.createElement('tr');
+                tr.innerHTML = legalDocRowHtml(1, 1, 'Bản án hình sự phúc thẩm số 58/2026/HS-PT', 'Ban_an_58_2026.pdf');
+                tbody.appendChild(tr);
+            };
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
+        })();
         function addLegalDocRow() {
             legalDocRowCount++;
             const tbody = document.getElementById('createLegalDocsTableBody');
             const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td style="text-align: center;">${tbody.children.length + 1}</td>
-                <td><input type="text" class="form-control" placeholder="Nhập tên văn bản, căn cứ..."></td>
-                <td>
-                    <input type="file" style="display: none;" id="cLegalFile_${legalDocRowCount}" onchange="handleLegalDocUpload(this, ${legalDocRowCount})">
-                    <button type="button" class="btn btn-secondary" style="font-size: 12px; padding: 4px 10px;" onclick="document.getElementById('cLegalFile_${legalDocRowCount}').click()">
-                        <i class="fa-solid fa-upload"></i> Tải file
-                    </button>
-                    <span id="cLegalFileName_${legalDocRowCount}" style="font-size: 12px; color: #1e40af; margin-left: 8px;"></span>
-                </td>
-                <td style="text-align: center;">
-                    <a href="javascript:void(0)" onclick="removeLegalDocRow(this)" style="color: #ef4444; font-weight: 500; font-size: 13px;">Xóa</a>
-                </td>
-            `;
+            tr.innerHTML = legalDocRowHtml(legalDocRowCount, tbody.children.length + 1, '', '');
             tbody.appendChild(tr);
         }
 
+        // Xóa thẳng, không hỏi xác nhận; xóa dòng cuối cùng thì đặt lại 01 dòng trống
         function removeLegalDocRow(btn) {
             const tbody = document.getElementById('createLegalDocsTableBody');
-            if (tbody.children.length <= 1) {
-                showToast("Bảng phải có ít nhất 01 dòng căn cứ!", "info");
-                return;
-            }
             btn.closest('tr').remove();
+            if (!tbody.children.length) addLegalDocRow();
             Array.from(tbody.children).forEach((row, idx) => {
                 row.cells[0].innerText = idx + 1;
             });
@@ -2225,10 +2238,21 @@
 
         function handleLegalDocUpload(input, rowId) {
             if (input.files && input.files[0]) {
+                const name = input.files[0].name;
                 const span = document.getElementById(`cLegalFileName_${rowId}`);
-                if (span) span.innerText = input.files[0].name;
-                showToast(`Đã tải lên tệp: ${input.files[0].name}`, "success");
+                if (span) { span.querySelector('span').innerText = name; span.style.display = ''; }
+                const btn = document.getElementById(`cLegalBtn_${rowId}`); if (btn) btn.style.display = 'none';
+                const view = document.getElementById(`cLegalView_${rowId}`); if (view) view.classList.remove('is-disabled');
+                const nameInput = input.closest('tr').querySelector('input[type="text"]');
+                if (nameInput && !nameInput.value.trim()) nameInput.value = name.replace(/\.[^.]+$/, '');
+                showToast(`Đã tải lên tệp: ${name}`, "success");
             }
+        }
+
+        function viewLegalDocFile(rowId) {
+            const span = document.getElementById(`cLegalFileName_${rowId}`);
+            const name = span ? span.innerText.trim() : '';
+            if (name && typeof viewDummyFile === 'function') viewDummyFile(name);
         }
 
         function clearCreateErrors() {
@@ -2451,33 +2475,13 @@
                 : `<span style="color: #94a3b8;"><i class="fa-solid fa-circle-xmark"></i> Không yêu cầu</span>`;
 
             // Bảng tài liệu đính kèm Tab 1
+            // Bảng tài liệu chuẩn (chỉ xem): STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file / Tải file)
             const attTableBody = document.getElementById('dpAttachmentsTableBody');
-            attTableBody.innerHTML = `
-                <tr>
-                    <td style="text-align: center;">1</td>
-                    <td style="font-weight: 600;">Đơn yêu cầu phục hồi danh dự</td>
-                    <td><i class="fa-solid fa-file-pdf" style="color: #ef4444; margin-right: 6px;"></i> Don_yeu_cau_phuc_hoi_danh_du.pdf</td>
-                    <td style="text-align: center;">
-                        <a href="javascript:void(0)" onclick="viewDummyFile('Don_yeu_cau_phuc_hoi_danh_du.pdf')" style="color: #2563eb; text-decoration: none; font-weight: 600;">Xem file</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="text-align: center;">2</td>
-                    <td style="font-weight: 600;">Bản án hình sự phúc thẩm số 58/2026/HS-PT</td>
-                    <td><i class="fa-solid fa-file-pdf" style="color: #ef4444; margin-right: 6px;"></i> Ban_an_hinh_su_phuc_tham_58.pdf</td>
-                    <td style="text-align: center;">
-                        <a href="javascript:void(0)" onclick="viewDummyFile('Ban_an_hinh_su_phuc_tham_58.pdf')" style="color: #2563eb; text-decoration: none; font-weight: 600;">Xem file</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td style="text-align: center;">3</td>
-                    <td style="font-weight: 600;">Bản sao CCCD người yêu cầu</td>
-                    <td><i class="fa-solid fa-file-image" style="color: #10b981; margin-right: 6px;"></i> CCCD_Nguyen_Van_A.jpg</td>
-                    <td style="text-align: center;">
-                        <a href="javascript:void(0)" onclick="viewDummyFile('CCCD_Nguyen_Van_A.jpg')" style="color: #2563eb; text-decoration: none; font-weight: 600;">Xem file</a>
-                    </td>
-                </tr>
-            `;
+            attTableBody.innerHTML = [
+                ['Đơn yêu cầu phục hồi danh dự', 'Don_yeu_cau_phuc_hoi_danh_du.pdf'],
+                ['Bản án hình sự phúc thẩm số 58/2026/HS-PT', 'Ban_an_hinh_su_phuc_tham_58.pdf'],
+                ['Bản sao CCCD người yêu cầu', 'CCCD_Nguyen_Van_A.jpg']
+            ].map((d, i) => dpDocViewRowHtml(i + 1, d[0], d[1])).join('');
 
             // --- TAB 2: CHI TIẾT XỬ LÝ HỒ SƠ ---
             document.getElementById('dpStep1Agency').innerText = item.agency;
@@ -2819,6 +2823,8 @@
         }
     </script>
     <script src="btnn_cot_thao_tac.js?v=20261023kpcd"></script>
+    <!-- Bảng tài liệu chuẩn BTNN: STT | Tên tài liệu, văn bản | File đính kèm | Thao tác; nút Tải file / Thêm tài liệu -->
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt5"></script>
 </body>
 
 </html>

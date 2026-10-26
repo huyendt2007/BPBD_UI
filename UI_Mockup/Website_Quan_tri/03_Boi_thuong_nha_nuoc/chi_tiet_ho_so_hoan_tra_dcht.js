@@ -7,7 +7,7 @@
  *            Bước 2 Kéo ô ký & chọn Lãnh đạo -> Trình Lãnh đạo.
  *   - Ký ngoài: đính kèm PDF đã ký & đóng dấu, Ban hành văn bản (có xác nhận).
  * Luồng trạng thái (giả định, bổ sung vào luồng hiện có của module hoàn trả):
- *   Hồ sơ đang xem xét (Họp hội đồng / Chờ ban hành QĐ hoàn trả / Hoãn hoàn trả / Miễn hoàn trả / Thu hồi tiền hoàn trả - xem DCHT_ALLOWED)
+ *   Hồ sơ trước khi chốt ý kiến Hội đồng (Chờ duyệt / Bị từ chối QĐ thành lập, Họp hội đồng - xem DCHT_ALLOWED)
  *   -> Đình chỉ (Trình Lãnh đạo) -> Chờ duyệt QĐ đình chỉ -> Lãnh đạo các cấp Ký duyệt (cấp cuối ký số) -> Đình chỉ xem xét hoàn trả (kết thúc hồ sơ)
  *   -> Từ chối -> Bị từ chối QĐ đình chỉ (Trình ký lại, giữ dữ liệu lần trình trước)
  *   Ký ngoài: Ban hành văn bản -> Đình chỉ xem xét hoàn trả.
@@ -19,7 +19,8 @@ const DCHT_ST_PENDING = 'Chờ duyệt QĐ đình chỉ';
 const DCHT_ST_REJECTED = 'Bị từ chối QĐ đình chỉ';
 const DCHT_ST_DONE = 'Đình chỉ xem xét hoàn trả';
 // Trạng thái hồ sơ cho phép Đình chỉ (chốt 23/10): Họp hội đồng, Chờ ban hành QĐ hoàn trả, Hoãn hoàn trả, Miễn hoàn trả, Thu hồi tiền hoàn trả
-const DCHT_ALLOWED = ['Họp hội đồng', 'Chờ ban hành QĐ hoàn trả', 'Hoãn hoàn trả', 'Miễn hoàn trả', 'Thu hồi tiền hoàn trả'];
+// Đình chỉ cả hồ sơ: Bước 1 (Chờ duyệt / Bị từ chối QĐ thành lập Hội đồng) và Bước 2 (Họp hội đồng); sau khi chốt ý kiến Hội đồng đình chỉ ở cấp cán bộ (chi_tiet_ho_so_hoan_tra_qd.js)
+const DCHT_ALLOWED = ['Chờ duyệt QĐ thành lập', 'Bị từ chối thành lập HĐ', 'Từ chối duyệt QĐ thành lập', 'Họp hội đồng'];
 
 // ---------------- Trạng thái hồ sơ hoàn trả (chốt 23/10): 9 giá trị hiển thị; Chờ duyệt / Bị từ chối kèm Loại trình ----------------
 // Mã trạng thái nội bộ (điều khiển luồng) -> [Trạng thái hiển thị, Loại trình]
@@ -27,7 +28,7 @@ const HT_ST_MAP = {
     'Chờ duyệt QĐ thành lập': ['Chờ duyệt', 'Thành lập hội đồng'], 'Chờ duyệt thành lập hội đồng': ['Chờ duyệt', 'Thành lập hội đồng'],
     'Bị từ chối thành lập HĐ': ['Bị từ chối', 'Thành lập hội đồng'], 'Từ chối duyệt QĐ thành lập': ['Bị từ chối', 'Thành lập hội đồng'],
     'Chờ duyệt QĐ hoàn trả': ['Chờ duyệt', 'QĐ hoàn trả'], 'Bị từ chối QĐ hoàn trả': ['Bị từ chối', 'QĐ hoàn trả'],
-    'Chờ duyệt QĐ đình chỉ': ['Chờ duyệt', 'Đình chỉ xem xét hoàn trả'], 'Bị từ chối QĐ đình chỉ': ['Bị từ chối', 'Đình chỉ xem xét hoàn trả'],
+    'Chờ duyệt QĐ đình chỉ': ['Chờ duyệt', 'QĐ đình chỉ'], 'Bị từ chối QĐ đình chỉ': ['Bị từ chối', 'QĐ đình chỉ'],
     'Đang họp hội đồng': ['Họp hội đồng', ''], 'Chờ ban hành QĐ': ['Chờ ban hành QĐ hoàn trả', ''], 'Đang thu hồi': ['Thu hồi tiền hoàn trả', ''], 'Hoàn tất': ['Hoàn thành', ''],
     // Chốt 23/10: bỏ 2 trạng thái, dữ liệu cũ quy về Đình chỉ xem xét hoàn trả
     'Không xem xét trách nhiệm hoàn trả': ['Đình chỉ xem xét hoàn trả', ''], 'Chấm dứt thu hồi': ['Đình chỉ xem xét hoàn trả', '']
@@ -169,7 +170,7 @@ function dchtModalHtml() {
                     <div class="gqx-grid2" style="margin-bottom:14px;">
                         <div class="gqx-field">
                             <label class="form-label" for="dchtSo">Số, ký hiệu văn bản<span class="gqx-req">*</span></label>
-                            <input type="text" id="dchtSo" class="form-control" maxlength="50" placeholder="VD: 39/QĐ-STP" oninput="dchtClearErr('dchtSo')">
+                            <input type="text" id="dchtSo" class="form-control" maxlength="50" placeholder="Nhập số, ký hiệu văn bản" oninput="dchtClearErr('dchtSo')">
                             <div id="dchtSoErr" class="gqx-err">${DCHT_REQ_MSG}</div>
                         </div>
                         <div class="gqx-field">
@@ -756,7 +757,7 @@ function dchtSubmitOnline() {
     const lead1 = dchtLeaderLabel(activeDossier.dcht, 0) || 'Lãnh đạo cấp 1';
     dchtLog(`Trình Lãnh đạo ${lead1} ký duyệt Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả (Mẫu 39/BTNN).` + (typeof tlktNote === 'function' ? tlktNote(activeDossier.dcht.attachments) : ''));
     dchtClose();
-    dchtToast(`Đã trình Lãnh đạo ký duyệt Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả. Hồ sơ chuyển sang trạng thái [Chờ duyệt - Đình chỉ xem xét hoàn trả].`, 'success');
+    dchtToast(`Đã trình Lãnh đạo ký duyệt Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả. Hồ sơ chuyển sang trạng thái [Chờ duyệt (QĐ đình chỉ)].`, 'success');
     dchtAfter();
 }
 function dchtSubmitOffline() {
@@ -833,7 +834,7 @@ function dchtApplyReject(reason) {
     a.level = 0;
     activeDossier.status = DCHT_ST_REJECTED;
     dchtLog(`Lãnh đạo ${who} từ chối Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả. Lý do: ${reason}`);
-    dchtToast(`Đã từ chối Quyết định đình chỉ. Hồ sơ chuyển sang trạng thái [Bị từ chối - Đình chỉ xem xét hoàn trả].`, 'success');
+    dchtToast(`Đã từ chối Quyết định đình chỉ. Hồ sơ chuyển sang trạng thái [Bị từ chối (QĐ đình chỉ)].`, 'success');
     dchtAfter();
 }
 

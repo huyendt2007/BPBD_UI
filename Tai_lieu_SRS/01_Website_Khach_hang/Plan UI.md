@@ -17,7 +17,7 @@ Bạn là Chuyên viên Phân tích Nghiệp vụ (BA) kiêm Technical Lead củ
 
 ## 2.2. Tự động sinh Đề nghị cấp kinh phí khi ban hành Quyết định
 
-Khi Ban hành QĐ hoặc Ký duyệt QĐ, hệ thống tự động sinh 01 bản ghi Đề nghị cấp kinh phí bồi thường ở trạng thái `Chờ lập đề nghị`.
+Khi Ban hành QĐ hoặc Ký duyệt QĐ, hệ thống tự động sinh 01 bản ghi Loại `Chi trả tiền bồi thường` ở trạng thái `Chờ thông báo chi trả` (luồng mới: Tạo thông báo chi trả; không còn trạng thái `Chờ lập đề nghị`).
 
 **Điều kiện kích hoạt (phải thỏa đồng thời):**
 - Loại quyết định = `Quyết định giải quyết bồi thường`. Quyết định hủy và Quyết định sửa chữa, bổ sung KHÔNG sinh bản ghi mới.
@@ -31,7 +31,7 @@ Khi Ban hành QĐ hoặc Ký duyệt QĐ, hệ thống tự động sinh 01 bả
 | Mã đề xuất kinh phí | Hệ thống tự sinh `KP-YYYY-XXX` |
 | Ngày lập đề nghị | Ngày ban hành Quyết định |
 | Loại đề nghị | `Đề nghị cấp kinh phí bồi thường` (khóa, không cho đổi) |
-| Trạng thái | `Chờ lập đề nghị` |
+| Trạng thái | `Chờ thông báo chi trả` |
 | **Số Quyết định làm căn cứ** | Số quyết định của Quyết định vừa ban hành *(trường mới, xem mục 4)* |
 | **Ngày Quyết định làm căn cứ** | Ngày quyết định của Quyết định vừa ban hành *(trường mới, xem mục 4)* |
 | Mã vụ việc gốc | Mã vụ việc trên Quyết định. Hiển thị dạng HyperLink `Mã vụ việc - Họ và tên người yêu cầu`, click vào thì mở ra màn Xem chi tiết vụ việc |
@@ -59,7 +59,7 @@ Khi Ban hành QĐ hoặc Ký duyệt QĐ, hệ thống tự động sinh 01 bả
 | :--- | :--- |
 | Đề nghị tạm ứng ở trạng thái `Hoàn thành` | Cảnh báo bắt buộc xác nhận trước khi ban hành. Sau khi xác nhận: chuyển sang `Chờ thu hồi` |
 | Đề nghị tạm ứng ở các trạng thái khác | Tự động chuyển sang `Đã hủy` |
-| Đề nghị cấp kinh phí bồi thường ở các trạng thái khác (`Chờ lập đề nghị`, `Chờ duyệt`, `Chờ chi trả`) | Tự động chuyển sang `Đã hủy` |
+| Bản ghi Chi trả tiền bồi thường ở các trạng thái khác (`Chờ thông báo chi trả`, `Đề nghị cấp bổ sung kinh phí`, `Chờ duyệt`, `Chờ chi trả`) | Tự động chuyển sang `Đã hủy` |
 
 **Cập nhật trạng thái:**
 - Quyết định gốc chuyển sang `Đã hủy`, gắn liên kết Quyết định hủy vào hồ sơ Quyết định gốc.
@@ -79,7 +79,7 @@ Khi Ban hành QĐ hoặc Ký duyệt QĐ, hệ thống tự động sinh 01 bả
 - Hệ thống tự đánh dấu các trường có thay đổi so với Quyết định gốc, phục vụ dựng nội dung "nội dung cũ → nội dung mới" của Mẫu 12/BTNN và phục vụ cập nhật ngược sang đề nghị kinh phí.
 
 **Xử lý sau khi ban hành Quyết định sửa chữa, bổ sung:**
-- Chuyển các Đề nghị cấp kinh phí bồi thường đang tồn tại về trạng thái `Chờ lập đề nghị`, cập nhật lại nội dung theo đúng phần đã điều chỉnh trên Quyết định.
+- Chuyển các bản ghi Chi trả tiền bồi thường đang tồn tại về trạng thái `Chờ thông báo chi trả`, cập nhật lại nội dung theo đúng phần đã điều chỉnh trên Quyết định, để lập lại Thông báo chi trả.
 - Lãnh đạo phải phê duyệt lại nếu trước đó bản ghi đang ở trạng thái `Chờ chi trả`.
 - Khi mở Xem chi tiết đề nghị kinh phí, phải thể hiện được thông tin đã bị sửa chữa, bổ sung theo Quyết định nào (số, ngày, nội dung điều chỉnh, số tiền trước và sau).
 
@@ -125,14 +125,14 @@ Bổ sung 02 trường `Số Quyết định làm căn cứ` và `Ngày Quyết 
 
 ### 4.3.1. Bảng ánh xạ dữ liệu — Đề nghị cấp kinh phí tạm ứng (phải định nghĩa rõ để Dev map được)
 
-**Điểm kích hoạt:** Hồ sơ yêu cầu bồi thường có yêu cầu tạm ứng kinh phí được xác nhận thụ lý hợp lệ, và chưa tồn tại Đề nghị tạm ứng có hiệu lực cho vụ việc đó.
+**Điểm kích hoạt (luồng mới):** Không tự sinh bản ghi. Cán bộ chủ động Tạo QĐ tạm ứng (Mẫu 07/BTNN) từ hồ sơ có yêu cầu tạm ứng kinh phí, chưa tồn tại Quyết định tạm ứng có hiệu lực cho vụ việc đó.
 
 | Trường trên Đề nghị cấp kinh phí | Nguồn dữ liệu |
 | :--- | :--- |
 | Mã đề xuất kinh phí | Hệ thống tự sinh `KP-YYYY-XXX` |
 | Ngày lập đề nghị | Ngày xác nhận thụ lý hồ sơ |
 | Loại đề nghị | `Đề nghị tạm ứng` (khóa, không cho đổi) |
-| Trạng thái | `Chờ lập đề nghị` |
+| Trạng thái | `Chờ duyệt` (Trình Lãnh đạo - Ký số) hoặc `Chờ chi trả` (Ký ngoài - Ban hành văn bản) |
 | **Số / Ngày Quyết định làm căn cứ** | **Để trống và ẩn.** Tạm ứng phát sinh sau thụ lý, TRƯỚC khi có Quyết định giải quyết bồi thường nên không có căn cứ Quyết định |
 | Mã vụ việc gốc | Lấy theo hồ sơ vụ việc |
 | Họ và tên người yêu cầu bồi thường | Lấy theo hồ sơ vụ việc |
@@ -242,7 +242,7 @@ Sửa lại đúng theo tài liệu đã đặc tả, bảng lưới gồm các 
 ## 7.5. Bổ sung dữ liệu giả lập cho Đề nghị cấp kinh phí
 
 Giả lập đầy đủ các trạng thái của đề nghị kinh phí, gồm cả 02 trạng thái mới:
-- `Chờ lập đề nghị`
+- `Chờ thông báo chi trả`
 - `Chờ duyệt`
 - `Chờ chi trả`
 - `Hoàn thành`
@@ -250,7 +250,7 @@ Giả lập đầy đủ các trạng thái của đề nghị kinh phí, gồm 
 - `Bị từ chối`
 - **`Đã hủy`** — kèm bản ghi minh họa bị hủy do Quyết định giải quyết bồi thường bị hủy, hiển thị được Khối Căn cứ thay đổi trạng thái theo Quyết định.
 - **`Chờ thu hồi`** — kèm bản ghi minh họa là Đề nghị tạm ứng đã chi trả xong, phát sinh thu hồi do Quyết định bị hủy; mở chi tiết phải thấy Khối Thu hồi kinh phí.
-- **`Chờ lập đề nghị` do bị sửa đổi, bổ sung** — bản ghi minh họa đã từng ở `Chờ chi trả`, bị đưa về `Chờ lập đề nghị` bởi một Quyết định sửa chữa, bổ sung cụ thể; mở chi tiết phải thấy được sửa theo Quyết định số nào, số tiền trước và sau điều chỉnh.
+- **`Chờ thông báo chi trả` do bị sửa đổi, bổ sung** — bản ghi minh họa đã từng ở `Chờ chi trả`, bị đưa về `Chờ thông báo chi trả` bởi một Quyết định sửa chữa, bổ sung cụ thể; mở chi tiết phải thấy được sửa theo Quyết định số nào, số tiền trước và sau điều chỉnh.
 
 ## 7.6. Sửa lại phần Khi Tìm kiếm loại
 

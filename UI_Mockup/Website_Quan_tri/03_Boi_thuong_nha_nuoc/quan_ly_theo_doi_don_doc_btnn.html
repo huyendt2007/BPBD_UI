@@ -623,15 +623,15 @@
                 <div id="historyList" class="history-list"></div>
             </div>
         </form>
-        <div class="section-title" style="margin:10px 0 12px 0;"><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm</div>
-        <div class="table-wrap">
+        <div class="section-title" id="docSectionTitle" style="margin:10px 0 12px 0;"><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm</div>
+        <div class="table-wrap" id="docTableWrap">
             <table class="doc-table">
-                <thead><tr><th style="width:60px; text-align:center;">STT</th><th>Tên tài liệu</th><th style="width:260px;">File đính kèm</th><th style="width:160px; text-align:center;">Thao tác tài liệu</th></tr></thead>
+                <thead><tr><th style="width:60px; text-align:center;">STT</th><th style="text-align:center;">Tên tài liệu, văn bản</th><th style="width:260px; text-align:center;">File đính kèm</th><th style="width:110px; text-align:center;">Thao tác</th></tr></thead>
                 <tbody id="documentRows"></tbody>
             </table>
         </div>
         <div style="margin-top:10px;" id="addDocBtnWrapper">
-            <button class="btn btn-secondary btn-sm" onclick="addDocumentRow()"><i class="fa-solid fa-plus"></i> Thêm dòng</button>
+            <button type="button" class="tlkt-btn-add" onclick="addDocumentRow()"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button>
         </div>
         <div class="footer-actions" id="formActions"></div>
     </div>
@@ -1097,17 +1097,25 @@
             if (typeof flatpickr !== 'function') return;
             root.querySelectorAll('input[placeholder="dd/mm/yyyy"]').forEach(el => { if (!el._flatpickr) flatpickr(el, { dateFormat: 'd/m/Y', allowInput: true, locale: (flatpickr.l10ns && flatpickr.l10ns.vn) || 'default' }); });
         }
+        // Bảng tài liệu chuẩn BTNN: Tên tài liệu, văn bản | File đính kèm (nút Tải file căn giữa) | Thao tác (nhập: Xem file / Xóa; xem: Xem file / Tải file); chế độ xem rỗng thì ẩn
         function renderDocuments() {
             document.getElementById('addDocBtnWrapper').style.display = docReadOnly ? 'none' : '';
-            document.getElementById('documentRows').innerHTML = documentRows.map((d, i) => `<tr>
+            const viewEmpty = docReadOnly && !documentRows.some(d => d && (d.name || d.file));
+            document.getElementById('docTableWrap').style.display = viewEmpty ? 'none' : '';
+            document.getElementById('docSectionTitle').style.display = viewEmpty ? 'none' : '';
+            const dis = d => d.file ? '' : ' is-disabled';
+            document.getElementById('documentRows').innerHTML = viewEmpty ? '' : documentRows.map((d, i) => `<tr>
                 <td style="text-align:center;">${i + 1}</td>
-                <td>${docReadOnly ? esc(d.name || '--') : `<input class="form-control" value="${esc(d.name)}" placeholder="Nhập tên tài liệu..." oninput="documentRows[${i}].name=this.value">`}</td>
-                <td>${d.file ? `<span class="file-name"><i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:6px;"></i>${esc(d.file)}</span>` : (docReadOnly ? '--' : `<button type="button" class="btn-upload-rust" onclick="documentRows[${i}].file='tai_lieu_${i + 1}.pdf'; renderDocuments();"><i class="fa-solid fa-cloud-arrow-up"></i> Tải lên</button>`)}</td>
-                <td><div class="doc-actions"><a href="javascript:void(0)" class="action-link view-link ${d.file ? '' : 'disabled-action'}" onclick="showToast('Đang mở file tại tab mới.')">Xem file</a>${docReadOnly ? '' : `<a href="javascript:void(0)" class="action-link delete-link" onclick="removeDocumentRow(${i})"><i class="fa-solid fa-trash-can"></i> Xóa</a>`}</div></td>
+                <td>${docReadOnly ? esc(d.name || '--') : `<input class="form-control" style="width:100%;" value="${esc(d.name)}" placeholder="Nhập tên tài liệu, văn bản" oninput="documentRows[${i}].name=this.value">`}</td>
+                <td class="tlkt-fc">${d.file ? `<span class="file-name"><i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i>${esc(d.file)}</span>` : (docReadOnly ? '--' : `<button type="button" class="tlkt-btn-pri" onclick="documentRows[${i}].file='tai_lieu_${i + 1}.pdf'; renderDocuments();"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>`)}</td>
+                <td style="text-align:center;"><span class="tlkt-acts"><button type="button" class="tlkt-ib${dis(d)}" data-admin-icon-normalized="1" title="Xem file" aria-label="Xem file" onclick="showToast('Đang mở file tại tab mới.')"><i class="fa-solid fa-eye"></i></button>${docReadOnly
+                    ? `<button type="button" class="tlkt-ib${dis(d)}" data-admin-icon-normalized="1" title="Tải file" aria-label="Tải file" onclick="showToast('Đang tải file.')"><i class="fa-solid fa-download"></i></button>`
+                    : `<button type="button" class="tlkt-ib tlkt-ib-del" data-admin-icon-normalized="1" title="Xóa" aria-label="Xóa" onclick="removeDocumentRow(${i})"><i class="fa-solid fa-trash"></i></button>`}</span></td>
             </tr>`).join('');
         }
         function addDocumentRow() { documentRows.push({ name: '', file: '' }); renderDocuments(); }
-        function removeDocumentRow(i) { openConfirm('Bạn có chắc chắn muốn xóa tài liệu này không? [MSG-CFM-SYS-001]', () => { documentRows.splice(i, 1); if (!documentRows.length) documentRows = [{ name: '', file: '' }]; renderDocuments(); }); }
+        // Xóa thẳng dòng tài liệu, không hỏi xác nhận (chuẩn bảng tài liệu BTNN)
+        function removeDocumentRow(i) { documentRows.splice(i, 1); if (!documentRows.length) documentRows = [{ name: '', file: '' }]; renderDocuments(); }
         let confirmCb = null;
         function openConfirm(text, cb) { confirmCb = cb; document.getElementById('confirmText').innerText = text; document.getElementById('confirmModal').classList.add('visible'); }
         function closeConfirm(ok) { document.getElementById('confirmModal').classList.remove('visible'); const cb = confirmCb; confirmCb = null; if (ok && cb) cb(); }
@@ -1125,6 +1133,8 @@
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_form_page.js?v=20261026fp"></script>
+    <!-- Bảng tài liệu chuẩn BTNN (style nút Tải file / Thêm tài liệu, icon thao tác) -->
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt5"></script>
 </body>
 
 </html>

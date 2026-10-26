@@ -1972,7 +1972,11 @@ function renderXdProfileBody(item) {
     document.getElementById('dtHinhThucNhan').innerText = normalizeNotifyMethod(item.hinhThucNhan);
     const dtDiaChiEl = document.getElementById('dtDiaChiNhan');
     if (dtDiaChiEl) dtDiaChiEl.innerHTML = (escapeHtml(item.diaChiNhanThongBao || (item.hinhThucNhan === 'Trực tiếp' ? 'Nhận trực tiếp tại trụ sở cơ quan giải quyết bồi thường' : 'VNeID / Cổng Dịch vụ công quốc gia'))) + getDiffBadge('diaChiNhanThongBao');
-    document.getElementById('dtVanBanCanCu').innerHTML = basisTableHtml(getBasisDocs(item));
+    // Văn bản làm căn cứ: chỉ hiển thị khi có dữ liệu (rỗng thì ẩn cả khối)
+    const dtBasisDocs = getBasisDocs(item).filter(d => d && (d.name || d.file));
+    document.getElementById('dtVanBanCanCu').innerHTML = dtBasisDocs.length ? basisTableHtml(dtBasisDocs) : '';
+    const dtBasisBlock = document.getElementById('dtVanBanCanCuBlock');
+    if (dtBasisBlock) dtBasisBlock.style.display = dtBasisDocs.length ? '' : 'none';
     document.getElementById('dtStatus').innerHTML = statusCellHtml(item);
 }
 

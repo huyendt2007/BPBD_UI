@@ -540,7 +540,7 @@
                     <div style="background-color:#f8fafc; padding:16px; border:1px solid var(--border-color); border-radius:var(--border-radius-md); margin-bottom:20px;">
                         <div class="grid-2" style="gap:16px;">
                             <div class="form-group" style="margin-bottom:0; grid-column: span 2;">
-                                <span class="form-label">Mã vụ việc</span>
+                                <span class="form-label">Mã vụ việc<span class="required">*</span></span>
                                 <div style="display:flex; gap:8px; align-items:center;">
                                     <input type="text" class="form-control" id="tdtaLinkCode" placeholder="Nhập mã vụ việc..." autocomplete="off" style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault(); tdtaQuickSearch();}">
                                     <button type="button" class="btn btn-primary" id="tdtaBtnSearch" onclick="tdtaQuickSearch()" style="white-space:nowrap;"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
@@ -951,7 +951,7 @@
         // ===== Cấu hình =====
         const STORE_KEY = "btnn_court_cases_v1";
         const SEED_KEY = "btnn_court_cases_seed";
-        const SEED_VERSION = "v2tdta";
+        const SEED_VERSION = "v3tdta";
         const FUNDING_KEY = "proposalsList";
         const REQUEST_TYPE_YCBT = BTNN_WF.REQUEST_TYPE_YCBT || "Giải quyết yêu cầu bồi thường";
         const NBTH_ROLE = "Người bị thiệt hại";
@@ -2034,7 +2034,7 @@
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_cot_thao_tac.js?v=20261023kpcd"></script>
     <!-- Bảng tài liệu chuẩn BTNN: STT | Tên tài liệu, văn bản | File đính kèm | Thao tác; nút Tải file / Thêm tài liệu cùng style -->
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt5"></script>
     <!-- [tdta] Vụ việc liên kết (Tìm kiếm / Tìm kiếm nâng cao), khối Người yêu cầu Cá nhân/Tổ chức, lưới + bộ lọc theo cột -->
     <script src="btnn_tim_kiem_vu_viec.js?v=20261026tdta"></script>
     <script src="theo_doi_vu_viec_toa_an_tdta.js?v=20261026tdta"></script>

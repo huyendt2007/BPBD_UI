@@ -107,7 +107,6 @@ const ucMetadata = {
             { id: 'fax', label: 'Số fax', type: 'text', required: false },
             { id: 'address_full', label: 'Địa chỉ đầy đủ', type: 'text', required: true },
             { id: 'province_code', label: 'Tỉnh/Thành phố', type: 'select', required: true },
-            { id: 'district_code', label: 'Quận/Huyện', type: 'select', required: true },
             { id: 'ward_code', label: 'Phường/Xã', type: 'select', required: false },
             { id: 'website_url', label: 'Website', type: 'text', required: false },
             { id: 'facebook_url', label: 'Facebook', type: 'text', required: false },
@@ -327,7 +326,7 @@ const mockRecords = {
         { id: '10', rule_name: 'IP tạm thời xử lý sự cố nâng cấp', ip_type: 'IP_RANGE', ip_from: '115.79.80.1', ip_to: '115.79.80.10', apply_to_role: 'QTHT', valid_from: '20/06/2026', valid_to: '22/06/2026', is_active: false, description: 'Đã hết hạn hiệu lực cấu hình khẩn cấp.' }
     ],
     UC555: [
-        { id: '1', org_code: 'CUC_DKGD_BTNN', org_name: 'Cục Đăng ký quốc gia giao dịch bảo đảm và Bồi thường nhà nước', org_name_en: 'National Registry of Secured Transactions and State Compensation', org_short_name: 'Cục Đăng ký & BTNN', tax_code: '0101234567', email_primary: 'contact@btp.gov.vn', email_noreply: 'noreply-gdbd@btp.gov.vn', email_support: 'support-gdbd@btp.gov.vn', phone_primary: '024.37335688', phone_hotline: '19001090', fax: '024.37335689', address_full: 'Số 58-60 Trần Phú, Ba Đình, Hà Nội', province_code: 'HN', district_code: 'BD', ward_code: 'QC', website_url: 'https://dkgdbd.gov.vn', facebook_url: 'https://facebook.com/dkgdbd.moj', logo_path: 'logo_cuc_dang_ky.png', favicon_path: 'favicon.ico', is_active: true }
+        { id: '1', org_code: 'CUC_DKGD_BTNN', org_name: 'Cục Đăng ký quốc gia giao dịch bảo đảm và Bồi thường nhà nước', org_name_en: 'National Registry of Secured Transactions and State Compensation', org_short_name: 'Cục Đăng ký & BTNN', tax_code: '0101234567', email_primary: 'contact@btp.gov.vn', email_noreply: 'noreply-gdbd@btp.gov.vn', email_support: 'support-gdbd@btp.gov.vn', phone_primary: '024.37335688', phone_hotline: '19001090', fax: '024.37335689', address_full: 'Số 58-60 Trần Phú, Ba Đình, Hà Nội', province_code: 'HN', ward_code: 'QC', website_url: 'https://dkgdbd.gov.vn', facebook_url: 'https://facebook.com/dkgdbd.moj', logo_path: 'logo_cuc_dang_ky.png', favicon_path: 'favicon.ico', is_active: true }
     ],
     UC556: [
         { id: '1', signer_code: 'SGN_001', signer_name: 'Nguyễn Văn Cán Bộ', position: 'Cục Trưởng', department: 'Ban Giám Đốc', org_unit: 'Cục Đăng ký quốc gia giao dịch bảo đảm', sign_role: 'AUTHORIZED_SIGNER', sign_position_on_doc: 'BOTTOM_RIGHT', sign_label: 'TM. CỤC TRƯỞNG', signature_image: 'signature_cuc_truong.png', effective_from: '01/01/2025', effective_to: '', apply_to_doc_type: 'CHUNG_THU_DK', is_default: true, is_active: true },

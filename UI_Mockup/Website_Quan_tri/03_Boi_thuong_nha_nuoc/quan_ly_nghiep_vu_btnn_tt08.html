@@ -618,22 +618,22 @@
             </div>
         </form>
 
-        <div class="section-title" style="margin:10px 0 12px 0;"><i class="fa-solid fa-paperclip"></i> Tài liệu liên quan</div>
-        <div class="table-wrap">
+        <div class="section-title" id="docSectionTitle" style="margin:10px 0 12px 0;"><i class="fa-solid fa-paperclip"></i> Tài liệu liên quan</div>
+        <div class="table-wrap" id="docTableWrap">
             <table class="doc-table">
                 <thead>
                     <tr>
                         <th style="width:60px; text-align:center;">STT</th>
-                        <th>Tên tài liệu</th>
-                        <th style="width:260px;">File đính kèm</th>
-                        <th style="width:160px; text-align:center;">Thao tác tài liệu</th>
+                        <th style="text-align:center;">Tên tài liệu, văn bản</th>
+                        <th style="width:260px; text-align:center;">File đính kèm</th>
+                        <th style="width:110px; text-align:center;">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody id="documentRows"></tbody>
             </table>
         </div>
         <div style="margin-top:10px;" id="addDocBtnWrapper">
-            <button class="btn btn-secondary btn-sm" onclick="addDocumentRow()"><i class="fa-solid fa-plus"></i> Thêm dòng</button>
+            <button type="button" class="tlkt-btn-add" onclick="addDocumentRow()"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button>
         </div>
         <div class="footer-actions" id="formActions"></div>
     </div>
@@ -1226,34 +1226,45 @@
             const body = document.getElementById('documentRows');
             const addWrap = document.getElementById('addDocBtnWrapper');
             if (addWrap) addWrap.style.display = docReadOnly ? 'none' : '';
-            if (docReadOnly && (!documentRows || documentRows.length === 0)) {
-                body.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); font-style:italic; padding:16px;">Không có tài liệu đính kèm nào.</td></tr>`;
-                return;
-            }
+            // Chế độ xem: bảng chỉ hiển thị khi có dữ liệu (ẩn cả tiêu đề khối)
+            const viewEmpty = docReadOnly && !(documentRows || []).some(d => d && (d.name || d.file));
+            const wrap = document.getElementById('docTableWrap');
+            const title = document.getElementById('docSectionTitle');
+            if (wrap) wrap.style.display = viewEmpty ? 'none' : '';
+            if (title) title.style.display = viewEmpty ? 'none' : '';
+            if (viewEmpty) { body.innerHTML = ''; return; }
+            // Bảng tài liệu chuẩn: Tên tài liệu, văn bản | File đính kèm (nút Tải file căn giữa) | Thao tác (nhập: Xem file / Xóa; xem: Xem file / Tải file)
             body.innerHTML = documentRows.map((doc, index) => `
                 <tr>
                     <td style="text-align:center;">${index + 1}</td>
                     <td>
                         ${docReadOnly
                             ? `<span style="font-weight:500; color:#1e293b;">${escDoc(doc.name || '--')}</span>`
-                            : `<input class="form-control" value="${escDoc(doc.name)}" placeholder="Nhập tên tài liệu..." oninput="documentRows[${index}].name = this.value">`}
+                            : `<input class="form-control" style="width:100%;" value="${escDoc(doc.name)}" placeholder="Nhập tên tài liệu, văn bản" oninput="documentRows[${index}].name = this.value">`}
                     </td>
-                    <td>
+                    <td class="tlkt-fc">
                         ${doc.file
-                            ? `<span class="file-name" title="${escDoc(doc.file)}"><i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:6px;"></i>${escDoc(doc.file)}</span>`
+                            ? `<span class="file-name" title="${escDoc(doc.file)}"><i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i>${escDoc(doc.file)}</span>`
                             : (docReadOnly
-                                ? `<span style="color:var(--text-muted); font-style:italic;">--</span>`
-                                : `<button type="button" class="btn-upload-rust" onclick="document.getElementById('docFile_${index}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải lên</button>`)}
+                                ? `<span style="color:var(--text-muted);">--</span>`
+                                : `<button type="button" class="tlkt-btn-pri" onclick="document.getElementById('docFile_${index}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>`)}
                         <input type="file" id="docFile_${index}" style="display:none;" onchange="setDocumentFile(${index}, this.files)">
                     </td>
-                    <td>
-                        <div class="doc-actions">
-                            <a href="javascript:void(0)" class="action-link view-link ${doc.file ? '' : 'disabled-action'}" onclick="viewDocumentFile(${index})">Xem file</a>
-                            ${docReadOnly ? '' : `<a href="javascript:void(0)" class="action-link delete-link" onclick="removeDocumentRow(${index})"><i class="fa-solid fa-trash-can"></i> Xóa</a>`}
-                        </div>
+                    <td style="text-align:center;">
+                        <span class="tlkt-acts">
+                            <button type="button" class="tlkt-ib${doc.file ? '' : ' is-disabled'}" data-admin-icon-normalized="1" title="Xem file" aria-label="Xem file" onclick="viewDocumentFile(${index})"><i class="fa-solid fa-eye"></i></button>
+                            ${docReadOnly
+                                ? `<button type="button" class="tlkt-ib${doc.file ? '' : ' is-disabled'}" data-admin-icon-normalized="1" title="Tải file" aria-label="Tải file" onclick="downloadDocumentFile(${index})"><i class="fa-solid fa-download"></i></button>`
+                                : `<button type="button" class="tlkt-ib tlkt-ib-del" data-admin-icon-normalized="1" title="Xóa" aria-label="Xóa" onclick="removeDocumentRow(${index})"><i class="fa-solid fa-trash"></i></button>`}
+                        </span>
                     </td>
                 </tr>
             `).join('');
+        }
+
+        function downloadDocumentFile(index) {
+            const doc = documentRows[index];
+            if (doc && doc.file) showToast(`Giả lập tải file: ${doc.file}`);
         }
 
         function addDocumentRow() {
@@ -1261,15 +1272,11 @@
             renderDocuments();
         }
 
+        // Xóa thẳng dòng tài liệu, không hỏi xác nhận (chuẩn bảng tài liệu BTNN)
         function removeDocumentRow(index) {
-            confirmCallback = () => {
-                if (documentRows.length === 1) documentRows = [{ name: '', file: '' }];
-                else documentRows.splice(index, 1);
-                renderDocuments();
-                showToast('Đã xóa dòng tài liệu.');
-            };
-            document.getElementById('confirmText').innerText = 'Bạn có chắc chắn muốn xóa tài liệu này không?';
-            document.getElementById('confirmModal').classList.add('visible');
+            if (documentRows.length === 1) documentRows = [{ name: '', file: '' }];
+            else documentRows.splice(index, 1);
+            renderDocuments();
         }
 
         function closeConfirm(accepted) {
@@ -1414,6 +1421,28 @@
                 const deadlineEl = document.getElementById('f_deadline');
                 if (deadlineEl && row[4] !== '—') deadlineEl.value = row[4];
             }
+            // Hướng dẫn, bồi dưỡng: nạp dữ liệu mẫu của hồ sơ vào form (đủ các trường bắt buộc) khi Sửa/Xem chi tiết
+            if (moduleKey === 'huong_dan') {
+                const setVal = (id, v) => { const el = document.getElementById(id); if (el) el.value = v; };
+                if (row) {
+                    const name = row[1];
+                    const level = /^Sở Tư pháp/.test(name) ? 'Sở Tư pháp'
+                        : /^UBND/.test(name) ? 'UBND cấp tỉnh'
+                        : /^TAND/.test(name) ? 'Tòa án'
+                        : /^Cục THADS/.test(name) ? 'Cơ quan giải quyết bồi thường'
+                        : /^(Ông|Bà) /.test(name) ? 'Cá nhân' : 'Cơ quan khác';
+                    setVal('f_type', row[2]);
+                    setVal('f_agency', name);
+                    setVal('f_agencyLevel', level);
+                    setVal('f_method', row[3]);
+                    setVal('f_receivedDate', row[4]);
+                    if (GUIDANCE_TRAINING_TYPES.includes(row[2])) setVal('f_participants', 'Công chức làm công tác bồi thường nhà nước');
+                    if (row[3] === 'Họp liên ngành') setVal('f_caseSummary', 'Vướng mắc trong xác định cơ quan giải quyết bồi thường và trách nhiệm hoàn trả.');
+                    setVal('mainContent', `${name} đề nghị ${row[2].toLowerCase()} trong việc áp dụng pháp luật về trách nhiệm bồi thường của Nhà nước.`);
+                } else {
+                    setVal('mainContent', '');
+                }
+            }
             bindFieldRules();
             // Chế độ xem chi tiết: khóa toàn bộ trường, chỉ hiển thị nút Đóng
             document.querySelectorAll('#businessForm input, #businessForm select, #businessForm textarea').forEach(el => {
@@ -1516,6 +1545,8 @@
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_form_page.js?v=20261026fp"></script>
+    <!-- Bảng tài liệu chuẩn BTNN (style nút Tải file / Thêm tài liệu, icon thao tác) -->
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt5"></script>
 </body>
 
 </html>

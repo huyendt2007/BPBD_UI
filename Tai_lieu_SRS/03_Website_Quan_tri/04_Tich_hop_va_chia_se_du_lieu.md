@@ -61,8 +61,8 @@ Dưới đây là đặc tả phân nhóm 41 Use Cases tích hợp và chia sẻ
 | **UC670** | Trao đổi qua API dữ liệu phục hồi danh dự | Hệ thống Bồi thường Nhà nước | Gửi | Gửi thông tin quyết định phục hồi danh dự cho cá nhân bị thiệt hại sang hệ thống Quản lý công tác BTNN. |
 | **UC671** | Trao đổi qua API dữ liệu giải quyết yêu cầu bồi thường | Hệ thống Bồi thường Nhà nước | Gửi/Nhận | Đồng bộ tình trạng giải quyết hồ sơ bồi thường nhà nước giữa hệ thống dịch vụ công và phân hệ nghiệp vụ BTNN nội bộ. |
 | **UC672** | Trao đổi qua API thông tin người sử dụng từ Nền tảng dùng chung Bộ Tư pháp | Nền tảng dùng chung STP | Nhận | Tích hợp xác thực tài khoản Cán bộ nghiệp vụ thông qua Active Directory (LDAP/AD) hoặc IAM dùng chung của Bộ Tư pháp. |
-| **UC673** | Trao đổi qua API danh mục Tỉnh/Thành phố | CSDL Danh mục quốc gia | Nhận | Tự động cập nhật danh mục Tỉnh/Thành phố từ CSDL hành chính quốc gia định kỳ. |
-| **UC674** | Trao đổi qua API danh mục Phường/Xã | CSDL Danh mục quốc gia | Nhận | Tự động cập nhật danh mục Quận/Huyện, Phường/Xã từ CSDL hành chính quốc gia định kỳ. |
+| **UC673** | Trao đổi qua API danh mục Tỉnh/Thành phố | CSDL Danh mục quốc gia | Nhận | Tự động cập nhật Danh mục địa bàn (cấp Tỉnh/Thành phố) từ CSDL hành chính quốc gia định kỳ. |
+| **UC674** | Trao đổi qua API danh mục Phường/Xã | CSDL Danh mục quốc gia | Nhận | Tự động cập nhật Danh mục địa bàn (cấp Phường/Xã) từ CSDL hành chính quốc gia định kỳ. |
 | **UC675** | Trao đổi qua API danh mục mã nước | CSDL Danh mục quốc gia | Nhận | Đồng bộ danh mục mã quốc gia theo tiêu chuẩn ISO 3166 dùng chung. |
 | **UC676** | Kết quả thực hiện API tiếp nhận dữ liệu | Hệ thống giám sát (Dashboard) | Nội bộ | Giao diện quản trị theo dõi log, thống kê tỷ lệ API tiếp nhận hồ sơ thành công/thất bại, xử lý sự cố kết nối API từ Ngân hàng. |
 | **UC677** | Trao đổi qua API dữ liệu về đăng ký BPBĐ (Với CSDLTH Quốc gia) | CSDLTH Quốc gia | Gửi | Đồng bộ dữ liệu hồ sơ đã hoàn thành đăng ký sang Cơ sở dữ liệu tích hợp quốc gia để lưu trữ tập trung. |

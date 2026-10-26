@@ -4033,7 +4033,7 @@
                                     <div class="form-group" style="margin: 0;">
                                         <span class="form-label">Địa chỉ UBND cấp xã *</span>
                                         <input type="text" class="form-control" id="editPhddStep1CommuneAddress"
-                                            placeholder="Số, Đường, Quận/Huyện...">
+                                            placeholder="Số nhà, tên đường, Phường/Xã...">
                                     </div>
                                 </div>
                             </div>
@@ -4480,7 +4480,7 @@
 
     <!-- Luồng phân công - phê duyệt dùng chung BTNN: nguồn hồ sơ YCBT nhận từ Xác định CQGQBT -->
     <script src="btnn_luong_xu_ly.js?v=20261026ttgq"></script>
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt5"></script>
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
     <script src="quan_ly_boi_thuong_dcgq.js?v=20261026dcct"></script>
     <script src="quan_ly_kinh_phi_kpdc.js?v=20261026kpdc"></script>
@@ -5206,7 +5206,10 @@
                 officerAgency: "UBND Phường Dịch Vọng Hậu",
                 officerStatus: "Vẫn công tác tại đơn vị cũ",
                 officerCurrentAgency: "",
-                officerCurrentPosition: ""
+                officerCurrentPosition: "",
+                // Tài liệu của hồ sơ Xác định CQGQBT: kế thừa vào form Nhập liệu hồ sơ vụ việc
+                vanBanCanCu: [{ name: "Quyết định xử phạt vi phạm hành chính số 125/QĐ-XPVPHC", file: "QD_125_XPVPHC.pdf" }],
+                attachedDocs: [{ name: "Đơn yêu cầu xác định cơ quan giải quyết bồi thường", file: "Don_yeu_cau_XD-2026-001.pdf" }, { name: "Giấy tờ chứng minh nhân thân", file: "CCCD_Nguyen_Van_Nam.pdf" }]
             },
             {
                 code: "XD-2026-002",
@@ -8830,7 +8833,7 @@
             const ward = stripWardCode(rec.nycPhuongXa);
             const addressDetail = rec.nycAddressDetail || '';
             const files = [];
-            (rec.attachedDocs || []).forEach(d => { if (d && (d.file || d.name)) files.push({ name: d.file || d.name, url: '#' }); });
+            (rec.attachedDocs || []).forEach(d => { if (d && (d.file || d.name)) files.push({ name: d.file || d.name, title: d.name || '', url: '#' }); });
             (rec.transferFiles || []).forEach(f => { if (f && f.name) files.push({ name: f.name, url: '#' }); });
             const nguonHoSo = normalizeNguonHoSo(rec.nguonHoSo || rec.hinhThucTiepNhan);
             const hinhThucTiepNhan = normalizeHinhThucTiepNhan(rec.hinhThucTiepNhan, rec.nguonHoSo);
@@ -11026,16 +11029,8 @@
                 }
 
                 // Docs files checklist
-                currentDocsList = [];
-                if (claim.files && claim.files.length > 0) {
-                    claim.files.forEach(f => {
-                        currentDocsList.push({
-                            name: "Tài liệu chứng minh",
-                            req: true,
-                            file: f.name
-                        });
-                    });
-                }
+                // Hiển thị đúng Tên tài liệu đã nhập (title); dữ liệu cũ chỉ có tên file: giữ nhãn "Tài liệu chứng minh"
+                currentDocsList = gqFilesToDocs(claim.files, "Tài liệu chứng minh");
                 renderDocsTable();
                 if (claim.hasVerdict) addVerdictDocumentRow();
 
@@ -11266,32 +11261,26 @@
             // Kế thừa Phương thức nhận thông báo từ hồ sơ Xác định CQGQBT
             setClaimNotifyMethodOnForm(found.notifyMethod || found.hinhThucNhan || NOTIFY_METHOD_DEFAULT_CLAIM, found.notifyAddress || found.diaChiNhanThongBao || '');
 
-            // Populate Officer Fields
-            document.getElementById('claimOfficerContainerForm').style.display = 'block';
-            document.getElementById('claimOfficerNameForm').value = found.officerName || '';
-            document.getElementById('claimOfficerNameForm').setAttribute('readonly', 'readonly');
-
-            document.getElementById('claimOfficerPositionForm').value = found.officerPosition || '';
-            document.getElementById('claimOfficerPositionForm').setAttribute('readonly', 'readonly');
-
-            document.getElementById('claimOfficerAgencyForm').value = found.officerAgency || '';
-            document.getElementById('claimOfficerAgencyForm').setAttribute('readonly', 'readonly');
-
-            document.getElementById('claimOfficerStatusForm').value = found.officerStatus || 'Vẫn công tác tại đơn vị cũ';
-            document.getElementById('claimOfficerStatusForm').setAttribute('disabled', 'disabled');
-
+            // Populate Officer Fields (bỏ qua trường không có trên form để không chặn các bước kế thừa phía sau)
+            const ofEl = id => document.getElementById(id);
+            const ofSet = (id, val, attr) => { const el = ofEl(id); if (!el) return; el.value = val; if (attr) el.setAttribute(attr, attr); };
+            if (ofEl('claimOfficerContainerForm')) ofEl('claimOfficerContainerForm').style.display = 'block';
+            ofSet('claimOfficerNameForm', found.officerName || '', 'readonly');
+            ofSet('claimOfficerPositionForm', found.officerPosition || '', 'readonly');
+            ofSet('claimOfficerAgencyForm', found.officerAgency || '', 'readonly');
+            ofSet('claimOfficerStatusForm', found.officerStatus || 'Vẫn công tác tại đơn vị cũ', 'disabled');
             if (found.officerStatus === 'Đã chuyển công tác') {
-                document.getElementById('claimOfficerCurrentGroupForm').style.display = 'grid';
-                document.getElementById('claimOfficerCurrentAgencyForm').value = found.officerCurrentAgency || '';
-                document.getElementById('claimOfficerCurrentAgencyForm').setAttribute('readonly', 'readonly');
-                document.getElementById('claimOfficerCurrentPositionForm').value = found.officerCurrentPosition || '';
-                document.getElementById('claimOfficerCurrentPositionForm').setAttribute('readonly', 'readonly');
-            } else {
-                document.getElementById('claimOfficerCurrentGroupForm').style.display = 'none';
+                if (ofEl('claimOfficerCurrentGroupForm')) ofEl('claimOfficerCurrentGroupForm').style.display = 'grid';
+                ofSet('claimOfficerCurrentAgencyForm', found.officerCurrentAgency || '', 'readonly');
+                ofSet('claimOfficerCurrentPositionForm', found.officerCurrentPosition || '', 'readonly');
+            } else if (ofEl('claimOfficerCurrentGroupForm')) {
+                ofEl('claimOfficerCurrentGroupForm').style.display = 'none';
             }
 
-            initDocsList();
-            toggleDocsByRole(found.nycRole);
+            // Kế thừa tài liệu của hồ sơ Xác định CQGQBT: Văn bản làm căn cứ + Tài liệu đính kèm (người dùng được sửa, xóa, thêm)
+            if (typeof loadVanBanCanCuRows === 'function') loadVanBanCanCuRows(found.vanBanCanCu || []);
+            currentDocsList = (found.attachedDocs || []).filter(d => d && (d.name || d.file)).map(d => ({ name: d.name || '', required: false, file: d.file || '', isCustom: true }));
+            renderDocsTable();
 
             // Hồ sơ Xác định CQGQBT đã có Mã vụ việc: hồ sơ mới kế thừa Mã vụ việc (chọn sẵn "Vụ việc đã có Mã vụ việc")
             if (!editingClaimId) {
@@ -11646,6 +11635,18 @@
         // Danh mục tài liệu gửi kèm khi tạo mới: bảng không có dòng; người dùng bấm "Thêm tài liệu" để thêm (bỏ các dòng mặc định theo tư cách người yêu cầu)
         function initDocsList(role = "Người bị thiệt hại") {
             currentDocsList = [];
+        }
+        // Danh mục tài liệu gửi kèm -> claim.files: mỗi dòng có tệp lưu { name: tên file, title: Tên tài liệu, văn bản }; không có tài liệu: []
+        function gqDocsToFiles() {
+            return (currentDocsList || []).filter(doc => doc && doc.file).map(doc => ({ name: doc.file, title: String(doc.name || '').trim(), url: "#" }));
+        }
+        // claim.files -> dòng bảng; dữ liệu cũ không có title: dùng nhãn mặc định (fallbackName)
+        function gqFilesToDocs(files, fallbackName) {
+            return (Array.isArray(files) ? files : []).map(f => {
+                const file = typeof f === 'string' ? f : ((f && (f.name || f.file)) || '');
+                const title = (f && typeof f === 'object' && f.title) || fallbackName || '';
+                return { name: title, required: false, file: file };
+            }).filter(d => d.file || d.name);
         }
         // [Không dùng] Danh mục mặc định cũ theo tư cách người yêu cầu - giữ để tham khảo
         function initDocsListLegacy(role = "Người bị thiệt hại") {
@@ -12471,18 +12472,8 @@
                     }
 
                     // Files
-                    claim.files = (() => {
-                        const finalFiles = [];
-                        currentDocsList.forEach(doc => {
-                            if (doc.file) {
-                                finalFiles.push({ name: doc.file, url: "#" });
-                            }
-                        });
-                        if (finalFiles.length === 0) {
-                            finalFiles.push({ name: "Mau_01_BTNN_He_Thong_Tu_Sinh.pdf", url: "#" });
-                        }
-                        return finalFiles;
-                    })();
+                    // Lưu từng dòng: name = tên file, title = Tên tài liệu, văn bản; không có tài liệu thì lưu danh sách rỗng
+                    claim.files = gqDocsToFiles();
 
                     // Tách vụ việc theo Loại yêu cầu: Cả hai -> giữ BT- (bồi thường tiền) + tạo PHDD- liên kết;
                     // Chỉ phục hồi danh dự -> cấp mã PHDD- (không qua Trình duyệt tiếp nhận / Thụ lý của luồng tiền)
@@ -12580,18 +12571,8 @@
                 officerStatus: currentClaimOfficers.length > 0 ? currentClaimOfficers[0].status : "",
                 officerCurrentAgency: currentClaimOfficers.length > 0 ? currentClaimOfficers[0].currentAgency : "",
                 officerCurrentPosition: currentClaimOfficers.length > 0 ? currentClaimOfficers[0].currentPosition : "",
-                files: (() => {
-                    const finalFiles = [];
-                    currentDocsList.forEach(doc => {
-                        if (doc.file) {
-                            finalFiles.push({ name: doc.file, url: "#" });
-                        }
-                    });
-                    if (finalFiles.length === 0) {
-                        finalFiles.push({ name: "Mau_01_BTNN_He_Thong_Tu_Sinh.pdf", url: "#" });
-                    }
-                    return finalFiles;
-                })(),
+                // Lưu từng dòng: name = tên file, title = Tên tài liệu, văn bản; không có tài liệu thì lưu danh sách rỗng
+                files: gqDocsToFiles(),
                 timeline: [
                     { title: "Nhập hồ sơ vụ việc", date: todayStr, desc: "Đã nhập hồ sơ vụ việc, chờ trình Lãnh đạo phê duyệt tiếp nhận hồ sơ.", status: "active" }
                 ]
@@ -13143,13 +13124,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
 
             let filesHtml = '';
             if (claim.files && claim.files.length > 0) {
-                claim.files.forEach(f => {
-                    filesHtml += `<div style="padding: 6px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; display:inline-flex; align-items:center; gap:8px; margin-right:8px; margin-top:4px;">
-                        <i class="fa-solid fa-file-pdf" style="color:var(--danger-color);"></i>
-                        <span>${f.name}</span>
-                        <a href="${f.url || '#'}" target="_blank" class="action-link view-link">Xem file</a>
-                    </div>`;
-                });
+                // Bảng tài liệu chuẩn (chỉ xem): Tên tài liệu, văn bản (title đã nhập; dữ liệu cũ lấy theo tên file) | File đính kèm | Xem file / Tải file
+                filesHtml = vxmDocsTableHtml(claim.files.map(f => typeof f === 'string' ? { name: f } : f), 'claimDetailDocsRead');
             } else {
                 filesHtml = `<span style="font-style:italic; color:var(--text-muted);">Không có tài liệu đính kèm</span>`;
             }
@@ -20349,12 +20325,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             }
 
             if (claim.files && claim.files.length > 0) {
-                currentDocsList = claim.files.map(file => ({
-                    name: "Tài liệu từ vụ việc gốc",
-                    required: false,
-                    file: file.name,
-                    isCustom: true
-                }));
+                currentDocsList = gqFilesToDocs(claim.files, "Tài liệu từ vụ việc gốc").map(d => Object.assign(d, { isCustom: true }));
                 renderDocsTable();
             }
 
@@ -25646,6 +25617,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <script src="quan_ly_boi_thuong_hdcv.js?v=20261026hdcv"></script>
     <!-- [ktlv] Màn chi tiết hồ sơ: khối Thông tin không thụ lý hồ sơ / Thông tin chuyển CQGQBT (thẻ cảnh báo, lưới 2 cột, File Xem/Tải) -->
     <script src="quan_ly_boi_thuong_ktlv.js?v=20261026ktlv"></script>
+    <!-- [tcvv] Xem chi tiết mở từ Tra cứu vụ việc (?readonly=1&returnUrl=tra_cuu...): tab mặc định, bỏ giới hạn cán bộ được cử; tcvvPreview=1: hồ sơ giả lập riêng của Tra cứu, không lưu vào claimsList -->
+    <script src="tra_cuu_seed_tcvv.js?v=20261026tcvv"></script>
 </body>
 
 </html>

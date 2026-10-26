@@ -154,8 +154,8 @@ Màn hình được thiết kế dưới dạng **Trang nhập liệu toàn tran
 | Ngày cấp | Date | Có | Trống | Control UI: Datepicker (`dd/mm/yyyy`). Áp dụng rule ngày quá khứ [BR-VAL-008]. |
 | Nơi cấp | String(255) | Có | Trống | Control UI: Input text. Áp dụng rule bắt buộc [BR-VAL-001]. |
 | Quốc gia | Enum(String(100)) | Có | `Việt Nam` | Control UI: Combobox. Tham chiếu Danh mục Quốc tịch / Quốc gia [DM_09]. |
-| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Có | Theo quốc gia | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Tỉnh/Thành phố [DM_13].<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản tự do. |
-| Phường/Xã | Enum(String(100)) / String(100) | Có | Theo quốc gia | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] (lọc động theo Tỉnh/Thành phố đã chọn).<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản tự do. |
+| Tỉnh/Thành phố | Enum(String(100)) / String(100) | Có | Theo quốc gia | Control UI: Combobox có tìm kiếm / Input text.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục địa bàn (cấp Tỉnh/Thành phố).<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản tự do. |
+| Phường/Xã | Enum(String(100)) / String(100) | Có | Theo quốc gia | Control UI: Combobox có tìm kiếm / Input text.<br>- Phụ thuộc vào `Tỉnh/Thành phố` đã chọn.<br>- Nếu `Quốc gia` = `Việt Nam`: Tham chiếu Danh mục địa bàn (cấp Phường/Xã) (lọc động theo Tỉnh/Thành phố đã chọn).<br>- Nếu `Quốc gia` khác `Việt Nam`: Hiển thị ô nhập văn bản tự do. |
 | Địa chỉ chi tiết | Text(1000) / String(500) | Có | Trống | Control UI: Input text. Nhập số nhà, tên đường/phố, thôn/xóm/ấp... Áp dụng quy tắc bắt buộc [BR-VAL-001]. |
 | **THÔNG TIN NGƯỜI BỊ THIỆT HẠI** | Section | - | Ẩn | Khối thông tin nhân thân của người bị thiệt hại.<br>- **Điều kiện hiển thị**: Chỉ hiển thị khi `Tư cách người yêu cầu bồi thường` khác `Người bị thiệt hại`.<br>- Các trường trong khối có cấu trúc tương tự khối `Thông tin người yêu cầu bồi thường`; chỉ 04 trường `Họ và tên người bị thiệt hại`, `Ngày tháng năm sinh (người bị thiệt hại)`, `Loại giấy tờ thân nhân (người bị thiệt hại)`, `Số giấy tờ thân nhân (người bị thiệt hại)` là bắt buộc (nhãn có dấu `*` màu đỏ); các trường còn lại không bắt buộc.<br>- Kiểm tra bắt buộc khi `Trình duyệt` chỉ áp dụng khi khối đang hiển thị: bỏ trống thì tô viền đỏ ô (class `.is-invalid`), hiển thị cảnh báo đỏ "Đây là trường bắt buộc" ngay dưới ô và focus vào ô lỗi đầu tiên. |
 | Họ và tên người bị thiệt hại | String(100) | Có (khi khối hiển thị) | Trống | Control UI: Input text. Áp dụng rule bắt buộc [BR-VAL-001]. |
@@ -168,14 +168,14 @@ Màn hình được thiết kế dưới dạng **Trang nhập liệu toàn tran
 | Ngày cấp (người bị thiệt hại) | Date | Không | Trống | Control UI: Datepicker (`dd/mm/yyyy`). Nếu có dữ liệu, áp dụng rule ngày quá khứ [BR-VAL-008]. |
 | Nơi cấp (người bị thiệt hại) | String(255) | Không | Trống | Control UI: Input text. |
 | Quốc gia (người bị thiệt hại) | Enum(String(100)) | Không | `Việt Nam` | Control UI: Combobox. Tham chiếu Danh mục Quốc tịch / Quốc gia [DM_09]. |
-| Tỉnh/Thành phố (người bị thiệt hại) | Enum(String(100)) / String(100) | Không | Trống | Control UI: Combobox có tìm kiếm / Input text. Tham chiếu Danh mục Tỉnh/Thành phố [DM_13] khi `Quốc gia` = `Việt Nam`; nhập tự do khi `Quốc gia` khác `Việt Nam`. |
-| Phường/Xã (người bị thiệt hại) | Enum(String(100)) / String(100) | Không | Trống | Control UI: Combobox có tìm kiếm / Input text. Tham chiếu Danh mục Xã/Phường/Thị trấn [DM_15] khi `Quốc gia` = `Việt Nam`; nhập tự do khi `Quốc gia` khác `Việt Nam`. |
+| Tỉnh/Thành phố (người bị thiệt hại) | Enum(String(100)) / String(100) | Không | Trống | Control UI: Combobox có tìm kiếm / Input text. Tham chiếu Danh mục địa bàn (cấp Tỉnh/Thành phố) khi `Quốc gia` = `Việt Nam`; nhập tự do khi `Quốc gia` khác `Việt Nam`. |
+| Phường/Xã (người bị thiệt hại) | Enum(String(100)) / String(100) | Không | Trống | Control UI: Combobox có tìm kiếm / Input text. Tham chiếu Danh mục địa bàn (cấp Phường/Xã) khi `Quốc gia` = `Việt Nam`; nhập tự do khi `Quốc gia` khác `Việt Nam`. |
 | Địa chỉ chi tiết (người bị thiệt hại) | Text(1000) / String(500) | Không | Trống | Control UI: Input text. Nhập số nhà, tên đường/phố, thôn/xóm... |
-| **VĂN BẢN LÀM CĂN CỨ YÊU CẦU BỒI THƯỜNG** | List(Object) | Không | 01 dòng trống | Control UI: Bảng nhập liệu (Data grid) đặt ngay sau khối thông tin Người yêu cầu bồi thường / Người bị thiệt hại, trước trường `Hành vi gây thiệt hại của người thi hành công vụ`.<br>- Khối không bắt buộc; mặc định hiển thị 01 dòng trống; nút `Thêm dòng tài liệu` đặt dưới bảng.<br>- Cột: `STT` \| `Tên văn bản, căn cứ` \| `Tải file` \| `Thao tác` (`Xem file`/`Xóa`). Dòng không có tên và không có file được bỏ qua khi lưu. |
-| STT | Integer(10) | - | Tự tăng | Căn giữa. Số thứ tự dòng. |
-| Tên văn bản, căn cứ | String(500) | Không | Trống | Control UI: Input text, placeholder *"Nhập tên văn bản, căn cứ..."*. |
-| Tải file | File | Không | Chưa có file | Control UI: Nút `Tải file`; sau khi tải lên hiển thị tên file thay cho nút kèm liên kết xem và xóa. Áp dụng [BR-FILE-010]. |
-| Thao tác | String(255) | - | - | Gồm liên kết `Xem file` (mở tab mới) và `Xóa` (Custom Confirmation Modal). |
+| **VĂN BẢN LÀM CĂN CỨ YÊU CẦU BỒI THƯỜNG** | List(Object) | Không | 01 dòng trống | Control UI: Bảng nhập liệu (Data grid) đặt ngay sau khối thông tin Người yêu cầu bồi thường / Người bị thiệt hại, trước trường `Hành vi gây thiệt hại của người thi hành công vụ`.<br>- Bảng theo [Bảng Tài liệu kèm theo - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-bang-tai-lieu-kem-theo); cột tên là `Tên văn bản căn cứ`.<br>- Khối không bắt buộc.<br>- Nút `Thêm tài liệu` đặt dưới bảng.<br>- Dòng không có tên và không có file được bỏ qua khi lưu. |
+| STT | Integer(10) | - | Tự tăng | Control UI: Text (Read-only).<br>- Căn giữa. |
+| Tên văn bản căn cứ | String(500) | Không | Trống | Control UI: Input text.<br>- `Placeholder: Nhập tên văn bản căn cứ`. |
+| File đính kèm | File | Không | Chưa có file | Control UI: Nút `Tải file`.<br>- Sau khi tải lên hiển thị tên file thay cho nút. |
+| Thao tác | Action | - | - | Control UI: Icon button có tooltip.<br>- `Xem file` (khóa khi dòng chưa có file): mở tab mới.<br>- `Xóa`: xóa dòng ngay, không hiển thị popup xác nhận. |
 | Hành vi gây thiệt hại của người thi hành công vụ | Text(2000) | Có | Trống | Control UI: Textarea.<br>- Placeholder: `Tóm tắt hành vi gây thiệt hại của người thi hành công vụ`.<br>- Tối đa 2000 ký tự. |
 | Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại | Text(2000) | Có | Trống | Control UI: Textarea. Phân tích, làm rõ mối quan hệ nhân quả giữa hành vi trái pháp luật và các tổn thất thực tế. Áp dụng rule bắt buộc [BR-VAL-001]. |
 | **HÌNH THỨC ĐỀ NGHỊ PHỤC HỒI DANH DỰ** | Section | - | - | Khối chọn hình thức (bắt buộc chọn ít nhất 01 hình thức): |
@@ -185,10 +185,10 @@ Màn hình được thiết kế dưới dạng **Trang nhập liệu toàn tran
 | Tổng số tiền yêu cầu bồi thường (VNĐ) | Currency(18,0) | Có khi hiển thị | Trống | Control UI: Input number / currency format. |
 | Tài khoản ngân hàng nhận tiền bồi thường | String(255) | Không | Trống | Control UI: Input text. Số tài khoản, tên chủ tài khoản, tên ngân hàng và chi nhánh. |
 | **BẢNG TÀI LIỆU ĐÍNH KÈM HỒ SƠ YÊU CẦU** | List(Object) | Không | Trống | Control UI: Data grid.<br>- Cho phép đính kèm nhiều tài liệu liên quan.<br>- Hỗ trợ định dạng `.pdf`, `.doc`, `.docx`, dung lượng tối đa 20MB/tệp theo [BR-FILE-010]. |
-| STT | Integer(10) | - | Tự tăng | Số thứ tự dòng tài liệu. |
-| Tên tài liệu | String(255) | Có khi có file | Trống | Control UI: Input text. |
-| Tệp đính kèm | File | Không | Trống | Control UI: Nút tải tệp tin. Tải lên thành công hiển thị tên tệp tin. |
-| Thao tác | Action | - | - | Gồm liên kết `Xem file` (mở tab mới) và liên kết `Xóa` (mở Custom Confirmation Modal). |
+| STT | Integer(10) | - | Tự tăng | Control UI: Text (Read-only).<br>- Căn giữa. |
+| Tên tài liệu, văn bản | String(255) | Có khi có file | Trống | Control UI: Input text.<br>- `Placeholder: Nhập tên tài liệu, văn bản`. |
+| File đính kèm | File | Không | Trống | Control UI: Nút `Tải file`.<br>- Tải lên thành công hiển thị tên tệp thay cho nút. |
+| Thao tác | Action | - | - | Control UI: Icon button có tooltip.<br>- `Xem file`: mở tab mới.<br>- `Xóa`: xóa dòng ngay, không hiển thị popup xác nhận. |
 
 ###### 4.3.3.6.4.3. Chức năng trên màn hình
 
@@ -196,8 +196,8 @@ Màn hình được thiết kế dưới dạng **Trang nhập liệu toàn tran
 | :--- | :--- | :--- | :--- |
 | 1 | Hủy bỏ | Button | Khi người dùng click nút, hệ thống điều hướng quay về [MH01 - Màn hình Danh sách vụ việc phục hồi danh dự](#43363-mh01---màn-hình-danh-sách-vụ-việc-phục-hồi-danh-dự), không lưu lại dữ liệu đang nhập dở. |
 | 2 | Trình duyệt | Button | Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý tuần tự theo các trường hợp bên dưới:<br><br>- **TH1 - Bỏ trống trường bắt buộc**: Áp dụng quy tắc [BR-VAL-001]. Nếu bỏ trống các trường bắt buộc đang hiển thị hoặc chưa chọn ít nhất 01 hình thức phục hồi danh dự:<br>+ Tuyệt đối không dùng thông báo Toast.<br>+ Hệ thống thực hiện highlight tô đỏ viền ô trống đầu tiên bằng class `.is-invalid`.<br>+ Hiển thị dòng chữ cảnh báo lỗi màu đỏ [MSG-ERR-VAL-001] ngay phía dưới ô nhập đó.<br>+ Tự động focus con trỏ vào ô nhập lỗi đầu tiên đó và dừng xử lý, không cho phép lưu.<br><br>- **TH2 - Dữ liệu hợp lệ (Tuần tự các hành động của hệ thống)**:<br>+ **Trường hợp Loại yêu cầu = "Chỉ yêu cầu phục hồi danh dự"**:<br>&nbsp;&nbsp;&nbsp;&nbsp;* Hệ thống sinh mã hồ sơ độc lập dạng `PHDD-yyyy-xxx` (với `yyyy` là năm hiện tại, `xxx` là số thứ tự tăng dần).<br>&nbsp;&nbsp;&nbsp;&nbsp;* Cột "Vụ việc BT liên quan" để trống (`--`).<br>&nbsp;&nbsp;&nbsp;&nbsp;* Hồ sơ được lưu vào CSDL với trạng thái ban đầu là `Chờ thông báo`.<br>&nbsp;&nbsp;&nbsp;&nbsp;* Đưa hồ sơ vào Tab "Vụ việc chờ xử lý" của MH01.<br>+ **Trường hợp Loại yêu cầu = "Yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự)"**:<br>&nbsp;&nbsp;&nbsp;&nbsp;* Hệ thống tự động tách và tạo đồng thời 02 hồ sơ liên kết độc lập:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. Hồ sơ Bồi thường tiền: Mã `BT-yyyy-xxx`, liên kết trường `relatedCode` trỏ đến mã `PHDD-yyyy-xxx`.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. Hồ sơ Phục hồi danh dự: Mã `PHDD-yyyy-xxx`, liên kết trường `relatedCode` trỏ đến mã `BT-yyyy-xxx`.<br>&nbsp;&nbsp;&nbsp;&nbsp;* Hồ sơ Phục hồi danh dự được lưu vào CSDL với trạng thái ban đầu là `Chờ thông báo` và đưa vào Tab "Vụ việc chờ xử lý".<br>+ **Hoàn tất thao tác**:<br>&nbsp;&nbsp;&nbsp;&nbsp;* Ghi nhật ký Audit Log hệ thống.<br>&nbsp;&nbsp;&nbsp;&nbsp;* Hệ thống hiển thị [MSG-SUC-BTNN-PHDD-001].<br>&nbsp;&nbsp;&nbsp;&nbsp;* Điều hướng quay về MH01 và cập nhật lại danh sách dữ liệu. |
-| 3 | Thêm dòng tài liệu | Button | Thêm một dòng mới vào bảng tài liệu đính kèm. |
-| 4 | Tải tệp đính kèm | File trigger | Mở hộp thoại chọn tệp tin từ máy tính. Kiểm tra định dạng và dung lượng theo [BR-FILE-010]. |
+| 3 | Thêm tài liệu | Button | Thêm 01 dòng trống vào cuối bảng tương ứng. |
+| 4 | Tải file | Button | Mở hộp thoại chọn tệp tin từ máy tính. Kiểm tra định dạng và dung lượng theo [BR-FILE-010]. |
 | 5 | Xem file | Link | Mở tệp đính kèm tại một tab trình duyệt mới. |
 | 6 | Xóa file | Link | Mở Custom Confirmation Modal xác nhận theo mã [MSG-CFM-SYS-001]. Nếu người dùng chọn `Xác nhận`, hệ thống gỡ tệp khỏi danh sách; nếu chọn `Hủy bỏ`, đóng modal và giữ nguyên tệp tin. |
 
@@ -248,13 +248,13 @@ Màn hình dùng chung màn hình Xem chi tiết vụ việc của Giải quyế
 | Số điện thoại | String(20) | - | Theo hồ sơ | Chỉ đọc. Số điện thoại người bị thiệt hại (nếu có). |
 | Địa chỉ cư trú chi tiết | String(500) | - | Theo hồ sơ | Chỉ đọc. Địa chỉ nơi cư trú của người bị thiệt hại. |
 | **Khối Văn bản làm căn cứ yêu cầu bồi thường** | Section | - | - | Hiển thị danh mục văn bản, căn cứ pháp lý và hành vi gây thiệt hại: |
-| Bảng danh sách văn bản làm căn cứ | List(Object) | - | Theo hồ sơ | Control UI: Data grid chỉ đọc.<br>- Cột: `STT`, `Tên văn bản, căn cứ`, `Tải file`, `Thao tác` (`Xem file` mở tab mới). |
+| Bảng danh sách văn bản làm căn cứ | List(Object) | - | Theo hồ sơ | Control UI: Data grid chỉ đọc.<br>- Cột: `STT`, `Tên văn bản căn cứ`, `File đính kèm`, `Thao tác` (`Xem file` mở tab mới, `Tải file`).<br>- Chỉ hiển thị khi có dữ liệu. |
 | Hành vi gây thiệt hại của người thi hành công vụ | Text(2000) | - | Theo hồ sơ | Chỉ đọc. Tóm tắt hành vi khởi tố, điều tra, truy tố, xét xử hoặc thi hành án trái pháp luật. |
 | Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại | Text(2000) | - | Theo hồ sơ | Chỉ đọc. Diễn giải mối quan hệ nhân quả giữa hành vi trái pháp luật và các tổn thất thực tế xảy ra. |
 | **Khối Hình thức đề nghị phục hồi danh dự** | Section | - | - | Hiển thị hình thức người yêu cầu đề nghị: |
 | Trực tiếp xin lỗi và cải chính công khai (Điều 58) | Boolean | - | Theo hồ sơ | Chỉ đọc. Có hoặc Không yêu cầu tổ chức trực tiếp. |
 | Đăng báo xin lỗi và cải chính công khai (Điều 59) | Boolean | - | Theo hồ sơ | Chỉ đọc. Có hoặc Không yêu cầu đăng báo công khai. |
-| **Khối Bảng tài liệu đính kèm hồ sơ** | List(Object) | - | Theo hồ sơ | Control UI: Data grid chỉ đọc.<br>- Hiển thị toàn bộ các tài liệu đã đính kèm theo hồ sơ.<br>- Cột: `STT`, `Tên tài liệu`, `File đính kèm`, `Thao tác` (`Xem file` mở tab mới). |
+| **Khối Bảng tài liệu đính kèm hồ sơ** | List(Object) | - | Theo hồ sơ | Control UI: Data grid chỉ đọc.<br>- Hiển thị toàn bộ các tài liệu đã đính kèm theo hồ sơ.<br>- Cột: `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác` (`Xem file` mở tab mới, `Tải file`).<br>- Chỉ hiển thị khi có dữ liệu. |
 | **TAB PHỤC HỒI DANH DỰ** | Tab | - | Inactive | Control UI: Tab nội dung.<br>- Bắt đầu từ Thanh tiến trình; không hiển thị khối tổng quan, thông tin pháp lý, nhân thân.<br>- Gồm Thanh tiến trình, khối Thông báo tổ chức phục hồi danh dự (Trình ký Thông báo tổ chức thực hiện phục hồi danh dự - Mẫu 26/BTNN), khối Ý kiến phản hồi của người bị thiệt hại, khối Hoãn phục hồi danh dự (khi có lần hoãn), khối Tổ chức thực hiện phục hồi danh dự, Lịch sử xử lý.<br>- Mô tả chi tiết theo [MH04 - Màn hình Xem chi tiết vụ việc Phục hồi danh dự - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#mh-chi-tiet-vu-viec-phdd). |
 
 ###### 4.3.3.6.5.3. Chức năng trên màn hình

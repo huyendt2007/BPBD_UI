@@ -748,21 +748,21 @@
         </form>
 
         <div class="section-title" id="docSectionTitle" style="margin:10px 0 12px 0;"><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm</div>
-        <div class="table-wrap">
+        <div class="table-wrap" id="docTableWrap">
             <table class="doc-table">
                 <thead>
                     <tr>
                         <th style="width:60px; text-align:center;">STT</th>
-                        <th>Tên tài liệu</th>
-                        <th style="width:260px;">File đính kèm</th>
-                        <th style="width:160px; text-align:center;">Thao tác tài liệu</th>
+                        <th style="text-align:center;">Tên tài liệu, văn bản</th>
+                        <th style="width:260px; text-align:center;">File đính kèm</th>
+                        <th style="width:110px; text-align:center;">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody id="documentRows"></tbody>
             </table>
         </div>
         <div style="margin-top:10px;" id="addDocBtnWrapper">
-            <button class="btn btn-secondary btn-sm" onclick="addDocumentRow()"><i class="fa-solid fa-plus"></i> Thêm dòng</button>
+            <button type="button" class="tlkt-btn-add" onclick="addDocumentRow()"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button>
         </div>
 
         <div class="footer-actions" id="formActions"></div>
@@ -1418,10 +1418,10 @@
                 duplicateKey: ['answerDocNo', 'answerDate'],
                 duplicateMessage: 'Văn bản giải đáp đã tồn tại trong hệ thống (trùng Số văn bản và Ngày văn bản)',
                 rows: [
-                    ['125/BTP-BTNN', '06/08/2026', 'Sở Tư pháp Hà Nội', 'Qua bưu chính', 'Gửi qua bưu chính', '01/08/2026', 'VB_GiaiDap_125.pdf', 'Cơ quan giải quyết bồi thường', 'Số 123 đường Giải Phóng, TP. Hà Nội'],
-                    ['118/BTP-BTNN', '28/07/2026', 'Ông Nguyễn Văn A', 'Cổng tiếp nhận ý kiến của Bộ', 'Gửi qua Cổng tiếp nhận ý kiến của Bộ + Bưu chính', '20/07/2026', 'VB_GiaiDap_118.pdf', 'Tổ chức/cá nhân khác', 'Số 45 phố Tràng Tiền, Hoàn Kiếm, Hà Nội'],
-                    ['112/BTP-BTNN', '25/07/2026', 'UBND tỉnh Lâm Đồng', 'Qua bưu chính', 'Gửi qua bưu chính', '20/07/2026', 'VB_GiaiDap_112.pdf', 'Cơ quan giải quyết bồi thường', 'Số 04 Trần Hưng Đạo, TP. Đà Lạt, Lâm Đồng'],
-                    ['105/BTP-BTNN', '20/07/2026', 'Sở Tư pháp TP. Hồ Chí Minh', 'Email', 'Gửi qua Email', '15/07/2026', 'VB_GiaiDap_105.pdf', 'Cơ quan giải quyết bồi thường', 'Số 141 Pasteur, Phường 6, Quận 3, TP.HCM'],
+                    ['125/BTP-BTNN', '20/10/2026', 'Sở Tư pháp Hà Nội', 'Qua bưu chính', 'Gửi qua bưu chính', '15/10/2026', 'VB_GiaiDap_125.pdf', 'Cơ quan giải quyết bồi thường', 'Số 123 đường Giải Phóng, TP. Hà Nội'],
+                    ['118/BTP-BTNN', '14/10/2026', 'Ông Nguyễn Văn A', 'Cổng tiếp nhận ý kiến của Bộ', 'Gửi qua Cổng tiếp nhận ý kiến của Bộ + Bưu chính', '08/10/2026', 'VB_GiaiDap_118.pdf', 'Tổ chức/cá nhân khác', 'Số 45 phố Tràng Tiền, Hoàn Kiếm, Hà Nội'],
+                    ['112/BTP-BTNN', '09/10/2026', 'UBND tỉnh Lâm Đồng', 'Qua bưu chính', 'Gửi qua bưu chính', '05/10/2026', 'VB_GiaiDap_112.pdf', 'Cơ quan giải quyết bồi thường', 'Số 04 Trần Hưng Đạo, TP. Đà Lạt, Lâm Đồng'],
+                    ['105/BTP-BTNN', '06/10/2026', 'Sở Tư pháp TP. Hồ Chí Minh', 'Email', 'Gửi qua Email', '01/10/2026', 'VB_GiaiDap_105.pdf', 'Cơ quan giải quyết bồi thường', 'Số 141 Pasteur, Phường 6, Quận 3, TP.HCM'],
                     ['98/BTP-BTNN', '09/07/2026', 'Bà Lê Thị Mai', 'Trực tiếp', 'Nhận trực tiếp tại trụ sở + Bưu chính', '05/07/2026', 'VB_GiaiDap_98.pdf', 'Tổ chức/cá nhân khác', 'Số 88 đường Láng, Đống Đa, Hà Nội'],
                     ['92/BTP-BTNN', '03/07/2026', 'UBND tỉnh Đồng Nai', 'Qua bưu chính', 'Gửi qua bưu chính', '28/06/2026', 'VB_GiaiDap_92.pdf', 'Cơ quan giải quyết bồi thường', 'Số 02 Nguyễn Văn Trị, TP. Biên Hòa, Đồng Nai'],
                     ['85/BTP-BTNN', '24/06/2026', 'Sở Tư pháp tỉnh Nghệ An', 'Qua bưu chính', 'Gửi qua bưu chính', '18/06/2026', 'VB_GiaiDap_85.pdf', 'Cơ quan giải quyết bồi thường', 'Số 56 Lê Hồng Phong, TP. Vinh, Nghệ An'],
@@ -1554,6 +1554,21 @@
             if (config.rowExtras && config.rowExtras[i]) r.extra = { ...config.rowExtras[i] };
             return r;
         });
+        // Giải đáp vướng mắc: 04 dòng mẫu đầu lấy ngày theo ngày hiện tại (trong tháng hiện tại, không quá hôm nay)
+        // để lần đầu mở màn hình luôn có dữ liệu theo bộ lọc mặc định (từ ngày đầu tháng đến hôm nay)
+        if (moduleKey === 'giai_dap_vuong_mac') {
+            const today = new Date(); today.setHours(0, 0, 0, 0);
+            const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+            const shift = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+            const clamp = d => d < firstDay ? firstDay : (d > today ? today : d);
+            // [số ngày trước hôm nay của Ngày nhận đề nghị, số ngày sau ngày nhận của Ngày văn bản]
+            [[0, 3], [2, 4], [5, 4], [9, 5]].forEach(([back, after], i) => {
+                if (!rows[i]) return;
+                const received = clamp(shift(today, -back));
+                rows[i][5] = formatDateVi(received);
+                rows[i][1] = formatDateVi(clamp(shift(received, after)));
+            });
+        }
         let selectedRowIndex = null;
         let confirmCallback = null;
         let responseRowIndex = null;
@@ -2167,34 +2182,45 @@
             const body = document.getElementById('documentRows');
             const addWrap = document.getElementById('addDocBtnWrapper');
             if (addWrap) addWrap.style.display = docReadOnly ? 'none' : '';
-            if (docReadOnly && (!documents || documents.length === 0)) {
-                body.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); font-style:italic; padding:16px;">Không có tài liệu đính kèm nào.</td></tr>`;
-                return;
-            }
+            // Chế độ xem: bảng chỉ hiển thị khi có dữ liệu (ẩn cả tiêu đề khối)
+            const viewEmpty = docReadOnly && !(documents || []).some(d => d && (d.name || d.file));
+            const wrap = document.getElementById('docTableWrap');
+            const title = document.getElementById('docSectionTitle');
+            if (wrap) wrap.style.display = viewEmpty ? 'none' : '';
+            if (title) title.style.display = viewEmpty ? 'none' : '';
+            if (viewEmpty) { body.innerHTML = ''; return; }
+            // Bảng tài liệu chuẩn: Tên tài liệu, văn bản | File đính kèm (nút Tải file căn giữa) | Thao tác (nhập: Xem file / Xóa; xem: Xem file / Tải file)
             body.innerHTML = documents.map((doc, index) => `
                 <tr>
                     <td style="text-align:center;">${index + 1}</td>
                     <td>
                         ${docReadOnly
                             ? `<span style="font-weight:500; color:#1e293b;">${escDoc(doc.name || '--')}</span>`
-                            : `<input class="form-control" value="${escDoc(doc.name)}" placeholder="Nhập tên tài liệu..." oninput="documents[${index}].name = this.value">`}
+                            : `<input class="form-control" style="width:100%;" value="${escDoc(doc.name)}" placeholder="Nhập tên tài liệu, văn bản" oninput="documents[${index}].name = this.value">`}
                     </td>
-                    <td>
+                    <td class="tlkt-fc">
                         ${doc.file
-                            ? `<span class="file-name" title="${escDoc(doc.file)}"><i class="fa-solid fa-file-pdf" style="color:#ef4444; margin-right:6px;"></i>${escDoc(doc.file)}</span>`
+                            ? `<span class="file-name" title="${escDoc(doc.file)}"><i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i>${escDoc(doc.file)}</span>`
                             : (docReadOnly
-                                ? `<span style="color:var(--text-muted); font-style:italic;">--</span>`
-                                : `<button type="button" class="btn-upload-rust" onclick="document.getElementById('docFile_${index}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải lên</button>`)}
+                                ? `<span style="color:var(--text-muted);">--</span>`
+                                : `<button type="button" class="tlkt-btn-pri" onclick="document.getElementById('docFile_${index}').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>`)}
                         <input type="file" id="docFile_${index}" style="display:none;" onchange="setDocumentFile(${index}, this.files)">
                     </td>
-                    <td>
-                        <div class="doc-actions">
-                            <a href="javascript:void(0)" class="action-link view-link ${doc.file ? '' : 'disabled-action'}" onclick="viewDocumentFile(${index})">Xem file</a>
-                            ${docReadOnly ? '' : `<a href="javascript:void(0)" class="action-link delete-link" onclick="removeDocumentRow(${index})"><i class="fa-solid fa-trash-can"></i> Xóa</a>`}
-                        </div>
+                    <td style="text-align:center;">
+                        <span class="tlkt-acts">
+                            <button type="button" class="tlkt-ib${doc.file ? '' : ' is-disabled'}" data-admin-icon-normalized="1" title="Xem file" aria-label="Xem file" onclick="viewDocumentFile(${index})"><i class="fa-solid fa-eye"></i></button>
+                            ${docReadOnly
+                                ? `<button type="button" class="tlkt-ib${doc.file ? '' : ' is-disabled'}" data-admin-icon-normalized="1" title="Tải file" aria-label="Tải file" onclick="downloadDocumentFile(${index})"><i class="fa-solid fa-download"></i></button>`
+                                : `<button type="button" class="tlkt-ib tlkt-ib-del" data-admin-icon-normalized="1" title="Xóa" aria-label="Xóa" onclick="removeDocumentRow(${index})"><i class="fa-solid fa-trash"></i></button>`}
+                        </span>
                     </td>
                 </tr>
             `).join('');
+        }
+
+        function downloadDocumentFile(index) {
+            const doc = documents[index];
+            if (doc && doc.file) showToast(`Giả lập tải file: ${doc.file}`);
         }
 
         function addDocumentRow() {
@@ -2202,15 +2228,11 @@
             renderDocuments();
         }
 
+        // Xóa thẳng dòng tài liệu, không hỏi xác nhận (chuẩn bảng tài liệu BTNN)
         function removeDocumentRow(index) {
-            confirmCallback = () => {
-                if (documents.length === 1) documents = [{ name: '', file: '' }];
-                else documents.splice(index, 1);
-                renderDocuments();
-                showToast('Đã xóa dòng tài liệu.');
-            };
-            document.getElementById('confirmText').innerText = 'Bạn có chắc chắn muốn xóa tài liệu này không?';
-            document.getElementById('confirmModal').classList.add('visible');
+            if (documents.length === 1) documents = [{ name: '', file: '' }];
+            else documents.splice(index, 1);
+            renderDocuments();
         }
 
         function viewDocumentFile(index) {
@@ -2905,7 +2927,7 @@
             if (currentFeature === 'giai_dap_vuong_mac') {
                 const fromEl = document.getElementById('filter_fromDate');
                 const toEl = document.getElementById('filter_toDate');
-                if (fromEl) fromEl.value = '01/10/2026';
+                if (fromEl) fromEl.value = formatDateVi(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
                 if (toEl) toEl.value = formatDateVi(new Date());
             }
             currentPage = 1;
@@ -2928,7 +2950,7 @@
             if (currentFeature === 'giai_dap_vuong_mac') {
                 const fromEl = document.getElementById('filter_fromDate');
                 const toEl = document.getElementById('filter_toDate');
-                if (fromEl) fromEl.value = '01/10/2026';
+                if (fromEl) fromEl.value = formatDateVi(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
                 if (toEl) toEl.value = formatDateVi(new Date());
             }
             currentPage = 1;
@@ -2943,6 +2965,8 @@
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_form_page.js?v=20261026fp"></script>
+    <!-- Bảng tài liệu chuẩn BTNN (style nút Tải file / Thêm tài liệu, icon thao tác) -->
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt5"></script>
 </body>
 
 </html>

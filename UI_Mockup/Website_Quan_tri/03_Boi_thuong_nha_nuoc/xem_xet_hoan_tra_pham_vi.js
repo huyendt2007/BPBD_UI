@@ -37,10 +37,13 @@
         BTC_MIEN: ['Bị từ chối', 'QĐ miễn hoàn trả', 'Chờ xử lý'],
         BTC_GIAM: ['Bị từ chối', 'QĐ giảm mức hoàn trả', 'Chờ xử lý'],
         CD_DC: ['Chờ duyệt', 'QĐ đình chỉ', 'Đang xử lý'],
+        BTC_DC: ['Bị từ chối', 'QĐ đình chỉ', 'Chờ xử lý'],
+        TL_DC: ['Chờ trả lại tiền', 'Đình chỉ hoàn trả', 'Thu hồi tiền hoàn trả'],
         THU: ['Thu hồi tiền hoàn trả', '', 'Thu hồi tiền hoàn trả'],
         MIEN: ['Miễn hoàn trả', '', 'Miễn hoàn trả'],
         DONE: ['Hoàn thành', '', 'Hoàn thành'],
-        DC: ['Đình chỉ xem xét hoàn trả', '', 'Đình chỉ xem xét hoàn trả']
+        // Cấp cán bộ: Đình chỉ hoàn trả; trạng thái chung (roll-up): Đình chỉ xem xét hoàn trả
+        DC: ['Đình chỉ hoàn trả', '', 'Đình chỉ xem xét hoàn trả']
     };
     // Hồ sơ (trước khi chốt ý kiến Hội đồng): mã trạng thái nội bộ của trang -> nhóm tổng hợp
     const HS_GROUP = {
@@ -68,9 +71,6 @@
         'HT-2026-004': { owner: U_CHU, officers: [C('Trần Văn Lỗi', U_B, 'MIEN', { xl: 'MIEN', hd: 5000000 })] },
         'HT-2026-009': { owner: U_CHU, officers: [C('Vũ Văn Tài', U_A, 'CBH_HT', { hd: 30000000 })] },
         'HT-2026-010': { owner: U_CHU, officers: [C('Ngô Quyền', U_B, 'BTC_HT', { hd: 18000000 })] },
-        'HT-2026-012': { owner: U_CHU, officers: [
-            C('Nguyễn Văn Chết', U_A, 'DC', { hd: 12000000 }),
-            C('Đỗ Minh Khang', U_A, 'MIEN', { xl: 'MIEN', hd: 8000000 })] },
         'HT-2026-017': { owner: U_CHU, officers: [
             C('Lưu Quốc Toàn', U_B, 'CD_MIEN', { xl: 'MIEN', hd: 45000000 })] },
         'HT-2026-018': { owner: U_CHU, officers: [C('Bùi Văn Nam', U_A, 'BTC_HT', { hd: 25000000 })] },
@@ -78,14 +78,24 @@
             C('Phạm Quốc Huy', U_A, 'CD_HT', { hd: 55000000 }),
             C('Đặng Thị Lan', U_B, 'CBH_HT', { hd: 30000000 })] }
     };
+    // Dữ liệu mẫu bổ sung phủ các trạng thái của ma trận (ht_du_lieu_mau.js)
+    Object.keys(window.HT_EXTRA_SPLIT || {}).forEach(code => {
+        const v = window.HT_EXTRA_SPLIT[code];
+        if (!HT_SPLIT[code]) HT_SPLIT[code] = { owner: v.owner || U_CHU, officers: v.officers.map(o => C(o.name, o.unit, o.st, o)) };
+    });
     // Trạng thái cán bộ theo đơn vị do màn chi tiết lưu (Bước 2 hoàn thành, Bước 3 trình ký / ban hành) - ghi đè dữ liệu mẫu
     try {
         const st = JSON.parse(localStorage.getItem('btnn_ht_units_v1') || '{}') || {};
         Object.keys(st).forEach(code => {
             const v = st[code]; if (!v || !Array.isArray(v.officers) || !v.officers.length) return;
             const old = HT_SPLIT[code] || {};
-            HT_SPLIT[code] = { owner: v.owner || old.owner || U_CHU, officers: v.officers.map(o => C(o.name, o.unit, o.st, { xl: o.xl, hd: o.hd, giam: o.giam, paid: o.paid, hoan: o.hoan })) };
+            HT_SPLIT[code] = { owner: v.owner || old.owner || U_CHU, officers: v.officers.map(o => C(o.name, o.unit, o.st, { xl: o.xl, hd: o.hd, giam: o.giam, paid: o.paid, hoan: o.hoan, pt: o.pt, trinh: o.trinh || '', refund: o.refund || 0, stp: !!o.stp })) };
         });
+    } catch (e) { /* bỏ qua */ }
+    // Hồ sơ chưa tách phần đơn vị: trạng thái hồ sơ do màn chi tiết lưu (thành lập Hội đồng, đình chỉ cả hồ sơ...)
+    try {
+        const hs = JSON.parse(localStorage.getItem('btnn_ht_status_v1') || '{}') || {};
+        if (typeof dossiersList !== 'undefined') dossiersList.forEach(d => { const v = hs[d.code]; if (v && v.status && !HT_SPLIT[d.code]) d.status = v.status; });
     } catch (e) { /* bỏ qua */ }
     // Hồ sơ chưa chốt ý kiến Hội đồng: cán bộ (dự thảo ý kiến tại Bước 2) theo đơn vị
     const HT_DRAFT_UNIT = { 'HT-2026-008': U_A, 'HT-2026-013': U_B, 'HT-2026-016': U_A };
@@ -94,7 +104,8 @@
     function ownerOf(d) { const s = splitOf(d); return s ? s.owner : U_CHU; }
     function isSplit(d) { return !!splitOf(d); }
     function cbStatus(o) { return CB_ST[o.trinh || o.st] || CB_ST.THU; }
-    function cbGroup(o) { return o.trinh ? 'Thu hồi tiền hoàn trả' : cbStatus(o)[2]; }
+    // Trình ký phát sinh khi cán bộ đang Thu hồi tiền hoàn trả: giữ nhóm Thu hồi; trình ký QĐ đình chỉ ở Bước 3: theo Loại trình
+    function cbGroup(o) { return o.trinh ? (o.st === 'THU' ? 'Thu hồi tiền hoàn trả' : cbStatus(o)[2]) : cbStatus(o)[2]; }
     function issued(o) { return !['CBH_HT', 'CD_HT', 'BTC_HT'].includes(o.st); }
     function unitIssued(d, unit) { const l = (splitOf(d) || { officers: [] }).officers.filter(o => o.unit === unit); return l.length > 0 && l.every(issued); }
     function cur() { return HT_SCOPES[htScope]; }
@@ -121,9 +132,13 @@
         if (!isSplit(d)) return HS_GROUP[d.status] || 'Chờ xử lý';
         const g = sc.officers.map(cbGroup);
         if (!g.length) return 'Chờ xử lý';
+        // Ưu tiên phần việc trước khi ban hành QĐ hoàn trả của đơn vị; sau đó Thu hồi tiền hoàn trả, rồi Miễn / Giảm / Đình chỉ đang chờ
+        const pre = sc.officers.filter(o => !issued(o)).map(cbGroup);
+        if (pre.includes('Chờ xử lý')) return 'Chờ xử lý';
+        if (pre.includes('Đang xử lý')) return 'Đang xử lý';
+        if (g.includes('Thu hồi tiền hoàn trả')) return 'Thu hồi tiền hoàn trả';
         if (g.includes('Chờ xử lý')) return 'Chờ xử lý';
         if (g.includes('Đang xử lý')) return 'Đang xử lý';
-        if (g.includes('Thu hồi tiền hoàn trả')) return 'Thu hồi tiền hoàn trả';
         if (g.every(x => x === 'Miễn hoàn trả')) return 'Miễn hoàn trả';
         if (g.every(x => x === 'Đình chỉ xem xét hoàn trả')) return 'Đình chỉ xem xét hoàn trả';
         return 'Hoàn thành';
@@ -138,7 +153,8 @@
         const m = new Map();
         sc.officers.forEach(o => {
             const v = cbStatus(o);
-            const k = (o.trinh ? 'Thu hồi tiền hoàn trả - ' : '') + (v[1] ? v[0] + ' (' + v[1] + ')' : v[0]);
+            const b = CB_ST[o.st] || CB_ST.THU;
+            const k = (o.trinh ? (b[1] ? b[0] + ' (' + b[1] + ')' : b[0]) + ' - ' : '') + (v[1] ? v[0] + ' (' + v[1] + ')' : v[0]);
             m.set(k, (m.get(k) || 0) + 1);
         });
         return Array.from(m.entries()).map(([k, n]) => k + ': ' + n + ' cán bộ');
@@ -146,12 +162,15 @@
     function chungBadge(name) { return '<span class="badge ht-st ht-st-' + (CHUNG_STYLE[name] || 'draft') + '">' + name + '</span>'; }
 
     // ===== Số liệu theo phạm vi =====
-    // Số phải thu: theo QĐ hoàn trả; cán bộ Giảm mức đã ban hành QĐ giảm (đang thu / hoàn thành): số tiền sau giảm; Miễn, Đình chỉ: 0
-    function phaiThu(o) { if (!issued(o) || ['MIEN', 'DC'].includes(o.st)) return 0; return o.xl === 'GIAM' && ['THU', 'DONE'].includes(o.st) ? o.giam : o.hd; }
+    // Số phải thu: theo QĐ hoàn trả; cán bộ Giảm mức đã ban hành QĐ giảm (đang thu / hoàn thành): số tiền sau giảm
+    // pt: số tiền phải hoàn trả hiện tại do màn chi tiết lưu (sau QĐ giảm / giảm bổ sung)
+    // Miễn / Đình chỉ: số phải thu = số đã thu được giữ lại (0 khi chưa thu hoặc đã trả lại)
+    // Sau khi ban hành QĐ hoàn trả: số phải thu sau miễn / giảm theo ý kiến Hội đồng (Giảm: số tiền sau giảm; Miễn: số đã thu)
+    function phaiThu(o) { if (['MIEN', 'DC'].includes(o.st)) return o.paid || 0; if (!issued(o)) return 0; if (o.pt != null) return o.pt; if (o.xl === 'MIEN') return o.paid || 0; return o.xl === 'GIAM' ? (o.giam || o.hd) : o.hd; }
     function money(sc) {
         const off = sc.officers.filter(issued);
         const tong = off.reduce((s, o) => s + phaiThu(o), 0);
-        const paid = off.filter(o => o.st !== 'DC').reduce((s, o) => s + (o.paid || 0), 0);
+        const paid = off.reduce((s, o) => s + (o.paid || 0), 0);
         const hd = sc.officers.reduce((s, o) => s + (o.hd || 0), 0);
         const ended = sc.officers.filter(o => ['DONE', 'MIEN', 'DC'].includes(o.st) && !o.trinh).length;
         return { tong, paid, hd, conLai: Math.max(0, tong - paid), ended, n: sc.officers.length, anyIssued: off.length > 0 };
@@ -166,7 +185,7 @@
         if (!isSplit(d)) return sc.full && ['Chờ thành lập hội đồng', 'Bị từ chối thành lập HĐ', 'Từ chối duyệt QĐ thành lập', 'Bị từ chối QĐ đình chỉ', 'Họp hội đồng'].includes(d.status);
         if (htScope === 'stp') return sc.officers.some(o => o.st === 'THU');
         // Sau khi chốt ý kiến HĐ: chỉ cán bộ thuộc đơn vị của người dùng (đơn vị tạo hội đồng không thao tác phần của đơn vị khác)
-        return sc.officers.some(o => o.unit === cur().unit && ['CBH_HT', 'BTC_HT', 'CBH_MIEN', 'CBH_GIAM', 'BTC_MIEN', 'BTC_GIAM', 'THU'].includes(o.st));
+        return sc.officers.some(o => o.unit === cur().unit && (['CBH_HT', 'BTC_HT', 'CBH_MIEN', 'CBH_GIAM', 'BTC_MIEN', 'BTC_GIAM', 'THU'].includes(o.st) || /^(BTC|TL)_/.test(o.trinh || '')));
     }
     function gatesOf(d, sc) {
         const list = [];
@@ -303,6 +322,8 @@
         const up = canUpdate
             ? '<button class="icon-btn edit" title="Cập nhật" onclick="htOpenDetail(event, \'' + d.id + '\', \'edit\')" style="color:#2563eb; border-color:#2563eb;"><i class="fa-solid fa-pen-to-square"></i></button>'
             : '<button class="icon-btn" title="Cập nhật" style="' + off + '"><i class="fa-solid fa-pen-to-square"></i></button>';
+        // Xóa hồ sơ nháp: chỉ Đơn vị tạo Hội đồng; Đơn vị quản lý cán bộ, Sở Tư pháp không có nút Xóa
+        if (htScope !== 'don_vi_chu') return wrap(up);
         const del = canDelete
             ? '<button class="icon-btn delete" title="Xóa" onclick="deleteRefundDossier(event, \'' + d.id + '\')" style="color:var(--danger-color); border-color:var(--danger-color);"><i class="fa-solid fa-trash"></i></button>'
             : '<button class="icon-btn delete" title="Xóa" style="' + off + '"><i class="fa-solid fa-trash"></i></button>';
@@ -329,14 +350,19 @@
     function unitCell(list) {
         const u = Array.from(new Set(list.map(o => o.unit).filter(Boolean)));
         if (!u.length) return '<span class="text-muted">—</span>';
-        if (u.length > 2) return '<span style="font-weight:700;" title="' + u.join('\n') + '">Liên ngành</span>';
-        return '<span title="' + u.join('\n') + '">' + u.join(' &amp; ') + '</span>';
+        // Nhiều đơn vị: tên đơn vị đầu tiên + badge "+X đơn vị khác" (tooltip danh sách đơn vị)
+        const tip = u.map((x, i) => (i + 1) + '. ' + x).join('\n').replace(/"/g, '&quot;');
+        const more = u.length > 1 ? ' <span class="badge" style="background:#e2e8f0; color:#334155; font-size:10.5px; font-weight:600; padding:1px 5px; border-radius:10px; white-space:nowrap;" title="' + tip + '">+' + (u.length - 1) + ' đơn vị khác</span>' : '';
+        return '<span title="' + tip + '">' + u[0] + '</span>' + more;
     }
     const fmt = n => (n || 0).toLocaleString('vi-VN');
 
     window.renderRefundTable = function () {
         const tbody = document.getElementById('refundTableBody');
         if (!tbody) return;
+        // Lập hồ sơ hoàn trả mới: chỉ Đơn vị tạo Hội đồng, tab Chờ xử lý
+        const btnNew = document.getElementById('btnCreateRefundDossier');
+        if (btnNew) btnNew.style.setProperty('display', htTab === 'pending' && htScope === 'don_vi_chu' ? 'inline-flex' : 'none', 'important');
         const val = id => ((document.getElementById(id) || {}).value || '').trim().toLowerCase();
         const fCode = val('filterDossierCode'), fVv = val('filterClaimCode'), fGq = val('filterGqbtCode'), fCb = val('filterOfficerName');
         const fUnit = (document.getElementById('filterAgency') || {}).value || '';
@@ -387,7 +413,8 @@
                 : m.anyIssued
                 ? '<div style="font-size:11px; display:flex; justify-content:space-between; font-weight:600; margin-bottom:2px;" title="' + tip + '"><span>' + fmt(m.paid) + 'đ</span><span style="color:#16a34a; font-weight:700;">' + pct + '%</span></div><div class="progress-bar-container" style="height:5px; margin-bottom:2px; background-color:#e2e8f0; border-radius:3px;"><div class="progress-bar-fill" style="width:' + pct + '%; height:100%; background-color:#22c55e; border-radius:3px;"></div></div><div style="font-size:11px; color:#64748b;">' + m.ended + '/' + m.n + ' cán bộ đã kết thúc</div>'
                 : '<span style="color:var(--text-muted); font-style:italic; font-size:11px;">Chưa ban hành QĐ</span>';
-            const sub = chiTietLines(d, r.sc).filter(t => t !== r.chung).map(t => '<div class="wf-sub" style="color:#64748b;">' + t + '</div>').join('');
+            // Cột Trạng thái: chỉ 01 badge trạng thái chung (trạng thái chi tiết xem tại màn chi tiết)
+            const sub = '';
             tr.innerHTML = '<td style="text-align:center;">' + (start + i + 1) + '</td>'
                 + '<td style="text-align:center; font-weight:700; color:var(--primary-color);">' + d.code + '</td>'
                 + '<td>' + officerCell(r.off) + '</td>'

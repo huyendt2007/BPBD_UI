@@ -188,7 +188,10 @@
     global.tdtaRequiredIds = function () {
         const isOrg = nycType() === T_TC;
         const role = getValue('claimNYCRole');
-        let ids = ['claimNYCRole', 'claimNYCName'];
+        let ids = [];
+        // Khối Thông tin vụ việc liên kết đang hiển thị: bắt buộc chọn vụ việc (nhập mà chưa chọn được coi là bỏ trống)
+        if (linkCondition() && !link) { setValue('tdtaLinkCode', ''); ids.push('tdtaLinkCode'); }
+        ids.push('claimNYCRole', 'claimNYCName');
         ids = ids.concat(isOrg ? ['claimNYCOrgCode', 'claimNYCRepName', 'claimNYCRepPosition'] : ['claimNYCBirth']);
         ids.push('claimNYCPhone');
         if (!isOrg) ids.push('claimNYCCardType', 'claimNYCCardNo');
@@ -306,7 +309,12 @@
     global.tdtaApplyCode = function (rec) {
         if (!rec || rec.fundingCode) return;
         if (rec.linkedVuViec) { if (rec.code !== rec.linkedVuViec) rec.code = rec.linkedVuViec; }
-        else if (W && W.isVuViecCode(rec.code)) rec.code = nextCaseCodes(1)[0];
+        else if (openedLinkCode && rec.code === openedLinkCode) rec.code = nextCaseCodes(1)[0];
+    };
+    let openedLinkCode = '';
+    // Mã vụ việc vụ việc không liên kết: VVBT-yyyy-xxx theo cơ chế cấp mã chung (BTNN_WF.nextVuViecCode, số đã cấp không cấp lại)
+    global.nextCaseCodes = function (count) {
+        return Array.from({ length: count || 1 }, () => W.nextVuViecCode());
     };
 
     // ---------- Popup Tìm kiếm nâng cao vụ việc ----------
@@ -416,6 +424,7 @@
         baseOpen.apply(this, arguments);
         if ($('formView').style.display === 'none') return;
         const rec = editingId ? cases.find(c => c.id === editingId) : null;
+        openedLinkCode = rec && rec.linkedVuViec ? rec.linkedVuViec : '';
         link = rec && rec.linkedVuViec ? { code: rec.linkedVuViec, hoSoCode: rec.hoSoCode || '', agencyId: rec.linkedAgencyId || '', agency: rec.linkedAgency || '', status: rec.linkedStatus || '', requester: rec.linkedRequester || (rec.nyc && rec.nyc.name) || '', victim: rec.linkedVictim || '' } : null;
         setValue('tdtaLinkCode', '');
         showLinkError('');
@@ -550,6 +559,8 @@
                 repName: 'Lê Minh Phát', repPosition: 'Giám đốc', country: 'Việt Nam', city: 'Lâm Đồng', ward: 'Phường Xuân Hương - Đà Lạt', address: 'Số 25 Trần Phú'
             };
         }
+        // Vụ việc không liên kết: Mã vụ việc VVBT- gắn với Id vụ việc tại Tòa án qua sổ đăng ký chung (ổn định khi nạp lại dữ liệu mẫu)
+        list.forEach(r => { if (W && !W.isVuViecCode(r.code)) r.code = W.vuViecOf(r.id); });
         return list;
     };
 

@@ -158,7 +158,7 @@ flowchart TD
 | Nhiệm vụ công tác bồi thường nhà nước phải thực hiện | Text(4000) | Có điều kiện | Trống | Control UI: Textarea, cùng vị trí với `Nội dung cần theo dõi`.<br>- Hiển thị khi `Nhóm nghiệp vụ` là `Đôn đốc công tác BTNN`; bắt buộc (`*`).<br>- Placeholder: "Nhập nhiệm vụ công tác bồi thường nhà nước phải thực hiện...". |
 | Kết quả theo dõi | Text(4000) | Có điều kiện | Trống | Control UI: Textarea.<br>- Hiển thị khi `Nhóm nghiệp vụ` là `Theo dõi công tác BTNN`.<br>- Placeholder: "Nhập kết quả theo dõi...".<br>- Bắt buộc (`*`) khi người dùng thực hiện `Hoàn thành`. |
 | Lịch sử xử lý | - | - | - | Control UI: Label.<br>- Luôn hiển thị; mỗi dòng gồm thời điểm, cán bộ thực hiện, thao tác và ghi chú. |
-| Tài liệu đính kèm | List(File) | Không | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu`, `File đính kèm`, `Thao tác tài liệu`; nút `+ Thêm dòng` dưới bảng.<br>- Luôn hiển thị.<br>- Đính kèm văn bản căn cứ, văn bản yêu cầu báo cáo, văn bản đôn đốc, văn bản đề nghị đôn đốc đã ký ban hành và tài liệu liên quan.<br>- Cột `Thao tác tài liệu` gồm:<br>+ Xem file<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
+| Tài liệu đính kèm | List(File) | Không | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Luôn hiển thị.<br>- Đính kèm văn bản căn cứ, văn bản yêu cầu báo cáo, văn bản đôn đốc, văn bản đề nghị đôn đốc đã ký ban hành và tài liệu liên quan.<br>- Cột `Thao tác` gồm:<br>+ Xem file<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
 
 \- Dấu `*` chỉ hiển thị trên nhãn khi trường đang hiển thị và bắt buộc theo giá trị đang chọn. Khi đổi `Nhóm nghiệp vụ`, `Hình thức đôn đốc`, `Cơ quan được đề nghị đôn đốc` hoặc `Hồ sơ đề nghị đôn đốc trước đó`, hệ thống ẩn/hiện các trường phụ thuộc và giữ dữ liệu đã nhập ở các trường còn hiển thị.
 
@@ -180,8 +180,8 @@ flowchart TD
 | 5 | Tìm kiếm nâng cao | Button | Hệ thống mở [Popup chuẩn Tìm kiếm vụ việc/hồ sơ gốc liên quan - SRS Giải quyết yêu cầu bồi thường - Giải quyết bồi thường](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#433110-popup-chuẩn-tìm-kiếm-vụ-việchồ-sơ-gốc-liên-quan); khi chọn vụ việc, hệ thống điền Mã vụ việc và hiển thị `Liên kết hồ sơ vụ việc`. |
 | 6 | Tải lên | Button | Hệ thống mở trình chọn file cho dòng tài liệu tương ứng. |
 | 7 | Xem file | Link | Hệ thống mở file của dòng tài liệu tại một tab trình duyệt mới. |
-| 8 | Xóa | Link | Hệ thống mở [Popup Xác nhận](#43386-popup-xác-nhận); nếu chọn `Đồng ý`, hệ thống xóa dòng tài liệu khỏi bảng. |
-| 9 | Thêm dòng | Button | Hệ thống thêm 01 dòng tài liệu trống vào cuối bảng. |
+| 8 | Xóa | Icon button | Hệ thống xóa dòng tài liệu khỏi bảng ngay, không hiển thị popup xác nhận. |
+| 9 | Thêm tài liệu | Button | Hệ thống thêm 01 dòng tài liệu trống vào cuối bảng. |
 | 10 | Hủy bỏ | Button | Khi người dùng click nút "Hủy bỏ" hoặc nút "Đóng" ở góc phải tiêu đề, hệ thống đóng màn hình, không lưu dữ liệu và quay lại [MH01 - Màn hình Danh sách theo dõi, đôn đốc công tác BTNN](#43383-mh01---màn-hình-danh-sách-theo-dõi-đôn-đốc-công-tác-btnn). |
 
 ---
