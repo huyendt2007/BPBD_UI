@@ -306,7 +306,7 @@
         <section id="listView">
             <div class="page-heading">
                 <div>
-                    <h2><i class="fa-solid fa-scale-balanced"></i> THEO DÕI VỤ VIỆC TẠI TÒA ÁN</h2>
+                    <h2 data-uxu-title>Theo dõi vụ việc tại Tòa án</h2>
                 </div>
             </div>
 
@@ -1019,7 +1019,10 @@
             return Array.from({ length: count }, (_, i) => `BT-${year}-${String(max + 1 + i).padStart(3, "0")}`);
         }
 
-        // ===== Liên thông Cấp kinh phí tạm ứng/Bồi thường =====
+        // ===== Liên thông Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường =====
+        // Vụ việc có yêu cầu bồi thường bằng tiền chuyển "Đã có bản án/QĐ" -> 01 bản ghi Loại "Chi trả tiền bồi thường", trạng thái "Chờ thông báo chi trả"
+        const FUNDING_TYPE = "Chi trả tiền bồi thường";
+        const FUNDING_STATUS_NEW = "Chờ thông báo chi trả";
         function needsFunding(rec) {
             return !!rec && !rec.deleted && rec.requestKind !== "honor" && rec.status === STATUS_BAN_AN;
         }
@@ -1043,16 +1046,17 @@
             return {
                 id: "P_TA_" + rec.code,
                 code: nextFundingCode(list),
-                type: "Cấp kinh phí bồi thường",
+                type: FUNDING_TYPE,
                 ycbtCode: rec.code,
                 courtCaseCode: rec.code,
+                decId: "TA-" + rec.code,
                 origin: "Theo dõi vụ việc tại Tòa án",
                 nycName: rec.nyc.name,
                 nycRole: rec.nyc.role || NBTH_ROLE,
                 amount: damageTotal(rec),
                 user: rec.updatedByName || rec.createdByName || CURRENT_USER.name,
                 date: BTNN_WF.dateText(),
-                status: "Chờ nhập liệu",
+                status: FUNDING_STATUS_NEW,
                 source: "",
                 cqCap: "",
                 agency: BTNN_WF.unitName(rec.rootUnitId),
@@ -1062,10 +1066,19 @@
                 verdictSource: rec.verdictSource || "",
                 selectedDamages: selectedDamagesOf(rec),
                 files: (rec.docs || []).filter(d => d.file).map(d => ({ name: d.name, file: d.file })),
-                createdAt: BTNN_WF.nowText()
+                createdAt: BTNN_WF.nowText(),
+                // Bản án/Quyết định của Tòa án làm căn cứ chi trả (dùng cho Thông báo chi trả Mẫu 32/BTNN); chưa có Phương thức chi trả -> mặc định chuyển khoản
+                kptbDec: {
+                    decId: "TA-" + rec.code, sourceLabel: "Bản án/Quyết định của Tòa án", claimCode: rec.code,
+                    nycName: rec.nyc.name, nycAddress: [rec.nyc.address, rec.nyc.city].filter(Boolean).join(", "),
+                    unitId: rec.rootUnitId, unitName: BTNN_WF.unitName(rec.rootUnitId),
+                    decNo: rec.verdictNo || "", issueDate: rec.effectiveDate || "", total: damageTotal(rec), advance: 0, net: damageTotal(rec),
+                    recipient: { name: rec.nyc.name, idNo: rec.nyc.cardNo || "" }, payout: { method: "Nhận qua chuyển khoản" }, at: BTNN_WF.nowText()
+                },
+                kptbHistory: [{ at: BTNN_WF.nowText(), userId: "", userName: "Hệ thống", action: "Tạo bản ghi", note: `Tạo từ Bản án/Quyết định của Tòa án số ${rec.verdictNo || "-"} ngày ${rec.effectiveDate || "-"}; trạng thái ${FUNDING_STATUS_NEW}.` }]
             };
         }
-        // Tạo bản ghi Chờ nhập liệu đúng 01 lần cho mỗi vụ việc (khóa theo Mã vụ việc).
+        // Tạo bản ghi Chờ thông báo chi trả đúng 01 lần cho mỗi vụ việc (khóa theo Mã vụ việc).
         // Chỉ ghi khi kho Cấp kinh phí đã được khởi tạo; nếu chưa, màn hình Cấp kinh phí tự tạo khi tải trang.
         function ensureFundingRecord(rec) {
             if (!needsFunding(rec)) return null;
@@ -1080,7 +1093,7 @@
             if (rec.fundingCode !== p.code) {
                 rec.fundingCode = p.code;
                 rec.fundingCreatedAt = p.createdAt || BTNN_WF.nowText();
-                addHistory(rec, "Tạo đề nghị cấp kinh phí", `Hệ thống tạo Đề nghị cấp kinh phí bồi thường ${p.code} ở trạng thái Chờ nhập liệu.`, "Hệ thống");
+                addHistory(rec, "Tạo bản ghi chi trả tiền bồi thường", `Hệ thống tạo bản ghi Chi trả tiền bồi thường ${p.code} ở trạng thái ${p.status}.`, "Hệ thống");
                 return p;
             }
             return null;
@@ -1090,14 +1103,14 @@
             cases.forEach(rec => { if (ensureFundingRecord(rec)) changed = true; });
             if (changed) saveCases();
         }
-        // Đề nghị kinh phí còn Chờ nhập liệu: cập nhật lại thông tin kế thừa theo vụ việc
+        // Bản ghi còn Chờ thông báo chi trả (bản ghi cũ: Chờ nhập liệu): cập nhật lại thông tin kế thừa theo vụ việc
         function syncFundingDraft(rec) {
             const list = readJson(FUNDING_KEY, null);
             if (!Array.isArray(list)) return;
             const p = list.find(x => x && x.courtCaseCode === rec.code);
-            if (!p || p.status !== "Chờ nhập liệu") return;
+            if (!p || ![FUNDING_STATUS_NEW, "Chờ nhập liệu"].includes(p.status)) return;
             const fresh = buildFundingRecord(rec, list);
-            ["nycName", "nycRole", "amount", "agency", "baseDecisionNo", "baseDecisionDate", "verdictSource", "selectedDamages", "files"].forEach(k => { p[k] = fresh[k]; });
+            ["nycName", "nycRole", "amount", "agency", "baseDecisionNo", "baseDecisionDate", "verdictSource", "selectedDamages", "files"].concat(p.type === FUNDING_TYPE ? ["kptbDec"] : []).forEach(k => { p[k] = fresh[k]; });
             writeJson(FUNDING_KEY, list);
         }
         function getFundingOf(rec) {
@@ -1398,10 +1411,10 @@
             const funding = rec ? getFundingOf(rec) : null;
             if (rec && (funding || rec.fundingCode)) {
                 fundBox.style.display = "block";
-                fundBox.innerHTML = `<i class="fa-solid fa-sack-dollar" style="color:#7c3aed;"></i> Đề nghị cấp kinh phí bồi thường: <a href="javascript:void(0)" onclick="openFunding('${escapeAttr(rec.code)}')">${escapeHtml(funding ? funding.code : rec.fundingCode)}</a> - Trạng thái: <strong>${escapeHtml(funding ? funding.status : "Chờ nhập liệu")}</strong>`;
+                fundBox.innerHTML = `<i class="fa-solid fa-sack-dollar" style="color:#7c3aed;"></i> ${funding && funding.type !== FUNDING_TYPE ? "Đề nghị cấp kinh phí bồi thường" : "Chi trả tiền bồi thường"}: <a href="javascript:void(0)" onclick="openFunding('${escapeAttr(rec.code)}')">${escapeHtml(funding ? funding.code : rec.fundingCode)}</a> - Trạng thái: <strong>${escapeHtml(funding ? funding.status : FUNDING_STATUS_NEW)}</strong>`;
             } else if (rec && needsFunding(rec)) {
                 fundBox.style.display = "block";
-                fundBox.innerHTML = `<i class="fa-solid fa-sack-dollar" style="color:#7c3aed;"></i> Đề nghị cấp kinh phí bồi thường sẽ được tạo ở trạng thái Chờ nhập liệu khi mở màn hình Cấp kinh phí tạm ứng/Bồi thường.`;
+                fundBox.innerHTML = `<i class="fa-solid fa-sack-dollar" style="color:#7c3aed;"></i> Bản ghi Chi trả tiền bồi thường sẽ được tạo ở trạng thái Chờ thông báo chi trả khi mở màn hình Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường.`;
             } else { fundBox.style.display = "none"; fundBox.innerHTML = ""; }
 
             // Loại yêu cầu: chọn khi thêm mới; khóa sau khi lưu
@@ -1622,23 +1635,24 @@
 
             const codesText = created.map(r => r.code).join(", ");
             let msg = rec ? `Đã cập nhật vụ việc ${codesText}.` : `Đã lưu vụ việc ${codesText}.`;
-            if (funded.length) msg += ` Đã tạo Đề nghị cấp kinh phí bồi thường ${funded.map(p => p.code).join(", ")} ở trạng thái Chờ nhập liệu.`;
-            else if (created.some(needsFunding) && created.some(r => !r.fundingCode)) msg += " Đề nghị cấp kinh phí bồi thường sẽ được tạo ở trạng thái Chờ nhập liệu tại màn hình Cấp kinh phí tạm ứng/Bồi thường.";
+            if (funded.length) msg += ` Đã tạo bản ghi Chi trả tiền bồi thường ${funded.map(p => p.code).join(", ")} ở trạng thái ${FUNDING_STATUS_NEW}.`;
+            else if (created.some(needsFunding) && created.some(r => !r.fundingCode)) msg += " Bản ghi Chi trả tiền bồi thường sẽ được tạo ở trạng thái Chờ thông báo chi trả tại màn hình Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường.";
             showToast(msg, "success");
         }
 
         function confirmDeleteCase(id) {
             const rec = cases.find(c => c.id === id);
             if (!rec || !canEditCase(rec)) return;
-            const fundNote = getFundingOf(rec) && getFundingOf(rec).status === "Chờ nhập liệu" ? ` Đề nghị cấp kinh phí ${getFundingOf(rec).code} (Chờ nhập liệu) cũng bị xóa theo.` : "";
+            const fundOf = getFundingOf(rec);
+            const fundNote = fundOf && [FUNDING_STATUS_NEW, "Chờ nhập liệu"].includes(fundOf.status) ? ` Bản ghi kinh phí ${fundOf.code} (${fundOf.status}) cũng bị xóa theo.` : "";
             showConfirm(`Bạn có chắc chắn muốn xóa vụ việc ${rec.code} - ${rec.nyc.name} không?${fundNote}`, () => {
                 reloadCases();
                 const latest = cases.find(c => c.id === id);
                 if (!latest || latest.deleted || !canEditCase(latest)) { showToast("Vụ việc đã bị xóa hoặc bạn không còn quyền xóa. Danh sách đã được tải lại.", "error"); closeCaseForm(); return; }
-                // Đề nghị kinh phí đã sinh: còn Chờ nhập liệu thì xóa theo; đã xử lý tiếp thì không cho xóa vụ việc
+                // Bản ghi kinh phí đã sinh: còn Chờ thông báo chi trả (bản ghi cũ: Chờ nhập liệu) thì xóa theo; đã xử lý tiếp thì không cho xóa vụ việc
                 const fundList = readJson(FUNDING_KEY, null);
                 const fund = Array.isArray(fundList) ? fundList.find(p => p && p.courtCaseCode === latest.code) : null;
-                if (fund && fund.status !== "Chờ nhập liệu") { showToast(`Đề nghị cấp kinh phí ${fund.code} đang ở trạng thái ${fund.status}, không được xóa vụ việc!`, "error"); return; }
+                if (fund && ![FUNDING_STATUS_NEW, "Chờ nhập liệu"].includes(fund.status)) { showToast(`Bản ghi kinh phí ${fund.code} đang ở trạng thái ${fund.status}, không được xóa vụ việc!`, "error"); return; }
                 if (fund) writeJson(FUNDING_KEY, fundList.filter(p => p !== fund));
                 latest.deleted = true;
                 latest.deletedAt = BTNN_WF.nowText();
@@ -1919,6 +1933,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
+    <script src="btnn_cot_thao_tac.js?v=20261023kpcd"></script>
 </body>
 
 </html>

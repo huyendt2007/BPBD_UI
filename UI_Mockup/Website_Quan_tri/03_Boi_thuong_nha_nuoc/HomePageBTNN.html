@@ -802,8 +802,9 @@
         <span id="toastMessage">Thông báo</span>
     </div>
 
-    <!-- Luồng xử lý BTNN dùng chung: đếm hồ sơ tab Chờ xử lý cho badge menu Tiếp nhận hồ sơ -->
+    <!-- Luồng xử lý BTNN dùng chung + tiện ích badge tab Chờ xử lý / badge menu 06 phân hệ -->
     <script src="btnn_luong_xu_ly.js?v=20261020v5"></script>
+    <script src="btnn_badge_cho_xu_ly.js?v=20261023bdg2"></script>
     <script>
         // Menu Data Model: Bồi thường nhà nước, Quản lý nhà nước & Quản trị hệ thống
         const menuData = [
@@ -811,20 +812,20 @@
                 title: "Bồi thường nhà nước",
                 icon: "fa-solid fa-hand-holding-dollar",
                 children: [
-                    { title: "Tiếp nhận hồ sơ", url: "tiep_nhan_ycbt.html?v=3", badgeKey: "btnn_reception_pending", badgeType: "danger" },
+                    // Badge số lượng (badgeKey bdg_*) = badge tab Chờ xử lý của phân hệ, tính qua tiện ích dùng chung BDG (btnn_badge_cho_xu_ly.js)
                     { title: "Dashboard Lãnh đạo", url: "dashboard_lanh_dao_btnn.html" },
-                    { title: "Xác định cơ quan giải quyết bồi thường", badge: 7, url: "xac_dinh_co_quan_boi_thuong.html?v=20261008" },
+                    { title: "Tiếp nhận hồ sơ", url: "tiep_nhan_ycbt.html?v=3", badgeKey: "bdg_tiepNhan", badgeType: "danger" },
+                    { title: "Xác định cơ quan giải quyết bồi thường", badgeKey: "bdg_xdcq", badgeType: "danger", url: "xac_dinh_co_quan_boi_thuong.html?v=20261008" },
                     {
-                        title: "Giải quyết bồi thường",
-                        badgeKey: "btnn_gq_pending",
-                        badgeType: "danger",
+                        // Badge nhóm = tổng badge 3 mục con (bdg_gqGroup, tính trong BDG.mountMenu)
+                        title: "Giải quyết bồi thường", badgeKey: "bdg_gqGroup", badgeType: "danger",
                         children: [
-                            { title: "Giải quyết yêu cầu bồi thường", badgeKey: "btnn_gq_pending", badgeType: "danger", url: "quan_ly_boi_thuong.html?v=1" },
-                            { title: "Quyết định giải quyết bồi thường", url: "quyet_dinh_giai_quyet_boi_thuong.html?v=1" },
-                            { title: "Cấp kinh phí tạm ứng/Bồi thường", url: "quan_ly_kinh_phi_boi_thuong.html?v=1" }
+                            { title: "Giải quyết yêu cầu bồi thường", badgeKey: "bdg_gqYcbt", badgeType: "danger", url: "quan_ly_boi_thuong.html?v=1" },
+                            { title: "Quyết định giải quyết bồi thường", badgeKey: "bdg_qdGqbt", badgeType: "danger", url: "quyet_dinh_giai_quyet_boi_thuong.html?v=1" },
+                            { title: "Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường", badgeKey: "bdg_kinhPhi", badgeType: "danger", url: "quan_ly_kinh_phi_boi_thuong.html?v=1" }
                         ]
                     },
-                    { title: "Xem xét trách nhiệm hoàn trả", url: "xem_xet_trach_nhiem_hoan_tra.html" },
+                    { title: "Xem xét trách nhiệm hoàn trả", badgeKey: "bdg_hoanTra", badgeType: "danger", url: "xem_xet_trach_nhiem_hoan_tra.html" },
                     { title: "Tra cứu vụ việc", url: "tra_cuu_ho_so_boi_thuong.html?v=1" },
                     { title: "Theo dõi vụ việc tại Tòa án", url: "theo_doi_vu_viec_toa_an.html" },
                     { title: "Quản lý chấm điểm công tác BTNN", url: "quan_ly_cham_diem_btnn.html", hidden: true },
@@ -1001,80 +1002,11 @@
         // Màn hình Coming Soon cho chức năng đang phát triển (comingSoon: true)
         const COMING_SOON_HTML = '<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><style>body{margin:0;height:100vh;display:flex;align-items:center;justify-content:center;background:#f8fafc;font-family:Inter,system-ui,sans-serif;color:#1e293b}.box{text-align:center;padding:40px}.ic{font-size:56px;color:#2563eb;margin-bottom:18px}h1{margin:0 0 8px;font-size:28px;letter-spacing:.5px}p{margin:0;color:#64748b;font-size:14px}<\/style><\/head><body><div class="box"><div class="ic"><i class="fa-solid fa-person-digging"></i></div><h1>Coming Soon</h1><p>Chức năng đang được phát triển.</p></div><\/body><\/html>';
 
-        // ===== Badge menu "Tiếp nhận hồ sơ" (Bồi thường nhà nước) =====
-        // Số hồ sơ đang ở tab Chờ xử lý của màn Tiếp nhận hồ sơ, theo người dùng đang đăng nhập (giả lập).
-        // Dùng chung hàm đếm BTNN_WF.receptionPendingCount với badge tab Chờ xử lý. Bằng 0 thì ẩn badge.
-        function setReceptionBadge(count) {
-            const n = Number(count || 0);
-            document.querySelectorAll('.menu-badge[data-badge-key="btnn_reception_pending"]').forEach(el => {
-                el.innerText = n > 99 ? '99+' : String(n);
-                el.style.display = n > 0 ? '' : 'none';
-            });
-        }
-        function refreshReceptionBadge() {
-            if (!window.BTNN_WF || typeof BTNN_WF.receptionPendingCount !== 'function') return;
-            try { setReceptionBadge(BTNN_WF.receptionPendingCount(BTNN_WF.getCurrentUserId())); } catch (err) { }
-        }
-        // Chưa có dữ liệu giả lập của màn Tiếp nhận hồ sơ: nạp ngầm màn hình để khởi tạo dữ liệu (màn hình gửi lại số lượng sau khi nạp)
-        function ensureReceptionSeeded() {
-            if (!window.BTNN_WF || typeof BTNN_WF.receptionSeeded !== 'function' || BTNN_WF.receptionSeeded()) return;
-            // Khung nội dung chính đang mở màn Tiếp nhận hồ sơ thì màn hình tự khởi tạo dữ liệu
-            const main = document.getElementById('mainContentIframe');
-            if (main && /tiep_nhan_ycbt\.html/.test(main.getAttribute('src') || '')) return;
-            if (document.getElementById('receptionSeedFrame')) return;
-            const f = document.createElement('iframe');
-            f.id = 'receptionSeedFrame';
-            f.style.cssText = 'position:absolute; width:0; height:0; border:0; visibility:hidden;';
-            f.src = 'tiep_nhan_ycbt.html?v=3';
-            f.onload = () => { refreshReceptionBadge(); setTimeout(() => f.remove(), 0); };
-            document.body.appendChild(f);
-        }
-        // ===== Badge menu "Giải quyết yêu cầu bồi thường" (Bồi thường nhà nước) =====
-        function setGqBadge(count) {
-            const n = Number(count || 0);
-            document.querySelectorAll('.menu-badge[data-badge-key="btnn_gq_pending"]').forEach(el => {
-                el.innerText = n > 99 ? '99+' : String(n);
-                el.style.display = n > 0 ? '' : 'none';
-            });
-        }
-        function refreshGqBadge() {
-            try {
-                const stored = localStorage.getItem('btnn_gq_pending_count');
-                if (stored !== null && stored !== '') {
-                    setGqBadge(Number(stored));
-                } else {
-                    setGqBadge(7);
-                }
-            } catch (err) { }
-        }
-        function ensureGqSeeded() {
-            if (localStorage.getItem('btnn_gq_pending_count') !== null) return;
-            const main = document.getElementById('mainContentIframe');
-            if (main && /quan_ly_boi_thuong\.html/.test(main.getAttribute('src') || '')) return;
-            if (document.getElementById('gqSeedFrame')) return;
-            const f = document.createElement('iframe');
-            f.id = 'gqSeedFrame';
-            f.style.cssText = 'position:absolute; width:0; height:0; border:0; visibility:hidden;';
-            f.src = 'quan_ly_boi_thuong.html?v=1';
-            f.onload = () => { refreshGqBadge(); setTimeout(() => f.remove(), 0); };
-            document.body.appendChild(f);
-        }
-
-        window.addEventListener('message', (event) => {
-            const data = event.data || {};
-            if (data.type === 'btnn:receptionPending') {
-                // Màn Tiếp nhận hồ sơ gửi số lượng sau khi nạp và sau mỗi thao tác tạo mới / xóa / phân công / thu hồi
-                if (window.BTNN_WF && data.userId === BTNN_WF.getCurrentUserId()) setReceptionBadge(data.count); else refreshReceptionBadge();
-            } else if (data.type === 'btnn:gqPending' || data.type === 'BTNN_GQ_COUNT_UPDATED') {
-                setGqBadge(data.count);
-            }
-        });
-        // Đổi người dùng giả lập / thay đổi hồ sơ ở màn hình khác: tính lại
-        window.addEventListener('storage', (event) => {
-            if (!event.key || /^(btnn_demo_user_v1|btnn_wf_records_v1|btnn_flow_config_v2|receptionClaimsList_v2026)$/.test(event.key)) refreshReceptionBadge();
-            if (!event.key || event.key === 'btnn_gq_pending_count') refreshGqBadge();
-        });
-        window.addEventListener('DOMContentLoaded', () => { setTimeout(() => { refreshReceptionBadge(); ensureReceptionSeeded(); refreshGqBadge(); ensureGqSeeded(); }, 0); });
+        // ===== Badge menu 06 phân hệ BTNN (Tiếp nhận hồ sơ, Xác định CQGQBT, Giải quyết YCBT, Quyết định GQBT, Tạm ứng kinh phí/Chi trả, Xem xét hoàn trả) =====
+        // Badge menu = badge tab Chờ xử lý của phân hệ, theo người dùng / vai trò giả lập hiện tại; bằng 0 thì ẩn.
+        // Tiện ích dùng chung BDG (btnn_badge_cho_xu_ly.js): trang phân hệ báo số lượng; phân hệ chưa có số của ngữ cảnh hiện tại thì nạp ngầm để tính.
+        let bdgMenu = null;
+        window.addEventListener('DOMContentLoaded', () => { setTimeout(() => { if (window.BDG) bdgMenu = BDG.mountMenu({ mainFrameId: 'mainContentIframe' }); }, 0); });
 
         // Page initialization
         window.addEventListener('DOMContentLoaded', () => {
@@ -1220,9 +1152,8 @@
                 container.appendChild(groupDiv);
             });
 
-            // Cập nhật giá trị badge động
-            refreshReceptionBadge();
-            refreshGqBadge();
+            // Cập nhật giá trị badge động (badge tab Chờ xử lý của 06 phân hệ)
+            if (bdgMenu) bdgMenu.render();
         }
 
         // Toggle Root Modules accordion
@@ -1443,8 +1374,11 @@
         // Select the default first child leaf node on startup (Tiếp nhận hồ sơ)
         function selectDefaultLeaf() {
             toggleRootItem(0); // Mở Bồi thường nhà nước
-            const firstLeaf = menuData[0].children[0]; // Tiếp nhận hồ sơ
-            selectLeaf(firstLeaf, [menuData[0].title, firstLeaf.title], 'leaf-0-0');
+            // Trang mặc định giữ là Tiếp nhận hồ sơ (Dashboard Lãnh đạo đứng đầu menu nhưng không tự mở)
+            let idx = menuData[0].children.findIndex(item => item.title === 'Tiếp nhận hồ sơ');
+            if (idx < 0) idx = 0;
+            const firstLeaf = menuData[0].children[idx];
+            selectLeaf(firstLeaf, [menuData[0].title, firstLeaf.title], 'leaf-0-' + idx);
         }
 
         // Navigate main workspace iframe to User Profile page

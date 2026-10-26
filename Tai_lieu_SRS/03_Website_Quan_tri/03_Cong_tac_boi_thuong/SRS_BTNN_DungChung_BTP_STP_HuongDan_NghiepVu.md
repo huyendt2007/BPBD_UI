@@ -43,7 +43,7 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Tiêu đề màn hình | String(255) | Không | Hướng dẫn, bồi dưỡng kỹ năng, nghiệp vụ công tác BTNN | Hiển thị tên màn hình. |
+| Tiêu đề màn hình | String(255) | Không | `Hướng dẫn, bồi dưỡng kỹ năng, nghiệp vụ` | Control UI: Text heading (Read-only).<br>- Hiển thị đúng tên mục Menu `Hướng dẫn, bồi dưỡng kỹ năng, nghiệp vụ`.<br>- Không có dòng mô tả dưới tiêu đề. |
 | Mã hồ sơ | String(50) | Không | Trống | Tìm gần đúng theo mã hồ sơ, tự động trim space. |
 | Cơ quan/cá nhân đề nghị | String(255) | Không | Trống | Tìm gần đúng theo tên cơ quan, tổ chức, cá nhân đề nghị. |
 | Loại nội dung | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Hướng dẫn nghiệp vụ<br>+ Giải đáp vướng mắc<br>+ Bồi dưỡng kỹ năng, nghiệp vụ<br>+ Truyền thông, tuyên truyền, phổ biến pháp luật |
@@ -64,7 +64,7 @@ flowchart TD
 | Ngày tiếp nhận | Date | Không | Theo dữ liệu | Hỗ trợ sắp xếp. |
 | Cán bộ xử lý | String(255) | Không | Theo dữ liệu | Hiển thị cán bộ xử lý hiện hành. |
 | Trạng thái | Enum(String(50)) | Không | Theo dữ liệu | Hiển thị dạng badge. |
-| Thao tác | String(255) | Không | Theo trạng thái | Không hiển thị row click chi tiết; xem chi tiết bằng row click. Hiển thị `Sửa`, `Lưu thông tin xử lý`, `Hoàn thành` theo trạng thái; nút không đủ điều kiện hiển thị mờ. |
+| Thao tác | String(255) | Không | Theo trạng thái | Không hiển thị row click chi tiết; xem chi tiết bằng row click. Hiển thị `Sửa`, `Lưu thông tin xử lý`, `Hoàn thành` theo trạng thái; nút không đủ điều kiện hiển thị mờ.<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 | Phân trang | String(255) | Không | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị trên mỗi trang gồm: 10, 20, 50, 100 bản ghi/trang; mặc định chọn sẵn 20 bản ghi/trang.<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;).<br>- Hiển thị dải bản ghi: "Hiển thị [từ] - [đến] của [tổng số] bản ghi". |
 
 ###### 4.3.3.7.3.3. Chức năng trên màn hình

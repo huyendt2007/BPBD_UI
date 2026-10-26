@@ -580,18 +580,23 @@
                 <label class="form-label" for="filterStatus">Trạng thái giải quyết</label>
                 <select class="form-control" id="filterStatus">
                     <option value="">-- Tất cả trạng thái --</option>
-                    <option value="Lưu nháp">Lưu nháp</option>
                     <option value="Chờ tiếp nhận">Chờ tiếp nhận</option>
-                    <option value="Yêu cầu bổ sung">Yêu cầu bổ sung</option>
-                    <option value="Chờ thụ lý">Chờ thụ lý</option>
-                    <option value="Từ chối tiếp nhận">Từ chối tiếp nhận</option>
-                    <option value="Từ chối thụ lý">Từ chối thụ lý</option>
-                    <option value="Đang xác minh thiệt hại">Đang xác minh thiệt hại</option>
-                    <option value="Đang thương lượng">Đang thương lượng</option>
-                    <option value="Thương lượng không thành công">Thương lượng không thành công</option>
+                    <option value="Chờ duyệt">Chờ duyệt</option>
+                    <option value="Bị từ chối">Bị từ chối</option>
+                    <option value="Cử người giải quyết bồi thường">Cử người giải quyết bồi thường</option>
+                    <option value="Xác minh thiệt hại">Xác minh thiệt hại</option>
+                    <option value="Thương lượng">Thương lượng</option>
                     <option value="Chờ ban hành QĐ">Chờ ban hành QĐ</option>
                     <option value="Chờ thực thi">Chờ thực thi</option>
                     <option value="Hoàn thành">Hoàn thành</option>
+                    <option value="Đang phục hồi danh dự">Đang phục hồi danh dự</option>
+                    <option value="Hoãn phục hồi danh dự">Hoãn phục hồi danh dự</option>
+                    <option value="Từ chối phục hồi danh dự">Từ chối phục hồi danh dự</option>
+                    <option value="Hoãn giải quyết">Hoãn giải quyết</option>
+                    <option value="Đình chỉ giải quyết">Đình chỉ giải quyết</option>
+                    <option value="Đã chuyển CQGQBT">Đã chuyển CQGQBT</option>
+                    <option value="Không thụ lý">Không thụ lý</option>
+                    <option value="Yêu cầu bổ sung">Yêu cầu bổ sung</option>
                 </select>
             </div>
 
@@ -736,7 +741,7 @@
                 coQuan: "Viện kiểm sát nhân dân Tỉnh Long An",
                 hinhThuc: "Cả hai hình thức",
                 ngayTiepNhan: "15/06/2026",
-                trangThai: "Đang thương lượng",
+                trangThai: "Thương lượng",
                 thoiHan: "Quá hạn 2 ngày",
                 thoiHanLoai: "critical",
                 ngayCapNhat: "09/07/2026"
@@ -772,7 +777,7 @@
                 coQuan: "Công an Huyện Gia Lâm",
                 hinhThuc: "Trực tiếp xin lỗi",
                 ngayTiepNhan: "18/06/2026",
-                trangThai: "Đang xác minh thiệt hại",
+                trangThai: "Xác minh thiệt hại",
                 thoiHan: "Còn 8 ngày",
                 thoiHanLoai: "normal",
                 ngayCapNhat: "11/07/2026"
@@ -832,7 +837,7 @@
                 coQuan: "Tòa án nhân dân TP. Hà Nội",
                 hinhThuc: "Cả hai hình thức",
                 ngayTiepNhan: "12/06/2026",
-                trangThai: "Đang thương lượng",
+                trangThai: "Thương lượng",
                 thoiHan: "Đang theo dõi tiến trình",
                 thoiHanLoai: "normal",
                 ngayCapNhat: "05/08/2026"
@@ -1085,9 +1090,9 @@
                 let badgeClass = "badge-draft";
                 if (item.trangThai === "Chờ thực thi") badgeClass = "badge-notice";
                 else if (item.trangThai === "Hoàn thành") badgeClass = "badge-success";
-                else if (item.trangThai === "Chờ tiếp nhận" || item.trangThai === "Chờ thụ lý" || item.trangThai === "Chờ ban hành QĐ") badgeClass = "badge-pending";
-                else if (item.trangThai === "Yêu cầu bổ sung" || item.trangThai === "Đang thương lượng" || item.trangThai === "Đang xác minh thiệt hại") badgeClass = "badge-warning";
-                else if (item.trangThai === "Từ chối tiếp nhận" || item.trangThai === "Từ chối thụ lý" || item.trangThai === "Thương lượng không thành công") badgeClass = "badge-danger";
+                else if (["Chờ tiếp nhận", "Chờ duyệt", "Cử người giải quyết bồi thường", "Chờ ban hành QĐ"].includes(item.trangThai)) badgeClass = "badge-pending";
+                else if (["Yêu cầu bổ sung", "Thương lượng", "Xác minh thiệt hại", "Hoãn giải quyết", "Hoãn phục hồi danh dự"].includes(item.trangThai)) badgeClass = "badge-warning";
+                else if (["Bị từ chối", "Không thụ lý", "Đình chỉ giải quyết", "Từ chối phục hồi danh dự"].includes(item.trangThai)) badgeClass = "badge-danger";
                 tdStatus.innerHTML = `<span class="badge ${badgeClass}">${item.trangThai}</span>`;
                 tr.appendChild(tdStatus);
 

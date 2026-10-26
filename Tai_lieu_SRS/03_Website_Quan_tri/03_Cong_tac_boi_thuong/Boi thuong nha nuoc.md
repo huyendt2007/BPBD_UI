@@ -359,7 +359,7 @@ Mỗi hồ sơ yêu cầu giải quyết bồi thường được hệ thống �
 
 ---
 
-### II.2. Quản lý kinh phí bồi thường
+### II.2. Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường
 
 #### II.2.1. Cấp tạm ứng kinh phí bồi thường
 

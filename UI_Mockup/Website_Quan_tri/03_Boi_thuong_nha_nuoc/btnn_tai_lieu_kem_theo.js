@@ -1,0 +1,311 @@
+/*
+ * Bảng "Tài liệu kèm theo" dùng chung cho các popup trình ký Lãnh đạo (Hình thức ký = Ký số trên hệ thống)
+ * và khối chỉ đọc "Tài liệu kèm theo" tại màn Ký duyệt/Từ chối của Lãnh đạo.
+ * - Bảng: STT | Tên văn bản, căn cứ | Tải file | Thao tác (Xem file / Xóa); nút "+ Thêm tài liệu".
+ * - Tải file: .pdf, .doc, .docx, .jpg, .jpeg, .png; tối đa 50MB/tệp (MSG-ERR-FILE-001 / MSG-ERR-FILE-002).
+ * - Xem file: mở chính tệp đã tải tại tab mới (giữ tệp trong bộ nhớ + IndexedDB để mở lại sau khi tải lại trang).
+ * - Dữ liệu lưu vào phiếu trình: [{ name, file: { id, name, size, type } }].
+ */
+(function () {
+    'use strict';
+    var EXTS = ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'];
+    var MAX_BYTES = 50 * 1024 * 1024;
+    var MSG_REQ = 'Đây là trường bắt buộc';
+    var MSG_FMT = 'Tệp không đúng định dạng. Chỉ chấp nhận .pdf, .doc, .docx, .jpg, .jpeg, .png.';
+    var MSG_SIZE = 'Tệp vượt quá dung lượng cho phép (tối đa 50MB).';
+    var S = {};          // key -> { hostId, required, rows, secClass, titleClass, visible }
+    var BLOBS = {};      // fileId -> File/Blob (phiên hiện tại)
+    var VIEWS = {};      // viewId -> danh sách tài liệu (khối chỉ đọc)
+    var viewSeq = 0;
+
+    function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+    function toast(msg, type) { if (typeof window.showToast === 'function') window.showToast(msg, type || 'info'); else window.alert(msg); }
+    function fmtSize(b) { b = Number(b) || 0; if (!b) return ''; return b >= 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB'; }
+    function fileIcon(name) {
+        var ext = (String(name || '').match(/\.[^.]+$/) || [''])[0].toLowerCase();
+        if (ext === '.pdf') return 'fa-solid fa-file-pdf tlkt-ico-pdf';
+        if (ext === '.doc' || ext === '.docx') return 'fa-solid fa-file-word tlkt-ico-word';
+        if (ext === '.jpg' || ext === '.jpeg' || ext === '.png') return 'fa-solid fa-file-image tlkt-ico-img';
+        return 'fa-solid fa-file-lines';
+    }
+
+    // ---------- Lưu tệp: bộ nhớ + IndexedDB (best effort) ----------
+    var dbp = null;
+    function db() {
+        if (dbp) return dbp;
+        dbp = new Promise(function (resolve) {
+            try {
+                if (!window.indexedDB) { resolve(null); return; }
+                var req = window.indexedDB.open('btnn_tlkt', 1);
+                req.onupgradeneeded = function () { try { req.result.createObjectStore('files'); } catch (e) { /* bỏ qua */ } };
+                req.onsuccess = function () { resolve(req.result); };
+                req.onerror = function () { resolve(null); };
+            } catch (e) { resolve(null); }
+        });
+        return dbp;
+    }
+    function idbPut(id, blob) {
+        db().then(function (d) { if (!d) return; try { d.transaction('files', 'readwrite').objectStore('files').put(blob, id); } catch (e) { /* bỏ qua */ } });
+    }
+    function idbGet(id) {
+        return db().then(function (d) {
+            if (!d) return null;
+            return new Promise(function (resolve) {
+                try {
+                    var r = d.transaction('files', 'readonly').objectStore('files').get(id);
+                    r.onsuccess = function () { resolve(r.result || null); };
+                    r.onerror = function () { resolve(null); };
+                } catch (e) { resolve(null); }
+            });
+        });
+    }
+    // Xem file: mở chính tệp đã tải lên tại tab mới (URL.createObjectURL + window.open)
+    function openFile(meta) {
+        if (!meta) return;
+        var isBlob = function (b) { return typeof Blob !== 'undefined' && b instanceof Blob; };
+        var mem = (meta.id && BLOBS[meta.id]) || (isBlob(meta.raw) ? meta.raw : null);
+        if (mem) { if (!meta.__url) meta.__url = URL.createObjectURL(mem); window.open(meta.__url, '_blank'); return; }
+        if (!meta.id) { toast('Tệp mẫu [' + (meta.name || '') + '] không có nội dung để mở xem.', 'info'); return; }
+        var w = window.open('', '_blank');
+        idbGet(meta.id).then(function (b) {
+            if (b) { BLOBS[meta.id] = b; var u = URL.createObjectURL(b); if (w) w.location.href = u; else window.open(u, '_blank'); return; }
+            if (w) w.close();
+            toast('Tệp mẫu [' + (meta.name || '') + '] không có nội dung để mở xem.', 'info');
+        });
+    }
+
+    // ---------- CSS (prefix tlkt-) ----------
+    function css() {
+        if (document.getElementById('tlktCss')) return;
+        var st = document.createElement('style');
+        st.id = 'tlktCss';
+        st.textContent = [
+            '.tlkt-wrap { border: 1px solid #e2e8f0; border-radius: 8px; overflow-x: auto; background: #fff; }',
+            '.tlkt-table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 560px; }',
+            '.tlkt-table th { background: #f8fafc; color: #334155; font-weight: 600; text-align: left; padding: 8px 10px; border-bottom: 1px solid #e2e8f0; white-space: nowrap; }',
+            '.tlkt-table td { padding: 8px 10px; border-bottom: 1px solid #f1f5f9; vertical-align: top; color: #1e293b; }',
+            '.tlkt-table tr:last-child td { border-bottom: 0; }',
+            '.tlkt-table .tlkt-c { text-align: center; }',
+            '.tlkt-table input.tlkt-name { width: 100%; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px 9px; font: inherit; font-size: 12.5px; }',
+            '.tlkt-table input.tlkt-name.is-invalid { border-color: #dc2626; background: #fef2f2; }',
+            '.tlkt-btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #cbd5e1; background: #fff; color: #334155; border-radius: 6px; padding: 5px 10px; font: inherit; font-size: 12px; cursor: pointer; white-space: nowrap; }',
+            '.tlkt-btn:hover { background: #f1f5f9; }',
+            '.tlkt-btn.is-invalid { border-color: #dc2626; background: #fef2f2; }',
+            '.tlkt-add { margin-top: 8px; border-style: dashed; color: #2563eb; border-color: #93c5fd; }',
+            '.tlkt-file { display: flex; align-items: center; gap: 6px; font-weight: 600; color: #0f172a; word-break: break-all; }',
+            '.tlkt-file small { color: #64748b; font-weight: 400; white-space: nowrap; }',
+            '.tlkt-ico-pdf { color: #dc2626; } .tlkt-ico-word { color: #2563eb; } .tlkt-ico-img { color: #0d9488; }',
+            '.tlkt-acts { display: inline-flex; gap: 10px; white-space: nowrap; }',
+            '.tlkt-link { color: #2563eb; cursor: pointer; text-decoration: none; background: none; border: 0; padding: 0; font: inherit; font-size: 12.5px; }',
+            '.tlkt-link.is-disabled { color: #94a3b8; pointer-events: none; }',
+            '.tlkt-link.tlkt-del { color: #dc2626; }',
+            '.tlkt-ib { width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid #bfdbfe; background: #eff6ff; color: #2563eb; cursor: pointer; padding: 0; font-size: 13px; }',
+            '.tlkt-ib:hover { filter: brightness(0.95); }',
+            '.tlkt-ib.tlkt-ib-del { border-color: #fecaca; background: #fef2f2; color: #dc2626; }',
+            '.tlkt-ib.is-disabled { border-color: #e2e8f0; background: #f8fafc; color: #cbd5e1; pointer-events: none; }',
+            '.tlkt-err { color: #dc2626; font-size: 11.5px; margin-top: 4px; display: none; }',
+            '.tlkt-err.on { display: block; }',
+            '.tlkt-hint { color: #64748b; font-size: 11.5px; margin-top: 6px; }',
+            '.tlkt-empty { text-align: center; color: #94a3b8; font-style: italic; }',
+            '.tlkt-sec-title { font-weight: 700; color: #0f172a; font-size: 13px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }',
+            '.tlkt-req { color: #dc2626; margin-left: 2px; }',
+            '.tlkt-view { border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; background: #fff; }',
+            '.tlkt-view-box .tlkt-table { min-width: 0; }',
+            '.tlkt-view-box .tlkt-table th, .tlkt-view-box .tlkt-table td { padding: 6px 8px; }',
+            // Tên tệp 1 dòng, dài thì cắt "…", rê chuột hiện đủ tên (title); dung lượng màu xám ngay sau tên
+            '.tlkt-view-box .tlkt-table { table-layout: fixed; }',
+            '.tlkt-view-box .tlkt-file { display: flex; align-items: center; gap: 6px; min-width: 0; font-weight: 500; font-size: 12px; word-break: normal; }',
+            '.tlkt-view-box .tlkt-file i { flex: none; }',
+            '.tlkt-view-box .tlkt-file span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }',
+            '.tlkt-view-box .tlkt-file small { flex: none; display: inline; color: #94a3b8; white-space: nowrap; }'
+        ].join('\n');
+        (document.head || document.documentElement).appendChild(st);
+    }
+
+    // ---------- Bảng nhập (popup trình ký) ----------
+    function cloneList(list) {
+        return (list || []).map(function (d) {
+            var f = d && d.file ? { id: d.file.id || '', name: d.file.name || '', size: d.file.size || 0, type: d.file.type || '' } : null;
+            if (f && !f.name) f = null;
+            return { name: (d && d.name) || '', file: f };
+        });
+    }
+    function sync(key) {
+        var s = S[key]; if (!s) return;
+        s.rows.forEach(function (r, i) { var el = document.getElementById('tlkt_' + key + '_n' + i); if (el) r.name = el.value; });
+    }
+    function render(key) {
+        var s = S[key]; if (!s) return;
+        var host = document.getElementById(s.hostId); if (!host) return;
+        css();
+        if (!s.rows.length) s.rows = [{ name: '', file: null }];
+        var body = s.rows.map(function (r, i) {
+            var fileCell = r.file
+                ? '<div class="tlkt-file"><i class="' + fileIcon(r.file.name) + '"></i><span>' + esc(r.file.name) + '</span>' + (r.file.size ? '<small>(' + fmtSize(r.file.size) + ')</small>' : '') + '</div>'
+                : '<button type="button" class="tlkt-btn" id="tlkt_' + key + '_b' + i + '" onclick="document.getElementById(\'tlkt_' + key + '_f' + i + '\').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>';
+            return '<tr>'
+                + '<td class="tlkt-c">' + (i + 1) + '</td>'
+                + '<td><input type="text" class="tlkt-name" id="tlkt_' + key + '_n' + i + '" maxlength="500" value="' + esc(r.name) + '" placeholder="Nhập tên văn bản, căn cứ" oninput="tlktOnName(\'' + key + '\',' + i + ')">'
+                + '<div class="tlkt-err" id="tlkt_' + key + '_ne' + i + '">' + MSG_REQ + '</div></td>'
+                + '<td><input type="file" id="tlkt_' + key + '_f' + i + '" accept="' + s.exts.join(',') + '" style="display:none;" onchange="tlktPick(\'' + key + '\',' + i + ',this)">' + fileCell
+                + '<div class="tlkt-err" id="tlkt_' + key + '_fe' + i + '">' + MSG_REQ + '</div></td>'
+                + '<td class="tlkt-c"><span class="tlkt-acts">' + actsHtml(key, i, !!r.file) + '</span></td></tr>';
+        }).join('');
+        host.innerHTML = '<div class="' + esc(s.secClass) + ' tlkt-sec">'
+            + '<div class="' + esc(s.titleClass) + '"><i class="fa-solid fa-paperclip"></i> ' + esc(s.title) + (s.required ? '<span class="tlkt-req">*</span>' : '') + '</div>'
+            + '<div class="tlkt-wrap"><table class="tlkt-table"><thead><tr><th class="tlkt-c" style="width:48px;">STT</th><th>Tên văn bản, căn cứ' + (s.required ? '<span class="tlkt-req">*</span>' : '') + '</th><th style="width:220px;">Tải file' + (s.required ? '<span class="tlkt-req">*</span>' : '') + '</th><th class="tlkt-c" style="width:90px;">Thao tác</th></tr></thead><tbody>' + body + '</tbody></table></div>'
+            + '<div class="tlkt-err" id="tlkt_' + key + '_err">' + MSG_REQ + '</div>'
+            + '<button type="button" class="tlkt-btn tlkt-add" onclick="tlktAdd(\'' + key + '\')"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button>'
+            + '<div class="tlkt-hint"><i class="fa-solid fa-circle-info"></i> Chấp nhận tệp ' + s.exts.join(', ') + ' (tối đa 50MB/tệp).' + (s.noLeader ? '' : ' Lãnh đạo xem được các tài liệu này khi Ký duyệt/Từ chối.') + '</div>'
+            + '</div>';
+        host.style.display = s.visible === false ? 'none' : '';
+    }
+    // Cột Thao tác dạng icon: Xem file (mắt), Xóa (thùng rác), có tooltip
+    function actsHtml(key, i, hasFile) {
+        return '<button type="button" data-admin-icon-normalized="1" class="tlkt-ib' + (hasFile ? '' : ' is-disabled') + '" title="Xem file" aria-label="Xem file" onclick="tlktOpenRow(\'' + key + '\',' + i + ')"><i class="fa-solid fa-eye"></i></button>'
+            + '<button type="button" data-admin-icon-normalized="1" class="tlkt-ib tlkt-ib-del" title="Xóa" aria-label="Xóa" onclick="tlktRemove(\'' + key + '\',' + i + ')"><i class="fa-solid fa-trash"></i></button>';
+    }
+    function setErr(id, on, msg) { var e = document.getElementById(id); if (!e) return; if (msg) e.textContent = msg; e.classList.toggle('on', !!on); }
+
+    // Khởi tạo bảng trong vùng hostId; opts: { required, rows, secClass, titleClass, visible }
+    window.tlktMount = function (key, hostId, opts) {
+        opts = opts || {};
+        S[key] = { hostId: hostId, required: !!opts.required, rows: cloneList(opts.rows), secClass: opts.secClass || 'gqx-sec', titleClass: opts.titleClass || 'tlkt-sec-title', visible: opts.visible !== false, noLeader: !!opts.noLeader, exts: (opts.exts && opts.exts.length) ? opts.exts : EXTS, title: opts.title || 'Tài liệu kèm theo' };
+        render(key);
+    };
+    window.tlktShow = function (key, on) {
+        var s = S[key]; if (!s) return;
+        s.visible = !!on;
+        var host = document.getElementById(s.hostId); if (host) host.style.display = on ? '' : 'none';
+    };
+    window.tlktOnName = function (key, i) {
+        var el = document.getElementById('tlkt_' + key + '_n' + i);
+        if (el) { el.classList.remove('is-invalid'); if (S[key] && S[key].rows[i]) S[key].rows[i].name = el.value; }
+        setErr('tlkt_' + key + '_ne' + i, false); setErr('tlkt_' + key + '_err', false);
+    };
+    window.tlktAdd = function (key) { var s = S[key]; if (!s) return; sync(key); s.rows.push({ name: '', file: null }); render(key); };
+    window.tlktPick = function (key, i, input) {
+        var s = S[key]; if (!s) return;
+        var f = input && input.files && input.files[0];
+        if (!f || !s.rows[i]) return;
+        sync(key);
+        var ext = (String(f.name).match(/\.[^.]+$/) || [''])[0].toLowerCase();
+        var msg = s.exts.indexOf(ext) < 0 ? 'Tệp không đúng định dạng. Chỉ chấp nhận ' + s.exts.join(', ') + '.' : (f.size > MAX_BYTES ? MSG_SIZE : '');
+        input.value = '';
+        if (msg) { setErr('tlkt_' + key + '_fe' + i, true, msg); var b = document.getElementById('tlkt_' + key + '_b' + i); if (b) b.classList.add('is-invalid'); return; }
+        var id = 'tlkt_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+        BLOBS[id] = f; idbPut(id, f);
+        s.rows[i].file = { id: id, name: f.name, size: f.size, type: f.type || '' };
+        if (!String(s.rows[i].name || '').trim()) s.rows[i].name = f.name.replace(/\.[^.]+$/, '');
+        render(key);
+    };
+    window.tlktOpenRow = function (key, i) { var s = S[key]; if (s && s.rows[i] && s.rows[i].file) openFile(s.rows[i].file); };
+    window.tlktRemove = function (key, i) {
+        var s = S[key]; if (!s) return;
+        sync(key);
+        var r = s.rows[i]; if (!r) return;
+        // Xóa thẳng dòng tài liệu, không hỏi xác nhận (chốt 23/10)
+        s.rows.splice(i, 1); render(key);
+    };
+    // Danh sách tài liệu đã nhập (bỏ dòng trống), dùng để lưu vào phiếu trình
+    window.tlktGet = function (key) {
+        var s = S[key]; if (!s) return [];
+        sync(key);
+        return cloneList(s.rows.filter(function (r) { return String(r.name || '').trim() || r.file; }).map(function (r) { return { name: String(r.name || '').trim(), file: r.file }; }));
+    };
+    // Kiểm tra: dòng có dữ liệu phải đủ Tên + Tệp; bảng bắt buộc phải có tối thiểu 01 dòng đủ Tên + Tệp.
+    // Trả về true nếu hợp lệ; nếu lỗi: tô viền đỏ ô lỗi, hiển thị thông báo dưới ô, focus ô lỗi đầu tiên.
+    window.tlktValidate = function (key) {
+        var s = S[key]; if (!s || s.visible === false) return true;
+        sync(key);
+        var first = null;
+        var full = 0;
+        s.rows.forEach(function (r, i) {
+            var hasName = !!String(r.name || '').trim(), hasFile = !!r.file;
+            var need = hasName || hasFile || (s.required && i === 0 && !s.rows.some(function (x) { return String(x.name || '').trim() || x.file; }));
+            var badName = need && !hasName, badFile = need && !hasFile;
+            var n = document.getElementById('tlkt_' + key + '_n' + i), b = document.getElementById('tlkt_' + key + '_b' + i);
+            if (n) n.classList.toggle('is-invalid', badName);
+            if (b) b.classList.toggle('is-invalid', badFile);
+            setErr('tlkt_' + key + '_ne' + i, badName, MSG_REQ);
+            setErr('tlkt_' + key + '_fe' + i, badFile, MSG_REQ);
+            if (!first && badName) first = n; if (!first && badFile) first = b;
+            if (hasName && hasFile) full++;
+        });
+        if (first) { first.focus(); return false; }
+        if (s.required && !full) { setErr('tlkt_' + key + '_err', true, MSG_REQ); return false; }
+        return true;
+    };
+
+    // ---------- Khối chỉ đọc (màn Ký duyệt/Từ chối) ----------
+    // list: danh sách tài liệu của lần trình hiện hành; trả về '' khi không có tài liệu
+    window.tlktViewHtml = function (list, opts) {
+        opts = opts || {};
+        var rows = (list || []).filter(function (d) { return d && (d.name || (d.file && d.file.name)); });
+        if (!rows.length) return '';
+        css();
+        var vid = 'v' + (++viewSeq);
+        VIEWS[vid] = rows;
+        // Cùng dạng bảng như lúc cán bộ trình (chỉ đọc): STT | Tên văn bản, căn cứ | Tệp (tên tệp, dung lượng) | Thao tác (Xem file)
+        var body = rows.map(function (d, i) {
+            var f = d.file;
+            var sz = f ? (isNaN(Number(f.size)) ? String(f.size || '') : fmtSize(f.size)) : '';
+            return '<tr data-kdtc-tlkt-row="1"><td class="tlkt-c">' + (i + 1) + '</td><td>' + esc(d.name || (f && f.name) || '') + '</td>'
+                + '<td>' + (f ? '<div class="tlkt-file"><i class="' + fileIcon(f.name) + '"></i><span title="' + esc(f.name) + '">' + esc(f.name) + '</span>' + (sz ? '<small>(' + esc(sz) + ')</small>' : '') + '</div>' : '<span style="color:#94a3b8;">--</span>') + '</td>'
+                + '<td class="tlkt-c">' + (f ? '<button type="button" data-admin-icon-normalized="1" class="tlkt-ib" title="Xem file" aria-label="Xem file" onclick="tlktOpenView(\'' + vid + '\',' + i + ')"><i class="fa-solid fa-eye"></i></button>' : '<span style="color:#94a3b8;">--</span>') + '</td></tr>';
+        }).join('');
+        var boxCls = opts.boxClass || 'tlkt-view';
+        var titleCls = opts.titleClass || 'tlkt-sec-title';
+        return '<div class="' + esc(boxCls) + ' tlkt-view-box" id="kdtcTlkt' + vid + '"><div class="' + esc(titleCls) + '"><i class="fa-solid fa-paperclip"></i> Tài liệu kèm theo</div>'
+            + '<div class="tlkt-wrap"><table class="tlkt-table"><thead><tr><th class="tlkt-c" style="width:36px;">STT</th><th>Tên văn bản, căn cứ</th><th style="width:44%;">Tệp</th><th class="tlkt-c" style="width:58px;">Thao tác</th></tr></thead><tbody>' + body + '</tbody></table></div></div>';
+    };
+    window.tlktOpenView = function (vid, i) { var l = VIEWS[vid]; if (l && l[i] && l[i].file) openFile(l[i].file); };
+    window.tlktOpenFile = openFile;
+    // Dùng chung cho bảng Tài liệu kèm theo dựng ngoài thư viện (VD quan_ly_boi_thuong_ctvv.js): nạp CSS tlkt-
+    window.tlktCss = css;
+    // Tải file: tải chính tệp đã tải lên (bộ nhớ phiên / IndexedDB); trả về false khi không có nội dung tệp
+    window.tlktDownloadFile = function (meta, done) {
+        if (!meta) { if (done) done(false); return; }
+        var save = function (b) {
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(b); a.download = meta.name || 'tai_lieu';
+            document.body.appendChild(a); a.click(); a.remove();
+            if (done) done(true);
+        };
+        var mem = (meta.id && BLOBS[meta.id]) || null;
+        if (mem) { save(mem); return; }
+        if (!meta.id) { if (done) done(false); return; }
+        idbGet(meta.id).then(function (b) { if (b) { BLOBS[meta.id] = b; save(b); } else if (done) done(false); });
+    };
+    // Giữ tệp (VD: tệp văn bản trình ký tải lên) để mở lại khi trình lại; trả về id lưu trữ
+    window.tlktKeep = function (blob) {
+        if (!blob || typeof Blob === 'undefined' || !(blob instanceof Blob)) return '';
+        var id = 'tlkt_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+        BLOBS[id] = blob; idbPut(id, blob);
+        return id;
+    };
+    // Lấy lại tệp đã giữ (bộ nhớ phiên hiện tại); không có thì trả về null
+    window.tlktBlob = function (id) { return (id && BLOBS[id]) || null; };
+    // Ghi tên tài liệu kèm theo vào ghi chú lịch sử
+    window.tlktNote = function (list) {
+        var names = (list || []).map(function (d) { return d.name || (d.file && d.file.name) || ''; }).filter(Boolean);
+        return names.length ? ' Tài liệu kèm theo: ' + names.join('; ') + '.' : '';
+    };
+    // Gắn danh sách tài liệu vào mục lịch sử "Trình ..." mới nhất của hồ sơ luồng xử lý (để lịch sử mỗi lần trình hiển thị tài liệu của lần đó)
+    window.tlktTagHistory = function (W, rec, list) {
+        if (!W || !rec || !rec.history || !rec.history.length) return;
+        var h = rec.history[rec.history.length - 1];
+        h.attachments = cloneList(list);
+        if (typeof W.upsertRecord === 'function') W.upsertRecord(rec);
+    };
+    // Danh sách tài liệu dạng dòng gọn (dùng trong Lịch sử trình ký)
+    window.tlktInlineHtml = function (list) {
+        var rows = (list || []).filter(function (d) { return d && (d.name || (d.file && d.file.name)); });
+        if (!rows.length) return '';
+        var vid = 'v' + (++viewSeq);
+        VIEWS[vid] = rows;
+        css();
+        return '<div style="margin-top:6px; font-size:12px; color:#475569;"><div><i class="fa-solid fa-paperclip"></i> Tài liệu kèm theo:</div>'
+            + rows.map(function (d, i) { return '<div style="padding-left:16px; text-align:left;">' + (i + 1) + '. ' + (d.file ? '<a href="javascript:void(0)" data-admin-icon-normalized="1" style="font-size:12px; color:#2563eb;" title="Xem file" onclick="tlktOpenView(\'' + vid + '\',' + i + ')">' + esc(d.name || d.file.name) + '</a>' : esc(d.name)) + '</div>'; }).join('') + '</div>';
+    };
+})();

@@ -526,8 +526,9 @@
 <body>
     <div class="page-header">
         <div class="page-title">
-            <h1 id="pageTitle">Nghiệp vụ bồi thường nhà nước</h1>
-            <p id="pageSubtitle">Quản lý nghiệp vụ theo Thông tư 08/2019/TT-BTP.</p>
+            <h1 id="pageTitle" data-uxu-title>Nghiệp vụ bồi thường nhà nước</h1>
+            <!-- Bỏ dòng mô tả phụ dưới tiêu đề (tiêu đề = tên mục Menu); giữ phần tử ẩn để mã cũ gán nội dung không lỗi -->
+            <p id="pageSubtitle" hidden></p>
         </div>
         <button class="btn btn-secondary" onclick="history.back()"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
     </div>
@@ -674,7 +675,7 @@
 
         const moduleConfigs = {
             huong_dan: {
-                title: 'Hướng dẫn, bồi dưỡng kỹ năng, nghiệp vụ công tác BTNN',
+                title: 'Hướng dẫn, bồi dưỡng kỹ năng, nghiệp vụ',
                 subtitle: 'Tiếp nhận, cập nhật và theo dõi hồ sơ hướng dẫn nghiệp vụ, giải đáp vướng mắc, bồi dưỡng kỹ năng, nghiệp vụ và truyền thông pháp luật về trách nhiệm bồi thường của Nhà nước.',
                 icon: 'fa-comments',
                 codeLabel: 'Mã hồ sơ',
@@ -830,7 +831,7 @@
                 ]
             },
             khieu_nai: {
-                title: 'Giải quyết khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN',
+                title: 'Giải quyết khiếu nại, tố cáo, xử lý vi phạm',
                 subtitle: 'Quản lý thông tin khiếu nại, tố cáo, phản ánh, kiến nghị và kết quả xử lý vi phạm liên quan công tác bồi thường nhà nước.',
                 icon: 'fa-scale-balanced',
                 codeLabel: 'Mã hồ sơ',

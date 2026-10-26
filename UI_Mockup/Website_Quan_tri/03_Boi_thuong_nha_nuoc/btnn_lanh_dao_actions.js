@@ -149,12 +149,6 @@
             <div id="ldDContext" style="margin-bottom:12px;"></div>
             <div class="ld-group" id="ldDNextGroup" style="display:none;"><span class="ld-label"><span id="ldDNextLabel">Lãnh đạo phê duyệt cấp tiếp theo</span><span class="ld-req">*</span></span><select id="ldDNext" class="ld-input"></select><div class="ld-err" id="ldDNextErr">Đây là trường bắt buộc</div></div>
             <div class="ld-group"><span class="ld-label" id="ldDLabel"></span><textarea id="ldDNote" class="ld-input" rows="4"></textarea><div class="ld-err" id="ldDErr">Đây là trường bắt buộc</div></div>
-            <div id="ldDSignBlock" style="display:none; border:1px solid #bfdbfe; background:#f8fbff; border-radius:8px; padding:12px 14px;">
-                <div style="font-weight:700; color:#1e3a8a; margin-bottom:10px;"><i class="fa-solid fa-signature"></i> Ký số</div>
-                <div class="ld-group"><span class="ld-label">Chứng thư số<span class="ld-req">*</span></span><select id="ldDCert" class="ld-input"></select><div class="ld-err" id="ldDCertErr">Đây là trường bắt buộc</div></div>
-                <div class="ld-group" style="margin-bottom:0;"><span class="ld-label">Mã PIN<span class="ld-req">*</span></span><input type="password" id="ldDPin" class="ld-input" autocomplete="off" placeholder="Nhập mã PIN USB Token..."><div class="ld-err" id="ldDPinErr">Đây là trường bắt buộc</div></div>
-                <div id="ldDSignErr" style="display:none; margin-top:10px; background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; border-radius:6px; padding:8px 10px; font-size:12.5px;"></div>
-            </div>
         </div></div>
         <div class="ld-modal-footer"><button class="ld-btn" data-close="ldDecideOverlay">Hủy bỏ</button><button class="ld-btn primary" id="ldDSubmit">Xác nhận</button></div>
     </div></div>
@@ -451,7 +445,7 @@
             : `Cấp phê duyệt cuối cùng. Sau khi ${verbLc},${signText} hồ sơ chuyển [${a.resultStatus || WF.SUBMIT_KINDS[a.kind] || a.prevStatus || ''}].`;
         const after = decisionMode === 'approve'
             ? (isLast ? lastText : `Sau khi ${verbLc}, hồ sơ chuyển ${WF.unitName(a.path[a.level + 1])} ${verbLc}${isXd ? ' (cấp này không ký số văn bản)' : ''}.`)
-            : 'Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị trả lại] cho cán bộ chủ trì.';
+            : 'Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị từ chối] cho cán bộ chủ trì.';
         document.getElementById('ldDTitle').innerHTML = decisionMode === 'approve' ? `<i class="fa-solid fa-circle-check"></i> ${verb} hồ sơ ${esc(code)}` : `<i class="fa-solid fa-circle-xmark" style="color:#dc2626;"></i> Từ chối phê duyệt hồ sơ ${esc(code)}`;
         document.getElementById('ldDContext').innerHTML = WF.renderDraftDocHtml(rec) + `<div><strong>Nội dung trình:</strong> ${esc(a.kind)} - ${esc(WF.userName(a.submittedBy))}</div>${a.content ? `<div class="ld-muted">${esc(a.content)}</div>` : ''}<div style="margin-top:6px;"><strong>Cấp phê duyệt:</strong> ${a.level + 1}/${a.path.length} - ${esc(WF.unitName(a.path[a.level]))}</div><div class="ld-hint">${esc(after)}</div>`;
         document.getElementById('ldDLabel').innerHTML = decisionMode === 'approve' ? `Ý kiến ${verbLc}` : 'Lý do từ chối phê duyệt<span class="ld-req">*</span>';
@@ -459,8 +453,9 @@
         note.placeholder = decisionMode === 'approve' ? `Nhập ý kiến ${verbLc}...` : 'Nhập lý do từ chối phê duyệt...';
         note.value = '';
         document.getElementById('ldDErr').style.display = 'none';
-        const nextLeaders = decisionMode === 'approve' ? WF.nextLevelLeaders(rec) : [];
-        document.getElementById('ldDNextGroup').style.display = nextLeaders.length ? 'block' : 'none';
+        // Lãnh đạo các cấp do cán bộ chọn khi trình: không chọn Lãnh đạo cấp tiếp theo (WF.approve tự chuyển Lãnh đạo cấp tiếp theo đã chọn)
+        const nextLeaders = [];
+        document.getElementById('ldDNextGroup').style.display = 'none';
         document.getElementById('ldDNextErr').style.display = 'none';
         document.getElementById('ldDNext').innerHTML = `<option value="">Chọn Lãnh đạo ${esc(nextLeaders.length ? WF.unitName(a.path[a.level + 1]) : '')}...</option>` + nextLeaders.map(u => `<option value="${esc(u)}">${esc(WF.userLabel(u))}</option>`).join('');
         const btn = document.getElementById('ldDSubmit');
@@ -468,18 +463,9 @@
         btn.className = decisionMode === 'approve' ? 'ld-btn primary' : 'ld-btn danger';
         open('ldDecideOverlay');
     }
-    // ---------- Xác định CQGQBT: popup Ký duyệt / Từ chối tối giản; Lãnh đạo cấp cuối ký số ngay trong popup ----------
-    let xdSignRequired = false;
-    // Giả lập: hệ thống tự nhận diện chứng thư số hợp lệ của Lãnh đạo đang đăng nhập
-    function xdCertOptions(userId) {
-        return [{ id: 'USB-01', label: `${WF.userName(userId)} - Chứng thư số USB Token (hiệu lực đến 31/12/2028)`, usbToken: true }];
-    }
-    function resetXdSign() {
-        xdSignRequired = false;
-        document.getElementById('ldDSignBlock').style.display = 'none';
-        ['ldDCertErr', 'ldDPinErr', 'ldDSignErr'].forEach(id => { document.getElementById(id).style.display = 'none'; });
-        document.getElementById('ldDPin').value = '';
-    }
+    // ---------- Xác định CQGQBT: màn Ký duyệt / Từ chối ----------
+    // Chốt 23/10: không nhập Chứng thư số / Mã PIN tại màn Ký duyệt; ký số hay không theo Cấu hình luồng xử lý
+    function resetXdSign() { /* không còn khối Ký số */ }
     // Xác định CQGQBT: popup Ký duyệt / Từ chối dạng xem trước văn bản (vùng trái) + lịch sử trình và trường nhập (vùng phải)
     function xdPreviewMode(on) {
         const m = document.getElementById('ldDModal');
@@ -527,7 +513,16 @@
             + row('Mã vụ việc', esc(rec.maVuViec || WF.vuViecOf(rec.code, { create: false }) || '--'))
             + row('Loại trình', esc(a.kind || '--'))
             + row('Cán bộ trình', `${esc(WF.userName(a.submittedBy) || '--')}${a.submittedAt ? ` <span style="color:#64748b;">- ${esc(a.submittedAt)}</span>` : ''}`)
-            + `</div>`;
+            + `</div>`
+            + (typeof global.tlktViewHtml === 'function' ? global.tlktViewHtml(xdAttachments(rec), { boxClass: 'ld-sum tlkt-ld-sum', titleClass: 'ld-hist-title' }) : '');
+    }
+    // Tài liệu kèm theo của lượt trình hiện hành: phiếu trình (signDoc.attachments); Kết quả xác định CQGQBT dữ liệu cũ: bảng Tài liệu kèm theo tại MH03 (procDocs)
+    function xdAttachments(rec) {
+        const a = rec.approval || {};
+        const sd = a.signDoc || {};
+        if (Array.isArray(sd.attachments)) return sd.attachments;
+        if (a.kind === WF.KIND_KQXD) return (rec.procDocs || []).filter(d => d && (d.name || d.file)).map(d => ({ name: d.name || d.file, file: d.file ? { id: d.fileId || '', name: d.file } : null }));
+        return [];
     }
     // Lịch sử trình ký: danh sách sự kiện giảm dần theo thời gian (mọi lượt trình, kể cả lượt bị từ chối), mỗi lượt có nhãn trạng thái; cấp chưa xử lý của lượt hiện hành hiển thị Chờ ký duyệt / Chưa đến
     function renderXdHistory(rec) {
@@ -545,18 +540,18 @@
         const pick = (re, s) => { const m = re.exec(s || ''); return m ? m[1].trim() : ''; };
         // st: done (đã xử lý, xanh) / no (từ chối, đỏ) / wait (đang chờ ký, cam) / todo (chưa tới, xám)
         const stepIcon = { done: 'fa-solid fa-circle-check', no: 'fa-solid fa-circle-xmark', wait: 'fa-regular fa-clock', todo: 'fa-regular fa-circle' };
-        const item = (st, uid, name, at, cls, icon, act, msg) => `<div class="ld-hv ${st}"><div class="ld-hv-step"><i class="${stepIcon[st]}"></i></div><div class="ld-hv-av">${esc(initials(name))}</div><div class="ld-hv-main">`
+        const item = (st, uid, name, at, cls, icon, act, msg, docs) => `<div class="ld-hv ${st}"><div class="ld-hv-step"><i class="${stepIcon[st]}"></i></div><div class="ld-hv-av">${esc(initials(name))}</div><div class="ld-hv-main">`
             + `<div class="ld-hv-head"><span class="ld-hv-name">${esc(name || '--')}</span>${at ? `<span class="ld-hv-time"><i class="fa-regular fa-clock"></i> ${esc(at)}</span>` : ''}</div>`
             + (sub(uid) ? `<div class="ld-hv-sub">${esc(sub(uid))}</div>` : '')
             + (act ? `<div class="ld-hv-act ${cls}"><i class="${icon}"></i> ${act}</div>` : '')
-            + (msg ? `<div class="ld-hv-msg">${esc(msg)}</div>` : '') + `</div></div>`;
+            + (msg ? `<div class="ld-hv-msg">${esc(msg)}</div>` : '') + (docs && typeof global.tlktInlineHtml === 'function' ? global.tlktInlineHtml(docs) : '') + `</div></div>`;
         let html = '';
         groups.forEach((g, gi) => {
             const current = gi === groups.length - 1 && a.pending;
             const items = [];
             // Trình ký
             const firstTo = pick(/Trình ([^.]+)\./, g.root.note) || (current && a.assignees && a.assignees[0] ? WF.userName(a.assignees[0]) : '');
-            items.push(item('done', g.root.userId, g.root.userName, g.root.at, '', 'fa-solid fa-circle-arrow-right', `Trình ký${firstTo ? ` đến <strong>${esc(shortName(firstTo))}</strong>` : ''}`, pick(/Nội dung: (.*)$/, g.root.note) || (current ? a.content : '')));
+            items.push(item('done', g.root.userId, g.root.userName, g.root.at, '', 'fa-solid fa-circle-arrow-right', `Trình ký${firstTo ? ` đến <strong>${esc(shortName(firstTo))}</strong>` : ''}`, pick(/Nội dung: (.*)$/, g.root.note) || (current ? a.content : ''), g.root.attachments));
             // Kết quả xử lý của từng cấp
             g.children.forEach(h => {
                 if (/Từ chối/.test(h.action)) { items.push(item('no', h.userId, h.userName, h.at, 'no', 'fa-solid fa-ban', 'Từ chối - trả lại cán bộ trình', pick(/Lý do: (.*)$/, h.note))); return; }
@@ -598,58 +593,18 @@
         // Lãnh đạo cấp tiếp theo do cán bộ chọn khi trình: không chọn tại popup, chỉ hiển thị dòng Chuyển tới (chỉ đọc)
         document.getElementById('ldDNextGroup').style.display = 'none';
         document.getElementById('ldDNext').innerHTML = '';
-        const presetNext = '';
-        if (presetNext) {
-            document.getElementById('ldDContext').innerHTML = `<div style="font-size:13px; color:#334155; background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:8px 10px;"><strong>Chuyển tới:</strong> ${esc(WF.userLabel(presetNext))} <span style="color:#64748b;">(Lãnh đạo cấp tiếp theo do cán bộ chọn khi trình)</span></div>`;
-            document.getElementById('ldDContext').style.display = '';
-        }
-        // Cấp cuối: ký số văn bản trình ký (Ký số trên hệ thống)
-        xdSignRequired = approve && isLast && !(a.signDoc && a.signDoc.method === 'Ký ngoài');
-        if (xdSignRequired) {
-            const certs = xdCertOptions(WF.getCurrentUserId());
-            document.getElementById('ldDCert').innerHTML = certs.map(c => `<option value="${esc(c.id)}">${esc(c.label)}</option>`).join('');
-            document.getElementById('ldDSignBlock').style.display = 'block';
-        }
+        // Không có Ghi chú kết quả, không có khối Chứng thư số / Mã PIN (chốt 23/10)
         const btn = document.getElementById('ldDSubmit');
-        btn.innerHTML = approve ? '<i class="fa-solid fa-file-signature"></i> Ký duyệt' : 'Từ chối';
+        btn.innerHTML = approve ? '<i class="fa-solid fa-file-signature"></i> Ký duyệt' : '<i class="fa-solid fa-circle-xmark"></i> Từ chối';
         btn.className = approve ? 'ld-btn primary' : 'ld-btn danger';
         open('ldDecideOverlay');
-    }
-    // Giả lập ký số: PIN >= 4 ký tự là hợp lệ; trả về thông báo lỗi nếu ký số thất bại
-    function xdSignCheck() {
-        const certSel = document.getElementById('ldDCert');
-        const pin = document.getElementById('ldDPin').value;
-        let ok = true;
-        document.getElementById('ldDSignErr').style.display = 'none';
-        if (!certSel.value) { document.getElementById('ldDCertErr').style.display = 'block'; ok = false; } else document.getElementById('ldDCertErr').style.display = 'none';
-        if (!pin) { document.getElementById('ldDPinErr').style.display = 'block'; ok = false; } else document.getElementById('ldDPinErr').style.display = 'none';
-        if (!ok) return false;
-        if (pin.length < 4) {
-            const e = document.getElementById('ldDSignErr');
-            e.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Ký số không thành công: Mã PIN không đúng. Hồ sơ giữ trạng thái [Chờ duyệt].';
-            e.style.display = 'block';
-            return false;
-        }
-        return true;
     }
     function submitDecision() {
         const note = document.getElementById('ldDNote').value.trim();
         if (decisionMode === 'reject' && !note) { document.getElementById('ldDErr').style.display = 'block'; return; }
         const next = document.getElementById('ldDNext').value;
         if (decisionMode === 'approve' && document.getElementById('ldDNextGroup').style.display !== 'none' && !next) { document.getElementById('ldDNextErr').style.display = 'block'; return; }
-        if (decisionMode === 'approve' && xdSignRequired && !xdSignCheck()) return;
-        const certSel = document.getElementById('ldDCert');
-        const certLabel = xdSignRequired && certSel.selectedIndex >= 0 ? certSel.options[certSel.selectedIndex].text : '';
         const res = decisionMode === 'approve' ? WF.approve(acting, note, next) : WF.rejectApproval(acting, note);
-        // Gán thông tin chữ ký (họ tên, chức vụ, thời điểm, chứng thư số) vào văn bản đã ký số
-        if (res.ok && certLabel && res.record.approval && res.record.approval.signDoc) {
-            const me = WF.getCurrentUserId();
-            const sd = res.record.approval.signDoc;
-            sd.signCert = certLabel;
-            sd.signedName = WF.userName(me);
-            sd.signedTitle = (WF.getUser(me) || {}).title || '';
-            WF.upsertRecord(res.record);
-        }
         close('ldDecideOverlay');
         const nextText = res.ok && res.record.status === WF.STATUS.CHO_PHE_DUYET ? ' - chuyển ' + ((next || (res.record.approval.assignees || [])[res.record.approval.level]) ? WF.userName(next || res.record.approval.assignees[res.record.approval.level]) + ' - ' : '') + WF.unitName(res.record.approval.path[res.record.approval.level]) : '';
         notify(res.ok ? `Hồ sơ ${acting}: [${res.record.status}]${nextText}.` : res.message, res.ok);

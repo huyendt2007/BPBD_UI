@@ -449,7 +449,6 @@
             </button>
             <button class="tab-nav-btn" id="tabBtnCompleted" onclick="switchMainTab('completed')">
                 <i class="fa-solid fa-circle-check"></i> Vụ việc đã xử lý
-                <span class="tab-counter-badge" id="badgeCompletedCount">0</span>
             </button>
         </div>
 
@@ -1247,13 +1246,6 @@
                         <div class="info-field-value">Nguyễn Văn Chuyên Viên (CB1)</div>
                     </div>
                 </div>
-                <div class="info-field-group">
-                    <span class="info-field-label">Văn bản thụ lý giải quyết phục hồi danh dự:</span>
-                    <div style="display: inline-flex; align-items: center; gap: 10px; padding: 6px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 13px;">
-                        <span><i class="fa-solid fa-file-pdf" style="color: #ef4444; margin-right: 6px;"></i> Quyet_dinh_thu_ly_PHDD.pdf</span>
-                        <a href="javascript:void(0)" onclick="viewDummyFile('Quyet_dinh_thu_ly_PHDD.pdf')" style="color: #2563eb; text-decoration: none; font-weight: 500;">Xem file</a>
-                    </div>
-                </div>
             </div>
 
             <!-- Thông báo tổ chức phục hồi danh dự (Điều 57) -->
@@ -1871,7 +1863,6 @@
             const pendingCount = phddList.filter(item => item.status !== 'Hoàn thành' && item.status !== 'Từ chối').length;
             const completedCount = phddList.filter(item => item.status === 'Hoàn thành' || item.status === 'Từ chối').length;
             document.getElementById('badgePendingCount').innerText = pendingCount;
-            document.getElementById('badgeCompletedCount').innerText = completedCount;
         }
 
         // =========================================================================
@@ -2827,6 +2818,7 @@
             }, 3500);
         }
     </script>
+    <script src="btnn_cot_thao_tac.js?v=20261023kpcd"></script>
 </body>
 
 </html>

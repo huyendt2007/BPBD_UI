@@ -57,7 +57,7 @@ flowchart TD
 | Ngày hỗ trợ | Date | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Định dạng `dd/mm/yyyy`. |
 | Cán bộ hỗ trợ | String(100) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
 | Kết quả hỗ trợ | Enum(String(50)) | Không | Theo dữ liệu hệ thống | Control UI: Badge.<br>- Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
-| Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Xóa |
+| Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Xóa<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 | Phân trang | - | - | 20 bản ghi/trang | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
 
 ###### 4.3.3.9.3.3. Chức năng trên màn hình

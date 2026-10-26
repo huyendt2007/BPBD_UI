@@ -303,6 +303,7 @@
 |  | WebAdmin-139 | Báo cáo kết quả công tác theo lĩnh vực phối hợp công tác hợp tác quốc tế, cải cách hành chính, cải cách tư pháp trong lĩnh vực đăng ký BPBĐ |  | UC298 |  |  |  |
 |  | WebAdmin-140 | Báo cáo kết quả công tác theo lĩnh vực khác theo phân công của lãnh đạo đơn vị | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Quan_ly_co_cau_to_chuc.md | UC299 |  |  |  |
 |  | WebAdmin-141 | Bồi thường nhà nước | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC412, UC413, UC414, UC415, UC416, UC417, UC418, UC419, UC420, UC421, UC422, UC423, UC424, UC425, UC426, UC427, UC428, UC429, UC430, UC431, UC432, UC433, UC434, UC435, UC436, UC437, UC438, UC439, UC440, UC441, UC442, UC443, UC444, UC445, UC446, UC447, UC448, UC449, UC450, UC451, UC452, UC453, UC454, UC455, UC456, UC457, UC458, UC459, UC460, UC461, UC462, UC463, UC464, UC465, UC466, UC467, UC468, UC469, UC470, UC471, UC472, UC473, UC474, UC475, UC476, UC477, UC478, UC479, UC480, UC481, UC482, UC483, UC484, UC485, UC486, UC487, UC488, UC489, UC490, UC491, UC492, UC494, UC495, UC500, UC501, UC502, UC503, UC504, UC505, UC506, UC507, UC508, UC509, UC617, UC618 |  |  |  |
+|  |  | Dashboard Lãnh đạo | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_Dashboard.md |  |  |  | Mục đầu tiên nhóm menu Bồi thường nhà nước, trước Tiếp nhận hồ sơ; chưa cấp mã tính năng |
 |  | WebAdmin-142 | Quản lý việc giải quyết yêu cầu bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md |  |  |  |  |
 |  | WebAdmin-143 | Xác định cơ quan giải quyết bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC412, UC413, UC659 |  |  |  |
 |  | WebAdmin-144 | Nhập yêu cầu xác định cơ quan giải quyết bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC412 |  |  |  |
@@ -331,7 +332,7 @@
 |  | WebAdmin-167 | Nhập thông tin thụ lý YCBT/ chấp nhận YCBT |  | UC430 |  |  |  |
 |  | WebAdmin-168 | Liên kết thông tin vụ việc YCBT đã có |  | UC431 |  |  |  |
 |  | WebAdmin-169 | Cập nhật nội dung Quyết định/Bản án có YCBT |  | UC432 |  |  |  |
-|  | WebAdmin-170 | Quản lý kinh phí bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC433, UC434, UC435, UC436, UC437, UC438, UC439, UC440, UC441 |  |  |  |
+|  | WebAdmin-170 | Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC433, UC434, UC435, UC436, UC437, UC438, UC439, UC440, UC441 |  |  |  |
 |  | WebAdmin-171 | Quản lý đề nghị cấp tạm ứng bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md |  |  |  |  |
 |  | WebAdmin-172 | Lập đề nghị cấp tạm ứng bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC433 |  |  |  |
 |  | WebAdmin-173 | Duyệt đề nghị cấp tạm ứng bồi thường | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\Boi thuong nha nuoc.md | UC434 |  |  |  |
@@ -566,6 +567,5 @@
 
 
 |  | WebAdmin-402 | Quản lý kỳ báo cáo, nhập liệu biểu mẫu Thông tư 08/2019/TT-BTP (Mẫu 01/03/04/05) theo mô hình 3 cấp | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_QuanLyBaoCao_TT08.md | UCPS023 |  | Review | Bổ sung theo yêu cầu cho phép UBND cấp tỉnh/huyện/xã, Sở Tư pháp, Bộ ngành nhập liệu trực tiếp biểu mẫu TT08 |
-|  | WebAdmin-403 | Dashboard Lãnh đạo (06 khối công việc chờ xử lý; mở tab Chờ xử lý của phân hệ. Phân công, phê duyệt, thu hồi thực hiện tại phân hệ) | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_ViecChoLanhDaoXuLy.md |  |  | Review | Menu mới thuộc phân hệ Bồi thường nhà nước, ngay dưới "Tiếp nhận hồ sơ" |
 |  | WebAdmin-404 | Cấu hình luồng xử lý | Tai lieu phan tich\03_Website_Quan_tri\01_Quan_tri_he_thong\Cau_hinh_luong_xu_ly.md |  |  | Review | Menu mới thuộc Quản trị hệ thống, sau "Quản lý cấu hình" |
 |  | WebAdmin-405 | Theo dõi vụ việc tại Tòa án (bị đơn khai báo vụ việc YCBT do Tòa án thụ lý; tự tạo đề nghị cấp kinh phí Chờ nhập liệu) | Tai lieu phan tich\03_Website_Quan_tri\03_Cong_tac_boi_thuong\SRS_BTNN_TheoDoiVuViecToaAn.md |  |  | Review | Menu mới thuộc Bồi thường nhà nước → Giải quyết bồi thường, sau "Giải quyết yêu cầu bồi thường" |

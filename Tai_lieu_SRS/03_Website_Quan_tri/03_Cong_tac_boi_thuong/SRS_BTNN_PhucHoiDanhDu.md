@@ -86,7 +86,7 @@ Nguồn UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_phuc_hoi_danh_du.ht
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Tab Vụ việc chờ xử lý | Tab | Không | Active | Control UI: Tab điều hướng.<br>- Hiển thị số lượng hồ sơ đang trong quá trình thực hiện phục hồi danh dự.<br>- Khi click: Tải danh sách hồ sơ thuộc Tab Chờ xử lý. |
-| Tab Vụ việc đã xử lý | Tab | Không | Inactive | Control UI: Tab điều hướng.<br>- Hiển thị số lượng hồ sơ đã kết thúc quá trình phục hồi danh dự.<br>- Khi click: Tải danh sách hồ sơ thuộc Tab Đã xử lý. |
+| Tab Vụ việc đã xử lý | Tab | Không | Inactive | Control UI: Tab điều hướng.<br>- Không hiển thị badge số lượng.<br>- Khi click: Tải danh sách hồ sơ thuộc Tab Đã xử lý. |
 | Mã vụ việc | String(50) | Không | Trống | Control UI: Input text.<br>- Nhập mã vụ việc Phục hồi danh dự (`PHDD-yyyy-xxx`) hoặc mã vụ việc Bồi thường tiền liên quan (`BT-yyyy-xxx`) để tìm kiếm gần đúng, tự động loại bỏ khoảng trắng hai đầu. |
 | Người bị thiệt hại | String(255) | Không | Trống | Control UI: Input text.<br>- Nhập họ tên người bị thiệt hại / người yêu cầu để tìm kiếm gần đúng, không phân biệt chữ hoa chữ thường. |
 | Cơ quan giải quyết bồi thường | Enum(String(255)) | Không | Tất cả cơ quan | Control UI: Combobox / Input có gợi ý datalist.<br>- Chọn hoặc nhập cơ quan giải quyết bồi thường.<br>- Giá trị UI gồm:<br>+ Tất cả cơ quan<br>+ Sở Tư pháp Hà Nội<br>+ Tòa án nhân dân TP. Hà Nội<br>+ Sở Tư pháp Hải Phòng<br>+ Cục Thi hành án dân sự Hà Nội<br>+ Viện kiểm sát nhân dân Tối cao<br>+ Tòa án nhân dân Quận Đống Đa |
@@ -104,7 +104,7 @@ Nguồn UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_phuc_hoi_danh_du.ht
 | Trạng thái | Enum(String(50)) | Không | Theo hồ sơ | Cột bảng (chỉ đọc): Theo dữ liệu bản ghi. |
 | Thời hạn thực hiện | String(100) | Không | Theo hồ sơ | Cột bảng (chỉ đọc): Hiển thị tình trạng thời hạn thực hiện của hồ sơ:<br>+ Còn hạn<br>+ Sắp hết hạn<br>+ Quá hạn<br>+ Đã hoàn thành |
 | Ngày cập nhật | Date | Không | Theo hồ sơ | Cột bảng (chỉ đọc): Định dạng `dd/mm/yyyy`. Hỗ trợ sắp xếp động. |
-| Thao tác | Action Buttons | Không | - | Cột bảng: Control UI: Icon buttons.<br>- Tab Vụ việc chờ xử lý: Cập nhật tiến trình PHDD.<br>- Tab Vụ việc đã xử lý: Không có thao tác gì. |
+| Thao tác | Action Buttons | Không | - | Cột bảng: Control UI: Icon buttons.<br>- Tab Vụ việc chờ xử lý: Cập nhật tiến trình PHDD.<br>- Tab Vụ việc đã xử lý: Không có thao tác gì.<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 
 ###### 4.3.3.6.3.3. Chức năng trên màn hình
 
@@ -213,15 +213,17 @@ Nguồn UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_phuc_hoi_danh_du.ht
 
 ###### 4.3.3.6.5.2. Mô tả thông tin trên màn hình
 
-Màn hình được thiết kế dưới dạng **Trang toàn màn hình (Page)**, đồng bộ với màn hình Xem chi tiết giải quyết yêu cầu bồi thường, bao gồm **02 Tab nghiệp vụ**:
-- **Tab 1: Thông tin Hồ sơ yêu cầu**: Toàn bộ dữ liệu hồ sơ yêu cầu ban đầu của người bị thiệt hại, căn cứ và tài liệu đính kèm.
-- **Tab 2: Chi tiết xử lý hồ sơ**: Toàn bộ lộ trình tiến trình các bước thụ lý, thông báo Điều 57, phản hồi, tổ chức thực hiện Điều 58/59 và lịch sử xử lý.
+Màn hình dùng chung màn hình Xem chi tiết vụ việc của Giải quyết yêu cầu bồi thường, gồm 03 tab tên cố định cho mọi vụ việc: `Thông tin hồ sơ vụ việc` \| `Chi tiết giải quyết bồi thường` \| `Phục hồi danh dự`.
+- `Thông tin hồ sơ vụ việc`: luôn hiển thị.
+- `Chi tiết giải quyết bồi thường`: chỉ hiển thị khi Loại yêu cầu có bồi thường thiệt hại (bồi thường thiệt hại hoặc cả hai).
+- `Phục hồi danh dự`: chỉ hiển thị khi Loại yêu cầu có phục hồi danh dự (phục hồi danh dự hoặc cả hai) và vụ việc đã bắt đầu tiến trình phục hồi danh dự.
+- Tên tab, điều kiện hiển thị và nội dung theo [MH03 - Màn hình Cập nhật kết quả xử lý hồ sơ yêu cầu bồi thường - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#mh03-mo-ta-thong-tin-xu-ly-ho-so) và [MH04 - Màn hình Xem chi tiết vụ việc Phục hồi danh dự - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#mh-chi-tiet-vu-viec-phdd).
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả & Quy tắc hiển thị |
 | :--- | :--- | :--- | :--- | :--- |
 | Phạm vi hiển thị màn hình | - | - | - | Màn hình chi tiết độc lập chỉ hiển thị các thông tin phục vụ công tác phục hồi danh dự; **tuyệt đối không hiển thị các thông tin liên quan đến tiền bồi thường** (không có bảng kê thiệt hại, thương lượng tiền, quyết định bồi thường tiền, tài khoản thanh toán hay kinh phí chi trả). |
-| Tiêu đề màn hình | String(255) | - | Theo hồ sơ | Control UI: Heading text (Read-only). Định dạng: `CHI TIẾT VỤ VIỆC PHỤC HỒI DANH DỰ: [Mã vụ việc] - [Họ tên người yêu cầu]`. |
-| **TAB 1: THÔNG TIN HỒ SƠ YÊU CẦU** | Tab | - | Active | Tab hiển thị thông tin hồ sơ yêu cầu phục hồi danh dự ban đầu. |
+| Tiêu đề màn hình | String(255) | - | Theo hồ sơ | Control UI: Heading text (Read-only).<br>- Định dạng: `CHI TIẾT VỤ VIỆC VÀ TIẾN TRÌNH GIẢI QUYẾT: [Mã vụ việc] - [Họ và tên người yêu cầu]`. |
+| **TAB THÔNG TIN HỒ SƠ VỤ VIỆC** | Tab | - | Active | Tab hiển thị thông tin hồ sơ yêu cầu phục hồi danh dự ban đầu. |
 | **Khối Thông tin chung vụ việc** | Section | - | - | Hiển thị thông tin nhận diện vụ việc: |
 | Mã vụ việc | String(50) | - | Theo hồ sơ | Chỉ đọc. Mã định dạng `PHDD-yyyy-xxx`. |
 | Vụ việc BT liên quan | String(50) | - | Theo hồ sơ | Chỉ đọc. Hiển thị mã `BT-yyyy-xxx` dạng liên kết click nếu vụ việc được tách từ "Yêu cầu cả hai"; hiển thị `Không có (Chỉ yêu cầu PHDD)` nếu là vụ việc độc lập. |
@@ -253,20 +255,14 @@ Màn hình được thiết kế dưới dạng **Trang toàn màn hình (Page)*
 | Trực tiếp xin lỗi và cải chính công khai (Điều 58) | Boolean | - | Theo hồ sơ | Chỉ đọc. Có hoặc Không yêu cầu tổ chức trực tiếp. |
 | Đăng báo xin lỗi và cải chính công khai (Điều 59) | Boolean | - | Theo hồ sơ | Chỉ đọc. Có hoặc Không yêu cầu đăng báo công khai. |
 | **Khối Bảng tài liệu đính kèm hồ sơ** | List(Object) | - | Theo hồ sơ | Control UI: Data grid chỉ đọc.<br>- Hiển thị toàn bộ các tài liệu đã đính kèm theo hồ sơ.<br>- Cột: `STT`, `Tên tài liệu`, `File đính kèm`, `Thao tác` (`Xem file` mở tab mới). |
-| **TAB 2: CHI TIẾT XỬ LÝ HỒ SƠ** | Tab | - | Inactive | Tab hiển thị toàn bộ lộ trình và tiến trình các bước giải quyết phục hồi danh dự: |
-| **Khối Tiếp nhận & Thụ lý hồ sơ** | Section | - | - | Thông tin tiếp nhận ban đầu: Kênh tiếp nhận, Ngày tiếp nhận, Cơ quan giải quyết, Cán bộ thụ lý hồ sơ. |
-| **Khối Thông báo tổ chức phục hồi danh dự (Điều 57)** | Section | - | - | Thông tin văn bản thông báo: Số thông báo, Ngày ban hành, Ngày gửi thông báo, Người ký, Chức vụ, Thời gian/Địa điểm dự kiến, Tên báo dự kiến, Tệp thông báo đã ký ban hành (kèm liên kết Xem file). |
-| **Khối Tiếp nhận ý kiến phản hồi của người yêu cầu** | Section | - | - | Thông tin phản hồi: Ý kiến người yêu cầu (`Đồng ý`, `Chưa thực hiện / Tạm hoãn`, `Từ chối`), Ngày nhận ý kiến, Hình thức gửi phản hồi, Nội dung ý kiến chi tiết/yêu cầu điều chỉnh, Tệp văn bản phản hồi đính kèm. |
-| **Khối Tổ chức thực hiện phục hồi danh dự (Điều 58, 59)** | Section | - | - | Kết quả thực tế tổ chức thực hiện:<br>- Trực tiếp xin lỗi: Ngày tổ chức thực tế, Địa điểm thực tế, Cơ quan chủ trì, Thành phần tham gia, Biên bản xin lỗi đính kèm.<br>- Đăng báo xin lỗi: Tên báo Trung ương, Tên báo Địa phương, Chi tiết các số báo và ngày phát hành trong 03 số liên tiếp, Bản scan các bài báo đính kèm. |
-| **Khối Kết thúc thực thi phục hồi danh dự** | Section | - | - | Kết quả hoàn thành: Ngày hoàn thành thực thi, Cán bộ chủ trì xác nhận, Báo cáo tóm tắt kết quả thực hiện. |
-| **Khối Lịch sử xử lý hồ sơ** | List(Object) | - | - | Control UI: Timeline (Read-only).<br>- Ghi nhận toàn bộ vết thời gian xử lý hồ sơ theo trình tự mới nhất lên đầu: `[Hành động] - [Người thực hiện] - [Thời điểm]` và nội dung chi tiết. |
+| **TAB PHỤC HỒI DANH DỰ** | Tab | - | Inactive | Control UI: Tab nội dung.<br>- Bắt đầu từ Thanh tiến trình; không hiển thị khối tổng quan, thông tin pháp lý, nhân thân.<br>- Gồm Thanh tiến trình, khối Thông báo tổ chức phục hồi danh dự (Trình ký Thông báo tổ chức thực hiện phục hồi danh dự - Mẫu 26/BTNN), khối Ý kiến phản hồi của người bị thiệt hại, khối Hoãn phục hồi danh dự (khi có lần hoãn), khối Tổ chức thực hiện phục hồi danh dự, Lịch sử xử lý.<br>- Mô tả chi tiết theo [MH04 - Màn hình Xem chi tiết vụ việc Phục hồi danh dự - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#mh-chi-tiet-vu-viec-phdd). |
 
 ###### 4.3.3.6.5.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Quay lại / Đóng | Button | Hệ thống điều hướng quay về [MH01 - Màn hình Danh sách vụ việc phục hồi danh dự](#43363-mh01---màn-hình-danh-sách-vụ-việc-phục-hồi-danh-dự). |
-| 2 | Chuyển Tab chi tiết | Tab button | Cho phép chuyển đổi linh hoạt giữa "Tab 1: Thông tin Hồ sơ yêu cầu" và "Tab 2: Chi tiết xử lý hồ sơ". |
+| 2 | Chuyển Tab chi tiết | Tab button | Chuyển giữa các tab `Thông tin hồ sơ vụ việc`, `Chi tiết giải quyết bồi thường`, `Phục hồi danh dự` đang hiển thị. |
 | 3 | Cập nhật tiến trình PHDD | Button | - **Điều kiện hiển thị**: Chỉ hiển thị đối với hồ sơ ở trạng thái chưa kết thúc (`Chờ thông báo`, `Chờ phản hồi`, `Chờ thực hiện`, `Tạm hoãn`).<br>- **Hành vi**: Mở [MH04 - Màn hình Cập nhật tiến trình phục hồi danh dự](#43366-mh04---màn-hình-cập-nhật-tiến-trình-phục-hồi-danh-dự) tại bước xử lý tiếp theo của hồ sơ. |
 | 4 | Click Mã vụ việc BT liên quan | Link | Mở màn hình Xem chi tiết hồ sơ yêu cầu bồi thường tiền liên quan (`BT-yyyy-xxx`) tại Module Giải quyết yêu cầu bồi thường. |
 | 5 | Xem file | Link | Mở tệp tin đính kèm tại một tab trình duyệt mới. |
@@ -287,32 +283,22 @@ Nguồn UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_phuc_hoi_danh_du.ht
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề modal | String(255) | - | Theo hồ sơ | `CẬP NHẬT TIẾN TRÌNH PHỤC HỒI DANH DỰ: [Mã vụ việc] - [Họ tên người yêu cầu]`. Khung popup có Header và Footer cố định (Sticky Header & Footer). |
 | **Thanh Stepper 04 bước** | Stepper | - | Theo bước hiện tại | Control UI: Stepper điều hướng 04 bước xử lý nghiệp vụ:<br>- Bước 1: `Thông báo (Đ.57)`<br>- Bước 2: `Ý kiến phản hồi`<br>- Bước 3: `Tổ chức thực hiện`<br>- Bước 4: `Hoàn thành`<br>Hiển thị trực quan trạng thái của từng bước: bước đã hoàn thành, bước đang thực hiện và bước chưa thực hiện. |
-| **BƯỚC 1: THÔNG BÁO TỔ CHỨC PHỤC HỒI DANH DỰ (ĐIỀU 57)** | Section | - | - | Khối quản lý ban hành thông báo: |
-| Số thông báo | String(50) | Có | Trống | Control UI: Input text. Ví dụ: `15/TB-STP`. |
-| Ngày ban hành | Date | Có | Ngày hiện tại | Control UI: Datepicker (`dd/mm/yyyy`). |
-| Ngày gửi thông báo | Date | Có | Ngày hiện tại | Control UI: Datepicker (`dd/mm/yyyy`). |
-| Người ký thông báo | String(255) | Có | Trống | Control UI: Input text. Họ tên Thủ trưởng / Phó Thủ trưởng cơ quan giải quyết. |
-| Chức vụ | String(255) | Có | `Giám đốc` | Control UI: Input text. |
-| Thời gian dự kiến tổ chức trực tiếp | Date | Không | Trống | Control UI: Datepicker (`dd/mm/yyyy`). |
-| Địa điểm dự kiến | String(255) | Không | Trống | Control UI: Input text. Hội trường UBND cấp xã nơi cư trú... |
-| Tên tờ báo Trung ương dự kiến | String(255) | Không | Trống | Control UI: Input text. Báo Nhân Dân, Báo Pháp luật Việt Nam... |
-| Tên tờ báo Địa phương dự kiến | String(255) | Không | Trống | Control UI: Input text. Báo Hà Nội Mới, Báo Sài Gòn Giải Phóng... |
-| Tài liệu thông báo đính kèm | File | Có | Trống | Control UI: Nút tải tệp thông báo đã ký và đóng dấu (định dạng `.pdf`, tối đa 20MB). |
+| **BƯỚC 1: THÔNG BÁO TỔ CHỨC PHỤC HỒI DANH DỰ (ĐIỀU 57)** | Section | - | - | Control UI: Khối thông tin.<br>- Lập Thông báo tổ chức thực hiện phục hồi danh dự (Mẫu 26/BTNN) qua [Popup Trình ký Thông báo tổ chức thực hiện phục hồi danh dự - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-popup-trinh-ky-m26).<br>- Nội dung khối theo [MH04 - Màn hình Xem chi tiết vụ việc Phục hồi danh dự - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#mh-chi-tiet-vu-viec-phdd). |
 | **BƯỚC 2: TIẾP NHẬN Ý KIẾN PHẢN HỒI CỦA NGƯỜI YÊU CẦU** | Section | - | - | Khối tiếp nhận văn bản phản hồi: |
-| Ý kiến của người yêu cầu | Enum(String(50)) | Có | `Đồng ý` | Control UI: Radio button gồm:<br>+ `Đồng ý`<br>+ `Chưa thực hiện`<br>+ `Từ chối`<br>+ `Không có phản hồi` |
+| Ý kiến của người yêu cầu | Enum(String(50)) | Có | `Đồng ý thực hiện phục hồi danh dự (Khoản 2 Điều 57)` | Control UI: Radio button.<br>- Giá trị và xử lý theo [MH04 - Màn hình Xem chi tiết vụ việc Phục hồi danh dự - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#mh-chi-tiet-vu-viec-phdd), gồm `Từ chối quyền được phục hồi danh dự (Khoản 5 Điều 57)`. |
 | Ngày nhận được ý kiến | Date | Có | Ngày hiện tại | Control UI: Datepicker (`dd/mm/yyyy`). |
 | Hình thức gửi phản hồi | Enum(String(50)) | Không | `Bằng văn bản` | Control UI: Combobox gồm:<br>+ `Bằng văn bản`<br>+ `Trực tiếp tại cơ quan`<br>+ `Qua bưu chính` |
 | Nội dung ý kiến chi tiết / Yêu cầu điều chỉnh | Text(2000) | Không | Trống | Control UI: Textarea. Nội dung điều chỉnh ngày giờ, địa điểm (nếu có). |
-| Tài liệu phản hồi đính kèm | File | Không | Trống | Control UI: Nút tải văn bản phản hồi của người bị thiệt hại. |
+| Tài liệu kèm theo | List(Object) | Có khi Từ chối quyền được phục hồi danh dự | 01 dòng trống | Control UI: Bảng Tài liệu kèm theo theo [Bảng Tài liệu kèm theo - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-bang-tai-lieu-kem-theo). |
 | **BƯỚC 3: TỔ CHỨC THỰC HIỆN (ĐIỀU 58, 59)** | Section | - | - | Khối ghi nhận kết quả thực tế tổ chức xin lỗi và đăng báo: |
 | Ngày tổ chức trực tiếp thực tế | Date | Không | Trống | Control UI: Datepicker (`dd/mm/yyyy`). |
 | Địa điểm tổ chức thực tế | String(255) | Không | Trống | Control UI: Input text. |
 | Cơ quan chủ trì xin lỗi | String(255) | Không | Trống | Control UI: Input text. |
-| Thành phần tham gia | String(500) | Không | Trống | Control UI: Input text. Đại diện TAND, VKSND, Công an, chính quyền địa phương, đoàn thể. |
+| Thành phần tham gia | List(Object) | Không | 01 dòng trống | Control UI: 02 bảng `a) Đại diện các cơ quan`, `b) Người yêu cầu bồi thường / người đại diện` theo [MH04 - Màn hình Xem chi tiết vụ việc Phục hồi danh dự - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#mh-chi-tiet-vu-viec-phdd). |
 | Tên báo Trung ương đã đăng | String(255) | Không | Trống | Control UI: Input text. |
 | Tên báo Địa phương đã đăng | String(255) | Không | Trống | Control UI: Input text. |
 | Thông tin chi tiết các số báo và ngày phát hành | String(500) | Không | Trống | Control UI: Input text. Số báo phát hành và ngày đăng trong 03 số liên tiếp theo Điều 59. |
-| Biên bản xin lỗi / bản scan bài báo đính kèm | File | Không | Trống | Control UI: Nút tải tệp biên bản buổi xin lỗi trực tiếp và các trang báo đã đăng tải. |
+| Tài liệu kèm theo | List(Object) | Có | 01 dòng trống | Control UI: Bảng Tài liệu kèm theo theo [Bảng Tài liệu kèm theo - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-bang-tai-lieu-kem-theo).<br>- Biên bản buổi xin lỗi trực tiếp, các trang báo đã đăng tải. |
 | **BƯỚC 4: KẾT THÚC THỰC THI PHỤC HỒI DANH DỰ** | Section | - | - | Khối kết thúc vụ việc: |
 | Ngày hoàn thành thực thi | Date | Có | Ngày hiện tại | Control UI: Datepicker (`dd/mm/yyyy`). |
 | Cán bộ chủ trì xác nhận hoàn thành | String(255) | - | Cán bộ đăng nhập | Chỉ đọc. Tên cán bộ xác nhận kết thúc vụ việc. |
@@ -322,7 +308,7 @@ Nguồn UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_phuc_hoi_danh_du.ht
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Lưu thông báo (Bước 1) | Button tại Bước 1 | Khi cán bộ click nút, hệ thống kiểm tra dữ liệu:<br>- **TH1 - Bỏ trống trường bắt buộc**: Bỏ trống `Số thông báo`, `Ngày ban hành`, `Ngày gửi thông báo`, `Người ký`, `Chức vụ` hoặc thiếu tệp thông báo đính kèm: Vi phạm [BR-VAL-001], hệ thống tô viền đỏ `.is-invalid`, hiển thị cảnh báo đỏ [MSG-ERR-VAL-001] dưới từng ô lỗi và focus vào ô lỗi đầu tiên. Không cho phép lưu.<br>- **TH2 - Hợp lệ**: Hệ thống lưu thông tin thông báo vào CSDL, cập nhật trạng thái hồ sơ sang `Chờ phản hồi`, hoàn thành Bước 1, tự động chuyển sang tab Bước 2, cập nhật danh sách MH01 và hiển thị [MSG-SUC-BTNN-PHDD-004]. |
+| 1 | Trình ký Thông báo tổ chức thực hiện phục hồi danh dự (Bước 1) | Button tại Bước 1 | Theo [Trình ký Thông báo tổ chức thực hiện phục hồi danh dự - MH04 - Màn hình Xem chi tiết vụ việc Phục hồi danh dự - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-phdd-trinh-ky-m26). |
 | 2 | Lưu ý kiến phản hồi (Bước 2) | Button tại Bước 2 | Khi cán bộ click nút, hệ thống kiểm tra dữ liệu:<br>- **TH1 - Bỏ trống Ngày nhận ý kiến**: Vi phạm [BR-VAL-001], tô viền đỏ và hiển thị cảnh báo lỗi [MSG-ERR-VAL-001]. Không cho phép lưu.<br>- **TH2 - Hợp lệ**: Hệ thống lưu ý kiến phản hồi vào CSDL và xử lý theo từng loại ý kiến:<br>+ *Nếu chọn `Đồng ý`*: Cập nhật trạng thái hồ sơ sang `Chờ thực hiện`, hoàn thành Bước 2 và tự động chuyển sang tab Bước 3.<br>+ *Nếu chọn `Chưa thực hiện`*: Cập nhật trạng thái hồ sơ sang `Tạm hoãn`, đóng màn hình và giữ hồ sơ tại Tab Chờ xử lý.<br>+ *Nếu chọn `Từ chối`*: Cập nhật trạng thái hồ sơ sang `Từ chối`, đóng màn hình và tự động chuyển hồ sơ sang Tab Vụ việc đã xử lý.<br>+ Hệ thống hiển thị [MSG-SUC-BTNN-PHDD-005]. |
 | 3 | Lưu kết quả thực hiện (Bước 3) | Button tại Bước 3 | Khi cán bộ click nút, hệ thống lưu toàn bộ thông tin tổ chức trực tiếp xin lỗi và thông tin đăng báo vào CSDL, hoàn thành Bước 3, tự động chuyển sang tab Bước 4, cập nhật danh sách MH01 và hiển thị [MSG-SUC-BTNN-PHDD-006]. |
 | 4 | Xác nhận hoàn thành thực thi (Bước 4) | Button tại Bước 4 | Khi cán bộ click nút, hệ thống mở Custom Confirmation Modal xác nhận theo mã [MSG-CFM-BTNN-PHDD-001]. Nếu người dùng chọn `Xác nhận`, hệ thống thực hiện tuần tự:<br>- Cập nhật trạng thái vụ việc `PHDD-yyyy-xxx` sang `Hoàn thành`.<br>- Hoàn tất Bước 4.<br>- Chuyển hồ sơ từ Tab "Vụ việc chờ xử lý" sang Tab "Vụ việc đã xử lý".<br>- Ghi nhật ký Audit Log hoàn thành thực thi.<br>- Đóng màn hình MH04 và tải lại danh sách MH01.<br>- Hệ thống hiển thị [MSG-SUC-BTNN-PHDD-007]. |

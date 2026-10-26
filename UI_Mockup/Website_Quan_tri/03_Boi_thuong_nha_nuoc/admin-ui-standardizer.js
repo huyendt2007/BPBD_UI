@@ -430,3 +430,11 @@
     });
     observer.observe(document.documentElement, { childList: true, subtree: true });
 })();
+
+// Phân hệ BTNN: cố định cột "Thao tác" bên phải lưới khi cuộn ngang (dùng chung, xem btnn_cot_thao_tac.js)
+(function () {
+    if (window.__btnnStickyAct || document.querySelector('script[src*="btnn_cot_thao_tac.js"]')) return;
+    const s = document.createElement('script');
+    s.src = 'btnn_cot_thao_tac.js?v=20261023kpcd';
+    (document.head || document.documentElement).appendChild(s);
+})();

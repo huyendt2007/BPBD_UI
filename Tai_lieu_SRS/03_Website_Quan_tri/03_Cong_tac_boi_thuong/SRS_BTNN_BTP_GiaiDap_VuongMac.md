@@ -61,7 +61,7 @@ flowchart TD
 | Phương thức gửi | String(255) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
 | Ngày nhận đề nghị | Date | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Định dạng `dd/mm/yyyy`. |
 | Tệp đính kèm | File | Không | Theo dữ liệu hệ thống | Control UI: File link.<br>- Chỉ đọc.<br>- Theo dữ liệu bản ghi; click tên tệp để xem file tại tab trình duyệt mới. |
-| Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Xóa |
+| Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Xóa<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 | Phân trang | - | - | 20 bản ghi/trang | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
 
 ###### 4.3.3.18.3.3. Chức năng trên màn hình

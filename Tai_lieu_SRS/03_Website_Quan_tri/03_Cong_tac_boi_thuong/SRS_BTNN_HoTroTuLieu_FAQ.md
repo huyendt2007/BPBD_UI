@@ -66,7 +66,7 @@ flowchart TD
 | Câu hỏi | Text(1000) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi, hiển thị dạng văn bản thường (không phải liên kết). |
 | Thứ tự hiển thị | Integer(10) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
 | Ngày tạo | Date | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Định dạng `dd/mm/yyyy`. |
-| Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Xóa |
+| Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Xóa<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 | Phân trang | - | - | 20 bản ghi/trang | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
 
 ###### 4.3.3.8.3.3. Chức năng trên màn hình

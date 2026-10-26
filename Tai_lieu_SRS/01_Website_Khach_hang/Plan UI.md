@@ -340,7 +340,7 @@ Chuẩn hóa đủ các trường theo SRS, đúng tên và đúng thứ tự kh
 - **Khối Thông tin chung hồ sơ**: Mã vụ việc (kèm nút Tìm kiếm, Tìm kiếm nâng cao) · Đơn vị ban hành · Hình thức ban hành · Lãnh đạo ký ban hành · Số quyết định · Ngày quyết định · Tệp quyết định
 - **Khối Chi tiết thông tin người yêu cầu bồi thường**: Họ và tên người yêu cầu bồi thường · Tỉnh/Thành phố · Phường/Xã · Địa chỉ chi tiết
 - **Khối Bảng nội dung đề xuất cấp kinh phí bồi thường**: bảng 4 cột (STT, Loại thiệt hại được yêu cầu, Mức đề nghị trong hồ sơ gốc, Số tiền duyệt cấp bồi thường) + Tổng số tiền bồi thường + Tổng số tiền bồi thường bằng chữ + Số tiền bồi thường đã tạm ứng + Số tiền bồi thường còn lại sau khi đã tạm ứng
-- **Khối Người nhận bồi thường và Phương thức chi trả**: Họ và tên người nhận · Số giấy tờ thân nhân người nhận · Địa chỉ chi tiết người nhận · Phương thức chi trả tiền bồi thường (2 giá trị: Chi trả trực tiếp bằng tiền mặt / Chi trả qua chuyển khoản) · Chủ tài khoản · Số tài khoản · Tên ngân hàng · Chi nhánh ngân hàng
+- **Khối Người nhận bồi thường và Phương thức chi trả**: Họ và tên người nhận · Số giấy tờ thân nhân người nhận · Địa chỉ chi tiết người nhận · Phương thức chi trả tiền bồi thường (2 giá trị: Nhận tiền mặt / Nhận qua chuyển khoản) · Chủ tài khoản · Số tài khoản · Tên ngân hàng · Chi nhánh ngân hàng
 - **Cảnh báo chênh lệch số liệu** và **Lý do điều chỉnh số liệu kinh phí**
 - **Bảng Văn bản căn cứ**: STT · Tên văn bản · Ngày văn bản · File đính kèm · Thao tác (Tải lên / Xem file / Xóa)
 - Bổ sung trường `Tổng số tiền bồi thường bằng chữ` (hiện chưa có trên giao diện).
@@ -370,7 +370,7 @@ Mở tại **tab trình duyệt mới**, trình bày dạng xem trước file PD
 Yêu cầu bắt buộc khi dựng bản xem trước:
 - Đầy đủ thể thức: Cơ quan chủ quản, Tên cơ quan ban hành, Số và ký hiệu văn bản, Địa danh và ngày tháng năm, Tên loại và trích yếu, Thẩm quyền ban hành, khối Căn cứ, các Điều, Nơi nhận, khối chữ ký.
 - **Bảng chi tiết các khoản thiệt hại chỉ in các dòng có số tiền lớn hơn 0**, số thứ tự đánh lại liên tục từ 1.
-- Khối thông tin tài khoản chỉ in khi Phương thức chi trả là `Chi trả qua chuyển khoản`.
+- Khối thông tin tài khoản chỉ in khi Phương thức chi trả là `Nhận qua chuyển khoản`.
 - Dòng tạm ứng và số tiền còn lại chỉ in khi có phát sinh tạm ứng.
 - Khi chưa cấp số, phần Số quyết định hiển thị `..../QĐ-...` theo đúng ký hiệu của loại quyết định.
 - Riêng Mẫu 12: in bảng đối chiếu nội dung cũ và nội dung mới, chỉ gồm các trường thực sự thay đổi.

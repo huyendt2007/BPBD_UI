@@ -49,6 +49,8 @@
     </main>
 
     <script src="btnn_luong_xu_ly.js?v=20261020v5"></script>
+    <!-- Số lượng mỗi khối = badge tab Chờ xử lý của phân hệ (cùng nguồn badge LeftMenu, cache bdg_cho_xu_ly_v1) -->
+    <script src="btnn_badge_cho_xu_ly.js?v=20261023bdg2"></script>
     <script>
         const WF = BTNN_WF;
         const WT = WF.WORK_TYPES;
@@ -69,7 +71,7 @@
               leaf: 'quan_ly_boi_thuong.html?v=1', url: 'quan_ly_boi_thuong.html?v=1&role=thu-truong&tab=cho-xu-ly' },
             { key: 'qd', title: 'Chờ duyệt QĐ Giải quyết YCBT', module: 'Quyết định giải quyết bồi thường', icon: 'fa-stamp', color: '#a16207', bg: '#fef3c7',
               leaf: 'quyet_dinh_giai_quyet_boi_thuong.html?v=1', url: 'quyet_dinh_giai_quyet_boi_thuong.html?v=1&role=lanh-dao&tab=pending' },
-            { key: 'kp', title: 'Chờ duyệt cấp kinh phí', module: 'Cấp kinh phí tạm ứng/Bồi thường', icon: 'fa-money-check-dollar', color: '#b91c1c', bg: '#fee2e2',
+            { key: 'kp', title: 'Chờ duyệt cấp kinh phí', module: 'Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường', icon: 'fa-money-check-dollar', color: '#b91c1c', bg: '#fee2e2',
               leaf: 'quan_ly_kinh_phi_boi_thuong.html?v=1', url: 'quan_ly_kinh_phi_boi_thuong.html?v=1&role=lanh-dao&tab=pending' },
             { key: 'ht', title: 'Chờ duyệt Xem xét hoàn trả', module: 'Xem xét trách nhiệm hoàn trả', icon: 'fa-rotate-left', color: '#334155', bg: '#e2e8f0',
               leaf: 'xem_xet_trach_nhiem_hoan_tra.html', url: 'xem_xet_trach_nhiem_hoan_tra.html?role=lanh_dao&tab=pending' }
@@ -84,11 +86,25 @@
             return {
                 pc: work.filter(t => t.type === WT.PHAN_CONG).map(line),
                 xd: work.filter(t => t.type === WT.PHE_DUYET && t.rec && t.rec.module === 'XD').map(line),
-                gq: work.filter(t => t.type === WT.THU_LY || (t.type === WT.PHE_DUYET && !(t.rec && t.rec.module === 'XD'))).map(t => ({ code: t.code, text: [t.nycName, t.type === WT.THU_LY ? 'Thụ lý hồ sơ' : t.kind].filter(Boolean).join(' - ') })),
+                gq: work.filter(t => t.type === WT.THU_LY || (t.type === WT.PHE_DUYET && !(t.rec && t.rec.module === 'XD'))).map(t => ({ code: t.code, text: [t.nycName, t.type === WT.THU_LY ? 'Cử người giải quyết bồi thường' : t.kind].filter(Boolean).join(' - ') })),
                 qd: work.filter(t => t.type === WT.KY_QD).map(line),
                 kp: work.filter(t => t.type === WT.KY_KP).map(t => ({ code: t.code, text: [t.nycName, t.kind, (Number(t.proposal && t.proposal.amount) || 0).toLocaleString('vi-VN') + ' đ'].filter(Boolean).join(' - ') })),
-                ht: ((ht && ht.pendingApproval) || HT_FALLBACK).map(x => ({ code: x.code, text: `${x.status} - Vụ việc ${x.claimCode || '--'}` }))
+                ht: ((ht && ht.pendingApproval) || HT_FALLBACK).map(x => ({ code: x.code, text: x.maVuViec ? `${x.status} - Vụ việc ${x.maVuViec}` : `${x.status} - Hồ sơ ${x.claimCode || '--'}` }))
             };
+        }
+        // Khối -> phân hệ trong tiện ích badge dùng chung (BDG)
+        const BDG_MODULE = { pc: 'tiepNhan', xd: 'xdcq', gq: 'gqYcbt', qd: 'qdGqbt', kp: 'kinhPhi', ht: 'hoanTra' };
+        // Số chờ xử lý của khối: lấy số badge tab Chờ xử lý đã lưu của đúng ngữ cảnh hiện tại (khớp badge LeftMenu); chưa có thì đếm danh sách công việc
+        function blockCount(key, list) {
+            const m = BDG_MODULE[key];
+            if (window.BDG && m) {
+                try {
+                    const c = JSON.parse(localStorage.getItem(BDG.CACHE_KEY) || '{}') || {};
+                    const it = c[m];
+                    if (it && it.ctx === BDG.ctxOf(m)) return Math.max(0, Number(it.count) || 0);
+                } catch (e) { /* bỏ qua */ }
+            }
+            return list.length;
         }
 
         function render() {
@@ -98,16 +114,19 @@
             let total = 0;
             document.getElementById('dashGrid').innerHTML = BLOCKS.map((b, i) => {
                 const list = items[b.key] || [];
-                total += list.length;
-                const rows = list.slice(0, 3).map(x => `<li><span class="c">${esc(x.code)}</span><span class="d" title="${esc(x.text)}">${esc(x.text)}</span></li>`).join('');
+                const n = blockCount(b.key, list);
+                total += n;
+                const shownList = list.slice(0, Math.min(3, n));
+                const rows = shownList.map(x => `<li><span class="c">${esc(x.code)}</span><span class="d" title="${esc(x.text)}">${esc(x.text)}</span></li>`).join('');
+                const empty = n ? 'Xem chi tiết tại tab Chờ xử lý của phân hệ.' : 'Không có công việc chờ xử lý.';
                 return `<div class="dash-card" role="button" tabindex="0" style="--card-color:${b.color}; --card-bg:${b.bg};" onclick="openBlock(${i})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openBlock(${i});}">
                     <div class="dash-card-top">
                         <div class="dash-icon"><i class="fa-solid ${b.icon}"></i></div>
                         <div><div class="dash-title">${esc(b.title)}</div><div class="dash-module">${esc(b.module)}</div></div>
-                        <div class="dash-count${list.length ? '' : ' zero'}">${list.length}</div>
+                        <div class="dash-count${n ? '' : ' zero'}">${n}</div>
                     </div>
-                    ${rows ? `<ul class="dash-list">${rows}</ul>` : '<div class="dash-empty">Không có công việc chờ xử lý.</div>'}
-                    <div class="dash-foot"><span>${list.length > 3 ? `và ${list.length - 3} công việc khác` : ''}</span><span>Mở danh sách Chờ xử lý <i class="fa-solid fa-arrow-right"></i></span></div>
+                    ${rows ? `<ul class="dash-list">${rows}</ul>` : `<div class="dash-empty">${empty}</div>`}
+                    <div class="dash-foot"><span>${rows && n > shownList.length ? `và ${n - shownList.length} công việc khác` : ''}</span><span>Mở danh sách Chờ xử lý <i class="fa-solid fa-arrow-right"></i></span></div>
                 </div>`;
             }).join('');
             document.getElementById('dashTotal').textContent = total;

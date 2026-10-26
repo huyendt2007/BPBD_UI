@@ -41,7 +41,7 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Tiêu đề màn hình | String(255) | Không | Khiếu nại, tố cáo, xử lý vi phạm trong công tác BTNN | Hiển thị tên màn hình. |
+| Tiêu đề màn hình | String(255) | Không | `Giải quyết khiếu nại, tố cáo, xử lý vi phạm` | Control UI: Text heading (Read-only).<br>- Hiển thị đúng tên mục Menu `Giải quyết khiếu nại, tố cáo, xử lý vi phạm`.<br>- Không có dòng mô tả dưới tiêu đề. |
 | Mã hồ sơ | String(50) | Không | Trống | Tìm gần đúng theo mã hồ sơ. |
 | Người/cơ quan gửi | String(255) | Không | Trống | Tìm gần đúng theo người/cơ quan gửi khiếu nại, tố cáo, phản ánh, kiến nghị. |
 | Loại nội dung | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Khiếu nại<br>+ Tố cáo<br>+ Phản ánh<br>+ Kiến nghị<br>+ Xử lý vi phạm |
@@ -63,7 +63,7 @@ flowchart TD
 | Ngày tiếp nhận | Date | Không | Theo dữ liệu | Hỗ trợ sắp xếp. |
 | Cán bộ xử lý | String(255) | Không | Theo dữ liệu | Hiển thị cán bộ xử lý hiện hành. |
 | Trạng thái | Enum(String(50)) | Không | Theo dữ liệu | Hiển thị dạng badge. |
-| Thao tác | String(255) | Không | Theo trạng thái | Không hiển thị row click chi tiết; xem bằng row click. Hiển thị `Sửa`, `Cập nhật kết quả`, `Hoàn thành` theo trạng thái; nút không đủ điều kiện hiển thị mờ. `Sửa` cho phép với hồ sơ ở trạng thái "Đang xử lý". |
+| Thao tác | String(255) | Không | Theo trạng thái | Không hiển thị row click chi tiết; xem bằng row click. Hiển thị `Sửa`, `Cập nhật kết quả`, `Hoàn thành` theo trạng thái; nút không đủ điều kiện hiển thị mờ. `Sửa` cho phép với hồ sơ ở trạng thái "Đang xử lý".<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 | Phân trang | String(255) | Không | 20 bản ghi/trang | Control UI: Pagination.<br>- Cho phép chọn cấu hình số lượng bản ghi hiển thị trên mỗi trang gồm: 10, 20, 50, 100 bản ghi/trang; mặc định chọn sẵn 20 bản ghi/trang.<br>- Đầy đủ các nút điều hướng trang: Đầu (&#124;&lt;&lt;), Trước (&lt;), các số trang, Sau (&gt;), Cuối (&gt;&gt;&#124;).<br>- Hiển thị dải bản ghi: "Hiển thị [từ] - [đến] của [tổng số] bản ghi". |
 
 ###### 4.3.3.10.3.3. Chức năng trên màn hình

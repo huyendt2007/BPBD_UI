@@ -674,7 +674,7 @@
 <body>
     <div class="page-header">
         <div class="page-title">
-            <h1 id="pageTitle">Nghiệp vụ bồi thường nhà nước</h1>
+            <h1 id="pageTitle" data-uxu-title>Nghiệp vụ bồi thường nhà nước</h1>
         </div>
     </div>
 
@@ -1570,9 +1570,9 @@
         });
         const relatedClaimMockRows = [
             caseRow('BT-2026-012', 'Lê Văn H', '', 'UBND-CG', '22/QĐ-GQBT', '05/08/2026', 'Hoàn thành'),
-            caseRow('BT-2026-021', 'Hoàng Văn R', '', 'CCTHADS-BT', '', '', 'Đang xác minh thiệt hại'),
-            caseRow('BT-2026-003-A', 'Công ty ABC', '', 'UBND-HK', '', '', 'Đang thương lượng'),
-            caseRow('BT-2026-010-TDC', 'Đặng Thị Thu', 'Đặng Văn T', 'THADS-LD', '', '', 'Chờ thụ lý', 'claim', 'STP-HN')
+            caseRow('BT-2026-021', 'Hoàng Văn R', '', 'CCTHADS-BT', '', '', 'Xác minh thiệt hại'),
+            caseRow('BT-2026-003-A', 'Công ty ABC', '', 'UBND-HK', '', '', 'Thương lượng'),
+            caseRow('BT-2026-010-TDC', 'Đặng Thị Thu', 'Đặng Văn T', 'THADS-LD', '', '', 'Cử người giải quyết bồi thường', 'claim', 'STP-HN')
         ];
         const relatedRefundMockRows = [
             caseRow('HT-2026-001', 'Lê Văn H', '', 'UBND-CG', '89/QĐ-HT', '06/08/2026', 'Đang thu hồi', 'refund'),
@@ -1587,14 +1587,14 @@
         // Vụ việc yêu cầu bồi thường toàn quốc (dữ liệu mẫu cho Nguồn 6 - module Thông tin từ các CSDL liên quan)
         const btnnCaseMockRows = [
             caseRow('BT-2026-045', 'Nguyễn Văn Bình', '', 'TAND-HN', 'Bản án số 12/2026/HSST', '10/06/2026', 'Hoàn thành'),
-            caseRow('BT-2026-030', 'Trần Thị Mai', '', 'UBND-DD', '', '', 'Đang thương lượng'),
-            caseRow('BT-2026-052', 'Công ty TNHH Minh Phát', '', 'TAND-LD', 'Bản án số 45/2026/HCST', '15/07/2026', 'Đang xác minh thiệt hại'),
+            caseRow('BT-2026-030', 'Trần Thị Mai', '', 'UBND-DD', '', '', 'Thương lượng'),
+            caseRow('BT-2026-052', 'Công ty TNHH Minh Phát', '', 'TAND-LD', 'Bản án số 45/2026/HCST', '15/07/2026', 'Xác minh thiệt hại'),
             caseRow('BT-2026-018', 'Lê Văn Hùng', '', 'THADS-HP', '', '', 'Không thụ lý'),
-            caseRow('BT-2026-038', 'Phạm Thị Hoa', '', 'CA-TX', '', '', 'Chờ thụ lý'),
+            caseRow('BT-2026-038', 'Phạm Thị Hoa', '', 'CA-TX', '', '', 'Cử người giải quyết bồi thường'),
             caseRow('BT-2026-022', 'Đỗ Thị Hằng', 'Đỗ Văn Nam', 'VKS-Q1', 'Bản án số 08/2026/DSPT', '05/06/2026', 'Đình chỉ giải quyết'),
             caseRow('BT-2026-014', 'Vũ Thị Lan', '', 'UBND-CG', '', '', 'Chờ ban hành QĐ'),
             caseRow('BT-2026-061', 'Hoàng Văn Đức', '', 'TAND-NT', 'Bản án số 33/2026/HCPT', '18/03/2026', 'Đang phục hồi danh dự'),
-            caseRow('BT-2026-009', 'Bùi Thị Thu', '', 'CCTHADS-TT', '05/QĐ-GQBT', '10/01/2026', 'Sung quỹ nhà nước')
+            caseRow('BT-2026-009', 'Bùi Thị Thu', '', 'CCTHADS-TT', '05/QĐ-GQBT', '10/01/2026', 'Hoàn thành')
         ];
         // Tỉnh/Thành phố của đơn vị, lấy theo tên đơn vị trên cây Cơ cấu tổ chức (đơn vị trung ương: rỗng)
         function provinceOfUnit(unitId) {
@@ -1618,8 +1618,8 @@
             }
             return { label: `Vụ việc do ${rootName} giải quyết`, allow: r => W.getRootId(r.agencyId) === rootId };
         }        // Trạng thái vụ việc được phép liên kết (mọi trạng thái trừ Chờ tiếp nhận)
-        const btnnCaseStatusOptions = ['Chờ duyệt', 'Bị trả lại', 'Chờ phát hành văn bản', 'Yêu cầu bổ sung', 'Chờ thụ lý', 'Không thụ lý', 'Đã chuyển CQGQBT',
-            'Đang xác minh thiệt hại', 'Đang thương lượng', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Hoàn thành', 'Hoãn giải quyết', 'Tạm đình chỉ giải quyết', 'Đình chỉ giải quyết', 'Sung quỹ nhà nước', 'Đang phục hồi danh dự'];
+        const btnnCaseStatusOptions = ['Chờ duyệt', 'Bị từ chối', 'Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Hoàn thành',
+            'Đang phục hồi danh dự', 'Hoãn phục hồi danh dự', 'Từ chối phục hồi danh dự', 'Hoãn giải quyết', 'Đình chỉ giải quyết', 'Đã chuyển CQGQBT', 'Không thụ lý', 'Yêu cầu bổ sung'];
         const lookupDefinitions = {
             claimSearch: {
                 title: 'Tìm kiếm vụ việc yêu cầu bồi thường liên quan',

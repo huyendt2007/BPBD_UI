@@ -72,7 +72,7 @@ flowchart TD
 | Ngày lập | Date | - | - | Theo dữ liệu bản ghi.<br>- Định dạng `dd/mm/yyyy`. |
 | Cán bộ xử lý | String(100) | - | - | Theo dữ liệu bản ghi. |
 | Trạng thái | Enum(String(50)) | - | - | Control UI: Badge, theo dữ liệu bản ghi. |
-| Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Hoàn thành |
+| Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Hoàn thành<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 | **II.2. Tab Yêu cầu báo cáo** | - | - | - | Hiển thị khi người dùng chọn tab `Yêu cầu báo cáo`. |
 | STT | Integer(10) | - | - | Theo dữ liệu bản ghi. |
 | Mã hồ sơ | String(50) | - | - | Theo dữ liệu bản ghi. |
@@ -82,7 +82,7 @@ flowchart TD
 | Ngày văn bản | Date | - | - | Theo dữ liệu bản ghi.<br>- Định dạng `dd/mm/yyyy`. |
 | Hạn báo cáo | Date | - | - | Theo dữ liệu bản ghi.<br>- Định dạng `dd/mm/yyyy`.<br>- Khi hồ sơ chưa có phản hồi và ngày hiện tại lớn hơn hạn, hiển thị thêm nhãn đỏ `Quá hạn`. |
 | Trạng thái | Enum(String(50)) | - | - | Control UI: Badge, theo dữ liệu bản ghi. |
-| Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Cập nhật phản hồi<br>+ Hoàn thành |
+| Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Cập nhật phản hồi<br>+ Hoàn thành<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 | **II.3. Tab Đôn đốc công tác BTNN** | - | - | - | Hiển thị khi người dùng chọn tab `Đôn đốc công tác BTNN`. |
 | STT | Integer(10) | - | - | Theo dữ liệu bản ghi. |
 | Mã hồ sơ | String(50) | - | - | Theo dữ liệu bản ghi. |
@@ -92,7 +92,7 @@ flowchart TD
 | Nội dung đôn đốc | Enum(String(255)) | - | - | Theo dữ liệu bản ghi. |
 | Hạn phản hồi | Date | - | - | Theo dữ liệu bản ghi.<br>- Định dạng `dd/mm/yyyy`.<br>- Khi hồ sơ chưa có phản hồi và ngày hiện tại lớn hơn hạn, hiển thị thêm nhãn đỏ `Quá hạn`. |
 | Trạng thái | Enum(String(50)) | - | - | Control UI: Badge, theo dữ liệu bản ghi. |
-| Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Cập nhật phản hồi<br>+ Hoàn thành |
+| Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Cập nhật phản hồi<br>+ Hoàn thành<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 
 ###### 4.3.3.8.3.3. Chức năng trên màn hình
 

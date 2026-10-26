@@ -32,16 +32,18 @@
         <!-- ============================================== -->
         <div id="screenList" class="card-section">
             <div class="section-title">
-                <span><i class="fa-solid fa-compass"></i> DANH SÁCH YÊU CẦU XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG</span>
+                <h2 data-uxu-title>Xác định cơ quan giải quyết bồi thường</h2>
             </div>
 
             <!-- 02 tab: Chờ xử lý / Đã xử lý theo người dùng đang đăng nhập (Cán bộ xử lý / Lãnh đạo phê duyệt) -->
             <div class="xd-tabs">
-                <button type="button" class="xd-tab active" data-tab="pending" onclick="switchXdTab('pending')"><i class="fa-solid fa-list-check"></i> Chờ xử lý <span class="xd-tab-count" id="xdCntPending">0</span></button>
+                <button type="button" class="xd-tab active" data-tab="pending" onclick="switchXdTab('pending')"><i class="fa-solid fa-list-check"></i> Chờ xử lý <span class="bdg-tab-count" id="xdCntPending" style="display:none;">0</span></button>
                 <button type="button" class="xd-tab" data-tab="done" onclick="switchXdTab('done')"><i class="fa-solid fa-box-archive"></i> Đã xử lý</button>
             </div>
 
-            <!-- SEARCH FILTERS -->
+            <!-- SEARCH FILTERS (khối lọc thu gọn/mở rộng - bpbd_filter_toggle.js; bố cục chuẩn - btnn_uxu_dong_bo.js) -->
+            <div data-bpbd-filter class="uxu-filter-flat" style="margin-bottom:16px;">
+            <div data-bpbd-filter-body>
             <div class="filter-grid">
                 <div>
                     <span class="form-label">Mã hồ sơ</span>
@@ -60,8 +62,8 @@
                     <input type="text" class="form-control" id="filterName" placeholder="Nhập tên cá nhân/tổ chức yêu cầu...">
                 </div>
                 <div>
-                    <span class="form-label">Họ và tên người/Tổ chức bị thiệt hại</span>
-                    <input type="text" class="form-control" id="filterVictim" placeholder="Nhập họ và tên người/tên tổ chức bị thiệt hại...">
+                    <span class="form-label">Tên cá nhân/Tổ chức bị thiệt hại</span>
+                    <input type="text" class="form-control" id="filterVictim" placeholder="Nhập tên cá nhân/tổ chức bị thiệt hại...">
                 </div>
                 <div>
                     <span class="form-label">Lĩnh vực phát sinh thiệt hại</span>
@@ -82,7 +84,7 @@
                         <option value="Chờ tiếp nhận">Chờ tiếp nhận</option>
                         <option value="Xác minh CQGQBT">Xác minh CQGQBT</option>
                         <option value="Chờ duyệt">Chờ duyệt</option>
-                        <option value="Bị trả lại">Bị trả lại</option>
+                        <option value="Bị từ chối">Bị từ chối</option>
                         <option value="Yêu cầu bổ sung">Yêu cầu bổ sung</option>
                         <option value="Không thụ lý">Không thụ lý</option>
                         <option value="Đã chuyển CQGQBT">Đã chuyển CQGQBT</option>
@@ -90,7 +92,7 @@
                 </div>
                 <div>
                     <span class="form-label">Loại trình</span>
-                    <select class="form-control" id="filterApprovalKind" title="Áp dụng cho hồ sơ Chờ duyệt và Bị trả lại">
+                    <select class="form-control" id="filterApprovalKind" title="Áp dụng cho hồ sơ Chờ duyệt và Bị từ chối">
                         <option value="">Tất cả</option>
                     </select>
                 </div>
@@ -117,12 +119,14 @@
             </div>
 
             <div class="filter-buttons">
-                <button class="btn btn-primary" onclick="applyFilters()">
-                    <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
-                </button>
                 <button class="btn btn-secondary" onclick="resetFilters()">
                     <i class="fa-filter-circle-xmark fa-solid"></i> Xóa bộ lọc
                 </button>
+                <button class="btn btn-primary" onclick="applyFilters()">
+                    <i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm
+                </button>
+            </div>
+            </div>
             </div>
 
             <!-- GRID ACTION TOOLBAR -->
@@ -142,7 +146,7 @@
                             <th style="width: 110px; text-align: center;">Mã hồ sơ</th>
                             <th style="width: 130px; text-align: center;">Mã vụ việc</th>
                             <th style="min-width: 160px;">Tên cá nhân/Tổ chức yêu cầu</th>
-                            <th style="min-width: 160px;">Họ và tên người/Tổ chức bị thiệt hại</th>
+                            <th style="min-width: 160px;">Tên cá nhân/Tổ chức bị thiệt hại</th>
                             <th style="min-width: 170px;">Lĩnh vực thiệt hại</th>
                             <th style="min-width: 200px;">Hành vi gây thiệt hại của người thi hành công vụ</th>
                             <th style="width: 130px; text-align: center;">Ngày tiếp nhận</th>
@@ -191,11 +195,11 @@
                     <i class="fa-solid fa-rotate-left" style="font-size: 22px; color: #e11d48; margin-top: 3px;"></i>
                     <div style="flex: 1;">
                         <div style="font-weight: 700; color: #9f1239; font-size: 15px; margin-bottom: 4px;">
-                            HỒ SƠ BỊ TRẢ LẠI - YÊU CẦU CẬP NHẬT LẠI
+                            HỒ SƠ BỊ TỪ CHỐI - YÊU CẦU CẬP NHẬT LẠI
                         </div>
                         <div id="formReturnedMeta" style="font-size: 13px; color: #881337; margin-bottom: 6px;"></div>
                         <div style="font-size: 13.5px; color: #4c0519; line-height: 1.5; background: #ffe4e6; padding: 10px 14px; border-radius: 6px; border: 1px dashed #fda4af;">
-                            <strong>Lý do bị trả lại:</strong> <span id="formReturnedReason"></span>
+                            <strong>Lý do từ chối:</strong> <span id="formReturnedReason"></span>
                         </div>
                     </div>
                 </div>
@@ -354,17 +358,15 @@
 
                     <div class="grid-2 nyc-individual" style="gap: 12px; margin-bottom: 0;">
                         <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Ngày cấp<span class="required">*</span></span>
+                            <span class="form-label">Ngày cấp</span>
                             <div class="date-input-wrapper">
                                 <input type="text" class="form-control" id="formNYCDocDate" placeholder="dd/mm/yyyy">
                                 <i class="fa-regular fa-calendar-days"></i>
                             </div>
-                            <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
-                            <span class="form-label">Nơi cấp<span class="required">*</span></span>
+                            <span class="form-label">Nơi cấp</span>
                             <input type="text" class="form-control" id="formNYCDocPlace" placeholder="Nhập nơi cấp...">
-                            <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
                     </div>
 
@@ -417,7 +419,8 @@
                         </div>
                     </div>
 
-                    <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
+                    <!-- [gqfx] Phường/Xã và Địa chỉ chi tiết: mỗi trường 01 hàng, Địa chỉ chi tiết là ô nhập nhiều dòng rộng hết khối -->
+                    <div class="gqfx-addr-rows" style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 0;">
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Phường / Xã<span class="required">*</span></span>
                             <div id="wardViSelection">
@@ -431,7 +434,7 @@
                         </div>
                         <div class="form-group" style="margin-bottom: 0;">
                             <span class="form-label">Địa chỉ chi tiết<span class="required">*</span></span>
-                            <input type="text" class="form-control" id="formNYCAddressDetail" placeholder="Nhập số nhà, tên đường/phố, thôn/xóm/ấp...">
+                            <textarea class="form-control" id="formNYCAddressDetail" rows="2" style="width: 100%; min-height: 64px; resize: vertical;" placeholder="Nhập số nhà, tên đường/phố, thôn/xóm/ấp..."></textarea>
                             <div class="error-message">Đây là trường bắt buộc</div>
                         </div>
                     </div>
@@ -528,14 +531,14 @@
                                 <input class="form-control" id="nbthCity" list="provinceOptions" placeholder="Gõ Mã hoặc Tên Tỉnh/Thành phố...">
                             </div>
                         </div>
-                        <div class="grid-2" style="gap: 12px; margin-bottom: 0;">
+                        <div class="gqfx-addr-rows" style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 0;">
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Phường / Xã</span>
                                 <input type="text" class="form-control" id="nbthWard" placeholder="Nhập phường/xã...">
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Địa chỉ chi tiết</span>
-                                <input type="text" class="form-control" id="nbthAddress" placeholder="Nhập số nhà, tên đường/phố, thôn/xóm/ấp...">
+                                <textarea class="form-control" id="nbthAddress" rows="2" style="width: 100%; min-height: 64px; resize: vertical;" placeholder="Nhập số nhà, tên đường/phố, thôn/xóm/ấp..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -720,13 +723,13 @@
             <div id="dtReturnedBlock" style="display: none; border: 1px solid #fecaca; background: #fff5f5; border-left: 4px solid #dc2626; border-radius: var(--border-radius-md); padding: 16px; margin-bottom: 20px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <div style="font-weight: 700; color: #dc2626; font-size: 14px;">
-                        <i class="fa-solid fa-rotate-left"></i> LÝ DO BỊ TRẢ LẠI
+                        <i class="fa-solid fa-rotate-left"></i> LÝ DO BỊ TỪ CHỐI
                     </div>
                     <span id="dtReturnedAtBadge" class="badge" style="background: #fee2e2; color: #991b1b; font-size: 11.5px;"></span>
                 </div>
                 <div style="font-size: 13px; line-height: 1.6; color: #1e293b;">
                     <div style="margin-bottom: 4px;">
-                        <strong>Người trả lại:</strong> <span id="dtReturnedBy"></span>
+                        <strong>Người từ chối:</strong> <span id="dtReturnedBy"></span>
                     </div>
                     <div style="margin-bottom: 4px;">
                         <strong>Loại trình bị từ chối:</strong> <span id="dtReturnedKind" style="color: #b91c1c; font-weight: 600;"></span>
@@ -758,6 +761,8 @@
                         </a>
                     </div>
                 </div>
+                <!-- Tài liệu kèm theo của lần trình hiện hành (chỉ hiển thị khi có) -->
+                <div id="dtPendingSignTlkt" style="display: none; margin-top: 10px;"></div>
             </div>
 
             <!-- 3. KHỐI THÔNG TIN YÊU CẦU BỔ SUNG (Chỉ hiển thị khi trạng thái Yêu cầu bổ sung) -->
@@ -1029,10 +1034,7 @@
 
                     <!-- 4. VĂN BẢN LÀM CĂN CỨ YÊU CẦU BỒI THƯỜNG -->
                     <div class="sub-section-title">VĂN BẢN LÀM CĂN CỨ YÊU CẦU BỒI THƯỜNG</div>
-                    <div class="detail-row">
-                        <div class="detail-label">Văn bản làm căn cứ YCBT</div>
-                        <div class="detail-value" id="dtVanBanCanCu"></div>
-                    </div>
+                    <div id="dtVanBanCanCu" style="margin-top: 10px; margin-bottom: 20px;"></div>
 
                     <!-- 5. HÀNH VI GÂY THIỆT HẠI & PHƯƠNG THỨC NHẬN THÔNG BÁO -->
                     <div class="sub-section-title">HÀNH VI GÂY THIỆT HẠI &amp; PHƯƠNG THỨC NHẬN THÔNG BÁO</div>
@@ -1065,12 +1067,18 @@
                 <div id="dtRoutesBody" style="margin-top: 10px;"><div id="dtRoutes"></div></div>
             </div>
 
-            <!-- 9. LỊCH SỬ XỬ LÝ (Hiển thị độc lập) -->
+            <!-- 9. LỊCH SỬ XỬ LÝ (Mở rộng / Thu gọn) -->
             <div class="detail-card" style="margin-bottom: 20px;">
-                <div class="sub-section-title" style="margin-top: 0; display: flex; align-items: center; gap: 8px;">
-                    <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-color);"></i> LỊCH SỬ XỬ LÝ
+                <div onclick="toggleDetailHistorySection()" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;">
+                    <div class="sub-section-title" style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-color);"></i> LỊCH SỬ XỬ LÝ
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span id="dtHistoryToggleText" style="font-size: 12.5px; color: #2563eb; font-weight: 600;">Thu gọn</span>
+                        <i id="dtHistoryToggleIcon" class="fa-solid fa-chevron-up" style="color: #64748b; font-size: 12px;"></i>
+                    </div>
                 </div>
-                <div id="dtHistory" style="margin-top: 10px;"></div>
+                <div id="dtHistoryBody" style="margin-top: 10px;"><div id="dtHistory"></div></div>
             </div>
 
             <div class="form-footer" id="detailWorkflowActions">
@@ -1096,7 +1104,7 @@
                 <span class="wf-modal-x" onclick="closeSignSubmitModal()" title="Đóng">&times;</span>
             </div>
 
-            <!-- Stepper (chỉ hiển thị khi Hình thức ký = Ký số trên hệ thống) -->
+            <!-- Stepper: chỉ hiển thị (2 bước) khi Ký số trên hệ thống; Ký ngoài thu gọn ẩn hẳn -->
             <div id="xsStepperBar" class="xs-stepper">
                 <div id="xsStep1Tab" class="xs-step"><span class="require-step-badge" id="xsStep1Badge">1</span><span>Nhập thông tin</span></div>
                 <div class="xs-stepper-divider"></div>
@@ -1108,44 +1116,46 @@
                 <!-- Khối THÔNG TIN HỒ SƠ BỊ TRẢ LẠI (hiển thị khi hồ sơ đang bị trả lại hoặc từng bị trả lại) -->
                 <div id="xsReturnedAlertBlock" style="display: none; margin-bottom: 16px; padding: 14px 16px; background: #fff1f2; border: 1px solid #fecdd3; border-left: 5px solid #e11d48; border-radius: var(--border-radius-md);"></div>
 
+                <!-- Hình thức ký (đầu form; Ký số hiện stepper 2 bước, Ký ngoài ẩn stepper) -->
+                <div class="xs-sec">
+                    <div class="xs-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="xs-req">*</span></div>
+                    <div class="xs-sign-cards-grid">
+                        <label class="xs-sign-card active" id="xsCardOn">
+                            <input type="radio" name="xsMethod" value="Ký số" checked onchange="xsSetMethod('Ký số')">
+                            <div class="xs-sign-card-content">
+                                <div class="xs-sign-card-icon"><i class="fa-solid fa-file-signature"></i></div>
+                                <div class="xs-sign-card-text"><div class="xs-sign-card-title">Ký số trên hệ thống</div><div class="xs-sign-card-desc">Trình Lãnh đạo ký duyệt trên phần mềm</div></div>
+                            </div>
+                            <div class="xs-sign-card-check"><i class="fa-solid fa-circle-check"></i></div>
+                        </label>
+                        <label class="xs-sign-card" id="xsCardOff">
+                            <input type="radio" name="xsMethod" value="Ký ngoài" onchange="xsSetMethod('Ký ngoài')">
+                            <div class="xs-sign-card-content">
+                                <div class="xs-sign-card-icon offline"><i class="fa-solid fa-stamp"></i></div>
+                                <div class="xs-sign-card-text"><div class="xs-sign-card-title">Ký ngoài (Ban hành trực tiếp)</div><div class="xs-sign-card-desc">Tải lên văn bản PDF đã ký và đóng dấu</div></div>
+                            </div>
+                            <div class="xs-sign-card-check"><i class="fa-regular fa-circle"></i></div>
+                        </label>
+                    </div>
+                </div>
+
                 <div class="form-group" id="xsReasonGroup">
                     <span class="form-label" id="xsReasonLabel">Lý do<span class="required">*</span></span>
                     <textarea class="form-control" id="xsReason" rows="3" placeholder="Nhập nội dung; mỗi dòng một nội dung..."></textarea>
                     <div class="error-message">Đây là trường bắt buộc</div>
                 </div>
 
-                <!-- Hình thức ký -->
-                <div class="xs-method-box">
-                    <label class="xs-method-title"><i class="fa-solid fa-signature" style="color:#0284c7;"></i> Hình thức ký <span style="color:#dc2626;">*</span></label>
-                    <div style="display:flex; gap:30px; flex-wrap:wrap;">
-                        <label class="xs-radio"><input type="radio" name="xsMethod" value="Ký số" checked onchange="xsSetMethod('Ký số')"><span><i class="fa-solid fa-file-signature" style="color:#16a34a;"></i> Ký số trên hệ thống</span></label>
-                        <label class="xs-radio"><input type="radio" name="xsMethod" value="Ký ngoài" onchange="xsSetMethod('Ký ngoài')"><span><i class="fa-solid fa-file-pen" style="color:#0284c7;"></i> Ký ngoài (Tải lên văn bản PDF đã ký &amp; đóng dấu)</span></label>
-                    </div>
+                <!-- Tệp văn bản trình ký (Ký số: đính file) / Tệp văn bản đã ký & đóng dấu (Ký ngoài) -->
+                <div id="xsFileBox" class="xs-sec">
+                    <div class="xs-sec-title" id="xsFileTitle"></div>
+                    <input type="file" id="xsFileInput" style="display:none;" accept=".pdf,.doc,.docx" onchange="xsUploadFile(this)">
+                    <div id="xsFileArea"></div>
+                    <div id="xsFileError" class="error-message">Đây là trường bắt buộc</div>
+                    <div id="xsOffStatusNote" class="xs-status-note" style="display:none;"></div>
                 </div>
 
-                <!-- Văn bản trình ký -->
-                <div id="xsFileBox" class="doc-upload-highlight" style="margin-bottom:18px;">
-                    <div style="font-weight:700; color:#1e40af; font-size:14px; margin-bottom:8px;" id="xsFileTitle"></div>
-                    <input type="file" id="xsFileInput" style="display:none;" accept=".pdf,.doc,.docx" onchange="xsUploadFile(this)">
-                    <div id="xsFileEmpty">
-                        <p style="font-size:13px; color:#475569; margin:0 0 10px 0;" id="xsFileHint"></p>
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('xsFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Tải file</button>
-                    </div>
-                    <div id="xsFileReady" class="xs-file-ready">
-                        <div style="display:flex; align-items:center; gap:12px;">
-                            <i class="fa-solid fa-file-pdf" style="font-size:30px; color:#ef4444;"></i>
-                            <div>
-                                <div id="xsFileName" style="font-weight:700; color:#1e293b; font-size:14px;"></div>
-                                <div id="xsFileMeta" style="font-size:12px; color:#64748b; margin-top:2px;"></div>
-                            </div>
-                        </div>
-                        <div style="display:flex; gap:8px;">
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="previewNamedFile(xsState.file)"><i class="fa-solid fa-eye"></i> Xem file</button>
-                            <button type="button" class="btn btn-secondary btn-sm" onclick="xsRemoveFile()" style="color:#dc2626;"><i class="fa-solid fa-trash"></i> Xóa file</button>
-                        </div>
-                    </div>
-                    <div id="xsFileError" class="error-message">Đây là trường bắt buộc</div>
-                </div>
+                <!-- Tài liệu kèm theo (Không thụ lý, chỉ khi Ký số trên hệ thống; không bắt buộc) - bảng do btnn_tai_lieu_kem_theo.js dựng -->
+                <div id="xsTlkt"></div>
 
             </div>
 
@@ -1237,7 +1247,7 @@
                         <div id="xsPanelRoomCard" style="background:#fff; border:1px solid #bfdbfe; border-left:4px solid #1d4ed8; border-radius:8px; padding:12px;">
                             <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px;">
                                 <span style="font-size:12.5px; font-weight:700; color:#1d4ed8;" id="xsPanelRoomUnit"></span>
-                                <span class="badge" style="background:#dbeafe; color:#1e40af; font-size:10.5px; white-space:nowrap;">Ký nháy</span>
+                                <span class="badge" id="xsRoomKyNhayBadge" style="display:none; background:#dbeafe; color:#1e40af; font-size:10.5px; white-space:nowrap;">Ký nháy</span>
                             </div>
                             <div class="form-group" style="margin-bottom:8px;" id="xsOfficerRoomGroup">
                                 <select id="xsOfficerRoomSelect" class="form-control" style="font-size:13px;" onchange="xsSyncLeaderNames()"></select>
@@ -1263,7 +1273,7 @@
                         <div id="xsPanelAgencyCard" style="background:#fff; border:1px solid #fecaca; border-left:4px solid #b91c1c; border-radius:8px; padding:12px;">
                             <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px;">
                                 <span style="font-size:12.5px; font-weight:700; color:#b91c1c;" id="xsPanelAgencyUnit"></span>
-                                <span class="badge" style="background:#fee2e2; color:#991b1b; font-size:10.5px; white-space:nowrap;">Ký số &amp; con dấu</span>
+                                <span class="badge" id="xsAgencyKyNhayBadge" style="display:none; background:#dbeafe; color:#1e40af; font-size:10.5px; white-space:nowrap;">Ký nháy</span>
                             </div>
                             <div class="form-group" style="margin-bottom:8px;" id="xsOfficerAgencyGroup">
                                 <select id="xsOfficerAgencySelect" class="form-control" style="font-size:13px;" onchange="xsSyncLeaderNames()"></select>
@@ -1291,12 +1301,12 @@
             </div>
 
             <div class="xs-foot">
-                <div><button type="button" class="btn btn-secondary" onclick="closeSignSubmitModal()">Hủy bỏ</button></div>
-                <div style="display:flex; gap:10px;">
-                    <button id="xsBtnSubmitOffline" type="button" class="btn btn-primary" onclick="xsSubmit()" style="background:#16a34a; border-color:#16a34a;"><i class="fa-solid fa-check"></i> Hoàn thành</button>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <button type="button" class="btn btn-secondary" onclick="closeSignSubmitModal()">Hủy bỏ</button>
+                    <button id="xsBtnBack" type="button" class="btn btn-secondary" onclick="xsGoStep1()" style="display:none;"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
                     <button id="xsBtnNext" type="button" class="btn btn-primary" onclick="xsGoStep2()"><span>Tiếp tục</span> <i class="fa-solid fa-arrow-right"></i></button>
-                    <button id="xsBtnBack" type="button" class="btn btn-secondary" onclick="xsGoStep1()"><i class="fa-solid fa-arrow-left"></i> Quay lại</button>
-                    <button id="xsBtnSubmitOnline" type="button" class="btn btn-primary" onclick="xsSubmit()" style="background:#16a34a; border-color:#16a34a;"><i class="fa-solid fa-paper-plane"></i> Trình Lãnh đạo</button>
+                    <button id="xsBtnSubmitOffline" type="button" class="btn btn-primary" onclick="xsSubmit()" style="display:none; background:#16a34a; border-color:#16a34a;"><i class="fa-solid fa-paper-plane"></i> Ban hành văn bản</button>
+                    <button id="xsBtnSubmitOnline" type="button" class="btn btn-primary" onclick="xsSubmit()" style="display:none; background:#16a34a; border-color:#16a34a;"><i class="fa-solid fa-paper-plane"></i> Trình Lãnh đạo</button>
                 </div>
             </div>
         </div>
@@ -1319,10 +1329,41 @@
     </div>
 
     <!-- External javascript logic -->
-    <script src="btnn_luong_xu_ly.js?v=20261020v5"></script>
-    <script src="btnn_lanh_dao_actions.js?v=20261021fs"></script>
-    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261021pd"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261023xdtl"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261026pdtb"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261023kdtc"></script>
+    <script src="btnn_badge_cho_xu_ly.js?v=20261023bdg"></script>
+    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261023gqfx"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="bpbd_filter_toggle.js?v=20261012"></script>
+    <script>
+        // [gqfx] Placeholder combobox form Nhập liệu XĐCQ: dòng "-- Chọn … --" (không chọn được), giữ giá trị mặc định đang chọn
+        (function () {
+            var MAP = {
+                formHinhThucTiepNhan: '-- Chọn hình thức tiếp nhận --',
+                formLinhVuc: '-- Chọn lĩnh vực phát sinh thiệt hại --',
+                formNYCCountry: '-- Chọn quốc gia --',
+                nbthCountry: '-- Chọn quốc gia --'
+            };
+            function ensure(sel, text) {
+                if (!sel || [].some.call(sel.options, function (o) { return o.value === '' && /^--/.test(o.textContent.trim()); })) return;
+                var had = sel.selectedIndex >= 0, keep = sel.value;
+                var op = document.createElement('option');
+                op.value = ''; op.textContent = text; op.disabled = true;
+                sel.insertBefore(op, sel.firstChild);
+                if (had) sel.value = keep;
+            }
+            function init() {
+                Object.keys(MAP).forEach(function (id) {
+                    var sel = document.getElementById(id);
+                    if (!sel || sel.dataset.gqfxPh) return;
+                    sel.dataset.gqfxPh = '1';
+                    ensure(sel, MAP[id]);
+                    if (window.MutationObserver) new MutationObserver(function () { ensure(sel, MAP[id]); }).observe(sel, { childList: true });
+                });
+            }
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+        })();
+    </script>
 </body>
 </html>

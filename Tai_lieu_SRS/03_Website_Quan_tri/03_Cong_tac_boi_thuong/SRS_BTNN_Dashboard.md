@@ -24,6 +24,8 @@
 
 \- Dashboard chỉ đọc, tổng hợp từ dữ liệu đã có trên hệ thống; không phát sinh nhập liệu mới (trừ chức năng Cấu hình).
 
+\- Màn hình công việc chờ xử lý của Lãnh đạo, mục đầu tiên của nhóm menu "Bồi thường nhà nước": xem [Dashboard Lãnh đạo - Dashboard - Công tác bồi thường nhà nước (Website Quản trị)](#db-lanh-dao).
+
 *a. Phân quyền*
 
 \- Menu "Dashboard trực quan về quản lý BTNN", mỗi chức năng là 01 quyền riêng.
@@ -122,7 +124,7 @@
 | Trạng thái | String(50) | - | Theo dữ liệu | Control UI: Tag (Áp dụng, Không áp dụng). |
 | Người cập nhật | String(255) | - | Theo dữ liệu | |
 | Thời điểm cập nhật | DateTime | - | Theo dữ liệu | Định dạng dd/mm/yyyy hh:mm. |
-| Thao tác | - | - | - | Control UI: Icon "Cập nhật". |
+| Thao tác | - | - | - | Control UI: Icon "Cập nhật".<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 | **III. Popup Cập nhật cấu hình hiển thị** | - | - | - | Control UI: Popup. |
 | Thành phần hiển thị | String(255) | - | Theo bản ghi | Control UI: Label, chỉ đọc. |
 | Áp dụng tại | String(50) | - | Theo thành phần | Chỉ đọc. |
@@ -311,3 +313,42 @@
 \- Bản đồ: màu tỉnh, thành phố theo Chỉ tiêu đang chọn (06 mức); di chuột hiển thị Số vụ việc thụ lý, Số vụ việc đã giải quyết, Tỷ lệ giải quyết, Số tiền đã chi trả; click tỉnh, thành phố mở [MH05](#db-mh05) lọc theo tỉnh, thành phố.
 
 \- Bảng số liệu: STT; Tỉnh/Thành phố; Số vụ việc thụ lý; Số vụ việc đã giải quyết; Tỷ lệ giải quyết; Số tiền đã chi trả (triệu đồng); dòng Tổng cộng.
+
+---
+
+<a id="db-lanh-dao"></a>
+#### 4.3.3.28.12. Dashboard Lãnh đạo
+
+\- Tổng hợp công việc chờ xử lý của người dùng đang đăng nhập tại 06 phân hệ giải quyết bồi thường; chọn khối để mở tab `Chờ xử lý` của phân hệ tương ứng.
+
+\- Màn hình chỉ đọc, không phát sinh nhập liệu.
+
+| STT | Nội dung | Quy tắc |
+| :-- | :--- | :--- |
+| 1 | Vị trí menu | Mục đầu tiên của nhóm menu "Bồi thường nhà nước", trước mục "Tiếp nhận hồ sơ".<br>- Hiển thị tại LeftMenu của Trang chủ Bồi thường nhà nước và Trang chủ Website Quản trị. |
+| 2 | Phân quyền | Quyền "Xem Dashboard Lãnh đạo" thuộc chức năng Dashboard Lãnh đạo. |
+| 3 | Số lượng | Số lượng của khối bằng số hồ sơ tại tab `Chờ xử lý` của phân hệ theo người dùng đang đăng nhập; trùng số hiển thị tại mục menu của phân hệ.<br>- Tổng công việc chờ xử lý bằng tổng số lượng 06 khối. |
+
+##### 4.3.3.28.12.1. Màn hình
+
+![Dashboard Lãnh đạo](images/VCLD_MH01_Dashboard_Lanh_dao.png)
+
+##### 4.3.3.28.12.2. Mô tả thông tin trên màn hình
+
+| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
+| :--- | :--- | :--- | :--- | :--- |
+| Tiêu đề màn hình | String(255) | - | `Dashboard Lãnh đạo` | Control UI: Text heading (Read-only).<br>- Hiển thị đúng tên mục Menu `Dashboard Lãnh đạo`. |
+| Tổng công việc chờ xử lý | Integer(10) | - | Theo dữ liệu | Control UI: Label.<br>- Tổng số lượng 06 khối (quy tắc 3). |
+| **Khối công việc chờ xử lý** | Section | - | - | Control UI: Card grid.<br>- 06 khối theo thứ tự (Tên khối - Tên phân hệ):<br>+ Chờ phân công - Tiếp nhận hồ sơ<br>+ Chờ duyệt Xác định CQGQBT - Xác định cơ quan giải quyết bồi thường<br>+ Chờ duyệt Giải quyết YCBT - Giải quyết yêu cầu bồi thường<br>+ Chờ duyệt QĐ Giải quyết YCBT - Quyết định giải quyết bồi thường<br>+ Chờ duyệt cấp kinh phí - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường<br>+ Chờ duyệt Xem xét hoàn trả - Xem xét trách nhiệm hoàn trả |
+| Tên khối | String(255) | - | Theo khối | Control UI: Label. |
+| Tên phân hệ | String(255) | - | Theo khối | Control UI: Label. |
+| Số lượng | Integer(10) | - | Theo dữ liệu | Control UI: Label.<br>- Theo quy tắc 3. |
+| Danh sách công việc | List | - | Theo dữ liệu | Control UI: List (Read-only).<br>- Tối đa 03 công việc đầu tiên của tab `Chờ xử lý`.<br>- Mỗi dòng: `Mã hồ sơ` và nội dung tóm tắt:<br>+ Khối Chờ duyệt cấp kinh phí: "[Tên cá nhân/Tổ chức yêu cầu] - [Nội dung trình] - [Số tiền] đ"<br>+ Khối Chờ duyệt Xem xét hoàn trả: "[Trạng thái] - Vụ việc [Mã vụ việc]"<br>+ Khối khác: "[Tên cá nhân/Tổ chức yêu cầu] - [Nội dung trình]"; việc chờ cử người giải quyết hiển thị nội dung "Cử người giải quyết bồi thường"<br>- Số lượng bằng 0: hiển thị "Không có công việc chờ xử lý." |
+| Số công việc còn lại | String(100) | - | Ẩn | Control UI: Label.<br>- Nội dung "và [n] công việc khác".<br>- Chỉ hiển thị khi số lượng lớn hơn số công việc đã hiển thị. |
+| Mở danh sách Chờ xử lý | HyperLink | - | - | Control UI: HyperLink. |
+
+##### 4.3.3.28.12.3. Chức năng trên màn hình
+
+| STT | Tên chức năng | Định dạng | Mô tả |
+| :-- | :--- | :--- | :--- |
+| 1 | Mở phân hệ | Card click | Chọn khối (click hoặc phím Enter/Space): mở phân hệ tương ứng tại tab `Chờ xử lý`, đồng thời chọn mục menu của phân hệ trên LeftMenu. |

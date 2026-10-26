@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quản lý kinh phí bồi thường - Cán bộ</title>
+    <title>Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Flatpickr CSS -->
@@ -580,6 +580,22 @@
             border: 1px solid #99f6e4;
         }
 
+        /* Trạng thái trên lưới: badge + dòng phụ Loại trình bên dưới (đồng bộ màn Quyết định GQBT) */
+        .badge-review { background-color: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe; }
+        .wf-sub { font-size: 11.5px; color: #64748b; margin-top: 4px; white-space: nowrap; font-weight: 500; }
+        .wf-sub.returned { color: #64748b; }
+        /* Màu badge trạng thái: mỗi trạng thái 01 màu riêng (Chờ duyệt: .badge-review tím nhạt) */
+        .badge.kp-st-lap { background-color: #ecfccb; color: #4d7c0f; border: 1px solid #d9f99d; }
+        .badge.kp-st-tb { background-color: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+        .badge.kp-st-bs { background-color: #ffedd5; color: #c2410c; border: 1px solid #fed7aa; }
+        .badge.kp-st-tc { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+        .badge.kp-st-ct { background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+        .badge.kp-st-ht { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        .badge.kp-st-sq { background-color: #ccfbf1; color: #0f766e; border: 1px solid #99f6e4; }
+        .badge.kp-st-cth { background-color: #fce7f3; color: #be185d; border: 1px solid #fbcfe8; }
+        .badge.kp-st-dth { background-color: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe; }
+        .badge.kp-st-huy { background-color: #e5e7eb; color: #374151; border: 1px solid #d1d5db; }
+
         /* Pagination Bar */
         .pagination-bar {
             display: flex;
@@ -893,37 +909,22 @@
     <!-- TOP NAVIGATION PORTAL HEADER -->
     <div class="page-header">
         <div class="page-title">
-            <h2 style="display: inline-flex; align-items: center; gap: 8px;">
-                Quản lý kinh phí bồi thường Nhà nước
-                <span id="headerProposalBadge" style="background-color: #ef4444; color: white; border-radius: 12px; padding: 2px 8px; font-size: 13px; font-weight: 700; min-width: 20px; text-align: center; line-height: 1;">0</span>
+            <h2 data-uxu-title style="display: inline-flex; align-items: center; gap: 8px;">
+                Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường
+                <!-- Badge số lượng chờ xử lý chỉ đặt tại tab Chờ xử lý (đồng nhất 06 phân hệ BTNN): ẩn badge tiêu đề -->
+                <span id="headerProposalBadge" style="display: none !important; background-color: #ef4444; color: white; border-radius: 12px; padding: 2px 8px; font-size: 13px; font-weight: 700; min-width: 20px; text-align: center; line-height: 1;">0</span>
             </h2>
-            <p>Hệ thống lập đề xuất cấp kinh phí bồi thường, tạm ứng và giám sát chi trả ngân sách</p>
         </div>
     </div>
-
-    <!-- STATISTICAL CARDS CONTAINER (03 THẺ CHUẨN THEO SRS) -->
-    <div class="stat-grid" id="dashboardStats" style="grid-template-columns: repeat(3, 1fr);">
-        <div class="stat-card">
-            <div class="stat-title">Đã cấp phát thực tế</div>
-            <div class="stat-val" style="color: var(--success-color);" id="statCapPhat">0 VNĐ</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-title">Chờ chi trả</div>
-            <div class="stat-val" style="color: var(--warning-color);" id="statChoChiTra">0 VNĐ</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-title">Sung quỹ nhà nước</div>
-            <div class="stat-val" style="color: #64748B;" id="statSungQuy">0 VNĐ</div>
-        </div>
-    </div>
+    <!-- Bỏ các thẻ thống kê (Đã cấp phát, Chờ chi trả, Sung quỹ nhà nước): thống kê xem tại Dashboard riêng -->
 
     <!-- MAIN DATA LIST AND FILTER SECTION -->
     <div id="contentListProposals" style="display: block;">
 
         <!-- 02 TAB: Chờ xử lý / Đã xử lý (theo người dùng đang đăng nhập) -->
         <div class="card-section kp-tab-bar" style="padding: 0 16px; margin-bottom: 12px;">
-            <button type="button" class="kp-tab active" id="kpTabPending" onclick="kpSetTab('pending')"><i class="fa-solid fa-list-check"></i> Chờ xử lý <span class="kp-tab-count" id="kpTabPendingCount">0</span></button>
-            <button type="button" class="kp-tab" id="kpTabDone" onclick="kpSetTab('done')"><i class="fa-solid fa-box-archive"></i> Đã xử lý <span class="kp-tab-count" id="kpTabDoneCount">0</span></button>
+            <button type="button" class="kp-tab active" id="kpTabPending" onclick="kpSetTab('pending')"><i class="fa-solid fa-list-check"></i> Chờ xử lý <span class="bdg-tab-count" id="kpTabPendingCount" style="display:none;">0</span></button>
+            <button type="button" class="kp-tab" id="kpTabDone" onclick="kpSetTab('done')"><i class="fa-solid fa-box-archive"></i> Đã xử lý</button>
         </div>
 
         <!-- SEARCH FILTERS CARD (FAFAFA theme complying with Gen_ui rule 10) -->
@@ -931,27 +932,26 @@
             style="background-color: #FAFAFA; border: 1px solid var(--border-color); padding: 12px 16px; margin-bottom: 12px; border-radius: var(--border-radius-md);">
             <div class="grid-4-cols" style="margin-bottom: 8px;">
                 <div>
-                    <span class="form-label">Mã đề nghị</span>
-                    <input type="text" class="form-control" id="searchProposalCode" placeholder="Nhập mã đề nghị...">
+                    <span class="form-label">Mã kinh phí</span>
+                    <input type="text" class="form-control" id="searchProposalCode" placeholder="Nhập mã kinh phí...">
                 </div>
                 <div>
-                    <span class="form-label">Loại đề nghị</span>
+                    <span class="form-label">Loại kinh phí</span>
                     <select class="form-control" id="searchProposalType" style="height: 34px;">
                         <option value="">Tất cả</option>
-                        <option value="Cấp tạm ứng">Đề nghị tạm ứng</option>
-                        <option value="Cấp kinh phí bồi thường">Đề nghị cấp kinh phí bồi thường</option>
+                        <option value="Tạm ứng kinh phí">Tạm ứng kinh phí</option>
+                        <option value="Chi trả tiền bồi thường">Chi trả tiền bồi thường</option>
                     </select>
                 </div>
                 <div>
-                    <span class="form-label">Mã vụ việc liên kết</span>
-                    <input type="text" class="form-control" id="searchYcbtCode" placeholder="Nhập mã vụ việc...">
+                    <span class="form-label">Mã hồ sơ GQBT</span>
+                    <input type="text" class="form-control" id="searchYcbtCode" placeholder="Nhập mã hồ sơ GQBT...">
                 </div>
                 <div>
-                    <span class="form-label">Trạng thái đề nghị</span>
+                    <span class="form-label">Trạng thái</span>
                     <select class="form-control" id="searchProposalStatus" style="height: 34px;" onchange="handleStatusSelectChange(this.value)">
                         <option value="">Tất cả</option>
                         <option value="Chờ lập đề nghị">Chờ lập đề nghị</option>
-                        <option value="Chờ nhập liệu">Chờ nhập liệu</option>
                         <option value="Chờ duyệt">Chờ duyệt</option>
                         <option value="Chờ chi trả">Chờ chi trả</option>
                         <option value="Hoàn thành">Hoàn thành</option>
@@ -966,26 +966,26 @@
 
             <div class="grid-4-cols">
                 <div>
-                    <span class="form-label">Tên người yêu cầu</span>
-                    <input type="text" class="form-control" id="searchNycName" placeholder="Nhập tên người yêu cầu...">
+                    <span class="form-label">Tên cá nhân/Tổ chức yêu cầu</span>
+                    <input type="text" class="form-control" id="searchNycName" placeholder="Nhập tên cá nhân/tổ chức yêu cầu...">
                 </div>
                 <div>
-                    <span class="form-label">Cán bộ xử lý</span>
-                    <input type="text" class="form-control" id="searchCbXuLy" placeholder="Nhập tên cán bộ lập...">
-                </div>
-                <div>
-                    <span class="form-label">Đề nghị: Từ ngày</span>
+                    <span class="form-label">Từ ngày</span>
                     <div class="date-input-wrapper">
                         <input type="text" class="form-control" id="searchFromDate" placeholder="dd/mm/yyyy">
                         <i class="fa-regular fa-calendar-days"></i>
                     </div>
                 </div>
                 <div>
-                    <span class="form-label">Đề nghị: Đến ngày</span>
+                    <span class="form-label">Đến ngày</span>
                     <div class="date-input-wrapper">
                         <input type="text" class="form-control" id="searchToDate" placeholder="dd/mm/yyyy">
                         <i class="fa-regular fa-calendar-days"></i>
                     </div>
+                </div>
+                <div>
+                    <span class="form-label">Cán bộ xử lý</span>
+                    <input type="text" class="form-control" id="searchCbXuLy" placeholder="Nhập tên cán bộ xử lý...">
                 </div>
             </div>
 
@@ -1020,7 +1020,8 @@
 
                 <!-- Action Buttons Toolbar -->
                 <div style="display: flex; gap: 8px; align-items: center;">
-                    <button class="btn btn-primary" id="btnCreateProposalTop" onclick="openCreateProposalForm()" style="height: 32px; padding: 0 12px; font-size: 12.5px;"><i class="fa fa-plus"></i> Lập đề nghị</button>
+                    <button class="btn btn-primary" id="btnCreateProposalTop" onclick="kpcdTbOpenPage()" style="height: 32px; padding: 0 12px; font-size: 12.5px;"><i class="fa fa-plus"></i> Tạo thông báo chi trả</button>
+                    <button type="button" class="btn btn-primary" id="btnQdtuCreateTop" onclick="qdtuOpenPage()" style="height: 32px; padding: 0 12px; font-size: 12.5px;"><i class="fa-solid fa-file-signature"></i> Tạo QĐ tạm ứng</button>
                     <button class="btn btn-secondary" onclick="exportExcelKinhPhi()" style="height: 32px; padding: 0 12px; font-size: 12.5px;"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
                 </div>
             </div>
@@ -1031,16 +1032,15 @@
                     <thead>
                         <tr>
                             <th style="width: 44px; text-align: center; cursor: pointer;" onclick="sortKinhPhiTable('stt')" title="Sắp xếp theo STT">STT <i class="fa-solid fa-sort" id="sortIcon_stt" style="font-size:11px; opacity:0.4;"></i></th>
-                            <th style="width: 105px; text-align: left; cursor: pointer;" onclick="sortKinhPhiTable('code')" title="Sắp xếp theo Mã đề nghị">Mã đề nghị <i class="fa-solid fa-sort" id="sortIcon_code" style="font-size:11px; opacity:0.4;"></i></th>
-                            <th style="width: 135px; text-align: left; cursor: pointer;" onclick="sortKinhPhiTable('type')" title="Sắp xếp theo Loại đề nghị">Loại đề nghị <i class="fa-solid fa-sort" id="sortIcon_type" style="font-size:11px; opacity:0.4;"></i></th>
-                            <th style="width: 105px; text-align: left; cursor: pointer;" onclick="sortKinhPhiTable('ycbtCode')" title="Sắp xếp theo Mã vụ việc">Mã vụ việc <i class="fa-solid fa-sort" id="sortIcon_ycbtCode" style="font-size:11px; opacity:0.4;"></i></th>
-                            <th style="min-width: 140px; text-align: left; cursor: pointer;" onclick="sortKinhPhiTable('nycName')" title="Sắp xếp theo Người yêu cầu">Tên người yêu cầu <i class="fa-solid fa-sort" id="sortIcon_nycName" style="font-size:11px; opacity:0.4;"></i></th>
-                            <th style="width: 135px; text-align: left;">Tư cách NYC</th>
-                            <th style="width: 135px; text-align: right; cursor: pointer;" onclick="sortKinhPhiTable('amount')" title="Sắp xếp theo Số tiền đề nghị">Số tiền đề nghị (VNĐ) <i class="fa-solid fa-sort" id="sortIcon_amount" style="font-size:11px; opacity:0.4;"></i></th>
+                            <th style="width: 105px; text-align: left; cursor: pointer;" onclick="sortKinhPhiTable('code')" title="Sắp xếp theo Mã kinh phí">Mã kinh phí <i class="fa-solid fa-sort" id="sortIcon_code" style="font-size:11px; opacity:0.4;"></i></th>
+                            <th style="width: 110px; text-align: left; cursor: pointer;" onclick="sortKinhPhiTable('ycbtCode')" title="Sắp xếp theo Mã hồ sơ GQBT">Mã hồ sơ GQBT <i class="fa-solid fa-sort" id="sortIcon_ycbtCode" style="font-size:11px; opacity:0.4;"></i></th>
+                            <th style="width: 130px; text-align: left; cursor: pointer;" onclick="sortKinhPhiTable('type')" title="Sắp xếp theo Loại kinh phí">Loại kinh phí <i class="fa-solid fa-sort" id="sortIcon_type" style="font-size:11px; opacity:0.4;"></i></th>
+                            <th style="min-width: 140px; text-align: left; cursor: pointer;" onclick="sortKinhPhiTable('nycName')" title="Sắp xếp theo Tên cá nhân/Tổ chức yêu cầu">Tên cá nhân/Tổ chức yêu cầu <i class="fa-solid fa-sort" id="sortIcon_nycName" style="font-size:11px; opacity:0.4;"></i></th>
+                            <th style="width: 130px; text-align: right; cursor: pointer;" onclick="sortKinhPhiTable('amount')" title="Sắp xếp theo Tổng số tiền duyệt chi">Tổng số tiền duyệt chi <i class="fa-solid fa-sort" id="sortIcon_amount" style="font-size:11px; opacity:0.4;"></i></th>
                             <th style="width: 120px; text-align: left;">Cán bộ xử lý</th>
-                            <th style="width: 95px; text-align: center; cursor: pointer;" onclick="sortKinhPhiTable('date')" title="Sắp xếp theo Ngày đề nghị">Ngày đề nghị <i class="fa-solid fa-sort" id="sortIcon_date" style="font-size:11px; opacity:0.4;"></i></th>
-                            <th style="width: 145px; text-align: left;">Hạn nhận / Sung quỹ</th>
-                            <th style="width: 125px; text-align: center; cursor: pointer;" onclick="sortKinhPhiTable('status')" title="Sắp xếp theo Trạng thái">Trạng thái <i class="fa-solid fa-sort" id="sortIcon_status" style="font-size:11px; opacity:0.4;"></i></th>
+                            <th style="width: 95px; text-align: center; cursor: pointer;" onclick="sortKinhPhiTable('date')" title="Sắp xếp theo Ngày trình">Ngày trình <i class="fa-solid fa-sort" id="sortIcon_date" style="font-size:11px; opacity:0.4;"></i></th>
+                            <th style="width: 130px; text-align: center;">Hạn nhận/Sung quỹ</th>
+                            <th style="width: 160px; min-width: 150px; text-align: center; cursor: pointer;" onclick="sortKinhPhiTable('status')" title="Sắp xếp theo Trạng thái">Trạng thái <i class="fa-solid fa-sort" id="sortIcon_status" style="font-size:11px; opacity:0.4;"></i></th>
                             <th style="width: 120px; text-align: center; min-width: 120px;" id="thProposalActions">Thao tác</th>
                         </tr>
                     </thead>
@@ -1371,12 +1371,12 @@
                             <span class="form-label">Phương thức chi trả tiền bồi thường<span class="required">*</span></span>
                             <div style="display:flex; gap:20px; align-items:center; height:38px;">
                                 <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:13.5px;">
-                                    <input type="radio" name="advRecMethodRadio" value="Chi trả trực tiếp bằng tiền mặt"
-                                        onchange="onAdvPayMethodChange(this.value)"> Chi trả trực tiếp bằng tiền mặt
+                                    <input type="radio" name="advRecMethodRadio" value="Nhận tiền mặt"
+                                        onchange="onAdvPayMethodChange(this.value)"> Nhận tiền mặt
                                 </label>
                                 <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:13.5px;">
-                                    <input type="radio" name="advRecMethodRadio" value="Chi trả qua chuyển khoản"
-                                        onchange="onAdvPayMethodChange(this.value)"> Chi trả qua chuyển khoản
+                                    <input type="radio" name="advRecMethodRadio" value="Nhận qua chuyển khoản"
+                                        onchange="onAdvPayMethodChange(this.value)"> Nhận qua chuyển khoản
                                 </label>
                             </div>
                             <input type="hidden" id="advRecMethod">
@@ -1421,12 +1421,12 @@
                             <span class="form-label">Phương thức chi trả tiền bồi thường<span class="required">*</span></span>
                             <div style="display:flex; gap:20px; align-items:center; height:38px;">
                                 <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:13.5px;">
-                                    <input type="radio" name="kpRecMethodRadio" value="Chi trả trực tiếp bằng tiền mặt"
-                                        onchange="onKpPayMethodChange(this.value)"> Chi trả trực tiếp bằng tiền mặt
+                                    <input type="radio" name="kpRecMethodRadio" value="Nhận tiền mặt"
+                                        onchange="onKpPayMethodChange(this.value)"> Nhận tiền mặt
                                 </label>
                                 <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:13.5px;">
-                                    <input type="radio" name="kpRecMethodRadio" value="Chi trả qua chuyển khoản"
-                                        onchange="onKpPayMethodChange(this.value)"> Chi trả qua chuyển khoản
+                                    <input type="radio" name="kpRecMethodRadio" value="Nhận qua chuyển khoản"
+                                        onchange="onKpPayMethodChange(this.value)"> Nhận qua chuyển khoản
                                 </label>
                             </div>
                             <input type="hidden" id="kpRecMethod">
@@ -1649,12 +1649,12 @@
                             <span class="form-label">Phương thức chi trả thực tế <span class="required">*</span></span>
                             <div style="display: flex; gap: 24px; align-items: center; margin-top: 8px;">
                                 <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13.5px; cursor: pointer; color: #1e293b;">
-                                    <input type="radio" name="payoutMethod" value="Chi trả qua chuyển khoản" id="payoutMethod_Transfer" checked onchange="handlePayoutMethodChange(this.value)" style="accent-color: var(--primary-color); width: 16px; height: 16px; cursor: pointer;">
-                                    <span>Chi trả qua chuyển khoản</span>
+                                    <input type="radio" name="payoutMethod" value="Nhận qua chuyển khoản" id="payoutMethod_Transfer" checked onchange="handlePayoutMethodChange(this.value)" style="accent-color: var(--primary-color); width: 16px; height: 16px; cursor: pointer;">
+                                    <span>Nhận qua chuyển khoản</span>
                                 </label>
                                 <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13.5px; cursor: pointer; color: #1e293b;">
-                                    <input type="radio" name="payoutMethod" value="Chi trả trực tiếp bằng tiền mặt" id="payoutMethod_Cash" onchange="handlePayoutMethodChange(this.value)" style="accent-color: var(--primary-color); width: 16px; height: 16px; cursor: pointer;">
-                                    <span>Chi trả trực tiếp bằng tiền mặt</span>
+                                    <input type="radio" name="payoutMethod" value="Nhận tiền mặt" id="payoutMethod_Cash" onchange="handlePayoutMethodChange(this.value)" style="accent-color: var(--primary-color); width: 16px; height: 16px; cursor: pointer;">
+                                    <span>Nhận tiền mặt</span>
                                 </label>
                             </div>
                         </div>
@@ -1690,7 +1690,7 @@
                                     <input type="text" class="form-control" id="payoutBankName" placeholder="Nhập tên ngân hàng nhận...">
                                 </div>
                                 <div class="form-group" style="margin-bottom: 0;">
-                                    <span class="form-label">Chi nhánh ngân hàng nhận <span class="required">*</span></span>
+                                    <span class="form-label">Chi nhánh ngân hàng nhận</span>
                                     <input type="text" class="form-control" id="payoutBankBranch" placeholder="Nhập chi nhánh ngân hàng nhận...">
                                 </div>
                             </div>
@@ -1707,7 +1707,9 @@
                             <textarea class="form-control" id="payoutNote" rows="2" placeholder="Nhập ghi chú chi tiết quá trình chi trả (nếu có)..." maxlength="1000"></textarea>
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 0;">
+                        <!-- Tài liệu kèm theo: bảng chuẩn dùng chung (btnn_tai_lieu_kem_theo.js, gắn tại quan_ly_kinh_phi_kpdt.js) -->
+                        <div id="payoutTlkt"></div>
+                        <div class="form-group" style="display: none;">
                             <span class="form-label">Tài liệu kèm theo <span class="required">*</span></span>
                             <div style="display: flex; align-items: center; gap: 15px; background: #F8FAFC; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm);">
                                 <button type="button" class="btn btn-outline-primary btn-sm" id="btnPayoutUpload" onclick="triggerPayoutFileUpload()" style="font-size: 12px; padding: 5px 10px;">
@@ -1753,7 +1755,9 @@
                             <span class="form-label">Căn cứ / lý do sung quỹ <span class="required">*</span></span>
                             <textarea class="form-control" id="treasuryForfeitReason" rows="2" placeholder="Nhập căn cứ, lý do sung quỹ..."></textarea>
                         </div>
-                        <div class="form-group" style="margin-bottom:0;">
+                        <!-- Tài liệu kèm theo (chứng từ nộp ngân sách): bảng chuẩn dùng chung, gắn tại quan_ly_kinh_phi_kpdt.js -->
+                        <div id="treasuryTlkt"></div>
+                        <div class="form-group" style="display:none;">
                             <span class="form-label">Tài liệu chứng từ nộp ngân sách <span class="required">*</span></span>
                             <div style="display:flex; align-items:center; gap:15px; background:white; padding:10px; border:1px solid var(--border-color); border-radius:var(--border-radius-sm);">
                                 <button type="button" class="btn btn-outline-primary btn-sm" id="btnTreasuryFileUpload" onclick="triggerTreasuryFileUpload()" style="font-size:12px; padding:5px 10px;">
@@ -1783,10 +1787,10 @@
                     class="fa-solid fa-circle-check"></i> Hoàn thành chi trả</button>
             <button class="btn btn-success" id="btnCompleteTreasuryForfeit" onclick="completeTreasuryForfeit()" style="display: none;"><i
                     class="fa-solid fa-circle-check"></i> Hoàn thành sung quỹ</button>
-            <button class="btn btn-danger" id="btnLeaderReject" onclick="openRejectModal(selectedProposalId)" style="display: none;"><i
-                    class="fa-solid fa-ban"></i> Từ chối</button>
-            <button class="btn btn-success" id="btnLeaderApprove" onclick="openApproveModal(selectedProposalId)" style="display: none;"><i
-                    class="fa-solid fa-circle-check"></i> Ký duyệt</button>
+            <button class="btn btn-danger" id="btnLeaderReject" onclick="openRejectModal(selectedProposalId)" style="display: none; background:#ef4444; color:#fff; border:none;"><i
+                    class="fa-solid fa-circle-xmark"></i> Từ chối</button>
+            <button class="btn btn-primary" id="btnLeaderApprove" onclick="openApproveModal(selectedProposalId)" style="display: none;"><i
+                    class="fa-solid fa-file-signature"></i> Ký duyệt</button>
         </div>
     </div>
 
@@ -1809,8 +1813,8 @@
                         <input class="form-control" id="fundingClaimSearchCode" placeholder="Nhập mã vụ việc...">
                     </div>
                     <div class="form-group">
-                        <span class="form-label">Người yêu cầu</span>
-                        <input class="form-control" id="fundingClaimSearchRequester" placeholder="Nhập họ tên...">
+                        <span class="form-label">Tên cá nhân/Tổ chức yêu cầu</span>
+                        <input class="form-control" id="fundingClaimSearchRequester" placeholder="Nhập tên cá nhân/tổ chức yêu cầu...">
                     </div>
                 </div>
                 <div style="display:flex; justify-content:flex-end; gap:8px; margin-bottom:12px;">
@@ -1822,7 +1826,7 @@
                         <thead>
                             <tr>
                                 <th style="width:120px; text-align:center;">Mã vụ việc</th>
-                                <th style="width:160px;">Người yêu cầu</th>
+                                <th style="width:160px;">Tên cá nhân/Tổ chức yêu cầu</th>
                                 <th style="width:180px;">Cơ quan giải quyết</th>
                                 <th style="width:130px; text-align:right;">Số tiền</th>
                                 <th style="width:130px; text-align:center;">Trạng thái</th>
@@ -1857,8 +1861,8 @@
                         <input class="form-control" id="fundingDecSearchClaim" placeholder="Nhập mã vụ việc...">
                     </div>
                     <div class="form-group">
-                        <span class="form-label">Họ và tên người yêu cầu</span>
-                        <input class="form-control" id="fundingDecSearchRequester" placeholder="Nhập họ tên...">
+                        <span class="form-label">Tên cá nhân/Tổ chức yêu cầu</span>
+                        <input class="form-control" id="fundingDecSearchRequester" placeholder="Nhập tên cá nhân/tổ chức yêu cầu...">
                     </div>
                     <div class="form-group">
                         <span class="form-label">Cơ quan ban hành</span>
@@ -1885,7 +1889,7 @@
                                 <th style="width:130px;">Mã vụ việc</th>
                                 <th style="width:150px;">Số quyết định</th>
                                 <th style="width:130px; text-align:center;">Ngày quyết định</th>
-                                <th style="width:180px;">Họ và tên người yêu cầu</th>
+                                <th style="width:180px;">Tên cá nhân/Tổ chức yêu cầu</th>
                                 <th style="width:130px; text-align:center;">Trạng thái</th>
                                 <th style="width:100px; text-align:center;">Thao tác</th>
                             </tr>
@@ -1905,7 +1909,15 @@
 
     <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="quan_ly_kinh_phi_boi_thuong.js?v=20261015d"></script>
+    <script src="quan_ly_kinh_phi_boi_thuong.js?v=20261023kpcd"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261023kpcd"></script>
+    <script src="btnn_badge_cho_xu_ly.js?v=20261023bdg"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261026pdtb"></script>
+    <script src="quan_ly_kinh_phi_kptb.js?v=20261023kpcd"></script>
+    <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
+    <script src="quan_ly_kinh_phi_qdtu.js?v=20261023kpcd"></script>
+    <script src="quan_ly_kinh_phi_kpcd.js?v=20261023kpcd"></script>
+    <script src="quan_ly_kinh_phi_kpdt.js?v=20261023kpdt"></script>
 
     <!-- Custom Confirmation Modal HTML -->
     <div id="customConfirmOverlay" class="confirm-modal-overlay">
@@ -1997,8 +2009,8 @@
             </div>
             <div class="confirm-modal-footer" style="padding: 16px 24px 24px 24px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px;">
                 <button type="button" class="btn btn-secondary btn-sm" onclick="closeApproveModal(false)">Hủy bỏ</button>
-                <button type="button" class="btn btn-success btn-sm" onclick="closeApproveModal(true)" style="background-color: var(--success-color, #10b981); border: none; padding: 8px 18px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
-                    <i class="fa-solid fa-circle-check"></i> Ký duyệt
+                <button type="button" class="btn btn-primary btn-sm" onclick="closeApproveModal(true)" style="padding: 8px 18px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-file-signature"></i> Ký duyệt
                 </button>
             </div>
         </div>
@@ -2053,7 +2065,7 @@
             <div class="confirm-modal-footer" style="padding: 16px 24px 24px 24px; background-color: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px;">
                 <button type="button" class="btn btn-secondary btn-sm" onclick="closeRejectModal(false)">Hủy bỏ</button>
                 <button type="button" class="btn btn-danger btn-sm" onclick="closeRejectModal(true)" style="background-color: var(--danger-color, #ef4444); border: none; padding: 8px 18px; font-weight: 600; display: flex; align-items: center; gap: 6px;">
-                    <i class="fa-solid fa-ban"></i> Xác nhận từ chối
+                    <i class="fa-solid fa-circle-xmark"></i> Từ chối
                 </button>
             </div>
         </div>

@@ -115,7 +115,7 @@
             document.getElementById('rootList').innerHTML = rows.length ? rows.join('') : '<span class="muted">Không có đơn vị gốc phù hợp.</span>';
         }
 
-        function blankNode() { return { leaders: [], allowUnit: false, units: [], allowOfficer: false, officers: [] }; }
+        function blankNode() { return { leaders: [], allowUnit: false, units: [], allowOfficer: false, officers: [], kyNhay: false }; }
 
         function selectRoot(id) {
             selectedRoot = id;
@@ -129,6 +129,7 @@
                 // 01 hình thức phân công: không có đơn vị cấp dưới thì không Chuyển đơn vị; bật cả hai thì giữ Chuyển đơn vị
                 if (n.allowUnit && !WF.getChildren(u).length) n.allowUnit = false;
                 if (n.allowUnit && n.allowOfficer) n.allowOfficer = false;
+                if (typeof n.kyNhay !== 'boolean') n.kyNhay = WF.isKyNhayUnit ? WF.isKyNhayUnit(u, flowType) : false;
             });
             renderConfig();
         }
@@ -159,6 +160,7 @@
                         <div>
                             <div class="col-title"><i class="fa-solid fa-user-tie"></i> Nhóm lãnh đạo</div>
                             <div class="check-list">${unitUsers.length ? unitUsers.map(x => `<label><input type="checkbox" ${n.leaders.includes(x.id) ? 'checked' : ''} onchange="toggleArr('${esc(u)}','leaders','${esc(x.id)}',this.checked)"> ${esc(x.name)} <span class="muted">- ${esc(x.title)}</span></label>`).join('') : '<span class="muted">Đơn vị chưa có tài khoản cán bộ.</span>'}</div>
+                            <label style="display:block; margin-top:8px;"><input type="checkbox" ${n.kyNhay ? 'checked' : ''} onchange="draft['${esc(u)}'].kyNhay = this.checked"> Ký nháy</label>
                         </div>
                         <div>
                             <div class="col-title"><i class="fa-solid fa-route"></i> Hình thức phân công</div>
@@ -237,7 +239,7 @@
                 const n = draft[u];
                 // Chỉ lưu danh sách của hình thức phân công đã chọn; danh sách của hình thức còn lại bị xóa
                 const toUnit = !!n.allowUnit, toOfficer = !toUnit && !!n.allowOfficer;
-                if (n.leaders.length || toUnit || toOfficer) clean[u] = { leaders: n.leaders.slice(), allowUnit: toUnit, units: toUnit ? n.units.slice() : [], allowOfficer: toOfficer, officers: toOfficer ? n.officers.slice() : [] };
+                if (n.leaders.length || toUnit || toOfficer) clean[u] = { leaders: n.leaders.slice(), allowUnit: toUnit, units: toUnit ? n.units.slice() : [], allowOfficer: toOfficer, officers: toOfficer ? n.officers.slice() : [], kyNhay: !!n.kyNhay };
             });
             cfg[selectedRoot] = clean;
             WF.saveFlowConfig(cfg, flowType);

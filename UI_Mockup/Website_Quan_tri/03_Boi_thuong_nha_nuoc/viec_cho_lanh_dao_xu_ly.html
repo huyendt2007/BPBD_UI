@@ -68,7 +68,7 @@
         <div class="tabs-card">
             <div class="wf-tabs">
                 <button class="tab-btn active" data-tab="pending" onclick="switchTab('pending')"><i class="fa-solid fa-inbox"></i> Chờ xử lý <span class="wf-count" id="cntPending">0</span></button>
-                <button class="tab-btn" data-tab="done" onclick="switchTab('done')"><i class="fa-solid fa-clock-rotate-left"></i> Đã xử lý <span class="wf-count" id="cntDone">0</span></button>
+                <button class="tab-btn" data-tab="done" onclick="switchTab('done')"><i class="fa-solid fa-clock-rotate-left"></i> Đã xử lý</button>
             </div>
         </div>
 
@@ -192,21 +192,6 @@
                     <textarea id="decNote" class="form-control" rows="4"></textarea>
                     <div class="error-text" id="decErr">Đây là trường bắt buộc</div>
                 </div>
-                <!-- Xác định CQGQBT - Lãnh đạo cấp cuối: ký số ngay trong popup -->
-                <div id="decSignBlock" style="display:none; border:1px solid #bfdbfe; background:#f8fbff; border-radius:8px; padding:12px 14px;">
-                    <div style="font-weight:700; color:#1e3a8a; margin-bottom:10px;"><i class="fa-solid fa-signature"></i> Ký số</div>
-                    <div class="form-group">
-                        <span class="form-label">Chứng thư số<span class="required">*</span></span>
-                        <select id="decCert" class="form-control"></select>
-                        <div class="error-text" id="decCertErr">Đây là trường bắt buộc</div>
-                    </div>
-                    <div class="form-group" style="margin-bottom:0;">
-                        <span class="form-label">Mã PIN<span class="required">*</span></span>
-                        <input type="password" id="decPin" class="form-control" autocomplete="off" placeholder="Nhập mã PIN USB Token...">
-                        <div class="error-text" id="decPinErr">Đây là trường bắt buộc</div>
-                    </div>
-                    <div id="decSignErr" style="display:none; margin-top:10px; background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; border-radius:6px; padding:8px 10px; font-size:12.5px;"></div>
-                </div>
             </div>
             <div class="wf-modal-footer">
                 <button class="btn btn-secondary" onclick="closeOverlay('decideOverlay')">Hủy bỏ</button>
@@ -215,11 +200,11 @@
         </div>
     </div>
 
-    <!-- Popup Thụ lý hồ sơ và Cử người giải quyết bồi thường -->
+    <!-- Popup cũ Cử người giải quyết bồi thường (không còn dùng: thay bằng Popup Cử người giải quyết bồi thường tại Giải quyết yêu cầu bồi thường) -->
     <div class="wf-overlay" id="thuLyOverlay">
         <div class="wf-modal">
             <div class="wf-modal-header">
-                <h3><i class="fa-solid fa-gavel"></i> Thụ lý hồ sơ <span id="tlCode"></span></h3>
+                <h3><i class="fa-solid fa-user-plus"></i> Cử người giải quyết bồi thường <span id="tlCode"></span></h3>
                 <span class="wf-close" onclick="closeOverlay('thuLyOverlay')">&times;</span>
             </div>
             <div class="wf-modal-body">
@@ -241,7 +226,7 @@
             </div>
             <div class="wf-modal-footer">
                 <button class="btn btn-secondary" onclick="closeOverlay('thuLyOverlay')">Hủy bỏ</button>
-                <button class="btn btn-primary" onclick="submitThuLy()"><i class="fa-solid fa-circle-check"></i> Xác nhận thụ lý</button>
+                <button class="btn btn-primary" onclick="submitThuLy()"><i class="fa-solid fa-circle-check"></i> Cử người giải quyết</button>
             </div>
         </div>
     </div>
@@ -298,7 +283,10 @@
 
     <div id="toast" class="toast-notif"></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261020v5"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261023kdtc"></script>
+    <!-- Màn Ký duyệt / Từ chối dùng chung (Xác định CQGQBT): bố cục 2 vùng + khối Tài liệu kèm theo chỉ đọc -->
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261026pdtb"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261023kdtc"></script>
     <script>
         const WF = BTNN_WF;
         const WT = WF.WORK_TYPES;
@@ -307,7 +295,7 @@
         let decisionMode = 'approve';
         let currentTasks = [];
         const TAB_NOTES = {
-            pending: 'Công việc đang chờ Lãnh đạo xử lý: Phân công, Phê duyệt nội dung trình, Thụ lý hồ sơ, Ký duyệt Quyết định giải quyết bồi thường, Ký duyệt cấp kinh phí.',
+            pending: 'Công việc đang chờ Lãnh đạo xử lý: Phân công, Phê duyệt nội dung trình, Cử người giải quyết bồi thường, Ký duyệt Quyết định giải quyết bồi thường, Ký duyệt cấp kinh phí.',
             done: 'Mỗi dòng là 01 lần Lãnh đạo đã xử lý. Được Thu hồi khi bên nhận chưa xử lý; việc bên nhận đã xem hồ sơ không ảnh hưởng đến quyền thu hồi.'
         };
         // Màu nhãn Loại công việc
@@ -340,7 +328,7 @@
             const me = WF.getCurrentUser();
             const types = WF.getRequestTypesForUser(me.id);
             document.getElementById('fType').innerHTML = `<option value="">Tất cả</option>` + types.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('');
-            const kinds = Array.from(new Set([].concat(WF.APPROVAL_KINDS.XD, WF.APPROVAL_KINDS.YCBT)));
+            const kinds = Array.from(new Set([].concat(WF.APPROVAL_KINDS.XD, WF.APPROVAL_KINDS.YCBT, WF.APPROVAL_KINDS.KP || [])));
             document.getElementById('fKind').innerHTML = `<option value="">Tất cả</option>` + kinds.map(k => `<option value="${esc(k)}">${esc(k)}</option>`).join('');
             document.getElementById('fWork').innerHTML = `<option value="">Tất cả</option>` + WF.WORK_TYPE_ORDER.map(k => `<option value="${esc(k)}">${esc(k)}</option>`).join('');
             const tab = new URLSearchParams(location.search).get('tab');
@@ -385,7 +373,6 @@
         function renderAll() {
             const work = WF.getLeaderWork();
             document.getElementById('cntPending').textContent = work.pending.length;
-            document.getElementById('cntDone').textContent = work.done.length;
             const all = work[activeTab];
             const base = filterTasks(all, true);
             const sel = document.getElementById('fWork').value;
@@ -404,9 +391,10 @@
                 const c = esc(t.code);
                 if (activeTab === 'pending') {
                     if (t.type === WT.PHAN_CONG) acts += `<button class="act primary" onclick="event.stopPropagation(); openAssign('${c}')"><i class="fa-solid fa-diagram-project"></i> Phân công</button>`;
-                    else if (t.type === WT.PHE_DUYET || t.type === WT.KY_QD) acts += `<button class="act success" onclick="event.stopPropagation(); openDecision('${c}','approve')"><i class="fa-solid fa-check"></i> ${WF.approveVerb(t.rec)}</button><button class="act danger" onclick="event.stopPropagation(); openDecision('${c}','reject')"><i class="fa-solid fa-xmark"></i> Từ chối</button>`;
-                    else if (t.type === WT.THU_LY) acts += `<button class="act success" onclick="event.stopPropagation(); openThuLy('${c}')"><i class="fa-solid fa-gavel"></i> Thụ lý</button><button class="act danger" onclick="event.stopPropagation(); openKtl('${c}')"><i class="fa-solid fa-ban"></i> Không thụ lý</button>`;
-                    else if (t.type === WT.KY_KP) acts += `<button class="act success" onclick="event.stopPropagation(); openKpDecision('${esc(t.proposal.id)}','approve')"><i class="fa-solid fa-check"></i> Ký duyệt</button><button class="act danger" onclick="event.stopPropagation(); openKpDecision('${esc(t.proposal.id)}','reject')"><i class="fa-solid fa-xmark"></i> Từ chối</button>`;
+                    else if (t.type === WT.PHE_DUYET || t.type === WT.KY_QD) acts += `<button class="act success" onclick="event.stopPropagation(); openDecision('${c}','approve')"><i class="fa-solid fa-file-signature"></i> ${WF.approveVerb(t.rec)}</button><button class="act danger" onclick="event.stopPropagation(); openDecision('${c}','reject')"><i class="fa-solid fa-ban"></i> Từ chối</button>`;
+                    // Hồ sơ Giải quyết YCBT "Cử người giải quyết bồi thường": Thủ trưởng cử người giải quyết (không còn Không thụ lý ở bước này)
+                    // Cử người giải quyết bồi thường: Cán bộ lập, trình; Lãnh đạo chỉ Ký duyệt / Từ chối phiếu trình (không có nút Cử người / Cập nhật)
+                    else if (t.type === WT.KY_KP) acts += `<button class="act success" onclick="event.stopPropagation(); openKpDecision('${esc(t.proposal.id)}','approve')"><i class="fa-solid fa-file-signature"></i> Ký duyệt</button><button class="act danger" onclick="event.stopPropagation(); openKpDecision('${esc(t.proposal.id)}','reject')"><i class="fa-solid fa-ban"></i> Từ chối</button>`;
                 } else if (t.source === 'wf' && isLatestDoneOf(t) && WF.getRecallInfo(t.rec, me)) {
                     acts += `<button class="act warn" onclick="event.stopPropagation(); confirmRecall('${c}')"><i class="fa-solid fa-rotate-left"></i> Thu hồi</button>`;
                 }
@@ -474,9 +462,10 @@
                     html += `<div class="sec-title">II. Phân công xử lý</div><div class="info-grid">${row('Đơn vị gốc', esc(WF.unitName(rec.rootUnitId)))}${row('Đơn vị đang phân công', esc(WF.unitName(rec.currentUnitId)))}</div>${WF.renderRoutesHtml(rec)}`;
                 } else if (t.type === WT.THU_LY) {
                     const tl = rec.thuLy;
-                    html += `<div class="sec-title">II. Thụ lý hồ sơ</div><div class="info-grid">
+                    html += `<div class="sec-title">II. Cử người giải quyết bồi thường</div><div class="info-grid">
                         ${row('Cơ quan giải quyết bồi thường', esc(WF.unitName(rec.rootUnitId)))}
-                        ${row('Đơn vị thụ lý', esc(WF.unitName(WF.thuLyUnitOf(rec))))}
+                        ${row('Đơn vị cử người giải quyết', esc(WF.unitName(WF.thuLyUnitOf(rec))))}
+                        ${rec.status === 'Bị từ chối' && rec.returned ? row('Lý do bị từ chối', esc(rec.returned.reason || '--')) : ''}
                         ${row('Cán bộ tiếp nhận hồ sơ', rec.chuTri && !tl ? esc(WF.userLabel(rec.chuTri)) : (tl && tl.officers ? tl.officers.map(id => esc(WF.userLabel(id))).join('<br>') : '--'))}
                         ${tl && tl.rejected ? row('Không thụ lý', esc((rec.gqData && rec.gqData.rejectReason) || '--')) : ''}
                         ${tl && tl.note ? row('Ý kiến chỉ đạo', esc(tl.note)) : ''}
@@ -503,9 +492,8 @@
             const c = esc(t.code);
             if (activeTab === 'pending') {
                 if (t.type === WT.PHAN_CONG && WF.canAssign(rec, me)) footer += `<button class="btn btn-primary" onclick="closeOverlay('detailOverlay'); openAssign('${c}')"><i class="fa-solid fa-diagram-project"></i> Phân công</button>`;
-                if ((t.type === WT.PHE_DUYET || t.type === WT.KY_QD) && WF.canApprove(rec, me)) footer += `<button class="btn btn-danger" style="background:#ef4444; color:#fff; border:none;" onclick="closeOverlay('detailOverlay'); openDecision('${c}','reject')">Từ chối</button><button class="btn btn-primary" onclick="closeOverlay('detailOverlay'); openDecision('${c}','approve')"><i class="fa-solid fa-check"></i> ${WF.approveVerb(rec)}</button>`;
-                if (t.type === WT.THU_LY && WF.canThuLy(rec, me)) footer += `<button class="btn btn-danger" style="background:#ef4444; color:#fff; border:none;" onclick="closeOverlay('detailOverlay'); openKtl('${c}')"><i class="fa-solid fa-ban"></i> Không thụ lý</button><button class="btn btn-primary" onclick="closeOverlay('detailOverlay'); openThuLy('${c}')"><i class="fa-solid fa-gavel"></i> Thụ lý</button>`;
-                if (t.type === WT.KY_KP && t.proposal.status === 'Chờ duyệt') footer += `<button class="btn btn-danger" style="background:#ef4444; color:#fff; border:none;" onclick="closeOverlay('detailOverlay'); openKpDecision('${esc(t.proposal.id)}','reject')">Từ chối</button><button class="btn btn-primary" onclick="closeOverlay('detailOverlay'); openKpDecision('${esc(t.proposal.id)}','approve')"><i class="fa-solid fa-check"></i> Ký duyệt</button>`;
+                if ((t.type === WT.PHE_DUYET || t.type === WT.KY_QD) && WF.canApprove(rec, me)) footer += `<button class="btn btn-danger" style="background:#ef4444; color:#fff; border:none;" onclick="closeOverlay('detailOverlay'); openDecision('${c}','reject')"><i class="fa-solid fa-circle-xmark"></i> Từ chối</button><button class="btn btn-primary" onclick="closeOverlay('detailOverlay'); openDecision('${c}','approve')"><i class="fa-solid fa-file-signature"></i> ${WF.approveVerb(rec)}</button>`;
+                if (t.type === WT.KY_KP && t.proposal.status === 'Chờ duyệt') footer += `<button class="btn btn-danger" style="background:#ef4444; color:#fff; border:none;" onclick="closeOverlay('detailOverlay'); openKpDecision('${esc(t.proposal.id)}','reject')"><i class="fa-solid fa-circle-xmark"></i> Từ chối</button><button class="btn btn-primary" onclick="closeOverlay('detailOverlay'); openKpDecision('${esc(t.proposal.id)}','approve')"><i class="fa-solid fa-file-signature"></i> Ký duyệt</button>`;
             } else if (t.source === 'wf' && isLatestDoneOf(t) && WF.getRecallInfo(rec, me)) {
                 footer += `<button class="btn btn-secondary" onclick="closeOverlay('detailOverlay'); confirmRecall('${c}')"><i class="fa-solid fa-rotate-left"></i> Thu hồi</button>`;
             }
@@ -531,7 +519,7 @@
             resetXdSign();
             document.getElementById('decContext').style.display = '';
             const btn = document.getElementById('decSubmit');
-            btn.textContent = mode === 'approve' ? 'Ký duyệt' : 'Từ chối';
+            btn.innerHTML = mode === 'approve' ? '<i class="fa-solid fa-file-signature"></i> Ký duyệt' : '<i class="fa-solid fa-circle-xmark"></i> Từ chối';
             btn.className = mode === 'approve' ? 'btn btn-primary' : 'btn btn-danger';
             btn.style.cssText = mode === 'approve' ? '' : 'background:#ef4444; color:#fff; border:none;';
             openOverlay('decideOverlay');
@@ -605,23 +593,26 @@
             const isXd = WF.isXdRec(rec);
             resetXdSign();
             // Xác định CQGQBT: popup tối giản (không hiển thị lại tệp trình ký / nội dung hồ sơ); cấp cuối ký số ngay trong popup
+            // Xác định CQGQBT: dùng màn Ký duyệt / Từ chối chung (btnn_lanh_dao_actions.js) - đồng nhất bố cục với các phân hệ
+            if (isXd && window.BTNN_LD) { BTNN_LD.openDecision(code, mode, renderAll); return; }
             if (isXd) { openXdDecision(rec, code, isLast, mode); return; }
             document.getElementById('decNextLabel').textContent = 'Lãnh đạo phê duyệt cấp tiếp theo';
             document.getElementById('decContext').style.display = '';
             const isXdKq = isXd && a.kind === WF.KIND_KQXD;
             // Chỉ cấp cuối hệ thống ký số văn bản và gán chữ ký tại vị trí đã định; cấp trước Ký duyệt = đồng ý chuyển cấp tiếp theo
-            const xdSign = isXd && a.signDoc && a.signDoc.method !== 'Ký ngoài' ? ' Hệ thống sẽ ký số và gán chữ ký vào văn bản tại vị trí chữ ký đã định (chứng thư số của Lãnh đạo).' : '';
+            const xdSign = '';
             const lastStatus = isXdKq ? 'Đã chuyển CQGQBT' : (a.resultStatus || WF.SUBMIT_KINDS[a.kind] || a.prevStatus || '');
             const xdAuto = isXdKq ? ` Hệ thống tự động chuyển hồ sơ đến ${WF.unitName(WF.xdTargetUnitId(rec))}.` : '';
-            const after = mode === 'approve' ? (isLast ? `Cấp phê duyệt cuối cùng.${xdSign} Sau khi ${verb}, hồ sơ chuyển [${lastStatus}].${xdAuto}` : `Sau khi ${verb}, hồ sơ chuyển ${WF.unitName(a.path[a.level + 1])} ${verb}${isXd ? ' (cấp này không ký số văn bản)' : ''}.`) : 'Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị trả lại] cho cán bộ chủ trì.';
+            const after = mode === 'approve' ? (isLast ? `Cấp phê duyệt cuối cùng.${xdSign} Sau khi ${verb}, hồ sơ chuyển [${lastStatus}].${xdAuto}` : `Sau khi ${verb}, hồ sơ chuyển ${WF.unitName(a.path[a.level + 1])} ${verb}${isXd ? ' (cấp này không ký số văn bản)' : ''}.`) : `Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị từ chối] cho cán bộ chủ trì.`;
             document.getElementById('decTitle').innerHTML = mode === 'approve' ? `<i class="fa-solid fa-circle-check"></i> ${Verb} hồ sơ ${esc(code)}` : `<i class="fa-solid fa-circle-xmark" style="color:#dc2626;"></i> Từ chối phê duyệt hồ sơ ${esc(code)}`;
             document.getElementById('decContext').innerHTML = WF.renderDraftDocHtml(rec) + `<div><strong>Nội dung trình:</strong> ${esc(a.kind)} - ${esc(WF.userName(a.submittedBy))}</div>${a.content ? `<div class="muted">${esc(a.content)}</div>` : ''}<div style="margin-top:6px;"><strong>Cấp phê duyệt:</strong> ${a.level + 1}/${a.path.length} - ${esc(WF.unitName(a.path[a.level]))}</div><div class="hint">${esc(after)}</div>`;
             document.getElementById('decLabel').innerHTML = mode === 'approve' ? `Ý kiến ${verb}` : 'Lý do từ chối phê duyệt<span class="required">*</span>';
             document.getElementById('decNote').placeholder = mode === 'approve' ? `Nhập ý kiến ${verb}...` : 'Nhập lý do từ chối phê duyệt...';
             document.getElementById('decNote').value = '';
             document.getElementById('decErr').style.display = 'none';
-            const nextLeaders = mode === 'approve' ? WF.nextLevelLeaders(rec) : [];
-            document.getElementById('decNextGroup').style.display = nextLeaders.length ? 'block' : 'none';
+            // Lãnh đạo các cấp do cán bộ chọn khi trình: không chọn Lãnh đạo cấp tiếp theo (WF.approve tự chuyển Lãnh đạo cấp tiếp theo đã chọn)
+            const nextLeaders = [];
+            document.getElementById('decNextGroup').style.display = 'none';
             document.getElementById('decNextErr').style.display = 'none';
             document.getElementById('decNext').innerHTML = `<option value="">Chọn Lãnh đạo ${esc(nextLeaders.length ? WF.unitName(a.path[a.level + 1]) : '')}...</option>` + nextLeaders.map(u => `<option value="${esc(u)}">${esc(WF.userLabel(u))}</option>`).join('');
             const btn = document.getElementById('decSubmit');
@@ -631,17 +622,8 @@
             openOverlay('decideOverlay');
         }
         // ---------- Xác định CQGQBT: popup Ký duyệt / Từ chối tối giản; Lãnh đạo cấp cuối ký số ngay trong popup ----------
-        let xdSignRequired = false;
-        // Giả lập: hệ thống tự nhận diện chứng thư số hợp lệ của Lãnh đạo đang đăng nhập
-        function xdCertOptions(userId) {
-            return [{ id: 'USB-01', label: `${WF.userName(userId)} - Chứng thư số USB Token (hiệu lực đến 31/12/2028)` }];
-        }
-        function resetXdSign() {
-            xdSignRequired = false;
-            document.getElementById('decSignBlock').style.display = 'none';
-            ['decCertErr', 'decPinErr', 'decSignErr'].forEach(id => { document.getElementById(id).style.display = 'none'; });
-            document.getElementById('decPin').value = '';
-        }
+        // Chốt 23/10: không nhập Chứng thư số / Mã PIN tại màn Ký duyệt
+        function resetXdSign() { /* không còn khối Ký số */ }
         function openXdDecision(rec, code, isLast, mode) {
             const a = rec.approval;
             const approve = mode === 'approve';
@@ -660,32 +642,11 @@
                 document.getElementById('decContext').innerHTML = `<div style="font-size:13px; color:#334155; background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:8px 10px;"><strong>Chuyển tới:</strong> ${esc(WF.userLabel(presetNext))} <span style="color:#64748b;">(Lãnh đạo cấp tiếp theo do cán bộ chọn khi trình)</span></div>`;
                 document.getElementById('decContext').style.display = '';
             }
-            xdSignRequired = approve && isLast && !(a.signDoc && a.signDoc.method === 'Ký ngoài');
-            if (xdSignRequired) {
-                document.getElementById('decCert').innerHTML = xdCertOptions(WF.getCurrentUserId()).map(c => `<option value="${esc(c.id)}">${esc(c.label)}</option>`).join('');
-                document.getElementById('decSignBlock').style.display = 'block';
-            }
             const btn = document.getElementById('decSubmit');
-            btn.innerHTML = approve ? '<i class="fa-solid fa-file-signature"></i> Ký duyệt' : 'Từ chối';
+            btn.innerHTML = approve ? '<i class="fa-solid fa-file-signature"></i> Ký duyệt' : '<i class="fa-solid fa-circle-xmark"></i> Từ chối';
             btn.className = approve ? 'btn btn-primary' : 'btn btn-danger';
             btn.style.cssText = approve ? '' : 'background:#ef4444; color:#fff; border:none;';
             openOverlay('decideOverlay');
-        }
-        // Giả lập ký số: PIN >= 4 ký tự là hợp lệ
-        function xdSignCheck() {
-            const pin = document.getElementById('decPin').value;
-            let ok = true;
-            document.getElementById('decSignErr').style.display = 'none';
-            if (!document.getElementById('decCert').value) { document.getElementById('decCertErr').style.display = 'block'; ok = false; } else document.getElementById('decCertErr').style.display = 'none';
-            if (!pin) { document.getElementById('decPinErr').style.display = 'block'; ok = false; } else document.getElementById('decPinErr').style.display = 'none';
-            if (!ok) return false;
-            if (pin.length < 4) {
-                const e = document.getElementById('decSignErr');
-                e.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Ký số không thành công: Mã PIN không đúng. Hồ sơ giữ trạng thái [Chờ duyệt].';
-                e.style.display = 'block';
-                return false;
-            }
-            return true;
         }
         function submitDecision() {
             const note = document.getElementById('decNote').value.trim();
@@ -700,34 +661,29 @@
             if (decisionMode === 'reject' && !note) { document.getElementById('decErr').style.display = 'block'; return; }
             const next = document.getElementById('decNext').value;
             if (decisionMode === 'approve' && document.getElementById('decNextGroup').style.display !== 'none' && !next) { document.getElementById('decNextErr').style.display = 'block'; return; }
-            if (decisionMode === 'approve' && xdSignRequired && !xdSignCheck()) return;
-            const certSel = document.getElementById('decCert');
-            const certLabel = xdSignRequired && certSel.selectedIndex >= 0 ? certSel.options[certSel.selectedIndex].text : '';
             const res = decisionMode === 'approve' ? WF.approve(actingCode, note, next) : WF.rejectApproval(actingCode, note);
-            // Gán thông tin chữ ký (họ tên, chức vụ, thời điểm, chứng thư số) vào văn bản đã ký số
-            if (res.ok && certLabel && res.record.approval && res.record.approval.signDoc) {
-                const me = WF.getCurrentUserId();
-                const sd = res.record.approval.signDoc;
-                sd.signCert = certLabel;
-                sd.signedName = WF.userName(me);
-                sd.signedTitle = (WF.getUser(me) || {}).title || '';
-                WF.upsertRecord(res.record);
-            }
             closeOverlay('decideOverlay');
             const nextText = res.ok && res.record.status === WF.STATUS.CHO_PHE_DUYET ? ' - chuyển ' + ((next || (res.record.approval.assignees || [])[res.record.approval.level]) ? WF.userName(next || res.record.approval.assignees[res.record.approval.level]) + ' - ' : '') + WF.unitName(res.record.approval.path[res.record.approval.level]) : '';
             showToast(res.ok ? `Hồ sơ ${actingCode}: [${res.record.status}]${nextText}.` : res.message, res.ok ? 'success' : 'error');
             renderAll();
         }
 
-        // ---------- Thụ lý / Không thụ lý (Thủ trưởng cơ quan giải quyết bồi thường, hồ sơ Chờ thụ lý) ----------
+        // ---------- Cử người giải quyết (Thủ trưởng cơ quan giải quyết bồi thường, hồ sơ Cử người giải quyết bồi thường) ----------
         let ktlTree = null;
         function thuLyGuard(code) {
             const rec = WF.getRecord(code);
-            if (!WF.canThuLy(rec, WF.getCurrentUserId())) { showToast('Hồ sơ đã được xử lý bởi người khác. Danh sách đã được tải lại.', 'error'); renderAll(); return null; }
+            if (!WF.canCuNguoi(rec, WF.getCurrentUserId())) { showToast('Hồ sơ đã được xử lý bởi người khác. Danh sách đã được tải lại.', 'error'); renderAll(); return null; }
             actingCode = code;
             return rec;
         }
+        // Cử người giải quyết: mở Popup Cử người giải quyết bồi thường (Mẫu 06/BTNN - Quyết định cử người giải quyết, Ký số / Ký ngoài) tại Giải quyết yêu cầu bồi thường
         function openThuLy(code) {
+            const rec = thuLyGuard(code);
+            if (!rec) return;
+            window.location.href = `quan_ly_boi_thuong.html?role=thu-truong&action=cu-nguoi&id=${encodeURIComponent(code)}`;
+        }
+        // Popup cũ (không còn dùng): Cán bộ chủ trì / Cán bộ cùng giải quyết / Ý kiến chỉ đạo
+        function openThuLyLegacy(code) {
             const rec = thuLyGuard(code);
             if (!rec) return;
             const opts = WF.thuLyOfficerOptions(rec);
@@ -752,7 +708,7 @@
             const others = Array.from(document.querySelectorAll('#tlOthers input:checked')).map(x => x.value);
             const res = WF.acceptCase(actingCode, [chuTri].concat(others), document.getElementById('tlNote').value.trim());
             closeOverlay('thuLyOverlay');
-            showToast(res.ok ? `Đã thụ lý hồ sơ ${actingCode}. Trạng thái: [${res.record.requestKind === 'honor' ? 'Đang phục hồi danh dự' : res.record.status}].` : res.message, res.ok ? 'success' : 'error');
+            showToast(res.ok ? `Đã cử người giải quyết hồ sơ ${actingCode}. Trạng thái: [${res.record.requestKind === 'honor' ? 'Đang phục hồi danh dự' : res.record.status}].` : res.message, res.ok ? 'success' : 'error');
             renderAll();
         }
         function openKtl(code) {

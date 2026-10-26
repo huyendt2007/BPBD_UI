@@ -323,14 +323,13 @@
         <section id="listView">
             <div class="page-heading">
                 <div>
-                    <h2><i class="fa-solid fa-inbox"></i> DANH SÁCH HỒ SƠ TIẾP NHẬN</h2>
-                    <p>Tiếp nhận hồ sơ Xác định cơ quan giải quyết bồi thường và Giải quyết yêu cầu bồi thường; Lãnh đạo phân công đơn vị/cán bộ xử lý theo Cấu hình luồng xử lý.</p>
+                    <h2 data-uxu-title>Tiếp nhận hồ sơ</h2>
                 </div>
             </div>
 
             <!-- 02 tab: Chờ xử lý / Đã xử lý theo người dùng đang đăng nhập (Cán bộ tiếp nhận / Lãnh đạo phân công) -->
             <div class="tn-tabs-card">
-                <button type="button" class="tn-tab active" data-tab="pending" onclick="switchReceptionTab('pending')"><i class="fa-solid fa-list-check"></i> Chờ xử lý <span class="tn-tab-count" id="tnCntPending">0</span></button>
+                <button type="button" class="tn-tab active" data-tab="pending" onclick="switchReceptionTab('pending')"><i class="fa-solid fa-list-check"></i> Chờ xử lý <span class="bdg-tab-count" id="tnCntPending" style="display:none;">0</span></button>
                 <button type="button" class="tn-tab" data-tab="done" onclick="switchReceptionTab('done')"><i class="fa-solid fa-box-archive"></i> Đã xử lý</button>
             </div>
 
@@ -840,7 +839,8 @@
     </div>
 
     <script src="btnn_luong_xu_ly.js?v=20261020v5"></script>
-    <script src="btnn_lanh_dao_actions.js?v=20261020v5"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261023kdtc"></script>
+    <script src="btnn_badge_cho_xu_ly.js?v=20261023bdg"></script>
     <script>
         // Người dùng đăng nhập (giả lập) - cán bộ tiếp nhận
         const CURRENT_USER = BTNN_WF.getCurrentUser();
@@ -1454,13 +1454,9 @@
         function updateReceptionTabCounts() {
             // Chỉ tab Chờ xử lý có badge số lượng; tab Đã xử lý không hiển thị badge
             const pendingCount = getTabRows("pending").length;
-            document.getElementById("tnCntPending").textContent = pendingCount;
-            // Đồng bộ badge menu trái "Tiếp nhận hồ sơ" tại trang chủ
-            try {
-                if (window.parent && window.parent !== window) {
-                    window.parent.postMessage({ type: "btnn:receptionPending", userId: CURRENT_USER.id, count: pendingCount }, "*");
-                }
-            } catch (e) { /* bỏ qua */ }
+            // Badge tab (ẩn khi bằng 0) + đồng bộ badge menu trái "Tiếp nhận hồ sơ" tại trang chủ (tiện ích dùng chung BDG)
+            if (window.BDG) BDG.report("tiepNhan", pendingCount, document.getElementById("tnCntPending"));
+            else document.getElementById("tnCntPending").textContent = pendingCount;
         }
         function openAssignFromList(code) { BTNN_LD.openAssign(code, afterLeaderAction); }
         function recallFromList(code) { BTNN_LD.confirmRecall(code, afterLeaderAction); }
@@ -3051,6 +3047,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
+    <script src="btnn_cot_thao_tac.js?v=20261023kpcd"></script>
 </body>
 
 </html>

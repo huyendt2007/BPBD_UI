@@ -460,6 +460,20 @@
             color: #0369a1;
         }
 
+        /* Trạng thái trên lưới: badge pill + dòng phụ Loại trình bên dưới (đồng bộ màn Quyết định GQBT / Kinh phí) */
+        .badge.ht-st { padding: 3px 8px; font-size: 11px; font-weight: 600; border-radius: 12px; text-align: center; white-space: normal; max-width: 100%; }
+        td:has(> .badge.ht-st) { min-width: 112px; }
+        .ht-st-review { background-color: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe; }
+        .ht-st-danger { background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .ht-st-pending { background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .ht-st-warning { background-color: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+        .ht-st-wait { background-color: #fef9c3; color: #a16207; border: 1px solid #fde68a; }
+        .ht-st-info { background-color: #f0fdfa; color: #0d9488; border: 1px solid #99f6e4; }
+        .ht-st-success { background-color: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+        .ht-st-draft { background-color: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+        .wf-sub { font-size: 11.5px; color: #6d28d9; margin-top: 4px; white-space: normal; font-weight: 500; }
+        .wf-sub.returned { color: #b91c1c; }
+
         /* KPI Quick Stats Row (Tương tự module Quản lý thông tin tư liệu VBQPPL) */
         .stats-badge-row {
             display: flex;
@@ -856,8 +870,7 @@
     <!-- TOP HEADER -->
     <div class="page-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
         <div class="page-title">
-            <h2>Quản lý xem xét trách nhiệm hoàn trả</h2>
-            <p>Hệ thống Nghiệp vụ Bồi thường nhà nước (Luật TNBTCNN 2017) — Website Cán bộ</p>
+            <h2 data-uxu-title>Xem xét trách nhiệm hoàn trả</h2>
         </div>
         <div style="display: flex; align-items: center; gap: 10px; background: #eff6ff; border: 1.5px solid #bfdbfe; padding: 6px 14px; border-radius: 20px; box-shadow: 0 1px 3px rgba(37,99,235,0.08);">
             <span style="font-size: 13px; font-weight: 700; color: #1e40af; display: inline-flex; align-items: center; gap: 6px;">
@@ -871,26 +884,11 @@
         </div>
     </div>
 
-    <!-- MAIN STATS SUMMARY -->
-    <div class="stat-grid">
-        <div class="stat-card">
-            <div class="stat-title">Số hồ sơ hoàn trả</div>
-            <div class="stat-val" id="statVuviecRefund">3 hồ sơ</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-title">Tổng số tiền phải hoàn trả (VNĐ)</div>
-            <div class="stat-val" style="color: var(--danger-color);" id="statTongphaiRefund">120.000.000 đ</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-title">Số tiền đã thu hồi thực tế (VNĐ)</div>
-            <div class="stat-val" style="color: var(--success-color);" id="statDathuRefund">85.000.000 đ</div>
-        </div>
-    </div>
 
     <!-- 02 tab: Chờ xử lý / Đã xử lý theo vai trò giả lập (Cán bộ xử lý / Lãnh đạo phê duyệt) -->
     <div class="ht-tabs-card">
-        <button type="button" class="ht-tab active" data-tab="pending" onclick="switchRefundTab('pending')"><i class="fa-solid fa-list-check"></i> Chờ xử lý <span class="ht-tab-count" id="htCntPending">0</span></button>
-        <button type="button" class="ht-tab" data-tab="done" onclick="switchRefundTab('done')"><i class="fa-solid fa-box-archive"></i> Đã xử lý <span class="ht-tab-count" id="htCntDone">0</span></button>
+        <button type="button" class="ht-tab active" data-tab="pending" onclick="switchRefundTab('pending')"><i class="fa-solid fa-list-check"></i> Chờ xử lý <span class="bdg-tab-count" id="htCntPending" style="display:none;">0</span></button>
+        <button type="button" class="ht-tab" data-tab="done" onclick="switchRefundTab('done')"><i class="fa-solid fa-box-archive"></i> Đã xử lý</button>
     </div>
 
     <!-- FILTER SEARCH BOX -->
@@ -926,17 +924,15 @@
                 <span class="form-label">Trạng thái</span>
                 <select class="form-control" id="filterStatusRefund" style="height:34px;">
                     <option value="">Tất cả</option>
-                    <option value="Chờ thành lập hội đồng">Chờ thành lập hội đồng</option>
-                    <option value="Chờ duyệt QĐ thành lập">Chờ duyệt QĐ thành lập</option>
-                    <option value="Bị từ chối thành lập HĐ">Bị từ chối thành lập HĐ</option>
-                    <option value="Đang họp hội đồng">Đang họp hội đồng</option>
+                    <option value="Chờ duyệt">Chờ duyệt</option>
+                    <option value="Bị từ chối">Bị từ chối</option>
+                    <option value="Họp hội đồng">Họp hội đồng</option>
                     <option value="Chờ ban hành QĐ hoàn trả">Chờ ban hành QĐ hoàn trả</option>
-                    <option value="Chờ duyệt QĐ hoàn trả">Chờ duyệt QĐ hoàn trả</option>
-                    <option value="Bị từ chối QĐ hoàn trả">Bị từ chối QĐ hoàn trả</option>
-                    <option value="Đang thi hành">Đang thi hành</option>
+                    <option value="Hoãn hoàn trả">Hoãn hoàn trả</option>
+                    <option value="Miễn hoàn trả">Miễn hoàn trả</option>
+                    <option value="Thu hồi tiền hoàn trả">Thu hồi tiền hoàn trả</option>
                     <option value="Hoàn thành">Hoàn thành</option>
-                    <option value="Không xem xét trách nhiệm hoàn trả">Không xem xét trách nhiệm hoàn trả</option>
-                    <option value="Chấm dứt thu hồi">Chấm dứt thu hồi</option>
+                    <option value="Đình chỉ xem xét hoàn trả">Đình chỉ xem xét hoàn trả</option>
                 </select>
             </div>
             <div>
@@ -953,7 +949,7 @@
                     <i class="fa-regular fa-calendar-days"></i>
                 </div>
             </div>
-            <div style="display: flex; gap: 8px; justify-content: flex-end; align-items: flex-end;">
+            <div style="display: flex; gap: 8px; justify-content: flex-end; align-items: flex-end; grid-column: 1 / -1;">
                 <button type="button" class="btn btn-clear-filter" onclick="resetRefundFilters()">
                     <i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc
                 </button>
@@ -1001,7 +997,6 @@
                         <th style="text-align:right; width: 125px; cursor:pointer;" onclick="sortRefundTable('refundTotal')" title="Sắp xếp theo Số tiền phải hoàn trả">Tiền hoàn trả (đ) <i class="fa-solid fa-sort" id="sortIcon_refundTotal" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="width: 145px; cursor:pointer;" onclick="sortRefundTable('progress')" title="Sắp xếp theo Tiến độ">Tiến độ thu hồi <i class="fa-solid fa-sort" id="sortIcon_progress" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="width: 145px; text-align:center; cursor:pointer;" onclick="sortRefundTable('status')" title="Sắp xếp theo Trạng thái">Trạng thái <i class="fa-solid fa-sort" id="sortIcon_status" style="font-size:11px; opacity:0.4;"></i></th>
-                        <th style="width: 110px; text-align:center; cursor:pointer;" onclick="sortRefundTable('deadline')" title="Sắp xếp theo Hạn xử lý">Hạn xử lý <i class="fa-solid fa-sort" id="sortIcon_deadline" style="font-size:11px; opacity:0.4;"></i></th>
                         <th style="width: 90px; min-width: 90px; text-align:center;" id="thActionsRefund">Thao tác</th>
                     </tr>
                 </thead>
@@ -1470,22 +1465,12 @@
                         </div>
                     </div>
 
-                    <div class="grid-2-cols" style="margin-bottom:12px;">
-                        <div class="form-group">
-                            <span class="form-label" id="refundObligationReasonLabel">Căn cứ/Lý do<span class="required">*</span></span>
-                            <textarea class="form-control" id="refundObligationReason" style="height:92px; resize:vertical;" placeholder="Nhập căn cứ, lý do thực hiện..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <span class="form-label">Tài liệu liên quan</span>
-                            <div class="file-upload-container">
-                                <label class="btn-brown" style="cursor: pointer; margin:0;">
-                                    Chọn tệp đính kèm...
-                                    <input type="file" id="refundObligationFiles" multiple style="display:none;" onchange="handleRefundObligationFiles(this.files)">
-                                </label>
-                                <div id="refundObligationFileList" style="margin-top:8px; display:grid; gap:6px;"></div>
-                            </div>
-                        </div>
+                    <div class="form-group" style="margin-bottom:12px;">
+                        <span class="form-label" id="refundObligationReasonLabel">Căn cứ/Lý do<span class="required">*</span></span>
+                        <textarea class="form-control" id="refundObligationReason" style="height:92px; resize:vertical;" placeholder="Nhập căn cứ, lý do thực hiện..."></textarea>
                     </div>
+                    <!-- Văn bản căn cứ (gộp Tài liệu liên quan / Tài liệu kèm theo): bắt buộc; .pdf, .jpg, .jpeg, .png; nhiều tệp, mỗi tệp tối đa 50MB - bảng do btnn_tai_lieu_kem_theo.js dựng -->
+                    <div id="refundObligationTlkt"></div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -1526,7 +1511,7 @@
                             <tr>
                                 <th>Mã vụ việc</th>
                                 <th>Mã hồ sơ GQBT</th>
-                                <th>Người yêu cầu</th>
+                                <th>Tên cá nhân/Tổ chức yêu cầu</th>
                                 <th style="text-align:right;">Số tiền bồi thường (đ)</th>
                                 <th style="text-align:center;">Ngày hoàn tất chi</th>
                                 <th style="text-align:center; width: 150px;">Thao tác</th>
@@ -1544,102 +1529,62 @@
         </div>
     </div>
 
-    <!-- MODAL 4.3.3.5.20: PHÊ DUYỆT / KÝ SỐ QUYẾT ĐỊNH -->
-    <div class="modal" id="approveModal">
-        <div class="modal-content" style="max-width: 800px; max-height: 90vh; display: flex; flex-direction: column;">
-            <div class="modal-header" style="padding: 24px 24px 16px 24px;">
-                <h3 class="modal-title" id="approveModalTitle" style="color:var(--primary-color);"><i class="fa-solid fa-file-signature"></i> Ký số phê duyệt Quyết định thành lập Hội đồng</h3>
-                <button type="button" class="close-modal" onclick="closeApproveModal()">&times;</button>
+    <!-- MÀN KÝ DUYỆT / TỪ CHỐI (htkd) - dùng chung cho mọi Loại trình (Thành lập hội đồng, QĐ hoàn trả, Đình chỉ xem xét hoàn trả);
+         bố cục đồng nhất màn chi tiết hồ sơ hoàn trả và màn Ký duyệt Xác định cơ quan GQBT / QĐ GQBT:
+         vùng trái Xem trước văn bản (tên tệp + Mở xem văn bản); vùng phải Thông tin tổng quan -> Tài liệu kèm theo (chỉ khi có) -> Lịch sử trình ký -> Ý kiến / Lý do từ chối.
+         Không có Chứng thư số / Mã PIN, Hình thức ký số, Ghi chú kết quả, chọn Lãnh đạo cấp tiếp theo. -->
+    <style id="htkdCss">
+        .htkd-modal { width: 100vw !important; max-width: 100vw !important; height: 100vh; max-height: 100vh !important; border-radius: 0 !important; }
+        .htkd-modal .modal-header { padding: 14px 22px !important; }
+        .htkd-body { display: flex; gap: 18px; padding: 0 !important; overflow: hidden !important; min-height: 0; flex: 1; }
+        .htkd-preview { flex: 1; background: #334155; overflow: auto; padding: 18px; }
+        .htkd-doc-bar { display: flex; justify-content: space-between; gap: 12px; color: #e2e8f0; font-size: 12.5px; margin-bottom: 8px; }
+        .htkd-doc-bar a { color: #bfdbfe; white-space: nowrap; }
+        .htkd-a4 { position: relative; background: #fff; width: 794px; max-width: 100%; min-height: 1060px; margin: 0 auto; padding: 56px 64px; box-shadow: 0 4px 16px rgba(0,0,0,.35); font-family: 'Times New Roman', serif; font-size: 14px; line-height: 1.6; color: #111; box-sizing: border-box; }
+        .htkd-uploaded { background: #fff; border-radius: 4px; padding: 40px; text-align: center; color: #334155; font-size: 14px; max-width: 794px; margin: 0 auto; }
+        .htkd-right { width: 480px; flex-shrink: 0; overflow-y: auto; padding: 16px 20px 16px 0; font-size: 13px; }
+        .htkd-box { border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; background: #fff; }
+        .htkd-box.hist { background: #f8fafc; }
+        .htkd-box-title { font-weight: 700; color: #0f172a; margin-bottom: 8px; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+        .htkd-row { display: grid; grid-template-columns: 120px 1fr; gap: 8px; padding: 3px 0; }
+        .htkd-row > span:first-child { color: #64748b; }
+        .htkd-hv { display: flex; gap: 10px; }
+        .htkd-hv-step { width: 22px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; padding-top: 8px; }
+        .htkd-hv-step > i { font-size: 18px; line-height: 20px; }
+        .htkd-hv-step::after { content: ''; flex: 1; width: 2px; margin-top: 3px; background: #22c55e; }
+        .htkd-hv:last-child .htkd-hv-step::after { display: none; }
+        .htkd-hv.done .htkd-hv-step > i { color: #22c55e; } .htkd-hv.no .htkd-hv-step > i { color: #dc2626; } .htkd-hv.wait .htkd-hv-step > i { color: #f59e0b; }
+        .htkd-hv-main { flex: 1; min-width: 0; padding: 8px 0 14px; }
+        .htkd-hv-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+        .htkd-hv-name { font-weight: 600; color: #0f172a; }
+        .htkd-hv-time { color: #94a3b8; font-size: 12px; white-space: nowrap; }
+        .htkd-hv-act { margin-top: 2px; color: #2563eb; } .htkd-hv-act.ok { color: #16a34a; } .htkd-hv-act.no { color: #dc2626; } .htkd-hv-act.wait { color: #d97706; }
+        .htkd-hv-msg { margin-top: 6px; background: #f1f5f9; border-radius: 6px; padding: 8px 10px; color: #1e293b; white-space: pre-wrap; }
+        .htkd-right textarea { font-family: inherit; width: 100%; box-sizing: border-box; }
+        @media (max-width: 900px) { .htkd-body { flex-direction: column; overflow-y: auto !important; } .htkd-right { width: auto; padding: 16px; } .htkd-preview { flex: none; } }
+    </style>
+    <div class="modal" id="htkdModal" style="z-index: 1070;">
+        <div class="modal-content htkd-modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="htkdTitle">Ký duyệt</h3>
+                <button type="button" class="close-modal" onclick="htkdClose()">&times;</button>
             </div>
-            <div class="modal-body" style="padding: 24px; overflow-y: auto; flex: 1;">
-                <input type="hidden" id="approveDossierId">
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <span class="form-label" style="font-weight:700;">Khung xem trước văn bản dự thảo</span>
-                    <div style="background:#f8fafc; border:1px solid var(--border-color); border-radius:8px; padding:20px; text-align:center; min-height:160px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px;">
-                        <i class="fa-solid fa-file-pdf" style="font-size:36px; color:#ef4444;"></i>
-                        <span id="approveDocName" style="font-weight:600; font-size:14px;">Du_thao_Quyet_dinh.pdf</span>
-                        <span style="font-size:12px; color:var(--text-muted);">Dung lượng: 1.8 MB • Sẵn sàng ký số điện tử</span>
+            <div class="modal-body htkd-body">
+                <div class="htkd-preview" id="htkdPreview"></div>
+                <div class="htkd-right">
+                    <div id="htkdSummary"></div>
+                    <div id="htkdTlkt"></div>
+                    <div id="htkdHist"></div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <span class="form-label" id="htkdNoteLabel">Ý kiến</span>
+                        <textarea class="form-control" id="htkdNote" rows="4" maxlength="2000" placeholder="Nhập ý kiến (không bắt buộc)..." oninput="htkdClearErr()"></textarea>
+                        <span class="invalid-feedback" id="htkdNoteErr" style="display:none; color:var(--danger-color); font-size:12px; margin-top:4px; font-weight:600;">Đây là trường bắt buộc</span>
                     </div>
                 </div>
-
-                <div class="form-group" style="margin-bottom: 16px;">
-                    <span class="form-label" style="font-weight:700;">Hình thức ký số <span style="color:red;">*</span></span>
-                    <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:6px;">
-                        <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-size:13.5px;">
-                            <input type="radio" name="approveSignType" value="token" checked onchange="toggleSignTypeUI('token')"> USB Token
-                        </label>
-                        <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-size:13.5px;">
-                            <input type="radio" name="approveSignType" value="sim" onchange="toggleSignTypeUI('sim')"> SIM ký số
-                        </label>
-                        <label style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; font-size:13.5px;">
-                            <input type="radio" name="approveSignType" value="hsm" onchange="toggleSignTypeUI('hsm')"> Ký số từ xa (HSM / Cloud CA)
-                        </label>
-                    </div>
-                </div>
-
-                <div class="grid-2-cols" style="gap:16px; margin-bottom:16px;">
-                    <div class="form-group">
-                        <span class="form-label">Chứng thư số <span style="color:red;">*</span></span>
-                        <select class="form-control" id="approveCertSelect">
-                            <option value="cert1">LÊ MINH CHÂU - GIÁM ĐỐC SỞ TƯ PHÁP HÀ NỘI (Viettel-CA)</option>
-                            <option value="cert2">PHẠM VĂN HÙNG - PHÓ GIÁM ĐỐC SỞ TƯ PHÁP (VNPT-CA)</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <span class="form-label" id="approvePinLabel">Mã PIN Token <span style="color:red;">*</span></span>
-                        <input type="password" class="form-control" id="approvePinInput" placeholder="Nhập mã PIN Token..." maxlength="50">
-                        <div class="invalid-feedback" id="approvePinError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</div>
-                    </div>
-                </div>
             </div>
-            <div class="modal-footer" style="padding: 16px 24px 24px 24px; border-top: 1px solid var(--border-color); display:flex; justify-content:flex-end; gap:8px;">
-                <button type="button" class="btn btn-secondary" onclick="closeApproveModal()">Hủy</button>
-                <button type="button" class="btn btn-primary" onclick="submitApproveDecision()"><i class="fa-solid fa-file-signature"></i> Xác nhận ký số</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL 4.3.3.5.21: TỪ CHỐI PHÊ DUYỆT QUYẾT ĐỊNH -->
-    <div class="modal" id="rejectModal">
-        <div class="modal-content" style="max-width: 750px; max-height: 90vh; display: flex; flex-direction: column;">
-            <div class="modal-header" style="padding: 24px 24px 16px 24px;">
-                <h3 class="modal-title" id="rejectModalTitle" style="color:var(--danger-color);"><i class="fa-solid fa-ban"></i> Từ chối phê duyệt Quyết định thành lập Hội đồng</h3>
-                <button type="button" class="close-modal" onclick="closeRejectModal()">&times;</button>
-            </div>
-            <div class="modal-body" style="padding: 24px; overflow-y: auto; flex: 1;">
-                <input type="hidden" id="rejectDossierId">
-                
-                <!-- I. Thông tin hồ sơ -->
-                <div style="background:#f8fafc; border:1px solid var(--border-color); border-radius:8px; padding:16px; margin-bottom:20px;">
-                    <div style="font-weight:700; color:var(--primary-color); margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-folder-open"></i> I. Thông tin hồ sơ</div>
-                    <div class="grid-2-cols" style="gap:12px; font-size:13.5px;">
-                        <div>Mã hồ sơ: <strong id="rejectDossierCode" style="color:var(--primary-color);">-</strong></div>
-                        <div>Vụ việc bồi thường gốc: <strong id="rejectClaimCode">-</strong></div>
-                    </div>
-                </div>
-
-                <!-- II. Nội dung từ chối -->
-                <div style="font-weight:700; color:var(--primary-color); margin-bottom:8px; font-size:14px;"><i class="fa-solid fa-file-circle-xmark"></i> II. Nội dung từ chối</div>
-                
-                <div class="form-group" style="margin-bottom:16px;">
-                    <span class="form-label">Lý do từ chối / Ý kiến chỉ đạo <span style="color:red;">*</span></span>
-                    <textarea class="form-control" id="rejectReasonInput" rows="4" maxlength="2000" placeholder="Nhập chi tiết lý do từ chối hoặc ý kiến chỉ đạo yêu cầu sửa..." oninput="updateRejectCharCount()"></textarea>
-                    <div style="display:flex; justify-content:space-between; margin-top:4px;">
-                        <span class="invalid-feedback" id="rejectReasonError" style="display:none; color:red; font-size:12px;">Đây là trường bắt buộc</span>
-                        <span id="rejectCharCount" style="font-size:12px; color:var(--text-muted); margin-left:auto;">0/2000 ký tự</span>
-                    </div>
-<div class="form-group" style="margin-bottom:8px;">
-                    <span class="form-label">Tài liệu đính kèm (Tối đa 5 tệp, tối đa 10MB/tệp: .pdf, .doc, .docx, .jpg, .png)</span>
-                    <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
-                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('rejectFileInput').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Chọn tệp đính kèm</button>
-                        <input type="file" id="rejectFileInput" style="display:none;" multiple accept=".pdf,.doc,.docx,.jpg,.png" onchange="handleRejectFileUpload(this)">
-                    </div>
-                    <div id="rejectFileList" style="display:flex; flex-direction:column; gap:6px;"></div>
-                </div>
-            </div>
-            <div class="modal-footer" style="padding: 16px 24px 24px 24px; border-top: 1px solid var(--border-color); display:flex; justify-content:flex-end; gap:8px;">
-                <button type="button" class="btn btn-secondary" onclick="closeRejectModal()">Hủy</button>
-                <button type="button" class="btn btn-primary" style="background-color:var(--danger-color); border-color:var(--danger-color);" onclick="submitRejectDecision()"><i class="fa-solid fa-ban"></i> Xác nhận</button>
+            <div class="modal-footer" style="padding: 12px 22px; border-top: 1px solid var(--border-color); display:flex; justify-content:flex-end; gap:8px;">
+                <button type="button" class="btn btn-secondary" onclick="htkdClose()">Hủy bỏ</button>
+                <button type="button" class="btn btn-primary" id="htkdSubmit" onclick="htkdSubmit()"><i class="fa-solid fa-file-signature"></i> Ký duyệt</button>
             </div>
         </div>
     </div>
@@ -1673,6 +1618,8 @@
     <!-- JAVASCRIPT CONTROLLERS -->
     <!-- ============================================== -->
     <script src="btnn_luong_xu_ly.js?v=20261020v5"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261026pdtb"></script>
+    <script src="btnn_badge_cho_xu_ly.js?v=20261023bdg"></script>
     <script>
         // Họ và tên người yêu cầu theo Mã hồ sơ GQBT (dữ liệu Giải quyết YCBT)
         const CLAIMANT_BY_CODE = {
@@ -1694,7 +1641,9 @@
         }
         // 01 vụ việc chỉ có 01 hồ sơ hoàn trả: tìm hồ sơ hoàn trả (HT-) đã có của vụ việc
         const HT_CREATED_KEY = 'btnn_hoantra_created_v1';
-        function loadCreatedRefundDossiers() { try { const l = JSON.parse(localStorage.getItem(HT_CREATED_KEY) || '[]'); return Array.isArray(l) ? l : []; } catch (e) { return []; } }
+        // Chuẩn hóa dữ liệu cũ: trạng thái "Đang thi hành" đổi thành "Thu hồi tiền hoàn trả"
+        function ykhdNormalizeRefundStatus(d) { if (d && d.status === 'Đang ' + 'thi hành') d.status = 'Thu hồi tiền hoàn trả'; return d; }
+        function loadCreatedRefundDossiers() { try { const l = JSON.parse(localStorage.getItem(HT_CREATED_KEY) || '[]'); return Array.isArray(l) ? l.map(ykhdNormalizeRefundStatus).map(d => { try { return htStNormalize(d); } catch (e) { return d; } }) : []; } catch (e) { return []; } }
         function saveCreatedRefundDossiers(list) { try { localStorage.setItem(HT_CREATED_KEY, JSON.stringify(list)); } catch (e) { /* bỏ qua */ } }
         function existingRefundCodeOf(maVuViec) {
             if (!maVuViec) return '';
@@ -1748,7 +1697,7 @@
                 refundTotal: 101000000,
                 refundMethod: "Khấu trừ lương",
                 refundMonthly: 5000000,
-                status: "Đang thi hành",
+                status: "Thu hồi tiền hoàn trả",
                 dateCreated: "02/04/2026",
                 qdDate: "15/04/2026",
                 refundOfficers: [
@@ -1780,7 +1729,7 @@
                 refundTotal: 30000000,
                 refundMethod: "Khấu trừ lương",
                 refundMonthly: 3000000,
-                status: "Đang thi hành",
+                status: "Thu hồi tiền hoàn trả",
                 dateCreated: "25/07/2026",
                 qdDate: "05/08/2026",
                 refundOfficers: [
@@ -1862,11 +1811,11 @@
                 refundTotal: 0,
                 refundMethod: "",
                 refundMonthly: 0,
-                status: "Chờ thành lập hội đồng",
+                status: "Chờ duyệt QĐ thành lập",
                 dateCreated: "03/09/2026",
                 qdDate: "",
                 refundOfficers: [
-                    { name: "Lê Thị Sai", loi: "Chờ thành lập hội đồng", total: 0, paid: 0, nextDate: "—", status: "Chờ thành lập hội đồng", progressClass: "secondary", agency: "UBND Tỉnh Lâm Đồng", role: "Chấp hành viên Chi cục" }
+                    { name: "Lê Thị Sai", loi: "Chờ duyệt QĐ", total: 0, paid: 0, nextDate: "—", status: "Chờ duyệt QĐ", progressClass: "warning", agency: "UBND Tỉnh Lâm Đồng", role: "Chấp hành viên Chi cục" }
                 ],
                 payments: []
             },
@@ -1937,11 +1886,11 @@
                 refundTotal: 0,
                 refundMethod: "",
                 refundMonthly: 0,
-                status: "Đang họp hội đồng",
+                status: "Họp hội đồng",
                 dateCreated: "10/08/2026",
                 qdDate: "",
                 refundOfficers: [
-                    { name: "Đỗ Thị Bình", loi: "Đang xem xét", total: 0, paid: 0, nextDate: "—", status: "Đang họp hội đồng", progressClass: "info", agency: "Sở Tư pháp Hà Nội", role: "Phó Trưởng phòng Đăng ký" }
+                    { name: "Đỗ Thị Bình", loi: "Đang xem xét", total: 0, paid: 0, nextDate: "—", status: "Họp hội đồng", progressClass: "info", agency: "Sở Tư pháp Hà Nội", role: "Phó Trưởng phòng Đăng ký" }
                 ],
                 payments: []
             },
@@ -2012,11 +1961,11 @@
                 refundTotal: 0,
                 refundMethod: "",
                 refundMonthly: 0,
-                status: "Không xem xét trách nhiệm hoàn trả",
+                status: "Đình chỉ xem xét hoàn trả",
                 dateCreated: "10/07/2026",
                 qdDate: "",
                 refundOfficers: [
-                    { name: "Lê Văn Hùng", loi: "Không có lỗi", total: 0, paid: 0, nextDate: "—", status: "Không xem xét trách nhiệm hoàn trả", progressClass: "secondary", agency: "Sở Tư pháp Hà Nội", role: "Chuyên viên" }
+                    { name: "Lê Văn Hùng", loi: "Không có lỗi", total: 0, paid: 0, nextDate: "—", status: "Đình chỉ xem xét hoàn trả", progressClass: "secondary", agency: "Sở Tư pháp Hà Nội", role: "Chuyên viên" }
                 ],
                 payments: []
             },
@@ -2037,11 +1986,11 @@
                 refundTotal: 0,
                 refundMethod: "",
                 refundMonthly: 0,
-                status: "Chấm dứt thu hồi",
+                status: "Đình chỉ xem xét hoàn trả",
                 dateCreated: "20/05/2026",
-                qdDate: "25/05/2026",
+                qdDate: "",
                 refundOfficers: [
-                    { name: "Nguyễn Văn Chết", loi: "Đã chết", total: 0, paid: 0, nextDate: "—", status: "Chấm dứt thu hồi", progressClass: "secondary", agency: "Sở Tư pháp Hà Nội", role: "Chấp hành viên" }
+                    { name: "Nguyễn Văn Chết", loi: "Đã chết", total: 0, paid: 0, nextDate: "—", status: "Đình chỉ xem xét hoàn trả", progressClass: "secondary", agency: "Sở Tư pháp Hà Nội", role: "Chấp hành viên" }
                 ],
                 payments: []
             },
@@ -2055,18 +2004,18 @@
                 claimDate: "02/08/2026",
                 officerName: "Vũ Đình Trọng",
                 officerRole: "Chuyên viên Thụ lý",
-                hdDecision: "",
-                hdDate: "",
-                deadlineDate: "05/09/2026",
-                daysLeft: -5,
+                hdDecision: "27/QĐ-TLHD",
+                hdDate: "10/08/2026",
+                deadlineDate: "",
+                daysLeft: null,
                 refundTotal: 0,
                 refundMethod: "",
                 refundMonthly: 0,
-                status: "Chờ thành lập hội đồng",
+                status: "Họp hội đồng",
                 dateCreated: "10/08/2026",
                 qdDate: "",
                 refundOfficers: [
-                    { name: "Vũ Đình Trọng", loi: "Chờ thành lập hội đồng", total: 0, paid: 0, nextDate: "—", status: "Chờ thành lập hội đồng", progressClass: "secondary", agency: "Sở Tư pháp Hà Nội", role: "Chuyên viên Thụ lý" }
+                    { name: "Vũ Đình Trọng", loi: "Đang xem xét", total: 0, paid: 0, nextDate: "—", status: "Họp hội đồng", progressClass: "info", agency: "Sở Tư pháp Hà Nội", role: "Chuyên viên Thụ lý" }
                 ],
                 payments: []
             },
@@ -2137,11 +2086,11 @@
                 refundTotal: 0,
                 refundMethod: "",
                 refundMonthly: 0,
-                status: "Đang họp hội đồng",
+                status: "Họp hội đồng",
                 dateCreated: "28/08/2026",
                 qdDate: "",
                 refundOfficers: [
-                    { name: "Hoàng Văn Tuấn", loi: "Đang thẩm tra mức độ lỗi", total: 0, paid: 0, nextDate: "—", status: "Đang họp hội đồng", progressClass: "info", agency: "Sở Tư pháp Hà Nội", role: "Giám định viên tư pháp" }
+                    { name: "Hoàng Văn Tuấn", loi: "Đang thẩm tra mức độ lỗi", total: 0, paid: 0, nextDate: "—", status: "Họp hội đồng", progressClass: "info", agency: "Sở Tư pháp Hà Nội", role: "Giám định viên tư pháp" }
                 ],
                 payments: []
             },
@@ -2212,11 +2161,11 @@
                 refundTotal: 0,
                 refundMethod: "",
                 refundMonthly: 0,
-                status: "Không xem xét trách nhiệm hoàn trả",
+                status: "Đình chỉ xem xét hoàn trả",
                 dateCreated: "15/07/2026",
-                qdDate: "25/07/2026",
+                qdDate: "",
                 refundOfficers: [
-                    { name: "Trịnh Quốc Việt", loi: "Tình thế cấp thiết", total: 0, paid: 0, nextDate: "—", status: "Không xem xét trách nhiệm hoàn trả", progressClass: "secondary", agency: "UBND Quận Ba Đình", role: "Cán bộ Quản lý Đô thị" }
+                    { name: "Trịnh Quốc Việt", loi: "Tình thế cấp thiết", total: 0, paid: 0, nextDate: "—", status: "Đình chỉ xem xét hoàn trả", progressClass: "secondary", agency: "UBND Quận Ba Đình", role: "Cán bộ Quản lý Đô thị" }
                 ],
                 payments: []
             },
@@ -2224,7 +2173,7 @@
                 id: "HT-2026-020",
                 code: "HT-2026-020",
                 claimCode: "BT-2026-020",
-                claimSummary: "Cán bộ ban hành quyết định đã từ trần, cơ quan ban hành QĐ chấm dứt thu hồi theo Luật BTNN.",
+                claimSummary: "Cán bộ ban hành quyết định đã từ trần, cơ quan ban hành QĐ đình chỉ việc xem xét trách nhiệm hoàn trả theo Luật BTNN.",
                 agency: "UBND Tỉnh Lâm Đồng",
                 claimAmt: 80000000,
                 claimDate: "22/05/2026",
@@ -2237,11 +2186,11 @@
                 refundTotal: 0,
                 refundMethod: "",
                 refundMonthly: 0,
-                status: "Chấm dứt thu hồi",
+                status: "Đình chỉ xem xét hoàn trả",
                 dateCreated: "05/06/2026",
-                qdDate: "18/06/2026",
+                qdDate: "",
                 refundOfficers: [
-                    { name: "Dương Đình Nghệ", loi: "Đã qua đời", total: 0, paid: 0, nextDate: "—", status: "Chấm dứt thu hồi", progressClass: "secondary", agency: "UBND Tỉnh Lâm Đồng", role: "Chuyên viên Phòng Tư pháp" }
+                    { name: "Dương Đình Nghệ", loi: "Đã qua đời", total: 0, paid: 0, nextDate: "—", status: "Đình chỉ xem xét hoàn trả", progressClass: "secondary", agency: "UBND Tỉnh Lâm Đồng", role: "Chuyên viên Phòng Tư pháp" }
                 ],
                 payments: []
             },
@@ -2279,7 +2228,6 @@
         let selectedDossierId = null;
         let tempPayments = [];
         let refundObligationFiles = [];
-        let rejectUploadedFiles = [];
         let currentPageRefund = 1;
         let pageSizeRefund = 10;
         let currentMockRole = sessionStorage.getItem('mockUserRole') || 'chuyen_vien';
@@ -2289,16 +2237,58 @@
 
         // ===== 02 tab Chờ xử lý / Đã xử lý theo bước xử lý (gate) của người dùng =====
         // - Chờ xử lý: hồ sơ đang chờ chính vai trò của người dùng thao tác.
-        //   + Cán bộ xử lý: Chờ thành lập hội đồng, Bị từ chối thành lập HĐ, Đang họp hội đồng, Chờ ban hành QĐ hoàn trả, Bị từ chối QĐ hoàn trả, Đang thi hành.
+        //   + Cán bộ xử lý: hồ sơ nháp (mã nội bộ 'Chờ thành lập hội đồng' - chưa trình QĐ thành lập, không hiển thị trạng thái), Bị từ chối thành lập HĐ, Họp hội đồng, Chờ ban hành QĐ hoàn trả, Bị từ chối QĐ hoàn trả, Thu hồi tiền hoàn trả.
         //   + Lãnh đạo phê duyệt: Chờ duyệt QĐ thành lập, Chờ duyệt thành lập hội đồng, Chờ duyệt QĐ hoàn trả.
         // - Đã xử lý: hồ sơ người dùng đã qua ít nhất 01 bước xử lý và không còn chờ người dùng thao tác
         //   (VD Lãnh đạo đã ký duyệt QĐ thành lập Hội đồng: hồ sơ ở tab Đã xử lý của Lãnh đạo, ở tab Chờ xử lý của Cán bộ).
-        const HT_APPROVAL_STATES = ['Chờ duyệt QĐ thành lập', 'Chờ duyệt thành lập hội đồng', 'Chờ duyệt QĐ hoàn trả'];
-        const HT_CB_ACTION_STATES = ['Chờ thành lập hội đồng', 'Bị từ chối thành lập HĐ', 'Đang họp hội đồng', 'Chờ ban hành QĐ hoàn trả', 'Bị từ chối QĐ hoàn trả', 'Đang thi hành'];
-        const HT_AFTER_COUNCIL = ['Chờ ban hành QĐ hoàn trả', 'Chờ duyệt QĐ hoàn trả', 'Bị từ chối QĐ hoàn trả', 'Đang thi hành', 'Hoàn thành', 'Hoàn tất', 'Chấm dứt thu hồi', 'Không xem xét trách nhiệm hoàn trả'];
-        const HT_AFTER_REFUND_SUBMIT = ['Chờ duyệt QĐ hoàn trả', 'Bị từ chối QĐ hoàn trả', 'Đang thi hành', 'Hoàn thành', 'Hoàn tất', 'Chấm dứt thu hồi'];
-        const HT_AFTER_REFUND_SIGN = ['Bị từ chối QĐ hoàn trả', 'Đang thi hành', 'Hoàn thành', 'Hoàn tất', 'Chấm dứt thu hồi'];
-        const HT_CLOSED = ['Hoàn thành', 'Hoàn tất', 'Chấm dứt thu hồi'];
+        const HT_APPROVAL_STATES = ['Chờ duyệt QĐ thành lập', 'Chờ duyệt thành lập hội đồng', 'Chờ duyệt QĐ hoàn trả', 'Chờ duyệt QĐ đình chỉ'];
+        const HT_CB_ACTION_STATES = ['Chờ thành lập hội đồng', 'Bị từ chối thành lập HĐ', 'Họp hội đồng', 'Chờ ban hành QĐ hoàn trả', 'Bị từ chối QĐ hoàn trả', 'Thu hồi tiền hoàn trả', 'Hoãn hoàn trả', 'Miễn hoàn trả', 'Bị từ chối QĐ đình chỉ'];
+        const HT_AFTER_COUNCIL = ['Chờ ban hành QĐ hoàn trả', 'Chờ duyệt QĐ hoàn trả', 'Bị từ chối QĐ hoàn trả', 'Thu hồi tiền hoàn trả', 'Hoàn thành', 'Hoàn tất'];
+        const HT_AFTER_REFUND_SUBMIT = ['Chờ duyệt QĐ hoàn trả', 'Bị từ chối QĐ hoàn trả', 'Thu hồi tiền hoàn trả', 'Hoàn thành', 'Hoàn tất'];
+        const HT_AFTER_REFUND_SIGN = ['Bị từ chối QĐ hoàn trả', 'Thu hồi tiền hoàn trả', 'Hoàn thành', 'Hoàn tất'];
+        const HT_CLOSED = ['Hoàn thành', 'Hoàn tất', 'Đình chỉ xem xét hoàn trả'];
+        // ===== Trạng thái hồ sơ hoàn trả (chốt 23/10): 9 trạng thái hiển thị; Chờ duyệt / Bị từ chối kèm Loại trình =====
+        // Mã trạng thái nội bộ (điều khiển luồng) -> [Trạng thái hiển thị, Loại trình]
+        const HT_ST_MAP = {
+            'Chờ duyệt QĐ thành lập': ['Chờ duyệt', 'Thành lập hội đồng'], 'Chờ duyệt thành lập hội đồng': ['Chờ duyệt', 'Thành lập hội đồng'],
+            'Bị từ chối thành lập HĐ': ['Bị từ chối', 'Thành lập hội đồng'], 'Từ chối duyệt QĐ thành lập': ['Bị từ chối', 'Thành lập hội đồng'],
+            'Chờ duyệt QĐ hoàn trả': ['Chờ duyệt', 'QĐ hoàn trả'], 'Bị từ chối QĐ hoàn trả': ['Bị từ chối', 'QĐ hoàn trả'],
+            'Chờ duyệt QĐ đình chỉ': ['Chờ duyệt', 'Đình chỉ xem xét hoàn trả'], 'Bị từ chối QĐ đình chỉ': ['Bị từ chối', 'Đình chỉ xem xét hoàn trả'],
+            'Đang họp hội đồng': ['Họp hội đồng', ''], 'Chờ ban hành QĐ': ['Chờ ban hành QĐ hoàn trả', ''], 'Đang thu hồi': ['Thu hồi tiền hoàn trả', ''], 'Hoàn tất': ['Hoàn thành', ''],
+            // Chốt 23/10: bỏ 2 trạng thái, dữ liệu cũ quy về Đình chỉ xem xét hoàn trả
+            'Không xem xét trách nhiệm hoàn trả': ['Đình chỉ xem xét hoàn trả', ''], 'Chấm dứt thu hồi': ['Đình chỉ xem xét hoàn trả', '']
+        };
+        // Hồ sơ nháp: mới khởi tạo, chưa trình/ban hành QĐ thành lập Hội đồng -> không có trạng thái (mã nội bộ giữ để điều khiển thao tác)
+        const HT_ST_DRAFT = 'Chờ thành lập hội đồng';
+        const HT_LOAI_CODE = {
+            'Chờ duyệt': { 'Thành lập hội đồng': 'Chờ duyệt QĐ thành lập', 'QĐ hoàn trả': 'Chờ duyệt QĐ hoàn trả', 'Đình chỉ xem xét hoàn trả': 'Chờ duyệt QĐ đình chỉ' },
+            'Bị từ chối': { 'Thành lập hội đồng': 'Bị từ chối thành lập HĐ', 'QĐ hoàn trả': 'Bị từ chối QĐ hoàn trả', 'Đình chỉ xem xét hoàn trả': 'Bị từ chối QĐ đình chỉ' }
+        };
+        // Thứ tự trạng thái hiển thị (bộ lọc)
+        const HT_ST_ORDER = ['Chờ duyệt', 'Bị từ chối', 'Họp hội đồng', 'Chờ ban hành QĐ hoàn trả', 'Hoãn hoàn trả', 'Miễn hoàn trả', 'Thu hồi tiền hoàn trả', 'Hoàn thành', 'Đình chỉ xem xét hoàn trả'];
+        function htStView(code) { const m = HT_ST_MAP[code]; return m ? { name: m[0], loai: m[1] } : { name: code || '', loai: '' }; }
+        // Chuẩn hóa dữ liệu (dữ liệu cũ / dữ liệu theo tên mới kèm Loại trình) về mã trạng thái nội bộ
+        function htStCode(status, loai) {
+            if (HT_LOAI_CODE[status]) return HT_LOAI_CODE[status][loai] || HT_LOAI_CODE[status]['Thành lập hội đồng'];
+            const m = HT_ST_MAP[status];
+            return m && !m[1] ? m[0] : status;
+        }
+        function htStNormalize(d) { if (d && d.status) { d.status = htStCode(d.status, d.loaiTrinh); d.loaiTrinh = htStView(d.status).loai; } return d; }
+        const HT_ST_STYLE = {
+            'Chờ duyệt': 'review', 'Bị từ chối': 'danger', 'Họp hội đồng': 'pending', 'Chờ ban hành QĐ hoàn trả': 'warning',
+            'Hoãn hoàn trả': 'wait', 'Thu hồi tiền hoàn trả': 'info', 'Miễn hoàn trả': 'success', 'Hoàn thành': 'success', 'Đình chỉ xem xét hoàn trả': 'draft'
+        };
+        // Badge trạng thái (đồng bộ màn Quyết định GQBT): pill không icon; Chờ duyệt / Bị từ chối có dòng phụ Loại trình; hồ sơ nháp không hiển thị trạng thái
+        function htStBadgeHtml(code) {
+            if (!code || code === HT_ST_DRAFT) return '<span style="color:#94a3b8;">—</span>';
+            const v = htStView(code);
+            const cls = HT_ST_STYLE[v.name] || 'draft';
+            return `<span class="badge ht-st ht-st-${cls}">${v.name}</span>${v.loai ? `<div class="wf-sub${v.name === 'Bị từ chối' ? ' returned' : ''}">${v.loai}</div>` : ''}`;
+        }
+        function htStOptionsHtml(names) {
+            const list = HT_ST_ORDER.filter(n => names.includes(n)).concat(names.filter(n => n && n !== HT_ST_DRAFT && !HT_ST_ORDER.includes(n)));
+            return '<option value="">Tất cả</option>' + list.map(n => `<option value="${n}">${n}</option>`).join('');
+        }
         let htTab = 'pending';
         function htRoleKey() { return currentMockRole === 'lanh_dao' ? 'lanh_dao' : 'chuyen_vien'; }
         // Các bước (gate) vai trò đã xử lý: suy ra theo tiến trình hồ sơ và nhật ký thao tác trên giao diện (gateLog)
@@ -2314,7 +2304,7 @@
                 if (s !== 'Chờ thành lập hội đồng') list.push({ gate: 'Trình ký QĐ thành lập Hội đồng' });
                 if (HT_AFTER_COUNCIL.includes(s)) list.push({ gate: 'Cập nhật kết luận Hội đồng' });
                 if (HT_AFTER_REFUND_SUBMIT.includes(s)) list.push({ gate: 'Trình ký QĐ hoàn trả' });
-                if (HT_CLOSED.includes(s)) list.push({ gate: s === 'Chấm dứt thu hồi' ? 'Chấm dứt thu hồi' : 'Hoàn tất thu hồi' });
+                if (HT_CLOSED.includes(s)) list.push({ gate: s === 'Đình chỉ xem xét hoàn trả' ? 'Đình chỉ xem xét hoàn trả' : 'Hoàn tất thu hồi' });
             }
             (d.gateLog || []).filter(g => g.role === role).forEach(g => {
                 const found = list.find(x => x.gate === g.gate);
@@ -2338,9 +2328,9 @@
             document.querySelectorAll('.ht-tabs-card .ht-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === htTab));
             const sel = document.getElementById('filterStatusRefund');
             if (sel) {
-                const states = Array.from(new Set(dossiersList.filter(d => htInTab(htTab, d)).map(d => d.status)));
+                const states = Array.from(new Set(dossiersList.filter(d => htInTab(htTab, d)).map(d => htStView(d.status).name)));
                 const cur = sel.value;
-                sel.innerHTML = '<option value="">Tất cả</option>' + states.map(s => `<option value="${s}">${s}</option>`).join('');
+                sel.innerHTML = htStOptionsHtml(states);
                 sel.value = states.includes(cur) ? cur : '';
             }
             currentPageRefund = 1;
@@ -2348,7 +2338,9 @@
         }
         function updateRefundTabCounts() {
             const p = document.getElementById('htCntPending'), d = document.getElementById('htCntDone');
-            if (p) p.textContent = dossiersList.filter(x => htInTab('pending', x)).length;
+            // Badge tab Chờ xử lý (ẩn khi bằng 0) + đồng bộ badge menu trái (tiện ích dùng chung BDG)
+            const bdgPending = dossiersList.filter(x => htInTab('pending', x)).length;
+            if (window.BDG) BDG.report('hoanTra', bdgPending, p); else if (p) p.textContent = bdgPending;
             if (d) d.textContent = dossiersList.filter(x => htInTab('done', x)).length;
             // Số hồ sơ chờ Lãnh đạo duyệt: dùng cho Dashboard Lãnh đạo
             try { localStorage.setItem('btnn_hoantra_summary', JSON.stringify({ pendingApproval: dossiersList.filter(x => HT_APPROVAL_STATES.includes(x.status)).map(x => ({ code: x.code, status: x.status, claimCode: x.claimCode, maVuViec: dossierVuViec(x) })) })); } catch (e) { /* bỏ qua */ }
@@ -2412,11 +2404,8 @@
             }
 
             const thAction = document.getElementById('thActionsRefund');
-            if (thAction) {
-                if (currentMockRole === 'lanh_dao') thAction.innerText = 'Thao tác (Lãnh đạo)';
-                else if (currentMockRole === 'chuyen_vien') thAction.innerText = 'Thao tác (Cán bộ)';
-                else thAction.innerText = 'Thao tác';
-            }
+            // Tiêu đề cột chỉ ghi "Thao tác" (không kèm vai trò)
+            if (thAction) thAction.innerText = 'Thao tác';
         }
 
         function changeMockRole(newRole) {
@@ -2509,7 +2498,7 @@
         }
 
         function updateSortIcons() {
-            const cols = ['stt', 'code', 'officer', 'agency', 'maVuViec', 'claimCode', 'claimAmt', 'refundTotal', 'progress', 'status', 'deadline'];
+            const cols = ['stt', 'code', 'officer', 'agency', 'maVuViec', 'claimCode', 'claimAmt', 'refundTotal', 'progress', 'status'];
             cols.forEach(c => {
                 const icon = document.getElementById(`sortIcon_${c}`);
                 if (!icon) return;
@@ -2541,10 +2530,11 @@
             let deleteTooltip = 'Xóa hồ sơ nháp';
 
             switch (d.status) {
-                case 'Chờ thành lập hội đồng':
+                case 'Chờ thành lập hội đồng': // Hồ sơ nháp (chưa trình QĐ thành lập Hội đồng, không có trạng thái)
                     canDelete = (currentMockRole !== 'lanh_dao' && currentMockRole !== 'tra_cuu');
+                    canUpdate = canDelete;
                     deleteTooltip = canDelete ? 'Xóa hồ sơ nháp' : 'Chỉ Chuyên viên mới có quyền xóa hồ sơ nháp';
-                    updateTooltip = 'Hồ sơ chưa thành lập Hội đồng, vui lòng lập Hội đồng qua chức năng tạo mới';
+                    updateTooltip = canUpdate ? 'Tiếp tục lập và trình/ban hành Quyết định thành lập Hội đồng' : 'Lãnh đạo không thực hiện cập nhật';
                     approveTooltip = 'Hồ sơ chưa có quyết định cần duyệt';
                     rejectTooltip = 'Hồ sơ chưa có quyết định cần duyệt';
                     break;
@@ -2563,7 +2553,7 @@
                     rejectTooltip = 'Hồ sơ đã bị từ chối';
                     deleteTooltip = 'Không thể xóa hồ sơ đã có quyết định';
                     break;
-                case 'Đang họp hội đồng':
+                case 'Họp hội đồng':
                     canUpdate = (currentMockRole !== 'lanh_dao' && currentMockRole !== 'tra_cuu');
                     updateTooltip = canUpdate ? 'Cập nhật kết luận và kiến nghị của Hội đồng' : 'Lãnh đạo không thực hiện cập nhật';
                     approveTooltip = 'Hội đồng đang họp, chưa trình dự thảo quyết định hoàn trả';
@@ -2595,12 +2585,12 @@
                     rejectTooltip = 'Dự thảo Quyết định đã bị từ chối';
                     deleteTooltip = 'Không thể xóa hồ sơ đang trong quy trình xử lý';
                     break;
-                case 'Đang thi hành':
+                case 'Thu hồi tiền hoàn trả':
                     canUpdate = (currentMockRole !== 'lanh_dao' && currentMockRole !== 'tra_cuu');
                     updateTooltip = canUpdate ? 'Cập nhật tiến độ nộp tiền hoàn trả' : 'Lãnh đạo không thực hiện cập nhật';
-                    approveTooltip = 'Quyết định hoàn trả đã được ban hành và đang thi hành';
+                    approveTooltip = 'Quyết định hoàn trả đã được ban hành, đang thu hồi tiền hoàn trả';
                     rejectTooltip = 'Quyết định hoàn trả đã có hiệu lực thi hành';
-                    deleteTooltip = 'Không thể xóa hồ sơ đang thi hành';
+                    deleteTooltip = 'Không thể xóa hồ sơ đang thu hồi tiền hoàn trả';
                     break;
                 case 'Hoàn thành':
                     updateTooltip = 'Hồ sơ đã hoàn thành 100% nghĩa vụ hoàn trả (Chỉ xem)';
@@ -2608,17 +2598,11 @@
                     rejectTooltip = 'Hồ sơ đã hoàn tất nghĩa vụ';
                     deleteTooltip = 'Hồ sơ đã hoàn tất, không được xóa';
                     break;
-                case 'Không xem xét trách nhiệm hoàn trả':
-                    updateTooltip = 'Hồ sơ đã kết luận không xem xét trách nhiệm hoàn trả (Chỉ xem)';
+                case 'Đình chỉ xem xét hoàn trả':
+                    updateTooltip = 'Hồ sơ đã đình chỉ việc xem xét trách nhiệm hoàn trả (Chỉ xem)';
                     approveTooltip = 'Hồ sơ đã kết thúc xử lý';
                     rejectTooltip = 'Hồ sơ đã kết thúc xử lý';
-                    deleteTooltip = 'Không được xóa hồ sơ đã có kết luận';
-                    break;
-                case 'Chấm dứt thu hồi':
-                    updateTooltip = 'Hồ sơ đã chấm dứt thu hồi theo Luật BTNN (Chỉ xem)';
-                    approveTooltip = 'Hồ sơ đã chấm dứt thu hồi';
-                    rejectTooltip = 'Hồ sơ đã chấm dứt thu hồi';
-                    deleteTooltip = 'Không được xóa hồ sơ đã có quyết định chấm dứt';
+                    deleteTooltip = 'Không được xóa hồ sơ đã có quyết định đình chỉ';
                     break;
             }
 
@@ -2634,7 +2618,9 @@
             }
 
             // Chú thích nút theo tên thao tác; thao tác không được phép hiển thị khóa mờ
-            updateTooltip = 'Cập nhật'; approveTooltip = 'Phê duyệt'; rejectTooltip = 'Từ chối'; deleteTooltip = 'Xóa';
+            updateTooltip = 'Cập nhật'; approveTooltip = 'Ký duyệt'; rejectTooltip = 'Từ chối'; deleteTooltip = 'Xóa';
+            // Ký duyệt / Từ chối: mọi Loại trình đang Chờ duyệt (Thành lập hội đồng, QĐ hoàn trả, Đình chỉ xem xét hoàn trả)
+            canApprove = canReject = currentMockRole !== 'tra_cuu' && HT_APPROVAL_STATES.includes(d.status);
             const disabledStyle = 'opacity: 0.35; pointer-events: none; cursor: not-allowed;';
 
             // Slot 1: Cập nhật
@@ -2642,15 +2628,14 @@
                 ? `<button class="icon-btn edit" title="${updateTooltip}" onclick="navigateToUpdate(event, '${d.id}', '${d.status}')" style="color:#2563eb; border-color:#2563eb;"><i class="fa-solid fa-pen-to-square"></i></button>`
                 : `<button class="icon-btn" title="${updateTooltip}" style="${disabledStyle}"><i class="fa-solid fa-pen-to-square"></i></button>`;
 
-            // Slot 2: Phê duyệt
+            // Slot 2: Ký duyệt / Slot 3: Từ chối - icon đồng nhất màn Xác định cơ quan GQBT; mở màn Ký duyệt / Từ chối dùng chung (htkdOpen)
             const btnApprove = canApprove
-                ? `<button class="icon-btn" title="${approveTooltip}" onclick="openApproveModal(event, '${d.id}')" style="color:#16a34a; border-color:#16a34a;"><i class="fa-solid fa-file-signature"></i></button>`
-                : `<button class="icon-btn" title="${approveTooltip}" style="${disabledStyle}"><i class="fa-solid fa-file-signature"></i></button>`;
+                ? `<button class="icon-btn accept sign" data-admin-icon-normalized="1" title="${approveTooltip}" onclick="htkdOpen(event, '${d.id}', 'approve')"><i class="fa-solid fa-file-signature"></i></button>`
+                : `<button class="icon-btn accept sign is-disabled" data-admin-icon-normalized="1" title="${approveTooltip}" style="${disabledStyle}" disabled><i class="fa-solid fa-file-signature"></i></button>`;
 
-            // Slot 3: Từ chối
             const btnReject = canReject
-                ? `<button class="icon-btn" title="${rejectTooltip}" onclick="openRejectModal(event, '${d.id}')" style="color:#dc2626; border-color:#dc2626;"><i class="fa-solid fa-ban"></i></button>`
-                : `<button class="icon-btn" title="${rejectTooltip}" style="${disabledStyle}"><i class="fa-solid fa-ban"></i></button>`;
+                ? `<button class="icon-btn delete reject" data-admin-icon-normalized="1" title="${rejectTooltip}" onclick="htkdOpen(event, '${d.id}', 'reject')"><i class="fa-solid fa-ban"></i></button>`
+                : `<button class="icon-btn delete reject is-disabled" data-admin-icon-normalized="1" title="${rejectTooltip}" style="${disabledStyle}" disabled><i class="fa-solid fa-ban"></i></button>`;
 
             // Slot 4: Xóa
             const btnDelete = canDelete
@@ -2710,18 +2695,14 @@
                     const matchSubAgency = (item.refundOfficers || []).some(o => (o.agency || '').toLowerCase().includes(agencySearch));
                     if (!matchAgency && !matchSubAgency) return false;
                 }
-                if (statusVal && item.status !== statusVal) return false;
+                if (statusVal && htStView(item.status).name !== statusVal) return false;
 
                 // Lọc nhanh theo KPI (Tất cả / Chờ duyệt / Bị từ chối)
                 if (activeKpiFilterRefund === 'Chờ duyệt') {
-                    const isPending = item.status === 'Chờ duyệt QĐ thành lập' || 
-                                      item.status === 'Chờ duyệt thành lập hội đồng' || 
-                                      item.status === 'Chờ duyệt QĐ hoàn trả';
+                    const isPending = htStView(item.status).name === 'Chờ duyệt';
                     if (!isPending) return false;
                 } else if (activeKpiFilterRefund === 'Bị từ chối') {
-                    const isRejected = item.status === 'Bị từ chối thành lập HĐ' || 
-                                       item.status === 'Bị từ chối QĐ hoàn trả' || 
-                                       (item.status && item.status.toLowerCase().includes('từ chối'));
+                    const isRejected = htStView(item.status).name === 'Bị từ chối';
                     if (!isRejected) return false;
                 }
 
@@ -2772,10 +2753,6 @@
                         valA = a.status || '';
                         valB = b.status || '';
                         break;
-                    case 'deadline':
-                        valA = a.daysLeft != null ? a.daysLeft : 9999;
-                        valB = b.daysLeft != null ? b.daysLeft : 9999;
-                        break;
                     default:
                         valA = a.code || '';
                         valB = b.code || '';
@@ -2793,14 +2770,6 @@
             currentFilteredDossiers = filtered;
             updateSortIcons();
             updateKpiCountersRefund();
-
-            let statCount = filtered.length;
-            let statTotalAmt = filtered.reduce((sum, d) => sum + (d.refundTotal || 0), 0);
-            let statPaidAmt = filtered.reduce((sum, d) => sum + getDossierPaid(d), 0);
-            
-            document.getElementById('statVuviecRefund').innerText = `${statCount} hồ sơ`;
-            document.getElementById('statTongphaiRefund').innerText = statTotalAmt.toLocaleString('vi-VN') + " đ";
-            document.getElementById('statDathuRefund').innerText = statPaidAmt.toLocaleString('vi-VN') + " đ";
 
             const totalCount = filtered.length;
             document.getElementById('totalCountRefund').innerText = totalCount;
@@ -2830,7 +2799,7 @@
             const pageData = filtered.slice(startIndex, endIndex);
 
             if (pageData.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; color:var(--text-muted); font-style:italic; padding: 30px;">Không tìm thấy hồ sơ xem xét trách nhiệm hoàn trả nào phù hợp.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; color:var(--text-muted); font-style:italic; padding: 30px;">Không tìm thấy hồ sơ xem xét trách nhiệm hoàn trả nào phù hợp.</td></tr>`;
                 return;
             }
 
@@ -2841,9 +2810,9 @@
 
                 let focusStep = 1;
                 if (['Chờ thành lập hội đồng', 'Chờ duyệt QĐ thành lập', 'Bị từ chối thành lập HĐ'].includes(d.status)) focusStep = 1;
-                else if (['Đang họp hội đồng', 'Không xem xét trách nhiệm hoàn trả'].includes(d.status)) focusStep = 2;
+                else if (['Họp hội đồng', 'Đình chỉ xem xét hoàn trả'].includes(d.status)) focusStep = 2;
                 else if (['Chờ ban hành QĐ hoàn trả', 'Bị từ chối QĐ hoàn trả'].includes(d.status)) focusStep = 3;
-                else if (['Đang thi hành', 'Chấm dứt thu hồi'].includes(d.status)) focusStep = 4;
+                else if (['Thu hồi tiền hoàn trả'].includes(d.status)) focusStep = 4;
                 else if (d.status === 'Hoàn thành') focusStep = 5;
 
                 tr.onclick = (e) => {
@@ -2858,17 +2827,14 @@
                 // Chuẩn màu Badge 10 trạng thái theo ma trận
                 let statusBadge = '';
                 switch (d.status) {
-                    case 'Chờ thành lập hội đồng':
-                        statusBadge = '<span class="badge" style="background:#fff7ed; color:#c2410c; border:1px solid #ffedd5; font-weight:600;"><i class="fa-regular fa-clock" style="margin-right:4px;"></i>Chờ thành lập hội đồng</span>';
-                        break;
                     case 'Chờ duyệt QĐ thành lập':
                         statusBadge = '<span class="badge" style="background:#fefce8; color:#a16207; border:1px solid #fef08a; font-weight:600;"><i class="fa-solid fa-hourglass-half" style="margin-right:4px;"></i>Chờ duyệt QĐ thành lập</span>';
                         break;
                     case 'Bị từ chối thành lập HĐ':
                         statusBadge = '<span class="badge" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; font-weight:600;"><i class="fa-solid fa-circle-xmark" style="margin-right:4px;"></i>Bị từ chối thành lập HĐ</span>';
                         break;
-                    case 'Đang họp hội đồng':
-                        statusBadge = '<span class="badge" style="background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; font-weight:600;"><i class="fa-solid fa-users" style="margin-right:4px;"></i>Đang họp hội đồng</span>';
+                    case 'Họp hội đồng':
+                        statusBadge = '<span class="badge" style="background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; font-weight:600;"><i class="fa-solid fa-users" style="margin-right:4px;"></i>Họp hội đồng</span>';
                         break;
                     case 'Chờ ban hành QĐ hoàn trả':
                         statusBadge = '<span class="badge" style="background:#fff7ed; color:#ea580c; border:1px solid #fdba74; font-weight:600;"><i class="fa-solid fa-file-signature" style="margin-right:4px;"></i>Chờ ban hành QĐ hoàn trả</span>';
@@ -2876,28 +2842,17 @@
                     case 'Bị từ chối QĐ hoàn trả':
                         statusBadge = '<span class="badge" style="background:#fee2e2; color:#991b1b; border:1px solid #f87171; font-weight:600;"><i class="fa-solid fa-circle-exclamation" style="margin-right:4px;"></i>Bị từ chối QĐ hoàn trả</span>';
                         break;
-                    case 'Đang thi hành':
-                        statusBadge = '<span class="badge" style="background:#dbeafe; color:#1e40af; border:1px solid #93c5fd; font-weight:600;"><i class="fa-solid fa-spinner fa-spin" style="margin-right:4px;"></i>Đang thi hành</span>';
+                    case 'Thu hồi tiền hoàn trả':
+                        statusBadge = '<span class="badge" style="background:#dbeafe; color:#1e40af; border:1px solid #93c5fd; font-weight:600;"><i class="fa-solid fa-spinner fa-spin" style="margin-right:4px;"></i>Thu hồi tiền hoàn trả</span>';
                         break;
                     case 'Hoàn thành':
                         statusBadge = '<span class="badge" style="background:#dcfce7; color:#15803d; border:1px solid #86efac; font-weight:600;"><i class="fa-solid fa-circle-check" style="margin-right:4px;"></i>Hoàn thành</span>';
                         break;
-                    case 'Không xem xét trách nhiệm hoàn trả':
-                        statusBadge = '<span class="badge" style="background:#f1f5f9; color:#334155; border:1px solid #cbd5e1; font-weight:600;"><i class="fa-solid fa-ban" style="margin-right:4px;"></i>Không xem xét trách nhiệm hoàn trả</span>';
-                        break;
-                    case 'Chấm dứt thu hồi':
-                        statusBadge = '<span class="badge" style="background:#f8fafc; color:#64748b; border:1px solid #e2e8f0; font-weight:600;"><i class="fa-solid fa-stop" style="margin-right:4px;"></i>Chấm dứt thu hồi</span>';
-                        break;
                     default:
                         statusBadge = `<span class="badge badge-info">${d.status}</span>`;
                 }
-
-                let deadlineHtml = '—';
-                if (['Chờ thành lập hội đồng', 'Chờ duyệt QĐ thành lập', 'Bị từ chối thành lập HĐ'].includes(d.status) && d.deadlineDate) {
-                    let badgeClass = d.daysLeft <= 0 ? 'background:#fee2e2; color:#b91c1c;' : (d.daysLeft <= 3 ? 'background:#fef9c3; color:#a16207;' : 'background:#dcfce7; color:#15803d;');
-                    let badgeText = d.daysLeft <= 0 ? `Quá hạn ${Math.abs(d.daysLeft)} ngày` : `Còn ${d.daysLeft} ngày`;
-                    deadlineHtml = `<div style="font-size:12px; font-weight:600; color:var(--text-main); line-height:1.2;">${d.deadlineDate}</div><div style="margin-top:2px;"><span class="badge" style="${badgeClass} font-size:10.5px; padding:1px 5px; border-radius:3px;">${badgeText}</span></div>`;
-                }
+                // Chốt 23/10: 9 trạng thái hiển thị; Chờ duyệt / Bị từ chối kèm nhãn Loại trình
+                statusBadge = htStBadgeHtml(d.status);
 
                 const actionButtonsHtml = getActionButtonsHtml(d);
 
@@ -2926,9 +2881,6 @@
                     </td>
                     <td style="text-align:center; vertical-align:middle; white-space:nowrap;">
                         ${statusBadge}${htTab === 'done' ? htGatesHtml(d) : ''}
-                    </td>
-                    <td style="text-align:center; vertical-align:middle;">
-                        ${deadlineHtml}
                     </td>
                     <td style="text-align:center; vertical-align:middle;">
                         ${actionButtonsHtml}
@@ -3024,7 +2976,7 @@
             saveCreatedRefundDossiers([newDossier].concat(loadCreatedRefundDossiers().filter(d => d.code !== newDossier.code)));
             sessionStorage.setItem('newRefundDossier', JSON.stringify(newDossier));
             closeRefundModal('selectClaimToRefundModal');
-            showToast(`Đã khởi tạo hồ sơ hoàn trả ${newDossier.code}. Đang chuyển sang màn hình chi tiết Bước 1...`, "success");
+            showToast(`Đã khởi tạo hồ sơ nháp ${newDossier.code}. Đang chuyển sang Bước 1 để lập và trình/ban hành Quyết định thành lập Hội đồng...`, "success");
             setTimeout(() => {
                 window.location.href = `chi_tiet_ho_so_hoan_tra.html?id=${newDossier.id}&mode=edit&focusStep=1`;
             }, 350);
@@ -3101,10 +3053,10 @@
                 refundTotal: 0,
                 refundMethod: "",
                 refundMonthly: 0,
-                status: "Chờ thành lập hội đồng",
+                status: HT_ST_DRAFT, // Hồ sơ nháp: chưa trình QĐ thành lập Hội đồng, không hiển thị trạng thái
                 dateCreated: new Date().toLocaleDateString('vi-VN'),
                 refundOfficers: [
-                    { name: seed.officerName, loi: "Chờ thành lập hội đồng", total: 0, paid: 0, nextDate: "—", status: "Chờ thành lập hội đồng", progressClass: "secondary", agency: seed.agency, role: seed.officerRole }
+                    { name: seed.officerName, loi: "Chờ xác định", total: 0, paid: 0, nextDate: "—", status: "Chờ xác định", progressClass: "secondary", agency: seed.agency, role: seed.officerRole }
                 ],
                 payments: []
             };
@@ -3269,10 +3221,10 @@
                 refundTotal: 0,
                 refundMethod: "",
                 refundMonthly: 0,
-                status: "Chờ thành lập hội đồng",
+                status: "Họp hội đồng", // Ban hành QĐ lập Hội đồng (ký ngoài) -> Họp hội đồng
                 dateCreated: new Date().toLocaleDateString('vi-VN'),
                 refundOfficers: [
-                    { name: "Chưa xác định", loi: "Chờ thành lập hội đồng", total: 0, paid: 0, nextDate: "—", status: "Chờ thành lập hội đồng", progressClass: "secondary" }
+                    { name: "Chưa xác định", loi: "Đang xem xét", total: 0, paid: 0, nextDate: "—", status: "Họp hội đồng", progressClass: "info" }
                 ],
                 payments: []
             });
@@ -3573,7 +3525,7 @@
                 document.getElementById('refundExemptScopeGroup').style.display = 'grid';
             }
 
-            renderRefundObligationFiles();
+            if (typeof tlktMount === 'function') tlktMount('rfo', 'refundObligationTlkt', { required: true, rows: [], secClass: 'form-group', titleClass: 'form-label', noLeader: true, title: 'Văn bản căn cứ', exts: ['.pdf', '.jpg', '.jpeg', '.png'] });
             document.getElementById('refundObligationModal').classList.add('visible');
         }
 
@@ -3595,6 +3547,10 @@
                 showToast("Vui lòng nhập đầy đủ thông tin bắt buộc.", "info");
                 return;
             }
+            // Văn bản căn cứ: bắt buộc tối thiểu 01 dòng đủ Tên văn bản, căn cứ và Tệp
+            if (typeof tlktValidate === 'function' && !tlktValidate('rfo')) return;
+            if (typeof tlktGet === 'function') refundObligationFiles = tlktGet('rfo').map(d => d.file ? d.file.name : d.name);
+            const refundObligationDocs = typeof tlktGet === 'function' ? tlktGet('rfo') : [];
 
             if (mode === 'postpone') {
                 const fromDate = document.getElementById('refundPostponeFrom').value.trim();
@@ -3614,7 +3570,8 @@
                     fromDate,
                     toDate,
                     reason,
-                    files: [...refundObligationFiles]
+                    files: [...refundObligationFiles],
+                    attachments: refundObligationDocs
                 };
                 (dossier.refundOfficers || []).forEach(o => {
                     if (o.status !== 'Hoàn tất') {
@@ -3638,7 +3595,8 @@
                     amount: appliedAmount,
                     scope: mode === 'exempt' ? scope : '',
                     reason,
-                    files: [...refundObligationFiles]
+                    files: [...refundObligationFiles],
+                    attachments: refundObligationDocs
                 };
                 dossier.refundTotal = Math.max(getDossierPaid(dossier), (dossier.refundTotal || 0) - appliedAmount);
                 if (getDossierPaid(dossier) >= dossier.refundTotal) {
@@ -3662,9 +3620,9 @@
             let focusStep = 1;
             if (d) {
                 if (['Chờ thành lập hội đồng', 'Chờ duyệt QĐ thành lập', 'Bị từ chối thành lập HĐ'].includes(d.status)) focusStep = 1;
-                else if (['Đang họp hội đồng', 'Không xem xét trách nhiệm hoàn trả'].includes(d.status)) focusStep = 2;
+                else if (['Họp hội đồng', 'Đình chỉ xem xét hoàn trả'].includes(d.status)) focusStep = 2;
                 else if (['Chờ ban hành QĐ hoàn trả', 'Bị từ chối QĐ hoàn trả'].includes(d.status)) focusStep = 3;
-                else if (['Đang thi hành', 'Chấm dứt thu hồi'].includes(d.status)) focusStep = 4;
+                else if (['Thu hồi tiền hoàn trả'].includes(d.status)) focusStep = 4;
                 else if (d.status === 'Hoàn thành') focusStep = 5;
             }
             window.location.href = `chi_tiet_ho_so_hoan_tra.html?mode=view&id=${id}&focusStep=${focusStep}&role=${currentMockRole}`;
@@ -3685,210 +3643,204 @@
             if (event) event.stopPropagation();
             let focusStep = 1;
             if (status === 'Bị từ chối thành lập HĐ') focusStep = 1;
-            else if (status === 'Đang họp hội đồng') focusStep = 2;
+            else if (status === 'Họp hội đồng') focusStep = 2;
             else if (status === 'Bị từ chối QĐ hoàn trả') focusStep = 3;
-            else if (status === 'Đang thi hành') focusStep = 4;
+            else if (status === 'Thu hồi tiền hoàn trả') focusStep = 4;
             window.location.href = `chi_tiet_ho_so_hoan_tra.html?mode=edit&id=${id}&focusStep=${focusStep}&role=${currentMockRole}`;
         }
 
-        let currentApproveDossier = null;
-        function openApproveModal(event, id) {
-            if (event) event.stopPropagation();
-            const dossier = dossiersList.find(d => d.id === id);
-            if (!dossier) return;
-            currentApproveDossier = dossier;
-
-            document.getElementById('approveDossierId').value = dossier.id;
-            const codeEl = document.getElementById('approveDossierCode'); if (codeEl) codeEl.innerText = dossier.code;
-            const claimEl = document.getElementById('approveClaimCode'); if (claimEl) claimEl.innerText = claimLabel(dossier.claimCode);
-            document.getElementById('approvePinInput').value = '';
-            document.getElementById('approvePinInput').classList.remove('is-invalid');
-            document.getElementById('approvePinError').style.display = 'none';
-
-            const titleEl = document.getElementById('approveModalTitle');
-            if (dossier.status === 'Chờ duyệt QĐ thành lập') {
-                titleEl.innerHTML = '<i class="fa-solid fa-file-signature"></i> Phê duyệt Quyết định thành lập Hội đồng hoàn trả';
-            } else {
-                titleEl.innerHTML = '<i class="fa-solid fa-file-signature"></i> Phê duyệt Quyết định hoàn trả';
+        // ===== Màn Ký duyệt / Từ chối (htkd): dùng chung mọi Loại trình; Lãnh đạo xem văn bản trình ký ngay trên màn =====
+        // Văn bản: file sinh theo mẫu của lần trình (Mẫu 33 - Thành lập hội đồng, Mẫu 21 - QĐ hoàn trả, Mẫu 39 - Đình chỉ) hoặc file cán bộ tải lên
+        const HTKD_STAFF = 'Chuyên viên Nguyễn Văn Chuyên Viên';
+        const HTKD_KIND = {
+            'Thành lập hội đồng': { doc: 'Quyết định thành lập Hội đồng xem xét trách nhiệm hoàn trả', mau: 'Mẫu số 33/BTNN', title: 'Thành lập Hội đồng xem xét trách nhiệm hoàn trả', gate: 'Ký duyệt QĐ thành lập Hội đồng', ok: 'Họp hội đồng' },
+            'QĐ hoàn trả': { doc: 'Quyết định hoàn trả', mau: 'Mẫu số 21/BTNN', title: 'Về việc hoàn trả', gate: 'Ký duyệt QĐ hoàn trả', ok: 'Thu hồi tiền hoàn trả' },
+            'Đình chỉ xem xét hoàn trả': { doc: 'Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả', mau: 'Mẫu số 39/BTNN', title: 'Đình chỉ việc xem xét trách nhiệm hoàn trả', gate: 'Ký duyệt QĐ đình chỉ', ok: 'Đình chỉ xem xét hoàn trả' }
+        };
+        let htkdCtx = null;
+        function htkdE(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+        function htkdLoai(d) { return htStView(d.status).loai || 'Thành lập hội đồng'; }
+        // Thông tin văn bản trình ký của lần trình hiện hành
+        function htkdDocInfo(d) {
+            const loai = htkdLoai(d);
+            const vv = dossierVuViec(d) || d.claimCode || '';
+            if (loai === 'Thành lập hội đồng') {
+                const t = d.tlhd || {};
+                return { name: t.fileName || d.hdFileName || `Mau_33_BTNN_Quyet_dinh_thanh_lap_hoi_dong_${vv}.docx`, uploaded: t.docSrc === 'upload' };
             }
-
-            document.getElementById('approveModal').classList.add('visible');
+            if (loai === 'Đình chỉ xem xét hoàn trả') {
+                const a = d.dcht || {};
+                return { name: a.fileName || `Mau_39_BTNN_Quyet_dinh_dinh_chi_xem_xet_hoan_tra_${vv}.docx`, uploaded: a.docSrc === 'upload' };
+            }
+            return { name: `Du_thao_Quyet_dinh_hoan_tra_${String(d.code || '').replace(/-/g, '_')}.docx`, uploaded: false };
         }
-
-        function closeApproveModal() {
-            document.getElementById('approveModal').classList.remove('visible');
-            currentApproveDossier = null;
+        // Nội dung văn bản sinh theo mẫu (giả lập) - dùng cho khung Xem trước và Mở xem văn bản (tab mới)
+        function htkdDocHtml(d) {
+            const loai = htkdLoai(d);
+            const k = HTKD_KIND[loai];
+            const agency = d.agency || 'Sở Tư pháp Hà Nội';
+            const p = 'text-indent:24px; margin:0 0 8px; text-align:justify;';
+            const officers = (d.refundOfficers || []).filter(o => o && o.name);
+            let dieu1 = '';
+            if (loai === 'Thành lập hội đồng') {
+                const mem = (d.council || []).map((m, i) => `<tr><td style="text-align:center;">${i + 1}</td><td>${htkdE(m.name)}</td><td>${htkdE(m.agency || '')}</td><td>${htkdE(m.role || '')}</td></tr>`).join('') || '<tr><td style="text-align:center;">1</td><td>……</td><td>……</td><td>Chủ tịch Hội đồng</td></tr>';
+                dieu1 = `<p style="${p}"><strong>Điều 1.</strong> Thành lập Hội đồng xem xét trách nhiệm hoàn trả gồm các Ông/Bà có tên sau đây:</p>
+                    <table style="width:100%; border-collapse:collapse; font-size:13px; margin:6px 0 10px;" border="1" cellpadding="4"><thead><tr><th style="width:40px;">STT</th><th>Họ và tên</th><th>Đơn vị công tác</th><th>Chức danh trong hội đồng</th></tr></thead><tbody>${mem}</tbody></table>
+                    <p style="${p}"><strong>Điều 2.</strong> Hội đồng có các nhiệm vụ, quyền hạn theo quy định của pháp luật.</p>`;
+            } else if (loai === 'QĐ hoàn trả') {
+                dieu1 = `<p style="${p}"><strong>Điều 1.</strong> Người thi hành công vụ có trách nhiệm hoàn trả cho ngân sách nhà nước:</p>`
+                    + officers.map((o, i) => `<p style="${p}">${i + 1}. Ông/Bà ${htkdE(o.name)} - ${htkdE(o.role || '')}, ${htkdE(o.agency || '')}: số tiền hoàn trả ${(o.total || 0).toLocaleString('vi-VN')} đồng; phương thức: ${htkdE(o.refundMethod || 'Một lần')}.</p>`).join('');
+            } else {
+                dieu1 = `<p style="${p}"><strong>Điều 1.</strong> Đình chỉ việc xem xét trách nhiệm hoàn trả đối với ${officers.map(o => 'Ông/Bà ' + htkdE(o.name)).join(', ') || '……'}.</p>`
+                    + `<p style="${p}">Lý do đình chỉ: ${htkdE((d.dcht && d.dcht.lyDo) || '……')}</p>`;
+            }
+            return `<div style="text-align:right; font-weight:bold; font-size:13px;">${k.mau}</div>
+                <div style="display:flex; justify-content:space-between; margin:12px 0 20px;">
+                    <div style="text-align:center; width:42%;"><div style="font-weight:bold; font-size:13px; text-transform:uppercase;">${htkdE(agency)}</div><div style="border-bottom:1px solid #000; width:100px; margin:4px auto 6px;"></div><div style="font-size:13px;">Số: ……/QĐ-……</div></div>
+                    <div style="text-align:center; width:56%;"><div style="font-weight:bold; font-size:13px;">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div><div style="font-weight:bold; font-size:13px;">Độc lập - Tự do - Hạnh phúc</div><div style="border-bottom:1px solid #000; width:140px; margin:4px auto 6px;"></div><div style="font-style:italic; font-size:13px;">……, ngày …… tháng …… năm ……</div></div>
+                </div>
+                <div style="text-align:center; margin-bottom:14px;"><div style="font-weight:bold; font-size:15px;">QUYẾT ĐỊNH</div><div style="font-weight:bold; font-size:14px;">${htkdE(k.title)}</div><div style="border-bottom:1px solid #000; width:120px; margin:4px auto 10px;"></div></div>
+                <p style="${p} font-style:italic;">Căn cứ Luật Trách nhiệm bồi thường của Nhà nước năm 2017 (được sửa đổi, bổ sung bởi Luật số 15/2026/QH16);</p>
+                <p style="${p} font-style:italic;">Xét hồ sơ xem xét trách nhiệm hoàn trả (Mã hồ sơ: ${htkdE(d.code)}; Mã vụ việc: ${htkdE(dossierVuViec(d) || '--')}),</p>
+                <div style="text-align:center; font-weight:bold; margin:10px 0;">QUYẾT ĐỊNH:</div>
+                ${dieu1}
+                <p style="${p}"><strong>Điều ${loai === 'Thành lập hội đồng' ? 3 : 2}.</strong> Quyết định này có hiệu lực kể từ ngày ký./.</p>
+                <div style="display:flex; justify-content:flex-end; margin-top:40px;"><div style="text-align:center; width:52%;"><div style="font-weight:bold;">THỦ TRƯỞNG CƠ QUAN</div><div style="font-style:italic; font-size:12px;">(Ký, ghi rõ họ tên và đóng dấu)</div><div style="height:90px;"></div></div></div>`;
         }
-
-        function submitApproveDecision() {
-            const pinInput = document.getElementById('approvePinInput');
-            const pinError = document.getElementById('approvePinError');
-            if (!pinInput.value.trim()) {
-                pinInput.classList.add('is-invalid');
-                pinError.style.display = 'block';
-                pinInput.focus();
+        function htkdOpenDoc() {
+            const d = htkdCtx && htkdCtx.d; if (!d) return;
+            const info = htkdDocInfo(d);
+            if (info.uploaded) { showToast(`Đang mở xem tệp tin: ${info.name}`, 'info'); return; }
+            const page = '<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><title>' + htkdE(info.name) + '</title><style>body{background:#e2e8f0;margin:0;padding:24px;}'
+                + '.page{width:794px;min-height:1123px;margin:0 auto;background:#fff;padding:50px 65px;box-sizing:border-box;font-family:"Times New Roman",serif;font-size:14px;line-height:1.6;color:#111827;}'
+                + '<\/style><\/head><body><div class="page">' + htkdDocHtml(d) + '<\/div><\/bo' + 'dy><\/ht' + 'ml>';
+            try { window.open(URL.createObjectURL(new Blob([page], { type: 'text/html;charset=utf-8' })), '_blank'); }
+            catch (e) { showToast('Không mở được văn bản.', 'warning'); }
+        }
+        function htkdPreviewHtml(d) {
+            const info = htkdDocInfo(d);
+            const bar = `<div class="htkd-doc-bar"><span><i class="fa-solid ${/\.pdf$/i.test(info.name) ? 'fa-file-pdf' : 'fa-file-word'}"></i> ${htkdE(info.name)}</span><a href="javascript:void(0)" onclick="htkdOpenDoc()"><i class="fa-solid fa-up-right-from-square"></i> Mở xem văn bản</a></div>`;
+            if (info.uploaded) return bar + `<div class="htkd-uploaded"><i class="fa-solid fa-file-pdf" style="font-size:36px; color:#dc2626;"></i><p>Văn bản do cán bộ tải lên: <b>${htkdE(info.name)}</b></p><p style="color:#64748b;">Bấm Mở xem văn bản để xem nội dung tệp.</p></div>`;
+            return bar + `<div class="htkd-a4">${htkdDocHtml(d)}</div>`;
+        }
+        function htkdContent(d) {
+            const loai = htkdLoai(d);
+            if (loai === 'Thành lập hội đồng') return (d.tlhd && d.tlhd.content) || d.councilDraftSummary || `Trình ký Quyết định thành lập Hội đồng xem xét trách nhiệm hoàn trả - hồ sơ ${d.code}.`;
+            if (loai === 'Đình chỉ xem xét hoàn trả') return (d.dcht && d.dcht.content) || `Trình ký Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả - hồ sơ ${d.code}.`;
+            return d.qdSummary || `Trình ký Quyết định hoàn trả - hồ sơ ${d.code}.`;
+        }
+        function htkdSummaryHtml(d) {
+            const row = (k, v) => `<div class="htkd-row"><span>${k}</span><span>${v}</span></div>`;
+            return `<div class="htkd-box"><div class="htkd-box-title"><i class="fa-solid fa-circle-info"></i> Thông tin tổng quan</div>`
+                + row('Mã hồ sơ', `<strong>${htkdE(d.code)}</strong>`)
+                + row('Mã vụ việc', htkdE(dossierVuViec(d) || '--'))
+                + row('Loại trình', htkdE(htkdLoai(d)))
+                + row('Cán bộ trình', `${htkdE(d.kdSubmittedBy || HTKD_STAFF)}${d.kdSubmittedAt ? ` <span style="color:#64748b;">- ${htkdE(d.kdSubmittedAt)}</span>` : ''}`)
+                + row('Nội dung trình', htkdE(htkdContent(d)))
+                + `</div>`;
+        }
+        // Tài liệu kèm theo của lần trình (chỉ đọc; chỉ hiển thị khi có)
+        function htkdTlktHtml(d) {
+            const loai = htkdLoai(d);
+            const list = loai === 'QĐ hoàn trả' ? d.qdTlkt : (loai === 'Đình chỉ xem xét hoàn trả' ? (d.dcht && d.dcht.attachments) : null);
+            return list && list.length && typeof tlktViewHtml === 'function' ? tlktViewHtml(list) : '';
+        }
+        // Lịch sử trình ký: giảm dần theo thời gian; lượt hiện hành: Lãnh đạo Chờ ký duyệt
+        function htkdHistHtml(d) {
+            const icon = { done: 'fa-solid fa-circle-check', no: 'fa-solid fa-circle-xmark', wait: 'fa-regular fa-clock' };
+            const item = (st, name, at, cls, act, msg) => `<div class="htkd-hv ${st}"><div class="htkd-hv-step"><i class="${icon[st]}"></i></div><div class="htkd-hv-main"><div class="htkd-hv-head"><span class="htkd-hv-name">${htkdE(name || '--')}</span>${at ? `<span class="htkd-hv-time"><i class="fa-regular fa-clock"></i> ${htkdE(at)}</span>` : ''}</div>${act ? `<div class="htkd-hv-act ${cls}">${act}</div>` : ''}${msg ? `<div class="htkd-hv-msg">${htkdE(msg)}</div>` : ''}</div></div>`;
+            const loai = htkdLoai(d);
+            const past = (d.kdHist || []).filter(h => h.loai === loai).map(h => h.type === 'reject'
+                ? item('no', h.name, h.at, 'no', '<i class="fa-solid fa-ban"></i> Từ chối - trả lại cán bộ trình', h.msg)
+                : h.type === 'submit' ? item('done', h.name, h.at, '', '<i class="fa-solid fa-circle-arrow-right"></i> Trình ký', h.msg)
+                    : item('done', h.name, h.at, 'ok', '<i class="fa-regular fa-circle-check"></i> Ký duyệt', h.msg));
+            const html = item('wait', 'Lãnh đạo ký duyệt', '', 'wait', '<i class="fa-solid fa-hourglass-half"></i> Chờ ký duyệt', '')
+                + item('done', d.kdSubmittedBy || HTKD_STAFF, d.kdSubmittedAt || '', '', '<i class="fa-solid fa-circle-arrow-right"></i> Trình ký', htkdContent(d))
+                + past.join('');
+            return `<div class="htkd-box hist"><div class="htkd-box-title"><i class="fa-solid fa-clock-rotate-left"></i> Lịch sử trình ký</div>${html}</div>`;
+        }
+        function htkdOpen(event, id, mode) {
+            if (event) event.stopPropagation();
+            const d = dossiersList.find(x => x.id === id);
+            if (!d || !HT_APPROVAL_STATES.includes(d.status)) return;
+            htkdCtx = { d, mode: mode === 'reject' ? 'reject' : 'approve' };
+            const approve = htkdCtx.mode === 'approve';
+            const k = HTKD_KIND[htkdLoai(d)];
+            document.getElementById('htkdTitle').innerHTML = approve
+                ? `<i class="fa-solid fa-file-signature"></i> Ký duyệt - ${htkdE(k.doc)} - ${htkdE(d.code)}`
+                : `<i class="fa-solid fa-circle-xmark" style="color:#dc2626;"></i> Từ chối - ${htkdE(k.doc)} - ${htkdE(d.code)}`;
+            document.getElementById('htkdPreview').innerHTML = htkdPreviewHtml(d);
+            document.getElementById('htkdSummary').innerHTML = htkdSummaryHtml(d);
+            document.getElementById('htkdTlkt').innerHTML = htkdTlktHtml(d);
+            document.getElementById('htkdHist').innerHTML = htkdHistHtml(d);
+            document.getElementById('htkdNoteLabel').innerHTML = approve ? 'Ý kiến' : 'Lý do từ chối <span style="color:var(--danger-color);">*</span>';
+            const note = document.getElementById('htkdNote');
+            note.value = '';
+            note.placeholder = approve ? 'Nhập ý kiến (không bắt buộc)...' : 'Nhập lý do từ chối...';
+            htkdClearErr();
+            const btn = document.getElementById('htkdSubmit');
+            btn.className = approve ? 'btn btn-primary' : 'btn btn-danger';
+            btn.style.cssText = approve ? '' : 'background:#ef4444; color:#fff; border:none;';
+            btn.innerHTML = approve ? '<i class="fa-solid fa-file-signature"></i> Ký duyệt' : '<i class="fa-solid fa-circle-xmark"></i> Từ chối';
+            document.getElementById('htkdModal').classList.add('visible');
+            if (!approve) setTimeout(() => note.focus(), 50);
+        }
+        function htkdClose() {
+            document.getElementById('htkdModal').classList.remove('visible');
+            htkdCtx = null;
+        }
+        function htkdClearErr() {
+            const n = document.getElementById('htkdNote'), e = document.getElementById('htkdNoteErr');
+            if (n) n.classList.remove('is-invalid');
+            if (e) e.style.display = 'none';
+        }
+        // Hồ sơ khởi tạo trong phiên giả lập: lưu trạng thái mới
+        function htkdPersist(d) {
+            const list = loadCreatedRefundDossiers();
+            const i = list.findIndex(x => x && x.code === d.code);
+            if (i < 0) return;
+            list[i] = Object.assign(list[i], { status: d.status, gateLog: d.gateLog || [], kdHist: d.kdHist || [] });
+            saveCreatedRefundDossiers(list);
+        }
+        // Kết quả: Ký duyệt (cấp cuối, ký số) -> trạng thái kế tiếp theo Loại trình; Từ chối -> Bị từ chối (kèm Loại trình) trả cán bộ trình
+        function htkdSubmit() {
+            if (!htkdCtx) return;
+            const d = htkdCtx.d;
+            const approve = htkdCtx.mode === 'approve';
+            const note = document.getElementById('htkdNote').value.trim();
+            if (!approve && !note) {
+                document.getElementById('htkdNote').classList.add('is-invalid');
+                document.getElementById('htkdNoteErr').style.display = 'block';
+                document.getElementById('htkdNote').focus();
                 return;
             }
-
-            if (!currentApproveDossier) return;
-            currentApproveDossier.gateLog = currentApproveDossier.gateLog || [];
-            currentApproveDossier.gateLog.push({ role: 'lanh_dao', gate: currentApproveDossier.status === 'Chờ duyệt QĐ thành lập' ? 'Ký duyệt QĐ thành lập Hội đồng' : 'Ký duyệt QĐ hoàn trả', result: 'Phê duyệt', at: new Date().toLocaleString('vi-VN') });
-            
-            if (currentApproveDossier.status === 'Chờ duyệt QĐ thành lập') {
-                currentApproveDossier.status = 'Đang họp hội đồng';
-                currentApproveDossier.deadlineDate = '';
-                currentApproveDossier.daysLeft = null;
-                (currentApproveDossier.refundOfficers || []).forEach(o => {
-                    o.status = 'Đang họp hội đồng';
-                    o.loi = 'Đang họp hội đồng';
-                    o.progressClass = 'info';
+            const loai = htkdLoai(d);
+            const k = HTKD_KIND[loai];
+            const at = new Date().toLocaleString('vi-VN');
+            d.gateLog = d.gateLog || [];
+            d.gateLog.push({ role: 'lanh_dao', gate: k.gate, result: approve ? 'Phê duyệt' : 'Từ chối', at });
+            d.kdHist = d.kdHist || [];
+            d.kdHist.unshift({ loai, type: approve ? 'approve' : 'reject', name: 'Lãnh đạo', at, msg: note ? (approve ? 'Ý kiến: ' : 'Lý do: ') + note : '' });
+            if (approve) {
+                d.status = k.ok;
+                (d.refundOfficers || []).forEach(o => {
+                    if (loai === 'Thành lập hội đồng') { o.status = 'Họp hội đồng'; o.loi = 'Họp hội đồng'; o.progressClass = 'info'; }
+                    else if (loai === 'QĐ hoàn trả') { o.status = 'Đang thu'; o.progressClass = 'primary'; }
                 });
-                showToast(`Đã ký số phê duyệt Quyết định thành lập Hội đồng cho hồ sơ ${currentApproveDossier.code}. Trạng thái chuyển sang 'Đang họp hội đồng'.`, 'success');
-            } else if (currentApproveDossier.status === 'Chờ duyệt QĐ hoàn trả' || currentApproveDossier.status === 'Chờ ban hành QĐ hoàn trả') {
-                currentApproveDossier.status = 'Đang thi hành';
-                (currentApproveDossier.refundOfficers || []).forEach(o => {
-                    o.status = 'Đang thu';
-                    o.progressClass = 'primary';
-                });
-                showToast(`Đã ký số phê duyệt Quyết định hoàn trả cho hồ sơ ${currentApproveDossier.code}. Trạng thái chuyển sang 'Đang thi hành'.`, 'success');
-            }
-
-            closeApproveModal();
-            renderRefundTable();
-        }
-
-        let currentRejectDossier = null;
-        function openRejectModal(event, id) {
-            if (event) event.stopPropagation();
-            const dossier = dossiersList.find(d => d.id === id);
-            if (!dossier) return;
-            currentRejectDossier = dossier;
-
-            document.getElementById('rejectDossierId').value = dossier.id;
-            document.getElementById('rejectDossierCode').innerText = dossier.code;
-            document.getElementById('rejectClaimCode').innerText = claimLabel(dossier.claimCode);
-            document.getElementById('rejectReasonInput').value = '';
-            document.getElementById('rejectReasonInput').classList.remove('is-invalid');
-            document.getElementById('rejectReasonError').style.display = 'none';
-            document.getElementById('rejectCharCount').innerText = '0/2000 ký tự';
-            rejectUploadedFiles = [];
-            renderRejectFileList();
-
-            const titleEl = document.getElementById('rejectModalTitle');
-            if (dossier.status === 'Chờ duyệt QĐ thành lập') {
-                titleEl.innerHTML = '<i class="fa-solid fa-ban"></i> Từ chối phê duyệt Quyết định thành lập Hội đồng';
+                showToast(`Ký duyệt thành công ${k.doc} - hồ sơ ${d.code}. Hồ sơ chuyển sang trạng thái [${htStView(d.status).name}].`, 'success');
             } else {
-                titleEl.innerHTML = '<i class="fa-solid fa-ban"></i> Từ chối phê duyệt Quyết định hoàn trả';
-            }
-
-            document.getElementById('rejectModal').classList.add('visible');
-        }
-
-        function closeRejectModal() {
-            document.getElementById('rejectModal').classList.remove('visible');
-            currentRejectDossier = null;
-        }
-
-        function updateRejectCharCount() {
-            const val = document.getElementById('rejectReasonInput').value || '';
-            document.getElementById('rejectCharCount').innerText = `${val.length}/2000 ký tự`;
-            if (val.trim()) {
-                document.getElementById('rejectReasonInput').classList.remove('is-invalid');
-                document.getElementById('rejectReasonError').style.display = 'none';
-            }
-        }
-
-        function handleRejectFileUpload(input) {
-            if (!input.files || input.files.length === 0) return;
-            const allowedExts = ['pdf', 'doc', 'docx', 'jpg', 'png'];
-            const maxFiles = 5;
-            const maxSize = 10 * 1024 * 1024; // 10MB
-
-            for (let i = 0; i < input.files.length; i++) {
-                const file = input.files[i];
-                if (rejectUploadedFiles.length >= maxFiles) {
-                    showToast("Chỉ được đính kèm tối đa 5 tệp tin.", "danger");
-                    break;
-                }
-                const ext = file.name.split('.').pop().toLowerCase();
-                if (!allowedExts.includes(ext)) {
-                    showToast(`Tệp ${file.name} không đúng định dạng cho phép (.pdf, .doc, .docx, .jpg, .png).`, "danger");
-                    continue;
-                }
-                if (file.size > maxSize) {
-                    showToast(`Tệp ${file.name} vượt quá dung lượng tối đa 10MB.`, "danger");
-                    continue;
-                }
-                rejectUploadedFiles.push(file);
-            }
-            input.value = '';
-            renderRejectFileList();
-        }
-
-        function renderRejectFileList() {
-            const container = document.getElementById('rejectFileList');
-            if (!container) return;
-            container.innerHTML = '';
-            rejectUploadedFiles.forEach((file, idx) => {
-                const div = document.createElement('div');
-                div.className = 'attached-file-info';
-                div.innerHTML = `
-                    <span class="file-name"><i class="fa-solid fa-paperclip"></i> ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
-                    <a href="javascript:void(0)" class="action-link" style="margin-left:8px;" onclick="viewRejectFile(${idx})">Xem file</a>
-                    <a href="javascript:void(0)" class="action-link delete-link" style="margin-left:8px;" onclick="confirmRemoveRejectFile(${idx})">Xóa</a>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        function viewRejectFile(idx) {
-            const file = rejectUploadedFiles[idx];
-            if (file) {
-                const url = URL.createObjectURL(file);
-                window.open(url, '_blank');
-            }
-        }
-
-        function confirmRemoveRejectFile(idx) {
-            showConfirmModal("Bạn có chắc chắn muốn xóa tệp đính kèm này không?", () => {
-                rejectUploadedFiles.splice(idx, 1);
-                renderRejectFileList();
-                showToast("Đã xóa tệp đính kèm.", "info");
-            });
-        }
-
-        function submitRejectDecision() {
-            const reasonInput = document.getElementById('rejectReasonInput');
-            const reasonError = document.getElementById('rejectReasonError');
-            if (!reasonInput.value.trim()) {
-                reasonInput.classList.add('is-invalid');
-                reasonError.style.display = 'block';
-                reasonInput.focus();
-                return;
-            }
-
-            if (!currentRejectDossier) return;
-
-            if (currentRejectDossier) { currentRejectDossier.gateLog = currentRejectDossier.gateLog || []; currentRejectDossier.gateLog.push({ role: 'lanh_dao', gate: currentRejectDossier.status === 'Chờ duyệt QĐ thành lập' ? 'Ký duyệt QĐ thành lập Hội đồng' : 'Ký duyệt QĐ hoàn trả', result: 'Từ chối', at: new Date().toLocaleString('vi-VN') }); }
-            if (currentRejectDossier.status === 'Chờ duyệt QĐ thành lập') {
-                currentRejectDossier.status = 'Bị từ chối thành lập HĐ';
-                (currentRejectDossier.refundOfficers || []).forEach(o => {
-                    o.status = 'Bị từ chối thành lập HĐ';
-                    o.loi = 'Chờ cập nhật lại dự thảo';
-                    o.progressClass = 'danger';
+                d.status = HT_LOAI_CODE['Bị từ chối'][loai];
+                (d.refundOfficers || []).forEach(o => {
+                    if (loai === 'Thành lập hội đồng') { o.status = 'Bị từ chối thành lập HĐ'; o.loi = 'Chờ cập nhật lại dự thảo'; o.progressClass = 'danger'; }
+                    else if (loai === 'QĐ hoàn trả') { o.status = 'Bị từ chối QĐ hoàn trả'; o.progressClass = 'danger'; }
                 });
-                showToast(`Đã từ chối phê duyệt Quyết định thành lập Hội đồng cho hồ sơ ${currentRejectDossier.code}. Trạng thái chuyển sang 'Bị từ chối thành lập HĐ'.`, 'info');
-            } else if (currentRejectDossier.status === 'Chờ duyệt QĐ hoàn trả' || currentRejectDossier.status === 'Chờ ban hành QĐ hoàn trả') {
-                currentRejectDossier.status = 'Bị từ chối QĐ hoàn trả';
-                (currentRejectDossier.refundOfficers || []).forEach(o => {
-                    o.status = 'Bị từ chối QĐ hoàn trả';
-                    o.progressClass = 'danger';
-                });
-                showToast(`Đã từ chối phê duyệt Quyết định hoàn trả cho hồ sơ ${currentRejectDossier.code}. Trạng thái chuyển sang 'Bị từ chối QĐ hoàn trả'.`, 'info');
+                showToast(`Đã từ chối ${k.doc} - hồ sơ ${d.code}. Hồ sơ chuyển sang trạng thái [Bị từ chối] (Loại trình: ${loai}).`, 'info');
             }
-
-            closeRejectModal();
+            d.loaiTrinh = htStView(d.status).loai;
+            htkdPersist(d);
+            htkdClose();
             renderRefundTable();
+            if (typeof updateRefundTabCounts === 'function') updateRefundTabCounts();
         }
 
         function deleteRefundDossier(event, id) {

@@ -4,106 +4,117 @@
 
 ##### 4.3.3.4.1. Mục đích
 
-Cho phép thực hiện tra cứu các yêu cầu về giải quyết bồi thường và các yêu cầu về phục hồi danh dự.
-Mặc định sẽ hiển thị danh sách các yêu cầu ở trạng thái hoàn thành trong thời gian tiếp nhận 03 tháng gần nhất. 
+\- Cho phép tra cứu vụ việc bồi thường nhà nước trên 01 danh sách chung, không tách riêng vụ việc yêu cầu bồi thường thiệt hại và vụ việc yêu cầu phục hồi danh dự.
 
-*a. Phân quyền*
+\- Màn hình chỉ phục vụ:
+  + Tra cứu vụ việc
+  + Xem chi tiết toàn trình vụ việc ở chế độ chỉ xem
+  + Kết xuất danh sách ra Excel
 
-Hệ thống phân quyền thao tác theo các quyền nghiệp vụ được cấp:
+\- Màn hình không có thao tác thêm mới, cập nhật, trình duyệt, ký duyệt hoặc xử lý nghiệp vụ.
 
-\- **Xem**: Tra cứu danh sách vụ việc theo phân trang trên cả 2 tab, chuyển đổi tab dữ liệu, click dòng dữ liệu để mở xem chi tiết vụ việc tại phân hệ giải quyết.
+<a id="tcvv-pham-vi-trang-thai"></a>
+\- **Phạm vi danh sách**: vụ việc từ trạng thái `Cử người giải quyết bồi thường` trở đi, gồm các Trạng thái vụ việc:
+  + Cử người giải quyết bồi thường
+  + Chờ duyệt
+  + Bị từ chối
+  + Xác minh thiệt hại
+  + Thương lượng
+  + Chờ ban hành QĐ
+  + Chờ thực thi
+  + Hoãn giải quyết
+  + Tạm đình chỉ
+  + Đình chỉ giải quyết
+  + Đã chuyển CQGQBT (hồ sơ chuyển bằng thao tác `Chuyển CQGQBT` sau bước Cử người giải quyết bồi thường)
+  + Đang phục hồi danh dự
+  + Hoãn phục hồi danh dự
+  + Từ chối phục hồi danh dự
+  + Hoàn thành
 
-\- **Kết xuất Excel**: Tải danh sách kết quả tra cứu của tab hiện hành ra file Excel theo đúng điều kiện lọc và sắp xếp.
+\- Không hiển thị:
+  + Vụ việc `Chờ tiếp nhận`, `Yêu cầu bổ sung`, `Không thụ lý`
+  + Vụ việc `Đã chuyển CQGQBT` do `Không thụ lý` lý do `KTL_01` (chuyển trước bước Cử người giải quyết bồi thường)
+  + Vụ việc `Chờ duyệt` / `Bị từ chối` có Nội dung trình `Thông báo thụ lý hồ sơ`, `Thông báo Yêu cầu bổ sung`, `Thông báo Không thụ lý`
+
+\- Mỗi dòng là 01 hồ sơ Giải quyết yêu cầu bồi thường (`Mã hồ sơ GQBT` `BT-yyyy-xxx`), kèm `Mã vụ việc` `VVBT-yyyy-xxx` theo [Mã vụ việc và mã hồ sơ - Tiếp nhận hồ sơ - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_TiepNhan_YCBT.md#tn-ma-vu-viec).
+
+\- Trạng thái vụ việc theo [Trạng thái vụ việc Giải quyết YCBT - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-trang-thai-vu-viec).
+
+<a id="tcvv-pham-vi-du-lieu"></a>
+*a. Phân quyền và phạm vi dữ liệu*
+
+\- **Xem**: tra cứu danh sách, xem chi tiết vụ việc ở chế độ chỉ xem.
+
+\- **Kết xuất Excel**: tải danh sách kết quả tra cứu theo bộ lọc hiện tại.
+
+\- Phạm vi dữ liệu theo cấp đơn vị của người dùng:
+  + Bộ Tư pháp: toàn quốc.
+  + Sở Tư pháp: vụ việc có Cơ quan giải quyết thuộc Tỉnh/Thành phố của Sở Tư pháp và vụ việc do chính Sở Tư pháp tiếp nhận.
+  + Cơ quan giải quyết bồi thường: vụ việc do chính đơn vị giải quyết.
+
+\- Vụ việc ngoài phạm vi dữ liệu: không hiển thị trên danh sách, không mở được chi tiết bằng đường dẫn.
 
 *b. Điều kiện thực hiện*
 
-\- Người dùng đã đăng nhập vào hệ thống thành công (Website quản trị).
+\- Người dùng đã đăng nhập Website quản trị và được phân quyền chức năng `Tra cứu vụ việc`.
 
-\- Người dùng được phân quyền truy cập chức năng "Tra cứu vụ việc".
-
-\- Dữ liệu vụ việc được kế thừa tự động từ các phân hệ: Tiếp nhận hồ sơ, Giải quyết yêu cầu bồi thường, Quyết định giải quyết bồi thường, Quản lý kinh phí bồi thường.
-
-\- Mỗi vụ việc hiển thị theo `Mã vụ việc` (`VVBT-yyyy-xxx`) và các Mã hồ sơ của vụ việc theo [Mã vụ việc và mã hồ sơ - Tiếp nhận hồ sơ - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_TiepNhan_YCBT.md#tn-ma-vu-viec).
+\- Dữ liệu vụ việc lấy từ hồ sơ Giải quyết yêu cầu bồi thường và các phân hệ liên quan: Quyết định giải quyết bồi thường, Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường.
 
 ---
 
-##### 4.3.3.4.3. MH01 - Màn hình Tra cứu vụ việc
+##### 4.3.3.4.2. MH01 - Màn hình Tra cứu vụ việc
 
-###### 4.3.3.4.3.1. Màn hình
+###### 4.3.3.4.2.1. Màn hình
 
 ![Màn hình Tra cứu vụ việc bồi thường nhà nước](images/UC_Tra_Cuu_Vu_Viec_BTNN_MH01.png)
 
-###### 4.3.3.4.3.2. Mô tả thông tin trên màn hình
+###### 4.3.3.4.2.2. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Khối thông tin chung màn hình** | Section | - | - | Vùng thông tin chung phía trên màn hình tra cứu. |
-| Tiêu đề màn hình | String(255) | - | - | Control UI: Text heading (Read-only).<br>- Hiển thị `TRA CỨU VỤ VIỆC BỒI THƯỜNG NHÀ NƯỚC`. |
-| Tab tra cứu | Enum(String(100)) | Có | `Yêu cầu bồi thường` | Control UI: Tab navigation.<br>- Chuyển đổi giữa 2 tab:<br>+ `Yêu cầu bồi thường`: vụ việc có yêu cầu bồi thường thiệt hại (Loại yêu cầu `Chỉ yêu cầu bồi thường thiệt hại bằng tiền` hoặc `Yêu cầu cả hai`), hiển thị Trạng thái vụ việc.<br>+ `Phục hồi danh dự`: vụ việc có yêu cầu phục hồi danh dự (Loại yêu cầu `Chỉ yêu cầu phục hồi danh dự` hoặc `Yêu cầu cả hai`), hiển thị Trạng thái Phục hồi danh dự (vụ việc chưa Thụ lý hiển thị trạng thái giai đoạn chung).<br>- Vụ việc `Yêu cầu cả hai` hiển thị ở cả 02 tab với cùng 01 Mã vụ việc; Cán bộ chỉ tra cứu được các vụ việc thuộc phạm vi phân quyền quản lý của đơn vị mình.<br>- Quy tắc Trạng thái vụ việc theo [Vụ việc gồm 02 nhánh giải quyết - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-vu-viec-hai-nhanh). |
-| **II. Tab Yêu cầu bồi thường** | Section | - | - | Phạm vi: Các vụ việc có yêu cầu bồi thường thiệt hại (`Chỉ yêu cầu bồi thường thiệt hại bằng tiền`, `Yêu cầu cả hai`). Cột/bộ lọc trạng thái theo Trạng thái vụ việc. |
-| *1. Bộ lọc tìm kiếm* | Section | - | - | Control UI: Filter panel.<br>- Hiển thị phía trên bảng kết quả của tab Yêu cầu bồi thường.<br>- Các tiêu chí lọc có dữ liệu được kết hợp theo điều kiện AND. |
-| Mã vụ việc | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập mã vụ việc (VVBT-...)`.<br>- Tìm kiếm gần đúng, không phân biệt hoa thường theo `Mã vụ việc` (`VVBT-...`).<br>- Tự động cắt khoảng trắng đầu cuối (trim space). |
-| Tên người yêu cầu | String(100) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập họ và tên...`.<br>- Tìm kiếm gần đúng, không phân biệt hoa thường theo họ tên người yêu cầu bồi thường. |
-| Cơ quan giải quyết | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập cơ quan giải quyết...`.<br>- Tìm kiếm gần đúng, không phân biệt hoa thường theo tên cơ quan giải quyết bồi thường. |
-| Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | Không | `Tất cả` | Control UI: Combobox.<br>- Tham chiếu Danh mục Lĩnh vực phát sinh thiệt hại [DM_22]. |
-| Hình thức tiếp nhận | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Tham chiếu [Danh mục Hình thức tiếp nhận - Danh mục dữ liệu dùng chung - Tổng quan và quy tắc chung](../../Tai%20lieu%20tong%20hop/00_Tong_quan_va_Quy_tac_chung.md#danh-muc-dung-chung) [DM_25].<br>- Có thêm giá trị `Tất cả`. |
-| Trạng thái giải quyết | Enum(String(50)) | Không | `Hoàn thành` | Control UI: Combobox.<br>- Lọc theo trạng thái giải quyết của vụ việc. Cho phép chọn tất cả các trạng thái trong vòng đời vụ việc. Mặc định ưu tiên chọn sẵn `Hoàn thành`, cho phép người dùng thay đổi lại. Gồm:<br>+ `Tất cả`<br>+ `Chờ nhập liệu`<br>+ `Chờ kiểm tra`<br>+ `Yêu cầu bổ sung`<br>+ `Bị từ chối`<br>+ `Chờ thụ lý`<br>+ `Từ chối thụ lý`<br>+ `Đang xác minh thiệt hại`<br>+ `Đang thương lượng`<br>+ `Thương lượng không thành công`<br>+ `Chờ ban hành QĐ`<br>+ `Hoãn giải quyết`<br>+ `Tạm đình chỉ giải quyết`<br>+ `Đình chỉ giải quyết`<br>+ `Chờ thực thi`<br>+ `Đang thực thi theo bản án`<br>+ `Hoàn thành` |
-| Nhóm trạng thái | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Lọc nhanh danh sách theo nhóm tiến trình xử lý vụ việc. Khi chọn một nhóm, hệ thống tự động lọc các hồ sơ có trạng thái giải quyết tương ứng gồm:<br>+ `Tất cả`: Lọc toàn bộ tất cả các trạng thái trong vòng đời vụ việc.<br>+ `Đang xử lý`: Tự động lọc các vụ việc có trạng thái giải quyết là một trong các trạng thái: `Chờ nhập liệu`, `Chờ kiểm tra`, `Yêu cầu bổ sung`, `Chờ thụ lý`, `Đang xác minh thiệt hại`, `Đang thương lượng`, `Thương lượng không thành công`, `Chờ ban hành QĐ`, `Chờ thực thi`, `Đang thực thi theo bản án`.<br>+ `Tạm dừng`: Tự động lọc các vụ việc có trạng thái giải quyết là: `Hoãn giải quyết`, `Tạm đình chỉ giải quyết`.<br>+ `Kết thúc`: Tự động lọc các vụ việc có trạng thái giải quyết là: `Bị từ chối`, `Từ chối thụ lý`, `Đình chỉ giải quyết`, `Hoàn thành`.<br>- Khi người dùng chọn một nhóm trạng thái cụ thể khác `Tất cả`, trường `Trạng thái giải quyết` tự động được reset về trạng thái trống. |
-| Tiếp nhận từ ngày | Date | Không | Ngày đầu tháng của 3 tháng trước | Control UI: Datepicker `dd/mm/yyyy`.<br>- Lọc theo ngày tiếp nhận hồ sơ.<br>- Tuân thủ [BR-VAL-007]. |
-| Tiếp nhận đến ngày | Date | Không | Ngày hiện tại | Control UI: Datepicker `dd/mm/yyyy`.<br>- Lọc theo ngày tiếp nhận hồ sơ.<br>- Tuân thủ [BR-VAL-007]. |
-| Hạn xử lý từ ngày | Date | Không | Trống | Control UI: Datepicker `dd/mm/yyyy`.<br>- Lọc theo thời hạn xử lý vụ việc.<br>- Tuân thủ [BR-VAL-007]. |
-| Hạn xử lý đến ngày | Date | Không | Trống | Control UI: Datepicker `dd/mm/yyyy`.<br>- Lọc theo thời hạn xử lý vụ việc.<br>- Tuân thủ [BR-VAL-007]. |
-| Xóa bộ lọc | Button | Không | - | Control UI: Button.<br>- Luôn hiển thị và cho phép click. |
-| Tìm kiếm | Button | Không | - | Control UI: Button.<br>- Luôn hiển thị và cho phép click. |
-| Kết xuất Excel | Button | Không | - | Control UI: Button.<br>- Hiển thị và cho phép click khi bảng có dữ liệu kết quả.<br>- Khóa mờ (Disabled) kèm tooltip khi bảng không có dữ liệu theo [BR-EXP-040]. |
-| *2. Bảng kết quả tìm kiếm* | Section | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- Sắp xếp mặc định: Sắp xếp theo "Ngày tiếp nhận" giảm dần (mới nhất hiển thị lên đầu).<br>- Chỉ hiển thị vụ việc thuộc phạm vi xử lý của người dùng đăng nhập.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
-| STT | Integer(10) | Không | Tự tăng | Control UI: Text (Read-only).<br>- Số thứ tự dòng dữ liệu trên trang hiện tại. |
-| Mã vụ việc | String(50) | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo dữ liệu bản ghi.<br>- Hiển thị `Mã vụ việc` in đậm, ví dụ `VVBT-2026-001`.<br>- Người dùng có thể click dòng để mở chi tiết hồ sơ Giải quyết yêu cầu bồi thường của vụ việc tại tab mới. |
-| Mã hồ sơ | String(200) | Không | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo dữ liệu bản ghi.<br>- Hiển thị các Mã hồ sơ của vụ việc tại các phân hệ (nếu có), mỗi mã 01 dòng, theo thứ tự:<br>+ Mã hồ sơ Xác định cơ quan giải quyết bồi thường (`XD-yyyy-xxx`)<br>+ Mã hồ sơ Giải quyết yêu cầu bồi thường (`BT-yyyy-xxx`)<br>+ Mã hồ sơ Xem xét trách nhiệm hoàn trả (`HT-yyyy-xxx`) |
-| Tên người yêu cầu | String(100) | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Hiển thị họ tên cá nhân/tổ chức yêu cầu bồi thường. |
-| Tỉnh/TP | String(100) | Không | Theo dữ liệu | Control UI: Text (Read-only).<br>- Hiển thị tỉnh/thành phố của người yêu cầu bồi thường. |
-| Địa chỉ chi tiết | String(500) | Không | Theo dữ liệu | Control UI: Text (Read-only).<br>- Hiển thị địa chỉ chi tiết nơi cư trú/trụ sở của người yêu cầu. |
-| Lĩnh vực | Enum(String(100)) | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Tham chiếu Danh mục Lĩnh vực phát sinh thiệt hại [DM_22]; trên lưới bỏ tiền tố `TRONG HOẠT ĐỘNG`. |
-| Cơ quan giải quyết | String(255) | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Hiển thị tên cơ quan có trách nhiệm giải quyết bồi thường. |
-| Cán bộ xử lý | String(255) | Không | Theo dữ liệu | Control UI: Text (Read-only).<br>- Hiển thị họ tên cán bộ thụ lý/giải quyết vụ việc. Nếu chưa phân công, để trống. |
-| Ngày tiếp nhận | DateTime | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Định dạng `dd/mm/yyyy HH:mm`. Hỗ trợ sắp xếp động (Sortable); mặc định sắp xếp giảm dần. |
-| Hạn xử lý | Date | Không | Theo dữ liệu | Control UI: Text (Read-only).<br>- Định dạng `dd/mm/yyyy`. Hiển thị hạn xử lý giải quyết vụ việc theo quy định. |
-| Hình thức tiếp nhận | Enum(String(50)) | Có | Theo dữ liệu | Control UI: Text (Read-only). Theo dữ liệu bản ghi. |
-| Trạng thái | Enum(String(50)) | Có | Theo dữ liệu | Control UI: Badge (Read-only).<br>- Hiển thị badge trạng thái giải quyết tương ứng của vụ việc theo dữ liệu hệ thống. |
-| Ngày cập nhật | Date | Không | Theo dữ liệu | Control UI: Text (Read-only).<br>- Định dạng `dd/mm/yyyy`. Ngày cập nhật trạng thái hoặc thông tin gần nhất của vụ việc. |
-| **III. Tab Phục hồi danh dự** | Section | - | - | Phạm vi: Các vụ việc có yêu cầu phục hồi danh dự (`Chỉ yêu cầu phục hồi danh dự`, `Yêu cầu cả hai`). Cột/bộ lọc trạng thái theo Trạng thái Phục hồi danh dự. Tra cứu chỉ đọc; cập nhật tiến trình thực hiện tại Giải quyết yêu cầu bồi thường. |
-| *1. Bộ lọc tìm kiếm* | Section | - | - | Control UI: Filter panel.<br>- Hiển thị phía trên bảng kết quả của tab Phục hồi danh dự.<br>- Các tiêu chí lọc có dữ liệu được kết hợp theo điều kiện AND. |
-| Mã vụ việc | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập mã vụ việc (VVBT-...)`.<br>- Tìm kiếm gần đúng, không phân biệt hoa thường theo `Mã vụ việc` (`VVBT-...`).<br>- Tự động cắt khoảng trắng đầu cuối (trim space). |
-| Người yêu cầu/người bị thiệt hại | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập họ và tên...`.<br>- Tìm kiếm gần đúng, không phân biệt hoa thường theo họ tên người bị thiệt hại hoặc người yêu cầu. |
-| Cơ quan giải quyết | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập cơ quan giải quyết...`.<br>- Tìm kiếm gần đúng theo tên cơ quan giải quyết bồi thường. |
-| Trạng thái Phục hồi danh dự | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Lọc theo Trạng thái Phục hồi danh dự (vụ việc chưa Thụ lý: theo trạng thái giai đoạn chung). Gồm:<br>+ `Tất cả`<br>+ `Đang thực hiện`<br>+ `Chờ phản hồi`<br>+ `Chờ thực hiện`<br>+ `Tạm hoãn`<br>+ `Yêu cầu bổ sung`<br>+ `Từ chối`<br>+ `Hoàn thành`<br>+ `Đình chỉ giải quyết` |
-| Nhóm trạng thái | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Lọc nhanh danh sách theo nhóm tiến trình xử lý vụ việc. Khi chọn một nhóm, hệ thống tự động lọc các hồ sơ có trạng thái giải quyết tương ứng gồm:<br>+ `Tất cả`: Lọc toàn bộ tất cả các trạng thái trong vòng đời vụ việc.<br>+ `Đang xử lý`: Tự động lọc các vụ việc có trạng thái giải quyết là một trong các trạng thái: `Chờ nhập liệu`, `Chờ kiểm tra`, `Yêu cầu bổ sung`, `Chờ thụ lý`, `Đang xác minh thiệt hại`, `Đang thương lượng`, `Thương lượng không thành công`, `Chờ ban hành QĐ`, `Chờ thực thi`, `Đang thực thi theo bản án`.<br>+ `Tạm dừng`: Tự động lọc các vụ việc có trạng thái giải quyết là: `Hoãn giải quyết`, `Tạm đình chỉ giải quyết`.<br>+ `Kết thúc`: Tự động lọc các vụ việc có trạng thái giải quyết là: `Bị từ chối`, `Từ chối thụ lý`, `Đình chỉ giải quyết`, `Hoàn thành`.<br>- Khi người dùng chọn một nhóm trạng thái cụ thể khác `Tất cả`, trường `Trạng thái giải quyết` tự động được reset về trạng thái trống. |
-| Hình thức phục hồi danh dự | Enum(String(100)) | Không | `Tất cả` | Control UI: Combobox.<br>- Chọn hình thức phục hồi danh dự cần tra cứu theo đúng dữ liệu đã ghi nhận trong hồ sơ YCBT gốc. Gồm:<br>+ `Tất cả`<br>+ `Trực tiếp xin lỗi và cải chính công khai`<br>+ `Đăng báo xin lỗi và cải chính công khai`<br>+ `Cả 2 hình thức` |
-| Tiếp nhận từ ngày | Date | Không | Ngày đầu tháng của 3 tháng trước | Control UI: Datepicker `dd/mm/yyyy`.<br>- Lọc theo ngày tiếp nhận hồ sơ vụ việc có phục hồi danh dự.<br>- Tuân thủ [BR-VAL-007]. |
-| Tiếp nhận đến ngày | Date | Không | Ngày hiện tại | Control UI: Datepicker `dd/mm/yyyy`.<br>- Lọc theo ngày tiếp nhận hồ sơ vụ việc có phục hồi danh dự.<br>- Tuân thủ [BR-VAL-007]. |
-| Xóa bộ lọc | Button | Không | - | Control UI: Button.<br>- Luôn hiển thị và cho phép click. |
-| Tìm kiếm | Button | Không | - | Control UI: Button.<br>- Luôn hiển thị và cho phép click. |
-| Kết xuất Excel | Button | Không | - | Control UI: Button.<br>- Hiển thị và cho phép click khi bảng có dữ liệu kết quả.<br>- Khóa mờ (Disabled) kèm tooltip khi bảng không có dữ liệu theo [BR-EXP-040]. |
-| *2. Bảng kết quả tìm kiếm* | Section | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Khi người dùng truy cập màn hình, hệ thống tự động tải trang đầu tiên (Trang 1) với số lượng mặc định 20 bản ghi.<br>- Sắp xếp mặc định: Sắp xếp theo "Ngày tiếp nhận" giảm dần (mới nhất hiển thị lên đầu).<br>- Chỉ hiển thị vụ việc thuộc phạm vi xử lý của người dùng đăng nhập.<br>- Trạng thái có dữ liệu: Hiển thị danh sách các bản ghi kết quả theo cấu trúc các cột quy định.<br>- Trạng thái không có dữ liệu (Empty State): Khi không tìm thấy kết quả phù hợp với điều kiện tìm kiếm, bảng hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]. |
-| STT | Integer(10) | Không | Tự tăng | Control UI: Text (Read-only).<br>- Số thứ tự dòng dữ liệu trên trang hiện tại. |
-| Mã vụ việc | String(50) | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo dữ liệu bản ghi.<br>- Hiển thị `Mã vụ việc` in đậm, ví dụ `VVBT-2026-012`.<br>- Người dùng có thể click dòng để mở chi tiết hồ sơ Giải quyết yêu cầu bồi thường của vụ việc tại tab mới. |
-| Mã hồ sơ | String(200) | Không | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo dữ liệu bản ghi.<br>- Hiển thị các Mã hồ sơ của vụ việc tại các phân hệ (nếu có), mỗi mã 01 dòng, theo thứ tự:<br>+ Mã hồ sơ Xác định cơ quan giải quyết bồi thường (`XD-yyyy-xxx`)<br>+ Mã hồ sơ Giải quyết yêu cầu bồi thường (`BT-yyyy-xxx`)<br>+ Mã hồ sơ Xem xét trách nhiệm hoàn trả (`HT-yyyy-xxx`) |
-| Người yêu cầu | String(255) | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Hiển thị họ tên người bị thiệt hại hoặc người yêu cầu phục hồi danh dự. |
-| Tỉnh/TP | String(100) | Không | Theo dữ liệu | Control UI: Text (Read-only).<br>- Hiển thị tỉnh/thành phố nơi cư trú của người yêu cầu. |
-| Địa chỉ chi tiết | String(500) | Không | Theo dữ liệu | Control UI: Text (Read-only).<br>- Hiển thị địa chỉ chi tiết nơi cư trú của người yêu cầu. |
-| Cơ quan giải quyết | String(255) | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Hiển thị cơ quan có trách nhiệm thực hiện phục hồi danh dự. |
-| Cán bộ xử lý | String(255) | Không | Theo dữ liệu | Control UI: Text (Read-only).<br>- Hiển thị cán bộ đang thụ lý hoặc phụ trách theo dõi phục hồi danh dự. |
-| Hình thức phục hồi | Enum(String(100)) | Có | Theo dữ liệu | Control UI: Badge (Read-only).<br>- Hiển thị badge hình thức phục hồi danh dự theo đúng dữ liệu đã ghi nhận trong hồ sơ YCBT gốc. Gồm:<br>+ `Trực tiếp xin lỗi và cải chính công khai`<br>+ `Đăng báo xin lỗi và cải chính công khai`<br>+ `Cả 2 hình thức` |
-| Trạng thái | Enum(String(50)) | Có | Theo dữ liệu | Control UI: Badge (Read-only).<br>- Hiển thị badge trạng thái giải quyết tương ứng của vụ việc theo dữ liệu hệ thống. |
-| Ngày tiếp nhận | DateTime | Có | Theo dữ liệu | Control UI: Text (Read-only).<br>- Định dạng `dd/mm/yyyy HH:mm`. Hỗ trợ sắp xếp động (Sortable); mặc định sắp xếp giảm dần. |
+| Tiêu đề màn hình | String(255) | - | `Tra cứu vụ việc` | Control UI: Text heading (Read-only).<br>- Hiển thị đúng tên mục Menu `Tra cứu vụ việc`.<br>- Không hiển thị dòng mô tả dưới tiêu đề. |
+| **I. Khối Lọc, tìm kiếm thông tin** | Section | - | - | Control UI: Filter panel.<br>- Các tiêu chí có dữ liệu kết hợp theo điều kiện AND.<br>- Áp dụng trên 01 danh sách chung, trong phạm vi tại [Phạm vi danh sách - Tra cứu vụ việc - Công tác bồi thường nhà nước (Website Quản trị)](#tcvv-pham-vi-trang-thai). |
+| Mã vụ việc | String(50) | Không | Trống | Control UI: Input text.<br>- `Placeholder: Nhập mã vụ việc`.<br>- Tìm gần đúng, không phân biệt hoa thường theo `Mã vụ việc`.<br>- Tự động cắt khoảng trắng đầu cuối. |
+| Mã hồ sơ GQBT | String(50) | Không | Trống | Control UI: Input text.<br>- `Placeholder: Nhập mã hồ sơ GQBT`.<br>- Tìm gần đúng, không phân biệt hoa thường theo `Mã hồ sơ GQBT`.<br>- Tự động cắt khoảng trắng đầu cuối. |
+| Tên cá nhân/Tổ chức yêu cầu | String(255) | Không | Trống | Control UI: Input text.<br>- `Placeholder: Nhập tên cá nhân/tổ chức yêu cầu`.<br>- Tìm gần đúng, không phân biệt hoa thường theo cột `Tên cá nhân/Tổ chức yêu cầu`. |
+| Tên cá nhân/Tổ chức bị thiệt hại | String(255) | Không | Trống | Control UI: Input text.<br>- `Placeholder: Nhập tên cá nhân/tổ chức bị thiệt hại`.<br>- Tìm gần đúng, không phân biệt hoa thường theo cột `Tên cá nhân/Tổ chức bị thiệt hại`. |
+| Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | Không | `Tất cả` | Control UI: Combobox.<br>- Tham chiếu [DM_22].<br>- Có thêm giá trị `Tất cả`.<br>- Lọc chính xác theo Lĩnh vực phát sinh thiệt hại. |
+| Cơ quan giải quyết | String(255) | Không | Trống | Control UI: Input text.<br>- `Placeholder: Nhập cơ quan giải quyết`.<br>- Tìm gần đúng, không phân biệt hoa thường theo tên cơ quan giải quyết bồi thường. |
+| Tỉnh/Thành phố | Enum(String(100)) | Không | `Tất cả` | Control UI: Combobox.<br>- Danh sách gồm toàn bộ Tỉnh/Thành phố của [DM_13], có thêm giá trị `Tất cả`.<br>- Lọc theo Tỉnh/Thành phố của Cơ quan giải quyết.<br>- Khi thay đổi: tải lại danh sách `Phường/Xã`, đưa `Phường/Xã` về `Tất cả`. |
+| Phường/Xã | Enum(String(100)) | Không | `Tất cả` | Control UI: Combobox.<br>- Danh sách gồm Phường/Xã của [DM_15] thuộc `Tỉnh/Thành phố` đã chọn, có thêm giá trị `Tất cả`.<br>- `Tỉnh/Thành phố` = `Tất cả`: trường bị khóa (Disabled), giá trị `Tất cả`.<br>- Lọc theo Phường/Xã của Cơ quan giải quyết. |
+| Cán bộ xử lý | String(255) | Không | Trống | Control UI: Input text.<br>- `Placeholder: Nhập tên cán bộ xử lý`.<br>- Tìm gần đúng, không phân biệt hoa thường theo họ tên cán bộ được cử giải quyết. |
+| Nguồn hồ sơ | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Gồm:<br>+ Tất cả<br>+ Tiếp nhận mới<br>+ Dịch vụ công quốc gia<br>+ Chuyển CQGQBT<br>+ Xác định CQGQBT<br>- Lọc chính xác theo Nguồn hồ sơ. |
+| Trạng thái | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Gồm `Tất cả` và các trạng thái thuộc [Phạm vi danh sách - Tra cứu vụ việc - Công tác bồi thường nhà nước (Website Quản trị)](#tcvv-pham-vi-trang-thai), theo thứ tự tại đó.<br>- Lọc chính xác theo Trạng thái vụ việc. |
+| Ngày tiếp nhận | Date | Không | `Từ ngày`: ngày đầu tháng của tháng cách tháng hiện tại 02 tháng<br>`Đến ngày`: ngày hiện tại | Control UI: Datepicker khoảng ngày (`Từ ngày` - `Đến ngày`).<br>- `Placeholder: Từ ngày` / `Placeholder: Đến ngày`.<br>- Định dạng `dd/mm/yyyy`.<br>- `Từ ngày` không lớn hơn `Đến ngày`. |
+| Xóa bộ lọc | Button | - | - | Control UI: Button. |
+| Tìm kiếm | Button | - | - | Control UI: Button. |
+| **II. Bảng kết quả tìm kiếm** | Section | - | 20 bản ghi/trang | Control UI: Data grid.<br>- Tải Trang 1 khi mở màn hình.<br>- Sắp xếp mặc định theo `Ngày tiếp nhận` giảm dần.<br>- Số dòng hiển thị: 10 / 20 / 50, mặc định 20.<br>- Không có cột Thao tác.<br>- Không có dữ liệu: 01 dòng căn giữa toàn bộ chiều rộng bảng, nội dung [MSG-INF-SYS-001]. |
+| Kết xuất Excel | Button | - | - | Control UI: Button.<br>- Vị trí: thanh tiêu đề Bảng kết quả tìm kiếm, cùng hàng số lượng bản ghi. |
+| Lọc nhanh | Enum(String(50)) | Không | `Tất cả` | Control UI: Nhóm nút (chip) phía trên lưới; không hiển thị nhãn tiêu đề.<br>- Gồm:<br>+ Tất cả<br>+ Bồi thường thiệt hại (Loại yêu cầu `Bồi thường thiệt hại`)<br>+ Phục hồi danh dự (mọi vụ việc có yêu cầu phục hồi danh dự: Loại yêu cầu `Phục hồi danh dự` hoặc `Bồi thường thiệt hại và Phục hồi danh dự`)<br>- Nút không hiển thị số lượng.<br>- Cùng kiểu hiển thị và cách lọc với `Lọc nhanh` tại [MH01 - Màn hình Danh sách vụ việc/hồ sơ yêu cầu bồi thường - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#43313-mh01---màn-hình-danh-sách-vụ-việchồ-sơ-yêu-cầu-bồi-thường).<br>- Lọc trên 01 danh sách chung, kết hợp AND với khối Lọc, tìm kiếm. |
+| STT | Integer(10) | - | Tự tăng | Control UI: Text (Read-only). |
+| Mã vụ việc | String(50) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo dữ liệu bản ghi: `Mã vụ việc` `VVBT-yyyy-xxx`. |
+| Mã hồ sơ GQBT | String(50) | - | Theo dữ liệu | Control UI: HyperLink.<br>- Theo dữ liệu bản ghi: `Mã hồ sơ` `BT-yyyy-xxx` của hồ sơ Giải quyết yêu cầu bồi thường.<br>- Click: mở xem chi tiết toàn trình ở chế độ chỉ xem. |
+| Tên cá nhân/Tổ chức yêu cầu | String(255) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo dữ liệu bản ghi: `Họ và tên` (cá nhân) hoặc `Tên tổ chức` (tổ chức) của người yêu cầu. |
+| Tên cá nhân/Tổ chức bị thiệt hại | String(255) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Cùng quy tắc cột `Tên cá nhân/Tổ chức bị thiệt hại` tại [MH01 - Màn hình Danh sách vụ việc/hồ sơ yêu cầu bồi thường - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#43313-mh01---màn-hình-danh-sách-vụ-việchồ-sơ-yêu-cầu-bồi-thường). |
+| Lĩnh vực phát sinh thiệt hại | Enum(String(100)) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo dữ liệu bản ghi, tham chiếu [DM_22].<br>- Bỏ tiền tố `Trong hoạt động`. |
+| Cơ quan giải quyết | String(255) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo dữ liệu bản ghi: Cơ quan giải quyết bồi thường hiện hành của hồ sơ. |
+| Tỉnh/Thành phố | Enum(String(100)) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo dữ liệu bản ghi: Tỉnh/Thành phố của Cơ quan giải quyết, theo khai báo tại [MH02 - Popup Thêm mới / Sửa cơ quan, đơn vị - Quản lý cơ cấu tổ chức - Quản trị hệ thống](../01_Quan_tri_he_thong/Quan_ly_co_cau_to_chuc.md#43173-mh02---popup-thêm-mới--sửa-cơ-quan-đơn-vị). |
+| Cán bộ xử lý | String(255) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo dữ liệu bản ghi: họ và tên các cán bộ được cử giải quyết hồ sơ, phân tách bằng dấu phẩy, theo thứ tự cử. |
+| Nguồn hồ sơ | Enum(String(50)) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo dữ liệu bản ghi, 01 trong các giá trị: `Tiếp nhận mới`, `Dịch vụ công quốc gia`, `Chuyển CQGQBT`, `Xác định CQGQBT`. |
+| Trạng thái | Enum(String(50)) | - | Theo dữ liệu | Control UI: Badge (Read-only).<br>- Theo dữ liệu bản ghi: Trạng thái vụ việc của hồ sơ, chỉ gồm giá trị thuộc phạm vi danh sách.<br>- Badge cùng quy tắc với cột `Trạng thái` tại Giải quyết yêu cầu bồi thường. |
+| Ngày tiếp nhận | Date | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo dữ liệu bản ghi, định dạng `dd/mm/yyyy`.<br>- Cho phép sắp xếp. |
+| Có phục hồi danh dự | Boolean | - | Theo dữ liệu | Control UI: Checkbox (Read-only).<br>- Theo dữ liệu bản ghi.<br>- Tích: Loại yêu cầu `Phục hồi danh dự` hoặc `Bồi thường thiệt hại và Phục hồi danh dự`.<br>- Không tích: Loại yêu cầu `Bồi thường thiệt hại`. |
+| Phân trang | - | - | Trang 1 | Control UI: Pagination.<br>- Gồm Số dòng hiển thị, thông tin `Hiển thị [từ]-[đến] trong tổng số [n] bản ghi`, nút chuyển trang. |
 
-###### 4.3.3.4.3.3. Chức năng trên màn hình
+###### 4.3.3.4.2.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Chuyển tab | Tab navigation | Khi người dùng click chọn tab `Yêu cầu bồi thường` hoặc `Phục hồi danh dự`:<br>- Hệ thống hiển thị khối bộ lọc và bảng dữ liệu kết quả tương ứng với tab được chọn.<br>- Tải lại danh sách kết quả theo điều kiện lọc mặc định của tab được chọn (Trạng thái giải quyết mặc định là `Hoàn thành`, thời gian tiếp nhận mặc định trong 3 tháng gần nhất) và đưa trang hiện tại về Trang 1.<br>- Dữ liệu giữa 2 tab là hoàn toàn độc lập theo nguyên tắc loại trừ, đảm bảo không trùng lặp vụ việc giữa 2 danh sách. |
-| 2 | Tìm kiếm | Button | Khi người dùng click nút Tìm kiếm, hệ thống kiểm tra tính hợp lệ của các tiêu chí và thực hiện lọc dữ liệu theo các trường hợp bên dưới:<br>- **TH1 - Khoảng ngày tiếp nhận không hợp lệ**: Nếu `Tiếp nhận từ ngày` lớn hơn `Tiếp nhận đến ngày`, vi phạm quy tắc kiểm tra khoảng ngày [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] (*"Thời điểm từ ngày không được lớn hơn thời điểm đến ngày"*) và không thực hiện tìm kiếm.<br>- **TH2 - Khoảng hạn xử lý không hợp lệ** (chỉ áp dụng tại Tab Yêu cầu bồi thường): Nếu `Hạn xử lý từ ngày` lớn hơn `Hạn xử lý đến ngày`, vi phạm quy tắc [BR-VAL-007], hệ thống hiển thị cảnh báo lỗi [MSG-ERR-VAL-007] và không thực hiện tìm kiếm.<br>- **TH3 - Không có dữ liệu trả về (Empty State)**: Khi không tìm thấy bản ghi nào thỏa mãn đồng thời các điều kiện lọc, bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001] (*"Không tìm thấy vụ việc bồi thường nào phù hợp"*); thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng phân trang ở trạng thái khóa mờ (Disabled); nút "Kết xuất Excel" chuyển sang trạng thái khóa mờ (Disabled) kèm tooltip *"Không có dữ liệu để kết xuất Excel"* theo [BR-EXP-040].<br>- **TH4 - Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống thực hiện lọc các bản ghi thỏa mãn đồng thời tất cả các tiêu chí lọc đã nhập/chọn theo điều kiện AND, hiển thị danh sách kết quả lên bảng dữ liệu, đưa trang hiện tại về Trang 1 và kích hoạt trạng thái khả dụng cho nút "Kết xuất Excel". |
-| 3 | Xóa bộ lọc | Button | Khi người dùng click nút Xóa bộ lọc, hệ thống xóa bỏ toàn bộ các điều kiện lọc đã nhập hoặc chọn trên form, khôi phục các trường về giá trị mặc định ban đầu (Trạng thái giải quyết mặc định là `Hoàn thành`, thời gian tiếp nhận mặc định trong 3 tháng gần nhất), đưa bảng về Trang 1 và tải lại danh sách kết quả. |
-| 4 | Kết xuất Excel | Button | Khi người dùng click nút Kết xuất Excel, hệ thống xuất toàn bộ các bản ghi kết quả thỏa mãn điều kiện lọc hiện tại của tab đang chọn ra tệp tin định dạng `.xlsx`, tuân thủ đúng quy chuẩn kỹ thuật và định dạng kết xuất dùng chung tại **Mục 5.5 của 04_Danh_muc_va_Phu_luc.md** (Quy chuẩn kỹ thuật & nghiệp vụ Kết xuất Excel dùng chung). |
-| 5 | Sắp xếp cột | Header cột | Khi người dùng click vào tiêu đề cột có hỗ trợ sắp xếp động (`Ngày tiếp nhận`):<br>- Lần click thứ nhất: Sắp xếp danh sách kết quả theo chiều tăng dần (cũ nhất lên đầu).<br>- Lần click thứ hai: Sắp xếp danh sách kết quả theo chiều giảm dần (mới nhất lên đầu).<br>- Lần click thứ ba: Đưa về trạng thái sắp xếp mặc định ban đầu của hệ thống (giảm dần theo Ngày tiếp nhận).<br>- Giữ nguyên các tiêu chí lọc đang thiết lập và đưa hiển thị về Trang 1. |
-| 6 | Click dòng dữ liệu | Row click | Khi người dùng click vào bất kỳ vị trí nào trên một dòng dữ liệu của bảng kết quả (ngoại trừ thao tác chọn bôi đen văn bản):<br>- **Môi trường mở**: Hệ thống mở màn hình **MH05 - Xem chi tiết hồ sơ yêu cầu bồi thường** (thuộc tài liệu `SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md`) ở chế độ Chỉ đọc (Read-only) tương ứng với mã vụ việc của dòng được click tại một **tab trình duyệt mới** (`target="_blank"`), giữ nguyên tab tra cứu hiện tại.<br>- **Tự động focus khối nội dung**:<br>  + **Nếu click từ Tab Phục hồi danh dự**: Hệ thống tự động focus trực tiếp vào khối **"Phục hồi danh dự"** trên màn hình chi tiết để người dùng xem ngay kế hoạch, tiến trình xin lỗi, đăng báo.<br>  + **Nếu click từ Tab Yêu cầu bồi thường**: Hệ thống tự động cuộn (focus) đến khối nội dung tương ứng theo trạng thái hiện tại của hồ sơ:<br>    * Trạng thái `Chờ nhập liệu`, `Chờ kiểm tra`, `Yêu cầu bổ sung`, `Chờ thụ lý`, `Bị từ chối`, `Từ chối thụ lý`: Focus vào khối **"Thông tin chung vụ việc"**.<br>    * Trạng thái `Đang xác minh thiệt hại`: Focus vào khối **"Xác minh thiệt hại"**.<br>    * Trạng thái `Đang thương lượng`, `Thương lượng không thành công`: Focus vào khối **"Thương lượng bồi thường"**.<br>    * Trạng thái `Chờ ban hành QĐ`, `Hoãn giải quyết`, `Tạm đình chỉ giải quyết`, `Đình chỉ giải quyết`: Focus vào khối **"Quyết định giải quyết bồi thường"**.<br>    * Trạng thái `Chờ thực thi`, `Đang thực thi theo bản án`, `Hoàn thành`: Focus vào khối **"Kết quả giải quyết & Chi trả bồi thường"**.<br>- Khi người dùng đóng tab chi tiết để quay lại tab tra cứu: Hệ thống giữ nguyên tab đang chọn, các tiêu chí bộ lọc đã thiết lập và trang hiện tại của bảng kết quả. |
+| 1 | Tìm kiếm | Button | - `Từ ngày` lớn hơn `Đến ngày` của `Ngày tiếp nhận`: hiển thị [MSG-ERR-VAL-007], không tìm kiếm.<br>- Hợp lệ: lọc danh sách theo các tiêu chí và `Lọc nhanh` đang chọn (điều kiện AND), về Trang 1. |
+| 2 | Xóa bộ lọc | Button | Đưa bộ lọc và `Lọc nhanh` về giá trị mặc định và tải lại danh sách. |
+| 3 | Chọn Tỉnh/Thành phố | Combobox | Tải lại danh sách `Phường/Xã` theo Tỉnh/Thành phố đã chọn, đưa `Phường/Xã` về `Tất cả`; chọn `Tất cả` thì khóa `Phường/Xã`. |
+| 4 | Lọc nhanh | Button (chip) | Lọc danh sách theo nút được chọn (kết hợp khối Lọc, tìm kiếm), về Trang 1. |
+| 5 | Sắp xếp | Header cột | Click tiêu đề `Ngày tiếp nhận`: đảo chiều sắp xếp tăng/giảm, giữ tiêu chí lọc. |
+| 6 | Phân trang | Pagination | Chuyển trang, đổi số dòng hiển thị (về Trang 1); giữ tiêu chí lọc và sắp xếp. |
+| 7 | Xem chi tiết | HyperLink | <a id="tcvv-xem-chi-tiet"></a>Click `Mã hồ sơ GQBT`: mở [MH05 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#43317-mh05---màn-hình-xem-chi-tiết-hồ-sơ-yêu-cầu-bồi-thường) của hồ sơ, gồm 03 tab `Thông tin hồ sơ vụ việc` \| `Chi tiết giải quyết bồi thường` \| `Phục hồi danh dự`.<br>Khác biệt ở chế độ chỉ xem:<br>- Ẩn toàn bộ nút thao tác tại thanh thao tác và trong các tab; chỉ giữ chuyển tab, xem/tải tài liệu, xem chi tiết liên kết và nút `Đóng`.<br>- Phạm vi xem theo phạm vi dữ liệu tra cứu; không áp dụng giới hạn chỉ cán bộ được cử giải quyết được xem hồ sơ.<br>- Tab mở mặc định: `Phục hồi danh dự` khi Trạng thái là `Đang phục hồi danh dự` / `Hoãn phục hồi danh dự`; trường hợp khác: `Thông tin hồ sơ vụ việc`.<br>- `Đóng`: quay lại màn hình Tra cứu vụ việc, giữ nguyên bộ lọc và `Lọc nhanh`. |
+| 8 | Kết xuất Excel | Button | - Danh sách rỗng: không kết xuất, hiển thị [MSG-WRN-SYS-001].<br>- Có dữ liệu: tải tệp `.xlsx` gồm toàn bộ bản ghi theo bộ lọc, `Lọc nhanh` và sắp xếp hiện tại (không theo trang).<br>- Cột xuất đúng thứ tự lưới: STT, Mã vụ việc, Mã hồ sơ GQBT, Tên cá nhân/Tổ chức yêu cầu, Tên cá nhân/Tổ chức bị thiệt hại, Lĩnh vực phát sinh thiệt hại, Cơ quan giải quyết, Tỉnh/Thành phố, Cán bộ xử lý, Nguồn hồ sơ, Trạng thái, Ngày tiếp nhận, Có phục hồi danh dự.<br>- Cột `Có phục hồi danh dự`: `x` khi có tích, để trống khi không tích. |

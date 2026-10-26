@@ -59,7 +59,7 @@ flowchart TD
 | Quốc gia đối tác | Enum(String(100)) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
 | Hình thức hợp tác | Enum(String(50)) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi. |
 | Thời gian thực hiện | String(50) | Không | Theo dữ liệu hệ thống | - Chỉ đọc.<br>- Theo dữ liệu bản ghi.<br>- Hiển thị dạng `Từ ngày - Đến ngày`, định dạng `dd/mm/yyyy`. |
-| Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Xóa |
+| Thao tác | - | - | - | Control UI: Icon<br>+ Sửa<br>+ Xóa<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 | Phân trang | - | - | 20 bản ghi/trang | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
 
 ###### 4.3.3.16.3.3. Chức năng trên màn hình

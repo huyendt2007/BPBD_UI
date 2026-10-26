@@ -4,17 +4,19 @@
 
 ##### 4.3.3.3.1. Mục đích
 Quản lý toàn bộ vòng đời của Quyết định giải quyết bồi thường (QĐ GQBT), từ lập dự thảo, trình Lãnh đạo ký duyệt nhiều cấp, ban hành đến hủy hoặc sửa chữa, bổ sung sau ban hành, gồm:
-- Tra cứu danh sách quyết định theo số quyết định, vụ việc, trạng thái, Nội dung trình, cơ quan ban hành và khoảng ngày ban hành.
+- Tra cứu danh sách quyết định theo Số quyết định, Mã hồ sơ GQBT, Mã vụ việc, trạng thái, Nội dung trình, cơ quan ban hành và khoảng Ngày quyết định.
 - Lập dự thảo quyết định với cơ chế tự động điền dữ liệu từ hồ sơ vụ việc yêu cầu bồi thường: thông tin người yêu cầu, bảng đề xuất bồi thường theo Kết quả xác minh thiệt hại hoặc Kết quả thương lượng (căn cứ Tình trạng tham gia thương lượng), thông tin người nhận tiền.
-- Sinh văn bản dự thảo theo Mẫu 18/BTNN (xem tại popup xem văn bản, tải file Word `.doc`) hoặc đính kèm tệp dự thảo từ máy tính.
+- Văn bản trình ký: hệ thống sinh theo Mẫu 18/BTNN hoặc cán bộ tải lên từ máy.
 - Trình Lãnh đạo ký duyệt theo luồng phê duyệt nhiều cấp dùng chung của phân hệ Bồi thường nhà nước; cán bộ chọn Hình thức ký: Ký số trên hệ thống (mặc định) hoặc Ký ngoài.
-- Ban hành quyết định sau khi Lãnh đạo cấp cuối ký duyệt: cán bộ nhập Số quyết định, Ngày ban hành; Quyết định Ký số dùng bản đã ký số trên hệ thống, Quyết định Ký ngoài đính kèm tệp quyết định đã ký.
-- Trình Lãnh đạo phê duyệt yêu cầu Hủy QĐ hoặc Sửa chữa, bổ sung QĐ đối với quyết định đã ban hành.
+- Ban hành quyết định:
+  + Ký số trên hệ thống: Lãnh đạo cấp cuối Ký duyệt thì quyết định chuyển `Đã ban hành` ngay, không có bước Ban hành riêng của cán bộ.
+  + Ký ngoài: cán bộ nhập Số quyết định, Ngày quyết định, Người ký, đính kèm tệp quyết định đã ký và ban hành trực tiếp, không trình Lãnh đạo duyệt trên hệ thống.
+- Trình Lãnh đạo phê duyệt yêu cầu Hủy QĐ (Mẫu 20/BTNN) hoặc Sửa chữa, bổ sung QĐ (Mẫu 21/BTNN) đối với quyết định đã ban hành; Ký ngoài thì đính kèm tệp đã ký và ban hành trực tiếp.
 - Danh sách chia 02 tab `Chờ xử lý` / `Đã xử lý`; thao tác trên từng quyết định theo phân quyền Cán bộ xử lý / Lãnh đạo.
 
 a. Phân quyền
 - Xem: Tra cứu danh sách theo 02 tab, xem chi tiết quyết định, xem văn bản dự thảo / văn bản đã ký ban hành.
-- Cán bộ xử lý (cán bộ chủ trì giải quyết vụ việc): Tạo mới và trình Lãnh đạo ký duyệt; Sửa, Xóa quyết định Bị trả lại; Ban hành; Sửa chữa, bổ sung QĐ; Hủy QĐ.
+- Cán bộ xử lý (cán bộ chủ trì giải quyết vụ việc): Tạo mới và trình Lãnh đạo ký duyệt; Sửa, Xóa quyết định Bị từ chối; Ban hành trực tiếp (Ký ngoài); Sửa chữa, bổ sung QĐ; Hủy QĐ.
 - Lãnh đạo: Ký duyệt / Từ chối quyết định `Chờ duyệt` - chỉ Lãnh đạo được giao đích danh tại cấp phê duyệt hiện hành.
 
 b. Điều kiện thực hiện
@@ -27,24 +29,24 @@ b. Điều kiện thực hiện
 
 | STT | Quy tắc | Mô tả |
 | :--- | :--- | :--- |
-| 1 | Ký duyệt và Hình thức ký | Lãnh đạo ký duyệt bằng thao tác Ký duyệt / Từ chối trên hệ thống. Hình thức ký do cán bộ chọn khi trình:<br>+ `Ký số trên hệ thống` (mặc định): Lãnh đạo cấp cuối Ký duyệt thì hệ thống ký số Quyết định bằng chứng thư số của Lãnh đạo; khi Ban hành dùng bản đã ký số, không tải tệp.<br>+ `Ký ngoài`: Lãnh đạo ký duyệt trên hệ thống, ký văn bản giấy ngoài hệ thống; cán bộ đính kèm tệp quyết định đã ký khi Ban hành. |
-| 2 | Trạng thái quyết định | Gồm:<br>+ `Chờ duyệt`: Quyết định hoặc yêu cầu Hủy QĐ / Sửa chữa, bổ sung QĐ đang chờ Lãnh đạo phê duyệt.<br>+ `Bị trả lại`: Một cấp Lãnh đạo từ chối phê duyệt; cán bộ cập nhật và trình lại.<br>+ `Chờ ban hành`: Lãnh đạo cấp cuối đã phê duyệt dự thảo quyết định; chờ cán bộ ban hành.<br>+ `Đã ban hành`: Quyết định đã có số, ngày ban hành và tệp đã ký.<br>+ `Đã hủy`: Yêu cầu Hủy QĐ đã được Lãnh đạo cấp cuối phê duyệt. |
-| 3 | Nội dung trình | Lưu trong phiếu trình của hồ sơ luồng, phân biệt việc Lãnh đạo đang duyệt, gồm:<br>+ `Quyết định GQBT`<br>+ `Hủy QĐ`<br>+ `Sửa chữa, bổ sung QĐ`<br>Trên lưới và tiêu đề màn hình chi tiết, dưới badge trạng thái `Chờ duyệt`/`Bị trả lại` hiển thị dòng phụ chỉ gồm tên Nội dung trình (VD "Hủy QĐ"), không hiển thị cấp phê duyệt. |
+| 1 | Ký duyệt và Hình thức ký | Lãnh đạo ký duyệt bằng thao tác Ký duyệt / Từ chối trên hệ thống. Hình thức ký do cán bộ chọn khi trình:<br>+ `Ký số trên hệ thống` (mặc định): trình Lãnh đạo Ký duyệt trên hệ thống; ký số / không ký số thực hiện theo luồng đã cấu hình tương ứng tại [Cấu hình luồng xử lý - Cấu hình luồng xử lý - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Cau_hinh_luong_xu_ly.md); Lãnh đạo cấp cuối Ký duyệt thì quyết định chuyển `Đã ban hành` ngay.<br>+ `Ký ngoài`: Lãnh đạo ký văn bản giấy ngoài hệ thống; cán bộ nhập Số quyết định, Ngày quyết định, Người ký, đính kèm tệp quyết định đã ký và bấm `Ban hành văn bản`; quyết định chuyển `Đã ban hành` trực tiếp, không trình Lãnh đạo duyệt trên hệ thống. |
+| 2 | Trạng thái quyết định | Gồm:<br>+ `Chờ duyệt`: Quyết định hoặc yêu cầu Hủy QĐ / Sửa chữa, bổ sung QĐ đang chờ Lãnh đạo phê duyệt.<br>+ `Bị từ chối`: Một cấp Lãnh đạo từ chối; cán bộ cập nhật và trình lại.<br>+ `Đã ban hành`: Lãnh đạo cấp cuối đã Ký duyệt quyết định (Ký số trên hệ thống) hoặc cán bộ đã ban hành trực tiếp (Ký ngoài).<br>+ `Đã hủy`: Yêu cầu Hủy QĐ đã được Lãnh đạo cấp cuối phê duyệt.<br>- Không có trạng thái `Chờ ban hành`.<br>- Dữ liệu cũ: `Chờ ban hành` chuyển `Đã ban hành` và thực hiện liên thông theo quy tắc 9. |
+| 3 | Nội dung trình | Lưu trong phiếu trình của hồ sơ luồng, phân biệt việc Lãnh đạo đang duyệt, gồm:<br>+ `Quyết định GQBT`<br>+ `Hủy QĐ`<br>+ `Sửa chữa, bổ sung QĐ`<br>Trên lưới và tiêu đề màn hình chi tiết, dưới badge trạng thái `Chờ duyệt`/`Bị từ chối` hiển thị dòng phụ chỉ gồm tên Nội dung trình, không hiển thị cấp phê duyệt. |
 | 4 | Khóa phiếu trình | Phiếu trình dùng Mã vụ việc làm khóa (hồ sơ luồng phân hệ Giải quyết yêu cầu bồi thường). Nếu vụ việc chưa có hồ sơ luồng, khi trình hệ thống tự tạo hồ sơ luồng với cán bộ chủ trì là người trình. Mỗi vụ việc tại một thời điểm chỉ có 01 phiếu trình đang chờ duyệt. |
-| 5 | Luồng phê duyệt nhiều cấp | Luồng phê duyệt đi ngược chiều luồng phân công thực tế của hồ sơ; hồ sơ không có lượt phân công thì đi theo cây đơn vị của cán bộ chủ trì lên đơn vị gốc (chỉ gồm đơn vị có nhóm lãnh đạo). Cán bộ chọn đích danh Lãnh đạo cấp 1; Lãnh đạo cấp n khi phê duyệt (chưa phải cấp cuối) chọn đích danh Lãnh đạo cấp n+1. Chỉ Lãnh đạo được giao thấy và thao tác. Chi tiết tại [Quy tắc chung - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_ViecChoLanhDaoXuLy.md#vcld-quy-tac-chung).<br>Trường "Luồng phê duyệt" (chỉ đọc, một dòng, ngay dưới ô Lãnh đạo ký duyệt/Lãnh đạo phê duyệt) hiển thị động theo Cấu hình luồng xử lý tương ứng đơn vị của cán bộ thực hiện, định dạng "Luồng phê duyệt: Cấp 1 - [Đơn vị] → Cấp 2 - [Đơn vị] → ...", VD:<br>+ Cán bộ thuộc Bộ Tư pháp: Cấp 1 - [Phòng nghiệp vụ thuộc Cục] → Cấp 2 - [Cục] → Cấp 3 - [Bộ Tư pháp]<br>+ Cán bộ thuộc Sở Tư pháp: Cấp 1 - [Phòng chuyên môn thuộc Sở] → Cấp 2 - [Sở Tư pháp]<br>+ Cán bộ thuộc cơ quan khác/UBND: các cấp lãnh đạo quản lý trực tiếp theo cây tổ chức đã thiết lập |
-| 6 | Trình lại | Hồ sơ `Bị trả lại` khi trình lại bắt đầu lại từ cấp phê duyệt đầu tiên. |
-| 7 | Kết quả khi cấp cuối phê duyệt | Trạng thái hồ sơ luồng (resultStatus) và trạng thái quyết định:<br>+ `Quyết định GQBT` → hồ sơ luồng `Chờ ban hành`; quyết định `Chờ ban hành`.<br>+ `Hủy QĐ` → hồ sơ luồng `Đã hủy`; quyết định `Đã hủy`, lưu Lý do hủy, Lãnh đạo phê duyệt và thời điểm.<br>+ `Sửa chữa, bổ sung QĐ` → hồ sơ luồng `Đã ban hành`; quyết định giữ `Đã ban hành`, nội dung sửa chữa, bổ sung được ghi vào khối "Nội dung sửa chữa, bổ sung có hiệu lực". |
-| 8 | Đồng bộ trạng thái | Lãnh đạo Ký duyệt / Từ chối tại tab `Chờ xử lý` của màn này (vai trò Lãnh đạo); số phiếu chờ ký duyệt hiển thị tại khối `Chờ duyệt QĐ Giải quyết YCBT` của [MH01 - Màn hình Dashboard Lãnh đạo - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_ViecChoLanhDaoXuLy.md#vcld-mh01). Mỗi lần mở danh sách/chi tiết, hệ thống đồng bộ trạng thái quyết định đang `Chờ duyệt` theo phiếu trình cùng Mã vụ việc, cùng Nội dung trình và cùng thời điểm trình: phiếu bị từ chối → `Bị trả lại`; phiếu được cấp cuối phê duyệt → áp dụng quy tắc 7. |
-| 9 | Ban hành | Sau khi ban hành, hồ sơ luồng của vụ việc chuyển `Đã ban hành`; vụ việc được ghi Số, Ngày ban hành, Số tiền và trạng thái quyết định; vụ việc đang `Chờ ban hành QĐ` chuyển `Chờ thực thi`. |
-| 10 | Văn bản dự thảo trình Lãnh đạo | 02 lựa chọn, bắt buộc chọn 1, mặc định chọn `Theo Mẫu 18/BTNN do hệ thống tự động sinh`:<br>+ Theo Mẫu 18/BTNN do hệ thống tự động sinh: nút "Xem dự thảo QĐ" (hệ thống sinh văn bản dự thảo theo `Mẫu 18_Template` từ dữ liệu đang nhập, mở tại tab mới), nút "Tải file" (Word `.doc`).<br>+ Tải file: nút "Chọn tệp" (`.doc`, `.docx`, `.pdf`), tên tệp, liên kết "Xem file", nút "Xóa".<br>- Trước khi Xem dự thảo QĐ / Tải file: kiểm tra các trường cấu thành văn bản; thiếu trường thì đánh dấu lỗi theo quy tắc 11, đưa con trỏ tới ô lỗi đầu tiên, không mở tab, không tải tệp.<br>- Văn bản hệ thống sinh được lưu cùng phiếu trình tại thời điểm trình để Lãnh đạo xem đúng bản đã trình. |
-| 11 | Trường bắt buộc | Trường bắt buộc để trống khi bấm nút xử lý: viền đỏ ô nhập và dòng chữ đỏ "Đây là trường bắt buộc" ngay dưới ô; không lưu dữ liệu. Không dùng hộp thoại mặc định của trình duyệt; thao tác xóa/rút yêu cầu dùng popup xác nhận. |
-| 12 | Ẩn/Hiện khối thông tin theo Mã vụ việc | Mặc định khi mở màn hình Tạo mới Quyết định giải quyết bồi thường (chưa chọn Mã vụ việc), hệ thống **ẩn** trường Cơ quan giải quyết bồi thường và các khối: (1) Lãnh đạo ký duyệt và Hình thức ký, (2) Thông tin người yêu cầu bồi thường, (3) Bảng nội dung đề xuất bồi thường, (4) Người nhận tiền bồi thường, (5) Phương thức chi trả tiền bồi thường, (6) Thời điểm có hiệu lực, (7) Văn bản dự thảo trình Lãnh đạo và nút "Trình Lãnh đạo". Chỉ hiển thị khi đã tìm kiếm và chọn được Mã vụ việc hợp lệ. |
-| 13 | Phương thức chi trả tiền bồi thường | Kế thừa thông tin từ hồ sơ vụ việc yêu cầu bồi thường. Hỗ trợ 2 phương thức chi trả:<br>+ `Nhận qua chuyển khoản`: bắt buộc Chủ tài khoản, Số tài khoản, Ngân hàng; Chi nhánh (không bắt buộc).<br>+ `Nhận tiền mặt`: bắt buộc Nơi nhận tiền mặt / Địa chỉ cơ quan chi trả; Giấy tờ / Biên lai / Ghi chú (không bắt buộc). |
-| 14 | Tab danh sách theo vai trò | Danh sách chia 02 tab, mỗi tab hiển thị số quyết định của tab:<br>+ Cán bộ xử lý: `Chờ xử lý` gồm quyết định `Chờ duyệt`, `Bị trả lại`, `Chờ ban hành`; `Đã xử lý` gồm quyết định `Đã ban hành`, `Đã hủy`.<br>+ Lãnh đạo: `Chờ xử lý` gồm quyết định `Chờ duyệt` mà người dùng là Lãnh đạo được giao ở cấp phê duyệt hiện hành; `Đã xử lý` gồm quyết định người dùng đã Ký duyệt / Từ chối. |
-| 15 | Thao tác theo phân quyền | Mỗi dòng quyết định hiển thị đủ các thao tác của vai trò ở vị trí cố định; thao tác không được phép theo trạng thái quyết định hiển thị dạng khóa mờ, không cho phép thao tác:<br>+ Cán bộ xử lý: Sửa, Xóa, Ban hành, Sửa chữa, bổ sung QĐ, Hủy QĐ.<br>+ Lãnh đạo: Ký duyệt, Từ chối (theo phân quyền: chỉ Lãnh đạo được giao đích danh tại cấp phê duyệt hiện hành). |
+| 5 | Luồng phê duyệt nhiều cấp | Luồng phê duyệt đi ngược chiều luồng phân công thực tế của hồ sơ; hồ sơ không có lượt phân công thì đi theo cây đơn vị của cán bộ chủ trì lên đơn vị gốc (chỉ gồm đơn vị có nhóm lãnh đạo). Lãnh đạo các cấp do cán bộ chọn khi trình; cấp n ký duyệt thì hồ sơ tự chuyển đến Lãnh đạo cấp n+1 đã chọn. Chỉ Lãnh đạo được giao thấy và thao tác. Chi tiết tại [Quy tắc trình ký - phê duyệt - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-quy-tac-phe-duyet).<br>- Các cấp ký duyệt hiển thị theo Cấu hình luồng xử lý tương ứng đơn vị của cán bộ trình, mỗi cấp 01 thẻ tại Bước 2 của popup trình ký. |
+| 6 | Trình lại | Hồ sơ `Bị từ chối` khi trình lại bắt đầu lại từ cấp phê duyệt đầu tiên. |
+| 7 | Kết quả khi cấp cuối phê duyệt | Trạng thái hồ sơ luồng (resultStatus) và trạng thái quyết định:<br>+ `Quyết định GQBT` → hồ sơ luồng `Đã ban hành`; quyết định `Đã ban hành`, xử lý liên thông theo quy tắc 9.<br>+ `Hủy QĐ` → hồ sơ luồng `Đã hủy`; quyết định `Đã hủy`, lưu Lý do hủy Quyết định, Ngày có hiệu lực, Lãnh đạo phê duyệt và thời điểm.<br>+ `Sửa chữa, bổ sung QĐ` → hồ sơ luồng `Đã ban hành`; quyết định giữ `Đã ban hành`, nội dung sửa chữa, bổ sung được ghi vào khối "Nội dung sửa chữa, bổ sung có hiệu lực". |
+| 8 | Đồng bộ trạng thái | Lãnh đạo Ký duyệt / Từ chối tại tab `Chờ xử lý` của màn này (vai trò Lãnh đạo). Mỗi lần mở danh sách/chi tiết, hệ thống đồng bộ trạng thái quyết định đang `Chờ duyệt` theo phiếu trình cùng Mã vụ việc, cùng Nội dung trình và cùng thời điểm trình: phiếu bị từ chối → `Bị từ chối`; phiếu được cấp cuối phê duyệt → áp dụng quy tắc 7. |
+| 9 | Ban hành | Quyết định chuyển `Đã ban hành` khi Lãnh đạo cấp cuối Ký duyệt (Ký số trên hệ thống) hoặc khi cán bộ bấm `Ban hành văn bản` (Ký ngoài). Khi đó hệ thống:<br>- Lưu Số quyết định, Ngày quyết định và văn bản ban hành:<br>+ Ký số trên hệ thống: Số quyết định theo `Số, ký hiệu văn bản` đã nhập khi trình; Ngày quyết định là ngày Lãnh đạo cấp cuối Ký duyệt; văn bản ban hành là Văn bản trình ký đã được Ký duyệt.<br>+ Ký ngoài: theo thông tin cán bộ nhập tại [MH02b - Popup Trình ký Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh02b).<br>- Chuyển hồ sơ luồng của vụ việc sang `Đã ban hành`.<br>- Ghi Số, Ngày quyết định, Số tiền và trạng thái quyết định vào vụ việc; vụ việc đang `Chờ ban hành QĐ` chuyển `Chờ thực thi`.<br>- Tạo 01 bản ghi `Chi trả tiền bồi thường` trạng thái `Chờ thông báo chi trả` theo [Luồng Chi trả tiền bồi thường - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_KinhPhi_BT.md#kp-chi-tra-tien-bt) và [Ánh xạ dữ liệu liên thông sang Module Quản lý kinh phí bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#bang-anh-xa-lien-thong-kinh-phi). |
+| 10 | Văn bản trình ký | Chọn tại [MH02b - Popup Trình ký Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh02b), gồm:<br>+ `Sinh văn bản theo mẫu 18/BTNN` (mặc định): hệ thống sinh văn bản theo `Mẫu 18_Template` từ dữ liệu đang nhập.<br>+ `Tải lên từ máy`: tệp `.pdf`, `.doc`, `.docx`.<br>- Văn bản trình ký được lưu cùng phiếu trình tại thời điểm trình để Lãnh đạo xem đúng bản đã trình. |
+| 11 | Trường bắt buộc | - Bỏ trống trường bắt buộc khi bấm nút xử lý: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không lưu dữ liệu.<br>- Thao tác xóa / rút yêu cầu / ban hành Ký ngoài dùng popup xác nhận của hệ thống. |
+| 12 | Ẩn/Hiện khối thông tin theo Mã hồ sơ giải quyết bồi thường | - Khi chưa chọn Mã hồ sơ giải quyết bồi thường, hệ thống ẩn các khối: (1) Thông tin người yêu cầu bồi thường, (2) Bảng nội dung đề xuất bồi thường, (3) Người nhận tiền bồi thường, (4) Phương thức chi trả tiền bồi thường, (5) Hiệu lực của Quyết định và nút `Tiếp tục`.<br>- Chỉ hiển thị khi đã chọn được Mã hồ sơ giải quyết bồi thường hợp lệ. |
+| 13 | Phương thức chi trả tiền bồi thường | Nguồn dữ liệu theo `Tình trạng tham gia thương lượng` tại [Quy tắc tự động điền khi chọn Mã hồ sơ giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-tu-dong-dien). Gồm:<br>+ `Nhận qua chuyển khoản`: bắt buộc Chủ tài khoản, Số tài khoản ngân hàng, Tên ngân hàng; Chi nhánh ngân hàng không bắt buộc.<br>+ `Nhận tiền mặt`: bắt buộc Cơ quan / Địa chỉ chi trả tiền mặt; Số biên lai / Ghi chú chi trả không bắt buộc. |
+| 14 | Tab danh sách theo vai trò | Danh sách chia 02 tab; tab `Chờ xử lý` hiển thị badge số lượng quyết định chờ xử lý, tab `Đã xử lý` không hiển thị badge số lượng:<br>+ Cán bộ xử lý: `Chờ xử lý` gồm quyết định `Chờ duyệt`, `Bị từ chối`; `Đã xử lý` gồm quyết định `Đã ban hành`, `Đã hủy`.<br>+ Lãnh đạo: `Chờ xử lý` gồm quyết định `Chờ duyệt` mà người dùng là Lãnh đạo được giao ở cấp phê duyệt hiện hành; `Đã xử lý` gồm quyết định người dùng đã Ký duyệt / Từ chối. |
+| 15 | Thao tác theo phân quyền | Thao tác trên từng quyết định (tại lưới danh sách hoặc khi xem chi tiết) theo vai trò:<br>+ Cán bộ xử lý: Sửa, Xóa, Sửa chữa, bổ sung QĐ, Hủy QĐ; mỗi dòng hiển thị đủ các thao tác ở vị trí cố định, thao tác không được phép theo trạng thái quyết định hiển thị dạng khóa mờ, không cho phép thao tác. Cán bộ xử lý không có thao tác Ký duyệt, Từ chối.<br>+ Lãnh đạo: Ký duyệt, Từ chối; chỉ hiển thị trên quyết định trạng thái `Chờ duyệt` khi người dùng là Lãnh đạo được giao đích danh tại cấp phê duyệt hiện hành, áp dụng cho cả 03 Loại trình `Quyết định GQBT`, `Hủy QĐ`, `Sửa chữa, bổ sung QĐ`; quyết định khác không hiển thị 02 thao tác này. |
 
 <a id="qd-quy-tac-tu-dong-dien"></a>
-**Quy tắc tự động điền khi chọn Mã vụ việc**
+**Quy tắc tự động điền khi chọn Mã hồ sơ giải quyết bồi thường**
 
 Dữ liệu vụ việc lấy từ danh sách vụ việc của [MH03 - Màn hình Cập nhật kết quả xử lý hồ sơ yêu cầu bồi thường - Giải quyết yêu cầu bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#mh03-mo-ta-thong-tin-xu-ly-ho-so). Chỉ áp dụng cho vụ việc bồi thường bằng tiền (mã `BT-yyyy-xxx`, loại yêu cầu khác Phục hồi danh dự); vụ việc Phục hồi danh dự (mã `PHDD-yyyy-xxx`) không thuộc phạm vi Quyết định giải quyết bồi thường.
 
@@ -61,38 +63,47 @@ Tương thích dữ liệu cũ: kết quả thương lượng cũ "Từ chối t
 
 Khối Nguồn dữ liệu hiển thị phía trên Bảng nội dung đề xuất bồi thường (MH02, MH03), gồm: Nguồn dữ liệu, Tình trạng tham gia thương lượng (vụ việc có kết quả thương lượng), Ghi chú nguồn. Các thông tin này được lưu cùng quyết định khi trình và phục vụ phần Căn cứ của văn bản Mẫu 18/BTNN.
 
-Các trường khác:
+<a id="qd-nguon-theo-thuong-luong"></a>
+**Nguồn dữ liệu theo Tình trạng tham gia thương lượng**
+
+| STT | Nhóm thông tin | Tình trạng tham gia thương lượng = `Đồng ý thương lượng` | Tình trạng tham gia thương lượng khác `Đồng ý thương lượng` |
+| :--- | :--- | :--- | :--- |
+| 1 | Bảng nội dung đề xuất bồi thường | - Lấy theo [Khối Kết quả thương lượng theo từng thiệt hại yêu cầu bồi thường - Giải quyết yêu cầu bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-ket-qua-thuong-luong).<br>- Chi tiết theo Kịch bản B; chưa có kết quả thương lượng từng thiệt hại thì theo trường hợp 3. | - Lấy theo Kết quả xác minh thiệt hại tại [Khối Xác minh thiệt hại thực tế - Giải quyết yêu cầu bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-khoi-xac-minh).<br>- Chi tiết theo Kịch bản A. |
+| 2 | Người nhận tiền bồi thường | - Lấy theo [Khối Phương thức chi trả tiền bồi thường của Kết quả thương lượng - Giải quyết yêu cầu bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-pt-chi-tra-thuong-luong).<br>- Họ và tên người nhận: theo `Họ và tên người nhận tiền`.<br>- Số định danh cá nhân/CCCD: theo `Số giấy tờ thân nhân người nhận`. | - Lấy theo `Thông tin người nhận tiền` đã nhập ở bước Tiếp nhận tại [Khối Thông tin người nhận tiền - Màn hình Nhập liệu hồ sơ vụ việc - Giải quyết yêu cầu bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#mh02-thong-tin-nguoi-nhan-tien).<br>- Họ và tên người nhận: theo `Họ và tên người nhận tiền`.<br>- Số định danh cá nhân/CCCD: theo `Số giấy tờ thân nhân người nhận`. |
+| 3 | Phương thức chi trả tiền bồi thường | - Lấy theo [Khối Phương thức chi trả tiền bồi thường của Kết quả thương lượng - Giải quyết yêu cầu bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-pt-chi-tra-thuong-luong).<br>- Gồm Phương thức chi trả, Chủ tài khoản, Số tài khoản, Ngân hàng, Chi nhánh, Số biên lai nhận tiền mặt. | - Lấy theo `Thông tin người nhận tiền` đã nhập ở bước Tiếp nhận tại [Khối Thông tin người nhận tiền - Màn hình Nhập liệu hồ sơ vụ việc - Giải quyết yêu cầu bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#mh02-thong-tin-nguoi-nhan-tien).<br>- Gồm Phương thức chi trả, Chủ tài khoản, Số tài khoản, Ngân hàng, Chi nhánh. |
+| 4 | Thông tin người yêu cầu bồi thường | - Lấy theo thông tin đã ghi trong hồ sơ ban đầu khi nhập liệu tại [MH02 - Màn hình Nhập liệu hồ sơ vụ việc - Giải quyết yêu cầu bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md). | - Như cột `Đồng ý thương lượng`. |
+| 5 | Số tiền bồi thường đã tạm ứng | - Tổng số tiền đã tạm ứng của vụ việc. | - Như cột `Đồng ý thương lượng`. |
+
+Quy tắc chi tiết các trường:
 - Họ và tên người yêu cầu: Họ và tên người yêu cầu bồi thường của vụ việc.
 - Địa chỉ: tự ghép theo thứ tự Địa chỉ chi tiết (số nhà/đường), Phường/Xã, Tỉnh/Thành phố, phân cách bằng dấu phẩy; bỏ mã đơn vị hành chính và không lặp lại phần đã có trong Địa chỉ chi tiết. Vụ việc chỉ có địa chỉ dạng một chuỗi thì lấy nguyên chuỗi đó.
-- Người nhận tiền: Họ và tên người nhận chi trả (nếu có) hoặc Họ và tên người yêu cầu; Số định danh cá nhân/CCCD của người nhận; Mối quan hệ với người bị thiệt hại / người yêu cầu (nếu có).
-- Phương thức chi trả tiền bồi thường: Kế thừa từ hồ sơ vụ việc; mặc định là `Nhận qua chuyển khoản` kèm Chủ tài khoản, Số tài khoản, Ngân hàng, Chi nhánh (nếu vụ việc chọn tiền mặt thì kế thừa `Nhận tiền mặt` kèm Nơi nhận tiền mặt / Địa chỉ cơ quan chi trả, Giấy tờ / Biên lai / Ghi chú).
-- Số tiền bồi thường đã tạm ứng: Tổng số tiền đã tạm ứng của vụ việc.
-- Cơ quan giải quyết bồi thường (cơ quan ban hành): chỉ hiển thị sau khi chọn được Mã vụ việc; lấy theo đơn vị gốc của hồ sơ luồng; vụ việc chưa có hồ sơ luồng thì lấy theo tên cơ quan giải quyết của vụ việc, không đối chiếu được thì lấy đơn vị gốc của cán bộ đang thao tác.
+- Cơ quan ban hành: không hiển thị tại MH02, lưu cùng quyết định; lấy theo đơn vị gốc của hồ sơ luồng; vụ việc chưa có hồ sơ luồng thì lấy theo tên cơ quan giải quyết của vụ việc, không đối chiếu được thì lấy đơn vị gốc của cán bộ đang thao tác.
 
 ##### 4.3.3.3.3. Sơ đồ luồng nghiệp vụ theo giao diện
 
 ```mermaid
 flowchart TD
     A[Danh sách Quyết định giải quyết bồi thường] --> C[Tạo mới Quyết định]
-    C --> D[Chọn Mã vụ việc - Người yêu cầu]
+    C --> D[Chọn Mã hồ sơ giải quyết bồi thường]
     D --> E{Tình trạng tham gia thương lượng}
     E -->|Từ chối / 2 lần từ chối nhận giấy mời / 2 lần vắng mặt| E1[Kịch bản A - Tự động điền theo Kết quả xác minh thiệt hại]
     E -->|Đồng ý thương lượng| E2[Kịch bản B - Tự động điền theo Kết quả thương lượng]
     E1 --> F
-    E2 --> F[Chọn Lãnh đạo ký duyệt + Văn bản dự thảo Mẫu 18/BTNN hoặc tải file]
-    F -->|Trình Lãnh đạo| G[Chờ duyệt - Quyết định GQBT]
+    E2 --> F[Tiếp tục - Popup Trình ký: Hình thức ký, Văn bản trình ký Mẫu 18/BTNN hoặc tải lên, chọn Lãnh đạo các cấp]
+    F -->|Ký số: Trình Lãnh đạo| G[Chờ duyệt - Quyết định GQBT]
+    F -->|Ký ngoài: nhập Số QĐ, Ngày QĐ, Người ký, đính tệp đã ký - Ban hành văn bản| J
     G -->|Lãnh đạo cấp i phê duyệt, chọn Lãnh đạo cấp i+1| G
-    G -->|Một cấp từ chối| H[Bị trả lại]
+    G -->|Một cấp từ chối| H[Bị từ chối]
     H -->|Cập nhật, trình lại từ cấp 1| G
     H -->|Xóa dự thảo| A
-    G -->|Cấp cuối Ký duyệt (Ký số: ký số Quyết định)| I[Chờ ban hành]
-    I -->|Ban hành: Số QĐ, Ngày ban hành; Ký ngoài: đính tệp QĐ đã ký| J[Đã ban hành]
-    J -->|Hủy QĐ| K[Chờ duyệt - Hủy QĐ]
+    G -->|Cấp cuối Ký duyệt| J[Đã ban hành]
+    J -->|Hủy QĐ - Ký số: Trình Lãnh đạo| K[Chờ duyệt - Hủy QĐ]
+    J -->|Hủy QĐ - Ký ngoài: đính tệp đã ký - Ban hành văn bản| M
     J -->|Sửa chữa, bổ sung QĐ| L[Chờ duyệt - Sửa chữa, bổ sung QĐ]
     K -->|Cấp cuối phê duyệt| M[Đã hủy]
     L -->|Cấp cuối phê duyệt| J2[Đã ban hành - bản sửa chữa có hiệu lực]
-    K -->|Một cấp từ chối| N[Bị trả lại - Hủy QĐ]
-    L -->|Một cấp từ chối| N2[Bị trả lại - Sửa chữa, bổ sung QĐ]
+    K -->|Một cấp từ chối| N[Bị từ chối - Hủy QĐ]
+    L -->|Một cấp từ chối| N2[Bị từ chối - Sửa chữa, bổ sung QĐ]
     N -->|Cập nhật, trình lại| K
     N2 -->|Cập nhật, trình lại| L
     N -->|Rút yêu cầu| J
@@ -113,44 +124,45 @@ flowchart TD
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | **Tiêu đề màn hình** | String(200) | - | `Quyết định giải quyết bồi thường` | Control UI: Label. |
-| **Thanh tab** | Tab | - | `Chờ xử lý` | Control UI: 02 tab `Chờ xử lý`, `Đã xử lý`, mỗi tab hiển thị số quyết định. Phạm vi dữ liệu của tab theo vai trò tại quy tắc 14 tại [Quy tắc chung - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-chung). |
-| **Khối Bộ lọc tìm kiếm** | Section | - | Mở rộng | Control UI: Khối thu gọn/mở rộng. Khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
-| Số quyết định | String(50) | Không | Trống | Control UI: Input text. Tìm gần đúng, không phân biệt hoa thường, tự động bỏ khoảng trắng đầu/cuối. |
-| Mã vụ việc / Người yêu cầu | String(255) | Không | Trống | Control UI: Input text. Tìm gần đúng theo Mã vụ việc hoặc Họ và tên người yêu cầu. |
-| Trạng thái | Enum(String(50)) | Không | `Tất cả` | Control UI: Dropdown. Danh sách theo tab đang chọn:<br>+ Tab `Chờ xử lý` (Cán bộ xử lý): `Tất cả`, `Chờ duyệt`, `Bị trả lại`, `Chờ ban hành`<br>+ Tab `Đã xử lý` (Cán bộ xử lý): `Tất cả`, `Đã ban hành`, `Đã hủy`<br>+ Lãnh đạo: tab `Chờ xử lý` gồm `Tất cả`, `Chờ duyệt`; tab `Đã xử lý` gồm `Tất cả` và 05 trạng thái quyết định |
-| Nội dung trình | Enum(String(100)) | Không | `Tất cả` | Control UI: Dropdown. Chỉ áp dụng cho quyết định ở trạng thái `Chờ duyệt` hoặc `Bị trả lại`.<br>Gồm:<br>+ `Tất cả`<br>+ `Quyết định GQBT`<br>+ `Hủy QĐ`<br>+ `Sửa chữa, bổ sung QĐ` |
-| Cơ quan ban hành | Enum(String(255)) | Không | `Tất cả` | Control UI: Dropdown. Danh sách cơ quan ban hành có trong dữ liệu quyết định. |
-| Ban hành: Từ ngày | Date | Không | Trống | Control UI: DatePicker `dd/mm/yyyy`. |
-| Ban hành: Đến ngày | Date | Không | Trống | Control UI: DatePicker `dd/mm/yyyy`. Từ ngày không được lớn hơn Đến ngày. |
-| **Bảng danh sách quyết định** | List(Object) | - | 10 bản ghi/trang | Control UI: Data grid. Click vào dòng (trừ liên kết và nút thao tác) mở [MH03 - Màn hình Chi tiết Quyết định giải quyết bồi thường](#qd-mh03). Không có dữ liệu: 01 dòng căn giữa, in nghiêng "Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm." |
-| STT | Integer | - | Tự tăng | Control UI: Label.<br>- Căn giữa, tăng theo phân trang. |
-| Mã hồ sơ | String(50) | - | Theo dữ liệu | Control UI: Hyperlink.<br>- Mã hồ sơ Giải quyết yêu cầu bồi thường (`BT-yyyy-xxx`).<br>- Click: mở màn hình chi tiết hồ sơ tại phân hệ Giải quyết yêu cầu bồi thường. |
-| Số quyết định | String(50) | - | Theo dữ liệu | Control UI: Label.<br>- Chưa ban hành: hiển thị `Chưa cấp số`. |
-| Ngày quyết định | Date | - | Theo dữ liệu | Control UI: Label.<br>- Căn giữa, định dạng `dd/mm/yyyy`. Chưa ban hành hiển thị `-`. |
-| Tổng số tiền bồi thường (VNĐ) | Decimal(18,0) | - | Theo dữ liệu | Control UI: Label.<br>- Căn phải, phân cách hàng nghìn bằng dấu chấm. |
-| Lãnh đạo ký duyệt | String(100) | - | Theo dữ liệu | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
-| Cơ quan ban hành | String(255) | - | Theo dữ liệu | Control UI: Label.<br>- Cơ quan giải quyết bồi thường. |
-| Mã vụ việc | String(50) | - | Theo dữ liệu | Control UI: Label.<br>- `VVBT-yyyy-xxx`. |
-| Trạng thái | Enum(String(50)) | - | Theo dữ liệu | Badge trạng thái; dưới badge hiển thị dòng phụ Nội dung trình theo quy tắc 3 tại [Quy tắc chung - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-chung). |
-| Thao tác | Action Buttons | - | Theo vai trò, trạng thái | Control UI: Icon buttons ở vị trí cố định trên mọi dòng, cột cố định bên phải khi cuộn ngang bảng (xem chi tiết bằng click dòng). Thao tác không được phép hiển thị dạng khóa mờ, không cho phép thao tác.<br>- **Cán bộ xử lý** - thứ tự: Sửa, Xóa, Ban hành, Sửa chữa, bổ sung QĐ, Hủy QĐ:<br>+ Sửa: trạng thái `Bị trả lại` (Nội dung trình `Quyết định GQBT`, `Hủy QĐ` hoặc `Sửa chữa, bổ sung QĐ`).<br>+ Xóa: trạng thái `Bị trả lại`; với Nội dung trình `Quyết định GQBT` là xóa dự thảo, với `Hủy QĐ` / `Sửa chữa, bổ sung QĐ` là rút yêu cầu.<br>+ Ban hành: trạng thái `Chờ ban hành`.<br>+ Sửa chữa, bổ sung QĐ; Hủy QĐ: trạng thái `Đã ban hành`.<br>- **Lãnh đạo** - thứ tự: Ký duyệt, Từ chối: theo phân quyền, chỉ kích hoạt khi quyết định `Chờ duyệt` và người dùng là Lãnh đạo được giao đích danh tại cấp phê duyệt hiện hành. |
-| Phân trang | Pagination | - | 10 | Chọn 10, 20, 50 bản ghi/trang; nút Đầu, Trước, số trang, Sau, Cuối; hiển thị "Hiển thị [từ]-[đến] trong tổng số [n] bản ghi". |
+| **Thanh tab** | Tab | - | `Chờ xử lý` | Control UI: Tab.<br>- Gồm 02 tab `Chờ xử lý`, `Đã xử lý`.<br>- Badge số lượng: số bản ghi thuộc tab Chờ xử lý của người dùng; không hiển thị khi bằng 0.<br>- Badge số lượng tại mục menu `Quyết định giải quyết bồi thường` bằng badge tab Chờ xử lý của Quyết định giải quyết bồi thường. Số này được cộng vào badge nhóm menu `Giải quyết bồi thường` theo [Tab Chờ xử lý - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md).<br>- Tab `Đã xử lý` không hiển thị badge số lượng.<br>- Phạm vi dữ liệu của tab theo vai trò tại quy tắc 14 tại [Quy tắc chung - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-chung). |
+| **Khối Bộ lọc tìm kiếm** | Section | - | Mở rộng | Control UI: Khối thu gọn/mở rộng.<br>- Khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
+| Số quyết định | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập số quyết định...`<br>- Tìm gần đúng, không phân biệt hoa thường, tự động bỏ khoảng trắng đầu/cuối. |
+| Mã hồ sơ GQBT | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập mã hồ sơ GQBT...`<br>- Tìm gần đúng theo Mã hồ sơ giải quyết bồi thường (`BT-yyyy-xxx`), không phân biệt hoa thường, tự động bỏ khoảng trắng đầu/cuối. |
+| Mã vụ việc | String(50) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập mã vụ việc...`<br>- Tìm gần đúng theo Mã vụ việc (`VVBT-yyyy-xxx`), không phân biệt hoa thường, tự động bỏ khoảng trắng đầu/cuối. |
+| Cơ quan ban hành | Enum(String(255)) | Không | `Tất cả` | Control UI: Dropdown.<br>- Danh sách cơ quan ban hành có trong dữ liệu quyết định. |
+| Trạng thái | Enum(String(50)) | Không | `Tất cả` | Control UI: Dropdown.<br>- Tab `Chờ xử lý` (Cán bộ xử lý), gồm:<br>+ `Tất cả`<br>+ `Chờ duyệt`<br>+ `Bị từ chối`<br>- Tab `Đã xử lý` (Cán bộ xử lý), gồm:<br>+ `Tất cả`<br>+ `Đã ban hành`<br>+ `Đã hủy`<br>- Tab `Chờ xử lý` (Lãnh đạo), gồm:<br>+ `Tất cả`<br>+ `Chờ duyệt`<br>- Tab `Đã xử lý` (Lãnh đạo), gồm:<br>+ `Tất cả`<br>+ `Chờ duyệt`<br>+ `Bị từ chối`<br>+ `Đã ban hành`<br>+ `Đã hủy` |
+| Nội dung trình | Enum(String(100)) | Không | `Tất cả` | Control UI: Dropdown.<br>- Chỉ áp dụng cho quyết định ở trạng thái `Chờ duyệt` hoặc `Bị từ chối`.<br>- Gồm:<br>+ `Tất cả`<br>+ `Quyết định GQBT`<br>+ `Hủy QĐ`<br>+ `Sửa chữa, bổ sung QĐ` |
+| Từ ngày | Date | Không | Trống | Control UI: DatePicker.<br>- Placeholder: `dd/mm/yyyy`<br>- Lọc quyết định có Ngày quyết định từ ngày này. |
+| Đến ngày | Date | Không | Trống | Control UI: DatePicker.<br>- Placeholder: `dd/mm/yyyy`<br>- Lọc quyết định có Ngày quyết định đến ngày này.<br>- Từ ngày không được lớn hơn Đến ngày. |
+| **Bảng danh sách quyết định** | List(Object) | - | 10 bản ghi/trang | Control UI: Data grid.<br>- Click vào dòng (trừ liên kết và nút thao tác): mở [MH03 - Màn hình Chi tiết Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh03).<br>- Không có dữ liệu: hiển thị `Không tìm thấy dữ liệu phù hợp với điều kiện tìm kiếm.` |
+| STT | Integer | - | Tự tăng | Control UI: Label.<br>- Tăng theo phân trang. |
+| Số quyết định | String(50) | - | - | Control UI: Label.<br>- Theo dữ liệu bản ghi.<br>- Chưa ban hành: hiển thị `Chưa cấp số`. |
+| Ngày quyết định | Date | - | - | Control UI: Label.<br>- Theo dữ liệu bản ghi, định dạng `dd/mm/yyyy`.<br>- Chưa ban hành: hiển thị `-`. |
+| Tổng số tiền bồi thường (VNĐ) | Decimal(18,0) | - | - | Control UI: Label.<br>- Theo dữ liệu bản ghi.<br>- Phân cách hàng nghìn bằng dấu chấm. |
+| Lãnh đạo ký duyệt | String(100) | - | - | Control UI: Label.<br>- Theo dữ liệu bản ghi.<br>- Đã ban hành: Lãnh đạo đã Ký duyệt cấp cuối (Ký ngoài: Người ký).<br>- Chưa ban hành: Lãnh đạo cấp 1 được trình ký. |
+| Cơ quan ban hành | String(255) | - | - | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
+| Mã hồ sơ GQBT | String(50) | - | - | Control UI: Hyperlink.<br>- Theo dữ liệu bản ghi (`BT-yyyy-xxx`).<br>- Click: mở màn hình xem chi tiết hồ sơ tại [Giải quyết yêu cầu bồi thường - Giải quyết yêu cầu bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md). |
+| Mã vụ việc | String(50) | - | - | Control UI: Label.<br>- Theo dữ liệu bản ghi (`VVBT-yyyy-xxx`). |
+| Trạng thái | Enum(String(50)) | - | - | Control UI: Badge.<br>- Theo dữ liệu bản ghi.<br>- Dưới badge hiển thị dòng phụ Nội dung trình theo quy tắc 3 tại [Quy tắc chung - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-chung). |
+| Thao tác | Action Buttons | - | - | Control UI: Icon button group.<br>- Vai trò Cán bộ xử lý, thứ tự:<br>+ `Sửa`: cho phép khi trạng thái `Bị từ chối`.<br>+ `Xóa`: cho phép khi trạng thái `Bị từ chối` (Nội dung trình `Quyết định GQBT`: xóa dự thảo; `Hủy QĐ` / `Sửa chữa, bổ sung QĐ`: rút yêu cầu).<br>+ `Sửa chữa, bổ sung QĐ`: cho phép khi trạng thái `Đã ban hành`.<br>+ `Hủy QĐ`: cho phép khi trạng thái `Đã ban hành`.<br>- Thao tác không được phép theo trạng thái: hiển thị khóa mờ, không cho thao tác.<br>- Vai trò Lãnh đạo, thứ tự:<br>+ `Ký duyệt`<br>+ `Từ chối`<br>- Lãnh đạo: chỉ hiển thị khi quyết định `Chờ duyệt` và người dùng là Lãnh đạo được giao đích danh tại cấp phê duyệt hiện hành; quyết định khác không hiển thị thao tác.<br>- Cán bộ xử lý không có thao tác `Ký duyệt`, `Từ chối`. |
+| Phân trang | Pagination | - | 10 | Control UI: Pagination.<br>- Số dòng hiển thị: 10, 20, 50.<br>- Nút Đầu, Trước, số trang, Sau, Cuối.<br>- Hiển thị `Hiển thị [từ]-[đến] trong tổng số [n] bản ghi`. |
 
 ###### 4.3.3.3.4.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Button | Từ ngày lớn hơn Đến ngày: viền đỏ ô Từ ngày, hiển thị "Từ ngày không được lớn hơn Đến ngày", không tìm kiếm. Hợp lệ: lọc theo đồng thời các tiêu chí, về Trang 1. |
-| 2 | Xóa bộ lọc | Button | Đưa các tiêu chí về mặc định và tải lại Trang 1. |
-| 3 | Tạo mới Quyết định | Button | Mở [MH02 - Màn hình Lập/Cập nhật Quyết định giải quyết bồi thường](#qd-mh02) ở chế độ tạo mới. |
-| 4 | Kết xuất Excel | Button | Không có dữ liệu: thông báo "Không có dữ liệu để kết xuất Excel.". Có dữ liệu: kết xuất theo kết quả lọc hiện hành. |
-| 6 | Ký duyệt / Từ chối | Icon button | Theo phân quyền: chỉ Lãnh đạo được giao đích danh tại cấp phê duyệt hiện hành, quyết định `Chờ duyệt`. Mở [MH07 - Popup Ký duyệt / Từ chối](#qd-mh07). |
-| 7 | Sửa (Quyết định GQBT) | Icon button | Mở [MH02 - Màn hình Lập/Cập nhật Quyết định giải quyết bồi thường](#qd-mh02) ở chế độ cập nhật, hiển thị Khối Lý do bị trả lại. |
-| 8 | Xóa | Icon button | Mở popup xác nhận "Xóa dự thảo Quyết định giải quyết bồi thường của vụ việc [Mã vụ việc] - [Người yêu cầu]?". Đồng ý: xóa quyết định, hồ sơ luồng của vụ việc trở về trạng thái trước khi trình; hiển thị "Đã xóa dự thảo Quyết định.". Hủy bỏ: đóng popup. |
-| 9 | Sửa (Hủy QĐ / Sửa chữa, bổ sung QĐ) | Icon button | Mở [MH05 - Popup Hủy QĐ / Sửa chữa, bổ sung QĐ](#qd-mh05) với dữ liệu lần trình trước và lý do bị trả lại. |
-| 10 | Xóa (rút yêu cầu Hủy QĐ / Sửa chữa, bổ sung QĐ) | Icon button | Popup xác nhận. Đồng ý: quyết định trở về `Đã ban hành`, hồ sơ luồng về `Đã ban hành`, ghi lịch sử "Rút yêu cầu". |
-| 11 | Ban hành | Icon button | Mở [MH06 - Popup Ban hành Quyết định](#qd-mh06). |
-| 12 | Sửa chữa, bổ sung QĐ / Hủy QĐ | Icon button | Mở [MH05 - Popup Hủy QĐ / Sửa chữa, bổ sung QĐ](#qd-mh05) theo loại tương ứng (Nội dung trình `Sửa chữa, bổ sung QĐ` / `Hủy QĐ`). |
-| 13 | Chọn tab | Tab | Tải danh sách theo tab và vai trò, đặt lại danh sách Trạng thái của bộ lọc theo tab, về Trang 1. |
+| 1 | Tìm kiếm | Button | Hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới:<br>- **TH1 - Từ ngày lớn hơn Đến ngày**: Hệ thống tô viền đỏ ô Từ ngày, hiển thị `Từ ngày không được lớn hơn Đến ngày` dưới ô; không tìm kiếm.<br>- **TH Hợp lệ**: Lọc đồng thời theo các tiêu chí (Từ ngày, Đến ngày so với Ngày quyết định), về Trang 1. |
+| 2 | Xóa bộ lọc | Button | Đưa bộ lọc về giá trị mặc định và tải lại danh sách. |
+| 3 | Tạo mới Quyết định | Button | - Chỉ hiển thị với vai trò Cán bộ xử lý.<br>- Mở [MH02 - Màn hình Lập/Cập nhật Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh02) ở chế độ tạo mới. |
+| 4 | Kết xuất Excel | Button | - **TH1 - Không có dữ liệu**: Hệ thống hiển thị `Không có dữ liệu để kết xuất Excel.`<br>- **TH Hợp lệ**: Kết xuất theo kết quả lọc hiện hành. |
+| 5 | Mã hồ sơ GQBT | Hyperlink | Mở màn hình xem chi tiết hồ sơ giải quyết bồi thường tương ứng. |
+| 6 | Ký duyệt / Từ chối | Icon button | - Chỉ hiển thị khi: vai trò Lãnh đạo, quyết định `Chờ duyệt` (03 Loại trình `Quyết định GQBT`, `Hủy QĐ`, `Sửa chữa, bổ sung QĐ`) và người dùng là Lãnh đạo được giao đích danh tại cấp phê duyệt hiện hành.<br>- Khi chọn thì hệ thống: `Ký duyệt` mở [Màn hình Ký duyệt / Từ chối - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh07) ở thao tác Ký duyệt; `Từ chối` mở [Màn hình Ký duyệt / Từ chối - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh07) ở thao tác Từ chối. |
+| 7 | Sửa (Quyết định GQBT) | Icon button | Mở [MH02 - Màn hình Lập/Cập nhật Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh02) ở chế độ cập nhật, hiển thị Khối Lý do bị từ chối. |
+| 8 | Xóa | Icon button | Hiển thị popup xác nhận `Xóa dự thảo Quyết định giải quyết bồi thường của vụ việc [Mã hồ sơ GQBT] - [Người yêu cầu]?`, nút `Hủy bỏ`, `Xóa`. Bấm `Xóa`:<br>- Xóa quyết định; hồ sơ luồng của vụ việc trở về trạng thái trước khi trình.<br>- Hiển thị `Đã xóa dự thảo Quyết định.`, tải lại danh sách. |
+| 9 | Sửa (Hủy QĐ / Sửa chữa, bổ sung QĐ) | Icon button | Mở popup theo Nội dung trình với dữ liệu lần trình trước và lý do bị từ chối:<br>- `Hủy QĐ`: [MH05 - Popup Hủy Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh05).<br>- `Sửa chữa, bổ sung QĐ`: [MH05b - Popup Trình ký Quyết định Sửa chữa, Bổ sung Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh05b). |
+| 10 | Xóa (rút yêu cầu Hủy QĐ / Sửa chữa, bổ sung QĐ) | Icon button | Hiển thị popup xác nhận `Rút yêu cầu [Nội dung trình] đối với Quyết định [Số quyết định]? Quyết định giữ nguyên trạng thái Đã ban hành.`, nút `Hủy bỏ`, `Đồng ý`. Bấm `Đồng ý`:<br>- Quyết định trở về `Đã ban hành`; hồ sơ luồng về `Đã ban hành`.<br>- Ghi Lịch sử xử lý `Rút yêu cầu`.<br>- Hiển thị `Đã rút yêu cầu.`, tải lại danh sách. |
+| 11 | Sửa chữa, bổ sung QĐ / Hủy QĐ | Icon button | - `Sửa chữa, bổ sung QĐ`: mở [MH05b - Popup Trình ký Quyết định Sửa chữa, Bổ sung Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh05b).<br>- `Hủy QĐ`: mở [MH05 - Popup Hủy Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh05). |
+| 12 | Chọn tab | Tab | Tải danh sách theo tab và vai trò, đặt lại danh sách Trạng thái của bộ lọc theo tab, về Trang 1. |
 
 ---
 
@@ -165,90 +177,87 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **Tiêu đề** | String(200) | - | Theo ngữ cảnh | + Tạo mới: `TẠO MỚI QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG`.<br>+ Cập nhật: `CẬP NHẬT QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG`. |
-| **Khối Lý do bị trả lại** | Section | - | Ẩn | Chỉ hiển thị khi cập nhật quyết định `Bị trả lại`: Người trả lại, Thời điểm, Lý do (chỉ đọc). |
-| **Khối Vụ việc yêu cầu bồi thường** | Section | - | - | |
-| Mã vụ việc liên kết | String(100) | Có | Trống | Control UI: Cụm tìm kiếm và chọn vụ việc gồm:<br>+ Ô nhập mã vụ việc: Input text có danh sách gợi ý, placeholder `Nhập hoặc chọn mã vụ việc...`.<br>+ Danh sách gợi ý: các vụ việc đủ điều kiện trong phạm vi đơn vị của người đăng nhập, hiển thị `[Mã vụ việc]` kèm `[Mã hồ sơ] - [Người yêu cầu]`; chọn 01 dòng thì hệ thống tự tìm và chọn vụ việc.<br>+ Cho phép nhập `Mã vụ việc` (`VVBT-yyyy-xxx`) hoặc `Mã hồ sơ` (`BT-yyyy-xxx`); tự động cắt khoảng trắng đầu/cuối; hỗ trợ bấm phím `Enter` để tìm kiếm nhanh.<br>+ Nút `Tìm kiếm` (icon `fa-magnifying-glass`): tìm nhanh vụ việc theo mã đã nhập.<br>+ Nút `Tìm kiếm nâng cao` (icon `fa-magnifying-glass-plus`): mở [MH02a - Popup Tìm kiếm nâng cao vụ việc liên kết](#qd-mh02a).<br>+ Badge thông tin vụ việc đã chọn: hiển thị `[Mã vụ việc] (Mã hồ sơ [Mã hồ sơ]) - [Người yêu cầu]`.<br>- Chỉ gồm vụ việc bồi thường bằng tiền (mã `BT-yyyy-xxx`, loại yêu cầu khác Phục hồi danh dự) ở trạng thái `Chờ ban hành QĐ`, chưa có quyết định còn hiệu lực; không gồm vụ việc Phục hồi danh dự (mã `PHDD-yyyy-xxx`).<br>- Khi chọn thành công: tự động điền dữ liệu theo [Quy tắc tự động điền khi chọn Mã vụ việc - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-tu-dong-dien) và hiển thị các khối (1) đến (7) cùng nút Trình Lãnh đạo.<br>- Khi chưa chọn: ẩn toàn bộ các khối chi tiết (1) đến (7) theo quy tắc 12.<br>- Chế độ cập nhật: khóa ô tìm kiếm, không cho đổi vụ việc. |
-| Cơ quan giải quyết bồi thường | String(255) | - | Ẩn | Control UI: Label. Cơ quan ban hành quyết định. Chỉ hiển thị sau khi tìm kiếm và chọn được Mã vụ việc. |
-| **(1) Thông tin người yêu cầu bồi thường** | Section | - | - | |
-| Họ và tên | String(255) | Có | Theo vụ việc | Control UI: Input text, cho phép sửa. |
-| Địa chỉ | String(1000) | Có | Theo vụ việc | Control UI: Input text, tự ghép từ số nhà/đường, Phường/Xã, Tỉnh/Thành phố; cho phép sửa. |
-| **(2) Bảng nội dung đề xuất bồi thường** | List(Object) | Có | Theo vụ việc | Control UI: Data grid hiển thị danh sách các khoản thiệt hại đề xuất bồi thường. |
-| Khối Nguồn dữ liệu | Section | - | Theo vụ việc | Chỉ đọc, phía trên bảng: Nguồn dữ liệu, Tình trạng tham gia thương lượng, Ghi chú nguồn theo [Quy tắc tự động điền khi chọn Mã vụ việc - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-tu-dong-dien). |
-| STT | Integer | - | Tự tăng | |
-| Thiệt hại yêu cầu bồi thường | String(255) | - | Theo vụ việc | Chỉ đọc. |
-| Mức đề xuất (đ) | Decimal(18,0) | - | Theo vụ việc | Chỉ đọc, căn phải. |
-| Mức xác minh (đ) | Decimal(18,0) | - | Theo vụ việc | Chỉ đọc, căn phải. |
-| Mức bồi thường (đ) | Decimal(18,0) | Có | Giá trị nguồn | Control UI: Input text số, phân cách hàng nghìn bằng dấu chấm, căn phải. Nằm ngay sau cột Mức xác minh. Mặc định bằng giá trị nguồn theo quy tắc tự động điền; cho phép sửa. Dòng có số tiền khác giá trị nguồn được tô vàng. |
-| Trạng thái thương lượng | Enum(String(50)) | - | Theo vụ việc | Hiển thị khi vụ việc có Tình trạng tham gia thương lượng. Badge:<br>+ `Đồng ý thương lượng`: theo kết quả thương lượng từng thiệt hại (`Thành công` / `Không thành công`)<br>+ Từ chối thương lượng, 02 lần từ chối nhận giấy mời, 02 lần không đến địa điểm: `Không thành công` |
-| Tổng số tiền bồi thường (VNĐ) | Decimal(18,0) | - | Hệ thống tính | Tổng cột Mức bồi thường; kèm "(Viết bằng chữ: ...)" khi lớn hơn 0. |
-| Số tiền bồi thường đã tạm ứng (VNĐ) | Decimal(18,0) | - | Theo vụ việc | Chỉ đọc. |
-| Số tiền bồi thường còn lại sau khi đã tạm ứng (VNĐ) | Decimal(18,0) | - | Hệ thống tính | Tổng số tiền bồi thường trừ Số tiền đã tạm ứng. |
-| Lý do điều chỉnh | Text(2000) | Có điều kiện | Trống | Control UI: Textarea. Chỉ hiển thị và bắt buộc khi có ít nhất 01 dòng Mức bồi thường khác giá trị nguồn; kèm cảnh báo "Số tiền bồi thường đã được điều chỉnh khác với giá trị nguồn (các dòng tô vàng)." |
-| **(3) Người nhận tiền bồi thường** | Section | - | - | |
-| Họ và tên người nhận | String(255) | Có | Theo vụ việc | Control UI: Input text. |
-| Số định danh cá nhân/CCCD | String(20) | Có | Theo vụ việc | Control UI: Input text. |
-| Quan hệ với người bị thiệt hại / người yêu cầu | String(255) | Không | Theo vụ việc | Control UI: Input text. |
-| **(4) Phương thức chi trả tiền bồi thường** | Section | - | - | |
-| Phương thức chi trả | Enum(String(50)) | Có | Theo vụ việc | Control UI: Dropdown.<br>Gồm:<br>+ `Nhận qua chuyển khoản`<br>+ `Nhận tiền mặt`<br>Kế thừa từ hồ sơ vụ việc; cho phép thay đổi. Thay đổi phương thức chuyển đổi nhóm trường hiển thị tương ứng bên dưới. |
-| Chủ tài khoản | String(255) | Có điều kiện | Theo vụ việc | Control UI: Input text. Bắt buộc khi phương thức là `Nhận qua chuyển khoản`. |
-| Số tài khoản | String(50) | Có điều kiện | Theo vụ việc | Control UI: Input text. Bắt buộc khi phương thức là `Nhận qua chuyển khoản`. |
-| Ngân hàng | String(255) | Có điều kiện | Theo vụ việc | Control UI: Input text. Bắt buộc khi phương thức là `Nhận qua chuyển khoản`. |
-| Chi nhánh | String(255) | Không | Theo vụ việc | Control UI: Input text. Chỉ hiển thị khi phương thức là `Nhận qua chuyển khoản`. |
-| Nơi nhận tiền mặt / Địa chỉ cơ quan chi trả | String(500) | Có điều kiện | Theo vụ việc | Control UI: Input text. Bắt buộc khi phương thức là `Nhận tiền mặt`. |
-| Giấy tờ / Biên lai / Ghi chú | String(500) | Không | Theo vụ việc | Control UI: Input text. Chỉ hiển thị khi phương thức là `Nhận tiền mặt`. |
-| **(5) Thời điểm có hiệu lực** | String(255) | Có | `sau 15 ngày kể từ ngày người yêu cầu bồi thường nhận được Quyết định` | Control UI: Input text (VD "sau 15 ngày kể từ ngày người yêu cầu bồi thường nhận được Quyết định" hoặc "Kể từ ngày ký"). Được điền vào Điều 5 của văn bản quyết định (Mẫu 18/BTNN). |
+| **Tiêu đề** | String(200) | - | Theo chế độ | Control UI: Label.<br>- Tạo mới: `TẠO MỚI QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG`.<br>- Cập nhật: `CẬP NHẬT QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG`. |
+| **Khối Lý do bị từ chối** | Section | - | Ẩn | Control UI: Alert panel (Read-only).<br>- Chỉ hiển thị khi cập nhật quyết định `Bị từ chối`.<br>- Tiêu đề: `LÝ DO BỊ TỪ CHỐI`.<br>- Nội dung: `Người từ chối: [Họ tên - Chức vụ] - [dd/mm/yyyy HH:mm]` và Lý do từ chối. |
+| **Khối Vụ việc yêu cầu bồi thường** | Section | - | - | Control UI: Section. |
+| Mã hồ sơ giải quyết bồi thường | String(100) | Có | Trống | Control UI: Input text có danh sách gợi ý.<br>- Placeholder: `Nhập hoặc chọn mã hồ sơ giải quyết bồi thường...`<br>- Danh sách gợi ý: hồ sơ đủ điều kiện trong phạm vi đơn vị của người đăng nhập, hiển thị `[Mã hồ sơ GQBT]` kèm `[Mã vụ việc] - [Người yêu cầu]`; chọn 01 dòng thì hệ thống tự chọn hồ sơ.<br>- Cho phép nhập Mã hồ sơ giải quyết bồi thường (`BT-yyyy-xxx`) hoặc Mã vụ việc (`VVBT-yyyy-xxx`); tự động bỏ khoảng trắng đầu/cuối.<br>- Hồ sơ đủ điều kiện: vụ việc bồi thường bằng tiền ở trạng thái `Chờ ban hành QĐ`, chưa có quyết định còn hiệu lực; không gồm vụ việc Phục hồi danh dự.<br>- Chọn thành công: hiển thị nhãn `Đã chọn: [Mã hồ sơ GQBT] (Mã vụ việc [Mã vụ việc]) - [Người yêu cầu]` dưới ô; tự động điền dữ liệu theo [Quy tắc tự động điền khi chọn Mã hồ sơ giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-tu-dong-dien); hiển thị các khối (1) đến (5) và nút `Tiếp tục` theo quy tắc 12.<br>- Chế độ cập nhật: khóa ô nhập, nút `Tìm kiếm`, `Tìm kiếm nâng cao`; không cho đổi hồ sơ. |
+| **(1) Thông tin người yêu cầu bồi thường** | Section | - | - | Control UI: Section. |
+| Họ và tên | String(255) | Có | Theo vụ việc | Control UI: Input text.<br>- Cho phép sửa. |
+| Địa chỉ | String(1000) | Có | Theo vụ việc | Control UI: Input text.<br>- Placeholder: `Số nhà/đường, Phường/Xã, Tỉnh/Thành phố`<br>- Cho phép sửa. |
+| **(2) Bảng nội dung đề xuất bồi thường** | List(Object) | Có | Theo vụ việc | Control UI: Data grid.<br>- Danh sách các khoản thiệt hại đề xuất bồi thường. |
+| Khối Nguồn dữ liệu | Section | - | Theo vụ việc | Control UI: Khối thông tin (Read-only), phía trên bảng.<br>- Gồm Nguồn dữ liệu, Tình trạng tham gia thương lượng, Ghi chú nguồn theo [Quy tắc tự động điền khi chọn Mã hồ sơ giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-tu-dong-dien). |
+| STT | Integer | - | Tự tăng | Control UI: Label. |
+| Thiệt hại yêu cầu bồi thường | String(255) | - | Theo vụ việc | Control UI: Label. |
+| Mức đề xuất (đ) | Decimal(18,0) | - | Theo vụ việc | Control UI: Label. |
+| Mức xác minh (đ) | Decimal(18,0) | - | Theo vụ việc | Control UI: Label. |
+| Mức bồi thường (đ) | Decimal(18,0) | Có | Giá trị nguồn | Control UI: Input text số.<br>- Phân cách hàng nghìn bằng dấu chấm.<br>- Giá trị nguồn theo quy tắc tự động điền; cho phép sửa.<br>- Dòng có số tiền khác giá trị nguồn được đánh dấu. |
+| Trạng thái thương lượng | Enum(String(50)) | - | Theo vụ việc | Control UI: Badge.<br>- Chỉ hiển thị khi vụ việc có Tình trạng tham gia thương lượng.<br>- `Đồng ý thương lượng`: theo kết quả thương lượng từng thiệt hại (`Thành công` / `Không thành công`).<br>- Từ chối thương lượng, 02 lần từ chối nhận giấy mời, 02 lần không đến địa điểm: `Không thành công`. |
+| Tổng số tiền bồi thường (VNĐ) | Decimal(18,0) | - | Hệ thống tính | Control UI: Label.<br>- Tổng cột Mức bồi thường.<br>- Lớn hơn 0: kèm `(Viết bằng chữ: ...)`. |
+| Số tiền bồi thường đã tạm ứng (VNĐ) | Decimal(18,0) | - | Theo vụ việc | Control UI: Label. |
+| Số tiền bồi thường còn lại sau khi đã tạm ứng (VNĐ) | Decimal(18,0) | - | Hệ thống tính | Control UI: Label.<br>- Tổng số tiền bồi thường trừ Số tiền bồi thường đã tạm ứng. |
+| Lý do điều chỉnh | Text(2000) | Có (khi hiển thị) | Trống | Control UI: Textarea.<br>- Placeholder: `Nhập lý do điều chỉnh số tiền bồi thường...`<br>- Chỉ hiển thị khi có ít nhất 01 dòng Mức bồi thường khác giá trị nguồn.<br>- Kèm cảnh báo `Số tiền bồi thường đã được điều chỉnh khác với giá trị nguồn (các dòng tô vàng).` |
+| **(3) Người nhận tiền bồi thường** | Section | - | - | Control UI: Section. |
+| Họ và tên người nhận | String(255) | Có | Theo vụ việc | Control UI: Input text.<br>- Nguồn theo [Nguồn dữ liệu theo Tình trạng tham gia thương lượng - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-nguon-theo-thuong-luong); cho phép sửa. |
+| Số định danh cá nhân/CCCD | String(20) | Có | Theo vụ việc | Control UI: Input text.<br>- Nguồn theo [Nguồn dữ liệu theo Tình trạng tham gia thương lượng - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-nguon-theo-thuong-luong); cho phép sửa. |
+| **(4) Phương thức chi trả tiền bồi thường** | Section | - | - | Control UI: Section. |
+| Phương thức nhận tiền | Enum(String(50)) | Có | Theo vụ việc | Control UI: Dropdown.<br>- Gồm:<br>+ `Nhận qua chuyển khoản`<br>+ `Nhận tiền mặt`<br>- Nguồn theo [Nguồn dữ liệu theo Tình trạng tham gia thương lượng - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-nguon-theo-thuong-luong); cho phép thay đổi. |
+| Chủ tài khoản | String(255) | Có (khi hiển thị) | Theo vụ việc | Control UI: Input text.<br>- Placeholder: `Nhập họ và tên chủ tài khoản...`<br>- Chỉ hiển thị khi Phương thức nhận tiền = `Nhận qua chuyển khoản`. |
+| Số tài khoản ngân hàng | String(50) | Có (khi hiển thị) | Theo vụ việc | Control UI: Input text.<br>- Placeholder: `Nhập số tài khoản...`<br>- Chỉ hiển thị khi Phương thức nhận tiền = `Nhận qua chuyển khoản`. |
+| Tên ngân hàng | String(255) | Có (khi hiển thị) | Theo vụ việc | Control UI: Input text.<br>- Chỉ hiển thị khi Phương thức nhận tiền = `Nhận qua chuyển khoản`. |
+| Chi nhánh ngân hàng | String(255) | Không | Theo vụ việc | Control UI: Input text.<br>- Chỉ hiển thị khi Phương thức nhận tiền = `Nhận qua chuyển khoản`. |
+| Cơ quan / Địa chỉ chi trả tiền mặt | String(255) | Có (khi hiển thị) | Theo vụ việc | Control UI: Input text.<br>- Chỉ hiển thị khi Phương thức nhận tiền = `Nhận tiền mặt`. |
+| Số biên lai / Ghi chú chi trả | String(255) | Không | Theo vụ việc | Control UI: Input text.<br>- Placeholder: `Ghi chú nhận tiền mặt hoặc số biên lai chi trả...`<br>- Chỉ hiển thị khi Phương thức nhận tiền = `Nhận tiền mặt`. |
+| **(5) Hiệu lực của Quyết định** | Section | - | - | Control UI: Section. |
+| Thời điểm có hiệu lực | String(255) | Có | `Kể từ ngày ký` | Control UI: Input text.<br>- Điền vào Điều 5 của văn bản Mẫu 18/BTNN. |
 
 ###### 4.3.3.3.5.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm vụ việc (Nhanh) | Input + Button | Nhập mã vụ việc và bấm `Tìm kiếm` (hoặc phím `Enter`). Hệ thống tìm kiếm trong danh sách vụ việc đủ điều kiện. Nếu tìm thấy: tự động điền thông tin và hiển thị các khối (1) đến (7). Nếu không tìm thấy: viền đỏ ô nhập kèm cảnh báo "Không tìm thấy vụ việc bồi thường phù hợp hoặc vụ việc chưa đủ điều kiện lập quyết định." |
-| 2 | Tìm kiếm nâng cao | Button | Mở [MH02a - Popup Tìm kiếm nâng cao vụ việc liên kết](#qd-mh02a) để tra cứu theo nhiều tiêu chí. |
-| 3 | Xóa chọn vụ việc (×) | Button | Hủy vụ việc đang chọn, đưa ô tìm kiếm về trống, ẩn lại các khối thông tin và nút `Tiếp tục`. |
-| 4 | Nhập Số tiền bồi thường | Input | Tính lại Tổng, số tiền bằng chữ, Số tiền còn lại; tô vàng dòng khác giá trị nguồn; hiện/ẩn Lý do điều chỉnh. |
-| 5 | Thay đổi Phương thức chi trả | Dropdown | Chuyển đổi hiển thị linh hoạt giữa nhóm trường Chuyển khoản (Chủ tài khoản, Số tài khoản, Ngân hàng, Chi nhánh) và Tiền mặt (Nơi nhận tiền mặt / Địa chỉ cơ quan chi trả, Giấy tờ / Biên lai / Ghi chú). |
-| 6 | Tiếp tục | Button | Chỉ hiển thị sau khi chọn Mã vụ việc. Hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới:<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không mở popup.<br>- **TH Hợp lệ**: Mở [MH02b - Popup Trình ký Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh02b). |
-| 7 | Hủy bỏ | Button | Đóng màn hình, không lưu, quay về danh sách. |
+| 1 | Tìm kiếm | Button | Tìm hồ sơ theo mã đã nhập trong danh sách hồ sơ đủ điều kiện (bấm nút hoặc chọn từ danh sách gợi ý):<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên.<br>- **TH2 - Không tìm thấy**: Hệ thống tô viền đỏ ô nhập, hiển thị `Không tìm thấy vụ việc bồi thường phù hợp hoặc vụ việc chưa đủ điều kiện lập quyết định` dưới ô.<br>- **TH Hợp lệ**: Chọn hồ sơ, tự động điền dữ liệu và hiển thị các khối (1) đến (5), nút `Tiếp tục`. |
+| 2 | Tìm kiếm nâng cao | Button | Mở [MH02a - Popup Tìm kiếm nâng cao vụ việc liên kết - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh02a). |
+| 3 | Nhập Mức bồi thường | Input | Tính lại Tổng số tiền bồi thường, số tiền bằng chữ, Số tiền còn lại; đánh dấu dòng khác giá trị nguồn; hiện/ẩn Lý do điều chỉnh. |
+| 4 | Thay đổi Phương thức nhận tiền | Dropdown | Chuyển nhóm trường hiển thị:<br>- `Nhận qua chuyển khoản`: Chủ tài khoản, Số tài khoản ngân hàng, Tên ngân hàng, Chi nhánh ngân hàng.<br>- `Nhận tiền mặt`: Cơ quan / Địa chỉ chi trả tiền mặt, Số biên lai / Ghi chú chi trả. |
+| 5 | Tiếp tục | Button | Chỉ hiển thị sau khi chọn Mã hồ sơ giải quyết bồi thường. Hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới:<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không mở popup.<br>- **TH2 - Vụ việc chưa có dữ liệu đề xuất bồi thường**: Hệ thống hiển thị `Vụ việc chưa có dữ liệu đề xuất bồi thường.`; không mở popup.<br>- **TH Hợp lệ**: Mở [MH02b - Popup Trình ký Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh02b). |
+| 6 | Hủy bỏ | Button | Đóng màn hình, không lưu, quay về danh sách. |
 
 ---
 
 <a id="qd-mh02a"></a>
 ##### 4.3.3.3.5.4. MH02a - Popup Tìm kiếm nâng cao vụ việc liên kết
 
-Popup thiết kế chuẩn modal: tiêu đề và chân popup cố định, thân popup cuộn độc lập (`max-height: 80vh; overflow-y: auto`), lề trong 24px (header 24px 24px 16px 24px, body 24px, footer 16px 24px 24px 24px), độ rộng lớn 950px.
+- Mở khi bấm `Tìm kiếm nâng cao` tại [MH02 - Màn hình Lập/Cập nhật Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh02).
 
 ###### Mô tả thông tin trên popup
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **Tiêu đề popup** | Label | - | `Tìm kiếm nâng cao vụ việc yêu cầu bồi thường` | Control UI: Modal header. |
-| **Bộ lọc tìm kiếm (Grid 2 cột)** | Section | - | - | |
-| Mã vụ việc | String(100) | Không | Trống | Control UI: Input text, placeholder `Nhập mã vụ việc...`. |
-| Người yêu cầu | String(255) | Không | Trống | Control UI: Input text, placeholder `Nhập họ tên người yêu cầu...`. |
-| Người bị thiệt hại | String(255) | Không | Trống | Control UI: Input text, placeholder `Nhập họ tên người bị thiệt hại...`. |
-| Số giấy tờ (CCCD/CMND/Hộ chiếu) | String(50) | Không | Trống | Control UI: Input text, placeholder `Nhập số CCCD/CMND/Hộ chiếu...`. |
-| **Bảng danh sách kết quả** | List(Object) | - | 10 bản ghi/trang | Control UI: Data grid.<br>- Phạm vi: vụ việc bồi thường bằng tiền ở trạng thái `Chờ ban hành QĐ`, chưa có quyết định còn hiệu lực, thuộc phạm vi đơn vị quản lý của người đang đăng nhập (cây đơn vị gốc của người dùng).<br>- Sắp xếp theo Thời gian xử lý tăng dần.<br>- Mặc định hiển thị 10 bản ghi/trang.<br>- Không có dữ liệu: 01 dòng căn giữa, in nghiêng "Không tìm thấy vụ việc bồi thường phù hợp với điều kiện tìm kiếm." |
-| STT | Integer | - | Tự tăng | Căn giữa. |
-| Mã vụ việc | String(100) | - | Theo dữ liệu | Chữ đậm. |
-| Người yêu cầu | String(255) | - | Theo dữ liệu | Họ và tên người yêu cầu bồi thường. |
-| Người bị thiệt hại | String(255) | - | Theo dữ liệu | Họ và tên người bị thiệt hại. |
-| Cơ quan giải quyết | String(255) | - | Theo dữ liệu | Cơ quan giải quyết bồi thường của vụ việc. |
-| Tổng số tiền đề xuất (VNĐ) | Decimal(18,0) | - | Theo dữ liệu | Căn phải, định dạng phân cách hàng nghìn bằng dấu chấm. |
-| Trạng thái vụ việc | Enum(String(50)) | - | Theo dữ liệu | Badge trạng thái vụ việc (`Chờ ban hành QĐ`). |
-| Thời gian xử lý | Date | - | Theo dữ liệu | Thời điểm cập nhật trạng thái gần nhất của vụ việc (thời điểm chuyển `Chờ ban hành QĐ`); định dạng `dd/mm/yyyy`. |
-| Thao tác | Action Button | - | - | Nút `Chọn` (`btn btn-primary btn-sm`, icon `fa-check`). Khi click: điền Mã vụ việc vào form, đóng popup, thực hiện tự động điền toàn bộ thông tin và hiển thị các khối dữ liệu (1) đến (7) trên form chính. |
-| Phân trang | Pagination | - | 10 | Chọn 10, 20, 50 bản ghi/trang; nút Đầu, Trước, số trang, Sau, Cuối; hiển thị "Hiển thị [từ]-[đến] trong tổng số [n] bản ghi". |
-| **Chân trang (Footer)** | Toolbar | - | - | Nút `Đóng` (icon `fa-xmark`), click để đóng popup mà không chọn vụ việc. |
+| **Tiêu đề popup** | Label | - | `Tìm kiếm nâng cao vụ việc yêu cầu bồi thường liên kết` | Control UI: Modal header. |
+| **Bộ lọc tìm kiếm** | Section | - | - | Control UI: Section. |
+| Mã vụ việc | String(100) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập mã vụ việc...`<br>- Tìm gần đúng theo Mã vụ việc (`VVBT-yyyy-xxx`). |
+| Mã hồ sơ GQBT | String(100) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập mã hồ sơ GQBT...`<br>- Tìm gần đúng theo Mã hồ sơ giải quyết bồi thường (`BT-yyyy-xxx`). |
+| Tên cá nhân/Tổ chức yêu cầu | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập tên cá nhân/tổ chức yêu cầu...` |
+| Tên cá nhân/Tổ chức bị thiệt hại | String(255) | Không | Trống | Control UI: Input text.<br>- Placeholder: `Nhập tên cá nhân/tổ chức bị thiệt hại...` |
+| **Bảng danh sách kết quả** | List(Object) | - | 10 bản ghi/trang | Control UI: Data grid.<br>- Phạm vi: vụ việc bồi thường bằng tiền ở trạng thái `Chờ ban hành QĐ`, chưa có quyết định còn hiệu lực, thuộc phạm vi đơn vị quản lý của người đang đăng nhập (cây đơn vị gốc của người dùng).<br>- Sắp xếp theo thời điểm cập nhật trạng thái gần nhất của vụ việc tăng dần.<br>- Không có dữ liệu: hiển thị `Không tìm thấy vụ việc bồi thường phù hợp với điều kiện tìm kiếm.` |
+| STT | Integer | - | Tự tăng | Control UI: Label.<br>- Tăng theo phân trang. |
+| Mã vụ việc | String(100) | - | - | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
+| Mã hồ sơ GQBT | String(100) | - | - | Control UI: Label.<br>- Theo dữ liệu bản ghi (`BT-yyyy-xxx`). |
+| Tên cá nhân/Tổ chức yêu cầu | String(255) | - | - | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
+| Tên cá nhân/Tổ chức bị thiệt hại | String(255) | - | - | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
+| Tổng số tiền đề xuất | Decimal(18,0) | - | - | Control UI: Label.<br>- Theo dữ liệu bản ghi.<br>- Phân cách hàng nghìn bằng dấu chấm. |
+| Trạng thái | Enum(String(50)) | - | - | Control UI: Badge.<br>- Trạng thái vụ việc theo dữ liệu bản ghi. |
+| Thao tác | Action Button | - | - | Control UI: Button.<br>- Nút `Chọn`. |
+| Phân trang | Pagination | - | 10 | Control UI: Pagination.<br>- Số dòng hiển thị: 10, 20, 50.<br>- Nút Đầu, Trước, số trang, Sau, Cuối.<br>- Hiển thị `Hiển thị [từ]-[đến] trong tổng số [n] bản ghi`. |
+| **Chân popup** | Toolbar | - | - | Control UI: Footer.<br>- Nút `Hủy bỏ`. |
 
 ###### Chức năng trên popup
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tìm kiếm | Button | Lọc danh sách vụ việc theo đồng thời các điều kiện đã nhập trên 4 ô tìm kiếm. Hỗ trợ bấm phím `Enter` tại bất kỳ ô nhập nào. |
-| 2 | Xóa bộ lọc | Button | Đưa toàn bộ 4 ô nhập về trống và tải lại danh sách vụ việc đầy đủ. |
-| 3 | Chọn vụ việc | Button | Điền vụ việc tương ứng vào màn hình chính MH02, kích hoạt nạp dữ liệu và đóng popup. |
-| 4 | Đóng popup | Button / Icon × | Đóng popup, giữ nguyên trạng thái trên form chính. |
+| 1 | Tìm kiếm | Button | Lọc danh sách vụ việc đồng thời theo các điều kiện đã nhập. |
+| 2 | Xóa bộ lọc | Button | Đưa bộ lọc về giá trị mặc định và tải lại danh sách. |
+| 3 | Chọn | Button | Điền Mã hồ sơ giải quyết bồi thường vào [MH02 - Màn hình Lập/Cập nhật Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh02), tự động điền dữ liệu, hiển thị các khối (1) đến (5) và đóng popup. |
+| 4 | Hủy bỏ / Đóng (×) | Button | Đóng popup, giữ nguyên dữ liệu trên MH02. |
 
 ---
 
@@ -260,51 +269,63 @@ Popup thiết kế chuẩn modal: tiêu đề và chân popup cố định, thâ
 ![Popup Trình ký Quyết định - Bước 2](images/UC465_466_MH02b_Trinh_ky_Buoc2.png)
 
 - Mở khi bấm `Tiếp tục` tại [MH02 - Màn hình Lập/Cập nhật Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh02).
+- Bố cục giống popup Không thụ lý hồ sơ: Header, Thanh bước (chỉ hiển thị khi Ký số trên hệ thống), Bước 1 (01 cột), Footer.
+- Thứ tự khối tại Bước 1: `Hình thức ký` (đầu form), `Tệp văn bản trình ký` / `Văn bản ban hành`, `Tài liệu kèm theo` (chỉ khi Ký số trên hệ thống).
 - `Ký số trên hệ thống`: 02 bước.
-  + Bước 1 - Nhập thông tin: Hình thức ký, Thông tin văn bản, Tệp văn bản trình ký.
+  + Bước 1 - Nhập thông tin: Hình thức ký, Tệp văn bản trình ký (Sinh văn bản theo mẫu 18/BTNN hoặc Tải lên từ máy), Tài liệu kèm theo.
   + Bước 2 - Kéo ô ký & chọn Lãnh đạo: hiển thị toàn màn hình; vùng trái là văn bản trình ký, vùng phải là thẻ từng cấp ký duyệt theo luồng đã cấu hình và `Nội dung trình`.
-- `Ký ngoài`: 01 bước, nhập Số, ký hiệu văn bản, Ngày ban hành, Tổng số tiền bồi thường, Lãnh đạo ký duyệt và tải lên tệp PDF đã ký; bấm `Hoàn thành` để ban hành trực tiếp, không trình Lãnh đạo.
+- `Ký ngoài`: không hiển thị Thanh bước; nhập Số quyết định, Ngày quyết định, Người ký và tải lên tệp PDF đã ký & đóng dấu; bấm `Ban hành văn bản`, xác nhận để ban hành trực tiếp, không trình Lãnh đạo.
 
 ###### Mô tả thông tin trên popup
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Tiêu đề popup | String(255) | - | - | Control UI: Heading text (Read-only).<br>- `TRÌNH KÝ QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG`.<br>- Dòng phụ: `Mã vụ việc: [Mã vụ việc] • Người yêu cầu: [Họ và tên]`. |
-| Thanh chỉ bước (Stepper) | Component | - | Bước 1 | Control UI: Stepper 02 bước.<br>- Bước 1: `Nhập thông tin`.<br>- Bước 2: `Kéo ô ký & chọn Lãnh đạo`.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`. |
-| **HÌNH THỨC KÝ** | Section | - | - | Control UI: Section header. |
-| Hình thức ký | Enum(String(30)) | Có | `Ký số trên hệ thống` | Control UI: Radio button.<br>Gồm:<br>+ Ký số trên hệ thống<br>+ Ký ngoài |
-| **THÔNG TIN VĂN BẢN BAN HÀNH** | Section | - | - | Control UI: Section header.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký ngoài`. |
-| Số, ký hiệu văn bản | String(100) | Có | Trống | Control UI: Input text.<br>- Placeholder: `Nhập số, ký hiệu văn bản...`. |
-| Ngày ban hành | Date | Có | Ngày hiện tại | Control UI: DatePicker.<br>- Placeholder: `dd/mm/yyyy`. |
-| Tổng số tiền bồi thường (VNĐ) | Decimal(18,0) | Có | Theo MH02 | Control UI: Input text số.<br>- Placeholder: `Nhập tổng số tiền bồi thường...`.<br>- Tự động lấy theo Tổng số tiền bồi thường đã nhập tại MH02. |
-| Lãnh đạo ký duyệt | Enum(String(50)) | Có | Trống | Control UI: Combobox.<br>- Danh sách là Nhóm lãnh đạo các cấp theo luồng đã cấu hình.<br>- Hiển thị `[Họ tên] - [Chức danh]`. |
-| Tệp văn bản PDF đã ký & đóng dấu | File | Có | Trống | Control UI: Khối tải tệp, nút `Tải file`.<br>- Định dạng `.pdf`.<br>- Dung lượng tối đa 50MB/file. |
-| **THÔNG TIN VĂN BẢN** | Section | - | - | Control UI: Section header.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`. |
-| Số, ký hiệu văn bản | String(100) | Có (khi Tạo văn bản theo Mẫu 18/BTNN) | Trống | Control UI: Input text.<br>- Placeholder: `Nhập số, ký hiệu văn bản...`. |
-| Ngày văn bản | Date | Có (khi Tạo văn bản theo Mẫu 18/BTNN) | Ngày hiện tại | Control UI: DatePicker.<br>- Placeholder: `dd/mm/yyyy`. |
-| Căn cứ | List(String(1000)) | Có (khi Tạo văn bản theo Mẫu 18/BTNN) | 02 căn cứ theo Mẫu 18/BTNN | Control UI: Danh sách Input text, mỗi căn cứ 01 dòng.<br>- Placeholder: `Nhập số hiệu, ngày tháng năm ban hành, cơ quan ban hành, trích yếu...`.<br>- Mỗi căn cứ ghi đủ số hiệu, ngày tháng năm ban hành, cơ quan ban hành và trích yếu của văn bản.<br>- Có ít nhất 01 căn cứ.<br>- Mặc định điền sẵn:<br>+ Căn cứ Điều 47 Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14 đã được sửa đổi, bổ sung bởi Luật số 81/2025/QH15 và Luật số 15/2026/QH16<br>+ Căn cứ Nghị định số …/…/NĐ-CP ngày …/…/… của Chính phủ quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước<br>- Cho phép sửa, xóa, thêm căn cứ; toàn bộ căn cứ đưa vào văn bản theo biến `##CanCu##`. |
-| Nơi nhận | Text(2000) | Có (khi Tạo văn bản theo Mẫu 18/BTNN) | Theo Mẫu 18/BTNN | Control UI: Textarea, mỗi nơi nhận 01 dòng, cho phép sửa.<br>- Placeholder: `Nhập nơi nhận, mỗi nơi nhận 01 dòng...`.<br>- Mặc định:<br>+ - Như Điều 6;<br>+ -………(12)……;<br>+ -..…......(13)..........;<br>+ - Lưu: VT, HSVV. |
-| Tệp văn bản trình ký | File | Có | Trống | Control UI: Khối tải tệp.<br>- Chưa có tệp: hiển thị nút `Tải file` và `Tạo văn bản theo Mẫu 18/BTNN`.<br>- Có tệp: hiển thị tên tệp, nhãn `Tạo tự động theo Mẫu 18/BTNN` (khi do hệ thống tạo), nút `Xem`, `Tải về`, `Xóa`.<br>- Định dạng `.docx`, `.doc`, `.pdf`.<br>- Dung lượng tối đa 50MB/file. |
+| Tiêu đề popup | String(255) | - | - | Control UI: Heading text (Read-only).<br>- Nội dung: `TRÌNH KÝ QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG`.<br>- Dòng phụ: `Mã vụ việc: [Mã vụ việc] • Người yêu cầu: [Họ và tên] • Đơn vị: [Cơ quan giải quyết bồi thường]`. |
+| Thanh bước | Component | - | Bước 1 | Control UI: Stepper 2 bước.<br>- Bước 1: `Nhập thông tin`.<br>- Bước 2: `Kéo ô ký & chọn Lãnh đạo`.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`; ẩn khi `Ký ngoài`.<br>- Bước đã hoàn thành hiển thị dấu hoàn thành thay cho số bước. |
+| **HÌNH THỨC KÝ** | Section | - | - | Control UI: Section header.<br>- Đặt đầu form Bước 1. |
+| Hình thức ký | Enum(String(30)) | Có | `Ký số trên hệ thống` | Control UI: Radio button dạng 02 thẻ chọn cùng chiều cao, đặt đầu form.<br>- Mỗi thẻ gồm tiêu đề và mô tả bên dưới.<br>Gồm:<br>+ Ký số trên hệ thống: mô tả `Trình Lãnh đạo ký duyệt trên phần mềm`<br>+ Ký ngoài (Ban hành trực tiếp): mô tả `Tải lên văn bản PDF đã ký và đóng dấu` |
+| **TỆP VĂN BẢN TRÌNH KÝ** | Section | - | - | Control UI: Section header.<br>- Đặt sau khối `Hình thức ký`.<br>- Tiêu đề đổi thành `VĂN BẢN BAN HÀNH` khi `Hình thức ký` = `Ký ngoài`. |
+| Nguồn tệp văn bản | Enum(String(30)) | Có | `Sinh văn bản theo mẫu 18/BTNN` | Control UI: Segmented control.<br>- Gồm: `Sinh văn bản theo mẫu 18/BTNN`; `Tải lên từ máy`.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`. |
+| **THÔNG TIN ĐIỀN VÀO MẪU 18/BTNN** | Section | - | - | Control UI: Khối con.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`.<br>- Nguồn `Tải lên từ máy`: chỉ hiển thị trường `Số, ký hiệu văn bản`, ẩn tiêu đề khối và các trường còn lại. |
+| Số, ký hiệu văn bản | String(100) | Có | `     /QĐ-` | Control UI: Input text.<br>- Hiển thị với cả 02 nguồn tệp văn bản.<br>- Placeholder: `Nhập số, ký hiệu văn bản`.<br>- Nguồn `Sinh văn bản theo mẫu 18/BTNN`: điền vào phần Số của văn bản Mẫu 18/BTNN.<br>- Lưu làm Số quyết định khi Lãnh đạo cấp cuối Ký duyệt.<br>- Bỏ trống hoặc chỉ có giá trị mặc định `/QĐ-`: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên. |
+| Ngày văn bản | Date | Có | Ngày hiện tại | Control UI: DatePicker.<br>- Chỉ hiển thị khi `Nguồn tệp văn bản` = `Sinh văn bản theo mẫu 18/BTNN`.<br>- Định dạng `dd/mm/yyyy`.<br>- Điền vào phần địa danh, ngày tháng năm của văn bản Mẫu 18/BTNN.<br>- Bỏ trống: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên. |
+| Căn cứ | Text(4000) | Không | 02 căn cứ theo Mẫu 18/BTNN | Control UI: Textarea, mỗi căn cứ 01 dòng, cho phép sửa.<br>- Chỉ hiển thị khi `Nguồn tệp văn bản` = `Sinh văn bản theo mẫu 18/BTNN`.<br>- Ô nhập tự động giãn chiều cao theo độ dài nội dung văn bản, không xuất hiện thanh cuộn trong ô.<br>- Placeholder: `Nhập căn cứ, mỗi căn cứ 01 dòng`.<br>- Gợi ý cạnh nhãn: `Mỗi căn cứ trên 01 dòng`.<br>- Gợi ý dưới ô: `Mỗi căn cứ ghi đủ số hiệu, ngày tháng năm ban hành, cơ quan ban hành và trích yếu của văn bản; mỗi căn cứ 01 dòng.`<br>- Dòng mặc định 1: `Căn cứ Điều 47 Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14 đã được sửa đổi, bổ sung bởi Luật số 81/2025/QH15 và Luật số 15/2026/QH16`.<br>- Dòng mặc định 2: `Căn cứ Nghị định số …/…/NĐ-CP ngày …/…/… của Chính phủ quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước`.<br>- Mỗi dòng sinh thành 01 đoạn căn cứ của văn bản theo biến `##CanCu##`; bỏ dòng trống. |
+| Nơi nhận | Text(2000) | Không | Theo Mẫu 18/BTNN | Control UI: Textarea, mỗi nơi nhận 01 dòng, cho phép sửa.<br>- Chỉ hiển thị khi `Nguồn tệp văn bản` = `Sinh văn bản theo mẫu 18/BTNN`.<br>- Gợi ý cạnh nhãn: `Mỗi nơi nhận trên 01 dòng`.<br>- Ô nhập tự động giãn chiều cao theo độ dài nội dung văn bản, không xuất hiện thanh cuộn trong ô.<br>- Placeholder: `Nhập nơi nhận, mỗi nơi nhận 01 dòng`.<br>- Dòng mặc định 1: `- Như Điều 6;`.<br>- Dòng mặc định 2: `-………(12)……;`.<br>- Dòng mặc định 3: `-..…......(13)..........;`.<br>- Dòng mặc định 4: `- Lưu: VT, HSVV.`.<br>- In đúng từng dòng vào phần Nơi nhận của văn bản; bỏ dòng trống. |
+| Văn bản sinh theo mẫu | Component | - | - | Control UI: Khối thông tin (Read-only), 01 dòng.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống` và `Nguồn tệp văn bản` = `Sinh văn bản theo mẫu 18/BTNN`.<br>- Nội dung `Hệ thống tự động sinh Quyết định theo Mẫu 18/BTNN từ thông tin đang nhập.` và nút `Xem trước văn bản` trên cùng 01 dòng. |
+| Tệp văn bản trình ký | File | Có | Trống | Control UI: Vùng kéo thả tệp (Drag & Drop).<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống` và `Nguồn tệp văn bản` = `Tải lên từ máy`.<br>- Chưa có tệp: nội dung `Kéo thả tệp vào đây hoặc Chọn tệp từ máy` và `Chấp nhận tệp .pdf, .doc, .docx (tối đa 50MB)`; cho phép kéo thả tệp hoặc bấm vào vùng để chọn tệp.<br>- Đang chuyển đổi tệp `.doc`, `.docx`: hiển thị `Đang chuyển đổi sang PDF...`.<br>- Có tệp: File Card gồm tên tệp, dung lượng; nút `Xem file`, `Xóa`.<br>- Định dạng `.pdf`, `.doc`, `.docx`.<br>- Dung lượng tối đa 50MB/file. |
+| **TÀI LIỆU KÈM THEO** | List(Object) | Không | Trống (Hồ sơ `Bị từ chối`: theo lần trình trước) | Control UI: Bảng động, đặt dưới khối `Tệp văn bản trình ký`.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`.<br>- Mặc định 01 dòng trống; nút `Thêm tài liệu` dưới bảng.<br>- Dòng gợi ý dưới bảng: `Chấp nhận tệp .pdf, .doc, .docx, .jpg, .jpeg, .png (tối đa 50MB/tệp). Lãnh đạo xem được các tài liệu này khi Ký duyệt/Từ chối.`<br>- Lưu theo từng lần trình; trình lại hồ sơ `Bị từ chối` điền lại dữ liệu lần trình trước. |
+| STT | Integer | - | Tự tăng | Control UI: Label. |
+| Tên văn bản, căn cứ | String(500) | Có (khi dòng có dữ liệu) | Trống | Control UI: Input text.<br>- Placeholder: `Nhập tên văn bản, căn cứ`<br>- Để trống khi tải tệp: lấy theo tên tệp (bỏ phần mở rộng).<br>- Dòng đã có tệp mà bỏ trống: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên. |
+| Tải file | File | Có (khi dòng có dữ liệu) | Trống | Control UI: Nút `Tải file`; có tệp thì hiển thị biểu tượng định dạng, tên tệp, dung lượng.<br>- Định dạng `.pdf`, `.doc`, `.docx`, `.jpg`, `.jpeg`, `.png`.<br>- Dung lượng tối đa 50MB/tệp.<br>- Dòng đã nhập Tên mà chưa có tệp: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên. |
+| Thao tác | Action Buttons | - | - | Control UI: Icon button group.<br>- `Xem file`: khóa mờ khi dòng chưa có tệp.<br>- `Xóa`. |
+| Số quyết định | String(100) | Có | Trống | Control UI: Input text.<br>- Số, ký hiệu văn bản của Quyết định đã ký.<br>- Placeholder: `Nhập số quyết định`.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký ngoài`.<br>- Bỏ trống: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên. |
+| Ngày quyết định | Date | Có | Ngày hiện tại | Control UI: DatePicker.<br>- Ngày văn bản của Quyết định đã ký.<br>- Định dạng `dd/mm/yyyy`.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký ngoài`.<br>- Bỏ trống: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên. |
+| Người ký | Enum(String(50)) | Có | Trống | Control UI: Combobox.<br>- Placeholder: `-- Chọn Lãnh đạo --`.<br>- Danh sách là Nhóm lãnh đạo các cấp theo luồng đã cấu hình.<br>- Hiển thị `[Họ tên] - [Chức danh]`.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký ngoài`. |
+| Tệp văn bản PDF đã ký & đóng dấu | File | Có | Trống | Control UI: Vùng kéo thả tệp (Drag & Drop).<br>- Chưa có tệp: nội dung `Kéo thả tệp PDF đã ký & đóng dấu vào đây, hoặc bấm Tải file` và `(Chỉ chấp nhận .pdf, tối đa 50MB)`; cho phép kéo thả tệp hoặc bấm vào vùng để chọn tệp.<br>- Có tệp: File Card gồm tên tệp, dung lượng; nút `Xem file`, `Xóa`.<br>- Định dạng `.pdf`.<br>- Dung lượng tối đa 50MB/file.<br>- Thông báo dưới khối: `Khi bấm Ban hành văn bản, Quyết định được ban hành trực tiếp (không qua bước duyệt của Lãnh đạo trên hệ thống) và chuyển sang trạng thái Đã ban hành.`<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký ngoài`. |
 | **BƯỚC 2 - VĂN BẢN TRÌNH KÝ** | Component | - | Tệp văn bản trình ký | Control UI: Xem trước văn bản (vùng trái, Read-only).<br>- Ô ký của từng cấp chỉ xuất hiện sau khi bấm `Đặt chữ ký` tại thẻ cấp đó. |
-| **BƯỚC 2 - THIẾT LẬP VỊ TRÍ & KÍCH THƯỚC CHỮ KÝ** | List | - | Theo luồng đã cấu hình | Control UI: Panel (vùng phải), mỗi cấp ký duyệt 01 thẻ.<br>- Tiêu đề thẻ: `Cấp [n] - [Tên đơn vị]`.<br>- Nhãn: `Ký nháy` (cấp trước cấp cuối) / `Ký số & con dấu` (cấp cuối). |
-| Lãnh đạo | Enum(String(50)) | Có | Lãnh đạo đầu tiên | Control UI: Combobox.<br>- Danh sách là Nhóm lãnh đạo của đơn vị ở cấp tương ứng.<br>- Hiển thị `[Họ tên] - [Chức danh]`. |
-| Ô ký | Draggable Box | Có | Chưa có | Control UI: Khung kéo thả.<br>- Hiển thị `Cấp [n] - [Họ tên Lãnh đạo]`. |
-| Nội dung trình | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Placeholder: `Nhập nội dung trình Lãnh đạo...`. |
+| **BƯỚC 2 - THIẾT LẬP VỊ TRÍ & KÍCH THƯỚC CHỮ KÝ** | List | - | Theo luồng đã cấu hình | Control UI: Panel (vùng phải), mỗi cấp ký duyệt 01 thẻ.<br>- Tiêu đề thẻ: `Cấp [n] - [Tên đơn vị]`.<br>- Nhãn `Ký nháy` hiển thị khi cấp đó được cấu hình Ký nháy tại [Cấu hình luồng xử lý - Cấu hình luồng xử lý - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Cau_hinh_luong_xu_ly.md); không cấu hình thì không hiển thị nhãn. |
+| Lãnh đạo | Enum(String(50)) | Có | Lãnh đạo đầu tiên | Control UI: Combobox.<br>- Placeholder: `-- Chọn Lãnh đạo --`<br>- Danh sách là Nhóm lãnh đạo của đơn vị ở cấp tương ứng.<br>- Hiển thị `[Họ tên] - [Chức danh]`.<br>- Trình lại: điền sẵn Lãnh đạo đã chọn lần trình trước. |
+| Ô ký | Draggable Box | Có | Chưa có | Control UI: Khung kéo thả.<br>- Hiển thị `Cấp [n] - [Họ tên Lãnh đạo]`.<br>- Chưa đặt: hiển thị `Chưa đặt chữ ký` dưới nút `Đặt chữ ký` khi bấm `Trình Lãnh đạo`. |
+| Nội dung trình | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Placeholder: `Nhập nội dung trình Lãnh đạo...` |
 
 ###### Chức năng trên popup
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Tải file | Button | Mở trình chọn tệp cho `Tệp văn bản trình ký` (Ký số) hoặc `Tệp văn bản PDF đã ký & đóng dấu` (Ký ngoài):<br>- **TH1 - Sai định dạng file**: Tệp không đúng định dạng (`.docx`, `.doc`, `.pdf` với Ký số; `.pdf` với Ký ngoài): hiển thị cảnh báo lỗi [MSG-ERR-FILE-001], không tiếp nhận tệp.<br>- **TH2 - File quá dung lượng**: Tệp vượt quá 50MB: hiển thị cảnh báo lỗi [MSG-ERR-FILE-002], không tiếp nhận tệp.<br>- **TH Hợp lệ**: Gắn tệp vào khối, thay thế tệp hiện có. |
-| 2 | Tạo văn bản theo Mẫu 18/BTNN | Button | Hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới:<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không tạo văn bản.<br>- **TH Hợp lệ**: Sinh văn bản theo Mẫu 18/BTNN theo [Ánh xạ dữ liệu sinh văn bản Quyết định - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#bang-anh-xa-sinh-qd-gqbt-mau18) và gắn vào `Tệp văn bản trình ký`. |
-| 3 | Xem / Tải về / Xóa | Button | Tại `Tệp văn bản trình ký`:<br>- `Xem`: mở xem văn bản tại tab mới.<br>- `Tải về`: tải tệp về máy.<br>- `Xóa`: gỡ tệp, khối trở về trạng thái chưa có tệp. |
-| 4 | Thêm căn cứ / Xóa căn cứ | Button / Icon button | Thêm 01 dòng căn cứ trống / xóa dòng căn cứ tương ứng (dòng duy nhất thì đưa về trống). |
-| 5 | Tiếp tục | Button | Chỉ hiển thị tại Bước 1 khi `Hình thức ký` = `Ký số trên hệ thống`.<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không chuyển bước.<br>- **TH Hợp lệ**: Chuyển sang Bước 2, hiển thị văn bản trình ký và thẻ các cấp ký duyệt. |
-| 6 | Đặt chữ ký / Nhỏ / Vừa / Lớn / Đặt lại | Button | Tại thẻ từng cấp: `Đặt chữ ký` sinh ô ký của cấp đó trên văn bản; `Nhỏ` / `Vừa` / `Lớn` đổi kích thước; `Đặt lại` đưa ô ký về vị trí mặc định. |
-| 7 | Quay lại | Button | Tại Bước 2: về Bước 1, giữ nguyên thông tin đã nhập. |
-| 8 | Trình Lãnh đạo | Button | Chỉ hiển thị tại Bước 2.<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không trình.<br>- **TH Hợp lệ**:<br>- Lưu Quyết định, trạng thái `Chờ duyệt`.<br>- Giao Lãnh đạo cấp 1 đã chọn; Lãnh đạo các cấp sau theo lựa chọn tại từng thẻ.<br>- Lưu thông tin văn bản, tệp văn bản trình ký và vị trí ô ký.<br>- Ghi Lịch sử xử lý `Trình ký duyệt`.<br>- Đóng popup, hiển thị thông báo thành công, quay về danh sách. |
-| 9 | Hoàn thành | Button | Chỉ hiển thị khi `Hình thức ký` = `Ký ngoài`.<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi; không ban hành.<br>- **TH Hợp lệ**:<br>- Quyết định chuyển `Đã ban hành`, không trình Lãnh đạo.<br>- Lưu Số, ký hiệu văn bản, Ngày ban hành, Tổng số tiền bồi thường, Lãnh đạo ký duyệt và tệp PDF đã ký.<br>- Ghi Lịch sử xử lý `Ban hành Quyết định (Ký ngoài)`.<br>- Đóng popup, hiển thị thông báo thành công, quay về danh sách. |
-| 10 | Hủy bỏ | Button | Đóng popup, không lưu; giữ nguyên dữ liệu tại MH02. |
+| 1 | Chọn Hình thức ký | Radio card | - `Ký số trên hệ thống`: Thanh bước 02 bước; hiển thị `Nguồn tệp văn bản`, khối theo nguồn tệp, `Tài liệu kèm theo`; nút `Hủy bỏ`, `Tiếp tục`.<br>- `Ký ngoài`: ẩn Thanh bước; ẩn `Nguồn tệp văn bản`, khối `Thông tin điền vào Mẫu 18/BTNN`, `Tài liệu kèm theo`; hiển thị Số quyết định, Ngày quyết định, Người ký, Tệp văn bản PDF đã ký & đóng dấu; nút `Hủy bỏ`, `Ban hành văn bản`. |
+| 2 | Chọn Nguồn tệp văn bản | Segmented control | - `Sinh văn bản theo mẫu 18/BTNN`: hiển thị khối `Thông tin điền vào Mẫu 18/BTNN` và nút `Xem trước văn bản`.<br>- `Tải lên từ máy`: trong khối `Thông tin điền vào Mẫu 18/BTNN` chỉ giữ trường `Số, ký hiệu văn bản`; hiển thị khối tải `Tệp văn bản trình ký`.<br>- Đổi nguồn thì gỡ tệp văn bản trình ký đang có. |
+| 3 | Chọn tệp / Kéo thả tệp | Drag & Drop | Kéo thả tệp vào vùng hoặc bấm vào vùng để chọn tệp cho `Tệp văn bản trình ký` (Ký số) hoặc `Tệp văn bản PDF đã ký & đóng dấu` (Ký ngoài):<br>- **TH1 - Sai định dạng file**: Tệp không đúng định dạng (`.pdf`, `.doc`, `.docx` với Ký số; `.pdf` với Ký ngoài): hiển thị cảnh báo lỗi [MSG-ERR-FILE-001], không tiếp nhận tệp.<br>- **TH2 - File quá dung lượng**: Tệp vượt quá 50MB: hiển thị cảnh báo lỗi [MSG-ERR-FILE-002], không tiếp nhận tệp.<br>- **TH Hợp lệ**: Gắn tệp vào khối dạng File Card, thay thế tệp hiện có.<br>- Tệp `.doc`, `.docx` (Ký số): hệ thống chuyển đổi sang PDF trước khi gắn; trong lúc chuyển đổi hiển thị `Đang chuyển đổi sang PDF...` và khóa nút `Tiếp tục`. |
+| 4 | Xem trước văn bản | Button | Hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới:<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên.<br>- **TH Hợp lệ**: Sinh văn bản theo Mẫu 18/BTNN từ Số, ký hiệu văn bản, Ngày văn bản, Căn cứ, Nơi nhận đang nhập theo [Ánh xạ dữ liệu sinh văn bản Quyết định - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#bang-anh-xa-sinh-qd-gqbt-mau18); mở xem văn bản tại [MH04 - Popup Xem văn bản - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh04). |
+| 5 | Xem file / Xóa | Button | Tại File Card:<br>- `Xem file`: mở tệp đã tải lên tại tab mới.<br>- `Xóa`: gỡ tệp, khối trở về vùng kéo thả. |
+| 6 | Tiếp tục | Button | Chỉ hiển thị tại Bước 1 khi `Hình thức ký` = `Ký số trên hệ thống`; bị khóa trong lúc chuyển đổi tệp sang PDF.<br>- **TH1 - Bỏ trống trường bắt buộc** (gồm dòng `Tài liệu kèm theo` có dữ liệu nhưng thiếu Tên văn bản, căn cứ hoặc tệp): Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không chuyển bước.<br>- **TH Hợp lệ**:<br>- Nguồn `Sinh văn bản theo mẫu 18/BTNN`: sinh văn bản Mẫu 18/BTNN từ thông tin đang nhập làm Tệp văn bản trình ký.<br>- Nguồn `Tải lên từ máy`: dùng tệp đã tải lên.<br>- Chuyển sang Bước 2, hiển thị văn bản trình ký và thẻ các cấp ký duyệt; Bước 1 trên Thanh bước chuyển trạng thái hoàn thành. |
+| 7 | Đặt chữ ký / Nhỏ / Vừa / Lớn / Đặt lại | Button | Tại thẻ từng cấp: `Đặt chữ ký` sinh ô ký của cấp đó trên văn bản; `Nhỏ` / `Vừa` / `Lớn` đổi kích thước; `Đặt lại` đưa ô ký về vị trí mặc định. |
+| 8 | Quay lại | Button | Tại Bước 2: về Bước 1, giữ nguyên thông tin đã nhập. |
+| 9 | Trình Lãnh đạo | Button | Chỉ hiển thị tại Bước 2.<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không trình.<br>- **TH Hợp lệ**:<br>- Lưu Quyết định, trạng thái `Chờ duyệt` với dòng phụ `Quyết định GQBT`.<br>- Giao Lãnh đạo cấp 1 đã chọn; Lãnh đạo các cấp sau theo lựa chọn tại từng thẻ.<br>- Lưu thông tin văn bản, tệp văn bản trình ký, vị trí ô ký và `Tài liệu kèm theo` theo lần trình (bỏ dòng trống).<br>- Ghi Lịch sử xử lý `Trình ký duyệt` (trình lại: `Trình lại`); sự kiện Trình ký tại Lịch sử trình ký hiển thị danh sách tài liệu kèm theo của lần trình.<br>- Đóng popup, hiển thị `Đã trình Lãnh đạo ký duyệt Quyết định giải quyết bồi thường.`, quay về danh sách. |
+| 10 | Ban hành văn bản | Button | Chỉ hiển thị khi `Hình thức ký` = `Ký ngoài`.<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; chưa tải `Tệp văn bản PDF đã ký & đóng dấu` thì hiển thị dưới vùng tải tệp `Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu.`, viền đỏ vùng kéo thả; không ban hành.<br>- **TH Hợp lệ**: Hiển thị popup xác nhận `Xác nhận ban hành văn bản` nêu văn bản được ban hành trực tiếp, bỏ qua bước duyệt của Lãnh đạo trên hệ thống và Quyết định chuyển sang trạng thái `Đã ban hành`; nút `Hủy bỏ`, `Ban hành`. Bấm `Ban hành`:<br>- Quyết định chuyển `Đã ban hành`, không trình Lãnh đạo.<br>- Lưu Số quyết định, Ngày quyết định, Người ký và tệp PDF đã ký & đóng dấu; dữ liệu quyết định lấy theo MH02.<br>- Xử lý liên thông theo quy tắc 9 tại [Quy tắc chung - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-chung), gồm tạo 01 bản ghi `Chi trả tiền bồi thường` trạng thái `Chờ thông báo chi trả` theo [Luồng Chi trả tiền bồi thường - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_KinhPhi_BT.md#kp-chi-tra-tien-bt).<br>- Ghi Lịch sử xử lý `Ban hành Quyết định (Ký ngoài)`.<br>- Đóng popup, hiển thị `Đã ban hành Quyết định giải quyết bồi thường (Ký ngoài).`, quay về danh sách. |
+| 11 | Hủy bỏ / Đóng (×) | Button | Đóng popup, không lưu; giữ nguyên dữ liệu tại MH02. |
+| 12 | Thêm tài liệu | Button | Tại bảng `Tài liệu kèm theo`: thêm 01 dòng trống vào cuối bảng. |
+| 13 | Tải file (Tài liệu kèm theo) | Button | Tại dòng của bảng `Tài liệu kèm theo`, hệ thống mở hộp thoại chọn tệp và xử lý theo các trường hợp:<br>- **TH1 - Sai định dạng file**: Tệp không thuộc `.pdf`, `.doc`, `.docx`, `.jpg`, `.jpeg`, `.png`: hiển thị [MSG-ERR-FILE-001] dưới ô, không tiếp nhận tệp.<br>- **TH2 - File quá dung lượng**: Tệp vượt quá 50MB: hiển thị [MSG-ERR-FILE-002] dưới ô, không tiếp nhận tệp.<br>- **TH Hợp lệ**: gắn tệp vào dòng; Tên văn bản, căn cứ đang trống thì lấy theo tên tệp (bỏ phần mở rộng). |
+| 14 | Xem file / Xóa (Tài liệu kèm theo) | Icon button | - `Xem file`: mở chính tệp đã tải lên tại tab mới.<br>- `Xóa`: xóa dòng ngay, không hiển thị popup xác nhận; đánh lại STT. |
 
 ---
 
@@ -319,29 +340,49 @@ Popup thiết kế chuẩn modal: tiêu đề và chân popup cố định, thâ
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **Tiêu đề** | Label | - | - | `CHI TIẾT QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG`, kèm badge trạng thái và dòng phụ Nội dung trình. |
-| Khối cảnh báo Bị trả lại | Section | - | Ẩn | Trạng thái `Bị trả lại`: Nội dung trình, Người trả lại, Thời điểm, Lý do. |
-| Khối cảnh báo Đã hủy | Section | - | Ẩn | Trạng thái `Đã hủy`: Lãnh đạo phê duyệt hủy, Thời điểm, Lý do hủy, Văn bản (liên kết Xem). |
-| Khối yêu cầu đang trình | Section | - | Ẩn | Đang có yêu cầu `Hủy QĐ` / `Sửa chữa, bổ sung QĐ` ở trạng thái `Chờ duyệt` / `Bị trả lại`: Lý do hủy hoặc Nội dung sửa chữa, bổ sung; Văn bản trình (liên kết Xem dự thảo); ghi chú "Quyết định gốc vẫn giữ hiệu lực cho đến khi yêu cầu được phê duyệt." |
-| **Khối Thông tin chung của Quyết định** | Section | - | Mở | Chỉ đọc: Mã vụ việc - Người yêu cầu (Mã vụ việc là liên kết mở chi tiết vụ việc), Cơ quan ban hành, Trạng thái, Số quyết định, Ngày ban hành, Thời điểm có hiệu lực, Tổng số tiền bồi thường, Lãnh đạo ký duyệt (01 trường: Lãnh đạo đã ký duyệt cấp cuối; khi chưa ký duyệt là Lãnh đạo được trình ký). Trường chưa có giá trị hiển thị `-`. |
-| **Khối Văn bản** | Section | - | Mở | Tách riêng, hiển thị 01 trong 02 nội dung:<br>+ Quyết định chưa ban hành - `Văn bản dự thảo trình Lãnh đạo`: tên tệp dự thảo, Hình thức ký.<br>+ Quyết định `Đã ban hành` / `Đã hủy` - `Văn bản Quyết định đã ký ban hành`: tên tệp Quyết định đã ký, Số / Ngày ban hành, Hình thức ký (Ký số: kèm chứng thư số và thời điểm ký số).<br>- Tên tệp là liên kết; click mở [MH04 - Popup Xem văn bản](#qd-mh04). |
-| **Khối Thông tin chi tiết Quyết định** | Section (mở rộng/thu gọn) | - | Thu gọn | Control UI: 01 khối mở rộng/thu gọn chung, gồm các mục con hiển thị liên tiếp (mục con không có mở rộng/thu gọn riêng): Thông tin người yêu cầu bồi thường, Bảng nội dung đề xuất bồi thường, Người nhận tiền bồi thường, Phương thức chi trả tiền bồi thường, Nội dung sửa chữa, bổ sung có hiệu lực. |
-| Thông tin người yêu cầu bồi thường | Mục con | - | - | Họ và tên, Địa chỉ. |
-| Bảng nội dung đề xuất bồi thường | Mục con | - | - | Khối Nguồn dữ liệu (Nguồn dữ liệu, Tình trạng tham gia thương lượng, Ghi chú nguồn đã lưu khi trình); bảng như MH02 ở chế độ chỉ đọc (dòng đã điều chỉnh hiển thị thêm "Giá trị nguồn: ..."); Tổng tiền và bằng chữ, Đã tạm ứng, Còn lại; Lý do điều chỉnh (nếu có). |
-| Người nhận tiền bồi thường | Mục con | - | - | Họ và tên người nhận, Số định danh cá nhân/CCCD, Quan hệ với người bị thiệt hại / người yêu cầu. |
-| Phương thức chi trả tiền bồi thường | Mục con | - | - | Phương thức chi trả (`Nhận qua chuyển khoản` hoặc `Nhận tiền mặt`).<br>+ Chuyển khoản: Chủ tài khoản, Số tài khoản, Ngân hàng, Chi nhánh.<br>+ Tiền mặt: Nơi nhận tiền mặt / Địa chỉ cơ quan chi trả, Giấy tờ / Biên lai / Ghi chú. |
-| Nội dung sửa chữa, bổ sung có hiệu lực | Mục con | - | Ẩn khi không có | Chỉ hiển thị khi có ít nhất 01 yêu cầu Sửa chữa, bổ sung QĐ đã được phê duyệt: Lần, Thời điểm, Lãnh đạo phê duyệt, Nội dung, Văn bản. |
-| **Khối Luồng phê duyệt** | Section (mở rộng/thu gọn) | - | Thu gọn; Ẩn khi không có | Hiển thị khi có phiếu trình của vụ việc tương ứng quyết định: Nội dung trình, người trình, thời điểm; bảng Cấp - Đơn vị phê duyệt - Nhóm lãnh đạo - Kết quả. |
-| **Khối Lịch sử xử lý** | Section | - | Mở | Control UI: Bảng 03 cột: Thời gian, Người thực hiện, Nội dung thực hiện (tên bước in đậm và nội dung). Sắp xếp theo thời gian tăng dần qua các bước: Trình ký duyệt / Trình lại → Ký duyệt (từng cấp) / Từ chối phê duyệt → Ký số (Hình thức ký số) → Ban hành → Trình Sửa chữa, bổ sung / Hủy QĐ → Phê duyệt cấp cuối / Rút yêu cầu. |
+| **Tiêu đề** | - | - | Theo bản ghi | Control UI: Label.<br>- `CHI TIẾT QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG`, kèm badge trạng thái và dòng phụ Nội dung trình theo dữ liệu bản ghi. |
+| **Khối cảnh báo Bị từ chối** | - | - | Theo bản ghi | Control UI: Alert panel (Read-only).<br>- Chỉ hiển thị khi trạng thái `Bị từ chối`.<br>- Tiêu đề: `BỊ TỪ CHỐI - [Nội dung trình]`. |
+| Người từ chối | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi, kèm thời điểm `dd/mm/yyyy HH:mm`. |
+| Lý do | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
+| **Khối cảnh báo Đã hủy** | - | - | Theo bản ghi | Control UI: Alert panel (Read-only).<br>- Chỉ hiển thị khi trạng thái `Đã hủy`.<br>- Tiêu đề: `QUYẾT ĐỊNH ĐÃ BỊ HỦY`. |
+| Lãnh đạo phê duyệt hủy | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi, kèm thời điểm `dd/mm/yyyy HH:mm`.<br>- Ký ngoài: nhãn `Ký ngoài, ban hành trực tiếp`, theo cán bộ ban hành. |
+| Lý do hủy Quyết định | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi; không có thì không hiển thị. |
+| Ngày có hiệu lực | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi; không có thì không hiển thị. |
+| Văn bản | - | - | Theo bản ghi | Control UI: Label + Hyperlink `Xem`.<br>- Theo dữ liệu bản ghi. |
+| **Khối yêu cầu đang trình** | - | - | Theo bản ghi | Control UI: Alert panel (Read-only).<br>- Chỉ hiển thị khi có yêu cầu `Hủy QĐ` / `Sửa chữa, bổ sung QĐ` ở trạng thái `Chờ duyệt` / `Bị từ chối`.<br>- Tiêu đề: `YÊU CẦU [NỘI DUNG TRÌNH] ĐANG TRÌNH`.<br>- Ghi chú cuối khối: `Quyết định gốc vẫn giữ hiệu lực cho đến khi yêu cầu được phê duyệt.` |
+| Lý do hủy Quyết định / Nội dung sửa chữa, bổ sung | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
+| Ngày có hiệu lực | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
+| Văn bản trình | - | - | Theo bản ghi | Control UI: Label + Hyperlink `Xem dự thảo`.<br>- Theo dữ liệu bản ghi. |
+| **Khối Thông tin chung của Quyết định** | - | - | Theo bản ghi | Control UI: Section (Read-only).<br>- Trường chưa có giá trị hiển thị `-`. |
+| Mã vụ việc - Người yêu cầu | - | - | Theo bản ghi | Control UI: Hyperlink + Label.<br>- Theo dữ liệu bản ghi.<br>- Click Mã vụ việc: mở chi tiết vụ việc tại [Giải quyết yêu cầu bồi thường - Giải quyết yêu cầu bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md). |
+| Cơ quan ban hành | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
+| Trạng thái | - | - | Theo bản ghi | Control UI: Badge.<br>- Theo dữ liệu bản ghi, kèm dòng phụ Nội dung trình. |
+| Số quyết định | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
+| Ngày ban hành | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
+| Thời điểm có hiệu lực | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
+| Tổng số tiền bồi thường (VNĐ) | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
+| Lãnh đạo ký duyệt | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi: Lãnh đạo đã Ký duyệt cấp cuối (Ký ngoài: Người ký); chưa ban hành là Lãnh đạo cấp 1 được trình ký. |
+| **Khối Văn bản** | - | - | Theo bản ghi | Control UI: Section (Read-only).<br>- Tiêu đề: `Văn bản Quyết định đã ký ban hành` khi quyết định `Đã ban hành` / `Đã hủy`; `Văn bản dự thảo trình Lãnh đạo` khi chưa ban hành. |
+| Văn bản Quyết định đã ký ban hành / Văn bản dự thảo trình Lãnh đạo | - | - | Theo bản ghi | Control UI: Hyperlink.<br>- Theo dữ liệu bản ghi.<br>- Click: mở [MH04 - Popup Xem văn bản - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh04). |
+| Số / Ngày ban hành | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi.<br>- Chỉ hiển thị khi quyết định `Đã ban hành` / `Đã hủy`. |
+| Hình thức ký | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
+| **Khối Thông tin chi tiết Quyết định** | - | - | Thu gọn | Control UI: Accordion (Read-only).<br>- 01 khối mở rộng/thu gọn chung, các mục con hiển thị liên tiếp. |
+| Thông tin người yêu cầu bồi thường | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi.<br>- Gồm: Họ và tên, Địa chỉ. |
+| Bảng nội dung đề xuất bồi thường | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi.<br>- Gồm: Khối Nguồn dữ liệu; bảng STT, Thiệt hại yêu cầu bồi thường, Mức đề xuất (đ), Mức xác minh (đ), Mức bồi thường (đ), Trạng thái thương lượng; Tổng số tiền bồi thường (VNĐ), Số tiền bồi thường đã tạm ứng (VNĐ), Số tiền bồi thường còn lại sau khi đã tạm ứng (VNĐ); Lý do điều chỉnh.<br>- Dòng đã điều chỉnh: hiển thị thêm `Giá trị nguồn: [số tiền]`. |
+| Người nhận tiền bồi thường | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi.<br>- Gồm: Họ và tên người nhận, Số định danh cá nhân/CCCD. |
+| Phương thức chi trả tiền bồi thường | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi.<br>- Gồm: Phương thức nhận tiền; `Nhận qua chuyển khoản`: Chủ tài khoản, Số tài khoản, Ngân hàng, Chi nhánh; `Nhận tiền mặt`: Cơ quan / Địa chỉ chi trả tiền mặt, Số biên lai / Ghi chú chi trả. |
+| Nội dung sửa chữa, bổ sung có hiệu lực | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi.<br>- Chỉ hiển thị khi có ít nhất 01 lần Sửa chữa, bổ sung QĐ đã được phê duyệt hoặc ban hành Ký ngoài.<br>- Mỗi lần gồm: Lần, Thời điểm, Lãnh đạo phê duyệt (Ký ngoài: cán bộ ban hành), Nội dung, Ngày có hiệu lực, Văn bản. |
+| **Khối Luồng phê duyệt** | - | - | Thu gọn | Control UI: Accordion (Read-only).<br>- Chỉ hiển thị khi có phiếu trình của vụ việc tương ứng quyết định.<br>- Theo dữ liệu bản ghi: Nội dung trình, người trình, thời điểm; bảng Cấp, Đơn vị phê duyệt, Nhóm lãnh đạo, Kết quả. |
+| **Khối Lịch sử xử lý** | - | - | Theo bản ghi | Control UI: Data grid (Read-only).<br>- Theo dữ liệu bản ghi, sắp xếp theo thời gian tăng dần.<br>- Cột: Thời gian, Người thực hiện, Nội dung thực hiện.<br>- Nội dung thực hiện gồm tên bước:<br>+ `Trình ký duyệt` / `Trình lại`<br>+ `Ký duyệt` / `Từ chối phê duyệt`<br>+ `Ban hành Quyết định (Ký ngoài)`<br>+ `Trình Hủy QĐ` / `Trình lại Hủy QĐ`<br>+ `Trình Sửa chữa, bổ sung QĐ` / `Trình lại Sửa chữa, bổ sung QĐ`<br>+ `Rút yêu cầu`<br>+ `Ban hành Quyết định sửa chữa, bổ sung (Ký ngoài)`<br>+ `Ban hành Quyết định hủy Quyết định giải quyết bồi thường (Ký ngoài)` |
 
 ###### 4.3.3.3.6.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Mở rộng / Thu gọn khối | Click tiêu đề khối | Mở rộng hoặc thu gọn Khối Thông tin chi tiết Quyết định (toàn bộ mục con) hoặc Khối Luồng phê duyệt; mặc định ở dạng thu gọn. |
-| 2 | Xem văn bản | Liên kết tên tệp | Click tên tệp tại Khối Văn bản: mở văn bản dự thảo / Quyết định đã ký ban hành tại [MH04 - Popup Xem văn bản](#qd-mh04). |
-| 3 | Ký duyệt / Từ chối | Button | Theo phân quyền Lãnh đạo: điều kiện và xử lý như chức năng 6 tại [Chức năng trên màn hình - MH01 - Màn hình Danh sách Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh01). |
-| 4 | Sửa / Xóa / Ban hành / Sửa chữa, bổ sung QĐ / Hủy QĐ | Button | Theo phân quyền Cán bộ xử lý: chỉ hiển thị thao tác được phép theo trạng thái quyết định; xử lý như các chức năng cùng tên tại [Chức năng trên màn hình - MH01 - Màn hình Danh sách Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh01). |
+| 1 | Mở rộng / Thu gọn khối | Accordion | Mở rộng hoặc thu gọn Khối Thông tin chi tiết Quyết định hoặc Khối Luồng phê duyệt. |
+| 2 | Xem văn bản | Hyperlink | Mở văn bản tại Khối Văn bản / liên kết `Xem`, `Xem dự thảo` tại [MH04 - Popup Xem văn bản - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh04). |
+| 3 | Ký duyệt / Từ chối | Button | - Chỉ hiển thị khi: vai trò Lãnh đạo, quyết định `Chờ duyệt` và người dùng là Lãnh đạo được giao đích danh tại cấp phê duyệt hiện hành.<br>- Xử lý như chức năng `Ký duyệt / Từ chối` tại [Chức năng trên màn hình - MH01 - Màn hình Danh sách Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh01). |
+| 4 | Sửa / Xóa / Xóa (rút yêu cầu) / Sửa chữa, bổ sung QĐ / Hủy QĐ | Button | - Vai trò Cán bộ xử lý: chỉ hiển thị thao tác được phép theo trạng thái quyết định.<br>- Xử lý như các chức năng cùng tên tại [Chức năng trên màn hình - MH01 - Màn hình Danh sách Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh01). |
 | 5 | Đóng | Button | Quay về danh sách, giữ tab và bộ lọc. |
 
 ---
@@ -353,102 +394,192 @@ Popup mở ngay trên màn hình đang thao tác (không phụ thuộc trình du
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Thanh công cụ | Toolbar | - | - | Tiêu đề "Xem văn bản - [tên tệp]"; nút "Tải file (Word .doc)", "In", "Mở tab mới" (mở văn bản tại tab trình duyệt mới), "Đóng" (hoặc phím Esc / click ngoài popup). |
-| Nội dung văn bản | HTML | - | Theo dữ liệu | Trang khổ A4 theo thể thức văn bản hành chính, dựng theo bảng ánh xạ tương ứng tại [Ánh xạ dữ liệu sinh văn bản Quyết định - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#anh-xa-sinh-van-ban-quyet-dinh). |
+| Thanh công cụ | Toolbar | - | - | Control UI: Toolbar.<br>- Tiêu đề: `Xem văn bản - [tên tệp]`.<br>- Nút `Tải file (Word .doc)`, `In`, `Mở tab mới`, `Đóng`. |
+| Nội dung văn bản | HTML | - | Theo dữ liệu | Control UI: Xem trước văn bản (Read-only).<br>- Trang khổ A4 theo thể thức văn bản hành chính, dựng theo bảng ánh xạ tương ứng tại [Ánh xạ dữ liệu sinh văn bản Quyết định - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#anh-xa-sinh-van-ban-quyet-dinh). |
 
 ---
 
 <a id="qd-mh05"></a>
-##### 4.3.3.3.8. MH05 - Popup Hủy QĐ / Sửa chữa, bổ sung QĐ
+##### 4.3.3.3.8. MH05 - Popup Hủy Quyết định giải quyết bồi thường
 
-Popup chuẩn: tiêu đề và chân popup cố định, thân popup cuộn độc lập (tối đa 80% chiều cao màn hình), lề trong 24px, độ rộng 650-850px.
+- Mở khi bấm `Hủy QĐ` với quyết định `Đã ban hành` (tại lưới danh sách hoặc màn Xem chi tiết Quyết định), hoặc `Sửa` với yêu cầu `Hủy QĐ` ở trạng thái `Bị từ chối` (điền sẵn dữ liệu lần trình trước).
+- Bố cục, Hình thức ký, Thanh bước, Bước 2 và Ký ngoài giống [MH05b - Popup Trình ký Quyết định Sửa chữa, Bổ sung Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh05b); văn bản sinh theo Mẫu 20/BTNN.
+- `Ký số trên hệ thống`: 02 bước.
+  + Bước 1 - Nhập thông tin: Hình thức ký, Tệp văn bản trình ký (Sinh văn bản theo mẫu 20/BTNN hoặc Tải lên từ máy), Tài liệu kèm theo.
+  + Bước 2 - Kéo ô ký & chọn Lãnh đạo: hiển thị toàn màn hình; vùng trái là văn bản trình ký, vùng phải là thẻ từng cấp ký duyệt theo luồng đã cấu hình và `Nội dung trình`.
+- `Ký ngoài`: không hiển thị Thanh bước; chỉ tải lên tệp PDF đã ký & đóng dấu; bấm `Ban hành văn bản`, xác nhận để ban hành trực tiếp, không trình Lãnh đạo.
+- Trình lại yêu cầu `Bị từ chối`: điền lại đúng toàn bộ dữ liệu lần trình trước, gồm nguồn tệp văn bản, thông tin điền vào mẫu, tệp văn bản trình ký đã tải lên, `Tài liệu kèm theo`, Lãnh đạo từng cấp, vị trí ô ký, `Nội dung trình`.
 
 ###### 4.3.3.3.8.1. Mô tả thông tin trên màn hình
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **Tiêu đề** | Label | - | Theo thao tác | + `Hủy Quyết định giải quyết bồi thường`<br>+ `Sửa chữa, bổ sung Quyết định giải quyết bồi thường` (Nội dung trình `Sửa chữa, bổ sung QĐ`) |
-| Khối thông tin quyết định | Label | - | Theo quyết định | Quyết định gốc (Số, Ngày ban hành, Cơ quan ban hành), Mã vụ việc - Người yêu cầu, Tổng số tiền bồi thường; khi trình lại có thêm lý do bị trả lại. |
-| Lý do hủy quyết định | Text(4000) | Có | Trống | Control UI: Textarea. Chỉ hiển thị với Hủy QĐ. Trình lại: điền sẵn nội dung lần trước. |
-| Nội dung sửa chữa, bổ sung | Text(4000) | Có | Trống | Control UI: Textarea. Chỉ hiển thị với Sửa chữa, bổ sung QĐ; ghi rõ nội dung, điều khoản được sửa chữa, bổ sung. |
-| Văn bản dự thảo trình Lãnh đạo | Radio + File | Có | Không chọn | Theo quy tắc 10 tại [Quy tắc chung - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-chung).<br>Gồm:<br>+ Theo mẫu Quyết định hủy / Quyết định sửa chữa, bổ sung do hệ thống tự động sinh (nút "Xem dự thảo", "Tải file")<br>+ Tải file |
-| Lãnh đạo phê duyệt | Enum(String(255)) | Có | Trống | Control UI: Dropdown. Nhóm lãnh đạo cấp phê duyệt đầu tiên theo quy tắc 5 tại [Quy tắc chung - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-chung). |
-| Luồng phê duyệt | String(500) | - | Theo vụ việc | Control UI: Label chỉ đọc, một dòng ngay dưới ô Lãnh đạo phê duyệt. Hiển thị động theo quy tắc 5 tại [Quy tắc chung - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-chung). |
+| Tiêu đề popup | String(255) | - | - | Control UI: Heading text (Read-only).<br>- Nội dung: `Hủy Quyết định giải quyết bồi thường`.<br>- Dòng phụ: `Mã vụ việc: [Mã vụ việc] • Người yêu cầu: [Họ và tên] • Đơn vị: [Cơ quan giải quyết bồi thường]`. |
+| Thanh bước | Component | - | Bước 1 | Control UI: Stepper 2 bước.<br>- Bước 1: `Nhập thông tin`.<br>- Bước 2: `Kéo ô ký & chọn Lãnh đạo`.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`; ẩn khi `Ký ngoài`.<br>- Bước đã hoàn thành hiển thị dấu hoàn thành thay cho số bước. |
+| Khối thông tin quyết định | String(500) | - | Theo quyết định | Control UI: Khối thông tin (Read-only).<br>- Nội dung: `Quyết định bị hủy: số [Số quyết định] ngày [Ngày ban hành] - [Cơ quan ban hành]` của bản ghi Quyết định đang chọn.<br>- Trình lại yêu cầu bị từ chối: thêm dòng `Bị từ chối bởi [Họ tên] ([Thời điểm]): [Lý do]`. |
+| **HÌNH THỨC KÝ** | Section | - | - | Control UI: Section header.<br>- Khối nhập liệu đầu tiên của Bước 1. |
+| Hình thức ký | Enum(String(30)) | Có | `Ký số trên hệ thống` | Control UI: Radio button dạng 02 thẻ chọn cùng chiều cao, đặt đầu form.<br>- Mỗi thẻ gồm tiêu đề và mô tả bên dưới.<br>Gồm:<br>+ Ký số trên hệ thống: mô tả `Trình Lãnh đạo ký duyệt trên phần mềm`<br>+ Ký ngoài (Ban hành trực tiếp): mô tả `Tải lên văn bản PDF đã ký và đóng dấu` |
+| **TỆP VĂN BẢN TRÌNH KÝ** | Section | - | - | Control UI: Section header.<br>- Đặt sau khối `Hình thức ký`.<br>- Tiêu đề đổi thành `VĂN BẢN BAN HÀNH` khi `Hình thức ký` = `Ký ngoài`. |
+| Nguồn tệp văn bản | Enum(String(30)) | Có | `Sinh văn bản theo mẫu 20/BTNN` | Control UI: Segmented control.<br>- Gồm: `Sinh văn bản theo mẫu 20/BTNN`; `Tải lên từ máy`.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`. |
+| **THÔNG TIN ĐIỀN VÀO MẪU 20/BTNN** | Section | - | - | Control UI: Khối con.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`.<br>- Nguồn `Tải lên từ máy`: tiêu đề đổi thành `THÔNG TIN HỦY QUYẾT ĐỊNH`, chỉ gồm `Lý do hủy Quyết định` và `Ngày có hiệu lực`. |
+| Số, ký hiệu văn bản | String(100) | Có | `     /QĐ-` | Control UI: Input text.<br>- Placeholder: `Nhập số, ký hiệu văn bản`.<br>- Chỉ hiển thị khi `Nguồn tệp văn bản` = `Sinh văn bản theo mẫu 20/BTNN`.<br>- Điền vào phần Số của văn bản Mẫu 20/BTNN. |
+| Ngày văn bản | Date | Có | Ngày hiện tại | Control UI: DatePicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Chỉ hiển thị khi `Nguồn tệp văn bản` = `Sinh văn bản theo mẫu 20/BTNN`.<br>- Điền vào phần địa danh, ngày tháng năm của văn bản Mẫu 20/BTNN. |
+| Căn cứ | Text(4000) | Có | `Căn cứ khoản ...(4)..  Điều 48 Luật Trách nhiệm bồi thường của Nhà nước năm 2017 (được sửa đổi, bổ sung bởi Luật số 15/2026/QH16);`<br>`Căn cứ ………………………………(5)………..……………………….,` | Control UI: Textarea, mỗi căn cứ 01 dòng, cho phép sửa.<br>- Placeholder: `Nhập căn cứ, mỗi căn cứ 01 dòng`.<br>- Chỉ hiển thị khi `Nguồn tệp văn bản` = `Sinh văn bản theo mẫu 20/BTNN`.<br>- Mỗi dòng sinh thành 01 đoạn căn cứ của văn bản; bỏ dòng trống. |
+| Lý do hủy Quyết định | Text(4000) | Có | Trống (Hồ sơ `Bị từ chối`: nội dung đã trình lần trước) | Control UI: Textarea.<br>- Placeholder: `Nhập lý do hủy Quyết định`.<br>- Hiển thị với cả 02 nguồn tệp văn bản.<br>- Nguồn `Sinh văn bản theo mẫu 20/BTNN`: điền vào Điều 1 của văn bản.<br>- Lưu và hiển thị tại Khối cảnh báo Đã hủy của MH03 khi yêu cầu được phê duyệt. |
+| Hậu quả pháp lý và biện pháp xử lý | Text(4000) | Có (khi hiển thị) | Trống (Hồ sơ `Bị từ chối`: nội dung đã trình lần trước) | Control UI: Textarea.<br>- Placeholder: `Nhập hậu quả pháp lý và biện pháp xử lý`.<br>- Chỉ hiển thị khi `Nguồn tệp văn bản` = `Sinh văn bản theo mẫu 20/BTNN`.<br>- Dòng đầu điền vào Điều 2 của văn bản (trước cụm *"đối với vụ việc yêu cầu bồi thường của Ông/Bà ..."*); các dòng sau là đoạn tiếp theo của Điều 2; bỏ dòng trống. |
+| Ngày có hiệu lực | Date | Có | Trống | Control UI: DatePicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Hiển thị với cả 02 nguồn tệp văn bản.<br>- Nguồn `Sinh văn bản theo mẫu 20/BTNN`: điền vào Điều 3 của văn bản. |
+| Nơi nhận | Text(2000) | Có | Theo Mẫu 20/BTNN | Control UI: Textarea, mỗi nơi nhận 01 dòng, cho phép sửa.<br>- Placeholder: `Nhập nơi nhận, mỗi nơi nhận 01 dòng`.<br>- Chỉ hiển thị khi `Nguồn tệp văn bản` = `Sinh văn bản theo mẫu 20/BTNN`.<br>- Dòng mặc định 1: `- Như Điều 4;`.<br>- Dòng mặc định 2: `- ……..(10)…….;`.<br>- Dòng mặc định 3: `- ……...(11)……;`.<br>- Dòng mặc định 4: `- Lưu: VT, HSVV.`.<br>- In đúng từng dòng vào phần Nơi nhận của văn bản; bỏ dòng trống. |
+| Văn bản sinh theo mẫu | Component | - | - | Control UI: Khối thông tin (Read-only), 01 dòng.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống` và `Nguồn tệp văn bản` = `Sinh văn bản theo mẫu 20/BTNN`.<br>- Nội dung `Hệ thống tự động sinh Quyết định theo Mẫu 20/BTNN từ thông tin đang nhập.` và nút `Xem trước văn bản` trên cùng 01 dòng. |
+| Tệp văn bản trình ký | File | Có | Trống | Control UI: Vùng kéo thả tệp (Drag & Drop).<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống` và `Nguồn tệp văn bản` = `Tải lên từ máy`.<br>- Chưa có tệp: nội dung `Kéo thả tệp vào đây hoặc Chọn tệp từ máy` và `Chấp nhận tệp .pdf, .doc, .docx (tối đa 50MB)`; cho phép kéo thả tệp hoặc bấm vào vùng để chọn tệp.<br>- Đang chuyển đổi tệp `.doc`, `.docx`: hiển thị `Đang chuyển đổi sang PDF...`.<br>- Có tệp: File Card gồm tên tệp, dung lượng; nút `Xem file`, `Xóa`.<br>- Định dạng `.pdf`, `.doc`, `.docx`.<br>- Dung lượng tối đa 50MB/file. |
+| Tệp văn bản PDF đã ký & đóng dấu | File | Có | Trống | Control UI: Vùng kéo thả tệp (Drag & Drop).<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký ngoài`; là trường duy nhất cần nhập khi Ký ngoài.<br>- Chưa có tệp: nội dung `Kéo thả tệp PDF đã ký & đóng dấu vào đây, hoặc bấm Tải file` và `(Chỉ chấp nhận .pdf, tối đa 50MB)`; cho phép kéo thả tệp hoặc bấm vào vùng để chọn tệp.<br>- Có tệp: File Card gồm tên tệp, dung lượng; nút `Xem file`, `Xóa`.<br>- Định dạng `.pdf`.<br>- Dung lượng tối đa 50MB/file.<br>- Thông báo dưới khối: `Khi bấm Ban hành văn bản, Quyết định hủy Quyết định giải quyết bồi thường được ban hành trực tiếp (không qua bước duyệt của Lãnh đạo trên hệ thống) và Quyết định giải quyết bồi thường chuyển sang trạng thái Đã hủy.` |
+| **TÀI LIỆU KÈM THEO** | Section | - | - | Control UI: Section header.<br>- Đặt ngay dưới khối `Tệp văn bản trình ký`.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`. |
+| Tài liệu kèm theo | List(Object) | Có (khi hiển thị) | Trống (Hồ sơ `Bị từ chối`: theo lần trình trước) | Control UI: Bảng động.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`.<br>- Cột: `STT`, `Tên văn bản, căn cứ`, `Tải file`, `Thao tác` (`Xem file`, `Xóa`; `Xem file` khóa mờ khi dòng chưa có tệp).<br>- Nút `Thêm tài liệu` dưới bảng.<br>- Dòng gợi ý dưới bảng: `Chấp nhận tệp .pdf, .doc, .docx, .jpg, .jpeg, .png (tối đa 50MB/tệp). Lãnh đạo xem được các tài liệu này khi Ký duyệt/Từ chối.`<br>- Mặc định 01 dòng trống.<br>- Bắt buộc tối thiểu 01 dòng có đủ `Tên văn bản, căn cứ` và tệp.<br>- Tên văn bản, căn cứ: Input text, tối đa 500 ký tự; placeholder `Nhập tên văn bản, căn cứ`.<br>- Tải file: nút `Tải file`; có tệp thì hiển thị tên tệp, dung lượng.<br>- Định dạng `.pdf`, `.doc`, `.docx`, `.jpg`, `.jpeg`, `.png`.<br>- Dung lượng tối đa 50MB/tệp.<br>- Lưu cùng phiếu trình; Lãnh đạo xem tại [MH07 - Màn hình Ký duyệt / Từ chối - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh07). |
+| **BƯỚC 2 - VĂN BẢN TRÌNH KÝ** | Component | - | Tệp văn bản trình ký | Control UI: Xem trước văn bản (vùng trái, Read-only).<br>- Ô ký của từng cấp chỉ xuất hiện sau khi bấm `Đặt chữ ký` tại thẻ cấp đó. |
+| **BƯỚC 2 - THIẾT LẬP VỊ TRÍ & KÍCH THƯỚC CHỮ KÝ** | List | - | Theo luồng đã cấu hình | Control UI: Panel (vùng phải), mỗi cấp ký duyệt 01 thẻ.<br>- Tiêu đề thẻ: `Cấp [n] - [Tên đơn vị]`.<br>- Nhãn `Ký nháy` hiển thị khi cấp đó được cấu hình Ký nháy tại [Cấu hình luồng xử lý - Cấu hình luồng xử lý - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Cau_hinh_luong_xu_ly.md); không cấu hình thì không hiển thị nhãn. |
+| Lãnh đạo | Enum(String(50)) | Có | Lãnh đạo đầu tiên | Control UI: Combobox.<br>- Placeholder: `-- Chọn Lãnh đạo --`<br>- Danh sách là Nhóm lãnh đạo của đơn vị ở cấp tương ứng.<br>- Hiển thị `[Họ tên] - [Chức danh]`.<br>- Trình lại: điền sẵn Lãnh đạo đã chọn lần trình trước. |
+| Ô ký | Draggable Box | Có | Chưa có (Hồ sơ `Bị từ chối`: theo lần trình trước) | Control UI: Khung kéo thả.<br>- Hiển thị `Cấp [n] - [Họ tên Lãnh đạo]`.<br>- Chưa đặt: hiển thị `Chưa đặt chữ ký` dưới nút `Đặt chữ ký` khi bấm `Trình Lãnh đạo`. |
+| Nội dung trình | Text(2000) | Không | Trống (Hồ sơ `Bị từ chối`: theo lần trình trước) | Control UI: Textarea.<br>- Placeholder: `Nhập nội dung trình Lãnh đạo`. |
 
 ###### 4.3.3.3.8.2. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Xem dự thảo / Tải file | Button | - **Kiểm tra**: Lý do hủy quyết định (Hủy QĐ) hoặc Nội dung sửa chữa, bổ sung (Sửa chữa, bổ sung QĐ) bắt buộc; để trống thì viền đỏ và dòng "Đây là trường bắt buộc" dưới ô, đưa con trỏ vào ô, không thông báo nổi, không mở tab/không tải tệp.<br>- **Hợp lệ**: mở văn bản dự thảo tại tab mới / tải Word `.doc`, dựng theo [Bảng 2 - Ánh xạ sinh Quyết định hủy Quyết định giải quyết bồi thường](#bang-anh-xa-sinh-qd-huy) hoặc [Bảng 3 - Ánh xạ sinh Quyết định sửa chữa, bổ sung Quyết định giải quyết bồi thường](#bang-anh-xa-sinh-qd-sua-chua) từ nội dung đang nhập. |
-| 2 | Trình Lãnh đạo | Button | - **Thiếu trường bắt buộc**: đánh dấu lỗi theo quy tắc 11, không lưu.<br>- **Hợp lệ**: tạo phiếu trình Nội dung trình `Hủy QĐ` hoặc `Sửa chữa, bổ sung QĐ` (giao đích danh Lãnh đạo cấp 1, đính văn bản dự thảo, kết quả khi cấp cuối phê duyệt theo quy tắc 7); quyết định chuyển `Chờ duyệt` với dòng phụ Nội dung trình; ghi lịch sử; thông báo "Đã trình Lãnh đạo phê duyệt [Nội dung trình]."; đóng popup.<br>- Quyết định gốc vẫn giữ hiệu lực trong thời gian chờ duyệt. |
-| 3 | Hủy bỏ / Đóng (×) | Button | Đóng popup, không lưu. |
+| 1 | Chọn Hình thức ký | Radio card | - `Ký số trên hệ thống`: Thanh bước 02 bước; hiển thị `Nguồn tệp văn bản`, khối thông tin và khối tệp theo nguồn tệp; nút `Hủy bỏ`, `Tiếp tục`.<br>- `Ký ngoài`: ẩn Thanh bước; ẩn `Nguồn tệp văn bản`, khối thông tin; chỉ hiển thị `Tệp văn bản PDF đã ký & đóng dấu`; nút `Hủy bỏ`, `Ban hành văn bản`. |
+| 2 | Chọn Nguồn tệp văn bản | Segmented control | - `Sinh văn bản theo mẫu 20/BTNN`: hiển thị đủ khối `Thông tin điền vào Mẫu 20/BTNN` và nút `Xem trước văn bản`.<br>- `Tải lên từ máy`: khối thông tin chỉ gồm `Lý do hủy Quyết định`, `Ngày có hiệu lực`; hiển thị khối tải `Tệp văn bản trình ký`.<br>- Đổi nguồn thì gỡ tệp văn bản trình ký đang có; giữ nguyên thông tin đã nhập. |
+| 3 | Chọn tệp / Kéo thả tệp | Drag & Drop | Kéo thả tệp vào vùng hoặc bấm vào vùng để chọn tệp cho `Tệp văn bản trình ký` (Ký số) hoặc `Tệp văn bản PDF đã ký & đóng dấu` (Ký ngoài):<br>- **TH1 - Sai định dạng file**: Tệp không đúng định dạng (`.pdf`, `.doc`, `.docx` với Ký số; `.pdf` với Ký ngoài): hiển thị cảnh báo lỗi [MSG-ERR-FILE-001], không tiếp nhận tệp.<br>- **TH2 - File quá dung lượng**: Tệp vượt quá 50MB: hiển thị cảnh báo lỗi [MSG-ERR-FILE-002], không tiếp nhận tệp.<br>- **TH Hợp lệ**: Gắn tệp vào khối dạng File Card, thay thế tệp hiện có.<br>- Tệp `.doc`, `.docx` (Ký số): hệ thống chuyển đổi sang PDF trước khi gắn; trong lúc chuyển đổi hiển thị `Đang chuyển đổi sang PDF...` và khóa nút `Tiếp tục`. |
+| 4 | Xem trước văn bản | Button | Hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới:<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên.<br>- **TH Hợp lệ**: Sinh văn bản theo Mẫu 20/BTNN từ Số, ký hiệu văn bản, Ngày văn bản, Căn cứ, Lý do hủy Quyết định, Ngày có hiệu lực, Nơi nhận đang nhập và thông tin Quyết định bị hủy theo [Bảng 2 - Ánh xạ sinh Quyết định hủy Quyết định giải quyết bồi thường (Mẫu 20/BTNN) - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#bang-anh-xa-sinh-qd-huy); mở xem văn bản tại [MH04 - Popup Xem văn bản - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh04). |
+| 5 | Xem file / Xóa | Button | Tại File Card:<br>- `Xem file`: mở tệp đã tải lên tại tab mới.<br>- `Xóa`: gỡ tệp, khối trở về vùng kéo thả. |
+| 6 | Tiếp tục | Button | Chỉ hiển thị tại Bước 1 khi `Hình thức ký` = `Ký số trên hệ thống`; bị khóa trong lúc chuyển đổi tệp sang PDF.<br>- **TH1 - Bỏ trống trường bắt buộc** (gồm bảng `Tài liệu kèm theo` chưa có dòng đủ `Tên văn bản, căn cứ` và tệp, hoặc dòng đã nhập thiếu tên / tệp): Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không chuyển bước.<br>- **TH Hợp lệ**:<br>- Nguồn `Sinh văn bản theo mẫu 20/BTNN`: sinh văn bản Mẫu 20/BTNN từ thông tin đang nhập làm Tệp văn bản trình ký.<br>- Nguồn `Tải lên từ máy`: dùng tệp đã tải lên.<br>- Chuyển sang Bước 2, hiển thị văn bản trình ký và thẻ các cấp ký duyệt; Bước 1 trên Thanh bước chuyển trạng thái hoàn thành. |
+| 7 | Đặt chữ ký / Nhỏ / Vừa / Lớn / Đặt lại | Button | Tại thẻ từng cấp: `Đặt chữ ký` sinh ô ký của cấp đó trên văn bản; `Nhỏ` / `Vừa` / `Lớn` đổi kích thước; `Đặt lại` đưa ô ký về vị trí mặc định. |
+| 8 | Quay lại | Button | Tại Bước 2: về Bước 1, giữ nguyên thông tin đã nhập. |
+| 9 | Trình Lãnh đạo | Button | Chỉ hiển thị tại Bước 2.<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không trình.<br>- **TH Hợp lệ**:<br>- Tạo phiếu trình Nội dung trình `Hủy QĐ`; giao Lãnh đạo cấp 1 đã chọn, Lãnh đạo các cấp sau theo lựa chọn tại từng thẻ; kết quả khi cấp cuối phê duyệt theo quy tắc 7 tại [Quy tắc chung - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-chung).<br>- Quyết định chuyển `Chờ duyệt` với dòng phụ `Hủy QĐ`; Quyết định gốc vẫn giữ hiệu lực trong thời gian chờ duyệt.<br>- Lưu Lý do hủy Quyết định, Ngày có hiệu lực, thông tin văn bản, tệp văn bản trình ký và vị trí ô ký.<br>- Ghi Lịch sử xử lý `Trình Hủy QĐ` (trình lại: `Trình lại Hủy QĐ`).<br>- Đóng popup, hiển thị thông báo `Đã trình Lãnh đạo phê duyệt Hủy QĐ.`, quay về danh sách. |
+| 10 | Ban hành văn bản | Button | Chỉ hiển thị khi `Hình thức ký` = `Ký ngoài`.<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; chưa tải `Tệp văn bản PDF đã ký & đóng dấu` thì hiển thị dưới vùng tải tệp `Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu.`, viền đỏ vùng kéo thả; không ban hành.<br>- **TH Hợp lệ**: Hiển thị popup xác nhận `Xác nhận ban hành văn bản` nêu văn bản được ban hành trực tiếp, bỏ qua bước duyệt của Lãnh đạo trên hệ thống và Quyết định giải quyết bồi thường chuyển sang trạng thái `Đã hủy`; nút `Hủy bỏ`, `Ban hành`. Bấm `Ban hành`:<br>- Không trình Lãnh đạo; quyết định chuyển `Đã hủy`; hồ sơ luồng của vụ việc (nếu có) chuyển `Đã hủy`.<br>- Lưu tệp PDF đã ký & đóng dấu, cán bộ ban hành và thời điểm; hiển thị tại Khối cảnh báo Đã hủy của MH03.<br>- Ghi Lịch sử xử lý `Ban hành Quyết định hủy Quyết định giải quyết bồi thường (Ký ngoài)`.<br>- Đóng popup, hiển thị `Đã ban hành Quyết định hủy Quyết định giải quyết bồi thường (Ký ngoài).`, quay về danh sách. |
+| 11 | Hủy bỏ / Đóng (×) | Button | - `Hủy bỏ` chỉ hiển thị tại Bước 1.<br>- Đóng popup, không lưu các thông tin vừa nhập, giữ nguyên trạng thái quyết định. |
+| 12 | Thêm tài liệu | Button | Tại bảng `Tài liệu kèm theo`: thêm 01 dòng trống vào cuối bảng. |
+| 13 | Tải file (Tài liệu kèm theo) | Button | Tại dòng của bảng `Tài liệu kèm theo`, hệ thống mở hộp thoại chọn tệp và xử lý theo các trường hợp:<br>- **TH1 - Sai định dạng file**: Tệp không thuộc `.pdf`, `.doc`, `.docx`, `.jpg`, `.jpeg`, `.png`: hiển thị cảnh báo lỗi [MSG-ERR-FILE-001] dưới ô, không tiếp nhận tệp.<br>- **TH2 - File quá dung lượng**: Tệp vượt quá 50MB: hiển thị cảnh báo lỗi [MSG-ERR-FILE-002] dưới ô, không tiếp nhận tệp.<br>- **TH Hợp lệ**: Hiển thị tên tệp, dung lượng tại cột `Tải file`; `Tên văn bản, căn cứ` đang trống thì điền theo tên tệp (bỏ phần mở rộng). |
+| 14 | Xem file / Xóa (Tài liệu kèm theo) | Icon button | - `Xem file`: mở chính tệp đã tải lên tại tab mới; chỉ bấm được khi dòng đã có tệp.<br>- `Xóa`: xóa dòng ngay, không hiển thị popup xác nhận. |
 
----
+<a id="qd-mh05b"></a>
+##### 4.3.3.3.8.3. MH05b - Popup Trình ký Quyết định Sửa chữa, Bổ sung Quyết định giải quyết bồi thường
 
-<a id="qd-mh06"></a>
-##### 4.3.3.3.9. MH06 - Popup Ban hành Quyết định
+- Mở khi bấm `Sửa chữa, bổ sung QĐ` với quyết định `Đã ban hành`, hoặc `Sửa` với yêu cầu `Sửa chữa, bổ sung QĐ` ở trạng thái `Bị từ chối` (điền sẵn dữ liệu lần trình trước).
+- Bố cục giống popup Không thụ lý hồ sơ: Header, Thanh bước (chỉ hiển thị khi Ký số trên hệ thống), Bước 1 (01 cột), Footer.
+- Thứ tự khối tại Bước 1: Khối thông tin quyết định (Read-only), `Hình thức ký` (khối nhập liệu đầu tiên), `Tệp văn bản trình ký` / `Văn bản ban hành`, `Tài liệu kèm theo` (chỉ khi Ký số trên hệ thống).
+- Trình lại yêu cầu `Bị từ chối`: điền lại đúng toàn bộ dữ liệu lần trình trước, gồm nguồn tệp văn bản, thông tin điền vào mẫu, tệp văn bản trình ký đã tải lên, `Tài liệu kèm theo`, Lãnh đạo từng cấp, vị trí ô ký, `Nội dung trình`.
+- `Ký số trên hệ thống`: 02 bước.
+  + Bước 1 - Nhập thông tin: Hình thức ký, Tệp văn bản trình ký (Sinh văn bản theo mẫu 21/BTNN hoặc Tải lên từ máy), Tài liệu kèm theo.
+  + Bước 2 - Kéo ô ký & chọn Lãnh đạo: hiển thị toàn màn hình; vùng trái là văn bản trình ký, vùng phải là thẻ từng cấp ký duyệt theo luồng đã cấu hình và `Nội dung trình`.
+- `Ký ngoài`: không hiển thị Thanh bước; chỉ tải lên tệp PDF đã ký & đóng dấu; bấm `Ban hành văn bản`, xác nhận để ban hành trực tiếp, không trình Lãnh đạo.
 
-Popup chuẩn như [MH05 - Popup Hủy QĐ / Sửa chữa, bổ sung QĐ](#qd-mh05).
-
-###### 4.3.3.3.9.1. Mô tả thông tin trên màn hình
+###### Mô tả thông tin trên popup
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Khối thông tin quyết định | Label | - | Theo quyết định | Mã vụ việc - Người yêu cầu, Cơ quan ban hành, Tổng số tiền bồi thường, Lãnh đạo đã ký duyệt (thời điểm). |
-| Số quyết định | String(50) | Có | Trống | Control UI: Input text. Không trùng với số quyết định khác của cùng cơ quan ban hành. |
-| Ngày ban hành | Date | Có | Ngày hiện tại | Control UI: DatePicker `dd/mm/yyyy`. |
-| Quyết định đã ký số | Label | - | Ẩn | Chỉ hiển thị khi Hình thức ký là `Ký số trên hệ thống` và Lãnh đạo cấp cuối đã ký số: tên tệp Quyết định đã ký số, chứng thư số, thời điểm ký. |
-| Tệp Quyết định đã ký | File | Có điều kiện | Trống | Control UI: nút "Chọn tệp"; nhận `.pdf`, `.doc`, `.docx`. Chỉ hiển thị và bắt buộc khi Hình thức ký là `Ký ngoài`. |
+| Tiêu đề popup | String(255) | - | - | Control UI: Heading text (Read-only).<br>- Nội dung: `Trình ký Quyết định Sửa chữa, Bổ sung Quyết định giải quyết bồi thường`.<br>- Dòng phụ: `Mã vụ việc: [Mã vụ việc] • Người yêu cầu: [Họ và tên] • Đơn vị: [Cơ quan giải quyết bồi thường]`. |
+| Thanh bước | Component | - | Bước 1 | Control UI: Stepper 2 bước.<br>- Bước 1: `Nhập thông tin`.<br>- Bước 2: `Kéo ô ký & chọn Lãnh đạo`.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`; ẩn khi `Ký ngoài`.<br>- Bước đã hoàn thành hiển thị dấu hoàn thành thay cho số bước. |
+| Khối thông tin quyết định | String(500) | - | Theo quyết định | Control UI: Khối thông tin (Read-only).<br>- Nội dung: `Quyết định được sửa chữa, bổ sung: số [Số quyết định] ngày [Ngày ban hành] - [Cơ quan ban hành]`.<br>- Trình lại yêu cầu bị từ chối: thêm dòng `Bị từ chối bởi [Họ tên] ([Thời điểm]): [Lý do]`. |
+| **HÌNH THỨC KÝ** | Section | - | - | Control UI: Section header.<br>- Khối nhập liệu đầu tiên của Bước 1. |
+| Hình thức ký | Enum(String(30)) | Có | `Ký số trên hệ thống` | Control UI: Radio button dạng 02 thẻ chọn cùng chiều cao, đặt đầu form.<br>- Mỗi thẻ gồm tiêu đề và mô tả bên dưới.<br>Gồm:<br>+ Ký số trên hệ thống: mô tả `Trình Lãnh đạo ký duyệt trên phần mềm`<br>+ Ký ngoài (Ban hành trực tiếp): mô tả `Tải lên văn bản PDF đã ký và đóng dấu` |
+| **TỆP VĂN BẢN TRÌNH KÝ** | Section | - | - | Control UI: Section header.<br>- Đặt sau khối `Hình thức ký`.<br>- Tiêu đề đổi thành `VĂN BẢN BAN HÀNH` khi `Hình thức ký` = `Ký ngoài`. |
+| Nguồn tệp văn bản | Enum(String(30)) | Có | `Sinh văn bản theo mẫu 21/BTNN` | Control UI: Segmented control.<br>- Gồm: `Sinh văn bản theo mẫu 21/BTNN`; `Tải lên từ máy`.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`. |
+| **THÔNG TIN ĐIỀN VÀO MẪU 21/BTNN** | Section | - | - | Control UI: Khối con.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`.<br>- Nguồn `Tải lên từ máy`: tiêu đề đổi thành `THÔNG TIN SỬA CHỮA, BỔ SUNG`, chỉ gồm `Nội dung sửa chữa, bổ sung` và `Ngày có hiệu lực`. |
+| Số, ký hiệu văn bản | String(100) | Có | `     /QĐ-` | Control UI: Input text.<br>- Placeholder: `Nhập số, ký hiệu văn bản`.<br>- Chỉ hiển thị khi `Nguồn tệp văn bản` = `Sinh văn bản theo mẫu 21/BTNN`.<br>- Điền vào phần Số của văn bản Mẫu 21/BTNN. |
+| Ngày văn bản | Date | Có | Ngày hiện tại | Control UI: DatePicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Chỉ hiển thị khi `Nguồn tệp văn bản` = `Sinh văn bản theo mẫu 21/BTNN`.<br>- Điền vào phần địa danh, ngày tháng năm của văn bản Mẫu 21/BTNN. |
+| Nội dung sửa chữa, bổ sung | Text(4000) | Có | Theo Mẫu 21/BTNN (Hồ sơ `Bị từ chối`: nội dung đã trình lần trước) | Control UI: Textarea.<br>- Placeholder: `Nhập nội dung sửa chữa, bổ sung`.<br>- Dòng mặc định 1: `Tại dòng thứ ……. trang…… Điều .... của Quyết định số [Số quyết định] đã ghi: ……………………(4)……………………`.<br>- Dòng mặc định 2: `Nay sửa chữa, bổ sung như sau: ………….(5)……………………`.<br>- Hiển thị với cả 02 nguồn tệp văn bản.<br>- Nguồn `Sinh văn bản theo mẫu 21/BTNN`: mỗi dòng sinh thành 01 đoạn tại Điều 1 của văn bản; bỏ dòng trống.<br>- Lưu vào khối `Nội dung sửa chữa, bổ sung có hiệu lực` tại MH03 khi yêu cầu được phê duyệt. |
+| Ngày có hiệu lực | Date | Có | Trống | Control UI: DatePicker.<br>- Định dạng `dd/mm/yyyy`.<br>- Hiển thị với cả 02 nguồn tệp văn bản.<br>- Nguồn `Sinh văn bản theo mẫu 21/BTNN`: điền vào Điều 2 của văn bản. |
+| Nơi nhận | Text(2000) | Có | Theo Mẫu 21/BTNN | Control UI: Textarea, mỗi nơi nhận 01 dòng, cho phép sửa.<br>- Placeholder: `Nhập nơi nhận, mỗi nơi nhận 01 dòng`.<br>- Chỉ hiển thị khi `Nguồn tệp văn bản` = `Sinh văn bản theo mẫu 21/BTNN`.<br>- Dòng mặc định 1: `- Như Điều 3;`.<br>- Dòng mặc định 2: `- …….(7)……..;`.<br>- Dòng mặc định 3: `- …….(8)…......;`.<br>- Dòng mặc định 4: `- Lưu: VT, HSVV.`.<br>- In đúng từng dòng vào phần Nơi nhận của văn bản; bỏ dòng trống. |
+| Văn bản sinh theo mẫu | Component | - | - | Control UI: Khối thông tin (Read-only), 01 dòng.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống` và `Nguồn tệp văn bản` = `Sinh văn bản theo mẫu 21/BTNN`.<br>- Nội dung `Hệ thống tự động sinh Quyết định theo Mẫu 21/BTNN từ thông tin đang nhập.` và nút `Xem trước văn bản` trên cùng 01 dòng. |
+| Tệp văn bản trình ký | File | Có | Trống | Control UI: Vùng kéo thả tệp (Drag & Drop).<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống` và `Nguồn tệp văn bản` = `Tải lên từ máy`.<br>- Chưa có tệp: nội dung `Kéo thả tệp vào đây hoặc Chọn tệp từ máy` và `Chấp nhận tệp .pdf, .doc, .docx (tối đa 50MB)`; cho phép kéo thả tệp hoặc bấm vào vùng để chọn tệp.<br>- Đang chuyển đổi tệp `.doc`, `.docx`: hiển thị `Đang chuyển đổi sang PDF...`.<br>- Có tệp: File Card gồm tên tệp, dung lượng; nút `Xem file`, `Xóa`.<br>- Định dạng `.pdf`, `.doc`, `.docx`.<br>- Dung lượng tối đa 50MB/file. |
+| Tệp văn bản PDF đã ký & đóng dấu | File | Có | Trống | Control UI: Vùng kéo thả tệp (Drag & Drop).<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký ngoài`; là trường duy nhất cần nhập khi Ký ngoài.<br>- Chưa có tệp: nội dung `Kéo thả tệp PDF đã ký & đóng dấu vào đây, hoặc bấm Tải file` và `(Chỉ chấp nhận .pdf, tối đa 50MB)`; cho phép kéo thả tệp hoặc bấm vào vùng để chọn tệp.<br>- Có tệp: File Card gồm tên tệp, dung lượng; nút `Xem file`, `Xóa`.<br>- Định dạng `.pdf`.<br>- Dung lượng tối đa 50MB/file.<br>- Thông báo dưới khối: `Khi bấm Ban hành văn bản, Quyết định sửa chữa, bổ sung được ban hành trực tiếp (không qua bước duyệt của Lãnh đạo trên hệ thống); Quyết định giải quyết bồi thường giữ trạng thái Đã ban hành.` |
+| **TÀI LIỆU KÈM THEO** | Section | - | - | Control UI: Section header.<br>- Đặt ngay dưới khối `Tệp văn bản trình ký`.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`. |
+| Tài liệu kèm theo | List(Object) | Không | Trống (Hồ sơ `Bị từ chối`: theo lần trình trước) | Control UI: Bảng động.<br>- Chỉ hiển thị khi `Hình thức ký` = `Ký số trên hệ thống`.<br>- Cột: `STT`, `Tên văn bản, căn cứ`, `Tải file`, `Thao tác` (`Xem file`, `Xóa`; `Xem file` khóa mờ khi dòng chưa có tệp).<br>- Nút `Thêm tài liệu` dưới bảng.<br>- Dòng gợi ý dưới bảng: `Chấp nhận tệp .pdf, .doc, .docx, .jpg, .jpeg, .png (tối đa 50MB/tệp). Lãnh đạo xem được các tài liệu này khi Ký duyệt/Từ chối.`<br>- Mặc định 01 dòng trống.<br>- Dòng đã nhập phải có đủ `Tên văn bản, căn cứ` và tệp; dòng trống không lưu.<br>- Tên văn bản, căn cứ: Input text, tối đa 500 ký tự; placeholder `Nhập tên văn bản, căn cứ`.<br>- Tải file: nút `Tải file`; có tệp thì hiển thị tên tệp, dung lượng.<br>- Định dạng `.pdf`, `.doc`, `.docx`, `.jpg`, `.jpeg`, `.png`.<br>- Dung lượng tối đa 50MB/tệp.<br>- Lưu cùng phiếu trình; Lãnh đạo xem tại [MH07 - Màn hình Ký duyệt / Từ chối - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh07). |
+| **BƯỚC 2 - VĂN BẢN TRÌNH KÝ** | Component | - | Tệp văn bản trình ký | Control UI: Xem trước văn bản (vùng trái, Read-only).<br>- Ô ký của từng cấp chỉ xuất hiện sau khi bấm `Đặt chữ ký` tại thẻ cấp đó. |
+| **BƯỚC 2 - THIẾT LẬP VỊ TRÍ & KÍCH THƯỚC CHỮ KÝ** | List | - | Theo luồng đã cấu hình | Control UI: Panel (vùng phải), mỗi cấp ký duyệt 01 thẻ.<br>- Tiêu đề thẻ: `Cấp [n] - [Tên đơn vị]`.<br>- Nhãn `Ký nháy` hiển thị khi cấp đó được cấu hình Ký nháy tại [Cấu hình luồng xử lý - Cấu hình luồng xử lý - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Cau_hinh_luong_xu_ly.md); không cấu hình thì không hiển thị nhãn. |
+| Lãnh đạo | Enum(String(50)) | Có | Lãnh đạo đầu tiên | Control UI: Combobox.<br>- Placeholder: `-- Chọn Lãnh đạo --`<br>- Danh sách là Nhóm lãnh đạo của đơn vị ở cấp tương ứng.<br>- Hiển thị `[Họ tên] - [Chức danh]`.<br>- Trình lại: điền sẵn Lãnh đạo đã chọn lần trình trước. |
+| Ô ký | Draggable Box | Có | Chưa có (Hồ sơ `Bị từ chối`: theo lần trình trước) | Control UI: Khung kéo thả.<br>- Hiển thị `Cấp [n] - [Họ tên Lãnh đạo]`.<br>- Chưa đặt: hiển thị `Chưa đặt chữ ký` dưới nút `Đặt chữ ký` khi bấm `Trình Lãnh đạo`. |
+| Nội dung trình | Text(2000) | Không | Trống (Hồ sơ `Bị từ chối`: theo lần trình trước) | Control UI: Textarea.<br>- Placeholder: `Nhập nội dung trình Lãnh đạo`. |
 
-###### 4.3.3.3.9.2. Chức năng trên màn hình
+###### Chức năng trên popup
 
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
-| 1 | Ban hành | Button | - **Thiếu trường bắt buộc**: đánh dấu lỗi theo quy tắc 11.<br>- **Ngày không đúng định dạng**: "Ngày không hợp lệ (định dạng dd/mm/yyyy)".<br>- **Trùng số quyết định**: "Số quyết định đã tồn tại tại cơ quan ban hành".<br>- **Hợp lệ**: lưu Số, Ngày ban hành và văn bản đã ký (Ký số: Quyết định đã ký số trên hệ thống; Ký ngoài: tệp đã tải lên); quyết định chuyển `Đã ban hành`; xử lý liên thông theo quy tắc 9 tại [Quy tắc chung - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-chung) và [Ánh xạ dữ liệu liên thông sang Module Quản lý kinh phí bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#bang-anh-xa-lien-thong-kinh-phi); ghi lịch sử "Ban hành"; thông báo "Đã ban hành Quyết định số [Số].", mở màn hình chi tiết. |
-| 2 | Hủy bỏ | Button | Đóng popup, không lưu. |
+| 1 | Chọn Hình thức ký | Radio card | - `Ký số trên hệ thống`: Thanh bước 02 bước; hiển thị `Nguồn tệp văn bản`, khối thông tin và khối tệp theo nguồn tệp; nút `Hủy bỏ`, `Tiếp tục`.<br>- `Ký ngoài`: ẩn Thanh bước; ẩn `Nguồn tệp văn bản`, khối thông tin; chỉ hiển thị `Tệp văn bản PDF đã ký & đóng dấu`; nút `Hủy bỏ`, `Ban hành văn bản`. |
+| 2 | Chọn Nguồn tệp văn bản | Segmented control | - `Sinh văn bản theo mẫu 21/BTNN`: hiển thị đủ khối `Thông tin điền vào Mẫu 21/BTNN` và nút `Xem trước văn bản`.<br>- `Tải lên từ máy`: khối thông tin chỉ gồm `Nội dung sửa chữa, bổ sung`, `Ngày có hiệu lực`; hiển thị khối tải `Tệp văn bản trình ký`.<br>- Đổi nguồn thì gỡ tệp văn bản trình ký đang có; giữ nguyên thông tin đã nhập. |
+| 3 | Chọn tệp / Kéo thả tệp | Drag & Drop | Kéo thả tệp vào vùng hoặc bấm vào vùng để chọn tệp cho `Tệp văn bản trình ký` (Ký số) hoặc `Tệp văn bản PDF đã ký & đóng dấu` (Ký ngoài):<br>- **TH1 - Sai định dạng file**: Tệp không đúng định dạng (`.pdf`, `.doc`, `.docx` với Ký số; `.pdf` với Ký ngoài): hiển thị cảnh báo lỗi [MSG-ERR-FILE-001], không tiếp nhận tệp.<br>- **TH2 - File quá dung lượng**: Tệp vượt quá 50MB: hiển thị cảnh báo lỗi [MSG-ERR-FILE-002], không tiếp nhận tệp.<br>- **TH Hợp lệ**: Gắn tệp vào khối dạng File Card, thay thế tệp hiện có.<br>- Tệp `.doc`, `.docx` (Ký số): hệ thống chuyển đổi sang PDF trước khi gắn; trong lúc chuyển đổi hiển thị `Đang chuyển đổi sang PDF...` và khóa nút `Tiếp tục`. |
+| 4 | Xem trước văn bản | Button | Hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới:<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên.<br>- **TH Hợp lệ**: Sinh văn bản theo Mẫu 21/BTNN từ Số, ký hiệu văn bản, Ngày văn bản, Nội dung sửa chữa, bổ sung, Ngày có hiệu lực, Nơi nhận đang nhập theo [Bảng 3 - Ánh xạ sinh Quyết định sửa chữa, bổ sung Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#bang-anh-xa-sinh-qd-sua-chua); mở xem văn bản tại [MH04 - Popup Xem văn bản - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh04). |
+| 5 | Xem file / Xóa | Button | Tại File Card:<br>- `Xem file`: mở tệp đã tải lên tại tab mới.<br>- `Xóa`: gỡ tệp, khối trở về vùng kéo thả. |
+| 6 | Tiếp tục | Button | Chỉ hiển thị tại Bước 1 khi `Hình thức ký` = `Ký số trên hệ thống`; bị khóa trong lúc chuyển đổi tệp sang PDF.<br>- **TH1 - Bỏ trống trường bắt buộc** (gồm dòng `Tài liệu kèm theo` đã nhập thiếu `Tên văn bản, căn cứ` hoặc tệp): Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không chuyển bước.<br>- **TH Hợp lệ**:<br>- Nguồn `Sinh văn bản theo mẫu 21/BTNN`: sinh văn bản Mẫu 21/BTNN từ thông tin đang nhập làm Tệp văn bản trình ký.<br>- Nguồn `Tải lên từ máy`: dùng tệp đã tải lên.<br>- Chuyển sang Bước 2, hiển thị văn bản trình ký và thẻ các cấp ký duyệt; Bước 1 trên Thanh bước chuyển trạng thái hoàn thành. |
+| 7 | Đặt chữ ký / Nhỏ / Vừa / Lớn / Đặt lại | Button | Tại thẻ từng cấp: `Đặt chữ ký` sinh ô ký của cấp đó trên văn bản; `Nhỏ` / `Vừa` / `Lớn` đổi kích thước; `Đặt lại` đưa ô ký về vị trí mặc định. |
+| 8 | Quay lại | Button | Tại Bước 2: về Bước 1, giữ nguyên thông tin đã nhập. |
+| 9 | Trình Lãnh đạo | Button | Chỉ hiển thị tại Bước 2.<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không trình.<br>- **TH Hợp lệ**:<br>- Tạo phiếu trình Nội dung trình `Sửa chữa, bổ sung QĐ`; giao Lãnh đạo cấp 1 đã chọn, Lãnh đạo các cấp sau theo lựa chọn tại từng thẻ; kết quả khi cấp cuối phê duyệt theo quy tắc 7 tại [Quy tắc chung - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-chung).<br>- Quyết định chuyển `Chờ duyệt` với dòng phụ `Sửa chữa, bổ sung QĐ`; Quyết định gốc vẫn giữ hiệu lực trong thời gian chờ duyệt.<br>- Lưu Nội dung sửa chữa, bổ sung, Ngày có hiệu lực, thông tin văn bản, tệp văn bản trình ký và vị trí ô ký.<br>- Ghi Lịch sử xử lý `Trình Sửa chữa, bổ sung QĐ` (trình lại: `Trình lại Sửa chữa, bổ sung QĐ`).<br>- Đóng popup, hiển thị thông báo `Đã trình Lãnh đạo phê duyệt Sửa chữa, bổ sung QĐ.`, quay về danh sách. |
+| 10 | Ban hành văn bản | Button | Chỉ hiển thị khi `Hình thức ký` = `Ký ngoài`.<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; chưa tải `Tệp văn bản PDF đã ký & đóng dấu` thì hiển thị dưới vùng tải tệp `Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu.`, viền đỏ vùng kéo thả; không ban hành.<br>- **TH Hợp lệ**: Hiển thị popup xác nhận `Xác nhận ban hành văn bản` nêu văn bản được ban hành trực tiếp, bỏ qua bước duyệt của Lãnh đạo trên hệ thống và Quyết định giải quyết bồi thường giữ trạng thái `Đã ban hành`; nút `Hủy bỏ`, `Ban hành`. Bấm `Ban hành`:<br>- Không trình Lãnh đạo; quyết định giữ trạng thái `Đã ban hành`.<br>- Lưu tệp PDF đã ký & đóng dấu thành 01 lần sửa chữa, bổ sung tại khối `Nội dung sửa chữa, bổ sung có hiệu lực` của MH03.<br>- Yêu cầu bị từ chối: hồ sơ luồng về `Đã ban hành`.<br>- Ghi Lịch sử xử lý `Ban hành Quyết định sửa chữa, bổ sung (Ký ngoài)`.<br>- Đóng popup, hiển thị `Đã ban hành Quyết định sửa chữa, bổ sung Quyết định giải quyết bồi thường (Ký ngoài).`, quay về danh sách. |
+| 11 | Hủy bỏ / Đóng (×) | Button | - `Hủy bỏ` chỉ hiển thị tại Bước 1.<br>- Đóng popup, không lưu các thông tin vừa nhập, giữ nguyên trạng thái quyết định. |
+| 12 | Thêm tài liệu | Button | Tại bảng `Tài liệu kèm theo`: thêm 01 dòng trống vào cuối bảng. |
+| 13 | Tải file (Tài liệu kèm theo) | Button | Tại dòng của bảng `Tài liệu kèm theo`, hệ thống mở hộp thoại chọn tệp và xử lý theo các trường hợp:<br>- **TH1 - Sai định dạng file**: Tệp không thuộc `.pdf`, `.doc`, `.docx`, `.jpg`, `.jpeg`, `.png`: hiển thị cảnh báo lỗi [MSG-ERR-FILE-001] dưới ô, không tiếp nhận tệp.<br>- **TH2 - File quá dung lượng**: Tệp vượt quá 50MB: hiển thị cảnh báo lỗi [MSG-ERR-FILE-002] dưới ô, không tiếp nhận tệp.<br>- **TH Hợp lệ**: Hiển thị tên tệp, dung lượng tại cột `Tải file`; `Tên văn bản, căn cứ` đang trống thì điền theo tên tệp (bỏ phần mở rộng). |
+| 14 | Xem file / Xóa (Tài liệu kèm theo) | Icon button | - `Xem file`: mở chính tệp đã tải lên tại tab mới; chỉ bấm được khi dòng đã có tệp.<br>- `Xóa`: xóa dòng ngay, không hiển thị popup xác nhận. |
 
 ---
 
 <a id="qd-mh07"></a>
-##### 4.3.3.3.10. MH07 - Popup Ký duyệt / Từ chối
+##### 4.3.3.3.9. MH07 - Màn hình Ký duyệt / Từ chối
 
-Dùng chung xử lý của [MH04 - Popup Phê duyệt / Từ chối phê duyệt - Dashboard Lãnh đạo - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_ViecChoLanhDaoXuLy.md#vcld-mh04). Điều kiện: quyết định `Chờ duyệt` và người dùng là Lãnh đạo được giao đích danh tại cấp hiện hành.
+###### 4.3.3.3.9.1. Màn hình
 
-| Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
-| :--- | :--- | :--- | :--- | :--- |
-| Khối thông tin trình | Label | - | Theo phiếu trình | Nội dung trình, Mã vụ việc - Người yêu cầu, Tổng số tiền (hoặc Lý do hủy / Nội dung sửa chữa, bổ sung), Văn bản dự thảo trình (liên kết Xem dự thảo). |
-| Bảng luồng phê duyệt | Grid | - | - | Cấp, Đơn vị phê duyệt, Nhóm lãnh đạo, Kết quả. |
-| Lãnh đạo phê duyệt cấp tiếp theo | Enum(String(255)) | Có điều kiện | Trống | Chỉ hiển thị khi Phê duyệt và chưa phải cấp cuối; danh sách nhóm lãnh đạo cấp tiếp theo. |
-| Hình thức ký | Label | - | Theo quyết định | Chỉ hiển thị khi Ký duyệt Nội dung trình `Quyết định GQBT`: `Ký số trên hệ thống` (cấp cuối: hệ thống ký số Quyết định bằng chứng thư số của Lãnh đạo) hoặc `Ký ngoài`. |
-| Ý kiến phê duyệt / Lý do từ chối | Text(2000) | Có khi Từ chối | Trống | Control UI: Textarea. |
+- Theo [Màn hình Ký duyệt / Từ chối - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-ky-duyet).
+- Mở khi Lãnh đạo được giao đích danh ở cấp phê duyệt hiện hành click `Ký duyệt` hoặc `Từ chối` với quyết định `Chờ duyệt` tại MH01 / MH03.
+
+###### 4.3.3.3.9.2. Mô tả thông tin trên màn hình
+
+- Theo [Mô tả thông tin trên màn hình - Màn hình Ký duyệt / Từ chối - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-ky-duyet-mo-ta).
+- Khác biệt hiển thị:
+  + Tiêu đề màn hình: `Ký duyệt - [Loại trình] - [Mã hồ sơ]` / `Từ chối - [Loại trình] - [Mã hồ sơ]`.
+  + Loại trình gồm: Quyết định GQBT, Hủy QĐ, Sửa chữa, bổ sung QĐ.
+  + Tài liệu kèm theo: theo bảng `Tài liệu kèm theo` cán bộ nhập khi trình tại [MH02b - Popup Trình ký Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh02b), [MH05 - Popup Hủy Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh05), [MH05b - Popup Trình ký Quyết định Sửa chữa, Bổ sung Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh05b).
+  + Tài liệu kèm theo: chỉ hiển thị khi lần trình đang chờ duyệt có tài liệu; đặt ngay dưới khối `Thông tin tổng quan`; chỉ đọc.
+  + Không hiển thị khối `Ký số` (không có Chứng thư số, Mã PIN); nút ở mọi cấp, kể cả cấp cuối, có nhãn `Ký duyệt`.
+  + Ký số / không ký số: thực hiện theo luồng đã cấu hình tương ứng tại [Cấu hình luồng xử lý - Cấu hình luồng xử lý - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Cau_hinh_luong_xu_ly.md).
+
+###### 4.3.3.3.9.3. Chức năng trên màn hình
 
 | STT | Tên chức năng | Định dạng | Mô tả |
-| :--- | :--- | :--- | :--- |
-| 1 | Ký duyệt | Button | Chưa phải cấp cuối: chuyển phiếu trình lên Lãnh đạo cấp tiếp theo đã chọn; quyết định giữ `Chờ duyệt`. Cấp cuối: áp dụng quy tắc 7 tại [Quy tắc chung - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-chung); Hình thức ký `Ký số trên hệ thống`: nút hiển thị "Ký số và ký duyệt", hệ thống ký số Quyết định, ghi lịch sử "Ký số". Ghi lịch sử. |
-| 2 | Từ chối | Button | Bắt buộc Lý do từ chối. Quyết định chuyển `Bị trả lại` (dòng phụ Nội dung trình), lưu người trả lại, thời điểm, lý do; trả lại cán bộ chủ trì. |
-| 3 | Hủy bỏ | Button | Đóng popup. |
+| :-- | :--- | :--- | :--- |
+| 1 | Ký duyệt | Button | - Chỉ hiển thị khi thao tác là `Ký duyệt`; nhãn `Ký duyệt` ở mọi cấp.<br>- Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
+|  |  |  | **TH1 - Quyết định không còn hợp lệ** (kiểm tra tại máy chủ): Hệ thống hiển thị [MSG-ERR-BTNN-LXL-005], đóng màn hình và tải lại danh sách. |
+|  |  |  | **TH2 - Ký số không thành công** (luồng đã cấu hình có ký số): Quyết định giữ `Chờ duyệt`; hệ thống hiển thị thông báo lỗi ký số và giữ màn hình để Lãnh đạo thực hiện lại. |
+|  |  |  | **TH3 - Hợp lệ, chưa phải cấp cuối** (mọi Loại trình):<br>- Ghi kết quả Ký duyệt của cấp hiện hành, kèm Ý kiến (nếu có).<br>- Phiếu trình tự chuyển đến Lãnh đạo cấp tiếp theo cán bộ đã chọn khi trình; quyết định giữ `Chờ duyệt`, dòng phụ giữ Loại trình.<br>- Ghi Lịch sử trình ký `Ký duyệt và chuyển xử lý đến [Họ tên Lãnh đạo cấp tiếp theo]`; ghi Lịch sử xử lý `Ký duyệt`.<br>- Đóng màn hình, hiển thị [MSG-SUC-BTNN-QD-006], quay về màn hình đã mở. |
+|  |  |  | **TH4 - Hợp lệ, cấp cuối, Loại trình `Quyết định GQBT`**:<br>- Ký số Văn bản trình ký theo luồng đã cấu hình tương ứng tại [Cấu hình luồng xử lý - Cấu hình luồng xử lý - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Cau_hinh_luong_xu_ly.md); văn bản đã Ký duyệt là văn bản ban hành của quyết định.<br>- Quyết định chuyển `Đã ban hành` ngay, không qua bước Ban hành của cán bộ; hồ sơ luồng của vụ việc chuyển `Đã ban hành`.<br>- Xử lý liên thông theo quy tắc 9 tại [Quy tắc chung - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-quy-tac-chung): lưu Số, Ngày quyết định; vụ việc chuyển `Chờ thực thi`; tạo 01 bản ghi `Chờ thông báo chi trả` tại [Luồng Chi trả tiền bồi thường - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_KinhPhi_BT.md#kp-chi-tra-tien-bt).<br>- Ghi Lịch sử xử lý `Phê duyệt cấp cuối`. |
+|  |  |  | **TH5 - Hợp lệ, cấp cuối, Loại trình `Hủy QĐ`**:<br>- Quyết định chuyển `Đã hủy`; hồ sơ luồng của vụ việc chuyển `Đã hủy`.<br>- Lưu Lý do hủy Quyết định, Ngày có hiệu lực, Lãnh đạo phê duyệt và thời điểm; hiển thị tại Khối cảnh báo Đã hủy của MH03.<br>- Quyết định hủy (Mẫu 20/BTNN) là văn bản ban hành. |
+|  |  |  | **TH6 - Hợp lệ, cấp cuối, Loại trình `Sửa chữa, bổ sung QĐ`**:<br>- Quyết định giữ `Đã ban hành`; hồ sơ luồng của vụ việc chuyển `Đã ban hành`.<br>- Nội dung sửa chữa, bổ sung, Ngày có hiệu lực, văn bản (Mẫu 21/BTNN) ghi thêm 01 lần vào khối `Nội dung sửa chữa, bổ sung có hiệu lực` của MH03. |
+|  |  |  | **Xử lý chung TH4 - TH6**:<br>- Ghi Lịch sử trình ký `Ký duyệt`.<br>- Đóng màn hình, hiển thị [MSG-SUC-BTNN-QD-007] (Trạng thái: `Đã ban hành` với `Quyết định GQBT` và `Sửa chữa, bổ sung QĐ`; `Đã hủy` với `Hủy QĐ`), quay về màn hình đã mở. |
+| 2 | Từ chối | Button | - Chỉ hiển thị khi thao tác là `Từ chối`.<br>- Khi người dùng click nút, hệ thống kiểm tra dữ liệu và xử lý theo các trường hợp bên dưới. |
+|  |  |  | **TH1 - Bỏ trống trường bắt buộc** (`Lý do từ chối`): Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không lưu. |
+|  |  |  | **TH2 - Quyết định không còn hợp lệ** (kiểm tra tại máy chủ): Hệ thống hiển thị [MSG-ERR-BTNN-LXL-005], đóng màn hình và tải lại danh sách. |
+|  |  |  | **TH3 - Hợp lệ** (mọi cấp, mọi Loại trình):<br>- Quyết định chuyển `Bị từ chối` về cán bộ trình, dòng phụ giữ Loại trình bị từ chối; quyết định gốc (Hủy QĐ, Sửa chữa, bổ sung QĐ) giữ hiệu lực.<br>- Lưu người từ chối, đơn vị, thời điểm, Lý do từ chối; kết quả Ký duyệt của các cấp trong lượt trình này không còn hiệu lực.<br>- Ghi Lịch sử trình ký `Từ chối - trả lại cán bộ trình`; ghi Lịch sử xử lý `Từ chối phê duyệt`.<br>- Đóng màn hình, hiển thị [MSG-SUC-BTNN-QD-008], quay về màn hình đã mở. |
+| 3 | Hủy bỏ | Button | Đóng màn hình, không lưu dữ liệu, quay về màn hình đã mở; quyết định giữ nguyên trạng thái. |
+| 4 | Xem file | Icon button / Link | Mở tệp tài liệu kèm theo tại tab mới. |
+
 
 ---
 
-##### 4.3.3.3.11. Ánh xạ dữ liệu liên thông sang Module Quản lý kinh phí bồi thường
+##### 4.3.3.3.10. Ánh xạ dữ liệu liên thông sang Module Quản lý kinh phí bồi thường
 
 <a id="bang-anh-xa-lien-thong-kinh-phi"></a>
 
 Ánh xạ sang [MH02 - Màn hình Lập/Cập nhật đề nghị cấp kinh phí - Quản lý kinh phí bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_KinhPhi_BT.md#43324-mh02---màn-hình-lậpcập-nhật-đề-nghị-cấp-kinh-phí):
-- **Khởi tạo mới**: khi Quyết định giải quyết bồi thường chuyển `Đã ban hành` (chức năng Ban hành), hệ thống tạo 01 `Đề nghị cấp kinh phí bồi thường` trạng thái `Chờ lập đề nghị`.
+- **Khởi tạo mới**: khi Quyết định giải quyết bồi thường chuyển `Đã ban hành` (Lãnh đạo cấp cuối Ký duyệt hoặc Ban hành văn bản Ký ngoài), hệ thống tạo 01 bản ghi Loại `Chi trả tiền bồi thường` trạng thái `Chờ thông báo chi trả` tại Module Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường, theo [Luồng Chi trả tiền bồi thường - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_KinhPhi_BT.md#kp-chi-tra-tien-bt).
 - **Cập nhật theo Sửa chữa, bổ sung QĐ**: khi yêu cầu Sửa chữa, bổ sung QĐ được Lãnh đạo cấp cuối phê duyệt, hệ thống cập nhật các đề nghị cấp kinh phí đang tồn tại của vụ việc theo cột thứ ba.
-- **Hủy QĐ**: khi yêu cầu Hủy QĐ được Lãnh đạo cấp cuối phê duyệt, các đề nghị kinh phí của vụ việc chưa chi trả chuyển `Đã hủy`; đề nghị tạm ứng đã chi trả chuyển `Chờ thu hồi`, lưu căn cứ là lý do hủy và thời điểm phê duyệt.
+- **Hủy QĐ**: khi yêu cầu Hủy QĐ được Lãnh đạo cấp cuối phê duyệt (hoặc Quyết định hủy Ký ngoài được ban hành), các đề nghị kinh phí của vụ việc chưa chi trả chuyển `Đã hủy`; đề nghị tạm ứng đã chi trả chuyển `Chờ thu hồi`, lưu căn cứ là lý do hủy và thời điểm phê duyệt.
 
 | Trường thông tin trên Đề nghị cấp kinh phí | Nguồn dữ liệu khi khởi tạo mới | Quy tắc khi Sửa chữa, bổ sung QĐ |
 | :--- | :--- | :--- |
 | **Khối Thông tin chung tờ trình** | | |
 | Mã đề xuất kinh phí | Hệ thống tự sinh `KP-YYYY-XXX`, `YYYY` là năm ban hành quyết định | Giữ nguyên |
 | Ngày lập đề nghị | Ngày ban hành quyết định | Giữ nguyên |
-| Loại đề nghị | Cố định `Đề nghị cấp kinh phí bồi thường` | Giữ nguyên |
+| Loại đề nghị | Cố định `Chi trả tiền bồi thường` | Giữ nguyên |
 | Mã vụ việc gốc | Mã vụ việc của quyết định | Giữ nguyên |
 | Số Quyết định làm căn cứ | Số quyết định | Giữ nguyên |
 | Ngày Quyết định làm căn cứ | Ngày ban hành | Giữ nguyên |
-| Trạng thái đề nghị | Cố định `Chờ lập đề nghị` | Chuyển về `Chờ lập đề nghị`; nếu đang `Chờ chi trả` thì phê duyệt cũ bị thu hồi |
+| Trạng thái đề nghị | Cố định `Chờ thông báo chi trả` | Chuyển về `Chờ thông báo chi trả`; nếu đang `Chờ chi trả` thì Thông báo chi trả đã duyệt bị thu hồi |
 | **Khối Chi tiết thông tin người yêu cầu bồi thường** | | |
 | Họ và tên người yêu cầu bồi thường | Họ và tên tại khối Thông tin người yêu cầu | Cập nhật theo nội dung sửa chữa, bổ sung (nếu có) |
 | Địa chỉ | Địa chỉ tại khối Thông tin người yêu cầu | Cập nhật theo nội dung sửa chữa, bổ sung (nếu có) |
@@ -462,16 +593,16 @@ Dùng chung xử lý của [MH04 - Popup Phê duyệt / Từ chối phê duyệt
 | **Khối Người nhận bồi thường** | | |
 | Họ và tên người nhận | Họ và tên người nhận | Cập nhật theo nội dung sửa chữa, bổ sung (nếu có) |
 | Số giấy tờ | Số định danh cá nhân/CCCD | Cập nhật theo nội dung sửa chữa, bổ sung (nếu có) |
-| Phương thức chi trả | Cố định `Chi trả qua chuyển khoản` | Giữ nguyên |
+| Phương thức chi trả | Cố định `Nhận qua chuyển khoản` | Giữ nguyên |
 | Số tài khoản, Tên ngân hàng, Chi nhánh | Số tài khoản, Ngân hàng, Chi nhánh (Chi nhánh có thể trống) | Cập nhật theo nội dung sửa chữa, bổ sung (nếu có) |
 | **Khối Nội dung tờ trình và Tài liệu gửi kèm** | | |
-| Tài liệu gửi kèm - dòng `Quyết định giải quyết bồi thường` | Tệp Quyết định đã ký đính kèm khi Ban hành | Giữ nguyên, bổ sung 01 dòng văn bản sửa chữa, bổ sung |
+| Tài liệu gửi kèm - dòng `Quyết định giải quyết bồi thường` | Văn bản ban hành của Quyết định (văn bản đã Ký duyệt hoặc tệp đã ký Ký ngoài) | Giữ nguyên, bổ sung 01 dòng văn bản sửa chữa, bổ sung |
 | **Khối Căn cứ thay đổi trạng thái theo Quyết định** | Không phát sinh | Ghi nhận: Nội dung trình, Nội dung sửa chữa, bổ sung, Lãnh đạo phê duyệt, thời điểm phê duyệt, trạng thái trước và sau |
 
 ---
 
 <a id="anh-xa-sinh-van-ban-quyet-dinh"></a>
-##### 4.3.3.3.12. Ánh xạ dữ liệu sinh văn bản Quyết định
+##### 4.3.3.3.11. Ánh xạ dữ liệu sinh văn bản Quyết định
 
 <a id="bang-anh-xa-sinh-qd-gqbt-mau18"></a>
 **Bảng 1 - Sinh Quyết định giải quyết bồi thường (Mẫu 18/BTNN)**
@@ -480,23 +611,31 @@ Dùng chung xử lý của [MH04 - Popup Phê duyệt / Từ chối phê duyệt
 - Văn bản sinh tại thời điểm trình được lưu cùng phiếu trình để Lãnh đạo xem đúng bản đã trình.
 
 <a id="bang-anh-xa-sinh-qd-huy"></a>
-**Bảng 2 - Ánh xạ sinh Quyết định hủy Quyết định giải quyết bồi thường**
+**Bảng 2 - Ánh xạ sinh Quyết định hủy Quyết định giải quyết bồi thường (Mẫu 20/BTNN)**
 
 | Thành phần trên văn bản | Nguồn dữ liệu |
 | :--- | :--- |
-| Tên loại và trích yếu | `QUYẾT ĐỊNH` / `Về việc hủy Quyết định giải quyết bồi thường` |
-| Căn cứ | Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14; Quyết định giải quyết bồi thường số, ngày ban hành |
-| Điều 1 | Hủy Quyết định giải quyết bồi thường [Số] ngày [Ngày ban hành] của [Cơ quan ban hành] |
-| Điều 2 | Lý do hủy quyết định |
-| Điều 3, Điều 4, Nơi nhận | Hiệu lực kể từ ngày ký; trách nhiệm thi hành; nơi nhận theo Bảng 1 |
+| Số, ký hiệu | `Số, ký hiệu văn bản` tại [MH05 - Popup Hủy Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh05) |
+| Địa danh, ngày tháng năm | `Ngày văn bản` tại MH05, định dạng `ngày dd tháng mm năm yyyy` |
+| Tên loại và trích yếu | `QUYẾT ĐỊNH` / `Hủy quyết định giải quyết bồi thường` |
+| Thẩm quyền ban hành | Chức vụ của người đứng đầu cơ quan giải quyết bồi thường, in hoa |
+| Căn cứ | `Căn cứ` tại MH05, mỗi dòng nhập là 01 đoạn, bỏ dòng trống |
+| Điều 1 | Hủy Quyết định giải quyết bồi thường số [Số quyết định] ngày [Ngày ban hành] của [Chức vụ người đứng đầu] [Cơ quan ban hành] vì [`Lý do hủy Quyết định` tại MH05]; Số, Ngày, Cơ quan ban hành lấy theo bản ghi Quyết định đang chọn khi bấm `Hủy QĐ` |
+| Điều 2 | `Hậu quả pháp lý và biện pháp xử lý` tại MH05 + *"đối với vụ việc yêu cầu bồi thường của Ông/Bà [Người yêu cầu bồi thường]."*; các dòng sau của trường là đoạn tiếp theo |
+| Điều 3 | Hiệu lực kể từ `Ngày có hiệu lực` tại MH05 |
+| Điều 4 | Trách nhiệm thi hành: Ông/Bà [Người yêu cầu bồi thường] và cơ quan, tổ chức, cá nhân có liên quan |
+| Nơi nhận | `Nơi nhận` tại MH05, in đúng từng dòng, bỏ dòng trống |
 
 <a id="bang-anh-xa-sinh-qd-sua-chua"></a>
-**Bảng 3 - Ánh xạ sinh Quyết định sửa chữa, bổ sung Quyết định giải quyết bồi thường**
+**Bảng 3 - Ánh xạ sinh Quyết định sửa chữa, bổ sung Quyết định giải quyết bồi thường (Mẫu 21/BTNN)**
 
 | Thành phần trên văn bản | Nguồn dữ liệu |
 | :--- | :--- |
-| Tên loại và trích yếu | `QUYẾT ĐỊNH` / `Về việc sửa chữa, bổ sung Quyết định giải quyết bồi thường` |
-| Căn cứ | Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14; Quyết định giải quyết bồi thường số, ngày ban hành |
-| Điều 1 | Nội dung sửa chữa, bổ sung; mỗi dòng nhập là 01 mục, đánh số khi có từ 02 dòng |
-| Điều 2 | Các nội dung khác của quyết định giữ nguyên hiệu lực |
-| Điều 3, Điều 4, Nơi nhận | Hiệu lực kể từ ngày ký; trách nhiệm thi hành; nơi nhận theo Bảng 1 |
+| Số, ký hiệu | `Số, ký hiệu văn bản` tại [MH05b - Popup Trình ký Quyết định Sửa chữa, Bổ sung Quyết định giải quyết bồi thường - Quyết định giải quyết bồi thường - Bồi thường nhà nước (Website Quản trị)](#qd-mh05b) |
+| Địa danh, ngày tháng năm | `Ngày văn bản` tại MH05b, định dạng `ngày dd tháng mm năm yyyy` |
+| Tên loại và trích yếu | `QUYẾT ĐỊNH` / `Sửa chữa, bổ sung quyết định giải quyết bồi thường` |
+| Căn cứ | Cố định theo mẫu: `Căn cứ khoản 4, 5 Điều 48 Luật Trách nhiệm bồi thường của Nhà nước năm 2017,` |
+| Điều 1 | Số, ngày ban hành, cơ quan ban hành của quyết định gốc; tiếp theo là `Nội dung sửa chữa, bổ sung` tại MH05b, mỗi dòng nhập là 01 đoạn, bỏ dòng trống |
+| Điều 2 | Hiệu lực kể từ `Ngày có hiệu lực` tại MH05b |
+| Điều 3 | Trách nhiệm thi hành: Ông/Bà [Người yêu cầu bồi thường] và cơ quan, tổ chức, cá nhân có liên quan |
+| Nơi nhận | `Nơi nhận` tại MH05b, in đúng từng dòng, bỏ dòng trống |

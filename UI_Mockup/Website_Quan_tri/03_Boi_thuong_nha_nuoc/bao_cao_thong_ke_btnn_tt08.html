@@ -144,8 +144,9 @@
 <div class="container">
 
     <div class="page-header">
-        <h1><i class="fa-solid fa-file-invoice"></i> <span id="pageTitle">Báo cáo quản lý BTNN</span></h1>
-        <p id="pageSubtitle">Tổng hợp, kiểm tra và kết xuất biểu mẫu báo cáo công tác bồi thường nhà nước theo Thông tư 08/2019/TT-BTP.</p>
+        <h1 data-uxu-title><span id="pageTitle">Báo cáo quản lý BTNN</span></h1>
+        <!-- Bỏ dòng mô tả phụ dưới tiêu đề (tiêu đề = tên mục Menu); giữ phần tử ẩn để mã cũ gán nội dung không lỗi -->
+        <p id="pageSubtitle" hidden></p>
     </div>
 
     <div class="card-section">
@@ -528,7 +529,7 @@
         thong_ke_pham_vi: { title: 'Thống kê chi tiết vụ việc YCBT theo phạm vi', subtitle: 'Tổng hợp bộ chỉ tiêu cốt lõi theo 06 lĩnh vực phát sinh thiệt hại [DM_22].', listLabel: 'Bảng thống kê vụ việc YCBT theo phạm vi', type: 'core', dataKey: 'scope', groupLabel: 'Lĩnh vực phát sinh thiệt hại' },
         thong_ke_co_quan: { title: 'Thống kê chi tiết vụ việc YCBT theo cơ quan', subtitle: 'Tổng hợp bộ chỉ tiêu cốt lõi theo từng đơn vị/cơ quan cụ thể.', listLabel: 'Bảng thống kê vụ việc YCBT theo cơ quan', type: 'core', dataKey: 'agency', groupLabel: 'Đơn vị/Cơ quan', showAgencyInfo: true },
         thong_ke_dia_phuong: { title: 'Thống kê kết quả giải quyết YCBT tại địa phương', subtitle: 'Tái sử dụng chỉ tiêu Mẫu số 03/BTNN, nhóm theo từng tỉnh/thành.', listLabel: 'Bảng kết quả giải quyết YCBT tại địa phương theo chỉ tiêu Mẫu 03/BTNN', type: 'local03' },
-        xep_loai: { title: 'Báo cáo tổng hợp kết quả đánh giá và xếp loại kết quả công tác bồi thường nhà nước', subtitle: 'Tổng hợp kết quả chấm điểm theo đơn vị, địa phương, trạng thái kỳ chấm điểm và nhóm tiêu chí.', listLabel: 'Bảng kết quả tổng hợp theo đơn vị', type: 'classification' },
+        xep_loai: { title: 'Báo cáo tổng hợp kết quả đánh giá xếp loại', subtitle: 'Tổng hợp kết quả chấm điểm theo đơn vị, địa phương, trạng thái kỳ chấm điểm và nhóm tiêu chí.', listLabel: 'Bảng kết quả tổng hợp theo đơn vị', type: 'classification' },
         mau01: { title: 'Mẫu 01 - Danh mục vụ việc giải quyết yêu cầu bồi thường', subtitle: 'Danh mục chi tiết vụ việc giải quyết yêu cầu bồi thường theo Điều 10 Thông tư 08/2019/TT-BTP.', listLabel: 'Danh mục vụ việc theo 06 lĩnh vực phát sinh thiệt hại' },
         mau03: { title: 'Mẫu 03 - Tổng hợp tình hình yêu cầu bồi thường, giải quyết bồi thường và chi trả tiền bồi thường', subtitle: 'Báo cáo tổng hợp theo Mẫu số 03/BTNN ban hành kèm Thông tư 08/2019/TT-BTP.', listLabel: 'Mẫu số 03/BTNN - Tổng hợp tình hình yêu cầu bồi thường, giải quyết bồi thường và chi trả tiền bồi thường' },
         mau04: { title: 'Mẫu 04 - Tình hình thực hiện trách nhiệm hoàn trả', subtitle: 'Báo cáo tình hình thực hiện trách nhiệm hoàn trả theo Mẫu số 04/BTNN ban hành kèm Thông tư 08/2019/TT-BTP.', listLabel: 'Mẫu số 04/BTNN - Tình hình thực hiện trách nhiệm hoàn trả' }

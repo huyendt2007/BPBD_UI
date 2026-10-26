@@ -3138,7 +3138,7 @@ const systemPermissions = [
                          },
                          {
                              "id":  "WebAdmin-13",
-                             "name":  "Quản lý kinh phí bồi thường",
+                             "name":  "Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường",
                              "children":  [
 
                                           ]

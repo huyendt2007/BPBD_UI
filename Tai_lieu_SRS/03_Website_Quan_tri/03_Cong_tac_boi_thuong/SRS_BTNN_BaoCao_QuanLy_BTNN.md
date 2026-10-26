@@ -20,7 +20,7 @@
 
 \- Người dùng được phân quyền truy cập nhóm menu `Báo cáo quản lý BTNN`.
 
-\- Dữ liệu vụ việc YCBT đã phát sinh tại các module Tiếp nhận YCBT, Giải quyết yêu cầu bồi thường, Quyết định giải quyết bồi thường, Cấp kinh phí tạm ứng/Bồi thường, Xem xét trách nhiệm hoàn trả, Theo dõi vụ việc tại Tòa án.
+\- Dữ liệu vụ việc YCBT đã phát sinh tại các module Tiếp nhận YCBT, Giải quyết yêu cầu bồi thường, Quyết định giải quyết bồi thường, Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường, Xem xét trách nhiệm hoàn trả, Theo dõi vụ việc tại Tòa án.
 
 \- Số tiền trên màn hình báo cáo hiển thị theo đơn vị `nghìn đồng`, hệ thống tự động quy đổi từ dữ liệu nghiệp vụ lưu theo đơn vị đồng.
 
@@ -38,7 +38,7 @@ Các báo cáo từ mục 4.3.3.24.4 đến 4.3.3.24.8 dùng chung bộ chỉ ti
 | Số vụ đang giải quyết | Integer(10) | - | Hệ thống tính | Đếm vụ việc có trạng thái thuộc nhóm đang xử lý theo danh mục [DM_24]. |
 | Số vụ đã giải quyết xong | Integer(10) | - | Hệ thống tính | Đếm vụ việc đã có kết quả giải quyết cuối cùng, bao gồm `Hoàn thành` và các vụ đã có văn bản giải quyết bồi thường có hiệu lực pháp luật. |
 | Số vụ đình chỉ/tạm đình chỉ | Integer(10) | - | Hệ thống tính | Đếm vụ việc có trạng thái `Tạm đình chỉ giải quyết` hoặc `Đình chỉ giải quyết` trong kỳ báo cáo. |
-| Số vụ đã chi trả | Integer(10) | - | Hệ thống tính | Đếm vụ việc có phát sinh chi trả tiền bồi thường hoàn thành theo module Cấp kinh phí tạm ứng/Bồi thường. |
+| Số vụ đã chi trả | Integer(10) | - | Hệ thống tính | Đếm vụ việc có phát sinh chi trả tiền bồi thường hoàn thành theo module Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường. |
 | Tổng tiền đã chi trả | Decimal(18,0) | - | Hệ thống tính | Tổng số tiền thực tế đã chi trả trong kỳ báo cáo, đơn vị nghìn đồng. |
 | Tổng tiền còn phải chi trả | Decimal(18,0) | - | Hệ thống tính | Tổng số tiền còn phải chi trả theo quyết định/bản án có hiệu lực, đơn vị nghìn đồng. |
 | Tỷ lệ giải quyết | Decimal(5,2) | - | Hệ thống tính | Công thức: `Số vụ đã giải quyết xong / (Số vụ thụ lý mới + Số vụ kỳ trước chuyển sang) * 100`. Nếu mẫu số bằng 0 thì hiển thị `0%`. |

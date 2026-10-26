@@ -365,7 +365,7 @@
                         cqCap: "Bộ Tài chính",
                         payoutDate: "10/05/2023",
                         payoutAmountReal: 4800000000,
-                        payoutMethod: "Chuyển khoản qua ngân hàng",
+                        payoutMethod: "Nhận qua chuyển khoản",
                         payoutRecName: "Công ty Hải Phát (Đại diện pháp luật)",
                         payoutBankUser: "CÔNG TY HẢI PHÁT",
                         payoutBankAccount: "1100223344",
@@ -461,7 +461,7 @@
                         cqCap: "Sở Tài chính Hà Nội",
                         payoutDate: "05/05/2026",
                         payoutAmountReal: 250000000,
-                        payoutMethod: "Chuyển khoản qua ngân hàng",
+                        payoutMethod: "Nhận qua chuyển khoản",
                         payoutRecName: "Lê Văn D",
                         payoutBankUser: "LÊ VĂN D",
                         payoutBankAccount: "123456789012",
@@ -776,7 +776,7 @@
                         cqCap: "Cục Thi hành án dân sự Hà Nội",
                         payoutDate: "05/06/2026",
                         payoutAmountReal: 100000000,
-                        payoutMethod: "Chuyển khoản qua ngân hàng",
+                        payoutMethod: "Nhận qua chuyển khoản",
                         payoutRecName: "Lê Văn H",
                         payoutBankUser: "LÊ VĂN H",
                         payoutBankAccount: "001100293421",
@@ -795,7 +795,7 @@
                         cqCap: "Sở Tài chính Hà Nội",
                         payoutDate: "20/07/2026",
                         payoutAmountReal: 750000000,
-                        payoutMethod: "Chuyển khoản qua ngân hàng",
+                        payoutMethod: "Nhận qua chuyển khoản",
                         payoutRecName: "Lê Văn H",
                         payoutBankUser: "LÊ VĂN H",
                         payoutBankAccount: "001100293421",
@@ -6806,14 +6806,9 @@ function downloadSupplementFile(name) {
 
 function removeSupplementFile(idx) {
     if (idx < 0 || idx >= currentSupplementFiles.length) return;
-    const fileName = currentSupplementFiles[idx].name;
-    showConfirmModal(`Bạn có chắc chắn muốn xóa tài liệu: "${fileName}" khỏi danh sách tài liệu kèm theo không?`, () => {
-        currentSupplementFiles.splice(idx, 1);
-        renderSupplementFilesList();
-        if (typeof showToast === 'function') {
-            showToast(`Đã xóa tài liệu: ${fileName}`, 'success');
-        }
-    });
+    // Xóa thẳng, không hỏi xác nhận
+    currentSupplementFiles.splice(idx, 1);
+    renderSupplementFilesList();
 }
 
 function clearSupplementInputError(inputEl, errorElId) {

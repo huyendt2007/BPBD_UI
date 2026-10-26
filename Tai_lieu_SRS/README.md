@@ -130,8 +130,7 @@ Tai lieu phan tich/
     │   ├── SRS_BTNN_GiaiQuyetBT_QuyetDinh_GQBT.md # Dự thảo, trình ký Quyết định giải quyết bồi thường
     │   ├── SRS_BTNN_GiaiQuyetBT_KinhPhi_BT.md   # Lập dự toán, cấp phát, chi trả & sung quỹ kinh phí
     │   ├── SRS_BTNN_GiaiQuyetBT_Xem xét Hoàn trả.md # Hội đồng hoàn trả, thu hồi tiền từ công chức có lỗi
-    │   ├── SRS_BTNN_GiaiQuyetBT_TraCuu_VuViec.md # Tra cứu toàn diện các vụ việc bồi thường
-    │   ├── SRS_BTNN_TraCuuVuViec_PhucHoiDanhDu.md # Theo dõi tổ chức xin lỗi & phục hồi danh dự
+    │   ├── SRS_BTNN_GiaiQuyetBT_TraCuu_VuViec.md # Tra cứu vụ việc bồi thường (01 danh sách chung, gồm vụ việc có phục hồi danh dự)
     │   ├── SRS_BTNN_Cham_Diem.md                # Chấm điểm đánh giá công tác BTNN theo tiêu chí
     │   ├── SRS_BTNN_BaoCao_QuanLy_BTNN.md       # Báo cáo quản trị công tác BTNN toàn quốc
     │   ├── SRS_BTNN_QuanLyBaoCao_TT08.md        # Quản lý kỳ báo cáo thống kê theo TT 08/2019/TT-BTP

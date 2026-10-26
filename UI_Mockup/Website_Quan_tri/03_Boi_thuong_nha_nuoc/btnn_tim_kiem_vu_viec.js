@@ -1,6 +1,6 @@
 /*
  * Popup chuẩn Tìm kiếm nâng cao vụ việc BTNN (mockup) - dùng chung cho các màn có trường Mã vụ việc liên quan.
- * Lưới: Mã vụ việc (VVBT-), Mã hồ sơ GQBT (BT-, mở chi tiết tab mới), Họ và tên người yêu cầu, Họ và tên người bị thiệt hại, Cơ quan giải quyết,
+ * Lưới: Mã vụ việc (VVBT-), Mã hồ sơ GQBT (BT-, mở chi tiết tab mới), Tên cá nhân/Tổ chức yêu cầu, Tên cá nhân/Tổ chức bị thiệt hại, Cơ quan giải quyết,
  * Số QĐ/Bản án, Ngày QĐ/Bản án, Trạng thái; tìm kiếm theo toàn bộ thông tin trên lưới.
  * Phạm vi dữ liệu theo cấp của người dùng đăng nhập (BTNN_WF): Bộ Tư pháp toàn quốc; Sở Tư pháp theo địa bàn tỉnh
  * và vụ việc do Sở tiếp nhận; cơ quan giải quyết bồi thường theo vụ việc do đơn vị giải quyết.
@@ -16,21 +16,22 @@
     // Vụ việc yêu cầu bồi thường mẫu (trạng thái khác Chờ tiếp nhận)
     const CASES = [
         row('BT-2026-012', 'Lê Văn H', '', 'UBND-CG', '22/QĐ-GQBT', '05/08/2026', 'Hoàn thành'),
-        row('BT-2026-021', 'Hoàng Văn R', '', 'CCTHADS-BT', '', '', 'Đang xác minh thiệt hại'),
-        row('BT-2026-003-A', 'Công ty ABC', '', 'UBND-HK', '', '', 'Đang thương lượng'),
-        row('BT-2026-010-TDC', 'Đặng Thị Thu', 'Đặng Văn T', 'THADS-LD', '', '', 'Chờ thụ lý', 'STP-HN'),
+        row('BT-2026-021', 'Hoàng Văn R', '', 'CCTHADS-BT', '', '', 'Xác minh thiệt hại'),
+        row('BT-2026-003-A', 'Công ty ABC', '', 'UBND-HK', '', '', 'Thương lượng'),
+        row('BT-2026-010-TDC', 'Đặng Thị Thu', 'Đặng Văn T', 'THADS-LD', '', '', 'Cử người giải quyết bồi thường', 'STP-HN'),
         row('BT-2026-045', 'Nguyễn Văn Bình', '', 'TAND-HN', 'Bản án số 12/2026/HSST', '10/06/2026', 'Hoàn thành'),
-        row('BT-2026-030', 'Trần Thị Mai', '', 'UBND-DD', '', '', 'Đang thương lượng'),
-        row('BT-2026-052', 'Công ty TNHH Minh Phát', '', 'TAND-LD', 'Bản án số 45/2026/HCST', '15/07/2026', 'Đang xác minh thiệt hại'),
+        row('BT-2026-030', 'Trần Thị Mai', '', 'UBND-DD', '', '', 'Thương lượng'),
+        row('BT-2026-052', 'Công ty TNHH Minh Phát', '', 'TAND-LD', 'Bản án số 45/2026/HCST', '15/07/2026', 'Xác minh thiệt hại'),
         row('BT-2026-018', 'Lê Văn Hùng', '', 'THADS-HP', '', '', 'Không thụ lý'),
-        row('BT-2026-038', 'Phạm Thị Hoa', '', 'CA-TX', '', '', 'Chờ thụ lý'),
+        row('BT-2026-038', 'Phạm Thị Hoa', '', 'CA-TX', '', '', 'Cử người giải quyết bồi thường'),
         row('BT-2026-022', 'Đỗ Thị Hằng', 'Đỗ Văn Nam', 'VKS-Q1', 'Bản án số 08/2026/DSPT', '05/06/2026', 'Đình chỉ giải quyết'),
         row('BT-2026-014', 'Vũ Thị Lan', '', 'UBND-CG', '', '', 'Chờ ban hành QĐ'),
         row('BT-2026-061', 'Hoàng Văn Đức', '', 'TAND-NT', 'Bản án số 33/2026/HCPT', '18/03/2026', 'Đang phục hồi danh dự'),
-        row('BT-2026-009', 'Bùi Thị Thu', '', 'CCTHADS-TT', '05/QĐ-GQBT', '10/01/2026', 'Sung quỹ nhà nước')
+        row('BT-2026-009', 'Bùi Thị Thu', '', 'CCTHADS-TT', '05/QĐ-GQBT', '10/01/2026', 'Hoàn thành')
     ];
-    const STATUS_OPTIONS = ['Chờ duyệt', 'Bị trả lại', 'Chờ phát hành văn bản', 'Yêu cầu bổ sung', 'Chờ thụ lý', 'Không thụ lý', 'Đã chuyển CQGQBT',
-        'Đang xác minh thiệt hại', 'Đang thương lượng', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Hoàn thành', 'Hoãn giải quyết', 'Tạm đình chỉ giải quyết', 'Đình chỉ giải quyết', 'Sung quỹ nhà nước', 'Đang phục hồi danh dự'];
+    // 17 Trạng thái vụ việc Giải quyết YCBT (trừ Chờ tiếp nhận)
+    const STATUS_OPTIONS = ['Chờ duyệt', 'Bị từ chối', 'Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Hoàn thành',
+        'Đang phục hồi danh dự', 'Hoãn phục hồi danh dự', 'Từ chối phục hồi danh dự', 'Hoãn giải quyết', 'Đình chỉ giải quyết', 'Đã chuyển CQGQBT', 'Không thụ lý', 'Yêu cầu bổ sung'];
 
     function fold(s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase().trim(); }
     function parseDate(s) { const p = String(s || '').split('/'); return p.length === 3 ? new Date(p[2], p[1] - 1, p[0]) : null; }
@@ -124,8 +125,8 @@
                     <div class="bcl-scope"><i class="fa-solid fa-shield-halved"></i> Phạm vi dữ liệu: <b id="bclScope"></b></div>
                     <div class="bcl-grid">
                         ${input('bclCode', 'Mã vụ việc', 'Nhập mã vụ việc (VVBT-...)')}
-                        ${input('bclRequester', 'Họ và tên người yêu cầu', 'Nhập họ và tên người yêu cầu...')}
-                        ${input('bclVictim', 'Họ và tên người bị thiệt hại', 'Nhập họ và tên người bị thiệt hại...')}
+                        ${input('bclRequester', 'Tên cá nhân/Tổ chức yêu cầu', 'Nhập tên cá nhân/tổ chức yêu cầu...')}
+                        ${input('bclVictim', 'Tên cá nhân/Tổ chức bị thiệt hại', 'Nhập tên cá nhân/tổ chức bị thiệt hại...')}
                         ${input('bclAgency', 'Cơ quan giải quyết', 'Nhập cơ quan giải quyết...')}
                         ${input('bclDecNo', 'Số QĐ/Bản án', 'Nhập số QĐ/Bản án...')}
                         ${input('bclFrom', 'Từ ngày QĐ/Bản án', 'dd/mm/yyyy')}
@@ -137,7 +138,7 @@
                         <button type="button" class="btn btn-primary" onclick="BTNN_CASE.search()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
                     </div>
                     <table class="bcl-table">
-                        <thead><tr><th>Mã vụ việc</th><th>Mã hồ sơ GQBT</th><th>Họ và tên người yêu cầu</th><th>Họ và tên người bị thiệt hại</th><th>Cơ quan giải quyết</th><th>Số QĐ/Bản án</th><th>Ngày QĐ/Bản án</th><th>Trạng thái</th><th style="text-align:center;">Thao tác</th></tr></thead>
+                        <thead><tr><th>Mã vụ việc</th><th>Mã hồ sơ GQBT</th><th>Tên cá nhân/Tổ chức yêu cầu</th><th>Tên cá nhân/Tổ chức bị thiệt hại</th><th>Cơ quan giải quyết</th><th>Số QĐ/Bản án</th><th>Ngày QĐ/Bản án</th><th>Trạng thái</th><th style="text-align:center;">Thao tác</th></tr></thead>
                         <tbody id="bclBody"></tbody>
                     </table>
                 </div>

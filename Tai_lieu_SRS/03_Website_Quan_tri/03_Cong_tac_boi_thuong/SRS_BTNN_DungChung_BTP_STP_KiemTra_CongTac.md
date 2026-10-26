@@ -73,7 +73,7 @@ flowchart TD
 | Thời gian kiểm tra thực tế | String(50) | - | - | Hiển thị `Từ ngày - Đến ngày` thực tế, định dạng `dd/mm/yyyy`; hiển thị `-` khi chưa cập nhật kết quả. |
 | Trưởng đoàn kiểm tra | String(100) | - | - | Họ và tên thành viên có vai trò `Trưởng đoàn` trong bảng Đoàn kiểm tra. |
 | Trạng thái | Enum(String(50)) | - | - | Control UI: Badge, theo dữ liệu bản ghi. |
-| Thao tác | - | - | - | Control UI: Icon<br>+ Sửa kế hoạch<br>+ Cập nhật kết quả |
+| Thao tác | - | - | - | Control UI: Icon<br>+ Sửa kế hoạch<br>+ Cập nhật kết quả<br>- Cột cố định bên phải lưới khi cuộn ngang. |
 | Phân trang | - | - | 20 bản ghi/trang | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
 
 ###### 4.3.3.9.3.3. Chức năng trên màn hình

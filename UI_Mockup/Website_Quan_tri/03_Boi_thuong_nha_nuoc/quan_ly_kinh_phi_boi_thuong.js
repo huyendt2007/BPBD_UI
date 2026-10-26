@@ -16,7 +16,7 @@ let mockClaims = [
         agency: "Tòa án nhân dân TP. Hà Nội",
         field: "Trong hoạt động tố tụng hình sự",
         amount: 350000000,
-        status: "Đang xác minh thiệt hại",
+        status: "Xác minh thiệt hại",
         suggestedAdvance: 100000000,
 
         // Advance details
@@ -47,7 +47,7 @@ let mockClaims = [
         agency: "UBND Quận Cầu Giấy",
         field: "Trong hoạt động quản lý hành chính",
         amount: 150000000,
-        status: "Đang xác minh thiệt hại",
+        status: "Xác minh thiệt hại",
         suggestedAdvance: 50000000,
 
         // Advance details
@@ -132,7 +132,7 @@ let mockClaims = [
         agency: "Tòa án nhân dân TP. Hà Nội",
         field: "Trong hoạt động tố tụng hình sự",
         amount: 320000000,
-        status: "Đang xác minh thiệt hại",
+        status: "Xác minh thiệt hại",
         suggestedAdvance: 90000000,
         advanceTinhThan: 50000000,
         advanceKhac: 40000000,
@@ -248,7 +248,7 @@ let proposalsList = [
         notes: "Khoản tạm ứng đã chi trả xong, phát sinh nghĩa vụ thu hồi do Quyết định giải quyết bồi thường bị hủy.",
         payoutDate: "06/09/2026",
         payoutAmountReal: 40000000,
-        payoutMethod: "Chuyển khoản qua ngân hàng",
+        payoutMethod: "Nhận qua chuyển khoản",
         payoutRecName: "Trần Thị Hòa",
         statusChangeBasis: {
             decisionType: "Quyết định hủy quyết định giải quyết bồi thường",
@@ -287,7 +287,7 @@ let proposalsList = [
         notes: "Khoản kinh phí chi trả thừa cần thu hồi do Quyết định sửa chữa giảm số tiền bồi thường.",
         payoutDate: "16/09/2026",
         payoutAmountReal: 90000000,
-        payoutMethod: "Chi trả qua chuyển khoản",
+        payoutMethod: "Nhận qua chuyển khoản",
         payoutRecName: "NGUYỄN THỊ MAI",
         recovery: {
             basisDecisionNo: "21/QĐ-SCBSGQBT",
@@ -362,148 +362,9 @@ let proposalsList = [
         }
     },
 
-    // ===== 4. TRẠNG THÁI: CHỜ DUYỆT (04 bản ghi - Phục vụ Lọc nhanh) =====
-    {
-        id: "P3",
-        code: "KP-2026-003",
-        type: "Cấp kinh phí bồi thường",
-        ycbtCode: "BT-2026-005",
-        nycName: "Lê Văn D",
-        nycRole: "Người bị thiệt hại",
-        amount: 200000000,
-        user: "Lê Văn Nam",
-        date: "14/09/2026",
-        status: "Chờ duyệt",
-        source: "Ngân sách địa phương (Dự phòng)",
-        cqCap: "Sở Tài chính Hà Nội",
-        notes: "Đề nghị cấp phát kinh phí bồi thường chính thức 250.000.000 đ theo quyết định bồi thường số 104/QD-BT, trừ tạm ứng đã nhận 50 triệu.",
-        files: [{ name: "Tờ trình Lê Văn D", file: "To_trinh_cap_KP_LeVanD.pdf" }],
-        approvedDamages: {
-            taiSan: 50000000,
-            thuNhap: 30000000,
-            tinhThan: 100000000,
-            chiPhiKhac: 20000000
-        }
-    },
-    {
-        id: "P4",
-        code: "KP-2026-004",
-        type: "Cấp tạm ứng",
-        ycbtCode: "BT-2026-002",
-        nycName: "Trần Thị B",
-        nycRole: "Người thừa kế của người bị thiệt hại",
-        amount: 50000000,
-        user: "Lê Văn Nam",
-        date: "16/09/2026",
-        status: "Chờ duyệt",
-        source: "Tạm ứng kinh phí Bộ Tài chính",
-        cqCap: "Sở Tư pháp Hà Nội",
-        notes: "Đề nghị cấp tạm ứng bồi thường cho bà Trần Thị B.",
-        files: [{ name: "Đề xuất tạm ứng Trần Thị B", file: "De_xuat_tam_ung_B.pdf" }],
-        advApproveTinhThan: 30000000,
-        advApproveKhac: 20000000
-    },
-    {
-        id: "P21",
-        code: "KP-2026-021",
-        type: "Cấp kinh phí bồi thường",
-        ycbtCode: "BT-2026-028",
-        nycName: "Hoàng Văn Thái",
-        nycRole: "Người bị thiệt hại",
-        amount: 180000000,
-        user: "Lê Văn Nam",
-        date: "18/09/2026",
-        status: "Chờ duyệt",
-        source: "Ngân sách địa phương (Dự phòng)",
-        cqCap: "Sở Tài chính Hà Nội",
-        notes: "Tờ trình đề nghị cấp phát kinh phí bồi thường tổn thất tài sản và thu nhập thực tế.",
-        files: [{ name: "Tờ trình cấp kinh phí Hoàng Văn Thái", file: "To_trinh_KP_HoangVanThai.pdf" }],
-        approvedDamages: {
-            taiSan: 80000000,
-            thuNhap: 40000000,
-            tinhThan: 60000000
-        }
-    },
-    {
-        id: "P22",
-        code: "KP-2026-022",
-        type: "Cấp tạm ứng",
-        ycbtCode: "BT-2026-029",
-        nycName: "Nguyễn Thị Mai",
-        nycRole: "Người bị thiệt hại",
-        amount: 70000000,
-        user: "Nguyễn Văn Thụ",
-        date: "19/09/2026",
-        status: "Chờ duyệt",
-        source: "Tạm ứng kinh phí Bộ Tài chính",
-        cqCap: "Sở Tư pháp Hà Nội",
-        notes: "Tờ trình đề xuất tạm ứng kinh phí bồi thường cho bà Nguyễn Thị Mai.",
-        files: [{ name: "Tờ trình đề xuất tạm ứng Mai", file: "To_trinh_tam_ung_NguyenThiMai.pdf" }],
-        advApproveTinhThan: 40000000,
-        advApproveKhac: 30000000
-    },
-
-    // ===== 5. TRẠNG THÁI: BỊ TỪ CHỐI (03 bản ghi - Phục vụ Lọc nhanh) =====
-    {
-        id: "P7",
-        code: "KP-2026-007",
-        type: "Cấp tạm ứng",
-        ycbtCode: "BT-2026-002",
-        nycName: "Trần Thị B",
-        nycRole: "Người thừa kế của người bị thiệt hại",
-        amount: 80000000,
-        user: "Lê Văn Nam",
-        date: "08/09/2026",
-        status: "Bị từ chối",
-        source: "Tạm ứng kinh phí Bộ Tài chính",
-        cqCap: "Sở Tư pháp Hà Nội",
-        notes: "Đề nghị cấp tạm ứng bồi thường bị từ chối do thiếu tài liệu y tế chứng minh.",
-        leaderOpinion: "Từ chối do hồ sơ chưa đính kèm báo cáo giám định sức khỏe của bệnh viện cấp tỉnh.",
-        files: [],
-        advApproveTinhThan: 40000000,
-        advApproveKhac: 40000000
-    },
-    {
-        id: "P8",
-        code: "KP-2026-008",
-        type: "Cấp kinh phí bồi thường",
-        ycbtCode: "BT-2026-005",
-        nycName: "Lê Văn D",
-        nycRole: "Người bị thiệt hại",
-        amount: 350000000,
-        user: "Lê Văn Nam",
-        date: "11/09/2026",
-        status: "Bị từ chối",
-        source: "Ngân sách địa phương (Dự phòng)",
-        cqCap: "Sở Tài chính Hà Nội",
-        notes: "Yêu cầu cấp kinh phí bồi thường chính thức bị từ chối để bổ soát lại chứng từ thầu phụ.",
-        leaderOpinion: "Từ chối do cần đối chiếu kỹ hơn các hợp đồng thuê thiết bị của Công ty Hải Phát.",
-        files: [],
-        approvedDamages: {
-            taiSan: 100000000,
-            thuNhap: 50000000,
-            tinhThan: 150000000,
-            chiPhiKhac: 50000000
-        }
-    },
-    {
-        id: "P23",
-        code: "KP-2026-023",
-        type: "Cấp kinh phí bồi thường",
-        ycbtCode: "BT-2026-028",
-        nycName: "Hoàng Văn Thái",
-        nycRole: "Người bị thiệt hại",
-        amount: 120000000,
-        user: "Lê Văn Nam",
-        date: "15/09/2026",
-        status: "Bị từ chối",
-        source: "Ngân sách địa phương (Dự phòng)",
-        cqCap: "Sở Tài chính Hà Nội",
-        notes: "Đề nghị cấp kinh phí bồi thường bị từ chối do hóa đơn viện phí không hợp lệ.",
-        leaderOpinion: "Từ chối phê duyệt: Cần bổ sung chứng từ hóa đơn viện phí bản gốc có chứng thực của cơ sở khám chữa bệnh.",
-        files: []
-    },
-
+    // ===== 4-5. TRẠNG THÁI: CHỜ DUYỆT / BỊ TỪ CHỐI =====
+    // Bỏ bản ghi mẫu kiểu cũ Chờ duyệt / Bị từ chối không có Loại trình (P3, P4, P21, P22, P7, P8, P23, P95).
+    // Bản ghi Chờ duyệt / Bị từ chối mẫu: QĐ tạm ứng (quan_ly_kinh_phi_qdtu.js), Thông báo chi trả (quan_ly_kinh_phi_kptb.js), đều có Loại trình.
     // ===== 6. TRẠNG THÁI: CHỜ CHI TRẢ (04 bản ghi - Gồm 3 khoản Quá hạn 3 năm) =====
     {
         id: "P2",
@@ -700,7 +561,7 @@ let proposalsList = [
         },
         payoutDate: "05/09/2026",
         payoutAmountReal: 250000000,
-        payoutMethod: "Chuyển khoản qua ngân hàng",
+        payoutMethod: "Nhận qua chuyển khoản",
         payoutRecName: "Lê Văn D",
         payoutRecAddress: "Số 234 Láng Hạ, Đống Đa, Hà Nội",
         payoutBankAccount: "123456789012",
@@ -759,7 +620,7 @@ let proposalsList = [
         advApproveKhac: 40000000,
         payoutDate: "15/09/2026",
         payoutAmountReal: 100000000,
-        payoutMethod: "Chuyển khoản qua ngân hàng",
+        payoutMethod: "Nhận qua chuyển khoản",
         payoutRecName: "Trần Thị B",
         payoutRecAddress: "Số 88 đường Lạch Tray, Ngô Quyền, Hải Phòng",
         payoutBankAccount: "190333444555",
@@ -824,7 +685,7 @@ let proposalsList = [
         },
         payoutDate: "18/09/2026",
         payoutAmountReal: 450000000,
-        payoutMethod: "Chi trả qua chuyển khoản",
+        payoutMethod: "Nhận qua chuyển khoản",
         payoutRecName: "ĐỖ QUỐC CƯỜNG",
         payoutRecAddress: "Số 45 phố Hai Bà Trưng, Hoàn Kiếm, Hà Nội",
         payoutBankAccount: "001100456789",
@@ -856,7 +717,7 @@ let proposalsList = [
         advApproveKhac: 40000000,
         payoutDate: "20/09/2026",
         payoutAmountReal: 85000000,
-        payoutMethod: "Chi trả trực tiếp bằng tiền mặt",
+        payoutMethod: "Nhận tiền mặt",
         payoutRecName: "Vũ Thị Mai",
         payoutRecAddress: "Tổ 12, phường Phúc Diễn, Bắc Từ Liêm, Hà Nội",
         payoutReceiptNo: "BL-TM-2026/089",
@@ -889,7 +750,7 @@ let proposalsList = [
         },
         payoutDate: "21/09/2026",
         payoutAmountReal: 520000000,
-        payoutMethod: "Chi trả qua chuyển khoản",
+        payoutMethod: "Nhận qua chuyển khoản",
         payoutRecName: "NGÔ VĂN HÙNG",
         payoutRecAddress: "Số 78 đường Quang Trung, Hà Đông, Hà Nội",
         payoutBankAccount: "034567891011",
@@ -922,7 +783,7 @@ let proposalsList = [
         },
         payoutDate: "21/09/2026",
         payoutAmountReal: 175000000,
-        payoutMethod: "Chi trả qua chuyển khoản",
+        payoutMethod: "Nhận qua chuyển khoản",
         payoutRecName: "BÙI THỊ NGỌC",
         payoutRecAddress: "Số 12 ngõ 89 Thái Hà, Đống Đa, Hà Nội",
         payoutBankAccount: "19034567890123",
@@ -954,7 +815,7 @@ let proposalsList = [
         advApproveKhac: 30000000,
         payoutDate: "21/09/2026",
         payoutAmountReal: 60000000,
-        payoutMethod: "Chi trả trực tiếp bằng tiền mặt",
+        payoutMethod: "Nhận tiền mặt",
         payoutRecName: "Dương Đình Trọng",
         payoutRecAddress: "Số 9 phố Nguyễn Đình Chiểu, Hai Bà Trưng, Hà Nội",
         payoutReceiptNo: "BL-TM-2026/102",
@@ -964,15 +825,6 @@ let proposalsList = [
         payoutNote: "Chi trả tiền mặt tại trụ sở cơ quan, ông Dương Đình Trọng đã trực tiếp ký nhận tiền mặt."
     },
     // ===== HÌNH THỨC KÝ ĐỀ NGHỊ TẠM ỨNG (Quyết định tạm ứng - Mẫu 07/BTNN) & TRẠNG THÁI ĐÃ THU HỒI =====
-    {
-        id: "P95", code: "KP-2026-095", type: "Cấp tạm ứng", ycbtCode: "BT-2026-015", nycName: "Phạm Văn C", nycRole: "Người bị thiệt hại",
-        amount: 30000000, user: "Lê Văn Nam", date: "12/10/2026", status: "Chờ duyệt",
-        source: "Tạm ứng kinh phí Bộ Tài chính", cqCap: "Sở Tài chính Hà Nội",
-        notes: "Đề nghị tạm ứng kinh phí bồi thường cho ông Phạm Văn C theo yêu cầu tạm ứng đã thụ lý.",
-        advApproveTinhThan: 18000000, advApproveKhac: 12000000,
-        signMethod: "Ký số", docNo: "125/QĐ-UBND", docDate: "12/10/2026", draftDoc: "Du_thao_QD_tam_ung_KP-2026-095.doc",
-        files: [{ name: "Tờ trình đề nghị tạm ứng", file: "To_trinh_tam_ung_P95.pdf" }]
-    },
     {
         id: "P96", code: "KP-2026-096", type: "Cấp tạm ứng", ycbtCode: "BT-2026-015", nycName: "Phạm Văn C", nycRole: "Người bị thiệt hại",
         amount: 25000000, user: "Lê Văn Nam", date: "08/10/2026", status: "Chờ chi trả",
@@ -1000,7 +852,7 @@ let proposalsList = [
         source: "Tạm ứng kinh phí Bộ Tài chính", cqCap: "Sở Tư pháp Hà Nội",
         notes: "Khoản tạm ứng đã thu hồi đủ 100% do Quyết định giải quyết bồi thường bị hủy.",
         advApproveTinhThan: 12000000, advApproveKhac: 8000000,
-        payoutDate: "03/10/2026", payoutAmountReal: 20000000, payoutMethod: "Chi trả qua chuyển khoản", payoutRecName: "Trần Thị B",
+        payoutDate: "03/10/2026", payoutAmountReal: 20000000, payoutMethod: "Nhận qua chuyển khoản", payoutRecName: "Trần Thị B",
         leaderOpinion: "Đồng ý cấp tạm ứng kinh phí bồi thường.", approvedDate: "02/10/2026 09:00", approvedLeader: "Lãnh đạo cơ quan",
         statusChangeBasis: { decisionType: "Quyết định hủy quyết định giải quyết bồi thường", decisionNo: "15/QĐ-HQĐGQBT", decisionDate: "05/10/2026",
             reason: "Hủy quyết định gốc theo kết quả xác minh bổ sung.", statusBefore: "Hoàn thành", statusAfter: "Chờ thu hồi", changedAt: "05/10/2026 10:00" },
@@ -1116,7 +968,7 @@ function exportExcelKinhPhi() {
     showToast("Đang kết xuất danh sách đề xuất kinh phí bồi thường ra file Excel...", "success");
 }
 
-const CURRENT_PROPOSALS_VERSION = 'v37_oct2026_kyso_tamung';
+const CURRENT_PROPOSALS_VERSION = 'v38_oct2026_kpdt';
 
 // Migration dữ liệu cũ: phân hệ BTNN đã bỏ trạng thái trung gian (lưu tạm) của đề nghị kinh phí.
 // Bản ghi cũ còn trạng thái này trong localStorage chuyển về "Chờ lập đề nghị" (chưa trình phê duyệt,
@@ -1171,6 +1023,9 @@ function syncFromLocalStorage() {
             localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
         }
     }
+    // Đồng nhất nhãn Phương thức chi trả: Nhận tiền mặt / Nhận qua chuyển khoản (dữ liệu cũ đã lưu)
+    const PAY_LEGACY = { 'Chi trả trực tiếp bằng tiền mặt': 'Nhận tiền mặt', 'Tiền mặt': 'Nhận tiền mặt', 'Chi trả qua chuyển khoản': 'Nhận qua chuyển khoản', 'Chuyển khoản qua ngân hàng': 'Nhận qua chuyển khoản' };
+    proposalsList.forEach(p => { if (p && PAY_LEGACY[p.payoutMethod]) p.payoutMethod = PAY_LEGACY[p.payoutMethod]; });
     migrateLegacyDraftProposals();
 
     // 2. Load claimsList and map to mockClaims
@@ -1237,16 +1092,16 @@ function syncFromLocalStorage() {
         }
     }
 
-    // 3. Liên thông Theo dõi vụ việc tại Tòa án: tạo bản ghi "Chờ nhập liệu" cho vụ việc Đã có bản án/QĐ
+    // 3. Liên thông Theo dõi vụ việc tại Tòa án: tạo bản ghi "Chờ thông báo chi trả" cho vụ việc Đã có bản án/QĐ
     syncCourtCaseFundingRecords();
 }
 
 // ===================== Liên thông Theo dõi vụ việc tại Tòa án =====================
-// Vụ việc có yêu cầu bồi thường bằng tiền chuyển "Đã có bản án/QĐ" -> 01 Đề nghị cấp kinh phí bồi thường
-// ở trạng thái "Chờ nhập liệu". Khóa chống trùng: courtCaseCode (Mã vụ việc), tạo đúng 01 lần.
+// Vụ việc có yêu cầu bồi thường bằng tiền chuyển "Đã có bản án/QĐ" -> 01 bản ghi Chi trả tiền bồi thường
+// ở trạng thái "Chờ thông báo chi trả" (quan_ly_kinh_phi_kptb.js). Khóa chống trùng: courtCaseCode (Mã vụ việc), tạo đúng 01 lần.
+// Đã bỏ trạng thái "Chờ nhập liệu" và thao tác "Nhập liệu".
 const COURT_CASES_KEY = 'btnn_court_cases_v1';
 const COURT_STATUS_VERDICT = 'Đã có bản án/QĐ';
-const FUNDING_STATUS_INPUT = 'Chờ nhập liệu';
 const COURT_DAMAGE_KEYS = ['taiSan', 'thuNhap', 'tuVong', 'sucKhoe', 'tinhThan', 'chiPhiKhac'];
 
 function loadCourtCases() {
@@ -1328,7 +1183,7 @@ function buildCourtFundingRecord(c) {
     return {
         id: 'P_TA_' + c.code,
         code: nextKinhPhiCode(),
-        type: 'Cấp kinh phí bồi thường',
+        type: 'Chi trả tiền bồi thường',
         ycbtCode: c.code,
         courtCaseCode: c.code,
         origin: 'Theo dõi vụ việc tại Tòa án',
@@ -1337,7 +1192,7 @@ function buildCourtFundingRecord(c) {
         amount: claim.amount,
         user: c.updatedByName || c.createdByName || '',
         date: `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`,
-        status: FUNDING_STATUS_INPUT,
+        status: 'Chờ thông báo chi trả',
         source: '',
         cqCap: '',
         agency: claim.agency,
@@ -1368,7 +1223,7 @@ function syncCourtCaseFundingRecords() {
             c.fundingCode = p.code;
             c.fundingCreatedAt = p.createdAt;
             if (!Array.isArray(c.history)) c.history = [];
-            c.history.push({ at: p.createdAt, userName: 'Hệ thống', action: 'Tạo đề nghị cấp kinh phí', note: `Hệ thống tạo Đề nghị cấp kinh phí bồi thường ${p.code} ở trạng thái Chờ nhập liệu.` });
+            c.history.push({ at: p.createdAt, userName: 'Hệ thống', action: 'Tạo bản ghi chi trả tiền bồi thường', note: `Hệ thống tạo bản ghi Chi trả tiền bồi thường ${p.code} ở trạng thái ${p.status}.` });
             casesChanged = true;
         }
     });
@@ -1378,35 +1233,6 @@ function syncCourtCaseFundingRecords() {
 
 function isCourtCaseCode(code) {
     return loadCourtCases().some(c => c && c.code === code);
-}
-
-// Nhập liệu bản ghi "Chờ nhập liệu": mở form Lập đề nghị, nạp sẵn dữ liệu từ vụ việc tại Tòa án
-function inputProposalDirect(id) {
-    const item = proposalsList.find(p => p.id === id);
-    if (!item || item.status !== FUNDING_STATUS_INPUT) return;
-    fillProposalDirect(id);
-    document.getElementById('formProposalTitle').innerHTML = `<i class="fa-solid fa-keyboard"></i> NHẬP LIỆU ĐỀ NGHỊ CẤP KINH PHÍ BỒI THƯỜNG: ${item.code}`;
-    const setVal = (elId, val) => { const el = document.getElementById(elId); if (el) el.value = val; };
-    // Hiển thị Loại đề nghị (khóa) và Số/Ngày Bản án/QĐ làm căn cứ; ẩn ô tìm kiếm vụ việc
-    const selectorBlock = document.getElementById('formSelectorBlock');
-    if (selectorBlock) selectorBlock.style.display = 'block';
-    const searchWrapper = document.getElementById('formClaimSearchWrapper');
-    if (searchWrapper) searchWrapper.style.display = 'none';
-    const selectorGrid = document.getElementById('formSelectorGrid');
-    if (selectorGrid) selectorGrid.style.gridTemplateColumns = '1fr 1fr 1fr';
-    setVal('formBaseDecisionNo', item.baseDecisionNo || '');
-    setVal('formBaseDecisionDate', item.baseDecisionDate || '');
-    // Số tiền đề nghị mặc định theo thiệt hại yêu cầu của vụ việc
-    document.querySelectorAll('.kp-approve-input').forEach(input => {
-        const max = parseFloat(input.dataset.max) || 0;
-        input.value = max.toLocaleString('vi-VN');
-    });
-    if (typeof calculateKinhPhiApproveTotal === 'function') calculateKinhPhiApproveTotal();
-    if (!item.notes) {
-        setVal('formProposalNotes', `Đề nghị cấp kinh phí bồi thường cho vụ việc ${item.ycbtCode} - ${item.nycName} theo Bản án/Quyết định${item.baseDecisionNo ? ' số ' + item.baseDecisionNo : ''}${item.baseDecisionDate ? ' có hiệu lực ngày ' + item.baseDecisionDate : ''}.`);
-    }
-    proposalAttachedDocs = item.files ? item.files.map(f => ({ name: f.name, file: f.file })) : [];
-    renderProposalAttachedDocs();
 }
 
 let lastProcessedUrl = '';
@@ -1448,14 +1274,14 @@ function checkAndHandleUrlParams() {
     }
 
     if (prop) {
-        if (prop.status === FUNDING_STATUS_INPUT && (actionType === 'input' || actionType === 'update')) {
-            inputProposalDirect(prop.id);
-        } else if (actionType === 'payout' || actionType === 'pay') {
+        if (actionType === 'payout' || actionType === 'pay') {
             payProposalDirect(prop.id);
         } else if (actionType === 'update') {
             updateProposalDirect(prop.id);
         } else if (actionType === 'forfeit' || actionType === 'treasury') {
             requestTreasuryForfeit(prop.id);
+        } else if (typeof kpdtOpen === 'function') {
+            kpdtOpen(prop.id, { noPush: true });
         } else {
             viewProposalDetail(prop.id);
         }
@@ -1492,6 +1318,8 @@ function initKinhPhiApp() {
     // Mở từ Dashboard Lãnh đạo: ?role=lanh-dao&tab=pending|done
     const dashQ = new URLSearchParams(window.location.search);
     if (dashQ.get("role") === "lanh-dao") { const rs = document.getElementById("roleSelector"); if (rs) rs.value = "lanh-dao"; }
+    // Vai trò giả lập theo tài khoản đang đăng nhập (thuộc Nhóm lãnh đạo: Lãnh đạo) để badge tab Chờ xử lý và badge menu trái cùng vai trò
+    else if (window.BTNN_WF && typeof kptbIsLeaderAccount === "function" && kptbIsLeaderAccount(BTNN_WF.getCurrentUserId())) { const rs = document.getElementById("roleSelector"); if (rs) rs.value = "lanh-dao"; }
     if (dashQ.get("tab")) kpActiveTab = /^(done|da-xu-ly)$/.test(dashQ.get("tab")) ? "done" : "pending";
 
     // Populate table on load
@@ -2434,6 +2262,56 @@ function completeTreasuryForfeit() {
     }, confirmTitle);
 }
 
+// =====================================================================================
+// [kpdt] Cột lưới MH01: Loại kinh phí, Ngày trình, Hạn nhận, Sung quỹ
+// - Loại kinh phí: "Tạm ứng kinh phí" (Đề nghị tạm ứng / QĐ tạm ứng) | "Chi trả tiền bồi thường" (Thông báo chi trả; bản ghi cũ Cấp kinh phí bồi thường).
+// - Ngày trình: ngày Trình ký gần nhất (Ký số) hoặc ngày Ban hành văn bản (Ký ngoài); chưa trình: "-".
+// - Hạn nhận/Sung quỹ: chỉ bản ghi Chi trả tiền bồi thường; Hạn nhận = Ngày nhận thông báo + 03 năm; đã sung quỹ: ngày + số tiền sung quỹ.
+// =====================================================================================
+const KPDT_TYPE_ADV = 'Tạm ứng kinh phí';
+const KPDT_TYPE_PAY = 'Chi trả tiền bồi thường';
+const KPDT_NOT_SUBMITTED = ['Chờ lập đề nghị', 'Chờ thông báo chi trả', 'Đề nghị cấp bổ sung kinh phí'];
+// Màu badge theo trạng thái (CSS .kp-st-* tại quan_ly_kinh_phi_boi_thuong.html): mỗi trạng thái 01 màu riêng
+const KPDT_STATUS_CLASS = {
+    'Chờ lập đề nghị': 'kp-st-lap', 'Chờ thông báo chi trả': 'kp-st-tb', 'Đề nghị cấp bổ sung kinh phí': 'kp-st-bs',
+    'Chờ duyệt': 'badge-review', 'Bị từ chối': 'kp-st-tc', 'Chờ chi trả': 'kp-st-ct', 'Hoàn thành': 'kp-st-ht',
+    'Sung quỹ nhà nước': 'kp-st-sq', 'Đã sung quỹ': 'kp-st-sq', 'Chờ thu hồi': 'kp-st-cth', 'Đã thu hồi': 'kp-st-dth', 'Đã hủy': 'kp-st-huy'
+};
+function kpdtStatusClass(st) { return KPDT_STATUS_CLASS[st] || 'badge-info'; }
+function kpdtTypeLabel(item) { return kpIsAdv(item) ? KPDT_TYPE_ADV : KPDT_TYPE_PAY; }
+function kpdtDatePart(s) { const m = String(s || '').match(/(\d{2}\/\d{2}\/\d{4})/); return m ? m[1] : ''; }
+function kpdtSubmitDate(item) {
+    if (!item) return '';
+    const a = item.qdtuApproval || item.kptbApproval;
+    if (a && a.submittedAt) return kpdtDatePart(a.submittedAt);
+    const s = (item.qdtu && item.qdtu.sign) || {};
+    if (s.issuedAt) return kpdtDatePart(s.issuedAt);
+    const n = item.kptbNotice || {};
+    if (n.issuedAt) return kpdtDatePart(n.issuedAt);
+    if (item.qdtu || item.kptbDec) return '';
+    return KPDT_NOT_SUBMITTED.includes(item.status) ? '' : kpdtDatePart(item.date);
+}
+// Cột "Hạn nhận/Sung quỹ" (chỉ bản ghi Chi trả tiền bồi thường; Tạm ứng kinh phí / chưa có dữ liệu: "-"):
+// - Đã sung quỹ: "Đã sung quỹ [ngày]" + số tiền sung quỹ.
+// - Chưa sung quỹ, có Ngày nhận thông báo: Hạn nhận (ngày); Chờ chi trả: dòng phụ "Còn X ngày" / "Quá hạn X ngày" + "Đủ điều kiện sung quỹ".
+function kpdtHanNhanSqHtml(item, info) {
+    const none = '<span style="color:#94a3b8;">-</span>';
+    if (kpIsAdv(item)) return none;
+    if (item.status === 'Sung quỹ nhà nước' || item.status === 'Đã sung quỹ') {
+        const amt = Number(item.treasuryAmount) || info.unpaid || 0;
+        return `<div style="font-weight:600;">Đã sung quỹ${item.treasuryForfeitDate ? ' ' + item.treasuryForfeitDate : ''}</div><div style="font-size:11.5px; color:#64748b;">${amt.toLocaleString('vi-VN')}</div>`;
+    }
+    if (!info.deadline) return none;
+    let sub = '';
+    if (kpNormStatus(item.status) === 'Chờ chi trả' && info.daysLeft !== null) {
+        sub = info.daysLeft < 0
+            ? `<div style="font-size:11.5px; color:#b91c1c; font-weight:600;">Quá hạn ${Math.abs(info.daysLeft)} ngày</div>`
+            : `<div style="font-size:11.5px; color:#64748b;">Còn ${info.daysLeft} ngày</div>`;
+    }
+    if (info.isEligible) sub += '<div style="font-size:11.5px; color:#b91c1c; font-weight:600;">Đủ điều kiện sung quỹ</div>';
+    return `<div style="font-weight:600;">${info.deadlineText}</div>${sub}`;
+}
+
 // RENDER DATA TABLE GRID
 function renderProposalsTable() {
     const tbody = document.getElementById('proposalsTableBody');
@@ -2456,7 +2334,7 @@ function renderProposalsTable() {
     const toDateInput = document.getElementById('searchToDate').value;
 
     if (code) filtered = filtered.filter(item => item.code.toLowerCase().includes(code));
-    if (type) filtered = filtered.filter(item => item.type === type);
+    if (type) filtered = filtered.filter(item => kpdtTypeLabel(item) === type);
     if (ycbtCode) filtered = filtered.filter(item => item.ycbtCode.toLowerCase().includes(ycbtCode));
     if (status) {
         if (status === 'Sung quỹ nhà nước') {
@@ -2525,8 +2403,8 @@ function renderProposalsTable() {
                 valB = b.code || '';
                 break;
             case 'type':
-                valA = a.type || '';
-                valB = b.type || '';
+                valA = kpdtTypeLabel(a);
+                valB = kpdtTypeLabel(b);
                 break;
             case 'ycbtCode':
                 valA = a.ycbtCode || '';
@@ -2541,8 +2419,8 @@ function renderProposalsTable() {
                 valB = typeof b.amount === 'number' ? b.amount : parseFloat(String(b.amount).replace(/\D/g, '')) || 0;
                 break;
             case 'date':
-                valA = parseDateVi(a.date) || new Date(0);
-                valB = parseDateVi(b.date) || new Date(0);
+                valA = parseDateVi(kpdtSubmitDate(a)) || new Date(0);
+                valB = parseDateVi(kpdtSubmitDate(b)) || new Date(0);
                 break;
             case 'status':
                 valA = a.status || '';
@@ -2577,7 +2455,7 @@ function renderProposalsTable() {
     const endIdx = Math.min(startIdx + pageSize, total);
 
     if (total === 0) {
-        tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy đề xuất cấp phát nào phù hợp</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy đề xuất cấp phát nào phù hợp</td></tr>`;
         document.getElementById('currentRange').innerText = "0-0";
         renderPaginationPages(1);
         return;
@@ -2594,7 +2472,7 @@ function renderProposalsTable() {
     if (isLeader) {
         pendingCount = proposalsList.filter(p => p.status === 'Chờ duyệt').length;
     } else {
-        pendingCount = proposalsList.filter(p => p.status === 'Chờ lập đề nghị' || p.status === FUNDING_STATUS_INPUT || p.status === 'Bị từ chối' || p.status === 'Chờ chi trả').length;
+        pendingCount = proposalsList.filter(p => p.status === 'Chờ lập đề nghị' || p.status === 'Bị từ chối' || p.status === 'Chờ chi trả').length;
     }
     const headerBadge = document.getElementById('headerProposalBadge');
     if (headerBadge) {
@@ -2606,32 +2484,26 @@ function renderProposalsTable() {
         tr.style.cursor = 'pointer';
         tr.onclick = (e) => {
             if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'I' && !e.target.closest('.icon-btn') && e.target.tagName !== 'A') {
-                viewProposalDetail(item.id);
+                // Xem chi tiết: mở dạng trang (quan_ly_kinh_phi_kpdt.js), có URL ?view=detail&id=[Mã kinh phí]
+                if (typeof kpdtOpen === 'function') kpdtOpen(item.id); else viewProposalDetail(item.id);
             }
         };
 
-        let badgeClass = 'badge-info';
-        if (item.status === 'Hoàn thành') badgeClass = 'badge-success';
-        else if (item.status === 'Chờ duyệt') badgeClass = 'badge-pending';
-        else if (item.status === 'Chờ chi trả') badgeClass = 'badge-warning';
-        else if (item.status === 'Sung quỹ nhà nước' || item.status === 'Đã sung quỹ') badgeClass = 'badge-success';
-        else if (item.status === 'Bị từ chối') badgeClass = 'badge-danger';
-        else if (item.status === 'Chờ lập đề nghị') badgeClass = 'badge-info';
-        else if (item.status === FUNDING_STATUS_INPUT) badgeClass = 'badge-draft';
-        else if (item.status === 'Chờ thu hồi') badgeClass = 'badge-warning';
-        else if (item.status === 'Đã hủy') badgeClass = 'badge-danger';
+        // Mỗi trạng thái 01 màu badge riêng (kpdtStatusClass); Chờ duyệt tím nhạt, Bị từ chối đỏ nhạt như các màn khác
+        const badgeClass = kpdtStatusClass(item.status);
         const treasuryInfo = getTreasuryInfo(item);
         const treasuryHtml = renderTreasuryCell(item, treasuryInfo);
 
         let actionsHtml = '';
 
         if (isLeader) {
-            let approveBtn = `<button class="icon-btn accept" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Ký duyệt"><i class="fa-solid fa-circle-check"></i></button>`;
-            let rejectBtn = `<button class="icon-btn reject" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Từ chối"><i class="fa-solid fa-ban"></i></button>`;
+            // Icon chuẩn Ký duyệt / Từ chối (đồng nhất màn Xác định cơ quan GQBT)
+            let approveBtn = `<button class="icon-btn accept sign" data-admin-icon-normalized="1" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Ký duyệt"><i class="fa-solid fa-file-signature"></i></button>`;
+            let rejectBtn = `<button class="icon-btn delete reject" data-admin-icon-normalized="1" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Từ chối"><i class="fa-solid fa-ban"></i></button>`;
 
             if (item.status === 'Chờ duyệt') {
-                approveBtn = `<button class="icon-btn accept" title="Ký duyệt" onclick="openApproveModal('${item.id}')"><i class="fa-solid fa-circle-check"></i></button>`;
-                rejectBtn = `<button class="icon-btn reject" title="Từ chối phê duyệt" onclick="openRejectModal('${item.id}')"><i class="fa-solid fa-ban"></i></button>`;
+                approveBtn = `<button class="icon-btn accept sign" data-admin-icon-normalized="1" title="Ký duyệt" onclick="openApproveModal('${item.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
+                rejectBtn = `<button class="icon-btn delete reject" data-admin-icon-normalized="1" title="Từ chối" onclick="openRejectModal('${item.id}')"><i class="fa-solid fa-ban"></i></button>`;
             }
             actionsHtml = `${approveBtn} ${rejectBtn}`;
         } else {
@@ -2645,9 +2517,6 @@ function renderProposalsTable() {
             if (item.status === 'Chờ lập đề nghị') {
                 fillBtn = `<button class="icon-btn edit" title="Lập đề nghị kinh phí" onclick="fillProposalDirect('${item.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
                 deleteBtn = `<button class="icon-btn delete" title="Xóa tờ trình" onclick="event.stopPropagation(); deleteProposal('${item.id}')"><i class="fa-regular fa-trash-can"></i></button>`;
-            } else if (item.status === FUNDING_STATUS_INPUT) {
-                // Bản ghi tự tạo từ Theo dõi vụ việc tại Tòa án: Nhập liệu tiếp; không được xóa
-                fillBtn = `<button class="icon-btn edit" title="Nhập liệu" onclick="event.stopPropagation(); inputProposalDirect('${item.id}')"><i class="fa-solid fa-keyboard"></i></button>`;
             } else if (item.status === 'Bị từ chối') {
                 updateBtn = `<button class="icon-btn edit" title="Cập nhật đề nghị" onclick="updateProposalDirect('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
             } else if (item.status === 'Chờ chi trả') {
@@ -2665,14 +2534,13 @@ function renderProposalsTable() {
         tr.innerHTML = `
             <td style="text-align:center; vertical-align:middle;">${startIdx + idx + 1}</td>
             <td style="text-align:left; vertical-align:middle; font-weight:700; color:var(--primary-light);">${item.code}</td>
-            <td style="font-weight: 500; font-size:12.5px; text-align:left; vertical-align:middle;">${item.type === 'Cấp tạm ứng' ? 'Đề nghị tạm ứng' : 'Đề nghị cấp kinh phí bồi thường'}</td>
-            <td style="text-align:left; vertical-align:middle;"><a href="quan_ly_boi_thuong.html?id=${encodeURIComponent(item.ycbtCode)}&from=kinh_phi&returnUrl=${encodeURIComponent('quan_ly_kinh_phi_boi_thuong.html')}" onclick="event.stopPropagation(); openLinkedClaimDetail('${item.ycbtCode}'); return false;" style="font-weight:700; color:var(--secondary-color); text-decoration:none;">${item.ycbtCode}</a></td>
+            <td style="text-align:left; vertical-align:middle;"><a href="quan_ly_boi_thuong.html?id=${encodeURIComponent(item.ycbtCode)}&from=kinh_phi&returnUrl=${encodeURIComponent('quan_ly_kinh_phi_boi_thuong.html')}" onclick="event.stopPropagation(); openLinkedClaimDetail('${item.ycbtCode}'); return false;" style="font-weight:700; color:var(--secondary-color); text-decoration:underline;">${item.ycbtCode}</a></td>
+            <td style="font-weight: 500; font-size:12.5px; text-align:left; vertical-align:middle;">${kpdtTypeLabel(item)}</td>
             <td style="text-align:left; vertical-align:middle; font-weight:600;">${item.nycName}</td>
-            <td style="text-align:left; vertical-align:middle;">${item.nycRole || 'Người bị thiệt hại'}</td>
             <td style="text-align:right; font-weight:700; vertical-align:middle;">${amtVal.toLocaleString('vi-VN')}</td>
-            <td style="text-align:left; vertical-align:middle;">${item.user}</td>
-            <td style="text-align:center; vertical-align:middle;">${item.date}</td>
-            <td style="text-align:left; vertical-align:middle;">${treasuryHtml}</td>
+            <td style="text-align:left; vertical-align:middle;">${item.user || '-'}</td>
+            <td style="text-align:center; vertical-align:middle;">${kpdtSubmitDate(item) || '-'}</td>
+            <td style="text-align:center; vertical-align:middle;">${kpdtHanNhanSqHtml(item, treasuryInfo)}</td>
             <td style="text-align:center; vertical-align:middle;"><span class="badge ${badgeClass}">${displayStatus}</span></td>
             <td class="kp-act-td" style="text-align:center; vertical-align:middle;">
                 <div class="action-flex" style="display:flex; justify-content:center; gap:4px;">
@@ -2784,7 +2652,7 @@ function validateClaimForProposalType(claimCode, proposalType) {
     if (!claim) return { valid: false, code: 'ERR_NOT_FOUND', message: `Không tìm thấy thông tin vụ việc [${claimCode}] trên hệ thống!` };
 
     // Active status lists according to system dropdown
-    const ACTIVE_KINH_PHI_STATUSES = ['Chờ lập đề nghị', FUNDING_STATUS_INPUT, 'Chờ duyệt', 'Chờ chi trả', 'Hoàn thành', 'Sung quỹ nhà nước'];
+    const ACTIVE_KINH_PHI_STATUSES = ['Chờ lập đề nghị', 'Chờ duyệt', 'Chờ chi trả', 'Hoàn thành', 'Sung quỹ nhà nước'];
     const ACTIVE_TAM_UNG_STATUSES = ['Chờ lập đề nghị', 'Chờ duyệt', 'Chờ chi trả', 'Hoàn thành'];
 
     // Check existing proposals in proposalsList for this claim
@@ -2818,13 +2686,13 @@ function validateClaimForProposalType(claimCode, proposalType) {
                 message: `Vụ việc [${claimCode}] đã tồn tại Đề nghị tạm ứng đang trong quy trình xử lý. Không được phép lập trùng lặp!`
             };
         }
-        // [BR-KP-STATUS-001]: Status must be from "Đang xác minh thiệt hại" onwards, but not "Chờ thực thi"
-        const validStatuses = ['Đang xác minh thiệt hại', 'Đang thương lượng', 'Chờ ban hành QĐ'];
+        // [BR-KP-STATUS-001]: Status must be from "Xác minh thiệt hại" onwards, but not "Chờ thực thi"
+        const validStatuses = ['Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ'];
         if (!validStatuses.includes(claim.status)) {
             return {
                 valid: false,
                 code: 'ERR_INVALID_STATUS_ADVANCE',
-                message: `Vụ việc [${claimCode}] đang ở trạng thái "${claim.status}", không thuộc giai đoạn được phép lập Đề nghị tạm ứng (chỉ áp dụng cho các vụ việc từ 'Đang xác minh thiệt hại' đến trước khi có Quyết định giải quyết bồi thường)!`
+                message: `Vụ việc [${claimCode}] đang ở trạng thái "${claim.status}", không thuộc giai đoạn được phép lập Đề nghị tạm ứng (chỉ áp dụng cho các vụ việc từ 'Xác minh thiệt hại' đến trước khi có Quyết định giải quyết bồi thường)!`
             };
         }
     } else if (proposalType === 'Cấp kinh phí bồi thường' || proposalType === 'Kinh phí bồi thường') {
@@ -3004,7 +2872,7 @@ function clearClaimDetails() {
     document.getElementById('advRecName').value = '';
     document.getElementById('advRecCard').value = '';
     document.getElementById('advRecAddress').value = '';
-    setAdvPayMethod('Chi trả trực tiếp bằng tiền mặt');
+    setAdvPayMethod('Nhận tiền mặt');
     document.getElementById('advRecBankWrapper').style.display = 'none';
     document.getElementById('advBankUser').value = '';
     document.getElementById('advBankAccount').value = '';
@@ -3027,7 +2895,7 @@ function clearClaimDetails() {
     document.getElementById('kpRecName').value = '';
     document.getElementById('kpRecCard').value = '';
     document.getElementById('kpRecAddress').value = '';
-    setKpPayMethod('Chi trả trực tiếp bằng tiền mặt');
+    setKpPayMethod('Nhận tiền mặt');
     document.getElementById('kpRecBankWrapper').style.display = 'none';
     document.getElementById('kpBankUser').value = '';
     document.getElementById('kpBankAccount').value = '';
@@ -3045,7 +2913,7 @@ function normalizeFundingLookupText(value) {
 
 function getFundingClaimTargetStatus() {
     const selectedType = document.getElementById('formProposalType').value;
-    return selectedType === 'Cấp tạm ứng' ? 'Đang xác minh thiệt hại' : 'Chờ thực thi';
+    return selectedType === 'Cấp tạm ứng' ? 'Xác minh thiệt hại' : 'Chờ thực thi';
 }
 
 function getFundingClaimLookupRows() {
@@ -3255,7 +3123,7 @@ function handleClaimSelected(code) {
             document.getElementById('advRecName').value = claim.nyc;
             document.getElementById('advRecCard').value = claim.cardNo;
             document.getElementById('advRecAddress').value = claim.address;
-            setAdvPayMethod(claim.advanceRecKenh === 'chuyen-khoan' ? 'Chi trả qua chuyển khoản' : 'Chi trả trực tiếp bằng tiền mặt');
+            setAdvPayMethod(claim.advanceRecKenh === 'chuyen-khoan' ? 'Nhận qua chuyển khoản' : 'Nhận tiền mặt');
 
             if (claim.advanceRecKenh === 'chuyen-khoan') {
                 document.getElementById('advRecBankWrapper').style.display = 'grid';
@@ -3280,7 +3148,7 @@ function handleClaimSelected(code) {
             document.getElementById('kpRecName').value = claim.nyc;
             document.getElementById('kpRecCard').value = claim.cardNo;
             document.getElementById('kpRecAddress').value = claim.address;
-            setKpPayMethod(claim.advanceRecKenh === 'chuyen-khoan' ? 'Chi trả qua chuyển khoản' : 'Chi trả trực tiếp bằng tiền mặt');
+            setKpPayMethod(claim.advanceRecKenh === 'chuyen-khoan' ? 'Nhận qua chuyển khoản' : 'Nhận tiền mặt');
 
             if (claim.advanceRecKenh === 'chuyen-khoan') {
                 document.getElementById('kpRecBankWrapper').style.display = 'grid';
@@ -3413,7 +3281,7 @@ function docTienBangChu(money) {
         }
 
         if (chuc === 0) {
-            chu += "lẻ " + mangSo[donvi] + " ";
+            chu += (chu ? "lẻ " : "") + mangSo[donvi] + " ";
         } else if (chuc === 1) {
             chu += "mười ";
             if (donvi === 5) {
@@ -3443,10 +3311,11 @@ function docTienBangChu(money) {
     hang[2] = Math.floor((money % 1000000000) / 1000000);
     hang[3] = Math.floor(money / 1000000000);
 
+    // Chỉ đọc đủ "không trăm" khi đã có hàng lớn hơn được đọc trước đó
     let i = 3;
     while (i >= 0) {
         if (hang[i] > 0) {
-            chu += docBlock3(hang[i], i < 3) + (i === 3 ? "tỷ " : i === 2 ? "triệu " : i === 1 ? "nghìn " : "");
+            chu += docBlock3(hang[i], chu.length > 0) + (i === 3 ? "tỷ " : i === 2 ? "triệu " : i === 1 ? "nghìn " : "");
         }
         i--;
     }
@@ -3666,7 +3535,7 @@ function openCreateProposalForm() {
     selectedProposalId = null;
     formEditingMode = true;
     document.getElementById('contentListProposals').style.display = 'none';
-    document.getElementById('dashboardStats').style.display = 'none'; // Rule 1: Hide dashboard on form view
+    { const ds = document.getElementById('dashboardStats'); if (ds) ds.style.display = 'none'; } // Thẻ thống kê đã bỏ khỏi màn hình
 
     const panel = document.getElementById('inlineProposalFormPanel');
     panel.style.display = 'flex';
@@ -3751,7 +3620,7 @@ function openCreateProposalForm() {
     const radioCash = document.getElementById('payoutMethod_Cash');
     if (radioTransfer) { radioTransfer.checked = true; radioTransfer.disabled = false; }
     if (radioCash) { radioCash.checked = false; radioCash.disabled = false; }
-    handlePayoutMethodChange('Chi trả qua chuyển khoản');
+    handlePayoutMethodChange('Nhận qua chuyển khoản');
 
     // Populate selector dropdown based on default type (automatically toggles Block 3 / Block 4)
     handleTypeChange(document.getElementById('formProposalType').value);
@@ -3787,7 +3656,7 @@ function closeCreateProposalForm() {
     formEditingMode = false;
     document.getElementById('inlineProposalFormPanel').style.display = 'none';
     document.getElementById('contentListProposals').style.display = 'block';
-    document.getElementById('dashboardStats').style.display = 'grid'; // Restore dashboard
+    { const ds = document.getElementById('dashboardStats'); if (ds) ds.style.display = 'grid'; } // Thẻ thống kê đã bỏ khỏi màn hình
     const rej = document.getElementById('blockRejectNotice');
     if (rej) rej.style.display = 'none';
     ['block7_LeaderApproval', 'block8_NoticeTracking', 'block9_TreasuryTracking', 'block10_PayoutReal', 'block11_TreasuryForfeit'].forEach(id => {
@@ -4289,7 +4158,7 @@ function viewProposalDetail(id) {
         document.getElementById('advRecName').value = claimDetails.nyc;
         document.getElementById('advRecCard').value = claimDetails.cardNo;
         document.getElementById('advRecAddress').value = claimDetails.address;
-        setAdvPayMethod(claimDetails.advanceRecKenh === 'chuyen-khoan' ? 'Chi trả qua chuyển khoản' : 'Chi trả trực tiếp bằng tiền mặt');
+        setAdvPayMethod(claimDetails.advanceRecKenh === 'chuyen-khoan' ? 'Nhận qua chuyển khoản' : 'Nhận tiền mặt');
 
         if (claimDetails.advanceRecKenh === 'chuyen-khoan') {
             document.getElementById('advRecBankWrapper').style.display = 'grid';
@@ -4345,7 +4214,7 @@ function viewProposalDetail(id) {
         document.getElementById('kpRecName').value = claimDetails.nyc;
         document.getElementById('kpRecCard').value = claimDetails.cardNo;
         document.getElementById('kpRecAddress').value = claimDetails.address;
-        setKpPayMethod(claimDetails.advanceRecKenh === 'chuyen-khoan' ? 'Chi trả qua chuyển khoản' : 'Chi trả trực tiếp bằng tiền mặt');
+        setKpPayMethod(claimDetails.advanceRecKenh === 'chuyen-khoan' ? 'Nhận qua chuyển khoản' : 'Nhận tiền mặt');
 
         if (claimDetails.advanceRecKenh === 'chuyen-khoan') {
             document.getElementById('kpRecBankWrapper').style.display = 'grid';
@@ -4442,17 +4311,17 @@ function viewProposalDetail(id) {
         document.getElementById('payoutAmountReal').value = (item.payoutAmountReal || item.amount || 0).toLocaleString('vi-VN');
         document.getElementById('payoutAmountReal').disabled = true;
 
-        const isCash = item.payoutMethod === 'Chi trả trực tiếp bằng tiền mặt' || item.payoutMethod === 'Tiền mặt';
+        const isCash = item.payoutMethod === 'Nhận tiền mặt' || item.payoutMethod === 'Tiền mặt';
         const radioTransfer = document.getElementById('payoutMethod_Transfer');
         const radioCash = document.getElementById('payoutMethod_Cash');
         if (isCash) {
             if (radioCash) { radioCash.checked = true; radioCash.disabled = true; }
             if (radioTransfer) { radioTransfer.checked = false; radioTransfer.disabled = true; }
-            handlePayoutMethodChange('Chi trả trực tiếp bằng tiền mặt');
+            handlePayoutMethodChange('Nhận tiền mặt');
         } else {
             if (radioTransfer) { radioTransfer.checked = true; radioTransfer.disabled = true; }
             if (radioCash) { radioCash.checked = false; radioCash.disabled = true; }
-            handlePayoutMethodChange('Chi trả qua chuyển khoản');
+            handlePayoutMethodChange('Nhận qua chuyển khoản');
         }
 
         document.getElementById('payoutRecName').value = item.payoutRecName || item.nycName;
@@ -4612,11 +4481,9 @@ function viewProposalDetail(id) {
 
     const isSpecialist = activeRole === 'chuyen-vien';
     const btnFill = document.getElementById('btnViewActionFill');
-    btnFill.innerHTML = item.status === FUNDING_STATUS_INPUT
-        ? '<i class="fa-solid fa-keyboard"></i> Nhập liệu'
-        : '<i class="fa-solid fa-file-signature"></i> Lập đề nghị';
+    btnFill.innerHTML = '<i class="fa-solid fa-file-signature"></i> Lập đề nghị';
     if (isSpecialist) {
-        if (item.status === 'Chờ lập đề nghị' || item.status === FUNDING_STATUS_INPUT) {
+        if (item.status === 'Chờ lập đề nghị') {
             btnFill.style.display = 'inline-flex';
         } else if (item.status === 'Bị từ chối') {
             document.getElementById('btnViewActionUpdate').style.display = 'inline-flex';
@@ -4638,9 +4505,7 @@ function startActionFromView(actionType) {
     if (!selectedProposalId) return;
     
     if (actionType === 'Lập đề nghị') {
-        const cur = proposalsList.find(p => p.id === selectedProposalId);
-        if (cur && cur.status === FUNDING_STATUS_INPUT) inputProposalDirect(selectedProposalId);
-        else fillProposalDirect(selectedProposalId);
+        fillProposalDirect(selectedProposalId);
     } else if (actionType === 'Cập nhật đề nghị') {
         updateProposalDirect(selectedProposalId);
     } else if (actionType === 'Cập nhật chi trả') {
@@ -4971,11 +4836,11 @@ function payProposalDirect(id) {
         document.getElementById('btnPayoutUpload').style.display = 'inline-flex';
 
         // Select correct radio button per SRS
-        const defaultMethod = (claimDetails.advanceRecKenh === 'tien-mat' || item.payoutMethod === 'Chi trả trực tiếp bằng tiền mặt' || item.payoutMethod === 'Tiền mặt')
-            ? 'Chi trả trực tiếp bằng tiền mặt'
-            : 'Chi trả qua chuyển khoản';
+        const defaultMethod = (claimDetails.advanceRecKenh === 'tien-mat' || item.payoutMethod === 'Nhận tiền mặt' || item.payoutMethod === 'Tiền mặt')
+            ? 'Nhận tiền mặt'
+            : 'Nhận qua chuyển khoản';
 
-        if (defaultMethod === 'Chi trả trực tiếp bằng tiền mặt') {
+        if (defaultMethod === 'Nhận tiền mặt') {
             if (radioCash) radioCash.checked = true;
             if (radioTransfer) radioTransfer.checked = false;
         } else {
@@ -5049,7 +4914,7 @@ function submitPayoutReal() {
     const payoutDate = document.getElementById('payoutDate').value.trim();
     const payoutAmountReal = document.getElementById('payoutAmountReal').value.trim();
     const methodRadio = document.querySelector('input[name="payoutMethod"]:checked');
-    const payoutMethod = methodRadio ? methodRadio.value : 'Chi trả qua chuyển khoản';
+    const payoutMethod = methodRadio ? methodRadio.value : 'Nhận qua chuyển khoản';
     const payoutRecName = document.getElementById('payoutRecName').value.trim();
     const payoutRecAddress = document.getElementById('payoutRecAddress').value.trim();
 
@@ -5088,7 +4953,7 @@ function submitPayoutReal() {
         triggerError('payoutRecAddress', 'Đây là trường bắt buộc');
     }
 
-    if (payoutMethod === 'Chi trả trực tiếp bằng tiền mặt' || payoutMethod === 'Tiền mặt') {
+    if (payoutMethod === 'Nhận tiền mặt' || payoutMethod === 'Tiền mặt') {
         const payoutReceiptNo = document.getElementById('payoutReceiptNo').value.trim();
         if (!payoutReceiptNo) {
             triggerError('payoutReceiptNo', 'Đây là trường bắt buộc');
@@ -5130,7 +4995,7 @@ function submitPayoutReal() {
     if (!item) return;
 
     // Show Confirmation Modal before completing 100% full payout
-    const methodDetailHtml = (payoutMethod === 'Chi trả trực tiếp bằng tiền mặt' || payoutMethod === 'Tiền mặt')
+    const methodDetailHtml = (payoutMethod === 'Nhận tiền mặt' || payoutMethod === 'Tiền mặt')
         ? `Số biên lai/phiếu chi: <strong>${document.getElementById('payoutReceiptNo').value.trim()}</strong>`
         : `STK: <strong>${document.getElementById('payoutBankAccount').value.trim()}</strong> - Ngân hàng: <strong>${document.getElementById('payoutBankName') ? document.getElementById('payoutBankName').value.trim() : ''}</strong> (Chủ TK: <strong>${document.getElementById('payoutBankUser').value.trim()}</strong>)`;
 
@@ -5161,7 +5026,7 @@ function submitPayoutReal() {
         item.payoutRecAddress = payoutRecAddress;
         item.payoutNote = document.getElementById('payoutNote') ? document.getElementById('payoutNote').value.trim() : '';
 
-        if (payoutMethod === 'Chi trả trực tiếp bằng tiền mặt' || payoutMethod === 'Tiền mặt') {
+        if (payoutMethod === 'Nhận tiền mặt' || payoutMethod === 'Tiền mặt') {
             item.payoutReceiptNo = document.getElementById('payoutReceiptNo').value.trim();
             item.payoutBankAccount = '';
             item.payoutBankUser = '';
@@ -5343,7 +5208,7 @@ function closeCustomAlertModal() {
 
 // PAYOUT METHOD TOGGLING
 function handlePayoutMethodChange(val) {
-    const isCash = val === 'Tiền mặt' || val === 'Chi trả trực tiếp bằng tiền mặt';
+    const isCash = val === 'Tiền mặt' || val === 'Nhận tiền mặt';
     const bankFields = document.getElementById('payoutBankFields');
     const cashFields = document.getElementById('payoutCashFields');
     if (isCash) {
@@ -5443,7 +5308,7 @@ function renderFundingDecisionLookupResults() {
     const kAgency = norm(document.getElementById('fundingDecSearchAgency') && document.getElementById('fundingDecSearchAgency').value);
 
     // Loại trừ các Quyết định mà vụ việc đã có Đề nghị cấp kinh phí bồi thường còn hiệu lực
-    const EFFECTIVE = ['Chờ lập đề nghị', 'Chờ nhập liệu', 'Chờ duyệt', 'Chờ chi trả', 'Chờ thu hồi', 'Hoàn thành', 'Sung quỹ nhà nước', 'Đã sung quỹ'];
+    const EFFECTIVE = ['Chờ lập đề nghị', 'Chờ duyệt', 'Chờ chi trả', 'Chờ thu hồi', 'Hoàn thành', 'Sung quỹ nhà nước', 'Đã sung quỹ'];
     const sourceList = (typeof proposalsList !== 'undefined') ? proposalsList : [];
     const usedClaims = new Set(
         sourceList
@@ -5521,11 +5386,11 @@ function openFundingLookupByType(prefillCode = '') {
 function onAdvPayMethodChange(value) {
     document.getElementById('advRecMethod').value = value;
     document.getElementById('advRecBankWrapper').style.display =
-        value === 'Chi trả qua chuyển khoản' ? 'grid' : 'none';
+        value === 'Nhận qua chuyển khoản' ? 'grid' : 'none';
 }
 
 function setAdvPayMethod(value) {
-    const method = value || 'Chi trả trực tiếp bằng tiền mặt';
+    const method = value || 'Nhận tiền mặt';
     document.querySelectorAll('input[name="advRecMethodRadio"]').forEach(r => {
         r.checked = r.value === method;
     });
@@ -5535,11 +5400,11 @@ function setAdvPayMethod(value) {
 function onKpPayMethodChange(value) {
     document.getElementById('kpRecMethod').value = value;
     document.getElementById('kpRecBankWrapper').style.display =
-        value === 'Chi trả qua chuyển khoản' ? 'grid' : 'none';
+        value === 'Nhận qua chuyển khoản' ? 'grid' : 'none';
 }
 
 function setKpPayMethod(value) {
-    const method = value || 'Chi trả trực tiếp bằng tiền mặt';
+    const method = value || 'Nhận tiền mặt';
     document.querySelectorAll('input[name="kpRecMethodRadio"]').forEach(r => {
         r.checked = r.value === method;
     });
@@ -5549,11 +5414,11 @@ function setKpPayMethod(value) {
 
 // =====================================================================================
 // 02 TAB "CHỜ XỬ LÝ" / "ĐÃ XỬ LÝ" THEO NGƯỜI DÙNG ĐĂNG NHẬP (GIẢ LẬP QUYỀN CÁN BỘ / LÃNH ĐẠO)
-// - Cán bộ xử lý: Chờ xử lý = Chờ lập đề nghị, Chờ nhập liệu, Chờ duyệt, Chờ chi trả, Bị từ chối, Chờ thu hồi;
+// - Cán bộ xử lý: Chờ xử lý = Chờ lập đề nghị, Chờ duyệt, Chờ chi trả, Bị từ chối, Chờ thu hồi;
 //   Đã xử lý = Hoàn thành, Sung quỹ nhà nước, Đã thu hồi, Đã hủy.
 // - Lãnh đạo: Chờ xử lý = đề nghị Chờ duyệt; Đã xử lý = đề nghị đã qua bước ký duyệt / từ chối.
 // =====================================================================================
-const KP_PENDING_STATES = ['Chờ lập đề nghị', FUNDING_STATUS_INPUT, 'Chờ duyệt', 'Chờ chi trả', 'Bị từ chối', 'Chờ thu hồi'];
+const KP_PENDING_STATES = ['Chờ lập đề nghị', 'Chờ duyệt', 'Chờ chi trả', 'Bị từ chối', 'Chờ thu hồi'];
 const KP_DONE_STATES = ['Hoàn thành', 'Sung quỹ nhà nước', 'Đã thu hồi', 'Đã hủy'];
 let kpActiveTab = 'pending';
 
@@ -5575,7 +5440,9 @@ function kpTabStates(tab) {
 function kpRefreshTabUi() {
     const cP = document.getElementById('kpTabPendingCount');
     const cD = document.getElementById('kpTabDoneCount');
-    if (cP) cP.innerText = proposalsList.filter(p => kpInTab('pending', p)).length;
+    // Badge tab Chờ xử lý (ẩn khi bằng 0) + đồng bộ badge menu trái (tiện ích dùng chung BDG)
+    const bdgPending = proposalsList.filter(p => kpInTab('pending', p)).length;
+    if (window.BDG) BDG.report('kinhPhi', bdgPending, cP); else if (cP) cP.innerText = bdgPending;
     if (cD) cD.innerText = proposalsList.filter(p => kpInTab('done', p)).length;
     document.getElementById('kpTabPending')?.classList.toggle('active', kpActiveTab === 'pending');
     document.getElementById('kpTabDone')?.classList.toggle('active', kpActiveTab === 'done');
@@ -5682,7 +5549,7 @@ function kpBuildAdvanceDecisionHtml(d) {
     const p = s => `<p style="margin:4pt 0; text-align:justify; text-indent:1cm;">${s}</p>`;
     const dp = String(d.docDate || '').split('/');
     const dateLine = dp.length === 3 ? `Hà Nội, ngày ${dp[0]} tháng ${dp[1]} năm ${dp[2]}` : '…, ngày … tháng … năm …';
-    const payLine = d.payMethod === 'Chi trả qua chuyển khoản'
+    const payLine = d.payMethod === 'Nhận qua chuyển khoản'
         ? `chuyển khoản vào tài khoản số ${kpEsc(d.bankAccount || '…')} mở tại ${kpEsc(d.bankName || '…')}${d.bankBranch ? ' - ' + kpEsc(d.bankBranch) : ''}, chủ tài khoản: ${kpEsc(d.bankUser || d.nycName || '…')}`
         : 'chi trả trực tiếp bằng tiền mặt';
     return `<div style="font-family:'Times New Roman',serif; font-size:14pt; line-height:1.5; color:#000;">
