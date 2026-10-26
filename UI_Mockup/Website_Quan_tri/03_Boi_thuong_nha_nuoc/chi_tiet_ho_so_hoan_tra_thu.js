@@ -31,25 +31,37 @@
             ? '<button type="button" data-admin-icon-normalized="1" class="btn-action-square" title="' + title + '" style="' + base + 'background:' + c + '; color:#fff; border:1px solid ' + c + ';" onclick="' + onclick + '"><i class="' + icon + '"></i></button>'
             : '<button type="button" data-admin-icon-normalized="1" class="btn-action-square" title="' + title + (tip ? ' - ' + tip : '') + '" style="' + base + 'background:#e2e8f0; color:#64748b; border:1px solid #cbd5e1; cursor:not-allowed;" disabled><i class="' + icon + '"></i></button>';
     }
+    // Cột Thao tác Bước 4: bộ 04 nút cố định Xem chi tiết | Ghi nhận nộp tiền / Ghi nhận trả lại tiền | Trình QĐ miễn bổ sung | Trình QĐ giảm bổ sung
+    // Nút không được phép: hiển thị mờ, tooltip "[Tên nút] - [Lý do]"
+    function payTip(o) {
+        if (/^CD_DC$/.test(o.trinh || '')) return 'Quyết định đình chỉ đang chờ Lãnh đạo ký duyệt';
+        if (/_DC$/.test(o.trinh || '')) return 'Cán bộ đang xử lý Đình chỉ hoàn trả';
+        if (o.ct === 'DONE') return 'Cán bộ đã hoàn thành nghĩa vụ hoàn trả';
+        if (o.ct === 'MIEN') return 'Cán bộ được Miễn hoàn trả';
+        if (o.ct === 'DC') return 'Cán bộ đã Đình chỉ hoàn trả';
+        if (conLai(o) <= 0) return 'Không còn số tiền phải nộp';
+        return '';
+    }
     function actions(o, idx) {
-        const a = A(), s = a.scope();
-        const view = window.htViewOfficerBtn(idx) + ' ' + act('ht4OpenHistory(' + idx + ')', 'fa-solid fa-clock-rotate-left', 'Xem lịch sử nộp tiền', true);
+        const a = A(), s = a.scope(), B = window.htActBtn;
+        const view = window.htViewOfficerBtn(idx, 'ht4OpenHistory');
         if (s === 'lanh_dao') {
             return /^CD_(MIEN|GIAM)$/.test(o.trinh || '')
                 ? view + ' ' + act('ht3Approve(\'S' + o.trinh.slice(3) + '\',' + idx + ')', 'fa-solid fa-file-signature', 'Ký duyệt', true) + ' ' + act('ht3Reject(\'S' + o.trinh.slice(3) + '\',' + idx + ')', 'fa-solid fa-ban', 'Từ chối', true)
                 : view;
         }
-        if (!canPay(o)) return view;
+        const own = canPay(o), viewTip = 'Chỉ đơn vị quản lý cán bộ hoặc Sở Tư pháp thực hiện';
+        // Nút 2 đổi chế độ theo tình trạng: có số tiền cần trả lại -> Ghi nhận trả lại tiền; còn lại -> Ghi nhận nộp tiền
+        let h = view + ' ';
+        if ((o.refund || 0) > 0) h += B('fa-solid fa-hand-holding-dollar', 'Ghi nhận trả lại tiền', 'ht4OpenRefund(' + idx + ')', own, viewTip, '#d97706');
+        else { const t = own ? payTip(o) : viewTip; h += B('fa-solid fa-money-bill-transfer', 'Ghi nhận nộp tiền', 'ht4OpenPay(' + idx + ')', !t, t, '#16a34a'); }
+        // Miễn / Giảm bổ sung: chỉ đơn vị quản lý cán bộ; Sở Tư pháp mờ
         const thu = o.ct === 'THU', trinhCho = /^CD_/.test(o.trinh || ''), dcLock = /_DC$/.test(o.trinh || '');
-        let h = view;
-        h += ' ' + act('ht4OpenPay(' + idx + ')', 'fa-solid fa-money-bill-transfer', 'Ghi nhận nộp tiền', thu && conLai(o) > 0 && !o.refund && !/^(CD|TL)_DC$/.test(o.trinh || ''), dcLock ? 'Cán bộ đang xử lý Đình chỉ hoàn trả' : 'Không còn số tiền phải thu');
-        h += ' ' + act('ht4OpenRefund(' + idx + ')', 'fa-solid fa-hand-holding-dollar', 'Cập nhật trả lại tiền', (o.refund || 0) > 0, 'Không có số tiền cần trả lại');
-        // Miễn / Giảm bổ sung: chỉ đơn vị quản lý cán bộ; Sở Tư pháp khóa mờ
-        const stpTip = 'Sở Tư pháp không thực hiện Miễn hoàn trả, Giảm mức hoàn trả';
-        const okMG = s !== 'stp' && thu && conLai(o) > 0 && !trinhCho && !o.refund && !dcLock;
-        const giamOk = okMG && o.loi === 'Vô ý';
-        h += ' ' + act('ht3OpenSign(\'SMIEN\',' + idx + ')', 'fa-solid fa-shield-halved', /^BTC_MIEN/.test(o.trinh || '') ? 'Trình ký lại QĐ miễn bổ sung' : 'Trình ký QĐ miễn bổ sung', okMG, s === 'stp' ? stpTip : (trinhCho ? 'Đang chờ Lãnh đạo ký duyệt' : 'Không áp dụng'));
-        h += ' ' + act('ht3OpenSign(\'SGIAM\',' + idx + ')', 'fa-solid fa-arrow-down-wide-short', /^BTC_GIAM/.test(o.trinh || '') ? 'Trình ký lại QĐ giảm bổ sung' : 'Trình ký QĐ giảm bổ sung', giamOk, s === 'stp' ? stpTip : (okMG ? 'Giảm mức hoàn trả chỉ áp dụng khi Mức độ lỗi là Vô ý' : (trinhCho ? 'Đang chờ Lãnh đạo ký duyệt' : 'Không áp dụng')));
+        const mgTip = !own ? viewTip : s === 'stp' ? 'Sở Tư pháp không có quyền' : dcLock ? 'Cán bộ đang xử lý Đình chỉ hoàn trả' : trinhCho ? 'Quyết định đang chờ Lãnh đạo ký duyệt'
+            : (o.refund || 0) > 0 ? 'Cán bộ có số tiền cần trả lại' : !(thu && conLai(o) > 0) ? (payTip(o) || 'Không còn số tiền phải nộp') : '';
+        const gTip = mgTip || (o.loi !== 'Vô ý' ? 'Giảm mức hoàn trả chỉ áp dụng khi Mức độ lỗi là Vô ý' : '');
+        h += ' ' + B('fa-solid fa-shield-halved', 'Trình QĐ miễn bổ sung', 'ht3OpenSign(\'SMIEN\',' + idx + ')', !mgTip, mgTip, '#7c3aed');
+        h += ' ' + B('fa-solid fa-arrow-down-wide-short', 'Trình QĐ giảm bổ sung', 'ht3OpenSign(\'SGIAM\',' + idx + ')', !gTip, gTip, '#2563eb');
         return h;
     }
     function methodCell(o) {
@@ -114,12 +126,16 @@
             + '<div class="modal-body" style="padding:24px;"><div id="ht4Info" class="info-grid" style="margin-bottom:16px;"></div><div id="ht4Form"></div></div>'
             + '<div class="modal-footer" style="padding:16px 24px 24px;"><button type="button" class="btn btn-secondary" onclick="ht4Close()">Đóng</button><button type="button" class="btn btn-primary" id="ht4Save" onclick="ht4Save()"><i class="fa-solid fa-floppy-disk"></i> Lưu</button></div></div></div>');
     }
-    function info(o) {
+    function info(o, full) {
         const a = A(), row = (k, v) => '<div class="info-item"><div class="info-label">' + k + '</div><div class="info-value" style="font-weight:700;">' + v + '</div></div>';
-        return row('Cán bộ', a.esc(o.name) + '<div style="font-weight:400; font-size:12.5px;">' + a.esc(o.role || '') + ' - ' + a.esc(o.agency) + '</div>')
+        // Xem chi tiết cán bộ: thông tin chung (mức độ lỗi, hình thức xử lý) và số tiền cần hoàn trả theo ý kiến Hội đồng
+        const xl = window.htXlLabel ? window.htXlLabel(o.xl) : (o.xl || '');
+        const ext = full ? row('Mức độ lỗi', a.esc(o.loi === 'Khác' ? (o.ykhdLoiKhac || 'Khác') : (o.loi || '--'))) + row('Hình thức xử lý', a.esc(xl || '--'))
+            + row('Số tiền cần hoàn trả', a.money(o.hd || o.total) + ' đ') : '';
+        return row('Cán bộ', a.esc(o.name) + '<div style="font-weight:400; font-size:12.5px;">' + a.esc(o.role || '') + ' - ' + a.esc(o.agency) + '</div>') + ext
             + row('Phương thức hoàn trả', a.esc((window.htMethod ? window.htMethod(o.refundMethod) : o.refundMethod) || '--'))
-            + row('Số tiền phải hoàn trả', a.money(o.total) + ' đ') + row('Đã nộp', a.money(o.paid) + ' đ')
-            + row('Còn phải thu', a.money(conLai(o)) + ' đ') + (o.refund > 0 ? row('Số tiền cần trả lại', a.money(o.refund) + ' đ') : '');
+            + row(full ? 'Số tiền phải nộp (sau giảm)' : 'Số tiền phải hoàn trả', a.money(o.total) + ' đ') + row('Đã nộp', a.money(o.paid) + ' đ')
+            + row(full ? 'Còn phải nộp' : 'Còn phải thu', a.money(conLai(o)) + ' đ') + (o.refund > 0 ? row('Số tiền cần trả lại', a.money(o.refund) + ' đ') : '');
     }
     const field = (label, id, ph, val, extra) => '<div class="form-group" style="margin-bottom:14px;"><span class="form-label">' + label + ' <span style="color:red;">*</span></span><input type="text" class="form-control" id="' + id + '" placeholder="' + ph + '" value="' + (val || '') + '" ' + (extra || '') + ' oninput="ht4Clr(\'' + id + '\')"><span class="invalid-feedback" id="' + id + 'Error" style="display:none; color:red; font-size:12px;">' + REQ + '</span></div>';
     window.ht4Clr = id => { const i = el(id); if (i) i.classList.remove('is-invalid'); const e = el(id + 'Error'); if (e) { e.style.display = 'none'; e.innerText = REQ; } };
@@ -128,7 +144,7 @@
         ensureModal();
         const a = A(), o = activeDossier.refundOfficers[idx];
         P = { mode, idx };
-        el('ht4Info').innerHTML = info(o);
+        el('ht4Info').innerHTML = info(o, mode === 'history');
         el('ht4Save').style.display = mode === 'history' ? 'none' : '';
         if (mode === 'pay') {
             el('ht4Title').innerHTML = '<i class="fa-solid fa-file-invoice-dollar"></i> Ghi nhận nộp tiền hoàn trả';
@@ -138,14 +154,16 @@
                 + (motLan ? '<div style="font-size:12.5px; color:var(--text-muted); margin:-6px 0 12px;">Phương thức Một lần: gợi ý 100% số còn phải thu.</div>' : '')
                 + '<div id="ht4Tlkt"></div>';
         } else if (mode === 'refund') {
-            el('ht4Title').innerHTML = '<i class="fa-solid fa-hand-holding-dollar"></i> Cập nhật trả lại tiền cho cán bộ';
+            el('ht4Title').innerHTML = '<i class="fa-solid fa-hand-holding-dollar"></i> Ghi nhận trả lại tiền';
             el('ht4Form').innerHTML = '<div class="grid-2-cols" style="gap:16px;">' + field('Số tiền trả lại (đ)', 'ht4Amt', 'Nhập số tiền trả lại', a.money(o.refund), 'style="text-align:right;" onchange="ht4Money(this)"') + field('Ngày trả lại', 'ht4Ngay', 'dd/mm/yyyy', a.today()) + '</div><div id="ht4Tlkt"></div>';
         } else {
-            el('ht4Title').innerHTML = '<i class="fa-solid fa-clock-rotate-left"></i> Lịch sử nộp tiền của cán bộ';
+            el('ht4Title').innerHTML = '<i class="fa-solid fa-circle-info"></i> Xem chi tiết cán bộ';
             const pays = o.payments || [];
-            el('ht4Form').innerHTML = '<table class="dense-table" style="width:100%;"><thead><tr><th style="width:45px; text-align:center;">STT</th><th style="width:110px;">Ngày nộp</th><th style="text-align:right; width:140px;">Số tiền (đ)</th><th>Người nhập</th><th style="width:150px;">Tài liệu kèm theo</th></tr></thead><tbody>'
+            el('ht4Form').innerHTML = '<div style="font-weight:700; color:var(--primary-color); margin:4px 0 8px;"><i class="fa-solid fa-clock-rotate-left"></i> Các lần nộp tiền</div><table class="dense-table" style="width:100%;"><thead><tr><th style="width:45px; text-align:center;">STT</th><th style="width:110px;">Ngày nộp</th><th style="text-align:right; width:140px;">Số tiền (đ)</th><th>Người nhập</th><th style="width:150px;">Tài liệu kèm theo</th></tr></thead><tbody>'
                 + (pays.length ? pays.map((p, i) => '<tr><td style="text-align:center;">' + (i + 1) + '</td><td>' + a.esc(p.ngay) + '</td><td style="text-align:right;">' + a.money(p.amt) + '</td><td>' + a.esc(p.by) + '<div style="font-size:12px; color:var(--text-muted);">' + a.esc(p.at || '') + '</div></td><td>' + ((p.tlkt || []).map(t => a.esc(t.name)).join(', ') || '--') + '</td></tr>').join('') : '<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Chưa có đợt nộp tiền.</td></tr>')
                 + '</tbody></table>' + (o.refundDone ? '<div style="margin-top:12px; font-size:13px;">Đã trả lại cho cán bộ: <strong>' + a.money(o.refundDone.amt) + ' đ</strong> ngày ' + a.esc(o.refundDone.ngay) + ' - ' + a.esc(o.refundDone.by) + '</div>' : '');
+            // Khối Quyết định miễn / giảm mức hoàn trả (nếu có), như popup Xem chi tiết cán bộ tại Bước 3
+            if (typeof window.htQdBlockHtml === 'function') el('ht4Form').insertAdjacentHTML('beforeend', window.htQdBlockHtml(idx));
         }
         if (mode !== 'history' && typeof tlktMount === 'function') tlktMount('ht4', 'ht4Tlkt', { required: false, rows: [], noLeader: true });
         el('ht4Modal').classList.add('visible');
@@ -180,8 +198,8 @@
         } else {
             o.refundDone = rec; o.paid = (o.paid || 0) - amt; o.refund = 0;
             // Trả lại tiền theo QĐ đình chỉ (phương án Hoàn trả lại số tiền đã thu) -> Đình chỉ hoàn trả; theo giảm bổ sung (nộp thừa) -> Hoàn thành
-            if (o.trinh === 'TL_DC') { o.trinh = ''; o.ct = 'DC'; o.total = o.paid || 0; msg = 'Cập nhật trả lại tiền thành công. Cán bộ chuyển Đình chỉ hoàn trả.'; }
-            else { o.ct = 'DONE'; msg = 'Cập nhật trả lại tiền thành công. Cán bộ chuyển Hoàn thành.'; }
+            if (o.trinh === 'TL_DC') { o.trinh = ''; o.ct = 'DC'; o.total = o.paid || 0; msg = 'Ghi nhận trả lại tiền thành công. Cán bộ chuyển Đình chỉ hoàn trả.'; }
+            else { o.ct = 'DONE'; msg = 'Ghi nhận trả lại tiền thành công. Cán bộ chuyển Hoàn thành.'; }
         }
         ht4Close();
         a.commit(msg);

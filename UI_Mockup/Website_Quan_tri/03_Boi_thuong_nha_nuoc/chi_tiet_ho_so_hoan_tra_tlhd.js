@@ -425,8 +425,9 @@ function tlhdOpenModal() {
     }
     tlhdEnsureModal();
     tlhdFrameFull(true);
-    const prev = activeDossier.tlhd || null;
-    const rejected = activeDossier.status === 'Bị từ chối thành lập HĐ';
+    // Trình ký lại: điền sẵn dữ liệu lần trình gần nhất (hồ sơ mẫu Bị từ chối chưa có lần trình: dựng lần trình mẫu)
+    const rejected = activeDossier.status === 'Bị từ chối thành lập HĐ' || activeDossier.status === 'Từ chối duyệt QĐ thành lập';
+    const prev = activeDossier.tlhd || (rejected ? tlhdSeedRejected() : null);
     tlhdState = {
         method: prev && rejected ? prev.method : 'online',
         docSrc: prev && rejected ? prev.docSrc : 'gen',
@@ -456,10 +457,30 @@ function tlhdOpenModal() {
     tlhdRenderMembers();
     tlhdEl(tlhdState.method === 'offline' ? 'tlhdMethodOffline' : 'tlhdMethodOnline').checked = true;
     tlhdSetDocSrc(tlhdState.docSrc);
+    // Tệp dự thảo tải lên ở lần trình trước (nguồn Tải lên từ máy)
+    if (prev && rejected && prev.docSrc === 'upload' && prev.onlineFile) { tlhdState.onlineFile = prev.onlineFile; tlhdRenderDocBox(); }
     tlhdSetMethod(tlhdState.method);
     tlhdGoStep1();
     const m = tlhdEl('tlhdModal');
     m.style.display = 'flex';
+}
+// Dữ liệu mẫu: lần trình QĐ thành lập Hội đồng đã bị từ chối (hồ sơ mẫu chưa có thông tin lần trình)
+function tlhdSeedRejected() {
+    const levels = tlhdLevels();
+    const root = tlhdRootUnitId();
+    const cv = tlhdChucVuList(root);
+    const code = i => (cv[Math.min(i, cv.length - 1)] || {}).code || '';
+    const mk = (name, i, chucDanh) => ({ name, unitId: root, unitName: tlhdUnitName(root), chucVu: code(i), chucVuName: tlhdCvName(code(i)), chucDanh });
+    activeDossier.tlhd = {
+        method: 'online', docSrc: 'gen', soQD: '45/QĐ-STP', ngayQD: '25/08/2026',
+        // Thành viên Hội đồng của lần trình trước: theo danh sách thành viên đang hiển thị của hồ sơ
+        members: (activeDossier.council || []).length
+            ? activeDossier.council.map((c, i) => mk(c.name, i, c.role || 'Thành viên'))
+            : [mk('Lê Minh Châu', 0, 'Chủ tịch Hội đồng'), mk('Nguyễn Văn Bình', 1, 'Thành viên'), mk('Phạm Thị Thu', 2, 'Thư ký Hội đồng')],
+        fileName: tlhdFileBase() + '.docx', levels, assignees: levels.map(l => (l.leaders[0] || {}).id || ''), enableNhay: true,
+        content: 'Kính trình Lãnh đạo xem xét, ký duyệt dự thảo Quyết định thành lập Hội đồng xem xét trách nhiệm hoàn trả.', level: 0
+    };
+    return activeDossier.tlhd;
 }
 function tlhdClose() {
     tlhdCancelConvert();
@@ -1038,7 +1059,8 @@ function tlhdSubmitOnline() {
     const fileName = tlhdState.docSrc === 'gen' ? tlhdFileBase() + '.docx' : tlhdState.onlineFile.name;
     activeDossier.tlhd = {
         method: 'online', docSrc: tlhdState.docSrc, soQD: d.soQD, ngayQD: d.ngayQD, members: tlhdState.docSrc === 'gen' ? d.members : [],
-        fileName, levels, assignees: sign.assignees, coords: sign.coords, enableNhay: sign.enableNhay, content: sign.content, level: 0
+        fileName, onlineFile: tlhdState.docSrc === 'upload' ? tlhdState.onlineFile : null,
+        levels, assignees: sign.assignees, coords: sign.coords, enableNhay: sign.enableNhay, content: sign.content, level: 0
     };
     activeDossier.hdPublishType = 'digital';
     activeDossier.hdDecision = d.soQD || 'Chờ cấp số';

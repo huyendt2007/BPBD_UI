@@ -11,7 +11,7 @@
 (function () {
     const U_CHU = 'UBND Quận Long Biên', U_A = 'UBND Phường Bồ Đề', U_B = 'UBND Huyện An Dương';
     // Phiên bản dữ liệu mẫu: đổi phiên bản thì xóa dữ liệu thao tác đã lưu của các hồ sơ mẫu bổ sung để nạp lại theo mẫu mới
-    const SEED_VER = '20261026p10', SEED_CODES = ['HT-2026-025', 'HT-2026-026', 'HT-2026-027'];
+    const SEED_VER = '20261026p15', SEED_CODES = ['HT-2026-025', 'HT-2026-026', 'HT-2026-027'];
     try {
         if (localStorage.getItem('btnn_ht_seed_ver') !== SEED_VER) {
             const st = JSON.parse(localStorage.getItem('btnn_ht_units_v1') || '{}') || {};
@@ -52,7 +52,7 @@
         'Kiều Văn Chỉ': ['DC', 'HT', 0, { paid: 3000000, total: 3000000, dc: { key: 2, st: 'DONE', pa: 'KHONG' } }],
         'Hồ Văn Thừa': ['THU', 'GIAM', 8000000, { paid: 10000000, total: 8000000, refund: 2000000 }],
         // HT-2026-027 - phần của Đơn vị tạo Hội đồng (UBND Quận Long Biên): đã ban hành QĐ hoàn trả
-        'Đoàn Văn Lâm': ['THU', 'HT', 0, { paid: 15000000 }], 'Vương Thị Hằng': ['THU', 'GIAM', 12000000, { total: 12000000 }], 'Mạc Văn Toàn': ['CBH_MIEN', 'MIEN'],
+        'Đoàn Văn Lâm': ['THU', 'HT', 0, { paid: 15000000 }], 'Vương Thị Hằng': ['THU', 'GIAM', 12000000, { total: 12000000 }], 'Mạc Văn Toàn': ['CD_MIEN', 'MIEN', 0, { qd2: 'CD' }],
         'Lại Văn Phúc': ['CD_HT', 'HT'],
         'Hà Thị Ngân': ['THU', 'HT', 0, { paid: 10000000 }], 'Tô Văn Khải': ['THU', 'HT', 0, { paid: 0 }]
     };
@@ -65,7 +65,7 @@
                 L('Kiều Văn Chỉ', U_A, 'DC', { hd: 9000000, paid: 3000000, pt: 3000000 }), L('Hồ Văn Thừa', U_A, 'THU', { xl: 'GIAM', hd: 10000000, giam: 8000000, paid: 10000000, pt: 8000000, refund: 2000000 })]
         },
         'HT-2026-027': {
-            owner: U_CHU, officers: [L('Đoàn Văn Lâm', U_CHU, 'THU', { hd: 40000000, paid: 15000000 }), L('Vương Thị Hằng', U_CHU, 'THU', { xl: 'GIAM', hd: 20000000, giam: 12000000, pt: 12000000 }), L('Mạc Văn Toàn', U_CHU, 'CBH_MIEN', { xl: 'MIEN', hd: 15000000 }), L('Lại Văn Phúc', U_A, 'CD_HT', { hd: 35000000 }),
+            owner: U_CHU, officers: [L('Đoàn Văn Lâm', U_CHU, 'THU', { hd: 40000000, paid: 15000000 }), L('Vương Thị Hằng', U_CHU, 'THU', { xl: 'GIAM', hd: 20000000, giam: 12000000, pt: 12000000 }), L('Mạc Văn Toàn', U_CHU, 'CD_MIEN', { xl: 'MIEN', hd: 15000000 }), L('Lại Văn Phúc', U_A, 'CD_HT', { hd: 35000000 }),
                 L('Hà Thị Ngân', U_B, 'THU', { hd: 25000000, paid: 10000000 }), L('Tô Văn Khải', U_B, 'THU', { hd: 18000000 })]
         }
     };
@@ -101,9 +101,9 @@
         const levels = tlhdLevels();
         activeDossier.dcht = {
             method: 'online', docSrc: 'gen', prevStatus: c.prev, so: '', ngay: '20/09/2026',
-            canCu: typeof DCHT_CAN_CU_DEFAULT !== 'undefined' && Array.isArray(DCHT_CAN_CU_DEFAULT) ? DCHT_CAN_CU_DEFAULT.join('\n') : '',
-            vbCanCu: 'Quyết định số 15/QĐ-UBND ngày 02/03/2026 của Ủy ban nhân dân quận Long Biên', noiNhan: '',
-            fileName: 'Mau_39_BTNN_Quyet_dinh_dinh_chi_xem_xet_hoan_tra_' + activeDossier.code + '.docx', uploadMeta: null, attachments: [],
+            canCu: typeof DCHT_CAN_CU_DEFAULT !== 'undefined' ? (Array.isArray(DCHT_CAN_CU_DEFAULT) ? DCHT_CAN_CU_DEFAULT.join('\n') : String(DCHT_CAN_CU_DEFAULT)) : '',
+            vbCanCu: 'Quyết định số 15/QĐ-UBND ngày 02/03/2026 của Ủy ban nhân dân quận Long Biên', noiNhan: typeof dchtNoiNhanDefault === 'function' ? dchtNoiNhanDefault() : '',
+            fileName: 'Mau_39_BTNN_Quyet_dinh_dinh_chi_xem_xet_hoan_tra_' + activeDossier.code + '.docx', uploadMeta: null, attachments: [{ name: 'Văn bản hủy bỏ văn bản làm căn cứ yêu cầu bồi thường', file: { id: '', name: 'Van_ban_huy_bo_can_cu_YCBT.pdf', size: 312320, type: 'application/pdf' } }],
             levels, assignees: levels.map(l => (l.leaders && l.leaders[0] ? l.leaders[0].id : '')), coords: [], enableNhay: true,
             content: 'Kính trình Lãnh đạo xem xét, ký duyệt Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả.', level: 0, submittedAt: '20/09/2026 09:00',
             returned: c.dcht === 'rejected' ? { reason: 'Cần ghi rõ số, ngày văn bản hủy bỏ văn bản làm căn cứ yêu cầu bồi thường.', by: 'Lãnh đạo cấp 1', at: '21/09/2026 10:30' } : null

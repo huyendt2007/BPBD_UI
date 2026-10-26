@@ -130,7 +130,7 @@
                 let r = activeDossier.htDcs[ex.dc.key];
                 if (!r) {
                     r = seedRec('DC', u, ex.dc.st);
-                    Object.assign(r, { st: ex.dc.st, unit: o.agency, names: [], dc: { pa: {}, canCu: typeof DCHT_CAN_CU_DEFAULT !== 'undefined' && Array.isArray(DCHT_CAN_CU_DEFAULT) ? DCHT_CAN_CU_DEFAULT.join('\n') : '', vbCanCu: 'Bản án số 05/2025/HS-ST ngày 12/03/2025 của Tòa án nhân dân quận Long Biên', noiNhan: '' } });
+                    Object.assign(r, { st: ex.dc.st, unit: o.agency, names: [], dc: { pa: {}, canCu: typeof DCHT_CAN_CU_DEFAULT !== 'undefined' ? (Array.isArray(DCHT_CAN_CU_DEFAULT) ? DCHT_CAN_CU_DEFAULT.join('\n') : String(DCHT_CAN_CU_DEFAULT)) : '', vbCanCu: 'Bản án số 05/2025/HS-ST ngày 12/03/2025 của Tòa án nhân dân quận Long Biên', noiNhan: typeof dchtNoiNhanDefault === 'function' ? dchtNoiNhanDefault() : '' } });
                     activeDossier.htDcs[ex.dc.key] = r;
                 }
                 r.names.push(o.name);
@@ -146,7 +146,7 @@
     // Lượt trình mẫu cho dữ liệu có sẵn (đã trình / bị từ chối / đã ban hành)
     function seedRec(kind, u, st) {
         const levels = levelsOf(u.unit);
-        const r = { kind, method: 'online', docSrc: 'gen', soKh: st === 'DONE' ? ({ GIAM: '92/QĐ-UBND', MIEN: '93/QĐ-UBND' }[kind] || '89/QĐ-UBND') : '', ngay: '20/09/2026', fileName: KIND[kind].file + '_' + (activeDossier.maVuViec || activeDossier.code) + '.docx', tlkt: [], levels, assignees: levels.map(l => l.leaders[0].id), content: KIND[kind].content, level: 0, hist: [{ type: 'submit', name: 'Cán bộ ' + u.unit, at: '18/09/2026 09:00', msg: KIND[kind].content }] };
+        const r = { kind, method: 'online', docSrc: 'gen', soKh: st === 'DONE' ? ({ GIAM: '92/QĐ-UBND', MIEN: '93/QĐ-UBND' }[kind] || '89/QĐ-UBND') : '', ngay: '20/09/2026', fileName: KIND[kind].file + '_' + (activeDossier.maVuViec || activeDossier.code) + '.docx', tlkt: [{ name: 'Văn bản kiến nghị của Hội đồng xem xét trách nhiệm hoàn trả', file: { id: '', name: 'Van_ban_kien_nghi_hoan_tra.pdf', size: 245760, type: 'application/pdf' } }], levels, assignees: levels.map(l => l.leaders[0].id), content: KIND[kind].content, level: 0, hist: [{ type: 'submit', name: 'Cán bộ ' + u.unit, at: '18/09/2026 09:00', msg: KIND[kind].content }] };
         if (st === 'BTC') { r.reject = { reason: 'Cần rà soát lại số tiền hoàn trả theo kiến nghị của Hội đồng.', by: leaderLabel(r, 0), at: '19/09/2026 10:15' }; r.hist.unshift({ type: 'reject', name: r.reject.by, at: r.reject.at, msg: 'Lý do: ' + r.reject.reason }); }
         if (st === 'DONE') { r.level = levels.length; r.issuedAt = /^(GIAM|MIEN)$/.test(kind) ? '22/09/2026' : '20/09/2026'; r.hist.unshift({ type: 'approve', name: leaderLabel(r, levels.length - 1), at: '20/09/2026 15:00', msg: 'Ký duyệt' }); }
         return r;
@@ -323,24 +323,31 @@
         if (btns.length) h += '<div style="display:flex; justify-content:flex-end; gap:10px; border-top:1px solid var(--border-color); padding-top:12px; margin-top:8px;">' + btns.join('') + '</div>';
         return h + '</div>';
     }
+    // Cột Thao tác Bước 3 (vai trò đơn vị): bộ 03 nút cố định Xem chi tiết | Trình QĐ miễn | Trình QĐ giảm; nút không được phép hiển thị mờ kèm lý do
+    function signTip(o, u, want) {
+        const x = xlCode(o);
+        if (scope() === 'stp') return 'Sở Tư pháp không có quyền';
+        if (!canActUnit(u)) return 'Chỉ đơn vị quản lý cán bộ thực hiện';
+        if (x !== want) return want === 'MIEN' ? 'Cán bộ không thuộc diện Miễn hoàn trả' : 'Cán bộ không thuộc diện Giảm mức hoàn trả';
+        if (o.ct === 'DC') return 'Cán bộ đã Đình chỉ hoàn trả';
+        if (/_DC$/.test(o.trinh || '')) return 'Cán bộ đang trình ký Quyết định đình chỉ';
+        if (u.st !== 'DONE') return 'Chỉ trình sau khi Quyết định hoàn trả của đơn vị được ban hành';
+        if (/^CD_/.test(o.ct)) return 'Quyết định đang chờ Lãnh đạo ký duyệt';
+        if (!/^(CBH|BTC)_/.test(o.ct)) return 'Quyết định đã được ban hành';
+        return '';
+    }
     function officerAction(o, idx, u) {
         const x = xlCode(o);
-        if (o.ct === 'DC' || /_DC$/.test(o.trinh || '')) return '<span style="color:var(--text-muted);">--</span>';
-        if (x === 'HT') return '<span style="color:var(--text-muted);">--</span>';
-        const lbl = x === 'MIEN' ? 'Trình ký QĐ miễn' : 'Trình ký QĐ giảm';
-        const dis = tip => '<button type="button" data-admin-icon-normalized="1" class="ht-btn-sm" style="background:#e2e8f0; color:#64748b; border:1px solid #cbd5e1; cursor:not-allowed;" title="' + esc(lbl + ' - ' + tip) + '" disabled><i class="fa-solid fa-file-signature"></i> ' + lbl + '</button>';
         if (isLeader()) {
             return ['CD_MIEN', 'CD_GIAM'].includes(o.ct)
                 ? '<button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-primary" title="Ký duyệt" onclick="ht3Approve(\'' + x + '\',' + idx + ')"><i class="fa-solid fa-file-signature"></i></button> <button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-danger" title="Từ chối" onclick="ht3Reject(\'' + x + '\',' + idx + ')"><i class="fa-solid fa-ban"></i></button>'
-                : '<span style="color:var(--text-muted);">--</span>';
+                : '';
         }
-        if (scope() === 'stp') return /^(CBH|BTC)_/.test(o.ct) ? dis('Sở Tư pháp không thực hiện Miễn hoàn trả, Giảm mức hoàn trả') : DASH;
-        if (!canActUnit(u)) return '<span style="color:var(--text-muted);">--</span>';
-        if (u.st !== 'DONE') return dis('Chỉ trình ký sau khi Quyết định hoàn trả của đơn vị được ban hành');
-        if (['CBH_MIEN', 'CBH_GIAM'].includes(o.ct)) return '<button type="button" data-admin-icon-normalized="1" class="ht-btn-sm ht-btn-pri" onclick="ht3OpenSign(\'' + x + '\',' + idx + ')"><i class="fa-solid fa-file-signature"></i> ' + lbl + '</button>';
-        if (['BTC_MIEN', 'BTC_GIAM'].includes(o.ct)) return '<button type="button" data-admin-icon-normalized="1" class="ht-btn-sm ht-btn-pri" onclick="ht3OpenSign(\'' + x + '\',' + idx + ')"><i class="fa-solid fa-paper-plane"></i> Trình ký lại</button>';
-        if (['CD_MIEN', 'CD_GIAM'].includes(o.ct)) return '<span style="color:var(--text-muted); font-size:12.5px;">Chờ Lãnh đạo ký duyệt</span>';
-        return '<span style="color:var(--text-muted);">--</span>';
+        const btn = (want, icon, name) => {
+            const tip = signTip(o, u, want);
+            return window.htActBtn(icon, name, tip ? '' : 'ht3OpenSign(\'' + want + '\',' + idx + ')', !tip, tip, '#7c3aed');
+        };
+        return btn('MIEN', 'fa-solid fa-shield-halved', 'Trình QĐ miễn') + ' ' + btn('GIAM', 'fa-solid fa-arrow-down-wide-short', 'Trình QĐ giảm');
     }
     function officerStatusCell(o, idx) {
         // Pill trạng thái; chú thích QĐ miễn / giảm đã ban hành (xem văn bản tại cột Thao tác)
@@ -386,19 +393,41 @@
             + (viewOnly ? '<span style="font-size:11px; padding:2px 8px; border-radius:999px; background:#eff6ff; color:#1d4ed8; font-weight:500; white-space:nowrap;">' + (hasOwnUnit() ? 'Chỉ xem (Đơn vị phối hợp)' : 'Chỉ xem') + '</span>' : '') + '</div>'
             + '<div style="font-size:13px; color:#334155;">' + unitSummary(u) + '</div></div>';
     }
-
-    // ===== Xem Quyết định miễn / giảm đã ban hành (Đơn vị, Sở Tư pháp, Lãnh đạo) =====
-    const DASH = '<span style="color:var(--text-muted);">--</span>';
-    function viewQdBtn(o, idx) {
-        const r = o.qd2;
-        if (!r || !r.issuedAt || !KIND[r.kind]) return '';
-        return '<button type="button" data-admin-icon-normalized="1" class="ht-btn-sm ht-btn-out" onclick="ht3ViewQd(\'' + r.kind + '\',' + idx + ')"><i class="fa-solid fa-eye"></i> ' + (baseKind(r.kind) === 'MIEN' ? 'Xem QĐ miễn' : 'Xem QĐ giảm') + '</button>';
+    // ===== Khối Quyết định miễn / giảm trong popup Xem chi tiết cán bộ (Bước 3, Bước 4): lần trình gần nhất theo trạng thái =====
+    function qdInfoBlock(o, idx, kind, r) {
+        if (!r || !KIND[kind]) return '';
+        const b = baseKind(kind), k = KIND[kind];
+        const item = (lbl, v) => '<div class="info-item"><div class="info-label">' + lbl + '</div><div class="info-value" style="font-weight:600;">' + v + '</div></div>';
+        const file = (label) => '<span style="display:inline-flex; align-items:center; gap:8px; flex-wrap:wrap;"><i class="fa-solid fa-file-pdf" style="color:#dc2626;"></i>' + esc(r.fileName || '') + (label ? ' <span style="font-size:11px; padding:1px 8px; border-radius:999px; background:#fef3c7; color:#92400e;">' + label + '</span>' : '')
+            + '<a class="action-link" href="javascript:void(0)" title="Xem" onclick="ht3OpenDoc(\'' + kind + '\',' + idx + ')"><i class="fa-solid fa-eye"></i></a><a class="action-link" href="javascript:void(0)" title="Tải" onclick="showToast(\'Đang tải tệp ' + esc(r.fileName || '') + '...\', \'info\')"><i class="fa-solid fa-download"></i></a></span>';
+        const sp = r.supp || {};
+        const tien = b === 'GIAM' ? item('Số tiền sau giảm', money(sp.giam || o.giam || 0) + ' đ') : item('Số tiền được miễn', money(k.base ? Math.max(0, (o.total || 0) - (o.paid || 0)) : (o.hd || o.total || 0)) + ' đ');
+        const lyDo = item(b === 'GIAM' ? 'Lý do giảm' : 'Lý do miễn', esc(sp.lyDo || (b === 'GIAM' ? o.lyDoGiam : o.lyDoMien) || '--'));
+        let st, body;
+        if (r.issuedAt) {
+            st = 'Đã ban hành';
+            body = item('Hình thức ký', r.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống') + item('Số, ký hiệu văn bản', esc(r.soKh || '--')) + item('Ngày Quyết định', esc(r.issuedAt)) + tien + lyDo + item('Tệp Quyết định', file(''));
+        } else {
+            const sub = (r.hist || []).find(h => h.type === 'submit');
+            st = r.reject ? 'Bị từ chối' : 'Chờ duyệt';
+            body = tien + lyDo + item('Lãnh đạo được trình', esc(leaderLabel(r, r.level || 0))) + item('Thời điểm trình', esc(sub ? sub.at : (r.ngay || '--'))) + item('Tệp văn bản', file('Bản dự thảo'))
+                + (r.reject ? item('Lý do từ chối', '<span style="color:#b91c1c;">' + esc(r.reject.reason) + '</span>') + item('Người từ chối', esc(r.reject.by)) + item('Thời điểm từ chối', esc(r.reject.at)) : '');
+        }
+        const old = (r.hist || []).slice(1);
+        return '<div class="ht-qd-block" style="margin-top:16px; border:1px solid #e2e8f0; border-radius:8px; padding:12px 14px;"><div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;"><strong style="color:var(--primary-color);"><i class="fa-solid fa-file-contract"></i> ' + esc(k.doc) + (k.base ? ' (bổ sung)' : '') + '</strong>' + (window.htPill ? window.htPill(st) : esc(st)) + '</div>'
+            + '<div class="info-grid">' + body + '</div>'
+            + (old.length ? '<details style="margin-top:8px;"><summary style="cursor:pointer; font-size:12.5px; color:#475569;">Lịch sử xử lý (' + old.length + ')</summary><ul style="margin:6px 0 0 18px; font-size:12.5px;">' + old.map(h => '<li>' + esc(h.at || '') + ' - ' + esc(h.name || '') + ': ' + esc(h.msg || '') + '</li>').join('') + '</ul></details>' : '')
+            + '</div>';
     }
+    window.htQdBlockHtml = function (idx) {
+        const o = (activeDossier.refundOfficers || [])[idx]; if (!o) return '';
+        return (o.qd2 ? qdInfoBlock(o, idx, o.qd2.kind || xlCode(o), o.qd2) : '') + (o.qd3 ? qdInfoBlock(o, idx, o.qd3.kind, o.qd3) : '');
+    };
     function actCell(o, idx, u) {
-        const a = officerAction(o, idx, u), v = viewQdBtn(o, idx);
-        // Xem chi tiết cán bộ (popup cán bộ chỉ đọc) luôn đứng đầu cột Thao tác
+        // Xem chi tiết cán bộ (popup chỉ đọc, kèm khối Quyết định miễn / giảm) luôn đứng đầu cột Thao tác
         const d = window.htViewOfficerBtn((activeDossier.refundOfficers || []).indexOf(o));
-        return [d, a === DASH ? '' : a, v || ''].filter(Boolean).join(' ');
+        const a = officerAction(o, idx, u);
+        return a ? d + ' ' + a : d;
     }
     window.ht3ViewQd = function (kind, key) {
         const r = recOf(kind, key); if (!r) return;
@@ -634,6 +663,8 @@
         document.querySelector('input[name="ht3Method"][value="' + S.method + '"]').checked = true;
         ht3SetSrc(S.src);
         ht3SetMethod(S.method);
+        // Trình ký lại: giữ tệp dự thảo tải lên ở lần trình trước (nguồn Tải lên từ máy)
+        if (rejected && S.method === 'online' && S.src === 'upload') { S.file = prev.upFile || { name: prev.fileName, size: 0 }; renderFileBoxes(); }
         el('ht3Modal').style.display = 'flex';
     };
     window.ht3Close = () => { const m = el('ht3Modal'); if (m) m.style.display = 'none'; S = null; DC_DRAFT = null; };
@@ -772,6 +803,7 @@
             kind: S.kind, method, docSrc: method === 'offline' ? '' : S.src, soKh: method === 'online' && S.src === 'gen' ? el('ht3So').value.trim() : '',
             ngay: method === 'online' && S.src === 'gen' ? el('ht3Ngay').value.trim() : today(),
             fileName: S.file ? S.file.name : k.file + '_' + (activeDossier.maVuViec || activeDossier.code) + '.docx',
+            upFile: S.file ? { name: S.file.name, size: S.file.size } : null,
             tlkt: method === 'online' && typeof tlktGet === 'function' ? tlktGet('ht3') : [],
             levels: S.levels, assignees: S.assignees.slice(), content: el('ht3Content').value.trim(), level: 0,
             hist: (recOf(S.kind, S.key) || { hist: [] }).hist.slice(), supp: readSupp(),

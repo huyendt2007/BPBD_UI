@@ -62,8 +62,18 @@
     }
     // Icon Xem chi tiết cán bộ (popup cán bộ chỉ đọc) dùng chung Bước 2/3/4.
     // Dùng span (không phải button) để admin-ui-standardizer.js không gỡ nút "Xem chi tiết" khỏi cột Thao tác.
-    window.htViewOfficerBtn = function (index) {
-        return '<span class="btn-action-square btn-info" role="img" tabindex="0" title="Xem chi tiết cán bộ" aria-label="Xem chi tiết cán bộ" onclick="event.stopPropagation(); viewOfficerInStep2(' + index + ')" onkeydown="if(event.key===\'Enter\'){viewOfficerInStep2(' + index + ')}"><i class="fa-solid fa-eye"></i></span>';
+    window.htViewOfficerBtn = function (index, fn) {
+        const f = fn || 'viewOfficerInStep2';
+        return '<span class="btn-action-square btn-info" role="img" tabindex="0" title="Xem chi tiết cán bộ" aria-label="Xem chi tiết cán bộ" onclick="event.stopPropagation(); ' + f + '(' + index + ')" onkeydown="if(event.key===\'Enter\'){' + f + '(' + index + ')}"><i class="fa-solid fa-eye"></i></span>';
+    };
+    // Icon thao tác vuông dùng chung cột Thao tác Bước 3 / Bước 4 (span, không bị admin-ui-standardizer.js gỡ / đổi icon).
+    // Không được phép: hiển thị mờ, tooltip "[Tên nút] - [Lý do]".
+    window.htActBtn = function (icon, title, onclick, enabled, tip, color) {
+        const c = color || '#2563eb';
+        const st = 'display:inline-flex; align-items:center; justify-content:center; width:32px; height:32px; border-radius:6px; margin:0 2px; vertical-align:middle; ';
+        return enabled
+            ? '<span class="btn-action-square" role="img" tabindex="0" title="' + title + '" aria-label="' + title + '" style="' + st + 'background:' + c + '; color:#fff; cursor:pointer;" onclick="event.stopPropagation(); ' + onclick + '" onkeydown="if(event.key===\'Enter\'){' + onclick + '}"><i class="' + icon + '"></i></span>'
+            : '<span class="btn-action-square" role="img" aria-disabled="true" title="' + title + (tip ? ' - ' + tip : '') + '" aria-label="' + title + '" style="' + st + 'background:#e2e8f0; color:#94a3b8; cursor:not-allowed;" onclick="event.stopPropagation();"><i class="' + icon + '"></i></span>';
     };
     window.htPill = function (text, tone) {
         const c = PILL[tone || pillTone(text)] || PILL.slate;
@@ -402,6 +412,7 @@
     const baseOpenAdd = window.openAddOfficerModal;
     window.openAddOfficerModal = function () {
         if (!canEditStep2()) { showToast('Chỉ đơn vị tạo Hội đồng được cập nhật ý kiến của Hội đồng khi hồ sơ ở trạng thái Họp hội đồng.', 'warning'); return; }
+        const oldQd = el('htOffQd'); if (oldQd) oldQd.remove();
         baseOpenAdd();
         setModalReadonly(false);
         const r = document.querySelector('input[name="ht2Xl"][value="Hoàn trả"]'); if (r) r.checked = true;
@@ -409,6 +420,7 @@
         ht2OnXlChange();
     };
     function fillModal(o, index, title) {
+        const oldQd = el('htOffQd'); if (oldQd) oldQd.remove();
         baseOpenAdd();
         el('editOfficerIndex').value = String(index);
         el('officerModalTitle').innerHTML = title;
@@ -446,6 +458,10 @@
         fillModal(o, index, '<i class="fa-solid fa-circle-info"></i> Xem chi tiết cán bộ chịu trách nhiệm');
         currentPerspective = keep;
         setModalReadonly(true);
+        // Bước 3 / Bước 4: khối Quyết định miễn / giảm mức hoàn trả (chỉ hiển thị khi có dữ liệu)
+        const qd = typeof window.htQdBlockHtml === 'function' ? window.htQdBlockHtml(index) : '';
+        const mb = el('officerStep2Modal') && el('officerStep2Modal').querySelector('.modal-body');
+        if (qd && mb) mb.insertAdjacentHTML('beforeend', '<div id="htOffQd">' + qd + '</div>');
     };
     window.deleteOfficerInStep2 = function (index) {
         if (!canEditStep2()) return;
@@ -509,7 +525,7 @@
         showToast(idx >= 0 ? 'Cập nhật cán bộ thành công.' : 'Thêm cán bộ thành công.', 'success');
     };
 
-    // ===== Lưu nháp / Hoàn thành Bước 2 =====
+    // ===== Lưu nháp / Lưu ý kiến hội đồng =====
     function collectStep2() {
         activeDossier.conclusionDate = el('s2ConclusionDate').value.trim();
         activeDossier.ht2YKienChung = el('ht2YKienChung').value.trim();
@@ -556,9 +572,9 @@
         }
         collectStep2();
         const units = Array.from(new Set(officers.map(o => o.agency)));
-        confirmBox('Xác nhận hoàn thành Bước 2',
-            'Danh sách cán bộ gây sai phạm sẽ được phân tách về ' + units.length + ' đơn vị quản lý cán bộ và không được cập nhật ý kiến của Hội đồng. Bạn có chắc chắn muốn hoàn thành Bước 2?',
-            'Hoàn thành', () => {
+        confirmBox('Xác nhận lưu ý kiến hội đồng',
+            'Danh sách cán bộ gây sai phạm sẽ được phân tách về ' + units.length + ' đơn vị quản lý cán bộ và không được cập nhật ý kiến của Hội đồng. Bạn có chắc chắn muốn lưu ý kiến hội đồng?',
+            'Lưu', () => {
                 activeDossier.dcPreOfficers = (activeDossier.refundOfficers || []).filter(o => o && o.dcPre);
                 activeDossier.refundOfficers = officers;
                 const files = ykhdFiles('kienNghi').map(f => f.name).concat((activeDossier.ht2Tlkt || []).map(t => t.name));
@@ -566,13 +582,13 @@
                 officers.forEach(o => { o.ctStatus = 'Chờ ban hành QĐ hoàn trả'; o.status = 'Chờ ban hành QĐ'; o.progressClass = 'warning'; });
                 activeDossier.refundTotal = officers.reduce((s, o) => s + (o.total || 0), 0);
                 if (!activeDossier.timeline) activeDossier.timeline = [];
-                activeDossier.timeline.unshift({ time: nowShort(), text: 'Hoàn thành ý kiến của Hội đồng; phân tách danh sách cán bộ về ' + units.length + ' đơn vị quản lý cán bộ.' });
+                activeDossier.timeline.unshift({ time: nowShort(), text: 'Lưu ý kiến của Hội đồng; phân tách danh sách cán bộ về ' + units.length + ' đơn vị quản lý cán bộ.' });
                 switchSimulatorState(3);
                 currentViewStep = 2;
                 isViewMode = true; currentMode = 'view';
                 renderStateLayout();
                 if (typeof tlhdPersistCreated === 'function') tlhdPersistCreated();
-                showToast('Hoàn thành Bước 2. Danh sách cán bộ đã được phân tách về ' + units.length + ' đơn vị quản lý cán bộ.', 'success');
+                showToast('Lưu ý kiến hội đồng thành công. Danh sách cán bộ đã được phân tách về ' + units.length + ' đơn vị quản lý cán bộ.', 'success');
             });
     };
 
@@ -590,7 +606,7 @@
         if (isSplitDossier() && scope === 'don_vi_chu' && !(activeDossier.refundOfficers || []).some(o => o.agency === myUnit)) drop(/dchtOpenModal|switchToEditMode\((3|4)\)/);
         if (!isViewMode && currentViewStep === 2 && canEditStep2()) {
             f.innerHTML = '<button type="button" class="btn btn-danger" onclick="dchtOpenModal()"><i class="fa-solid fa-circle-stop"></i> Đình chỉ</button>'
-                + '<button type="button" class="btn btn-primary" onclick="submitStep2Recommendations()"><i class="fa-solid fa-circle-check"></i> Hoàn thành Bước 2</button>'
+                + '<button type="button" class="btn btn-primary" onclick="submitStep2Recommendations()"><i class="fa-solid fa-floppy-disk"></i> Lưu ý kiến hội đồng</button>'
                 + '<button type="button" class="btn btn-secondary" onclick="closeRefundDetail()" title="Đóng màn hình"><i class="fa-solid fa-xmark"></i> Đóng</button>';
         }
     };
