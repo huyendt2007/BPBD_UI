@@ -9,13 +9,12 @@
 | :-- | :--- | :--- | :--- |
 | 1 | DM_09 | Quốc tịch / Quốc gia | Quốc gia |
 | 2 | DM_10 | Loại giấy tờ pháp lý | Loại giấy tờ thân nhân |
-| 3 | DM_13 | Tỉnh/Thành phố | Tỉnh/Thành phố cơ quan giải quyết, Tỉnh/Thành phố |
-| 4 | DM_15 | Phường/Xã | Phường/Xã |
-| 5 | DM_22 | Lĩnh vực phát sinh thiệt hại | Lĩnh vực phát sinh thiệt hại |
-| 6 | DM_25 | Hình thức tiếp nhận hồ sơ bồi thường | Hình thức tiếp nhận |
-| 7 | DM_26 | Tư cách người yêu cầu bồi thường | Tư cách người yêu cầu |
-| 8 | RESOLUTION_SCOPE | Loại yêu cầu giải quyết bồi thường | Loại yêu cầu giải quyết bồi thường |
-| 9 | - | Cơ quan giải quyết bồi thường (Module Quản lý Cơ cấu tổ chức) | Cơ quan giải quyết bồi thường |
+| 3 | - | Danh mục địa bàn | Tỉnh/Thành phố, Phường/Xã |
+| 4 | DM_22 | Lĩnh vực phát sinh thiệt hại | Lĩnh vực phát sinh thiệt hại |
+| 5 | DM_25 | Hình thức tiếp nhận hồ sơ bồi thường | Hình thức tiếp nhận |
+| 6 | DM_26 | Tư cách người yêu cầu bồi thường | Tư cách người yêu cầu |
+| 7 | RESOLUTION_SCOPE | Loại yêu cầu giải quyết bồi thường | Loại yêu cầu giải quyết bồi thường |
+| 8 | - | Cơ quan giải quyết bồi thường (Module Quản lý Cơ cấu tổ chức) | Cơ quan giải quyết bồi thường |
 
 ---
 
@@ -35,13 +34,11 @@
 | MA_SO_THUE | Mã số thuế |
 | GIAY_TO_DI_LAI_QUOC_TE | Giấy tờ đi lại có giá trị quốc tế |
 
-### Tỉnh/Thành phố (DM_13)
+### Danh mục địa bàn
 
-- Chia sẻ qua API danh mục; nguồn: đồng bộ từ CSDL hành chính quốc gia.
-
-### Phường/Xã (DM_15)
-
-- Chia sẻ qua API danh mục; nguồn: đồng bộ từ CSDL hành chính quốc gia, lọc theo mã Tỉnh/Thành phố.
+- Chia sẻ qua API danh mục.
+- Gồm cấp Tỉnh/Thành phố và cấp Phường/Xã.
+- Phường/Xã lọc theo mã Tỉnh/Thành phố.
 
 ### Lĩnh vực phát sinh thiệt hại (DM_22)
 
