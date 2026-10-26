@@ -60,6 +60,11 @@
         if (/^Đình chỉ/.test(t)) return 'slate';
         return 'slate';
     }
+    // Icon Xem chi tiết cán bộ (popup cán bộ chỉ đọc) dùng chung Bước 2/3/4.
+    // Dùng span (không phải button) để admin-ui-standardizer.js không gỡ nút "Xem chi tiết" khỏi cột Thao tác.
+    window.htViewOfficerBtn = function (index) {
+        return '<span class="btn-action-square btn-info" role="img" tabindex="0" title="Xem chi tiết cán bộ" aria-label="Xem chi tiết cán bộ" onclick="event.stopPropagation(); viewOfficerInStep2(' + index + ')" onkeydown="if(event.key===\'Enter\'){viewOfficerInStep2(' + index + ')}"><i class="fa-solid fa-eye"></i></span>';
+    };
     window.htPill = function (text, tone) {
         const c = PILL[tone || pillTone(text)] || PILL.slate;
         return '<span class="ht-pill" style="display:inline-flex; align-items:center; gap:6px; padding:2px 10px; border-radius:999px; font-size:12px; font-weight:600; white-space:nowrap; background:' + c[0] + '; color:' + c[1] + '; border:1px solid ' + c[2] + '33;"><span style="width:7px; height:7px; border-radius:50%; background:' + c[2] + ';"></span>' + esc(text) + '</span>';
@@ -222,8 +227,8 @@
         let bar = el('ht2DcBar');
         if (!bar && table) { table.insertAdjacentHTML('beforebegin', '<div id="ht2DcBar" style="display:none; justify-content:flex-end; margin-bottom:8px;"><button type="button" id="ht2DcBtn" data-admin-icon-normalized="1" class="ht-btn-sm ht-btn-dc" disabled onclick="ht2OpenDc()"><i class="fa-solid fa-ban"></i> Trình ký QĐ đình chỉ</button></div>'); bar = el('ht2DcBar'); }
         if (bar) bar.style.display = canDc && list.some(x => !x.o.dcPre) ? 'flex' : 'none';
-        // Chế độ xem (đã hoàn thành Bước 2 hoặc vai trò chỉ xem): ẩn cột Thao tác
-        const showAct = canEdit;
+        // Cột Thao tác luôn hiển thị: chế độ xem chỉ có Xem chi tiết cán bộ; chế độ nhập có Xem / Sửa / Xóa (cột Chọn chỉ hiển thị khi nhập)
+        const showAct = true;
         const thAct = headRow && Array.from(headRow.cells).find(c => (c.innerText || c.textContent).trim() === 'Thao tác');
         if (thAct) thAct.style.display = showAct ? '' : 'none';
         let foot = table && table.tFoot;
@@ -237,7 +242,7 @@
             const o = x.o, xl = xlFull(o.xl);
             const hoan = o.ykhdDieuKienHoan ? ' <span class="badge" style="background:#fef9c3; color:#a16207; font-size:10.5px;">Hoãn hoàn trả</span>' : '';
             const dcb = o.dcPre ? ' <span class="badge" style="background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; font-size:10.5px;">Đình chỉ hoàn trả</span>' : '';
-            const acts = x.i < 0 ? '--' : '<button type="button" class="btn-action-square btn-info" title="Xem chi tiết cán bộ" onclick="viewOfficerInStep2(' + x.i + ')"><i class="fa-solid fa-eye"></i></button>'
+            const acts = x.i < 0 ? '--' : htViewOfficerBtn(x.i)
                 + (canEdit && !o.dcPre ? ' <button type="button" class="btn-action-square btn-primary" title="Sửa cán bộ" onclick="editOfficerInStep2(' + x.i + ')"><i class="fa-solid fa-pen-to-square"></i></button>'
                     + ' <button type="button" class="btn-action-square btn-danger" title="Xóa cán bộ" onclick="deleteOfficerInStep2(' + x.i + ')"><i class="fa-solid fa-trash-can"></i></button>' : '');
             // Hình thức xử lý: nhãn đầy đủ; Giảm / Miễn kèm lý do

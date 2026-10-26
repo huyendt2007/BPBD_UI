@@ -396,8 +396,9 @@
     }
     function actCell(o, idx, u) {
         const a = officerAction(o, idx, u), v = viewQdBtn(o, idx);
-        if (!v) return a;
-        return a === DASH ? v : a + ' ' + v;
+        // Xem chi tiết cán bộ (popup cán bộ chỉ đọc) luôn đứng đầu cột Thao tác
+        const d = window.htViewOfficerBtn((activeDossier.refundOfficers || []).indexOf(o));
+        return [d, a === DASH ? '' : a, v || ''].filter(Boolean).join(' ');
     }
     window.ht3ViewQd = function (kind, key) {
         const r = recOf(kind, key); if (!r) return;

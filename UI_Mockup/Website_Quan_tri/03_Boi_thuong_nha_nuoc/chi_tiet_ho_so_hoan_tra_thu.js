@@ -23,7 +23,7 @@
 
     // ===== Bước 4: hiển thị theo phần đơn vị =====
     // Nút thao tác: màu nền theo thao tác; khóa: nền xám, icon xám đậm (không ẩn), tooltip tên nút kèm lý do khóa
-    const COLOR = { 'fa-eye': '#0284c7', 'fa-money-bill-transfer': '#16a34a', 'fa-hand-holding-dollar': '#d97706', 'fa-shield-halved': '#7c3aed', 'fa-arrow-down-wide-short': '#2563eb', 'fa-file-signature': '#16a34a', 'fa-ban': '#dc2626' };
+    const COLOR = { 'fa-clock-rotate-left': '#0284c7', 'fa-eye': '#0284c7', 'fa-money-bill-transfer': '#16a34a', 'fa-hand-holding-dollar': '#d97706', 'fa-shield-halved': '#7c3aed', 'fa-arrow-down-wide-short': '#2563eb', 'fa-file-signature': '#16a34a', 'fa-ban': '#dc2626' };
     function act(onclick, icon, title, enabled, tip) {
         const c = COLOR[(icon.split(' ').find(x => COLOR[x])) || ''] || '#2563eb';
         const base = 'width:32px; height:32px; display:inline-flex; align-items:center; justify-content:center; border-radius:6px; ';
@@ -33,7 +33,7 @@
     }
     function actions(o, idx) {
         const a = A(), s = a.scope();
-        const view = act('ht4OpenHistory(' + idx + ')', 'fa-solid fa-eye', 'Xem lịch sử nộp tiền', true);
+        const view = window.htViewOfficerBtn(idx) + ' ' + act('ht4OpenHistory(' + idx + ')', 'fa-solid fa-clock-rotate-left', 'Xem lịch sử nộp tiền', true);
         if (s === 'lanh_dao') {
             return /^CD_(MIEN|GIAM)$/.test(o.trinh || '')
                 ? view + ' ' + act('ht3Approve(\'S' + o.trinh.slice(3) + '\',' + idx + ')', 'fa-solid fa-file-signature', 'Ký duyệt', true) + ' ' + act('ht3Reject(\'S' + o.trinh.slice(3) + '\',' + idx + ')', 'fa-solid fa-ban', 'Từ chối', true)
