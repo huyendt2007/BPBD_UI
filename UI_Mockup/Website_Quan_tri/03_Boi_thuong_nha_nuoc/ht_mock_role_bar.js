@@ -27,7 +27,9 @@
     function css() {
         if (document.getElementById('htRoleBarCss')) return;
         const st = document.createElement('style'); st.id = 'htRoleBarCss';
-        st.textContent = '#htRoleBar{position:fixed;top:10px;right:16px;z-index:1045;display:flex;align-items:center;gap:8px;background:#eff6ff;border:1.5px solid #bfdbfe;padding:5px 10px 5px 14px;border-radius:20px;box-shadow:0 2px 8px rgba(15,23,42,.12);font-size:13px;}'
+        // Kiểu viên bo tròn góc trên phải lấy theo btnn_gia_lap_bar.js; các quy tắc dưới chỉ dùng khi không nạp file dùng chung
+        st.textContent = '#htRoleBar{display:flex;align-items:center;gap:8px;background:#eff6ff;border:1.5px solid #bfdbfe;padding:4px 8px 4px 12px;border-radius:20px;font-size:13px;flex-wrap:nowrap;margin-left:auto;}'
+            + '.ht-rolebar-row{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px;}'
             + '#htRoleBar .hrb-label{font-weight:700;color:#1e40af;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;}'
             + '#htRoleBar select{height:30px;padding:2px 10px;border-radius:15px;border:1px solid #93c5fd;font-weight:700;color:#1e3a8a;background:#fff;cursor:pointer;font-size:13px;}'
             + '#htRoleBar .hrb-reset{height:30px;border-radius:15px;border:1px solid #cbd5e1;background:#fff;color:#334155;font-weight:600;font-size:12.5px;padding:0 12px;cursor:pointer;white-space:nowrap;}'
@@ -38,6 +40,14 @@
             + '#htRoleResetModal .hrb-act{display:flex;justify-content:flex-end;gap:10px;}';
         document.head.appendChild(st);
     }
+    // Vị trí thanh: góc trên phải trang như màn Xác định cơ quan giải quyết bồi thường (thanh dùng chung btnn_gia_lap_bar.js)
+    function place(bar) {
+        // Thanh cũ đã chèn vào Top Header của khung quản trị (phiên bản trước): gỡ bỏ
+        try { const pd = window.parent !== window ? window.parent.document : null; const old = pd && pd.getElementById('htRoleBarTop'); if (old) old.remove(); } catch (e) { /* khung khác nguồn: bỏ qua */ }
+        if (window.BTNN_GL) { window.BTNN_GL.wrap(bar, { hide: '.hrb-label' }); return; }
+        bar.style.cssText = 'position:absolute; top:8px; right:12px; z-index:9000; margin:0;';
+        document.body.appendChild(bar);
+    }
     function render() {
         css();
         if (document.getElementById('htRoleBar')) return;
@@ -46,7 +56,7 @@
         bar.innerHTML = '<span class="hrb-label"><i class="fa-solid fa-user-gear"></i> Người dùng giả lập:</span>'
             + '<select id="htRoleBarSelect" onchange="htRoleBarChange(this.value)">' + ROLES.map(r => '<option value="' + r[0] + '"' + (r[0] === scope ? ' selected' : '') + ' title="' + r[2] + '">' + r[1] + '</option>').join('') + '</select>'
             + '<button type="button" class="hrb-reset" onclick="htRoleBarAskReset()"><i class="fa-solid fa-rotate-left"></i> Khôi phục dữ liệu mẫu</button>';
-        document.body.appendChild(bar);
+        place(bar);
         const m = document.createElement('div');
         m.id = 'htRoleResetModal';
         m.innerHTML = '<div class="hrb-box"><div class="hrb-title">Khôi phục dữ liệu mẫu</div><div class="hrb-text">Toàn bộ thao tác đã thực hiện trên các hồ sơ hoàn trả trong trình duyệt này sẽ bị xóa và đưa về dữ liệu mẫu ban đầu. Bạn có chắc chắn muốn khôi phục?</div>'
@@ -105,6 +115,8 @@
 
     function init() {
         render();
+        scheduleAlign();
+        try { new MutationObserver(scheduleAlign).observe(document.body, { childList: true, subtree: true }); } catch (e) { /* bỏ qua */ }
         // Màn Chi tiết: góc nhìn theo vai trò giả lập (Lãnh đạo: chỉ xem, Ký duyệt / Từ chối; vai trò khác: Cán bộ xử lý)
         if (isDetail && typeof switchPerspective === 'function' && typeof currentPerspective !== 'undefined') {
             const want = scope === 'lanh_dao' ? 'leader' : 'staff';
@@ -119,6 +131,30 @@
             if (ssGet(RKEY) === '1') { ssDel(RKEY); restoreFilters(); }
         }
     }
+    // ===== Căn lề bảng tài chính: cột tiền căn phải (tiêu đề và giá trị); STT, Trạng thái, Thao tác căn giữa =====
+    const MONEY = /^(Tiền hoàn trả|Số tiền|Đã nộp|Đã thu|Còn phải thu|Tổng phải thu|Phải thu)/i;
+    const CENTER = /^(STT|Trạng thái|Thao tác)$/i;
+    function alignTables() {
+        document.querySelectorAll('table').forEach(t => {
+            if (t.closest('.a4-document-page, .tlhd-doc-table, #ht3A4')) return;
+            const head = t.tHead && t.tHead.rows[0]; if (!head) return;
+            const map = [];
+            Array.from(head.cells).forEach((th, i) => {
+                const txt = (th.innerText || '').replace(/\s+/g, ' ').trim();
+                const a = MONEY.test(txt) ? 'right' : (CENTER.test(txt) ? 'center' : '');
+                map[i] = a;
+                if (a) th.style.setProperty('text-align', a, 'important');
+            });
+            if (!map.some(Boolean)) return;
+            Array.from(t.tBodies).forEach(b => Array.from(b.rows).forEach(r => {
+                if (r.cells.length !== head.cells.length) return;
+                Array.from(r.cells).forEach((td, i) => { if (map[i]) td.style.setProperty('text-align', map[i], 'important'); });
+            }));
+        });
+    }
+    let alignTick = 0;
+    function scheduleAlign() { if (alignTick) return; alignTick = requestAnimationFrame(() => { alignTick = 0; try { alignTables(); } catch (e) { /* bỏ qua */ } }); }
+
     // window: chạy sau khối khởi tạo của trang
     if (document.readyState === 'loading') window.addEventListener('DOMContentLoaded', init); else init();
 })();

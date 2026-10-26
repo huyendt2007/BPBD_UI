@@ -52,9 +52,15 @@
         h += ' ' + act('ht3OpenSign(\'SGIAM\',' + idx + ')', 'fa-solid fa-arrow-down-wide-short', /^BTC_GIAM/.test(o.trinh || '') ? 'Trình ký lại QĐ giảm bổ sung' : 'Trình ký QĐ giảm bổ sung', giamOk, s === 'stp' ? stpTip : (okMG ? 'Giảm mức hoàn trả chỉ áp dụng khi Mức độ lỗi là Vô ý' : (trinhCho ? 'Đang chờ Lãnh đạo ký duyệt' : 'Không áp dụng')));
         return h;
     }
+    function methodCell(o) {
+        const a = A();
+        if (o.ct === 'MIEN' || o.xl === 'MIEN') return '<td style="text-align:center;">--</td>';
+        const m = window.htMethod ? window.htMethod(o.refundMethod) : o.refundMethod;
+        return '<td style="white-space:nowrap;">' + a.esc(m || '--') + '</td>';
+    }
     function statusCell(o) {
         const a = A();
-        let h = '<div>' + a.esc(a.ctText(o.ct)) + '</div>';
+        let h = '<div>' + (window.htPill ? window.htPill(a.ctText(o.ct)) : a.esc(a.ctText(o.ct))) + '</div>';
         if (o.trinh && !/_DC$/.test(o.trinh)) h += '<div style="font-size:12px; color:#6d28d9;">' + a.esc(a.ctText(o.trinh)) + (/^BTC_/.test(o.trinh) && o.qd3 && o.qd3.reject ? ' - Lý do: ' + a.esc(o.qd3.reject.reason) : '') + '</div>';
         h += a.dcLine(o);
         if (o.refund > 0) h += '<div style="font-size:12px; color:#b91c1c;">Cần trả lại: ' + a.money(o.refund) + ' đ</div>';
@@ -69,7 +75,7 @@
         if (!root) { root = document.createElement('div'); root.id = 'ht4Root'; panel.insertBefore(root, panel.firstChild); }
         Array.from(panel.children).forEach(ch => { if (ch !== root) { ch.dataset.ht4Hide = '1'; ch.style.display = 'none'; } });
         root.style.display = '';
-        const units = a.unitsInView();
+        const units = a.orderUnits(a.unitsInView());
         let h = '<div style="margin-bottom:14px;"><h3 style="font-size:16px; font-weight:800; color:var(--primary-color); margin:0;"><i class="fa-solid fa-money-bill-trend-up"></i> Thu hồi tiền hoàn trả</h3></div>';
         let any = false;
         units.forEach(u => {
@@ -79,12 +85,12 @@
             any = true;
             // Miễn / Đình chỉ: số phải hoàn trả = số đã thu được giữ lại
             const tong = list.reduce((s, x) => s + (x.o.ct === 'MIEN' ? (x.o.paid || 0) : (x.o.total || 0)), 0), daThu = list.reduce((s, x) => s + (x.o.paid || 0), 0);
-            h += '<div class="card" style="margin-bottom:20px;"><div class="card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;"><div class="card-title" style="margin-bottom:0;"><i class="fa-solid fa-sitemap"></i> Phần đơn vị: ' + a.esc(u.unit) + '</div>'
-                + '<div style="font-size:13px;">Tổng phải thu: <strong>' + a.money(tong) + ' đ</strong> • Đã thu: <strong>' + a.money(daThu) + ' đ</strong> • Còn phải thu: <strong>' + a.money(Math.max(0, list.reduce((s, x) => s + (x.o.ct === 'THU' ? conLai(x.o) : 0), 0))) + ' đ</strong></div></div><div class="card-body">'
-                + a.dcToolbar(u, ui, list) + '<table class="dense-table" style="width:100%;"><thead><tr>' + a.dcHeadCell(u, ui, list) + '<th style="width:45px; text-align:center;">STT</th><th>Họ và tên</th><th style="width:100px;">Phương thức hoàn trả</th><th style="width:130px; text-align:right;">Số tiền phải hoàn trả (đ)</th><th style="width:120px; text-align:right;">Đã nộp (đ)</th><th style="width:120px; text-align:right;">Còn phải thu (đ)</th><th style="width:220px;">Trạng thái</th><th style="width:210px; text-align:center;">Thao tác</th></tr></thead><tbody>'
-                + list.map((x, k) => '<tr>' + a.dcCheckCell(x.o, x.idx, u, ui) + '<td style="text-align:center;">' + (k + 1) + '</td><td><strong>' + a.esc(x.o.name) + '</strong><div style="font-size:12px; color:var(--text-muted);">' + a.esc(x.o.role || '') + '</div></td><td>' + a.esc(x.o.refundMethod || '--') + '</td>'
+            h += '<div class="card" style="' + a.unitCardStyle(u) + '">' + a.unitHeader(u, 4, a.unitBadge(u)) + '<div class="card-body"' + (a.unitCollapsed(4, u) ? ' style="display:none;"' : '') + '>'
+                + '<div style="font-size:13px; margin-bottom:10px;">Cán bộ ở giai đoạn thu hồi: <strong>' + list.length + '</strong> • Tổng phải thu: <strong>' + a.money(tong) + ' đ</strong> • Đã thu: <strong>' + a.money(daThu) + ' đ</strong> • Còn phải thu: <strong>' + a.money(Math.max(0, list.reduce((s, x) => s + (x.o.ct === 'THU' ? conLai(x.o) : 0), 0))) + ' đ</strong></div>'
+                + a.dcToolbar(u, ui, list) + '<table class="dense-table" style="width:100%;"><thead><tr>' + a.dcHeadCell(u, ui, list) + '<th style="width:45px; text-align:center;">STT</th><th>Họ và tên</th><th style="width:90px;">Mức độ lỗi</th><th style="width:100px;">Phương thức hoàn trả</th><th style="width:130px; text-align:right;">Số tiền phải hoàn trả (đ)</th><th style="width:120px; text-align:right;">Đã nộp (đ)</th><th style="width:120px; text-align:right;">Còn phải thu (đ)</th><th style="width:220px;">Trạng thái</th><th style="min-width:160px; text-align:center; white-space:nowrap;">Thao tác</th></tr></thead><tbody>'
+                + list.map((x, k) => '<tr>' + a.dcCheckCell(x.o, x.idx, u, ui) + '<td style="text-align:center;">' + (k + 1) + '</td><td><strong>' + a.esc(x.o.name) + '</strong><div style="font-size:12px; color:var(--text-muted);">' + a.esc(x.o.role || '') + '</div></td><td>' + a.esc(x.o.loi === 'Khác' ? (x.o.ykhdLoiKhac || 'Khác') : (x.o.loi || '--')) + '</td>' + methodCell(x.o)
                     + '<td style="text-align:right;">' + a.money(x.o.ct === 'MIEN' ? 0 : x.o.total) + '</td><td style="text-align:right;">' + a.money(x.o.paid) + '</td><td style="text-align:right; font-weight:700;">' + a.money(x.o.ct === 'THU' ? conLai(x.o) : 0) + '</td>'
-                    + '<td>' + statusCell(x.o) + '</td><td style="text-align:center; white-space:nowrap;">' + actions(x.o, x.idx) + '</td></tr>').join('')
+                    + '<td>' + statusCell(x.o) + '</td><td class="ht-act-cell">' + actions(x.o, x.idx) + '</td></tr>').join('')
                 + '</tbody></table>' + a.dcBlock(u) + '</div></div>';
         });
         if (!any) h += '<div class="card"><div class="card-body" style="color:var(--text-muted);">Chưa có cán bộ thuộc phạm vi dữ liệu ở giai đoạn thu hồi tiền hoàn trả.</div></div>';
@@ -111,7 +117,7 @@
     function info(o) {
         const a = A(), row = (k, v) => '<div class="info-item"><div class="info-label">' + k + '</div><div class="info-value" style="font-weight:700;">' + v + '</div></div>';
         return row('Cán bộ', a.esc(o.name) + '<div style="font-weight:400; font-size:12.5px;">' + a.esc(o.role || '') + ' - ' + a.esc(o.agency) + '</div>')
-            + row('Phương thức hoàn trả', a.esc(o.refundMethod || '--'))
+            + row('Phương thức hoàn trả', a.esc((window.htMethod ? window.htMethod(o.refundMethod) : o.refundMethod) || '--'))
             + row('Số tiền phải hoàn trả', a.money(o.total) + ' đ') + row('Đã nộp', a.money(o.paid) + ' đ')
             + row('Còn phải thu', a.money(conLai(o)) + ' đ') + (o.refund > 0 ? row('Số tiền cần trả lại', a.money(o.refund) + ' đ') : '');
     }
@@ -129,7 +135,7 @@
             const motLan = /một lần/i.test(o.refundMethod || '');
             const goiY = motLan ? a.money(conLai(o)) : '';
             el('ht4Form').innerHTML = '<div class="grid-2-cols" style="gap:16px;">' + field('Số tiền nộp đợt này (đ)', 'ht4Amt', 'Nhập số tiền nộp đợt này', goiY, 'style="text-align:right;" onchange="ht4Money(this)"') + field('Ngày nộp', 'ht4Ngay', 'dd/mm/yyyy', a.today()) + '</div>'
-                + (motLan ? '<div style="font-size:12.5px; color:var(--text-muted); margin:-6px 0 12px;">Phương thức Hoàn trả một lần: gợi ý 100% số còn phải thu.</div>' : '')
+                + (motLan ? '<div style="font-size:12.5px; color:var(--text-muted); margin:-6px 0 12px;">Phương thức Một lần: gợi ý 100% số còn phải thu.</div>' : '')
                 + '<div id="ht4Tlkt"></div>';
         } else if (mode === 'refund') {
             el('ht4Title').innerHTML = '<i class="fa-solid fa-hand-holding-dollar"></i> Cập nhật trả lại tiền cho cán bộ';

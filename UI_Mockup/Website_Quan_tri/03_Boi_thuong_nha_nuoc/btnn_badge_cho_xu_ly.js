@@ -1,6 +1,6 @@
 /*
  * Badge số lượng tab "Chờ xử lý" dùng chung cho 06 phân hệ BTNN và badge tương ứng tại LeftMenu (Trang chủ).
- * - Phân hệ: Tiếp nhận hồ sơ, Xác định CQGQBT, Giải quyết YCBT, Quyết định GQBT, Tạm ứng kinh phí/Chi trả, Xem xét hoàn trả.
+ * - Phân hệ: Tiếp nhận hồ sơ, Xác định CQGQBT, Giải quyết YCBT, Quyết định GQBT, Tạm ứng kinh phí/Chi trả, Xem xét hoàn trả; thêm Báo cáo Công tác BTNN (bctt).
  * - Trang phân hệ: gọi BDG.report(module, số lượng, phần tử badge tab) mỗi khi tính lại tab Chờ xử lý.
  *   Badge tab: class bdg-tab-count, ẩn khi bằng 0. Số lượng lưu localStorage (bdg_cho_xu_ly_v1) kèm ngữ cảnh người dùng/vai trò giả lập.
  * - Trang chủ: BDG.mountMenu() hiển thị badge menu (data-badge-key="bdg_<module>") = số đã lưu của đúng ngữ cảnh hiện tại;
@@ -18,7 +18,8 @@
         gqYcbt: { title: 'Giải quyết yêu cầu bồi thường', page: 'quan_ly_boi_thuong.html', url: 'quan_ly_boi_thuong.html?v=1' },
         qdGqbt: { title: 'Quyết định giải quyết bồi thường', page: 'quyet_dinh_giai_quyet_boi_thuong.html', url: 'quyet_dinh_giai_quyet_boi_thuong.html?v=1' },
         kinhPhi: { title: 'Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường', page: 'quan_ly_kinh_phi_boi_thuong.html', url: 'quan_ly_kinh_phi_boi_thuong.html?v=1' },
-        hoanTra: { title: 'Xem xét trách nhiệm hoàn trả', page: 'xem_xet_trach_nhiem_hoan_tra.html', url: 'xem_xet_trach_nhiem_hoan_tra.html' }
+        hoanTra: { title: 'Xem xét trách nhiệm hoàn trả', page: 'xem_xet_trach_nhiem_hoan_tra.html', url: 'xem_xet_trach_nhiem_hoan_tra.html' },
+        bctt: { title: 'Báo cáo Công tác BTNN', page: 'bao_cao_cong_tac_btnn.html', url: 'bao_cao_cong_tac_btnn.html' }
     };
     const MODULE_IDS = Object.keys(MODULES);
 
@@ -34,7 +35,10 @@
     function ctxOf(module) {
         const u = 'u:' + userId();
         if (module === 'gqYcbt') return u + '|' + (ssGet(GQ_SIM_KEY) || '');
-        if (module === 'hoanTra') return u + '|' + (ssGet('mockUserRole') || 'chuyen_vien');
+        // Hoàn trả: vai trò giả lập riêng của phân hệ (htMockScope - thanh Người dùng giả lập), không dùng mockUserRole chung của các phân hệ khác
+        if (module === 'hoanTra') return u + '|' + (ssGet('htMockScope') || 'don_vi_chu');
+        if (module === 'bctt') return u + '|' + (lsGet('bctt_role_v1') || 'cb_stp');
+        if (module === 'kinhPhi') return u + '|' + (lsGet('kp_role_v1') || 'chuyen-vien');
         return u;
     }
     // Dấu vân tay dữ liệu (bỏ qua khóa badge): thay đổi thì số lượng đã lưu được tính lại
@@ -44,7 +48,8 @@
             const keys = [];
             for (let i = 0; i < localStorage.length; i++) {
                 const k = localStorage.key(i);
-                if (k && !/^bdg_|^btnn_gq_pending_count$|^kths_menu_badges$/.test(k)) keys.push(k);
+                // Bỏ qua khóa tóm tắt / phiên bản mẫu do trang tự ghi khi hiển thị (ghi theo vai trò giả lập, không phải dữ liệu nghiệp vụ)
+                if (k && !/^bdg_|^btnn_gq_pending_count$|^kths_menu_badges$|^kp_role_v1$|^btnn_hoantra_summary$|^btnn_ht_seed_ver$/.test(k)) keys.push(k);
             }
             keys.sort().forEach(k => {
                 const v = k + '=' + (localStorage.getItem(k) || '');
@@ -188,9 +193,9 @@
         // Đổi người dùng giả lập / dữ liệu ở cửa sổ khác: hiển thị lại theo ngữ cảnh mới và tính lại khi cần
         global.addEventListener('storage', event => {
             if (!event.key || event.key === CACHE_KEY) { render(); return; }
-            if (/^(btnn_demo_user_v1|btnn_wf_records_v1|btnn_flow_config_v2|receptionClaimsList_v2026)$/.test(event.key)) {
+            if (/^(btnn_demo_user_v1|btnn_wf_records_v1|btnn_flow_config_v2|receptionClaimsList_v2026|bctt_role_v1|kp_role_v1)$/.test(event.key)) {
                 render();
-                if (event.key === 'btnn_demo_user_v1') schedule();
+                if (event.key === 'btnn_demo_user_v1' || event.key === 'bctt_role_v1' || event.key === 'kp_role_v1') schedule();
             }
         });
         render();

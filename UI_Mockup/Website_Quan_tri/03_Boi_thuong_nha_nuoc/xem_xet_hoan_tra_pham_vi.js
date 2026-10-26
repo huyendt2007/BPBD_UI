@@ -53,8 +53,21 @@
         'Họp hội đồng': 'Chờ xử lý',
         'Đình chỉ xem xét hoàn trả': 'Đình chỉ xem xét hoàn trả'
     };
-    const CHUNG_ORDER = ['Chờ xử lý', 'Đang xử lý', 'Thu hồi tiền hoàn trả', 'Miễn hoàn trả', 'Hoàn thành', 'Đình chỉ xem xét hoàn trả'];
-    const CHUNG_STYLE = { 'Chờ xử lý': 'warning', 'Đang xử lý': 'review', 'Thu hồi tiền hoàn trả': 'info', 'Miễn hoàn trả': 'success', 'Hoàn thành': 'success', 'Đình chỉ xem xét hoàn trả': 'draft' };
+    // Bước 1: trạng thái hồ sơ đang trình / bị từ chối QĐ thành lập Hội đồng -> [badge, Loại trình]
+    const HS_TRINH = {
+        'Chờ duyệt QĐ thành lập': ['Chờ duyệt', 'QĐ thành lập hội đồng'], 'Chờ duyệt thành lập hội đồng': ['Chờ duyệt', 'QĐ thành lập hội đồng'],
+        'Bị từ chối thành lập HĐ': ['Bị từ chối', 'QĐ thành lập hội đồng'], 'Từ chối duyệt QĐ thành lập': ['Bị từ chối', 'QĐ thành lập hội đồng'],
+        // Đình chỉ cả hồ sơ (trước khi tách phần đơn vị)
+        'Chờ duyệt QĐ đình chỉ': ['Chờ duyệt', 'QĐ đình chỉ'], 'Bị từ chối QĐ đình chỉ': ['Bị từ chối', 'QĐ đình chỉ']
+    };
+    const CHUNG_ORDER = ['Chờ duyệt', 'Bị từ chối', 'Chờ xử lý', 'Đang xử lý', 'Thu hồi tiền hoàn trả', 'Miễn hoàn trả', 'Hoàn thành', 'Đình chỉ xem xét hoàn trả'];
+    // Mỗi trạng thái chung một màu badge riêng
+    const CHUNG_STYLE = { 'Chờ duyệt': 'wait', 'Bị từ chối': 'danger', 'Chờ xử lý': 'warning', 'Đang xử lý': 'pending', 'Thu hồi tiền hoàn trả': 'info', 'Miễn hoàn trả': 'mien', 'Hoàn thành': 'success', 'Đình chỉ xem xét hoàn trả': 'draft' };
+    try {
+        const st = document.createElement('style');
+        st.textContent = '.ht-st-mien{background-color:#fdf2f8;color:#be185d;border:1px solid #fbcfe8;} .ht-st-wait{background-color:#ede9fe;color:#6d28d9;border:1px solid #ddd6fe;} .ht-trinh-sub{font-size:11px;color:#64748b;margin-top:3px;}';
+        document.head.appendChild(st);
+    } catch (e) { /* bỏ qua */ }
 
     // ===== Dữ liệu giả lập theo đơn vị (cán bộ sau khi chốt ý kiến Hội đồng) =====
     // xl: hình thức xử lý theo ý kiến Hội đồng (HT: hoàn trả, GIAM, MIEN); hd: số tiền theo ý kiến HĐ; giam: số tiền sau giảm; paid: đã thu
@@ -98,7 +111,11 @@
         if (typeof dossiersList !== 'undefined') dossiersList.forEach(d => { const v = hs[d.code]; if (v && v.status && !HT_SPLIT[d.code]) d.status = v.status; });
     } catch (e) { /* bỏ qua */ }
     // Hồ sơ chưa chốt ý kiến Hội đồng: cán bộ (dự thảo ý kiến tại Bước 2) theo đơn vị
-    const HT_DRAFT_UNIT = { 'HT-2026-008': U_A, 'HT-2026-013': U_B, 'HT-2026-016': U_A };
+    const HT_DRAFT_UNIT = { 'HT-2026-005': U_A, 'HT-2026-007': U_B, 'HT-2026-008': U_A, 'HT-2026-011': U_B, 'HT-2026-013': U_B, 'HT-2026-016': U_A, 'HT-2026-023': U_A, 'HT-2026-024': U_B };
+    // Rút gọn danh sách mẫu để chụp ảnh tài liệu: bỏ các hồ sơ trùng trạng thái (giữ đủ hồ sơ demo của ma trận chuyển trạng thái)
+    const HT_HIDE = ['HT-2026-006', 'HT-2026-012', 'HT-2026-013', 'HT-2026-014', 'HT-2026-015', 'HT-2026-016', 'HT-2026-019', 'HT-2026-020',
+        'HT-2026-002', 'HT-2026-009', 'HT-2026-017', 'HT-2026-018'];
+    try { if (typeof dossiersList !== 'undefined') for (let i = dossiersList.length - 1; i >= 0; i--) if (HT_HIDE.includes(dossiersList[i].code)) dossiersList.splice(i, 1); } catch (e) { /* bỏ qua */ }
 
     function splitOf(d) { return HT_SPLIT[d.code] || null; }
     function ownerOf(d) { const s = splitOf(d); return s ? s.owner : U_CHU; }
@@ -129,20 +146,23 @@
 
     // ===== Trạng thái chung (roll-up) =====
     function chungOf(d, sc) {
-        if (!isSplit(d)) return HS_GROUP[d.status] || 'Chờ xử lý';
-        const g = sc.officers.map(cbGroup);
-        if (!g.length) return 'Chờ xử lý';
-        // Ưu tiên phần việc trước khi ban hành QĐ hoàn trả của đơn vị; sau đó Thu hồi tiền hoàn trả, rồi Miễn / Giảm / Đình chỉ đang chờ
-        const pre = sc.officers.filter(o => !issued(o)).map(cbGroup);
-        if (pre.includes('Chờ xử lý')) return 'Chờ xử lý';
-        if (pre.includes('Đang xử lý')) return 'Đang xử lý';
-        if (g.includes('Thu hồi tiền hoàn trả')) return 'Thu hồi tiền hoàn trả';
-        if (g.includes('Chờ xử lý')) return 'Chờ xử lý';
-        if (g.includes('Đang xử lý')) return 'Đang xử lý';
-        if (g.every(x => x === 'Miễn hoàn trả')) return 'Miễn hoàn trả';
-        if (g.every(x => x === 'Đình chỉ xem xét hoàn trả')) return 'Đình chỉ xem xét hoàn trả';
-        return 'Hoàn thành';
+        // Bước 1 đang trình / bị từ chối QĐ thành lập Hội đồng: badge Chờ duyệt / Bị từ chối kèm dòng Loại trình
+        if (!isSplit(d)) return HS_TRINH[d.status] ? HS_TRINH[d.status][0] : (HS_GROUP[d.status] || 'Chờ xử lý');
+        const l = sc.officers;
+        if (!l.length) return 'Chờ xử lý';
+        // Thứ tự: trạng thái đích (100% kết thúc) > Thu hồi tiền hoàn trả > Đang xử lý > Chờ xử lý
+        const ended = o => ['MIEN', 'DONE', 'DC'].includes(o.st) && !o.trinh;
+        if (l.every(ended)) {
+            if (l.every(o => o.st === 'DC')) return 'Đình chỉ xem xét hoàn trả';
+            if (l.every(o => o.st === 'MIEN')) return 'Miễn hoàn trả';
+            return 'Hoàn thành';
+        }
+        if (l.some(o => o.st === 'THU')) return 'Thu hồi tiền hoàn trả';
+        // Có đơn vị đang trình / đã ban hành QĐ hoàn trả, hoặc đang trình QĐ miễn / giảm / đình chỉ
+        if (l.some(o => !['CBH_HT', 'BTC_HT', 'DC'].includes(o.st) || /^CD_/.test(o.trinh || ''))) return 'Đang xử lý';
+        return 'Chờ xử lý';
     }
+    function trinhLabel(d) { return !isSplit(d) && HS_TRINH[d.status] ? HS_TRINH[d.status][1] : ''; }
     // Dòng phụ: trạng thái chi tiết (kèm Loại trình); sau khi chốt ý kiến HĐ kèm số cán bộ
     function chiTietLines(d, sc) {
         if (!isSplit(d)) {
@@ -338,7 +358,8 @@
     }
     function officersOfRow(d, sc) {
         if (isSplit(d)) return sc.officers;
-        if (d.status === 'Họp hội đồng' && sc.full) return (d.refundOfficers || []).map(o => ({ name: o.name, unit: HT_DRAFT_UNIT[d.code] || o.agency, st: '' }));
+        // Trước khi tách đơn vị: cán bộ dự kiến (theo dự thảo ý kiến Hội đồng) với đơn vị tạo Hội đồng
+        if (sc.full && d.status !== 'Chờ thành lập hội đồng') return (d.refundOfficers || []).filter(o => o && o.name).map(o => ({ name: o.name, unit: HT_DRAFT_UNIT[d.code] || o.agency, st: '' }));
         return [];
     }
     function officerCell(list) {
@@ -414,7 +435,9 @@
                 ? '<div style="font-size:11px; display:flex; justify-content:space-between; font-weight:600; margin-bottom:2px;" title="' + tip + '"><span>' + fmt(m.paid) + 'đ</span><span style="color:#16a34a; font-weight:700;">' + pct + '%</span></div><div class="progress-bar-container" style="height:5px; margin-bottom:2px; background-color:#e2e8f0; border-radius:3px;"><div class="progress-bar-fill" style="width:' + pct + '%; height:100%; background-color:#22c55e; border-radius:3px;"></div></div><div style="font-size:11px; color:#64748b;">' + m.ended + '/' + m.n + ' cán bộ đã kết thúc</div>'
                 : '<span style="color:var(--text-muted); font-style:italic; font-size:11px;">Chưa ban hành QĐ</span>';
             // Cột Trạng thái: chỉ 01 badge trạng thái chung (trạng thái chi tiết xem tại màn chi tiết)
-            const sub = '';
+            // Ngoại lệ Bước 1: dòng Loại trình dưới badge Chờ duyệt / Bị từ chối
+            const tl = trinhLabel(d);
+            const sub = tl ? '<div class="ht-trinh-sub">' + tl + '</div>' : '';
             tr.innerHTML = '<td style="text-align:center;">' + (start + i + 1) + '</td>'
                 + '<td style="text-align:center; font-weight:700; color:var(--primary-color);">' + d.code + '</td>'
                 + '<td>' + officerCell(r.off) + '</td>'
@@ -423,7 +446,7 @@
                 + '<td style="text-align:center;">' + gqbtCell(d) + '</td>'
                 + '<td style="text-align:right; font-weight:600; color:var(--danger-color);">' + tien + '</td>'
                 + '<td>' + prog + '</td>'
-                + '<td style="text-align:center; vertical-align:middle;">' + chungBadge(r.chung) + sub + (htTab === 'done' ? htGatesHtml(d) : '') + '</td>'
+                + '<td style="text-align:center; vertical-align:middle;">' + chungBadge(r.chung) + sub + '</td>'
                 + '<td style="text-align:center; vertical-align:middle;">' + getActionButtonsHtml(d) + '</td>';
             tbody.appendChild(tr);
         });

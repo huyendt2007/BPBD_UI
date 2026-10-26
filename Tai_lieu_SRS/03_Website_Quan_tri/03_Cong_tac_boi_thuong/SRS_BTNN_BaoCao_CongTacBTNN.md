@@ -11,7 +11,7 @@ Cho phép Sở Tư pháp lập, trình ký số và gửi Bộ Tư pháp báo c�
 
 *a. Phân quyền*
 - Cán bộ Sở Tư pháp: tạo báo cáo, nhập liệu, xem trước PDF, Gửi phê duyệt, cập nhật và trình lại báo cáo `Bị từ chối` của Sở Tư pháp mình.
-- Lãnh đạo Phòng, Lãnh đạo Sở: xem báo cáo của Sở Tư pháp mình; Ký duyệt / Từ chối báo cáo `Chờ duyệt` khi được chọn đích danh ở cấp phê duyệt hiện hành.
+- Lãnh đạo Phòng, Lãnh đạo Sở: xem báo cáo của Sở Tư pháp mình, trừ báo cáo `Đang nhập liệu`; Ký duyệt / Từ chối báo cáo `Chờ duyệt` khi được chọn đích danh ở cấp phê duyệt hiện hành.
 - Cán bộ Bộ Tư pháp: xem kỳ tổng hợp, tệp đã ban hành và số liệu tổng hợp của 34 Sở Tư pháp; điều chỉnh số liệu tổng hợp theo từng Sở Tư pháp.
 
 *b. Điều kiện thực hiện*
@@ -83,6 +83,16 @@ flowchart TD
    - Mẫu 43/BTNN: cộng số liệu từng ô theo nhóm, cột.
    - Điều chỉnh của Bộ Tư pháp lưu riêng, chỉ dùng cho số liệu tổng hợp; không thay đổi số liệu và tệp đã ban hành của Sở Tư pháp; ghi Lịch sử xử lý của báo cáo Sở Tư pháp.
 
+<a id="bctt-tab-xu-ly"></a>
+9. Phạm vi xem và 02 tab Chờ xử lý / Đã xử lý tại MH01:
+   - Phạm vi xem: báo cáo của Sở Tư pháp của người dùng; Lãnh đạo Phòng, Lãnh đạo Sở không thấy báo cáo `Đang nhập liệu`.
+   - Lãnh đạo: báo cáo không thuộc tab `Chờ xử lý` và Lãnh đạo chưa từng Ký duyệt / Từ chối không hiển thị ở tab nào.
+
+| Vai trò | Tab `Chờ xử lý` | Tab `Đã xử lý` |
+| :--- | :--- | :--- |
+| Cán bộ Sở Tư pháp | Báo cáo `Đang nhập liệu`, `Bị từ chối` | Báo cáo `Chờ duyệt`, `Đã ban hành` |
+| Lãnh đạo Phòng, Lãnh đạo Sở | Báo cáo `Chờ duyệt` mà Lãnh đạo được chọn đích danh ở cấp phê duyệt hiện hành | Báo cáo Lãnh đạo đã Ký duyệt / Từ chối, không còn chờ Lãnh đạo duyệt |
+
 ---
 
 ### MH01 - Màn hình Danh sách báo cáo
@@ -93,16 +103,17 @@ flowchart TD
 
 #### 2. Mô tả thông tin trên màn hình
 
-- Áp dụng cho vai trò Sở Tư pháp (Cán bộ, Lãnh đạo Phòng, Lãnh đạo Sở); danh sách gồm báo cáo của Sở Tư pháp của người dùng.
+- Áp dụng cho vai trò Sở Tư pháp (Cán bộ, Lãnh đạo Phòng, Lãnh đạo Sở); phạm vi xem theo [Phạm vi xem và 02 tab Chờ xử lý / Đã xử lý - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-tab-xu-ly).
 - Vai trò Bộ Tư pháp mở [MH07 - Màn hình Danh sách kỳ tổng hợp - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-mh07).
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề màn hình | String(255) | - | `Báo cáo Công tác BTNN` | Control UI: Page Header (Read-only).<br>- Đúng tên mục Menu. |
+| **Tab danh sách** | Tab | - | `Chờ xử lý` | Control UI: 02 tab đặt phía trên bộ lọc:<br>+ Chờ xử lý<br>+ Đã xử lý<br>- Badge số lượng: số bản ghi thuộc tab Chờ xử lý của người dùng; không hiển thị khi bằng 0.<br>- Badge số lượng tại mục menu `Báo cáo Công tác BTNN` bằng badge tab Chờ xử lý của Báo cáo Công tác BTNN.<br>- Tab `Đã xử lý` không có badge số lượng.<br>- Bản ghi của từng tab theo [Phạm vi xem và 02 tab Chờ xử lý / Đã xử lý - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-tab-xu-ly). |
 | **I. Bộ lọc tìm kiếm** | Section | - | - | Control UI: Khối thu gọn/mở rộng. |
 | Năm báo cáo | Enum(String(4)) | Không | `Tất cả` | Control UI: Combobox.<br>- Gồm `Tất cả` và các năm có báo cáo, giảm dần. |
 | Loại kỳ báo cáo | Enum(String(100)) | Không | `Tất cả` | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Báo cáo năm số liệu thực tế (01/01 - 31/10)<br>+ Số liệu thống kê năm chính thức (01/01 - 31/12) |
-| Trạng thái | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Đang nhập liệu<br>+ Chờ duyệt<br>+ Bị từ chối<br>+ Đã ban hành |
+| Trạng thái | Enum(String(50)) | Không | `Tất cả` | Control UI: Combobox.<br>- Gồm `Tất cả` và các trạng thái thuộc tab đang chọn theo [Phạm vi xem và 02 tab Chờ xử lý / Đã xử lý - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-tab-xu-ly).<br>- Đổi tab: giá trị không thuộc tab mới đặt lại `Tất cả`. |
 | **II. Danh sách báo cáo** | Data grid | - | 10 bản ghi/trang | Control UI: Data grid.<br>- Sắp xếp theo Năm báo cáo giảm dần.<br>- Click dòng: mở MH03.<br>- Không có dữ liệu: 01 dòng `Không có dữ liệu`. |
 | STT | Integer | - | Tự tăng | Control UI: Label. |
 | Năm báo cáo | Integer(4) | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
@@ -120,12 +131,13 @@ flowchart TD
 | :--- | :--- | :--- | :--- |
 | 1 | Tìm kiếm | Button | Lọc danh sách theo điều kiện đã chọn, về Trang 1. |
 | 2 | Xóa bộ lọc | Button | Đặt lại điều kiện lọc, tải lại danh sách, về Trang 1. |
-| 3 | Tạo báo cáo | Button | Chỉ hiển thị với Cán bộ Sở Tư pháp. Mở MH02. |
-| 4 | Xem chi tiết | Click dòng | Mở MH03 của báo cáo. |
-| 5 | Cập nhật | Icon button | Cho phép khi báo cáo `Đang nhập liệu` hoặc `Bị từ chối`. Mở MH03 ở chế độ nhập liệu. |
-| 6 | Gửi phê duyệt | Icon button | Cho phép như `Cập nhật`. Mở MH03, kiểm tra dữ liệu và mở MH04 theo chức năng `Gửi phê duyệt` tại MH03. |
-| 7 | Ký duyệt / Từ chối | Icon button | Cho phép khi báo cáo `Chờ duyệt` và người dùng là Lãnh đạo được chọn ở cấp phê duyệt hiện hành. Mở MH05 theo thao tác tương ứng. |
-| 8 | Phân trang | Panel | Tải lại danh sách theo trang, số bản ghi/trang đã chọn; giữ điều kiện lọc. |
+| 3 | Tạo báo cáo | Button | Chỉ hiển thị với Cán bộ Sở Tư pháp tại tab `Chờ xử lý`. Mở MH02. |
+| 4 | Chuyển tab | Tab | Hiển thị bản ghi của tab được chọn; giữ điều kiện lọc hợp lệ, về Trang 1. |
+| 5 | Xem chi tiết | Click dòng | Mở MH03 của báo cáo. |
+| 6 | Cập nhật | Icon button | Cho phép khi báo cáo `Đang nhập liệu` hoặc `Bị từ chối`. Mở MH03 ở chế độ nhập liệu. |
+| 7 | Gửi phê duyệt | Icon button | Cho phép như `Cập nhật`. Mở MH03, kiểm tra dữ liệu và mở MH04 theo chức năng `Gửi phê duyệt` tại MH03. |
+| 8 | Ký duyệt / Từ chối | Icon button | Cho phép khi báo cáo `Chờ duyệt` và người dùng là Lãnh đạo được chọn ở cấp phê duyệt hiện hành. Mở MH05 theo thao tác tương ứng. |
+| 9 | Phân trang | Panel | Tải lại danh sách theo trang, số bản ghi/trang đã chọn; giữ điều kiện lọc. |
 
 ---
 

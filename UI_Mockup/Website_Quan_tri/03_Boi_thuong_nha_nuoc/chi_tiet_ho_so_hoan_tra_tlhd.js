@@ -152,7 +152,13 @@ const TLHD_CSS = [
     '.tlhd-doc-table th { text-align:center; font-weight:bold; }',
     '#tlhdMembersView .tlhd-doc-table { font-family:inherit; }',
     '#tlhdMembersView .tlhd-doc-table th, #tlhdMembersView .tlhd-doc-table td { border-color:#e2e8f0; padding:8px 10px; }',
-    '#tlhdMembersView .tlhd-doc-table th { background:#f1f5f9; text-align:left; }',
+    // Bảng thành viên Hội đồng (màn xem): tiêu đề cột căn giữa; cột chữ căn trái, STT căn giữa (đè căn giữa ô cuối của admin-ui-standardizer)
+    '#tlhdMembersView .tlhd-doc-table th { background:#f1f5f9; text-align:center !important; }',
+    '#tlhdMembersView .tlhd-doc-table td { text-align:left !important; }',
+    '#tlhdMembersView .tlhd-doc-table td:first-child { text-align:center !important; }',
+    '#tlhdModal .tlhd-mem-table th { text-align:center !important; }',
+    '#tlhdModal .tlhd-mem-table td { text-align:left !important; }',
+    '#tlhdModal .tlhd-mem-table td:first-child, #tlhdModal .tlhd-mem-table td:last-child { text-align:center !important; }',
     '@media (max-width: 760px) { #tlhdModal .gqx-grid2, #tlhdModal .sign-cards-grid { grid-template-columns:1fr; } }'
 ].join('\n');
 

@@ -793,7 +793,7 @@
 
     <!-- Luồng xử lý BTNN dùng chung: đếm hồ sơ tab Chờ xử lý cho badge menu Tiếp nhận hồ sơ -->
     <script src="btnn_luong_xu_ly.js?v=20261020v5"></script>
-    <script src="../03_Boi_thuong_nha_nuoc/btnn_badge_cho_xu_ly.js?v=20261023bdg2"></script>
+    <script src="../03_Boi_thuong_nha_nuoc/btnn_badge_cho_xu_ly.js?v=20261026htrole"></script>
     <script>
         // Menu Data Model without numerical headers in titles
         const menuData = [
@@ -946,7 +946,7 @@
                     {
                         title: "Báo cáo quản lý BTNN",
                         children: [
-                            { title: "Báo cáo Công tác BTNN", url: "../03_Boi_thuong_nha_nuoc/bao_cao_cong_tac_btnn.html" },
+                            { title: "Báo cáo Công tác BTNN", badgeKey: "bdg_bctt", badgeType: "danger", url: "../03_Boi_thuong_nha_nuoc/bao_cao_cong_tac_btnn.html" },
                             // Ẩn: chưa làm đợt này (6 mục dưới, hidden: true)
                             { title: "Thống kê số lượng vụ việc YCBT theo thời gian", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_thoi_gian", hidden: true },
                             { title: "Thống kê chi tiết vụ việc YCBT theo các cấp", url: "../03_Boi_thuong_nha_nuoc/bao_cao_thong_ke_btnn_tt08.html?module=thong_ke_cap", hidden: true },

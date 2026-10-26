@@ -1864,7 +1864,7 @@
         <div id="subTabContentResolver" style="display: block;">
 
             <!-- GIẢ LẬP ĐĂNG NHẬP: Quyền giả lập / Cán bộ (Lãnh đạo) đang đăng nhập - đặt đầu màn hình -->
-                    <div class="role-switch-container"
+                    <div class="role-switch-container" data-btnn-gl="> span:first-child, #currentOfficerSelectorWrapper > span, #currentLeaderSelectorWrapper > span"
                         style="display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; margin: 0 0 12px auto; width: fit-content; max-width: 100%; padding: 6px 12px; background: #FFFBEB; border: 1px dashed #F59E0B;">
                         <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Quyền giả lập</span>
                         <select class="role-selector" id="roleSelectorGiaLap" onchange="syncRole(this)"
@@ -4481,12 +4481,13 @@
     <!-- Luồng phân công - phê duyệt dùng chung BTNN: nguồn hồ sơ YCBT nhận từ Xác định CQGQBT -->
     <script src="btnn_luong_xu_ly.js?v=20261026ttgq"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt5"></script>
+    <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
     <script src="quan_ly_boi_thuong_dcgq.js?v=20261026dcct"></script>
     <script src="quan_ly_kinh_phi_kpdc.js?v=20261026kpdc"></script>
     <script src="quan_ly_boi_thuong_seedx.js?v=20261026sdx"></script>
     <script src="quan_ly_boi_thuong_hgq.js?v=20261026ycbs"></script>
-    <script src="btnn_badge_cho_xu_ly.js?v=20261023bdg"></script>
+    <script src="btnn_badge_cho_xu_ly.js?v=20261026htrole"></script>
     <!-- Cử người giải quyết (nhiều cán bộ theo Cơ cấu tổ chức), Xác minh thiệt hại nhiều lần, Văn bản làm căn cứ yêu cầu bồi thường -->
     <script>
         function ycEsc(v) {
@@ -25619,6 +25620,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <script src="quan_ly_boi_thuong_ktlv.js?v=20261026ktlv"></script>
     <!-- [tcvv] Xem chi tiết mở từ Tra cứu vụ việc (?readonly=1&returnUrl=tra_cuu...): tab mặc định, bỏ giới hạn cán bộ được cử; tcvvPreview=1: hồ sơ giả lập riêng của Tra cứu, không lưu vào claimsList -->
     <script src="tra_cuu_seed_tcvv.js?v=20261026tcvv"></script>
+    <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
 </body>
 
 </html>

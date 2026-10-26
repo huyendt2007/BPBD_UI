@@ -36,8 +36,51 @@
     function parseMoney(v) { return parseInt(String(v || '').replace(/\D/g, ''), 10) || 0; }
     function nowShort() { const d = new Date(), p = n => String(n).padStart(2, '0'); return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes()); }
 
-    function htMethod(v) { return !v ? '' : (/một lần/i.test(v) ? 'Hoàn trả một lần' : 'Hoàn trả nhiều lần'); }
+    // Phương thức hoàn trả: nhãn ngắn Một lần / Nhiều lần (dữ liệu cũ: Hoàn trả một lần, Khấu trừ lương, Nhiều lần...)
+    function htMethod(v) { return !v ? '' : (/một lần/i.test(v) ? 'Một lần' : 'Nhiều lần'); }
     window.htMethod = htMethod;
+    // Hình thức xử lý: giá trị chuẩn (Hoàn trả / Giảm mức hoàn trả / Miễn hoàn trả) và nhãn hiển thị (Hoàn trả 100% / ...)
+    function xlFull(v) { return v === 'GIAM' || v === 'Giảm mức hoàn trả' ? 'Giảm mức hoàn trả' : (v === 'MIEN' || v === 'Miễn hoàn trả' ? 'Miễn hoàn trả' : 'Hoàn trả'); }
+    const xlLabel = v => { const f = xlFull(v); return f === 'Hoàn trả' ? 'Hoàn trả 100%' : f; };
+    window.htXlLabel = xlLabel;
+    // Pill trạng thái dùng chung Bước 2, 3, 4 (mỗi nhóm trạng thái một màu)
+    const PILL = {
+        teal: ['#f0fdfa', '#0f766e', '#14b8a6'], amber: ['#fffbeb', '#b45309', '#f59e0b'], indigo: ['#eef2ff', '#4338ca', '#6366f1'], red: ['#fef2f2', '#b91c1c', '#ef4444'],
+        emerald: ['#ecfdf5', '#047857', '#10b981'], pink: ['#fdf2f8', '#be185d', '#ec4899'], slate: ['#f1f5f9', '#475569', '#94a3b8'], orange: ['#fff7ed', '#c2410c', '#f97316']
+    };
+    function pillTone(t) {
+        t = String(t || '');
+        if (/^Bị từ chối/.test(t)) return 'red';
+        if (/^Chờ duyệt/.test(t)) return 'indigo';
+        if (/^Chờ trả lại/.test(t)) return 'orange';
+        if (/^Chờ ban hành/.test(t)) return 'amber';
+        if (/^Thu hồi/.test(t)) return 'teal';
+        if (/^(Đã ban hành|Hoàn thành)/.test(t)) return 'emerald';
+        if (/^Miễn/.test(t)) return 'pink';
+        if (/^Đình chỉ/.test(t)) return 'slate';
+        return 'slate';
+    }
+    window.htPill = function (text, tone) {
+        const c = PILL[tone || pillTone(text)] || PILL.slate;
+        return '<span class="ht-pill" style="display:inline-flex; align-items:center; gap:6px; padding:2px 10px; border-radius:999px; font-size:12px; font-weight:600; white-space:nowrap; background:' + c[0] + '; color:' + c[1] + '; border:1px solid ' + c[2] + '33;"><span style="width:7px; height:7px; border-radius:50%; background:' + c[2] + ';"></span>' + esc(text) + '</span>';
+    };
+    // Nút bảng cỡ nhỏ trên 01 dòng: hành động chính (nền xanh) / xem văn bản (viền xám) / đình chỉ (viền đỏ hồng)
+    try {
+        const st = document.createElement('style');
+        st.textContent = '.ht-btn-sm{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;font-size:12px;font-weight:500;border-radius:6px;box-shadow:0 1px 2px rgba(15,23,42,.08);white-space:nowrap;cursor:pointer;line-height:1.2;}'
+            + '.ht-btn-pri{background:#2563eb;color:#fff;border:1px solid #2563eb;}.ht-btn-pri:hover{background:#1d4ed8;}'
+            + '.ht-btn-out{background:#fff;color:#334155;border:1px solid #cbd5e1;}.ht-btn-out:hover{background:#f8fafc;}'
+            + '.ht-btn-dc{background:#fff;color:#e11d48;border:1px solid #fda4af;}.ht-btn-dc:hover:not(:disabled){background:#e11d48;color:#fff;}'
+            + '.ht-btn-dc:disabled{background:#f1f5f9;color:#94a3b8;border-color:#e2e8f0;cursor:not-allowed;box-shadow:none;}'
+            + '.ht-act-cell{white-space:nowrap!important;min-width:160px;text-align:center!important;}.ht-act-cell > *{vertical-align:middle;}'
+            + '.ht-note{font-size:11.5px;color:#64748b;margin-top:3px;white-space:normal;}.ht-note-i{font-size:11.5px;color:#64748b;font-style:italic;margin-top:2px;}';
+        document.head.appendChild(st);
+        // Popup cán bộ: nhãn Hình thức xử lý "Hoàn trả 100%"; Phương thức hoàn trả "Một lần" / "Nhiều lần"
+        const r = document.querySelector('input[name="ht2Xl"][value="Hoàn trả"]');
+        if (r && r.parentElement) r.parentElement.lastChild.textContent = ' Hoàn trả 100%';
+        const m = document.getElementById('oMethod');
+        if (m) m.innerHTML = '<option value="">-- Chọn phương thức hoàn trả --</option><option value="Một lần">Một lần</option><option value="Nhiều lần">Nhiều lần</option>';
+    } catch (e) { /* bỏ qua */ }
     // ===== Dữ liệu mẫu: đơn vị quản lý cán bộ, cây đơn vị của popup cán bộ =====
     try {
         dossiersList.forEach(d => {
@@ -48,7 +91,7 @@
                 o.refundMethod = htMethod(o.refundMethod);
             });
             // Dữ liệu mẫu: Đỗ Thị Bình (HT-2026-008, Bước 2)
-            (d.refundOfficers || []).forEach(o => { if (o.name === 'Đỗ Thị Bình' && !o.total) { o.total = 25000000; o.refundMethod = 'Hoàn trả một lần'; o.loi = 'Vô ý'; } });
+            (d.refundOfficers || []).forEach(o => { if (o.name === 'Đỗ Thị Bình' && !o.total) { o.total = 25000000; o.refundMethod = 'Một lần'; o.loi = 'Vô ý'; } });
         });
         if (typeof agencyTreeData !== 'undefined' && !agencyTreeData.some(x => x.code === 'UBND-LB')) {
             agencyTreeData.unshift(
@@ -116,6 +159,16 @@
     const baseRenderStep1 = window.renderStep1;
     window.renderStep1 = function () {
         baseRenderStep1();
+        // Khối QĐ thành lập Hội đồng: bỏ Trích yếu, Ngày ký; badge trạng thái lớn ở góc trên phải
+        ['s1SummaryReadonly', 's1SignDateReadonly'].forEach(id => { const g = el(id) && el(id).closest('.form-group'); if (g) g.style.display = 'none'; });
+        const bc = el('s1OfficialStatusBadge');
+        if (bc) {
+            const st = activeDossier.status;
+            const big = 'font-size:14px; padding:8px 16px; font-weight:800; border-radius:8px; display:inline-flex; align-items:center; gap:8px;';
+            if (st === 'Chờ duyệt QĐ thành lập' || st === 'Chờ duyệt thành lập hội đồng') bc.innerHTML = '<span class="badge" style="' + big + ' background:#ede9fe; color:#6d28d9; border:1px solid #ddd6fe;"><i class="fa-solid fa-hourglass-half"></i> Chờ duyệt - QĐ thành lập hội đồng</span>';
+            else if (st === 'Bị từ chối thành lập HĐ' || st === 'Từ chối duyệt QĐ thành lập') bc.innerHTML = '<span class="badge" style="' + big + ' background:#fef2f2; color:#dc2626; border:1px solid #fecaca;"><i class="fa-solid fa-circle-xmark"></i> Bị từ chối - QĐ thành lập hội đồng</span>';
+            else if (st !== 'Chờ thành lập hội đồng') bc.innerHTML = '<span class="badge" style="' + big + ' background:#16a34a; color:#fff; border:1px solid #15803d;"><i class="fa-solid fa-circle-check"></i> Đã ban hành</span>';
+        }
         const cta = el('s1CreateCtaCard');
         if (!cta) return;
         const btn = cta.querySelector('button');
@@ -167,34 +220,59 @@
         if (canDc && headRow && !th) { headRow.insertAdjacentHTML('afterbegin', '<th id="ht2DcTh" style="width:40px; text-align:center;"><input type="checkbox" id="ht2DcAll" title="Chọn tất cả" onchange="ht2DcAll(this.checked)"></th>'); }
         if (!canDc && th) th.remove();
         let bar = el('ht2DcBar');
-        if (!bar && table) { table.insertAdjacentHTML('beforebegin', '<div id="ht2DcBar" style="display:none; justify-content:flex-end; margin-bottom:8px;"><button type="button" data-admin-icon-normalized="1" class="btn btn-danger btn-sm" onclick="ht2OpenDc()"><i class="fa-solid fa-ban"></i> Trình ký QĐ đình chỉ</button></div>'); bar = el('ht2DcBar'); }
+        if (!bar && table) { table.insertAdjacentHTML('beforebegin', '<div id="ht2DcBar" style="display:none; justify-content:flex-end; margin-bottom:8px;"><button type="button" id="ht2DcBtn" data-admin-icon-normalized="1" class="ht-btn-sm ht-btn-dc" disabled onclick="ht2OpenDc()"><i class="fa-solid fa-ban"></i> Trình ký QĐ đình chỉ</button></div>'); bar = el('ht2DcBar'); }
         if (bar) bar.style.display = canDc && list.some(x => !x.o.dcPre) ? 'flex' : 'none';
+        // Chế độ xem (đã hoàn thành Bước 2 hoặc vai trò chỉ xem): ẩn cột Thao tác
+        const showAct = canEdit;
+        const thAct = headRow && Array.from(headRow.cells).find(c => (c.innerText || c.textContent).trim() === 'Thao tác');
+        if (thAct) thAct.style.display = showAct ? '' : 'none';
+        let foot = table && table.tFoot;
         if (!list.length) {
             body.innerHTML = '<tr><td colspan="11" style="text-align:center; color:var(--text-muted); font-style:italic; padding:20px;">Danh sách cán bộ trống. Vui lòng bấm "Thêm cán bộ gây sai phạm" để ghi nhận ý kiến của Hội đồng.</td></tr>';
+            if (foot) foot.innerHTML = '';
             return;
         }
+        const thucThu = o => { const f = xlFull(o.xl); return f === 'Miễn hoàn trả' ? 0 : (f === 'Giảm mức hoàn trả' ? (o.giam || 0) : (o.hd || o.total || 0)); };
         body.innerHTML = list.map((x, k) => {
-            const o = x.o, xl = o.xl || 'Hoàn trả';
+            const o = x.o, xl = xlFull(o.xl);
             const hoan = o.ykhdDieuKienHoan ? ' <span class="badge" style="background:#fef9c3; color:#a16207; font-size:10.5px;">Hoãn hoàn trả</span>' : '';
             const dcb = o.dcPre ? ' <span class="badge" style="background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; font-size:10.5px;">Đình chỉ hoàn trả</span>' : '';
             const acts = x.i < 0 ? '--' : '<button type="button" class="btn-action-square btn-info" title="Xem chi tiết cán bộ" onclick="viewOfficerInStep2(' + x.i + ')"><i class="fa-solid fa-eye"></i></button>'
                 + (canEdit && !o.dcPre ? ' <button type="button" class="btn-action-square btn-primary" title="Sửa cán bộ" onclick="editOfficerInStep2(' + x.i + ')"><i class="fa-solid fa-pen-to-square"></i></button>'
                     + ' <button type="button" class="btn-action-square btn-danger" title="Xóa cán bộ" onclick="deleteOfficerInStep2(' + x.i + ')"><i class="fa-solid fa-trash-can"></i></button>' : '');
+            // Hình thức xử lý: nhãn đầy đủ; Giảm / Miễn kèm lý do
+            const lyDo = xl === 'Giảm mức hoàn trả' && o.lyDoGiam ? '<div class="ht-note-i">Lý do giảm: ' + esc(o.lyDoGiam) + '</div>' : (xl === 'Miễn hoàn trả' && o.lyDoMien ? '<div class="ht-note-i">Lý do miễn: ' + esc(o.lyDoMien) + '</div>' : '');
+            const stText = o.dcPre ? 'Đình chỉ hoàn trả' : officerStatusText(o);
             return '<tr>' + (canDc ? '<td style="text-align:center;">' + (o.dcPre || x.i < 0 ? '' : '<input type="checkbox" class="ht2DcChk" data-idx="' + x.i + '" onchange="ht2DcSync()">') + '</td>' : '') + '<td style="text-align:center;">' + (k + 1) + '</td>'
                 + '<td><strong>' + esc(o.name) + '</strong>' + hoan + dcb + '<div style="font-size:12px; color:var(--text-muted);">' + esc(o.role || '') + '</div></td>'
                 + '<td>' + esc(o.agency || '') + '</td>'
                 + '<td>' + esc(o.loi === 'Khác' ? (o.ykhdLoiKhac || 'Khác') : (o.loi || '')) + '</td>'
                 + '<td style="text-align:right; font-weight:600;">' + money(o.hd || o.total) + '</td>'
-                + '<td>' + esc(xl === 'Hoàn trả' ? 'Hoàn trả (Không miễn/giảm)' : xl) + '</td>'
+                + '<td>' + esc(xlLabel(xl)) + lyDo + '</td>'
                 + '<td style="text-align:right;">' + (xl === 'Giảm mức hoàn trả' ? money(o.giam) : '--') + '</td>'
-                + '<td>' + esc(xl === 'Miễn hoàn trả' ? '--' : (o.refundMethod || '')) + '</td>'
-                + (split ? '<td>' + esc(o.dcPre ? 'Đình chỉ hoàn trả' : officerStatusText(o)) + '</td>' : '')
-                + '<td style="text-align:center; white-space:nowrap;">' + acts + '</td></tr>';
+                + '<td style="white-space:nowrap;' + (xl === 'Miễn hoàn trả' ? ' text-align:center;' : '') + '">' + esc(xl === 'Miễn hoàn trả' ? '--' : (htMethod(o.refundMethod) || '--')) + '</td>'
+                + (split ? '<td style="text-align:center;">' + (stText ? htPill(stText) : '') + '</td>' : '')
+                + (showAct ? '<td style="text-align:center; white-space:nowrap;">' + acts + '</td>' : '') + '</tr>';
         }).join('');
+        // Dòng Tổng cộng: tổng Số tiền cần hoàn trả và tổng số tiền thực tế phải thu sau giảm / miễn (không tính cán bộ đã đình chỉ tại Bước 2)
+        if (table && !foot) foot = table.createTFoot();
+        if (foot) {
+            const act = list.filter(x => !x.o.dcPre);
+            const tong = act.reduce((s, x) => s + (x.o.hd || x.o.total || 0), 0), thuc = act.reduce((s, x) => s + thucThu(x.o), 0);
+            const lead = (canDc ? 1 : 0) + 4, tail = 1 + (split ? 1 : 0) + (showAct ? 1 : 0);
+            foot.innerHTML = '<tr style="background:#f1f5f9; font-weight:700;"><td colspan="' + lead + '" style="text-align:right;">Tổng cộng</td><td style="text-align:right;">' + money(tong) + '</td>'
+                + '<td style="font-weight:600; color:#475569;">Phải thu sau giảm / miễn</td><td style="text-align:right;">' + money(thuc) + '</td><td colspan="' + tail + '"></td></tr>';
+        }
+        ht2DcSync();
     }
     // ===== Đình chỉ tại Bước 2: chọn cán bộ =====
-    window.ht2DcAll = function (on) { document.querySelectorAll('.ht2DcChk').forEach(c => { c.checked = on; }); };
-    window.ht2DcSync = function () { const c = Array.from(document.querySelectorAll('.ht2DcChk')); const a = el('ht2DcAll'); if (a) a.checked = c.length > 0 && c.every(x => x.checked); };
+    window.ht2DcAll = function (on) { document.querySelectorAll('.ht2DcChk').forEach(c => { c.checked = on; }); ht2DcSync(); };
+    // Nút Trình ký QĐ đình chỉ: khóa khi chưa chọn cán bộ; có chọn: bật, hiển thị số cán bộ đã chọn
+    window.ht2DcSync = function () {
+        const c = Array.from(document.querySelectorAll('.ht2DcChk')), n = c.filter(x => x.checked).length;
+        const a = el('ht2DcAll'); if (a) a.checked = c.length > 0 && n === c.length;
+        const b = el('ht2DcBtn'); if (b) { b.disabled = n === 0; b.innerHTML = '<i class="fa-solid fa-ban"></i> Trình ký QĐ đình chỉ' + (n ? ' (' + n + ')' : ''); }
+    };
     let dcFromStep2 = false;
     window.ht2OpenDc = function () {
         const all = (activeDossier.refundOfficers || []).filter(o => o && o.name && !o.dcPre);
@@ -245,7 +323,16 @@
         host.style.display = 'block';
         host.innerHTML = '<div style="font-weight:700; color:var(--primary-color); font-size:14px; margin-bottom:8px;"><i class="fa-solid fa-sitemap"></i> Phân tách theo đơn vị quản lý cán bộ</div>'
             + '<table class="dense-table" style="width:100%;"><thead><tr><th style="width:45px; text-align:center;">STT</th><th>Đơn vị quản lý cán bộ</th><th style="width:90px; text-align:center;">Số cán bộ</th><th>Cán bộ</th><th>Tài liệu kèm theo phần đơn vị</th><th style="width:170px;">Trạng thái</th></tr></thead><tbody>'
-            + units.map((u, i) => '<tr><td style="text-align:center;">' + (i + 1) + '</td><td><strong>' + esc(u.unit) + '</strong></td><td style="text-align:center;">' + u.officers.length + '</td><td>' + esc(u.officers.join(', ')) + '</td><td>' + esc(u.files.join(', ') || '--') + '</td><td>' + esc(u.status) + '</td></tr>').join('')
+            + units.map((u, i) => {
+                // Tài liệu kèm theo phần đơn vị: văn bản kiến nghị của Hội đồng (và tài liệu kèm theo Bước 2), mỗi tệp kèm Xem / Tải
+                const files = (u.files && u.files.length ? u.files : (ykhdFiles('kienNghi').map(f => f.name).concat((activeDossier.ht2Tlkt || []).map(t => t.name))))
+                    .filter(Boolean);
+                const list = files.length ? files : ['Van_ban_kien_nghi_' + activeDossier.code + '.pdf'];
+                const fileHtml = list.map(n => '<div style="display:flex; align-items:center; gap:8px; white-space:nowrap;"><i class="fa-solid fa-file-pdf" style="color:#dc2626;"></i> ' + esc(n)
+                    + ' <a class="action-link" href="javascript:void(0)" title="Xem file" onclick="showToast(\'Đang mở xem tệp ' + esc(n) + '\', \'info\')"><i class="fa-solid fa-eye"></i></a>'
+                    + ' <a class="action-link" href="javascript:void(0)" title="Tải file" onclick="showToast(\'Đang tải tệp ' + esc(n) + '\', \'info\')"><i class="fa-solid fa-download"></i></a></div>').join('');
+                return '<tr><td style="text-align:center;">' + (i + 1) + '</td><td><strong>' + esc(u.unit) + '</strong></td><td style="text-align:center;">' + u.officers.length + '</td><td>' + esc(u.officers.join(', ')) + '</td><td>' + fileHtml + '</td><td style="text-align:center;">' + htPill(u.status || '') + '</td></tr>';
+            }).join('')
             + '</tbody></table>';
     }
     window.renderStep2 = function () {
@@ -328,13 +415,13 @@
         if (el('ykhdLoiKhac')) el('ykhdLoiKhac').value = o.ykhdLoiKhac || '';
         el('oAmt').value = o.total ? money(o.total) : '';
         if (o.total) handleModalAmtInput(el('oAmt').value);
-        const r = document.querySelector('input[name="ht2Xl"][value="' + (o.xl || 'Hoàn trả') + '"]'); if (r) r.checked = true;
+        const r = document.querySelector('input[name="ht2Xl"][value="' + xlFull(o.xl) + '"]'); if (r) r.checked = true;
         ht2OnXlChange();
         el('ht2Giam').value = o.giam ? money(o.giam) : '';
         if (o.giam) ht2OnMoneyInput(el('ht2Giam'), 'ht2GiamText');
         el('ht2LyDoGiam').value = o.lyDoGiam || '';
         el('ht2LyDoMien').value = o.lyDoMien || '';
-        el('oMethod').value = (o.xl === 'Miễn hoàn trả') ? '' : (htMethod(o.refundMethod) || '');
+        el('oMethod').value = (xlFull(o.xl) === 'Miễn hoàn trả') ? '' : (htMethod(o.refundMethod) || '');
         el('oPostponeReason').value = o.ykhdDieuKienHoan || '';
         ykhdOnDieuKienHoanInput();
         if (el('oPostponeStart')) el('oPostponeStart').value = o.postponeStart || '';

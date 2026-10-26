@@ -898,7 +898,7 @@
 <body>
     <!-- GIẢ LẬP QUYỀN (Cán bộ xử lý / Lãnh đạo): góc phải phía trên, tách khỏi giao diện màn hình -->
     <div style="display:flex; justify-content:flex-end; margin-bottom:8px;">
-        <div class="role-switch-container" style="background:#FFFBEB; border:1px dashed #F59E0B; padding:5px 12px;">
+        <div class="role-switch-container" data-btnn-gl="> span:first-child" style="background:#FFFBEB; border:1px dashed #F59E0B; padding:5px 12px;">
             <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Quyền giả lập</span>
             <select class="role-selector" id="roleSelector" onchange="kpOnRoleChange()">
                 <option value="chuyen-vien">Cán bộ xử lý</option>
@@ -1909,15 +1909,16 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="quan_ly_kinh_phi_boi_thuong.js?v=20261026tlkt"></script>
     <script src="btnn_luong_xu_ly.js?v=20261023kpcd"></script>
-    <script src="btnn_badge_cho_xu_ly.js?v=20261023bdg"></script>
+    <script src="btnn_badge_cho_xu_ly.js?v=20261026htrole"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt5"></script>
+    <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
     <script src="quan_ly_kinh_phi_kptb.js?v=20261023kpcd"></script>
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
     <script src="quan_ly_kinh_phi_qdtu.js?v=20261023kpcd"></script>
     <script src="quan_ly_kinh_phi_kpcd.js?v=20261023kpcd"></script>
     <script src="quan_ly_kinh_phi_kpdt.js?v=20261026tlkt"></script>
     <script src="quan_ly_kinh_phi_kpdc.js?v=20261026kpdc"></script>
-    <script src="quan_ly_kinh_phi_kpux.js?v=20261026kpux3"></script>
+    <script src="quan_ly_kinh_phi_kpux.js?v=20261026kpux6"></script>
 
     <!-- Custom Confirmation Modal HTML -->
     <div id="customConfirmOverlay" class="confirm-modal-overlay">
@@ -2073,6 +2074,7 @@
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
+    <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
 </body>
 
 </html>
