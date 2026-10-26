@@ -9,7 +9,7 @@
 | :-- | :--- | :--- | :--- |
 | 1 | DM_09 | Quốc tịch / Quốc gia | Quốc gia |
 | 2 | DM_10 | Loại giấy tờ pháp lý | Loại giấy tờ thân nhân |
-| 3 | - | Danh mục địa bàn | Tỉnh/Thành phố, Phường/Xã |
+| 3 | - | Danh mục địa bàn | Tỉnh/Thành phố cơ quan giải quyết, Tỉnh/Thành phố, Phường/Xã |
 | 4 | DM_22 | Lĩnh vực phát sinh thiệt hại | Lĩnh vực phát sinh thiệt hại |
 | 5 | DM_25 | Hình thức tiếp nhận hồ sơ bồi thường | Hình thức tiếp nhận |
 | 6 | DM_26 | Tư cách người yêu cầu bồi thường | Tư cách người yêu cầu |
