@@ -60,6 +60,8 @@
         const mgTip = !own ? viewTip : s === 'stp' ? 'Sở Tư pháp không có quyền' : dcLock ? 'Cán bộ đang xử lý Đình chỉ hoàn trả' : trinhCho ? 'Quyết định đang chờ Lãnh đạo ký duyệt'
             : (o.refund || 0) > 0 ? 'Cán bộ có số tiền cần trả lại' : !(thu && conLai(o) > 0) ? (payTip(o) || 'Không còn số tiền phải nộp') : '';
         const gTip = mgTip || (o.loi !== 'Vô ý' ? 'Giảm mức hoàn trả chỉ áp dụng khi Mức độ lỗi là Vô ý' : '');
+        // Giả lập phân quyền: Sở Tư pháp không hiển thị Trình QĐ miễn / giảm bổ sung (ẩn hẳn, ngoại lệ chỉ áp dụng Bước 4)
+        if (s === 'stp') return h;
         h += ' ' + B('fa-solid fa-shield-halved', 'Trình QĐ miễn bổ sung', 'ht3OpenSign(\'SMIEN\',' + idx + ')', !mgTip, mgTip, '#7c3aed');
         h += ' ' + B('fa-solid fa-arrow-down-wide-short', 'Trình QĐ giảm bổ sung', 'ht3OpenSign(\'SGIAM\',' + idx + ')', !gTip, gTip, '#2563eb');
         return h;

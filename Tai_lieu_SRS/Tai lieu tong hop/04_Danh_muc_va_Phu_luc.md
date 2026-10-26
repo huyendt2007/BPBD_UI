@@ -527,7 +527,7 @@ Dưới đây là danh sách các thông báo (MessageList - MSG) chuẩn hóa h
 | **[MSG-SUC-BTNN-HT-003]** | Thành công | `"Phê duyệt và ban hành Quyết định thành lập Hội đồng thành công."` | Toast | Không |
 | **[MSG-SUC-BTNN-HT-004]** | Thành công | `"Đã ghi nhận từ chối phê duyệt Quyết định thành lập Hội đồng kèm lý do."` | Toast | Không |
 | **[MSG-SUC-BTNN-HT-005]** | Thành công | `"Ghi nhận Quyết định thành lập Hội đồng ký ngoài hệ thống thành công."` | Toast | Không |
-| **[MSG-SUC-BTNN-HT-006]** | Thành công | `"Lưu kết luận của Hội đồng và trình duyệt kiến nghị hoàn trả thành công."` | Toast | Không |
+| **[MSG-SUC-BTNN-HT-006]** | Thành công | `"Lưu ý kiến hội đồng thành công. Danh sách cán bộ đã được phân tách về [Số đơn vị] đơn vị quản lý cán bộ."` | Toast | Không |
 | **[MSG-SUC-BTNN-HT-007]** | Thành công | `"Đã ghi nhận kết luận không xem xét trách nhiệm hoàn trả. Hồ sơ kết thúc tiến trình."` | Toast | Không |
 | **[MSG-SUC-BTNN-HT-008]** | Thành công | `"Lưu thông tin cán bộ chịu trách nhiệm hoàn trả thành công."` | Toast | Không |
 | **[MSG-SUC-BTNN-HT-009]** | Thành công | `"Xóa cán bộ chịu trách nhiệm hoàn trả thành công."` | Toast | Không |

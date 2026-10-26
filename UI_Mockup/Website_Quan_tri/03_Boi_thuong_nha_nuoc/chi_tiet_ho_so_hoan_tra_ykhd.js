@@ -584,9 +584,11 @@
                 if (!activeDossier.timeline) activeDossier.timeline = [];
                 activeDossier.timeline.unshift({ time: nowShort(), text: 'Lưu ý kiến của Hội đồng; phân tách danh sách cán bộ về ' + units.length + ' đơn vị quản lý cán bộ.' });
                 switchSimulatorState(3);
-                currentViewStep = 2;
+                currentViewStep = 2; // hiển thị xong chuyển sang Bước 3 (switchWorkflowStep bên dưới)
                 isViewMode = true; currentMode = 'view';
                 renderStateLayout();
+                // Sau khi lưu: tự chuyển sang Bước 3, các phần đơn vị ở trạng thái Chờ ban hành QĐ hoàn trả
+                if (typeof switchWorkflowStep === "function") switchWorkflowStep(3);
                 if (typeof tlhdPersistCreated === 'function') tlhdPersistCreated();
                 showToast('Lưu ý kiến hội đồng thành công. Danh sách cán bộ đã được phân tách về ' + units.length + ' đơn vị quản lý cán bộ.', 'success');
             });
