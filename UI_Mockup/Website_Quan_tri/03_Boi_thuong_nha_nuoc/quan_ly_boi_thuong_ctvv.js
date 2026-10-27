@@ -309,7 +309,7 @@ window.tlRenderDocs = function (k) {
 // 2. Tab "Chi tiết giải quyết bồi thường": khối các bước đã qua (thu gọn) + bước hiện tại (mở)
 // =====================================================================
 var CTVV_STEPS = ['thuly', 'bosung', 'xacminh', 'thuongluong', 'quyetdinh', 'thucthi'];
-var CTVV_STEP_OF = { 'Cử người giải quyết bồi thường': 0, 'Yêu cầu bổ sung': 1, 'Xác minh thiệt hại': 2, 'Thương lượng': 3, 'Chờ ban hành QĐ': 4, 'Chờ thực thi': 5, 'Hoàn thành': 5 };
+var CTVV_STEP_OF = { 'Cử người giải quyết bồi thường': 0, 'Yêu cầu bổ sung': 1, 'Xác minh thiệt hại': 2, 'Thương lượng': 3, 'Chờ ban hành QĐ': 4, 'Chờ chi trả': 5, 'Hoàn thành': 5 };
 // Bước hiện tại của tiến trình giải quyết bồi thường; trạng thái tạm dừng / chờ duyệt: bước trước khi tạm dừng / trình
 function ctvvCurrentStep(claim) {
     var st = canonicalClaimStatus(claim.status);

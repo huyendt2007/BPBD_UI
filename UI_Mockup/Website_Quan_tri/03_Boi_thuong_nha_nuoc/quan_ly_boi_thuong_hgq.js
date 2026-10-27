@@ -28,8 +28,12 @@ var HGQ_CFG = {
 };
 var HGQ_NOI_NHAN_DEFAULT = '- Như Điều 4;\n- ......\n- Lưu: VT, HSVV.';
 var HGQ_OFF_MSG = 'Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu.';
-// Trạng thái được Hoãn / Tạm đình chỉ (theo cột Thao tác khác)
-var HGQ_SOURCE = ['Yêu cầu bổ sung', 'Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ'];
+// Trạng thái Giải quyết YCBT được Hoãn giải quyết / Tạm đình chỉ (theo cột Thao tác khác; ngoài các trạng thái này chặn mở popup)
+// - Hoãn giải quyết: Xác minh thiệt hại, Thương lượng
+// - Tạm đình chỉ: Xác minh thiệt hại, Thương lượng, Chờ ban hành QĐ
+var HGQ_SOURCE_OF = { hgq: ['Xác minh thiệt hại', 'Thương lượng'], hgqt: ['Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ'] };
+// Bước tiến trình lưu làm trạng thái trước (Tiếp tục giải quyết khôi phục)
+var HGQ_SOURCE = ['Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ'];
 var hgqS = { hgq: { claim: null, docSrc: 'gen', online: null, offline: null }, hgqt: { claim: null, docSrc: 'upload', online: null, offline: null } };
 
 function hgqEl(id) { return document.getElementById(id); }
@@ -176,7 +180,7 @@ function hgqOpen(p, claimId) {
     var rec = gqRecord(claim);
     var prev = rec && rec.status === 'Bị từ chối' && rec.approval && rec.approval.kind === cfg.kind ? rec.approval : null;
     var st = typeof gqldCaseStatus === 'function' ? gqldCaseStatus(claim) : claim.status;
-    if (!prev && HGQ_SOURCE.indexOf(st) < 0) { showToast('Trạng thái hồ sơ hiện tại không cho phép ' + (p === 'hgq' ? 'Hoãn giải quyết' : 'Tạm đình chỉ') + '.', 'error'); return; }
+    if (!prev && HGQ_SOURCE_OF[p].indexOf(st) < 0) { showToast('Trạng thái hồ sơ hiện tại không cho phép ' + (p === 'hgq' ? 'Hoãn giải quyết' : 'Tạm đình chỉ') + '.', 'error'); return; }
     hgqEnsureModal(p);
     gqFrameFull(true);
     var S = hgqS[p];

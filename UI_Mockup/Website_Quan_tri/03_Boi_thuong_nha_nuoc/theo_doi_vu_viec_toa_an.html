@@ -462,25 +462,8 @@
 
                 <div class="info-group-title">Thông tin vụ việc tại Tòa án</div>
                 <div class="court-block">
+                    <!-- Vụ việc tại Tòa án chỉ yêu cầu bồi thường thiệt hại bằng tiền: không có Loại yêu cầu / Phục hồi danh dự -->
                     <div class="grid-2" style="gap:24px;">
-                        <div class="form-group" style="margin-bottom:0;">
-                            <span class="form-label" style="font-weight:700; color:#1e3a8a; margin-bottom:8px;">Loại yêu cầu giải quyết bồi thường <span class="required">*</span></span>
-                            <div style="display:flex; flex-direction:column; gap:12px;">
-                                <label class="radio-line">
-                                    <input type="radio" name="caseRequestKind" value="both" checked onchange="handleKindChange(this.value)">
-                                    Yêu cầu cả hai (Bồi thường tiền &amp; Phục hồi danh dự)
-                                </label>
-                                <label class="radio-line">
-                                    <input type="radio" name="caseRequestKind" value="money" onchange="handleKindChange(this.value)">
-                                    Chỉ yêu cầu bồi thường thiệt hại bằng tiền
-                                </label>
-                                <label class="radio-line">
-                                    <input type="radio" name="caseRequestKind" value="honor" onchange="handleKindChange(this.value)">
-                                    Chỉ yêu cầu phục hồi danh dự
-                                </label>
-                            </div>
-                            <div id="kindSplitHint" style="font-size:12px; color:#1d4ed8; margin-top:10px;"><i class="fa-solid fa-circle-info"></i> Yêu cầu cả hai được lưu thành 01 vụ việc (01 Mã vụ việc) gồm cả Danh sách thiệt hại và Hình thức phục hồi danh dự.</div>
-                        </div>
                         <div>
                             <div class="form-group">
                                 <span class="form-label">Trạng thái<span class="required">*</span></span>
@@ -858,22 +841,6 @@
                     <div class="table-container" id="damageTreeWrap" style="margin-bottom:20px;"></div>
                 </div>
 
-                <!-- YÊU CẦU PHỤC HỒI DANH DỰ -->
-                <div id="claimHonorSection" style="background-color:#ECFEFF; border:2px solid #06B6D4; padding:20px; border-radius:var(--border-radius-md); margin-bottom:20px;">
-                    <div style="font-weight:700; color:#0891B2; font-size:14px; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
-                        <i class="fa-solid fa-ribbon" style="font-size:16px;"></i> YÊU CẦU PHỤC HỒI DANH DỰ
-                    </div>
-                    <div style="margin-bottom:6px; font-weight:700; color:#0e7490; font-size:12.5px;">Hình thức đề nghị phục hồi danh dự mong muốn (Điều 56):</div>
-                    <div style="display:flex; flex-direction:column; gap:8px; margin-left:10px;">
-                        <label style="cursor:pointer; font-size:13.5px; display:flex; align-items:center; gap:8px; color:#334155;">
-                            <input type="checkbox" id="claimPhddFormApology" checked> Trực tiếp xin lỗi và cải chính công khai tại nơi cư trú / trụ sở (Điều 58)
-                        </label>
-                        <label style="cursor:pointer; font-size:13.5px; display:flex; align-items:center; gap:8px; color:#334155;">
-                            <input type="checkbox" id="claimPhddFormNews"> Đăng báo xin lỗi và cải chính công khai (Điều 59)
-                        </label>
-                    </div>
-                </div>
-
                 <div class="info-group-title">Tài liệu kèm theo<span class="required" style="color:var(--danger-color);">*</span></div>
                 <div class="table-container" style="margin-bottom:10px;">
                     <table class="custom-table" style="min-width:760px;">
@@ -935,7 +902,7 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261027xdc"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261027s35"></script>
     <!-- [th2c] Danh mục / bảng thiệt hại 2 cấp dùng chung (window.BTNN_TH) -->
     <script src="btnn_thiet_hai.js?v=20261027th3"></script>
     <style>#damageTreeWrap.dmg-ro tr.bth-kadd, #damageTreeWrap.dmg-ro .bth-kdel { display: none !important; }</style>
@@ -943,7 +910,7 @@
         // ===== Cấu hình =====
         const STORE_KEY = "btnn_court_cases_v1";
         const SEED_KEY = "btnn_court_cases_seed";
-        const SEED_VERSION = "v4th2c";
+        const SEED_VERSION = "v5money";
         const FUNDING_KEY = "proposalsList";
         const REQUEST_TYPE_YCBT = BTNN_WF.REQUEST_TYPE_YCBT || "Giải quyết yêu cầu bồi thường";
         const NBTH_ROLE = "Người bị thiệt hại";
@@ -1083,16 +1050,19 @@
             cases.forEach(r => {
                 if (!r || r.deleted || r.requestKind !== "money" || !r.linkedCode) return;
                 const partner = cases.find(c => c && c.code === r.linkedCode && c.requestKind === "honor");
-                r.requestKind = "both";
-                r.originalKind = "both";
+                r.requestKind = "money";
+                r.originalKind = "money";
                 if (partner) {
-                    r.honorForms = partner.honorForms || r.honorForms || { apology: true, news: false };
                     partner.deleted = true;
                     partner.mergedInto = r.code;
                     addHistory(r, "Gộp vụ việc", `Gộp vụ việc ${partner.code} (Phục hồi danh dự) vào vụ việc ${r.code}: 01 vụ việc gồm Bồi thường thiệt hại và Phục hồi danh dự.`);
                 }
                 r.linkedCode = null;
                 changed = true;
+            });
+            // Vụ việc tại Tòa án chỉ yêu cầu bồi thường bằng tiền: dữ liệu cũ Loại yêu cầu khác quy về bằng tiền, bỏ Hình thức phục hồi danh dự
+            cases.forEach(r => {
+                if (r && (r.requestKind !== "money" || r.honorForms)) { r.requestKind = "money"; r.originalKind = "money"; r.honorForms = null; changed = true; }
             });
             if (changed) saveCases();
         }
@@ -1402,18 +1372,10 @@
             BTNN_TH.refresh(DAMAGE_TID, true); // nhóm có mục được chọn mở, còn lại thu gọn
         }
 
-        function getKindRadio() {
-            const r = document.querySelector('input[name="caseRequestKind"]:checked');
-            return r ? r.value : "both";
-        }
-        function setKindRadio(v) {
-            document.querySelectorAll('input[name="caseRequestKind"]').forEach(r => { r.checked = r.value === v; });
-        }
-        function handleKindChange(v) {
-            document.getElementById("claimMoneySection").style.display = v === "honor" ? "none" : "block";
-            document.getElementById("claimHonorSection").style.display = v === "money" ? "none" : "block";
-            document.getElementById("kindSplitHint").style.display = v === "both" && !editingId ? "block" : "none";
-        }
+        // Vụ việc tại Tòa án chỉ yêu cầu bồi thường thiệt hại bằng tiền (không có Loại yêu cầu / Phục hồi danh dự)
+        function getKindRadio() { return "money"; }
+        function setKindRadio() { /* không còn lựa chọn Loại yêu cầu */ }
+        function handleKindChange() { document.getElementById("claimMoneySection").style.display = "block"; }
         function handleStatusChange() {
             const isVerdict = getValue("caseStatus") === STATUS_BAN_AN;
             document.querySelectorAll(".verdict-field").forEach(el => { el.style.display = isVerdict ? "" : "none"; });
@@ -1451,6 +1413,7 @@
         function handleVictimAliveChange(val) {
             const apology = document.getElementById("claimPhddFormApology");
             const news = document.getElementById("claimPhddFormNews");
+            if (!apology || !news) return;
             if (val === "no") {
                 apology.checked = false; apology.disabled = true;
                 news.checked = true; news.disabled = true;
@@ -1572,9 +1535,6 @@
             setValue("claimHanhVi", rec ? rec.hanhVi || "" : "");
             setValue("claimNhanQua", rec ? rec.nhanQua || "" : "");
             fillDamages(rec ? rec.damages : []);
-            const hf = rec && rec.honorForms ? rec.honorForms : { apology: true, news: false };
-            document.getElementById("claimPhddFormApology").checked = !!hf.apology;
-            document.getElementById("claimPhddFormNews").checked = !!hf.news;
 
             basisRows = rec ? (rec.vanBanCanCu || []).map(d => ({ name: d.name || "", file: d.file || "" })) : [];
             if (!readOnly && !basisRows.length) basisRows = [{ name: "", file: "" }];
@@ -1730,15 +1690,15 @@
             // [tdta] Vụ việc liên kết (Mã vụ việc, Mã hồ sơ, Cơ quan giải quyết, Trạng thái vụ việc)
             if (typeof tdtaLinkData === "function") Object.assign(common, tdtaLinkData());
             const damages = readDamages();
-            const honorForms = { apology: document.getElementById("claimPhddFormApology").checked, news: document.getElementById("claimPhddFormNews").checked };
+            const honorForms = null; // Tòa án: không có Phục hồi danh dự
             const created = [];
 
             if (rec) {
                 const prevStatus = rec.status;
                 Object.assign(rec, common);
                 if (typeof tdtaApplyCode === "function") tdtaApplyCode(rec);
-                if (rec.requestKind !== "honor") rec.damages = damages;
-                if (rec.requestKind !== "money") rec.honorForms = honorForms;
+                rec.damages = damages; rec.requestKind = "money";
+                rec.honorForms = null;
                 addHistory(rec, "Cập nhật vụ việc", prevStatus !== status ? `Chuyển trạng thái: ${prevStatus} → ${status}.` : "Cập nhật thông tin vụ việc.");
                 created.push(rec);
             } else {
@@ -1758,11 +1718,11 @@
                     createdBy: CURRENT_USER.id,
                     createdByName: CURRENT_USER.name,
                     damages: kind !== "honor" ? damages : [],
-                    honorForms: kind !== "money" ? honorForms : null,
+                    honorForms: null,
                     linkedCode: null,
                     history: []
                 }, JSON.parse(JSON.stringify(common)));
-                addHistory(r, "Thêm mới vụ việc", `Loại yêu cầu: ${KIND_LABEL[kind]}. Trạng thái: ${status}.`);
+                addHistory(r, "Thêm mới vụ việc", `Trạng thái: ${status}.`);
                 cases.unshift(r);
                 created.push(r);
             }
@@ -1808,9 +1768,10 @@
         }
 
         function openFunding(code) {
-            const url = `quan_ly_kinh_phi_boi_thuong.html?viewCode=${encodeURIComponent(code)}`;
+            // Bản ghi kinh phí tạo từ vụ việc Tòa án thuộc menu con Chi trả tiền bồi thường (menu Kinh phí)
+            const url = `quan_ly_kinh_phi_boi_thuong.html?menu=chi-tra&viewCode=${encodeURIComponent(code)}`;
             if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === "function") {
-                window.parent.openAdminModule(url, "quan_ly_kinh_phi_boi_thuong.html?v=1");
+                window.parent.openAdminModule(url, "quan_ly_kinh_phi_boi_thuong.html?v=1&menu=chi-tra");
                 return;
             }
             window.location.href = url;
@@ -2013,13 +1974,13 @@
                     history: [h("Thêm mới vụ việc", "09:10 16/09/2026", "Kiều Văn Nam", "Trạng thái: Đã thụ lý.")]
                 }),
                 base("BT-2026-302", {
-                    requestKind: "both", originalKind: "both", linkedCode: null, rootUnitId: "STP-HN", status: STATUS_DANG_GQ, honorForms: { apology: true, news: false },
+                    requestKind: "money", originalKind: "money", linkedCode: null, rootUnitId: "STP-HN", status: STATUS_DANG_GQ,
                     verdictSource: VERDICT_SOURCES[1], lawsuitCase: LAWSUIT_CASES[0], acceptDate: "02/09/2026", fieldGroup: "hành chính",
                     nyc: nycHoa, hanhVi: "Ra quyết định xử phạt vi phạm hành chính sai thẩm quyền, tạm giữ phương tiện kinh doanh.",
                     damages: [dmg("TH_TS_04", 45000000, "Giá thuê phương tiện cùng loại trên thị trường x 05 tháng tạm giữ"), dmg("TH_TN_01", 40000000, "Lương bình quân 8.000.000 đồng/tháng x 05 tháng"), dmg("TH_TT_02", 30000000, "Thiệt hại tinh thần theo quy định"), dmg("TH_CPK_01", 6500000, "Chi phí đi lại, in ấn tài liệu khi tham gia tố tụng")],
                     docs: [doc("Thông báo thụ lý vụ án", "Thong_bao_thu_ly_BT-2026-302.pdf")],
                     createdAt: "14:00 03/09/2026", createdBy: "cv_hn1", createdByName: "Đỗ Văn Chung",
-                    history: [h("Thêm mới vụ việc", "14:00 03/09/2026", "Đỗ Văn Chung", "Loại yêu cầu: Bồi thường thiệt hại và Phục hồi danh dự. Trạng thái: Đã thụ lý."), h("Cập nhật vụ việc", "10:30 25/09/2026", "Ngô Thị Lan", "Chuyển trạng thái: Đã thụ lý → Đang giải quyết.")]
+                    history: [h("Thêm mới vụ việc", "14:00 03/09/2026", "Đỗ Văn Chung", "Trạng thái: Đã thụ lý."), h("Cập nhật vụ việc", "10:30 25/09/2026", "Ngô Thị Lan", "Chuyển trạng thái: Đã thụ lý → Đang giải quyết.")]
                 }),
                 base("BT-2026-304", {
                     requestKind: "money", rootUnitId: "THADS-LD", status: STATUS_BAN_AN, fieldGroup: "thi hành án dân sự",
@@ -2033,11 +1994,12 @@
                     history: [h("Thêm mới vụ việc", "08:45 12/06/2026", "Trịnh Thu Trang", "Trạng thái: Đã thụ lý."), h("Cập nhật vụ việc", "16:20 30/09/2026", "Trịnh Thu Trang", "Chuyển trạng thái: Đang giải quyết → Đã có bản án/QĐ.")]
                 }),
                 base("BT-2026-305", {
-                    requestKind: "honor", rootUnitId: "UBND-HK", status: STATUS_BAN_AN,
+                    requestKind: "money", rootUnitId: "UBND-HK", status: STATUS_BAN_AN,
                     verdictSource: VERDICT_SOURCES[2], lawsuitCase: LAWSUIT_CASES[2], acceptDate: "20/05/2026", fieldGroup: "tố tụng hành chính",
                     verdictNo: "08/2026/HC-ST", effectiveDate: "15/08/2026",
                     nyc: person("Lê Thị Thu", "Nữ", "09/09/1988", "001188007788", "0915300305", "Hà Nội", "Số 3 Lý Thái Tổ, Hoàn Kiếm"),
-                    hanhVi: "Công bố thông tin sai sự thật về hành vi vi phạm của người yêu cầu.", honorForms: { apology: true, news: true },
+                    hanhVi: "Công bố thông tin sai sự thật về hành vi vi phạm của người yêu cầu.",
+                    damages: [dmg("TH_CPK_01", 15000000, "Chi phí đi lại, in ấn tài liệu trong quá trình tham gia tố tụng hành chính")],
                     docs: [doc("Bản án hành chính sơ thẩm", "Ban_an_08_2026_HC_ST.pdf")],
                     createdAt: "10:00 22/05/2026", createdBy: "cv_hk1", createdByName: "Tạ Quang Vinh",
                     history: [h("Thêm mới vụ việc", "10:00 22/05/2026", "Tạ Quang Vinh", "Trạng thái: Đã thụ lý."), h("Cập nhật vụ việc", "09:00 18/08/2026", "Tạ Quang Vinh", "Chuyển trạng thái: Đang giải quyết → Đã có bản án/QĐ.")]
@@ -2083,7 +2045,7 @@
     <!-- Bảng tài liệu chuẩn BTNN: STT | Tên tài liệu, văn bản | File đính kèm | Thao tác; nút Tải file / Thêm tài liệu cùng style -->
     <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
     <!-- [tdta] Vụ việc liên kết (Tìm kiếm / Tìm kiếm nâng cao), khối Người yêu cầu Cá nhân/Tổ chức, lưới + bộ lọc theo cột -->
-    <script src="btnn_tim_kiem_vu_viec.js?v=20261026tdta"></script>
+    <script src="btnn_tim_kiem_vu_viec.js?v=20261027ccct"></script>
     <script src="theo_doi_vu_viec_toa_an_tdta.js?v=20261026tdta"></script>
 </body>
 

@@ -349,7 +349,7 @@
                     { title: "Xác minh thiệt hại", date: "15/02/2023", desc: "Đã ban hành báo cáo xác minh thiệt hại", status: "completed" },
                     { title: "Thương lượng bồi thường", date: "28/02/2023", desc: "Thương lượng thành công", status: "completed" },
                     { title: "Quyết định giải quyết bồi thường", date: "10/03/2023", desc: "Ban hành quyết định bồi thường số 45/QĐ-BT", status: "completed" },
-                    { title: "Thực thi giải quyết bồi thường", date: "10/05/2023", desc: "Đã hoàn thành thực thi chi trả 4,8 tỷ đồng", status: "completed" }
+                    { title: "Chi trả tiền bồi thường", date: "10/05/2023", desc: "Đã hoàn thành chi trả 4,8 tỷ đồng", status: "completed" }
                 ],
                 thucthiDate: "10/05/2023",
                 thucthiNote: "Đã chuyển khoản đủ số tiền 4.800.000.000đ sang tài khoản Công ty Hải Phát.",
@@ -422,7 +422,7 @@
                 docBase: "Bản án hành chính số 02/2026/HC-ST",
                 hanhVi: "Không cấp giấy phép xây dựng trái luật.",
                 nhanQua: "Nguyên vật liệu hư hỏng do chậm khởi công.",
-                status: "Chờ thực thi",
+                status: "Chờ chi trả",
                 thulyVenue: "tòa án tố tụng",
                 totalNum: 250000000,
                 advanceNum: 0,
@@ -760,7 +760,7 @@
                     { title: "Xác minh thiệt hại", date: "20/06/2026", desc: "Hoàn thành báo cáo xác minh thiệt hại", status: "completed" },
                     { title: "Thương lượng bồi thường", date: "30/06/2026", desc: "Thương lượng thành công", status: "completed" },
                     { title: "Quyết định giải quyết bồi thường", date: "05/07/2026", desc: "Ban hành quyết định số 56/QD-BT", status: "completed" },
-                    { title: "Thực thi giải quyết bồi thường", date: "20/07/2026", desc: "Đã chi trả xong 850 triệu đồng cho ông Lê Văn H", status: "completed" }
+                    { title: "Chi trả tiền bồi thường", date: "20/07/2026", desc: "Đã chi trả xong 850 triệu đồng cho ông Lê Văn H", status: "completed" }
                 ],
                 thucthiDate: "20/07/2026",
                 thucthiNote: "Đã chi trả đủ qua chuyển khoản, khấu trừ 100 triệu đồng đã tạm ứng trước đó.",
@@ -1249,7 +1249,7 @@
             }
 
             // Populate verification details if state is post-verification
-            const isPostVerification = ['Đang thương lượng', 'Thương lượng không thành công', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Hoàn thành'].includes(claim.status);
+            const isPostVerification = ['Đang thương lượng', 'Thương lượng không thành công', 'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoàn thành'].includes(claim.status);
             if (isPostVerification) {
                 if (claim.thietHaiList) {
                     claim.thietHaiList.forEach(item => {
@@ -1541,11 +1541,11 @@
                 else if (item.status === 'Bị từ chối' || item.status === 'Từ chối tiếp nhận' || item.status === 'Từ chối thụ lý') badgeClass = 'badge-danger';
                 else if (item.status === 'Thương lượng không thành công') badgeClass = 'badge-danger';
                 else if (item.status === 'Chờ ban hành QĐ') badgeClass = 'badge-warning';
-                else if (item.status === 'Chờ thực thi') badgeClass = 'badge-warning';
+                else if (item.status === 'Chờ chi trả') badgeClass = 'badge-warning';
 
                 // Fixed slots
                 const isPending = item.status === 'Chờ tiếp nhận';
-                const hasUpdateRights = ['Yêu cầu bổ sung', 'Đang xác minh thiệt hại', 'Đang thương lượng', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Từ chối thụ lý', 'Bị từ chối'].includes(item.status);
+                const hasUpdateRights = ['Yêu cầu bổ sung', 'Đang xác minh thiệt hại', 'Đang thương lượng', 'Chờ ban hành QĐ', 'Chờ chi trả', 'Từ chối thụ lý', 'Bị từ chối'].includes(item.status);
 
                 const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : 'Nguyễn Văn Chuyên Viên';
                 const isAssignedToOther = (currentRole === 'chuyen-vien') && item.assignedOfficer && (item.assignedOfficer !== currentOfficer);
@@ -4079,7 +4079,7 @@
                 let badgeClass = 'badge-info';
                 if (claim.status === 'Hoàn thành') badgeClass = 'badge-success';
                 else if (claim.status === 'Chờ tiếp nhận' || claim.status === 'Chờ thụ lý') badgeClass = 'badge-pending';
-                else if (claim.status === 'Yêu cầu bổ sung' || claim.status === 'Chờ ban hành QĐ' || claim.status === 'Chờ thực thi') badgeClass = 'badge-warning';
+                else if (claim.status === 'Yêu cầu bổ sung' || claim.status === 'Chờ ban hành QĐ' || claim.status === 'Chờ chi trả') badgeClass = 'badge-warning';
                 else if (claim.status === 'Bị từ chối' || claim.status === 'Từ chối tiếp nhận' || claim.status === 'Từ chối thụ lý' || claim.status === 'Thương lượng không thành công') badgeClass = 'badge-danger';
                 
                 badgeEl.className = 'badge ' + badgeClass;
@@ -4098,7 +4098,7 @@
                     claim.status === 'Yêu cầu bổ sung' ? 'bosung' :
                     claim.status === 'Đang xác minh thiệt hại' ? 'xacminh' :
                     claim.status === 'Đang thương lượng' ? 'thuongluong' :
-                    claim.status === 'Chờ thực thi' ? 'thucthi' : 'chung'
+                    claim.status === 'Chờ chi trả' ? 'thucthi' : 'chung'
                 );
 
                 if (effectiveAction === 'bosung') {
@@ -4138,7 +4138,7 @@
                 if (claim.status === 'Đang xác minh thiệt hại') defaultAcc = 'xacminh';
                 else if (claim.status === 'Đang thương lượng' || claim.status === 'Thương lượng không thành công') defaultAcc = 'thuongluong';
                 else if (claim.status === 'Chờ ban hành QĐ') defaultAcc = 'quyetdinh';
-                else if (claim.status === 'Chờ thực thi' || claim.status === 'Hoàn thành') defaultAcc = 'thucthi';
+                else if (claim.status === 'Chờ chi trả' || claim.status === 'Hoàn thành') defaultAcc = 'thucthi';
                 forceOpenAccordion(defaultAcc);
             }
         }
@@ -4159,7 +4159,7 @@
 
             let isEditing = false;
             if (isDetailEditMode) {
-                const draftStatuses = ['Yêu cầu bổ sung', 'Đang xác minh thiệt hại', 'Đang thương lượng', 'Chờ thực thi'];
+                const draftStatuses = ['Yêu cầu bổ sung', 'Đang xác minh thiệt hại', 'Đang thương lượng', 'Chờ chi trả'];
                 if (draftStatuses.includes(claim.status)) {
                     isEditing = true;
                 }
@@ -4311,16 +4311,16 @@
                     showCloseButton = false;
                     break;
 
-                case 'Chờ thực thi':
+                case 'Chờ chi trả':
                     if (isDetailEditMode) {
                         buttonsHtml = `
-                            <button class="btn btn-success" onclick="submitThucThiUpdate()"><i class="fa-solid fa-circle-check"></i> Hoàn thành thực thi</button>
+                            <button class="btn btn-success" onclick="submitThucThiUpdate()"><i class="fa-solid fa-circle-check"></i> Hoàn thành chi trả</button>
                             ${cancelActionBtnHtml}
                         `;
                         showCloseButton = false;
                     } else {
                         buttonsHtml = `
-                            <button class="btn btn-primary" onclick="switchToEditMode('thucthi')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật kết quả thực thi</button>
+                            <button class="btn btn-primary" onclick="switchToEditMode('thucthi')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật kết quả chi trả</button>
                         `;
                     }
                     break;
@@ -4421,7 +4421,7 @@
             else if (claim.status === 'Bị từ chối') badgeClass = 'badge-danger';
             else if (claim.status === 'Thương lượng không thành công') badgeClass = 'badge-danger';
             else if (claim.status === 'Chờ ban hành QĐ') badgeClass = 'badge-warning';
-            else if (claim.status === 'Chờ thực thi') badgeClass = 'badge-warning';
+            else if (claim.status === 'Chờ chi trả') badgeClass = 'badge-warning';
 
             // Payout channels & banking helper
             let advanceSectionHtml = '';
@@ -4635,7 +4635,7 @@
             const phddTabBtn = document.getElementById('detailSubTab2Btn');
             const kqxlTabBtn = document.getElementById('detailSubTab1Btn');
 
-            const showPhdd = claim.restoreHonor && ['Chờ ban hành QĐ', 'Chờ thực thi', 'Hoàn thành'].includes(claim.status);
+            const showPhdd = claim.restoreHonor && ['Chờ ban hành QĐ', 'Chờ chi trả', 'Hoàn thành'].includes(claim.status);
             if (showPhdd) {
                 if (subTabsContainer) subTabsContainer.style.display = 'flex';
                 if (phddTabBtn) phddTabBtn.style.display = 'inline-block';
@@ -4776,7 +4776,7 @@
                 });
                 xmTable.innerHTML = tableHtml;
             } else {
-                if (claim.xmTotalAmount !== undefined || ['Đang thương lượng', 'Thương lượng không thành công', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Hoàn thành'].includes(claim.status)) {
+                if (claim.xmTotalAmount !== undefined || ['Đang thương lượng', 'Thương lượng không thành công', 'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoàn thành'].includes(claim.status)) {
                     // Render comparison table
                     let comparisonRowsHtml = '';
                     let totalClaimed = 0;
@@ -4949,7 +4949,7 @@
                             </div>
                             ${tlHistoryHtml ? `<div style="margin-top:15px; border-top:1px solid #e2e8f0; padding-top:15px;"><strong>Lịch sử các phiên họp thương lượng trước đó:</strong>${tlHistoryHtml}</div>` : ''}
                         </div>`;
-                } else if (claim.tlResult || ['Chờ ban hành QĐ', 'Chờ thực thi', 'Hoàn thành'].includes(claim.status)) {
+                } else if (claim.tlResult || ['Chờ ban hành QĐ', 'Chờ chi trả', 'Hoàn thành'].includes(claim.status)) {
                     let tlFilesHtml = '';
                     if (claim.tlFiles && claim.tlFiles.length > 0) {
                         claim.tlFiles.forEach(file => {
@@ -5047,13 +5047,13 @@
                 `;
             }
 
-            // 6. Thực thi Quyết định
+            // 6. Chi trả tiền bồi thường theo Quyết định
             const ttRead = document.getElementById('thucthiReadBlock');
             const ttEdit = document.getElementById('thucthiEditBlock');
             ttRead.innerHTML = '';
             ttEdit.style.display = 'none';
 
-            if (claim.status === 'Chờ thực thi' && isDetailEditMode) {
+            if (claim.status === 'Chờ chi trả' && isDetailEditMode) {
                 ttEdit.style.display = 'block';
                 document.getElementById('thucthiDateInput').value = new Date().toLocaleDateString('vi-VN');
                 document.getElementById('thucthiNoteInput').value = '';
@@ -5066,7 +5066,7 @@
                             <p><strong>Ghi chú:</strong> ${claim.thucthiNote || "Đã nhận tiền đầy đủ qua chuyển khoản ngân hàng."}</p>
                         </div>`;
                 } else {
-                    ttRead.innerHTML = `<div style="font-size:12.5px; color:var(--text-muted); font-style:italic;">Chưa thực thi chi trả bồi thường</div>`;
+                    ttRead.innerHTML = `<div style="font-size:12.5px; color:var(--text-muted); font-style:italic;">Chưa chi trả tiền bồi thường</div>`;
                 }
             }
 
@@ -5153,7 +5153,7 @@
                 forceOpenAccordion('thuongluong');
             } else if (claim.status === 'Chờ ban hành QĐ') {
                 forceOpenAccordion('quyetdinh');
-            } else if (claim.status === 'Chờ thực thi') {
+            } else if (claim.status === 'Chờ chi trả') {
                 forceOpenAccordion('thucthi');
             } else if (claim.status === 'Hoàn thành') {
                 forceOpenAccordion('thucthi');
@@ -5285,7 +5285,7 @@
             const s4Badge = document.getElementById('phddStep4Badge');
             if (claim.phddStep4DateAct) {
                 s4Badge.className = "badge bg-success";
-                s4Badge.innerText = "Hoàn thành thực thi";
+                s4Badge.innerText = "Hoàn thành chi trả";
             } else {
                 s4Badge.className = "badge bg-secondary";
                 s4Badge.innerText = "Chờ cập nhật kết quả";
@@ -5434,7 +5434,7 @@
             let step3Type = claim.phddStep3Type || suggestedType;
 
             const editButtons = document.getElementById('editPhddButtons');
-            const canEdit = isDetailEditMode && (claim.status === 'Chờ thực thi' || claim.status === 'Đang thương lượng' || claim.status === 'Đang xác minh thiệt hại' || claim.status === 'Chờ thụ lý');
+            const canEdit = isDetailEditMode && (claim.status === 'Chờ chi trả' || claim.status === 'Đang thương lượng' || claim.status === 'Đang xác minh thiệt hại' || claim.status === 'Chờ thụ lý');
 
             if (isDeceased) {
                 step3Type = "Đăng báo xin lỗi";
@@ -5665,7 +5665,7 @@
                     const todayStr = new Date().toLocaleDateString('vi-VN');
                     
                     claim.decStatus = 'Hoàn thành';
-                    claim.status = 'Chờ thực thi';
+                    claim.status = 'Chờ chi trả';
                     
                     claim.decPublishDate = todayStr;
                     claim.decEffectiveDate = todayStr;
@@ -5674,14 +5674,14 @@
                     claim.timeline.push({
                         title: "Duyệt ký số quyết định",
                         date: todayStr,
-                        desc: `Lãnh đạo phê duyệt và ký số Quyết định bồi thường số ${claim.decNo || '104/QĐ-BT'}. Hồ sơ chuyển sang [Chờ thực thi]`,
+                        desc: `Lãnh đạo phê duyệt và ký số Quyết định bồi thường số ${claim.decNo || '104/QĐ-BT'}. Hồ sơ chuyển sang [Chờ chi trả]`,
                         status: "completed"
                     });
                     
                     saveClaimsToLocal();
                     renderClaimsTable();
                     showCaseDetail(id, false);
-                    showToast("Duyệt ký số Quyết định thành công! Hồ sơ đã chuyển sang Chờ thực thi.", "success");
+                    showToast("Duyệt ký số Quyết định thành công! Hồ sơ đã chuyển sang Chờ chi trả.", "success");
                 });
             }
         }
@@ -5789,16 +5789,16 @@
 
                 claim.status = 'Hoàn thành';
                 claim.thucthiDate = time;
-                claim.thucthiNote = note || "Đã hoàn thành thực thi chi trả bồi thường.";
+                claim.thucthiNote = note || "Đã hoàn thành chi trả tiền bồi thường.";
 
                 claim.timeline.push({
-                    title: "Thực thi giải quyết bồi thường",
+                    title: "Chi trả tiền bồi thường",
                     date: new Date().toLocaleDateString('vi-VN'),
                     desc: "Đã hoàn thành chi trả tiền bồi thường.",
                     status: "completed"
                 });
 
-                showToast("Đã hoàn thành thực thi hồ sơ bồi thường!", "success");
+                showToast("Đã hoàn thành chi trả tiền bồi thường!", "success");
                 showCaseDetail(selectedClaimId, false);
             }
         }

@@ -187,10 +187,10 @@ Cho phép quản lý và tra cứu cơ cấu tổ chức các cơ quan, đơn v�
 | 1 | `Huong_dan` | Hướng dẫn nhập liệu, mô tả từng cột, quy tắc từng chế độ nhận dữ liệu, danh sách lỗi và cấu trúc file chi tiết lỗi. |
 | 2 | `Du_lieu` | Sheet nhập dữ liệu. Hệ thống chỉ đọc sheet này. |
 | 3 | `Vi_du` | Dữ liệu ví dụ đúng định dạng; hệ thống không đọc sheet này. |
-| 4 | `Danh_muc` | Danh sách giá trị hợp lệ của `Loại cơ quan, đơn vị` và `Trạng thái`; dùng cho danh sách chọn tại sheet `Du_lieu`. |
+| 4 | `Danh_muc` | Danh sách giá trị hợp lệ của `Loại cơ quan, đơn vị`, `Trạng thái` và `Cấp đơn vị`; dùng cho danh sách chọn tại sheet `Du_lieu`. |
 
 - Cấu trúc sheet `Du_lieu`:
-  + Dòng 1: tiêu đề cột, gồm đúng 12 cột theo thứ tự tại bảng dưới; cột bắt buộc có ký hiệu `(*)`.
+  + Dòng 1: tiêu đề cột, gồm đúng 13 cột theo thứ tự tại bảng dưới; cột bắt buộc có ký hiệu `(*)`.
   + Dòng 2: dòng hướng dẫn nhập liệu cho từng cột; hệ thống bỏ qua dòng này.
   + Từ dòng 3: dữ liệu cơ quan, đơn vị, mỗi dòng là 01 cơ quan, đơn vị.
 
@@ -208,6 +208,7 @@ Cho phép quản lý và tra cứu cơ cấu tổ chức các cơ quan, đơn v�
 | 10 | J | Phường/Xã | Text(100) | Không | - Nếu có nhập: phải là tên Phường/Xã trong Danh mục địa bàn (cấp Phường/Xã), đang hoạt động và thuộc `Tỉnh/Thành phố` tại cột I. |
 | 11 | K | Địa chỉ chi tiết | Text(500) | Không | - Tối đa 500 ký tự. |
 | 12 | L | Trạng thái | Text(50) | Không | - Chỉ nhận `Đang hoạt động` hoặc `Ngừng hoạt động`; chọn từ danh sách thả xuống.<br>- Bỏ trống: Thêm mới thì ghi nhận `Đang hoạt động`; cập nhật thì giữ nguyên trạng thái hiện tại. |
+| 13 | M | Cấp đơn vị | Text(50) | Có với cơ quan, đơn vị gốc | - Chỉ nhận `Trung ương` hoặc `Địa phương`; chọn từ danh sách thả xuống.<br>- Cơ quan, đơn vị gốc (cột B bỏ trống): bắt buộc khi thêm mới; cập nhật mà bỏ trống thì giữ nguyên giá trị hiện tại.<br>- Đơn vị trực thuộc (cột B có nhập): hệ thống bỏ qua giá trị, lấy theo Cấp đơn vị của cơ quan, đơn vị gốc theo [Cấp đơn vị - Quản lý cơ cấu tổ chức - Quản trị hệ thống (Website Quản trị)](#cctc-cap-don-vi). |
 
 <a id="cctc-quy-tac-nhan-file"></a>
 ##### 4.3.1.7.7. Quy tắc kiểm tra tệp và dữ liệu nhận file
@@ -220,7 +221,7 @@ Cho phép quản lý và tra cứu cơ cấu tổ chức các cơ quan, đơn v�
 | :-- | :--- | :--- |
 | 1 | Tệp phải có định dạng `.xls` hoặc `.xlsx`. | "Định dạng tệp tin không hợp lệ. Chỉ chấp nhận tệp tin định dạng .xls, .xlsx." |
 | 2 | Dung lượng tệp tối đa 20MB. | "Dung lượng tệp tin vượt quá 20MB. Vui lòng kiểm tra lại." |
-| 3 | Tệp phải có sheet `Du_lieu`; dòng 1 của sheet `Du_lieu` phải có đúng 12 cột, đúng tên và thứ tự cột theo biểu mẫu. | "Tệp không đúng cấu trúc biểu mẫu. Vui lòng tải file mẫu và nhập lại." |
+| 3 | Tệp phải có sheet `Du_lieu`; dòng 1 của sheet `Du_lieu` phải có đúng 13 cột, đúng tên và thứ tự cột theo biểu mẫu. | "Tệp không đúng cấu trúc biểu mẫu. Vui lòng tải file mẫu và nhập lại." |
 | 4 | Sheet `Du_lieu` phải có ít nhất 01 dòng dữ liệu từ dòng 3. | "Tệp không có dữ liệu. Vui lòng nhập dữ liệu từ dòng 3 của sheet Du_lieu." |
 
 **2. Kiểm tra từng dòng dữ liệu** (từ dòng 3, theo thứ tự từ trên xuống):
@@ -265,6 +266,8 @@ Cho phép quản lý và tra cứu cơ cấu tổ chức các cơ quan, đơn v�
 | 21 | Phường/Xã | Có nhập nhưng không có trong Danh mục địa bàn (cấp Phường/Xã), đã ngừng hoạt động hoặc không thuộc Tỉnh/Thành phố đã nhập | Phường/Xã không tồn tại hoặc không thuộc Tỉnh/Thành phố đã nhập |
 | 22 | Địa chỉ chi tiết | Vượt quá 500 ký tự | Địa chỉ chi tiết vượt quá 500 ký tự |
 | 23 | Trạng thái | Có nhập nhưng khác `Đang hoạt động`, `Ngừng hoạt động` | Trạng thái không hợp lệ (chỉ nhận Đang hoạt động hoặc Ngừng hoạt động) |
+| 24 | Cấp đơn vị | Cơ quan, đơn vị gốc, thêm mới, bỏ trống | Cấp đơn vị không được để trống với cơ quan, đơn vị gốc |
+| 25 | Cấp đơn vị | Cơ quan, đơn vị gốc, có nhập nhưng khác `Trung ương`, `Địa phương` | Cấp đơn vị không hợp lệ (chỉ nhận Trung ương hoặc Địa phương) |
 
 <a id="cctc-file-loi"></a>
 **5. File chi tiết lỗi:**
@@ -273,7 +276,7 @@ Cho phép quản lý và tra cứu cơ cấu tổ chức các cơ quan, đơn v�
 - Gồm 01 sheet `Chi_tiet_loi`, chỉ chứa các dòng lỗi, giữ nguyên giá trị người dùng đã nhập.
 - Cấu trúc cột:
   + Cột A `Dòng Excel`: số thứ tự dòng của dòng lỗi trong sheet `Du_lieu`.
-  + Cột B đến cột M: 12 cột của sheet `Du_lieu`, đúng tên và thứ tự.
-  + Cột N `Chi tiết lỗi`: toàn bộ lỗi của dòng, mỗi lỗi cách nhau bằng dấu `;`.
+  + Cột B đến cột N: 13 cột của sheet `Du_lieu`, đúng tên và thứ tự.
+  + Cột O `Chi tiết lỗi`: toàn bộ lỗi của dòng, mỗi lỗi cách nhau bằng dấu `;`.
 - Ô của cột có lỗi được tô nền để đánh dấu.
-- Người dùng sửa dữ liệu theo `Chi tiết lỗi`, chép lại vào sheet `Du_lieu` của biểu mẫu (bỏ cột A và cột N) và nhận file lại.
+- Người dùng sửa dữ liệu theo `Chi tiết lỗi`, chép lại vào sheet `Du_lieu` của biểu mẫu (bỏ cột A và cột O) và nhận file lại.

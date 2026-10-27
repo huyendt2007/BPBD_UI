@@ -283,11 +283,13 @@
 
     <div id="toast" class="toast-notif"></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261027chot2"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261027s35"></script>
     <!-- Màn Ký duyệt / Từ chối dùng chung (Xác định CQGQBT): bố cục 2 vùng + khối Tài liệu kèm theo chỉ đọc -->
     <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
     <script src="btnn_lanh_dao_actions.js?v=20261023kdtc"></script>
+    <!-- Loại trình "Phiếu tiếp nhận" (Mẫu 02/BTNN) - Tiếp nhận hồ sơ: Ký duyệt / Từ chối -->
+    <script src="tiep_nhan_ptn.js?v=20261027ptn3"></script>
     <script>
         const WF = BTNN_WF;
         const WT = WF.WORK_TYPES;
@@ -329,7 +331,7 @@
             const me = WF.getCurrentUser();
             const types = WF.getRequestTypesForUser(me.id);
             document.getElementById('fType').innerHTML = `<option value="">Tất cả</option>` + types.map(t => `<option value="${esc(t)}">${esc(t)}</option>`).join('');
-            const kinds = Array.from(new Set([].concat(WF.APPROVAL_KINDS.XD, WF.APPROVAL_KINDS.YCBT, WF.APPROVAL_KINDS.KP || [])));
+            const kinds = Array.from(new Set([].concat(WF.APPROVAL_KINDS.XD, WF.APPROVAL_KINDS.YCBT, WF.APPROVAL_KINDS.KP || [], WF.APPROVAL_KINDS.TN || [])));
             document.getElementById('fKind').innerHTML = `<option value="">Tất cả</option>` + kinds.map(k => `<option value="${esc(k)}">${esc(k)}</option>`).join('');
             document.getElementById('fWork').innerHTML = `<option value="">Tất cả</option>` + WF.WORK_TYPE_ORDER.map(k => `<option value="${esc(k)}">${esc(k)}</option>`).join('');
             const tab = new URLSearchParams(location.search).get('tab');
@@ -391,7 +393,9 @@
                 let acts = `<button class="act" title="Xem chi tiết công việc" onclick="event.stopPropagation(); openWork(${i})"><i class="fa-solid fa-eye"></i> Xem</button>`;
                 const c = esc(t.code);
                 if (activeTab === 'pending') {
-                    if (t.type === WT.PHAN_CONG) acts += `<button class="act primary" onclick="event.stopPropagation(); openAssign('${c}')"><i class="fa-solid fa-diagram-project"></i> Phân công</button>`;
+                    // Loại trình Phiếu tiếp nhận (tiep_nhan_ptn.js): Ký duyệt / Từ chối
+                    if (t.source === 'ptn') acts += window.PTN ? PTN.ldActionsHtml(t) : '';
+                    else if (t.type === WT.PHAN_CONG) acts += `<button class="act primary" onclick="event.stopPropagation(); openAssign('${c}')"><i class="fa-solid fa-diagram-project"></i> Phân công</button>`;
                     else if (t.type === WT.PHE_DUYET || t.type === WT.KY_QD) acts += `<button class="act success" onclick="event.stopPropagation(); openDecision('${c}','approve')"><i class="fa-solid fa-file-signature"></i> ${WF.approveVerb(t.rec)}</button><button class="act danger" onclick="event.stopPropagation(); openDecision('${c}','reject')"><i class="fa-solid fa-ban"></i> Từ chối</button>`;
                     // Hồ sơ Giải quyết YCBT "Cử người giải quyết bồi thường": Thủ trưởng cử người giải quyết (không còn Không thụ lý ở bước này)
                     // Cử người giải quyết bồi thường: Cán bộ lập, trình; Lãnh đạo chỉ Ký duyệt / Từ chối phiếu trình (không có nút Cử người / Cập nhật)
@@ -399,7 +403,7 @@
                 } else if (t.source === 'wf' && isLatestDoneOf(t) && WF.getRecallInfo(t.rec, me)) {
                     acts += `<button class="act warn" onclick="event.stopPropagation(); confirmRecall('${c}')"><i class="fa-solid fa-rotate-left"></i> Thu hồi</button>`;
                 }
-                const statusHtml = t.source === 'kp' ? kpStatusBadge(t.status) : WF.statusBadge(t.rec.status) + (WF.approvalLabel(t.rec) ? `<div class="muted" style="margin-top:4px;">${esc(WF.approvalLabel(t.rec))}</div>` : '');
+                const statusHtml = t.source === 'ptn' && window.PTN ? PTN.statusBadge(t.ptn.status) : t.source === 'kp' ? kpStatusBadge(t.status) : WF.statusBadge(t.rec.status) + (WF.approvalLabel(t.rec) ? `<div class="muted" style="margin-top:4px;">${esc(WF.approvalLabel(t.rec))}</div>` : '');
                 const codeSub = t.source === 'kp' ? `<div class="muted">Vụ việc ${esc(t.caseCode)}</div>` : `<div class="muted">${esc(t.loaiYeuCau)}</div>`;
                 return `<tr onclick="openWork(${i})">
                     <td style="text-align:center;">${i + 1}</td>
@@ -433,6 +437,7 @@
         function openWork(i) {
             const t = currentTasks[i];
             if (!t) return;
+            if (t.source === 'ptn' && window.PTN) { PTN.ldOpenWork(t, activeTab); return; }
             const me = WF.getCurrentUserId();
             if (t.source === 'wf' && WF.markViewed(t.rec, me)) WF.upsertRecord(t.rec);
             const row = (k, v) => `<div class="k">${esc(k)}</div><div>${v}</div>`;

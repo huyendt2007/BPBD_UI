@@ -205,6 +205,10 @@ function dchtModalHtml() {
                 </div>
 
                 <div id="dchtOfflineSection" style="display:none;">
+                    <div class="gqx-grid2">
+                        <div class="gqx-field"><label class="form-label" for="dchtOffSo">Số, ký hiệu văn bản<span class="gqx-req">*</span></label><input type="text" id="dchtOffSo" class="form-control" maxlength="50" placeholder="Nhập số, ký hiệu văn bản" oninput="this.classList.remove('is-invalid'); dchtEl('dchtOffSoErr').style.display='none';"><div id="dchtOffSoErr" class="gqx-err">${DCHT_REQ_MSG}</div></div>
+                        <div class="gqx-field"><label class="form-label" for="dchtOffNgay">Ngày văn bản<span class="gqx-req">*</span></label><input type="text" id="dchtOffNgay" class="form-control" placeholder="dd/mm/yyyy" oninput="this.classList.remove('is-invalid'); dchtEl('dchtOffNgayErr').style.display='none';"><div id="dchtOffNgayErr" class="gqx-err">${DCHT_REQ_MSG}</div></div>
+                    </div>
                     <input type="file" id="dchtOfflineFileInput" accept=".pdf" style="display:none;" onchange="dchtOnOfflineFile(this)">
                     <div id="dchtOfflineBox"></div>
                     <div id="dchtOfflineFileErr" class="gqx-err">${DCHT_OFF_FILE_MSG}</div>
@@ -336,6 +340,10 @@ function dchtOpenModal() {
     dchtEl('dchtModal').querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
     dchtEl('dchtModal').querySelectorAll('.gqx-err').forEach(el => { el.style.display = 'none'; });
     if (typeof tlktMount === 'function') tlktMount('dcht', 'dchtTlkt', { required: true, rows: prev && prev.attachments ? prev.attachments : [] });
+    // Ký ngoài: Số, ký hiệu / Ngày văn bản đã ký (mặc định ngày hiện tại)
+    ['dchtOffSo', 'dchtOffNgay'].forEach(id => { const i = dchtEl(id); if (i) { i.classList.remove('is-invalid'); dchtEl(id + 'Err').style.display = 'none'; } });
+    if (dchtEl('dchtOffSo')) dchtEl('dchtOffSo').value = '';
+    if (dchtEl('dchtOffNgay')) dchtEl('dchtOffNgay').value = dchtToday();
     dchtSignInit(prev ? prev.assignees : null);
     dchtRenderOff();
     dchtEl(dchtState.method === 'offline' ? 'dchtMethodOffline' : 'dchtMethodOnline').checked = true;
@@ -761,6 +769,13 @@ function dchtSubmitOnline() {
     dchtAfter();
 }
 function dchtSubmitOffline() {
+    // Ký ngoài: Số, ký hiệu và Ngày văn bản đã ký bắt buộc
+    let bad = null;
+    [['dchtOffSo', v => !!v], ['dchtOffNgay', v => /^\d{2}\/\d{2}\/\d{4}$/.test(v)]].forEach(([id, ok]) => {
+        const i = dchtEl(id), e = dchtEl(id + 'Err'), v = i ? i.value.trim() : '';
+        if (i && !ok(v)) { i.classList.add('is-invalid'); e.textContent = v ? 'Ngày không đúng định dạng dd/mm/yyyy.' : DCHT_REQ_MSG; e.style.display = 'block'; if (!bad) bad = i; }
+    });
+    if (bad) { bad.focus(); return; }
     if (!dchtState.offlineFile) {
         const e = dchtEl('dchtOfflineFileErr'); e.textContent = DCHT_OFF_FILE_MSG; e.style.display = 'block';
         const dz = dchtEl('dchtOfflineDrop'); if (dz) { dz.classList.add('is-error'); dz.focus(); }
@@ -772,7 +787,7 @@ function dchtSubmitOffline() {
 function dchtIssueOffline() {
     if (!dchtState.offlineFile) return;
     const prevStatus = activeDossier.status === DCHT_ST_REJECTED && activeDossier.dcht ? activeDossier.dcht.prevStatus : activeDossier.status;
-    activeDossier.dcht = { method: 'offline', prevStatus, fileName: dchtState.offlineFile.name, offFile: dchtState.offlineFile, issuedAt: dchtNow(), attachments: typeof tlktGet === 'function' ? tlktGet('dcht') : [], levels: [], assignees: [], level: 0 };
+    activeDossier.dcht = { method: 'offline', prevStatus, so: (dchtEl('dchtOffSo') || {}).value ? dchtEl('dchtOffSo').value.trim() : '', ngay: ((dchtEl('dchtOffNgay') || {}).value || '').trim(), fileName: dchtState.offlineFile.name, offFile: dchtState.offlineFile, issuedAt: dchtNow(), attachments: typeof tlktGet === 'function' ? tlktGet('dcht') : [], levels: [], assignees: [], level: 0 };
     activeDossier.status = DCHT_ST_DONE;
     dchtLog(`Ban hành Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả ký ngoài hệ thống (tệp ${dchtState.offlineFile.name}). Hồ sơ chuyển sang trạng thái [${DCHT_ST_DONE}].`);
     dchtClose();
@@ -867,7 +882,7 @@ function dchtRenderInfoCard() {
         + it('Hình thức ký', a.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống')
         + it('Trạng thái hồ sơ', htStBadgeHtml(activeDossier.status))
         + it('Văn bản', `<a href="javascript:void(0)" onclick="dchtViewDoc()" style="color:#2563eb;">${dchtE(a.fileName || '')}</a>`)
-        + (a.method === 'online' && a.docSrc === 'gen' ? it('Số, ký hiệu văn bản', dchtE(a.so || '--')) + it('Ngày văn bản', dchtE(a.ngay || '--')) : '')
+        + ((a.method === 'online' && a.docSrc === 'gen') || (a.method === 'offline' && a.so) ? it('Số, ký hiệu văn bản', dchtE(a.so || '--')) + it('Ngày văn bản', dchtE(a.ngay || '--')) : '')
         + (lead ? it('Lãnh đạo được giao ký duyệt', lead) : '')
         + (a.returned && activeDossier.status === DCHT_ST_REJECTED ? it('Lý do từ chối', dchtE(a.returned.reason) + `<div class="dcht-k" style="margin-top:2px;">${dchtE(a.returned.by)} • ${dchtE(a.returned.at)}</div>`) : '')
         + `</div>`;

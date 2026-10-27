@@ -128,15 +128,14 @@ Tai lieu phan tich/
     │   ├── SRS_BTNN_GiaiQuyetBT_TiepNhan_YCBT.md # Tiếp nhận hồ sơ (trực tiếp, bưu chính, DVC, chuyển đến)
     │   ├── SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md # Thụ lý, xác minh thiệt hại, thương lượng BTNN
     │   ├── SRS_BTNN_GiaiQuyetBT_QuyetDinh_GQBT.md # Dự thảo, trình ký Quyết định giải quyết bồi thường
-    │   ├── SRS_BTNN_GiaiQuyetBT_KinhPhi_BT.md   # Lập dự toán, cấp phát, chi trả & sung quỹ kinh phí
+    │   ├── SRS_BTNN_GiaiQuyetBT_KinhPhi_BT.md   # Lập dự toán, cấp phát, chi trả & trả lại ngân sách nhà nước kinh phí
     │   ├── SRS_BTNN_GiaiQuyetBT_Xem xét Hoàn trả.md # Hội đồng hoàn trả, thu hồi tiền từ công chức có lỗi
     │   ├── SRS_BTNN_GiaiQuyetBT_TraCuu_VuViec.md # Tra cứu vụ việc bồi thường (01 danh sách chung, gồm vụ việc có phục hồi danh dự)
     │   ├── SRS_BTNN_Cham_Diem.md                # Chấm điểm đánh giá công tác BTNN theo tiêu chí
     │   ├── SRS_BTNN_BaoCao_QuanLy_BTNN.md       # Báo cáo quản trị công tác BTNN toàn quốc
-    │   ├── SRS_BTNN_BaoCao_CongTacBTNN.md       # Báo cáo Công tác BTNN (Mẫu 41, 42, 43)
+    │   ├── SRS_BTNN_BaoCao_CongTacBTNN.md       # Báo cáo Công tác BTNN (Mẫu 41, 42, 43, Mẫu số 04 TT08 - hoàn trả)
     │   ├── SRS_BaoCao_Mau01_DanhMucVuViec.md    # Biểu mẫu 01/BTNN: Danh mục vụ việc bồi thường
     │   ├── SRS_BaoCao_Mau03_TongHopTinhHinh.md  # Biểu mẫu 03/BTNN: Tổng hợp tình hình BTNN
-    │   ├── SRS_BaoCao_Mau04_TinhHinhHoanTra.md  # Biểu mẫu 04/BTNN: Tình hình thực hiện trách nhiệm hoàn trả
     │   ├── SRS_BTNN_STP_KienNghi_XemXet_QDHoanTra.md # Sở Tư pháp kiến nghị xem xét lại QĐ hoàn trả
     │   ├── SRS_BTNN_STP_KienNghi_XuLyViPham_GQBT.md # Sở Tư pháp kiến nghị xử lý vi phạm giải quyết BT
     │   ├── SRS_BTNN_STP_YeuCau_Huy_QuyetDinh_GQBT.md # Sở Tư pháp yêu cầu hủy quyết định GQBT trái luật

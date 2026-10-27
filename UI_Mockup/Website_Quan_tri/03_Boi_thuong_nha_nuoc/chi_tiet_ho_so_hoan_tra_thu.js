@@ -35,7 +35,8 @@
     // Nút không được phép: hiển thị mờ, tooltip "[Tên nút] - [Lý do]"
     function payTip(o) {
         if (/^CD_DC$/.test(o.trinh || '')) return 'Quyết định đình chỉ đang chờ Lãnh đạo ký duyệt';
-        if (/_DC$/.test(o.trinh || '')) return 'Cán bộ đang xử lý Đình chỉ hoàn trả';
+        // QĐ đình chỉ Bị từ chối: vẫn cho phép Ghi nhận nộp tiền (chỉ giữ khóa Trình QĐ miễn / giảm bổ sung)
+        if (/_DC$/.test(o.trinh || '') && o.trinh !== 'BTC_DC') return 'Cán bộ đang xử lý Đình chỉ hoàn trả';
         if (o.ct === 'DONE') return 'Cán bộ đã hoàn thành nghĩa vụ hoàn trả';
         if (o.ct === 'MIEN') return 'Cán bộ được Miễn hoàn trả';
         if (o.ct === 'DC') return 'Cán bộ đã Đình chỉ hoàn trả';
@@ -155,9 +156,16 @@
             el('ht4Form').innerHTML = '<div class="grid-2-cols" style="gap:16px;">' + field('Số tiền nộp đợt này (đ)', 'ht4Amt', 'Nhập số tiền nộp đợt này', goiY, 'style="text-align:right;" onchange="ht4Money(this)"') + field('Ngày nộp', 'ht4Ngay', 'dd/mm/yyyy', a.today()) + '</div>'
                 + (motLan ? '<div style="font-size:12.5px; color:var(--text-muted); margin:-6px 0 12px;">Phương thức Một lần: gợi ý 100% số còn phải thu.</div>' : '')
                 + '<div id="ht4Tlkt"></div>';
+            // Ghi nhận nộp tiền: hiển thị Quyết định giảm mức hoàn trả đã ban hành (03 số tiền, tệp Quyết định) để đối chiếu số phải thu
+            if (typeof window.htQdBlockHtml === 'function') el('ht4Form').insertAdjacentHTML('beforeend', window.htQdBlockHtml(idx));
         } else if (mode === 'refund') {
             el('ht4Title').innerHTML = '<i class="fa-solid fa-hand-holding-dollar"></i> Ghi nhận trả lại tiền';
             el('ht4Form').innerHTML = '<div class="grid-2-cols" style="gap:16px;">' + field('Số tiền trả lại (đ)', 'ht4Amt', 'Nhập số tiền trả lại', a.money(o.refund), 'style="text-align:right;" onchange="ht4Money(this)"') + field('Ngày trả lại', 'ht4Ngay', 'dd/mm/yyyy', a.today()) + '</div><div id="ht4Tlkt"></div>';
+        } else if (window.htCtCanBoHtml) {
+            // Xem chi tiết hoàn trả của cán bộ: khối Thông tin hoàn trả, QĐ giảm, QĐ miễn, Lịch sử hoàn trả
+            el('ht4Title').innerHTML = '<i class="fa-solid fa-circle-info"></i> Xem chi tiết hoàn trả của cán bộ';
+            el('ht4Info').innerHTML = '';
+            el('ht4Form').innerHTML = window.htCtCanBoHtml(o, idx);
         } else {
             el('ht4Title').innerHTML = '<i class="fa-solid fa-circle-info"></i> Xem chi tiết cán bộ';
             const pays = o.payments || [];
@@ -168,8 +176,56 @@
             if (typeof window.htQdBlockHtml === 'function') el('ht4Form').insertAdjacentHTML('beforeend', window.htQdBlockHtml(idx));
         }
         if (mode !== 'history' && typeof tlktMount === 'function') tlktMount('ht4', 'ht4Tlkt', { required: false, rows: [], noLeader: true });
+        // Xem chi tiết hoàn trả của cán bộ: Popup Modal kích thước lớn, thân popup cuộn trong; các thao tác khác giữ kích thước thường
+        const mc = el('ht4Modal').querySelector('.modal-content'), mb = el('ht4Modal').querySelector('.modal-body');
+        const big = mode === 'history' && !!window.htCtCanBoHtml;
+        Object.assign(mc.style, big ? { width: '1180px', maxWidth: '95vw', maxHeight: '90vh', display: 'flex', flexDirection: 'column' } : { width: '', maxWidth: '780px', maxHeight: '', display: '', flexDirection: '' });
+        Object.assign(mb.style, big ? { overflowY: 'auto', overflowX: 'hidden', flex: '1', minHeight: '0' } : { overflowY: '', overflowX: '', flex: '', minHeight: '' });
         el('ht4Modal').classList.add('visible');
     }
+    // ===== Xem chi tiết hoàn trả của cán bộ (Bước 4) =====
+    const pd = s => { const m = /^(\d{2})\/(\d{2})\/(\d{4})(?:\s+(\d{2}):(\d{2}))?/.exec(String(s || '').trim()); return m ? +(m[3] + m[2] + m[1] + (m[4] || '00') + (m[5] || '00')) : 0; };
+    const fileLinks = name => '<span style="display:inline-flex; align-items:center; gap:8px; flex-wrap:wrap;"><i class="fa-solid fa-file-pdf" style="color:#dc2626;"></i>' + A().esc(name)
+        + ' <a class="action-link" href="javascript:void(0)" onclick="showToast(\'Đang mở xem tệp ' + A().esc(name).replace(/'/g, '') + '\', \'info\')"><i class="fa-solid fa-eye"></i> Xem file</a>'
+        + ' <a class="action-link" href="javascript:void(0)" onclick="showToast(\'Đang tải tệp ' + A().esc(name).replace(/'/g, '') + '...\', \'info\')"><i class="fa-solid fa-download"></i> Tải file</a></span>';
+    const sec = (icon, title, body) => '<div class="card" style="margin-bottom:16px;"><div class="card-header"><div class="card-title" style="margin-bottom:0;"><i class="' + icon + '"></i> ' + title + '</div></div><div class="card-body">' + body + '</div></div>';
+    const grid3 = items => '<div style="display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px 20px;">' + items.join('') + '</div>';
+    const it = (k, v) => '<div class="info-item"><div class="info-label">' + k + '</div><div class="info-value" style="font-weight:700;">' + v + '</div></div>';
+    window.htCtCanBoHtml = function (o, idx) {
+        const a = A(), m = n => a.money(n) + ' đ';
+        const recs = typeof window.htQdRecs === 'function' ? window.htQdRecs(idx) : [];
+        const giamRecs = recs.filter(x => x.base === 'GIAM'), mienRecs = recs.filter(x => x.base === 'MIEN');
+        const giamIssued = giamRecs.filter(x => x.r.issuedAt);
+        const isMien = o.ct === 'MIEN', xl = window.htXlLabel ? window.htXlLabel(o.xl) : (o.xl || '');
+        const hd = o.hd || 0;
+        // Khối Thông tin hoàn trả (luôn hiển thị)
+        const info = [it('Họ và tên', a.esc(o.name)), it('Chức vụ', a.esc(o.role || '--')), it('Đơn vị quản lý cán bộ', a.esc(o.agency || '--')),
+            it('Mức độ lỗi', a.esc(o.loi === 'Khác' ? (o.ykhdLoiKhac || 'Khác') : (o.loi || '--'))), it('Hình thức xử lý', a.esc(xl || '--')), it('Phương thức hoàn trả', a.esc(isMien ? '--' : ((window.htMethod ? window.htMethod(o.refundMethod) : o.refundMethod) || '--'))),
+            it('Số tiền phải hoàn trả theo QĐ hoàn trả', m(hd))];
+        if (giamIssued.length && !isMien) info.push(it('Số tiền hoàn trả được giảm', m(Math.max(0, hd - (o.total || 0)))), it('Số tiền còn phải hoàn trả', m(o.total)));
+        if (isMien) info.push(it('Số tiền được miễn', m(Math.max(0, hd - (o.paid || 0)))));
+        info.push(it('Số tiền đã nộp (lũy kế)', m(o.paid)), it('Số tiền còn phải thu', m(o.ct === 'THU' ? conLai(o) : 0)));
+        if ((o.refund || 0) > 0) info.push(it('Số tiền cần trả lại', '<span style="color:#b91c1c;">' + m(o.refund) + '</span>'));
+        info.push(it('Trạng thái', (window.htPill ? window.htPill(a.ctText(o.ct)) : a.esc(a.ctText(o.ct))) + (o.trinh && !/_DC$/.test(o.trinh) ? '<div style="font-size:12px; color:#6d28d9; font-weight:500;">' + a.esc(a.ctText(o.trinh)) + '</div>' : '')));
+        let h = sec('fa-solid fa-user-tie', 'Thông tin hoàn trả', grid3(info));
+        // Khối Quyết định giảm / miễn: chỉ hiển thị khi cán bộ có Quyết định tương ứng; nhiều lần: mỗi lần 01 khối, mới nhất trên cùng
+        if (giamRecs.length) h += sec('fa-solid fa-arrow-down-wide-short', 'Quyết định giảm mức hoàn trả', giamRecs.map(x => x.html).join(''));
+        if (mienRecs.length) h += sec('fa-solid fa-shield-halved', 'Quyết định miễn hoàn trả', mienRecs.map(x => x.html).join(''));
+        // Khối Lịch sử hoàn trả (luôn hiển thị): nộp tiền, trả lại tiền, ban hành QĐ giảm / miễn; mới nhất trên cùng
+        const rows = [];
+        (o.payments || []).forEach((p, i) => rows.push({ t: p.at || p.ngay, k: pd(p.at || p.ngay), nd: 'Nộp tiền hoàn trả đợt ' + (i + 1) + ' (ngày nộp ' + a.esc(p.ngay) + ')', tien: m(p.amt), by: a.esc(p.by || '') + (p.unit && String(p.by || '').indexOf(p.unit) < 0 ? '<div style="font-size:12px; color:var(--text-muted);">' + a.esc(p.unit) + '</div>' : ''), f: (p.tlkt || []).filter(t => t.file && t.file.name).map(t => fileLinks(t.file.name)).join('<br>') }));
+        if (o.refundDone) rows.push({ t: o.refundDone.at || o.refundDone.ngay, k: pd(o.refundDone.at || o.refundDone.ngay), nd: 'Trả lại tiền cho cán bộ (ngày ' + a.esc(o.refundDone.ngay) + ')', tien: m(o.refundDone.amt), by: a.esc(o.refundDone.by || ''), f: (o.refundDone.tlkt || []).filter(t => t.file && t.file.name).map(t => fileLinks(t.file.name)).join('<br>') });
+        recs.filter(x => x.r.issuedAt).forEach(x => {
+            const r = x.r, sp = r.supp || {}, ap = (r.hist || []).find(hh => hh.type === 'issue' || hh.type === 'approve');
+            const tien = x.base === 'GIAM' ? 'Được giảm ' + m(sp.duocGiam != null ? sp.duocGiam : Math.max(0, (sp.phaiHT != null ? sp.phaiHT : hd) - (sp.giam || o.giam || 0))) : 'Được miễn ' + m(Math.max(0, hd - (o.paid || 0)));
+            rows.push({ t: r.issuedAt, k: pd(r.issuedAt), nd: 'Ban hành ' + a.esc(x.doc) + (r.kind && /^S/.test(r.kind) ? ' (bổ sung)' : '') + (r.soKh ? ' số ' + a.esc(r.soKh) : '') + ' - ' + (r.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống'), tien, by: a.esc(r.method === 'offline' ? 'Cán bộ ' + (r.unit || o.agency || '') : (ap ? ap.name : '')), f: fileLinks(r.fileName || '') });
+        });
+        rows.sort((x, y) => y.k - x.k);
+        h += sec('fa-solid fa-clock-rotate-left', 'Lịch sử hoàn trả', '<table class="dense-table" style="width:100%; table-layout:fixed;"><thead><tr><th style="width:50px; text-align:center;">STT</th><th style="width:130px;">Thời điểm</th><th>Nội dung</th><th style="width:170px; text-align:right;">Số tiền</th><th style="width:190px;">Người thực hiện</th><th style="width:300px;">Tài liệu / chứng từ</th></tr></thead><tbody>'
+            + (rows.length ? rows.map((r, i) => '<tr><td style="text-align:center;">' + (i + 1) + '</td><td>' + a.esc(r.t || '') + '</td><td style="white-space:normal;">' + r.nd + '</td><td style="text-align:right;">' + r.tien + '</td><td style="white-space:normal;">' + r.by + '</td><td style="white-space:normal;">' + (r.f || '--') + '</td></tr>').join('') : '<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Chưa có lịch sử hoàn trả.</td></tr>')
+            + '</tbody></table>');
+        return h;
+    };
     window.ht4OpenPay = idx => open('pay', idx);
     window.ht4OpenRefund = idx => open('refund', idx);
     window.ht4OpenHistory = idx => open('history', idx);

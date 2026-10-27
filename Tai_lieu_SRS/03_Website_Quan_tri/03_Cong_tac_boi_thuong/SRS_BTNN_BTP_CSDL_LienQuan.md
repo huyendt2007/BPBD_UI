@@ -164,7 +164,7 @@ flowchart TD
 
 **Quy tắc liên kết Vụ việc BTNN liên quan**
 
-\- Phạm vi tìm kiếm (Nguồn 6): các vụ việc yêu cầu bồi thường đã được tiếp nhận vào hệ thống, thuộc phạm vi dữ liệu theo cấp của người dùng đăng nhập (người dùng Bộ Tư pháp: toàn quốc), ở mọi Trạng thái vụ việc trừ `Chờ tiếp nhận`, kể cả vụ việc đã kết thúc (`Hoàn thành`, `Sung quỹ nhà nước`, `Không thụ lý`, `Đã chuyển CQGQBT`, `Đình chỉ giải quyết`).
+\- Phạm vi tìm kiếm (Nguồn 6): các vụ việc yêu cầu bồi thường đã được tiếp nhận vào hệ thống, thuộc phạm vi dữ liệu theo cấp của người dùng đăng nhập (người dùng Bộ Tư pháp: toàn quốc), ở mọi Trạng thái vụ việc trừ `Chờ tiếp nhận`, kể cả vụ việc đã kết thúc (`Hoàn thành`, `Trả lại ngân sách nhà nước`, `Không thụ lý`, `Đã chuyển CQGQBT`, `Đình chỉ giải quyết`).
 
 \- Khi người dùng gõ tay hoặc sửa nội dung ô `Vụ việc BTNN liên quan`, hệ thống bỏ liên kết đã chọn; người dùng phải chọn lại từ popup hoặc xóa trống ô.
 

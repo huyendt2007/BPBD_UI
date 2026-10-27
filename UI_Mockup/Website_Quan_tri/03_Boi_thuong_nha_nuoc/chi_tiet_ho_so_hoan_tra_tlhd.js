@@ -263,6 +263,10 @@ function tlhdModalHtml() {
                 </div>
 
                 <div id="tlhdOfflineSection" style="display:none;">
+                    <div class="gqx-grid2">
+                        <div class="gqx-field"><label class="form-label" for="tlhdOffSo">Số, ký hiệu văn bản<span class="gqx-req">*</span></label><input type="text" id="tlhdOffSo" class="form-control" maxlength="50" placeholder="Nhập số, ký hiệu văn bản" oninput="this.classList.remove('is-invalid'); tlhdEl('tlhdOffSoErr').style.display='none';"><div id="tlhdOffSoErr" class="gqx-err">Đây là trường bắt buộc</div></div>
+                        <div class="gqx-field"><label class="form-label" for="tlhdOffNgay">Ngày văn bản<span class="gqx-req">*</span></label><input type="text" id="tlhdOffNgay" class="form-control" placeholder="dd/mm/yyyy" oninput="this.classList.remove('is-invalid'); tlhdEl('tlhdOffNgayErr').style.display='none';"><div id="tlhdOffNgayErr" class="gqx-err">Đây là trường bắt buộc</div></div>
+                    </div>
                     <input type="file" id="tlhdOfflineFileInput" accept=".pdf" style="display:none;" onchange="tlhdOnOfflineFile(this)">
                     <div id="tlhdOfflineDrop" class="tlhd-drop" tabindex="0" role="button" onclick="tlhdEl('tlhdOfflineFileInput').click()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault(); this.click();}" ondragover="tlhdDragOver(event)" ondragleave="tlhdDragLeave(event)" ondrop="tlhdDropOffline(event)">
                         <i class="fa-solid fa-cloud-arrow-up tlhd-drop-ico"></i>
@@ -463,6 +467,10 @@ function tlhdOpenModal() {
     if (prev && rejected && prev.docSrc === 'upload' && prev.onlineFile) { tlhdState.onlineFile = prev.onlineFile; tlhdRenderDocBox(); }
     // Tài liệu ban hành kèm theo / không ban hành kèm theo; Trình lại: nạp đúng 02 khối của lần trình trước
     if (typeof tlktMount === 'function') tlktMount('tlhd', 'tlhdTlkt', { required: false, rows: prev && rejected && prev.attachments ? prev.attachments : [] });
+    // Ký ngoài: Số, ký hiệu / Ngày văn bản đã ký (mặc định ngày hiện tại)
+    ['tlhdOffSo', 'tlhdOffNgay'].forEach(id => { const i = tlhdEl(id); if (i) { i.classList.remove('is-invalid'); tlhdEl(id + 'Err').style.display = 'none'; } });
+    if (tlhdEl('tlhdOffSo')) tlhdEl('tlhdOffSo').value = '';
+    if (tlhdEl('tlhdOffNgay')) tlhdEl('tlhdOffNgay').value = tlhdToday();
     tlhdSetMethod(tlhdState.method);
     tlhdGoStep1();
     const m = tlhdEl('tlhdModal');
@@ -1118,6 +1126,13 @@ function tlhdConfirmIssue(message, onYes) {
     ob.observe(modal, { attributes: true, attributeFilter: ['class'] });
 }
 function tlhdSubmitOffline() {
+    // Ký ngoài: Số, ký hiệu và Ngày văn bản đã ký bắt buộc
+    let bad = null;
+    [['tlhdOffSo', v => !!v], ['tlhdOffNgay', v => /^\d{2}\/\d{2}\/\d{4}$/.test(v)]].forEach(([id, ok]) => {
+        const i = tlhdEl(id), e = tlhdEl(id + 'Err'), v = i ? i.value.trim() : '';
+        if (i && !ok(v)) { i.classList.add('is-invalid'); e.textContent = v ? 'Ngày không đúng định dạng dd/mm/yyyy.' : 'Đây là trường bắt buộc'; e.style.display = 'block'; if (!bad) bad = i; }
+    });
+    if (bad) { bad.focus(); return; }
     if (typeof tlktValidate === 'function' && !tlktValidate('tlhd')) return;
     if (!tlhdState.offlineFile) {
         const e = tlhdEl('tlhdOfflineFileErr'); e.textContent = TLHD_OFF_FILE_MSG; e.style.display = 'block';
@@ -1130,11 +1145,12 @@ function tlhdSubmitOffline() {
 // Thực thi ban hành văn bản Ký ngoài (sau khi xác nhận)
 function tlhdIssueOffline() {
     if (!tlhdState.offlineFile) return;
-    const today = tlhdToday();
-    // Ký ngoài: Tài liệu ban hành kèm theo (chỉ khối ban hành kèm theo)
-    activeDossier.tlhd = { method: 'offline', docSrc: '', soQD: '', ngayQD: today, members: [], fileName: tlhdState.offlineFile.name, levels: [], assignees: [], level: 0, attachments: typeof tlktGet === 'function' ? tlktGet('tlhd') : [] };
+    const offSo = (tlhdEl('tlhdOffSo') || {}).value ? tlhdEl('tlhdOffSo').value.trim() : '';
+    const today = ((tlhdEl('tlhdOffNgay') || {}).value || '').trim() || tlhdToday();
+    // Ký ngoài: Tài liệu ban hành kèm theo (chỉ khối ban hành kèm theo); Số, ngày theo văn bản đã ký
+    activeDossier.tlhd = { method: 'offline', docSrc: '', soQD: offSo, ngayQD: today, members: [], fileName: tlhdState.offlineFile.name, levels: [], assignees: [], level: 0, attachments: typeof tlktGet === 'function' ? tlktGet('tlhd') : [] };
     activeDossier.hdPublishType = 'offline';
-    activeDossier.hdDecision = 'Theo tệp văn bản đã ký';
+    activeDossier.hdDecision = offSo || 'Theo tệp văn bản đã ký';
     activeDossier.hdDate = today;
     activeDossier.hdSignDate = today;
     activeDossier.hdFileName = tlhdState.offlineFile.name;

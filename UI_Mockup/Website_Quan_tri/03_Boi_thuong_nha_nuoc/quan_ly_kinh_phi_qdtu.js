@@ -1,13 +1,13 @@
 /*
  * Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Luồng Tạo Quyết định tạm ứng kinh phí bồi thường (Mẫu 07/BTNN)
- * - Thanh công cụ MH01: nút "Tạo QĐ tạm ứng" -> Màn hình Tạo Quyết định tạm ứng kinh phí bồi thường (bố cục như Tạo Quyết định GQBT):
+ * - Thanh công cụ MH01: nút "Tạo QĐ tạm ứng" -> Màn hình Tạo Quyết định tạm ứng kinh phí (bố cục như Tạo Quyết định GQBT):
  *   chọn Mã vụ việc (Tìm kiếm / Tìm kiếm nâng cao); chỉ vụ việc GQ YCBT trạng thái
  *   Xác minh thiệt hại, Thương lượng, Chờ ban hành QĐ; thông tin mặc định theo hồ sơ vụ việc, cho phép sửa.
- * - Tiếp tục -> Popup Trình ký Quyết định tạm ứng kinh phí bồi thường (Ký số 02 bước / Ký ngoài Ban hành văn bản).
- * - Trình (Ký số) -> bản ghi Loại "Cấp tạm ứng" (Đề nghị tạm ứng) "Chờ duyệt", Loại trình "Quyết định tạm ứng kinh phí bồi thường";
+ * - Tiếp tục -> Popup Trình ký Quyết định tạm ứng kinh phí (Ký số 02 bước / Ký ngoài Ban hành văn bản).
+ * - Trình (Ký số) -> bản ghi Loại "Cấp tạm ứng" (Đề nghị tạm ứng) "Chờ duyệt", Loại trình "Quyết định tạm ứng kinh phí";
  *   Lãnh đạo được giao Ký duyệt theo luồng; cấp cuối ký số -> "Chờ chi trả"; Từ chối -> "Bị từ chối" (Cập nhật -> trình lại).
  *   Ký ngoài: Ban hành văn bản -> "Chờ chi trả". Chờ chi trả -> Cập nhật chi trả (MH03 sẵn có) -> "Hoàn thành".
- * - Điều 2 (người nhận tạm ứng) chỉ có khi Người nhận khác Người yêu cầu bồi thường; không có Điều 2 thì đánh số lại Điều 3->2, 4->3, 5->4
+ * - Điều 2 (người nhận tạm ứng) chỉ có khi Người nhận khác Người yêu cầu; không có Điều 2 thì đánh số lại Điều 3->2, 4->3, 5->4
  *   và Nơi nhận "Như Điều 5" -> "Như Điều 4".
  * Id/hàm prefix qdtu. Mockup tĩnh: chỉ kiểm tra trống trường bắt buộc.
  */
@@ -232,7 +232,7 @@ const QDTU_LEGACY_STATUS = {
     'thương lượng thành công': 'Chờ ban hành QĐ', 'thương lượng không thành công': 'Chờ ban hành QĐ'
 };
 // Đề nghị tạm ứng còn hiệu lực của vụ việc: không cho Tạo Quyết định tạm ứng mới
-const QDTU_EFFECTIVE = ['Chờ duyệt', 'Chờ chi trả', 'Hoàn thành', 'Sung quỹ nhà nước', 'Chờ thu hồi'];
+const QDTU_EFFECTIVE = ['Chờ duyệt', 'Chờ chi trả', 'Hoàn thành', 'Trả lại ngân sách nhà nước', 'Chờ thu hồi'];
 const QDTU_CASH = 'Nhận tiền mặt';
 const QDTU_TRANSFER = 'Nhận qua chuyển khoản';
 const QDTU_MAX_FILE = 50 * 1024 * 1024;
@@ -329,6 +329,12 @@ function kpcdHasAdvance(c) { return !!c && (c.needAdvance === true || (qdtuNum(c
 // Trùng QĐ tạm ứng không loại khỏi danh sách: kiểm tra và chặn khi bấm Tiếp tục (kpcdQdtuDup).
 function qdtuEligibleClaims() {
     return qdtuAllClaims().filter(c => qdtuIsMoneyClaim(c) && kpcdHasAdvance(c) && QDTU_ELIGIBLE.includes(qdtuNormStatus(c.status)));
+}
+// Cập nhật QĐ tạm ứng Bị từ chối: vụ việc phải còn ở trạng thái QDTU_ELIGIBLE (không tìm thấy hồ sơ thì không chặn)
+const QDTU_MSG_NOT_ELIGIBLE = 'Vụ việc không còn ở trạng thái được phép tạo Quyết định tạm ứng.';
+function qdtuClaimStillEligible(code) {
+    const c = qdtuAllClaims().find(x => x && x.code === code);
+    return !c || QDTU_ELIGIBLE.includes(qdtuNormStatus(c.status));
 }
 // Chặn trùng: vụ việc đã có QĐ tạm ứng (Loại trình "QĐ tạm ứng kinh phí") ở trạng thái Chờ duyệt, Chờ chi trả hoặc Hoàn thành
 const KPCD_QDTU_DUP_ST = ['Chờ duyệt', 'Chờ chi trả', 'Hoàn thành'];
@@ -478,7 +484,7 @@ function qdtuFrameFull(on) {
 }
 
 // =====================================================================================
-// MÀN HÌNH TẠO QUYẾT ĐỊNH TẠM ỨNG KINH PHÍ BỒI THƯỜNG (bố cục như Tạo Quyết định GQBT)
+// MÀN HÌNH TẠO QUYẾT ĐỊNH TẠM ỨNG KINH PHÍ (bố cục như Tạo Quyết định GQBT)
 // =====================================================================================
 let qdtuState = { id: null, claimCode: '', unitId: '', isOrg: false, nycRole: '' };
 function qdtuFld(id, label, req, control, extraCls) {
@@ -492,28 +498,28 @@ function qdtuEnsurePage() {
     p.id = 'qdtuPanel';
     p.className = 'inline-form-panel';
     const money = (id, label, req) => qdtuFld(id, label, req, `<input type="text" class="form-control" id="${id}" maxlength="20" style="text-align:right;" placeholder="0" oninput="formatNumberInput(this); qdtuMark('${id}', false); qdtuRecalc('${id}')">`);
-    p.innerHTML = `<div class="inline-form-header"><span class="inline-form-title" id="qdtuPageTitle"><i class="fa-solid fa-file-invoice"></i> TẠO QUYẾT ĐỊNH TẠM ỨNG KINH PHÍ BỒI THƯỜNG</span></div>
+    p.innerHTML = `<div class="inline-form-header"><span class="inline-form-title" id="qdtuPageTitle"><i class="fa-solid fa-file-invoice"></i> TẠO QUYẾT ĐỊNH TẠM ỨNG KINH PHÍ</span></div>
     <div class="inline-form-body" style="background:#F8FAFC; max-height:none;">
         <div id="qdtuReturnedBlock" style="display:none; background:#FEF2F2; border:1px solid #FECACA; border-left:4px solid #DC2626; border-radius:8px; padding:14px 16px; margin-bottom:16px;"></div>
         <div class="qdtu-card" id="qdtuClaimCard">
-            <div class="qdtu-card-head"><i class="fa-solid fa-folder-open"></i> Hồ sơ giải quyết bồi thường</div>
+            <div class="qdtu-card-head"><i class="fa-solid fa-folder-open"></i> Hồ sơ</div>
             <div class="qdtu-card-body"><div class="qdtu-grid">
-                <div class="form-group"><span class="form-label">Mã hồ sơ giải quyết bồi thường<span class="required">*</span></span>
+                <div class="form-group"><span class="form-label">Mã hồ sơ<span class="required">*</span></span>
                     <div style="display:flex; gap:8px; align-items:center;">
-                        <input type="text" class="form-control" id="qdtuClaimInput" list="qdtuClaimDatalist" autocomplete="off" placeholder="Nhập hoặc chọn mã hồ sơ giải quyết bồi thường..." style="flex:1;" oninput="qdtuMark('qdtuClaimInput', false)" onchange="qdtuOnClaimPick(this.value)"><datalist id="qdtuClaimDatalist"></datalist>
+                        <input type="text" class="form-control" id="qdtuClaimInput" list="qdtuClaimDatalist" autocomplete="off" placeholder="Nhập hoặc chọn mã hồ sơ..." style="flex:1;" oninput="qdtuMark('qdtuClaimInput', false)" onchange="qdtuOnClaimPick(this.value)"><datalist id="qdtuClaimDatalist"></datalist>
                         <button type="button" class="btn btn-primary" id="qdtuBtnSearch" onclick="qdtuSearchClaim()" style="height:38px; padding:0 16px; font-weight:600; display:inline-flex; align-items:center; gap:6px; white-space:nowrap;"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
                         <button type="button" class="btn btn-secondary" id="qdtuBtnAdv" onclick="qdtuOpenLookup()" style="height:38px; padding:0 16px; font-weight:600; display:inline-flex; align-items:center; gap:6px; white-space:nowrap;"><i class="fa-solid fa-magnifying-glass-plus"></i> Tìm kiếm nâng cao</button>
                     </div>
                     <div class="qdtu-gqx-err" id="qdtuClaimInputErr">Đây là trường bắt buộc</div>
                     <div id="qdtuClaimBadge" style="display:none; margin-top:8px;"><span class="badge badge-pending" id="qdtuClaimBadgeText" style="font-size:12.5px; padding:6px 12px; border-radius:6px;"></span></div>
                 </div>
-                <div class="form-group" id="qdtuUnitGroup" style="display:none;"><span class="form-label">Cơ quan giải quyết bồi thường</span><div class="qdtu-ro" id="qdtuUnitText">--</div></div>
+                <div class="form-group" id="qdtuUnitGroup" style="display:none;"><span class="form-label">Cơ quan giải quyết</span><div class="qdtu-ro" id="qdtuUnitText">--</div></div>
             </div></div>
         </div>
-        <div class="qdtu-empty" id="qdtuEmptyHint"><i class="fa-solid fa-circle-info"></i> Chọn Mã hồ sơ giải quyết bồi thường để hệ thống tự động điền thông tin theo hồ sơ vụ việc.</div>
+        <div class="qdtu-empty" id="qdtuEmptyHint"><i class="fa-solid fa-circle-info"></i> Chọn Mã hồ sơ để hệ thống tự động điền thông tin theo hồ sơ vụ việc.</div>
         <div id="qdtuInfoCards" style="display:none;">
             <div class="qdtu-card">
-                <div class="qdtu-card-head"><i class="fa-solid fa-user"></i> Thông tin người yêu cầu bồi thường</div>
+                <div class="qdtu-card-head"><i class="fa-solid fa-user"></i> Thông tin người yêu cầu</div>
                 <div class="qdtu-card-body"><div class="qdtu-grid">
                     ${qdtuFld('qdtuNycName', 'Họ và tên/Tên tổ chức', true, qdtuInput('qdtuNycName', 255, 'Nhập họ và tên/tên tổ chức'))}
                     ${qdtuFld('qdtuNycIdNo', 'Số định danh cá nhân/hộ chiếu/giấy tờ đi lại có giá trị quốc tế/Mã số của tổ chức', true, qdtuInput('qdtuNycIdNo', 50, 'Nhập số giấy tờ/mã số tổ chức', 'onchange="qdtuSyncRecNote()"'))}
@@ -521,13 +527,13 @@ function qdtuEnsurePage() {
                 </div></div>
             </div>
             <div class="qdtu-card">
-                <div class="qdtu-card-head"><i class="fa-solid fa-coins"></i> Số tiền tạm ứng kinh phí bồi thường</div>
+                <div class="qdtu-card-head"><i class="fa-solid fa-coins"></i> Số tiền tạm ứng kinh phí</div>
                 <div class="qdtu-card-body">
                     <div class="qdtu-grid">
                         ${money('qdtuAmtTinhThan', 'Thiệt hại về tinh thần (đồng)', false)}
                         ${money('qdtuAmtKhac', 'Thiệt hại khác có thể tính được ngay mà không cần xác minh (đồng)', false)}
                         ${qdtuFld('qdtuRate', 'Tỷ lệ tạm ứng trên tổng số tiền thiệt hại (%)', true, `<input type="number" class="form-control" id="qdtuRate" min="0" max="100" step="0.01" style="text-align:right;" oninput="qdtuMark('qdtuRate', false); qdtuRecalc('qdtuRate')" onchange="if (this.value !== '') { this.value = Math.round(parseFloat(this.value) * 100) / 100; qdtuRecalc('qdtuRate'); }">`)}
-                        <div class="form-group"><span class="form-label">Số tiền tạm ứng kinh phí bồi thường (đồng)<span class="required">*</span></span>
+                        <div class="form-group"><span class="form-label">Số tiền tạm ứng kinh phí (đồng)<span class="required">*</span></span>
                             <input type="text" class="form-control" id="qdtuAmount" maxlength="20" style="text-align:right; font-weight:700;" placeholder="0" oninput="formatNumberInput(this); qdtuMark('qdtuAmount', false); qdtuRecalc('qdtuAmount')">
                             ${qdtuErrDiv('qdtuAmount')}
                             <div class="qdtu-words" id="qdtuAmountWords"></div>
@@ -539,7 +545,7 @@ function qdtuEnsurePage() {
             <div class="qdtu-card">
                 <div class="qdtu-card-head"><i class="fa-solid fa-hand-holding-dollar"></i> Thông tin người nhận tạm ứng</div>
                 <div class="qdtu-card-body"><div class="qdtu-grid">
-                    ${qdtuFld('qdtuRecName', 'Họ và tên người nhận tạm ứng kinh phí bồi thường', true, qdtuInput('qdtuRecName', 255, 'Nhập họ và tên người nhận', 'onchange="qdtuSyncRecNote()"'))}
+                    ${qdtuFld('qdtuRecName', 'Họ và tên người nhận tạm ứng kinh phí', true, qdtuInput('qdtuRecName', 255, 'Nhập họ và tên người nhận', 'onchange="qdtuSyncRecNote()"'))}
                     ${qdtuFld('qdtuRecIdNo', 'Số định danh cá nhân/hộ chiếu/giấy tờ đi lại có giá trị quốc tế', true, qdtuInput('qdtuRecIdNo', 50, 'Nhập số giấy tờ', 'onchange="qdtuSyncRecNote()"'))}
                     ${qdtuFld('qdtuRecAddress', 'Địa chỉ', true, qdtuInput('qdtuRecAddress', 1000, 'Địa chỉ nơi cư trú của người nhận'), 'qdtu-full')}
                 </div>
@@ -557,7 +563,7 @@ function qdtuEnsurePage() {
                         ${qdtuFld('qdtuBranch', 'Chi nhánh ngân hàng', false, qdtuInput('qdtuBranch', 255, 'Nhập chi nhánh...'))}
                     </div>
                     <div class="qdtu-grid" id="qdtuCashGroup" style="display:none;">
-                        ${qdtuFld('qdtuCashPlace', 'Cơ quan chi trả tiền mặt', true, qdtuInput('qdtuCashPlace', 255, 'Tên cơ quan giải quyết bồi thường'))}
+                        ${qdtuFld('qdtuCashPlace', 'Cơ quan chi trả tiền mặt', true, qdtuInput('qdtuCashPlace', 255, 'Tên cơ quan giải quyết'))}
                     </div>
                 </div>
             </div>
@@ -588,6 +594,7 @@ function qdtuOpenPage(id) {
     qdtuEnsurePage();
     const item = id ? qdtuFind(id) : null;
     if (id && (!qdtuIs(item) || item.status !== QDTU_ST.REJECT)) return;
+    if (item && !qdtuClaimStillEligible(item.ycbtCode)) { showToast(QDTU_MSG_NOT_ELIGIBLE, 'error'); return; }
     qdtuState = { id: item ? item.id : null, claimCode: '', unitId: '', isOrg: false, nycRole: '' };
     QDTU_FIELD_IDS.concat(['qdtuClaimInput']).forEach(x => { qdtuSetVal(x, ''); qdtuMark(x, false); });
     qdtuEl('qdtuClaimBadge').style.display = 'none';
@@ -601,7 +608,7 @@ function qdtuOpenPage(id) {
     qdtuEl('qdtuClaimInput').style.background = lock ? '#F1F5F9' : '';
     qdtuEl('qdtuBtnSearch').style.display = lock ? 'none' : 'inline-flex';
     qdtuEl('qdtuBtnAdv').style.display = lock ? 'none' : 'inline-flex';
-    qdtuEl('qdtuPageTitle').innerHTML = item ? `<i class="fa-solid fa-pen-to-square"></i> CẬP NHẬT QUYẾT ĐỊNH TẠM ỨNG KINH PHÍ BỒI THƯỜNG: ${qdtuEsc(item.code)}` : '<i class="fa-solid fa-file-invoice"></i> TẠO QUYẾT ĐỊNH TẠM ỨNG KINH PHÍ BỒI THƯỜNG';
+    qdtuEl('qdtuPageTitle').innerHTML = item ? `<i class="fa-solid fa-pen-to-square"></i> CẬP NHẬT QUYẾT ĐỊNH TẠM ỨNG KINH PHÍ: ${qdtuEsc(item.code)}` : '<i class="fa-solid fa-file-invoice"></i> TẠO QUYẾT ĐỊNH TẠM ỨNG KINH PHÍ';
     const rb = qdtuEl('qdtuReturnedBlock');
     if (item && item.qdtuReturned) {
         rb.style.display = 'block';
@@ -620,7 +627,7 @@ function qdtuSearchClaim() {
     const er = qdtuEl('qdtuClaimInputErr');
     if (!val) { er.innerText = 'Đây là trường bắt buộc'; qdtuMark('qdtuClaimInput', true); qdtuEl('qdtuClaimInput').focus(); return; }
     const c = qdtuFindEligible(val);
-    if (!c) { er.innerText = 'Không tìm thấy hồ sơ giải quyết bồi thường đủ điều kiện tạo Quyết định tạm ứng.'; qdtuMark('qdtuClaimInput', true); qdtuEl('qdtuClaimInput').focus(); return; }
+    if (!c) { er.innerText = 'Không tìm thấy hồ sơ đủ điều kiện tạo Quyết định tạm ứng.'; qdtuMark('qdtuClaimInput', true); qdtuEl('qdtuClaimInput').focus(); return; }
     qdtuSelectClaim(c.code);
 }
 function qdtuOnClaimPick(val) { if (qdtuFindEligible(val)) qdtuSearchClaim(); }
@@ -703,7 +710,7 @@ function qdtuOnPayMethod(v) {
     qdtuEl('qdtuCashGroup').style.display = cash ? '' : 'none';
     ['qdtuAccHolder', 'qdtuAccount', 'qdtuBank', 'qdtuCashPlace'].forEach(x => qdtuMark(x, false));
 }
-// Người nhận tạm ứng khác Người yêu cầu bồi thường: khác Họ và tên hoặc khác Số định danh (không phân biệt hoa thường, bỏ khoảng trắng thừa)
+// Người nhận tạm ứng khác Người yêu cầu: khác Họ và tên hoặc khác Số định danh (không phân biệt hoa thường, bỏ khoảng trắng thừa)
 function qdtuDiffRecipient(f) {
     const n = s => String(s || '').trim().replace(/\s+/g, ' ').toLowerCase();
     return n(f.recName) !== n(f.nycName) || n(f.recIdNo) !== n(f.nycIdNo);
@@ -712,8 +719,8 @@ function qdtuSyncRecNote() {
     const el = qdtuEl('qdtuRecNote'); if (!el) return;
     const diff = qdtuDiffRecipient({ recName: qdtuEl('qdtuRecName').value, recIdNo: qdtuEl('qdtuRecIdNo').value, nycName: qdtuEl('qdtuNycName').value, nycIdNo: qdtuEl('qdtuNycIdNo').value });
     el.innerHTML = diff
-        ? '<i class="fa-solid fa-circle-info"></i> Người nhận tạm ứng khác Người yêu cầu bồi thường: Quyết định tạm ứng có Điều 2 (thông tin người nhận tạm ứng kinh phí bồi thường).'
-        : '<i class="fa-solid fa-circle-info"></i> Người nhận tạm ứng là Người yêu cầu bồi thường: Quyết định tạm ứng không có Điều 2; các Điều sau được đánh số lại.';
+        ? '<i class="fa-solid fa-circle-info"></i> Người nhận tạm ứng khác Người yêu cầu: Quyết định tạm ứng có Điều 2 (thông tin người nhận tạm ứng kinh phí).'
+        : '<i class="fa-solid fa-circle-info"></i> Người nhận tạm ứng là Người yêu cầu: Quyết định tạm ứng không có Điều 2; các Điều sau được đánh số lại.';
 }
 function qdtuFormData() {
     const v = id => (qdtuEl(id) ? qdtuEl(id).value.trim() : '');
@@ -728,7 +735,7 @@ function qdtuFormData() {
         payMethod: v('qdtuPayMethod'), accHolder: v('qdtuAccHolder'), account: v('qdtuAccount'), bank: v('qdtuBank'), branch: v('qdtuBranch'), cashPlace: v('qdtuCashPlace')
     };
 }
-// Tiếp tục: chỉ kiểm tra trống trường bắt buộc -> mở Popup Trình ký Quyết định tạm ứng kinh phí bồi thường
+// Tiếp tục: chỉ kiểm tra trống trường bắt buộc -> mở Popup Trình ký Quyết định tạm ứng kinh phí
 function qdtuContinue() {
     if (!qdtuState.claimCode) { qdtuEl('qdtuClaimInputErr').innerText = 'Đây là trường bắt buộc'; qdtuMark('qdtuClaimInput', true); qdtuEl('qdtuClaimInput').focus(); return; }
     const cash = qdtuEl('qdtuPayMethod').value === QDTU_CASH;
@@ -736,6 +743,8 @@ function qdtuContinue() {
     const bad = req.filter(id => !String(qdtuEl(id).value || '').trim());
     req.forEach(id => qdtuMark(id, bad.includes(id)));
     if (bad.length) { qdtuEl(bad[0]).focus(); qdtuEl(bad[0]).scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
+    // Cập nhật QĐ tạm ứng Bị từ chối: chặn khi vụ việc đã chuyển khỏi trạng thái QDTU_ELIGIBLE
+    if (qdtuState.id && !qdtuClaimStillEligible(qdtuState.claimCode)) { showToast(QDTU_MSG_NOT_ELIGIBLE, 'error'); return; }
     // Chặn trùng QĐ tạm ứng của vụ việc (Chờ duyệt / Chờ chi trả / Hoàn thành) - MSG-ERR-BTNN-KP-012
     const dup = kpcdQdtuDup(qdtuState.claimCode, qdtuState.id);
     if (dup) { showToast(`Vụ việc ${kpcdVv(dup.ycbtCode) || dup.ycbtCode} đã có Quyết định tạm ứng kinh phí ${dup.code} ở trạng thái ${kpNormStatus(dup.status)}. Không thể tạo Quyết định tạm ứng mới.`, 'error'); return; }
@@ -751,12 +760,12 @@ function qdtuOpenLookup() {
     m.className = 'qdtu-modal open'; m.id = 'qdtuLkModal';
     const f = (id, label) => `<div class="qdtu-gqx-field"><label class="form-label" for="${id}">${label}</label><input type="text" class="form-control" id="${id}" onkeydown="if(event.key==='Enter') qdtuRenderLookup()"></div>`;
     m.innerHTML = `<div class="qdtu-modal-box qdtu-qs-box" style="width:1000px;">
-        <div class="qdtu-qs-head"><div><div class="qdtu-qs-head-title"><span class="qdtu-qs-head-ico"><i class="fa-solid fa-magnifying-glass-plus"></i></span><span>TÌM KIẾM NÂNG CAO MÃ HỒ SƠ GIẢI QUYẾT BỒI THƯỜNG</span></div>
+        <div class="qdtu-qs-head"><div><div class="qdtu-qs-head-title"><span class="qdtu-qs-head-ico"><i class="fa-solid fa-magnifying-glass-plus"></i></span><span>TÌM KIẾM NÂNG CAO MÃ HỒ SƠ</span></div>
             <div class="qdtu-qs-sub">Hồ sơ có đề nghị tạm ứng, trạng thái: ${QDTU_ELIGIBLE.map(qdtuEsc).join(', ')}</div></div>
             <button type="button" class="qdtu-qs-head-close" onclick="qdtuCloseLookup()" title="Đóng">&times;</button></div>
         <div class="qdtu-qs-body qdtu-gqx-body">
             <div class="qdtu-gqx-sec">
-                <div class="qdtu-gqx-grid2" style="grid-template-columns:repeat(4,1fr);">${f('qdtuLkVv', 'Mã vụ việc')}${f('qdtuLkCode', 'Mã hồ sơ giải quyết bồi thường')}${f('qdtuLkNyc', 'Tên cá nhân/Tổ chức yêu cầu')}${f('qdtuLkNbth', 'Tên cá nhân/Tổ chức bị thiệt hại')}</div>
+                <div class="qdtu-gqx-grid2" style="grid-template-columns:repeat(4,1fr);">${f('qdtuLkVv', 'Mã vụ việc')}${f('qdtuLkCode', 'Mã hồ sơ')}${f('qdtuLkNyc', 'Tên cá nhân/Tổ chức yêu cầu')}${f('qdtuLkNbth', 'Tên cá nhân/Tổ chức bị thiệt hại')}</div>
                 <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:12px;"><button type="button" class="btn btn-secondary btn-sm" onclick="['qdtuLkVv','qdtuLkCode','qdtuLkNyc','qdtuLkNbth'].forEach(function(x){document.getElementById(x).value='';}); qdtuRenderLookup();"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button><button type="button" class="btn btn-primary btn-sm" onclick="qdtuRenderLookup()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button></div>
             </div>
             <div class="qdtu-gqx-sec"><div style="overflow-x:auto;"><table class="qdtu-lk-table"><thead><tr><th style="text-align:center; width:48px;">STT</th><th>Mã vụ việc</th><th>Mã hồ sơ GQBT</th><th>Tên cá nhân/Tổ chức yêu cầu</th><th>Tên cá nhân/Tổ chức bị thiệt hại</th><th style="text-align:right;">Số tiền đề nghị tạm ứng (VNĐ)</th><th style="text-align:center;">Trạng thái</th><th style="text-align:center;">Thao tác</th></tr></thead><tbody id="qdtuLkBody"></tbody></table></div>
@@ -798,7 +807,7 @@ function qdtuRenderLookup(keep) {
 }
 // HyperLink Mã hồ sơ GQBT: mở Chi tiết hồ sơ tại Giải quyết yêu cầu bồi thường (tab mới, chỉ xem)
 function kpcdOpenClaim(code) {
-    const url = `quan_ly_boi_thuong.html?id=${encodeURIComponent(code)}&from=kinh_phi&returnUrl=${encodeURIComponent('quan_ly_kinh_phi_boi_thuong.html')}`;
+    const url = `quan_ly_boi_thuong.html?id=${encodeURIComponent(code)}&from=kinh_phi&returnUrl=${encodeURIComponent('quan_ly_kinh_phi_boi_thuong.html?v=1&menu=' + kpMenu())}`;
     window.open(url, '_blank');
 }
 
@@ -868,7 +877,7 @@ function qdtuViewDoc(id) {
 }
 
 // =====================================================================================
-// POPUP TRÌNH KÝ QUYẾT ĐỊNH TẠM ỨNG KINH PHÍ BỒI THƯỜNG (bố cục như Trình ký Quyết định GQBT)
+// POPUP TRÌNH KÝ QUYẾT ĐỊNH TẠM ỨNG KINH PHÍ (bố cục như Trình ký Quyết định GQBT)
 // =====================================================================================
 const QDTU_SIG = { w: 230, h: 90 };
 let qdtuSg = null;
@@ -883,7 +892,7 @@ function qdtuEnsureSignModal() {
     m.innerHTML = `<div class="qdtu-modal-box qdtu-qs-box" id="qdtuSgBox">
         <div class="qdtu-qs-head">
             <div>
-                <div class="qdtu-qs-head-title"><span class="qdtu-qs-head-ico"><i class="fa-solid fa-file-signature"></i></span><span>TRÌNH KÝ QUYẾT ĐỊNH TẠM ỨNG KINH PHÍ BỒI THƯỜNG</span></div>
+                <div class="qdtu-qs-head-title"><span class="qdtu-qs-head-ico"><i class="fa-solid fa-file-signature"></i></span><span>TRÌNH KÝ QUYẾT ĐỊNH TẠM ỨNG KINH PHÍ</span></div>
                 <div class="qdtu-qs-sub">Mã vụ việc: <strong id="qdtuSgSubCode" style="color:var(--primary-color);">--</strong><span class="qdtu-qs-dot">•</span> Người yêu cầu: <span id="qdtuSgSubNyc" style="font-weight:600; color:#334155;">--</span><span class="qdtu-qs-dot">•</span> Đơn vị: <span id="qdtuSgSubUnit" style="font-weight:500; color:#475569;">--</span></div>
             </div>
             <button type="button" class="qdtu-qs-head-close" onclick="qdtuCloseSign()" title="Đóng">&times;</button>
@@ -996,8 +1005,8 @@ function qdtuOpenSign(form) {
     qdtuEl('qdtuSgCanCu').value = prev.canCu || QDTU_CAN_CU_DEFAULT.join('\n');
     qdtuEl('qdtuSgNoiNhan').value = prev.noiNhan || qdtuNoiNhanDefault(form);
     qdtuEl('qdtuSgDieu2Hint').innerText = qdtuDiffRecipient(form)
-        ? 'Người nhận tạm ứng khác Người yêu cầu bồi thường: văn bản có Điều 2.'
-        : 'Người nhận tạm ứng là Người yêu cầu bồi thường: văn bản không có Điều 2, các Điều sau đánh số lại; "Như Điều 5" tự đổi thành "Như Điều 4".';
+        ? 'Người nhận tạm ứng khác Người yêu cầu: văn bản có Điều 2.'
+        : 'Người nhận tạm ứng là Người yêu cầu: văn bản không có Điều 2, các Điều sau đánh số lại; "Như Điều 5" tự đổi thành "Như Điều 4".';
     qdtuEl('qdtuSgOffNo').value = ''; qdtuEl('qdtuSgOffDate').value = '';
     const leaders = [];
     levels.forEach(lv => lv.leaders.forEach(u => { if (!leaders.includes(u)) leaders.push(u); }));
@@ -1260,7 +1269,7 @@ function qdtuUpsertRecord(form, sign) {
     qdtuEnsureMockClaim(item);
     return item;
 }
-// Trình Lãnh đạo: mỗi cấp chọn Lãnh đạo và đặt chữ ký -> "Chờ duyệt", Loại trình "Quyết định tạm ứng kinh phí bồi thường"
+// Trình Lãnh đạo: mỗi cấp chọn Lãnh đạo và đặt chữ ký -> "Chờ duyệt", Loại trình "Quyết định tạm ứng kinh phí"
 function qdtuSgSubmit() {
     let ok = true; let first = null;
     qdtuSg.levels.forEach((lv, i) => {
@@ -1451,7 +1460,7 @@ function qdtuLdSubmit() {
             item.digitalSign = { by: qdtuUserName(me), at, cert: s.digitalSign.cert };
             item.approvedDate = at; item.approvedLeader = qdtuUserName(me); item.approvedLeaderId = me; item.leaderOpinion = fullNote;
             qdtuHist(item, 'Ký duyệt', `${QDTU_KIND}: ký duyệt cấp ${qdtuUnitName(unitId)}.${fullNote ? ' Ý kiến: ' + fullNote : ''}`);
-            qdtuHist(item, 'Ký số', `Ký số Quyết định tạm ứng kinh phí bồi thường. ${s.digitalSign.cert}.`);
+            qdtuHist(item, 'Ký số', `Ký số Quyết định tạm ứng kinh phí. ${s.digitalSign.cert}.`);
             msg = `Đã ký duyệt ${QDTU_KIND}. Đề nghị tạm ứng chuyển [${QDTU_ST.PAY}].`;
         }
     } else {
@@ -1484,12 +1493,12 @@ function qdtuView(id) {
     const grid = x => `<div class="qdtu-dtl-grid">${x}</div>`;
     const cash = f.payMethod === QDTU_CASH;
     const general = grid(it('Mã đề nghị', qdtuEsc(item.code)) + it('Loại đề nghị', 'Đề nghị tạm ứng') + it('Trạng thái', `<span class="badge badge-info">${qdtuEsc(item.status)}</span>${item.status === QDTU_ST.REVIEW ? `<span class="qdtu-sub">${qdtuEsc(QDTU_KIND)}</span>` : ''}`)
-        + it('Mã hồ sơ', qdtuEsc(item.ycbtCode)) + it('Mã vụ việc', qdtuEsc(qdtuVv(item.ycbtCode))) + it('Cơ quan giải quyết bồi thường', qdtuEsc(f.unitName)) + it('Ngày đề nghị', qdtuEsc(item.date)) + it('Cán bộ xử lý', qdtuEsc(item.user)));
+        + it('Mã hồ sơ', qdtuEsc(item.ycbtCode)) + it('Mã vụ việc', qdtuEsc(qdtuVv(item.ycbtCode))) + it('Cơ quan giải quyết', qdtuEsc(f.unitName)) + it('Ngày đề nghị', qdtuEsc(item.date)) + it('Cán bộ xử lý', qdtuEsc(item.user)));
     const rej = item.status === QDTU_ST.REJECT && item.qdtuReturned ? grid(it('Người từ chối', qdtuEsc(qdtuUserName(item.qdtuReturned.by))) + it('Thời điểm', qdtuEsc(item.qdtuReturned.at)) + it('Lý do từ chối', qdtuEsc(item.qdtuReturned.reason))) : '';
     const nyc = grid(it('Họ và tên/Tên tổ chức', qdtuEsc(f.nycName)) + it('Số định danh cá nhân/hộ chiếu/giấy tờ đi lại có giá trị quốc tế/Mã số của tổ chức', qdtuEsc(f.nycIdNo)) + it('Địa chỉ', qdtuEsc(f.nycAddress)));
     const money = grid(it('Thiệt hại về tinh thần', qdtuFmt(f.tinhThan) + ' đồng') + it('Thiệt hại khác có thể tính được ngay mà không cần xác minh', qdtuFmt(f.khac) + ' đồng') + it('Tỷ lệ tạm ứng', qdtuRateText(f.rate) + '%')
-        + it('Số tiền tạm ứng kinh phí bồi thường', qdtuFmt(f.amount) + ' đồng') + it('Viết bằng chữ', qdtuEsc(qdtuBangChu(Number(f.amount) || 0))));
-    const rec = grid(it('Họ và tên người nhận tạm ứng kinh phí bồi thường', qdtuEsc(f.recName)) + it('Số định danh cá nhân/hộ chiếu/giấy tờ đi lại có giá trị quốc tế', qdtuEsc(f.recIdNo)) + it('Địa chỉ', qdtuEsc(f.recAddress)));
+        + it('Số tiền tạm ứng kinh phí', qdtuFmt(f.amount) + ' đồng') + it('Viết bằng chữ', qdtuEsc(qdtuBangChu(Number(f.amount) || 0))));
+    const rec = grid(it('Họ và tên người nhận tạm ứng kinh phí', qdtuEsc(f.recName)) + it('Số định danh cá nhân/hộ chiếu/giấy tờ đi lại có giá trị quốc tế', qdtuEsc(f.recIdNo)) + it('Địa chỉ', qdtuEsc(f.recAddress)));
     const pay = grid(it('Phương thức nhận tiền', qdtuEsc(f.payMethod)) + (cash ? it('Cơ quan chi trả tiền mặt', qdtuEsc(f.cashPlace)) : it('Chủ tài khoản', qdtuEsc(f.accHolder)) + it('Số tài khoản ngân hàng', qdtuEsc(f.account)) + it('Ngân hàng', qdtuEsc([f.bank, f.branch].filter(Boolean).join(' - ')))));
     const docLink = s.method === 'Ký ngoài' ? qdtuEsc(s.signedFile) : `<a href="javascript:void(0)" onclick="qdtuViewDoc('${item.id}')">${qdtuEsc(s.signedFile || (s.docFile || {}).name || qdtuDocBaseName(item.ycbtCode) + '.doc')}</a>`;
     const dec = grid(it('Hình thức ký', s.method === 'Ký ngoài' ? 'Ký ngoài' : 'Ký số trên hệ thống') + it(s.method === 'Ký ngoài' ? 'Số quyết định' : 'Số, ký hiệu văn bản', qdtuEsc(s.docNo)) + it(s.method === 'Ký ngoài' ? 'Ngày quyết định' : 'Ngày văn bản', qdtuEsc(s.docDate))
@@ -1508,17 +1517,17 @@ function qdtuView(id) {
     const m = document.createElement('div');
     m.className = 'qdtu-modal open'; m.id = 'qdtuViewModal';
     m.innerHTML = `<div class="qdtu-modal-box qdtu-qs-box" style="width:980px;">
-        <div class="qdtu-qs-head"><div><div class="qdtu-qs-head-title"><span class="qdtu-qs-head-ico"><i class="fa-solid fa-file-invoice-dollar"></i></span><span>CHI TIẾT QUYẾT ĐỊNH TẠM ỨNG KINH PHÍ BỒI THƯỜNG</span></div>
+        <div class="qdtu-qs-head"><div><div class="qdtu-qs-head-title"><span class="qdtu-qs-head-ico"><i class="fa-solid fa-file-invoice-dollar"></i></span><span>CHI TIẾT QUYẾT ĐỊNH TẠM ỨNG KINH PHÍ</span></div>
             <div class="qdtu-qs-sub">Mã đề nghị: <strong style="color:var(--primary-color);">${qdtuEsc(item.code)}</strong><span class="qdtu-qs-dot">•</span> Người yêu cầu: <span style="font-weight:600; color:#334155;">${qdtuEsc(item.nycName)}</span></div></div>
             <button type="button" class="qdtu-qs-head-close" onclick="qdtuCloseView()" title="Đóng">&times;</button></div>
         <div class="qdtu-qs-body qdtu-gqx-body">
             ${sec('fa-circle-info', 'Thông tin chung', general)}
             ${rej ? sec('fa-triangle-exclamation', 'Lý do bị từ chối', rej) : ''}
-            ${sec('fa-user', 'Thông tin người yêu cầu bồi thường', nyc)}
-            ${sec('fa-coins', 'Số tiền tạm ứng kinh phí bồi thường', money)}
+            ${sec('fa-user', 'Thông tin người yêu cầu', nyc)}
+            ${sec('fa-coins', 'Số tiền tạm ứng kinh phí', money)}
             ${sec('fa-hand-holding-dollar', 'Thông tin người nhận tạm ứng', rec)}
             ${sec('fa-money-bill-transfer', 'Phương thức chi trả tiền tạm ứng', pay)}
-            ${sec('fa-file-signature', 'Quyết định tạm ứng kinh phí bồi thường', dec)}
+            ${sec('fa-file-signature', 'Quyết định tạm ứng kinh phí', dec)}
             ${item.qdtuApproval ? qdtuLdHistoryHtml(item) : ''}
             ${paid ? sec('fa-receipt', 'Kết quả chi trả', paid) : ''}
             ${sec('fa-clock-rotate-left', 'Lịch sử xử lý', hist || '<div style="color:#64748b;">Chưa có lịch sử.</div>')}
@@ -1588,10 +1597,10 @@ function qdtuSeed() {
         ycbtCode: c.code, nycName: c.nyc, nycRole: 'Người bị thiệt hại', amount: form.amount, agency: form.unitName, advApproveTinhThan: form.tinhThan, advApproveKhac: form.khac,
         payoutMethod: 'Nhận tiền mặt', signMethod: 'Ký số', docNo: sign.docNo, docDate: sign.docDate, draftDoc: sign.docFile.name, signedFile: null, digitalSign: null,
         user: 'Nguyễn Văn Cán Bộ', status: QDTU_ST.REVIEW, qdtu: Object.assign({}, form, { sign }),
-        qdtuApproval: { kind: QDTU_KIND, path: levels.map(l => l.unitId), assignees, level: 0, steps: [], content: 'Kính trình Lãnh đạo ký Quyết định tạm ứng kinh phí bồi thường.', submittedBy: 'canbonv', submittedAt: '09:30 21/10/2026', pending: true },
+        qdtuApproval: { kind: QDTU_KIND, path: levels.map(l => l.unitId), assignees, level: 0, steps: [], content: 'Kính trình Lãnh đạo ký Quyết định tạm ứng kinh phí.', submittedBy: 'canbonv', submittedAt: '09:30 21/10/2026', pending: true },
         qdtuHistory: [
             { at: '09:20 21/10/2026', userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Tạo Quyết định tạm ứng', note: `Mã hồ sơ ${c.code}; số tiền tạm ứng 25.000.000 đồng.` },
-            { at: '09:30 21/10/2026', userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Trình ký', note: `${QDTU_KIND}. Trình ${qdtuUserName(assignees[0])} - ${qdtuUnitName(levels[0].unitId)}. Nội dung: Kính trình Lãnh đạo ký Quyết định tạm ứng kinh phí bồi thường.` }
+            { at: '09:30 21/10/2026', userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Trình ký', note: `${QDTU_KIND}. Trình ${qdtuUserName(assignees[0])} - ${qdtuUnitName(levels[0].unitId)}. Nội dung: Kính trình Lãnh đạo ký Quyết định tạm ứng kinh phí.` }
         ] };
     proposalsList.unshift(item);
     return true;
@@ -1612,7 +1621,7 @@ function qdtuDecorateTable() {
     const tbody = qdtuEl('proposalsTableBody'); if (!tbody) return;
     const isLeader = kpRole() === 'lanh-dao';
     Array.from(tbody.rows).forEach(tr => {
-        if (tr.cells.length < 11) return; // Lưới MH01 11 cột: Trạng thái = cột kề cuối, Thao tác = cột cuối
+        if (tr.cells.length < 10) return; // Lưới MH01 10 cột (đã bỏ cột Loại kinh phí khi tách menu): Trạng thái = cột kề cuối, Thao tác = cột cuối
         const stCell = tr.cells[tr.cells.length - 2], actCell = tr.cells[tr.cells.length - 1];
         const code = tr.cells[1].innerText.trim();
         const item = proposalsList.find(p => p.code === code && qdtuIs(p));
@@ -1633,7 +1642,8 @@ function qdtuEnsureToolbarButton() {
         btn.onclick = () => qdtuOpenPage();
         ref.parentNode.insertBefore(btn, ref.nextSibling);
     }
-    if (btn && ref) btn.style.display = ref.style.display === 'none' ? 'none' : 'inline-flex';
+    // Tạo QĐ tạm ứng: chỉ menu Tạm ứng kinh phí, tab Chờ xử lý, Cán bộ xử lý (Tạo thông báo chi trả: menu Chi trả tiền bồi thường)
+    if (btn) btn.style.setProperty('display', (kpActiveTab === 'pending' && kpRole() !== 'lanh-dao' && (typeof kpMenu !== 'function' || kpMenu() === 'tam-ung')) ? 'inline-flex' : 'none', 'important');
 }
 
 // ---------------- Bọc các chức năng sẵn có của màn hình ----------------

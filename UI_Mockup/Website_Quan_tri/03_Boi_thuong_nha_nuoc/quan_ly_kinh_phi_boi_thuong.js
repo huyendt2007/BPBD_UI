@@ -74,7 +74,7 @@ let mockClaims = [
         agency: "Sở Tư pháp Hải Phòng",
         field: "Trong hoạt động tố tụng hành chính",
         amount: 250000000,
-        status: "Chờ thực thi",
+        status: "Chờ chi trả",
         advanceRecKenh: "chuyen-khoan",
         advanceBankUser: "LÊ VĂN D",
         advanceBankAccount: "123456789012",
@@ -106,7 +106,7 @@ let mockClaims = [
         agency: "Sở Tư pháp Hà Nội",
         field: "Trong hoạt động quản lý hành chính",
         amount: 300000000,
-        status: "Chờ thực thi",
+        status: "Chờ chi trả",
 
         // Damage breakdown
         selectedDamages: {
@@ -161,7 +161,7 @@ let mockClaims = [
         agency: "Sở Tư pháp Hà Nội",
         field: "Trong hoạt động quản lý hành chính",
         amount: 280000000,
-        status: "Chờ thực thi",
+        status: "Chờ chi trả",
         advanceRecKenh: "chuyen-khoan",
         advanceBankUser: "NGUYỄN THỊ MAI",
         advanceBankAccount: "190223344556",
@@ -280,22 +280,22 @@ let proposalsList = [
         nycRole: "Người bị thiệt hại",
         amount: 90000000,
         user: "Lê Văn Nam",
-        date: "15/09/2026",
+        date: "01/10/2026",
         status: "Chờ thu hồi",
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tài chính Hà Nội",
         notes: "Khoản kinh phí chi trả thừa cần thu hồi do Quyết định sửa chữa giảm số tiền bồi thường.",
-        payoutDate: "16/09/2026",
+        payoutDate: "02/10/2026",
         payoutAmountReal: 90000000,
         payoutMethod: "Nhận qua chuyển khoản",
         payoutRecName: "NGUYỄN THỊ MAI",
         recovery: {
             basisDecisionNo: "21/QĐ-SCBSGQBT",
-            basisDecisionDate: "15/09/2026",
+            basisDecisionDate: "08/10/2026",
             amountToRecover: 90000000,
             amountRecovered: 30000000,
             amountRemain: 60000000,
-            recordDate: "18/09/2026",
+            recordDate: "12/10/2026",
             note: "Đang yêu cầu đương sự hoàn nộp 60.000.000 VNĐ tiền thừa vào kho bạc.",
             files: [{ name: "Biên lai thu hồi đợt 1", file: "Bien_lai_thu_hoi_P25.pdf" }]
         },
@@ -435,7 +435,7 @@ let proposalsList = [
         status: "Chờ chi trả",
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tư pháp Hà Nội",
-        notes: "Khoản kinh phí bồi thường đã thông báo nhận nhưng quá hạn 3 năm người yêu cầu chưa đến nhận, đủ điều kiện sung quỹ.",
+        notes: "Khoản kinh phí bồi thường đã thông báo nhận nhưng quá hạn 3 năm người yêu cầu chưa đến nhận, đủ điều kiện trả lại ngân sách nhà nước.",
         leaderOpinion: "Đồng ý cấp kinh phí bồi thường theo quyết định đã ban hành.",
         files: [{ name: "Tờ trình kinh phí Hoàng Văn H", file: "To_trinh_KPBT_H.pdf" }],
         approvedDamages: {
@@ -476,7 +476,7 @@ let proposalsList = [
         noticeNote: "Đã gửi thông báo nhận kinh phí bằng văn bản cho người yêu cầu."
     },
 
-    // ===== 7. TRẠNG THÁI: SUNG QUỸ NHÀ NƯỚC (02 bản ghi) =====
+    // ===== 7. TRẠNG THÁI: TRẢ LẠI NGÂN SÁCH NHÀ NƯỚC (02 bản ghi) =====
     {
         id: "P15",
         code: "KP-2026-015",
@@ -487,11 +487,11 @@ let proposalsList = [
         amount: 120000000,
         user: "Lê Văn Nam",
         date: "08/09/2026",
-        status: "Sung quỹ nhà nước",
+        status: "Trả lại ngân sách nhà nước",
         source: "Ngân sách địa phương (Dự phòng)",
         cqCap: "Sở Tài chính Hà Nội",
-        notes: "Khoản kinh phí bồi thường đã hoàn tất sung quỹ Nhà nước do người yêu cầu không nhận sau hạn 3 năm.",
-        leaderOpinion: "Phê duyệt sung quỹ theo đề nghị của cán bộ xử lý.",
+        notes: "Khoản kinh phí bồi thường đã hoàn tất trả lại ngân sách nhà nước do người yêu cầu không nhận sau hạn 3 năm.",
+        leaderOpinion: "Phê duyệt trả lại ngân sách nhà nước theo đề nghị của cán bộ xử lý.",
         files: [{ name: "Tờ trình cấp kinh phí Phạm Thị M", file: "To_trinh_KPBT_M.pdf" }],
         approvedDamages: {
             taiSan: 50000000,
@@ -520,12 +520,12 @@ let proposalsList = [
         amount: 80000000,
         user: "Nguyễn Văn Thụ",
         date: "14/09/2026",
-        status: "Sung quỹ nhà nước",
+        status: "Trả lại ngân sách nhà nước",
         source: "Tạm ứng kinh phí Bộ Tài chính",
         cqCap: "Sở Tư pháp Hà Nội",
-        notes: "Khoản tạm ứng đã quá hạn 3 năm, đã thực hiện nộp sung quỹ Nhà nước.",
-        leaderOpinion: "Phê duyệt sung quỹ theo tờ trình số 12/TTr-KP.",
-        files: [{ name: "Tờ trình sung quỹ P24", file: "To_trinh_sung_quy_P24.pdf" }],
+        notes: "Khoản tạm ứng đã quá hạn 3 năm, đã thực hiện nộp trả lại ngân sách nhà nước.",
+        leaderOpinion: "Phê duyệt trả lại ngân sách nhà nước theo tờ trình số 12/TTr-KP.",
+        files: [{ name: "Tờ trình trả lại ngân sách nhà nước P24", file: "To_trinh_sung_quy_P24.pdf" }],
         payoutAmountReal: 0,
         payoutRecName: "Phạm Văn C",
         noticeReceivedDate: "10/02/2023",
@@ -948,7 +948,7 @@ function sortKinhPhiTable(col) {
 }
 
 function updateKpSortIcons() {
-    const cols = ['stt', 'code', 'type', 'ycbtCode', 'nycName', 'amount', 'date', 'status'];
+    const cols = ['stt', 'code', 'ycbtCode', 'nycName', 'amount', 'date', 'status'];
     cols.forEach(c => {
         const icon = document.getElementById(`sortIcon_${c}`);
         if (!icon) return;
@@ -1026,6 +1026,12 @@ function syncFromLocalStorage() {
     // Đồng nhất nhãn Phương thức chi trả: Nhận tiền mặt / Nhận qua chuyển khoản (dữ liệu cũ đã lưu)
     const PAY_LEGACY = { 'Chi trả trực tiếp bằng tiền mặt': 'Nhận tiền mặt', 'Tiền mặt': 'Nhận tiền mặt', 'Chi trả qua chuyển khoản': 'Nhận qua chuyển khoản', 'Chuyển khoản qua ngân hàng': 'Nhận qua chuyển khoản' };
     proposalsList.forEach(p => { if (p && PAY_LEGACY[p.payoutMethod]) p.payoutMethod = PAY_LEGACY[p.payoutMethod]; });
+    // Đổi tên trạng thái: "Sung quỹ nhà nước" / "Đã sung quỹ" (dữ liệu cũ đã lưu) -> "Trả lại ngân sách nhà nước"
+    const TLNS_LEGACY = ['Sung quỹ nhà nước', 'Đã sung quỹ'];
+    if (proposalsList.some(p => p && TLNS_LEGACY.includes(p.status))) {
+        proposalsList.forEach(p => { if (p && TLNS_LEGACY.includes(p.status)) p.status = 'Trả lại ngân sách nhà nước'; });
+        localStorage.setItem('proposalsList', JSON.stringify(proposalsList));
+    }
     migrateLegacyDraftProposals();
 
     // 2. Load claimsList and map to mockClaims
@@ -1274,6 +1280,8 @@ function checkAndHandleUrlParams() {
     }
 
     if (prop) {
+        // Bản ghi thuộc menu con còn lại (Tạm ứng kinh phí / Chi trả tiền bồi thường): chuyển menu con theo loại bản ghi
+        kpSyncMenuTo(prop);
         if (actionType === 'payout' || actionType === 'pay') {
             payProposalDirect(prop.id);
         } else if (actionType === 'update') {
@@ -1447,7 +1455,7 @@ function updateBudgetStats() {
             totalCapPhat += (p.payoutAmountReal || amt);
         } else if (p.status === 'Chờ chi trả') {
             totalChoChiTra += amt;
-        } else if (p.status === 'Sung quỹ nhà nước' || p.status === 'Đã sung quỹ') {
+        } else if (p.status === 'Trả lại ngân sách nhà nước' || p.status === 'Đã sung quỹ') {
             totalSungQuy += (p.treasuryAmount || amt);
         }
     });
@@ -1512,6 +1520,7 @@ function addFilesToList(currentFiles, fileList) {
     return files;
 }
 
+// Hạn nhận tiền = Ngày người yêu cầu nhận thông báo (noticeReceivedDate, Cán bộ nhập 01 lần) + 03 năm; chưa nhập thông báo thì chưa tính hạn
 function getTreasuryInfo(item) {
     const noticeDate = parseDateViGlobal(item.noticeReceivedDate);
     const deadline = noticeDate ? addYearsToDate(noticeDate, 3) : null;
@@ -1536,7 +1545,7 @@ function renderTreasuryWarningPanel() {
     const panel = document.getElementById('treasuryWarningPanel');
     if (!panel) return;
 
-    const eligible = proposalsList.filter(p => getTreasuryInfo(p).isEligible);
+    const eligible = proposalsList.filter(p => kpInMenu(p) && getTreasuryInfo(p).isEligible);
 
     if (eligible.length === 0) {
         panel.style.display = 'none';
@@ -1552,7 +1561,7 @@ function renderTreasuryWarningPanel() {
                 <div>
                     <div style="font-weight:800; color:#9a3412;">Cảnh báo khoản chi đã quá hạn 3 năm</div>
                     <div style="font-size:12.5px; color:#9a3412; margin-top:3px;">
-                        ${eligible.length} khoản Chờ chi trả đủ điều kiện xử lý sung quỹ, tổng số tiền ${eligibleAmt.toLocaleString('vi-VN')} VNĐ (Theo Điều 45 Luật TNBTCNN).
+                        ${eligible.length} khoản Chờ chi trả đủ điều kiện xử lý trả lại ngân sách nhà nước, tổng số tiền ${eligibleAmt.toLocaleString('vi-VN')} VNĐ (Theo Điều 45 Luật TNBTCNN).
                     </div>
                 </div>
             </div>
@@ -1563,7 +1572,7 @@ function renderTreasuryWarningPanel() {
     `;
 }
 
-// Render dynamic content for Block 9: Theo dõi hạn nhận kinh phí / Sung quỹ
+// Render dynamic content for Block 9: Theo dõi hạn nhận kinh phí / Trả lại ngân sách nhà nước
 function renderTreasuryTrackingBlock(item) {
     const block = document.getElementById('block9_TreasuryTracking');
     if (!block) return;
@@ -1578,7 +1587,7 @@ function renderTreasuryTrackingBlock(item) {
     if (!item) return;
 
     const info = getTreasuryInfo(item);
-    const isSungQuy = (item.status === 'Sung quỹ nhà nước' || item.status === 'Đã sung quỹ');
+    const isSungQuy = (item.status === 'Trả lại ngân sách nhà nước' || item.status === 'Đã sung quỹ');
 
     if (unpaidEl) {
         const unpaidAmt = isSungQuy ? (item.treasuryAmount || info.unpaid || 0) : info.unpaid;
@@ -1593,15 +1602,15 @@ function renderTreasuryTrackingBlock(item) {
     let daysText = '-';
 
     if (isSungQuy) {
-        statusText = 'Đã sung quỹ nhà nước';
+        statusText = 'Đã trả lại ngân sách nhà nước';
         badgeClass = 'badge badge-success';
-        daysText = item.treasuryForfeitDate ? `Đã sung quỹ (${item.treasuryForfeitDate})` : 'Đã sung quỹ';
+        daysText = item.treasuryForfeitDate ? `Đã trả lại ngân sách nhà nước (${item.treasuryForfeitDate})` : 'Đã sung quỹ';
     } else if (!item.noticeReceivedDate) {
         statusText = 'Chưa gửi thông báo';
         badgeClass = 'badge badge-draft';
         daysText = '-';
     } else if (info.isEligible) {
-        statusText = 'Đã quá hạn 3 năm (Đủ điều kiện sung quỹ)';
+        statusText = 'Đã quá hạn 3 năm (Đủ điều kiện trả lại ngân sách nhà nước)';
         badgeClass = 'badge badge-danger';
         daysText = `Quá hạn ${Math.abs(info.daysLeft)} ngày`;
     } else if (info.isWarning) {
@@ -1656,17 +1665,17 @@ function renderTreasuryTrackingBlock(item) {
 
     if (badgeEl) {
         badgeEl.className = badgeClass;
-        badgeEl.innerText = isSungQuy ? 'Đã sung quỹ nhà nước' : (info.isEligible ? 'Đã quá hạn 3 năm' : (info.isWarning ? 'Sắp đến hạn' : (item.noticeReceivedDate ? 'Trong hạn 3 năm' : 'Chưa kích hoạt')));
+        badgeEl.innerText = isSungQuy ? 'Đã trả lại ngân sách nhà nước' : (info.isEligible ? 'Đã quá hạn 3 năm' : (info.isWarning ? 'Sắp đến hạn' : (item.noticeReceivedDate ? 'Trong hạn 3 năm' : 'Chưa kích hoạt')));
     }
 }
 
-// Cột Hạn nhận / Sung quỹ trên Bảng MH01 chuẩn 5 trạng thái theo SRS Mục 4.3.3.2.1 dòng 95:
+// Cột Hạn nhận / Trả lại ngân sách nhà nước trên Bảng MH01 chuẩn 5 trạng thái theo SRS Mục 4.3.3.2.1 dòng 95:
 function renderTreasuryCell(item, info = getTreasuryInfo(item)) {
-    const isSungQuy = (item.status === 'Sung quỹ nhà nước' || item.status === 'Đã sung quỹ');
+    const isSungQuy = (item.status === 'Trả lại ngân sách nhà nước' || item.status === 'Đã sung quỹ');
     if (isSungQuy) {
         const forfeitDate = item.treasuryForfeitDate || item.date || '-';
         return `
-            <div style="font-weight:700; color:#7c3aed;"><i class="fa-solid fa-building-columns"></i> Đã sung quỹ</div>
+            <div style="font-weight:700; color:#7c3aed;"><i class="fa-solid fa-building-columns"></i> Đã trả lại ngân sách nhà nước</div>
             <div style="font-size:11.5px; color:#64748b;">${forfeitDate !== '-' ? `Ngày: ${forfeitDate}` : '-'}</div>
         `;
     }
@@ -1700,12 +1709,12 @@ function filterTreasuryEligible() {
     currentPage = 1;
     if (!proposalsList.some(p => getTreasuryInfo(p).isEligible)) {
         showTreasuryEligibleOnly = false;
-        showToast('Không có khoản nào đủ điều kiện sung quỹ.', 'info');
+        showToast('Không có khoản nào đủ điều kiện trả lại ngân sách nhà nước.', 'info');
         renderProposalsTable();
         return;
     }
     renderProposalsTable();
-    showToast('Đang hiển thị các khoản đủ điều kiện sung quỹ.', 'info');
+    showToast('Đang hiển thị các khoản đủ điều kiện trả lại ngân sách nhà nước.', 'info');
 }
 
 function openLinkedClaimDetail(ycbtCode) {
@@ -1719,7 +1728,7 @@ function openLinkedClaimDetail(ycbtCode) {
         window.location.href = courtUrl;
         return;
     }
-    const detailUrl = `quan_ly_boi_thuong.html?id=${encodeURIComponent(ycbtCode)}&from=kinh_phi&returnUrl=${encodeURIComponent('quan_ly_kinh_phi_boi_thuong.html')}`;
+    const detailUrl = `quan_ly_boi_thuong.html?id=${encodeURIComponent(ycbtCode)}&from=kinh_phi&returnUrl=${encodeURIComponent('quan_ly_kinh_phi_boi_thuong.html?v=1&menu=' + kpMenu())}`;
     const shellDetailUrl = detailUrl;
     const activeClaimUrl = 'quan_ly_boi_thuong.html';
 
@@ -1744,7 +1753,7 @@ function forfeitProposalDirect(id) {
     if (!item) return;
     const info = getTreasuryInfo(item);
     if (!info.isEligible) {
-        showToast('Khoản này chưa đủ điều kiện sung quỹ (chưa quá thời hạn 03 năm kể từ ngày nhận thông báo).', 'warning');
+        showToast('Khoản này chưa đủ điều kiện trả lại ngân sách nhà nước (chưa quá thời hạn 03 năm kể từ ngày người yêu cầu nhận thông báo).', 'warning');
         return;
     }
 
@@ -1778,11 +1787,11 @@ function renderPayoutTreasuryResult(item) {
     let color = '#a16207';
     let icon = 'fa-clock';
     if (item.status === 'Đã sung quỹ') {
-        title = 'Đã sung quỹ Nhà nước';
+        title = 'Đã trả lại ngân sách nhà nước';
         color = '#15803d';
         icon = 'fa-circle-check';
     } else if (info.isEligible) {
-        title = 'Đủ điều kiện lập đề nghị sung quỹ';
+        title = 'Đủ điều kiện lập đề nghị trả lại ngân sách nhà nước';
         color = '#b91c1c';
         icon = 'fa-triangle-exclamation';
     }
@@ -1799,17 +1808,17 @@ function renderPayoutTreasuryResult(item) {
                 <div style="font-weight:800; color:#334155;">${info.unpaid.toLocaleString('vi-VN')} VNĐ</div>
             </div>
             <div>
-                <div style="color:var(--text-muted);">Số tiền sung quỹ</div>
+                <div style="color:var(--text-muted);">Số tiền trả lại ngân sách nhà nước</div>
                 <div style="font-weight:800; color:${color};">${treasuryAmount.toLocaleString('vi-VN')} VNĐ</div>
             </div>
             <div>
-                <div style="color:var(--text-muted);">Ngày sung quỹ</div>
+                <div style="color:var(--text-muted);">Ngày trả lại ngân sách nhà nước</div>
                 <div style="font-weight:700; color:#334155;">${item.treasuryForfeitDate || '-'}</div>
             </div>
         </div>
         <div style="font-size:12.5px; color:#475569; margin-top:10px;">
             <strong>Căn cứ:</strong> ${item.treasuryReason || `Quá hạn 3 năm kể từ ngày nhận thông báo (${item.noticeReceivedDate}), hạn nhận kinh phí ${info.deadlineText}.`}
-            ${item.treasuryVoucherNo ? `<div style="margin-top:6px;"><strong>Chứng từ sung quỹ:</strong> ${item.treasuryVoucherNo}</div>` : ''}
+            ${item.treasuryVoucherNo ? `<div style="margin-top:6px;"><strong>Chứng từ trả lại ngân sách nhà nước:</strong> ${item.treasuryVoucherNo}</div>` : ''}
         </div>
     `;
 }
@@ -1846,14 +1855,14 @@ function previewNoticeTrackingDeadline() {
     const deadline = noticeDate ? addYearsToDate(noticeDate, 3) : null;
     deadlineInput.value = deadline ? formatDateViGlobal(deadline) : '';
     if (!deadline) {
-        hint.innerText = 'Sau khi lưu ngày nhận thông báo, hệ thống sẽ bắt đầu tính hạn 3 năm để cảnh báo sung quỹ nếu khoản chi vẫn ở trạng thái Chờ chi trả.';
+        hint.innerText = 'Sau khi lưu ngày người yêu cầu nhận thông báo, hệ thống sẽ bắt đầu tính hạn 3 năm để cảnh báo trả lại ngân sách nhà nước nếu khoản chi vẫn ở trạng thái Chờ chi trả.';
         hint.style.color = '#9a3412';
         return;
     }
 
     const daysLeft = diffDays(TREASURY_DEMO_TODAY, deadline);
     if (daysLeft < 0) {
-        hint.innerText = `Đã quá hạn ${Math.abs(daysLeft)} ngày so với mốc 3 năm. Nếu hồ sơ vẫn Chờ chi trả, có thể thực hiện sung quỹ.`;
+        hint.innerText = `Đã quá hạn ${Math.abs(daysLeft)} ngày so với mốc 3 năm. Nếu hồ sơ vẫn Chờ chi trả, có thể thực hiện trả lại ngân sách nhà nước.`;
         hint.style.color = '#b91c1c';
     } else {
         hint.innerText = `Còn ${daysLeft} ngày đến mốc 3 năm kể từ ngày người yêu cầu nhận thông báo.`;
@@ -1889,7 +1898,7 @@ function renderNoticeTrackingSection(item, forceEditing = null) {
     if (!section || !item) return;
 
     const block8 = document.getElementById('block8_NoticeTracking');
-    const shouldShow = item.status === 'Chờ chi trả' || item.status === 'Chi trả một phần' || item.status === 'Hoàn thành' || item.status === 'Sung quỹ nhà nước' || item.status === 'Đã sung quỹ' || !!item.noticeReceivedDate;
+    const shouldShow = item.status === 'Chờ chi trả' || item.status === 'Chi trả một phần' || item.status === 'Hoàn thành' || item.status === 'Trả lại ngân sách nhà nước' || item.status === 'Đã sung quỹ' || !!item.noticeReceivedDate;
     if (!shouldShow) {
         if (block8) block8.style.display = 'none';
         section.style.display = 'none';
@@ -1942,8 +1951,8 @@ function renderNoticeTrackingSection(item, forceEditing = null) {
 
     if (canMaintainNotice) {
         if (hasNotice && !editing) {
-            // View mode with existing notice data: Show "Cập nhật thông báo"
-            if (btnEdit) btnEdit.style.display = 'inline-flex';
+            // View mode with existing notice data: chỉ xem (thông tin thông báo nhập 01 lần, không sửa sau khi lưu)
+            if (btnEdit) btnEdit.style.display = 'none';
             if (btnSave) btnSave.style.display = 'none';
             if (btnCancel) btnCancel.style.display = 'none';
         } else if (hasNotice && editing) {
@@ -1966,7 +1975,7 @@ function renderNoticeTrackingSection(item, forceEditing = null) {
 
 function editNoticeTracking() {
     const item = proposalsList.find(p => p.id === selectedProposalId);
-    if (!item) return;
+    if (!item || item.noticeReceivedDate) return; // Thông tin thông báo nhập 01 lần, không sửa sau khi lưu
     clearFieldErrors();
     const section = document.getElementById('sectionNoticeTracking');
     if (section) section.dataset.editing = 'true';
@@ -2005,7 +2014,7 @@ function saveNoticeTracking() {
         showFieldError('noticeTrackingDate', 'Ngày không hợp lệ, vui lòng nhập dd/mm/yyyy');
         hasError = true;
     } else if (noticeDate > today) {
-        showFieldError('noticeTrackingDate', 'Ngày nhận thông báo không được lớn hơn ngày hiện tại');
+        showFieldError('noticeTrackingDate', 'Ngày người yêu cầu nhận thông báo không được lớn hơn ngày hiện tại');
         hasError = true;
     }
 
@@ -2031,7 +2040,7 @@ function saveNoticeTracking() {
     renderNoticeTrackingSection(item, false);
     renderTreasuryTrackingBlock(item);
     renderProposalsTable();
-    showToast('Lưu thông tin thông báo nhận kinh phí thành công!', 'success');
+    showToast('Lưu thông tin thông báo chi trả tiền bồi thường thành công!', 'success');
 }
 
 function renderTreasuryFile(readOnly = false) {
@@ -2050,7 +2059,7 @@ function renderTreasuryFile(readOnly = false) {
         `).join('');
         link.style.color = 'var(--text-color)';
     } else {
-        link.innerText = 'Chưa có tài liệu sung quỹ';
+        link.innerText = 'Chưa có tài liệu trả lại ngân sách nhà nước';
         link.style.color = 'var(--text-color)';
     }
 }
@@ -2102,14 +2111,14 @@ function startTreasuryForfeitFromDetail() {
     if (!item) return;
     const info = getTreasuryInfo(item);
     if (!info.isEligible) {
-        showToast('Chỉ được sung quỹ khi hồ sơ Chờ chi trả đã quá hạn 3 năm kể từ ngày nhận thông báo.', 'warning');
+        showToast('Chỉ được trả lại ngân sách nhà nước khi hồ sơ Chờ chi trả đã quá hạn 3 năm kể từ ngày người yêu cầu nhận thông báo.', 'warning');
         return;
     }
 
     // Modal title per MH04
     const modalTitleEl = document.getElementById('formProposalTitle');
     if (modalTitleEl) {
-        modalTitleEl.innerHTML = `<i class="fa-solid fa-building-columns"></i> CẬP NHẬT SUNG QUỸ NHÀ NƯỚC: ${item.code}`;
+        modalTitleEl.innerHTML = `<i class="fa-solid fa-building-columns"></i> CẬP NHẬT TRẢ LẠI NGÂN SÁCH NHÀ NƯỚC: ${item.code}`;
     }
 
     // Collapse Blocks 1 to 9 per SRS Section 4.3.3.2 (MH04)
@@ -2179,7 +2188,7 @@ function completeTreasuryForfeit() {
     const reason = document.getElementById('treasuryForfeitReason').value.trim();
 
     if (!info.isEligible) {
-        showToast('Khoản chi này không còn đủ điều kiện sung quỹ.', 'warning');
+        showToast('Khoản chi này không còn đủ điều kiện trả lại ngân sách nhà nước.', 'warning');
         return;
     }
     if (!voucherNo) {
@@ -2195,7 +2204,7 @@ function completeTreasuryForfeit() {
         return;
     }
     if (!amount || amount !== info.unpaid) {
-        showFieldError('treasuryForfeitAmount', `Số tiền sung quỹ phải bằng số tiền chưa chi ${info.unpaid.toLocaleString('vi-VN')} VNĐ`);
+        showFieldError('treasuryForfeitAmount', `Số tiền trả lại ngân sách nhà nước phải bằng số tiền chưa chi ${info.unpaid.toLocaleString('vi-VN')} VNĐ`);
         return;
     }
     if (!reason) {
@@ -2212,7 +2221,7 @@ function completeTreasuryForfeit() {
         return;
     }
 
-    const confirmTitle = 'Xác nhận hoàn thành thủ tục sung quỹ nhà nước';
+    const confirmTitle = 'Xác nhận hoàn thành thủ tục trả lại ngân sách nhà nước';
     const confirmMsg = `
         <div style="text-align: left; font-size: 13.5px; line-height: 1.6;">
             <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 12px; margin-bottom: 12px;">
@@ -2229,11 +2238,11 @@ function completeTreasuryForfeit() {
                     <strong style="color: #1E293B;">${voucherNo}</strong>
                 </div>
                 <div style="display: grid; grid-template-columns: 140px 1fr; gap: 6px; margin-bottom: 4px;">
-                    <span style="color: #64748B;">Ngày sung quỹ:</span>
+                    <span style="color: #64748B;">Ngày trả lại ngân sách nhà nước:</span>
                     <strong style="color: #1E293B;">${forfeitDateText}</strong>
                 </div>
                 <div style="display: grid; grid-template-columns: 140px 1fr; gap: 6px;">
-                    <span style="color: #64748B;">Số tiền sung quỹ:</span>
+                    <span style="color: #64748B;">Số tiền trả lại ngân sách nhà nước:</span>
                     <strong style="color: #DC2626; font-size: 15px;">${amount.toLocaleString('vi-VN')} VNĐ</strong>
                 </div>
             </div>
@@ -2241,13 +2250,13 @@ function completeTreasuryForfeit() {
                 Bạn có chắc chắn muốn xác nhận hoàn thành thủ tục nộp toàn bộ số tiền <strong style="color: #DC2626;">${amount.toLocaleString('vi-VN')} VNĐ</strong> vào ngân sách nhà nước không?
             </div>
             <div style="font-size: 12px; color: #B45309; background: #FFFBEB; border-left: 3px solid #F59E0B; padding: 8px 10px; border-radius: 4px;">
-                <i class="fa-solid fa-triangle-exclamation"></i> <strong>Lưu ý:</strong> Sau khi xác nhận, đề xuất cấp kinh phí và Vụ việc bồi thường gốc liên kết sẽ chuyển sang trạng thái <strong>Sung quỹ nhà nước</strong> và không thể điều chỉnh hoặc hoàn tác.
+                <i class="fa-solid fa-triangle-exclamation"></i> <strong>Lưu ý:</strong> Sau khi xác nhận, đề xuất cấp kinh phí và Vụ việc bồi thường gốc liên kết sẽ chuyển sang trạng thái <strong>Trả lại ngân sách nhà nước</strong> và không thể điều chỉnh hoặc hoàn tác.
             </div>
         </div>
     `;
 
     showConfirmModal(confirmMsg, () => {
-        item.status = 'Sung quỹ nhà nước';
+        item.status = 'Trả lại ngân sách nhà nước';
         item.treasuryForfeitDate = forfeitDateText;
         item.treasuryVoucherNo = voucherNo;
         item.treasuryAmount = amount;
@@ -2256,17 +2265,18 @@ function completeTreasuryForfeit() {
         item.payoutAmountReal = Math.max(0, item.amount - amount);
 
         saveProposalsToLocal();
+        kpTlnsCompleteClaim(item, forfeitDateText, amount);
         updateBudgetStats();
         closeCreateProposalForm();
-        showToast(`Cập nhật sung quỹ nhà nước thành công cho đề xuất ${item.code}!`, 'success');
+        showToast(`Cập nhật trả lại ngân sách nhà nước thành công cho đề xuất ${item.code}!`, 'success');
     }, confirmTitle);
 }
 
 // =====================================================================================
-// [kpdt] Cột lưới MH01: Loại kinh phí, Ngày trình, Hạn nhận, Sung quỹ
+// [kpdt] Cột lưới MH01: Loại kinh phí, Ngày trình, Hạn nhận, Trả lại ngân sách nhà nước
 // - Loại kinh phí: "Tạm ứng kinh phí" (Đề nghị tạm ứng / QĐ tạm ứng) | "Chi trả tiền bồi thường" (Thông báo chi trả; bản ghi cũ Cấp kinh phí bồi thường).
 // - Ngày trình: ngày Trình ký gần nhất (Ký số) hoặc ngày Ban hành văn bản (Ký ngoài); chưa trình: "-".
-// - Hạn nhận/Sung quỹ: chỉ bản ghi Chi trả tiền bồi thường; Hạn nhận = Ngày nhận thông báo + 03 năm; đã sung quỹ: ngày + số tiền sung quỹ.
+// - Hạn nhận/Trả lại ngân sách nhà nước: chỉ bản ghi Chi trả tiền bồi thường; Hạn nhận = Ngày người yêu cầu nhận thông báo + 03 năm; đã trả lại ngân sách nhà nước: ngày + số tiền trả lại ngân sách nhà nước.
 // =====================================================================================
 const KPDT_TYPE_ADV = 'Tạm ứng kinh phí';
 const KPDT_TYPE_PAY = 'Chi trả tiền bồi thường';
@@ -2275,7 +2285,7 @@ const KPDT_NOT_SUBMITTED = ['Chờ lập đề nghị', 'Chờ thông báo chi t
 const KPDT_STATUS_CLASS = {
     'Chờ lập đề nghị': 'kp-st-lap', 'Chờ thông báo chi trả': 'kp-st-tb', 'Đề nghị cấp bổ sung kinh phí': 'kp-st-bs',
     'Chờ duyệt': 'badge-review', 'Bị từ chối': 'kp-st-tc', 'Chờ chi trả': 'kp-st-ct', 'Hoàn thành': 'kp-st-ht',
-    'Sung quỹ nhà nước': 'kp-st-sq', 'Đã sung quỹ': 'kp-st-sq', 'Chờ thu hồi': 'kp-st-cth', 'Đã thu hồi': 'kp-st-dth', 'Đã hủy': 'kp-st-huy'
+    'Trả lại ngân sách nhà nước': 'kp-st-sq', 'Đã sung quỹ': 'kp-st-sq', 'Chờ thu hồi': 'kp-st-cth', 'Đã thu hồi': 'kp-st-dth', 'Đã hủy': 'kp-st-huy'
 };
 function kpdtStatusClass(st) { return KPDT_STATUS_CLASS[st] || 'badge-info'; }
 function kpdtTypeLabel(item) { return kpIsAdv(item) ? KPDT_TYPE_ADV : KPDT_TYPE_PAY; }
@@ -2291,15 +2301,15 @@ function kpdtSubmitDate(item) {
     if (item.qdtu || item.kptbDec) return '';
     return KPDT_NOT_SUBMITTED.includes(item.status) ? '' : kpdtDatePart(item.date);
 }
-// Cột "Hạn nhận/Sung quỹ" (chỉ bản ghi Chi trả tiền bồi thường; Tạm ứng kinh phí / chưa có dữ liệu: "-"):
-// - Đã sung quỹ: "Đã sung quỹ [ngày]" + số tiền sung quỹ.
-// - Chưa sung quỹ, có Ngày nhận thông báo: Hạn nhận (ngày); Chờ chi trả: dòng phụ "Còn X ngày" / "Quá hạn X ngày" + "Đủ điều kiện sung quỹ".
+// Cột "Hạn nhận/Trả lại ngân sách nhà nước" (chỉ bản ghi Chi trả tiền bồi thường; Tạm ứng kinh phí / chưa có dữ liệu: "-"):
+// - Đã trả lại ngân sách nhà nước: "Đã trả lại ngân sách nhà nước [ngày]" + số tiền trả lại ngân sách nhà nước.
+// - Chưa trả lại ngân sách nhà nước, có Ngày nhận thông báo: Hạn nhận (ngày); Chờ chi trả: dòng phụ "Còn X ngày" / "Quá hạn X ngày" + "Đủ điều kiện trả lại ngân sách nhà nước".
 function kpdtHanNhanSqHtml(item, info) {
     const none = '<span style="color:#94a3b8;">-</span>';
     if (kpIsAdv(item)) return none;
-    if (item.status === 'Sung quỹ nhà nước' || item.status === 'Đã sung quỹ') {
+    if (item.status === 'Trả lại ngân sách nhà nước' || item.status === 'Đã sung quỹ') {
         const amt = Number(item.treasuryAmount) || info.unpaid || 0;
-        return `<div style="font-weight:600;">Đã sung quỹ${item.treasuryForfeitDate ? ' ' + item.treasuryForfeitDate : ''}</div><div style="font-size:11.5px; color:#64748b;">${amt.toLocaleString('vi-VN')}</div>`;
+        return `<div style="font-weight:600;">Đã trả lại ngân sách nhà nước${item.treasuryForfeitDate ? ' ' + item.treasuryForfeitDate : ''}</div><div style="font-size:11.5px; color:#64748b;">${amt.toLocaleString('vi-VN')}</div>`;
     }
     if (!info.deadline) return none;
     let sub = '';
@@ -2308,7 +2318,7 @@ function kpdtHanNhanSqHtml(item, info) {
             ? `<div style="font-size:11.5px; color:#b91c1c; font-weight:600;">Quá hạn ${Math.abs(info.daysLeft)} ngày</div>`
             : `<div style="font-size:11.5px; color:#64748b;">Còn ${info.daysLeft} ngày</div>`;
     }
-    if (info.isEligible) sub += '<div style="font-size:11.5px; color:#b91c1c; font-weight:600;">Đủ điều kiện sung quỹ</div>';
+    if (info.isEligible) sub += '<div style="font-size:11.5px; color:#b91c1c; font-weight:600;">Đủ điều kiện trả lại ngân sách nhà nước</div>';
     return `<div style="font-weight:600;">${info.deadlineText}</div>${sub}`;
 }
 
@@ -2320,10 +2330,10 @@ function renderProposalsTable() {
 
     kpRefreshTabUi();
     // Chỉ lấy bản ghi thuộc tab đang chọn (Chờ xử lý / Đã xử lý) theo người dùng đang đăng nhập
+    // (menu con Kinh phí: chỉ 01 loại bản ghi - kpInActiveTab đã lọc theo menu, không còn bộ lọc Loại kinh phí)
     let filtered = proposalsList.filter(kpInActiveTab);
 
     const code = document.getElementById('searchProposalCode').value.trim().toLowerCase();
-    const type = document.getElementById('searchProposalType').value;
     const ycbtCode = document.getElementById('searchYcbtCode').value.trim().toLowerCase();
     const status = document.getElementById('searchProposalStatus').value;
 
@@ -2334,11 +2344,10 @@ function renderProposalsTable() {
     const toDateInput = document.getElementById('searchToDate').value;
 
     if (code) filtered = filtered.filter(item => item.code.toLowerCase().includes(code));
-    if (type) filtered = filtered.filter(item => kpdtTypeLabel(item) === type);
     if (ycbtCode) filtered = filtered.filter(item => item.ycbtCode.toLowerCase().includes(ycbtCode));
     if (status) {
-        if (status === 'Sung quỹ nhà nước') {
-            filtered = filtered.filter(item => item.status === 'Sung quỹ nhà nước' || item.status === 'Đã sung quỹ');
+        if (status === 'Trả lại ngân sách nhà nước') {
+            filtered = filtered.filter(item => item.status === 'Trả lại ngân sách nhà nước' || item.status === 'Đã sung quỹ');
         } else {
             filtered = filtered.filter(item => item.status === status);
         }
@@ -2402,10 +2411,6 @@ function renderProposalsTable() {
                 valA = a.code || '';
                 valB = b.code || '';
                 break;
-            case 'type':
-                valA = kpdtTypeLabel(a);
-                valB = kpdtTypeLabel(b);
-                break;
             case 'ycbtCode':
                 valA = a.ycbtCode || '';
                 valB = b.ycbtCode || '';
@@ -2455,7 +2460,7 @@ function renderProposalsTable() {
     const endIdx = Math.min(startIdx + pageSize, total);
 
     if (total === 0) {
-        tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy đề xuất cấp phát nào phù hợp</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; color:var(--text-muted); padding:30px;">Không tìm thấy đề xuất cấp phát nào phù hợp</td></tr>`;
         document.getElementById('currentRange').innerText = "0-0";
         renderPaginationPages(1);
         return;
@@ -2511,7 +2516,7 @@ function renderProposalsTable() {
             let fillBtn = `<button class="icon-btn edit" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ lập đề nghị cho đề xuất ở trạng thái Chờ lập đề nghị"><i class="fa-solid fa-file-signature"></i></button>`;
             let updateBtn = `<button class="icon-btn edit" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ cập nhật đề xuất ở trạng thái Bị từ chối"><i class="fa-solid fa-pen-to-square"></i></button>`;
             let payBtn = `<button class="icon-btn accept" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ thực hiện chi trả ở trạng thái Chờ chi trả"><i class="fa-solid fa-hand-holding-dollar"></i></button>`;
-            let treasuryBtn = `<button class="icon-btn" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chưa đủ điều kiện sung quỹ"><i class="fa-solid fa-building-columns"></i></button>`;
+            let treasuryBtn = `<button class="icon-btn" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chưa đủ điều kiện trả lại ngân sách nhà nước"><i class="fa-solid fa-building-columns"></i></button>`;
             let deleteBtn = `<button class="icon-btn delete" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ xóa được tờ trình ở trạng thái Chờ lập đề nghị"><i class="fa-regular fa-trash-can"></i></button>`;
 
             if (item.status === 'Chờ lập đề nghị') {
@@ -2523,24 +2528,23 @@ function renderProposalsTable() {
                 payBtn = `<button class="icon-btn accept" title="Thực hiện chi trả" onclick="payProposalDirect('${item.id}')"><i class="fa-solid fa-hand-holding-dollar"></i></button>`;
             }
             if (treasuryInfo.isEligible) {
-                treasuryBtn = `<button class="icon-btn reject" title="Sung quỹ Nhà nước" onclick="forfeitProposalDirect('${item.id}')"><i class="fa-solid fa-building-columns"></i></button>`;
+                treasuryBtn = `<button class="icon-btn reject" title="Trả lại ngân sách nhà nước" onclick="forfeitProposalDirect('${item.id}')"><i class="fa-solid fa-building-columns"></i></button>`;
             }
             actionsHtml = kpSpecialistActions(item, { fillBtn, updateBtn, payBtn, treasuryBtn, deleteBtn });
         }
 
         const amtVal = typeof item.amount === 'number' ? item.amount : parseFloat(String(item.amount).replace(/\D/g, '')) || 0;
-        const displayStatus = item.status === 'Đã sung quỹ' ? 'Sung quỹ nhà nước' : item.status;
+        const displayStatus = item.status === 'Đã sung quỹ' ? 'Trả lại ngân sách nhà nước' : item.status;
 
         tr.innerHTML = `
             <td style="text-align:center; vertical-align:middle;">${startIdx + idx + 1}</td>
             <td style="text-align:left; vertical-align:middle; font-weight:700; color:var(--primary-light);">${item.code}</td>
-            <td style="text-align:left; vertical-align:middle;"><a href="quan_ly_boi_thuong.html?id=${encodeURIComponent(item.ycbtCode)}&from=kinh_phi&returnUrl=${encodeURIComponent('quan_ly_kinh_phi_boi_thuong.html')}" onclick="event.stopPropagation(); openLinkedClaimDetail('${item.ycbtCode}'); return false;" style="font-weight:700; color:var(--secondary-color); text-decoration:underline;">${item.ycbtCode}</a></td>
-            <td style="font-weight: 500; font-size:12.5px; text-align:left; vertical-align:middle;">${kpdtTypeLabel(item)}</td>
+            <td style="text-align:left; vertical-align:middle;"><a href="quan_ly_boi_thuong.html?id=${encodeURIComponent(item.ycbtCode)}&from=kinh_phi&returnUrl=${encodeURIComponent('quan_ly_kinh_phi_boi_thuong.html?v=1&menu=' + kpMenu())}" onclick="event.stopPropagation(); openLinkedClaimDetail('${item.ycbtCode}'); return false;" style="font-weight:700; color:var(--secondary-color); text-decoration:underline;">${item.ycbtCode}</a></td>
             <td style="text-align:left; vertical-align:middle; font-weight:600;">${item.nycName}</td>
             <td style="text-align:right; font-weight:700; vertical-align:middle;">${amtVal.toLocaleString('vi-VN')}</td>
             <td style="text-align:left; vertical-align:middle;">${item.user || '-'}</td>
             <td style="text-align:center; vertical-align:middle;">${kpdtSubmitDate(item) || '-'}</td>
-            <td style="text-align:center; vertical-align:middle;">${kpdtHanNhanSqHtml(item, treasuryInfo)}</td>
+            <td class="kp-col-hn" style="text-align:center; vertical-align:middle;">${kpdtHanNhanSqHtml(item, treasuryInfo)}</td>
             <td style="text-align:center; vertical-align:middle;"><span class="badge ${badgeClass}">${displayStatus}</span></td>
             <td class="kp-act-td" style="text-align:center; vertical-align:middle;">
                 <div class="action-flex" style="display:flex; justify-content:center; gap:4px;">
@@ -2610,7 +2614,6 @@ function changePageSize(val) {
 function clearFilters() {
     showTreasuryEligibleOnly = false;
     document.getElementById('searchProposalCode').value = '';
-    document.getElementById('searchProposalType').value = '';
     document.getElementById('searchYcbtCode').value = '';
     document.getElementById('searchProposalStatus').value = '';
     document.getElementById('searchNycName').value = '';
@@ -2652,7 +2655,7 @@ function validateClaimForProposalType(claimCode, proposalType) {
     if (!claim) return { valid: false, code: 'ERR_NOT_FOUND', message: `Không tìm thấy thông tin vụ việc [${claimCode}] trên hệ thống!` };
 
     // Active status lists according to system dropdown
-    const ACTIVE_KINH_PHI_STATUSES = ['Chờ lập đề nghị', 'Chờ duyệt', 'Chờ chi trả', 'Hoàn thành', 'Sung quỹ nhà nước'];
+    const ACTIVE_KINH_PHI_STATUSES = ['Chờ lập đề nghị', 'Chờ duyệt', 'Chờ chi trả', 'Hoàn thành', 'Trả lại ngân sách nhà nước'];
     const ACTIVE_TAM_UNG_STATUSES = ['Chờ lập đề nghị', 'Chờ duyệt', 'Chờ chi trả', 'Hoàn thành'];
 
     // Check existing proposals in proposalsList for this claim
@@ -2686,7 +2689,7 @@ function validateClaimForProposalType(claimCode, proposalType) {
                 message: `Vụ việc [${claimCode}] đã tồn tại Đề nghị tạm ứng đang trong quy trình xử lý. Không được phép lập trùng lặp!`
             };
         }
-        // [BR-KP-STATUS-001]: Status must be from "Xác minh thiệt hại" onwards, but not "Chờ thực thi"
+        // [BR-KP-STATUS-001]: Status must be from "Xác minh thiệt hại" onwards, but not "Chờ chi trả"
         const validStatuses = ['Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ'];
         if (!validStatuses.includes(claim.status)) {
             return {
@@ -2704,14 +2707,14 @@ function validateClaimForProposalType(claimCode, proposalType) {
                 message: `Vụ việc [${claimCode}] đã tồn tại Đề nghị cấp kinh phí bồi thường trên hệ thống. Không được phép tạo trùng lặp!`
             };
         }
-        // [BR-KP-STATUS-001]: Status must be 'Chờ thực thi'
+        // [BR-KP-STATUS-001]: Status must be 'Chờ chi trả'
         // (vụ việc tại Tòa án: đủ điều kiện khi Đã có bản án/QĐ)
         const courtEligible = claim.source === 'court' && claim.status === COURT_STATUS_VERDICT;
-        if (claim.status !== 'Chờ thực thi' && !courtEligible) {
+        if (claim.status !== 'Chờ chi trả' && !courtEligible) {
             return {
                 valid: false,
                 code: 'ERR_INVALID_STATUS_COMPENSATION',
-                message: `Vụ việc [${claimCode}] đang ở trạng thái "${claim.status}", chưa đủ điều kiện lập Đề nghị cấp kinh phí bồi thường (chưa có Quyết định giải quyết bồi thường có hiệu lực / chưa đạt trạng thái 'Chờ thực thi')!`
+                message: `Vụ việc [${claimCode}] đang ở trạng thái "${claim.status}", chưa đủ điều kiện lập Đề nghị cấp kinh phí bồi thường (chưa có Quyết định giải quyết bồi thường có hiệu lực / chưa đạt trạng thái 'Chờ chi trả')!`
             };
         }
     }
@@ -2913,7 +2916,7 @@ function normalizeFundingLookupText(value) {
 
 function getFundingClaimTargetStatus() {
     const selectedType = document.getElementById('formProposalType').value;
-    return selectedType === 'Cấp tạm ứng' ? 'Xác minh thiệt hại' : 'Chờ thực thi';
+    return selectedType === 'Cấp tạm ứng' ? 'Xác minh thiệt hại' : 'Chờ chi trả';
 }
 
 function getFundingClaimLookupRows() {
@@ -3819,7 +3822,7 @@ function fillProposalDirect(id) {
     if (item.type === 'Kinh phí bồi thường' || item.type === 'Cấp kinh phí bồi thường') {
         document.getElementById('formProposalTitle').innerHTML = `<i class="fa-solid fa-file-signature"></i> LẬP ĐỀ NGHỊ CẤP PHÁT KINH PHÍ BỒI THƯỜNG: ${item.code}`;
     } else {
-        document.getElementById('formProposalTitle').innerHTML = `<i class="fa-solid fa-file-signature"></i> LẬP ĐỀ NGHỊ TẠM ỨNG KINH PHÍ BỒI THƯỜNG: ${item.code}`;
+        document.getElementById('formProposalTitle').innerHTML = `<i class="fa-solid fa-file-signature"></i> LẬP ĐỀ NGHỊ TẠM ỨNG KINH PHÍ: ${item.code}`;
     }
 
     // Set type and disable it so it cannot be edited
@@ -4241,7 +4244,7 @@ function viewProposalDetail(id) {
     renderNoticeTrackingSection(item);
     resetTreasuryForfeitForm();
 
-    const isSungQuy = (item.status === 'Sung quỹ nhà nước' || item.status === 'Đã sung quỹ');
+    const isSungQuy = (item.status === 'Trả lại ngân sách nhà nước' || item.status === 'Đã sung quỹ');
     const b11 = document.getElementById('block11_TreasuryForfeit');
     if (isSungQuy) {
         if (b11) {
@@ -5028,7 +5031,7 @@ function submitPayoutReal() {
                 // Add timeline entry
                 if (!matchedClaim.timeline) matchedClaim.timeline = [];
                 matchedClaim.timeline.push({
-                    title: "Thực thi chi trả bồi thường",
+                    title: "Chi trả tiền bồi thường",
                     date: payoutDate,
                     desc: `Hoàn thành chi trả 100% kinh phí bồi thường thực tế qua ${payoutMethod}. Số tiền: ${payoutAmountReal} VNĐ.`,
                     status: "completed"
@@ -5069,7 +5072,7 @@ function deleteProposal(id) {
 
 // Export Excel mock
 function exportExcelKinhPhi() {
-    showToast("Đang kết xuất danh sách đề nghị kinh phí bồi thường ra file Excel...", "success");
+    showToast("Đang kết xuất danh sách " + KP_MENUS[kpMenuState].title + " ra file Excel...", "success");
 }
 
 // TOAST ENGINE
@@ -5277,7 +5280,7 @@ function renderFundingDecisionLookupResults() {
     const kAgency = norm(document.getElementById('fundingDecSearchAgency') && document.getElementById('fundingDecSearchAgency').value);
 
     // Loại trừ các Quyết định mà vụ việc đã có Đề nghị cấp kinh phí bồi thường còn hiệu lực
-    const EFFECTIVE = ['Chờ lập đề nghị', 'Chờ duyệt', 'Chờ chi trả', 'Chờ thu hồi', 'Hoàn thành', 'Sung quỹ nhà nước', 'Đã sung quỹ'];
+    const EFFECTIVE = ['Chờ lập đề nghị', 'Chờ duyệt', 'Chờ chi trả', 'Chờ thu hồi', 'Hoàn thành', 'Trả lại ngân sách nhà nước', 'Đã sung quỹ'];
     const sourceList = (typeof proposalsList !== 'undefined') ? proposalsList : [];
     const usedClaims = new Set(
         sourceList
@@ -5382,26 +5385,82 @@ function setKpPayMethod(value) {
 
 
 // =====================================================================================
+// MENU "KINH PHÍ" - 02 MENU CON DÙNG CHUNG TRANG NÀY (tham số URL menu)
+// - Tạm ứng kinh phí (?menu=tam-ung): chỉ bản ghi tạm ứng (Đề nghị tạm ứng / QĐ tạm ứng - kpIsAdv).
+// - Chi trả tiền bồi thường (?menu=chi-tra): chỉ bản ghi chi trả (Thông báo chi trả; bản ghi cũ Cấp kinh phí bồi thường).
+// - Không có tham số menu: mặc định Tạm ứng kinh phí (menu con đầu tiên); mở bản ghi (viewCode / view=detail&id)
+//   thuộc menu con còn lại: tự chuyển menu con theo loại bản ghi, báo Trang chủ đánh dấu đúng menu (admin:activeMenu).
+// - Mỗi menu con giữ 02 tab Chờ xử lý / Đã xử lý; badge tab + badge menu tính riêng theo menu con (BDG: kpTamUng / kpChiTra).
+// =====================================================================================
+const KP_MENUS = {
+    'tam-ung': { title: 'Tạm ứng kinh phí', bdg: 'kpTamUng' },
+    'chi-tra': { title: 'Chi trả tiền bồi thường', bdg: 'kpChiTra' }
+};
+const KP_MENU_DEFAULT = 'tam-ung';
+let kpMenuState = (function () {
+    let m = '';
+    try { m = new URLSearchParams(window.location.search).get('menu') || ''; } catch (e) { m = ''; }
+    if (!KP_MENUS[m] && window.KP_MENU) m = window.KP_MENU;
+    return KP_MENUS[m] ? m : KP_MENU_DEFAULT;
+})();
+function kpMenu() { return kpMenuState; }
+function kpMenuOf(item) { return kpIsAdv(item) ? 'tam-ung' : 'chi-tra'; }
+function kpInMenu(item, menu) { return !!item && kpMenuOf(item) === (menu || kpMenuState); }
+// Tiêu đề trang / thẻ title / lớp body theo menu con
+function kpApplyMenuUi() {
+    const t = KP_MENUS[kpMenuState].title;
+    const el = document.getElementById('kpPageTitleText');
+    if (el) el.textContent = t;
+    document.title = t;
+    if (document.body) {
+        document.body.classList.toggle('kp-menu-tam-ung', kpMenuState === 'tam-ung');
+        document.body.classList.toggle('kp-menu-chi-tra', kpMenuState === 'chi-tra');
+    }
+}
+// Mở bản ghi thuộc menu con khác: chuyển menu con theo loại bản ghi (giữ tham số URL menu) và báo Trang chủ đánh dấu menu
+function kpSyncMenuTo(item) {
+    if (!item) return;
+    const m = kpMenuOf(item);
+    if (m === kpMenuState) return;
+    kpMenuState = m;
+    try {
+        const q = new URLSearchParams(window.location.search);
+        q.set('menu', m);
+        history.replaceState(history.state, '', window.location.pathname + '?' + q.toString() + window.location.hash);
+    } catch (e) { /* file:// hoặc khung khác nguồn: bỏ qua */ }
+    kpApplyMenuUi();
+    kpActiveTab = 'pending';
+    currentPage = 1;
+    renderProposalsTable();
+    try {
+        const embed = new URLSearchParams(window.location.search).get('embed') === 'true';
+        if (!embed && window.parent && window.parent !== window) window.parent.postMessage({ type: 'admin:activeMenu', activeUrl: 'quan_ly_kinh_phi_boi_thuong.html?v=1&menu=' + m }, '*');
+    } catch (e) { /* bỏ qua */ }
+}
+if (document.readyState !== 'loading') kpApplyMenuUi(); else document.addEventListener('DOMContentLoaded', kpApplyMenuUi);
+
+// =====================================================================================
 // 02 TAB "CHỜ XỬ LÝ" / "ĐÃ XỬ LÝ" THEO NGƯỜI DÙNG ĐĂNG NHẬP (GIẢ LẬP QUYỀN CÁN BỘ / LÃNH ĐẠO)
 // - Cán bộ xử lý: Chờ xử lý = Chờ lập đề nghị, Chờ duyệt, Chờ chi trả, Bị từ chối, Chờ thu hồi;
-//   Đã xử lý = Hoàn thành, Sung quỹ nhà nước, Đã thu hồi, Đã hủy.
+//   Đã xử lý = Hoàn thành, Trả lại ngân sách nhà nước, Đã thu hồi, Đã hủy.
 // - Lãnh đạo: Chờ xử lý = đề nghị Chờ duyệt; Đã xử lý = đề nghị đã qua bước ký duyệt / từ chối.
 // =====================================================================================
 const KP_PENDING_STATES = ['Chờ lập đề nghị', 'Chờ duyệt', 'Chờ chi trả', 'Bị từ chối', 'Chờ thu hồi'];
-const KP_DONE_STATES = ['Hoàn thành', 'Sung quỹ nhà nước', 'Đã thu hồi', 'Đã hủy'];
+const KP_DONE_STATES = ['Hoàn thành', 'Trả lại ngân sách nhà nước', 'Đã thu hồi', 'Đã hủy'];
 let kpActiveTab = 'pending';
 
 function kpRole() { const s = document.getElementById('roleSelector'); return s ? s.value : 'chuyen-vien'; }
-function kpNormStatus(st) { return st === 'Đã sung quỹ' ? 'Sung quỹ nhà nước' : (st === 'Chi trả một phần' ? 'Chờ chi trả' : st); }
+function kpNormStatus(st) { return (st === 'Đã sung quỹ' || st === 'Sung quỹ nhà nước') ? 'Trả lại ngân sách nhà nước' : (st === 'Chi trả một phần' ? 'Chờ chi trả' : st); }
 function kpInTab(tab, item) {
     const st = kpNormStatus(item.status);
     if (kpRole() === 'lanh-dao') {
         if (tab === 'pending') return st === 'Chờ duyệt';
-        return ['Chờ chi trả', 'Bị từ chối', 'Chờ thu hồi', 'Hoàn thành', 'Sung quỹ nhà nước', 'Đã thu hồi'].includes(st) || (st === 'Đã hủy' && !!item.approvedDate);
+        return ['Chờ chi trả', 'Bị từ chối', 'Chờ thu hồi', 'Hoàn thành', 'Trả lại ngân sách nhà nước', 'Đã thu hồi'].includes(st) || (st === 'Đã hủy' && !!item.approvedDate);
     }
     return tab === 'pending' ? KP_PENDING_STATES.includes(st) : KP_DONE_STATES.includes(st);
 }
-function kpInActiveTab(item) { return kpInTab(kpActiveTab, item); }
+// Bản ghi thuộc menu con đang chọn và tab đang chọn
+function kpInActiveTab(item) { return kpInMenu(item) && kpInTab(kpActiveTab, item); }
 function kpTabStates(tab) {
     if (kpRole() === 'lanh-dao') return tab === 'pending' ? ['Chờ duyệt'] : ['Chờ chi trả', 'Bị từ chối', 'Chờ thu hồi', ...KP_DONE_STATES];
     return tab === 'pending' ? KP_PENDING_STATES : KP_DONE_STATES;
@@ -5409,10 +5468,14 @@ function kpTabStates(tab) {
 function kpRefreshTabUi() {
     const cP = document.getElementById('kpTabPendingCount');
     const cD = document.getElementById('kpTabDoneCount');
-    // Badge tab Chờ xử lý (ẩn khi bằng 0) + đồng bộ badge menu trái (tiện ích dùng chung BDG)
-    const bdgPending = proposalsList.filter(p => kpInTab('pending', p)).length;
-    if (window.BDG) BDG.report('kinhPhi', bdgPending, cP); else if (cP) cP.innerText = bdgPending;
-    if (cD) cD.innerText = proposalsList.filter(p => kpInTab('done', p)).length;
+    // Badge tab Chờ xử lý (ẩn khi bằng 0) theo menu con đang chọn + đồng bộ badge menu trái cả 02 menu con (tiện ích dùng chung BDG)
+    const pendingOf = m => proposalsList.filter(p => kpInMenu(p, m) && kpInTab('pending', p)).length;
+    const bdgPending = pendingOf(kpMenuState);
+    if (window.BDG) {
+        Object.keys(KP_MENUS).forEach(m => { if (m !== kpMenuState) BDG.report(KP_MENUS[m].bdg, pendingOf(m)); });
+        BDG.report(KP_MENUS[kpMenuState].bdg, bdgPending, cP);
+    } else if (cP) cP.innerText = bdgPending;
+    if (cD) cD.innerText = proposalsList.filter(p => kpInMenu(p) && kpInTab('done', p)).length;
     document.getElementById('kpTabPending')?.classList.toggle('active', kpActiveTab === 'pending');
     document.getElementById('kpTabDone')?.classList.toggle('active', kpActiveTab === 'done');
     // Trạng thái đề nghị: chỉ gồm các trạng thái của tab đang chọn
@@ -5433,7 +5496,9 @@ function kpRefreshTabUi() {
     if (kpiRow) kpiRow.style.visibility = showKpi ? 'visible' : 'hidden';
     if (!showKpi) activeKpiFilterKp = 'all';
     const btnCreate = document.getElementById('btnCreateProposalTop');
-    if (btnCreate) btnCreate.style.display = (kpActiveTab === 'pending' && kpRole() !== 'lanh-dao') ? 'inline-flex' : 'none';
+    // Tạo thông báo chi trả: chỉ menu Chi trả tiền bồi thường (Tạo QĐ tạm ứng: menu Tạm ứng kinh phí - qdtuEnsureToolbarButton)
+    // (important: lớp chuẩn hóa .uxu-btn-tb - btnn_uxu_dong_bo.js - đặt display !important)
+    if (btnCreate) btnCreate.style.setProperty('display', (kpActiveTab === 'pending' && kpRole() !== 'lanh-dao' && kpMenuState === 'chi-tra') ? 'inline-flex' : 'none', 'important');
     // Tab Đã xử lý chỉ xem: ẩn cột Thao tác
     const table = document.getElementById('proposalsTable');
     if (table) table.classList.toggle('kp-done', kpActiveTab === 'done');
@@ -5463,6 +5528,24 @@ function kpOnRoleChange() {
 const KP_SIGN_DIGITAL = 'Ký số';
 const KP_SIGN_OUTSIDE = 'Ký ngoài';
 function kpIsAdv(item) { return !!item && (item.type === 'Cấp tạm ứng' || item.type === 'Đề nghị tạm ứng'); }
+// Hoàn thành Trả lại ngân sách nhà nước của khoản Chi trả tiền bồi thường: vụ việc liên kết chuyển "Hoàn thành" và ghi tiến trình.
+// Khoản tạm ứng không kết thúc vụ việc (vụ việc tiếp tục giải quyết).
+// Như hoàn thành chi trả: vụ việc còn nhánh Phục hồi danh dự chưa hoàn thành (restoreHonor) thì giữ nguyên trạng thái vụ việc.
+function kpTlnsCompleteClaim(item, dateText, amount) {
+    if (!item || kpIsAdv(item) || !item.ycbtCode) return;
+    let list;
+    try { list = JSON.parse(localStorage.getItem('claimsList') || '[]'); } catch (e) { return; }
+    const c = Array.isArray(list) ? list.find(x => x && x.code === item.ycbtCode) : null;
+    if (!c) return;
+    const money = (Number(amount) || 0).toLocaleString('vi-VN');
+    const done = !c.restoreHonor;
+    if (!c.timeline) c.timeline = [];
+    c.timeline.push({ title: 'Trả lại ngân sách nhà nước', date: dateText, desc: `Người yêu cầu không nhận tiền bồi thường trong thời hạn; đã nộp trả ${money} đồng vào ngân sách nhà nước (${item.code}).` + (done ? ' Vụ việc chuyển trạng thái Hoàn thành.' : ''), status: 'completed' });
+    if (done) c.status = 'Hoàn thành';
+    c.thucthiDate = dateText;
+    c.thucthiNote = `Đã trả lại ngân sách nhà nước số tiền ${money} đồng (${item.code}).`;
+    localStorage.setItem('claimsList', JSON.stringify(list));
+}
 function kpEsc(v) { return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
 function kpSignText(m) { return m === KP_SIGN_OUTSIDE ? 'Ký ngoài' : 'Ký số trên hệ thống'; }
 function kpDraftName(code) { return `Du_thao_QD_tam_ung_${code}`; }
@@ -5620,7 +5703,7 @@ function kpRenderSignBlock(item, readOnly) {
         kpOnSignMethodChange();
         return;
     }
-    const approved = !!item.approvedDate && ['Chờ chi trả', 'Hoàn thành', 'Sung quỹ nhà nước', 'Chờ thu hồi', 'Đã thu hồi'].includes(kpNormStatus(item.status));
+    const approved = !!item.approvedDate && ['Chờ chi trả', 'Hoàn thành', 'Trả lại ngân sách nhà nước', 'Chờ thu hồi', 'Đã thu hồi'].includes(kpNormStatus(item.status));
     let docHtml;
     if (item.signedFile) {
         docHtml = `<a href="javascript:void(0)" onclick="kpViewSignDoc('${item.id}','signed')" style="display:inline-flex; gap:8px; align-items:center; font-weight:600; color:var(--primary-light); text-decoration:none;"><i class="fa-solid fa-file-pdf" style="color:#dc2626;"></i> ${kpEsc(item.signedFile)}</a>`

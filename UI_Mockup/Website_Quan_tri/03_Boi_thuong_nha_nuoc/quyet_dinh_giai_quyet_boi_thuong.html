@@ -2276,12 +2276,12 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261027xdc"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261027s35"></script>
     <!-- [th2c] Danh mục Loại thiệt hại 2 cấp (DM_27) + bảng 2 cấp dùng chung -->
     <script src="btnn_thiet_hai.js?v=20261027th6"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
-    <script src="btnn_badge_cho_xu_ly.js?v=20261026htrole"></script>
+    <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
     <script>
         'use strict';
         const W = window.BTNN_WF;
@@ -2703,11 +2703,11 @@
             if (!d.signedFile) d.signedFile = qdSignedName(d);
             if (!d.signMethod) d.signMethod = 'Ký số';
         }
-        // Liên thông khi Quyết định GQBT Đã ban hành: hồ sơ luồng, vụ việc (Chờ thực thi), Thông báo chi trả (Chờ thông báo chi trả)
+        // Liên thông khi Quyết định GQBT Đã ban hành: hồ sơ luồng, vụ việc (Chờ chi trả), Thông báo chi trả (Chờ thông báo chi trả)
         function qdgqIssueLinks(d) {
             if (W.getRecord(d.claimCode)) W.ensureClaimRecord({ code: d.claimCode, status: ST.DA_BH });
             const claim = claimByCode(d.claimCode);
-            updateClaimInStorage(d.claimCode, Object.assign({ decNo: d.decNo, decDate: d.issueDate, decPublishDate: d.issueDate, decStatus: 'Đã ban hành', decAmount: d.total, decSigner: d.approvedBy ? W.userLabel(d.approvedBy) : '', decEffectiveDate: d.effectiveText }, claim && claim.status === 'Chờ ban hành QĐ' ? { status: 'Chờ thực thi' } : {}));
+            updateClaimInStorage(d.claimCode, Object.assign({ decNo: d.decNo, decDate: d.issueDate, decPublishDate: d.issueDate, decStatus: 'Đã ban hành', decAmount: d.total, decSigner: d.approvedBy ? W.userLabel(d.approvedBy) : '', decEffectiveDate: d.effectiveText }, claim && claim.status === 'Chờ ban hành QĐ' ? { status: 'Chờ chi trả' } : {}));
             kptbNotifyIssued(d);
         }
 
@@ -5116,6 +5116,8 @@
         window.addEventListener('storage', e => { if (e.key === W.KEYS.RECORDS || e.key === KEY_DEC) { decisions = loadDecisions(); if ($('contentListDecisions').style.display !== 'none') showList(); } });
     </script>
     <script src="quyet_dinh_gqbt_ctqd.js?v=20261027hl2"></script>
+    <!-- [hlqd] Cập nhật hiệu lực Quyết định giải quyết bồi thường (Có hiệu lực / Không có hiệu lực) -->
+    <script src="quyet_dinh_gqbt_hlqd.js?v=20261027hlqd2"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="bpbd_filter_toggle.js?v=20261012"></script>
     <script src="filter_toggle_auto.js?v=20261012"></script>

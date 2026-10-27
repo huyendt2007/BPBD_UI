@@ -587,7 +587,7 @@
                     <option value="Xác minh thiệt hại">Xác minh thiệt hại</option>
                     <option value="Thương lượng">Thương lượng</option>
                     <option value="Chờ ban hành QĐ">Chờ ban hành QĐ</option>
-                    <option value="Chờ thực thi">Chờ thực thi</option>
+                    <option value="Chờ chi trả">Chờ chi trả</option>
                     <option value="Hoàn thành">Hoàn thành</option>
                     <option value="Đang phục hồi danh dự">Đang phục hồi danh dự</option>
                     <option value="Hoãn phục hồi danh dự">Hoãn phục hồi danh dự</option>
@@ -717,7 +717,7 @@
                 coQuan: "Tòa án nhân dân TP. Hà Nội",
                 hinhThuc: "Trực tiếp xin lỗi",
                 ngayTiepNhan: "10/06/2026",
-                trangThai: "Chờ thực thi",
+                trangThai: "Chờ chi trả",
                 thoiHan: "Còn 12 ngày",
                 thoiHanLoai: "normal",
                 ngayCapNhat: "12/07/2026"
@@ -729,7 +729,7 @@
                 coQuan: "Công an Quận 1, TP. HCM",
                 hinhThuc: "Đăng báo",
                 ngayTiepNhan: "12/06/2026",
-                trangThai: "Chờ thực thi",
+                trangThai: "Chờ chi trả",
                 thoiHan: "Còn 5 ngày",
                 thoiHanLoai: "normal",
                 ngayCapNhat: "10/07/2026"
@@ -765,7 +765,7 @@
                 coQuan: "Tòa án nhân dân Quận Đống Đa",
                 hinhThuc: "Đăng báo",
                 ngayTiepNhan: "20/06/2026",
-                trangThai: "Chờ thực thi",
+                trangThai: "Chờ chi trả",
                 thoiHan: "Theo tiến trình kinh phí",
                 thoiHanLoai: "muted",
                 ngayCapNhat: "13/07/2026"
@@ -885,7 +885,7 @@
                 coQuan: "Tòa án nhân dân Quận Đống Đa",
                 hinhThuc: "Cả hai hình thức",
                 ngayTiepNhan: "11/06/2026",
-                trangThai: "Chờ thực thi",
+                trangThai: "Chờ chi trả",
                 thoiHan: "Còn 10 ngày",
                 thoiHanLoai: "normal",
                 ngayCapNhat: "01/08/2026"
@@ -1088,7 +1088,7 @@
                 const tdStatus = document.createElement('td');
                 tdStatus.className = "cell-center";
                 let badgeClass = "badge-draft";
-                if (item.trangThai === "Chờ thực thi") badgeClass = "badge-notice";
+                if (item.trangThai === "Chờ chi trả") badgeClass = "badge-notice";
                 else if (item.trangThai === "Hoàn thành") badgeClass = "badge-success";
                 else if (["Chờ tiếp nhận", "Chờ duyệt", "Cử người giải quyết bồi thường", "Chờ ban hành QĐ"].includes(item.trangThai)) badgeClass = "badge-pending";
                 else if (["Yêu cầu bổ sung", "Thương lượng", "Xác minh thiệt hại", "Hoãn giải quyết", "Hoãn phục hồi danh dự"].includes(item.trangThai)) badgeClass = "badge-warning";

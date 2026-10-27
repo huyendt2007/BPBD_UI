@@ -430,19 +430,19 @@
         <span id="toastMessage">Thông báo</span>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261027chot2"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261027s35"></script>
     <script src="../../Common/dia_ban_vn.js"></script>
 
     <script>
         // Trạng thái vụ việc Giải quyết YCBT (danh sách gốc GQ_CASE_STATUSES tại quan_ly_boi_thuong.html)
         const allStatuses = [
             'Chờ tiếp nhận', 'Chờ duyệt', 'Bị từ chối', 'Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng',
-            'Chờ ban hành QĐ', 'Chờ thực thi', 'Hoàn thành', 'Đang phục hồi danh dự', 'Hoãn phục hồi danh dự', 'Từ chối phục hồi danh dự',
+            'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoàn thành', 'Đang phục hồi danh dự', 'Hoãn phục hồi danh dự', 'Từ chối phục hồi danh dự',
             'Hoãn giải quyết', 'Tạm đình chỉ', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Đã chuyển CQGQBT', 'Không thụ lý', 'Yêu cầu bổ sung'
         ];
         // Phạm vi tra cứu: toàn bộ vụ việc từ "Chờ tiếp nhận" trở đi, mọi Trạng thái vụ việc (thứ tự hiển thị tại bộ lọc Trạng thái).
         const TCVV_STATUSES = [
-            'Chờ tiếp nhận', 'Yêu cầu bổ sung', 'Không thụ lý', 'Cử người giải quyết bồi thường', 'Chờ duyệt', 'Bị từ chối', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ thực thi',
+            'Chờ tiếp nhận', 'Yêu cầu bổ sung', 'Không thụ lý', 'Cử người giải quyết bồi thường', 'Chờ duyệt', 'Bị từ chối', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ chi trả',
             'Hoãn giải quyết', 'Tạm đình chỉ', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Đã chuyển CQGQBT', 'Đang phục hồi danh dự', 'Hoãn phục hồi danh dự', 'Từ chối phục hồi danh dự', 'Hoàn thành'
         ];
 
@@ -457,7 +457,7 @@
             { id: 'HS_STOP', code: 'BT-2026-010', date: '08/07/2026', updatedDate: '04/08/2026', nyc: 'Công ty Minh An', nycTinhThanh: 'Hà Nội', address: 'Tầng 5, tòa nhà Vân Hồ, Hai Bà Trưng, Hà Nội', hanhVi: 'Thi hành án dân sự sai đối tượng tài sản.', fieldGroup: 'thi hành án dân sự', agency: 'Cục Thi hành án dân sự Hà Nội', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Chờ ban hành QĐ', deadline: '25/09/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 620000000, restoreHonor: false },
             { id: 'HS_DONE', code: 'BT-2026-008', date: '02/06/2026', updatedDate: '05/08/2026', nyc: 'Nguyễn Văn F', nycTinhThanh: 'Hà Nội', address: 'Số 5 Nguyễn Trãi, Thanh Xuân, Hà Nội', hanhVi: 'Không thống nhất được mức tiền bồi thường sau xác minh.', fieldGroup: 'hình sự', agency: 'Công an Quận Thanh Xuân', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Hoàn thành', deadline: '15/08/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 120000000, restoreHonor: false },
             { id: 'HS_PHDD_1', code: 'BT-2026-010-TDC', date: '07/07/2026', updatedDate: '06/08/2026', nyc: 'Đặng Văn T', nycTinhThanh: 'Hà Nội', address: 'Số 33 Kim Mã, Ba Đình, Hà Nội', hanhVi: 'Đình chỉ điều tra không đúng thời điểm làm ảnh hưởng danh dự.', fieldGroup: 'hình sự', agency: 'Viện kiểm sát nhân dân TP. Hà Nội', assignedOfficer: 'Lê Văn Chuyên Viên', status: 'Hoãn giải quyết', deadline: '22/09/2026', hinhThucTiepNhan: 'Bộ phận Một cửa', totalNum: 260000000, restoreHonor: true, phddForm: 'Cả hai hình thức', phddDateExp: '22/09/2026' },
-            { id: 'HS_PHDD_2', code: 'BT-2026-012', date: '14/06/2026', updatedDate: '05/08/2026', nyc: 'Lê Văn H', nycTinhThanh: 'Hà Nội', address: 'Số 9 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội', hanhVi: 'Bản án oan sai trong hoạt động tố tụng hình sự.', fieldGroup: 'hình sự', agency: 'Tòa án nhân dân TP. Hà Nội', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Chờ thực thi', deadline: '30/08/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 350000000, restoreHonor: true, phddForm: 'Đăng báo', phddDateExp: '25/08/2026' },
+            { id: 'HS_PHDD_2', code: 'BT-2026-012', date: '14/06/2026', updatedDate: '05/08/2026', nyc: 'Lê Văn H', nycTinhThanh: 'Hà Nội', address: 'Số 9 Lý Thường Kiệt, Hoàn Kiếm, Hà Nội', hanhVi: 'Bản án oan sai trong hoạt động tố tụng hình sự.', fieldGroup: 'hình sự', agency: 'Tòa án nhân dân TP. Hà Nội', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Chờ chi trả', deadline: '30/08/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 350000000, restoreHonor: true, phddForm: 'Đăng báo', phddDateExp: '25/08/2026' },
             { id: 'HS_PHDD_3', code: 'BT-2026-013', date: '10/05/2026', updatedDate: '03/08/2026', nyc: 'Công ty Hải Phát', nycTinhThanh: 'Hà Nội', address: 'Khu đô thị mới Cầu Giấy, Hà Nội', hanhVi: 'Công bố thông tin xử lý vi phạm không đúng sự thật.', fieldGroup: 'hành chính', agency: 'UBND Quận Cầu Giấy', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Hoàn thành', deadline: '10/07/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 0, restoreHonor: true, phddForm: 'Cả hai hình thức', phddDateExp: '10/07/2026', phddStep4DateAct: '02/08/2026' },
             { id: 'HS_TRANSFER', code: 'BT-2026-024', date: '20/07/2026', nyc: 'Phan Thị M', nycTinhThanh: 'Bắc Ninh', address: 'Phường Kinh Bắc, Bắc Ninh', hanhVi: 'Xử phạt vi phạm hành chính không đúng thẩm quyền.', fieldGroup: 'hành chính', agency: 'Sở Tư pháp Bắc Ninh', assignedOfficer: 'Phạm Minh Chuyên Viên', status: 'Đã chuyển CQGQBT', nguonHoSo: 'Tiếp nhận mới', totalNum: 75000000, restoreHonor: false }
         ];
@@ -992,7 +992,7 @@
             let cls = 'badge-info';
             if (status === 'Hoàn thành') cls = 'badge-success';
             else if (['Chờ tiếp nhận', 'Chờ duyệt', 'Cử người giải quyết bồi thường'].includes(status)) cls = 'badge-pending';
-            else if (['Yêu cầu bổ sung', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Hoãn giải quyết', 'Tạm đình chỉ', 'Hoãn phục hồi danh dự'].includes(status)) cls = 'badge-warning';
+            else if (['Yêu cầu bổ sung', 'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoãn giải quyết', 'Tạm đình chỉ', 'Hoãn phục hồi danh dự'].includes(status)) cls = 'badge-warning';
             else if (['Bị từ chối', 'Không thụ lý', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Từ chối phục hồi danh dự'].includes(status)) cls = 'badge-danger';
             return `<span class="badge ${cls}">${escapeHtml(status)}</span>`;
         }
@@ -1068,7 +1068,7 @@
                 .replace(/'/g, '&#039;');
         }
     </script>
-    <script src="tra_cuu_seed_tcvv.js?v=20261027tcvv3"></script>
+    <script src="tra_cuu_seed_tcvv.js?v=20261027ccct"></script>
     <script src="btnn_uxu_dong_bo.js?v=20261023uxu"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>

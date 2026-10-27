@@ -1373,14 +1373,14 @@
                 </div>
             </div>
 
-            <!-- Kết thúc thực thi phục hồi danh dự -->
+            <!-- Kết thúc tổ chức thực hiện phục hồi danh dự -->
             <div class="form-section-card">
                 <div class="form-section-title">
-                    <i class="fa-solid fa-flag-checkered"></i> KẾT THÚC THỰC THI PHỤC HỒI DANH DỰ
+                    <i class="fa-solid fa-flag-checkered"></i> KẾT THÚC TỔ CHỨC THỰC HIỆN PHỤC HỒI DANH DỰ
                 </div>
                 <div class="grid-3-cols" style="margin-bottom: 12px;">
                     <div class="info-field-group">
-                        <span class="info-field-label">Ngày hoàn thành thực thi:</span>
+                        <span class="info-field-label">Ngày hoàn thành thực hiện:</span>
                         <div class="info-field-value highlight" id="dpCompletedDate">--</div>
                     </div>
                     <div class="info-field-group">
@@ -1388,7 +1388,7 @@
                         <div class="info-field-value" id="dpCompletedOfficer">--</div>
                     </div>
                     <div class="info-field-group">
-                        <span class="info-field-label">Kết luận thực thi:</span>
+                        <span class="info-field-label">Kết luận thực hiện:</span>
                         <div class="info-field-value" id="dpCompletedResult">--</div>
                     </div>
                 </div>
@@ -1670,14 +1670,14 @@
                     </div>
                 </div>
 
-                <!-- KẾT THÚC THỰC THI PHỤC HỒI DANH DỰ -->
+                <!-- KẾT THÚC TỔ CHỨC THỰC HIỆN PHỤC HỒI DANH DỰ -->
                 <div class="form-section-card" id="stepSection4" style="display: none;">
                     <div class="form-section-title">
-                        <i class="fa-solid fa-circle-check"></i> KẾT THÚC THỰC THI PHỤC HỒI DANH DỰ
+                        <i class="fa-solid fa-circle-check"></i> KẾT THÚC TỔ CHỨC THỰC HIỆN PHỤC HỒI DANH DỰ
                     </div>
                     <div class="grid-2-cols" style="margin-bottom: 12px;">
                         <div class="form-group">
-                            <span class="form-label">Ngày hoàn thành thực thi *</span>
+                            <span class="form-label">Ngày hoàn thành thực hiện *</span>
                             <input type="text" class="form-control date-picker-input" id="uStep4EndDate" placeholder="dd/mm/yyyy">
                             <div class="invalid-feedback-text" id="err_uStep4Date">Đây là trường bắt buộc</div>
                         </div>
@@ -1692,7 +1692,7 @@
                     </div>
                     <div style="display: flex; justify-content: flex-end; gap: 10px;">
                         <button type="button" class="btn btn-success" onclick="completePhddProcess()">
-                            <i class="fa-solid fa-check-double"></i> Xác nhận hoàn thành thực thi
+                            <i class="fa-solid fa-check-double"></i> Xác nhận hoàn thành thực hiện
                         </button>
                     </div>
                 </div>
@@ -2543,7 +2543,7 @@
                    </div>`
                 : `<span style="color: #94a3b8; font-style: italic;">Chưa đăng báo</span>`;
 
-            // Mục 5: Kết thúc thực thi
+            // Mục 5: Kết thúc tổ chức thực hiện
             document.getElementById('dpCompletedDate').innerText = isDone ? item.updatedDate : "--";
             document.getElementById('dpCompletedOfficer').innerText = isDone ? "Trần Văn Quản Lý (Giám đốc)" : "--";
             document.getElementById('dpCompletedResult').innerText = isDone ? "Đạt kết quả toàn diện theo Luật TNBTCNN" : (item.status === 'Từ chối' ? "Đình chỉ theo ý kiến từ chối của người yêu cầu" : "Đang thực hiện");
@@ -2749,7 +2749,7 @@
         }
 
         function completePhddProcess() {
-            openConfirmModal("Bạn có chắc chắn muốn xác nhận hoàn thành thực thi phục hồi danh dự cho vụ việc này? Sau khi hoàn thành, vụ việc sẽ chuyển sang Tab Vụ việc đã xử lý. [MSG-CFM-BTNN-PHDD-001]", () => {
+            openConfirmModal("Bạn có chắc chắn muốn xác nhận hoàn thành tổ chức thực hiện phục hồi danh dự cho vụ việc này? Sau khi hoàn thành, vụ việc sẽ chuyển sang Tab Vụ việc đã xử lý. [MSG-CFM-BTNN-PHDD-001]", () => {
                 if (currentRecordBeingUpdated) {
                     currentRecordBeingUpdated.status = "Hoàn thành";
                     currentRecordBeingUpdated.deadlineStatus = "Đã hoàn thành";
@@ -2759,7 +2759,7 @@
                 updateTabBadges();
                 closeModal('updateModal');
                 filterAndRender();
-                showToast("Đã hoàn thành thực thi phục hồi danh dự! [MSG-SUC-BTNN-PHDD-007]", "success");
+                showToast("Đã hoàn thành tổ chức thực hiện phục hồi danh dự! [MSG-SUC-BTNN-PHDD-007]", "success");
             });
         }
 

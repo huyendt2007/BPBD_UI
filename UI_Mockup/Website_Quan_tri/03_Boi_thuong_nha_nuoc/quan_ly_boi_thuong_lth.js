@@ -53,9 +53,13 @@
     var css = document.createElement('style');
     css.textContent = '.lth-badge{display:inline-block;font-size:11px;font-weight:600;line-height:16px;padding:0 6px;border-radius:8px;margin-left:6px;white-space:nowrap;vertical-align:middle;}'
         + '.lth-req{background:#e0f2fe;color:#0369a1;}.lth-bs{background:#fef3c7;color:#92400e;}'
-        + '.lth-chk{display:inline-flex;align-items:center;gap:6px;cursor:pointer;margin:0;font-weight:600;}.lth-chk input{margin:0;}'
+        + '.lth-chk{display:inline-flex;align-items:center;gap:8px;cursor:pointer;margin:0;padding:0;font-size:14px;font-weight:600;line-height:20px;color:inherit;}.lth-chk input{margin:0;width:16px;height:16px;flex:0 0 16px;}'
         + 'tr.bth-off .lth-in{display:none;}tr.bth-off .lth-badge{display:none;}'
-        + '.lth-phdd{margin:10px 0 14px;padding:8px 12px;border:1px dashed #cbd5e1;border-radius:6px;background:#f8fafc;}';
+        // [klcb] Checkbox tùy chọn dùng chung Xác minh / Thương lượng (Yêu cầu phục hồi danh dự, Thỏa thuận kéo dài, Thỏa thuận hiệu lực sớm hơn):
+        // cùng lề trái, ô checkbox cùng cột; trường con thụt 24px (= ô 16px + khoảng cách 8px) để thẳng chữ nhãn
+        + '.lth-opt{margin:0 0 12px;padding:0;}.lth-opt-sub{margin:8px 0 0 24px;}.lth-opt-sub .form-group{margin-bottom:0;}'
+        + '.lth-opt-list{display:flex;flex-direction:column;gap:12px;margin-top:8px;}.lth-opt-list > .lth-opt{margin:0;}'
+        + '.form-group.lth-phdd{margin:12px 0 16px;padding:0;border:0;background:none;}';
     document.head.appendChild(css);
 
     // ======================= Quy đổi dữ liệu cũ =======================
@@ -98,7 +102,7 @@
         var bs = !!claim.phddBs;
         var locked = has && (!bs || claim.phddBsStep !== step);
         var tip = !has ? '' : (bs ? 'Đã bổ sung yêu cầu phục hồi danh dự tại bước ' + STEP_NAME[claim.phddBsStep || 'xm'] : 'Hồ sơ đã có yêu cầu phục hồi danh dự');
-        return '<div class="form-group lth-phdd" id="lthPhddBox_' + step + '">'
+        return '<div class="form-group lth-opt lth-phdd" id="lthPhddBox_' + step + '">'
             + '<label class="lth-chk"><input type="checkbox" id="lthPhdd_' + step + '"' + (has ? ' checked' : '') + (locked ? ' disabled' : '') + (tip ? ' title="' + esc(tip) + '"' : '')
             + ' onchange="lthPhddTick(\'' + step + '\', this.checked)"> <span>Yêu cầu phục hồi danh dự</span></label>'
             + '<span id="lthPhddBadge_' + step + '">' + (has ? badge(bs) : '') + '</span></div>';
@@ -415,9 +419,9 @@
         var tl = tg ? tg.querySelector('.form-label') : null;
         if (tl) tl.style.display = 'none';
         var x = claim.xmExtend || extFromText(claim.xmTimeExtension);
-        te.insertAdjacentHTML('afterend', '<div id="xmExtBlock">'
+        te.insertAdjacentHTML('afterend', '<div id="xmExtBlock" class="lth-opt">'
             + '<label class="lth-chk"><input type="checkbox" id="xmExtOn"' + (x.on ? ' checked' : '') + ' onchange="lthXmExtTick(this.checked)"> <span>' + XM_EXT_LABEL + '</span></label>'
-            + '<div id="xmExtBox" style="margin:8px 0 0 24px;' + (x.on ? '' : ' display:none;') + '"><span class="form-label">Thời gian thỏa thuận kéo dài</span>'
+            + '<div id="xmExtBox" class="lth-opt-sub"' + (x.on ? '' : ' style="display:none;"') + '><span class="form-label">Thời gian thỏa thuận kéo dài</span>'
             + '<div class="grid-2" style="gap:12px;">'
             + '<div class="form-group" style="margin-bottom:0;"><span class="form-label">Từ ngày <span class="required">*</span></span><div class="date-input-wrapper"><input type="text" class="form-control" id="xmExtFrom" value="' + esc(x.from || '') + '" placeholder="dd/mm/yyyy" oninput="ptClearErr(this)" onchange="ptClearErr(this)"><i class="fa-regular fa-calendar-days"></i></div>' + TT_ERR + '</div>'
             + '<div class="form-group" style="margin-bottom:0;"><span class="form-label">Đến ngày</span><div class="date-input-wrapper"><input type="text" class="form-control" id="xmExtTo" value="' + esc(x.to || '') + '" placeholder="dd/mm/yyyy" oninput="ptClearErr(this)" onchange="ptClearErr(this)"><i class="fa-regular fa-calendar-days"></i></div>' + TT_ERR + '</div>'
@@ -638,16 +642,16 @@
         var ex = dong && neg.extend ? neg.extend : {}, ef = dong && neg.earlyEffect ? neg.earlyEffect : {};
         host.insertAdjacentHTML('beforebegin', '<div class="form-group" id="lthTlAgree">'
             + '<span class="form-label" style="color:#166534; font-weight:700;">Thông tin thỏa thuận khác</span>'
-            + '<div style="display:flex; flex-direction:column; gap:8px; margin-top:6px;">'
-            + '<label class="lth-chk"><input type="checkbox" id="tlExtOn"' + (ex.on ? ' checked' : '') + ' onchange="lthTlAgreeTick(\'ext\', this.checked)"> <span>Thỏa thuận kéo dài thương lượng</span></label>'
-            + '<div id="tlExtBox" class="grid-2" style="gap:12px; margin-left:24px;' + (ex.on ? '' : ' display:none;') + '">'
+            + '<div class="lth-opt-list">'
+            + '<div class="lth-opt"><label class="lth-chk"><input type="checkbox" id="tlExtOn"' + (ex.on ? ' checked' : '') + ' onchange="lthTlAgreeTick(\'ext\', this.checked)"> <span>Thỏa thuận kéo dài thương lượng</span></label>'
+            + '<div id="tlExtBox" class="lth-opt-sub"' + (ex.on ? '' : ' style="display:none;"') + '><span class="form-label">Thời gian thỏa thuận kéo dài</span><div class="grid-2" style="gap:12px;">'
             + '<div class="form-group" style="margin-bottom:0;"><span class="form-label">Từ ngày <span class="required">*</span></span><div class="date-input-wrapper"><input type="text" class="form-control" id="tlExtFrom" value="' + esc(ex.from || '') + '" placeholder="dd/mm/yyyy" oninput="ptClearErr(this)" onchange="ptClearErr(this)"><i class="fa-regular fa-calendar-days"></i></div>' + TT_ERR + '</div>'
-            + '<div class="form-group" style="margin-bottom:0;"><span class="form-label">Đến ngày <span class="required">*</span></span><div class="date-input-wrapper"><input type="text" class="form-control" id="tlExtTo" value="' + esc(ex.to || '') + '" placeholder="dd/mm/yyyy" oninput="ptClearErr(this)" onchange="ptClearErr(this)"><i class="fa-regular fa-calendar-days"></i></div>' + TT_ERR + '</div>'
-            + '</div>'
-            + '<label class="lth-chk"><input type="checkbox" id="tlEarlyOn"' + (ef.on ? ' checked' : '') + ' onchange="lthTlAgreeTick(\'early\', this.checked)"> <span>Thỏa thuận hiệu lực sớm hơn của Quyết định giải quyết bồi thường</span></label>'
-            + '<div id="tlEarlyBox" class="form-group" style="margin:0 0 0 24px;' + (ef.on ? '' : ' display:none;') + '">'
+            + '<div class="form-group" style="margin-bottom:0;"><span class="form-label">Đến ngày</span><div class="date-input-wrapper"><input type="text" class="form-control" id="tlExtTo" value="' + esc(ex.to || '') + '" placeholder="dd/mm/yyyy" oninput="ptClearErr(this)" onchange="ptClearErr(this)"><i class="fa-regular fa-calendar-days"></i></div>' + TT_ERR + '</div>'
+            + '</div></div></div>'
+            + '<div class="lth-opt"><label class="lth-chk"><input type="checkbox" id="tlEarlyOn"' + (ef.on ? ' checked' : '') + ' onchange="lthTlAgreeTick(\'early\', this.checked)"> <span>Thỏa thuận hiệu lực sớm hơn của Quyết định giải quyết bồi thường</span></label>'
+            + '<div id="tlEarlyBox" class="lth-opt-sub"' + (ef.on ? '' : ' style="display:none;"') + '><div class="form-group">'
             + '<span class="form-label">Nội dung thỏa thuận hiệu lực sớm hơn <span class="required">*</span></span>'
-            + '<textarea class="form-control" id="tlEarlyText" rows="2" maxlength="1000" placeholder="Nhập nội dung thỏa thuận hiệu lực sớm hơn của Quyết định giải quyết bồi thường..." oninput="ptClearErr(this)">' + esc(ef.text || '') + '</textarea>' + TT_ERR + '</div>'
+            + '<textarea class="form-control" id="tlEarlyText" rows="2" maxlength="1000" placeholder="Nhập nội dung thỏa thuận hiệu lực sớm hơn của Quyết định giải quyết bồi thường..." oninput="ptClearErr(this)">' + esc(ef.text || '') + '</textarea>' + TT_ERR + '</div></div></div>'
             + '</div></div>');
         if (typeof flatpickr !== 'undefined') flatpickr('#tlExtFrom, #tlExtTo', { dateFormat: 'd/m/Y', allowInput: true });
     }
@@ -676,7 +680,8 @@
         if (exOn && exOn.checked) {
             var f = el('tlExtFrom'), t = el('tlExtTo'), df = ttParse(f.value), dt = ttParse(t.value);
             set(f, !f.value.trim() ? 'Đây là trường bắt buộc' : (!df ? 'Ngày không đúng định dạng dd/mm/yyyy' : ''));
-            set(t, !t.value.trim() ? 'Đây là trường bắt buộc' : (!dt ? 'Ngày không đúng định dạng dd/mm/yyyy' : (df && dt < df ? 'Đến ngày phải lớn hơn hoặc bằng Từ ngày' : '')));
+            // [klcb] Đến ngày không bắt buộc; nếu nhập phải >= Từ ngày (giống Thỏa thuận kéo dài thời gian xác minh)
+            set(t, !t.value.trim() ? '' : (!dt ? 'Ngày không đúng định dạng dd/mm/yyyy' : (df && dt < df ? 'Đến ngày phải lớn hơn hoặc bằng Từ ngày' : '')));
         }
         if (efOn && efOn.checked) { var x = el('tlEarlyText'); set(x, !x.value.trim() ? 'Đây là trường bắt buộc' : ''); }
         return first;
@@ -690,14 +695,14 @@
     }
     function tlAgreeText(neg) {
         var a = [];
-        if (neg && neg.extend && neg.extend.on) a.push('Thỏa thuận kéo dài thương lượng từ ngày ' + neg.extend.from + ' đến ngày ' + neg.extend.to);
+        if (neg && neg.extend && neg.extend.on) a.push('Thỏa thuận kéo dài thương lượng ' + extText(neg.extend).replace(/^Từ/, 'từ'));
         if (neg && neg.earlyEffect && neg.earlyEffect.on) a.push('Thỏa thuận hiệu lực sớm hơn của Quyết định giải quyết bồi thường: ' + neg.earlyEffect.text);
         return a;
     }
     function tlAgreeReadHtml(neg) {
         if (!neg || neg.participation !== 'DONG_Y') return '';
         var h = '';
-        if (neg.extend && neg.extend.on) h += vxmTextHtml('Thỏa thuận kéo dài thương lượng', 'Từ ngày ' + neg.extend.from + ' đến ngày ' + neg.extend.to);
+        if (neg.extend && neg.extend.on) h += vxmTextHtml('Thỏa thuận kéo dài thương lượng', extText(neg.extend));
         if (neg.earlyEffect && neg.earlyEffect.on) h += vxmTextHtml('Thỏa thuận hiệu lực sớm hơn của Quyết định giải quyết bồi thường', neg.earlyEffect.text);
         return h ? '<div id="tlAgreeRead">' + h + '</div>' : '';
     }

@@ -1,12 +1,14 @@
 /*
  * Liên thông Đình chỉ giải quyết (Giải quyết yêu cầu bồi thường) -> Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường (prefix kpdc)
  * - Thời điểm: Quyết định đình chỉ giải quyết bồi thường (Mẫu 25/BTNN) được ban hành: Lãnh đạo cấp cuối Ký duyệt hoặc Ký ngoài ban hành
- *   (áp dụng cả vụ việc đình chỉ từ trạng thái Chờ thực thi). Không chặn đình chỉ vì lý do kinh phí.
+ *   (áp dụng mọi trạng thái nguồn được Đình chỉ, gồm cả Chờ chi trả và Hoàn thành; không giới hạn theo trạng thái vụ việc). Không chặn đình chỉ vì lý do kinh phí.
  * - Bản ghi kinh phí của vụ việc (theo Mã hồ sơ GQBT = ycbtCode):
  *   + Đã chi (Hoàn thành hoặc Số tiền đã chi > 0) -> "Chờ thu hồi".
  *   + Đang dở, chưa chi đồng nào (Chờ lập đề nghị, Chờ thông báo chi trả, Đề nghị cấp bổ sung kinh phí, Chờ duyệt, Bị từ chối, Chờ chi trả) -> "Đã hủy";
  *     phiếu trình đang Chờ duyệt (Thông báo chi trả / QĐ tạm ứng) bị hủy theo (không còn ở tab Chờ xử lý của Lãnh đạo).
- *   + Đã hủy, Đã thu hồi, Chờ thu hồi, Sung quỹ nhà nước: giữ nguyên.
+ *   + Đã hủy, Đã thu hồi, Chờ thu hồi, Trả lại ngân sách nhà nước: giữ nguyên.
+ *   + Đình chỉ / Dừng giải quyết chọn "Không thu hồi" (dinhChi.thuHoi / dungGiaiQuyet.thuHoi): khoản đã chi giữ nguyên trạng thái, ghi lịch sử "Không thu hồi do đình chỉ giải quyết bồi thường / do dừng giải quyết bồi thường. Lý do: ..."
+ *     (đánh dấu kpdcNoRecover để không áp lại); khoản chưa chi vẫn Hủy. Không có lựa chọn (dữ liệu cũ) = Thu hồi. Áp dụng cả nguồn Dừng giải quyết.
  * - Lưu căn cứ trên bản ghi kinh phí (statusBasis) + lịch sử (kpdcHistory); không phụ thuộc trang khác.
  * - Dùng chung 02 trang:
  *   + quan_ly_boi_thuong.html: gọi ngay khi ban hành Ký ngoài (bọc dcgqIssueOffline) / khi nhận kết quả Ký duyệt cấp cuối (kpdcOnApplied, gọi từ gqApplyRecord);
@@ -23,11 +25,13 @@ var KPDC_REASON = 'Vụ việc bị đình chỉ giải quyết theo Quyết đ�
 var KPDC_CANCEL = 'Đã hủy';
 var KPDC_RECOVER = 'Chờ thu hồi';
 var KPDC_SUB = 'Do đình chỉ giải quyết';
-var KPDC_KEEP = ['Đã hủy', 'Đã thu hồi', 'Chờ thu hồi', 'Sung quỹ nhà nước', 'Đã sung quỹ'];
+var KPDC_KEEP = ['Đã hủy', 'Đã thu hồi', 'Chờ thu hồi', 'Trả lại ngân sách nhà nước', 'Đã sung quỹ', 'Sung quỹ nhà nước'];
+var KPDC_NO_RECOVER = 'Không thu hồi';
+var KPDC_NO_RECOVER_ACT = 'Không thu hồi kinh phí bồi thường đã chi';
 // Nguồn liên thông: Đình chỉ giải quyết | Dừng giải quyết (cùng quy tắc tự hủy / Chờ thu hồi)
 var KPDC_SOURCES = {
-    dinhChi: { caseStatus: KPDC_CASE_STATUS, kind: KPDC_KIND, data: 'dinhChi', reason: KPDC_REASON, decisionType: 'Quyết định đình chỉ giải quyết bồi thường', sub: KPDC_SUB, act: 'đình chỉ giải quyết', doc: 'quyết định' },
-    dungGiaiQuyet: { caseStatus: 'Dừng giải quyết', kind: 'Dừng giải quyết bồi thường', data: 'dungGiaiQuyet', reason: 'Dừng giải quyết bồi thường', decisionType: 'Thông báo dừng giải quyết yêu cầu bồi thường', sub: 'Do dừng giải quyết bồi thường', act: 'dừng giải quyết bồi thường', doc: 'văn bản' }
+    dinhChi: { caseStatus: KPDC_CASE_STATUS, kind: KPDC_KIND, data: 'dinhChi', reason: KPDC_REASON, decisionType: 'Quyết định đình chỉ giải quyết bồi thường', sub: KPDC_SUB, act: 'đình chỉ giải quyết', noRecover: 'Không thu hồi do đình chỉ giải quyết bồi thường', doc: 'quyết định' },
+    dungGiaiQuyet: { caseStatus: 'Dừng giải quyết', kind: 'Dừng giải quyết bồi thường', data: 'dungGiaiQuyet', reason: 'Dừng giải quyết bồi thường', decisionType: 'Thông báo dừng giải quyết yêu cầu bồi thường', sub: 'Do dừng giải quyết bồi thường', act: 'dừng giải quyết bồi thường', noRecover: 'Không thu hồi do dừng giải quyết bồi thường', doc: 'văn bản' }
 };
 function kpdcCfg(src) { return KPDC_SOURCES[src] || KPDC_SOURCES[KPDC_SRC]; }
 function kpdcSrcOfStatus(st) { var k = Object.keys(KPDC_SOURCES).filter(function (x) { return KPDC_SOURCES[x].caseStatus === st; })[0]; return k || ''; }
@@ -35,7 +39,7 @@ function kpdcSrcOfStatus(st) { var k = Object.keys(KPDC_SOURCES).filter(function
 function kpdcE(v) { return String(v == null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
 function kpdcRead(key, fb) { try { var raw = localStorage.getItem(key); return raw ? JSON.parse(raw) : fb; } catch (e) { return fb; } }
 function kpdcNum(v) { return typeof v === 'number' ? v : (Number(String(v == null ? '' : v).replace(/[^\d]/g, '')) || 0); }
-function kpdcNorm(st) { return st === 'Đã sung quỹ' ? 'Sung quỹ nhà nước' : (st === 'Chi trả một phần' ? 'Chờ chi trả' : st); }
+function kpdcNorm(st) { return (st === 'Đã sung quỹ' || st === 'Sung quỹ nhà nước') ? 'Trả lại ngân sách nhà nước' : (st === 'Chi trả một phần' ? 'Chờ chi trả' : st); }
 function kpdcNow() {
     var d = new Date(), p = function (n) { return String(n).padStart(2, '0'); };
     return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
@@ -48,6 +52,60 @@ function kpdcSignedName(name) { var s = String(name || ''); if (!s) return ''; r
 // Đã chi: Hoàn thành, hoặc Số tiền đã chi > 0 (Cập nhật chi trả: payoutAmountReal / kptbPayment.amount)
 function kpdcPaidAmount(p) { return Math.max(kpdcNum(p.payoutAmountReal), p.kptbPayment ? kpdcNum(p.kptbPayment.amount) : 0); }
 function kpdcIsPaid(p) { return p.status === 'Hoàn thành' || p.status === 'Chi trả một phần' || kpdcPaidAmount(p) > 0; }
+// Bản sao dữ liệu mẫu mặc định của phân hệ Kinh phí (các khoản đang hiệu lực: [id, Mã, Mã hồ sơ GQBT, Loại, Trạng thái, Số tiền đã chi])
+// Dùng khi kho 'proposalsList' trống (người dùng chưa mở trang Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường): popup Đình chỉ / Dừng giải quyết
+// vẫn xác định được khoản đã chi. Đồng bộ với seed quan_ly_kinh_phi_boi_thuong.js (v38_oct2026_kpdt) + kpdcSeed.
+var KPDC_KP_SEED = [
+    ['P_QDTU_S1', 'KP-2026-195', 'BT-2026-174', 'Cấp tạm ứng', 'Chờ duyệt', 0],
+    ['P_TB_QD-HL4', 'KP-2026-194', 'BT-2026-194', 'Chi trả tiền bồi thường', 'Chờ duyệt', 0],
+    ['P_TB_QD-HL3', 'KP-2026-193', 'BT-2026-193', 'Chi trả tiền bồi thường', 'Hoàn thành', 120000000],
+    ['P_TB_QD-HL2', 'KP-2026-192', 'BT-2026-192', 'Chi trả tiền bồi thường', 'Chờ chi trả', 0],
+    ['P_TB_QD-HL1', 'KP-2026-191', 'BT-2026-191', 'Chi trả tiền bồi thường', 'Chờ thông báo chi trả', 0],
+    ['P_TB_KPTB-S6', 'KP-2026-104', 'BT-2023-041', 'Chi trả tiền bồi thường', 'Chờ chi trả', 0],
+    ['P_TB_KPTB-S5', 'KP-2026-103', 'BT-2026-015', 'Chi trả tiền bồi thường', 'Chờ chi trả', 0],
+    ['P_TB_KPTB-S4', 'KP-2026-102', 'BT-2026-034', 'Chi trả tiền bồi thường', 'Chờ duyệt', 0],
+    ['P_TB_KPTB-S3', 'KP-2026-101', 'BT-2026-033', 'Chi trả tiền bồi thường', 'Đề nghị cấp bổ sung kinh phí', 0],
+    ['P_TB_KPTB-S2', 'KP-2026-100', 'BT-2026-032', 'Chi trả tiền bồi thường', 'Chờ thông báo chi trả', 0],
+    ['P_TB_KPTB-S1', 'KP-2026-099', 'BT-2026-031', 'Chi trả tiền bồi thường', 'Chờ thông báo chi trả', 0],
+    ['P2', 'KP-2026-002', 'BT-2026-002', 'Cấp tạm ứng', 'Chờ chi trả', 0],
+    ['P9', 'KP-2026-009', 'BT-2026-005', 'Cấp kinh phí bồi thường', 'Chờ chi trả', 0],
+    ['P13', 'KP-2026-013', 'BT-2026-018', 'Cấp kinh phí bồi thường', 'Chờ chi trả', 0],
+    ['P14', 'KP-2026-014', 'BT-2026-019', 'Cấp tạm ứng', 'Chờ chi trả', 0],
+    ['P1', 'KP-2026-001', 'BT-2026-005', 'Cấp kinh phí bồi thường', 'Hoàn thành', 250000000],
+    ['P10', 'KP-2026-010', 'BT-2026-015', 'Cấp tạm ứng', 'Hoàn thành', 50000000],
+    ['P11', 'KP-2026-011', 'BT-2026-002', 'Cấp tạm ứng', 'Hoàn thành', 100000000],
+    ['P12', 'KP-2026-012', 'BT-2026-011', 'Cấp kinh phí bồi thường', 'Hoàn thành', 300000000],
+    ['P16', 'KP-2026-016', 'BT-2026-021', 'Cấp kinh phí bồi thường', 'Hoàn thành', 450000000],
+    ['P17', 'KP-2026-017', 'BT-2026-022', 'Cấp tạm ứng', 'Hoàn thành', 85000000],
+    ['P18', 'KP-2026-018', 'BT-2026-023', 'Cấp kinh phí bồi thường', 'Hoàn thành', 520000000],
+    ['P19', 'KP-2026-019', 'BT-2026-024', 'Cấp kinh phí bồi thường', 'Hoàn thành', 175000000],
+    ['P20', 'KP-2026-020', 'BT-2026-025', 'Cấp tạm ứng', 'Hoàn thành', 60000000],
+    ['P96', 'KP-2026-096', 'BT-2026-015', 'Cấp tạm ứng', 'Chờ chi trả', 0],
+    ['P97', 'KP-2026-097', 'BT-2026-028', 'Cấp tạm ứng', 'Chờ chi trả', 0],
+    ['P_KPUX_1', 'KP-2026-121', 'BT-2026-061', 'Chi trả tiền bồi thường', 'Chờ chi trả', 0],
+    ['P_KPUX_2', 'KP-2026-122', 'BT-2026-062', 'Chi trả tiền bồi thường', 'Chờ chi trả', 0],
+    ['P_KPUX_3', 'KP-2026-123', 'BT-2023-047', 'Chi trả tiền bồi thường', 'Chờ chi trả', 0],
+    ['P_KPUX_4', 'KP-2026-124', 'BT-2026-064', 'Chi trả tiền bồi thường', 'Hoàn thành', 92000000],
+    ['P_KPDC_S4', 'KP-2026-904', 'BT-2026-002', 'Chi trả tiền bồi thường', 'Chờ duyệt', 0],
+    ['P_KPDC_S6', 'KP-2026-906', 'BT-2026-541', 'Cấp tạm ứng', 'Hoàn thành', 25000000],
+    ['P_KPDC_S9', 'KP-2026-909', 'BT-2026-504', 'Cấp tạm ứng', 'Hoàn thành', 30000000]
+];
+// Bản ghi kinh phí: kho 'proposalsList' nếu đã có, ngược lại dữ liệu mẫu mặc định
+// Số / Ngày Quyết định tạm ứng kinh phí bồi thường (Ký ngoài) của các khoản tạm ứng mẫu đã ban hành: dùng cho bản sao trên
+// và bổ sung (chỉ khi còn trống) vào bản ghi mẫu tại kpdcSeed -> Điều 3 Quyết định đình chỉ (Mẫu 25/BTNN) lấy đúng Số, ngày
+var KPDC_ADV_DOC = {
+    P2: ['52/QĐ-STP', '05/09/2026'], P10: ['48/QĐ-STP', '06/09/2026'], P11: ['55/QĐ-STP', '13/09/2026'],
+    P17: ['63/QĐ-STP', '19/09/2026'], P20: ['66/QĐ-STP', '21/09/2026'],
+    P96: ['96/QĐ-STC', '10/10/2026'], P97: ['118/QĐ-TA', '07/10/2026'], P_KPDC_S6: ['75/QĐ-STP', '08/10/2026'], P_KPDC_S9: ['76/QĐ-STP', '09/10/2026']
+};
+function kpdcProposals() {
+    var list = kpdcRead('proposalsList', null);
+    if (Array.isArray(list) && list.length) return list;
+    return KPDC_KP_SEED.map(function (r) {
+        var d = KPDC_ADV_DOC[r[0]] || [];
+        return { id: r[0], code: r[1], ycbtCode: r[2], type: r[3], status: r[4], payoutAmountReal: r[5], docNo: d[0] || '', docDate: d[1] || '', kpdcFromSeed: true };
+    });
+}
 
 // ---------- Căn cứ (Quyết định đình chỉ) ----------
 function kpdcVvOf(claim) {
@@ -69,10 +127,19 @@ function kpdcBasisOf(claim, rec, at, src) {
         decisionNo: kpdcVal(dc.docNumber || sd.docNumber), decisionDate: kpdcVal(dc.docDate || sd.docDate),
         file: file ? { name: file, fileId: dc.signedFileId || '' } : null,
         signingMethod: method, canCu: dc.reasonText || dc.canCuText || '',
-        claimCode: claim.code, vvCode: kpdcVvOf(claim)
+        claimCode: claim.code, vvCode: kpdcVvOf(claim),
+        // Thu hồi kinh phí bồi thường đã chi (chỉ Đình chỉ giải quyết): thiếu lựa chọn (dữ liệu cũ) = Thu hồi
+        thuHoi: (dc.thuHoi || sd.thuHoi) === KPDC_NO_RECOVER ? KPDC_NO_RECOVER : 'Thu hồi',
+        thuHoiReason: dc.thuHoiReason || sd.thuHoiReason || ''
     };
 }
 
+// Lịch sử bản ghi kinh phí khi Đình chỉ / Dừng giải quyết chọn Không thu hồi
+function kpdcNoRecoverNote(b, claimCode, st) {
+    return kpdcCfg(b.source).noRecover + '. Lý do: ' + (String(b.thuHoiReason || '').replace(/[.\s]+$/, '') || '-') + '. Căn cứ: ' + b.decisionType
+        + (b.decisionNo ? ' số ' + b.decisionNo : '') + (b.decisionDate ? ' ngày ' + b.decisionDate : '')
+        + ' (' + (b.vvCode ? 'Mã vụ việc ' + b.vvCode + ', ' : '') + 'Mã hồ sơ GQBT ' + claimCode + '). Giữ trạng thái: ' + st + '.';
+}
 // ---------- Áp liên thông trên 01 danh sách bản ghi kinh phí; trả về các bản ghi đã đổi ----------
 function kpdcApply(list, claim, rec, src) {
     if (!Array.isArray(list) || !claim || !claim.code) return [];
@@ -85,8 +152,17 @@ function kpdcApply(list, claim, rec, src) {
         var st = kpdcNorm(p.status);
         if (KPDC_KEEP.indexOf(st) >= 0) return;
         if (p.statusBasis && KPDC_SOURCES[p.statusBasis.source]) return;
+        if (p.kpdcNoRecover) return;
         basis = basis || kpdcBasisOf(claim, rec, at, src);
         var paid = kpdcIsPaid(p);
+        // Đình chỉ / Dừng giải quyết chọn Không thu hồi: khoản đã chi giữ nguyên trạng thái, chỉ ghi lịch sử
+        if (paid && basis.thuHoi === KPDC_NO_RECOVER) {
+            p.kpdcNoRecover = Object.assign({}, basis, { statusBefore: st, statusAfter: st });
+            if (!Array.isArray(p.kpdcHistory)) p.kpdcHistory = [];
+            p.kpdcHistory.push({ at: at, userId: '', userName: 'Hệ thống', action: KPDC_NO_RECOVER_ACT, note: kpdcNoRecoverNote(basis, claim.code, st) });
+            changed.push(p);
+            return;
+        }
         var after = paid ? KPDC_RECOVER : KPDC_CANCEL;
         // Hủy phiếu trình đang chờ duyệt (Thông báo chi trả / QĐ tạm ứng)
         var cancelled = [];
@@ -168,8 +244,8 @@ function kpdcSyncAll() {
     return n;
 }
 
-// Dữ liệu mẫu: vụ việc Đình chỉ giải quyết BT-2026-407 (Ký số, có Số/Ngày QĐ), BT-2026-408 (Ký ngoài, không Số/Ngày QĐ);
-// BT-2026-002 (Chờ thực thi): thêm 01 Thông báo chi trả đang Chờ duyệt để thử Đình chỉ -> hủy phiếu trình
+// Dữ liệu mẫu: vụ việc Đình chỉ giải quyết BT-2026-407 (Ký số, có Số/Ngày QĐ, chọn Thu hồi), BT-2026-408 (Ký ngoài, không Số/Ngày QĐ, chọn Không thu hồi: KP-2026-907 giữ Hoàn thành);
+// BT-2026-002 (Chờ chi trả): thêm 01 Thông báo chi trả đang Chờ duyệt để thử Đình chỉ -> hủy phiếu trình
 function kpdcSeedBasis(code, vv, no, date, file, method, at, before, after, src) {
     var cf = kpdcCfg(src);
     return { source: KPDC_SOURCES[src] ? src : KPDC_SRC, reason: cf.reason, changedAt: at, decisionType: cf.decisionType, decisionNo: no, decisionDate: date,
@@ -186,6 +262,13 @@ function kpdcSeedVv(code) {
 function kpdcSeed() {
     var added = 0;
     var has = function (id) { return proposalsList.some(function (p) { return p && p.id === id; }); };
+    // Bổ sung Số / Ngày QĐ tạm ứng còn trống cho khoản tạm ứng mẫu (không ghi đè dữ liệu người dùng đã nhập)
+    proposalsList.forEach(function (p) {
+        var d = p && p.type === 'Cấp tạm ứng' && !p.docNo ? KPDC_ADV_DOC[p.id] : null;
+        if (!d) return;
+        p.docNo = d[0]; p.docDate = p.docDate || d[1]; p.signMethod = p.signMethod || 'Ký ngoài';
+        added++;
+    });
     var f7 = 'Mau_25_BTNN_Quyet_dinh_dinh_chi_VVBT-2026-407_da_ky.pdf', f8 = 'QD_dinh_chi_giai_quyet_BT-2026-408_ky_ngoai.pdf';
     var base7 = { ycbtCode: 'BT-2026-407', nycName: 'Lâm Văn Tài', nycRole: 'Người bị thiệt hại', agency: 'UBND phường Tây Hồ', cqCap: 'UBND phường Tây Hồ', source: 'Ngân sách địa phương', user: 'Nguyễn Văn Chuyên Viên', files: [] };
     var list = [
@@ -211,7 +294,22 @@ function kpdcSeed() {
             notes: 'Đề nghị tạm ứng chưa lập; vụ việc bị đình chỉ giải quyết (Ký ngoài) nên tự hủy.', advApproveTinhThan: 25000000, advApproveKhac: 15000000,
             statusBasis: kpdcSeedBasis('BT-2026-408', 'VVBT-2026-408', '', '', f8, 'Ký ngoài', '20/10/2026 10:15', 'Chờ lập đề nghị', KPDC_CANCEL),
             kpdcHistory: kpdcSeedHist('20/10/2026 10:15', false, 'Căn cứ: Quyết định đình chỉ giải quyết bồi thường (Mã vụ việc VVBT-2026-408, Mã hồ sơ GQBT BT-2026-408). Trạng thái trước: Chờ lập đề nghị.')
-        }
+        },
+        // BT-2026-408: Đình chỉ chọn "Không thu hồi" -> khoản tạm ứng đã chi giữ Hoàn thành, chỉ ghi lịch sử
+        (function () {
+            var b = kpdcSeedBasis('BT-2026-408', 'VVBT-2026-408', '', '', f8, 'Ký ngoài', '20/10/2026 10:15', 'Hoàn thành', 'Hoàn thành');
+            b.thuHoi = KPDC_NO_RECOVER;
+            b.thuHoiReason = 'Người yêu cầu bồi thường đã sử dụng khoản tạm ứng để khắc phục thiệt hại thực tế phát sinh; không có khả năng hoàn trả.';
+            return {
+                id: 'P_KPDC_S7', code: 'KP-2026-907', type: 'Cấp tạm ứng', ycbtCode: 'BT-2026-408', nycName: 'Trương Thị Mai', nycRole: 'Người bị thiệt hại', agency: 'UBND phường Thanh Xuân', cqCap: 'UBND phường Thanh Xuân',
+                source: 'Ngân sách địa phương', user: 'Nguyễn Văn Chuyên Viên', files: [], amount: 20000000, date: '06/10/2026', status: 'Hoàn thành',
+                notes: 'Tạm ứng kinh phí bồi thường đã chi trả; vụ việc bị đình chỉ giải quyết, Quyết định đình chỉ chọn Không thu hồi.',
+                advApproveTinhThan: 12000000, advApproveKhac: 8000000, signMethod: 'Ký ngoài', docNo: '79/QĐ-UBND', docDate: '07/10/2026', signedFile: 'QD_tam_ung_BT-2026-408_ky_ngoai.pdf',
+                approvedDate: '07/10/2026 14:00', approvedLeader: 'Bùi Quang Vinh', payoutDate: '09/10/2026', payoutAmountReal: 20000000, payoutMethod: 'Nhận qua chuyển khoản', payoutRecName: 'Trương Thị Mai',
+                kpdcNoRecover: b,
+                kpdcHistory: [{ at: '20/10/2026 10:15', userId: '', userName: 'Hệ thống', action: KPDC_NO_RECOVER_ACT, note: kpdcNoRecoverNote(b, 'BT-2026-408', 'Hoàn thành') }]
+            };
+        })()
     ];
     // Dừng giải quyết: BT-2026-543 (Dừng giải quyết - Ký số) tạm ứng đã chi -> Chờ thu hồi;
     // BT-2026-541 (Chờ duyệt Dừng giải quyết bồi thường) tạm ứng đã chi trả (Hoàn thành) -> chuyển Chờ thu hồi khi Lãnh đạo cấp cuối Ký duyệt
@@ -231,6 +329,25 @@ function kpdcSeed() {
         notes: 'Tạm ứng kinh phí bồi thường đã chi trả; vụ việc đang trình Dừng giải quyết bồi thường.',
         advApproveTinhThan: 15000000, advApproveKhac: 10000000, docNo: '75/QĐ-STP', docDate: '08/10/2026', signedFile: 'QD_tam_ung_BT-2026-541_ky_ngoai.pdf',
         approvedDate: '08/10/2026 10:00', payoutDate: '10/10/2026', payoutAmountReal: 25000000, payoutRecName: 'Tạ Quang Vinh'
+    }));
+    // BT-2026-544 (Dừng giải quyết - Ký ngoài) chọn "Không thu hồi": khoản tạm ứng đã chi giữ Hoàn thành, chỉ ghi lịch sử
+    var b544 = kpdcSeedBasis('BT-2026-544', kpdcSeedVv('BT-2026-544'), '', '', 'TB_dung_giai_quyet_BT-2026-544_ky_ngoai.pdf', 'Ký ngoài', '23/10/2026 09:30', 'Hoàn thành', 'Hoàn thành', DGQ);
+    b544.thuHoi = KPDC_NO_RECOVER;
+    b544.thuHoiReason = 'Khoản tạm ứng đã được chi cho thiệt hại có thật và sẽ được cơ quan có thẩm quyền giải quyết bồi thường xem xét khấu trừ.';
+    list.push(Object.assign({}, baseDgq, {
+        id: 'P_KPDC_S8', code: 'KP-2026-908', ycbtCode: 'BT-2026-544', nycName: 'Công ty TNHH Thương mại Hòa Bình', amount: 40000000, date: '04/10/2026', status: 'Hoàn thành',
+        notes: 'Tạm ứng kinh phí bồi thường đã chi trả; vụ việc bị dừng giải quyết, Thông báo dừng giải quyết chọn Không thu hồi.',
+        advApproveTinhThan: 0, advApproveKhac: 40000000, docNo: '70/QĐ-STP', docDate: '05/10/2026', signedFile: 'QD_tam_ung_BT-2026-544_ky_ngoai.pdf',
+        approvedDate: '05/10/2026 10:00', payoutDate: '07/10/2026', payoutAmountReal: 40000000, payoutRecName: 'Công ty TNHH Thương mại Hòa Bình',
+        kpdcNoRecover: b544,
+        kpdcHistory: [{ at: '23/10/2026 09:30', userId: '', userName: 'Hệ thống', action: KPDC_NO_RECOVER_ACT, note: kpdcNoRecoverNote(b544, 'BT-2026-544', 'Hoàn thành') }]
+    }));
+    // BT-2026-504 (Thương lượng): tạm ứng đã chi trả (Hoàn thành), dùng để thử Đình chỉ giải quyết chọn Thu hồi / Không thu hồi
+    list.push(Object.assign({}, baseDgq, {
+        id: 'P_KPDC_S9', code: 'KP-2026-909', ycbtCode: 'BT-2026-504', nycName: 'Phạm Thị Mai Anh', amount: 30000000, date: '08/10/2026', status: 'Hoàn thành',
+        notes: 'Tạm ứng kinh phí bồi thường đã chi trả trong quá trình giải quyết bồi thường.',
+        advApproveTinhThan: 10000000, advApproveKhac: 20000000, docNo: '76/QĐ-STP', docDate: '09/10/2026', signedFile: 'QD_tam_ung_BT-2026-504_ky_ngoai.pdf',
+        approvedDate: '09/10/2026 10:00', payoutDate: '12/10/2026', payoutAmountReal: 30000000, payoutRecName: 'Phạm Thị Mai Anh'
     }));
     list.forEach(function (it) { if (!has(it.id)) { proposalsList.push(it); added++; } });
     // BT-2026-002: Thông báo chi trả Chờ duyệt (Loại trình Thông báo chi trả), dùng để thử Đình chỉ (Ký ngoài) tại màn Giải quyết YCBT
@@ -309,7 +426,7 @@ function kpdcHistInject(html, item) {
 function kpdcDecorateTable() {
     var tbody = document.getElementById('proposalsTableBody'); if (!tbody) return;
     Array.prototype.forEach.call(tbody.rows, function (tr) {
-        if (tr.cells.length < 11) return; // Lưới MH01 11 cột: Trạng thái = cột kề cuối
+        if (tr.cells.length < 10) return; // Lưới MH01 10 cột: Trạng thái = cột kề cuối
         var code = tr.cells[1].innerText.trim();
         var item = proposalsList.find(function (p) { return p && p.code === code; });
         if (!kpdcIsDc(item)) return;
@@ -354,4 +471,10 @@ function kpdcDecorateTable() {
     };
     wrapFile('kpdtAdvFile');
     wrapFile('kpdtPayFile');
+    // Áp bù lần cuối sau khi các add-on khác nạp dữ liệu mẫu (VD khoản chi trả mẫu của vụ việc Hoàn thành - quan_ly_kinh_phi_kpux.js)
+    window.addEventListener('load', function () {
+        setTimeout(function () {
+            try { if (kpdcSyncAll()) { saveProposalsToLocal(); renderProposalsTable(); } } catch (e) { console.error(e); }
+        }, 0);
+    });
 })();

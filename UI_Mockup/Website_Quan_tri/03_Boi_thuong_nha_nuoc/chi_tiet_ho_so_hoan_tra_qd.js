@@ -93,6 +93,8 @@
             if (!o.xl && sd) { o.xl = sd[1]; if (sd[2]) o.giam = sd[2]; }
             const rec = stored && stored.detail && stored.detail.recs.find(r => r.name === o.name);
             if (rec) Object.assign(o, { ct: rec.ct, qd2: rec.qd2, qd3: rec.qd3 || null, trinh: rec.trinh || '', total: rec.total != null ? rec.total : o.total, paid: rec.paid || 0, payments: rec.payments || [], refund: rec.refund || 0, refundDone: rec.refundDone || null, dcKey: rec.dcKey != null ? rec.dcKey : null });
+            // QĐ giảm mức hoàn trả đã ban hành: số tiền sau giảm theo Quyết định
+            if (rec && rec.qd2 && rec.qd2.issuedAt && rec.qd2.supp && rec.qd2.supp.phaiHT != null) o.giam = rec.qd2.supp.giam;
             if (!o.ct) {
                 if (o.ctStatus) o.ct = 'CBH_HT';
                 else if (sd) o.ct = sd[0];
@@ -100,6 +102,8 @@
             }
             const ex = !rec && sd && sd[3];
             if (ex) ['paid', 'trinh', 'refund', 'total'].forEach(k => { if (ex[k] != null) o[k] = ex[k]; });
+            // Dữ liệu mẫu nhiều đợt nộp (ht_du_lieu_mau.js: pays [[Ngày nộp, Số tiền], ...]) kèm biên lai
+            if (ex && Array.isArray(ex.pays) && !Array.isArray(o.payments)) o.payments = ex.pays.map(p => ({ ngay: p[0], amt: p[1], by: 'Cán bộ ' + o.agency, unit: o.agency, at: p[0] + ' 09:00', tlkt: [{ name: 'Biên lai nộp tiền vào ngân sách nhà nước', file: { id: '', name: 'Bien_lai_' + String(p[0]).replace(/\//g, '') + '.pdf', size: 122880, type: 'application/pdf' } }] }));
             // Dữ liệu mẫu: số đã nộp quy về 01 đợt nộp
             if (!Array.isArray(o.payments)) o.payments = (o.paid || 0) > 0 ? [{ ngay: '15/09/2026', amt: o.paid, by: 'Cán bộ ' + o.agency, unit: o.agency, tlkt: [] }] : [];
             if (o.ct === 'MIEN' && !o.total) o.total = 0;
@@ -126,6 +130,8 @@
             if (!o.qd2 && xc !== 'HT' && ['MIEN', 'THU', 'DONE'].includes(o.ct)) o.qd2 = seedRec(xc, u, 'DONE');
             const ex = (SEED[o.name] || [])[3]; if (!ex) return;
             if (ex.qd2 && !o.qd2) o.qd2 = seedRec(xlCode(o), u, ex.qd2);
+            // Dữ liệu mẫu QĐ giảm / miễn đã ban hành theo hình thức Ký ngoài (tệp PDF đã ký và đóng dấu)
+            if (ex.qd2m === 'offline' && o.qd2) Object.assign(o.qd2, { method: 'offline', docSrc: '', soKh: ex.qd2So || '', fileName: KIND[o.qd2.kind].file + '_' + (activeDossier.maVuViec || activeDossier.code) + '_da_ky.pdf', upFile: { name: KIND[o.qd2.kind].file + '_da_ky.pdf', size: 286720 } });
             if (ex.dc) {
                 let r = activeDossier.htDcs[ex.dc.key];
                 if (!r) {
@@ -399,9 +405,12 @@
         const b = baseKind(kind), k = KIND[kind];
         const item = (lbl, v) => '<div class="info-item"><div class="info-label">' + lbl + '</div><div class="info-value" style="font-weight:600;">' + v + '</div></div>';
         const file = (label) => '<span style="display:inline-flex; align-items:center; gap:8px; flex-wrap:wrap;"><i class="fa-solid fa-file-pdf" style="color:#dc2626;"></i>' + esc(r.fileName || '') + (label ? ' <span style="font-size:11px; padding:1px 8px; border-radius:999px; background:#fef3c7; color:#92400e;">' + label + '</span>' : '')
-            + '<a class="action-link" href="javascript:void(0)" title="Xem" onclick="ht3OpenDoc(\'' + kind + '\',' + idx + ')"><i class="fa-solid fa-eye"></i></a><a class="action-link" href="javascript:void(0)" title="Tải" onclick="showToast(\'Đang tải tệp ' + esc(r.fileName || '') + '...\', \'info\')"><i class="fa-solid fa-download"></i></a></span>';
+            + '<a class="action-link" href="javascript:void(0)" title="Xem file" onclick="ht3OpenDoc(\'' + kind + '\',' + idx + ')"><i class="fa-solid fa-eye"></i> Xem file</a><a class="action-link" href="javascript:void(0)" title="Tải file" onclick="showToast(\'Đang tải tệp ' + esc(r.fileName || '') + '...\', \'info\')"><i class="fa-solid fa-download"></i> Tải file</a></span>';
         const sp = r.supp || {};
-        const tien = b === 'GIAM' ? item('Số tiền sau giảm', money(sp.giam || o.giam || 0) + ' đ') : item('Số tiền được miễn', money(k.base ? Math.max(0, (o.total || 0) - (o.paid || 0)) : (o.hd || o.total || 0)) + ' đ');
+        // QĐ giảm: 03 số tiền theo lượt trình; dữ liệu cũ (chưa lưu số tiền): Bước 3 theo ý kiến của Hội đồng
+        const gPhai = sp.phaiHT != null ? sp.phaiHT : (k.base ? null : (o.hd || 0)), gCon = sp.phaiHT != null ? sp.giam : (k.base ? (sp.giam || 0) : (o.giam || 0));
+        const tien = b === 'GIAM' ? item('Số tiền phải hoàn trả', gPhai != null ? money(gPhai) + ' đ' : '--') + item('Số tiền hoàn trả được giảm', gPhai != null ? money(sp.duocGiam != null ? sp.duocGiam : Math.max(0, gPhai - gCon)) + ' đ' : '--')
+            + item('Số tiền còn phải hoàn trả', money(gCon) + ' đ') : item('Số tiền được miễn', money(k.base ? Math.max(0, (o.total || 0) - (o.paid || 0)) : (o.hd || o.total || 0)) + ' đ');
         const lyDo = item(b === 'GIAM' ? 'Lý do giảm' : 'Lý do miễn', esc(sp.lyDo || (b === 'GIAM' ? o.lyDoGiam : o.lyDoMien) || '--'));
         let st, body;
         if (r.issuedAt) {
@@ -416,9 +425,19 @@
         const old = (r.hist || []).slice(1);
         return '<div class="ht-qd-block" style="margin-top:16px; border:1px solid #e2e8f0; border-radius:8px; padding:12px 14px;"><div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;"><strong style="color:var(--primary-color);"><i class="fa-solid fa-file-contract"></i> ' + esc(k.doc) + (k.base ? ' (bổ sung)' : '') + '</strong>' + (window.htPill ? window.htPill(st) : esc(st)) + '</div>'
             + '<div class="info-grid">' + body + '</div>'
+            // Tài liệu ban hành / không ban hành kèm theo của lượt trình (khối không ban hành chỉ đơn vị trình thấy)
+            + (r.tlkt && r.tlkt.length && typeof tlktViewHtml === 'function' ? '<div style="margin-top:8px;">' + tlktViewHtml(r.tlkt, { ownerUnit: r.unit || o.agency || '' }) + '</div>' : '')
             + (old.length ? '<details style="margin-top:8px;"><summary style="cursor:pointer; font-size:12.5px; color:#475569;">Lịch sử xử lý (' + old.length + ')</summary><ul style="margin:6px 0 0 18px; font-size:12.5px;">' + old.map(h => '<li>' + esc(h.at || '') + ' - ' + esc(h.name || '') + ': ' + esc(h.msg || '') + '</li>').join('') + '</ul></details>' : '')
             + '</div>';
     }
+    // Xem chi tiết hoàn trả của cán bộ (Bước 4): các lượt Quyết định giảm / miễn của cán bộ, mới nhất trên cùng
+    window.htQdRecs = function (idx) {
+        const o = (activeDossier.refundOfficers || [])[idx]; if (!o) return [];
+        const l = [];
+        if (o.qd3 && KIND[o.qd3.kind]) l.push({ kind: o.qd3.kind, base: baseKind(o.qd3.kind), r: o.qd3 });
+        if (o.qd2) { const kd = o.qd2.kind || xlCode(o); if (KIND[kd]) l.push({ kind: kd, base: baseKind(kd), r: o.qd2 }); }
+        return l.map(x => Object.assign(x, { html: qdInfoBlock(o, idx, x.kind, x.r), doc: KIND[x.kind].doc }));
+    };
     window.htQdBlockHtml = function (idx) {
         const o = (activeDossier.refundOfficers || [])[idx]; if (!o) return '';
         return (o.qd2 ? qdInfoBlock(o, idx, o.qd2.kind || xlCode(o), o.qd2) : '') + (o.qd3 ? qdInfoBlock(o, idx, o.qd3.kind, o.qd3) : '');
@@ -564,28 +583,40 @@
             + '<div id="ht3Stepper" class="ktl-stepper-fullwidth"><div id="ht3Tab1" class="ktl-step-tab active"><span class="ktl-step-badge">1</span><span class="ktl-step-title">Nhập thông tin</span></div><div class="ktl-stepper-sep"></div><div id="ht3Tab2" class="ktl-step-tab"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span></div></div>'
             + '<div id="ht3Body1" class="gqx-body" style="overflow-y:auto; flex:1; padding:24px;">'
             + '<div id="ht3Returned" style="display:none; background:#fef2f2; border:1px solid #fecaca; border-left:4px solid #dc2626; border-radius:8px; padding:12px 16px; margin-bottom:14px;"></div>'
-            // Miễn / Giảm bổ sung (Bước 4): thông tin số tiền, Số tiền sau giảm, Lý do
-            + '<div class="gqx-sec" id="ht3Supp" style="display:none;"><div class="gqx-sec-title"><i class="fa-solid fa-scale-balanced"></i> <span id="ht3SuppTitle"></span></div><div id="ht3SuppInfo" style="font-size:13px; margin-bottom:10px;"></div>'
-            + '<div class="gqx-field" id="ht3SuppGiamWrap"><label class="form-label">Số tiền sau giảm (đ)<span class="gqx-req">*</span></label><input type="text" id="ht3SuppGiam" class="form-control" placeholder="Nhập số tiền sau giảm" style="text-align:right;" oninput="ht3MoneyIn(this)"><div id="ht3SuppGiamErr" class="gqx-err">' + REQ + '</div></div>'
-            + '<div class="gqx-field"><label class="form-label"><span id="ht3SuppLyDoLbl"></span><span class="gqx-req">*</span></label><textarea id="ht3SuppLyDo" class="form-control" rows="2" oninput="ht3Clr(\'ht3SuppLyDo\')"></textarea><div id="ht3SuppLyDoErr" class="gqx-err">' + REQ + '</div></div></div>'
-            // Đình chỉ cấp cán bộ: danh sách cán bộ được chọn (kế thừa), phương án xử lý số tiền đã thu, lý do / căn cứ đình chỉ
-            + '<div class="gqx-sec" id="ht3Dc" style="display:none;"><div class="gqx-sec-title"><i class="fa-solid fa-users"></i> Cán bộ được đình chỉ</div><div id="ht3DcList"></div><div id="ht3DcPaErr" class="gqx-err">Vui lòng chọn phương án xử lý số tiền đã thu cho từng cán bộ.</div></div>'
-            + '<div class="gqx-sec" id="ht3DcInfo" style="display:none;"><div class="gqx-sec-title"><i class="fa-solid fa-scale-balanced"></i> Lý do, căn cứ đình chỉ</div>'
-            + '<div class="gqx-field"><label class="form-label">Căn cứ<span class="gqx-req">*</span></label><textarea id="ht3DcCanCu" class="form-control" rows="4" maxlength="4000" placeholder="Nhập căn cứ, mỗi căn cứ 01 dòng" oninput="ht3Clr(\'ht3DcCanCu\')"></textarea><div id="ht3DcCanCuErr" class="gqx-err">' + REQ + '</div></div>'
-            + '<div class="gqx-field"><label class="form-label">Văn bản làm căn cứ yêu cầu bồi thường<span class="gqx-req">*</span></label><textarea id="ht3DcVb" class="form-control" rows="2" maxlength="1000" placeholder="Nhập tên, số hiệu, ngày ban hành, cơ quan ban hành văn bản làm căn cứ yêu cầu bồi thường" oninput="ht3Clr(\'ht3DcVb\')"></textarea><div id="ht3DcVbErr" class="gqx-err">' + REQ + '</div></div>'
-            + '<div class="gqx-field" style="margin-bottom:0;"><label class="form-label">Nơi nhận</label><textarea id="ht3DcNoiNhan" class="form-control" rows="3" maxlength="2000" placeholder="Nhập nơi nhận, mỗi nơi nhận 01 dòng"></textarea></div></div>'
+            // Thứ tự chuẩn của popup trình ký: Hình thức ký -> thông tin nghiệp vụ (số tiền / cán bộ) -> Tệp văn bản trình ký (Nguồn tệp, Thông tin điền vào Mẫu, Xem trước) -> Tài liệu kèm theo
             + '<div class="gqx-sec"><div class="gqx-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="gqx-req">*</span></div><div class="sign-cards-grid">'
             + '<label class="sign-card active" id="ht3CardOn"><input type="radio" name="ht3Method" value="online" checked onchange="ht3SetMethod(\'online\')"><div class="sign-card-content"><div class="sign-card-icon"><i class="fa-solid fa-file-signature"></i></div><div class="sign-card-text"><div class="sign-card-title">Ký số trên hệ thống</div><div class="sign-card-desc">Trình Lãnh đạo ký duyệt trên phần mềm</div></div></div><div class="sign-card-check"><i class="fa-solid fa-circle-check"></i></div></label>'
             + '<label class="sign-card" id="ht3CardOff"><input type="radio" name="ht3Method" value="offline" onchange="ht3SetMethod(\'offline\')"><div class="sign-card-content"><div class="sign-card-icon offline"><i class="fa-solid fa-stamp"></i></div><div class="sign-card-text"><div class="sign-card-title">Ký ngoài (Ban hành trực tiếp)</div><div class="sign-card-desc">Tải lên văn bản PDF đã ký và đóng dấu</div></div></div><div class="sign-card-check"><i class="fa-regular fa-circle"></i></div></label>'
             + '</div></div>'
+            // Miễn / Giảm bổ sung (Bước 4): thông tin số tiền, Số tiền sau giảm, Lý do
+            + '<div class="gqx-sec" id="ht3Supp" style="display:none;"><div class="gqx-sec-title"><i class="fa-solid fa-scale-balanced"></i> <span id="ht3SuppTitle"></span></div><div id="ht3SuppInfo" style="font-size:13px; margin-bottom:10px;"></div>'
+            // QĐ giảm mức hoàn trả (Bước 3 và giảm bổ sung Bước 4; cả Ký số và Ký ngoài): Số tiền phải hoàn trả (chỉ đọc) - Số tiền hoàn trả được giảm (nhập) = Số tiền còn phải hoàn trả (tự tính)
+            + '<div id="ht3SuppGiamWrap" class="gqx-grid2" style="grid-template-columns:repeat(3, 1fr);">'
+            + '<div class="gqx-field"><label class="form-label">Số tiền phải hoàn trả (đ)</label><input type="text" id="ht3SuppPhai" class="form-control" style="text-align:right; background:#f1f5f9;" readonly></div>'
+            + '<div class="gqx-field"><label class="form-label">Số tiền hoàn trả được giảm (đ)<span class="gqx-req">*</span></label><input type="text" id="ht3SuppDuoc" class="form-control" placeholder="Nhập số tiền hoàn trả được giảm" style="text-align:right;" oninput="ht3MoneyIn(this); ht3GiamCalc()"><div id="ht3SuppDuocErr" class="gqx-err">' + REQ + '</div></div>'
+            + '<div class="gqx-field"><label class="form-label">Số tiền còn phải hoàn trả (đ)</label><input type="text" id="ht3SuppGiam" class="form-control" style="text-align:right; background:#f1f5f9;" readonly><div id="ht3SuppGiamChu" style="font-size:12px; color:var(--text-muted); margin-top:4px; font-style:italic;"></div></div>'
+            + '</div>'
+            + '<div class="gqx-field"><label class="form-label"><span id="ht3SuppLyDoLbl"></span><span class="gqx-req">*</span></label><textarea id="ht3SuppLyDo" class="form-control" rows="2" oninput="ht3Clr(\'ht3SuppLyDo\')"></textarea><div id="ht3SuppLyDoErr" class="gqx-err">' + REQ + '</div></div></div>'
+            // Đình chỉ cấp cán bộ: danh sách cán bộ được chọn (kế thừa), phương án xử lý số tiền đã thu, lý do / căn cứ đình chỉ
+            + '<div class="gqx-sec" id="ht3Dc" style="display:none;"><div class="gqx-sec-title"><i class="fa-solid fa-users"></i> Cán bộ được đình chỉ</div><div id="ht3DcList"></div><div id="ht3DcPaErr" class="gqx-err">Vui lòng chọn phương án xử lý số tiền đã thu cho từng cán bộ.</div></div>'
             + '<div class="gqx-sec" id="ht3DocSec"><div class="gqx-sec-title" id="ht3DocTitle"></div>'
             + '<div id="ht3SrcGroup" class="doc-src-segmented"><button type="button" class="doc-src-seg-btn active" id="ht3SegGen" onclick="ht3SetSrc(\'gen\')"><i class="fa-solid fa-wand-magic-sparkles"></i><span id="ht3SegGenText"></span></button><button type="button" class="doc-src-seg-btn" id="ht3SegUp" onclick="ht3SetSrc(\'upload\')"><i class="fa-solid fa-cloud-arrow-up"></i><span>Tải lên từ máy</span></button></div>'
             + '<div id="ht3Meta" class="tlhd-meta"><div class="tlhd-meta-title" id="ht3MetaTitle"></div><div class="gqx-grid2">'
             + '<div class="gqx-field"><label class="form-label">Số, ký hiệu văn bản<span class="gqx-req">*</span></label><input type="text" id="ht3So" class="form-control" maxlength="50" placeholder="Nhập số, ký hiệu văn bản" oninput="ht3Clr(\'ht3So\')"><div id="ht3SoErr" class="gqx-err">' + REQ + '</div></div>'
             + '<div class="gqx-field"><label class="form-label">Ngày văn bản<span class="gqx-req">*</span></label><input type="text" id="ht3Ngay" class="form-control" placeholder="dd/mm/yyyy" oninput="ht3Clr(\'ht3Ngay\')"><div id="ht3NgayErr" class="gqx-err">' + REQ + '</div></div>'
-            + '</div><div class="tlhd-gen-row" style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:8px;"><div class="gqx-file-hint" id="ht3GenHint"></div><button type="button" class="btn-preview-doc btn btn-secondary btn-sm" onclick="ht3Preview()"><i class="fa-solid fa-eye"></i> Xem trước văn bản</button></div></div>'
+            + '</div>'
+            // QĐ đình chỉ (Mẫu 39/BTNN): Căn cứ, Văn bản làm căn cứ yêu cầu bồi thường, Nơi nhận thuộc Thông tin điền vào Mẫu (như popup Đình chỉ cả hồ sơ)
+            + '<div id="ht3DcInfo" style="display:none;">'
+            + '<div class="gqx-field"><label class="form-label">Căn cứ<span class="gqx-req">*</span></label><textarea id="ht3DcCanCu" class="form-control" rows="4" maxlength="4000" placeholder="Nhập căn cứ, mỗi căn cứ 01 dòng" oninput="ht3Clr(\'ht3DcCanCu\')"></textarea><div id="ht3DcCanCuErr" class="gqx-err">' + REQ + '</div></div>'
+            + '<div class="gqx-field"><label class="form-label">Văn bản làm căn cứ yêu cầu bồi thường<span class="gqx-req">*</span></label><textarea id="ht3DcVb" class="form-control" rows="2" maxlength="1000" placeholder="Nhập tên, số hiệu, ngày ban hành, cơ quan ban hành văn bản làm căn cứ yêu cầu bồi thường" oninput="ht3Clr(\'ht3DcVb\')"></textarea><div id="ht3DcVbErr" class="gqx-err">' + REQ + '</div></div>'
+            + '<div class="gqx-field" style="margin-bottom:0;"><label class="form-label">Nơi nhận</label><textarea id="ht3DcNoiNhan" class="form-control" rows="3" maxlength="2000" placeholder="Nhập nơi nhận, mỗi nơi nhận 01 dòng"></textarea></div></div>'
+            + '<div class="tlhd-gen-row" style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:8px;"><div class="gqx-file-hint" id="ht3GenHint"></div><button type="button" class="btn-preview-doc btn btn-secondary btn-sm" onclick="ht3Preview()"><i class="fa-solid fa-eye"></i> Xem trước văn bản</button></div></div>'
             + '<div id="ht3Upload" style="display:none;"><input type="file" id="ht3File" accept=".pdf,.doc,.docx" style="display:none;" onchange="ht3OnFile(this)"><div id="ht3FileBox"></div><div id="ht3FileErr" class="gqx-err">' + REQ + '</div></div>'
-            + '<div id="ht3Off" style="display:none;"><input type="file" id="ht3OffFile" accept=".pdf" style="display:none;" onchange="ht3OnFile(this)"><div id="ht3OffBox"></div><div id="ht3OffErr" class="gqx-err">Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu.</div><div class="tlhd-status-note" id="ht3OffNote"></div></div>'
+            // Ký ngoài: Số, ký hiệu và Ngày của văn bản đã ký (như popup Ký ngoài QĐ GQBT)
+            + '<div id="ht3Off" style="display:none;"><div class="gqx-grid2">'
+            + '<div class="gqx-field"><label class="form-label">Số, ký hiệu văn bản<span class="gqx-req">*</span></label><input type="text" id="ht3OffSo" class="form-control" maxlength="50" placeholder="Nhập số, ký hiệu văn bản" oninput="ht3Clr(\'ht3OffSo\')"><div id="ht3OffSoErr" class="gqx-err">' + REQ + '</div></div>'
+            + '<div class="gqx-field"><label class="form-label">Ngày văn bản<span class="gqx-req">*</span></label><input type="text" id="ht3OffNgay" class="form-control" placeholder="dd/mm/yyyy" oninput="ht3Clr(\'ht3OffNgay\')"><div id="ht3OffNgayErr" class="gqx-err">' + REQ + '</div></div>'
+            + '</div><input type="file" id="ht3OffFile" accept=".pdf" style="display:none;" onchange="ht3OnFile(this)"><div id="ht3OffBox"></div><div id="ht3OffErr" class="gqx-err">Vui lòng tải lên tệp văn bản PDF đã ký và đóng dấu.</div><div class="tlhd-status-note" id="ht3OffNote"></div></div>'
             + '</div>'
             + '<div id="ht3Tlkt"></div>'
             + '</div>'
@@ -627,19 +658,31 @@
         el('ht3GenHint').innerText = 'Hệ thống tự động sinh ' + k.doc + ' theo Mẫu ' + k.mau + '/BTNN từ thông tin đang nhập.';
         el('ht3OffNote').innerHTML = '<i class="fa-solid fa-circle-info"></i> Khi bấm <strong>Ban hành văn bản</strong>, văn bản được ban hành trực tiếp (không qua bước duyệt của Lãnh đạo trên hệ thống).';
         el('ht3So').value = rejected ? prev.soKh : '';
+        el('ht3OffSo').value = rejected && prev.method === 'offline' ? (prev.soKh || '') : '';
+        el('ht3OffNgay').value = rejected && prev.method === 'offline' ? (prev.ngay || today()) : today();
         el('ht3Ngay').value = rejected ? prev.ngay : today();
         el('ht3Content').value = rejected ? prev.content : k.content;
         // Miễn / Giảm bổ sung: số tiền hiện tại, số tiền sau giảm mới, lý do
-        el('ht3Supp').style.display = k.base ? '' : 'none';
-        if (k.base) {
-            const o = ctx.officer, giam = k.base === 'GIAM';
-            el('ht3SuppTitle').innerText = giam ? 'Thông tin giảm mức hoàn trả bổ sung' : 'Thông tin miễn hoàn trả bổ sung';
+        // QĐ giảm mức hoàn trả tại Bước 3: cũng nhập 03 số tiền (mặc định theo ý kiến của Hội đồng)
+        el('ht3Supp').style.display = hasSupp(kind) ? '' : 'none';
+        if (hasSupp(kind)) {
+            const o = ctx.officer, giam = baseKind(kind) === 'GIAM';
+            el('ht3SuppTitle').innerText = giam ? (k.base ? 'Thông tin giảm mức hoàn trả bổ sung' : 'Thông tin giảm mức hoàn trả') : 'Thông tin miễn hoàn trả bổ sung';
+            el('ht3SuppInfo').style.display = k.base ? '' : 'none';
             el('ht3SuppInfo').innerHTML = 'Số tiền phải hoàn trả hiện tại: <strong>' + money(o.total) + ' đ</strong> • Đã nộp: <strong>' + money(o.paid) + ' đ</strong> • Còn phải thu: <strong>' + money(Math.max(0, (o.total || 0) - (o.paid || 0))) + ' đ</strong>';
             el('ht3SuppGiamWrap').style.display = giam ? '' : 'none';
-            el('ht3SuppGiam').value = rejected && prev.supp && prev.supp.giam ? money(prev.supp.giam) : '';
+            const phai = suppPhai(kind, o), ps = rejected && prev.supp ? prev.supp : null;
+            el('ht3SuppPhai').value = money(phai);
+            // Bước 3: Số tiền hoàn trả được giảm theo ý kiến của Hội đồng, chỉ đọc; giảm bổ sung Bước 4: nhập
+            const lockDuoc = !k.base && giam;
+            const duoc = lockDuoc ? Math.max(0, phai - (o.giam || 0)) : (ps ? (ps.duocGiam != null ? ps.duocGiam : Math.max(0, phai - (ps.giam || 0))) : 0);
+            el('ht3SuppDuoc').value = duoc ? money(duoc) : '';
+            el('ht3SuppDuoc').readOnly = lockDuoc;
+            el('ht3SuppDuoc').style.background = lockDuoc ? '#f1f5f9' : '';
+            ht3GiamCalc();
             el('ht3SuppLyDoLbl').innerText = giam ? 'Lý do giảm' : 'Lý do miễn';
             el('ht3SuppLyDo').placeholder = giam ? 'Nhập lý do giảm mức hoàn trả' : 'Nhập lý do miễn hoàn trả';
-            el('ht3SuppLyDo').value = rejected && prev.supp ? prev.supp.lyDo : '';
+            el('ht3SuppLyDo').value = ps ? ps.lyDo : (!k.base && giam ? (o.lyDoGiam || '') : '');
         }
         // Đình chỉ: kế thừa cán bộ đã chọn; cán bộ đã thu > 0 bắt buộc chọn phương án xử lý số tiền đã thu
         el('ht3Dc').style.display = kind === 'DC' ? '' : 'none';
@@ -718,9 +761,26 @@
         renderFileBoxes();
     };
     window.ht3MoneyIn = function (input) { const n = parseInt(String(input.value).replace(/\D/g, ''), 10) || 0; input.value = n ? money(n) : ''; ht3Clr(input.id); };
+    // Khối số tiền / lý do của popup: Miễn, Giảm bổ sung (Bước 4) và QĐ giảm mức hoàn trả (Bước 3)
+    function hasSupp(kind) { return !!(KIND[kind] && (KIND[kind].base || kind === 'GIAM')); }
+    // Số tiền phải hoàn trả: Bước 3 theo Quyết định hoàn trả (ý kiến của Hội đồng); giảm bổ sung Bước 4 theo số tiền phải hoàn trả hiện tại
+    function suppPhai(kind, o) { return KIND[kind].base ? (o.total || 0) : (o.hd || o.total || 0); }
+    // Số tiền còn phải hoàn trả = Số tiền phải hoàn trả - Số tiền hoàn trả được giảm (tự tính khi nhập)
+    window.ht3GiamCalc = function () {
+        const p = parseInt(String(el('ht3SuppPhai').value).replace(/\D/g, ''), 10) || 0, d = parseInt(String(el('ht3SuppDuoc').value).replace(/\D/g, ''), 10) || 0;
+        const c = el('ht3SuppGiam'), chu = el('ht3SuppGiamChu');
+        if (!el('ht3SuppDuoc').value.trim()) { c.value = ''; chu.innerText = ''; return; }
+        const n = p - d;
+        c.value = n >= 0 ? money(n) : '';
+        chu.innerText = n > 0 ? (typeof docSoTien === 'function' ? 'Bằng chữ: ' + docSoTien(n) : '') : '';
+    };
     function readSupp() {
-        if (!S || !KIND[S.kind].base) return null;
-        return { giam: parseInt(String(el('ht3SuppGiam').value).replace(/\D/g, ''), 10) || 0, lyDo: el('ht3SuppLyDo').value.trim() };
+        if (!S || !hasSupp(S.kind)) return null;
+        const lyDo = el('ht3SuppLyDo').value.trim();
+        if (baseKind(S.kind) !== 'GIAM') return { giam: 0, lyDo };
+        const phai = suppPhai(S.kind, S.ctx.officer), duoc = parseInt(String(el('ht3SuppDuoc').value).replace(/\D/g, ''), 10) || 0;
+        // giam: Số tiền còn phải hoàn trả (số tiền sau giảm) - giữ tên trường cũ cho bộ sinh văn bản
+        return { phaiHT: phai, duocGiam: duoc, giam: Math.max(0, phai - duoc), lyDo };
     }
     function readDc() {
         if (!S || S.kind !== 'DC') return null;
@@ -728,34 +788,54 @@
         S.ctx.list.forEach((o, n) => { const c = document.querySelector('input[name="ht3Pa' + n + '"]:checked'); if (c) pa[o.name] = c.value; });
         return { pa, canCu: el('ht3DcCanCu').value, vbCanCu: el('ht3DcVb').value.trim(), noiNhan: el('ht3DcNoiNhan').value };
     }
-    function curDocHtml() { return docHtml(S.kind, Object.assign({}, S.ctx, { supp: readSupp(), dc: readDc() }), el('ht3So').value.trim(), el('ht3Ngay').value.trim()); }
+    // Dữ liệu điền mẫu QĐ giảm: 03 số tiền theo lượt trình (Số tiền phải hoàn trả tại thời điểm trình)
+    function docCtx(ctx, supp) {
+        if (!supp || supp.phaiHT == null || !ctx.officer) return supp ? Object.assign({}, ctx, { supp }) : ctx;
+        return Object.assign({}, ctx, { supp, officer: Object.assign({}, ctx.officer, { total: supp.phaiHT }) });
+    }
+    function curDocHtml() { return docHtml(S.kind, Object.assign(docCtx(S.ctx, readSupp()), { dc: readDc() }), el('ht3So').value.trim(), el('ht3Ngay').value.trim()); }
     window.ht3Preview = function () {
         const page = '<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><title>Xem trước văn bản<\/title><style>body{background:#e2e8f0;margin:0;padding:24px;}.page{width:794px;min-height:1123px;margin:0 auto;background:#fff;padding:50px 65px;box-sizing:border-box;font-family:"Times New Roman",serif;font-size:14px;line-height:1.6;}<\/style><\/head><body><div class="page">' + curDocHtml() + '<\/div><\/bo' + 'dy><\/ht' + 'ml>';
         try { window.open(URL.createObjectURL(new Blob([page], { type: 'text/html;charset=utf-8' })), '_blank'); } catch (e) { /* bỏ qua */ }
     };
     function validate1() {
         let first = null;
+        // Xóa lỗi của lần kiểm tra trước (khối số tiền, đình chỉ, tệp văn bản)
+        document.querySelectorAll('#ht3Body1 .is-invalid').forEach(x => { if (!x.closest('#ht3Tlkt')) x.classList.remove('is-invalid'); });
+        document.querySelectorAll('#ht3Body1 .gqx-err').forEach(x => { if (!x.closest('#ht3Tlkt')) x.style.display = 'none'; });
         const mark = (id, errId) => { const i = el(id); if (i) i.classList.add('is-invalid'); const e = el(errId || id + 'Err'); if (e) e.style.display = 'block'; if (!first) first = i || e; };
         const sp = readSupp();
         if (sp) {
-            if (KIND[S.kind].base === 'GIAM') {
-                const tot = S.ctx.officer.total || 0;
-                if (!el('ht3SuppGiam').value.trim()) mark('ht3SuppGiam');
-                else if (!(sp.giam > 0 && sp.giam < tot)) { el('ht3SuppGiamErr').innerText = 'Số tiền sau giảm phải lớn hơn 0 và nhỏ hơn số tiền phải hoàn trả hiện tại.'; mark('ht3SuppGiam'); }
+            if (baseKind(S.kind) === 'GIAM') {
+                // Số tiền hoàn trả được giảm: bắt buộc; lớn hơn 0 và nhỏ hơn Số tiền phải hoàn trả (giảm toàn bộ là Miễn hoàn trả)
+                el('ht3SuppDuocErr').innerText = REQ;
+                if (!el('ht3SuppDuoc').value.trim()) mark('ht3SuppDuoc');
+                else if (!(sp.duocGiam > 0 && sp.duocGiam < sp.phaiHT)) { el('ht3SuppDuocErr').innerText = 'Số tiền hoàn trả được giảm phải lớn hơn 0 và nhỏ hơn Số tiền phải hoàn trả.'; mark('ht3SuppDuoc'); }
             }
             if (!sp.lyDo) mark('ht3SuppLyDo');
         }
         const dc = readDc();
         if (dc) {
             if (S.ctx.list.some(o => (o.paid || 0) > 0 && !dc.pa[o.name])) mark('ht3DcList', 'ht3DcPaErr');
-            if (!dc.canCu.trim()) mark('ht3DcCanCu');
-            if (!dc.vbCanCu) mark('ht3DcVb');
+            // Căn cứ, Văn bản làm căn cứ: thuộc Thông tin điền vào Mẫu 39/BTNN - bắt buộc khi Ký số và Sinh văn bản theo mẫu
+            if (S.method === 'online' && S.src === 'gen') {
+                if (!dc.canCu.trim()) mark('ht3DcCanCu');
+                if (!dc.vbCanCu) mark('ht3DcVb');
+            }
         }
-        if (S.method === 'offline') { if (!S.file) mark('ht3OffBox', 'ht3OffErr'); }
+        if (S.method === 'offline') {
+            if (!el('ht3OffSo').value.trim()) mark('ht3OffSo');
+            const nd = el('ht3OffNgay').value.trim();
+            el('ht3OffNgayErr').innerText = REQ;
+            if (!nd) mark('ht3OffNgay');
+            else if (!/^\d{2}\/\d{2}\/\d{4}$/.test(nd)) { el('ht3OffNgayErr').innerText = 'Ngày không đúng định dạng dd/mm/yyyy.'; mark('ht3OffNgay'); }
+            if (!S.file) mark('ht3OffBox', 'ht3OffErr');
+        }
         else if (S.src === 'gen') { if (!el('ht3So').value.trim()) mark('ht3So'); if (!el('ht3Ngay').value.trim()) mark('ht3Ngay'); }
         else if (!S.file) mark('ht3FileBox', 'ht3FileErr');
         if (!first && typeof tlktValidate === 'function' && !tlktValidate('ht3')) return false;
-        if (first) { if (first.focus) first.focus(); return false; }
+        // Focus ô lỗi đầu tiên theo thứ tự hiển thị trên popup
+        if (first) { const f = document.querySelector('#ht3Body1 input.is-invalid, #ht3Body1 textarea.is-invalid, #ht3Body1 select.is-invalid') || first; if (f.focus) f.focus(); return false; }
         return true;
     }
     window.ht3Go1 = function () {
@@ -802,8 +882,8 @@
     function newRec(method) {
         const k = KIND[S.kind];
         return {
-            kind: S.kind, method, docSrc: method === 'offline' ? '' : S.src, soKh: method === 'online' && S.src === 'gen' ? el('ht3So').value.trim() : '',
-            ngay: method === 'online' && S.src === 'gen' ? el('ht3Ngay').value.trim() : today(),
+            kind: S.kind, method, docSrc: method === 'offline' ? '' : S.src, soKh: method === 'offline' ? el('ht3OffSo').value.trim() : (S.src === 'gen' ? el('ht3So').value.trim() : ''),
+            ngay: method === 'offline' ? el('ht3OffNgay').value.trim() : (S.src === 'gen' ? el('ht3Ngay').value.trim() : today()),
             fileName: S.file ? S.file.name : k.file + '_' + (activeDossier.maVuViec || activeDossier.code) + '.docx',
             upFile: S.file ? { name: S.file.name, size: S.file.size } : null,
             tlkt: typeof tlktGet === 'function' ? tlktGet('ht3') : [], // Ký ngoài: chỉ Tài liệu ban hành kèm theo
@@ -846,7 +926,8 @@
     // Ban hành: Tầng 1 (QĐ hoàn trả) định tuyến từng cán bộ; Tầng 2 (QĐ miễn / giảm) chuyển trạng thái cán bộ
     function issue(kind, key, msg) {
         const r = recOf(kind, key);
-        r.issuedAt = today();
+        // Ký ngoài: ngày Quyết định theo `Ngày văn bản` đã nhập; Ký số: ngày ký duyệt ban hành
+        r.issuedAt = r.method === 'offline' && r.ngay ? r.ngay : today();
         r.level = r.levels.length;
         if (kind === 'DC') {
             // Ban hành QĐ đình chỉ: phương án (1) / chưa thu -> Đình chỉ hoàn trả; phương án (2) -> chờ Cập nhật trả lại tiền rồi mới Đình chỉ hoàn trả
@@ -875,7 +956,15 @@
         } else {
             const o = activeDossier.refundOfficers[key];
             if (kind === 'MIEN') o.ct = 'MIEN';
-            else { o.ct = 'THU'; o.total = o.giam; }
+            else {
+                // QĐ giảm mức hoàn trả: số tiền phải thu hồi = Số tiền còn phải hoàn trả theo Quyết định
+                if (r.supp && r.supp.phaiHT != null) { o.giam = r.supp.giam; if (r.supp.lyDo) o.lyDoGiam = r.supp.lyDo; }
+                o.ct = 'THU'; o.total = o.giam;
+            }
+        }
+        // Lịch sử ban hành QĐ giảm: thời điểm, số Quyết định, 03 số tiền, tệp Quyết định
+        if (baseKind(kind) === 'GIAM' && r.supp && r.supp.phaiHT != null) {
+            r.hist.unshift({ type: 'issue', name: r.method === 'offline' ? 'Cán bộ ' + (r.unit || '') : leaderLabel(r, r.levels.length - 1), at: nowShort(), msg: 'Ban hành ' + KIND[kind].doc + (r.soKh ? ' số ' + r.soKh : '') + ' ngày ' + r.issuedAt + ': Số tiền phải hoàn trả ' + money(r.supp.phaiHT) + ' đ; Số tiền hoàn trả được giảm ' + money(r.supp.duocGiam) + ' đ; Số tiền còn phải hoàn trả ' + money(r.supp.giam) + ' đ; tệp ' + r.fileName + '.' });
         }
         commit(msg);
     }
@@ -886,7 +975,7 @@
     window.ht3OpenDoc = function (kind, key) {
         const r = recOf(kind, key); if (!r) return;
         if (r.method === 'offline' || r.docSrc === 'upload') { showToast('Đang mở xem tệp tin: ' + r.fileName, 'info'); return; }
-        const html = docHtml(kind, ctxOf(kind, key), r.soKh, r.issuedAt || r.ngay);
+        const html = docHtml(kind, docCtx(ctxOf(kind, key), r.supp), r.soKh, r.issuedAt || r.ngay);
         const page = '<!DOCTYPE html><html lang="vi"><head><meta charset="UTF-8"><title>' + esc(r.fileName) + '<\/title><style>body{background:#e2e8f0;margin:0;padding:24px;}.page{width:794px;min-height:1123px;margin:0 auto;background:#fff;padding:50px 65px;box-sizing:border-box;font-family:"Times New Roman",serif;font-size:14px;line-height:1.6;}<\/style><\/head><body><div class="page">' + html + '<\/div><\/bo' + 'dy><\/ht' + 'ml>';
         try { window.open(URL.createObjectURL(new Blob([page], { type: 'text/html;charset=utf-8' })), '_blank'); } catch (e) { /* bỏ qua */ }
     };
@@ -912,7 +1001,7 @@
     window.htkdDocInfo = function (target) {
         const p = parse(target); if (!p) return baseDocInfo(target);
         const r = recOf(p.kind, p.key);
-        const html = r.docSrc === 'gen' ? docHtml(p.kind, ctxOf(p.kind, p.key), r.soKh, r.ngay) : '';
+        const html = r.docSrc === 'gen' ? docHtml(p.kind, docCtx(ctxOf(p.kind, p.key), r.supp), r.soKh, r.ngay) : '';
         return { name: r.fileName, html, open: () => ht3OpenDoc(p.kind, p.key) };
     };
     const baseConfirm = window.confirmLeaderDigitalSign;

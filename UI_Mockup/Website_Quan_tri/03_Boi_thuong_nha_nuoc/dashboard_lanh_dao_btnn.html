@@ -48,9 +48,9 @@
         <div class="dash-grid" id="dashGrid"></div>
     </main>
 
-    <script src="btnn_luong_xu_ly.js?v=20261027xdc"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261027s35"></script>
     <!-- Số lượng mỗi khối = badge tab Chờ xử lý của phân hệ (cùng nguồn badge LeftMenu, cache bdg_cho_xu_ly_v1) -->
-    <script src="btnn_badge_cho_xu_ly.js?v=20261026htrole"></script>
+    <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
     <script>
         const WF = BTNN_WF;
         const WT = WF.WORK_TYPES;
@@ -61,7 +61,7 @@
             { code: 'HT-2026-014', status: 'Chờ duyệt QĐ thành lập', claimCode: 'BT-2026-008' },
             { code: 'HT-2026-021', status: 'Chờ duyệt QĐ hoàn trả', claimCode: 'BT-2026-001' }
         ];
-        // 06 khối Chờ xử lý; click khối mở tab Chờ xử lý của phân hệ tương ứng ở vai trò Lãnh đạo
+        // 07 khối Chờ xử lý (Kinh phí: 02 khối theo 02 menu con); click khối mở tab Chờ xử lý của phân hệ tương ứng ở vai trò Lãnh đạo
         const BLOCKS = [
             { key: 'pc', title: 'Chờ phân công', module: 'Tiếp nhận hồ sơ', icon: 'fa-diagram-project', color: '#0369a1', bg: '#e0f2fe',
               leaf: 'tiep_nhan_ycbt.html?v=3', url: 'tiep_nhan_ycbt.html?v=3&tab=pending' },
@@ -71,8 +71,11 @@
               leaf: 'quan_ly_boi_thuong.html?v=1', url: 'quan_ly_boi_thuong.html?v=1&role=thu-truong&tab=cho-xu-ly' },
             { key: 'qd', title: 'Chờ duyệt QĐ Giải quyết YCBT', module: 'Quyết định giải quyết bồi thường', icon: 'fa-stamp', color: '#a16207', bg: '#fef3c7',
               leaf: 'quyet_dinh_giai_quyet_boi_thuong.html?v=1', url: 'quyet_dinh_giai_quyet_boi_thuong.html?v=1&role=lanh-dao&tab=pending' },
-            { key: 'kp', title: 'Chờ duyệt cấp kinh phí', module: 'Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường', icon: 'fa-money-check-dollar', color: '#b91c1c', bg: '#fee2e2',
-              leaf: 'quan_ly_kinh_phi_boi_thuong.html?v=1', url: 'quan_ly_kinh_phi_boi_thuong.html?v=1&role=lanh-dao&tab=pending' },
+            // Menu Kinh phí tách 02 menu con: 01 khối/menu con, mở đúng menu con (tham số menu)
+            { key: 'kpt', title: 'Chờ duyệt QĐ tạm ứng', module: 'Kinh phí - Tạm ứng kinh phí', icon: 'fa-money-check-dollar', color: '#b91c1c', bg: '#fee2e2',
+              leaf: 'quan_ly_kinh_phi_boi_thuong.html?v=1&menu=tam-ung', url: 'quan_ly_kinh_phi_boi_thuong.html?v=1&menu=tam-ung&role=lanh-dao&tab=pending' },
+            { key: 'kpc', title: 'Chờ duyệt Thông báo chi trả', module: 'Kinh phí - Chi trả tiền bồi thường', icon: 'fa-hand-holding-dollar', color: '#be123c', bg: '#ffe4e6',
+              leaf: 'quan_ly_kinh_phi_boi_thuong.html?v=1&menu=chi-tra', url: 'quan_ly_kinh_phi_boi_thuong.html?v=1&menu=chi-tra&role=lanh-dao&tab=pending' },
             { key: 'ht', title: 'Chờ duyệt Xem xét hoàn trả', module: 'Xem xét trách nhiệm hoàn trả', icon: 'fa-rotate-left', color: '#334155', bg: '#e2e8f0',
               leaf: 'xem_xet_trach_nhiem_hoan_tra.html', url: 'xem_xet_trach_nhiem_hoan_tra.html?role=lanh_dao&tab=pending' }
         ];
@@ -81,6 +84,7 @@
         function collectItems() {
             const work = WF.getLeaderWork().pending;
             const line = t => ({ code: t.code, text: [t.nycName, t.kind || t.detail].filter(Boolean).join(' - ') });
+            const kpLine = t => ({ code: t.code, text: [t.nycName, t.kind, (Number(t.proposal && t.proposal.amount) || 0).toLocaleString('vi-VN') + ' đ'].filter(Boolean).join(' - ') });
             let ht = null;
             try { ht = JSON.parse(localStorage.getItem('btnn_hoantra_summary') || 'null'); } catch (e) { ht = null; }
             return {
@@ -88,12 +92,13 @@
                 xd: work.filter(t => t.type === WT.PHE_DUYET && t.rec && t.rec.module === 'XD').map(line),
                 gq: work.filter(t => t.type === WT.THU_LY || (t.type === WT.PHE_DUYET && !(t.rec && t.rec.module === 'XD'))).map(t => ({ code: t.code, text: [t.nycName, t.type === WT.THU_LY ? 'Cử người giải quyết bồi thường' : t.kind].filter(Boolean).join(' - ') })),
                 qd: work.filter(t => t.type === WT.KY_QD).map(line),
-                kp: work.filter(t => t.type === WT.KY_KP).map(t => ({ code: t.code, text: [t.nycName, t.kind, (Number(t.proposal && t.proposal.amount) || 0).toLocaleString('vi-VN') + ' đ'].filter(Boolean).join(' - ') })),
+                kpt: work.filter(t => t.type === WT.KY_KP && t.proposal && WF.isAdvanceProposal(t.proposal)).map(kpLine),
+                kpc: work.filter(t => t.type === WT.KY_KP && !(t.proposal && WF.isAdvanceProposal(t.proposal))).map(kpLine),
                 ht: ((ht && ht.pendingApproval) || HT_FALLBACK).map(x => ({ code: x.code, text: x.maVuViec ? `${x.status} - Vụ việc ${x.maVuViec}` : `${x.status} - Hồ sơ ${x.claimCode || '--'}` }))
             };
         }
         // Khối -> phân hệ trong tiện ích badge dùng chung (BDG)
-        const BDG_MODULE = { pc: 'tiepNhan', xd: 'xdcq', gq: 'gqYcbt', qd: 'qdGqbt', kp: 'kinhPhi', ht: 'hoanTra' };
+        const BDG_MODULE = { pc: 'tiepNhan', xd: 'xdcq', gq: 'gqYcbt', qd: 'qdGqbt', kpt: 'kpTamUng', kpc: 'kpChiTra', ht: 'hoanTra' };
         // Số chờ xử lý của khối: lấy số badge tab Chờ xử lý đã lưu của đúng ngữ cảnh hiện tại (khớp badge LeftMenu); chưa có thì đếm danh sách công việc
         function blockCount(key, list) {
             const m = BDG_MODULE[key];

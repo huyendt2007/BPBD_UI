@@ -11,7 +11,7 @@
 (function () {
     const U_CHU = 'UBND Quận Long Biên', U_A = 'UBND Phường Bồ Đề', U_B = 'UBND Huyện An Dương';
     // Phiên bản dữ liệu mẫu: đổi phiên bản thì xóa dữ liệu thao tác đã lưu của các hồ sơ mẫu bổ sung để nạp lại theo mẫu mới
-    const SEED_VER = '20261026p15', SEED_CODES = ['HT-2026-025', 'HT-2026-026', 'HT-2026-027'];
+    const SEED_VER = '20261027htct', SEED_CODES = ['HT-2026-025', 'HT-2026-026', 'HT-2026-027'];
     try {
         if (localStorage.getItem('btnn_ht_seed_ver') !== SEED_VER) {
             const st = JSON.parse(localStorage.getItem('btnn_ht_units_v1') || '{}') || {};
@@ -31,7 +31,8 @@
         },
         {
             id: 'HT-2026-026', claimCode: 'BT-2026-026', claimSummary: 'Ra quyết định tạm giữ hành chính trái pháp luật; văn bản làm căn cứ bị hủy bỏ một phần.', claimAmt: 120000000, status: 'Thu hồi tiền hoàn trả', hdDecision: '53/QĐ-TLHD', hdDate: '15/07/2026',
-            officers: [OF('Cao Văn Duyệt', U_A, 'Trưởng Công an phường', 'Vô ý', 15000000, 'Nhiều lần'), OF('Tạ Thị Chối', U_A, 'Cán bộ tư pháp', 'Vô ý', 8000000, 'Một lần'), OF('Phan Văn Trả', U_A, 'Phó Chủ tịch', 'Vô ý', 12000000, 'Nhiều lần'), OF('Kiều Văn Chỉ', U_A, 'Chuyên viên', 'Vô ý', 9000000, 'Nhiều lần'), OF('Hồ Văn Thừa', U_A, 'Kế toán', 'Vô ý', 10000000, 'Nhiều lần')]
+            officers: [OF('Cao Văn Duyệt', U_A, 'Trưởng Công an phường', 'Vô ý', 15000000, 'Nhiều lần'), OF('Tạ Thị Chối', U_A, 'Cán bộ tư pháp', 'Vô ý', 8000000, 'Một lần'), OF('Phan Văn Trả', U_A, 'Phó Chủ tịch', 'Vô ý', 12000000, 'Nhiều lần'), OF('Kiều Văn Chỉ', U_A, 'Chuyên viên', 'Vô ý', 9000000, 'Nhiều lần'), OF('Hồ Văn Thừa', U_A, 'Kế toán', 'Vô ý', 10000000, 'Nhiều lần'), OF('Đỗ Văn Nộp', U_A, 'Công chức địa chính', 'Vô ý', 12000000, 'Nhiều lần'),
+                OF('Lương Văn Giảm', U_A, 'Phó Trưởng phòng', 'Vô ý', 18000000, 'Nhiều lần'), OF('Phí Thị Miễn', U_A, 'Chuyên viên', 'Vô ý', 10000000, '')]
         },
         // Hồ sơ nhiều đơn vị (03 phần đơn vị ở 03 trạng thái): Đơn vị tạo Hội đồng chưa trình QĐ hoàn trả; Đơn vị A Chờ duyệt QĐ hoàn trả; Đơn vị B đã ban hành, đang thu hồi
         {
@@ -51,8 +52,13 @@
         'Phan Văn Trả': ['THU', 'HT', 0, { paid: 4000000, total: 4000000, refund: 4000000, trinh: 'TL_DC', dc: { key: 2, st: 'DONE', pa: 'HOAN' } }],
         'Kiều Văn Chỉ': ['DC', 'HT', 0, { paid: 3000000, total: 3000000, dc: { key: 2, st: 'DONE', pa: 'KHONG' } }],
         'Hồ Văn Thừa': ['THU', 'GIAM', 8000000, { paid: 10000000, total: 8000000, refund: 2000000 }],
+        // Đơn vị quản lý cán bộ A: cán bộ đang thu hồi, còn phải nộp (demo Ghi nhận nộp tiền)
+        'Đỗ Văn Nộp': ['THU', 'HT', 0, { paid: 3000000, pays: [['15/09/2026', 1000000], ['05/10/2026', 2000000]] }],
+        // Xem chi tiết hoàn trả của cán bộ: QĐ giảm đã ký (Ký số), đã nộp 02 đợt; QĐ miễn hoàn trả đã ban hành
+        'Lương Văn Giảm': ['THU', 'GIAM', 12000000, { paid: 4000000, total: 12000000, pays: [['10/10/2026', 2000000], ['20/10/2026', 2000000]] }],
+        'Phí Thị Miễn': ['MIEN', 'MIEN', 0, { paid: 0, total: 0 }],
         // HT-2026-027 - phần của Đơn vị tạo Hội đồng (UBND Quận Long Biên): đã ban hành QĐ hoàn trả
-        'Đoàn Văn Lâm': ['THU', 'HT', 0, { paid: 15000000 }], 'Vương Thị Hằng': ['THU', 'GIAM', 12000000, { total: 12000000 }], 'Mạc Văn Toàn': ['CD_MIEN', 'MIEN', 0, { qd2: 'CD' }],
+        'Đoàn Văn Lâm': ['THU', 'HT', 0, { paid: 15000000 }], 'Vương Thị Hằng': ['THU', 'GIAM', 12000000, { paid: 5000000, total: 12000000, qd2m: 'offline', qd2So: '95/QĐ-UBND' }], 'Mạc Văn Toàn': ['CD_MIEN', 'MIEN', 0, { qd2: 'CD' }],
         'Lại Văn Phúc': ['CD_HT', 'HT'],
         'Hà Thị Ngân': ['THU', 'HT', 0, { paid: 10000000 }], 'Tô Văn Khải': ['THU', 'HT', 0, { paid: 0 }]
     };
@@ -62,12 +68,45 @@
         'HT-2026-025': { owner: U_CHU, officers: [L('Trịnh Văn Miễn', U_B, 'CBH_MIEN', { xl: 'MIEN', hd: 12000000 }), L('Lý Thị Từ', U_B, 'BTC_MIEN', { xl: 'MIEN', hd: 10000000 }), L('Mai Văn Giảm', U_B, 'CD_GIAM', { xl: 'GIAM', hd: 20000000, giam: 14000000 }), L('Đinh Thị Hạ', U_B, 'BTC_GIAM', { xl: 'GIAM', hd: 16000000, giam: 12000000 })] },
         'HT-2026-026': {
             owner: U_CHU, officers: [L('Cao Văn Duyệt', U_A, 'THU', { hd: 15000000, paid: 5000000, trinh: 'CD_DC' }), L('Tạ Thị Chối', U_A, 'THU', { hd: 8000000, trinh: 'BTC_DC' }), L('Phan Văn Trả', U_A, 'THU', { hd: 12000000, paid: 4000000, pt: 4000000, refund: 4000000, trinh: 'TL_DC' }),
-                L('Kiều Văn Chỉ', U_A, 'DC', { hd: 9000000, paid: 3000000, pt: 3000000 }), L('Hồ Văn Thừa', U_A, 'THU', { xl: 'GIAM', hd: 10000000, giam: 8000000, paid: 10000000, pt: 8000000, refund: 2000000 })]
+                L('Kiều Văn Chỉ', U_A, 'DC', { hd: 9000000, paid: 3000000, pt: 3000000 }), L('Hồ Văn Thừa', U_A, 'THU', { xl: 'GIAM', hd: 10000000, giam: 8000000, paid: 10000000, pt: 8000000, refund: 2000000 }),
+                L('Đỗ Văn Nộp', U_A, 'THU', { hd: 12000000, paid: 3000000 }), L('Lương Văn Giảm', U_A, 'THU', { xl: 'GIAM', hd: 18000000, giam: 12000000, paid: 4000000, pt: 12000000 }),
+                L('Phí Thị Miễn', U_A, 'MIEN', { xl: 'MIEN', hd: 10000000 })]
         },
         'HT-2026-027': {
-            owner: U_CHU, officers: [L('Đoàn Văn Lâm', U_CHU, 'THU', { hd: 40000000, paid: 15000000 }), L('Vương Thị Hằng', U_CHU, 'THU', { xl: 'GIAM', hd: 20000000, giam: 12000000, pt: 12000000 }), L('Mạc Văn Toàn', U_CHU, 'CD_MIEN', { xl: 'MIEN', hd: 15000000 }), L('Lại Văn Phúc', U_A, 'CD_HT', { hd: 35000000 }),
+            owner: U_CHU, officers: [L('Đoàn Văn Lâm', U_CHU, 'THU', { hd: 40000000, paid: 15000000 }), L('Vương Thị Hằng', U_CHU, 'THU', { xl: 'GIAM', hd: 20000000, giam: 12000000, paid: 5000000, pt: 12000000 }), L('Mạc Văn Toàn', U_CHU, 'CD_MIEN', { xl: 'MIEN', hd: 15000000 }), L('Lại Văn Phúc', U_A, 'CD_HT', { hd: 35000000 }),
                 L('Hà Thị Ngân', U_B, 'THU', { hd: 25000000, paid: 10000000 }), L('Tô Văn Khải', U_B, 'THU', { hd: 18000000 })]
         }
+    };
+
+    // Nguồn lập hồ sơ hoàn trả mới (popup Chọn vụ việc bồi thường, màn Danh sách): vụ việc đã hoàn tất chi trả kinh phí bồi thường,
+    // chưa có hồ sơ hoàn trả; agency = Đơn vị chi trả bồi thường (đơn vị tạo Hội đồng) dùng lọc phạm vi dữ liệu; officers = người thi hành công vụ gây thiệt hại.
+    // Dữ liệu độc lập kho của Giải quyết YCBT / QĐ GQBT / Kinh phí để popup luôn có dữ liệu khi trình duyệt chưa mở các trang đó.
+    const S = (claimCode, claimant, agency, claimAmt, paidDate, gqbtQdNo, gqbtQdDate, claimField, claimAct, claimSummary, officers) =>
+        ({ claimCode, claimant, agency, claimAmt, paidDate, gqbtQdNo, gqbtQdDate, claimField, claimAct, claimSummary, officers: officers.map(o => ({ name: o[0], agency: o[1], role: o[2] })) });
+    window.HT_SOURCE_CLAIMS = [
+        S('BT-2026-101', 'Đặng Văn Hưng', U_CHU, 95000000, '05/08/2026', '45/QĐ-UBND', '10/07/2026', 'Quản lý hành chính đất đai', 'Ban hành quyết định thu hồi đất không đúng thẩm quyền',
+            'Thu hồi đất nông nghiệp không đúng thẩm quyền, không bồi thường hỗ trợ theo quy định.', [['Phùng Văn Quang', U_CHU, 'Phó Trưởng phòng Tài nguyên và Môi trường'], ['Nông Thị Diệu', U_A, 'Cán bộ địa chính']]),
+        S('BT-2026-102', 'Công ty TNHH Minh Khang', U_CHU, 240000000, '12/08/2026', '48/QĐ-UBND', '18/07/2026', 'Xử lý vi phạm hành chính', 'Ra quyết định đình chỉ hoạt động kinh doanh trái pháp luật',
+            'Đình chỉ hoạt động kinh doanh của doanh nghiệp khi chưa đủ căn cứ vi phạm hành chính.', [['Quách Văn Bình', U_CHU, 'Chánh Thanh tra quận'], ['Lục Thị Yến', U_B, 'Thanh tra viên']]),
+        S('BT-2026-103', 'Trịnh Thị Lan', U_CHU, 68000000, '20/08/2026', '51/QĐ-UBND', '25/07/2026', 'Quản lý trật tự xây dựng', 'Cưỡng chế phá dỡ công trình sai chỉ giới được cấp phép',
+            'Cưỡng chế phá dỡ phần công trình xây dựng đúng giấy phép, gây thiệt hại tài sản.', [['Ông Văn Thắng', U_A, 'Phó Chủ tịch UBND phường']]),
+        S('BT-2026-104', 'Hồ Minh Trí', U_CHU, 132000000, '28/08/2026', '53/QĐ-UBND', '02/08/2026', 'Thi hành án hành chính', 'Chậm thực hiện bản án hành chính đã có hiệu lực pháp luật',
+            'Chậm thi hành bản án hành chính về cấp giấy chứng nhận quyền sử dụng đất, gây thiệt hại thu nhập.', [['Tăng Văn Lực', U_CHU, 'Chuyên viên Văn phòng HĐND - UBND'], ['Khổng Thị Mến', U_B, 'Công chức địa chính - xây dựng'], ['Âu Văn Sơn', U_A, 'Công chức tư pháp - hộ tịch']]),
+        S('BT-2026-105', 'Lưu Thị Phương', U_CHU, 54000000, '03/09/2026', '56/QĐ-UBND', '08/08/2026', 'Quản lý hộ tịch', 'Từ chối đăng ký hộ tịch trái pháp luật',
+            'Từ chối đăng ký khai sinh trái quy định làm phát sinh thiệt hại do không hưởng chế độ an sinh.', [['Yên Thị Hòa', U_B, 'Công chức tư pháp - hộ tịch']]),
+        // Ngoài phạm vi dữ liệu của đơn vị giả lập (đơn vị chi trả khác): không hiển thị trong popup
+        S('BT-2026-106', 'Tôn Văn Kiên', 'UBND Quận Cầu Giấy', 77000000, '15/08/2026', '61/QĐ-UBND', '20/07/2026', 'Quản lý hành chính đất đai', 'Cấp giấy chứng nhận quyền sử dụng đất sai đối tượng',
+            'Cấp giấy chứng nhận quyền sử dụng đất cho người không có quyền, gây thiệt hại cho chủ sử dụng hợp pháp.', [['Bạch Văn Hiếu', 'UBND Quận Cầu Giấy', 'Chuyên viên phòng Tài nguyên và Môi trường']])
+    ];
+    // Họ và tên người yêu cầu theo Mã hồ sơ GQBT (định danh vụ việc "Mã vụ việc - Họ và tên" trên Danh sách / Chi tiết)
+    try { if (typeof CLAIMANT_BY_CODE !== 'undefined') window.HT_SOURCE_CLAIMS.forEach(s => { if (!CLAIMANT_BY_CODE[s.claimCode]) CLAIMANT_BY_CODE[s.claimCode] = s.claimant; }); } catch (e) { /* bỏ qua */ }
+    // Đơn vị của người dùng giả lập (thanh giả lập Hoàn trả): xác định phạm vi dữ liệu của nguồn lập hồ sơ
+    window.htSourceInScope = function (src) {
+        if (!src || !src.agency) return true;
+        let sc = 'don_vi_chu';
+        try { sc = sessionStorage.getItem('htMockScope') || sc; } catch (e) { /* bỏ qua */ }
+        const unit = { don_vi_chu: U_CHU, don_vi_a: U_A, don_vi_b: U_B, stp: 'Sở Tư pháp Hà Nội' }[sc] || U_CHU;
+        return src.agency === unit;
     };
 
     if (typeof dossiersList === 'undefined') return;
@@ -92,6 +131,25 @@
         d8.refundOfficers.push(Object.assign(OF('Nguyễn Thị Hoa', U_A, 'Cán bộ tư pháp', 'Vô ý', 15000000, 'Hoàn trả nhiều lần'), { xl: 'Hoàn trả', status: 'Họp hội đồng' }));
     }
     if (!isDetail) return;
+
+    // Màn Chi tiết: hồ sơ do người dùng khởi tạo từ màn Danh sách (localStorage 'btnn_hoantra_created_v1') mở lại được khi đã đóng phiên
+    try {
+        const created = JSON.parse(localStorage.getItem('btnn_hoantra_created_v1') || '[]');
+        if (Array.isArray(created)) created.forEach(d => {
+            if (!d || !d.id || dossiersList.some(x => x.id === d.id)) return;
+            addMockDossier(Object.assign({ qdStatus: null, qdNo: '', qdDate: '', qdSigner: '', qdSummary: '', qdFileName: '', conclusionFile: '', timeline: [], payments: [] }, d));
+        });
+    } catch (e) { /* bỏ qua */ }
+    // Bước 1 - Tài liệu liên quan: Quyết định giải quyết bồi thường của vụ việc nguồn
+    window.addEventListener('DOMContentLoaded', () => {
+        try {
+            if (typeof activeDossier === 'undefined' || !activeDossier || !activeDossier.gqbtQdNo || typeof s1RelatedDocs === 'undefined') return;
+            const no = activeDossier.gqbtQdNo;
+            if (s1RelatedDocs.some(x => x.code === no)) return;
+            s1RelatedDocs.splice(0, s1RelatedDocs.length, { title: 'Quyết định giải quyết bồi thường số ' + no, code: no, date: activeDossier.claimDate || '', fileName: 'Quyet_dinh_giai_quyet_boi_thuong_' + no.replace(/\//g, '_') + '.pdf' });
+            if (typeof renderStep1 === 'function') renderStep1();
+        } catch (e) { /* bỏ qua */ }
+    });
 
     // Màn Chi tiết: lượt trình Quyết định đình chỉ cả hồ sơ (Chờ duyệt / Bị từ chối) cho HT-2026-023, HT-2026-024
     // window: chạy sau khối khởi tạo của trang (chọn hồ sơ theo id)

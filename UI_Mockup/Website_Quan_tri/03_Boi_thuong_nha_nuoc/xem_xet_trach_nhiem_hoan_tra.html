@@ -1593,7 +1593,7 @@
     <!-- ============================================== -->
     <!-- JAVASCRIPT CONTROLLERS -->
     <!-- ============================================== -->
-    <script src="btnn_luong_xu_ly.js?v=20261027xdc"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261027s35"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
     <script>
         // Xem xét trách nhiệm hoàn trả: đơn vị người xem theo vai trò giả lập (htMockScope); Lãnh đạo (ký duyệt) xem được mọi khối.
@@ -1607,7 +1607,7 @@
         window.tlktDefaultOwnerUnit = 'UBND Quận Long Biên';
     </script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
-    <script src="btnn_badge_cho_xu_ly.js?v=20261026htrole"></script>
+    <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
     <script>
         // Họ và tên người yêu cầu theo Mã hồ sơ GQBT (dữ liệu Giải quyết YCBT)
         const CLAIMANT_BY_CODE = {
@@ -2930,14 +2930,18 @@
         function renderSelectClaimRows() {
             const body = document.getElementById('selectClaimToRefundBody');
             if (!body) return;
-            const rows = PAID_CLAIM_CODES.filter(c => !existingRefundCodeOf(vuViecOfClaim(c))).map(c => {
+            // Điều kiện (SRS MH02): đã hoàn tất chi trả; chưa có hồ sơ hoàn trả; thuộc phạm vi dữ liệu người dùng. Sắp xếp Ngày hoàn tất chi tăng dần
+            const dmy = s => { const p = String(s || '').split('/'); return p.length === 3 ? p[2] + p[1] + p[0] : ''; };
+            const srcCodes = (window.HT_SOURCE_CLAIMS || []).filter(s => typeof htSourceInScope !== 'function' || htSourceInScope(s)).map(s => s.claimCode);
+            const rows = PAID_CLAIM_CODES.concat(srcCodes).filter(c => !existingRefundCodeOf(vuViecOfClaim(c)))
+                .sort((a, b) => dmy(getClaimSeedData(a).paidDate).localeCompare(dmy(getClaimSeedData(b).paidDate))).map(c => {
                 const seed = getClaimSeedData(c);
                 return `<tr>
                     <td><strong>${vuViecOfClaim(c)}</strong></td>
                     <td><a href="javascript:void(0)" onclick="openLinkedClaimDetail('${c}')" style="color:var(--secondary-color); text-decoration:underline; font-weight:700;">${c}</a></td>
-                    <td>${CLAIMANT_BY_CODE[c] || ''}</td>
+                    <td>${CLAIMANT_BY_CODE[c] || seed.claimant || ''}</td>
                     <td style="text-align:right; font-weight:600; color:var(--danger-color);">${seed.claimAmt.toLocaleString('vi-VN')}</td>
-                    <td style="text-align:center;">${seed.claimDate}</td>
+                    <td style="text-align:center;">${seed.paidDate}</td>
                     <td style="text-align:center;"><button class="btn btn-primary btn-sm" onclick="selectClaimForRefund('${c}')" style="padding:4px 8px; font-size:11.5px; height:28px;">Khởi tạo hồ sơ</button></td>
                 </tr>`;
             });
@@ -3013,7 +3017,15 @@
                     officerRole: "Kiểm sát viên"
                 }
             };
-            return map[claimCode] || map["BT-2026-001"];
+            // Nguồn giả lập bổ sung (ht_du_lieu_mau.js): kế thừa đủ Mã hồ sơ GQBT, QĐ GQBT, Ngày hoàn thành chi trả, người thi hành công vụ
+            const src = (window.HT_SOURCE_CLAIMS || []).find(s => s.claimCode === claimCode);
+            if (src) {
+                return Object.assign({}, src, {
+                    claimDate: src.gqbtQdDate, officerName: src.officers.map(o => o.name).join(', '), officerRole: src.officers.map(o => o.role).join(', ')
+                });
+            }
+            const legacy = map[claimCode] || map["BT-2026-001"];
+            return Object.assign({ paidDate: legacy.claimDate }, legacy);
         }
 
         function createPendingRefundDossier(claimCode) {
@@ -3032,6 +3044,11 @@
                 agency: seed.agency,
                 claimAmt: seed.claimAmt,
                 claimDate: seed.claimDate,
+                claimPaymentDate: seed.paidDate || seed.claimDate,
+                claimant: seed.claimant || CLAIMANT_BY_CODE[claimCode] || '',
+                gqbtQdNo: seed.gqbtQdNo || '',
+                claimField: seed.claimField || '',
+                claimAct: seed.claimAct || '',
                 officerName: seed.officerName,
                 officerRole: seed.officerRole,
                 hdDecision: "",
@@ -3043,9 +3060,9 @@
                 refundMonthly: 0,
                 status: HT_ST_DRAFT, // Hồ sơ nháp: chưa trình QĐ thành lập Hội đồng, không hiển thị trạng thái
                 dateCreated: new Date().toLocaleDateString('vi-VN'),
-                refundOfficers: [
-                    { name: seed.officerName, loi: "Chờ xác định", total: 0, paid: 0, nextDate: "—", status: "Chờ xác định", progressClass: "secondary", agency: seed.agency, role: seed.officerRole }
-                ],
+                // Người thi hành công vụ gây thiệt hại theo vụ việc nguồn (mỗi người 01 dòng kèm đơn vị quản lý cán bộ)
+                refundOfficers: (seed.officers || [{ name: seed.officerName, agency: seed.agency, role: seed.officerRole }]).map(o =>
+                    ({ name: o.name, loi: "Chờ xác định", total: 0, paid: 0, nextDate: "—", status: "Chờ xác định", progressClass: "secondary", agency: o.agency, role: o.role })),
                 payments: []
             };
         }
@@ -3905,7 +3922,7 @@
         });
     </script>
     <!-- Phạm vi dữ liệu theo đơn vị + trạng thái 02 tầng (chi tiết / chung) của màn danh sách -->
-    <script src="ht_du_lieu_mau.js?v=20261026p15"></script>
+    <script src="ht_du_lieu_mau.js?v=20261027htstp"></script>
     <script src="xem_xet_hoan_tra_pham_vi.js?v=20261026p11"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
     <script src="ht_mock_role_bar.js?v=20261026gl"></script>

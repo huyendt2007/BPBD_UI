@@ -3,7 +3,7 @@
  * Mỗi vụ việc có đủ dữ liệu các bước đã qua để màn Xem chi tiết hiển thị đầy đủ (khối các bước, lịch sử xử lý, văn bản đã ban hành):
  * - Từ chối phục hồi danh dự: Chỉ PHDD (BT-2026-401); Cả hai - nhánh tiền Hoàn thành (BT-2026-402); Cả hai - nhánh tiền Thương lượng (BT-2026-403)
  * - Hoàn thành: Chỉ tiền (BT-2026-404); Chỉ PHDD (BT-2026-405); Cả hai (BT-2026-406)
- * - Đình chỉ giải quyết: Ký số có Số/Ngày quyết định (BT-2026-407); Ký ngoài không Số/Ngày (BT-2026-408)
+ * - Đình chỉ giải quyết: Ký số có Số/Ngày quyết định, chọn Thu hồi (BT-2026-407); Ký ngoài không Số/Ngày, chọn Không thu hồi (BT-2026-408)
  * - Đã chuyển CQGQBT: thao tác Chuyển CQGQBT sau Cử người (BT-2026-409); Không thụ lý lý do KTL_01 (BT-2026-410)
  * - Không thụ lý: KTL_02 Ký số (BT-2026-411); KTL_05 Ký ngoài (BT-2026-412)
  * Nạp khi tải trang: quan_ly_boi_thuong.html gọi sdxSeedClaims() sau seedNycOrgSampleClaims(); chỉ thêm vụ việc chưa có (theo id / Mã hồ sơ),
@@ -12,6 +12,11 @@
  */
 var SDX_BASE = { y: 2026, m: 10 };
 var SDX_CB = 'Nguyễn Văn Chuyên Viên';
+// Thu hồi kinh phí bồi thường đã chi của vụ việc Đình chỉ mẫu (khoản đã chi: KP-2026-901 / KP-2026-907 - quan_ly_kinh_phi_kpdc.js)
+var SDX_DC_THUHOI = {
+    'BT-2026-407': { thuHoi: 'Thu hồi', thuHoiReason: '' },
+    'BT-2026-408': { thuHoi: 'Không thu hồi', thuHoiReason: 'Người yêu cầu bồi thường đã sử dụng khoản tạm ứng để khắc phục thiệt hại thực tế phát sinh; không có khả năng hoàn trả.' }
+};
 var SDX_TH = ['Tài sản bị xâm phạm', 'Thu nhập thực tế bị mất/giảm sút', 'Vật chất do người bị thiệt hại chết', 'Vật chất do sức khỏe bị xâm phạm', 'Thiệt hại về tinh thần', 'Các chi phí hợp lý khác'];
 // [th2c] Tên thiệt hại: mã mục chi tiết DM_27 (TH_xx_nn) hoặc loại cũ 1..6
 function sdxThName(t) { return (window.BTNN_TH && BTNN_TH.codeOf(t) && !/^[1-6]$/.test(String(t))) ? BTNN_TH.name(t) : SDX_TH[t - 1]; }
@@ -399,6 +404,7 @@ function sdxClaims() {
     sdxXm(c7, '09/10/2026');
     var f7 = 'Mau_25_BTNN_Quyet_dinh_dinh_chi_VVBT-2026-407_da_ky.pdf';
     c7.dinhChi = { reasonCode: 'DCGQ_02', reasonText: dc02, detail: 'Ngày 12/10/2026, ông Lâm Văn Tài có đơn rút toàn bộ yêu cầu bồi thường.', docNumber: '25/QĐ-UBND', docDate: '15/10/2026', noiNhan: ['- Như Điều 4;', '- Ông Lâm Văn Tài;', '- Lưu: VT, HSVV.'], advance: null, fileName: 'Mau_25_BTNN_Quyet_dinh_dinh_chi_VVBT-2026-407.doc', signedFile: f7, formNo: 'Mẫu số 25/BTNN', signingMethod: 'Ký số', submittedAt: '13/10/2026 09:30', issuedAt: '15/10/2026', attachments: [{ name: 'Đơn rút yêu cầu bồi thường', file: { name: 'Don_rut_yeu_cau_boi_thuong_BT-2026-407.pdf', size: '210 KB', id: '' } }] };
+    Object.assign(c7.dinhChi, SDX_DC_THUHOI['BT-2026-407']);
     c7.specialStatusLogs = [{ type: 'Đình chỉ giải quyết', docNo: '25/QĐ-UBND', docDate: '15/10/2026', signMode: 'Ký số', startDate: '15/10/2026', endDate: '', previousStatus: 'Xác minh thiệt hại', reason: dc02 + ': Ngày 12/10/2026, ông Lâm Văn Tài có đơn rút toàn bộ yêu cầu bồi thường.', files: [{ name: f7, size: '318 KB', url: '#' }], createdAt: '15/10/2026' }];
     c7.timeline = [
         sdxT('Tiếp nhận hồ sơ', '02/10/2026', 'Tiếp nhận văn bản yêu cầu bồi thường trực tiếp.', 'Hệ thống / Người nộp đơn'),
@@ -432,6 +438,7 @@ function sdxClaims() {
     sdxNeg(c8, '14/10/2026', { bankAccount: '2108408408408', bankName: 'BIDV', bankBranch: 'Chi nhánh Thanh Xuân' });
     var f8 = 'QD_dinh_chi_giai_quyet_BT-2026-408_ky_ngoai.pdf';
     c8.dinhChi = { reasonCode: 'DCGQ_04', reasonText: dc04, detail: 'Quyết định giải quyết khiếu nại số 47/QĐ-GQKN bị hủy theo Quyết định số 102/QĐ-UBND ngày 16/10/2026 của UBND Thành phố.', docNumber: '', docDate: '', advance: null, fileName: f8, signedFile: f8, formNo: 'Mẫu số 25/BTNN', signingMethod: 'Ký ngoài', issuedAt: '20/10/2026 10:15', attachments: [] };
+    Object.assign(c8.dinhChi, SDX_DC_THUHOI['BT-2026-408']);
     c8.specialStatusLogs = [{ type: 'Đình chỉ giải quyết', docNo: '', docDate: '', signMode: 'Ký ngoài', startDate: '20/10/2026', endDate: '', previousStatus: 'Thương lượng', reason: dc04 + ': ' + c8.dinhChi.detail, files: [{ name: f8, size: '402 KB', url: '#' }], createdAt: '20/10/2026' }];
     c8.timeline = [
         sdxT('Tiếp nhận hồ sơ', '01/10/2026', 'Tiếp nhận văn bản yêu cầu bồi thường qua dịch vụ bưu chính.', 'Hệ thống / Người nộp đơn'),
@@ -599,7 +606,13 @@ function sdxSeedClaims() {
                 if (reg) c.maVuViec = reg; else W.linkVuViec(c.code, c.maVuViec);
             }
         } catch (e) { /* mockup */ }
-        if (claimsList.some(function (x) { return x && (x.id === c.id || x.code === c.code); })) return;
+        var ex = claimsList.find(function (x) { return x && (x.id === c.id || x.code === c.code); });
+        if (ex) {
+            // Bổ sung lựa chọn Thu hồi kinh phí bồi thường đã chi cho vụ việc Đình chỉ mẫu đã lưu (chưa có lựa chọn)
+            var th = SDX_DC_THUHOI[c.code];
+            if (th && ex.code === c.code && ex.dinhChi && ex.dinhChi.thuHoi === undefined) Object.assign(ex.dinhChi, th);
+            return;
+        }
         claimsList.push(c);
         n++;
     });

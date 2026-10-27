@@ -270,46 +270,6 @@
             }
         }
 
-        @media print {
-            body * {
-                visibility: hidden !important;
-            }
-            #previewModalReceptionReceipt,
-            #previewModalReceptionReceipt #printReceiptBody,
-            #previewModalReceptionReceipt #printReceiptBody * {
-                visibility: visible !important;
-            }
-            #previewModalReceptionReceipt {
-                display: block !important;
-                position: absolute !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 100% !important;
-                height: auto !important;
-                background: transparent !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                box-shadow: none !important;
-                z-index: 99999 !important;
-            }
-            #previewModalReceptionReceipt .sticky-modal-container {
-                box-shadow: none !important;
-                border: none !important;
-                width: 100% !important;
-                max-width: 100% !important;
-                max-height: none !important;
-                overflow: visible !important;
-            }
-            #previewModalReceptionReceipt .confirm-modal-header,
-            #previewModalReceptionReceipt .modal-footer {
-                display: none !important;
-            }
-            #printReceiptBody {
-                padding: 10mm 15mm !important;
-                overflow: visible !important;
-                max-height: none !important;
-            }
-        }
         .tn-tabs-card { display: flex; gap: 8px; align-items: center; background: #fff; border: 1px solid var(--border-color); border-radius: var(--border-radius-md); padding: 0 16px; margin-bottom: 12px; }
         .tn-tab { border: 0; background: transparent; padding: 12px 16px; font-size: 13.5px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; display: inline-flex; align-items: center; gap: 8px; }
         .tn-tab.active { color: var(--primary-light); border-bottom-color: var(--primary-light); }
@@ -853,8 +813,8 @@
                     <button class="btn btn-secondary" id="btnFormBack" style="display:none;" onclick="closeReceptionForm()">
                         <i class="fa-solid fa-xmark"></i> Đóng
                     </button>
-                    <button class="btn btn-secondary" id="btnFormPrintReceipt" style="display:none;" onclick="printCurrentReceptionReceipt()">
-                        <i class="fa-solid fa-print"></i> In Phiếu tiếp nhận
+                    <button class="btn btn-secondary" id="btnFormPrintReceipt" style="display:none;" onclick="if (window.PTN && editingId) PTN.open(editingId)">
+                        <i class="fa-solid fa-file-signature"></i> Trình ký Phiếu tiếp nhận
                     </button>
                     <button class="btn btn-primary" id="btnFormEdit" style="display:none;" onclick="switchToEditMode()">
                         <i class="fa-solid fa-pen-to-square"></i> Sửa
@@ -878,26 +838,6 @@
 
     <div id="toast" class="toast-notif"></div>
 
-    <!-- Preview Modal for Phiếu tiếp nhận yêu cầu bồi thường (MH03) -->
-    <div id="previewModalReceptionReceipt" class="confirm-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:9999; justify-content:center; align-items:center;">
-        <div class="sticky-modal-container" style="background:#fff; width:900px; max-width:95%; border-radius:8px; display:flex; flex-direction:column; max-height:90vh; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
-            <div class="confirm-modal-header" style="color:var(--primary-light); background-color:#f8fafc; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; padding:24px 24px 16px 24px;">
-                <div style="display:flex; align-items:center; gap:10px; font-size:16px; font-weight:700; color:var(--primary-light); text-transform:uppercase;">
-                    <i class="fa-solid fa-print"></i> IN PHIẾU TIẾP NHẬN HỒ SƠ
-                </div>
-                <span onclick="closePreviewReceiptModal()" style="cursor:pointer; font-size:24px; font-weight:bold; color:#64748b; line-height:1;" title="Đóng">&times;</span>
-            </div>
-            <!-- Nội dung phiếu theo Mẫu số 02/BTNN - Giấy tiếp nhận yêu cầu bồi thường (JS render, dùng chung cho In phiếu và Tải file) -->
-            <div class="sticky-modal-body" id="printReceiptBody" style="padding:24px 40px; overflow-y:auto; flex:1; background:#fff; color:#000;">
-                <div id="receptionReceiptContent"></div>
-            </div>
-            <div class="modal-footer" style="padding:16px 24px 24px 24px; border-top:1px solid var(--border-color); display:flex; justify-content:flex-end; gap:10px; background:#f8fafc; flex-shrink:0;">
-                <button type="button" class="btn btn-secondary" id="btnReceiptDownload" onclick="downloadReceiptWord()"><i class="fa-solid fa-file-word"></i> Tải file</button>
-                <button type="button" class="btn btn-primary" id="btnReceiptPrint" onclick="executePrintReceipt()"><i class="fa-solid fa-print"></i> In phiếu</button>
-                <button type="button" class="btn btn-secondary" id="btnReceiptClose" onclick="closePreviewReceiptModal()">Đóng</button>
-            </div>
-        </div>
-    </div>
     <div id="confirmOverlay" class="confirm-modal-overlay">
         <div class="confirm-modal-container">
             <div class="confirm-modal-header">
@@ -911,9 +851,9 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261027xdc"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261027s35"></script>
     <script src="btnn_lanh_dao_actions.js?v=20261023kdtc"></script>
-    <script src="btnn_badge_cho_xu_ly.js?v=20261026htrole"></script>
+    <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
     <script>
         // Người dùng đăng nhập (giả lập) - cán bộ tiếp nhận
         const CURRENT_USER = BTNN_WF.getCurrentUser();
@@ -2054,23 +1994,17 @@
             } else {
                 tbody.innerHTML = pageRows.map((item, idx) => {
                     const editable = !item.fromWorkflow && canEditReception(item);
-                    const printable = canPrintReceipt(item);
                     const rec = BTNN_WF.getRecord(item.code);
                     const source = getSourceOf(item);
                     const status = item.status || "Chờ phân công";
                     const offStyle = "opacity:0.35; pointer-events:none; cursor:not-allowed;";
                     // Cột Thao tác theo tab; thao tác của tab không thỏa điều kiện hiển thị mờ
-                    // Tab Chờ xử lý: Phân công | In Phiếu tiếp nhận | Sửa | Xóa. Tab Đã xử lý: In Phiếu tiếp nhận | Thu hồi
+                    // Tab Chờ xử lý: Phân công | Trình ký Phiếu tiếp nhận | Sửa | Xóa. Tab Đã xử lý: Trình ký Phiếu tiếp nhận | Thu hồi
                     // Phân công: Lãnh đạo thuộc Nhóm lãnh đạo của đơn vị đang phân công; Thu hồi: bên nhận chưa xử lý
                     const canAssign = receptionTab === "pending" && rec && BTNN_WF.canAssign(rec, CURRENT_USER.id);
                     const canRecall = receptionTab === "done" && BTNN_LD.canRecall(rec, CURRENT_USER.id);
                     const assignBtn = `<button class="icon-btn accept${canAssign ? "" : " disabled-action"}" title="${canAssign ? "Phân công" : "Chỉ khả dụng với Lãnh đạo của đơn vị đang phân công, hồ sơ Chờ phân công / Đang phân công"}" style="${canAssign ? "" : offStyle}" onclick="event.stopPropagation(); openAssignFromList('${escapeAttr(item.code)}')"><i class="fa-solid fa-diagram-project"></i></button>`;
                     const recallBtn = `<button class="icon-btn edit${canRecall ? "" : " disabled-action"}" title="${canRecall ? "Thu hồi" : "Chỉ khả dụng với Lãnh đạo đã chuyển/phân công khi bên nhận chưa xử lý"}" style="${canRecall ? "" : offStyle}" onclick="event.stopPropagation(); recallFromList('${escapeAttr(item.code)}')"><i class="fa-solid fa-rotate-left"></i></button>`;
-
-                    // In Phiếu tiếp nhận (Nguồn Tiếp nhận mới + Hình thức Trực tiếp, mọi trạng thái)
-                    const printDisabled = !printable;
-                    const printTitle = printable ? "In Phiếu tiếp nhận" : "Chỉ khả dụng đối với hồ sơ có Nguồn hồ sơ Tiếp nhận mới và Hình thức tiếp nhận Trực tiếp";
-                    const printStyle = printable ? "" : offStyle;
 
                     // Sửa
                     const editDisabled = !editable;
@@ -2082,7 +2016,8 @@
                     const deleteTitle = editable ? "Xóa" : "Chỉ khả dụng khi hồ sơ Nguồn Tiếp nhận mới ở trạng thái Chờ phân công, lãnh đạo chưa thao tác và do người dùng hiện tại tiếp nhận";
                     const deleteStyle = editable ? "" : offStyle;
 
-                    const printBtn = `<button class="icon-btn print${printDisabled ? ' disabled-action' : ''}" title="${printTitle}" style="${printStyle}" onclick="event.stopPropagation(); printReceptionReceipt('${escapeAttr(item.id)}')"><i class="fa-solid fa-print"></i></button>`;
+                    // Trình ký Phiếu tiếp nhận (tiep_nhan_ptn.js): Nguồn Tiếp nhận mới + Hình thức Trực tiếp / Qua dịch vụ bưu chính
+                    const printBtn = window.PTN ? PTN.gridButtonHtml(item, offStyle) : "";
                     const editBtn = `<button class="icon-btn edit${editDisabled ? ' disabled-action' : ''}" title="${editTitle}" style="${editStyle}" onclick="event.stopPropagation(); openReceptionForm('${escapeAttr(item.id)}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
                     const deleteBtn = `<button class="icon-btn delete${deleteDisabled ? ' disabled-action' : ''}" title="${deleteTitle}" style="${deleteStyle}" onclick="event.stopPropagation(); confirmDeleteReception('${escapeAttr(item.id)}')"><i class="fa-solid fa-trash-can"></i></button>`;
                     // Phân công, Thu hồi chỉ hiển thị với người dùng thuộc Nhóm lãnh đạo
@@ -2259,9 +2194,9 @@
             const btnFormRecall = document.getElementById("btnFormRecall");
 
             if (isReadOnly) {
-                // MH03 - Chi tiết hồ sơ tiếp nhận: Đóng, In Phiếu tiếp nhận, Sửa, Xóa, Phân công, Thu hồi
+                // MH03 - Chi tiết hồ sơ tiếp nhận: Đóng, Trình ký Phiếu tiếp nhận, Sửa, Xóa, Phân công, Thu hồi
                 // Nút không thỏa điều kiện hiển thị: không hiển thị trên thanh thao tác
-                const canPrint = !!claim && canPrintReceipt(claim);
+                const canPrint = !!claim && canSubmitReceipt(claim);
                 const canEdit = !!claim && canEditReception(claim);
                 const rec = claim ? BTNN_WF.getRecord(claim.code) : null;
                 const canAssign = !!rec && BTNN_WF.canAssign(rec, CURRENT_USER.id);
@@ -2277,10 +2212,10 @@
                     btnFormBack.title = "Đóng màn hình xem chi tiết";
                 }
 
-                // 2. Nút In Phiếu tiếp nhận
+                // 2. Nút Trình ký Phiếu tiếp nhận (tiep_nhan_ptn.js)
                 if (btnFormPrint) {
                     btnFormPrint.style.display = canPrint ? "inline-flex" : "none";
-                    btnFormPrint.title = "In Phiếu tiếp nhận hồ sơ";
+                    btnFormPrint.title = "Trình ký Phiếu tiếp nhận";
                 }
 
                 // 3. Nút Sửa
@@ -2315,9 +2250,8 @@
                 if (btnFormAssign) btnFormAssign.style.display = "none";
                 if (btnFormRecall) btnFormRecall.style.display = "none";
 
-                // In Phiếu tiếp nhận: hiển thị khi sửa hồ sơ đã tồn tại ở trạng thái Chờ phân công, Hình thức tiếp nhận Trực tiếp
-                const showPrint = !!claim && canPrintReceipt(claim);
-                if (btnFormPrint) btnFormPrint.style.display = showPrint ? "inline-flex" : "none";
+                // Trình ký Phiếu tiếp nhận: chỉ tại màn Xem chi tiết (MH03), không hiển thị tại form Thêm mới / Sửa
+                if (btnFormPrint) btnFormPrint.style.display = "none";
             }
         }
 
@@ -2751,10 +2685,10 @@
                 && (item.receivedBy || CURRENT_OFFICER) === CURRENT_OFFICER;
         }
 
-        // In Phiếu tiếp nhận: hồ sơ Nguồn Tiếp nhận mới và Hình thức tiếp nhận Trực tiếp, ở mọi trạng thái
-        function canPrintReceipt(item) {
-            return !!item && getSourceOf(item) === SOURCES.TIEP_NHAN
-                && (item.nopKenh || RECEIVE_METHODS.TRUC_TIEP) === RECEIVE_METHODS.TRUC_TIEP;
+        // Trình ký Phiếu tiếp nhận (tiep_nhan_ptn.js): Nguồn Tiếp nhận mới, Hình thức tiếp nhận Trực tiếp / Qua dịch vụ bưu chính,
+        // Cán bộ tiếp nhận hồ sơ, Phiếu tiếp nhận chưa trình hoặc Bị từ chối
+        function canSubmitReceipt(item) {
+            return !!window.PTN && PTN.canSubmit(item);
         }
 
         function openClaimDetail(code) {
@@ -3027,11 +2961,6 @@
                 .filter(doc => (doc.name || "").trim() || (doc.file || "").trim())
                 .map(doc => ({ name: (doc.name || "").trim(), file: doc.file || "" }));
         }
-        // In Phiếu tiếp nhận yêu cầu bồi thường (MH03)
-        function printCurrentReceptionReceipt() {
-            if (editingId) printReceptionReceipt(editingId);
-        }
-
         // Số điện thoại Việt Nam: chỉ gồm chữ số, 10 số, bắt đầu bằng 0 (bỏ khoảng trắng)
         function normalizeVnPhone(value) {
             return String(value || "").replace(/\s+/g, "");
@@ -3039,9 +2968,6 @@
         function isValidVnPhone(value) {
             return /^0\d{9}$/.test(normalizeVnPhone(value));
         }
-
-        // Phiếu tiếp nhận đang xem (dùng cho Tải file)
-        let currentReceipt = null;
 
         // Địa chỉ người yêu cầu theo bảng mapping Mẫu 02/BTNN: [Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố] (+ [Quốc gia] nếu khác Việt Nam)
         function getReceiptAddress(claim) {
@@ -3052,7 +2978,7 @@
             return parts.filter(Boolean).join(", ");
         }
 
-        // Nội dung Mẫu số 02/BTNN - Giấy tiếp nhận yêu cầu bồi thường (HTML dùng chung cho popup, In phiếu, Tải file Word)
+        // Nội dung Mẫu số 02/BTNN - Giấy tiếp nhận yêu cầu bồi thường (HTML dùng cho Sinh văn bản theo mẫu 02/BTNN tại popup Trình ký Phiếu tiếp nhận - tiep_nhan_ptn.js)
         function buildReceiptForm02Html(claim) {
             const esc = escapeHtml;
             const DOTS = "……";
@@ -3089,44 +3015,6 @@
         </div>`;
         }
 
-        function printReceptionReceipt(id) {
-            // Hồ sơ trong danh sách tiếp nhận hoặc hồ sơ luồng (VD Lãnh đạo in phiếu hồ sơ chờ phân công)
-            const wfCode = String(id).indexOf("WF:") === 0 ? String(id).slice(3) : "";
-            const wfRec = wfCode ? BTNN_WF.getRecord(wfCode) : null;
-            const claim = wfRec ? rowFromRecord(wfRec) : claimsList.find(item => item.id === id);
-            if (!claim || !canPrintReceipt(claim)) return;
-
-            const modal = document.getElementById("previewModalReceptionReceipt");
-            const container = document.getElementById("receptionReceiptContent");
-            if (!modal || !container) {
-                window.print();
-                return;
-            }
-
-            const html = buildReceiptForm02Html(claim);
-            currentReceipt = { html, code: claim.maVuViec || claim.code || "" };
-            container.innerHTML = html;
-
-            modal.style.display = "flex";
-            // .confirm-modal-overlay mặc định opacity:0, phải thêm class "visible" thì popup mới hiển thị
-            setTimeout(() => modal.classList.add("visible"), 10);
-        }
-
-        // Tải file: phiếu Mẫu 02/BTNN dạng Word (.doc)
-        function downloadReceiptWord() {
-            if (!currentReceipt) return;
-            BTNN_WF.downloadDocWord(currentReceipt.html, `Mau_02_BTNN_Giay_tiep_nhan_${currentReceipt.code}`);
-        }
-
-        function closePreviewReceiptModal() {
-            const modal = document.getElementById("previewModalReceptionReceipt");
-            if (!modal) return;
-            modal.classList.remove("visible");
-            modal.style.display = "none";
-        }
-        function executePrintReceipt() {
-            window.print();
-        }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="bpbd_filter_toggle.js"></script>
@@ -3137,6 +3025,8 @@
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
     <!-- [nbth] Văn bản yêu cầu bồi thường mặc định; Người bị thiệt hại Cá nhân/Tổ chức; địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại -->
     <script src="tiep_nhan_nbth.js?v=20261027nbthe3"></script>
+    <!-- Trình ký Phiếu tiếp nhận (Mẫu 02/BTNN): thay thao tác In Phiếu tiếp nhận -->
+    <script src="tiep_nhan_ptn.js?v=20261027ptn3"></script>
 </body>
 
 </html>

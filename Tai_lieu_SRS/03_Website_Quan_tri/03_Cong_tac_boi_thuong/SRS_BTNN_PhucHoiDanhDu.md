@@ -20,12 +20,12 @@
   - **Bước 1**: Ban hành Thông báo tổ chức phục hồi danh dự (Điều 57).
   - **Bước 2**: Ghi nhận ý kiến phản hồi của người yêu cầu / người bị thiệt hại (Đồng ý, Đề nghị tạm hoãn, Từ chối hoặc Không có ý kiến).
   - **Bước 3**: Tổ chức thực hiện phục hồi danh dự (Điều 58 - Trực tiếp xin lỗi và cải chính công khai; Điều 59 - Đăng báo xin lỗi công khai 03 số liên tiếp).
-  - **Bước 4**: Hoàn thành thực thi phục hồi danh dự (Xác nhận hoàn thành, lưu trữ hồ sơ và chuyển trạng thái).
+  - **Bước 4**: Hoàn thành tổ chức thực hiện phục hồi danh dự (Xác nhận hoàn thành, lưu trữ hồ sơ và chuyển trạng thái).
 
 *a. Phân quyền*
 
 - Người dùng thuộc vai trò Chuyên viên Thụ lý hoặc Thủ trưởng/Lãnh đạo cơ quan giải quyết bồi thường có quyền truy cập menu "Phục hồi danh dự".
-- Cán bộ được phân công thụ lý có quyền tạo yêu cầu mới, cập nhật tiến trình 04 bước và xác nhận hoàn thành thực thi.
+- Cán bộ được phân công thụ lý có quyền tạo yêu cầu mới, cập nhật tiến trình 04 bước và xác nhận hoàn thành thực hiện.
 - Các cán bộ khác chỉ có quyền xem chi tiết hồ sơ trong phạm vi đơn vị.
 
 *b. Điều kiện thực hiện*
@@ -66,7 +66,7 @@ flowchart TD
     S --> T[Bước 1: Ban hành Thông báo Điều 57]
     T --> U[Bước 2: Ghi nhận ý kiến phản hồi]
     U --> V[Bước 3: Tổ chức thực hiện Điều 58/59]
-    V --> W[Bước 4: Xác nhận hoàn thành thực thi]
+    V --> W[Bước 4: Xác nhận hoàn thành thực hiện]
     W --> X[Popup xác nhận hoàn thành]
     X -->|Đồng ý| Y[Chuyển trạng thái Hoàn thành, đưa sang Tab Đã xử lý]
 ```
@@ -299,8 +299,8 @@ Nguồn UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_phuc_hoi_danh_du.ht
 | Tên báo Địa phương đã đăng | String(255) | Không | Trống | Control UI: Input text. |
 | Thông tin chi tiết các số báo và ngày phát hành | String(500) | Không | Trống | Control UI: Input text. Số báo phát hành và ngày đăng trong 03 số liên tiếp theo Điều 59. |
 | Tài liệu kèm theo | List(Object) | Có | 01 dòng trống | Control UI: Bảng Tài liệu kèm theo theo [Bảng Tài liệu kèm theo - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-bang-tai-lieu-kem-theo).<br>- Biên bản buổi xin lỗi trực tiếp, các trang báo đã đăng tải. |
-| **BƯỚC 4: KẾT THÚC THỰC THI PHỤC HỒI DANH DỰ** | Section | - | - | Khối kết thúc vụ việc: |
-| Ngày hoàn thành thực thi | Date | Có | Ngày hiện tại | Control UI: Datepicker (`dd/mm/yyyy`). |
+| **BƯỚC 4: KẾT THÚC TỔ CHỨC THỰC HIỆN PHỤC HỒI DANH DỰ** | Section | - | - | Khối kết thúc vụ việc: |
+| Ngày hoàn thành thực hiện | Date | Có | Ngày hiện tại | Control UI: Datepicker (`dd/mm/yyyy`). |
 | Cán bộ chủ trì xác nhận hoàn thành | String(255) | - | Cán bộ đăng nhập | Chỉ đọc. Tên cán bộ xác nhận kết thúc vụ việc. |
 | Báo cáo tóm tắt kết quả thực hiện | Text(2000) | Không | Trống | Control UI: Textarea. |
 
@@ -311,7 +311,7 @@ Nguồn UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_phuc_hoi_danh_du.ht
 | 1 | Trình ký Thông báo tổ chức thực hiện phục hồi danh dự (Bước 1) | Button tại Bước 1 | Theo [Trình ký Thông báo tổ chức thực hiện phục hồi danh dự - MH04 - Màn hình Xem chi tiết vụ việc Phục hồi danh dự - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-phdd-trinh-ky-m26). |
 | 2 | Lưu ý kiến phản hồi (Bước 2) | Button tại Bước 2 | Khi cán bộ click nút, hệ thống kiểm tra dữ liệu:<br>- **TH1 - Bỏ trống Ngày nhận ý kiến**: Vi phạm [BR-VAL-001], tô viền đỏ và hiển thị cảnh báo lỗi [MSG-ERR-VAL-001]. Không cho phép lưu.<br>- **TH2 - Hợp lệ**: Hệ thống lưu ý kiến phản hồi vào CSDL và xử lý theo từng loại ý kiến:<br>+ *Nếu chọn `Đồng ý`*: Cập nhật trạng thái hồ sơ sang `Chờ thực hiện`, hoàn thành Bước 2 và tự động chuyển sang tab Bước 3.<br>+ *Nếu chọn `Chưa thực hiện`*: Cập nhật trạng thái hồ sơ sang `Tạm hoãn`, đóng màn hình và giữ hồ sơ tại Tab Chờ xử lý.<br>+ *Nếu chọn `Từ chối`*: Cập nhật trạng thái hồ sơ sang `Từ chối`, đóng màn hình và tự động chuyển hồ sơ sang Tab Vụ việc đã xử lý.<br>+ Hệ thống hiển thị [MSG-SUC-BTNN-PHDD-005]. |
 | 3 | Lưu kết quả thực hiện (Bước 3) | Button tại Bước 3 | Khi cán bộ click nút, hệ thống lưu toàn bộ thông tin tổ chức trực tiếp xin lỗi và thông tin đăng báo vào CSDL, hoàn thành Bước 3, tự động chuyển sang tab Bước 4, cập nhật danh sách MH01 và hiển thị [MSG-SUC-BTNN-PHDD-006]. |
-| 4 | Xác nhận hoàn thành thực thi (Bước 4) | Button tại Bước 4 | Khi cán bộ click nút, hệ thống mở Custom Confirmation Modal xác nhận theo mã [MSG-CFM-BTNN-PHDD-001]. Nếu người dùng chọn `Xác nhận`, hệ thống thực hiện tuần tự:<br>- Cập nhật trạng thái vụ việc `PHDD-yyyy-xxx` sang `Hoàn thành`.<br>- Hoàn tất Bước 4.<br>- Chuyển hồ sơ từ Tab "Vụ việc chờ xử lý" sang Tab "Vụ việc đã xử lý".<br>- Ghi nhật ký Audit Log hoàn thành thực thi.<br>- Đóng màn hình MH04 và tải lại danh sách MH01.<br>- Hệ thống hiển thị [MSG-SUC-BTNN-PHDD-007]. |
+| 4 | Xác nhận hoàn thành thực hiện (Bước 4) | Button tại Bước 4 | Khi cán bộ click nút, hệ thống mở Custom Confirmation Modal xác nhận theo mã [MSG-CFM-BTNN-PHDD-001]. Nếu người dùng chọn `Xác nhận`, hệ thống thực hiện tuần tự:<br>- Cập nhật trạng thái vụ việc `PHDD-yyyy-xxx` sang `Hoàn thành`.<br>- Hoàn tất Bước 4.<br>- Chuyển hồ sơ từ Tab "Vụ việc chờ xử lý" sang Tab "Vụ việc đã xử lý".<br>- Ghi nhật ký Audit Log hoàn thành thực hiện.<br>- Đóng màn hình MH04 và tải lại danh sách MH01.<br>- Hệ thống hiển thị [MSG-SUC-BTNN-PHDD-007]. |
 | 5 | Đóng | Button tại Footer | Đóng màn hình MH04 và quay về danh sách MH01. |
 
 ---
@@ -329,11 +329,11 @@ Nguồn UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_phuc_hoi_danh_du.ht
 | 7 | `[MSG-INF-SYS-001]` | Thông tin (Inline Table) | "Không tìm thấy dữ liệu phục hồi danh dự phù hợp" | Hiển thị 01 dòng căn giữa bảng dữ liệu khi không có bản ghi nào thỏa mãn điều kiện tìm kiếm. |
 | 8 | `[MSG-WRN-SYS-001]` | Cảnh báo (Toast) | "Danh sách không có dữ liệu để kết xuất Excel!" | Thông báo khi click Kết xuất Excel nhưng bảng danh sách rỗng. |
 | 9 | `[MSG-CFM-SYS-001]` | Xác nhận (Custom Modal) | "Bạn có chắc chắn muốn xóa tệp đính kèm này?" | Hộp thoại xác nhận tùy chỉnh khi người dùng bấm xóa tệp đính kèm. |
-| 10 | `[MSG-CFM-BTNN-PHDD-001]` | Xác nhận (Custom Modal) | "Bạn có chắc chắn muốn xác nhận hoàn thành thực thi phục hồi danh dự cho vụ việc này? Sau khi hoàn thành, vụ việc sẽ chuyển sang Tab Vụ việc đã xử lý." | Hộp thoại xác nhận tùy chỉnh khi cán bộ bấm nút Xác nhận hoàn thành thực thi tại Bước 4. |
+| 10 | `[MSG-CFM-BTNN-PHDD-001]` | Xác nhận (Custom Modal) | "Bạn có chắc chắn muốn xác nhận hoàn thành tổ chức thực hiện phục hồi danh dự cho vụ việc này? Sau khi hoàn thành, vụ việc sẽ chuyển sang Tab Vụ việc đã xử lý." | Hộp thoại xác nhận tùy chỉnh khi cán bộ bấm nút Xác nhận hoàn thành thực hiện tại Bước 4. |
 | 11 | `[MSG-SUC-BTNN-PHDD-001]` | Thành công (Toast) | "Đã tiếp nhận và trình duyệt yêu cầu phục hồi danh dự thành công!" | Thông báo sau khi tạo mới yêu cầu phục hồi danh dự tại MH02. |
 | 12 | `[MSG-SUC-BTNN-PHDD-002]` | Thành công (Toast) | "Đã xóa bộ lọc tìm kiếm!" | Thông báo sau khi bấm nút Xóa bộ lọc tại MH01. |
 | 13 | `[MSG-SUC-BTNN-PHDD-003]` | Thành công (Toast) | "Đang kết xuất danh sách phục hồi danh dự ra Excel..." | Thông báo khi tải xuống tệp Excel danh sách. |
 | 14 | `[MSG-SUC-BTNN-PHDD-004]` | Thành công (Toast) | "Đã lưu thông báo tổ chức phục hồi danh dự thành công!" | Thông báo sau khi lưu thông tin văn bản thông báo tại Bước 1. |
 | 15 | `[MSG-SUC-BTNN-PHDD-005]` | Thành công (Toast) | "Đã lưu ý kiến phản hồi của người yêu cầu thành công!" | Thông báo sau khi lưu ý kiến phản hồi tại Bước 2. |
 | 16 | `[MSG-SUC-BTNN-PHDD-006]` | Thành công (Toast) | "Đã lưu kết quả thực hiện phục hồi danh dự thành công!" | Thông báo sau khi lưu kết quả tổ chức tại Bước 3. |
-| 17 | `[MSG-SUC-BTNN-PHDD-007]` | Thành công (Toast) | "Đã hoàn thành thực thi phục hồi danh dự!" | Thông báo sau khi xác nhận hoàn thành thực thi tại Bước 4. |
+| 17 | `[MSG-SUC-BTNN-PHDD-007]` | Thành công (Toast) | "Đã hoàn thành tổ chức thực hiện phục hồi danh dự!" | Thông báo sau khi xác nhận hoàn thành thực hiện tại Bước 4. |

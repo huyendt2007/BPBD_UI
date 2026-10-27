@@ -8,7 +8,7 @@
  * Nạp tại quan_ly_boi_thuong.html (popup Không thụ lý, ban hành, khối chuyển ở màn chi tiết, dữ liệu mẫu)
  * và xac_dinh_co_quan_boi_thuong.html (khối "Thông tin hồ sơ chuyển đến" ở màn chi tiết).
  */
-var KTLC_VERSION = '20261027ktlc2';
+var KTLC_VERSION = '20261027ktl2';
 var KTLC_LABELS = { BTP: 'Bộ Tư pháp', STP: 'Sở Tư pháp', CQ: 'Cơ quan giải quyết bồi thường khác' };
 // Chuyển cho chính đơn vị (Bộ Tư pháp / Sở Tư pháp Không thụ lý KTL_01): hồ sơ Xác định CQGQBT tạo tại chính đơn vị
 var KTLC_SELF_SUFFIX = ' (bộ phận Xác định CQGQBT)';
@@ -58,6 +58,25 @@ function ktlcPick(claim, rec, key) {
     if (v === undefined && rec && rec[key] !== undefined && rec[key] !== '') v = rec[key];
     return v;
 }
+// Chuỗi hồ sơ chuyển đến (Mã hồ sơ chuyển đến): số hồ sơ Giải quyết YCBT đã chuyển trước đó, nguồn hồ sơ đầu chuỗi, có hồ sơ Xác định CQGQBT trong chuỗi
+function ktlcChain(rec) {
+    var W = ktlcW();
+    var res = { n: 0, goc: '', quaXd: false };
+    if (!W || !rec || typeof W.getRecord !== 'function') return res;
+    var seen = {}, r = rec;
+    while (r && r.transferFromCode && !seen[r.code]) {
+        seen[r.code] = 1;
+        var p = W.getRecord(r.transferFromCode);
+        if (!p) break;
+        if (W.isXdRec && W.isXdRec(p)) { res.quaXd = true; break; }
+        // Chỉ tính hồ sơ chuyển do Không thụ lý KTL_01 - Cơ quan giải quyết bồi thường khác; hồ sơ đến qua thao tác Chuyển CQGQBT: ngoài phạm vi
+        if (r.transferMode !== 'CQ') { res.ngoai = true; break; }
+        res.n++;
+        r = p;
+    }
+    if (res.n && !res.quaXd && r && r.nguonHoSo && W.normalizeSource) res.goc = W.normalizeSource(r.nguonHoSo);
+    return res;
+}
 // Thông tin hồ sơ: số lần đã chuyển do KTL_01, nguồn gốc, đã qua Xác định CQGQBT chưa
 function ktlcInfo(claim, rec) {
     var W = ktlcW();
@@ -65,10 +84,13 @@ function ktlcInfo(claim, rec) {
     var norm = function (v) { return W && W.normalizeSource ? W.normalizeSource(v) : v; };
     var src = norm(ktlcPick(claim, rec, 'nguonHoSo') || '') || S.TIEP_NHAN;
     var lan = Number(ktlcPick(claim, rec, 'ktlcLan') || 0);
+    // Đếm theo chuỗi hồ sơ cùng Mã vụ việc (Mã hồ sơ chuyển đến -> hồ sơ trước): mỗi hồ sơ Giải quyết YCBT đã chuyển trực tiếp = 01 lần
+    var ch = ktlcChain(rec);
+    if (ch.n > lan) lan = ch.n;
     // Hồ sơ nhận do đơn vị trước Không thụ lý KTL_01 - Chuyển trực tiếp (dữ liệu trước khi có ktlcLan): tính 01 lần
     if (!lan && rec && rec.transferMode === 'CQ' && src === S.CHUYEN) lan = 1;
-    var goc = norm(ktlcPick(claim, rec, 'ktlcNguonGoc') || '') || (lan ? '' : src);
-    var quaXd = !!ktlcPick(claim, rec, 'ktlcQuaXd') || src === S.XDCQ || !!ktlcPick(claim, rec, 'xdCode');
+    var goc = norm(ktlcPick(claim, rec, 'ktlcNguonGoc') || '') || ch.goc || (lan ? '' : src);
+    var quaXd = !!ktlcPick(claim, rec, 'ktlcQuaXd') || src === S.XDCQ || !!ktlcPick(claim, rec, 'xdCode') || ch.quaXd;
     var applies = !quaXd && ([S.TIEP_NHAN, S.DVC].indexOf(goc) >= 0 || (src === S.CHUYEN && lan > 0));
     return { src: src, lan: lan, goc: goc || S.TIEP_NHAN, quaXd: quaXd, applies: applies };
 }
@@ -226,13 +248,14 @@ function ktlcValidatePopup() {
     return ok;
 }
 (function () {
-    ['goToKtlStep2', 'submitKtlOffline'].forEach(function (fn) {
+    ['goToKtlStep2', 'submitKtlOffline', 'submitKtlOnline'].forEach(function (fn) {
         var orig = window[fn];
         if (typeof orig !== 'function' || orig.__ktlc) return;
         var w = function () {
             if (!ktlcValidatePopup()) {
                 var offRadio = document.getElementById('ktlSigningMethodOffline');
                 if (fn === 'goToKtlStep2' && offRadio && offRadio.checked) return orig.apply(this, arguments);
+                if (fn === 'submitKtlOnline' && typeof showToast === 'function') showToast('Vui lòng hoàn thiện thông tin Chuyển hồ sơ cho tại Bước 1.', 'warning');
                 return;
             }
             return orig.apply(this, arguments);
@@ -364,6 +387,12 @@ function ktlcDoTransfer(code, transfer, o) {
         var claim = ktlcFindClaim(code);
         var rec0 = W.getRecord(code);
         var rule = rec0 ? ktlcRule(claim, rec0, ktlcRoot(rec0.rootUnitId)) : null;
+        // Chặn lựa chọn ngoài quy tắc (gọi trực tiếp, dữ liệu cũ chỉ có targetUnitId được hiểu là Cơ quan giải quyết bồi thường khác)
+        if (rule && rule.applies && reasonCode === 'KTL_01' && !(transfer && (transfer.mode || transfer.targetUnitId))) return { ok: false, transferError: true, message: 'Vui lòng chọn Chuyển hồ sơ cho.' };
+        if (rule && reasonCode === 'KTL_01' && transfer && (transfer.mode || transfer.targetUnitId)) {
+            var m0 = transfer.mode || 'CQ';
+            if (rule.modes.indexOf(m0) < 0) return { ok: false, transferError: true, message: 'Chuyển hồ sơ cho chỉ được chọn: ' + rule.modes.map(function (m) { return ktlcModeLabel(m, rule); }).join(' hoặc ') + '.' };
+        }
         var res = orj.apply(this, arguments);
         try {
             var t = res && res.ok && res.record ? res.record.transferTo : null;
@@ -454,7 +483,7 @@ function ktlcDoTransfer(code, transfer, o) {
     window.ktlvTransferHtml = w;
 })();
 
-// ---------- 5. Dữ liệu mẫu: 05 trường hợp (BT-2026-961 .. 965) ----------
+// ---------- 5. Dữ liệu mẫu: 07 trường hợp (BT-2026-961 .. 967) ----------
 function ktlcSeedList() {
     if (typeof sxmBuild !== 'function' || typeof SXM_TH_C === 'undefined') return [];
     var base = function (o) {
@@ -490,6 +519,17 @@ function ktlcSeedList() {
         base({ id: 'KTLC_BTP1', code: 'BT-2026-965', who: 'p8', agency: 'Bộ Tư pháp', officer: 'Nguyễn Văn Cán Bộ', hinhThuc: 'Trực tiếp',
             docBase: 'Quyết định hủy Quyết định xử phạt vi phạm hành chính số 45/QĐ-XPHC ngày 12/08/2026',
             hanhVi: 'Xử phạt vi phạm hành chính trong lĩnh vực công chứng không đúng thẩm quyền.', nhanQua: 'Thiệt hại do tạm đình chỉ hoạt động văn phòng công chứng.',
+            extra: { nguonHoSo: 'Tiếp nhận mới' } }),
+        // 6. Đơn vị thứ 2 (trung ương), hồ sơ Dịch vụ công đã chuyển 01 lần do KTL_01 (Bộ Tài chính chuyển): bắt buộc Bộ Tư pháp
+        base({ id: 'KTLC_TW2', code: 'BT-2026-966', who: 'p9', agency: 'Viện kiểm sát nhân dân tối cao', officer: 'Âu Thị Kim Oanh', hinhThuc: 'Dịch vụ công trực tuyến', kd: 1,
+            docBase: 'Quyết định đình chỉ điều tra số 07/QĐ-VKSTC ngày 18/08/2026 do người bị tạm giữ không thực hiện hành vi phạm tội',
+            hanhVi: 'Tạm giữ hình sự đối với người không thực hiện hành vi phạm tội.', nhanQua: 'Mất thu nhập trong thời gian bị tạm giữ.',
+            extra: { nguonHoSo: 'Chuyển CQGQBT', ktlcLan: 1, ktlcNguonGoc: 'Dịch vụ công quốc gia', transferFromCode: 'BT-2026-959',
+                ktlcFrom: { code: 'BT-2026-959', unitId: 'BTC', mode: 'CQ', lan: 1, reason: 'Không thuộc thẩm quyền (KTL_01)' } } }),
+        // 7. Đơn vị địa phương (Công an quận), lần 1 - Tiếp nhận qua dịch vụ bưu chính: Sở Tư pháp cùng tỉnh / CQGQBT khác
+        base({ id: 'KTLC_DP3', code: 'BT-2026-967', who: 'p11', agency: 'Công an quận Hoàng Mai, Thành phố Hà Nội', officer: 'Bế Thị Lụa', hinhThuc: 'Qua dịch vụ bưu chính',
+            docBase: 'Quyết định hủy bỏ Quyết định tạm giữ phương tiện số 19/QĐ-TGPT ngày 10/08/2026',
+            hanhVi: 'Tạm giữ phương tiện giao thông quá thời hạn luật định.', nhanQua: 'Thiệt hại do không khai thác được phương tiện.',
             extra: { nguonHoSo: 'Tiếp nhận mới' } })
     ];
 }
@@ -520,7 +560,7 @@ function ktlcSeedClaims() {
     w.__ktlc = true;
     window.sdxSeedClaims = w;
 })();
-// Hồ sơ luồng của 04 hồ sơ mẫu (cán bộ chủ trì = cán bộ mẫu của đơn vị): Mã hồ sơ cấp mới khi chuyển không trùng mã hồ sơ mẫu
+// Hồ sơ luồng của các hồ sơ mẫu (cán bộ chủ trì = cán bộ mẫu của đơn vị): Mã hồ sơ cấp mới khi chuyển không trùng mã hồ sơ mẫu
 function ktlcSeedRecords() {
     var W = ktlcW();
     if (!W || typeof gqEnsureRecord !== 'function' || typeof claimsList === 'undefined') return;

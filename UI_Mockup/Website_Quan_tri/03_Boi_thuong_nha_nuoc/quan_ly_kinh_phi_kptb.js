@@ -181,7 +181,7 @@ function kptbSeedDecs() {
         { decId: 'KPTB-S5', claimCode: 'BT-2026-015', nycName: 'Phạm Thanh Sơn', nycAddress: 'Số 45 phố Trần Thái Tông, Phường Cầu Giấy, Thành phố Hà Nội', unitId: 'UBND-CG', unitName: 'UBND quận Cầu Giấy', decNo: '31/QĐ-UBND', issueDate: '16/10/2026', total: 75000000, advance: 15000000, net: 60000000,
             recipient: { name: 'Phạm Minh Tuấn', idNo: '001095002468' },
             payout: { method: 'Nhận tiền mặt', cashPlace: 'UBND quận Cầu Giấy, Thành phố Hà Nội', cashNote: 'Nhận tiền mặt tại phòng Kế toán ngân sách' }, at: '15:30 16/10/2026' },
-        // Bản ghi Chờ chi trả đã quá hạn 03 năm kể từ ngày Thông báo chi trả (đủ điều kiện Sung quỹ nhà nước)
+        // Bản ghi Chờ chi trả đã quá hạn 03 năm kể từ ngày Thông báo chi trả (đủ điều kiện Trả lại ngân sách nhà nước)
         { decId: 'KPTB-S6', claimCode: 'BT-2023-041', nycName: 'Lê Thị Hạnh', nycAddress: 'Số 9 phố Tây Sơn, Phường Đống Đa, Thành phố Hà Nội', unitId: 'STP-HN', unitName: 'Sở Tư pháp Thành phố Hà Nội', decNo: '12/QĐ-STP', issueDate: '05/05/2023', total: 85000000, advance: 0, net: 85000000,
             recipient: { name: 'Lê Thị Hạnh', idNo: '001182007788' },
             payout: { method: 'Nhận tiền mặt', cashPlace: 'Sở Tư pháp Thành phố Hà Nội' }, at: '09:00 05/05/2023' }
@@ -973,7 +973,7 @@ function kptbSgIssueOffline(confirmed) {
     const item = kpcdTbCommit(kptbSgItem());
     const me = kptbMe();
     item.kptbNotice = { signMethod: 'Ký ngoài', signedFile: kptbSg.offFile.name, issuedAt: kptbNow(), issuedBy: me, attachments: offAtt };
-    item.noticeReceivedDate = kptbToday(); // Mốc bắt đầu tính hạn 03 năm (Sung quỹ nhà nước): ngày ban hành Thông báo chi trả
+    // Ngày người yêu cầu nhận thông báo (mốc tính hạn 03 năm): Cán bộ nhập 01 lần tại khối Thông tin thông báo chi trả, không tự gán khi ban hành
     item.kptbApproval = null;
     item.kptbReturned = null;
     item.status = KPTB_ST.PAY;
@@ -1114,7 +1114,7 @@ function kptbLdSubmit() {
             item.kptbNotice = item.kptbNotice || {};
             item.kptbNotice.digitalSign = { by: me, at, cert: `Chứng thư số ${kptbUserName(me)} - Ban Cơ yếu Chính phủ (giả lập)` };
             item.kptbNotice.signedFile = kptbDocBaseName(item) + '_ky_so.pdf';
-            item.noticeReceivedDate = kptbToday(); // Mốc bắt đầu tính hạn 03 năm (Sung quỹ nhà nước): ngày Thông báo chi trả được ký duyệt cấp cuối
+            // Ngày người yêu cầu nhận thông báo (mốc tính hạn 03 năm): Cán bộ nhập 01 lần tại khối Thông tin thông báo chi trả, không tự gán khi ký duyệt
             item.approvedDate = at; item.approvedLeader = kptbUserName(me); item.approvedLeaderId = me; item.leaderOpinion = fullNote;
             kptbHist(item, 'Ký duyệt', `${KPTB_KIND}: ký duyệt cấp ${kptbUnitName(unitId)}.${fullNote ? ' Ý kiến: ' + fullNote : ''}`);
             kptbHist(item, 'Ký số', `Ký số Thông báo chi trả tiền bồi thường. ${item.kptbNotice.digitalSign.cert}.`);
@@ -1207,7 +1207,6 @@ let kptbPayId = null;
 function kptbOpenPay(id) {
     const item = kptbFind(id);
     if (!kptbIs(item) || item.status !== KPTB_ST.PAY) return;
-    if (getTreasuryInfo(item).isEligible) { showToast('Khoản chi đã quá hạn 03 năm kể từ ngày nhận thông báo, chỉ được thực hiện Sung quỹ nhà nước.', 'warning'); return; }
     kptbInjectCss();
     kptbPayId = id;
     kptbClosePay();
@@ -1321,13 +1320,13 @@ function kptbView(id) {
         if (item.status === KPTB_ST.WAIT) btns += `<button type="button" class="btn btn-secondary" onclick="kptbOpenSupp('${item.id}')"><i class="fa-solid fa-file-invoice-dollar"></i> Đề nghị cấp bổ sung kinh phí</button>`;
         if (kptbCanSubmit(item)) btns += `<button type="button" class="btn btn-primary" onclick="kptbOpenSign('${item.id}')"><i class="fa-solid fa-file-signature"></i> Trình thông báo chi trả</button>`;
         const elig = getTreasuryInfo(item).isEligible;
-        if (item.status === KPTB_ST.PAY && !elig) btns += `<button type="button" class="btn btn-success" onclick="kptbOpenPay('${item.id}')"><i class="fa-solid fa-hand-holding-dollar"></i> Cập nhật chi trả</button>`;
-        if (elig) btns += `<button type="button" class="btn btn-danger" onclick="kptbOpenForfeit('${item.id}')"><i class="fa-solid fa-building-columns"></i> Sung quỹ nhà nước</button>`;
+        if (item.status === KPTB_ST.PAY) btns += `<button type="button" class="btn btn-success" onclick="kptbOpenPay('${item.id}')"><i class="fa-solid fa-hand-holding-dollar"></i> Cập nhật chi trả</button>`;
+        if (elig) btns += `<button type="button" class="btn btn-danger" onclick="kptbOpenForfeit('${item.id}')"><i class="fa-solid fa-building-columns"></i> Trả lại ngân sách nhà nước</button>`;
     }
-    // Theo dõi hạn nhận kinh phí 03 năm / Sung quỹ nhà nước (như các loại đề nghị khác)
+    // Theo dõi hạn nhận kinh phí 03 năm / Trả lại ngân sách nhà nước (như các loại đề nghị khác)
     const tInfo = getTreasuryInfo(item);
-    const isSq = item.status === 'Sung quỹ nhà nước';
-    const treasuryBody = item.noticeReceivedDate ? `<div class="kptb-dtl-grid">${it('Ngày người yêu cầu nhận thông báo', kpEsc(item.noticeReceivedDate))}${it('Hạn nhận kinh phí', kpEsc(tInfo.deadlineText))}${it('Tình trạng hạn nhận', isSq ? 'Đã sung quỹ' : (item.status === KPTB_ST.DONE ? 'Đã chi trả' : (tInfo.isEligible ? 'Đã quá hạn 3 năm (Đủ điều kiện sung quỹ)' : (tInfo.isWarning ? 'Sắp đến hạn 3 năm' : 'Trong thời hạn 3 năm'))))}${isSq ? it('Số chứng từ / quyết định sung quỹ', kpEsc(item.treasuryVoucherNo)) + it('Ngày sung quỹ', kpEsc(item.treasuryForfeitDate)) + it('Số tiền sung quỹ', kptbFmt(item.treasuryAmount) + ' đồng') : ''}</div>` : '';
+    const isSq = item.status === 'Trả lại ngân sách nhà nước';
+    const treasuryBody = item.noticeReceivedDate ? `<div class="kptb-dtl-grid">${it('Ngày người yêu cầu nhận thông báo', kpEsc(item.noticeReceivedDate))}${it('Hạn nhận kinh phí', kpEsc(tInfo.deadlineText))}${it('Tình trạng hạn nhận', isSq ? 'Đã trả lại ngân sách nhà nước' : (item.status === KPTB_ST.DONE ? 'Đã chi trả' : (tInfo.isEligible ? 'Đã quá hạn 3 năm (Đủ điều kiện trả lại ngân sách nhà nước)' : (tInfo.isWarning ? 'Sắp đến hạn 3 năm' : 'Trong thời hạn 3 năm'))))}${isSq ? it('Số chứng từ / quyết định trả lại ngân sách nhà nước', kpEsc(item.treasuryVoucherNo)) + it('Ngày trả lại ngân sách nhà nước', kpEsc(item.treasuryForfeitDate)) + it('Số tiền trả lại ngân sách nhà nước', kptbFmt(item.treasuryAmount) + ' đồng') : ''}</div>` : '';
     const m = document.createElement('div');
     m.className = 'kptb-modal open'; m.id = 'kptbViewModal';
     m.innerHTML = `<div class="kptb-modal-box kptb-qs-box" style="width:980px;">
@@ -1341,7 +1340,7 @@ function kptbView(id) {
             ${supBody ? sec('fa-file-invoice-dollar', 'Đề nghị cấp bổ sung kinh phí', supBody) : ''}
             ${noticeBody ? sec('fa-file-signature', 'Thông báo chi trả tiền bồi thường', noticeBody) : ''}
             ${a ? kptbLdHistoryHtml(item) : ''}
-            ${treasuryBody ? sec('fa-hourglass-half', 'Theo dõi hạn nhận kinh phí / Sung quỹ', treasuryBody) : ''}
+            ${treasuryBody ? sec('fa-hourglass-half', 'Theo dõi hạn nhận kinh phí / Trả lại ngân sách nhà nước', treasuryBody) : ''}
             ${payBody ? sec('fa-receipt', 'Kết quả chi trả', payBody) : ''}
             ${sec('fa-clock-rotate-left', 'Lịch sử xử lý', hist || '<div style="color:#64748b;">Chưa có lịch sử.</div>')}
         </div>
@@ -1362,19 +1361,19 @@ function kptbActionsHtml(item) {
     const sup = item.status === KPTB_ST.WAIT
         ? `<button class="icon-btn" title="Đề nghị cấp bổ sung kinh phí" onclick="event.stopPropagation(); kptbOpenSupp('${item.id}')"><i class="fa-solid fa-file-invoice-dollar"></i></button>`
         : `<button class="icon-btn" style="${off}" title="Đề nghị cấp bổ sung kinh phí"><i class="fa-solid fa-file-invoice-dollar"></i></button>`;
-    // Như các loại đề nghị khác: Cập nhật chi trả khi còn trong hạn 03 năm; quá hạn -> Sung quỹ nhà nước
+    // Cập nhật chi trả với bản ghi Chờ chi trả (kể cả quá hạn 03 năm); quá hạn có thêm Trả lại ngân sách nhà nước
     const eligible = getTreasuryInfo(item).isEligible;
-    const pay = item.status === KPTB_ST.PAY && !eligible
+    const pay = item.status === KPTB_ST.PAY
         ? `<button class="icon-btn accept" title="Cập nhật chi trả" onclick="event.stopPropagation(); kptbOpenPay('${item.id}')"><i class="fa-solid fa-hand-holding-dollar"></i></button>`
         : `<button class="icon-btn accept" style="${off}" title="Cập nhật chi trả"><i class="fa-solid fa-hand-holding-dollar"></i></button>`;
     const forfeit = eligible
-        ? `<button class="icon-btn reject" title="Sung quỹ Nhà nước" onclick="event.stopPropagation(); kptbOpenForfeit('${item.id}')"><i class="fa-solid fa-building-columns"></i></button>`
-        : `<button class="icon-btn" style="${off}" title="Chưa đủ điều kiện sung quỹ"><i class="fa-solid fa-building-columns"></i></button>`;
+        ? `<button class="icon-btn reject" title="Trả lại ngân sách nhà nước" onclick="event.stopPropagation(); kptbOpenForfeit('${item.id}')"><i class="fa-solid fa-building-columns"></i></button>`
+        : `<button class="icon-btn" style="${off}" title="Chưa đủ điều kiện trả lại ngân sách nhà nước"><i class="fa-solid fa-building-columns"></i></button>`;
     return `${sign} ${sup} ${pay} ${forfeit}`;
 }
 
 // =====================================================================================
-// SUNG QUỸ NHÀ NƯỚC (như MH04 của các loại đề nghị khác): Chờ chi trả quá hạn 03 năm kể từ
+// TRẢ LẠI NGÂN SÁCH NHÀ NƯỚC (như MH04 của các loại đề nghị khác): Chờ chi trả quá hạn 03 năm kể từ
 // ngày Thông báo chi trả được ký duyệt cấp cuối / ban hành (Ký ngoài) mà chưa chi trả
 // =====================================================================================
 let kptbFfId = null;
@@ -1382,7 +1381,7 @@ function kptbOpenForfeit(id) {
     const item = kptbFind(id);
     if (!kptbIs(item)) return;
     const info = getTreasuryInfo(item);
-    if (!info.isEligible) { showToast('Khoản này chưa đủ điều kiện sung quỹ (chưa quá thời hạn 03 năm kể từ ngày nhận thông báo).', 'warning'); return; }
+    if (!info.isEligible) { showToast('Khoản này chưa đủ điều kiện trả lại ngân sách nhà nước (chưa quá thời hạn 03 năm kể từ ngày người yêu cầu nhận thông báo).', 'warning'); return; }
     kptbInjectCss();
     kptbCloseView();
     kptbCloseForfeit();
@@ -1391,7 +1390,7 @@ function kptbOpenForfeit(id) {
     const m = document.createElement('div');
     m.className = 'kptb-modal open'; m.id = 'kptbFfModal';
     m.innerHTML = `<div class="kptb-modal-box kptb-qs-box" style="width:820px;">
-        <div class="kptb-qs-head"><div><div class="kptb-qs-head-title"><span class="kptb-qs-head-ico"><i class="fa-solid fa-building-columns"></i></span><span>CẬP NHẬT SUNG QUỸ NHÀ NƯỚC</span></div>
+        <div class="kptb-qs-head"><div><div class="kptb-qs-head-title"><span class="kptb-qs-head-ico"><i class="fa-solid fa-building-columns"></i></span><span>CẬP NHẬT TRẢ LẠI NGÂN SÁCH NHÀ NƯỚC</span></div>
             <div class="kptb-qs-sub">Mã đề nghị: <strong style="color:var(--primary-color);">${kpEsc(item.code)}</strong><span class="kptb-qs-dot">•</span> Người yêu cầu: <span style="font-weight:600; color:#334155;">${kpEsc(item.nycName)}</span></div></div>
             <button type="button" class="kptb-qs-head-close" onclick="kptbCloseForfeit()" title="Đóng">&times;</button></div>
         <div class="kptb-qs-body kptb-gqx-body">
@@ -1400,20 +1399,20 @@ function kptbOpenForfeit(id) {
                 <div class="kptb-gqx-grid2">${ro('Ngày người yêu cầu nhận thông báo', item.noticeReceivedDate || '')}${ro('Hạn nhận kinh phí', info.deadlineText)}</div>
             </div>
             <div class="kptb-gqx-sec">
-                <div class="kptb-gqx-sec-title"><i class="fa-solid fa-building-columns"></i> Thông tin sung quỹ Nhà nước</div>
+                <div class="kptb-gqx-sec-title"><i class="fa-solid fa-building-columns"></i> Thông tin trả lại ngân sách nhà nước</div>
                 <div class="kptb-gqx-grid2" style="margin-bottom:14px;">
-                    <div class="kptb-gqx-field"><label class="form-label" for="kptbFfNo">Số chứng từ / quyết định sung quỹ<span class="kptb-gqx-req">*</span></label><input type="text" class="form-control" id="kptbFfNo" maxlength="100" oninput="kptbMark('kptbFfNo', false)"><div class="kptb-gqx-err" id="kptbFfNoErr">Đây là trường bắt buộc</div></div>
-                    <div class="kptb-gqx-field"><label class="form-label" for="kptbFfDate">Ngày sung quỹ<span class="kptb-gqx-req">*</span></label><div class="kptb-gqx-date"><input type="text" class="form-control" id="kptbFfDate" placeholder="dd/mm/yyyy" readonly value="${kpEsc(formatDateViGlobal(TREASURY_DEMO_TODAY))}" onchange="kptbMark('kptbFfDate', false)"><i class="fa-regular fa-calendar-days" onclick="var i=document.getElementById('kptbFfDate'); if(i._flatpickr) i._flatpickr.open();"></i></div><div class="kptb-gqx-err" id="kptbFfDateErr">Đây là trường bắt buộc</div></div>
+                    <div class="kptb-gqx-field"><label class="form-label" for="kptbFfNo">Số chứng từ / quyết định trả lại ngân sách nhà nước<span class="kptb-gqx-req">*</span></label><input type="text" class="form-control" id="kptbFfNo" maxlength="100" oninput="kptbMark('kptbFfNo', false)"><div class="kptb-gqx-err" id="kptbFfNoErr">Đây là trường bắt buộc</div></div>
+                    <div class="kptb-gqx-field"><label class="form-label" for="kptbFfDate">Ngày trả lại ngân sách nhà nước<span class="kptb-gqx-req">*</span></label><div class="kptb-gqx-date"><input type="text" class="form-control" id="kptbFfDate" placeholder="dd/mm/yyyy" readonly value="${kpEsc(formatDateViGlobal(TREASURY_DEMO_TODAY))}" onchange="kptbMark('kptbFfDate', false)"><i class="fa-regular fa-calendar-days" onclick="var i=document.getElementById('kptbFfDate'); if(i._flatpickr) i._flatpickr.open();"></i></div><div class="kptb-gqx-err" id="kptbFfDateErr">Đây là trường bắt buộc</div></div>
                 </div>
-                ${ro('Số tiền sung quỹ (VNĐ)', info.unpaid.toLocaleString('vi-VN'))}
-                <div class="kptb-gqx-field"><label class="form-label" for="kptbFfReason">Căn cứ / lý do sung quỹ<span class="kptb-gqx-req">*</span></label><textarea class="form-control" id="kptbFfReason" rows="3" maxlength="2000" oninput="kptbMark('kptbFfReason', false)">Người yêu cầu bồi thường đã quá thời hạn 03 năm kể từ ngày nhận thông báo chi trả kinh phí nhưng không đến nhận tiền bồi thường theo quy định của Luật Trách nhiệm bồi thường của Nhà nước.</textarea><div class="kptb-gqx-err" id="kptbFfReasonErr">Đây là trường bắt buộc</div></div>
+                ${ro('Số tiền trả lại ngân sách nhà nước (VNĐ)', info.unpaid.toLocaleString('vi-VN'))}
+                <div class="kptb-gqx-field"><label class="form-label" for="kptbFfReason">Căn cứ / lý do trả lại ngân sách nhà nước<span class="kptb-gqx-req">*</span></label><textarea class="form-control" id="kptbFfReason" rows="3" maxlength="2000" oninput="kptbMark('kptbFfReason', false)">Người yêu cầu bồi thường đã quá thời hạn 03 năm kể từ ngày nhận thông báo chi trả kinh phí nhưng không đến nhận tiền bồi thường theo quy định của Luật Trách nhiệm bồi thường của Nhà nước.</textarea><div class="kptb-gqx-err" id="kptbFfReasonErr">Đây là trường bắt buộc</div></div>
                 <!-- Tài liệu kèm theo (chứng từ nộp ngân sách): bảng chuẩn dùng chung, bắt buộc, .pdf -->
                 <div id="kptbFfTlkt"></div>
             </div>
         </div>
         <div class="kptb-modal-foot kptb-qs-foot"><div class="kptb-qs-foot-btns">
             <button type="button" class="btn btn-secondary" onclick="kptbCloseForfeit()">Hủy bỏ</button>
-            <button type="button" class="btn btn-danger" onclick="kptbSaveForfeit()" style="font-weight:600;"><i class="fa-solid fa-building-columns"></i> Hoàn thành sung quỹ</button>
+            <button type="button" class="btn btn-danger" onclick="kptbSaveForfeit()" style="font-weight:600;"><i class="fa-solid fa-building-columns"></i> Hoàn thành trả lại ngân sách nhà nước</button>
         </div></div>
     </div>`;
     document.body.appendChild(m);
@@ -1424,7 +1423,7 @@ function kptbCloseForfeit() { const m = kptbEl('kptbFfModal'); if (m) m.remove()
 function kptbSaveForfeit() {
     const item = kptbFind(kptbFfId); if (!item) return;
     const info = getTreasuryInfo(item);
-    if (!info.isEligible) { showToast('Khoản chi này không còn đủ điều kiện sung quỹ.', 'warning'); return; }
+    if (!info.isEligible) { showToast('Khoản chi này không còn đủ điều kiện trả lại ngân sách nhà nước.', 'warning'); return; }
     const req = ['kptbFfNo', 'kptbFfDate', 'kptbFfReason'];
     const bad = req.filter(id => !String(kptbEl(id).value || '').trim());
     req.forEach(id => kptbMark(id, bad.includes(id)));
@@ -1432,16 +1431,17 @@ function kptbSaveForfeit() {
     if (typeof tlktValidate === 'function' && !tlktValidate('kptbFf')) return;
     const ffFiles = typeof tlktGet === 'function' ? tlktGet('kptbFf') : [];
     const no = kptbEl('kptbFfNo').value.trim(), dt = kptbEl('kptbFfDate').value.trim(), reason = kptbEl('kptbFfReason').value.trim();
-    showConfirmModal(`Xác nhận hoàn thành thủ tục nộp toàn bộ số tiền ${info.unpaid.toLocaleString('vi-VN')} VNĐ của đề nghị ${item.code} vào ngân sách nhà nước? Sau khi xác nhận, bản ghi chuyển trạng thái Sung quỹ nhà nước.`, () => {
-        item.status = 'Sung quỹ nhà nước';
+    showConfirmModal(`Xác nhận hoàn thành thủ tục nộp toàn bộ số tiền ${info.unpaid.toLocaleString('vi-VN')} VNĐ của đề nghị ${item.code} vào ngân sách nhà nước? Sau khi xác nhận, bản ghi chuyển trạng thái Trả lại ngân sách nhà nước.`, () => {
+        item.status = 'Trả lại ngân sách nhà nước';
         item.treasuryForfeitDate = dt; item.treasuryVoucherNo = no; item.treasuryAmount = info.unpaid; item.treasuryReason = reason; item.treasuryFile = ffFiles;
         item.payoutAmountReal = Math.max(0, (Number(item.amount) || 0) - info.unpaid);
-        kptbHist(item, 'Sung quỹ nhà nước', `Số chứng từ ${no}; ngày ${dt}; số tiền ${kptbFmt(info.unpaid)} đồng.`);
+        kptbHist(item, 'Trả lại ngân sách nhà nước', `Số chứng từ ${no}; ngày ${dt}; số tiền ${kptbFmt(info.unpaid)} đồng.`);
         saveProposalsToLocal();
+        if (typeof kpTlnsCompleteClaim === 'function') kpTlnsCompleteClaim(item, dt, info.unpaid);
         kptbCloseForfeit();
-        showToast(`Cập nhật sung quỹ nhà nước thành công cho đề xuất ${item.code}!`, 'success');
+        showToast(`Cập nhật trả lại ngân sách nhà nước thành công cho đề xuất ${item.code}!`, 'success');
         kptbAfterChange(item.id);
-    }, 'Xác nhận hoàn thành thủ tục sung quỹ nhà nước');
+    }, 'Xác nhận hoàn thành thủ tục trả lại ngân sách nhà nước');
 }
 function kptbLeaderActionsHtml(item) {
     const off = 'opacity: 0.35; pointer-events: none; cursor: not-allowed;';
@@ -1453,7 +1453,7 @@ function kptbDecorateTable() {
     const tbody = kptbEl('proposalsTableBody'); if (!tbody) return;
     const isLeader = kpRole() === 'lanh-dao';
     Array.from(tbody.rows).forEach(tr => {
-        if (tr.cells.length < 11) return; // Lưới MH01 11 cột: Trạng thái = cột kề cuối, Thao tác = cột cuối
+        if (tr.cells.length < 10) return; // Lưới MH01 10 cột: Trạng thái = cột kề cuối, Thao tác = cột cuối
         const stCell = tr.cells[tr.cells.length - 2], actCell = tr.cells[tr.cells.length - 1];
         const code = tr.cells[1].innerText.trim();
         const item = proposalsList.find(p => p.code === code && kptbIs(p));

@@ -803,8 +803,8 @@
     </div>
 
     <!-- Luồng xử lý BTNN dùng chung + tiện ích badge tab Chờ xử lý / badge menu 06 phân hệ -->
-    <script src="btnn_luong_xu_ly.js?v=20261027xdc"></script>
-    <script src="btnn_badge_cho_xu_ly.js?v=20261026htrole"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261027s35"></script>
+    <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
     <script>
         // Menu Data Model: Bồi thường nhà nước, Quản lý nhà nước & Quản trị hệ thống
         const menuData = [
@@ -817,12 +817,20 @@
                     { title: "Tiếp nhận hồ sơ", url: "tiep_nhan_ycbt.html?v=3", badgeKey: "bdg_tiepNhan", badgeType: "danger" },
                     { title: "Xác định cơ quan giải quyết bồi thường", badgeKey: "bdg_xdcq", badgeType: "danger", url: "xac_dinh_co_quan_boi_thuong.html?v=20261008" },
                     {
-                        // Badge nhóm = tổng badge 3 mục con (bdg_gqGroup, tính trong BDG.mountMenu)
+                        // Badge nhóm = tổng badge 2 mục con (bdg_gqGroup, tính trong BDG.mountMenu)
                         title: "Giải quyết bồi thường", badgeKey: "bdg_gqGroup", badgeType: "danger",
                         children: [
                             { title: "Giải quyết yêu cầu bồi thường", badgeKey: "bdg_gqYcbt", badgeType: "danger", url: "quan_ly_boi_thuong.html?v=1" },
-                            { title: "Quyết định giải quyết bồi thường", badgeKey: "bdg_qdGqbt", badgeType: "danger", url: "quyet_dinh_giai_quyet_boi_thuong.html?v=1" },
-                            { title: "Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường", badgeKey: "bdg_kinhPhi", badgeType: "danger", url: "quan_ly_kinh_phi_boi_thuong.html?v=1" }
+                            { title: "Quyết định giải quyết bồi thường", badgeKey: "bdg_qdGqbt", badgeType: "danger", url: "quyet_dinh_giai_quyet_boi_thuong.html?v=1" }
+                        ]
+                    },
+                    {
+                        // Menu Kinh phí: 02 menu con dùng chung trang quan_ly_kinh_phi_boi_thuong.html, phân biệt bằng tham số menu (tam-ung / chi-tra)
+                        // Badge nhóm = tổng badge 2 mục con (bdg_kpGroup, tính trong BDG.mountMenu)
+                        title: "Kinh phí", badgeKey: "bdg_kpGroup", badgeType: "danger",
+                        children: [
+                            { title: "Tạm ứng kinh phí", badgeKey: "bdg_kpTamUng", badgeType: "danger", url: "quan_ly_kinh_phi_boi_thuong.html?v=1&menu=tam-ung" },
+                            { title: "Chi trả tiền bồi thường", badgeKey: "bdg_kpChiTra", badgeType: "danger", url: "quan_ly_kinh_phi_boi_thuong.html?v=1&menu=chi-tra" }
                         ]
                     },
                     { title: "Xem xét trách nhiệm hoàn trả", badgeKey: "bdg_hoanTra", badgeType: "danger", url: "xem_xet_trach_nhiem_hoan_tra.html" },
@@ -1250,8 +1258,17 @@
             return String(url || '').split('?')[0].split('#')[0].split('/').pop();
         }
 
+        // Tham số menu của URL (menu con dùng chung 01 trang)
+        function menuParamOf(url) {
+            const m = String(url || '').split('#')[0].match(/[?&]menu=([^&]*)/);
+            return m ? decodeURIComponent(m[1]) : '';
+        }
+
         function findMenuLeafByUrl(targetUrl) {
             const target = normalizeMenuUrl(targetUrl);
+            // Menu con dùng chung 01 trang (VD Kinh phí: menu=tam-ung / menu=chi-tra): khớp thêm tham số menu
+            const targetMenu = menuParamOf(targetUrl);
+            const sameLeaf = url => normalizeMenuUrl(url) === target && (!targetMenu || !menuParamOf(url) || menuParamOf(url) === targetMenu);
             for (let rootIdx = 0; rootIdx < menuData.length; rootIdx++) {
                 const root = menuData[rootIdx];
                 for (let childIdx = 0; childIdx < root.children.length; childIdx++) {
@@ -1259,7 +1276,7 @@
                     if (child.children) {
                         for (let leafIdx = 0; leafIdx < child.children.length; leafIdx++) {
                             const leaf = child.children[leafIdx];
-                            if (normalizeMenuUrl(leaf.url) === target) {
+                            if (sameLeaf(leaf.url)) {
                                 return {
                                     rootIdx,
                                     childIdx,
@@ -1269,7 +1286,7 @@
                                 };
                             }
                         }
-                    } else if (normalizeMenuUrl(child.url) === target) {
+                    } else if (sameLeaf(child.url)) {
                         return {
                             rootIdx,
                             childIdx,
@@ -1369,6 +1386,22 @@
             const data = event.data || {};
             if (data.type === 'admin:navigate' && data.url) {
                 window.openAdminModule(data.url, data.activeUrl || data.url);
+            }
+            // Trang trong khung tự chuyển menu con (VD Kinh phí mở bản ghi khác loại): chỉ đánh dấu menu + breadcrumb, không tải lại trang
+            if (data.type === 'admin:activeMenu' && data.activeUrl) {
+                const match = findMenuLeafByUrl(resolveModuleUrl(data.activeUrl));
+                if (match) {
+                    const rc = document.getElementById(`sub-container-${match.rootIdx}`);
+                    if (!rc || !rc.classList.contains('expanded')) toggleRootItem(match.rootIdx);
+                    const sg = document.getElementById(`subgroup-container-${match.rootIdx}-${match.childIdx}`);
+                    if (sg && !sg.classList.contains('expanded')) toggleSubGroup(match.rootIdx, match.childIdx);
+                    document.querySelectorAll('.menu-leaf-item').forEach(item => item.classList.remove('active'));
+                    const el = document.getElementById(match.elementId);
+                    if (el) el.classList.add('active');
+                    const p = match.path;
+                    document.getElementById('breadcrumbParent').innerText = p.length === 3 ? `${p[0]} / ${p[1]}` : p[0];
+                    document.getElementById('breadcrumbChild').innerText = p[p.length - 1];
+                }
             }
         });
 

@@ -1,26 +1,26 @@
 /*
  * Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Màn hình Tạo thông báo chi trả (Mẫu số 32/BTNN)
  * - Nút "Tạo thông báo chi trả" (MH01) -> màn hình tạo (bố cục như Tạo Quyết định tạm ứng).
- * - Khối Tìm kiếm / Tìm kiếm nâng cao Quyết định giải quyết bồi thường: chỉ QĐ "Đã ban hành" VÀ hồ sơ GQBT "Chờ thực thi".
+ * - Khối Tìm kiếm / Tìm kiếm nâng cao Quyết định giải quyết bồi thường: chỉ QĐ "Đã ban hành" VÀ hồ sơ GQBT "Chờ chi trả".
  *   Nguồn QĐ: kho 'btnn_qd_gqbt_v2' của màn hình Quyết định giải quyết bồi thường (+ dữ liệu mẫu KPCD_SEED_DECS khi kho chưa có).
  * - Chọn QĐ -> hiển thị các khối: Thông tin người yêu cầu, Phương thức chi trả (theo QĐ), Tài liệu kèm theo.
  * - Tiếp tục -> Popup Trình ký thông báo chi trả (kptbOpenSign với bản ghi nháp) -> Trình: "Chờ duyệt", Loại trình "Thông báo chi trả".
- * - Chặn trùng: QĐ đã có Thông báo chi trả Chờ duyệt / Chờ chi trả / Hoàn thành / Sung quỹ nhà nước (MSG-ERR-BTNN-KP-013).
+ * - Chặn trùng: QĐ đã có Thông báo chi trả Chờ duyệt / Chờ chi trả / Hoàn thành / Trả lại ngân sách nhà nước (MSG-ERR-BTNN-KP-013).
  *   QĐ đã có bản ghi "Chờ thông báo chi trả" / "Đề nghị cấp bổ sung kinh phí" / "Bị từ chối": dùng lại chính bản ghi đó (không tạo trùng).
  * Id/hàm prefix kpcd. Mockup tĩnh: chỉ kiểm tra trống trường bắt buộc.
  */
 const KPCD_DEC_KEY = 'btnn_qd_gqbt_v2';
 const KPCD_DEC_ISSUED = 'Đã ban hành';
-const KPCD_CLAIM_WAIT = 'Chờ thực thi';
-const KPCD_TB_DUP_ST = ['Chờ duyệt', 'Chờ chi trả', 'Hoàn thành', 'Sung quỹ nhà nước'];
+const KPCD_CLAIM_WAIT = 'Chờ chi trả';
+const KPCD_TB_DUP_ST = ['Chờ duyệt', 'Chờ chi trả', 'Hoàn thành', 'Trả lại ngân sách nhà nước'];
 // Dữ liệu mẫu Quyết định GQBT (dùng khi kho Quyết định chưa có); kpcdClaimStatus: trạng thái hồ sơ GQBT khi claimsList chưa có hồ sơ
 const KPCD_SEED_DECS = [
     { id: 'KPCD-QD-01', claimCode: 'BT-2026-041', nycName: 'Trần Quốc Bảo', nycAddress: 'Số 18 ngõ 61 Lạc Trung, Phường Vĩnh Tuy, Thành phố Hà Nội', nbth: 'Trần Quốc Bảo', unitId: 'STP-HN', unitName: 'Sở Tư pháp Thành phố Hà Nội', status: 'Đã ban hành', decNo: '41/QĐ-STP', issueDate: '18/10/2026', total: 130000000, advance: 0, net: 130000000,
         recipient: { name: 'Trần Quốc Bảo', idNo: '001088007711', account: '0011009988776', bank: 'Vietcombank', branch: 'Chi nhánh Hà Nội' },
-        payout: { method: 'Nhận qua chuyển khoản', accHolder: 'Trần Quốc Bảo', account: '0011009988776', bank: 'Vietcombank', branch: 'Chi nhánh Hà Nội' }, kpcdClaimStatus: 'Chờ thực thi' },
+        payout: { method: 'Nhận qua chuyển khoản', accHolder: 'Trần Quốc Bảo', account: '0011009988776', bank: 'Vietcombank', branch: 'Chi nhánh Hà Nội' }, kpcdClaimStatus: 'Chờ chi trả' },
     { id: 'KPCD-QD-02', claimCode: 'BT-2026-042', nycName: 'Ngô Thị Thanh Tâm', nycAddress: 'Số 7 phố Lò Đúc, Phường Hai Bà Trưng, Thành phố Hà Nội', nbth: 'Ngô Văn Hùng (chồng)', unitId: 'STP-HN', unitName: 'Sở Tư pháp Thành phố Hà Nội', status: 'Đã ban hành', decNo: '42/QĐ-STP', issueDate: '20/10/2026', total: 95000000, advance: 20000000, net: 75000000,
         recipient: { name: 'Ngô Thị Thanh Tâm', idNo: '001190004433' },
-        payout: { method: 'Nhận tiền mặt', cashPlace: 'Sở Tư pháp Thành phố Hà Nội', cashNote: 'Nhận tiền mặt tại Phòng Kế hoạch - Tài chính' }, kpcdClaimStatus: 'Chờ thực thi' },
+        payout: { method: 'Nhận tiền mặt', cashPlace: 'Sở Tư pháp Thành phố Hà Nội', cashNote: 'Nhận tiền mặt tại Phòng Kế hoạch - Tài chính' }, kpcdClaimStatus: 'Chờ chi trả' },
     { id: 'KPCD-QD-03', claimCode: 'BT-2026-043', nycName: 'Lương Văn Đức', nycAddress: 'Số 2 phố Tràng Thi, Phường Hoàn Kiếm, Thành phố Hà Nội', unitId: 'STP-HN', unitName: 'Sở Tư pháp Thành phố Hà Nội', status: 'Chờ duyệt', decNo: '', issueDate: '', total: 60000000, advance: 0, net: 60000000,
         recipient: { name: 'Lương Văn Đức', idNo: '001079003322' }, payout: { method: 'Nhận qua chuyển khoản', accHolder: 'Lương Văn Đức', account: '0451000556677', bank: 'Vietinbank' }, kpcdClaimStatus: 'Chờ ban hành QĐ' }
 ];
@@ -48,7 +48,7 @@ function kpcdClaim(code) {
 function kpcdClaimStatus(d) { const c = kpcdClaim(d.claimCode); return (c && c.status) || d.kpcdClaimStatus || ''; }
 function kpcdNbth(d) { const c = kpcdClaim(d.claimCode); return (c && (c.nbth || c.nbthName)) || d.nbth || d.nycName || ''; }
 function kpcdNycName(d) { const c = kpcdClaim(d.claimCode); return d.nycName || (c && (c.nyc || c.nycName)) || ''; }
-// Chỉ Quyết định "Đã ban hành" VÀ hồ sơ GQBT "Chờ thực thi" (áp dụng cho ô tìm nhanh và Tìm kiếm nâng cao)
+// Chỉ Quyết định "Đã ban hành" VÀ hồ sơ GQBT "Chờ chi trả" (áp dụng cho ô tìm nhanh và Tìm kiếm nâng cao)
 function kpcdEligibleDecs() {
     return kpcdAllDecs().filter(d => d.status === KPCD_DEC_ISSUED && kpcdClaimStatus(d) === KPCD_CLAIM_WAIT && !/^PHDD-/i.test(d.claimCode));
 }
@@ -252,7 +252,7 @@ function kpcdTbContinue() {
     req.forEach(id => qdtuMark(id, bad.includes(id)));
     if (bad.length) { kpcdEl(bad[0]).focus(); kpcdEl(bad[0]).scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
     if (typeof tlktValidate === 'function' && !tlktValidate('kpcdTb')) return;
-    // Chặn trùng: QĐ đã có Thông báo chi trả Chờ duyệt / đã ban hành (Chờ chi trả, Hoàn thành, Sung quỹ nhà nước) - MSG-ERR-BTNN-KP-013
+    // Chặn trùng: QĐ đã có Thông báo chi trả Chờ duyệt / đã ban hành (Chờ chi trả, Hoàn thành, Trả lại ngân sách nhà nước) - MSG-ERR-BTNN-KP-013
     const dup = kpcdTbOf(d, KPCD_TB_DUP_ST);
     if (dup) { showToast(`Quyết định giải quyết bồi thường số ${d.decNo || '-'} đã có Thông báo chi trả ${dup.code} ở trạng thái ${kpNormStatus(dup.status)}. Không thể tạo Thông báo chi trả mới.`, 'error'); return; }
     kptbOpenSign(null, kpcdTbBuildDraft(d, kpcdTbFormData()));

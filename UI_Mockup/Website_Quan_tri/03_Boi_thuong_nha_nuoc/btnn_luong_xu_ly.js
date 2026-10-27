@@ -667,7 +667,8 @@
     const YCBT_STATUS = { BI_TU_CHOI: 'Bị từ chối', CU_NGUOI: 'Cử người giải quyết bồi thường', XAC_MINH_TH: 'Xác minh thiệt hại', DANG_PHDD: 'Đang phục hồi danh dự' };
     const YCBT_OLD_STATUS = {
         'Bị trả lại': 'Bị từ chối', 'Chờ thụ lý': 'Cử người giải quyết bồi thường', 'Đang xác minh thiệt hại': 'Xác minh thiệt hại',
-        'Đang thương lượng': 'Thương lượng', 'Chờ phát hành văn bản': 'Yêu cầu bổ sung', 'Tạm đình chỉ giải quyết': 'Tạm đình chỉ', 'Sung quỹ nhà nước': 'Hoàn thành'
+        'Đang thương lượng': 'Thương lượng', 'Chờ phát hành văn bản': 'Yêu cầu bổ sung', 'Tạm đình chỉ giải quyết': 'Tạm đình chỉ', 'Trả lại ngân sách nhà nước': 'Hoàn thành',
+        'Chờ thực thi': 'Chờ chi trả'
     };
     // Nội dung trình của chức năng Quyết định giải quyết bồi thường (Lãnh đạo từ chối -> Bị từ chối; dữ liệu cũ Bị trả lại đọc thành Bị từ chối)
     const YCBT_QD_KINDS = ['Quyết định GQBT', 'Hủy QĐ', 'Sửa chữa, bổ sung QĐ'];
@@ -1089,7 +1090,9 @@
         else if (!rec || rec.chuTri !== me) return { ok: false, message: 'Chỉ cán bộ chủ trì được trình phê duyệt.' };
         // Giải quyết YCBT: "Bị từ chối" = Lãnh đạo từ chối phiếu trình -> cán bộ cập nhật và trình lại được (phân hệ khác giữ nguyên)
         const closed = [STATUS.CHO_PHE_DUYET, STATUS.HOAN_THANH, STATUS.KHONG_THU_LY, STATUS.DA_CHUYEN, STATUS.CHO_PHAN_CONG, STATUS.DANG_PHAN_CONG].concat((isYcbtRec(rec) || isXdRec(rec)) ? [] : [STATUS.BI_TU_CHOI]);
-        if (closed.includes(rec.status)) return { ok: false, message: 'Trạng thái hồ sơ không cho phép trình phê duyệt.' };
+        // Giải quyết YCBT: hồ sơ "Hoàn thành" vẫn được trình Đình chỉ giải quyết bồi thường
+        const dcFromDone = isYcbtRec(rec) && rec.status === STATUS.HOAN_THANH && kind === 'Đình chỉ giải quyết bồi thường';
+        if (closed.includes(rec.status) && !dcFromDone) return { ok: false, message: 'Trạng thái hồ sơ không cho phép trình phê duyệt.' };
         const path = computeApprovalPath(rec);
         if (!path.length) return { ok: false, message: 'Chưa xác định được cấp phê duyệt. Vui lòng liên hệ Quản trị hệ thống.' };
         // extra.assignees: Lãnh đạo được chọn cho mọi cấp theo thứ tự luồng phê duyệt (Xác định CQGQBT: cán bộ chọn tất cả cấp khi trình)
@@ -2338,8 +2341,14 @@
                 <i class="fa-solid fa-file-word" style="color:#2563eb; font-size:18px;"></i> <b>${esc(submitted)}</b>
                 <span style="background:${isUploaded ? '#dcfce7; color:#15803d' : '#e0e7ff; color:#3730a3'}; border-radius:999px; padding:1px 8px; font-size:11.5px; font-weight:600;">${isUploaded ? 'Tệp đính kèm' : 'Hệ thống sinh theo ' + esc(formNo)}</span>
                 ${isUploaded ? `<span style="margin-left:12px; color:#64748b;">(Giả lập: tệp đính kèm khi trình)</span>` : link('<i class="fa-solid fa-up-right-from-square"></i> Xem dự thảo', `BTNN_WF.previewSubmittedDraft('${code}')`) + link('<i class="fa-solid fa-download"></i> Tải file', `BTNN_WF.downloadSubmittedDraft('${code}')`)}
-            </div>
+            </div>${thuHoiHtml(rec.approval)}
         </div>`;
+    }
+    // Đình chỉ / Dừng giải quyết bồi thường: lựa chọn Thu hồi kinh phí bồi thường đã chi (+ Lý do không thu hồi) của phiếu trình
+    function thuHoiHtml(a) {
+        const sd = (a && a.signDoc) || {};
+        if (!sd.thuHoi) return '';
+        return `<div style="margin-top:8px; color:#334155;"><b>Thu hồi kinh phí bồi thường đã chi:</b> ${esc(sd.thuHoi)}${sd.thuHoi === 'Không thu hồi' ? `<br><b>Lý do không thu hồi:</b> ${esc(sd.thuHoiReason || '-')}` : ''}</div>`;
     }
     function renderApprovalTableHtml(rec) {
         const a = rec.approval;
@@ -2824,6 +2833,61 @@
         return Array.from(map.values()).filter(x => allowed.includes((x.claim ? x.claim.requestType : x.rec && x.rec.loaiYeuCau) || REQUEST_TYPE_YCBT));
     }
     function receptionPendingCount(userId, claims) { return receptionPendingItems(userId, claims).length; }
+
+    // ---------------- Đổi tên Trạng thái vụ việc "Chờ thực thi" -> "Chờ chi trả" (dữ liệu cũ đã lưu) ----------------
+    // Chạy mỗi lần nạp trang (idempotent), trước khi các trang đọc kho: chuẩn hóa mọi kho localStorage có giá trị cũ.
+    // Chỉ đổi các trường Trạng thái vụ việc / trạng thái trước (Hoãn / Tạm đình chỉ / Đình chỉ / phiếu trình) và tên trạng thái trong lịch sử;
+    // bước tiến trình Phục hồi danh dự (phddStatus, vụ việc Chỉ yêu cầu phục hồi danh dự) giữ nguyên.
+    const CASE_STATUS_OLD = 'Chờ thực thi';
+    const CASE_STATUS_NEW = 'Chờ chi trả';
+    const CASE_STATUS_FIELDS = ['status', 'TrangThai', 'trangThai', 'previousStatus', 'prevStatus', 'resultStatus', 'hgqPrevStatus', 'specialStatusPreviousStatus', 'kpcdClaimStatus', 'claimStatus'];
+    const CASE_STATUS_TEXT_FIELDS = ['desc', 'title', 'note', 'content', 'thucthiNote'];
+    // Nhãn "thực thi" (không phải tên trạng thái) đổi đồng bộ với "Chờ chi trả": tiến trình / lịch sử đã lưu
+    const CASE_LABEL_RENAME = [
+        ['Thực thi Quyết định giải quyết bồi thường', 'Chi trả tiền bồi thường'], ['Thực thi giải quyết bồi thường', 'Chi trả tiền bồi thường'],
+        ['Thực thi chi trả bồi thường', 'Chi trả tiền bồi thường'], ['hoàn thành thực thi chi trả bồi thường', 'hoàn thành chi trả tiền bồi thường'],
+        ['hoàn thành thực thi chi trả', 'hoàn thành chi trả'], ['Hoàn thành thực thi phục hồi danh dự', 'Hoàn thành tổ chức thực hiện phục hồi danh dự'],
+        ['hoàn thành thực thi phục hồi danh dự', 'hoàn thành tổ chức thực hiện phục hồi danh dự']
+    ];
+    function renameCaseStatusText(s) {
+        let r = s.split('[' + CASE_STATUS_OLD + ']').join('[' + CASE_STATUS_NEW + ']').split('sang ' + CASE_STATUS_OLD).join('sang ' + CASE_STATUS_NEW);
+        CASE_LABEL_RENAME.forEach(p => { r = r.split(p[0]).join(p[1]); });
+        return r;
+    }
+    function renameCaseStatusIn(node, depth) {
+        if (!node || typeof node !== 'object' || depth > 8) return false;
+        let ch = false;
+        if (Array.isArray(node)) { node.forEach(x => { if (renameCaseStatusIn(x, depth + 1)) ch = true; }); return ch; }
+        const honor = node.requestType === 'honor';
+        Object.keys(node).forEach(k => {
+            const v = node[k];
+            // Nhánh Phục hồi danh dự: giữ bước tiến trình (phddStatus); lịch sử phddTimeline chỉ đổi nhãn
+            if (/^phdd/.test(k) && !(k === 'phddTimeline' && v && typeof v === 'object')) return;
+            if (typeof v === 'string') {
+                if (v === CASE_STATUS_OLD && CASE_STATUS_FIELDS.includes(k) && !(honor && k === 'status')) { node[k] = CASE_STATUS_NEW; ch = true; }
+                else if (CASE_STATUS_TEXT_FIELDS.includes(k) && /thực thi/i.test(v)) { const nv = renameCaseStatusText(v); if (nv !== v) { node[k] = nv; ch = true; } }
+            } else if (v && typeof v === 'object') {
+                if (renameCaseStatusIn(v, depth + 1)) ch = true;
+            }
+        });
+        return ch;
+    }
+    function migrateCaseStatusRename() {
+        let ls;
+        try { ls = global.localStorage; } catch (e) { return; }
+        if (!ls) return;
+        const keys = [];
+        for (let i = 0; i < ls.length; i++) keys.push(ls.key(i));
+        keys.forEach(k => {
+            let raw;
+            try { raw = ls.getItem(k); } catch (e) { return; }
+            if (!raw || !/thực thi/i.test(raw) || (raw[0] !== '[' && raw[0] !== '{')) return;
+            let data;
+            try { data = JSON.parse(raw); } catch (e) { return; }
+            if (renameCaseStatusIn(data, 0)) { try { ls.setItem(k, JSON.stringify(data)); } catch (e) { /* mockup */ } }
+        });
+    }
+    try { migrateCaseStatusRename(); } catch (e) { /* mockup */ }
 
     global.BTNN_WF = {
         KEYS: { RECORDS: KEY_RECORDS, FLOW: KEY_FLOW, USER: KEY_USER, RECEPTION_CLAIMS: KEY_RECEPTION_CLAIMS },

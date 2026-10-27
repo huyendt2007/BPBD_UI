@@ -26,7 +26,7 @@
   + Xác minh thiệt hại
   + Thương lượng
   + Chờ ban hành QĐ
-  + Chờ thực thi
+  + Chờ chi trả
   + Hoãn giải quyết
   + Tạm đình chỉ
   + Đình chỉ giải quyết

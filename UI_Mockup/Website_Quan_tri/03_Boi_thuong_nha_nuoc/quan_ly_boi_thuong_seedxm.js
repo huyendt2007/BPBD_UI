@@ -2,7 +2,7 @@
  * Dữ liệu mẫu (giả lập) bổ sung đủ các Trạng thái vụ việc - Giải quyết yêu cầu bồi thường (prefix sxm, Mã hồ sơ BT-2026-501 .. BT-2026-522)
  * - Xác minh thiệt hại: Tổ chức mới vào bước (501); Cá nhân, Cả hai (có PHDD), đã lưu dở kết quả xác minh lần 1 (502); Cá nhân mới vào bước (503)
  * - Thương lượng: mới vào bước (504); Tổ chức, đã nhập dở biên bản thương lượng (505)
- * - Chờ thực thi: Cá nhân (506), Tổ chức (507) - đã ban hành Quyết định giải quyết bồi thường
+ * - Chờ chi trả: Cá nhân (506), Tổ chức (507) - đã ban hành Quyết định giải quyết bồi thường
  * - Chờ duyệt theo Nội dung trình: Hoãn GQBT (508), Không thụ lý (509), Tiếp tục GQBT (510), Cử người GQBT (511), Hủy QĐ (512), Sửa chữa, bổ sung QĐ (513)
  * - Bị từ chối theo Nội dung trình: Tạm đình chỉ (514), Không thụ lý (515), Hoãn GQBT (516), Cử người GQBT (517), Quyết định GQBT (518),
  *   Chuyển CQGQBT (519), Tiếp tục GQBT (520), Hủy QĐ (521), Sửa chữa, bổ sung QĐ (522)
@@ -11,7 +11,7 @@
  * - Mã vụ việc VVBT- do ensureClaimsVuViec() của trang cấp theo sổ đăng ký chung (btnn_vuviec_registry_v1); không cố định số để không trùng mã đã cấp.
  * - Ngày tiếp nhận tính lùi từ hôm nay (không trước ngày 01 của tháng hiện tại -> qua bộ lọc Ngày tiếp nhận mặc định); không có ngày sau hôm nay.
  * - Chờ duyệt / Bị từ chối: trình (và từ chối) phiếu trình qua kho luồng dùng chung khi tải trang nếu hồ sơ luồng chưa ở bước trình.
- * - Dời ngày tiếp nhận các hồ sơ Thương lượng / Chờ thực thi mẫu đã có (HS1, HS2, HS3, HS3_A, HS3_B, SDX_TCPH3, HDCV_HGQ_TT) về gần hôm nay;
+ * - Dời ngày tiếp nhận các hồ sơ Thương lượng / Chờ chi trả mẫu đã có (HS1, HS2, HS3, HS3_A, HS3_B, SDX_TCPH3, HDCV_HGQ_TT) về gần hôm nay;
  *   giữ nguyên trạng thái và nội dung nghiệp vụ.
  */
 var SXM_VERSION = '20261027th6'; // [th2c] dữ liệu thiệt hại theo mục chi tiết DM_27
@@ -65,8 +65,8 @@ function sxmOrg(o) {
 
 // Bước đã qua: tiếp nhận -> thụ lý / cử người -> xác minh -> thương lượng -> ban hành QĐ
 var SXM_STAGES = ['tiep-nhan', 'cu-nguoi', 'xac-minh', 'thuong-luong', 'cho-qd', 'cho-thuc-thi'];
-var SXM_STAGE_STATUS = { 'tiep-nhan': 'Chờ tiếp nhận', 'cu-nguoi': 'Cử người giải quyết bồi thường', 'xac-minh': 'Xác minh thiệt hại', 'thuong-luong': 'Thương lượng', 'cho-qd': 'Chờ ban hành QĐ', 'cho-thuc-thi': 'Chờ thực thi' };
-var SXM_SLA = { 'tiep-nhan': 'Chờ tiếp nhận hồ sơ bồi thường', 'cu-nguoi': 'Chờ Thủ trưởng cử người giải quyết bồi thường', 'xac-minh': 'Đang xác minh thiệt hại', 'thuong-luong': 'Đang thương lượng việc bồi thường', 'cho-qd': 'Chờ ban hành quyết định giải quyết bồi thường', 'cho-thuc-thi': 'Chờ thực thi quyết định giải quyết bồi thường' };
+var SXM_STAGE_STATUS = { 'tiep-nhan': 'Chờ tiếp nhận', 'cu-nguoi': 'Cử người giải quyết bồi thường', 'xac-minh': 'Xác minh thiệt hại', 'thuong-luong': 'Thương lượng', 'cho-qd': 'Chờ ban hành QĐ', 'cho-thuc-thi': 'Chờ chi trả' };
+var SXM_SLA = { 'tiep-nhan': 'Chờ tiếp nhận hồ sơ bồi thường', 'cu-nguoi': 'Chờ Thủ trưởng cử người giải quyết bồi thường', 'xac-minh': 'Đang xác minh thiệt hại', 'thuong-luong': 'Đang thương lượng việc bồi thường', 'cho-qd': 'Chờ ban hành quyết định giải quyết bồi thường', 'cho-thuc-thi': 'Chờ chi trả tiền bồi thường' };
 
 // o: { id, code, who (SXM_PERSONS / SXM_ORGS key), stage, k: [tiếp nhận, thụ lý, xác minh, thương lượng, QĐ] (số ngày lùi từ hôm nay),
 //      agency, requestType, fieldGroup, hanhVi, nhanQua, docBase, th: [[type, đề nghị, xác minh, ghi chú]], xmDraft, tlDraft, bank }
@@ -117,7 +117,7 @@ function sxmBuild(o) {
     if (reach >= 5) {
         var qd = (100 + Number(o.code.slice(-3)) % 100) + '/QĐ-STP';
         sdxDec(c, qd, sxmD(k[4]), 'Lê Hoàng Nam', 'Cục trưởng');
-        c.timeline.push(sdxT('Ban hành Quyết định giải quyết bồi thường', sxmD(k[4]), 'Lãnh đạo ký số Quyết định giải quyết bồi thường số ' + qd + '. Hồ sơ chuyển sang trạng thái [Chờ thực thi].', 'Lê Hoàng Nam (Cục trưởng)'));
+        c.timeline.push(sdxT('Ban hành Quyết định giải quyết bồi thường', sxmD(k[4]), 'Lãnh đạo ký số Quyết định giải quyết bồi thường số ' + qd + '. Hồ sơ chuyển sang trạng thái [Chờ chi trả].', 'Lê Hoàng Nam (Cục trưởng)'));
     }
     return c;
 }
@@ -192,8 +192,8 @@ function sxmTlDraft(c, dk) {
         otherRights: '', otherRequests: 'Người yêu cầu bồi thường đề nghị thương lượng tiếp mục còn lại sau khi bổ sung chứng từ.',
         docs: [{ name: 'Giấy mời tham gia thương lượng', file: 'Giay_moi_thuong_luong_' + c.code + '.pdf' }],
         savedAt: d + ' 10:15', savedBy: SDX_CB, draft: true,
-        // [tltt] Thông tin thỏa thuận khác: có tích cả 02 thỏa thuận
-        extend: { on: true, from: d, to: sxmAddDays(d, 15) },
+        // [tltt] Thông tin thỏa thuận khác: có tích cả 02 thỏa thuận; [t89] kéo dài thương lượng chỉ có Từ ngày (demo không có Đến ngày)
+        extend: { on: true, from: d, to: '' },
         earlyEffect: { on: true, text: 'kể từ ngày ký' }
     };
     c.timeline.push({ title: 'Tổ chức thương lượng (lần 1)', date: d, desc: 'Gửi Giấy mời và tổ chức thương lượng lần 1; đã thống nhất 01 hạng mục, các hạng mục còn lại thương lượng tiếp.', status: 'completed', officer: SDX_CB });
@@ -243,7 +243,7 @@ function sxmClaims() {
         docBase: 'Quyết định hủy Quyết định thu hồi giấy phép kinh doanh số 19/QĐ-UBND ngày 05/08/2026',
         hanhVi: 'Thu hồi giấy phép kinh doanh dịch vụ ăn uống không đúng thẩm quyền.', nhanQua: 'Cửa hàng ngừng hoạt động 02 tháng, mất thu nhập.', th: SXM_TH_A.concat([['TH_KHAC_504A', 4000000, 3500000, 'Theo hợp đồng và hóa đơn thuê kho', 'Chi phí thuê kho bảo quản hàng hóa trong thời gian bị thu hồi giấy phép']]),
         bs: [['TH_CPK_02', 1500000, 'Bổ sung khi xác minh: chi phí gửi đơn thư có biên lai bưu chính']] }));
-    // Chờ thực thi - Cá nhân, đã ban hành QĐ giải quyết bồi thường
+    // Chờ chi trả - Cá nhân, đã ban hành QĐ giải quyết bồi thường
     L.push(sxmBuild({ id: 'SXM_CTT1', code: 'BT-2026-506', who: 'p4', stage: 'cho-thuc-thi', k: [4, 4, 3, 2, 1], bank: ['0451000506506', 'Vietcombank', 'Chi nhánh Ba Đình'],
         docBase: 'Quyết định hủy Quyết định tịch thu phương tiện số 33/QĐ-XPHC ngày 01/08/2026',
         hanhVi: 'Tịch thu xe ô tô tải trái pháp luật trong xử phạt vi phạm hành chính.', nhanQua: 'Xe bị hư hỏng do lưu giữ ngoài trời, mất thu nhập vận chuyển hàng hóa.', th: SXM_TH_A }));
@@ -256,7 +256,7 @@ function sxmClaims() {
     L.push(sxmTlDraft(sxmBuild({ id: 'SXM_TL2', code: 'BT-2026-505', who: 'o2', stage: 'thuong-luong', k: [8, 7, 4], fieldGroup: 'thi hành án dân sự', agency: SXM_STP,
         docBase: 'Quyết định hủy Quyết định cưỡng chế kê biên tài sản số 64/QĐ-CCTHADS ngày 12/08/2026',
         hanhVi: 'Kê biên, tạm giữ 05 xe tải vượt quá giá trị nghĩa vụ phải thi hành án.', nhanQua: 'Ngừng khai thác 05 xe tải, phải thuê phương tiện thay thế để thực hiện hợp đồng.', th: SXM_TH_B }), 1));
-    // Chờ thực thi - Tổ chức
+    // Chờ chi trả - Tổ chức
     L.push(sxmBuild({ id: 'SXM_CTT2', code: 'BT-2026-507', who: 'o3', stage: 'cho-thuc-thi', k: [9, 8, 6, 4, 2], bank: ['1200205507507', 'Agribank', 'Chi nhánh Từ Liêm'],
         docBase: 'Quyết định hủy Quyết định thu hồi đất số 120/QĐ-UBND ngày 25/07/2026',
         hanhVi: 'Thu hồi đất sản xuất nông nghiệp của hợp tác xã không đúng trình tự, thủ tục.', nhanQua: 'Mất hoa màu vụ thu, chi phí cải tạo lại đất sản xuất.', th: SXM_TH_A }));
@@ -278,13 +278,13 @@ var SXM_WF = [
     { id: 'SXM_TC_HGQ', code: 'BT-2026-516', who: 'p10', k: [12, 10], base: 'xac-minh', kind: 'Hoãn giải quyết bồi thường', result: 'Hoãn giải quyết', mode: 'reject', t: 'hgq', rejectReason: 'Thời hạn hoãn đề nghị chưa có căn cứ; bổ sung văn bản của tổ chức thẩm định giá.' },
     { id: 'SXM_CD_CN', code: 'BT-2026-511', who: 'p11', k: [13], base: 'cu-nguoi', kind: 'Cử người giải quyết bồi thường', result: 'Xác minh thiệt hại', mode: 'submit', t: 'cn' },
     { id: 'SXM_TC_CN', code: 'BT-2026-517', who: 'p12', k: [13], base: 'cu-nguoi', kind: 'Cử người giải quyết bồi thường', result: 'Xác minh thiệt hại', mode: 'reject', t: 'cn', rejectReason: 'Đề nghị cử thêm 01 cán bộ có chuyên môn thẩm định giá tham gia giải quyết.' },
-    { id: 'SXM_TC_QD', code: 'BT-2026-518', who: 'p13', k: [14, 13, 10, 7], base: 'cho-qd', kind: 'Quyết định GQBT', result: 'Chờ thực thi', mode: 'reject', t: 'qd', rejectReason: 'Số tiền bồi thường tại dự thảo chưa khớp Biên bản thương lượng; đề nghị rà soát lại.' },
+    { id: 'SXM_TC_QD', code: 'BT-2026-518', who: 'p13', k: [14, 13, 10, 7], base: 'cho-qd', kind: 'Quyết định GQBT', result: 'Chờ chi trả', mode: 'reject', t: 'qd', rejectReason: 'Số tiền bồi thường tại dự thảo chưa khớp Biên bản thương lượng; đề nghị rà soát lại.' },
     { id: 'SXM_TC_CQ', code: 'BT-2026-519', who: 'p14', k: [15, 14], base: 'xac-minh', kind: 'Chuyển CQGQBT', result: '', mode: 'reject', t: 'cq', rejectReason: 'Chưa đủ căn cứ xác định cơ quan giải quyết bồi thường khác; đề nghị làm rõ cơ quan quản lý người thi hành công vụ.' },
     { id: 'SXM_CD_HUY', code: 'BT-2026-512', who: 'p15', k: [15, 14, 11, 8, 5], base: 'cho-thuc-thi', kind: 'Hủy QĐ', result: 'Chờ ban hành QĐ', mode: 'submit', t: 'huy' },
-    { id: 'SXM_CD_SUA', code: 'BT-2026-513', who: 'p16', k: [16, 15, 12, 9, 6], base: 'cho-thuc-thi', kind: 'Sửa chữa, bổ sung QĐ', result: 'Chờ thực thi', mode: 'submit', t: 'sua' },
+    { id: 'SXM_CD_SUA', code: 'BT-2026-513', who: 'p16', k: [16, 15, 12, 9, 6], base: 'cho-thuc-thi', kind: 'Sửa chữa, bổ sung QĐ', result: 'Chờ chi trả', mode: 'submit', t: 'sua' },
     { id: 'SXM_TC_TTGQ', code: 'BT-2026-520', who: 'p17', k: [16, 15, 12], base: 'thuong-luong', pause: ['tdc', 8], kind: 'Tiếp tục giải quyết bồi thường', result: 'Thương lượng', mode: 'reject', t: 'ttgq', rejectReason: 'Chưa có văn bản của Tòa án về kết quả giải quyết vụ án hành chính có liên quan.' },
     { id: 'SXM_TC_HUY', code: 'BT-2026-521', who: 'p18', k: [17, 16, 13, 10, 7], base: 'cho-thuc-thi', kind: 'Hủy QĐ', result: 'Chờ ban hành QĐ', mode: 'reject', t: 'huy', rejectReason: 'Căn cứ hủy Quyết định chưa rõ; đề nghị bổ sung văn bản của cơ quan có thẩm quyền.' },
-    { id: 'SXM_TC_SUA', code: 'BT-2026-522', who: 'p19', k: [17, 16, 13, 10, 7], base: 'cho-thuc-thi', kind: 'Sửa chữa, bổ sung QĐ', result: 'Chờ thực thi', mode: 'reject', t: 'sua', rejectReason: 'Nội dung sửa chữa chưa nêu rõ điều khoản được sửa đổi.' }
+    { id: 'SXM_TC_SUA', code: 'BT-2026-522', who: 'p19', k: [17, 16, 13, 10, 7], base: 'cho-thuc-thi', kind: 'Sửa chữa, bổ sung QĐ', result: 'Chờ chi trả', mode: 'reject', t: 'sua', rejectReason: 'Nội dung sửa chữa chưa nêu rõ điều khoản được sửa đổi.' }
 ];
 var SXM_WF_TEXT = {
     hgq: { title: 'Quyết định hoãn giải quyết bồi thường', form: 'Mẫu số 22/BTNN', reason: 'Chờ kết quả định giá tài sản của tổ chức thẩm định giá.', file: 'Du_thao_QD_hoan_giai_quyet_' },
@@ -361,7 +361,7 @@ function sxmSeedClaims() {
         try { sxmSeedClaims(); } catch (e) { console.warn('seedxm', e); }
         return r;
     };
-    // 2) Dời ngày hồ sơ Thương lượng / Chờ thực thi mẫu đã có (chạy sau bước gán ngày HS* của trang, trước khi lưu claimsList)
+    // 2) Dời ngày hồ sơ Thương lượng / Chờ chi trả mẫu đã có (chạy sau bước gán ngày HS* của trang, trước khi lưu claimsList)
     var origVv = window.ensureClaimsVuViec, shifted = false;
     window.ensureClaimsVuViec = function () {
         if (!shifted && typeof claimsList !== 'undefined' && Array.isArray(claimsList)) {
@@ -371,7 +371,7 @@ function sxmSeedClaims() {
                     var c = claimsList.find(function (x) { return x && x.id === e[0]; });
                     if (!c) return;
                     var st = canonicalClaimStatus(c.status);
-                    if (st !== 'Thương lượng' && st !== 'Chờ thực thi') return; // người dùng đã thao tác chuyển trạng thái: giữ nguyên
+                    if (st !== 'Thương lượng' && st !== 'Chờ chi trả') return; // người dùng đã thao tác chuyển trạng thái: giữ nguyên
                     if (e[2] === 'hs') sxmSetHsDate(c, e[1]); else sxmShiftRecord(c, e[1]);
                 });
             } catch (err) { console.warn('seedxm shift', err); }

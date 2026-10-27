@@ -3,6 +3,10 @@
  * Bố cục giống Popup Không thụ lý hồ sơ / Trình duyệt tiếp nhận hồ sơ:
  * - Hình thức ký (đầu form): Ký số trên hệ thống (02 bước: Nhập thông tin -> Kéo ô ký & chọn Lãnh đạo) | Ký ngoài (Ban hành trực tiếp)
  * - Thông tin đình chỉ: Căn cứ đình chỉ (6), Diễn giải; Quyết định tạm ứng (Điều 3, chỉ đọc)
+ * - Thu hồi kinh phí bồi thường đã chi (Thu hồi | Không thu hồi, mặc định Thu hồi): luôn hiển thị; có lựa chọn khi vụ việc có khoản kinh phí đã chi
+ *   hoặc bản ghi kinh phí đang hiệu lực (kho proposalsList, kho trống -> dữ liệu mẫu Kinh phí), không có -> dòng chú thích chỉ đọc;
+ *   Không thu hồi -> Lý do không thu hồi (bắt buộc, tối đa 1000 ký tự). Lưu vào dinhChi / phiếu trình (thuHoi, thuHoiReason);
+ *   liên thông Kinh phí theo lựa chọn (quan_ly_kinh_phi_kpdc.js)
  * - Tệp văn bản trình ký: Sinh văn bản theo mẫu 25/BTNN | Tải lên từ máy; Tài liệu kèm theo (chỉ Ký số, không bắt buộc)
  * - Trình Lãnh đạo: Loại trình "Đình chỉ giải quyết bồi thường" -> Chờ duyệt; Lãnh đạo Ký duyệt / Từ chối tại màn chung (gqld);
  *   cấp cuối ký duyệt -> "Đình chỉ giải quyết"; từ chối -> "Bị từ chối" (Cập nhật -> mở lại popup, điền lại toàn bộ dữ liệu lần trình trước)
@@ -32,6 +36,102 @@ function dcgqEl(id) { return document.getElementById(id); }
 function dcgqIsOffline() { var r = dcgqEl('dcgqSigningMethodOffline'); return !!(r && r.checked); }
 function dcgqClearErr(id) { var el = dcgqEl(id); if (el) el.classList.remove('is-invalid'); var er = dcgqEl(id + 'Err'); if (er) er.style.display = 'none'; }
 function dcgqSetErr(id, msg) { var el = dcgqEl(id); if (el) el.classList.add('is-invalid'); var er = dcgqEl(id + 'Err'); if (er) { if (msg) er.textContent = msg; er.style.display = 'block'; } return el; }
+
+// ---------- Thu hồi kinh phí bồi thường đã chi (dùng chung: Đình chỉ giải quyết - prefix dcgq, Dừng giải quyết - prefix dgq) ----------
+var DCGQ_TH_YES = 'Thu hồi';
+var DCGQ_TH_NO = 'Không thu hồi';
+var DCGQ_TH_MAX = 1000;
+var gqthPaid = {};
+function gqthEl(p, k) { return document.getElementById(p + k); }
+function gqthSetErr(p, k) { var el = gqthEl(p, k); if (el) el.classList.add('is-invalid'); var er = gqthEl(p, k + 'Err'); if (er) er.style.display = 'block'; return el; }
+function gqthClearErr(p, k) { var el = gqthEl(p, k); if (el) el.classList.remove('is-invalid'); var er = gqthEl(p, k + 'Err'); if (er) er.style.display = 'none'; }
+// Khoản kinh phí tạm ứng/chi trả đã chi của vụ việc (Hoàn thành / có Số tiền đã chi), chưa ở trạng thái Đã hủy / Chờ thu hồi / Đã thu hồi / Trả lại ngân sách nhà nước
+// Bản ghi kinh phí của vụ việc đang hiệu lực (chưa Đã hủy / Chờ thu hồi / Đã thu hồi / Trả lại ngân sách nhà nước, chưa ghi nhận Không thu hồi).
+// Nguồn: kho 'proposalsList'; kho trống (chưa mở trang Kinh phí) -> dữ liệu mẫu mặc định của phân hệ Kinh phí (kpdcProposals)
+function dcgqActiveList(claim) {
+    var list = [];
+    if (typeof kpdcProposals === 'function') list = kpdcProposals();
+    else { try { list = JSON.parse(localStorage.getItem('proposalsList') || '[]') || []; } catch (e) { list = []; } }
+    var keep = ['Đã hủy', 'Đã thu hồi', 'Chờ thu hồi', 'Trả lại ngân sách nhà nước', 'Đã sung quỹ', 'Sung quỹ nhà nước'];
+    return (Array.isArray(list) ? list : []).filter(function (p) {
+        return !!(p && claim && claim.code && p.ycbtCode === claim.code && keep.indexOf(p.status) < 0 && !p.kpdcNoRecover);
+    });
+}
+function dcgqIsPaidItem(p) { return typeof kpdcIsPaid === 'function' ? kpdcIsPaid(p) : p.status === 'Hoàn thành'; }
+function dcgqPaidList(claim) { return dcgqActiveList(claim).filter(dcgqIsPaidItem); }
+// Khối trường (đặt cuối khối Thông tin đình chỉ / dừng giải quyết); luôn hiển thị:
+// có khoản kinh phí đang hiệu lực -> lựa chọn Thu hồi / Không thu hồi; không có -> dòng chú thích chỉ đọc
+var GQTH_NONE_MSG = 'Vụ việc chưa có khoản kinh phí đã chi, không phát sinh thu hồi.';
+function gqthHtml(p) {
+    return '<div id="' + p + 'ThuHoiBlock" class="gqx-field" style="margin:14px 0 0;"><label class="form-label">Thu hồi kinh phí bồi thường đã chi<span id="' + p + 'ThuHoiReq" class="gqx-req">*</span></label>'
+        + '<div id="' + p + 'ThuHoiNone" style="display:none; background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:8px 12px; font-size:13px; color:#64748b; font-style:italic;">' + GQTH_NONE_MSG + '</div>'
+        + '<div id="' + p + 'ThuHoiChoice"><div style="display:flex; gap:28px; align-items:center; font-size:13px;">'
+        + '<label for="' + p + 'ThuHoiYes" style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; margin:0;"><input type="radio" name="' + p + 'ThuHoi" id="' + p + 'ThuHoiYes" value="' + DCGQ_TH_YES + '" checked onchange="gqthToggle(\'' + p + '\')"> ' + DCGQ_TH_YES + '</label>'
+        + '<label for="' + p + 'ThuHoiNo" style="display:inline-flex; align-items:center; gap:6px; cursor:pointer; margin:0;"><input type="radio" name="' + p + 'ThuHoi" id="' + p + 'ThuHoiNo" value="' + DCGQ_TH_NO + '" onchange="gqthToggle(\'' + p + '\')"> ' + DCGQ_TH_NO + '</label></div>'
+        + '<div id="' + p + 'ThuHoiErr" class="gqx-err">Đây là trường bắt buộc</div>'
+        + '<div id="' + p + 'ThuHoiPaid" style="font-size:12px; color:#64748b; margin-top:4px;"></div>'
+        + '<div id="' + p + 'ThuHoiReasonGroup" style="display:none; margin-top:10px;"><label class="form-label" for="' + p + 'ThuHoiReason">Lý do không thu hồi<span class="gqx-req">*</span></label>'
+        + '<textarea id="' + p + 'ThuHoiReason" class="form-control" rows="3" maxlength="' + DCGQ_TH_MAX + '" placeholder="Nhập lý do không thu hồi..." oninput="gqthClearErr(\'' + p + '\', \'ThuHoiReason\'); gqthCounter(\'' + p + '\')"></textarea>'
+        + '<div id="' + p + 'ThuHoiReasonErr" class="gqx-err">Đây là trường bắt buộc</div><div id="' + p + 'ThuHoiReasonCount" class="ktlx-counter">0/' + DCGQ_TH_MAX + ' ký tự</div></div></div></div>';
+}
+// Có lựa chọn Thu hồi / Không thu hồi (vụ việc có khoản kinh phí đang hiệu lực)
+function gqthShown(p) { var b = gqthEl(p, 'ThuHoiChoice'); return !!(b && b.style.display !== 'none'); }
+function gqthVal(p) { var r = document.querySelector('input[name="' + p + 'ThuHoi"]:checked'); return r ? r.value : ''; }
+function gqthCounter(p) { var t = gqthEl(p, 'ThuHoiReason'), c = gqthEl(p, 'ThuHoiReasonCount'); if (t && c) c.textContent = (t.value || '').length + '/' + DCGQ_TH_MAX + ' ký tự'; }
+function gqthToggle(p) {
+    var no = gqthVal(p) === DCGQ_TH_NO;
+    gqthEl(p, 'ThuHoiReasonGroup').style.display = no ? '' : 'none';
+    gqthClearErr(p, 'ThuHoi');
+    if (!no) gqthClearErr(p, 'ThuHoiReason');
+}
+// Hiển thị trường theo bản ghi kinh phí của vụ việc; trình lại (Bị từ chối): điền lại lựa chọn + lý do lần trình trước
+function gqthRender(p, claim, prevSd) {
+    var act = dcgqActiveList(claim);
+    var paid = gqthPaid[p] = act.filter(dcgqIsPaidItem);
+    var unpaid = act.filter(function (x) { return !dcgqIsPaidItem(x); });
+    var show = act.length > 0;
+    gqthEl(p, 'ThuHoiBlock').style.display = '';
+    gqthEl(p, 'ThuHoiChoice').style.display = show ? '' : 'none';
+    gqthEl(p, 'ThuHoiNone').style.display = show ? 'none' : '';
+    gqthEl(p, 'ThuHoiReq').style.display = show ? '' : 'none';
+    var val = prevSd && prevSd.thuHoi === DCGQ_TH_NO ? DCGQ_TH_NO : DCGQ_TH_YES;
+    gqthEl(p, 'ThuHoiYes').checked = val === DCGQ_TH_YES;
+    gqthEl(p, 'ThuHoiNo').checked = val === DCGQ_TH_NO;
+    gqthEl(p, 'ThuHoiReason').value = val === DCGQ_TH_NO ? (prevSd.thuHoiReason || '') : '';
+    var codes = function (l, withAmt) {
+        return l.map(function (x) {
+            var amt = withAmt && typeof kpdcPaidAmount === 'function' ? kpdcPaidAmount(x) : 0;
+            return '<b>' + gqE(x.code || '') + '</b>' + (amt ? ' (' + amt.toLocaleString('vi-VN') + ' đồng)' : '');
+        }).join(', ');
+    };
+    gqthEl(p, 'ThuHoiPaid').innerHTML = !show ? ''
+        : (paid.length ? 'Khoản kinh phí đã chi: ' + codes(paid, true) : 'Khoản kinh phí đã chi: chưa có')
+          + (unpaid.length ? '<br>Khoản kinh phí chưa chi (tự hủy khi ban hành văn bản): ' + codes(unpaid, false) : '');
+    gqthCounter(p);
+    gqthToggle(p);
+}
+// Kiểm tra: Không thu hồi phải nhập Lý do không thu hồi; trả về ô lỗi
+function gqthValidate(p) {
+    if (!gqthShown(p)) return null;
+    if (!gqthVal(p)) return gqthSetErr(p, 'ThuHoi') || gqthEl(p, 'ThuHoiYes');
+    if (gqthVal(p) === DCGQ_TH_NO && !gqthEl(p, 'ThuHoiReason').value.trim()) return gqthSetErr(p, 'ThuHoiReason');
+    gqthClearErr(p, 'ThuHoiReason');
+    return null;
+}
+// Dữ liệu lưu: trường ẩn (không có khoản đã chi) -> thuHoi rỗng
+function gqthData(p) {
+    if (!gqthShown(p)) return { thuHoi: '', thuHoiReason: '' };
+    var v = gqthVal(p) || DCGQ_TH_YES;
+    return { thuHoi: v, thuHoiReason: v === DCGQ_TH_NO ? gqthEl(p, 'ThuHoiReason').value.trim() : '' };
+}
+function dcgqThuHoiText(th) {
+    if (!th || !th.thuHoi) return '';
+    return 'Thu hồi kinh phí bồi thường đã chi: ' + th.thuHoi + (th.thuHoi === DCGQ_TH_NO && th.thuHoiReason ? '. Lý do không thu hồi: ' + String(th.thuHoiReason).replace(/[.\s]+$/, '') : '') + '.';
+}
+// Đình chỉ giải quyết (prefix dcgq)
+function dcgqRenderThuHoi(claim, prevSd) { gqthRender('dcgq', claim, prevSd); }
+function dcgqValidateThuHoi() { return gqthValidate('dcgq'); }
+function dcgqThuHoiData() { return gqthData('dcgq'); }
 
 // ---------- Dữ liệu điền mẫu ----------
 // (3) Chức vụ người đứng đầu cơ quan giải quyết bồi thường = chức vụ đầu tiên của Loại cơ quan trong DM_58 + tên cơ quan
@@ -72,8 +172,11 @@ function dcgqOfficialNames(claim) {
 // Điều 3: Quyết định tạm ứng kinh phí bồi thường đã ban hành của vụ việc (Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường)
 function dcgqFindAdvance(claim) {
     var list = [];
-    try { list = JSON.parse(localStorage.getItem('proposalsList') || '[]') || []; } catch (e) { list = []; }
-    var done = ['Chờ chi trả', 'Hoàn thành', 'Sung quỹ nhà nước', 'Chờ thu hồi'];
+    // Kho 'proposalsList'; kho trống (chưa mở trang Kinh phí) -> dữ liệu mẫu mặc định của phân hệ Kinh phí
+    if (typeof kpdcProposals === 'function') list = kpdcProposals();
+    else { try { list = JSON.parse(localStorage.getItem('proposalsList') || '[]') || []; } catch (e) { list = []; } }
+    if (!Array.isArray(list)) list = [];
+    var done = ['Chờ chi trả', 'Hoàn thành', 'Trả lại ngân sách nhà nước', 'Chờ thu hồi'];
     var hits = list.filter(function (p) { return p && p.ycbtCode === claim.code && (p.type === 'Cấp tạm ứng' || p.qdtu) && done.indexOf(p.status) >= 0 && (p.docNo || (p.qdtu && p.qdtu.sign && p.qdtu.sign.docNo)); });
     if (!hits.length) return null;
     var p = hits[hits.length - 1];
@@ -166,6 +269,8 @@ function dcgqEnsureModal() {
         + '<div class="gqx-field"><label class="form-label" for="dcgqReason">Căn cứ đình chỉ<span class="gqx-req">*</span></label><select id="dcgqReason" class="form-control" onchange="dcgqClearErr(\'dcgqReason\')"><option value="">-- Chọn căn cứ đình chỉ --</option>' + opts + '</select><div id="dcgqReasonErr" class="gqx-err">Đây là trường bắt buộc</div></div>'
         + '<div class="gqx-field"><label class="form-label" for="dcgqDetail">Diễn giải</label><textarea id="dcgqDetail" class="form-control" rows="3" maxlength="500" placeholder="Nhập nội dung diễn giải..." oninput="dcgqUpdateCounter()"></textarea><div id="dcgqDetailCount" class="ktlx-counter">0/500 ký tự</div></div>'
         + '<div class="gqx-field" style="margin-bottom:0;"><label class="form-label">Quyết định tạm ứng kinh phí bồi thường (Điều 3)</label><div id="dcgqAdvanceInfo" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:8px 12px; font-size:13px; color:#334155;"></div></div>'
+        // Thu hồi kinh phí bồi thường đã chi: chỉ hiển thị khi vụ việc có khoản kinh phí đã chi
+        + gqthHtml('dcgq')
         + '</div>'
         + '<div class="gqx-sec" id="dcgqDocSection"><div class="gqx-sec-title" id="dcgqDocSectionTitle"><i class="fa-solid fa-file-signature"></i> Tệp văn bản trình ký<span class="gqx-req">*</span></div>'
         + '<div id="dcgqDocSrcGroup"><div class="doc-src-segmented"><button type="button" class="doc-src-seg-btn active" id="dcgqSegBtnGen" onclick="dcgqSetDocSrc(\'gen\')"><i class="fa-solid fa-wand-magic-sparkles"></i><span>Sinh văn bản theo mẫu 25/BTNN</span></button><button type="button" class="doc-src-seg-btn" id="dcgqSegBtnUpload" onclick="dcgqSetDocSrc(\'upload\')"><i class="fa-solid fa-cloud-arrow-up"></i><span>Tải lên từ máy</span></button></div></div>'
@@ -211,9 +316,15 @@ function dcgqRenderAdvance() {
 
 // ---------- Mở / đóng ----------
 // Mở từ thao tác "Đình chỉ giải quyết" (Thao tác khác) hoặc "Cập nhật" hồ sơ Bị từ chối có Loại trình "Đình chỉ giải quyết"
+// Trạng thái Giải quyết YCBT được Đình chỉ giải quyết: ngoài các trạng thái này chặn mở popup (trừ Cập nhật hồ sơ Bị từ chối Loại trình Đình chỉ)
+var DCGQ_SOURCE = ['Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoàn thành'];
 function openDcgqModal(claimId) {
     var claim = gqClaim(claimId);
     if (!claim) return;
+    var rec0 = gqRecord(claim);
+    var st0 = typeof gqldCaseStatus === 'function' ? gqldCaseStatus(claim) : claim.status;
+    var isRet = !!(rec0 && rec0.status === 'Bị từ chối' && rec0.approval && rec0.approval.kind === DCGQ_KIND);
+    if (!isRet && DCGQ_SOURCE.indexOf(st0) < 0) { showToast('Trạng thái hồ sơ hiện tại không cho phép Đình chỉ giải quyết.', 'error'); return; }
     dcgqEnsureModal();
     gqFrameFull(true);
     dcgqClaim = claim;
@@ -239,6 +350,7 @@ function openDcgqModal(claimId) {
     dcgqUpdateCounter();
     dcgqAdvance = dcgqFindAdvance(claim);
     dcgqRenderAdvance();
+    dcgqRenderThuHoi(claim, prev ? sd : null);
     // Thông tin điền vào Mẫu 25/BTNN (mặc định), Nội dung trình, các cấp ký
     var d = new Date(); var p2 = function (n) { return String(n).padStart(2, '0'); };
     dcgqEl('dcgqDocNumber').value = '     /QĐ-';
@@ -320,6 +432,7 @@ function dcgqDropOffline(e) { e.preventDefault(); e.currentTarget.classList.remo
 function dcgqValidateStep1() {
     var first = null;
     if (!dcgqEl('dcgqReason').value) first = dcgqSetErr('dcgqReason'); else dcgqClearErr('dcgqReason');
+    var thErr = dcgqValidateThuHoi(); first = first || thErr;
     if (dcgqDocSrc === 'gen') {
         var no = dcgqEl('dcgqDocNumber').value.trim(), dt = dcgqEl('dcgqDocDate').value.trim();
         if (!no) first = first || dcgqSetErr('dcgqDocNumber'); else dcgqClearErr('dcgqDocNumber');
@@ -429,9 +542,9 @@ function dcgqGoStep2() {
 }
 
 // ---------- Trình / Ban hành ----------
-// Trạng thái trước khi đình chỉ: trạng thái vụ việc lúc trình/ban hành (Yêu cầu bổ sung, Cử người giải quyết bồi thường, Xác minh thiệt hại,
-// Thương lượng, Chờ ban hành QĐ, Chờ thực thi, Hoãn giải quyết); trình lại sau "Bị từ chối": giữ trạng thái trước của lần trình đầu
-var DCGQ_STEP_SOURCE = ['Yêu cầu bổ sung', 'Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ thực thi'];
+// Trạng thái trước khi đình chỉ: trạng thái vụ việc lúc trình/ban hành (Cử người giải quyết bồi thường, Xác minh thiệt hại,
+// Thương lượng, Chờ ban hành QĐ, Chờ chi trả, Hoàn thành; dữ liệu cũ: Yêu cầu bổ sung, Hoãn giải quyết); trình lại sau "Bị từ chối": giữ trạng thái trước của lần trình đầu
+var DCGQ_STEP_SOURCE = ['Yêu cầu bổ sung', 'Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoàn thành'];
 function dcgqPrevStatus(claim) {
     var st = typeof gqldCaseStatus === 'function' ? gqldCaseStatus(claim) : claim.status;
     if (DCGQ_STEP_SOURCE.indexOf(st) >= 0 || st === 'Hoãn giải quyết') return st;
@@ -454,17 +567,35 @@ function dcgqSubmitOnline() {
     var gen = dcgqOnlineFile.source === 'generated';
     var fileName = dcgqOnlineFile.name;
     var reasonFull = x.reasonText + (x.detail ? ': ' + x.detail : '');
+    var th = dcgqThuHoiData();
     var draftDoc = { source: gen ? 'generated' : 'uploaded', formNo: DCGQ_FORM, docTitle: 'Quyết định đình chỉ giải quyết yêu cầu bồi thường', generatedName: gen ? fileName : '', uploadedName: gen ? '' : fileName, bodyHtml: gen ? dcgqOnlineFile.bodyHtml : '' };
     var signDoc = Object.assign({
         method: 'Ký số', file: gen ? dcgqDocBaseName(claim) + '.pdf' : fileName, enableRoomSig: sign.enableNhay, sigCoords: sign.coords,
         reasonCode: x.reasonCode, reasonText: x.reasonText, detail: x.detail,
-        docNumber: gen ? x.docNumber : '', docDate: gen ? x.docDate : '', noiNhan: gen ? x.noiNhan : [], advance: x.advance
+        docNumber: gen ? x.docNumber : '', docDate: gen ? x.docDate : '', noiNhan: gen ? x.noiNhan : [], advance: x.advance,
+        thuHoi: th.thuHoi, thuHoiReason: th.thuHoiReason
     }, tlktGqExtra('dcgq', dcgqOnlineFile, dcgqDocSrc, sign.content));
     var res = gqSubmit(claim, DCGQ_KIND, sign.content, [], { assignee: sign.assignees[0] || '', assignees: sign.assignees, reason: reasonFull, resultStatus: DCGQ_RESULT, draftDoc: draftDoc, signDoc: signDoc });
     if (!res || res.ok === false) { showToast(res ? res.message : 'Không trình được hồ sơ.', 'error'); return; }
-    gqSaveData(claim, dcgqPrevPatch(claim, prevSt, { dinhChi: { reasonCode: x.reasonCode, reasonText: x.reasonText, detail: x.detail, docNumber: signDoc.docNumber, docDate: signDoc.docDate, noiNhan: signDoc.noiNhan, advance: x.advance, fileName: fileName, formNo: DCGQ_FORM, signingMethod: 'Ký số', submittedAt: gqNow() } }));
+    dcgqTagHistory(claim, res.record, th);
+    gqSaveData(claim, dcgqPrevPatch(claim, prevSt, { dinhChi: { reasonCode: x.reasonCode, reasonText: x.reasonText, detail: x.detail, docNumber: signDoc.docNumber, docDate: signDoc.docDate, noiNhan: signDoc.noiNhan, advance: x.advance, thuHoi: th.thuHoi, thuHoiReason: th.thuHoiReason, fileName: fileName, formNo: DCGQ_FORM, signingMethod: 'Ký số', submittedAt: gqNow() } }));
     closeDcgqModal();
     gqAfterSubmit(claim, DCGQ_KIND);
+}
+// Lịch sử xử lý / tiến trình: ghi kèm lựa chọn Thu hồi kinh phí bồi thường đã chi vào mục "Trình phê duyệt" vừa tạo (trước phần Nội dung trình)
+function dcgqTagHistory(claim, rec, th) {
+    var t = dcgqThuHoiText(th);
+    if (!t) return;
+    try {
+        var h = rec && Array.isArray(rec.history) ? rec.history[rec.history.length - 1] : null;
+        if (h && /^Trình/.test(h.action || '')) {
+            var n = String(h.note || ''), i = n.indexOf(' Nội dung: ');
+            h.note = i >= 0 ? n.slice(0, i) + ' ' + t + n.slice(i) : n + ' ' + t;
+            var W = gqW(); if (W) W.upsertRecord(rec);
+        }
+    } catch (e) { /* mockup */ }
+    var tl = Array.isArray(claim.timeline) ? claim.timeline[claim.timeline.length - 1] : null;
+    if (tl && /^Trình Lãnh đạo/.test(tl.title || '')) tl.desc = String(tl.desc || '') + ' ' + t;
 }
 // Ký ngoài: kiểm tra Căn cứ đình chỉ + tệp PDF đã ký -> popup xác nhận -> ban hành trực tiếp
 function dcgqSubmitOffline() {
@@ -472,6 +603,7 @@ function dcgqSubmitOffline() {
     if (!claim) return;
     var first = null;
     if (!dcgqEl('dcgqReason').value) first = dcgqSetErr('dcgqReason');
+    var thErr = dcgqValidateThuHoi(); first = first || thErr;
     if (!dcgqOfflineFile) {
         var fErr = dcgqEl('dcgqOfflineFileErr'); fErr.textContent = DCGQ_OFF_MSG; fErr.style.display = 'block';
         var drop = dcgqEl('dcgqOfflineDrop'); drop.classList.add('is-error'); first = first || drop;
@@ -494,16 +626,18 @@ function dcgqIssueOffline() {
     var x = dcgqFormData();
     var file = dcgqOfflineFile.name;
     var reasonFull = x.reasonText + (x.detail ? ': ' + x.detail : '');
+    var th = dcgqThuHoiData();
+    var thText = dcgqThuHoiText(th);
     var prevSt = dcgqPrevStatus(claim);
     claim.status = DCGQ_RESULT;
     claim.wfReturned = null;
     if (!Array.isArray(claim.timeline)) claim.timeline = [];
-    claim.timeline.push({ title: 'Ban hành Quyết định đình chỉ giải quyết (Ký ngoài)', date: gqToday(), desc: 'Ban hành văn bản Mẫu 25/BTNN - Quyết định đình chỉ giải quyết yêu cầu bồi thường đã ký ngoài hệ thống (' + file + '). Căn cứ: ' + reasonFull + '. Hồ sơ chuyển sang trạng thái [' + DCGQ_RESULT + '].', status: 'completed' });
+    claim.timeline.push({ title: 'Ban hành Quyết định đình chỉ giải quyết (Ký ngoài)', date: gqToday(), desc: 'Ban hành văn bản Mẫu 25/BTNN - Quyết định đình chỉ giải quyết yêu cầu bồi thường đã ký ngoài hệ thống (' + file + '). Căn cứ: ' + reasonFull + '.' + (thText ? ' ' + thText : '') + ' Hồ sơ chuyển sang trạng thái [' + DCGQ_RESULT + '].', status: 'completed' });
     try {
         var rec = gqEnsureRecord(claim) || gqRecord(claim);
-        if (rec && W) { rec.status = DCGQ_RESULT; W.addHistory(rec, 'Ban hành Quyết định đình chỉ giải quyết (Ký ngoài)', 'Căn cứ: ' + reasonFull + '. Văn bản đã ký: ' + file + '.'); W.upsertRecord(rec); }
+        if (rec && W) { rec.status = DCGQ_RESULT; W.addHistory(rec, 'Ban hành Quyết định đình chỉ giải quyết (Ký ngoài)', 'Căn cứ: ' + reasonFull + '. Văn bản đã ký: ' + file + '.' + (thText ? ' ' + thText : '')); W.upsertRecord(rec); }
     } catch (e) { /* mockup: bỏ qua lỗi luồng */ }
-    gqSaveData(claim, dcgqPrevPatch(claim, prevSt, { status: DCGQ_RESULT, dinhChi: { reasonCode: x.reasonCode, reasonText: x.reasonText, detail: x.detail, advance: x.advance, fileName: file, signedFile: file, formNo: DCGQ_FORM, signingMethod: 'Ký ngoài', issuedAt: gqNow(), attachments: typeof tlktGet === 'function' ? tlktGet('dcgq') : [] } }));
+    gqSaveData(claim, dcgqPrevPatch(claim, prevSt, { status: DCGQ_RESULT, dinhChi: { reasonCode: x.reasonCode, reasonText: x.reasonText, detail: x.detail, advance: x.advance, thuHoi: th.thuHoi, thuHoiReason: th.thuHoiReason, fileName: file, signedFile: file, formNo: DCGQ_FORM, signingMethod: 'Ký ngoài', issuedAt: gqNow(), attachments: typeof tlktGet === 'function' ? tlktGet('dcgq') : [] } }));
     closeDcgqModal();
     saveClaimsToLocal();
     renderClaimsTable();

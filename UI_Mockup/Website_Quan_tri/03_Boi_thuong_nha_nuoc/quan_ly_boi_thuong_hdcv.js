@@ -100,6 +100,8 @@ function hdcvEntries(claim) {
             e2.signMode = method;
             e2.canCu = dc.reasonText || e2.canCu || '';
             e2.dienGiai = dc.detail || '';
+            e2.thuHoi = dc.thuHoi || sd.thuHoi || '';
+            e2.thuHoiReason = dc.thuHoiReason || sd.thuHoiReason || '';
             e2.docNo = hdcvV(dc.docNumber) || (dcFromLog ? e2.docNo : '');
             e2.docDate = hdcvV(dc.docDate) || (dcFromLog ? e2.docDate : '');
             var signed = dc.signedFile || (method === 'Ký số' ? hdcvSignedName(sd.file || dc.fileName) : dc.fileName);
@@ -121,7 +123,7 @@ function hdcvEntries(claim) {
             out.push({
                 t: tk, state: pend ? 'pending' : 'rejected', signMode: 'Ký số',
                 docNo: '', docDate: '', fromDate: hdcvV(s.fromDate), toDate: hdcvV(s.toDate),
-                reason: s.reason || '', canCu: s.reasonText || '', dienGiai: s.detail || '',
+                reason: s.reason || '', canCu: s.reasonText || '', dienGiai: s.detail || '', thuHoi: s.thuHoi || '', thuHoiReason: s.thuHoiReason || '',
                 file: draftName ? { name: draftName, size: (s.docFileMeta && s.docFileMeta.size) || '', fileId: (s.docFileMeta && s.docFileMeta.keepId) || '', bodyHtml: dd.source === 'generated' ? (dd.bodyHtml || '') : '', draft: true } : null,
                 docs: hdcvRows(s.attachments || []),
                 rejectReason: rej && rec.returned ? rec.returned.reason || '' : ''
@@ -177,6 +179,8 @@ function hdcvEntryHtml(e, withTitle) {
     if (e.t === 'hgq') h += hdcvField('Lý do hoãn giải quyết', e.reason, true);
     if (e.t === 'hgqt') h += hdcvField('Lý do tạm đình chỉ', e.reason, true);
     if (e.t === 'dc') h += hdcvField('Căn cứ đình chỉ', e.canCu, true) + hdcvField('Diễn giải', e.dienGiai, true);
+    // Thu hồi kinh phí bồi thường đã chi: chỉ khi có lựa chọn (vụ việc có khoản kinh phí đã chi lúc trình / ban hành)
+    if (e.t === 'dc' && e.thuHoi) h += hdcvField('Thu hồi kinh phí bồi thường đã chi', e.thuHoi) + (e.thuHoi === 'Không thu hồi' ? hdcvField('Lý do không thu hồi', e.thuHoiReason, true) : '');
     h += '<div class="hdcv-f hdcv-full"><span class="hdcv-l">File Quyết định</span>' + hdcvFileHtml(e.file) + '</div>';
     // Tài liệu ban hành kèm theo / không ban hành kèm theo: khối rỗng hoặc không có quyền xem thì không hiển thị
     h += typeof tlktSplitRender === 'function'
@@ -431,3 +435,15 @@ function hdcvInit() {
     }
 }
 if (document.readyState === 'complete') setTimeout(hdcvInit, 0); else window.addEventListener('load', function () { setTimeout(hdcvInit, 0); });
+// Màn Ký duyệt / Từ chối (gqld): Thông tin tổng quan hiển thị Thu hồi kinh phí bồi thường đã chi + Lý do không thu hồi của phiếu trình Đình chỉ / Dừng giải quyết
+(function () {
+    if (typeof window.gqldSummaryHtml !== 'function') return;
+    var orig = window.gqldSummaryHtml;
+    window.gqldSummaryHtml = function (W, rec) {
+        var h = orig.apply(this, arguments);
+        var a = (rec && rec.approval) || {}, sd = a.signDoc || {};
+        if ([HDCV_TYPES.dc.kind, 'Dừng giải quyết bồi thường'].indexOf(a.kind) < 0 || !sd.thuHoi || h.slice(-6) !== '</div>') return h;
+        var row = function (k, v) { return '<div class="gqld-row"><span>' + k + '</span><span>' + hdcvE(v) + '</span></div>'; };
+        return h.slice(0, -6) + row('Thu hồi kinh phí bồi thường đã chi', sd.thuHoi) + (sd.thuHoi === 'Không thu hồi' ? row('Lý do không thu hồi', sd.thuHoiReason || '-') : '') + '</div>';
+    };
+})();

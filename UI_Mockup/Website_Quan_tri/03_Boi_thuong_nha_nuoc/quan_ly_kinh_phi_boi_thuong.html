@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường</title>
+    <!-- Trang dùng chung 02 menu con của menu Kinh phí (tham số menu=tam-ung / chi-tra); tiêu đề cập nhật theo menu con (kpApplyMenuUi) -->
+    <title>Tạm ứng kinh phí</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Flatpickr CSS -->
@@ -892,6 +893,9 @@
             justify-content: flex-end;
             gap: 10px;
         }
+
+        /* Menu Tạm ứng kinh phí: ẩn cột Hạn nhận/Trả lại ngân sách nhà nước (chỉ áp dụng bản ghi Chi trả tiền bồi thường) */
+        body.kp-menu-tam-ung .kp-col-hn { display: none; }
     </style>
 </head>
 
@@ -910,13 +914,13 @@
     <div class="page-header">
         <div class="page-title">
             <h2 data-uxu-title style="display: inline-flex; align-items: center; gap: 8px;">
-                Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường
+                <span id="kpPageTitleText">Tạm ứng kinh phí</span>
                 <!-- Badge số lượng chờ xử lý chỉ đặt tại tab Chờ xử lý (đồng nhất 06 phân hệ BTNN): ẩn badge tiêu đề -->
                 <span id="headerProposalBadge" style="display: none !important; background-color: #ef4444; color: white; border-radius: 12px; padding: 2px 8px; font-size: 13px; font-weight: 700; min-width: 20px; text-align: center; line-height: 1;">0</span>
             </h2>
         </div>
     </div>
-    <!-- Bỏ các thẻ thống kê (Đã cấp phát, Chờ chi trả, Sung quỹ nhà nước): thống kê xem tại Dashboard riêng -->
+    <!-- Bỏ các thẻ thống kê (Đã cấp phát, Chờ chi trả, Trả lại ngân sách nhà nước): thống kê xem tại Dashboard riêng -->
 
     <!-- MAIN DATA LIST AND FILTER SECTION -->
     <div id="contentListProposals" style="display: block;">
@@ -936,14 +940,6 @@
                     <input type="text" class="form-control" id="searchProposalCode" placeholder="Nhập mã kinh phí...">
                 </div>
                 <div>
-                    <span class="form-label">Loại kinh phí</span>
-                    <select class="form-control" id="searchProposalType" style="height: 34px;">
-                        <option value="">Tất cả</option>
-                        <option value="Tạm ứng kinh phí">Tạm ứng kinh phí</option>
-                        <option value="Chi trả tiền bồi thường">Chi trả tiền bồi thường</option>
-                    </select>
-                </div>
-                <div>
                     <span class="form-label">Mã hồ sơ GQBT</span>
                     <input type="text" class="form-control" id="searchYcbtCode" placeholder="Nhập mã hồ sơ GQBT...">
                 </div>
@@ -955,20 +951,20 @@
                         <option value="Chờ duyệt">Chờ duyệt</option>
                         <option value="Chờ chi trả">Chờ chi trả</option>
                         <option value="Hoàn thành">Hoàn thành</option>
-                        <option value="Sung quỹ nhà nước">Sung quỹ nhà nước</option>
+                        <option value="Trả lại ngân sách nhà nước">Trả lại ngân sách nhà nước</option>
                         <option value="Bị từ chối">Bị từ chối</option>
                         <option value="Chờ thu hồi">Chờ thu hồi</option>
                         <option value="Đã thu hồi">Đã thu hồi</option>
                         <option value="Đã hủy">Đã hủy</option>
                     </select>
                 </div>
-            </div>
-
-            <div class="grid-4-cols">
                 <div>
                     <span class="form-label">Tên cá nhân/Tổ chức yêu cầu</span>
                     <input type="text" class="form-control" id="searchNycName" placeholder="Nhập tên cá nhân/tổ chức yêu cầu...">
                 </div>
+            </div>
+
+            <div class="grid-4-cols">
                 <div>
                     <span class="form-label">Từ ngày</span>
                     <div class="date-input-wrapper">
@@ -1034,12 +1030,11 @@
                             <th style="width: 44px; text-align: center; cursor: pointer;" onclick="sortKinhPhiTable('stt')" title="Sắp xếp theo STT">STT <i class="fa-solid fa-sort" id="sortIcon_stt" style="font-size:11px; opacity:0.4;"></i></th>
                             <th style="width: 105px; text-align: left; cursor: pointer;" onclick="sortKinhPhiTable('code')" title="Sắp xếp theo Mã kinh phí">Mã kinh phí <i class="fa-solid fa-sort" id="sortIcon_code" style="font-size:11px; opacity:0.4;"></i></th>
                             <th style="width: 110px; text-align: left; cursor: pointer;" onclick="sortKinhPhiTable('ycbtCode')" title="Sắp xếp theo Mã hồ sơ GQBT">Mã hồ sơ GQBT <i class="fa-solid fa-sort" id="sortIcon_ycbtCode" style="font-size:11px; opacity:0.4;"></i></th>
-                            <th style="width: 130px; text-align: left; cursor: pointer;" onclick="sortKinhPhiTable('type')" title="Sắp xếp theo Loại kinh phí">Loại kinh phí <i class="fa-solid fa-sort" id="sortIcon_type" style="font-size:11px; opacity:0.4;"></i></th>
                             <th style="min-width: 140px; text-align: left; cursor: pointer;" onclick="sortKinhPhiTable('nycName')" title="Sắp xếp theo Tên cá nhân/Tổ chức yêu cầu">Tên cá nhân/Tổ chức yêu cầu <i class="fa-solid fa-sort" id="sortIcon_nycName" style="font-size:11px; opacity:0.4;"></i></th>
                             <th style="width: 130px; text-align: right; cursor: pointer;" onclick="sortKinhPhiTable('amount')" title="Sắp xếp theo Tổng số tiền duyệt chi">Tổng số tiền duyệt chi <i class="fa-solid fa-sort" id="sortIcon_amount" style="font-size:11px; opacity:0.4;"></i></th>
                             <th style="width: 120px; text-align: left;">Cán bộ xử lý</th>
                             <th style="width: 95px; text-align: center; cursor: pointer;" onclick="sortKinhPhiTable('date')" title="Sắp xếp theo Ngày trình">Ngày trình <i class="fa-solid fa-sort" id="sortIcon_date" style="font-size:11px; opacity:0.4;"></i></th>
-                            <th style="width: 130px; text-align: center;">Hạn nhận/Sung quỹ</th>
+                            <th class="kp-col-hn" style="width: 130px; text-align: center;">Hạn nhận/Trả lại ngân sách nhà nước</th>
                             <th style="width: 160px; min-width: 150px; text-align: center; cursor: pointer;" onclick="sortKinhPhiTable('status')" title="Sắp xếp theo Trạng thái">Trạng thái <i class="fa-solid fa-sort" id="sortIcon_status" style="font-size:11px; opacity:0.4;"></i></th>
                             <th style="width: 120px; text-align: center; min-width: 120px;" id="thProposalActions">Thao tác</th>
                         </tr>
@@ -1585,17 +1580,17 @@
                             <textarea class="form-control" id="noticeTrackingNote" rows="2" placeholder="Nhập hình thức gửi, số văn bản, kết quả liên hệ..."></textarea>
                         </div>
                         <div id="noticeTrackingHint" style="font-size:12.5px; color:#9a3412; margin-top:10px; font-weight:600;">
-                            Sau khi lưu ngày nhận thông báo, hệ thống sẽ bắt đầu tính hạn 3 năm để cảnh báo sung quỹ nếu khoản chi vẫn ở trạng thái Chờ chi trả.
+                            Sau khi lưu ngày người yêu cầu nhận thông báo, hệ thống sẽ bắt đầu tính hạn 3 năm để cảnh báo trả lại ngân sách nhà nước nếu khoản chi vẫn ở trạng thái Chờ chi trả.
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- KHỐI 9: THEO DÕI HẠN NHẬN KINH PHÍ / SUNG QUỸ -->
+            <!-- KHỐI 9: THEO DÕI HẠN NHẬN KINH PHÍ / TRẢ LẠI NGÂN SÁCH NHÀ NƯỚC -->
             <div class="accordion-item" id="block9_TreasuryTracking" style="display: none;">
                 <div class="accordion-header active" onclick="toggleAccordion('block9_TreasuryTracking')">
                     <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; padding-right: 12px;">
-                        <span><i class="fa-solid fa-scale-balanced" style="color: #475569; margin-right: 8px;"></i> 9. Theo dõi hạn nhận kinh phí / Sung quỹ</span>
+                        <span><i class="fa-solid fa-scale-balanced" style="color: #475569; margin-right: 8px;"></i> 9. Theo dõi hạn nhận kinh phí / Trả lại ngân sách nhà nước</span>
                         <span id="treasuryTrackingStatusBadge" class="badge badge-info" style="font-size: 12px; padding: 4px 10px;">Chưa kích hoạt</span>
                     </div>
                     <i class="fa-solid fa-chevron-down accordion-icon rotated"></i>
@@ -1727,31 +1722,31 @@
                 </div>
             </div>
 
-            <!-- KHỐI 11: THÔNG TIN SUNG QUỸ NHÀ NƯỚC -->
+            <!-- KHỐI 11: THÔNG TIN TRẢ LẠI NGÂN SÁCH NHÀ NƯỚC -->
             <div class="accordion-item" id="block11_TreasuryForfeit" style="display: none;">
                 <div class="accordion-header active" onclick="toggleAccordion('block11_TreasuryForfeit')">
-                    <span><i class="fa-solid fa-building-columns" style="color: #334155; margin-right: 8px;"></i> 11. Thông tin sung quỹ Nhà nước</span>
+                    <span><i class="fa-solid fa-building-columns" style="color: #334155; margin-right: 8px;"></i> 11. Thông tin trả lại ngân sách nhà nước</span>
                     <i class="fa-solid fa-chevron-down accordion-icon rotated"></i>
                 </div>
                 <div class="accordion-body show" style="border-top: 2px solid #64748B;">
                     <div id="sectionTreasuryForfeit">
                         <div class="grid-3-cols">
                             <div class="form-group">
-                                <span class="form-label">Số chứng từ / quyết định sung quỹ <span class="required">*</span></span>
+                                <span class="form-label">Số chứng từ / quyết định trả lại ngân sách nhà nước <span class="required">*</span></span>
                                 <input type="text" class="form-control" id="treasuryVoucherNo" placeholder="Nhập số chứng từ...">
                             </div>
                             <div class="form-group">
-                                <span class="form-label">Ngày sung quỹ <span class="required">*</span></span>
+                                <span class="form-label">Ngày trả lại ngân sách nhà nước <span class="required">*</span></span>
                                 <input type="text" class="form-control" id="treasuryForfeitDate" placeholder="dd/mm/yyyy">
                             </div>
                             <div class="form-group">
-                                <span class="form-label">Số tiền sung quỹ (VNĐ) <span class="required">*</span></span>
+                                <span class="form-label">Số tiền trả lại ngân sách nhà nước (VNĐ) <span class="required">*</span></span>
                                 <input type="text" class="form-control" id="treasuryForfeitAmount" placeholder="Nhập số tiền..." readonly style="background-color: #F8FAFC; font-weight: 700; text-align: right; color: #DC2626;">
                             </div>
                         </div>
                         <div class="form-group">
-                            <span class="form-label">Căn cứ / lý do sung quỹ <span class="required">*</span></span>
-                            <textarea class="form-control" id="treasuryForfeitReason" rows="2" placeholder="Nhập căn cứ, lý do sung quỹ..."></textarea>
+                            <span class="form-label">Căn cứ / lý do trả lại ngân sách nhà nước <span class="required">*</span></span>
+                            <textarea class="form-control" id="treasuryForfeitReason" rows="2" placeholder="Nhập căn cứ, lý do trả lại ngân sách nhà nước..."></textarea>
                         </div>
                         <!-- Tài liệu kèm theo (chứng từ nộp ngân sách): bảng chuẩn dùng chung, gắn tại quan_ly_kinh_phi_kpdt.js -->
                         <div id="treasuryTlkt"></div>
@@ -1762,7 +1757,7 @@
                                     <i class="fa-solid fa-cloud-arrow-up"></i> Chọn tài liệu (.pdf)
                                 </button>
                                 <input type="file" id="treasuryFileInput" style="display:none;" accept=".pdf" multiple onchange="handleTreasuryFileChange(this)">
-                                <div id="treasuryFileLink" style="font-size:13px; font-weight:500; color:var(--text-color);">Chưa có tài liệu sung quỹ</div>
+                                <div id="treasuryFileLink" style="font-size:13px; font-weight:500; color:var(--text-color);">Chưa có tài liệu trả lại ngân sách nhà nước</div>
                             </div>
                         </div>
                     </div>
@@ -1777,14 +1772,14 @@
             <button class="btn btn-success" id="btnViewActionFill" onclick="startActionFromView('Lập đề nghị')" style="display: none;"><i class="fa-solid fa-file-signature"></i> Lập đề nghị</button>
             <button class="btn btn-success" id="btnViewActionUpdate" onclick="startActionFromView('Cập nhật đề nghị')" style="display: none;"><i class="fa-solid fa-pen-to-square"></i> Cập nhật đề nghị</button>
             <button class="btn btn-success" id="btnViewActionPay" onclick="startActionFromView('Cập nhật chi trả')" style="display: none;"><i class="fa-solid fa-hand-holding-dollar"></i> Cập nhật chi trả</button>
-            <button class="btn btn-danger" id="btnViewActionForfeit" onclick="startTreasuryForfeitFromDetail()" style="display: none;"><i class="fa-solid fa-building-columns"></i> Sung quỹ nhà nước</button>
+            <button class="btn btn-danger" id="btnViewActionForfeit" onclick="startTreasuryForfeitFromDetail()" style="display: none;"><i class="fa-solid fa-building-columns"></i> Trả lại ngân sách nhà nước</button>
             
             <button class="btn btn-success" id="btnSubmitProposal" onclick="saveProposal()"><i
                     class="fa-solid fa-paper-plane"></i> Trình phê duyệt</button>
             <button class="btn btn-success" id="btnCompletePayout" onclick="submitPayoutReal()" style="display: none;"><i
                     class="fa-solid fa-circle-check"></i> Hoàn thành chi trả</button>
             <button class="btn btn-success" id="btnCompleteTreasuryForfeit" onclick="completeTreasuryForfeit()" style="display: none;"><i
-                    class="fa-solid fa-circle-check"></i> Hoàn thành sung quỹ</button>
+                    class="fa-solid fa-circle-check"></i> Hoàn thành trả lại ngân sách nhà nước</button>
             <button class="btn btn-danger" id="btnLeaderReject" onclick="openRejectModal(selectedProposalId)" style="display: none; background:#ef4444; color:#fff; border:none;"><i
                     class="fa-solid fa-circle-xmark"></i> Từ chối</button>
             <button class="btn btn-primary" id="btnLeaderApprove" onclick="openApproveModal(selectedProposalId)" style="display: none;"><i
@@ -1907,20 +1902,22 @@
 
     <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="quan_ly_kinh_phi_boi_thuong.js?v=20261026tlkt"></script>
-    <script src="btnn_luong_xu_ly.js?v=20261027chot2"></script>
-    <script src="btnn_badge_cho_xu_ly.js?v=20261026htrole"></script>
+    <script src="quan_ly_kinh_phi_boi_thuong.js?v=20261027s35"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261027s35"></script>
+    <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
-    <script src="quan_ly_kinh_phi_kptb.js?v=20261027tk2"></script>
+    <script src="quan_ly_kinh_phi_kptb.js?v=20261027rc2m"></script>
     <!-- [th7] Khoản thiệt hại của bản ghi tạo từ Tòa án (02 cấp): cộng theo nhóm, dòng "Các thiệt hại khác" -->
     <script src="quan_ly_kinh_phi_thkhac.js?v=20261027th7"></script>
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
-    <script src="quan_ly_kinh_phi_qdtu.js?v=20261027tu2"></script>
-    <script src="quan_ly_kinh_phi_kpcd.js?v=20261027tk2"></script>
-    <script src="quan_ly_kinh_phi_kpdt.js?v=20261026tlkt"></script>
-    <script src="quan_ly_kinh_phi_kpdc.js?v=20261027chot2"></script>
-    <script src="quan_ly_kinh_phi_kpux.js?v=20261026kpux6"></script>
+    <script src="quan_ly_kinh_phi_qdtu.js?v=20261027q10"></script>
+    <script src="quan_ly_kinh_phi_kpcd.js?v=20261027ccct"></script>
+    <script src="quan_ly_kinh_phi_kpdt.js?v=20261027menu"></script>
+    <script src="quan_ly_kinh_phi_kpdc.js?v=20261027rc2m"></script>
+    <script src="quan_ly_kinh_phi_kpux.js?v=20261027rc3"></script>
+    <!-- [hlqd] Chặn Trình thông báo chi trả / Cập nhật chi trả khi Quyết định GQBT Không có hiệu lực -->
+    <script src="quan_ly_kinh_phi_hlqd.js?v=20261027p8"></script>
 
     <!-- Custom Confirmation Modal HTML -->
     <div id="customConfirmOverlay" class="confirm-modal-overlay">

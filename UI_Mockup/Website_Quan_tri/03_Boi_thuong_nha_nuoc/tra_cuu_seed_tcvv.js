@@ -24,7 +24,7 @@
         ['Đà Nẵng', 'Tòa án nhân dân TP. Đà Nẵng', 'Công ty Cổ phần Vận tải Sông Hàn', 'TC', R_NBTH, '', TTHC, 'Xác minh thiệt hại', XD, 'money', 'Ngô Thị Mai; Phan Văn Lực', '', 'Bản án hành chính bị hủy do áp dụng sai pháp luật.', 540000000],
         ['Cần Thơ', 'Trại giam Cần Thơ', 'Huỳnh Văn Sang', 'CN', R_NBTH, '', THAHS, 'Thương lượng', TN, 'both', 'Trương Thị Bích', '', 'Thi hành án phạt tù quá thời hạn của bản án.', 310000000],
         ['Huế', 'Thi hành án dân sự TP. Huế', 'Hợp tác xã Nông nghiệp Hương Thủy', 'TC', R_NBTH, '', THADS, 'Chờ ban hành QĐ', DVC, 'money', 'Nguyễn Văn Bảo', '', 'Cưỡng chế giao tài sản sai người được thi hành án.', 410000000],
-        ['An Giang', 'UBND tỉnh An Giang', 'Lâm Thị Thu', 'CN', R_NBTH, '', HC, 'Chờ thực thi', CH, 'money', 'Võ Thanh Tâm', '', 'Thu hồi đất không đúng đối tượng.', 680000000],
+        ['An Giang', 'UBND tỉnh An Giang', 'Lâm Thị Thu', 'CN', R_NBTH, '', HC, 'Chờ chi trả', CH, 'money', 'Võ Thanh Tâm', '', 'Thu hồi đất không đúng đối tượng.', 680000000],
         ['Bắc Ninh', 'Viện kiểm sát nhân dân tỉnh Bắc Ninh', 'Nguyễn Văn Quyết', 'CN', R_NBTH, '', HS, 'Hoãn giải quyết', XD, 'both', 'Hoàng Thị Yến', '', 'Phê chuẩn lệnh bắt tạm giam người không phạm tội.', 390000000],
         ['Cà Mau', 'Công an tỉnh Cà Mau', 'Tạ Thị Hồng', 'CN', R_DD, 'Tạ Văn Khoa', HS, 'Tạm đình chỉ', TN, 'money', 'Lý Văn Sơn', '', 'Khởi tố bị can sau đó đình chỉ do không có hành vi phạm tội.', 175000000],
         ['Cao Bằng', 'Thi hành án dân sự tỉnh Cao Bằng', 'Công ty TNHH Khoáng sản Non Nước', 'TC', R_NBTH, '', THADS, 'Đình chỉ giải quyết', DVC, 'money', 'Nông Văn Thắng', '', 'Kê biên tài sản của bên thứ ba không có nghĩa vụ.', 230000000],
@@ -40,7 +40,7 @@
         ['Lâm Đồng', 'Trại giam Đại Bình', 'Kơ Să Ha Thu', 'CN', R_TK, 'Kơ Să Ha Bin', THAHS, 'Xác minh thiệt hại', XD, 'both', 'Mai Văn Thành', '', 'Người chấp hành án bị thương tích do quản lý trại giam sai quy định.', 450000000],
         ['Lạng Sơn', 'Thi hành án dân sự tỉnh Lạng Sơn', 'Hoàng Văn Pảo', 'CN', R_NBTH, '', THADS, 'Thương lượng', CH, 'money', 'Lương Thị Thu', '', 'Cưỡng chế thi hành án vượt quá nghĩa vụ phải thi hành.', 190000000],
         ['Lào Cai', 'UBND tỉnh Lào Cai', 'Công ty Cổ phần Du lịch Sa Pa Xanh', 'TC', R_NBTH, '', HC, 'Chờ ban hành QĐ', TN, 'money', 'Hà Văn Long', '', 'Thu hồi giấy chứng nhận đầu tư không đúng quy định.', 1250000000],
-        ['Nghệ An', 'Viện kiểm sát nhân dân tỉnh Nghệ An', 'Hồ Văn Thái', 'CN', R_NBTH, '', HS, 'Chờ thực thi', DVC, 'both', 'Nguyễn Thị Hải Yến', '', 'Tạm giam quá thời hạn luật định.', 520000000],
+        ['Nghệ An', 'Viện kiểm sát nhân dân tỉnh Nghệ An', 'Hồ Văn Thái', 'CN', R_NBTH, '', HS, 'Chờ chi trả', DVC, 'both', 'Nguyễn Thị Hải Yến', '', 'Tạm giam quá thời hạn luật định.', 520000000],
         ['Ninh Bình', 'Tòa án nhân dân tỉnh Ninh Bình', 'Đinh Thị Hương', 'CN', R_NBTH, '', DS, 'Hoãn giải quyết', XD, 'money', 'Bùi Văn Kiên', '', 'Tuyên kê biên tài sản không thuộc sở hữu của đương sự.', 175000000],
         ['Phú Thọ', 'Công an tỉnh Phú Thọ', 'Công ty TNHH Chè Hùng Vương', 'TC', R_NBTH, '', HC, 'Tạm đình chỉ', CH, 'money', 'Cao Thị Phượng', '', 'Tạm giữ tang vật, phương tiện quá thời hạn.', 240000000],
         ['Quảng Ngãi', 'Tòa án nhân dân tỉnh Quảng Ngãi', 'Phạm Văn Lộc', 'CN', R_NBTH, '', TTHC, 'Đình chỉ giải quyết', TN, 'money', 'Trịnh Văn Hòa', '', 'Quyết định cưỡng chế bị Tòa án tuyên hủy.', 110000000],
@@ -53,7 +53,7 @@
         ['Tuyên Quang', 'UBND tỉnh Tuyên Quang', 'Ma Văn Thịnh', 'CN', R_NBTH, '', HC, 'Xác minh thiệt hại', TN, 'money', 'Chu Thị Lan', '', 'Cưỡng chế phá dỡ công trình không đúng quyết định.', 280000000],
         ['Vĩnh Long', 'Tòa án nhân dân tỉnh Vĩnh Long', 'Công ty TNHH Thủy sản Cửu Long', 'TC', R_NBTH, '', TTHC, 'Thương lượng', DVC, 'money', 'Thạch Văn Sơn', '', 'Quyết định hành chính về thuế bị Tòa án tuyên hủy.', 960000000],
         ['Hà Nội', 'Viện kiểm sát nhân dân TP. Hà Nội', 'Nguyễn Thị Thanh Tâm', 'CN', R_TK, 'Nguyễn Văn Bình', HS, 'Đang phục hồi danh dự', CH, 'both', 'Phạm Thu Trang; Lê Văn Chuyên Viên', '', 'Truy cứu trách nhiệm hình sự oan, người bị thiệt hại đã chết.', 900000000],
-        ['Hà Nội', 'Cục Thi hành án dân sự Thành phố Hà Nội', 'Công ty Cổ phần Xây dựng Thăng Long', 'TC', R_NBTH, '', THADS, 'Chờ thực thi', XD, 'money', 'Hứa Thị Ngân', '', 'Kê biên, xử lý tài sản đang thế chấp không đúng thứ tự ưu tiên.', 1500000000],
+        ['Hà Nội', 'Cục Thi hành án dân sự Thành phố Hà Nội', 'Công ty Cổ phần Xây dựng Thăng Long', 'TC', R_NBTH, '', THADS, 'Chờ chi trả', XD, 'money', 'Hứa Thị Ngân', '', 'Kê biên, xử lý tài sản đang thế chấp không đúng thứ tự ưu tiên.', 1500000000],
         ['Hồ Chí Minh', 'Tòa án nhân dân TP. Hồ Chí Minh', 'Võ Thị Ngọc Ánh', 'CN', R_NBTH, '', DS, 'Hoàn thành', TN, 'honor', 'Nguyễn Hoàng Long', '', 'Bản án dân sự bị hủy, công bố thông tin sai về đương sự.', 0],
         ['Bắc Ninh', 'UBND tỉnh Bắc Ninh', 'Công ty TNHH Gốm Phù Lãng', 'TC', R_NBTH, '', HC, 'Chờ ban hành QĐ', CH, 'money', 'Phạm Minh Chuyên Viên', '', 'Đình chỉ hoạt động sản xuất không đúng thẩm quyền.', 330000000],
         ['Hải Phòng', 'Trại tạm giam Công an TP. Hải Phòng', 'Bùi Văn Hậu', 'CN', R_NBTH, '', THAHS, 'Hoãn giải quyết', DVC, 'money', 'Nguyễn Văn Chuyên Viên', '', 'Không thực hiện quyết định tha tù trước thời hạn đúng hạn.', 70000000],
@@ -78,7 +78,7 @@
         ['Hà Nội', 'Sở Tư pháp Thành phố Hà Nội', 'Văn phòng Công chứng Hồng Hà', 'TC', R_NBTH, '', HC, 'Chờ ban hành QĐ', DVC, 'money', 'Ngô Thị Lan', '', 'Tạm đình chỉ hoạt động văn phòng công chứng trái quy định.', 310000000],
         ['Hà Nội', 'UBND quận Cầu Giấy, Thành phố Hà Nội', 'Nguyễn Thị Mận', 'CN', R_NBTH, '', HC, 'Thương lượng', TN, 'money', 'Kiều Văn Nam', '', 'Cưỡng chế phá dỡ công trình khi quyết định cưỡng chế đã bị hủy.', 230000000],
         ['Hà Nội', 'Tòa án nhân dân Thành phố Hà Nội', 'Trịnh Văn Khôi', 'CN', R_TK, 'Trịnh Văn Lực', DS, 'Xác minh thiệt hại', CH, 'money', 'Lại Thị Hương Giang', '', 'Áp dụng biện pháp khẩn cấp tạm thời phong tỏa tài sản không đúng quy định.', 520000000],
-        ['Lâm Đồng', 'Tòa án nhân dân tỉnh Lâm Đồng', 'Ka Hoa', 'CN', R_NBTH, '', TTHC, 'Chờ thực thi', XD, 'money', 'Hà Minh Tâm', '', 'Bản án hành chính bị hủy do áp dụng sai pháp luật đất đai.', 175000000],
+        ['Lâm Đồng', 'Tòa án nhân dân tỉnh Lâm Đồng', 'Ka Hoa', 'CN', R_NBTH, '', TTHC, 'Chờ chi trả', XD, 'money', 'Hà Minh Tâm', '', 'Bản án hành chính bị hủy do áp dụng sai pháp luật đất đai.', 175000000],
         ['Hà Nội', 'Công an quận Thanh Xuân, Thành phố Hà Nội', 'Bùi Đức Anh', 'CN', R_NBTH, '', HS, 'Hoàn thành', TN, 'both', 'Nguyễn Hữu Phước', '', 'Tạm giữ hình sự không có căn cứ, sau đó trả tự do.', 140000000]
     ];
 

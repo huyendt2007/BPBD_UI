@@ -4571,7 +4571,7 @@
 
             // Render buttons before rendering attachment display blocks
             const editButtons = document.getElementById('editPhddButtons');
-            const canEdit = isDetailEditMode && (claim.status === 'Chờ thực thi' || claim.status === 'Đang thương lượng' || claim.status === 'Đang xác minh thi�?t hại' || claim.status === 'Chờ thụ lý');
+            const canEdit = isDetailEditMode && (claim.status === 'Chờ chi trả' || claim.status === 'Đang thương lượng' || claim.status === 'Đang xác minh thi�?t hại' || claim.status === 'Chờ thụ lý');
 
             if (canEdit) {
                 editButtons.style.display = 'flex';
@@ -4732,14 +4732,14 @@
                 claim.decContent = content;
 
                 if (decStatus === 'Chờ ký') {
-                    claim.status = 'Chờ thực thi';
+                    claim.status = 'Chờ chi trả';
                     claim.timeline.push({
                         title: "Quyết �'�<nh giải quyết b�"i thường",
                         date: new Date().toLocaleDateString('vi-VN'),
                         desc: `Ký duy�?t và ban hành QĐ giải quyết b�"i thường s�' ${no}. S�' tiền: ${amount.toLocaleString('vi-VN')}�'`,
                         status: "completed"
                     });
-                    showToast("Quyết �'�<nh �'ã �'ược duy�?t ký s�' thành công. H�" sơ chuy�fn sang [Chờ thực thi]!", "success");
+                    showToast("Quyết �'�<nh �'ã �'ược duy�?t ký s�' thành công. H�" sơ chuy�fn sang [Chờ chi trả]!", "success");
                 } else {
                     showToast("Đã lưu nháp dự thảo Quyết �'�<nh giải quyết b�"i thường!", "info");
                 }

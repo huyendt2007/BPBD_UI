@@ -1,6 +1,6 @@
 /*
  * Badge số lượng tab "Chờ xử lý" dùng chung cho 06 phân hệ BTNN và badge tương ứng tại LeftMenu (Trang chủ).
- * - Phân hệ: Tiếp nhận hồ sơ, Xác định CQGQBT, Giải quyết YCBT, Quyết định GQBT, Tạm ứng kinh phí/Chi trả, Xem xét hoàn trả; thêm Báo cáo Công tác BTNN (bctt).
+ * - Phân hệ: Tiếp nhận hồ sơ, Xác định CQGQBT, Giải quyết YCBT, Quyết định GQBT, Kinh phí (02 menu con: Tạm ứng kinh phí - kpTamUng, Chi trả tiền bồi thường - kpChiTra), Xem xét hoàn trả; thêm Báo cáo Công tác BTNN (bctt).
  * - Trang phân hệ: gọi BDG.report(module, số lượng, phần tử badge tab) mỗi khi tính lại tab Chờ xử lý.
  *   Badge tab: class bdg-tab-count, ẩn khi bằng 0. Số lượng lưu localStorage (bdg_cho_xu_ly_v1) kèm ngữ cảnh người dùng/vai trò giả lập.
  * - Trang chủ: BDG.mountMenu() hiển thị badge menu (data-badge-key="bdg_<module>") = số đã lưu của đúng ngữ cảnh hiện tại;
@@ -17,7 +17,9 @@
         xdcq: { title: 'Xác định cơ quan giải quyết bồi thường', page: 'xac_dinh_co_quan_boi_thuong.html', url: 'xac_dinh_co_quan_boi_thuong.html?v=20261008' },
         gqYcbt: { title: 'Giải quyết yêu cầu bồi thường', page: 'quan_ly_boi_thuong.html', url: 'quan_ly_boi_thuong.html?v=1' },
         qdGqbt: { title: 'Quyết định giải quyết bồi thường', page: 'quyet_dinh_giai_quyet_boi_thuong.html', url: 'quyet_dinh_giai_quyet_boi_thuong.html?v=1' },
-        kinhPhi: { title: 'Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường', page: 'quan_ly_kinh_phi_boi_thuong.html', url: 'quan_ly_kinh_phi_boi_thuong.html?v=1' },
+        // Menu Kinh phí: 02 menu con dùng chung 01 trang (tham số menu); trang báo số lượng của cả 02 menu con mỗi lần tính
+        kpTamUng: { title: 'Tạm ứng kinh phí', page: 'quan_ly_kinh_phi_boi_thuong.html', menu: 'tam-ung', url: 'quan_ly_kinh_phi_boi_thuong.html?v=1&menu=tam-ung' },
+        kpChiTra: { title: 'Chi trả tiền bồi thường', page: 'quan_ly_kinh_phi_boi_thuong.html', menu: 'chi-tra', url: 'quan_ly_kinh_phi_boi_thuong.html?v=1&menu=chi-tra' },
         hoanTra: { title: 'Xem xét trách nhiệm hoàn trả', page: 'xem_xet_trach_nhiem_hoan_tra.html', url: 'xem_xet_trach_nhiem_hoan_tra.html' },
         bctt: { title: 'Báo cáo Công tác BTNN', page: 'bao_cao_cong_tac_btnn.html', url: 'bao_cao_cong_tac_btnn.html' }
     };
@@ -38,7 +40,7 @@
         // Hoàn trả: vai trò giả lập riêng của phân hệ (htMockScope - thanh Người dùng giả lập), không dùng mockUserRole chung của các phân hệ khác
         if (module === 'hoanTra') return u + '|' + (ssGet('htMockScope') || 'don_vi_chu');
         if (module === 'bctt') return u + '|' + (lsGet('bctt_role_v1') || 'cb_stp');
-        if (module === 'kinhPhi') return u + '|' + (lsGet('kp_role_v1') || 'chuyen-vien');
+        if (module === 'kpTamUng' || module === 'kpChiTra') return u + '|' + (lsGet('kp_role_v1') || 'chuyen-vien');
         return u;
     }
     // Dấu vân tay dữ liệu (bỏ qua khóa badge): thay đổi thì số lượng đã lưu được tính lại
@@ -106,12 +108,12 @@
                 el.style.display = n > 0 ? '' : 'none';
             });
         }
-        // Nhóm menu "Giải quyết bồi thường" = tổng badge 3 mục con
-        const GQ_GROUP = ['gqYcbt', 'qdGqbt', 'kinhPhi'];
+        // Badge nhóm menu = tổng badge các mục con: "Giải quyết bồi thường" (02 mục con), "Kinh phí" (02 menu con)
+        const GROUPS = { gqGroup: ['gqYcbt', 'qdGqbt'], kpGroup: ['kpTamUng', 'kpChiTra'] };
         function setMenuBadge(module, n) {
             shown[module] = Number(n) || 0;
             paint(module, shown[module]);
-            if (GQ_GROUP.indexOf(module) >= 0) paint('gqGroup', GQ_GROUP.reduce((s, m) => s + (shown[m] || 0), 0));
+            Object.keys(GROUPS).forEach(g => { if (GROUPS[g].indexOf(module) >= 0) paint(g, GROUPS[g].reduce((s, m) => s + (shown[m] || 0), 0)); });
         }
         // Tiếp nhận hồ sơ: dùng trực tiếp hàm đếm chung BTNN_WF.receptionPendingCount (cùng hàm của tab) khi đã có dữ liệu
         function receptionLive() {
@@ -130,12 +132,14 @@
                 setMenuBadge(m, it && it.ctx === ctxOf(m) ? it.count : 0);
             });
         }
-        function moduleOfUrl(src) {
+        // Các phân hệ của trang (Kinh phí: 01 trang - 02 menu con, trang tự báo số lượng cả 02 menu con)
+        function modulesOfUrl(src) {
             const file = String(src || '').split('?')[0].split('#')[0].split('/').pop();
-            return MODULE_IDS.find(m => MODULES[m].page === file) || '';
+            return MODULE_IDS.filter(m => MODULES[m].page === file);
         }
         function mainFrame() { return document.getElementById(mainId); }
-        function mainModule() { const f = mainFrame(); return f ? moduleOfUrl(f.getAttribute('src')) : ''; }
+        function mainModules() { const f = mainFrame(); return f ? modulesOfUrl(f.getAttribute('src')) : []; }
+        function cacheValid(c, m, fp) { const it = c[m]; return !!it && it.ctx === ctxOf(m) && it.fp === fp; }
         // Tính lại các phân hệ chưa có số của ngữ cảnh hiện tại hoặc dữ liệu đã thay đổi (mỗi phân hệ tối đa 01 lần/lượt)
         function schedule(delay) {
             clearTimeout(timer);
@@ -144,12 +148,11 @@
         function runCycle() {
             const c = readCache();
             const fp = fingerprint();
-            const main = mainModule();
+            const main = mainModules();
             MODULE_IDS.forEach(m => {
-                if (m === main || queue.includes(m) || (running && running.m === m)) return;
+                if (main.includes(m) || queue.includes(m) || (running && running.m === m)) return;
                 if (m === 'tiepNhan' && receptionLive()) return;
-                const it = c[m];
-                if (!it || it.ctx !== ctxOf(m) || it.fp !== fp) queue.push(m);
+                if (!cacheValid(c, m, fp)) queue.push(m);
             });
             next();
         }
@@ -163,7 +166,11 @@
             next();
         }
         function next() {
-            if (running || !queue.length) return;
+            if (running) return;
+            // Bỏ qua phân hệ đã có số mới (VD menu con Kinh phí còn lại đã được trang nạp ngầm trước báo cùng lượt)
+            const c = readCache(), fp = fingerprint();
+            while (queue.length && cacheValid(c, queue[0], fp)) queue.shift();
+            if (!queue.length) return;
             const m = queue.shift();
             const f = document.createElement('iframe');
             f.className = 'bdg-probe-frame';
@@ -180,7 +187,9 @@
             if (d.type !== MSG_TYPE || !MODULES[d.module]) return;
             const mf = mainFrame();
             if (running && event.source === running.f.contentWindow) {
-                if (d.module === running.m) { setMenuBadge(d.module, d.ctx === ctxOf(d.module) ? d.count : 0); setTimeout(finish, 300); }
+                // Trang nạp ngầm có thể báo nhiều phân hệ (Kinh phí: 02 menu con): nhận tất cả, kết thúc khi đã có số của phân hệ đang tính
+                setMenuBadge(d.module, d.ctx === ctxOf(d.module) ? d.count : 0);
+                if (d.module === running.m) setTimeout(finish, 300);
                 return;
             }
             if (mf && event.source === mf.contentWindow) {
