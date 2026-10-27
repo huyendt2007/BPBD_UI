@@ -273,6 +273,8 @@ function tlhdModalHtml() {
                     <div id="tlhdOfflineFileErr" class="gqx-err">${TLHD_OFF_FILE_MSG}</div>
                     <div id="tlhdOffStatusNote" class="tlhd-status-note"><i class="fa-solid fa-circle-info"></i> Khi bấm <strong>Ban hành văn bản</strong>, văn bản được ban hành trực tiếp (không qua bước duyệt của Lãnh đạo trên hệ thống) và hồ sơ chuyển sang trạng thái <strong>${TLHD_OFF_TARGET}</strong>.</div>
                 </div>
+                <!-- Tài liệu ban hành kèm theo + Tài liệu không ban hành kèm theo (Ký số: 02 khối; Ký ngoài: chỉ khối ban hành kèm theo; không bắt buộc) -->
+                <div id="tlhdTlkt" style="margin-top:14px;"></div>
             </div>
         </div>
 
@@ -459,6 +461,8 @@ function tlhdOpenModal() {
     tlhdSetDocSrc(tlhdState.docSrc);
     // Tệp dự thảo tải lên ở lần trình trước (nguồn Tải lên từ máy)
     if (prev && rejected && prev.docSrc === 'upload' && prev.onlineFile) { tlhdState.onlineFile = prev.onlineFile; tlhdRenderDocBox(); }
+    // Tài liệu ban hành kèm theo / không ban hành kèm theo; Trình lại: nạp đúng 02 khối của lần trình trước
+    if (typeof tlktMount === 'function') tlktMount('tlhd', 'tlhdTlkt', { required: false, rows: prev && rejected && prev.attachments ? prev.attachments : [] });
     tlhdSetMethod(tlhdState.method);
     tlhdGoStep1();
     const m = tlhdEl('tlhdModal');
@@ -507,6 +511,7 @@ function tlhdSetMethod(method) {
     tlhdEl('tlhdDocSectionTitle').innerHTML = on
         ? '<i class="fa-solid fa-file-signature"></i> Tệp văn bản trình ký<span class="gqx-req">*</span>'
         : '<i class="fa-solid fa-file-pdf"></i> Tệp văn bản đã ký &amp; đóng dấu<span class="gqx-req">*</span>';
+    if (typeof tlktShow === 'function') tlktShow('tlhd', on);
     tlhdApplyDocMeta();
     tlhdGoStep1();
 }
@@ -764,8 +769,9 @@ function tlhdValidateStep1() {
         const d = tlhdEl('tlhdOnlineDrop'); if (d) d.classList.add('is-error');
         if (!first) first = d;
     }
+    const tlktOk = typeof tlktValidate !== 'function' || tlktValidate('tlhd');
     if (first) { if (first.focus) first.focus(); if (first.scrollIntoView) first.scrollIntoView({ block: 'center' }); return false; }
-    return true;
+    return tlktOk;
 }
 
 // ---------------- Văn bản Mẫu 33/BTNN ----------------
@@ -1060,7 +1066,8 @@ function tlhdSubmitOnline() {
     activeDossier.tlhd = {
         method: 'online', docSrc: tlhdState.docSrc, soQD: d.soQD, ngayQD: d.ngayQD, members: tlhdState.docSrc === 'gen' ? d.members : [],
         fileName, onlineFile: tlhdState.docSrc === 'upload' ? tlhdState.onlineFile : null,
-        levels, assignees: sign.assignees, coords: sign.coords, enableNhay: sign.enableNhay, content: sign.content, level: 0
+        levels, assignees: sign.assignees, coords: sign.coords, enableNhay: sign.enableNhay, content: sign.content, level: 0,
+        attachments: typeof tlktGet === 'function' ? tlktGet('tlhd') : []
     };
     activeDossier.hdPublishType = 'digital';
     activeDossier.hdDecision = d.soQD || 'Chờ cấp số';
@@ -1111,6 +1118,7 @@ function tlhdConfirmIssue(message, onYes) {
     ob.observe(modal, { attributes: true, attributeFilter: ['class'] });
 }
 function tlhdSubmitOffline() {
+    if (typeof tlktValidate === 'function' && !tlktValidate('tlhd')) return;
     if (!tlhdState.offlineFile) {
         const e = tlhdEl('tlhdOfflineFileErr'); e.textContent = TLHD_OFF_FILE_MSG; e.style.display = 'block';
         const d = tlhdEl('tlhdOfflineDrop'); if (d) { d.classList.add('is-error'); d.focus(); }
@@ -1123,7 +1131,8 @@ function tlhdSubmitOffline() {
 function tlhdIssueOffline() {
     if (!tlhdState.offlineFile) return;
     const today = tlhdToday();
-    activeDossier.tlhd = { method: 'offline', docSrc: '', soQD: '', ngayQD: today, members: [], fileName: tlhdState.offlineFile.name, levels: [], assignees: [], level: 0 };
+    // Ký ngoài: Tài liệu ban hành kèm theo (chỉ khối ban hành kèm theo)
+    activeDossier.tlhd = { method: 'offline', docSrc: '', soQD: '', ngayQD: today, members: [], fileName: tlhdState.offlineFile.name, levels: [], assignees: [], level: 0, attachments: typeof tlktGet === 'function' ? tlktGet('tlhd') : [] };
     activeDossier.hdPublishType = 'offline';
     activeDossier.hdDecision = 'Theo tệp văn bản đã ký';
     activeDossier.hdDate = today;

@@ -2846,99 +2846,9 @@
                 <!-- II. THIỆT HẠI YÊU CẦU BỒI THƯỜNG -->
                 <div id="claimMoneySection">
                     <div class="info-group-title">Thiệt hại yêu cầu bồi thường</div>
-                    <div class="table-container" style="margin-bottom: 20px;">
-                        <table class="custom-table">
-                            <thead>
-                                <tr style="background-color: var(--table-header-bg);">
-                                    <th style="width: 50px; text-align: center;">STT</th>
-                                    <th style="width: 250px;">Thiệt hại yêu cầu bồi thường</th>
-                                    <th style="min-width: 300px;">Cách tính / Diễn giải công thức áp dụng</th>
-                                    <th style="width: 200px; text-align: right;">Số tiền yêu cầu bồi thường (đồng)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_1"
-                                            onchange="toggleClaimThietHaiRow(1)"></td>
-                                    <td>1. Tài sản bị xâm phạm</td>
-                                    <td><textarea class="form-control auto-expand" id="claimThietHaiCalc_1" rows="1"
-                                            placeholder="Ví dụ: Giá trị căn nhà gỗ tháo dỡ" disabled
-                                            oninput="autoExpandTextarea(this)"></textarea></td>
-                                    <td><input type="text" class="form-control" style="text-align: right;"
-                                            id="claimThietHaiVal_1" placeholder="0" oninput="formatCurrencyInput(this)"
-                                            disabled></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_2"
-                                            onchange="toggleClaimThietHaiRow(2)"></td>
-                                    <td>2. Thu nhập thực tế bị mất/giảm sút</td>
-                                    <td><textarea class="form-control auto-expand" id="claimThietHaiCalc_2" rows="1"
-                                            placeholder="Ví dụ: Lương 3 tháng không đi làm được" disabled
-                                            oninput="autoExpandTextarea(this)"></textarea></td>
-                                    <td><input type="text" class="form-control" style="text-align: right;"
-                                            id="claimThietHaiVal_2" placeholder="0" oninput="formatCurrencyInput(this)"
-                                            disabled></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_3"
-                                            onchange="toggleClaimThietHaiRow(3)"></td>
-                                    <td>3. Vật chất do người bị thiệt hại chết</td>
-                                    <td><textarea class="form-control auto-expand" id="claimThietHaiCalc_3" rows="1"
-                                            placeholder="Ví dụ: Chi phí mai táng, cấp dưỡng con nhỏ" disabled
-                                            oninput="autoExpandTextarea(this)"></textarea></td>
-                                    <td><input type="text" class="form-control" style="text-align: right;"
-                                            id="claimThietHaiVal_3" placeholder="0" oninput="formatCurrencyInput(this)"
-                                            disabled></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_4"
-                                            onchange="toggleClaimThietHaiRow(4)"></td>
-                                    <td>4. Vật chất do sức khỏe bị xâm phạm</td>
-                                    <td><textarea class="form-control auto-expand" id="claimThietHaiCalc_4" rows="1"
-                                            placeholder="Ví dụ: Chi phí viện phí, thuốc men điều trị" disabled
-                                            oninput="autoExpandTextarea(this)"></textarea></td>
-                                    <td><input type="text" class="form-control" style="text-align: right;"
-                                            id="claimThietHaiVal_4" placeholder="0" oninput="formatCurrencyInput(this)"
-                                            disabled></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_5"
-                                            onchange="toggleClaimThietHaiRow(5)"></td>
-                                    <td>5. Thiệt hại về tinh thần</td>
-                                    <td><textarea class="form-control auto-expand" id="claimThietHaiCalc_5" rows="1"
-                                            placeholder="Quy đổi số ngày tù oan, giam giữ..." disabled
-                                            oninput="autoExpandTextarea(this)"></textarea></td>
-                                    <td><input type="text" class="form-control" style="text-align: right;"
-                                            id="claimThietHaiVal_5" placeholder="0" oninput="formatCurrencyInput(this)"
-                                            disabled></td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: center;"><input type="checkbox" id="claimThietHaiCb_6"
-                                            onchange="toggleClaimThietHaiRow(6)"></td>
-                                    <td>6. Các chi phí hợp lý khác</td>
-                                    <td><textarea class="form-control auto-expand" id="claimThietHaiCalc_6" rows="1"
-                                            placeholder="Ví dụ: Chi phí đi lại nộp đơn khiếu nại" disabled
-                                            oninput="autoExpandTextarea(this)"></textarea></td>
-                                    <td><input type="text" class="form-control" style="text-align: right;"
-                                            id="claimThietHaiVal_6" placeholder="0" oninput="formatCurrencyInput(this)"
-                                            disabled></td>
-                                </tr>
-                                <tr style="background-color: #F8FAFC; font-weight: 700;">
-                                    <td colspan="3" style="text-align: right;">TỔNG CỘNG SỐ TIỀN YÊU CẦU BỒI THƯỜNG:
-                                    </td>
-                                    <td>
-                                        <div
-                                            style="display: flex; flex-direction: column; gap: 4px; text-align: right;">
-                                            <div style="font-size: 16px; color: var(--danger-color);"
-                                                id="claimTotalNumText">0 đồng</div>
-                                            <div style="font-size: 11.5px; font-style: italic; font-weight: normal; color: var(--text-muted);"
-                                                id="claimTotalWordText">Viết bằng chữ: Không đồng</div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <!-- [th2c] Bảng thiệt hại 2 cấp (06 nhóm / 36 mục DM_27): dựng bởi quan_ly_boi_thuong_lth.js (BTNN_TH.tableHtml);
+                         ô tích claimThietHaiCb_<mã mục>, Cách tính claimThietHaiCalc_<mã mục>, Số tiền claimThietHaiVal_<mã mục> -->
+                    <div class="table-container" id="claimThietHaiTreeWrap" style="margin-bottom: 20px;"></div>
                 </div> <!-- KẾT THÚC claimMoneySection -->
 
                 <!-- III. ĐỀ NGHỊ TẠM ỨNG KINH PHÍ -->
@@ -4479,14 +4389,16 @@
     </div>
 
     <!-- Luồng phân công - phê duyệt dùng chung BTNN: nguồn hồ sơ YCBT nhận từ Xác định CQGQBT -->
-    <script src="btnn_luong_xu_ly.js?v=20261026ttgq"></script>
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt5"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261027chot2"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
-    <script src="quan_ly_boi_thuong_dcgq.js?v=20261026dcct"></script>
-    <script src="quan_ly_kinh_phi_kpdc.js?v=20261026kpdc"></script>
-    <script src="quan_ly_boi_thuong_seedx.js?v=20261026sdx"></script>
-    <script src="quan_ly_boi_thuong_hgq.js?v=20261026ycbs"></script>
+    <script src="quan_ly_boi_thuong_dcgq.js?v=20261027tk2"></script>
+    <script src="quan_ly_kinh_phi_kpdc.js?v=20261027chot2"></script>
+    <!-- [th2c] Danh mục Loại thiệt hại 2 cấp (DM_27) + bảng 2 cấp dùng chung -->
+    <script src="btnn_thiet_hai.js?v=20261027th6"></script>
+    <script src="quan_ly_boi_thuong_seedx.js?v=20261027th7"></script>
+    <script src="quan_ly_boi_thuong_hgq.js?v=20261027tk2"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261026htrole"></script>
     <!-- Cử người giải quyết (nhiều cán bộ theo Cơ cấu tổ chức), Xác minh thiệt hại nhiều lần, Văn bản làm căn cứ yêu cầu bồi thường -->
     <script>
@@ -4657,11 +4569,12 @@
             const rows = list.map((o, i) => `<tr><td style="text-align:center;">${i + 1}</td><td style="text-align:left;">${ycEsc(o.name || '-')}</td><td style="text-align:left;">${ycEsc(o.position || '-')}</td><td style="text-align:left;">${ycEsc(o.unit || '-')}</td></tr>`).join('')
                 || '<tr><td colspan="4" style="text-align:center; color:#94a3b8;">-</td></tr>';
             box.innerHTML = `<div class="gqfx-tn-grid">
-                    <div><span class="gqfx-lbl">Nguồn hồ sơ</span>${renderNguonHoSoBadge(claim.nguonHoSo)}</div>
+                    <div><span class="gqfx-lbl">Nguồn hồ sơ</span>${renderNguonHoSoBadge(claim.nguonHoSo, claim)}</div>
                     <div><span class="gqfx-lbl">Ngày tiếp nhận</span>${ycEsc(claim.date || '-')}</div>
                     <div><span class="gqfx-lbl">Ngày thụ lý</span><span id="gqfxNgayThuLy">${ycEsc(gqfxNgayThuLy(claim))}</span></div>
                     <div style="grid-column: 1 / -1;"><span class="gqfx-lbl">Quyết định cử người giải quyết bồi thường</span><span id="gqfxQdLinks">${fileHtml}</span></div>
                 </div>
+                ${qd && typeof tlktViewHtml === 'function' ? `<div style="margin-top:10px;">${tlktViewHtml(qd.attachments || [], { ownerUnit: ((typeof gqRecord === 'function' && gqRecord(claim)) || {}).rootUnitId || '' })}</div>` : ''}
                 <div style="margin-top:12px; font-size:13px;"><span class="gqfx-lbl" style="color:var(--text-muted); font-weight:700; display:block; margin-bottom:6px;">Cán bộ được cử giải quyết</span>
                     <table class="custom-table gqfx-bordered" id="gqfxCbTable" style="background:white; font-size:12.5px;">
                         <thead><tr style="background-color:#f8fafc;"><th style="width:50px; text-align:center;">STT</th><th>Họ và tên</th><th>Chức vụ</th><th>Đơn vị</th></tr></thead>
@@ -8069,7 +7982,7 @@
         // Danh sách vụ việc gồm 02 tab:
         // - "Vụ việc chờ xử lý": hồ sơ còn bước xử lý tiếp theo (thứ tự = thứ tự hiển thị tại bộ lọc Trạng thái).
         // - "Vụ việc đã xử lý": hồ sơ đã kết thúc giải quyết, chỉ xem (không có cột Thao tác).
-        const CLAIM_DONE_TAB_STATES = ['Hoàn thành', 'Từ chối phục hồi danh dự', 'Đình chỉ giải quyết', 'Đã chuyển CQGQBT', 'Không thụ lý'];
+        const CLAIM_DONE_TAB_STATES = ['Hoàn thành', 'Từ chối phục hồi danh dự', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Đã chuyển CQGQBT', 'Không thụ lý'];
         const CLAIM_PENDING_TAB_STATES = [
             'Chờ tiếp nhận', 'Chờ duyệt', 'Bị từ chối', 'Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng',
             'Chờ ban hành QĐ', 'Chờ thực thi', 'Đang phục hồi danh dự', 'Hoãn phục hồi danh dự', 'Hoãn giải quyết', 'Tạm đình chỉ', 'Yêu cầu bổ sung'
@@ -8094,7 +8007,7 @@
         ];
 
         // Màn chi tiết chia 03 tab (Thông tin hồ sơ vụ việc | Chi tiết Giải quyết bồi thường | Phục hồi danh dự) cho hồ sơ từ "Cử người giải quyết bồi thường" trở đi
-        const GQNL_STATUSES_FROM_CU_NGUOI = ['Cử người giải quyết bồi thường', 'Tạm đình chỉ'].concat(CLAIM_STATUSES_FROM_VERIFICATION);
+        const GQNL_STATUSES_FROM_CU_NGUOI = ['Cử người giải quyết bồi thường', 'Tạm đình chỉ', 'Dừng giải quyết'].concat(CLAIM_STATUSES_FROM_VERIFICATION);
         function gqnlIsFromCuNguoi(claim) {
             if (!claim) return false;
             const st = canonicalClaimStatus(claim.status);
@@ -8115,7 +8028,7 @@
         const GQ_CASE_STATUSES = [
             'Chờ tiếp nhận', 'Chờ duyệt', 'Bị từ chối', 'Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng',
             'Chờ ban hành QĐ', 'Chờ thực thi', 'Hoàn thành', 'Đang phục hồi danh dự', 'Hoãn phục hồi danh dự', 'Từ chối phục hồi danh dự',
-            'Hoãn giải quyết', 'Tạm đình chỉ', 'Đình chỉ giải quyết', 'Đã chuyển CQGQBT', 'Không thụ lý', 'Yêu cầu bổ sung'
+            'Hoãn giải quyết', 'Tạm đình chỉ', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Đã chuyển CQGQBT', 'Không thụ lý', 'Yêu cầu bổ sung'
         ];
         // Chuyển CQGQBT: các Trạng thái vụ việc được phép
         const GQ_TRANSFER_CASE_STATES = ['Yêu cầu bổ sung', 'Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Đang phục hồi danh dự', 'Hoãn giải quyết'];
@@ -8351,6 +8264,9 @@
                     : (/bưu/i.test(s) ? HTTN_SRC.BUU_CHINH : /dịch vụ công|môi trường số|dvc/i.test(s) ? HTTN_SRC.MOI_TRUONG_SO : /một cửa/i.test(s) ? HTTN_SRC.MOT_CUA : /trực tiếp/i.test(s) ? HTTN_SRC.TRUC_TIEP : s);
                 return HTTN_VALUES.includes(r) ? r : '';
             };
+            // [cdpd] Giá trị DM_25 do hệ thống gán (VD Cán bộ chủ động phục hồi danh dự khi có đủ thông tin): giữ nguyên
+            const sys = String(value || '').trim();
+            if (sys && W && W.RECEIVE_METHODS && [W.RECEIVE_METHODS.CAN_BO_PHUC_HOI_DANH_DU, W.RECEIVE_METHODS.CAN_BO_NHAP].includes(sys)) return sys;
             return norm(value) || norm(nguonCu) || (normalizeNguonHoSo(nguonCu) === NGUON_HO_SO_DVC ? HTTN_SRC.MOI_TRUONG_SO : HTTN_SRC.TRUC_TIEP);
         }
 
@@ -9543,7 +9459,7 @@
                 </div>`;
             const recvBody = `<div class="grid-3-cols" style="gap:12px 20px; font-size:13px; line-height:1.6;">
                     ${f('Cơ quan giải quyết', e(claim.agency))}
-                    ${f('Nguồn hồ sơ', renderNguonHoSoBadge(claim.nguonHoSo))}
+                    ${f('Nguồn hồ sơ', renderNguonHoSoBadge(claim.nguonHoSo, claim))}
                     ${f('Hình thức tiếp nhận', e(normalizeHinhThucTiepNhan(claim.hinhThucTiepNhan, claim.nguonHoSo)))}
                     ${f('Cán bộ giải quyết', e(getClaimOfficerNamesText(claim)))}
                 </div>`;
@@ -9663,6 +9579,37 @@
             });
         }
 
+        // ===== Dữ liệu claimsList: giữ dữ liệu người dùng khi tải lại trang =====
+        // - Cùng phiên bản dữ liệu mẫu: dùng claimsList đã lưu (kể cả trạng thái hồ sơ mẫu đã chuyển), chỉ bổ sung hồ sơ mẫu chưa có (theo id / Mã hồ sơ).
+        // - Phiên bản dữ liệu mẫu đổi (GQ_SEED_VER hoặc ?v= của tệp dữ liệu mẫu quan_ly_boi_thuong_*.js): bỏ bản ghi mẫu đã lưu để nạp lại,
+        //   giữ bản ghi người dùng tạo (userCreated); dữ liệu mẫu theo phiên bản riêng của add-on (dgq, cdpd, nbth) cũng nạp lại.
+        const GQ_SEED_VER = '20261027i2';
+        const GQ_SEED_VER_KEY = 'claimsList_seed_ver';
+        const GQ_ADDON_SEED_KEYS = ['btnn_dgq_seed_v', 'btnn_cdpd_seed_v', 'gqNbthSeedVersion'];
+        function gqSeedVersion() {
+            const v = Array.from(document.scripts).map(s => s.getAttribute('src') || '')
+                .filter(s => /^(quan_ly_boi_thuong_[a-z0-9]+|tra_cuu_seed_tcvv)\.js\?v=/.test(s)).sort().join('|');
+            return GQ_SEED_VER + '|' + v;
+        }
+        function gqLoadStoredClaims() {
+            const ver = gqSeedVersion();
+            let stored = null;
+            try { stored = JSON.parse(localStorage.getItem('claimsList') || 'null'); } catch (e) { stored = null; }
+            const same = localStorage.getItem(GQ_SEED_VER_KEY) === ver;
+            if (Array.isArray(stored) && stored.length) {
+                let loaded = stored.filter(c => c && typeof c === 'object');
+                if (!same) {
+                    loaded = loaded.filter(c => c.userCreated);
+                    GQ_ADDON_SEED_KEYS.forEach(k => { try { localStorage.removeItem(k); } catch (e) { /* mockup */ } });
+                }
+                claimsList.forEach(m => { if (!loaded.some(c => c.id === m.id || (m.code && c.code === m.code))) loaded.push(m); });
+                claimsList = loaded;
+            } else if (!same) {
+                GQ_ADDON_SEED_KEYS.forEach(k => { try { localStorage.removeItem(k); } catch (e) { /* mockup */ } });
+            }
+            try { localStorage.setItem(GQ_SEED_VER_KEY, ver); } catch (e) { /* mockup */ }
+        }
+
         // Initialize flatpickr on startup
         document.addEventListener('DOMContentLoaded', () => {
             if (!localStorage.getItem('claimsList_v25_supplement_print')) {
@@ -9720,23 +9667,8 @@
                 document.getElementById('claimCreateDate').value = formatDate(today);
             }
 
-            // Force reset mock data for testing updates
-            localStorage.removeItem('claimsList');
-
-            // Load claimsList from localStorage if present
-            const localClaims = localStorage.getItem('claimsList');
-            if (localClaims) {
-                const loadedList = JSON.parse(localClaims);
-                claimsList.forEach(masterClaim => {
-                    const existing = loadedList.find(c => c.id === masterClaim.id);
-                    if (!existing) {
-                        loadedList.push(masterClaim);
-                    } else {
-                        Object.assign(existing, masterClaim);
-                    }
-                });
-                claimsList = loadedList;
-            }
+            // Nạp claimsList đã lưu (giữ hồ sơ người dùng tạo / đã chuyển trạng thái); gộp dữ liệu mẫu theo Mã hồ sơ + phiên bản dữ liệu mẫu
+            gqLoadStoredClaims();
             // Dữ liệu mẫu người yêu cầu là Tổ chức (Mẫu 01/BTNN): bổ sung nếu chưa có, không ghi đè bản ghi đã có
             seedNycOrgSampleClaims();
             // Dữ liệu mẫu các trạng thái kết thúc (quan_ly_boi_thuong_seedx.js): bổ sung nếu chưa có, không ghi đè bản ghi đã có
@@ -9744,7 +9676,7 @@
 
             // Dynamically assign mock dates in current month so they bypass the default date filters on load
             claimsList.forEach((claim, idx) => {
-                if (claim.id && claim.id.startsWith('HS')) {
+                if (claim.id && claim.id.startsWith('HS') && !claim.userCreated) {
                     const dayNum = (idx % 8) + 1;
                     const d = String(dayNum).padStart(2, '0');
                     const m = String(today.getMonth() + 1).padStart(2, '0');
@@ -10223,7 +10155,7 @@
                     <td style="font-size:12px; color:var(--text-muted);">${item.agency || "Chưa phân công"}</td>
                     <td style="font-size:12px; color:var(--text-muted); font-weight: 500;">${getClaimOfficerNamesText(item) || '<span style="color:#94a3b8; font-style:italic;">Chưa phân công</span>'}</td>
                     <td style="text-align:center;">${item.date}</td>
-                    <td style="text-align:center;">${renderNguonHoSoBadge(item.nguonHoSo)}</td>
+                    <td style="text-align:center;">${renderNguonHoSoBadge(item.nguonHoSo, item)}</td>
                     <td class="gqfx-st-cell" style="text-align:center;"><span class="badge ${badgeClass} uxu-st" data-uxu-st="${caseStatusLabel(item)}" title="Trạng thái vụ việc">${caseStatusLabel(item)}</span>${typeof gqApprovalSubLabel === 'function' ? gqApprovalSubLabel(item) : ''}</td>
                     ${actionCellHtml}
                 `;
@@ -10673,7 +10605,11 @@
 
             let total = 0;
             if (requestType !== 'honor') {
-                for (let i = 1; i <= 6; i++) {
+                // [th2c] Nhóm VII. Các thiệt hại khác: bắt buộc Tên / nội dung thiệt hại của từng dòng
+                if (BTNN_TH.validateKhac('claimThietHaiTree')) return;
+                // [th2c] Cách tính / Số tiền của mục đang tích: tô viền đỏ ô lỗi, câu lỗi dưới ô, focus ô lỗi đầu tiên
+                if (BTNN_TH.validateRows('claimThietHaiTree', 'claimThietHaiCalc_', 'claimThietHaiVal_')) return;
+                for (const i of BTNN_TH.codes('claimThietHaiTree')) {
                     const checked = document.getElementById(`claimThietHaiCb_${i}`).checked;
                     if (checked) {
                         const calc = document.getElementById(`claimThietHaiCalc_${i}`).value.trim();
@@ -10983,8 +10919,9 @@
                 document.getElementById('claimRecBankBranch').value = claim.advanceBankBranch || '';
                 toggleClaimRecKenh(recKenh);
 
-                for (let i = 1; i <= 6; i++) {
-                    const found = claim.thietHaiList ? claim.thietHaiList.find(x => x.type === i) : null;
+            if (window.lthNlRender) lthNlRender(claim.thietHaiList); // [th2c] dựng lại bảng thiệt hại (gồm dòng thiệt hại khác của hồ sơ)
+                for (const i of BTNN_TH.codes('claimThietHaiTree')) {
+                    const found = claim.thietHaiList ? claim.thietHaiList.find(x => BTNN_TH.codeOf(x.type) === i) : null;
                     const cb = document.getElementById(`claimThietHaiCb_${i}`);
                     const calcEl = document.getElementById(`claimThietHaiCalc_${i}`);
                     const valEl = document.getElementById(`claimThietHaiVal_${i}`);
@@ -10998,6 +10935,7 @@
                 }
 
                 sumClaimThietHai();
+                BTNN_TH.refresh('claimThietHaiTree', true); // [th2c] nhóm có mục được chọn mở, còn lại thu gọn
                 toggleRecInfoSection();
 
                 const reqRadios = document.getElementsByName('claimRequestType');
@@ -11104,7 +11042,8 @@
                 document.getElementById('claimRecInfoSection').style.display = 'none';
                 toggleClaimRecKenh('tien-mat');
 
-                for (let i = 1; i <= 6; i++) {
+                if (window.lthNlRender) lthNlRender([]); // [th2c]
+                for (const i of BTNN_TH.codes('claimThietHaiTree')) {
                     document.getElementById(`claimThietHaiCb_${i}`).checked = false;
                     const calcEl = document.getElementById(`claimThietHaiCalc_${i}`);
                     calcEl.value = '';
@@ -11116,6 +11055,7 @@
 
                 document.getElementById('claimTotalNumText').innerText = "0 đồng";
                 document.getElementById('claimTotalWordText').innerText = "Viết bằng chữ: Không đồng";
+                BTNN_TH.refresh('claimThietHaiTree', true); // [th2c] bỏ chọn toàn bộ: thu gọn các nhóm, dòng nhóm / tổng về 0
                 const reqRadios = document.getElementsByName('claimRequestType');
                 reqRadios.forEach(r => {
                     r.checked = (r.value === 'both');
@@ -11537,14 +11477,14 @@
                 calc.focus();
             }
 
-            if (idx === 5) {
+            if (BTNN_TH.groupOf(idx) === 'TH_TT') {
                 syncAdvanceTinhThanState();
             }
             toggleRecInfoSection();
         }
 
         function syncAdvanceTinhThanState() {
-            const tThanCb = document.getElementById('claimThietHaiCb_5');
+            const tThanCb = { checked: BTNN_TH.codes().some(c => BTNN_TH.groupOf(c) === 'TH_TT' && (document.getElementById('claimThietHaiCb_' + c) || {}).checked) }; // [th2c] nhóm V - Thiệt hại về tinh thần
             const advInp = document.getElementById('claimAdvanceTinhThan');
 
             if (!tThanCb.checked) {
@@ -11558,7 +11498,7 @@
 
         function sumClaimThietHai() {
             let total = 0;
-            for (let i = 1; i <= 6; i++) {
+            for (const i of BTNN_TH.codes('claimThietHaiTree')) {
                 const valEl = document.getElementById(`claimThietHaiVal_${i}`);
                 const cleanValStr = valEl.value.replace(/\./g, '');
                 const val = parseFloat(cleanValStr) || 0;
@@ -11566,6 +11506,8 @@
             }
             document.getElementById('claimTotalNumText').innerText = `${total.toLocaleString('vi-VN')} đồng`;
             document.getElementById('claimTotalWordText').innerText = `Viết bằng chữ: ${numberToVietnameseWords(total)}`;
+            // [th2c] Dòng nhóm tự cộng các mục chi tiết được chọn
+            if (window.BTNN_TH) BTNN_TH.refresh('claimThietHaiTree');
 
             // Keep receiver details synced
             const name = document.getElementById('claimNYCName').value;
@@ -11595,7 +11537,7 @@
         function toggleRecInfoSection() {
             const needAdvance = document.getElementById('claimNeedAdvance').checked;
             let anyDamageChecked = false;
-            for (let i = 1; i <= 6; i++) {
+            for (const i of BTNN_TH.codes('claimThietHaiTree')) {
                 const cb = document.getElementById(`claimThietHaiCb_${i}`);
                 if (cb && cb.checked) {
                     anyDamageChecked = true;
@@ -11793,7 +11735,7 @@
                 const nhanQua = document.getElementById('claimNhanQua').value || "Chưa có mô tả mối quan hệ nhân quả";
                 let total = 0;
                 let thietHaiRowsHtml = "";
-                for (let i = 1; i <= 6; i++) {
+                for (const i of BTNN_TH.codes('claimThietHaiTree')) {
                     const checked = document.getElementById(`claimThietHaiCb_${i}`).checked;
                     if (checked) {
                         const calc = document.getElementById(`claimThietHaiCalc_${i}`).value || "-";
@@ -11802,8 +11744,8 @@
                         const val = parseFloat(cleanValStr) || 0;
                         total += val;
                         thietHaiRowsHtml += `<tr>
-                            <td style="border: 1px solid black; padding: 8px; text-align: center;">${i}</td>
-                            <td style="border: 1px solid black; padding: 8px;">${thietHaiNames[i - 1]}</td>
+                            <td style="border: 1px solid black; padding: 8px; text-align: center;">${(thietHaiRowsHtml.match(/<tr>/g) || []).length + 1}</td>
+                            <td style="border: 1px solid black; padding: 8px;">${BTNN_TH.name(i)}</td>
                             <td style="border: 1px solid black; padding: 8px;">${calc}</td>
                             <td style="border: 1px solid black; padding: 8px; text-align: right; font-weight: bold;">${val.toLocaleString('vi-VN')} đ</td>
                         </tr>`;
@@ -12218,7 +12160,11 @@
             let thietHaiTinhThanVal = 0;
             let thietHaiKhacTotal = 0;
             if (requestType !== 'honor') {
-                for (let i = 1; i <= 6; i++) {
+                // [th2c] Nhóm VII. Các thiệt hại khác: bắt buộc Tên / nội dung thiệt hại của từng dòng
+                if (BTNN_TH.validateKhac('claimThietHaiTree')) return;
+                // [th2c] Cách tính / Số tiền của mục đang tích: tô viền đỏ ô lỗi, câu lỗi dưới ô, focus ô lỗi đầu tiên
+                if (BTNN_TH.validateRows('claimThietHaiTree', 'claimThietHaiCalc_', 'claimThietHaiVal_')) return;
+                for (const i of BTNN_TH.codes('claimThietHaiTree')) {
                     const checked = document.getElementById(`claimThietHaiCb_${i}`).checked;
                     if (checked) {
                         const calc = document.getElementById(`claimThietHaiCalc_${i}`).value.trim();
@@ -12230,8 +12176,8 @@
                             return;
                         }
                         total += val;
-                        if (i === 5) {
-                            thietHaiTinhThanVal = val;
+                        if (BTNN_TH.groupOf(i) === 'TH_TT') {
+                            thietHaiTinhThanVal += val;
                         } else {
                             thietHaiKhacTotal += val;
                         }
@@ -12301,7 +12247,7 @@
 
             let anyDamageChecked = false;
             if (requestType !== 'honor') {
-                for (let i = 1; i <= 6; i++) {
+                for (const i of BTNN_TH.codes('claimThietHaiTree')) {
                     if (document.getElementById(`claimThietHaiCb_${i}`).checked) {
                         anyDamageChecked = true;
                         break;
@@ -12460,14 +12406,14 @@
                     // Update thietHaiList
                     claim.thietHaiList = [];
                     if (requestType !== 'honor') {
-                        for (let i = 1; i <= 6; i++) {
+                        for (const i of BTNN_TH.codes('claimThietHaiTree')) {
                             const checked = document.getElementById(`claimThietHaiCb_${i}`).checked;
                             if (checked) {
                                 const calc = document.getElementById(`claimThietHaiCalc_${i}`).value.trim();
                                 const valEl = document.getElementById(`claimThietHaiVal_${i}`);
                                 const cleanValStr = valEl.value.replace(/\./g, '');
                                 const val = parseFloat(cleanValStr) || 0;
-                                claim.thietHaiList.push({ type: i, calc: calc, val: val });
+                                claim.thietHaiList.push(Object.assign({ type: i, code: i, group: BTNN_TH.groupOf(i), calc: calc, val: val }, BTNN_TH.isKhac(i) ? { name: BTNN_TH.khacValue('claimThietHaiTree', i) } : {}));
                             }
                         }
                     }
@@ -12508,6 +12454,7 @@
             claimsList.unshift({
                 id: newId,
                 code: newCode,
+                userCreated: true, // hồ sơ người dùng tạo: giữ khi đổi phiên bản dữ liệu mẫu (gqLoadStoredClaims)
                 maVuViec: maVuViec,
                 vuViecLienQuan: vuViecLienQuan,
                 fieldGroup: fieldGroup,
@@ -13098,29 +13045,15 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
 
             // READ-ONLY VIEW
             let thHtml = '';
-            const items = [
-                "1. Tài sản bị xâm phạm",
-                "2. Thu nhập thực tế bị mất/giảm sút",
-                "3. Vật chất do người bị thiệt hại chết",
-                "4. Vật chất do sức khỏe bị xâm phạm",
-                "5. Thiệt hại về tinh thần",
-                "6. Các chi phí hợp lý khác"
-            ];
-
-            items.forEach((itemText, idx) => {
-                const typeNum = idx + 1;
-                const found = claim.thietHaiList ? claim.thietHaiList.find(x => x.type === typeNum) : null;
-                const isChecked = !!found;
-                const checkIcon = isChecked ? '<i class="fa-solid fa-square-check" style="color:var(--secondary-color); font-size:14px;"></i>' : '<i class="fa-regular fa-square" style="color:var(--text-muted); font-size:14px;"></i>';
-                const calcText = isChecked ? found.calc : '<span style="color:var(--text-muted); font-style:italic;">Không yêu cầu</span>';
-                const valText = isChecked ? found.val.toLocaleString('vi-VN') + ' đ' : '0 đ';
-                const rowStyle = isChecked ? 'font-weight:600; background-color:#FAFBFD;' : 'color:var(--text-muted); opacity:0.85;';
-
-                thHtml += `<tr style="${rowStyle}">
-                        <td><strong>${itemText}</strong></td>
-                        <td>${calcText}</td>
-                        <td style="text-align:right; font-weight:600;">${valText}</td>
-                    </tr>`;
+            // [th2c] Thiệt hại yêu cầu bồi thường (chỉ xem): 02 cấp nhóm / mục chi tiết, chỉ hiển thị nhóm và mục có yêu cầu (không gồm mục bổ sung tại Xác minh / Thương lượng)
+            thHtml = BTNN_TH.rowsHtml({
+                list: (claim.thietHaiList || []).filter(x => !x.bs),
+                cols: [
+                    { k: 'calc', td: (code, d) => ycEsc((d && d.calc) || '--') },
+                    { k: 'req', sum: true, align: 'right', v: (code, d) => (d && d.val) || 0, td: (code, d) => BTNN_TH.fmt(d && d.val) + ' đ' }
+                ],
+                total: false,
+                empty: 'Không có thiệt hại yêu cầu bồi thường'
             });
 
             let filesHtml = '';
@@ -13197,7 +13130,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 `;
             }
 
-            const nguonHoSoBadge = renderNguonHoSoBadge(claim.nguonHoSo);
+            const nguonHoSoBadge = renderNguonHoSoBadge(claim.nguonHoSo, claim);
             const xdTransferHtml = claim.xdCode ? `
                         <div><strong style="color:var(--text-muted);">Mã hồ sơ XĐCQ liên quan:</strong> <br><span style="font-weight:700; color:#475569;">${escapeHtml(claim.xdCode)}</span> <span style="font-size:12px; color:#64748b; font-style:italic;">(Không cho phép xem lại)</span></div>
                         <div style="grid-column: span 2;"><strong style="color:var(--text-muted);">Nội dung chuyển xử lý:</strong> <br>${claim.transferContent || '--'}</div>
@@ -13230,6 +13163,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     <div class="grid-4-cols" style="gap: 12px 20px; font-size: 13px; line-height: 1.6;">
                         ${dF('Tên tổ chức bị thiệt hại', `<span style="text-transform:uppercase; font-weight:700; color:var(--text-main);">${dE(claim.nbthOrgName)}</span>`, 2)}
                         ${dF('Mã số tổ chức', dE(claim.nbthOrgCode))}
+                        ${typeof nbthGqOrgAddrHtml === 'function' ? nbthGqOrgAddrHtml(claim, dF, dE) : ''}
                     </div>
                 </div>` : '';
             const nbthData = claim.nbth && nycRoleDt !== NBTH_ROLE && nycRoleDt !== NYC_ROLE_TO_CHUC_KE_THUA ? claim.nbth : null;
@@ -13239,6 +13173,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         <i class="fa-solid fa-user-injured"></i> THÔNG TIN NGƯỜI BỊ THIỆT HẠI
                     </div>
                     <div class="grid-4-cols" style="gap: 12px 20px; font-size: 13px; line-height: 1.6;">
+                        ${typeof nbthGqDetailHtml === 'function' ? nbthGqDetailHtml(nbthData, dF, dE) : `
                         <div><strong style="color:var(--text-muted);">Họ và tên:</strong> <br><span style="text-transform:uppercase; font-weight:700; color:var(--text-main);">${nbthData.name || '--'}</span></div>
                         <div><strong style="color:var(--text-muted);">Ngày sinh:</strong> <br>${nbthData.dob || '--'}</div>
                         <div><strong style="color:var(--text-muted);">Loại giấy tờ thân nhân:</strong> <br>${ycEsc(normClaimDocType(nbthData.docType)) || '--'}</div>
@@ -13248,7 +13183,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         <div><strong style="color:var(--text-muted);">Số điện thoại:</strong> <br>${nbthData.phone || '--'}</div>
                         <div><strong style="color:var(--text-muted);">Email:</strong> <br>${nbthData.email || '--'}</div>
                         <div><strong style="color:var(--text-muted);">Quốc gia:</strong> <br>${nbthData.country || '--'}</div>
-                        <div style="grid-column: span 4;"><strong style="color:var(--text-muted);">Địa chỉ:</strong> <br>${joinClaimAddress(nbthData.address, stripWardCode(nbthData.ward), nbthData.city) || '--'}</div>
+                        <div style="grid-column: span 4;"><strong style="color:var(--text-muted);">Địa chỉ:</strong> <br>${joinClaimAddress(nbthData.address, stripWardCode(nbthData.ward), nbthData.city) || '--'}</div>`}
                     </div>
                 </div>` : '');
             const report = getClaimReport(claim);
@@ -13313,7 +13248,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         <div><strong style="color:var(--text-muted);">Nguồn hồ sơ:</strong> <br>${nguonHoSoBadge}</div>
                         <div><strong style="color:var(--text-muted);">Hình thức tiếp nhận:</strong> <br><span style="font-weight:600; color:var(--text-main);">${normalizeHinhThucTiepNhan(claim.hinhThucTiepNhan, claim.nguonHoSo)}</span></div>
                         <div><strong style="color:var(--text-muted);">Lĩnh vực phát sinh thiệt hại:</strong> <br><span style="text-transform:uppercase; font-weight:600; font-size:11px; color:var(--primary-color);">TRONG HOẠT ĐỘNG ${(claim.fieldGroup || '').toUpperCase()}</span></div>
-                        <div><strong style="color:var(--text-muted);">Loại yêu cầu giải quyết bồi thường:</strong> <br><span style="font-weight:600; color:var(--text-main);">${({ both: 'Yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự)', money: 'Chỉ yêu cầu bồi thường thiệt hại bằng tiền', honor: 'Chỉ yêu cầu phục hồi danh dự' })[claim.requestType] || '-'}</span></div>
+                        <div><strong style="color:var(--text-muted);">Loại yêu cầu giải quyết bồi thường:</strong> <br><span style="font-weight:600; color:var(--text-main);">${({ both: 'Yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự)', money: 'Chỉ yêu cầu bồi thường thiệt hại bằng tiền', honor: 'Chỉ yêu cầu phục hồi danh dự' })[claim.requestType] || '-'}</span>${claim.phddBs ? '<div id="claimPhddBsInfo" style="font-size:12.5px; margin-top:2px;">Yêu cầu phục hồi danh dự: Có (Bổ sung tại bước ' + (claim.phddBsStep === 'tl' ? 'Thương lượng' : 'Xác minh thiệt hại') + ')</div>' : ''}</div>
                         <div><strong style="color:var(--text-muted);">Cơ quan giải quyết bồi thường:</strong> <br>${claim.agency || '--'}</div>
                         ${xdTransferHtml}
                         <div><strong style="color:var(--text-muted);">Ngày văn bản yêu cầu bồi thường:</strong> <br>${claim.requestDocDate || '--'}</div>
@@ -13341,10 +13276,11 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     </div>
                     
                     <div class="table-container" style="margin-bottom: 15px;">
-                        <table class="custom-table">
+                        ${BTNN_TH.toolbar('claimThietHaiRead')}
+                        <table class="custom-table bth-table" id="claimThietHaiRead">
                             <thead>
                                 <tr style="background-color: var(--table-header-bg);">
-                                    <th style="width: 280px;">Thiệt hại yêu cầu bồi thường</th>
+                                    <th style="min-width: 320px;">Thiệt hại yêu cầu bồi thường</th>
                                     <th style="min-width: 300px;">Cách tính / Diễn giải công thức áp dụng</th>
                                     <th style="width: 220px; text-align: right;">Số tiền yêu cầu bồi thường (đồng)</th>
                                 </tr>
@@ -16813,7 +16749,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         <div class="error-message" id="tlptNycErr" style="color:#dc2626; font-size:12px; display:none;">Đây là trường bắt buộc</div>
                     </div>
                     <span class="form-label" style="color:#166534; font-weight:700;">Kết quả thương lượng theo từng thiệt hại yêu cầu bồi thường</span>
-                    <div style="font-size:12px; color:#475569; margin-top:2px;">Danh sách thiệt hại lấy theo Kết quả xác minh thiệt hại. Trạng thái thương lượng được cập nhật trên từng dòng; Lý do diễn giải bắt buộc khi Không thành công.</div>
+                    <div style="font-size:12px; color:#475569; margin-top:2px;">Danh sách thiệt hại lấy theo Kết quả xác minh thiệt hại. Trạng thái thương lượng (Thành công / Không thành công / Không tiếp tục thương lượng) bắt buộc trên từng dòng được tích; chỉ mục Thành công nhập Mức tiền bồi thường và được tính vào tổng; Lý do diễn giải bắt buộc khi Không thành công / Không tiếp tục thương lượng.</div>
                     <div class="table-container" style="overflow-x:auto;">
                         <table class="custom-table" id="tlItemsTable" style="margin:8px 0 12px; background:white; font-size:12.5px;">
                             <thead><tr style="background-color: var(--table-header-bg);">
@@ -16870,7 +16806,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         function tlReasonRequired(i) {
             const sel = document.getElementById('tlStatus_' + i);
             const reason = document.getElementById('tlReason_' + i);
-            if (sel && reason && sel.value !== 'Không thành công') fieldErr(reason, false);
+            if (sel && reason && (sel.value === 'Thành công' || !sel.value)) fieldErr(reason, false);
         }
         // Bảng tài liệu (biên bản thương lượng / minh chứng): STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file / Xóa); nút Thêm tài liệu dưới bảng (bản dùng thực tế: quan_ly_boi_thuong_ctvv.js)
         function tlSyncDocs(k) {
@@ -16971,10 +16907,12 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 const reasonEl = document.getElementById('tlReason_' + i);
                 const status = statusEl.value;
                 const reason = reasonEl.value.trim();
-                check(agreedEl, !agreedEl.value.trim());
+                // [tlst] Mức tiền bồi thường chỉ nhập / bắt buộc khi Trạng thái thương lượng = Thành công; Lý do diễn giải không bắt buộc
+                check(agreedEl, status === 'Thành công' && !agreedEl.value.trim());
                 check(statusEl, !status);
-                check(reasonEl, status === 'Không thành công' && !reason);
-                return { key: it.key, label: it.label, proposed: Number(it.proposed) || 0, verified: Number(it.verified) || 0, agreed: tlMoney(agreedEl.value), status, reason };
+                // [tlst] Lý do diễn giải bắt buộc khi Không thành công / Không tiếp tục thương lượng
+                check(reasonEl, (status === 'Không thành công' || status === 'Không tiếp tục thương lượng') && !reason);
+                return { key: it.key, label: it.label, proposed: Number(it.proposed) || 0, verified: Number(it.verified) || 0, agreed: status === 'Thành công' ? tlMoney(agreedEl.value) : 0, status, reason };
             });
             const payment = tlptPayCollect(check);
             tlSyncDocs('docs');
@@ -17010,13 +16948,14 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             claim.status = 'Chờ ban hành QĐ';
             if (!Array.isArray(claim.timeline)) claim.timeline = [];
             const okCount = (neg.items || []).filter(x => x.status === 'Thành công').length;
-            const failCount = (neg.items || []).length - okCount;
+            const failCount = (neg.items || []).filter(x => x.status === 'Không thành công').length;
+            const stopCount = (neg.items || []).filter(x => x.status === 'Không tiếp tục thương lượng').length;
             claim.timeline.push({
                 title: 'Thương lượng bồi thường',
                 date: now.toLocaleDateString('vi-VN'),
                 desc: neg.participation !== 'DONG_Y'
                     ? `${neg.decision}. Hồ sơ chuyển sang [Chờ ban hành QĐ] (đề xuất bồi thường theo Kết quả xác minh thiệt hại).`
-                    : `Đồng ý thương lượng ngày ${neg.date} tại ${neg.place}: ${okCount} mục thành công, ${failCount} mục không thành công. Hồ sơ chuyển sang [Chờ ban hành QĐ].`,
+                    : `Đồng ý thương lượng ngày ${neg.date} tại ${neg.place}: ${okCount} mục thành công, ${failCount} mục không thành công, ${stopCount} mục không tiếp tục thương lượng. Hồ sơ chuyển sang [Chờ ban hành QĐ].`,
                 status: 'completed'
             });
             persistXmTlData(claim);
@@ -17889,6 +17828,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         }
 
         function getThietHaiName(type) {
+            // [th2c] Mã mục chi tiết DM_27 (dữ liệu cũ 1..6 quy đổi sang mục _01 của nhóm)
+            if (window.BTNN_TH && BTNN_TH.codeOf(type)) return BTNN_TH.name(type);
             if (type >= 1 && type <= 6) {
                 return thietHaiNames[type - 1];
             }
@@ -19225,6 +19166,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     </div>
                     <!-- Lãnh đạo các cấp ký duyệt: chọn tại Bước 2 "Kéo ô ký & chọn Lãnh đạo" -->
                 </div>
+                <!-- Tài liệu ban hành kèm theo + Tài liệu không ban hành kèm theo (Ký số: 02 khối; Ký ngoài: chỉ khối ban hành kèm theo; không bắt buộc) - btnn_tai_lieu_kem_theo.js dựng -->
+                <div id="mraTlkt"></div>
 
             </div>
 
@@ -19547,7 +19490,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     </div>
                 </div>
 
-                <!-- Tài liệu kèm theo (chỉ khi Ký số trên hệ thống; không bắt buộc) - bảng do btnn_tai_lieu_kem_theo.js dựng -->
+                <!-- Tài liệu ban hành kèm theo + Tài liệu không ban hành kèm theo (Ký số: 02 khối; Ký ngoài: chỉ khối ban hành kèm theo; không bắt buộc) - btnn_tai_lieu_kem_theo.js dựng -->
                 <div id="ktlTlkt"></div>
 
             </div>
@@ -19843,6 +19786,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         <div id="tndxOffStatusNote" class="ktlx-status-note"><i class="fa-solid fa-circle-info"></i> Khi bấm <strong>Ban hành văn bản</strong>, văn bản được ban hành trực tiếp (không qua bước duyệt của Lãnh đạo trên hệ thống) và hồ sơ chuyển sang trạng thái <strong>Cử người giải quyết bồi thường</strong>.</div>
                     </div>
                 </div>
+                <!-- Tài liệu ban hành kèm theo + Tài liệu không ban hành kèm theo (Ký số: 02 khối; Ký ngoài: chỉ khối ban hành kèm theo; không bắt buộc) - btnn_tai_lieu_kem_theo.js dựng -->
+                <div id="tndTlkt"></div>
             </div>
 
             <!-- BƯỚC 2: Kéo ô ký & chọn Lãnh đạo trên văn bản A4 Mẫu 04/BTNN (trường hợp Thụ lý) -->
@@ -20044,6 +19989,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                         <div class="ktlx-status-note"><i class="fa-solid fa-circle-info"></i> Khi bấm <strong>Ban hành văn bản</strong>, văn bản được ban hành trực tiếp (không qua bước duyệt của Lãnh đạo trên hệ thống) và hồ sơ chuyển sang trạng thái <strong>Xác minh thiệt hại</strong> (vụ việc chỉ yêu cầu phục hồi danh dự: <strong>Đang phục hồi danh dự</strong>).</div>
                     </div>
                 </div>
+                <!-- Tài liệu ban hành kèm theo + Tài liệu không ban hành kèm theo (Ký số: 02 khối; Ký ngoài: chỉ khối ban hành kèm theo; không bắt buộc) - btnn_tai_lieu_kem_theo.js dựng -->
+                <div id="cngTlkt"></div>
             </div>
 
             <!-- BƯỚC 2: Kéo ô ký & chọn Lãnh đạo trên văn bản A4 Mẫu 06/BTNN -->
@@ -20308,9 +20255,10 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 setInputValue('claimNYCCityText', getClaimCity(claim));
             }
 
+            if (window.lthNlRender) lthNlRender(claim.thietHaiList); // [th2c] dựng lại bảng thiệt hại (gồm dòng thiệt hại khác của hồ sơ)
             if (claim.thietHaiList && claim.thietHaiList.length > 0) {
-                for (let i = 1; i <= 6; i++) {
-                    const found = claim.thietHaiList.find(x => x.type === i);
+                for (const i of BTNN_TH.codes('claimThietHaiTree')) {
+                    const found = claim.thietHaiList.find(x => BTNN_TH.codeOf(x.type) === i);
                     const cb = document.getElementById(`claimThietHaiCb_${i}`);
                     const calcEl = document.getElementById(`claimThietHaiCalc_${i}`);
                     const valEl = document.getElementById(`claimThietHaiVal_${i}`);
@@ -20323,6 +20271,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     }
                 }
                 sumClaimThietHai();
+                BTNN_TH.refresh('claimThietHaiTree', true);
             }
 
             if (claim.files && claim.files.length > 0) {
@@ -21132,6 +21081,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             if (typeof ttgqOnApplied === 'function') ttgqOnApplied(c, r, st);
             // Đình chỉ giải quyết được Ký duyệt cấp cuối: liên thông bản ghi Tạm ứng kinh phí/Chi trả (tự hủy / Chờ thu hồi) - quan_ly_kinh_phi_kpdc.js
             if (typeof kpdcOnApplied === 'function') kpdcOnApplied(c, r, st);
+            // Dừng giải quyết được Ký duyệt cấp cuối: lưu văn bản đã ký, tài liệu kèm theo (quan_ly_boi_thuong_dgq.js); nhánh Phục hồi danh dự giữ nguyên
+            if (typeof dgqOnApplied === 'function') dgqOnApplied(c, r, st);
             if (!Array.isArray(c.timeline)) c.timeline = [];
             const last = (r.history || [])[(r.history || []).length - 1];
             const atDate = last && last.at ? String(last.at).replace(/^\d{2}:\d{2}\s+/, '') : gqToday();
@@ -21828,6 +21779,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             // Bước 2: các cấp ký theo luồng đã cấu hình; ô ký chỉ sinh khi bấm Đặt chữ ký
             tndEl('tndSignContent').value = back && back.content ? back.content : 'Kính trình Lãnh đạo xem xét, phê duyệt tiếp nhận hồ sơ và văn bản Thông báo thụ lý hồ sơ yêu cầu bồi thường.';
             gqSignInit('tnd', claim, back && Array.isArray(back.assignees) ? back.assignees : null);
+            // Tài liệu ban hành kèm theo / không ban hành kèm theo; Trình lại: nạp đúng 02 khối của lần trình trước
+            if (typeof tlktMount === 'function') tlktMount('tnd', 'tndTlkt', { required: false, rows: (back && back.signDoc && back.signDoc.attachments) || [] });
 
             tndOfflineRemove();
             const offErr = tndEl('tndOfflineFileErr'); if (offErr) offErr.style.display = 'none';
@@ -21879,6 +21832,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             show('tndDocSrcGroup', isOnline);
             show('tndOnlineSection', isOnline);
             show('tndOfflineSection', !isOnline);
+            if (typeof tlktShow === 'function') tlktShow('tnd', isOnline);
             show('tndBtnSubmitOffline', !isOnline, 'inline-flex');
             show('tndBtnNextStep', isOnline, 'inline-flex');
             const t = tndEl('tndDocSectionTitle');
@@ -22037,6 +21991,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             let first = null;
             if (tndDocSrc === 'gen') first = tndValidateMeta();
             else if (!tndOnlineFile) { tndEl('tndDocFileError').style.display = 'block'; first = tndEl('tndOnlineFileInput'); }
+            if (typeof tlktValidate === 'function' && !tlktValidate('tnd') && !first) first = tndEl('tndTlkt');
             if (first) {
                 if (first.focus && first.type !== 'file') first.focus();
                 showToast('Vui lòng nhập đầy đủ các trường bắt buộc.', 'warning');
@@ -22079,10 +22034,10 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 assignee: sign.assignees[0] || '',
                 assignees: sign.assignees,
                 draftDoc,
-                signDoc: { method: 'Ký số', file: gen ? gqThuLyDocBaseName(claim) + '.pdf' : fileName, enableRoomSig: sign.enableNhay, sigCoords: sign.coords }
+                signDoc: { method: 'Ký số', file: gen ? gqThuLyDocBaseName(claim) + '.pdf' : fileName, enableRoomSig: sign.enableNhay, sigCoords: sign.coords, attachments: typeof tlktGet === 'function' ? tlktGet('tnd') : [] }
             });
             if (!res || res.ok === false) { showToast(res ? res.message : 'Không trình được hồ sơ.', 'error'); return; }
-            gqSaveData(claim, { thongBaoThuLy: { soKyHieu, ngay, noiNhan, fileName, formNo: GQ_FORM_04, bodyHtml: draftDoc.bodyHtml, signingMethod: 'Ký số', submittedAt: gqNow() } });
+            gqSaveData(claim, { thongBaoThuLy: { soKyHieu, ngay, noiNhan, fileName, formNo: GQ_FORM_04, bodyHtml: draftDoc.bodyHtml, signingMethod: 'Ký số', submittedAt: gqNow(), attachments: typeof tlktGet === 'function' ? tlktGet('tnd') : [] } });
             const msg = tndAfterMsg;
             closeTndModal();
             gqAfterSubmit(claim, 'Tiếp nhận hồ sơ');
@@ -22126,7 +22081,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             if (!Array.isArray(claim.timeline)) claim.timeline = [];
             claim.timeline.push({ title: 'Ban hành Thông báo thụ lý (Ký ngoài)', date: gqToday(), desc: `Ban hành văn bản Mẫu 04/BTNN - Thông báo thụ lý hồ sơ yêu cầu bồi thường đã ký ngoài hệ thống (${file}). Hồ sơ chuyển sang trạng thái [Cử người giải quyết bồi thường].`, status: 'completed' });
             try { gqEnsureRecord(claim); } catch (e) { /* mockup: bỏ qua lỗi luồng */ }
-            gqSaveData(claim, { thongBaoThuLy: { soKyHieu: '', ngay: '', noiNhan: [], fileName: file, formNo: GQ_FORM_04, signingMethod: 'Ký ngoài', signedFile: file, issuedAt: gqNow() } });
+            gqSaveData(claim, { thongBaoThuLy: { soKyHieu: '', ngay: '', noiNhan: [], fileName: file, formNo: GQ_FORM_04, signingMethod: 'Ký ngoài', signedFile: file, issuedAt: gqNow(), attachments: typeof tlktGet === 'function' ? tlktGet('tnd') : [] } });
             if (typeof ensureAdvanceProposalForClaim === 'function') ensureAdvanceProposalForClaim(claim);
             const msg = tndAfterMsg;
             closeTndModal();
@@ -22338,6 +22293,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             // Bước 2: các cấp ký theo luồng đã cấu hình; ô ký chỉ sinh khi bấm Đặt chữ ký
             cngEl('cngSignContent').value = back && back.content ? back.content : CNG_SIGN_CONTENT_DEFAULT;
             gqSignInit('cng', claim, back && Array.isArray(back.assignees) ? back.assignees : null);
+            // Tài liệu ban hành kèm theo / không ban hành kèm theo; Trình lại: nạp đúng 02 khối của lần trình trước
+            if (typeof tlktMount === 'function') tlktMount('cng', 'cngTlkt', { required: false, rows: (back && back.signDoc && back.signDoc.attachments) || [] });
 
             cngOfflineRemove();
             const offErr = cngEl('cngOfflineFileErr'); if (offErr) offErr.style.display = 'none';
@@ -22398,6 +22355,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             show('cngDocSrcGroup', isOnline);
             show('cngOnlineSection', isOnline);
             show('cngOfflineSection', !isOnline);
+            if (typeof tlktShow === 'function') tlktShow('cng', isOnline);
             show('cngBtnSubmitOffline', !isOnline, 'inline-flex');
             show('cngBtnNextStep', isOnline, 'inline-flex');
             const t = cngEl('cngDocSectionTitle');
@@ -22552,6 +22510,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             let first = cngValidateOfficer();
             if (cngDocSrc === 'gen') { const m = cngValidateMeta(); first = first || m; }
             else if (!cngOnlineFile) { cngEl('cngDocFileError').style.display = 'block'; first = first || cngEl('cngOnlineFileInput'); }
+            if (typeof tlktValidate === 'function' && !tlktValidate('cng') && !first) first = cngEl('cngTlkt');
             if (first) {
                 if (first.focus && first.type !== 'file') first.focus();
                 showToast('Vui lòng nhập đầy đủ các trường bắt buộc.', 'warning');
@@ -22641,21 +22600,24 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const fileName = cngOnlineFile.name;
             const action = { type: 'cuNguoi', officers: gqnlWfOfficers(f.officers), officersText: f.officers, soKyHieu: gen ? f.soKyHieu : '', ngay: gen ? f.ngay : '', noiNhan: gen ? f.noiNhan : [] };
             const now = W.nowText();
+            // Tài liệu ban hành kèm theo / không ban hành kèm theo của lần trình
+            const cngDocs = typeof tlktGet === 'function' ? tlktGet('cng') : [];
             // Trình theo luồng chung (BTNN_WF.submitForApproval): Thủ trưởng trình được ở hồ sơ Cử người giải quyết bồi thường / Bị từ chối với Loại trình này
             const res = W.submitForApproval(claim.code, CNG_KIND, sign.content, [], {
                 assignee: sign.assignees[0] || '', assignees: sign.assignees,
                 draftDoc: { source: gen ? 'generated' : 'uploaded', formNo: GQ_FORM_06, docTitle: 'Quyết định cử người giải quyết bồi thường', generatedName: gen ? fileName : '', uploadedName: gen ? '' : fileName, soKyHieu: action.soKyHieu, ngay: action.ngay, noiNhan: action.noiNhan, bodyHtml },
-                signDoc: { method: 'Ký số', file: gen ? cngDocBaseName(claim) + '.pdf' : fileName, enableRoomSig: sign.enableNhay, sigCoords: sign.coords },
+                signDoc: { method: 'Ký số', file: gen ? cngDocBaseName(claim) + '.pdf' : fileName, enableRoomSig: sign.enableNhay, sigCoords: sign.coords, attachments: cngDocs },
                 resultStatus: claimRequestKind(claim) === 'honor' ? 'Đang phục hồi danh dự' : 'Xác minh thiệt hại', action
             });
             if (!res || !res.ok) { showToast(res ? res.message : 'Không trình được hồ sơ.', 'error'); return; }
+            if (cngDocs.length && typeof tlktTagHistory === 'function') tlktTagHistory(W, res.record, cngDocs);
             const path = res.record.approval.path;
             gqRecMap[claim.code] = res.record;
             claim.status = 'Chờ duyệt';
             claim.wfReturned = null;
             if (!Array.isArray(claim.timeline)) claim.timeline = [];
             claim.timeline.push({ title: `Trình Lãnh đạo: ${CNG_KIND}`, date: gqToday(), desc: `Trình ${sign.assignees[0] ? W.userName(sign.assignees[0]) + ' - ' : ''}${W.unitName(path[0])} ký duyệt [${CNG_KIND}] (${path.length} cấp). Hồ sơ chuyển sang trạng thái [Chờ duyệt].`, status: 'active' });
-            gqSaveData(claim, { qdCuNguoi: { status: 'Chờ ký duyệt', officers: f.officers, soKyHieu: action.soKyHieu, ngay: action.ngay, noiNhan: action.noiNhan, fileName, formNo: GQ_FORM_06, bodyHtml, signingMethod: 'Ký số', submittedAt: now } });
+            gqSaveData(claim, { qdCuNguoi: { status: 'Chờ ký duyệt', officers: f.officers, soKyHieu: action.soKyHieu, ngay: action.ngay, noiNhan: action.noiNhan, fileName, formNo: GQ_FORM_06, bodyHtml, signingMethod: 'Ký số', submittedAt: now, attachments: cngDocs } });
             closeCngModal();
             saveClaimsToLocal();
             renderClaimsTable();
@@ -22708,7 +22670,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             // Cán bộ được cử theo Họ và tên nhập trên popup
             const patch = gqnlApplyTextOfficers(cngOfficerPatchFromRec(r), f.officers, at);
             const file = cngOfflineFile.name;
-            const qd = { status: 'Đã ban hành', officers: patch.appointedOfficers || [], fileName: file, formNo: GQ_FORM_06, signingMethod: 'Ký ngoài', signedFile: file, issuedAt: at };
+            // Ký ngoài: Tài liệu ban hành kèm theo (chỉ khối ban hành kèm theo)
+            const qd = { status: 'Đã ban hành', officers: patch.appointedOfficers || [], fileName: file, formNo: GQ_FORM_06, signingMethod: 'Ký ngoài', signedFile: file, issuedAt: at, attachments: typeof tlktGet === 'function' ? tlktGet('cng') : [] };
             r.gqData = Object.assign({}, r.gqData || {}, JSON.parse(JSON.stringify(patch)), { qdCuNguoi: qd });
             W.addHistory(r, 'Ban hành văn bản', `Ban hành Quyết định cử người giải quyết bồi thường (Mẫu 06/BTNN) đã ký ngoài hệ thống (${file}).`);
             W.upsertRecord(r);
@@ -23055,6 +23018,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const mraContentEl = document.getElementById('mraSignContent');
             if (mraContentEl) mraContentEl.value = 'Kính trình Lãnh đạo xem xét, phê duyệt văn bản Thông báo yêu cầu bổ sung hồ sơ yêu cầu bồi thường.';
             gqSignInit('mra', claim, mraPrev);
+            // Tài liệu ban hành kèm theo / không ban hành kèm theo (Ký số mặc định); Trình lại: nạp đúng 02 khối của lần trình trước
+            const mraPrevSd = mraPrev && mraRec.approval.signDoc;
+            if (typeof tlktMount === 'function') tlktMount('mra', 'mraTlkt', { required: false, rows: (mraPrevSd && mraPrevSd.attachments) || [] });
 
             // Reset step to 1
             goToMraStep1();
@@ -23127,6 +23093,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             mraxRenderStepper(isOnline);
             if (onlineSection) onlineSection.style.display = isOnline ? 'block' : 'none';
             if (offlineSection) offlineSection.style.display = isOnline ? 'none' : 'block';
+            if (typeof tlktShow === 'function') tlktShow('mra', isOnline);
             if (btnSubmitOffline) btnSubmitOffline.style.display = isOnline ? 'none' : 'inline-flex';
             if (btnNextStep) btnNextStep.style.display = isOnline ? 'inline-flex' : 'none';
         }
@@ -23543,6 +23510,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 reason.classList.remove('is-invalid');
                 document.getElementById('mraContentReasonError').style.display = 'none';
             }
+            // Tài liệu ban hành kèm theo / không ban hành kèm theo (không bắt buộc): dòng đã nhập phải đủ Tên và Tệp
+            if (typeof tlktValidate === 'function' && !tlktValidate('mra')) { isValid = false; if (!firstErrEl) firstErrEl = document.getElementById('mraTlkt'); }
 
             if (!mraCurrentFile) {
                 document.getElementById('mraDocFileError').textContent = 'Đây là trường bắt buộc';
@@ -23768,7 +23737,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 action: 'Yêu cầu bổ sung',
                 reason: reason.value.trim(),
                 method: 'Ký ngoài',
-                file: mraOfflineFile.name
+                file: mraOfflineFile.name,
+                // Ký ngoài: Tài liệu ban hành kèm theo (chỉ khối ban hành kèm theo)
+                attachments: typeof tlktGet === 'function' ? tlktGet('mra') : []
             });
 
             // Đóng popup nhưng giữ hồ sơ đang xử lý để lưu kết quả (closeRequireAdditionModal xóa selectedMraClaim)
@@ -23829,7 +23800,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     assignee: officerRoom,
                     assignees: sign.assignees,
                     reason: reason,
-                    signDoc: { method: 'Ký số', file: mraCurrentFile ? mraCurrentFile.name : '', enableRoomSig: sign.enableNhay, sigCoords: sign.coords },
+                    signDoc: { method: 'Ký số', file: mraCurrentFile ? mraCurrentFile.name : '', enableRoomSig: sign.enableNhay, sigCoords: sign.coords, attachments: typeof tlktGet === 'function' ? tlktGet('mra') : [] },
                     draftDoc: { source: 'generated', generatedName: mraCurrentFile ? mraCurrentFile.name : 'Mau_03_BTNN.pdf' },
                     resultStatus: 'Yêu cầu bổ sung'
                 });
@@ -24940,6 +24911,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         // Thực thi ban hành văn bản Ký ngoài (sau khi xác nhận)
         function ktlxIssueOffline() {
             if (!selectedKtlClaim || !ktlOfflineFile) return;
+            // Ký ngoài: Tài liệu ban hành kèm theo (chỉ khối ban hành kèm theo)
+            const ktlIssuedDocs = typeof tlktGet === 'function' ? tlktGet('ktl') : [];
             const reasonEl = document.getElementById('ktlReason');
             // Ký ngoài: không nhập Số, ký hiệu văn bản / Ngày văn bản (chỉ đính kèm PDF đã ký)
             const offDocNumber = '';
@@ -24960,6 +24933,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             selectedKtlClaim.signedFile = ktlOfflineFile.name;
             selectedKtlClaim.ktlDocNumber = offDocNumber;
             selectedKtlClaim.ktlDocDate = offDocDate;
+            selectedKtlClaim.ktlAttachments = ktlIssuedDocs;
 
             if (!selectedKtlClaim.rejectionLog) selectedKtlClaim.rejectionLog = [];
             selectedKtlClaim.rejectionLog.push({
@@ -24985,6 +24959,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     ktlDetail: detail,
                     ktlDocNumber: offDocNumber,
                     ktlDocDate: offDocDate,
+                    ktlAttachments: ktlIssuedDocs,
                     status: finalStatus,
                     rejectType: finalStatus,
                     rejectReason: reasonText + (detail ? ': ' + detail : '')
@@ -25045,6 +25020,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             if (kind === 'Chuyển CQGQBT') { openGqTransferModal(claimId); return; }
             if (kind === CNG_KIND) { openCngModal(claimId); return; }
             if (typeof DCGQ_KIND !== 'undefined' && kind === DCGQ_KIND) { openDcgqModal(claimId); return; }
+            if (typeof DGQ_KIND !== 'undefined' && kind === DGQ_KIND) { openDgqModal(claimId); return; }
             if (typeof HGQ_CFG !== 'undefined' && kind === HGQ_CFG.hgq.kind) { openHgqModal(claimId); return; }
             if (typeof HGQ_CFG !== 'undefined' && kind === HGQ_CFG.hgqt.kind) { openHgqtModal(claimId); return; }
             if (typeof TTGQ_KIND !== 'undefined' && kind === TTGQ_KIND) { openTtgqModal(claimId); return; }
@@ -25099,7 +25075,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     <div><b>Tệp văn bản:</b> ${gqE(tb.fileName)}
                         <a href="#" onclick="event.preventDefault(); gqOpenThuLyNotice('${gqE(claim.id)}')" style="margin-left:10px; color:#2563eb;"><i class="fa-solid fa-up-right-from-square"></i> Xem văn bản</a>
                         <a href="#" onclick="event.preventDefault(); gqOpenThuLyNotice('${gqE(claim.id)}', true)" style="margin-left:10px; color:#2563eb;"><i class="fa-solid fa-download"></i> Tải file</a></div>
-                    <div style="color:#64748b;">Cử người giải quyết bồi thường: ${gqE(W.userName(rec.thuLy.by))} - ${gqE(rec.thuLy.at)}</div>`);
+                    <div style="color:#64748b;">Cử người giải quyết bồi thường: ${gqE(W.userName(rec.thuLy.by))} - ${gqE(rec.thuLy.at)}</div>
+                    ${typeof tlktViewHtml === 'function' ? tlktViewHtml(tb.attachments || [], { ownerUnit: rec.rootUnitId || '' }) : ''}`);
             }
             const t = claim.transferTo || null;
             const tr = claim.transferRequest || null;
@@ -25233,7 +25210,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             if (st === 'Hoàn thành') return 'badge-success';
             if (['Chờ tiếp nhận', 'Chờ duyệt', 'Cử người giải quyết bồi thường'].includes(st)) return 'badge-pending';
             if (['Yêu cầu bổ sung', 'Chờ ban hành QĐ', 'Chờ thực thi', 'Hoãn giải quyết', 'Tạm đình chỉ', 'Hoãn phục hồi danh dự'].includes(st)) return 'badge-warning';
-            if (['Không thụ lý', 'Bị từ chối', 'Đình chỉ giải quyết', 'Từ chối phục hồi danh dự'].includes(st)) return 'badge-danger';
+            if (['Không thụ lý', 'Bị từ chối', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Từ chối phục hồi danh dự'].includes(st)) return 'badge-danger';
             return 'badge-info';
         }
         // Lịch sử tiến trình đã lưu trước đây: đọc tên trạng thái cũ (tiêu đề hoặc tên trạng thái đặt trong [...]) theo tên mới
@@ -25320,7 +25297,9 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                     { key: 'pause', icon: 'fa-solid fa-circle-pause', label: 'Hoãn giải quyết', allowed: GQLD_PAUSE_SOURCE.includes(st), fn: `openHgqModal('${id}');` },
                     { key: 'resume', icon: 'fa-solid fa-play', label: 'Tiếp tục giải quyết', allowed: st === 'Hoãn giải quyết' || st === 'Tạm đình chỉ', fn: `openTtgqModal('${id}');` },
                     { key: 'stop', icon: 'fa-solid fa-circle-stop', label: 'Đình chỉ giải quyết', allowed: GQLD_STOP_SOURCE.includes(st), fn: `openDcgqModal('${id}');` },
-                    { key: 'suspend', icon: 'fa-solid fa-hand', label: 'Tạm đình chỉ', allowed: GQLD_PAUSE_SOURCE.includes(st), fn: `gqldOpenTdc('${id}');` }
+                    { key: 'suspend', icon: 'fa-solid fa-hand', label: 'Tạm đình chỉ', allowed: GQLD_PAUSE_SOURCE.includes(st), fn: `gqldOpenTdc('${id}');` },
+                    // Dừng giải quyết (Mẫu 05/BTNN): chỉ Cử người giải quyết bồi thường, Xác minh thiệt hại, Thương lượng, Chờ ban hành QĐ (quan_ly_boi_thuong_dgq.js)
+                    { key: 'dgq', icon: 'fa-solid fa-circle-minus', label: 'Dừng giải quyết', allowed: typeof DGQ_SOURCE !== 'undefined' && DGQ_SOURCE.includes(st), fn: `openDgqModal('${id}');` }
                 ]
             };
         }
@@ -25381,7 +25360,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 html = d.main.filter(a => a.allowed).map(a => {
                     if (a.key === 'update' && a.edit) return `<button class="btn btn-primary" data-action="update" onclick="switchToEditMode('${a.edit}')"><i class="${a.icon}"></i> ${gqldEsc(a.label)}</button>`;
                     return big(a, a.key === 'reject' ? 'btn-danger' : (a.key === 'supplement' ? 'btn-warning' : 'btn-primary'));
-                }).join('') + d.more.filter(a => a.allowed).map(a => big(a, a.key === 'stop' ? 'btn-outline-danger detail-secondary-action' : 'btn-outline-primary detail-secondary-action')).join('');
+                }).join('') + d.more.filter(a => a.allowed).map(a => big(a, (a.key === 'stop' || a.key === 'dgq') ? 'btn-outline-danger detail-secondary-action' : 'btn-outline-primary detail-secondary-action')).join('');
             }
             return html + closeBtnHtml;
         }
@@ -25429,7 +25408,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const dd = a.draftDoc || {};
             const file = (dd.source === 'uploaded' ? dd.uploadedName : dd.generatedName) || (a.signDoc && a.signDoc.file) || `Van_ban_trinh_ky_${rec.code}.pdf`;
             // Hoãn / Tạm đình chỉ / Đình chỉ giải quyết bồi thường: văn bản sinh theo mẫu hiển thị đúng nội dung đã trình
-            const genKinds = typeof HGQ_CFG !== 'undefined' ? [HGQ_CFG.hgq.kind, HGQ_CFG.hgqt.kind, typeof DCGQ_KIND !== 'undefined' ? DCGQ_KIND : '', typeof TTGQ_KIND !== 'undefined' ? TTGQ_KIND : ''] : [];
+            const genKinds = typeof HGQ_CFG !== 'undefined' ? [HGQ_CFG.hgq.kind, HGQ_CFG.hgqt.kind, typeof DCGQ_KIND !== 'undefined' ? DCGQ_KIND : '', typeof TTGQ_KIND !== 'undefined' ? TTGQ_KIND : '', typeof DGQ_KIND !== 'undefined' ? DGQ_KIND : ''] : [];
             if (dd.source === 'generated' && dd.bodyHtml && genKinds.includes(a.kind)) return `<div style="color:#e2e8f0; font-size:12px; margin-bottom:8px;"><i class="fa-solid fa-file-pdf"></i> ${gqldEsc((a.signDoc && a.signDoc.file) || file)} · Trang 1/1</div><div class="gqld-a4">${dd.bodyHtml}</div>`;
             const root = rec.rootUnitId;
             const content = a.reason || a.content || '';
@@ -25607,21 +25586,31 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <script src="bpbd_filter_toggle.js?v=20261012"></script>
     <script src="filter_toggle_auto.js?v=20261012"></script>
     <!-- [ctvv] Chi tiết vụ việc: khối các bước đã qua, tên 03 tab, Trình ký Mẫu 26/BTNN, bảng Tài liệu kèm theo đồng nhất (đặt sau các script chính để bọc hàm) -->
-    <script src="quan_ly_boi_thuong_ctvv.js?v=20261026tlkt"></script>
+    <script src="quan_ly_boi_thuong_ctvv.js?v=20261027tk2"></script>
     <!-- [ttgq] Popup Trình ký Quyết định tiếp tục giải quyết bồi thường (Mẫu số 23/BTNN) -->
-    <script src="quan_ly_boi_thuong_ttgq.js?v=20261026ttgq2"></script>
+    <script src="quan_ly_boi_thuong_ttgq.js?v=20261027tk2"></script>
     <!-- [ycbs] Tiếp nhận hồ sơ bổ sung: nhãn Hồ sơ gốc / Bổ sung, Đã cập nhật bổ sung (bọc hàm màn Nhập liệu hồ sơ vụ việc) -->
-    <script src="quan_ly_boi_thuong_ycbs.js?v=20261026tlkt"></script>
+    <script src="quan_ly_boi_thuong_ycbs.js?v=20261027chot2b"></script>
     <!-- [phdx] Tab Phục hồi danh dự: bấm Step -> khối tương ứng; thu gọn / mở rộng khối; khối Hoãn phục hồi danh dự + Tiếp tục thực hiện -->
     <script src="quan_ly_boi_thuong_phdd.js?v=20261026phdx2"></script>
     <!-- [hdcv] Khối xem Hoãn / Tạm đình chỉ / Đình chỉ giải quyết bồi thường (tab Chi tiết giải quyết bồi thường) + dữ liệu mẫu BT-2026-431..437 -->
-    <script src="quan_ly_boi_thuong_hdcv.js?v=20261026hdcv"></script>
+    <script src="quan_ly_boi_thuong_hdcv.js?v=20261027chot2"></script>
     <!-- [ktlv] Màn chi tiết hồ sơ: khối Thông tin không thụ lý hồ sơ / Thông tin chuyển CQGQBT (thẻ cảnh báo, lưới 2 cột, File Xem/Tải) -->
-    <script src="quan_ly_boi_thuong_ktlv.js?v=20261026ktlv"></script>
+    <script src="quan_ly_boi_thuong_ktlv.js?v=20261027tk3"></script>
     <!-- [seedxm] Dữ liệu giả lập đủ các Trạng thái vụ việc Giải quyết YCBT (Xác minh thiệt hại, Thương lượng, Chờ thực thi, Chờ duyệt / Bị từ chối theo Nội dung trình) -->
-    <script src="quan_ly_boi_thuong_seedxm.js?v=20261027xm"></script>
+    <script src="quan_ly_boi_thuong_seedxm.js?v=20261027th6"></script>
     <!-- [tcvv] Xem chi tiết mở từ Tra cứu vụ việc (?readonly=1&returnUrl=tra_cuu...): tab mặc định, bỏ giới hạn cán bộ được cử; tcvvPreview=1: hồ sơ giả lập riêng của Tra cứu, không lưu vào claimsList -->
     <script src="tra_cuu_seed_tcvv.js?v=20261026tcvv"></script>
+    <!-- [lth][th2c] Thiệt hại 02 cấp (nhóm / mục chi tiết DM_27) tại Nhập liệu hồ sơ, Xác minh thiệt hại, Thương lượng, Xem chi tiết; tích bổ sung mục / Yêu cầu phục hồi danh dự; popup xác nhận Hoàn thành xác minh -->
+    <script src="quan_ly_boi_thuong_lth.js?v=20261027th6"></script>
+    <!-- [ktlc] Không thụ lý KTL_01: Chuyển hồ sơ cho theo cấp đơn vị / số lần chuyển, tự tạo hồ sơ Xác định CQGQBT -->
+    <script src="quan_ly_boi_thuong_ktlc.js?v=20261027ktlc2"></script>
+    <!-- [nbth] Người bị thiệt hại Cá nhân/Tổ chức, địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại; bắt buộc khi trình Thông báo thụ lý (đặt trước cdpd) -->
+    <script src="quan_ly_boi_thuong_nbth.js?v=20261027nbthe3"></script>
+    <!-- [cdpd] Tạo yêu cầu - Cán bộ chủ động phục hồi danh dự khi có đủ thông tin: form tối thiểu, trình Thông báo tổ chức thực hiện phục hồi danh dự (chỉ Tải lên từ máy / Ký ngoài) -->
+    <script src="quan_ly_boi_thuong_cdpd.js?v=20261027chot2"></script>
+    <!-- [dgq] Dừng giải quyết (Mẫu 05/BTNN): popup trình ký Thông báo dừng giải quyết, khối Thông tin dừng giải quyết, dữ liệu mẫu BT-2026-541..544 (đặt sau dcgq, hdcv) -->
+    <script src="quan_ly_boi_thuong_dgq.js?v=20261027chot2"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
 </body>
 

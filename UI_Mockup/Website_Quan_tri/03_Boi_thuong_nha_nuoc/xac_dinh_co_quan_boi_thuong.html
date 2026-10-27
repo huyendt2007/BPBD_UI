@@ -637,7 +637,7 @@
         <!-- ============================================== -->
         <div id="screenProcess" class="card-section" style="display: none;">
             <div class="section-title">
-                <span><i class="fa-solid fa-compass"></i> CẬP NHẬT KẾT QUẢ XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG</span>
+                <span><i class="fa-solid fa-compass"></i> THAM MƯU KẾT QUẢ XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG</span>
             </div>
 
             <input type="hidden" id="processRequestId">
@@ -666,7 +666,7 @@
                 <div class="error-message" id="procTargetAgencyError">Đây là trường bắt buộc</div>
             </div>
             <div class="form-group">
-                <span class="form-label">Nhận định lý do xác định chi tiết<span class="required">*</span></span>
+                <span class="form-label">Nhận định lý do xác định cơ quan giải quyết bồi thường<span class="required">*</span></span>
                 <textarea class="form-control" id="procReason" rows="4" placeholder="Nhập lập luận, phân tích lý do chỉ định cơ quan giải quyết này dựa trên hồ sơ xác minh..."></textarea>
                 <div class="error-message">Đây là trường bắt buộc</div>
             </div>
@@ -833,7 +833,7 @@
                     <div class="detail-value" style="font-weight: 700; color: var(--primary-color);" id="dtProcTargetAgency"></div>
                 </div>
                 <div class="detail-row">
-                    <div class="detail-label">Nhận định lý do chi tiết</div>
+                    <div class="detail-label">Nhận định lý do xác định cơ quan giải quyết bồi thường</div>
                     <div class="detail-value" style="line-height: 1.5;" id="dtProcReason"></div>
                 </div>
                 <div class="detail-row">
@@ -1151,7 +1151,7 @@
                     <div id="xsOffStatusNote" class="xs-status-note" style="display:none;"></div>
                 </div>
 
-                <!-- Tài liệu kèm theo (Không thụ lý, chỉ khi Ký số trên hệ thống; không bắt buộc) - bảng do btnn_tai_lieu_kem_theo.js dựng -->
+                <!-- Tài liệu ban hành kèm theo + Tài liệu không ban hành kèm theo (Ký số: 02 khối; Ký ngoài: chỉ khối ban hành kèm theo; không bắt buộc) - btnn_tai_lieu_kem_theo.js dựng -->
                 <div id="xsTlkt"></div>
 
             </div>
@@ -1326,12 +1326,13 @@
     </div>
 
     <!-- External javascript logic -->
-    <script src="btnn_luong_xu_ly.js?v=20261023xdtl"></script>
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt5"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261027xdc"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
     <script src="btnn_lanh_dao_actions.js?v=20261023kdtc"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261026htrole"></script>
-    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261026tlkt4"></script>
+    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261027xdc"></script>
+    <script src="quan_ly_boi_thuong_ktlc.js?v=20261027ktlc2"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="bpbd_filter_toggle.js?v=20261012"></script>
     <script>

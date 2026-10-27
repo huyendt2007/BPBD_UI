@@ -663,28 +663,73 @@
                                 <input id="nbthOrgCode" class="form-control" placeholder="Mã số doanh nghiệp / mã số thuế / mã số khác...">
                             </div>
                         </div>
+                        <!-- [nbth] Địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại: Quốc gia, Tỉnh/Thành phố, Phường/Xã, Địa chỉ chi tiết (không có Email, Số điện thoại) -->
+                        <div class="grid-2" style="gap: 16px; margin-top: 14px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Quốc gia</span>
+                                <select id="nbthOrgCountry" class="form-control" onchange="nbthOnCountryChange('nbthOrg')"></select>
+                            </div>
+                            <div class="form-group nbth-addr-view" style="display:none; margin-bottom: 0;">
+                                <span class="form-label">Địa chỉ đầy đủ</span>
+                                <input id="nbthOrgAddressFull" class="form-control" disabled>
+                            </div>
+                            <div class="form-group nbth-addr-edit" style="margin-bottom: 0;">
+                                <span class="form-label">Tỉnh/Thành phố</span>
+                                <input id="nbthOrgCity" class="form-control" list="cityOptions" placeholder="Gõ Mã hoặc Tên Tỉnh/Thành phố..." oninput="nbthUpdateWardOptions('nbthOrg')">
+                                <div class="error-message">Đây là trường bắt buộc</div>
+                            </div>
+                        </div>
+                        <div class="grid-2 nbth-addr-edit" style="gap: 16px; margin-top: 14px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Phường/Xã</span>
+                                <input id="nbthOrgWard" class="form-control" list="nbthOrgWardOptions" placeholder="Vui lòng chọn Tỉnh/Thành phố trước" disabled>
+                                <datalist id="nbthOrgWardOptions"></datalist>
+                                <div class="error-message">Đây là trường bắt buộc</div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Địa chỉ chi tiết (Số nhà, tên đường, thôn/xóm...)</span>
+                                <input id="nbthOrgAddress" class="form-control" placeholder="Nhập số nhà, tên đường, thôn/xóm...">
+                                <div class="error-message">Đây là trường bắt buộc</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Khối Người bị thiệt hại: 1 Card form, mỗi dòng đúng 2 thông tin đồng nhất -->
                 <div id="nbthBlock" style="display:none;">
                     <div class="info-group-title">Thông tin người bị thiệt hại</div>
+                    <!-- [nbth] Bộ trường y hệt khối Người yêu cầu (Loại Cá nhân/Tổ chức); Tiếp nhận hồ sơ không bắt buộc trường nào -->
                     <div class="nyc-form-card">
-                        <!-- Dòng 1: Họ tên & Ngày sinh (2 thông tin) -->
+                        <!-- Dòng 1: Loại người bị thiệt hại & Ngày sinh (Cá nhân) -->
                         <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
                             <div class="form-group" style="margin-bottom: 0;">
-                                <span class="form-label">Họ và tên người bị thiệt hại</span>
-                                <input id="nbthName" class="form-control" placeholder="Nhập họ và tên người bị thiệt hại...">
+                                <span class="form-label">Loại người bị thiệt hại</span>
+                                <div class="nyc-type-radios" id="nbthTypeGroup" style="height: 38px; display: flex; align-items: center; gap: 20px; background: #f8fafc; padding: 0 14px; border: 1px solid #cbd5e1; border-radius: 4px;">
+                                    <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; color: #1e293b; margin: 0;">
+                                        <input type="radio" name="nbthType" id="nbthTypeCaNhan" value="Cá nhân" checked onchange="nbthToggleType()">
+                                        <i class="fa-solid fa-user" style="color: #2563eb; font-size: 12px;"></i> Cá nhân
+                                    </label>
+                                    <label style="cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600; font-size: 13px; color: #1e293b; margin: 0;">
+                                        <input type="radio" name="nbthType" id="nbthTypeToChuc" value="Tổ chức" onchange="nbthToggleType()">
+                                        <i class="fa-solid fa-building" style="color: #0284c7; font-size: 12px;"></i> Tổ chức
+                                    </label>
+                                </div>
                             </div>
-                            <div class="form-group" style="margin-bottom: 0;">
+                            <div class="form-group nbth-ca-nhan" style="margin-bottom: 0;">
                                 <span class="form-label">Ngày sinh</span>
                                 <input id="nbthDob" class="form-control" placeholder="dd/mm/yyyy" autocomplete="off">
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                         </div>
 
-                        <!-- Dòng 2: Giấy tờ thân nhân & Tỉnh/Thành phố (2 thông tin) -->
+                        <!-- Dòng 2: Họ và tên/Tên tổ chức & Giấy tờ thân nhân/Mã số tổ chức -->
                         <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
                             <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label"><span id="nbthNameLabel">Họ và tên</span></span>
+                                <input id="nbthName" class="form-control" placeholder="Nhập họ và tên...">
+                                <div class="error-message">Đây là trường bắt buộc</div>
+                            </div>
+                            <div class="form-group nbth-ca-nhan" style="margin-bottom: 0;">
                                 <span class="form-label">Giấy tờ thân nhân</span>
                                 <div style="display: flex; gap: 8px;">
                                     <select id="nbthDocType" class="form-control" style="width: 40%; min-width: 140px;">
@@ -692,6 +737,34 @@
                                     </select>
                                     <input id="nbthDocNo" class="form-control" style="flex: 1;" placeholder="Nhập số giấy tờ thân nhân...">
                                 </div>
+                                <div class="error-message">Đây là trường bắt buộc</div>
+                            </div>
+                            <div class="form-group nbth-to-chuc" style="display:none; margin-bottom: 0;">
+                                <span class="form-label">Mã số tổ chức</span>
+                                <input id="nbthPOrgCode" class="form-control" placeholder="Mã số doanh nghiệp / mã số thuế / mã số khác...">
+                                <div class="error-message">Đây là trường bắt buộc</div>
+                            </div>
+                        </div>
+
+                        <!-- Dòng 3: Số điện thoại & Email -->
+                        <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Số điện thoại</span>
+                                <input id="nbthPhone" class="form-control" placeholder="Nhập số điện thoại...">
+                                <div class="error-message" id="nbthPhoneError">Số điện thoại không đúng định dạng.</div>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Email</span>
+                                <input id="nbthEmail" class="form-control" placeholder="Nhập email...">
+                                <div class="error-message" id="nbthEmailError">Email không đúng định dạng.</div>
+                            </div>
+                        </div>
+
+                        <!-- Dòng 4: Quốc gia & Tỉnh/Thành phố (Xem chi tiết: Địa chỉ đầy đủ) -->
+                        <div class="grid-2" style="gap: 16px; margin-bottom: 14px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <span class="form-label">Quốc gia</span>
+                                <select id="nbthCountry" class="form-control" onchange="nbthOnCountryChange('nbth')"></select>
                             </div>
                             <div class="form-group nbth-addr-view" style="display:none; margin-bottom: 0;">
                                 <span class="form-label">Địa chỉ đầy đủ</span>
@@ -699,19 +772,23 @@
                             </div>
                             <div class="form-group nbth-addr-edit" style="margin-bottom: 0;">
                                 <span class="form-label">Tỉnh/Thành phố</span>
-                                <input id="nbthCity" class="form-control" list="cityOptions" placeholder="Gõ Mã hoặc Tên Tỉnh/Thành phố...">
+                                <input id="nbthCity" class="form-control" list="cityOptions" placeholder="Gõ Mã hoặc Tên Tỉnh/Thành phố..." oninput="nbthUpdateWardOptions('nbth')">
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                         </div>
 
-                        <!-- Dòng 3: Phường/Xã & Địa chỉ chi tiết (2 thông tin - chỉ ở chế độ sửa) -->
+                        <!-- Dòng 5: Phường/Xã & Địa chỉ chi tiết (chỉ ở chế độ thêm/sửa) -->
                         <div class="grid-2 nbth-addr-edit" style="gap: 16px; margin-bottom: 0;">
                             <div class="form-group" style="margin-bottom: 0;">
                                 <span class="form-label">Phường/Xã</span>
-                                <input id="nbthWard" class="form-control" placeholder="Nhập phường/xã...">
+                                <input id="nbthWard" class="form-control" list="nbthWardOptions" placeholder="Vui lòng chọn Tỉnh/Thành phố trước" disabled>
+                                <datalist id="nbthWardOptions"></datalist>
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
-                                <span class="form-label">Địa chỉ chi tiết</span>
+                                <span class="form-label">Địa chỉ chi tiết (Số nhà, tên đường, thôn/xóm...)</span>
                                 <input id="nbthAddress" class="form-control" placeholder="Nhập số nhà, tên đường, thôn/xóm...">
+                                <div class="error-message">Đây là trường bắt buộc</div>
                             </div>
                         </div>
                     </div>
@@ -834,7 +911,7 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261020v5"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261027xdc"></script>
     <script src="btnn_lanh_dao_actions.js?v=20261023kdtc"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261026htrole"></script>
     <script>
@@ -2448,6 +2525,8 @@
                 }
                 return false;
             });
+            // [nbth] Dòng mặc định Văn bản yêu cầu bồi thường bắt buộc có file; định dạng Số điện thoại/Email khối Người bị thiệt hại (tiep_nhan_nbth.js)
+            if (typeof nbthValidateReception === "function") { const nbthBad = nbthValidateReception(); if (nbthBad && !firstInvalid) firstInvalid = nbthBad; }
 
             if (firstInvalid || hasInvalidDoc) {
                 showToast("Vui lòng nhập đầy đủ thông tin bắt buộc!", "error");
@@ -3054,8 +3133,10 @@
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_cot_thao_tac.js?v=20261023kpcd"></script>
     <!-- Bảng tài liệu chuẩn BTNN: STT | Tên tài liệu, văn bản | File đính kèm | Thao tác; nút Tải file / Thêm tài liệu cùng style -->
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt5"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
+    <!-- [nbth] Văn bản yêu cầu bồi thường mặc định; Người bị thiệt hại Cá nhân/Tổ chức; địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại -->
+    <script src="tiep_nhan_nbth.js?v=20261027nbthe3"></script>
 </body>
 
 </html>

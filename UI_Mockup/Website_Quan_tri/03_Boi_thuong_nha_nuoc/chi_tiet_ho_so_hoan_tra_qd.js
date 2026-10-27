@@ -316,7 +316,7 @@
             + cell('Tệp văn bản Quyết định', qdFileCell(r, 'HT', i))
             + '</div>'
             + (u.st === 'CD' ? '<div style="font-size:13px; margin-top:8px;"><span style="color:#64748b;">Lãnh đạo được giao ký duyệt:</span> <strong>Cấp ' + (r.level + 1) + '/' + r.levels.length + ' - ' + esc(r.levels[r.level].unit) + ': ' + esc(leaderLabel(r, r.level)) + '</strong></div>' : '');
-        if (r.tlkt && r.tlkt.length && typeof tlktViewHtml === 'function') h += tlktViewHtml(r.tlkt);
+        if (r.tlkt && r.tlkt.length && typeof tlktViewHtml === 'function') h += tlktViewHtml(r.tlkt, { ownerUnit: r.unit || '' });
         const btns = [];
         if (u.st === 'CD' && isLeader()) btns.push(htkdBarButtons('ht3Reject(\'HT\',' + i + ')', 'ht3Approve(\'HT\',' + i + ')'));
         if (u.st === 'BTC' && act) btns.push(dcBusy ? '<button type="button" class="btn btn-primary" disabled style="opacity:.45; cursor:not-allowed;" title="Đơn vị đang trình ký Quyết định đình chỉ"><i class="fa-solid fa-paper-plane"></i> Trình ký lại</button>' : '<button type="button" class="btn btn-primary" onclick="ht3OpenSign(\'HT\',' + i + ')"><i class="fa-solid fa-paper-plane"></i> Trình ký lại</button>');
@@ -443,7 +443,7 @@
             + item('Hình thức ký', r.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống')
             + (r.method === 'offline' ? '' : item('Số, ký hiệu văn bản', esc(r.soKh || '--')) + item('Ngày văn bản', esc(r.issuedAt || r.ngay || '--')))
             + item('Tệp văn bản Quyết định', esc(r.fileName) + '<div style="margin-top:4px; font-weight:400;">' + fileLinks(r, kind, key) + '</div>')
-            + '</div>' + (r.tlkt && r.tlkt.length && typeof tlktViewHtml === 'function' ? tlktViewHtml(r.tlkt) : '');
+            + '</div>' + (r.tlkt && r.tlkt.length && typeof tlktViewHtml === 'function' ? tlktViewHtml(r.tlkt, { ownerUnit: r.unit || '' }) : '');
         el('ht3ViewModal').classList.add('visible');
     };
     window.ht3ViewClose = function () { const m = el('ht3ViewModal'); if (m) m.classList.remove('visible'); };
@@ -680,7 +680,9 @@
         el('ht3Meta').style.display = on && S.src === 'gen' ? '' : 'none';
         el('ht3Upload').style.display = on && S.src === 'upload' ? '' : 'none';
         el('ht3Off').style.display = on ? 'none' : '';
-        el('ht3Tlkt').style.display = on ? '' : 'none';
+        // Ký số: 02 khối Tài liệu ban hành / không ban hành kèm theo; Ký ngoài: chỉ khối ban hành kèm theo
+        el('ht3Tlkt').style.display = '';
+        if (typeof tlktShow === 'function') tlktShow('ht3', on);
         el('ht3DocTitle').innerHTML = on ? '<i class="fa-solid fa-file-signature"></i> Tệp văn bản trình ký<span class="gqx-req">*</span>' : '<i class="fa-solid fa-file-pdf"></i> Tệp văn bản đã ký &amp; đóng dấu<span class="gqx-req">*</span>';
         S.file = null; renderFileBoxes();
         ht3Go1();
@@ -752,7 +754,7 @@
         if (S.method === 'offline') { if (!S.file) mark('ht3OffBox', 'ht3OffErr'); }
         else if (S.src === 'gen') { if (!el('ht3So').value.trim()) mark('ht3So'); if (!el('ht3Ngay').value.trim()) mark('ht3Ngay'); }
         else if (!S.file) mark('ht3FileBox', 'ht3FileErr');
-        if (!first && S.method === 'online' && typeof tlktValidate === 'function' && !tlktValidate('ht3')) return false;
+        if (!first && typeof tlktValidate === 'function' && !tlktValidate('ht3')) return false;
         if (first) { if (first.focus) first.focus(); return false; }
         return true;
     }
@@ -804,7 +806,7 @@
             ngay: method === 'online' && S.src === 'gen' ? el('ht3Ngay').value.trim() : today(),
             fileName: S.file ? S.file.name : k.file + '_' + (activeDossier.maVuViec || activeDossier.code) + '.docx',
             upFile: S.file ? { name: S.file.name, size: S.file.size } : null,
-            tlkt: method === 'online' && typeof tlktGet === 'function' ? tlktGet('ht3') : [],
+            tlkt: typeof tlktGet === 'function' ? tlktGet('ht3') : [], // Ký ngoài: chỉ Tài liệu ban hành kèm theo
             levels: S.levels, assignees: S.assignees.slice(), content: el('ht3Content').value.trim(), level: 0,
             hist: (recOf(S.kind, S.key) || { hist: [] }).hist.slice(), supp: readSupp(),
             dc: readDc(), unit: S.ctx.unit, names: (S.ctx.list || []).map(o => o.name)
@@ -892,12 +894,12 @@
         openLeaderSignModal(tgt(kind, key));
         const r = recOf(kind, key);
         const s = el('m20Summary'); if (s) s.innerText = r.content || '';
-        const t = el('m20Tlkt'); if (t) t.innerHTML = r.tlkt && r.tlkt.length && typeof tlktViewHtml === 'function' ? tlktViewHtml(r.tlkt) : '';
+        const t = el('m20Tlkt'); if (t) t.innerHTML = r.tlkt && r.tlkt.length && typeof tlktViewHtml === 'function' ? tlktViewHtml(r.tlkt, { showInternal: true }) : '';
     };
     window.ht3Reject = function (kind, key) {
         openRejectReasonModal(tgt(kind, key));
         const r = recOf(kind, key);
-        const t = el('rejectTlkt'); if (t) t.innerHTML = r.tlkt && r.tlkt.length && typeof tlktViewHtml === 'function' ? tlktViewHtml(r.tlkt) : '';
+        const t = el('rejectTlkt'); if (t) t.innerHTML = r.tlkt && r.tlkt.length && typeof tlktViewHtml === 'function' ? tlktViewHtml(r.tlkt, { showInternal: true }) : '';
     };
     const baseCtx = window.kdtcHtCtx;
     window.kdtcHtCtx = function (target) {

@@ -170,7 +170,8 @@ function kpcdTbOpenPage() {
     const dl = kpcdEl('kpcdTbDecDatalist');
     dl.innerHTML = kpcdEligibleDecs().map(d => `<option value="${kpcdEsc(d.claimCode)}">Số QĐ ${kpcdEsc(d.decNo || '-')} - ${kpcdEsc(kpcdNycName(d))}</option>`).join('');
     if (window.flatpickr && !kpcdEl('kpcdTbTime')._flatpickr) flatpickr('#kpcdTbTime', { enableTime: true, time_24hr: true, dateFormat: 'H:i d/m/Y', allowInput: true });
-    if (typeof tlktMount === 'function') tlktMount('kpcdTb', 'kpcdTbTlkt', { required: false, rows: [], secClass: '', titleClass: 'kpcd-hide' });
+    // 02 khối Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo (Ký ngoài tại popup Trình ký: chỉ lưu khối ban hành kèm theo)
+    if (typeof tlktMount === 'function') tlktMount('kpcdTb', 'kpcdTbTlkt', { required: false, rows: [], secClass: '', titleClass: 'tlkt-sec-title' });
     kpcdTbShowPage(true);
 }
 function kpcdTbClosePage() { kpcdTbShowPage(false); renderProposalsTable(); }

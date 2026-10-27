@@ -14,7 +14,7 @@
  * - Dời ngày tiếp nhận các hồ sơ Thương lượng / Chờ thực thi mẫu đã có (HS1, HS2, HS3, HS3_A, HS3_B, SDX_TCPH3, HDCV_HGQ_TT) về gần hôm nay;
  *   giữ nguyên trạng thái và nội dung nghiệp vụ.
  */
-var SXM_VERSION = '20261027xm';
+var SXM_VERSION = '20261027th6'; // [th2c] dữ liệu thiệt hại theo mục chi tiết DM_27
 var SXM_KEY_WF = 'btnn_gq_seedxm_wf_v1';
 var SXM_STP = 'Sở Tư pháp Hà Nội';
 
@@ -81,9 +81,11 @@ function sxmBuild(o) {
         docBase: o.docBase, vanBanCanCu: [{ name: o.docBase, file: 'Van_ban_can_cu_' + o.code + '.pdf' }],
         hanhVi: o.hanhVi, nhanQua: o.nhanQua,
         status: SXM_STAGE_STATUS[o.stage], slaDays: 10, slaText: SXM_SLA[o.stage],
-        thietHaiList: sdxThiet(o.th.map(function (r) { return reach >= 3 ? r : [r[0], r[1]]; }), reach >= 3 ? sxmD(k[2]) : ''),
+        thietHaiList: sdxThiet(o.th.map(function (r) { return reach >= 3 ? r : [r[0], r[1], undefined, undefined, r[4]]; }), reach >= 3 ? sxmD(k[2]) : ''),
         files: [{ name: 'Van_ban_yeu_cau_boi_thuong_' + o.code + '.pdf', url: '#' }]
     }));
+    // [lth] Loại thiệt hại bổ sung tại bước Xác minh (không có trong yêu cầu): o.bs = [[type, Mức xác minh, Nội dung diễn giải]]
+    (o.bs || []).forEach(function (b) { c.thietHaiList.push(sxmBs(b, reach >= 3 ? sxmD(k[2]) : '')); });
     if (who.nycType === 'Tổ chức') { c.nycCardNo = ''; c.cardNo = ''; }
     if (c.requestType === 'both') {
         Object.assign(c, { phddStatus: 'Đang thực hiện', phddForm: 'Tổ chức trực tiếp xin lỗi và cải chính công khai', phddFormApology: true, phddFormNews: false });
@@ -104,6 +106,8 @@ function sxmBuild(o) {
     }
     if (reach >= 3) {
         sdxXm(c, sxmD(k[2]));
+        // [xmbc] Thỏa thuận kéo dài thời gian xác minh có Đến ngày (BT-2026-504); tài liệu "Báo cáo kết quả xác minh" của dữ liệu cũ được quy đổi vào khối Báo cáo xác minh
+        if (o.code === 'BT-2026-504') { c.xmExtend = { on: true, from: sxmD(k[2] + 5), to: sxmD(k[2]) }; c.xmTimeExtension = 'Từ ngày ' + c.xmExtend.from + ' đến ngày ' + c.xmExtend.to; }
         c.timeline.push(sdxT('Xác minh thiệt hại', sxmD(k[2]), 'Hoàn thành xác minh thiệt hại thực tế. Tổng Mức xác minh: ' + sdxMoney(c.xmTotalAmount) + ' đ. Hồ sơ chuyển sang trạng thái [Thương lượng].', SDX_CB));
     }
     if (reach >= 4) {
@@ -117,6 +121,15 @@ function sxmBuild(o) {
     }
     return c;
 }
+// [lth] 01 loại thiệt hại bổ sung tại bước Xác minh: Mức đề xuất = 0, cờ bs / bsStep phân biệt với loại theo yêu cầu
+function sxmBs(b, xmDate) {
+    var it = { type: b[0], code: b[0], group: window.BTNN_TH ? BTNN_TH.groupOf(b[0]) : '', calc: '', val: 0, bs: true, bsStep: 'xm', bsXm: b[1] };
+    if (xmDate) {
+        Object.assign(it, { xmVal: b[1], xmNote: b[2] || '', xmDate: xmDate, xmPlace: 'Trụ sở cơ quan giải quyết bồi thường', xmMembers: 'Tổ xác minh thiệt hại',
+            xmMethodText: 'Làm việc trực tiếp với người yêu cầu bồi thường, đối chiếu chứng từ phát sinh', xmCalculation: 'Theo chứng từ thực tế' });
+    }
+    return it;
+}
 // Lưu dở kết quả xác minh (lần 1, chưa Hoàn thành xác minh)
 function sxmXmDraft(c, dk) {
     var d = sxmD(dk);
@@ -127,26 +140,28 @@ function sxmXmDraft(c, dk) {
         2: ['Tạm tính theo mức lương tối thiểu vùng; chờ bảng lương, xác nhận thu nhập', 'Thu nhập bình quân tháng x số tháng bị tạm giam', 0.75],
         5: ['Tạm tính theo mức lương cơ sở x số ngày bị tạm giam', 'Theo Điều 27 Luật TNBTCNN', 1], 6: ['Theo chứng từ chi phí đi lại, thuê luật sư', 'Theo chứng từ thực tế', 1] };
     c.thietHaiList.forEach(function (it) {
-        var n = notes[it.type] || ['Đối chiếu chứng từ', 'Theo chứng từ thực tế', 1];
-        it.xmVal = Math.round(it.val * n[2]);
-        it.xmNote = n[0];
+        var n = notes[window.BTNN_TH && BTNN_TH.group(it.type) ? BTNN_TH.group(it.type).no : it.type] || ['Đối chiếu chứng từ', 'Theo chứng từ thực tế', 1];
+        it.xmVal = it.bs ? (Number(it.bsXm) || 0) : Math.round(it.val * n[2]);
+        it.xmNote = it.bs ? 'Bổ sung khi xác minh: chi phí khám, điều trị có hóa đơn, chứng từ' : n[0];
         it.xmDate = d; it.xmPlace = 'Trụ sở ' + c.agency; it.xmMembers = members;
         it.xmMethodText = 'Đối chiếu hóa đơn, chứng từ và làm việc trực tiếp với người yêu cầu bồi thường';
         it.xmCalculation = n[1];
         done += it.xmVal;
     });
     var parts = [{ name: SDX_CB, position: 'Chuyên viên', unit: c.agency }, { name: 'Phạm Quốc Hùng', position: 'Trưởng phòng', unit: c.agency }];
+    // [xmbc] Báo cáo xác minh thiệt hại (trả cho người yêu cầu bồi thường) tách khỏi tài liệu kèm theo khác (nội bộ)
+    var report = [{ name: 'Bao_cao_xac_minh_thiet_hai_lan_1_' + c.code + '.pdf', url: '#', title: 'Báo cáo xác minh thiệt hại (lần 1)', size: '415 KB', shareNyc: true, dvcSync: false }];
     var files = [{ name: 'Bien_ban_xac_minh_thiet_hai_lan_1_' + c.code + '.pdf', url: '#', title: 'Biên bản xác minh thiệt hại (lần 1)', size: '342 KB' },
         { name: 'Hoa_don_chung_tu_tai_san_' + c.code + '.pdf', url: '#', title: 'Hóa đơn, chứng từ chứng minh thiệt hại tài sản', size: '518 KB' }];
     c.xmHistory = [{
         lan: 1, at: d + ' 16:30', by: SDX_CB,
         items: c.thietHaiList.map(function (it) {
-            return { type: it.type, name: SDX_TH[it.type - 1], reqVal: Number(it.val) || 0, xmVal: it.xmVal !== undefined ? it.xmVal : 0, xmNote: it.xmNote || '', xmDate: it.xmDate || '', xmPlace: it.xmPlace || '', xmMembers: it.xmMembers || '', xmMethodText: it.xmMethodText || '', xmCalculation: it.xmCalculation || '' };
+            return { type: it.type, name: it.name || sdxThName(it.type), bs: !!it.bs, reqVal: Number(it.val) || 0, xmVal: it.xmVal !== undefined ? it.xmVal : 0, xmNote: it.xmNote || '', xmDate: it.xmDate || '', xmPlace: it.xmPlace || '', xmMembers: it.xmMembers || '', xmMethodText: it.xmMethodText || '', xmCalculation: it.xmCalculation || '' };
         }),
         participants: parts, total: done,
-        timeExtension: 'Đề nghị kéo dài thời hạn xác minh thêm 10 ngày do chờ kết quả định giá tài sản.',
+        timeExtension: 'Từ ngày ' + sxmRaw(20), xmExtend: { on: true, from: sxmRaw(20), to: '' }, // [xmbc] kéo dài: Từ ngày ở quá khứ, không có Đến ngày
         otherInfo: 'Đang chờ người yêu cầu bồi thường cung cấp bảng lương, xác nhận thu nhập để xác minh mục thu nhập bị mất.',
-        files: files, completed: false
+        reportFiles: report, files: files, completed: false
     }];
     c.xmRequiredDocs = { thuly: 'Thong_bao_thu_ly_' + c.code + '.pdf', cuNguoi: 'QD_cu_nguoi_giai_quyet_' + c.code + '_da_ky.pdf' };
     c.xmTotalAmount = done;
@@ -154,6 +169,8 @@ function sxmXmDraft(c, dk) {
     c.xmOtherRelatedInfo = c.xmHistory[0].otherInfo;
     c.verificationParticipants = parts;
     c.xmFiles = files;
+    c.xmReportFiles = report;
+    c.xmExtend = c.xmHistory[0].xmExtend;
     c.timeline.push({ title: 'Lưu kết quả xác minh thiệt hại', date: d, desc: 'Lưu kết quả xác minh thiệt hại lần 1. Tổng Mức xác minh hiện hành: ' + sdxMoney(done) + ' đ.', status: 'completed', officer: SDX_CB });
     return c;
 }
@@ -164,13 +181,20 @@ function sxmTlDraft(c, dk) {
         participation: 'DONG_Y', decision: 'Đồng ý thương lượng', date: d, place: 'Phòng họp số 2 - ' + c.agency,
         participants: sdxOfficials(c.agency), claimantParticipants: [{ name: c.nycRepName || c.nyc, idNo: c.nycCardNo || '', address: c.nycAddressDetail || '' }],
         items: c.verifiedItems.map(function (v, i) {
-            return i === 0 ? { key: v.key, label: v.label, proposed: v.proposed, verified: v.verified, agreed: v.verified, status: 'Thành công', reason: '' }
-                : { key: v.key, label: v.label, proposed: v.proposed, verified: v.verified, agreed: '', status: '', reason: '' };
+            // [tlst] Bản nháp có đủ 03 Trạng thái thương lượng: Thành công / Không thành công / Không tiếp tục thương lượng; các mục còn lại chưa chọn
+            var b = { key: v.key, label: v.label, proposed: v.proposed, verified: v.verified };
+            if (i === 0) return Object.assign(b, { agreed: v.verified, status: 'Thành công', reason: '' });
+            if (i === 1) return Object.assign(b, { agreed: 0, status: 'Không thành công', reason: 'Hai bên chưa thống nhất mức bồi thường do khác biệt về giá trị thẩm định.' });
+            if (i === 2) return Object.assign(b, { agreed: 0, status: 'Không tiếp tục thương lượng', reason: 'Người yêu cầu bồi thường đề nghị không tiếp tục thương lượng mục này.' });
+            return Object.assign(b, { agreed: '', status: '', reason: '' });
         }),
         payment: { method: '', receiverName: '', receiverIdNo: '', receiverAddress: '', bankUser: '', bankAccount: '', bankName: '', bankBranch: '' },
         otherRights: '', otherRequests: 'Người yêu cầu bồi thường đề nghị thương lượng tiếp mục còn lại sau khi bổ sung chứng từ.',
         docs: [{ name: 'Giấy mời tham gia thương lượng', file: 'Giay_moi_thuong_luong_' + c.code + '.pdf' }],
-        savedAt: d + ' 10:15', savedBy: SDX_CB, draft: true
+        savedAt: d + ' 10:15', savedBy: SDX_CB, draft: true,
+        // [tltt] Thông tin thỏa thuận khác: có tích cả 02 thỏa thuận
+        extend: { on: true, from: d, to: sxmAddDays(d, 15) },
+        earlyEffect: { on: true, text: 'kể từ ngày ký' }
     };
     c.timeline.push({ title: 'Tổ chức thương lượng (lần 1)', date: d, desc: 'Gửi Giấy mời và tổ chức thương lượng lần 1; đã thống nhất 01 hạng mục, các hạng mục còn lại thương lượng tiếp.', status: 'completed', officer: SDX_CB });
     return c;
@@ -202,9 +226,10 @@ var SXM_DOC = {
     hgq: 'Ngày 15/08/2026, Tòa án nhân dân Thành phố Hà Nội tuyên hủy Quyết định cưỡng chế số 205/QĐ-CC',
     ktl: 'Bản án hành chính số 41/2026/HC-ST ngày 02/09/2026 của Tòa án nhân dân Thành phố Hà Nội'
 };
-var SXM_TH_A = [[1, 120000000, 110000000, 'Khấu hao theo thời gian sử dụng'], [2, 45000000, 42000000, 'Theo sổ sách doanh thu 03 tháng liền kề'], [6, 8000000, 8000000]];
-var SXM_TH_B = [[1, 260000000, 240000000, 'Theo chứng thư thẩm định giá'], [2, 90000000, 85000000, 'Theo báo cáo tài chính quý gần nhất'], [6, 15000000, 15000000]];
-var SXM_TH_C = [[2, 60000000, 55000000, 'Theo bảng lương 06 tháng liền kề'], [5, 30000000, 30000000, 'Theo mức lương cơ sở'], [6, 6000000, 6000000]];
+// [th2c] Thiệt hại theo mục chi tiết DM_27 (02-03 nhóm, nhiều mục / nhóm): [mã mục, Số tiền yêu cầu, Mức xác minh, Nội dung diễn giải]
+var SXM_TH_A = [['TH_TS_02', 70000000, 65000000, 'Theo báo giá sửa chữa của gara được cấp phép'], ['TH_TS_04', 50000000, 45000000, 'Theo giá thuê tài sản cùng loại trên thị trường'], ['TH_TN_01', 45000000, 42000000, 'Theo bảng lương 03 tháng liền kề'], ['TH_CPK_01', 5000000, 5000000], ['TH_CPK_03', 3000000, 3000000]];
+var SXM_TH_B = [['TH_TS_01', 160000000, 150000000, 'Theo chứng thư thẩm định giá'], ['TH_TS_03', 100000000, 90000000, 'Theo biên bản giám định hư hỏng'], ['TH_TN_04', 90000000, 85000000, 'Theo báo cáo tài chính quý gần nhất'], ['TH_CPK_01', 9000000, 9000000], ['TH_CPK_02', 6000000, 6000000]];
+var SXM_TH_C = [['TH_TN_01', 60000000, 55000000, 'Theo bảng lương 06 tháng liền kề'], ['TH_TT_04', 30000000, 30000000, 'Theo mức lương cơ sở'], ['TH_CPK_01', 4000000, 4000000], ['TH_CPK_02', 2000000, 2000000]];
 
 // Hồ sơ trạng thái xử lý (không qua phiếu trình)
 function sxmClaims() {
@@ -216,7 +241,8 @@ function sxmClaims() {
     // Thương lượng - Cá nhân, mới vào bước thương lượng
     L.push(sxmBuild({ id: 'SXM_TL1', code: 'BT-2026-504', who: 'p3', stage: 'thuong-luong', k: [3, 2, 1],
         docBase: 'Quyết định hủy Quyết định thu hồi giấy phép kinh doanh số 19/QĐ-UBND ngày 05/08/2026',
-        hanhVi: 'Thu hồi giấy phép kinh doanh dịch vụ ăn uống không đúng thẩm quyền.', nhanQua: 'Cửa hàng ngừng hoạt động 02 tháng, mất thu nhập.', th: SXM_TH_A }));
+        hanhVi: 'Thu hồi giấy phép kinh doanh dịch vụ ăn uống không đúng thẩm quyền.', nhanQua: 'Cửa hàng ngừng hoạt động 02 tháng, mất thu nhập.', th: SXM_TH_A.concat([['TH_KHAC_504A', 4000000, 3500000, 'Theo hợp đồng và hóa đơn thuê kho', 'Chi phí thuê kho bảo quản hàng hóa trong thời gian bị thu hồi giấy phép']]),
+        bs: [['TH_CPK_02', 1500000, 'Bổ sung khi xác minh: chi phí gửi đơn thư có biên lai bưu chính']] }));
     // Chờ thực thi - Cá nhân, đã ban hành QĐ giải quyết bồi thường
     L.push(sxmBuild({ id: 'SXM_CTT1', code: 'BT-2026-506', who: 'p4', stage: 'cho-thuc-thi', k: [4, 4, 3, 2, 1], bank: ['0451000506506', 'Vietcombank', 'Chi nhánh Ba Đình'],
         docBase: 'Quyết định hủy Quyết định tịch thu phương tiện số 33/QĐ-XPHC ngày 01/08/2026',
@@ -225,7 +251,7 @@ function sxmClaims() {
     L.push(sxmXmDraft(sxmBuild({ id: 'SXM_XM2', code: 'BT-2026-502', who: 'p1', stage: 'xac-minh', k: [7, 5], requestType: 'both', fieldGroup: 'hình sự',
         docBase: 'Quyết định đình chỉ điều tra số 15/QĐ-CSĐT ngày 20/08/2026 (người bị thiệt hại không thực hiện hành vi phạm tội)',
         hanhVi: 'Khởi tố, tạm giam 03 tháng đối với người không thực hiện hành vi phạm tội.', nhanQua: 'Mất thu nhập trong thời gian bị tạm giam; tài sản bị kê biên hư hỏng; danh dự, uy tín bị xâm phạm.',
-        th: [[1, 80000000], [2, 54000000], [5, 36000000], [6, 7000000]] }), 2));
+        th: [['TH_TS_02', 50000000], ['TH_TS_06', 30000000], ['TH_TN_01', 54000000], ['TH_TT_04', 36000000], ['TH_CPK_01', 4000000], ['TH_CPK_03', 3000000], ['TH_KHAC_502A', 6000000, undefined, undefined, 'Chi phí thuê kho bảo quản tài sản bị kê biên']], bs: [['TH_SK_01', 12000000]] }), 2));
     // Thương lượng - Tổ chức, đã nhập dở biên bản thương lượng
     L.push(sxmTlDraft(sxmBuild({ id: 'SXM_TL2', code: 'BT-2026-505', who: 'o2', stage: 'thuong-luong', k: [8, 7, 4], fieldGroup: 'thi hành án dân sự', agency: SXM_STP,
         docBase: 'Quyết định hủy Quyết định cưỡng chế kê biên tài sản số 64/QĐ-CCTHADS ngày 12/08/2026',

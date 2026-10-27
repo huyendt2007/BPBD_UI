@@ -4,7 +4,7 @@
  * 2. Tên 03 tab cố định: Thông tin hồ sơ vụ việc | Chi tiết giải quyết bồi thường | Phục hồi danh dự.
  * 3. Tab "Phục hồi danh dự": bắt đầu từ thanh tiến trình; bước Thông báo: Trình ký Thông báo tổ chức thực hiện phục hồi danh dự (Mẫu số 26/BTNN);
  *    Thành phần tham gia tổ chức phục hồi danh dự: 02 bảng như Thương lượng.
- * 4. Bảng "Tài liệu kèm theo" đồng nhất (chuẩn màn Cập nhật kết quả xác định cơ quan giải quyết bồi thường):
+ * 4. Bảng "Tài liệu kèm theo" đồng nhất (chuẩn màn Tham mưu kết quả xác định cơ quan giải quyết bồi thường):
  *    STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file / Xóa - xóa thẳng); nút Thêm tài liệu dưới bảng;
  *    chế độ xem: Thao tác Xem file / Tải file, bảng rỗng thì không hiển thị.
  * Dùng tiện ích sẵn có của quan_ly_boi_thuong.html (gq*, ktlx*, tlkt*, pt*, phdd*) và btnn_tai_lieu_kem_theo.js.
@@ -1085,7 +1085,7 @@ function ctvvmIssueOffline() {
     var claim = ctvvmClaim;
     if (!claim || !ctvvmOfflineFile) return;
     var keep = typeof tlktKeep === 'function' ? tlktKeep(ctvvmOfflineFile.raw) : '';
-    var m26 = { state: 'Đã ban hành', method: 'Ký ngoài', formNo: CTVV_FORM, forms: ctvvmForms(claim), signedFile: ctvvmOfflineFile.name, signedFileId: keep, signedSize: ctvvmOfflineFile.size, issuedAt: gqNow(), attachments: [] };
+    var m26 = { state: 'Đã ban hành', method: 'Ký ngoài', formNo: CTVV_FORM, forms: ctvvmForms(claim), signedFile: ctvvmOfflineFile.name, signedFileId: keep, signedSize: ctvvmOfflineFile.size, issuedAt: gqNow(), attachments: typeof tlktGet === 'function' ? tlktGet('ctvvm') : [] }; // Ký ngoài: Tài liệu ban hành kèm theo
     try {
         var W = gqW(), rec = gqRecord(claim);
         if (W && rec) { W.addHistory(rec, 'Ban hành Thông báo tổ chức thực hiện phục hồi danh dự (Ký ngoài)', 'Văn bản đã ký: ' + ctvvmOfflineFile.name + '.'); W.upsertRecord(rec); }
@@ -1214,7 +1214,10 @@ function ctvvM26Decorate(claim) {
         + (fileName ? '<span class="tlkt-acts">'
             + '<button type="button" data-admin-icon-normalized="1" class="tlkt-ib" title="Xem file" aria-label="Xem file" data-ctvv-act="m26view" data-ctvv-id="' + claim.id + '"><i class="fa-solid fa-eye"></i></button>'
             + '<button type="button" data-admin-icon-normalized="1" class="tlkt-ib" title="Tải file" aria-label="Tải file" data-ctvv-act="m26dl" data-ctvv-id="' + claim.id + '"><i class="fa-solid fa-download"></i></button></span>' : '') + '</div>'
-        + ctvvDocsViewHtml((m.attachments || []).map(function (d) { return { title: d.name, file: d.file ? d.file.name : '', size: d.file ? d.file.size : '', fileId: d.file ? d.file.id : '' }; }), { title: 'Tài liệu kèm theo' })
+        // Tài liệu ban hành kèm theo / không ban hành kèm theo (khối rỗng hoặc không có quyền xem thì không hiển thị)
+        + (typeof tlktSplitRender === 'function'
+            ? tlktSplitRender(m.attachments || [], { ownerUnit: ((typeof gqRecord === 'function' && gqRecord(claim)) || {}).rootUnitId || '' }, function (rows, title) { return ctvvDocsViewHtml(rows.map(function (d) { return { title: d.name, file: d.file ? d.file.name : '', size: d.file ? d.file.size : '', fileId: d.file ? d.file.id : '' }; }), { title: title }); })
+            : ctvvDocsViewHtml((m.attachments || []).map(function (d) { return { title: d.name, file: d.file ? d.file.name : '', size: d.file ? d.file.size : '', fileId: d.file ? d.file.id : '' }; }), { title: 'Tài liệu kèm theo' }))
         + (canResubmit ? '<div style="display:flex; justify-content:flex-end; margin-top:10px;">' + btn('Cập nhật và trình ký lại') + '</div>' : '');
     panel.innerHTML = html;
 }

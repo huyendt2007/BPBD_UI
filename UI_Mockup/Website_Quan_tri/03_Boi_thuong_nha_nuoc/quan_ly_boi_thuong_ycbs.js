@@ -338,3 +338,46 @@ function ycbsDecorateDetail(claim) {
         if (host && !(host.parentElement && host.parentElement.querySelector('.ycbs-diff'))) host.insertAdjacentHTML('afterend', ycbsDiffBadge(d.oldVal, d.at, d.by));
     });
 }
+
+// =====================================================================
+// Khối chỉ đọc "Thông tin yêu cầu bổ sung hồ sơ" (màn Tiếp nhận / Xem chi tiết): tài liệu tách 02 khối
+// "Tài liệu ban hành kèm theo" / "Tài liệu không ban hành kèm theo" theo component chung btnn_tai_lieu_kem_theo.js (tlktViewHtml / tlktSplit).
+// Nguồn: lần yêu cầu bổ sung gần nhất (Ký ngoài: rejectionLog.attachments) -> phiếu trình Loại trình "Yêu cầu bổ sung" (Ký số: signDoc.attachments)
+// -> dữ liệu cũ (supplementFiles / files, chưa có phạm vi): tính là Tài liệu không ban hành kèm theo.
+// =====================================================================
+function ycbsSupplementDocs(claim, info) {
+    var rounds = (info && info.rounds) || [];
+    var last = rounds[rounds.length - 1] || null;
+    if (last && Array.isArray(last.attachments) && last.attachments.length) return last.attachments;
+    var rec = null; try { rec = typeof gqRecord === 'function' ? gqRecord(claim) : null; } catch (e) { rec = null; }
+    var a = rec && rec.approval;
+    if (a && a.kind === 'Yêu cầu bổ sung' && a.signDoc && Array.isArray(a.signDoc.attachments) && a.signDoc.attachments.length) return a.signDoc.attachments;
+    return ((info && info.files) || []).map(function (n) { return { name: n, file: { id: '', name: n, size: '' }, scope: 'internal' }; });
+}
+(function () {
+    if (typeof window.renderSupplementRequestInfoHtml !== 'function' || typeof window.getClaimSupplementRequestInfo !== 'function') return;
+    window.renderSupplementRequestInfoHtml = function (claim, mode) {
+        if (!claim || ycbsStatusOf(claim) !== YCBS_ST) return '';
+        var info = getClaimSupplementRequestInfo(claim);
+        var rec = null; try { rec = typeof gqRecord === 'function' ? gqRecord(claim) : null; } catch (e) { rec = null; }
+        var docs = ycbsSupplementDocs(claim, info);
+        var docsHtml = typeof tlktViewHtml === 'function' ? tlktViewHtml(docs, rec && rec.rootUnitId ? { ownerUnit: rec.rootUnitId } : { showInternal: true }) : '';
+        var earlier = info.rounds.length > 1
+            ? '<div style="margin-top:10px; border-top:1px dashed #FDE68A; padding-top:8px;"><strong style="color:#9A3412;">Các lần yêu cầu bổ sung trước:</strong><ol style="margin:4px 0 0; padding-left:18px;">'
+              + info.rounds.slice(0, -1).map(function (r) { return '<li>' + ycbsEsc(r.date || '--') + ' - ' + ycbsEsc(r.officer || '--') + ': ' + ycbsEsc(r.reason || '--') + '</li>'; }).join('') + '</ol></div>'
+            : '';
+        var hint = mode === 'form'
+            ? 'Thông tin chỉ đọc. Đối chiếu nội dung đã yêu cầu bổ sung với hồ sơ người yêu cầu bồi thường đã bổ sung trước khi lưu tiếp nhận.'
+            : 'Thông tin chỉ đọc về yêu cầu bổ sung hồ sơ đã gửi người yêu cầu bồi thường.';
+        return '<div id="supplementRequestInfoBlock" class="supplement-request-info" data-mode="' + (mode || 'detail') + '" style="background-color:#FEF3C7; border:1.5px solid #F59E0B; padding:16px; border-radius:var(--border-radius-md); margin-bottom:20px;">'
+            + '<div style="font-weight:700; color:#B45309; margin-bottom:4px; font-size:14px; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-circle-question" style="color:#D97706; font-size:16px;"></i> THÔNG TIN YÊU CẦU BỔ SUNG HỒ SƠ</div>'
+            + '<div style="font-size:12px; color:#92400E; margin-bottom:10px;">' + hint + '</div>'
+            + '<div style="font-size:12.5px; background:white; padding:12px; border-radius:4px; border:1px solid #FDE68A; line-height:1.6;">'
+            + '<div style="margin-bottom:8px;"><strong style="color:#9A3412;">Nội dung yêu cầu bổ sung:</strong><div style="color:#1F2937; white-space:pre-line;">' + ycbsEsc(info.content || '--') + '</div></div>'
+            + '<div style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px 16px; border-top:1px dashed #e2e8f0; padding-top:8px;">'
+            + '<div><strong style="color:#475569;">Người yêu cầu bổ sung:</strong><br><span style="font-weight:600;">' + ycbsEsc(info.officer || '--') + '</span></div>'
+            + '<div><strong style="color:#475569;">Thời điểm yêu cầu bổ sung:</strong><br><span style="font-weight:600;">' + ycbsEsc(info.date || '--') + '</span></div></div>'
+            + '<div class="ycbs-tlkt" style="margin-top:8px;">' + (docsHtml || '<div><strong style="color:#475569;">Tài liệu kèm theo:</strong> <span style="color:#94a3b8; font-style:italic;">Không có</span></div>') + '</div>'
+            + earlier + '</div></div>';
+    };
+})();

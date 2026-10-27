@@ -191,7 +191,7 @@ Popup mở khi Cán bộ Sở Tư pháp click `Tạo báo cáo` tại MH01.
 | Ngày gửi gần nhất | - | - | Theo bản ghi | Control UI: Label.<br>- Định dạng `dd/mm/yyyy HH:mm`; chưa gửi: `--`. |
 | Ngày ban hành | - | - | Theo bản ghi | Control UI: Label.<br>- `[dd/mm/yyyy HH:mm] - [Họ tên Lãnh đạo ký]`; chưa ban hành: `--`. |
 | Khối Lý do bị từ chối | Section | - | Ẩn | Control UI: Khối cảnh báo (Read-only).<br>- Chỉ hiển thị khi báo cáo `Bị từ chối`.<br>- Tiêu đề `BÁO CÁO BỊ LÃNH ĐẠO TỪ CHỐI`.<br>- Gồm Lý do từ chối, Người từ chối (Cấp [n]), Thời điểm `dd/mm/yyyy HH:mm` của lần từ chối gần nhất. |
-| **II. Tệp báo cáo** | Data grid | - | 03 dòng | Control UI: Data grid (Read-only).<br>- Tiêu đề `Tệp báo cáo (dự thảo)` hoặc `Tệp báo cáo (đã ban hành)` theo trạng thái.<br>- Mỗi biểu mẫu 01 dòng. |
+| **II. Tệp báo cáo** | Data grid | - | 03 dòng | Control UI: Data grid (Read-only).<br>- Tiêu đề `Tệp báo cáo (dự thảo)` hoặc `Tệp báo cáo (đã ban hành)` theo trạng thái.<br>- Mỗi biểu mẫu 01 dòng.<br>- Dưới bảng: 02 khối `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo` của lần trình (Read-only); mỗi khối chỉ hiển thị khi có dữ liệu; khối `Tài liệu không ban hành kèm theo` chỉ hiển thị với Sở Tư pháp trình báo cáo; quy tắc tại [Quy tắc Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-tai-lieu-trinh-ky). |
 | STT | Integer | - | Tự tăng | Control UI: Label. |
 | Biểu mẫu | - | - | Theo bản ghi | Control UI: Label.<br>- `[Mã mẫu] - [Tên mẫu]`. |
 | Tên tệp | - | - | Theo bản ghi | Control UI: Label.<br>- Theo quy tắc đặt tên tại Bảng mapping trường dữ liệu biểu mẫu BTNN. |
@@ -290,10 +290,10 @@ Popup mở khi Cán bộ Sở Tư pháp click `Tạo báo cáo` tại MH01.
 
 - Bố cục giống [Popup Trình duyệt Hoãn giải quyết bồi thường - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-popup-hoan); khác biệt:
   + Văn bản trình ký là bộ 03 biểu mẫu sinh theo mẫu; không có `Nguồn tệp văn bản`, `Tải lên từ máy`, `Ký ngoài`.
-  + Bước 1 - Kiểm tra bộ báo cáo: `Hình thức ký`, `Bộ báo cáo trình ký`, `Người lập biểu`, `Tài liệu kèm theo`.
+  + Bước 1 - Kiểm tra bộ báo cáo: `Hình thức ký`, `Bộ báo cáo trình ký`, `Người lập biểu`, `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo`.
   + Bước 2 - Chọn Lãnh đạo & trình ký: vùng trái xem văn bản có thanh tab 03 biểu mẫu; vùng phải thẻ cấp ký, `Nội dung trình`.
   + Ô ký do hệ thống đặt theo [Quy tắc nghiệp vụ - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-quy-tac) quy tắc 4; không có nút `Đặt chữ ký`.
-- Báo cáo `Bị từ chối`: điền lại Lãnh đạo từng cấp, `Nội dung trình`, `Tài liệu kèm theo` của lần trình trước.
+- Báo cáo `Bị từ chối`: điền lại Lãnh đạo từng cấp, `Nội dung trình`, `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo` của lần trình trước.
 
 #### 2. Mô tả thông tin trên màn hình
 
@@ -308,7 +308,7 @@ Popup mở khi Cán bộ Sở Tư pháp click `Tạo báo cáo` tại MH01.
 | Tình trạng dữ liệu | - | - | Theo bản ghi | Control UI: Label.<br>- Mẫu 41/BTNN: `[Số] vụ việc`.<br>- Mẫu 42/BTNN: `[Số mục đã nhập]/16 mục đã nhập nội dung`.<br>- Mẫu 43/BTNN: `Tổng số [Cột 2 dòng Tổng cộng] vụ việc (Cột 2)`. |
 | Thao tác | Action buttons | - | - | Control UI: Link.<br>Gồm:<br>+ Xem trước PDF |
 | **Người lập biểu** | Section | - | - | Control UI: Khối thông tin (Read-only).<br>- Ảnh chữ ký hình ảnh, Họ và tên, Chức vụ của người dùng đang thao tác theo Thông tin cá nhân cán bộ. |
-| Tài liệu kèm theo | List(Object) | Không | 01 dòng trống | Control UI: Bảng động dùng chung.<br>- Cột: `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`: Xem file, Xóa.<br>- Nút `Thêm tài liệu` dưới bảng.<br>- Dòng đã nhập phải có đủ `Tên tài liệu, văn bản` và tệp; dòng trống không lưu.<br>- Định dạng `.pdf`, `.doc`, `.docx`, `.jpg`, `.jpeg`, `.png`; tối đa 50MB/tệp. |
+| Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo | List(Object) | Không | 01 dòng trống | Control UI: Bảng động dùng chung, 02 khối riêng: `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo`; mỗi khối 01 bảng như sau.<br>- Cột: `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`: Xem file, Xóa.<br>- Nút `Thêm tài liệu` dưới bảng.<br>- Dòng đã nhập phải có đủ `Tên tài liệu, văn bản` và tệp; dòng trống không lưu.<br>- Định dạng `.pdf`, `.doc`, `.docx`, `.jpg`, `.jpeg`, `.png`; tối đa 50MB/tệp.<br>- Quy tắc tại [Quy tắc Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-tai-lieu-trinh-ky). |
 | Xem văn bản (Bước 2) | Component | - | Tab `Mẫu 41/BTNN` | Control UI: Document Viewer (Read-only), vùng trái.<br>- Thanh tab: `Mẫu 41/BTNN`, `Mẫu 42/BTNN`, `Mẫu 43/BTNN`.<br>- Hiển thị văn bản dự thảo, ô ký các cấp theo Lãnh đạo đang chọn. |
 | Thẻ cấp ký (Bước 2) | Component | - | Theo luồng đã cấu hình | Control UI: Danh sách thẻ, mỗi cấp 01 thẻ.<br>- Tiêu đề `Cấp [n] - [Đơn vị]`.<br>- Cấp có cấu hình Ký nháy: nhãn `Ký nháy`. |
 | Lãnh đạo (từng cấp) | Enum(String(100)) | Có | Lãnh đạo đầu tiên của nhóm lãnh đạo cấp đó | Control UI: Combobox tại từng thẻ cấp ký.<br>- Danh sách là Nhóm lãnh đạo của đơn vị ở cấp tương ứng, hiển thị `[Họ tên] - [Chức vụ]`.<br>- `Placeholder: -- Chọn Lãnh đạo --`<br>- Bỏ trống: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên. |
@@ -319,11 +319,11 @@ Popup mở khi Cán bộ Sở Tư pháp click `Tạo báo cáo` tại MH01.
 | STT | Tên chức năng | Định dạng | Mô tả |
 | :--- | :--- | :--- | :--- |
 | 1 | Xem trước PDF | Link | Mở MH06 tại tab biểu mẫu tương ứng. |
-| 2 | Thêm tài liệu / Tải file / Xem file / Xóa | Button / Icon button | Theo bảng `Tài liệu kèm theo` dùng chung:<br>- Sai định dạng: [MSG-ERR-FILE-001], không tiếp nhận tệp.<br>- Quá 50MB: [MSG-ERR-FILE-002], không tiếp nhận tệp.<br>- `Xóa`: xóa dòng ngay. |
-| 3 | Tiếp tục | Button | Tại Bước 1.<br>- **TH1 - Dòng Tài liệu kèm theo thiếu Tên tài liệu, văn bản hoặc tệp**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên.<br>- **TH Hợp lệ**: sinh văn bản dự thảo 03 biểu mẫu, chuyển Bước 2. |
+| 2 | Thêm tài liệu / Tải file / Xem file / Xóa | Button / Icon button | Theo bảng tài liệu dùng chung, áp dụng cho từng khối:<br>- Sai định dạng: [MSG-ERR-FILE-001], không tiếp nhận tệp.<br>- Quá 50MB: [MSG-ERR-FILE-002], không tiếp nhận tệp.<br>- `Xóa`: xóa dòng ngay. |
+| 3 | Tiếp tục | Button | Tại Bước 1.<br>- **TH1 - Dòng `Tài liệu ban hành kèm theo` / `Tài liệu không ban hành kèm theo` thiếu Tên tài liệu, văn bản hoặc tệp**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên.<br>- **TH Hợp lệ**: sinh văn bản dự thảo 03 biểu mẫu, chuyển Bước 2. |
 | 4 | Chọn Lãnh đạo | Combobox | Cập nhật ô ký trên văn bản đang xem. |
 | 5 | Quay lại | Button | Tại Bước 2: về Bước 1, giữ dữ liệu đã nhập. |
-| 6 | Trình Lãnh đạo | Button | Tại Bước 2.<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên.<br>- **TH Hợp lệ**: tạo phiếu trình Loại trình `Báo cáo công tác BTNN` kèm 03 văn bản dự thảo, Lãnh đạo từng cấp, `Nội dung trình`, `Tài liệu kèm theo`; ghi Người lập = người dùng đang thao tác; báo cáo chuyển `Chờ duyệt`, cấp hiện hành = Cấp 1; ghi Ngày gửi gần nhất, Lịch sử xử lý `Gửi phê duyệt`; xóa Khối Lý do bị từ chối khỏi màn hình; đóng popup, tải lại MH03, thông báo `Đã gửi phê duyệt báo cáo đến [Họ tên Lãnh đạo Cấp 1].` |
+| 6 | Trình Lãnh đạo | Button | Tại Bước 2.<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên.<br>- **TH Hợp lệ**: tạo phiếu trình Loại trình `Báo cáo công tác BTNN` kèm 03 văn bản dự thảo, Lãnh đạo từng cấp, `Nội dung trình`, `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo`; ghi Người lập = người dùng đang thao tác; báo cáo chuyển `Chờ duyệt`, cấp hiện hành = Cấp 1; ghi Ngày gửi gần nhất, Lịch sử xử lý `Gửi phê duyệt`; xóa Khối Lý do bị từ chối khỏi màn hình; đóng popup, tải lại MH03, thông báo `Đã gửi phê duyệt báo cáo đến [Họ tên Lãnh đạo Cấp 1].` |
 | 7 | Hủy bỏ / Đóng | Button | Đóng popup, không trình, giữ nguyên trạng thái báo cáo. |
 
 ---
@@ -339,7 +339,7 @@ Popup mở khi Cán bộ Sở Tư pháp click `Tạo báo cáo` tại MH01.
 - Mở khi Lãnh đạo được chọn ở cấp phê duyệt hiện hành click `Ký duyệt` hoặc `Từ chối` tại MH01 / MH03.
 - Hiển thị toàn màn hình, gồm 02 vùng:
   + Vùng trái: xem văn bản trình ký, chia 03 tab `Mẫu 41/BTNN`, `Mẫu 42/BTNN`, `Mẫu 43/BTNN`.
-  + Vùng phải, theo thứ tự: `Thông tin tổng quan`, `Tài liệu kèm theo` (chỉ khi có), `Lịch sử trình ký`, `Ý kiến` / `Lý do từ chối`.
+  + Vùng phải, theo thứ tự: `Thông tin tổng quan`, `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo` (mỗi khối chỉ hiển thị khi có dữ liệu), `Lịch sử trình ký`, `Ý kiến` / `Lý do từ chối`.
 - Ký duyệt / Từ chối áp dụng đồng thời cho cả 03 biểu mẫu.
 
 #### 2. Mô tả thông tin trên màn hình
@@ -356,7 +356,8 @@ Popup mở khi Cán bộ Sở Tư pháp click `Tạo báo cáo` tại MH01.
 | Cán bộ trình | - | - | Theo bản ghi | Control UI: Label.<br>- `[Họ tên] - [dd/mm/yyyy HH:mm]`. |
 | Cấp phê duyệt | - | - | Theo bản ghi | Control UI: Label.<br>- `[Cấp hiện hành]/[Tổng số cấp] - [Đơn vị]`; cấp Ký nháy hiển thị nhãn `Ký nháy`. |
 | Nội dung trình | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu phiếu trình. |
-| **TÀI LIỆU KÈM THEO** | List(Object) | - | Theo phiếu trình | Control UI: Data grid (Read-only).<br>- Chỉ hiển thị khi phiếu trình có tài liệu kèm theo.<br>- Cột: `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`: Xem file, Tải file. |
+| **TÀI LIỆU BAN HÀNH KÈM THEO** | List(Object) | - | Theo phiếu trình | Control UI: Data grid (Read-only).<br>- Chỉ hiển thị khi phiếu trình có tài liệu ban hành kèm theo.<br>- Cột: `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`: Xem file, Tải file. |
+| **TÀI LIỆU KHÔNG BAN HÀNH KÈM THEO** | List(Object) | - | Theo phiếu trình | Control UI: Data grid (Read-only), đặt dưới khối `TÀI LIỆU BAN HÀNH KÈM THEO`.<br>- Chỉ hiển thị khi phiếu trình có tài liệu không ban hành kèm theo.<br>- Cột giống `TÀI LIỆU BAN HÀNH KÈM THEO`.<br>- Quy tắc tại [Quy tắc Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-tai-lieu-trinh-ky). |
 | **LỊCH SỬ TRÌNH KÝ** | List(Object) | - | Theo bản ghi | Control UI: Danh sách sự kiện (Read-only), giảm dần theo thời gian.<br>- Gồm mọi lượt trình, kể cả lượt bị từ chối; cấp đang chờ: `Đang chờ ký duyệt`; cấp sau: `Chưa tới`. |
 | Ý kiến | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Chỉ hiển thị khi thao tác là `Ký duyệt`.<br>- `Placeholder: Nhập ý kiến (không bắt buộc)...` |
 | Lý do từ chối | Text(2000) | Có | Trống | Control UI: Textarea.<br>- Chỉ hiển thị khi thao tác là `Từ chối`.<br>- `Placeholder: Nhập lý do từ chối...`<br>- Bỏ trống: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên. |
@@ -451,7 +452,7 @@ Màn hình mặc định của vai trò Bộ Tư pháp tại chức năng `Báo 
 | Trạng thái | - | - | Theo bản ghi | Control UI: Badge.<br>Gồm:<br>+ Đã ban hành<br>+ Chưa gửi: báo cáo chưa `Đã ban hành` hoặc chưa tạo |
 | Ngày ban hành | - | - | Theo bản ghi | Control UI: Label.<br>- Định dạng `dd/mm/yyyy HH:mm`; chưa gửi: `--`. |
 | Người ký | - | - | Theo bản ghi | Control UI: Label.<br>- Họ tên Lãnh đạo cấp cuối; chưa gửi: `--`. |
-| Tệp báo cáo | - | - | Theo bản ghi | Control UI: Nhóm thẻ tệp, mỗi biểu mẫu 01 thẻ.<br>- Thẻ: `[Mã mẫu]`, link `Xem file`, `Tải file`.<br>- Chưa gửi: `--`. |
+| Tệp báo cáo | - | - | Theo bản ghi | Control UI: Nhóm thẻ tệp, mỗi biểu mẫu 01 thẻ.<br>- Thẻ: `[Mã mẫu]`, link `Xem file`, `Tải file`.<br>- Dưới nhóm thẻ: danh sách `Tài liệu ban hành kèm theo` của báo cáo (chỉ khi có); Bộ Tư pháp không xem `Tài liệu không ban hành kèm theo` của Sở Tư pháp.<br>- Chưa gửi: `--`. |
 | **II. Tab Mẫu 41/BTNN - Tổng hợp** | Tab | - | - | Control UI: Tab. |
 | Sở Tư pháp | Enum(String(255)) | Không | `Tất cả ([Số] Sở Tư pháp đã ban hành)` | Control UI: Combobox.<br>- Gồm `Tất cả` và các Sở Tư pháp đã ban hành. |
 | Danh mục vụ việc tổng hợp | Data grid | - | Theo dữ liệu | Control UI: Data grid (Read-only), nhóm theo 06 nhóm như Tab Mẫu 41/BTNN (MH03).<br>- Cột: `STT`, 06 cột (1) - (6) của Mẫu 41/BTNN, `Sở Tư pháp`, `Thao tác`: Điều chỉnh.<br>- Dòng đã điều chỉnh: nhãn `Đã điều chỉnh` tại cột `Sở Tư pháp`.<br>- Dòng cuối `Tổng cộng`: `[Số] vụ việc`. |

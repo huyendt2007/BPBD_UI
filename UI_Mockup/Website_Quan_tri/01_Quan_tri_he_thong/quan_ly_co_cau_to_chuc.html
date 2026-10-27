@@ -767,6 +767,10 @@
                             <div class="info-value" id="dLoaiCoQuan">-</div>
                         </div>
                         <div class="info-item">
+                            <span class="info-label">Cấp đơn vị</span>
+                            <div class="info-value" id="dCapDonVi">-</div>
+                        </div>
+                        <div class="info-item">
                             <span class="info-label">Email</span>
                             <div class="info-value" id="dEmail">-</div>
                         </div>
@@ -870,6 +874,16 @@
                             <div class="ldv-dd" id="mLoaiCoQuanDd"></div>
                         </div>
                         <span class="field-error" id="errLoaiCoQuan">Vui lòng chọn Loại cơ quan, đơn vị.</span>
+                    </div>
+                    <!-- Cấp đơn vị: bắt buộc với cơ quan, đơn vị gốc; đơn vị trực thuộc dùng Cấp đơn vị của đơn vị gốc (chỉ đọc) -->
+                    <div class="form-group">
+                        <label class="form-label">Cấp đơn vị <span class="required" id="mCapDonViReq">*</span></label>
+                        <select class="form-control" id="mCapDonVi" onchange="document.getElementById('errCapDonVi').style.display='none'">
+                            <option value="">-- Chọn Cấp đơn vị --</option>
+                            <option value="Trung ương">Trung ương</option>
+                            <option value="Địa phương">Địa phương</option>
+                        </select>
+                        <span class="field-error" id="errCapDonVi">Đây là trường bắt buộc</span>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Email</label>
@@ -1222,8 +1236,37 @@
                     { name: "Nguyễn Hoàng Giang", username: "giangnh", email: "giangnh@moit.gov.vn", tel: "0966554433", role: "Cán bộ nghiệp vụ", status: "Đang hoạt động" }
                 ],
                 collapsed: false
+            },
+            {
+                id: "STP-HN",
+                name: "Sở Tư pháp Thành phố Hà Nội",
+                stt: "",
+                parentId: null,
+                loai: "Cơ quan ngoài ngành",
+                capDonVi: "Địa phương",
+                tinhThanh: "Thành phố Hà Nội",
+                dienThoai: "02438253600",
+                diaChi: "Số 1B Trần Phú, Hà Đông, Hà Nội",
+                trangThai: "Đang hoạt động",
+                officers: [
+                    { name: "Phạm Quang Huy", username: "gdso_hn", email: "gdso_hn@sotuphap.hanoi.gov.vn", tel: "0912888001", role: "Giám đốc Sở", status: "Đang hoạt động" }
+                ],
+                collapsed: false
             }
         ];
+        // Cấp đơn vị của cơ quan, đơn vị gốc mẫu (Trung ương / Địa phương); đơn vị trực thuộc dùng Cấp đơn vị của đơn vị gốc
+        const ORG_CAP_MAU = { "BTP-01": "Trung ương", "BCA-01": "Trung ương", "BCT-01": "Trung ương", "STP-HN": "Địa phương" };
+        function initCapDonVi() { orgData.forEach(n => { if (!n.parentId && !n.capDonVi && ORG_CAP_MAU[n.id]) n.capDonVi = ORG_CAP_MAU[n.id]; }); }
+        function rootOf(node) { let n = node; while (n && n.parentId) n = orgData.find(x => x.id === n.parentId); return n || node; }
+        function capDonViOf(node) { const r = node ? rootOf(node) : null; return (r && r.capDonVi) || ""; }
+        // Ô Cấp đơn vị trên popup: đơn vị gốc chọn (bắt buộc); đơn vị trực thuộc khóa, hiển thị Cấp đơn vị của đơn vị gốc
+        function setCapDonViForm(isRoot, value) {
+            const sel = document.getElementById('mCapDonVi');
+            sel.value = value || "";
+            sel.disabled = !isRoot;
+            document.getElementById('mCapDonViReq').style.display = isRoot ? "" : "none";
+            document.getElementById('errCapDonVi').style.display = "none";
+        }
 
         // Active State variables
         let selectedNodeId = "CĐK-01";
@@ -1232,7 +1275,7 @@
         let modalIsRoot = false;
 
         // Loại cơ quan của cơ quan, đơn vị mẫu (Danh mục Loại cơ quan [DM_57])
-        const ORG_LOAI_MAU = { "BTP-01": "Bộ", "CĐK-01": "Cục", "VP-01": "Văn phòng", "PLN-01": "Phòng / Ban", "PLN-02": "Phòng / Ban", "PLN-03": "Phòng / Ban", "TT1-01": "Trung tâm", "TT2-01": "Trung tâm", "TT3-01": "Trung tâm", "BCA-01": "Bộ", "BCT-01": "Bộ" };
+        const ORG_LOAI_MAU = { "BTP-01": "Bộ", "CĐK-01": "Cục", "VP-01": "Văn phòng", "PLN-01": "Phòng / Ban", "PLN-02": "Phòng / Ban", "PLN-03": "Phòng / Ban", "TT1-01": "Trung tâm", "TT2-01": "Trung tâm", "TT3-01": "Trung tâm", "BCA-01": "Bộ", "BCT-01": "Bộ", "STP-HN": "Sở" };
         function initLoaiCoQuan() {
             orgData.forEach(n => {
                 if (n.loaiCoQuan !== undefined) return;
@@ -1296,6 +1339,7 @@
         // Window Init
         window.addEventListener('DOMContentLoaded', () => {
             initLoaiCoQuan();
+            initCapDonVi();
             bindLoaiCoQuanCombo();
             renderTreeView();
             selectNode(selectedNodeId);
@@ -1433,6 +1477,7 @@
             document.getElementById('dTenDonVi').innerText = node.name;
             document.getElementById('dTenVietTat').innerText = node.tenVietTat || "-";
             document.getElementById('dLoaiCoQuan').innerText = nodeLoai ? nodeLoai.name : "-";
+            document.getElementById('dCapDonVi').innerText = capDonViOf(node) || "-";
             document.getElementById('dEmail').innerText = node.email || "-";
             document.getElementById('dSoDienThoai').innerText = node.dienThoai || "-";
             document.getElementById('dTinhThanh').innerText = node.tinhThanh || "-";
@@ -1547,6 +1592,7 @@
             document.getElementById('mTenDonVi').value = "";
             document.getElementById('mTenVietTat').value = "";
             setLoaiCoQuanForm("");
+            setCapDonViForm(isRoot, isRoot ? "" : capDonViOf(activeNode));
             document.getElementById('mEmail').value = "";
             document.getElementById('mSoDienThoai').value = "";
             document.getElementById('mTinhThanh').value = "";
@@ -1574,6 +1620,7 @@
             document.getElementById('mTenDonVi').value = node.name;
             document.getElementById('mTenVietTat').value = node.tenVietTat || "";
             setLoaiCoQuanForm(node.loaiCoQuan);
+            setCapDonViForm(!node.parentId, capDonViOf(node));
             document.getElementById('mEmail').value = node.email || "";
             document.getElementById('mSoDienThoai').value = node.dienThoai || "";
             document.getElementById('mTinhThanh').value = node.tinhThanh || "";
@@ -1597,8 +1644,13 @@
             const addVal = document.getElementById('mDiaChi').value.trim();
             const statusVal = document.getElementById('mTrangThai').value;
 
+            // Cấp đơn vị: bắt buộc với cơ quan, đơn vị gốc (Thêm cơ quan, đơn vị / Sửa đơn vị không có đơn vị cha)
+            const editNode = modalMode === "edit" ? orgData.find(n => n.id === selectedNodeId) : null;
+            const isRootForm = modalMode === "create" ? modalIsRoot : !!(editNode && !editNode.parentId);
+            const capVal = document.getElementById('mCapDonVi').value;
+            if (isRootForm && !capVal) document.getElementById('errCapDonVi').style.display = "block";
             if (!loaiCqVal) document.getElementById('errLoaiCoQuan').style.display = "block";
-            if (!idVal || !nameVal || !loaiCqVal || !tinhVal) {
+            if (!idVal || !nameVal || !loaiCqVal || !tinhVal || (isRootForm && !capVal)) {
                 showToast("Vui lòng nhập đầy đủ các trường bắt buộc (*)", "error");
                 return;
             }
@@ -1627,6 +1679,7 @@
                     tenVietTat: shortVal,
                     parentId: modalIsRoot ? null : activeNode.id,
                     loaiCoQuan: loaiCqVal,
+                    capDonVi: modalIsRoot ? capVal : "",
                     email: emailVal,
                     dienThoai: telVal,
                     tinhThanh: tinhVal,
@@ -1644,6 +1697,7 @@
                     node.name = nameVal;
                     node.tenVietTat = shortVal;
                     node.loaiCoQuan = loaiCqVal;
+                    if (!node.parentId) node.capDonVi = capVal;
                     node.email = emailVal;
                     node.dienThoai = telVal;
                     node.tinhThanh = tinhVal;

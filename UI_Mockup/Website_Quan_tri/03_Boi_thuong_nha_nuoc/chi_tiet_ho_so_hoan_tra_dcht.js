@@ -772,7 +772,7 @@ function dchtSubmitOffline() {
 function dchtIssueOffline() {
     if (!dchtState.offlineFile) return;
     const prevStatus = activeDossier.status === DCHT_ST_REJECTED && activeDossier.dcht ? activeDossier.dcht.prevStatus : activeDossier.status;
-    activeDossier.dcht = { method: 'offline', prevStatus, fileName: dchtState.offlineFile.name, offFile: dchtState.offlineFile, issuedAt: dchtNow(), attachments: [], levels: [], assignees: [], level: 0 };
+    activeDossier.dcht = { method: 'offline', prevStatus, fileName: dchtState.offlineFile.name, offFile: dchtState.offlineFile, issuedAt: dchtNow(), attachments: typeof tlktGet === 'function' ? tlktGet('dcht') : [], levels: [], assignees: [], level: 0 };
     activeDossier.status = DCHT_ST_DONE;
     dchtLog(`Ban hành Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả ký ngoài hệ thống (tệp ${dchtState.offlineFile.name}). Hồ sơ chuyển sang trạng thái [${DCHT_ST_DONE}].`);
     dchtClose();

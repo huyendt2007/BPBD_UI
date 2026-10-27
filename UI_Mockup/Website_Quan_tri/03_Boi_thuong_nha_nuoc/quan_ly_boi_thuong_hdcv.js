@@ -23,12 +23,14 @@ function hdcvTypeOfKind(kind) { for (var k in HDCV_TYPES) if (HDCV_TYPES[k].kind
 function hdcvSignedName(name) { var s = String(name || ''); if (!s) return ''; return /_da_ky\.[^.]+$/i.test(s) ? s : s.replace(/\.[^.]+$/, '') + '_da_ky.pdf'; }
 // Tài liệu kèm theo: [{ name, file: { id, name, size } }] (phiếu trình) | [{ name: tên tệp, size, title }] (lịch sử cũ) -> dòng bảng
 function hdcvRows(list) {
+    // Giữ scope (ban hành kèm theo / không ban hành kèm theo) và unit (đơn vị trình) để tách 02 khối khi hiển thị
+    var keep = function (r, a) { if (a && a.scope) r.scope = a.scope; if (a && a.unit) r.unit = a.unit; return r; };
     return (list || []).map(function (a) {
         if (!a) return null;
-        if (a.file && typeof a.file === 'object') return { title: a.name || '', file: a.file.name || '', size: a.file.size || '', fileId: a.file.id || '' };
+        if (a.file && typeof a.file === 'object') return keep({ title: a.name || '', file: a.file.name || '', size: a.file.size || '', fileId: a.file.id || '' }, a);
         if (typeof a === 'string') return { title: a.replace(/\.[^.]+$/, ''), file: a, size: '', fileId: '' };
         var file = typeof a.file === 'string' ? a.file : (a.name || '');
-        return { title: a.title || (typeof a.file === 'string' ? a.name : '') || file.replace(/\.[^.]+$/, ''), file: file, size: a.size || '', fileId: a.fileId || a.tlktId || '' };
+        return keep({ title: a.title || (typeof a.file === 'string' ? a.name : '') || file.replace(/\.[^.]+$/, ''), file: file, size: a.size || '', fileId: a.fileId || a.tlktId || '' }, a);
     }).filter(function (r) { return r && (r.title || r.file); });
 }
 function hdcvCss() {
@@ -70,7 +72,7 @@ function hdcvEntries(claim) {
     logs.forEach(function (l) {
         if (!l) return;
         if (l.type === HDCV_RESUME) {
-            if (lastPause && !lastPause.resume) lastPause.resume = { docNo: hdcvV(l.docNo), docDate: hdcvV(l.docDate), signMode: l.signMode || '', file: (l.files || [])[0] ? { name: l.files[0].name, size: l.files[0].size || '', fileId: l.files[0].fileId || '' } : null };
+            if (lastPause && !lastPause.resume) lastPause.resume = { docNo: hdcvV(l.docNo), docDate: hdcvV(l.docDate), signMode: l.signMode || '', file: (l.files || [])[0] ? { name: l.files[0].name, size: l.files[0].size || '', fileId: l.files[0].fileId || '' } : null, docs: hdcvRows(l.attachments || []) };
             return;
         }
         var t = hdcvTypeOfStatus(l.type);
@@ -126,6 +128,8 @@ function hdcvEntries(claim) {
             });
         }
     }
+    // Đơn vị trình (đơn vị gốc của hồ sơ): xác định quyền xem Tài liệu không ban hành kèm theo với dữ liệu cũ chưa lưu đơn vị
+    out.forEach(function (e) { e.owner = (rec && rec.rootUnitId) || ''; });
     return out;
 }
 
@@ -174,12 +178,17 @@ function hdcvEntryHtml(e, withTitle) {
     if (e.t === 'hgqt') h += hdcvField('Lý do tạm đình chỉ', e.reason, true);
     if (e.t === 'dc') h += hdcvField('Căn cứ đình chỉ', e.canCu, true) + hdcvField('Diễn giải', e.dienGiai, true);
     h += '<div class="hdcv-f hdcv-full"><span class="hdcv-l">File Quyết định</span>' + hdcvFileHtml(e.file) + '</div>';
-    h += '<div class="hdcv-f hdcv-full"><span class="hdcv-l">Tài liệu kèm theo</span>' + hdcvDocsHtml(e.docs) + '</div>';
+    // Tài liệu ban hành kèm theo / không ban hành kèm theo: khối rỗng hoặc không có quyền xem thì không hiển thị
+    h += typeof tlktSplitRender === 'function'
+        ? tlktSplitRender(e.docs, { ownerUnit: e.owner || '' }, function (rows, title) { return '<div class="hdcv-f hdcv-full"><span class="hdcv-l">' + hdcvE(title) + '</span>' + hdcvDocsHtml(rows) + '</div>'; })
+        : '<div class="hdcv-f hdcv-full"><span class="hdcv-l">Tài liệu kèm theo</span>' + hdcvDocsHtml(e.docs) + '</div>';
     h += '</div>';
     if (e.resume) {
         h += '<div class="hdcv-resume"><div class="hdcv-sub">Quyết định tiếp tục giải quyết bồi thường</div><div class="hdcv-grid">'
             + hdcvField('Số quyết định', e.resume.docNo) + hdcvField('Ngày quyết định', e.resume.docDate)
-            + '<div class="hdcv-f hdcv-full"><span class="hdcv-l">File Quyết định</span>' + hdcvFileHtml(e.resume.file) + '</div></div></div>';
+            + '<div class="hdcv-f hdcv-full"><span class="hdcv-l">File Quyết định</span>' + hdcvFileHtml(e.resume.file) + '</div>'
+            + (typeof tlktSplitRender === 'function' ? tlktSplitRender(e.resume.docs || [], { ownerUnit: e.owner || '' }, function (rows, title) { return '<div class="hdcv-f hdcv-full"><span class="hdcv-l">' + hdcvE(title) + '</span>' + hdcvDocsHtml(rows) + '</div>'; }) : '')
+            + '</div></div>';
     }
     return h + '</div>';
 }
@@ -291,7 +300,12 @@ var HDCV_SEED = [
     { id: 'HDCV_HGQ', code: 'BT-2026-436', nyc: 'Trần Quốc Bảo', mode: 'issued', t: 'hgq', sign: 'Ký số' },
     { id: 'HDCV_HGQ_TT', code: 'BT-2026-437', nyc: 'Hà Thị Lan Anh', mode: 'resumed', t: 'hgq', sign: 'Ký số' }
 ];
-function hdcvVv(code) { return 'VVBT-' + String(code).replace(/^BT-/, ''); }
+// Mã vụ việc theo sổ đăng ký dùng chung (BTNN_WF.uniqueVuViecFor): ưu tiên VVBT- cùng số với Mã hồ sơ; đã có hồ sơ BT- khác dùng thì cấp mới
+function hdcvVv(code) {
+    var pref = 'VVBT-' + String(code).replace(/^BT-/, '');
+    try { var W = window.BTNN_WF; if (W && typeof W.uniqueVuViecFor === 'function') return W.uniqueVuViecFor(code, pref) || pref; } catch (e) { /* mockup */ }
+    return pref;
+}
 // Vụ việc mẫu: sao chép HS1 (Thương lượng, Sở Tư pháp Hà Nội - có luồng phê duyệt 02 cấp), thay mã, người yêu cầu, lịch sử
 function hdcvBuildClaim(p, tpl) {
     var c = JSON.parse(JSON.stringify(tpl));

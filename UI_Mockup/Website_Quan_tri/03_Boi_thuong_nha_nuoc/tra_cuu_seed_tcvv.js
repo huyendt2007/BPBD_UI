@@ -2,9 +2,10 @@
  * tra_cuu_seed_tcvv.js - Dữ liệu giả lập bổ sung CHỈ cho màn Tra cứu vụ việc (tra_cuu_ho_so_boi_thuong.html).
  * - Không ghi vào claimsList / seed của Giải quyết YCBT; chỉ nối thêm vào danh sách do loadClaims() của trang trả về.
  * - Merge theo Mã hồ sơ GQBT: bản ghi đã có (localStorage claimsList / dữ liệu mẫu của trang) được giữ nguyên, chỉ thêm mã chưa có.
- * - Phủ đủ giá trị bộ lọc: 34 Tỉnh/Thành phố (theo Cơ quan giải quyết), 06 Lĩnh vực, 04 Nguồn hồ sơ, 15 Trạng thái,
- *   Lọc nhanh (Bồi thường thiệt hại / Phục hồi danh dự), cá nhân / tổ chức, Ngày tiếp nhận trải 3 tháng gần nhất và các năm trước.
- * Nạp sau script nội tuyến của trang: <script src="tra_cuu_seed_tcvv.js?v=20261026tcvv"></script>
+ * - Phủ đủ giá trị bộ lọc: cơ quan giải quyết trên toàn hệ thống, 06 Lĩnh vực, 15 Trạng thái, có / không yêu cầu phục hồi danh dự,
+ *   cá nhân / tổ chức, Số giấy tờ người yêu cầu / người bị thiệt hại, 01-03 Văn bản làm căn cứ bồi thường.
+ * - UNIT_ROWS: vụ việc của các cơ quan có tài khoản người dùng giả lập (Bộ Tư pháp, Sở Tư pháp TP. Hà Nội, UBND quận Cầu Giấy...) để demo quyền xem chi tiết.
+ * Nạp sau script nội tuyến của trang: <script src="tra_cuu_seed_tcvv.js?v=20261027tcvv3"></script>
  * - Cũng nạp ở cuối quan_ly_boi_thuong.html: chỉ hoạt động khi ?readonly=1&tcvvPreview=1 (Xem chi tiết hồ sơ bổ sung, chỉ trong bộ nhớ).
  */
 (function () {
@@ -52,7 +53,7 @@
         ['Tuyên Quang', 'UBND tỉnh Tuyên Quang', 'Ma Văn Thịnh', 'CN', R_NBTH, '', HC, 'Xác minh thiệt hại', TN, 'money', 'Chu Thị Lan', '', 'Cưỡng chế phá dỡ công trình không đúng quyết định.', 280000000],
         ['Vĩnh Long', 'Tòa án nhân dân tỉnh Vĩnh Long', 'Công ty TNHH Thủy sản Cửu Long', 'TC', R_NBTH, '', TTHC, 'Thương lượng', DVC, 'money', 'Thạch Văn Sơn', '', 'Quyết định hành chính về thuế bị Tòa án tuyên hủy.', 960000000],
         ['Hà Nội', 'Viện kiểm sát nhân dân TP. Hà Nội', 'Nguyễn Thị Thanh Tâm', 'CN', R_TK, 'Nguyễn Văn Bình', HS, 'Đang phục hồi danh dự', CH, 'both', 'Phạm Thu Trang; Lê Văn Chuyên Viên', '', 'Truy cứu trách nhiệm hình sự oan, người bị thiệt hại đã chết.', 900000000],
-        ['Hà Nội', 'Thi hành án dân sự TP. Hà Nội', 'Công ty Cổ phần Xây dựng Thăng Long', 'TC', R_NBTH, '', THADS, 'Chờ thực thi', XD, 'money', 'Trần Thị Chuyên Viên', '', 'Kê biên, xử lý tài sản đang thế chấp không đúng thứ tự ưu tiên.', 1500000000],
+        ['Hà Nội', 'Cục Thi hành án dân sự Thành phố Hà Nội', 'Công ty Cổ phần Xây dựng Thăng Long', 'TC', R_NBTH, '', THADS, 'Chờ thực thi', XD, 'money', 'Hứa Thị Ngân', '', 'Kê biên, xử lý tài sản đang thế chấp không đúng thứ tự ưu tiên.', 1500000000],
         ['Hồ Chí Minh', 'Tòa án nhân dân TP. Hồ Chí Minh', 'Võ Thị Ngọc Ánh', 'CN', R_NBTH, '', DS, 'Hoàn thành', TN, 'honor', 'Nguyễn Hoàng Long', '', 'Bản án dân sự bị hủy, công bố thông tin sai về đương sự.', 0],
         ['Bắc Ninh', 'UBND tỉnh Bắc Ninh', 'Công ty TNHH Gốm Phù Lãng', 'TC', R_NBTH, '', HC, 'Chờ ban hành QĐ', CH, 'money', 'Phạm Minh Chuyên Viên', '', 'Đình chỉ hoạt động sản xuất không đúng thẩm quyền.', 330000000],
         ['Hải Phòng', 'Trại tạm giam Công an TP. Hải Phòng', 'Bùi Văn Hậu', 'CN', R_NBTH, '', THAHS, 'Hoãn giải quyết', DVC, 'money', 'Nguyễn Văn Chuyên Viên', '', 'Không thực hiện quyết định tha tù trước thời hạn đúng hạn.', 70000000],
@@ -67,6 +68,48 @@
         [470, 'Khánh Hòa', 'Tòa án nhân dân tỉnh Khánh Hòa', 'Trần Minh Quân', 'CN', R_NBTH, '', DS, 'Tạm đình chỉ', CH, 'money', 'Đinh Văn Nam', '', 'Quyết định áp dụng biện pháp khẩn cấp tạm thời sai quy định.', 155000000],
         [560, 'Bắc Ninh', 'Trại giam Ngọc Lý', 'Ngô Văn Thuận', 'CN', R_NBTH, '', THAHS, 'Hoàn thành', TN, 'both', 'Phạm Minh Chuyên Viên', '', 'Chấp hành án quá thời hạn do tính sai thời hạn tạm giam.', 260000000]
     ];
+
+    // Vụ việc của các cơ quan giải quyết có tài khoản người dùng giả lập (tên đúng theo Cơ cấu tổ chức) - phục vụ demo quyền xem chi tiết theo đơn vị
+    const UNIT_ROWS = [
+        ['Hà Nội', 'Bộ Tư pháp', 'Lê Quang Vinh', 'CN', R_NBTH, '', HC, 'Xác minh thiệt hại', XD, 'money', 'Nguyễn Văn Cán Bộ', '', 'Thu hồi chứng chỉ hành nghề luật sư không đúng quy định.', 120000000],
+        ['Hà Nội', 'Bộ Tư pháp', 'Công ty Luật TNHH Minh Đức', 'TC', R_NBTH, '', HC, 'Thương lượng', XD, 'money', 'Trần Thị Thu Hà', '', 'Đình chỉ hoạt động tổ chức hành nghề luật sư không có căn cứ.', 450000000],
+        ['Hà Nội', 'Bộ Tư pháp', 'Phạm Thị Ngọc', 'CN', R_NBTH, '', HC, 'Đang phục hồi danh dự', TN, 'both', 'Phạm Minh Đức', '', 'Công bố quyết định xử lý kỷ luật công chứng viên không đúng sự thật.', 80000000],
+        ['Hà Nội', 'Sở Tư pháp Thành phố Hà Nội', 'Đoàn Văn Hưng', 'CN', R_NBTH, '', HC, 'Cử người giải quyết bồi thường', TN, 'money', 'Đỗ Văn Chung', '', 'Xử phạt vi phạm hành chính trong lĩnh vực công chứng không đúng thẩm quyền.', 60000000],
+        ['Hà Nội', 'Sở Tư pháp Thành phố Hà Nội', 'Văn phòng Công chứng Hồng Hà', 'TC', R_NBTH, '', HC, 'Chờ ban hành QĐ', DVC, 'money', 'Ngô Thị Lan', '', 'Tạm đình chỉ hoạt động văn phòng công chứng trái quy định.', 310000000],
+        ['Hà Nội', 'UBND quận Cầu Giấy, Thành phố Hà Nội', 'Nguyễn Thị Mận', 'CN', R_NBTH, '', HC, 'Thương lượng', TN, 'money', 'Kiều Văn Nam', '', 'Cưỡng chế phá dỡ công trình khi quyết định cưỡng chế đã bị hủy.', 230000000],
+        ['Hà Nội', 'Tòa án nhân dân Thành phố Hà Nội', 'Trịnh Văn Khôi', 'CN', R_TK, 'Trịnh Văn Lực', DS, 'Xác minh thiệt hại', CH, 'money', 'Lại Thị Hương Giang', '', 'Áp dụng biện pháp khẩn cấp tạm thời phong tỏa tài sản không đúng quy định.', 520000000],
+        ['Lâm Đồng', 'Tòa án nhân dân tỉnh Lâm Đồng', 'Ka Hoa', 'CN', R_NBTH, '', TTHC, 'Chờ thực thi', XD, 'money', 'Hà Minh Tâm', '', 'Bản án hành chính bị hủy do áp dụng sai pháp luật đất đai.', 175000000],
+        ['Hà Nội', 'Công an quận Thanh Xuân, Thành phố Hà Nội', 'Bùi Đức Anh', 'CN', R_NBTH, '', HS, 'Hoàn thành', TN, 'both', 'Nguyễn Hữu Phước', '', 'Tạm giữ hình sự không có căn cứ, sau đó trả tự do.', 140000000]
+    ];
+
+    // Vụ việc đầu luồng (Chờ tiếp nhận, Yêu cầu bổ sung, Chờ duyệt / Bị từ chối Thông báo, Không thụ lý, Đã chuyển CQGQBT do Không thụ lý KTL_01)
+    // Phần tử 15 (tùy chọn): trường bổ sung của hồ sơ
+    const EARLY_ROWS = [
+        ['Hà Nội', 'Bộ Tư pháp', 'Hoàng Minh Tuấn', 'CN', R_NBTH, '', HC, 'Chờ tiếp nhận', DVC, 'money', '', '', 'Từ chối cấp phiếu lý lịch tư pháp không đúng quy định.', 40000000],
+        ['Hà Nội', 'UBND quận Cầu Giấy, Thành phố Hà Nội', 'Công ty TNHH Thực phẩm Dịch Vọng', 'TC', R_NBTH, '', HC, 'Chờ tiếp nhận', TN, 'money', '', '', 'Đình chỉ hoạt động cơ sở kinh doanh không có căn cứ.', 260000000],
+        ['Lâm Đồng', 'Tòa án nhân dân tỉnh Lâm Đồng', 'K\'Brăng', 'CN', R_NBTH, '', DS, 'Chờ tiếp nhận', DVC, 'both', '', '', 'Kê biên tài sản ngoài phạm vi yêu cầu của đương sự.', 90000000],
+        ['Hà Nội', 'Sở Tư pháp Thành phố Hà Nội', 'Lý Thị Hằng', 'CN', R_NBTH, '', HC, 'Yêu cầu bổ sung', TN, 'money', 'Đỗ Văn Chung', '', 'Thu hồi thẻ công chứng viên không đúng thẩm quyền.', 55000000],
+        ['Hải Phòng', 'Cục Thi hành án dân sự Thành phố Hải Phòng', 'Công ty Cổ phần Cảng Đình Vũ', 'TC', R_NBTH, '', THADS, 'Yêu cầu bổ sung', CH, 'money', 'Lục Thị Hoa', '', 'Cưỡng chế thi hành án đối với tài sản của bên thứ ba.', 880000000],
+        ['Hà Nội', 'Bộ Tư pháp', 'Văn phòng Luật sư Ánh Dương', 'TC', R_NBTH, '', HC, 'Chờ duyệt', TN, 'money', 'Trần Thị Thu Hà', 'Thông báo thụ lý hồ sơ', 'Thu hồi giấy đăng ký hoạt động tổ chức hành nghề luật sư trái quy định.', 150000000],
+        ['Hà Nội', 'Công an quận Thanh Xuân, Thành phố Hà Nội', 'Đặng Quốc Hưng', 'CN', R_NBTH, '', HS, 'Chờ duyệt', DVC, 'both', 'Đào Thị Mỹ Linh', 'Thông báo Không thụ lý', 'Tạm giữ người theo thủ tục hành chính quá thời hạn.', 30000000],
+        ['Lâm Đồng', 'UBND tỉnh Lâm Đồng', 'Nguyễn Văn Sáu', 'CN', R_NBTH, '', HC, 'Bị từ chối', TN, 'money', 'Ông Thị Thảo', 'Thông báo Yêu cầu bổ sung', 'Thu hồi đất không đúng đối tượng sử dụng đất.', 410000000],
+        ['Hà Nội', 'Tòa án nhân dân Thành phố Hà Nội', 'Mai Văn Tiến', 'CN', R_NBTH, '', DS, 'Không thụ lý', CH, 'money', 'Cao Văn Hiếu', '', 'Yêu cầu bồi thường đã được giải quyết bằng bản án có hiệu lực.', 120000000, { ktlReasonCode: 'KTL_08' }],
+        ['Hà Nội', 'Bộ Tư pháp', 'Công ty TNHH Đấu giá Thăng Long', 'TC', R_NBTH, '', HC, 'Không thụ lý', TN, 'money', 'Phạm Minh Đức', '', 'Thu hồi chứng chỉ hành nghề đấu giá viên.', 70000000, { ktlReasonCode: 'KTL_03' }],
+        ['Hà Nội', 'Sở Tư pháp Thành phố Hà Nội', 'Trần Văn Lợi', 'CN', R_NBTH, '', HC, 'Đã chuyển CQGQBT', TN, 'money', 'Ngô Thị Lan', '', 'Xử phạt vi phạm hành chính không đúng thẩm quyền, chuyển cơ quan có thẩm quyền.', 45000000, { ktlReasonCode: 'KTL_01', rejectType: 'Không thụ lý' }]
+    ];
+
+    // Văn bản làm căn cứ bồi thường theo Lĩnh vực (dữ liệu giả lập)
+    const VBCC = {
+        [HC]: ['Quyết định hủy quyết định hành chính số {n}/QĐ-UBND', 'Kết luận thanh tra số {n}/KL-TTr', 'Quyết định giải quyết khiếu nại số {n}/QĐ-GQKN'],
+        [HS]: ['Quyết định đình chỉ điều tra số {n}/QĐ-CSĐT', 'Quyết định đình chỉ vụ án số {n}/QĐ-VKS', 'Bản án hình sự phúc thẩm số {n}/2026/HS-PT'],
+        [DS]: ['Quyết định giám đốc thẩm số {n}/2026/DS-GĐT', 'Bản án dân sự phúc thẩm số {n}/2026/DS-PT', 'Quyết định hủy biện pháp khẩn cấp tạm thời số {n}/QĐ-BPKCTT'],
+        [TTHC]: ['Bản án hành chính phúc thẩm số {n}/2026/HC-PT', 'Quyết định giám đốc thẩm số {n}/2026/HC-GĐT', 'Bản án hành chính sơ thẩm số {n}/2026/HC-ST'],
+        [THAHS]: ['Quyết định trả tự do số {n}/QĐ-TG', 'Kết luận kiểm sát số {n}/KL-VKS', 'Quyết định giảm thời hạn chấp hành án số {n}/QĐ-TA'],
+        [THADS]: ['Quyết định hủy quyết định cưỡng chế số {n}/QĐ-THADS', 'Kết luận kiểm sát số {n}/KL-VKS', 'Quyết định giải quyết khiếu nại số {n}/QĐ-GQKN']
+    };
+    // Số giấy tờ giả lập: CCCD 12 số (cá nhân), Mã số tổ chức 10 số (tổ chức)
+    const cccd = s => '0' + String((s * 7919) % 100).padStart(2, '0') + '0' + String(80 + (s % 20)) + String(100000 + ((s * 48271) % 900000));
+    const mst = s => '0' + String(100000000 + ((s * 7393) % 900000000));
 
     const pad = n => String(n).padStart(2, '0');
     const fmt = d => `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
@@ -90,11 +133,19 @@
             assignedOfficer: names[0] || '', appointedOfficers: names.map(name => ({ name })),
             nguonHoSo: nguon, requestType: kind, restoreHonor: kind !== 'money', totalNum: money, status
         };
+        // Số giấy tờ người yêu cầu: tổ chức -> Mã số tổ chức; cá nhân -> CCCD
+        if (type === 'TC') item.nycOrgCode = mst(serial); else { item.cardNo = cccd(serial); item.nycCardNo = item.cardNo; item.nycCardType = 'Căn cước công dân'; }
+        // Văn bản làm căn cứ bồi thường: 01-03 văn bản
+        const vbCount = 1 + (serial % 3 === 0 ? 1 : 0) + (serial % 5 === 0 ? 1 : 0);
+        item.vanBanCanCu = (VBCC[fieldGroup] || VBCC[HC]).slice(0, vbCount).map((t, k) => ({ name: t.replace('{n}', String(10 + serial * 3 + k)), file: '' }));
         if (victim) {
-            if (/^Tổ chức kế thừa/.test(role)) item.nbthOrgName = victim;
-            item.nbth = { name: victim, orgName: victim };
+            const isOrgVictim = /^Tổ chức kế thừa/.test(role);
+            if (isOrgVictim) { item.nbthOrgName = victim; item.nbthOrgCode = mst(serial + 500); }
+            // Người thừa kế của người bị thiệt hại (người bị thiệt hại đã chết): dữ liệu giả lập không có số giấy tờ -> hiển thị "-"
+            item.nbth = { name: victim, orgName: victim, docNo: isOrgVictim || role === R_TK ? '' : cccd(serial + 300) };
         }
         if (apprKind) item.approvalKind = apprKind;
+        if (r[14] && typeof r[14] === 'object') Object.assign(item, r[14]);
         if (kind !== 'money' && PHDD_STATUSES.includes(status)) {
             // Trạng thái Phục hồi danh dự: vụ việc cả hai -> GQ YCBT đã Hoàn thành; chỉ PHDD -> đã bắt đầu PHDD
             item.phddStarted = true; item.phddStatus = status;
@@ -118,6 +169,17 @@
         OLD_ROWS.forEach((r, j) => {
             const d = new Date(today.getTime()); d.setDate(d.getDate() - r[0]);
             list.push(build(r.slice(1), ROWS.length + j, d, ROWS.length + j + 1));
+        });
+        // Thêm sau OLD_ROWS để không đổi Mã hồ sơ GQBT của các dòng đã có
+        const base = ROWS.length + OLD_ROWS.length;
+        UNIT_ROWS.forEach((r, k) => {
+            const d = new Date(start.getTime()); d.setDate(d.getDate() + Math.floor(((k * 2 + 1) * span) / (UNIT_ROWS.length * 2)));
+            list.push(build(r, base + k, d, base + k + 1));
+        });
+        const base2 = base + UNIT_ROWS.length;
+        EARLY_ROWS.forEach((r, k) => {
+            const d = new Date(today.getTime()); d.setDate(d.getDate() - (k % 20));
+            list.push(build(r, base2 + k, d, base2 + k + 1));
         });
         return list;
     }

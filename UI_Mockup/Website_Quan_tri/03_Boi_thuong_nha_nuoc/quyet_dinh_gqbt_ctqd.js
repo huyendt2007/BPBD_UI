@@ -125,11 +125,11 @@ function ctqdCancelHtml(d) {
         + ctqdF(off ? 'Người ban hành' : 'Lãnh đạo ký duyệt hủy', esc(W.userLabel(off ? c.issuedBy : c.approvedBy) || ''))
         + ctqdF('Thời điểm hủy', esc(c.at || ''))
         + (c.decNo || sd.docNo ? ctqdF('Số quyết định hủy', esc(c.decNo || sd.docNo)) : '')
-        + (c.effectiveDate ? ctqdF('Ngày có hiệu lực', esc(c.effectiveDate)) : '')
+        + ctqdF('Hiệu lực', 'Kể từ ngày ký') // [hqdhl] cố định theo Mẫu 20/BTNN
         + ctqdF('Lý do hủy Quyết định', esc(c.content || ''), true)
         + '</div>';
     return '<div class="ctqd-card is-danger" id="ctqdCancel"><div class="ctqd-title"><i class="fa-solid fa-ban"></i> Quyết định đã bị hủy</div>' + g
-        + ctqdFileSec('File Quyết định hủy Quyết định giải quyết bồi thường', c.signedFile || draftDocName(c.draftDoc), '', d.id, 'cancel') + '</div>';
+        + ctqdFileSec('File Quyết định hủy Quyết định giải quyết bồi thường', c.signedFile || draftDocName(c.draftDoc), '', d.id, 'cancel') + ctqdDocs(c.attachments || sd.attachments, d) + '</div>';
 }
 // Dự thảo đang trình (Hủy QĐ / Sửa chữa, bổ sung QĐ) - trạng thái Chờ duyệt / Bị từ chối
 function ctqdRequestBody(d) {
@@ -140,10 +140,11 @@ function ctqdRequestBody(d) {
         + ctqdF('Người trình', esc(W.userLabel(r.submittedBy) || ''))
         + ctqdF('Thời điểm trình', esc(r.submittedAt || ''))
         + ctqdF('Lãnh đạo được trình', esc(r.leaderId ? W.userLabel(r.leaderId) : ''))
-        + (r.effectiveDate ? ctqdF('Ngày có hiệu lực', esc(r.effectiveDate)) : '')
+        + (huy ? ctqdF('Hiệu lực', 'Kể từ ngày ký') : (r.effectiveDate ? ctqdF('Hiệu lực của Quyết định', esc(r.effectiveDate)) : ''))
         + ctqdF(huy ? 'Lý do hủy Quyết định' : 'Nội dung sửa chữa, bổ sung', esc(r.content || ''), true)
         + '</div>'
-        + ctqdFileSec(huy ? 'File dự thảo Quyết định hủy' : 'File dự thảo Quyết định sửa chữa, bổ sung', draftDocName(r.draftDoc), 'Bản dự thảo', d.id, 'request');
+        + ctqdFileSec(huy ? 'File dự thảo Quyết định hủy' : 'File dự thảo Quyết định sửa chữa, bổ sung', draftDocName(r.draftDoc), 'Bản dự thảo', d.id, 'request')
+        + ctqdDocs((r.signDoc || {}).attachments, d);
 }
 function ctqdHasPendingReq(d) { return !!d.request && [ST.CHO_DUYET, ST.TRA_LAI].includes(d.status); }
 // Khối Yêu cầu Hủy QĐ đang trình
@@ -170,16 +171,24 @@ function ctqdAmendHtml(d) {
             + ctqdF('Ngày quyết định', esc(inf.date))
             + ctqdF('Hình thức ký', esc(inf.sign))
             + ctqdF(off ? 'Người ban hành' : 'Lãnh đạo ký duyệt', esc(W.userLabel(off ? a.issuedBy : a.approvedBy) || ''))
-            + (a.effectiveDate ? ctqdF('Ngày có hiệu lực', esc(a.effectiveDate)) : '')
+            + (a.effectiveDate ? ctqdF('Hiệu lực của Quyết định', esc(a.effectiveDate)) : '')
             + (a.content ? ctqdF('Nội dung sửa chữa, bổ sung', esc(a.content), true) : '')
-            + '</div>' + ctqdFileSec('File Quyết định sửa chữa, bổ sung đã ký ban hành', inf.file, '', d.id, 'amend', i) + '</div>');
+            + '</div>' + ctqdFileSec('File Quyết định sửa chữa, bổ sung đã ký ban hành', inf.file, '', d.id, 'amend', i) + ctqdDocs(a.attachments || (a.signDoc || {}).attachments, d) + '</div>');
     }
     return '<div class="ctqd-card" id="ctqdAmend"><div class="ctqd-title"><i class="fa-solid fa-file-pen"></i> Quyết định sửa chữa, bổ sung<span class="ctqd-st" style="color:#1d4ed8;">Sửa chữa, bổ sung cho Quyết định số ' + esc(d.decNo || '-') + '</span></div>' + parts.join('') + '</div>';
+}
+// Tài liệu ban hành kèm theo / không ban hành kèm theo của Quyết định (khối rỗng hoặc không có quyền xem thì không hiển thị;
+// khối không ban hành chỉ đơn vị trình - đơn vị gốc của hồ sơ GQBT - xem được)
+function ctqdDocs(list, d) {
+    if (typeof tlktViewHtml !== 'function' || !list || !list.length) return '';
+    var rec = W.getRecord(d.claimCode);
+    var h = tlktViewHtml(list, { ownerUnit: (rec && rec.rootUnitId) || '' });
+    return h ? '<div style="margin-top:10px;">' + h + '</div>' : '';
 }
 // Khối Văn bản của Quyết định gốc: chỉ dòng File (Số, Ngày quyết định, Hình thức ký đã có ở Khối Thông tin chung)
 function ctqdDocBlock(d, issued) {
     var name = issued ? d.signedFile : draftDocName(d.draftDoc);
-    return ctqdFileRow(name, issued ? '' : 'Bản dự thảo', d.id, issued ? 'signed' : 'draft');
+    return ctqdFileRow(name, issued ? '' : 'Bản dự thảo', d.id, issued ? 'signed' : 'draft') + (issued ? ctqdDocs((d.signDoc || {}).attachments, d) : '');
 }
 
 // Dữ liệu mẫu: 01 Quyết định đã ban hành 01 lần sửa chữa, bổ sung (Ký số); bổ sung Số/Ngày/Hình thức ký cho dữ liệu cũ
@@ -194,7 +203,7 @@ function ctqdEnsureSeeds() {
                 id: 'QD-10', claimCode: 'BT-2026-074', nycName: 'Vũ Thị Mai Lan', nycAddress: 'Số 21 Hoàng Quốc Việt, Phường Nghĩa Đô, Thành phố Hà Nội', unitId: 'BTP-01', leaderId: 'tpbt', approvedBy: 'cuctruong', approvedAt: '16:00 26/09/2026',
                 status: ST.DA_BH, decNo: '28/QĐ-BTP', issueDate: '26/09/2026', signedFile: 'QD_GQBT_BT-2026-074_ky_so.pdf', signMethod: 'Ký số', lastKind: KIND_SC,
                 items: seedItems([['Tài sản bị xâm phạm', 420000000, 400000000, 400000000]]), recipient: { name: 'Vũ Thị Mai Lan', idNo: '001186004455', account: '0491000556677', bank: 'Vietcombank', branch: 'Chi nhánh Cầu Giấy' },
-                amendments: [{ kind: KIND_SC, content: sc, effectiveDate: '12/10/2026', decNo: '05/QĐ-BTP', issueDate: '12/10/2026', signMethod: 'Ký số', signedFile: 'QD_SCBS_BT-2026-074_ky_so.pdf', draftDoc: { source: 'generated', generatedName: 'Du_thao_Sua_chua_bo_sung_QD_BT-2026-074.doc' }, submittedBy: 'canbonv', submittedAt: '09:00 08/10/2026', approvedBy: 'cuctruong', at: '10:30 12/10/2026' }],
+                amendments: [{ kind: KIND_SC, content: sc, effectiveDate: 'kể từ ngày ký', decNo: '05/QĐ-BTP', issueDate: '12/10/2026', signMethod: 'Ký số', signedFile: 'QD_SCBS_BT-2026-074_ky_so.pdf', draftDoc: { source: 'generated', generatedName: 'Du_thao_Sua_chua_bo_sung_QD_BT-2026-074.doc' }, submittedBy: 'canbonv', submittedAt: '09:00 08/10/2026', approvedBy: 'cuctruong', at: '10:30 12/10/2026' }],
                 history: [
                     { at: '08:30 22/09/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: 'Trình ký duyệt', note: 'Trình ' + W.userLabel('tpbt') + ' ký duyệt.' },
                     { at: '16:00 26/09/2026', userId: 'cuctruong', userName: W.userName('cuctruong'), action: 'Phê duyệt cấp cuối', note: KIND_QD + '. Quyết định chuyển [Đã ban hành]. Số 28/QĐ-BTP ngày 26/09/2026.' },

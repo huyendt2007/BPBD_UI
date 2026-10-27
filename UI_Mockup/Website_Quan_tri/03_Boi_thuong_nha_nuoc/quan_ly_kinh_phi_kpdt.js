@@ -200,7 +200,7 @@ function kpdtRejHtml(item) {
 }
 
 // ---------------- Bảng Tài liệu kèm theo - chế độ xem ----------------
-// Chuẩn bảng dùng chung (như Cập nhật kết quả xác định cơ quan): STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file / Tải file); rỗng thì không hiển thị (tlktStd).
+// Chuẩn bảng dùng chung (như Tham mưu kết quả xác định cơ quan): STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file / Tải file); rỗng thì không hiển thị (tlktStd).
 // Dữ liệu chấp nhận: [{ name, file: { id, name, size } }] (btnn_tai_lieu_kem_theo.js), [{ name, file: 'x.pdf' }], ['x.pdf'] (dữ liệu cũ).
 const KPDT_DOCS = {};
 let kpdtDocsSeq = 0;

@@ -73,6 +73,14 @@ function ktlvDocsField(label, list) {
         : rows.map(function (r) { return ktlvFileHtml(r.file, ''); }).join('');
     return '<div class="ktlv-f ktlv-full"><span class="ktlv-l">' + ktlvE(label) + '</span>' + body + '</div>';
 }
+// Tài liệu của văn bản Không thụ lý: 02 khối Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo
+// (khối rỗng không hiển thị; khối không ban hành chỉ đơn vị trình - đơn vị gốc của hồ sơ - xem được)
+function ktlvDocsSplit(list, rec, claim) {
+    if (typeof tlktSplitRender !== 'function') return ktlvDocsField('Tài liệu kèm theo', list);
+    var W = window.BTNN_WF;
+    var owner = (rec && rec.rootUnitId) || (claim && W && W.resolveAgencyUnit ? W.resolveAgencyUnit(claim.agency) : '') || '';
+    return tlktSplitRender(list, { ownerUnit: owner }, function (rows, title) { return ktlvDocsField(title, rows); });
+}
 function ktlvSignMethod(claim, sd) {
     var log = Array.isArray(claim.rejectionLog) && claim.rejectionLog.length ? claim.rejectionLog[claim.rejectionLog.length - 1] : null;
     if (log && log.method) return log.method;
@@ -106,13 +114,13 @@ function ktlvBlockHtml(claim, caseSt, rec, W) {
         h += ktlvField('Hình thức ký', method);
         h += ktlvField('Người ký', signer);
         h += ktlvFileField('Thông báo không thụ lý', claim.signedFile || tr.signedFile || (sd && sd.signedFile) || '', 'Đã ban hành');
-        h += ktlvDocsField('Tài liệu kèm theo', atts);
+        h += ktlvDocsSplit(atts, rec, claim);
     } else {
         // Chờ duyệt / Bị từ chối: bản dự thảo của lần trình
         var dd = a && a.draftDoc;
         var draft = (sd && sd.file) || (dd && (dd.source === 'uploaded' ? dd.uploadedName : dd.generatedName)) || claim.ktlDraftFile || '';
         h += ktlvFileField('Thông báo không thụ lý', draft, 'Bản dự thảo');
-        h += ktlvDocsField('Tài liệu kèm theo', atts);
+        h += ktlvDocsSplit(atts, rec, claim);
     }
     return h + '</div></div>';
 }
@@ -120,8 +128,9 @@ function ktlvBlockHtml(claim, caseSt, rec, W) {
 var KTLV_SEED = {
     'BT-2026-411': {
         ktlAttachments: [
-            { name: 'Quyết định hủy Quyết định xử phạt số 15/QĐ-XPHC ngày 12/03/2022', file: { id: '', name: 'QD_huy_QD_xu_phat_15_QD-XPHC.pdf', size: 251904 } },
-            { name: 'Biên bản làm việc với người yêu cầu bồi thường', file: { id: '', name: 'Bien_ban_lam_viec_BT-2026-411.pdf', size: 189440 } }
+            // Mẫu 02 khối: ban hành kèm theo (scope issued) / không ban hành kèm theo (scope internal - chỉ đơn vị trình xem)
+            { name: 'Quyết định hủy Quyết định xử phạt số 15/QĐ-XPHC ngày 12/03/2022', file: { id: '', name: 'QD_huy_QD_xu_phat_15_QD-XPHC.pdf', size: 251904 }, scope: 'issued' },
+            { name: 'Biên bản làm việc với người yêu cầu bồi thường', file: { id: '', name: 'Bien_ban_lam_viec_BT-2026-411.pdf', size: 189440 }, scope: 'internal' }
         ]
     },
     'BT-2026-018': {

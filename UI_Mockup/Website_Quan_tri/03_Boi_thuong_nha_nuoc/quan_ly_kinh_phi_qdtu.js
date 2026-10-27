@@ -1,7 +1,7 @@
 /*
  * Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Luồng Tạo Quyết định tạm ứng kinh phí bồi thường (Mẫu 07/BTNN)
  * - Thanh công cụ MH01: nút "Tạo QĐ tạm ứng" -> Màn hình Tạo Quyết định tạm ứng kinh phí bồi thường (bố cục như Tạo Quyết định GQBT):
- *   chọn Mã vụ việc (Tìm kiếm / Tìm kiếm nâng cao); chỉ vụ việc GQ YCBT trạng thái Cử người giải quyết bồi thường,
+ *   chọn Mã vụ việc (Tìm kiếm / Tìm kiếm nâng cao); chỉ vụ việc GQ YCBT trạng thái
  *   Xác minh thiệt hại, Thương lượng, Chờ ban hành QĐ; thông tin mặc định theo hồ sơ vụ việc, cho phép sửa.
  * - Tiếp tục -> Popup Trình ký Quyết định tạm ứng kinh phí bồi thường (Ký số 02 bước / Ký ngoài Ban hành văn bản).
  * - Trình (Ký số) -> bản ghi Loại "Cấp tạm ứng" (Đề nghị tạm ứng) "Chờ duyệt", Loại trình "Quyết định tạm ứng kinh phí bồi thường";
@@ -224,7 +224,7 @@ const QDTU_TYPE = 'Cấp tạm ứng';
 const QDTU_KIND = 'QĐ tạm ứng kinh phí'; // Loại trình (phân hệ chỉ gồm "Thông báo chi trả", "QĐ tạm ứng kinh phí")
 const QDTU_ST = { REVIEW: 'Chờ duyệt', REJECT: 'Bị từ chối', PAY: 'Chờ chi trả', DONE: 'Hoàn thành' };
 // Trạng thái vụ việc (17 Trạng thái vụ việc GQ YCBT) được phép Tạo Quyết định tạm ứng
-const QDTU_ELIGIBLE = ['Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ'];
+const QDTU_ELIGIBLE = ['Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ'];
 // Chuẩn hóa trạng thái cũ trong localStorage -> tên mới (chỉ dùng khi đọc dữ liệu)
 const QDTU_LEGACY_STATUS = {
     'chờ thụ lý': 'Cử người giải quyết bồi thường', 'chờ kiểm tra': 'Cử người giải quyết bồi thường',
@@ -236,7 +236,7 @@ const QDTU_EFFECTIVE = ['Chờ duyệt', 'Chờ chi trả', 'Hoàn thành', 'Sun
 const QDTU_CASH = 'Nhận tiền mặt';
 const QDTU_TRANSFER = 'Nhận qua chuyển khoản';
 const QDTU_MAX_FILE = 50 * 1024 * 1024;
-const QDTU_DEFAULT_RATE = 50;
+const QDTU_DEFAULT_RATE = 75;
 const QDTU_CAN_CU_DEFAULT = [
     'Căn cứ Điều 44 Luật Trách nhiệm bồi thường của Nhà nước số 10/2017/QH14 đã được sửa đổi, bổ sung bởi Luật số 81/2025/QH15 và Luật số 15/2026/QH16;',
     'Căn cứ…………………………….(4)…………………………………….;',
@@ -537,7 +537,7 @@ function qdtuEnsurePage() {
                 </div>
             </div>
             <div class="qdtu-card">
-                <div class="qdtu-card-head"><i class="fa-solid fa-hand-holding-dollar"></i> Thông tin người nhận tiền bồi thường</div>
+                <div class="qdtu-card-head"><i class="fa-solid fa-hand-holding-dollar"></i> Thông tin người nhận tạm ứng</div>
                 <div class="qdtu-card-body"><div class="qdtu-grid">
                     ${qdtuFld('qdtuRecName', 'Họ và tên người nhận tạm ứng kinh phí bồi thường', true, qdtuInput('qdtuRecName', 255, 'Nhập họ và tên người nhận', 'onchange="qdtuSyncRecNote()"'))}
                     ${qdtuFld('qdtuRecIdNo', 'Số định danh cá nhân/hộ chiếu/giấy tờ đi lại có giá trị quốc tế', true, qdtuInput('qdtuRecIdNo', 50, 'Nhập số giấy tờ', 'onchange="qdtuSyncRecNote()"'))}
@@ -546,7 +546,7 @@ function qdtuEnsurePage() {
                 <div class="qdtu-note" id="qdtuRecNote"></div></div>
             </div>
             <div class="qdtu-card">
-                <div class="qdtu-card-head"><i class="fa-solid fa-money-bill-transfer"></i> Phương thức chi trả tiền bồi thường</div>
+                <div class="qdtu-card-head"><i class="fa-solid fa-money-bill-transfer"></i> Phương thức chi trả tiền tạm ứng</div>
                 <div class="qdtu-card-body">
                     <div class="form-group" style="margin-bottom:14px; max-width:320px;"><span class="form-label">Phương thức nhận tiền<span class="required">*</span></span>
                         <select class="form-control" id="qdtuPayMethod" onchange="qdtuOnPayMethod(this.value)"><option value="${QDTU_TRANSFER}">${QDTU_TRANSFER}</option><option value="${QDTU_CASH}">${QDTU_CASH}</option></select></div>
@@ -1022,7 +1022,7 @@ function qdtuOpenSign(form) {
         if (prev.sigCoords) { qdtuSg.coords = JSON.parse(JSON.stringify(prev.sigCoords)); Object.keys(qdtuSg.coords).forEach(k => { qdtuSg.placed[k] = true; }); }
         if (prev.content) qdtuEl('qdtuSgContent').value = prev.content;
     }
-    if (typeof tlktMount === 'function') tlktMount('qdtuSg', 'qdtuSgTlkt', { required: false, rows: (prev.method === 'Ký số' && prev.attachments) || [], secClass: 'qdtu-gqx-sec', titleClass: 'qdtu-gqx-sec-title' });
+    if (typeof tlktMount === 'function') tlktMount('qdtuSg', 'qdtuSgTlkt', { required: false, rows: prev.attachments || [], secClass: 'qdtu-gqx-sec', titleClass: 'qdtu-gqx-sec-title' });
     qdtuSgSetMethod('Ký số');
     qdtuSgGoStep(1);
     qdtuFrameFull(true);
@@ -1305,7 +1305,7 @@ function qdtuSgIssueOffline(confirmed) {
     }
     const me = qdtuMe();
     const signer = qdtuEl('qdtuSgOffSigner').value;
-    const sign = { method: 'Ký ngoài', docNo: qdtuEl('qdtuSgOffNo').value.trim(), docDate: qdtuEl('qdtuSgOffDate').value.trim(), offSigner: signer, signedFile: qdtuSg.offFile.name, issuedAt: qdtuNow(), issuedBy: me };
+    const sign = { method: 'Ký ngoài', docNo: qdtuEl('qdtuSgOffNo').value.trim(), docDate: qdtuEl('qdtuSgOffDate').value.trim(), offSigner: signer, signedFile: qdtuSg.offFile.name, issuedAt: qdtuNow(), issuedBy: me, attachments: typeof tlktGet === 'function' ? tlktGet('qdtuSg') : [] }; // Ký ngoài: Tài liệu ban hành kèm theo
     const item = qdtuUpsertRecord(qdtuSg.form, sign);
     item.qdtuApproval = null;
     item.status = QDTU_ST.PAY;
@@ -1493,7 +1493,9 @@ function qdtuView(id) {
     const pay = grid(it('Phương thức nhận tiền', qdtuEsc(f.payMethod)) + (cash ? it('Cơ quan chi trả tiền mặt', qdtuEsc(f.cashPlace)) : it('Chủ tài khoản', qdtuEsc(f.accHolder)) + it('Số tài khoản ngân hàng', qdtuEsc(f.account)) + it('Ngân hàng', qdtuEsc([f.bank, f.branch].filter(Boolean).join(' - ')))));
     const docLink = s.method === 'Ký ngoài' ? qdtuEsc(s.signedFile) : `<a href="javascript:void(0)" onclick="qdtuViewDoc('${item.id}')">${qdtuEsc(s.signedFile || (s.docFile || {}).name || qdtuDocBaseName(item.ycbtCode) + '.doc')}</a>`;
     const dec = grid(it('Hình thức ký', s.method === 'Ký ngoài' ? 'Ký ngoài' : 'Ký số trên hệ thống') + it(s.method === 'Ký ngoài' ? 'Số quyết định' : 'Số, ký hiệu văn bản', qdtuEsc(s.docNo)) + it(s.method === 'Ký ngoài' ? 'Ngày quyết định' : 'Ngày văn bản', qdtuEsc(s.docDate))
-        + (s.method === 'Ký ngoài' ? it('Người ký', qdtuEsc(qdtuUserName(s.offSigner))) : '') + it('Văn bản', docLink) + (s.digitalSign ? it('Ký số', `${qdtuEsc(qdtuUserName(s.digitalSign.by))} - ${qdtuEsc(s.digitalSign.at)}`) : ''));
+        + (s.method === 'Ký ngoài' ? it('Người ký', qdtuEsc(qdtuUserName(s.offSigner))) : '') + it('Văn bản', docLink) + (s.digitalSign ? it('Ký số', `${qdtuEsc(qdtuUserName(s.digitalSign.by))} - ${qdtuEsc(s.digitalSign.at)}`) : ''))
+        // Tài liệu ban hành kèm theo / không ban hành kèm theo của Quyết định tạm ứng (khối rỗng / không có quyền xem thì không hiển thị)
+        + (typeof tlktViewHtml === 'function' ? tlktViewHtml(s.attachments || [], { boxClass: 'tlkt-view', titleClass: 'tlkt-sec-title' }) : '');
     const paid = item.status === QDTU_ST.DONE ? grid(it('Ngày chi trả', qdtuEsc(item.payoutDate)) + it('Số tiền chi trả', qdtuFmt(item.payoutAmountReal) + ' đồng') + it('Phương thức chi trả', qdtuEsc(item.payoutMethod)) + it('Người nhận', qdtuEsc(item.payoutRecName))) : '';
     const hist = (item.qdtuHistory || []).slice().reverse().map(h => `<div class="qdtu-hist-row"><span style="color:#64748b;">${qdtuEsc(h.at)}</span><span style="font-weight:600;">${qdtuEsc(h.userName)}</span><span><b>${qdtuEsc(h.action)}</b>${h.note ? ': ' + qdtuEsc(h.note) : ''}</span></div>`).join('');
     let btns = '';
@@ -1514,8 +1516,8 @@ function qdtuView(id) {
             ${rej ? sec('fa-triangle-exclamation', 'Lý do bị từ chối', rej) : ''}
             ${sec('fa-user', 'Thông tin người yêu cầu bồi thường', nyc)}
             ${sec('fa-coins', 'Số tiền tạm ứng kinh phí bồi thường', money)}
-            ${sec('fa-hand-holding-dollar', 'Thông tin người nhận tiền bồi thường', rec)}
-            ${sec('fa-money-bill-transfer', 'Phương thức chi trả tiền bồi thường', pay)}
+            ${sec('fa-hand-holding-dollar', 'Thông tin người nhận tạm ứng', rec)}
+            ${sec('fa-money-bill-transfer', 'Phương thức chi trả tiền tạm ứng', pay)}
             ${sec('fa-file-signature', 'Quyết định tạm ứng kinh phí bồi thường', dec)}
             ${item.qdtuApproval ? qdtuLdHistoryHtml(item) : ''}
             ${paid ? sec('fa-receipt', 'Kết quả chi trả', paid) : ''}

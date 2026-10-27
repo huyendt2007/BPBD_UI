@@ -854,19 +854,8 @@
                 <!-- THIỆT HẠI YÊU CẦU BỒI THƯỜNG -->
                 <div id="claimMoneySection">
                     <div class="info-group-title">Thiệt hại yêu cầu bồi thường</div>
-                    <div class="table-container" style="margin-bottom:20px;">
-                        <table class="custom-table">
-                            <thead>
-                                <tr>
-                                    <th style="width:50px; text-align:center;">STT</th>
-                                    <th style="width:250px;">Mục thiệt hại yêu cầu bồi thường</th>
-                                    <th style="min-width:300px;">Cách tính / Diễn giải công thức áp dụng</th>
-                                    <th style="width:200px; text-align:right;">Số tiền yêu cầu bồi thường (đồng)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="damageTableBody"></tbody>
-                        </table>
-                    </div>
+                    <!-- [th2c] Bảng thiệt hại 2 cấp (06 nhóm / 36 mục DM_27 + VII. Các thiệt hại khác): dựng bởi buildDamageRows (BTNN_TH.tableHtml) -->
+                    <div class="table-container" id="damageTreeWrap" style="margin-bottom:20px;"></div>
                 </div>
 
                 <!-- YÊU CẦU PHỤC HỒI DANH DỰ -->
@@ -946,12 +935,15 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261020v5"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261027xdc"></script>
+    <!-- [th2c] Danh mục / bảng thiệt hại 2 cấp dùng chung (window.BTNN_TH) -->
+    <script src="btnn_thiet_hai.js?v=20261027th3"></script>
+    <style>#damageTreeWrap.dmg-ro tr.bth-kadd, #damageTreeWrap.dmg-ro .bth-kdel { display: none !important; }</style>
     <script>
         // ===== Cấu hình =====
         const STORE_KEY = "btnn_court_cases_v1";
         const SEED_KEY = "btnn_court_cases_seed";
-        const SEED_VERSION = "v3tdta";
+        const SEED_VERSION = "v4th2c";
         const FUNDING_KEY = "proposalsList";
         const REQUEST_TYPE_YCBT = BTNN_WF.REQUEST_TYPE_YCBT || "Giải quyết yêu cầu bồi thường";
         const NBTH_ROLE = "Người bị thiệt hại";
@@ -980,14 +972,27 @@
             "Kết hợp giải quyết YCBT trong quá trình tố tụng hình sự, tố tụng hành chính tại toà"
         ];
         const KIND_LABEL = { money: "Bồi thường thiệt hại bằng tiền", honor: "Phục hồi danh dự", both: "Bồi thường thiệt hại và Phục hồi danh dự" };
+        // [th2c] 06 loại thiệt hại cũ (danh sách phẳng): chỉ dùng để quy đổi dữ liệu cũ sang mục _01 của nhóm (DM_27, BTNN_TH)
+        // và tổng hợp số tiền theo 06 nhóm cho bản ghi Chi trả tiền bồi thường (selectedDamages); bảng nhập liệu dùng BTNN_TH 2 cấp
         const DAMAGE_ITEMS = [
-            { key: "taiSan", label: "1. Tài sản bị xâm phạm", placeholder: "Nhập cách tính thiệt hại tài sản..." },
-            { key: "thuNhap", label: "2. Thu nhập thực tế bị mất/giảm sút", placeholder: "Nhập cách tính thu nhập bị mất/giảm sút..." },
-            { key: "tuVong", label: "3. Vật chất do người bị thiệt hại chết", placeholder: "Nhập cách tính thiệt hại vật chất..." },
-            { key: "sucKhoe", label: "4. Vật chất do sức khỏe bị xâm phạm", placeholder: "Nhập cách tính chi phí điều trị..." },
-            { key: "tinhThan", label: "5. Thiệt hại về tinh thần", placeholder: "Nhập cách tính thiệt hại tinh thần..." },
-            { key: "chiPhiKhac", label: "6. Các chi phí hợp lý khác", placeholder: "Nhập cách tính chi phí hợp lý khác..." }
+            { key: "taiSan", group: "TH_TS", label: "1. Tài sản bị xâm phạm" },
+            { key: "thuNhap", group: "TH_TN", label: "2. Thu nhập thực tế bị mất/giảm sút" },
+            { key: "tuVong", group: "TH_CHET", label: "3. Vật chất do người bị thiệt hại chết" },
+            { key: "sucKhoe", group: "TH_SK", label: "4. Vật chất do sức khỏe bị xâm phạm" },
+            { key: "tinhThan", group: "TH_TT", label: "5. Thiệt hại về tinh thần" },
+            { key: "chiPhiKhac", group: "TH_CPK", label: "6. Các chi phí hợp lý khác" }
         ];
+        const DAMAGE_TID = "damageTree";
+        // Quy đổi danh sách thiệt hại của vụ việc: mã loại cũ -> mã nhóm -> mục _01 (BTNN_TH.codeOf); giữ nguyên cách tính / số tiền
+        function normDamages(list) {
+            if (!Array.isArray(list)) return list;
+            list.forEach(d => {
+                if (!d || typeof d !== "object") return;
+                const old = DAMAGE_ITEMS.find(x => x.key === d.key);
+                if (old && !d.code) d.code = BTNN_TH.codeOf(old.group);
+            });
+            return BTNN_TH.normList(list, "key", "label");
+        }
         const FIELD_GROUP_NAMES = {
             "hành chính": "Trong hoạt động quản lý hành chính",
             "hình sự": "Trong hoạt động tố tụng hình sự",
@@ -1069,6 +1074,7 @@
                 try { localStorage.setItem(SEED_KEY, SEED_VERSION); } catch (e) { /* bỏ qua */ }
             }
             cases = list;
+            cases.forEach(r => { if (r) normDamages(r.damages); });
             mergeSplitCases();
         }
         // Dữ liệu cũ đã tách "Yêu cầu cả hai" thành 02 vụ việc (linkedCode): gộp thành 01 vụ việc Loại yêu cầu Cả hai
@@ -1091,7 +1097,7 @@
             if (changed) saveCases();
         }
         function saveCases() { writeJson(STORE_KEY, cases); }
-        function reloadCases() { const list = readJson(STORE_KEY, null); if (Array.isArray(list)) cases = list; }
+        function reloadCases() { const list = readJson(STORE_KEY, null); if (Array.isArray(list)) { cases = list; cases.forEach(r => { if (r) normDamages(r.damages); }); } }
 
         // Mã vụ việc BT-yyyy-nnn: không trùng với Giải quyết YCBT (claimsList), kho luồng BTNN_WF và module này
         function maxCaseNumber(year) {
@@ -1124,7 +1130,14 @@
         function selectedDamagesOf(rec) {
             const out = {};
             DAMAGE_ITEMS.forEach(it => { out[it.key] = 0; });
-            (rec.damages || []).forEach(d => { if (d.key) out[d.key] = Number(d.amount) || 0; });
+            out.thietHaiKhac = 0;
+            // [th2c] Cộng số tiền các mục chi tiết theo 06 nhóm; dòng VII. Các thiệt hại khác cộng vào thietHaiKhac
+            (rec.damages || []).forEach(d => {
+                const g = BTNN_TH.groupOf(BTNN_TH.codeOfAny(d));
+                const old = DAMAGE_ITEMS.find(x => x.group === g);
+                const k = old ? old.key : (g === BTNN_TH.KHAC ? "thietHaiKhac" : "");
+                if (k) out[k] += Number(d.amount) || 0;
+            });
             return out;
         }
         function nextFundingCode(list) {
@@ -1302,32 +1315,61 @@
         }
 
         // ===== Biểu mẫu =====
-        function buildDamageRows() {
-            document.getElementById("damageTableBody").innerHTML = DAMAGE_ITEMS.map((it, i) => `
-                <tr>
-                    <td style="text-align:center;"><input type="checkbox" id="dmgCb_${i}" onchange="toggleDamageRow(${i})"></td>
-                    <td>${escapeHtml(it.label)}</td>
-                    <td><textarea class="form-control" id="dmgCalc_${i}" rows="1" placeholder="${escapeAttr(it.placeholder)}" disabled></textarea></td>
-                    <td><input type="text" class="form-control" style="text-align:right;" id="dmgVal_${i}" placeholder="0" oninput="formatCurrencyInput(this)" disabled></td>
-                </tr>`).join("") + `
-                <tr style="background-color:#F8FAFC; font-weight:700;">
-                    <td colspan="3" style="text-align:right;">TỔNG CỘNG SỐ TIỀN YÊU CẦU BỒI THƯỜNG:</td>
-                    <td>
+        // [th2c] Bảng thiệt hại 2 cấp (BTNN_TH): 06 nhóm / 36 mục DM_27 có ô tích + VII. Các thiệt hại khác (dòng tự nhập);
+        // ô nhập theo mã mục: dmgCb_<mã>, dmgCalc_<mã>, dmgVal_<mã>, dmgName_<mã> (dòng VII); dòng nhóm / dòng tổng tự cộng
+        // readOnly (Xem chi tiết): chỉ hiển thị nhóm và mục có dữ liệu, không có ô tích / ô nhập
+        function buildDamageRows(list, readOnly) {
+            const money = n => n ? BTNN_TH.fmt(n) : "";
+            document.getElementById("damageTreeWrap").innerHTML = BTNN_TH.tableHtml(Object.assign({
+                tid: DAMAGE_TID, all: !readOnly, nameTitle: "Mục thiệt hại yêu cầu bồi thường",
+                list: list || [], empty: "Không có thiệt hại yêu cầu bồi thường",
+                head: ['<th style="min-width:260px;">Cách tính / Diễn giải công thức áp dụng</th>', '<th style="width:200px; text-align:right;">Số tiền yêu cầu bồi thường (đồng)</th>'],
+                cols: readOnly ? [
+                    { k: "calc", td: (c, d) => escapeHtml(d && d.calc || "-") },
+                    { k: "amt", sum: true, align: "right", v: (c, d) => (d && Number(d.amount)) || 0, td: (c, d) => BTNN_TH.fmt(d && d.amount) + " đ" }
+                ] : [
+                    { k: "calc", td: (c, d, on) => `<textarea class="form-control" id="dmgCalc_${c}" rows="1" placeholder="Nhập cách tính / diễn giải..."${on ? "" : " disabled"}>${escapeHtml(d && d.calc || "")}</textarea>` },
+                    { k: "amt", sum: true, align: "right", v: (c, d) => (d && Number(d.amount)) || 0,
+                      td: (c, d, on) => `<input type="text" class="form-control bth-num" style="text-align:right;" id="dmgVal_${c}" placeholder="0" value="${money(d && Number(d.amount))}" oninput="formatCurrencyInput(this)"${on ? "" : " disabled"}>` }
+                ],
+                totalRow: `<tr class="bth-total"><td colspan="2" style="text-align:right;">TỔNG CỘNG SỐ TIỀN YÊU CẦU BỒI THƯỜNG:</td><td>
                         <div style="display:flex; flex-direction:column; gap:4px; text-align:right;">
                             <div style="font-size:16px; color:var(--danger-color);" id="damageTotalText">0 đồng</div>
                             <div style="font-size:11.5px; font-style:italic; font-weight:normal; color:var(--text-muted);" id="damageTotalWord">Viết bằng chữ: Không đồng</div>
-                        </div>
-                    </td>
-                </tr>`;
+                        </div></td></tr>`
+            }, readOnly ? {} : {
+                hook: "onDamageTick", khacHook: "onDamageKhac",
+                check: { id: c => "dmgCb_" + c },
+                khac: { nameId: c => "dmgName_" + c }
+            }));
         }
-        function toggleDamageRow(i) {
-            const cb = document.getElementById(`dmgCb_${i}`);
-            const calc = document.getElementById(`dmgCalc_${i}`);
-            const val = document.getElementById(`dmgVal_${i}`);
-            calc.disabled = !cb.checked || isFormReadOnly;
-            val.disabled = !cb.checked || isFormReadOnly;
-            if (!cb.checked) { calc.value = ""; val.value = ""; }
+        // Tích / bỏ tích mục chi tiết: mở / khóa ô Cách tính, Số tiền; bỏ tích thì xóa giá trị đã nhập
+        function onDamageTick(code, on) {
+            const calc = document.getElementById("dmgCalc_" + code);
+            const val = document.getElementById("dmgVal_" + code);
+            if (calc) calc.disabled = !on || isFormReadOnly;
+            if (val) val.disabled = !on || isFormReadOnly;
+            if (!on) { if (calc) calc.value = ""; if (val) val.value = ""; }
             sumDamages();
+        }
+        // Thêm / Xóa dòng thiệt hại khác (nhóm VII): xóa thì bỏ số tiền của dòng
+        function onDamageKhac(code, act) {
+            if (act === "del") { const v = document.getElementById("dmgVal_" + code); if (v) v.value = ""; }
+            sumDamages();
+        }
+        // Khóa / mở bảng theo chế độ xem / cập nhật
+        function applyDamageState(readOnly) {
+            const wrap = document.getElementById("damageTreeWrap");
+            wrap.classList.toggle("dmg-ro", !!readOnly);
+            wrap.querySelectorAll("tr.bth-i").forEach(tr => {
+                const c = tr.getAttribute("data-code");
+                const cb = document.getElementById("dmgCb_" + c);
+                const on = !!(cb && cb.checked);
+                if (cb) cb.disabled = !!readOnly;
+                const nm = document.getElementById("dmgName_" + c);
+                if (nm) nm.disabled = !!readOnly;
+                ["dmgCalc_", "dmgVal_"].forEach(p => { const e = document.getElementById(p + c); if (e) e.disabled = !!readOnly || !on; });
+            });
         }
         function formatCurrencyInput(input) {
             const v = input.value.replace(/\D/g, "");
@@ -1335,29 +1377,29 @@
             sumDamages();
         }
         function parseMoney(v) { return parseFloat(String(v || "").replace(/\D/g, "")) || 0; }
+        // Dòng nhóm / dòng tổng: BTNN_TH.refresh cộng các mục đang tích
         function sumDamages() {
-            let total = 0;
-            DAMAGE_ITEMS.forEach((_, i) => { if (document.getElementById(`dmgCb_${i}`).checked) total += parseMoney(getValue(`dmgVal_${i}`)); });
+            const t = document.getElementById(DAMAGE_TID);
+            const total = t ? (BTNN_TH.refresh(t).amt || 0) : 0;
             document.getElementById("damageTotalText").textContent = `${total.toLocaleString("vi-VN")} đồng`;
             document.getElementById("damageTotalWord").textContent = `Viết bằng chữ: ${numberToVietnameseWords(total)} đồng`;
         }
         function readDamages() {
             const out = [];
-            DAMAGE_ITEMS.forEach((it, i) => {
-                if (document.getElementById(`dmgCb_${i}`).checked) out.push({ key: it.key, label: it.label, calc: getValue(`dmgCalc_${i}`), amount: parseMoney(getValue(`dmgVal_${i}`)) });
+            BTNN_TH.codes(DAMAGE_TID).forEach(c => {
+                const cb = document.getElementById("dmgCb_" + c);
+                if (!cb || !cb.checked) return;
+                const khac = BTNN_TH.isKhac(c);
+                const name = khac ? BTNN_TH.khacValue(DAMAGE_TID, c) : BTNN_TH.name(c);
+                out.push(Object.assign({ key: c, code: c, group: BTNN_TH.groupOf(c), label: name, calc: getValue("dmgCalc_" + c), amount: parseMoney(getValue("dmgVal_" + c)) }, khac ? { name } : {}));
             });
             return out;
         }
         function fillDamages(list) {
-            const map = {};
-            (list || []).forEach(d => { map[d.key] = d; });
-            DAMAGE_ITEMS.forEach((it, i) => {
-                const d = map[it.key];
-                document.getElementById(`dmgCb_${i}`).checked = !!d;
-                setValue(`dmgCalc_${i}`, d ? d.calc || "" : "");
-                setValue(`dmgVal_${i}`, d && d.amount ? Number(d.amount).toLocaleString("vi-VN").replace(/,/g, ".") : "");
-            });
+            buildDamageRows(normDamages((list || []).map(d => Object.assign({}, d))), isFormReadOnly);
+            applyDamageState(isFormReadOnly);
             sumDamages();
+            BTNN_TH.refresh(DAMAGE_TID, true); // nhóm có mục được chọn mở, còn lại thu gọn
         }
 
         function getKindRadio() {
@@ -1547,12 +1589,8 @@
                 if (el.name === "caseRequestKind") return;
                 el.disabled = readOnly;
             });
+            applyDamageState(readOnly);
             if (!readOnly) {
-                DAMAGE_ITEMS.forEach((_, i) => {
-                    const on = document.getElementById(`dmgCb_${i}`).checked;
-                    document.getElementById(`dmgCalc_${i}`).disabled = !on;
-                    document.getElementById(`dmgVal_${i}`).disabled = !on;
-                });
                 handleVictimAliveChange(rec ? rec.nyc.victimAlive : "yes");
             }
             document.getElementById("addDocBtnWrapper").style.display = readOnly ? "none" : "block";
@@ -1638,6 +1676,11 @@
             const cleanDocs = docRows.filter(d => (d.name || "").trim() || d.file).map(d => ({ name: (d.name || "").trim() || d.file.replace(/\.[^.]+$/, ""), file: d.file || "" }));
             const docsOk = cleanDocs.some(d => d.file);
             if (!docsOk) document.getElementById("docsError").style.display = "block";
+            // [th2c] Dòng VII. Các thiệt hại khác đang chọn: bắt buộc nhập Tên / nội dung thiệt hại
+            if (document.getElementById("claimMoneySection").style.display !== "none") {
+                const k = BTNN_TH.validateKhac(DAMAGE_TID);
+                if (k && !firstInvalid) firstInvalid = k;
+            }
 
             if (firstInvalid || !docsOk) {
                 if (effMissing) showToast("Vui lòng nhập Số Bản án/Quyết định và Ngày Bản án/Quyết định có hiệu lực khi trạng thái là Đã có bản án/QĐ!", "error");
@@ -1949,9 +1992,13 @@
                 verdictNo: "", effectiveDate: "", nbth: null, damages: [], honorForms: null, history: [],
                 nhanQua: "Thiệt hại phát sinh trực tiếp từ hành vi trái pháp luật của người thi hành công vụ."
             }, extra, { agency: BTNN_WF.unitName(extra.rootUnitId) });
-            const dmg = (key, amount, calc) => {
-                const it = DAMAGE_ITEMS.find(x => x.key === key);
-                return { key, label: it.label, calc, amount };
+            // [th2c] Thiệt hại 2 cấp: mã mục chi tiết DM_27 (TH_xx_nn) hoặc dòng VII. Các thiệt hại khác (TH_KHAC_xx, tên tự nhập);
+            // mã loại cũ (taiSan, thuNhap...) giữ nguyên để minh họa quy đổi khi tải trang (normDamages)
+            const dmg = (key, amount, calc, name) => {
+                if (BTNN_TH.isKhac(key)) return { key, code: key, group: BTNN_TH.KHAC, label: name, name, calc, amount };
+                const old = DAMAGE_ITEMS.find(x => x.key === key);
+                if (old) return { key, label: old.label, calc, amount };
+                return { key, code: key, group: BTNN_TH.groupOf(key), label: BTNN_TH.name(key), calc, amount };
             };
             const nycHoa = person("Đinh Thị Hoa", "Nữ", "14/03/1979", "001179004561", "0913100302", "Hà Nội", "Số 18 Hàng Gai, Hoàn Kiếm");
             return [
@@ -1969,7 +2016,7 @@
                     requestKind: "both", originalKind: "both", linkedCode: null, rootUnitId: "STP-HN", status: STATUS_DANG_GQ, honorForms: { apology: true, news: false },
                     verdictSource: VERDICT_SOURCES[1], lawsuitCase: LAWSUIT_CASES[0], acceptDate: "02/09/2026", fieldGroup: "hành chính",
                     nyc: nycHoa, hanhVi: "Ra quyết định xử phạt vi phạm hành chính sai thẩm quyền, tạm giữ phương tiện kinh doanh.",
-                    damages: [dmg("thuNhap", 85000000, "Thu nhập bị mất trong 05 tháng tạm giữ phương tiện"), dmg("tinhThan", 30000000, "Thiệt hại tinh thần theo quy định")],
+                    damages: [dmg("TH_TS_04", 45000000, "Giá thuê phương tiện cùng loại trên thị trường x 05 tháng tạm giữ"), dmg("TH_TN_01", 40000000, "Lương bình quân 8.000.000 đồng/tháng x 05 tháng"), dmg("TH_TT_02", 30000000, "Thiệt hại tinh thần theo quy định"), dmg("TH_CPK_01", 6500000, "Chi phí đi lại, in ấn tài liệu khi tham gia tố tụng")],
                     docs: [doc("Thông báo thụ lý vụ án", "Thong_bao_thu_ly_BT-2026-302.pdf")],
                     createdAt: "14:00 03/09/2026", createdBy: "cv_hn1", createdByName: "Đỗ Văn Chung",
                     history: [h("Thêm mới vụ việc", "14:00 03/09/2026", "Đỗ Văn Chung", "Loại yêu cầu: Bồi thường thiệt hại và Phục hồi danh dự. Trạng thái: Đã thụ lý."), h("Cập nhật vụ việc", "10:30 25/09/2026", "Ngô Thị Lan", "Chuyển trạng thái: Đã thụ lý → Đang giải quyết.")]
@@ -1980,7 +2027,7 @@
                     verdictNo: "25/2026/DS-ST", effectiveDate: "28/09/2026",
                     nyc: person("Phạm Quốc Bảo", "Nam", "21/11/1975", "068075001234", "0918300304", "Lâm Đồng", "Số 12 Phan Chu Trinh, Đà Lạt"),
                     hanhVi: "Kê biên, bán đấu giá tài sản không thuộc sở hữu của người phải thi hành án.",
-                    damages: [dmg("taiSan", 450000000, "Giá trị tài sản bị bán đấu giá sai đối tượng"), dmg("chiPhiKhac", 12000000, "Chi phí đi lại, thuê luật sư")],
+                    damages: [dmg("TH_TS_01", 450000000, "Giá trị tài sản bị bán đấu giá sai đối tượng"), dmg("TH_TS_05", 36000000, "Thu nhập từ khai thác nhà xưởng bị mất 09 tháng x 4.000.000 đồng"), dmg("TH_CPK_03", 12000000, "Chi phí thuê luật sư theo hợp đồng dịch vụ pháp lý"), dmg("TH_KHAC_TA304", 8000000, "Phí lưu kho theo hóa đơn", "Chi phí lưu kho hàng hóa trong thời gian kê biên")],
                     docs: [doc("Bản án sơ thẩm có hiệu lực", "Ban_an_25_2026_DS_ST.pdf"), doc("Thông báo thụ lý vụ án", "Thong_bao_thu_ly_BT-2026-304.pdf")],
                     createdAt: "08:45 12/06/2026", createdBy: "cv_thads1", createdByName: "Trịnh Thu Trang",
                     history: [h("Thêm mới vụ việc", "08:45 12/06/2026", "Trịnh Thu Trang", "Trạng thái: Đã thụ lý."), h("Cập nhật vụ việc", "16:20 30/09/2026", "Trịnh Thu Trang", "Chuyển trạng thái: Đang giải quyết → Đã có bản án/QĐ.")]
@@ -2011,7 +2058,7 @@
                     nyc: person("Võ Thanh Liêm", "Nam", "30/04/1984", "001084002345", "0917300307", "Hà Nội", "Số 22 Nguyễn Trãi, Thanh Xuân", "Người thừa kế của người bị thiệt hại"),
                     nbth: { name: "Võ Văn Thắng", gender: "Nam", dob: "", phone: "", email: "", docType: "CCCD", docNo: "", docDate: "", docPlace: "", country: "Việt Nam", city: "Hà Nội", address: "" },
                     hanhVi: "Tạm giam quá thời hạn trong quá trình điều tra vụ án hình sự.",
-                    damages: [dmg("tinhThan", 180000000, "Quy đổi số ngày bị tạm giam"), dmg("thuNhap", 40000000, "Thu nhập bị mất trong thời gian tạm giam")],
+                    damages: [dmg("TH_TT_04", 180000000, "Quy đổi số ngày bị tạm giam"), dmg("TH_TN_02", 40000000, "Thu nhập bị mất trong thời gian tạm giam"), dmg("TH_SK_01", 15000000, "Chi phí khám, chữa bệnh sau thời gian tạm giam"), dmg("TH_CPK_04", 9000000, "Chi phí đi lại thăm gặp của thân nhân 18 lần")],
                     docs: [doc("Thông báo thụ lý yêu cầu bồi thường", "Thong_bao_thu_ly_BT-2026-307.pdf")],
                     createdAt: "08:30 13/08/2026", createdBy: "canbonv", createdByName: "Nguyễn Văn Cán Bộ",
                     history: [h("Thêm mới vụ việc", "08:30 13/08/2026", "Nguyễn Văn Cán Bộ", "Trạng thái: Đã thụ lý."), h("Cập nhật vụ việc", "14:10 02/10/2026", "Nguyễn Văn Cán Bộ", "Chuyển trạng thái: Đã thụ lý → Đang giải quyết.")]
@@ -2034,7 +2081,7 @@
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_cot_thao_tac.js?v=20261023kpcd"></script>
     <!-- Bảng tài liệu chuẩn BTNN: STT | Tên tài liệu, văn bản | File đính kèm | Thao tác; nút Tải file / Thêm tài liệu cùng style -->
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt5"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
     <!-- [tdta] Vụ việc liên kết (Tìm kiếm / Tìm kiếm nâng cao), khối Người yêu cầu Cá nhân/Tổ chức, lưới + bộ lọc theo cột -->
     <script src="btnn_tim_kiem_vu_viec.js?v=20261026tdta"></script>
     <script src="theo_doi_vu_viec_toa_an_tdta.js?v=20261026tdta"></script>

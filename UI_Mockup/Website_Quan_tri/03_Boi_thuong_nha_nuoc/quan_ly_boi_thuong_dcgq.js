@@ -503,7 +503,7 @@ function dcgqIssueOffline() {
         var rec = gqEnsureRecord(claim) || gqRecord(claim);
         if (rec && W) { rec.status = DCGQ_RESULT; W.addHistory(rec, 'Ban hành Quyết định đình chỉ giải quyết (Ký ngoài)', 'Căn cứ: ' + reasonFull + '. Văn bản đã ký: ' + file + '.'); W.upsertRecord(rec); }
     } catch (e) { /* mockup: bỏ qua lỗi luồng */ }
-    gqSaveData(claim, dcgqPrevPatch(claim, prevSt, { status: DCGQ_RESULT, dinhChi: { reasonCode: x.reasonCode, reasonText: x.reasonText, detail: x.detail, advance: x.advance, fileName: file, signedFile: file, formNo: DCGQ_FORM, signingMethod: 'Ký ngoài', issuedAt: gqNow() } }));
+    gqSaveData(claim, dcgqPrevPatch(claim, prevSt, { status: DCGQ_RESULT, dinhChi: { reasonCode: x.reasonCode, reasonText: x.reasonText, detail: x.detail, advance: x.advance, fileName: file, signedFile: file, formNo: DCGQ_FORM, signingMethod: 'Ký ngoài', issuedAt: gqNow(), attachments: typeof tlktGet === 'function' ? tlktGet('dcgq') : [] } }));
     closeDcgqModal();
     saveClaimsToLocal();
     renderClaimsTable();

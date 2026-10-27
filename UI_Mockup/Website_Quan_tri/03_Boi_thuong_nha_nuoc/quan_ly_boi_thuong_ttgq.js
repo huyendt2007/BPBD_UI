@@ -424,7 +424,7 @@ function ttgqApplyResult(claim, d, method, file, oldStatus) {
     claim.slaStatus = 'normal';
     claim.slaText = 'Tiếp tục xử lý tại bước ' + claim.status;
     if (!Array.isArray(claim.specialStatusLogs)) claim.specialStatusLogs = [];
-    claim.specialStatusLogs.push({ type: 'Tiếp tục giải quyết', docNo: d.docNumber || '', docDate: d.docDate || '', signMode: method, startDate: gqToday(), endDate: '', previousStatus: oldStatus || L.status, reason: ttgqReasonText(d), files: file ? [{ name: file, size: '', url: '#' }] : [], createdAt: gqToday() });
+    claim.specialStatusLogs.push({ type: 'Tiếp tục giải quyết', docNo: d.docNumber || '', docDate: d.docDate || '', signMode: method, startDate: gqToday(), endDate: '', previousStatus: oldStatus || L.status, reason: ttgqReasonText(d), files: file ? [{ name: file, size: '', url: '#' }] : [], createdAt: gqToday(), attachments: Array.isArray(d.attachments) ? JSON.parse(JSON.stringify(d.attachments)) : [] });
 }
 // Gọi từ gqApplyRecord khi vụ việc nhận trạng thái mới từ kho luồng (cấp cuối Ký duyệt phiếu trình "Tiếp tục giải quyết bồi thường")
 function ttgqOnApplied(c, r, st) {
@@ -460,6 +460,8 @@ function ttgqIssueOffline() {
     var W = gqW();
     var file = S.offline.name;
     var data = ttgqData(false);
+    // Ký ngoài: Tài liệu ban hành kèm theo (chỉ khối ban hành kèm theo)
+    data.attachments = typeof tlktGet === 'function' ? tlktGet('ttgq') : [];
     var L = TTGQ_LOAI[data.loai];
     var oldSt = L.status;
     var newSt = S.restore;

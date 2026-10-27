@@ -1544,7 +1544,7 @@
                     <!-- Nguồn dữ liệu và Tình trạng tham gia thương lượng của vụ việc -->
                     <div id="qdSourceInfo" style="display:none; background:#F8FAFC; border:1px solid var(--border-color); border-left:4px solid var(--primary-light); border-radius:6px; padding:10px 14px; margin-bottom:12px; font-size:13px; line-height:1.7;"></div>
                     <div class="table-container">
-                        <table class="custom-table compact-table" style="min-width:760px;">
+                        <table class="custom-table compact-table bth-table" id="qdItemsTable" style="min-width:760px;">
                             <thead id="qdItemsHead"></thead>
                             <tbody id="qdItemsBody"></tbody>
                         </table>
@@ -1639,7 +1639,8 @@
                 <div class="dtl-card-body">
                     <div class="form-group" style="margin-bottom:0;">
                         <span class="form-label">Thời điểm có hiệu lực<span class="required">*</span></span>
-                        <input type="text" class="form-control" id="qdEffective" maxlength="255" placeholder="VD: Kể từ ngày ký">
+                        <input type="text" class="form-control" id="qdEffective" maxlength="255" placeholder="Tự điền khi chọn vụ việc" readonly style="background:#f8fafc;">
+                        <div id="qdEffectiveHint" style="font-size:12px; color:var(--text-muted); margin-top:4px;">Tự điền khi chọn vụ việc: theo Thỏa thuận hiệu lực sớm hơn của Quyết định giải quyết bồi thường tại Kết quả thương lượng (nếu có); không có: 60 ngày kể từ ngày người yêu cầu bồi thường nhận được quyết định.</div>
                     </div>
                 </div>
             </div>
@@ -1803,13 +1804,11 @@
                             <div class="gqx-err" id="hqdConsequenceErr">Đây là trường bắt buộc</div>
                         </div>
                         <div class="gqx-grid2" id="hqdEffRow" style="margin-bottom:14px;">
-                            <div class="gqx-field">
-                                <label class="form-label" for="hqdEffDate">Ngày có hiệu lực<span class="gqx-req">*</span></label>
-                                <div class="gqx-date">
-                                    <input type="text" class="form-control" id="hqdEffDate" placeholder="dd/mm/yyyy" readonly onchange="hqdErr('hqdEffDate', false)">
-                                    <i class="fa-regular fa-calendar-days" onclick="var i=document.getElementById('hqdEffDate'); if(i._flatpickr) i._flatpickr.open();" title="Chọn ngày"></i>
-                                </div>
-                                <div class="gqx-err" id="hqdEffDateErr">Đây là trường bắt buộc</div>
+                            <!-- [hqdhl] Quyết định hủy có hiệu lực kể từ ngày ký (cố định trong Mẫu 20/BTNN): không nhập hiệu lực -->
+                            <div class="gqx-field" style="grid-column:1 / -1;">
+                                <span class="form-label">Hiệu lực của Quyết định hủy</span>
+                                <div id="hqdEffFixed" style="font-size:13px; padding:6px 0;">Có hiệu lực kể từ ngày ký</div>
+                                <input type="hidden" id="hqdEffDate" value="">
                             </div>
                         </div>
                         <div class="gqx-field hqd-gen-only" style="margin-bottom:0;">
@@ -1835,7 +1834,7 @@
                     </div>
                 </div>
 
-                <!-- Khối 3: Tài liệu kèm theo (chỉ khi Ký số trên hệ thống; bắt buộc) - bảng do btnn_tai_lieu_kem_theo.js dựng -->
+                <!-- Khối 3: Tài liệu ban hành kèm theo + Tài liệu không ban hành kèm theo (Ký số: 02 khối, khối không ban hành kèm theo bắt buộc; Ký ngoài: chỉ khối ban hành kèm theo) - btnn_tai_lieu_kem_theo.js dựng -->
                 <div id="hqdTlkt"></div>
             </div>
 
@@ -1962,12 +1961,10 @@
                             <div class="gqx-err" id="scbContentErr">Đây là trường bắt buộc</div>
                         </div>
                         <div class="gqx-grid2" id="scbEffRow" style="margin-bottom:14px;">
-                            <div class="gqx-field">
-                                <label class="form-label" for="scbEffDate">Ngày có hiệu lực<span class="gqx-req">*</span></label>
-                                <div class="gqx-date">
-                                    <input type="text" class="form-control" id="scbEffDate" placeholder="dd/mm/yyyy" readonly onchange="scbErr('scbEffDate', false)">
-                                    <i class="fa-regular fa-calendar-days" onclick="var i=document.getElementById('scbEffDate'); if(i._flatpickr) i._flatpickr.open();" title="Chọn ngày"></i>
-                                </div>
+                            <div class="gqx-field" style="grid-column:1 / -1;">
+                                <!-- [scbhl] Hiệu lực của Quyết định sửa chữa, bổ sung: nhập text; mặc định theo hiệu lực của Quyết định gốc -->
+                                <label class="form-label" for="scbEffDate">Hiệu lực của Quyết định<span class="gqx-req">*</span></label>
+                                <textarea class="form-control" id="scbEffDate" rows="2" maxlength="500" placeholder="Nhập hiệu lực của Quyết định..." oninput="scbErr('scbEffDate', false)"></textarea>
                                 <div class="gqx-err" id="scbEffDateErr">Đây là trường bắt buộc</div>
                             </div>
                         </div>
@@ -1994,7 +1991,7 @@
                     </div>
                 </div>
 
-                <!-- Khối 3: Tài liệu kèm theo (chỉ khi Ký số trên hệ thống; không bắt buộc) - bảng do btnn_tai_lieu_kem_theo.js dựng -->
+                <!-- Khối 3: Tài liệu ban hành kèm theo + Tài liệu không ban hành kèm theo (Ký số: 02 khối; Ký ngoài: chỉ khối ban hành kèm theo; không bắt buộc) - btnn_tai_lieu_kem_theo.js dựng -->
                 <div id="scbTlkt"></div>
             </div>
 
@@ -2249,7 +2246,7 @@
                         <div class="qdx-status-note"><i class="fa-solid fa-circle-info"></i> Khi bấm <strong>Ban hành văn bản</strong>, Quyết định được ban hành trực tiếp (không qua bước duyệt của Lãnh đạo trên hệ thống) và chuyển sang trạng thái <strong>Đã ban hành</strong>.</div>
                     </div>
                 </div>
-                <!-- Khối 3: Tài liệu kèm theo (chỉ khi Ký số; dùng btnn_tai_lieu_kem_theo.js) -->
+                <!-- Khối 3: Tài liệu ban hành kèm theo + Tài liệu không ban hành kèm theo (Ký số: 02 khối; Ký ngoài: chỉ khối ban hành kèm theo) - btnn_tai_lieu_kem_theo.js dựng -->
                 <div id="qdgqTlkt"></div>
             </div>
 
@@ -2279,8 +2276,10 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261023kdtc"></script>
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt5"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261027xdc"></script>
+    <!-- [th2c] Danh mục Loại thiệt hại 2 cấp (DM_27) + bảng 2 cấp dùng chung -->
+    <script src="btnn_thiet_hai.js?v=20261027th6"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261026htrole"></script>
     <script>
@@ -2397,7 +2396,8 @@
                 linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: 'Thu hồi giấy phép kinh doanh trái pháp luật.', advanceNum: 20000000,
                 payoutMethod: 'Nhận qua chuyển khoản', payoutRecName: 'Nguyễn Thị Hồng Nhung', payoutBankAccount: '0011004455667', payoutBankName: 'Vietcombank', payoutBankBranch: 'Chi nhánh Thăng Long',
                 verifiedItems: [
-                    { key: 'TS', label: 'Tài sản bị xâm phạm', proposed: 120000000, verified: 100000000, note: 'Đối chiếu hóa đơn, chứng từ' },
+                    { key: 'TH_TS_02', proposed: 70000000, verified: 60000000, note: 'Đối chiếu hóa đơn sửa chữa' },
+                    { key: 'TH_TS_06', proposed: 50000000, verified: 40000000, note: 'Đối chiếu biên lai nộp tiền' },
                     { key: 'TN', label: 'Thu nhập thực tế bị mất/giảm sút', proposed: 60000000, verified: 45000000, note: 'Tính theo thu nhập bình quân 6 tháng' },
                     { key: 'TT', label: 'Thiệt hại về tinh thần', proposed: 30000000, verified: 20000000, note: 'Theo mức lương cơ sở' }
                 ],
@@ -2405,11 +2405,13 @@
                     participation: 'DONG_Y', decision: 'Đồng ý thương lượng', date: '05/10/2026', place: 'Phòng họp số 2 - Bộ Tư pháp',
                     participants: [{ name: 'Nguyễn Văn Cán Bộ', position: 'Chuyên viên', unit: 'Phòng Quản lý nghiệp vụ về bồi thường nhà nước' }],
                     items: [
-                        { key: 'TS', label: 'Tài sản bị xâm phạm', proposed: 120000000, verified: 100000000, agreed: 95000000, status: 'Thành công', reason: 'Hai bên thống nhất mức bồi thường.' },
+                        { key: 'TH_TS_02', proposed: 70000000, verified: 60000000, agreed: 57000000, status: 'Thành công', reason: 'Hai bên thống nhất mức bồi thường.' },
+                        { key: 'TH_TS_06', proposed: 50000000, verified: 40000000, agreed: 38000000, status: 'Thành công', reason: 'Hai bên thống nhất mức bồi thường.' },
                         { key: 'TN', label: 'Thu nhập thực tế bị mất/giảm sút', proposed: 60000000, verified: 45000000, agreed: 0, status: 'Không thành công', reason: 'Người yêu cầu không đồng ý cách tính thu nhập.' },
                         { key: 'TT', label: 'Thiệt hại về tinh thần', proposed: 30000000, verified: 20000000, agreed: 20000000, status: 'Thành công', reason: '' }
                     ],
-                    otherRequests: '', docs: [{ name: 'Biên bản thương lượng', file: 'Bien_ban_thuong_luong_BT-2026-031.pdf' }]
+                    otherRequests: '', docs: [{ name: 'Biên bản thương lượng', file: 'Bien_ban_thuong_luong_BT-2026-031.pdf' }],
+                    earlyEffect: { on: true, text: 'kể từ ngày ký' }, extend: { on: true, from: '05/10/2026', to: '20/10/2026' }
                 }
             },
             {
@@ -2509,7 +2511,11 @@
             }
             return num(c && (c.totalNum !== undefined ? c.totalNum : (c.xmTotalAmount || 0)));
         }
+        function thKey(it) { return window.BTNN_TH ? BTNN_TH.codeOfAny(it) : ''; }
         function damageLabel(it) {
+            // [th2c] Mã mục chi tiết DM_27 (dữ liệu cũ 06 loại / mã ngắn TS, TN, TT... quy đổi sang mục _01 của nhóm)
+            const thc = window.BTNN_TH ? BTNN_TH.codeOfAny(it) : '';
+            if (thc && !BTNN_TH.isKhac(thc)) return BTNN_TH.name(thc);
             if (it.label) return it.label;
             if (it.name) return it.name;
             const t = Number(it.type);
@@ -2548,10 +2554,10 @@
         }
         function verifiedRows(c) {
             if (Array.isArray(c && c.verifiedItems) && c.verifiedItems.length) {
-                return c.verifiedItems.map((it, i) => ({ key: it.key || ('V' + i), label: damageLabel(it), proposed: num(it.proposed), verified: num(it.verified), note: it.note || '' }));
+                return c.verifiedItems.map((it, i) => ({ key: thKey(it) || it.key || ('V' + i), label: damageLabel(it), proposed: num(it.proposed), verified: num(it.verified), note: it.note || '' }));
             }
             if (Array.isArray(c && c.thietHaiList) && c.thietHaiList.length) {
-                return c.thietHaiList.map((it, i) => ({ key: 'T' + (it.type || i), label: damageLabel(it), proposed: num(it.val), verified: it.xmVal !== undefined && it.xmVal !== null && it.xmVal !== '' ? num(it.xmVal) : num(it.val), note: it.xmNote || '' }));
+                return c.thietHaiList.map((it, i) => ({ key: thKey(it) || ('T' + (it.type || i)), label: damageLabel(it), proposed: num(it.val), verified: it.xmVal !== undefined && it.xmVal !== null && it.xmVal !== '' ? num(it.xmVal) : num(it.val), note: it.xmNote || '' }));
             }
             return [];
         }
@@ -2564,16 +2570,17 @@
             const participationLabel = participation ? NEG_PARTICIPATION[participation] : '';
             const base = { participation, participationLabel };
             if (participation === 'DONG_Y' && Array.isArray(neg.items) && neg.items.length) {
-                let ok = 0, fail = 0;
-                const items = neg.items.map((it, i) => {
+                // [tlst] Thành công -> Mức tiền bồi thường đã thương lượng; Không thành công -> Mức xác minh; Không tiếp tục thương lượng -> không chuyển sang Quyết định
+                let ok = 0, fail = 0, stop = 0;
+                neg.items.forEach(it => { if (it.status === 'Thành công') ok++; else if (it.status === 'Không tiếp tục thương lượng') stop++; else fail++; });
+                const items = neg.items.filter(it => it.status !== 'Không tiếp tục thương lượng').map((it, i) => {
                     const success = it.status === 'Thành công';
-                    if (success) ok++; else fail++;
                     return {
-                        key: it.key || ('N' + i), label: damageLabel(it), proposed: num(it.proposed), verified: num(it.verified), agreed: num(it.agreed),
+                        key: thKey(it) || it.key || ('N' + i), label: damageLabel(it), proposed: num(it.proposed), verified: num(it.verified), agreed: num(it.agreed),
                         negStatus: success ? 'Thành công' : 'Không thành công', sourceAmount: success ? num(it.agreed) : num(it.verified)
                     };
                 });
-                return Object.assign(base, { scenario: 'B', sourceType: 'negotiation', sourceLabel: 'Kết quả thương lượng', sourceNote: SRC_NOTE_NEG, summary: `${ok} mục thương lượng thành công, ${fail} mục thương lượng không thành công. Mục thành công lấy theo Mức tiền bồi thường đã thương lượng; mục không thành công lấy theo Mức xác minh.`, success: ok, fail, items });
+                return Object.assign(base, { scenario: 'B', sourceType: 'negotiation', sourceLabel: 'Kết quả thương lượng', sourceNote: SRC_NOTE_NEG, summary: `${ok} mục thương lượng thành công, ${fail} mục thương lượng không thành công, ${stop} mục không tiếp tục thương lượng. Mục thành công lấy theo Mức tiền bồi thường đã thương lượng; mục không thành công lấy theo Mức xác minh; mục không tiếp tục thương lượng không đưa vào Quyết định.`, success: ok, fail, items });
             }
             // Đồng ý thương lượng nhưng chưa có kết quả từng mục: tạm lấy theo Mức xác minh, không áp dụng ghi chú khoản 7 Điều 46
             const noteA = participation === 'DONG_Y' ? '' : SRC_NOTE_VERIFY;
@@ -3134,12 +3141,34 @@
         // ---------------- MH03 - Chi tiết ----------------
         let detailId = null;
         function dtlItem(label, value, full) { return `<div class="dtl-item${full ? ' full' : ''}"><span class="dtl-label">${label}</span><span class="dtl-value">${value}</span></div>`; }
+        // [th2c] Bảng đề xuất bồi thường 02 cấp (nhóm / mục chi tiết DM_27): dòng nhóm có mở rộng / thu gọn, tự cộng Mức đề xuất / Mức xác minh / Mức bồi thường;
+        // mục không xác định được mã (dữ liệu tổng của vụ việc cũ) hiển thị dạng phẳng như trước
         function itemsTableHtml(d, editable) {
             const neg = d.sourceType === 'negotiation' || (d.items || []).some(it => it.negStatus);
+            const TH = window.BTNN_TH;
+            const list = (d.items || []).map((it, i) => Object.assign({}, it, { i, code: TH ? TH.codeOfAny(it) : '' }));
+            const uniq = new Set(list.map(x => x.code));
+            const tree = TH && list.length && list.every(x => x.code) && uniq.size === list.length;
+            const amtCell = (it, i) => editable ? `<input type="text" class="form-control money-input bth-num" id="qdAmt_${i}" value="${fmt(it.amount)}" oninput="formatMoneyInput(this); onAmountInput(${i}, this.value)">` : `<strong>${fmt(it.amount)}</strong>${num(it.amount) !== num(it.sourceAmount) ? `<div style="font-size:11px; color:#92400E;">Giá trị nguồn: ${fmt(it.sourceAmount)}</div>` : ''}`;
+            const negCell = it => `<span class="badge ${it.negStatus === 'Thành công' ? 'badge-success' : 'badge-danger'}">${esc(it.negStatus || '')}</span>`;
+            if (tree) {
+                const tools = `<span style="float:right; display:inline-flex; gap:4px;"><button type="button" class="btn btn-secondary btn-sm" style="padding:2px 6px; font-size:11px;" onclick="BTNN_TH.toggleAll(this.closest('table'), true)"><i class="fa-solid fa-angles-down"></i> Mở rộng tất cả</button><button type="button" class="btn btn-secondary btn-sm" style="padding:2px 6px; font-size:11px;" onclick="BTNN_TH.toggleAll(this.closest('table'), false)"><i class="fa-solid fa-angles-up"></i> Thu gọn tất cả</button></span>`;
+                const head = `<tr style="background:#F8FAFC;"><th style="min-width:320px;">Thiệt hại yêu cầu bồi thường ${tools}</th><th style="text-align:right;">Mức đề xuất (đ)</th><th style="text-align:right;">Mức xác minh (đ)</th><th style="text-align:right; width:190px;">Mức bồi thường (đ)${editable ? '<span class="required" style="color:var(--danger-color);">*</span>' : ''}</th>${neg ? '<th style="text-align:center; width:170px;">Trạng thái thương lượng</th>' : ''}</tr>`;
+                const cols = [
+                    { k: 'p', sum: true, align: 'right', v: (c, it) => num(it.proposed), td: (c, it) => fmt(it.proposed) },
+                    { k: 'v', sum: true, align: 'right', v: (c, it) => num(it.verified), td: (c, it) => fmt(it.verified) },
+                    { k: 'a', sum: true, align: 'right', v: (c, it) => num(it.amount), td: (c, it) => amtCell(it, it.i) }
+                ];
+                if (neg) cols.push({ k: 'n', style: 'text-align:center;', td: (c, it) => negCell(it) });
+                let body = TH.rowsHtml({ list, cols, total: false });
+                // Dòng có Mức bồi thường khác giá trị nguồn: giữ nhãn row-adjusted
+                list.forEach(it => { if (num(it.amount) !== num(it.sourceAmount)) body = body.replace(`class="bth-i" data-g="${TH.groupOf(it.code)}" data-code="${it.code}"`, `class="bth-i row-adjusted" data-g="${TH.groupOf(it.code)}" data-code="${it.code}"`); });
+                return { head, body };
+            }
             const head = `<tr style="background:#F8FAFC;"><th style="width:50px; text-align:center;">STT</th><th>Thiệt hại yêu cầu bồi thường</th><th style="text-align:right;">Mức đề xuất (đ)</th><th style="text-align:right;">Mức xác minh (đ)</th><th style="text-align:right; width:190px;">Mức bồi thường (đ)${editable ? '<span class="required" style="color:var(--danger-color);">*</span>' : ''}</th>${neg ? '<th style="text-align:center; width:170px;">Trạng thái thương lượng</th>' : ''}</tr>`;
             const body = (d.items || []).map((it, i) => {
                 const adjusted = num(it.amount) !== num(it.sourceAmount);
-                return `<tr class="${adjusted ? 'row-adjusted' : ''}"><td style="text-align:center;">${i + 1}</td><td style="font-weight:600;">${esc(it.label)}</td><td style="text-align:right;">${fmt(it.proposed)}</td><td style="text-align:right;">${fmt(it.verified)}</td><td style="text-align:right;">${editable ? `<input type="text" class="form-control money-input" id="qdAmt_${i}" value="${fmt(it.amount)}" oninput="formatMoneyInput(this); onAmountInput(${i}, this.value)">` : `<strong>${fmt(it.amount)}</strong>${adjusted ? `<div style="font-size:11px; color:#92400E;">Giá trị nguồn: ${fmt(it.sourceAmount)}</div>` : ''}`}</td>${neg ? `<td style="text-align:center;"><span class="badge ${it.negStatus === 'Thành công' ? 'badge-success' : 'badge-danger'}">${esc(it.negStatus || '')}</span></td>` : ''}</tr>`;
+                return `<tr class="${adjusted ? 'row-adjusted' : ''}"><td style="text-align:center;">${i + 1}</td><td style="font-weight:600;">${esc(it.label)}</td><td style="text-align:right;">${fmt(it.proposed)}</td><td style="text-align:right;">${fmt(it.verified)}</td><td style="text-align:right;">${amtCell(it, i)}</td>${neg ? `<td style="text-align:center;">${negCell(it)}</td>` : ''}</tr>`;
             }).join('') || `<tr><td colspan="${neg ? 6 : 5}" style="text-align:center; font-style:italic; color:var(--text-muted);">Chưa có dữ liệu đề xuất bồi thường.</td></tr>`;
             return { head, body };
         }
@@ -3187,7 +3216,7 @@
             const docBlock = ctqdDocBlock(d, issued);
             const hasAmend = ctqdHasAmend(d);
             const srcInfo = (d.participationLabel || d.sourceLabel) ? `<div style="background:#F8FAFC; border:1px solid var(--border-color); border-left:4px solid var(--primary-light); border-radius:6px; padding:10px 14px; margin-bottom:12px; font-size:13px; line-height:1.7;">${sourceNoteHtml(decSourceInfo(d))}</div>` : '';
-            const itemsBody = `${srcInfo}<div class="table-container"><table class="custom-table compact-table" style="min-width:760px;"><thead>${t.head}</thead><tbody>${t.body}</tbody></table></div>
+            const itemsBody = `${srcInfo}<div class="table-container"><table class="custom-table compact-table bth-table" style="min-width:760px;"><thead>${t.head}</thead><tbody>${t.body}</tbody></table></div>
                 <div class="dtl-money-grid" style="margin-top:14px;">
                     <div class="dtl-money-box"><span class="dtl-label">Tổng số tiền bồi thường (VNĐ)</span><span class="dtl-value" style="color:var(--primary-light);">${fmt(d.total)}</span><span class="dtl-value" style="font-style:italic; font-weight:500; font-size:12.5px; color:var(--text-muted);">(Viết bằng chữ: ${esc(numberToWords(d.total))})</span></div>
                     <div class="dtl-money-box"><span class="dtl-label">Số tiền bồi thường đã tạm ứng (VNĐ)</span><span class="dtl-value" style="color:var(--success-color);">${fmt(d.advance)}</span></div>
@@ -3428,6 +3457,12 @@
             }
         }
         // Chọn vụ việc và nạp dữ liệu
+        const QD_EFFECTIVE_DEFAULT = '60 ngày kể từ ngày người yêu cầu bồi thường nhận được quyết định';
+        function qdEffectiveDefault(c) {
+            const neg = c && c.negotiation;
+            const ef = neg && negParticipation(neg) === 'DONG_Y' ? neg.earlyEffect : null;
+            return ef && ef.on && String(ef.text || '').trim() ? String(ef.text).trim() : QD_EFFECTIVE_DEFAULT;
+        }
         function selectClaim(code) {
             const c = claimByCode(code);
             if (!c) return;
@@ -3438,6 +3473,8 @@
             $('selectedClaimText').innerHTML = `<i class="fa-solid fa-check"></i> Đã chọn: <b>${esc(code)}</b>${qdVvCode(code) ? ` (Mã vụ việc ${esc(qdVvCode(code))})` : ''} - ${esc(claimName(c))}`;
             $('selectedClaimBadge').style.display = 'inline-flex';
             onClaimChange(code);
+            // [tltt] Thời điểm có hiệu lực: theo Thỏa thuận hiệu lực sớm hơn tại Kết quả thương lượng (nếu có tích); không tích: 60 ngày kể từ ngày nhận quyết định
+            $('qdEffective').value = qdEffectiveDefault(c);
             toggleDecisionCards(true);
         }
         // Đổi vụ việc (reset về trạng thái ban đầu)
@@ -3607,6 +3644,7 @@
             form.items[i].amount = parseMoney(val);
             const tr = $('qdAmt_' + i).closest('tr');
             tr.classList.toggle('row-adjusted', num(form.items[i].amount) !== num(form.items[i].sourceAmount));
+            if (window.BTNN_TH) BTNN_TH.refresh(tr.closest('table')); // [th2c] dòng nhóm tự cộng
             recalcTotals();
         }
         function isAdjusted() { return form.items.some(it => num(it.amount) !== num(it.sourceAmount)); }
@@ -4095,7 +4133,7 @@
             if (!d) { d = { id: 'QD-' + Date.now().toString(36), decisionType: 'Quyết định giải quyết bồi thường', amendments: [], history: [], createdBy: W.getCurrentUserId(), createdAt: W.nowText() }; decisions.unshift(d); }
             delete data.note;
             const offName = qs.offFile.name;
-            Object.assign(d, data, { signMethod: 'Ký ngoài', signDoc: { method: 'Ký ngoài', file: offName }, signedFile: offName, status: ST.DA_BH, returned: null, request: null, decNo: $('qsOffNo').value.trim(), issueDate: $('qsOffDate').value.trim() || W.dateText(), approvedBy: $('qsOffLeader').value, updatedAt: new Date().toISOString() });
+            Object.assign(d, data, { signMethod: 'Ký ngoài', signDoc: { method: 'Ký ngoài', file: offName, attachments: typeof tlktGet === 'function' ? tlktGet('qdgq') : [] }, signedFile: offName, status: ST.DA_BH, returned: null, request: null, decNo: $('qsOffNo').value.trim(), issueDate: $('qsOffDate').value.trim() || W.dateText(), approvedBy: $('qsOffLeader').value, updatedAt: new Date().toISOString() });
             addDecHistory(d, 'Ban hành Quyết định (Ký ngoài)', `Số ${d.decNo || '-'} ngày ${d.issueDate}. Tệp đã ký: ${offName}.`);
             if (W.getRecord(d.claimCode)) W.ensureClaimRecord({ code: d.claimCode, status: ST.DA_BH });
             saveDecisions();
@@ -4183,7 +4221,7 @@
             $('hqdNote').value = '';
             clearInvalid($('hqdModal'));
             document.querySelectorAll('#hqdModal .gqx-err, #hqdModal .scb-err').forEach(e => { e.style.display = 'none'; });
-            ['hqdDocDate', 'hqdEffDate'].forEach(fid => {
+            ['hqdDocDate'].forEach(fid => {
                 const el = $(fid);
                 if (window.flatpickr && !el._flatpickr) flatpickr('#' + fid, { dateFormat: 'd/m/Y', allowInput: true });
                 const fp = el._flatpickr; if (fp) { if (el.value) fp.setDate(el.value, false, 'd/m/Y'); else fp.clear(false); }
@@ -4214,7 +4252,7 @@
             hqdApplyDocMeta();
             hqdGoStep(1);
         }
-        // Khối thông tin: Ký số + Sinh văn bản -> đủ trường Mẫu 20/BTNN; Ký số + Tải lên từ máy -> chỉ Lý do hủy Quyết định, Ngày có hiệu lực; Ký ngoài -> ẩn
+        // Khối thông tin: Ký số + Sinh văn bản -> đủ trường Mẫu 20/BTNN; Ký số + Tải lên từ máy -> chỉ Lý do hủy Quyết định; Hiệu lực cố định "kể từ ngày ký"; Ký ngoài -> ẩn
         function hqdApplyDocMeta() {
             const gen = hqd.docSrc === 'gen';
             $('hqdMetaGroup').style.display = hqd.method === 'Ký số' ? '' : 'none';
@@ -4251,9 +4289,9 @@
         function hqdData() {
             return { docNo: $('hqdDocNo').value.trim(), docDate: $('hqdDocDate').value.trim(), canCu: scbLines('hqdCanCu'), reason: $('hqdReason').value.trim(), consequence: $('hqdConsequence').value.trim(), effectiveDate: $('hqdEffDate').value.trim(), noiNhan: scbLines('hqdNoiNhan') };
         }
-        // Kiểm tra trống trường bắt buộc: Sinh văn bản -> Số, Ngày văn bản, Căn cứ, Lý do hủy, Ngày có hiệu lực, Nơi nhận; Tải lên từ máy -> Lý do hủy, Ngày có hiệu lực
+        // Kiểm tra trống trường bắt buộc: Sinh văn bản -> Số, Ngày văn bản, Căn cứ, Lý do hủy, Hậu quả pháp lý, Nơi nhận; Tải lên từ máy -> Lý do hủy
         function hqdValidateInfo() {
-            const ids = hqd.docSrc === 'gen' ? ['hqdDocNo', 'hqdDocDate', 'hqdCanCu', 'hqdReason', 'hqdConsequence', 'hqdEffDate', 'hqdNoiNhan'] : ['hqdReason', 'hqdEffDate'];
+            const ids = hqd.docSrc === 'gen' ? ['hqdDocNo', 'hqdDocDate', 'hqdCanCu', 'hqdReason', 'hqdConsequence', 'hqdNoiNhan'] : ['hqdReason'];
             const bad = ids.filter(id => !$(id).value.trim());
             ids.forEach(id => hqdErr(id, bad.includes(id)));
             if (bad.length) { $(bad[0]).focus(); return false; }
@@ -4363,7 +4401,7 @@
             if (typeof tlktTagHistory === 'function') tlktTagHistory(W, res.record, signDoc.attachments);
             d.request = { kind: KIND_HUY, content: data.reason, effectiveDate: data.effectiveDate, draftDoc, bodyHtml: f.generated ? f.html : '', leaderId, signMethod: 'Ký số', signDoc, note, submittedAt: res.record.approval.submittedAt, submittedBy: W.getCurrentUserId() };
             d.status = ST.CHO_DUYET; d.wfKind = KIND_HUY; d.wfSubmittedAt = res.record.approval.submittedAt; d.returned = null; d.updatedAt = new Date().toISOString();
-            addDecHistory(d, hqd.resubmit ? `Trình lại ${KIND_HUY}` : `Trình ${KIND_HUY}`, `Lý do hủy Quyết định: ${data.reason}. Ngày có hiệu lực: ${data.effectiveDate}. Trình ${W.userLabel(leaderId)}. Văn bản: ${draftDocName(draftDoc)}.${typeof tlktNote === 'function' ? tlktNote(signDoc.attachments) : ''}`);
+            addDecHistory(d, hqd.resubmit ? `Trình lại ${KIND_HUY}` : `Trình ${KIND_HUY}`, `Lý do hủy Quyết định: ${data.reason}. Hiệu lực: kể từ ngày ký. Trình ${W.userLabel(leaderId)}. Văn bản: ${draftDocName(draftDoc)}.${typeof tlktNote === 'function' ? tlktNote(signDoc.attachments) : ''}`);
             saveDecisions();
             closeHqdModal();
             showToast(`Đã trình Lãnh đạo phê duyệt ${KIND_HUY}.`, 'success');
@@ -4378,7 +4416,7 @@
             const name = hqd.offFile.name;
             const at = W.nowText();
             if (W.getRecord(d.claimCode)) W.ensureClaimRecord({ code: d.claimCode, status: RESULT_STATUS[KIND_HUY] });
-            d.cancel = { kind: KIND_HUY, content: '', signMethod: 'Ký ngoài', draftDoc: { source: 'uploaded', uploadedName: name }, approvedBy: '', issuedBy: W.getCurrentUserId(), at };
+            d.cancel = { kind: KIND_HUY, content: '', signMethod: 'Ký ngoài', draftDoc: { source: 'uploaded', uploadedName: name }, approvedBy: '', issuedBy: W.getCurrentUserId(), at, attachments: typeof tlktGet === 'function' ? tlktGet('hqd') : [] };
             d.status = ST.DA_HUY; d.request = null; d.returned = null; d.wfKind = ''; d.lastKind = KIND_HUY; d.updatedAt = new Date().toISOString();
             updateClaimInStorage(d.claimCode, { decStatus: 'Đã hủy', cancelReason: '', cancelDecDate: W.dateText() });
             addDecHistory(d, 'Ban hành Quyết định hủy Quyết định giải quyết bồi thường (Ký ngoài)', `Tệp đã ký: ${name}.`);
@@ -4396,7 +4434,7 @@
             if (/^Cục /i.test(n)) return 'Cục trưởng';
             return 'Thủ trưởng';
         }
-        // Văn bản Mẫu 20/BTNN (bám Mau_20_BTNN_Template.docx) sinh từ Số, ký hiệu; Ngày văn bản; Căn cứ; Lý do hủy Quyết định; Ngày có hiệu lực; Nơi nhận
+        // Văn bản Mẫu 20/BTNN (bám Mau_20_BTNN_Template.docx) sinh từ Số, ký hiệu; Ngày văn bản; Căn cứ; Lý do hủy Quyết định; Nơi nhận (Điều 3 cố định "có hiệu lực kể từ ngày ký")
         // Quyết định bị hủy (Số, Ngày, Cơ quan ban hành) và Người yêu cầu bồi thường lấy theo bản ghi Quyết định đang chọn
         function buildHqdDocHtml(d, x) {
             const unit = W.unitName(d.unitId) || unitLabel(d);
@@ -4418,7 +4456,7 @@
                 ${p(`<b>Điều 1.</b> Hủy Quyết định giải quyết bồi thường số ${esc(d.decNo || '....')} ngày ${esc(d.issueDate || '....')} của ${esc(title + ' ' + unit)} vì ${esc(reason || '................')}.`)}
                 ${p(`<b>Điều 2.</b> ${esc(cq[0] || '………………………………')} đối với vụ việc yêu cầu bồi thường của Ông/Bà ${nyc}.`)}
                 ${cq.slice(1).map(s => p(esc(s))).join('')}
-                ${p(`<b>Điều 3.</b> Quyết định này có hiệu lực kể từ ngày ${esc(x.effectiveDate || '…./…../……')}.`)}
+                ${p('<b>Điều 3.</b> Quyết định này có hiệu lực kể từ ngày ký.')}
                 ${p(`<b>Điều 4.</b> Ông/Bà ${nyc} và cơ quan, tổ chức, cá nhân có liên quan chịu trách nhiệm thi hành Quyết định này./.`)}
                 <table style="width:100%; border-collapse:collapse; margin-top:16pt;"><tr>
                     <td style="width:55%; vertical-align:top; font-size:12pt; line-height:1.4;"><b><i>Nơi nhận:</i></b><br>${noiNhan.map(esc).join('<br>')}</td>
@@ -4471,12 +4509,12 @@
             $('scbDocNo').value = sd.docNo || '     /QĐ-';
             $('scbDocDate').value = sd.docDate || W.dateText();
             $('scbContent').value = prev && prev.content ? prev.content : scbContentDefault(d);
-            $('scbEffDate').value = prev ? (prev.effectiveDate || '') : '';
+            $('scbEffDate').value = prev && prev.effectiveDate ? prev.effectiveDate : (d.effectiveText || '60 ngày kể từ ngày người yêu cầu bồi thường nhận được quyết định'); // [scbhl]
             $('scbNoiNhan').value = sd.noiNhan || SCB_NOI_NHAN_DEFAULT;
             $('scbNote').value = '';
             clearInvalid($('scbModal'));
             document.querySelectorAll('#scbModal .gqx-err, #scbModal .scb-err').forEach(e => { e.style.display = 'none'; });
-            ['scbDocDate', 'scbEffDate'].forEach(fid => {
+            ['scbDocDate'].forEach(fid => {
                 const el = $(fid);
                 if (window.flatpickr && !el._flatpickr) flatpickr('#' + fid, { dateFormat: 'd/m/Y', allowInput: true });
                 const fp = el._flatpickr; if (fp) { if (el.value) fp.setDate(el.value, false, 'd/m/Y'); else fp.clear(false); }
@@ -4545,7 +4583,7 @@
         function scbData() {
             return { docNo: $('scbDocNo').value.trim(), docDate: $('scbDocDate').value.trim(), content: $('scbContent').value.trim(), effectiveDate: $('scbEffDate').value.trim(), noiNhan: scbLines('scbNoiNhan') };
         }
-        // Kiểm tra trống trường bắt buộc: Sinh văn bản -> Số, Ngày văn bản, Nội dung, Ngày có hiệu lực, Nơi nhận; Tải lên từ máy -> Nội dung, Ngày có hiệu lực
+        // Kiểm tra trống trường bắt buộc: Sinh văn bản -> Số, Ngày văn bản, Nội dung, Hiệu lực của Quyết định, Nơi nhận; Tải lên từ máy -> Nội dung, Hiệu lực của Quyết định
         function scbValidateInfo() {
             const ids = scb.docSrc === 'gen' ? ['scbDocNo', 'scbDocDate', 'scbContent', 'scbEffDate', 'scbNoiNhan'] : ['scbContent', 'scbEffDate'];
             const bad = ids.filter(id => !$(id).value.trim());
@@ -4661,7 +4699,7 @@
             if (typeof tlktTagHistory === 'function') tlktTagHistory(W, res.record, signDoc.attachments);
             d.request = { kind: KIND_SC, content: data.content, effectiveDate: data.effectiveDate, draftDoc, bodyHtml: f.generated ? f.html : '', leaderId, signMethod: 'Ký số', signDoc, note, submittedAt: res.record.approval.submittedAt, submittedBy: W.getCurrentUserId() };
             d.status = ST.CHO_DUYET; d.wfKind = KIND_SC; d.wfSubmittedAt = res.record.approval.submittedAt; d.returned = null; d.updatedAt = new Date().toISOString();
-            addDecHistory(d, scb.resubmit ? `Trình lại ${KIND_SC}` : `Trình ${KIND_SC}`, `Nội dung sửa chữa, bổ sung: ${data.content}. Ngày có hiệu lực: ${data.effectiveDate}. Trình ${W.userLabel(leaderId)}. Văn bản: ${draftDocName(draftDoc)}.${typeof tlktNote === 'function' ? tlktNote(signDoc.attachments) : ''}`);
+            addDecHistory(d, scb.resubmit ? `Trình lại ${KIND_SC}` : `Trình ${KIND_SC}`, `Nội dung sửa chữa, bổ sung: ${data.content}. Hiệu lực của Quyết định: ${data.effectiveDate}. Trình ${W.userLabel(leaderId)}. Văn bản: ${draftDocName(draftDoc)}.${typeof tlktNote === 'function' ? tlktNote(signDoc.attachments) : ''}`);
             saveDecisions();
             closeScbModal();
             showToast(`Đã trình Lãnh đạo phê duyệt ${KIND_SC}.`, 'success');
@@ -4675,7 +4713,7 @@
             const d = getDec(scb.id); if (!d) return;
             const name = scb.offFile.name;
             if (scb.resubmit && W.getRecord(d.claimCode)) W.ensureClaimRecord({ code: d.claimCode, status: ST.DA_BH });
-            (d.amendments = d.amendments || []).push({ kind: KIND_SC, content: '', signMethod: 'Ký ngoài', draftDoc: { source: 'uploaded', uploadedName: name }, approvedBy: '', issuedBy: W.getCurrentUserId(), at: W.nowText() });
+            (d.amendments = d.amendments || []).push({ kind: KIND_SC, content: '', signMethod: 'Ký ngoài', draftDoc: { source: 'uploaded', uploadedName: name }, approvedBy: '', issuedBy: W.getCurrentUserId(), at: W.nowText(), attachments: typeof tlktGet === 'function' ? tlktGet('scb') : [] });
             d.status = ST.DA_BH; d.request = null; d.returned = null; d.wfKind = ''; d.lastKind = KIND_SC; d.updatedAt = new Date().toISOString();
             addDecHistory(d, 'Ban hành Quyết định sửa chữa, bổ sung (Ký ngoài)', `Tệp đã ký: ${name}.`);
             saveDecisions();
@@ -4683,7 +4721,7 @@
             showToast('Đã ban hành Quyết định sửa chữa, bổ sung Quyết định giải quyết bồi thường (Ký ngoài).', 'success');
             showList();
         }
-        // Văn bản Mẫu 21/BTNN sinh từ Số, ký hiệu; Ngày văn bản; Nội dung sửa chữa, bổ sung; Ngày có hiệu lực; Nơi nhận
+        // Văn bản Mẫu 21/BTNN sinh từ Số, ký hiệu; Ngày văn bản; Nội dung sửa chữa, bổ sung; Hiệu lực của Quyết định (Điều 2: "Quyết định này có hiệu lực [text]."); Nơi nhận
         function buildScbDocHtml(d, x) {
             const unit = W.unitName(d.unitId) || unitLabel(d);
             const p = s => `<p style="margin:4pt 0; text-align:justify; text-indent:1cm;">${s}</p>`;
@@ -4698,7 +4736,7 @@
                 <p style="text-align:center; margin:10pt 0;"><b>QUYẾT ĐỊNH:</b></p>
                 ${p(`<b>Điều 1.</b> Sửa chữa, bổ sung Quyết định giải quyết bồi thường ${qdGoc} như sau:`)}
                 ${lines.length ? lines.map(s => p(esc(s))).join('') : p('................')}
-                ${p(`<b>Điều 2.</b> Quyết định này có hiệu lực kể từ ngày ${esc(x.effectiveDate || '…./…../……')}.`)}
+                ${p(`<b>Điều 2.</b> Quyết định này có hiệu lực ${esc(x.effectiveDate || '……………')}.`)}
                 ${p(`<b>Điều 3.</b> Ông/Bà ${esc(d.nycName || '....................')} và cơ quan, tổ chức, cá nhân có liên quan chịu trách nhiệm thi hành Quyết định này./.`)}
                 <table style="width:100%; border-collapse:collapse; margin-top:16pt;"><tr>
                     <td style="width:55%; vertical-align:top; font-size:12pt; line-height:1.4;"><b><i>Nơi nhận:</i></b><br>${noiNhan.map(esc).join('<br>')}</td>
@@ -4974,10 +5012,10 @@
                 request: { kind: KIND_HUY, content: 'Căn cứ ban hành Quyết định không chính xác theo kết luận kiểm tra của cơ quan có thẩm quyền.', effectiveDate: '20/10/2026', draftDoc: { source: 'generated', generatedName: 'Du_thao_Huy_QD_BT-2026-071.doc' }, bodyHtml: '', leaderId: 'tpbt', signMethod: 'Ký số', note: s1.rec.approval.content, submittedAt: '08:30 14/10/2026', submittedBy: 'canbonv' },
                 history: [{ at: '16:00 15/09/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: 'Ban hành', note: 'Số 25/QĐ-BTP ngày 15/09/2026.' }, { at: '08:30 14/10/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: `Trình ${KIND_HUY}`, note: `Lý do hủy Quyết định: Căn cứ ban hành Quyết định không chính xác theo kết luận kiểm tra của cơ quan có thẩm quyền. Trình ${W.userLabel('tpbt')}.` }],
                 updatedAt: '2026-10-14T08:30:00.000Z' });
-            // Tài liệu kèm theo của lần trình Hủy QĐ (bắt buộc) - Lãnh đạo xem tại màn Ký duyệt/Từ chối
+            // Tài liệu của lần trình Hủy QĐ: 01 ban hành kèm theo + 01 không ban hành kèm theo (bắt buộc) - Lãnh đạo xem tại màn Ký duyệt/Từ chối
             s1.tlkt = [
-                { name: 'Kết luận kiểm tra số 15/KL-TTr ngày 30/09/2026 của Thanh tra Bộ Tư pháp', file: { id: '', name: 'Ket_luan_kiem_tra_15_KL-TTr.pdf', size: 524288, type: 'application/pdf' } },
-                { name: 'Văn bản xác định trường hợp hủy Quyết định giải quyết bồi thường', file: { id: '', name: 'Van_ban_xac_dinh_truong_hop_huy_QD.pdf', size: 312320, type: 'application/pdf' } }
+                { name: 'Kết luận kiểm tra số 15/KL-TTr ngày 30/09/2026 của Thanh tra Bộ Tư pháp', file: { id: '', name: 'Ket_luan_kiem_tra_15_KL-TTr.pdf', size: 524288, type: 'application/pdf' }, scope: 'internal', unit: 'BTP-01' },
+                { name: 'Văn bản xác định trường hợp hủy Quyết định giải quyết bồi thường', file: { id: '', name: 'Van_ban_xac_dinh_truong_hop_huy_QD.pdf', size: 312320, type: 'application/pdf' }, scope: 'issued', unit: 'BTP-01' }
             ];
             s1.rec.approval.signDoc = { method: 'Ký số', docSrc: 'gen', attachments: s1.tlkt };
             s1.rec.history[0].attachments = s1.tlkt;
@@ -4985,7 +5023,7 @@
             const s2 = mk('BT-2026-072', 'Ngô Thị Thanh Hương', 'VVBT-2026-072', KIND_SC, '10:15 15/10/2026', 'Kính trình Lãnh đạo ký duyệt Quyết định sửa chữa, bổ sung Quyết định giải quyết bồi thường số 27/QĐ-BTP.', 'Du_thao_Sua_chua_bo_sung_QD_BT-2026-072.doc');
             s2.dec = seedDec({ id: 'QD-08', claimCode: 'BT-2026-072', nycName: 'Ngô Thị Thanh Hương', nycAddress: 'Số 45 Kim Mã, Phường Giảng Võ, Thành phố Hà Nội', unitId: 'BTP-01', leaderId: 'tpbt', approvedBy: 'cuctruong', status: ST.CHO_DUYET, wfKind: KIND_SC, wfSubmittedAt: '10:15 15/10/2026', lastKind: KIND_QD, decNo: '27/QĐ-BTP', issueDate: '25/09/2026', signedFile: 'QD_27_GQBT_da_ky.pdf',
                 items: seedItems([['Tài sản bị xâm phạm', 300000000, 280000000, 280000000]]), recipient: { name: 'Ngô Thị Thanh Hương', idNo: '001190007788', account: '1903344556677', bank: 'Techcombank', branch: 'Chi nhánh Ba Đình' },
-                request: { kind: KIND_SC, content: 'Sửa chữa số tài khoản nhận tiền bồi thường tại Điều 2 do sai sót trong quá trình soạn thảo.', effectiveDate: '20/10/2026', draftDoc: { source: 'generated', generatedName: 'Du_thao_Sua_chua_bo_sung_QD_BT-2026-072.doc' }, bodyHtml: '', leaderId: 'tpbt', signMethod: 'Ký số', note: s2.rec.approval.content, submittedAt: '10:15 15/10/2026', submittedBy: 'canbonv' },
+                request: { kind: KIND_SC, content: 'Sửa chữa số tài khoản nhận tiền bồi thường tại Điều 2 do sai sót trong quá trình soạn thảo.', effectiveDate: 'kể từ ngày ký', draftDoc: { source: 'generated', generatedName: 'Du_thao_Sua_chua_bo_sung_QD_BT-2026-072.doc' }, bodyHtml: '', leaderId: 'tpbt', signMethod: 'Ký số', note: s2.rec.approval.content, submittedAt: '10:15 15/10/2026', submittedBy: 'canbonv' },
                 history: [{ at: '15:00 25/09/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: 'Ban hành', note: 'Số 27/QĐ-BTP ngày 25/09/2026.' }, { at: '10:15 15/10/2026', userId: 'canbonv', userName: W.userName('canbonv'), action: `Trình ${KIND_SC}`, note: `Nội dung sửa chữa, bổ sung: Sửa chữa số tài khoản nhận tiền bồi thường tại Điều 2 do sai sót trong quá trình soạn thảo. Trình ${W.userLabel('tpbt')}.` }],
                 updatedAt: '2026-10-15T10:15:00.000Z' });
             const at3 = '14:00 13/10/2026', ok3 = '09:20 15/10/2026', y3 = 'Đồng ý mức bồi thường theo kết quả xác minh thiệt hại.';
@@ -5077,7 +5115,7 @@
         });
         window.addEventListener('storage', e => { if (e.key === W.KEYS.RECORDS || e.key === KEY_DEC) { decisions = loadDecisions(); if ($('contentListDecisions').style.display !== 'none') showList(); } });
     </script>
-    <script src="quyet_dinh_gqbt_ctqd.js?v=20261026ctqd"></script>
+    <script src="quyet_dinh_gqbt_ctqd.js?v=20261027hl2"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="bpbd_filter_toggle.js?v=20261012"></script>
     <script src="filter_toggle_auto.js?v=20261012"></script>

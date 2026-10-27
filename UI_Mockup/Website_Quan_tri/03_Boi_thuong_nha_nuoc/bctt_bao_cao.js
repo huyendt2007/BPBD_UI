@@ -10,7 +10,7 @@
     'use strict';
     var KEY = 'bctt_bao_cao_v1';
     var KEY_ROLE = 'bctt_role_v1';
-    var SEED = 's6_ngay_tuong_doi'; // đổi giá trị khi đổi dữ liệu mẫu: trình duyệt đang lưu bản cũ sẽ tự nạp lại
+    var SEED = 's7_tlkt_2khoi'; // đổi giá trị khi đổi dữ liệu mẫu: trình duyệt đang lưu bản cũ sẽ tự nạp lại
     var KIND = 'Báo cáo công tác BTNN';
     var DEMO_UNIT = 'STP-HN';
     var DEMO_SUB = 'STP-HN-HCTP';
@@ -214,6 +214,11 @@
             r.submit = { at: seedAt(year, period, 0, '09:15'), by: r.preparer.name, noiDung: 'Kính trình Lãnh đạo xem xét, ký duyệt Báo cáo công tác bồi thường nhà nước năm ' + year + '.', current: status === ST.CHO ? (i % 2) : lv.length - 1, tlkt: [{ name: 'Tờ trình Báo cáo công tác bồi thường nhà nước năm ' + year, file: { name: 'To_trinh_BC_cong_tac_BTNN_' + year + '.pdf', size: 245760 } }],
                 levels: lv.map(function (l) { return { level: l.level, unitId: l.unitId, unitName: i === 0 ? l.unitName : (l.level === 1 ? 'Phòng Hành chính tư pháp' : stpName(prov)), leaderId: l.leaders[0], leaderName: i === 0 ? userName(l.leaders[0]) : (l.level === 1 ? 'Trưởng phòng HCTP - ' + diaDanh(prov) : 'Giám đốc Sở Tư pháp ' + diaDanh(prov)), kyNhay: l.kyNhay, result: null, at: '', note: '' }; }) };
             r.sentAt = r.submit.at;
+            // Dữ liệu mẫu 02 khối: Tài liệu ban hành kèm theo (Bộ Tư pháp xem được) / Tài liệu không ban hành kèm theo (chỉ Sở Tư pháp trình)
+            r.submit.tlkt = [
+                { name: 'Phụ lục số liệu chi tiết vụ việc năm ' + year, file: { id: '', name: 'Phu_luc_so_lieu_' + year + '_' + unitId + '.pdf', size: 245760 }, scope: 'issued', unit: unitId },
+                { name: 'Tờ trình ban hành báo cáo công tác bồi thường nhà nước năm ' + year, file: { id: '', name: 'To_trinh_bao_cao_' + year + '_' + unitId + '.pdf', size: 163840 }, scope: 'internal', unit: unitId }
+            ];
             r.history.push({ at: r.submit.at, actor: r.preparer.name, action: 'Gửi phê duyệt', note: r.submit.noiDung });
             if (status === ST.CHO && r.submit.current === 1) { r.submit.levels[0].result = 'approved'; r.submit.levels[0].at = seedAt(year, period, 1, '10:00'); }
             if (status === ST.BH) {
@@ -259,6 +264,8 @@
     var role = 'cb_stp';
     function me() { return ROLES[role]; }
     function isStpRole() { return role !== 'cb_btp'; }
+    // Đơn vị người xem (quyền xem Tài liệu không ban hành kèm theo): vai trò Sở Tư pháp -> Sở Tư pháp Hà Nội; Cán bộ Bộ Tư pháp -> Bộ Tư pháp
+    window.tlktViewerUnit = function () { return isStpRole() ? DEMO_UNIT : 'BTP-01'; };
     function canEdit(r) { return role === 'cb_stp' && r.unitId === DEMO_UNIT && (r.status === ST.DANG || r.status === ST.TC); }
     function canApprove(r) {
         if (!r || r.status !== ST.CHO || !r.submit || r.unitId !== DEMO_UNIT) return false;
@@ -527,6 +534,8 @@
             + '</div>'
             + (r.status === ST.TC && r.reject ? '<div class="bctt-alert" id="bcttRejectBox"><b class="t">BÁO CÁO BỊ LÃNH ĐẠO TỪ CHỐI</b>Lý do từ chối: <strong>' + esc(r.reject.reason) + '</strong><br>Người từ chối: ' + esc(r.reject.byName) + ' (Cấp ' + r.reject.level + ') • Thời điểm: ' + esc(r.reject.at) + '</div>' : '')
             + '<div class="bctt-files"><div class="section-title" style="margin-bottom:10px;"><span>Tệp báo cáo (' + (r.status === ST.BH ? 'đã ban hành' : 'dự thảo') + ')</span></div><div class="table-container"><table class="custom-table" id="bcttFileTable"><thead><tr><th>STT</th><th>Biểu mẫu</th><th>Tên tệp</th><th>Loại tệp</th><th>Thao tác</th></tr></thead><tbody>' + fileRows(r) + '</tbody></table></div></div>'
+            // Tài liệu ban hành kèm theo / không ban hành kèm theo của lần trình (khối rỗng / không có quyền xem thì không hiển thị)
+            + (r.submit && typeof window.tlktViewHtml === 'function' ? '<div style="margin-top:12px;">' + window.tlktViewHtml(r.submit.tlkt || [], { ownerUnit: r.unitId }) + '</div>' : '')
             + '</div>';
         html += '<div class="card-section"><div class="bctt-tabs" id="bcttTabs">' + FORMS.map(function (f) { return '<button class="bctt-tab" data-tab="' + f.id + '">' + f.code + ' - ' + (f.id === 'm43' ? 'Tổng hợp tình hình' : f.title) + '</button>'; }).join('')
             + '<button class="bctt-tab" data-tab="hist">Lịch sử xử lý</button></div>'
@@ -954,7 +963,9 @@
             + units.filter(function (u) { return !btpState.kw || u.name.toLowerCase().indexOf(btpState.kw.toLowerCase()) >= 0; }).map(function (u, i) {
                 var r = u.r, ok = r && r.status === ST.BH;
                 return '<tr><td>' + (i + 1) + '</td><td class="text-left">' + esc(u.name) + '</td><td>' + (ok ? '<span class="badge badge-success">Đã ban hành</span>' : '<span class="badge badge-muted">Chưa gửi</span>') + '</td><td>' + (ok ? r.issued.at : '--') + '</td><td class="text-left">' + (ok ? esc(r.issued.signer) : '--') + '</td><td class="text-left">'
-                    + (ok ? FORMS.map(function (f) { return '<span class="bctt-chip">' + f.code + ' <button class="bctt-link" data-rid="' + r.id + '" data-fview="' + f.id + '">Xem file</button>|<button class="bctt-link" data-fdl="' + f.file + '_' + year + '_' + r.unitId + '_signed.pdf">Tải file</button></span>'; }).join('') : '--') + '</td></tr>';
+                    + (ok ? FORMS.map(function (f) { return '<span class="bctt-chip">' + f.code + ' <button class="bctt-link" data-rid="' + r.id + '" data-fview="' + f.id + '">Xem file</button>|<button class="bctt-link" data-fdl="' + f.file + '_' + year + '_' + r.unitId + '_signed.pdf">Tải file</button></span>'; }).join('') : '--')
+                    // Bộ Tư pháp xem báo cáo của Sở Tư pháp: chỉ Tài liệu ban hành kèm theo (khối không ban hành kèm theo chỉ Sở Tư pháp trình xem được)
+                    + (ok && r.submit && typeof window.tlktInlineHtml === 'function' ? window.tlktInlineHtml(r.submit.tlkt || [], { ownerUnit: r.unitId }) : '') + '</td></tr>';
             }).join('') + '</tbody></table></div></div></div>';
         html += '<div class="card-section"><div class="bctt-tabs" id="bcttTabs">' + FORMS.map(function (f) { return '<button class="bctt-tab" data-tab="' + f.id + '">' + f.code + ' - Tổng hợp</button>'; }).join('') + '</div>'
             + '<div class="bctt-panel" id="bcttP_m41"></div><div class="bctt-panel" id="bcttP_m42"></div><div class="bctt-panel" id="bcttP_m43"></div></div>';

@@ -510,6 +510,9 @@ function hgqIssueOffline(p) {
     claim.status = cfg.result;
     claim.wfReturned = null;
     hgqApplyResult(claim, p, Object.assign({ previousStatus: prevSt }, data), 'Ký ngoài', file);
+    // Ký ngoài: Tài liệu ban hành kèm theo (chỉ khối ban hành kèm theo) lưu vào lần Hoãn / Tạm đình chỉ vừa ban hành
+    var hgqLast = claim.specialStatusLogs[claim.specialStatusLogs.length - 1];
+    if (hgqLast) hgqLast.attachments = typeof tlktGet === 'function' ? tlktGet(p) : [];
     if (!Array.isArray(claim.timeline)) claim.timeline = [];
     claim.timeline.push({ title: title, date: gqToday(), desc: cfg.docTitle + ' đã ký ngoài hệ thống (' + file + '). Lý do: ' + hgqReasonText(p, x) + '. Vụ việc chuyển từ [' + prevSt + '] sang trạng thái [' + cfg.result + '].', status: 'active' });
     try {

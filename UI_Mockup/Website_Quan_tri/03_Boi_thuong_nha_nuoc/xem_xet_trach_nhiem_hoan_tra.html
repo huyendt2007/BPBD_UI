@@ -1593,8 +1593,19 @@
     <!-- ============================================== -->
     <!-- JAVASCRIPT CONTROLLERS -->
     <!-- ============================================== -->
-    <script src="btnn_luong_xu_ly.js?v=20261020v5"></script>
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261026tlkt5"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261027xdc"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
+    <script>
+        // Xem xét trách nhiệm hoàn trả: đơn vị người xem theo vai trò giả lập (htMockScope); Lãnh đạo (ký duyệt) xem được mọi khối.
+        // Tài liệu không ban hành kèm theo của phiếu trình chỉ đơn vị trình (mặc định Đơn vị tạo Hội đồng; Quyết định của đơn vị quản lý cán bộ: đơn vị đó) và Lãnh đạo xem được
+        window.tlktViewerUnit = function () {
+            var s = '';
+            try { s = new URLSearchParams(location.search).get('scope') || sessionStorage.getItem('htMockScope') || ''; } catch (e) { s = ''; }
+            var U = { don_vi_chu: 'UBND Quận Long Biên', don_vi_a: 'UBND Phường Bồ Đề', don_vi_b: 'UBND Huyện An Dương', stp: 'Sở Tư pháp Hà Nội', lanh_dao: '' };
+            return U[s || 'don_vi_chu'] || '';
+        };
+        window.tlktDefaultOwnerUnit = 'UBND Quận Long Biên';
+    </script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261026htrole"></script>
     <script>
@@ -3719,7 +3730,7 @@
         // Tài liệu kèm theo của lần trình (chỉ đọc; chỉ hiển thị khi có)
         function htkdTlktHtml(d) {
             const loai = htkdLoai(d);
-            const list = loai === 'QĐ hoàn trả' ? d.qdTlkt : (loai === 'Đình chỉ xem xét hoàn trả' ? (d.dcht && d.dcht.attachments) : null);
+            const list = loai === 'QĐ hoàn trả' ? d.qdTlkt : (loai === 'Đình chỉ xem xét hoàn trả' ? (d.dcht && d.dcht.attachments) : (loai === 'Thành lập hội đồng' ? (d.tlhd && d.tlhd.attachments) : null));
             return list && list.length && typeof tlktViewHtml === 'function' ? tlktViewHtml(list) : '';
         }
         // Lịch sử trình ký: giảm dần theo thời gian; lượt hiện hành: Lãnh đạo Chờ ký duyệt

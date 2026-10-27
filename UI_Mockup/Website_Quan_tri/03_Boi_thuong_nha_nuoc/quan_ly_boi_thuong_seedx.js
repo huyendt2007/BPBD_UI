@@ -13,12 +13,15 @@
 var SDX_BASE = { y: 2026, m: 10 };
 var SDX_CB = 'Nguyễn Văn Chuyên Viên';
 var SDX_TH = ['Tài sản bị xâm phạm', 'Thu nhập thực tế bị mất/giảm sút', 'Vật chất do người bị thiệt hại chết', 'Vật chất do sức khỏe bị xâm phạm', 'Thiệt hại về tinh thần', 'Các chi phí hợp lý khác'];
+// [th2c] Tên thiệt hại: mã mục chi tiết DM_27 (TH_xx_nn) hoặc loại cũ 1..6
+function sdxThName(t) { return (window.BTNN_TH && BTNN_TH.codeOf(t) && !/^[1-6]$/.test(String(t))) ? BTNN_TH.name(t) : SDX_TH[t - 1]; }
 
 function sdxMoney(n) { return Number(n || 0).toLocaleString('vi-VN'); }
 // Danh sách thiệt hại: [type, đề nghị, xác minh (undefined = chưa xác minh), ghi chú xác minh]
 function sdxThiet(rows, xmDate) {
     return rows.map(function (r) {
-        var it = { type: r[0], calc: SDX_TH[r[0] - 1] + ': ' + sdxMoney(r[1]) + ' đ', val: r[1] };
+        var it = { type: r[0], calc: (r[4] || sdxThName(r[0])) + ': ' + sdxMoney(r[1]) + ' đ', val: r[1] };
+        if (r[4]) { it.name = r[4]; if (window.BTNN_TH) BTNN_TH.setName(r[0], r[4]); } // [th2c] dòng VII. Các thiệt hại khác: tên tự nhập
         if (r[2] !== undefined) {
             it.xmVal = r[2];
             it.xmNote = r[3] || 'Xác minh đúng thực tế';
@@ -45,7 +48,7 @@ function sdxXm(c, xmDate, other) {
     c.xmOtherRelatedInfo = other || 'Đã đối soát biên bản thiệt hại thực tế giữa cơ quan giải quyết bồi thường và người yêu cầu bồi thường.';
     c.xmFiles = [{ name: 'Bien_ban_xac_minh_thiet_hai_' + c.code + '.pdf', url: '#' }, { name: 'Bao_cao_ket_qua_xac_minh_' + c.code + '.pdf', url: '#' }];
     c.verificationParticipants = sdxOfficials(c.agency);
-    c.verifiedItems = (c.thietHaiList || []).map(function (it) { return { key: it.type, label: SDX_TH[it.type - 1], proposed: it.val, verified: it.xmVal, note: it.xmNote || '' }; });
+    c.verifiedItems = (c.thietHaiList || []).map(function (it) { return { key: it.type, label: it.name || sdxThName(it.type), proposed: it.val, verified: it.xmVal, note: it.xmNote || '' }; });
     return c;
 }
 // Thương lượng thành công theo Mức xác minh (cấu trúc như form Cập nhật kết quả thương lượng)

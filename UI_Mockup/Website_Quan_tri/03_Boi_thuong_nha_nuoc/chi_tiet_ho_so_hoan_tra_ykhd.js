@@ -204,6 +204,10 @@
         if (fv) fv.querySelectorAll('a').forEach(a => { if (/Tải xuống/.test(a.textContent)) a.innerHTML = '<i class="fa-solid fa-download"></i> Tải file'; });
         const audit = el('s1AuditCard');
         if (audit && off) audit.style.display = 'none';
+        // Tài liệu ban hành kèm theo / không ban hành kèm theo của Quyết định thành lập Hội đồng (khối rỗng / không có quyền xem thì không hiển thị)
+        let tl = el('s1TlhdTlkt');
+        if (!tl) { tl = document.createElement('div'); tl.id = 's1TlhdTlkt'; tl.style.marginTop = '12px'; body.appendChild(tl); }
+        tl.innerHTML = typeof tlktViewHtml === 'function' && activeDossier.tlhd ? tlktViewHtml(activeDossier.tlhd.attachments || []) : '';
     };
 
     // ===== Bước 2: Ý kiến của Hội đồng =====
@@ -375,7 +379,7 @@
             } else {
                 host.dataset.ht2Mounted = '';
                 // Chế độ xem: chỉ hiển thị bảng khi có tài liệu
-                host.innerHTML = typeof tlktViewHtml === 'function' && list.length ? tlktViewHtml(list) : '';
+                host.innerHTML = typeof tlktViewHtml === 'function' && list.length ? tlktViewHtml(list, { split: false }) : ''; // Không thuộc phiếu trình: 01 bảng Tài liệu kèm theo
             }
         }
         const add = el('s2AddOfficerBtn'); if (add) add.style.display = ro ? 'none' : 'inline-flex';

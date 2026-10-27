@@ -8,7 +8,11 @@
  * - tlktStd(): tự chuẩn hóa các bảng tài liệu dựng riêng tại từng trang (tên cột, nút, icon Thao tác, ẩn bảng rỗng ở chế độ xem).
  * - Tải file: .pdf, .doc, .docx, .jpg, .jpeg, .png; tối đa 50MB/tệp (MSG-ERR-FILE-001 / MSG-ERR-FILE-002).
  * - Xem file: mở chính tệp đã tải tại tab mới (giữ tệp trong bộ nhớ + IndexedDB để mở lại sau khi tải lại trang).
- * - Dữ liệu lưu vào phiếu trình: [{ name, file: { id, name, size, type } }].
+ * - Dữ liệu lưu vào phiếu trình: [{ name, file: { id, name, size, type }, scope: 'issued' | 'internal', unit }].
+ * - Popup trình ký (không truyền noLeader): 02 khối "Tài liệu ban hành kèm theo" (scope issued) + "Tài liệu không ban hành kèm theo" (scope internal);
+ *   Ký ngoài (tlktShow(key, false) / tlktMode(key, 'offline')): chỉ khối Tài liệu ban hành kèm theo.
+ * - Khối chỉ đọc / Lịch sử trình ký: tách 02 khối; Tài liệu không ban hành kèm theo chỉ hiển thị cho đơn vị trình (unit = đơn vị gốc người xem).
+ * - Dữ liệu cũ chưa có scope: quy đổi thành Tài liệu không ban hành kèm theo.
  */
 (function () {
     'use strict';
@@ -154,9 +158,65 @@
         return (list || []).map(function (d) {
             var f = d && d.file ? { id: d.file.id || '', name: d.file.name || '', size: d.file.size || 0, type: d.file.type || '' } : null;
             if (f && !f.name) f = null;
-            return { name: (d && d.name) || '', file: f };
+            var o = { name: (d && d.name) || '', file: f };
+            if (d && d.scope) o.scope = d.scope;
+            if (d && d.unit) o.unit = d.unit;
+            return o;
         });
     }
+
+    // ---------- Tách 2 khối: Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo ----------
+    // Mỗi tài liệu của phiếu trình lưu scope: 'issued' (ban hành kèm theo) | 'internal' (không ban hành kèm theo) và unit (đơn vị gốc của đơn vị trình).
+    // Dữ liệu cũ chưa có scope: quy đổi thành 'internal' (không ban hành kèm theo) - không lộ ra đơn vị khác.
+    var T_ISSUED = 'Tài liệu ban hành kèm theo', T_INTERNAL = 'Tài liệu không ban hành kèm theo';
+    var HINT_ISSUED = 'Tài liệu phát hành cùng văn bản (phụ lục, bảng kê...); hiển thị cho mọi đơn vị được nhận / xem văn bản sau khi ban hành.';
+    var HINT_INTERNAL = 'Tài liệu nội bộ phục vụ trình duyệt (tờ trình, ý kiến, hồ sơ tham khảo...); chỉ đơn vị trình và Lãnh đạo ký duyệt của đơn vị xem được, không chuyển cho đơn vị khác.';
+    function scopeOf(d) { return d && d.scope === 'issued' ? 'issued' : 'internal'; }
+    // Đơn vị (gốc) của người dùng đang xem: trang có thể khai báo window.tlktViewerUnit(); mặc định lấy theo người dùng giả lập BTNN_WF
+    function viewerUnit() {
+        try {
+            if (typeof window.tlktViewerUnit === 'function') return window.tlktViewerUnit() || '';
+            var W = window.BTNN_WF;
+            if (W && typeof W.getCurrentUser === 'function') { var u = W.getCurrentUser(); return u ? (W.getRootId(u.unitId) || u.unitId || '') : ''; }
+        } catch (e) { /* bỏ qua */ }
+        return '';
+    }
+    // Quyền xem Tài liệu không ban hành kèm theo: chỉ đơn vị trình (owner = unit của tài liệu, hoặc opts.ownerUnit với dữ liệu cũ)
+    function canSeeInternal(d, opts) {
+        opts = opts || {};
+        if (opts.hideInternal) return false;
+        if (opts.showInternal) return true;
+        var owner = (d && d.unit) || opts.ownerUnit || window.tlktDefaultOwnerUnit || '';
+        var v = viewerUnit();
+        // Màn xem chi tiết có truyền ownerUnit nhưng không xác định được đơn vị trình (dữ liệu cũ): ẩn để không lộ ra đơn vị khác
+        if (!owner) return !v || !Object.prototype.hasOwnProperty.call(opts, 'ownerUnit');
+        return !v || owner === v;
+    }
+    function hasDoc(d) {
+        if (typeof d === 'string') return !!d;
+        return !!(d && (d.name || d.title || (d.file && (typeof d.file === 'string' || d.file.name))));
+    }
+    // Tách danh sách tài liệu của phiếu trình thành 2 khối (đã áp quyền xem khối không ban hành)
+    window.tlktSplit = function (list, opts) {
+        var out = { issued: [], internal: [] };
+        (list || []).forEach(function (d) {
+            if (!hasDoc(d)) return;
+            if (scopeOf(d) === 'issued') out.issued.push(d);
+            else if (canSeeInternal(d, opts)) out.internal.push(d);
+        });
+        return out;
+    };
+    // Trang dựng bảng tài liệu riêng: fn(danh sách, tiêu đề khối, 'issued' | 'internal') -> HTML; khối rỗng / không có quyền xem thì bỏ qua
+    window.tlktSplitRender = function (list, opts, fn) {
+        var sp = window.tlktSplit(list, opts);
+        return (sp.issued.length ? fn(sp.issued, T_ISSUED, 'issued') : '') + (sp.internal.length ? fn(sp.internal, T_INTERNAL, 'internal') : '');
+    };
+    window.TLKT_T_ISSUED = T_ISSUED;
+    window.TLKT_T_INTERNAL = T_INTERNAL;
+    // Chỉ Tài liệu ban hành kèm theo (dùng khi chuyển hồ sơ / văn bản cho đơn vị khác)
+    window.tlktIssuedOnly = function (list) { return cloneList((list || []).filter(function (d) { return hasDoc(d) && scopeOf(d) === 'issued'; })); };
+    window.tlktViewerUnit0 = viewerUnit;
+    window.tlktCanSeeInternal = canSeeInternal;
     function sync(key) {
         var s = S[key]; if (!s) return;
         s.rows.forEach(function (r, i) { var el = document.getElementById('tlkt_' + key + '_n' + i); if (el) r.name = el.value; });
@@ -183,7 +243,7 @@
             + '<div class="tlkt-wrap"><table class="tlkt-table"><thead><tr><th class="tlkt-c" style="width:48px;">STT</th><th>' + esc(s.nameLabel) + (s.required ? '<span class="tlkt-req">*</span>' : '') + '</th><th style="width:220px;">File đính kèm' + (s.required ? '<span class="tlkt-req">*</span>' : '') + '</th><th class="tlkt-c" style="width:90px;">Thao tác</th></tr></thead><tbody>' + body + '</tbody></table></div>'
             + '<div class="tlkt-err" id="tlkt_' + key + '_err">' + MSG_REQ + '</div>'
             + '<div><button type="button" class="tlkt-btn tlkt-btn-add tlkt-add" onclick="tlktAdd(\'' + key + '\')"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button></div>'
-            + '<div class="tlkt-hint"><i class="fa-solid fa-circle-info"></i> Chấp nhận tệp ' + s.exts.join(', ') + ' (tối đa 50MB/tệp).' + (s.noLeader ? '' : ' Lãnh đạo xem được các tài liệu này khi Ký duyệt/Từ chối.') + '</div>'
+            + '<div class="tlkt-hint"><i class="fa-solid fa-circle-info"></i> Chấp nhận tệp ' + s.exts.join(', ') + ' (tối đa 50MB/tệp).' + (s.hint ? ' ' + esc(s.hint) : (s.noLeader ? '' : ' Lãnh đạo xem được các tài liệu này khi Ký duyệt/Từ chối.')) + '</div>'
             + '</div>';
         host.style.display = s.visible === false ? 'none' : '';
     }
@@ -195,13 +255,43 @@
     function setErr(id, on, msg) { var e = document.getElementById(id); if (!e) return; if (msg) e.textContent = msg; e.classList.toggle('on', !!on); }
 
     // Khởi tạo bảng trong vùng hostId; opts: { required, rows, secClass, titleClass, visible, title, nameLabel (tên cột Tên ...; mặc định "Tên tài liệu, văn bản"; lưới Văn bản làm căn cứ dùng "Tên văn bản căn cứ") }
+    // Popup trình ký Lãnh đạo (không truyền noLeader) mặc định dựng 02 khối: Tài liệu ban hành kèm theo + Tài liệu không ban hành kèm theo
+    // (opts.split = false để giữ 01 bảng). opts.rows: danh sách cũ/lần trình trước (tách theo scope; chưa có scope -> không ban hành kèm theo).
+    // opts.required (quy tắc bắt buộc riêng của phân hệ) áp cho khối opts.requiredBlock ('internal' mặc định | 'issued').
+    function mountOne(key, hostId, opts) {
+        S[key] = { hostId: hostId, required: !!opts.required, rows: cloneList(opts.rows), secClass: opts.secClass || 'gqx-sec', titleClass: opts.titleClass || 'tlkt-sec-title', visible: opts.visible !== false, noLeader: !!opts.noLeader, exts: (opts.exts && opts.exts.length) ? opts.exts : EXTS, title: opts.title || 'Tài liệu kèm theo', nameLabel: opts.nameLabel || STD_NAME, hint: opts.hint || '' };
+        render(key);
+    }
     window.tlktMount = function (key, hostId, opts) {
         opts = opts || {};
-        S[key] = { hostId: hostId, required: !!opts.required, rows: cloneList(opts.rows), secClass: opts.secClass || 'gqx-sec', titleClass: opts.titleClass || 'tlkt-sec-title', visible: opts.visible !== false, noLeader: !!opts.noLeader, exts: (opts.exts && opts.exts.length) ? opts.exts : EXTS, title: opts.title || 'Tài liệu kèm theo', nameLabel: opts.nameLabel || STD_NAME };
-        render(key);
+        var split = opts.split != null ? !!opts.split : !opts.noLeader;
+        if (!split) { mountOne(key, hostId, opts); return; }
+        var host = document.getElementById(hostId); if (!host) return;
+        css();
+        var rows = cloneList(opts.rows).filter(function (d) { return hasDoc(d) || d.file; });
+        var req = opts.required ? (opts.requiredBlock || 'internal') : '';
+        host.innerHTML = '<div id="' + hostId + '__bh" data-tlkt-block="issued"></div><div id="' + hostId + '__kbh" data-tlkt-block="internal" style="margin-top:12px;"></div>';
+        var base = { secClass: opts.secClass, titleClass: opts.titleClass, exts: opts.exts, nameLabel: opts.nameLabel, noLeader: true };
+        mountOne(key + '__bh', hostId + '__bh', Object.assign({}, base, { title: T_ISSUED, hint: HINT_ISSUED, required: req === 'issued', rows: rows.filter(function (d) { return scopeOf(d) === 'issued'; }) }));
+        mountOne(key + '__kbh', hostId + '__kbh', Object.assign({}, base, { title: T_INTERNAL, hint: HINT_INTERNAL, required: req === 'internal', rows: rows.filter(function (d) { return scopeOf(d) === 'internal'; }) }));
+        S[key] = { split: true, hostId: hostId, offline: false, visible: opts.visible !== false };
+        host.style.display = S[key].visible ? '' : 'none';
+    };
+    // Bảng 02 khối: on = true -> Ký số (02 khối); on = false -> Ký ngoài (chỉ khối Tài liệu ban hành kèm theo)
+    // tlktMode(key, 'online' | 'offline' | 'hidden'): đặt chế độ tường minh
+    window.tlktMode = function (key, mode) {
+        var s = S[key]; if (!s) return;
+        var host = document.getElementById(s.hostId);
+        if (!s.split) { s.visible = mode === 'online'; if (host) host.style.display = s.visible ? '' : 'none'; return; }
+        s.visible = mode !== 'hidden'; s.offline = mode === 'offline';
+        if (host) host.style.display = s.visible ? '' : 'none';
+        var bh = S[key + '__bh'], kbh = S[key + '__kbh'];
+        if (bh) bh.visible = s.visible;
+        if (kbh) { kbh.visible = s.visible && !s.offline; var h2 = document.getElementById(kbh.hostId); if (h2) h2.style.display = kbh.visible ? '' : 'none'; }
     };
     window.tlktShow = function (key, on) {
         var s = S[key]; if (!s) return;
+        if (s.split) { window.tlktMode(key, on ? 'online' : 'offline'); return; }
         s.visible = !!on;
         var host = document.getElementById(s.hostId); if (host) host.style.display = on ? '' : 'none';
     };
@@ -237,6 +327,13 @@
     // Danh sách tài liệu đã nhập (bỏ dòng trống), dùng để lưu vào phiếu trình
     window.tlktGet = function (key) {
         var s = S[key]; if (!s) return [];
+        if (s.split) {
+            var u = viewerUnit();
+            var tag = function (list, sc) { return list.map(function (d) { d.scope = sc; if (u) d.unit = u; return d; }); };
+            var iss = tag(window.tlktGet(key + '__bh'), 'issued');
+            var inn = s.offline ? [] : tag(window.tlktGet(key + '__kbh'), 'internal');
+            return iss.concat(inn);
+        }
         sync(key);
         return cloneList(s.rows.filter(function (r) { return String(r.name || '').trim() || r.file; }).map(function (r) { return { name: String(r.name || '').trim(), file: r.file }; }));
     };
@@ -244,6 +341,11 @@
     // Trả về true nếu hợp lệ; nếu lỗi: tô viền đỏ ô lỗi, hiển thị thông báo dưới ô, focus ô lỗi đầu tiên.
     window.tlktValidate = function (key) {
         var s = S[key]; if (!s || s.visible === false) return true;
+        if (s.split) {
+            var ok1 = window.tlktValidate(key + '__bh');
+            var ok2 = window.tlktValidate(key + '__kbh');
+            return ok1 && ok2;
+        }
         sync(key);
         var first = null;
         var full = 0;
@@ -266,7 +368,19 @@
 
     // ---------- Khối chỉ đọc (màn Ký duyệt/Từ chối) ----------
     // list: danh sách tài liệu của lần trình hiện hành; trả về '' khi không có tài liệu
+    // Mặc định (tài liệu của phiếu trình) hiển thị 02 khối riêng: Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo;
+    // khối không có dữ liệu thì không hiển thị; khối không ban hành chỉ hiển thị cho đơn vị trình (opts.ownerUnit / showInternal / hideInternal).
+    // opts.split = false: 01 bảng (danh sách không thuộc phiếu trình), tiêu đề opts.title (mặc định "Tài liệu kèm theo").
     window.tlktViewHtml = function (list, opts) {
+        opts = opts || {};
+        if (opts.split !== false) {
+            var sp = window.tlktSplit(list, opts);
+            return (sp.issued.length ? viewOne(sp.issued, Object.assign({}, opts, { title: T_ISSUED, block: 'issued' })) : '')
+                + (sp.internal.length ? viewOne(sp.internal, Object.assign({}, opts, { title: T_INTERNAL, block: 'internal' })) : '');
+        }
+        return viewOne(list, opts);
+    };
+    function viewOne(list, opts) {
         opts = opts || {};
         var rows = (list || []).filter(function (d) { return d && (d.name || (d.file && d.file.name)); });
         if (!rows.length) return '';
@@ -284,9 +398,9 @@
         }).join('');
         var boxCls = opts.boxClass || 'tlkt-view';
         var titleCls = opts.titleClass || 'tlkt-sec-title';
-        return '<div class="' + esc(boxCls) + ' tlkt-view-box" id="kdtcTlkt' + vid + '"><div class="' + esc(titleCls) + '"><i class="fa-solid fa-paperclip"></i> Tài liệu kèm theo</div>'
+        return '<div class="' + esc(boxCls) + ' tlkt-view-box" id="kdtcTlkt' + vid + '"' + (opts.block ? ' data-tlkt-block="' + opts.block + '"' : '') + '><div class="' + esc(titleCls) + '"><i class="fa-solid fa-paperclip"></i> ' + esc(opts.title || 'Tài liệu kèm theo') + '</div>'
             + '<div class="tlkt-wrap"><table class="tlkt-table"><thead><tr><th class="tlkt-c" style="width:36px;">STT</th><th>' + esc(opts.nameLabel || STD_NAME) + '</th><th style="width:44%;">File đính kèm</th><th class="tlkt-c" style="width:90px;">Thao tác</th></tr></thead><tbody>' + body + '</tbody></table></div></div>';
-    };
+    }
     window.tlktOpenView = function (vid, i) { var l = VIEWS[vid]; if (l && l[i] && l[i].file) openFile(l[i].file); };
     window.tlktDownloadView = function (vid, i) {
         var l = VIEWS[vid]; var f = l && l[i] && l[i].file; if (!f) return;
@@ -319,9 +433,11 @@
     // Lấy lại tệp đã giữ (bộ nhớ phiên hiện tại); không có thì trả về null
     window.tlktBlob = function (id) { return (id && BLOBS[id]) || null; };
     // Ghi tên tài liệu kèm theo vào ghi chú lịch sử
+    // Ghi chú lịch sử chỉ ghi tên Tài liệu ban hành kèm theo (lịch sử hiển thị cho cả đơn vị khác); Tài liệu không ban hành kèm theo
+    // xem tại khối tài liệu của lần trình (tlktTagHistory / tlktInlineHtml áp quyền xem theo đơn vị)
     window.tlktNote = function (list) {
-        var names = (list || []).map(function (d) { return d.name || (d.file && d.file.name) || ''; }).filter(Boolean);
-        return names.length ? ' Tài liệu kèm theo: ' + names.join('; ') + '.' : '';
+        var names = (list || []).filter(function (d) { return d && scopeOf(d) === 'issued'; }).map(function (d) { return d.name || (d.file && d.file.name) || ''; }).filter(Boolean);
+        return names.length ? ' ' + T_ISSUED + ': ' + names.join('; ') + '.' : '';
     };
     // Gắn danh sách tài liệu vào mục lịch sử "Trình ..." mới nhất của hồ sơ luồng xử lý (để lịch sử mỗi lần trình hiển thị tài liệu của lần đó)
     window.tlktTagHistory = function (W, rec, list) {
@@ -331,14 +447,18 @@
         if (typeof W.upsertRecord === 'function') W.upsertRecord(rec);
     };
     // Danh sách tài liệu dạng dòng gọn (dùng trong Lịch sử trình ký)
-    window.tlktInlineHtml = function (list) {
-        var rows = (list || []).filter(function (d) { return d && (d.name || (d.file && d.file.name)); });
-        if (!rows.length) return '';
-        var vid = 'v' + (++viewSeq);
-        VIEWS[vid] = rows;
+    // Lịch sử trình ký: 02 nhóm Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo (nhóm không ban hành áp quyền xem theo đơn vị)
+    window.tlktInlineHtml = function (list, opts) {
+        var sp = window.tlktSplit(list, opts);
+        var grp = function (rows, title) {
+            if (!rows.length) return '';
+            var vid = 'v' + (++viewSeq);
+            VIEWS[vid] = rows;
+            return '<div style="margin-top:6px; font-size:12px; color:#475569;"><div><i class="fa-solid fa-paperclip"></i> ' + title + ':</div>'
+                + rows.map(function (d, i) { return '<div style="padding-left:16px; text-align:left;">' + (i + 1) + '. ' + (d.file ? '<a href="javascript:void(0)" data-admin-icon-normalized="1" style="font-size:12px; color:#2563eb;" title="Xem file" onclick="tlktOpenView(\'' + vid + '\',' + i + ')">' + esc(d.name || d.file.name) + '</a>' : esc(d.name)) + '</div>'; }).join('') + '</div>';
+        };
         css();
-        return '<div style="margin-top:6px; font-size:12px; color:#475569;"><div><i class="fa-solid fa-paperclip"></i> Tài liệu kèm theo:</div>'
-            + rows.map(function (d, i) { return '<div style="padding-left:16px; text-align:left;">' + (i + 1) + '. ' + (d.file ? '<a href="javascript:void(0)" data-admin-icon-normalized="1" style="font-size:12px; color:#2563eb;" title="Xem file" onclick="tlktOpenView(\'' + vid + '\',' + i + ')">' + esc(d.name || d.file.name) + '</a>' : esc(d.name)) + '</div>'; }).join('') + '</div>';
+        return grp(sp.issued, T_ISSUED) + grp(sp.internal, T_INTERNAL);
     };
 
     // ---------- Chuẩn hóa bảng tài liệu dựng riêng tại từng trang (tlktStd) ----------

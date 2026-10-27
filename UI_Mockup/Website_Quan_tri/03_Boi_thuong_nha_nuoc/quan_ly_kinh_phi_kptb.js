@@ -727,7 +727,9 @@ function kptbSgSetMethod(m) {
     // Stepper 2 bước chỉ hiển thị khi Ký số; Ký ngoài thu gọn (ẩn hẳn)
     const bar = kptbEl('kptbSgStepper');
     bar.style.display = 'flex'; bar.classList.toggle('is-collapsed', !on); bar.setAttribute('aria-hidden', on ? 'false' : 'true');
-    if (typeof tlktShow === 'function') tlktShow('kptbSg', on && !kptbSg.draft);
+    // Ký số: 02 khối Tài liệu ban hành / không ban hành kèm theo; Ký ngoài: chỉ khối ban hành kèm theo; tạo từ màn Tạo thông báo chi trả: tài liệu đã nhập tại màn tạo
+    if (typeof tlktMode === 'function') tlktMode('kptbSg', kptbSg.draft ? 'hidden' : (on ? 'online' : 'offline'));
+    else if (typeof tlktShow === 'function') tlktShow('kptbSg', on && !kptbSg.draft);
     kptbSgApplyMeta();
     kptbSgGoStep(1);
 }
@@ -966,7 +968,8 @@ function kptbSgIssueOffline(confirmed) {
     }
     if (!kptbCanSubmit(kptbSgItem())) { kptbCloseSign(); return; }
     const fromForm = !!kptbSg.draft;
-    const offAtt = fromForm ? (kptbSg.draft.kpcdForm.attachments || []) : [];
+    // Ký ngoài: chỉ Tài liệu ban hành kèm theo (tài liệu không ban hành kèm theo nhập tại màn tạo không lưu khi ban hành ngay)
+    const offAtt = fromForm ? (typeof tlktIssuedOnly === 'function' ? tlktIssuedOnly(kptbSg.draft.kpcdForm.attachments || []) : []) : (typeof tlktGet === 'function' ? tlktGet('kptbSg') : []);
     const item = kpcdTbCommit(kptbSgItem());
     const me = kptbMe();
     item.kptbNotice = { signMethod: 'Ký ngoài', signedFile: kptbSg.offFile.name, issuedAt: kptbNow(), issuedBy: me, attachments: offAtt };
@@ -1302,6 +1305,8 @@ function kptbView(id) {
     if (n) {
         const fileLink = n.signMethod === 'Ký ngoài' ? kpEsc(n.signedFile) : `<a href="javascript:void(0)" onclick="kptbViewNotice('${item.id}')">${kpEsc(n.signedFile || (n.docFile || {}).name || kptbDocBaseName(item) + '.doc')}</a>`;
         noticeBody = `<div class="kptb-dtl-grid">${it('Hình thức ký', n.signMethod === 'Ký ngoài' ? 'Ký ngoài' : 'Ký số trên hệ thống')}${n.signMethod !== 'Ký ngoài' ? it('Số, ký hiệu văn bản', kpEsc(n.docNo)) + it('Ngày văn bản', kpEsc(n.docDate)) : ''}${cash && n.signMethod !== 'Ký ngoài' ? it('Thời gian', kpEsc(n.time)) + it('Địa điểm', kpEsc(n.place)) : ''}${it('Văn bản', fileLink)}${n.digitalSign ? it('Ký số', `${kpEsc(kptbUserName(n.digitalSign.by))} - ${kpEsc(n.digitalSign.at)}`) : ''}</div>`;
+        // Tài liệu ban hành kèm theo / không ban hành kèm theo của Thông báo chi trả (khối rỗng / không có quyền xem thì không hiển thị)
+        if (typeof tlktViewHtml === 'function') noticeBody += tlktViewHtml(n.attachments || [], { boxClass: 'tlkt-view', titleClass: 'tlkt-sec-title' });
     }
     const supBody = item.kptbSupp ? `<div class="kptb-dtl-grid">${it('Ngày đề nghị', kpEsc(item.kptbSupp.at))}${it('Cán bộ đề nghị', kpEsc(kptbUserName(item.kptbSupp.by)))}${it('Văn bản đề nghị', kpEsc(item.kptbSupp.file))}</div><div class="kptb-dtl-item" style="margin-top:8px;"><div class="k">Nội dung đề nghị</div><div class="v" style="font-weight:500;">${kpEsc(item.kptbSupp.content || '-')}</div></div>` : '';
     const rejBody = item.status === KPTB_ST.REJECT && item.kptbReturned ? `<div class="kptb-dtl-grid">${it('Người từ chối', kpEsc(kptbUserName(item.kptbReturned.by)))}${it('Thời điểm', kpEsc(item.kptbReturned.at))}</div><div class="kptb-dtl-item" style="margin-top:8px;"><div class="k">Lý do từ chối</div><div class="v" style="font-weight:500;">${kpEsc(item.kptbReturned.reason)}</div></div>` : '';

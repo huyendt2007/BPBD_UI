@@ -30,8 +30,14 @@
     const RECEIVE_METHOD_CATALOG = 'DM_25';
     const RECEIVE_METHODS = { MOI_TRUONG_SO: 'Qua môi trường số (Dịch vụ Công)', TRUC_TIEP: 'Trực tiếp', MOT_CUA: 'Bộ phận Một cửa', BUU_CHINH: 'Qua dịch vụ bưu chính' };
     RECEIVE_METHODS.DVC = RECEIVE_METHODS.MOI_TRUONG_SO; // tên cũ, giữ để các trang đang dùng không lỗi
+    // [cdpd] Giá trị DM_25 do hệ thống gán (không có trong lựa chọn của form): Xác định CQGQBT, Cán bộ chủ động phục hồi danh dự, Cán bộ chủ động nhập
+    RECEIVE_METHODS.XAC_DINH_CQGQBT = 'Xác định CQGQBT';
+    RECEIVE_METHODS.CAN_BO_PHUC_HOI_DANH_DU = 'Cán bộ chủ động phục hồi danh dự khi có đủ thông tin';
+    RECEIVE_METHODS.CAN_BO_NHAP = 'Cán bộ chủ động nhập theo tố tụng/thi hành án';
     const RECEIVE_METHOD_ORDER = [RECEIVE_METHODS.MOI_TRUONG_SO, RECEIVE_METHODS.TRUC_TIEP, RECEIVE_METHODS.MOT_CUA, RECEIVE_METHODS.BUU_CHINH];
     const FORM_RECEIVE_METHODS = [RECEIVE_METHODS.TRUC_TIEP, RECEIVE_METHODS.BUU_CHINH];
+    // [cdpd] Đủ 07 giá trị DM_25 theo thứ tự trên hệ thống (hiển thị/lọc); RECEIVE_METHOD_ORDER giữ 04 giá trị cho lựa chọn trên form
+    const RECEIVE_METHOD_ALL = [RECEIVE_METHODS.MOT_CUA, RECEIVE_METHODS.XAC_DINH_CQGQBT, RECEIVE_METHODS.CAN_BO_PHUC_HOI_DANH_DU, RECEIVE_METHODS.MOI_TRUONG_SO, RECEIVE_METHODS.TRUC_TIEP, RECEIVE_METHODS.BUU_CHINH, RECEIVE_METHODS.CAN_BO_NHAP];
 
     const STATUS = {
         CHO_PHAN_CONG: 'Chờ phân công',
@@ -69,7 +75,7 @@
     // Danh sách Nội dung trình theo phân hệ (bộ lọc "Nội dung trình")
     const APPROVAL_KINDS = {
         XD: ['Yêu cầu bổ sung', 'Không thụ lý', KIND_KQXD],
-        YCBT: ['Tiếp nhận hồ sơ', 'Yêu cầu bổ sung', 'Không thụ lý', 'Cử người giải quyết bồi thường', 'Chuyển CQGQBT', 'Hoãn giải quyết bồi thường', 'Tạm đình chỉ giải quyết bồi thường', 'Tiếp tục giải quyết bồi thường', 'Đình chỉ giải quyết bồi thường', 'Quyết định GQBT', 'Hủy QĐ', 'Sửa chữa, bổ sung QĐ'],
+        YCBT: ['Tiếp nhận hồ sơ', 'Chủ động phục hồi danh dự', 'Yêu cầu bổ sung', 'Không thụ lý', 'Cử người giải quyết bồi thường', 'Chuyển CQGQBT', 'Hoãn giải quyết bồi thường', 'Tạm đình chỉ giải quyết bồi thường', 'Tiếp tục giải quyết bồi thường', 'Đình chỉ giải quyết bồi thường', 'Dừng giải quyết bồi thường', 'Quyết định GQBT', 'Hủy QĐ', 'Sửa chữa, bổ sung QĐ'],
         // Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường: chỉ gồm 02 Loại trình
         KP: ['Thông báo chi trả', 'QĐ tạm ứng kinh phí']
     };
@@ -679,6 +685,15 @@
             if (x) ['resultStatus', 'prevStatus'].forEach(f => { if (YCBT_OLD_STATUS[x[f]]) { x[f] = YCBT_OLD_STATUS[x[f]]; ch = true; } });
             // Loại trình cũ "Đình chỉ giải quyết" -> "Đình chỉ giải quyết bồi thường"
             if (x && x.kind === 'Đình chỉ giải quyết') { x.kind = 'Đình chỉ giải quyết bồi thường'; ch = true; }
+            // Loại trình cũ "Dừng giải quyết" -> "Dừng giải quyết bồi thường" (Trạng thái vụ việc "Dừng giải quyết" giữ nguyên)
+            if (x && x.kind === 'Dừng giải quyết') { x.kind = 'Dừng giải quyết bồi thường'; ch = true; }
+        });
+        (r.history || []).forEach(h => {
+            if (!h) return;
+            const note = String(h.note || '');
+            if (h.kind === 'Dừng giải quyết') { h.kind = 'Dừng giải quyết bồi thường'; ch = true; }
+            const nn = note.replace(/^Dừng giải quyết\. Trình /, 'Dừng giải quyết bồi thường. Trình ').replace(/văn bản: Dừng giải quyết\./, 'văn bản: Dừng giải quyết bồi thường.').replace(/^(Phê duyệt cấp cuối \([^)]*\)): Dừng giải quyết\./, '$1: Dừng giải quyết bồi thường.').replace(/^Dừng giải quyết: /, 'Dừng giải quyết bồi thường: ');
+            if (nn !== note) { h.note = nn; ch = true; }
         });
         return ch;
     }
@@ -711,6 +726,10 @@
         const add = n => { if (n && !out.some(f => f.name === n)) out.push({ name: n }); };
         const sd = rec && rec.approval && rec.approval.signDoc;
         if (sd) add(sd.signedFile || sd.file);
+        // Chỉ chuyển Tài liệu ban hành kèm theo của văn bản; Tài liệu không ban hành kèm theo (nội bộ đơn vị trình) không chuyển cho CQGQBT
+        const issuedOf = list => (list || []).filter(d => d && d.scope === 'issued').forEach(d => add((d.file && d.file.name) || d.name));
+        if (sd) issuedOf(sd.attachments);
+        if (rec && rec.offlineDoc) issuedOf(rec.offlineDoc.attachments);
         (rec.attachedDocs || []).forEach(d => add(d && d.file));
         (rec.vanBanCanCu || []).forEach(d => add(d && d.file));
         add(rec.procDecisionFile);
@@ -845,9 +864,26 @@
         readJson(KEY_RECORDS, []).forEach(r => { if (r) { add(r.maVuViec); add(r.code); add(r.vuViecLienQuan); } });
         Object.values(vuViecRegistry()).forEach(add);
         ['claimsList', 'btnn_gq_phdd_claims_v1', 'receptionClaimsList_v2026'].forEach(k => { const l = readJson(k, []); if (Array.isArray(l)) l.forEach(c => { if (c) { add(c.maVuViec); add(c.vuViecLienQuan); } }); });
+        // Hồ sơ Giải quyết YCBT đang nạp trong bộ nhớ (dữ liệu mẫu chưa ghi localStorage)
+        memClaims().forEach(c => { if (c) { add(c.maVuViec); add(c.vuViecLienQuan); } });
         const hwm = readJson(KEY_VUVIEC + '_hwm', {});
         Object.keys(hwm || {}).forEach(y => add(`VVBT-${y}-${String(hwm[y]).padStart(3, '0')}`));
         return set;
+    }
+    // Danh sách hồ sơ Giải quyết YCBT của trang đang mở (biến toàn cục claimsList - quan_ly_boi_thuong.html); trang khác: []
+    function memClaims() { try { return (typeof claimsList !== 'undefined' && Array.isArray(claimsList)) ? claimsList : []; } catch (e) { return []; } }
+    // Mã vụ việc riêng cho 01 hồ sơ BT- (dữ liệu mẫu): giữ mã đã đăng ký nếu không trùng hồ sơ BT- khác;
+    // không thì lấy preferred nếu chưa dùng, còn lại cấp mới theo sổ đăng ký. Gắn Mã hồ sơ với Mã vụ việc.
+    function uniqueVuViecFor(hoSoCode, preferred) {
+        const code = String(hoSoCode || '').trim();
+        if (!code) return '';
+        const reg = vuViecRegistry();
+        const others = vv => Object.keys(reg).some(k => k !== code && /^BT-/.test(k) && reg[k] === vv)
+            || memClaims().some(c => c && c.code && c.code !== code && /^BT-/.test(c.code) && c.maVuViec === vv);
+        const cur = reg[code];
+        if (isVuViecCode(cur) && !others(cur)) return cur;
+        const vv = isVuViecCode(preferred) && !others(preferred) && (preferred === cur || !allVuViecCodes().has(preferred)) ? preferred : nextVuViecCode();
+        return linkVuViec(code, vv);
     }
     function nextVuViecCode() {
         const year = new Date().getFullYear();
@@ -899,10 +935,13 @@
         const year = new Date().getFullYear();
         const list = readJson(KEY_RECORDS, []);
         let max = 0;
-        list.forEach(r => {
-            const m = String(r.code || '').match(new RegExp(`^${prefix}-${year}-(\\d+)$`));
-            if (m) max = Math.max(max, parseInt(m[1], 10));
-        });
+        const re = new RegExp(`^${prefix}-${year}-(\\d+)$`);
+        const see = c => { const m = String(c || '').match(re); if (m) max = Math.max(max, parseInt(m[1], 10)); };
+        list.forEach(r => { if (r) { see(r.code); see(r.claimCode); } });
+        // Hồ sơ mẫu chưa có bản ghi luồng: danh sách Giải quyết YCBT (đã lưu + đang nạp), sổ đăng ký Mã vụ việc
+        const cl = readJson('claimsList', []);
+        (Array.isArray(cl) ? cl : []).concat(memClaims()).forEach(c => { if (c) see(c.code); });
+        Object.keys(vuViecRegistry()).forEach(see);
         return `${prefix}-${year}-${String(max + 1).padStart(3, '0')}`;
     }
 
@@ -1289,19 +1328,40 @@
     }
     // Chuyển hồ sơ sang cơ quan khác: cơ quan nhận tiếp nhận hồ sơ tại Tiếp nhận hồ sơ, trạng thái Chờ phân công (bắt đầu lại từ bước tiếp nhận).
     // action.loaiYeuCau: Loại hồ sơ tại cơ quan nhận (mặc định Giải quyết YCBT; KTL_01 chuyển Bộ/Sở Tư pháp: Xác định CQGQBT). Giữ nguyên Mã vụ việc.
+    // Chuyển hồ sơ sang cơ quan khác: không chuyển tài liệu nội bộ - Tài liệu kèm theo khác trong quá trình xác minh (xmFiles, files của từng lần xác minh)
+    // và mọi tài liệu gắn scope 'internal'; tài liệu khác giữ nguyên
+    function stripInternalDocs(obj) {
+        const walk = o => {
+            if (Array.isArray(o)) { for (let i = o.length - 1; i >= 0; i--) { if (o[i] && typeof o[i] === 'object' && o[i].scope === 'internal') o.splice(i, 1); else walk(o[i]); } return; }
+            if (!o || typeof o !== 'object') return;
+            Object.keys(o).forEach(k => walk(o[k]));
+        };
+        const g = obj && obj.gqData;
+        if (g) {
+            if (Array.isArray(g.xmFiles)) g.xmFiles = [];
+            if (Array.isArray(g.xmHistory)) g.xmHistory.forEach(r => { if (r && Array.isArray(r.files)) r.files = []; });
+        }
+        walk(obj);
+        return obj;
+    }
     function performTransfer(rec, action) {
         const target = getUnit(action.targetUnitId);
         if (!target) return null;
         const loai = action.loaiYeuCau === REQUEST_TYPE_XD ? REQUEST_TYPE_XD : REQUEST_TYPE_YCBT;
-        const newCode = nextCode('BT');
+        // Mã hồ sơ theo phân hệ nhận: Xác định CQGQBT cấp XD-, Giải quyết YCBT cấp BT-
+        const newCode = nextCode(loai === REQUEST_TYPE_XD ? 'XD' : 'BT');
         const copy = JSON.parse(JSON.stringify(rec));
         ['routes', 'approval', 'history', 'returned', 'transfer', 'transferTo', 'chuTri', 'status', 'currentUnitId', 'code', 'id', 'appointedOfficers', 'thuLy', 'claimCode', 'seedKey', 'gqClaimId'].forEach(k => delete copy[k]);
         if (copy.gqData) ['ktlReasonCode', 'ktlReasonName', 'ktlDetail', 'ktlDraftDoc', 'transferRequest', 'rejectType', 'rejectReason', 'rejectOfficer', 'rejectDate', 'thongBaoThuLy'].forEach(k => delete copy.gqData[k]);
+        stripInternalDocs(copy);
         // Tài liệu chuyển kèm: văn bản Thông báo không thụ lý (Mẫu 04/BTNN) + tài liệu đính kèm khi chuyển + tài liệu hồ sơ
         const files = [];
         const addF = n => { if (n && !files.some(f => f.name === n)) files.push({ name: n }); };
         const dd = action.noticeDoc || (rec.approval && rec.approval.kind === 'Không thụ lý' ? rec.approval.draftDoc : null);
         if (dd) addF(dd.source === 'uploaded' ? dd.uploadedName : dd.generatedName);
+        // Chỉ Tài liệu ban hành kèm theo của văn bản Không thụ lý; Tài liệu không ban hành kèm theo không chuyển cho cơ quan nhận
+        const sdK = rec.approval && rec.approval.kind === 'Không thụ lý' ? rec.approval.signDoc : null;
+        ((action.issuedDocs || (sdK && sdK.attachments) || [])).filter(d => d && d.scope === 'issued').forEach(d => addF((d.file && d.file.name) || d.name));
         (action.files || []).forEach(f => addF(f && (f.name || f)));
         (rec.attachedDocs || []).forEach(d => addF(d && d.file));
         const via = action.mode ? `Không thụ lý (KTL_01) - ${KTL_TRANSFER_LABELS[action.mode] || ''}` : 'Chuyển CQGQBT';
@@ -1370,7 +1430,8 @@
     // ---------------- Xác định CQGQBT - Ký ngoài: cán bộ ban hành trực tiếp, KHÔNG trình Lãnh đạo ----------------
     // Văn bản đã ký & đóng dấu ngoài hệ thống (PDF). Kết quả xác định CQGQBT: hệ thống tự động chuyển CQGQBT ngay;
     // Yêu cầu bổ sung -> Yêu cầu bổ sung; Không thụ lý -> Không thụ lý. Chờ duyệt / Bị trả lại chỉ áp dụng cho Ký số.
-    function issueXdOffline(code, kind, file, reason) {
+    // attachments: Tài liệu ban hành kèm theo (Ký ngoài chỉ có khối ban hành kèm theo)
+    function issueXdOffline(code, kind, file, reason, attachments) {
         const rec = getRecord(code);
         const me = getCurrentUserId();
         if (!rec || rec.chuTri !== me) return { ok: false, message: 'Chỉ cán bộ xử lý được ban hành văn bản.' };
@@ -1378,7 +1439,7 @@
         const isKq = kind === 'Kết quả xác định CQGQBT';
         if (isKq && !xdTargetConfigured(rec)) return { ok: false, message: xdTargetNotConfiguredMsg(rec) };
         const at = nowText();
-        rec.offlineDoc = { kind, method: 'Ký ngoài', file, reason: reason || '', at, by: me };
+        rec.offlineDoc = { kind, method: 'Ký ngoài', file, reason: reason || '', at, by: me, attachments: Array.isArray(attachments) ? attachments : [] };
         rec.procDecisionFile = file;
         rec.approval = null;
         rec.returned = null;
@@ -2768,8 +2829,8 @@
         KEYS: { RECORDS: KEY_RECORDS, FLOW: KEY_FLOW, USER: KEY_USER, RECEPTION_CLAIMS: KEY_RECEPTION_CLAIMS },
         receptionPendingItems, receptionPendingCount, receptionSeeded,
         CATALOG_TYPE, STATUS, SUBMIT_KINDS, APPROVAL_KINDS, KTL_CATALOG_TYPE, DEFAULT_KTL_REASONS, XD_AUTHORITY_UNITS, REQUEST_TYPE_XD, REQUEST_TYPE_YCBT,
-        FLOW_TYPES, FLOW_TYPE_NAMES, FLOW_TYPE_ORDER, SOURCES, RECEIVE_METHODS, RECEIVE_METHOD_CATALOG, RECEIVE_METHOD_ORDER, FORM_RECEIVE_METHODS, UBND_TINH_STP,
-        flowRootIds, flowTypeOf, normalizeReceiveMethod, normalizeSource, nextVuViecCode, isVuViecCode, linkVuViec, unlinkVuViec, vuViecOf, listVuViec, xdViewOnlyStpRoots, isXdViewOnlyUser,
+        FLOW_TYPES, FLOW_TYPE_NAMES, FLOW_TYPE_ORDER, SOURCES, RECEIVE_METHODS, RECEIVE_METHOD_CATALOG, RECEIVE_METHOD_ORDER, RECEIVE_METHOD_ALL, FORM_RECEIVE_METHODS, UBND_TINH_STP,
+        flowRootIds, flowTypeOf, normalizeReceiveMethod, normalizeSource, nextVuViecCode, uniqueVuViecFor, isVuViecCode, linkVuViec, unlinkVuViec, vuViecOf, listVuViec, xdViewOnlyStpRoots, isXdViewOnlyUser,
         ORG_UNITS, USERS, DEFAULT_REQUEST_TYPES, KIND_KP_TB, KIND_KP_QDTU,
         getUnit, unitName, getChildren, getRootId, getAncestors, getDescendants, getRootUnits, unitTreeLabel, searchUnits, mountUnitTree,
         getUser, userName, userLabel, usersInUnitTree,
