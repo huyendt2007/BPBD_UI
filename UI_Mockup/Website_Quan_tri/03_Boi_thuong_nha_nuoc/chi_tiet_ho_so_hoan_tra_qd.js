@@ -350,8 +350,8 @@
         const off = r.method === 'offline';
         h += '<div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap; background:#eff6ff; border:1px solid #dbeafe; border-radius:8px; padding:10px 14px;">'
             + cell('Hình thức ký', off ? 'Ký ngoài' : 'Ký số trên hệ thống')
-            + cell('Số, ký hiệu văn bản', off ? '--' : esc(r.soKh || 'Chờ cấp số'))
-            + cell('Ngày văn bản', off ? '--' : esc(u.st === 'DONE' ? (r.issuedAt || r.ngay) : r.ngay || '--'))
+            + cell('Số, ký hiệu văn bản', off ? '-' : esc(r.soKh || 'Chờ cấp số'))
+            + cell('Ngày văn bản', off ? '-' : esc(u.st === 'DONE' ? (r.issuedAt || r.ngay) : r.ngay || '-'))
             + cell('Tệp văn bản Quyết định', qdFileCell(r, 'HT', i))
             + '</div>'
             + (u.st === 'CD' ? '<div style="font-size:13px; margin-top:8px;"><span style="color:#64748b;">Lãnh đạo được giao ký duyệt:</span> <strong>Cấp ' + (r.level + 1) + '/' + r.levels.length + ' - ' + esc(r.levels[r.level].unit) + ': ' + esc(leaderLabel(r, r.level)) + '</strong></div>' : '');
@@ -369,7 +369,7 @@
         let h = '<div>' + (typeof htPill === 'function' ? htPill(ctText(o.ct)) : esc(ctText(o.ct))) + '</div>';
         const r = o.qd2;
         if (r && ['BTC_MIEN', 'BTC_GIAM'].includes(o.ct) && r.reject) h += '<div class="ht-note" style="color:#b91c1c;">Lý do từ chối: ' + esc(r.reject.reason) + '</div>';
-        if (r && r.issuedAt) h += '<div class="ht-note">' + (baseKind(r.kind) === 'MIEN' ? 'QĐ miễn số: ' : 'QĐ giảm số: ') + esc(r.soKh || '--') + ' (' + esc(r.issuedAt) + ')</div>';
+        if (r && r.issuedAt) h += '<div class="ht-note">' + (baseKind(r.kind) === 'MIEN' ? 'QĐ miễn số: ' : 'QĐ giảm số: ') + esc(r.soKh || '-') + ' (' + esc(r.issuedAt) + ')</div>';
         return h + dcLine(o);
     }
 
@@ -422,17 +422,17 @@
         const sp = r.supp || {};
         // QĐ giảm: 03 số tiền theo lượt trình; dữ liệu cũ (chưa lưu số tiền): Bước 3 theo ý kiến của Hội đồng
         const gPhai = sp.phaiHT != null ? sp.phaiHT : (k.base ? null : (o.hd || 0)), gCon = sp.phaiHT != null ? sp.giam : (k.base ? (sp.giam || 0) : (o.giam || 0));
-        const tien = b === 'GIAM' ? item('Số tiền phải hoàn trả', gPhai != null ? money(gPhai) + ' đ' : '--') + item('Số tiền hoàn trả được giảm', gPhai != null ? money(sp.duocGiam != null ? sp.duocGiam : Math.max(0, gPhai - gCon)) + ' đ' : '--')
+        const tien = b === 'GIAM' ? item('Số tiền phải hoàn trả', gPhai != null ? money(gPhai) + ' đ' : '-') + item('Số tiền hoàn trả được giảm', gPhai != null ? money(sp.duocGiam != null ? sp.duocGiam : Math.max(0, gPhai - gCon)) + ' đ' : '-')
             + item('Số tiền còn phải hoàn trả', money(gCon) + ' đ') : item('Số tiền được miễn', money(sp.mien != null ? sp.mien : k.base ? Math.max(0, (o.total || 0) - (o.paid || 0)) : (o.hd || o.total || 0)) + ' đ');
-        const lyDo = item(b === 'GIAM' ? 'Lý do giảm' : 'Lý do miễn', esc(sp.lyDo || (b === 'GIAM' ? o.lyDoGiam : o.lyDoMien) || '--'));
+        const lyDo = item(b === 'GIAM' ? 'Lý do giảm' : 'Lý do miễn', esc(sp.lyDo || (b === 'GIAM' ? o.lyDoGiam : o.lyDoMien) || '-'));
         let st, body;
         if (r.issuedAt) {
             st = 'Đã ban hành';
-            body = item('Hình thức ký', r.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống') + item('Số, ký hiệu văn bản', esc(r.soKh || '--')) + item('Ngày Quyết định', esc(r.issuedAt)) + tien + lyDo + item('Tệp Quyết định', file(''));
+            body = item('Hình thức ký', r.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống') + item('Số, ký hiệu văn bản', esc(r.soKh || '-')) + item('Ngày Quyết định', esc(r.issuedAt)) + tien + lyDo + item('Tệp Quyết định', file(''));
         } else {
             const sub = (r.hist || []).find(h => h.type === 'submit');
             st = r.reject ? 'Bị trả lại' : 'Chờ duyệt';
-            body = tien + lyDo + item('Lãnh đạo được trình', esc(leaderLabel(r, r.level || 0))) + item('Thời điểm trình', esc(sub ? sub.at : (r.ngay || '--'))) + item('Tệp văn bản', file('Bản dự thảo'))
+            body = tien + lyDo + item('Lãnh đạo được trình', esc(leaderLabel(r, r.level || 0))) + item('Thời điểm trình', esc(sub ? sub.at : (r.ngay || '-'))) + item('Tệp văn bản', file('Bản dự thảo'))
                 + (r.reject ? item('Lý do từ chối', '<span style="color:#b91c1c;">' + esc(r.reject.reason) + '</span>') + item('Người từ chối', esc(r.reject.by)) + item('Thời điểm từ chối', esc(r.reject.at)) : '');
         }
         const old = (r.hist || []).slice(1);
@@ -476,7 +476,7 @@
             + item('Cán bộ', esc(ctx.officer ? ctx.officer.name : (ctx.list || []).map(o => o.name).join(', ')))
             + item('Đơn vị ban hành', esc(ctx.issuer || ctx.unit))
             + item('Hình thức ký', r.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống')
-            + (r.method === 'offline' ? '' : item('Số, ký hiệu văn bản', esc(r.soKh || '--')) + item('Ngày văn bản', esc(r.issuedAt || r.ngay || '--')))
+            + (r.method === 'offline' ? '' : item('Số, ký hiệu văn bản', esc(r.soKh || '-')) + item('Ngày văn bản', esc(r.issuedAt || r.ngay || '-')))
             + item('Tệp văn bản Quyết định', esc(r.fileName) + '<div style="margin-top:4px; font-weight:400;">' + fileLinks(r, kind, key) + '</div>')
             + '</div>' + (r.tlkt && r.tlkt.length && typeof tlktViewHtml === 'function' ? tlktViewHtml(r.tlkt, { ownerUnit: r.unit || '' }) : '');
         el('ht3ViewModal').classList.add('visible');
@@ -523,7 +523,7 @@
         recs.forEach((x, n) => {
             const d = x.d;
             const st = { CD: 'Chờ duyệt (QĐ đình chỉ) - Cấp ' + (d.level + 1) + '/' + d.levels.length + ': ' + leaderLabel(d, Math.min(d.level, d.levels.length - 1)), BTC: 'Bị trả lại (QĐ đình chỉ)', DONE: 'Đã ban hành' + (d.soKh ? ' số ' + d.soKh : '') + ' ngày ' + (d.issuedAt || '') }[d.st] || '';
-            let a = '--';
+            let a = '-';
             if (d.st === 'CD' && isLeader()) a = '<button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-primary" title="Ký duyệt" onclick="ht3Approve(\'DC\',' + x.k + ')"><i class="fa-solid fa-file-signature"></i></button> <button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-danger" title="Từ chối" onclick="ht3Reject(\'DC\',' + x.k + ')"><i class="fa-solid fa-ban"></i></button>';
             if (d.st === 'BTC' && act) a = '<button type="button" data-admin-icon-normalized="1" class="ht-btn-sm ht-btn-pri" onclick="ht3OpenSign(\'DC\',' + x.k + ')"><i class="fa-solid fa-paper-plane"></i> Trình ký lại</button>';
             h += '<tr><td style="text-align:center;">' + (n + 1) + '</td><td>' + d.names.map(esc).join('<br>') + '</td><td>' + (d.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống') + '</td><td>' + esc(st)
@@ -608,7 +608,7 @@
         recs.forEach((x, n) => {
             const d = x.d, kind = d.kind;
             const st = { CD: 'Chờ duyệt - Cấp ' + (d.level + 1) + '/' + d.levels.length + ': ' + leaderLabel(d, Math.min(d.level, d.levels.length - 1)), BTC: 'Bị trả lại', DONE: 'Đã ban hành' + (d.soKh ? ' số ' + d.soKh : '') + ' ngày ' + (d.issuedAt || '') }[d.st] || '';
-            let a = '--';
+            let a = '-';
             if (d.st === 'CD' && isLeader()) a = '<button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-primary" title="Ký duyệt" onclick="ht3Approve(\'' + kind + '\',' + x.k + ')"><i class="fa-solid fa-file-signature"></i></button> <button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-danger" title="Từ chối" onclick="ht3Reject(\'' + kind + '\',' + x.k + ')"><i class="fa-solid fa-ban"></i></button>';
             if (d.st === 'BTC' && act) a = '<button type="button" data-admin-icon-normalized="1" class="ht-btn-sm ht-btn-pri" onclick="ht3OpenSign(\'' + kind + '\',' + x.k + ')"><i class="fa-solid fa-paper-plane"></i> Trình ký lại</button>';
             h += '<tr><td style="text-align:center;">' + (n + 1) + '</td><td>' + esc(KIND[kind].doc) + ' (Mẫu ' + KIND[kind].mau + '/BTNN)</td><td>' + d.names.map(esc).join('<br>') + '</td><td>' + (d.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống') + '</td><td>' + esc(st)
@@ -633,7 +633,7 @@
                 + '<div style="font-weight:700; color:var(--primary-color); margin-bottom:8px;"><i class="fa-solid fa-file-contract"></i> Quyết định hoàn trả (Mẫu 36/BTNN)</div>' + qdBlock(u, i)
                 + '<div style="display:flex; justify-content:space-between; align-items:flex-end; gap:10px;"><div style="font-weight:700; color:var(--primary-color); margin-bottom:8px;"><i class="fa-solid fa-users"></i> Cán bộ của đơn vị</div>' + dcToolbar(u, i, list) + '</div>'
                 + '<table class="dense-table" style="width:100%;"><thead><tr>' + dcHeadCell(u, i, list) + '<th style="width:45px; text-align:center;">STT</th><th>Họ và tên</th><th style="width:90px;">Mức độ lỗi</th><th style="width:150px;">Giảm/Miễn hoàn trả</th><th style="width:140px;">Phương thức hoàn trả</th><th style="width:140px; text-align:right;">Số tiền cần hoàn trả (đ)</th><th style="width:130px; text-align:right;">Số tiền sau giảm (đ)</th><th style="width:230px;">Trạng thái</th><th style="min-width:160px; text-align:center; white-space:nowrap;">Thao tác</th></tr></thead><tbody>'
-                + list.map((x, k) => '<tr>' + dcCheckCell(x.o, x.idx, u, i) + '<td style="text-align:center;">' + (k + 1) + '</td><td><strong>' + esc(x.o.name) + '</strong><div style="font-size:12px; color:var(--text-muted);">' + esc(x.o.role || '') + '</div></td><td>' + esc(x.o.loi === 'Khác' ? (x.o.ykhdLoiKhac || 'Khác') : (x.o.loi || '--')) + '</td><td>' + esc(xlText(x.o)) + lyDoNote(x.o) + '</td><td style="white-space:nowrap;' + (xlCode(x.o) === 'MIEN' ? ' text-align:center;' : '') + '">' + (xlCode(x.o) === 'MIEN' ? '--' : esc((window.htMethod ? htMethod(x.o.refundMethod) : x.o.refundMethod) || '--')) + '</td><td style="text-align:right;">' + money(x.o.hd) + '</td><td style="text-align:right;">' + (xlCode(x.o) === 'GIAM' ? money(x.o.giam) : '--') + '</td><td>' + officerStatusCell(x.o, x.idx) + '</td><td class="ht-act-cell">' + actCell(x.o, x.idx, u) + '</td></tr>').join('')
+                + list.map((x, k) => '<tr>' + dcCheckCell(x.o, x.idx, u, i) + '<td style="text-align:center;">' + (k + 1) + '</td><td><strong>' + esc(x.o.name) + '</strong><div style="font-size:12px; color:var(--text-muted);">' + esc(x.o.role || '') + '</div></td><td>' + esc(x.o.loi === 'Khác' ? (x.o.ykhdLoiKhac || 'Khác') : (x.o.loi || '-')) + '</td><td>' + esc(xlText(x.o)) + lyDoNote(x.o) + '</td><td style="white-space:nowrap;' + (xlCode(x.o) === 'MIEN' ? ' text-align:center;' : '') + '">' + (xlCode(x.o) === 'MIEN' ? '-' : esc((window.htMethod ? htMethod(x.o.refundMethod) : x.o.refundMethod) || '-')) + '</td><td style="text-align:right;">' + money(x.o.hd) + '</td><td style="text-align:right;">' + (xlCode(x.o) === 'GIAM' ? money(x.o.giam) : '-') + '</td><td>' + officerStatusCell(x.o, x.idx) + '</td><td class="ht-act-cell">' + actCell(x.o, x.idx, u) + '</td></tr>').join('')
                 + '</tbody></table>' + dcBlock(u) + '</div></div>';
         });
         root.innerHTML = h;
@@ -782,7 +782,7 @@
                     const r = rows[o.name] || {};
                     return '<tr><td style="text-align:center;">' + (n + 1) + '</td><td><strong>' + esc(o.name) + '</strong><div style="font-size:12px; color:var(--text-muted);">' + esc(o.role || '') + '</div></td><td style="text-align:right;">' + money(o.total) + '</td><td style="text-align:right;">' + money(o.paid) + '</td><td style="text-align:right; font-weight:700;">' + money(conLaiOf(o)) + '</td>'
                         + (giam
-                            ? '<td><input type="text" id="ht3MgDuoc' + n + '" class="form-control" style="text-align:right;" placeholder="Nhập số tiền" value="' + (r.duocGiam ? money(r.duocGiam) : '') + '" oninput="ht3MoneyIn(this); ht3MgCalc(' + n + ')"><div id="ht3MgDuoc' + n + 'Err" class="gqx-err">' + REQ + '</div><div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">Tối đa ' + money(giamMaxOf(o)) + ' đ</div></td><td style="text-align:right;" id="ht3MgCon' + n + '">' + (r.duocGiam ? money(Math.max(0, (o.total || 0) - r.duocGiam)) : '--') + '</td>'
+                            ? '<td><input type="text" id="ht3MgDuoc' + n + '" class="form-control" style="text-align:right;" placeholder="Nhập số tiền" value="' + (r.duocGiam ? money(r.duocGiam) : '') + '" oninput="ht3MoneyIn(this); ht3MgCalc(' + n + ')"><div id="ht3MgDuoc' + n + 'Err" class="gqx-err">' + REQ + '</div><div style="font-size:11.5px; color:var(--text-muted); margin-top:2px;">Tối đa ' + money(giamMaxOf(o)) + ' đ</div></td><td style="text-align:right;" id="ht3MgCon' + n + '">' + (r.duocGiam ? money(Math.max(0, (o.total || 0) - r.duocGiam)) : '-') + '</td>'
                             : '<td style="text-align:right; font-weight:700;">' + money(conLaiOf(o)) + '</td>')
                         + '<td><textarea id="ht3MgLyDo' + n + '" class="form-control" rows="2" maxlength="2000" placeholder="' + (giam ? 'Nhập lý do giảm mức hoàn trả' : 'Nhập lý do miễn hoàn trả') + '" oninput="ht3Clr(\'ht3MgLyDo' + n + '\')">' + esc(r.lyDo || '') + '</textarea><div id="ht3MgLyDo' + n + 'Err" class="gqx-err">' + REQ + '</div></td></tr>';
                 }).join('') + '</tbody></table>';
@@ -898,7 +898,7 @@
         ht3Clr('ht3MgDuoc' + n);
         const o = S && S.ctx.list[n], c = el('ht3MgCon' + n); if (!o || !c) return;
         const d = parseInt(String(el('ht3MgDuoc' + n).value).replace(/\D/g, ''), 10) || 0;
-        c.innerText = d ? money(Math.max(0, (o.total || 0) - d)) : '--';
+        c.innerText = d ? money(Math.max(0, (o.total || 0) - d)) : '-';
     };
     // Số tiền còn phải hoàn trả = Số tiền phải hoàn trả - Số tiền hoàn trả được giảm (tự tính khi nhập)
     window.ht3GiamCalc = function () {

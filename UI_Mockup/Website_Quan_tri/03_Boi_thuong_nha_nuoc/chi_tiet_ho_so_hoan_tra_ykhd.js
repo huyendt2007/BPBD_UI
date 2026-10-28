@@ -330,7 +330,7 @@
             const o = x.o, xl = xlFull(o.xl);
             const hoan = o.ykhdDieuKienHoan ? ' <span class="badge" style="background:#fef9c3; color:#a16207; font-size:10.5px;">Hoãn hoàn trả</span>' : '';
             const dcb = o.dcPre ? ' <span class="badge" style="background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; font-size:10.5px;">Đình chỉ hoàn trả</span>' : '';
-            const acts = x.i < 0 ? '--' : htViewOfficerBtn(x.i)
+            const acts = x.i < 0 ? '-' : htViewOfficerBtn(x.i)
                 + (canEdit && !o.dcPre ? ' <button type="button" class="btn-action-square btn-primary" title="Sửa cán bộ" onclick="editOfficerInStep2(' + x.i + ')"><i class="fa-solid fa-pen-to-square"></i></button>'
                     + ' <button type="button" class="btn-action-square btn-danger" title="Xóa cán bộ" onclick="deleteOfficerInStep2(' + x.i + ')"><i class="fa-solid fa-trash-can"></i></button>' : '');
             // Giảm/Miễn hoàn trả: không giảm, không miễn hiển thị "-"; Giảm / Miễn kèm lý do
@@ -342,8 +342,8 @@
                 + '<td>' + esc(o.loi === 'Khác' ? (o.ykhdLoiKhac || 'Khác') : (o.loi || '')) + '</td>'
                 + '<td style="text-align:right; font-weight:600;">' + money(o.hd || o.total) + '</td>'
                 + '<td>' + esc(xlLabel(xl)) + lyDo + '</td>'
-                + '<td style="text-align:right;">' + (xl === 'Giảm mức hoàn trả' ? money(o.giam) : '--') + '</td>'
-                + '<td style="white-space:nowrap;' + (xl === 'Miễn hoàn trả' ? ' text-align:center;' : '') + '">' + esc(xl === 'Miễn hoàn trả' ? '--' : (htMethod(o.refundMethod) || '--')) + '</td>'
+                + '<td style="text-align:right;">' + (xl === 'Giảm mức hoàn trả' ? money(o.giam) : '-') + '</td>'
+                + '<td style="white-space:nowrap;' + (xl === 'Miễn hoàn trả' ? ' text-align:center;' : '') + '">' + esc(xl === 'Miễn hoàn trả' ? '-' : (htMethod(o.refundMethod) || '-')) + '</td>'
                 + (split ? '<td style="text-align:center;">' + (stText ? htPill(stText) : '') + '</td>' : '')
                 + (showAct ? '<td style="text-align:center; white-space:nowrap;">' + acts + '</td>' : '') + '</tr>';
         }).join('');
@@ -441,7 +441,7 @@
         }
         const yk = el('ht2YKienChung'), ykv = el('ht2YKienChungView');
         if (yk) yk.style.display = ro ? 'none' : '';
-        if (ykv) { ykv.style.display = ro ? 'block' : 'none'; ykv.innerText = activeDossier.ht2YKienChung || (yk && yk.value) || '--'; }
+        if (ykv) { ykv.style.display = ro ? 'block' : 'none'; ykv.innerText = activeDossier.ht2YKienChung || (yk && yk.value) || '-'; }
         const host = el('ht2Tlkt');
         if (host) {
             const list = activeDossier.ht2Tlkt || [];

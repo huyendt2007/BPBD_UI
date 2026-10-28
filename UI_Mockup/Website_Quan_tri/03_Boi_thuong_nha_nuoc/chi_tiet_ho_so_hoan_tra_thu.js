@@ -63,9 +63,9 @@
     }
     function methodCell(o) {
         const a = A();
-        if (o.ct === 'MIEN' || o.xl === 'MIEN') return '<td style="text-align:center;">--</td>';
+        if (o.ct === 'MIEN' || o.xl === 'MIEN') return '<td style="text-align:center;">-</td>';
         const m = window.htMethod ? window.htMethod(o.refundMethod) : o.refundMethod;
-        return '<td style="white-space:nowrap;">' + a.esc(m || '--') + '</td>';
+        return '<td style="white-space:nowrap;">' + a.esc(m || '-') + '</td>';
     }
     function statusCell(o) {
         const a = A();
@@ -99,7 +99,7 @@
             h += '<div class="card" style="' + a.unitCardStyle(u) + '">' + a.unitHeader(u, 4, a.unitBadge(u)) + '<div class="card-body"' + (a.unitCollapsed(4, u) ? ' style="display:none;"' : '') + '>'
                 + '<div style="font-size:13px; margin-bottom:10px;">Cán bộ ở giai đoạn thu tiền: <strong>' + list.length + '</strong> • Tổng phải thu: <strong>' + a.money(tong) + ' đ</strong> • Đã thu: <strong>' + a.money(daThu) + ' đ</strong> • Còn phải thu: <strong>' + a.money(Math.max(0, list.reduce((s, x) => s + (x.o.ct === 'THU' ? conLai(x.o) : 0), 0))) + ' đ</strong></div>'
                 + a.mgToolbar(u, ui, list) + '<table class="dense-table" style="width:100%;"><thead><tr>' + a.mgHeadCell(u, ui, list) + '<th style="width:45px; text-align:center;">STT</th><th>Họ và tên</th><th style="width:90px;">Mức độ lỗi</th><th style="width:100px;">Phương thức hoàn trả</th><th style="width:130px; text-align:right;">Số tiền phải hoàn trả (đ)</th><th style="width:120px; text-align:right;">Đã nộp (đ)</th><th style="width:120px; text-align:right;">Còn phải thu (đ)</th><th style="width:220px;">Trạng thái</th><th style="min-width:160px; text-align:center; white-space:nowrap;">Thao tác</th></tr></thead><tbody>'
-                + list.map((x, k) => '<tr>' + a.mgCheckCell(x.o, x.idx, u, ui) + '<td style="text-align:center;">' + (k + 1) + '</td><td><strong>' + a.esc(x.o.name) + '</strong><div style="font-size:12px; color:var(--text-muted);">' + a.esc(x.o.role || '') + '</div></td><td>' + a.esc(x.o.loi === 'Khác' ? (x.o.ykhdLoiKhac || 'Khác') : (x.o.loi || '--')) + '</td>' + methodCell(x.o)
+                + list.map((x, k) => '<tr>' + a.mgCheckCell(x.o, x.idx, u, ui) + '<td style="text-align:center;">' + (k + 1) + '</td><td><strong>' + a.esc(x.o.name) + '</strong><div style="font-size:12px; color:var(--text-muted);">' + a.esc(x.o.role || '') + '</div></td><td>' + a.esc(x.o.loi === 'Khác' ? (x.o.ykhdLoiKhac || 'Khác') : (x.o.loi || '-')) + '</td>' + methodCell(x.o)
                     + '<td style="text-align:right;">' + a.money(x.o.ct === 'MIEN' ? 0 : x.o.total) + '</td><td style="text-align:right;">' + a.money(x.o.paid) + '</td><td style="text-align:right; font-weight:700;">' + a.money(x.o.ct === 'THU' ? conLai(x.o) : 0) + '</td>'
                     + '<td>' + statusCell(x.o) + '</td><td class="ht-act-cell">' + actions(x.o, x.idx) + '</td></tr>').join('')
                 + '</tbody></table>' + a.mgBlock(u) + a.dcBlock(u) + '</div></div>';
@@ -129,10 +129,10 @@
         const a = A(), row = (k, v) => '<div class="info-item"><div class="info-label">' + k + '</div><div class="info-value" style="font-weight:700;">' + v + '</div></div>';
         // Xem chi tiết cán bộ: thông tin chung (mức độ lỗi, hình thức xử lý) và số tiền cần hoàn trả theo ý kiến Hội đồng
         const xl = window.htXlLabel ? window.htXlLabel(o.xl) : (o.xl || '');
-        const ext = full ? row('Mức độ lỗi', a.esc(o.loi === 'Khác' ? (o.ykhdLoiKhac || 'Khác') : (o.loi || '--'))) + row('Giảm/Miễn hoàn trả', a.esc(xl || '--'))
+        const ext = full ? row('Mức độ lỗi', a.esc(o.loi === 'Khác' ? (o.ykhdLoiKhac || 'Khác') : (o.loi || '-'))) + row('Giảm/Miễn hoàn trả', a.esc(xl || '-'))
             + row('Số tiền cần hoàn trả', a.money(o.hd || o.total) + ' đ') : '';
         return row('Cán bộ', a.esc(o.name) + '<div style="font-weight:400; font-size:12.5px;">' + a.esc(o.role || '') + ' - ' + a.esc(o.agency) + '</div>') + ext
-            + row('Phương thức hoàn trả', a.esc((window.htMethod ? window.htMethod(o.refundMethod) : o.refundMethod) || '--'))
+            + row('Phương thức hoàn trả', a.esc((window.htMethod ? window.htMethod(o.refundMethod) : o.refundMethod) || '-'))
             + row(full ? 'Số tiền phải nộp (sau giảm)' : 'Số tiền phải hoàn trả', a.money(o.total) + ' đ') + row('Đã nộp', a.money(o.paid) + ' đ')
             + row(full ? 'Còn phải nộp' : 'Còn phải thu', a.money(conLai(o)) + ' đ') + (o.refund > 0 ? row('Số tiền cần trả lại', a.money(o.refund) + ' đ') : '');
     }
@@ -166,7 +166,7 @@
             el('ht4Title').innerHTML = '<i class="fa-solid fa-circle-info"></i> Xem chi tiết cán bộ';
             const pays = o.payments || [];
             el('ht4Form').innerHTML = '<div style="font-weight:700; color:var(--primary-color); margin:4px 0 8px;"><i class="fa-solid fa-clock-rotate-left"></i> Các lần nộp tiền</div><table class="dense-table" style="width:100%;"><thead><tr><th style="width:45px; text-align:center;">STT</th><th style="width:110px;">Ngày nộp</th><th style="text-align:right; width:140px;">Số tiền (đ)</th><th>Người nhập</th><th style="width:150px;">Tài liệu kèm theo</th></tr></thead><tbody>'
-                + (pays.length ? pays.map((p, i) => '<tr><td style="text-align:center;">' + (i + 1) + '</td><td>' + a.esc(p.ngay) + '</td><td style="text-align:right;">' + a.money(p.amt) + '</td><td>' + a.esc(p.by) + '<div style="font-size:12px; color:var(--text-muted);">' + a.esc(p.at || '') + '</div></td><td>' + ((p.tlkt || []).map(t => a.esc(t.name)).join(', ') || '--') + '</td></tr>').join('') : '<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Chưa có đợt nộp tiền.</td></tr>')
+                + (pays.length ? pays.map((p, i) => '<tr><td style="text-align:center;">' + (i + 1) + '</td><td>' + a.esc(p.ngay) + '</td><td style="text-align:right;">' + a.money(p.amt) + '</td><td>' + a.esc(p.by) + '<div style="font-size:12px; color:var(--text-muted);">' + a.esc(p.at || '') + '</div></td><td>' + ((p.tlkt || []).map(t => a.esc(t.name)).join(', ') || '-') + '</td></tr>').join('') : '<tr><td colspan="5" style="text-align:center; color:var(--text-muted);">Chưa có đợt nộp tiền.</td></tr>')
                 + '</tbody></table>' + (o.refundDone ? '<div style="margin-top:12px; font-size:13px;">Đã trả lại cho cán bộ: <strong>' + a.money(o.refundDone.amt) + ' đ</strong> ngày ' + a.esc(o.refundDone.ngay) + ' - ' + a.esc(o.refundDone.by) + '</div>' : '');
             // Khối Quyết định miễn / giảm mức hoàn trả (nếu có), như popup Xem chi tiết cán bộ tại Bước 3
             if (typeof window.htQdBlockHtml === 'function') el('ht4Form').insertAdjacentHTML('beforeend', window.htQdBlockHtml(idx));
@@ -195,8 +195,8 @@
         const isMien = o.ct === 'MIEN', xl = window.htXlLabel ? window.htXlLabel(o.xl) : (o.xl || '');
         const hd = o.hd || 0;
         // Khối Thông tin hoàn trả (luôn hiển thị)
-        const info = [it('Họ và tên', a.esc(o.name)), it('Chức vụ', a.esc(o.role || '--')), it('Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại', a.esc(o.agency || '--')), it('Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương', a.esc(a.payUnitOf(o) || '--')),
-            it('Mức độ lỗi', a.esc(o.loi === 'Khác' ? (o.ykhdLoiKhac || 'Khác') : (o.loi || '--'))), it('Giảm/Miễn hoàn trả', a.esc(xl || '--')), it('Phương thức hoàn trả', a.esc(isMien ? '--' : ((window.htMethod ? window.htMethod(o.refundMethod) : o.refundMethod) || '--'))),
+        const info = [it('Họ và tên', a.esc(o.name)), it('Chức vụ', a.esc(o.role || '-')), it('Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại', a.esc(o.agency || '-')), it('Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương', a.esc(a.payUnitOf(o) || '-')),
+            it('Mức độ lỗi', a.esc(o.loi === 'Khác' ? (o.ykhdLoiKhac || 'Khác') : (o.loi || '-'))), it('Giảm/Miễn hoàn trả', a.esc(xl || '-')), it('Phương thức hoàn trả', a.esc(isMien ? '-' : ((window.htMethod ? window.htMethod(o.refundMethod) : o.refundMethod) || '-'))),
             it('Số tiền phải hoàn trả theo QĐ hoàn trả', m(hd))];
         if (giamIssued.length && !isMien) info.push(it('Số tiền hoàn trả được giảm', m(Math.max(0, hd - (o.total || 0)))), it('Số tiền còn phải hoàn trả', m(o.total)));
         if (isMien) info.push(it('Số tiền được miễn', m(Math.max(0, hd - (o.paid || 0)))));
@@ -218,7 +218,7 @@
         });
         rows.sort((x, y) => y.k - x.k);
         h += sec('fa-solid fa-clock-rotate-left', 'Lịch sử hoàn trả', '<table class="dense-table" style="width:100%; table-layout:fixed;"><thead><tr><th style="width:50px; text-align:center;">STT</th><th style="width:130px;">Thời điểm</th><th>Nội dung</th><th style="width:170px; text-align:right;">Số tiền</th><th style="width:190px;">Người thực hiện</th><th style="width:300px;">Tài liệu / chứng từ</th></tr></thead><tbody>'
-            + (rows.length ? rows.map((r, i) => '<tr><td style="text-align:center;">' + (i + 1) + '</td><td>' + a.esc(r.t || '') + '</td><td style="white-space:normal;">' + r.nd + '</td><td style="text-align:right;">' + r.tien + '</td><td style="white-space:normal;">' + r.by + '</td><td style="white-space:normal;">' + (r.f || '--') + '</td></tr>').join('') : '<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Chưa có lịch sử hoàn trả.</td></tr>')
+            + (rows.length ? rows.map((r, i) => '<tr><td style="text-align:center;">' + (i + 1) + '</td><td>' + a.esc(r.t || '') + '</td><td style="white-space:normal;">' + r.nd + '</td><td style="text-align:right;">' + r.tien + '</td><td style="white-space:normal;">' + r.by + '</td><td style="white-space:normal;">' + (r.f || '-') + '</td></tr>').join('') : '<tr><td colspan="6" style="text-align:center; color:var(--text-muted);">Chưa có lịch sử hoàn trả.</td></tr>')
             + '</tbody></table>');
         return h;
     };

@@ -2285,19 +2285,19 @@
                     </div>
                     <div class="info-item" style="grid-column: span 2;">
                         <div class="info-label">Trách nhiệm hoàn trả và mức hoàn trả</div>
-                        <div class="info-value" id="ykhdVTrachNhiem" style="white-space:pre-line;">—</div>
+                        <div class="info-value" id="ykhdVTrachNhiem" style="white-space:pre-line;">-</div>
                     </div>
                     <div class="info-item" style="grid-column: span 2;">
                         <div class="info-label">Giảm mức hoàn trả</div>
-                        <div class="info-value" id="ykhdVGiamMuc" style="white-space:pre-line;">—</div>
+                        <div class="info-value" id="ykhdVGiamMuc" style="white-space:pre-line;">-</div>
                     </div>
                     <div class="info-item" style="grid-column: span 2;">
                         <div class="info-label">Miễn hoàn trả</div>
-                        <div class="info-value" id="ykhdVMienHoanTra" style="white-space:pre-line;">—</div>
+                        <div class="info-value" id="ykhdVMienHoanTra" style="white-space:pre-line;">-</div>
                     </div>
                     <div class="info-item" style="grid-column: span 2;" id="vOfficerNoteWrap">
                         <div class="info-label">Thông tin mô tả khác</div>
-                        <div class="info-value" id="vOfficerNote">—</div>
+                        <div class="info-value" id="vOfficerNote">-</div>
                     </div>
                 </div>
 
@@ -6314,10 +6314,10 @@
                             trAdj.innerHTML = `
                                 <td style="text-align:center; font-weight:600;">${aIdx + 1}</td>
                                 <td style="text-align:center;">${typeBadge}</td>
-                                <td style="text-align:center; font-weight:600; color:var(--primary-color);">${adj.decisionNo || adj.qdNo || '—'}</td>
-                                <td style="text-align:center; font-size:12.5px; color:var(--text-muted);">${adj.decisionDate || adj.qdDate || '—'}</td>
+                                <td style="text-align:center; font-weight:600; color:var(--primary-color);">${adj.decisionNo || adj.qdNo || '-'}</td>
+                                <td style="text-align:center; font-size:12.5px; color:var(--text-muted);">${adj.decisionDate || adj.qdDate || '-'}</td>
                                 <td style="text-align:right; font-weight:700; color:var(--primary-color);">${contentText}</td>
-                                <td style="font-size:12.5px;">${adj.reason || '—'}</td>
+                                <td style="font-size:12.5px;">${adj.reason || '-'}</td>
                                 <td style="text-align:center;">
                                     ${adj.fileName ? `<a href="javascript:void(0)" class="action-link" onclick="viewAttachedFileMock('${adj.fileName}')">Xem file</a>` : '<span style="color:var(--text-muted); font-style:italic;">Không có file</span>'}
                                 </td>
@@ -7438,12 +7438,12 @@
                 document.getElementById('vOfficerAmtText').innerText = o.total ? docSoTien(o.total) : "Chưa nhập số tiền";
 
                 // Other description
-                document.getElementById('vOfficerNote').innerText = o.note && o.note.trim() ? o.note : "—";
+                document.getElementById('vOfficerNote').innerText = o.note && o.note.trim() ? o.note : "-";
 
                 // Ý kiến của Hội đồng theo từng cán bộ
                 [['ykhdVTrachNhiem', 'ykhdTrachNhiem'], ['ykhdVGiamMuc', 'ykhdGiamMuc'], ['ykhdVMienHoanTra', 'ykhdMienHoanTra']].forEach(([elId, key]) => {
                     const el = document.getElementById(elId);
-                    if (el) el.innerText = o[key] && String(o[key]).trim() ? o[key] : '—';
+                    if (el) el.innerText = o[key] && String(o[key]).trim() ? o[key] : '-';
                 });
 
                 // Postponement info
@@ -7997,11 +7997,11 @@
     <!-- Dữ liệu mẫu bổ sung phủ các trạng thái của Ma trận chuyển trạng thái (dùng chung màn Danh sách) -->
     <script src="ht_du_lieu_mau.js?v=20261028mg1"></script>
     <!-- Bước 1 / Bước 2 Ý kiến của Hội đồng, Stepper 04 bước, phạm vi người xem theo đơn vị -->
-    <script src="chi_tiet_ho_so_hoan_tra_ykhd.js?v=20261028loi"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_ykhd.js?v=20261028dash"></script>
     <!-- Bước 3: trình ký 02 tầng tại đơn vị (QĐ hoàn trả Mẫu 36; QĐ miễn Mẫu 38 / QĐ giảm Mẫu 37; QĐ đình chỉ Mẫu 39 cấp cán bộ) -->
-    <script src="chi_tiet_ho_so_hoan_tra_qd.js?v=20261028mg1"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_qd.js?v=20261028dash"></script>
     <!-- Bước 4: thu tiền hoàn trả theo phần đơn vị (nộp tiền nhiều đợt, miễn / giảm bổ sung, trả lại tiền) -->
-    <script src="chi_tiet_ho_so_hoan_tra_thu.js?v=20261028mg1"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_thu.js?v=20261028dash"></script>
     <!-- Thanh giả lập người dùng dùng chung màn Danh sách / Chi tiết, Khôi phục dữ liệu mẫu -->
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
     <script src="ht_mock_role_bar.js?v=20261028tl1"></script>
