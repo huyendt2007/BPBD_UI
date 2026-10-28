@@ -1,13 +1,13 @@
 /*
  * Popup Trình ký Quyết định tiếp tục giải quyết bồi thường (prefix ttgq, Mẫu số 23/BTNN) - Giải quyết yêu cầu bồi thường
- * Mở từ Thao tác khác "Tiếp tục giải quyết" (vụ việc Hoãn giải quyết / Tạm đình chỉ) hoặc "Cập nhật" hồ sơ Bị từ chối có Loại trình "Tiếp tục giải quyết bồi thường".
+ * Mở từ Thao tác khác "Tiếp tục giải quyết" (vụ việc Hoãn giải quyết / Tạm đình chỉ) hoặc "Cập nhật" hồ sơ Bị trả lại có Loại trình "Tiếp tục giải quyết bồi thường".
  * Bố cục giống Popup Không thụ lý / Hoãn giải quyết (quan_ly_boi_thuong_hgq.js):
  * - Bước 1: Hình thức ký (Ký số trên hệ thống | Ký ngoài (Ban hành trực tiếp)), Tệp văn bản trình ký (Sinh văn bản theo mẫu 23/BTNN | Tải lên từ máy),
  *   khối Số / Ngày QĐ hoãn hoặc tạm đình chỉ (mọi hình thức ký), khối Thông tin điền vào Mẫu 23/BTNN (Số, ký hiệu văn bản; Ngày văn bản; Căn cứ (4) nhập tự do; Nơi nhận), Tài liệu kèm theo (chỉ Ký số)
  *   -> Tiếp tục -> Bước 2: Kéo ô ký & chọn Lãnh đạo (Ký nháy theo Cấu hình luồng xử lý), Nội dung trình -> Trình Lãnh đạo
  * - Số / Ngày QĐ hoãn hoặc tạm đình chỉ: tự điền theo Quyết định hoãn / tạm đình chỉ đã ban hành của vụ việc (dữ liệu lưu khi ban hành tại hgq / hgqt); chưa có thì để trống, bắt buộc nhập
  * - Trình: vụ việc "Chờ duyệt", Loại trình "Tiếp tục giải quyết bồi thường"; cấp cuối Ký duyệt -> trạng thái trước khi Hoãn / Tạm đình chỉ (specialStatusPreviousStatus);
- *   Từ chối -> "Bị từ chối" (Cập nhật -> mở lại popup, điền lại dữ liệu lần trình trước)
+ *   Từ chối -> "Bị trả lại" (Cập nhật -> mở lại popup, điền lại dữ liệu lần trình trước)
  * - Ký ngoài: tải PDF đã ký -> xác nhận -> ban hành trực tiếp, vụ việc khôi phục ngay trạng thái trước
  * - Chỉ áp dụng nhánh Giải quyết bồi thường thiệt hại; nhánh Phục hồi danh dự (phddStatus) giữ nguyên
  * Dùng tiện ích của quan_ly_boi_thuong.html (gqW, gqClaim, gqRecord, gqSubmit, gqSign*, ktlx*, tlktGqRestore, tlktGqExtra), hgq* (quan_ly_boi_thuong_hgq.js) và dcgqHeadTitle (quan_ly_boi_thuong_dcgq.js).
@@ -144,13 +144,13 @@ function ttgqEnsureModal() {
 }
 
 // ---------- Mở / đóng ----------
-// Mở từ Thao tác khác "Tiếp tục giải quyết" (Hoãn giải quyết / Tạm đình chỉ) hoặc "Cập nhật" hồ sơ Bị từ chối có Loại trình "Tiếp tục giải quyết bồi thường"
+// Mở từ Thao tác khác "Tiếp tục giải quyết" (Hoãn giải quyết / Tạm đình chỉ) hoặc "Cập nhật" hồ sơ Bị trả lại có Loại trình "Tiếp tục giải quyết bồi thường"
 function openTtgqModal(claimId) {
     var claim = gqClaim(claimId);
     if (!claim) return;
     var W = gqW();
     var rec = gqRecord(claim);
-    var prev = rec && rec.status === 'Bị từ chối' && rec.approval && rec.approval.kind === TTGQ_KIND ? rec.approval : null;
+    var prev = rec && rec.status === 'Bị trả lại' && rec.approval && rec.approval.kind === TTGQ_KIND ? rec.approval : null;
     var sd = (prev && prev.signDoc) || {};
     var loai = prev ? (sd.loai || 'hgq') : ttgqLoaiOfStatus(ttgqStatusOf(claim));
     if (!loai) { showToast('Chỉ tiếp tục giải quyết vụ việc ở trạng thái Hoãn giải quyết hoặc Tạm đình chỉ.', 'error'); return; }
@@ -169,7 +169,7 @@ function openTtgqModal(claimId) {
     ttgqEl('ttgqClaimCode').innerText = hgqVvCode(claim) || '--';
     ttgqEl('ttgqClaimNYC').innerText = getClaimRequesterName(claim) || '--';
     ttgqEl('ttgqClaimAgency').innerText = claim.agency || '--';
-    ttgqEl('ttgqClaimStatus').innerText = prev ? 'Bị từ chối (' + L.status + ')' : L.status;
+    ttgqEl('ttgqClaimStatus').innerText = prev ? 'Bị trả lại (' + L.status + ')' : L.status;
     ttgqEl('ttgqRestoreNote').innerText = ttgqS.restore;
     // Nhãn Số / Ngày QĐ theo loại quyết định trước
     ttgqEl('ttgqPrevSecTitle').innerText = 'Quyết định ' + L.label;
@@ -429,7 +429,7 @@ function ttgqApplyResult(claim, d, method, file, oldStatus) {
 // Gọi từ gqApplyRecord khi vụ việc nhận trạng thái mới từ kho luồng (cấp cuối Ký duyệt phiếu trình "Tiếp tục giải quyết bồi thường")
 function ttgqOnApplied(c, r, st) {
     var a = r && r.approval;
-    if (!a || a.kind !== TTGQ_KIND || st === 'Chờ duyệt' || st === 'Bị từ chối') return;
+    if (!a || a.kind !== TTGQ_KIND || st === 'Chờ duyệt' || st === 'Bị trả lại') return;
     var sd = a.signDoc || {};
     ttgqApplyResult(c, sd, 'Ký số', sd.file || '', (TTGQ_LOAI[sd.loai] || TTGQ_LOAI.hgq).status);
 }

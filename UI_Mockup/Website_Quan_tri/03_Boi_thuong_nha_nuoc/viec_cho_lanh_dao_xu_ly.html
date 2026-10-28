@@ -283,13 +283,13 @@
 
     <div id="toast" class="toast-notif"></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261027s35"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261028tl1"></script>
     <!-- Màn Ký duyệt / Từ chối dùng chung (Xác định CQGQBT): bố cục 2 vùng + khối Tài liệu kèm theo chỉ đọc -->
     <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
-    <script src="btnn_lanh_dao_actions.js?v=20261023kdtc"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261028tl1"></script>
     <!-- Loại trình "Phiếu tiếp nhận" (Mẫu 02/BTNN) - Tiếp nhận hồ sơ: Ký duyệt / Từ chối -->
-    <script src="tiep_nhan_ptn.js?v=20261027ptn3"></script>
+    <script src="tiep_nhan_ptn.js?v=20261028tl1"></script>
     <script>
         const WF = BTNN_WF;
         const WT = WF.WORK_TYPES;
@@ -322,7 +322,7 @@
             return `<span class="work-badge" style="background:${s[0]}; color:${s[1]};"><i class="fa-solid ${s[2]}"></i> ${esc(type)}</span>`;
         }
         function kpStatusBadge(st) {
-            const c = st === 'Chờ duyệt' ? ['#fef9c3', '#a16207'] : (st === 'Bị từ chối' ? ['#fee2e2', '#991b1b'] : (st === 'Chờ chi trả' ? ['#e0f2fe', '#0369a1'] : ['#dcfce7', '#15803d']));
+            const c = st === 'Chờ duyệt' ? ['#fef9c3', '#a16207'] : (st === 'Bị trả lại' ? ['#fee2e2', '#991b1b'] : (st === 'Chờ chi trả' ? ['#e0f2fe', '#0369a1'] : ['#dcfce7', '#15803d']));
             return `<span class="badge wf-badge" style="background:${c[0]}; color:${c[1]}; border:1px solid ${c[1]}33; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:600; white-space:nowrap;">${esc(st)}</span>`;
         }
 
@@ -471,7 +471,7 @@
                     html += `<div class="sec-title">II. Cử người giải quyết bồi thường</div><div class="info-grid">
                         ${row('Cơ quan giải quyết bồi thường', esc(WF.unitName(rec.rootUnitId)))}
                         ${row('Đơn vị cử người giải quyết', esc(WF.unitName(WF.thuLyUnitOf(rec))))}
-                        ${rec.status === 'Bị từ chối' && rec.returned ? row('Lý do bị từ chối', esc(rec.returned.reason || '--')) : ''}
+                        ${rec.status === 'Bị trả lại' && rec.returned ? row('Lý do bị từ chối', esc(rec.returned.reason || '--')) : ''}
                         ${row('Cán bộ tiếp nhận hồ sơ', rec.chuTri && !tl ? esc(WF.userLabel(rec.chuTri)) : (tl && tl.officers ? tl.officers.map(id => esc(WF.userLabel(id))).join('<br>') : '--'))}
                         ${tl && tl.rejected ? row('Không thụ lý', esc((rec.gqData && rec.gqData.rejectReason) || '--')) : ''}
                         ${tl && tl.note ? row('Ý kiến chỉ đạo', esc(tl.note)) : ''}
@@ -516,7 +516,7 @@
             decisionMode = mode === 'approve' ? 'kp-approve' : 'kp-reject';
             const kindText = WF.isAdvanceProposal(p) ? 'Đề nghị tạm ứng' : 'Đề nghị cấp kinh phí bồi thường';
             document.getElementById('decTitle').innerHTML = mode === 'approve' ? `<i class="fa-solid fa-circle-check"></i> Ký duyệt ${esc(kindText.toLowerCase())} ${esc(p.code)}` : `<i class="fa-solid fa-circle-xmark" style="color:#dc2626;"></i> Từ chối ${esc(kindText.toLowerCase())} ${esc(p.code)}`;
-            document.getElementById('decContext').innerHTML = `<div><strong>${esc(kindText)}:</strong> ${esc(p.code)} - Vụ việc ${esc(p.ycbtCode)} - ${esc(p.nycName || '--')}</div><div style="margin-top:4px;"><strong>Số tiền:</strong> ${(Number(p.amount) || 0).toLocaleString('vi-VN')} đ - <strong>Nguồn:</strong> ${esc(p.source || '--')}</div><div class="hint">${mode === 'approve' ? 'Sau khi ký duyệt, đề nghị chuyển [Chờ chi trả].' : 'Sau khi từ chối, đề nghị chuyển [Bị từ chối] cho cán bộ lập đề nghị.'}</div>`;
+            document.getElementById('decContext').innerHTML = `<div><strong>${esc(kindText)}:</strong> ${esc(p.code)} - Vụ việc ${esc(p.ycbtCode)} - ${esc(p.nycName || '--')}</div><div style="margin-top:4px;"><strong>Số tiền:</strong> ${(Number(p.amount) || 0).toLocaleString('vi-VN')} đ - <strong>Nguồn:</strong> ${esc(p.source || '--')}</div><div class="hint">${mode === 'approve' ? 'Sau khi ký duyệt, đề nghị chuyển [Chờ chi trả].' : 'Sau khi từ chối, đề nghị chuyển [Bị trả lại] cho cán bộ lập đề nghị.'}</div>`;
             document.getElementById('decLabel').innerHTML = mode === 'approve' ? 'Ý kiến ký duyệt' : 'Lý do từ chối<span class="required">*</span>';
             document.getElementById('decNote').placeholder = mode === 'approve' ? 'Nhập ý kiến ký duyệt...' : 'Nhập lý do từ chối...';
             document.getElementById('decNote').value = '';
@@ -609,7 +609,7 @@
             const xdSign = '';
             const lastStatus = isXdKq ? 'Đã chuyển CQGQBT' : (a.resultStatus || WF.SUBMIT_KINDS[a.kind] || a.prevStatus || '');
             const xdAuto = isXdKq ? ` Hệ thống tự động chuyển hồ sơ đến ${WF.unitName(WF.xdTargetUnitId(rec))}.` : '';
-            const after = mode === 'approve' ? (isLast ? `Cấp phê duyệt cuối cùng.${xdSign} Sau khi ${verb}, hồ sơ chuyển [${lastStatus}].${xdAuto}` : `Sau khi ${verb}, hồ sơ chuyển ${WF.unitName(a.path[a.level + 1])} ${verb}${isXd ? ' (cấp này không ký số văn bản)' : ''}.`) : `Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị từ chối] cho cán bộ chủ trì.`;
+            const after = mode === 'approve' ? (isLast ? `Cấp phê duyệt cuối cùng.${xdSign} Sau khi ${verb}, hồ sơ chuyển [${lastStatus}].${xdAuto}` : `Sau khi ${verb}, hồ sơ chuyển ${WF.unitName(a.path[a.level + 1])} ${verb}${isXd ? ' (cấp này không ký số văn bản)' : ''}.`) : `Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị trả lại] cho cán bộ chủ trì.`;
             document.getElementById('decTitle').innerHTML = mode === 'approve' ? `<i class="fa-solid fa-circle-check"></i> ${Verb} hồ sơ ${esc(code)}` : `<i class="fa-solid fa-circle-xmark" style="color:#dc2626;"></i> Từ chối phê duyệt hồ sơ ${esc(code)}`;
             document.getElementById('decContext').innerHTML = WF.renderDraftDocHtml(rec) + `<div><strong>Nội dung trình:</strong> ${esc(a.kind)} - ${esc(WF.userName(a.submittedBy))}</div>${a.content ? `<div class="muted">${esc(a.content)}</div>` : ''}<div style="margin-top:6px;"><strong>Cấp phê duyệt:</strong> ${a.level + 1}/${a.path.length} - ${esc(WF.unitName(a.path[a.level]))}</div><div class="hint">${esc(after)}</div>`;
             document.getElementById('decLabel').innerHTML = mode === 'approve' ? `Ý kiến ${verb}` : 'Lý do từ chối phê duyệt<span class="required">*</span>';

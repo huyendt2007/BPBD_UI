@@ -91,7 +91,7 @@ const LEGACY_SEED = [
         linhVuc: "TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ",
         hanhVi: "Phong tỏa tài khoản tiết kiệm ngân hàng trái pháp luật của Chi cục THADS trong thời gian giải quyết tranh chấp.",
         hinhThucNhan: "Phương thức điện tử",
-        status: "Bị từ chối",
+        status: "Không thụ lý",
         attachedFile: "Van_ban_uy_quyen_kem_don.pdf",
         procBasis: "",
         procTargetAgency: "",
@@ -308,7 +308,7 @@ const LEGACY_SEED = [
         linhVuc: "TRONG HOẠT ĐỘNG TỐ TỤNG HÀNH CHÍNH",
         hanhVi: "Quyết định xử phạt hành chính thu hồi đất dự án đầu tư sai luật của UBND thành phố.",
         hinhThucNhan: "Hồ sơ giấy",
-        status: "Bị từ chối",
+        status: "Không thụ lý",
         attachedFile: "Don_de_nghi_kem_ban_an.pdf",
         procBasis: "",
         procTargetAgency: "",
@@ -1023,9 +1023,8 @@ function migrateLegacySeed() {
             routes: [], approval: null, receivedAt: rec.receivedAt || rec.date,
             history: [{ at: (rec.date || '') , userId: 'canbonv', userName: 'Nguyễn Văn Cán Bộ', action: 'Tạo yêu cầu', note: `Trạng thái: ${rec.status}.` }]
         });
-        // Dữ liệu mẫu cũ: "Bị từ chối" = Không thụ lý (không có lượt Lãnh đạo từ chối); "Bị trả lại" = Lãnh đạo từ chối -> "Bị từ chối"
-        if (rec.status === 'Bị từ chối' && !rec.returned) { rec.rejectionReason = rec.rejectionReason || rec.procReason; rec.status = XD_ST.KTL; }
-        if (rec.status === 'Bị trả lại') rec.status = XD_ST.BI_TRA_LAI;
+        // Dữ liệu mẫu cũ Không thụ lý: lý do không thụ lý lấy theo Lý do xử lý
+        if (rec.status === XD_ST.KTL && !rec.returned) rec.rejectionReason = rec.rejectionReason || rec.procReason;
         records.push(rec);
     });
     BTNN_WF.saveRecords(records);
@@ -1037,7 +1036,7 @@ function getMe() { return BTNN_WF.getCurrentUserId(); }
 // ===== 02 tab Chờ xử lý / Đã xử lý =====
 // - Cán bộ xử lý: Chờ xử lý = hồ sơ còn bước xử lý; Đã xử lý = Không thụ lý, Đã chuyển CQGQBT.
 // - Lãnh đạo: Chờ xử lý = hồ sơ Chờ duyệt Lãnh đạo được giao ở cấp phê duyệt hiện hành; Đã xử lý = hồ sơ Lãnh đạo đã Phê duyệt / Ký duyệt / Từ chối phê duyệt.
-const XD_ST = { CHO_TIEP_NHAN: 'Chờ tiếp nhận', XAC_MINH: 'Xác minh CQGQBT', CHO_DUYET: 'Chờ duyệt', BI_TRA_LAI: 'Bị từ chối', YCBS: 'Yêu cầu bổ sung', KTL: 'Không thụ lý', DA_CHUYEN: 'Đã chuyển CQGQBT' };
+const XD_ST = { CHO_TIEP_NHAN: 'Chờ tiếp nhận', XAC_MINH: 'Xác minh CQGQBT', CHO_DUYET: 'Chờ duyệt', BI_TRA_LAI: 'Bị trả lại', YCBS: 'Yêu cầu bổ sung', KTL: 'Không thụ lý', DA_CHUYEN: 'Đã chuyển CQGQBT' };
 const XD_PENDING_STATES = [XD_ST.CHO_TIEP_NHAN, XD_ST.XAC_MINH, XD_ST.CHO_DUYET, XD_ST.BI_TRA_LAI, XD_ST.YCBS];
 const XD_DONE_STATES = [XD_ST.KTL, XD_ST.DA_CHUYEN];
 // Nội dung trình của hồ sơ Xác định CQGQBT (dòng phụ dưới trạng thái Chờ duyệt / Bị trả lại)
@@ -1810,7 +1809,7 @@ function statusBadgeClass(status) {
         case 'Yêu cầu bổ sung': return 'badge-warning';
         case 'Xác minh CQGQBT': return 'badge-verifying';
         case 'Chờ duyệt': return 'badge-approval';
-        case 'Bị từ chối':
+        case 'Bị trả lại':
         case 'Bị trả lại': return 'badge-returned';
         case 'Không thụ lý': return 'badge-rejected';
         case 'Đã chuyển CQGQBT': return 'badge-transfer';

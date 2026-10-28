@@ -3,11 +3,11 @@
  * Thay thao tác "In Phiếu tiếp nhận" cũ. Nạp tại tiep_nhan_ycbt.html (cán bộ trình ký, màn chi tiết) và
  * viec_cho_lanh_dao_xu_ly.html (Lãnh đạo Ký duyệt / Từ chối).
  * - Điều kiện: hồ sơ Nguồn Tiếp nhận mới, Hình thức tiếp nhận Trực tiếp / Qua dịch vụ bưu chính; người thao tác là Cán bộ tiếp nhận hồ sơ;
- *   Phiếu tiếp nhận chưa trình hoặc Bị từ chối.
+ *   Phiếu tiếp nhận chưa trình hoặc Bị trả lại.
  * - Popup Trình ký Phiếu tiếp nhận (bố cục như Trình ký QĐ tạm ứng - Mẫu 07): Hình thức ký Ký số trên hệ thống (02 bước, trình Lãnh đạo
  *   các cấp theo luồng) / Ký ngoài (Ban hành văn bản ngay); Nguồn tệp Sinh văn bản theo mẫu 02/BTNN / Tải lên từ máy;
  *   Tài liệu kèm theo 02 khối (tlktMount).
- * - Trạng thái Phiếu tiếp nhận: Chờ duyệt / Bị từ chối / Đã ban hành. Không thay đổi trạng thái, luồng phân công của hồ sơ.
+ * - Trạng thái Phiếu tiếp nhận: Chờ duyệt / Bị trả lại / Đã ban hành. Không thay đổi trạng thái, luồng phân công của hồ sơ.
  * - Lưu localStorage "btnnPhieuTiepNhan_v1" theo Mã hồ sơ; lịch sử ghi trong phiếu, hiển thị gộp vào Lịch sử xử lý của màn chi tiết.
  * - Lãnh đạo: bổ sung công việc Loại trình "Phiếu tiếp nhận" vào BTNN_WF.getLeaderWork (source 'ptn').
  * - Dữ liệu mẫu: merge theo Mã hồ sơ, PTN_SEED_VER.
@@ -230,7 +230,7 @@ const KEY = 'btnnPhieuTiepNhan_v1';
 const SEED_KEY = 'btnnPtnSeedVersion';
 const PTN_SEED_VER = '20261027ptn2';
 const KIND = 'Phiếu tiếp nhận'; // Loại trình tại màn Việc chờ Lãnh đạo xử lý
-const ST = { REVIEW: 'Chờ duyệt', REJECT: 'Bị từ chối', DONE: 'Đã ban hành' };
+const ST = { REVIEW: 'Chờ duyệt', REJECT: 'Bị trả lại', DONE: 'Đã ban hành' };
 const RM = W.RECEIVE_METHODS;
 const METHODS = [RM.TRUC_TIEP, RM.BUU_CHINH];
 const MSG_REQ = 'Đây là trường bắt buộc'; // MSG-ERR-VAL-001
@@ -296,7 +296,7 @@ function isReceiver(item) {
     const u = W.getCurrentUser();
     return !!item && !!u && (item.receivedBy || '') === u.name;
 }
-// Trình ký: Cán bộ tiếp nhận hồ sơ; Phiếu tiếp nhận chưa trình hoặc Bị từ chối
+// Trình ký: Cán bộ tiếp nhận hồ sơ; Phiếu tiếp nhận chưa trình hoặc Bị trả lại
 function canSubmit(item) {
     if (!eligible(item) || !isReceiver(item)) return false;
     const p = get(item.code);
@@ -314,7 +314,7 @@ function denyReason(item) {
 function gridButtonHtml(item, offStyle) {
     const ok = canSubmit(item);
     const p = item ? get(item.code) : null;
-    const title = ok ? (p && p.status === ST.REJECT ? 'Trình ký lại Phiếu tiếp nhận (Bị từ chối)' : 'Trình ký Phiếu tiếp nhận') : denyReason(item);
+    const title = ok ? (p && p.status === ST.REJECT ? 'Trình ký lại Phiếu tiếp nhận (Bị trả lại)' : 'Trình ký Phiếu tiếp nhận') : denyReason(item);
     const id = String(item.id || '').replace(/'/g, "\\'");
     return `<button class="icon-btn print${ok ? '' : ' disabled-action'}" data-ptn="1" title="${esc(title)}" style="${ok ? '' : offStyle}" onclick="event.stopPropagation(); PTN.open('${esc(id)}')"><i class="fa-solid fa-file-signature"></i></button>`;
 }
@@ -522,7 +522,7 @@ function open(id) {
     if (el('ptnSgDocDate')._flatpickr) el('ptnSgDocDate')._flatpickr.setDate(el('ptnSgDocDate').value, false, 'd/m/Y');
     renderOff();
     setDocSrc('gen');
-    // Trình lại (Bị từ chối): điền lại nguồn tệp, tệp trình ký, vị trí ô ký, Lãnh đạo, Nội dung trình, Tài liệu kèm theo của lần trình trước
+    // Trình lại (Bị trả lại): điền lại nguồn tệp, tệp trình ký, vị trí ô ký, Lãnh đạo, Nội dung trình, Tài liệu kèm theo của lần trình trước
     if (re) {
         if (re.docSrc && re.docSrc !== 'gen') {
             setDocSrc(re.docSrc);
@@ -941,7 +941,7 @@ function ldOpen(code, mode, cb) {
     const signBox = approve ? `<div class="ptnld-sign"><b>Hình thức ký:</b> Ký số trên hệ thống<br>${last ? 'Cấp ký duyệt cuối cùng: hệ thống ký số Phiếu tiếp nhận bằng chứng thư số của <b>' + esc(W.userLabel(uid)) + '</b> (giả lập). Phiếu tiếp nhận chuyển [Đã ban hành].' : 'Ký duyệt cấp hiện tại; Phiếu tiếp nhận chuyển Lãnh đạo cấp tiếp theo: <b>' + esc(W.userLabel(a.assignees[a.level + 1])) + '</b>.'}</div>` : '';
     const input = approve
         ? `<div class="ptnld-group"><label class="ptnld-label" for="ptnLdNote">Ý kiến ký duyệt</label><textarea class="ptnld-input" id="ptnLdNote" rows="4" maxlength="2000" placeholder="Nhập ý kiến ký duyệt..."></textarea></div>`
-        : reject ? `<div class="ptnld-group"><label class="ptnld-label" for="ptnLdNote">Lý do từ chối<span class="ptnld-req">*</span></label><textarea class="ptnld-input" id="ptnLdNote" rows="4" maxlength="2000" placeholder="Nhập lý do từ chối..." oninput="this.classList.remove('is-invalid'); document.getElementById('ptnLdNoteErr').style.display='none';"></textarea><div class="ptnld-err" id="ptnLdNoteErr">${MSG_REQ}</div><div class="ptnld-hint">Sau khi từ chối, Phiếu tiếp nhận chuyển [Bị từ chối] cho Cán bộ tiếp nhận cập nhật, trình lại.</div></div>` : '';
+        : reject ? `<div class="ptnld-group"><label class="ptnld-label" for="ptnLdNote">Lý do từ chối<span class="ptnld-req">*</span></label><textarea class="ptnld-input" id="ptnLdNote" rows="4" maxlength="2000" placeholder="Nhập lý do từ chối..." oninput="this.classList.remove('is-invalid'); document.getElementById('ptnLdNoteErr').style.display='none';"></textarea><div class="ptnld-err" id="ptnLdNoteErr">${MSG_REQ}</div><div class="ptnld-hint">Sau khi từ chối, Phiếu tiếp nhận chuyển [Bị trả lại] cho Cán bộ tiếp nhận cập nhật, trình lại.</div></div>` : '';
     const can = canAct(p, uid);
     const foot = approve ? `<button type="button" class="btn btn-secondary" onclick="PTN.ldClose()">Hủy bỏ</button><button type="button" class="btn btn-primary" onclick="PTN.ldSubmit()"><i class="fa-solid fa-file-signature"></i> Ký duyệt</button>`
         : reject ? `<button type="button" class="btn btn-secondary" onclick="PTN.ldClose()">Hủy bỏ</button><button type="button" class="btn btn-danger" style="background:#ef4444; color:#fff; border:none;" onclick="PTN.ldSubmit()"><i class="fa-solid fa-circle-xmark"></i> Từ chối</button>`
@@ -1033,7 +1033,7 @@ function seed() {
         { code: 'VVBT-2026-003', maVuViec: 'VVBT-2026-003', nycName: 'Trần Minh Tuấn', nopKenh: RM.BUU_CHINH, loaiYeuCau: W.REQUEST_TYPE_YCBT, rootUnitId: 'BTP-01',
           status: ST.DONE, method: 'Ký ngoài', docNo: '15/TB-CĐK', docDate: day(2), offSigner: 'cuctruong', signedFile: 'Giay_tiep_nhan_VVBT-2026-003_da_ky.pdf', issuedAt: at(2, 14), issuedBy: 'canbonv', attachments: [], approval: null, reason: '',
           history: [H('Ban hành Phiếu tiếp nhận (Ký ngoài)', 'canbonv', at(2, 14), `Số, ký hiệu 15/TB-CĐK ngày ${day(2)}; Người ký Nguyễn Văn Cục Trưởng; tệp đã ký: Giay_tiep_nhan_VVBT-2026-003_da_ky.pdf.`)] },
-        // Trực tiếp - Ký số, Bị từ chối tại cấp 1
+        // Trực tiếp - Ký số, Bị trả lại tại cấp 1
         { code: 'VVBT-2026-005', maVuViec: 'VVBT-2026-005', nycName: 'Hoàng Đức Thịnh', nopKenh: RM.TRUC_TIEP, loaiYeuCau: W.REQUEST_TYPE_YCBT, rootUnitId: 'BTP-01',
           status: ST.REJECT, method: 'Ký số', docSrc: 'gen', docFile: { name: docBaseName('VVBT-2026-005') + '.doc', generated: true }, docHtml: '', meta: { docNo: '10/TB-CĐK', docDate: day(), noiNhan: SEED_NN },
           assignees: ['tpbt', 'cuctruong'], sigCoords: { 0: { x: 60, y: 893, w: 230, h: 90 }, 1: { x: 470, y: 893, w: 230, h: 90 } }, content: 'Kính trình Lãnh đạo ký Giấy tiếp nhận yêu cầu bồi thường.', attachments: [],

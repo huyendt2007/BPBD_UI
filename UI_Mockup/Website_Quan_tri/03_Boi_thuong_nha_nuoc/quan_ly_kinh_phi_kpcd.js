@@ -6,7 +6,7 @@
  * - Chọn QĐ -> hiển thị các khối: Thông tin người yêu cầu, Phương thức chi trả (theo QĐ), Tài liệu kèm theo.
  * - Tiếp tục -> Popup Trình ký thông báo chi trả (kptbOpenSign với bản ghi nháp) -> Trình: "Chờ duyệt", Loại trình "Thông báo chi trả".
  * - Chặn trùng: QĐ đã có Thông báo chi trả Chờ duyệt / Chờ chi trả / Hoàn thành / Trả lại ngân sách nhà nước (MSG-ERR-BTNN-KP-013).
- *   QĐ đã có bản ghi "Chờ thông báo chi trả" / "Đề nghị cấp bổ sung kinh phí" / "Bị từ chối": dùng lại chính bản ghi đó (không tạo trùng).
+ *   QĐ đã có bản ghi "Chờ thông báo chi trả" / "Đề nghị cấp bổ sung kinh phí" / "Bị trả lại": dùng lại chính bản ghi đó (không tạo trùng).
  * Id/hàm prefix kpcd. Mockup tĩnh: chỉ kiểm tra trống trường bắt buộc.
  */
 const KPCD_DEC_KEY = 'btnn_qd_gqbt_v2';
@@ -218,7 +218,7 @@ function kpcdTbSelect(decId) {
     kpcdEl('kpcdTbPlace').value = po.cashPlace || '';
     KPCD_TB_INPUTS.forEach(x => qdtuMark(x, false));
 }
-// Bản ghi nháp truyền cho Popup Trình ký thông báo chi trả; QĐ đã có bản ghi chưa trình (Chờ thông báo chi trả / Đề nghị cấp bổ sung kinh phí / Bị từ chối) thì dùng lại bản ghi đó
+// Bản ghi nháp truyền cho Popup Trình ký thông báo chi trả; QĐ đã có bản ghi chưa trình (Chờ thông báo chi trả / Đề nghị cấp bổ sung kinh phí / Bị trả lại) thì dùng lại bản ghi đó
 function kpcdTbBuildDraft(d, form) {
     const unit = kpcdUnitName(d);
     const dec = Object.assign(JSON.parse(JSON.stringify(d)), { decId: d.id, unitName: unit, nycName: form.nycName, nycAddress: form.nycAddress, payAgency: form.payAgency, cashTime: form.time, cashPlaceNotice: form.place });

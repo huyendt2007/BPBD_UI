@@ -16,11 +16,11 @@
         R_TCKT = 'Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại';
 
     // [Tỉnh/TP của CQGQ, Cơ quan giải quyết, Người yêu cầu, Loại (CN/TC), Tư cách, Người bị thiệt hại (khi khác NYC), Lĩnh vực,
-    //  Trạng thái vụ việc, Nguồn hồ sơ, Loại yêu cầu (money/honor/both), Cán bộ xử lý (phân tách ';'), Nội dung trình (Chờ duyệt/Bị từ chối), Hành vi gây thiệt hại, Số tiền yêu cầu]
+    //  Trạng thái vụ việc, Nguồn hồ sơ, Loại yêu cầu (money/honor/both), Cán bộ xử lý (phân tách ';'), Nội dung trình (Chờ duyệt/Bị trả lại), Hành vi gây thiệt hại, Số tiền yêu cầu]
     const ROWS = [
         ['Hà Nội', 'UBND phường Hoàn Kiếm', 'Trần Văn Khải', 'CN', R_NBTH, '', HC, 'Cử người giải quyết bồi thường', TN, 'money', 'Nguyễn Thu Hà', '', 'Thu hồi giấy phép xây dựng không đúng thẩm quyền.', 145000000],
         ['Hồ Chí Minh', 'Công an TP. Hồ Chí Minh', 'Công ty TNHH Thương mại Sài Gòn Xanh', 'TC', R_NBTH, '', HS, 'Chờ duyệt', DVC, 'money', 'Lê Minh Tuấn', 'Quyết định GQBT', 'Kê biên, tạm giữ hàng hóa ngoài phạm vi vụ án.', 820000000],
-        ['Hải Phòng', 'Tòa án nhân dân TP. Hải Phòng', 'Phạm Thị Lan', 'CN', R_TK, 'Phạm Văn Toàn', DS, 'Bị từ chối', CH, 'money', 'Đỗ Quang Huy', 'Hoãn giải quyết bồi thường', 'Áp dụng biện pháp khẩn cấp tạm thời không đúng quy định.', 260000000],
+        ['Hải Phòng', 'Tòa án nhân dân TP. Hải Phòng', 'Phạm Thị Lan', 'CN', R_TK, 'Phạm Văn Toàn', DS, 'Bị trả lại', CH, 'money', 'Đỗ Quang Huy', 'Hoãn giải quyết bồi thường', 'Áp dụng biện pháp khẩn cấp tạm thời không đúng quy định.', 260000000],
         ['Đà Nẵng', 'Tòa án nhân dân TP. Đà Nẵng', 'Công ty Cổ phần Vận tải Sông Hàn', 'TC', R_NBTH, '', TTHC, 'Xác minh thiệt hại', XD, 'money', 'Ngô Thị Mai; Phan Văn Lực', '', 'Bản án hành chính bị hủy do áp dụng sai pháp luật.', 540000000],
         ['Cần Thơ', 'Trại giam Cần Thơ', 'Huỳnh Văn Sang', 'CN', R_NBTH, '', THAHS, 'Thương lượng', TN, 'both', 'Trương Thị Bích', '', 'Thi hành án phạt tù quá thời hạn của bản án.', 310000000],
         ['Huế', 'Thi hành án dân sự TP. Huế', 'Hợp tác xã Nông nghiệp Hương Thủy', 'TC', R_NBTH, '', THADS, 'Chờ ban hành QĐ', DVC, 'money', 'Nguyễn Văn Bảo', '', 'Cưỡng chế giao tài sản sai người được thi hành án.', 410000000],
@@ -36,7 +36,7 @@
         ['Hà Tĩnh', 'Công an tỉnh Hà Tĩnh', 'Phan Văn Đức', 'CN', R_NBTH, '', HS, 'Hoàn thành', XD, 'both', 'Trần Quốc Việt', '', 'Bắt, tạm giữ người không đúng quy định.', 270000000],
         ['Hưng Yên', 'Thi hành án dân sự tỉnh Hưng Yên', 'Công ty TNHH Nhãn lồng Phố Hiến', 'TC', R_TCKT, 'Công ty TNHH Nông sản Phố Hiến', THADS, 'Cử người giải quyết bồi thường', CH, 'money', 'Vũ Thị Hạnh', '', 'Bán đấu giá tài sản không đúng giá khởi điểm.', 360000000],
         ['Khánh Hòa', 'UBND tỉnh Khánh Hòa', 'Lê Thị Bích Thủy', 'CN', R_NBTH, '', HC, 'Chờ duyệt', TN, 'both', 'Đinh Văn Nam', 'Tạm đình chỉ giải quyết bồi thường', 'Đình chỉ hoạt động kinh doanh không có căn cứ.', 210000000],
-        ['Lai Châu', 'Tòa án nhân dân tỉnh Lai Châu', 'Giàng A Sử', 'CN', R_NBTH, '', TTHC, 'Bị từ chối', DVC, 'money', 'Tống Thị Lý', 'Quyết định GQBT', 'Bản án hành chính sơ thẩm bị hủy, quyết định hành chính trái luật.', 80000000],
+        ['Lai Châu', 'Tòa án nhân dân tỉnh Lai Châu', 'Giàng A Sử', 'CN', R_NBTH, '', TTHC, 'Bị trả lại', DVC, 'money', 'Tống Thị Lý', 'Quyết định GQBT', 'Bản án hành chính sơ thẩm bị hủy, quyết định hành chính trái luật.', 80000000],
         ['Lâm Đồng', 'Trại giam Đại Bình', 'Kơ Să Ha Thu', 'CN', R_TK, 'Kơ Să Ha Bin', THAHS, 'Xác minh thiệt hại', XD, 'both', 'Mai Văn Thành', '', 'Người chấp hành án bị thương tích do quản lý trại giam sai quy định.', 450000000],
         ['Lạng Sơn', 'Thi hành án dân sự tỉnh Lạng Sơn', 'Hoàng Văn Pảo', 'CN', R_NBTH, '', THADS, 'Thương lượng', CH, 'money', 'Lương Thị Thu', '', 'Cưỡng chế thi hành án vượt quá nghĩa vụ phải thi hành.', 190000000],
         ['Lào Cai', 'UBND tỉnh Lào Cai', 'Công ty Cổ phần Du lịch Sa Pa Xanh', 'TC', R_NBTH, '', HC, 'Chờ ban hành QĐ', TN, 'money', 'Hà Văn Long', '', 'Thu hồi giấy chứng nhận đầu tư không đúng quy định.', 1250000000],
@@ -82,7 +82,7 @@
         ['Hà Nội', 'Công an quận Thanh Xuân, Thành phố Hà Nội', 'Bùi Đức Anh', 'CN', R_NBTH, '', HS, 'Hoàn thành', TN, 'both', 'Nguyễn Hữu Phước', '', 'Tạm giữ hình sự không có căn cứ, sau đó trả tự do.', 140000000]
     ];
 
-    // Vụ việc đầu luồng (Chờ tiếp nhận, Yêu cầu bổ sung, Chờ duyệt / Bị từ chối Thông báo, Không thụ lý, Đã chuyển CQGQBT do Không thụ lý KTL_01)
+    // Vụ việc đầu luồng (Chờ tiếp nhận, Yêu cầu bổ sung, Chờ duyệt / Bị trả lại Thông báo, Không thụ lý, Đã chuyển CQGQBT do Không thụ lý KTL_01)
     // Phần tử 15 (tùy chọn): trường bổ sung của hồ sơ
     const EARLY_ROWS = [
         ['Hà Nội', 'Bộ Tư pháp', 'Hoàng Minh Tuấn', 'CN', R_NBTH, '', HC, 'Chờ tiếp nhận', DVC, 'money', '', '', 'Từ chối cấp phiếu lý lịch tư pháp không đúng quy định.', 40000000],
@@ -92,7 +92,7 @@
         ['Hải Phòng', 'Cục Thi hành án dân sự Thành phố Hải Phòng', 'Công ty Cổ phần Cảng Đình Vũ', 'TC', R_NBTH, '', THADS, 'Yêu cầu bổ sung', CH, 'money', 'Lục Thị Hoa', '', 'Cưỡng chế thi hành án đối với tài sản của bên thứ ba.', 880000000],
         ['Hà Nội', 'Bộ Tư pháp', 'Văn phòng Luật sư Ánh Dương', 'TC', R_NBTH, '', HC, 'Chờ duyệt', TN, 'money', 'Trần Thị Thu Hà', 'Thông báo thụ lý hồ sơ', 'Thu hồi giấy đăng ký hoạt động tổ chức hành nghề luật sư trái quy định.', 150000000],
         ['Hà Nội', 'Công an quận Thanh Xuân, Thành phố Hà Nội', 'Đặng Quốc Hưng', 'CN', R_NBTH, '', HS, 'Chờ duyệt', DVC, 'both', 'Đào Thị Mỹ Linh', 'Thông báo Không thụ lý', 'Tạm giữ người theo thủ tục hành chính quá thời hạn.', 30000000],
-        ['Lâm Đồng', 'UBND tỉnh Lâm Đồng', 'Nguyễn Văn Sáu', 'CN', R_NBTH, '', HC, 'Bị từ chối', TN, 'money', 'Ông Thị Thảo', 'Thông báo Yêu cầu bổ sung', 'Thu hồi đất không đúng đối tượng sử dụng đất.', 410000000],
+        ['Lâm Đồng', 'UBND tỉnh Lâm Đồng', 'Nguyễn Văn Sáu', 'CN', R_NBTH, '', HC, 'Bị trả lại', TN, 'money', 'Ông Thị Thảo', 'Thông báo Yêu cầu bổ sung', 'Thu hồi đất không đúng đối tượng sử dụng đất.', 410000000],
         ['Hà Nội', 'Tòa án nhân dân Thành phố Hà Nội', 'Mai Văn Tiến', 'CN', R_NBTH, '', DS, 'Không thụ lý', CH, 'money', 'Cao Văn Hiếu', '', 'Yêu cầu bồi thường đã được giải quyết bằng bản án có hiệu lực.', 120000000, { ktlReasonCode: 'KTL_08' }],
         ['Hà Nội', 'Bộ Tư pháp', 'Công ty TNHH Đấu giá Thăng Long', 'TC', R_NBTH, '', HC, 'Không thụ lý', TN, 'money', 'Phạm Minh Đức', '', 'Thu hồi chứng chỉ hành nghề đấu giá viên.', 70000000, { ktlReasonCode: 'KTL_03' }],
         ['Hà Nội', 'Sở Tư pháp Thành phố Hà Nội', 'Trần Văn Lợi', 'CN', R_NBTH, '', HC, 'Đã chuyển CQGQBT', TN, 'money', 'Ngô Thị Lan', '', 'Xử phạt vi phạm hành chính không đúng thẩm quyền, chuyển cơ quan có thẩm quyền.', 45000000, { ktlReasonCode: 'KTL_01', rejectType: 'Không thụ lý' }]

@@ -15,6 +15,30 @@
     const SEED_VERSION = 'v4_cuc_only';
     const CATALOG_TYPE = 'DM_54';
 
+    // Chốt 28/10: trạng thái "Bị từ chối" đổi thành "Bị trả lại" trên mọi phân hệ BTNN; "Thu hồi tiền hoàn trả" đổi thành "Thu tiền hoàn trả" -> chuẩn hóa dữ liệu đã lưu (giữ nguyên dữ liệu người dùng).
+    // Không áp dụng: Báo cáo công tác BTNN (bctt_*, có trạng thái Bị trả lại riêng), dữ liệu Biện pháp bảo đảm.
+    // Hồ sơ "Bị từ chối" không có lượt Lãnh đạo trả lại (nghĩa Không thụ lý cũ): giữ nguyên để chuẩn hóa theo phân hệ (migrateXdRecord / migrateYcbtRecord).
+    (function chuanHoaBiTraLai() {
+        const OLD = 'Bị từ chối';
+        const PAIRS = [[OLD, 'Bị trả lại'], ['Thu hồi tiền hoàn trả', 'Thu tiền hoàn trả'], ['thu hồi tiền hoàn trả', 'thu tiền hoàn trả']];
+        const swap = s => PAIRS.reduce((t, p) => t.split(p[0]).join(p[1]), s);
+        try {
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (!k || !/^(btnn|claimsList|proposals|receptionClaims|traCuuVuViec|htList|phdd|gqNbth|nbth)/.test(k)) continue;
+                const v = localStorage.getItem(k);
+                if (!v || !PAIRS.some(p => v.indexOf(p[0]) >= 0)) continue;
+                let out = swap(v);
+                if (k === KEY_RECORDS) {
+                    const list = JSON.parse(v);
+                    if (!Array.isArray(list)) continue;
+                    out = JSON.stringify(list.map(r => (r && r.status === OLD && !r.returned) ? r : JSON.parse(swap(JSON.stringify(r)))));
+                }
+                if (out !== v) localStorage.setItem(k, out);
+            }
+        } catch (e) { /* bỏ qua */ }
+    })();
+
     const REQUEST_TYPE_XD = 'Xác định cơ quan giải quyết bồi thường';
     const REQUEST_TYPE_YCBT = 'Giải quyết yêu cầu bồi thường';
     const REQUEST_TYPE_YCBT_OLD = 'Yêu cầu bồi thường';
@@ -52,7 +76,7 @@
         BI_TRA_LAI: 'Bị trả lại',
         CHO_CHUYEN: 'Chờ chuyển CQGQBT',
         YC_BO_SUNG: 'Yêu cầu bổ sung',
-        BI_TU_CHOI: 'Bị từ chối',
+        BI_TU_CHOI: 'Bị trả lại',
         HOAN_THANH: 'Hoàn thành',
         LUU_NHAP: 'Lưu nháp'
     };
@@ -660,17 +684,18 @@
         return list;
     }
     // ---------------- Xác định CQGQBT: trạng thái mới, tự động chuyển CQGQBT ----------------
-    // Trạng thái cũ -> mới: Đang thực hiện -> Xác minh CQGQBT; Bị từ chối -> Không thụ lý; Hoàn thành / Chờ chuyển CQGQBT -> Đã chuyển CQGQBT
-    // Chốt 23/10: Lãnh đạo Từ chối -> "Bị từ chối" (thay "Bị trả lại"); "Bị từ chối" cũ (không có lượt trả lại) -> Không thụ lý (xử lý tại migrateXdRecord)
+    // Trạng thái cũ -> mới: Đang thực hiện -> Xác minh CQGQBT; Bị từ chối (không có lượt Lãnh đạo từ chối) -> Không thụ lý; Hoàn thành / Chờ chuyển CQGQBT -> Đã chuyển CQGQBT
+    // Chốt 28/10: Lãnh đạo Từ chối -> "Bị trả lại" (thay "Bị từ chối"); dữ liệu đã lưu "Bị từ chối" có lượt trả lại -> "Bị trả lại", không có lượt trả lại -> Không thụ lý (xử lý tại migrateXdRecord)
+    const LEGACY_BI_TU_CHOI = 'Bị từ chối';
     const XD_OLD_STATUS = { 'Đang thực hiện': 'Xác minh CQGQBT', 'Hoàn thành': 'Đã chuyển CQGQBT' };
     // ---------------- Giải quyết YCBT: 17 Trạng thái vụ việc (chỉ áp dụng hồ sơ module YCBT) ----------------
-    const YCBT_STATUS = { BI_TU_CHOI: 'Bị từ chối', CU_NGUOI: 'Cử người giải quyết bồi thường', XAC_MINH_TH: 'Xác minh thiệt hại', DANG_PHDD: 'Đang phục hồi danh dự' };
+    const YCBT_STATUS = { BI_TU_CHOI: 'Bị trả lại', CU_NGUOI: 'Cử người giải quyết bồi thường', XAC_MINH_TH: 'Xác minh thiệt hại', DANG_PHDD: 'Đang phục hồi danh dự' };
     const YCBT_OLD_STATUS = {
-        'Bị trả lại': 'Bị từ chối', 'Chờ thụ lý': 'Cử người giải quyết bồi thường', 'Đang xác minh thiệt hại': 'Xác minh thiệt hại',
+        'Bị từ chối': 'Bị trả lại', 'Chờ thụ lý': 'Cử người giải quyết bồi thường', 'Đang xác minh thiệt hại': 'Xác minh thiệt hại',
         'Đang thương lượng': 'Thương lượng', 'Chờ phát hành văn bản': 'Yêu cầu bổ sung', 'Tạm đình chỉ giải quyết': 'Tạm đình chỉ', 'Trả lại ngân sách nhà nước': 'Hoàn thành',
         'Chờ thực thi': 'Chờ chi trả'
     };
-    // Nội dung trình của chức năng Quyết định giải quyết bồi thường (Lãnh đạo từ chối -> Bị từ chối; dữ liệu cũ Bị trả lại đọc thành Bị từ chối)
+    // Nội dung trình của chức năng Quyết định giải quyết bồi thường (Lãnh đạo từ chối -> Bị trả lại; dữ liệu cũ Bị từ chối đọc thành Bị trả lại)
     const YCBT_QD_KINDS = ['Quyết định GQBT', 'Hủy QĐ', 'Sửa chữa, bổ sung QĐ'];
     function isYcbtRec(r) { return !!r && r.module === 'YCBT'; }
     function migrateYcbtRecord(r) {
@@ -773,16 +798,16 @@
             h.note = String(h.note || '').replace(/Phê duyệt cấp/g, 'Ký duyệt cấp').replace(/phê duyệt cấp/g, 'ký duyệt cấp');
             ch = true;
         });
-        if (r.status === STATUS.BI_TU_CHOI && !r.returned && !r.ktlReason && r.rejectionReason) { r.ktlReason = r.rejectionReason; ch = true; }
+        if (r.status === LEGACY_BI_TU_CHOI && !r.returned && !r.ktlReason && r.rejectionReason) { r.ktlReason = r.rejectionReason; ch = true; }
         // Nội dung trình "Tiếp nhận yêu cầu" của luồng cũ không còn áp dụng: hồ sơ về Xác minh CQGQBT
         const oldAccept = x => x && x.kind === 'Tiếp nhận yêu cầu';
-        if ((r.status === STATUS.CHO_PHE_DUYET && oldAccept(r.approval)) || ((r.status === STATUS.BI_TRA_LAI || r.status === STATUS.BI_TU_CHOI) && r.returned && oldAccept(r.returned))) {
+        if ((r.status === STATUS.CHO_PHE_DUYET && oldAccept(r.approval)) || ((r.status === STATUS.BI_TRA_LAI || r.status === LEGACY_BI_TU_CHOI) && r.returned && oldAccept(r.returned))) {
             r.status = STATUS.XAC_MINH; r.approval = null; r.returned = null; ch = true;
         }
         if (XD_OLD_STATUS[r.status]) { r.status = XD_OLD_STATUS[r.status]; ch = true; }
-        // "Bị từ chối" cũ (nghĩa Không thụ lý, không có lượt Lãnh đạo trả lại) -> Không thụ lý; "Bị trả lại" cũ -> "Bị từ chối"
-        if (r.status === STATUS.BI_TU_CHOI && !r.returned) { r.status = STATUS.KHONG_THU_LY; ch = true; }
-        if (r.status === STATUS.BI_TRA_LAI) { r.status = STATUS.BI_TU_CHOI; ch = true; }
+        // "Bị từ chối" cũ: không có lượt Lãnh đạo trả lại (nghĩa Không thụ lý) -> Không thụ lý; có lượt trả lại -> "Bị trả lại"
+        if (r.status === LEGACY_BI_TU_CHOI && !r.returned) { r.status = STATUS.KHONG_THU_LY; ch = true; }
+        if (r.status === LEGACY_BI_TU_CHOI) { r.status = STATUS.BI_TRA_LAI; ch = true; }
         if (r.status === STATUS.CHO_CHUYEN || (r.status === STATUS.DA_CHUYEN && !hasClaimCode(r))) {
             ch = true;
             if (hasClaimCode(r)) { r.status = STATUS.DA_CHUYEN; return ch; }
@@ -1085,10 +1110,10 @@
         extra = extra || {};
         const rec = getRecord(code);
         const me = getCurrentUserId();
-        // Cử người giải quyết bồi thường: Thủ trưởng cơ quan giải quyết bồi thường trình (hồ sơ Cử người giải quyết bồi thường hoặc Bị từ chối với Nội dung trình này)
+        // Cử người giải quyết bồi thường: Thủ trưởng cơ quan giải quyết bồi thường trình (hồ sơ Cử người giải quyết bồi thường hoặc Bị trả lại với Nội dung trình này)
         if (rec && kind === KIND_CU_NGUOI) { if (!canCuNguoi(rec, me)) return { ok: false, message: 'Hồ sơ đã được xử lý hoặc bạn không có quyền cử người giải quyết.' }; }
         else if (!rec || rec.chuTri !== me) return { ok: false, message: 'Chỉ cán bộ chủ trì được trình phê duyệt.' };
-        // Giải quyết YCBT: "Bị từ chối" = Lãnh đạo từ chối phiếu trình -> cán bộ cập nhật và trình lại được (phân hệ khác giữ nguyên)
+        // Giải quyết YCBT: "Bị trả lại" = Lãnh đạo từ chối phiếu trình -> cán bộ cập nhật và trình lại được (phân hệ khác giữ nguyên)
         const closed = [STATUS.CHO_PHE_DUYET, STATUS.HOAN_THANH, STATUS.KHONG_THU_LY, STATUS.DA_CHUYEN, STATUS.CHO_PHAN_CONG, STATUS.DANG_PHAN_CONG].concat((isYcbtRec(rec) || isXdRec(rec)) ? [] : [STATUS.BI_TU_CHOI]);
         // Giải quyết YCBT: hồ sơ "Hoàn thành" vẫn được trình Đình chỉ giải quyết bồi thường
         const dcFromDone = isYcbtRec(rec) && rec.status === STATUS.HOAN_THANH && kind === 'Đình chỉ giải quyết bồi thường';
@@ -1405,7 +1430,7 @@
         rec.returned = { reason, by: me, unitId: a.path[a.level], at: nowText(), kind: a.kind, prevStatus: a.prevStatus || '' };
         // Tài liệu kèm theo của lần trình bị trả lại (lưu theo phiếu trình để xem lại)
         rec.returnHistory.push({ kind: a.kind, reason, by: me, unitId: a.path[a.level], at: rec.returned.at, attachments: (a.signDoc && Array.isArray(a.signDoc.attachments)) ? a.signDoc.attachments : [] });
-        // Chốt 23/10: Lãnh đạo từ chối -> "Bị từ chối" (mọi phân hệ BTNN); phiếu trình của chức năng Quyết định GQBT do màn hình Quyết định tự chuẩn hóa
+        // Chốt 28/10: Lãnh đạo từ chối -> "Bị trả lại" (mọi phân hệ BTNN); phiếu trình của chức năng Quyết định GQBT do màn hình Quyết định tự chuẩn hóa
         rec.status = STATUS.BI_TU_CHOI;
         a.pending = null;
         addHistory(rec, 'Từ chối phê duyệt', `Trả lại cán bộ chủ trì. Lý do: ${reason}`, null, { kind: a.kind });
@@ -1618,7 +1643,7 @@
         Object.values(cfg).forEach(n => (n.leaders || []).forEach(u => leaders.add(u)));
         return usersInUnitTree(root).filter(u => !leaders.has(u.id)).map(u => u.id);
     }
-    // Cán bộ lập, trình (hoặc cập nhật, trình lại) Cử người giải quyết bồi thường: hồ sơ Cử người giải quyết bồi thường, hoặc Bị từ chối với Nội dung trình Cử người giải quyết bồi thường.
+    // Cán bộ lập, trình (hoặc cập nhật, trình lại) Cử người giải quyết bồi thường: hồ sơ Cử người giải quyết bồi thường, hoặc Bị trả lại với Nội dung trình Cử người giải quyết bồi thường.
     // Người trình: cán bộ chủ trì hoặc cán bộ thuộc cơ quan giải quyết bồi thường của hồ sơ (Lãnh đạo chỉ Ký duyệt / Từ chối phiếu trình)
     function cuNguoiStage(rec) {
         if (!rec || rec.module !== 'YCBT') return false;
@@ -1785,7 +1810,7 @@
         { id: 'P21', code: 'KP-2026-021', type: 'Cấp kinh phí bồi thường', ycbtCode: 'BT-2026-028', nycName: 'Hoàng Văn Thái', amount: 180000000, user: 'Lê Văn Nam', date: '18/09/2026', status: 'Chờ duyệt', source: 'Ngân sách địa phương (Dự phòng)', cqCap: 'Sở Tài chính Hà Nội', notes: 'Tờ trình đề nghị cấp phát kinh phí bồi thường tổn thất tài sản và thu nhập thực tế.', files: [{ name: 'Tờ trình cấp kinh phí Hoàng Văn Thái', file: 'To_trinh_KP_HoangVanThai.pdf' }], agencyName: 'Tòa án nhân dân TP. Hà Nội' },
         { id: 'P22', code: 'KP-2026-022', type: 'Cấp tạm ứng', ycbtCode: 'BT-2026-029', nycName: 'Nguyễn Thị Mai', amount: 70000000, user: 'Nguyễn Văn Thụ', date: '19/09/2026', status: 'Chờ duyệt', source: 'Tạm ứng kinh phí Bộ Tài chính', cqCap: 'Sở Tư pháp Hà Nội', notes: 'Tờ trình đề xuất tạm ứng kinh phí bồi thường cho bà Nguyễn Thị Mai.', files: [{ name: 'Tờ trình đề xuất tạm ứng Mai', file: 'To_trinh_tam_ung_NguyenThiMai.pdf' }], agencyName: 'UBND Quận Cầu Giấy' },
         { id: 'P2', code: 'KP-2026-002', type: 'Cấp tạm ứng', ycbtCode: 'BT-2026-002', nycName: 'Trần Thị B', amount: 100000000, user: 'Nguyễn Văn Thụ', date: '04/09/2026', status: 'Chờ chi trả', source: 'Tạm ứng kinh phí Bộ Tài chính', cqCap: 'Sở Tư pháp Hà Nội', notes: 'Cấp tạm ứng bồi thường thiệt hại cho bà Trần Thị B.', files: [{ name: 'Tờ trình đề xuất cấp kinh phí', file: 'De_xuat_tam_ung_B.pdf' }], leaderOpinion: 'Đồng ý cấp tạm ứng kinh phí bồi thường cho bà Trần Thị B.', approvedDate: '05/09/2026 09:15', approvedLeader: 'Lãnh đạo cơ quan', agencyName: 'Tòa án nhân dân TP. Hà Nội' },
-        { id: 'P7', code: 'KP-2026-007', type: 'Cấp tạm ứng', ycbtCode: 'BT-2026-002', nycName: 'Trần Thị B', amount: 80000000, user: 'Lê Văn Nam', date: '08/09/2026', status: 'Bị từ chối', source: 'Tạm ứng kinh phí Bộ Tài chính', cqCap: 'Sở Tư pháp Hà Nội', notes: 'Đề nghị cấp tạm ứng bồi thường bị từ chối do thiếu tài liệu y tế chứng minh.', files: [], leaderOpinion: 'Từ chối do hồ sơ chưa đính kèm báo cáo giám định sức khỏe của bệnh viện cấp tỉnh.', approvedDate: '09/09/2026 10:30', approvedLeader: 'Lãnh đạo cơ quan', agencyName: 'Tòa án nhân dân TP. Hà Nội' }
+        { id: 'P7', code: 'KP-2026-007', type: 'Cấp tạm ứng', ycbtCode: 'BT-2026-002', nycName: 'Trần Thị B', amount: 80000000, user: 'Lê Văn Nam', date: '08/09/2026', status: 'Bị trả lại', source: 'Tạm ứng kinh phí Bộ Tài chính', cqCap: 'Sở Tư pháp Hà Nội', notes: 'Đề nghị cấp tạm ứng bồi thường bị từ chối do thiếu tài liệu y tế chứng minh.', files: [], leaderOpinion: 'Từ chối do hồ sơ chưa đính kèm báo cáo giám định sức khỏe của bệnh viện cấp tỉnh.', approvedDate: '09/09/2026 10:30', approvedLeader: 'Lãnh đạo cơ quan', agencyName: 'Tòa án nhân dân TP. Hà Nội' }
     ];
     const KP_FALLBACK_AGENCY = {};
     KP_FALLBACK.forEach(p => { KP_FALLBACK_AGENCY[p.id] = p.agencyName; });
@@ -1804,7 +1829,7 @@
         if (!approveIt && !opinion) return { ok: false, message: 'Vui lòng nhập lý do từ chối.' };
         const d = new Date();
         const at = `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-        p.status = approveIt ? 'Chờ chi trả' : 'Bị từ chối';
+        p.status = approveIt ? 'Chờ chi trả' : 'Bị trả lại';
         p.leaderOpinion = opinion || (isAdvanceProposal(p) ? 'Đồng ý cấp tạm ứng kinh phí bồi thường.' : 'Đồng ý phê duyệt cấp kinh phí bồi thường.');
         p.approvedDate = at;
         p.approvedLeader = userName(me);
@@ -1882,7 +1907,7 @@
             if (p.status === 'Chờ duyệt') {
                 pending.push(Object.assign({}, base, { key: 'kp:' + p.id, detail: `Ký duyệt ${base.kind} ${amount}`, who: `${p.user || '--'} - Cán bộ lập đề nghị`, at: p.date || '--' }));
             } else if (p.approvedDate && (!p.approvedLeaderId || p.approvedLeaderId === me)) {
-                const ok = p.status !== 'Bị từ chối';
+                const ok = p.status !== 'Bị trả lại';
                 done.push(Object.assign({}, base, { key: 'kpd:' + p.id, action: ok ? 'Phê duyệt' : 'Từ chối', detail: `${ok ? 'Đã ký duyệt' : 'Từ chối'} ${base.kind} ${amount}${p.leaderOpinion ? '. Ý kiến: ' + p.leaderOpinion : ''}`, who: p.approvedLeaderId ? userName(me) : (p.approvedLeader || '--'), at: p.approvedDate }));
             }
         });
@@ -2054,7 +2079,6 @@
         'Bị trả lại': ['#fee2e2', '#b91c1c'],
         'Chờ chuyển CQGQBT': ['#ccfbf1', '#0f766e'],
         'Yêu cầu bổ sung': ['#ffedd5', '#c2410c'],
-        'Bị từ chối': ['#fee2e2', '#991b1b'],
         'Hoàn thành': ['#dcfce7', '#15803d'],
         'Lưu nháp': ['#f1f5f9', '#475569']
     };

@@ -1385,7 +1385,7 @@
                     <select class="form-control" id="searchDecStatus">
                         <option value="">Tất cả</option>
                         <option value="Chờ duyệt">Chờ duyệt</option>
-                        <option value="Bị từ chối">Bị từ chối</option>
+                        <option value="Bị trả lại">Bị trả lại</option>
                         <option value="Đã ban hành">Đã ban hành</option>
                         <option value="Đã hủy">Đã hủy</option>
                     </select>
@@ -2276,7 +2276,7 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261027s35"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261028tl1"></script>
     <!-- [th2c] Danh mục Loại thiệt hại 2 cấp (DM_27) + bảng 2 cấp dùng chung -->
     <script src="btnn_thiet_hai.js?v=20261027th6"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
@@ -2289,8 +2289,8 @@
         const KIND_QD = 'Quyết định GQBT';
         const KIND_HUY = 'Hủy QĐ';
         const KIND_SC = 'Sửa chữa, bổ sung QĐ';
-        // Trạng thái Quyết định: không còn "Chờ ban hành" (cấp cuối Ký duyệt -> Đã ban hành); Lãnh đạo từ chối -> "Bị từ chối"
-        const ST = { CHO_DUYET: 'Chờ duyệt', TRA_LAI: 'Bị từ chối', DA_BH: 'Đã ban hành', DA_HUY: 'Đã hủy' };
+        // Trạng thái Quyết định: không còn "Chờ ban hành" (cấp cuối Ký duyệt -> Đã ban hành); Lãnh đạo từ chối -> "Bị trả lại"
+        const ST = { CHO_DUYET: 'Chờ duyệt', TRA_LAI: 'Bị trả lại', DA_BH: 'Đã ban hành', DA_HUY: 'Đã hủy' };
         // Trạng thái hồ sơ luồng khi cấp phê duyệt cuối cùng đồng ý (resultStatus truyền cho BTNN_WF.submitForApproval)
         const RESULT_STATUS = {};
         RESULT_STATUS[KIND_QD] = 'Đã ban hành';
@@ -2684,12 +2684,12 @@
             return seed;
         }
         function getDec(id) { return decisions.find(d => d.id === id) || null; }
-        // Dữ liệu cũ: "Bị trả lại" -> "Bị từ chối"; "Chờ ban hành" -> "Đã ban hành" (cấp cuối đã ký duyệt), chạy liên thông ban hành
+        // Dữ liệu cũ: "Bị từ chối" -> "Bị trả lại"; "Chờ ban hành" -> "Đã ban hành" (cấp cuối đã ký duyệt), chạy liên thông ban hành
         function qdgqMigrateStatus(list) {
             let ch = false;
             (list || []).forEach(d => {
                 if (!d) return;
-                if (d.status === 'Bị trả lại') { d.status = ST.TRA_LAI; ch = true; }
+                if (d.status === 'Bị từ chối') { d.status = ST.TRA_LAI; ch = true; }
                 if (d.status === 'Chờ ban hành') { qdgqApplyIssued(d, (d.approvedAt || '').split(' ').pop() || W.dateText()); qdgqIssueLinks(d); ch = true; }
             });
             return ch;
@@ -2711,7 +2711,7 @@
             kptbNotifyIssued(d);
         }
 
-        // Hồ sơ luồng đang trình đúng Nội dung trình của Quyết định (Chờ duyệt / Bị từ chối)
+        // Hồ sơ luồng đang trình đúng Nội dung trình của Quyết định (Chờ duyệt / Bị trả lại)
         function wfRecFor(d) {
             if (!d || ![ST.CHO_DUYET, ST.TRA_LAI].includes(d.status) || !d.wfKind) return null;
             const rec = W.getRecord(d.claimCode);
@@ -2733,7 +2733,7 @@
                 if (!rec || !rec.approval || rec.approval.kind !== d.wfKind) return;
                 if (d.wfSubmittedAt && rec.approval.submittedAt !== d.wfSubmittedAt) return;
                 const a = rec.approval;
-                // Lãnh đạo từ chối: hồ sơ luồng Bị trả lại (hồ sơ Giải quyết YCBT: Bị từ chối) -> Quyết định Bị từ chối
+                // Lãnh đạo từ chối: hồ sơ luồng Bị trả lại -> Quyết định Bị trả lại
                 const lastStep = (a.steps || [])[(a.steps || []).length - 1];
                 if (rec.returned && (rec.status === W.STATUS.BI_TRA_LAI || rec.status === W.STATUS.BI_TU_CHOI || (rec.status !== W.STATUS.CHO_PHE_DUYET && !a.pending && lastStep && lastStep.action === 'Từ chối phê duyệt'))) {
                     d.status = ST.TRA_LAI;
@@ -2827,7 +2827,7 @@
         // ---------------- MH01 - Danh sách ----------------
         let currentPage = 1, pageSize = 10;
         function statusBadge(status) {
-            const cls = { 'Chờ duyệt': 'badge-review', 'Bị từ chối': 'badge-danger', 'Đã ban hành': 'badge-success', 'Đã hủy': 'badge-cancel' }[status] || 'badge-draft';
+            const cls = { 'Chờ duyệt': 'badge-review', 'Bị trả lại': 'badge-danger', 'Đã ban hành': 'badge-success', 'Đã hủy': 'badge-cancel' }[status] || 'badge-draft';
             return `<span class="badge ${cls}">${esc(status)}</span>`;
         }
         function statusCell(d) {
@@ -3210,7 +3210,7 @@
             if (d.status === ST.DA_HUY && d.cancel) alerts += ctqdCancelHtml(d);
             alerts += ctqdCancelReqHtml(d);
             // [ctqd] Khối Văn bản của Quyết định gốc: chỉ dòng File (Xem file / Tải file); Số, Ngày quyết định, Hình thức ký nằm ở Khối Thông tin chung
-            // Quyết định gốc đã ban hành: Đã ban hành / Đã hủy, hoặc đang trình Hủy QĐ / Sửa chữa, bổ sung QĐ (Chờ duyệt / Bị từ chối)
+            // Quyết định gốc đã ban hành: Đã ban hành / Đã hủy, hoặc đang trình Hủy QĐ / Sửa chữa, bổ sung QĐ (Chờ duyệt / Bị trả lại)
             const issued = !!d.signedFile && ([ST.DA_BH, ST.DA_HUY].includes(d.status) || (!!d.wfKind && d.wfKind !== KIND_QD));
             const signedSign = d.digitalSign ? `Ký số trên hệ thống<br><span style="font-size:12px; color:var(--text-muted);">${esc(d.digitalSign.cert)} - ${esc(d.digitalSign.at)}</span>` : esc(signText);
             const docBlock = ctqdDocBlock(d, issued);
@@ -3342,7 +3342,7 @@
         function openForm(id) {
             syncFromWorkflow();
             const d = id ? getDec(id) : null;
-            if (id && (!d || d.status !== ST.TRA_LAI)) { showToast('Chỉ cập nhật Quyết định ở trạng thái Bị từ chối.', 'error'); return; }
+            if (id && (!d || d.status !== ST.TRA_LAI)) { showToast('Chỉ cập nhật Quyết định ở trạng thái Bị trả lại.', 'error'); return; }
             form = { id: d ? d.id : null, claimCode: d ? d.claimCode : '', unitId: d ? d.unitId : '', items: [], advance: 0, uploadedName: '' };
             clearInvalid($('qdFormPanel'));
             $('qdFormTitle').innerHTML = `<i class="fa-solid fa-file-invoice"></i> ${d ? 'CẬP NHẬT QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG' : 'TẠO MỚI QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG'}`;
@@ -3935,7 +3935,7 @@
             if (window.flatpickr && !$('qsOffDate')._flatpickr) flatpickr('#qsOffDate', { dateFormat: 'd/m/Y', allowInput: true });
             ['qsDocDate', 'qsOffDate'].forEach(id => { const fp = $(id)._flatpickr; if (fp) fp.setDate($(id).value, false, 'd/m/Y'); });
             qsRenderOff();
-            // Tài liệu kèm theo: lưu theo lần trình; trình lại (Bị từ chối) điền lại dữ liệu lần trình trước
+            // Tài liệu kèm theo: lưu theo lần trình; trình lại (Bị trả lại) điền lại dữ liệu lần trình trước
             if (typeof tlktMount === 'function') tlktMount('qdgq', 'qdgqTlkt', { required: false, rows: (sd && sd.attachments) || [] });
             qsSetDocSrc('gen');
             qsSetMethod('Ký số');
@@ -4163,7 +4163,7 @@
         }
 
         // ---------------- Tài liệu kèm theo (Hủy QĐ: bắt buộc; Sửa chữa, bổ sung QĐ: không bắt buộc) & Trình lại ----------------
-        // Trình lại (Bị từ chối): điền lại đúng dữ liệu lần trình trước - nguồn tệp, tệp văn bản trình ký, vị trí ô ký, Nội dung trình, Tài liệu kèm theo
+        // Trình lại (Bị trả lại): điền lại đúng dữ liệu lần trình trước - nguồn tệp, tệp văn bản trình ký, vị trí ô ký, Nội dung trình, Tài liệu kèm theo
         function tlktQdRestore(st, p, prev, sd, required) {
             if (prev) {
                 const src = sd.docSrc || (prev.draftDoc && prev.draftDoc.source === 'uploaded' ? 'upload' : 'gen');
@@ -4210,7 +4210,7 @@
             const info = $('hqdInfo');
             info.className = 'scb-info' + (resubmit && d.returned ? ' returned' : '');
             info.innerHTML = `<div><i class="fa-solid fa-file-lines"></i> Quyết định bị hủy: số <b>${esc(d.decNo || '-')}</b> ngày <b>${esc(d.issueDate || '-')}</b> - ${esc(unitLabel(d))}</div>`
-                + (resubmit && d.returned ? `<div style="margin-top:4px;"><i class="fa-solid fa-circle-exclamation"></i> Bị từ chối bởi${esc(W.userName(d.returned.by))} (${esc(d.returned.at)}): ${esc(d.returned.reason)}</div>` : '');
+                + (resubmit && d.returned ? `<div style="margin-top:4px;"><i class="fa-solid fa-circle-exclamation"></i> Bị trả lại bởi${esc(W.userName(d.returned.by))} (${esc(d.returned.at)}): ${esc(d.returned.reason)}</div>` : '');
             $('hqdDocNo').value = sd.docNo || '     /QĐ-';
             $('hqdDocDate').value = sd.docDate || W.dateText();
             $('hqdCanCu').value = sd.canCu || HQD_CAN_CU_DEFAULT;
@@ -4505,7 +4505,7 @@
             const info = $('scbInfo');
             info.className = 'scb-info' + (resubmit && d.returned ? ' returned' : '');
             info.innerHTML = `<div><i class="fa-solid fa-file-lines"></i> Quyết định được sửa chữa, bổ sung: số <b>${esc(d.decNo || '-')}</b> ngày <b>${esc(d.issueDate || '-')}</b> - ${esc(unitLabel(d))}</div>`
-                + (resubmit && d.returned ? `<div style="margin-top:4px;"><i class="fa-solid fa-circle-exclamation"></i> Bị từ chối bởi${esc(W.userName(d.returned.by))} (${esc(d.returned.at)}): ${esc(d.returned.reason)}</div>` : '');
+                + (resubmit && d.returned ? `<div style="margin-top:4px;"><i class="fa-solid fa-circle-exclamation"></i> Bị trả lại bởi${esc(W.userName(d.returned.by))} (${esc(d.returned.at)}): ${esc(d.returned.reason)}</div>` : '');
             $('scbDocNo').value = sd.docNo || '     /QĐ-';
             $('scbDocDate').value = sd.docDate || W.dateText();
             $('scbContent').value = prev && prev.content ? prev.content : scbContentDefault(d);
@@ -5115,7 +5115,7 @@
         });
         window.addEventListener('storage', e => { if (e.key === W.KEYS.RECORDS || e.key === KEY_DEC) { decisions = loadDecisions(); if ($('contentListDecisions').style.display !== 'none') showList(); } });
     </script>
-    <script src="quyet_dinh_gqbt_ctqd.js?v=20261027hl2"></script>
+    <script src="quyet_dinh_gqbt_ctqd.js?v=20261028tl1"></script>
     <!-- [hlqd] Cập nhật hiệu lực Quyết định giải quyết bồi thường (Có hiệu lực / Không có hiệu lực) -->
     <script src="quyet_dinh_gqbt_hlqd.js?v=20261027hlqd2"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>

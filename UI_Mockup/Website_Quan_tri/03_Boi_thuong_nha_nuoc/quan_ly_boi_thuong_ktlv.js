@@ -88,17 +88,17 @@ function ktlvSignMethod(claim, sd) {
     if (claim.signingMethod === 'offline') return 'Ký ngoài';
     return (sd && sd.method) || '';
 }
-// Khối Thông tin không thụ lý hồ sơ (Không thụ lý / Đã chuyển CQGQBT do không thụ lý KTL_01 / Chờ duyệt / Bị từ chối)
+// Khối Thông tin không thụ lý hồ sơ (Không thụ lý / Đã chuyển CQGQBT do không thụ lý KTL_01 / Chờ duyệt / Bị trả lại)
 function ktlvBlockHtml(claim, caseSt, rec, W) {
     if (!claim) return '';
     var reason = claim.ktlReasonName || (claim.trinhDuyet && claim.trinhDuyet.type === 'Không thụ lý' ? claim.trinhDuyet.reasonText : '');
-    if (!reason || ['Không thụ lý', 'Đã chuyển CQGQBT', 'Chờ duyệt', 'Bị từ chối'].indexOf(caseSt) < 0) return '';
+    if (!reason || ['Không thụ lý', 'Đã chuyển CQGQBT', 'Chờ duyệt', 'Bị trả lại'].indexOf(caseSt) < 0) return '';
     ktlvCss();
     var a = rec && rec.approval && rec.approval.kind === 'Không thụ lý' ? rec.approval : null;
     var sd = a && a.signDoc;
     var issued = caseSt === 'Không thụ lý' || (caseSt === 'Đã chuyển CQGQBT' && claim.ktlReasonCode === 'KTL_01');
-    // Badge tiêu đề chỉ khi Chờ duyệt / Bị từ chối; văn bản đã ban hành thể hiện bằng nhãn cạnh tên file
-    var stTxt = issued ? '' : (caseSt === 'Bị từ chối' ? 'Bị từ chối' : 'Chờ duyệt');
+    // Badge tiêu đề chỉ khi Chờ duyệt / Bị trả lại; văn bản đã ban hành thể hiện bằng nhãn cạnh tên file
+    var stTxt = issued ? '' : (caseSt === 'Bị trả lại' ? 'Bị trả lại' : 'Chờ duyệt');
     var atts = (sd && sd.attachments && sd.attachments.length ? sd.attachments : null) || claim.ktlAttachments;
     var h = '<div class="ktlv-card" id="ktlvInfoBlock"><div class="ktlv-title"><i class="fa-solid fa-circle-exclamation"></i> Thông tin không thụ lý hồ sơ' + (stTxt ? '<span class="ktlv-st">' + ktlvE(stTxt) + '</span>' : '') + '</div><div class="ktlv-grid">';
     h += ktlvField('Lý do không thụ lý', reason, true);
@@ -116,7 +116,7 @@ function ktlvBlockHtml(claim, caseSt, rec, W) {
         h += ktlvFileField('Thông báo không thụ lý', claim.signedFile || tr.signedFile || (sd && sd.signedFile) || '', 'Đã ban hành');
         h += ktlvDocsSplit(atts, rec, claim);
     } else {
-        // Chờ duyệt / Bị từ chối: bản dự thảo của lần trình
+        // Chờ duyệt / Bị trả lại: bản dự thảo của lần trình
         var dd = a && a.draftDoc;
         var draft = (sd && sd.file) || (dd && (dd.source === 'uploaded' ? dd.uploadedName : dd.generatedName)) || claim.ktlDraftFile || '';
         h += ktlvFileField('Thông báo không thụ lý', draft, 'Bản dự thảo');

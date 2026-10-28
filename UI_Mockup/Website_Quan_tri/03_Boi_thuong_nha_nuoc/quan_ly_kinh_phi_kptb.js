@@ -3,15 +3,15 @@
  * - Ban hành Quyết định giải quyết bồi thường -> hệ thống tạo 01 bản ghi Loại "Chi trả tiền bồi thường" trạng thái "Chờ thông báo chi trả"
  *   (Module Quyết định ghi hàng đợi 'btnn_kptb_qd_issued_v1'; màn hình này nhận hàng đợi khi tải trang).
  * - Chờ thông báo chi trả: Trình thông báo chi trả | Đề nghị cấp bổ sung kinh phí (-> "Đề nghị cấp bổ sung kinh phí").
- * - Đề nghị cấp bổ sung kinh phí / Bị từ chối: Trình thông báo chi trả.
+ * - Đề nghị cấp bổ sung kinh phí / Bị trả lại: Trình thông báo chi trả.
  * - Trình (Ký số) -> "Chờ duyệt" (Loại trình "Thông báo chi trả") -> Lãnh đạo được giao Ký duyệt theo luồng;
- *   cấp cuối ký số -> "Chờ chi trả"; Từ chối -> "Bị từ chối". Ký ngoài: đính kèm PDF đã ký -> Ban hành văn bản -> "Chờ chi trả".
+ *   cấp cuối ký số -> "Chờ chi trả"; Từ chối -> "Bị trả lại". Ký ngoài: đính kèm PDF đã ký -> Ban hành văn bản -> "Chờ chi trả".
  * - Chờ chi trả: Cập nhật chi trả -> "Hoàn thành".
  * Id/hàm prefix kptb. Mockup tĩnh: chỉ kiểm tra trống trường bắt buộc.
  */
 const KPTB_TYPE = 'Chi trả tiền bồi thường';
 const KPTB_KIND = 'Thông báo chi trả'; // Loại trình (phân hệ chỉ gồm "Thông báo chi trả", "QĐ tạm ứng kinh phí")
-const KPTB_ST = { WAIT: 'Chờ thông báo chi trả', SUPP: 'Đề nghị cấp bổ sung kinh phí', REVIEW: 'Chờ duyệt', REJECT: 'Bị từ chối', PAY: 'Chờ chi trả', DONE: 'Hoàn thành' };
+const KPTB_ST = { WAIT: 'Chờ thông báo chi trả', SUPP: 'Đề nghị cấp bổ sung kinh phí', REVIEW: 'Chờ duyệt', REJECT: 'Bị trả lại', PAY: 'Chờ chi trả', DONE: 'Hoàn thành' };
 const KPTB_QUEUE_KEY = 'btnn_kptb_qd_issued_v1';
 const KPTB_CASH = 'Nhận tiền mặt';
 const KPTB_TRANSFER = 'Nhận qua chuyển khoản';
@@ -1459,7 +1459,7 @@ function kptbDecorateTable() {
         const item = proposalsList.find(p => p.code === code && kptbIs(p));
         if (!item) return;
         // Loại kinh phí, Cán bộ xử lý ("-" khi trống): hiển thị tại lưới MH01 (renderProposalsTable)
-        // Dòng phụ Loại trình dưới badge (Chờ duyệt / Bị từ chối), đồng bộ màn Quyết định GQBT
+        // Dòng phụ Loại trình dưới badge (Chờ duyệt / Bị trả lại), đồng bộ màn Quyết định GQBT
         if (item.status === KPTB_ST.REVIEW || item.status === KPTB_ST.REJECT) stCell.insertAdjacentHTML('beforeend', `<div class="wf-sub${item.status === KPTB_ST.REJECT ? ' returned' : ''}">${kpEsc(KPTB_KIND)}</div>`);
         if (isLeader) { const box = actCell.querySelector('.action-flex'); if (box) box.innerHTML = kptbLeaderActionsHtml(item); }
     });

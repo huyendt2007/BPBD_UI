@@ -34,7 +34,7 @@
         'body .uxu-btn-excel { background: #FFFFFF !important; color: #334155 !important; border: 1px solid #CBD5E1 !important; box-shadow: none !important; cursor: pointer !important; }',
         'body .uxu-btn-excel:hover { background: #F0FDF4 !important; border-color: #86EFAC !important; color: #166534 !important; }',
         'body .uxu-btn-excel > i { color: #16A34A !important; font-size: 14px !important; margin: 0 !important; }',
-        /* 5. Cột Trạng thái: dòng phụ Loại trình dưới badge Chờ duyệt / Bị từ chối - chữ xám trung tính (badge giữ màu theo trạng thái) */
+        /* 5. Cột Trạng thái: dòng phụ Loại trình dưới badge Chờ duyệt / Bị trả lại - chữ xám trung tính (badge giữ màu theo trạng thái) */
         'body .wf-sub, body .wf-sub.returned, body .approval-sub, body .gq-sub, body .uxu-sub { color: #64748b !important; }',
         /* 4. Khối Người dùng giả lập */
         /* Neo theo đầu trang (cuộn cùng trang), không nổi đè lên lưới/nút khi cuộn */

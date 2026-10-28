@@ -582,7 +582,7 @@
                     <option value="">-- Tất cả trạng thái --</option>
                     <option value="Chờ tiếp nhận">Chờ tiếp nhận</option>
                     <option value="Chờ duyệt">Chờ duyệt</option>
-                    <option value="Bị từ chối">Bị từ chối</option>
+                    <option value="Bị trả lại">Bị trả lại</option>
                     <option value="Cử người giải quyết bồi thường">Cử người giải quyết bồi thường</option>
                     <option value="Xác minh thiệt hại">Xác minh thiệt hại</option>
                     <option value="Thương lượng">Thương lượng</option>
@@ -1092,7 +1092,7 @@
                 else if (item.trangThai === "Hoàn thành") badgeClass = "badge-success";
                 else if (["Chờ tiếp nhận", "Chờ duyệt", "Cử người giải quyết bồi thường", "Chờ ban hành QĐ"].includes(item.trangThai)) badgeClass = "badge-pending";
                 else if (["Yêu cầu bổ sung", "Thương lượng", "Xác minh thiệt hại", "Hoãn giải quyết", "Hoãn phục hồi danh dự"].includes(item.trangThai)) badgeClass = "badge-warning";
-                else if (["Bị từ chối", "Không thụ lý", "Đình chỉ giải quyết", "Từ chối phục hồi danh dự"].includes(item.trangThai)) badgeClass = "badge-danger";
+                else if (["Bị trả lại", "Không thụ lý", "Đình chỉ giải quyết", "Từ chối phục hồi danh dự"].includes(item.trangThai)) badgeClass = "badge-danger";
                 tdStatus.innerHTML = `<span class="badge ${badgeClass}">${item.trangThai}</span>`;
                 tr.appendChild(tdStatus);
 

@@ -9,7 +9,7 @@
  *   liên thông Kinh phí theo lựa chọn (quan_ly_kinh_phi_kpdc.js)
  * - Tệp văn bản trình ký: Sinh văn bản theo mẫu 25/BTNN | Tải lên từ máy; Tài liệu kèm theo (chỉ Ký số, không bắt buộc)
  * - Trình Lãnh đạo: Loại trình "Đình chỉ giải quyết bồi thường" -> Chờ duyệt; Lãnh đạo Ký duyệt / Từ chối tại màn chung (gqld);
- *   cấp cuối ký duyệt -> "Đình chỉ giải quyết"; từ chối -> "Bị từ chối" (Cập nhật -> mở lại popup, điền lại toàn bộ dữ liệu lần trình trước)
+ *   cấp cuối ký duyệt -> "Đình chỉ giải quyết"; từ chối -> "Bị trả lại" (Cập nhật -> mở lại popup, điền lại toàn bộ dữ liệu lần trình trước)
  * - Ký ngoài: đính kèm PDF đã ký -> xác nhận -> Ban hành văn bản -> "Đình chỉ giải quyết"
  * Dùng các tiện ích sẵn có của quan_ly_boi_thuong.html (gqW, gqClaim, gqRecord, gqSubmit, gqSign*, ktlx*, tlktGqRestore, tlktGqExtra).
  */
@@ -84,7 +84,7 @@ function gqthToggle(p) {
     gqthClearErr(p, 'ThuHoi');
     if (!no) gqthClearErr(p, 'ThuHoiReason');
 }
-// Hiển thị trường theo bản ghi kinh phí của vụ việc; trình lại (Bị từ chối): điền lại lựa chọn + lý do lần trình trước
+// Hiển thị trường theo bản ghi kinh phí của vụ việc; trình lại (Bị trả lại): điền lại lựa chọn + lý do lần trình trước
 function gqthRender(p, claim, prevSd) {
     var act = dcgqActiveList(claim);
     var paid = gqthPaid[p] = act.filter(dcgqIsPaidItem);
@@ -315,15 +315,15 @@ function dcgqRenderAdvance() {
 }
 
 // ---------- Mở / đóng ----------
-// Mở từ thao tác "Đình chỉ giải quyết" (Thao tác khác) hoặc "Cập nhật" hồ sơ Bị từ chối có Loại trình "Đình chỉ giải quyết"
-// Trạng thái Giải quyết YCBT được Đình chỉ giải quyết: ngoài các trạng thái này chặn mở popup (trừ Cập nhật hồ sơ Bị từ chối Loại trình Đình chỉ)
+// Mở từ thao tác "Đình chỉ giải quyết" (Thao tác khác) hoặc "Cập nhật" hồ sơ Bị trả lại có Loại trình "Đình chỉ giải quyết"
+// Trạng thái Giải quyết YCBT được Đình chỉ giải quyết: ngoài các trạng thái này chặn mở popup (trừ Cập nhật hồ sơ Bị trả lại Loại trình Đình chỉ)
 var DCGQ_SOURCE = ['Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoàn thành'];
 function openDcgqModal(claimId) {
     var claim = gqClaim(claimId);
     if (!claim) return;
     var rec0 = gqRecord(claim);
     var st0 = typeof gqldCaseStatus === 'function' ? gqldCaseStatus(claim) : claim.status;
-    var isRet = !!(rec0 && rec0.status === 'Bị từ chối' && rec0.approval && rec0.approval.kind === DCGQ_KIND);
+    var isRet = !!(rec0 && rec0.status === 'Bị trả lại' && rec0.approval && rec0.approval.kind === DCGQ_KIND);
     if (!isRet && DCGQ_SOURCE.indexOf(st0) < 0) { showToast('Trạng thái hồ sơ hiện tại không cho phép Đình chỉ giải quyết.', 'error'); return; }
     dcgqEnsureModal();
     gqFrameFull(true);
@@ -332,7 +332,7 @@ function openDcgqModal(claimId) {
     dcgqOfflineFile = null;
     var W = gqW();
     var rec = gqRecord(claim);
-    var prev = rec && rec.status === 'Bị từ chối' && rec.approval && rec.approval.kind === DCGQ_KIND ? rec.approval : null;
+    var prev = rec && rec.status === 'Bị trả lại' && rec.approval && rec.approval.kind === DCGQ_KIND ? rec.approval : null;
     var sd = (prev && prev.signDoc) || {};
     var ret = prev ? (rec.returned || {}) : null;
     dcgqEl('dcgqReturnedAlertBlock').style.display = prev ? 'block' : 'none';
@@ -344,7 +344,7 @@ function openDcgqModal(claimId) {
     dcgqEl('dcgqClaimCode').innerText = (typeof claimVvCode === 'function' && claimVvCode(claim)) || claim.code || '--';
     dcgqEl('dcgqClaimNYC').innerText = getClaimRequesterName(claim) || '--';
     dcgqEl('dcgqClaimAgency').innerText = claim.agency || '--';
-    // Thông tin đình chỉ: lần trình trước (Bị từ chối) hoặc trống
+    // Thông tin đình chỉ: lần trình trước (Bị trả lại) hoặc trống
     dcgqEl('dcgqReason').value = sd.reasonCode || '';
     dcgqEl('dcgqDetail').value = sd.detail || '';
     dcgqUpdateCounter();
@@ -543,7 +543,7 @@ function dcgqGoStep2() {
 
 // ---------- Trình / Ban hành ----------
 // Trạng thái trước khi đình chỉ: trạng thái vụ việc lúc trình/ban hành (Cử người giải quyết bồi thường, Xác minh thiệt hại,
-// Thương lượng, Chờ ban hành QĐ, Chờ chi trả, Hoàn thành; dữ liệu cũ: Yêu cầu bổ sung, Hoãn giải quyết); trình lại sau "Bị từ chối": giữ trạng thái trước của lần trình đầu
+// Thương lượng, Chờ ban hành QĐ, Chờ chi trả, Hoàn thành; dữ liệu cũ: Yêu cầu bổ sung, Hoãn giải quyết); trình lại sau "Bị trả lại": giữ trạng thái trước của lần trình đầu
 var DCGQ_STEP_SOURCE = ['Yêu cầu bổ sung', 'Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoàn thành'];
 function dcgqPrevStatus(claim) {
     var st = typeof gqldCaseStatus === 'function' ? gqldCaseStatus(claim) : claim.status;

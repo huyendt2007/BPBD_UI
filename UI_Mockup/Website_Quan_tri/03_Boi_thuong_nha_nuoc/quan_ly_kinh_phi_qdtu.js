@@ -5,7 +5,7 @@
  *   Xác minh thiệt hại, Thương lượng, Chờ ban hành QĐ; thông tin mặc định theo hồ sơ vụ việc, cho phép sửa.
  * - Tiếp tục -> Popup Trình ký Quyết định tạm ứng kinh phí (Ký số 02 bước / Ký ngoài Ban hành văn bản).
  * - Trình (Ký số) -> bản ghi Loại "Cấp tạm ứng" (Đề nghị tạm ứng) "Chờ duyệt", Loại trình "Quyết định tạm ứng kinh phí";
- *   Lãnh đạo được giao Ký duyệt theo luồng; cấp cuối ký số -> "Chờ chi trả"; Từ chối -> "Bị từ chối" (Cập nhật -> trình lại).
+ *   Lãnh đạo được giao Ký duyệt theo luồng; cấp cuối ký số -> "Chờ chi trả"; Từ chối -> "Bị trả lại" (Cập nhật -> trình lại).
  *   Ký ngoài: Ban hành văn bản -> "Chờ chi trả". Chờ chi trả -> Cập nhật chi trả (MH03 sẵn có) -> "Hoàn thành".
  * - Điều 2 (người nhận tạm ứng) chỉ có khi Người nhận khác Người yêu cầu; không có Điều 2 thì đánh số lại Điều 3->2, 4->3, 5->4
  *   và Nơi nhận "Như Điều 5" -> "Như Điều 4".
@@ -222,7 +222,7 @@ const QDTU_EXTRA_CSS = [
 ].join('\n');
 const QDTU_TYPE = 'Cấp tạm ứng';
 const QDTU_KIND = 'QĐ tạm ứng kinh phí'; // Loại trình (phân hệ chỉ gồm "Thông báo chi trả", "QĐ tạm ứng kinh phí")
-const QDTU_ST = { REVIEW: 'Chờ duyệt', REJECT: 'Bị từ chối', PAY: 'Chờ chi trả', DONE: 'Hoàn thành' };
+const QDTU_ST = { REVIEW: 'Chờ duyệt', REJECT: 'Bị trả lại', PAY: 'Chờ chi trả', DONE: 'Hoàn thành' };
 // Trạng thái vụ việc (17 Trạng thái vụ việc GQ YCBT) được phép Tạo Quyết định tạm ứng
 const QDTU_ELIGIBLE = ['Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ'];
 // Chuẩn hóa trạng thái cũ trong localStorage -> tên mới (chỉ dùng khi đọc dữ liệu)
@@ -330,7 +330,7 @@ function kpcdHasAdvance(c) { return !!c && (c.needAdvance === true || (qdtuNum(c
 function qdtuEligibleClaims() {
     return qdtuAllClaims().filter(c => qdtuIsMoneyClaim(c) && kpcdHasAdvance(c) && QDTU_ELIGIBLE.includes(qdtuNormStatus(c.status)));
 }
-// Cập nhật QĐ tạm ứng Bị từ chối: vụ việc phải còn ở trạng thái QDTU_ELIGIBLE (không tìm thấy hồ sơ thì không chặn)
+// Cập nhật QĐ tạm ứng Bị trả lại: vụ việc phải còn ở trạng thái QDTU_ELIGIBLE (không tìm thấy hồ sơ thì không chặn)
 const QDTU_MSG_NOT_ELIGIBLE = 'Vụ việc không còn ở trạng thái được phép tạo Quyết định tạm ứng.';
 function qdtuClaimStillEligible(code) {
     const c = qdtuAllClaims().find(x => x && x.code === code);
@@ -589,7 +589,7 @@ function qdtuShowPage(on) {
     if (panel) panel.style.display = on ? 'flex' : 'none';
     window.scrollTo(0, 0);
 }
-// Mở màn hình: id rỗng = Tạo mới; id = Cập nhật Quyết định tạm ứng Bị từ chối
+// Mở màn hình: id rỗng = Tạo mới; id = Cập nhật Quyết định tạm ứng Bị trả lại
 function qdtuOpenPage(id) {
     qdtuEnsurePage();
     const item = id ? qdtuFind(id) : null;
@@ -671,7 +671,7 @@ function qdtuSelectClaim(code) {
     QDTU_FIELD_IDS.forEach(x => qdtuMark(x, false));
     qdtuSyncRecNote();
 }
-// Nạp lại dữ liệu đã lưu (Cập nhật Quyết định tạm ứng Bị từ chối)
+// Nạp lại dữ liệu đã lưu (Cập nhật Quyết định tạm ứng Bị trả lại)
 function qdtuLoadForm(f) {
     if (!f) return;
     const c = qdtuClaimByCode(f.claimCode) || { code: f.claimCode, nyc: f.nycName, status: '' };
@@ -743,7 +743,7 @@ function qdtuContinue() {
     const bad = req.filter(id => !String(qdtuEl(id).value || '').trim());
     req.forEach(id => qdtuMark(id, bad.includes(id)));
     if (bad.length) { qdtuEl(bad[0]).focus(); qdtuEl(bad[0]).scrollIntoView({ block: 'center', behavior: 'smooth' }); return; }
-    // Cập nhật QĐ tạm ứng Bị từ chối: chặn khi vụ việc đã chuyển khỏi trạng thái QDTU_ELIGIBLE
+    // Cập nhật QĐ tạm ứng Bị trả lại: chặn khi vụ việc đã chuyển khỏi trạng thái QDTU_ELIGIBLE
     if (qdtuState.id && !qdtuClaimStillEligible(qdtuState.claimCode)) { showToast(QDTU_MSG_NOT_ELIGIBLE, 'error'); return; }
     // Chặn trùng QĐ tạm ứng của vụ việc (Chờ duyệt / Chờ chi trả / Hoàn thành) - MSG-ERR-BTNN-KP-012
     const dup = kpcdQdtuDup(qdtuState.claimCode, qdtuState.id);
@@ -1021,7 +1021,7 @@ function qdtuOpenSign(form) {
     }
     qdtuSgRenderOff();
     qdtuSgSetDocSrc('gen');
-    // Trình lại (Bị từ chối): nguồn tệp, tệp văn bản trình ký, vị trí ô ký, Nội dung trình, Tài liệu kèm theo của lần trình trước
+    // Trình lại (Bị trả lại): nguồn tệp, tệp văn bản trình ký, vị trí ô ký, Nội dung trình, Tài liệu kèm theo của lần trình trước
     if (prev.method === 'Ký số') {
         if (prev.docSrc && prev.docSrc !== 'gen') {
             qdtuSgSetDocSrc(prev.docSrc);
@@ -1626,7 +1626,7 @@ function qdtuDecorateTable() {
         const code = tr.cells[1].innerText.trim();
         const item = proposalsList.find(p => p.code === code && qdtuIs(p));
         if (!item) return;
-        // Dòng phụ Loại trình dưới badge (Chờ duyệt / Bị từ chối), đồng bộ màn Quyết định GQBT
+        // Dòng phụ Loại trình dưới badge (Chờ duyệt / Bị trả lại), đồng bộ màn Quyết định GQBT
         if (item.status === QDTU_ST.REVIEW || item.status === QDTU_ST.REJECT) stCell.insertAdjacentHTML('beforeend', `<div class="wf-sub${item.status === QDTU_ST.REJECT ? ' returned' : ''}">${qdtuEsc(QDTU_KIND)}</div>`);
         if (isLeader) { const box = actCell.querySelector('.action-flex'); if (box) box.innerHTML = qdtuLeaderActionsHtml(item); }
     });

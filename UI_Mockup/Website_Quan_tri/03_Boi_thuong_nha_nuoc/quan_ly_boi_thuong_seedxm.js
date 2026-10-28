@@ -4,13 +4,13 @@
  * - Thương lượng: mới vào bước (504); Tổ chức, đã nhập dở biên bản thương lượng (505)
  * - Chờ chi trả: Cá nhân (506), Tổ chức (507) - đã ban hành Quyết định giải quyết bồi thường
  * - Chờ duyệt theo Nội dung trình: Hoãn GQBT (508), Không thụ lý (509), Tiếp tục GQBT (510), Cử người GQBT (511), Hủy QĐ (512), Sửa chữa, bổ sung QĐ (513)
- * - Bị từ chối theo Nội dung trình: Tạm đình chỉ (514), Không thụ lý (515), Hoãn GQBT (516), Cử người GQBT (517), Quyết định GQBT (518),
+ * - Bị trả lại theo Nội dung trình: Tạm đình chỉ (514), Không thụ lý (515), Hoãn GQBT (516), Cử người GQBT (517), Quyết định GQBT (518),
  *   Chuyển CQGQBT (519), Tiếp tục GQBT (520), Hủy QĐ (521), Sửa chữa, bổ sung QĐ (522)
  * Cơ chế nạp:
  * - Bổ sung vào claimsList sau sdxSeedClaims() theo id / Mã hồ sơ (chỉ thêm bản ghi chưa có, không ghi đè bản ghi đã có).
  * - Mã vụ việc VVBT- do ensureClaimsVuViec() của trang cấp theo sổ đăng ký chung (btnn_vuviec_registry_v1); không cố định số để không trùng mã đã cấp.
  * - Ngày tiếp nhận tính lùi từ hôm nay (không trước ngày 01 của tháng hiện tại -> qua bộ lọc Ngày tiếp nhận mặc định); không có ngày sau hôm nay.
- * - Chờ duyệt / Bị từ chối: trình (và từ chối) phiếu trình qua kho luồng dùng chung khi tải trang nếu hồ sơ luồng chưa ở bước trình.
+ * - Chờ duyệt / Bị trả lại: trình (và từ chối) phiếu trình qua kho luồng dùng chung khi tải trang nếu hồ sơ luồng chưa ở bước trình.
  * - Dời ngày tiếp nhận các hồ sơ Thương lượng / Chờ chi trả mẫu đã có (HS1, HS2, HS3, HS3_A, HS3_B, SDX_TCPH3, HDCV_HGQ_TT) về gần hôm nay;
  *   giữ nguyên trạng thái và nội dung nghiệp vụ.
  */
@@ -267,7 +267,7 @@ function sxmClaims() {
     return L;
 }
 
-// Hồ sơ Chờ duyệt / Bị từ chối theo Nội dung trình (trình qua kho luồng khi tải trang)
+// Hồ sơ Chờ duyệt / Bị trả lại theo Nội dung trình (trình qua kho luồng khi tải trang)
 // base: bước đã qua trước khi trình; pause: dữ liệu Hoãn/Tạm đình chỉ đã ban hành
 var SXM_WF = [
     { id: 'SXM_CD_HGQ', code: 'BT-2026-508', who: 'p5', k: [5, 4], base: 'xac-minh', kind: 'Hoãn giải quyết bồi thường', result: 'Hoãn giải quyết', mode: 'submit', t: 'hgq' },
@@ -380,7 +380,7 @@ function sxmSeedClaims() {
     };
 })();
 
-// 3) Trình (và từ chối) phiếu trình mẫu qua kho luồng dùng chung -> Chờ duyệt / Bị từ chối theo Nội dung trình
+// 3) Trình (và từ chối) phiếu trình mẫu qua kho luồng dùng chung -> Chờ duyệt / Bị trả lại theo Nội dung trình
 function sxmReadDone() { try { return JSON.parse(localStorage.getItem(SXM_KEY_WF) || '{}') || {}; } catch (e) { return {}; } }
 function sxmSeedSubmit() {
     var W = typeof gqW === 'function' ? gqW() : null;
@@ -392,13 +392,13 @@ function sxmSeedSubmit() {
             if (!c) return;
             var rec0 = gqRecord(c);
             // Đã trình mẫu trước đó (hoặc người dùng đã xử lý tiếp): không trình lại
-            if (rec0 && (done[p.code] || rec0.status === 'Chờ duyệt' || rec0.status === 'Bị từ chối' || rec0.approval || rec0.returned)) {
+            if (rec0 && (done[p.code] || rec0.status === 'Chờ duyệt' || rec0.status === 'Bị trả lại' || rec0.approval || rec0.returned)) {
                 // Tải lại trang (claimsList dựng lại từ dữ liệu mẫu): bổ sung lịch sử trình / từ chối theo hồ sơ luồng
                 var dOf = function (at) { var m = /(\d{2}\/\d{2}\/\d{4})/.exec(String(at || '')); return m ? m[1] : today; };
                 (rec0.history || []).forEach(function (h) {
                     var title = h.action === 'Trình phê duyệt' ? 'Trình Lãnh đạo: ' + p.kind : (h.action === 'Từ chối phê duyệt' ? 'Lãnh đạo từ chối: ' + p.kind : '');
                     if (!title || c.timeline.some(function (t) { return t.title === title; })) return;
-                    c.timeline.push({ title: title, date: dOf(h.at), desc: title.indexOf('Trình') === 0 ? 'Trình Lãnh đạo ký duyệt ' + SXM_WF_TEXT[p.t].title + '. Hồ sơ chuyển sang trạng thái [Chờ duyệt].' : 'Lý do: ' + p.rejectReason + '. Hồ sơ chuyển sang trạng thái [Bị từ chối].', status: 'active', officer: h.userName || '' });
+                    c.timeline.push({ title: title, date: dOf(h.at), desc: title.indexOf('Trình') === 0 ? 'Trình Lãnh đạo ký duyệt ' + SXM_WF_TEXT[p.t].title + '. Hồ sơ chuyển sang trạng thái [Chờ duyệt].' : 'Lý do: ' + p.rejectReason + '. Hồ sơ chuyển sang trạng thái [Bị trả lại].', status: 'active', officer: h.userName || '' });
                     changed = true;
                 });
                 return;
@@ -436,9 +436,9 @@ function sxmSeedSubmit() {
                 W.setCurrentUser(assignees[0]);
                 var rr = W.rejectApproval(c.code, p.rejectReason);
                 if (rr && rr.ok) {
-                    c.status = 'Bị từ chối';
+                    c.status = 'Bị trả lại';
                     c.wfReturned = rr.record.returned || null;
-                    c.timeline.push({ title: 'Lãnh đạo từ chối: ' + p.kind, date: today, desc: 'Lý do: ' + p.rejectReason + '. Hồ sơ chuyển sang trạng thái [Bị từ chối].', status: 'active' });
+                    c.timeline.push({ title: 'Lãnh đạo từ chối: ' + p.kind, date: today, desc: 'Lý do: ' + p.rejectReason + '. Hồ sơ chuyển sang trạng thái [Bị trả lại].', status: 'active' });
                 }
             }
             try { gqRecMap[c.code] = W.getRecord(c.code); } catch (e) { /* mockup */ }

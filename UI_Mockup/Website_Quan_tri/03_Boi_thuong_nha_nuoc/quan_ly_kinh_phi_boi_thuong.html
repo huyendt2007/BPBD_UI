@@ -952,7 +952,7 @@
                         <option value="Chờ chi trả">Chờ chi trả</option>
                         <option value="Hoàn thành">Hoàn thành</option>
                         <option value="Trả lại ngân sách nhà nước">Trả lại ngân sách nhà nước</option>
-                        <option value="Bị từ chối">Bị từ chối</option>
+                        <option value="Bị trả lại">Bị trả lại</option>
                         <option value="Chờ thu hồi">Chờ thu hồi</option>
                         <option value="Đã thu hồi">Đã thu hồi</option>
                         <option value="Đã hủy">Đã hủy</option>
@@ -1009,8 +1009,8 @@
                     <button type="button" class="stat-badge-btn" onclick="filterByKpiKinhPhi('Chờ duyệt')" id="kpiBtnPending">
                         Chờ duyệt <span class="count" id="countPending">0</span>
                     </button>
-                    <button type="button" class="stat-badge-btn" onclick="filterByKpiKinhPhi('Bị từ chối')" id="kpiBtnRejected">
-                        Bị từ chối <span class="count" id="countRejected">0</span>
+                    <button type="button" class="stat-badge-btn" onclick="filterByKpiKinhPhi('Bị trả lại')" id="kpiBtnRejected">
+                        Bị trả lại <span class="count" id="countRejected">0</span>
                     </button>
                 </div>
 
@@ -1122,7 +1122,7 @@
                 </div>
             </div>
 
-            <!-- KHỐI LÝ DO BỊ TỪ CHỐI (Hiển thị khi hồ sơ Bị từ chối theo SRS 4.3.3.2.7.2 & 4.3.3.2.4.2) -->
+            <!-- KHỐI LÝ DO BỊ TỪ CHỐI (Hiển thị khi hồ sơ Bị trả lại theo SRS 4.3.3.2.7.2 & 4.3.3.2.4.2) -->
             <div id="blockRejectNotice" style="display: none; background: #FFF5F5; border: 1.5px solid #FCA5A5; border-radius: var(--border-radius-md); padding: 18px 22px; margin-bottom: 22px; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.08);">
                 <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #FECACA; padding-bottom: 10px; margin-bottom: 12px;">
                     <div style="display: flex; align-items: center; gap: 10px; color: #B91C1C; font-weight: 700; font-size: 14.5px;">
@@ -1902,20 +1902,20 @@
 
     <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="quan_ly_kinh_phi_boi_thuong.js?v=20261027s35"></script>
-    <script src="btnn_luong_xu_ly.js?v=20261027s35"></script>
+    <script src="quan_ly_kinh_phi_boi_thuong.js?v=20261028tl1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261028tl1"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
     <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
-    <script src="quan_ly_kinh_phi_kptb.js?v=20261027rc2m"></script>
+    <script src="quan_ly_kinh_phi_kptb.js?v=20261028tl1"></script>
     <!-- [th7] Khoản thiệt hại của bản ghi tạo từ Tòa án (02 cấp): cộng theo nhóm, dòng "Các thiệt hại khác" -->
     <script src="quan_ly_kinh_phi_thkhac.js?v=20261027th7"></script>
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
-    <script src="quan_ly_kinh_phi_qdtu.js?v=20261027q10"></script>
-    <script src="quan_ly_kinh_phi_kpcd.js?v=20261027ccct"></script>
-    <script src="quan_ly_kinh_phi_kpdt.js?v=20261027menu"></script>
-    <script src="quan_ly_kinh_phi_kpdc.js?v=20261027rc2m"></script>
-    <script src="quan_ly_kinh_phi_kpux.js?v=20261027rc3"></script>
+    <script src="quan_ly_kinh_phi_qdtu.js?v=20261028tl1"></script>
+    <script src="quan_ly_kinh_phi_kpcd.js?v=20261028tl1"></script>
+    <script src="quan_ly_kinh_phi_kpdt.js?v=20261028tl1"></script>
+    <script src="quan_ly_kinh_phi_kpdc.js?v=20261028tl1"></script>
+    <script src="quan_ly_kinh_phi_kpux.js?v=20261028tl1"></script>
     <!-- [hlqd] Chặn Trình thông báo chi trả / Cập nhật chi trả khi Quyết định GQBT Không có hiệu lực -->
     <script src="quan_ly_kinh_phi_hlqd.js?v=20261027p8"></script>
 

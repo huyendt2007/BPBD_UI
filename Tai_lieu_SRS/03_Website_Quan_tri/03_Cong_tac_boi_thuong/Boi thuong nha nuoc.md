@@ -433,7 +433,7 @@ Mỗi hồ sơ yêu cầu giải quyết bồi thường được hệ thống �
 *   **Thiết kế Giao diện**: Form nhập thành lập hội đồng, cho phép thêm dòng chọn nhân sự.
 *   **Quy tắc nghiệp vụ**:
     *   *Thời hạn nhắc nhở*: Hệ thống tự động cảnh báo nhắc nhở lập Hội đồng trong vòng **10 ngày** kể từ ngày hoàn tất chi trả tiền bồi thường cho công dân (UC456 đã hoàn thành) (Điều 66.1).
-    *   *Thành phần Hội đồng*: Bắt buộc gán vai trò rõ ràng gồm: Chủ tịch hội đồng (Lãnh đạo cơ quan), 01 Ủy viên đại diện tổ chức công đoàn, 01 Ủy viên là đại diện đơn vị tài chính/kế toán, 01 Ủy viên đại diện đơn vị quản lý cán bộ trực tiếp, Thư ký hội đồng.
+    *   *Thành phần Hội đồng*: Bắt buộc gán vai trò rõ ràng gồm: Chủ tịch hội đồng (Lãnh đạo cơ quan), 01 Ủy viên đại diện tổ chức công đoàn, 01 Ủy viên là đại diện đơn vị tài chính/kế toán, 01 Ủy viên đại diện cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại, Thư ký hội đồng.
 
 ##### UC459: Ký duyệt Quyết định thành lập Hội đồng
 *   **Mục đích**: Thủ trưởng ký ban hành Quyết định thành lập Hội đồng xem xét trách nhiệm hoàn trả chính thức.
@@ -476,7 +476,7 @@ Mỗi hồ sơ yêu cầu giải quyết bồi thường được hệ thống �
     *   *Validate*: Hệ thống tự động kiểm tra số tiền hoàn trả nhập tay của cán bộ xem có vượt mức trần tối đa theo quy định của tháng lương công chức đã khai báo hay không $\rightarrow$ Cảnh báo đỏ nếu vượt trần.
 
 ##### UC465: Cập nhật thực hiện hoàn trả
-*   **Mục đích**: Theo dõi tiến độ thu hồi tiền hoàn trả thực tế từ công chức gây thiệt hại để nộp ngân sách nhà nước.
+*   **Mục đích**: Theo dõi tiến độ thu tiền hoàn trả thực tế từ công chức gây thiệt hại để nộp ngân sách nhà nước.
 *   **Phân quyền**: Chuyên viên giải quyết (phối hợp với Kế toán cơ quan).
 *   **Đặc tả phương thức thu hồi (Điều 68)**:
     *   *Hình thức nộp tiền*: Radio `{Trừ vào lương hàng tháng, Nộp một lần}`.
@@ -516,7 +516,7 @@ Thay vì chuyển trang liên tục, toàn bộ quá trình giải quyết một
 
 ### 4. Phân hệ Hoàn trả (II.3): Reimbursement Calculator & Trực quan hóa công nợ công chức
 *   **Trình tính toán tự động:** Thiết kế giao diện nhập liệu thông tin lương và phân loại lỗi của công chức dưới dạng thanh kéo trượt (Slider) trực quan. Công cụ Reimbursement Calculator tự động tính toán số tiền gợi ý và khóa giới hạn trần tối đa theo quy định pháp luật để ngăn ngừa sai phạm số liệu.
-*   **Bảng theo dõi công nợ lương:** Thiết kế bảng lưới hiển thị danh sách các tháng thu hồi tiền hoàn trả. Kế toán cơ quan chỉ cần tích chọn tháng đã trừ lương $\rightarrow$ Hệ thống tự động ghi nhận số tiền thu hồi lũy kế và trừ vào dư nợ hoàn trả của công chức.
+*   **Bảng theo dõi công nợ lương:** Thiết kế bảng lưới hiển thị danh sách các tháng thu tiền hoàn trả. Kế toán cơ quan chỉ cần tích chọn tháng đã trừ lương $\rightarrow$ Hệ thống tự động ghi nhận số tiền thu hồi lũy kế và trừ vào dư nợ hoàn trả của công chức.
 
 ---
 

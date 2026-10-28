@@ -1538,14 +1538,14 @@
                 else if (item.status === 'Chờ tiếp nhận') badgeClass = 'badge-pending';
                 else if (item.status === 'Yêu cầu bổ sung') badgeClass = 'badge-warning';
                 else if (item.status === 'Chờ thụ lý') badgeClass = 'badge-pending';
-                else if (item.status === 'Bị từ chối' || item.status === 'Từ chối tiếp nhận' || item.status === 'Từ chối thụ lý') badgeClass = 'badge-danger';
+                else if (item.status === 'Bị trả lại' || item.status === 'Từ chối tiếp nhận' || item.status === 'Từ chối thụ lý') badgeClass = 'badge-danger';
                 else if (item.status === 'Thương lượng không thành công') badgeClass = 'badge-danger';
                 else if (item.status === 'Chờ ban hành QĐ') badgeClass = 'badge-warning';
                 else if (item.status === 'Chờ chi trả') badgeClass = 'badge-warning';
 
                 // Fixed slots
                 const isPending = item.status === 'Chờ tiếp nhận';
-                const hasUpdateRights = ['Yêu cầu bổ sung', 'Đang xác minh thiệt hại', 'Đang thương lượng', 'Chờ ban hành QĐ', 'Chờ chi trả', 'Từ chối thụ lý', 'Bị từ chối'].includes(item.status);
+                const hasUpdateRights = ['Yêu cầu bổ sung', 'Đang xác minh thiệt hại', 'Đang thương lượng', 'Chờ ban hành QĐ', 'Chờ chi trả', 'Từ chối thụ lý', 'Bị trả lại'].includes(item.status);
 
                 const currentOfficer = document.getElementById('currentOfficerSelector') ? document.getElementById('currentOfficerSelector').value : 'Nguyễn Văn Chuyên Viên';
                 const isAssignedToOther = (currentRole === 'chuyen-vien') && item.assignedOfficer && (item.assignedOfficer !== currentOfficer);
@@ -1557,7 +1557,7 @@
                     if (isAssignedToOther) {
                         updateBtn = `<button class="icon-btn edit" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Hồ sơ được giao cho cán bộ ${item.assignedOfficer}. Bạn chỉ có quyền Xem."><i class="fa-solid fa-pen-to-square"></i></button>`;
                     } else {
-                        if (item.status === 'Yêu cầu bổ sung' || item.status === 'Từ chối thụ lý' || item.status === 'Bị từ chối') {
+                        if (item.status === 'Yêu cầu bổ sung' || item.status === 'Từ chối thụ lý' || item.status === 'Bị trả lại') {
                             updateBtn = `<button class="icon-btn edit" title="Cập nhật hồ sơ" onclick="event.stopPropagation(); openInlineClaimForm('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
                         } else {
                             updateBtn = `<button class="icon-btn edit" title="Cập nhật hồ sơ" onclick="event.stopPropagation(); showCaseDetail('${item.id}', true)"><i class="fa-solid fa-pen-to-square"></i></button>`;
@@ -2780,7 +2780,7 @@
             const claim = id ? claimsList.find(c => c.id === id) : null;
 
             if (claim) {
-                if (claim.status === 'Từ chối thụ lý' || claim.status === 'Bị từ chối') {
+                if (claim.status === 'Từ chối thụ lý' || claim.status === 'Bị trả lại') {
                     document.getElementById('editFormThulyRejectBlock').style.display = 'block';
                     document.getElementById('editFormRejectReasonText').innerText = claim.rejectReason || 'Không có lý do.';
                     
@@ -2795,7 +2795,7 @@
                     if (histContainer && histList) {
                         histList.innerHTML = '';
                         // Lọc các log bị từ chối
-                        const rejections = (claim.rejectionLog || []).filter(log => log.action === 'Từ chối thụ lý' || log.action === 'Từ chối tiếp nhận' || log.action === 'Bị từ chối');
+                        const rejections = (claim.rejectionLog || []).filter(log => log.action === 'Từ chối thụ lý' || log.action === 'Từ chối tiếp nhận' || log.action === 'Bị trả lại');
                         if (rejections.length > 0) {
                             rejections.forEach((rej, index) => {
                                 const rejDiv = document.createElement('div');
@@ -4048,7 +4048,7 @@
             const claim = claimsList.find(c => c.id === id);
             if (!claim) return;
 
-            if (editMode && (claim.status === 'Yêu cầu bổ sung' || claim.status === 'Từ chối thụ lý' || claim.status === 'Bị từ chối')) {
+            if (editMode && (claim.status === 'Yêu cầu bổ sung' || claim.status === 'Từ chối thụ lý' || claim.status === 'Bị trả lại')) {
                 openInlineClaimForm(id);
                 return;
             }
@@ -4080,7 +4080,7 @@
                 if (claim.status === 'Hoàn thành') badgeClass = 'badge-success';
                 else if (claim.status === 'Chờ tiếp nhận' || claim.status === 'Chờ thụ lý') badgeClass = 'badge-pending';
                 else if (claim.status === 'Yêu cầu bổ sung' || claim.status === 'Chờ ban hành QĐ' || claim.status === 'Chờ chi trả') badgeClass = 'badge-warning';
-                else if (claim.status === 'Bị từ chối' || claim.status === 'Từ chối tiếp nhận' || claim.status === 'Từ chối thụ lý' || claim.status === 'Thương lượng không thành công') badgeClass = 'badge-danger';
+                else if (claim.status === 'Bị trả lại' || claim.status === 'Từ chối tiếp nhận' || claim.status === 'Từ chối thụ lý' || claim.status === 'Thương lượng không thành công') badgeClass = 'badge-danger';
                 
                 badgeEl.className = 'badge ' + badgeClass;
                 badgeEl.innerText = claim.status;
@@ -4254,7 +4254,7 @@
                     break;
 
                 case 'Từ chối thụ lý':
-                case 'Bị từ chối':
+                case 'Bị trả lại':
                     if (currentRole === 'chuyen-vien') {
                         buttonsHtml = `
                             <button class="btn btn-primary" onclick="switchToEditMode('tuthoithuly')"><i class="fa-solid fa-pen-to-square"></i> Cập nhật</button>
@@ -4418,7 +4418,7 @@
             else if (claim.status === 'Chờ tiếp nhận') badgeClass = 'badge-pending';
             else if (claim.status === 'Yêu cầu bổ sung') badgeClass = 'badge-warning';
             else if (claim.status === 'Chờ thụ lý') badgeClass = 'badge-pending';
-            else if (claim.status === 'Bị từ chối') badgeClass = 'badge-danger';
+            else if (claim.status === 'Bị trả lại') badgeClass = 'badge-danger';
             else if (claim.status === 'Thương lượng không thành công') badgeClass = 'badge-danger';
             else if (claim.status === 'Chờ ban hành QĐ') badgeClass = 'badge-warning';
             else if (claim.status === 'Chờ chi trả') badgeClass = 'badge-warning';
@@ -4653,7 +4653,7 @@
             document.getElementById('detThulyAgency').value = claim.agency;
             document.getElementById('detThulyOfficer').value = claim.assignedOfficer || "Chưa phân công";
             
-            const isRejected = (claim.status === 'Bị từ chối' || claim.status === 'Từ chối tiếp nhận' || claim.status === 'Từ chối thụ lý');
+            const isRejected = (claim.status === 'Bị trả lại' || claim.status === 'Từ chối tiếp nhận' || claim.status === 'Từ chối thụ lý');
 
             // Handle rejection block visibility and populate fields
             const rejectBlock = document.getElementById('detThulyRejectBlock');
@@ -5021,7 +5021,7 @@
                 
                 let badgeClass = 'bg-secondary';
                 if (decStatus === 'Chờ ký') badgeClass = 'bg-warning';
-                else if (decStatus === 'Bị từ chối') badgeClass = 'bg-danger';
+                else if (decStatus === 'Bị trả lại') badgeClass = 'bg-danger';
                 else if (decStatus === 'Hoàn thành') badgeClass = 'bg-success';
                 
                 qdRead.innerHTML = `

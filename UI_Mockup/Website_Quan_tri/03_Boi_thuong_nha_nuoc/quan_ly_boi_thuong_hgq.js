@@ -5,7 +5,7 @@
  * - Bước 1 (Form): Hình thức ký (Ký số trên hệ thống | Ký ngoài (Ban hành trực tiếp)), thông tin hoãn / tạm đình chỉ, Tệp văn bản trình ký, Tài liệu kèm theo (chỉ Ký số)
  *   -> nút Tiếp tục (Ký số) -> Bước 2 Trình duyệt: Kéo ô ký & chọn Lãnh đạo từng cấp, Nội dung trình -> Trình Lãnh đạo
  * - Trình: vụ việc "Chờ duyệt", Loại trình "Hoãn giải quyết bồi thường" / "Tạm đình chỉ giải quyết bồi thường";
- *   cấp cuối Ký duyệt -> "Hoãn giải quyết" / "Tạm đình chỉ"; Từ chối -> "Bị từ chối" (Cập nhật -> mở lại popup, điền lại dữ liệu lần trình trước)
+ *   cấp cuối Ký duyệt -> "Hoãn giải quyết" / "Tạm đình chỉ"; Từ chối -> "Bị trả lại" (Cập nhật -> mở lại popup, điền lại dữ liệu lần trình trước)
  * - Ký ngoài: tải PDF đã ký -> xác nhận -> ban hành trực tiếp
  * - Chỉ áp dụng nhánh Giải quyết bồi thường thiệt hại (tiền); nhánh Phục hồi danh dự (phddStatus) giữ nguyên
  * Dùng tiện ích sẵn có của quan_ly_boi_thuong.html (gqW, gqClaim, gqRecord, gqSubmit, gqSign*, ktlx*, tlktGqRestore, tlktGqExtra) và dcgqHeadTitle (quan_ly_boi_thuong_dcgq.js).
@@ -169,7 +169,7 @@ function hgqFlat(id, def, cb) {
 }
 
 // ---------- Mở / đóng ----------
-// Mở từ Thao tác khác "Hoãn giải quyết" / "Tạm đình chỉ" hoặc "Cập nhật" hồ sơ Bị từ chối có Loại trình tương ứng
+// Mở từ Thao tác khác "Hoãn giải quyết" / "Tạm đình chỉ" hoặc "Cập nhật" hồ sơ Bị trả lại có Loại trình tương ứng
 function openHgqModal(claimId) { hgqOpen('hgq', claimId); }
 function openHgqtModal(claimId) { hgqOpen('hgqt', claimId); }
 function hgqOpen(p, claimId) {
@@ -178,7 +178,7 @@ function hgqOpen(p, claimId) {
     var cfg = HGQ_CFG[p];
     var W = gqW();
     var rec = gqRecord(claim);
-    var prev = rec && rec.status === 'Bị từ chối' && rec.approval && rec.approval.kind === cfg.kind ? rec.approval : null;
+    var prev = rec && rec.status === 'Bị trả lại' && rec.approval && rec.approval.kind === cfg.kind ? rec.approval : null;
     var st = typeof gqldCaseStatus === 'function' ? gqldCaseStatus(claim) : claim.status;
     if (!prev && HGQ_SOURCE_OF[p].indexOf(st) < 0) { showToast('Trạng thái hồ sơ hiện tại không cho phép ' + (p === 'hgq' ? 'Hoãn giải quyết' : 'Tạm đình chỉ') + '.', 'error'); return; }
     hgqEnsureModal(p);

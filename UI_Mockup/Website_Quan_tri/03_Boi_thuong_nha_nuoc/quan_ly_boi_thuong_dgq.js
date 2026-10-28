@@ -4,13 +4,13 @@
  *   Thương lượng, Chờ ban hành QĐ; trạng thái khác: mục mờ trong Thao tác khác, không hiển thị tại thanh thao tác MH05.
  * - Bố cục giống Popup Đình chỉ giải quyết (quan_ly_boi_thuong_dcgq.js): Hình thức ký (Ký số 02 bước | Ký ngoài), Thông tin dừng giải quyết,
  *   Tệp văn bản trình ký (Sinh văn bản theo mẫu 05/BTNN | Tải lên từ máy), Tài liệu ban hành / không ban hành kèm theo (tlktMount).
- * - Trình: Loại trình "Dừng giải quyết bồi thường" -> Chờ duyệt; Lãnh đạo Từ chối -> Bị từ chối (Cập nhật: điền lại dữ liệu lần trình trước);
+ * - Trình: Loại trình "Dừng giải quyết bồi thường" -> Chờ duyệt; Lãnh đạo Từ chối -> Bị trả lại (Cập nhật: điền lại dữ liệu lần trình trước);
  *   cấp cuối Ký duyệt / Ký ngoài ban hành -> "Dừng giải quyết" (trạng thái kết thúc, tab Vụ việc đã xử lý).
  * - Thu hồi kinh phí bồi thường đã chi (Thu hồi | Không thu hồi + Lý do): dùng chung gqth* (quan_ly_boi_thuong_dcgq.js), lưu dungGiaiQuyet / phiếu trình;
  *   liên thông Kinh phí theo lựa chọn (quan_ly_kinh_phi_kpdc.js, nguồn dungGiaiQuyet).
  * - Chỉ dừng nhánh Giải quyết bồi thường thiệt hại; nhánh Phục hồi danh dự giữ nguyên (như Đình chỉ giải quyết).
  * - Khối xem chi tiết "Thông tin dừng giải quyết": mở rộng quan_ly_boi_thuong_hdcv.js (HDCV_TYPES.dgq, hdcvEntries, hdcvEntryHtml).
- * - Dữ liệu mẫu: BT-2026-541 (Chờ duyệt), BT-2026-542 (Bị từ chối), BT-2026-543 (Dừng giải quyết - Ký số), BT-2026-544 (Dừng giải quyết - Ký ngoài);
+ * - Dữ liệu mẫu: BT-2026-541 (Chờ duyệt), BT-2026-542 (Bị trả lại), BT-2026-543 (Dừng giải quyết - Ký số), BT-2026-544 (Dừng giải quyết - Ký ngoài);
  *   gộp theo Mã hồ sơ, theo phiên bản DGQ_SEED_VER.
  * Đặt sau quan_ly_boi_thuong_dcgq.js, quan_ly_boi_thuong_hdcv.js.
  */
@@ -227,13 +227,13 @@ function dgqRenderThuLy() {
 }
 
 // ---------- Mở / đóng ----------
-// Mở từ Thao tác khác "Dừng giải quyết" hoặc "Cập nhật" hồ sơ Bị từ chối có Loại trình "Dừng giải quyết"
+// Mở từ Thao tác khác "Dừng giải quyết" hoặc "Cập nhật" hồ sơ Bị trả lại có Loại trình "Dừng giải quyết"
 function openDgqModal(claimId) {
     var claim = gqClaim(claimId);
     if (!claim) return;
     var W = gqW();
     var rec = gqRecord(claim);
-    var prev = rec && rec.status === 'Bị từ chối' && rec.approval && rec.approval.kind === DGQ_KIND ? rec.approval : null;
+    var prev = rec && rec.status === 'Bị trả lại' && rec.approval && rec.approval.kind === DGQ_KIND ? rec.approval : null;
     if (!prev && DGQ_SOURCE.indexOf(dgqCaseStatus(claim)) < 0) { showToast('Trạng thái hồ sơ hiện tại không cho phép Dừng giải quyết.', 'error'); return; }
     dgqEnsureModal();
     gqFrameFull(true);
@@ -249,7 +249,7 @@ function openDgqModal(claimId) {
     dgqEl('dgqClaimCode').innerText = dgqVvCode(claim) || '--';
     dgqEl('dgqClaimNYC').innerText = getClaimRequesterName(claim) || '--';
     dgqEl('dgqClaimAgency').innerText = claim.agency || '--';
-    // Thông tin dừng giải quyết: lần trình trước (Bị từ chối) hoặc trống
+    // Thông tin dừng giải quyết: lần trình trước (Bị trả lại) hoặc trống
     dgqEl('dgqCanCu').value = sd.canCuCode || '';
     dgqEl('dgqLyDo').value = sd.lyDo || '';
     dgqAutoLyDo = sd.lyDo ? '' : dgqDefaultLyDo(sd.canCuCode);
@@ -452,7 +452,7 @@ function dgqGoStep2() {
 }
 
 // ---------- Trình / Ban hành ----------
-// Trạng thái trước khi dừng: trạng thái lúc trình / ban hành; trình lại sau "Bị từ chối": giữ trạng thái trước của lần trình đầu
+// Trạng thái trước khi dừng: trạng thái lúc trình / ban hành; trình lại sau "Bị trả lại": giữ trạng thái trước của lần trình đầu
 function dgqPrevStatus(claim) {
     var st = dgqCaseStatus(claim);
     if (DGQ_SOURCE.indexOf(st) >= 0) return st;
@@ -560,7 +560,7 @@ function dgqIssueOffline() {
         return e && e.t === 'dgq' ? dgqEntryHtml(e, withTitle) : origHtml.apply(this, arguments);
     };
 })();
-// Entry: đã ban hành (Dừng giải quyết) | Chờ duyệt / Bị từ chối (phiếu trình Loại trình "Dừng giải quyết")
+// Entry: đã ban hành (Dừng giải quyết) | Chờ duyệt / Bị trả lại (phiếu trình Loại trình "Dừng giải quyết")
 function dgqEntry(claim) {
     var st = canonicalClaimStatus(claim.status);
     var rec = typeof gqRecord === 'function' ? gqRecord(claim) : null;
@@ -579,7 +579,7 @@ function dgqEntry(claim) {
     }
     if (!a || !rec) return null;
     var pend = st === 'Chờ duyệt' && rec.status === 'Chờ duyệt' && a.kind === DGQ_KIND;
-    var rej = st === 'Bị từ chối' && rec.returned && rec.returned.kind === DGQ_KIND && a.kind === DGQ_KIND;
+    var rej = st === 'Bị trả lại' && rec.returned && rec.returned.kind === DGQ_KIND && a.kind === DGQ_KIND;
     if (!pend && !rej) return null;
     var s = a.signDoc || {}, dd = a.draftDoc || {};
     var draftName = (dd.source === 'uploaded' ? dd.uploadedName : dd.generatedName) || (s.docFileMeta && s.docFileMeta.name) || s.file || '';
@@ -594,7 +594,7 @@ function dgqEntry(claim) {
 function dgqEntryHtml(e, withTitle) {
     if (/^\/?\s*TB-?\s*$/i.test(String(e.docNo || '').trim())) e.docNo = '';
     var h = '<div class="hdcv-entry" data-hdcv-type="dgq">';
-    var stTxt = e.state === 'pending' ? 'Chờ duyệt' : (e.state === 'rejected' ? 'Bị từ chối' : 'Đã ban hành');
+    var stTxt = e.state === 'pending' ? 'Chờ duyệt' : (e.state === 'rejected' ? 'Bị trả lại' : 'Đã ban hành');
     if (withTitle || e.state !== 'issued') h += '<div class="hdcv-sub">Dừng giải quyết yêu cầu bồi thường<small>(' + hdcvE(stTxt) + ')</small></div>';
     h += '<div class="hdcv-grid">' + hdcvField('Số văn bản', e.docNo) + hdcvField('Ngày văn bản', e.docDate) + hdcvField('Hình thức ký', e.signMode === 'Ký ngoài' ? 'Ký ngoài (Ban hành trực tiếp)' : (e.signMode ? 'Ký số trên hệ thống' : ''))
         + hdcvField('Căn cứ dừng giải quyết', e.canCu, true) + hdcvField('Lý do dừng giải quyết', e.lyDo, true) + hdcvField('Biện pháp xử lý hồ sơ', e.bienPhap, true);
@@ -609,7 +609,7 @@ function dgqEntryHtml(e, withTitle) {
 }
 
 // =====================================================================
-// Dữ liệu mẫu: BT-2026-541 Chờ duyệt (Thu hồi) | BT-2026-542 Bị từ chối | BT-2026-543 Dừng giải quyết (Ký số, Thu hồi) | BT-2026-544 Dừng giải quyết (Ký ngoài, Không thu hồi)
+// Dữ liệu mẫu: BT-2026-541 Chờ duyệt (Thu hồi) | BT-2026-542 Bị trả lại | BT-2026-543 Dừng giải quyết (Ký số, Thu hồi) | BT-2026-544 Dừng giải quyết (Ký ngoài, Không thu hồi)
 // =====================================================================
 var DGQ_SEEDS = [
     { id: 'DGQ_CD', code: 'BT-2026-541', nyc: 'Tạ Quang Vinh', mode: 'submit', canCu: 'DGQ_B', prev: 'Xác minh thiệt hại', thuHoi: 'Thu hồi' },
@@ -684,7 +684,7 @@ function dgqSeed() {
             if (s.mode === 'reject' && assignees[0]) {
                 W.setCurrentUser(assignees[0]);
                 var rr = W.rejectApproval(c.code, s.rejectReason);
-                if (rr && rr.ok) { c.status = 'Bị từ chối'; c.wfReturned = rr.record.returned || null; }
+                if (rr && rr.ok) { c.status = 'Bị trả lại'; c.wfReturned = rr.record.returned || null; }
             }
             if (s.mode === 'approve') {
                 for (var i = 0; i < 6; i++) {

@@ -1,12 +1,12 @@
 /*
  * Màn Xem chi tiết vụ việc - tab "Chi tiết giải quyết bồi thường": khối xem Hoãn / Tạm đình chỉ / Đình chỉ giải quyết bồi thường (prefix hdcv)
  * - 01 hàm render chung theo loại (hdcvEntryHtml); tiêu đề khối theo loại: "Hoãn giải quyết bồi thường" / "Tạm đình chỉ giải quyết bồi thường" / "Đình chỉ giải quyết bồi thường".
- * - Trường chung: Số quyết định, Ngày quyết định ("-" khi Chờ duyệt / Bị từ chối hoặc không có), File Quyết định (dự thảo hoặc bản đã ký ban hành: Xem file | Tải file),
+ * - Trường chung: Số quyết định, Ngày quyết định ("-" khi Chờ duyệt / Bị trả lại hoặc không có), File Quyết định (dự thảo hoặc bản đã ký ban hành: Xem file | Tải file),
  *   Tài liệu kèm theo (bảng chuẩn chế độ xem ctvvDocsViewHtml: STT | Tên văn bản, căn cứ | Tải file | Thao tác). Bỏ "Ghi chú", bỏ "Tài liệu liên quan".
  * - Hoãn: Thời hạn hoãn, Lý do hoãn giải quyết. Đình chỉ: Căn cứ đình chỉ, Diễn giải. Tạm đình chỉ: Lý do tạm đình chỉ.
  * - Đã Tiếp tục giải quyết sau Hoãn / Tạm đình chỉ: khối vẫn hiển thị (thu gọn), kèm Quyết định tiếp tục giải quyết bồi thường.
- * - Dữ liệu: specialStatusLogs (đã ban hành), dinhChi / hoanGiaiQuyet / tamDinhChi, phiếu trình (BTNN_WF: approval.signDoc / draftDoc) khi Chờ duyệt / Bị từ chối.
- * - Dữ liệu mẫu: vụ việc Chờ duyệt / Bị từ chối tạo qua API phiếu trình (W.submitForApproval / W.rejectApproval) để Lãnh đạo thấy tại màn Ký duyệt.
+ * - Dữ liệu: specialStatusLogs (đã ban hành), dinhChi / hoanGiaiQuyet / tamDinhChi, phiếu trình (BTNN_WF: approval.signDoc / draftDoc) khi Chờ duyệt / Bị trả lại.
+ * - Dữ liệu mẫu: vụ việc Chờ duyệt / Bị trả lại tạo qua API phiếu trình (W.submitForApproval / W.rejectApproval) để Lãnh đạo thấy tại màn Ký duyệt.
  * Đặt sau quan_ly_boi_thuong_ctvv.js / _hgq.js / _dcgq.js / _ttgq.js (bọc renderSpecialStatusBlock, showCaseDetail, hgqOnApplied, seedNycOrgSampleClaims).
  */
 var HDCV_TYPES = {
@@ -110,10 +110,10 @@ function hdcvEntries(claim) {
             if (att && att.length) e2.docs = hdcvRows(att);
         }
     }
-    // Chờ duyệt / Bị từ chối: phiếu trình Hoãn / Tạm đình chỉ / Đình chỉ (bản dự thảo)
+    // Chờ duyệt / Bị trả lại: phiếu trình Hoãn / Tạm đình chỉ / Đình chỉ (bản dự thảo)
     if (a && rec) {
         var pend = st === 'Chờ duyệt' && rec.status === 'Chờ duyệt' ? a.kind : '';
-        var rej = st === 'Bị từ chối' && rec.returned ? rec.returned.kind : '';
+        var rej = st === 'Bị trả lại' && rec.returned ? rec.returned.kind : '';
         var tk = hdcvTypeOfKind(pend || rej);
         if (tk && a.kind === (pend || rej)) {
             var s = a.signDoc || {}, dd = a.draftDoc || {};
@@ -171,7 +171,7 @@ function hdcvEntryHtml(e, withTitle) {
     var no = draft ? '' : e.docNo, dt = draft ? '' : e.docDate;
     var h = '<div class="hdcv-entry" data-hdcv-type="' + e.t + '">';
     if (withTitle) {
-        var stTxt = e.state === 'pending' ? 'Chờ duyệt' : (e.state === 'rejected' ? 'Bị từ chối' : (e.resume ? 'Đã tiếp tục giải quyết' : 'Đã ban hành'));
+        var stTxt = e.state === 'pending' ? 'Chờ duyệt' : (e.state === 'rejected' ? 'Bị trả lại' : (e.resume ? 'Đã tiếp tục giải quyết' : 'Đã ban hành'));
         h += '<div class="hdcv-sub">' + hdcvE(T.label) + '<small>(' + stTxt + ')</small></div>';
     }
     h += '<div class="hdcv-grid">' + hdcvField('Số quyết định', no) + hdcvField('Ngày quyết định', dt);
@@ -219,7 +219,7 @@ function hdcvRender(claim) {
     if (head) head.textContent = '8. ' + hdcvBlockLabel(list);
     return true;
 }
-// Khối mở sẵn khi vụ việc đang Hoãn / Tạm đình chỉ / Đình chỉ hoặc Chờ duyệt / Bị từ chối phiếu trình tương ứng
+// Khối mở sẵn khi vụ việc đang Hoãn / Tạm đình chỉ / Đình chỉ hoặc Chờ duyệt / Bị trả lại phiếu trình tương ứng
 function hdcvShouldOpen(claim) {
     var st = typeof canonicalClaimStatus === 'function' ? canonicalClaimStatus(claim.status) : claim.status;
     if (hdcvTypeOfStatus(st)) return true;
@@ -371,7 +371,7 @@ function hdcvBuildClaim(p, tpl) {
         return r;
     };
 })();
-// Trình phiếu mẫu (lần đầu, khi chưa có hồ sơ luồng): Chờ duyệt / Bị từ chối
+// Trình phiếu mẫu (lần đầu, khi chưa có hồ sơ luồng): Chờ duyệt / Bị trả lại
 function hdcvSeedSubmit() {
     var W = typeof gqW === 'function' ? gqW() : null;
     if (!W || typeof claimsList === 'undefined') return false;
@@ -414,9 +414,9 @@ function hdcvSeedSubmit() {
                 W.setCurrentUser(assignees[0]);
                 var rr = W.rejectApproval(c.code, p.rejectReason);
                 if (rr && rr.ok) {
-                    c.status = 'Bị từ chối';
+                    c.status = 'Bị trả lại';
                     c.wfReturned = rr.record.returned || null;
-                    c.timeline.push({ title: 'Lãnh đạo từ chối: ' + T.kind, date: hdcvDay(19), desc: 'Lý do: ' + p.rejectReason + '. Hồ sơ chuyển sang trạng thái [Bị từ chối].', status: 'active' });
+                    c.timeline.push({ title: 'Lãnh đạo từ chối: ' + T.kind, date: hdcvDay(19), desc: 'Lý do: ' + p.rejectReason + '. Hồ sơ chuyển sang trạng thái [Bị trả lại].', status: 'active' });
                 }
             }
             try { gqRecMap[c.code] = W.getRecord(c.code); } catch (e) { /* mockup */ }

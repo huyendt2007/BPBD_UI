@@ -6,7 +6,7 @@
  * - Chi trả tiền bồi thường: Thông tin chung, Thông báo chi trả tiền bồi thường, Theo dõi hạn nhận kinh phí/Trả lại ngân sách nhà nước,
  *   Thông tin chi trả, Thông tin Trả lại ngân sách nhà nước, Lịch sử xử lý.
  * - Không có khối Lịch sử trình ký. Lịch sử xử lý dạng mở rộng/thu gọn (mặc định thu gọn).
- * - Tệp văn bản: Chờ duyệt / Bị từ chối -> PDF dự thảo đã trình; đã ký duyệt / ban hành ngoài -> PDF đã ký số / PDF ký ngoài.
+ * - Tệp văn bản: Chờ duyệt / Bị trả lại -> PDF dự thảo đã trình; đã ký duyệt / ban hành ngoài -> PDF đã ký số / PDF ký ngoài.
  * - Thao tác trên thanh nút theo trạng thái như popup chi tiết trước đây.
  * Id/hàm prefix kpdt.
  */
@@ -144,7 +144,7 @@ function kpdtKind(item) {
 }
 function kpdtStatusHtml(item) {
     const st = kpNormStatus(item.status);
-    const sub = (st === 'Chờ duyệt' || st === 'Bị từ chối') ? `<div class="wf-sub">${kpdtEsc(kpdtKind(item))}</div>` : '';
+    const sub = (st === 'Chờ duyệt' || st === 'Bị trả lại') ? `<div class="wf-sub">${kpdtEsc(kpdtKind(item))}</div>` : '';
     return `<span class="kpdt-st"><span class="badge ${kpdtStatusClass(st)}">${kpdtEsc(st)}</span>${sub}</span>`;
 }
 function kpdtClaimLink(code) {
@@ -184,7 +184,7 @@ function kpdtHistHtml(item) {
         // Bản ghi kiểu cũ: lịch sử tổng hợp từ dữ liệu bản ghi
         if (item.date) list.push({ at: item.date, userName: item.user || '-', action: 'Tạo bản ghi', note: '' });
         (item.rejectHistory || []).slice().reverse().forEach(h => list.push({ at: h.date, userName: h.leader, action: 'Từ chối', note: h.opinion }));
-        if (item.approvedDate && item.status !== 'Bị từ chối') list.push({ at: item.approvedDate, userName: item.approvedLeader || '-', action: 'Ký duyệt', note: item.leaderOpinion || '' });
+        if (item.approvedDate && item.status !== 'Bị trả lại') list.push({ at: item.approvedDate, userName: item.approvedLeader || '-', action: 'Ký duyệt', note: item.leaderOpinion || '' });
         if (item.payoutDate) list.push({ at: item.payoutDate, userName: item.user || '-', action: 'Cập nhật chi trả', note: `Số tiền ${kpdtFmt(item.payoutAmountReal || item.amount)} đồng.` });
         if (item.treasuryForfeitDate) list.push({ at: item.treasuryForfeitDate, userName: item.user || '-', action: 'Trả lại ngân sách nhà nước', note: `Số chứng từ ${item.treasuryVoucherNo || '-'}.` });
     }
@@ -193,7 +193,7 @@ function kpdtHistHtml(item) {
         <div class="kpdt-card-body">${rows || '<div style="color:#64748b;">Chưa có lịch sử.</div>'}</div></div>`;
 }
 function kpdtRejHtml(item) {
-    if (kpNormStatus(item.status) !== 'Bị từ chối') return '';
+    if (kpNormStatus(item.status) !== 'Bị trả lại') return '';
     const r = item.qdtuReturned || item.kptbReturned;
     const by = r ? kpdtUserName(r.by) : (item.approvedLeader || '');
     const at = r ? r.at : (item.approvedDate || '');
@@ -253,14 +253,14 @@ function kpdtAdvData(item) {
         sign: { method: item.signMethod === KP_SIGN_OUTSIDE ? 'Ký ngoài' : 'Ký số', docNo: item.docNo || '', docDate: item.docDate || '', signedFile: item.signedFile || '', legacy: true }
     };
 }
-// Tệp Quyết định: Chờ duyệt / Bị từ chối -> PDF dự thảo đã trình; đã ký duyệt / ban hành ngoài -> PDF đã ký / PDF ký ngoài
+// Tệp Quyết định: Chờ duyệt / Bị trả lại -> PDF dự thảo đã trình; đã ký duyệt / ban hành ngoài -> PDF đã ký / PDF ký ngoài
 function kpdtAdvFile(item, f) {
     const s = f.sign || {};
     const st = kpNormStatus(item.status);
     const off = s.method === 'Ký ngoài';
     const isQd = typeof qdtuIs === 'function' && qdtuIs(item);
     const base = isQd ? qdtuDocBaseName(item.ycbtCode) : kpDraftName(item.code);
-    if (st === 'Chờ duyệt' || st === 'Bị từ chối') {
+    if (st === 'Chờ duyệt' || st === 'Bị trả lại') {
         const df = s.docFile;
         if (df && !df.generated) return { name: df.name, note: 'Dự thảo đã trình', keepId: df.keepId };
         const html = isQd ? qdtuBuildDocHtml(item.qdtu, s, { signerId: qdtuSignerOf(item) }) : kpBuildAdvanceDecisionHtml(Object.assign(kpItemDocData(item), { digitalSign: null, signedFile: null }));
@@ -313,7 +313,7 @@ function kpdtPayFile(item) {
     const isTb = typeof kptbIs === 'function' && kptbIs(item) && !!item.kptbDec;
     if (!n) return null;
     const base = isTb ? kptbDocBaseName(item) : 'Thong_bao_chi_tra_' + item.code;
-    if (st === 'Chờ duyệt' || st === 'Bị từ chối') {
+    if (st === 'Chờ duyệt' || st === 'Bị trả lại') {
         const df = n.docFile;
         if (df && !df.generated) return { name: df.name, note: 'Dự thảo đã trình' };
         return { name: base + '.pdf', note: 'Dự thảo đã trình', html: isTb ? kptbBuildDocHtml(item, kptbNoticeData(item)) : '' };
@@ -382,7 +382,7 @@ function kpdtButtons(item) {
         if (elig) h += b('btn-danger', 'fa-building-columns', 'Trả lại ngân sách nhà nước', `kptbOpenForfeit('${id}')`);
     } else {
         if (st === 'Chờ lập đề nghị') h += b('btn-primary', 'fa-file-signature', 'Lập đề nghị', `kpdtGo('fillProposalDirect','${id}')`);
-        if (st === 'Bị từ chối') h += b('btn-primary', 'fa-pen-to-square', isQd ? 'Cập nhật Quyết định tạm ứng' : 'Cập nhật đề nghị', `kpdtGo('updateProposalDirect','${id}')`);
+        if (st === 'Bị trả lại') h += b('btn-primary', 'fa-pen-to-square', isQd ? 'Cập nhật Quyết định tạm ứng' : 'Cập nhật đề nghị', `kpdtGo('updateProposalDirect','${id}')`);
         if (st === 'Chờ chi trả') h += b('btn-success', 'fa-hand-holding-dollar', 'Cập nhật chi trả', `kpdtGo('payProposalDirect','${id}')`);
         if (elig) h += b('btn-danger', 'fa-building-columns', 'Trả lại ngân sách nhà nước', `kpdtGo('forfeitProposalDirect','${id}')`);
     }
@@ -396,14 +396,14 @@ function kpdtRender(item) {
     kpdtEl('kpdtFoot').innerHTML = kpdtButtons(item);
 }
 
-// ---------------- Chuẩn hóa dữ liệu: bỏ "Chờ nhập liệu"; bỏ bản ghi Chờ duyệt / Bị từ chối không có Loại trình ----------------
+// ---------------- Chuẩn hóa dữ liệu: bỏ "Chờ nhập liệu"; bỏ bản ghi Chờ duyệt / Bị trả lại không có Loại trình ----------------
 function kpdtSanitize() {
     let changed = false;
     proposalsList.forEach(p => {
         if (p && p.status === 'Chờ nhập liệu') { p.status = 'Chờ thông báo chi trả'; p.type = 'Chi trả tiền bồi thường'; changed = true; }
     });
     const keep = proposalsList.filter(p => {
-        if (!p || !['Chờ duyệt', 'Bị từ chối'].includes(p.status)) return true;
+        if (!p || !['Chờ duyệt', 'Bị trả lại'].includes(p.status)) return true;
         return (typeof qdtuIs === 'function' && qdtuIs(p)) || (typeof kptbIs === 'function' && kptbIs(p) && !!(p.kptbApproval || p.kptbReturned));
     });
     if (keep.length !== proposalsList.length) { proposalsList = keep; changed = true; }

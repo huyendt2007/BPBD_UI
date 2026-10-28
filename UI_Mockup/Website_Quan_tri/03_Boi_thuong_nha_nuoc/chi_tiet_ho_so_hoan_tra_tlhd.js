@@ -4,7 +4,7 @@
  *   - Ký số trên hệ thống: Wizard 2 bước (1) Nhập thông tin ── (2) Kéo ô ký & chọn Lãnh đạo; văn bản sinh theo Mẫu 33/BTNN hoặc tải lên từ máy.
  *   - Ký ngoài: 01 bước, đính kèm PDF đã ký & đóng dấu, Ban hành văn bản trực tiếp.
  * Luồng trạng thái (chốt 23/10): hồ sơ nháp (mới khởi tạo, chưa có trạng thái) -> (Trình Lãnh đạo) Chờ duyệt [Thành lập hội đồng]
- *   -> Lãnh đạo các cấp ký duyệt (cấp cuối ký số) -> Họp hội đồng; Từ chối -> Bị từ chối thành lập HĐ; Ký ngoài -> Họp hội đồng.
+ *   -> Lãnh đạo các cấp ký duyệt (cấp cuối ký số) -> Họp hội đồng; Từ chối -> Bị trả lại thành lập HĐ; Ký ngoài -> Họp hội đồng.
  * Phụ thuộc: btnn_luong_xu_ly.js (BTNN_WF: cây đơn vị, cấu hình luồng), ../01_Quan_tri_he_thong/dm_loai_co_quan.js (DM_LCQ: DM_57/DM_58)
  * và các hàm sẵn có của chi_tiet_ho_so_hoan_tra.html (activeDossier, showToast, showCustomConfirm, switchSimulatorState...).
  */
@@ -431,8 +431,8 @@ function tlhdOpenModal() {
     }
     tlhdEnsureModal();
     tlhdFrameFull(true);
-    // Trình ký lại: điền sẵn dữ liệu lần trình gần nhất (hồ sơ mẫu Bị từ chối chưa có lần trình: dựng lần trình mẫu)
-    const rejected = activeDossier.status === 'Bị từ chối thành lập HĐ' || activeDossier.status === 'Từ chối duyệt QĐ thành lập';
+    // Trình ký lại: điền sẵn dữ liệu lần trình gần nhất (hồ sơ mẫu Bị trả lại chưa có lần trình: dựng lần trình mẫu)
+    const rejected = activeDossier.status === 'Bị trả lại thành lập HĐ' || activeDossier.status === 'Từ chối duyệt QĐ thành lập';
     const prev = activeDossier.tlhd || (rejected ? tlhdSeedRejected() : null);
     tlhdState = {
         method: prev && rejected ? prev.method : 'online',

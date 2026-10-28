@@ -7,29 +7,29 @@
  *            Bước 2 Kéo ô ký & chọn Lãnh đạo -> Trình Lãnh đạo.
  *   - Ký ngoài: đính kèm PDF đã ký & đóng dấu, Ban hành văn bản (có xác nhận).
  * Luồng trạng thái (giả định, bổ sung vào luồng hiện có của module hoàn trả):
- *   Hồ sơ trước khi chốt ý kiến Hội đồng (Chờ duyệt / Bị từ chối QĐ thành lập, Họp hội đồng - xem DCHT_ALLOWED)
+ *   Hồ sơ trước khi chốt ý kiến Hội đồng (Chờ duyệt / Bị trả lại QĐ thành lập, Họp hội đồng - xem DCHT_ALLOWED)
  *   -> Đình chỉ (Trình Lãnh đạo) -> Chờ duyệt QĐ đình chỉ -> Lãnh đạo các cấp Ký duyệt (cấp cuối ký số) -> Đình chỉ xem xét hoàn trả (kết thúc hồ sơ)
- *   -> Từ chối -> Bị từ chối QĐ đình chỉ (Trình ký lại, giữ dữ liệu lần trình trước)
+ *   -> Từ chối -> Bị trả lại QĐ đình chỉ (Trình ký lại, giữ dữ liệu lần trình trước)
  *   Ký ngoài: Ban hành văn bản -> Đình chỉ xem xét hoàn trả.
  * Phụ thuộc: chi_tiet_ho_so_hoan_tra_tlhd.js (CSS, tiện ích cơ quan / luồng ký / xác nhận), btnn_tai_lieu_kem_theo.js (tlkt),
  * các hàm sẵn có của trang (activeDossier, currentPerspective, renderStateLayout, renderPageHeaderActions, getDossierStatusBadge...).
  */
 
 const DCHT_ST_PENDING = 'Chờ duyệt QĐ đình chỉ';
-const DCHT_ST_REJECTED = 'Bị từ chối QĐ đình chỉ';
+const DCHT_ST_REJECTED = 'Bị trả lại QĐ đình chỉ';
 const DCHT_ST_DONE = 'Đình chỉ xem xét hoàn trả';
-// Trạng thái hồ sơ cho phép Đình chỉ (chốt 23/10): Họp hội đồng, Chờ ban hành QĐ hoàn trả, Hoãn hoàn trả, Miễn hoàn trả, Thu hồi tiền hoàn trả
-// Đình chỉ cả hồ sơ: Bước 1 (Chờ duyệt / Bị từ chối QĐ thành lập Hội đồng) và Bước 2 (Họp hội đồng); sau khi chốt ý kiến Hội đồng đình chỉ ở cấp cán bộ (chi_tiet_ho_so_hoan_tra_qd.js)
-const DCHT_ALLOWED = ['Chờ duyệt QĐ thành lập', 'Bị từ chối thành lập HĐ', 'Từ chối duyệt QĐ thành lập', 'Họp hội đồng'];
+// Đình chỉ chỉ thực hiện khi chưa ban hành QĐ hoàn trả (chốt 28/10); QĐ hoàn trả đã ban hành: không cho phép
+// Đình chỉ cả hồ sơ: Bước 1 (Chờ duyệt / Bị trả lại QĐ thành lập Hội đồng) và Bước 2 (Họp hội đồng); sau khi chốt ý kiến Hội đồng đình chỉ ở cấp cán bộ (chi_tiet_ho_so_hoan_tra_qd.js)
+const DCHT_ALLOWED = ['Chờ duyệt QĐ thành lập', 'Bị trả lại thành lập HĐ', 'Từ chối duyệt QĐ thành lập', 'Họp hội đồng'];
 
-// ---------------- Trạng thái hồ sơ hoàn trả (chốt 23/10): 9 giá trị hiển thị; Chờ duyệt / Bị từ chối kèm Loại trình ----------------
+// ---------------- Trạng thái hồ sơ hoàn trả (chốt 23/10): 9 giá trị hiển thị; Chờ duyệt / Bị trả lại kèm Loại trình ----------------
 // Mã trạng thái nội bộ (điều khiển luồng) -> [Trạng thái hiển thị, Loại trình]
 const HT_ST_MAP = {
     'Chờ duyệt QĐ thành lập': ['Chờ duyệt', 'Thành lập hội đồng'], 'Chờ duyệt thành lập hội đồng': ['Chờ duyệt', 'Thành lập hội đồng'],
-    'Bị từ chối thành lập HĐ': ['Bị từ chối', 'Thành lập hội đồng'], 'Từ chối duyệt QĐ thành lập': ['Bị từ chối', 'Thành lập hội đồng'],
-    'Chờ duyệt QĐ hoàn trả': ['Chờ duyệt', 'QĐ hoàn trả'], 'Bị từ chối QĐ hoàn trả': ['Bị từ chối', 'QĐ hoàn trả'],
-    'Chờ duyệt QĐ đình chỉ': ['Chờ duyệt', 'QĐ đình chỉ'], 'Bị từ chối QĐ đình chỉ': ['Bị từ chối', 'QĐ đình chỉ'],
-    'Đang họp hội đồng': ['Họp hội đồng', ''], 'Chờ ban hành QĐ': ['Chờ ban hành QĐ hoàn trả', ''], 'Đang thu hồi': ['Thu hồi tiền hoàn trả', ''], 'Hoàn tất': ['Hoàn thành', ''],
+    'Bị trả lại thành lập HĐ': ['Bị trả lại', 'Thành lập hội đồng'], 'Từ chối duyệt QĐ thành lập': ['Bị trả lại', 'Thành lập hội đồng'],
+    'Chờ duyệt QĐ hoàn trả': ['Chờ duyệt', 'QĐ hoàn trả'], 'Bị trả lại QĐ hoàn trả': ['Bị trả lại', 'QĐ hoàn trả'],
+    'Chờ duyệt QĐ đình chỉ': ['Chờ duyệt', 'QĐ đình chỉ'], 'Bị trả lại QĐ đình chỉ': ['Bị trả lại', 'QĐ đình chỉ'],
+    'Đang họp hội đồng': ['Họp hội đồng', ''], 'Chờ ban hành QĐ': ['Chờ ban hành QĐ hoàn trả', ''], 'Đang thu hồi': ['Thu tiền hoàn trả', ''], 'Hoàn tất': ['Hoàn thành', ''],
     // Chốt 23/10: bỏ 2 trạng thái, dữ liệu cũ quy về Đình chỉ xem xét hoàn trả
     'Không xem xét trách nhiệm hoàn trả': ['Đình chỉ xem xét hoàn trả', ''], 'Chấm dứt thu hồi': ['Đình chỉ xem xét hoàn trả', '']
 };
@@ -37,7 +37,7 @@ const HT_ST_MAP = {
 const HT_ST_DRAFT = 'Chờ thành lập hội đồng';
 const HT_LOAI_CODE = {
     'Chờ duyệt': { 'Thành lập hội đồng': 'Chờ duyệt QĐ thành lập', 'QĐ hoàn trả': 'Chờ duyệt QĐ hoàn trả', 'Đình chỉ xem xét hoàn trả': 'Chờ duyệt QĐ đình chỉ' },
-    'Bị từ chối': { 'Thành lập hội đồng': 'Bị từ chối thành lập HĐ', 'QĐ hoàn trả': 'Bị từ chối QĐ hoàn trả', 'Đình chỉ xem xét hoàn trả': 'Bị từ chối QĐ đình chỉ' }
+    'Bị trả lại': { 'Thành lập hội đồng': 'Bị trả lại thành lập HĐ', 'QĐ hoàn trả': 'Bị trả lại QĐ hoàn trả', 'Đình chỉ xem xét hoàn trả': 'Bị trả lại QĐ đình chỉ' }
 };
 function htStView(code) { const m = HT_ST_MAP[code]; return m ? { name: m[0], loai: m[1] } : { name: code || '', loai: '' }; }
 // Chuẩn hóa dữ liệu (dữ liệu cũ / dữ liệu theo tên mới kèm Loại trình) về mã trạng thái nội bộ
@@ -50,16 +50,16 @@ function htStNormalize(d) { if (d && d.status) { d.status = htStCode(d.status, d
 const HT_ST_STYLE = {
     // Đồng bộ màu badge màn Quyết định GQBT / Kinh phí: [nền, chữ, viền]
     'Chờ duyệt': ['#ede9fe', '#6d28d9', '#ddd6fe'],
-    'Bị từ chối': ['#fef2f2', '#dc2626', '#fecaca'],
+    'Bị trả lại': ['#fef2f2', '#dc2626', '#fecaca'],
     'Họp hội đồng': ['#eff6ff', '#1d4ed8', '#bfdbfe'],
     'Chờ ban hành QĐ hoàn trả': ['#fffbeb', '#d97706', '#fde68a'],
     'Hoãn hoàn trả': ['#fef9c3', '#a16207', '#fde68a'],
-    'Thu hồi tiền hoàn trả': ['#f0fdfa', '#0d9488', '#99f6e4'],
+    'Thu tiền hoàn trả': ['#f0fdfa', '#0d9488', '#99f6e4'],
     'Miễn hoàn trả': ['#ecfdf5', '#059669', '#a7f3d0'],
     'Hoàn thành': ['#ecfdf5', '#059669', '#a7f3d0'],
     'Đình chỉ xem xét hoàn trả': ['#f1f5f9', '#475569', '#cbd5e1']
 };
-// Badge trạng thái (đồng bộ màn Quyết định GQBT): pill không icon; Chờ duyệt / Bị từ chối có dòng phụ Loại trình; hồ sơ nháp không hiển thị trạng thái
+// Badge trạng thái (đồng bộ màn Quyết định GQBT): pill không icon; Chờ duyệt / Bị trả lại có dòng phụ Loại trình; hồ sơ nháp không hiển thị trạng thái
 function htStBadgeHtml(code) {
     if (!code || code === HT_ST_DRAFT) return '<span style="color:#94a3b8;">—</span>';
     const v = htStView(code);
@@ -841,7 +841,7 @@ function dchtLeaderReject() {
     const t = dchtEl('rejectTlkt');
     if (t) t.innerHTML = typeof tlktViewHtml === 'function' ? tlktViewHtml(activeDossier.dcht.attachments) : '';
 }
-// Từ chối (màn Từ chối dùng chung): hồ sơ chuyển Bị từ chối QĐ đình chỉ, giữ dữ liệu lần trình để trình lại
+// Từ chối (màn Từ chối dùng chung): hồ sơ chuyển Bị trả lại QĐ đình chỉ, giữ dữ liệu lần trình để trình lại
 function dchtApplyReject(reason) {
     const a = activeDossier.dcht; if (!a) return;
     const who = dchtLeaderLabel(a, a.level) || ('Lãnh đạo cấp ' + (a.level + 1));
@@ -849,7 +849,7 @@ function dchtApplyReject(reason) {
     a.level = 0;
     activeDossier.status = DCHT_ST_REJECTED;
     dchtLog(`Lãnh đạo ${who} từ chối Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả. Lý do: ${reason}`);
-    dchtToast(`Đã từ chối Quyết định đình chỉ. Hồ sơ chuyển sang trạng thái [Bị từ chối (QĐ đình chỉ)].`, 'success');
+    dchtToast(`Đã từ chối Quyết định đình chỉ. Hồ sơ chuyển sang trạng thái [Bị trả lại (QĐ đình chỉ)].`, 'success');
     dchtAfter();
 }
 
@@ -919,7 +919,7 @@ function dchtFooterButtons() {
         if (activeDossier && (activeDossier.status === DCHT_ST_PENDING || activeDossier.status === DCHT_ST_DONE)) return true;
         return orig.apply(this, arguments);
     });
-    // Badge trạng thái hồ sơ: 9 trạng thái hiển thị, Chờ duyệt / Bị từ chối kèm nhãn Loại trình
+    // Badge trạng thái hồ sơ: 9 trạng thái hiển thị, Chờ duyệt / Bị trả lại kèm nhãn Loại trình
     wrap('getDossierStatusBadge', orig => function (status) { return htStBadgeHtml(status); });
     // Thanh nút: thêm Đình chỉ / Trình ký lại (Cán bộ xử lý), Ký duyệt / Từ chối (Lãnh đạo được giao) trước nút Đóng
     wrap('renderPageHeaderActions', orig => function () {

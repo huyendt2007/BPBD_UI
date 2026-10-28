@@ -445,7 +445,7 @@
             : `Cấp phê duyệt cuối cùng. Sau khi ${verbLc},${signText} hồ sơ chuyển [${a.resultStatus || WF.SUBMIT_KINDS[a.kind] || a.prevStatus || ''}].`;
         const after = decisionMode === 'approve'
             ? (isLast ? lastText : `Sau khi ${verbLc}, hồ sơ chuyển ${WF.unitName(a.path[a.level + 1])} ${verbLc}${isXd ? ' (cấp này không ký số văn bản)' : ''}.`)
-            : 'Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị từ chối] cho cán bộ chủ trì.';
+            : 'Sau khi từ chối phê duyệt, hồ sơ chuyển [Bị trả lại] cho cán bộ chủ trì.';
         document.getElementById('ldDTitle').innerHTML = decisionMode === 'approve' ? `<i class="fa-solid fa-circle-check"></i> ${verb} hồ sơ ${esc(code)}` : `<i class="fa-solid fa-circle-xmark" style="color:#dc2626;"></i> Từ chối phê duyệt hồ sơ ${esc(code)}`;
         document.getElementById('ldDContext').innerHTML = WF.renderDraftDocHtml(rec) + `<div><strong>Nội dung trình:</strong> ${esc(a.kind)} - ${esc(WF.userName(a.submittedBy))}</div>${a.content ? `<div class="ld-muted">${esc(a.content)}</div>` : ''}<div style="margin-top:6px;"><strong>Cấp phê duyệt:</strong> ${a.level + 1}/${a.path.length} - ${esc(WF.unitName(a.path[a.level]))}</div><div class="ld-hint">${esc(after)}</div>`;
         document.getElementById('ldDLabel').innerHTML = decisionMode === 'approve' ? `Ý kiến ${verbLc}` : 'Lý do từ chối phê duyệt<span class="ld-req">*</span>';

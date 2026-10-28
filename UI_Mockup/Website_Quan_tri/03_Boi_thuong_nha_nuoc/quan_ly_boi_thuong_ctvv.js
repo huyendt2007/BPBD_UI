@@ -797,7 +797,7 @@ function ctvvmRenderInfo(claim) {
     box.innerHTML = row('Người bị thiệt hại', vic.name) + row('Địa chỉ', vic.address) + row('Văn bản làm căn cứ yêu cầu bồi thường', ctvvmBaseDoc(claim))
         + row('Lĩnh vực', typeof getFieldGroupName === 'function' ? getFieldGroupName(claim.fieldGroup) : claim.fieldGroup) + row('Hình thức phục hồi danh dự', fText);
 }
-// Mở từ khối Thông báo phục hồi danh dự (chế độ cập nhật) hoặc thao tác "Cập nhật" vụ việc Bị từ chối có Loại trình này
+// Mở từ khối Thông báo phục hồi danh dự (chế độ cập nhật) hoặc thao tác "Cập nhật" vụ việc Bị trả lại có Loại trình này
 function openCtvvmModal(claimId) {
     var claim = gqClaim(claimId || selectedClaimId);
     if (!claim) return;
@@ -807,7 +807,7 @@ function openCtvvmModal(claimId) {
     ctvvmOnlineFile = null; ctvvmOfflineFile = null;
     var W = gqW();
     var rec = gqRecord(claim);
-    var prev = rec && rec.status === 'Bị từ chối' && rec.approval && rec.approval.kind === CTVV_KIND ? rec.approval : null;
+    var prev = rec && rec.status === 'Bị trả lại' && rec.approval && rec.approval.kind === CTVV_KIND ? rec.approval : null;
     var sd = (prev && prev.signDoc) || {};
     var ret = prev ? (rec.returned || {}) : null;
     ctvvEl('ctvvmReturnedAlertBlock').style.display = prev ? 'block' : 'none';
@@ -1018,8 +1018,8 @@ function ctvvmGoStep2() {
 function ctvvmResultStatus(claim) {
     var st = canonicalClaimStatus(claim.status);
     if (isPhddClaim(claim)) return CASE_PHDD_PENDING_STATUS;
-    // Trình lại sau khi Bị từ chối: giữ trạng thái trước lần trình đầu
-    if ((st === 'Bị từ chối' || st === 'Chờ duyệt') && claim.ctvvM26 && claim.ctvvM26.resultStatus) return claim.ctvvM26.resultStatus;
+    // Trình lại sau khi Bị trả lại: giữ trạng thái trước lần trình đầu
+    if ((st === 'Bị trả lại' || st === 'Chờ duyệt') && claim.ctvvM26 && claim.ctvvM26.resultStatus) return claim.ctvvM26.resultStatus;
     return st;
 }
 // Ký số: trình Lãnh đạo Loại trình "Thông báo tổ chức thực hiện phục hồi danh dự" -> vụ việc "Chờ duyệt"
@@ -1112,7 +1112,7 @@ function ctvvmApplyIssued(claim, m26, signerName, signerTitle) {
     if (claim.victimAlive === 'no') setPhddStatus(claim, 'Chờ thực hiện');
     try { gqSaveData(claim, { ctvvM26: m26 }); } catch (e) { /* mockup */ }
 }
-// Kết quả Lãnh đạo xử lý phiếu trình (đồng bộ từ hồ sơ luồng): Ký duyệt cấp cuối -> ban hành; Từ chối -> Bị từ chối
+// Kết quả Lãnh đạo xử lý phiếu trình (đồng bộ từ hồ sơ luồng): Ký duyệt cấp cuối -> ban hành; Từ chối -> Bị trả lại
 (function () {
     var orig = window.gqApplyRecord;
     if (typeof orig !== 'function') return;
@@ -1123,17 +1123,17 @@ function ctvvmApplyIssued(claim, m26, signerName, signerTitle) {
             var m = c && c.ctvvM26;
             if (a && a.kind === CTVV_KIND && m && m.state !== 'Đã ban hành') {
                 var W = gqW();
-                if (a.done && r.status !== 'Chờ duyệt' && r.status !== 'Bị từ chối') {
+                if (a.done && r.status !== 'Chờ duyệt' && r.status !== 'Bị trả lại') {
                     var last = (a.steps || [])[a.steps.length - 1] || {};
                     var u = W && last.userId ? W.getUser(last.userId) : null;
                     var nm = Object.assign({}, m, { state: 'Đã ban hành', signedFile: String(m.signFile || 'Van_ban.pdf').replace(/\.[^.]+$/, '') + '_da_ky.pdf', signedAt: last.at || gqNow(), issuedAt: last.at || gqNow(), signedBy: u ? u.name : '' });
                     ctvvmApplyIssued(c, nm, u ? u.name : '', u ? u.title : '');
                     res = true;
-                } else if (r.status === 'Bị từ chối' && m.state !== 'Bị từ chối') {
+                } else if (r.status === 'Bị trả lại' && m.state !== 'Bị trả lại') {
                     var ret = r.returned || {};
-                    c.ctvvM26 = Object.assign({}, m, { state: 'Bị từ chối', rejectReason: ret.reason || '', rejectBy: ret.by && W ? W.userName(ret.by) : '', rejectAt: ret.at || '' });
+                    c.ctvvM26 = Object.assign({}, m, { state: 'Bị trả lại', rejectReason: ret.reason || '', rejectBy: ret.by && W ? W.userName(ret.by) : '', rejectAt: ret.at || '' });
                     if (!Array.isArray(c.phddTimeline)) c.phddTimeline = [];
-                    c.phddTimeline.push({ title: 'Lãnh đạo từ chối Thông báo tổ chức thực hiện phục hồi danh dự', date: gqToday(), desc: 'Lý do: ' + (ret.reason || '--') + '. Vụ việc chuyển sang trạng thái [Bị từ chối].' });
+                    c.phddTimeline.push({ title: 'Lãnh đạo từ chối Thông báo tổ chức thực hiện phục hồi danh dự', date: gqToday(), desc: 'Lý do: ' + (ret.reason || '--') + '. Vụ việc chuyển sang trạng thái [Bị trả lại].' });
                     res = true;
                 }
             }
@@ -1142,7 +1142,7 @@ function ctvvmApplyIssued(claim, m26, signerName, signerTitle) {
     };
     var oCase = window.gqldCaseStatus;
     if (typeof oCase === 'function') window.gqldCaseStatus = function (c) {
-        if (c && c.ctvvM26 && (c.ctvvM26.state === 'Chờ duyệt' || c.ctvvM26.state === 'Bị từ chối')) {
+        if (c && c.ctvvM26 && (c.ctvvM26.state === 'Chờ duyệt' || c.ctvvM26.state === 'Bị trả lại')) {
             var st = canonicalClaimStatus(c.status);
             if (st === c.ctvvM26.state) return st;
         }
@@ -1183,15 +1183,15 @@ function ctvvM26Decorate(claim) {
     var caseSt = canonicalClaimStatus(claim.status);
     // Nút trình ký: nhánh PHDD ở bước Thông báo, chưa trình, vụ việc không Chờ duyệt, chế độ cập nhật (thao tác "Cập nhật phục hồi danh dự")
     var canSubmit = isDetailEditMode && atNotice && !m && caseSt !== 'Chờ duyệt' && pdtbCanUpdate(claim);
-    // Bị từ chối (Loại trình Thông báo tổ chức thực hiện phục hồi danh dự): Cập nhật và trình ký lại
-    var canResubmit = !!m && m.state === 'Bị từ chối' && atNotice && caseSt === 'Bị từ chối' && pdtbCanUpdate(claim);
+    // Bị trả lại (Loại trình Thông báo tổ chức thực hiện phục hồi danh dự): Cập nhật và trình ký lại
+    var canResubmit = !!m && m.state === 'Bị trả lại' && atNotice && caseSt === 'Bị trả lại' && pdtbCanUpdate(claim);
     var btn = function (label) { return '<button type="button" class="btn btn-primary btn-sm" id="ctvvBtnTrinhM26" onclick="openCtvvmModal(\'' + claim.id + '\')" style="display:inline-flex; align-items:center; gap:6px;"><i class="fa-solid fa-file-signature"></i> ' + label + '</button>'; };
     if (!m) {
         panel.innerHTML = '<div class="ctvv-m26-empty"><span><i class="fa-solid fa-circle-info" style="color:#2563eb;"></i> Chưa trình ký Thông báo tổ chức thực hiện phục hồi danh dự (' + CTVV_FORM + ').</span>' + (canSubmit ? btn('Trình ký Thông báo tổ chức thực hiện phục hồi danh dự') : '') + '</div>';
         return;
     }
     var issued = m.state === 'Đã ban hành';
-    var badge = issued ? '<span class="ctvv-m26-badge issued">Đã ban hành</span>' : (m.state === 'Bị từ chối' ? '<span class="ctvv-m26-badge rejected">Bị từ chối</span>' : '<span class="ctvv-m26-badge pending">Chờ duyệt</span>');
+    var badge = issued ? '<span class="ctvv-m26-badge issued">Đã ban hành</span>' : (m.state === 'Bị trả lại' ? '<span class="ctvv-m26-badge rejected">Bị trả lại</span>' : '<span class="ctvv-m26-badge pending">Chờ duyệt</span>');
     var cell = function (l, v) { return '<div><b>' + l + '</b>' + ctvvE(v || '-') + '</div>'; };
     var signer = m.signedBy || (issued ? claim.phddStep1Signer : '');
     var signerTitle = m.signerTitle || (issued ? claim.phddStep1Position : '');
@@ -1208,7 +1208,7 @@ function ctvvM26Decorate(claim) {
         + '</div>'
         + pdtbC7Html(m.forms || ctvvmForms(claim), m)
         + '<div class="ctvv-m26-grid" style="grid-template-columns:1fr;"><div><b>Nơi nhận</b>' + (nn.length ? nn.map(ctvvE).join('<br>') : '-') + '</div></div>'
-        + (m.state === 'Bị từ chối' ? '<div style="background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:10px 12px; margin-bottom:10px; color:#7f1d1d;"><b>Lý do từ chối:</b> ' + ctvvE(m.rejectReason || '--') + '<div style="font-size:12px;">Người từ chối: ' + ctvvE(m.rejectBy || '--') + ' • Thời điểm: ' + ctvvE(m.rejectAt || '--') + '</div></div>' : '')
+        + (m.state === 'Bị trả lại' ? '<div style="background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:10px 12px; margin-bottom:10px; color:#7f1d1d;"><b>Lý do từ chối:</b> ' + ctvvE(m.rejectReason || '--') + '<div style="font-size:12px;">Người từ chối: ' + ctvvE(m.rejectBy || '--') + ' • Thời điểm: ' + ctvvE(m.rejectAt || '--') + '</div></div>' : '')
         + '<div class="tlkt-sec-title"><i class="fa-solid fa-file-signature"></i> ' + fileLabel + '</div>'
         + '<div class="ctvv-m26-file">' + (fileName ? pdtbFileHtml({ file: fileName, size: fileSize }) : '<span style="color:#94a3b8;">--</span>')
         + (fileName ? '<span class="tlkt-acts">'
@@ -1272,7 +1272,7 @@ function pdtbMigrateM26(c) {
     };
     return true;
 }
-// [pdtb] Dữ liệu mẫu: 01 vụ việc Chờ duyệt, 01 vụ việc Bị từ chối với Loại trình "Thông báo tổ chức thực hiện phục hồi danh dự"
+// [pdtb] Dữ liệu mẫu: 01 vụ việc Chờ duyệt, 01 vụ việc Bị trả lại với Loại trình "Thông báo tổ chức thực hiện phục hồi danh dự"
 var PDTB_SEED = [{ id: 'HS5', reject: false, no: '27/TB-BT' }, { id: 'HS7', reject: true, no: '18/TB-BT', reason: 'Đề nghị ghi rõ dự kiến địa điểm tổ chức trực tiếp xin lỗi (tên hội trường, địa chỉ cụ thể).' }];
 function pdtbSeedM26() {
     var W = gqW(); if (!W || typeof claimsList === 'undefined' || !claimsList.length) return false;
@@ -1283,9 +1283,9 @@ function pdtbSeedM26() {
             var c = gqClaim(p.id);
             if (!c || c.ctvvM26 || !pdtbAtNoticeStep(c) || phddCanonicalStatus(c.phddStatus) !== PHDD_START_STATUS) return;
             var st = canonicalClaimStatus(c.status);
-            if (['Chờ duyệt', 'Bị từ chối', 'Đình chỉ giải quyết', 'Hoàn thành'].indexOf(st) >= 0) return;
+            if (['Chờ duyệt', 'Bị trả lại', 'Đình chỉ giải quyết', 'Hoàn thành'].indexOf(st) >= 0) return;
             var rec0 = gqRecord(c);
-            if (rec0 && (rec0.status === 'Chờ duyệt' || rec0.status === 'Bị từ chối')) return;
+            if (rec0 && (rec0.status === 'Chờ duyệt' || rec0.status === 'Bị trả lại')) return;
             var rec = gqEnsureRecord(c); if (!rec) return;
             var assignees = gqSignLevels(c).map(function (lv) { return (lv.leaders && lv.leaders[0] && lv.leaders[0].id) || ''; });
             var forms = ctvvmForms(c);
@@ -1305,10 +1305,10 @@ function pdtbSeedM26() {
                 W.setCurrentUser(assignees[0]);
                 var rr = W.rejectApproval(c.code, p.reason);
                 if (rr && rr.ok) {
-                    c.status = 'Bị từ chối';
+                    c.status = 'Bị trả lại';
                     c.wfReturned = rr.record.returned || null;
-                    m26 = Object.assign(m26, { state: 'Bị từ chối', rejectReason: p.reason, rejectBy: W.userName(assignees[0]), rejectAt: (rr.record.returned || {}).at || '' });
-                    c.phddTimeline.push({ title: 'Lãnh đạo từ chối Thông báo tổ chức thực hiện phục hồi danh dự', date: gqToday(), desc: 'Lý do: ' + p.reason + '. Vụ việc chuyển sang trạng thái [Bị từ chối].' });
+                    m26 = Object.assign(m26, { state: 'Bị trả lại', rejectReason: p.reason, rejectBy: W.userName(assignees[0]), rejectAt: (rr.record.returned || {}).at || '' });
+                    c.phddTimeline.push({ title: 'Lãnh đạo từ chối Thông báo tổ chức thực hiện phục hồi danh dự', date: gqToday(), desc: 'Lý do: ' + p.reason + '. Vụ việc chuyển sang trạng thái [Bị trả lại].' });
                 }
             }
             try { gqRecMap[c.code] = W.getRecord(c.code); } catch (e) { /* mockup */ }

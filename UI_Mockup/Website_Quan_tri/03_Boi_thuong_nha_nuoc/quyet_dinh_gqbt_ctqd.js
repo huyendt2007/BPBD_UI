@@ -131,7 +131,7 @@ function ctqdCancelHtml(d) {
     return '<div class="ctqd-card is-danger" id="ctqdCancel"><div class="ctqd-title"><i class="fa-solid fa-ban"></i> Quyết định đã bị hủy</div>' + g
         + ctqdFileSec('File Quyết định hủy Quyết định giải quyết bồi thường', c.signedFile || draftDocName(c.draftDoc), '', d.id, 'cancel') + ctqdDocs(c.attachments || sd.attachments, d) + '</div>';
 }
-// Dự thảo đang trình (Hủy QĐ / Sửa chữa, bổ sung QĐ) - trạng thái Chờ duyệt / Bị từ chối
+// Dự thảo đang trình (Hủy QĐ / Sửa chữa, bổ sung QĐ) - trạng thái Chờ duyệt / Bị trả lại
 function ctqdRequestBody(d) {
     var r = d.request; if (!r) return '';
     var huy = r.kind === KIND_HUY;

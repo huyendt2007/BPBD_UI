@@ -22,7 +22,7 @@
   + Không thụ lý
   + Cử người giải quyết bồi thường
   + Chờ duyệt (mọi Nội dung trình, gồm `Thông báo thụ lý hồ sơ`, `Thông báo Không thụ lý`)
-  + Bị từ chối (mọi Nội dung trình)
+  + Bị trả lại (mọi Nội dung trình)
   + Xác minh thiệt hại
   + Thương lượng
   + Chờ ban hành QĐ

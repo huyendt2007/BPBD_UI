@@ -8,11 +8,11 @@
  *    Không có Lưu nháp: nút "Trình Lãnh đạo" -> popup trình.
  * 2. Popup Trình ký Thông báo tổ chức thực hiện phục hồi danh dự (hồ sơ chủ động): Ký số (Stepper 02 bước, CHỈ Tải lên từ máy,
  *    không sinh văn bản theo mẫu) / Ký ngoài (tải PDF đã ký, ban hành ngay). Nội dung trình "Chủ động phục hồi danh dự".
- *    Trình -> Chờ duyệt; Lãnh đạo từ chối -> Bị từ chối (Cập nhật: mở lại form + popup, điền sẵn, hiển thị lý do; Xóa hồ sơ: chỉ cán bộ tạo);
+ *    Trình -> Chờ duyệt; Lãnh đạo từ chối -> Bị trả lại (Cập nhật: mở lại form + popup, điền sẵn, hiển thị lý do; Xóa hồ sơ: chỉ cán bộ tạo);
  *    cấp cuối Ký duyệt / Ký ngoài ban hành -> Đang phục hồi danh dự, tab Phục hồi danh dự ở Bước 2 (Bước 1 đã xong, Khối 1 hiển thị văn bản).
  *    Không qua Chờ tiếp nhận, Thông báo thụ lý (Mẫu 04/BTNN), Cử người giải quyết (Mẫu 06/BTNN); cán bộ tạo là cán bộ chủ trì.
  * 3. Lưới / bộ lọc / chi tiết: nhãn "Cán bộ chủ động PHDD" dưới Nguồn hồ sơ; bộ lọc Hình thức tiếp nhận có giá trị CAN_BO_PHUC_HOI_DANH_DU.
- * 4. Dữ liệu mẫu: 03 hồ sơ (Chờ duyệt, Bị từ chối, Đang phục hồi danh dự - Bước 2), gộp theo Mã hồ sơ, theo phiên bản CDPD_SEED_VER.
+ * 4. Dữ liệu mẫu: 03 hồ sơ (Chờ duyệt, Bị trả lại, Đang phục hồi danh dự - Bước 2), gộp theo Mã hồ sơ, theo phiên bản CDPD_SEED_VER.
  * Dùng tiện ích sẵn có: gq*, ktlx*, tlkt*, ctvvm* (quan_ly_boi_thuong_ctvv.js), saveNewClaim, openInlineClaimForm.
  */
 var CDPD_KIND = 'Chủ động phục hồi danh dự'; // Nội dung trình (Loại trình)
@@ -251,7 +251,7 @@ function cdpdAfterOpenForm(id) {
         radios.forEach(function (r) { r.checked = r.value === 'cdpd'; r.disabled = true; });
         cdpdApplyMode(true, false);
         var rec = gqRecord(claim);
-        if (rec && rec.status === 'Bị từ chối' && rec.returned) {
+        if (rec && rec.status === 'Bị trả lại' && rec.returned) {
             var W = gqW();
             ret.innerHTML = '<div style="display:flex; align-items:center; gap:8px; font-weight:700; color:#b91c1c; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TỪ CHỐI</div>'
                 + '<div><b>Lý do từ chối:</b> ' + cdpdE(rec.returned.reason || '--') + '</div>'
@@ -407,7 +407,7 @@ function openCdpdModal(claimId) {
     cdpdOnlineFile = null; cdpdOfflineFile = null;
     var W = gqW();
     var rec = gqRecord(claim);
-    var prev = rec && rec.status === 'Bị từ chối' && rec.approval && rec.approval.kind === CDPD_KIND ? rec.approval : null;
+    var prev = rec && rec.status === 'Bị trả lại' && rec.approval && rec.approval.kind === CDPD_KIND ? rec.approval : null;
     var ret = prev ? (rec.returned || {}) : null;
     cdpdEl('cdpdReturnedAlertBlock').style.display = prev ? 'block' : 'none';
     if (prev) {
@@ -617,7 +617,7 @@ function cdpdIssueOffline() {
     if (!Array.isArray(claim.timeline)) claim.timeline = [];
     claim.timeline.push({ title: 'Ban hành Thông báo tổ chức thực hiện phục hồi danh dự (Ký ngoài)', date: gqToday(), desc: 'Ban hành văn bản đã ký ngoài hệ thống (' + cdpdOfflineFile.name + '). Hồ sơ chuyển sang trạng thái [Đang phục hồi danh dự] - bước Ý kiến phản hồi.', status: 'completed' });
     cdpdApplyIssued(claim, m26, '', '');
-    // Hồ sơ luồng: tạo (hồ sơ mới) hoặc cập nhật trạng thái (hồ sơ Bị từ chối trình lại bằng Ký ngoài)
+    // Hồ sơ luồng: tạo (hồ sơ mới) hoặc cập nhật trạng thái (hồ sơ Bị trả lại trình lại bằng Ký ngoài)
     try {
         var W = gqW();
         gqEnsureRecord(claim);
@@ -657,11 +657,11 @@ function cdpdApplyIssued(c, m26, signerName, signerTitle) {
 }
 
 // =====================================================================
-// 3. Kết quả Lãnh đạo xử lý phiếu trình, Cập nhật / Xóa hồ sơ Bị từ chối, lưới, bộ lọc
+// 3. Kết quả Lãnh đạo xử lý phiếu trình, Cập nhật / Xóa hồ sơ Bị trả lại, lưới, bộ lọc
 // =====================================================================
 function cdpdDelete(id) {
     var c = gqClaim(id);
-    if (!c || !cdpdIs(c) || canonicalClaimStatus(c.status) !== 'Bị từ chối' || !cdpdIsCreator(c)) { showToast('Chỉ cán bộ tạo hồ sơ được xóa hồ sơ chủ động phục hồi danh dự ở trạng thái Bị từ chối.', 'error'); return; }
+    if (!c || !cdpdIs(c) || canonicalClaimStatus(c.status) !== 'Bị trả lại' || !cdpdIsCreator(c)) { showToast('Chỉ cán bộ tạo hồ sơ được xóa hồ sơ chủ động phục hồi danh dự ở trạng thái Bị trả lại.', 'error'); return; }
     showConfirmModal('Bạn có chắc chắn muốn xóa hồ sơ ' + claimVvLabel(c) + ' không?', function () {
         var idx = claimsList.indexOf(c);
         if (idx >= 0) claimsList.splice(idx, 1);
@@ -674,12 +674,12 @@ function cdpdDelete(id) {
     });
 }
 (function () {
-    // Kết quả phê duyệt (đồng bộ từ hồ sơ luồng): Ký duyệt cấp cuối -> Đang phục hồi danh dự (Bước 2); Từ chối -> Bị từ chối
+    // Kết quả phê duyệt (đồng bộ từ hồ sơ luồng): Ký duyệt cấp cuối -> Đang phục hồi danh dự (Bước 2); Từ chối -> Bị trả lại
     var oApply = window.gqApplyRecord;
     if (typeof oApply === 'function') window.gqApplyRecord = function (c, r) {
         var a = r && r.approval;
         var mine = !!(c && a && a.kind === CDPD_KIND && cdpdIs(c));
-        var approved = mine && a.done && r.status !== 'Chờ duyệt' && r.status !== 'Bị từ chối' && !(c.cdpdDoc && c.cdpdDoc.state === 'Đã ban hành');
+        var approved = mine && a.done && r.status !== 'Chờ duyệt' && r.status !== 'Bị trả lại' && !(c.cdpdDoc && c.cdpdDoc.state === 'Đã ban hành');
         // Không ghi bước "Phê duyệt tiếp nhận hồ sơ - Bước 1" của luồng tiếp nhận thông thường
         if (approved) c.phddStarted = true;
         var res = oApply.apply(this, arguments);
@@ -698,16 +698,16 @@ function cdpdDelete(id) {
                 cdpdApplyIssued(c, m26, u ? u.name : '', u ? u.title : '');
                 cdpdPersist(c);
                 res = true;
-            } else if (mine && r.status === 'Bị từ chối' && !(c.cdpdDoc && c.cdpdDoc.state === 'Bị từ chối')) {
+            } else if (mine && r.status === 'Bị trả lại' && !(c.cdpdDoc && c.cdpdDoc.state === 'Bị trả lại')) {
                 var W2 = gqW(); var ret = r.returned || {};
-                c.cdpdDoc = Object.assign({}, c.cdpdDoc || {}, { state: 'Bị từ chối', rejectReason: ret.reason || '', rejectBy: ret.by && W2 ? W2.userName(ret.by) : '', rejectAt: ret.at || '' });
+                c.cdpdDoc = Object.assign({}, c.cdpdDoc || {}, { state: 'Bị trả lại', rejectReason: ret.reason || '', rejectBy: ret.by && W2 ? W2.userName(ret.by) : '', rejectAt: ret.at || '' });
                 cdpdPersist(c);
                 res = true;
             }
         } catch (e) { /* mockup */ }
         return res;
     };
-    // Cập nhật hồ sơ Bị từ chối (Nội dung trình Chủ động phục hồi danh dự): mở lại form, Trình Lãnh đạo -> popup điền sẵn lần trình trước
+    // Cập nhật hồ sơ Bị trả lại (Nội dung trình Chủ động phục hồi danh dự): mở lại form, Trình Lãnh đạo -> popup điền sẵn lần trình trước
     var oUpd = window.gqUpdateReturned;
     if (typeof oUpd === 'function') window.gqUpdateReturned = function (claimId) {
         var claim = gqClaim(claimId);
@@ -739,7 +739,7 @@ function cdpdDelete(id) {
         if (cdpdHonorOnly(c)) { showToast('Hồ sơ Chỉ yêu cầu phục hồi danh dự không có thao tác Chuyển CQGQBT.', 'warning'); return; }
         return oTrm.apply(this, arguments);
     };
-    // Thao tác khác: Xóa hồ sơ (hồ sơ chủ động Bị từ chối, chỉ cán bộ tạo)
+    // Thao tác khác: Xóa hồ sơ (hồ sơ chủ động Bị trả lại, chỉ cán bộ tạo)
     var oDefs = window.gqldActionDefs;
     if (typeof oDefs === 'function') window.gqldActionDefs = function (item) {
         var d = oDefs.apply(this, arguments);
@@ -747,7 +747,7 @@ function cdpdDelete(id) {
         // (ẩn tại cột Thao tác / Thao tác khác / thanh thao tác màn Xem chi tiết)
         if (cdpdHonorOnly(item) && d) ['main', 'more'].forEach(function (k) { if (Array.isArray(d[k])) d[k] = d[k].filter(function (a) { return a.key !== 'transfer'; }); });
         if (cdpdIs(item) && d && Array.isArray(d.more)) {
-            d.more = d.more.concat([{ key: 'cdpdDelete', icon: 'fa-solid fa-trash', label: 'Xóa hồ sơ', allowed: d.st === 'Bị từ chối' && cdpdIsCreator(item), fn: "cdpdDelete('" + item.id + "');" }]);
+            d.more = d.more.concat([{ key: 'cdpdDelete', icon: 'fa-solid fa-trash', label: 'Xóa hồ sơ', allowed: d.st === 'Bị trả lại' && cdpdIsCreator(item), fn: "cdpdDelete('" + item.id + "');" }]);
         }
         return d;
     };

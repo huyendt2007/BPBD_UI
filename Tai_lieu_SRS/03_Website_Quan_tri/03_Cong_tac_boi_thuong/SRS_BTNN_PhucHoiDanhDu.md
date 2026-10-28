@@ -18,7 +18,7 @@
 
 - Cung cấp chức năng "Cập nhật tiến trình phục hồi danh dự" gồm 04 bước chuẩn hóa theo luật định:
   - **Bước 1**: Ban hành Thông báo tổ chức phục hồi danh dự (Điều 57).
-  - **Bước 2**: Ghi nhận ý kiến phản hồi của người yêu cầu / người bị thiệt hại (Đồng ý, Đề nghị tạm hoãn, Từ chối hoặc Không có ý kiến).
+  - **Bước 2**: Ghi nhận ý kiến phản hồi của người yêu cầu / người bị thiệt hại (Đồng ý, Đề nghị chưa thực hiện, Từ chối hoặc Không có ý kiến).
   - **Bước 3**: Tổ chức thực hiện phục hồi danh dự (Điều 58 - Trực tiếp xin lỗi và cải chính công khai; Điều 59 - Đăng báo xin lỗi công khai 03 số liên tiếp).
   - **Bước 4**: Hoàn thành tổ chức thực hiện phục hồi danh dự (Xác nhận hoàn thành, lưu trữ hồ sơ và chuyển trạng thái).
 
@@ -298,6 +298,7 @@ Nguồn UI: `UI_Mockups_Git_BPBD_UI/Website_Quan_tri/quan_ly_phuc_hoi_danh_du.ht
 | Tên báo Trung ương đã đăng | String(255) | Không | Trống | Control UI: Input text. |
 | Tên báo Địa phương đã đăng | String(255) | Không | Trống | Control UI: Input text. |
 | Thông tin chi tiết các số báo và ngày phát hành | String(500) | Không | Trống | Control UI: Input text. Số báo phát hành và ngày đăng trong 03 số liên tiếp theo Điều 59. |
+| Gửi cho UBND cấp xã nơi người bị thiệt hại cư trú | Section | - | - | Control UI: Nhóm trường gồm `Đơn vị nhận` (bắt buộc), `Ngày nhận` (bắt buộc), `Tài liệu kèm theo`.<br>- Chỉ hiển thị khi Hình thức phục hồi danh dự có Đăng báo xin lỗi và cải chính công khai.<br>- Mô tả chi tiết theo [Gửi cho UBND cấp xã nơi người bị thiệt hại cư trú - MH04 - Màn hình Xem chi tiết vụ việc Phục hồi danh dự - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-phdd-gui-ubnd-xa). |
 | Tài liệu kèm theo | List(Object) | Có | 01 dòng trống | Control UI: Bảng Tài liệu kèm theo theo [Bảng Tài liệu kèm theo - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-bang-tai-lieu-kem-theo).<br>- Biên bản buổi xin lỗi trực tiếp, các trang báo đã đăng tải. |
 | **BƯỚC 4: KẾT THÚC TỔ CHỨC THỰC HIỆN PHỤC HỒI DANH DỰ** | Section | - | - | Khối kết thúc vụ việc: |
 | Ngày hoàn thành thực hiện | Date | Có | Ngày hiện tại | Control UI: Datepicker (`dd/mm/yyyy`). |

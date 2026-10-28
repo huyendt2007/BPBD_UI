@@ -93,8 +93,8 @@
             ];
         }
         return [
-            { t: 'Cập nhật Quyết định tạm ứng', ic: 'fa-solid fa-pen-to-square', cls: 'edit', on: st === 'Bị từ chối' && qd, js: "qdtuOpenPage('" + id + "')", dt: "kpdtGo('qdtuOpenPage','" + id + "')", off: 'chỉ thực hiện với bản ghi Tạm ứng kinh phí Bị từ chối' },
-            { t: 'Trình thông báo chi trả', ic: 'fa-solid fa-paper-plane', cls: 'edit', on: tb && kptbCanSubmit(item), js: "kptbOpenSign('" + id + "')", off: 'chỉ thực hiện với bản ghi Chi trả tiền bồi thường Chờ thông báo chi trả, Đề nghị cấp bổ sung kinh phí, Bị từ chối' },
+            { t: 'Cập nhật Quyết định tạm ứng', ic: 'fa-solid fa-pen-to-square', cls: 'edit', on: st === 'Bị trả lại' && qd, js: "qdtuOpenPage('" + id + "')", dt: "kpdtGo('qdtuOpenPage','" + id + "')", off: 'chỉ thực hiện với bản ghi Tạm ứng kinh phí Bị trả lại' },
+            { t: 'Trình thông báo chi trả', ic: 'fa-solid fa-paper-plane', cls: 'edit', on: tb && kptbCanSubmit(item), js: "kptbOpenSign('" + id + "')", off: 'chỉ thực hiện với bản ghi Chi trả tiền bồi thường Chờ thông báo chi trả, Đề nghị cấp bổ sung kinh phí, Bị trả lại' },
             { t: 'Đề nghị cấp bổ sung kinh phí', ic: 'fa-solid fa-file-invoice-dollar', cls: '', on: tb && st === KPTB_ST.WAIT, js: "kptbOpenSupp('" + id + "')", off: 'chỉ thực hiện với bản ghi Chi trả tiền bồi thường Chờ thông báo chi trả' },
             // Cập nhật chi trả / Cập nhật thu hồi: 01 nút chung, nhãn theo trạng thái (Chờ chi trả -> Cập nhật chi trả; Chờ thu hồi -> Cập nhật thu hồi)
             (st === 'Chờ thu hồi'

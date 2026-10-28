@@ -15,6 +15,30 @@
     const SEED_VERSION = 'v4_cuc_only';
     const CATALOG_TYPE = 'DM_54';
 
+    // Chốt 28/10: trạng thái "Bị từ chối" đổi thành "Bị trả lại" trên mọi phân hệ BTNN; "Thu hồi tiền hoàn trả" đổi thành "Thu tiền hoàn trả" -> chuẩn hóa dữ liệu đã lưu (giữ nguyên dữ liệu người dùng).
+    // Không áp dụng: Báo cáo công tác BTNN (bctt_*, có trạng thái Bị trả lại riêng), dữ liệu Biện pháp bảo đảm.
+    // Hồ sơ "Bị từ chối" không có lượt Lãnh đạo trả lại (nghĩa Không thụ lý cũ): giữ nguyên để chuẩn hóa theo phân hệ (migrateXdRecord / migrateYcbtRecord).
+    (function chuanHoaBiTraLai() {
+        const OLD = 'Bị từ chối';
+        const PAIRS = [[OLD, 'Bị trả lại'], ['Thu hồi tiền hoàn trả', 'Thu tiền hoàn trả'], ['thu hồi tiền hoàn trả', 'thu tiền hoàn trả']];
+        const swap = s => PAIRS.reduce((t, p) => t.split(p[0]).join(p[1]), s);
+        try {
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (!k || !/^(btnn|claimsList|proposals|receptionClaims|traCuuVuViec|htList|phdd|gqNbth|nbth)/.test(k)) continue;
+                const v = localStorage.getItem(k);
+                if (!v || !PAIRS.some(p => v.indexOf(p[0]) >= 0)) continue;
+                let out = swap(v);
+                if (k === KEY_RECORDS) {
+                    const list = JSON.parse(v);
+                    if (!Array.isArray(list)) continue;
+                    out = JSON.stringify(list.map(r => (r && r.status === OLD && !r.returned) ? r : JSON.parse(swap(JSON.stringify(r)))));
+                }
+                if (out !== v) localStorage.setItem(k, out);
+            }
+        } catch (e) { /* bỏ qua */ }
+    })();
+
     const REQUEST_TYPE_XD = 'Xác định cơ quan giải quyết bồi thường';
     const REQUEST_TYPE_YCBT = 'Giải quyết yêu cầu bồi thường';
     const REQUEST_TYPE_YCBT_OLD = 'Yêu cầu bồi thường';
@@ -1627,7 +1651,7 @@
         { id: 'P21', code: 'KP-2026-021', type: 'Cấp kinh phí bồi thường', ycbtCode: 'BT-2026-028', nycName: 'Hoàng Văn Thái', amount: 180000000, user: 'Lê Văn Nam', date: '18/09/2026', status: 'Chờ duyệt', source: 'Ngân sách địa phương (Dự phòng)', cqCap: 'Sở Tài chính Hà Nội', notes: 'Tờ trình đề nghị cấp phát kinh phí bồi thường tổn thất tài sản và thu nhập thực tế.', files: [{ name: 'Tờ trình cấp kinh phí Hoàng Văn Thái', file: 'To_trinh_KP_HoangVanThai.pdf' }], agencyName: 'Tòa án nhân dân TP. Hà Nội' },
         { id: 'P22', code: 'KP-2026-022', type: 'Cấp tạm ứng', ycbtCode: 'BT-2026-029', nycName: 'Nguyễn Thị Mai', amount: 70000000, user: 'Nguyễn Văn Thụ', date: '19/09/2026', status: 'Chờ duyệt', source: 'Tạm ứng kinh phí Bộ Tài chính', cqCap: 'Sở Tư pháp Hà Nội', notes: 'Tờ trình đề xuất tạm ứng kinh phí bồi thường cho bà Nguyễn Thị Mai.', files: [{ name: 'Tờ trình đề xuất tạm ứng Mai', file: 'To_trinh_tam_ung_NguyenThiMai.pdf' }], agencyName: 'UBND Quận Cầu Giấy' },
         { id: 'P2', code: 'KP-2026-002', type: 'Cấp tạm ứng', ycbtCode: 'BT-2026-002', nycName: 'Trần Thị B', amount: 100000000, user: 'Nguyễn Văn Thụ', date: '04/09/2026', status: 'Chờ chi trả', source: 'Tạm ứng kinh phí Bộ Tài chính', cqCap: 'Sở Tư pháp Hà Nội', notes: 'Cấp tạm ứng bồi thường thiệt hại cho bà Trần Thị B.', files: [{ name: 'Tờ trình đề xuất cấp kinh phí', file: 'De_xuat_tam_ung_B.pdf' }], leaderOpinion: 'Đồng ý cấp tạm ứng kinh phí bồi thường cho bà Trần Thị B.', approvedDate: '05/09/2026 09:15', approvedLeader: 'Lãnh đạo cơ quan', agencyName: 'Tòa án nhân dân TP. Hà Nội' },
-        { id: 'P7', code: 'KP-2026-007', type: 'Cấp tạm ứng', ycbtCode: 'BT-2026-002', nycName: 'Trần Thị B', amount: 80000000, user: 'Lê Văn Nam', date: '08/09/2026', status: 'Bị từ chối', source: 'Tạm ứng kinh phí Bộ Tài chính', cqCap: 'Sở Tư pháp Hà Nội', notes: 'Đề nghị cấp tạm ứng bồi thường bị từ chối do thiếu tài liệu y tế chứng minh.', files: [], leaderOpinion: 'Từ chối do hồ sơ chưa đính kèm báo cáo giám định sức khỏe của bệnh viện cấp tỉnh.', approvedDate: '09/09/2026 10:30', approvedLeader: 'Lãnh đạo cơ quan', agencyName: 'Tòa án nhân dân TP. Hà Nội' }
+        { id: 'P7', code: 'KP-2026-007', type: 'Cấp tạm ứng', ycbtCode: 'BT-2026-002', nycName: 'Trần Thị B', amount: 80000000, user: 'Lê Văn Nam', date: '08/09/2026', status: 'Bị trả lại', source: 'Tạm ứng kinh phí Bộ Tài chính', cqCap: 'Sở Tư pháp Hà Nội', notes: 'Đề nghị cấp tạm ứng bồi thường bị từ chối do thiếu tài liệu y tế chứng minh.', files: [], leaderOpinion: 'Từ chối do hồ sơ chưa đính kèm báo cáo giám định sức khỏe của bệnh viện cấp tỉnh.', approvedDate: '09/09/2026 10:30', approvedLeader: 'Lãnh đạo cơ quan', agencyName: 'Tòa án nhân dân TP. Hà Nội' }
     ];
     const KP_FALLBACK_AGENCY = {};
     KP_FALLBACK.forEach(p => { KP_FALLBACK_AGENCY[p.id] = p.agencyName; });
@@ -1646,7 +1670,7 @@
         if (!approveIt && !opinion) return { ok: false, message: 'Vui lòng nhập lý do từ chối.' };
         const d = new Date();
         const at = `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-        p.status = approveIt ? 'Chờ chi trả' : 'Bị từ chối';
+        p.status = approveIt ? 'Chờ chi trả' : 'Bị trả lại';
         p.leaderOpinion = opinion || (isAdvanceProposal(p) ? 'Đồng ý cấp tạm ứng kinh phí bồi thường.' : 'Đồng ý phê duyệt cấp kinh phí bồi thường.');
         p.approvedDate = at;
         p.approvedLeader = userName(me);
@@ -1718,7 +1742,7 @@
             if (p.status === 'Chờ duyệt') {
                 pending.push(Object.assign({}, base, { key: 'kp:' + p.id, detail: `Ký duyệt ${base.kind.toLowerCase()} ${amount}`, who: `${p.user || '--'} - Cán bộ lập đề nghị`, at: p.date || '--' }));
             } else if (p.approvedDate && (!p.approvedLeaderId || p.approvedLeaderId === me)) {
-                const ok = p.status !== 'Bị từ chối';
+                const ok = p.status !== 'Bị trả lại';
                 done.push(Object.assign({}, base, { key: 'kpd:' + p.id, action: ok ? 'Phê duyệt' : 'Từ chối', detail: `${ok ? 'Đã ký duyệt' : 'Từ chối'} ${base.kind.toLowerCase()} ${amount}${p.leaderOpinion ? '. Ý kiến: ' + p.leaderOpinion : ''}`, who: p.approvedLeaderId ? userName(me) : (p.approvedLeader || '--'), at: p.approvedDate }));
             }
         });

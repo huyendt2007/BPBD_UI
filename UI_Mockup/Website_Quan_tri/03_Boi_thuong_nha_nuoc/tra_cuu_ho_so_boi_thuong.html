@@ -430,19 +430,19 @@
         <span id="toastMessage">Thông báo</span>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261027s35"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261028tl1"></script>
     <script src="../../Common/dia_ban_vn.js"></script>
 
     <script>
         // Trạng thái vụ việc Giải quyết YCBT (danh sách gốc GQ_CASE_STATUSES tại quan_ly_boi_thuong.html)
         const allStatuses = [
-            'Chờ tiếp nhận', 'Chờ duyệt', 'Bị từ chối', 'Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng',
+            'Chờ tiếp nhận', 'Chờ duyệt', 'Bị trả lại', 'Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng',
             'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoàn thành', 'Đang phục hồi danh dự', 'Hoãn phục hồi danh dự', 'Từ chối phục hồi danh dự',
             'Hoãn giải quyết', 'Tạm đình chỉ', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Đã chuyển CQGQBT', 'Không thụ lý', 'Yêu cầu bổ sung'
         ];
         // Phạm vi tra cứu: toàn bộ vụ việc từ "Chờ tiếp nhận" trở đi, mọi Trạng thái vụ việc (thứ tự hiển thị tại bộ lọc Trạng thái).
         const TCVV_STATUSES = [
-            'Chờ tiếp nhận', 'Yêu cầu bổ sung', 'Không thụ lý', 'Cử người giải quyết bồi thường', 'Chờ duyệt', 'Bị từ chối', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ chi trả',
+            'Chờ tiếp nhận', 'Yêu cầu bổ sung', 'Không thụ lý', 'Cử người giải quyết bồi thường', 'Chờ duyệt', 'Bị trả lại', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ chi trả',
             'Hoãn giải quyết', 'Tạm đình chỉ', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Đã chuyển CQGQBT', 'Đang phục hồi danh dự', 'Hoãn phục hồi danh dự', 'Từ chối phục hồi danh dự', 'Hoàn thành'
         ];
 
@@ -674,7 +674,7 @@
 
         // Chuẩn hóa khi đọc dữ liệu: giá trị cũ trong localStorage -> 17 Trạng thái vụ việc (bảng đọc dữ liệu cũ, viết không dấu)
         const LEGACY_STATUS = {
-            'luu nhap': 'Chờ tiếp nhận', 'cho nhap lieu': 'Chờ tiếp nhận', 'cho phe duyet': 'Chờ duyệt', 'bi tra lai': 'Bị từ chối',
+            'luu nhap': 'Chờ tiếp nhận', 'cho nhap lieu': 'Chờ tiếp nhận', 'cho phe duyet': 'Chờ duyệt', 'bi tra lai': 'Bị trả lại',
             'cho thu ly': 'Cử người giải quyết bồi thường', 'cho kiem tra': 'Cử người giải quyết bồi thường',
             'dang xac minh thiet hai': 'Xác minh thiệt hại', 'dang thuong luong': 'Thương lượng',
             'thuong luong khong thanh cong': 'Chờ ban hành QĐ', 'thuong luong thanh cong': 'Chờ ban hành QĐ',
@@ -728,7 +728,7 @@
             };
         }
 
-        // Nội dung trình của phiếu Chờ duyệt / Bị từ chối (luồng xử lý dùng chung)
+        // Nội dung trình của phiếu Chờ duyệt / Bị trả lại (luồng xử lý dùng chung)
         function tcvvApprovalKind(item) {
             try {
                 const W = window.BTNN_WF;
@@ -739,7 +739,7 @@
             }
         }
 
-        // Phạm vi tra cứu: toàn bộ vụ việc từ Chờ tiếp nhận trở đi (mọi Nội dung trình của Chờ duyệt / Bị từ chối, mọi trường hợp Đã chuyển CQGQBT)
+        // Phạm vi tra cứu: toàn bộ vụ việc từ Chờ tiếp nhận trở đi (mọi Nội dung trình của Chờ duyệt / Bị trả lại, mọi trường hợp Đã chuyển CQGQBT)
         function tcvvInScope(row) {
             return TCVV_STATUSES.includes(row.status);
         }
@@ -993,7 +993,7 @@
             if (status === 'Hoàn thành') cls = 'badge-success';
             else if (['Chờ tiếp nhận', 'Chờ duyệt', 'Cử người giải quyết bồi thường'].includes(status)) cls = 'badge-pending';
             else if (['Yêu cầu bổ sung', 'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoãn giải quyết', 'Tạm đình chỉ', 'Hoãn phục hồi danh dự'].includes(status)) cls = 'badge-warning';
-            else if (['Bị từ chối', 'Không thụ lý', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Từ chối phục hồi danh dự'].includes(status)) cls = 'badge-danger';
+            else if (['Bị trả lại', 'Không thụ lý', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Từ chối phục hồi danh dự'].includes(status)) cls = 'badge-danger';
             return `<span class="badge ${cls}">${escapeHtml(status)}</span>`;
         }
 
@@ -1068,8 +1068,8 @@
                 .replace(/'/g, '&#039;');
         }
     </script>
-    <script src="tra_cuu_seed_tcvv.js?v=20261027ccct"></script>
-    <script src="btnn_uxu_dong_bo.js?v=20261023uxu"></script>
+    <script src="tra_cuu_seed_tcvv.js?v=20261028tl1"></script>
+    <script src="btnn_uxu_dong_bo.js?v=20261028tl1"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>

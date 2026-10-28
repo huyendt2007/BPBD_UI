@@ -4,7 +4,7 @@
  *   (áp dụng mọi trạng thái nguồn được Đình chỉ, gồm cả Chờ chi trả và Hoàn thành; không giới hạn theo trạng thái vụ việc). Không chặn đình chỉ vì lý do kinh phí.
  * - Bản ghi kinh phí của vụ việc (theo Mã hồ sơ GQBT = ycbtCode):
  *   + Đã chi (Hoàn thành hoặc Số tiền đã chi > 0) -> "Chờ thu hồi".
- *   + Đang dở, chưa chi đồng nào (Chờ lập đề nghị, Chờ thông báo chi trả, Đề nghị cấp bổ sung kinh phí, Chờ duyệt, Bị từ chối, Chờ chi trả) -> "Đã hủy";
+ *   + Đang dở, chưa chi đồng nào (Chờ lập đề nghị, Chờ thông báo chi trả, Đề nghị cấp bổ sung kinh phí, Chờ duyệt, Bị trả lại, Chờ chi trả) -> "Đã hủy";
  *     phiếu trình đang Chờ duyệt (Thông báo chi trả / QĐ tạm ứng) bị hủy theo (không còn ở tab Chờ xử lý của Lãnh đạo).
  *   + Đã hủy, Đã thu hồi, Chờ thu hồi, Trả lại ngân sách nhà nước: giữ nguyên.
  *   + Đình chỉ / Dừng giải quyết chọn "Không thu hồi" (dinhChi.thuHoi / dungGiaiQuyet.thuHoi): khoản đã chi giữ nguyên trạng thái, ghi lịch sử "Không thu hồi do đình chỉ giải quyết bồi thường / do dừng giải quyết bồi thường. Lý do: ..."

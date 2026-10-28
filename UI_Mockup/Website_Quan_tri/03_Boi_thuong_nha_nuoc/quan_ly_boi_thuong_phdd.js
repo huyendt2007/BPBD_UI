@@ -35,7 +35,6 @@ function phdxDateNum(v) {
 }
 var PHDX_MSG_RANGE = 'Từ ngày không được lớn hơn Đến ngày'; // [MSG-ERR-VAL-007]
 var PHDX_MSG_FUTURE = 'Ngày nhập vào không được lớn hơn ngày hiện tại'; // [MSG-ERR-VAL-008]
-var PHDX_MSG_BEFORE_HOAN = 'Ngày tiếp tục không được nhỏ hơn Từ ngày hoãn';
 
 function phdxCss() {
     if (phdxEl('phdxCss')) return;
@@ -161,8 +160,8 @@ function phdxOpenLog(claim) {
 }
 function phdxLogs(claim) {
     if (!Array.isArray(claim.phddHoanLogs)) claim.phddHoanLogs = [];
-    // Hoãn ghi nhận tại khối Ý kiến phản hồi (ý kiến "Đề nghị chưa thực hiện / tạm hoãn") chưa có lần hoãn: tạo lần hoãn từ ý kiến đã lưu
-    // Từ ngày / Đến ngày lấy theo trường Từ ngày / Đến ngày của Khối 2 (không bắt buộc, trống hiển thị "-")
+    // Hoãn ghi nhận tại khối Ý kiến phản hồi (ý kiến "Đề nghị chưa thực hiện") chưa có lần hoãn: tạo lần hoãn từ ý kiến đã lưu
+    // Không có Từ ngày / Đến ngày (Khối 2 không nhập thời gian hoãn)
     var files = typeof ctvvFromLegacy === 'function' ? ctvvFromLegacy(claim.phddStep2Files || []) : [];
     var open = phdxOpenLog(claim);
     if (phdxSt(claim) === PHDX_HOAN && !open) {
@@ -188,16 +187,14 @@ function phdxDocs(rows, title) {
 }
 function phdxF(label, value, cls) { return '<div' + (cls ? ' class="' + cls + '"' : '') + '><b>' + label + '</b>' + (value ? phdxE(value) : '-') + '</div>'; }
 function phdxLogHtml(l, i, isOpen) {
-    var period = (l.fromDate || '-') + ' – ' + (l.toDate || '-');
     var h = '<div class="phdx-lan' + (isOpen ? ' is-open-hoan' : '') + '" id="phdxLan_' + (i + 1) + '">'
-        + '<div class="phdx-lan-title">Lần ' + (i + 1) + ' – Hoãn từ ' + phdxE(l.fromDate || '-') + ' đến ' + phdxE(l.toDate || '-')
+        + '<div class="phdx-lan-title">Lần ' + (i + 1) + ' – Đề nghị chưa thực hiện'
         + (l.resumeDate ? ' – Tiếp tục ngày ' + phdxE(l.resumeDate) : (isOpen ? ' (đang hoãn)' : '')) + '</div>'
         + '<div class="phdx-grid">'
-        + phdxF('Lý do hoãn', l.reason, 'phdx-span4')
-        + phdxF('Thời gian hoãn', period)
+        + phdxF('Lý do đề nghị chưa thực hiện', l.reason, 'phdx-span4')
         + phdxF('Bước trước khi hoãn', typeof phddStepLabel === 'function' ? phddStepLabel(l.prevStatus) : l.prevStatus)
         + phdxF('Người cập nhật', l.by)
-        + phdxF('Thời điểm cập nhật', l.at)
+        + phdxF('Thời điểm cập nhật', l.at, 'phdx-span2')
         + '</div>' + phdxDocs(l.files, 'Tài liệu kèm theo');
     if (l.resumeDate) {
         h += '<div class="phdx-sub">Tiếp tục thực hiện phục hồi danh dự</div><div class="phdx-grid">'
@@ -252,7 +249,7 @@ function phdxRenderHoan(claim) {
     if (phdxEl('phdxResumeForm')) {
         var d = phdxEl('phdxResumeDate');
         d.value = phdxToday();
-        if (typeof flatpickr !== 'undefined') flatpickr(d, { dateFormat: 'd/m/Y', allowInput: true, defaultDate: d.value, maxDate: 'today', minDate: phdxValidDate(open && open.fromDate) ? open.fromDate : null, onChange: function () { phdxClearErr('phdxResumeDate'); } });
+        if (typeof flatpickr !== 'undefined') flatpickr(d, { dateFormat: 'd/m/Y', allowInput: true, defaultDate: d.value, maxDate: 'today', onChange: function () { phdxClearErr('phdxResumeDate'); } });
         if (typeof ctvvDocsMount === 'function') ctvvDocsMount('phdx', 'phdxResumeDocs', [], { required: false, title: '' });
     }
     phdxSetOpen(sec, hoan);
@@ -270,12 +267,11 @@ function phdxResume() {
     if (!claim || !log || phdxSt(claim) !== PHDX_HOAN) return;
     var dEl = phdxEl('phdxResumeDate'), rEl = phdxEl('phdxResumeReason');
     var date = dEl ? dEl.value.trim() : '', reason = rEl ? rEl.value.trim() : '';
-    // Ngày tiếp tục: bắt buộc; không lớn hơn ngày hiện tại; không nhỏ hơn Từ ngày của lần hoãn (khi lần hoãn có Từ ngày)
+    // Ngày tiếp tục: bắt buộc; không lớn hơn ngày hiện tại
     var dateMsg = '';
-    var dn = phdxDateNum(date), fromN = phdxDateNum(log.fromDate), todayN = phdxDateNum(phdxToday());
+    var dn = phdxDateNum(date), todayN = phdxDateNum(phdxToday());
     if (!date || dn === null) dateMsg = PHDX_REQ;
     else if (dn > todayN) dateMsg = PHDX_MSG_FUTURE;
-    else if (fromN !== null && dn < fromN) dateMsg = PHDX_MSG_BEFORE_HOAN;
     var badDate = !!dateMsg, badReason = !reason;
     phdxSetErr('phdxResumeDate', badDate, dateMsg);
     phdxSetErr('phdxResumeReason', badReason);
@@ -332,9 +328,12 @@ function phdxToggleHistory() {
     head.classList.toggle('is-open', open);
 }
 
-// ---------- Khối 2 - ý kiến "Đề nghị chưa thực hiện / tạm hoãn": Từ ngày / Đến ngày (không bắt buộc) ----------
+// ---------- Khối 2 - ý kiến "Đề nghị chưa thực hiện": không nhập Từ ngày / Đến ngày ----------
+// Không dựng ô Từ ngày / Đến ngày (phdxBeforeStep2 tự để trống khi không có ô); dữ liệu cũ đã lưu vẫn hiển thị ở các lần hoãn
+var PHDX_DELAY_DATES = false;
 function phdxDelayFields() {
     var g = phdxEl('phddStep2DelayGroup');
+    if (!PHDX_DELAY_DATES) { var old = phdxEl('phdxDelayDates'); if (old) old.remove(); return; }
     if (!g || phdxEl('phdxDelayDates')) return;
     var fld = function (id, label) {
         return '<div class="form-group" style="margin-bottom:0;"><span class="form-label">' + label + '</span>'

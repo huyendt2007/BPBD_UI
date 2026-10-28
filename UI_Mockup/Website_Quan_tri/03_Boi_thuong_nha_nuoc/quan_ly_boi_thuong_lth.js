@@ -105,11 +105,11 @@
         return '<div class="form-group lth-opt lth-phdd" id="lthPhddBox_' + step + '">'
             + '<label class="lth-chk"><input type="checkbox" id="lthPhdd_' + step + '"' + (has ? ' checked' : '') + (locked ? ' disabled' : '') + (tip ? ' title="' + esc(tip) + '"' : '')
             + ' onchange="lthPhddTick(\'' + step + '\', this.checked)"> <span>Yêu cầu phục hồi danh dự</span></label>'
-            + '<span id="lthPhddBadge_' + step + '">' + (has ? badge(bs) : '') + '</span></div>';
+            + '<span id="lthPhddBadge_' + step + '"></span></div>'; // Không hiển thị nhãn Theo yêu cầu / Bổ sung cạnh ô tích
     }
     window.lthPhddTick = function (step, on) {
         var b = el('lthPhddBadge_' + step);
-        if (b) b.innerHTML = on ? badge(true) : '';
+        if (b) b.innerHTML = '';
     };
     var PHDD_KEYS = ['requestType', 'restoreHonor', 'phddBs', 'phddBsStep', 'phddBsAt', 'phddBsPrevType', 'phddStatus', 'phddStarted'];
     function phddSnap(c) { var s = { tl: (c.timeline || []).length }; PHDD_KEYS.forEach(function (k) { s[k] = c[k]; }); return s; }

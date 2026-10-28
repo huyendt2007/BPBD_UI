@@ -1,6 +1,6 @@
 /*
  * Xem xét trách nhiệm hoàn trả - Màn danh sách (Prompt 1):
- * - Giả lập người dùng theo đơn vị: Đơn vị tạo hội đồng / Đơn vị quản lý cán bộ A, B / Sở Tư pháp / Lãnh đạo.
+ * - Giả lập người dùng theo đơn vị: Đơn vị tạo hội đồng / Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại A, B / Sở Tư pháp / Lãnh đạo.
  * - Trạng thái 02 tầng: trạng thái chi tiết (hồ sơ / phần đơn vị / cán bộ) và trạng thái chung (cấp ngoài) tổng hợp theo phạm vi dữ liệu.
  * - Nạp sau script chính của trang; ghi đè các hàm hiển thị danh sách (renderRefundTable, tab, bộ lọc, thao tác).
  */
@@ -14,8 +14,8 @@
     const STP_UNITS = [U_A, U_CHU];
     const HT_SCOPES = {
         don_vi_chu: { label: 'Đơn vị tạo hội đồng (' + U_CHU + ')', unit: U_CHU, legacy: 'chuyen_vien' },
-        don_vi_a: { label: 'Đơn vị quản lý cán bộ A (' + U_A + ')', unit: U_A, legacy: 'chuyen_vien' },
-        don_vi_b: { label: 'Đơn vị quản lý cán bộ B (' + U_B + ')', unit: U_B, legacy: 'chuyen_vien' },
+        don_vi_a: { label: 'Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại A (' + U_A + ')', unit: U_A, legacy: 'chuyen_vien' },
+        don_vi_b: { label: 'Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại B (' + U_B + ')', unit: U_B, legacy: 'chuyen_vien' },
         stp: { label: 'Sở Tư pháp (' + U_STP + ')', unit: U_STP, legacy: 'chuyen_vien' },
         lanh_dao: { label: 'Lãnh đạo phê duyệt', unit: '', legacy: 'lanh_dao' }
     };
@@ -29,17 +29,17 @@
     const CB_ST = {
         CBH_HT: ['Chờ ban hành QĐ hoàn trả', '', 'Chờ xử lý'],
         CD_HT: ['Chờ duyệt', 'QĐ hoàn trả', 'Đang xử lý'],
-        BTC_HT: ['Bị từ chối', 'QĐ hoàn trả', 'Chờ xử lý'],
+        BTC_HT: ['Bị trả lại', 'QĐ hoàn trả', 'Chờ xử lý'],
         CBH_MIEN: ['Chờ ban hành QĐ Miễn hoàn trả', '', 'Chờ xử lý'],
         CBH_GIAM: ['Chờ ban hành QĐ Giảm mức hoàn trả', '', 'Chờ xử lý'],
         CD_MIEN: ['Chờ duyệt', 'QĐ miễn hoàn trả', 'Đang xử lý'],
         CD_GIAM: ['Chờ duyệt', 'QĐ giảm mức hoàn trả', 'Đang xử lý'],
-        BTC_MIEN: ['Bị từ chối', 'QĐ miễn hoàn trả', 'Chờ xử lý'],
-        BTC_GIAM: ['Bị từ chối', 'QĐ giảm mức hoàn trả', 'Chờ xử lý'],
+        BTC_MIEN: ['Bị trả lại', 'QĐ miễn hoàn trả', 'Chờ xử lý'],
+        BTC_GIAM: ['Bị trả lại', 'QĐ giảm mức hoàn trả', 'Chờ xử lý'],
         CD_DC: ['Chờ duyệt', 'QĐ đình chỉ', 'Đang xử lý'],
-        BTC_DC: ['Bị từ chối', 'QĐ đình chỉ', 'Chờ xử lý'],
-        TL_DC: ['Chờ trả lại tiền', 'Đình chỉ hoàn trả', 'Thu hồi tiền hoàn trả'],
-        THU: ['Thu hồi tiền hoàn trả', '', 'Thu hồi tiền hoàn trả'],
+        BTC_DC: ['Bị trả lại', 'QĐ đình chỉ', 'Chờ xử lý'],
+        TL_DC: ['Chờ trả lại tiền', 'Đình chỉ hoàn trả', 'Thu tiền hoàn trả'],
+        THU: ['Thu tiền hoàn trả', '', 'Thu tiền hoàn trả'],
         MIEN: ['Miễn hoàn trả', '', 'Miễn hoàn trả'],
         DONE: ['Hoàn thành', '', 'Hoàn thành'],
         // Cấp cán bộ: Đình chỉ hoàn trả; trạng thái chung (roll-up): Đình chỉ xem xét hoàn trả
@@ -49,20 +49,20 @@
     const HS_GROUP = {
         'Chờ thành lập hội đồng': 'Chờ xử lý',
         'Chờ duyệt QĐ thành lập': 'Đang xử lý', 'Chờ duyệt thành lập hội đồng': 'Đang xử lý', 'Chờ duyệt QĐ đình chỉ': 'Đang xử lý',
-        'Bị từ chối thành lập HĐ': 'Chờ xử lý', 'Từ chối duyệt QĐ thành lập': 'Chờ xử lý', 'Bị từ chối QĐ đình chỉ': 'Chờ xử lý',
+        'Bị trả lại thành lập HĐ': 'Chờ xử lý', 'Từ chối duyệt QĐ thành lập': 'Chờ xử lý', 'Bị trả lại QĐ đình chỉ': 'Chờ xử lý',
         'Họp hội đồng': 'Chờ xử lý',
         'Đình chỉ xem xét hoàn trả': 'Đình chỉ xem xét hoàn trả'
     };
     // Bước 1: trạng thái hồ sơ đang trình / bị từ chối QĐ thành lập Hội đồng -> [badge, Loại trình]
     const HS_TRINH = {
         'Chờ duyệt QĐ thành lập': ['Chờ duyệt', 'QĐ thành lập hội đồng'], 'Chờ duyệt thành lập hội đồng': ['Chờ duyệt', 'QĐ thành lập hội đồng'],
-        'Bị từ chối thành lập HĐ': ['Bị từ chối', 'QĐ thành lập hội đồng'], 'Từ chối duyệt QĐ thành lập': ['Bị từ chối', 'QĐ thành lập hội đồng'],
+        'Bị trả lại thành lập HĐ': ['Bị trả lại', 'QĐ thành lập hội đồng'], 'Từ chối duyệt QĐ thành lập': ['Bị trả lại', 'QĐ thành lập hội đồng'],
         // Đình chỉ cả hồ sơ (trước khi tách phần đơn vị)
-        'Chờ duyệt QĐ đình chỉ': ['Chờ duyệt', 'QĐ đình chỉ'], 'Bị từ chối QĐ đình chỉ': ['Bị từ chối', 'QĐ đình chỉ']
+        'Chờ duyệt QĐ đình chỉ': ['Chờ duyệt', 'QĐ đình chỉ'], 'Bị trả lại QĐ đình chỉ': ['Bị trả lại', 'QĐ đình chỉ']
     };
-    const CHUNG_ORDER = ['Chờ duyệt', 'Bị từ chối', 'Chờ xử lý', 'Đang xử lý', 'Thu hồi tiền hoàn trả', 'Miễn hoàn trả', 'Hoàn thành', 'Đình chỉ xem xét hoàn trả'];
+    const CHUNG_ORDER = ['Chờ duyệt', 'Bị trả lại', 'Chờ xử lý', 'Đang xử lý', 'Thu tiền hoàn trả', 'Miễn hoàn trả', 'Hoàn thành', 'Đình chỉ xem xét hoàn trả'];
     // Mỗi trạng thái chung một màu badge riêng
-    const CHUNG_STYLE = { 'Chờ duyệt': 'wait', 'Bị từ chối': 'danger', 'Chờ xử lý': 'warning', 'Đang xử lý': 'pending', 'Thu hồi tiền hoàn trả': 'info', 'Miễn hoàn trả': 'mien', 'Hoàn thành': 'success', 'Đình chỉ xem xét hoàn trả': 'draft' };
+    const CHUNG_STYLE = { 'Chờ duyệt': 'wait', 'Bị trả lại': 'danger', 'Chờ xử lý': 'warning', 'Đang xử lý': 'pending', 'Thu tiền hoàn trả': 'info', 'Miễn hoàn trả': 'mien', 'Hoàn thành': 'success', 'Đình chỉ xem xét hoàn trả': 'draft' };
     try {
         const st = document.createElement('style');
         st.textContent = '.ht-st-mien{background-color:#fdf2f8;color:#be185d;border:1px solid #fbcfe8;} .ht-st-wait{background-color:#ede9fe;color:#6d28d9;border:1px solid #ddd6fe;} .ht-trinh-sub{font-size:11px;color:#64748b;margin-top:3px;}';
@@ -71,21 +71,21 @@
 
     // ===== Dữ liệu giả lập theo đơn vị (cán bộ sau khi chốt ý kiến Hội đồng) =====
     // xl: hình thức xử lý theo ý kiến Hội đồng (HT: hoàn trả, GIAM, MIEN); hd: số tiền theo ý kiến HĐ; giam: số tiền sau giảm; paid: đã thu
-    // trinh: trình ký phát sinh khi đang Thu hồi tiền hoàn trả (Miễn/Giảm/Đình chỉ bổ sung); hoan: nhãn Hoãn hoàn trả; stp: Sở Tư pháp đã ghi nhận nộp tiền
+    // trinh: trình ký phát sinh khi đang Thu tiền hoàn trả (Miễn/Giảm/Đình chỉ bổ sung); hoan: nhãn Hoãn hoàn trả; stp: Sở Tư pháp đã ghi nhận nộp tiền
     const C = (name, unit, st, o) => Object.assign({ name, unit, st, xl: 'HT', hd: 0, giam: 0, paid: 0 }, o || {});
     const HT_SPLIT = {
         'HT-2026-001': { owner: U_CHU, officers: [
             C('Nguyễn Văn Đạt', U_A, 'DONE', { hd: 36000000, paid: 36000000, stp: true }),
             C('Lê Văn Cường', U_A, 'THU', { hd: 20000000, paid: 8000000, hoan: true }),
-            C('Hoàng Văn D', U_A, 'CBH_GIAM', { xl: 'GIAM', hd: 15000000, giam: 9000000 }),
-            C('Trần Thị Bình', U_B, 'THU', { hd: 30000000, paid: 3000000, trinh: 'CD_GIAM' })] },
+            C('Hoàng Văn D', U_A, 'THU', { xl: 'GIAM', hd: 15000000, giam: 11000000, pt: 11000000 }),
+            C('Trần Thị Bình', U_B, 'THU', { hd: 30000000, paid: 3000000, trinh: 'CD_GIAM', pay: U_A })] },
         'HT-2026-002': { owner: U_A, officers: [C('Hoàng Thị M', U_A, 'THU', { hd: 30000000, paid: 6000000 })] },
         'HT-2026-003': { owner: U_CHU, officers: [C('Phạm Văn Thiếu Sót', U_A, 'DONE', { hd: 10000000, paid: 10000000 })] },
         'HT-2026-004': { owner: U_CHU, officers: [C('Trần Văn Lỗi', U_B, 'MIEN', { xl: 'MIEN', hd: 5000000 })] },
         'HT-2026-009': { owner: U_CHU, officers: [C('Vũ Văn Tài', U_A, 'CBH_HT', { hd: 30000000 })] },
         'HT-2026-010': { owner: U_CHU, officers: [C('Ngô Quyền', U_B, 'BTC_HT', { hd: 18000000 })] },
         'HT-2026-017': { owner: U_CHU, officers: [
-            C('Lưu Quốc Toàn', U_B, 'CD_MIEN', { xl: 'MIEN', hd: 45000000 })] },
+            C('Lưu Quốc Toàn', U_B, 'MIEN', { xl: 'MIEN', hd: 45000000 })] },
         'HT-2026-018': { owner: U_CHU, officers: [C('Bùi Văn Nam', U_A, 'BTC_HT', { hd: 25000000 })] },
         'HT-2026-021': { owner: U_CHU, officers: [
             C('Phạm Quốc Huy', U_A, 'CD_HT', { hd: 55000000 }),
@@ -102,7 +102,7 @@
         Object.keys(st).forEach(code => {
             const v = st[code]; if (!v || !Array.isArray(v.officers) || !v.officers.length) return;
             const old = HT_SPLIT[code] || {};
-            HT_SPLIT[code] = { owner: v.owner || old.owner || U_CHU, officers: v.officers.map(o => C(o.name, o.unit, o.st, { xl: o.xl, hd: o.hd, giam: o.giam, paid: o.paid, hoan: o.hoan, pt: o.pt, trinh: o.trinh || '', refund: o.refund || 0, stp: !!o.stp })) };
+            HT_SPLIT[code] = { owner: v.owner || old.owner || U_CHU, officers: v.officers.map(o => C(o.name, o.unit, o.st, { xl: o.xl, hd: o.hd, giam: o.giam, paid: o.paid, hoan: o.hoan, pt: o.pt, trinh: o.trinh || '', refund: o.refund || 0, stp: !!o.stp, pay: o.pay || '' })) };
         });
     } catch (e) { /* bỏ qua */ }
     // Hồ sơ chưa tách phần đơn vị: trạng thái hồ sơ do màn chi tiết lưu (thành lập Hội đồng, đình chỉ cả hồ sơ...)
@@ -121,8 +121,8 @@
     function ownerOf(d) { const s = splitOf(d); return s ? s.owner : U_CHU; }
     function isSplit(d) { return !!splitOf(d); }
     function cbStatus(o) { return CB_ST[o.trinh || o.st] || CB_ST.THU; }
-    // Trình ký phát sinh khi cán bộ đang Thu hồi tiền hoàn trả: giữ nhóm Thu hồi; trình ký QĐ đình chỉ ở Bước 3: theo Loại trình
-    function cbGroup(o) { return o.trinh ? (o.st === 'THU' ? 'Thu hồi tiền hoàn trả' : cbStatus(o)[2]) : cbStatus(o)[2]; }
+    // Trình ký phát sinh khi cán bộ đang Thu tiền hoàn trả: giữ nhóm Thu hồi; trình ký QĐ đình chỉ ở Bước 3: theo Loại trình
+    function cbGroup(o) { return o.trinh ? (o.st === 'THU' ? 'Thu tiền hoàn trả' : cbStatus(o)[2]) : cbStatus(o)[2]; }
     function issued(o) { return !['CBH_HT', 'CD_HT', 'BTC_HT'].includes(o.st); }
     function unitIssued(d, unit) { const l = (splitOf(d) || { officers: [] }).officers.filter(o => o.unit === unit); return l.length > 0 && l.every(issued); }
     function cur() { return HT_SCOPES[htScope]; }
@@ -140,24 +140,25 @@
             const list = all.filter(o => STP_UNITS.includes(o.unit) && unitIssued(d, o.unit));
             return { visible: list.length > 0, full: false, officers: list };
         }
-        const list = all.filter(o => o.unit === unit);
+        // Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương (pay, mặc định = đơn vị quản lý): thấy cán bộ do đơn vị thu tiền sau khi ban hành QĐ hoàn trả
+        const list = all.filter(o => o.unit === unit || ((o.pay || o.unit) === unit && issued(o)));
         return { visible: list.length > 0, full: false, officers: list };
     }
 
     // ===== Trạng thái chung (roll-up) =====
     function chungOf(d, sc) {
-        // Bước 1 đang trình / bị từ chối QĐ thành lập Hội đồng: badge Chờ duyệt / Bị từ chối kèm dòng Loại trình
+        // Bước 1 đang trình / bị từ chối QĐ thành lập Hội đồng: badge Chờ duyệt / Bị trả lại kèm dòng Loại trình
         if (!isSplit(d)) return HS_TRINH[d.status] ? HS_TRINH[d.status][0] : (HS_GROUP[d.status] || 'Chờ xử lý');
         const l = sc.officers;
         if (!l.length) return 'Chờ xử lý';
-        // Thứ tự: trạng thái đích (100% kết thúc) > Thu hồi tiền hoàn trả > Đang xử lý > Chờ xử lý
+        // Thứ tự: trạng thái đích (100% kết thúc) > Thu tiền hoàn trả > Đang xử lý > Chờ xử lý
         const ended = o => ['MIEN', 'DONE', 'DC'].includes(o.st) && !o.trinh;
         if (l.every(ended)) {
             if (l.every(o => o.st === 'DC')) return 'Đình chỉ xem xét hoàn trả';
             if (l.every(o => o.st === 'MIEN')) return 'Miễn hoàn trả';
             return 'Hoàn thành';
         }
-        if (l.some(o => o.st === 'THU')) return 'Thu hồi tiền hoàn trả';
+        if (l.some(o => o.st === 'THU')) return 'Thu tiền hoàn trả';
         // Có đơn vị đang trình / đã ban hành QĐ hoàn trả, hoặc đang trình QĐ miễn / giảm / đình chỉ
         if (l.some(o => !['CBH_HT', 'BTC_HT', 'DC'].includes(o.st) || /^CD_/.test(o.trinh || ''))) return 'Đang xử lý';
         return 'Chờ xử lý';
@@ -202,10 +203,10 @@
             if (!isSplit(d)) return HT_APPROVAL_STATES.includes(d.status);
             return sc.officers.some(o => cbStatus(o)[0] === 'Chờ duyệt');
         }
-        if (!isSplit(d)) return sc.full && ['Chờ thành lập hội đồng', 'Bị từ chối thành lập HĐ', 'Từ chối duyệt QĐ thành lập', 'Bị từ chối QĐ đình chỉ', 'Họp hội đồng'].includes(d.status);
+        if (!isSplit(d)) return sc.full && ['Chờ thành lập hội đồng', 'Bị trả lại thành lập HĐ', 'Từ chối duyệt QĐ thành lập', 'Bị trả lại QĐ đình chỉ', 'Họp hội đồng'].includes(d.status);
         if (htScope === 'stp') return sc.officers.some(o => o.st === 'THU');
         // Sau khi chốt ý kiến HĐ: chỉ cán bộ thuộc đơn vị của người dùng (đơn vị tạo hội đồng không thao tác phần của đơn vị khác)
-        return sc.officers.some(o => o.unit === cur().unit && (['CBH_HT', 'BTC_HT', 'CBH_MIEN', 'CBH_GIAM', 'BTC_MIEN', 'BTC_GIAM', 'THU'].includes(o.st) || /^(BTC|TL)_/.test(o.trinh || '')));
+        return sc.officers.some(o => (sc.full && o.st === 'THU') || o.unit === cur().unit && (['CBH_HT', 'BTC_HT', 'CBH_MIEN', 'CBH_GIAM', 'BTC_MIEN', 'BTC_GIAM', 'THU'].includes(o.st) || /^(BTC|TL)_/.test(o.trinh || '')));
     }
     function gatesOf(d, sc) {
         const list = [];
@@ -304,7 +305,7 @@
     // Bước mở sẵn (Stepper 4 bước): bước nhỏ nhất của phần việc chưa kết thúc trong phạm vi
     function focusStepOf(d, sc) {
         if (!isSplit(d)) {
-            if (['Họp hội đồng', 'Đình chỉ xem xét hoàn trả'].includes(d.status) || d.status === 'Chờ duyệt QĐ đình chỉ' || d.status === 'Bị từ chối QĐ đình chỉ') return 2;
+            if (['Họp hội đồng', 'Đình chỉ xem xét hoàn trả'].includes(d.status) || d.status === 'Chờ duyệt QĐ đình chỉ' || d.status === 'Bị trả lại QĐ đình chỉ') return 2;
             return 1;
         }
         const open = sc.officers.filter(o => !['DONE', 'MIEN', 'DC'].includes(o.st) || o.trinh);
@@ -342,7 +343,7 @@
         const up = canUpdate
             ? '<button class="icon-btn edit" title="Cập nhật" onclick="htOpenDetail(event, \'' + d.id + '\', \'edit\')" style="color:#2563eb; border-color:#2563eb;"><i class="fa-solid fa-pen-to-square"></i></button>'
             : '<button class="icon-btn" title="Cập nhật" style="' + off + '"><i class="fa-solid fa-pen-to-square"></i></button>';
-        // Xóa hồ sơ nháp: chỉ Đơn vị tạo Hội đồng; Đơn vị quản lý cán bộ, Sở Tư pháp không có nút Xóa
+        // Xóa hồ sơ nháp: chỉ Đơn vị tạo Hội đồng; Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại, Sở Tư pháp không có nút Xóa
         if (htScope !== 'don_vi_chu') return wrap(up);
         const del = canDelete
             ? '<button class="icon-btn delete" title="Xóa" onclick="deleteRefundDossier(event, \'' + d.id + '\')" style="color:var(--danger-color); border-color:var(--danger-color);"><i class="fa-solid fa-trash"></i></button>'
@@ -435,7 +436,7 @@
                 ? '<div style="font-size:11px; display:flex; justify-content:space-between; font-weight:600; margin-bottom:2px;" title="' + tip + '"><span>' + fmt(m.paid) + 'đ</span><span style="color:#16a34a; font-weight:700;">' + pct + '%</span></div><div class="progress-bar-container" style="height:5px; margin-bottom:2px; background-color:#e2e8f0; border-radius:3px;"><div class="progress-bar-fill" style="width:' + pct + '%; height:100%; background-color:#22c55e; border-radius:3px;"></div></div><div style="font-size:11px; color:#64748b;">' + m.ended + '/' + m.n + ' cán bộ đã kết thúc</div>'
                 : '<span style="color:var(--text-muted); font-style:italic; font-size:11px;">Chưa ban hành QĐ</span>';
             // Cột Trạng thái: chỉ 01 badge trạng thái chung (trạng thái chi tiết xem tại màn chi tiết)
-            // Ngoại lệ Bước 1: dòng Loại trình dưới badge Chờ duyệt / Bị từ chối
+            // Ngoại lệ Bước 1: dòng Loại trình dưới badge Chờ duyệt / Bị trả lại
             const tl = trinhLabel(d);
             const sub = tl ? '<div class="ht-trinh-sub">' + tl + '</div>' : '';
             tr.innerHTML = '<td style="text-align:center;">' + (start + i + 1) + '</td>'
@@ -472,7 +473,8 @@
             baseSubmit();
             const s = d && splitOf(d);
             if (s && loai === 'QĐ hoàn trả' && d.status !== before) {
-                s.officers.filter(o => o.st === 'CD_HT').forEach(o => { o.st = approve ? (o.xl === 'MIEN' ? 'CBH_MIEN' : o.xl === 'GIAM' ? 'CBH_GIAM' : 'THU') : 'BTC_HT'; });
+                // Ban hành QĐ hoàn trả: Miễn -> Miễn hoàn trả; Giảm / không giảm, không miễn -> Thu tiền hoàn trả (không QĐ miễn / giảm riêng)
+                s.officers.filter(o => o.st === 'CD_HT').forEach(o => { o.st = approve ? (o.xl === 'MIEN' ? 'MIEN' : 'THU') : 'BTC_HT'; });
                 renderRefundTable();
             }
         };

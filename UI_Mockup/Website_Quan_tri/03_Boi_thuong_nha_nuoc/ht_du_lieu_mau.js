@@ -3,15 +3,17 @@
  * Dùng chung màn Danh sách (xem_xet_trach_nhiem_hoan_tra.html) và màn Chi tiết (chi_tiet_ho_so_hoan_tra.html).
  * - HT-2026-022: Hồ sơ nháp (chưa thành lập Hội đồng)
  * - HT-2026-023: Chờ duyệt (QĐ đình chỉ) - đình chỉ cả hồ sơ tại Bước 2
- * - HT-2026-024: Bị từ chối (QĐ đình chỉ) - đình chỉ cả hồ sơ tại Bước 1
- * - HT-2026-025: Chờ ban hành / Chờ duyệt / Bị từ chối QĐ miễn, QĐ giảm (đơn vị B)
- * - HT-2026-026: Đình chỉ cấp cán bộ (Chờ duyệt, Bị từ chối, Chờ trả lại tiền, Đình chỉ hoàn trả) + Cần trả lại tiền nộp thừa (đơn vị A)
+ * - HT-2026-024: Bị trả lại (QĐ đình chỉ) - đình chỉ cả hồ sơ tại Bước 1
+ * - HT-2026-025: Chờ ban hành QĐ hoàn trả, cán bộ Miễn / Giảm theo ý kiến Hội đồng (ban hành QĐ hoàn trả -> Miễn hoàn trả / Thu tiền hoàn trả) (đơn vị B)
+ * - HT-2026-026: Thu tiền hoàn trả: nhiều đợt nộp, cán bộ Giảm / Miễn; chọn nhiều cán bộ trình QĐ miễn / giảm bổ sung (đơn vị A)
  * Nạp sau khối dữ liệu của trang, trước các add-on xem_xet_hoan_tra_pham_vi.js / chi_tiet_ho_so_hoan_tra_ykhd.js / _qd.js.
  */
 (function () {
     const U_CHU = 'UBND Quận Long Biên', U_A = 'UBND Phường Bồ Đề', U_B = 'UBND Huyện An Dương';
     // Phiên bản dữ liệu mẫu: đổi phiên bản thì xóa dữ liệu thao tác đã lưu của các hồ sơ mẫu bổ sung để nạp lại theo mẫu mới
-    const SEED_VER = '20261027htct', SEED_CODES = ['HT-2026-025', 'HT-2026-026', 'HT-2026-027'];
+    // 28/10: giảm mức hoàn trả tối đa 30% (dữ liệu mẫu giảm), Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương (HT-2026-001), lĩnh vực tố tụng hình sự (HT-2026-021)
+    // 28/10 (2): Miễn / Giảm theo ý kiến Hội đồng thể hiện trong QĐ hoàn trả (không QĐ miễn / giảm riêng); đình chỉ chỉ trước khi ban hành QĐ hoàn trả
+    const SEED_VER = '20261028mg1', SEED_CODES = ['HT-2026-025', 'HT-2026-026', 'HT-2026-027', 'HT-2026-001', 'HT-2026-021'];
     try {
         if (localStorage.getItem('btnn_ht_seed_ver') !== SEED_VER) {
             const st = JSON.parse(localStorage.getItem('btnn_ht_units_v1') || '{}') || {};
@@ -24,56 +26,56 @@
     const CASES = [
         { id: 'HT-2026-022', claimCode: 'BT-2026-022', claimSummary: 'Thu giữ phương tiện vi phạm quá thời hạn tạm giữ theo quy định.', claimAmt: 40000000, status: 'Chờ thành lập hội đồng', hdDecision: '', hdDate: '', officers: [] },
         { id: 'HT-2026-023', claimCode: 'BT-2026-023', claimSummary: 'Ban hành quyết định xử phạt vi phạm hành chính sai đối tượng.', claimAmt: 60000000, status: 'Chờ duyệt QĐ đình chỉ', prev: 'Họp hội đồng', dcht: 'pending', hdDecision: '51/QĐ-TLHD', hdDate: '05/09/2026', officers: [OF('Lâm Văn Đình', U_A, 'Chuyên viên', 'Vô ý', 20000000, 'Một lần')] },
-        { id: 'HT-2026-024', claimCode: 'BT-2026-024', claimSummary: 'Chậm cấp giấy chứng nhận quyền sử dụng đất gây thiệt hại.', claimAmt: 35000000, status: 'Bị từ chối QĐ đình chỉ', prev: 'Bị từ chối thành lập HĐ', dcht: 'rejected', hdDecision: '', hdDate: '', officers: [OF('Nghiêm Văn Tú', U_B, 'Chuyên viên', 'Vô ý', 12000000, 'Hoàn trả một lần')] },
+        { id: 'HT-2026-024', claimCode: 'BT-2026-024', claimSummary: 'Chậm cấp giấy chứng nhận quyền sử dụng đất gây thiệt hại.', claimAmt: 35000000, status: 'Bị trả lại QĐ đình chỉ', prev: 'Bị trả lại thành lập HĐ', dcht: 'rejected', hdDecision: '', hdDate: '', officers: [OF('Nghiêm Văn Tú', U_B, 'Chuyên viên', 'Vô ý', 12000000, 'Hoàn trả một lần')] },
         {
             id: 'HT-2026-025', claimCode: 'BT-2026-025', claimSummary: 'Cưỡng chế thu hồi đất không đúng trình tự, thủ tục.', claimAmt: 180000000, status: 'Chờ ban hành QĐ hoàn trả', hdDecision: '52/QĐ-TLHD', hdDate: '10/08/2026',
             officers: [OF('Trịnh Văn Miễn', U_B, 'Cán bộ địa chính', 'Vô ý', 12000000, ''), OF('Lý Thị Từ', U_B, 'Chuyên viên', 'Vô ý', 10000000, ''), OF('Mai Văn Giảm', U_B, 'Phó Trưởng phòng', 'Vô ý', 20000000, 'Nhiều lần'), OF('Đinh Thị Hạ', U_B, 'Chuyên viên', 'Vô ý', 16000000, 'Một lần')]
         },
         {
-            id: 'HT-2026-026', claimCode: 'BT-2026-026', claimSummary: 'Ra quyết định tạm giữ hành chính trái pháp luật; văn bản làm căn cứ bị hủy bỏ một phần.', claimAmt: 120000000, status: 'Thu hồi tiền hoàn trả', hdDecision: '53/QĐ-TLHD', hdDate: '15/07/2026',
+            id: 'HT-2026-026', claimCode: 'BT-2026-026', claimSummary: 'Ra quyết định tạm giữ hành chính trái pháp luật; văn bản làm căn cứ bị hủy bỏ một phần.', claimAmt: 120000000, status: 'Thu tiền hoàn trả', hdDecision: '53/QĐ-TLHD', hdDate: '15/07/2026',
             officers: [OF('Cao Văn Duyệt', U_A, 'Trưởng Công an phường', 'Vô ý', 15000000, 'Nhiều lần'), OF('Tạ Thị Chối', U_A, 'Cán bộ tư pháp', 'Vô ý', 8000000, 'Một lần'), OF('Phan Văn Trả', U_A, 'Phó Chủ tịch', 'Vô ý', 12000000, 'Nhiều lần'), OF('Kiều Văn Chỉ', U_A, 'Chuyên viên', 'Vô ý', 9000000, 'Nhiều lần'), OF('Hồ Văn Thừa', U_A, 'Kế toán', 'Vô ý', 10000000, 'Nhiều lần'), OF('Đỗ Văn Nộp', U_A, 'Công chức địa chính', 'Vô ý', 12000000, 'Nhiều lần'),
                 OF('Lương Văn Giảm', U_A, 'Phó Trưởng phòng', 'Vô ý', 18000000, 'Nhiều lần'), OF('Phí Thị Miễn', U_A, 'Chuyên viên', 'Vô ý', 10000000, '')]
         },
-        // Hồ sơ nhiều đơn vị (03 phần đơn vị ở 03 trạng thái): Đơn vị tạo Hội đồng chưa trình QĐ hoàn trả; Đơn vị A Chờ duyệt QĐ hoàn trả; Đơn vị B đã ban hành, đang thu hồi
+        // Hồ sơ nhiều đơn vị (03 phần đơn vị ở 03 trạng thái): Đơn vị tạo Hội đồng chưa trình QĐ hoàn trả; Đơn vị A Chờ duyệt QĐ hoàn trả; Đơn vị B đã ban hành, đang thu tiền
         {
             id: 'HT-2026-027', claimCode: 'BT-2026-027', claimSummary: 'Giải phóng mặt bằng sai quy hoạch, ban hành nhiều quyết định thu hồi đất trái pháp luật tại 03 địa bàn.', claimAmt: 260000000, status: 'Chờ ban hành QĐ hoàn trả', hdDecision: '54/QĐ-TLHD', hdDate: '01/08/2026',
             officers: [OF('Đoàn Văn Lâm', U_CHU, 'Trưởng phòng Tài nguyên và Môi trường', 'Vô ý', 40000000, 'Hoàn trả nhiều lần'), OF('Vương Thị Hằng', U_CHU, 'Chuyên viên', 'Vô ý', 20000000, 'Hoàn trả một lần'), OF('Mạc Văn Toàn', U_CHU, 'Cán bộ địa chính', 'Vô ý', 15000000, ''),
-                OF('Lại Văn Phúc', U_A, 'Phó Chủ tịch phường', 'Cố ý', 35000000, 'Hoàn trả nhiều lần'), OF('Hà Thị Ngân', U_B, 'Cán bộ địa chính', 'Vô ý', 25000000, 'Hoàn trả nhiều lần'), OF('Tô Văn Khải', U_B, 'Chuyên viên', 'Vô ý', 18000000, 'Hoàn trả một lần')]
+                OF('Lại Văn Phúc', U_A, 'Phó Chủ tịch phường', 'Cố ý mà có bản án đã có hiệu lực pháp luật tuyên phạm tội', 35000000, 'Hoàn trả nhiều lần'), OF('Hà Thị Ngân', U_B, 'Cán bộ địa chính', 'Vô ý', 25000000, 'Hoàn trả nhiều lần'), OF('Tô Văn Khải', U_B, 'Chuyên viên', 'Vô ý', 18000000, 'Hoàn trả một lần')]
         }
     ];
     // Trạng thái mẫu của cán bộ (màn Chi tiết, chi_tiet_ho_so_hoan_tra_qd.js): [ct, xl, giam, extra]
     window.HT_EXTRA_SEED = {
-        'Trịnh Văn Miễn': ['CBH_MIEN', 'MIEN'],
-        'Lý Thị Từ': ['BTC_MIEN', 'MIEN', 0, { qd2: 'BTC' }],
-        'Mai Văn Giảm': ['CD_GIAM', 'GIAM', 14000000, { qd2: 'CD' }],
-        'Đinh Thị Hạ': ['BTC_GIAM', 'GIAM', 12000000, { qd2: 'BTC' }],
-        'Cao Văn Duyệt': ['THU', 'HT', 0, { paid: 5000000, trinh: 'CD_DC', dc: { key: 0, st: 'CD', pa: 'KHONG' } }],
-        'Tạ Thị Chối': ['THU', 'HT', 0, { trinh: 'BTC_DC', dc: { key: 1, st: 'BTC' } }],
-        'Phan Văn Trả': ['THU', 'HT', 0, { paid: 4000000, total: 4000000, refund: 4000000, trinh: 'TL_DC', dc: { key: 2, st: 'DONE', pa: 'HOAN' } }],
-        'Kiều Văn Chỉ': ['DC', 'HT', 0, { paid: 3000000, total: 3000000, dc: { key: 2, st: 'DONE', pa: 'KHONG' } }],
-        'Hồ Văn Thừa': ['THU', 'GIAM', 8000000, { paid: 10000000, total: 8000000, refund: 2000000 }],
-        // Đơn vị quản lý cán bộ A: cán bộ đang thu hồi, còn phải nộp (demo Ghi nhận nộp tiền)
+        'Trịnh Văn Miễn': ['CBH_HT', 'MIEN'],
+        'Lý Thị Từ': ['CBH_HT', 'MIEN'],
+        'Mai Văn Giảm': ['CBH_HT', 'GIAM', 14000000],
+        'Đinh Thị Hạ': ['CBH_HT', 'GIAM', 12000000],
+        'Cao Văn Duyệt': ['THU', 'HT', 0, { paid: 5000000 }],
+        'Tạ Thị Chối': ['THU', 'HT'],
+        'Phan Văn Trả': ['THU', 'HT', 0, { paid: 4000000 }],
+        'Kiều Văn Chỉ': ['THU', 'HT', 0, { paid: 3000000 }],
+        'Hồ Văn Thừa': ['THU', 'GIAM', 8000000, { paid: 6000000, total: 8000000 }],
+        // Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại A: cán bộ đang thu tiền, còn phải nộp (demo Ghi nhận nộp tiền)
         'Đỗ Văn Nộp': ['THU', 'HT', 0, { paid: 3000000, pays: [['15/09/2026', 1000000], ['05/10/2026', 2000000]] }],
-        // Xem chi tiết hoàn trả của cán bộ: QĐ giảm đã ký (Ký số), đã nộp 02 đợt; QĐ miễn hoàn trả đã ban hành
-        'Lương Văn Giảm': ['THU', 'GIAM', 12000000, { paid: 4000000, total: 12000000, pays: [['10/10/2026', 2000000], ['20/10/2026', 2000000]] }],
+        // Xem chi tiết hoàn trả của cán bộ: Giảm theo ý kiến Hội đồng, đã nộp 02 đợt; Miễn hoàn trả
+        'Lương Văn Giảm': ['THU', 'GIAM', 13000000, { paid: 4000000, total: 13000000, pays: [['10/10/2026', 2000000], ['20/10/2026', 2000000]] }],
         'Phí Thị Miễn': ['MIEN', 'MIEN', 0, { paid: 0, total: 0 }],
         // HT-2026-027 - phần của Đơn vị tạo Hội đồng (UBND Quận Long Biên): đã ban hành QĐ hoàn trả
-        'Đoàn Văn Lâm': ['THU', 'HT', 0, { paid: 15000000 }], 'Vương Thị Hằng': ['THU', 'GIAM', 12000000, { paid: 5000000, total: 12000000, qd2m: 'offline', qd2So: '95/QĐ-UBND' }], 'Mạc Văn Toàn': ['CD_MIEN', 'MIEN', 0, { qd2: 'CD' }],
+        'Đoàn Văn Lâm': ['THU', 'HT', 0, { paid: 32000000 }], 'Vương Thị Hằng': ['THU', 'GIAM', 14000000, { paid: 5000000, total: 14000000 }], 'Mạc Văn Toàn': ['MIEN', 'MIEN'],
         'Lại Văn Phúc': ['CD_HT', 'HT'],
         'Hà Thị Ngân': ['THU', 'HT', 0, { paid: 10000000 }], 'Tô Văn Khải': ['THU', 'HT', 0, { paid: 0 }]
     };
     // Phần đơn vị / cán bộ của hồ sơ đã chốt ý kiến Hội đồng (màn Danh sách, xem_xet_hoan_tra_pham_vi.js)
     const L = (name, unit, st, o) => Object.assign({ name, unit, st, xl: 'HT', hd: 0, giam: 0, paid: 0 }, o || {});
     window.HT_EXTRA_SPLIT = {
-        'HT-2026-025': { owner: U_CHU, officers: [L('Trịnh Văn Miễn', U_B, 'CBH_MIEN', { xl: 'MIEN', hd: 12000000 }), L('Lý Thị Từ', U_B, 'BTC_MIEN', { xl: 'MIEN', hd: 10000000 }), L('Mai Văn Giảm', U_B, 'CD_GIAM', { xl: 'GIAM', hd: 20000000, giam: 14000000 }), L('Đinh Thị Hạ', U_B, 'BTC_GIAM', { xl: 'GIAM', hd: 16000000, giam: 12000000 })] },
+        'HT-2026-025': { owner: U_CHU, officers: [L('Trịnh Văn Miễn', U_B, 'CBH_HT', { xl: 'MIEN', hd: 12000000 }), L('Lý Thị Từ', U_B, 'CBH_HT', { xl: 'MIEN', hd: 10000000 }), L('Mai Văn Giảm', U_B, 'CBH_HT', { xl: 'GIAM', hd: 20000000, giam: 14000000 }), L('Đinh Thị Hạ', U_B, 'CBH_HT', { xl: 'GIAM', hd: 16000000, giam: 12000000 })] },
         'HT-2026-026': {
-            owner: U_CHU, officers: [L('Cao Văn Duyệt', U_A, 'THU', { hd: 15000000, paid: 5000000, trinh: 'CD_DC' }), L('Tạ Thị Chối', U_A, 'THU', { hd: 8000000, trinh: 'BTC_DC' }), L('Phan Văn Trả', U_A, 'THU', { hd: 12000000, paid: 4000000, pt: 4000000, refund: 4000000, trinh: 'TL_DC' }),
-                L('Kiều Văn Chỉ', U_A, 'DC', { hd: 9000000, paid: 3000000, pt: 3000000 }), L('Hồ Văn Thừa', U_A, 'THU', { xl: 'GIAM', hd: 10000000, giam: 8000000, paid: 10000000, pt: 8000000, refund: 2000000 }),
-                L('Đỗ Văn Nộp', U_A, 'THU', { hd: 12000000, paid: 3000000 }), L('Lương Văn Giảm', U_A, 'THU', { xl: 'GIAM', hd: 18000000, giam: 12000000, paid: 4000000, pt: 12000000 }),
+            owner: U_CHU, officers: [L('Cao Văn Duyệt', U_A, 'THU', { hd: 15000000, paid: 5000000 }), L('Tạ Thị Chối', U_A, 'THU', { hd: 8000000 }), L('Phan Văn Trả', U_A, 'THU', { hd: 12000000, paid: 4000000 }),
+                L('Kiều Văn Chỉ', U_A, 'THU', { hd: 9000000, paid: 3000000 }), L('Hồ Văn Thừa', U_A, 'THU', { xl: 'GIAM', hd: 10000000, giam: 8000000, paid: 6000000, pt: 8000000 }),
+                L('Đỗ Văn Nộp', U_A, 'THU', { hd: 12000000, paid: 3000000 }), L('Lương Văn Giảm', U_A, 'THU', { xl: 'GIAM', hd: 18000000, giam: 13000000, paid: 4000000, pt: 13000000 }),
                 L('Phí Thị Miễn', U_A, 'MIEN', { xl: 'MIEN', hd: 10000000 })]
         },
         'HT-2026-027': {
-            owner: U_CHU, officers: [L('Đoàn Văn Lâm', U_CHU, 'THU', { hd: 40000000, paid: 15000000 }), L('Vương Thị Hằng', U_CHU, 'THU', { xl: 'GIAM', hd: 20000000, giam: 12000000, paid: 5000000, pt: 12000000 }), L('Mạc Văn Toàn', U_CHU, 'CD_MIEN', { xl: 'MIEN', hd: 15000000 }), L('Lại Văn Phúc', U_A, 'CD_HT', { hd: 35000000 }),
+            owner: U_CHU, officers: [L('Đoàn Văn Lâm', U_CHU, 'THU', { hd: 40000000, paid: 32000000 }), L('Vương Thị Hằng', U_CHU, 'THU', { xl: 'GIAM', hd: 20000000, giam: 14000000, paid: 5000000, pt: 14000000 }), L('Mạc Văn Toàn', U_CHU, 'MIEN', { xl: 'MIEN', hd: 15000000 }), L('Lại Văn Phúc', U_A, 'CD_HT', { hd: 35000000 }),
                 L('Hà Thị Ngân', U_B, 'THU', { hd: 25000000, paid: 10000000 }), L('Tô Văn Khải', U_B, 'THU', { hd: 18000000 })]
         }
     };
@@ -151,7 +153,7 @@
         } catch (e) { /* bỏ qua */ }
     });
 
-    // Màn Chi tiết: lượt trình Quyết định đình chỉ cả hồ sơ (Chờ duyệt / Bị từ chối) cho HT-2026-023, HT-2026-024
+    // Màn Chi tiết: lượt trình Quyết định đình chỉ cả hồ sơ (Chờ duyệt / Bị trả lại) cho HT-2026-023, HT-2026-024
     // window: chạy sau khối khởi tạo của trang (chọn hồ sơ theo id)
     window.addEventListener('DOMContentLoaded', () => {
         const c = CASES.find(x => activeDossier && x.id === activeDossier.id && x.dcht);

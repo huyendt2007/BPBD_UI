@@ -363,8 +363,8 @@ let proposalsList = [
     },
 
     // ===== 4-5. TRẠNG THÁI: CHỜ DUYỆT / BỊ TỪ CHỐI =====
-    // Bỏ bản ghi mẫu kiểu cũ Chờ duyệt / Bị từ chối không có Loại trình (P3, P4, P21, P22, P7, P8, P23, P95).
-    // Bản ghi Chờ duyệt / Bị từ chối mẫu: QĐ tạm ứng (quan_ly_kinh_phi_qdtu.js), Thông báo chi trả (quan_ly_kinh_phi_kptb.js), đều có Loại trình.
+    // Bỏ bản ghi mẫu kiểu cũ Chờ duyệt / Bị trả lại không có Loại trình (P3, P4, P21, P22, P7, P8, P23, P95).
+    // Bản ghi Chờ duyệt / Bị trả lại mẫu: QĐ tạm ứng (quan_ly_kinh_phi_qdtu.js), Thông báo chi trả (quan_ly_kinh_phi_kptb.js), đều có Loại trình.
     // ===== 6. TRẠNG THÁI: CHỜ CHI TRẢ (04 bản ghi - Gồm 3 khoản Quá hạn 3 năm) =====
     {
         id: "P2",
@@ -882,7 +882,7 @@ function updateKpiCountersKp() {
     const scope = proposalsList.filter(kpInActiveTab);
     const all = scope.length;
     const pending = scope.filter(p => p.status === 'Chờ duyệt').length;
-    const rejected = scope.filter(p => p.status === 'Bị từ chối' || (p.status && p.status.toLowerCase().includes('từ chối'))).length;
+    const rejected = scope.filter(p => p.status === 'Bị trả lại' || (p.status && p.status.toLowerCase().includes('từ chối'))).length;
 
     const countAllEl = document.getElementById('countAll');
     const countPendingEl = document.getElementById('countPending');
@@ -901,7 +901,7 @@ function filterByKpiKinhPhi(type) {
         document.getElementById('kpiBtnAll')?.classList.add('active');
     } else if (type === 'Chờ duyệt') {
         document.getElementById('kpiBtnPending')?.classList.add('active');
-    } else if (type === 'Bị từ chối') {
+    } else if (type === 'Bị trả lại') {
         document.getElementById('kpiBtnRejected')?.classList.add('active');
     }
 
@@ -912,8 +912,8 @@ function filterByKpiKinhPhi(type) {
             statusSelect.value = '';
         } else if (type === 'Chờ duyệt') {
             statusSelect.value = 'Chờ duyệt';
-        } else if (type === 'Bị từ chối') {
-            statusSelect.value = 'Bị từ chối';
+        } else if (type === 'Bị trả lại') {
+            statusSelect.value = 'Bị trả lại';
         }
     }
 
@@ -924,8 +924,8 @@ function filterByKpiKinhPhi(type) {
 function handleStatusSelectChange(val) {
     if (val === 'Chờ duyệt') {
         filterByKpiKinhPhi('Chờ duyệt');
-    } else if (val === 'Bị từ chối') {
-        filterByKpiKinhPhi('Bị từ chối');
+    } else if (val === 'Bị trả lại') {
+        filterByKpiKinhPhi('Bị trả lại');
     } else {
         activeKpiFilterKp = 'all';
         document.querySelectorAll('#kpiStatsRow .stat-badge-btn').forEach(btn => btn.classList.remove('active'));
@@ -1686,7 +1686,7 @@ function renderTreasuryCell(item, info = getTreasuryInfo(item)) {
             <div style="font-size:11.5px; color:#64748b;">${payDate !== '-' ? `Ngày: ${payDate}` : '-'}</div>
         `;
     }
-    if (!item.noticeReceivedDate || item.status === 'Chờ lập đề nghị' || item.status === 'Chờ duyệt' || item.status === 'Bị từ chối') {
+    if (!item.noticeReceivedDate || item.status === 'Chờ lập đề nghị' || item.status === 'Chờ duyệt' || item.status === 'Bị trả lại') {
         return `<span style="font-size:12px; color:#94a3b8;">-</span>`;
     }
 
@@ -2284,7 +2284,7 @@ const KPDT_NOT_SUBMITTED = ['Chờ lập đề nghị', 'Chờ thông báo chi t
 // Màu badge theo trạng thái (CSS .kp-st-* tại quan_ly_kinh_phi_boi_thuong.html): mỗi trạng thái 01 màu riêng
 const KPDT_STATUS_CLASS = {
     'Chờ lập đề nghị': 'kp-st-lap', 'Chờ thông báo chi trả': 'kp-st-tb', 'Đề nghị cấp bổ sung kinh phí': 'kp-st-bs',
-    'Chờ duyệt': 'badge-review', 'Bị từ chối': 'kp-st-tc', 'Chờ chi trả': 'kp-st-ct', 'Hoàn thành': 'kp-st-ht',
+    'Chờ duyệt': 'badge-review', 'Bị trả lại': 'kp-st-tc', 'Chờ chi trả': 'kp-st-ct', 'Hoàn thành': 'kp-st-ht',
     'Trả lại ngân sách nhà nước': 'kp-st-sq', 'Đã sung quỹ': 'kp-st-sq', 'Chờ thu hồi': 'kp-st-cth', 'Đã thu hồi': 'kp-st-dth', 'Đã hủy': 'kp-st-huy'
 };
 function kpdtStatusClass(st) { return KPDT_STATUS_CLASS[st] || 'badge-info'; }
@@ -2356,11 +2356,11 @@ function renderProposalsTable() {
     if (nyc) filtered = filtered.filter(item => item.nycName.toLowerCase().includes(nyc));
     if (cb) filtered = filtered.filter(item => item.user.toLowerCase().includes(cb));
 
-    // Lọc nhanh theo KPI (Tất cả / Chờ duyệt / Bị từ chối)
+    // Lọc nhanh theo KPI (Tất cả / Chờ duyệt / Bị trả lại)
     if (activeKpiFilterKp === 'Chờ duyệt') {
         filtered = filtered.filter(item => item.status === 'Chờ duyệt');
-    } else if (activeKpiFilterKp === 'Bị từ chối') {
-        filtered = filtered.filter(item => item.status === 'Bị từ chối' || (item.status && item.status.toLowerCase().includes('từ chối')));
+    } else if (activeKpiFilterKp === 'Bị trả lại') {
+        filtered = filtered.filter(item => item.status === 'Bị trả lại' || (item.status && item.status.toLowerCase().includes('từ chối')));
     }
 
     const parseDateVi = (str) => {
@@ -2477,7 +2477,7 @@ function renderProposalsTable() {
     if (isLeader) {
         pendingCount = proposalsList.filter(p => p.status === 'Chờ duyệt').length;
     } else {
-        pendingCount = proposalsList.filter(p => p.status === 'Chờ lập đề nghị' || p.status === 'Bị từ chối' || p.status === 'Chờ chi trả').length;
+        pendingCount = proposalsList.filter(p => p.status === 'Chờ lập đề nghị' || p.status === 'Bị trả lại' || p.status === 'Chờ chi trả').length;
     }
     const headerBadge = document.getElementById('headerProposalBadge');
     if (headerBadge) {
@@ -2494,7 +2494,7 @@ function renderProposalsTable() {
             }
         };
 
-        // Mỗi trạng thái 01 màu badge riêng (kpdtStatusClass); Chờ duyệt tím nhạt, Bị từ chối đỏ nhạt như các màn khác
+        // Mỗi trạng thái 01 màu badge riêng (kpdtStatusClass); Chờ duyệt tím nhạt, Bị trả lại đỏ nhạt như các màn khác
         const badgeClass = kpdtStatusClass(item.status);
         const treasuryInfo = getTreasuryInfo(item);
         const treasuryHtml = renderTreasuryCell(item, treasuryInfo);
@@ -2514,7 +2514,7 @@ function renderProposalsTable() {
         } else {
             // Specialist role
             let fillBtn = `<button class="icon-btn edit" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ lập đề nghị cho đề xuất ở trạng thái Chờ lập đề nghị"><i class="fa-solid fa-file-signature"></i></button>`;
-            let updateBtn = `<button class="icon-btn edit" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ cập nhật đề xuất ở trạng thái Bị từ chối"><i class="fa-solid fa-pen-to-square"></i></button>`;
+            let updateBtn = `<button class="icon-btn edit" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ cập nhật đề xuất ở trạng thái Bị trả lại"><i class="fa-solid fa-pen-to-square"></i></button>`;
             let payBtn = `<button class="icon-btn accept" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ thực hiện chi trả ở trạng thái Chờ chi trả"><i class="fa-solid fa-hand-holding-dollar"></i></button>`;
             let treasuryBtn = `<button class="icon-btn" style="opacity:0.35; pointer-events:none; cursor:not-allowed;" title="Chưa đủ điều kiện trả lại ngân sách nhà nước"><i class="fa-solid fa-building-columns"></i></button>`;
             let deleteBtn = `<button class="icon-btn delete" style="opacity: 0.35; pointer-events: none; cursor: not-allowed;" title="Chỉ xóa được tờ trình ở trạng thái Chờ lập đề nghị"><i class="fa-regular fa-trash-can"></i></button>`;
@@ -2522,7 +2522,7 @@ function renderProposalsTable() {
             if (item.status === 'Chờ lập đề nghị') {
                 fillBtn = `<button class="icon-btn edit" title="Lập đề nghị kinh phí" onclick="fillProposalDirect('${item.id}')"><i class="fa-solid fa-file-signature"></i></button>`;
                 deleteBtn = `<button class="icon-btn delete" title="Xóa tờ trình" onclick="event.stopPropagation(); deleteProposal('${item.id}')"><i class="fa-regular fa-trash-can"></i></button>`;
-            } else if (item.status === 'Bị từ chối') {
+            } else if (item.status === 'Bị trả lại') {
                 updateBtn = `<button class="icon-btn edit" title="Cập nhật đề nghị" onclick="updateProposalDirect('${item.id}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
             } else if (item.status === 'Chờ chi trả') {
                 payBtn = `<button class="icon-btn accept" title="Thực hiện chi trả" onclick="payProposalDirect('${item.id}')"><i class="fa-solid fa-hand-holding-dollar"></i></button>`;
@@ -3952,7 +3952,7 @@ function updateProposalDirect(id) {
         const badge = document.getElementById('leaderApprovalBadge');
         if (badge) {
             badge.className = 'badge badge-danger';
-            badge.innerText = 'Bị từ chối';
+            badge.innerText = 'Bị trả lại';
         }
         const nameEl = document.getElementById('viewLeaderName');
         if (nameEl) nameEl.innerText = item.approvedLeader || 'Lãnh đạo cơ quan';
@@ -4024,7 +4024,7 @@ function viewProposalDetail(id) {
         if (item.status === 'Chờ duyệt' || item.status === 'Chờ phê duyệt') statusClass = 'badge-pending';
         else if (item.status === 'Đã duyệt' || item.status === 'Đã cấp kinh phí' || item.status === 'Hoàn thành' || item.status === 'Đã sung quỹ') statusClass = 'badge-success';
         else if (item.status === 'Chờ chi trả' || item.status === 'Chi trả một phần') statusClass = 'badge-warning';
-        else if (item.status === 'Từ chối' || item.status === 'Bị từ chối') statusClass = 'badge-danger';
+        else if (item.status === 'Từ chối' || item.status === 'Bị trả lại') statusClass = 'badge-danger';
         
         badge.className = 'badge ' + statusClass;
         badge.innerText = item.status;
@@ -4217,7 +4217,7 @@ function viewProposalDetail(id) {
 
     // Reject notice banner (Khối Lý do bị từ chối theo SRS 4.3.3.2.7.2)
     const blockReject = document.getElementById('blockRejectNotice');
-    if (item.status === 'Bị từ chối') {
+    if (item.status === 'Bị trả lại') {
         if (blockReject) {
             blockReject.style.display = 'block';
             const reasonEl = document.getElementById('rejectNoticeReasonText');
@@ -4394,7 +4394,7 @@ function viewProposalDetail(id) {
         document.getElementById('btnLeaderApprove').style.display = 'none';
 
         // If it is in Read-only or Approved status, hide form actions too except cancel
-        if (item.status === 'Hoàn thành' || item.status === 'Chờ chi trả' || isSungQuy || item.status === 'Bị từ chối' || isLeader) {
+        if (item.status === 'Hoàn thành' || item.status === 'Chờ chi trả' || isSungQuy || item.status === 'Bị trả lại' || isLeader) {
             document.getElementById('btnSubmitProposal').style.display = 'none';
 
             if (item.leaderOpinion || item.status === 'Chờ chi trả' || item.status === 'Hoàn thành' || isSungQuy) {
@@ -4405,8 +4405,8 @@ function viewProposalDetail(id) {
                 document.getElementById('sectionLeaderApproval').style.display = 'block';
                 const approvalBadge = document.getElementById('leaderApprovalBadge');
                 if (approvalBadge) {
-                    approvalBadge.className = item.status === 'Bị từ chối' ? 'badge badge-danger' : 'badge badge-success';
-                    approvalBadge.innerText = item.status === 'Bị từ chối' ? 'Bị từ chối' : 'Đã phê duyệt';
+                    approvalBadge.className = item.status === 'Bị trả lại' ? 'badge badge-danger' : 'badge badge-success';
+                    approvalBadge.innerText = item.status === 'Bị trả lại' ? 'Bị trả lại' : 'Đã phê duyệt';
                 }
                 const nameEl = document.getElementById('viewLeaderName');
                 if (nameEl) nameEl.innerText = item.approvedLeader || 'Lãnh đạo cơ quan';
@@ -4415,7 +4415,7 @@ function viewProposalDetail(id) {
                 const textEl = document.getElementById('viewLeaderOpinionText');
                 if (textEl) {
                     textEl.innerText = item.leaderOpinion || 'Đồng ý phê duyệt tờ trình cấp kinh phí bồi thường theo quy định.';
-                    textEl.style.borderLeftColor = item.status === 'Bị từ chối' ? 'var(--danger-color)' : 'var(--success-color)';
+                    textEl.style.borderLeftColor = item.status === 'Bị trả lại' ? 'var(--danger-color)' : 'var(--success-color)';
                 }
             } else {
                 if (b7) b7.style.display = 'none';
@@ -4457,7 +4457,7 @@ function viewProposalDetail(id) {
     if (isSpecialist) {
         if (item.status === 'Chờ lập đề nghị') {
             btnFill.style.display = 'inline-flex';
-        } else if (item.status === 'Bị từ chối') {
+        } else if (item.status === 'Bị trả lại') {
             document.getElementById('btnViewActionUpdate').style.display = 'inline-flex';
         } else if (item.status === 'Chờ chi trả' || item.status === 'Chi trả một phần') {
             document.getElementById('btnViewActionPay').style.display = 'inline-flex';
@@ -4488,7 +4488,7 @@ function startActionFromView(actionType) {
 // LEADERS DIRECT APPROVAL/REJECTION SUBMIT FROM WITHIN DETAILED VIEW FOOTER
 // LEADERS APPROVAL & REJECTION MODAL HANDLERS
 function submitLeaderApproval(decisionStatus) {
-    if (decisionStatus === 'Bị từ chối') {
+    if (decisionStatus === 'Bị trả lại') {
         openRejectModal(selectedProposalId);
     } else {
         openApproveModal(selectedProposalId);
@@ -4623,7 +4623,7 @@ function closeRejectModal(confirm) {
 
         const item = proposalsList.find(p => p.id === rejectProposalId);
         if (item) {
-            item.status = 'Bị từ chối';
+            item.status = 'Bị trả lại';
             item.leaderOpinion = opinion;
             item.approvedDate = formatCurrentDateTime();
             item.approvedLeader = 'Lãnh đạo cơ quan';
@@ -5441,11 +5441,11 @@ if (document.readyState !== 'loading') kpApplyMenuUi(); else document.addEventLi
 
 // =====================================================================================
 // 02 TAB "CHỜ XỬ LÝ" / "ĐÃ XỬ LÝ" THEO NGƯỜI DÙNG ĐĂNG NHẬP (GIẢ LẬP QUYỀN CÁN BỘ / LÃNH ĐẠO)
-// - Cán bộ xử lý: Chờ xử lý = Chờ lập đề nghị, Chờ duyệt, Chờ chi trả, Bị từ chối, Chờ thu hồi;
+// - Cán bộ xử lý: Chờ xử lý = Chờ lập đề nghị, Chờ duyệt, Chờ chi trả, Bị trả lại, Chờ thu hồi;
 //   Đã xử lý = Hoàn thành, Trả lại ngân sách nhà nước, Đã thu hồi, Đã hủy.
 // - Lãnh đạo: Chờ xử lý = đề nghị Chờ duyệt; Đã xử lý = đề nghị đã qua bước ký duyệt / từ chối.
 // =====================================================================================
-const KP_PENDING_STATES = ['Chờ lập đề nghị', 'Chờ duyệt', 'Chờ chi trả', 'Bị từ chối', 'Chờ thu hồi'];
+const KP_PENDING_STATES = ['Chờ lập đề nghị', 'Chờ duyệt', 'Chờ chi trả', 'Bị trả lại', 'Chờ thu hồi'];
 const KP_DONE_STATES = ['Hoàn thành', 'Trả lại ngân sách nhà nước', 'Đã thu hồi', 'Đã hủy'];
 let kpActiveTab = 'pending';
 
@@ -5455,14 +5455,14 @@ function kpInTab(tab, item) {
     const st = kpNormStatus(item.status);
     if (kpRole() === 'lanh-dao') {
         if (tab === 'pending') return st === 'Chờ duyệt';
-        return ['Chờ chi trả', 'Bị từ chối', 'Chờ thu hồi', 'Hoàn thành', 'Trả lại ngân sách nhà nước', 'Đã thu hồi'].includes(st) || (st === 'Đã hủy' && !!item.approvedDate);
+        return ['Chờ chi trả', 'Bị trả lại', 'Chờ thu hồi', 'Hoàn thành', 'Trả lại ngân sách nhà nước', 'Đã thu hồi'].includes(st) || (st === 'Đã hủy' && !!item.approvedDate);
     }
     return tab === 'pending' ? KP_PENDING_STATES.includes(st) : KP_DONE_STATES.includes(st);
 }
 // Bản ghi thuộc menu con đang chọn và tab đang chọn
 function kpInActiveTab(item) { return kpInMenu(item) && kpInTab(kpActiveTab, item); }
 function kpTabStates(tab) {
-    if (kpRole() === 'lanh-dao') return tab === 'pending' ? ['Chờ duyệt'] : ['Chờ chi trả', 'Bị từ chối', 'Chờ thu hồi', ...KP_DONE_STATES];
+    if (kpRole() === 'lanh-dao') return tab === 'pending' ? ['Chờ duyệt'] : ['Chờ chi trả', 'Bị trả lại', 'Chờ thu hồi', ...KP_DONE_STATES];
     return tab === 'pending' ? KP_PENDING_STATES : KP_DONE_STATES;
 }
 function kpRefreshTabUi() {
@@ -5490,7 +5490,7 @@ function kpRefreshTabUi() {
             sel.dataset.kpStates = key;
         }
     }
-    // Lọc nhanh Chờ duyệt / Bị từ chối: chỉ tại tab Chờ xử lý của Cán bộ xử lý
+    // Lọc nhanh Chờ duyệt / Bị trả lại: chỉ tại tab Chờ xử lý của Cán bộ xử lý
     const showKpi = kpActiveTab === 'pending' && kpRole() !== 'lanh-dao';
     const kpiRow = document.getElementById('kpiStatsRow');
     if (kpiRow) kpiRow.style.visibility = showKpi ? 'visible' : 'hidden';

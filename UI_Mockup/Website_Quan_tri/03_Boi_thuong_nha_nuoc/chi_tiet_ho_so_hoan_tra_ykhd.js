@@ -2,7 +2,7 @@
  * Chi tiết hồ sơ hoàn trả - Prompt 2: Bước 1 (Thành lập Hội đồng) + Bước 2 (Ý kiến của Hội đồng), Stepper 04 bước, phạm vi người xem.
  * - Phạm vi người xem (giả lập, tham số ?scope= hoặc sessionStorage htMockScope, đồng bộ màn danh sách):
  *   + don_vi_chu: Đơn vị tạo hội đồng - nhập Bước 1, Bước 2, thấy toàn bộ cán bộ.
- *   + don_vi_a / don_vi_b: Đơn vị quản lý cán bộ - Bước 1, Bước 2 chỉ xem, chỉ thấy cán bộ của đơn vị.
+ *   + don_vi_a / don_vi_b: Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại - Bước 1, Bước 2 chỉ xem, chỉ thấy cán bộ của đơn vị.
  *   + stp: Sở Tư pháp - chỉ xem Bước 1, 2; chỉ thấy cán bộ của đơn vị thuộc phạm vi quản lý.
  *   + lanh_dao: Lãnh đạo phê duyệt (góc nhìn Lãnh đạo của trang).
  * - Nạp sau chi_tiet_ho_so_hoan_tra_tlhd.js / _dcht.js; ghi đè các hàm Bước 2 và bổ sung Lưu nháp, Ký ngoài có thông tin QĐ cho Bước 1.
@@ -11,13 +11,14 @@
     const U_CHU = 'UBND Quận Long Biên', U_A = 'UBND Phường Bồ Đề', U_B = 'UBND Huyện An Dương', U_STP = 'Sở Tư pháp Hà Nội';
     const STP_UNITS = [U_A, U_CHU];
     const SCOPE_UNIT = { don_vi_chu: U_CHU, don_vi_a: U_A, don_vi_b: U_B, stp: U_STP, lanh_dao: '' };
-    // Đơn vị quản lý cán bộ của dữ liệu mẫu (đồng bộ màn danh sách)
+    // Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại của dữ liệu mẫu (đồng bộ màn danh sách)
     const OFFICER_UNIT = {
         'Nguyễn Văn Đạt': U_A, 'Lê Văn Cường': U_A, 'Hoàng Văn D': U_A, 'Trần Thị Bình': U_B, 'Hoàng Thị M': U_A, 'Phạm Văn Thiếu Sót': U_A,
         'Trần Văn Lỗi': U_B, 'Vũ Văn Tài': U_A, 'Ngô Quyền': U_B, 'Nguyễn Văn Chết': U_A, 'Lưu Quốc Toàn': U_B, 'Bùi Văn Nam': U_A,
         'Phạm Quốc Huy': U_A, 'Đặng Thị Lan': U_B, 'Đỗ Thị Bình': U_A, 'Vũ Đình Trọng': U_B, 'Hoàng Văn Tuấn': U_A
     };
-    const PRE_SPLIT = ['Chờ thành lập hội đồng', 'Chờ duyệt QĐ thành lập', 'Bị từ chối thành lập HĐ', 'Từ chối duyệt QĐ thành lập', 'Họp hội đồng', 'Không xem xét trách nhiệm hoàn trả'];
+    const PAY_UNIT_DEMO = { 'Trần Thị Bình': U_A };
+    const PRE_SPLIT = ['Chờ thành lập hội đồng', 'Chờ duyệt QĐ thành lập', 'Bị trả lại thành lập HĐ', 'Từ chối duyệt QĐ thành lập', 'Họp hội đồng', 'Không xem xét trách nhiệm hoàn trả'];
     const REQ = 'Đây là trường bắt buộc';
 
     function ssGet(k) { try { return sessionStorage.getItem(k); } catch (e) { return null; } }
@@ -39,10 +40,15 @@
     // Phương thức hoàn trả: nhãn ngắn Một lần / Nhiều lần (dữ liệu cũ: Hoàn trả một lần, Khấu trừ lương, Nhiều lần...)
     function htMethod(v) { return !v ? '' : (/một lần/i.test(v) ? 'Một lần' : 'Nhiều lần'); }
     window.htMethod = htMethod;
-    // Hình thức xử lý: giá trị chuẩn (Hoàn trả / Giảm mức hoàn trả / Miễn hoàn trả) và nhãn hiển thị (Hoàn trả 100% / ...)
+    // Giảm/Miễn hoàn trả: giá trị chuẩn (Hoàn trả = không giảm, không miễn / Giảm mức hoàn trả / Miễn hoàn trả); không giảm, không miễn hiển thị "-"
     function xlFull(v) { return v === 'GIAM' || v === 'Giảm mức hoàn trả' ? 'Giảm mức hoàn trả' : (v === 'MIEN' || v === 'Miễn hoàn trả' ? 'Miễn hoàn trả' : 'Hoàn trả'); }
-    const xlLabel = v => { const f = xlFull(v); return f === 'Hoàn trả' ? 'Hoàn trả 100%' : f; };
+    const xlLabel = v => { const f = xlFull(v); return f === 'Hoàn trả' ? '-' : f; };
     window.htXlLabel = xlLabel;
+    // Mức độ lỗi: Vô ý / Cố ý nhưng không bị truy cứu trách nhiệm hình sự / Cố ý mà có bản án đã có hiệu lực pháp luật tuyên phạm tội / Khác (nhập nội dung)
+    const LOI_LIST = ['Vô ý', 'Cố ý nhưng không bị truy cứu trách nhiệm hình sự', 'Cố ý mà có bản án đã có hiệu lực pháp luật tuyên phạm tội', 'Khác'];
+    // Dữ liệu cũ "Cố ý" đưa về "Cố ý nhưng không bị truy cứu trách nhiệm hình sự"
+    const loiNorm = v => v === 'Cố ý' ? LOI_LIST[1] : v;
+    window.HT_LOI_LIST = LOI_LIST;
     // Pill trạng thái dùng chung Bước 2, 3, 4 (mỗi nhóm trạng thái một màu)
     const PILL = {
         teal: ['#f0fdfa', '#0f766e', '#14b8a6'], amber: ['#fffbeb', '#b45309', '#f59e0b'], indigo: ['#eef2ff', '#4338ca', '#6366f1'], red: ['#fef2f2', '#b91c1c', '#ef4444'],
@@ -50,11 +56,11 @@
     };
     function pillTone(t) {
         t = String(t || '');
-        if (/^Bị từ chối/.test(t)) return 'red';
+        if (/^Bị trả lại/.test(t)) return 'red';
         if (/^Chờ duyệt/.test(t)) return 'indigo';
         if (/^Chờ trả lại/.test(t)) return 'orange';
         if (/^Chờ ban hành/.test(t)) return 'amber';
-        if (/^Thu hồi/.test(t)) return 'teal';
+        if (/^Thu (hồi )?tiền/.test(t)) return 'teal';
         if (/^(Đã ban hành|Hoàn thành)/.test(t)) return 'emerald';
         if (/^Miễn/.test(t)) return 'pink';
         if (/^Đình chỉ/.test(t)) return 'slate';
@@ -90,20 +96,23 @@
             + '.ht-act-cell{white-space:nowrap!important;min-width:160px;text-align:center!important;}.ht-act-cell > *{vertical-align:middle;}'
             + '.ht-note{font-size:11.5px;color:#64748b;margin-top:3px;white-space:normal;}.ht-note-i{font-size:11.5px;color:#64748b;font-style:italic;margin-top:2px;}';
         document.head.appendChild(st);
-        // Popup cán bộ: nhãn Hình thức xử lý "Hoàn trả 100%"; Phương thức hoàn trả "Một lần" / "Nhiều lần"
-        const r = document.querySelector('input[name="ht2Xl"][value="Hoàn trả"]');
-        if (r && r.parentElement) r.parentElement.lastChild.textContent = ' Hoàn trả 100%';
+        // Popup cán bộ: Phương thức hoàn trả "Một lần" / "Nhiều lần"
         const m = document.getElementById('oMethod');
         if (m) m.innerHTML = '<option value="">-- Chọn phương thức hoàn trả --</option><option value="Một lần">Một lần</option><option value="Nhiều lần">Nhiều lần</option>';
     } catch (e) { /* bỏ qua */ }
-    // ===== Dữ liệu mẫu: đơn vị quản lý cán bộ, cây đơn vị của popup cán bộ =====
+    // ===== Dữ liệu mẫu: cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại, cây đơn vị của popup cán bộ =====
     try {
         dossiersList.forEach(d => {
             d.ownerUnit = ownerOf(d);
+            // Dữ liệu mẫu lĩnh vực tố tụng hình sự: Cơ quan trực tiếp quản lý ban hành QĐ hoàn trả
+            if (d.code === 'HT-2026-021' && !d.claimField) d.claimField = 'Trong hoạt động tố tụng hình sự';
             (d.refundOfficers || []).forEach(o => {
                 if (OFFICER_UNIT[o.name]) o.agency = OFFICER_UNIT[o.name];
+                // Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương: mặc định = Cơ quan trực tiếp quản lý (dữ liệu mẫu: Trần Thị Bình do UBND Phường Bồ Đề trả lương)
+                if (!o.payUnit) o.payUnit = PAY_UNIT_DEMO[o.name] || o.agency;
                 // Phương thức hoàn trả theo ý kiến Hội đồng: Hoàn trả một lần / Hoàn trả nhiều lần (dữ liệu cũ: Khấu trừ lương, Nhiều lần...)
                 o.refundMethod = htMethod(o.refundMethod);
+                o.loi = loiNorm(o.loi);
             });
             // Dữ liệu mẫu: Đỗ Thị Bình (HT-2026-008, Bước 2)
             (d.refundOfficers || []).forEach(o => { if (o.name === 'Đỗ Thị Bình' && !o.total) { o.total = 25000000; o.refundMethod = 'Một lần'; o.loi = 'Vô ý'; } });
@@ -117,7 +126,7 @@
     } catch (e) { /* bỏ qua */ }
 
     // Đình chỉ cả hồ sơ (Bước 1, Bước 2 - Mẫu 39) thuộc giai đoạn trước khi tách phần đơn vị; sau khi tách (có phần đơn vị), đình chỉ ở cấp cán bộ
-    const DCHT_PRE = ['Chờ duyệt QĐ đình chỉ', 'Bị từ chối QĐ đình chỉ', 'Đình chỉ xem xét hoàn trả'];
+    const DCHT_PRE = ['Chờ duyệt QĐ đình chỉ', 'Bị trả lại QĐ đình chỉ', 'Đình chỉ xem xét hoàn trả'];
     function isSplitDossier() { return !!activeDossier && ((Array.isArray(activeDossier.htUnits) && activeDossier.htUnits.length > 0) || (!PRE_SPLIT.includes(activeDossier.status) && !DCHT_PRE.includes(activeDossier.status))); }
     function officerVisible(o) {
         if (scope === 'lanh_dao' || isOwnerScope()) return true;
@@ -181,7 +190,7 @@
             const st = activeDossier.status;
             const big = 'font-size:14px; padding:8px 16px; font-weight:800; border-radius:8px; display:inline-flex; align-items:center; gap:8px;';
             if (st === 'Chờ duyệt QĐ thành lập' || st === 'Chờ duyệt thành lập hội đồng') bc.innerHTML = '<span class="badge" style="' + big + ' background:#ede9fe; color:#6d28d9; border:1px solid #ddd6fe;"><i class="fa-solid fa-hourglass-half"></i> Chờ duyệt - QĐ thành lập hội đồng</span>';
-            else if (st === 'Bị từ chối thành lập HĐ' || st === 'Từ chối duyệt QĐ thành lập') bc.innerHTML = '<span class="badge" style="' + big + ' background:#fef2f2; color:#dc2626; border:1px solid #fecaca;"><i class="fa-solid fa-circle-xmark"></i> Bị từ chối - QĐ thành lập hội đồng</span>';
+            else if (st === 'Bị trả lại thành lập HĐ' || st === 'Từ chối duyệt QĐ thành lập') bc.innerHTML = '<span class="badge" style="' + big + ' background:#fef2f2; color:#dc2626; border:1px solid #fecaca;"><i class="fa-solid fa-circle-xmark"></i> Bị trả lại - QĐ thành lập hội đồng</span>';
             else if (st !== 'Chờ thành lập hội đồng') bc.innerHTML = '<span class="badge" style="' + big + ' background:#16a34a; color:#fff; border:1px solid #15803d;"><i class="fa-solid fa-circle-check"></i> Đã ban hành</span>';
         }
         const cta = el('s1CreateCtaCard');
@@ -210,14 +219,79 @@
         tl.innerHTML = typeof tlktViewHtml === 'function' && activeDossier.tlhd ? tlktViewHtml(activeDossier.tlhd.attachments || []) : '';
     };
 
+    // ===== Popup cán bộ: Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương =====
+    // Cùng control với Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại (cây đơn vị có tìm kiếm); mặc định theo cơ quan trực tiếp quản lý, cho phép chọn lại
+    let payAuto = true;
+    function ensurePayField() {
+        if (el('oPayUnit')) return;
+        const src = el('oAgencySelectBox'), grp = src && src.closest('.form-group');
+        if (!grp) return;
+        grp.insertAdjacentHTML('afterend', '<div class="form-group" id="oPayUnitGroup" style="margin-bottom: 16px; position: relative;">'
+            + '<span class="form-label">Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương <span style="color:red;">*</span></span>'
+            + '<input type="hidden" id="oPayUnit">'
+            + '<div id="oPayUnitSelectBox" style="display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 12px; min-height: 38px; background: #fff; cursor: pointer;" onclick="htPayToggle(event)">'
+            + '<span id="oPayUnitSelectedText" style="color: var(--text-muted); font-size: 13.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">-- Chọn hoặc tìm kiếm cơ quan, tổ chức --</span><i class="fa-solid fa-chevron-down" style="color: #64748b; font-size: 12px; margin-left: 8px;"></i></div>'
+            + '<div id="oPayUnitDropdownPanel" style="display: none; position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #fff; border: 1px solid var(--border-color); border-radius: 6px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 1060; max-height: 280px; flex-direction: column;">'
+            + '<div style="padding: 8px 10px; border-bottom: 1px solid var(--border-color); background: #f8fafc;"><div style="position: relative;"><i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 10px; top: 10px; color: #94a3b8; font-size: 12px;"></i>'
+            + '<input type="text" id="oPayUnitSearchInput" placeholder="Tìm theo mã hoặc tên đơn vị..." style="width: 100%; padding: 6px 10px 6px 30px; font-size: 13px; border: 1px solid #cbd5e1; border-radius: 4px; outline: none;" oninput="htPayRender(this.value)" onclick="event.stopPropagation();"></div></div>'
+            + '<div id="oPayUnitListContainer" style="overflow-y: auto; max-height: 220px; padding: 4px 0;"></div></div>'
+            + '<span class="invalid-feedback" id="oPayUnitError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span></div>');
+        document.addEventListener('click', e => {
+            const p = el('oPayUnitDropdownPanel'), b = el('oPayUnitSelectBox');
+            if (p && b && !p.contains(e.target) && !b.contains(e.target)) p.style.display = 'none';
+        });
+    }
+    function setPayUnit(name, manual) {
+        ensurePayField();
+        const h = el('oPayUnit'), t = el('oPayUnitSelectedText');
+        if (h) h.value = name || '';
+        if (t) { t.innerText = name || '-- Chọn hoặc tìm kiếm cơ quan, tổ chức --'; t.style.color = name ? 'var(--text-main)' : 'var(--text-muted)'; t.style.fontWeight = name ? '500' : 'normal'; }
+        if (manual) payAuto = false;
+        if (name) window.ht2ClearErr('oPayUnit');
+        const p = el('oPayUnitDropdownPanel'); if (p) p.style.display = 'none';
+    }
+    window.htPayToggle = function (e) {
+        if (e) e.stopPropagation();
+        const p = el('oPayUnitDropdownPanel'); if (!p) return;
+        if (p.style.display === 'flex') { p.style.display = 'none'; return; }
+        p.style.display = 'flex';
+        const s = el('oPayUnitSearchInput'); if (s) { s.value = ''; setTimeout(() => s.focus(), 80); }
+        window.htPayRender('');
+    };
+    window.htPayRender = function (query) {
+        const box = el('oPayUnitListContainer'); if (!box) return;
+        const q = String(query || '').trim().toLowerCase();
+        const hit = x => x.name.toLowerCase().includes(q) || String(x.code || '').toLowerCase().includes(q);
+        const tree = typeof agencyTreeData !== 'undefined' ? agencyTreeData : [];
+        let h = '';
+        tree.forEach(p => {
+            const kids = (p.children || []).filter(hit);
+            if (q && !hit(p) && !kids.length) return;
+            h += '<div style="padding: 8px 12px; background: #f8fafc; font-weight: 700; font-size: 13px; color: var(--primary-color); display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #f1f5f9; cursor: pointer;" onclick="event.stopPropagation(); htPaySelect(this.dataset.n)" data-n="' + esc(p.name) + '"><i class="fa-solid fa-sitemap" style="color: #64748b; font-size: 11.5px;"></i> <span>' + esc(p.name) + '</span> <span style="font-size: 11px; background: #e2e8f0; color: #475569; padding: 1px 6px; border-radius: 4px; font-weight: 600; margin-left: auto;">' + esc(p.code) + '</span></div>';
+            (q && !hit(p) ? kids : (p.children || [])).forEach(c => {
+                h += '<div style="padding: 8px 12px 8px 30px; font-size: 13px; color: #334155; display: flex; align-items: center; justify-content: space-between; cursor: pointer; border-bottom: 1px solid #f8fafc;" onmouseover="this.style.backgroundColor=\'#eff6ff\'" onmouseout="this.style.backgroundColor=\'transparent\'" onclick="event.stopPropagation(); htPaySelect(this.dataset.n)" data-n="' + esc(c.name) + '"><span><i class="fa-regular fa-building" style="color: #94a3b8; font-size: 11.5px; margin-right: 6px;"></i>' + esc(c.name) + '</span> <span style="font-size: 11px; color: #94a3b8;">' + esc(c.code) + '</span></div>';
+            });
+        });
+        box.innerHTML = h || '<div style="padding: 16px; text-align: center; color: var(--text-muted); font-size: 13px; font-style: italic;"><i class="fa-solid fa-circle-question" style="margin-right: 6px;"></i>Không tìm thấy đơn vị nào khớp với từ khóa</div>';
+    };
+    window.htPaySelect = function (name) { setPayUnit(name, true); };
+    // Chọn Cơ quan trực tiếp quản lý: điền mặc định Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương khi người dùng chưa chọn lại
+    const baseSelectAgency = window.selectAgency;
+    if (typeof baseSelectAgency === 'function') {
+        window.selectAgency = function (name) {
+            baseSelectAgency.apply(this, arguments);
+            if (payAuto || !el('oPayUnit') || !el('oPayUnit').value) setPayUnit(name, false);
+        };
+    }
+
     // ===== Bước 2: Ý kiến của Hội đồng =====
     window.ht2ClearErr = function (id) {
         const i = el(id); if (i) i.classList.remove('is-invalid');
         const e = el(id + 'Error'); if (e) e.style.display = 'none';
-        if (id === 'oAgency') { const b = el('oAgencySelectBox'); if (b) b.classList.remove('is-invalid'); }
+        if (id === 'oAgency' || id === 'oPayUnit') { const b = el(id + 'SelectBox'); if (b) b.classList.remove('is-invalid'); }
     };
     function markErr(id, msg) {
-        const i = el(id === 'oAgency' ? 'oAgencySelectBox' : id); if (i) i.classList.add('is-invalid');
+        const i = el(id === 'oAgency' || id === 'oPayUnit' ? id + 'SelectBox' : id); if (i) i.classList.add('is-invalid');
         const e = el(id + 'Error'); if (e) { e.innerText = msg || REQ; e.style.display = 'block'; }
         return i;
     }
@@ -247,7 +321,7 @@
         if (thAct) thAct.style.display = showAct ? '' : 'none';
         let foot = table && table.tFoot;
         if (!list.length) {
-            body.innerHTML = '<tr><td colspan="11" style="text-align:center; color:var(--text-muted); font-style:italic; padding:20px;">Danh sách cán bộ trống. Vui lòng bấm "Thêm cán bộ gây sai phạm" để ghi nhận ý kiến của Hội đồng.</td></tr>';
+            body.innerHTML = '<tr><td colspan="11" style="text-align:center; color:var(--text-muted); font-style:italic; padding:20px;">Danh sách cán bộ trống. Vui lòng bấm "Thêm người thi hành công vụ gây thiệt hại" để ghi nhận ý kiến của Hội đồng.</td></tr>';
             if (foot) foot.innerHTML = '';
             return;
         }
@@ -259,12 +333,12 @@
             const acts = x.i < 0 ? '--' : htViewOfficerBtn(x.i)
                 + (canEdit && !o.dcPre ? ' <button type="button" class="btn-action-square btn-primary" title="Sửa cán bộ" onclick="editOfficerInStep2(' + x.i + ')"><i class="fa-solid fa-pen-to-square"></i></button>'
                     + ' <button type="button" class="btn-action-square btn-danger" title="Xóa cán bộ" onclick="deleteOfficerInStep2(' + x.i + ')"><i class="fa-solid fa-trash-can"></i></button>' : '');
-            // Hình thức xử lý: nhãn đầy đủ; Giảm / Miễn kèm lý do
+            // Giảm/Miễn hoàn trả: không giảm, không miễn hiển thị "-"; Giảm / Miễn kèm lý do
             const lyDo = xl === 'Giảm mức hoàn trả' && o.lyDoGiam ? '<div class="ht-note-i">Lý do giảm: ' + esc(o.lyDoGiam) + '</div>' : (xl === 'Miễn hoàn trả' && o.lyDoMien ? '<div class="ht-note-i">Lý do miễn: ' + esc(o.lyDoMien) + '</div>' : '');
             const stText = o.dcPre ? 'Đình chỉ hoàn trả' : officerStatusText(o);
             return '<tr>' + (canDc ? '<td style="text-align:center;">' + (o.dcPre || x.i < 0 ? '' : '<input type="checkbox" class="ht2DcChk" data-idx="' + x.i + '" onchange="ht2DcSync()">') + '</td>' : '') + '<td style="text-align:center;">' + (k + 1) + '</td>'
                 + '<td><strong>' + esc(o.name) + '</strong>' + hoan + dcb + '<div style="font-size:12px; color:var(--text-muted);">' + esc(o.role || '') + '</div></td>'
-                + '<td>' + esc(o.agency || '') + '</td>'
+                + '<td>' + esc(o.agency || '') + '<div style="font-size:12px; color:var(--text-muted);">Quản lý, sử dụng, trả lương: ' + esc(o.payUnit || o.agency || '') + '</div></td>'
                 + '<td>' + esc(o.loi === 'Khác' ? (o.ykhdLoiKhac || 'Khác') : (o.loi || '')) + '</td>'
                 + '<td style="text-align:right; font-weight:600;">' + money(o.hd || o.total) + '</td>'
                 + '<td>' + esc(xlLabel(xl)) + lyDo + '</td>'
@@ -309,13 +383,13 @@
         if (!n && host) { host.insertAdjacentHTML('afterbegin', '<div id="ht2DcNote" style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:10px 14px; margin-bottom:14px; font-size:13px;"></div>'); n = el('ht2DcNote'); }
         if (!n) return;
         const sel = activeDossier.dcPartialSel;
-        n.innerHTML = sel && sel.length ? '<strong>Đình chỉ đối với cán bộ:</strong> ' + esc(sel.join(', ')) + '<div style="color:var(--text-muted); margin-top:2px;">Các cán bộ được đình chỉ không được phân tách về đơn vị quản lý cán bộ khi hoàn thành Bước 2.</div>' : '<strong>Đình chỉ cả hồ sơ</strong> (toàn bộ cán bộ).';
+        n.innerHTML = sel && sel.length ? '<strong>Đình chỉ đối với cán bộ:</strong> ' + esc(sel.join(', ')) + '<div style="color:var(--text-muted); margin-top:2px;">Các cán bộ được đình chỉ không được phân tách về cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại khi hoàn thành Bước 2.</div>' : '<strong>Đình chỉ cả hồ sơ</strong> (toàn bộ cán bộ).';
     }
     (function wrapDcht() {
         const w = (name, fn) => { const o = window[name]; if (typeof o === 'function') window[name] = fn(o); };
         w('dchtOpenModal', o => function () {
             const st = activeDossier && activeDossier.status;
-            if (!dcFromStep2 && st !== 'Bị từ chối QĐ đình chỉ') activeDossier.dcPartialSel = null;
+            if (!dcFromStep2 && st !== 'Bị trả lại QĐ đình chỉ') activeDossier.dcPartialSel = null;
             const r = o.apply(this, arguments); dcNote(); return r;
         });
         const keepSel = o => function () { const r = o.apply(this, arguments); if (activeDossier && activeDossier.dcht) activeDossier.dcht.partial = activeDossier.dcPartialSel || null; finishPartial(); return r; };
@@ -340,8 +414,8 @@
         const units = (activeDossier.htUnits || []).filter(u => scope === 'lanh_dao' || isOwnerScope() || (scope === 'stp' ? STP_UNITS.includes(u.unit) : u.unit === myUnit));
         if (!isSplitDossier() || !units.length) { host.style.display = 'none'; host.innerHTML = ''; return; }
         host.style.display = 'block';
-        host.innerHTML = '<div style="font-weight:700; color:var(--primary-color); font-size:14px; margin-bottom:8px;"><i class="fa-solid fa-sitemap"></i> Phân tách theo đơn vị quản lý cán bộ</div>'
-            + '<table class="dense-table" style="width:100%;"><thead><tr><th style="width:45px; text-align:center;">STT</th><th>Đơn vị quản lý cán bộ</th><th style="width:90px; text-align:center;">Số cán bộ</th><th>Cán bộ</th><th>Tài liệu kèm theo phần đơn vị</th><th style="width:170px;">Trạng thái</th></tr></thead><tbody>'
+        host.innerHTML = '<div style="font-weight:700; color:var(--primary-color); font-size:14px; margin-bottom:8px;"><i class="fa-solid fa-sitemap"></i> Phân tách theo cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</div>'
+            + '<table class="dense-table" style="width:100%;"><thead><tr><th style="width:45px; text-align:center;">STT</th><th>Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th><th style="width:90px; text-align:center;">Số cán bộ</th><th>Cán bộ</th><th>Tài liệu kèm theo phần đơn vị</th><th style="width:170px;">Trạng thái</th></tr></thead><tbody>'
             + units.map((u, i) => {
                 // Tài liệu kèm theo phần đơn vị: văn bản kiến nghị của Hội đồng (và tài liệu kèm theo Bước 2), mỗi tệp kèm Xem / Tải
                 const files = (u.files && u.files.length ? u.files : (ykhdFiles('kienNghi').map(f => f.name).concat((activeDossier.ht2Tlkt || []).map(t => t.name))))
@@ -397,7 +471,9 @@
         if (t) t.innerText = n ? (typeof docSoTien === 'function' ? docSoTien(n) : money(n) + ' đồng') : 'Chưa nhập số tiền';
     };
     function xlValue() { const r = document.querySelector('input[name="ht2Xl"]:checked'); return r ? r.value : 'Hoàn trả'; }
-    window.ht2OnXlChange = function () {
+    // Giảm/Miễn hoàn trả: ô tích không bắt buộc, chọn tối đa 01 (chọn ô này thì bỏ chọn ô kia)
+    window.ht2OnXlChange = function (src) {
+        if (src && src.checked) document.querySelectorAll('input[name="ht2Xl"]').forEach(x => { if (x !== src) x.checked = false; });
         const xl = xlValue();
         el('ht2GiamWrap').style.display = xl === 'Giảm mức hoàn trả' ? 'block' : 'none';
         el('ht2MienWrap').style.display = xl === 'Miễn hoàn trả' ? 'block' : 'none';
@@ -410,6 +486,7 @@
         const m = el('officerStep2Modal'); if (!m) return;
         m.querySelectorAll('input, select, textarea').forEach(x => { if (x.type !== 'hidden') x.disabled = on; });
         const box = el('oAgencySelectBox'); if (box) box.style.pointerEvents = on ? 'none' : '';
+        const pbox = el('oPayUnitSelectBox'); if (pbox) pbox.style.pointerEvents = on ? 'none' : '';
         m.querySelectorAll('#oPostponeBlock .btn').forEach(b => { b.style.display = on ? 'none' : ''; });
         const save = m.querySelector('.modal-footer .btn-primary'); if (save) save.style.display = on ? 'none' : '';
     }
@@ -417,26 +494,33 @@
     window.openAddOfficerModal = function () {
         if (!canEditStep2()) { showToast('Chỉ đơn vị tạo Hội đồng được cập nhật ý kiến của Hội đồng khi hồ sơ ở trạng thái Họp hội đồng.', 'warning'); return; }
         const oldQd = el('htOffQd'); if (oldQd) oldQd.remove();
+        ensurePayField(); payAuto = true;
         baseOpenAdd();
+        setPayUnit('', false);
         setModalReadonly(false);
-        const r = document.querySelector('input[name="ht2Xl"][value="Hoàn trả"]'); if (r) r.checked = true;
+        document.querySelectorAll('input[name="ht2Xl"]').forEach(x => { x.checked = false; });
         el('oMethod').value = '';
         ht2OnXlChange();
     };
     function fillModal(o, index, title) {
         const oldQd = el('htOffQd'); if (oldQd) oldQd.remove();
+        ensurePayField(); payAuto = true;
         baseOpenAdd();
+        setPayUnit('', false);
         el('editOfficerIndex').value = String(index);
         el('officerModalTitle').innerHTML = title;
         el('oName').value = o.name || '';
         el('oRole').value = o.role || '';
+        ensurePayField();
         if (o.agency) selectAgency(o.agency);
-        el('oLoi').value = ['Vô ý', 'Cố ý', 'Khác'].includes(o.loi) ? o.loi : 'Vô ý';
+        setPayUnit(o.payUnit || o.agency || '', false);
+        payAuto = !o.payUnit || o.payUnit === o.agency;
+        el('oLoi').value = LOI_LIST.includes(loiNorm(o.loi)) ? loiNorm(o.loi) : 'Vô ý';
         ykhdOnLoiChange();
         if (el('ykhdLoiKhac')) el('ykhdLoiKhac').value = o.ykhdLoiKhac || '';
         el('oAmt').value = o.total ? money(o.total) : '';
         if (o.total) handleModalAmtInput(el('oAmt').value);
-        const r = document.querySelector('input[name="ht2Xl"][value="' + xlFull(o.xl) + '"]'); if (r) r.checked = true;
+        document.querySelectorAll('input[name="ht2Xl"]').forEach(x => { x.checked = x.value === xlFull(o.xl); });
         ht2OnXlChange();
         el('ht2Giam').value = o.giam ? money(o.giam) : '';
         if (o.giam) ht2OnMoneyInput(el('ht2Giam'), 'ht2GiamText');
@@ -452,14 +536,14 @@
     window.editOfficerInStep2 = function (index) {
         const o = (activeDossier.refundOfficers || [])[index]; if (!o) return;
         if (!canEditStep2()) { window.viewOfficerInStep2(index); return; }
-        fillModal(o, index, '<i class="fa-solid fa-user-pen"></i> Cập nhật cán bộ chịu trách nhiệm');
+        fillModal(o, index, '<i class="fa-solid fa-user-pen"></i> Cập nhật người thi hành công vụ gây thiệt hại');
         setModalReadonly(false);
     };
     window.viewOfficerInStep2 = function (index) {
         const o = (activeDossier.refundOfficers || [])[index]; if (!o) return;
         const keep = currentPerspective;
         if (keep === 'leader') currentPerspective = 'staff';
-        fillModal(o, index, '<i class="fa-solid fa-circle-info"></i> Xem chi tiết cán bộ chịu trách nhiệm');
+        fillModal(o, index, '<i class="fa-solid fa-circle-info"></i> Xem chi tiết người thi hành công vụ gây thiệt hại');
         currentPerspective = keep;
         setModalReadonly(true);
         // Bước 3 / Bước 4: khối Quyết định miễn / giảm mức hoàn trả (chỉ hiển thị khi có dữ liệu)
@@ -484,6 +568,7 @@
         const xl = xlValue();
         const amt = parseMoney(el('oAmt').value), giam = parseMoney(el('ht2Giam').value);
         need('oAgency', !!el('oAgency').value);
+        need('oPayUnit', !!(el('oPayUnit') && el('oPayUnit').value));
         need('oName', !!el('oName').value.trim());
         need('oRole', !!el('oRole').value.trim());
         if (el('oLoi').value === 'Khác') need('ykhdLoiKhac', !!el('ykhdLoiKhac').value.trim());
@@ -494,6 +579,8 @@
         if (xl === 'Giảm mức hoàn trả') {
             if (!el('ht2Giam').value.trim()) need('ht2Giam', false);
             else need('ht2Giam', giam > 0 && giam < amt, 'Số tiền sau giảm phải lớn hơn 0 và nhỏ hơn Số tiền cần hoàn trả.');
+            // Giảm mức hoàn trả tối đa 30% Số tiền cần hoàn trả
+            if (el('ht2Giam').value.trim() && giam > 0 && giam < amt) need('ht2Giam', amt - giam <= Math.floor(amt * 0.3), 'Mức giảm không được lớn hơn 30% Số tiền cần hoàn trả (Số tiền sau giảm tối thiểu ' + money(amt - Math.floor(amt * 0.3)) + ' đ).');
             need('ht2LyDoGiam', !!el('ht2LyDoGiam').value.trim());
         }
         if (xl === 'Miễn hoàn trả') need('ht2LyDoMien', !!el('ht2LyDoMien').value.trim());
@@ -509,7 +596,7 @@
         const idx = parseInt(el('editOfficerIndex').value, 10);
         const old = (activeDossier.refundOfficers || [])[idx] || {};
         const o = Object.assign({}, old, {
-            name: el('oName').value.trim(), role: el('oRole').value.trim(), agency: el('oAgency').value,
+            name: el('oName').value.trim(), role: el('oRole').value.trim(), agency: el('oAgency').value, payUnit: el('oPayUnit') ? el('oPayUnit').value : el('oAgency').value,
             loi: el('oLoi').value, ykhdLoiKhac: el('oLoi').value === 'Khác' ? el('ykhdLoiKhac').value.trim() : '',
             total: amt, xl, giam: xl === 'Giảm mức hoàn trả' ? giam : 0,
             lyDoGiam: xl === 'Giảm mức hoàn trả' ? el('ht2LyDoGiam').value.trim() : '',
@@ -565,7 +652,7 @@
         // Cán bộ đã đình chỉ tại Bước 2 (QĐ đình chỉ một phần cán bộ): không đưa vào phần tách đơn vị
         const officers = (activeDossier.refundOfficers || []).filter(o => o && o.name && !o.dcPre);
         if (!officers.length) {
-            const e = el('ht2OfficerError'); e.innerText = 'Vui lòng thêm ít nhất 01 cán bộ gây sai phạm.'; e.style.display = 'block';
+            const e = el('ht2OfficerError'); e.innerText = 'Vui lòng thêm ít nhất 01 người thi hành công vụ gây thiệt hại.'; e.style.display = 'block';
             e.scrollIntoView({ block: 'center' });
             return;
         }
@@ -577,7 +664,7 @@
         collectStep2();
         const units = Array.from(new Set(officers.map(o => o.agency)));
         confirmBox('Xác nhận lưu ý kiến hội đồng',
-            'Danh sách cán bộ gây sai phạm sẽ được phân tách về ' + units.length + ' đơn vị quản lý cán bộ và không được cập nhật ý kiến của Hội đồng. Bạn có chắc chắn muốn lưu ý kiến hội đồng?',
+            'Danh sách người thi hành công vụ gây thiệt hại sẽ được phân tách về ' + units.length + ' cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại và không được cập nhật ý kiến của Hội đồng. Bạn có chắc chắn muốn lưu ý kiến hội đồng?',
             'Lưu', () => {
                 activeDossier.dcPreOfficers = (activeDossier.refundOfficers || []).filter(o => o && o.dcPre);
                 activeDossier.refundOfficers = officers;
@@ -586,7 +673,7 @@
                 officers.forEach(o => { o.ctStatus = 'Chờ ban hành QĐ hoàn trả'; o.status = 'Chờ ban hành QĐ'; o.progressClass = 'warning'; });
                 activeDossier.refundTotal = officers.reduce((s, o) => s + (o.total || 0), 0);
                 if (!activeDossier.timeline) activeDossier.timeline = [];
-                activeDossier.timeline.unshift({ time: nowShort(), text: 'Lưu ý kiến của Hội đồng; phân tách danh sách cán bộ về ' + units.length + ' đơn vị quản lý cán bộ.' });
+                activeDossier.timeline.unshift({ time: nowShort(), text: 'Lưu ý kiến của Hội đồng; phân tách danh sách cán bộ về ' + units.length + ' cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại.' });
                 switchSimulatorState(3);
                 currentViewStep = 2; // hiển thị xong chuyển sang Bước 3 (switchWorkflowStep bên dưới)
                 isViewMode = true; currentMode = 'view';
@@ -594,7 +681,7 @@
                 // Sau khi lưu: tự chuyển sang Bước 3, các phần đơn vị ở trạng thái Chờ ban hành QĐ hoàn trả
                 if (typeof switchWorkflowStep === "function") switchWorkflowStep(3);
                 if (typeof tlhdPersistCreated === 'function') tlhdPersistCreated();
-                showToast('Lưu ý kiến hội đồng thành công. Danh sách cán bộ đã được phân tách về ' + units.length + ' đơn vị quản lý cán bộ.', 'success');
+                showToast('Lưu ý kiến hội đồng thành công. Danh sách cán bộ đã được phân tách về ' + units.length + ' cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại.', 'success');
             });
     };
 
@@ -603,13 +690,13 @@
     window.renderPageHeaderActions = function () {
         baseActions();
         const f = el('stickyFooterActionsContainer'); if (!f) return;
-        // Đơn vị quản lý cán bộ / Sở Tư pháp: không cập nhật Bước 1, Bước 2
+        // Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại / Sở Tư pháp: không cập nhật Bước 1, Bước 2
         const drop = re => f.querySelectorAll('button').forEach(b => { if (re.test(b.getAttribute('onclick') || '')) b.remove(); });
         if (!isOwnerScope() && scope !== 'lanh_dao') drop(/switchToEditMode\((1|2)\)|tlhdOpenModal/);
-        // Sở Tư pháp: chỉ ghi nhận thu hồi / trả lại tiền; không Miễn, Giảm, Đình chỉ
+        // Sở Tư pháp: chỉ ghi nhận thu tiền / trả lại tiền; không Miễn, Giảm, Đình chỉ
         if (scope === 'stp') drop(/dchtOpenModal/);
-        // Sau khi chốt ý kiến HĐ: đơn vị tạo Hội đồng không có cán bộ của đơn vị thì không thao tác Bước 3, 4
-        if (isSplitDossier() && scope === 'don_vi_chu' && !(activeDossier.refundOfficers || []).some(o => o.agency === myUnit)) drop(/dchtOpenModal|switchToEditMode\((3|4)\)/);
+        // Sau khi chốt ý kiến HĐ, lĩnh vực tố tụng hình sự: đơn vị tạo Hội đồng không có cán bộ của đơn vị thì không thao tác Bước 3, 4
+        if (isSplitDossier() && scope === 'don_vi_chu' && /tố tụng hình sự/i.test(activeDossier.claimField || '') && !(activeDossier.refundOfficers || []).some(o => o.agency === myUnit || (o.payUnit || o.agency) === myUnit)) drop(/dchtOpenModal|switchToEditMode\((3|4)\)/);
         if (!isViewMode && currentViewStep === 2 && canEditStep2()) {
             f.innerHTML = '<button type="button" class="btn btn-danger" onclick="dchtOpenModal()"><i class="fa-solid fa-circle-stop"></i> Đình chỉ</button>'
                 + '<button type="button" class="btn btn-primary" onclick="submitStep2Recommendations()"><i class="fa-solid fa-floppy-disk"></i> Lưu ý kiến hội đồng</button>'
