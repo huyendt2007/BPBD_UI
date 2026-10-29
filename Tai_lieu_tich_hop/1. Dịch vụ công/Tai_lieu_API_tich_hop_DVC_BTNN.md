@@ -498,6 +498,7 @@ Giá trị mặc định khi không gửi: `requester.requester_type` = `CA_NHAN
 - `requester.victim_status`: chỉ nhận khi người bị thiệt hại là cá nhân (`requester_type` = `CA_NHAN` và `requester_role` = `NGUOI_BI_THIET_HAI`, hoặc `victim.victim_type` = `CA_NHAN`); `requester_role` = `NGUOI_THUA_KE` hoặc `NGUOI_DAI_DIEN_THUA_KE`: luôn lưu `DA_MAT`.
 - `damages`: khi khối được nhận, tối thiểu 01 dòng; mỗi `item_code` mục chi tiết xuất hiện tối đa 01 lần; `TH_KHAC` được lặp nhiều dòng, mỗi dòng 01 thiệt hại khác (`other_name`, `calculation`, `amount`).
 - `resolution_scope` = `CHI_PHUC_HOI`: `honor_restoration.requested` luôn lưu `true`.
+- `honor_restoration.forms[]`: nhận khi khối `honor_restoration` được nhận, không phụ thuộc `honor_restoration.requested`.
 
 #### 7.3.1. Mã giá trị không có danh mục
 

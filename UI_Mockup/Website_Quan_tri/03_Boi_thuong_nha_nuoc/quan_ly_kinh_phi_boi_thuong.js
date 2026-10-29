@@ -5038,7 +5038,7 @@ function submitPayoutReal() {
                     status: "completed"
                 });
 
-                if (!matchedClaim.restoreHonor) {
+                if (!kpClaimHasPhdd(matchedClaim)) {
                     matchedClaim.status = 'Hoàn thành';
                 }
                 matchedClaim.moneyPaid = true;
@@ -5531,7 +5531,12 @@ const KP_SIGN_OUTSIDE = 'Ký ngoài';
 function kpIsAdv(item) { return !!item && (item.type === 'Cấp tạm ứng' || item.type === 'Đề nghị tạm ứng'); }
 // Hoàn thành Trả lại ngân sách nhà nước của khoản Chi trả tiền bồi thường: vụ việc liên kết chuyển "Hoàn thành" và ghi tiến trình.
 // Khoản tạm ứng không kết thúc vụ việc (vụ việc tiếp tục giải quyết).
-// Như hoàn thành chi trả: vụ việc còn nhánh Phục hồi danh dự chưa hoàn thành (restoreHonor) thì giữ nguyên trạng thái vụ việc.
+// Như hoàn thành chi trả: vụ việc còn nhánh Phục hồi danh dự chưa hoàn thành (Loại yêu cầu có phục hồi danh dự) thì giữ nguyên trạng thái vụ việc.
+// [d1] Vụ việc có nhánh Phục hồi danh dự: theo Loại yêu cầu giải quyết bồi thường (requestType); dữ liệu cũ chưa có requestType suy ra theo restoreHonor
+function kpClaimHasPhdd(c) {
+    var k = ['money', 'honor', 'both'].indexOf(c && c.requestType) >= 0 ? c.requestType : (c && c.restoreHonor ? 'both' : 'money');
+    return k !== 'money';
+}
 function kpTlnsCompleteClaim(item, dateText, amount) {
     if (!item || kpIsAdv(item) || !item.ycbtCode) return;
     let list;
@@ -5539,7 +5544,7 @@ function kpTlnsCompleteClaim(item, dateText, amount) {
     const c = Array.isArray(list) ? list.find(x => x && x.code === item.ycbtCode) : null;
     if (!c) return;
     const money = (Number(amount) || 0).toLocaleString('vi-VN');
-    const done = !c.restoreHonor;
+    const done = !kpClaimHasPhdd(c);
     if (!c.timeline) c.timeline = [];
     c.timeline.push({ title: 'Trả lại ngân sách nhà nước', date: dateText, desc: `Người yêu cầu không nhận tiền bồi thường trong thời hạn; đã nộp trả ${money} đồng vào ngân sách nhà nước (${item.code}).` + (done ? ' Vụ việc chuyển trạng thái Hoàn thành.' : ''), status: 'completed' });
     if (done) c.status = 'Hoàn thành';

@@ -1867,15 +1867,16 @@
                     <div class="role-switch-container" data-btnn-gl="> span:first-child, #currentOfficerSelectorWrapper > span, #currentLeaderSelectorWrapper > span"
                         style="display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 6px; margin: 0 0 12px auto; width: fit-content; max-width: 100%; padding: 6px 12px; background: #FFFBEB; border: 1px dashed #F59E0B;">
                         <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Quyền giả lập</span>
+                        <!-- [gqld2] Vai trò suy ra theo người dùng giả lập (thuộc Nhóm lãnh đạo tại Cấu hình luồng xử lý -> Lãnh đạo): ẩn ô chọn vai trò -->
                         <select class="role-selector" id="roleSelectorGiaLap" onchange="syncRole(this)"
-                            style="padding: 6px 10px; font-size: 12.5px;">
+                            style="padding: 6px 10px; font-size: 12.5px; display: none;">
                             <option value="chuyen-vien">Cán bộ xử lý hồ sơ</option>
                             <option value="thu-truong">Lãnh đạo đơn vị</option>
                         </select>
                         <!-- Cán bộ đang đăng nhập (giả lập): danh sách gồm cán bộ mẫu và tài khoản cán bộ theo Cơ cấu tổ chức -->
                         <span id="currentOfficerSelectorWrapper" style="display: inline-flex; align-items: center; gap: 6px; margin-left: 10px;">
                             <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Cán bộ đang đăng nhập</span>
-                            <select class="role-selector" id="currentOfficerSelector" onchange="renderClaimsTable()"
+                            <select class="role-selector" id="currentOfficerSelector" onchange="gqSimUserChanged()"
                                 style="padding: 6px 10px; font-size: 12.5px; max-width: 320px;">
                                 <optgroup label="Cán bộ mẫu">
                                     <option value="Nguyễn Văn Chuyên Viên">Nguyễn Văn Chuyên Viên (CB1)</option>
@@ -2566,7 +2567,7 @@
                                 </select>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
-                                <span class="form-label">Tỉnh / Thành phố<span class="required">*</span></span>
+                                <span class="form-label">Tỉnh/Thành phố<span class="required">*</span></span>
                                 <div id="claimCityDropdownWrapper">
                                     <select class="form-control" id="claimNYCCity" onchange="updateClaimWardOptions(true)">
                                         <option value="Hà Nội">Thành phố Hà Nội</option>
@@ -2589,7 +2590,7 @@
                         <!-- [gqfx] Phường/Xã và Địa chỉ chi tiết: mỗi trường 01 hàng, Địa chỉ chi tiết là ô nhập nhiều dòng rộng hết khối -->
                         <div class="gqfx-addr-rows" style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 0;">
                             <div class="form-group" style="margin-bottom: 0;">
-                                <span class="form-label">Phường / Xã<span class="required">*</span></span>
+                                <span class="form-label">Phường/Xã<span class="required">*</span></span>
                                 <input type="text" class="form-control" id="claimNYCWard" list="claimNYCWardList" placeholder="Gõ Mã hoặc Tên Phường/Xã..." onfocus="updateClaimWardOptions(false)" oninput="this.classList.remove('is-invalid'); this.closest('.form-group').querySelector('.error-message').style.display='none';">
                                 <datalist id="claimNYCWardList"></datalist>
                                 <div class="error-message">Đây là trường bắt buộc</div>
@@ -2694,7 +2695,7 @@
                                     </select>
                                 </div>
                                 <div class="form-group" style="margin-bottom: 0;">
-                                    <span class="form-label">Tỉnh / Thành phố</span>
+                                    <span class="form-label">Tỉnh/Thành phố</span>
                                     <input type="text" class="form-control" id="claimNbthCity" placeholder="Chọn hoặc nhập tỉnh/thành phố..." list="claimNbthCityList">
                                     <datalist id="claimNbthCityList">
                                         <option value="Hà Nội"></option>
@@ -2708,7 +2709,7 @@
                             </div>
                             <div class="gqfx-addr-rows" style="display: flex; flex-direction: column; gap: 14px; margin-bottom: 0;">
                                 <div class="form-group" style="margin-bottom: 0;">
-                                    <span class="form-label">Phường / Xã</span>
+                                    <span class="form-label">Phường/Xã</span>
                                     <input type="text" class="form-control" id="claimNbthWard" placeholder="Nhập phường/xã...">
                                 </div>
                                 <div class="form-group" style="margin-bottom: 0;">
@@ -2974,8 +2975,7 @@
                     <div style="margin-bottom: 12px; line-height: 1.6;">
                         <label
                             style="cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 600; color: #0f172a;">
-                            <input type="checkbox" id="claimNeedRestoreHonor"
-                                onchange="document.getElementById('claimRestoreHonorDescWrapper').style.display = this.checked ? 'block' : 'none'">
+                            <input type="checkbox" id="claimNeedRestoreHonor">
                             Đề nghị cơ quan giải quyết chủ động tiến hành phục hồi danh dự (Điều 57)
                         </label>
                     </div>
@@ -3012,7 +3012,7 @@
                     </label>
                     <div id="claimOtherRestoreWrapper" style="display: none;">
                         <textarea class="form-control" id="claimOtherRestore" rows="2"
-                            placeholder="Nhập nội dung yêu cầu khôi phục quyền, lợi ích hợp pháp khác..."></textarea>
+                            placeholder="Nhập nội dung yêu cầu khôi phục quyền và lợi ích hợp pháp khác..."></textarea>
                     </div>
                 </div>
 
@@ -4390,7 +4390,7 @@
 
     <!-- Luồng phân công - phê duyệt dùng chung BTNN: nguồn hồ sơ YCBT nhận từ Xác định CQGQBT -->
     <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261029tldk"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
     <script src="quan_ly_boi_thuong_dcgq.js?v=20261029tlcam2"></script>
@@ -4963,18 +4963,71 @@
             if (selMain) selMain.value = val;
             if (selGiaLap) selGiaLap.value = val;
 
+            // [gqld2] 01 ô "Người dùng giả lập" (currentOfficerSelector) cho cả 02 vai trò; ô Lãnh đạo ẩn, đồng bộ theo người dùng chọn
             const wrapper = document.getElementById('currentOfficerSelectorWrapper');
-            if (wrapper) {
-                wrapper.style.display = val === 'chuyen-vien' ? 'inline-flex' : 'none';
-            }
+            if (wrapper) wrapper.style.display = 'inline-flex';
             const leaderWrap = document.getElementById('currentLeaderSelectorWrapper');
-            if (leaderWrap) leaderWrap.style.display = val === 'thu-truong' ? 'inline-flex' : 'none';
-            if (val === 'thu-truong') populateLeaderSelector();
+            if (leaderWrap) leaderWrap.style.display = 'none';
+            if (val === 'thu-truong') { populateLeaderSelector(); gqSimReflectLeader(); }
 
             // Vai trò Lãnh đạo (Thủ trưởng CQ giải quyết): Tab "Vụ việc chờ xử lý" chỉ gồm hồ sơ Cử người giải quyết bồi thường
             // (lọc trong claimInActiveWorkflowTab); nút Tạo yêu cầu thuộc phạm vi Cán bộ xử lý nên ẩn với Lãnh đạo.
             // Chuyển vai trò -> nạp lại danh sách lọc Trạng thái theo vai trò và tab hiện tại.
             switchClaimsWorkflowTab(activeClaimsWorkflowTab);
+        }
+
+        // [gqld2] Giả lập người dùng (cùng cách nhận diện màn Tiếp nhận hồ sơ): tài khoản thuộc Nhóm lãnh đạo của ít nhất 01 đơn vị
+        // tại Cấu hình luồng xử lý (xét cả các Loại luồng) -> vai trò Lãnh đạo (chỉ Ký duyệt / Từ chối hồ sơ Chờ duyệt); còn lại -> Cán bộ xử lý
+        function gqIsLeaderUser(userId) {
+            const W = window.BTNN_WF;
+            if (!W || !userId) return false;
+            const types = Array.isArray(W.FLOW_TYPE_ORDER) && W.FLOW_TYPE_ORDER.length ? W.FLOW_TYPE_ORDER : [undefined];
+            return types.some(ft => {
+                const cfg = W.getFlowConfig(ft) || {};
+                return Object.keys(cfg).some(root => Object.values(cfg[root] || {}).some(n => ((n && n.leaders) || []).includes(userId)));
+            });
+        }
+        function gqSimUserOf(name) {
+            const W = window.BTNN_WF;
+            return W && name ? (W.USERS || []).find(u => u.name === name) || null : null;
+        }
+        // Ô Người dùng giả lập hiển thị Lãnh đạo đang chọn (ô currentLeaderSelector ẩn)
+        function gqSimReflectLeader() {
+            const W = window.BTNN_WF;
+            const ld = document.getElementById('currentLeaderSelector');
+            const off = document.getElementById('currentOfficerSelector');
+            if (!W || !ld || !off || !ld.value) return;
+            const u = W.getUser(ld.value);
+            if (!u) return;
+            if (!Array.from(off.options).some(o => o.value === u.name)) {
+                const opt = document.createElement('option');
+                opt.value = u.name;
+                opt.textContent = `${u.name} - ${u.title}`;
+                off.appendChild(opt);
+            }
+            off.value = u.name;
+        }
+        function gqSimUserChanged() {
+            const off = document.getElementById('currentOfficerSelector');
+            const rs = document.getElementById('roleSelectorGiaLap') || document.getElementById('roleSelectorMain');
+            const u = gqSimUserOf(off ? off.value : '');
+            if (u && gqIsLeaderUser(u.id)) {
+                populateLeaderSelector();
+                const ld = document.getElementById('currentLeaderSelector');
+                if (ld) {
+                    if (!Array.from(ld.options).some(o => o.value === u.id)) {
+                        const opt = document.createElement('option');
+                        opt.value = u.id;
+                        opt.textContent = `${u.name} - ${u.title}`;
+                        ld.appendChild(opt);
+                    }
+                    ld.value = u.id;
+                }
+                if (rs) { rs.value = 'thu-truong'; syncRole(rs); }
+                return;
+            }
+            if (rs && rs.value !== 'chuyen-vien') { rs.value = 'chuyen-vien'; syncRole(rs); return; }
+            renderClaimsTable();
         }
 
         function handleRequestTypeChange(val) {
@@ -5008,8 +5061,9 @@
                 if (honorSec) honorSec.style.display = 'block';
                 if (needHonor) {
                     needHonor.disabled = false;
-                    if (descWrapper) descWrapper.style.display = needHonor.checked ? 'block' : 'none';
                 }
+                // [m6] Hình thức đề nghị phục hồi danh dự (Điều 56): hiển thị khi Loại yêu cầu có phục hồi danh dự, không phụ thuộc Điều 57
+                if (descWrapper) descWrapper.style.display = 'block';
             }
         }
 
@@ -9167,7 +9221,7 @@
         }
 
         function migrateAllClaimsForSrs() {
-            claimsList.forEach((claim, idx) => migrateClaimForSrs(claim, idx));
+            claimsList.forEach((claim, idx) => { claimRequestKindMigrate(claim); migrateClaimForSrs(claim, idx); });
         }
 
         // ===================== Vụ việc 2 nhánh: Trạng thái Giải quyết YCBT + Trạng thái Phục hồi danh dự =====================
@@ -9193,11 +9247,18 @@
         // Các bước Thông báo / Chờ phản hồi / Chờ thực hiện / Yêu cầu bổ sung là bước của tiến trình (phddStatus dùng cho Stepper), hiển thị là Đang phục hồi danh dự.
         let phddStoreReady = false;
         // Loại yêu cầu của vụ việc
+        // [d1] Loại yêu cầu lấy theo trường "Loại yêu cầu giải quyết bồi thường" (requestType); restoreHonor chỉ mang nghĩa Điều 57
+        // (Đề nghị cơ quan giải quyết chủ động tiến hành phục hồi danh dự). Dữ liệu cũ chưa có requestType: suy ra theo cách cũ (claimRequestKindMigrate ghi lại 01 lần).
+        const CLAIM_REQUEST_KINDS = ['money', 'honor', 'both'];
         function claimRequestKind(c) {
             if (!c) return 'money';
-            if (c.requestType === 'honor') return 'honor';
-            if (c.restoreHonor) return 'both';
-            return 'money';
+            if (CLAIM_REQUEST_KINDS.includes(c.requestType)) return c.requestType;
+            return c.restoreHonor ? 'both' : 'money';
+        }
+        // Hồ sơ Chờ tiếp nhận chưa nhập Loại yêu cầu (không đánh dấu Điều 57): giữ trống để form Nhập liệu mặc định Yêu cầu cả hai
+        function claimRequestKindMigrate(c) {
+            if (!c || CLAIM_REQUEST_KINDS.includes(c.requestType)) return;
+            if (c.restoreHonor || canonicalClaimStatus(c.status) !== 'Chờ tiếp nhận') c.requestType = claimRequestKind(c);
         }
         // Loại yêu cầu ghi sang hồ sơ luồng: vụ việc chưa có giá trị (chưa lưu Nhập liệu hồ sơ) không ghi, giữ trống
         function claimStoredRequestKind(c) {
@@ -9479,7 +9540,7 @@
             const formBody = `<div class="grid-3-cols" style="gap:12px 20px; font-size:13px; line-height:1.6;">
                     ${f('Trực tiếp xin lỗi và cải chính công khai', yesNo(forms.apology))}
                     ${f('Đăng báo xin lỗi và cải chính công khai', yesNo(forms.news))}
-                    ${f('Yêu cầu khôi phục quyền, lợi ích hợp pháp khác', e(claim.otherRightsRequest))}
+                    ${f('Yêu cầu khôi phục quyền và lợi ích hợp pháp khác', e(claim.otherRightsRequest))}
                 </div>`;
             const recvBody = `<div class="grid-3-cols" style="gap:12px 20px; font-size:13px; line-height:1.6;">
                     ${f('Cơ quan giải quyết', e(claim.agency))}
@@ -9607,7 +9668,7 @@
         // - Cùng phiên bản dữ liệu mẫu: dùng claimsList đã lưu (kể cả trạng thái hồ sơ mẫu đã chuyển), chỉ bổ sung hồ sơ mẫu chưa có (theo id / Mã hồ sơ).
         // - Phiên bản dữ liệu mẫu đổi (GQ_SEED_VER hoặc ?v= của tệp dữ liệu mẫu quan_ly_boi_thuong_*.js): bỏ bản ghi mẫu đã lưu để nạp lại,
         //   giữ bản ghi người dùng tạo (userCreated); dữ liệu mẫu theo phiên bản riêng của add-on (dgq, cdpd, nbth) cũng nạp lại.
-        const GQ_SEED_VER = '20261027i2';
+        const GQ_SEED_VER = '20261029gq2';
         const GQ_SEED_VER_KEY = 'claimsList_seed_ver';
         const GQ_ADDON_SEED_KEYS = ['btnn_dgq_seed_v', 'btnn_cdpd_seed_v', 'gqNbthSeedVersion'];
         function gqSeedVersion() {
@@ -9876,6 +9937,9 @@
                 if (rs) { rs.value = 'thu-truong'; syncRole(rs); }
                 const ld = document.getElementById('currentLeaderSelector');
                 if (has(ld, s.leader)) ld.value = s.leader;
+                if (typeof gqSimReflectLeader === 'function') gqSimReflectLeader();
+            } else if (typeof gqSimUserChanged === 'function' && gqIsLeaderUser((gqSimUserOf(off ? off.value : '') || {}).id)) {
+                gqSimUserChanged();
             }
         }
 
@@ -10977,7 +11041,7 @@
                 handleVictimAliveChange(claim.victimAlive || 'yes');
 
                 document.getElementById('claimNeedRestoreHonor').checked = claim.restoreHonor || false;
-                document.getElementById('claimRestoreHonorDescWrapper').style.display = (claim.restoreHonor) ? 'block' : 'none';
+                document.getElementById('claimRestoreHonorDescWrapper').style.display = (claim.requestType || 'both') !== 'money' ? 'block' : 'none';
                 document.getElementById('claimPhddFormApology').checked = claim.phddFormApology || false;
                 document.getElementById('claimPhddFormNews').checked = claim.phddFormNews || false;
                 // Yêu cầu khôi phục quyền và lợi ích hợp pháp khác (kế thừa từ hồ sơ, VD dữ liệu nhận từ Dịch vụ công)
@@ -11098,7 +11162,7 @@
                 handleVictimAliveChange('yes');
 
                 document.getElementById('claimNeedRestoreHonor').checked = false;
-                document.getElementById('claimRestoreHonorDescWrapper').style.display = 'none';
+                document.getElementById('claimRestoreHonorDescWrapper').style.display = 'block';
                 document.getElementById('claimPhddFormApology').checked = true;
                 document.getElementById('claimPhddFormNews').checked = false;
                 document.getElementById('claimNeedOtherRestore').checked = false;
@@ -11800,6 +11864,8 @@
                 const needRestoreHonor = document.getElementById('claimNeedRestoreHonor').checked;
                 const phddFormApology = document.getElementById('claimPhddFormApology').checked;
                 const phddFormNews = document.getElementById('claimPhddFormNews').checked;
+                const phddReqChecked = document.querySelector('input[name="claimRequestType"]:checked');
+                const hasPhddRequest = !phddReqChecked || phddReqChecked.value !== 'money';
 
                 const datePlace = (document.getElementById('claimCreatePlace') ? document.getElementById('claimCreatePlace').value : '') || (document.getElementById('claimNYCCity') ? document.getElementById('claimNYCCity').value : "Hà Nội");
                 const today = new Date();
@@ -11899,7 +11965,7 @@
                         <div class="section-title">Yêu cầu phục hồi danh dự (Điều 57)</div>
                         <div style="margin-top: 8px;">
                             <div><span class="field-label">Yêu cầu Nhà nước tổ chức phục hồi danh dự:</span> ${needRestoreHonor ? "CÓ" : "KHÔNG"}</div>
-                            ${needRestoreHonor ? `
+                            ${hasPhddRequest ? `
                                 <div style="margin-top: 4px; margin-left: 15px;">
                                     <div>- <span class="field-label">Hình thức đề nghị phục hồi danh dự mong muốn (Điều 56):</span> 
                                         ${[
@@ -12416,8 +12482,8 @@
                     claim.advanceBankName = recBankName;
                     claim.advanceBankBranch = recBankBranch;
                     claim.restoreHonor = requestType === 'honor' ? true : document.getElementById('claimNeedRestoreHonor').checked;
-                    claim.phddFormApology = requestType === 'honor' ? document.getElementById('claimPhddFormApology').checked : (document.getElementById('claimNeedRestoreHonor').checked ? document.getElementById('claimPhddFormApology').checked : false);
-                    claim.phddFormNews = requestType === 'honor' ? document.getElementById('claimPhddFormNews').checked : (document.getElementById('claimNeedRestoreHonor').checked ? document.getElementById('claimPhddFormNews').checked : false);
+                    claim.phddFormApology = requestType !== 'money' ? document.getElementById('claimPhddFormApology').checked : false;
+                    claim.phddFormNews = requestType !== 'money' ? document.getElementById('claimPhddFormNews').checked : false;
                     claim.requestType = requestType;
                     claim.victimAlive = victimAlive;
                     claim.otherRestore = document.getElementById('claimNeedOtherRestore').checked ? document.getElementById('claimOtherRestore').value.trim() : '';
@@ -12544,8 +12610,8 @@
                 advanceBankName: recBankName,
                 advanceBankBranch: recBankBranch,
                 restoreHonor: requestType === 'honor' ? true : document.getElementById('claimNeedRestoreHonor').checked,
-                phddFormApology: requestType === 'honor' ? document.getElementById('claimPhddFormApology').checked : (document.getElementById('claimNeedRestoreHonor').checked ? document.getElementById('claimPhddFormApology').checked : false),
-                phddFormNews: requestType === 'honor' ? document.getElementById('claimPhddFormNews').checked : (document.getElementById('claimNeedRestoreHonor').checked ? document.getElementById('claimPhddFormNews').checked : false),
+                phddFormApology: requestType !== 'money' ? document.getElementById('claimPhddFormApology').checked : false,
+                phddFormNews: requestType !== 'money' ? document.getElementById('claimPhddFormNews').checked : false,
                 requestType: requestType,
                 victimAlive: victimAlive,
                 otherRestore: document.getElementById('claimNeedOtherRestore').checked ? document.getElementById('claimOtherRestore').value.trim() : '',
@@ -12646,6 +12712,13 @@
                 selectedClaimId = null;
                 isDetailEditMode = false;
                 showToast(`Bạn không thuộc danh sách cán bộ được cử giải quyết hồ sơ ${claim.code}. Không thể xem và cập nhật hồ sơ.`, "error");
+                return;
+            }
+            // [gqfix3] Trước khi cử người: chỉ cán bộ được phân công xử lý hồ sơ được xem
+            if (currentRole === 'chuyen-vien' && typeof gqldPreAppoint === 'function' && gqldPreAppoint(claim) && gqldGateReason(claim, currentRole, currentOfficer)) {
+                selectedClaimId = null;
+                isDetailEditMode = false;
+                showToast(`Bạn không phải cán bộ được phân công xử lý hồ sơ ${claim.code}. Không thể xem và cập nhật hồ sơ.`, "error");
                 return;
             }
 
@@ -25106,6 +25179,21 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 ${docName ? `<div style="margin-bottom:6px;"><b>Văn bản trình:</b> ${gqE(docName)}${d.formNo && d.source !== 'uploaded' ? ` <span style="color:#64748b;">(${gqE(d.formNo)} do hệ thống sinh)</span>` : ''}</div>` : ''}
                 <table><thead><tr><th style="width:44px;">Cấp</th><th>Đơn vị phê duyệt</th><th>Lãnh đạo được giao</th><th>Kết quả</th></tr></thead><tbody>${rows}</tbody></table>`;
         }
+        function gqReturnedBlockHtml(W, rec) {
+            const r = rec.returned || {};
+            const a = rec.approval || null;
+            let lv = -1;
+            if (a && Array.isArray(a.path)) lv = r.unitId ? a.path.indexOf(r.unitId) : a.level;
+            if (a && lv < 0 && typeof a.level === 'number') lv = a.level;
+            const cap = a && lv >= 0 ? `Cấp ${lv + 1}/${a.path.length} - ${W.unitName(a.path[lv])}` : (r.unitId ? W.unitName(r.unitId) : '--');
+            const leader = r.by ? `${W.userName(r.by)}${r.unitId ? ' - ' + W.unitName(r.unitId) : ''}` : '--';
+            const cell = (k, v, wide) => `<div${wide ? ' style="grid-column:1 / -1;"' : ''}><div style="font-size:12px; color:#b45309; font-weight:600;">${k}</div><div style="color:#92400e; font-weight:500; white-space:pre-wrap;">${gqE(v || '--')}</div></div>`;
+            return `<div class="gq-returned-block" id="gqReturnedBlock" style="background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px; font-size:13px;">
+                <div style="font-weight:700; color:#b45309; margin-bottom:8px;"><i class="fa-solid fa-rotate-left"></i> Lý do bị trả lại</div>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:8px 16px;">
+                    ${cell('Lý do trả lại', r.reason, true)}${cell('Lãnh đạo trả lại', leader)}${cell('Thời điểm trả lại', r.at)}${cell('Cấp ký duyệt', cap)}
+                </div></div>`;
+        }
         function gqWfInfoHtml(claim) {
             const W = gqW();
             if (!W || !claim) return '';
@@ -25167,9 +25255,10 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 parts.push(`<h4 style="margin-top:10px;"><i class="fa-solid fa-stamp"></i> Văn bản yêu cầu bổ sung đã phát hành</h4>
                     <div><b>Số văn bản:</b> ${gqE(p.docNo)} - <b>Ngày văn bản:</b> ${gqE(p.docDate)} - <b>Văn bản đã đóng dấu:</b> ${gqE((p.files || []).join(', '))}</div>`);
             }
+            // [gqtl] Khối "Lý do bị trả lại" (đồng bộ kiểu khối trả lại các phân hệ BTNN): Lý do trả lại, Lãnh đạo trả lại, Thời điểm trả lại, Cấp ký duyệt
+            if (rec && rec.status === 'Bị trả lại' && rec.returned) pre.unshift(gqReturnedBlockHtml(W, rec));
             if (rec && rec.approval) {
-                const ret = rec.status === 'Bị trả lại' && rec.returned ? `<div class="gq-returned" style="margin:6px 0;"><b>Lý do trả lại:</b> ${gqE(rec.returned.reason)} (${gqE(W.userName(rec.returned.by))} - ${gqE(rec.returned.at)})</div>` : '';
-                parts.push(`<h4 style="margin-top:10px;"><i class="fa-solid fa-sitemap"></i> Thông tin trình phê duyệt${W.approvalLabel(rec) ? ' - ' + gqE(W.approvalLabel(rec)) : ''}</h4>${ret}${gqApprovalTableHtml(rec)}`);
+                parts.push(`<h4 style="margin-top:10px;"><i class="fa-solid fa-sitemap"></i> Thông tin trình phê duyệt${W.approvalLabel(rec) ? ' - ' + gqE(W.approvalLabel(rec)) : ''}</h4>${gqApprovalTableHtml(rec)}`);
             }
             return pre.join('') + (parts.length ? `<div class="gq-wf-box" id="gqWfInfoBox">${parts.join('')}</div>` : '');
         }
@@ -25298,8 +25387,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const st = gqldCaseStatus(item);
             const done = GQLD_DONE_STATUSES.includes(st);
             // Giai đoạn trước khi cử người giải quyết: luôn hiển thị; từ khi cử người giải quyết chỉ cán bộ được cử thấy hồ sơ
-            const preAppoint = !isPhddStarted(item) && ['Chờ tiếp nhận', 'Yêu cầu bổ sung', 'Cử người giải quyết bồi thường', 'Không thụ lý'].includes(st);
-            const visible = preAppoint || !isClaimAssignedToOther(item, currentRole, currentOfficer);
+            // [gqfix3] Cán bộ: trước khi cử người chỉ cán bộ được phân công xử lý hồ sơ thấy hồ sơ; sau khi cử người chỉ cán bộ trong Danh sách cán bộ giải quyết bồi thường
+            const visible = !gqldGateReason(item, currentRole, currentOfficer);
             return (tab === 'da-xu-ly' ? done : !done) && visible;
         }
         // Danh sách giá trị bộ lọc Trạng thái theo tab / vai trò
@@ -25369,9 +25458,28 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             };
         }
         // Lý do không được thao tác (chú thích nút mờ); '' = được phép xét theo trạng thái
+        // [gqfix2] Giai đoạn trước khi hoàn thành bước Cử người giải quyết bồi thường (Chờ tiếp nhận / Yêu cầu bổ sung / Cử người giải quyết bồi thường / Không thụ lý,
+        // Chờ duyệt - Bị trả lại của phiếu trình Thông báo thụ lý / Yêu cầu bổ sung / Không thụ lý / Cử người): chỉ cán bộ được phân công xử lý hồ sơ (assignedOfficer) thấy và thao tác;
+        // sau khi cử người: các cán bộ trong Danh sách cán bộ giải quyết bồi thường. Cán bộ khác: không hiển thị hồ sơ (gqldInWorkflowTab, showCaseDetail)
+        function gqldPreAppoint(item, st) {
+            if (!item || isPhddStarted(item)) return false;
+            st = st || gqldCaseStatus(item);
+            if (['Chờ tiếp nhận', 'Yêu cầu bổ sung', 'Cử người giải quyết bồi thường', 'Không thụ lý'].includes(st)) return true;
+            if (st !== 'Chờ duyệt' && st !== 'Bị trả lại') return false;
+            const k = typeof gqApprovalKindOf === 'function' ? gqApprovalKindOf(item) : '';
+            return ['Tiếp nhận hồ sơ', 'Yêu cầu bổ sung', 'Không thụ lý', 'Cử người giải quyết bồi thường'].includes(k);
+        }
         function gqldGateReason(item, currentRole, currentOfficer) {
-            if (currentRole !== 'thu-truong' && isClaimAssignedToOther(item, currentRole, currentOfficer)) return 'Hồ sơ đã giao cán bộ khác giải quyết';
-            return '';
+            if (currentRole === 'thu-truong') return '';
+            const why = 'Hồ sơ đã giao cán bộ khác giải quyết';
+            if (gqldPreAppoint(item)) {
+                // Trước khi cử người: chỉ cán bộ được phân công xử lý hồ sơ (hồ sơ chưa phân công: không giới hạn)
+                const assigned = normalizeStatusText(item.assignedOfficer || '');
+                const me = normalizeStatusText(currentOfficer || '');
+                return assigned && me && assigned !== me ? why : '';
+            }
+            // Sau khi cử người: các cán bộ trong Danh sách cán bộ giải quyết bồi thường
+            return isClaimAssignedToOther(item, currentRole, currentOfficer) ? why : '';
         }
         function gqldMoreItems(item) {
             const role = getCurrentSimulatedRole();
@@ -25402,6 +25510,8 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             const gate = gqldGateReason(item, currentRole, currentOfficer);
             const why = gate || `Không áp dụng ở trạng thái ${d.st}`;
             const render = a => (a.allowed && !gate) ? gqldBtn(a.key, a.cls, a.icon, a.label, a.fn) : gqldBtnOff(a.key, a.cls, a.icon, a.label, why);
+            // [gqld2] Giả lập Lãnh đạo: chỉ Ký duyệt / Từ chối, chỉ trên hồ sơ Chờ duyệt; hồ sơ khác chỉ xem (click dòng -> Xem chi tiết)
+            if (currentRole === 'thu-truong' && d.st !== 'Chờ duyệt') return '';
             if (currentRole === 'thu-truong') return d.leader.map(a => (a.allowed ? gqldBtn(a.key, a.cls, a.icon, a.label, a.fn) : gqldBtnOff(a.key, a.cls, a.icon, a.label, d.st === 'Chờ duyệt' ? 'Chỉ Lãnh đạo được giao ở cấp phê duyệt hiện hành' : why))).join('').replace(/<button /g, '<button data-admin-icon-normalized="1" ');
             return d.main.map(render).join('') + gqldBtn('more', 'gqld-more', 'fa-solid fa-ellipsis', 'Thao tác khác', `gqldToggleMore(event, '${item.id}')`);
         }
@@ -25665,21 +25775,23 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <script src="quan_ly_boi_thuong_ktlv.js?v=20261029tldk"></script>
     <!-- [seedxm] Dữ liệu giả lập đủ các Trạng thái vụ việc Giải quyết YCBT (Xác minh thiệt hại, Thương lượng, Chờ chi trả, Chờ duyệt / Bị trả lại theo Nội dung trình) -->
     <script src="quan_ly_boi_thuong_seedxm.js?v=20261029tldk"></script>
+    <script src="quan_ly_boi_thuong_seedgq.js?v=20261029gq2"></script>
     <!-- [tcvv] Xem chi tiết mở từ Tra cứu vụ việc (?readonly=1&returnUrl=tra_cuu...): tab mặc định, bỏ giới hạn cán bộ được cử; tcvvPreview=1: hồ sơ giả lập riêng của Tra cứu, không lưu vào claimsList -->
     <script src="tra_cuu_seed_tcvv.js?v=20261028dvc1"></script>
     <!-- [lth][th2c] Thiệt hại 02 cấp (nhóm / mục chi tiết DM_27) tại Nhập liệu hồ sơ, Xác minh thiệt hại, Thương lượng, Xem chi tiết; tích bổ sung mục / Yêu cầu phục hồi danh dự; popup xác nhận Hoàn thành xác minh -->
-    <script src="quan_ly_boi_thuong_lth.js?v=20261029tldk"></script>
+    <script src="quan_ly_boi_thuong_lth.js?v=20261029d1"></script>
     <!-- [ktlc] Không thụ lý KTL_01: Chuyển hồ sơ cho theo cấp đơn vị / số lần chuyển, tự tạo hồ sơ Xác định CQGQBT -->
     <script src="quan_ly_boi_thuong_ktlc.js?v=20261028dvc1"></script>
     <!-- [tptl] Thành phần tham gia thương lượng: 1. Cơ quan, tổ chức (thành phần bắt buộc theo Cấp đơn vị / Lĩnh vực, Không tham gia + Lý do; thành phần khác), 2. Người yêu cầu bồi thường / người đại diện / người bảo vệ quyền lợi ích hợp pháp (đặt sau lth, ktlc) -->
     <script src="quan_ly_boi_thuong_tptl.js?v=20261027tptl3"></script>
     <!-- [nbth] Người bị thiệt hại Cá nhân/Tổ chức, địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại; bắt buộc khi trình Thông báo thụ lý (đặt trước cdpd) -->
-    <script src="quan_ly_boi_thuong_nbth.js?v=20261027nbthe3"></script>
+    <script src="quan_ly_boi_thuong_nbth.js?v=20261029nbthm7"></script>
     <!-- [cdpd] Tạo yêu cầu - Cán bộ chủ động phục hồi danh dự khi có đủ thông tin: form tối thiểu, trình Thông báo tổ chức thực hiện phục hồi danh dự (chỉ Tải lên từ máy / Ký ngoài) -->
     <script src="quan_ly_boi_thuong_cdpd.js?v=20261029tlcam2"></script>
     <!-- [dgq] Dừng giải quyết (Mẫu 05/BTNN): popup trình ký Thông báo dừng giải quyết, khối Thông tin dừng giải quyết, dữ liệu mẫu BT-2026-541..544 (đặt sau dcgq, hdcv) -->
     <script src="quan_ly_boi_thuong_dgq.js?v=20261029tlcam2"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
+    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
 </body>
 
 </html>

@@ -50,9 +50,9 @@
 | STT | Integer(10) | Có | Tự tăng | Control UI: Label, căn giữa.<br>- Số thứ tự dòng trên trang hiện tại. |
 | Mã đề nghị | String(50) | Có | Theo hồ sơ | Control UI: Hyperlink.<br>- Mã đề nghị do hệ thống sinh tự động dạng `ĐN-YYYY/STT`.<br>- Khi click: Mở màn hình xem chi tiết đề nghị. |
 | Loại đề nghị | Enum(String(50)) | Có | Theo hồ sơ | Control UI: Label dạng nhãn trạng thái (Badge).<br>Gồm:<br>+ Chỉnh lý thông tin sai sót<br>+ Hủy đăng ký (Toàn phần)<br>+ Hủy đăng ký (Một phần)<br>+ Khôi phục hủy đăng ký |
-| Mã KH | String(50) | Có | Theo hồ sơ | Control UI: Label, căn giữa.<br>- Mã khách hàng của người yêu cầu đăng ký. |
-| Số đăng ký | String(50) | Có | Theo hồ sơ | Control UI: Label, căn giữa, in đậm.<br>- Tùy theo Loại đề nghị mà hiển thị số tương ứng:<br>  * Chỉnh lý: Hiển thị Số đăng ký phiên bản sai sót.<br>  * Hủy đăng ký: Hiển thị Số đăng ký lần đầu.<br>  * Khôi phục: Hiển thị Số đăng ký hủy. |
-| Loại đăng ký | String(255) | Có | Theo hồ sơ | Control UI: Label, căn giữa.<br>- Theo dữ liệu bản ghi. |
+| Mã KH | String(50) | Có | Theo hồ sơ | Control UI: Label.<br>- Mã khách hàng của người yêu cầu đăng ký. |
+| Số đăng ký | String(50) | Có | Theo hồ sơ | Control UI: Label, in đậm.<br>- Tùy theo Loại đề nghị mà hiển thị số tương ứng:<br>  * Chỉnh lý: Hiển thị Số đăng ký phiên bản sai sót.<br>  * Hủy đăng ký: Hiển thị Số đăng ký lần đầu.<br>  * Khôi phục: Hiển thị Số đăng ký hủy. |
+| Loại đăng ký | String(255) | Có | Theo hồ sơ | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
 | Tên bên bảo đảm | Text | Có | Theo hồ sơ | Control UI: Label, căn trái, in đậm vừa.<br>- Tên cá nhân hoặc tổ chức là Bên bảo đảm của hồ sơ gốc. Cột riêng biệt, không gộp chung với Bên nhận bảo đảm. |
 | Tên bên nhận bảo đảm | Text | Có | Theo hồ sơ | Control UI: Label, căn trái, in đậm vừa.<br>- Tên cá nhân hoặc tổ chức tín dụng là Bên nhận bảo đảm của hồ sơ gốc. Cột riêng biệt, không gộp chung với Bên bảo đảm. |
 | Cán bộ lập đề nghị | String(255) | Có | Theo hồ sơ | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
@@ -167,7 +167,7 @@
 | Bảng danh sách Bên bảo đảm | - | - | - | Control UI: Bảng dữ liệu chỉ đọc hiển thị danh sách các chủ thể Bên bảo đảm của hồ sơ gốc. |
 | STT | - | - | - | Control UI: Label, căn giữa.<br>- Số thứ tự dòng dữ liệu. |
 | LOẠI CHỦ THỂ | - | - | - | Control UI: Label.<br>- Loại chủ thể của Bên bảo đảm. |
-| SỐ GIẤY TỜ CHỨNG MINH TƯ CÁCH PHÁP LÝ | - | - | - | Control UI: Label, căn giữa.<br>- Số CMND, CCCD, Hộ chiếu, Mã định danh cá nhân, Mã số thuế hoặc ĐKKD. |
+| SỐ GIẤY TỜ CHỨNG MINH TƯ CÁCH PHÁP LÝ | - | - | - | Control UI: Label.<br>- Số CMND, CCCD, Hộ chiếu, Mã định danh cá nhân, Mã số thuế hoặc ĐKKD. |
 | TÊN | - | - | - | Control UI: Label, in đậm vừa.<br>- Họ và tên cá nhân hoặc tên tổ chức. |
 | ĐỊA CHỈ | - | - | - | Control UI: Label.<br>- Định dạng: "Địa chỉ chi tiết, Phường/Xã, Tỉnh/Thành phố, Quốc gia" (Quốc gia khác Việt Nam không có Phường/Xã, theo [BR-VAL-015]). |
 | **3. Bên nhận bảo đảm (Tiêu đề động)** | - | - | - | Tiêu đề khối thay đổi động theo Loại biện pháp / Loại hợp đồng tương tự quy tắc tại Màn hình Đăng ký mới BPBĐ trên Website khách hàng. |

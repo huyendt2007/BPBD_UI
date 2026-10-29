@@ -783,6 +783,38 @@ Sau khi quét và xử lý xong toàn bộ tệp dữ liệu, hệ thống bắt
 
 ---
 
+<a id="quy-chuan-hien-thi-luoi-danh-sach"></a>
+## 5.8. Quy chuẩn Hiển thị Lưới danh sách
+
+Áp dụng thống nhất cho mọi lưới danh sách và bảng dữ liệu trong toàn bộ hệ thống (Website Khách hàng, Website Cán bộ và Website Quản trị), gồm cả bảng con trong màn hình chi tiết và popup:
+
+1. **Tiêu đề cột**:
+   - Căn lề theo căn lề giá trị của cột tương ứng.
+   - Ô tiêu đề nhóm (gộp nhiều cột): căn giữa.
+2. **Căn giữa**:
+   - STT.
+   - Thao tác.
+   - Ngày, thời điểm, thời hạn; các cột Giờ, Phút, Ngày, Tháng, Năm.
+   - Trạng thái.
+   - Checkbox, cột chọn, cột mở rộng dòng.
+   - Cột tệp trong bảng tài liệu đính kèm (nút Tải file, tên tệp đã tải).
+   - Nút, icon và nhóm icon trong cột căn giữa được căn giữa theo ô.
+3. **Căn trái**:
+   - Text.
+   - Mã, số hiệu và các dãy số định danh.
+4. **Căn phải**:
+   - Tiền.
+   - Số đếm, số lượng.
+   - Tỷ lệ phần trăm, tiến độ.
+5. **Bảng tài liệu đính kèm**:
+   - Tiêu đề cột căn trái, trừ STT, File đính kèm, Thao tác căn giữa.
+   - Giá trị STT căn giữa.
+   - Giá trị Tên tài liệu, văn bản căn trái.
+   - Nút Tải file hoặc tên tệp đã tải căn giữa.
+   - Icon Xem file, Tải file, Xóa căn giữa.
+
+---
+
 # 6. PHỤ LỤC: MẪU EMAIL HỆ THỐNG
 
 

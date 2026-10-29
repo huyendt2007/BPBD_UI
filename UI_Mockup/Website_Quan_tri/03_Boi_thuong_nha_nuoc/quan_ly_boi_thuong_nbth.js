@@ -90,16 +90,16 @@
         country.setAttribute('onchange', "nbthGqCountryChange('claimNbth')");
         addStar('claimNbthCountry');
         var oldCity = el('claimNbthCity'), cityG = oldCity.closest('.form-group');
-        cityG.innerHTML = '<span class="form-label">Tỉnh / Thành phố' + star() + '</span>' + cityCtrl('claimNbth') + errDiv();
+        cityG.innerHTML = '<span class="form-label">Tỉnh/Thành phố' + star() + '</span>' + cityCtrl('claimNbth') + errDiv();
         var oldWard = el('claimNbthWard'), wardG = oldWard.closest('.form-group');
-        wardG.innerHTML = '<span class="form-label">Phường / Xã' + star() + '</span>' + wardCtrl('claimNbth') + errDiv();
+        wardG.innerHTML = '<span class="form-label">Phường/Xã' + star() + '</span>' + wardCtrl('claimNbth') + errDiv();
         addStar('claimNbthAddress');
         // Tổ chức bị thiệt hại đã chấm dứt tồn tại: địa bàn (không có Email, Số điện thoại)
         var org = el('claimNbthOrgBlock');
         org.insertAdjacentHTML('beforeend',
             fg('Quốc gia', '<select class="form-control" id="claimNbthOrgCountry" onchange="nbthGqCountryChange(\'claimNbthOrg\')"></select>', '', true)
-            + fg('Tỉnh / Thành phố', cityCtrl('claimNbthOrg'), '', true)
-            + fg('Phường / Xã', wardCtrl('claimNbthOrg'), '', true)
+            + fg('Tỉnh/Thành phố', cityCtrl('claimNbthOrg'), '', true)
+            + fg('Phường/Xã', wardCtrl('claimNbthOrg'), '', true)
             + fg('Địa chỉ chi tiết', '<textarea class="form-control" id="claimNbthOrgAddress" rows="2" style="width: 100%; min-height: 64px; resize: vertical;" placeholder="Nhập số nhà, tên đường/phố, thôn/xóm/ấp..." oninput="' + CLEAR + '"></textarea>', '', true));
         if (typeof fillClaimCountrySelect === 'function') { fillClaimCountrySelect('claimNbthCountry'); fillClaimCountrySelect('claimNbthOrgCountry'); }
         if (typeof flatpickr !== 'undefined') flatpickr('#claimNbthOrgDocDate', { dateFormat: 'd/m/Y', allowInput: true });

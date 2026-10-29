@@ -46,14 +46,24 @@
 \- **Xem danh sách**: mọi người dùng được phân quyền chức năng `Tra cứu vụ việc` tìm kiếm được vụ việc của mọi cơ quan giải quyết bồi thường trên toàn hệ thống, trong phạm vi tại [Phạm vi danh sách - Tra cứu vụ việc - Công tác bồi thường nhà nước (Website Quản trị)](#tcvv-pham-vi-trang-thai).
 
 <a id="tcvv-quyen-xem-chi-tiet"></a>
-\- **Xem chi tiết**: theo đơn vị của người dùng đang đăng nhập:
-  + Bộ Tư pháp: mọi vụ việc trên toàn quốc.
-  + Sở Tư pháp: vụ việc có `Cơ quan giải quyết` thuộc địa bàn Tỉnh/Thành phố của Sở Tư pháp (theo cơ cấu tổ chức) và vụ việc do chính Sở Tư pháp giải quyết.
-  + Cơ quan, đơn vị khác: chỉ vụ việc có `Cơ quan giải quyết` là đơn vị của người dùng.
-  + Đơn vị của người dùng: đơn vị cấp cao nhất chứa đơn vị công tác của người dùng trên cây cơ cấu tổ chức, theo [MH02 - Popup Thêm mới / Sửa cơ quan, đơn vị - Quản lý cơ cấu tổ chức - Quản trị hệ thống](../01_Quan_tri_he_thong/Quan_ly_co_cau_to_chuc.md#43173-mh02---popup-thêm-mới--sửa-cơ-quan-đơn-vị).
+\- **Xem chi tiết**: mở chi tiết hồ sơ theo `Mã hồ sơ GQBT` của dòng khi người dùng đang đăng nhập thỏa mãn 01 trong các điều kiện:
+  + `Cơ quan giải quyết` của hồ sơ là đơn vị của người dùng.
+  + Đơn vị của người dùng là Sở Tư pháp quản lý `Cơ quan giải quyết` của hồ sơ.
+  + Người dùng thuộc Bộ Tư pháp hoặc Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước: mọi hồ sơ trên toàn quốc.
+
+\- Quy tắc xác định:
+  + Đơn vị của người dùng: đơn vị cấp cao nhất chứa đơn vị công tác của người dùng trên cây cơ cấu tổ chức, theo [MH02 - Popup Thêm mới / Sửa cơ quan, đơn vị - Quản lý cơ cấu tổ chức - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Quan_ly_co_cau_to_chuc.md#cctc-mh02).
+  + Sở Tư pháp quản lý `Cơ quan giải quyết`: đơn vị gốc Sở Tư pháp có `Tỉnh/Thành phố` trùng `Tỉnh/Thành phố` của đơn vị gốc của `Cơ quan giải quyết`, áp dụng khi `Cơ quan giải quyết` có `Cấp đơn vị` là `Địa phương`, theo [Cấp đơn vị - Quản lý cơ cấu tổ chức - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Quan_ly_co_cau_to_chuc.md#cctc-cap-don-vi).
+  + Thuộc Bộ Tư pháp hoặc Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước: đơn vị công tác của người dùng là đơn vị này hoặc đơn vị trực thuộc trên cây cơ cấu tổ chức.
   + `Cơ quan giải quyết`: cơ quan giải quyết bồi thường hiện hành của hồ sơ; vụ việc `Đã chuyển CQGQBT` tính theo cơ quan nhận chuyển.
-  + Vụ việc ngoài các trường hợp trên: chỉ xem thông tin trên danh sách; không mở được chi tiết bằng link, click dòng hoặc đường dẫn.
-  + Vụ việc chưa có `Mã hồ sơ GQBT`: không mở chi tiết.
+
+\- Hồ sơ không thỏa mãn điều kiện nào:
+  + Chỉ xem thông tin trên danh sách.
+  + `Mã hồ sơ GQBT` hiển thị dạng Text, không có link, có tooltip `Chỉ Cơ quan giải quyết, Sở Tư pháp quản lý Cơ quan giải quyết, Bộ Tư pháp và Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước được xem chi tiết`.
+  + Click dòng: không có hành vi.
+  + Mở bằng đường dẫn chứa `Mã hồ sơ GQBT`: không mở chi tiết, hiển thị nội dung tooltip trên.
+
+\- Vụ việc chưa có `Mã hồ sơ GQBT`: không mở chi tiết.
 
 \- **Kết xuất Excel**: tải danh sách kết quả tra cứu theo bộ lọc hiện tại.
 
@@ -94,7 +104,7 @@
 | Kết xuất Excel | Button | - | - | Control UI: Button.<br>- Vị trí: thanh tiêu đề Bảng kết quả tìm kiếm, cùng hàng số lượng bản ghi. |
 | STT | Integer(10) | - | Tự tăng | Control UI: Text (Read-only). |
 | Mã vụ việc | String(50) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo dữ liệu bản ghi: `Mã vụ việc` `VVBT-yyyy-xxx`. |
-| Mã hồ sơ GQBT | String(50) | - | Theo dữ liệu | Control UI: HyperLink / Text (Read-only).<br>- Theo dữ liệu bản ghi: `Mã hồ sơ` `BT-yyyy-xxx` của hồ sơ Giải quyết yêu cầu bồi thường.<br>- Vụ việc người dùng được xem chi tiết: HyperLink, click mở xem chi tiết toàn trình ở chế độ chỉ xem.<br>- Vụ việc còn lại: Text (Read-only), không có link; tooltip `Chỉ đơn vị giải quyết, Bộ Tư pháp, Sở Tư pháp theo địa bàn được xem chi tiết`.<br>- Chưa có Mã hồ sơ GQBT: hiển thị `-`.<br>- Quy tắc theo [Xem chi tiết - Phân quyền và phạm vi dữ liệu - Tra cứu vụ việc - Công tác bồi thường nhà nước (Website Quản trị)](#tcvv-quyen-xem-chi-tiet). |
+| Mã hồ sơ GQBT | String(50) | - | Theo dữ liệu | Control UI: HyperLink / Text (Read-only).<br>- Theo dữ liệu bản ghi: `Mã hồ sơ` `BT-yyyy-xxx` của hồ sơ Giải quyết yêu cầu bồi thường.<br>- Hồ sơ người dùng được xem chi tiết: HyperLink, click mở xem chi tiết toàn trình của hồ sơ theo `Mã hồ sơ GQBT`, ở chế độ chỉ xem.<br>- Hồ sơ còn lại: Text (Read-only), không có link; tooltip `Chỉ Cơ quan giải quyết, Sở Tư pháp quản lý Cơ quan giải quyết, Bộ Tư pháp và Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước được xem chi tiết`.<br>- Chưa có Mã hồ sơ GQBT: hiển thị `-`.<br>- Quy tắc theo [Xem chi tiết - Phân quyền và phạm vi dữ liệu - Tra cứu vụ việc - Công tác bồi thường nhà nước (Website Quản trị)](#tcvv-quyen-xem-chi-tiet). |
 | Tên cá nhân/Tổ chức yêu cầu | String(255) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Theo dữ liệu bản ghi: `Họ và tên` (cá nhân) hoặc `Tên tổ chức` (tổ chức) của người yêu cầu. |
 | Số giấy tờ người yêu cầu | String(50) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Cá nhân: `Số giấy tờ thân nhân` của người yêu cầu.<br>- Tổ chức: `Mã số tổ chức` của người yêu cầu.<br>- Không có dữ liệu: hiển thị `-`. |
 | Tên cá nhân/Tổ chức bị thiệt hại | String(255) | - | Theo dữ liệu | Control UI: Text (Read-only).<br>- Cùng quy tắc cột `Tên cá nhân/Tổ chức bị thiệt hại` tại [MH01 - Màn hình Danh sách vụ việc/hồ sơ yêu cầu bồi thường - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#43313-mh01---màn-hình-danh-sách-vụ-việchồ-sơ-yêu-cầu-bồi-thường). |
@@ -113,5 +123,5 @@
 | 1 | Tìm kiếm | Button | - Lọc danh sách theo các tiêu chí (điều kiện AND), trên toàn hệ thống.<br>- Về Trang 1. |
 | 2 | Xóa bộ lọc | Button | - Đưa bộ lọc về giá trị mặc định.<br>- Tải lại danh sách. |
 | 3 | Phân trang | Pagination | - Chuyển trang, đổi số dòng hiển thị (về Trang 1).<br>- Giữ tiêu chí lọc. |
-| 4 | Xem chi tiết | HyperLink / Dòng dữ liệu | <a id="tcvv-xem-chi-tiet"></a>- Áp dụng: vụ việc người dùng được xem chi tiết theo [Xem chi tiết - Phân quyền và phạm vi dữ liệu - Tra cứu vụ việc - Công tác bồi thường nhà nước (Website Quản trị)](#tcvv-quyen-xem-chi-tiet).<br>- Click `Mã hồ sơ GQBT` hoặc click vào dòng: mở [MH05 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#43317-mh05---màn-hình-xem-chi-tiết-hồ-sơ-yêu-cầu-bồi-thường) của hồ sơ, gồm 03 tab `Thông tin hồ sơ vụ việc` \| `Chi tiết giải quyết bồi thường` \| `Phục hồi danh dự`.<br>- Vụ việc còn lại: không mở chi tiết.<br>Khác biệt ở chế độ chỉ xem:<br>- Ẩn toàn bộ nút thao tác tại thanh thao tác và trong các tab; chỉ giữ chuyển tab, xem/tải tài liệu, xem chi tiết liên kết và nút `Đóng`.<br>- Không áp dụng giới hạn chỉ cán bộ được cử giải quyết được xem hồ sơ.<br>- Tab mở mặc định: `Phục hồi danh dự` khi Trạng thái là `Đang phục hồi danh dự` / `Hoãn phục hồi danh dự`; trường hợp khác: `Thông tin hồ sơ vụ việc`.<br>- `Đóng`: quay lại màn hình Tra cứu vụ việc, giữ nguyên bộ lọc. |
+| 4 | Xem chi tiết | HyperLink / Dòng dữ liệu | <a id="tcvv-xem-chi-tiet"></a>- Áp dụng: vụ việc người dùng được xem chi tiết theo [Xem chi tiết - Phân quyền và phạm vi dữ liệu - Tra cứu vụ việc - Công tác bồi thường nhà nước (Website Quản trị)](#tcvv-quyen-xem-chi-tiet).<br>- Click `Mã hồ sơ GQBT` hoặc click vào dòng: mở [MH05 - Màn hình Xem chi tiết hồ sơ yêu cầu bồi thường - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#43317-mh05---màn-hình-xem-chi-tiết-hồ-sơ-yêu-cầu-bồi-thường) của hồ sơ theo `Mã hồ sơ GQBT` của dòng, gồm 03 tab `Thông tin hồ sơ vụ việc` \| `Chi tiết giải quyết bồi thường` \| `Phục hồi danh dự`.<br>- Hồ sơ còn lại: không mở chi tiết, kể cả mở bằng đường dẫn.<br>Khác biệt ở chế độ chỉ xem:<br>- Ẩn toàn bộ nút thao tác tại thanh thao tác và trong các tab; chỉ giữ chuyển tab, xem/tải tài liệu, xem chi tiết liên kết và nút `Đóng`.<br>- Không áp dụng giới hạn chỉ cán bộ được cử giải quyết được xem hồ sơ.<br>- Tab mở mặc định: `Phục hồi danh dự` khi Trạng thái là `Đang phục hồi danh dự` / `Hoãn phục hồi danh dự`; trường hợp khác: `Thông tin hồ sơ vụ việc`.<br>- `Đóng`: quay lại màn hình Tra cứu vụ việc, giữ nguyên bộ lọc. |
 | 5 | Kết xuất Excel | Button | - Danh sách rỗng: không kết xuất, hiển thị [MSG-WRN-SYS-001].<br>- Có dữ liệu: tải tệp `.xlsx` gồm toàn bộ bản ghi theo bộ lọc và sắp xếp hiện tại (không theo trang).<br>- Cột xuất đúng thứ tự lưới: STT, Mã vụ việc, Mã hồ sơ GQBT, Tên cá nhân/Tổ chức yêu cầu, Số giấy tờ người yêu cầu, Tên cá nhân/Tổ chức bị thiệt hại, Số giấy tờ người bị thiệt hại, Văn bản làm căn cứ bồi thường, Lĩnh vực phát sinh thiệt hại, Cơ quan giải quyết, Yêu cầu phục hồi danh dự, Trạng thái.<br>- Cột `Văn bản làm căn cứ bồi thường`: liệt kê đủ tên các văn bản, phân tách bằng dấu `;`.<br>- Cột `Yêu cầu phục hồi danh dự`: `x` khi có tích, để trống khi không tích. |

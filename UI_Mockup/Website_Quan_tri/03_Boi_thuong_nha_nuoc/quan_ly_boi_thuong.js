@@ -4518,7 +4518,7 @@
                         <div><strong style="color:var(--text-muted);">Số điện thoại:</strong> <br>${claim.nycPhone || '--'}</div>
                         <div><strong style="color:var(--text-muted);">Email:</strong> <br>${claim.nycEmail || '--'}</div>
                         <div><strong style="color:var(--text-muted);">Quốc gia:</strong> <br>${claim.nycCountry}</div>
-                        <div><strong style="color:var(--text-muted);">Tỉnh / Thành phố:</strong> <br>${claim.nycTinhThanh}</div>
+                        <div><strong style="color:var(--text-muted);">Tỉnh/Thành phố:</strong> <br>${claim.nycTinhThanh}</div>
                         <div style="grid-column: span 3;"><strong style="color:var(--text-muted);">Địa chỉ chi tiết:</strong> <br>${claim.nycAddressDetail}</div>
                     </div>
                 </div>

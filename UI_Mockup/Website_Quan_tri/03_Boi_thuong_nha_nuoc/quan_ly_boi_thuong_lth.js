@@ -12,7 +12,7 @@
  * - Xem chi tiết (Kết quả xác minh, Lịch sử các lần xác minh, Kết quả thương lượng): bảng 02 cấp chỉ gồm nhóm / mục có dữ liệu.
  * - Ô "Yêu cầu phục hồi danh dự" dưới bảng thiệt hại tại Xác minh / Thương lượng: hồ sơ đã có yêu cầu PHDD tích sẵn, khóa (nhãn "Theo yêu cầu");
  *   hồ sơ chưa có: tích bổ sung (nhãn "Bổ sung") -> khi lưu: Loại yêu cầu "Chỉ yêu cầu bồi thường thiệt hại bằng tiền" chuyển "Yêu cầu cả hai",
- *   restoreHonor = true, phddBs = true, phddBsStep = 'xm' | 'tl', mở nhánh Phục hồi danh dự (syncClaimTracks), ghi lịch sử xử lý.
+ *   requestType = 'both', phddBs = true, phddBsStep = 'xm' | 'tl', mở nhánh Phục hồi danh dự (syncClaimTracks), ghi lịch sử xử lý.
  * - Hoàn thành xác minh: popup xác nhận [MSG-CFM-BTNN-GQBT-001] trước khi hoàn thành.
  * - Quy đổi dữ liệu cũ (06 loại phẳng) sang mã mục chi tiết khi tải trang / mở hồ sơ: BTNN_TH.normClaim.
  */
@@ -126,8 +126,7 @@
         var who = typeof getCurrentSimulatedOfficer === 'function' ? getCurrentSimulatedOfficer() : '';
         if (on && kind === 'money') {
             claim.phddBsPrevType = claim.requestType || 'money';
-            claim.requestType = 'both';
-            claim.restoreHonor = true;
+            claim.requestType = 'both'; // [d1] Loại yêu cầu theo requestType; không đổi Điều 57 (restoreHonor)
             claim.phddBs = true;
             claim.phddBsStep = step;
             claim.phddBsAt = today();
@@ -138,7 +137,6 @@
         }
         if (!on && claim.phddBs && claim.phddBsStep === step) {
             claim.requestType = claim.phddBsPrevType || 'money';
-            claim.restoreHonor = false;
             ['phddBs', 'phddBsStep', 'phddBsAt', 'phddBsPrevType', 'phddStatus', 'phddStarted'].forEach(function (k) { delete claim[k]; });
             claim.timeline.push({ title: 'Bỏ bổ sung yêu cầu phục hồi danh dự', date: today(), desc: 'Bỏ yêu cầu phục hồi danh dự đã bổ sung tại bước ' + STEP_NAME[step] + '. Loại yêu cầu trở lại "Chỉ yêu cầu bồi thường thiệt hại bằng tiền".', status: 'completed', officer: who });
             return 'remove';

@@ -571,15 +571,27 @@
             });
             return stp ? stp.id : '';
         }
-        // Quyền xem chi tiết: Bộ Tư pháp - mọi vụ việc; Sở Tư pháp - vụ việc có Cơ quan giải quyết thuộc địa bàn của Sở;
-        // cơ quan khác - chỉ vụ việc do chính đơn vị giải quyết
+        // Người dùng thuộc Bộ Tư pháp hoặc Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước (đơn vị công tác hoặc đơn vị cấp trên trên Cơ cấu tổ chức)
+        function tcvvIsBtpOrCuc() {
+            const W = window.BTNN_WF;
+            const u = W ? W.getCurrentUser() : null;
+            if (!u) return false;
+            const chain = [u.unitId].concat((W.getAncestors && W.getAncestors(u.unitId)) || []);
+            return chain.some(id => {
+                const unit = W.getUnit(id);
+                return /^BTP/.test(id) || (unit && /^Cục\b/i.test(unit.name) && /Bồi thường nhà nước/i.test(unit.name));
+            });
+        }
+        const TCVV_NO_DETAIL_MSG = 'Chỉ Cơ quan giải quyết, Sở Tư pháp quản lý Cơ quan giải quyết, Bộ Tư pháp và Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước được xem chi tiết';
+        // Quyền xem chi tiết (mở theo Mã hồ sơ GQBT), thỏa mãn 01 trong các điều kiện:
+        // 1. Cơ quan giải quyết = đơn vị của người dùng; 2. đơn vị của người dùng là Sở Tư pháp quản lý Cơ quan giải quyết;
+        // 3. người dùng thuộc Bộ Tư pháp / Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước: mọi vụ việc
         function tcvvCanViewDetail(item) {
             const root = tcvvCurrentRootUnit();
             if (!item || !item.code || !root) return false;
-            if (/^BTP/.test(root)) return true;
             if (item.agencyUnitId && item.agencyUnitId === root) return true;
-            if (/^STP-/.test(root)) return item.agencyStp === root;
-            return false;
+            if (/^STP-/.test(root) && item.agencyStp === root) return true;
+            return tcvvIsBtpOrCuc();
         }
 
         // Combobox Cơ quan giải quyết: toàn bộ cơ quan giải quyết trên toàn hệ thống (theo dữ liệu vụ việc), có giá trị Tất cả
@@ -699,7 +711,8 @@
 
         // Loại yêu cầu và Trạng thái vụ việc (cùng quy tắc với Giải quyết yêu cầu bồi thường)
         function claimKind(item) {
-            if (item.requestType === 'honor') return 'honor';
+            // [d1] Theo Loại yêu cầu giải quyết bồi thường (requestType); hồ sơ cũ chưa có giá trị mới suy ra theo restoreHonor
+            if (item.requestType === 'honor' || item.requestType === 'money' || item.requestType === 'both') return item.requestType;
             return item.restoreHonor ? 'both' : 'money';
         }
         // Vụ việc yêu cầu cả hai: bồi thường chưa Hoàn thành -> theo Trạng thái Giải quyết YCBT; đã Hoàn thành -> theo Trạng thái Phục hồi danh dự
@@ -907,10 +920,10 @@
             tcvvFiltered.slice(start, end).forEach((item, idx) => {
                 const canView = tcvvCanViewDetail(item);
                 const tr = document.createElement('tr');
-                // Vụ việc của đơn vị đang đăng nhập: Mã hồ sơ GQBT là HyperLink; cơ quan khác: chữ thường, chỉ xem trên danh sách
+                // Vụ việc được xem chi tiết: Mã hồ sơ GQBT là HyperLink; vụ việc còn lại: chữ thường + tooltip, chỉ xem trên danh sách
                 const codeHtml = canView
                     ? `<a class="tcvv-link" href="javascript:void(0)" onclick="tcvvOpenDetail('${escapeHtml(item.code)}')">${escapeHtml(item.code)}</a>`
-                    : (item.code ? `<span class="tcvv-code-plain" title="Chỉ đơn vị giải quyết, Bộ Tư pháp, Sở Tư pháp theo địa bàn được xem chi tiết">${escapeHtml(item.code)}</span>` : '-');
+                    : (item.code ? `<span class="tcvv-code-plain" title="${TCVV_NO_DETAIL_MSG}">${escapeHtml(item.code)}</span>` : '-');
                 tr.innerHTML = `
                     <td style="text-align:center;">${start + idx + 1}</td>
                     <td class="code-cell">${escapeHtml(vuViecOfItem(item) || '-')}</td>
@@ -925,7 +938,7 @@
                     <td style="text-align:center;"><input type="checkbox" class="tcvv-check" disabled ${item.hasPhdd ? 'checked' : ''} aria-label="Yêu cầu phục hồi danh dự"></td>
                     <td style="text-align:center;">${statusBadge(item.status || '-')}</td>
                 `;
-                // Bấm vào dòng: chỉ vụ việc của đơn vị đang đăng nhập (cùng hành vi bấm Mã hồ sơ GQBT)
+                // Bấm vào dòng: chỉ vụ việc được xem chi tiết (cùng hành vi bấm Mã hồ sơ GQBT)
                 if (canView) {
                     tr.classList.add('lookup-row');
                     tr.addEventListener('click', e => {
@@ -1001,8 +1014,8 @@
         // Mã hồ sơ GQBT (HyperLink): mở màn Xem chi tiết hồ sơ của Giải quyết yêu cầu bồi thường ở chế độ chỉ xem
         // (readonly=1: ẩn toàn bộ nút thao tác), ngay trong khung quản trị; Đóng quay lại màn tra cứu.
         function tcvvOpenDetail(code) {
-            // Chỉ đơn vị giải quyết (Cơ quan giải quyết = đơn vị đang đăng nhập) được xem chi tiết
-            if (!tcvvCanViewDetail(tcvvList.find(x => x.code === code))) { showToast('Chỉ đơn vị giải quyết, Bộ Tư pháp, Sở Tư pháp theo địa bàn được xem chi tiết'); return; }
+            // Chặn mở chi tiết khi không thỏa mãn quyền xem chi tiết (tcvvCanViewDetail)
+            if (!tcvvCanViewDetail(tcvvList.find(x => x.code === code))) { showToast(TCVV_NO_DETAIL_MSG); return; }
             const targetUrl = tcvvBuildDetailUrl(code);
             if (window.parent && window.parent !== window && typeof window.parent.openAdminModule === 'function') {
                 window.parent.openAdminModule(targetUrl, 'tra_cuu_ho_so_boi_thuong.html?v=1');
@@ -1074,6 +1087,7 @@
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
+    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
 </body>
 
 </html>

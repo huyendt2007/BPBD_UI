@@ -1402,7 +1402,7 @@
                     ['fromDate', 'Từ ngày nhận đề nghị', 'date'],
                     ['toDate', 'Đến ngày nhận đề nghị', 'date']
                 ],
-                columns: ['Số văn bản', 'Ngày văn bản', 'Tên đơn vị / Cá nhân đề nghị', 'Hình thức nhận', 'Phương thức gửi', 'Ngày nhận đề nghị', 'Tệp đính kèm', 'Thao tác'],
+                columns: ['Số văn bản', 'Ngày văn bản', 'Tên đơn vị / Cá nhân đề nghị', 'Hình thức nhận', 'Phương thức gửi', 'Ngày nhận đề nghị', 'Thao tác'],
                 fields: [
                     ['requesterType', 'Đối tượng đề nghị', ['Cơ quan giải quyết bồi thường', 'Tổ chức/cá nhân khác'], true],
                     ['requesterName', 'Tên đơn vị / Cá nhân đề nghị', 'text', true],
@@ -2154,7 +2154,7 @@
             body.innerHTML = pageRows.map((row, index) => {
                 const realIndex = rows.indexOf(row);
                 const displayCells = (currentFeature === 'giai_dap_vuong_mac')
-                    ? row.slice(0, 7)
+                    ? row.slice(0, 6)
                     : row.slice(0, config.columns.length - 1);
                 return `
                     <tr onclick="openForm('view', ${realIndex})" style="cursor:pointer;" title="Click vào dòng để xem chi tiết">
@@ -2937,7 +2937,7 @@
         };
         function exportExcel() {
             const gridCols = config.columns.slice(0, -1);
-            const cells = row => (currentFeature === 'giai_dap_vuong_mac') ? row.slice(0, 7) : row.slice(0, gridCols.length);
+            const cells = row => (currentFeature === 'giai_dap_vuong_mac') ? row.slice(0, 6) : row.slice(0, gridCols.length);
             return BTNN_XLSX.exportGrid({
                 title: config.title,
                 name: XLSX_FILE_NAMES[moduleKey] || 'Danh_sach_nghiep_vu_BTNN',
@@ -2996,7 +2996,8 @@
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_form_page.js?v=20261026fp"></script>
     <!-- Bảng tài liệu chuẩn BTNN (style nút Tải file / Thêm tài liệu, icon thao tác) -->
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261029tldk"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
+    <script src="../../Common/grid_align.js?v=20261029ga7"></script>
 </body>
 
 </html>

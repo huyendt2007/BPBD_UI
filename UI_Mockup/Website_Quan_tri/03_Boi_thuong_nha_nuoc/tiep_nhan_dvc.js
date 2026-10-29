@@ -444,8 +444,6 @@
     }
 
     // [tnd] Bố cục, thứ tự khối, nhãn trường theo MH02 - Nhập liệu hồ sơ vụ việc (quan_ly_boi_thuong.html, quan_ly_boi_thuong_nbth.js)
-    // Lĩnh vực phát sinh thiệt hại: hiển thị tên lựa chọn của MH02 (VD "Trong hoạt động quản lý hành chính")
-    function linhVucLabel(v) { var s = String(v || '').trim(); return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : ''; }
     // Nhãn "Địa chỉ, đầu mối nhận thông báo" theo Phương thức nhận thông báo (như MH02)
     function notifyAddrLabel(m) {
         if (m === 'Trực tiếp') return 'Địa chỉ, đầu mối nhận thông báo (Trực tiếp tại trụ sở)';
@@ -461,15 +459,16 @@
         var role = r.nycRole || item.nycRole || ROLE_NBTH;
         var kind = r.requestKind || item.requestKind || '';
         var orgRole = !!(W.isNbthOrgRole && W.isNbthOrgRole(role));
-        // Trạng thái người bị thiệt hại: không áp dụng khi người bị thiệt hại là tổ chức (như MH02)
-        var orgVictim = orgRole || (role === ROLE_NBTH && isOrg);
+        // Trạng thái người bị thiệt hại: chỉ hiển thị khi người bị thiệt hại là cá nhân (E-Form STT 10):
+        // Tư cách = Người bị thiệt hại và Loại người yêu cầu = Cá nhân; hoặc khối Người bị thiệt hại hiển thị và Loại người bị thiệt hại = Cá nhân
+        var personVictim = role === ROLE_NBTH ? !isOrg : (!orgRole && (r.nbth || {}).type !== 'Tổ chức');
         var alive = fld('Trạng thái người bị thiệt hại', d.victimAlive === 'no' ? 'Đã mất' : 'Còn sống');
         var h = '';
         // I. Thông tin Hồ sơ yêu cầu
         h += title('Thông tin Hồ sơ yêu cầu') + card(
             grid([fld('Loại hồ sơ', W.REQUEST_TYPE_YCBT || 'Giải quyết yêu cầu bồi thường'), fld('Loại yêu cầu giải quyết bồi thường', KIND[kind] || '')])
             + grid([fld('Nguồn hồ sơ', DVC), fld('Hình thức tiếp nhận', W.RECEIVE_METHODS.MOI_TRUONG_SO)])
-            + grid([fld('Lĩnh vực phát sinh thiệt hại', linhVucLabel(r.linhVuc || item.linhVuc)), fld('Ngày văn bản yêu cầu bồi thường', d.requestDocDate)])
+            + grid([fld('Lĩnh vực phát sinh thiệt hại', r.linhVuc || item.linhVuc), fld('Ngày văn bản yêu cầu bồi thường', d.requestDocDate)])
             + grid([fld('Cơ quan giải quyết bồi thường', W.unitName(r.rootUnitId || item.rootUnitId))])
             + '<div style="margin-bottom:0;">' + grid([fld('Vụ việc liên quan', r.vuViecLienQuan || '')]) + '</div>'
         );
@@ -481,13 +480,13 @@
         } else {
             nyc += grid([fld('Họ và tên', r.nycName || item.nyc), fld('Ngày sinh', r.nycDob)]);
         }
-        if (!orgVictim) nyc += grid([alive]);
+        if (personVictim) nyc += grid([alive]);
         nyc += grid([fld('Số điện thoại', r.nycPhone || item.nycPhone), fld('Email', r.nycEmail)]);
         nyc += isOrg
             ? grid([fld('Số giấy tờ thành lập/đăng ký', r.nycOrgDocNo), fld('Ngày cấp', r.nycOrgDocDate)]) + grid([fld('Nơi cấp', r.nycOrgDocPlace)])
             : grid([fld('Loại giấy tờ thân nhân', r.nycDocType), fld('Số giấy tờ thân nhân', r.nycDocNo)]) + grid([fld('Ngày cấp', r.nycDocDate), fld('Nơi cấp', r.nycDocPlace)]);
-        nyc += grid([fld('Quốc gia', r.nycCountry || 'Việt Nam'), fld('Tỉnh / Thành phố', r.nycTinhThanh)])
-            + grid([fld('Phường / Xã', stripCode(r.nycPhuongXa)), fld('Địa chỉ chi tiết', r.nycAddressDetail)]);
+        nyc += grid([fld('Quốc gia', r.nycCountry || 'Việt Nam'), fld('Tỉnh/Thành phố', r.nycTinhThanh)])
+            + grid([fld('Phường/Xã', stripCode(r.nycPhuongXa)), fld('Địa chỉ chi tiết', r.nycAddressDetail)]);
         h += title('Thông tin chi tiết người yêu cầu bồi thường') + card(nyc);
         // Thông tin người bị thiệt hại (Tư cách khác Người bị thiệt hại)
         if (role !== ROLE_NBTH) {
@@ -495,8 +494,8 @@
                 var oa = r.nbthOrgAddr || {};
                 h += title('Thông tin tổ chức bị thiệt hại đã chấm dứt tồn tại') + card(
                     grid([fld('Tên tổ chức bị thiệt hại', r.nbthOrgName), fld('Mã số tổ chức', r.nbthOrgCode)])
-                    + grid([fld('Quốc gia', oa.country || 'Việt Nam'), fld('Tỉnh / Thành phố', oa.city)])
-                    + grid([fld('Phường / Xã', stripCode(oa.ward)), fld('Địa chỉ chi tiết', oa.address)])
+                    + grid([fld('Quốc gia', oa.country || 'Việt Nam'), fld('Tỉnh/Thành phố', oa.city)])
+                    + grid([fld('Phường/Xã', stripCode(oa.ward)), fld('Địa chỉ chi tiết', oa.address)])
                 );
             } else {
                 var nb = r.nbth || {};
@@ -510,8 +509,8 @@
                     + (nbOrg
                         ? grid([fld('Số giấy tờ thành lập/đăng ký', nb.orgDocNo), fld('Ngày cấp', nb.orgDocDate)]) + grid([fld('Nơi cấp', nb.orgDocPlace)])
                         : grid([fld('Loại giấy tờ thân nhân', nb.docType), fld('Số giấy tờ thân nhân', nb.docNo)]) + grid([fld('Ngày cấp', nb.docDate), fld('Nơi cấp', nb.docPlace)]))
-                    + grid([fld('Quốc gia', nb.country || 'Việt Nam'), fld('Tỉnh / Thành phố', nb.city)])
-                    + grid([fld('Phường / Xã', stripCode(nb.ward)), fld('Địa chỉ chi tiết', nb.address)])
+                    + grid([fld('Quốc gia', nb.country || 'Việt Nam'), fld('Tỉnh/Thành phố', nb.city)])
+                    + grid([fld('Phường/Xã', stripCode(nb.ward)), fld('Địa chỉ chi tiết', nb.address)])
                 );
             }
         }
@@ -551,10 +550,10 @@
         var other = String(d.otherRestore || '').trim();
         h += title('Nội dung khác & Tài liệu đính kèm') + card(
             (kind === 'both' || kind === 'honor'
-                ? grid([fld('Đề nghị cơ quan giải quyết chủ động tiến hành phục hồi danh dự (Điều 57)', honorOn ? 'Có' : 'Không'), fld('Hình thức đề nghị phục hồi danh dự mong muốn (Điều 56)', honorOn ? forms.join('; ') : '')])
+                ? grid([fld('Đề nghị cơ quan giải quyết chủ động tiến hành phục hồi danh dự (Điều 57)', honorOn ? 'Có' : 'Không'), fld('Hình thức đề nghị phục hồi danh dự mong muốn (Điều 56)', forms.join('; '))])
                 : '')
             + grid([fld('Yêu cầu khôi phục quyền và lợi ích hợp pháp khác (nếu có)', other ? 'Có' : 'Không')])
-            + (other ? '<div style="display:grid;">' + fld('Nội dung yêu cầu khôi phục quyền, lợi ích hợp pháp khác', other, { area: true }) + '</div>' : '')
+            + (other ? '<div style="display:grid;">' + fld('Nội dung yêu cầu khôi phục quyền và lợi ích hợp pháp khác', other, { area: true }) + '</div>' : '')
         );
         // Thành phần hồ sơ (1), (3), (4) - Danh mục tài liệu gửi kèm; (2) tại khối Văn bản làm căn cứ yêu cầu bồi thường
         var docs = (r.attachedDocs || []).map(function (x) { return { name: x.name, file: x.file, componentCode: x.componentCode || 'TAI_LIEU_KHAC' }; });

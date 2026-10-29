@@ -399,7 +399,7 @@
         var boxCls = opts.boxClass || 'tlkt-view';
         var titleCls = opts.titleClass || 'tlkt-sec-title';
         return '<div class="' + esc(boxCls) + ' tlkt-view-box" id="kdtcTlkt' + vid + '"' + (opts.block ? ' data-tlkt-block="' + opts.block + '"' : '') + '><div class="' + esc(titleCls) + '"><i class="fa-solid fa-paperclip"></i> ' + esc(opts.title || 'Tài liệu đính kèm') + '</div>'
-            + '<div class="tlkt-wrap"><table class="tlkt-table"><thead><tr><th class="tlkt-c" style="width:36px;">STT</th><th>' + esc(opts.nameLabel || STD_NAME) + '</th><th style="width:44%;">File đính kèm</th><th class="tlkt-c" style="width:90px;">Thao tác</th></tr></thead><tbody>' + body + '</tbody></table></div></div>';
+            + '<div class="tlkt-wrap"><table class="tlkt-table"><thead><tr><th class="tlkt-c" style="width:48px;">STT</th><th>' + esc(opts.nameLabel || STD_NAME) + '</th><th style="width:44%;">File đính kèm</th><th class="tlkt-c" style="width:90px;">Thao tác</th></tr></thead><tbody>' + body + '</tbody></table></div></div>';
     }
     window.tlktOpenView = function (vid, i) { var l = VIEWS[vid]; if (l && l[i] && l[i].file) openFile(l[i].file); };
     window.tlktDownloadView = function (vid, i) {

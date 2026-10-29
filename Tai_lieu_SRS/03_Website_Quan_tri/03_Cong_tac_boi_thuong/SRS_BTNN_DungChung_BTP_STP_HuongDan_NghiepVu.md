@@ -44,6 +44,7 @@ flowchart TD
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề màn hình | String(255) | Không | `Hướng dẫn, bồi dưỡng kỹ năng, nghiệp vụ` | Control UI: Text heading (Read-only).<br>- Hiển thị đúng tên mục Menu `Hướng dẫn, bồi dưỡng kỹ năng, nghiệp vụ`.<br>- Không có dòng mô tả dưới tiêu đề. |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối. |
 | Mã hồ sơ | String(50) | Không | Trống | Tìm gần đúng theo mã hồ sơ, tự động trim space. |
 | Cơ quan/cá nhân đề nghị | String(255) | Không | Trống | Tìm gần đúng theo tên cơ quan, tổ chức, cá nhân đề nghị. |
 | Loại nội dung | Enum(String(100)) | Không | Tất cả | Gồm:<br>+ Tất cả<br>+ Hướng dẫn nghiệp vụ<br>+ Giải đáp vướng mắc<br>+ Bồi dưỡng kỹ năng, nghiệp vụ<br>+ Truyền thông, tuyên truyền, phổ biến pháp luật |
