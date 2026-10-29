@@ -26,7 +26,7 @@
 
 ```mermaid
 flowchart TD
-    A[Danh sách văn bản, biểu mẫu, sổ sách về công tác BTNN] --> B[Tìm kiếm / Xóa bộ lọc / Sắp xếp / Phân trang]
+    A[Danh sách văn bản, biểu mẫu, sổ sách về công tác BTNN] --> B[Tìm kiếm / Xóa bộ lọc / Sắp xếp / Phân trang / Kết xuất Excel]
     A --> G[Row click] --> K[Xem chi tiết]
     K --> E
     K --> F
@@ -51,7 +51,7 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Tên văn bản/biểu mẫu/sổ sách | String(255) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập tên văn bản/biểu mẫu/sổ sách...".<br>- Tìm gần đúng; không phân biệt hoa thường, có dấu/không dấu. |
 | Số, ký hiệu | String(50) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập số, ký hiệu...".<br>- Tìm gần đúng; không phân biệt hoa thường, có dấu/không dấu. |
 | Loại nội dung | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Văn bản<br>+ Biểu mẫu<br>+ Sổ sách |
@@ -80,13 +80,16 @@ flowchart TD
 |  |  |  | **TH3 - Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa (`colspan`), in nghiêng với nội dung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 trong tổng số 0 bản ghi"*, các nút điều hướng trang ở trạng thái khóa mờ. |
 | 2 | Xóa bộ lọc | Button | Hệ thống xóa toàn bộ tiêu chí tìm kiếm đã nhập/chọn, thiết lập các ô lọc về giá trị mặc định. |
 | 3 | Thêm mới | Button | Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa văn bản, biểu mẫu, sổ sách về công tác BTNN](#433155-mh03---màn-hình-thêm-mớisửa-văn-bản-biểu-mẫu-sổ-sách-về-công-tác-btnn) ở chế độ Thêm mới với form thông tin để trống. |
-| 4 | Sắp xếp cột | Header cột | Áp dụng trên các cột:<br>+ Tên văn bản/biểu mẫu/sổ sách<br>+ Loại nội dung<br>+ Hình thức ban hành |
+| 4 | Kết xuất Excel | Button | Kết xuất danh sách ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md):<br>- Phạm vi: toàn bộ bản ghi thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới, không gồm cột Thao tác: STT, Tên văn bản/biểu mẫu/sổ sách, Loại nội dung, Hình thức ban hành, Số, ký hiệu, Cơ quan ban hành, Ngày ban hành.<br>- Tên tệp: `yyyyMMdd_Danh_sach_van_ban_bieu_mau_so_sach_BTNN.xlsx`. |
+|  |  |  | **TH1 - Không có dữ liệu**: Hệ thống hiển thị [MSG-WRN-SYS-001] và không tải tệp. |
+|  |  |  | **TH2 - Có dữ liệu**: Hệ thống tải tệp Excel về máy người dùng. |
+| 5 | Sắp xếp cột | Header cột | Áp dụng trên các cột:<br>+ Tên văn bản/biểu mẫu/sổ sách<br>+ Loại nội dung<br>+ Hình thức ban hành |
 |  |  |  | **TH1 - Chọn lại cột đang sắp xếp**: Hệ thống đảo chiều sắp xếp tăng dần/giảm dần và cập nhật icon mũi tên trên tiêu đề cột. |
 |  |  |  | **TH2 - Chọn cột khác**: Hệ thống sắp xếp danh sách theo cột được chọn. |
-| 5 | Row click | Row click | Khi người dùng click vào bất kỳ vị trí nào trên dòng dữ liệu (trừ các nút thao tác), hệ thống mở [MH02 - Màn hình Chi tiết văn bản, biểu mẫu, sổ sách về công tác BTNN](#433154-mh02---màn-hình-chi-tiết-văn-bản-biểu-mẫu-sổ-sách-về-công-tác-btnn). |
-| 6 | Sửa | Icon button | Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa văn bản, biểu mẫu, sổ sách về công tác BTNN](#433155-mh03---màn-hình-thêm-mớisửa-văn-bản-biểu-mẫu-sổ-sách-về-công-tác-btnn) ở chế độ Sửa với dữ liệu hiện tại của bản ghi được điền sẵn. |
-| 7 | Xóa | Icon button | Hệ thống mở [Popup Xác nhận xóa](#433156-popup-xác-nhận-xóa). |
-| 8 | Phân trang & chuyển trang | Pagination | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
+| 6 | Row click | Row click | Khi người dùng click vào bất kỳ vị trí nào trên dòng dữ liệu (trừ các nút thao tác), hệ thống mở [MH02 - Màn hình Chi tiết văn bản, biểu mẫu, sổ sách về công tác BTNN](#433154-mh02---màn-hình-chi-tiết-văn-bản-biểu-mẫu-sổ-sách-về-công-tác-btnn). |
+| 7 | Sửa | Icon button | Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa văn bản, biểu mẫu, sổ sách về công tác BTNN](#433155-mh03---màn-hình-thêm-mớisửa-văn-bản-biểu-mẫu-sổ-sách-về-công-tác-btnn) ở chế độ Sửa với dữ liệu hiện tại của bản ghi được điền sẵn. |
+| 8 | Xóa | Icon button | Hệ thống mở [Popup Xác nhận xóa](#433156-popup-xác-nhận-xóa). |
+| 9 | Phân trang & chuyển trang | Pagination | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
 
 ---
 
@@ -116,8 +119,8 @@ flowchart TD
 | Ngày ban hành | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Phạm vi áp dụng | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Nội dung tóm tắt | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
-| **III. File đính kèm** |  |  |  |  |
-| File đính kèm | - | - | - | Control UI: File link<br>Theo dữ liệu bản ghi. |
+| **III. Tài liệu đính kèm** |  |  |  |  |
+| Tài liệu đính kèm | - | - | - | Control UI: File link<br>Theo dữ liệu bản ghi. |
 
 ###### 4.3.3.15.4.3. Chức năng trên màn hình
 
@@ -156,8 +159,8 @@ flowchart TD
 | Ngày ban hành | Date | Có | Trống | Control UI: Date input.<br>- Placeholder: "dd/mm/yyyy".<br>- Không lớn hơn ngày hiện tại theo [BR-VAL-008]. |
 | Phạm vi áp dụng | Text(1000) | Không | Trống | Control UI: Textarea.<br>- Placeholder: "Nhập phạm vi áp dụng...". |
 | Nội dung tóm tắt | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Placeholder: "Nhập nội dung tóm tắt...". |
-| **III. File đính kèm** |  |  |  |  |
-| File đính kèm | List(File) | Có | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Cột `Tên tài liệu, văn bản`: Text input. Placeholder: "Nhập tên tài liệu, văn bản".<br>- Cột `File đính kèm`: khi dòng chưa có file hiển thị nút `Tải file`; khi đã có file hiển thị tên file.<br>- Cột `Thao tác` gồm:<br>+ Xem file (khóa mờ khi dòng chưa có file)<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
+| **III. Tài liệu đính kèm** |  |  |  |  |
+| Tài liệu đính kèm | List(File) | Có | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Cột `Tên tài liệu, văn bản`: Text input. Placeholder: "Nhập tên tài liệu, văn bản".<br>- Cột `File đính kèm`: khi dòng chưa có file hiển thị nút `Tải file`; khi đã có file hiển thị tên file.<br>- Cột `Thao tác` gồm:<br>+ Xem file (khóa mờ khi dòng chưa có file)<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
 
 **Quy tắc hiển thị và bắt buộc theo `Loại nội dung` và `Hình thức ban hành`**
 

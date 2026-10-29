@@ -2402,7 +2402,7 @@
             if (window.BTNN_WF && BTNN_WF.normalizeReceiveMethod) return BTNN_WF.normalizeReceiveMethod(value) || "Trực tiếp";
             const s = String(value || "").trim();
             if (/bưu/i.test(s)) return "Qua dịch vụ bưu chính";
-            if (/dịch vụ công|môi trường số|dvc/i.test(s)) return "Qua môi trường số (Dịch vụ Công)";
+            if (/dịch vụ công|môi trường số|dvc/i.test(s)) return "Dịch vụ công";
             if (/một cửa/i.test(s)) return "Bộ phận Một cửa";
             return s || "Trực tiếp";
         }
@@ -2824,7 +2824,7 @@
     </script>
     <script src="btnn_cot_thao_tac.js?v=20261023kpcd"></script>
     <!-- Bảng tài liệu chuẩn BTNN: STT | Tên tài liệu, văn bản | File đính kèm | Thao tác; nút Tải file / Thêm tài liệu -->
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261029tldk"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
 </body>
 

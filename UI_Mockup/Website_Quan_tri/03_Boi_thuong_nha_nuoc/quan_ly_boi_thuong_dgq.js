@@ -169,7 +169,7 @@ function dgqEnsureModal() {
         + '<div id="dgqStepperBar" class="ktl-stepper-fullwidth"><div id="dgqStep1Tab" class="ktl-step-tab active" onclick="dgqGoStep1()"><span class="ktl-step-badge" id="dgqStep1Badge">1</span><span class="ktl-step-title">Nhập thông tin</span></div>'
         + '<div class="ktl-stepper-sep"><i class="fa-solid fa-chevron-right"></i></div><div id="dgqStep2Tab" class="ktl-step-tab" onclick="dgqGoStep2()"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span></div></div>'
         + '<div id="dgqStep1Body" class="sticky-modal-body gqx-body" style="overflow-y:auto; flex:1; padding:24px;">'
-        + '<div id="dgqReturnedAlertBlock" style="display:none; background:#fef2f2; border:1px solid #fecaca; border-left:4px solid #dc2626; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b91c1c; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TRẢ VỀ YÊU CẦU CHỈNH SỬA</div><div style="font-size:12.5px; color:#7f1d1d; line-height:1.5;">Lý do trả về: <strong id="dgqReturnedReason">--</strong><br>Người trả về: <span id="dgqReturnedOfficer">--</span> • Thời điểm: <span id="dgqReturnedDate">--</span></div></div>'
+        + '<div id="dgqReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TRẢ VỀ YÊU CẦU CHỈNH SỬA</div><div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả về: <strong id="dgqReturnedReason">--</strong><br>Người trả về: <span id="dgqReturnedOfficer">--</span> • Thời điểm: <span id="dgqReturnedDate">--</span></div></div>'
         + '<div class="gqx-sec"><div class="gqx-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="gqx-req">*</span></div><div class="sign-cards-grid">'
         + card('online', 'Ký số trên hệ thống', 'Trình Lãnh đạo ký duyệt trên phần mềm', 'fa-file-signature', false)
         + card('offline', 'Ký ngoài (Ban hành trực tiếp)', 'Tải lên văn bản PDF đã ký và đóng dấu', 'fa-stamp', true)
@@ -266,7 +266,7 @@ function openDgqModal(claimId) {
     gqSignInit('dgq', claim, prev && Array.isArray(prev.assignees) ? prev.assignees : null);
     dgqOfflineRemove();
     dgqSetDocSrc('gen');
-    // Trình lại: nguồn tệp, tệp tải lên, Số/Ngày văn bản, ô ký, Nội dung trình, Tài liệu kèm theo của lần trình trước
+    // Trình lại: nguồn tệp, tệp tải lên, Số/Ngày văn bản, ô ký, Nội dung trình, Tài liệu đính kèm của lần trình trước
     tlktGqRestore('dgq', prev, {
         required: false,
         setSrc: function (src) { dgqSetDocSrc(src); },
@@ -600,11 +600,11 @@ function dgqEntryHtml(e, withTitle) {
         + hdcvField('Căn cứ dừng giải quyết', e.canCu, true) + hdcvField('Lý do dừng giải quyết', e.lyDo, true) + hdcvField('Biện pháp xử lý hồ sơ', e.bienPhap, true);
     // Thu hồi kinh phí bồi thường đã chi: chỉ khi có lựa chọn (vụ việc có khoản kinh phí đã chi lúc trình / ban hành)
     if (e.thuHoi) h += hdcvField('Thu hồi kinh phí bồi thường đã chi', e.thuHoi) + (e.thuHoi === 'Không thu hồi' ? hdcvField('Lý do không thu hồi', e.thuHoiReason, true) : '');
-    if (e.state === 'rejected') h += hdcvField('Lý do từ chối', e.rejectReason, true);
+    if (e.state === 'rejected') h += hdcvField('Lý do bị trả lại', e.rejectReason, true);
     h += '<div class="hdcv-f hdcv-full"><span class="hdcv-l">File Thông báo dừng giải quyết</span>' + hdcvFileHtml(e.file) + '</div>';
     h += typeof tlktSplitRender === 'function'
         ? tlktSplitRender(e.docs, { ownerUnit: e.owner || '' }, function (rows, title) { return '<div class="hdcv-f hdcv-full"><span class="hdcv-l">' + hdcvE(title) + '</span>' + hdcvDocsHtml(rows) + '</div>'; })
-        : '<div class="hdcv-f hdcv-full"><span class="hdcv-l">Tài liệu kèm theo</span>' + hdcvDocsHtml(e.docs) + '</div>';
+        : '<div class="hdcv-f hdcv-full"><span class="hdcv-l">Tài liệu đính kèm</span>' + hdcvDocsHtml(e.docs) + '</div>';
     return h + '</div></div>';
 }
 

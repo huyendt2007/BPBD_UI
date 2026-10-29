@@ -149,7 +149,7 @@ function sxmXmDraft(c, dk) {
         done += it.xmVal;
     });
     var parts = [{ name: SDX_CB, position: 'Chuyên viên', unit: c.agency }, { name: 'Phạm Quốc Hùng', position: 'Trưởng phòng', unit: c.agency }];
-    // [xmbc] Báo cáo xác minh thiệt hại (trả cho người yêu cầu bồi thường) tách khỏi tài liệu kèm theo khác (nội bộ)
+    // [xmbc] Báo cáo xác minh thiệt hại (trả cho người yêu cầu bồi thường) tách khỏi tài liệu đính kèm khác (nội bộ)
     var report = [{ name: 'Bao_cao_xac_minh_thiet_hai_lan_1_' + c.code + '.pdf', url: '#', title: 'Báo cáo xác minh thiệt hại (lần 1)', size: '415 KB', shareNyc: true, dvcSync: false }];
     var files = [{ name: 'Bien_ban_xac_minh_thiet_hai_lan_1_' + c.code + '.pdf', url: '#', title: 'Biên bản xác minh thiệt hại (lần 1)', size: '342 KB' },
         { name: 'Hoa_don_chung_tu_tai_san_' + c.code + '.pdf', url: '#', title: 'Hóa đơn, chứng từ chứng minh thiệt hại tài sản', size: '518 KB' }];
@@ -417,7 +417,7 @@ function sxmSeedSubmit() {
             var fileName = T.file + (c.maVuViec || c.code) + '.pdf';
             var content = 'Kính trình Lãnh đạo xem xét, ký duyệt ' + T.title.charAt(0).toLowerCase() + T.title.slice(1) + '.';
             var draftDoc = { source: 'uploaded', formNo: T.form, docTitle: T.title, generatedName: '', uploadedName: fileName, bodyHtml: '' };
-            var signDoc = { method: 'Ký số', file: fileName, enableRoomSig: true, sigCoords: [], docSrc: 'upload', docFileMeta: { name: fileName, size: '286 KB', note: '', keepId: '' }, submitContent: content, attachments: [{ name: 'Tài liệu kèm theo phiếu trình', file: { id: '', name: 'Tai_lieu_kem_theo_' + c.code + '.pdf', size: '164 KB' } }] };
+            var signDoc = { method: 'Ký số', file: fileName, enableRoomSig: true, sigCoords: [], docSrc: 'upload', docFileMeta: { name: fileName, size: '286 KB', note: '', keepId: '' }, submitContent: content, attachments: [{ name: 'Tài liệu đính kèm phiếu trình', file: { id: '', name: 'Tai_lieu_kem_theo_' + c.code + '.pdf', size: '164 KB' } }] };
             var extra = { assignee: assignees[0] || '', assignees: assignees, reason: T.reason, resultStatus: p.result, draftDoc: draftDoc, signDoc: signDoc };
             var patch = {};
             var prev = canonicalClaimStatus(c.status);

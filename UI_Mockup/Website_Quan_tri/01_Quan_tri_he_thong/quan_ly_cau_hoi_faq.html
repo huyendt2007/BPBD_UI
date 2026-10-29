@@ -997,7 +997,7 @@
                     <!-- Section 2: Files Upload -->
                     <div class="form-section" id="uploadSection">
                         <div class="form-section-title">
-                            <i class="fa-solid fa-file-arrow-up"></i> Tài liệu hướng dẫn đi kèm
+                            <i class="fa-solid fa-file-arrow-up"></i> <span id="uploadSectionTitle">Tài liệu hướng dẫn đi kèm</span>
                         </div>
                         
                         <div class="grid-layout" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px;">
@@ -1343,6 +1343,9 @@
             const modalTags = document.getElementById('faqTagsGroup');
             if (modalTopic) modalTopic.style.display = isBtnn ? 'none' : 'flex';
             if (modalTags) modalTags.style.display = isBtnn ? 'none' : 'flex';
+            // Tiêu đề khối tệp: BTNN dùng "Tài liệu đính kèm"; BPBD giữ nguyên
+            const uploadSectionTitle = document.getElementById('uploadSectionTitle');
+            if (uploadSectionTitle) uploadSectionTitle.textContent = isBtnn ? 'Tài liệu đính kèm' : 'Tài liệu hướng dẫn đi kèm';
 
             const modalMetaGrid = document.getElementById('modalMetaGrid');
             if (modalMetaGrid) {

@@ -491,6 +491,15 @@
         } else {
             tbody.innerHTML = pageRows.map((r, idx) => {
                 const id = escapeAttr(r.id);
+                // Vụ việc "Đã có bản án/QĐ": Cập nhật / Xóa khóa mờ, tooltip "[Tên thao tác] - [Lý do]"
+                const ok = typeof canEditCase === 'function' ? canEditCase(r) : true;
+                const why = ' - Vụ việc đã có bản án/QĐ';
+                const actEdit = ok
+                    ? `<button class="icon-btn edit" title="Cập nhật" onclick="event.stopPropagation(); openCaseForm('${id}', false)"><i class="fa-solid fa-pen-to-square"></i></button>`
+                    : `<button type="button" class="icon-btn edit disabled-action" aria-disabled="true" title="Cập nhật${why}" onclick="event.stopPropagation();"><i class="fa-solid fa-pen-to-square"></i></button>`;
+                const actDel = ok
+                    ? `<button class="icon-btn delete" title="Xóa" onclick="event.stopPropagation(); confirmDeleteCase('${id}')"><i class="fa-solid fa-trash-can"></i></button>`
+                    : `<button type="button" class="icon-btn delete disabled-action" aria-disabled="true" title="Xóa${why}" onclick="event.stopPropagation();"><i class="fa-solid fa-trash-can"></i></button>`;
                 return `
                     <tr onclick="openCaseForm('${id}', true)">
                         <td style="text-align:center;">${start + idx + 1}</td>
@@ -505,8 +514,8 @@
                         <td>${escapeHtml(agencyName(r) || '-')}</td>
                         <td style="text-align:center;">
                             <div class="action-flex">
-                                <button class="icon-btn edit" title="Cập nhật" onclick="event.stopPropagation(); openCaseForm('${id}', false)"><i class="fa-solid fa-pen-to-square"></i></button>
-                                <button class="icon-btn delete" title="Xóa" onclick="event.stopPropagation(); confirmDeleteCase('${id}')"><i class="fa-solid fa-trash-can"></i></button>
+                                ${actEdit}
+                                ${actDel}
                             </div>
                         </td>
                     </tr>`;

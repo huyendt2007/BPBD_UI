@@ -377,7 +377,7 @@ function ycbsSupplementDocs(claim, info) {
             + '<div style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:10px 16px; border-top:1px dashed #e2e8f0; padding-top:8px;">'
             + '<div><strong style="color:#475569;">Người yêu cầu bổ sung:</strong><br><span style="font-weight:600;">' + ycbsEsc(info.officer || '--') + '</span></div>'
             + '<div><strong style="color:#475569;">Thời điểm yêu cầu bổ sung:</strong><br><span style="font-weight:600;">' + ycbsEsc(info.date || '--') + '</span></div></div>'
-            + '<div class="ycbs-tlkt" style="margin-top:8px;">' + (docsHtml || '<div><strong style="color:#475569;">Tài liệu kèm theo:</strong> <span style="color:#94a3b8; font-style:italic;">Không có</span></div>') + '</div>'
+            + '<div class="ycbs-tlkt" style="margin-top:8px;">' + (docsHtml || '<div><strong style="color:#475569;">Tài liệu đính kèm:</strong> <span style="color:#94a3b8; font-style:italic;">Không có</span></div>') + '</div>'
             + earlier + '</div></div>';
     };
 })();

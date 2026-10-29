@@ -7,7 +7,7 @@
  *    các khối phía trên thu gọn, cuộn + focus khối "Thông tin kết quả chi trả thực tế" (không có Số biên lai nhận tiền mặt).
  *    Bỏ thao tác "Đính kèm văn bản đã ký": Quyết định tạm ứng Ký ngoài đã có văn bản đã ký khi chuyển Chờ chi trả.
  * 3. Xem chi tiết: lưới nhãn - giá trị gọn (04 cột trên màn rộng), Footer nút cố định, nút "Đóng" chỉ ở Footer.
- * 4. Bảng Tài liệu kèm theo chỉ hiển thị khi có dữ liệu.
+ * 4. Bảng Tài liệu đính kèm chỉ hiển thị khi có dữ liệu.
  * 5. Khối "Thông tin thông báo chi trả tiền bồi thường và hạn nhận tiền bồi thường": chỉ loại Chi trả tiền bồi thường, nhập 01 lần (không Thêm thông báo, chỉ xem sau khi lưu),
  *    sau khi Thông báo chi trả đã ký (Chờ chi trả trở đi); Cán bộ nhập khi Chờ chi trả; Hạn nhận tiền = Ngày người yêu cầu nhận thông báo + 03 năm.
  */
@@ -390,7 +390,7 @@
                 if (noticeVisible(item)) c.outerHTML = noticeCardHtml(item); else c.remove();
             }
         });
-        // Khối chỉ chứa bảng Tài liệu kèm theo mà không có dữ liệu: ẩn cả khối
+        // Khối chỉ chứa bảng Tài liệu đính kèm mà không có dữ liệu: ẩn cả khối
         Array.prototype.slice.call(body.querySelectorAll('.kpdt-card')).forEach(function (c) {
             var b = c.querySelector(':scope > .kpdt-card-body');
             if (b && !b.textContent.trim() && !b.querySelector('input,textarea,select,table,img')) c.remove();
@@ -700,7 +700,7 @@
         var needHtml = '<b>' + fmt(d.need) + '</b><div class="kpdt-words" id="kpuxRcFormula" style="font-style:normal;">' + esc(d.formula) + '</div>';
         var view = '<div class="kpdt-grid">' + kpdtFld('Căn cứ thu hồi', basis) + kpdtFld('Số tiền phải thu hồi (VNĐ)', needHtml) + kpdtFld('Số tiền đã thu hồi lũy kế (VNĐ)', fmt(d.got)) + kpdtFld('Số tiền còn phải thu hồi (VNĐ)', '<span id="kpuxRcRemain">' + fmt(d.remain) + '</span>') + '</div>';
         if (d.hist.length) {
-            view += '<div class="kpdt-docs-title" style="margin-top:12px;"><i class="fa-solid fa-list-ol"></i> Các lần thu hồi</div><div class="kpdt-docs-wrap"><table class="kpdt-docs" id="kpuxRcHistTbl"><thead><tr><th class="c" style="width:56px;">Lần</th><th class="c" style="width:110px;">Ngày thu hồi</th><th style="text-align:right; width:150px;">Số tiền thu hồi (VNĐ)</th><th style="width:130px;">Hình thức nộp trả</th><th>Diễn giải</th><th>Tài liệu kèm theo</th></tr></thead><tbody>'
+            view += '<div class="kpdt-docs-title" style="margin-top:12px;"><i class="fa-solid fa-list-ol"></i> Các lần thu hồi</div><div class="kpdt-docs-wrap"><table class="kpdt-docs" id="kpuxRcHistTbl"><thead><tr><th class="c" style="width:56px;">Lần</th><th class="c" style="width:110px;">Ngày thu hồi</th><th style="text-align:right; width:150px;">Số tiền thu hồi (VNĐ)</th><th style="width:130px;">Hình thức nộp trả</th><th>Diễn giải</th><th>Tài liệu đính kèm</th></tr></thead><tbody>'
                 + d.hist.map(function (h, i) { return '<tr><td class="c">' + (i + 1) + '</td><td class="c">' + esc(h.date || '-') + '</td><td style="text-align:right;">' + fmt(h.amount) + '</td><td>' + esc(h.method || '-') + '</td><td>' + esc(h.note || '-') + '</td><td>' + (esc(docNames(h.files || []).join(', ')) || '-') + '</td></tr>'; }).join('')
                 + '<tr class="kpux-rc-total" style="font-weight:700; background:#f8fafc;"><td class="c" colspan="2">Tổng</td><td style="text-align:right;">' + fmt(d.got) + '</td><td colspan="3">Còn phải thu hồi: ' + fmt(d.remain) + ' đồng</td></tr>'
                 + '</tbody></table></div>';
@@ -876,7 +876,7 @@
     kpdtOpen = function (key, opts) { if (!(opts && opts.kpuxKeep)) { payId = null; ntEditId = null; ffId = null; rcEditId = null; } return origOpen.apply(this, arguments); };
     var origClose = kpdtClose;
     kpdtClose = function () { payId = null; ntEditId = null; ffId = null; rcEditId = null; return origClose.apply(this, arguments); };
-    // Tài liệu kèm theo chế độ xem: không có dữ liệu thì không hiển thị bảng
+    // Tài liệu đính kèm chế độ xem: không có dữ liệu thì không hiển thị bảng
     var origDocs = kpdtDocsHtml;
     kpdtDocsHtml = function (list) { return kpdtDocsNorm(list).length ? origDocs.apply(this, arguments) : ''; };
     // Ký ngoài: không còn thao tác Đính kèm văn bản đã ký

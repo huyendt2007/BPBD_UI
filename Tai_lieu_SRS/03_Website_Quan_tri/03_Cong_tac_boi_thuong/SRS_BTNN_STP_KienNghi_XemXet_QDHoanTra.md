@@ -28,7 +28,7 @@
 
 ```mermaid
 flowchart TD
-    A[Danh sách kiến nghị xem xét lại quyết định hoàn trả] --> B[Tìm kiếm / Xóa bộ lọc / Sắp xếp / Phân trang]
+    A[Danh sách kiến nghị xem xét lại quyết định hoàn trả] --> B[Tìm kiếm / Xóa bộ lọc / Sắp xếp / Phân trang / Kết xuất Excel]
     A --> G[Row click] --> K[Xem chi tiết]
     K --> E
     K --> F
@@ -52,7 +52,7 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Số văn bản kiến nghị | String(50) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập số văn bản kiến nghị...".<br>- Tìm gần đúng; không phân biệt hoa thường, có dấu/không dấu. |
 | Số Quyết định bị kiến nghị | String(50) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập số Quyết định bị kiến nghị...".<br>- Tìm gần đúng; không phân biệt hoa thường, có dấu/không dấu. |
 | Loại quyết định bị kiến nghị | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Quyết định hoàn trả<br>+ Quyết định giảm mức hoàn trả<br>+ Quyết định miễn hoàn trả |
@@ -81,14 +81,17 @@ flowchart TD
 |  |  |  | **TH3 - Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa (`colspan`), in nghiêng với nội dung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 trong tổng số 0 bản ghi"*, các nút điều hướng trang ở trạng thái khóa mờ. |
 | 2 | Xóa bộ lọc | Button | Hệ thống xóa toàn bộ tiêu chí tìm kiếm đã nhập/chọn, thiết lập các ô lọc về giá trị mặc định. |
 | 3 | Thêm mới | Button | Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa kiến nghị xem xét lại quyết định hoàn trả](#433135-mh03---màn-hình-thêm-mớisửa-kiến-nghị-xem-xét-lại-quyết-định-hoàn-trả) ở chế độ Thêm mới với form thông tin để trống. |
-| 4 | Sắp xếp cột | Header cột | Áp dụng trên các cột:<br>+ Số văn bản kiến nghị<br>+ Loại quyết định bị kiến nghị<br>+ Số Quyết định bị kiến nghị |
+| 4 | Kết xuất Excel | Button | Kết xuất danh sách ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md):<br>- Phạm vi: toàn bộ bản ghi thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới, không gồm cột Thao tác: STT, Số văn bản kiến nghị, Loại quyết định bị kiến nghị, Số Quyết định bị kiến nghị, Cơ quan nhận kiến nghị, Ngày gửi, Hạn trả lời, Trạng thái.<br>- Tên tệp: `yyyyMMdd_Danh_sach_kien_nghi_xem_xet_QD_hoan_tra.xlsx`. |
+|  |  |  | **TH1 - Không có dữ liệu**: Hệ thống hiển thị [MSG-WRN-SYS-001] và không tải tệp. |
+|  |  |  | **TH2 - Có dữ liệu**: Hệ thống tải tệp Excel về máy người dùng. |
+| 5 | Sắp xếp cột | Header cột | Áp dụng trên các cột:<br>+ Số văn bản kiến nghị<br>+ Loại quyết định bị kiến nghị<br>+ Số Quyết định bị kiến nghị |
 |  |  |  | **TH1 - Chọn lại cột đang sắp xếp**: Hệ thống đảo chiều sắp xếp tăng dần/giảm dần và cập nhật icon mũi tên trên tiêu đề cột. |
 |  |  |  | **TH2 - Chọn cột khác**: Hệ thống sắp xếp danh sách theo cột được chọn. |
-| 5 | Row click | Row click | Khi người dùng click vào bất kỳ vị trí nào trên dòng dữ liệu (trừ các nút thao tác), hệ thống mở [MH02 - Màn hình Chi tiết kiến nghị xem xét lại quyết định hoàn trả](#433134-mh02---màn-hình-chi-tiết-kiến-nghị-xem-xét-lại-quyết-định-hoàn-trả). |
-| 6 | Sửa | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" do cán bộ đăng nhập tạo; trường hợp khác icon hiển thị mờ, không cho thao tác.<br>- Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa kiến nghị xem xét lại quyết định hoàn trả](#433135-mh03---màn-hình-thêm-mớisửa-kiến-nghị-xem-xét-lại-quyết-định-hoàn-trả) ở chế độ Sửa với dữ liệu hiện tại của bản ghi được điền sẵn. |
-| 7 | Xóa | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" do cán bộ đăng nhập tạo; trường hợp khác icon hiển thị mờ, không cho thao tác.<br>- Hệ thống mở [Popup Xác nhận](#433136-popup-xác-nhận). |
-| 8 | Cập nhật phản hồi | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" hoặc "Đã có phản hồi"; trường hợp khác icon hiển thị mờ.<br>- Hệ thống mở [Popup Cập nhật kết quả phản hồi](#433137-popup-cập-nhật-kết-quả-phản-hồi). |
-| 9 | Phân trang & chuyển trang | Pagination | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
+| 6 | Row click | Row click | Khi người dùng click vào bất kỳ vị trí nào trên dòng dữ liệu (trừ các nút thao tác), hệ thống mở [MH02 - Màn hình Chi tiết kiến nghị xem xét lại quyết định hoàn trả](#433134-mh02---màn-hình-chi-tiết-kiến-nghị-xem-xét-lại-quyết-định-hoàn-trả). |
+| 7 | Sửa | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" do cán bộ đăng nhập tạo; trường hợp khác icon hiển thị mờ, không cho thao tác.<br>- Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa kiến nghị xem xét lại quyết định hoàn trả](#433135-mh03---màn-hình-thêm-mớisửa-kiến-nghị-xem-xét-lại-quyết-định-hoàn-trả) ở chế độ Sửa với dữ liệu hiện tại của bản ghi được điền sẵn. |
+| 8 | Xóa | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" do cán bộ đăng nhập tạo; trường hợp khác icon hiển thị mờ, không cho thao tác.<br>- Hệ thống mở [Popup Xác nhận](#433136-popup-xác-nhận). |
+| 9 | Cập nhật phản hồi | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" hoặc "Đã có phản hồi"; trường hợp khác icon hiển thị mờ.<br>- Hệ thống mở [Popup Cập nhật kết quả phản hồi](#433137-popup-cập-nhật-kết-quả-phản-hồi). |
+| 10 | Phân trang & chuyển trang | Pagination | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
 
 ---
 
@@ -123,8 +126,8 @@ flowchart TD
 | Căn cứ cho rằng Quyết định chưa phù hợp | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Căn cứ pháp lý kiến nghị | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Nội dung kiến nghị | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
-| **III. Tài liệu kiến nghị đính kèm** |  |  |  |  |
-| Tài liệu kiến nghị đính kèm | - | - | - | Control UI: File link<br>Theo dữ liệu bản ghi. |
+| **III. Tài liệu đính kèm** |  |  |  |  |
+| Tài liệu đính kèm | - | - | - | Control UI: File link<br>Theo dữ liệu bản ghi. |
 
 ###### 4.3.3.13.4.3. Chức năng trên màn hình
 
@@ -169,8 +172,8 @@ flowchart TD
 | Căn cứ cho rằng Quyết định chưa phù hợp | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Placeholder: "Nhập căn cứ cho rằng quyết định chưa phù hợp...". |
 | Căn cứ pháp lý kiến nghị | Text(1000) | Không | Khoản 2 Điều 67 Luật Trách nhiệm bồi thường của Nhà nước; khoản 5 Điều 40 Nghị định quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước; Điều 30 Thông tư 08/2019/TT-BTP | Control UI: Textarea.<br>- Placeholder: "Nhập căn cứ pháp lý kiến nghị...".<br>- Cho phép sửa giá trị mặc định. |
 | Nội dung kiến nghị | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Placeholder: "Nhập nội dung kiến nghị...". |
-| **III. Tài liệu kiến nghị đính kèm** |  |  |  |  |
-| Tài liệu kiến nghị đính kèm | List(File) | Không | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Cột `Tên tài liệu, văn bản`: Text input. Placeholder: "Nhập tên tài liệu, văn bản".<br>- Cột `File đính kèm`: khi dòng chưa có file hiển thị nút `Tải file`; khi đã có file hiển thị tên file.<br>- Cột `Thao tác` gồm:<br>+ Xem file (khóa mờ khi dòng chưa có file)<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
+| **III. Tài liệu đính kèm** |  |  |  |  |
+| Tài liệu đính kèm | List(File) | Không | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Cột `Tên tài liệu, văn bản`: Text input. Placeholder: "Nhập tên tài liệu, văn bản".<br>- Cột `File đính kèm`: khi dòng chưa có file hiển thị nút `Tải file`; khi đã có file hiển thị tên file.<br>- Cột `Thao tác` gồm:<br>+ Xem file (khóa mờ khi dòng chưa có file)<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
 
 ###### 4.3.3.13.5.3. Chức năng trên màn hình
 

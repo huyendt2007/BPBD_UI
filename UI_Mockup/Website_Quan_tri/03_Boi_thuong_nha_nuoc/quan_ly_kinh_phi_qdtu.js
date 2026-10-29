@@ -500,7 +500,7 @@ function qdtuEnsurePage() {
     const money = (id, label, req) => qdtuFld(id, label, req, `<input type="text" class="form-control" id="${id}" maxlength="20" style="text-align:right;" placeholder="0" oninput="formatNumberInput(this); qdtuMark('${id}', false); qdtuRecalc('${id}')">`);
     p.innerHTML = `<div class="inline-form-header"><span class="inline-form-title" id="qdtuPageTitle"><i class="fa-solid fa-file-invoice"></i> TẠO QUYẾT ĐỊNH TẠM ỨNG KINH PHÍ</span></div>
     <div class="inline-form-body" style="background:#F8FAFC; max-height:none;">
-        <div id="qdtuReturnedBlock" style="display:none; background:#FEF2F2; border:1px solid #FECACA; border-left:4px solid #DC2626; border-radius:8px; padding:14px 16px; margin-bottom:16px;"></div>
+        <div id="qdtuReturnedBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:14px 16px; margin-bottom:16px;"></div>
         <div class="qdtu-card" id="qdtuClaimCard">
             <div class="qdtu-card-head"><i class="fa-solid fa-folder-open"></i> Hồ sơ</div>
             <div class="qdtu-card-body"><div class="qdtu-grid">
@@ -612,7 +612,7 @@ function qdtuOpenPage(id) {
     const rb = qdtuEl('qdtuReturnedBlock');
     if (item && item.qdtuReturned) {
         rb.style.display = 'block';
-        rb.innerHTML = `<div style="font-weight:700; color:#B91C1C; margin-bottom:6px;"><i class="fa-solid fa-triangle-exclamation"></i> Lý do bị từ chối</div><div style="font-size:13px;">${qdtuEsc(qdtuUserName(item.qdtuReturned.by))} - ${qdtuEsc(item.qdtuReturned.at)}</div><div style="font-size:13px; margin-top:4px; white-space:pre-wrap;">${qdtuEsc(item.qdtuReturned.reason)}</div>`;
+        rb.innerHTML = `<div style="font-weight:700; color:#b45309; margin-bottom:6px;"><i class="fa-solid fa-triangle-exclamation"></i> Lý do bị trả lại</div><div style="font-size:13px;">${qdtuEsc(qdtuUserName(item.qdtuReturned.by))} - ${qdtuEsc(item.qdtuReturned.at)}</div><div style="font-size:13px; margin-top:4px; white-space:pre-wrap;">${qdtuEsc(item.qdtuReturned.reason)}</div>`;
     } else { rb.style.display = 'none'; rb.innerHTML = ''; }
     qdtuFillClaimDatalist();
     if (item) qdtuLoadForm(item.qdtu);
@@ -1021,7 +1021,7 @@ function qdtuOpenSign(form) {
     }
     qdtuSgRenderOff();
     qdtuSgSetDocSrc('gen');
-    // Trình lại (Bị trả lại): nguồn tệp, tệp văn bản trình ký, vị trí ô ký, Nội dung trình, Tài liệu kèm theo của lần trình trước
+    // Trình lại (Bị trả lại): nguồn tệp, tệp văn bản trình ký, vị trí ô ký, Nội dung trình, Tài liệu đính kèm của lần trình trước
     if (prev.method === 'Ký số') {
         if (prev.docSrc && prev.docSrc !== 'gen') {
             qdtuSgSetDocSrc(prev.docSrc);
@@ -1494,7 +1494,7 @@ function qdtuView(id) {
     const cash = f.payMethod === QDTU_CASH;
     const general = grid(it('Mã đề nghị', qdtuEsc(item.code)) + it('Loại đề nghị', 'Đề nghị tạm ứng') + it('Trạng thái', `<span class="badge badge-info">${qdtuEsc(item.status)}</span>${item.status === QDTU_ST.REVIEW ? `<span class="qdtu-sub">${qdtuEsc(QDTU_KIND)}</span>` : ''}`)
         + it('Mã hồ sơ', qdtuEsc(item.ycbtCode)) + it('Mã vụ việc', qdtuEsc(qdtuVv(item.ycbtCode))) + it('Cơ quan giải quyết', qdtuEsc(f.unitName)) + it('Ngày đề nghị', qdtuEsc(item.date)) + it('Cán bộ xử lý', qdtuEsc(item.user)));
-    const rej = item.status === QDTU_ST.REJECT && item.qdtuReturned ? grid(it('Người từ chối', qdtuEsc(qdtuUserName(item.qdtuReturned.by))) + it('Thời điểm', qdtuEsc(item.qdtuReturned.at)) + it('Lý do từ chối', qdtuEsc(item.qdtuReturned.reason))) : '';
+    const rej = item.status === QDTU_ST.REJECT && item.qdtuReturned ? grid(it('Người từ chối', qdtuEsc(qdtuUserName(item.qdtuReturned.by))) + it('Thời điểm', qdtuEsc(item.qdtuReturned.at)) + it('Lý do bị trả lại', qdtuEsc(item.qdtuReturned.reason))) : '';
     const nyc = grid(it('Họ và tên/Tên tổ chức', qdtuEsc(f.nycName)) + it('Số định danh cá nhân/hộ chiếu/giấy tờ đi lại có giá trị quốc tế/Mã số của tổ chức', qdtuEsc(f.nycIdNo)) + it('Địa chỉ', qdtuEsc(f.nycAddress)));
     const money = grid(it('Thiệt hại về tinh thần', qdtuFmt(f.tinhThan) + ' đồng') + it('Thiệt hại khác có thể tính được ngay mà không cần xác minh', qdtuFmt(f.khac) + ' đồng') + it('Tỷ lệ tạm ứng', qdtuRateText(f.rate) + '%')
         + it('Số tiền tạm ứng kinh phí', qdtuFmt(f.amount) + ' đồng') + it('Viết bằng chữ', qdtuEsc(qdtuBangChu(Number(f.amount) || 0))));
@@ -1522,7 +1522,7 @@ function qdtuView(id) {
             <button type="button" class="qdtu-qs-head-close" onclick="qdtuCloseView()" title="Đóng">&times;</button></div>
         <div class="qdtu-qs-body qdtu-gqx-body">
             ${sec('fa-circle-info', 'Thông tin chung', general)}
-            ${rej ? sec('fa-triangle-exclamation', 'Lý do bị từ chối', rej) : ''}
+            ${rej ? sec('fa-triangle-exclamation', 'Lý do bị trả lại', rej) : ''}
             ${sec('fa-user', 'Thông tin người yêu cầu', nyc)}
             ${sec('fa-coins', 'Số tiền tạm ứng kinh phí', money)}
             ${sec('fa-hand-holding-dollar', 'Thông tin người nhận tạm ứng', rec)}

@@ -283,13 +283,13 @@
 
     <div id="toast" class="toast-notif"></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261028tl1"></script>
-    <!-- Màn Ký duyệt / Từ chối dùng chung (Xác định CQGQBT): bố cục 2 vùng + khối Tài liệu kèm theo chỉ đọc -->
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
+    <!-- Màn Ký duyệt / Từ chối dùng chung (Xác định CQGQBT): bố cục 2 vùng + khối Tài liệu đính kèm chỉ đọc -->
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261029tldk"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
-    <script src="btnn_lanh_dao_actions.js?v=20261028tl1"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261029tldk"></script>
     <!-- Loại trình "Phiếu tiếp nhận" (Mẫu 02/BTNN) - Tiếp nhận hồ sơ: Ký duyệt / Từ chối -->
-    <script src="tiep_nhan_ptn.js?v=20261028tl1"></script>
+    <script src="tiep_nhan_ptn.js?v=20261029tlcam2"></script>
     <script>
         const WF = BTNN_WF;
         const WT = WF.WORK_TYPES;
@@ -322,7 +322,7 @@
             return `<span class="work-badge" style="background:${s[0]}; color:${s[1]};"><i class="fa-solid ${s[2]}"></i> ${esc(type)}</span>`;
         }
         function kpStatusBadge(st) {
-            const c = st === 'Chờ duyệt' ? ['#fef9c3', '#a16207'] : (st === 'Bị trả lại' ? ['#fee2e2', '#991b1b'] : (st === 'Chờ chi trả' ? ['#e0f2fe', '#0369a1'] : ['#dcfce7', '#15803d']));
+            const c = st === 'Chờ duyệt' ? ['#fef9c3', '#a16207'] : (st === 'Bị trả lại' ? ['#fef3c7', '#b45309'] : (st === 'Chờ chi trả' ? ['#e0f2fe', '#0369a1'] : ['#dcfce7', '#15803d']));
             return `<span class="badge wf-badge" style="background:${c[0]}; color:${c[1]}; border:1px solid ${c[1]}33; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:600; white-space:nowrap;">${esc(st)}</span>`;
         }
 
@@ -403,7 +403,7 @@
                 } else if (t.source === 'wf' && isLatestDoneOf(t) && WF.getRecallInfo(t.rec, me)) {
                     acts += `<button class="act warn" onclick="event.stopPropagation(); confirmRecall('${c}')"><i class="fa-solid fa-rotate-left"></i> Thu hồi</button>`;
                 }
-                const statusHtml = t.source === 'ptn' && window.PTN ? PTN.statusBadge(t.ptn.status) : t.source === 'kp' ? kpStatusBadge(t.status) : WF.statusBadge(t.rec.status) + (WF.approvalLabel(t.rec) ? `<div class="muted" style="margin-top:4px;">${esc(WF.approvalLabel(t.rec))}</div>` : '');
+                const statusHtml = t.source === 'ptn' && window.PTN ? (PTN.workStatusHtml ? PTN.workStatusHtml(t) : PTN.statusBadge(t.ptn.status)) : t.source === 'kp' ? kpStatusBadge(t.status) : WF.statusBadge(t.rec.status) + (WF.approvalLabel(t.rec) ? `<div class="muted" style="margin-top:4px;">${esc(WF.approvalLabel(t.rec))}</div>` : '');
                 const codeSub = t.source === 'kp' ? `<div class="muted">Vụ việc ${esc(t.caseCode)}</div>` : `<div class="muted">${esc(t.loaiYeuCau)}</div>`;
                 return `<tr onclick="openWork(${i})">
                     <td style="text-align:center;">${i + 1}</td>
@@ -471,7 +471,7 @@
                     html += `<div class="sec-title">II. Cử người giải quyết bồi thường</div><div class="info-grid">
                         ${row('Cơ quan giải quyết bồi thường', esc(WF.unitName(rec.rootUnitId)))}
                         ${row('Đơn vị cử người giải quyết', esc(WF.unitName(WF.thuLyUnitOf(rec))))}
-                        ${rec.status === 'Bị trả lại' && rec.returned ? row('Lý do bị từ chối', esc(rec.returned.reason || '--')) : ''}
+                        ${rec.status === 'Bị trả lại' && rec.returned ? row('Lý do bị trả lại', esc(rec.returned.reason || '--')) : ''}
                         ${row('Cán bộ tiếp nhận hồ sơ', rec.chuTri && !tl ? esc(WF.userLabel(rec.chuTri)) : (tl && tl.officers ? tl.officers.map(id => esc(WF.userLabel(id))).join('<br>') : '--'))}
                         ${tl && tl.rejected ? row('Không thụ lý', esc((rec.gqData && rec.gqData.rejectReason) || '--')) : ''}
                         ${tl && tl.note ? row('Ý kiến chỉ đạo', esc(tl.note)) : ''}

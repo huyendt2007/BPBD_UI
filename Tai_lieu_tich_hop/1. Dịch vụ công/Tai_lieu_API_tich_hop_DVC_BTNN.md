@@ -15,7 +15,7 @@
 
 Hệ thống BTNN cung cấp cho Cổng Dịch vụ công (DVC) hai nhóm API:
 
-1. **API chia sẻ danh mục** (chỉ đọc): DVC lấy các danh mục để dựng E-Form "Yêu cầu bồi thường nhà nước" - Quốc gia, Loại giấy tờ pháp lý, Địa bàn, Lĩnh vực phát sinh thiệt hại, Hình thức tiếp nhận, Tư cách người yêu cầu, Loại yêu cầu giải quyết bồi thường, Cơ quan giải quyết bồi thường.
+1. **API chia sẻ danh mục** (chỉ đọc): DVC lấy các danh mục để dựng E-Form "Yêu cầu bồi thường nhà nước" - Quốc gia, Loại giấy tờ pháp lý, Địa bàn, Lĩnh vực phát sinh thiệt hại, Hình thức tiếp nhận, Tư cách người yêu cầu, Loại thiệt hại yêu cầu bồi thường, Phương thức nhận tiền bồi thường/tạm ứng, Loại yêu cầu giải quyết bồi thường, Cơ quan giải quyết bồi thường.
 2. **API nhận hồ sơ**: DVC gửi hồ sơ E-Form người dân/tổ chức đã nộp sang BTNN; hệ thống tạo hồ sơ ở màn **Tiếp nhận hồ sơ** của Cơ quan giải quyết bồi thường. DVC tra được trạng thái xử lý.
 
 ```
@@ -268,6 +268,8 @@ Mỗi danh mục là một API riêng, có mã API riêng; DVC chỉ gọi đư�
 | Lĩnh vực phát sinh thiệt hại [DM_22] | `GET /api/share/v1/catalogs/DM_22` | `SHARE_CATALOG_DM_22` | |
 | Hình thức tiếp nhận hồ sơ bồi thường [DM_25] | `GET /api/share/v1/catalogs/DM_25` | `SHARE_CATALOG_DM_25` | Hồ sơ từ DVC luôn là `DICH_VU_CONG` |
 | Tư cách người yêu cầu bồi thường [DM_26] | `GET /api/share/v1/catalogs/DM_26` | `SHARE_CATALOG_DM_26` | Lọc theo `for_individual` / `for_organization` |
+| Loại thiệt hại yêu cầu bồi thường [DM_27] | `GET /api/share/v1/catalogs/DM_27` | `SHARE_CATALOG_DM_27` | 02 cấp: nhóm (`depth` = 0), mục chi tiết (`depth` = 1, `parent_code` = mã nhóm); nhóm `TH_KHAC` không có mục |
+| Phương thức nhận tiền bồi thường/tạm ứng [DM_28] | `GET /api/share/v1/catalogs/DM_28` | `SHARE_CATALOG_DM_28` | `TIEN_MAT`, `CHUYEN_KHOAN` |
 | Loại yêu cầu giải quyết bồi thường | `GET /api/share/v1/catalogs/RESOLUTION_SCOPE` | `SHARE_CATALOG_RESOLUTION_SCOPE` | `CA_HAI`, `CHI_BOI_THUONG`, `CHI_PHUC_HOI` |
 | Danh mục địa bàn | `GET /api/share/v1/areas` | `SHARE_AREA` | Tỉnh/Thành phố và Phường/Xã (mục 6.4) |
 | Cơ quan giải quyết bồi thường | `GET /api/share/v1/org-units` | `SHARE_ORG_UNIT` | Lọc theo Tỉnh/Thành phố (mục 6.4) |
@@ -358,6 +360,8 @@ GET /api/share/v1/areas?level=WARD&province_code=01
 | Phường/Xã | `areas?level=WARD&province_code=<tỉnh đã chọn>` |
 | Cơ quan giải quyết bồi thường | `org-units?province_code=<Tỉnh/Thành phố cơ quan giải quyết>` |
 | Hình thức tiếp nhận | Cố định `DICH_VU_CONG` |
+| Bảng thiệt hại yêu cầu bồi thường | Dựng bảng 02 cấp từ `DM_27` theo `parent_code`, thứ tự `sort_order`; nhóm `TH_KHAC` ở cuối, người nộp tự thêm dòng |
+| Phương thức nhận tiền | Giá trị `DM_28` |
 
 ---
 
@@ -371,7 +375,7 @@ GET /api/share/v1/areas?level=WARD&province_code=01
 ### 7.1. Luồng xử lý
 
 1. DVC gửi hồ sơ. Cổng kiểm hợp lệ toàn bộ; hợp lệ thì trả **số tiếp nhận** và trạng thái `RECEIVED`.
-2. Trong khoảng 1 phút, hệ thống tự chuyển hồ sơ vào màn **Tiếp nhận hồ sơ** của Cơ quan giải quyết: Nguồn hồ sơ "Dịch vụ công quốc gia", Hình thức tiếp nhận "Dịch vụ công", trạng thái "Chờ phân công". Hồ sơ có mã `BT-yyyy-nnn`.
+2. Trong khoảng 1 phút, hệ thống tự chuyển hồ sơ vào màn **Tiếp nhận hồ sơ** của Cơ quan giải quyết: Nguồn hồ sơ "Dịch vụ công", Hình thức tiếp nhận "Dịch vụ công", trạng thái "Chờ phân công". Hồ sơ có mã `BT-yyyy-nnn`.
 3. DVC tra trạng thái để biết hồ sơ đã vào hệ thống (`ACCEPTED`, kèm mã hồ sơ) hoặc bị từ chối (`REJECTED`, kèm lý do).
 
 ### 7.2. Thân request
@@ -385,71 +389,149 @@ Ngoài các trường E-Form, bắt buộc có:
 | `dvc_dossier_code` | Mã hồ sơ bên DVC (duy nhất), ký tự `A-Za-z0-9 . _ : / -`, tối đa 100 |
 | `submitted_at` | Thời điểm người dân nộp, ISO-8601 có múi giờ, vd `2026-10-27T09:30:00+07:00` |
 
-Giá trị mặc định khi không gửi: `requester_type` = `CA_NHAN`, `requester_role` = `NGUOI_BI_THIET_HAI`, `resolution_scope` = `CA_HAI`, `country_code` = `VN`.
+Giá trị mặc định khi không gửi: `requester.requester_type` = `CA_NHAN`, `requester.requester_role` = `NGUOI_BI_THIET_HAI`, `overview.resolution_scope` = `CA_HAI`, `*.country_code` = `VN`.
 
+<a id="api-anh-xa-eform"></a>
 ### 7.3. Ánh xạ trường E-Form sang JSON
 
-STT theo bảng II của `EForm_DVC_YeuCauBoiThuong.md`.
+- STT theo bảng III của `EForm_DVC_YeuCauBoiThuong.md`.
+- Độ dài tối đa theo kiểu dữ liệu tại E-Form.
+- Trường E-Form chỉ đọc, tự tính (STT 56, 63, 67) không gửi; Hệ thống BTNN tự tính.
 
 | STT | Trường E-Form | Trường JSON | Bắt buộc |
 | :--- | :--- | :--- | :--- |
-| 1 | Tỉnh/Thành phố cơ quan giải quyết | `agency.province_code` | Có |
-| 2 | Cơ quan giải quyết bồi thường | `agency.agency_code` | Có |
-| 3 | Loại yêu cầu giải quyết bồi thường | `overview.resolution_scope` | Không (mặc định `CA_HAI`) |
+| 1 | Loại yêu cầu giải quyết bồi thường [RESOLUTION_SCOPE] | `overview.resolution_scope` | Không (mặc định `CA_HAI`) |
 | - | Hình thức tiếp nhận [DM_25] | `overview.receipt_form` | Không; có thì phải là `DICH_VU_CONG` |
-| 4 | Lĩnh vực phát sinh thiệt hại | `overview.damage_field` | Có |
-| 5 | Hành vi gây thiệt hại của người thi hành công vụ (tối đa 2000) | `overview.damage_act` | Không |
-| 6 | Loại người yêu cầu (`CA_NHAN` / `TO_CHUC`) | `requester.requester_type` | Không (mặc định `CA_NHAN`) |
-| 7, 17 | Tư cách người yêu cầu | `requester.requester_role` | Không (mặc định `NGUOI_BI_THIET_HAI`) |
-| 8 | Họ và tên (tối đa 255) - Cá nhân | `requester.full_name` | Có khi Cá nhân |
-| 9 | Loại giấy tờ thân nhân - Cá nhân | `requester.id_doc_type` | Có khi Cá nhân |
-| 10 | Số giấy tờ thân nhân (tối đa 50) - Cá nhân | `requester.id_doc_no` | Có khi Cá nhân |
-| 18 | Tên tổ chức (tối đa 255) - Tổ chức | `requester.org_name` | Có khi Tổ chức |
-| 19 | Mã số tổ chức (tối đa 50) - Tổ chức | `requester.org_code` | Có khi Tổ chức |
-| 11, 20 | Số điện thoại | `requester.phone` | Có |
-| 12, 21 | Email (tối đa 255) | `requester.email` | Không |
-| 13, 22 | Quốc gia | `requester.country_code` | Không (mặc định `VN`) |
-| 14, 23 | Tỉnh/Thành phố | `requester.province` | Có |
-| 15, 24 | Phường/Xã | `requester.ward` | Có |
-| 16, 25 | Địa chỉ chi tiết (tối đa 500) | `requester.address_detail` | Có |
-| 26, 35 | Họ và tên người bị thiệt hại (tối đa 100) | `victim.full_name` | Không |
-| 27, 36 | Ngày sinh (`yyyy-MM-dd`) | `victim.birth_date` | Không |
-| 28, 37 | Loại giấy tờ thân nhân | `victim.id_doc_type` | Không |
-| 29, 38 | Số giấy tờ thân nhân (tối đa 50) | `victim.id_doc_no` | Không |
-| 30, 39 | Tỉnh/Thành phố (mã địa bàn) | `victim.province_code` | Không |
-| 31, 40 | Phường/Xã (văn bản, tối đa 100) | `victim.ward_name` | Không |
-| 32, 41 | Địa chỉ chi tiết (tối đa 500) | `victim.address_detail` | Không |
-| 33 | Tên tổ chức bị thiệt hại (tối đa 255) - D1 | `victim.org_name` | Không |
-| 34 | Mã số tổ chức (tối đa 50) - D1 | `victim.org_code` | Không |
-| 43 | Tên văn bản, căn cứ (tối đa 255) | `basis_documents[].title` | Không |
-| 44 | Tệp văn bản căn cứ (pdf, jpg, png; tối đa 20MB) | `basis_documents[].file` | Không |
-| 48 | Tên tài liệu (tối đa 255) | `attachments[].title` | Không (tự lấy theo tên tệp) |
-| 49 | Tệp đính kèm (pdf, doc, docx, jpg, png; tối đa 20MB) | `attachments[].file` | Không |
+| 2 | Lĩnh vực phát sinh thiệt hại [DM_22] | `overview.damage_field` | Có |
+| 3 | Ngày văn bản yêu cầu bồi thường (`yyyy-MM-dd`) | `overview.request_doc_date` | Có |
+| 4 | Tỉnh/Thành phố (cơ quan giải quyết bồi thường) | `agency.province_code` | Có |
+| 5 | Cơ quan giải quyết bồi thường | `agency.agency_code` | Có |
+| 6 | Loại người yêu cầu (mục 7.3.1) | `requester.requester_type` | Không (mặc định `CA_NHAN`) |
+| 7 | Tư cách người yêu cầu bồi thường [DM_26] | `requester.requester_role` | Không (mặc định `NGUOI_BI_THIET_HAI`) |
+| 8 | Họ và tên - Cá nhân | `requester.full_name` | Có khi `CA_NHAN` |
+| 8 | Tên tổ chức - Tổ chức | `requester.org_name` | Có khi `TO_CHUC` |
+| 9 | Ngày sinh | `requester.birth_date` | Có khi `CA_NHAN` |
+| 10 | Trạng thái người bị thiệt hại (mục 7.3.1) | `requester.victim_status` | Có khi người bị thiệt hại là cá nhân (xem STT 10 E-Form) |
+| 11 | Số điện thoại | `requester.phone` | Có |
+| 12 | Email | `requester.email` | Không |
+| 13 | Loại giấy tờ thân nhân [DM_10] | `requester.id_doc_type` | Có khi `CA_NHAN` |
+| 14 | Số giấy tờ thân nhân | `requester.id_doc_no` | Có khi `CA_NHAN` |
+| 15 | Ngày cấp | `requester.id_doc_issue_date` | Không |
+| 16 | Nơi cấp | `requester.id_doc_issue_place` | Không |
+| 17 | Mã số tổ chức | `requester.org_code` | Có khi `TO_CHUC` |
+| 18 | Số giấy tờ thành lập/đăng ký | `requester.org_reg_no` | Không |
+| 19 | Ngày cấp | `requester.org_reg_issue_date` | Không |
+| 20 | Nơi cấp | `requester.org_reg_issue_place` | Không |
+| 21 | Họ và tên người đại diện theo pháp luật | `requester.legal_rep_name` | Có khi `TO_CHUC` |
+| 22 | Chức vụ người đại diện | `requester.legal_rep_position` | Có khi `TO_CHUC` |
+| 23 | Quốc gia [DM_09] | `requester.country_code` | Không (mặc định `VN`) |
+| 24 | Tỉnh/Thành phố | `requester.province` | Có |
+| 25 | Phường/Xã | `requester.ward` | Có |
+| 26 | Địa chỉ chi tiết | `requester.address_detail` | Có |
+| 27 | Loại người bị thiệt hại (mục 7.3.1) | `victim.victim_type` | Có khi có khối `victim` |
+| 28 | Họ và tên - Cá nhân | `victim.full_name` | Có khi `victim_type` = `CA_NHAN` |
+| 28 | Tên tổ chức - Tổ chức | `victim.org_name` | Có khi `victim_type` = `TO_CHUC` |
+| 29 | Ngày sinh | `victim.birth_date` | Có khi `victim_type` = `CA_NHAN` |
+| 30 | Số điện thoại | `victim.phone` | Có khi có khối `victim` |
+| 31 | Email | `victim.email` | Không |
+| 32 | Loại giấy tờ thân nhân [DM_10] | `victim.id_doc_type` | Có khi `victim_type` = `CA_NHAN` |
+| 33 | Số giấy tờ thân nhân | `victim.id_doc_no` | Có khi `victim_type` = `CA_NHAN` |
+| 34 | Ngày cấp | `victim.id_doc_issue_date` | Không |
+| 35 | Nơi cấp | `victim.id_doc_issue_place` | Không |
+| 36 | Mã số tổ chức | `victim.org_code` | Có khi `victim_type` = `TO_CHUC` |
+| 37 | Số giấy tờ thành lập/đăng ký | `victim.org_reg_no` | Không |
+| 38 | Ngày cấp | `victim.org_reg_issue_date` | Không |
+| 39 | Nơi cấp | `victim.org_reg_issue_place` | Không |
+| 40 | Họ và tên người đại diện theo pháp luật | `victim.legal_rep_name` | Có khi `victim_type` = `TO_CHUC` |
+| 41 | Chức vụ người đại diện | `victim.legal_rep_position` | Có khi `victim_type` = `TO_CHUC` |
+| 42 | Quốc gia [DM_09] | `victim.country_code` | Không (mặc định `VN`) |
+| 43 | Tỉnh/Thành phố | `victim.province` | Có khi có khối `victim` |
+| 44 | Phường/Xã | `victim.ward` | Có khi có khối `victim` |
+| 45 | Địa chỉ chi tiết | `victim.address_detail` | Có khi có khối `victim` |
+| 46 | Tên tổ chức bị thiệt hại | `dissolved_org.org_name` | Có khi có khối `dissolved_org` |
+| 47 | Mã số tổ chức | `dissolved_org.org_code` | Không |
+| 48 | Quốc gia [DM_09] | `dissolved_org.country_code` | Không (mặc định `VN`) |
+| 49 | Tỉnh/Thành phố | `dissolved_org.province` | Có khi có khối `dissolved_org` |
+| 50 | Phường/Xã | `dissolved_org.ward` | Có khi có khối `dissolved_org` |
+| 51 | Địa chỉ chi tiết | `dissolved_org.address_detail` | Có khi có khối `dissolved_org` |
+| 52 | Hành vi gây thiệt hại của người thi hành công vụ | `overview.damage_act` | Có |
+| 53 | Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại | `overview.causal_relation` | Có |
+| 54 | Phương thức nhận thông báo (mục 7.3.1) | `notification.method` | Có |
+| 55 | Địa chỉ, đầu mối nhận thông báo | `notification.address` | Có |
+| 57 | Mục thiệt hại được tích [DM_27] | `damages[].item_code` (mã mục chi tiết, vd `TH_TS_01`) | Có khi có khối `damages` |
+| 58 | Cách tính / Diễn giải công thức áp dụng (mục chi tiết) | `damages[].calculation` | Có |
+| 59 | Số tiền yêu cầu bồi thường (đồng) (mục chi tiết), số nguyên | `damages[].amount` | Có |
+| 60 | Tên / nội dung thiệt hại (dòng thiệt hại khác, nhóm VII) | `damages[].item_code` = `TH_KHAC`, `damages[].other_name` | Có khi `item_code` = `TH_KHAC` |
+| 61 | Cách tính / diễn giải (thiệt hại khác) | `damages[].calculation` | Có |
+| 62 | Số tiền (thiệt hại khác) (đồng), số nguyên | `damages[].amount` | Có |
+| 64 | Có đề nghị tạm ứng kinh phí bồi thường (Điều 44) | `advance.requested` (`true`/`false`) | Không (mặc định `false`) |
+| 65 | Tạm ứng Thiệt hại tinh thần (đồng) | `advance.spiritual_amount` | Không |
+| 66 | Tạm ứng Thiệt hại khác tính được ngay (đồng) | `advance.other_amount` | Không |
+| 68 | Họ và tên người nhận | `payee.full_name` | Có khi có khối `payee` |
+| 69 | Giấy tờ thân nhân | `payee.id_doc_no` | Có khi có khối `payee` |
+| 70 | Địa chỉ chi tiết | `payee.address` | Có khi có khối `payee` |
+| 71 | Phương thức nhận tiền [DM_28] | `payee.payment_method` | Có khi có khối `payee` |
+| 72 | Chủ tài khoản | `payee.account_holder` | Có khi `payment_method` = `CHUYEN_KHOAN` |
+| 73 | Số tài khoản | `payee.account_no` | Có khi `payment_method` = `CHUYEN_KHOAN` |
+| 74 | Tên ngân hàng | `payee.bank_name` | Có khi `payment_method` = `CHUYEN_KHOAN` |
+| 75 | Chi nhánh | `payee.bank_branch` | Không |
+| 76 | Đề nghị cơ quan giải quyết chủ động tiến hành phục hồi danh dự (Điều 57) | `honor_restoration.requested` (`true`/`false`) | Không |
+| 77 | Hình thức đề nghị phục hồi danh dự mong muốn (Điều 56) (mục 7.3.1) | `honor_restoration.forms[]` | Không |
+| 78 | Yêu cầu khôi phục quyền và lợi ích hợp pháp khác (nếu có) | `other_rights.requested` (`true`/`false`) | Không |
+| 79 | Nội dung yêu cầu khôi phục quyền và lợi ích hợp pháp khác | `other_rights.content` | Có khi `other_rights.requested` = `true` |
+| 80 | Văn bản yêu cầu bồi thường | `dossier_components.VB_YEU_CAU_BT` | Có |
+| 81 | Văn bản làm căn cứ yêu cầu bồi thường | `dossier_components.VB_CAN_CU_YCBT` | Không |
+| 82 | Văn bản ủy quyền thực hiện yêu cầu bồi thường | `dossier_components.VB_UY_QUYEN_YCBT` | Có khi `requester_role` khác `NGUOI_BI_THIET_HAI` |
+| 83 | Các tài liệu kèm theo khác | `dossier_components.TAI_LIEU_KHAC` | Không |
 
-STT 42, 45, 46, 47, 50, 51 (STT dòng, Thao tác, Thêm dòng) là điều khiển giao diện, không có trong API; thứ tự dòng theo thứ tự mảng.
+**Khối nhận theo điều kiện.** Khối không thuộc nhánh bị bỏ, không lưu:
 
-**Khối người bị thiệt hại (`victim`)** chỉ được nhận khi `requester_role` khác `NGUOI_BI_THIET_HAI`:
+| Khối JSON | Chỉ nhận khi | Khối E-Form |
+| :--- | :--- | :--- |
+| `victim` | `requester_role` khác `NGUOI_BI_THIET_HAI` và khác `TO_CHUC_KE_THUA` | C - Thông tin người bị thiệt hại |
+| `dissolved_org` | `requester_role` = `TO_CHUC_KE_THUA` | D - Thông tin tổ chức bị thiệt hại đã chấm dứt tồn tại |
+| `damages`, `advance`, `payee` | `resolution_scope` = `CA_HAI` hoặc `CHI_BOI_THUONG` | G - Thông tin bồi thường thiệt hại bằng tiền |
+| `payee` | Thêm điều kiện: `advance.requested` = `true` hoặc `damages` có ít nhất 01 dòng | G.3 - Thông tin người nhận & phương thức chi trả |
+| `honor_restoration` | `resolution_scope` = `CA_HAI` hoặc `CHI_PHUC_HOI` | H.1 - Yêu cầu cơ quan phục hồi danh dự |
+| `dossier_components.VB_UY_QUYEN_YCBT` | `requester_role` khác `NGUOI_BI_THIET_HAI` | I - Thành phần hồ sơ |
 
-| Loại người yêu cầu + Tư cách | Trường `victim` dùng |
-| :--- | :--- |
-| `CA_NHAN` + tư cách khác Người bị thiệt hại | Khối D: `full_name`, `birth_date`, `id_doc_type`, `id_doc_no`, `province_code`, `ward_name`, `address_detail` |
-| `TO_CHUC` + `TO_CHUC_KE_THUA` | Khối D1: `org_name`, `org_code` |
-| `TO_CHUC` + `NGUOI_DUOC_UY_QUYEN` | Khối D2: như khối D |
+- `requester.victim_status`: chỉ nhận khi người bị thiệt hại là cá nhân (`requester_type` = `CA_NHAN` và `requester_role` = `NGUOI_BI_THIET_HAI`, hoặc `victim.victim_type` = `CA_NHAN`); `requester_role` = `NGUOI_THUA_KE` hoặc `NGUOI_DAI_DIEN_THUA_KE`: luôn lưu `DA_MAT`.
+- `damages`: khi khối được nhận, tối thiểu 01 dòng; mỗi `item_code` mục chi tiết xuất hiện tối đa 01 lần; `TH_KHAC` được lặp nhiều dòng, mỗi dòng 01 thiệt hại khác (`other_name`, `calculation`, `amount`).
+- `resolution_scope` = `CHI_PHUC_HOI`: `honor_restoration.requested` luôn lưu `true`.
 
-Trường ngoài nhánh bị bỏ, không lưu.
+#### 7.3.1. Mã giá trị không có danh mục
 
-### 7.4. Gửi tệp
+| Trường JSON | Mã | Giá trị trên E-Form |
+| :--- | :--- | :--- |
+| `requester.requester_type`, `victim.victim_type` | `CA_NHAN` | Cá nhân |
+|  | `TO_CHUC` | Tổ chức |
+| `requester.victim_status` | `CON_SONG` | Còn sống |
+|  | `DA_MAT` | Đã mất |
+| `notification.method` | `TRUC_TIEP` | Trực tiếp |
+|  | `BUU_CHINH` | Qua dịch vụ bưu chính |
+|  | `THU_DIEN_TU` | Qua thư điện tử |
+|  | `DVC_VNEID` | Qua Cổng Dịch vụ công quốc gia hoặc Ứng dụng định danh quốc gia (VNeID) |
+|  | `DIEN_TU_KHAC` | Qua phương tiện điện tử khác |
+| `honor_restoration.forms[]` | `XIN_LOI_TRUC_TIEP` | Trực tiếp xin lỗi và cải chính công khai tại nơi cư trú / trụ sở (Điều 58) |
+|  | `DANG_BAO` | Đăng báo xin lỗi và cải chính công khai (Điều 59) |
 
-Tệp gửi trong JSON dạng **base64**: `"file": { "file_name": "ban-an.pdf", "content_base64": "<base64 chuẩn>" }`.
+### 7.4. Gửi tệp (thành phần hồ sơ)
 
-- Tối đa 20MB mỗi tệp, 20 dòng mỗi bảng, cả gói tin tối đa 64MB (một tệp 20MB khoảng 27MB khi mã base64).
-- Định dạng kiểm theo **nội dung tệp**, không theo đuôi: văn bản căn cứ nhận pdf, jpg, png; tài liệu đính kèm nhận thêm doc, docx.
-- Dòng có tệp mà thiếu `title` thì lấy tên tệp bỏ phần mở rộng.
+- `dossier_components` là đối tượng, khóa là mã thành phần, giá trị là **01 tệp**: `"VB_YEU_CAU_BT": { "file_name": "don-yeu-cau.pdf", "content_base64": "<base64 chuẩn>" }`.
+- Mã thành phần: `VB_YEU_CAU_BT`, `VB_CAN_CU_YCBT`, `VB_UY_QUYEN_YCBT`, `TAI_LIEU_KHAC`; mã khác bị từ chối.
+- Mỗi thành phần đúng 01 tệp; gửi mảng hoặc nhiều tệp cho 01 thành phần bị từ chối.
+- Định dạng nhận: pdf, doc, docx, jpg, jpeg, png; kiểm theo **nội dung tệp**, không theo đuôi.
+- Tối đa 20MB mỗi tệp; cả gói tin tối đa 64MB (một tệp 20MB khoảng 27MB khi mã base64).
+- Tên tài liệu lưu tại Hệ thống BTNN:
+  - `VB_YEU_CAU_BT`: `Văn bản yêu cầu bồi thường`.
+  - `VB_CAN_CU_YCBT`: `file_name` bỏ phần mở rộng (Tên văn bản căn cứ).
+  - `VB_UY_QUYEN_YCBT`: `Văn bản ủy quyền thực hiện yêu cầu bồi thường`.
+  - `TAI_LIEU_KHAC`: `Các tài liệu kèm theo khác`.
 - Chữ ký (mục 5.2) băm **toàn bộ** thân JSON, kể cả chuỗi base64.
 
 ### 7.5. Ví dụ request
 
-Cá nhân là người thừa kế của người bị thiệt hại (có khối người bị thiệt hại):
+Cá nhân là người thừa kế của người bị thiệt hại (có khối người bị thiệt hại), yêu cầu cả bồi thường tiền và phục hồi danh dự:
 
 ```json
 {
@@ -459,41 +541,64 @@ Cá nhân là người thừa kế của người bị thiệt hại (có khối
   "overview": {
     "receipt_form": "DICH_VU_CONG",
     "resolution_scope": "CA_HAI",
-    "damage_field": "QUAN_LY_HANH_CHINH",
-    "damage_act": "Tóm tắt hành vi gây thiệt hại của người thi hành công vụ"
+    "damage_field": "TO_TUNG_HINH_SU",
+    "request_doc_date": "2026-10-20",
+    "damage_act": "Tóm tắt hành vi gây thiệt hại của người thi hành công vụ",
+    "causal_relation": "Giải trình mối quan hệ nhân quả"
   },
   "requester": {
     "requester_type": "CA_NHAN",
     "requester_role": "NGUOI_THUA_KE",
     "full_name": "Nguyễn Văn A",
-    "id_doc_type": "CCCD",
-    "id_doc_no": "001090000001",
+    "birth_date": "1985-03-12",
+    "victim_status": "DA_MAT",
     "phone": "0912345678",
     "email": "a@example.com",
+    "id_doc_type": "CCCD",
+    "id_doc_no": "001090000001",
     "country_code": "VN",
     "province": "01",
     "ward": "00001",
     "address_detail": "Số 1 phố Huế"
   },
   "victim": {
+    "victim_type": "CA_NHAN",
     "full_name": "Nguyễn Văn B",
     "birth_date": "1960-05-20",
+    "phone": "0987654321",
     "id_doc_type": "CCCD",
     "id_doc_no": "001060000002",
-    "province_code": "01",
-    "ward_name": "Phường Hàng Bài",
+    "country_code": "VN",
+    "province": "01",
+    "ward": "00004",
     "address_detail": "Số 2 phố Huế"
   },
-  "basis_documents": [
-    { "title": "Bản án số 12/2025", "file": { "file_name": "ban-an.pdf", "content_base64": "JVBERi0xLjQK..." } }
+  "notification": { "method": "DVC_VNEID", "address": "001090000001" },
+  "damages": [
+    { "item_code": "TH_TT_04", "calculation": "Số ngày tạm giam x mức lương cơ sở", "amount": 120000000 },
+    { "item_code": "TH_KHAC", "other_name": "Chi phí photo hồ sơ", "calculation": "Theo hóa đơn", "amount": 500000 },
+    { "item_code": "TH_KHAC", "other_name": "Chi phí thuê xe", "calculation": "02 chuyến x 1.500.000", "amount": 3000000 }
   ],
-  "attachments": [
-    { "title": "Giấy ủy quyền", "file": { "file_name": "uy-quyen.pdf", "content_base64": "JVBERi0xLjQK..." } }
-  ]
+  "advance": { "requested": true, "spiritual_amount": 50000000 },
+  "payee": {
+    "full_name": "Nguyễn Văn A",
+    "id_doc_no": "001090000001",
+    "address": "Số 1 phố Huế",
+    "payment_method": "CHUYEN_KHOAN",
+    "account_holder": "NGUYEN VAN A",
+    "account_no": "0123456789",
+    "bank_name": "Ngân hàng X"
+  },
+  "honor_restoration": { "requested": true, "forms": ["XIN_LOI_TRUC_TIEP"] },
+  "dossier_components": {
+    "VB_YEU_CAU_BT": { "file_name": "don-yeu-cau.pdf", "content_base64": "JVBERi0xLjQK..." },
+    "VB_CAN_CU_YCBT": { "file_name": "Ban an so 12-2025.pdf", "content_base64": "JVBERi0xLjQK..." },
+    "VB_UY_QUYEN_YCBT": { "file_name": "uy-quyen.pdf", "content_base64": "JVBERi0xLjQK..." }
+  }
 }
 ```
 
-Giá trị `MA_CO_QUAN_GIAI_QUYET`, `01`, `00001` là ví dụ: dùng mã thật lấy từ API mục 6. Người yêu cầu là tổ chức: `requester_type` = `TO_CHUC`, dùng `org_name`, `org_code` thay cho `full_name`, `id_doc_type`, `id_doc_no`.
+Giá trị `MA_CO_QUAN_GIAI_QUYET`, `01`, `00001`, `00004` là ví dụ: dùng mã thật lấy từ API mục 6. Người yêu cầu là tổ chức: `requester_type` = `TO_CHUC`, dùng `org_name`, `org_code`, `legal_rep_name`, `legal_rep_position` thay cho `full_name`, `birth_date`, `id_doc_type`, `id_doc_no`.
 
 ### 7.6. Quy tắc kiểm hợp lệ
 
@@ -501,24 +606,33 @@ Mọi lỗi được gom và trả **một lượt**. Giá trị danh mục ph�
 
 | Trường | Quy tắc | Mã lỗi |
 | :--- | :--- | :--- |
-| Trường bắt buộc (theo khối và nhánh) | Thiếu hoặc rỗng | `REQUIRED` |
+| Trường bắt buộc (theo khối và nhánh, mục 7.3) | Thiếu hoặc rỗng | `REQUIRED` |
 | Mọi chuỗi | Quá độ dài tối đa | `MAX_LENGTH` |
-| Kiểu dữ liệu, ngày tháng | Sai kiểu, ngày không đúng ISO | `INVALID_FORMAT` |
-| `requester.phone` | Đúng 10 chữ số, bắt đầu bằng 03, 05, 07, 08 hoặc 09 | `INVALID_PHONE` |
-| `requester.email` | Có thì đúng định dạng email | `INVALID_EMAIL` |
+| Kiểu dữ liệu, ngày tháng | Sai kiểu, ngày không đúng ISO `yyyy-MM-dd` | `INVALID_FORMAT` |
+| `overview.request_doc_date`, `*.birth_date`, `*.id_doc_issue_date`, `*.org_reg_issue_date` | Không lớn hơn ngày hiện tại | `FUTURE_DATE` |
+| `requester.phone`, `victim.phone` | Quốc gia `VN`: đúng 10 chữ số, bắt đầu bằng 03, 05, 07, 08 hoặc 09. Quốc gia khác: 8-15 chữ số, cho phép `+` ở đầu | `INVALID_PHONE` |
+| `requester.email`, `victim.email` | Có thì đúng định dạng email | `INVALID_EMAIL` |
+| `*.id_doc_no` | `id_doc_type` = `CCCD`: đúng 12 chữ số | `INVALID_ID_NO` |
 | `requester.requester_role` | Có trong DM_26; Cá nhân chỉ nhận tư cách có `for_individual`, Tổ chức chỉ nhận tư cách có `for_organization` | `NOT_IN_CATALOG` / `NOT_ALLOWED` |
+| `victim.victim_type` | `requester_role` = `NGUOI_THUA_KE` hoặc `NGUOI_DAI_DIEN_THUA_KE`: chỉ nhận `CA_NHAN` | `NOT_ALLOWED` |
 | `*.id_doc_type` | Có trong DM_10 và `use_on_eform` = `true` (không nhận `MA_SO_THUE`) | `NOT_IN_CATALOG` / `NOT_ALLOWED` |
-| `requester.country_code` | Có trong DM_09 | `NOT_IN_CATALOG` |
-| `requester.province`, `requester.ward` | Quốc gia `VN`: mã địa bàn và Phường/Xã thuộc Tỉnh/Thành phố đã chọn. Quốc gia khác: văn bản tự do (tối đa 100) | `NOT_IN_CATALOG` / `WARD_NOT_IN_PROVINCE` |
+| `*.country_code` | Có trong DM_09 | `NOT_IN_CATALOG` |
+| `*.province`, `*.ward` | Quốc gia `VN`: mã địa bàn và Phường/Xã thuộc Tỉnh/Thành phố đã chọn. Quốc gia khác: văn bản tự do (tối đa 100) | `NOT_IN_CATALOG` / `WARD_NOT_IN_PROVINCE` |
 | `overview.damage_field`, `overview.resolution_scope` | Có trong DM_22 / RESOLUTION_SCOPE | `NOT_IN_CATALOG` |
+| `notification.method`, `requester.victim_status`, `*.requester_type`, `victim.victim_type`, `honor_restoration.forms[]` | Có trong mục 7.3.1 | `NOT_IN_CATALOG` |
 | `overview.receipt_form` | Có thì phải là `DICH_VU_CONG` | `NOT_ALLOWED` |
 | `agency.province_code` | Mã Tỉnh/Thành phố trong danh mục địa bàn | `NOT_IN_CATALOG` |
 | `agency.agency_code` | Đơn vị còn hiệu lực, thuộc Tỉnh/Thành phố cơ quan giải quyết | `NOT_IN_CATALOG` / `AGENCY_NOT_IN_PROVINCE` |
-| `victim.province_code` | Có thì là mã Tỉnh/Thành phố | `NOT_IN_CATALOG` |
-| `*.file.content_base64` | Base64 hợp lệ, không rỗng | `INVALID_BASE64` |
+| `damages[].item_code` | Mã mục chi tiết DM_27 (`depth` = 1) hoặc `TH_KHAC`; mục chi tiết không lặp | `NOT_IN_CATALOG` / `DUPLICATE_ITEM` |
+| `damages` | Khối được nhận mà không có dòng | `REQUIRED` |
+| `damages[].amount`, `advance.spiritual_amount`, `advance.other_amount` | Số nguyên lớn hơn 0 | `INVALID_AMOUNT` |
+| `advance.spiritual_amount` | Nhỏ hơn tổng `amount` các dòng thuộc nhóm `TH_TT`; không có dòng nhóm `TH_TT` thì không nhận | `ADVANCE_EXCEEDED` |
+| `advance.other_amount` | Nhỏ hơn tổng `amount` các dòng không thuộc nhóm `TH_TT` | `ADVANCE_EXCEEDED` |
+| `payee.payment_method` | Có trong DM_28 | `NOT_IN_CATALOG` |
+| `dossier_components` | Khóa là mã thành phần mục 7.4; mỗi thành phần 01 tệp | `NOT_ALLOWED` / `TOO_MANY_FILES` |
+| `dossier_components.*.content_base64` | Base64 hợp lệ, không rỗng | `INVALID_BASE64` |
 | Tệp | Tối đa 20MB | `FILE_TOO_LARGE` |
 | Tệp | Đúng định dạng cho phép | `INVALID_FILE_TYPE` |
-| `basis_documents`, `attachments` | Tối đa 20 dòng | `TOO_MANY_ROWS` |
 
 ### 7.7. Phản hồi và chống trùng
 
@@ -552,8 +666,8 @@ Mọi lỗi được gom và trả **một lượt**. Giá trị danh mục ph�
     "errors": [
       { "field": "requester.phone", "code": "INVALID_PHONE",
         "message": "Số điện thoại phải gồm đúng 10 chữ số và bắt đầu bằng 03, 05, 07, 08 hoặc 09." },
-      { "field": "attachments[0].file.content_base64", "code": "INVALID_FILE_TYPE",
-        "message": "Định dạng tệp không được chấp nhận; chỉ nhận pdf, doc, docx, jpg, png." }
+      { "field": "dossier_components.TAI_LIEU_KHAC.content_base64", "code": "INVALID_FILE_TYPE",
+        "message": "Định dạng tệp không được chấp nhận; chỉ nhận pdf, doc, docx, jpg, jpeg, png." }
     ]
   }
 }
@@ -606,14 +720,15 @@ Mã hồ sơ không có hoặc không phải của DVC: HTTP 404 `NOT_FOUND`. Th
 | 4 | Đồng bộ lần đầu đủ các danh mục mục 6.1 | Đủ dữ liệu, `has_more=false` ở trang cuối |
 | 5 | Đồng bộ lại với `last_sync_time` | Chỉ nhận bản ghi thay đổi (kể cả đã xóa/ngừng) |
 | 6 | E-Form: ô Loại giấy tờ, Tư cách, Phường/Xã, Cơ quan giải quyết | Lọc đúng quy tắc mục 6.6 |
-| 7 | Gửi hồ sơ Cá nhân - Người bị thiệt hại, có tệp | 200 `RECEIVED`; sau ~1 phút tra trạng thái `ACCEPTED` kèm mã `BT-...` |
-| 8 | Gửi hồ sơ Cá nhân - Người thừa kế (khối D) | Hồ sơ có thông tin người bị thiệt hại |
-| 9 | Gửi hồ sơ Tổ chức - Tổ chức kế thừa (khối D1) | Hồ sơ có tên, mã số tổ chức bị thiệt hại |
-| 10 | Gửi hồ sơ Tổ chức - Được ủy quyền (khối D2) | Hồ sơ có thông tin người bị thiệt hại |
-| 11 | Gửi hồ sơ sai số điện thoại, thiếu trường bắt buộc, Mã số thuế ở Loại giấy tờ, Phường không thuộc Tỉnh | 400, `data.errors` liệt kê đủ từng trường |
-| 12 | Gửi tệp sai định dạng / quá 20MB | 400 `INVALID_FILE_TYPE` / `FILE_TOO_LARGE` |
-| 13 | Gửi lại hồ sơ cùng `dvc_dossier_code` | 200, `duplicate=true`, cùng số tiếp nhận, không có hồ sơ thứ hai |
-| 14 | Tra trạng thái mã không tồn tại | 404 |
+| 7 | Gửi hồ sơ Cá nhân - Người bị thiệt hại, `CHI_PHUC_HOI`, có `VB_YEU_CAU_BT` | 200 `RECEIVED`; sau ~1 phút tra trạng thái `ACCEPTED` kèm mã `BT-...` |
+| 8 | Gửi hồ sơ Cá nhân - Người thừa kế (khối `victim`, có `VB_UY_QUYEN_YCBT`) | Hồ sơ có thông tin người bị thiệt hại, Trạng thái người bị thiệt hại `Đã mất` |
+| 9 | Gửi hồ sơ Tổ chức - Tổ chức kế thừa (khối `dissolved_org`) | Hồ sơ có thông tin tổ chức bị thiệt hại đã chấm dứt tồn tại |
+| 10 | Gửi hồ sơ Tổ chức - Được ủy quyền, người bị thiệt hại là tổ chức (`victim.victim_type` = `TO_CHUC`) | Hồ sơ có thông tin tổ chức bị thiệt hại |
+| 11 | Gửi hồ sơ `CA_HAI` có `damages` (mục DM_27 và `TH_KHAC`), `advance`, `payee` chuyển khoản, `honor_restoration` | Hồ sơ có bảng thiệt hại, tạm ứng, người nhận, hình thức phục hồi danh dự |
+| 12 | Gửi hồ sơ sai số điện thoại, thiếu trường bắt buộc, Mã số thuế ở Loại giấy tờ, Phường không thuộc Tỉnh, tạm ứng vượt mức | 400, `data.errors` liệt kê đủ từng trường |
+| 13 | Gửi tệp sai định dạng / quá 20MB / thiếu `VB_YEU_CAU_BT` / 02 tệp cho 01 thành phần | 400 `INVALID_FILE_TYPE` / `FILE_TOO_LARGE` / `REQUIRED` / `TOO_MANY_FILES` |
+| 14 | Gửi lại hồ sơ cùng `dvc_dossier_code` | 200, `duplicate=true`, cùng số tiếp nhận, không có hồ sơ thứ hai |
+| 15 | Tra trạng thái mã không tồn tại | 404 |
 
 ---
 

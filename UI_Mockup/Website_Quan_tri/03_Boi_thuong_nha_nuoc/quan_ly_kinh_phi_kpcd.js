@@ -3,7 +3,7 @@
  * - Nút "Tạo thông báo chi trả" (MH01) -> màn hình tạo (bố cục như Tạo Quyết định tạm ứng).
  * - Khối Tìm kiếm / Tìm kiếm nâng cao Quyết định giải quyết bồi thường: chỉ QĐ "Đã ban hành" VÀ hồ sơ GQBT "Chờ chi trả".
  *   Nguồn QĐ: kho 'btnn_qd_gqbt_v2' của màn hình Quyết định giải quyết bồi thường (+ dữ liệu mẫu KPCD_SEED_DECS khi kho chưa có).
- * - Chọn QĐ -> hiển thị các khối: Thông tin người yêu cầu, Phương thức chi trả (theo QĐ), Tài liệu kèm theo.
+ * - Chọn QĐ -> hiển thị các khối: Thông tin người yêu cầu, Phương thức chi trả (theo QĐ), Tài liệu đính kèm.
  * - Tiếp tục -> Popup Trình ký thông báo chi trả (kptbOpenSign với bản ghi nháp) -> Trình: "Chờ duyệt", Loại trình "Thông báo chi trả".
  * - Chặn trùng: QĐ đã có Thông báo chi trả Chờ duyệt / Chờ chi trả / Hoàn thành / Trả lại ngân sách nhà nước (MSG-ERR-BTNN-KP-013).
  *   QĐ đã có bản ghi "Chờ thông báo chi trả" / "Đề nghị cấp bổ sung kinh phí" / "Bị trả lại": dùng lại chính bản ghi đó (không tạo trùng).
@@ -139,7 +139,7 @@ function kpcdTbEnsurePage() {
                 </div>
             </div>
             <div class="qdtu-card">
-                <div class="qdtu-card-head"><i class="fa-solid fa-paperclip"></i> Tài liệu kèm theo</div>
+                <div class="qdtu-card-head"><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm</div>
                 <div class="qdtu-card-body"><div id="kpcdTbTlkt"></div></div>
             </div>
         </div>
@@ -242,7 +242,7 @@ function kpcdTbFormData() {
     return { nycName: v('kpcdTbNycName'), nycAddress: v('kpcdTbNycAddress'), payAgency: v('kpcdTbPayAgency'), time: v('kpcdTbTime'), place: v('kpcdTbPlace'),
         attachments: typeof tlktGet === 'function' ? tlktGet('kpcdTb') : [] };
 }
-// Tiếp tục: kiểm tra trống trường bắt buộc, Tài liệu kèm theo, chặn trùng -> mở Popup Trình ký thông báo chi trả
+// Tiếp tục: kiểm tra trống trường bắt buộc, Tài liệu đính kèm, chặn trùng -> mở Popup Trình ký thông báo chi trả
 function kpcdTbContinue() {
     if (!kpcdTbState.decId) { kpcdEl('kpcdTbDecInputErr').innerText = 'Đây là trường bắt buộc'; qdtuMark('kpcdTbDecInput', true); kpcdEl('kpcdTbDecInput').focus(); return; }
     const d = kpcdAllDecs().find(x => x.id === kpcdTbState.decId); if (!d) return;

@@ -18,6 +18,15 @@
     // Chốt 28/10: trạng thái "Bị từ chối" đổi thành "Bị trả lại" trên mọi phân hệ BTNN; "Thu hồi tiền hoàn trả" đổi thành "Thu tiền hoàn trả" -> chuẩn hóa dữ liệu đã lưu (giữ nguyên dữ liệu người dùng).
     // Không áp dụng: Báo cáo công tác BTNN (bctt_*, có trạng thái Bị trả lại riêng), dữ liệu Biện pháp bảo đảm.
     // Hồ sơ "Bị từ chối" không có lượt Lãnh đạo trả lại (nghĩa Không thụ lý cũ): giữ nguyên để chuẩn hóa theo phân hệ (migrateXdRecord / migrateYcbtRecord).
+    // Màu nhãn trạng thái "Bị trả lại" dùng chung toàn phân hệ BTNN (cam): nền #fef3c7, chữ #b45309, viền #fde68a
+    (function cssBiTraLai() {
+        try {
+            if (document.getElementById('btnnTraLaiCss')) return;
+            const st = document.createElement('style'); st.id = 'btnnTraLaiCss';
+            st.textContent = '.badge-tra-lai, .badge.badge-tra-lai { background-color: #fef3c7 !important; color: #b45309 !important; border: 1px solid #fde68a !important; }';
+            (document.head || document.documentElement).appendChild(st);
+        } catch (e) { /* bỏ qua */ }
+    })();
     (function chuanHoaBiTraLai() {
         const OLD = 'Bị từ chối';
         const PAIRS = [[OLD, 'Bị trả lại'], ['Thu hồi tiền hoàn trả', 'Thu tiền hoàn trả'], ['thu hồi tiền hoàn trả', 'thu tiền hoàn trả']];
@@ -49,10 +58,10 @@
     const FLOW_TYPE_ORDER = ['XD_BTP', 'XD_STP', 'GQ'];
 
     // Nguồn hồ sơ và Hình thức tiếp nhận tại Tiếp nhận hồ sơ
-    const SOURCES = { TIEP_NHAN: 'Tiếp nhận mới', DVC: 'Dịch vụ công quốc gia', CHUYEN: 'Chuyển CQGQBT', XDCQ: 'Xác định CQGQBT' };
+    const SOURCES = { TIEP_NHAN: 'Tiếp nhận mới', DVC: 'Dịch vụ công', CHUYEN: 'Chuyển CQGQBT', XDCQ: 'Xác định CQGQBT' };
     // Hình thức tiếp nhận: Danh mục dùng chung DM_25 (04 giá trị); form Tiếp nhận mới chỉ gồm Trực tiếp, Qua dịch vụ bưu chính
     const RECEIVE_METHOD_CATALOG = 'DM_25';
-    const RECEIVE_METHODS = { MOI_TRUONG_SO: 'Qua môi trường số (Dịch vụ Công)', TRUC_TIEP: 'Trực tiếp', MOT_CUA: 'Bộ phận Một cửa', BUU_CHINH: 'Qua dịch vụ bưu chính' };
+    const RECEIVE_METHODS = { MOI_TRUONG_SO: 'Dịch vụ công', TRUC_TIEP: 'Trực tiếp', MOT_CUA: 'Bộ phận Một cửa', BUU_CHINH: 'Qua dịch vụ bưu chính' };
     RECEIVE_METHODS.DVC = RECEIVE_METHODS.MOI_TRUONG_SO; // tên cũ, giữ để các trang đang dùng không lỗi
     // [cdpd] Giá trị DM_25 do hệ thống gán (không có trong lựa chọn của form): Xác định CQGQBT, Cán bộ chủ động phục hồi danh dự, Cán bộ chủ động nhập
     RECEIVE_METHODS.XAC_DINH_CQGQBT = 'Xác định CQGQBT';
@@ -625,6 +634,8 @@
         let list = readJson(KEY_RECORDS, []);
         // Chuẩn hóa dữ liệu cũ: Nội dung trình "Sửa chữa, đính chính QĐ" -> "Sửa chữa, bổ sung QĐ"
         if (/[Ss]ửa chữa, đính chính/.test(JSON.stringify(list))) { list = JSON.parse(JSON.stringify(list).replace(/Sửa chữa, đính chính/g, "Sửa chữa, bổ sung").replace(/sửa chữa, đính chính/g, "sửa chữa, bổ sung")); writeJson(KEY_RECORDS, list); }
+        // Đổi tên giá trị: Hình thức tiếp nhận "Qua môi trường số (Dịch vụ Công)" và Nguồn hồ sơ "Dịch vụ công quốc gia" -> "Dịch vụ công"
+        if (/Qua môi trường số|"Dịch vụ công quốc gia"|từ Dịch vụ công quốc gia/.test(JSON.stringify(list))) { list = JSON.parse(JSON.stringify(list).replace(/Qua môi trường số \(Dịch vụ [Cc]ông\)/g, 'Dịch vụ công').replace(/"Dịch vụ công quốc gia"/g, '"Dịch vụ công"').replace(/từ Dịch vụ công quốc gia/g, 'từ Dịch vụ công')); writeJson(KEY_RECORDS, list); }
         // Chuẩn hóa dữ liệu cũ: "Chờ phê duyệt" -> "Chờ duyệt"; Nội dung trình "Hoàn thành xác định"/"Kết quả xác định" -> "Kết quả xác định CQGQBT"
         const OLD_KQXD = ['Hoàn thành xác định', 'Kết quả xác định'];
         let changed = false;
@@ -637,9 +648,11 @@
             const hm = normalizeReceiveMethod(r.hinhThucTiepNhan);
             if (r.hinhThucTiepNhan && hm !== r.hinhThucTiepNhan) { r.hinhThucTiepNhan = hm; changed = true; }
             if (!r.maVuViec && /^VVBT-/.test(r.code || '')) { r.maVuViec = r.code; changed = true; }
-            // Nguồn hồ sơ: chuẩn hóa giá trị cũ về 04 giá trị Tiếp nhận mới / Dịch vụ công quốc gia / Chuyển CQGQBT / Xác định CQGQBT
+            // Nguồn hồ sơ: chuẩn hóa giá trị cũ về 04 giá trị Tiếp nhận mới / Dịch vụ công / Chuyển CQGQBT / Xác định CQGQBT
             const ns = normalizeSource(r.nguonHoSo);
             if (r.nguonHoSo && ns !== r.nguonHoSo) { r.nguonHoSo = ns; changed = true; }
+            // Hồ sơ nguồn Dịch vụ công: Loại hồ sơ luôn là Giải quyết yêu cầu bồi thường, Hình thức tiếp nhận cố định Dịch vụ công
+            if (r.nguonHoSo === SOURCES.DVC && r.hinhThucTiepNhan !== RECEIVE_METHODS.MOI_TRUONG_SO) { r.hinhThucTiepNhan = RECEIVE_METHODS.MOI_TRUONG_SO; changed = true; }
             // Loại người yêu cầu: dữ liệu cũ không có nycType -> theo ràng buộc Tư cách, mặc định Cá nhân
             if (r.nycType !== NYC_TYPES.CA_NHAN && r.nycType !== NYC_TYPES.TO_CHUC) { r.nycType = nycTypeOf(r); changed = true; }
             // Loại giấy tờ thân nhân: chuẩn hóa giá trị cũ theo DM_10 (CCCD/CMND/... -> CMND/CCCD/Chứng minh quân đội)
@@ -874,7 +887,7 @@
         return SOURCES.TIEP_NHAN;
     }
     // ---------------- Mã vụ việc toàn trình ----------------
-    // - Mã vụ việc VVBT-yyyy-xxx: sinh 01 lần tại điểm vào đầu tiên (Tiếp nhận mới, Dịch vụ công quốc gia,
+    // - Mã vụ việc VVBT-yyyy-xxx: sinh 01 lần tại điểm vào đầu tiên (Tiếp nhận mới, Dịch vụ công,
     //   Thêm mới trực tiếp "Vụ việc mới" tại Xác định CQGQBT / Giải quyết YCBT); các bước sau kế thừa, không sinh lại.
     // - Mỗi phân hệ có Mã hồ sơ riêng (XD- / BT- / HT-) gắn với Mã vụ việc qua sổ đăng ký KEY_VUVIEC
     //   { [Mã hồ sơ]: Mã vụ việc }. Sổ đăng ký không bị xóa khi một phân hệ nạp lại dữ liệu mẫu nên ánh xạ luôn ổn định.
@@ -1356,7 +1369,7 @@
     }
     // Chuyển hồ sơ sang cơ quan khác: cơ quan nhận tiếp nhận hồ sơ tại Tiếp nhận hồ sơ, trạng thái Chờ phân công (bắt đầu lại từ bước tiếp nhận).
     // action.loaiYeuCau: Loại hồ sơ tại cơ quan nhận (mặc định Giải quyết YCBT; KTL_01 chuyển Bộ/Sở Tư pháp: Xác định CQGQBT). Giữ nguyên Mã vụ việc.
-    // Chuyển hồ sơ sang cơ quan khác: không chuyển tài liệu nội bộ - Tài liệu kèm theo khác trong quá trình xác minh (xmFiles, files của từng lần xác minh)
+    // Chuyển hồ sơ sang cơ quan khác: không chuyển tài liệu nội bộ - Tài liệu đính kèm khác trong quá trình xác minh (xmFiles, files của từng lần xác minh)
     // và mọi tài liệu gắn scope 'internal'; tài liệu khác giữ nguyên
     function stripInternalDocs(obj) {
         const walk = o => {
@@ -1428,7 +1441,7 @@
         // Lịch sử các lần bị trả lại (dựng lại từ lịch sử xử lý trước khi ghi lần mới; dựng trước khi gán rec.returned để không tính trùng lần đang ghi)
         rec.returnHistory = returnHistoryOf(rec, true);
         rec.returned = { reason, by: me, unitId: a.path[a.level], at: nowText(), kind: a.kind, prevStatus: a.prevStatus || '' };
-        // Tài liệu kèm theo của lần trình bị trả lại (lưu theo phiếu trình để xem lại)
+        // Tài liệu đính kèm của lần trình bị trả lại (lưu theo phiếu trình để xem lại)
         rec.returnHistory.push({ kind: a.kind, reason, by: me, unitId: a.path[a.level], at: rec.returned.at, attachments: (a.signDoc && Array.isArray(a.signDoc.attachments)) ? a.signDoc.attachments : [] });
         // Chốt 28/10: Lãnh đạo từ chối -> "Bị trả lại" (mọi phân hệ BTNN); phiếu trình của chức năng Quyết định GQBT do màn hình Quyết định tự chuẩn hóa
         rec.status = STATUS.BI_TU_CHOI;
@@ -1568,7 +1581,7 @@
     const histRow = (k, v) => `<div style="display:flex; gap:8px; margin-top:4px;"><span style="color:#64748b; min-width:170px; flex-shrink:0;">${esc(k)}:</span><span style="flex:1; min-width:0; white-space:pre-line;">${v}</span></div>`;
     const histFileLink = name => name ? `<i class="fa-solid fa-file-pdf" style="color:#ef4444;"></i> <b>${esc(name)}</b> <a href="#" onclick="event.preventDefault(); if (window.previewNamedFile) previewNamedFile(${esc(JSON.stringify(name))});" style="color:#2563eb; text-decoration:none; margin-left:8px; white-space:nowrap; font-weight:600;"><i class="fa-solid fa-eye"></i> Xem file</a>` : '--';
     // Khối THÔNG TIN HỒ SƠ BỊ TRẢ LẠI: kê đầy đủ các lần bị trả lại theo thứ tự thời gian; không ghi "Lần 1, Lần 2"
-    // opts.withDocs (MH04): mỗi lần hiển thị bảng Tài liệu kèm theo của lần trình bị trả lại (ẩn khi không có)
+    // opts.withDocs (MH04): mỗi lần hiển thị bảng Tài liệu đính kèm của lần trình bị trả lại (ẩn khi không có)
     function renderXdReturnHistoryHtml(rec, opts) {
         const list = returnHistoryOf(rec, true);
         if (!list.length) return '';
@@ -1582,18 +1595,18 @@
         const items = list.map((e, i) => {
             const isLatest = (i === list.length - 1);
             const docsHtml = opts && opts.withDocs && typeof window.tlktViewHtml === 'function' ? window.tlktViewHtml(trinhDocs(e), { boxClass: 'tlkt-view', titleClass: 'tlkt-sec-title' }) : '';
-            return `<div style="background:#fff; border:1px solid #fecaca; border-left:4px solid #ef4444; border-radius:6px; padding:12px 14px; margin-top:8px; font-size:13px; line-height:1.55;">
+            return `<div style="background:#fff; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:6px; padding:12px 14px; margin-top:8px; font-size:13px; line-height:1.55;">
                 <div style="margin-bottom:6px;">
-                    <div style="font-weight:700; color:#991b1b;"><i class="fa-solid fa-clock"></i> Thời điểm: ${esc(e.at || '--')}</div>
+                    <div style="font-weight:700; color:#b45309;"><i class="fa-solid fa-clock"></i> Thời điểm: ${esc(e.at || '--')}</div>
                 </div>
-                ${histRow('Lãnh đạo từ chối', `<b>${esc(userName(e.by))}</b>${e.unitId ? ' - ' + esc(unitName(e.unitId)) : ''}`)}
-                ${histRow('Loại trình bị từ chối', `<b style="color:#b91c1c;">${esc(e.kind || '--')}</b>`)}
-                ${histRow('Lý do chi tiết', `<span style="color:#991b1b; font-weight:500;">${esc(e.reason || '--')}</span>`)}
+                ${histRow('Lãnh đạo trả lại', `<b>${esc(userName(e.by))}</b>${e.unitId ? ' - ' + esc(unitName(e.unitId)) : ''}`)}
+                ${histRow('Loại trình bị trả lại', `<b style="color:#b45309;">${esc(e.kind || '--')}</b>`)}
+                ${histRow('Lý do chi tiết', `<span style="color:#b45309; font-weight:500;">${esc(e.reason || '--')}</span>`)}
                 ${docsHtml ? `<div style="margin-top:8px;">${docsHtml}</div>` : ''}
             </div>`;
         }).join('');
         return `<div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:4px;">
-                <div style="font-weight:700; color:#dc2626; font-size:14px;"><i class="fa-solid fa-rotate-left"></i> THÔNG TIN HỒ SƠ BỊ TỪ CHỐI</div>
+                <div style="font-weight:700; color:#b45309; font-size:14px;"><i class="fa-solid fa-rotate-left"></i> THÔNG TIN HỒ SƠ BỊ TRẢ LẠI</div>
             </div>${items}`;
     }
     // Khối THÔNG TIN YÊU CẦU BỔ SUNG: danh sách các lần ban hành Yêu cầu bổ sung (mới nhất trước); rỗng khi hồ sơ chưa từng Yêu cầu bổ sung
@@ -1810,7 +1823,7 @@
         { id: 'P21', code: 'KP-2026-021', type: 'Cấp kinh phí bồi thường', ycbtCode: 'BT-2026-028', nycName: 'Hoàng Văn Thái', amount: 180000000, user: 'Lê Văn Nam', date: '18/09/2026', status: 'Chờ duyệt', source: 'Ngân sách địa phương (Dự phòng)', cqCap: 'Sở Tài chính Hà Nội', notes: 'Tờ trình đề nghị cấp phát kinh phí bồi thường tổn thất tài sản và thu nhập thực tế.', files: [{ name: 'Tờ trình cấp kinh phí Hoàng Văn Thái', file: 'To_trinh_KP_HoangVanThai.pdf' }], agencyName: 'Tòa án nhân dân TP. Hà Nội' },
         { id: 'P22', code: 'KP-2026-022', type: 'Cấp tạm ứng', ycbtCode: 'BT-2026-029', nycName: 'Nguyễn Thị Mai', amount: 70000000, user: 'Nguyễn Văn Thụ', date: '19/09/2026', status: 'Chờ duyệt', source: 'Tạm ứng kinh phí Bộ Tài chính', cqCap: 'Sở Tư pháp Hà Nội', notes: 'Tờ trình đề xuất tạm ứng kinh phí bồi thường cho bà Nguyễn Thị Mai.', files: [{ name: 'Tờ trình đề xuất tạm ứng Mai', file: 'To_trinh_tam_ung_NguyenThiMai.pdf' }], agencyName: 'UBND Quận Cầu Giấy' },
         { id: 'P2', code: 'KP-2026-002', type: 'Cấp tạm ứng', ycbtCode: 'BT-2026-002', nycName: 'Trần Thị B', amount: 100000000, user: 'Nguyễn Văn Thụ', date: '04/09/2026', status: 'Chờ chi trả', source: 'Tạm ứng kinh phí Bộ Tài chính', cqCap: 'Sở Tư pháp Hà Nội', notes: 'Cấp tạm ứng bồi thường thiệt hại cho bà Trần Thị B.', files: [{ name: 'Tờ trình đề xuất cấp kinh phí', file: 'De_xuat_tam_ung_B.pdf' }], leaderOpinion: 'Đồng ý cấp tạm ứng kinh phí bồi thường cho bà Trần Thị B.', approvedDate: '05/09/2026 09:15', approvedLeader: 'Lãnh đạo cơ quan', agencyName: 'Tòa án nhân dân TP. Hà Nội' },
-        { id: 'P7', code: 'KP-2026-007', type: 'Cấp tạm ứng', ycbtCode: 'BT-2026-002', nycName: 'Trần Thị B', amount: 80000000, user: 'Lê Văn Nam', date: '08/09/2026', status: 'Bị trả lại', source: 'Tạm ứng kinh phí Bộ Tài chính', cqCap: 'Sở Tư pháp Hà Nội', notes: 'Đề nghị cấp tạm ứng bồi thường bị từ chối do thiếu tài liệu y tế chứng minh.', files: [], leaderOpinion: 'Từ chối do hồ sơ chưa đính kèm báo cáo giám định sức khỏe của bệnh viện cấp tỉnh.', approvedDate: '09/09/2026 10:30', approvedLeader: 'Lãnh đạo cơ quan', agencyName: 'Tòa án nhân dân TP. Hà Nội' }
+        { id: 'P7', code: 'KP-2026-007', type: 'Cấp tạm ứng', ycbtCode: 'BT-2026-002', nycName: 'Trần Thị B', amount: 80000000, user: 'Lê Văn Nam', date: '08/09/2026', status: 'Bị trả lại', source: 'Tạm ứng kinh phí Bộ Tài chính', cqCap: 'Sở Tư pháp Hà Nội', notes: 'Đề nghị cấp tạm ứng bồi thường bị trả lại do thiếu tài liệu y tế chứng minh.', files: [], leaderOpinion: 'Từ chối do hồ sơ chưa đính kèm báo cáo giám định sức khỏe của bệnh viện cấp tỉnh.', approvedDate: '09/09/2026 10:30', approvedLeader: 'Lãnh đạo cơ quan', agencyName: 'Tòa án nhân dân TP. Hà Nội' }
     ];
     const KP_FALLBACK_AGENCY = {};
     KP_FALLBACK.forEach(p => { KP_FALLBACK_AGENCY[p.id] = p.agencyName; });
@@ -1880,7 +1893,7 @@
                 const back = rec.status === YCBT_STATUS.BI_TU_CHOI;
                 pending.push(Object.assign({}, base, {
                     key: 'tl:' + rec.code, type: WORK_TYPES.THU_LY, kind: back ? KIND_CU_NGUOI : '',
-                    detail: back ? `Cập nhật, trình lại Cử người giải quyết bồi thường (bị từ chối: ${rec.returned.reason || ''})` : `Cử người giải quyết bồi thường tại ${unitName(thuLyUnitOf(rec))}`,
+                    detail: back ? `Cập nhật, trình lại Cử người giải quyết bồi thường (bị trả lại: ${rec.returned.reason || ''})` : `Cử người giải quyết bồi thường tại ${unitName(thuLyUnitOf(rec))}`,
                     who: ph ? `${ph.userName} (Phê duyệt tiếp nhận)` : '--', at: ph ? ph.at : (rec.receivedAt || '--')
                 }));
             }
@@ -2076,7 +2089,7 @@
         'Không thụ lý': ['#fee2e2', '#991b1b'],
         'Đã chuyển CQGQBT': ['#ccfbf1', '#0f766e'],
         'Đã hủy': ['#f1f5f9', '#475569'],
-        'Bị trả lại': ['#fee2e2', '#b91c1c'],
+        'Bị trả lại': ['#fef3c7', '#b45309'],
         'Chờ chuyển CQGQBT': ['#ccfbf1', '#0f766e'],
         'Yêu cầu bổ sung': ['#ffedd5', '#c2410c'],
         'Hoàn thành': ['#dcfce7', '#15803d'],
@@ -2536,7 +2549,7 @@
                 nycName: 'Lê Thị Bích Ngọc', nycPhone: '0983215647', nycTinhThanh: 'Thành phố Hà Nội', nycPhuongXa: 'Phường Láng', nycAddressDetail: 'Số 8 phố Chùa Láng',
                 linhVuc: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', hanhVi: 'Yêu cầu bồi thường thiệt hại do quyết định xử phạt vi phạm hành chính trái pháp luật.',
                 date: '15/10/2026', receivedAt: '08:20 15/10/2026', routes: routeBtp('10:00 15/10/2026', '15:15 15/10/2026'),
-                history: [h('Nhận hồ sơ từ Dịch vụ công quốc gia', '', '08:20 15/10/2026', 'Hồ sơ gửi từ Dịch vụ công quốc gia. Chờ lãnh đạo Bộ Tư pháp phân công.'), h('Chuyển đơn vị', 'oanhdh', '10:00 15/10/2026', 'Chuyển Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước phân công.'), h('Chuyển đơn vị', 'cuctruong', '15:15 15/10/2026', 'Chuyển Phòng Quản lý nghiệp vụ về bồi thường nhà nước phân công.')]
+                history: [h('Nhận hồ sơ từ Dịch vụ công', '', '08:20 15/10/2026', 'Hồ sơ gửi từ Dịch vụ công. Chờ lãnh đạo Bộ Tư pháp phân công.'), h('Chuyển đơn vị', 'oanhdh', '10:00 15/10/2026', 'Chuyển Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước phân công.'), h('Chuyển đơn vị', 'cuctruong', '15:15 15/10/2026', 'Chuyển Phòng Quản lý nghiệp vụ về bồi thường nhà nước phân công.')]
             }),
             base('VVBT-2026-143', {
                 module: 'YCBT', loaiYeuCau: REQUEST_TYPE_YCBT, nguonHoSo: SOURCES.TIEP_NHAN, hinhThucTiepNhan: RECEIVE_METHODS.BUU_CHINH,
@@ -2842,14 +2855,26 @@
         const claimOf = code => list.find(c => c.code === code) || null;
         const map = new Map();
         const add = (code, claim, rec) => { if (code && !map.has(code)) map.set(code, { code, claim, rec }); };
+        // [tnd] Luồng Duyệt tiếp nhận (tiep_nhan_ptn.js): hồ sơ Chờ duyệt tiếp nhận / Bị trả lại chưa có hồ sơ luồng, trạng thái theo Phiếu tiếp nhận
+        const ptn = readJson('btnnPhieuTiepNhan_v1', {}) || {};
+        const ptnHeld = c => { const p = ptn[c.code]; return !!p && p.flow === 'tn' && (p.status === 'Chờ duyệt' || p.status === 'Bị trả lại') && !recMap.get(c.code); };
+        const ptnCanSign = c => {
+            const p = ptn[c.code];
+            if (!ptnHeld(c) || p.status !== 'Chờ duyệt' || !p.approval) return false;
+            const a = p.approval; const who = (a.assignees || [])[a.level];
+            if (who) return who === userId;
+            const grp = (a.leaders || [])[a.level];
+            return Array.isArray(grp) ? grp.includes(userId) : isLeaderOf(userId, a.path[a.level]);
+        };
         if (isLeaderUser(userId)) {
             records.filter(r => canAssign(r, userId)).forEach(r => add(r.code, claimOf(r.code), r));
+            list.filter(ptnCanSign).forEach(c => add(c.code, c, null));
         } else {
             list.forEach(c => {
                 const rec = recMap.get(c.code) || null;
                 // Trạng thái hồ sơ tiếp nhận lấy theo hồ sơ luồng phân công
                 const status = rec ? rec.status : c.status;
-                if (c.rootUnitId === root && (c.receivedBy || name) === name && allowed.includes(c.requestType) && inReception(status)) add(c.code, c, rec);
+                if (c.rootUnitId === root && (c.receivedBy || name) === name && allowed.includes(c.requestType) && (inReception(status) || ptnHeld(c))) add(c.code, c, rec);
             });
             records.filter(r => r.source === 'Tiếp nhận' && receptionSourceOf(r.nguonHoSo) === SOURCES.TIEP_NHAN
                 && r.receivedBy === name && r.rootUnitId === root && inReception(r.status)).forEach(r => add(r.code, claimOf(r.code), r));

@@ -9,7 +9,7 @@
 (function () {
     if (typeof sdxClaims !== 'function' || typeof sdxSeedClaims !== 'function') return;
 
-    // Đăng báo: Gửi cho UBND cấp xã nơi người bị thiệt hại cư trú (Đơn vị nhận, Ngày nhận, Tài liệu kèm theo)
+    // Đăng báo: Gửi cho UBND cấp xã nơi người bị thiệt hại cư trú (Đơn vị nhận, Ngày nhận, Tài liệu đính kèm)
     function communeXa(c, date) {
         var vv = c.maVuViec || c.code;
         var ward = String(c.nycPhuongXa || '').replace(/^\d+\s*-\s*/, '');

@@ -195,14 +195,14 @@ function phdxLogHtml(l, i, isOpen) {
         + phdxF('Bước trước khi hoãn', typeof phddStepLabel === 'function' ? phddStepLabel(l.prevStatus) : l.prevStatus)
         + phdxF('Người cập nhật', l.by)
         + phdxF('Thời điểm cập nhật', l.at, 'phdx-span2')
-        + '</div>' + phdxDocs(l.files, 'Tài liệu kèm theo');
+        + '</div>' + phdxDocs(l.files, 'Tài liệu đính kèm');
     if (l.resumeDate) {
         h += '<div class="phdx-sub">Tiếp tục thực hiện phục hồi danh dự</div><div class="phdx-grid">'
             + phdxF('Ngày tiếp tục', l.resumeDate)
             + phdxF('Người cập nhật', l.resumeBy)
             + phdxF('Thời điểm cập nhật', l.resumeAt, 'phdx-span2')
             + phdxF('Lý do / Nội dung tiếp tục', l.resumeReason, 'phdx-span4')
-            + '</div>' + phdxDocs(l.resumeFiles, 'Tài liệu kèm theo');
+            + '</div>' + phdxDocs(l.resumeFiles, 'Tài liệu đính kèm');
     }
     return h + '</div>';
 }
@@ -220,7 +220,7 @@ function phdxFormHtml() {
         + '<div class="gqx-field" style="margin-bottom:12px;"><label class="form-label" for="phdxResumeReason">Lý do / Nội dung tiếp tục<span class="gqx-req">*</span></label>'
         + '<textarea id="phdxResumeReason" class="form-control" rows="3" maxlength="2000" placeholder="Nhập lý do / nội dung tiếp tục thực hiện phục hồi danh dự" oninput="phdxClearErr(\'phdxResumeReason\'); document.getElementById(\'phdxResumeReasonCount\').textContent=this.value.length+\'/2000 ký tự\';"></textarea>'
         + '<div id="phdxResumeReasonCount" class="ktlx-counter">0/2000 ký tự</div>' + err('phdxResumeReason') + '</div>'
-        + '<div class="form-group" style="margin-bottom:0;"><span class="form-label">Tài liệu kèm theo</span><div id="phdxResumeDocs"></div></div>'
+        + '<div class="form-group" style="margin-bottom:0;"><span class="form-label">Tài liệu đính kèm</span><div id="phdxResumeDocs"></div></div>'
         + '<div class="phdx-foot"><button type="button" class="btn btn-primary btn-sm" id="phdxBtnResume" onclick="phdxResume()" style="display:inline-flex; align-items:center; gap:6px;"><i class="fa-solid fa-play"></i> Tiếp tục thực hiện phục hồi danh dự</button></div>'
         + '</div>';
 }

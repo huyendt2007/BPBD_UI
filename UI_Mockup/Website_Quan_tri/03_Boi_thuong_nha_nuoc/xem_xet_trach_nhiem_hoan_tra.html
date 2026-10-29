@@ -465,6 +465,7 @@
         td:has(> .badge.ht-st) { min-width: 112px; }
         .ht-st-review { background-color: #ede9fe; color: #6d28d9; border: 1px solid #ddd6fe; }
         .ht-st-danger { background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .ht-st-tralai { background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
         .ht-st-pending { background-color: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
         .ht-st-warning { background-color: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
         .ht-st-wait { background-color: #fef9c3; color: #a16207; border: 1px solid #fde68a; }
@@ -1445,7 +1446,7 @@
                         <span class="form-label" id="refundObligationReasonLabel">Căn cứ/Lý do<span class="required">*</span></span>
                         <textarea class="form-control" id="refundObligationReason" style="height:92px; resize:vertical;" placeholder="Nhập căn cứ, lý do thực hiện..."></textarea>
                     </div>
-                    <!-- Văn bản căn cứ (gộp Tài liệu liên quan / Tài liệu kèm theo): bắt buộc; .pdf, .jpg, .jpeg, .png; nhiều tệp, mỗi tệp tối đa 50MB - bảng do btnn_tai_lieu_kem_theo.js dựng -->
+                    <!-- Văn bản căn cứ (gộp Tài liệu liên quan / Tài liệu đính kèm): bắt buộc; .pdf, .jpg, .jpeg, .png; nhiều tệp, mỗi tệp tối đa 50MB - bảng do btnn_tai_lieu_kem_theo.js dựng -->
                     <div id="refundObligationTlkt"></div>
                 </form>
             </div>
@@ -1507,7 +1508,7 @@
 
     <!-- MÀN KÝ DUYỆT / TỪ CHỐI (htkd) - dùng chung cho mọi Loại trình (Thành lập hội đồng, QĐ hoàn trả, Đình chỉ xem xét hoàn trả);
          bố cục đồng nhất màn chi tiết hồ sơ hoàn trả và màn Ký duyệt Xác định cơ quan GQBT / QĐ GQBT:
-         vùng trái Xem trước văn bản (tên tệp + Mở xem văn bản); vùng phải Thông tin tổng quan -> Tài liệu kèm theo (chỉ khi có) -> Lịch sử trình ký -> Ý kiến / Lý do từ chối.
+         vùng trái Xem trước văn bản (tên tệp + Mở xem văn bản); vùng phải Thông tin tổng quan -> Tài liệu đính kèm (chỉ khi có) -> Lịch sử trình ký -> Ý kiến / Lý do từ chối.
          Không có Chứng thư số / Mã PIN, Hình thức ký số, Ghi chú kết quả, chọn Lãnh đạo cấp tiếp theo. -->
     <style id="htkdCss">
         .htkd-modal { width: 100vw !important; max-width: 100vw !important; height: 100vh; max-height: 100vh !important; border-radius: 0 !important; }
@@ -1593,8 +1594,8 @@
     <!-- ============================================== -->
     <!-- JAVASCRIPT CONTROLLERS -->
     <!-- ============================================== -->
-    <script src="btnn_luong_xu_ly.js?v=20261028tl1"></script>
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261029tldk"></script>
     <script>
         // Xem xét trách nhiệm hoàn trả: đơn vị người xem theo vai trò giả lập (htMockScope); Lãnh đạo (ký duyệt) xem được mọi khối.
         // Tài liệu không ban hành kèm theo của phiếu trình chỉ đơn vị trình (mặc định Đơn vị tạo Hội đồng; Quyết định của cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại: đơn vị đó) và Lãnh đạo xem được
@@ -2263,7 +2264,7 @@
         }
         function htStNormalize(d) { if (d && d.status) { d.status = htStCode(d.status, d.loaiTrinh); d.loaiTrinh = htStView(d.status).loai; } return d; }
         const HT_ST_STYLE = {
-            'Chờ duyệt': 'review', 'Bị trả lại': 'danger', 'Họp hội đồng': 'pending', 'Chờ ban hành QĐ hoàn trả': 'warning',
+            'Chờ duyệt': 'review', 'Bị trả lại': 'tralai', 'Họp hội đồng': 'pending', 'Chờ ban hành QĐ hoàn trả': 'warning',
             'Hoãn hoàn trả': 'wait', 'Thu tiền hoàn trả': 'info', 'Miễn hoàn trả': 'success', 'Hoàn thành': 'success', 'Đình chỉ xem xét hoàn trả': 'draft'
         };
         // Badge trạng thái (đồng bộ màn Quyết định GQBT): pill không icon; Chờ duyệt / Bị trả lại có dòng phụ Loại trình; hồ sơ nháp không hiển thị trạng thái
@@ -2537,8 +2538,8 @@
                 case 'Bị trả lại thành lập HĐ':
                     canUpdate = (currentMockRole !== 'lanh_dao' && currentMockRole !== 'tra_cuu');
                     updateTooltip = canUpdate ? 'Cập nhật lại thông tin Hội đồng và trình ký lại' : 'Lãnh đạo không thực hiện cập nhật';
-                    approveTooltip = 'Hồ sơ đã bị từ chối, cần cập nhật trước khi trình ký lại';
-                    rejectTooltip = 'Hồ sơ đã bị từ chối';
+                    approveTooltip = 'Hồ sơ đã bị trả lại, cần cập nhật trước khi trình ký lại';
+                    rejectTooltip = 'Hồ sơ đã bị trả lại';
                     deleteTooltip = 'Không thể xóa hồ sơ đã có quyết định';
                     break;
                 case 'Họp hội đồng':
@@ -2569,8 +2570,8 @@
                 case 'Bị trả lại QĐ hoàn trả':
                     canUpdate = (currentMockRole !== 'lanh_dao' && currentMockRole !== 'tra_cuu');
                     updateTooltip = canUpdate ? 'Cập nhật lại dự thảo Quyết định hoàn trả và trình ký lại' : 'Lãnh đạo không thực hiện cập nhật';
-                    approveTooltip = 'Dự thảo Quyết định đã bị từ chối, cần sửa lại';
-                    rejectTooltip = 'Dự thảo Quyết định đã bị từ chối';
+                    approveTooltip = 'Dự thảo Quyết định đã bị trả lại, cần sửa lại';
+                    rejectTooltip = 'Dự thảo Quyết định đã bị trả lại';
                     deleteTooltip = 'Không thể xóa hồ sơ đang trong quy trình xử lý';
                     break;
                 case 'Thu tiền hoàn trả':
@@ -2819,7 +2820,7 @@
                         statusBadge = '<span class="badge" style="background:#fefce8; color:#a16207; border:1px solid #fef08a; font-weight:600;"><i class="fa-solid fa-hourglass-half" style="margin-right:4px;"></i>Chờ duyệt QĐ thành lập</span>';
                         break;
                     case 'Bị trả lại thành lập HĐ':
-                        statusBadge = '<span class="badge" style="background:#fef2f2; color:#b91c1c; border:1px solid #fecaca; font-weight:600;"><i class="fa-solid fa-circle-xmark" style="margin-right:4px;"></i>Bị trả lại thành lập HĐ</span>';
+                        statusBadge = '<span class="badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-weight:600;"><i class="fa-solid fa-circle-xmark" style="margin-right:4px;"></i>Bị trả lại thành lập HĐ</span>';
                         break;
                     case 'Họp hội đồng':
                         statusBadge = '<span class="badge" style="background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; font-weight:600;"><i class="fa-solid fa-users" style="margin-right:4px;"></i>Họp hội đồng</span>';
@@ -2828,7 +2829,7 @@
                         statusBadge = '<span class="badge" style="background:#fff7ed; color:#ea580c; border:1px solid #fdba74; font-weight:600;"><i class="fa-solid fa-file-signature" style="margin-right:4px;"></i>Chờ ban hành QĐ hoàn trả</span>';
                         break;
                     case 'Bị trả lại QĐ hoàn trả':
-                        statusBadge = '<span class="badge" style="background:#fee2e2; color:#991b1b; border:1px solid #f87171; font-weight:600;"><i class="fa-solid fa-circle-exclamation" style="margin-right:4px;"></i>Bị trả lại QĐ hoàn trả</span>';
+                        statusBadge = '<span class="badge" style="background:#fef3c7; color:#b45309; border:1px solid #fde68a; font-weight:600;"><i class="fa-solid fa-circle-exclamation" style="margin-right:4px;"></i>Bị trả lại QĐ hoàn trả</span>';
                         break;
                     case 'Thu tiền hoàn trả':
                         statusBadge = '<span class="badge" style="background:#dbeafe; color:#1e40af; border:1px solid #93c5fd; font-weight:600;"><i class="fa-solid fa-spinner fa-spin" style="margin-right:4px;"></i>Thu tiền hoàn trả</span>';
@@ -3744,7 +3745,7 @@
                 + row('Nội dung trình', htkdE(htkdContent(d)))
                 + `</div>`;
         }
-        // Tài liệu kèm theo của lần trình (chỉ đọc; chỉ hiển thị khi có)
+        // Tài liệu đính kèm của lần trình (chỉ đọc; chỉ hiển thị khi có)
         function htkdTlktHtml(d) {
             const loai = htkdLoai(d);
             const list = loai === 'QĐ hoàn trả' ? d.qdTlkt : (loai === 'Đình chỉ xem xét hoàn trả' ? (d.dcht && d.dcht.attachments) : (loai === 'Thành lập hội đồng' ? (d.tlhd && d.tlhd.attachments) : null));
@@ -3923,7 +3924,7 @@
     </script>
     <!-- Phạm vi dữ liệu theo đơn vị + trạng thái 02 tầng (chi tiết / chung) của màn danh sách -->
     <script src="ht_du_lieu_mau.js?v=20261028mg1"></script>
-    <script src="xem_xet_hoan_tra_pham_vi.js?v=20261028mg1"></script>
+    <script src="xem_xet_hoan_tra_pham_vi.js?v=20261029tlcam"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
     <script src="ht_mock_role_bar.js?v=20261028tl1"></script>
     <script src="admin-ui-standardizer.js"></script>

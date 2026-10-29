@@ -362,7 +362,7 @@ let proposalsList = [
         }
     },
 
-    // ===== 4-5. TRẠNG THÁI: CHỜ DUYỆT / BỊ TỪ CHỐI =====
+    // ===== 4-5. TRẠNG THÁI: CHỜ DUYỆT / BỊ TRẢ LẠI =====
     // Bỏ bản ghi mẫu kiểu cũ Chờ duyệt / Bị trả lại không có Loại trình (P3, P4, P21, P22, P7, P8, P23, P95).
     // Bản ghi Chờ duyệt / Bị trả lại mẫu: QĐ tạm ứng (quan_ly_kinh_phi_qdtu.js), Thông báo chi trả (quan_ly_kinh_phi_kptb.js), đều có Loại trình.
     // ===== 6. TRẠNG THÁI: CHỜ CHI TRẢ (04 bản ghi - Gồm 3 khoản Quá hạn 3 năm) =====
@@ -2494,7 +2494,7 @@ function renderProposalsTable() {
             }
         };
 
-        // Mỗi trạng thái 01 màu badge riêng (kpdtStatusClass); Chờ duyệt tím nhạt, Bị trả lại đỏ nhạt như các màn khác
+        // Mỗi trạng thái 01 màu badge riêng (kpdtStatusClass); Chờ duyệt tím nhạt, Bị trả lại cam như các màn khác
         const badgeClass = kpdtStatusClass(item.status);
         const treasuryInfo = getTreasuryInfo(item);
         const treasuryHtml = renderTreasuryCell(item, treasuryInfo);
@@ -3877,7 +3877,7 @@ function fillProposalDirect(id) {
     renderProposalAttachedDocs();
 }
 
-// UPDATE PROPOSAL DIRECT FROM "BỊ TỪ CHỐI" STATUS
+// UPDATE PROPOSAL DIRECT FROM "BỊ TRẢ LẠI" STATUS
 function updateProposalDirect(id) {
     const item = proposalsList.find(p => p.id === id);
     if (!item) return;
@@ -3951,7 +3951,7 @@ function updateProposalDirect(id) {
         document.getElementById('sectionLeaderApproval').style.display = 'block';
         const badge = document.getElementById('leaderApprovalBadge');
         if (badge) {
-            badge.className = 'badge badge-danger';
+            badge.className = 'badge badge-tra-lai';
             badge.innerText = 'Bị trả lại';
         }
         const nameEl = document.getElementById('viewLeaderName');
@@ -4024,7 +4024,8 @@ function viewProposalDetail(id) {
         if (item.status === 'Chờ duyệt' || item.status === 'Chờ phê duyệt') statusClass = 'badge-pending';
         else if (item.status === 'Đã duyệt' || item.status === 'Đã cấp kinh phí' || item.status === 'Hoàn thành' || item.status === 'Đã sung quỹ') statusClass = 'badge-success';
         else if (item.status === 'Chờ chi trả' || item.status === 'Chi trả một phần') statusClass = 'badge-warning';
-        else if (item.status === 'Từ chối' || item.status === 'Bị trả lại') statusClass = 'badge-danger';
+        else if (item.status === 'Bị trả lại') statusClass = 'badge-tra-lai';
+        else if (item.status === 'Từ chối') statusClass = 'badge-danger';
         
         badge.className = 'badge ' + statusClass;
         badge.innerText = item.status;
@@ -4215,7 +4216,7 @@ function viewProposalDetail(id) {
         btnCancel.innerText = 'Đóng';
     }
 
-    // Reject notice banner (Khối Lý do bị từ chối theo SRS 4.3.3.2.7.2)
+    // Reject notice banner (Khối Lý do bị trả lại theo SRS 4.3.3.2.7.2)
     const blockReject = document.getElementById('blockRejectNotice');
     if (item.status === 'Bị trả lại') {
         if (blockReject) {
@@ -4405,7 +4406,7 @@ function viewProposalDetail(id) {
                 document.getElementById('sectionLeaderApproval').style.display = 'block';
                 const approvalBadge = document.getElementById('leaderApprovalBadge');
                 if (approvalBadge) {
-                    approvalBadge.className = item.status === 'Bị trả lại' ? 'badge badge-danger' : 'badge badge-success';
+                    approvalBadge.className = item.status === 'Bị trả lại' ? 'badge badge-tra-lai' : 'badge badge-success';
                     approvalBadge.innerText = item.status === 'Bị trả lại' ? 'Bị trả lại' : 'Đã phê duyệt';
                 }
                 const nameEl = document.getElementById('viewLeaderName');
@@ -4415,7 +4416,7 @@ function viewProposalDetail(id) {
                 const textEl = document.getElementById('viewLeaderOpinionText');
                 if (textEl) {
                     textEl.innerText = item.leaderOpinion || 'Đồng ý phê duyệt tờ trình cấp kinh phí bồi thường theo quy định.';
-                    textEl.style.borderLeftColor = item.status === 'Bị trả lại' ? 'var(--danger-color)' : 'var(--success-color)';
+                    textEl.style.borderLeftColor = item.status === 'Bị trả lại' ? '#f59e0b' : 'var(--success-color)';
                 }
             } else {
                 if (b7) b7.style.display = 'none';
@@ -4435,7 +4436,7 @@ function viewProposalDetail(id) {
                         <div style="display: flex; justify-content: space-between; font-weight: 600; color: #64748B; margin-bottom: 4px;">
                             <span>Lần từ chối ngày ${h.date} - ${h.leader}</span>
                         </div>
-                        <div style="color: #334155;"><strong>Lý do từ chối:</strong> ${h.opinion}</div>
+                        <div style="color: #334155;"><strong>Lý do bị trả lại:</strong> ${h.opinion}</div>
                     </div>
                 `).join('');
             } else {

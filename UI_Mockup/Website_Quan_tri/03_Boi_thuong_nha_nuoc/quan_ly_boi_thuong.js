@@ -1538,7 +1538,8 @@
                 else if (item.status === 'Chờ tiếp nhận') badgeClass = 'badge-pending';
                 else if (item.status === 'Yêu cầu bổ sung') badgeClass = 'badge-warning';
                 else if (item.status === 'Chờ thụ lý') badgeClass = 'badge-pending';
-                else if (item.status === 'Bị trả lại' || item.status === 'Từ chối tiếp nhận' || item.status === 'Từ chối thụ lý') badgeClass = 'badge-danger';
+                else if (item.status === 'Bị trả lại') badgeClass = 'badge-tra-lai';
+                else if (item.status === 'Từ chối tiếp nhận' || item.status === 'Từ chối thụ lý') badgeClass = 'badge-danger';
                 else if (item.status === 'Thương lượng không thành công') badgeClass = 'badge-danger';
                 else if (item.status === 'Chờ ban hành QĐ') badgeClass = 'badge-warning';
                 else if (item.status === 'Chờ chi trả') badgeClass = 'badge-warning';
@@ -4080,7 +4081,8 @@
                 if (claim.status === 'Hoàn thành') badgeClass = 'badge-success';
                 else if (claim.status === 'Chờ tiếp nhận' || claim.status === 'Chờ thụ lý') badgeClass = 'badge-pending';
                 else if (claim.status === 'Yêu cầu bổ sung' || claim.status === 'Chờ ban hành QĐ' || claim.status === 'Chờ chi trả') badgeClass = 'badge-warning';
-                else if (claim.status === 'Bị trả lại' || claim.status === 'Từ chối tiếp nhận' || claim.status === 'Từ chối thụ lý' || claim.status === 'Thương lượng không thành công') badgeClass = 'badge-danger';
+                else if (claim.status === 'Bị trả lại') badgeClass = 'badge-tra-lai';
+                else if (claim.status === 'Từ chối tiếp nhận' || claim.status === 'Từ chối thụ lý' || claim.status === 'Thương lượng không thành công') badgeClass = 'badge-danger';
                 
                 badgeEl.className = 'badge ' + badgeClass;
                 badgeEl.innerText = claim.status;
@@ -4418,7 +4420,7 @@
             else if (claim.status === 'Chờ tiếp nhận') badgeClass = 'badge-pending';
             else if (claim.status === 'Yêu cầu bổ sung') badgeClass = 'badge-warning';
             else if (claim.status === 'Chờ thụ lý') badgeClass = 'badge-pending';
-            else if (claim.status === 'Bị trả lại') badgeClass = 'badge-danger';
+            else if (claim.status === 'Bị trả lại') badgeClass = 'badge-tra-lai';
             else if (claim.status === 'Thương lượng không thành công') badgeClass = 'badge-danger';
             else if (claim.status === 'Chờ ban hành QĐ') badgeClass = 'badge-warning';
             else if (claim.status === 'Chờ chi trả') badgeClass = 'badge-warning';
@@ -4475,7 +4477,7 @@
                 `;
             }
 
-            const nopKenhText = claim.claimNopKenh === 'buu-chinh' ? 'Qua dịch vụ bưu chính' : claim.claimNopKenh === 'dvc' ? 'Qua môi trường số (Dịch vụ Công)' : 'Trực tiếp';
+            const nopKenhText = claim.claimNopKenh === 'buu-chinh' ? 'Qua dịch vụ bưu chính' : claim.claimNopKenh === 'dvc' ? 'Dịch vụ công' : 'Trực tiếp';
 
             container.innerHTML = `
                 <!-- Top Status Header Block -->
@@ -5021,7 +5023,7 @@
                 
                 let badgeClass = 'bg-secondary';
                 if (decStatus === 'Chờ ký') badgeClass = 'bg-warning';
-                else if (decStatus === 'Bị trả lại') badgeClass = 'bg-danger';
+                else if (decStatus === 'Bị trả lại') badgeClass = 'badge-tra-lai';
                 else if (decStatus === 'Hoàn thành') badgeClass = 'bg-success';
                 
                 qdRead.innerHTML = `
@@ -6895,10 +6897,10 @@ function printSupplementNotice(id) {
             </div>
         </div>
 
-        <!-- Khối Tài liệu kèm theo (Nếu có) -->
+        <!-- Khối Tài liệu đính kèm (Nếu có) -->
         <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:15px; margin-bottom:15px; font-family:sans-serif;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <p style="font-weight:bold; color:#1e3a8a; margin:0; font-size:14px;"><i class="fa-solid fa-paperclip"></i> Tài liệu kèm theo (Nếu có):</p>
+                <p style="font-weight:bold; color:#1e3a8a; margin:0; font-size:14px;"><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm (Nếu có):</p>
                 <div class="supplement-no-print">
                     <input type="file" id="supplementFileInput" multiple style="display:none;" onchange="handleSupplementFilesUpload(this)" accept=".pdf,.doc,.docx,.jpg,.png">
                     <button type="button" class="btn btn-secondary btn-sm" onclick="document.getElementById('supplementFileInput').click()" style="padding:5px 12px; font-size:12.5px;">

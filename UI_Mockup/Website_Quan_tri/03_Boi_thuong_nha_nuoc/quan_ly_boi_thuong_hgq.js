@@ -2,7 +2,7 @@
  * Popup Trình duyệt Hoãn giải quyết bồi thường (prefix hgq, Mẫu số 22/BTNN) và
  * Popup Trình duyệt Tạm đình chỉ giải quyết bồi thường (prefix hgqt, chưa có mẫu văn bản: chỉ Tải lên từ máy) - Giải quyết yêu cầu bồi thường
  * Bố cục giống Popup Đình chỉ giải quyết (quan_ly_boi_thuong_dcgq.js) / Không thụ lý:
- * - Bước 1 (Form): Hình thức ký (Ký số trên hệ thống | Ký ngoài (Ban hành trực tiếp)), thông tin hoãn / tạm đình chỉ, Tệp văn bản trình ký, Tài liệu kèm theo (chỉ Ký số)
+ * - Bước 1 (Form): Hình thức ký (Ký số trên hệ thống | Ký ngoài (Ban hành trực tiếp)), thông tin hoãn / tạm đình chỉ, Tệp văn bản trình ký, Tài liệu đính kèm (chỉ Ký số)
  *   -> nút Tiếp tục (Ký số) -> Bước 2 Trình duyệt: Kéo ô ký & chọn Lãnh đạo từng cấp, Nội dung trình -> Trình Lãnh đạo
  * - Trình: vụ việc "Chờ duyệt", Loại trình "Hoãn giải quyết bồi thường" / "Tạm đình chỉ giải quyết bồi thường";
  *   cấp cuối Ký duyệt -> "Hoãn giải quyết" / "Tạm đình chỉ"; Từ chối -> "Bị trả lại" (Cập nhật -> mở lại popup, điền lại dữ liệu lần trình trước)
@@ -123,7 +123,7 @@ function hgqEnsureModal(p) {
         + '<div id="' + p + 'StepperBar" class="ktl-stepper-fullwidth"><div id="' + p + 'Step1Tab" class="ktl-step-tab active" onclick="hgqGoStep1(\'' + p + '\')"><span class="ktl-step-badge" id="' + p + 'Step1Badge">1</span><span class="ktl-step-title">Nhập thông tin</span></div>'
         + '<div class="ktl-stepper-sep"><i class="fa-solid fa-chevron-right"></i></div><div id="' + p + 'Step2Tab" class="ktl-step-tab" onclick="hgqGoStep2(\'' + p + '\')"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span></div></div>'
         + '<div id="' + p + 'Step1Body" class="sticky-modal-body gqx-body" style="overflow-y:auto; flex:1; padding:24px;">'
-        + '<div id="' + p + 'ReturnedAlertBlock" style="display:none; background:#fef2f2; border:1px solid #fecaca; border-left:4px solid #dc2626; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b91c1c; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TRẢ VỀ YÊU CẦU CHỈNH SỬA</div><div style="font-size:12.5px; color:#7f1d1d; line-height:1.5;">Lý do trả về: <strong id="' + p + 'ReturnedReason">--</strong><br>Người trả về: <span id="' + p + 'ReturnedOfficer">--</span> • Thời điểm: <span id="' + p + 'ReturnedDate">--</span></div></div>'
+        + '<div id="' + p + 'ReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TRẢ VỀ YÊU CẦU CHỈNH SỬA</div><div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả về: <strong id="' + p + 'ReturnedReason">--</strong><br>Người trả về: <span id="' + p + 'ReturnedOfficer">--</span> • Thời điểm: <span id="' + p + 'ReturnedDate">--</span></div></div>'
         + '<div class="gqx-sec"><div class="gqx-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="gqx-req">*</span></div><div class="sign-cards-grid">'
         + card('online', 'Ký số trên hệ thống', 'Trình Lãnh đạo ký duyệt trên phần mềm', 'fa-file-signature', false)
         + card('offline', 'Ký ngoài (Ban hành trực tiếp)', 'Tải lên văn bản PDF đã ký và đóng dấu', 'fa-stamp', true)

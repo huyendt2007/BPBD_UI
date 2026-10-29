@@ -10,10 +10,10 @@
 
 | Khối | Thời điểm nhập | Căn cứ | Thông tin |
 | :--- | :--- | :--- | :--- |
-| I. Kế hoạch kiểm tra | Khi lập kế hoạch | Điều 17, 18, 19, 20 | Hình thức, căn cứ, cơ quan được kiểm tra, nội dung, phạm vi, thời gian và địa điểm dự kiến, đoàn kiểm tra, tài liệu kèm theo kế hoạch. |
-| II. Kết quả kiểm tra | Sau khi tiến hành kiểm tra | Điều 22, 23 | Thời gian và địa điểm kiểm tra thực tế, kết quả kiểm tra, tài liệu kèm theo (biên bản, kết luận kiểm tra). |
+| I. Kế hoạch kiểm tra | Khi lập kế hoạch | Điều 17, 18, 19, 20 | Hình thức, căn cứ, cơ quan được kiểm tra, nội dung, phạm vi, thời gian và địa điểm dự kiến, đoàn kiểm tra, tài liệu đính kèm của kế hoạch. |
+| II. Kết quả kiểm tra | Sau khi tiến hành kiểm tra | Điều 22, 23 | Thời gian và địa điểm kiểm tra thực tế, kết quả kiểm tra, tài liệu đính kèm (biên bản, kết luận kiểm tra). |
 
-\- Hệ thống chỉ ghi nhận thông tin; kế hoạch kiểm tra, kết luận kiểm tra được ban hành và gửi ngoài hệ thống, cán bộ đính kèm file vào tài liệu kèm theo.
+\- Hệ thống chỉ ghi nhận thông tin; kế hoạch kiểm tra, kết luận kiểm tra được ban hành và gửi ngoài hệ thống, cán bộ tải file lên khối Tài liệu đính kèm.
 
 *a. Phân quyền*:
 
@@ -57,7 +57,7 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion). |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối. |
 | Mã cuộc kiểm tra | String(50) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập mã cuộc kiểm tra...".<br>- Tìm gần đúng. |
 | Cơ quan được kiểm tra | String(255) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập cơ quan được kiểm tra...".<br>- Tìm gần đúng theo tên cơ quan. |
 | Hình thức kiểm tra | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Kiểm tra định kỳ<br>+ Kiểm tra đột xuất |
@@ -86,7 +86,9 @@ flowchart TD
 |  |  |  | **TH3 - Không có dữ liệu**: Bảng hiển thị 01 dòng [MSG-INF-SYS-001]. |
 | 2 | Xóa bộ lọc | Button | Hệ thống xóa toàn bộ tiêu chí lọc về giá trị mặc định và tải lại danh sách. |
 | 3 | Thêm mới | Button | Hệ thống mở [MH02 - Màn hình Thêm mới/Sửa kế hoạch kiểm tra](#43394-mh02---màn-hình-thêm-mớisửa-kế-hoạch-kiểm-tra) ở chế độ Thêm mới. |
-| 4 | Kết xuất Excel | Button | Kết xuất danh sách theo kết quả tìm kiếm hiện hành, áp dụng [BR-EXP-040]. |
+| 4 | Kết xuất Excel | Button | Kết xuất danh sách ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md):<br>- Phạm vi: toàn bộ bản ghi thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới, không gồm cột Thao tác: STT, Mã cuộc kiểm tra, Cơ quan được kiểm tra, Hình thức kiểm tra, Thời gian kiểm tra theo kế hoạch, Thời gian kiểm tra thực tế, Trưởng đoàn kiểm tra, Trạng thái.<br>- Tên tệp: `yyyyMMdd_Danh_sach_kiem_tra_cong_tac_BTNN.xlsx`. |
+|  |  |  | **TH1 - Không có dữ liệu**: Hệ thống hiển thị [MSG-WRN-SYS-001] và không tải tệp. |
+|  |  |  | **TH2 - Có dữ liệu**: Hệ thống tải tệp Excel về máy người dùng. |
 | 5 | Row click | Row click | Hệ thống mở [MH04 - Màn hình Xem chi tiết cuộc kiểm tra](#43396-mh04---màn-hình-xem-chi-tiết-cuộc-kiểm-tra). |
 | 6 | Sửa kế hoạch | Icon button | Chỉ cho phép khi trạng thái `Chờ kiểm tra`. Hệ thống mở [MH02 - Màn hình Thêm mới/Sửa kế hoạch kiểm tra](#43394-mh02---màn-hình-thêm-mớisửa-kế-hoạch-kiểm-tra) ở chế độ Sửa. |
 | 7 | Cập nhật kết quả | Icon button | Hệ thống mở [MH03 - Màn hình Cập nhật kết quả kiểm tra](#43395-mh03---màn-hình-cập-nhật-kết-quả-kiểm-tra); với cuộc kiểm tra đã có kết quả, cho phép sửa kết quả. |
@@ -122,7 +124,7 @@ flowchart TD
 | Phạm vi kiểm tra - Thời kỳ đến ngày | Date | Có | Trống | Control UI: DatePicker.<br>- Placeholder: "dd/mm/yyyy".<br>- Không nhỏ hơn `Phạm vi kiểm tra - Thời kỳ từ ngày` theo [BR-VAL-007]. |
 | Phạm vi kiểm tra khác | String(500) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập phạm vi kiểm tra khác (đối tượng, vụ việc cụ thể)...". |
 | Đoàn kiểm tra | List(Object) | Có | 01 dòng trống, Vai trò `Trưởng đoàn` | Control UI: Bảng gồm các cột:<br>+ STT: Label, tự tăng.<br>+ Họ và tên: Text input, bắt buộc, Placeholder "Nhập họ và tên...".<br>+ Chức vụ: Text input, bắt buộc, Placeholder "Nhập chức vụ...".<br>+ Đơn vị: Tree select trên cây Cơ cấu tổ chức [DM_DON_VI], bắt buộc; chọn được mọi đơn vị (thành viên gồm đại diện cơ quan kiểm tra và các cơ quan, đơn vị có liên quan đến nội dung kiểm tra - khoản 1 Điều 20).<br>+ Vai trò: Combobox, bắt buộc, gồm `Trưởng đoàn`, `Thành viên` (khoản 1 Điều 20).<br>+ Thao tác: Icon Xóa thành viên.<br>- Nút `+ Thêm thành viên` dưới bảng.<br>- Đoàn kiểm tra phải có đúng 01 thành viên vai trò `Trưởng đoàn`. |
-| Tài liệu kèm theo kế hoạch | List(File) | Không | 01 dòng trống | Control UI: Bảng tài liệu gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Đính kèm kế hoạch kiểm tra đã ban hành và tài liệu liên quan.<br>- Cột `Thao tác` gồm:<br>+ Xem file<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
+| Tài liệu đính kèm | List(File) | Không | 01 dòng trống | Control UI: Bảng tài liệu gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Đính kèm kế hoạch kiểm tra đã ban hành và tài liệu liên quan.<br>- Cột `Thao tác` gồm:<br>+ Xem file<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
 | Lịch sử xử lý | - | - | - | Control UI: Label.<br>- Mỗi dòng gồm thời điểm, cán bộ thực hiện, thao tác. |
 
 ###### 4.3.3.9.4.3. Chức năng trên màn hình
@@ -162,7 +164,7 @@ flowchart TD
 | Thời gian kiểm tra thực tế đến ngày | Date | Có | `Thời gian kiểm tra dự kiến đến ngày` | Control UI: DatePicker.<br>- Placeholder: "dd/mm/yyyy".<br>- Không nhỏ hơn `Thời gian kiểm tra thực tế từ ngày` theo [BR-VAL-007]. |
 | Địa điểm kiểm tra thực tế | String(255) | Có | `Địa điểm kiểm tra dự kiến` | Control UI: Text input.<br>- Placeholder: "Nhập địa điểm kiểm tra thực tế...". |
 | Kết quả kiểm tra | Text(4000) | Có | Trống | Control UI: Text Area.<br>- Placeholder: "Nhập kết quả kiểm tra...".<br>- Ghi kết quả kiểm tra, nội dung kết luận kiểm tra (Điều 22) và biện pháp xử lý sau kiểm tra (Điều 23) nếu có. |
-| Tài liệu kèm theo | List(File) | Không | 01 dòng trống | Control UI: Bảng tài liệu gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Đính kèm biên bản kiểm tra, kết luận kiểm tra và tài liệu liên quan.<br>- Cột `Thao tác` gồm:<br>+ Xem file<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
+| Tài liệu đính kèm | List(File) | Không | 01 dòng trống | Control UI: Bảng tài liệu gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Đính kèm biên bản kiểm tra, kết luận kiểm tra và tài liệu liên quan.<br>- Cột `Thao tác` gồm:<br>+ Xem file<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
 
 ###### 4.3.3.9.5.3. Chức năng trên màn hình
 
@@ -172,7 +174,7 @@ flowchart TD
 |  |  |  | **TH1 - Bỏ trống trường bắt buộc**: Vi phạm [BR-VAL-001]. Hệ thống viền đỏ các ô lỗi, hiển thị "Đây là trường bắt buộc" và không cho lưu. |
 |  |  |  | **TH2 - Khoảng ngày không hợp lệ**: `Thời gian kiểm tra thực tế đến ngày` nhỏ hơn `Thời gian kiểm tra thực tế từ ngày`, vi phạm [BR-VAL-007]. Hệ thống hiển thị [MSG-ERR-VAL-007] và không cho lưu. |
 |  |  |  | **TH3 - Hợp lệ**: Hệ thống lưu kết quả, chuyển cuộc kiểm tra sang trạng thái `Đã kiểm tra`, ghi lịch sử xử lý, đóng màn hình và hiển thị [MSG-SUC-SYS-002]. Khối I. Kế hoạch kiểm tra giữ nguyên. |
-| 2 | Tải file / Xem file / Xóa / Thêm tài liệu | Button/Link | Xử lý như các chức năng tương ứng tại [MH02 - Màn hình Thêm mới/Sửa kế hoạch kiểm tra](#43394-mh02---màn-hình-thêm-mớisửa-kế-hoạch-kiểm-tra), áp dụng cho bảng `Tài liệu kèm theo`. |
+| 2 | Tải file / Xem file / Xóa / Thêm tài liệu | Button/Link | Xử lý như các chức năng tương ứng tại [MH02 - Màn hình Thêm mới/Sửa kế hoạch kiểm tra](#43394-mh02---màn-hình-thêm-mớisửa-kế-hoạch-kiểm-tra), áp dụng cho bảng `Tài liệu đính kèm`. |
 | 3 | Hủy bỏ | Button | Hệ thống đóng màn hình, không lưu dữ liệu và quay lại [MH01 - Màn hình Danh sách kiểm tra công tác BTNN](#43393-mh01---màn-hình-danh-sách-kiểm-tra-công-tác-btnn). |
 
 ---

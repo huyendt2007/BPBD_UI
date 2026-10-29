@@ -310,7 +310,7 @@
                         <select id="filterSource" class="form-control">
                             <option value="">Tất cả</option>
                             <option value="Tiếp nhận mới">Tiếp nhận mới</option>
-                            <option value="Dịch vụ công quốc gia">Dịch vụ công quốc gia</option>
+                            <option value="Dịch vụ công">Dịch vụ công</option>
                             <option value="Chuyển CQGQBT">Chuyển CQGQBT</option>
                             <option value="Xác định CQGQBT">Xác định CQGQBT</option>
                         </select>
@@ -323,7 +323,7 @@
                         <span class="form-label">Hình thức tiếp nhận</span>
                         <select id="filterReceiveMethod" class="form-control">
                             <option value="">Tất cả</option>
-                            <option value="Qua môi trường số (Dịch vụ Công)">Qua môi trường số (Dịch vụ Công)</option>
+                            <option value="Dịch vụ công">Dịch vụ công</option>
                             <option value="Trực tiếp">Trực tiếp</option>
                             <option value="Bộ phận Một cửa">Bộ phận Một cửa</option>
                             <option value="Qua dịch vụ bưu chính">Qua dịch vụ bưu chính</option>
@@ -851,8 +851,8 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261028tl1"></script>
-    <script src="btnn_lanh_dao_actions.js?v=20261028tl1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261029tldk"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
     <script>
         // Người dùng đăng nhập (giả lập) - cán bộ tiếp nhận
@@ -1389,7 +1389,8 @@
             // Ẩn nút "Tiếp nhận mới" khi ở tab "Đã xử lý", chỉ hiển thị tại tab "Chờ xử lý"
             const btnNew = document.getElementById("btnNewReception");
             if (btnNew) {
-                btnNew.style.display = receptionTab === "done" ? "none" : "";
+                // [ldtn] Giả lập Lãnh đạo: không hiển thị "Tiếp nhận mới"
+                btnNew.style.display = receptionTab === "done" || BTNN_LD.isLeaderUser(CURRENT_USER.id) ? "none" : "";
             }
             // Bộ lọc Trạng thái: chỉ gồm các trạng thái đang có của hồ sơ thuộc tab đang chọn
             const sel = document.getElementById("filterStatus");
@@ -1455,8 +1456,10 @@
             } else {
                 if (isLeader) {
                     records.filter(rec => !BTNN_WF.canAssign(rec, me) && BTNN_LD.leaderActedOn(rec, me, /Chuyển đơn vị|Phân công cán bộ/)).forEach(rec => add(rowFromRecord(rec)));
+                    // [tnd] Hồ sơ Lãnh đạo đã Ký duyệt / Từ chối Phiếu tiếp nhận (không còn chờ Lãnh đạo ký duyệt)
+                    if (window.PTN) claimsList.filter(c => !c.deleted && PTN.leaderActed(c.code, me) && !PTN.canActCode(c.code, me) && !(BTNN_WF.getRecord(c.code) && BTNN_WF.canAssign(BTNN_WF.getRecord(c.code), me))).forEach(add);
                 } else {
-                    getReceptionRows().filter(item => !inReception(item.status)).forEach(add);
+                    getReceptionRows().filter(item => !inReception(item.status) && !(window.PTN && PTN.holds(item))).forEach(add);
                     records.filter(rec => isMyReceptionRecord(rec) && !inReception(rec.status)).forEach(rec => add(rowFromRecord(rec)));
                 }
             }
@@ -1515,7 +1518,7 @@
         const OTHER_SOURCE_SEEDS = [
             { key: "DVC-1", nguon: SOURCES.DVC, root: "BTP-01", nyc: "Lương Văn Toàn", phone: "0912003456", city: "Thành phố Hà Nội", ward: "00007 - Phường Cầu Giấy", addr: "Số 18 Trần Đăng Ninh", linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Thu hồi giấy phép hoạt động không đúng thẩm quyền.", days: 1, time: "09:20" },
             { key: "DVC-2", nguon: SOURCES.DVC, root: "BTP-01", nyc: "Công ty TNHH Minh Khang", type: "Tổ chức", orgCode: "0312345678", phone: "0283822991", city: "Thành phố Hồ Chí Minh", ward: "26737 - Phường Sài Gòn", addr: "Số 27 Lê Thánh Tôn", linhVuc: "TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ", hanhVi: "Kê biên tài sản vượt quá nghĩa vụ phải thi hành án.", days: 5, time: "14:05" },
-            { key: "DVC-3", nguon: SOURCES.DVC, root: "STP-HN", nyc: "Nguyễn Thị Hồng Nhung", phone: "0904556123", city: "Thành phố Hà Nội", ward: "00010 - Phường Thanh Xuân", addr: "Số 9 Vũ Trọng Phụng", method: RECEIVE_METHODS.MOT_CUA, linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Chậm cấp Phiếu lý lịch tư pháp quá thời hạn quy định.", days: 2, time: "10:40" },
+            { key: "DVC-3", nguon: SOURCES.DVC, root: "STP-HN", nyc: "Nguyễn Thị Hồng Nhung", phone: "0904556123", city: "Thành phố Hà Nội", ward: "00010 - Phường Thanh Xuân", addr: "Số 9 Vũ Trọng Phụng", linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Chậm cấp Phiếu lý lịch tư pháp quá thời hạn quy định.", days: 2, time: "10:40" },
             { key: "CHUYEN-1", nguon: SOURCES.CHUYEN, root: "BTP-01", from: "UBND-HM", method: RECEIVE_METHODS.BUU_CHINH, nyc: "Đào Văn Hiển", phone: "0913224455", city: "Thành phố Hà Nội", ward: "00004 - Phường Hoàn Kiếm", addr: "Số 3 Hàng Gai", linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Xử phạt vi phạm hành chính không đúng thẩm quyền.", days: 4, time: "08:50" },
             { key: "CHUYEN-2", nguon: SOURCES.CHUYEN, root: "STP-HN", from: "UBND-CG", method: RECEIVE_METHODS.TRUC_TIEP, nyc: "Phùng Thị Lan Anh", phone: "0967332211", city: "Thành phố Hà Nội", ward: "00007 - Phường Cầu Giấy", addr: "Số 66 Xuân Thủy", linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Từ chối chứng thực hợp đồng trái quy định.", days: 6, time: "15:30" },
             { key: "XDCQ-1", nguon: SOURCES.XDCQ, root: "STP-HN", from: "BTP-01", method: RECEIVE_METHODS.TRUC_TIEP, nyc: "Hồ Văn Khiêm", phone: "0985117788", city: "Thành phố Hà Nội", ward: "00001 - Phường Ba Đình", addr: "Số 11 Đội Cấn", linhVuc: "TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH", hanhVi: "Hủy kết quả đăng ký hộ tịch trái pháp luật.", days: 3, time: "11:15" },
@@ -1541,13 +1544,13 @@
                 // Hồ sơ từ DVC: mã hồ sơ trùng Mã vụ việc; hồ sơ Chuyển CQGQBT / Xác định CQGQBT: mã BT- tại cơ quan nhận, giữ Mã vụ việc của hồ sơ gốc
                 const code = s.nguon === SOURCES.DVC ? maVuViec : BTNN_WF.nextCode("BT");
                 const unit = BTNN_WF.unitName(s.root);
-                const action = s.nguon === SOURCES.DVC ? "Nhận hồ sơ từ Dịch vụ công quốc gia"
+                const action = s.nguon === SOURCES.DVC ? "Nhận hồ sơ từ Dịch vụ công"
                     : s.nguon === SOURCES.CHUYEN ? "Nhận hồ sơ chuyển CQGQBT" : "Nhận hồ sơ từ Xác định CQGQBT";
-                const note = s.nguon === SOURCES.DVC ? `Hồ sơ gửi từ Dịch vụ công quốc gia. Chờ lãnh đạo ${unit} phân công.`
+                const note = s.nguon === SOURCES.DVC ? `Hồ sơ gửi từ Dịch vụ công. Chờ lãnh đạo ${unit} phân công.`
                     : `Hồ sơ do ${BTNN_WF.unitName(s.from)} chuyển đến. Chờ lãnh đạo ${unit} phân công.`;
                 BTNN_WF.upsertRecord({
                     id: "WF-" + code, code, maVuViec, seedKey, module: "YCBT", loaiYeuCau: REQUEST_TYPE_YCBT,
-                    nguonHoSo: s.nguon, hinhThucTiepNhan: s.method || RECEIVE_METHODS.MOI_TRUONG_SO,
+                    nguonHoSo: s.nguon, hinhThucTiepNhan: s.nguon === SOURCES.DVC ? RECEIVE_METHODS.MOI_TRUONG_SO : (s.method || RECEIVE_METHODS.TRUC_TIEP),
                     rootUnitId: s.root, currentUnitId: s.root, status: "Chờ phân công",
                     routes: [], chuTri: null, approval: null,
                     nycName: s.nyc, nycPhone: s.phone || "", nycRole: "Người bị thiệt hại", nycCountry: "Việt Nam",
@@ -1779,6 +1782,8 @@
             const isVv = item => /^VVBT-/.test(item.code || "") ? 0 : 1;
             claimsList.filter(item => !item.deleted).sort((a, b) => isVv(a) - isVv(b)).forEach(item => {
                 let rec = BTNN_WF.getRecord(item.code);
+                // [tnd] Hồ sơ đang duyệt tiếp nhận (Chờ duyệt tiếp nhận / Bị trả lại): trạng thái theo Phiếu tiếp nhận, chưa tạo hồ sơ luồng phân công
+                if (!rec && window.PTN && PTN.reconcile(item)) return;
                 if (!rec) {
                     rec = BTNN_WF.createPendingRecord(Object.assign(buildWorkflowData(item), {
                         historyNote: `Chuyển lãnh đạo ${BTNN_WF.unitName(item.rootUnitId)} phân công xử lý.`
@@ -2003,28 +2008,30 @@
                     // Phân công: Lãnh đạo thuộc Nhóm lãnh đạo của đơn vị đang phân công; Thu hồi: bên nhận chưa xử lý
                     const canAssign = receptionTab === "pending" && rec && BTNN_WF.canAssign(rec, CURRENT_USER.id);
                     const canRecall = receptionTab === "done" && BTNN_LD.canRecall(rec, CURRENT_USER.id);
-                    const assignBtn = `<button class="icon-btn accept${canAssign ? "" : " disabled-action"}" title="${canAssign ? "Phân công" : "Chỉ khả dụng với Lãnh đạo của đơn vị đang phân công, hồ sơ Chờ phân công / Đang phân công"}" style="${canAssign ? "" : offStyle}" onclick="event.stopPropagation(); openAssignFromList('${escapeAttr(item.code)}')"><i class="fa-solid fa-diagram-project"></i></button>`;
+                    const assignBtn = `<button class="icon-btn accept${canAssign ? "" : " disabled-action"}" data-ld="assign" title="${canAssign ? "Phân công" : "Phân công - Chỉ khả dụng khi hồ sơ Chờ phân công / Đang phân công và người dùng thuộc Nhóm lãnh đạo của đơn vị đang phân công"}" style="${canAssign ? "" : offStyle}" onclick="event.stopPropagation(); openAssignFromList('${escapeAttr(item.code)}')"><i class="fa-solid fa-diagram-project"></i></button>`;
                     const recallBtn = `<button class="icon-btn edit${canRecall ? "" : " disabled-action"}" title="${canRecall ? "Thu hồi" : "Chỉ khả dụng với Lãnh đạo đã chuyển/phân công khi bên nhận chưa xử lý"}" style="${canRecall ? "" : offStyle}" onclick="event.stopPropagation(); recallFromList('${escapeAttr(item.code)}')"><i class="fa-solid fa-rotate-left"></i></button>`;
 
                     // Sửa
                     const editDisabled = !editable;
-                    const editTitle = editable ? "Sửa" : "Chỉ khả dụng khi hồ sơ Nguồn Tiếp nhận mới ở trạng thái Chờ phân công, lãnh đạo chưa thao tác và do người dùng hiện tại tiếp nhận";
+                    const editTitle = editable ? "Sửa" : "Sửa - Chỉ khả dụng khi hồ sơ Nguồn Tiếp nhận mới ở trạng thái Bị trả lại, do người dùng hiện tại tiếp nhận";
                     const editStyle = editable ? "" : offStyle;
 
                     // Xóa
                     const deleteDisabled = !editable;
-                    const deleteTitle = editable ? "Xóa" : "Chỉ khả dụng khi hồ sơ Nguồn Tiếp nhận mới ở trạng thái Chờ phân công, lãnh đạo chưa thao tác và do người dùng hiện tại tiếp nhận";
+                    const deleteTitle = editable ? "Xóa" : "Xóa - Chỉ khả dụng khi hồ sơ Nguồn Tiếp nhận mới ở trạng thái Bị trả lại, do người dùng hiện tại tiếp nhận";
                     const deleteStyle = editable ? "" : offStyle;
 
                     // Trình ký Phiếu tiếp nhận (tiep_nhan_ptn.js): Nguồn Tiếp nhận mới + Hình thức Trực tiếp / Qua dịch vụ bưu chính
                     const printBtn = window.PTN ? PTN.gridButtonHtml(item, offStyle) : "";
                     const editBtn = `<button class="icon-btn edit${editDisabled ? ' disabled-action' : ''}" title="${editTitle}" style="${editStyle}" onclick="event.stopPropagation(); openReceptionForm('${escapeAttr(item.id)}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
                     const deleteBtn = `<button class="icon-btn delete${deleteDisabled ? ' disabled-action' : ''}" title="${deleteTitle}" style="${deleteStyle}" onclick="event.stopPropagation(); confirmDeleteReception('${escapeAttr(item.id)}')"><i class="fa-solid fa-trash-can"></i></button>`;
-                    // Phân công, Thu hồi chỉ hiển thị với người dùng thuộc Nhóm lãnh đạo
+                    // [ldtn] Lãnh đạo (thuộc Nhóm lãnh đạo): chỉ Ký duyệt, Từ chối, Phân công, Thu hồi; không hiển thị Trình ký Phiếu tiếp nhận, Sửa, Xóa.
+                    // [tnld2] Lãnh đạo, cả 02 tab: Ký duyệt | Từ chối | Phân công luôn hiển thị, cố định vị trí (không đủ điều kiện hiển thị mờ); tab Đã xử lý thêm Thu hồi.
+                    // Cán bộ: Trình ký Phiếu tiếp nhận, Sửa, Xóa (không thỏa điều kiện hiển thị mờ)
                     const leaderUser = BTNN_LD.isLeaderUser(CURRENT_USER.id);
-                    const actionsHtml = receptionTab === "done"
-                        ? printBtn + (leaderUser ? recallBtn : "")
-                        : (leaderUser ? assignBtn : "") + printBtn + editBtn + deleteBtn;
+                    const actionsHtml = leaderUser
+                        ? (window.PTN ? PTN.gridLeaderButtonsHtml(item, offStyle) : "") + assignBtn + (receptionTab === "done" ? recallBtn : "")
+                        : printBtn + (receptionTab === "done" ? "" : editBtn + deleteBtn);
 
                     return `
                         <tr onclick="handleRowClick('${escapeAttr(item.id)}')">
@@ -2110,7 +2117,7 @@
             }
             return claimsList.find(item => item.id === id && !item.deleted) || null;
         }
-        // Hồ sơ luồng (nguồn Dịch vụ công quốc gia / Chuyển CQGQBT / Xác định CQGQBT ...): bổ sung các trường của màn chi tiết
+        // Hồ sơ luồng (nguồn Dịch vụ công / Chuyển CQGQBT / Xác định CQGQBT ...): bổ sung các trường của màn chi tiết
         function detailFromRecord(rec) {
             const row = rowFromRecord(rec);
             if (!row.fromWorkflow) return row;
@@ -2129,7 +2136,7 @@
             const opt = Array.from(document.querySelectorAll("#formFieldGroup option")).find(o => o.value && o.textContent.trim() === String(name).trim());
             return opt ? opt.value : name;
         }
-        // Ô chọn chỉ đọc: giá trị ngoài danh sách (VD Hình thức tiếp nhận Qua môi trường số) thêm tạm để hiển thị đúng dữ liệu
+        // Ô chọn chỉ đọc: giá trị ngoài danh sách (VD Hình thức tiếp nhận Bộ phận Một cửa) thêm tạm để hiển thị đúng dữ liệu
         function setSelectDisplay(id, value) {
             const el = document.getElementById(id);
             if (!el) return;
@@ -2196,12 +2203,23 @@
             if (isReadOnly) {
                 // MH03 - Chi tiết hồ sơ tiếp nhận: Đóng, Trình ký Phiếu tiếp nhận, Sửa, Xóa, Phân công, Thu hồi
                 // Nút không thỏa điều kiện hiển thị: không hiển thị trên thanh thao tác
-                const canPrint = !!claim && canSubmitReceipt(claim);
-                const canEdit = !!claim && canEditReception(claim);
+                // [ldtn] Lãnh đạo: chỉ Phân công, Ký duyệt, Từ chối (tiep_nhan_ptn.js), Thu hồi; không hiển thị Trình ký Phiếu tiếp nhận, Sửa, Xóa
+                const leaderUser = BTNN_LD.isLeaderUser(CURRENT_USER.id);
+                const canPrint = !leaderUser && !!claim && canSubmitReceipt(claim);
+                const canEdit = !leaderUser && !!claim && canEditReception(claim);
                 const rec = claim ? BTNN_WF.getRecord(claim.code) : null;
-                const canAssign = !!rec && BTNN_WF.canAssign(rec, CURRENT_USER.id);
-                const canRecall = !!rec && BTNN_LD.canRecall(rec, CURRENT_USER.id);
-                if (btnFormAssign) btnFormAssign.style.display = canAssign ? "inline-flex" : "none";
+                // [ldtn] Cán bộ (không thuộc Nhóm lãnh đạo): không hiển thị Phân công, Thu hồi
+                const canAssign = leaderUser && !!rec && BTNN_WF.canAssign(rec, CURRENT_USER.id);
+                const canRecall = leaderUser && !!rec && BTNN_LD.canRecall(rec, CURRENT_USER.id);
+                // [tnld2] Lãnh đạo: Phân công luôn hiển thị, cố định sau Ký duyệt / Từ chối; không đủ điều kiện hiển thị mờ (disabled + tooltip lý do)
+                if (btnFormAssign) {
+                    btnFormAssign.style.display = leaderUser ? "inline-flex" : "none";
+                    btnFormAssign.disabled = !canAssign;
+                    btnFormAssign.classList.toggle("disabled-action", !canAssign);
+                    btnFormAssign.style.opacity = canAssign ? "" : "0.5";
+                    btnFormAssign.style.cursor = canAssign ? "" : "not-allowed";
+                    btnFormAssign.title = canAssign ? "Phân công" : "Phân công - Chỉ khả dụng khi hồ sơ Chờ phân công / Đang phân công và người dùng thuộc Nhóm lãnh đạo của đơn vị đang phân công";
+                }
                 if (btnFormRecall) btnFormRecall.style.display = canRecall ? "inline-flex" : "none";
 
                 // 1. Nút Đóng
@@ -2263,6 +2281,7 @@
             // Hồ sơ trong danh sách tiếp nhận hoặc hồ sơ luồng (nguồn khác Tiếp nhận mới, hồ sơ Lãnh đạo xem)
             const claim = id ? getDetailItem(id) : null;
             if (!isReadOnly && claim && claim.fromWorkflow) return;
+            if (!isReadOnly && claim && !canEditReception(claim)) { showToast("Sửa - Chỉ khả dụng khi hồ sơ ở trạng thái Bị trả lại, do người dùng hiện tại tiếp nhận.", "error"); return; }
 
             document.getElementById("listView").style.display = "none";
             const formView = document.getElementById("formView");
@@ -2461,6 +2480,8 @@
             });
             // [nbth] Dòng mặc định Văn bản yêu cầu bồi thường bắt buộc có file; định dạng Số điện thoại/Email khối Người bị thiệt hại (tiep_nhan_nbth.js)
             if (typeof nbthValidateReception === "function") { const nbthBad = nbthValidateReception(); if (nbthBad && !firstInvalid) firstInvalid = nbthBad; }
+            // [tnd] Thông tin Phiếu tiếp nhận (Mẫu 02/BTNN): Số, ký hiệu văn bản / Ngày văn bản bắt buộc (tiep_nhan_ptn.js)
+            if (window.PTN && PTN.formActive()) { const ptnBad = PTN.validateForm(); if (ptnBad && !firstInvalid) firstInvalid = ptnBad; }
 
             if (firstInvalid || hasInvalidDoc) {
                 showToast("Vui lòng nhập đầy đủ thông tin bắt buộc!", "error");
@@ -2478,6 +2499,12 @@
             if (editingId) {
                 const claim = claimsList.find(item => item.id === editingId);
                 if (!claim) return;
+                // [tnd] Kiểm tra lại quyền Sửa (chỉ hồ sơ Bị trả lại do người dùng tiếp nhận)
+                if (!canEditReception(claim)) {
+                    showToast("Hồ sơ không còn ở trạng thái Bị trả lại, không thể cập nhật!", "error");
+                    closeReceptionForm();
+                    return;
+                }
                 // Kiểm tra lại phía máy chủ: lãnh đạo có thể đã thao tác trong lúc đang cập nhật
                 const wfCurrent = BTNN_WF.getRecord(claim.code);
                 if (wfCurrent && !BTNN_WF.canEditAtReception(wfCurrent)) {
@@ -2512,6 +2539,13 @@
                     desc: "Đã cập nhật thông tin tổng quan và tài liệu đính kèm của vụ việc.",
                     status: "completed"
                 });
+                // [tnd] Hồ sơ Bị trả lại: nút "Trình ký" = ghi nhận thông tin cập nhật, mở popup Trình ký Phiếu tiếp nhận (điền sẵn lần trình trước);
+                // Trình Lãnh đạo -> Chờ duyệt tiếp nhận từ cấp 1 (tiep_nhan_ptn.js). Đóng popup không trình: hồ sơ giữ Bị trả lại.
+                if (!wfCurrent && window.PTN && PTN.holds(claim)) {
+                    saveClaims();
+                    PTN.open(claim.id);
+                    return;
+                }
                 if (wfCurrent) {
                     const data = buildWorkflowData(claim);
                     ["id", "code", "maVuViec", "receivedAt", "date", "createdBy", "receivedBy"].forEach(k => delete data[k]);
@@ -2566,6 +2600,18 @@
                     status: "completed"
                 }]
             });
+            // [tnd] Nguồn Tiếp nhận mới + Hình thức Trực tiếp / Qua dịch vụ bưu chính: sinh Phiếu tiếp nhận (Dự thảo), trình Lãnh đạo các cấp theo luồng đã cấu hình
+            // -> Chờ duyệt tiếp nhận; hồ sơ luồng phân công tạo khi Lãnh đạo cấp cuối ký duyệt Phiếu tiếp nhận
+            if (window.PTN && PTN.eligible(newClaim)) {
+                const sub = PTN.autoSubmit(newClaim, buildWorkflowData(newClaim), PTN.formMeta());
+                if (!sub.ok) { showToast(sub.message, "error"); return; }
+                newClaim.timeline[0].desc = `Đã tiếp nhận thông tin ban đầu. Trạng thái: ${PTN.REC_ST.REVIEW}.`;
+                claimsList.unshift(newClaim);
+                saveClaims();
+                showToast(`Đã lưu thông tin. Hồ sơ ${newCode} trình Lãnh đạo ký duyệt Phiếu tiếp nhận [${PTN.REC_ST.REVIEW}]!`, "success");
+                closeReceptionForm();
+                return;
+            }
             claimsList.unshift(newClaim);
             const rec = BTNN_WF.createPendingRecord(buildWorkflowData(newClaim));
             newClaim.currentUnitId = rec.currentUnitId;
@@ -2677,11 +2723,10 @@
 
         function canEditReception(item) {
             if (!item || item.fromWorkflow) return false;
-            // Chỉ khả dụng khi hồ sơ Nguồn Tiếp nhận mới, Chờ phân công, chưa có lãnh đạo nào thao tác và do chính người dùng hiện tại tiếp nhận
-            const rec = BTNN_WF.getRecord(item.code);
-            return (item.status || "Chờ phân công") === "Chờ phân công"
+            // [tnd] Chốt 28/10: Sửa / Xóa chỉ khả dụng khi hồ sơ Nguồn Tiếp nhận mới ở trạng thái Bị trả lại (Lãnh đạo từ chối Phiếu tiếp nhận),
+            // do chính người dùng hiện tại tiếp nhận; trạng thái khác (Chờ duyệt tiếp nhận, Chờ phân công, Đang phân công...) không được Sửa / Xóa
+            return !!window.PTN && PTN.holds(item) && PTN.recStatusOf(item.code) === PTN.REC_ST.REJECT
                 && getSourceOf(item) === SOURCES.TIEP_NHAN
-                && BTNN_WF.canEditAtReception(rec)
                 && (item.receivedBy || CURRENT_OFFICER) === CURRENT_OFFICER;
         }
 
@@ -3021,12 +3066,15 @@
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_cot_thao_tac.js?v=20261023kpcd"></script>
     <!-- Bảng tài liệu chuẩn BTNN: STT | Tên tài liệu, văn bản | File đính kèm | Thao tác; nút Tải file / Thêm tài liệu cùng style -->
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261029tldk"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
     <!-- [nbth] Văn bản yêu cầu bồi thường mặc định; Người bị thiệt hại Cá nhân/Tổ chức; địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại -->
     <script src="tiep_nhan_nbth.js?v=20261027nbthe3"></script>
     <!-- Trình ký Phiếu tiếp nhận (Mẫu 02/BTNN): thay thao tác In Phiếu tiếp nhận -->
-    <script src="tiep_nhan_ptn.js?v=20261028tl1"></script>
+    <script src="tiep_nhan_ptn.js?v=20261029tlcam2"></script>
+    <!-- [dvc] Hồ sơ nguồn Dịch vụ công: Xem chi tiết đầy đủ theo bố cục Nhập liệu hồ sơ vụ việc; dữ liệu mẫu đầy đủ (bảng thiệt hại DM_27 dùng btnn_thiet_hai.js) -->
+    <script src="btnn_thiet_hai.js?v=20261028dm27"></script>
+    <script src="tiep_nhan_dvc.js?v=20261029dvce1"></script>
 </body>
 
 </html>

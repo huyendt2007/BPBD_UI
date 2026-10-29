@@ -563,9 +563,6 @@
     </div>
 
     <div class="section">
-        <div class="section-head">
-            <div class="section-title"><i class="fa-solid fa-filter"></i> Lọc, tìm kiếm thông tin</div>
-        </div>
         <div class="tabs" id="moduleTabs" style="display:flex;"></div>
         <div class="grid-4" id="filterGrid"></div>
         <div class="footer-actions" style="margin-top:12px;">
@@ -579,7 +576,7 @@
             <div class="section-title"><i class="fa-solid fa-table-list"></i> Bảng kết quả tìm kiếm</div>
             <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
                 <button class="btn btn-primary" id="btnAddNew" onclick="openForm('new')"><i class="fa-solid fa-circle-plus"></i> Thêm mới</button>
-                <button class="btn btn-secondary" onclick="showToast('Hệ thống đang kết xuất Excel theo kết quả tìm kiếm hiện hành.')"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+                <button class="btn btn-secondary" id="btnExportExcel" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
             </div>
         </div>
         <div class="table-wrap">
@@ -652,7 +649,7 @@
 
     <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261028tl1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
     <script src="btnn_tim_kiem_vu_viec.js?v=20261028tl1"></script>
     <script>
         const W = window.BTNN_WF, CASE = window.BTNN_CASE;
@@ -815,6 +812,7 @@
             const cols = columns();
             document.getElementById('tableHead').innerHTML = `<tr><th style="width:56px; text-align:center;">STT</th>${cols.map(c => `<th>${c.h}</th>`).join('')}<th style="width:120px; text-align:center;">Thao tác</th></tr>`;
             const list = filtered();
+            lastGrid = { cols, list };
             const total = list.length, maxPages = Math.ceil(total / pageSize) || 1;
             if (currentPage > maxPages) currentPage = maxPages;
             const start = (currentPage - 1) * pageSize, end = Math.min(start + pageSize, total);
@@ -840,6 +838,17 @@
         function changePageSize(v) { pageSize = parseInt(v, 10); currentPage = 1; renderTable(); }
         function switchTab(t) { currentTab = t; currentPage = 1; renderTabs(); renderFilters(); renderTable(); closeForm(); }
         function resetFilters() { renderFilters(); currentPage = 1; renderTable(); }
+        // Kết xuất Excel: toàn bộ bản ghi của tab hiện tại theo bộ lọc đã tìm kiếm, đúng các cột của lưới (bỏ Thao tác)
+        let lastGrid = { cols: [], list: [] };
+        const XLSX_FILE_NAMES = { [G.TD]: 'Danh_sach_theo_doi_cong_tac_BTNN', [G.YC]: 'Danh_sach_yeu_cau_bao_cao_BTNN', [G.DD]: 'Danh_sach_don_doc_cong_tac_BTNN' };
+        function exportExcel() {
+            return BTNN_XLSX.exportGrid({
+                title: `Danh sách ${currentTab.charAt(0).toLowerCase()}${currentTab.slice(1)}`,
+                name: XLSX_FILE_NAMES[currentTab] || 'Danh_sach_theo_doi_don_doc_BTNN',
+                headers: lastGrid.cols.map(c => c.h),
+                rows: lastGrid.list.map(r => lastGrid.cols.map(c => c.v(r)))
+            });
+        }
 
         // ===== Biểu mẫu =====
         let formMode = 'new', formRec = null, documentRows = [], docReadOnly = false;
@@ -1129,12 +1138,15 @@
         }
         init();
     </script>
+    <!-- Kết xuất Excel dùng chung BTNN (SheetJS như dashboard_btnn.html) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="btnn_ket_xuat_excel.js?v=20261029xlsx"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_form_page.js?v=20261026fp"></script>
     <!-- Bảng tài liệu chuẩn BTNN (style nút Tải file / Thêm tài liệu, icon thao tác) -->
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261029tldk"></script>
 </body>
 
 </html>

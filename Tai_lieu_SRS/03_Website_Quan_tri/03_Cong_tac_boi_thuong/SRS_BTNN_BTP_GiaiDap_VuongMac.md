@@ -24,7 +24,7 @@
 
 ```mermaid
 flowchart TD
-    A[Danh sách giải đáp vướng mắc] --> B[Tìm kiếm / Xóa bộ lọc / Sắp xếp / Phân trang]
+    A[Danh sách giải đáp vướng mắc] --> B[Tìm kiếm / Xóa bộ lọc / Sắp xếp / Phân trang / Kết xuất Excel]
     A --> G[Row click] --> K[Xem chi tiết]
     K --> E
     K --> F
@@ -45,7 +45,7 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Số văn bản | String(50) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập số văn bản...".<br>- Tìm gần đúng; không phân biệt hoa thường, có dấu/không dấu. |
 | Tên đơn vị / Cá nhân đề nghị | String(255) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập tên đơn vị hoặc cá nhân đề nghị...".<br>- Tìm gần đúng; không phân biệt hoa thường, có dấu/không dấu. |
 | Đối tượng đề nghị | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Cơ quan giải quyết bồi thường<br>+ Tổ chức/cá nhân khác |
@@ -74,13 +74,16 @@ flowchart TD
 |  |  |  | **TH3 - Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa (`colspan`), in nghiêng với nội dung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 trong tổng số 0 bản ghi"*, các nút điều hướng trang ở trạng thái khóa mờ. |
 | 2 | Xóa bộ lọc | Button | Hệ thống xóa toàn bộ tiêu chí tìm kiếm đã nhập/chọn, thiết lập các ô lọc về giá trị mặc định. |
 | 3 | Thêm mới | Button | Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa giải đáp vướng mắc](#433185-mh03---màn-hình-thêm-mớisửa-giải-đáp-vướng-mắc) ở chế độ Thêm mới với form thông tin để trống. |
-| 4 | Sắp xếp cột | Header cột | Áp dụng trên các cột:<br>+ Số văn bản<br>+ Ngày văn bản<br>+ Tên đơn vị / Cá nhân đề nghị |
+| 4 | Kết xuất Excel | Button | Kết xuất danh sách ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md):<br>- Phạm vi: toàn bộ bản ghi thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới, không gồm cột Thao tác: STT, Số văn bản, Ngày văn bản, Tên đơn vị / Cá nhân đề nghị, Hình thức nhận, Phương thức gửi, Ngày nhận đề nghị, Tệp đính kèm.<br>- Tên tệp: `yyyyMMdd_Danh_sach_giai_dap_vuong_mac.xlsx`. |
+|  |  |  | **TH1 - Không có dữ liệu**: Hệ thống hiển thị [MSG-WRN-SYS-001] và không tải tệp. |
+|  |  |  | **TH2 - Có dữ liệu**: Hệ thống tải tệp Excel về máy người dùng. |
+| 5 | Sắp xếp cột | Header cột | Áp dụng trên các cột:<br>+ Số văn bản<br>+ Ngày văn bản<br>+ Tên đơn vị / Cá nhân đề nghị |
 |  |  |  | **TH1 - Chọn lại cột đang sắp xếp**: Hệ thống đảo chiều sắp xếp tăng dần/giảm dần và cập nhật icon mũi tên trên tiêu đề cột. |
 |  |  |  | **TH2 - Chọn cột khác**: Hệ thống sắp xếp danh sách theo cột được chọn. |
-| 5 | Row click | Row click | Khi người dùng click vào bất kỳ vị trí nào trên dòng dữ liệu (trừ các nút thao tác), hệ thống mở [MH02 - Màn hình Chi tiết giải đáp vướng mắc](#433184-mh02---màn-hình-chi-tiết-giải-đáp-vướng-mắc). |
-| 6 | Sửa | Icon button | Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa giải đáp vướng mắc](#433185-mh03---màn-hình-thêm-mớisửa-giải-đáp-vướng-mắc) ở chế độ Sửa với dữ liệu hiện tại của bản ghi được điền sẵn. |
-| 7 | Xóa | Icon button | Hệ thống mở [Popup Xác nhận xóa](#433186-popup-xác-nhận-xóa). |
-| 8 | Phân trang & chuyển trang | Pagination | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
+| 6 | Row click | Row click | Khi người dùng click vào bất kỳ vị trí nào trên dòng dữ liệu (trừ các nút thao tác), hệ thống mở [MH02 - Màn hình Chi tiết giải đáp vướng mắc](#433184-mh02---màn-hình-chi-tiết-giải-đáp-vướng-mắc). |
+| 7 | Sửa | Icon button | Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa giải đáp vướng mắc](#433185-mh03---màn-hình-thêm-mớisửa-giải-đáp-vướng-mắc) ở chế độ Sửa với dữ liệu hiện tại của bản ghi được điền sẵn. |
+| 8 | Xóa | Icon button | Hệ thống mở [Popup Xác nhận xóa](#433186-popup-xác-nhận-xóa). |
+| 9 | Phân trang & chuyển trang | Pagination | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
 
 ---
 
@@ -108,8 +111,8 @@ flowchart TD
 | Số văn bản | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Ngày văn bản | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Phương thức gửi | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
-| **III. Tài liệu đính kèm (văn bản đầu ra)** |  |  |  |  |
-| Tài liệu đính kèm (văn bản đầu ra) | - | - | - | Control UI: File link<br>Theo dữ liệu bản ghi. |
+| **III. Tài liệu đính kèm** |  |  |  |  |
+| Tài liệu đính kèm | - | - | - | Control UI: File link<br>Theo dữ liệu bản ghi. |
 
 ###### 4.3.3.18.4.3. Chức năng trên màn hình
 
@@ -146,8 +149,8 @@ flowchart TD
 | Số văn bản | String(50) | Có | Trống | Control UI: Text input.<br>- Placeholder: "Nhập số văn bản...". |
 | Ngày văn bản | Date | Có | Ngày hiện tại | Control UI: Date input.<br>- Placeholder: "dd/mm/yyyy".<br>- Không lớn hơn ngày hiện tại theo [BR-VAL-008]; không nhỏ hơn `Ngày nhận đề nghị`. |
 | Phương thức gửi | Enum(String(255)) | Có | Theo Hình thức nhận đề nghị | Control UI: Combobox.<br>- Hệ thống tự chọn theo `Hình thức nhận đề nghị`:<br>+ Qua bưu chính: Gửi qua bưu chính<br>+ Trực tiếp: Nhận trực tiếp tại trụ sở<br>+ Email: Gửi qua Email<br>+ Cổng tiếp nhận ý kiến của Bộ: Gửi qua Cổng tiếp nhận ý kiến của Bộ<br>- Người dùng được chọn lại; khi `Địa chỉ chi tiết` có dữ liệu, cho phép chọn thêm `Gửi theo đường công văn qua bưu chính` hoặc `Cả hai phương thức (Trực tuyến & Bưu chính)`. |
-| **III. Tài liệu đính kèm (văn bản đầu ra)** |  |  |  |  |
-| Tài liệu đính kèm (văn bản đầu ra) | List(File) | Có | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Cột `Tên tài liệu, văn bản`: Text input. Placeholder: "Nhập tên tài liệu, văn bản".<br>- Bắt buộc tải lên ít nhất 01 tệp văn bản giải đáp đã ban hành.<br>- Chỉ nhận tệp `.pdf`, dung lượng tối đa 20MB/tệp.<br>- Cột `Thao tác` gồm:<br>+ Xem file<br>+ Xóa |
+| **III. Tài liệu đính kèm** |  |  |  |  |
+| Tài liệu đính kèm | List(File) | Có | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Cột `Tên tài liệu, văn bản`: Text input. Placeholder: "Nhập tên tài liệu, văn bản".<br>- Bắt buộc tải lên ít nhất 01 tệp văn bản giải đáp đã ban hành.<br>- Chỉ nhận tệp `.pdf`, dung lượng tối đa 20MB/tệp.<br>- Cột `Thao tác` gồm:<br>+ Xem file<br>+ Xóa |
 
 ###### 4.3.3.18.5.3. Chức năng trên màn hình
 

@@ -1,9 +1,9 @@
 /*
  * [lth] Thiệt hại yêu cầu bồi thường tại Giải quyết yêu cầu bồi thường - cấu trúc 02 cấp (nhóm / mục chi tiết, DM_27) dùng component BTNN_TH (btnn_thiet_hai.js)
- * - Nhập liệu hồ sơ vụ việc: bảng 06 nhóm / 36 mục; tích từng mục chi tiết -> nhập Cách tính / Diễn giải, Số tiền yêu cầu; dòng nhóm và Tổng tự cộng.
+ * - Nhập liệu hồ sơ vụ việc: bảng 06 nhóm / 35 mục; tích từng mục chi tiết -> nhập Cách tính / Diễn giải, Số tiền yêu cầu; dòng nhóm và Tổng tự cộng.
  *   Ô nhập giữ id theo mã mục: claimThietHaiCb_<mã>, claimThietHaiCalc_<mã>, claimThietHaiVal_<mã> (các hàm lưu / kiểm tra của trang lặp theo BTNN_TH.codes()).
  * - Nhóm VII. Các thiệt hại khác (TH_KHAC_<số>): nút Thêm thiệt hại khác / Xóa dòng, Tên / nội dung thiệt hại bắt buộc; kế thừa sang Xác minh / Thương lượng.
- * - Form Cập nhật kết quả xác minh: đủ 36 mục + nhóm VII; mọi mục tích / bỏ tích tự do, không hiển thị nhãn Theo yêu cầu / Bổ sung.
+ * - Form Cập nhật kết quả xác minh: đủ 35 mục + nhóm VII; mọi mục tích / bỏ tích tự do, không hiển thị nhãn Theo yêu cầu / Bổ sung.
  *   Lưu ngầm: mục chưa yêu cầu -> bs = true, bsStep = 'xm' (Mức đề xuất = 0); mục theo yêu cầu bị bỏ tích -> xmOff = true (không thuộc Kết quả xác minh).
  *   Mức xác minh nhập theo mục; dòng nhóm / Tổng tự cộng.
  * - Form Cập nhật kết quả thương lượng: kế thừa danh sách sau xác minh (gồm mục bổ sung), tích bổ sung thêm mục còn lại (bsStep = 'tl');
@@ -292,7 +292,7 @@
             var last = claim.xmHistory[claim.xmHistory.length - 1];
             (last && last.items || []).forEach(function (x) { x.bs = !!bs[code(x.type)]; x.code = code(x.type); x.group = TH.groupOf(x.type); });
             (claim.verifiedItems || []).forEach(function (x) { x.bs = !!bs[code(x.key)]; });
-            // [xmbc] Báo cáo xác minh (trả cho người yêu cầu bồi thường) tách khỏi tài liệu kèm theo khác (nội bộ)
+            // [xmbc] Báo cáo xác minh (trả cho người yêu cầu bồi thường) tách khỏi tài liệu đính kèm khác (nội bộ)
             if (last) {
                 last.reportFiles = tagReport(xmReportDraft, claim);
                 last.files = tagInternal(last.files);
@@ -362,8 +362,8 @@
     // ======================= [xmbc] Xác minh thiệt hại: tài liệu tách 02 khối + Thỏa thuận kéo dài thời gian xác minh =======================
     // - Báo cáo xác minh thiệt hại (reportFiles / claim.xmReportFiles): tài liệu DUY NHẤT của bước Xác minh trả cho người yêu cầu bồi thường
     //   (shareNyc = true; hồ sơ nguồn Dịch vụ công: dvcSync = true để đồng bộ trả về); bắt buộc khi Hoàn thành xác minh.
-    // - Tài liệu kèm theo khác trong quá trình xác minh (files / claim.xmFiles): nội bộ (scope 'internal'), không trả người yêu cầu, không chuyển đơn vị khác.
-    // - Dữ liệu cũ: tài liệu có tên chứa "Báo cáo ... xác minh" -> Báo cáo xác minh; còn lại -> tài liệu kèm theo khác.
+    // - Tài liệu đính kèm khác trong quá trình xác minh (files / claim.xmFiles): nội bộ (scope 'internal'), không trả người yêu cầu, không chuyển đơn vị khác.
+    // - Dữ liệu cũ: tài liệu có tên chứa "Báo cáo ... xác minh" -> Báo cáo xác minh; còn lại -> tài liệu đính kèm khác.
     // - Thỏa thuận kéo dài (xmExtend = { on, from, to }): Từ ngày bắt buộc khi tích (cho phép ngày quá khứ); Đến ngày không bắt buộc, nếu nhập phải >= Từ ngày.
     //   Dữ liệu cũ (text xmTimeExtension): có nội dung -> tích, lấy ngày dd/mm/yyyy đầu tiên / thứ hai làm Từ ngày / Đến ngày; trống hoặc "Không..." -> không tích.
     var xmReportDraft = [];
@@ -397,7 +397,7 @@
         var g = list ? list.closest('.form-group') : null;
         if (g) {
             var lb = g.querySelector('.form-label');
-            if (lb) lb.innerHTML = 'Tài liệu kèm theo khác trong quá trình xác minh<div style="font-size:12px; font-weight:400; color:#64748b;">Tài liệu nội bộ của đơn vị giải quyết bồi thường; không trả cho người yêu cầu bồi thường, không chuyển khi chuyển hồ sơ cho đơn vị khác.</div>';
+            if (lb) lb.innerHTML = 'Tài liệu đính kèm khác trong quá trình xác minh<div style="font-size:12px; font-weight:400; color:#64748b;">Tài liệu nội bộ của đơn vị giải quyết bồi thường; không trả cho người yêu cầu bồi thường, không chuyển khi chuyển hồ sơ cho đơn vị khác.</div>';
             var old = el('xmReportGroup');
             if (old) old.remove();
             g.insertAdjacentHTML('beforebegin', '<div class="form-group" id="xmReportGroup" style="margin-top:15px;">'
@@ -463,7 +463,7 @@
         return vxmTitle('fa-file-contract', 'Báo cáo xác minh thiệt hại')
             + '<div style="font-size:12px; color:#475569; margin:-2px 0 6px;">Tài liệu trả cho người yêu cầu bồi thường</div>'
             + (rep.length ? vxmDocsTableHtml(rep, pfx + '_report') : '<div style="font-size:12.5px; color:#94a3b8; font-style:italic;">Chưa có Báo cáo xác minh thiệt hại</div>')
-            + (oth.length ? vxmTitle('fa-paperclip', 'Tài liệu kèm theo khác trong quá trình xác minh') + '<div style="font-size:12px; color:#475569; margin:-2px 0 6px;">Tài liệu nội bộ của đơn vị giải quyết bồi thường; không trả cho người yêu cầu bồi thường</div>' + vxmDocsTableHtml(oth, pfx + '_internal') : '');
+            + (oth.length ? vxmTitle('fa-paperclip', 'Tài liệu đính kèm khác trong quá trình xác minh') + '<div style="font-size:12px; color:#475569; margin:-2px 0 6px;">Tài liệu nội bộ của đơn vị giải quyết bồi thường; không trả cho người yêu cầu bồi thường</div>' + vxmDocsTableHtml(oth, pfx + '_internal') : '');
     }
     var EXT_FIELD_RE = /<div class="vxm-text-field"[^>]*><div[^>]*>Thỏa thuận việc kéo dài thời gian xác minh<\/div><div[^>]*>[\s\S]*?<\/div><\/div>/;
     var origRB = window.vxmRoundBodyHtml;
@@ -476,12 +476,12 @@
         if (!x.on) html = html.replace(EXT_FIELD_RE, '');
         return html + xmDocsBlocks(rep, oth, pfx);
     };
-    // Kết quả xác minh (chỉ xem): thay khối Tài liệu kèm theo bằng 02 khối; Thỏa thuận kéo dài theo checkbox
+    // Kết quả xác minh (chỉ xem): thay khối Tài liệu đính kèm bằng 02 khối; Thỏa thuận kéo dài theo checkbox
     function xmReadSplit(claim, vr) {
         if (vr.getAttribute('data-xmbc') === '1') return;
         vr.setAttribute('data-xmbc', '1');
         Array.prototype.slice.call(vr.children).forEach(function (ch) {
-            if (ch.classList && ch.classList.contains('vxm-section-title') && /^\s*Tài liệu kèm theo\s*$/.test(ch.textContent)) {
+            if (ch.classList && ch.classList.contains('vxm-section-title') && /^\s*Tài liệu đính kèm\s*$/.test(ch.textContent)) {
                 var nx = ch.nextElementSibling;
                 ch.remove();
                 if (nx && !(nx.classList.contains('vxm-section-title') || nx.classList.contains('vxm-text-field'))) nx.remove();

@@ -26,7 +26,7 @@
 
 ```mermaid
 flowchart TD
-    A[Danh sách yêu cầu hủy quyết định GQBT] --> B[Tìm kiếm / Xóa bộ lọc / Sắp xếp / Phân trang]
+    A[Danh sách yêu cầu hủy quyết định GQBT] --> B[Tìm kiếm / Xóa bộ lọc / Sắp xếp / Phân trang / Kết xuất Excel]
     A --> G[Row click] --> K[Xem chi tiết]
     K --> E
     K --> F
@@ -50,7 +50,7 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Số văn bản yêu cầu | String(50) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập số văn bản yêu cầu...".<br>- Tìm gần đúng; không phân biệt hoa thường, có dấu/không dấu. |
 | Số Quyết định GQBT bị yêu cầu hủy | String(50) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập số Quyết định GQBT bị yêu cầu hủy...".<br>- Tìm gần đúng; không phân biệt hoa thường, có dấu/không dấu. |
 | Trạng thái | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Đã gửi - Chờ phản hồi<br>+ Đã có phản hồi<br>+ Đã thực hiện<br>+ Không thực hiện |
@@ -76,14 +76,17 @@ flowchart TD
 |  |  |  | **TH3 - Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa (`colspan`), in nghiêng với nội dung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 trong tổng số 0 bản ghi"*, các nút điều hướng trang ở trạng thái khóa mờ. |
 | 2 | Xóa bộ lọc | Button | Hệ thống xóa toàn bộ tiêu chí tìm kiếm đã nhập/chọn, thiết lập các ô lọc về giá trị mặc định. |
 | 3 | Thêm mới | Button | Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa yêu cầu hủy quyết định GQBT](#433125-mh03---màn-hình-thêm-mớisửa-yêu-cầu-hủy-quyết-định-gqbt) ở chế độ Thêm mới với form thông tin để trống. |
-| 4 | Sắp xếp cột | Header cột | Áp dụng trên các cột:<br>+ Số văn bản yêu cầu<br>+ Số Quyết định GQBT bị yêu cầu hủy<br>+ Cơ quan nhận yêu cầu |
+| 4 | Kết xuất Excel | Button | Kết xuất danh sách ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md):<br>- Phạm vi: toàn bộ bản ghi thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới, không gồm cột Thao tác: STT, Số văn bản yêu cầu, Số Quyết định GQBT bị yêu cầu hủy, Cơ quan nhận yêu cầu, Ngày gửi, Trạng thái.<br>- Tên tệp: `yyyyMMdd_Danh_sach_yeu_cau_huy_quyet_dinh_GQBT.xlsx`. |
+|  |  |  | **TH1 - Không có dữ liệu**: Hệ thống hiển thị [MSG-WRN-SYS-001] và không tải tệp. |
+|  |  |  | **TH2 - Có dữ liệu**: Hệ thống tải tệp Excel về máy người dùng. |
+| 5 | Sắp xếp cột | Header cột | Áp dụng trên các cột:<br>+ Số văn bản yêu cầu<br>+ Số Quyết định GQBT bị yêu cầu hủy<br>+ Cơ quan nhận yêu cầu |
 |  |  |  | **TH1 - Chọn lại cột đang sắp xếp**: Hệ thống đảo chiều sắp xếp tăng dần/giảm dần và cập nhật icon mũi tên trên tiêu đề cột. |
 |  |  |  | **TH2 - Chọn cột khác**: Hệ thống sắp xếp danh sách theo cột được chọn. |
-| 5 | Row click | Row click | Khi người dùng click vào bất kỳ vị trí nào trên dòng dữ liệu (trừ các nút thao tác), hệ thống mở [MH02 - Màn hình Chi tiết yêu cầu hủy quyết định GQBT](#433124-mh02---màn-hình-chi-tiết-yêu-cầu-hủy-quyết-định-gqbt). |
-| 6 | Sửa | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" do cán bộ đăng nhập tạo; trường hợp khác icon hiển thị mờ, không cho thao tác.<br>- Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa yêu cầu hủy quyết định GQBT](#433125-mh03---màn-hình-thêm-mớisửa-yêu-cầu-hủy-quyết-định-gqbt) ở chế độ Sửa với dữ liệu hiện tại của bản ghi được điền sẵn. |
-| 7 | Xóa | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" do cán bộ đăng nhập tạo; trường hợp khác icon hiển thị mờ, không cho thao tác.<br>- Hệ thống mở [Popup Xác nhận](#433126-popup-xác-nhận). |
-| 8 | Cập nhật phản hồi | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" hoặc "Đã có phản hồi"; trường hợp khác icon hiển thị mờ.<br>- Hệ thống mở [Popup Cập nhật kết quả phản hồi](#433127-popup-cập-nhật-kết-quả-phản-hồi). |
-| 9 | Phân trang & chuyển trang | Pagination | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
+| 6 | Row click | Row click | Khi người dùng click vào bất kỳ vị trí nào trên dòng dữ liệu (trừ các nút thao tác), hệ thống mở [MH02 - Màn hình Chi tiết yêu cầu hủy quyết định GQBT](#433124-mh02---màn-hình-chi-tiết-yêu-cầu-hủy-quyết-định-gqbt). |
+| 7 | Sửa | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" do cán bộ đăng nhập tạo; trường hợp khác icon hiển thị mờ, không cho thao tác.<br>- Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa yêu cầu hủy quyết định GQBT](#433125-mh03---màn-hình-thêm-mớisửa-yêu-cầu-hủy-quyết-định-gqbt) ở chế độ Sửa với dữ liệu hiện tại của bản ghi được điền sẵn. |
+| 8 | Xóa | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" do cán bộ đăng nhập tạo; trường hợp khác icon hiển thị mờ, không cho thao tác.<br>- Hệ thống mở [Popup Xác nhận](#433126-popup-xác-nhận). |
+| 9 | Cập nhật phản hồi | Icon button | Chỉ cho phép với bản ghi ở trạng thái "Đã gửi - Chờ phản hồi" hoặc "Đã có phản hồi"; trường hợp khác icon hiển thị mờ.<br>- Hệ thống mở [Popup Cập nhật kết quả phản hồi](#433127-popup-cập-nhật-kết-quả-phản-hồi). |
+| 10 | Phân trang & chuyển trang | Pagination | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
 
 ---
 
@@ -116,8 +119,8 @@ flowchart TD
 | Căn cứ cho rằng Quyết định trái pháp luật | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Căn cứ pháp lý yêu cầu | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Nội dung yêu cầu | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
-| **III. Tài liệu yêu cầu đính kèm** |  |  |  |  |
-| Tài liệu yêu cầu đính kèm | - | - | - | Control UI: File link<br>Theo dữ liệu bản ghi. |
+| **III. Tài liệu đính kèm** |  |  |  |  |
+| Tài liệu đính kèm | - | - | - | Control UI: File link<br>Theo dữ liệu bản ghi. |
 
 ###### 4.3.3.12.4.3. Chức năng trên màn hình
 
@@ -160,8 +163,8 @@ flowchart TD
 | Căn cứ cho rằng Quyết định trái pháp luật | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Placeholder: "Nhập căn cứ cho rằng quyết định trái pháp luật...". |
 | Căn cứ pháp lý yêu cầu | Text(1000) | Không | Khoản 1 và điểm a khoản 3 Điều 48 Luật Trách nhiệm bồi thường của Nhà nước; khoản 8 Điều 45 Nghị định quy định chi tiết một số điều và biện pháp thi hành Luật Trách nhiệm bồi thường của Nhà nước; Điều 29 Thông tư 08/2019/TT-BTP | Control UI: Textarea.<br>- Placeholder: "Nhập căn cứ pháp lý yêu cầu...".<br>- Cho phép sửa giá trị mặc định. |
 | Nội dung yêu cầu | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Placeholder: "Nhập nội dung yêu cầu...". |
-| **III. Tài liệu yêu cầu đính kèm** |  |  |  |  |
-| Tài liệu yêu cầu đính kèm | List(File) | Không | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Cột `Tên tài liệu, văn bản`: Text input. Placeholder: "Nhập tên tài liệu, văn bản".<br>- Cột `File đính kèm`: khi dòng chưa có file hiển thị nút `Tải file`; khi đã có file hiển thị tên file.<br>- Cột `Thao tác` gồm:<br>+ Xem file (khóa mờ khi dòng chưa có file)<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
+| **III. Tài liệu đính kèm** |  |  |  |  |
+| Tài liệu đính kèm | List(File) | Không | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Cột `Tên tài liệu, văn bản`: Text input. Placeholder: "Nhập tên tài liệu, văn bản".<br>- Cột `File đính kèm`: khi dòng chưa có file hiển thị nút `Tải file`; khi đã có file hiển thị tên file.<br>- Cột `Thao tác` gồm:<br>+ Xem file (khóa mờ khi dòng chưa có file)<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
 
 ###### 4.3.3.12.5.3. Chức năng trên màn hình
 
@@ -226,7 +229,7 @@ flowchart TD
 | Ngày phản hồi | Date | Có | Ngày hiện tại | Control UI: Date input.<br>- Placeholder: "dd/mm/yyyy".<br>- Không lớn hơn ngày hiện tại theo [BR-VAL-008]. |
 | Kết quả phản hồi | Enum(String(50)) | Có | Đã có phản hồi | Control UI: Combobox.<br>Gồm:<br>+ Đã có phản hồi<br>+ Đã thực hiện<br>+ Không thực hiện |
 | Nội dung phản hồi | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Placeholder: "Nhập nội dung phản hồi/kết quả xử lý...".<br>- Ghi nội dung phản hồi/kết quả xử lý của cơ quan nhận yêu cầu. |
-| Quyết định hủy liên kết | String(50) | Có điều kiện | Trống | Control UI: Text input kèm nút `Tìm kiếm`.<br>- Placeholder: "Nhập số quyết định GQBT đã hủy...".<br>- Chỉ hiển thị và bắt buộc (`*`) khi `Kết quả phản hồi` là `Đã thực hiện` (Thủ trưởng cơ quan đã hủy Quyết định giải quyết bồi thường).<br>- Chỉ cho phép chọn Quyết định giải quyết bồi thường ở trạng thái `Đã hủy` (đã thực hiện thao tác Hủy QĐ) tại Module Quyết định giải quyết bồi thường.<br>- Sau khi chọn, hệ thống hiển thị khung thông tin chỉ đọc gồm Số quyết định, Ngày quyết định, Cơ quan ban hành, Ngày hủy, Vụ việc và liên kết `Xem chi tiết quyết định` mở [MH03 - Màn hình Chi tiết Quyết định giải quyết bồi thường - SRS Quyết định giải quyết bồi thường - Giải quyết bồi thường](SRS_BTNN_GiaiQuyetBT_QuyetDinh_GQBT.md#43336-mh03---màn-hình-chi-tiết-quyết-định-giải-quyết-bồi-thường) tại tab trình duyệt mới. |
+| Quyết định hủy liên kết | String(50) | Có điều kiện | Trống | Control UI: Text input kèm nút `Tìm kiếm`.<br>- Placeholder: "Nhập số quyết định GQBT đã hủy...".<br>- Chỉ hiển thị và bắt buộc (`*`) khi `Kết quả phản hồi` là `Đã thực hiện` (Thủ trưởng cơ quan đã hủy Quyết định giải quyết bồi thường).<br>- Chỉ cho phép chọn Quyết định giải quyết bồi thường ở trạng thái `Hủy quyết định` (đã thực hiện thao tác Hủy QĐ) tại Module Quyết định giải quyết bồi thường.<br>- Sau khi chọn, hệ thống hiển thị khung thông tin chỉ đọc gồm Số quyết định, Ngày quyết định, Cơ quan ban hành, Ngày hủy, Vụ việc và liên kết `Xem chi tiết quyết định` mở [MH03 - Màn hình Chi tiết Quyết định giải quyết bồi thường - SRS Quyết định giải quyết bồi thường - Giải quyết bồi thường](SRS_BTNN_GiaiQuyetBT_QuyetDinh_GQBT.md#43336-mh03---màn-hình-chi-tiết-quyết-định-giải-quyết-bồi-thường) tại tab trình duyệt mới. |
 | Tài liệu phản hồi đính kèm | File | Không | Trống | Control UI: Button `Tải lên`.<br>- Áp dụng [BR-FILE-010]. |
 
 ###### 4.3.3.12.7.3. Chức năng trên màn hình
@@ -238,7 +241,7 @@ flowchart TD
 |  |  |  | **TH2 - Ngày phản hồi không hợp lệ**: `Ngày phản hồi` lớn hơn ngày hiện tại, vi phạm [BR-VAL-008]. Hệ thống hiển thị [MSG-ERR-VAL-008] và không cho phép lưu. |
 |  |  |  | **TH3 - Chưa chọn Quyết định hủy liên kết**: `Kết quả phản hồi` là `Đã thực hiện` nhưng chưa chọn `Quyết định hủy liên kết`, vi phạm [BR-VAL-001]. Hệ thống viền đỏ ô lỗi, hiển thị "Đây là trường bắt buộc" và không cho phép lưu. |
 |  |  |  | **TH4 - Hợp lệ**: Hệ thống lưu kết quả phản hồi, cập nhật trạng thái bản ghi theo `Kết quả phản hồi` đã chọn, gắn liên kết hai chiều giữa bản ghi yêu cầu hủy và Quyết định hủy tại Module Quyết định giải quyết bồi thường (nếu có), đóng popup, tải lại danh sách và hiển thị [MSG-SUC-SYS-002]. |
-| 2 | Tìm kiếm (Quyết định hủy liên kết) | Button | Khi người dùng click nút, hệ thống tìm gần đúng theo số quyết định đã nhập trong các Quyết định giải quyết bồi thường ở trạng thái `Đã hủy` và xử lý theo các trường hợp bên dưới: |
+| 2 | Tìm kiếm (Quyết định hủy liên kết) | Button | Khi người dùng click nút, hệ thống tìm gần đúng theo số quyết định đã nhập trong các Quyết định giải quyết bồi thường ở trạng thái `Hủy quyết định` và xử lý theo các trường hợp bên dưới: |
 |  |  |  | **TH1 - Có dữ liệu phù hợp**: Hệ thống chọn quyết định tìm được, điền đầy đủ số quyết định vào ô nhập và hiển thị khung thông tin quyết định kèm liên kết `Xem chi tiết quyết định`. |
 |  |  |  | **TH2 - Không có dữ liệu phù hợp**: Hệ thống viền đỏ ô nhập, hiển thị ngay dưới ô nội dung "Không tìm thấy quyết định GQBT đã hủy phù hợp." theo [MSG-INF-SYS-001] và bỏ chọn quyết định trước đó (nếu có). |
 | 3 | Xem chi tiết quyết định | Link | Hệ thống mở [MH03 - Màn hình Chi tiết Quyết định giải quyết bồi thường - SRS Quyết định giải quyết bồi thường - Giải quyết bồi thường](SRS_BTNN_GiaiQuyetBT_QuyetDinh_GQBT.md#43336-mh03---màn-hình-chi-tiết-quyết-định-giải-quyết-bồi-thường) tại tab trình duyệt mới. |

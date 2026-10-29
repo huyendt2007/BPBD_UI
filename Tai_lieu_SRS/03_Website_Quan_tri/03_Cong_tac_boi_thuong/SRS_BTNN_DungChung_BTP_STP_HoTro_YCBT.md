@@ -20,7 +20,7 @@
 
 ```mermaid
 flowchart TD
-    A[Danh sách hỗ trợ, hướng dẫn người bị thiệt hại] --> B[Tìm kiếm / Xóa bộ lọc / Sắp xếp / Phân trang]
+    A[Danh sách hỗ trợ, hướng dẫn người bị thiệt hại] --> B[Tìm kiếm / Xóa bộ lọc / Sắp xếp / Phân trang / Kết xuất Excel]
     A --> G[Row click] --> K[Xem chi tiết]
     K --> E
     K --> F
@@ -41,7 +41,7 @@ flowchart TD
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
+| **I. Bộ lọc tìm kiếm** | - | - | - | Control UI: Khối thu gọn/mở rộng (Accordion).<br>- Không hiển thị tiêu đề khối.<br>- Mặc định hiển thị dạng mở rộng.<br>- Cho phép thu gọn/mở rộng khi click vào nút "Thu gọn"/"Mở rộng" ở góc phải khối; khi thu gọn, các giá trị lọc đã nhập được giữ nguyên. |
 | Họ và tên người được hỗ trợ | String(255) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập họ và tên người được hỗ trợ...".<br>- Tìm gần đúng; không phân biệt hoa thường, có dấu/không dấu. |
 | Số điện thoại | String(50) | Không | Trống | Control UI: Text input.<br>- Placeholder: "Nhập số điện thoại...".<br>- Tìm gần đúng; không phân biệt hoa thường, có dấu/không dấu. |
 | Hình thức hỗ trợ | Enum(String(50)) | Không | Tất cả | Control UI: Combobox.<br>Gồm:<br>+ Tất cả<br>+ Trực tiếp tại trụ sở<br>+ Qua điện thoại<br>+ Qua văn bản/email<br>+ Khác |
@@ -70,13 +70,16 @@ flowchart TD
 |  |  |  | **TH3 - Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa (`colspan`), in nghiêng với nội dung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 trong tổng số 0 bản ghi"*, các nút điều hướng trang ở trạng thái khóa mờ. |
 | 2 | Xóa bộ lọc | Button | Hệ thống xóa toàn bộ tiêu chí tìm kiếm đã nhập/chọn, thiết lập các ô lọc về giá trị mặc định. |
 | 3 | Thêm mới | Button | Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa hỗ trợ, hướng dẫn người bị thiệt hại](#43395-mh03---màn-hình-thêm-mớisửa-hỗ-trợ-hướng-dẫn-người-bị-thiệt-hại) ở chế độ Thêm mới với form thông tin để trống. |
-| 4 | Sắp xếp cột | Header cột | Áp dụng trên các cột:<br>+ Họ và tên người được hỗ trợ<br>+ Số điện thoại<br>+ Hình thức hỗ trợ |
+| 4 | Kết xuất Excel | Button | Kết xuất danh sách ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md):<br>- Phạm vi: toàn bộ bản ghi thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới, không gồm cột Thao tác: STT, Họ và tên người được hỗ trợ, Số điện thoại, Hình thức hỗ trợ, Vụ việc liên quan, Ngày hỗ trợ, Cán bộ hỗ trợ, Kết quả hỗ trợ.<br>- Tên tệp: `yyyyMMdd_Danh_sach_ho_tro_nguoi_bi_thiet_hai.xlsx`. |
+|  |  |  | **TH1 - Không có dữ liệu**: Hệ thống hiển thị [MSG-WRN-SYS-001] và không tải tệp. |
+|  |  |  | **TH2 - Có dữ liệu**: Hệ thống tải tệp Excel về máy người dùng. |
+| 5 | Sắp xếp cột | Header cột | Áp dụng trên các cột:<br>+ Họ và tên người được hỗ trợ<br>+ Số điện thoại<br>+ Hình thức hỗ trợ |
 |  |  |  | **TH1 - Chọn lại cột đang sắp xếp**: Hệ thống đảo chiều sắp xếp tăng dần/giảm dần và cập nhật icon mũi tên trên tiêu đề cột. |
 |  |  |  | **TH2 - Chọn cột khác**: Hệ thống sắp xếp danh sách theo cột được chọn. |
-| 5 | Row click | Row click | Khi người dùng click vào bất kỳ vị trí nào trên dòng dữ liệu (trừ các nút thao tác), hệ thống mở [MH02 - Màn hình Chi tiết hỗ trợ, hướng dẫn người bị thiệt hại](#43394-mh02---màn-hình-chi-tiết-hỗ-trợ-hướng-dẫn-người-bị-thiệt-hại). |
-| 6 | Sửa | Icon button | Chỉ cho phép với bản ghi do cán bộ đăng nhập tạo.<br>- Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa hỗ trợ, hướng dẫn người bị thiệt hại](#43395-mh03---màn-hình-thêm-mớisửa-hỗ-trợ-hướng-dẫn-người-bị-thiệt-hại) ở chế độ Sửa với dữ liệu hiện tại của bản ghi được điền sẵn. |
-| 7 | Xóa | Icon button | Chỉ cho phép với bản ghi do cán bộ đăng nhập tạo.<br>- Hệ thống mở [Popup Xác nhận xóa](#43396-popup-xác-nhận-xóa). |
-| 8 | Phân trang & chuyển trang | Pagination | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
+| 6 | Row click | Row click | Khi người dùng click vào bất kỳ vị trí nào trên dòng dữ liệu (trừ các nút thao tác), hệ thống mở [MH02 - Màn hình Chi tiết hỗ trợ, hướng dẫn người bị thiệt hại](#43394-mh02---màn-hình-chi-tiết-hỗ-trợ-hướng-dẫn-người-bị-thiệt-hại). |
+| 7 | Sửa | Icon button | Chỉ cho phép với bản ghi do cán bộ đăng nhập tạo.<br>- Hệ thống mở [MH03 - Màn hình Thêm mới/Sửa hỗ trợ, hướng dẫn người bị thiệt hại](#43395-mh03---màn-hình-thêm-mớisửa-hỗ-trợ-hướng-dẫn-người-bị-thiệt-hại) ở chế độ Sửa với dữ liệu hiện tại của bản ghi được điền sẵn. |
+| 8 | Xóa | Icon button | Chỉ cho phép với bản ghi do cán bộ đăng nhập tạo.<br>- Hệ thống mở [Popup Xác nhận xóa](#43396-popup-xác-nhận-xóa). |
+| 9 | Phân trang & chuyển trang | Pagination | Phân trang, chuyển trang và cấu hình số dòng hiển thị theo quy tắc chung của hệ thống. |
 
 ---
 
@@ -108,8 +111,8 @@ flowchart TD
 | Kết quả hỗ trợ | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Nội dung yêu cầu hỗ trợ | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Nội dung đã hướng dẫn/hỗ trợ | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
-| **III. Tài liệu hỗ trợ đính kèm** |  |  |  |  |
-| Tài liệu hỗ trợ đính kèm | - | - | - | Control UI: File link<br>Theo dữ liệu bản ghi. |
+| **III. Tài liệu đính kèm** |  |  |  |  |
+| Tài liệu đính kèm | - | - | - | Control UI: File link<br>Theo dữ liệu bản ghi. |
 
 ###### 4.3.3.9.4.3. Chức năng trên màn hình
 
@@ -150,8 +153,8 @@ flowchart TD
 | Kết quả hỗ trợ | Enum(String(50)) | Có | Đang hỗ trợ | Control UI: Combobox.<br>Gồm:<br>+ Đang hỗ trợ<br>+ Đã hướng dẫn xong<br>+ Người dân đã nộp YCBT<br>+ Không liên hệ được |
 | Nội dung yêu cầu hỗ trợ | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Placeholder: "Nhập nội dung yêu cầu hỗ trợ...". |
 | Nội dung đã hướng dẫn/hỗ trợ | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Placeholder: "Nhập nội dung đã hướng dẫn/hỗ trợ...". |
-| **III. Tài liệu hỗ trợ đính kèm** |  |  |  |  |
-| Tài liệu hỗ trợ đính kèm | List(File) | Không | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Cột `Tên tài liệu, văn bản`: Text input. Placeholder: "Nhập tên tài liệu, văn bản".<br>- Cột `File đính kèm`: khi dòng chưa có file hiển thị nút `Tải file`; khi đã có file hiển thị tên file.<br>- Cột `Thao tác` gồm:<br>+ Xem file (khóa mờ khi dòng chưa có file)<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
+| **III. Tài liệu đính kèm** |  |  |  |  |
+| Tài liệu đính kèm | List(File) | Không | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Cột `Tên tài liệu, văn bản`: Text input. Placeholder: "Nhập tên tài liệu, văn bản".<br>- Cột `File đính kèm`: khi dòng chưa có file hiển thị nút `Tải file`; khi đã có file hiển thị tên file.<br>- Cột `Thao tác` gồm:<br>+ Xem file (khóa mờ khi dòng chưa có file)<br>+ Xóa<br>- Áp dụng [BR-FILE-010]. |
 
 ###### 4.3.3.9.5.3. Chức năng trên màn hình
 

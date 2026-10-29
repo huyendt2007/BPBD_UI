@@ -679,9 +679,6 @@
     </div>
 
     <div class="section">
-        <div class="section-head">
-            <div class="section-title"><i class="fa-solid fa-filter"></i> Lọc, tìm kiếm thông tin</div>
-        </div>
         <div class="grid-4" id="filterGrid"></div>
         <div class="footer-actions">
             <button class="btn btn-secondary" onclick="resetFilters()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
@@ -692,7 +689,10 @@
     <div class="section">
         <div class="section-head">
             <div class="section-title"><i class="fa-solid fa-table-list"></i> Bảng kết quả tìm kiếm</div>
-            <button class="btn btn-primary" onclick="openForm('new')"><i class="fa-solid fa-circle-plus"></i> Thêm mới</button>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
+                <button class="btn btn-primary" onclick="openForm('new')"><i class="fa-solid fa-circle-plus"></i> Thêm mới</button>
+                <button class="btn btn-secondary" id="btnExportExcel" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+            </div>
         </div>
         <div class="table-wrap">
             <table>
@@ -902,7 +902,7 @@
 
     <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261028tl1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
     <script>
         const statusOptions = ['Tất cả', 'Đã gửi - Chờ phản hồi', 'Đã có phản hồi', 'Đã thực hiện', 'Không thực hiện'];
         // Căn cứ phát sinh kiến nghị xử lý vi phạm (khoản 1 Điều 47 dự thảo Nghị định hướng dẫn)
@@ -2128,6 +2128,7 @@
                 });
             }
 
+            lastFilteredRows = filtered;
             const total = filtered.length;
             const maxPages = Math.ceil(total / pageSize) || 1;
             if (currentPage > maxPages) currentPage = maxPages;
@@ -2293,9 +2294,8 @@
 
             const docTitleEl = document.getElementById('docSectionTitle');
             if (docTitleEl) {
-                docTitleEl.innerHTML = currentFeature === 'giai_dap_vuong_mac'
-                    ? '<i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm (văn bản đầu ra)'
-                    : '<i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm';
+                // Tiêu đề khối tài liệu thống nhất cho mọi module
+                docTitleEl.innerHTML = '<i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm';
             }
 
             if (currentFeature === 'giai_dap_vuong_mac') {
@@ -2919,6 +2919,33 @@
             showToast('Đã lưu kết quả phản hồi.');
         }
 
+        // Kết xuất Excel dùng chung 12 module: toàn bộ bản ghi theo bộ lọc hiện tại, đúng các cột của lưới (bỏ Thao tác)
+        let lastFilteredRows = [];
+        const XLSX_FILE_NAMES = {
+            ho_tro_nguoi_bi_thiet_hai: 'Danh_sach_ho_tro_nguoi_bi_thiet_hai',
+            kien_nghi_xu_ly_vi_pham: 'Danh_sach_kien_nghi_xu_ly_vi_pham',
+            kien_nghi_khang_nghi_ban_an: 'Danh_sach_kien_nghi_khang_nghi_ban_an',
+            yeu_cau_huy_qd_gqbt: 'Danh_sach_yeu_cau_huy_quyet_dinh_GQBT',
+            kien_nghi_xem_xet_qd_hoan_tra: 'Danh_sach_kien_nghi_xem_xet_QD_hoan_tra',
+            chien_luoc_chinh_sach: 'Danh_sach_chien_luoc_chinh_sach_BTNN',
+            van_ban_bieu_mau_so_sach: 'Danh_sach_van_ban_bieu_mau_so_sach_BTNN',
+            hop_tac_quoc_te: 'Danh_sach_hop_tac_quoc_te_BTNN',
+            phoi_hop_tand_vksnd: 'Danh_sach_phoi_hop_TAND_VKSND',
+            giai_dap_vuong_mac: 'Danh_sach_giai_dap_vuong_mac',
+            dau_moi_btnn: 'Danh_sach_dau_moi_cong_tac_BTNN',
+            csdl_lien_quan_btnn: 'Danh_sach_thong_tin_CSDL_lien_quan_BTNN'
+        };
+        function exportExcel() {
+            const gridCols = config.columns.slice(0, -1);
+            const cells = row => (currentFeature === 'giai_dap_vuong_mac') ? row.slice(0, 7) : row.slice(0, gridCols.length);
+            return BTNN_XLSX.exportGrid({
+                title: config.title,
+                name: XLSX_FILE_NAMES[moduleKey] || 'Danh_sach_nghiep_vu_BTNN',
+                headers: gridCols,
+                rows: lastFilteredRows.map(cells)
+            });
+        }
+
         function resetFilters() {
             config.filters.forEach(([id]) => {
                 const el = document.getElementById(`filter_${id}`);
@@ -2961,12 +2988,15 @@
         // Người dùng giả lập (dùng chung phân hệ BTNN): phạm vi dữ liệu Popup Tìm kiếm vụ việc theo cấp của người dùng
         if (window.BTNN_WF) BTNN_WF.mountUserSwitcher();
     </script>
+    <!-- Kết xuất Excel dùng chung BTNN (SheetJS như dashboard_btnn.html) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="btnn_ket_xuat_excel.js?v=20261029xlsx"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_form_page.js?v=20261026fp"></script>
     <!-- Bảng tài liệu chuẩn BTNN (style nút Tải file / Thêm tài liệu, icon thao tác) -->
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261029tldk"></script>
 </body>
 
 </html>

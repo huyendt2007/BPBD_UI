@@ -77,7 +77,9 @@ flowchart TD
 |  |  |  | **TH Hợp lệ (Có dữ liệu phù hợp)**: Hệ thống lọc và hiển thị danh sách các bản ghi thỏa mãn đồng thời các tiêu chí tìm kiếm/lọc đã nhập/chọn, hiển thị kết quả lên bảng và đưa về Trang 1. |
 |  |  |  | **TH Không có dữ liệu trả về**: Bảng kết quả hiển thị duy nhất 01 dòng căn giữa trên toàn bộ chiều rộng bảng (`colspan`), in nghiêng với nội dung theo MessageList dùng chung [MSG-INF-SYS-001]; thanh phân trang hiển thị *"Hiển thị 0-0 của 0 bản ghi"*, các nút điều hướng trang ở trạng thái ẩn hoặc khóa mờ (Disabled); nút "Kết xuất Excel" (nếu có) ở trạng thái khóa mờ kèm tooltip *"Không có dữ liệu để kết xuất Excel"*. |
 | 3 | Xóa bộ lọc | Button | Hệ thống xóa các tiêu chí lọc, đưa về giá trị mặc định và tải lại danh sách. |
-| 4 | Kết xuất Excel | Button | Kết xuất danh sách theo kết quả tìm kiếm hiện hành, áp dụng [BR-EXP-040]. |
+| 4 | Kết xuất Excel | Button | Kết xuất danh sách ra tệp Excel theo [Quy chuẩn Kết xuất Excel dùng chung - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md):<br>- Phạm vi: toàn bộ bản ghi thỏa mãn điều kiện tìm kiếm hiện hành, không giới hạn theo trang.<br>- Cột xuất theo thứ tự lưới, không gồm cột Thao tác: STT, Mã hồ sơ, Cơ quan/cá nhân đề nghị, Loại nội dung, Hình thức thực hiện, Ngày tiếp nhận, Cán bộ xử lý, Trạng thái.<br>- Tên tệp: `yyyyMMdd_Danh_sach_huong_dan_nghiep_vu_BTNN.xlsx`. |
+|  |  |  | **TH1 - Không có dữ liệu**: Hệ thống hiển thị [MSG-WRN-SYS-001] và không tải tệp. |
+|  |  |  | **TH2 - Có dữ liệu**: Hệ thống tải tệp Excel về máy người dùng. |
 | 5 | Click dòng dữ liệu | Row click | Mở **MH02 - Thêm mới/Cập nhật hướng dẫn nghiệp vụ, giải đáp vướng mắc** ở chế độ xem chi tiết. |
 | 6 | Sửa | Icon/Button | Mở **MH02 - Thêm mới/Cập nhật hướng dẫn nghiệp vụ, giải đáp vướng mắc** ở chế độ cập nhật khi người dùng có quyền và hồ sơ ở trạng thái "Đang xử lý". Hồ sơ ở trạng thái "Hoàn thành" không cho phép sửa (icon hiển thị mờ). |
 
@@ -106,7 +108,7 @@ flowchart TD
 | Cơ quan phối hợp | Text(2000) | Không | Trống | Danh sách cơ quan phối hợp nếu cần lấy ý kiến. |
 | Nội dung hướng dẫn/giải đáp | Text(4000) | Có khi hoàn thành | Trống | Nội dung trả lời chính thức. Với `Bồi dưỡng kỹ năng, nghiệp vụ` hoặc `Truyền thông, tuyên truyền, phổ biến pháp luật`, trường hiển thị nhãn `Kết quả thực hiện`. |
 | Căn cứ pháp luật | Text(4000) | Có điều kiện | Trống | Căn cứ pháp luật phải nêu trong văn bản hướng dẫn/giải đáp. Bắt buộc khi hoàn thành hồ sơ có `Loại nội dung` là `Hướng dẫn nghiệp vụ` hoặc `Giải đáp vướng mắc`. |
-| Tài liệu liên quan | List(File) | Không | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Cột `File đính kèm`: khi dòng chưa có file hiển thị nút `Tải file`; khi đã có file hiển thị tên file.<br>- Cột `Thao tác` gồm `Xem file` (khóa khi dòng chưa có file) và `Xóa`.<br>- Ở chế độ xem chi tiết: ẩn `Xóa` và nút `Thêm tài liệu`; chỉ cho phép `Xem file`.<br>- Áp dụng [BR-FILE-010]. |
+| Tài liệu đính kèm | List(File) | Không | Trống | Control UI: Bảng tài liệu đính kèm gồm các cột `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`; nút `Thêm tài liệu` dưới bảng.<br>- Cột `File đính kèm`: khi dòng chưa có file hiển thị nút `Tải file`; khi đã có file hiển thị tên file.<br>- Cột `Thao tác` gồm `Xem file` (khóa khi dòng chưa có file) và `Xóa`.<br>- Ở chế độ xem chi tiết: ẩn `Xóa` và nút `Thêm tài liệu`; chỉ cho phép `Xem file`.<br>- Áp dụng [BR-FILE-010]. |
 | Lịch sử xử lý | String(255) | Không | Theo dữ liệu | Hiển thị thời gian, người thực hiện, thao tác, nội dung xử lý. |
 | Hủy bỏ | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |
 | Lưu thông tin xử lý | String(50) | Không | Hiển thị | Chi tiết nghiệp vụ xem tại bảng Chức năng trên màn hình. |

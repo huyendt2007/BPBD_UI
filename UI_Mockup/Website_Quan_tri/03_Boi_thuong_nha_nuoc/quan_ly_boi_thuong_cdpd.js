@@ -253,8 +253,8 @@ function cdpdAfterOpenForm(id) {
         var rec = gqRecord(claim);
         if (rec && rec.status === 'Bị trả lại' && rec.returned) {
             var W = gqW();
-            ret.innerHTML = '<div style="display:flex; align-items:center; gap:8px; font-weight:700; color:#b91c1c; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TỪ CHỐI</div>'
-                + '<div><b>Lý do từ chối:</b> ' + cdpdE(rec.returned.reason || '--') + '</div>'
+            ret.innerHTML = '<div style="display:flex; align-items:center; gap:8px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TRẢ LẠI</div>'
+                + '<div><b>Lý do bị trả lại:</b> ' + cdpdE(rec.returned.reason || '--') + '</div>'
                 + '<div style="font-size:12px; margin-top:2px;">Người từ chối: ' + cdpdE((rec.returned.by && W ? W.userName(rec.returned.by) : '') || '--') + ' • Thời điểm: ' + cdpdE(rec.returned.at || '--') + '</div>';
             ret.style.display = 'block';
         }
@@ -355,8 +355,8 @@ function cdpdEnsureModal() {
         + '<div id="cdpdStepperBar" class="ktl-stepper-fullwidth"><div id="cdpdStep1Tab" class="ktl-step-tab active" onclick="cdpdGoStep1()"><span class="ktl-step-badge" id="cdpdStep1Badge">1</span><span class="ktl-step-title">Nhập thông tin</span></div>'
         + '<div class="ktl-stepper-sep"><i class="fa-solid fa-chevron-right"></i></div><div id="cdpdStep2Tab" class="ktl-step-tab" onclick="cdpdGoStep2()"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span></div></div>'
         + '<div id="cdpdStep1Body" class="sticky-modal-body gqx-body" style="overflow-y:auto; flex:1; padding:24px;">'
-        + '<div id="cdpdReturnedAlertBlock" style="display:none; background:#fef2f2; border:1px solid #fecaca; border-left:4px solid #dc2626; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b91c1c; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TỪ CHỐI</div>'
-        + '<div style="font-size:13px; color:#7f1d1d;"><b>Lý do từ chối:</b> <span id="cdpdReturnedReason">--</span></div><div style="font-size:12px; color:#991b1b; margin-top:2px;">Người từ chối: <span id="cdpdReturnedOfficer">--</span> • Thời điểm: <span id="cdpdReturnedDate">--</span></div></div>'
+        + '<div id="cdpdReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TRẢ LẠI</div>'
+        + '<div style="font-size:13px; color:#92400e;"><b>Lý do bị trả lại:</b> <span id="cdpdReturnedReason">--</span></div><div style="font-size:12px; color:#b45309; margin-top:2px;">Người từ chối: <span id="cdpdReturnedOfficer">--</span> • Thời điểm: <span id="cdpdReturnedDate">--</span></div></div>'
         + '<div class="gqx-sec"><div class="gqx-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="gqx-req">*</span></div><div class="sign-cards-grid">'
         + card('cdpdCardSignOnline', 'online', 'Ký số trên hệ thống', 'Trình Lãnh đạo ký duyệt trên phần mềm', 'fa-file-signature', false, true)
         + card('cdpdCardSignOffline', 'offline', 'Ký ngoài (Ban hành trực tiếp)', 'Tải lên văn bản PDF đã ký và đóng dấu', 'fa-stamp', true, false)
@@ -424,7 +424,7 @@ function openCdpdModal(claimId) {
     cdpdOfflineRemove();
     var fe = cdpdEl('cdpdDocFileError'); fe.textContent = CDPD_REQ; fe.style.display = 'none';
     if (typeof ktlxCancelConvert === 'function') ktlxCancelConvert('cdpd');
-    // Trình lại sau khi bị từ chối: điền lại tệp, ô ký, Nội dung trình, Tài liệu kèm theo của lần trình trước
+    // Trình lại sau khi bị trả lại: điền lại tệp, ô ký, Nội dung trình, Tài liệu đính kèm của lần trình trước
     tlktGqRestore('cdpd', prev, { required: false, setFile: function (f) { cdpdOnlineFile = f; } });
     cdpdRenderDocBox();
     cdpdEl('cdpdSigningMethodOnline').checked = true;
@@ -539,7 +539,7 @@ function cdpdGoStep1() {
     cdpdEl('cdpdBtnBackStep1').style.display = 'none';
     cdpdEl('cdpdBtnSubmitOnline').style.display = 'none';
 }
-// Tiếp tục: kiểm tra tệp văn bản trình ký, Tài liệu kèm theo -> Bước 2
+// Tiếp tục: kiểm tra tệp văn bản trình ký, Tài liệu đính kèm -> Bước 2
 function cdpdGoStep2() {
     if (!cdpdClaim || cdpdIsOffline()) return;
     if (ktlxConverting.cdpd) { showToast('Đang chuyển đổi tệp sang PDF, vui lòng chờ hoàn tất.', 'warning'); return; }

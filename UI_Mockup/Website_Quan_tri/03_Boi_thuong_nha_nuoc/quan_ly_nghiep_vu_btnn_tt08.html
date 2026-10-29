@@ -534,9 +534,6 @@
     </div>
 
     <div class="section">
-        <div class="section-head">
-            <div class="section-title"><i class="fa-solid fa-filter"></i> Lọc, tìm kiếm thông tin</div>
-        </div>
         <div class="tabs" id="moduleTabs"></div>
         <div class="grid-4" id="filterGrid"></div>
         <div class="footer-actions" style="margin-top:12px;">
@@ -550,7 +547,7 @@
             <div class="section-title"><i class="fa-solid fa-table-list"></i> Bảng kết quả tìm kiếm</div>
             <div style="display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end;">
                 <button class="btn btn-primary" onclick="openForm('new')"><i class="fa-solid fa-circle-plus"></i> Thêm mới</button>
-                <button class="btn btn-secondary" onclick="showToast('Hệ thống đang kết xuất Excel theo kết quả tìm kiếm hiện hành.')"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
+                <button class="btn btn-secondary" id="btnExportExcel" onclick="exportExcel()"><i class="fa-solid fa-file-excel"></i> Kết xuất Excel</button>
             </div>
         </div>
         <div class="table-wrap">
@@ -618,7 +615,7 @@
             </div>
         </form>
 
-        <div class="section-title" id="docSectionTitle" style="margin:10px 0 12px 0;"><i class="fa-solid fa-paperclip"></i> Tài liệu liên quan</div>
+        <div class="section-title" id="docSectionTitle" style="margin:10px 0 12px 0;"><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm</div>
         <div class="table-wrap" id="docTableWrap">
             <table class="doc-table">
                 <thead>
@@ -654,7 +651,7 @@
 
     <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastText">Thành công</span></div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261028tl1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
     <script src="btnn_tim_kiem_vu_viec.js?v=20261028tl1"></script>
     <script>
         const commonStatusOptions = ['Tất cả', 'Đang xử lý', 'Hoàn thành'];
@@ -889,6 +886,7 @@
         let currentConfig = moduleConfigs[moduleKey] || moduleConfigs.huong_dan;
         let currentTab = currentConfig.tabs[0] || '';
         let workingRows = [];
+        let lastFilteredRows = [];
         let documentRows = [
             { name: 'Văn bản đề nghị', file: 'van_ban_de_nghi.pdf' },
             { name: 'Tài liệu liên quan', file: 'tai_lieu_lien_quan.docx' }
@@ -1171,6 +1169,7 @@
                 return true;
             });
 
+            lastFilteredRows = filtered;
             const total = filtered.length;
             const maxPages = Math.ceil(total / pageSize) || 1;
             if (currentPage > maxPages) currentPage = maxPages;
@@ -1492,6 +1491,18 @@
             }
         }
 
+        // Kết xuất Excel dùng chung các module (Hướng dẫn nghiệp vụ, Khiếu nại/tố cáo/xử lý vi phạm): toàn bộ bản ghi theo bộ lọc hiện tại, đúng các cột của lưới (bỏ Thao tác)
+        const XLSX_FILE_NAMES = { huong_dan: 'Danh_sach_huong_dan_nghiep_vu_BTNN', khieu_nai: 'Danh_sach_khieu_nai_to_cao_xu_ly_vi_pham' };
+        function exportExcel() {
+            const gridCols = currentConfig.columns.slice(0, -1);
+            return BTNN_XLSX.exportGrid({
+                title: currentConfig.title,
+                name: XLSX_FILE_NAMES[moduleKey] || 'Danh_sach_nghiep_vu_BTNN',
+                headers: gridCols,
+                rows: lastFilteredRows.map(row => row.slice(0, gridCols.length))
+            });
+        }
+
         function resetFilters() {
             currentConfig.filters.forEach(([id]) => {
                 const el = document.getElementById(`filter_${id}`);
@@ -1541,12 +1552,15 @@
         // Người dùng giả lập (dùng chung phân hệ BTNN): phạm vi chọn đơn vị và tìm kiếm vụ việc theo cấp của người dùng
         if (window.BTNN_WF) BTNN_WF.mountUserSwitcher();
     </script>
+    <!-- Kết xuất Excel dùng chung BTNN (SheetJS như dashboard_btnn.html) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="btnn_ket_xuat_excel.js?v=20261029xlsx"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_form_page.js?v=20261026fp"></script>
     <!-- Bảng tài liệu chuẩn BTNN (style nút Tải file / Thêm tài liệu, icon thao tác) -->
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261029tldk"></script>
 </body>
 
 </html>

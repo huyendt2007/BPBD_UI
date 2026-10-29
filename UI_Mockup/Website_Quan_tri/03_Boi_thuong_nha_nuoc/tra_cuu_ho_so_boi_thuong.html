@@ -430,7 +430,7 @@
         <span id="toastMessage">Thông báo</span>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261028tl1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
     <script src="../../Common/dia_ban_vn.js"></script>
 
     <script>
@@ -448,11 +448,11 @@
 
         const fallbackClaims = [
             { id: 'HS_WAIT_INPUT', code: 'BT-2026-020', date: '01/08/2026', updatedDate: '05/08/2026', nyc: 'Công ty An Phú', nycTinhThanh: 'Hà Nội', address: 'Số 12 Nguyễn Chí Thanh, Ba Đình, Hà Nội', hanhVi: 'Thu hồi giấy phép kinh doanh không đúng căn cứ pháp luật.', fieldGroup: 'hành chính', agency: 'Sở Tư pháp Hà Nội', assignedOfficer: '', status: 'Chờ tiếp nhận', deadline: '30/08/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 0, restoreHonor: false },
-            { id: 'HS_SUPPLEMENT', code: 'BT-2026-021', date: '02/08/2026', updatedDate: '06/08/2026', nyc: 'Nguyễn Văn D', nycTinhThanh: 'Đà Nẵng', address: 'Tổ 8 phường Hải Châu, Đà Nẵng', hanhVi: 'Cưỡng chế hành chính sai đối tượng.', fieldGroup: 'hành chính', agency: 'UBND Quận Hải Châu', assignedOfficer: 'Lê Văn Chuyên Viên', status: 'Yêu cầu bổ sung', deadline: '25/08/2026', hinhThucTiepNhan: 'Qua môi trường số (Dịch vụ Công)', totalNum: 65000000, restoreHonor: false },
+            { id: 'HS_SUPPLEMENT', code: 'BT-2026-021', date: '02/08/2026', updatedDate: '06/08/2026', nyc: 'Nguyễn Văn D', nycTinhThanh: 'Đà Nẵng', address: 'Tổ 8 phường Hải Châu, Đà Nẵng', hanhVi: 'Cưỡng chế hành chính sai đối tượng.', fieldGroup: 'hành chính', agency: 'UBND Quận Hải Châu', assignedOfficer: 'Lê Văn Chuyên Viên', status: 'Yêu cầu bổ sung', deadline: '25/08/2026', hinhThucTiepNhan: 'Dịch vụ công', totalNum: 65000000, restoreHonor: false },
             { id: 'HS_CHECK', code: 'BT-2026-022', date: '03/08/2026', updatedDate: '06/08/2026', nyc: 'Công ty Hòa Bình', nycTinhThanh: 'Hải Phòng', address: 'Số 7 Lạch Tray, Ngô Quyền, Hải Phòng', hanhVi: 'Kê biên tài sản của bên thứ ba không có nghĩa vụ.', fieldGroup: 'thi hành án dân sự', agency: 'Cục Thi hành án dân sự TP. Hải Phòng', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Cử người giải quyết bồi thường', deadline: '28/08/2026', hinhThucTiepNhan: 'Qua dịch vụ bưu chính', totalNum: 185000000, restoreHonor: false },
             { id: 'HS_REJECT', code: 'BT-2026-023', date: '25/07/2026', updatedDate: '02/08/2026', nyc: 'Vũ Văn L', nycTinhThanh: 'Bắc Ninh', address: 'Phường Võ Cường, Bắc Ninh', hanhVi: 'Yêu cầu chưa có văn bản làm căn cứ yêu cầu bồi thường.', fieldGroup: 'hành chính', agency: 'Sở Tư pháp Bắc Ninh', assignedOfficer: 'Phạm Minh Chuyên Viên', status: 'Không thụ lý', deadline: '15/08/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 0, restoreHonor: false },
             { id: 'HS_THULY', code: 'BT-2026-018', date: '22/07/2026', updatedDate: '03/08/2026', nyc: 'Lê Văn H', nycTinhThanh: 'Hà Nội', address: 'Số 41 Trần Phú, Hà Đông, Hà Nội', hanhVi: 'Tạm giữ người không đúng trình tự tố tụng.', fieldGroup: 'hình sự', agency: 'Viện kiểm sát nhân dân TP. Hà Nội', assignedOfficer: '', status: 'Cử người giải quyết bồi thường', deadline: '18/08/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 210000000, restoreHonor: false },
-            { id: 'HS_VERIFY', code: 'BT-2026-007', date: '15/07/2026', updatedDate: '04/08/2026', nyc: 'Hoàng Văn R', nycTinhThanh: 'Khánh Hòa', address: 'Phường Phước Hải, Nha Trang, Khánh Hòa', hanhVi: 'Tạm giữ phương tiện kinh doanh trái quy định.', fieldGroup: 'hành chính', agency: 'Tòa án nhân dân TP. Nha Trang', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Xác minh thiệt hại', deadline: '26/09/2026', hinhThucTiepNhan: 'Qua môi trường số (Dịch vụ Công)', totalNum: 90000000, restoreHonor: false },
+            { id: 'HS_VERIFY', code: 'BT-2026-007', date: '15/07/2026', updatedDate: '04/08/2026', nyc: 'Hoàng Văn R', nycTinhThanh: 'Khánh Hòa', address: 'Phường Phước Hải, Nha Trang, Khánh Hòa', hanhVi: 'Tạm giữ phương tiện kinh doanh trái quy định.', fieldGroup: 'hành chính', agency: 'Tòa án nhân dân TP. Nha Trang', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Xác minh thiệt hại', deadline: '26/09/2026', hinhThucTiepNhan: 'Dịch vụ công', totalNum: 90000000, restoreHonor: false },
             { id: 'HS_PAUSE', code: 'BT-2026-001', date: '12/07/2026', updatedDate: '05/08/2026', nyc: 'Hoàng Thị H', nycTinhThanh: 'Hồ Chí Minh', address: 'Số 18 Nguyễn Du, Quận 1, TP. Hồ Chí Minh', hanhVi: 'Áp dụng biện pháp xử phạt và cưỡng chế trái pháp luật.', fieldGroup: 'hành chính', agency: 'Công an Quận 1, TP. HCM', assignedOfficer: 'Lê Văn Chuyên Viên', status: 'Thương lượng', deadline: '18/09/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 185000000, restoreHonor: false },
             { id: 'HS_STOP', code: 'BT-2026-010', date: '08/07/2026', updatedDate: '04/08/2026', nyc: 'Công ty Minh An', nycTinhThanh: 'Hà Nội', address: 'Tầng 5, tòa nhà Vân Hồ, Hai Bà Trưng, Hà Nội', hanhVi: 'Thi hành án dân sự sai đối tượng tài sản.', fieldGroup: 'thi hành án dân sự', agency: 'Cục Thi hành án dân sự Hà Nội', assignedOfficer: 'Trần Thị Chuyên Viên', status: 'Chờ ban hành QĐ', deadline: '25/09/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 620000000, restoreHonor: false },
             { id: 'HS_DONE', code: 'BT-2026-008', date: '02/06/2026', updatedDate: '05/08/2026', nyc: 'Nguyễn Văn F', nycTinhThanh: 'Hà Nội', address: 'Số 5 Nguyễn Trãi, Thanh Xuân, Hà Nội', hanhVi: 'Không thống nhất được mức tiền bồi thường sau xác minh.', fieldGroup: 'hình sự', agency: 'Công an Quận Thanh Xuân', assignedOfficer: 'Nguyễn Văn Chuyên Viên', status: 'Hoàn thành', deadline: '15/08/2026', hinhThucTiepNhan: 'Trực tiếp', totalNum: 120000000, restoreHonor: false },
@@ -622,8 +622,8 @@
             return list;
         }
 
-        // Nguồn hồ sơ (cùng giá trị với Giải quyết yêu cầu bồi thường): Tiếp nhận mới / Dịch vụ công quốc gia / Chuyển CQGQBT / Xác định CQGQBT
-        const TCVV_NGUON = (window.BTNN_WF && window.BTNN_WF.SOURCES) || { TIEP_NHAN: 'Tiếp nhận mới', DVC: 'Dịch vụ công quốc gia', CHUYEN: 'Chuyển CQGQBT', XDCQ: 'Xác định CQGQBT' };
+        // Nguồn hồ sơ (cùng giá trị với Giải quyết yêu cầu bồi thường): Tiếp nhận mới / Dịch vụ công / Chuyển CQGQBT / Xác định CQGQBT
+        const TCVV_NGUON = (window.BTNN_WF && window.BTNN_WF.SOURCES) || { TIEP_NHAN: 'Tiếp nhận mới', DVC: 'Dịch vụ công', CHUYEN: 'Chuyển CQGQBT', XDCQ: 'Xác định CQGQBT' };
         function tcvvNormalizeNguon(v) {
             const s = String(v || '').trim();
             const values = [TCVV_NGUON.TIEP_NHAN, TCVV_NGUON.DVC, TCVV_NGUON.CHUYEN, TCVV_NGUON.XDCQ];
@@ -993,7 +993,8 @@
             if (status === 'Hoàn thành') cls = 'badge-success';
             else if (['Chờ tiếp nhận', 'Chờ duyệt', 'Cử người giải quyết bồi thường'].includes(status)) cls = 'badge-pending';
             else if (['Yêu cầu bổ sung', 'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoãn giải quyết', 'Tạm đình chỉ', 'Hoãn phục hồi danh dự'].includes(status)) cls = 'badge-warning';
-            else if (['Bị trả lại', 'Không thụ lý', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Từ chối phục hồi danh dự'].includes(status)) cls = 'badge-danger';
+            else if (status === 'Bị trả lại') cls = 'badge-tra-lai';
+            else if (['Không thụ lý', 'Đình chỉ giải quyết', 'Dừng giải quyết', 'Từ chối phục hồi danh dự'].includes(status)) cls = 'badge-danger';
             return `<span class="badge ${cls}">${escapeHtml(status)}</span>`;
         }
 
@@ -1068,7 +1069,7 @@
                 .replace(/'/g, '&#039;');
         }
     </script>
-    <script src="tra_cuu_seed_tcvv.js?v=20261028tl1"></script>
+    <script src="tra_cuu_seed_tcvv.js?v=20261028dvc1"></script>
     <script src="btnn_uxu_dong_bo.js?v=20261028tl1"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="bpbd_filter_toggle.js"></script>

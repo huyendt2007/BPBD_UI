@@ -106,7 +106,7 @@ flowchart TD
 | Câu hỏi | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Nội dung trả lời | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
 | Thứ tự hiển thị | - | - | - | Control UI: Label<br>Theo dữ liệu bản ghi. |
-| **II. Tài liệu hướng dẫn đi kèm** | | | | |
+| **II. Tài liệu đính kèm** | | | | |
 | File tài liệu đính kèm | - | - | - | Control UI: File link<br>Theo dữ liệu bản ghi. |
 | File hướng dẫn media | - | - | - | Control UI: File link<br>Theo dữ liệu bản ghi. |
 | **III. Thao tác** | | | | |
@@ -139,7 +139,7 @@ flowchart TD
 | Câu hỏi | Text(1000) | Có | Trống | Control UI: Textarea.<br>- Nhập nội dung câu hỏi thường gặp (placeholder: "Nhập câu hỏi thường gặp..."). |
 | Nội dung trả lời | Text(4000) | Có | Trống | Control UI: Rich Text Editor.<br>- Nhập nội dung câu trả lời chi tiết (placeholder: "Nhập nội dung câu trả lời chi tiết...").<br>- Hỗ trợ các công cụ định dạng trực quan trên toolbar:<br>+ In đậm (Bold)<br>+ In nghiêng (Italic)<br>+ Danh sách không thứ tự (Bullet list)<br>+ Danh sách có thứ tự (Numbered list)<br>+ Chèn liên kết (Insert link) |
 | Thứ tự hiển thị | Integer(10) | Không | Trống | Control UI: Number input.<br>- Nhập số nguyên dương xác định thứ tự ưu tiên khi công bố (placeholder: "Nhập thứ tự hiển thị..."). |
-| **II. Tài liệu hướng dẫn đi kèm** | | | | |
+| **II. Tài liệu đính kèm** | | | | |
 | File tài liệu đính kèm | File | Không | Trống | Control UI: File Upload Area.<br>- Cho phép kéo thả hoặc click chọn nhiều file tài liệu.<br>- Định dạng cho phép: PDF, JPG, PNG.<br>- Dung lượng tối đa: 10MB/file, tối đa 5 file.<br>- Áp dụng [BR-BTNN-FAQ-001].<br>- Sau khi tải lên thành công, hiển thị tên file kèm theo 2 liên kết:<br>+ Xem file (mở tab mới)<br>+ Xóa (xóa khỏi danh sách file trước khi lưu) |
 | File hướng dẫn media | File | Không | Trống | Control UI: File Upload Area.<br>- Cho phép kéo thả hoặc click chọn nhiều file media.<br>- Định dạng cho phép: MP4, MP3.<br>- Dung lượng tối đa: 50MB/file, tối đa 3 file.<br>- Áp dụng [BR-BTNN-FAQ-002].<br>- Sau khi tải lên thành công, hiển thị tên file kèm theo 2 liên kết:<br>+ Xem file (mở tab mới)<br>+ Xóa (xóa khỏi danh sách file trước khi lưu) |
 

@@ -16,8 +16,9 @@
     var DEMO_SUB = 'STP-HN-HCTP';
     var BTP_UNIT = 'BTP-01'; // Báo cáo tổng hợp toàn quốc của Bộ Tư pháp (cùng form 04 biểu mẫu)
 
-    var ST = { DANG: 'Đang nhập liệu', CHO: 'Chờ duyệt', TC: 'Bị từ chối', BH: 'Đã ban hành', TL: 'Bị trả lại' };
-    var ST_CLS = {}; ST_CLS[ST.DANG] = 'badge-muted'; ST_CLS[ST.CHO] = 'badge-info'; ST_CLS[ST.TC] = 'badge-danger'; ST_CLS[ST.BH] = 'badge-success'; ST_CLS[ST.TL] = 'badge-warning';
+    // Chốt 28/10: Lãnh đạo Từ chối và Bộ Tư pháp trả lại cùng trạng thái "Bị trả lại" (TC = TL); phân biệt theo r.reject (Lãnh đạo Từ chối) / r.returned (Bộ Tư pháp trả lại).
+    var ST = { DANG: 'Đang nhập liệu', CHO: 'Chờ duyệt', TC: 'Bị trả lại', BH: 'Đã ban hành', TL: 'Bị trả lại' };
+    var ST_CLS = {}; ST_CLS[ST.DANG] = 'badge-muted'; ST_CLS[ST.CHO] = 'badge-info'; ST_CLS[ST.TC] = 'badge-warning'; ST_CLS[ST.BH] = 'badge-success'; ST_CLS[ST.TL] = 'badge-warning';
 
     var PERIODS = {
         thuc_te: { label: 'Báo cáo năm số liệu thực tế (01/01 - 31/10)', from: '01/01', to: '31/10' },
@@ -278,7 +279,7 @@
             list.push(newReport(i, p, 2026, 'thuc_te', st));
         });
         var hn25 = newReport(0, PROVINCES[0], 2025, 'chinh_thuc', ST.BH); list.push(hn25);
-        // Giả lập Lãnh đạo Sở Tư pháp Hà Nội: (1) chờ Cấp 2 - Lãnh đạo Sở (Cấp 1 đã ký nháy); (2) chờ Cấp 1 - Lãnh đạo Phòng; (3) Bị từ chối
+        // Giả lập Lãnh đạo Sở Tư pháp Hà Nội: (1) chờ Cấp 2 - Lãnh đạo Sở (Cấp 1 đã ký nháy); (2) chờ Cấp 1 - Lãnh đạo Phòng; (3) Bị trả lại (Lãnh đạo Từ chối)
         var c2 = newReport(0, PROVINCES[0], 2025, 'thuc_te', ST.CHO), l1 = c2.submit.levels[0];
         l1.result = 'approved'; l1.at = seedAt(2025, 'thuc_te', 1, '10:00'); c2.submit.current = 1;
         c2.history.push({ at: l1.at, actor: l1.leaderName, action: 'Ký duyệt và chuyển xử lý đến ' + c2.submit.levels[1].leaderName, note: '' });
@@ -293,7 +294,7 @@
         list[0].m42.ngay = ''; list[0].m42.items.keHoach = ''; list[0].m42.items.deXuatKienNghi = '';
         // Năm 2025: thêm báo cáo đã ban hành của 08 Sở Tư pháp (nguồn tổng hợp cho báo cáo của Bộ các kỳ năm 2025)
         for (var k = 1; k <= 8; k++) { list.push(newReport(k, PROVINCES[k], 2025, 'chinh_thuc', ST.BH)); list.push(newReport(k, PROVINCES[k], 2025, 'thuc_te', ST.BH)); }
-        // Báo cáo tổng hợp của Bộ Tư pháp: 2026 Đang nhập liệu (từ 28 Sở đã gửi); 2025 chính thức Đã ban hành; 2025 thực tế Bị từ chối
+        // Báo cáo tổng hợp của Bộ Tư pháp: 2026 Đang nhập liệu (từ 28 Sở đã gửi); 2025 chính thức Đã ban hành; 2025 thực tế Bị trả lại
         list.push(newBtpReport(2026, 'thuc_te', ST.DANG, list));
         // Sở Tư pháp Tỉnh Điện Biên (2026): Bộ Tư pháp trả lại sau khi đã lập báo cáo tổng hợp -> báo cáo của Bộ có nhắc cập nhật
         var tl = list[3], tlAt = seedAt(2026, 'thuc_te', 4, '10:30'), tlReason = 'Mẫu số 04 (TT 08/2019): số tiền Cột 12 chưa khớp Cột 13 + 14 theo hồ sơ hoàn trả; đề nghị rà soát, gửi lại.';
@@ -382,6 +383,10 @@
     var DB = null;
     function load() {
         try { DB = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { DB = null; }
+        // Dữ liệu cũ: trạng thái "Bị từ chối" -> "Bị trả lại"
+        if (DB && Array.isArray(DB.reports) && DB.reports.some(function (r) { return r && r.status === 'Bị từ chối'; })) {
+            DB.reports.forEach(function (r) { if (r && r.status === 'Bị từ chối') r.status = ST.TC; }); save();
+        }
         if (!DB || DB.seed !== SEED) { DB = seed(); save(); }
     }
     function save() { try { localStorage.setItem(KEY, JSON.stringify(DB)); } catch (e) { /* bỏ qua */ } }
@@ -394,7 +399,7 @@
     function myUnit() { return isStpRole() ? DEMO_UNIT : BTP_UNIT; }
     // Đơn vị người xem (quyền xem Tài liệu không ban hành kèm theo): vai trò Sở Tư pháp -> Sở Tư pháp Hà Nội; vai trò Bộ Tư pháp -> Bộ Tư pháp
     window.tlktViewerUnit = function () { return myUnit(); };
-    // Cán bộ cập nhật báo cáo của đơn vị mình (Sở Tư pháp Hà Nội / báo cáo tổng hợp của Bộ Tư pháp) khi Đang nhập liệu hoặc Bị từ chối
+    // Cán bộ cập nhật báo cáo của đơn vị mình (Sở Tư pháp Hà Nội / báo cáo tổng hợp của Bộ Tư pháp) khi Đang nhập liệu hoặc Bị trả lại
     function canEdit(r) { return (role === 'cb_stp' || role === 'cb_btp') && r.unitId === myUnit() && (r.status === ST.DANG || r.status === ST.TC || r.status === ST.TL); }
     function canApprove(r) {
         if (!r || r.status !== ST.CHO || !r.submit || r.unitId !== myUnit()) return false;
@@ -440,8 +445,8 @@
             '.bctt-meta strong{font-size:13.5px;color:#1e293b;font-weight:600;}',
             '.bctt-sub{display:block;font-size:11.5px;color:#64748b;margin-top:3px;}',
             '.bctt-sig{height:40px;border:1px dashed #cbd5e1;border-radius:4px;background:#fff;vertical-align:middle;margin-right:8px;}',
-            '.bctt-alert{background:#fef2f2;border:1px solid #fecaca;border-left:4px solid #dc2626;border-radius:8px;padding:12px 16px;margin:14px 0 0;color:#7f1d1d;font-size:13px;line-height:1.6;}',
-            '.bctt-alert b.t{display:block;color:#b91c1c;margin-bottom:2px;}',
+            '.bctt-alert{background:#fffbeb;border:1px solid #fde68a;border-left:4px solid #f59e0b;border-radius:8px;padding:12px 16px;margin:14px 0 0;color:#92400e;font-size:13px;line-height:1.6;}',
+            '.bctt-alert b.t{display:block;color:#b45309;margin-bottom:2px;}',
             '.bctt-files{margin-top:16px;}',
             '.bctt-files .custom-table td{white-space:normal;}',
             '.bctt-link{background:none;border:0;color:#1d4ed8;cursor:pointer;font:inherit;font-weight:600;padding:0 4px;}',
@@ -590,14 +595,14 @@
         var sub = '';
         if (r.status === ST.CHO && r.submit) { var lv = r.submit.levels[r.submit.current]; sub = '<span class="bctt-sub uxu-sub">Loại trình: ' + KIND + '<br>Chờ Cấp ' + lv.level + ' - ' + esc(lv.leaderName) + '</span>'; }
         if (r.status === ST.TC && r.reject) sub = '<span class="bctt-sub uxu-sub">Loại trình: ' + KIND + '</span>';
-        if (r.status === ST.TL && r.returned) sub = '<span class="bctt-sub uxu-sub">Bộ Tư pháp trả lại</span>';
+        if (r.status === ST.TL && r.returned && !r.reject) sub = '<span class="bctt-sub uxu-sub">Bộ Tư pháp trả lại</span>';
         if (r.status === ST.BH) sub = '<span class="bctt-sub uxu-sub">' + (isBtpReport(r) ? 'Đã ban hành' : 'Đã gửi Bộ Tư pháp') + '</span>';
         return '<span class="badge ' + ST_CLS[r.status] + '">' + r.status + '</span>' + sub;
     }
 
     // ---------------- 02 tab Chờ xử lý / Đã xử lý (theo vai trò giả lập) ----------------
     // - Phạm vi xem: báo cáo của Sở Tư pháp mình; Lãnh đạo không thấy báo cáo `Đang nhập liệu`.
-    // - Chờ xử lý: Cán bộ = `Đang nhập liệu`, `Bị từ chối`; Lãnh đạo = `Chờ duyệt` tại cấp phê duyệt hiện hành của mình.
+    // - Chờ xử lý: Cán bộ = `Đang nhập liệu`, `Bị trả lại`; Lãnh đạo = `Chờ duyệt` tại cấp phê duyệt hiện hành của mình.
     // - Đã xử lý: Cán bộ = các báo cáo còn lại trong phạm vi xem; Lãnh đạo = báo cáo chính Lãnh đạo đã Ký duyệt / Từ chối, không còn chờ Lãnh đạo duyệt
     //   (giống Xác định CQGQBT: !canApprove && leaderActedOn). Badge số lượng chỉ ở tab Chờ xử lý (đồng bộ LeftMenu qua BDG).
     var listTab = 'pending';
@@ -610,7 +615,7 @@
         return !isPending(r) && (role === 'cb_stp' || leaderActed(r));
     }
     function tabStatuses(tab) {
-        if (role === 'cb_stp') return tab === 'pending' ? [ST.DANG, ST.TC, ST.TL] : [ST.CHO, ST.BH];
+        if (role === 'cb_stp') return tab === 'pending' ? [ST.DANG, ST.TL] : [ST.CHO, ST.BH];
         return [ST.CHO, ST.TC, ST.BH].filter(function (s) { return DB.reports.some(function (r) { return r.status === s && inTab(tab, r); }); });
     }
     function pendingCount() { return isStpRole() ? DB.reports.filter(function (r) { return inTab('pending', r); }).length : 0; }
@@ -666,7 +671,7 @@
             return ' <button class="icon-btn ' + cls + (on ? '' : ' is-disabled') + '" data-admin-icon-normalized="1" data-act="' + act + '" data-id="' + r.id + '" title="' + esc(on ? title : title + ' - ' + why) + '"' + (on ? '' : ' disabled') + '><i class="' + icon + '"></i></button>';
         }
         if (role === 'cb_stp') {
-            var ed = canEdit(r), why = 'Chỉ thực hiện khi báo cáo ở trạng thái Đang nhập liệu, Bị từ chối hoặc Bị trả lại';
+            var ed = canEdit(r), why = 'Chỉ thực hiện khi báo cáo ở trạng thái Đang nhập liệu hoặc Bị trả lại';
             return btn('edit', 'edit', 'fa-solid fa-pen-to-square', 'Cập nhật', ed, why) + btn('submit', 'submit', 'fa-solid fa-paper-plane', 'Gửi phê duyệt', ed, why);
         }
         var ok = canApprove(r), lv = r.status === ST.CHO && r.submit ? r.submit.levels[r.submit.current] : null;
@@ -732,8 +737,8 @@
             // Báo cáo của Bộ: nhắc cập nhật khi có Sở Tư pháp bị trả lại / đã gửi lại sau lần tổng hợp gần nhất
             + (isBtpReport(r) && r.srcDirty && r.srcDirty.length ? '<div class="bctt-alert" id="bcttDirtyBox" style="background:#fffbeb;border-color:#fde68a;border-left-color:#d97706;color:#78350f;"><b class="t" style="color:#92400e;">CÓ SỞ TƯ PHÁP BỊ TRẢ LẠI / ĐÃ GỬI LẠI SAU LẦN TỔNG HỢP GẦN NHẤT</b>' + r.srcDirty.map(function (x) { return '- ' + esc(x.unit) + ': ' + esc(x.what) + ' lúc ' + esc(x.at); }).join('<br>') + (ed ? '<br>Bấm <strong>Cập nhật số liệu từ các Sở</strong> để tổng hợp lại.' : '') + '</div>' : '')
             // Báo cáo Sở Tư pháp bị Bộ Tư pháp trả lại
-            + (r.status === ST.TL && r.returned ? '<div class="bctt-alert" id="bcttReturnBox"><b class="t">BÁO CÁO BỊ BỘ TƯ PHÁP TRẢ LẠI</b>Lý do trả lại: <strong>' + esc(r.returned.reason) + '</strong><br>Người trả lại: ' + esc(r.returned.by) + ' (Bộ Tư pháp) • Thời điểm: ' + esc(r.returned.at) + '</div>' : '')
-            + (r.status === ST.TC && r.reject ? '<div class="bctt-alert" id="bcttRejectBox"><b class="t">BÁO CÁO BỊ LÃNH ĐẠO TỪ CHỐI</b>Lý do từ chối: <strong>' + esc(r.reject.reason) + '</strong><br>Người từ chối: ' + esc(r.reject.byName) + ' (Cấp ' + r.reject.level + ') • Thời điểm: ' + esc(r.reject.at) + '</div>' : '')
+            + (r.status === ST.TL && r.returned && !r.reject ? '<div class="bctt-alert" id="bcttReturnBox"><b class="t">BÁO CÁO BỊ BỘ TƯ PHÁP TRẢ LẠI</b>Lý do trả lại: <strong>' + esc(r.returned.reason) + '</strong><br>Người trả lại: ' + esc(r.returned.by) + ' (Bộ Tư pháp) • Thời điểm: ' + esc(r.returned.at) + '</div>' : '')
+            + (r.status === ST.TC && r.reject ? '<div class="bctt-alert" id="bcttRejectBox"><b class="t">BÁO CÁO BỊ LÃNH ĐẠO TRẢ LẠI</b>Lý do bị trả lại: <strong>' + esc(r.reject.reason) + '</strong><br>Người từ chối: ' + esc(r.reject.byName) + ' (Cấp ' + r.reject.level + ') • Thời điểm: ' + esc(r.reject.at) + '</div>' : '')
             + '<div class="bctt-files"><div class="section-title" style="margin-bottom:10px;"><span>Tệp báo cáo (' + (r.status === ST.BH ? 'đã ban hành' : 'dự thảo') + ')</span></div><div class="table-container"><table class="custom-table" id="bcttFileTable"><thead><tr><th>STT</th><th>Biểu mẫu</th><th>Tên tệp</th><th>Loại tệp</th><th>Thao tác</th></tr></thead><tbody>' + fileRows(r) + '</tbody></table></div></div>'
             // Tài liệu ban hành kèm theo / không ban hành kèm theo của lần trình (khối rỗng / không có quyền xem thì không hiển thị)
             + (r.submit && typeof window.tlktViewHtml === 'function' ? '<div style="margin-top:12px;">' + window.tlktViewHtml(r.submit.tlkt || [], { ownerUnit: r.unitId }) + '</div>' : '')
@@ -1178,7 +1183,7 @@
             if (onTab) onTab(b.getAttribute('data-vtab'));
         };
     }
-    function currentSign(r) { return r.submit && r.status !== ST.TC ? r.submit : null; }
+    function currentSign(r) { return r.submit && !(r.status === ST.TC && r.reject) ? r.submit : null; }
     // Popup xem file PDF: 04 tab biểu mẫu, nút Tải file của tab đang xem
     function openViewer(r, tab, title, data) {
         var t = tab || 'm41', sign = data ? null : currentSign(r);
@@ -1213,7 +1218,7 @@
         sub.step = 1; $('bcttS1').classList.add('on'); $('bcttS2').classList.remove('on');
         $('bcttSubBody1').style.display = ''; $('bcttSubBody2').style.display = 'none';
         var info = { m41: m41Count(r.m41) + ' vụ việc', m42: m42Filled(r.m42) + '/' + M42_ITEMS.length + ' mục đã nhập nội dung', m43: 'Tổng số ' + m43Total(r.m43)[2] + ' vụ việc (Cột 2)', m04: 'Tổng số ' + m04Total(r.m04)[3] + ' vụ việc xem xét trách nhiệm hoàn trả (Cột 3)' };
-        var html = (r.status === ST.TC && r.reject ? '<div class="bctt-alert" style="margin:0 0 14px;"><b class="t">BÁO CÁO BỊ LÃNH ĐẠO TỪ CHỐI</b>Lý do từ chối: <strong>' + esc(r.reject.reason) + '</strong><br>Người từ chối: ' + esc(r.reject.byName) + ' • Thời điểm: ' + esc(r.reject.at) + '</div>' : '')
+        var html = (r.status === ST.TC && r.reject ? '<div class="bctt-alert" style="margin:0 0 14px;"><b class="t">BÁO CÁO BỊ LÃNH ĐẠO TRẢ LẠI</b>Lý do bị trả lại: <strong>' + esc(r.reject.reason) + '</strong><br>Người từ chối: ' + esc(r.reject.byName) + ' • Thời điểm: ' + esc(r.reject.at) + '</div>' : '')
             + '<div class="bctt-sec"><div class="h">Hình thức ký</div><div><strong>Ký số trên hệ thống</strong> <span class="formula-hint">- Cố định, không chọn; báo cáo không ký duyệt ở ngoài. Trình 01 lần cho cả bộ báo cáo theo luồng đã cấu hình tại Cấu hình luồng xử lý.</span></div></div>'
             + '<div class="bctt-sec"><div class="h">Bộ báo cáo trình ký</div><div class="table-container"><table class="custom-table" id="bcttSubForms"><thead><tr><th>STT</th><th>Biểu mẫu</th><th>Tình trạng dữ liệu</th><th>Thao tác</th></tr></thead><tbody>'
             + FORMS.map(function (f, i) { return '<tr><td>' + (i + 1) + '</td><td class="text-left">' + f.code + ' - ' + f.title + '</td><td class="text-left">' + info[f.id] + '</td><td><button class="bctt-link" data-fview="' + f.id + '">Xem trước PDF</button></td></tr>'; }).join('')
@@ -1336,7 +1341,7 @@
         }
         if (role === 'cb_btp') {
             if (!bR) return btn('create', 'add', 'fa-solid fa-plus', 'Lập báo cáo tổng hợp của Bộ', true, '');
-            var ed = canEdit(bR), why = 'Chỉ thực hiện khi báo cáo của Bộ ở trạng thái Đang nhập liệu hoặc Bị từ chối';
+            var ed = canEdit(bR), why = 'Chỉ thực hiện khi báo cáo của Bộ ở trạng thái Đang nhập liệu hoặc Bị trả lại';
             return btn('edit', 'edit', 'fa-solid fa-pen-to-square', 'Cập nhật báo cáo của Bộ', ed, why) + btn('submit', 'submit', 'fa-solid fa-paper-plane', 'Gửi phê duyệt', ed, why);
         }
         var ok = canApprove(bR), lv = bR && bR.status === ST.CHO && bR.submit ? bR.submit.levels[bR.submit.current] : null;

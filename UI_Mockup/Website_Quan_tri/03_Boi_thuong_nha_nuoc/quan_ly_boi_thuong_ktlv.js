@@ -1,7 +1,7 @@
 /* [ktlv] Màn chi tiết hồ sơ Giải quyết YCBT - khối "Thông tin không thụ lý hồ sơ" và khối "Thông tin chuyển CQGQBT"
  * - Thẻ cảnh báo (viền trái đỏ, nền đỏ nhạt), lưới 2 cột nhãn - giá trị, trường dài chiếm full chiều ngang
  * - Thông báo không thụ lý: dòng File (icon loại tệp + tên tệp + nhãn) + Xem file / Tải file (icon có tooltip)
- * - Tài liệu kèm theo / Tài liệu chuyển giao: bảng tài liệu chế độ xem (ctvvDocsViewHtml)
+ * - Tài liệu đính kèm / Tài liệu chuyển giao: bảng tài liệu chế độ xem (ctvvDocsViewHtml)
  * - Được gọi từ gqWfInfoHtml (quan_ly_boi_thuong.html); "-" khi không có dữ liệu
  */
 var KTLV_FILES = {};
@@ -76,7 +76,7 @@ function ktlvDocsField(label, list) {
 // Tài liệu của văn bản Không thụ lý: 02 khối Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo
 // (khối rỗng không hiển thị; khối không ban hành chỉ đơn vị trình - đơn vị gốc của hồ sơ - xem được)
 function ktlvDocsSplit(list, rec, claim) {
-    if (typeof tlktSplitRender !== 'function') return ktlvDocsField('Tài liệu kèm theo', list);
+    if (typeof tlktSplitRender !== 'function') return ktlvDocsField('Tài liệu đính kèm', list);
     var W = window.BTNN_WF;
     var owner = (rec && rec.rootUnitId) || (claim && W && W.resolveAgencyUnit ? W.resolveAgencyUnit(claim.agency) : '') || '';
     return tlktSplitRender(list, { ownerUnit: owner }, function (rows, title) { return ktlvDocsField(title, rows); });
@@ -124,7 +124,7 @@ function ktlvBlockHtml(claim, caseSt, rec, W) {
     }
     return h + '</div></div>';
 }
-// Dữ liệu mẫu bổ sung (chỉ điền khi bản ghi chưa có): Tài liệu kèm theo BT-2026-411; hồ sơ Chờ duyệt Không thụ lý BT-2026-018
+// Dữ liệu mẫu bổ sung (chỉ điền khi bản ghi chưa có): Tài liệu đính kèm BT-2026-411; hồ sơ Chờ duyệt Không thụ lý BT-2026-018
 var KTLV_SEED = {
     'BT-2026-411': {
         ktlAttachments: [

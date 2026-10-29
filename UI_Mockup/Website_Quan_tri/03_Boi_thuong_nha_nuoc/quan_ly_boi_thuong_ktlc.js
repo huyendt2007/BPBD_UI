@@ -1,5 +1,5 @@
 /* [ktlc] Không thụ lý lý do KTL_01 (Không thuộc thẩm quyền) - Quy tắc "Chuyển hồ sơ cho" theo cấp đơn vị và số lần đã chuyển
- * Phạm vi áp dụng: hồ sơ Giải quyết YCBT có nguồn gốc Tiếp nhận mới / Dịch vụ công quốc gia, chưa từng qua bước Xác định CQGQBT.
+ * Phạm vi áp dụng: hồ sơ Giải quyết YCBT có nguồn gốc Tiếp nhận mới / Dịch vụ công, chưa từng qua bước Xác định CQGQBT.
  * - Lần 1 (chưa từng chuyển do KTL_01): đơn vị trung ương -> Bộ Tư pháp / Cơ quan giải quyết bồi thường khác;
  *   đơn vị địa phương -> Sở Tư pháp cùng tỉnh, thành phố (hệ thống tự xác định) / Cơ quan giải quyết bồi thường khác.
  * - Từ lần 2 (hồ sơ đã chuyển ít nhất 01 lần do KTL_01): bắt buộc Bộ Tư pháp (trung ương) / Sở Tư pháp cùng tỉnh (địa phương);
@@ -500,10 +500,10 @@ function ktlcSeedList() {
             hanhVi: 'Phê chuẩn lệnh tạm giam đối với người không thực hiện hành vi phạm tội.', nhanQua: 'Mất thu nhập trong thời gian bị tạm giam.',
             extra: { nguonHoSo: 'Tiếp nhận mới' } }),
         // 2. Đơn vị địa phương, lần 1 (Dịch vụ công): Sở Tư pháp cùng tỉnh / CQGQBT khác
-        base({ id: 'KTLC_DP1', code: 'BT-2026-962', who: 'p10', agency: 'UBND quận Cầu Giấy, Thành phố Hà Nội', officer: 'Kiều Văn Nam', hinhThuc: 'Dịch vụ công trực tuyến',
+        base({ id: 'KTLC_DP1', code: 'BT-2026-962', who: 'p10', agency: 'UBND quận Cầu Giấy, Thành phố Hà Nội', officer: 'Kiều Văn Nam', hinhThuc: 'Dịch vụ công',
             docBase: 'Quyết định hủy Quyết định cưỡng chế thu hồi đất số 115/QĐ-UBND ngày 20/08/2026',
             hanhVi: 'Cưỡng chế thu hồi đất không đúng đối tượng.', nhanQua: 'Thiệt hại tài sản trên đất bị phá dỡ.',
-            extra: { nguonHoSo: 'Dịch vụ công quốc gia' } }),
+            extra: { nguonHoSo: 'Dịch vụ công' } }),
         // 3. Đơn vị thứ 2 (địa phương), hồ sơ đã chuyển 01 lần do KTL_01: bắt buộc Sở Tư pháp, tự tạo hồ sơ Xác định CQGQBT
         base({ id: 'KTLC_DP2', code: 'BT-2026-963', who: 'p6', agency: 'UBND quận Hoàn Kiếm, Thành phố Hà Nội', officer: 'Tạ Quang Vinh', hinhThuc: 'Trực tiếp', kd: 1,
             docBase: 'Quyết định hủy Quyết định xử phạt vi phạm hành chính số 32/QĐ-XPHC ngày 05/08/2026',
@@ -521,10 +521,10 @@ function ktlcSeedList() {
             hanhVi: 'Xử phạt vi phạm hành chính trong lĩnh vực công chứng không đúng thẩm quyền.', nhanQua: 'Thiệt hại do tạm đình chỉ hoạt động văn phòng công chứng.',
             extra: { nguonHoSo: 'Tiếp nhận mới' } }),
         // 6. Đơn vị thứ 2 (trung ương), hồ sơ Dịch vụ công đã chuyển 01 lần do KTL_01 (Bộ Tài chính chuyển): bắt buộc Bộ Tư pháp
-        base({ id: 'KTLC_TW2', code: 'BT-2026-966', who: 'p9', agency: 'Viện kiểm sát nhân dân tối cao', officer: 'Âu Thị Kim Oanh', hinhThuc: 'Dịch vụ công trực tuyến', kd: 1,
+        base({ id: 'KTLC_TW2', code: 'BT-2026-966', who: 'p9', agency: 'Viện kiểm sát nhân dân tối cao', officer: 'Âu Thị Kim Oanh', hinhThuc: 'Dịch vụ công', kd: 1,
             docBase: 'Quyết định đình chỉ điều tra số 07/QĐ-VKSTC ngày 18/08/2026 do người bị tạm giữ không thực hiện hành vi phạm tội',
             hanhVi: 'Tạm giữ hình sự đối với người không thực hiện hành vi phạm tội.', nhanQua: 'Mất thu nhập trong thời gian bị tạm giữ.',
-            extra: { nguonHoSo: 'Chuyển CQGQBT', ktlcLan: 1, ktlcNguonGoc: 'Dịch vụ công quốc gia', transferFromCode: 'BT-2026-959',
+            extra: { nguonHoSo: 'Chuyển CQGQBT', ktlcLan: 1, ktlcNguonGoc: 'Dịch vụ công', transferFromCode: 'BT-2026-959',
                 ktlcFrom: { code: 'BT-2026-959', unitId: 'BTC', mode: 'CQ', lan: 1, reason: 'Không thuộc thẩm quyền (KTL_01)' } } }),
         // 7. Đơn vị địa phương (Công an quận), lần 1 - Tiếp nhận qua dịch vụ bưu chính: Sở Tư pháp cùng tỉnh / CQGQBT khác
         base({ id: 'KTLC_DP3', code: 'BT-2026-967', who: 'p11', agency: 'Công an quận Hoàng Mai, Thành phố Hà Nội', officer: 'Bế Thị Lụa', hinhThuc: 'Qua dịch vụ bưu chính',

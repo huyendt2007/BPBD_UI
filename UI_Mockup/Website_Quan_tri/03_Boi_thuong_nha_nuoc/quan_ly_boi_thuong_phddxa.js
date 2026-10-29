@@ -1,7 +1,7 @@
 /**
  * Phục hồi danh dự - Khối 3 (Tổ chức thực hiện), hình thức Đăng báo xin lỗi, cải chính công khai:
  * khối "Gửi cho UBND cấp xã nơi người bị thiệt hại cư trú" gồm Đơn vị nhận *, Ngày nhận * (inline trong trang)
- * và Tài liệu kèm theo (file này): nhập khi khối 3 đang mở, chỉ xem khi khối 3 đã khóa.
+ * và Tài liệu đính kèm (file này): nhập khi khối 3 đang mở, chỉ xem khi khối 3 đã khóa.
  * Dữ liệu: claim.phddStep3CommuneUnit, claim.editPhddStep3CommunePostingSendDate (Ngày nhận), claim.phddStep3CommuneFiles.
  */
 (function () {
@@ -27,8 +27,8 @@
             tlktMount(KEY, HOST, { required: false, rows: rows, noLeader: true, secClass: '', titleClass: 'form-label' });
         } else {
             host.innerHTML = rows.length && typeof tlktViewHtml === 'function'
-                ? tlktViewHtml(rows, { split: false, title: 'Tài liệu kèm theo' })
-                : '<div class="form-label" style="margin-bottom:4px;">Tài liệu kèm theo</div><div style="font-size:13px; color:#64748b;">Không có tài liệu</div>';
+                ? tlktViewHtml(rows, { split: false, title: 'Tài liệu đính kèm' })
+                : '<div class="form-label" style="margin-bottom:4px;">Tài liệu đính kèm</div><div style="font-size:13px; color:#64748b;">Không có tài liệu</div>';
         }
     }
     function wrap(name) {

@@ -672,7 +672,7 @@ function kptbEnsureSignModal() {
 function kptbCanSubmit(item) { return kptbIs(item) && [KPTB_ST.WAIT, KPTB_ST.SUPP, KPTB_ST.REJECT].includes(item.status); }
 // Bản ghi đang trình: bản nháp từ màn hình Tạo thông báo chi trả (kpcd) hoặc bản ghi trong danh sách
 function kptbSgItem() { return kptbSg ? (kptbSg.draft || kptbFind(kptbSg.id)) : null; }
-// draft: bản ghi nháp từ màn hình Tạo thông báo chi trả (Thời gian/Địa điểm, Tài liệu kèm theo nhập tại màn hình tạo)
+// draft: bản ghi nháp từ màn hình Tạo thông báo chi trả (Thời gian/Địa điểm, Tài liệu đính kèm nhập tại màn hình tạo)
 function kptbOpenSign(id, draft) {
     const item = draft || kptbFind(id);
     if (!kptbCanSubmit(item)) return;
@@ -700,7 +700,7 @@ function kptbOpenSign(id, draft) {
     }
     kptbSgRenderOff();
     kptbSgSetDocSrc('gen');
-    // Tài liệu kèm theo (Ký số): lần trình lại nạp lại danh sách của lần trình trước
+    // Tài liệu đính kèm (Ký số): lần trình lại nạp lại danh sách của lần trình trước
     if (typeof tlktMount === 'function') tlktMount('kptbSg', 'kptbSgTlkt', { required: false, rows: prev.attachments || [], secClass: 'kptb-gqx-sec', titleClass: 'kptb-gqx-sec-title' });
     kptbSgSetMethod('Ký số');
     kptbSgGoStep(1);
@@ -1240,7 +1240,7 @@ function kptbOpenPay(id) {
                         <div class="kptb-gqx-err" id="kptbPayAmountErr">Đây là trường bắt buộc</div>
                         <div class="kptb-gqx-hint">Số tiền theo Thông báo chi trả: ${kptbFmt(item.amount)} đồng.</div></div>
                 </div>
-                <!-- Tài liệu kèm theo: bảng chuẩn dùng chung (btnn_tai_lieu_kem_theo.js) -->
+                <!-- Tài liệu đính kèm: bảng chuẩn dùng chung (btnn_tai_lieu_kem_theo.js) -->
                 <div id="kptbPayTlkt"></div>
             </div>
         </div>
@@ -1251,7 +1251,7 @@ function kptbOpenPay(id) {
     </div>`;
     document.body.appendChild(m);
     if (window.flatpickr) flatpickr('#kptbPayDate', { dateFormat: 'd/m/Y', allowInput: true });
-    // Tài liệu kèm theo: STT | Tên văn bản, căn cứ | Tải file | Thao tác (Xem file / Xóa) - không bắt buộc
+    // Tài liệu đính kèm: STT | Tên văn bản, căn cứ | Tải file | Thao tác (Xem file / Xóa) - không bắt buộc
     if (typeof tlktMount === 'function') tlktMount('kptbPay', 'kptbPayTlkt', { required: false, rows: [], secClass: '', titleClass: 'tlkt-sec-title', noLeader: true });
 }
 function kptbClosePay() { const m = kptbEl('kptbPayModal'); if (m) m.remove(); }
@@ -1308,7 +1308,7 @@ function kptbView(id) {
         if (typeof tlktViewHtml === 'function') noticeBody += tlktViewHtml(n.attachments || [], { boxClass: 'tlkt-view', titleClass: 'tlkt-sec-title' });
     }
     const supBody = item.kptbSupp ? `<div class="kptb-dtl-grid">${it('Ngày đề nghị', kpEsc(item.kptbSupp.at))}${it('Cán bộ đề nghị', kpEsc(kptbUserName(item.kptbSupp.by)))}${it('Văn bản đề nghị', kpEsc(item.kptbSupp.file))}</div><div class="kptb-dtl-item" style="margin-top:8px;"><div class="k">Nội dung đề nghị</div><div class="v" style="font-weight:500;">${kpEsc(item.kptbSupp.content || '-')}</div></div>` : '';
-    const rejBody = item.status === KPTB_ST.REJECT && item.kptbReturned ? `<div class="kptb-dtl-grid">${it('Người từ chối', kpEsc(kptbUserName(item.kptbReturned.by)))}${it('Thời điểm', kpEsc(item.kptbReturned.at))}</div><div class="kptb-dtl-item" style="margin-top:8px;"><div class="k">Lý do từ chối</div><div class="v" style="font-weight:500;">${kpEsc(item.kptbReturned.reason)}</div></div>` : '';
+    const rejBody = item.status === KPTB_ST.REJECT && item.kptbReturned ? `<div class="kptb-dtl-grid">${it('Người từ chối', kpEsc(kptbUserName(item.kptbReturned.by)))}${it('Thời điểm', kpEsc(item.kptbReturned.at))}</div><div class="kptb-dtl-item" style="margin-top:8px;"><div class="k">Lý do bị trả lại</div><div class="v" style="font-weight:500;">${kpEsc(item.kptbReturned.reason)}</div></div>` : '';
     const p = item.kptbPayment;
     const payBody = p ? `<div class="kptb-dtl-grid">${it('Phương thức chi trả', kpEsc(p.method))}${p.method === KPTB_CASH ? it('Người nhận tiền', kpEsc(p.recName)) + it('Số định danh cá nhân/CCCD', kpEsc(p.recIdNo)) : it('Chủ tài khoản', kpEsc(p.accHolder)) + it('Số tài khoản', kpEsc(p.account)) + it('Ngân hàng', kpEsc([p.bank, p.branch].filter(Boolean).join(' - ')))}${it('Ngày chi trả', kpEsc(p.payDate))}${it('Số tiền chi trả', kptbFmt(p.amount) + ' đồng')}${it('Tệp đính kèm', kpEsc((p.files || []).join(', ')))}</div>` : '';
     const hist = (item.kptbHistory || []).slice().reverse().map(h => `<div class="kptb-hist-row"><span style="color:#64748b;">${kpEsc(h.at)}</span><span style="font-weight:600;">${kpEsc(h.userName)}</span><span><b>${kpEsc(h.action)}</b>${h.note ? ': ' + kpEsc(h.note) : ''}</span></div>`).join('');
@@ -1335,7 +1335,7 @@ function kptbView(id) {
             <button type="button" class="kptb-qs-head-close" onclick="kptbCloseView()" title="Đóng">&times;</button></div>
         <div class="kptb-qs-body kptb-gqx-body">
             ${sec('fa-circle-info', 'Thông tin chung', general)}
-            ${rejBody ? sec('fa-triangle-exclamation', 'Lý do bị từ chối', rejBody) : ''}
+            ${rejBody ? sec('fa-triangle-exclamation', 'Lý do bị trả lại', rejBody) : ''}
             ${sec('fa-gavel', 'Quyết định giải quyết bồi thường', decBody)}
             ${supBody ? sec('fa-file-invoice-dollar', 'Đề nghị cấp bổ sung kinh phí', supBody) : ''}
             ${noticeBody ? sec('fa-file-signature', 'Thông báo chi trả tiền bồi thường', noticeBody) : ''}
@@ -1406,7 +1406,7 @@ function kptbOpenForfeit(id) {
                 </div>
                 ${ro('Số tiền trả lại ngân sách nhà nước (VNĐ)', info.unpaid.toLocaleString('vi-VN'))}
                 <div class="kptb-gqx-field"><label class="form-label" for="kptbFfReason">Căn cứ / lý do trả lại ngân sách nhà nước<span class="kptb-gqx-req">*</span></label><textarea class="form-control" id="kptbFfReason" rows="3" maxlength="2000" oninput="kptbMark('kptbFfReason', false)">Người yêu cầu bồi thường đã quá thời hạn 03 năm kể từ ngày nhận thông báo chi trả kinh phí nhưng không đến nhận tiền bồi thường theo quy định của Luật Trách nhiệm bồi thường của Nhà nước.</textarea><div class="kptb-gqx-err" id="kptbFfReasonErr">Đây là trường bắt buộc</div></div>
-                <!-- Tài liệu kèm theo (chứng từ nộp ngân sách): bảng chuẩn dùng chung, bắt buộc, .pdf -->
+                <!-- Tài liệu đính kèm (chứng từ nộp ngân sách): bảng chuẩn dùng chung, bắt buộc, .pdf -->
                 <div id="kptbFfTlkt"></div>
             </div>
         </div>

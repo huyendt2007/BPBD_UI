@@ -13,7 +13,7 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
     <!-- External stylesheet -->
-    <link rel="stylesheet" href="xac_dinh_co_quan_boi_thuong.css?v=20261021fs">
+    <link rel="stylesheet" href="xac_dinh_co_quan_boi_thuong.css?v=20261029tlcam">
     <style>
         .xd-tabs { display: flex; gap: 8px; align-items: center; border-bottom: 1px solid var(--border-color); margin: 4px 0 16px; }
         .xd-tab { border: 0; background: transparent; padding: 10px 16px; font-size: 13.5px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; display: inline-flex; align-items: center; gap: 8px; }
@@ -190,16 +190,16 @@
             </div>
 
             <!-- Khối THÔNG TIN HỒ SƠ BỊ TRẢ LẠI (hồ sơ đang Bị trả lại hoặc từng bị trả lại; nội dung dựng bằng JS) -->
-            <div id="formReturnedAlertBlock" style="display: none; margin-bottom: 20px; padding: 16px 20px; background: #fff1f2; border: 1px solid #fecdd3; border-left: 5px solid #e11d48; border-radius: var(--border-radius-md);">
+            <div id="formReturnedAlertBlock" style="display: none; margin-bottom: 20px; padding: 16px 20px; background: #fffbeb; border: 1px solid #fde68a; border-left: 5px solid #f59e0b; border-radius: var(--border-radius-md);">
                 <div style="display: flex; align-items: flex-start; gap: 14px;">
-                    <i class="fa-solid fa-rotate-left" style="font-size: 22px; color: #e11d48; margin-top: 3px;"></i>
+                    <i class="fa-solid fa-rotate-left" style="font-size: 22px; color: #b45309; margin-top: 3px;"></i>
                     <div style="flex: 1;">
-                        <div style="font-weight: 700; color: #9f1239; font-size: 15px; margin-bottom: 4px;">
-                            HỒ SƠ BỊ TỪ CHỐI - YÊU CẦU CẬP NHẬT LẠI
+                        <div style="font-weight: 700; color: #b45309; font-size: 15px; margin-bottom: 4px;">
+                            HỒ SƠ BỊ TRẢ LẠI - YÊU CẦU CẬP NHẬT LẠI
                         </div>
-                        <div id="formReturnedMeta" style="font-size: 13px; color: #881337; margin-bottom: 6px;"></div>
-                        <div style="font-size: 13.5px; color: #4c0519; line-height: 1.5; background: #ffe4e6; padding: 10px 14px; border-radius: 6px; border: 1px dashed #fda4af;">
-                            <strong>Lý do từ chối:</strong> <span id="formReturnedReason"></span>
+                        <div id="formReturnedMeta" style="font-size: 13px; color: #92400e; margin-bottom: 6px;"></div>
+                        <div style="font-size: 13.5px; color: #92400e; line-height: 1.5; background: #fffbeb; padding: 10px 14px; border-radius: 6px; border: 1px dashed #fde68a;">
+                            <strong>Lý do bị trả lại:</strong> <span id="formReturnedReason"></span>
                         </div>
                     </div>
                 </div>
@@ -643,7 +643,7 @@
             <input type="hidden" id="processRequestId">
 
             <!-- Hồ sơ Bị trả lại (Nội dung trình Kết quả xác định CQGQBT): lý do trả lại -->
-            <div id="procReturnedNotice" style="display: none; padding: 14px 16px; border-radius: var(--border-radius-md); margin-bottom: 16px; font-size: 13px; line-height: 1.55; background: #FEF2F2; border-left: 4px solid #dc2626;"></div>
+            <div id="procReturnedNotice" style="display: none; padding: 14px 16px; border-radius: var(--border-radius-md); margin-bottom: 16px; font-size: 13px; line-height: 1.55; background: #fffbeb; border-left: 4px solid #f59e0b;"></div>
 
             <!-- Chi tiết yêu cầu xác định CQGQBT (chỉ đọc, Mở rộng / Thu gọn): dùng chung khối Chi tiết hồ sơ của MH04, chuyển vào vị trí này khi mở màn -->
             <div id="procProfileSlot"></div>
@@ -671,8 +671,8 @@
                 <div class="error-message">Đây là trường bắt buộc</div>
             </div>
 
-            <!-- Tài liệu kèm theo: bảng nhiều dòng giống Bảng tài liệu đính kèm của MH02 -->
-            <span class="form-label">Tài liệu kèm theo</span>
+            <!-- Tài liệu đính kèm: bảng nhiều dòng giống Bảng tài liệu đính kèm của MH02 -->
+            <span class="form-label">Tài liệu đính kèm</span>
             <div class="table-container">
                 <table class="custom-table" style="min-width: 760px;">
                     <thead>
@@ -713,113 +713,16 @@
             <!-- Thông báo chế độ xem liên kết (nếu có) -->
             <div id="dtNoticeBlock" style="display: none; padding: 12px 16px; border-radius: var(--border-radius-md); margin-bottom: 16px; font-size: 13px; line-height: 1.55;"></div>
 
-            <!-- 1. KHỐI LÝ DO BỊ TRẢ LẠI (Chỉ hiển thị khi Hồ sơ có trạng thái Bị trả lại) -->
-            <div id="dtReturnedBlock" style="display: none; border: 1px solid #fecaca; background: #fff5f5; border-left: 4px solid #dc2626; border-radius: var(--border-radius-md); padding: 16px; margin-bottom: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <div style="font-weight: 700; color: #dc2626; font-size: 14px;">
-                        <i class="fa-solid fa-rotate-left"></i> LÝ DO BỊ TỪ CHỐI
-                    </div>
-                    <span id="dtReturnedAtBadge" class="badge" style="background: #fee2e2; color: #991b1b; font-size: 11.5px;"></span>
-                </div>
-                <div style="font-size: 13px; line-height: 1.6; color: #1e293b;">
-                    <div style="margin-bottom: 4px;">
-                        <strong>Người từ chối:</strong> <span id="dtReturnedBy"></span>
-                    </div>
-                    <div style="margin-bottom: 4px;">
-                        <strong>Loại trình bị từ chối:</strong> <span id="dtReturnedKind" style="color: #b91c1c; font-weight: 600;"></span>
-                    </div>
-                    <div>
-                        <strong>Lý do chi tiết:</strong> <span id="dtReturnedReason" style="font-style: italic; color: #991b1b;"></span>
-                    </div>
-                </div>
-            </div>
+            <!-- 1. THÔNG TIN KHÔNG THỤ LÝ: trạng thái Không thụ lý, hoặc Chờ duyệt / Bị trả lại với Loại trình Không thụ lý (nội dung dựng bằng JS: xdActionBlockHtml) -->
+            <div id="dtKtlBlock" class="detail-card xd-act-block" style="display: none; margin-bottom: 20px; border-left: 4px solid var(--danger-color);"></div>
 
-            <!-- 2. KHỐI TỆP VĂN BẢN TRÌNH KÝ (Chỉ hiển thị khi Chờ duyệt và Ký số trên hệ thống) -->
-            <div id="dtPendingSignBlock" style="display: none; border: 1px solid #bfdbfe; background: #eff6ff; border-left: 4px solid #2563eb; border-radius: var(--border-radius-md); padding: 16px; margin-bottom: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <div style="font-weight: 700; color: #1e40af; font-size: 14px;">
-                        <i class="fa-solid fa-file-signature"></i> TỆP VĂN BẢN TRÌNH KÝ
-                    </div>
-                </div>
-                <div style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; border: 1px solid #dbeafe; border-radius: 6px; padding: 10px 14px; margin-top: 8px;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <i class="fa-solid fa-file-pdf" style="font-size: 26px; color: #ef4444;"></i>
-                        <div>
-                            <div id="dtPendingSignFileName" style="font-weight: 700; color: #1e293b; font-size: 13.5px;"></div>
-                            <div id="dtPendingSignFileMeta" style="font-size: 12px; color: #64748b;">Định dạng PDF • Hình thức: Ký số trên hệ thống</div>
-                        </div>
-                    </div>
-                    <div>
-                        <a href="#" id="dtPendingSignFileLink" onclick="event.preventDefault();" style="color: var(--secondary-color); text-decoration: none; font-size: 12.5px; font-weight: 600;">
-                            <i class="fa-solid fa-eye"></i> Xem file
-                        </a>
-                    </div>
-                </div>
-                <!-- Tài liệu kèm theo của lần trình hiện hành (chỉ hiển thị khi có) -->
-                <div id="dtPendingSignTlkt" style="display: none; margin-top: 10px;"></div>
-            </div>
+            <!-- 2. THÔNG TIN YÊU CẦU BỔ SUNG: trạng thái Yêu cầu bổ sung, hoặc Chờ duyệt / Bị trả lại với Loại trình Yêu cầu bổ sung -->
+            <div id="dtYcbsBlock" class="detail-card xd-act-block" style="display: none; margin-bottom: 20px; border-left: 4px solid #f97316;"></div>
 
-            <!-- 3. KHỐI THÔNG TIN YÊU CẦU BỔ SUNG (Chỉ hiển thị khi trạng thái Yêu cầu bổ sung) -->
-            <div id="dtSupplementBlock" style="display: none; border: 1px solid #fed7aa; background: #fffbeb; border-left: 4px solid #f97316; border-radius: var(--border-radius-md); padding: 16px; margin-bottom: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <div style="font-weight: 700; color: #c2410c; font-size: 14px;">
-                        <i class="fa-solid fa-file-circle-question"></i> THÔNG TIN YÊU CẦU BỔ SUNG HỒ SƠ
-                    </div>
-                    <span class="badge" style="background: #ffedd5; color: #9a3412; font-size: 11.5px;"><i class="fa-solid fa-clock"></i> Đang chờ bổ sung</span>
-                </div>
-                <div style="font-size: 13px; line-height: 1.6; color: #1e293b; margin-bottom: 10px;">
-                    <div style="margin-bottom: 6px;">
-                        <strong>Nội dung yêu cầu bổ sung:</strong>
-                        <div id="dtSupplementReason" style="margin-top: 4px; padding: 10px 14px; background: #ffffff; border: 1px solid #fed7aa; border-radius: 6px; white-space: pre-line;"></div>
-                    </div>
-                </div>
-                <div style="font-size: 13px;">
-                    <strong style="color: #334155; display: block; margin-bottom: 6px;">Văn bản thông báo yêu cầu bổ sung (PDF):</strong>
-                    <div style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; border: 1px solid #fed7aa; border-radius: 6px; padding: 8px 14px;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fa-solid fa-file-pdf" style="font-size: 24px; color: #ef4444;"></i>
-                            <div>
-                                <span id="dtSupplementFileName" style="font-weight: 600; color: #1e293b; font-size: 13px;"></span>
-                                <span id="dtSupplementFileMethodBadge" class="badge" style="margin-left: 8px; font-size: 10.5px;"></span>
-                            </div>
-                        </div>
-                        <a href="#" id="dtSupplementFileLink" onclick="event.preventDefault();" style="color: var(--secondary-color); text-decoration: none; font-size: 12.5px; font-weight: 600;">
-                            <i class="fa-solid fa-eye"></i> Xem file
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <!-- 3. THÔNG TIN TIẾP NHẬN: Chờ duyệt / Bị trả lại với Loại trình Kết quả xác định CQGQBT (Xác minh CQGQBT: không có nội dung, không hiển thị) -->
+            <div id="dtTiepNhanBlock" class="detail-card xd-act-block" style="display: none; margin-bottom: 20px; border-left: 4px solid #2563eb;"></div>
 
-            <!-- 4. KHỐI THÔNG TIN KHÔNG THỤ LÝ (Chỉ hiển thị khi trạng thái Không thụ lý) -->
-            <div id="dtRejectionBlock" style="display: none; border: 1px solid #fecaca; background: #fef2f2; border-left: 4px solid var(--danger-color); border-radius: var(--border-radius-md); padding: 16px; margin-bottom: 20px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                    <div style="font-weight: 700; color: var(--danger-color); font-size: 14px;">
-                        <i class="fa-solid fa-circle-exclamation"></i> THÔNG TIN KHÔNG THỤ LÝ HỒ SƠ
-                    </div>
-                    <span class="badge" style="background: #fee2e2; color: #991b1b; font-size: 11.5px;"><i class="fa-solid fa-ban"></i> Không thụ lý</span>
-                </div>
-                <div style="font-size: 13px; line-height: 1.6; color: var(--text-main); margin-bottom: 10px;">
-                    <div><strong>Lý do không thụ lý:</strong></div>
-                    <div id="dtRejectionReason" style="margin-top: 4px; padding: 10px 14px; background: #ffffff; border: 1px solid #fecaca; border-radius: 6px; font-style: italic; white-space: pre-line;"></div>
-                </div>
-                <div style="font-size: 13px;">
-                    <strong style="color: #334155; display: block; margin-bottom: 6px;">Văn bản không thụ lý (PDF):</strong>
-                    <div style="display: flex; align-items: center; justify-content: space-between; background: #ffffff; border: 1px solid #fecaca; border-radius: 6px; padding: 8px 14px;">
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <i class="fa-solid fa-file-pdf" style="font-size: 24px; color: #ef4444;"></i>
-                            <div>
-                                <span id="dtRejectionFileName" style="font-weight: 600; color: #1e293b; font-size: 13px;"></span>
-                                <span id="dtRejectionFileMethodBadge" class="badge" style="margin-left: 8px; font-size: 10.5px;"></span>
-                            </div>
-                        </div>
-                        <a href="#" id="dtRejectionFileActionLink" onclick="event.preventDefault();" style="color: var(--secondary-color); text-decoration: none; font-size: 12.5px; font-weight: 600;">
-                            <i class="fa-solid fa-eye"></i> Xem file
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 5. KẾT QUẢ XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG -->
+            <!-- 4. KẾT QUẢ XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG -->
             <div id="dtVerificationResultBlock" class="detail-card" style="display: none; margin-bottom: 20px; border-left: 4px solid var(--primary-color);">
                 <div class="sub-section-title" style="margin-top: 0; color: var(--primary-color); display: flex; align-items: center; gap: 8px;">
                     <i class="fa-solid fa-scale-balanced"></i> KẾT QUẢ XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG
@@ -837,12 +740,12 @@
                     <div class="detail-value" style="line-height: 1.5;" id="dtProcReason"></div>
                 </div>
                 <div class="detail-row">
-                    <div class="detail-label">Tài liệu kèm theo</div>
+                    <div class="detail-label">Tài liệu đính kèm</div>
                     <div class="detail-value" id="dtProcDecisionFile"></div>
                 </div>
             </div>
 
-            <!-- 6. KẾT QUẢ CHUYỂN CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG (Chỉ hiển thị khi Đã chuyển CQGQBT) -->
+            <!-- 5. KẾT QUẢ CHUYỂN CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG (Chỉ hiển thị khi Đã chuyển CQGQBT) -->
             <div id="dtTransferBlock" class="detail-card" style="display: none; margin-bottom: 20px; border-left: 4px solid var(--success-color);">
                 <div class="sub-section-title" style="margin-top: 0; color: var(--success-color); display: flex; justify-content: space-between; align-items: center;">
                     <span><i class="fa-solid fa-paper-plane"></i> KẾT QUẢ CHUYỂN CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG</span>
@@ -888,7 +791,7 @@
                 </div>
             </div>
 
-            <!-- 7. CHI TIẾT HỒ SƠ XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG (Mở rộng / Thu gọn) - dùng chung tại MH03 (Chi tiết yêu cầu xác định CQGQBT) -->
+            <!-- 6. CHI TIẾT HỒ SƠ XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG (Mở rộng / Thu gọn; mặc định Thu gọn, Chờ tiếp nhận Mở rộng) - dùng chung tại MH03 (Chi tiết yêu cầu xác định CQGQBT) -->
             <div id="dtProfileSlot"></div>
             <div id="xdProfileCard" class="detail-card" style="margin-bottom: 20px; padding: 0; overflow: hidden; border: 1px solid var(--border-color);">
                 <div onclick="toggleDetailProfileSection()" style="background: #f8fafc; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; border-bottom: 1px solid var(--border-color); transition: background 0.2s;">
@@ -903,17 +806,18 @@
                 </div>
 
                 <div id="dtProfileBody" style="display: none; padding: 20px;">
-                    <!-- 1. THÔNG TIN TIẾP NHẬN HỒ SƠ -->
-                    <div class="sub-section-title" style="margin-top:0;">THÔNG TIN TIẾP NHẬN HỒ SƠ</div>
+                    <!-- 1. THÔNG TIN CHUNG (cùng thứ tự khối của màn Tiếp nhận yêu cầu xác định CQGQBT) -->
+                    <div class="sub-section-title" style="margin-top:0;">THÔNG TIN CHUNG</div>
                     <div class="detail-row">
                         <div class="detail-label">Mã hồ sơ</div>
                         <div class="detail-value" style="font-weight: 700; color: var(--primary-color);" id="dtCode"></div>
                     </div>
-                    <div class="detail-row" style="display: none;">
+                    <div class="detail-row">
                         <div class="detail-label">Mã vụ việc</div>
-                        <div class="detail-value" id="dtMaVuViec"></div>
+                        <div class="detail-value" style="font-weight: 700;" id="dtMaVuViec"></div>
                     </div>
-                    <div class="detail-row" style="display: none;">
+                    <!-- Vụ việc liên quan: chỉ hiển thị khi có dữ liệu -->
+                    <div class="detail-row" id="dtVuViecLienQuanRow" style="display: none;">
                         <div class="detail-label">Vụ việc liên quan</div>
                         <div class="detail-value" id="dtVuViecLienQuan"></div>
                     </div>
@@ -984,12 +888,8 @@
                         <div class="detail-label">Địa chỉ</div>
                         <div class="detail-value" id="dtNYCAddress"></div>
                     </div>
-                    <div class="detail-row">
-                        <div class="detail-label">Đính kèm đơn đề nghị ban đầu</div>
-                        <div class="detail-value" id="dtFileAttachment"></div>
-                    </div>
 
-                    <!-- 3. THÔNG TIN NGƯỜI BỊ THIỆT HẠI -->
+                    <!-- 2a. THÔNG TIN NGƯỜI BỊ THIỆT HẠI (thuộc nhóm Thông tin người yêu cầu; chỉ hiển thị khi Tư cách khác Người bị thiệt hại) -->
                     <div id="dtNbthBlock" style="display: none;">
                         <div class="sub-section-title" id="dtNbthTitle">THÔNG TIN NGƯỜI BỊ THIỆT HẠI</div>
                         <div class="detail-row dt-nbth-org">
@@ -1026,14 +926,14 @@
                         </div>
                     </div>
 
-                    <!-- 4. VĂN BẢN LÀM CĂN CỨ YÊU CẦU BỒI THƯỜNG -->
+                    <!-- 3. VĂN BẢN LÀM CĂN CỨ YÊU CẦU BỒI THƯỜNG -->
                     <!-- Chỉ hiển thị khi có dữ liệu: rỗng thì ẩn cả tiêu đề và bảng (xac_dinh_co_quan_boi_thuong.js) -->
                     <div id="dtVanBanCanCuBlock">
                     <div class="sub-section-title">VĂN BẢN LÀM CĂN CỨ YÊU CẦU BỒI THƯỜNG</div>
                     <div id="dtVanBanCanCu" style="margin-top: 10px; margin-bottom: 20px;"></div>
                     </div>
 
-                    <!-- 5. HÀNH VI GÂY THIỆT HẠI & PHƯƠNG THỨC NHẬN THÔNG BÁO -->
+                    <!-- 4. HÀNH VI GÂY THIỆT HẠI & PHƯƠNG THỨC NHẬN THÔNG BÁO -->
                     <div class="sub-section-title">HÀNH VI GÂY THIỆT HẠI &amp; PHƯƠNG THỨC NHẬN THÔNG BÁO</div>
                     <div class="detail-row">
                         <div class="detail-label">Hành vi gây thiệt hại của người thi hành công vụ</div>
@@ -1047,10 +947,14 @@
                         <div class="detail-label">Địa chỉ, đầu mối nhận thông báo</div>
                         <div class="detail-value" id="dtDiaChiNhan"></div>
                     </div>
+
+                    <!-- 5. BẢNG TÀI LIỆU ĐÍNH KÈM (STT | Tên tài liệu, văn bản | File đính kèm | Thao tác Xem file / Tải file) -->
+                    <div class="sub-section-title">BẢNG TÀI LIỆU ĐÍNH KÈM</div>
+                    <div id="dtFileAttachment" style="margin-top: 10px;"></div>
                 </div>
             </div>
 
-            <!-- 8. QUÁ TRÌNH PHÂN CÔNG (Mở rộng / Thu gọn) -->
+            <!-- 7. QUÁ TRÌNH PHÂN CÔNG (Mở rộng / Thu gọn; mặc định Thu gọn) -->
             <div class="detail-card" style="margin-bottom: 20px;">
                 <div onclick="toggleDetailRoutesSection()" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;">
                     <div class="sub-section-title" style="margin: 0; display: flex; align-items: center; gap: 8px;">
@@ -1064,7 +968,7 @@
                 <div id="dtRoutesBody" style="margin-top: 10px;"><div id="dtRoutes"></div></div>
             </div>
 
-            <!-- 9. LỊCH SỬ XỬ LÝ (Mở rộng / Thu gọn) -->
+            <!-- 8. LỊCH SỬ XỬ LÝ (Mở rộng / Thu gọn; mặc định Mở rộng) -->
             <div class="detail-card" style="margin-bottom: 20px;">
                 <div onclick="toggleDetailHistorySection()" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none;">
                     <div class="sub-section-title" style="margin: 0; display: flex; align-items: center; gap: 8px;">
@@ -1111,7 +1015,7 @@
             <!-- Bước 1 -->
             <div id="xsStep1Body" class="xs-body">
                 <!-- Khối THÔNG TIN HỒ SƠ BỊ TRẢ LẠI (hiển thị khi hồ sơ đang bị trả lại hoặc từng bị trả lại) -->
-                <div id="xsReturnedAlertBlock" style="display: none; margin-bottom: 16px; padding: 14px 16px; background: #fff1f2; border: 1px solid #fecdd3; border-left: 5px solid #e11d48; border-radius: var(--border-radius-md);"></div>
+                <div id="xsReturnedAlertBlock" style="display: none; margin-bottom: 16px; padding: 14px 16px; background: #fffbeb; border: 1px solid #fde68a; border-left: 5px solid #f59e0b; border-radius: var(--border-radius-md);"></div>
 
                 <!-- Hình thức ký (đầu form; Ký số hiện stepper 2 bước, Ký ngoài ẩn stepper) -->
                 <div class="xs-sec">
@@ -1326,12 +1230,12 @@
     </div>
 
     <!-- External javascript logic -->
-    <script src="btnn_luong_xu_ly.js?v=20261028tl1"></script>
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261029tldk"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
-    <script src="btnn_lanh_dao_actions.js?v=20261028tl1"></script>
+    <script src="btnn_lanh_dao_actions.js?v=20261029tldk"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
-    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261028tl1"></script>
+    <script src="xac_dinh_co_quan_boi_thuong.js?v=20261029tlcam2"></script>
     <script src="quan_ly_boi_thuong_ktlc.js?v=20261027ktl2"></script>
     <script src="admin-ui-standardizer.js?v=20261012"></script>
     <script src="bpbd_filter_toggle.js?v=20261012"></script>

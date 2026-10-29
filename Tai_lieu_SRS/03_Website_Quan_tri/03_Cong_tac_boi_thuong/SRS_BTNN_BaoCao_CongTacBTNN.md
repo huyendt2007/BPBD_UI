@@ -8,12 +8,12 @@ Cho phép Sở Tư pháp lập, trình ký số và gửi Bộ Tư pháp báo c�
 - Nhập liệu trên 04 tab biểu mẫu; Mẫu 42/BTNN nhập theo từng mục của mẫu; Mẫu 41/BTNN, Mẫu 43/BTNN, Mẫu số 04 (TT 08/2019) nhập tay.
 - Xem trước tệp PDF của 04 biểu mẫu trước khi trình.
 - Gửi phê duyệt 01 lần cho cả bộ báo cáo, trình Lãnh đạo Phòng ký nháy, Lãnh đạo Sở ký số theo luồng đã cấu hình.
-- Lãnh đạo Ký duyệt hoặc Từ chối đồng thời cả 04 biểu mẫu; cán bộ xem Lý do từ chối để điều chỉnh, trình lại.
+- Lãnh đạo Ký duyệt hoặc Từ chối đồng thời cả 04 biểu mẫu; cán bộ xem Lý do bị trả lại để điều chỉnh, trình lại.
 - Bộ Tư pháp theo dõi tình hình gửi báo cáo của 34 Sở Tư pháp, xem nhập liệu báo cáo của từng Sở Tư pháp (chỉ đọc), xem, tải tệp đã ban hành; trả lại báo cáo của Sở Tư pháp để Sở sửa, gửi lại.
-- Bộ Tư pháp lập báo cáo tổng hợp của Bộ theo kỳ trên cùng form 04 biểu mẫu, số liệu tự tổng hợp từ báo cáo đã gửi của các Sở Tư pháp; chỉnh sửa, trình Lãnh đạo Cục ký nháy, Lãnh đạo Bộ ký số; Bị từ chối thì sửa và trình lại.
+- Bộ Tư pháp lập báo cáo tổng hợp của Bộ theo kỳ trên cùng form 04 biểu mẫu, số liệu tự tổng hợp từ báo cáo đã gửi của các Sở Tư pháp; chỉnh sửa, trình Lãnh đạo Cục ký nháy, Lãnh đạo Bộ ký số; Bị trả lại thì sửa và trình lại.
 
 *a. Phân quyền*
-- Cán bộ Sở Tư pháp: tạo báo cáo, nhập liệu, xem trước PDF, Gửi phê duyệt, cập nhật và trình lại báo cáo `Bị từ chối` của Sở Tư pháp mình.
+- Cán bộ Sở Tư pháp: tạo báo cáo, nhập liệu, xem trước PDF, Gửi phê duyệt, cập nhật và trình lại báo cáo `Bị trả lại` của Sở Tư pháp mình.
 - Lãnh đạo Phòng, Lãnh đạo Sở: xem báo cáo của Sở Tư pháp mình, trừ báo cáo `Đang nhập liệu`; Ký duyệt / Từ chối báo cáo `Chờ duyệt` khi được chọn đích danh ở cấp phê duyệt hiện hành.
 - Cán bộ Bộ Tư pháp: xem kỳ báo cáo, tình hình gửi, nhập liệu và tệp đã ban hành của 34 Sở Tư pháp; trả lại báo cáo Đã ban hành của Sở Tư pháp; lập, cập nhật, Gửi phê duyệt, trình lại báo cáo tổng hợp của Bộ.
 - Lãnh đạo Cục, Lãnh đạo Bộ: xem kỳ báo cáo, báo cáo của các Sở Tư pháp và báo cáo tổng hợp của Bộ; Ký duyệt / Từ chối báo cáo tổng hợp của Bộ `Chờ duyệt` khi được chọn đích danh ở cấp phê duyệt hiện hành.
@@ -37,7 +37,7 @@ flowchart TD
     E -->|Trình Lãnh đạo| F["Chờ duyệt (Loại trình Báo cáo công tác BTNN)"]
     F --> G[MH05 - Ký duyệt / Từ chối: Lãnh đạo Phòng]
     G -->|Ký duyệt| H[MH05 - Ký duyệt / Từ chối: Lãnh đạo Sở]
-    G -->|Từ chối| I[Bị từ chối]
+    G -->|Từ chối| I[Bị trả lại]
     H -->|Từ chối| I
     I -->|Cán bộ xem Lý do, điều chỉnh| C
     H -->|Ký duyệt| J["Đã ban hành - gửi Bộ Tư pháp"]
@@ -65,7 +65,7 @@ flowchart TD
 | :--- | :--- | :--- |
 | `Đang nhập liệu` | Báo cáo đã tạo, chưa trình | Cán bộ Sở Tư pháp: Xem chi tiết, Cập nhật, Lưu, Xem trước PDF, Gửi phê duyệt. |
 | `Chờ duyệt` | Đã Gửi phê duyệt, đang chờ Lãnh đạo; dòng phụ `Loại trình: Báo cáo công tác BTNN` và cấp đang chờ | Lãnh đạo được chọn ở cấp hiện hành: Ký duyệt, Từ chối. Cán bộ Sở Tư pháp: Xem chi tiết. |
-| `Bị từ chối` | Lãnh đạo một cấp đã Từ chối; dòng phụ `Loại trình: Báo cáo công tác BTNN` | Cán bộ Sở Tư pháp: Xem Lý do từ chối, Cập nhật, Lưu, Xem trước PDF, Gửi phê duyệt lại. |
+| `Bị trả lại` | Lãnh đạo một cấp đã Từ chối; dòng phụ `Loại trình: Báo cáo công tác BTNN` | Cán bộ Sở Tư pháp: Xem Lý do bị trả lại, Cập nhật, Lưu, Xem trước PDF, Gửi phê duyệt lại. |
 | `Đã ban hành` | Lãnh đạo cấp cuối đã Ký duyệt; dòng phụ `Đã gửi Bộ Tư pháp` | Mọi vai trò: Xem chi tiết, Xem file, Tải file. Bộ Tư pháp tổng hợp số liệu. |
 | `Bị trả lại` | Bộ Tư pháp đã trả lại báo cáo `Đã ban hành` của Sở Tư pháp; dòng phụ `Bộ Tư pháp trả lại`; không tính là Đã gửi | Cán bộ Sở Tư pháp: Xem Lý do trả lại, Cập nhật, Lưu, Xem trước PDF, Gửi phê duyệt lại; ký cấp cuối thì báo cáo `Đã ban hành` và gửi lại Bộ Tư pháp. |
 
@@ -87,8 +87,8 @@ flowchart TD
      + Cột 12 = Cột 13 + 14.
    - Dòng `Tổng cộng` = tổng 06 nhóm của từng cột.
    - Ô tiền (đơn vị nghìn đồng): hiển thị và nhập có dấu chấm phân cách hàng nghìn, căn phải; tự định dạng khi nhập; lưu dạng số; áp dụng cả ô tổng, dòng `Tổng cộng`, bảng tổng hợp, popup chi tiết theo Sở Tư pháp và tệp PDF.
-7. Tệp báo cáo: hệ thống sinh tệp PDF từng biểu mẫu theo [Mẫu 41/BTNN - Danh mục vụ việc giải quyết yêu cầu bồi thường - Bảng mapping trường dữ liệu biểu mẫu BTNN - Công tác bồi thường nhà nước](Bieu_mau/Bang_mapping_truong_du_lieu_bieu_mau_BTNN.md), [Mẫu 42/BTNN - Báo cáo công tác bồi thường nhà nước - Bảng mapping trường dữ liệu biểu mẫu BTNN - Công tác bồi thường nhà nước](Bieu_mau/Bang_mapping_truong_du_lieu_bieu_mau_BTNN.md), [Mẫu 43/BTNN - Tổng hợp tình hình yêu cầu bồi thường, giải quyết bồi thường và chi trả tiền bồi thường - Bảng mapping trường dữ liệu biểu mẫu BTNN - Công tác bồi thường nhà nước](Bieu_mau/Bang_mapping_truong_du_lieu_bieu_mau_BTNN.md).
-   - Mẫu số 04 (TT 08/2019): sinh theo bố cục Biểu mẫu số 04 ban hành kèm theo Thông tư số 08/2019/TT-BTP ngày 10/12/2019: tiêu đề `BIỂU MẪU SỐ 04`; góc trái tên cơ quan báo cáo, góc phải Quốc hiệu, Tiêu ngữ; dòng tổng ngay dưới dòng số thứ tự cột, sau đó 06 nhóm I - VI; vị trí ký `Người lập biểu`, `Thủ trưởng cơ quan`; cuối biểu mục `Nguồn lấy số liệu` đúng câu chữ của mẫu; số liệu theo [Tab Mẫu số 04 (TT 08/2019) - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-tab-m04). Template `Mau_04_TT08_Template.docx`, biến theo [Mẫu số 04 (TT 08/2019) - Tình hình thực hiện trách nhiệm hoàn trả - Bảng mapping trường dữ liệu biểu mẫu BTNN - Công tác bồi thường nhà nước](Bieu_mau/Bang_mapping_truong_du_lieu_bieu_mau_BTNN.md).
+7. Tệp báo cáo: hệ thống sinh tệp PDF từng biểu mẫu theo [Mẫu 41/BTNN - Danh mục vụ việc giải quyết yêu cầu bồi thường - Bảng mapping trường dữ liệu biểu mẫu BTNN - Công tác bồi thường nhà nước](../../../Bieu_mau/Boi_thuong_nha_nuoc/Bang_mapping_truong_du_lieu_bieu_mau_BTNN.md), [Mẫu 42/BTNN - Báo cáo công tác bồi thường nhà nước - Bảng mapping trường dữ liệu biểu mẫu BTNN - Công tác bồi thường nhà nước](../../../Bieu_mau/Boi_thuong_nha_nuoc/Bang_mapping_truong_du_lieu_bieu_mau_BTNN.md), [Mẫu 43/BTNN - Tổng hợp tình hình yêu cầu bồi thường, giải quyết bồi thường và chi trả tiền bồi thường - Bảng mapping trường dữ liệu biểu mẫu BTNN - Công tác bồi thường nhà nước](../../../Bieu_mau/Boi_thuong_nha_nuoc/Bang_mapping_truong_du_lieu_bieu_mau_BTNN.md).
+   - Mẫu số 04 (TT 08/2019): sinh theo bố cục Biểu mẫu số 04 ban hành kèm theo Thông tư số 08/2019/TT-BTP ngày 10/12/2019: tiêu đề `BIỂU MẪU SỐ 04`; góc trái tên cơ quan báo cáo, góc phải Quốc hiệu, Tiêu ngữ; dòng tổng ngay dưới dòng số thứ tự cột, sau đó 06 nhóm I - VI; vị trí ký `Người lập biểu`, `Thủ trưởng cơ quan`; cuối biểu mục `Nguồn lấy số liệu` đúng câu chữ của mẫu; số liệu theo [Tab Mẫu số 04 (TT 08/2019) - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-tab-m04). Template `Mau_04_TT08_Template.docx`, biến theo [Mẫu số 04 (TT 08/2019) - Tình hình thực hiện trách nhiệm hoàn trả - Bảng mapping trường dữ liệu biểu mẫu BTNN - Công tác bồi thường nhà nước](../../../Bieu_mau/Boi_thuong_nha_nuoc/Bang_mapping_truong_du_lieu_bieu_mau_BTNN.md).
    - Trước khi ban hành: tệp `Dự thảo`, có nhãn `DỰ THẢO`.
    - Sau khi Lãnh đạo cấp cuối Ký duyệt: tệp `Đã ban hành`, có chữ ký số.
 8. Tổng hợp tại Bộ Tư pháp (số liệu tự tổng hợp của báo cáo tổng hợp của Bộ):
@@ -105,16 +105,16 @@ flowchart TD
 
 | Vai trò | Tab `Chờ xử lý` | Tab `Đã xử lý` |
 | :--- | :--- | :--- |
-| Cán bộ Sở Tư pháp | Báo cáo `Đang nhập liệu`, `Bị từ chối`, `Bị trả lại` | Báo cáo `Chờ duyệt`, `Đã ban hành` |
+| Cán bộ Sở Tư pháp | Báo cáo `Đang nhập liệu`, `Bị trả lại` | Báo cáo `Chờ duyệt`, `Đã ban hành` |
 | Lãnh đạo Phòng, Lãnh đạo Sở | Báo cáo `Chờ duyệt` mà Lãnh đạo được chọn đích danh ở cấp phê duyệt hiện hành | Báo cáo Lãnh đạo đã Ký duyệt / Từ chối, không còn chờ Lãnh đạo duyệt |
 
 <a id="bctt-btp"></a>
 10. Báo cáo tổng hợp của Bộ Tư pháp:
    - Mỗi cặp `Năm báo cáo` - `Loại kỳ báo cáo` có tối đa 01 báo cáo của Bộ; Đơn vị báo cáo `Bộ Tư pháp`; cùng form 04 biểu mẫu và trạng thái theo quy tắc 3.
    - Khi lập báo cáo: số liệu 04 biểu mẫu tự tổng hợp theo quy tắc 8; ghi nhận số Sở Tư pháp đã gửi và thời điểm tổng hợp.
-   - Cán bộ Bộ Tư pháp được sửa số liệu, nội dung 04 biểu mẫu khi báo cáo `Đang nhập liệu` hoặc `Bị từ chối`; số tự tổng hợp lưu riêng để so sánh, ô đã sửa có đánh dấu.
+   - Cán bộ Bộ Tư pháp được sửa số liệu, nội dung 04 biểu mẫu khi báo cáo `Đang nhập liệu` hoặc `Bị trả lại`; số tự tổng hợp lưu riêng để so sánh, ô đã sửa có đánh dấu.
    - `Cập nhật số liệu từ các Sở`: tổng hợp lại theo báo cáo Đã ban hành mới nhất của các Sở Tư pháp, ghi đè số liệu Bộ đã sửa.
-   - Luồng ký: Cấp 1 - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước, Cấp 2 - Bộ Tư pháp, theo [Cấu hình luồng xử lý - Cấu hình luồng xử lý - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Cau_hinh_luong_xu_ly.md); hình thức ký, tài liệu kèm theo, Từ chối, trình lại như quy tắc 4.
+   - Luồng ký: Cấp 1 - Cục Đăng ký giao dịch bảo đảm và Bồi thường nhà nước, Cấp 2 - Bộ Tư pháp, theo [Cấu hình luồng xử lý - Cấu hình luồng xử lý - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Cau_hinh_luong_xu_ly.md); hình thức ký, tài liệu đính kèm, Từ chối, trình lại như quy tắc 4.
    - Lãnh đạo cấp cuối Ký duyệt: báo cáo `Đã ban hành`; Lịch sử xử lý ghi `Ban hành`.
 
 <a id="bctt-tra-lai"></a>
@@ -152,9 +152,9 @@ flowchart TD
 | Loại kỳ báo cáo | String(100) | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
 | Đơn vị báo cáo | String(255) | - | Theo bản ghi | Control UI: Label.<br>- Tên Sở Tư pháp. |
 | Người lập | String(100) | - | Theo bản ghi | Control UI: Label.<br>- Họ và tên cán bộ lập báo cáo. |
-| Trạng thái | Enum(String(50)) | - | Theo bản ghi | Control UI: Badge và dòng phụ.<br>- Giá trị theo [Quy tắc nghiệp vụ - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-quy-tac) quy tắc 3.<br>- `Chờ duyệt`: dòng phụ `Loại trình: Báo cáo công tác BTNN`, `Chờ Cấp [n] - [Họ tên Lãnh đạo]`.<br>- `Bị từ chối`: dòng phụ `Loại trình: Báo cáo công tác BTNN`.<br>- `Bị trả lại`: dòng phụ `Bộ Tư pháp trả lại`.<br>- `Đã ban hành`: dòng phụ `Đã gửi Bộ Tư pháp`. |
+| Trạng thái | Enum(String(50)) | - | Theo bản ghi | Control UI: Badge và dòng phụ.<br>- Giá trị theo [Quy tắc nghiệp vụ - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-quy-tac) quy tắc 3.<br>- `Chờ duyệt`: dòng phụ `Loại trình: Báo cáo công tác BTNN`, `Chờ Cấp [n] - [Họ tên Lãnh đạo]`.<br>- `Bị trả lại`: dòng phụ `Loại trình: Báo cáo công tác BTNN` (Lãnh đạo Từ chối) hoặc `Bộ Tư pháp trả lại` (Bộ Tư pháp trả lại báo cáo).<br>- `Đã ban hành`: dòng phụ `Đã gửi Bộ Tư pháp`. |
 | Ngày gửi gần nhất | DateTime | - | Theo bản ghi | Control UI: Label.<br>- Thời điểm Gửi phê duyệt gần nhất, định dạng `dd/mm/yyyy HH:mm`.<br>- Chưa gửi: `--`. |
-| Thao tác | Action buttons | - | - | Control UI: Icon button group.<br>- Cột cố định bên phải lưới khi cuộn ngang.<br>- Điều kiện theo trạng thái báo cáo tại [Quy tắc nghiệp vụ - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-quy-tac) quy tắc 3.<br>- Thao tác không thỏa điều kiện: hiển thị mờ (disabled), không cho click, có chú thích lý do.<br>Gồm:<br>+ Cập nhật: báo cáo `Đang nhập liệu`, `Bị từ chối` hoặc `Bị trả lại`.<br>+ Gửi phê duyệt: cùng điều kiện với Cập nhật.<br>+ Ký duyệt: báo cáo `Chờ duyệt`; người dùng là Lãnh đạo được chọn ở cấp phê duyệt hiện hành.<br>+ Từ chối: cùng điều kiện với Ký duyệt. |
+| Thao tác | Action buttons | - | - | Control UI: Icon button group.<br>- Cột cố định bên phải lưới khi cuộn ngang.<br>- Điều kiện theo trạng thái báo cáo tại [Quy tắc nghiệp vụ - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-quy-tac) quy tắc 3.<br>- Thao tác không thỏa điều kiện: hiển thị mờ (disabled), không cho click, có chú thích lý do.<br>Gồm:<br>+ Cập nhật: báo cáo `Đang nhập liệu` hoặc `Bị trả lại`.<br>+ Gửi phê duyệt: cùng điều kiện với Cập nhật.<br>+ Ký duyệt: báo cáo `Chờ duyệt`; người dùng là Lãnh đạo được chọn ở cấp phê duyệt hiện hành.<br>+ Từ chối: cùng điều kiện với Ký duyệt. |
 | Thanh phân trang | Panel | - | 10 bản ghi/trang | Control UI: Pagination bar.<br>- Số bản ghi/trang gồm:<br>+ 10<br>+ 20<br>+ 50<br>+ 100<br>- Ẩn khi không có bản ghi. |
 
 #### 3. Chức năng trên màn hình
@@ -166,7 +166,7 @@ flowchart TD
 | 3 | Tạo báo cáo | Button | Chỉ hiển thị với Cán bộ Sở Tư pháp tại tab `Chờ xử lý`. Mở MH02. |
 | 4 | Chuyển tab | Tab | Hiển thị bản ghi của tab được chọn; giữ điều kiện lọc hợp lệ, về Trang 1. |
 | 5 | Xem chi tiết | Click dòng | Mở MH03 của báo cáo. |
-| 6 | Cập nhật | Icon button | Cho phép khi báo cáo `Đang nhập liệu`, `Bị từ chối` hoặc `Bị trả lại`. Mở MH03 ở chế độ nhập liệu. |
+| 6 | Cập nhật | Icon button | Cho phép khi báo cáo `Đang nhập liệu` hoặc `Bị trả lại`. Mở MH03 ở chế độ nhập liệu. |
 | 7 | Gửi phê duyệt | Icon button | Cho phép như `Cập nhật`. Mở MH03, kiểm tra dữ liệu và mở MH04 theo chức năng `Gửi phê duyệt` tại MH03. |
 | 8 | Ký duyệt / Từ chối | Icon button | Cho phép khi báo cáo `Chờ duyệt` và người dùng là Lãnh đạo được chọn ở cấp phê duyệt hiện hành. Mở MH05 theo thao tác tương ứng. |
 | 9 | Phân trang | Panel | Tải lại danh sách theo trang, số bản ghi/trang đã chọn; giữ điều kiện lọc. |
@@ -207,8 +207,8 @@ Popup mở khi Cán bộ Sở Tư pháp click `Tạo báo cáo` tại MH01.
 
 #### 2. Mô tả thông tin trên màn hình
 
-- Bố cục từ trên xuống: khối `Thông tin báo cáo` (gồm `Khối Lý do bị từ chối`, `Tệp báo cáo`), khối tab biểu mẫu (`Mẫu 41/BTNN`, `Mẫu 42/BTNN`, `Mẫu 43/BTNN`, `Mẫu số 04 (TT 08/2019)`, `Lịch sử xử lý`), thanh thao tác.
-- Chế độ nhập liệu khi Cán bộ Sở Tư pháp mở báo cáo `Đang nhập liệu`, `Bị từ chối` hoặc `Bị trả lại`; trạng thái khác hoặc vai trò khác: chỉ đọc.
+- Bố cục từ trên xuống: khối `Thông tin báo cáo` (gồm `Khối Lý do bị trả lại`, `Tệp báo cáo`), khối tab biểu mẫu (`Mẫu 41/BTNN`, `Mẫu 42/BTNN`, `Mẫu 43/BTNN`, `Mẫu số 04 (TT 08/2019)`, `Lịch sử xử lý`), thanh thao tác.
+- Chế độ nhập liệu khi Cán bộ Sở Tư pháp mở báo cáo `Đang nhập liệu` hoặc `Bị trả lại`; trạng thái khác hoặc vai trò khác: chỉ đọc.
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
@@ -222,8 +222,8 @@ Popup mở khi Cán bộ Sở Tư pháp click `Tạo báo cáo` tại MH01.
 | Người lập | - | - | Theo bản ghi | Control UI: Label.<br>- Ảnh chữ ký hình ảnh và Họ và tên cán bộ lập báo cáo theo Thông tin cá nhân cán bộ. |
 | Ngày gửi gần nhất | - | - | Theo bản ghi | Control UI: Label.<br>- Định dạng `dd/mm/yyyy HH:mm`; chưa gửi: `--`. |
 | Ngày ban hành | - | - | Theo bản ghi | Control UI: Label.<br>- `[dd/mm/yyyy HH:mm] - [Họ tên Lãnh đạo ký]`; chưa ban hành: `--`. |
-| Khối Lý do bị từ chối | Section | - | Ẩn | Control UI: Khối cảnh báo (Read-only).<br>- Chỉ hiển thị khi báo cáo `Bị từ chối`.<br>- Tiêu đề `BÁO CÁO BỊ LÃNH ĐẠO TỪ CHỐI`.<br>- Gồm Lý do từ chối, Người từ chối (Cấp [n]), Thời điểm `dd/mm/yyyy HH:mm` của lần từ chối gần nhất. |
-| Khối Lý do bị trả lại | Section | - | Ẩn | Control UI: Khối cảnh báo (Read-only).<br>- Chỉ hiển thị khi báo cáo `Bị trả lại`.<br>- Tiêu đề `BÁO CÁO BỊ BỘ TƯ PHÁP TRẢ LẠI`.<br>- Gồm Lý do trả lại, Người trả lại (Bộ Tư pháp), Thời điểm `dd/mm/yyyy HH:mm`. |
+| Khối Lý do bị trả lại | Section | - | Ẩn | Control UI: Khối cảnh báo (Read-only).<br>- Chỉ hiển thị khi báo cáo `Bị trả lại` do Lãnh đạo Từ chối.<br>- Tiêu đề `BÁO CÁO BỊ LÃNH ĐẠO TRẢ LẠI`.<br>- Gồm Lý do bị trả lại, Người từ chối (Cấp [n]), Thời điểm `dd/mm/yyyy HH:mm` của lần từ chối gần nhất. |
+| Khối Lý do bị trả lại | Section | - | Ẩn | Control UI: Khối cảnh báo (Read-only).<br>- Chỉ hiển thị khi báo cáo `Bị trả lại` do Bộ Tư pháp trả lại.<br>- Tiêu đề `BÁO CÁO BỊ BỘ TƯ PHÁP TRẢ LẠI`.<br>- Gồm Lý do trả lại, Người trả lại (Bộ Tư pháp), Thời điểm `dd/mm/yyyy HH:mm`. |
 | **II. Tệp báo cáo** | Data grid | - | 04 dòng | Control UI: Data grid (Read-only).<br>- Tiêu đề `Tệp báo cáo (dự thảo)` hoặc `Tệp báo cáo (đã ban hành)` theo trạng thái.<br>- Mỗi biểu mẫu 01 dòng.<br>- Dưới bảng: 02 khối `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo` của lần trình (Read-only); mỗi khối chỉ hiển thị khi có dữ liệu; khối `Tài liệu không ban hành kèm theo` chỉ hiển thị với Sở Tư pháp trình báo cáo; quy tắc tại [Quy tắc Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-tai-lieu-trinh-ky). |
 | STT | Integer | - | Tự tăng | Control UI: Label. |
 | Biểu mẫu | - | - | Theo bản ghi | Control UI: Label.<br>- `[Mã mẫu] - [Tên mẫu]`. |
@@ -365,7 +365,7 @@ Popup mở khi Cán bộ Sở Tư pháp click `Tạo báo cáo` tại MH01.
   + Bước 1 - Kiểm tra bộ báo cáo: `Hình thức ký`, `Bộ báo cáo trình ký`, `Người lập biểu`, `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo`.
   + Bước 2 - Chọn Lãnh đạo & trình ký: vùng trái xem văn bản có thanh tab 04 biểu mẫu; vùng phải thẻ cấp ký, `Nội dung trình`.
   + Ô ký do hệ thống đặt theo [Quy tắc nghiệp vụ - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-quy-tac) quy tắc 4; không có nút `Đặt chữ ký`.
-- Báo cáo `Bị từ chối`: điền lại Lãnh đạo từng cấp, `Nội dung trình`, `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo` của lần trình trước.
+- Báo cáo `Bị trả lại`: điền lại Lãnh đạo từng cấp, `Nội dung trình`, `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo` của lần trình trước.
 
 #### 2. Mô tả thông tin trên màn hình
 
@@ -373,7 +373,7 @@ Popup mở khi Cán bộ Sở Tư pháp click `Tạo báo cáo` tại MH01.
 | :--- | :--- | :--- | :--- | :--- |
 | Tiêu đề popup | String(255) | - | `GỬI PHÊ DUYỆT BÁO CÁO CÔNG TÁC BỒI THƯỜNG NHÀ NƯỚC` | Control UI: Heading text (Read-only).<br>- Dòng phụ: `Kỳ báo cáo: năm [Năm báo cáo] - [Loại kỳ báo cáo] • Đơn vị: [Tên Sở Tư pháp]`. |
 | Thanh chỉ trình (Stepper) | Component | - | Bước 1 active | Control UI: Stepper 2 bước.<br>Gồm:<br>+ Bước 1: Kiểm tra bộ báo cáo<br>+ Bước 2: Chọn Lãnh đạo & trình ký |
-| Khối Báo cáo bị từ chối | Section | - | Ẩn | Control UI: Khối cảnh báo (Read-only).<br>- Chỉ hiển thị khi báo cáo `Bị từ chối`.<br>- Gồm Lý do từ chối, Người từ chối, Thời điểm. |
+| Khối Báo cáo bị trả lại | Section | - | Ẩn | Control UI: Khối cảnh báo (Read-only).<br>- Chỉ hiển thị khi báo cáo `Bị trả lại` do Lãnh đạo Từ chối.<br>- Gồm Lý do bị trả lại, Người từ chối, Thời điểm. |
 | Hình thức ký | - | - | `Ký số trên hệ thống` | Control UI: Label (Read-only).<br>- Giá trị cố định, không cho chọn; báo cáo không ký duyệt ở ngoài.<br>- Theo luồng đã cấu hình tại [Cấu hình luồng xử lý - Cấu hình luồng xử lý - Quản trị hệ thống (Website Quản trị)](../01_Quan_tri_he_thong/Cau_hinh_luong_xu_ly.md). |
 | **Bộ báo cáo trình ký** | Data grid | - | 04 dòng | Control UI: Data grid (Read-only). |
 | Biểu mẫu | - | - | Theo bản ghi | Control UI: Label.<br>- `[Mã mẫu] - [Tên mẫu]`. |
@@ -395,7 +395,7 @@ Popup mở khi Cán bộ Sở Tư pháp click `Tạo báo cáo` tại MH01.
 | 3 | Tiếp tục | Button | Tại Bước 1.<br>- **TH1 - Dòng `Tài liệu ban hành kèm theo` / `Tài liệu không ban hành kèm theo` thiếu Tên tài liệu, văn bản hoặc tệp**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên.<br>- **TH Hợp lệ**: sinh văn bản dự thảo 04 biểu mẫu, chuyển Bước 2. |
 | 4 | Chọn Lãnh đạo | Combobox | Cập nhật ô ký trên văn bản đang xem. |
 | 5 | Quay lại | Button | Tại Bước 2: về Bước 1, giữ dữ liệu đã nhập. |
-| 6 | Trình Lãnh đạo | Button | Tại Bước 2.<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên.<br>- **TH Hợp lệ**: tạo phiếu trình Loại trình `Báo cáo công tác BTNN` kèm 04 văn bản dự thảo, Lãnh đạo từng cấp, `Nội dung trình`, `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo`; ghi Người lập = người dùng đang thao tác; báo cáo chuyển `Chờ duyệt`, cấp hiện hành = Cấp 1; ghi Ngày gửi gần nhất, Lịch sử xử lý `Gửi phê duyệt`; xóa Khối Lý do bị từ chối khỏi màn hình; đóng popup, tải lại MH03, thông báo `Đã gửi phê duyệt báo cáo đến [Họ tên Lãnh đạo Cấp 1].` |
+| 6 | Trình Lãnh đạo | Button | Tại Bước 2.<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên.<br>- **TH Hợp lệ**: tạo phiếu trình Loại trình `Báo cáo công tác BTNN` kèm 04 văn bản dự thảo, Lãnh đạo từng cấp, `Nội dung trình`, `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo`; ghi Người lập = người dùng đang thao tác; báo cáo chuyển `Chờ duyệt`, cấp hiện hành = Cấp 1; ghi Ngày gửi gần nhất, Lịch sử xử lý `Gửi phê duyệt`; xóa Khối Lý do bị trả lại khỏi màn hình; đóng popup, tải lại MH03, thông báo `Đã gửi phê duyệt báo cáo đến [Họ tên Lãnh đạo Cấp 1].` |
 | 7 | Hủy bỏ / Đóng | Button | Đóng popup, không trình, giữ nguyên trạng thái báo cáo. |
 
 ---
@@ -440,7 +440,7 @@ Popup mở khi Cán bộ Sở Tư pháp click `Tạo báo cáo` tại MH01.
 | :--- | :--- | :--- | :--- |
 | 1 | Chuyển tab biểu mẫu | Tab | Hiển thị văn bản của biểu mẫu được chọn. |
 | 2 | Ký duyệt | Button | Chỉ hiển thị khi thao tác là `Ký duyệt`.<br>- **TH1 - Báo cáo không còn hợp lệ** (không còn chờ cấp này hoặc người dùng không còn là Lãnh đạo được chọn; kiểm tra tại máy chủ): hiển thị [MSG-ERR-BTNN-LXL-005], đóng màn hình, tải lại danh sách.<br>- **TH2 - Ký số không thành công**: báo cáo giữ `Chờ duyệt`; hiển thị thông báo lỗi ký số, giữ màn hình.<br>- **TH3 - Hợp lệ, chưa phải cấp cuối**: ghi kết quả Ký duyệt (ký nháy nếu cấp được cấu hình) cả 04 biểu mẫu, kèm Ý kiến; chuyển Lãnh đạo cấp tiếp theo đã chọn khi trình; giữ `Chờ duyệt`; ghi Lịch sử `Ký duyệt và chuyển xử lý đến [Họ tên Lãnh đạo cấp tiếp theo]`; thông báo `Đã ký duyệt cả 04 biểu mẫu và chuyển [Họ tên] ký duyệt.`<br>- **TH4 - Hợp lệ, cấp cuối**: ký số cả 04 biểu mẫu; báo cáo chuyển `Đã ban hành`, 04 tệp chuyển `Đã ban hành`; ghi Ngày ban hành, Người ký; gửi Bộ Tư pháp (báo cáo được tính vào kỳ tổng hợp tại MH08); ghi Lịch sử `Ký duyệt`, `Ban hành và gửi Bộ Tư pháp`; thông báo `Đã ký số ban hành cả 04 biểu mẫu và gửi Bộ Tư pháp.`; báo cáo của Bộ theo chức năng 6 của MH09.<br>- Đóng màn hình, tải lại MH03. |
-| 3 | Từ chối | Button | Chỉ hiển thị khi thao tác là `Từ chối`.<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên.<br>- **TH2 - Báo cáo không còn hợp lệ**: như Ký duyệt TH1.<br>- **TH Hợp lệ**: ghi kết quả Từ chối cả 04 biểu mẫu kèm Lý do từ chối; báo cáo chuyển `Bị từ chối`; lưu Lý do, Người từ chối, Cấp, Thời điểm để hiển thị tại Khối Lý do bị từ chối (MH03); ghi Lịch sử `Từ chối`; đóng màn hình, tải lại MH03, thông báo `Đã từ chối báo cáo. Cán bộ lập báo cáo nhận lại để điều chỉnh.` |
+| 3 | Từ chối | Button | Chỉ hiển thị khi thao tác là `Từ chối`.<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên.<br>- **TH2 - Báo cáo không còn hợp lệ**: như Ký duyệt TH1.<br>- **TH Hợp lệ**: ghi kết quả Từ chối cả 04 biểu mẫu kèm Lý do từ chối; báo cáo chuyển `Bị trả lại`; lưu Lý do, Người từ chối, Cấp, Thời điểm để hiển thị tại Khối Lý do bị trả lại (MH03); ghi Lịch sử `Từ chối`; đóng màn hình, tải lại MH03, thông báo `Đã từ chối báo cáo. Cán bộ lập báo cáo nhận lại để điều chỉnh.` |
 | 4 | Hủy bỏ / Đóng | Button | Đóng màn hình, không lưu. |
 
 ---
@@ -489,7 +489,7 @@ Màn hình mặc định của vai trò Bộ Tư pháp (Cán bộ Bộ Tư pháp
 | Số Sở Tư pháp đã gửi | - | - | Theo bản ghi | Control UI: Label.<br>- `[Số báo cáo Sở Tư pháp Đã ban hành]/34`. |
 | Tình hình tiếp nhận | Enum(String(50)) | - | Theo bản ghi | Control UI: Badge.<br>Gồm:<br>+ Đang tiếp nhận: chưa đủ 34 Sở Tư pháp<br>+ Đủ số liệu: đủ 34 Sở Tư pháp |
 | Báo cáo tổng hợp của Bộ | Enum(String(50)) | - | Theo bản ghi | Control UI: Badge và dòng phụ.<br>- Trạng thái báo cáo của Bộ theo quy tắc 3; dòng phụ như cột `Trạng thái` của MH01, `Đã ban hành`: dòng phụ `Đã ban hành`.<br>- Chưa lập: `Chưa lập`. |
-| Thao tác | Action buttons | - | - | Control UI: Icon button group.<br>- Cột cố định bên phải lưới khi cuộn ngang.<br>- Thao tác không thỏa điều kiện: hiển thị mờ (disabled), không cho click, có chú thích lý do.<br>Gồm:<br>+ Lập báo cáo tổng hợp của Bộ: Cán bộ Bộ Tư pháp, kỳ chưa có báo cáo của Bộ.<br>+ Cập nhật báo cáo của Bộ, Gửi phê duyệt: Cán bộ Bộ Tư pháp, báo cáo của Bộ `Đang nhập liệu` hoặc `Bị từ chối`.<br>+ Ký duyệt, Từ chối: Lãnh đạo Cục, Lãnh đạo Bộ; báo cáo của Bộ `Chờ duyệt` và người dùng là Lãnh đạo được chọn ở cấp hiện hành. |
+| Thao tác | Action buttons | - | - | Control UI: Icon button group.<br>- Cột cố định bên phải lưới khi cuộn ngang.<br>- Thao tác không thỏa điều kiện: hiển thị mờ (disabled), không cho click, có chú thích lý do.<br>Gồm:<br>+ Lập báo cáo tổng hợp của Bộ: Cán bộ Bộ Tư pháp, kỳ chưa có báo cáo của Bộ.<br>+ Cập nhật báo cáo của Bộ, Gửi phê duyệt: Cán bộ Bộ Tư pháp, báo cáo của Bộ `Đang nhập liệu` hoặc `Bị trả lại`.<br>+ Ký duyệt, Từ chối: Lãnh đạo Cục, Lãnh đạo Bộ; báo cáo của Bộ `Chờ duyệt` và người dùng là Lãnh đạo được chọn ở cấp hiện hành. |
 
 #### 3. Chức năng trên màn hình
 
@@ -528,7 +528,7 @@ Màn hình mặc định của vai trò Bộ Tư pháp (Cán bộ Bộ Tư pháp
 | Tình hình gửi (bộ lọc) | Enum(String(20)) | Không | `Tất cả` | Control UI: Combobox đặt trên bảng.<br>Gồm:<br>+ Tất cả ([Số])<br>+ Đã gửi ([Số])<br>+ Chưa gửi ([Số]) |
 | Sở Tư pháp | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu bản ghi. |
 | Tình hình gửi | - | - | Theo bản ghi | Control UI: Badge.<br>Gồm:<br>+ Đã gửi: báo cáo của kỳ `Đã ban hành`<br>+ Chưa gửi: báo cáo chưa `Đã ban hành`, `Bị trả lại` hoặc chưa tạo |
-| Tình trạng tại Sở Tư pháp | - | - | Theo bản ghi | Control UI: Label.<br>Gồm:<br>+ Đã ban hành<br>+ Đang nhập liệu<br>+ Chờ duyệt<br>+ Bị từ chối<br>+ Bị trả lại<br>+ Chưa tạo báo cáo |
+| Tình trạng tại Sở Tư pháp | - | - | Theo bản ghi | Control UI: Label.<br>Gồm:<br>+ Đã ban hành<br>+ Đang nhập liệu<br>+ Chờ duyệt<br>+ Bị trả lại<br>+ Chưa tạo báo cáo |
 | Ngày gửi | - | - | Theo bản ghi | Control UI: Label.<br>- Thời điểm ban hành và gửi Bộ Tư pháp, định dạng `dd/mm/yyyy HH:mm`.<br>- Chưa gửi: `--`. |
 | Người lập | - | - | Theo bản ghi | Control UI: Label.<br>- Họ tên cán bộ lập báo cáo.<br>- Chưa tạo báo cáo: `--`. |
 | Người ký ban hành | - | - | Theo bản ghi | Control UI: Label.<br>- Họ tên Lãnh đạo cấp cuối.<br>- Chưa gửi: `--`. |
@@ -536,7 +536,7 @@ Màn hình mặc định của vai trò Bộ Tư pháp (Cán bộ Bộ Tư pháp
 | **II. Báo cáo tổng hợp của Bộ Tư pháp** | Section | - | - | Control UI: Khối thông tin, đặt dưới khối `Thông tin chung`. |
 | Trạng thái báo cáo của Bộ | Enum(String(50)) | - | Theo bản ghi | Control UI: Badge và dòng phụ.<br>- Theo quy tắc 3; kỳ chưa có báo cáo của Bộ: `Chưa lập`. |
 | Ghi chú nguồn số liệu | Label | - | - | Control UI: Label.<br>- `Cùng form 04 biểu mẫu như Sở Tư pháp; số liệu tự tổng hợp từ báo cáo đã gửi của các Sở Tư pháp (hiện có [Số]/34 Sở đã gửi)`.<br>- Đã lập báo cáo: thêm `Lần tổng hợp gần nhất: [Số]/34 Sở, lúc [dd/mm/yyyy HH:mm]`. |
-| Nút thao tác | Button | - | - | Control UI: Button.<br>- Chưa lập: `Lập báo cáo tổng hợp của Bộ` (chỉ Cán bộ Bộ Tư pháp).<br>- Đã lập: `Mở báo cáo của Bộ để cập nhật` (Cán bộ Bộ Tư pháp, báo cáo `Đang nhập liệu` / `Bị từ chối`), `Mở báo cáo của Bộ để ký duyệt` (Lãnh đạo được chọn ở cấp hiện hành), `Xem báo cáo của Bộ` (trường hợp khác). |
+| Nút thao tác | Button | - | - | Control UI: Button.<br>- Chưa lập: `Lập báo cáo tổng hợp của Bộ` (chỉ Cán bộ Bộ Tư pháp).<br>- Đã lập: `Mở báo cáo của Bộ để cập nhật` (Cán bộ Bộ Tư pháp, báo cáo `Đang nhập liệu` / `Bị trả lại`), `Mở báo cáo của Bộ để ký duyệt` (Lãnh đạo được chọn ở cấp hiện hành), `Xem báo cáo của Bộ` (trường hợp khác). |
 
 #### 3. Chức năng trên màn hình
 

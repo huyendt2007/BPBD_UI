@@ -2,7 +2,7 @@
  * Màn Xem chi tiết vụ việc - tab "Chi tiết giải quyết bồi thường": khối xem Hoãn / Tạm đình chỉ / Đình chỉ giải quyết bồi thường (prefix hdcv)
  * - 01 hàm render chung theo loại (hdcvEntryHtml); tiêu đề khối theo loại: "Hoãn giải quyết bồi thường" / "Tạm đình chỉ giải quyết bồi thường" / "Đình chỉ giải quyết bồi thường".
  * - Trường chung: Số quyết định, Ngày quyết định ("-" khi Chờ duyệt / Bị trả lại hoặc không có), File Quyết định (dự thảo hoặc bản đã ký ban hành: Xem file | Tải file),
- *   Tài liệu kèm theo (bảng chuẩn chế độ xem ctvvDocsViewHtml: STT | Tên văn bản, căn cứ | Tải file | Thao tác). Bỏ "Ghi chú", bỏ "Tài liệu liên quan".
+ *   Tài liệu đính kèm (bảng chuẩn chế độ xem ctvvDocsViewHtml: STT | Tên văn bản, căn cứ | Tải file | Thao tác). Bỏ "Ghi chú", bỏ "Tài liệu liên quan".
  * - Hoãn: Thời hạn hoãn, Lý do hoãn giải quyết. Đình chỉ: Căn cứ đình chỉ, Diễn giải. Tạm đình chỉ: Lý do tạm đình chỉ.
  * - Đã Tiếp tục giải quyết sau Hoãn / Tạm đình chỉ: khối vẫn hiển thị (thu gọn), kèm Quyết định tiếp tục giải quyết bồi thường.
  * - Dữ liệu: specialStatusLogs (đã ban hành), dinhChi / hoanGiaiQuyet / tamDinhChi, phiếu trình (BTNN_WF: approval.signDoc / draftDoc) khi Chờ duyệt / Bị trả lại.
@@ -21,7 +21,7 @@ function hdcvV(v) { var s = String(v == null ? '' : v).trim(); return s && s !==
 function hdcvTypeOfStatus(st) { for (var k in HDCV_TYPES) if (HDCV_TYPES[k].status === st) return k; return ''; }
 function hdcvTypeOfKind(kind) { for (var k in HDCV_TYPES) if (HDCV_TYPES[k].kind === kind) return k; return ''; }
 function hdcvSignedName(name) { var s = String(name || ''); if (!s) return ''; return /_da_ky\.[^.]+$/i.test(s) ? s : s.replace(/\.[^.]+$/, '') + '_da_ky.pdf'; }
-// Tài liệu kèm theo: [{ name, file: { id, name, size } }] (phiếu trình) | [{ name: tên tệp, size, title }] (lịch sử cũ) -> dòng bảng
+// Tài liệu đính kèm: [{ name, file: { id, name, size } }] (phiếu trình) | [{ name: tên tệp, size, title }] (lịch sử cũ) -> dòng bảng
 function hdcvRows(list) {
     // Giữ scope (ban hành kèm theo / không ban hành kèm theo) và unit (đơn vị trình) để tách 02 khối khi hiển thị
     var keep = function (r, a) { if (a && a.scope) r.scope = a.scope; if (a && a.unit) r.unit = a.unit; return r; };
@@ -185,7 +185,7 @@ function hdcvEntryHtml(e, withTitle) {
     // Tài liệu ban hành kèm theo / không ban hành kèm theo: khối rỗng hoặc không có quyền xem thì không hiển thị
     h += typeof tlktSplitRender === 'function'
         ? tlktSplitRender(e.docs, { ownerUnit: e.owner || '' }, function (rows, title) { return '<div class="hdcv-f hdcv-full"><span class="hdcv-l">' + hdcvE(title) + '</span>' + hdcvDocsHtml(rows) + '</div>'; })
-        : '<div class="hdcv-f hdcv-full"><span class="hdcv-l">Tài liệu kèm theo</span>' + hdcvDocsHtml(e.docs) + '</div>';
+        : '<div class="hdcv-f hdcv-full"><span class="hdcv-l">Tài liệu đính kèm</span>' + hdcvDocsHtml(e.docs) + '</div>';
     h += '</div>';
     if (e.resume) {
         h += '<div class="hdcv-resume"><div class="hdcv-sub">Quyết định tiếp tục giải quyết bồi thường</div><div class="hdcv-grid">'
@@ -242,7 +242,7 @@ function hdcvShouldOpen(claim) {
         } catch (e) { /* mockup */ }
         return r;
     };
-    // Ký duyệt cấp cuối Hoãn / Tạm đình chỉ: lưu kèm Tài liệu kèm theo của lần trình, tệp đã ký vào lịch sử để xem lại sau khi trình phiếu khác
+    // Ký duyệt cấp cuối Hoãn / Tạm đình chỉ: lưu kèm Tài liệu đính kèm của lần trình, tệp đã ký vào lịch sử để xem lại sau khi trình phiếu khác
     var origApplied = window.hgqOnApplied;
     if (typeof origApplied === 'function') window.hgqOnApplied = function (c, r, st) {
         var n = (c && Array.isArray(c.specialStatusLogs)) ? c.specialStatusLogs.length : 0;

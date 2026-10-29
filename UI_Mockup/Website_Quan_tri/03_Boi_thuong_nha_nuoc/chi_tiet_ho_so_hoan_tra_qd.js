@@ -4,7 +4,7 @@
  * - Tầng 2: sau khi QĐ hoàn trả ban hành, tự định tuyến từng cán bộ (không qua QĐ miễn / QĐ giảm riêng):
  *   + Không giảm, không miễn -> Thu tiền hoàn trả; Giảm -> Thu tiền hoàn trả theo Số tiền sau giảm; Miễn -> Miễn hoàn trả.
  * - Bước 4: chọn 01 / nhiều cán bộ của phần đơn vị -> 01 QĐ miễn (Mẫu 38) / QĐ giảm (Mẫu 37) bổ sung chung (activeDossier.htMgs).
- * - Popup trình ký theo chuẩn: Hình thức ký (Ký số / Ký ngoài), Stepper 02 bước, Sinh văn bản theo mẫu | Tải lên từ máy, Tài liệu kèm theo, chọn Lãnh đạo theo luồng (giả lập 02 cấp).
+ * - Popup trình ký theo chuẩn: Hình thức ký (Ký số / Ký ngoài), Stepper 02 bước, Sinh văn bản theo mẫu | Tải lên từ máy, Tài liệu đính kèm, chọn Lãnh đạo theo luồng (giả lập 02 cấp).
  * - Ký duyệt / Từ chối: dùng màn Ký duyệt / Từ chối chung của trang (leaderSignApprovalModal / rejectReasonModal).
  * - Lưu trạng thái cán bộ theo đơn vị vào localStorage 'btnn_ht_units_v1' để màn danh sách tổng hợp trạng thái chung.
  * Nạp sau chi_tiet_ho_so_hoan_tra_ykhd.js.
@@ -162,7 +162,7 @@
         persist();
         return true;
     }
-    // Lượt trình mẫu cho dữ liệu có sẵn (đã trình / bị từ chối / đã ban hành)
+    // Lượt trình mẫu cho dữ liệu có sẵn (đã trình / bị trả lại / đã ban hành)
     function seedRec(kind, u, st) {
         const levels = levelsOf(issuerOf(u));
         const r = { kind, method: 'online', docSrc: 'gen', soKh: st === 'DONE' ? ({ GIAM: '92/QĐ-UBND', MIEN: '93/QĐ-UBND' }[kind] || '89/QĐ-UBND') : '', ngay: '20/09/2026', fileName: KIND[kind].file + '_' + (activeDossier.maVuViec || activeDossier.code) + '.docx', tlkt: [{ name: 'Văn bản kiến nghị của Hội đồng xem xét trách nhiệm hoàn trả', file: { id: '', name: 'Van_ban_kien_nghi_hoan_tra.pdf', size: 245760, type: 'application/pdf' } }], levels, assignees: levels.map(l => l.leaders[0].id), content: KIND[kind].content, level: 0, hist: [{ type: 'submit', name: 'Cán bộ ' + issuerOf(u), at: '18/09/2026 09:00', msg: KIND[kind].content }] };
@@ -342,8 +342,8 @@
         }
         let h = '<div style="margin-bottom:16px;">';
         if (u.st === 'BTC' && r && r.reject) {
-            h += '<div class="alert-box danger" style="border-left:4px solid var(--danger-color); padding:12px 16px; background:#fef2f2; border-radius:8px; margin-bottom:12px;"><div style="font-weight:800; color:#b91c1c;">Quyết định hoàn trả bị từ chối</div>'
-                + '<div style="font-size:13px;"><strong>Người từ chối:</strong> ' + esc(r.reject.by) + ' (' + esc(r.reject.at) + ')</div><div style="font-size:13px;"><strong>Lý do từ chối:</strong> ' + esc(r.reject.reason) + '</div></div>';
+            h += '<div class="alert-box danger" style="border-left:4px solid #f59e0b; padding:12px 16px; background:#fffbeb; border-radius:8px; margin-bottom:12px;"><div style="font-weight:800; color:#b45309;">Quyết định hoàn trả bị trả lại</div>'
+                + '<div style="font-size:13px;"><strong>Người từ chối:</strong> ' + esc(r.reject.by) + ' (' + esc(r.reject.at) + ')</div><div style="font-size:13px;"><strong>Lý do bị trả lại:</strong> ' + esc(r.reject.reason) + '</div></div>';
         }
         // Dải ngang 01 hàng: Hình thức ký | Số, ký hiệu văn bản | Ngày văn bản | Tệp văn bản Quyết định
         const cell = (k, v) => '<div style="flex:1 1 0; min-width:160px;"><div style="font-size:12px; color:#64748b; margin-bottom:2px;">' + k + '</div><div style="font-weight:600; font-size:13px; overflow-wrap:anywhere;">' + v + '</div></div>';
@@ -368,7 +368,7 @@
         // Pill trạng thái; chú thích QĐ miễn / giảm đã ban hành (xem văn bản tại cột Thao tác)
         let h = '<div>' + (typeof htPill === 'function' ? htPill(ctText(o.ct)) : esc(ctText(o.ct))) + '</div>';
         const r = o.qd2;
-        if (r && ['BTC_MIEN', 'BTC_GIAM'].includes(o.ct) && r.reject) h += '<div class="ht-note" style="color:#b91c1c;">Lý do từ chối: ' + esc(r.reject.reason) + '</div>';
+        if (r && ['BTC_MIEN', 'BTC_GIAM'].includes(o.ct) && r.reject) h += '<div class="ht-note" style="color:#b45309;">Lý do bị trả lại: ' + esc(r.reject.reason) + '</div>';
         if (r && r.issuedAt) h += '<div class="ht-note">' + (baseKind(r.kind) === 'MIEN' ? 'QĐ miễn số: ' : 'QĐ giảm số: ') + esc(r.soKh || '-') + ' (' + esc(r.issuedAt) + ')</div>';
         return h + dcLine(o);
     }
@@ -433,7 +433,7 @@
             const sub = (r.hist || []).find(h => h.type === 'submit');
             st = r.reject ? 'Bị trả lại' : 'Chờ duyệt';
             body = tien + lyDo + item('Lãnh đạo được trình', esc(leaderLabel(r, r.level || 0))) + item('Thời điểm trình', esc(sub ? sub.at : (r.ngay || '-'))) + item('Tệp văn bản', file('Bản dự thảo'))
-                + (r.reject ? item('Lý do từ chối', '<span style="color:#b91c1c;">' + esc(r.reject.reason) + '</span>') + item('Người từ chối', esc(r.reject.by)) + item('Thời điểm từ chối', esc(r.reject.at)) : '');
+                + (r.reject ? item('Lý do bị trả lại', '<span style="color:#b45309;">' + esc(r.reject.reason) + '</span>') + item('Người từ chối', esc(r.reject.by)) + item('Thời điểm từ chối', esc(r.reject.at)) : '');
         }
         const old = (r.hist || []).slice(1);
         return '<div class="ht-qd-block" style="margin-top:16px; border:1px solid #e2e8f0; border-radius:8px; padding:12px 14px;"><div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;"><strong style="color:var(--primary-color);"><i class="fa-solid fa-file-contract"></i> ' + esc(k.doc) + (k.base ? ' (bổ sung)' : '') + '</strong>' + (window.htPill ? window.htPill(st) : esc(st)) + '</div>'
@@ -513,7 +513,7 @@
         // Khóa khi chưa chọn cán bộ; có chọn: bật, hiển thị số cán bộ đã chọn (ht3DcSync)
         return '<div style="display:flex; justify-content:flex-end; margin-bottom:8px;"><button type="button" data-admin-icon-normalized="1" class="ht-btn-sm ht-btn-dc htDcBtn" data-u="' + ui + '" disabled onclick="ht3OpenDc(' + ui + ')"><i class="fa-solid fa-ban"></i> Trình ký QĐ đình chỉ</button></div>';
     }
-    // Khối các lượt trình QĐ đình chỉ của đơn vị: Ký duyệt / Từ chối (Lãnh đạo), Trình ký lại (bị từ chối), Xem file
+    // Khối các lượt trình QĐ đình chỉ của đơn vị: Ký duyệt / Từ chối (Lãnh đạo), Trình ký lại (bị trả lại), Xem file
     function dcBlock(u) {
         const recs = (activeDossier.htDcs || []).map((d, k) => ({ d, k })).filter(x => x.d && x.d.unit === u.unit);
         if (!recs.length) return '';
@@ -527,7 +527,7 @@
             if (d.st === 'CD' && isLeader()) a = '<button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-primary" title="Ký duyệt" onclick="ht3Approve(\'DC\',' + x.k + ')"><i class="fa-solid fa-file-signature"></i></button> <button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-danger" title="Từ chối" onclick="ht3Reject(\'DC\',' + x.k + ')"><i class="fa-solid fa-ban"></i></button>';
             if (d.st === 'BTC' && act) a = '<button type="button" data-admin-icon-normalized="1" class="ht-btn-sm ht-btn-pri" onclick="ht3OpenSign(\'DC\',' + x.k + ')"><i class="fa-solid fa-paper-plane"></i> Trình ký lại</button>';
             h += '<tr><td style="text-align:center;">' + (n + 1) + '</td><td>' + d.names.map(esc).join('<br>') + '</td><td>' + (d.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống') + '</td><td>' + esc(st)
-                + (d.st === 'BTC' && d.reject ? '<div style="font-size:12px; color:#b91c1c;">Lý do từ chối: ' + esc(d.reject.reason) + '</div>' : '') + '</td><td><a class="action-link" href="javascript:void(0)" onclick="ht3OpenDoc(\'DC\',' + x.k + ')">Xem file</a></td><td style="text-align:center;">' + a + '</td></tr>';
+                + (d.st === 'BTC' && d.reject ? '<div style="font-size:12px; color:#b45309;">Lý do bị trả lại: ' + esc(d.reject.reason) + '</div>' : '') + '</td><td><a class="action-link" href="javascript:void(0)" onclick="ht3OpenDoc(\'DC\',' + x.k + ')">Xem file</a></td><td style="text-align:center;">' + a + '</td></tr>';
         });
         return h + '</tbody></table>';
     }
@@ -612,7 +612,7 @@
             if (d.st === 'CD' && isLeader()) a = '<button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-primary" title="Ký duyệt" onclick="ht3Approve(\'' + kind + '\',' + x.k + ')"><i class="fa-solid fa-file-signature"></i></button> <button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-danger" title="Từ chối" onclick="ht3Reject(\'' + kind + '\',' + x.k + ')"><i class="fa-solid fa-ban"></i></button>';
             if (d.st === 'BTC' && act) a = '<button type="button" data-admin-icon-normalized="1" class="ht-btn-sm ht-btn-pri" onclick="ht3OpenSign(\'' + kind + '\',' + x.k + ')"><i class="fa-solid fa-paper-plane"></i> Trình ký lại</button>';
             h += '<tr><td style="text-align:center;">' + (n + 1) + '</td><td>' + esc(KIND[kind].doc) + ' (Mẫu ' + KIND[kind].mau + '/BTNN)</td><td>' + d.names.map(esc).join('<br>') + '</td><td>' + (d.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống') + '</td><td>' + esc(st)
-                + (d.st === 'BTC' && d.reject ? '<div style="font-size:12px; color:#b91c1c;">Lý do từ chối: ' + esc(d.reject.reason) + '</div>' : '') + '</td><td><a class="action-link" href="javascript:void(0)" onclick="ht3OpenDoc(\'' + kind + '\',' + x.k + ')">Xem file</a></td><td style="text-align:center;">' + a + '</td></tr>';
+                + (d.st === 'BTC' && d.reject ? '<div style="font-size:12px; color:#b45309;">Lý do bị trả lại: ' + esc(d.reject.reason) + '</div>' : '') + '</td><td><a class="action-link" href="javascript:void(0)" onclick="ht3OpenDoc(\'' + kind + '\',' + x.k + ')">Xem file</a></td><td style="text-align:center;">' + a + '</td></tr>';
         });
         return h + '</tbody></table>';
     }
@@ -664,7 +664,7 @@
         f.querySelectorAll('button').forEach(b => { if (/submitStep3ForApproval|issueStep3OfflineDecision|handleHeaderApprove|handleHeaderReject|switchToEditMode\((3|4)\)|dchtOpenModal/.test(b.getAttribute('onclick') || '')) b.remove(); });
     };
 
-    // ===== Popup trình ký (chuẩn: Hình thức ký, Stepper 02 bước, nguồn tệp, Tài liệu kèm theo, chọn Lãnh đạo) =====
+    // ===== Popup trình ký (chuẩn: Hình thức ký, Stepper 02 bước, nguồn tệp, Tài liệu đính kèm, chọn Lãnh đạo) =====
     let S = null;
     function modalHtml() {
         return '<div id="ht3Modal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.65); z-index:1050; justify-content:center; align-items:center;">'
@@ -672,8 +672,8 @@
             + '<div style="background:#f8fafc; border-bottom:1px solid #e2e8f0; padding:18px 24px; display:flex; justify-content:space-between;"><div><div id="ht3Title" style="font-size:16.5px; font-weight:700; color:#1e293b;"></div><div id="ht3Sub" style="font-size:12.5px; color:#64748b; margin-top:4px;"></div></div><button type="button" onclick="ht3Close()" style="border:none; background:transparent; font-size:22px; color:#94a3b8; cursor:pointer;">&times;</button></div>'
             + '<div id="ht3Stepper" class="ktl-stepper-fullwidth"><div id="ht3Tab1" class="ktl-step-tab active"><span class="ktl-step-badge">1</span><span class="ktl-step-title">Nhập thông tin</span></div><div class="ktl-stepper-sep"></div><div id="ht3Tab2" class="ktl-step-tab"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span></div></div>'
             + '<div id="ht3Body1" class="gqx-body" style="overflow-y:auto; flex:1; padding:24px;">'
-            + '<div id="ht3Returned" style="display:none; background:#fef2f2; border:1px solid #fecaca; border-left:4px solid #dc2626; border-radius:8px; padding:12px 16px; margin-bottom:14px;"></div>'
-            // Thứ tự chuẩn của popup trình ký: Hình thức ký -> thông tin nghiệp vụ (số tiền / cán bộ) -> Tệp văn bản trình ký (Nguồn tệp, Thông tin điền vào Mẫu, Xem trước) -> Tài liệu kèm theo
+            + '<div id="ht3Returned" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"></div>'
+            // Thứ tự chuẩn của popup trình ký: Hình thức ký -> thông tin nghiệp vụ (số tiền / cán bộ) -> Tệp văn bản trình ký (Nguồn tệp, Thông tin điền vào Mẫu, Xem trước) -> Tài liệu đính kèm
             + '<div class="gqx-sec"><div class="gqx-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="gqx-req">*</span></div><div class="sign-cards-grid">'
             + '<label class="sign-card active" id="ht3CardOn"><input type="radio" name="ht3Method" value="online" checked onchange="ht3SetMethod(\'online\')"><div class="sign-card-content"><div class="sign-card-icon"><i class="fa-solid fa-file-signature"></i></div><div class="sign-card-text"><div class="sign-card-title">Ký số trên hệ thống</div><div class="sign-card-desc">Trình Lãnh đạo ký duyệt trên phần mềm</div></div></div><div class="sign-card-check"><i class="fa-solid fa-circle-check"></i></div></label>'
             + '<label class="sign-card" id="ht3CardOff"><input type="radio" name="ht3Method" value="offline" onchange="ht3SetMethod(\'offline\')"><div class="sign-card-content"><div class="sign-card-icon offline"><i class="fa-solid fa-stamp"></i></div><div class="sign-card-text"><div class="sign-card-title">Ký ngoài (Ban hành trực tiếp)</div><div class="sign-card-desc">Tải lên văn bản PDF đã ký và đóng dấu</div></div></div><div class="sign-card-check"><i class="fa-regular fa-circle"></i></div></label>'
@@ -752,7 +752,7 @@
         el('ht3Sub').innerHTML = 'Hồ sơ: <strong>' + esc(activeDossier.code) + '</strong> • Đơn vị ban hành: ' + esc(ctx.issuer || ctx.unit) + (ctx.officer ? ' • Cán bộ: ' + esc(ctx.officer.name) : '');
         const rb = el('ht3Returned');
         rb.style.display = rejected ? 'block' : 'none';
-        if (rejected) rb.innerHTML = '<div style="font-weight:700; color:#b91c1c;">' + esc(k.doc.toUpperCase()) + ' BỊ LÃNH ĐẠO TỪ CHỐI</div><div style="font-size:12.5px; color:#7f1d1d;">Lý do từ chối: <strong>' + esc(prev.reject.reason) + '</strong><br>Người từ chối: ' + esc(prev.reject.by) + ' • Thời điểm: ' + esc(prev.reject.at) + '</div>';
+        if (rejected) rb.innerHTML = '<div style="font-weight:700; color:#b45309;">' + esc(k.doc.toUpperCase()) + ' BỊ LÃNH ĐẠO TRẢ LẠI</div><div style="font-size:12.5px; color:#92400e;">Lý do bị trả lại: <strong>' + esc(prev.reject.reason) + '</strong><br>Người từ chối: ' + esc(prev.reject.by) + ' • Thời điểm: ' + esc(prev.reject.at) + '</div>';
         el('ht3SegGenText').innerText = 'Sinh văn bản theo mẫu ' + k.mau + '/BTNN';
         el('ht3MetaTitle').innerHTML = '<i class="fa-solid fa-sliders" style="color:#2563eb;"></i> Thông tin điền vào Mẫu ' + k.mau + '/BTNN';
         el('ht3GenHint').innerText = 'Hệ thống tự động sinh ' + k.doc + ' theo Mẫu ' + k.mau + '/BTNN từ thông tin đang nhập.';
@@ -1210,7 +1210,7 @@
 
     // ===== Badge trạng thái đầu màn: trạng thái chung theo phạm vi người xem (cùng quy tắc roll-up với màn danh sách) =====
     // Màu badge trạng thái chung (đồng bộ màn danh sách)
-    const CHUNG_TONE = { 'Chờ duyệt': '#ede9fe;color:#6d28d9;border:1px solid #ddd6fe', 'Bị trả lại': '#fef2f2;color:#dc2626;border:1px solid #fecaca', 'Chờ xử lý': '#fffbeb;color:#b45309;border:1px solid #fde68a', 'Đang xử lý': '#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe', 'Thu tiền hoàn trả': '#f0fdfa;color:#0d9488;border:1px solid #99f6e4', 'Miễn hoàn trả': '#fdf2f8;color:#be185d;border:1px solid #fbcfe8', 'Hoàn thành': '#ecfdf5;color:#047857;border:1px solid #a7f3d0', 'Đình chỉ xem xét hoàn trả': '#f1f5f9;color:#475569;border:1px solid #cbd5e1' };
+    const CHUNG_TONE = { 'Chờ duyệt': '#ede9fe;color:#6d28d9;border:1px solid #ddd6fe', 'Bị trả lại': '#fef3c7;color:#b45309;border:1px solid #fde68a', 'Chờ xử lý': '#fffbeb;color:#b45309;border:1px solid #fde68a', 'Đang xử lý': '#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe', 'Thu tiền hoàn trả': '#f0fdfa;color:#0d9488;border:1px solid #99f6e4', 'Miễn hoàn trả': '#fdf2f8;color:#be185d;border:1px solid #fbcfe8', 'Hoàn thành': '#ecfdf5;color:#047857;border:1px solid #a7f3d0', 'Đình chỉ xem xét hoàn trả': '#f1f5f9;color:#475569;border:1px solid #cbd5e1' };
     const HS_TRINH = { 'Chờ duyệt QĐ thành lập': ['Chờ duyệt', 'QĐ thành lập hội đồng'], 'Chờ duyệt thành lập hội đồng': ['Chờ duyệt', 'QĐ thành lập hội đồng'], 'Bị trả lại thành lập HĐ': ['Bị trả lại', 'QĐ thành lập hội đồng'], 'Từ chối duyệt QĐ thành lập': ['Bị trả lại', 'QĐ thành lập hội đồng'], 'Chờ duyệt QĐ đình chỉ': ['Chờ duyệt', 'QĐ đình chỉ'], 'Bị trả lại QĐ đình chỉ': ['Bị trả lại', 'QĐ đình chỉ'] };
     function chungDetail() {
         if (!ensureModel()) {

@@ -4,13 +4,14 @@
  * - Quyết định Không có hiệu lực: Trình thông báo chi trả / Cập nhật chi trả bị chặn
  *   + Lưới: khóa mờ + tooltip; Footer chi tiết: ẩn; gọi trực tiếp hàm: thông báo, không mở.
  *   + Nhãn "QĐ không có hiệu lực" dưới trạng thái ở lưới, cạnh trạng thái + khối cảnh báo ở màn chi tiết.
- *   + Quyết định có hiệu lực lại: mở lại bình thường.
+ *   + Không có hiệu lực là trạng thái cuối của Quyết định (không cập nhật lại), bản ghi giữ nguyên trạng thái và bị chặn chi trả.
  * - Thông báo chi trả Chờ duyệt: chặn Ký duyệt (lưới, Footer, kptbLdOpen 'approve', openApproveModal, kptbLdSubmit); Từ chối vẫn cho phép.
- * - Màn Tạo thông báo chi trả (MH24): loại Quyết định Không có hiệu lực khỏi gợi ý / Tìm kiếm nâng cao (kpcdEligibleDecs);
+ * - Bản ghi Chi trả tiền bồi thường chỉ được tạo khi Quyết định chuyển Có hiệu lực (quyet_dinh_gqbt_hlqd.js); Quyết định Đã ban hành chưa cập nhật (qdhlPending) chưa chi trả.
+ * - Màn Tạo thông báo chi trả (MH24): loại Quyết định Không có hiệu lực / Đã ban hành chưa cập nhật hiệu lực khỏi gợi ý / Tìm kiếm nâng cao (kpcdEligibleDecs);
  *   nhập mã trực tiếp: báo lỗi dưới ô (kpcdTbSearch); Tiếp tục / Trình ký bản nháp: chặn (kpcdTbContinue, kptbOpenSign(null, draft)).
  * - Add-on độc lập: chỉ bọc hàm sẵn có (kptbOpenSign, kptbOpenPay, kpuxOpenPay, payProposalDirect, renderProposalsTable, kpdtRender, kptbImportAndSeed).
  * - Dữ liệu mẫu (bổ sung nếu thiếu, theo Mã bản ghi): Chi trả tiền bồi thường của QD-HL1 (Chờ thông báo chi trả - bị chặn),
- *   QD-HL2 (Chờ chi trả - đã có hiệu lực lại), QD-HL3 (Hoàn thành).
+ *   QD-HL2 (Chờ thông báo chi trả - Có hiệu lực), QD-HL3 (Hoàn thành).
  */
 (function () {
     'use strict';
@@ -20,6 +21,7 @@
     var PAY_TYPE = 'Chi trả tiền bồi thường';
     var MSG = 'Quyết định giải quyết bồi thường không có hiệu lực, không thực hiện chi trả.';
     var LABEL = 'QĐ không có hiệu lực';
+    var MSG_PENDING = 'Quyết định giải quyết bồi thường chưa được cập nhật trạng thái Có hiệu lực, không thực hiện chi trả.';
     // Ký duyệt: Thông báo chi trả đang Chờ duyệt mà Quyết định chuyển Không có hiệu lực (Từ chối vẫn cho phép)
     var BLOCK_ACTS = ['Trình thông báo chi trả', 'Cập nhật chi trả', 'Ký duyệt'];
 
@@ -45,7 +47,7 @@
         var k = Object.keys(map).find(function (id) { return map[id] && map[id].claimCode === item.ycbtCode && map[id].status === 'Đã ban hành'; });
         return k ? map[k] : null;
     }
-    function blocked(item) { var i = decInfo(item); return !!i && i.status !== 'Đã hủy' && i.hieuLuc === OFF; }
+    function blocked(item) { var i = decInfo(item); return !!i && ['Đã hủy', 'Hủy quyết định'].indexOf(i.status) < 0 && i.hieuLuc === OFF; }
     window.kphlBlocked = blocked;
 
     function css() {
@@ -96,11 +98,14 @@
         installKpcd();
     }
     // ---------------- Màn Tạo thông báo chi trả (MH24) + popup Tìm kiếm nâng cao Quyết định ----------------
-    function decOff(d) {
-        if (!d) return false;
-        if (d.hieuLuc) return d.hieuLuc === OFF;
+    // Quyết định chưa được chi trả theo hiệu lực: Không có hiệu lực -> MSG; Đã ban hành chưa cập nhật hiệu lực -> MSG_PENDING; còn lại ""
+    function decMsg(d) {
+        if (!d) return "";
         var m = (rj(MAP_KEY, {}) || {})[d.id];
-        return !!m && m.hieuLuc === OFF;
+        var hl = d.hieuLuc || (m && m.hieuLuc) || "";
+        if (hl === OFF) return MSG;
+        if (hl !== "Có hiệu lực" && d.status === "Đã ban hành" && (d.qdhlPending || (m && m.pending))) return MSG_PENDING;
+        return "";
     }
     // [p8] Bản sao tối thiểu hồ sơ GQ YCBT mẫu (dùng khi claimsList trống / chưa có hồ sơ, tức chưa mở trang Giải quyết YCBT).
     // PHẢI ĐỒNG BỘ với seed GQ YCBT: quan_ly_boi_thuong_hlqd.js (hlqdClaims) và Quyết định mẫu: quyet_dinh_gqbt_hlqd.js (qdhlSeedDefs).
@@ -155,7 +160,7 @@
         // Loại Quyết định Không có hiệu lực khỏi danh sách gợi ý và Tìm kiếm nâng cao
         var el = window.kpcdEligibleDecs;
         if (typeof el === 'function' && !el.__kphl) {
-            var we = function () { return (el.apply(this, arguments) || []).filter(function (d) { return !decOff(d); }); };
+            var we = function () { return (el.apply(this, arguments) || []).filter(function (d) { return !decMsg(d); }); };
             we.__kphl = true;
             window.kpcdEligibleDecs = we;
         }
@@ -166,9 +171,9 @@
                 var inp = document.getElementById('kpcdTbDecInput');
                 var v = inp ? String(inp.value || '').trim().toLowerCase() : '';
                 if (v && typeof kpcdAllDecs === 'function') {
-                    var d = kpcdAllDecs().find(function (x) { return x && x.status === 'Đã ban hành' && decOff(x) && (String(x.claimCode || '').toLowerCase() === v || String(x.decNo || '').toLowerCase() === v || String(x.id || '').toLowerCase() === v); });
+                    var d = kpcdAllDecs().find(function (x) { return x && x.status === 'Đã ban hành' && decMsg(x) && (String(x.claimCode || '').toLowerCase() === v || String(x.decNo || '').toLowerCase() === v || String(x.id || '').toLowerCase() === v); });
                     if (d) {
-                        var er = document.getElementById('kpcdTbDecInputErr'); if (er) er.innerText = MSG;
+                        var er = document.getElementById('kpcdTbDecInputErr'); if (er) er.innerText = decMsg(d);
                         if (typeof qdtuMark === 'function') qdtuMark('kpcdTbDecInput', true);
                         inp.focus();
                         return;
@@ -185,7 +190,7 @@
             var wc = function () {
                 var id = ''; try { id = kpcdTbState && kpcdTbState.decId; } catch (e) { /* bỏ qua */ }
                 var d = id && typeof kpcdAllDecs === 'function' ? kpcdAllDecs().find(function (x) { return x.id === id; }) : null;
-                if (d && decOff(d)) { if (typeof showToast === 'function') showToast(MSG, 'warning'); return; }
+                if (d && decMsg(d)) { if (typeof showToast === 'function') showToast(decMsg(d), 'warning'); return; }
                 return co.apply(this, arguments);
             };
             wc.__kphl = true;
@@ -236,7 +241,7 @@
             body.insertAdjacentHTML('afterbegin', '<div class="kphl-alert"><b><i class="fa-solid fa-circle-exclamation"></i> QUYẾT ĐỊNH GIẢI QUYẾT BỒI THƯỜNG KHÔNG CÓ HIỆU LỰC</b><br>'
                 + 'Quyết định số ' + esc(info.decNo || item.baseDecisionNo || '-') + (info.at ? ' - cập nhật lúc ' + esc(info.at) : '') + '.'
                 + (info.reason ? '<br>Lý do: ' + esc(info.reason) : '')
-                + '<br>Không thực hiện Trình thông báo chi trả / Cập nhật chi trả cho tới khi Quyết định có hiệu lực lại.</div>');
+                + '<br>Không thực hiện Trình thông báo chi trả / Cập nhật chi trả.</div>');
         }
     }
 

@@ -7,7 +7,7 @@
  *   hoặc bản ghi kinh phí đang hiệu lực (kho proposalsList, kho trống -> dữ liệu mẫu Kinh phí), không có -> dòng chú thích chỉ đọc;
  *   Không thu hồi -> Lý do không thu hồi (bắt buộc, tối đa 1000 ký tự). Lưu vào dinhChi / phiếu trình (thuHoi, thuHoiReason);
  *   liên thông Kinh phí theo lựa chọn (quan_ly_kinh_phi_kpdc.js)
- * - Tệp văn bản trình ký: Sinh văn bản theo mẫu 25/BTNN | Tải lên từ máy; Tài liệu kèm theo (chỉ Ký số, không bắt buộc)
+ * - Tệp văn bản trình ký: Sinh văn bản theo mẫu 25/BTNN | Tải lên từ máy; Tài liệu đính kèm (chỉ Ký số, không bắt buộc)
  * - Trình Lãnh đạo: Loại trình "Đình chỉ giải quyết bồi thường" -> Chờ duyệt; Lãnh đạo Ký duyệt / Từ chối tại màn chung (gqld);
  *   cấp cuối ký duyệt -> "Đình chỉ giải quyết"; từ chối -> "Bị trả lại" (Cập nhật -> mở lại popup, điền lại toàn bộ dữ liệu lần trình trước)
  * - Ký ngoài: đính kèm PDF đã ký -> xác nhận -> Ban hành văn bản -> "Đình chỉ giải quyết"
@@ -260,7 +260,7 @@ function dcgqEnsureModal() {
         + '<div class="ktl-stepper-sep"><i class="fa-solid fa-chevron-right"></i></div><div id="dcgqStep2Tab" class="ktl-step-tab" onclick="dcgqGoStep2()"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span></div></div>'
         // Bước 1
         + '<div id="dcgqStep1Body" class="sticky-modal-body gqx-body" style="overflow-y:auto; flex:1; padding:24px;">'
-        + '<div id="dcgqReturnedAlertBlock" style="display:none; background:#fef2f2; border:1px solid #fecaca; border-left:4px solid #dc2626; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b91c1c; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TRẢ VỀ YÊU CẦU CHỈNH SỬA</div><div style="font-size:12.5px; color:#7f1d1d; line-height:1.5;">Lý do trả về: <strong id="dcgqReturnedReason">--</strong><br>Người trả về: <span id="dcgqReturnedOfficer">--</span> • Thời điểm: <span id="dcgqReturnedDate">--</span></div></div>'
+        + '<div id="dcgqReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TRẢ VỀ YÊU CẦU CHỈNH SỬA</div><div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do trả về: <strong id="dcgqReturnedReason">--</strong><br>Người trả về: <span id="dcgqReturnedOfficer">--</span> • Thời điểm: <span id="dcgqReturnedDate">--</span></div></div>'
         + '<div class="gqx-sec"><div class="gqx-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="gqx-req">*</span></div><div class="sign-cards-grid">'
         + card('dcgqCardSignOnline', 'online', 'Ký số trên hệ thống', 'Trình Lãnh đạo ký duyệt trên phần mềm', 'fa-file-signature', false, true)
         + card('dcgqCardSignOffline', 'offline', 'Ký ngoài (Ban hành trực tiếp)', 'Tải lên văn bản PDF đã ký và đóng dấu', 'fa-stamp', true, false)
@@ -362,7 +362,7 @@ function openDcgqModal(claimId) {
     gqSignInit('dcgq', claim, prev && Array.isArray(prev.assignees) ? prev.assignees : null);
     dcgqOfflineRemove();
     dcgqSetDocSrc('gen');
-    // Trình lại: nguồn tệp, tệp tải lên, Số/Ngày văn bản, Nơi nhận, ô ký, Nội dung trình, Tài liệu kèm theo của lần trình trước
+    // Trình lại: nguồn tệp, tệp tải lên, Số/Ngày văn bản, Nơi nhận, ô ký, Nội dung trình, Tài liệu đính kèm của lần trình trước
     tlktGqRestore('dcgq', prev, {
         required: false,
         setSrc: function (src) { dcgqSetDocSrc(src); },
@@ -508,7 +508,7 @@ function dcgqGoStep1() {
     dcgqEl('dcgqBtnBackStep1').style.display = 'none';
     dcgqEl('dcgqBtnSubmitOnline').style.display = 'none';
 }
-// Tiếp tục: kiểm tra Bước 1 (Căn cứ đình chỉ, Số/Ngày văn bản hoặc tệp tải lên, dòng Tài liệu kèm theo) -> Bước 2
+// Tiếp tục: kiểm tra Bước 1 (Căn cứ đình chỉ, Số/Ngày văn bản hoặc tệp tải lên, dòng Tài liệu đính kèm) -> Bước 2
 function dcgqGoStep2() {
     if (!dcgqClaim || dcgqIsOffline()) return;
     if (ktlxConverting.dcgq) { showToast('Đang chuyển đổi tệp sang PDF, vui lòng chờ hoàn tất.', 'warning'); return; }

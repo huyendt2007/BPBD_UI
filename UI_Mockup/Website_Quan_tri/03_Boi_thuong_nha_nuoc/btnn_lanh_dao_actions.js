@@ -242,7 +242,7 @@
             return Object.keys(cfg).some(root => Object.values(cfg[root]).some(n => (n.leaders || []).includes(userId)));
         });
     }
-    // Nguồn hồ sơ hiển thị: chuẩn hóa dữ liệu cũ về 04 giá trị Tiếp nhận mới / Dịch vụ công quốc gia / Chuyển CQGQBT / Xác định CQGQBT
+    // Nguồn hồ sơ hiển thị: chuẩn hóa dữ liệu cũ về 04 giá trị Tiếp nhận mới / Dịch vụ công / Chuyển CQGQBT / Xác định CQGQBT
     function sourceOf(rec) {
         const v = String((rec && rec.nguonHoSo) || '').trim();
         const S = WF.SOURCES;
@@ -516,7 +516,7 @@
             + `</div>`
             + (typeof global.tlktViewHtml === 'function' ? global.tlktViewHtml(xdAttachments(rec), { boxClass: 'ld-sum tlkt-ld-sum', titleClass: 'ld-hist-title' }) : '');
     }
-    // Tài liệu kèm theo của lượt trình hiện hành: phiếu trình (signDoc.attachments); Kết quả xác định CQGQBT dữ liệu cũ: bảng Tài liệu kèm theo tại MH03 (procDocs)
+    // Tài liệu đính kèm của lượt trình hiện hành: phiếu trình (signDoc.attachments); Kết quả xác định CQGQBT dữ liệu cũ: bảng Tài liệu đính kèm tại MH03 (procDocs)
     function xdAttachments(rec) {
         const a = rec.approval || {};
         const sd = a.signDoc || {};

@@ -30,7 +30,7 @@ const KPDT_CSS = [
     '#kpdtPanel .kpdt-words { font-style:italic; color:var(--text-muted); font-size:12.5px; margin-top:4px; }',
     '#kpdtPanel .kpdt-hint { font-size:12px; color:#64748b; margin-top:8px; }',
     '#kpdtPanel .kpdt-note { background:#EFF6FF; border:1px solid #BFDBFE; border-left:4px solid #2563EB; border-radius:6px; padding:8px 12px; font-size:12.5px; color:#1E3A8A; margin-top:12px; }',
-    '#kpdtPanel .kpdt-rej { background:#FEF2F2; border:1px solid #FECACA; border-left:4px solid #DC2626; border-radius:8px; padding:14px 16px; margin-bottom:16px; font-size:13px; }',
+    '#kpdtPanel .kpdt-rej { background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:14px 16px; margin-bottom:16px; font-size:13px; }',
     '#kpdtPanel .kpdt-file { display:flex; align-items:center; gap:12px; background:#fff; border:1px solid #cbd5e1; border-radius:8px; padding:10px 14px; }',
     '#kpdtPanel .kpdt-file-ico { font-size:28px; color:#dc2626; flex-shrink:0; }',
     '#kpdtPanel .kpdt-file-info { flex:1; min-width:0; }',
@@ -40,7 +40,7 @@ const KPDT_CSS = [
     '#kpdtPanel .kpdt-hist-row { display:grid; grid-template-columns:140px 180px 1fr; gap:10px; font-size:12.5px; padding:7px 0; border-bottom:1px dashed #e2e8f0; }',
     '#kpdtPanel .kpdt-hist-row:last-child { border-bottom:0; }',
     '#kpdtPanel .kpdt-foot { display:flex; justify-content:flex-end; gap:8px; flex-wrap:wrap; }',
-    // Bảng Tài liệu kèm theo (chế độ xem): cùng chuẩn bảng dùng chung btnn_tai_lieu_kem_theo.js
+    // Bảng Tài liệu đính kèm (chế độ xem): cùng chuẩn bảng dùng chung btnn_tai_lieu_kem_theo.js
     '.kpdt-docs-title { font-weight:700; color:#0f172a; font-size:13px; margin:4px 0 8px; display:flex; align-items:center; gap:6px; }',
     '.kpdt-docs-wrap { border:1px solid #e2e8f0; border-radius:8px; overflow-x:auto; background:#fff; }',
     '.kpdt-docs { width:100%; border-collapse:collapse; font-size:12.5px; }',
@@ -198,10 +198,10 @@ function kpdtRejHtml(item) {
     const by = r ? kpdtUserName(r.by) : (item.approvedLeader || '');
     const at = r ? r.at : (item.approvedDate || '');
     const reason = r ? r.reason : (item.leaderOpinion || '');
-    return `<div class="kpdt-rej"><div style="font-weight:700; color:#B91C1C; margin-bottom:6px;"><i class="fa-solid fa-triangle-exclamation"></i> Lý do bị từ chối</div><div>${kpdtEsc(by)}${at ? ' - ' + kpdtEsc(at) : ''}</div><div style="margin-top:4px; white-space:pre-wrap;">${kpdtEsc(reason || '-')}</div></div>`;
+    return `<div class="kpdt-rej"><div style="font-weight:700; color:#b45309; margin-bottom:6px;"><i class="fa-solid fa-triangle-exclamation"></i> Lý do bị trả lại</div><div>${kpdtEsc(by)}${at ? ' - ' + kpdtEsc(at) : ''}</div><div style="margin-top:4px; white-space:pre-wrap;">${kpdtEsc(reason || '-')}</div></div>`;
 }
 
-// ---------------- Bảng Tài liệu kèm theo - chế độ xem ----------------
+// ---------------- Bảng Tài liệu đính kèm - chế độ xem ----------------
 // Chuẩn bảng dùng chung (như Tham mưu kết quả xác định cơ quan): STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file / Tải file); rỗng thì không hiển thị (tlktStd).
 // Dữ liệu chấp nhận: [{ name, file: { id, name, size } }] (btnn_tai_lieu_kem_theo.js), [{ name, file: 'x.pdf' }], ['x.pdf'] (dữ liệu cũ).
 const KPDT_DOCS = {};
@@ -224,7 +224,7 @@ function kpdtDocsHtml(list, opts) {
         <td>${d.file ? `<span class="fn"><i class="fa-solid fa-file-lines"></i>${kpdtEsc(d.file.name)}</span>${sz(d.file.size) ? ` <small style="color:#64748b;">(${sz(d.file.size)})</small>` : ''}` : '-'}</td>
         <td class="c">${d.file ? `<button type="button" class="ib" data-admin-icon-normalized="1" title="Xem file" onclick="kpdtDocAct('${vid}',${i},'view')"><i class="fa-solid fa-eye"></i></button><button type="button" class="ib" data-admin-icon-normalized="1" title="Tải file" onclick="kpdtDocAct('${vid}',${i},'download')"><i class="fa-solid fa-download"></i></button>` : '-'}</td></tr>`).join('')
         : '<tr><td colspan="4" class="c" style="color:#94a3b8; font-style:italic;">Không có tài liệu.</td></tr>';
-    return `<div class="kpdt-docs-box">${opts.noTitle ? '' : '<div class="kpdt-docs-title"><i class="fa-solid fa-paperclip"></i> Tài liệu kèm theo</div>'}
+    return `<div class="kpdt-docs-box">${opts.noTitle ? '' : '<div class="kpdt-docs-title"><i class="fa-solid fa-paperclip"></i> Tài liệu đính kèm</div>'}
         <div class="kpdt-docs-wrap"><table class="kpdt-docs"><thead><tr><th class="c" style="width:48px;">STT</th><th>Tên tài liệu, văn bản</th><th style="width:38%;">File đính kèm</th><th class="c" style="width:96px;">Thao tác</th></tr></thead><tbody>${body}</tbody></table></div></div>`;
 }
 function kpdtDocAct(vid, i, act) {
@@ -302,7 +302,7 @@ function kpdtAdvBody(item) {
         + kpdtCard('fa-hand-holding-dollar', 'Thông tin người nhận tạm ứng', rec)
         + kpdtCard('fa-money-bill-transfer', 'Phương thức chi trả tiền tạm ứng', pay)
         + kpdtCard('fa-file-signature', 'Quyết định tạm ứng kinh phí', dec)
-        + kpdtCard('fa-paperclip', 'Tài liệu kèm theo', kpdtDocsHtml(s.attachments || item.files || [], { noTitle: true }))
+        + kpdtCard('fa-paperclip', 'Tài liệu đính kèm', kpdtDocsHtml(s.attachments || item.files || [], { noTitle: true }))
         + kpdtHistHtml(item);
 }
 
@@ -426,7 +426,7 @@ function kpdtSanitize() {
         const orig = window[fn]; if (typeof orig !== 'function') return;
         window[fn] = function (on) { if (on && kpdtIsOpen()) { kpdtShow(false); kpdtSetUrl(''); } return orig.apply(this, arguments); };
     });
-    // ---- Tài liệu kèm theo tại MH03 Cập nhật kết quả chi trả / MH04 Cập nhật trả lại ngân sách nhà nước (form chung): bảng chuẩn dùng chung ----
+    // ---- Tài liệu đính kèm tại MH03 Cập nhật kết quả chi trả / MH04 Cập nhật trả lại ngân sách nhà nước (form chung): bảng chuẩn dùng chung ----
     const inlineOpen = () => { const p = kpdtEl('inlineProposalFormPanel'); return !!p && p.style.display !== 'none'; };
     const cur = () => proposalsList.find(p => p.id === selectedProposalId) || null;
     const names = list => list.map(d => (d.file && d.file.name) || d.name).filter(Boolean);

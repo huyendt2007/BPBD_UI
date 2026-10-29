@@ -1,5 +1,5 @@
 /*
- * [th2c] Danh mục Loại thiệt hại yêu cầu bồi thường 2 cấp (DM_27): 06 nhóm (Điều 23 - Điều 28 Luật TNBTCNN), 36 mục chi tiết.
+ * [th2c] Danh mục Loại thiệt hại yêu cầu bồi thường 2 cấp (DM_27): 06 nhóm (Điều 23 - Điều 28 Luật TNBTCNN), 35 mục chi tiết.
  * Component dùng chung (window.BTNN_TH):
  * - GROUPS / ITEMS: mã nhóm TH_TS, TH_TN, TH_CHET, TH_SK, TH_TT, TH_CPK; mã mục = mã nhóm + _01, _02...
  * - codeOf(x): quy đổi giá trị cũ về mã mục chi tiết:
@@ -20,9 +20,8 @@
             ['Tài sản bị hư hỏng không thể sửa chữa, khôi phục', 'Khoản 2, Điều 23'],
             ['Thu nhập thực tế bị mất do không sử dụng, khai thác được tài sản - Đối với tài sản có cho thuê trên thị trường', 'Khoản 3, Điều 23'],
             ['Thu nhập thực tế bị mất do không sử dụng, khai thác được tài sản - Đối với tài sản không có cho thuê trên thị trường', 'Khoản 3, Điều 23'],
-            ['Các khoản tiền đã nộp vào ngân sách nhà nước, bị tịch thu, thi hành án, khoản tiền đặt để bảo đảm và khoản lãi', 'Khoản 4, Điều 23'],
-            ['Tiền phạt do vi phạm nghĩa vụ trong giao dịch dân sự, kinh tế đã có hiệu lực và khoản lãi của khoản tiền phạt', 'Khoản 5, Điều 23'],
-            ['Thiệt hại xảy ra do vượt quá yêu cầu của tình thế cấp thiết', 'Khoản 6, Điều 23']
+            ['Hoàn trả các khoản tiền đã nộp vào ngân sách nhà nước, bị tịch thu, thi hành án, khoản tiền đặt để bảo đảm và khoản lãi', 'Khoản 4, Điều 23'],
+            ['Tiền phạt do vi phạm nghĩa vụ trong giao dịch dân sự, kinh tế đã có hiệu lực và khoản lãi của khoản tiền phạt', 'Khoản 5, Điều 23']
         ]],
         ['TH_TN', 'II', 'Thiệt hại do thu nhập thực tế bị mất hoặc bị giảm sút', 'Điều 24', [
             ['Thu nhập ổn định từ tiền lương, tiền công bị mất hoặc bị giảm sút của cá nhân', 'Điểm a, Khoản 1, Điều 24'],
@@ -168,7 +167,7 @@
     }
 
     // ---------- Bảng 2 cấp ----------
-    // o: { tid, head: [th html cột 2..n], list: [{ code|type|key, ... }], all: true = đủ 36 mục (có ô tích), nameTitle,
+    // o: { tid, head: [th html cột 2..n], list: [{ code|type|key, ... }], all: true = đủ 35 mục (có ô tích), nameTitle,
     //      cols: [{ k, sum, align, td(code, d, on) -> html, v(code, d) -> số }], isOn(code, d), check: { id(code), disabled(code, d), title(code, d) },
     //      badge(code, d) -> html, after(code, d, on) -> '<tr>...</tr>', total: { label } | false, totalRow: html, hook: tên hàm window(code, on, el),
     //      khac: { nameId(code) } -> nhóm VII cho phép thêm / xóa dòng (ô Tên / nội dung thiệt hại), khacHook: tên hàm window(code, 'add'|'del', el),

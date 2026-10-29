@@ -1,6 +1,6 @@
 /*
- * Bảng "Tài liệu kèm theo" dùng chung cho các popup trình ký Lãnh đạo (Hình thức ký = Ký số trên hệ thống)
- * và khối chỉ đọc "Tài liệu kèm theo" tại màn Ký duyệt/Từ chối của Lãnh đạo.
+ * Bảng "Tài liệu đính kèm" dùng chung cho các popup trình ký Lãnh đạo (Hình thức ký = Ký số trên hệ thống)
+ * và khối chỉ đọc "Tài liệu đính kèm" tại màn Ký duyệt/Từ chối của Lãnh đạo.
  * - Bảng chuẩn BTNN (đồng nhất mọi form Thêm mới / Cập nhật có đính kèm file):
  *   STT | Tên tài liệu, văn bản | File đính kèm (nút "Tải file") | Thao tác (Xem file / Xóa); nút "Thêm tài liệu" dưới bảng.
  *   Chế độ xem: Thao tác Xem file / Tải file; bảng rỗng thì không hiển thị.
@@ -259,7 +259,7 @@
     // (opts.split = false để giữ 01 bảng). opts.rows: danh sách cũ/lần trình trước (tách theo scope; chưa có scope -> không ban hành kèm theo).
     // opts.required (quy tắc bắt buộc riêng của phân hệ) áp cho khối opts.requiredBlock ('internal' mặc định | 'issued').
     function mountOne(key, hostId, opts) {
-        S[key] = { hostId: hostId, required: !!opts.required, rows: cloneList(opts.rows), secClass: opts.secClass || 'gqx-sec', titleClass: opts.titleClass || 'tlkt-sec-title', visible: opts.visible !== false, noLeader: !!opts.noLeader, exts: (opts.exts && opts.exts.length) ? opts.exts : EXTS, title: opts.title || 'Tài liệu kèm theo', nameLabel: opts.nameLabel || STD_NAME, hint: opts.hint || '' };
+        S[key] = { hostId: hostId, required: !!opts.required, rows: cloneList(opts.rows), secClass: opts.secClass || 'gqx-sec', titleClass: opts.titleClass || 'tlkt-sec-title', visible: opts.visible !== false, noLeader: !!opts.noLeader, exts: (opts.exts && opts.exts.length) ? opts.exts : EXTS, title: opts.title || 'Tài liệu đính kèm', nameLabel: opts.nameLabel || STD_NAME, hint: opts.hint || '' };
         render(key);
     }
     window.tlktMount = function (key, hostId, opts) {
@@ -370,7 +370,7 @@
     // list: danh sách tài liệu của lần trình hiện hành; trả về '' khi không có tài liệu
     // Mặc định (tài liệu của phiếu trình) hiển thị 02 khối riêng: Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo;
     // khối không có dữ liệu thì không hiển thị; khối không ban hành chỉ hiển thị cho đơn vị trình (opts.ownerUnit / showInternal / hideInternal).
-    // opts.split = false: 01 bảng (danh sách không thuộc phiếu trình), tiêu đề opts.title (mặc định "Tài liệu kèm theo").
+    // opts.split = false: 01 bảng (danh sách không thuộc phiếu trình), tiêu đề opts.title (mặc định "Tài liệu đính kèm").
     window.tlktViewHtml = function (list, opts) {
         opts = opts || {};
         if (opts.split !== false) {
@@ -398,7 +398,7 @@
         }).join('');
         var boxCls = opts.boxClass || 'tlkt-view';
         var titleCls = opts.titleClass || 'tlkt-sec-title';
-        return '<div class="' + esc(boxCls) + ' tlkt-view-box" id="kdtcTlkt' + vid + '"' + (opts.block ? ' data-tlkt-block="' + opts.block + '"' : '') + '><div class="' + esc(titleCls) + '"><i class="fa-solid fa-paperclip"></i> ' + esc(opts.title || 'Tài liệu kèm theo') + '</div>'
+        return '<div class="' + esc(boxCls) + ' tlkt-view-box" id="kdtcTlkt' + vid + '"' + (opts.block ? ' data-tlkt-block="' + opts.block + '"' : '') + '><div class="' + esc(titleCls) + '"><i class="fa-solid fa-paperclip"></i> ' + esc(opts.title || 'Tài liệu đính kèm') + '</div>'
             + '<div class="tlkt-wrap"><table class="tlkt-table"><thead><tr><th class="tlkt-c" style="width:36px;">STT</th><th>' + esc(opts.nameLabel || STD_NAME) + '</th><th style="width:44%;">File đính kèm</th><th class="tlkt-c" style="width:90px;">Thao tác</th></tr></thead><tbody>' + body + '</tbody></table></div></div>';
     }
     window.tlktOpenView = function (vid, i) { var l = VIEWS[vid]; if (l && l[i] && l[i].file) openFile(l[i].file); };
@@ -407,7 +407,7 @@
         window.tlktDownloadFile(f, function (ok) { if (!ok) toast('Tải xuống tệp [' + (f.name || '') + '] (giả lập).', 'info'); });
     };
     window.tlktOpenFile = openFile;
-    // Dùng chung cho bảng Tài liệu kèm theo dựng ngoài thư viện (VD quan_ly_boi_thuong_ctvv.js): nạp CSS tlkt-
+    // Dùng chung cho bảng Tài liệu đính kèm dựng ngoài thư viện (VD quan_ly_boi_thuong_ctvv.js): nạp CSS tlkt-
     window.tlktCss = css;
     // Tải file: tải chính tệp đã tải lên (bộ nhớ phiên / IndexedDB); trả về false khi không có nội dung tệp
     window.tlktDownloadFile = function (meta, done) {
@@ -432,7 +432,7 @@
     };
     // Lấy lại tệp đã giữ (bộ nhớ phiên hiện tại); không có thì trả về null
     window.tlktBlob = function (id) { return (id && BLOBS[id]) || null; };
-    // Ghi tên tài liệu kèm theo vào ghi chú lịch sử
+    // Ghi tên tài liệu đính kèm vào ghi chú lịch sử
     // Ghi chú lịch sử chỉ ghi tên Tài liệu ban hành kèm theo (lịch sử hiển thị cho cả đơn vị khác); Tài liệu không ban hành kèm theo
     // xem tại khối tài liệu của lần trình (tlktTagHistory / tlktInlineHtml áp quyền xem theo đơn vị)
     window.tlktNote = function (list) {

@@ -837,11 +837,11 @@
                 <!-- THIỆT HẠI YÊU CẦU BỒI THƯỜNG -->
                 <div id="claimMoneySection">
                     <div class="info-group-title">Thiệt hại yêu cầu bồi thường</div>
-                    <!-- [th2c] Bảng thiệt hại 2 cấp (06 nhóm / 36 mục DM_27 + VII. Các thiệt hại khác): dựng bởi buildDamageRows (BTNN_TH.tableHtml) -->
+                    <!-- [th2c] Bảng thiệt hại 2 cấp (06 nhóm / 35 mục DM_27 + VII. Các thiệt hại khác): dựng bởi buildDamageRows (BTNN_TH.tableHtml) -->
                     <div class="table-container" id="damageTreeWrap" style="margin-bottom:20px;"></div>
                 </div>
 
-                <div class="info-group-title">Tài liệu kèm theo<span class="required" style="color:var(--danger-color);">*</span></div>
+                <div class="info-group-title">Tài liệu đính kèm<span class="required" style="color:var(--danger-color);">*</span></div>
                 <div class="table-container" style="margin-bottom:10px;">
                     <table class="custom-table" style="min-width:760px;">
                         <thead>
@@ -855,7 +855,7 @@
                         <tbody id="docsTableBody"></tbody>
                     </table>
                 </div>
-                <div id="docsError" class="error-message" style="margin-bottom:10px;">Vui lòng đính kèm ít nhất 01 tài liệu kèm theo</div>
+                <div id="docsError" class="error-message" style="margin-bottom:10px;">Vui lòng đính kèm ít nhất 01 tài liệu</div>
                 <div id="addDocBtnWrapper" style="margin-bottom:20px;">
                     <button type="button" class="tlkt-btn-add" onclick="addDocRow()"><i class="fa-solid fa-plus"></i> Thêm tài liệu</button>
                 </div>
@@ -902,9 +902,9 @@
         </div>
     </div>
 
-    <script src="btnn_luong_xu_ly.js?v=20261028tl1"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
     <!-- [th2c] Danh mục / bảng thiệt hại 2 cấp dùng chung (window.BTNN_TH) -->
-    <script src="btnn_thiet_hai.js?v=20261027th3"></script>
+    <script src="btnn_thiet_hai.js?v=20261028dm27"></script>
     <style>#damageTreeWrap.dmg-ro tr.bth-kadd, #damageTreeWrap.dmg-ro .bth-kdel { display: none !important; }</style>
     <script>
         // ===== Cấu hình =====
@@ -1196,8 +1196,8 @@
         // ===== Quyền =====
         function isTerminal(rec) { return TERMINAL_STATUSES.includes(rec.status); }
         function canEditCase(rec) {
-            // Mọi bản ghi đang hiển thị đều được Cập nhật / Xóa (kể cả trạng thái kết thúc)
-            return !!rec && !rec.deleted;
+            // Được Cập nhật / Xóa trừ vụ việc đã xóa và vụ việc "Đã có bản án/QĐ"
+            return !!rec && !rec.deleted && rec.status !== STATUS_BAN_AN;
         }
         function visibleCases() {
             return cases.filter(r => !r.deleted && (VIEW_ALL || r.rootUnitId === CURRENT_ROOT_UNIT));
@@ -1285,7 +1285,7 @@
         }
 
         // ===== Biểu mẫu =====
-        // [th2c] Bảng thiệt hại 2 cấp (BTNN_TH): 06 nhóm / 36 mục DM_27 có ô tích + VII. Các thiệt hại khác (dòng tự nhập);
+        // [th2c] Bảng thiệt hại 2 cấp (BTNN_TH): 06 nhóm / 35 mục DM_27 có ô tích + VII. Các thiệt hại khác (dòng tự nhập);
         // ô nhập theo mã mục: dmgCb_<mã>, dmgCalc_<mã>, dmgVal_<mã>, dmgName_<mã> (dòng VII); dòng nhóm / dòng tổng tự cộng
         // readOnly (Xem chi tiết): chỉ hiển thị nhóm và mục có dữ liệu, không có ô tích / ô nhập
         function buildDamageRows(list, readOnly) {
@@ -1474,7 +1474,7 @@
             const rec = id ? cases.find(c => c.id === id) : null;
             if (id && !rec) return;
             if (rec && !readOnly && !canEditCase(rec)) {
-                showToast("Bạn không có quyền cập nhật vụ việc này!", "error");
+                showToast(rec.status === STATUS_BAN_AN ? "Vụ việc đã có bản án/QĐ, không cho phép cập nhật." : "Bạn không có quyền cập nhật vụ việc này!", "error");
                 readOnly = true;
             }
             editingId = id;
@@ -1644,7 +1644,7 @@
 
             if (firstInvalid || !docsOk) {
                 if (effMissing) showToast("Vui lòng nhập Số Bản án/Quyết định và Ngày Bản án/Quyết định có hiệu lực khi trạng thái là Đã có bản án/QĐ!", "error");
-                else if (!firstInvalid) showToast("Vui lòng đính kèm ít nhất 01 tài liệu kèm theo!", "error");
+                else if (!firstInvalid) showToast("Vui lòng đính kèm ít nhất 01 tài liệu!", "error");
                 else showToast("Vui lòng nhập đầy đủ thông tin bắt buộc!", "error");
                 if (firstInvalid) firstInvalid.focus();
                 return;
@@ -1741,6 +1741,7 @@
 
         function confirmDeleteCase(id) {
             const rec = cases.find(c => c.id === id);
+            if (rec && rec.status === STATUS_BAN_AN) { showToast("Vụ việc đã có bản án/QĐ, không cho phép xóa.", "error"); return; }
             if (!rec || !canEditCase(rec)) return;
             const fundOf = getFundingOf(rec);
             const fundNote = fundOf && [FUNDING_STATUS_NEW, "Chờ nhập liệu"].includes(fundOf.status) ? ` Bản ghi kinh phí ${fundOf.code} (${fundOf.status}) cũng bị xóa theo.` : "";
@@ -1777,7 +1778,7 @@
             window.location.href = url;
         }
 
-        // ===== Tài liệu kèm theo =====
+        // ===== Tài liệu đính kèm =====
         // ===== Văn bản làm căn cứ yêu cầu bồi thường: bảng chuẩn STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file/Xóa); chỉ xem rỗng thì ẩn (tlktStd) =====
         let basisRows = [];
         function addBasisRow() { basisRows.push({ name: "", file: "" }); renderBasisRows(); }
@@ -2043,10 +2044,10 @@
     <script src="filter_toggle_auto.js"></script>
     <script src="btnn_cot_thao_tac.js?v=20261023kpcd"></script>
     <!-- Bảng tài liệu chuẩn BTNN: STT | Tên tài liệu, văn bản | File đính kèm | Thao tác; nút Tải file / Thêm tài liệu cùng style -->
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261029tldk"></script>
     <!-- [tdta] Vụ việc liên kết (Tìm kiếm / Tìm kiếm nâng cao), khối Người yêu cầu Cá nhân/Tổ chức, lưới + bộ lọc theo cột -->
     <script src="btnn_tim_kiem_vu_viec.js?v=20261028tl1"></script>
-    <script src="theo_doi_vu_viec_toa_an_tdta.js?v=20261026tdta"></script>
+    <script src="theo_doi_vu_viec_toa_an_tdta.js?v=20261028ba1"></script>
 </body>
 
 </html>

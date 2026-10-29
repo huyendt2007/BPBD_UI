@@ -11,7 +11,7 @@
 (function () {
 
     const HC = 'hành chính', HS = 'hình sự', DS = 'dân sự', TTHC = 'tố tụng hành chính', THAHS = 'thi hành án hình sự', THADS = 'thi hành án dân sự';
-    const TN = 'Tiếp nhận mới', DVC = 'Dịch vụ công quốc gia', CH = 'Chuyển CQGQBT', XD = 'Xác định CQGQBT';
+    const TN = 'Tiếp nhận mới', DVC = 'Dịch vụ công', CH = 'Chuyển CQGQBT', XD = 'Xác định CQGQBT';
     const R_NBTH = 'Người bị thiệt hại', R_TK = 'Người thừa kế của người bị thiệt hại', R_DD = 'Người đại diện theo pháp luật của người bị thiệt hại',
         R_TCKT = 'Tổ chức kế thừa quyền, nghĩa vụ của tổ chức bị thiệt hại đã chấm dứt tồn tại';
 

@@ -4,7 +4,7 @@
  * 2. Tên 03 tab cố định: Thông tin hồ sơ vụ việc | Chi tiết giải quyết bồi thường | Phục hồi danh dự.
  * 3. Tab "Phục hồi danh dự": bắt đầu từ thanh tiến trình; bước Thông báo: Trình ký Thông báo tổ chức thực hiện phục hồi danh dự (Mẫu số 26/BTNN);
  *    Thành phần tham gia tổ chức phục hồi danh dự: 02 bảng như Thương lượng.
- * 4. Bảng "Tài liệu kèm theo" đồng nhất (chuẩn màn Tham mưu kết quả xác định cơ quan giải quyết bồi thường):
+ * 4. Bảng "Tài liệu đính kèm" đồng nhất (chuẩn màn Tham mưu kết quả xác định cơ quan giải quyết bồi thường):
  *    STT | Tên tài liệu, văn bản | File đính kèm | Thao tác (Xem file / Xóa - xóa thẳng); nút Thêm tài liệu dưới bảng;
  *    chế độ xem: Thao tác Xem file / Tải file, bảng rỗng thì không hiển thị.
  * Dùng tiện ích sẵn có của quan_ly_boi_thuong.html (gq*, ktlx*, tlkt*, pt*, phdd*) và btnn_tai_lieu_kem_theo.js.
@@ -42,7 +42,7 @@ function ctvvCss() {
     st.id = 'ctvvCss';
     st.textContent = [
         '.ctvv-docs { margin-top: 6px; }',
-        // [pdtb] Bảng Tài liệu kèm theo: nhãn phía trên bảng, bảng rộng 100% khối (kể cả khi khối cha đã chuyển dạng "nhãn: giá trị" ở chế độ xem)
+        // [pdtb] Bảng Tài liệu đính kèm: nhãn phía trên bảng, bảng rộng 100% khối (kể cả khi khối cha đã chuyển dạng "nhãn: giá trị" ở chế độ xem)
         '.form-group:has(.ctvv-docs) { display: block !important; }',
         '.form-group:has(.ctvv-docs) > .form-label { display: block !important; margin: 0 0 6px !important; }',
         '.ctvv-docs { width: 100%; flex: 1 0 100%; box-sizing: border-box; }',
@@ -72,7 +72,7 @@ function ctvvCss() {
         '.ctvv-m26-file .tlkt-acts { margin-left: auto; }',
         '.ctvv-m26-badge { display: inline-block; font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }',
         '.ctvv-m26-badge.pending { background: #fef3c7; color: #92400e; }',
-        '.ctvv-m26-badge.rejected { background: #fee2e2; color: #b91c1c; }',
+        '.ctvv-m26-badge.rejected { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }',
         '.ctvv-m26-badge.issued { background: #dcfce7; color: #166534; }',
         '.ctvv-m26-c7 { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px 14px; margin-bottom: 12px; }',
         '.ctvv-m26-c7 .ctvv-sub { font-size: 12px; font-weight: 700; color: #334155; margin: 2px 0 8px; }',
@@ -84,7 +84,7 @@ function ctvvCss() {
 }
 
 // =====================================================================
-// 1. Bảng Tài liệu kèm theo (nhập + chỉ xem) dùng chung
+// 1. Bảng Tài liệu đính kèm (nhập + chỉ xem) dùng chung
 // =====================================================================
 // rows: [{ title (Tên văn bản, căn cứ), file (tên tệp), size, fileId }]
 var CTVV_DOCS = {};
@@ -92,7 +92,7 @@ function ctvvDocsMount(key, hostId, rows, opts) {
     opts = opts || {};
     CTVV_DOCS[key] = {
         hostId: hostId, rows: (rows || []).map(function (r) { return { title: r.title || '', file: r.file || '', size: r.size || '', fileId: r.fileId || '' }; }),
-        required: !!opts.required, title: opts.title === undefined ? 'Tài liệu kèm theo' : opts.title,
+        required: !!opts.required, title: opts.title === undefined ? 'Tài liệu đính kèm' : opts.title,
         idp: opts.idp || ('ctvv_' + key + '_'), onSync: opts.onSync || null, minRow: opts.minRow !== false
     };
     ctvvDocsRender(key);
@@ -400,7 +400,7 @@ function ctvvSecEditable(n) {
     var el = ctvvEl(probe);
     return !!el && el.style.display !== 'none' && !el.disabled;
 }
-// ---------- Tài liệu kèm theo của các khối (Thông báo / Ghi nhận ý kiến / Tổ chức phục hồi danh dự) ----------
+// ---------- Tài liệu đính kèm của các khối (Thông báo / Ghi nhận ý kiến / Tổ chức phục hồi danh dự) ----------
 window.renderPhddStepFiles = function (step) {
     var claim = ctvvClaim(); if (!claim) return;
     var wrapper = ctvvEl('phddStep' + step + 'FileWrapper');
@@ -437,7 +437,7 @@ window.renderPhddUploadedFiles = function () {
         list.innerHTML = ctvvDocsViewHtml(ctvvFromLegacy(phddUploadedFiles));
     }
 };
-// Khối Ghi nhận ý kiến: Tài liệu kèm theo hiển thị với mọi ý kiến, bắt buộc khi "Từ chối quyền được phục hồi danh dự"
+// Khối Ghi nhận ý kiến: Tài liệu đính kèm hiển thị với mọi ý kiến, bắt buộc khi "Từ chối quyền được phục hồi danh dự"
 (function () {
     var orig = window.toggleStep2OpinionFields;
     if (typeof orig !== 'function') return;
@@ -447,7 +447,7 @@ window.renderPhddUploadedFiles = function () {
         if (g) {
             g.style.display = 'block';
             var lb = g.querySelector('.form-label');
-            if (lb) lb.innerHTML = 'Tài liệu kèm theo' + (value === 'Từ chối' ? ' <span class="required">*</span>' : '');
+            if (lb) lb.innerHTML = 'Tài liệu đính kèm' + (value === 'Từ chối' ? ' <span class="required">*</span>' : '');
         }
         if (CTVV_DOCS.ph2 && ctvvEl('ctvvDocs_ph2')) { ctvvDocsSync('ph2'); CTVV_DOCS.ph2.required = value === 'Từ chối'; ctvvDocsRender('ph2'); }
         return r;
@@ -535,7 +535,7 @@ function ctvvPtHeader() {
     var origPR = window.ptRender;
     if (typeof origPR === 'function') window.ptRender = function (key) { var r = origPR.apply(this, arguments); if (key === 'ctvvph') ctvvPtHeader(); return r; };
 })();
-// Trước khi lưu khối Tổ chức phục hồi danh dự: kiểm tra Thành phần tham gia + Tài liệu kèm theo
+// Trước khi lưu khối Tổ chức phục hồi danh dự: kiểm tra Thành phần tham gia + Tài liệu đính kèm
 function ctvvBeforeStep3Save() {
     var claim = ctvvClaim(); if (!claim) return false;
     var ok = true;
@@ -735,7 +735,7 @@ function ctvvmEnsureModal() {
         + '<div id="ctvvmStepperBar" class="ktl-stepper-fullwidth"><div id="ctvvmStep1Tab" class="ktl-step-tab active" onclick="ctvvmGoStep1()"><span class="ktl-step-badge" id="ctvvmStep1Badge">1</span><span class="ktl-step-title">Nhập thông tin</span></div>'
         + '<div class="ktl-stepper-sep"><i class="fa-solid fa-chevron-right"></i></div><div id="ctvvmStep2Tab" class="ktl-step-tab" onclick="ctvvmGoStep2()"><span class="ktl-step-badge">2</span><span class="ktl-step-title">Kéo ô ký &amp; chọn Lãnh đạo</span></div></div>'
         + '<div id="ctvvmStep1Body" class="sticky-modal-body gqx-body" style="overflow-y:auto; flex:1; padding:24px;">'
-        + '<div id="ctvvmReturnedAlertBlock" style="display:none; background:#fef2f2; border:1px solid #fecaca; border-left:4px solid #dc2626; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b91c1c; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TỪ CHỐI</div><div style="font-size:12.5px; color:#7f1d1d; line-height:1.5;">Lý do từ chối: <strong id="ctvvmReturnedReason">--</strong><br>Người từ chối: <span id="ctvvmReturnedOfficer">--</span> • Thời điểm: <span id="ctvvmReturnedDate">--</span></div></div>'
+        + '<div id="ctvvmReturnedAlertBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;"><div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> HỒ SƠ BỊ LÃNH ĐẠO TRẢ LẠI</div><div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do bị trả lại: <strong id="ctvvmReturnedReason">--</strong><br>Người từ chối: <span id="ctvvmReturnedOfficer">--</span> • Thời điểm: <span id="ctvvmReturnedDate">--</span></div></div>'
         + '<div class="gqx-sec"><div class="gqx-sec-title"><i class="fa-solid fa-signature"></i> Hình thức ký<span class="gqx-req">*</span></div><div class="sign-cards-grid">'
         + card('ctvvmCardSignOnline', 'online', 'Ký số trên hệ thống', 'Trình Lãnh đạo ký duyệt trên phần mềm', 'fa-file-signature', false, true)
         + card('ctvvmCardSignOffline', 'offline', 'Ký ngoài (Ban hành trực tiếp)', 'Tải lên văn bản PDF đã ký và đóng dấu', 'fa-stamp', true, false)
@@ -982,7 +982,7 @@ function ctvvmGoStep1() {
     ctvvEl('ctvvmBtnBackStep1').style.display = 'none';
     ctvvEl('ctvvmBtnSubmitOnline').style.display = 'none';
 }
-// Tiếp tục: kiểm tra Bước 1 (Thông tin điền vào Mẫu 26/BTNN hoặc tệp tải lên, dòng Tài liệu kèm theo) -> Bước 2
+// Tiếp tục: kiểm tra Bước 1 (Thông tin điền vào Mẫu 26/BTNN hoặc tệp tải lên, dòng Tài liệu đính kèm) -> Bước 2
 function ctvvmGoStep2() {
     if (!ctvvmClaim || ctvvmIsOffline()) return;
     if (ktlxConverting.ctvvm) { showToast('Đang chuyển đổi tệp sang PDF, vui lòng chờ hoàn tất.', 'warning'); return; }
@@ -1208,7 +1208,7 @@ function ctvvM26Decorate(claim) {
         + '</div>'
         + pdtbC7Html(m.forms || ctvvmForms(claim), m)
         + '<div class="ctvv-m26-grid" style="grid-template-columns:1fr;"><div><b>Nơi nhận</b>' + (nn.length ? nn.map(ctvvE).join('<br>') : '-') + '</div></div>'
-        + (m.state === 'Bị trả lại' ? '<div style="background:#fef2f2; border:1px solid #fecaca; border-radius:8px; padding:10px 12px; margin-bottom:10px; color:#7f1d1d;"><b>Lý do từ chối:</b> ' + ctvvE(m.rejectReason || '--') + '<div style="font-size:12px;">Người từ chối: ' + ctvvE(m.rejectBy || '--') + ' • Thời điểm: ' + ctvvE(m.rejectAt || '--') + '</div></div>' : '')
+        + (m.state === 'Bị trả lại' ? '<div style="background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:10px 12px; margin-bottom:10px; color:#92400e;"><b>Lý do bị trả lại:</b> ' + ctvvE(m.rejectReason || '--') + '<div style="font-size:12px;">Người từ chối: ' + ctvvE(m.rejectBy || '--') + ' • Thời điểm: ' + ctvvE(m.rejectAt || '--') + '</div></div>' : '')
         + '<div class="tlkt-sec-title"><i class="fa-solid fa-file-signature"></i> ' + fileLabel + '</div>'
         + '<div class="ctvv-m26-file">' + (fileName ? pdtbFileHtml({ file: fileName, size: fileSize }) : '<span style="color:#94a3b8;">--</span>')
         + (fileName ? '<span class="tlkt-acts">'
@@ -1217,7 +1217,7 @@ function ctvvM26Decorate(claim) {
         // Tài liệu ban hành kèm theo / không ban hành kèm theo (khối rỗng hoặc không có quyền xem thì không hiển thị)
         + (typeof tlktSplitRender === 'function'
             ? tlktSplitRender(m.attachments || [], { ownerUnit: ((typeof gqRecord === 'function' && gqRecord(claim)) || {}).rootUnitId || '' }, function (rows, title) { return ctvvDocsViewHtml(rows.map(function (d) { return { title: d.name, file: d.file ? d.file.name : '', size: d.file ? d.file.size : '', fileId: d.file ? d.file.id : '' }; }), { title: title }); })
-            : ctvvDocsViewHtml((m.attachments || []).map(function (d) { return { title: d.name, file: d.file ? d.file.name : '', size: d.file ? d.file.size : '', fileId: d.file ? d.file.id : '' }; }), { title: 'Tài liệu kèm theo' }))
+            : ctvvDocsViewHtml((m.attachments || []).map(function (d) { return { title: d.name, file: d.file ? d.file.name : '', size: d.file ? d.file.size : '', fileId: d.file ? d.file.id : '' }; }), { title: 'Tài liệu đính kèm' }))
         + (canResubmit ? '<div style="display:flex; justify-content:flex-end; margin-top:10px;">' + btn('Cập nhật và trình ký lại') + '</div>' : '');
     panel.innerHTML = html;
 }

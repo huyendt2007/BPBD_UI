@@ -196,9 +196,9 @@ function tlhdModalHtml() {
         </div>
 
         <div id="tlhdStep1Body" class="gqx-body" style="overflow-y:auto; flex:1; padding:24px;">
-            <div id="tlhdReturnedBlock" style="display:none; background:#fef2f2; border:1px solid #fecaca; border-left:4px solid #dc2626; border-radius:8px; padding:12px 16px; margin-bottom:14px;">
-                <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b91c1c; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> QUYẾT ĐỊNH THÀNH LẬP HỘI ĐỒNG BỊ LÃNH ĐẠO TỪ CHỐI</div>
-                <div style="font-size:12.5px; color:#7f1d1d; line-height:1.5;">Lý do từ chối: <strong id="tlhdReturnedReason">--</strong><br>Người từ chối: <span id="tlhdReturnedBy">--</span> • Thời điểm: <span id="tlhdReturnedAt">--</span></div>
+            <div id="tlhdReturnedBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;">
+                <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> QUYẾT ĐỊNH THÀNH LẬP HỘI ĐỒNG BỊ LÃNH ĐẠO TRẢ LẠI</div>
+                <div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do bị trả lại: <strong id="tlhdReturnedReason">--</strong><br>Người từ chối: <span id="tlhdReturnedBy">--</span> • Thời điểm: <span id="tlhdReturnedAt">--</span></div>
             </div>
 
             <div class="gqx-sec">

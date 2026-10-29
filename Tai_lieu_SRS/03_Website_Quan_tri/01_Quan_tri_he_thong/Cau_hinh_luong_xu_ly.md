@@ -9,11 +9,14 @@ Cho phép Quản trị hệ thống cấu hình luồng phân công - phê duy�
 
 Cấu hình được dùng tại [Tiếp nhận hồ sơ - Tiếp nhận hồ sơ - Công tác bồi thường nhà nước (Website Quản trị)](../03_Cong_tac_boi_thuong/SRS_BTNN_GiaiQuyetBT_TiepNhan_YCBT.md#tn-luong-phan-cong) (Lãnh đạo Phân công), [Quy tắc trình ký - phê duyệt - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](../03_Cong_tac_boi_thuong/SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-quy-tac-phe-duyet) (Lãnh đạo phê duyệt), khi chọn CQGQBT và tự động chuyển CQGQBT tại phân hệ Xác định cơ quan giải quyết bồi thường và khi Chuyển CQGQBT tại phân hệ Giải quyết yêu cầu bồi thường. Hệ thống chọn luồng theo Loại hồ sơ và đơn vị tiếp nhận hồ sơ:
 
-| Loại luồng | Áp dụng cho | Đơn vị gốc được cấu hình | Ví dụ nhánh luồng |
-| :--- | :--- | :--- | :--- |
-| `Xác định CQGQBT - Bộ Tư pháp` | Hồ sơ Loại hồ sơ `Xác định cơ quan giải quyết bồi thường` do Bộ Tư pháp tiếp nhận | Bộ Tư pháp | Lãnh đạo Bộ Tư pháp → Lãnh đạo Cục Giao dịch bảo đảm và bồi thường nhà nước → Lãnh đạo Phòng/Ban phụ trách → Cán bộ |
-| `Xác định CQGQBT - Sở Tư pháp` | Hồ sơ Loại hồ sơ `Xác định cơ quan giải quyết bồi thường` do Sở Tư pháp tiếp nhận | Từng Sở Tư pháp | Lãnh đạo Sở Tư pháp → Lãnh đạo Phòng phụ trách → Cán bộ |
-| `Giải quyết YCBT` | Hồ sơ Loại hồ sơ `Giải quyết yêu cầu bồi thường` | Từng cơ quan giải quyết bồi thường | Theo cấu hình của từng cơ quan |
+| Loại luồng | Áp dụng cho | Đơn vị gốc được cấu hình | Ví dụ nhánh luồng phân công | Luồng trình ký |
+| :--- | :--- | :--- | :--- | :--- |
+| `Xác định CQGQBT - Bộ Tư pháp` | Hồ sơ Loại hồ sơ `Xác định cơ quan giải quyết bồi thường` do Bộ Tư pháp tiếp nhận | Bộ Tư pháp | Lãnh đạo Bộ Tư pháp → Lãnh đạo Cục Giao dịch bảo đảm và bồi thường nhà nước → Lãnh đạo Phòng/Ban phụ trách → Cán bộ | Cán bộ → Lãnh đạo Phòng/Ban phụ trách → Lãnh đạo Cục Giao dịch bảo đảm và bồi thường nhà nước → Lãnh đạo Bộ Tư pháp |
+| `Xác định CQGQBT - Sở Tư pháp` | Hồ sơ Loại hồ sơ `Xác định cơ quan giải quyết bồi thường` do Sở Tư pháp tiếp nhận | Từng Sở Tư pháp | Lãnh đạo Sở Tư pháp → Lãnh đạo Phòng phụ trách → Cán bộ | Cán bộ → Lãnh đạo Phòng phụ trách → Lãnh đạo Sở Tư pháp → Lãnh đạo UBND cấp tỉnh |
+| `Giải quyết YCBT` | Hồ sơ Loại hồ sơ `Giải quyết yêu cầu bồi thường` | Từng cơ quan giải quyết bồi thường | Theo cấu hình của từng cơ quan | Ngược chiều luồng phân công của hồ sơ |
+
+- Luồng trình ký của hồ sơ Xác định cơ quan giải quyết bồi thường theo [Luồng trình ký hồ sơ Xác định cơ quan giải quyết bồi thường - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](../03_Cong_tac_boi_thuong/SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-luong-trinh-ky).
+- Loại luồng `Xác định CQGQBT - Sở Tư pháp`: cấu hình thêm Nhóm lãnh đạo của UBND cấp tỉnh (cơ quan cha của Sở Tư pháp trên cây Cơ cấu tổ chức) làm cấp phê duyệt cuối; UBND cấp tỉnh không tham gia phân công.
 
 *a. Phân quyền*
 - Quản trị hệ thống (QTHT).

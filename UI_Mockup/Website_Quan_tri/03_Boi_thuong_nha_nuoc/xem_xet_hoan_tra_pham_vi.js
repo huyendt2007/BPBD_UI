@@ -53,7 +53,7 @@
         'Họp hội đồng': 'Chờ xử lý',
         'Đình chỉ xem xét hoàn trả': 'Đình chỉ xem xét hoàn trả'
     };
-    // Bước 1: trạng thái hồ sơ đang trình / bị từ chối QĐ thành lập Hội đồng -> [badge, Loại trình]
+    // Bước 1: trạng thái hồ sơ đang trình / bị trả lại QĐ thành lập Hội đồng -> [badge, Loại trình]
     const HS_TRINH = {
         'Chờ duyệt QĐ thành lập': ['Chờ duyệt', 'QĐ thành lập hội đồng'], 'Chờ duyệt thành lập hội đồng': ['Chờ duyệt', 'QĐ thành lập hội đồng'],
         'Bị trả lại thành lập HĐ': ['Bị trả lại', 'QĐ thành lập hội đồng'], 'Từ chối duyệt QĐ thành lập': ['Bị trả lại', 'QĐ thành lập hội đồng'],
@@ -62,7 +62,7 @@
     };
     const CHUNG_ORDER = ['Chờ duyệt', 'Bị trả lại', 'Chờ xử lý', 'Đang xử lý', 'Thu tiền hoàn trả', 'Miễn hoàn trả', 'Hoàn thành', 'Đình chỉ xem xét hoàn trả'];
     // Mỗi trạng thái chung một màu badge riêng
-    const CHUNG_STYLE = { 'Chờ duyệt': 'wait', 'Bị trả lại': 'danger', 'Chờ xử lý': 'warning', 'Đang xử lý': 'pending', 'Thu tiền hoàn trả': 'info', 'Miễn hoàn trả': 'mien', 'Hoàn thành': 'success', 'Đình chỉ xem xét hoàn trả': 'draft' };
+    const CHUNG_STYLE = { 'Chờ duyệt': 'wait', 'Bị trả lại': 'tralai', 'Chờ xử lý': 'warning', 'Đang xử lý': 'pending', 'Thu tiền hoàn trả': 'info', 'Miễn hoàn trả': 'mien', 'Hoàn thành': 'success', 'Đình chỉ xem xét hoàn trả': 'draft' };
     try {
         const st = document.createElement('style');
         st.textContent = '.ht-st-mien{background-color:#fdf2f8;color:#be185d;border:1px solid #fbcfe8;} .ht-st-wait{background-color:#ede9fe;color:#6d28d9;border:1px solid #ddd6fe;} .ht-trinh-sub{font-size:11px;color:#64748b;margin-top:3px;}';
@@ -147,7 +147,7 @@
 
     // ===== Trạng thái chung (roll-up) =====
     function chungOf(d, sc) {
-        // Bước 1 đang trình / bị từ chối QĐ thành lập Hội đồng: badge Chờ duyệt / Bị trả lại kèm dòng Loại trình
+        // Bước 1 đang trình / bị trả lại QĐ thành lập Hội đồng: badge Chờ duyệt / Bị trả lại kèm dòng Loại trình
         if (!isSplit(d)) return HS_TRINH[d.status] ? HS_TRINH[d.status][0] : (HS_GROUP[d.status] || 'Chờ xử lý');
         const l = sc.officers;
         if (!l.length) return 'Chờ xử lý';

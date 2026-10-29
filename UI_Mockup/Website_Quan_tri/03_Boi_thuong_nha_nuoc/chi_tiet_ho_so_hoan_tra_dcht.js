@@ -3,7 +3,7 @@
  * Màn hình Xem chi tiết / Cập nhật hồ sơ hoàn trả (chi_tiet_ho_so_hoan_tra.html).
  * Bố cục như Popup Không thụ lý hồ sơ / Popup Thành lập Hội đồng (tlhd):
  *   - Hình thức ký 02 thẻ đầu form; Stepper 2 bước chỉ hiển thị khi Ký số trên hệ thống.
- *   - Ký số: Bước 1 Nhập thông tin (Sinh văn bản theo mẫu 39/BTNN | Tải lên từ máy, Tài liệu kèm theo bắt buộc)
+ *   - Ký số: Bước 1 Nhập thông tin (Sinh văn bản theo mẫu 39/BTNN | Tải lên từ máy, Tài liệu đính kèm bắt buộc)
  *            Bước 2 Kéo ô ký & chọn Lãnh đạo -> Trình Lãnh đạo.
  *   - Ký ngoài: đính kèm PDF đã ký & đóng dấu, Ban hành văn bản (có xác nhận).
  * Luồng trạng thái (giả định, bổ sung vào luồng hiện có của module hoàn trả):
@@ -50,7 +50,7 @@ function htStNormalize(d) { if (d && d.status) { d.status = htStCode(d.status, d
 const HT_ST_STYLE = {
     // Đồng bộ màu badge màn Quyết định GQBT / Kinh phí: [nền, chữ, viền]
     'Chờ duyệt': ['#ede9fe', '#6d28d9', '#ddd6fe'],
-    'Bị trả lại': ['#fef2f2', '#dc2626', '#fecaca'],
+    'Bị trả lại': ['#fef3c7', '#b45309', '#fde68a'],
     'Họp hội đồng': ['#eff6ff', '#1d4ed8', '#bfdbfe'],
     'Chờ ban hành QĐ hoàn trả': ['#fffbeb', '#d97706', '#fde68a'],
     'Hoãn hoàn trả': ['#fef9c3', '#a16207', '#fde68a'],
@@ -134,9 +134,9 @@ function dchtModalHtml() {
         </div>
 
         <div id="dchtStep1Body" class="gqx-body" style="overflow-y:auto; flex:1; padding:24px;">
-            <div id="dchtReturnedBlock" style="display:none; background:#fef2f2; border:1px solid #fecaca; border-left:4px solid #dc2626; border-radius:8px; padding:12px 16px; margin-bottom:14px;">
-                <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b91c1c; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> QUYẾT ĐỊNH ĐÌNH CHỈ BỊ LÃNH ĐẠO TỪ CHỐI</div>
-                <div style="font-size:12.5px; color:#7f1d1d; line-height:1.5;">Lý do từ chối: <strong id="dchtReturnedReason">--</strong><br>Người từ chối: <span id="dchtReturnedBy">--</span> • Thời điểm: <span id="dchtReturnedAt">--</span></div>
+            <div id="dchtReturnedBlock" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-left:4px solid #f59e0b; border-radius:8px; padding:12px 16px; margin-bottom:14px;">
+                <div style="display:flex; align-items:center; gap:8px; font-size:13px; font-weight:700; color:#b45309; margin-bottom:4px;"><i class="fa-solid fa-circle-exclamation"></i> QUYẾT ĐỊNH ĐÌNH CHỈ BỊ LÃNH ĐẠO TRẢ LẠI</div>
+                <div style="font-size:12.5px; color:#92400e; line-height:1.5;">Lý do bị trả lại: <strong id="dchtReturnedReason">--</strong><br>Người từ chối: <span id="dchtReturnedBy">--</span> • Thời điểm: <span id="dchtReturnedAt">--</span></div>
             </div>
 
             <div class="gqx-sec">
@@ -216,7 +216,7 @@ function dchtModalHtml() {
                 </div>
             </div>
 
-            <!-- Tài liệu kèm theo (bắt buộc khi Ký số trên hệ thống) -->
+            <!-- Tài liệu đính kèm (bắt buộc khi Ký số trên hệ thống) -->
             <div id="dchtTlkt"></div>
         </div>
 
@@ -884,7 +884,7 @@ function dchtRenderInfoCard() {
         + it('Văn bản', `<a href="javascript:void(0)" onclick="dchtViewDoc()" style="color:#2563eb;">${dchtE(a.fileName || '')}</a>`)
         + ((a.method === 'online' && a.docSrc === 'gen') || (a.method === 'offline' && a.so) ? it('Số, ký hiệu văn bản', dchtE(a.so || '--')) + it('Ngày văn bản', dchtE(a.ngay || '--')) : '')
         + (lead ? it('Lãnh đạo được giao ký duyệt', lead) : '')
-        + (a.returned && activeDossier.status === DCHT_ST_REJECTED ? it('Lý do từ chối', dchtE(a.returned.reason) + `<div class="dcht-k" style="margin-top:2px;">${dchtE(a.returned.by)} • ${dchtE(a.returned.at)}</div>`) : '')
+        + (a.returned && activeDossier.status === DCHT_ST_REJECTED ? it('Lý do bị trả lại', dchtE(a.returned.reason) + `<div class="dcht-k" style="margin-top:2px;">${dchtE(a.returned.by)} • ${dchtE(a.returned.at)}</div>`) : '')
         + `</div>`;
     if (a.attachments && a.attachments.length && typeof tlktViewHtml === 'function') html += `<div style="margin-top:14px;">${tlktViewHtml(a.attachments)}</div>`;
     html += '</div>';

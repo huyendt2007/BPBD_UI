@@ -589,7 +589,7 @@
         .badge.kp-st-lap { background-color: #ecfccb; color: #4d7c0f; border: 1px solid #d9f99d; }
         .badge.kp-st-tb { background-color: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
         .badge.kp-st-bs { background-color: #ffedd5; color: #c2410c; border: 1px solid #fed7aa; }
-        .badge.kp-st-tc { background-color: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+        .badge.kp-st-tc { background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
         .badge.kp-st-ct { background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
         .badge.kp-st-ht { background-color: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
         .badge.kp-st-sq { background-color: #ccfbf1; color: #0f766e; border: 1px solid #99f6e4; }
@@ -1122,29 +1122,29 @@
                 </div>
             </div>
 
-            <!-- KHỐI LÝ DO BỊ TỪ CHỐI (Hiển thị khi hồ sơ Bị trả lại theo SRS 4.3.3.2.7.2 & 4.3.3.2.4.2) -->
-            <div id="blockRejectNotice" style="display: none; background: #FFF5F5; border: 1.5px solid #FCA5A5; border-radius: var(--border-radius-md); padding: 18px 22px; margin-bottom: 22px; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.08);">
-                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #FECACA; padding-bottom: 10px; margin-bottom: 12px;">
-                    <div style="display: flex; align-items: center; gap: 10px; color: #B91C1C; font-weight: 700; font-size: 14.5px;">
-                        <i class="fa-solid fa-triangle-exclamation" style="font-size: 18px; color: #DC2626;"></i>
-                        <span>KHỐI LÝ DO BỊ TỪ CHỐI</span>
+            <!-- KHỐI LÝ DO BỊ TRẢ LẠI (Hiển thị khi hồ sơ Bị trả lại theo SRS 4.3.3.2.7.2 & 4.3.3.2.4.2) -->
+            <div id="blockRejectNotice" style="display: none; background: #fffbeb; border: 1.5px solid #fde68a; border-radius: var(--border-radius-md); padding: 18px 22px; margin-bottom: 22px; box-shadow: 0 2px 8px rgba(217, 119, 6, 0.08);">
+                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #fde68a; padding-bottom: 10px; margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 10px; color: #b45309; font-weight: 700; font-size: 14.5px;">
+                        <i class="fa-solid fa-triangle-exclamation" style="font-size: 18px; color: #b45309;"></i>
+                        <span>KHỐI LÝ DO BỊ TRẢ LẠI</span>
                     </div>
                 </div>
                 
                 <div class="grid-2-cols" style="gap: 12px 24px; margin-bottom: 12px;">
-                    <div style="font-size: 13px; color: #7F1D1D;">
-                        <span style="color: #991B1B; font-weight: 600;">Người từ chối:</span>
+                    <div style="font-size: 13px; color: #92400e;">
+                        <span style="color: #b45309; font-weight: 600;">Người từ chối:</span>
                         <strong id="rejectNoticeLeaderName" style="color: #1E293B; margin-left: 6px;">-</strong>
                     </div>
-                    <div style="font-size: 13px; color: #7F1D1D;">
-                        <span style="color: #991B1B; font-weight: 600;">Ngày từ chối:</span>
+                    <div style="font-size: 13px; color: #92400e;">
+                        <span style="color: #b45309; font-weight: 600;">Ngày từ chối:</span>
                         <span id="rejectNoticeDate" style="color: #1E293B; font-weight: 600; margin-left: 6px;">-</span>
                     </div>
                 </div>
                 
-                <div style="font-size: 13px; color: #7F1D1D;">
-                    <div style="font-weight: 600; color: #991B1B; margin-bottom: 5px;">Nội dung ý kiến chỉ đạo / Lý do từ chối:</div>
-                    <div id="rejectNoticeReasonText" style="background: white; border: 1px solid #FCA5A5; border-left: 4px solid #DC2626; border-radius: 4px; padding: 10px 14px; font-size: 13px; color: #1E293B; line-height: 1.5;">
+                <div style="font-size: 13px; color: #92400e;">
+                    <div style="font-weight: 600; color: #b45309; margin-bottom: 5px;">Nội dung ý kiến chỉ đạo / Lý do bị trả lại:</div>
+                    <div id="rejectNoticeReasonText" style="background: white; border: 1px solid #fde68a; border-left: 4px solid #f59e0b; border-radius: 4px; padding: 10px 14px; font-size: 13px; color: #1E293B; line-height: 1.5;">
                         -
                     </div>
                 </div>
@@ -1518,7 +1518,7 @@
                                 </div>
                             </div>
                             <div style="font-size: 13px;">
-                                <span style="color: #64748B; font-weight: 600; display: block; margin-bottom: 4px;">Ý kiến phê duyệt / Lý do từ chối:</span>
+                                <span style="color: #64748B; font-weight: 600; display: block; margin-bottom: 4px;">Ý kiến phê duyệt / Lý do bị trả lại:</span>
                                 <div id="viewLeaderOpinionText" style="color: #334155; line-height: 1.5; font-style: italic; background-color: #F8FAFC; padding: 8px 12px; border-radius: 4px; border-left: 3px solid #F59E0B;">
                                     Chưa có ý kiến xét duyệt
                                 </div>
@@ -1567,7 +1567,7 @@
                                 <input type="text" class="form-control" id="noticeTrackingDeadline" placeholder="Tự động + 3 năm" disabled>
                             </div>
                             <div class="form-group" style="margin-bottom:0;">
-                                <span class="form-label">Tài liệu kèm theo <span class="required">*</span></span>
+                                <span class="form-label">Tài liệu đính kèm <span class="required">*</span></span>
                                 <button type="button" class="btn btn-outline-primary btn-sm" id="btnNoticeTrackingUpload" onclick="triggerNoticeTrackingUpload()" style="font-size:12px; padding:5px 10px;">
                                     <i class="fa-solid fa-paperclip"></i> Chọn file
                                 </button>
@@ -1700,10 +1700,10 @@
                             <textarea class="form-control" id="payoutNote" rows="2" placeholder="Nhập ghi chú chi tiết quá trình chi trả (nếu có)..." maxlength="1000"></textarea>
                         </div>
 
-                        <!-- Tài liệu kèm theo: bảng chuẩn dùng chung (btnn_tai_lieu_kem_theo.js, gắn tại quan_ly_kinh_phi_kpdt.js) -->
+                        <!-- Tài liệu đính kèm: bảng chuẩn dùng chung (btnn_tai_lieu_kem_theo.js, gắn tại quan_ly_kinh_phi_kpdt.js) -->
                         <div id="payoutTlkt"></div>
                         <div class="form-group" style="display: none;">
-                            <span class="form-label">Tài liệu kèm theo <span class="required">*</span></span>
+                            <span class="form-label">Tài liệu đính kèm <span class="required">*</span></span>
                             <div style="display: flex; align-items: center; gap: 15px; background: #F8FAFC; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--border-radius-sm);">
                                 <button type="button" class="btn btn-outline-primary btn-sm" id="btnPayoutUpload" onclick="triggerPayoutFileUpload()" style="font-size: 12px; padding: 5px 10px;">
                                     <i class="fa-solid fa-cloud-arrow-up"></i> Chọn tài liệu đính kèm
@@ -1748,7 +1748,7 @@
                             <span class="form-label">Căn cứ / lý do trả lại ngân sách nhà nước <span class="required">*</span></span>
                             <textarea class="form-control" id="treasuryForfeitReason" rows="2" placeholder="Nhập căn cứ, lý do trả lại ngân sách nhà nước..."></textarea>
                         </div>
-                        <!-- Tài liệu kèm theo (chứng từ nộp ngân sách): bảng chuẩn dùng chung, gắn tại quan_ly_kinh_phi_kpdt.js -->
+                        <!-- Tài liệu đính kèm (chứng từ nộp ngân sách): bảng chuẩn dùng chung, gắn tại quan_ly_kinh_phi_kpdt.js -->
                         <div id="treasuryTlkt"></div>
                         <div class="form-group" style="display:none;">
                             <span class="form-label">Tài liệu chứng từ nộp ngân sách <span class="required">*</span></span>
@@ -1902,22 +1902,22 @@
 
     <!-- SCRIPTS -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="quan_ly_kinh_phi_boi_thuong.js?v=20261028tl1"></script>
-    <script src="btnn_luong_xu_ly.js?v=20261028tl1"></script>
+    <script src="quan_ly_kinh_phi_boi_thuong.js?v=20261029tlcam2"></script>
+    <script src="btnn_luong_xu_ly.js?v=20261029sync"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
-    <script src="btnn_tai_lieu_kem_theo.js?v=20261027tk3"></script>
+    <script src="btnn_tai_lieu_kem_theo.js?v=20261029tldk"></script>
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
-    <script src="quan_ly_kinh_phi_kptb.js?v=20261028tl1"></script>
+    <script src="quan_ly_kinh_phi_kptb.js?v=20261029tldk"></script>
     <!-- [th7] Khoản thiệt hại của bản ghi tạo từ Tòa án (02 cấp): cộng theo nhóm, dòng "Các thiệt hại khác" -->
     <script src="quan_ly_kinh_phi_thkhac.js?v=20261027th7"></script>
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
-    <script src="quan_ly_kinh_phi_qdtu.js?v=20261028tl1"></script>
-    <script src="quan_ly_kinh_phi_kpcd.js?v=20261028tl1"></script>
-    <script src="quan_ly_kinh_phi_kpdt.js?v=20261028tl1"></script>
+    <script src="quan_ly_kinh_phi_qdtu.js?v=20261029tlcam2"></script>
+    <script src="quan_ly_kinh_phi_kpcd.js?v=20261029tldk"></script>
+    <script src="quan_ly_kinh_phi_kpdt.js?v=20261029tlcam2"></script>
     <script src="quan_ly_kinh_phi_kpdc.js?v=20261028tl1"></script>
-    <script src="quan_ly_kinh_phi_kpux.js?v=20261028tl1"></script>
+    <script src="quan_ly_kinh_phi_kpux.js?v=20261029tldk"></script>
     <!-- [hlqd] Chặn Trình thông báo chi trả / Cập nhật chi trả khi Quyết định GQBT Không có hiệu lực -->
-    <script src="quan_ly_kinh_phi_hlqd.js?v=20261027p8"></script>
+    <script src="quan_ly_kinh_phi_hlqd.js?v=20261028qddx1"></script>
 
     <!-- Custom Confirmation Modal HTML -->
     <div id="customConfirmOverlay" class="confirm-modal-overlay">

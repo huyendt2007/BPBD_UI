@@ -51,12 +51,12 @@
     window.HT_LOI_LIST = LOI_LIST;
     // Pill trạng thái dùng chung Bước 2, 3, 4 (mỗi nhóm trạng thái một màu)
     const PILL = {
-        teal: ['#f0fdfa', '#0f766e', '#14b8a6'], amber: ['#fffbeb', '#b45309', '#f59e0b'], indigo: ['#eef2ff', '#4338ca', '#6366f1'], red: ['#fef2f2', '#b91c1c', '#ef4444'],
+        teal: ['#f0fdfa', '#0f766e', '#14b8a6'], amber: ['#fffbeb', '#b45309', '#f59e0b'], indigo: ['#eef2ff', '#4338ca', '#6366f1'], red: ['#fef2f2', '#b91c1c', '#ef4444'], tralai: ['#fef3c7', '#b45309', '#fde68a'],
         emerald: ['#ecfdf5', '#047857', '#10b981'], pink: ['#fdf2f8', '#be185d', '#ec4899'], slate: ['#f1f5f9', '#475569', '#94a3b8'], orange: ['#fff7ed', '#c2410c', '#f97316']
     };
     function pillTone(t) {
         t = String(t || '');
-        if (/^Bị trả lại/.test(t)) return 'red';
+        if (/^Bị trả lại/.test(t)) return 'tralai';
         if (/^Chờ duyệt/.test(t)) return 'indigo';
         if (/^Chờ trả lại/.test(t)) return 'orange';
         if (/^Chờ ban hành/.test(t)) return 'amber';
@@ -190,7 +190,7 @@
             const st = activeDossier.status;
             const big = 'font-size:14px; padding:8px 16px; font-weight:800; border-radius:8px; display:inline-flex; align-items:center; gap:8px;';
             if (st === 'Chờ duyệt QĐ thành lập' || st === 'Chờ duyệt thành lập hội đồng') bc.innerHTML = '<span class="badge" style="' + big + ' background:#ede9fe; color:#6d28d9; border:1px solid #ddd6fe;"><i class="fa-solid fa-hourglass-half"></i> Chờ duyệt - QĐ thành lập hội đồng</span>';
-            else if (st === 'Bị trả lại thành lập HĐ' || st === 'Từ chối duyệt QĐ thành lập') bc.innerHTML = '<span class="badge" style="' + big + ' background:#fef2f2; color:#dc2626; border:1px solid #fecaca;"><i class="fa-solid fa-circle-xmark"></i> Bị trả lại - QĐ thành lập hội đồng</span>';
+            else if (st === 'Bị trả lại thành lập HĐ' || st === 'Từ chối duyệt QĐ thành lập') bc.innerHTML = '<span class="badge" style="' + big + ' background:#fef3c7; color:#b45309; border:1px solid #fde68a;"><i class="fa-solid fa-circle-xmark"></i> Bị trả lại - QĐ thành lập hội đồng</span>';
             else if (st !== 'Chờ thành lập hội đồng') bc.innerHTML = '<span class="badge" style="' + big + ' background:#16a34a; color:#fff; border:1px solid #15803d;"><i class="fa-solid fa-circle-check"></i> Đã ban hành</span>';
         }
         const cta = el('s1CreateCtaCard');
@@ -415,9 +415,9 @@
         if (!isSplitDossier() || !units.length) { host.style.display = 'none'; host.innerHTML = ''; return; }
         host.style.display = 'block';
         host.innerHTML = '<div style="font-weight:700; color:var(--primary-color); font-size:14px; margin-bottom:8px;"><i class="fa-solid fa-sitemap"></i> Phân tách theo cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</div>'
-            + '<table class="dense-table" style="width:100%;"><thead><tr><th style="width:45px; text-align:center;">STT</th><th>Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th><th style="width:90px; text-align:center;">Số cán bộ</th><th>Cán bộ</th><th>Tài liệu kèm theo phần đơn vị</th><th style="width:170px;">Trạng thái</th></tr></thead><tbody>'
+            + '<table class="dense-table" style="width:100%;"><thead><tr><th style="width:45px; text-align:center;">STT</th><th>Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th><th style="width:90px; text-align:center;">Số cán bộ</th><th>Cán bộ</th><th>Tài liệu đính kèm phần đơn vị</th><th style="width:170px;">Trạng thái</th></tr></thead><tbody>'
             + units.map((u, i) => {
-                // Tài liệu kèm theo phần đơn vị: văn bản kiến nghị của Hội đồng (và tài liệu kèm theo Bước 2), mỗi tệp kèm Xem / Tải
+                // Tài liệu đính kèm phần đơn vị: văn bản kiến nghị của Hội đồng (và tài liệu đính kèm Bước 2), mỗi tệp kèm Xem / Tải
                 const files = (u.files && u.files.length ? u.files : (ykhdFiles('kienNghi').map(f => f.name).concat((activeDossier.ht2Tlkt || []).map(t => t.name))))
                     .filter(Boolean);
                 const list = files.length ? files : ['Van_ban_kien_nghi_' + activeDossier.code + '.pdf'];
@@ -453,7 +453,7 @@
             } else {
                 host.dataset.ht2Mounted = '';
                 // Chế độ xem: chỉ hiển thị bảng khi có tài liệu
-                host.innerHTML = typeof tlktViewHtml === 'function' && list.length ? tlktViewHtml(list, { split: false }) : ''; // Không thuộc phiếu trình: 01 bảng Tài liệu kèm theo
+                host.innerHTML = typeof tlktViewHtml === 'function' && list.length ? tlktViewHtml(list, { split: false }) : ''; // Không thuộc phiếu trình: 01 bảng Tài liệu đính kèm
             }
         }
         const add = el('s2AddOfficerBtn'); if (add) add.style.display = ro ? 'none' : 'inline-flex';

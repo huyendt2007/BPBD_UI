@@ -102,7 +102,7 @@
 ### 1. MẪU SỐ 02/BTNN: GIẤY TIẾP NHẬN YÊU CẦU BỒI THƯỜNG
 - **Tên tệp template**: `Mau_02_BTNN_Template.docx`
 - **Mục đích**: Cơ quan giải quyết bồi thường lập và giao/gửi cho người yêu cầu bồi thường để xác nhận thời điểm và thành phần hồ sơ đã tiếp nhận.
-- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Tiếp nhận hồ sơ > Thao tác "Trình ký Phiếu tiếp nhận" (Danh sách hồ sơ tiếp nhận, Màn hình Xem chi tiết hồ sơ tiếp nhận) > MH04 - Popup Trình ký Phiếu tiếp nhận hồ sơ > Hình thức ký `Ký số trên hệ thống`, Tệp văn bản trình ký `Sinh văn bản theo mẫu 02/BTNN`*. Chỉ áp dụng hồ sơ Nguồn `Tiếp nhận mới`, Hình thức tiếp nhận `Trực tiếp` / `Qua dịch vụ bưu chính`.
+- **Màn hình kích hoạt**: *Website Quản trị > Công tác bồi thường nhà nước > Tiếp nhận hồ sơ > MH02 - Màn hình Tiếp nhận hồ sơ > Lưu thông tin (sinh Phiếu tiếp nhận Dự thảo, trình Lãnh đạo ký duyệt theo luồng đã cấu hình; Lãnh đạo cấp cuối Ký duyệt thì ký số, ban hành)*. Chỉ áp dụng hồ sơ Nguồn `Tiếp nhận mới`, Hình thức tiếp nhận `Trực tiếp` / `Qua dịch vụ bưu chính`.
 - **Quy tắc đặt tên file tải về**: `Mau_02_BTNN_Giay_tiep_nhan_[Mã vụ việc].docx`
 - **Biến dùng chung**: `##SoHieuNghiDinh##`, `##NgayBanHanhNghiDinh##`, `##TenCoQuanChuQuan##`, `##TenCoQuanGiaiQuyetBoiThuong##` (tên cơ quan tiếp nhận yêu cầu bồi thường - (1)), `##DiaDanh##` (2), `##ChucVuNguoiKy##` theo Bảng trường thông tin dùng chung (Phần I mục 8).
 - **Nội dung cố định**: không có (Số, ký hiệu văn bản, Nơi nhận, Họ tên người ký lấy theo biến tại bảng dưới).
@@ -110,16 +110,16 @@
 #### Bảng mapping chi tiết Mẫu 02/BTNN:
 | STT | Vị trí trên mẫu | Tên biến | Màn hình nguồn | Trường dữ liệu trên giao diện | Quy tắc xử lý & Định dạng | Ví dụ |
 |:---:|---|---|---|---|---|---|
-| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Tiếp nhận hồ sơ > MH04 - Popup Trình ký Phiếu tiếp nhận hồ sơ | Số, ký hiệu văn bản | Theo giá trị trường `Số, ký hiệu văn bản` trên giao diện.<br>- Gồm chữ viết tắt tên cơ quan giải quyết bồi thường (1). | `15/TB-STP` |
-| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Tiếp nhận hồ sơ > MH04 - Popup Trình ký Phiếu tiếp nhận hồ sơ | Ngày văn bản | Theo giá trị trường `Ngày văn bản` trên giao diện.<br>Định dạng: `ngày dd tháng mm năm yyyy`. | `ngày 10 tháng 03 năm 2026` |
+| 1 | Bảng đầu trang - Ô trái | `##SoKyHieuVanBan##` | Tiếp nhận hồ sơ > MH02 - Màn hình Tiếp nhận hồ sơ > Khối Thông tin Phiếu tiếp nhận (Mẫu 02/BTNN) | Số, ký hiệu văn bản | Theo giá trị trường `Số, ký hiệu văn bản` trên giao diện.<br>- Gồm chữ viết tắt tên cơ quan giải quyết bồi thường (1). | `15/TB-STP` |
+| 2 | Bảng đầu trang - Ô phải | `##NgayThangNamBanHanh##` | Tiếp nhận hồ sơ > MH02 - Màn hình Tiếp nhận hồ sơ > Khối Thông tin Phiếu tiếp nhận (Mẫu 02/BTNN) | Ngày văn bản | Theo giá trị trường `Ngày văn bản` trên giao diện.<br>Định dạng: `ngày dd tháng mm năm yyyy`. | `ngày 10 tháng 03 năm 2026` |
 | 3 | Kính gửi | `##TenNguoiYeuCauBoiThuong##` | Tiếp nhận hồ sơ > Thông tin người yêu cầu | Họ và tên / Tên tổ chức | Theo giá trị trường `Họ và tên / Tên tổ chức` trên giao diện (Phần I mục 4):<br>- `Loại người yêu cầu` = `Cá nhân`: Họ và tên.<br>- `Loại người yêu cầu` = `Tổ chức`: Tên tổ chức. | `Nguyễn Văn Nam` |
 | 4 | Dưới Kính gửi | `##DiaChiNguoiYeuCauBoiThuong##` | Tiếp nhận hồ sơ > Thông tin người yêu cầu | Địa chỉ chi tiết; Phường/Xã; Tỉnh/Thành phố; Quốc gia | Ghép theo Phần I mục 5: `[Địa chỉ chi tiết], [Phường/Xã], [Tỉnh/Thành phố]`; bỏ phần trống; `Quốc gia` khác `Việt Nam` thì ghép thêm `[Quốc gia]` ở cuối. | `Số 12 phố Hàng Bông, Phường Hoàn Kiếm, Thành phố Hà Nội` |
 | 5 | Dưới Địa chỉ | `##SoDienThoaiNguoiYeuCau##` | Tiếp nhận hồ sơ > Thông tin người yêu cầu | Số điện thoại | Theo giá trị trường `Số điện thoại` trên giao diện. | `0912345678` |
 | 6 | Đoạn 1 | `##NgayTiepNhan##` | Tiếp nhận hồ sơ | Thời điểm tiếp nhận | Theo phần ngày của giá trị trường `Thời điểm tiếp nhận` trên giao diện.<br>Định dạng: `dd/mm/yyyy`. | `10/03/2026` |
 | 7 | Đoạn 1 (3) | `##HinhThucNopHoSo##` | Tiếp nhận hồ sơ > Thông tin tổng quan vụ việc | Hình thức tiếp nhận | Theo giá trị trường `Hình thức tiếp nhận` trên giao diện.<br>- Viết thường; bỏ chữ `Qua ` ở đầu giá trị (câu mẫu đã có chữ "qua"). | `trực tiếp` |
 | 8 | Đoạn 2 | `##DanhSachGiayToTiepNhan##` | Tiếp nhận hồ sơ | Tên tài liệu (Bảng tài liệu đính kèm); Tên văn bản, căn cứ (Văn bản làm căn cứ yêu cầu bồi thường) | Theo giá trị trường `Tên tài liệu` của Bảng tài liệu đính kèm và trường `Tên văn bản, căn cứ` của Văn bản làm căn cứ yêu cầu bồi thường trên giao diện.<br>- Mỗi tài liệu 01 dòng dạng `- [Tên]`; bỏ dòng trống, bỏ tên trùng.<br>- Không có tài liệu: bỏ cả dòng "Hồ sơ yêu cầu bồi thường gồm: (nếu có)". | `- Đơn yêu cầu bồi thường`<br>`- Bản án hình sự phúc thẩm số 18/2025/HSPT` |
-| 9 | Nơi nhận | `##NoiNhan##` | Tiếp nhận hồ sơ > MH04 - Popup Trình ký Phiếu tiếp nhận hồ sơ | Nơi nhận | Theo giá trị trường `Nơi nhận` trên giao diện.<br>- Mỗi dòng 01 nơi nhận, in đúng thứ tự nhập; bỏ dòng trống. | `- Như trên;`<br>`- Bộ Tư pháp (để biết);`<br>`- Lưu: VT, HSVV.` |
-| 10 | Bảng ký - Ô phải | `##HoTenNguoiKy##` | Tiếp nhận hồ sơ > MH04 - Popup Trình ký Phiếu tiếp nhận hồ sơ (Bước 2) | Lãnh đạo (cấp ký duyệt cuối cùng) | Theo giá trị trường `Lãnh đạo` của cấp ký duyệt cuối cùng trên giao diện.<br>- Chỉ lấy Họ và tên. | `Nguyễn Văn An` |
+| 9 | Nơi nhận | `##NoiNhan##` | Tiếp nhận hồ sơ > MH02 - Màn hình Tiếp nhận hồ sơ > Khối Thông tin Phiếu tiếp nhận (Mẫu 02/BTNN) | Nơi nhận | Theo giá trị trường `Nơi nhận` trên giao diện.<br>- Mỗi dòng 01 nơi nhận, in đúng thứ tự nhập; bỏ dòng trống. | `- Như trên;`<br>`- Bộ Tư pháp (để biết);`<br>`- Lưu: VT, HSVV.` |
+| 10 | Bảng ký - Ô phải | `##HoTenNguoiKy##` | Tiếp nhận hồ sơ > MH04 - Màn hình Ký duyệt / Từ chối Phiếu tiếp nhận (cấp cuối) | Lãnh đạo ký duyệt cấp cuối | Họ và tên Lãnh đạo thực hiện Ký duyệt tại cấp ký duyệt cuối cùng.<br>- Dự thảo (chưa ký duyệt cấp cuối): để trống. | `Nguyễn Văn An` |
 
 ---
 
