@@ -1,6 +1,6 @@
 /*
  * Xem xét trách nhiệm hoàn trả - Màn danh sách (Prompt 1):
- * - Giả lập người dùng theo đơn vị: Đơn vị tạo hội đồng / Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại A, B / Sở Tư pháp / Lãnh đạo.
+ * - Giả lập người dùng theo đơn vị: Đơn vị tạo hội đồng / Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương A, B / Sở Tư pháp / Lãnh đạo.
  * - Trạng thái 02 tầng: trạng thái chi tiết (hồ sơ / phần đơn vị / cán bộ) và trạng thái chung (cấp ngoài) tổng hợp theo phạm vi dữ liệu.
  * - Nạp sau script chính của trang; ghi đè các hàm hiển thị danh sách (renderRefundTable, tab, bộ lọc, thao tác).
  */
@@ -14,8 +14,8 @@
     const STP_UNITS = [U_A, U_CHU];
     const HT_SCOPES = {
         don_vi_chu: { label: 'Đơn vị tạo hội đồng (' + U_CHU + ')', unit: U_CHU, legacy: 'chuyen_vien' },
-        don_vi_a: { label: 'Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại A (' + U_A + ')', unit: U_A, legacy: 'chuyen_vien' },
-        don_vi_b: { label: 'Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại B (' + U_B + ')', unit: U_B, legacy: 'chuyen_vien' },
+        don_vi_a: { label: 'Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương A (' + U_A + ')', unit: U_A, legacy: 'chuyen_vien' },
+        don_vi_b: { label: 'Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương B (' + U_B + ')', unit: U_B, legacy: 'chuyen_vien' },
         stp: { label: 'Sở Tư pháp (' + U_STP + ')', unit: U_STP, legacy: 'chuyen_vien' },
         lanh_dao: { label: 'Lãnh đạo phê duyệt', unit: '', legacy: 'lanh_dao' }
     };
@@ -89,7 +89,7 @@
         'HT-2026-018': { owner: U_CHU, officers: [C('Bùi Văn Nam', U_A, 'BTC_HT', { hd: 25000000 })] },
         'HT-2026-021': { owner: U_CHU, officers: [
             C('Phạm Quốc Huy', U_A, 'CD_HT', { hd: 55000000 }),
-            C('Đặng Thị Lan', U_B, 'CBH_HT', { hd: 30000000 })] }
+            C('Đặng Thị Lan', U_A, 'CBH_HT', { hd: 30000000, pay: U_B })] }
     };
     // Dữ liệu mẫu bổ sung phủ các trạng thái của ma trận (ht_du_lieu_mau.js)
     Object.keys(window.HT_EXTRA_SPLIT || {}).forEach(code => {
@@ -126,6 +126,9 @@
     function issued(o) { return !['CBH_HT', 'CD_HT', 'BTC_HT'].includes(o.st); }
     function unitIssued(d, unit) { const l = (splitOf(d) || { officers: [] }).officers.filter(o => o.unit === unit); return l.length > 0 && l.every(issued); }
     function cur() { return HT_SCOPES[htScope]; }
+    // Đơn vị ban hành QĐ hoàn trả của cán bộ: tố tụng hình sự - Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương; lĩnh vực khác - Đơn vị tạo Hội đồng (01 QĐ cho toàn bộ cán bộ)
+    function isTths(d) { return /tố tụng hình sự/i.test((d && d.claimField) || ''); }
+    function issuerOf(d, o) { return isTths(d) ? (o.pay || o.unit) : ownerOf(d); }
 
     // ===== Phạm vi dữ liệu =====
     // Trả về { visible, full, officers } của hồ sơ đối với người dùng giả lập
@@ -140,8 +143,9 @@
             const list = all.filter(o => STP_UNITS.includes(o.unit) && unitIssued(d, o.unit));
             return { visible: list.length > 0, full: false, officers: list };
         }
-        // Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương (pay, mặc định = đơn vị quản lý): thấy cán bộ do đơn vị thu tiền sau khi ban hành QĐ hoàn trả
-        const list = all.filter(o => o.unit === unit || ((o.pay || o.unit) === unit && issued(o)));
+        // Đơn vị ban hành QĐ hoàn trả: cán bộ của phần đơn vị; Cơ quan trực tiếp quản lý: cán bộ của đơn vị;
+        // Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương (pay, mặc định = đơn vị quản lý): cán bộ do đơn vị thu tiền sau khi ban hành QĐ hoàn trả
+        const list = all.filter(o => issuerOf(d, o) === unit || o.unit === unit || ((o.pay || o.unit) === unit && issued(o)));
         return { visible: list.length > 0, full: false, officers: list };
     }
 
@@ -205,8 +209,10 @@
         }
         if (!isSplit(d)) return sc.full && ['Chờ thành lập hội đồng', 'Bị trả lại thành lập HĐ', 'Từ chối duyệt QĐ thành lập', 'Bị trả lại QĐ đình chỉ', 'Họp hội đồng'].includes(d.status);
         if (htScope === 'stp') return sc.officers.some(o => o.st === 'THU');
-        // Sau khi chốt ý kiến HĐ: chỉ cán bộ thuộc đơn vị của người dùng (đơn vị tạo hội đồng không thao tác phần của đơn vị khác)
-        return sc.officers.some(o => (sc.full && o.st === 'THU') || o.unit === cur().unit && (['CBH_HT', 'BTC_HT', 'CBH_MIEN', 'CBH_GIAM', 'BTC_MIEN', 'BTC_GIAM', 'THU'].includes(o.st) || /^(BTC|TL)_/.test(o.trinh || '')));
+        // Sau khi chốt ý kiến HĐ: Đơn vị ban hành QĐ hoàn trả - trình ký QĐ hoàn trả, trình ký lại; đơn vị tạo Hội đồng, Cơ quan đang quản lý, sử dụng, trả lương - thu tiền
+        const U = cur().unit;
+        return sc.officers.some(o => (sc.full && o.st === 'THU') || ((o.pay || o.unit) === U && o.st === 'THU')
+            || (issuerOf(d, o) === U && (['CBH_HT', 'BTC_HT', 'CBH_MIEN', 'CBH_GIAM', 'BTC_MIEN', 'BTC_GIAM'].includes(o.st) || /^(BTC|TL)_/.test(o.trinh || ''))));
     }
     function gatesOf(d, sc) {
         const list = [];
@@ -226,7 +232,7 @@
         }
         if (sc.full) { list.push({ gate: 'Trình ký QĐ thành lập Hội đồng' }); list.push({ gate: 'Chốt ý kiến Hội đồng' }); }
         if (htScope === 'stp') { if (sc.officers.some(o => o.stp)) list.push({ gate: 'Ghi nhận nộp tiền' }); return list; }
-        const mine = sc.officers.filter(o => o.unit === cur().unit);
+        const mine = sc.officers.filter(o => issuerOf(d, o) === cur().unit || o.unit === cur().unit);
         if (!mine.length) return list;
         if (mine.some(o => o.st !== 'CBH_HT')) list.push({ gate: 'Trình ký QĐ hoàn trả' });
         if (mine.some(o => o.st === 'MIEN' || o.st === 'CD_MIEN')) list.push({ gate: 'Trình ký QĐ miễn hoàn trả' });

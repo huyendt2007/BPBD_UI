@@ -15,9 +15,9 @@
     const OFFICER_UNIT = {
         'Nguyễn Văn Đạt': U_A, 'Lê Văn Cường': U_A, 'Hoàng Văn D': U_A, 'Trần Thị Bình': U_B, 'Hoàng Thị M': U_A, 'Phạm Văn Thiếu Sót': U_A,
         'Trần Văn Lỗi': U_B, 'Vũ Văn Tài': U_A, 'Ngô Quyền': U_B, 'Nguyễn Văn Chết': U_A, 'Lưu Quốc Toàn': U_B, 'Bùi Văn Nam': U_A,
-        'Phạm Quốc Huy': U_A, 'Đặng Thị Lan': U_B, 'Đỗ Thị Bình': U_A, 'Vũ Đình Trọng': U_B, 'Hoàng Văn Tuấn': U_A
+        'Phạm Quốc Huy': U_A, 'Đặng Thị Lan': U_A, 'Đỗ Thị Bình': U_A, 'Vũ Đình Trọng': U_B, 'Hoàng Văn Tuấn': U_A
     };
-    const PAY_UNIT_DEMO = { 'Trần Thị Bình': U_A };
+    const PAY_UNIT_DEMO = { 'Trần Thị Bình': U_A, 'Đặng Thị Lan': U_B };
     const PRE_SPLIT = ['Chờ thành lập hội đồng', 'Chờ duyệt QĐ thành lập', 'Bị trả lại thành lập HĐ', 'Từ chối duyệt QĐ thành lập', 'Họp hội đồng', 'Không xem xét trách nhiệm hoàn trả'];
     const REQ = 'Đây là trường bắt buộc';
 
@@ -104,7 +104,7 @@
     try {
         dossiersList.forEach(d => {
             d.ownerUnit = ownerOf(d);
-            // Dữ liệu mẫu lĩnh vực tố tụng hình sự: Cơ quan trực tiếp quản lý ban hành QĐ hoàn trả
+            // Dữ liệu mẫu lĩnh vực tố tụng hình sự: Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương ban hành QĐ hoàn trả (gán tại ht_du_lieu_mau.js)
             if (d.code === 'HT-2026-021' && !d.claimField) d.claimField = 'Trong hoạt động tố tụng hình sự';
             (d.refundOfficers || []).forEach(o => {
                 if (OFFICER_UNIT[o.name]) o.agency = OFFICER_UNIT[o.name];
@@ -131,8 +131,12 @@
     function officerVisible(o) {
         if (scope === 'lanh_dao' || isOwnerScope()) return true;
         if (scope === 'stp') return STP_UNITS.includes(o.agency);
-        return o.agency === myUnit;
+        // Cơ quan trực tiếp quản lý hoặc Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương của cán bộ
+        return o.agency === myUnit || (o.payUnit || o.agency) === myUnit;
     }
+    // Đơn vị ban hành QĐ hoàn trả của cán bộ: tố tụng hình sự - Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương; lĩnh vực khác - Đơn vị tạo Hội đồng (01 QĐ cho toàn bộ cán bộ)
+    const isTthsD = () => /tố tụng hình sự/i.test((activeDossier && activeDossier.claimField) || '');
+    const unitKeyOfO = o => (isTthsD() ? (o.payUnit || o.agency) : ownerOf(activeDossier));
     function canEditStep2() {
         return !isViewMode && currentPerspective !== 'leader' && isOwnerScope() && activeDossier.status === 'Họp hội đồng';
     }
@@ -191,7 +195,7 @@
             const big = 'font-size:14px; padding:8px 16px; font-weight:800; border-radius:8px; display:inline-flex; align-items:center; gap:8px;';
             if (st === 'Chờ duyệt QĐ thành lập' || st === 'Chờ duyệt thành lập hội đồng') bc.innerHTML = '<span class="badge" style="' + big + ' background:#ede9fe; color:#6d28d9; border:1px solid #ddd6fe;"><i class="fa-solid fa-hourglass-half"></i> Chờ duyệt - QĐ thành lập hội đồng</span>';
             else if (st === 'Bị trả lại thành lập HĐ' || st === 'Từ chối duyệt QĐ thành lập') bc.innerHTML = '<span class="badge" style="' + big + ' background:#fef3c7; color:#b45309; border:1px solid #fde68a;"><i class="fa-solid fa-circle-xmark"></i> Bị trả lại - QĐ thành lập hội đồng</span>';
-            else if (st !== 'Chờ thành lập hội đồng') bc.innerHTML = '<span class="badge" style="' + big + ' background:#16a34a; color:#fff; border:1px solid #15803d;"><i class="fa-solid fa-circle-check"></i> Đã ban hành</span>';
+            else if (st !== 'Chờ thành lập hội đồng') bc.innerHTML = '<span class="badge" style="font-size:13px; padding:5px 12px; font-weight:700; border-radius:999px; display:inline-flex; align-items:center; gap:6px; background:#dcfce7; color:#15803d; border:1px solid #bbf7d0;"><i class="fa-solid fa-circle-check"></i> Đã ban hành</span>';
         }
         const cta = el('s1CreateCtaCard');
         if (!cta) return;
@@ -205,6 +209,12 @@
         Array.from(body.children).forEach(ch => {
             const keep = (pt && ch.contains(pt)) || (fv && ch.contains(fv)) || ch.id === 's1ResubmitContainer';
             if (off && !keep) { ch.dataset.ht2Hide = '1'; ch.style.display = 'none'; }
+            else if (ch.dataset.ht2Hide) { delete ch.dataset.ht2Hide; ch.style.display = ''; }
+        });
+        // Lưới 01 hàng (Hình thức ban hành ... Lãnh đạo ký): Ký ngoài chỉ giữ Hình thức ban hành
+        const grid = el('s1OfficialGrid');
+        if (grid) Array.from(grid.children).forEach(ch => {
+            if (off && !(pt && ch.contains(pt))) { ch.dataset.ht2Hide = '1'; ch.style.display = 'none'; }
             else if (ch.dataset.ht2Hide) { delete ch.dataset.ht2Hide; ch.style.display = ''; }
         });
         const unit = el('s1OfficialIssuingUnit'), unitGroup = unit && unit.closest('.form-group');
@@ -411,11 +421,12 @@
 
     function renderUnitSplit() {
         const host = el('ht2UnitSplit'); if (!host) return;
-        const units = (activeDossier.htUnits || []).filter(u => scope === 'lanh_dao' || isOwnerScope() || (scope === 'stp' ? STP_UNITS.includes(u.unit) : u.unit === myUnit));
-        if (!isSplitDossier() || !units.length) { host.style.display = 'none'; host.innerHTML = ''; return; }
+        // Bảng phân tách: chỉ lĩnh vực tố tụng hình sự (lĩnh vực khác: 01 Quyết định hoàn trả cho toàn bộ cán bộ, không tách phần đơn vị)
+        const units = (activeDossier.htUnits || []).filter(u => scope === 'lanh_dao' || isOwnerScope() || (activeDossier.refundOfficers || []).some(o => o && unitKeyOfO(o) === u.unit && officerVisible(o)));
+        if (!isSplitDossier() || !isTthsD() || !units.length) { host.style.display = 'none'; host.innerHTML = ''; return; }
         host.style.display = 'block';
-        host.innerHTML = '<div style="font-weight:700; color:var(--primary-color); font-size:14px; margin-bottom:8px;"><i class="fa-solid fa-sitemap"></i> Phân tách theo cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</div>'
-            + '<table class="dense-table" style="width:100%;"><thead><tr><th style="width:45px; text-align:center;">STT</th><th>Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại</th><th style="width:90px; text-align:center;">Số cán bộ</th><th>Cán bộ</th><th>Tài liệu đính kèm phần đơn vị</th><th style="width:170px;">Trạng thái</th></tr></thead><tbody>'
+        host.innerHTML = '<div style="font-weight:700; color:var(--primary-color); font-size:14px; margin-bottom:8px;"><i class="fa-solid fa-sitemap"></i> Phân tách theo cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương</div>'
+            + '<table class="dense-table" style="width:100%;"><thead><tr><th style="width:45px; text-align:center;">STT</th><th>Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương</th><th style="width:90px; text-align:center;">Số cán bộ</th><th>Cán bộ</th><th>Tài liệu đính kèm phần đơn vị</th><th style="width:170px;">Trạng thái</th></tr></thead><tbody>'
             + units.map((u, i) => {
                 // Tài liệu đính kèm phần đơn vị: văn bản kiến nghị của Hội đồng (và tài liệu đính kèm Bước 2), mỗi tệp kèm Xem / Tải
                 const files = (u.files && u.files.length ? u.files : (ykhdFiles('kienNghi').map(f => f.name).concat((activeDossier.ht2Tlkt || []).map(t => t.name))))
@@ -662,18 +673,20 @@
             return;
         }
         collectStep2();
-        const units = Array.from(new Set(officers.map(o => o.agency)));
+        // Tố tụng hình sự: phân tách theo Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương; lĩnh vực khác: 01 khối của Đơn vị tạo Hội đồng
+        const units = Array.from(new Set(officers.map(unitKeyOfO)));
+        const splitMsg = isTthsD() ? 'phân tách về ' + units.length + ' cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương' : 'chuyển sang ban hành 01 Quyết định hoàn trả cho toàn bộ cán bộ của hồ sơ';
         confirmBox('Xác nhận lưu ý kiến hội đồng',
-            'Danh sách người thi hành công vụ gây thiệt hại sẽ được phân tách về ' + units.length + ' cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại và không được cập nhật ý kiến của Hội đồng. Bạn có chắc chắn muốn lưu ý kiến hội đồng?',
+            'Danh sách người thi hành công vụ gây thiệt hại sẽ được ' + splitMsg + ' và không được cập nhật ý kiến của Hội đồng. Bạn có chắc chắn muốn lưu ý kiến hội đồng?',
             'Lưu', () => {
                 activeDossier.dcPreOfficers = (activeDossier.refundOfficers || []).filter(o => o && o.dcPre);
                 activeDossier.refundOfficers = officers;
                 const files = ykhdFiles('kienNghi').map(f => f.name).concat((activeDossier.ht2Tlkt || []).map(t => t.name));
-                activeDossier.htUnits = units.map(u => ({ unit: u, status: 'Chờ ban hành QĐ hoàn trả', officers: officers.filter(o => o.agency === u).map(o => o.name), files }));
+                activeDossier.htUnits = units.map(u => ({ unit: u, status: 'Chờ ban hành QĐ hoàn trả', officers: officers.filter(o => unitKeyOfO(o) === u).map(o => o.name), files }));
                 officers.forEach(o => { o.ctStatus = 'Chờ ban hành QĐ hoàn trả'; o.status = 'Chờ ban hành QĐ'; o.progressClass = 'warning'; });
                 activeDossier.refundTotal = officers.reduce((s, o) => s + (o.total || 0), 0);
                 if (!activeDossier.timeline) activeDossier.timeline = [];
-                activeDossier.timeline.unshift({ time: nowShort(), text: 'Lưu ý kiến của Hội đồng; phân tách danh sách cán bộ về ' + units.length + ' cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại.' });
+                activeDossier.timeline.unshift({ time: nowShort(), text: 'Lưu ý kiến của Hội đồng; danh sách cán bộ được ' + splitMsg + '.' });
                 switchSimulatorState(3);
                 currentViewStep = 2; // hiển thị xong chuyển sang Bước 3 (switchWorkflowStep bên dưới)
                 isViewMode = true; currentMode = 'view';
@@ -681,7 +694,7 @@
                 // Sau khi lưu: tự chuyển sang Bước 3, các phần đơn vị ở trạng thái Chờ ban hành QĐ hoàn trả
                 if (typeof switchWorkflowStep === "function") switchWorkflowStep(3);
                 if (typeof tlhdPersistCreated === 'function') tlhdPersistCreated();
-                showToast('Lưu ý kiến hội đồng thành công. Danh sách cán bộ đã được phân tách về ' + units.length + ' cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại.', 'success');
+                showToast('Lưu ý kiến hội đồng thành công. Danh sách cán bộ đã được ' + splitMsg + '.', 'success');
             });
     };
 
@@ -695,8 +708,8 @@
         if (!isOwnerScope() && scope !== 'lanh_dao') drop(/switchToEditMode\((1|2)\)|tlhdOpenModal/);
         // Sở Tư pháp: chỉ ghi nhận thu tiền / trả lại tiền; không Miễn, Giảm, Đình chỉ
         if (scope === 'stp') drop(/dchtOpenModal/);
-        // Sau khi chốt ý kiến HĐ, lĩnh vực tố tụng hình sự: đơn vị tạo Hội đồng không có cán bộ của đơn vị thì không thao tác Bước 3, 4
-        if (isSplitDossier() && scope === 'don_vi_chu' && /tố tụng hình sự/i.test(activeDossier.claimField || '') && !(activeDossier.refundOfficers || []).some(o => o.agency === myUnit || (o.payUnit || o.agency) === myUnit)) drop(/dchtOpenModal|switchToEditMode\((3|4)\)/);
+        // Sau khi chốt ý kiến HĐ: đơn vị tạo Hội đồng Ghi nhận nộp tiền tại Bước 4 cho toàn bộ cán bộ ở mọi lĩnh vực;
+        // Trình ký QĐ hoàn trả, miễn / giảm bổ sung, đình chỉ cấp cán bộ: Đơn vị ban hành QĐ hoàn trả (chi_tiet_ho_so_hoan_tra_qd.js)
         if (!isViewMode && currentViewStep === 2 && canEditStep2()) {
             f.innerHTML = '<button type="button" class="btn btn-danger" onclick="dchtOpenModal()"><i class="fa-solid fa-circle-stop"></i> Đình chỉ</button>'
                 + '<button type="button" class="btn btn-primary" onclick="submitStep2Recommendations()"><i class="fa-solid fa-floppy-disk"></i> Lưu ý kiến hội đồng</button>'

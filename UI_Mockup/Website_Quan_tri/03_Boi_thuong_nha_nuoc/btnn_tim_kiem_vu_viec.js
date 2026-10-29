@@ -14,20 +14,21 @@
         code, hoSoCode: code, requester, victim: victim || requester, agencyId, decisionNo: decisionNo || '-', decisionDate: decisionDate || '-', status, receivedBy, detailType: 'claim'
     });
     // Vụ việc yêu cầu bồi thường mẫu (trạng thái khác Chờ tiếp nhận)
+    // Đồng bộ theo dữ liệu mẫu Giải quyết YCBT (Người yêu cầu, Cơ quan giải quyết, Trạng thái, Số/Ngày QĐ); BT-2026-045, BT-2026-038 chưa có hồ sơ GQ YCBT
     const CASES = [
-        row('BT-2026-012', 'Lê Văn H', '', 'UBND-CG', '22/QĐ-GQBT', '05/08/2026', 'Hoàn thành'),
-        row('BT-2026-021', 'Hoàng Văn R', '', 'CCTHADS-BT', '', '', 'Xác minh thiệt hại'),
-        row('BT-2026-003-A', 'Công ty ABC', '', 'UBND-HK', '', '', 'Thương lượng'),
-        row('BT-2026-010-TDC', 'Đặng Thị Thu', 'Đặng Văn T', 'THADS-LD', '', '', 'Cử người giải quyết bồi thường', 'STP-HN'),
+        row('BT-2026-012', 'Lê Văn H', '', 'THADS-HN', '56/QĐ-BT', '05/07/2026', 'Hoàn thành'),
+        row('BT-2026-021', 'Hoàng Văn R', '', 'TAND-NT', '', '', 'Bị trả lại'),
+        row('BT-2026-003-A', 'Công ty ABC', '', 'UBND-CG', '46/QĐ-BT', '11/03/2023', 'Chờ chi trả'),
+        row('BT-2026-010-TDC', 'Đặng Văn T', '', 'STP-HN', '', '', 'Hoãn giải quyết', 'STP-HN'),
         row('BT-2026-045', 'Nguyễn Văn Bình', '', 'TAND-HN', 'Bản án số 12/2026/HSST', '10/06/2026', 'Hoàn thành'),
-        row('BT-2026-030', 'Trần Thị Mai', '', 'UBND-DD', '', '', 'Thương lượng'),
-        row('BT-2026-052', 'Công ty TNHH Minh Phát', '', 'TAND-LD', 'Bản án số 45/2026/HCST', '15/07/2026', 'Xác minh thiệt hại'),
-        row('BT-2026-018', 'Lê Văn Hùng', '', 'THADS-HP', '', '', 'Không thụ lý'),
+        row('BT-2026-030', 'Bùi Văn Khánh', '', 'CA-HM', '', '', 'Bị trả lại'),
+        row('BT-2026-052', 'Trần Đình Trọng', '', 'UBND-CG', '', '', 'Cử người giải quyết bồi thường'),
+        row('BT-2026-018', 'Trần Thu O', '', 'CCTS-BD', '', '', 'Chờ duyệt'),
         row('BT-2026-038', 'Phạm Thị Hoa', '', 'CA-TX', '', '', 'Cử người giải quyết bồi thường'),
-        row('BT-2026-022', 'Đỗ Thị Hằng', 'Đỗ Văn Nam', 'VKS-Q1', 'Bản án số 08/2026/DSPT', '05/06/2026', 'Đình chỉ giải quyết'),
-        row('BT-2026-014', 'Vũ Thị Lan', '', 'UBND-CG', '', '', 'Chờ ban hành QĐ'),
-        row('BT-2026-061', 'Hoàng Văn Đức', '', 'TAND-NT', 'Bản án số 33/2026/HCPT', '18/03/2026', 'Đang phục hồi danh dự'),
-        row('BT-2026-009', 'Bùi Thị Thu', '', 'CCTHADS-TT', '05/QĐ-GQBT', '10/01/2026', 'Hoàn thành')
+        row('BT-2026-022', 'Trần Văn Phú', '', 'STP-HN', '', '', 'Chờ ban hành QĐ'),
+        row('BT-2026-014', 'Phạm Văn K', '', 'UBND-HN', '', '', 'Không thụ lý'),
+        row('BT-2026-061', 'Lương Văn Thành', '', 'Công an tỉnh Nam Định', '', '', 'Đang phục hồi danh dự'),
+        row('BT-2026-009', 'Nguyễn Văn E', '', 'UBND-DD', '', '', 'Không thụ lý')
     ];
     // 17 Trạng thái vụ việc Giải quyết YCBT (trừ Chờ tiếp nhận)
     const STATUS_OPTIONS = ['Chờ duyệt', 'Bị trả lại', 'Cử người giải quyết bồi thường', 'Xác minh thiệt hại', 'Thương lượng', 'Chờ ban hành QĐ', 'Chờ chi trả', 'Hoàn thành',

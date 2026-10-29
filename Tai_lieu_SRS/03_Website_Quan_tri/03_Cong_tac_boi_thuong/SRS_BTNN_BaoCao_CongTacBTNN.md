@@ -5,7 +5,7 @@ Cho phép Sở Tư pháp lập, trình ký số và gửi Bộ Tư pháp báo c�
 - Lập bộ báo cáo gồm 04 biểu mẫu:
   + Theo dự thảo Nghị định: Mẫu 41/BTNN - Danh mục vụ việc giải quyết yêu cầu bồi thường; Mẫu 42/BTNN - Báo cáo công tác bồi thường nhà nước; Mẫu 43/BTNN - Tổng hợp tình hình yêu cầu bồi thường, giải quyết bồi thường và chi trả tiền bồi thường.
   + Theo Thông tư số 08/2019/TT-BTP: Mẫu số 04 - Tình hình thực hiện trách nhiệm hoàn trả, gọi là Mẫu số 04 (TT 08/2019).
-- Nhập liệu trên 04 tab biểu mẫu; Mẫu 42/BTNN nhập theo từng mục của mẫu; Mẫu 41/BTNN, Mẫu 43/BTNN, Mẫu số 04 (TT 08/2019) nhập tay.
+- Nhập liệu trên 04 tab biểu mẫu; Mẫu 42/BTNN nhập theo từng mục của mẫu; Mẫu 41/BTNN, Mẫu số 04 (TT 08/2019) nhập tay; Mẫu 43/BTNN tổng hợp tự động từ dữ liệu vụ việc, cho phép sửa.
 - Xem trước tệp PDF của 04 biểu mẫu trước khi trình.
 - Gửi phê duyệt 01 lần cho cả bộ báo cáo, trình Lãnh đạo Phòng ký nháy, Lãnh đạo Sở ký số theo luồng đã cấu hình.
 - Lãnh đạo Ký duyệt hoặc Từ chối đồng thời cả 04 biểu mẫu; cán bộ xem Lý do bị trả lại để điều chỉnh, trình lại.
@@ -55,7 +55,13 @@ flowchart TD
 <a id="bctt-quy-tac"></a>
 #### 3. Quy tắc nghiệp vụ
 
+<a id="bctt-pham-vi-thong-ke"></a>
 1. Bộ báo cáo gồm 04 biểu mẫu: Mẫu 41/BTNN, Mẫu 42/BTNN, Mẫu 43/BTNN, Mẫu số 04 (TT 08/2019). Mỗi Sở Tư pháp có 01 báo cáo cho mỗi cặp `Năm báo cáo` - `Loại kỳ báo cáo`.
+   - Phạm vi thống kê vụ việc, áp dụng cho cả 04 biểu mẫu:
+     + Không thống kê vụ việc chỉ có yêu cầu phục hồi danh dự: mọi hồ sơ cùng `Mã vụ việc` là hồ sơ `Loại yêu cầu giải quyết bồi thường` = `Chỉ yêu cầu phục hồi danh dự` hoặc hồ sơ cán bộ chủ động phục hồi danh dự.
+     + Vụ việc có yêu cầu bồi thường thiệt hại bằng tiền (`Loại yêu cầu giải quyết bồi thường` = `Yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự)`, `Chỉ yêu cầu bồi thường thiệt hại bằng tiền`, hoặc vụ việc tại Tòa án): thống kê 01 lần theo `Mã vụ việc`, kể cả khi cùng `Mã vụ việc` có hồ sơ cán bộ chủ động phục hồi danh dự hoặc hồ sơ `Chỉ yêu cầu phục hồi danh dự`.
+     + Mẫu 41/BTNN, Mẫu 42/BTNN, Mẫu số 04 (TT 08/2019): danh mục vụ việc, nội dung, số liệu do cán bộ nhập theo phạm vi này.
+     + Mẫu 43/BTNN: nút `Tổng hợp` tổng hợp theo phạm vi này và quy tắc 12.
 2. Loại kỳ báo cáo và thời gian số liệu:
    - `Báo cáo năm số liệu thực tế (01/01 - 31/10)`: từ 01/01 đến 31/10 của Năm báo cáo.
    - `Số liệu thống kê năm chính thức (01/01 - 31/12)`: từ 01/01 đến 31/12 của Năm báo cáo.
@@ -124,6 +130,57 @@ flowchart TD
    - Sở Tư pháp xem Lý do trả lại, cập nhật, Gửi phê duyệt theo luồng ký của Sở; Lãnh đạo cấp cuối Ký duyệt thì báo cáo `Đã ban hành` và gửi lại Bộ Tư pháp.
    - Báo cáo của Bộ cùng kỳ chưa `Đã ban hành`: hiển thị nhắc danh sách Sở Tư pháp bị trả lại / đã gửi lại sau lần tổng hợp gần nhất; nhắc mất khi Bộ Tư pháp `Cập nhật số liệu từ các Sở`.
    - Lịch sử xử lý ghi ở cả báo cáo Sở Tư pháp và báo cáo của Bộ.
+
+<a id="bctt-m43-tong-hop"></a>
+12. Quy tắc tổng hợp số liệu Mẫu 43/BTNN (nút `Tổng hợp` tại Tab Mẫu 43/BTNN của báo cáo Sở Tư pháp):
+   - Nguồn dữ liệu:
+     + Hồ sơ Giải quyết yêu cầu bồi thường theo [Trạng thái vụ việc Giải quyết YCBT - Giải quyết yêu cầu bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_GiaiQuyet_YCBT.md#gq-trang-thai-vu-viec).
+     + Vụ việc tại Tòa án theo [Theo dõi vụ việc tại Tòa án - Theo dõi vụ việc tại Tòa án - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_TheoDoiVuViecToaAn.md).
+     + Quyết định giải quyết bồi thường `Có hiệu lực` theo [Hiệu lực của Quyết định - Quyết định giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_QuyetDinh_GQBT.md#qd-quy-tac-hieu-luc).
+     + Bản ghi Chi trả tiền bồi thường theo [Luồng Chi trả tiền bồi thường - Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT_KinhPhi_BT.md#kp-chi-tra-tien-bt).
+   - Phạm vi đơn vị: vụ việc có Cơ quan giải quyết bồi thường là Sở Tư pháp của báo cáo hoặc cơ quan, đơn vị cùng Tỉnh/Thành phố với Sở Tư pháp theo Cơ cấu tổ chức.
+     + Vụ việc tại Tòa án có vụ việc liên kết: lấy Cơ quan giải quyết bồi thường của vụ việc liên kết.
+     + Vụ việc tại Tòa án không có vụ việc liên kết: lấy `Cơ quan giải quyết` của vụ việc tại Tòa án.
+   - Kỳ số liệu: từ ngày đến ngày theo `Năm báo cáo`, `Loại kỳ báo cáo` của báo cáo theo quy tắc 2.
+   - Dòng: theo `Lĩnh vực phát sinh thiệt hại` của vụ việc, 06 nhóm I - VI; ô tổng Cột 2, 11, 17 và dòng `Tổng cộng` tự tính theo quy tắc 6.
+   - Đơn vị đếm là `Mã vụ việc`:
+     + Mỗi vụ việc tính 01 lần trong Cột 3 - 10 và 01 lần trong Cột 12 - 22.
+     + Không tính vụ việc chỉ có yêu cầu phục hồi danh dự theo quy tắc 1.
+     + Không tính hồ sơ `Chỉ yêu cầu phục hồi danh dự`, hồ sơ cán bộ chủ động phục hồi danh dự; vụ việc có yêu cầu bồi thường thiệt hại bằng tiền tính theo hồ sơ có yêu cầu bồi thường thiệt hại bằng tiền.
+     + Vụ việc có nhiều hồ sơ Giải quyết yêu cầu bồi thường có yêu cầu bồi thường thiệt hại bằng tiền (Chuyển CQGQBT): lấy hồ sơ có Ngày thụ lý sau cùng.
+   - Nơi thụ lý cuối cùng tính đến ngày cuối kỳ:
+     + Vụ việc có vụ việc tại Tòa án với `Ngày thụ lý` không sau ngày cuối kỳ: chỉ tính tại Tòa án, không tính tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại.
+     + Trường hợp còn lại: tính tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại.
+   - Vụ việc được tính thụ lý:
+     + Tại cơ quan trực tiếp quản lý: hồ sơ Giải quyết yêu cầu bồi thường đã thụ lý (Thông báo thụ lý hồ sơ đã ký duyệt hoặc ban hành).
+     + Không tính hồ sơ chưa thụ lý, hồ sơ `Không thụ lý`, `Đã chuyển CQGQBT`.
+     + Tại Tòa án: không tính vụ việc `Trả lại đơn khởi kiện`.
+   - Ngày thụ lý:
+     + Tại cơ quan trực tiếp quản lý: `Ngày thụ lý` của hồ sơ Giải quyết yêu cầu bồi thường.
+     + Tại Tòa án: `Ngày thụ lý` của vụ việc tại Tòa án.
+   - Thụ lý mới / kỳ trước chuyển sang, theo Ngày thụ lý tại nơi thụ lý cuối cùng:
+     + Trong kỳ số liệu: thụ lý mới (Cột 3 - 6).
+     + Trước ngày đầu kỳ, chưa có văn bản giải quyết bồi thường có hiệu lực pháp luật trước ngày đầu kỳ: kỳ trước chuyển sang (Cột 7 - 10).
+     + Sau ngày cuối kỳ: không tính.
+   - Cột 3 - 10:
+     + Cột 3, 7: thụ lý tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại.
+     + Cột 4, 8: thụ lý tại Tòa án, `Trường hợp khởi kiện` = `Khởi kiện thẳng ra Tòa án, chưa từng yêu cầu cơ quan giải quyết (điểm a khoản 1 Điều 52)`.
+     + Cột 5, 9: thụ lý tại Tòa án, `Trường hợp khởi kiện` = `Đã yêu cầu cơ quan giải quyết trước khi khởi kiện (điểm b khoản 1 và khoản 2 Điều 52)`.
+     + Cột 6, 10: thụ lý tại Tòa án, `Trường hợp khởi kiện` = `Kết hợp giải quyết YCBT trong quá trình tố tụng hình sự, tố tụng hành chính tại toà` hoặc `Nguồn phát sinh bản án` = `Giải quyết YCBT trong quá trình tố tụng hình sự, tố tụng hành chính tại toà (Điều 55)`.
+   - Cột 12 - 22: vụ việc đã tính tại Cột 3 - 10, theo tình trạng tại ngày cuối kỳ và cùng nơi thụ lý cuối cùng:
+     + Cột 12: tại cơ quan, có Quyết định giải quyết bồi thường `Có hiệu lực` hoặc Trạng thái vụ việc `Chờ chi trả`, `Hoàn thành`.
+     + Cột 13, 14, 15: tại Tòa án theo căn cứ của Cột 4 và 8, 5 và 9, 6 và 10; vụ việc `Đã có bản án/QĐ`, `Ngày hiệu lực bản án/QĐ` không sau ngày cuối kỳ.
+     + Cột 16: tổng `Tổng số tiền bồi thường` của Quyết định giải quyết bồi thường tính tại Cột 12 và số tiền của bản ghi Chi trả tiền bồi thường tạo từ vụ việc tại Tòa án tính tại Cột 13 - 15; quy đổi nghìn đồng, làm tròn.
+     + Cột 18: tại cơ quan, chưa thuộc Cột 12, 22, gồm cả Trạng thái vụ việc `Dừng giải quyết`.
+     + Cột 19, 20, 21: tại Tòa án theo căn cứ của Cột 4 và 8, 5 và 9, 6 và 10; chưa thuộc Cột 13 - 15.
+     + Cột 22: tại cơ quan, Trạng thái vụ việc `Đình chỉ giải quyết`.
+   - Cột 23, 24: hệ thống không tổng hợp; giữ số liệu đang nhập.
+   - Cột 25 - 27: không phụ thuộc Ngày thụ lý; tính bản ghi Chi trả tiền bồi thường đã chi trả (`Hoàn thành` hoặc đã có `Số tiền thực tế chi trả`), `Ngày thực hiện chi trả` trong kỳ số liệu, không tính `Trả lại ngân sách nhà nước`:
+     + Cột 25: số vụ việc có bản ghi chi trả.
+     + Cột 26: tổng `Số tiền thực tế chi trả` của bản ghi chi trả theo Quyết định giải quyết bồi thường; quy đổi nghìn đồng, làm tròn.
+     + Cột 27: tổng `Số tiền thực tế chi trả` của bản ghi chi trả theo bản án, quyết định của Tòa án; quy đổi nghìn đồng, làm tròn.
+   - Kết quả tổng hợp ghi đè Cột 3 - 10, 12 - 16, 18 - 22, 25 - 27 của 06 nhóm; không tự lưu báo cáo.
+   - Sau khi tổng hợp: cán bộ được sửa mọi ô số liệu; ô tổng tự tính lại theo quy tắc 6.
 
 ---
 
@@ -224,7 +281,7 @@ Popup mở khi Cán bộ Sở Tư pháp click `Tạo báo cáo` tại MH01.
 | Ngày ban hành | - | - | Theo bản ghi | Control UI: Label.<br>- `[dd/mm/yyyy HH:mm] - [Họ tên Lãnh đạo ký]`; chưa ban hành: `--`. |
 | Khối Lý do bị trả lại | Section | - | Ẩn | Control UI: Khối cảnh báo (Read-only).<br>- Chỉ hiển thị khi báo cáo `Bị trả lại` do Lãnh đạo Từ chối.<br>- Tiêu đề `BÁO CÁO BỊ LÃNH ĐẠO TRẢ LẠI`.<br>- Gồm Lý do bị trả lại, Người từ chối (Cấp [n]), Thời điểm `dd/mm/yyyy HH:mm` của lần từ chối gần nhất. |
 | Khối Lý do bị trả lại | Section | - | Ẩn | Control UI: Khối cảnh báo (Read-only).<br>- Chỉ hiển thị khi báo cáo `Bị trả lại` do Bộ Tư pháp trả lại.<br>- Tiêu đề `BÁO CÁO BỊ BỘ TƯ PHÁP TRẢ LẠI`.<br>- Gồm Lý do trả lại, Người trả lại (Bộ Tư pháp), Thời điểm `dd/mm/yyyy HH:mm`. |
-| **II. Tệp báo cáo** | Data grid | - | 04 dòng | Control UI: Data grid (Read-only).<br>- Tiêu đề `Tệp báo cáo (dự thảo)` hoặc `Tệp báo cáo (đã ban hành)` theo trạng thái.<br>- Mỗi biểu mẫu 01 dòng.<br>- Dưới bảng: 02 khối `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo` của lần trình (Read-only); mỗi khối chỉ hiển thị khi có dữ liệu; khối `Tài liệu không ban hành kèm theo` chỉ hiển thị với Sở Tư pháp trình báo cáo; quy tắc tại [Quy tắc Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-tai-lieu-trinh-ky). |
+| **II. Tệp báo cáo** | Data grid | - | 04 dòng | Control UI: Data grid (Read-only).<br>- Tiêu đề `Tệp báo cáo (dự thảo)` hoặc `Tệp báo cáo (đã ban hành)` theo trạng thái.<br>- Mỗi biểu mẫu 01 dòng.<br>- Dưới bảng: 02 khối `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo` của lần trình (Read-only); mỗi khối chỉ hiển thị khi có dữ liệu; khối `Tài liệu không ban hành kèm theo` chỉ hiển thị với Sở Tư pháp trình báo cáo; quy tắc tại [Quy tắc Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-tac-tai-lieu-ban-hanh-kem-theo). |
 | STT | Integer | - | Tự tăng | Control UI: Label. |
 | Biểu mẫu | - | - | Theo bản ghi | Control UI: Label.<br>- `[Mã mẫu] - [Tên mẫu]`. |
 | Tên tệp | - | - | Theo bản ghi | Control UI: Label.<br>- Theo quy tắc đặt tên tại Bảng mapping trường dữ liệu biểu mẫu BTNN. |
@@ -292,9 +349,10 @@ Popup mở khi Cán bộ Sở Tư pháp click `Tạo báo cáo` tại MH01.
 
 | Trường thông tin | Kiểu dữ liệu | Bắt buộc | Mặc định | Mô tả |
 | :--- | :--- | :--- | :--- | :--- |
-| Ghi chú số liệu | Label | - | - | Control UI: Label.<br>- `Số liệu tính từ [Từ ngày] đến [Đến ngày]` và công thức ô tổng theo [Quy tắc nghiệp vụ - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-quy-tac) quy tắc 6. |
+| Ghi chú số liệu | Label | - | - | Control UI: Label.<br>- `Số liệu tính từ [Từ ngày] đến [Đến ngày]` và công thức ô tổng theo [Quy tắc nghiệp vụ - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-quy-tac) quy tắc 6.<br>- Chế độ nhập liệu: thêm `Nút Tổng hợp tự điền số liệu từ dữ liệu vụ việc, trừ Cột 23, 24.` |
+| Tổng hợp | Button | - | - | Control UI: Button, đặt bên phải dòng Ghi chú số liệu.<br>- Chỉ hiển thị ở chế độ nhập liệu của báo cáo Sở Tư pháp.<br>- Tổng hợp số liệu theo [Quy tắc tổng hợp số liệu Mẫu 43/BTNN - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-m43-tong-hop). |
 | Bảng số liệu | Data grid | - | 0 | Control UI: Data grid nhập liệu, cuộn ngang.<br>- Tiêu đề cột nhiều tầng đúng bố cục Mẫu 43/BTNN, dòng số thứ tự cột 1 - 27.<br>- Dòng: `Tổng cộng`; 06 nhóm I - VI, mỗi nhóm 01 dòng tên nhóm và 01 dòng số liệu. |
-| Ô số liệu Cột 3 - 10, 12 - 16, 18 - 27 | Integer(15) | Không | 0 | Control UI: Input number, căn phải.<br>- Số nguyên không âm.<br>- Cột 16, 26, 27: đơn vị nghìn đồng, định dạng ô tiền theo quy tắc 6. |
+| Ô số liệu Cột 3 - 10, 12 - 16, 18 - 27 | Integer(15) | Không | 0 | Control UI: Input number, căn phải.<br>- Số nguyên không âm.<br>- Cột 16, 26, 27: đơn vị nghìn đồng, định dạng ô tiền theo quy tắc 6.<br>- Cột 3 - 10, 12 - 16, 18 - 22, 25 - 27: hệ thống điền khi bấm `Tổng hợp`; cán bộ được sửa sau khi tổng hợp.<br>- Cột 23, 24: cán bộ nhập. |
 | Ô tổng Cột 2, 11, 17 | Integer(10) | - | Hệ thống tự tính | Control UI: Label (Read-only).<br>- Tự tính lại ngay khi thay đổi ô thành phần theo quy tắc 6. |
 | Dòng Tổng cộng | Integer(10) | - | Hệ thống tự tính | Control UI: Label (Read-only).<br>- Tổng 06 nhóm của từng cột. |
 
@@ -341,15 +399,16 @@ Popup mở khi Cán bộ Sở Tư pháp click `Tạo báo cáo` tại MH01.
 | 2 | Thêm vụ việc | Button | Tab Mẫu 41/BTNN, chế độ nhập liệu: thêm 01 dòng trống cuối nhóm. |
 | 3 | Xóa vụ việc | Icon button | Tab Mẫu 41/BTNN: xóa dòng ngay, đánh số lại STT trong nhóm, thông báo `Đã xóa vụ việc khỏi danh mục.` |
 | 4 | Nhập ô số liệu | Input | Tab Mẫu 43/BTNN, Tab Mẫu số 04 (TT 08/2019): tự tính lại ô tổng của nhóm và dòng `Tổng cộng`. |
-| 5 | Thu gọn / Mở rộng khối | Click tiêu đề khối | Tab Mẫu 42/BTNN (khối phần, mục), Tab Mẫu 41/BTNN (dòng tên nhóm): thu gọn khối / nhóm đang mở hoặc mở rộng khối / nhóm đang thu gọn; dữ liệu đang nhập giữ nguyên. |
-| 6 | Mở rộng tất cả / Thu gọn tất cả | Button | Tab Mẫu 42/BTNN, Tab Mẫu 41/BTNN: mở rộng hoặc thu gọn đồng thời toàn bộ khối phần, mục / nhóm. |
-| 7 | Xem file / Tải file | Link | Tại `Tệp báo cáo`:<br>- `Xem file`: mở MH06 tại tab biểu mẫu tương ứng.<br>- `Tải file`: tải tệp PDF của biểu mẫu. |
-| 8 | Xem trước PDF | Button | Mở MH06 với dữ liệu đang nhập (tệp `Dự thảo`). |
-| 9 | Lưu | Button | Chế độ nhập liệu: lưu dữ liệu 04 biểu mẫu, không kiểm tra trường bắt buộc; ghi Lịch sử xử lý `Lưu báo cáo`; thông báo `Đã lưu báo cáo.` |
-| 10 | Gửi phê duyệt | Button | Chế độ nhập liệu.<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không mở MH04.<br>- **TH2 - Ngày báo cáo sai định dạng**: hiển thị `Ngày không hợp lệ (dd/mm/yyyy)` dưới ô; không mở MH04.<br>- TH1, TH2: hệ thống chuyển đến tab có ô lỗi đầu tiên.<br>- **TH Hợp lệ**:<br>+ Lưu dữ liệu 04 biểu mẫu.<br>+ Mở MH04. |
-| 11 | Ký duyệt / Từ chối | Button | Hiển thị khi báo cáo `Chờ duyệt` và người dùng là Lãnh đạo được chọn ở cấp hiện hành. Mở MH05. |
-| 12 | Trả lại | Button | Chỉ hiển thị với Cán bộ Bộ Tư pháp khi xem báo cáo `Đã ban hành` của Sở Tư pháp. Mở Popup Trả lại báo cáo. |
-| 13 | Quay lại | Button | Về MH01 (vai trò Sở Tư pháp) hoặc màn hình đã mở báo cáo (vai trò Bộ Tư pháp); dữ liệu chưa Lưu không được lưu. |
+| 5 | Tổng hợp | Button | Tab Mẫu 43/BTNN, chế độ nhập liệu của báo cáo Sở Tư pháp.<br>- Có ô Cột 3 - 10, 12 - 16, 18 - 22, 25 - 27 khác 0: hiển thị popup xác nhận `Tổng hợp số liệu Mẫu 43/BTNN`, nội dung `Số liệu đang nhập tại các cột tổng hợp sẽ bị ghi đè; Cột 23, 24 giữ nguyên. Bạn có muốn tiếp tục?`, nút `Hủy bỏ`, `Tổng hợp`.<br>- **TH1 - Lỗi kết nối dữ liệu**: hiển thị [MSG-ERR-SYS-002]; giữ nguyên số liệu đang nhập.<br>- **TH2 - Không có vụ việc phù hợp**: các cột tổng hợp bằng 0; thông báo `Không có vụ việc phù hợp trong kỳ báo cáo; số liệu các cột tổng hợp bằng 0.`<br>- **TH Hợp lệ**:<br>+ Điền số liệu theo [Quy tắc tổng hợp số liệu Mẫu 43/BTNN - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](#bctt-m43-tong-hop).<br>+ Tự tính lại ô tổng và dòng `Tổng cộng`.<br>+ Thông báo `Đã tổng hợp số liệu Mẫu 43/BTNN từ dữ liệu vụ việc ([Số] vụ việc thụ lý). Cột 23, 24 giữ nguyên số đang nhập.`<br>+ Ô số liệu vẫn cho phép sửa; bấm `Lưu` để lưu báo cáo. |
+| 6 | Thu gọn / Mở rộng khối | Click tiêu đề khối | Tab Mẫu 42/BTNN (khối phần, mục), Tab Mẫu 41/BTNN (dòng tên nhóm): thu gọn khối / nhóm đang mở hoặc mở rộng khối / nhóm đang thu gọn; dữ liệu đang nhập giữ nguyên. |
+| 7 | Mở rộng tất cả / Thu gọn tất cả | Button | Tab Mẫu 42/BTNN, Tab Mẫu 41/BTNN: mở rộng hoặc thu gọn đồng thời toàn bộ khối phần, mục / nhóm. |
+| 8 | Xem file / Tải file | Link | Tại `Tệp báo cáo`:<br>- `Xem file`: mở MH06 tại tab biểu mẫu tương ứng.<br>- `Tải file`: tải tệp PDF của biểu mẫu. |
+| 9 | Xem trước PDF | Button | Mở MH06 với dữ liệu đang nhập (tệp `Dự thảo`). |
+| 10 | Lưu | Button | Chế độ nhập liệu: lưu dữ liệu 04 biểu mẫu, không kiểm tra trường bắt buộc; ghi Lịch sử xử lý `Lưu báo cáo`; thông báo `Đã lưu báo cáo.` |
+| 11 | Gửi phê duyệt | Button | Chế độ nhập liệu.<br>- **TH1 - Bỏ trống trường bắt buộc**: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên; không mở MH04.<br>- **TH2 - Ngày báo cáo sai định dạng**: hiển thị `Ngày không hợp lệ (dd/mm/yyyy)` dưới ô; không mở MH04.<br>- TH1, TH2: hệ thống chuyển đến tab có ô lỗi đầu tiên.<br>- **TH Hợp lệ**:<br>+ Lưu dữ liệu 04 biểu mẫu.<br>+ Mở MH04. |
+| 12 | Ký duyệt / Từ chối | Button | Hiển thị khi báo cáo `Chờ duyệt` và người dùng là Lãnh đạo được chọn ở cấp hiện hành. Mở MH05. |
+| 13 | Trả lại | Button | Chỉ hiển thị với Cán bộ Bộ Tư pháp khi xem báo cáo `Đã ban hành` của Sở Tư pháp. Mở Popup Trả lại báo cáo. |
+| 14 | Quay lại | Button | Về MH01 (vai trò Sở Tư pháp) hoặc màn hình đã mở báo cáo (vai trò Bộ Tư pháp); dữ liệu chưa Lưu không được lưu. |
 
 ---
 
@@ -380,7 +439,7 @@ Popup mở khi Cán bộ Sở Tư pháp click `Tạo báo cáo` tại MH01.
 | Tình trạng dữ liệu | - | - | Theo bản ghi | Control UI: Label.<br>- Mẫu 41/BTNN: `[Số] vụ việc`.<br>- Mẫu 42/BTNN: `[Số mục đã nhập]/16 mục đã nhập nội dung`.<br>- Mẫu 43/BTNN: `Tổng số [Cột 2 dòng Tổng cộng] vụ việc (Cột 2)`.<br>- Mẫu số 04 (TT 08/2019): `Tổng số [Cột 3 dòng Tổng cộng] vụ việc xem xét trách nhiệm hoàn trả (Cột 3)`. |
 | Thao tác | Action buttons | - | - | Control UI: Link.<br>Gồm:<br>+ Xem trước PDF |
 | **Người lập biểu** | Section | - | - | Control UI: Khối thông tin (Read-only).<br>- Ảnh chữ ký hình ảnh, Họ và tên, Chức vụ của người dùng đang thao tác theo Thông tin cá nhân cán bộ. |
-| Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo | List(Object) | Không | 01 dòng trống | Control UI: Bảng động dùng chung, 02 khối riêng: `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo`; mỗi khối 01 bảng như sau.<br>- Cột: `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`: Xem file, Xóa.<br>- Nút `Thêm tài liệu` dưới bảng.<br>- Dòng đã nhập phải có đủ `Tên tài liệu, văn bản` và tệp; dòng trống không lưu.<br>- Định dạng `.pdf`, `.doc`, `.docx`, `.jpg`, `.jpeg`, `.png`; tối đa 50MB/tệp.<br>- Quy tắc tại [Quy tắc Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-tai-lieu-trinh-ky). |
+| Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo | List(Object) | Không | 01 dòng trống | Control UI: Bảng động dùng chung, 02 khối riêng: `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo`; mỗi khối 01 bảng như sau.<br>- Cột: `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`: Xem file, Xóa.<br>- Nút `Thêm tài liệu` dưới bảng.<br>- Dòng đã nhập phải có đủ `Tên tài liệu, văn bản` và tệp; dòng trống không lưu.<br>- Định dạng `.pdf`, `.doc`, `.docx`, `.jpg`, `.jpeg`, `.png`; tối đa 50MB/tệp.<br>- Quy tắc tại [Quy tắc Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-tac-tai-lieu-ban-hanh-kem-theo). |
 | Xem văn bản (Bước 2) | Component | - | Tab `Mẫu 41/BTNN` | Control UI: Document Viewer (Read-only), vùng trái.<br>- Thanh tab: `Mẫu 41/BTNN`, `Mẫu 42/BTNN`, `Mẫu 43/BTNN`, `Mẫu số 04 (TT 08/2019)`.<br>- Hiển thị văn bản dự thảo, ô ký các cấp theo Lãnh đạo đang chọn. |
 | Thẻ cấp ký (Bước 2) | Component | - | Theo luồng đã cấu hình | Control UI: Danh sách thẻ, mỗi cấp 01 thẻ.<br>- Tiêu đề `Cấp [n] - [Đơn vị]`.<br>- Cấp có cấu hình Ký nháy: nhãn `Ký nháy`. |
 | Lãnh đạo (từng cấp) | Enum(String(100)) | Có | Lãnh đạo đầu tiên của nhóm lãnh đạo cấp đó | Control UI: Combobox tại từng thẻ cấp ký.<br>- Danh sách là Nhóm lãnh đạo của đơn vị ở cấp tương ứng, hiển thị `[Họ tên] - [Chức vụ]`.<br>- `Placeholder: -- Chọn Lãnh đạo --`<br>- Bỏ trống: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên. |
@@ -429,7 +488,7 @@ Popup mở khi Cán bộ Sở Tư pháp click `Tạo báo cáo` tại MH01.
 | Cấp phê duyệt | - | - | Theo bản ghi | Control UI: Label.<br>- `[Cấp hiện hành]/[Tổng số cấp] - [Đơn vị]`; cấp Ký nháy hiển thị nhãn `Ký nháy`. |
 | Nội dung trình | - | - | Theo bản ghi | Control UI: Label.<br>- Theo dữ liệu phiếu trình. |
 | **TÀI LIỆU BAN HÀNH KÈM THEO** | List(Object) | - | Theo phiếu trình | Control UI: Data grid (Read-only).<br>- Chỉ hiển thị khi phiếu trình có tài liệu ban hành kèm theo.<br>- Cột: `STT`, `Tên tài liệu, văn bản`, `File đính kèm`, `Thao tác`: Xem file, Tải file. |
-| **TÀI LIỆU KHÔNG BAN HÀNH KÈM THEO** | List(Object) | - | Theo phiếu trình | Control UI: Data grid (Read-only), đặt dưới khối `TÀI LIỆU BAN HÀNH KÈM THEO`.<br>- Chỉ hiển thị khi phiếu trình có tài liệu không ban hành kèm theo.<br>- Cột giống `TÀI LIỆU BAN HÀNH KÈM THEO`.<br>- Quy tắc tại [Quy tắc Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-tai-lieu-trinh-ky). |
+| **TÀI LIỆU KHÔNG BAN HÀNH KÈM THEO** | List(Object) | - | Theo phiếu trình | Control UI: Data grid (Read-only), đặt dưới khối `TÀI LIỆU BAN HÀNH KÈM THEO`.<br>- Chỉ hiển thị khi phiếu trình có tài liệu không ban hành kèm theo.<br>- Cột giống `TÀI LIỆU BAN HÀNH KÈM THEO`.<br>- Quy tắc tại [Quy tắc Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-tac-tai-lieu-ban-hanh-kem-theo). |
 | **LỊCH SỬ TRÌNH KÝ** | List(Object) | - | Theo bản ghi | Control UI: Danh sách sự kiện (Read-only), giảm dần theo thời gian.<br>- Gồm mọi lượt trình, kể cả lượt bị từ chối; cấp đang chờ: `Đang chờ ký duyệt`; cấp sau: `Chưa tới`. |
 | Ý kiến | Text(2000) | Không | Trống | Control UI: Textarea.<br>- Chỉ hiển thị khi thao tác là `Ký duyệt`.<br>- `Placeholder: Nhập ý kiến (không bắt buộc)...` |
 | Lý do từ chối | Text(2000) | Có | Trống | Control UI: Textarea.<br>- Chỉ hiển thị khi thao tác là `Từ chối`.<br>- `Placeholder: Nhập lý do từ chối...`<br>- Bỏ trống: Hệ thống tô viền đỏ ô lỗi, hiển thị [MSG-ERR-VAL-001] dưới ô lỗi và focus vào ô lỗi đầu tiên. |
@@ -571,7 +630,7 @@ Màn hình mặc định của vai trò Bộ Tư pháp (Cán bộ Bộ Tư pháp
 | **Khối Nguồn số liệu** | Section | - | - | Control UI: Khối thông tin, đặt dưới khối `Thông tin báo cáo`.<br>- Có Sở Tư pháp bị trả lại / đã gửi lại sau lần tổng hợp gần nhất: khối cảnh báo `CÓ SỞ TƯ PHÁP BỊ TRẢ LẠI / ĐÃ GỬI LẠI SAU LẦN TỔNG HỢP GẦN NHẤT`, mỗi Sở 01 dòng `- [Tên Sở Tư pháp]: [bị trả lại báo cáo / đã gửi lại báo cáo] lúc [dd/mm/yyyy HH:mm]`, theo quy tắc 11.<br>- Nội dung: `Nguồn số liệu: tổng hợp từ [Số]/34 Sở Tư pháp đã gửi (cập nhật lúc [dd/mm/yyyy HH:mm])`.<br>Gồm:<br>+ Nút `Tình hình gửi và nhập liệu của 34 Sở`<br>+ Nút `Cập nhật số liệu từ các Sở`: chỉ ở chế độ nhập liệu |
 | Tab Mẫu 41/BTNN | Data grid | - | Hệ thống tự tổng hợp | Control UI: Như Tab Mẫu 41/BTNN (MH03).<br>- Thêm cột `Sở Tư pháp` (Read-only) sau cột (6): tên Sở Tư pháp của vụ việc; vụ việc Bộ Tư pháp thêm mới để trống. |
 | Tab Mẫu 42/BTNN | Text(4000) | Không | Hệ thống tự tổng hợp | Control UI: Như Tab Mẫu 42/BTNN (MH03).<br>- Nội dung từng mục mặc định theo quy tắc 10; cho phép sửa. |
-| Tab Mẫu 43/BTNN, Tab Mẫu số 04 (TT 08/2019) | Data grid | - | Hệ thống tự tổng hợp | Control UI: Như tab tương ứng (MH03).<br>- Ô Bộ Tư pháp đã sửa khác số tự tổng hợp: đánh dấu viền; rê chuột hiển thị `Đã sửa. Số tự tổng hợp: [Số]`.<br>- Nút `Xem chi tiết theo Sở Tư pháp` trên bảng: chuyển bảng sang chế độ xem, mỗi ô số liệu là link mở Popup Chi tiết số liệu theo Sở Tư pháp; nút đổi thành `Quay lại bảng số liệu`. |
+| Tab Mẫu 43/BTNN, Tab Mẫu số 04 (TT 08/2019) | Data grid | - | Hệ thống tự tổng hợp | Control UI: Như tab tương ứng (MH03).<br>- Không hiển thị nút `Tổng hợp` của Tab Mẫu 43/BTNN.<br>- Ô Bộ Tư pháp đã sửa khác số tự tổng hợp: đánh dấu viền; rê chuột hiển thị `Đã sửa. Số tự tổng hợp: [Số]`.<br>- Nút `Xem chi tiết theo Sở Tư pháp` trên bảng: chuyển bảng sang chế độ xem, mỗi ô số liệu là link mở Popup Chi tiết số liệu theo Sở Tư pháp; nút đổi thành `Quay lại bảng số liệu`. |
 
 #### 3. Chức năng trên màn hình
 

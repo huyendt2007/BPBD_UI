@@ -100,10 +100,26 @@ function dchtInjectCss() {
         '#dchtModal .dcht-label-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }',
         '#dchtModal .dcht-label-row .form-label { margin-bottom:0; }',
         '#dchtInfoCard { border-left:4px solid #b91c1c; margin-bottom:20px; }',
-        '#dchtInfoCard .dcht-grid { display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px 18px; }',
+        '#dchtInfoCard .dcht-grid { display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); gap:12px 18px; }',
         '#dchtInfoCard .dcht-k { font-size:12px; color:#64748b; margin-bottom:2px; }',
         '#dchtInfoCard .dcht-v { font-size:13.5px; font-weight:600; color:#0f172a; overflow-wrap:anywhere; }',
-        '@media (max-width: 760px) { #dchtInfoCard .dcht-grid { grid-template-columns:1fr; } }'
+        '@media (max-width: 1100px) { #dchtInfoCard .dcht-grid { grid-template-columns:repeat(2, minmax(0, 1fr)); } }',
+        '@media (max-width: 760px) { #dchtInfoCard .dcht-grid { grid-template-columns:1fr; } }',
+        '#dchtInfoCard .dcht-empty { color:#9CA3AF; font-weight:500; }',
+        '#dchtInfoCard .dcht-return { display:flex; align-items:flex-start; gap:10px; background:#FEF2F2; border:1px solid #FCA5A5; border-radius:8px; padding:10px 14px; margin-bottom:16px; color:#991b1b; }',
+        '#dchtInfoCard .dcht-return > i { color:#dc2626; font-size:15px; margin-top:2px; }',
+        '#dchtInfoCard .dcht-return-txt { font-size:13.5px; line-height:1.5; }',
+        '#dchtInfoCard .dcht-return-meta { font-size:12px; color:#7f1d1d; opacity:.8; margin-top:2px; }',
+        '#dchtInfoCard .dcht-file { display:inline-flex; align-items:center; gap:6px; color:#2563eb; text-decoration:none; max-width:100%; }',
+        '#dchtInfoCard .dcht-file span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-decoration:underline; }',
+        '#dchtInfoCard .dcht-tlkt .tlkt-table { table-layout:fixed; min-width:0; }',
+        '#dchtInfoCard .dcht-tlkt .tlkt-table th:nth-child(1) { width:56px !important; }',
+        '#dchtInfoCard .dcht-tlkt .tlkt-table th:nth-child(2) { width:auto !important; text-align:left !important; }',
+        '#dchtInfoCard .dcht-tlkt .tlkt-table th:nth-child(3) { width:40% !important; text-align:left !important; }',
+        '#dchtInfoCard .dcht-tlkt .tlkt-table th:nth-child(4) { width:110px !important; }',
+        '#dchtInfoCard .dcht-tlkt .tlkt-table td:nth-child(2) { text-align:left !important; overflow-wrap:anywhere; }',
+        '#dchtInfoCard .dcht-tlkt td.tlkt-fc { text-align:left !important; }',
+        '#dchtInfoCard .dcht-tlkt td.tlkt-fc .tlkt-file { justify-content:flex-start !important; }'
     ].join('\n');
     document.head.appendChild(st);
 }
@@ -876,17 +892,26 @@ function dchtRenderInfoCard() {
         card = dchtEl('dchtInfoCard');
     }
     const it = (k, v) => `<div><div class="dcht-k">${k}</div><div class="dcht-v">${v}</div></div>`;
+    const emp = '<span class="dcht-empty">---</span>';
     const pending = activeDossier.status === DCHT_ST_PENDING;
-    const lead = pending && a.levels && a.levels.length ? `Cấp ${a.level + 1}/${a.levels.length} - ${dchtE(a.levels[a.level].unit)}: ${dchtE(dchtLeaderLabel(a, a.level) || '--')}` : '';
-    let html = `<div class="card-header"><div class="card-title" style="margin-bottom:0; color:#b91c1c;"><i class="fa-solid fa-circle-stop"></i> Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả</div></div><div class="card-body"><div class="dcht-grid">`
+    const lead = pending && a.levels && a.levels.length ? `Cấp ${a.level + 1}/${a.levels.length} - ${dchtE(a.levels[a.level].unit)}: ${dchtE(dchtLeaderLabel(a, a.level) || '---')}` : '';
+    let html = `<div class="card-header"><div class="card-title" style="margin-bottom:0; color:#b91c1c;"><i class="fa-solid fa-circle-stop"></i> Quyết định đình chỉ việc xem xét trách nhiệm hoàn trả</div></div><div class="card-body">`;
+    // Lý do bị trả lại: khối cảnh báo ngay dưới tiêu đề (Lý do; Lãnh đạo/cấp trả lại • thời điểm)
+    if (a.returned && activeDossier.status === DCHT_ST_REJECTED) {
+        const meta = [a.returned.by, a.returned.at].filter(Boolean).map(dchtE).join(' • ');
+        html += `<div class="dcht-return"><i class="fa-solid fa-triangle-exclamation"></i><div><div class="dcht-return-txt"><strong>Lý do bị trả lại:</strong> ${dchtE(a.returned.reason || '') || '---'}</div>${meta ? `<div class="dcht-return-meta">${meta}</div>` : ''}</div></div>`;
+    }
+    // 01 hàng 4 cột: Hình thức ký | Số, ký hiệu văn bản | Ngày văn bản | Văn bản dự thảo
+    const fileIco = /\.pdf$/i.test(a.fileName || '') ? 'fa-file-pdf" style="color:#dc2626;' : 'fa-file-word" style="color:#2563eb;';
+    html += `<div class="dcht-grid">`
         + it('Hình thức ký', a.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống')
-        + it('Trạng thái hồ sơ', htStBadgeHtml(activeDossier.status))
-        + it('Văn bản', `<a href="javascript:void(0)" onclick="dchtViewDoc()" style="color:#2563eb;">${dchtE(a.fileName || '')}</a>`)
-        + ((a.method === 'online' && a.docSrc === 'gen') || (a.method === 'offline' && a.so) ? it('Số, ký hiệu văn bản', dchtE(a.so || '--')) + it('Ngày văn bản', dchtE(a.ngay || '--')) : '')
+        + it('Số, ký hiệu văn bản', a.so && a.so.trim() && !/^\s*\/QĐ-\s*$/.test(a.so) ? dchtE(a.so) : emp)
+        + it('Ngày văn bản', a.ngay ? dchtE(a.ngay) : emp)
+        + it(activeDossier.status === DCHT_ST_DONE ? 'Văn bản' : 'Văn bản dự thảo', a.fileName ? `<a href="javascript:void(0)" class="dcht-file" onclick="dchtViewDoc()" title="${dchtE(a.fileName)}"><i class="fa-solid ${fileIco}"></i><span>${dchtE(a.fileName)}</span></a>` : emp)
         + (lead ? it('Lãnh đạo được giao ký duyệt', lead) : '')
-        + (a.returned && activeDossier.status === DCHT_ST_REJECTED ? it('Lý do bị trả lại', dchtE(a.returned.reason) + `<div class="dcht-k" style="margin-top:2px;">${dchtE(a.returned.by)} • ${dchtE(a.returned.at)}</div>`) : '')
         + `</div>`;
-    if (a.attachments && a.attachments.length && typeof tlktViewHtml === 'function') html += `<div style="margin-top:14px;">${tlktViewHtml(a.attachments)}</div>`;
+    // Bảng tài liệu: độ rộng cột cân đối, Tên tài liệu / File đính kèm căn trái (ga-skip: không để grid_align.js căn giữa cột tệp)
+    if (a.attachments && a.attachments.length && typeof tlktViewHtml === 'function') html += `<div class="dcht-tlkt ga-skip" style="margin-top:16px;">${tlktViewHtml(a.attachments)}</div>`;
     html += '</div>';
     card.innerHTML = html;
     card.style.display = '';
@@ -900,7 +925,8 @@ function dchtFooterButtons() {
             ? (typeof htkdBarButtons === 'function' ? htkdBarButtons('dchtLeaderReject()', 'dchtLeaderApprove()') : '')
             : '';
     }
-    if (st === DCHT_ST_REJECTED) return `<button type="button" class="btn btn-primary" onclick="dchtOpenModal()"><i class="fa-solid fa-paper-plane"></i> Trình ký lại</button>`;
+    // Bị trả lại: nút "Trình ký" (chế độ Cập nhật và Xem chi tiết; mở Popup trình ký với dữ liệu lần trình gần nhất)
+    if (st === DCHT_ST_REJECTED) return `<button type="button" class="btn btn-primary" onclick="dchtOpenModal()"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>`;
     if (DCHT_ALLOWED.indexOf(st) >= 0) return `<button type="button" class="btn btn-danger" onclick="dchtOpenModal()" title="Đình chỉ việc xem xét trách nhiệm hoàn trả (Mẫu 39/BTNN)"><i class="fa-solid fa-circle-stop"></i> Đình chỉ</button>`;
     return '';
 }

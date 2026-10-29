@@ -2278,15 +2278,17 @@ function showDetailScreen(id) {
     // UBND cấp tỉnh (chỉ xem): không có thao tác xử lý, phê duyệt
     if (readOnlyView || isXdViewOnly()) return;
 
-    // Lãnh đạo: chỉ Ký duyệt / Từ chối hồ sơ Chờ duyệt được giao đích danh ở cấp hiện hành (cấp trước: Phê duyệt; cấp cuối: Ký duyệt)
-    if (!isChuTri(item)) {
+    // Giả lập Lãnh đạo (thuộc Nhóm lãnh đạo): ẩn toàn bộ thao tác của cán bộ, chỉ có Ký duyệt / Từ chối;
+    // chỉ hiển thị khi hồ sơ Chờ duyệt được giao đích danh ở cấp hiện hành; màn chi tiết không có nút mờ
+    if (isLeaderMe()) {
+        const code = escapeAttr(item.code);
         if (item.status === XD_ST.CHO_DUYET && BTNN_WF.canApprove(item, getMe())) {
-            const code = escapeAttr(item.code);
             footer.innerHTML += `<button class="btn btn-danger" onclick="BTNN_LD.openDecision('${code}','reject', afterXdLeaderAction)" style="background:#ef4444; color:#fff; border:none;"><i class="fa-solid fa-circle-xmark"></i> Từ chối</button>`
                 + `<button class="btn btn-primary" onclick="BTNN_LD.openDecision('${code}','approve', afterXdLeaderAction)"><i class="fa-solid fa-file-signature"></i> ${escapeHtml(BTNN_WF.approveVerb(item))}</button>`;
         }
         return;
     }
+    if (!isChuTri(item)) return;
 
     // Cán bộ xử lý: thao tác theo trạng thái; nút chính (Tiếp nhận / Tham mưu kết quả / Cập nhật) luôn đặt cuối thanh nút
     // - Chờ tiếp nhận: Yêu cầu bổ sung, Không thụ lý, Tiếp nhận
@@ -3043,7 +3045,6 @@ function getActionButtons(item) {
     const owner = isChuTri(item);
     const ACTIONS = {
         accept: { icon: 'fa-solid fa-file-import', cls: 'accept', title: 'Tiếp nhận' },
-        edit: { icon: 'fa-solid fa-pen', cls: 'view', title: 'Sửa thông tin hồ sơ' },
         update: { icon: 'fa-solid fa-scale-balanced', cls: 'edit', title: 'Tham mưu kết quả' },
         supplement: { icon: 'fa-solid fa-file-circle-question', cls: 'edit', title: 'Yêu cầu bổ sung' },
         ktl: { icon: 'fa-solid fa-ban', cls: 'delete', title: 'Không thụ lý' }
@@ -3067,7 +3068,7 @@ function getActionButtons(item) {
     } else if (s === XD_ST.BI_TRA_LAI) {
         act('update', `updateReturned('${id}')`, `Cập nhật và trình ký lại - ${returnedKindOf(item)}`);
     }
-    return ['accept', 'edit', 'update', 'supplement', 'ktl'].map(k => slots[k] || off(k)).join('');
+    return ['accept', 'update', 'supplement', 'ktl'].map(k => slots[k] || off(k)).join('');
 }
 // Khối lịch sử (THÔNG TIN YÊU CẦU BỔ SUNG / THÔNG TIN HỒ SƠ BỊ TRẢ LẠI): có nội dung thì hiển thị, rỗng thì ẩn
 function renderXdHistoryBlock(id, html) {

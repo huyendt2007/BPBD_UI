@@ -910,7 +910,7 @@
         // ===== Cấu hình =====
         const STORE_KEY = "btnn_court_cases_v1";
         const SEED_KEY = "btnn_court_cases_seed";
-        const SEED_VERSION = "v5money";
+        const SEED_VERSION = "v7sn";
         const FUNDING_KEY = "proposalsList";
         const REQUEST_TYPE_YCBT = BTNN_WF.REQUEST_TYPE_YCBT || "Giải quyết yêu cầu bồi thường";
         const NBTH_ROLE = "Người bị thiệt hại";
@@ -2028,13 +2028,13 @@
                 }),
                 base("BT-2026-308", {
                     requestKind: "money", rootUnitId: "BTP-01", status: STATUS_THU_LY,
-                    verdictSource: VERDICT_SOURCES[1], lawsuitCase: LAWSUIT_CASES[0], acceptDate: "01/10/2026",
+                    verdictSource: VERDICT_SOURCES[1], lawsuitCase: LAWSUIT_CASES[0], acceptDate: "20/10/2026",
                     nyc: person("Hoàng Văn Sơn", "Nam", "11/12/1970", "001070008899", "0919300308", "Hà Nội", "Số 5 Kim Mã, Ba Đình"),
                     hanhVi: "Thu hồi giấy chứng nhận đăng ký doanh nghiệp không đúng quy định.",
                     damages: [dmg("taiSan", 95000000, "Hàng hóa hư hỏng trong thời gian đình chỉ hoạt động")],
                     docs: [doc("Thông báo thụ lý vụ án", "Thong_bao_thu_ly_BT-2026-308.pdf")],
-                    createdAt: "09:00 02/10/2026", createdBy: "canbonv", createdByName: "Nguyễn Văn Cán Bộ",
-                    history: [h("Thêm mới vụ việc", "09:00 02/10/2026", "Nguyễn Văn Cán Bộ", "Trạng thái: Đã thụ lý.")]
+                    createdAt: "09:00 21/10/2026", createdBy: "canbonv", createdByName: "Nguyễn Văn Cán Bộ",
+                    history: [h("Thêm mới vụ việc", "09:00 21/10/2026", "Nguyễn Văn Cán Bộ", "Trạng thái: Đã thụ lý.")]
                 })
             ];
         }
@@ -2046,8 +2046,8 @@
     <!-- Bảng tài liệu chuẩn BTNN: STT | Tên tài liệu, văn bản | File đính kèm | Thao tác; nút Tải file / Thêm tài liệu cùng style -->
     <script src="btnn_tai_lieu_kem_theo.js?v=20261029stt48"></script>
     <!-- [tdta] Vụ việc liên kết (Tìm kiếm / Tìm kiếm nâng cao), khối Người yêu cầu Cá nhân/Tổ chức, lưới + bộ lọc theo cột -->
-    <script src="btnn_tim_kiem_vu_viec.js?v=20261028tl1"></script>
-    <script src="theo_doi_vu_viec_toa_an_tdta.js?v=20261028ba1"></script>
+    <script src="btnn_tim_kiem_vu_viec.js?v=20261029sn1"></script>
+    <script src="theo_doi_vu_viec_toa_an_tdta.js?v=20261029sn1"></script>
     <script src="../../Common/grid_align.js?v=20261029ga7"></script>
 </body>
 

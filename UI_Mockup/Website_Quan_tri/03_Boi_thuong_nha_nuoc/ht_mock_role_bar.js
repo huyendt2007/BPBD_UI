@@ -1,6 +1,6 @@
 /*
  * Xem xét trách nhiệm hoàn trả - Thanh giả lập người dùng dùng chung màn Danh sách và màn Chi tiết (góc phải trên).
- * - 05 vai trò: Đơn vị tạo Hội đồng, Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại A, B, Sở Tư pháp, Lãnh đạo; lưu sessionStorage 'htMockScope', giữ khi chuyển màn.
+ * - 05 vai trò: Đơn vị tạo Hội đồng, Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương A, B, Sở Tư pháp, Lãnh đạo; lưu sessionStorage 'htMockScope', giữ khi chuyển màn.
  * - Nút Khôi phục dữ liệu mẫu: xóa dữ liệu thao tác đã lưu (localStorage) và tải lại trang.
  * - Màn Danh sách: lưu bộ lọc, tab khi rời trang; khôi phục khi quay lại từ màn Chi tiết (nút Đóng / đường dẫn điều hướng).
  * Nạp cuối trang, sau xem_xet_hoan_tra_pham_vi.js (Danh sách) hoặc chi_tiet_ho_so_hoan_tra_thu.js (Chi tiết).
@@ -8,8 +8,8 @@
 (function () {
     const ROLES = [
         ['don_vi_chu', 'Đơn vị tạo Hội đồng', 'UBND Quận Long Biên'],
-        ['don_vi_a', 'Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại A', 'UBND Phường Bồ Đề'],
-        ['don_vi_b', 'Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại B', 'UBND Huyện An Dương'],
+        ['don_vi_a', 'Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương A', 'UBND Phường Bồ Đề'],
+        ['don_vi_b', 'Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương B', 'UBND Huyện An Dương'],
         ['stp', 'Sở Tư pháp', 'Sở Tư pháp Hà Nội'],
         ['lanh_dao', 'Lãnh đạo', 'Lãnh đạo phê duyệt']
     ];

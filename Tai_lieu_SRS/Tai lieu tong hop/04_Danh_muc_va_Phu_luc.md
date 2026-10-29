@@ -815,6 +815,47 @@ Sau khi quét và xử lý xong toàn bộ tệp dữ liệu, hệ thống bắt
 
 ---
 
+<a id="quy-tac-tai-lieu-ban-hanh-kem-theo"></a>
+## 5.9. Quy tắc Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo
+
+Áp dụng thống nhất cho popup Trình ký, màn hình Ký duyệt / Từ chối và màn hình xem chi tiết văn bản của các phân hệ Bồi thường nhà nước có văn bản trình ký (Tiếp nhận hồ sơ, Xác định cơ quan giải quyết bồi thường, Giải quyết yêu cầu bồi thường, Quyết định giải quyết bồi thường, Tạm ứng kinh phí bồi thường/Chi trả tiền bồi thường, Xem xét trách nhiệm hoàn trả):
+
+1. **Phân loại tài liệu của phiếu trình**:
+   - `Tài liệu ban hành kèm theo`: tài liệu phát hành cùng văn bản trình ký (phụ lục, bảng kê...).
+   - `Tài liệu không ban hành kèm theo`: tài liệu nội bộ phục vụ trình duyệt (tờ trình, ý kiến, hồ sơ tham khảo...).
+   - Mỗi tài liệu lưu cùng phiếu trình / văn bản ban hành, kèm loại tài liệu và đơn vị trình (đơn vị gốc của cán bộ trình).
+2. **Popup Trình ký - `Ký số trên hệ thống`**:
+   - Hiển thị 02 khối riêng, đặt dưới khối văn bản trình ký: `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo`.
+   - Mỗi khối là 01 bảng tài liệu: cột STT, Tên tài liệu, văn bản, File đính kèm, Thao tác (`Xem file`, `Xóa`); nút `Thêm tài liệu` dưới bảng.
+   - Không bắt buộc; phân hệ có quy tắc bắt buộc riêng mô tả tại popup Trình ký của phân hệ đó.
+   - Dòng đã nhập phải đủ Tên tài liệu, văn bản và tệp; dòng trống không lưu.
+   - Định dạng `.pdf`, `.doc`, `.docx`, `.jpg`, `.jpeg`, `.png`; dung lượng tối đa 50MB/tệp.
+3. **Popup Trình ký - `Ký ngoài`**:
+   - Chỉ hiển thị khối `Tài liệu ban hành kèm theo`, đặt dưới khối tệp văn bản đã ký & đóng dấu.
+   - Không hiển thị khối `Tài liệu không ban hành kèm theo`; dữ liệu đã nhập ở khối này không lưu khi `Ban hành văn bản`.
+   - `Tài liệu ban hành kèm theo` lưu cùng văn bản ban hành.
+4. **Trình lại (`Bị trả lại`)**:
+   - Điền lại đúng 02 khối theo lần trình trước.
+5. **Màn hình Ký duyệt / Từ chối**:
+   - Vùng phải hiển thị 02 khối riêng, đặt dưới khối `Thông tin tổng quan`: `Tài liệu ban hành kèm theo`, `Tài liệu không ban hành kèm theo`.
+   - Mỗi khối là bảng chỉ đọc: cột STT, Tên tài liệu, văn bản, File đính kèm, Thao tác (`Xem file`, `Tải file`).
+   - Khối không có dữ liệu thì không hiển thị.
+   - `Lịch sử trình ký`: sự kiện Trình ký hiển thị tên tài liệu của lần trình theo 02 nhóm tương ứng.
+6. **Quyền xem**:
+   - `Tài liệu ban hành kèm theo`: hiển thị cho mọi đơn vị được nhận / xem văn bản sau khi ban hành.
+   - `Tài liệu không ban hành kèm theo`: chỉ đơn vị trình (cán bộ, Lãnh đạo của đơn vị) và Lãnh đạo ký duyệt xem được.
+   - Đơn vị khác nhận / xem hồ sơ (hồ sơ chuyển cơ quan giải quyết bồi thường, tra cứu vụ việc, Bộ Tư pháp / Sở Tư pháp xem hồ sơ hoặc báo cáo của đơn vị khác...): chỉ thấy văn bản đã ký và `Tài liệu ban hành kèm theo`; không hiển thị khối `Tài liệu không ban hành kèm theo`.
+   - Chuyển hồ sơ cho đơn vị khác: chỉ chuyển văn bản đã ký và `Tài liệu ban hành kèm theo`.
+   - Ghi chú Lịch sử xử lý chỉ ghi tên `Tài liệu ban hành kèm theo`.
+7. **Màn hình xem chi tiết**:
+   - Khối văn bản / lần trình có tài liệu: hiển thị 02 khối như màn hình Ký duyệt / Từ chối, áp quyền xem tại mục 6.
+   - Khối không có dữ liệu hoặc người xem không có quyền xem thì không hiển thị.
+8. **Dữ liệu cũ**:
+   - Tài liệu lưu trước khi tách 02 khối (01 danh sách `Tài liệu đính kèm`) được quy đổi thành `Tài liệu không ban hành kèm theo`.
+   - Dữ liệu cũ không xác định được đơn vị trình: khối `Tài liệu không ban hành kèm theo` chỉ hiển thị tại màn hình Ký duyệt / Từ chối.
+
+---
+
 # 6. PHỤ LỤC: MẪU EMAIL HỆ THỐNG
 
 

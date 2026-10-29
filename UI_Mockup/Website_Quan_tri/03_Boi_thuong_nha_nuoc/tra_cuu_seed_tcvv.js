@@ -124,8 +124,9 @@
         const [prov, agency, nyc, type, role, victim, fieldGroup, status, nguon, kind, officers, apprKind, hanhVi, money] = r;
         const year = date.getFullYear();
         const names = officers.split(';').map(s => s.trim()).filter(Boolean);
+        // Mã hồ sơ BT-yyyy-7xx (từ 701): không trùng hồ sơ mẫu Giải quyết YCBT BT-2026-601 .. BT-2026-612
         const item = {
-            id: 'TCVV_' + pad(serial), code: `BT-${year}-${600 + serial}`,
+            id: 'TCVV_' + pad(serial), code: `BT-${year}-${700 + serial}`,
             date: fmt(date), updatedDate: fmt(date),
             nyc, nycName: nyc, nycType: type === 'TC' ? 'Tổ chức' : 'Cá nhân', nycRole: role, role,
             nycTinhThanh: prov, address: prov,
@@ -154,7 +155,7 @@
             item.phddStarted = true; item.phddStatus = 'Hoàn thành';
         }
         // Năm trước: gắn sẵn Mã vụ việc cùng năm (không ảnh hưởng số thứ tự cấp mới của năm hiện tại)
-        if (year !== new Date().getFullYear()) item.maVuViec = `VVBT-${year}-${600 + serial}`;
+        if (year !== new Date().getFullYear()) item.maVuViec = `VVBT-${year}-${700 + serial}`;
         return item;
     }
 

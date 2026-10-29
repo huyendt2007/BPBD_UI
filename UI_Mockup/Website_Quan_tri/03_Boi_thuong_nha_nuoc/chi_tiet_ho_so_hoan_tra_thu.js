@@ -54,11 +54,12 @@
                 ? view + ' ' + act('ht3Approve(\'S' + o.trinh.slice(3) + '\',' + idx + ')', 'fa-solid fa-file-signature', 'Ký duyệt', true) + ' ' + act('ht3Reject(\'S' + o.trinh.slice(3) + '\',' + idx + ')', 'fa-solid fa-ban', 'Từ chối', true)
                 : view;
         }
-        const own = canPay(o), viewTip = 'Chỉ Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương, đơn vị tạo Hội đồng hoặc Sở Tư pháp / Bộ Tư pháp thực hiện';
+        const own = canPay(o);
         // Nút 2 đổi chế độ theo tình trạng: có số tiền cần trả lại -> Ghi nhận trả lại tiền; còn lại -> Ghi nhận nộp tiền
         let h = view + ' ';
-        if ((o.refund || 0) > 0) h += B('fa-solid fa-hand-holding-dollar', 'Ghi nhận trả lại tiền', 'ht4OpenRefund(' + idx + ')', own, viewTip, '#d97706');
-        else { const t = own ? payTip(o) : viewTip; h += B('fa-solid fa-money-bill-transfer', 'Ghi nhận nộp tiền', 'ht4OpenPay(' + idx + ')', !t, t, '#16a34a'); }
+        // Nút chỉ hiển thị khi được phép thực hiện (không hiển thị dạng khóa mờ)
+        if ((o.refund || 0) > 0) { if (own) h += B('fa-solid fa-hand-holding-dollar', 'Ghi nhận trả lại tiền', 'ht4OpenRefund(' + idx + ')', true, '', '#d97706'); }
+        else if (own && !payTip(o)) h += B('fa-solid fa-money-bill-transfer', 'Ghi nhận nộp tiền', 'ht4OpenPay(' + idx + ')', true, '', '#16a34a');
         return h;
     }
     function methodCell(o) {
@@ -89,9 +90,8 @@
         let any = false;
         units.forEach(u => {
             const ui = activeDossier.htUnits.indexOf(u);
-            // Đơn vị chỉ là Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương của phần đơn vị: chỉ thấy cán bộ do đơn vị thu tiền
-            const payOnly = !['lanh_dao', 'stp'].includes(a.scope()) && !(window.ht2Api && ht2Api.isOwnerScope && ht2Api.isOwnerScope()) && u.unit !== a.myUnit() && a.issuerOf(u) !== a.myUnit();
-            const list = a.officers().map(o => ({ o, idx: activeDossier.refundOfficers.indexOf(o) })).filter(x => x.o.agency === u.unit && STEP4.includes(x.o.ct) && (!payOnly || a.payUnitOf(x.o) === a.myUnit()));
+            // Cán bộ của phần đơn vị trong phạm vi dữ liệu của người dùng (Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương: cán bộ do đơn vị quản lý)
+            const list = a.officers().map(o => ({ o, idx: activeDossier.refundOfficers.indexOf(o) })).filter(x => a.inUnit(x.o, u) && STEP4.includes(x.o.ct) && a.seeOfficer(x.o, u));
             if (!list.length) return;
             any = true;
             // Miễn / Đình chỉ: số phải hoàn trả = số đã thu được giữ lại

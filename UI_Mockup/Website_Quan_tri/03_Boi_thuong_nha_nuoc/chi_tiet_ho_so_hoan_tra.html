@@ -1053,6 +1053,33 @@
         .htx-card-name { font-weight:700; font-size:13.5px; color:#1e293b; overflow-wrap:anywhere; }
         .htx-card-meta { font-size:12px; color:#64748b; margin-top:3px; }
         .htx-card-btns { display:flex; gap:6px; flex-shrink:0; }
+
+        /* Header tóm tắt hồ sơ: hàng 1 mã hồ sơ (trái) + trạng thái 01 dòng (phải); hàng 2 Mã vụ việc • Mã hồ sơ GQBT */
+        .page-header { padding: 20px; align-items: center; }
+        .page-header .page-title { flex: 1; min-width: 0; }
+        .page-title h2 .ht-hdr-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; width: 100%; }
+        .page-title h2 { width: 100%; }
+        .ht-hdr-code { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+        .ht-hdr-status { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; flex-wrap: nowrap; }
+        .ht-hdr-lbl { font-size: 13px; font-weight: 600; color: var(--text-muted); }
+        .ht-hdr-badge { display: inline-flex; align-items: center; border: 1px solid; border-radius: 999px; padding: 4px 12px; font-size: 12.5px; font-weight: 700; line-height: 1.4; white-space: nowrap; overflow: visible; }
+        .ht-hdr-tag { display: inline-flex; align-items: center; background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; border-radius: 6px; padding: 3px 8px; font-size: 12px; font-weight: 600; line-height: 1.4; white-space: nowrap; }
+        .ht-hdr-sep { margin: 0 6px; color: #94a3b8; }
+
+        /* Bước 1 - Khối Thông tin văn bản Quyết định thành lập Hội đồng: 01 hàng 5 cột (màn hẹp 3 cột) */
+        .ht-s1-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px 20px; margin-bottom: 16px; }
+        .ht-s1-grid > .form-group { margin-bottom: 0; min-width: 0; }
+        .ht-s1-grid .info-value { overflow-wrap: anywhere; }
+        @media (max-width: 1280px) { .ht-s1-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        @media (max-width: 760px) { .ht-s1-grid { grid-template-columns: 1fr; } }
+        .ht-s1-file-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; background: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 14px; box-sizing: border-box; }
+        .ht-s1-file-name { display: flex; align-items: center; gap: 8px; min-width: 0; font-size: 13.5px; font-weight: 600; color: var(--primary-color); }
+        .ht-s1-file-name span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .ht-empty { color: #9CA3AF; }
+
+        /* Chừa khoảng trống cuối trang để thanh nút cố định không che nội dung */
+        .sticky-footer-bar { margin-top: 40px; }
+        html { scroll-padding-bottom: 96px; }
     </style>
 </head>
 
@@ -1071,10 +1098,9 @@
         <div class="page-title">
             <h2 id="pageHeaderTitle"><i class="fa-solid fa-folder-open"></i> Hồ sơ trách nhiệm hoàn trả: HT-2026-001
             </h2>
-            <p>Mã vụ việc: <strong id="pageHeaderVuViec" style="color:var(--text-main);">-</strong> &nbsp;·&nbsp; Mã hồ sơ GQBT: <a id="pageHeaderClaimLink" href="#"
-                    style="color:var(--secondary-color); font-weight:700; text-decoration:underline; display:inline-flex; align-items:center; gap:4px;">BT-2026-001
-                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i> <span>[Xem hồ sơ
-                        gốc]</span></a>
+            <p>Mã vụ việc: <strong id="pageHeaderVuViec" style="color:var(--text-main);">-</strong> <span class="ht-hdr-sep">•</span> Mã hồ sơ GQBT: <strong id="pageHeaderClaimCode" style="color:var(--text-main);">BT-2026-001</strong> <a id="pageHeaderClaimLink" href="#"
+                    style="color:var(--secondary-color); font-weight:700; text-decoration:underline; display:inline-flex; align-items:center; gap:4px;"><span>[Xem hồ sơ gốc]</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i></a>
             </p>
         </div>
 
@@ -1139,7 +1165,7 @@
                 </div>
                 <div class="info-item" style="grid-column: span 2; background: #f8fafc; padding: 12px 16px; border-radius: 6px; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <span style="font-size: 13.5px; font-weight: 700; color: var(--text-main);"><i class="fa-solid fa-signal" style="color: var(--primary-color); margin-right: 4px;"></i> Trạng thái hồ sơ hoàn trả:</span>
+                        <span style="font-size: 13.5px; font-weight: 700; color: var(--text-main);"><i class="fa-solid fa-signal" style="color: var(--primary-color); margin-right: 4px;"></i> Trạng thái hồ sơ hoàn trả</span>
                         <span id="claimInfoStatusBadge"></span>
                     </div>
                 </div>
@@ -1221,25 +1247,32 @@
                 <div id="s1OfficialStatusBadge"></div>
             </div>
             <div class="card-body">
-                <div class="grid-2-cols" style="gap: 20px; margin-bottom: 16px;">
+                <!-- 01 hàng 5 cột: Hình thức ban hành | Đơn vị ban hành | Số quyết định | Ngày quyết định | Lãnh đạo ký -->
+                <div class="ht-s1-grid" id="s1OfficialGrid">
                     <div class="form-group">
-                        <span class="form-label">Hình thức ban hành:</span>
+                        <span class="form-label">Hình thức ban hành</span>
                         <div class="info-value" id="s1OfficialPublishType" style="font-weight:600;">Trình ký điện tử trên hệ thống</div>
                     </div>
                     <div class="form-group">
-                        <span class="form-label">Đơn vị ban hành:</span>
+                        <span class="form-label">Đơn vị ban hành</span>
                         <div class="info-value" id="s1OfficialIssuingUnit" style="font-weight:600;">Sở Tư pháp Hà Nội</div>
                     </div>
-                </div>
-
-                <div class="grid-2-cols" style="gap: 20px; margin-bottom: 16px;">
                     <div class="form-group">
-                        <span class="form-label">Số quyết định:</span>
+                        <span class="form-label">Số quyết định</span>
                         <div class="info-value" id="s1OfficialNo" style="font-weight:800; color:var(--primary-color);">45/QĐ-STP</div>
                     </div>
                     <div class="form-group">
-                        <span class="form-label">Ngày quyết định:</span>
+                        <span class="form-label">Ngày quyết định</span>
                         <div class="info-value" id="s1OfficialSignDate">02/04/2026</div>
+                    </div>
+                    <div class="form-group" id="s1LeaderSignContainer">
+                        <span class="form-label">Lãnh đạo ký <span id="s1LeaderRequiredMark" style="color:red; display:none;">*</span></span>
+                        <div id="s1LeaderReadonly" class="info-value" style="font-weight:600;">Lê Minh Châu (Giám đốc Sở)</div>
+                        <select id="s1LeaderEditable" class="form-control" style="display:none; height:38px;">
+                            <option value="Lê Minh Châu (Giám đốc Sở)">Lê Minh Châu (Giám đốc Sở)</option>
+                            <option value="Phạm Văn Hùng (Phó Giám đốc)">Phạm Văn Hùng (Phó Giám đốc)</option>
+                            <option value="Trần Văn Lãnh Đạo (Giám đốc Sở)">Trần Văn Lãnh Đạo (Giám đốc Sở)</option>
+                        </select>
                     </div>
                 </div>
 
@@ -1250,27 +1283,15 @@
                     <span class="invalid-feedback" id="s1SummaryError" style="display:none; color:red; font-size:12px; margin-top:4px;">Đây là trường bắt buộc</span>
                 </div>
 
-                <div class="form-group" id="s1LeaderSignContainer" style="margin-bottom: 16px;">
-                    <span class="form-label">Lãnh đạo ký <span id="s1LeaderRequiredMark" style="color:red; display:none;">*</span></span>
-                    <div id="s1LeaderReadonly" class="info-value" style="font-weight:600;">Lê Minh Châu (Giám đốc Sở)</div>
-                    <select id="s1LeaderEditable" class="form-control" style="display:none; height:38px;">
-                        <option value="Lê Minh Châu (Giám đốc Sở)">Lê Minh Châu (Giám đốc Sở)</option>
-                        <option value="Phạm Văn Hùng (Phó Giám đốc)">Phạm Văn Hùng (Phó Giám đốc)</option>
-                        <option value="Trần Văn Lãnh Đạo (Giám đốc Sở)">Trần Văn Lãnh Đạo (Giám đốc Sở)</option>
-                    </select>
-                </div>
-
                 <div class="form-group" style="margin-bottom: 16px;">
                     <span class="form-label">Ngày ký</span>
                     <div id="s1SignDateReadonly" class="info-value">02/04/2026</div>
                 </div>
 
-                <!-- Tệp văn bản Quyết định -->
-                <div class="form-group" style="margin-bottom: 20px; background-color: #f8fafc; border: 1px solid var(--border-color); border-radius: 8px; padding: 16px 20px;">
-                    <span class="form-label" style="font-weight:700; color:var(--primary-color); display:flex; align-items:center; gap:6px;">
-                        <i class="fa-solid fa-file-pdf"></i> Tệp văn bản Quyết định
-                    </span>
-                    <div id="s1FileViewerContainer" style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; width: 100%;">
+                <!-- Tệp văn bản Quyết định: 01 hàng gọn - [icon PDF] tên tệp | nút Xem file, Tải file -->
+                <div class="form-group ht-s1-file" style="margin-bottom: 20px;">
+                    <span class="form-label" style="font-weight:700; color:var(--primary-color);">Tệp văn bản Quyết định</span>
+                    <div id="s1FileViewerContainer" class="ht-s1-file-row">
                         <!-- Populated dynamically -->
                     </div>
                     <div id="s1FileReplaceContainer" style="display:none; margin-top:12px; border-top:1px dashed #cbd5e1; padding-top:10px;">
@@ -4049,22 +4070,33 @@
 
                 const pageHeaderTitle = document.getElementById('pageHeaderTitle');
                 if (pageHeaderTitle) {
-                    const statusBadgeHtml = getDossierStatusBadge(activeDossier.status);
+                    // Hàng 1: trái - mã hồ sơ; phải (01 dòng) - "Trạng thái:" + badge trạng thái + nhãn Loại trình (Chờ duyệt / Bị trả lại)
+                    let statusBadgeHtml;
+                    if (typeof htStView === 'function' && typeof HT_ST_STYLE !== 'undefined' && activeDossier.status && activeDossier.status !== (typeof HT_ST_DRAFT !== 'undefined' ? HT_ST_DRAFT : '')) {
+                        const v = htStView(activeDossier.status);
+                        const s = HT_ST_STYLE[v.name] || ['#f1f5f9', '#475569', '#cbd5e1'];
+                        statusBadgeHtml = `<span class="ht-hdr-badge" style="background:${s[0]}; color:${s[1]}; border-color:${s[2]};">${v.name}</span>`
+                            + (v.loai ? `<span class="ht-hdr-tag">${v.loai}</span>` : '');
+                    } else {
+                        statusBadgeHtml = getDossierStatusBadge(activeDossier.status);
+                    }
 
                     pageHeaderTitle.innerHTML = `
-                        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-                            <span><i class="fa-solid fa-folder-open"></i> Hồ sơ trách nhiệm hoàn trả: ${activeDossier.code}</span>
-                            <div style="display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; margin-left:6px;">
-                                <span style="font-size:12px; font-weight:600; color:var(--text-muted);">Trạng thái:</span>
+                        <div class="ht-hdr-row">
+                            <span class="ht-hdr-code"><i class="fa-solid fa-folder-open"></i> Hồ sơ trách nhiệm hoàn trả: ${activeDossier.code}</span>
+                            <div class="ht-hdr-status">
+                                <span class="ht-hdr-lbl">Trạng thái:</span>
                                 ${statusBadgeHtml}
                             </div>
                         </div>
                     `;
                 }
 
+                const pageHeaderClaimCode = document.getElementById('pageHeaderClaimCode');
+                if (pageHeaderClaimCode) pageHeaderClaimCode.textContent = activeDossier.claimCode || '-';
                 const pageHeaderClaimLink = document.getElementById('pageHeaderClaimLink');
                 if (pageHeaderClaimLink) {
-                    pageHeaderClaimLink.innerHTML = `${activeDossier.claimCode || "-"} <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i> <span>[Xem hồ sơ gốc]</span>`; syncRefundVuViec();
+                    pageHeaderClaimLink.innerHTML = `<span>[Xem hồ sơ gốc]</span> <i class="fa-solid fa-arrow-up-right-from-square" style="font-size:11px;"></i>`; syncRefundVuViec();
                     pageHeaderClaimLink.onclick = (e) => { e.preventDefault(); openLinkedClaimDetail(activeDossier.claimCode); };
                 }
 
@@ -4156,7 +4188,7 @@
                     // Chế độ Cập nhật (mode=edit): Bỏ nút "Xem chi tiết", hiển thị nút tác vụ của bước + nút "Đóng"
                     if (currentViewStep === 1) {
                         if (status === 'Bị trả lại thành lập HĐ') {
-                            html += `<button type="button" class="btn btn-primary" onclick="tlhdOpenModal()"><i class="fa-solid fa-paper-plane"></i> Trình ký lại</button>`;
+                            html += `<button type="button" class="btn btn-primary" onclick="tlhdOpenModal()"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>`;
                         } else if (false && status === 'Chờ thành lập hội đồng') {
                             // Bỏ nút Thành lập hội đồng ở footer vì đã có ở CTA card Bước 1
                         }
@@ -4837,16 +4869,18 @@
                 // File Viewer Container
                 const fileViewer = document.getElementById('s1FileViewerContainer');
                 if (fileViewer) {
+                    if (typeof tlktCss === 'function') tlktCss();
                     const fileName = activeDossier.hdFileName || 'quyet_dinh_thanh_lap_hoi_dong.pdf';
+                    // 01 hàng: [icon PDF] tên tệp | nút biểu tượng Xem file, Tải file (cùng kiểu nút của bảng tài liệu đính kèm)
                     fileViewer.innerHTML = `
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <i class="fa-solid fa-file-pdf" style="color:#ef4444; font-size:18px;"></i>
-                            <strong style="color:var(--primary-color); font-size:13.5px;">${fileName}</strong>
+                        <div class="ht-s1-file-name">
+                            <i class="fa-solid fa-file-pdf" style="color:#dc2626; font-size:18px;"></i>
+                            <span title="${fileName}">${fileName}</span>
                         </div>
-                        <div style="display:flex; gap:10px; align-items:center;">
-                            <a href="javascript:void(0)" onclick="window.open('#', '_blank')" class="action-link"><i class="fa-solid fa-eye"></i> Xem file</a>
-                            <a href="javascript:void(0)" onclick="showToast('Đang tải tệp tin ${fileName}...', 'info')" class="action-link" style="color:var(--secondary-color);"><i class="fa-solid fa-download"></i> Tải xuống</a>
-                        </div>
+                        <span class="tlkt-acts">
+                            <button type="button" data-admin-icon-normalized="1" class="tlkt-ib" title="Xem file" aria-label="Xem file" onclick="window.open('#', '_blank')"><i class="fa-solid fa-eye"></i></button>
+                            <button type="button" data-admin-icon-normalized="1" class="tlkt-ib" title="Tải file" aria-label="Tải file" onclick="showToast('Đang tải tệp tin ${fileName}...', 'info')"><i class="fa-solid fa-download"></i></button>
+                        </span>
                     `;
                 }
 
@@ -4880,7 +4914,7 @@
                         <td>${doc.title}</td>
                         <td style="text-align:center;">${doc.code}</td>
                         <td style="text-align:center;">${doc.date}</td>
-                        <td style="text-align:center;"><a href="javascript:void(0)" onclick="viewAttachedFileMock('${doc.fileName || 'tai_lieu_dinh_kem.pdf'}')" class="action-link"><i class="fa-solid fa-file-pdf"></i> Xem file</a></td>
+                        <td style="text-align:center;"><span class="tlkt-acts"><button type="button" data-admin-icon-normalized="1" class="tlkt-ib" title="Xem file" aria-label="Xem file" onclick="viewAttachedFileMock('${doc.fileName || 'tai_lieu_dinh_kem.pdf'}')"><i class="fa-solid fa-eye"></i></button><button type="button" data-admin-icon-normalized="1" class="tlkt-ib" title="Tải file" aria-label="Tải file" onclick="showToast('Đang tải tệp tin ${doc.fileName || 'tai_lieu_dinh_kem.pdf'}...', 'info')"><i class="fa-solid fa-download"></i></button></span></td>
                         ${actionColHtml}
                     `;
                     tbody.appendChild(tr);
@@ -7992,19 +8026,19 @@
         </script>
     <!-- Popup Thành lập Hội đồng xem xét trách nhiệm hoàn trả (Mẫu 33/BTNN) - bố cục như Popup Không thụ lý hồ sơ -->
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
-    <script src="chi_tiet_ho_so_hoan_tra_tlhd.js?v=20261029tlcam2"></script>
-    <script src="chi_tiet_ho_so_hoan_tra_dcht.js?v=20261029tlcam2"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_tlhd.js?v=20261029htui"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_dcht.js?v=20261029htui2"></script>
     <!-- Dữ liệu mẫu bổ sung phủ các trạng thái của Ma trận chuyển trạng thái (dùng chung màn Danh sách) -->
-    <script src="ht_du_lieu_mau.js?v=20261028mg1"></script>
+    <script src="ht_du_lieu_mau.js?v=20261029dvbh"></script>
     <!-- Bước 1 / Bước 2 Ý kiến của Hội đồng, Stepper 04 bước, phạm vi người xem theo đơn vị -->
-    <script src="chi_tiet_ho_so_hoan_tra_ykhd.js?v=20261029tldk"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_ykhd.js?v=20261029htui"></script>
     <!-- Bước 3: trình ký 02 tầng tại đơn vị (QĐ hoàn trả Mẫu 36; QĐ miễn Mẫu 38 / QĐ giảm Mẫu 37; QĐ đình chỉ Mẫu 39 cấp cán bộ) -->
-    <script src="chi_tiet_ho_so_hoan_tra_qd.js?v=20261029tlcam2"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_qd.js?v=20261029htui2"></script>
     <!-- Bước 4: thu tiền hoàn trả theo phần đơn vị (nộp tiền nhiều đợt, miễn / giảm bổ sung, trả lại tiền) -->
-    <script src="chi_tiet_ho_so_hoan_tra_thu.js?v=20261029tldk"></script>
+    <script src="chi_tiet_ho_so_hoan_tra_thu.js?v=20261029dvbh"></script>
     <!-- Thanh giả lập người dùng dùng chung màn Danh sách / Chi tiết, Khôi phục dữ liệu mẫu -->
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>
-    <script src="ht_mock_role_bar.js?v=20261028tl1"></script>
+    <script src="ht_mock_role_bar.js?v=20261029k2"></script>
     <script src="admin-ui-standardizer.js"></script>
     <script src="../../Common/grid_align.js?v=20261029ga7"></script>
 </body>

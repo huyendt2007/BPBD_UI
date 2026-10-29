@@ -115,6 +115,8 @@ flowchart TD
 
 \- Một `Mã vụ việc` chỉ được tính một lần trong cùng kỳ báo cáo, cùng lĩnh vực phát sinh thiệt hại và cùng cột số liệu; hệ thống tự loại trùng khi tổng hợp.
 
+\- Hệ thống không thống kê vụ việc chỉ có yêu cầu phục hồi danh dự (vụ việc chỉ có hồ sơ `Chỉ yêu cầu phục hồi danh dự` hoặc hồ sơ cán bộ chủ động phục hồi danh dự, không có yêu cầu bồi thường thiệt hại bằng tiền) theo [Phạm vi thống kê vụ việc - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_BaoCao_CongTacBTNN.md#bctt-pham-vi-thong-ke).
+
 \- Vụ việc tại Tòa án ở trạng thái `Trả lại đơn khởi kiện` (theo dõi tại [Theo dõi vụ việc tại Tòa án - Theo dõi vụ việc tại Tòa án - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_TheoDoiVuViecToaAn.md)) không được tính vào bất kỳ cột số liệu nào của Mẫu số 03/BTNN. Sau khi tổng hợp, thông báo tổng hợp thành công phía trên bảng hiển thị kèm nội dung *"Không tính các vụ việc tại Tòa án ở trạng thái "Trả lại đơn khởi kiện"."*
 
 \- Kỳ tổng hợp ở trạng thái `Nháp` cho phép bấm `Tổng hợp số liệu` để tính lại khi dữ liệu nghiệp vụ thay đổi; sau khi chuyển `Đã kết xuất`, lần kết xuất tiếp theo tạo phiên bản file mới, không ghi đè phiên bản đã kết xuất trước đó.

@@ -380,6 +380,8 @@
         }
 
         /* Disabled state */
+        /* Màn hình xem chi tiết: không hiển thị nút dạng mờ (dòng chưa có tệp: ẩn icon Xem file) */
+        #caseDetailSection .tlkt-ib.is-disabled, #caseDetailSection .gq-stop-hide { display: none !important; }
         .icon-btn.disabled, .icon-btn:disabled {
             opacity: 0.35 !important;
             cursor: not-allowed !important;
@@ -2094,43 +2096,6 @@
             </div>
 
             <div class="inline-form-body">
-                <!-- TÌM KIẾM ĐỂ NHẬP NHANH -->
-                <div id="quickSearchContainer" class="quick-search-container"
-                    style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1.5px solid #bfdbfe; padding: 20px; border-radius: var(--border-radius-md); margin-bottom: 24px; box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1);">
-                    <div
-                        style="font-weight: 700; color: #1e3a8a; margin-bottom: 12px; font-size: 14.5px; display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-magnifying-glass-chart" style="color: #2563eb; font-size: 16px;"></i>
-                        TÌM NHANH TỪ VỤ VIỆC XÁC ĐỊNH CƠ QUAN GIẢI QUYẾT BỒI THƯỜNG
-                    </div>
-                    <div style="display: flex; gap: 12px; align-items: center;">
-                        <div style="flex: 1; position: relative;">
-                            <i class="fa-solid fa-search"
-                                style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #64748b;"></i>
-                            <input type="text" class="form-control" id="quickFillCode"
-                                placeholder="Nhập mã hồ sơ xác định cơ quan (Ví dụ: XD-2026-001 hoặc XD-2026-002)..."
-                                style="padding-left: 36px; border-color: #93c5fd; height: 42px; font-size: 13.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                        </div>
-                        <button class="btn btn-primary" onclick="triggerQuickFill()"
-                            style="height: 42px; padding: 0 24px; font-weight: 600; font-size: 13.5px; box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);"><i
-                                class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
-                        <button class="btn btn-secondary" onclick="openXdAgencySearchModal()"
-                            style="height: 42px; padding: 0 18px; font-weight: 600; font-size: 13.5px;">
-                            <i class="fa-solid fa-magnifying-glass-plus"></i> Tìm kiếm nâng cao
-                        </button>
-                    </div>
-                    <div id="xdAgencyLinkedWrapper" style="display:none; margin-top:12px;"></div>
-                    <div
-                        style="margin-top: 8px; font-size: 12px; color: #1e40af; display: flex; align-items: center; gap: 6px;">
-                        <i class="fa-solid fa-circle-info"></i>
-                        <span>Gợi ý mã hồ sơ giả lập: <strong style="cursor: pointer; text-decoration: underline;"
-                                onclick="document.getElementById('quickFillCode').value='XD-2026-001'; triggerQuickFill();">XD-2026-001
-                                (Nguyễn Văn Nam)</strong> hoặc <strong
-                                style="cursor: pointer; text-decoration: underline;"
-                                onclick="document.getElementById('quickFillCode').value='XD-2026-002'; triggerQuickFill();">XD-2026-002
-                                (Lê Hoàng Hải)</strong></span>
-                    </div>
-                </div>
-
                 <!-- THÔNG TIN YÊU CẦU BỔ SUNG ĐÃ NHẬP (CHỈ ĐỌC) - CHỈ HIỂN THỊ KHI TIẾP NHẬN HỒ SƠ Ở TRẠNG THÁI YÊU CẦU BỔ SUNG.
                      Nội dung được dựng bởi renderSupplementRequestInfoHtml(claim), dùng chung với màn Xem chi tiết. -->
                 <div id="editFormBosungAlertBlock" style="display: none; margin-bottom: 24px;"></div>
@@ -2179,7 +2144,7 @@
                 <!-- Khối hồ sơ nhận từ Xác định CQGQBT (chỉ hiển thị khi hồ sơ có xdCode) -->
                 <div id="claimXdTransferInfo" style="display:none; background:#eff6ff; border:1px solid #bfdbfe; border-radius: var(--border-radius-md); padding: 14px 16px; margin-bottom: 16px; font-size: 13px; line-height: 1.6;"></div>
 
-                <!-- Mã vụ việc: Thêm mới trực tiếp chọn "Vụ việc mới" (hệ thống sinh Mã vụ việc khi lưu) / "Vụ việc đã có Mã vụ việc" (chọn từ BTNN_WF.listVuViec()).
+                <!-- Mã vụ việc: Thêm mới trực tiếp chọn "Vụ việc mới" (hệ thống sinh Mã vụ việc khi lưu) / "Vụ việc đã có Mã vụ việc" (Tìm kiếm / Tìm kiếm nâng cao vụ việc).
                      Vụ việc liên quan: chỉ khi "Vụ việc mới" (hồ sơ nộp lại sau khi bị từ chối). Hồ sơ đã có: Mã vụ việc / Mã hồ sơ chỉ đọc. -->
                 <div id="claimVuViecBlock" class="grid-3-cols" style="margin-bottom: 16px;">
                     <div class="form-group" id="claimVuViecModeGroup">
@@ -2189,10 +2154,39 @@
                             <label style="cursor:pointer; font-size:13px; display:inline-flex; align-items:center; gap:6px;"><input type="radio" name="claimVuViecMode" value="existing" onchange="toggleClaimVuViecMode()"> Vụ việc đã có Mã vụ việc</label>
                         </div>
                     </div>
-                    <div class="form-group" id="claimVuViecPickGroup" style="display:none;">
-                        <span class="form-label">Chọn vụ việc <span class="required">*</span></span>
-                        <input type="text" class="form-control" id="claimVuViecPick" list="claimVuViecOptions" placeholder="Gõ Mã vụ việc hoặc Họ và tên người yêu cầu..." autocomplete="off">
-                        <div class="error-message" id="errClaimVuViecPick">Vui lòng chọn vụ việc trong danh sách</div>
+                    <!-- Vụ việc đã có Mã vụ việc: Tìm kiếm / Tìm kiếm nâng cao vụ việc (giống khối Thông tin vụ việc liên kết - Theo dõi vụ việc tại Tòa án).
+                         Chỉ vụ việc có trạng thái claimVvStatuses() (CDPD thêm Hoàn thành), không có hồ sơ đang giải quyết. -->
+                    <style>#claimVuViecPickGroup input[readonly]{background:#f1f5f9;color:#334155;cursor:default;}#claimVuViecPickGroup button:disabled{opacity:.55;cursor:not-allowed;}</style>
+                    <div class="form-group" id="claimVuViecPickGroup" style="display:none; grid-column: 1 / -1;">
+                        <div style="background-color:#f8fafc; padding:16px; border:1px solid var(--border-color); border-radius:var(--border-radius-md);">
+                            <div style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:16px;">
+                                <div class="form-group" style="margin-bottom:0; grid-column: span 2;">
+                                    <span class="form-label">Chọn vụ việc <span class="required">*</span></span>
+                                    <div style="display:flex; gap:8px; align-items:center;">
+                                        <input type="text" class="form-control" id="claimVuViecPick" placeholder="Nhập mã vụ việc..." autocomplete="off" style="flex:1;" onkeydown="if(event.key==='Enter'){event.preventDefault(); claimVvQuickSearch();}">
+                                        <button type="button" class="btn btn-primary" id="claimVvBtnSearch" onclick="claimVvQuickSearch()" style="white-space:nowrap;"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                                        <button type="button" class="btn btn-secondary" id="claimVvBtnAdv" onclick="claimVvOpenLookup()" style="white-space:nowrap;"><i class="fa-solid fa-magnifying-glass-plus"></i> Tìm kiếm nâng cao</button>
+                                    </div>
+                                    <div class="error-message" id="errClaimVuViecPick">Đây là trường bắt buộc</div>
+                                    <div id="claimVvSelected" style="display:none; margin-top:8px; align-items:center; gap:8px; flex-wrap:wrap;">
+                                        <span class="badge" id="claimVvSelectedText" style="background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe; font-size:12.5px; padding:6px 12px; border-radius:6px;"></span>
+                                        <button type="button" class="btn btn-secondary btn-sm" id="claimVvBtnUnlink" onclick="claimVvClearLink(true)"><i class="fa-solid fa-xmark"></i> Bỏ chọn</button>
+                                    </div>
+                                </div>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <span class="form-label">Mã hồ sơ</span>
+                                    <input type="text" class="form-control" id="claimVvLinkHoSo" readonly tabindex="-1" placeholder="Tự điền khi chọn vụ việc">
+                                </div>
+                                <div class="form-group" style="margin-bottom:0;">
+                                    <span class="form-label">Trạng thái vụ việc</span>
+                                    <input type="text" class="form-control" id="claimVvLinkStatus" readonly tabindex="-1" placeholder="Tự điền khi chọn vụ việc">
+                                </div>
+                                <div class="form-group" style="margin-bottom:0; grid-column: span 2;">
+                                    <span class="form-label">Cơ quan giải quyết</span>
+                                    <input type="text" class="form-control" id="claimVvLinkAgency" readonly tabindex="-1" placeholder="Tự điền khi chọn vụ việc">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group" id="claimVuViecLienQuanGroup">
                         <span class="form-label">Vụ việc liên quan</span>
@@ -4394,12 +4388,12 @@
     <script src="btnn_tab_xu_ly.js?v=20261026tab2"></script>
     <script src="../01_Quan_tri_he_thong/dm_loai_co_quan.js"></script>
     <script src="quan_ly_boi_thuong_dcgq.js?v=20261029tlcam2"></script>
-    <script src="quan_ly_kinh_phi_kpdc.js?v=20261028tl1"></script>
+    <script src="quan_ly_kinh_phi_kpdc.js?v=20261029sn1"></script>
     <!-- [th2c] Danh mục Loại thiệt hại 2 cấp (DM_27) + bảng 2 cấp dùng chung -->
     <script src="btnn_thiet_hai.js?v=20261028dm27"></script>
     <script src="quan_ly_boi_thuong_seedx.js?v=20261027dcth"></script>
     <!-- [hlqd] Hồ sơ mẫu BT-2026-191..194 cho Quyết định GQBT mẫu thử Hiệu lực -->
-    <script src="quan_ly_boi_thuong_hlqd.js?v=20261027p7"></script>
+    <script src="quan_ly_boi_thuong_hlqd.js?v=20261029sn1"></script>
     <script src="quan_ly_boi_thuong_seedht.js?v=20261029tldk"></script>
     <script src="quan_ly_boi_thuong_hgq.js?v=20261029tlcam2"></script>
     <script src="btnn_badge_cho_xu_ly.js?v=20261027menu"></script>
@@ -5151,63 +5145,6 @@
 
             sumClaimThietHai();
         }
-
-        // Local simulation data for Quick-Fill
-        const xdRequestList = [
-            {
-                code: "XD-2026-001",
-                nycName: "Nguyễn Văn Nam",
-                nycRole: "Người bị thiệt hại",
-                nycGender: "Nam",
-                nycBirth: "12/05/1988",
-                nycCardType: "CCCD",
-                nycCardNo: "001088002934",
-                nycCardDate: "15/08/2021",
-                nycCardPlace: "Cục Cảnh sát QLHC về TTXH",
-                nycPhone: "0915223344",
-                nycEmail: "namnv@example.com",
-                nycCountry: "Việt Nam",
-                nycTinhThanh: "Hà Nội",
-                nycAddressDetail: "Số 20 Trần Hưng Đạo, Hoàn Kiếm",
-                hanhVi: "UBND Phường đã thực hiện lập biên bản phạt hành chính sai thẩm quyền đối với hộ kinh doanh.",
-                procTargetAgency: "Sở Tư pháp TP. Hà Nội",
-                fieldGroup: "hành chính",
-                officerName: "Đỗ Xuân Tài",
-                officerPosition: "Chủ tịch UBND Phường",
-                officerAgency: "UBND Phường Dịch Vọng Hậu",
-                officerStatus: "Vẫn công tác tại đơn vị cũ",
-                officerCurrentAgency: "",
-                officerCurrentPosition: "",
-                // Tài liệu của hồ sơ Xác định CQGQBT: kế thừa vào form Nhập liệu hồ sơ vụ việc
-                vanBanCanCu: [{ name: "Quyết định xử phạt vi phạm hành chính số 125/QĐ-XPVPHC", file: "QD_125_XPVPHC.pdf" }],
-                attachedDocs: [{ name: "Đơn yêu cầu xác định cơ quan giải quyết bồi thường", file: "Don_yeu_cau_XD-2026-001.pdf" }, { name: "Giấy tờ chứng minh nhân thân", file: "CCCD_Nguyen_Van_Nam.pdf" }]
-            },
-            {
-                code: "XD-2026-002",
-                nycName: "Lê Hoàng Hải",
-                nycRole: "Cá nhân, pháp nhân được ủy quyền hợp pháp",
-                nycGender: "Nam",
-                nycBirth: "20/10/1990",
-                nycCardType: "CCCD",
-                nycCardNo: "001090008812",
-                nycCardDate: "10/02/2023",
-                nycCardPlace: "Cục Cảnh sát QLHC về TTXH",
-                nycPhone: "0988776655",
-                nycEmail: "haile@example.com",
-                nycCountry: "Việt Nam",
-                nycTinhThanh: "Hải Phòng",
-                nycAddressDetail: "Số 45 Lê Lợi, Ngô Quyền",
-                hanhVi: "Bắt tạm giam khẩn cấp không phê chuẩn của Viện kiểm sát.",
-                procTargetAgency: "Tòa án nhân dân TP. Hà Nội",
-                fieldGroup: "hình sự",
-                officerName: "Nguyễn Trung Dũng",
-                officerPosition: "Điều tra viên sơ cấp",
-                officerAgency: "Công an Quận Ngô Quyền",
-                officerStatus: "Đã chuyển công tác",
-                officerCurrentAgency: "Công an Thành phố Hải Phòng",
-                officerCurrentPosition: "Điều tra viên trung cấp"
-            }
-        ];
 
         const thietHaiNames = [
             "Tài sản bị xâm phạm",
@@ -7176,7 +7113,7 @@
             {
                 id: "HS_TT10",
                 code: "BT-2026-057",
-                fieldGroup: "hành chính",
+                fieldGroup: "dân sự",
                 date: "02/10/2026",
                 nyc: "Đặng Hoàng Nam",
                 cardType: "Cá nhân",
@@ -8204,10 +8141,12 @@
             if (!dl) return;
             dl.innerHTML = gqListVuViec().map(v => `<option value="${ycEsc(v.nycName ? `${v.code} - ${v.nycName}` : v.code)}"></option>`).join('');
         }
-        // Mã vụ việc nhập tại ô chọn: '' khi trống, null khi không thuộc danh sách vụ việc trên hệ thống
+        // Mã vụ việc nhập tại ô chọn: '' khi trống, null khi không thuộc danh sách vụ việc trên hệ thống.
+        // Ô "Chọn vụ việc" (Vụ việc đã có Mã vụ việc): theo vụ việc đã chọn tại Tìm kiếm / Tìm kiếm nâng cao
         function readClaimVuViecInput(id) {
             const el = document.getElementById(id);
             const raw = el ? el.value.trim() : '';
+            if (id === 'claimVuViecPick') return claimVvLink ? claimVvLink.code : (raw ? null : '');
             if (!raw) return '';
             const m = raw.match(/^VVBT-\d{4}-\d+/i);
             const code = m ? m[0].toUpperCase() : '';
@@ -8217,7 +8156,8 @@
             const r = document.querySelector('input[name="claimVuViecMode"]:checked');
             return r && r.value === 'existing' ? 'existing' : 'new';
         }
-        // Vụ việc mới: ẩn ô chọn, hiện Vụ việc liên quan; Vụ việc đã có Mã vụ việc: hiện ô chọn (bắt buộc), ẩn và xóa Vụ việc liên quan
+        // Vụ việc mới: ẩn khối chọn vụ việc và xóa vụ việc đã chọn, hiện Vụ việc liên quan;
+        // Vụ việc đã có Mã vụ việc: hiện khối Tìm kiếm / Tìm kiếm nâng cao vụ việc (bắt buộc chọn), ẩn và xóa Vụ việc liên quan
         function toggleClaimVuViecMode() {
             const existing = getClaimVuViecMode() === 'existing';
             const pick = document.getElementById('claimVuViecPickGroup');
@@ -8226,9 +8166,220 @@
             if (lq) lq.style.display = existing ? 'none' : '';
             const lqInp = document.getElementById('claimVuViecLienQuan');
             if (existing && lqInp) lqInp.value = '';
-            if (!existing) setInputValue('claimVuViecPick', '');
+            if (!existing) claimVvClearLink(false);
             ['claimVuViecPick', 'claimVuViecLienQuan'].forEach(id => { const el = document.getElementById(id); if (el) el.classList.remove('is-invalid'); });
             ['errClaimVuViecPick', 'errClaimVuViecLienQuan'].forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none'; });
+        }
+
+        // ===== Vụ việc đã có Mã vụ việc: Tìm kiếm / Tìm kiếm nâng cao vụ việc (theo Theo dõi vụ việc tại Tòa án) =====
+        // Trạng thái vụ việc được chọn: vụ việc đã kết thúc, người yêu cầu phải gửi lại hồ sơ (thứ tự theo GQ_CASE_STATUSES)
+        var GQ_VV_RESUBMIT_STATUSES = ['Từ chối phục hồi danh dự', 'Đình chỉ giải quyết', 'Dừng giải quyết'];
+        // Hình thức tạo hồ sơ = Cán bộ chủ động phục hồi danh dự: thêm Hoàn thành
+        var GQ_VV_RESUBMIT_STATUSES_CDPD = GQ_VV_RESUBMIT_STATUSES.concat(['Hoàn thành']);
+        function claimVvStatuses() { return (typeof cdpdOn !== 'undefined' && cdpdOn) ? GQ_VV_RESUBMIT_STATUSES_CDPD : GQ_VV_RESUBMIT_STATUSES; }
+        // Đổi Hình thức tạo hồ sơ: vụ việc đã chọn không còn hợp lệ theo chế độ mới -> bỏ chọn
+        function claimVvRevalidate() {
+            if (claimVvLink && !claimVvEligible().some(r => r.code === claimVvLink.code)) claimVvClearLink(false);
+        }
+        var claimVvLink = null; // { code, hoSoCode, claimId, status, agency, requester, victim }
+        function claimVvFold(s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase().trim(); }
+        function claimVvStatusOf(c) {
+            try { return typeof gqldCaseStatus === 'function' ? gqldCaseStatus(c) : canonicalClaimStatus(c.status); } catch (e) { return canonicalClaimStatus(c && c.status); }
+        }
+        // Vụ việc hợp lệ: thuộc danh sách Giải quyết YCBT của người dùng, hồ sơ gần nhất có trạng thái GQ_VV_RESUBMIT_STATUSES, không có hồ sơ chưa kết thúc
+        function claimVvEligible() {
+            const byVv = new Map();
+            claimsList.forEach(c => {
+                if (!c || c.deleted) return;
+                const vv = claimVvCode(c);
+                if (!isVvCode(vv)) return;
+                if (!byVv.has(vv)) byVv.set(vv, []);
+                byVv.get(vv).push(c);
+            });
+            const out = [];
+            byVv.forEach((list, vv) => {
+                if (list.some(c => !CLAIM_DONE_TAB_STATES.includes(claimVvStatusOf(c)))) return;
+                const sts = claimVvStatuses();
+                const hits = list.filter(c => sts.includes(claimVvStatusOf(c)));
+                const hit = hits[hits.length - 1];
+                if (!hit) return;
+                out.push({ code: vv, hoSoCode: hit.code, claimId: hit.id, status: claimVvStatusOf(hit), agency: hit.agency || '', requester: getClaimRequesterName(hit), victim: getClaimVictimName(hit) });
+            });
+            return out.sort((a, b) => b.code.localeCompare(a.code));
+        }
+        function claimVvShowError(msg) {
+            const inp = document.getElementById('claimVuViecPick'), err = document.getElementById('errClaimVuViecPick');
+            if (inp) inp.classList.toggle('is-invalid', !!msg);
+            if (err) { err.textContent = msg || 'Đây là trường bắt buộc'; err.style.display = msg ? 'block' : 'none'; }
+        }
+        function renderClaimVvLink() {
+            const has = !!claimVvLink;
+            const inp = document.getElementById('claimVuViecPick');
+            if (!inp) return;
+            if (has) inp.value = claimVvLink.code;
+            setInputValue('claimVvLinkHoSo', has ? claimVvLink.hoSoCode : '');
+            setInputValue('claimVvLinkStatus', has ? claimVvLink.status : '');
+            setInputValue('claimVvLinkAgency', has ? claimVvLink.agency : '');
+            const sel = document.getElementById('claimVvSelected');
+            if (sel) sel.style.display = has ? 'flex' : 'none';
+            const txt = document.getElementById('claimVvSelectedText');
+            if (txt) txt.textContent = has ? `Đã chọn: ${claimVvLink.code} - ${claimVvLink.requester || '-'}` : '';
+            inp.disabled = has;
+            ['claimVvBtnSearch', 'claimVvBtnAdv'].forEach(id => { const b = document.getElementById(id); if (b) b.disabled = has; });
+        }
+        function claimVvClearLink(focus) {
+            claimVvLink = null;
+            setInputValue('claimVuViecPick', '');
+            claimVvShowError('');
+            renderClaimVvLink();
+            if (focus) { const inp = document.getElementById('claimVuViecPick'); if (inp) inp.focus(); }
+        }
+        // Điền sẵn thông tin người yêu cầu, người bị thiệt hại theo hồ sơ của vụ việc đã chọn (cho phép sửa)
+        function claimVvPrefill(r) {
+            const c = claimsList.find(x => x && x.id === r.claimId);
+            if (!c) return;
+            const set = (id, v) => { const el = document.getElementById(id); if (el) el.value = v || ''; };
+            try {
+                set('claimNYCName', c.nyc || '');
+                const role = c.nycRole || c.role || 'Người bị thiệt hại';
+                setNycTypeOnForm(nycTypeOfGq(role, c.nycType));
+                fillNycOrgForm(c);
+                fillNbthForm(c.nbth);
+                applyNycTypeConstraint(role);
+                toggleNbthBlock(document.getElementById('claimNYCRole').value);
+                set('claimNYCBirth', c.nycBirth);
+                if (c.cardType) set('claimNYCCardType', c.cardType);
+                set('claimNYCCardNo', c.cardNo);
+                set('claimNYCCardDate', c.nycCardDate);
+                set('claimNYCCardPlace', c.nycCardPlace);
+                set('claimNYCPhone', c.phone);
+                set('claimNYCEmail', c.nycEmail);
+                setClaimCountry('claimNYCCountry', c.nycCountry);
+                toggleClaimCountrySelect(c.nycCountry || 'Việt Nam');
+                if ((c.nycCountry || 'Việt Nam') === 'Việt Nam') { set('claimNYCCity', getClaimCity(c)); set('claimNYCCityText', ''); }
+                else { set('claimNYCCity', ''); set('claimNYCCityText', getClaimCity(c)); }
+                set('claimNYCAddress', getClaimAddressDetail(c));
+            } catch (e) { /* mockup: trường không có trên form */ }
+            if (typeof cdpdOn !== 'undefined' && cdpdOn && typeof cdpdLockRole === 'function') cdpdLockRole();
+        }
+        function claimVvChoose(r) {
+            claimVvLink = Object.assign({}, r);
+            claimVvShowError('');
+            renderClaimVvLink();
+            claimVvPrefill(r);
+        }
+        // Tìm kiếm theo Mã vụ việc (nhận cả Mã hồ sơ)
+        function claimVvQuickSearch() {
+            const v = getInputValue('claimVuViecPick');
+            const inp = document.getElementById('claimVuViecPick');
+            if (!v) { claimVvShowError('Đây là trường bắt buộc'); if (inp) inp.focus(); return; }
+            const f = claimVvFold(v);
+            const hit = claimVvEligible().find(r => claimVvFold(r.code) === f || claimVvFold(r.hoSoCode) === f);
+            if (hit) { claimVvChoose(hit); showToast(`Đã chọn vụ việc ${hit.code}.`, 'success'); }
+            else { claimVvShowError('Không tìm thấy vụ việc phù hợp hoặc vụ việc không ở trạng thái được chọn'); if (inp) inp.focus(); }
+        }
+        // Popup Tìm kiếm vụ việc
+        var CLAIM_VV_POP_FIELDS = ['claimVvPopCode', 'claimVvPopHoSo', 'claimVvPopReq', 'claimVvPopVictim', 'claimVvPopAgency', 'claimVvPopStatus'];
+        var claimVvPopRows = [];
+        function claimVvEnsureModal() {
+            if (document.getElementById('claimVvLookup')) return;
+            const st = document.createElement('style');
+            st.textContent = [
+                '.gqvv-bd{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:flex-start;justify-content:center;z-index:5000;padding:20px;overflow:auto;}',
+                '.gqvv-bd.visible{display:flex;}',
+                '.gqvv-modal{background:#fff;border-radius:12px;width:min(1180px,100%);box-shadow:0 20px 50px rgba(15,23,42,.3);display:flex;flex-direction:column;max-height:calc(100vh - 40px);}',
+                '.gqvv-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid #e2e8f0;font-size:15px;color:#0f172a;}',
+                '.gqvv-body{padding:16px 18px;overflow:auto;}',
+                '.gqvv-note{margin-bottom:12px;padding:8px 12px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;font-size:13px;color:#1e3a8a;}',
+                '.gqvv-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 14px;}',
+                '.gqvv-grid label{display:block;font-size:13px;font-weight:600;color:#334155;margin-bottom:4px;}',
+                '.gqvv-grid input,.gqvv-grid select{width:100%;box-sizing:border-box;height:36px;border:1px solid #cbd5e1;border-radius:6px;padding:4px 10px;font:inherit;font-size:13px;}',
+                '.gqvv-actions{display:flex;justify-content:flex-end;gap:8px;margin:12px 0;}',
+                '.gqvv-table{width:100%;border-collapse:collapse;font-size:13px;}',
+                '.gqvv-table th{background:#f1f5f9;text-align:left;padding:9px 10px;color:#334155;border-bottom:1px solid #e2e8f0;white-space:nowrap;}',
+                '.gqvv-table td{padding:9px 10px;border-bottom:1px solid #f1f5f9;vertical-align:middle;}',
+                '.gqvv-table tbody tr{cursor:pointer;}',
+                '.gqvv-table tbody tr:hover td{background:#f8fafc;}',
+                '.gqvv-table a{color:#1d4ed8;text-decoration:underline;cursor:pointer;}',
+                '.gqvv-badge{display:inline-block;padding:3px 9px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:600;white-space:nowrap;}',
+                '.gqvv-foot{display:flex;justify-content:flex-end;padding:12px 18px;border-top:1px solid #e2e8f0;}',
+                '.gqvv-empty{text-align:center;color:#64748b;font-style:italic;padding:24px;}'
+            ].join('\n');
+            document.head.appendChild(st);
+            const inp = (id, label, ph) => `<div><label for="${id}">${label}</label><input id="${id}" placeholder="${ph}" autocomplete="off"></div>`;
+            const box = document.createElement('div');
+            box.className = 'gqvv-bd';
+            box.id = 'claimVvLookup';
+            box.innerHTML = `
+                <div class="gqvv-modal" role="dialog" aria-modal="true">
+                    <div class="gqvv-head"><strong><i class="fa-solid fa-magnifying-glass-plus"></i> Tìm kiếm vụ việc</strong>
+                        <button type="button" class="btn btn-secondary" onclick="claimVvCloseLookup()" title="Đóng"><i class="fa-solid fa-xmark"></i></button></div>
+                    <div class="gqvv-body">
+                        <div class="gqvv-note"><i class="fa-solid fa-shield-halved"></i> Phạm vi dữ liệu: vụ việc thuộc phạm vi dữ liệu của người dùng. Chỉ hiển thị vụ việc có trạng thái <span id="claimVvPopNoteSts"></span> và không có hồ sơ đang giải quyết.</div>
+                        <div class="gqvv-grid">
+                            ${inp('claimVvPopCode', 'Mã vụ việc', 'Nhập mã vụ việc...')}
+                            ${inp('claimVvPopHoSo', 'Mã hồ sơ', 'Nhập mã hồ sơ...')}
+                            ${inp('claimVvPopReq', 'Tên cá nhân/Tổ chức yêu cầu', 'Nhập tên cá nhân/tổ chức yêu cầu...')}
+                            ${inp('claimVvPopVictim', 'Tên cá nhân/Tổ chức bị thiệt hại', 'Nhập tên cá nhân/tổ chức bị thiệt hại...')}
+                            ${inp('claimVvPopAgency', 'Cơ quan giải quyết', 'Nhập cơ quan giải quyết...')}
+                            <div><label for="claimVvPopStatus">Trạng thái</label><select id="claimVvPopStatus"></select></div>
+                        </div>
+                        <div class="gqvv-actions">
+                            <button type="button" class="btn btn-secondary" onclick="claimVvLookupClear()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
+                            <button type="button" class="btn btn-primary" onclick="claimVvLookupSearch()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
+                        </div>
+                        <table class="gqvv-table" id="claimVvPopTable">
+                            <thead><tr><th style="width:50px;text-align:center;">STT</th><th>Mã vụ việc</th><th>Mã hồ sơ</th><th>Tên cá nhân/Tổ chức yêu cầu</th><th>Tên cá nhân/Tổ chức bị thiệt hại</th><th>Cơ quan giải quyết</th><th>Trạng thái</th><th style="text-align:center;">Thao tác</th></tr></thead>
+                            <tbody id="claimVvPopBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="gqvv-foot"><button type="button" class="btn btn-secondary" onclick="claimVvCloseLookup()">Hủy bỏ</button></div>
+                </div>`;
+            document.body.appendChild(box);
+            CLAIM_VV_POP_FIELDS.slice(0, 5).forEach(id => document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); claimVvLookupSearch(); } }));
+        }
+        function claimVvOpenLookup() {
+            claimVvEnsureModal();
+            document.getElementById('claimVvPopStatus').innerHTML = '<option value="">Tất cả</option>' + claimVvStatuses().map(s => `<option value="${ycEsc(s)}">${ycEsc(s)}</option>`).join('');
+            document.getElementById('claimVvPopNoteSts').textContent = claimVvStatuses().map(s => `"${s}"`).join(', ');
+            CLAIM_VV_POP_FIELDS.forEach(id => setInputValue(id, ''));
+            setInputValue('claimVvPopCode', getInputValue('claimVuViecPick'));
+            claimVvLookupSearch();
+            document.getElementById('claimVvLookup').classList.add('visible');
+        }
+        function claimVvCloseLookup() { const m = document.getElementById('claimVvLookup'); if (m) m.classList.remove('visible'); }
+        function claimVvLookupClear() { CLAIM_VV_POP_FIELDS.forEach(id => setInputValue(id, '')); claimVvLookupSearch(); }
+        function claimVvLookupSearch() {
+            const g = id => claimVvFold(getInputValue(id));
+            const f = { code: g('claimVvPopCode'), hoSo: g('claimVvPopHoSo'), req: g('claimVvPopReq'), victim: g('claimVvPopVictim'), agency: g('claimVvPopAgency') };
+            const status = getInputValue('claimVvPopStatus');
+            claimVvPopRows = claimVvEligible().filter(r => {
+                if (f.code && !claimVvFold(r.code).includes(f.code)) return false;
+                if (f.hoSo && !claimVvFold(r.hoSoCode).includes(f.hoSo)) return false;
+                if (f.req && !claimVvFold(r.requester).includes(f.req)) return false;
+                if (f.victim && !claimVvFold(r.victim).includes(f.victim)) return false;
+                if (f.agency && !claimVvFold(r.agency).includes(f.agency)) return false;
+                if (status && r.status !== status) return false;
+                return true;
+            });
+            document.getElementById('claimVvPopBody').innerHTML = claimVvPopRows.length ? claimVvPopRows.map((r, i) => `<tr onclick="claimVvLookupChoose(${i})">
+                    <td style="text-align:center;">${i + 1}</td>
+                    <td style="white-space:nowrap;font-weight:600;">${ycEsc(r.code)}</td>
+                    <td style="white-space:nowrap;"><a title="Mở xem chi tiết hồ sơ tại tab mới" onclick="event.stopPropagation(); claimVvOpenDetail('${ycEsc(r.hoSoCode)}')">${ycEsc(r.hoSoCode)}</a></td>
+                    <td>${ycEsc(r.requester || '-')}</td><td>${ycEsc(r.victim || '-')}</td><td>${ycEsc(r.agency || '-')}</td>
+                    <td><span class="gqvv-badge">${ycEsc(r.status)}</span></td>
+                    <td style="text-align:center;"><button type="button" class="btn btn-primary btn-sm" onclick="event.stopPropagation(); claimVvLookupChoose(${i})"><i class="fa-solid fa-check"></i> Chọn</button></td>
+                </tr>`).join('') : '<tr><td colspan="8" class="gqvv-empty">Không tìm thấy dữ liệu phù hợp. [MSG-INF-SYS-001]</td></tr>';
+        }
+        function claimVvLookupChoose(i) {
+            const r = claimVvPopRows[i];
+            if (!r) return;
+            claimVvCloseLookup();
+            claimVvChoose(r);
+        }
+        // Mở xem chi tiết hồ sơ Giải quyết YCBT tại tab trình duyệt mới, không chọn vụ việc
+        function claimVvOpenDetail(code) {
+            window.open(`quan_ly_boi_thuong.html?id=${encodeURIComponent(code)}&mode=view`, '_blank');
         }
         // claim = null: Thêm mới trực tiếp; claim: hồ sơ đã có -> Mã vụ việc, Mã hồ sơ, Vụ việc liên quan chỉ đọc
         function setupClaimVuViecForm(claim) {
@@ -8250,22 +8401,15 @@
             show('claimVuViecReadonlyGroup', false);
             show('claimHoSoCodeReadonlyGroup', false);
             if (lqInp) { lqInp.disabled = false; lqInp.value = ''; }
-            setInputValue('claimVuViecPick', '');
+            claimVvClearLink(false);
             document.getElementsByName('claimVuViecMode').forEach(r => { r.checked = r.value === 'new'; });
             toggleClaimVuViecMode();
-        }
-        // Tìm nhanh từ hồ sơ Xác định CQGQBT đã có Mã vụ việc: chọn sẵn "Vụ việc đã có Mã vụ việc"
-        function setClaimVuViecExisting(code) {
-            if (!isVvCode(code)) return;
-            document.getElementsByName('claimVuViecMode').forEach(r => { r.checked = r.value === 'existing'; });
-            toggleClaimVuViecMode();
-            setInputValue('claimVuViecPick', gqVuViecLabel(code));
         }
         // Kiểm tra trường Mã vụ việc / Vụ việc liên quan khi lưu; trả về phần tử lỗi đầu tiên hoặc null
         function validateClaimVuViecForm() {
             const bad = (id, errId) => { const el = document.getElementById(id); if (el) el.classList.add('is-invalid'); const er = document.getElementById(errId); if (er) er.style.display = 'block'; return el; };
             if (getClaimVuViecMode() === 'existing') {
-                if (!readClaimVuViecInput('claimVuViecPick')) return bad('claimVuViecPick', 'errClaimVuViecPick');
+                if (!readClaimVuViecInput('claimVuViecPick')) { const er = document.getElementById('errClaimVuViecPick'); if (er) er.textContent = 'Đây là trường bắt buộc'; return bad('claimVuViecPick', 'errClaimVuViecPick'); }
                 return null;
             }
             if (readClaimVuViecInput('claimVuViecLienQuan') === null) return bad('claimVuViecLienQuan', 'errClaimVuViecLienQuan');
@@ -8987,10 +9131,9 @@
         }
 
         function collectVerdictFormData() {
-            // Form nhập liệu không còn khối "Tình trạng pháp lý"/thông tin bản án: chỉ thu thập liên kết hồ sơ
-            // Xác định cơ quan, không ghi đè thông tin bản án của hồ sơ cũ (dữ liệu mẫu) khi lưu lại.
+            // Form nhập liệu không còn khối "Tình trạng pháp lý"/thông tin bản án: không ghi đè thông tin bản án của hồ sơ cũ (dữ liệu mẫu) khi lưu lại.
             if (!document.querySelector('input[name="claimHasVerdictRadio"]')) {
-                return { linkedXdAgencyCode: getInputValue('quickFillCode') };
+                return {};
             }
             const hasVerdictRadio = document.querySelector('input[name="claimHasVerdictRadio"]:checked');
             const hasVerdict = hasVerdictRadio && hasVerdictRadio.value === 'true';
@@ -9006,8 +9149,7 @@
                 originDocDate: noOriginClaim ? getInputValue('verdictOriginDocDate') : '',
                 originAgency: noOriginClaim ? getInputValue('verdictOriginAgency') : '',
                 verdictNumber: getInputValue('verdictNumber'),
-                verdictEffectiveDate: getInputValue('verdictEffectiveDate'),
-                linkedXdAgencyCode: getInputValue('quickFillCode')
+                verdictEffectiveDate: getInputValue('verdictEffectiveDate')
             };
         }
 
@@ -9063,7 +9205,6 @@
             setInputValue('verdictOriginAgency', claim.originAgency || '');
             setInputValue('verdictNumber', claim.verdictNumber || '');
             setInputValue('verdictEffectiveDate', claim.verdictEffectiveDate || '');
-            setInputValue('quickFillCode', claim.linkedXdAgencyCode || '');
 
             const noOriginCheckbox = document.getElementById('verdictNoOriginClaim');
             if (noOriginCheckbox) {
@@ -9072,19 +9213,6 @@
             }
 
             toggleVerdictSource(getInputValue('verdictSource') || 'Điều 52');
-
-            const linkedXd = xdRequestList.find(item => item.code === claim.linkedXdAgencyCode);
-            const xdWrapper = document.getElementById('xdAgencyLinkedWrapper');
-            if (xdWrapper && linkedXd) {
-                xdWrapper.style.display = 'block';
-                xdWrapper.innerHTML = `
-                    <span style="font-size:13px; font-weight:600; color:#475569; background:#f1f5f9; border:1px solid #cbd5e1; padding:6px 12px; border-radius:4px; display:inline-flex; align-items:center; gap:6px;">
-                        <i class="fa-solid fa-file-shield"></i> Mã XĐCQ: ${escapeHtml(linkedXd.code)} - ${escapeHtml(linkedXd.nycName)} <span style="font-size:12px; color:#64748b; font-style:italic;">(Không cho phép xem lại)</span>
-                    </span>`;
-            } else if (xdWrapper) {
-                xdWrapper.style.display = 'none';
-                xdWrapper.innerHTML = '';
-            }
 
             const linkedOrigin = claim.originClaimCode ? getOriginClaimCandidates().find(item => item.code === claim.originClaimCode) : null;
             const originWrapper = document.getElementById('mockOriginLinkWrapper');
@@ -9668,7 +9796,7 @@
         // - Cùng phiên bản dữ liệu mẫu: dùng claimsList đã lưu (kể cả trạng thái hồ sơ mẫu đã chuyển), chỉ bổ sung hồ sơ mẫu chưa có (theo id / Mã hồ sơ).
         // - Phiên bản dữ liệu mẫu đổi (GQ_SEED_VER hoặc ?v= của tệp dữ liệu mẫu quan_ly_boi_thuong_*.js): bỏ bản ghi mẫu đã lưu để nạp lại,
         //   giữ bản ghi người dùng tạo (userCreated); dữ liệu mẫu theo phiên bản riêng của add-on (dgq, cdpd, nbth) cũng nạp lại.
-        const GQ_SEED_VER = '20261029gq2';
+        const GQ_SEED_VER = '20261029sn1';
         const GQ_SEED_VER_KEY = 'claimsList_seed_ver';
         const GQ_ADDON_SEED_KEYS = ['btnn_dgq_seed_v', 'btnn_cdpd_seed_v', 'gqNbthSeedVersion'];
         function gqSeedVersion() {
@@ -11220,15 +11348,6 @@
                     opinionEl.value = (rec && rec.approval && rec.approval.content) ? rec.approval.content : '';
                 }
             }
-            gqnlApplyQuickSearchVisibility();
-        }
-
-        // Khối "Tìm nhanh từ vụ việc Xác định CQGQBT": chỉ hiển thị khi Thêm mới trực tiếp; mở từ Tiếp nhận trên lưới (hồ sơ đã có) thì ẩn
-        function gqnlApplyQuickSearchVisibility() {
-            const qs = document.getElementById('quickSearchContainer');
-            if (!qs) return;
-            const verdictOn = Array.from(document.getElementsByName('claimHasVerdictRadio')).some(r => r.checked && r.value === 'true');
-            qs.style.display = (editingClaimId || verdictOn) ? 'none' : 'block';
         }
 
         function closeInlineClaimForm() {
@@ -11260,82 +11379,6 @@
             }
         }
 
-        // Quick-Fill logic
-        function triggerQuickFill() {
-            const code = getInputValue('quickFillCode');
-            openXdAgencySearchModal(code);
-        }
-
-        function applyXdAgencyRequestToForm(found) {
-            document.getElementById('claimFieldGroup').value = found.fieldGroup;
-            toggleAdvanceByLinhVuc(found.fieldGroup);
-
-            document.getElementById('claimCqNhan').value = found.procTargetAgency;
-            document.getElementById('claimNYCName').value = found.nycName;
-            setNycTypeOnForm(nycTypeOfGq(found.nycRole, found.nycType));
-            fillNycOrgForm(found);
-            applyNycTypeConstraint(found.nycRole);
-            toggleNbthBlock(document.getElementById('claimNYCRole').value);
-            document.getElementById('claimNYCBirth').value = found.nycBirth;
-            document.getElementById('claimNYCCardType').value = found.nycCardType;
-            document.getElementById('claimNYCCardNo').value = found.nycCardNo;
-            document.getElementById('claimNYCCardDate').value = found.nycCardDate;
-            document.getElementById('claimNYCCardPlace').value = found.nycCardPlace;
-            document.getElementById('claimNYCPhone').value = found.nycPhone;
-            document.getElementById('claimNYCEmail').value = found.nycEmail;
-
-            setClaimCountry('claimNYCCountry', found.nycCountry);
-            toggleClaimCountrySelect(found.nycCountry);
-            if (found.nycCountry === 'Việt Nam') {
-                document.getElementById('claimNYCCity').value = found.nycTinhThanh;
-            } else {
-                document.getElementById('claimNYCCityText').value = found.nycTinhThanh;
-            }
-            document.getElementById('claimNYCAddress').value = found.nycAddressDetail;
-            document.getElementById('claimHanhVi').value = found.hanhVi;
-
-            // Kế thừa Phương thức nhận thông báo từ hồ sơ Xác định CQGQBT
-            setClaimNotifyMethodOnForm(found.notifyMethod || found.hinhThucNhan || NOTIFY_METHOD_DEFAULT_CLAIM, found.notifyAddress || found.diaChiNhanThongBao || '');
-
-            // Populate Officer Fields (bỏ qua trường không có trên form để không chặn các bước kế thừa phía sau)
-            const ofEl = id => document.getElementById(id);
-            const ofSet = (id, val, attr) => { const el = ofEl(id); if (!el) return; el.value = val; if (attr) el.setAttribute(attr, attr); };
-            if (ofEl('claimOfficerContainerForm')) ofEl('claimOfficerContainerForm').style.display = 'block';
-            ofSet('claimOfficerNameForm', found.officerName || '', 'readonly');
-            ofSet('claimOfficerPositionForm', found.officerPosition || '', 'readonly');
-            ofSet('claimOfficerAgencyForm', found.officerAgency || '', 'readonly');
-            ofSet('claimOfficerStatusForm', found.officerStatus || 'Vẫn công tác tại đơn vị cũ', 'disabled');
-            if (found.officerStatus === 'Đã chuyển công tác') {
-                if (ofEl('claimOfficerCurrentGroupForm')) ofEl('claimOfficerCurrentGroupForm').style.display = 'grid';
-                ofSet('claimOfficerCurrentAgencyForm', found.officerCurrentAgency || '', 'readonly');
-                ofSet('claimOfficerCurrentPositionForm', found.officerCurrentPosition || '', 'readonly');
-            } else if (ofEl('claimOfficerCurrentGroupForm')) {
-                ofEl('claimOfficerCurrentGroupForm').style.display = 'none';
-            }
-
-            // Kế thừa tài liệu của hồ sơ Xác định CQGQBT: Văn bản làm căn cứ + Tài liệu đính kèm (người dùng được sửa, xóa, thêm)
-            if (typeof loadVanBanCanCuRows === 'function') loadVanBanCanCuRows(found.vanBanCanCu || []);
-            currentDocsList = (found.attachedDocs || []).filter(d => d && (d.name || d.file)).map(d => ({ name: d.name || '', required: false, file: d.file || '', isCustom: true }));
-            renderDocsTable();
-
-            // Hồ sơ Xác định CQGQBT đã có Mã vụ việc: hồ sơ mới kế thừa Mã vụ việc (chọn sẵn "Vụ việc đã có Mã vụ việc")
-            if (!editingClaimId) {
-                let xdVv = isVvCode(found.maVuViec) ? found.maVuViec : '';
-                try { if (!xdVv && window.BTNN_WF && typeof BTNN_WF.vuViecOf === 'function') xdVv = BTNN_WF.vuViecOf(found.code, { create: false }); } catch (e) { xdVv = ''; }
-                if (xdVv && gqListVuViec().some(v => v.code === xdVv)) setClaimVuViecExisting(xdVv);
-            }
-
-            const linkWrapper = document.getElementById('xdAgencyLinkedWrapper');
-            if (linkWrapper) {
-                linkWrapper.style.display = 'block';
-                linkWrapper.innerHTML = `
-                    <span style="font-size:13px; font-weight:600; color:#475569; background:#f1f5f9; border:1px solid #cbd5e1; padding:6px 12px; border-radius:4px; display:inline-flex; align-items:center; gap:6px;">
-                        <i class="fa-solid fa-file-shield"></i> Mã XĐCQ: ${escapeHtml(found.code)} - ${escapeHtml(found.nycName)} <span style="font-size:12px; color:#64748b; font-style:italic;">(Không cho phép xem lại)</span>
-                    </span>
-                `;
-            }
-        }
-
         // MH05 chức năng 13: điều hướng sang màn Xem chi tiết đề nghị cấp kinh phí
         // tại Module Quản lý kinh phí bồi thường (không mở popup nhúng).
         function openFundDetailModule(code) {
@@ -11353,10 +11396,6 @@
                 return;
             }
             window.location.href = targetUrl;
-        }
-
-        function openMockXdAgencyDetail(code) {
-            showToast('Theo quy định, Cơ quan giải quyết bồi thường không được phép xem lại thông tin hồ sơ phân hệ Xác định cơ quan.', 'info');
         }
 
         // ==============================================
@@ -11424,82 +11463,6 @@
                         ${navBtn('&gt;&gt;&#124;', totalPages, pager.page >= totalPages, 'Trang cuối')}
                     </div>
                 </div>`;
-        }
-
-        function openXdAgencySearchModal(prefillCode = null) {
-            const overlay = document.getElementById('xdAgencySearchOverlay');
-            if (!overlay) return;
-            if (prefillCode !== null) {
-                setInputValue('xdAgencySearchCode', prefillCode);
-            }
-            resetLookupPager('xdAgency');
-            renderXdAgencySearchResults();
-            overlay.style.display = 'flex';
-            setTimeout(() => overlay.classList.add('visible'), 10);
-        }
-
-        function closeXdAgencySearchModal() {
-            const overlay = document.getElementById('xdAgencySearchOverlay');
-            if (!overlay) return;
-            overlay.classList.remove('visible');
-            setTimeout(() => overlay.style.display = 'none', 200);
-        }
-
-        function clearXdAgencySearch() {
-            ['xdAgencySearchCode', 'xdAgencySearchName', 'xdAgencySearchCity', 'xdAgencySearchAddress'].forEach(id => setInputValue(id, ''));
-            resetLookupPager('xdAgency');
-            renderXdAgencySearchResults();
-        }
-
-        function renderXdAgencySearchResults() {
-            const tbody = document.getElementById('xdAgencySearchResultsBody');
-            if (!tbody) return;
-            const code = normalizeStatusText(getInputValue('xdAgencySearchCode'));
-            const name = normalizeStatusText(getInputValue('xdAgencySearchName'));
-            const city = normalizeStatusText(getInputValue('xdAgencySearchCity'));
-            const address = normalizeStatusText(getInputValue('xdAgencySearchAddress'));
-            const results = xdRequestList.filter(item => {
-                return (!code || normalizeStatusText(item.code).includes(code))
-                    && (!name || normalizeStatusText(item.nycName).includes(name))
-                    && (!city || normalizeStatusText(item.nycTinhThanh).includes(city))
-                    && (!address || normalizeStatusText(item.nycAddressDetail).includes(address));
-            });
-
-            if (results.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:24px;">Không tìm thấy vụ việc xác định cơ quan phù hợp</td></tr>`;
-                renderLookupPagerBar('xdAgency', 'xdAgencySearchPager', 0, 'renderXdAgencySearchResults');
-                return;
-            }
-
-            const pageRows = sliceLookupPage('xdAgency', results);
-            renderLookupPagerBar('xdAgency', 'xdAgencySearchPager', results.length, 'renderXdAgencySearchResults');
-
-            tbody.innerHTML = pageRows.map(item => `
-                <tr style="cursor:pointer;" onclick="selectXdAgencyFromModal('${item.code}')">
-                    <td>
-                        <span style="font-weight:700; color:#334155;">${item.code}</span>
-                    </td>
-                    <td>${item.nycName}</td>
-                    <td>${item.nycTinhThanh}</td>
-                    <td>${item.nycAddressDetail}</td>
-                    <td class="nowrap-cell" style="text-align:center;">${item.date || '01/07/2026'}</td>
-                    <td style="text-align:center;">
-                        <button type="button" class="btn btn-primary btn-sm" style="padding:4px 10px; font-size:12px;"
-                            onclick="event.stopPropagation(); selectXdAgencyFromModal('${item.code}')">
-                            <i class="fa-solid fa-check"></i> Chọn
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function selectXdAgencyFromModal(code) {
-            const found = xdRequestList.find(item => item.code === code);
-            if (!found) return;
-            setInputValue('quickFillCode', code);
-            applyXdAgencyRequestToForm(found);
-            closeXdAgencySearchModal();
-            showToast("Đã chọn vụ việc xác định cơ quan và tự động điền dữ liệu vào form!", "success");
         }
 
         // Toggles Country selections
@@ -16358,7 +16321,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
                 completeBar.style.display = showBar ? 'flex' : 'none';
                 const btnDone = document.getElementById('btnCompletePhdd');
                 const ready = !!claim.phddStep3Saved;
-                if (btnDone) { btnDone.disabled = !ready; btnDone.style.opacity = ready ? '1' : '0.5'; btnDone.style.cursor = ready ? 'pointer' : 'not-allowed'; btnDone.title = ready ? 'Chuyển Trạng thái Phục hồi danh dự sang Hoàn thành' : 'Cần lưu thông tin tổ chức thực hiện phục hồi danh dự (khối 3) trước khi hoàn thành'; }
+                if (btnDone) { btnDone.disabled = false; btnDone.style.opacity = ''; btnDone.style.cursor = ''; btnDone.style.display = ready ? 'inline-flex' : 'none'; btnDone.title = 'Chuyển Trạng thái Phục hồi danh dự sang Hoàn thành'; }
                 const hint = document.getElementById('phddCompleteHint');
                 if (hint) hint.textContent = ready ? 'Đã lưu thông tin tổ chức thực hiện. Bấm "Hoàn thành phục hồi danh dự" để kết thúc nhánh Phục hồi danh dự.' : 'Lưu thông tin tổ chức thực hiện phục hồi danh dự (khối 3) để hoàn thành nhánh Phục hồi danh dự.';
             }
@@ -16367,8 +16330,15 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             renderPhddTimeline(claim);
                     // Vụ việc đã Đình chỉ giải quyết: dừng nhánh Phục hồi danh dự, chỉ xem
             const phddStopBox = document.getElementById('detailSubTabPhdd');
+            if (phddStopBox) phddStopBox.querySelectorAll('.gq-stop-hide').forEach(el => el.classList.remove('gq-stop-hide'));
             if (phddStopBox && claim.phddStatus === 'Đình chỉ giải quyết') {
-                phddStopBox.querySelectorAll('input, select, textarea, button').forEach(el => { el.disabled = true; });
+                phddStopBox.querySelectorAll('input, select, textarea').forEach(el => { el.disabled = true; });
+                // Màn hình xem chi tiết: nút thao tác không hiển thị dạng mờ -> ẩn; giữ nút xem / tải / mở rộng-thu gọn
+                const keepFn = /^\s*(event\.stopPropagation\(\);\s*)?(open\w*Detail|preview|view|xem|download|toggle|tlktOpenRow|phdx|ctvv\w*Toggle)/i;
+                phddStopBox.querySelectorAll('button').forEach(el => {
+                    const fn = el.getAttribute('onclick') || '';
+                    if (!(keepFn.test(fn) || /^(Xem|Tải)/.test(el.textContent.trim()) || (!fn && el.closest('.phdd-timeline')))) el.classList.add('gq-stop-hide');
+                });
             }
         }
 
@@ -18797,72 +18767,6 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         </div>
     </div>
 
-    <!-- Advanced Search: Xác định cơ quan -->
-    <div id="xdAgencySearchOverlay" class="confirm-modal-overlay">
-        <div class="sticky-modal-container" style="width: 850px; max-width: 96%;">
-            <div class="confirm-modal-header"
-                style="color:#1e3a8a; background-color:#f8fafc; border-bottom:1px solid var(--border-color); display:flex; justify-content:space-between; align-items:center; padding:24px 24px 16px 24px;">
-                <div style="display:flex; align-items:center; gap:8px; font-size:15px; font-weight:600;">
-                    <i class="fa-solid fa-building-circle-check"></i> Tìm kiếm vụ việc xác định cơ quan giải quyết bồi thường
-                </div>
-                <span onclick="closeXdAgencySearchModal()"
-                    style="cursor:pointer; font-size:20px; font-weight:bold; color:#64748b; line-height:1;">&times;</span>
-            </div>
-            <div class="sticky-modal-body" style="padding:24px;">
-                <div class="grid-4-cols" style="gap:12px; margin-bottom:14px;">
-                    <div>
-                        <span class="form-label">Mã hồ sơ</span>
-                        <input type="text" id="xdAgencySearchCode" class="form-control" placeholder="VD: XD-2026-001">
-                    </div>
-                    <div>
-                        <span class="form-label">Tên cá nhân/Tổ chức yêu cầu</span>
-                        <input type="text" id="xdAgencySearchName" class="form-control" placeholder="Nhập tên cá nhân/tổ chức yêu cầu...">
-                    </div>
-                    <div>
-                        <span class="form-label">Tỉnh/Thành phố</span>
-                        <input type="text" id="xdAgencySearchCity" class="form-control" placeholder="Nhập tỉnh/thành...">
-                    </div>
-                    <div>
-                        <span class="form-label">Địa chỉ chi tiết</span>
-                        <input type="text" id="xdAgencySearchAddress" class="form-control" placeholder="Nhập địa chỉ...">
-                    </div>
-                </div>
-                <div style="display:flex; justify-content:flex-end; gap:8px; margin-bottom:12px;">
-                    <button class="btn btn-secondary btn-sm" onclick="clearXdAgencySearch()"><i class="fa-solid fa-filter-circle-xmark"></i> Xóa bộ lọc</button>
-                    <button class="btn btn-primary btn-sm" onclick="resetLookupPager('xdAgency'); renderXdAgencySearchResults()"><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
-                </div>
-                <div class="table-container lookup-modal-table-container">
-                    <table class="custom-table lookup-modal-table">
-                        <colgroup>
-                            <col style="width:13%;">
-                            <col style="width:22%;">
-                            <col style="width:15%;">
-                            <col style="width:24%;">
-                            <col style="width:14%;">
-                            <col style="width:12%;">
-                        </colgroup>
-                        <thead>
-                            <tr>
-                                <th>Mã hồ sơ</th>
-                                <th>Tên cá nhân/Tổ chức yêu cầu</th>
-                                <th>Tỉnh/Thành phố</th>
-                                <th>Địa chỉ chi tiết</th>
-                                <th class="nowrap-cell">Ngày tiếp nhận</th>
-                                <th>Thao tác</th>
-                            </tr>
-                        </thead>
-                        <tbody id="xdAgencySearchResultsBody"></tbody>
-                    </table>
-                </div>
-                <div id="xdAgencySearchPager"></div>
-            </div>
-            <div class="confirm-modal-footer"
-                style="padding:16px 24px 24px 24px; display:flex; justify-content:flex-end; gap:10px; background-color:#f8fafc; border-top:1px solid var(--border-color);">
-                <button class="btn btn-secondary btn-sm" onclick="closeXdAgencySearchModal()">Hủy bỏ</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Advanced Search: Vụ việc gốc liên quan -->
     <div id="originClaimSearchOverlay" class="confirm-modal-overlay">
         <div class="sticky-modal-container" style="width: 850px; max-width: 96%;">
@@ -20591,7 +20495,6 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
         function toggleVerdictFields(isChecked) {
             const verdictBlock = document.getElementById('verdictFieldsBlock');
             const advanceSection = document.getElementById('advancePaymentSection');
-            const quickSearch = document.getElementById('quickSearchContainer');
             const labels1 = document.querySelectorAll('.verdict-group-label');
             const labels2 = document.querySelectorAll('.verdict-sub-label');
             const officerBlock = document.getElementById('claimOfficerContainerForm');
@@ -20599,7 +20502,6 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             if (isChecked) {
                 if (verdictBlock) verdictBlock.style.display = 'block';
                 if (advanceSection) advanceSection.style.display = 'none';
-                if (quickSearch) quickSearch.style.display = 'none';
 
                 labels1.forEach(l => l.style.display = 'inline');
                 labels2.forEach(l => l.style.display = 'inline');
@@ -20610,7 +20512,6 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
             } else {
                 if (verdictBlock) verdictBlock.style.display = 'none';
                 if (advanceSection) advanceSection.style.display = 'block';
-                if (quickSearch) quickSearch.style.display = editingClaimId ? 'none' : 'block';
 
                 labels1.forEach(l => l.style.display = 'none');
                 labels2.forEach(l => l.style.display = 'none');
@@ -25777,7 +25678,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <script src="quan_ly_boi_thuong_seedxm.js?v=20261029tldk"></script>
     <script src="quan_ly_boi_thuong_seedgq.js?v=20261029gq2"></script>
     <!-- [tcvv] Xem chi tiết mở từ Tra cứu vụ việc (?readonly=1&returnUrl=tra_cuu...): tab mặc định, bỏ giới hạn cán bộ được cử; tcvvPreview=1: hồ sơ giả lập riêng của Tra cứu, không lưu vào claimsList -->
-    <script src="tra_cuu_seed_tcvv.js?v=20261028dvc1"></script>
+    <script src="tra_cuu_seed_tcvv.js?v=20261029sn1"></script>
     <!-- [lth][th2c] Thiệt hại 02 cấp (nhóm / mục chi tiết DM_27) tại Nhập liệu hồ sơ, Xác minh thiệt hại, Thương lượng, Xem chi tiết; tích bổ sung mục / Yêu cầu phục hồi danh dự; popup xác nhận Hoàn thành xác minh -->
     <script src="quan_ly_boi_thuong_lth.js?v=20261029d1"></script>
     <!-- [ktlc] Không thụ lý KTL_01: Chuyển hồ sơ cho theo cấp đơn vị / số lần chuyển, tự tạo hồ sơ Xác định CQGQBT -->
@@ -25787,7 +25688,7 @@ Phục hồi danh dự: ${phddStatusLabel(claim.phddStatus)}`
     <!-- [nbth] Người bị thiệt hại Cá nhân/Tổ chức, địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại; bắt buộc khi trình Thông báo thụ lý (đặt trước cdpd) -->
     <script src="quan_ly_boi_thuong_nbth.js?v=20261029nbthm7"></script>
     <!-- [cdpd] Tạo yêu cầu - Cán bộ chủ động phục hồi danh dự khi có đủ thông tin: form tối thiểu, trình Thông báo tổ chức thực hiện phục hồi danh dự (chỉ Tải lên từ máy / Ký ngoài) -->
-    <script src="quan_ly_boi_thuong_cdpd.js?v=20261029tlcam2"></script>
+    <script src="quan_ly_boi_thuong_cdpd.js?v=20261029v3cdpd"></script>
     <!-- [dgq] Dừng giải quyết (Mẫu 05/BTNN): popup trình ký Thông báo dừng giải quyết, khối Thông tin dừng giải quyết, dữ liệu mẫu BT-2026-541..544 (đặt sau dcgq, hdcv) -->
     <script src="quan_ly_boi_thuong_dgq.js?v=20261029tlcam2"></script>
     <script src="btnn_gia_lap_bar.js?v=20261026gl"></script>

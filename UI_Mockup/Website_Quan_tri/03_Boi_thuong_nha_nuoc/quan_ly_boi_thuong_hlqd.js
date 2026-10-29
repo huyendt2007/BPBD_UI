@@ -45,22 +45,22 @@ function hlqdClaims() {
         }
         L.push(c);
     }
-    mk({ id: 'HLQD_191', code: 'BT-2026-191', vv: 'VVBT-2026-191', date: '18/08/2026', deadline: '16/10/2026', reqDate: '15/08/2026', thuLy: '21/08/2026', tbNo: '81/TB-STP',
+    mk({ id: 'HLQD_191', code: 'BT-2026-191', vv: 'VVBT-2026-391', date: '18/08/2026', deadline: '16/10/2026', reqDate: '15/08/2026', thuLy: '21/08/2026', tbNo: '81/TB-STP',
         nyc: 'Trần Thị Thu Hương', birth: '12/03/1988', cardNo: '001188005511', phone: '0912191191', ward: 'Phường Giảng Võ', addr: 'Số 18 phố Kim Mã', agency: STP,
         docBase: 'Quyết định hủy Quyết định xử phạt vi phạm hành chính số 45/QĐ-XPVPHC ngày 20/07/2026', hanhVi: 'Ra quyết định xử phạt vi phạm hành chính trái pháp luật, tạm đình chỉ hoạt động kinh doanh.', nhanQua: 'Thu nhập bị mất trong thời gian tạm đình chỉ hoạt động kinh doanh.',
         status: 'Chờ chi trả', slaText: 'Chờ chi trả tiền bồi thường', th: [[2, 200000000, 180000000, 'Theo sổ sách doanh thu 03 tháng liền kề']], xmDate: '10/09/2026', negDate: '22/09/2026',
         bank: { bankAccount: '0021001122334', bankName: 'Vietcombank', bankBranch: 'Chi nhánh Ba Đình' }, decNo: '41/QĐ-STP', decDate: '05/10/2026', signer: 'Đỗ Văn Sơn', position: 'Giám đốc Sở Tư pháp' });
-    mk({ id: 'HLQD_192', code: 'BT-2026-192', vv: 'VVBT-2026-192', date: '12/08/2026', deadline: '10/10/2026', reqDate: '10/08/2026', thuLy: '14/08/2026', tbNo: '52/TB-BTP',
+    mk({ id: 'HLQD_192', code: 'BT-2026-192', vv: 'VVBT-2026-392', date: '12/08/2026', deadline: '10/10/2026', reqDate: '10/08/2026', thuLy: '14/08/2026', tbNo: '52/TB-BTP',
         nyc: 'Nguyễn Văn Phúc', birth: '21/06/1979', cardNo: '001079008899', phone: '0913192192', ward: 'Phường Láng', addr: 'Số 7 phố Nguyễn Chí Thanh', agency: BTP,
         docBase: 'Bản án hành chính phúc thẩm số 18/2026/HC-PT ngày 10/07/2026', hanhVi: 'Thu hồi giấy phép hoạt động trái pháp luật.', nhanQua: 'Tài sản (trang thiết bị) bị hư hỏng do niêm phong kéo dài.',
         status: 'Chờ chi trả', slaText: 'Chờ chi trả tiền bồi thường', th: [[1, 320000000, 300000000, 'Theo biên bản định giá tài sản']], xmDate: '05/09/2026', negDate: '18/09/2026',
         bank: { bankAccount: '1903366778899', bankName: 'Techcombank', bankBranch: 'Chi nhánh Đống Đa' }, decNo: '33/QĐ-BTP', decDate: '01/10/2026', signer: 'Trần Văn Bồi Thường', position: 'Cục trưởng' });
-    mk({ id: 'HLQD_193', code: 'BT-2026-193', vv: 'VVBT-2026-193', date: '20/07/2026', deadline: '17/09/2026', reqDate: '17/07/2026', thuLy: '23/07/2026', tbNo: '70/TB-STP',
+    mk({ id: 'HLQD_193', code: 'BT-2026-193', vv: 'VVBT-2026-393', date: '20/07/2026', deadline: '17/09/2026', reqDate: '17/07/2026', thuLy: '23/07/2026', tbNo: '70/TB-STP',
         nyc: 'Lê Minh Đức', birth: '05/11/1985', cardNo: '001085006677', phone: '0914193193', ward: 'Phường Hai Bà Trưng', addr: 'Số 25 phố Lò Đúc', agency: STP,
         docBase: 'Quyết định hủy Quyết định cưỡng chế số 31/QĐ-CC ngày 02/07/2026', hanhVi: 'Cưỡng chế tháo dỡ công trình phụ trái pháp luật.', nhanQua: 'Tài sản bị hư hỏng.',
         status: 'Hoàn thành', slaText: 'Hoàn thành chi trả tiền bồi thường', th: [[1, 130000000, 120000000, 'Khấu hao theo thời gian sử dụng']], xmDate: '12/08/2026', negDate: '26/08/2026',
         bank: { bankAccount: '0451000334455', bankName: 'Vietinbank', bankBranch: 'Chi nhánh Hai Bà Trưng' }, decNo: '38/QĐ-STP', decDate: '15/09/2026', signer: 'Đỗ Văn Sơn', position: 'Giám đốc Sở Tư pháp', paid: '25/09/2026' });
-    mk({ id: 'HLQD_194', code: 'BT-2026-194', vv: 'VVBT-2026-194', date: '14/08/2026', deadline: '12/10/2026', reqDate: '12/08/2026', thuLy: '18/08/2026', tbNo: '79/TB-STP',
+    mk({ id: 'HLQD_194', code: 'BT-2026-194', vv: 'VVBT-2026-394', date: '14/08/2026', deadline: '12/10/2026', reqDate: '12/08/2026', thuLy: '18/08/2026', tbNo: '79/TB-STP',
         nyc: 'Phạm Thị Ngọc Ánh', birth: '09/09/1992', cardNo: '001192007788', phone: '0916194194', ward: 'Phường Hoàn Kiếm', addr: 'Số 40 phố Hàng Bài', agency: STP,
         docBase: 'Quyết định đình chỉ điều tra số 15/QĐ-CQĐT ngày 01/07/2026', hanhVi: 'Áp dụng biện pháp ngăn chặn trái pháp luật.', nhanQua: 'Danh dự, uy tín bị ảnh hưởng; tổn thất về tinh thần.',
         status: 'Chờ chi trả', slaText: 'Chờ chi trả tiền bồi thường', th: [[5, 100000000, 95000000, 'Theo mức lương cơ sở tại thời điểm giải quyết']], xmDate: '08/09/2026', negDate: '24/09/2026',

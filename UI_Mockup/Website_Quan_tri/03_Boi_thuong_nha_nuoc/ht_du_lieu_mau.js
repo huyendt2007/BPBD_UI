@@ -13,7 +13,8 @@
     // Phiên bản dữ liệu mẫu: đổi phiên bản thì xóa dữ liệu thao tác đã lưu của các hồ sơ mẫu bổ sung để nạp lại theo mẫu mới
     // 28/10: giảm mức hoàn trả tối đa 30% (dữ liệu mẫu giảm), Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương (HT-2026-001), lĩnh vực tố tụng hình sự (HT-2026-021)
     // 28/10 (2): Miễn / Giảm theo ý kiến Hội đồng thể hiện trong QĐ hoàn trả (không QĐ miễn / giảm riêng); đình chỉ chỉ trước khi ban hành QĐ hoàn trả
-    const SEED_VER = '20261028mg1', SEED_CODES = ['HT-2026-025', 'HT-2026-026', 'HT-2026-027', 'HT-2026-001', 'HT-2026-021'];
+    // 29/10: Đơn vị ban hành QĐ hoàn trả - tố tụng hình sự (HT-2026-021, HT-2026-027): theo Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương, mỗi đơn vị 01 QĐ; lĩnh vực khác: Đơn vị tạo Hội đồng, 01 QĐ cho toàn bộ cán bộ
+    const SEED_VER = '20261029dvbh', SEED_CODES = ['HT-2026-025', 'HT-2026-026', 'HT-2026-027', 'HT-2026-001', 'HT-2026-021'];
     try {
         if (localStorage.getItem('btnn_ht_seed_ver') !== SEED_VER) {
             const st = JSON.parse(localStorage.getItem('btnn_ht_units_v1') || '{}') || {};
@@ -36,7 +37,7 @@
             officers: [OF('Cao Văn Duyệt', U_A, 'Trưởng Công an phường', 'Vô ý', 15000000, 'Nhiều lần'), OF('Tạ Thị Chối', U_A, 'Cán bộ tư pháp', 'Vô ý', 8000000, 'Một lần'), OF('Phan Văn Trả', U_A, 'Phó Chủ tịch', 'Vô ý', 12000000, 'Nhiều lần'), OF('Kiều Văn Chỉ', U_A, 'Chuyên viên', 'Vô ý', 9000000, 'Nhiều lần'), OF('Hồ Văn Thừa', U_A, 'Kế toán', 'Vô ý', 10000000, 'Nhiều lần'), OF('Đỗ Văn Nộp', U_A, 'Công chức địa chính', 'Vô ý', 12000000, 'Nhiều lần'),
                 OF('Lương Văn Giảm', U_A, 'Phó Trưởng phòng', 'Vô ý', 18000000, 'Nhiều lần'), OF('Phí Thị Miễn', U_A, 'Chuyên viên', 'Vô ý', 10000000, '')]
         },
-        // Hồ sơ nhiều đơn vị (03 phần đơn vị ở 03 trạng thái): Đơn vị tạo Hội đồng chưa trình QĐ hoàn trả; Đơn vị A Chờ duyệt QĐ hoàn trả; Đơn vị B đã ban hành, đang thu tiền
+        // Hồ sơ tố tụng hình sự nhiều đơn vị (03 phần đơn vị theo Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương): Đơn vị tạo Hội đồng đã ban hành, đang thu tiền; Đơn vị A Chờ duyệt QĐ hoàn trả; Đơn vị B đã ban hành, đang thu tiền
         {
             id: 'HT-2026-027', claimCode: 'BT-2026-027', claimSummary: 'Giải phóng mặt bằng sai quy hoạch, ban hành nhiều quyết định thu hồi đất trái pháp luật tại 03 địa bàn.', claimAmt: 260000000, status: 'Chờ ban hành QĐ hoàn trả', hdDecision: '54/QĐ-TLHD', hdDate: '01/08/2026',
             officers: [OF('Đoàn Văn Lâm', U_CHU, 'Trưởng phòng Tài nguyên và Môi trường', 'Vô ý', 40000000, 'Hoàn trả nhiều lần'), OF('Vương Thị Hằng', U_CHU, 'Chuyên viên', 'Vô ý', 20000000, 'Hoàn trả một lần'), OF('Mạc Văn Toàn', U_CHU, 'Cán bộ địa chính', 'Vô ý', 15000000, ''),
@@ -127,6 +128,10 @@
             }));
         }
     });
+    // Lĩnh vực tố tụng hình sự: Đơn vị ban hành QĐ hoàn trả là Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương của từng cán bộ (mỗi đơn vị 01 QĐ)
+    // HT-2026-021: 02 cán bộ cùng Cơ quan trực tiếp quản lý (UBND Phường Bồ Đề), khác Cơ quan đang quản lý, sử dụng, trả lương -> 02 QĐ hoàn trả
+    const TTHS_CODES = ['HT-2026-021', 'HT-2026-027'];
+    dossiersList.forEach(d => { if (TTHS_CODES.includes(d.code || d.id)) d.claimField = 'Trong hoạt động tố tụng hình sự'; });
     // HT-2026-008 (Họp hội đồng): thêm 01 cán bộ để demo đình chỉ một phần cán bộ tại Bước 2
     const d8 = dossiersList.find(d => d.id === 'HT-2026-008');
     if (d8 && Array.isArray(d8.refundOfficers) && !d8.refundOfficers.some(o => o.name === 'Nguyễn Thị Hoa')) {

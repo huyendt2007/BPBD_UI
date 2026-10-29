@@ -67,11 +67,16 @@
     const scope = () => (api().scope ? api().scope() : 'don_vi_chu');
     const myUnit = () => (api().myUnit ? api().myUnit() : '');
     const isSplit = () => !!(api().isSplitDossier && api().isSplitDossier());
-    // Lĩnh vực tố tụng hình sự: Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại ban hành QĐ hoàn trả; lĩnh vực khác: Đơn vị tạo QĐ thành lập Hội đồng ban hành
-    const isTths = () => /tố tụng hình sự/i.test((activeDossier && activeDossier.claimField) || '');
-    const issuerOf = u => (isTths() ? u.unit : ((activeDossier && activeDossier.ownerUnit) || u.unit));
     // Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương: nhận QĐ hoàn trả và thực hiện Thu tiền hoàn trả (mặc định = Cơ quan trực tiếp quản lý)
     const payUnitOf = o => (o && (o.payUnit || o.agency)) || '';
+    // Đơn vị ban hành QĐ hoàn trả:
+    // - Lĩnh vực tố tụng hình sự: Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương của từng cán bộ; cán bộ tách thành phần đơn vị theo đơn vị này, mỗi phần đơn vị 01 QĐ hoàn trả
+    // - Lĩnh vực khác: Đơn vị tạo QĐ thành lập Hội đồng; không tách phần đơn vị, 01 QĐ hoàn trả cho toàn bộ cán bộ của hồ sơ
+    // Khóa phần đơn vị (u.unit) = Đơn vị ban hành QĐ hoàn trả
+    const isTths = () => /tố tụng hình sự/i.test((activeDossier && activeDossier.claimField) || '');
+    const unitKeyOf = o => (isTths() ? payUnitOf(o) : ((activeDossier && activeDossier.ownerUnit) || payUnitOf(o)));
+    const inUnit = (o, u) => unitKeyOf(o) === (u && u.unit != null ? u.unit : u);
+    const issuerOf = u => u.unit;
     const xlCode = o => { const x = o.xl || ''; return x === 'Giảm mức hoàn trả' || x === 'GIAM' ? 'GIAM' : (x === 'Miễn hoàn trả' || x === 'MIEN' ? 'MIEN' : 'HT'); };
     // Giảm/Miễn hoàn trả: không giảm, không miễn hiển thị "-"
     const xlText = o => ({ HT: '-', GIAM: 'Giảm mức hoàn trả', MIEN: 'Miễn hoàn trả' })[xlCode(o)];
@@ -120,18 +125,18 @@
             if (/^(CBH|CD|BTC)_MIEN$/.test(o.ct)) { o.ct = 'MIEN'; o.total = o.paid || 0; o.qd2 = null; }
             if (/^(CBH|CD|BTC)_GIAM$/.test(o.ct)) { o.ct = 'THU'; o.total = o.giam || o.hd; o.qd2 = null; }
             // Dữ liệu mẫu nhiều đợt nộp (ht_du_lieu_mau.js: pays [[Ngày nộp, Số tiền], ...]) kèm biên lai
-            if (ex && Array.isArray(ex.pays) && !Array.isArray(o.payments)) o.payments = ex.pays.map(p => ({ ngay: p[0], amt: p[1], by: 'Cán bộ ' + o.agency, unit: o.agency, at: p[0] + ' 09:00', tlkt: [{ name: 'Biên lai nộp tiền vào ngân sách nhà nước', file: { id: '', name: 'Bien_lai_' + String(p[0]).replace(/\//g, '') + '.pdf', size: 122880, type: 'application/pdf' } }] }));
+            if (ex && Array.isArray(ex.pays) && !Array.isArray(o.payments)) o.payments = ex.pays.map(p => ({ ngay: p[0], amt: p[1], by: 'Cán bộ ' + payUnitOf(o), unit: payUnitOf(o), at: p[0] + ' 09:00', tlkt: [{ name: 'Biên lai nộp tiền vào ngân sách nhà nước', file: { id: '', name: 'Bien_lai_' + String(p[0]).replace(/\//g, '') + '.pdf', size: 122880, type: 'application/pdf' } }] }));
             // Dữ liệu mẫu: số đã nộp quy về 01 đợt nộp
-            if (!Array.isArray(o.payments)) o.payments = (o.paid || 0) > 0 ? [{ ngay: '15/09/2026', amt: o.paid, by: 'Cán bộ ' + o.agency, unit: o.agency, tlkt: [] }] : [];
+            if (!Array.isArray(o.payments)) o.payments = (o.paid || 0) > 0 ? [{ ngay: '15/09/2026', amt: o.paid, by: 'Cán bộ ' + payUnitOf(o), unit: payUnitOf(o), tlkt: [] }] : [];
             if (o.ct === 'MIEN' && !o.total) o.total = 0;
         });
         if (stored && stored.detail && stored.detail.units) activeDossier.htUnits = stored.detail.units;
         activeDossier.htDcs = (stored && stored.detail && stored.detail.dcs) || activeDossier.htDcs || [];
         activeDossier.htMgs = (stored && stored.detail && stored.detail.mgs) || activeDossier.htMgs || [];
-        const names = Array.from(new Set(officers().map(o => o.agency)));
+        const names = Array.from(new Set(officers().map(unitKeyOf)));
         activeDossier.htUnits = names.map(u => {
             const old = (activeDossier.htUnits || []).find(x => x.unit === u) || {};
-            const list = officers().filter(o => o.agency === u);
+            const list = officers().filter(o => inUnit(o, u));
             const st = old.st || (list.some(o => o.ct === 'CD_HT') ? 'CD' : list.some(o => o.ct === 'BTC_HT') ? 'BTC' : list.some(o => o.ct === 'CBH_HT') ? 'CBH' : 'DONE');
             const u2 = Object.assign({ files: [] }, old, { unit: u, st, officers: list.map(o => o.name) });
             if (!u2.qd && st !== 'CBH') u2.qd = seedRec('HT', u2, st);
@@ -139,7 +144,7 @@
         });
         // Dữ liệu mẫu: lý do giảm / miễn theo ý kiến Hội đồng, QĐ đình chỉ theo trạng thái mẫu của cán bộ
         if (!stored) officers().forEach(o => {
-            const u = activeDossier.htUnits.find(x => x.unit === o.agency) || { unit: o.agency };
+            const u = activeDossier.htUnits.find(x => inUnit(o, x)) || { unit: unitKeyOf(o) };
             const xc = xlCode(o);
             // Lý do giảm / miễn mẫu (hiển thị dưới Giảm/Miễn hoàn trả)
             if (xc === 'GIAM' && !o.lyDoGiam) o.lyDoGiam = 'Cán bộ có hoàn cảnh kinh tế khó khăn, đã chủ động khắc phục một phần thiệt hại.';
@@ -149,7 +154,7 @@
                 let r = activeDossier.htDcs[ex.dc.key];
                 if (!r) {
                     r = seedRec('DC', u, ex.dc.st);
-                    Object.assign(r, { st: ex.dc.st, unit: o.agency, names: [], dc: { pa: {}, canCu: typeof DCHT_CAN_CU_DEFAULT !== 'undefined' ? (Array.isArray(DCHT_CAN_CU_DEFAULT) ? DCHT_CAN_CU_DEFAULT.join('\n') : String(DCHT_CAN_CU_DEFAULT)) : '', vbCanCu: 'Bản án số 05/2025/HS-ST ngày 12/03/2025 của Tòa án nhân dân quận Long Biên', noiNhan: typeof dchtNoiNhanDefault === 'function' ? dchtNoiNhanDefault() : '' } });
+                    Object.assign(r, { st: ex.dc.st, unit: u.unit, names: [], dc: { pa: {}, canCu: typeof DCHT_CAN_CU_DEFAULT !== 'undefined' ? (Array.isArray(DCHT_CAN_CU_DEFAULT) ? DCHT_CAN_CU_DEFAULT.join('\n') : String(DCHT_CAN_CU_DEFAULT)) : '', vbCanCu: 'Bản án số 05/2025/HS-ST ngày 12/03/2025 của Tòa án nhân dân quận Long Biên', noiNhan: typeof dchtNoiNhanDefault === 'function' ? dchtNoiNhanDefault() : '' } });
                     activeDossier.htDcs[ex.dc.key] = r;
                 }
                 r.names.push(o.name);
@@ -177,7 +182,7 @@
             if (u.st !== 'DONE' && allDc(u.unit)) u.status = 'Đình chỉ hoàn trả';
         });
     }
-    function allDc(unit) { const l = officers().filter(o => o.agency === unit); return l.length > 0 && l.every(o => o.ct === 'DC'); }
+    function allDc(unit) { const l = officers().filter(o => inUnit(o, unit)); return l.length > 0 && l.every(o => o.ct === 'DC'); }
     function recomputeBase() {
         const l = officers();
         if (l.length && l.every(o => o.ct === 'DC')) activeDossier.status = 'Đình chỉ xem xét hoàn trả';
@@ -193,17 +198,23 @@
     function commit(msg) { recomputeBase(); persist(); renderStateLayout(); if (msg) showToast(msg, 'success'); }
 
     // ===== Phạm vi / quyền thao tác =====
+    // Cán bộ trong phạm vi dữ liệu của người dùng (sau khi chốt ý kiến Hội đồng)
+    function seeOfficer(o, u) {
+        const s = scope(), U = myUnit();
+        if (s === 'lanh_dao' || (api().isOwnerScope && api().isOwnerScope())) return true;
+        const uu = u || (activeDossier.htUnits || []).find(x => inUnit(o, x)) || {};
+        // Sở Tư pháp / Bộ Tư pháp: cán bộ của đơn vị trong phạm vi quản lý, sau khi ban hành QĐ hoàn trả
+        if (s === 'stp') return (api().STP_UNITS || []).includes(o.agency) && uu.st === 'DONE';
+        // Đơn vị ban hành QĐ hoàn trả: toàn bộ cán bộ của phần đơn vị
+        if (issuerOf(uu) === U) return true;
+        // Cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại: cán bộ của đơn vị
+        if (o.agency === U) return true;
+        // Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương: cán bộ do đơn vị quản lý, sau khi ban hành QĐ hoàn trả
+        return payUnitOf(o) === U && uu.st === 'DONE';
+    }
     function unitsInView() {
-        const s = scope(), U = myUnit(), stpUnits = api().STP_UNITS || [];
         const owner = api().isOwnerScope && api().isOwnerScope();
-        return (activeDossier.htUnits || []).filter(u => {
-            if (s === 'lanh_dao' || owner) return true;
-            if (s === 'stp') return stpUnits.includes(u.unit) && u.st === 'DONE';
-            // Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương: phần đơn vị đã ban hành QĐ hoàn trả có cán bộ do đơn vị thu tiền
-            if (u.st === 'DONE' && officers().some(o => o.agency === u.unit && payUnitOf(o) === U)) return true;
-            if (issuerOf(u) === U) return true;
-            return u.unit === U;
-        });
+        return (activeDossier.htUnits || []).filter(u => scope() === 'lanh_dao' || owner || officers().some(o => inUnit(o, u) && seeOfficer(o, u)));
     }
     const canActUnit = u => scope() !== 'lanh_dao' && scope() !== 'stp' && issuerOf(u) === myUnit();
     const isLeader = () => scope() === 'lanh_dao';
@@ -285,7 +296,7 @@
     let DC_DRAFT = null; // lượt trình QĐ đình chỉ mới: { unit, names }
     let MG_DRAFT = null; // lượt trình QĐ miễn / giảm bổ sung chung mới: { unit, names }
     function ctxOf(kind, key) {
-        if (kind === 'HT') { const u = activeDossier.htUnits[key]; return { unit: u.unit, issuer: issuerOf(u), list: officers().filter(o => o.agency === u.unit && o.ct !== 'DC'), u }; }
+        if (kind === 'HT') { const u = activeDossier.htUnits[key]; return { unit: u.unit, issuer: issuerOf(u), list: officers().filter(o => inUnit(o, u) && o.ct !== 'DC'), u }; }
         if (kind === 'DC') {
             const d = (activeDossier.htDcs || [])[key] || DC_DRAFT || { names: [] };
             return { unit: d.unit, list: d.names.map(n => officers().find(o => o.name === n)).filter(Boolean), u: activeDossier.htUnits.find(x => x.unit === d.unit) || {}, dc: d.dc || null };
@@ -296,9 +307,9 @@
             return { unit: d.unit, issuer: issuerOf(u), list: d.names.map(n => officers().find(o => o.name === n)).filter(Boolean), u, qdHt: u.qd ? (u.qd.soKh || '') + (u.qd.issuedAt ? ' ngày ' + u.qd.issuedAt : '') : '' };
         }
         const o = activeDossier.refundOfficers[key];
-        const u = activeDossier.htUnits.find(x => x.unit === o.agency) || {};
+        const u = activeDossier.htUnits.find(x => inUnit(o, x)) || {};
         const supp = KIND[kind].base ? ((o.qd3 && o.qd3.supp) || null) : null;
-        return { unit: o.agency, issuer: issuerOf(u.unit ? u : { unit: o.agency }), officer: o, u, supp, qdHt: u.qd ? (u.qd.soKh || '') + (u.qd.issuedAt ? ' ngày ' + u.qd.issuedAt : '') : '' };
+        return { unit: unitKeyOf(o), issuer: issuerOf(u.unit ? u : { unit: unitKeyOf(o) }), officer: o, u, supp, qdHt: u.qd ? (u.qd.soKh || '') + (u.qd.issuedAt ? ' ngày ' + u.qd.issuedAt : '') : '' };
     }
     // QĐ hoàn trả: theo phần đơn vị; QĐ miễn / giảm (Bước 3): o.qd2; miễn / giảm bổ sung (Bước 4): o.qd3
     function recOf(kind, key) { if (kind === 'DC') return (activeDossier.htDcs || [])[key] || null; if (isBatch(kind)) return (activeDossier.htMgs || [])[key] || null; return kind === 'HT' ? activeDossier.htUnits[key].qd : (KIND[kind].base ? activeDossier.refundOfficers[key].qd3 : activeDossier.refundOfficers[key].qd2) || null; }
@@ -330,15 +341,15 @@
     }
     function qdBlock(u, i) {
         const r = u.qd, act = canActUnit(u);
-        // Cán bộ của đơn vị đang trình ký QĐ đình chỉ: tạm khóa trình ký QĐ hoàn trả
-        const dcBusy = officers().some(o => o.agency === u.unit && /^(CD|BTC)_DC$/.test(o.trinh || ''));
+        // Cán bộ của phần đơn vị đang trình ký QĐ đình chỉ: ẩn Trình ký QĐ hoàn trả / Trình ký lại
+        const dcBusy = officers().some(o => inUnit(o, u) && /^(CD|BTC)_DC$/.test(o.trinh || ''));
         if (u.st !== 'DONE' && allDc(u.unit)) {
             return '<div style="background:#f8fafc; border:1px dashed #cbd5e1; border-radius:8px; padding:14px 16px; margin-bottom:16px;"><div style="font-weight:700; color:var(--text-muted);">Không ban hành Quyết định hoàn trả</div><div style="font-size:13px; color:var(--text-muted);">Toàn bộ cán bộ của đơn vị đã Đình chỉ hoàn trả.</div></div>';
         }
         if (u.st === 'CBH') {
             return '<div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; background:#f8fafc; border:1px dashed #cbd5e1; border-radius:8px; padding:14px 16px; margin-bottom:16px;">'
-                + '<div><div style="font-weight:700; color:var(--primary-color);">Chưa ban hành Quyết định hoàn trả</div><div style="font-size:13px; color:var(--text-muted);">Đơn vị ban hành Quyết định hoàn trả trình ký / ban hành 01 Quyết định hoàn trả (Mẫu 36/BTNN) chung cho các cán bộ của phần đơn vị.</div></div>'
-                + (act ? (dcBusy ? '<button type="button" class="btn btn-primary" disabled style="opacity:.45; cursor:not-allowed;" title="Đơn vị đang trình ký Quyết định đình chỉ"><i class="fa-solid fa-file-signature"></i> Trình ký QĐ hoàn trả</button>' : '<button type="button" class="btn btn-primary" onclick="ht3OpenSign(\'HT\',' + i + ')"><i class="fa-solid fa-file-signature"></i> Trình ký QĐ hoàn trả</button>') : '') + '</div>';
+                + '<div><div style="font-weight:700; color:var(--primary-color);">Chưa ban hành Quyết định hoàn trả</div><div style="font-size:13px; color:var(--text-muted);">' + (isTths() ? 'Đơn vị ban hành Quyết định hoàn trả trình ký / ban hành 01 Quyết định hoàn trả (Mẫu 36/BTNN) chung cho các cán bộ của phần đơn vị.' : 'Đơn vị tạo Quyết định thành lập Hội đồng trình ký / ban hành 01 Quyết định hoàn trả (Mẫu 36/BTNN) chung cho toàn bộ cán bộ của hồ sơ.') + '</div></div>'
+                + (act && !dcBusy ? '<button type="button" class="btn btn-primary" onclick="ht3OpenSign(\'HT\',' + i + ')"><i class="fa-solid fa-file-signature"></i> Trình ký QĐ hoàn trả</button>' : '') + '</div>';
         }
         let h = '<div style="margin-bottom:16px;">';
         if (u.st === 'BTC' && r && r.reject) {
@@ -358,7 +369,7 @@
         if (r.tlkt && r.tlkt.length && typeof tlktViewHtml === 'function') h += tlktViewHtml(r.tlkt, { ownerUnit: r.unit || '' });
         const btns = [];
         if (u.st === 'CD' && isLeader()) btns.push(htkdBarButtons('ht3Reject(\'HT\',' + i + ')', 'ht3Approve(\'HT\',' + i + ')'));
-        if (u.st === 'BTC' && act) btns.push(dcBusy ? '<button type="button" class="btn btn-primary" disabled style="opacity:.45; cursor:not-allowed;" title="Đơn vị đang trình ký Quyết định đình chỉ"><i class="fa-solid fa-paper-plane"></i> Trình ký lại</button>' : '<button type="button" class="btn btn-primary" onclick="ht3OpenSign(\'HT\',' + i + ')"><i class="fa-solid fa-paper-plane"></i> Trình ký lại</button>');
+        if (u.st === 'BTC' && act && !dcBusy) btns.push('<button type="button" class="btn btn-primary" onclick="ht3OpenSign(\'HT\',' + i + ')"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>');
         if (btns.length) h += '<div style="display:flex; justify-content:flex-end; gap:10px; border-top:1px solid var(--border-color); padding-top:12px; margin-top:8px;">' + btns.join('') + '</div>';
         return h + '</div>';
     }
@@ -389,7 +400,7 @@
         const ic = btn.querySelector('i'); if (ic) ic.className = COLLAPSE[key] ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-down';
     };
     function unitSummary(u) {
-        const l = officers().filter(o => o.agency === u.unit);
+        const l = officers().filter(o => inUnit(o, u) && seeOfficer(o, u));
         const issued = l.filter(o => !STEP3.includes(o.ct));
         const tong = issued.reduce((s, o) => s + (o.ct === 'MIEN' ? (o.paid || 0) : (o.total || 0)), 0);
         const paid = l.reduce((s, o) => s + (o.paid || 0), 0);
@@ -403,7 +414,8 @@
         const own = hasOwnUnit() && isOwnUnit(u), viewOnly = scope() !== 'lanh_dao' && !canActUnit(u);
         return '<div class="card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">'
             + '<div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;"><button type="button" data-admin-icon-normalized="1" title="Thu gọn / Mở rộng" onclick="htToggleUnit(\'' + esc(key).replace(/'/g, '&#39;') + '\', this)" style="border:1px solid var(--border-color); background:#fff; border-radius:6px; width:28px; height:28px; cursor:pointer;"><i class="fa-solid ' + (col ? 'fa-chevron-right' : 'fa-chevron-down') + '"></i></button>'
-            + '<div class="card-title" style="margin-bottom:0;"><i class="fa-solid fa-sitemap"></i> Phần đơn vị: ' + esc(u.unit) + '</div>' + badgeHtml
+            // Tố tụng hình sự: Phần đơn vị theo Cơ quan, tổ chức đang trực tiếp quản lý, sử dụng, trả lương; lĩnh vực khác: 01 khối cho toàn bộ cán bộ của hồ sơ
+            + '<div class="card-title" style="margin-bottom:0;"><i class="fa-solid fa-sitemap"></i> ' + (isTths() ? 'Phần đơn vị: ' + esc(u.unit) : 'Toàn bộ cán bộ của hồ sơ') + '</div>' + badgeHtml
             + '<span style="font-size:11.5px; color:#475569; white-space:nowrap;">Đơn vị ban hành QĐ hoàn trả: ' + esc(issuerOf(u)) + '</span>'
             + (own ? '<span style="font-size:11px; padding:2px 8px; border-radius:999px; background:#eff6ff; color:#1d4ed8; font-weight:600; white-space:nowrap;">Đơn vị của bạn (Trực tiếp xử lý)</span>' : '')
             + (viewOnly ? '<span style="font-size:11px; padding:2px 8px; border-radius:999px; background:#eff6ff; color:#1d4ed8; font-weight:500; white-space:nowrap;">' + (hasOwnUnit() ? 'Chỉ xem (Đơn vị phối hợp)' : 'Chỉ xem') + '</span>' : '') + '</div>'
@@ -493,7 +505,7 @@
         return h;
     }
     // Đình chỉ chỉ thực hiện khi QĐ hoàn trả của đơn vị chưa ban hành; đã ban hành (Bước 4 và các trạng thái sau): không cho phép
-    const dcQdIssued = o => { const u = (activeDossier.htUnits || []).find(x => x.unit === o.agency); return !!(u && (u.st === 'DONE' || (u.qd && u.qd.issuedAt))); };
+    const dcQdIssued = o => { const u = (activeDossier.htUnits || []).find(x => inUnit(o, x)); return !!(u && (u.st === 'DONE' || (u.qd && u.qd.issuedAt))); };
     const DC_ISSUED_MSG = 'Quyết định hoàn trả của đơn vị đã được ban hành, không thực hiện Đình chỉ xem xét hoàn trả.';
     // Cán bộ được chọn đình chỉ: QĐ hoàn trả của đơn vị chưa ban hành, chưa kết thúc, không đang chờ Lãnh đạo ký duyệt, không có trình ký QĐ đình chỉ, không đang chờ trả lại tiền
     const dcEligible = o => !dcQdIssued(o) && !ENDED.includes(o.ct) && !/^CD_/.test(o.ct) && !/^CD_|_DC$/.test(o.trinh || '') && !((o.refund || 0) > 0);
@@ -508,8 +520,9 @@
         const any = rows.some(x => dcEligible(x.o));
         return '<th style="width:40px; text-align:center;">' + (any ? '<input type="checkbox" class="htDcAll" data-u="' + ui + '" title="Chọn tất cả" onchange="ht3DcAll(' + ui + ', this.checked)">' : '') + '</th>';
     }
+    // Trình ký QĐ đình chỉ: chỉ hiển thị khi QĐ hoàn trả của phần đơn vị chưa ban hành (đã ban hành: ẩn, không khóa mờ)
     function dcToolbar(u, ui, rows) {
-        if (!canActUnit(u) || !rows.some(x => dcEligible(x.o))) return '';
+        if (!canActUnit(u) || dcUnitIssued(u) || !rows.some(x => dcEligible(x.o))) return '';
         // Khóa khi chưa chọn cán bộ; có chọn: bật, hiển thị số cán bộ đã chọn (ht3DcSync)
         return '<div style="display:flex; justify-content:flex-end; margin-bottom:8px;"><button type="button" data-admin-icon-normalized="1" class="ht-btn-sm ht-btn-dc htDcBtn" data-u="' + ui + '" disabled onclick="ht3OpenDc(' + ui + ')"><i class="fa-solid fa-ban"></i> Trình ký QĐ đình chỉ</button></div>';
     }
@@ -525,7 +538,7 @@
             const st = { CD: 'Chờ duyệt (QĐ đình chỉ) - Cấp ' + (d.level + 1) + '/' + d.levels.length + ': ' + leaderLabel(d, Math.min(d.level, d.levels.length - 1)), BTC: 'Bị trả lại (QĐ đình chỉ)', DONE: 'Đã ban hành' + (d.soKh ? ' số ' + d.soKh : '') + ' ngày ' + (d.issuedAt || '') }[d.st] || '';
             let a = '-';
             if (d.st === 'CD' && isLeader()) a = '<button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-primary" title="Ký duyệt" onclick="ht3Approve(\'DC\',' + x.k + ')"><i class="fa-solid fa-file-signature"></i></button> <button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-danger" title="Từ chối" onclick="ht3Reject(\'DC\',' + x.k + ')"><i class="fa-solid fa-ban"></i></button>';
-            if (d.st === 'BTC' && act) a = '<button type="button" data-admin-icon-normalized="1" class="ht-btn-sm ht-btn-pri" onclick="ht3OpenSign(\'DC\',' + x.k + ')"><i class="fa-solid fa-paper-plane"></i> Trình ký lại</button>';
+            if (d.st === 'BTC' && act) a = '<button type="button" data-admin-icon-normalized="1" class="ht-btn-sm ht-btn-pri" onclick="ht3OpenSign(\'DC\',' + x.k + ')"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>';
             h += '<tr><td style="text-align:center;">' + (n + 1) + '</td><td>' + d.names.map(esc).join('<br>') + '</td><td>' + (d.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống') + '</td><td>' + esc(st)
                 + (d.st === 'BTC' && d.reject ? '<div style="font-size:12px; color:#b45309;">Lý do bị trả lại: ' + esc(d.reject.reason) + '</div>' : '') + '</td><td><a class="action-link" href="javascript:void(0)" onclick="ht3OpenDoc(\'DC\',' + x.k + ')">Xem file</a></td><td style="text-align:center;">' + a + '</td></tr>';
         });
@@ -610,7 +623,7 @@
             const st = { CD: 'Chờ duyệt - Cấp ' + (d.level + 1) + '/' + d.levels.length + ': ' + leaderLabel(d, Math.min(d.level, d.levels.length - 1)), BTC: 'Bị trả lại', DONE: 'Đã ban hành' + (d.soKh ? ' số ' + d.soKh : '') + ' ngày ' + (d.issuedAt || '') }[d.st] || '';
             let a = '-';
             if (d.st === 'CD' && isLeader()) a = '<button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-primary" title="Ký duyệt" onclick="ht3Approve(\'' + kind + '\',' + x.k + ')"><i class="fa-solid fa-file-signature"></i></button> <button type="button" data-admin-icon-normalized="1" class="btn-action-square btn-danger" title="Từ chối" onclick="ht3Reject(\'' + kind + '\',' + x.k + ')"><i class="fa-solid fa-ban"></i></button>';
-            if (d.st === 'BTC' && act) a = '<button type="button" data-admin-icon-normalized="1" class="ht-btn-sm ht-btn-pri" onclick="ht3OpenSign(\'' + kind + '\',' + x.k + ')"><i class="fa-solid fa-paper-plane"></i> Trình ký lại</button>';
+            if (d.st === 'BTC' && act) a = '<button type="button" data-admin-icon-normalized="1" class="ht-btn-sm ht-btn-pri" onclick="ht3OpenSign(\'' + kind + '\',' + x.k + ')"><i class="fa-solid fa-paper-plane"></i> Trình ký</button>';
             h += '<tr><td style="text-align:center;">' + (n + 1) + '</td><td>' + esc(KIND[kind].doc) + ' (Mẫu ' + KIND[kind].mau + '/BTNN)</td><td>' + d.names.map(esc).join('<br>') + '</td><td>' + (d.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống') + '</td><td>' + esc(st)
                 + (d.st === 'BTC' && d.reject ? '<div style="font-size:12px; color:#b45309;">Lý do bị trả lại: ' + esc(d.reject.reason) + '</div>' : '') + '</td><td><a class="action-link" href="javascript:void(0)" onclick="ht3OpenDoc(\'' + kind + '\',' + x.k + ')">Xem file</a></td><td style="text-align:center;">' + a + '</td></tr>';
         });
@@ -628,7 +641,7 @@
         units.forEach(u => {
             const i = activeDossier.htUnits.indexOf(u);
             const tone = u.st !== 'DONE' && allDc(u.unit) ? 'muted' : { CBH: 'warn', CD: 'info', BTC: 'bad', DONE: 'ok' }[u.st];
-            const list = officers().map((o, idx) => ({ o, idx })).filter(x => x.o.agency === u.unit);
+            const list = officers().map((o, idx) => ({ o, idx })).filter(x => inUnit(x.o, u) && seeOfficer(x.o, u));
             h += '<div class="card" style="' + unitCardStyle(u) + '">' + unitHeader(u, 3, badge(u.status, tone)) + '<div class="card-body"' + (unitCollapsed(3, u) ? ' style="display:none;"' : '') + '>'
                 + '<div style="font-weight:700; color:var(--primary-color); margin-bottom:8px;"><i class="fa-solid fa-file-contract"></i> Quyết định hoàn trả (Mẫu 36/BTNN)</div>' + qdBlock(u, i)
                 + '<div style="display:flex; justify-content:space-between; align-items:flex-end; gap:10px;"><div style="font-weight:700; color:var(--primary-color); margin-bottom:8px;"><i class="fa-solid fa-users"></i> Cán bộ của đơn vị</div>' + dcToolbar(u, i, list) + '</div>'
@@ -650,7 +663,7 @@
     const baseStep = window.getCurrentWorkflowStep;
     window.getCurrentWorkflowStep = function () {
         if (!ensureModel()) return baseStep();
-        const vis = officers().filter(o => !api().officerVisible || api().officerVisible(o));
+        const vis = officers().filter(o => seeOfficer(o));
         if (!vis.length || vis.every(o => STEP3.includes(o.ct))) return 3;
         return vis.some(o => ['THU', 'DONE', 'MIEN', 'DC'].includes(o.ct)) ? 4 : 3;
     };
@@ -1061,7 +1074,7 @@
         setRec(kind, key, r);
         if (kind === 'DC') { r.st = 'CD'; S.ctx.list.forEach(o => { o.trinh = 'CD_DC'; o.dcKey = key; }); DC_DRAFT = null; }
         else if (isBatch(kind)) { r.st = 'CD'; S.ctx.list.forEach(o => { o.trinh = 'CD_' + KIND[kind].base; o.mgKey = key; }); MG_DRAFT = null; }
-        else if (kind === 'HT') { const u = activeDossier.htUnits[key]; u.st = 'CD'; officers().filter(o => o.agency === u.unit && o.ct !== 'DC').forEach(o => { o.ct = 'CD_HT'; }); }
+        else if (kind === 'HT') { const u = activeDossier.htUnits[key]; u.st = 'CD'; officers().filter(o => inUnit(o, u) && o.ct !== 'DC').forEach(o => { o.ct = 'CD_HT'; }); }
         else if (KIND[kind].base) activeDossier.refundOfficers[key].trinh = 'CD_' + KIND[kind].base; // trình bổ sung: cán bộ vẫn Thu tiền hoàn trả
         else activeDossier.refundOfficers[key].ct = 'CD_' + kind;
         ht3Close();
@@ -1095,7 +1108,7 @@
             const u = activeDossier.htUnits[key];
             u.st = 'DONE';
             // Không giảm, không miễn -> Thu tiền hoàn trả; Giảm -> Thu tiền hoàn trả theo Số tiền sau giảm; Miễn -> Miễn hoàn trả
-            officers().filter(o => o.agency === u.unit && o.ct !== 'DC').forEach(o => {
+            officers().filter(o => inUnit(o, u) && o.ct !== 'DC').forEach(o => {
                 const x = xlCode(o);
                 if (x === 'MIEN') { o.ct = 'MIEN'; o.total = 0; }
                 else { o.ct = 'THU'; o.total = x === 'GIAM' ? (o.giam || o.hd) : o.hd; }
@@ -1201,7 +1214,7 @@
         r.level = 0;
         if (p.kind === 'DC') { r.st = 'BTC'; ctxOf('DC', p.key).list.forEach(o => { o.trinh = 'BTC_DC'; }); }
         else if (isBatch(p.kind)) { r.st = 'BTC'; ctxOf(p.kind, p.key).list.forEach(o => { o.trinh = 'BTC_' + KIND[p.kind].base; }); }
-        else if (p.kind === 'HT') { const u = activeDossier.htUnits[p.key]; u.st = 'BTC'; officers().filter(o => o.agency === u.unit && o.ct !== 'DC').forEach(o => { o.ct = 'BTC_HT'; }); }
+        else if (p.kind === 'HT') { const u = activeDossier.htUnits[p.key]; u.st = 'BTC'; officers().filter(o => inUnit(o, u) && o.ct !== 'DC').forEach(o => { o.ct = 'BTC_HT'; }); }
         else if (KIND[p.kind].base) activeDossier.refundOfficers[p.key].trinh = 'BTC_' + KIND[p.kind].base;
         else activeDossier.refundOfficers[p.key].ct = 'BTC_' + p.kind;
         closeRejectReasonModal();
@@ -1219,7 +1232,7 @@
             return { g: HS_GROUP[s] || (CHUNG_TONE[s] ? s : 'Chờ xử lý'), lines: [] };
         }
         const inView = unitsInView().map(u => u.unit);
-        const vis = officers().filter(o => inView.includes(o.agency));
+        const vis = officers().filter(o => inView.includes(unitKeyOf(o)) && seeOfficer(o));
         // Thứ tự: trạng thái đích (100% kết thúc) > Thu tiền hoàn trả > Đang xử lý > Chờ xử lý
         const ended = o => ENDED.includes(o.ct) && !o.trinh;
         let chung = 'Chờ xử lý';
@@ -1243,7 +1256,7 @@
         unitBadge: u => badge(u.status, u.st !== 'DONE' && allDc(u.unit) ? 'muted' : { CBH: 'warn', CD: 'info', BTC: 'bad', DONE: 'ok' }[u.st]),
         ensureModel, recOf, units: () => activeDossier.htUnits, persist, setFile: f => { if (S) { S.file = f; renderFileBoxes(); } },
         // Dùng cho Bước 4 (chi_tiet_ho_so_hoan_tra_thu.js)
-        commit, officers, unitsInView, canActUnit, isLeader, scope, myUnit, isTths, issuerOf, payUnitOf, xlCode, ctText, CT, money, esc, today, nowShort, tgt
+        commit, officers, unitsInView, seeOfficer, inUnit, unitKeyOf, canActUnit, isLeader, scope, myUnit, isTths, issuerOf, payUnitOf, xlCode, ctText, CT, money, esc, today, nowShort, tgt
     };
     document.addEventListener('DOMContentLoaded', () => { if (ensureModel()) { recomputeBase(); persist(); renderStateLayout(); } });
 })();

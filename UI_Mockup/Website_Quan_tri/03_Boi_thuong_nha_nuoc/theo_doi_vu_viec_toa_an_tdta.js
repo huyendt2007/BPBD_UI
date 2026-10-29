@@ -556,12 +556,21 @@
         const r302 = list.find(r => r.code === 'BT-2026-302');
         if (r302) {
             linkTo(r302, 'BT-2026-030');
-            Object.assign(r302.nyc, { name: 'Trần Thị Mai', birth: '14/03/1979', city: 'Đà Nẵng', ward: 'Phường Hải Châu', address: 'Số 18 Bạch Đằng' });
+            // Đồng bộ hồ sơ GQ YCBT BT-2026-030 (Người yêu cầu, Lĩnh vực, Hành vi gây thiệt hại)
+            Object.assign(r302.nyc, { name: 'Bùi Văn Khánh', gender: 'Nam', birth: '14/03/1979', cardNo: '001092556677', city: 'Hà Nội', ward: 'Phường Định Công', address: 'Hoàng Mai' });
+            Object.assign(r302, { fieldGroup: 'hình sự', hanhVi: 'Khởi tố, tạm giam 10 ngày đối với người không thực hiện hành vi phạm tội.' });
         }
         const r308 = list.find(r => r.code === 'BT-2026-308');
         if (r308) {
             linkTo(r308, 'BT-2026-052');
-            r308.nyc = {
+            // Đồng bộ hồ sơ GQ YCBT BT-2026-052 (Người yêu cầu, Hành vi gây thiệt hại)
+            Object.assign(r308.nyc, { name: 'Trần Đình Trọng', gender: 'Nam', cardNo: '001094005678', city: 'Hà Nội', ward: 'Phường Dịch Vọng Hậu', address: 'Cầu Giấy' });
+            r308.hanhVi = 'Thu hồi giấy phép kinh doanh ăn uống không đúng trình tự, gây đình trệ chuỗi nhà hàng.';
+        }
+        // Người yêu cầu là Tổ chức (minh họa khối Tổ chức): vụ việc không liên kết BT-2026-306
+        const r306 = list.find(r => r.code === 'BT-2026-306');
+        if (r306) {
+            r306.nyc = {
                 type: T_TC, name: 'Công ty TNHH Minh Phát', role: ROLE_NBTH, birth: '', victimAlive: 'yes', phone: '02633822456', email: 'lienhe@minhphat.vn',
                 cardType: '', cardNo: '', cardDate: '', cardPlace: '',
                 orgCode: '5800123456', orgDocNo: '5800123456', orgDocDate: '15/04/2012', orgDocPlace: 'Sở Kế hoạch và Đầu tư tỉnh Lâm Đồng',

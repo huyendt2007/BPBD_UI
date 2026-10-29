@@ -418,6 +418,218 @@
         GROUPS.forEach(function (g) { var r = m43Row(m43[g.k]); for (var c = 2; c <= 27; c++) t[c] += r[c]; });
         return t;
     }
+    // ---------------- Tổng hợp số liệu Mẫu 43/BTNN từ dữ liệu vụ việc (nút "Tổng hợp", báo cáo của Sở Tư pháp) ----------------
+    // Nguồn: hồ sơ Giải quyết YCBT (BTNN_WF, module YCBT), Theo dõi vụ việc tại Tòa án ('btnn_court_cases_v1'), Quyết định GQBT ('btnn_qd_gqbt_v2'),
+    // Chi trả tiền bồi thường ('proposalsList'). Mỗi Mã vụ việc tính 01 lần, theo nơi thụ lý cuối cùng tính đến ngày cuối kỳ (Tòa án ưu tiên hơn cơ quan trực tiếp quản lý).
+    // Phạm vi: vụ việc có Cơ quan giải quyết bồi thường thuộc Tỉnh/Thành phố của Sở Tư pháp (BTNN_WF.stpOfUnit). Cột 23, 24 không có dữ liệu nguồn: giữ số đang nhập.
+    var M43_AUTO_COLS = [3, 4, 5, 6, 7, 8, 9, 10, 12, 13, 14, 15, 16, 18, 19, 20, 21, 22, 25, 26, 27];
+    var M43_MANUAL_COLS = [23, 24];
+    var M43_KEY_COURT = 'btnn_court_cases_v1', M43_KEY_QD = 'btnn_qd_gqbt_v2', M43_KEY_KP = 'proposalsList';
+    // Trạng thái vụ việc Giải quyết YCBT chưa thụ lý / không thụ lý tại cơ quan
+    var M43_NOT_THULY = ['Chờ tiếp nhận', 'Chờ phân công', 'Đang phân công', 'Yêu cầu bổ sung', 'Không thụ lý', 'Đã chuyển CQGQBT'];
+    // Nội dung trình trước thụ lý: hồ sơ Chờ duyệt / Bị trả lại với các Nội dung trình này chưa thụ lý
+    var M43_PRE_KINDS = ['Tiếp nhận hồ sơ', 'Thông báo thụ lý hồ sơ', 'Yêu cầu bổ sung', 'Thông báo Yêu cầu bổ sung', 'Không thụ lý', 'Thông báo Không thụ lý'];
+    var M43_DONE = ['Chờ chi trả', 'Hoàn thành'];
+    var M43_PAY_RETURNED = ['Trả lại ngân sách nhà nước', 'Đã sung quỹ', 'Sung quỹ nhà nước'];
+    var M43_COURT_DONE = 'Đã có bản án/QĐ', M43_COURT_RETURNED = 'Trả lại đơn khởi kiện';
+    // Dữ liệu mẫu bổ sung: hồ sơ Giải quyết YCBT của Thành phố Hà Nội mà Quyết định GQBT / Chi trả tiền bồi thường mẫu tham chiếu nhưng chưa có trong kho luồng xử lý
+    // (chỉ dùng khi kho luồng xử lý không có Mã hồ sơ; số liệu Quyết định / Chi trả lấy theo kho của phân hệ nếu có)
+    var M43_SEED_CASES = [
+        { code: 'BT-2026-193', unit: 'STP-HN', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '20/08/2026', status: 'Hoàn thành', qd: ['16/09/2026', 120000000], pay: ['25/09/2026', 120000000] },
+        { code: 'BT-2026-077', unit: 'UBND-CG', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '15/11/2025', status: 'Hoàn thành', qd: ['05/10/2026', 92000000], pay: ['20/10/2026', 92000000] },
+        { code: 'BT-2026-005', unit: 'STP-HP', lv: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÀNH CHÍNH', thuLy: '12/05/2026', status: 'Chờ duyệt' },
+        { code: 'BT-2026-003', unit: 'UBND-CG', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '06/04/2026', status: 'Chờ chi trả', qd: ['02/07/2026', 4800000000] },
+        { code: 'BT-2026-047', unit: 'CCTHADS-CG', lv: 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ', thuLy: '12/03/2026', status: 'Đình chỉ giải quyết' },
+        { code: 'BT-2025-142', unit: 'CA-TX', lv: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', thuLy: '20/10/2025', status: 'Xác minh thiệt hại' },
+        // Phục hồi danh dự: hồ sơ Chỉ yêu cầu phục hồi danh dự; hồ sơ cán bộ chủ động phục hồi danh dự (riêng / cùng Mã vụ việc với hồ sơ BT-2026-193 đã giải quyết)
+        { code: 'BT-2026-211', unit: 'UBND-HM', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '22/07/2026', status: 'Hoàn thành', requestKind: 'honor' },
+        { code: 'BT-2026-212', unit: 'CA-TX', lv: 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', thuLy: '10/09/2026', status: 'Đang phục hồi danh dự', requestKind: 'honor', cdpd: true },
+        { code: 'BT-2026-213', vv: 'BT-2026-193', unit: 'STP-HN', lv: 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', thuLy: '05/10/2026', status: 'Đang phục hồi danh dự', requestKind: 'honor', cdpd: true }
+    ];
+    // Vụ việc tại Tòa án mẫu (cùng dữ liệu mẫu của màn Theo dõi vụ việc tại Tòa án): dùng khi trình duyệt chưa mở màn Theo dõi vụ việc tại Tòa án
+    var M43_COURT_FALLBACK = [
+        { id: 'TA-BT-2026-301', rootUnitId: 'UBND-CG', status: 'Đã thụ lý', basis: 'a', acceptDate: '15/09/2026', fieldGroup: 'hành chính', amount: 320000000 },
+        { id: 'TA-BT-2026-302', hoSoCode: 'BT-2026-030', linkedAgencyId: 'CA-HM', rootUnitId: 'STP-HN', status: 'Đang giải quyết', basis: 'b', acceptDate: '02/09/2026', fieldGroup: 'hình sự', amount: 121500000 },
+        { id: 'TA-BT-2026-304', rootUnitId: 'THADS-LD', status: M43_COURT_DONE, basis: 'a', acceptDate: '10/06/2026', effectiveDate: '28/09/2026', fieldGroup: 'thi hành án dân sự', amount: 506000000 },
+        { id: 'TA-BT-2026-305', rootUnitId: 'UBND-HK', status: M43_COURT_DONE, basis: 'tt', acceptDate: '20/05/2026', effectiveDate: '15/08/2026', fieldGroup: 'tố tụng hành chính', amount: 15000000 },
+        { id: 'TA-BT-2026-306', rootUnitId: 'BTP-01', status: M43_COURT_RETURNED, basis: 'a', acceptDate: '05/08/2026', fieldGroup: 'hành chính', amount: 60000000 },
+        { id: 'TA-BT-2026-307', rootUnitId: 'BTP-01', status: 'Đang giải quyết', basis: 'tt', acceptDate: '12/08/2026', fieldGroup: 'hình sự', amount: 244000000 },
+        { id: 'TA-BT-2026-308', hoSoCode: 'BT-2026-052', linkedAgencyId: 'UBND-CG', rootUnitId: 'BTP-01', status: 'Đã thụ lý', basis: 'b', acceptDate: '20/10/2026', fieldGroup: 'hành chính', amount: 95000000 }
+    ];
+    function m43Read(key) { try { return JSON.parse(localStorage.getItem(key) || 'null'); } catch (e) { return null; } }
+    // dd/mm/yyyy hoặc HH:mm dd/mm/yyyy -> yyyymmdd (số), không hợp lệ -> 0
+    function m43Day(s) { var m = /(\d{2})\/(\d{2})\/(\d{4})/.exec(String(s || '')); return m ? +(m[3] + m[2] + m[1]) : 0; }
+    function m43Fold(s) { return String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase(); }
+    // Lĩnh vực phát sinh thiệt hại -> nhóm I - VI
+    function m43Group(lv) {
+        var t = m43Fold(lv);
+        if (!t) return '';
+        if (/thi hanh an hinh su/.test(t)) return 'V';
+        if (/thi hanh an dan su/.test(t)) return 'VI';
+        if (/to tung hanh chinh/.test(t)) return 'IV';
+        if (/hinh su/.test(t)) return 'II';
+        if (/dan su/.test(t)) return 'III';
+        if (/hanh chinh/.test(t)) return 'I';
+        return '';
+    }
+    // Căn cứ khởi kiện tại Tòa án: a (điểm a khoản 1 Điều 52) | b (điểm b khoản 1 và khoản 2 Điều 52) | tt (trong quá trình tố tụng hình sự, tố tụng hành chính)
+    function m43Basis(c) {
+        if (c.basis) return c.basis;
+        var lc = String(c.lawsuitCase || ''), vs = String(c.verdictSource || '');
+        if (/điểm a khoản 1/.test(lc)) return 'a';
+        if (/điểm b khoản 1/.test(lc)) return 'b';
+        if (/tố tụng hình sự, tố tụng hành chính/.test(lc) || /Điều 55/.test(vs)) return 'tt';
+        if (/Khoản 2 Điều 52/.test(vs)) return 'b';
+        if (/Khoản 1 Điều 52/.test(vs)) return 'a';
+        return '';
+    }
+    // Ngày thụ lý hồ sơ Giải quyết YCBT: ngày cấp cuối ký duyệt Nội dung trình Tiếp nhận hồ sơ / Thông báo thụ lý hồ sơ; không có lịch sử -> ngày tiếp nhận
+    function m43ThuLyDate(rec) {
+        var h = (rec.history || []).filter(function (x) { return x && /Phê duyệt|Ký duyệt|Ban hành/.test(x.action || '') && /Tiếp nhận hồ sơ|Thông báo thụ lý/.test(x.note || ''); }).pop();
+        return m43Day(h ? h.at : '') || m43Day(rec.date) || m43Day(rec.receivedAt);
+    }
+    // Hồ sơ chỉ có phục hồi danh dự (Chỉ yêu cầu phục hồi danh dự / Cán bộ chủ động phục hồi danh dự): không thống kê trong biểu mẫu báo cáo BTNN
+    function m43HonorOnly(rec) {
+        if (!rec) return false;
+        var g = rec.gqData || {}, x = rec.approval || rec.returned || {};
+        return rec.requestKind === 'honor' || rec.requestType === 'honor' || g.requestType === 'honor' || !!rec.cdpd || !!g.cdpd
+            || /chủ động phục hồi danh dự/i.test(rec.hinhThucTiepNhan || g.hinhThucTiepNhan || '') || x.kind === 'Chủ động phục hồi danh dự';
+    }
+    function m43IsThuLy(rec) {
+        if (!rec || rec.module !== 'YCBT') return false;
+        var st = rec.status;
+        if (st === 'Chờ duyệt' || st === 'Bị trả lại') {
+            var x = rec.approval || rec.returned || {};
+            if (M43_PRE_KINDS.indexOf(x.kind) >= 0) return false;
+            return !!x.prevStatus && M43_NOT_THULY.indexOf(x.prevStatus) < 0 && x.prevStatus !== 'Chờ tiếp nhận';
+        }
+        return !!st && M43_NOT_THULY.indexOf(st) < 0;
+    }
+    // Dữ liệu vụ việc phục vụ Mẫu 43/BTNN: { list: [vụ việc], find(mã) }
+    function m43Cases() {
+        var W = wf(); if (!W) return null;
+        var vv = function (code) { if (!code) return ''; if (W.isVuViecCode(code)) return code; return W.vuViecOf(code, { create: false }) || ''; };
+        var map = {}, alias = {};
+        var get = function (key) { if (!map[key]) map[key] = { key: key, unit: '', lv: '', ag: null, ct: null, qd: null, pay: [] }; return map[key]; };
+        var link = function (e, codes) { codes.forEach(function (c) { if (c) alias[c] = e; }); };
+        var find = function (codes) { for (var i = 0; i < codes.length; i++) { if (codes[i] && alias[codes[i]]) return alias[codes[i]]; } return null; };
+        var recs = W.loadRecords();
+        // 1. Hồ sơ Giải quyết YCBT đã thụ lý tại cơ quan trực tiếp quản lý người thi hành công vụ gây thiệt hại
+        recs.forEach(function (rec) {
+            // Không tính hồ sơ chỉ có phục hồi danh dự: vụ việc chỉ có phục hồi danh dự không thống kê; vụ việc có yêu cầu bồi thường tính 01 lần theo hồ sơ có yêu cầu bồi thường
+            if (!m43IsThuLy(rec) || m43HonorOnly(rec)) return;
+            var key = vv(rec.maVuViec) || vv(rec.code) || rec.code, e = get(key);
+            var d = m43ThuLyDate(rec);
+            // Nhiều hồ sơ cùng Mã vụ việc (Chuyển CQGQBT): lấy hồ sơ thụ lý sau cùng
+            if (!e.ag || d >= e.ag.date) { e.ag = { code: rec.code, date: d, status: rec.status, kind: rec.requestKind }; e.unit = W.getRootId(rec.rootUnitId) || rec.rootUnitId; e.lv = rec.linhVuc || e.lv; }
+            link(e, [key, rec.code, rec.claimCode]);
+        });
+        M43_SEED_CASES.forEach(function (s) {
+            if (m43HonorOnly(s) || recs.some(function (x) { return x && (x.code === s.code || x.claimCode === s.code); })) return;
+            var key = s.vv || vv(s.code) || s.code, e = get(key), d = m43Day(s.thuLy);
+            // Cùng Mã vụ việc: lấy hồ sơ có Ngày thụ lý sau cùng; số liệu Quyết định / Chi trả mẫu giữ theo hồ sơ đã có
+            if (e.ag && d < e.ag.date) { link(e, [s.code]); return; }
+            e.ag = { code: s.code, date: d, status: s.status, kind: s.requestKind, seed: (e.ag && e.ag.seed) || s }; e.unit = s.unit; e.lv = s.lv;
+            link(e, [key, s.code]);
+        });
+        // 2. Vụ việc tại Tòa án (không tính Trả lại đơn khởi kiện)
+        var court = m43Read(M43_KEY_COURT);
+        if (!Array.isArray(court)) court = M43_COURT_FALLBACK;
+        court.forEach(function (c) {
+            if (!c || c.deleted || c.status === M43_COURT_RETURNED || !m43Day(c.acceptDate)) return;
+            var key = (W.isVuViecCode(c.code) && c.code) || vv(c.linkedVuViec) || vv(c.hoSoCode) || vv(c.id) || c.code || c.id, e = find([key, c.hoSoCode]) || get(key);
+            var amt = Array.isArray(c.damages) ? c.damages.reduce(function (s, d) { return s + (Number(d && d.amount) || 0); }, 0) : (Number(c.amount) || 0);
+            e.ct = { date: m43Day(c.acceptDate), basis: m43Basis(c), status: c.status, eff: m43Day(c.effectiveDate), amount: amt };
+            if (!e.ag) { e.unit = W.getRootId(c.linkedAgencyId || c.rootUnitId) || c.linkedAgencyId || c.rootUnitId; e.lv = FIELD_LV[c.fieldGroup] || c.fieldGroup || ''; }
+            link(e, [key, c.code, c.id, c.hoSoCode]);
+        });
+        // 3. Quyết định giải quyết bồi thường có hiệu lực
+        var qd = m43Read(M43_KEY_QD);
+        (Array.isArray(qd) ? qd : []).forEach(function (d) {
+            if (!d || d.decisionType && d.decisionType !== 'Quyết định giải quyết bồi thường' || d.status !== 'Đã ban hành' || d.hieuLuc !== 'Có hiệu lực') return;
+            var e = find([vv(d.claimCode), d.claimCode]); if (!e) return;
+            var h = (d.hieuLucHistory || []).filter(function (x) { return x && x.to === 'Có hiệu lực'; }).pop();
+            e.qd = { date: m43Day(h && h.at) || m43Day(d.issueDate), amount: Number(d.total) || 0 };
+        });
+        // 4. Chi trả tiền bồi thường đã chi trả (Hoàn thành hoặc đã có số tiền chi trả thực tế; không tính Trả lại ngân sách nhà nước)
+        var kp = m43Read(M43_KEY_KP);
+        var payKeys = {};
+        (Array.isArray(kp) ? kp : []).forEach(function (p) {
+            if (!p || p.type !== 'Chi trả tiền bồi thường' || M43_PAY_RETURNED.indexOf(p.status) >= 0) return;
+            var real = Number(p.payoutAmountReal) || Number(p.kptbPayment && p.kptbPayment.amount) || 0;
+            if (p.status !== 'Hoàn thành' && !(Number(p.payoutAmountReal) > 0)) return;
+            var e = find([vv(p.ycbtCode), p.ycbtCode, p.vvCode, p.courtCaseCode]); if (!e) return;
+            e.pay.push({ date: m43Day(p.payoutDate || (p.kptbPayment && p.kptbPayment.payDate)), amount: real || Number(p.amount) || 0, court: !!(p.courtCaseCode || /^TA-/.test(p.decId || '')) });
+            payKeys[e.key] = 1;
+        });
+        // Hồ sơ mẫu bổ sung: Quyết định / Chi trả mẫu khi kho của phân hệ chưa có
+        Object.keys(map).forEach(function (k) {
+            var e = map[k], s = e.ag && e.ag.seed; if (!s) return;
+            if (!e.qd && s.qd) e.qd = { date: m43Day(s.qd[0]), amount: s.qd[1] };
+            if (!payKeys[k] && s.pay) e.pay.push({ date: m43Day(s.pay[0]), amount: s.pay[1], court: false });
+        });
+        return { list: Object.keys(map).map(function (k) { return map[k]; }), stpOf: function (u) { return W.stpOfUnit(u); } };
+    }
+    var FIELD_LV = { 'hành chính': 'TRONG HOẠT ĐỘNG QUẢN LÝ HÀNH CHÍNH', 'hình sự': 'TRONG HOẠT ĐỘNG TỐ TỤNG HÌNH SỰ', 'dân sự': 'TRONG HOẠT ĐỘNG TỐ TỤNG DÂN SỰ',
+        'tố tụng hành chính': 'TRONG HOẠT ĐỘNG TỐ TỤNG HÀNH CHÍNH', 'thi hành án hình sự': 'TRONG HOẠT ĐỘNG THI HÀNH ÁN HÌNH SỰ', 'thi hành án dân sự': 'TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ' };
+    // Tính số liệu các cột tự tổng hợp theo kỳ báo cáo và Sở Tư pháp của báo cáo: { rows: {I: {3: n, ...}}, n: số vụ việc tính vào Cột 3 - 10, detail: [...] }
+    function m43Compute(r) {
+        var src = m43Cases(); if (!src) return null;
+        var from = m43Day(r.fromDate), to = m43Day(r.toDate);
+        var rows = {}; GROUPS.forEach(function (g) { var o = {}; M43_AUTO_COLS.forEach(function (c) { o[c] = 0; }); rows[g.k] = o; });
+        var n = 0, detail = [];
+        var BASE = { ag: 3, a: 4, b: 5, tt: 6 }, RES = { ag: 12, a: 13, b: 14, tt: 15 }, ING = { ag: 18, a: 19, b: 20, tt: 21 };
+        src.list.forEach(function (e) {
+            if (!e.unit || src.stpOf(e.unit) !== r.unitId) return;
+            var g = m43Group(e.lv); if (!g) return;
+            var row = rows[g];
+            // Chi trả tiền bồi thường trong kỳ (không phụ thuộc kỳ thụ lý)
+            var paid = e.pay.filter(function (p) { return p.date >= from && p.date <= to; });
+            if (paid.length) {
+                row[25] += 1;
+                paid.forEach(function (p) { row[p.court ? 27 : 26] += Math.round(p.amount / 1000); });
+            }
+            // Nơi thụ lý cuối cùng tính đến ngày cuối kỳ: Tòa án (đã thụ lý) ưu tiên hơn cơ quan trực tiếp quản lý
+            var place = e.ct && e.ct.date && e.ct.date <= to && e.ct.basis ? e.ct.basis : (e.ag && e.ag.date && e.ag.date <= to ? 'ag' : '');
+            if (!place) return;
+            var at = place === 'ag' ? e.ag : e.ct;
+            var agDone = place === 'ag' && (e.qd && e.qd.date && e.qd.date <= to || M43_DONE.indexOf(e.ag.status) >= 0);
+            var ctDone = place !== 'ag' && e.ct.status === M43_COURT_DONE && (!e.ct.eff || e.ct.eff <= to);
+            var endDate = place === 'ag' ? (agDone && e.qd ? e.qd.date : 0) : (ctDone ? e.ct.eff : 0);
+            var isNew = at.date >= from;
+            // Kỳ trước chuyển sang: thụ lý trước kỳ, chưa kết thúc trước ngày đầu kỳ
+            if (!isNew && endDate && endDate < from) return;
+            row[BASE[place] + (isNew ? 0 : 4)] += 1; n++;
+            var res;
+            if (place === 'ag') {
+                if (agDone) { row[12] += 1; row[16] += Math.round(((e.qd && e.qd.amount) || 0) / 1000); res = 12; }
+                else if (e.ag.status === 'Đình chỉ giải quyết') { row[22] += 1; res = 22; }
+                else { row[18] += 1; res = 18; } // gồm Dừng giải quyết, Từ chối phục hồi danh dự (yêu cầu cả hai)
+            } else if (ctDone) { row[RES[place]] += 1; row[16] += Math.round((e.ct.amount || 0) / 1000); res = RES[place]; }
+            else { row[ING[place]] += 1; res = ING[place]; }
+            detail.push({ key: e.key, g: g, col: BASE[place] + (isNew ? 0 : 4), res: res || '', unit: e.unit });
+        });
+        return { rows: rows, n: n, detail: detail };
+    }
+    function m43HasAutoValue(m43) { return GROUPS.some(function (g) { return M43_AUTO_COLS.some(function (c) { return num(m43[g.k] && m43[g.k][c]) > 0; }); }); }
+    function m43ApplyAuto(r, ed) {
+        var res = null;
+        try { res = m43Compute(r); } catch (e) { res = null; }
+        if (!res) { toast('Kết nối tới hệ thống bị gián đoạn. Vui lòng thử lại sau.', 'error'); return; }
+        GROUPS.forEach(function (g) { M43_AUTO_COLS.forEach(function (c) { r.m43[g.k][c] = res.rows[g.k][c]; }); });
+        window.__bcttM43Last = res;
+        renderM43Tab(r, ed);
+        var any = GROUPS.some(function (g) { return M43_AUTO_COLS.some(function (c) { return res.rows[g.k][c] > 0; }); });
+        toast(any ? 'Đã tổng hợp số liệu Mẫu 43/BTNN từ dữ liệu vụ việc (' + res.n + ' vụ việc thụ lý). Cột 23, 24 giữ nguyên số đang nhập.' : 'Không có vụ việc phù hợp trong kỳ báo cáo; số liệu các cột tổng hợp bằng 0.', any ? 'success' : 'warning');
+    }
+    function m43ConfirmAuto(r, ed) {
+        if (!m43HasAutoValue(r.m43)) { m43ApplyAuto(r, ed); return; }
+        var html = '<div class="bctt-modal" style="width:560px;"><div class="bctt-mh"><div><div class="tt">Tổng hợp số liệu Mẫu 43/BTNN</div></div><button class="bctt-x" data-close>&times;</button></div>'
+            + '<div class="bctt-mb"><p>Hệ thống tổng hợp số liệu từ dữ liệu vụ việc của các cơ quan giải quyết bồi thường trên địa bàn, từ ' + esc(r.fromDate) + ' đến ' + esc(r.toDate) + '.</p><p style="margin-top:8px;">Số liệu đang nhập tại các cột tổng hợp sẽ bị ghi đè; Cột 23, 24 giữ nguyên. Bạn có muốn tiếp tục?</p></div>'
+            + '<div class="bctt-mf"><button class="btn btn-secondary" data-close>Hủy bỏ</button><button class="btn btn-primary" id="bcttM43AutoOk"><i class="fa-solid fa-calculator"></i> Tổng hợp</button></div></div>';
+        openOv('bcttOv2', html); bindClose('bcttOv2');
+        $('bcttM43AutoOk').onclick = function () { closeOv('bcttOv2'); m43ApplyAuto(r, ed); };
+    }
     // ---------------- Tính toán Mẫu số 04 (TT 08/2019) ----------------
     function m04Row(row) {
         var o = {}; for (var c = 2; c <= 15; c++) o[c] = num(row && row[c]);
@@ -972,9 +1184,13 @@
     }
     function renderM43Tab(r, ed) {
         var p = $('bcttP_m43');
-        p.innerHTML = '<div class="toolbar-row" style="justify-content:space-between;"><div class="formula-hint">Số liệu tính từ ' + r.fromDate + ' đến ' + r.toDate + '. Ô tổng tự tính: Cột 2 = Cột 3+4+5+6+7+8+9+10; Cột 11 = Cột 12+13+14+15; Cột 17 = Cột 18+19+20+21. Cột 16, 26, 27 đơn vị nghìn đồng.</div>' + (isBtpReport(r) ? detToggle('m43') : '') + '</div>'
+        // Nút Tổng hợp: báo cáo của Sở Tư pháp ở chế độ nhập liệu (cùng điều kiện sửa ô số liệu)
+        var auto = !!ed && !isBtpReport(r);
+        p.innerHTML = '<div class="toolbar-row" style="justify-content:space-between;"><div class="formula-hint" style="flex:1;min-width:0;">Số liệu tính từ ' + r.fromDate + ' đến ' + r.toDate + '. Ô tổng tự tính: Cột 2 = Cột 3+4+5+6+7+8+9+10; Cột 11 = Cột 12+13+14+15; Cột 17 = Cột 18+19+20+21. Cột 16, 26, 27 đơn vị nghìn đồng.' + (auto ? ' Nút Tổng hợp tự điền số liệu từ dữ liệu vụ việc, trừ Cột 23, 24.' : '') + '</div>'
+            + (isBtpReport(r) ? detToggle('m43') : '') + (auto ? '<button type="button" class="btn btn-primary btn-sm" id="bcttM43Auto" title="Tổng hợp số liệu từ dữ liệu vụ việc"><i class="fa-solid fa-calculator"></i> Tổng hợp</button>' : '') + '</div>'
             + '<div class="table-container">' + m43TableHtml(r.m43, isBtpReport(r) && btpDet.m43 ? 'agg' : (ed ? 'edit' : 'view')) + '</div>';
         if (isBtpReport(r)) bindBtpTab(r, 'm43', p, function () { renderM43Tab(r, ed); });
+        if (auto) $('bcttM43Auto').onclick = function () { m43ConfirmAuto(r, ed); };
         if (ed) p.oninput = function (e) {
             var i = e.target.closest('input[data-c]'); if (!i) return;
             r.m43[i.getAttribute('data-g')][i.getAttribute('data-c')] = num(i.value);

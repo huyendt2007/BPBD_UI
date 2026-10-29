@@ -790,8 +790,10 @@ function tlhdCollectDoc() {
         members: tlhdState.members.map(m => ({ name: String(m.name || '').trim(), unitId: m.unitId, unitName: tlhdUnitName(m.unitId), chucVu: m.chucVu, chucVuName: tlhdCvName(m.chucVu), chucDanh: String(m.chucDanh || '').trim() }))
     };
 }
-function tlhdMembersTableHtml(members) {
-    const rows = (members || []).map((m, i) => `<tr><td style="text-align:center;">${i + 1}</td><td>${tlhdE(m.name) || '……'}</td><td>${tlhdE(m.unitName) || '……'}</td><td>${tlhdE(m.chucVuName) || '……'}</td><td>${tlhdE(m.chucDanh) || '……'}</td></tr>`).join('');
+// empty: giá trị hiển thị khi trống (văn bản Mẫu 33 dùng "……"; màn chi tiết dùng "---")
+function tlhdMembersTableHtml(members, empty) {
+    const e = empty || '……';
+    const rows = (members || []).map((m, i) => `<tr><td style="text-align:center;">${i + 1}</td><td>${tlhdE(m.name) || e}</td><td>${tlhdE(m.unitName) || e}</td><td>${tlhdE(m.chucVuName) || e}</td><td>${tlhdE(m.chucDanh) || e}</td></tr>`).join('');
     return `<table class="tlhd-doc-table"><thead><tr><th style="width:40px;">STT</th><th>Họ và tên</th><th>Đơn vị công tác</th><th>Chức vụ</th><th>Chức danh trong hội đồng</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 function tlhdDocHtml(d) {
@@ -1238,7 +1240,8 @@ function tlhdRenderOfficialExtras() {
     if (pt && a) pt.innerText = a.method === 'offline' ? 'Ký ngoài' : 'Ký số trên hệ thống';
     let view = tlhdEl('tlhdMembersView');
     if (!view) {
-        const anchor = tlhdEl('s1LeaderSignContainer');
+        // Chèn sau lưới thông tin chung (Hình thức ban hành ... Lãnh đạo ký)
+        const anchor = tlhdEl('s1OfficialGrid') || tlhdEl('s1LeaderSignContainer');
         if (!anchor) return;
         anchor.insertAdjacentHTML('afterend', '<div id="tlhdMembersView" class="form-group" style="margin-bottom:16px;"></div>');
         view = tlhdEl('tlhdMembersView');
@@ -1247,7 +1250,7 @@ function tlhdRenderOfficialExtras() {
     const members = a && a.members && a.members.length ? a.members : (activeDossier.council || []).map(c => ({ name: c.name, unitName: c.agency, chucVuName: '', chucDanh: c.role }));
     let html = '';
     if (pending && a && a.levels && a.levels.length) html += `<span class="form-label">Lãnh đạo được giao ký duyệt</span><div class="info-value" style="font-weight:600; margin-bottom:12px;">${tlhdE(tlhdAssigneeText())}</div>`;
-    if (members.length) html += `<span class="form-label">Danh sách thành viên trong hội đồng</span>${tlhdMembersTableHtml(members)}`;
+    if (members.length) html += `<span class="form-label">Danh sách thành viên trong hội đồng</span>${tlhdMembersTableHtml(members, '<span class="ht-empty">---</span>')}`;
     view.innerHTML = html;
     view.style.display = html ? '' : 'none';
 }

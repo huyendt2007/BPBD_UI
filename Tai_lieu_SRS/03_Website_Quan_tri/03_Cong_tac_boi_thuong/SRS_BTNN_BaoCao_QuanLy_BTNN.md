@@ -227,6 +227,8 @@ Các báo cáo từ mục 4.3.3.24.4 đến 4.3.3.24.8 dùng chung bộ chỉ ti
 
 \- Một `Mã vụ việc` chỉ được tính một lần trong cùng kỳ báo cáo, cùng chiều nhóm dữ liệu và cùng chỉ tiêu.
 
+\- Hệ thống không thống kê vụ việc chỉ có yêu cầu phục hồi danh dự (vụ việc chỉ có hồ sơ `Chỉ yêu cầu phục hồi danh dự` hoặc hồ sơ cán bộ chủ động phục hồi danh dự, không có yêu cầu bồi thường thiệt hại bằng tiền) theo [Phạm vi thống kê vụ việc - Báo cáo Công tác BTNN - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_BaoCao_CongTacBTNN.md#bctt-pham-vi-thong-ke).
+
 \- Các báo cáo 1-4 dùng bộ chỉ tiêu cốt lõi để phục vụ quản trị, không thay thế file biểu mẫu pháp lý Mẫu 01/03/04 TT08.
 
 \- Báo cáo kết quả giải quyết YCBT tại địa phương tái sử dụng chỉ tiêu của Mẫu 03/BTNN nhưng đổi chiều nhóm dữ liệu sang từng tỉnh/thành.

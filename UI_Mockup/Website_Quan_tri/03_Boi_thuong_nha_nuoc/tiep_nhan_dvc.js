@@ -393,41 +393,64 @@
 
     // ---------------- MH03 - Xem chi tiết hồ sơ nguồn Dịch vụ công ----------------
     function esc(v) { return String(v === undefined || v === null ? '' : v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
-    function dash(v) { var s = String(v === undefined || v === null ? '' : v).trim(); return s || '-'; }
+    // [mh03ui] MH03 chỉ đọc: cặp Nhãn - Giá trị (không dùng ô nhập disabled), khối dạng card, lưới 3/4 cột; không có dữ liệu hiển thị "---"
+    var EMPTY_V = '---';
+    function isEmptyV(v) { var s = String(v === undefined || v === null ? '' : v).trim(); return !s || s === '-' || s === '--' || s === '---'; }
+    function dash(v) { return isEmptyV(v) ? EMPTY_V : String(v).trim(); }
     function money(n) { return (Math.round(Number(n) || 0)).toLocaleString('vi-VN').replace(/,/g, '.') + ' đồng'; }
+    function valHtml(value, opts) {
+        if (opts && opts.html !== undefined) return opts.html;
+        return isEmptyV(value) ? '<span class="ro-empty">' + EMPTY_V + '</span>' : esc(String(value).trim());
+    }
+    // opts: span (2/3 cột), full (cả dòng), area (văn bản nhiều dòng), html (giá trị dựng sẵn, VD badge)
     function fld(label, value, opts) {
         opts = opts || {};
-        var ctl = opts.area
-            ? '<textarea class="form-control" rows="' + (opts.rows || 2) + '" disabled style="resize:vertical; font-family:inherit;">' + esc(dash(value)) + '</textarea>'
-            : '<input class="form-control" disabled value="' + esc(dash(value)) + '">';
-        return '<div class="form-group" style="margin-bottom:0;' + (opts.full ? ' grid-column:1 / -1;' : '') + '"><span class="form-label">' + esc(label) + '</span>' + ctl + '</div>';
+        var cls = 'ro-f' + (opts.full ? ' ro-full' : '') + (opts.span ? ' ro-span-' + opts.span : '') + (opts.area ? ' ro-area' : '');
+        return '<div class="' + cls + '"><div class="ro-l">' + esc(label) + '</div><div class="ro-v">' + valHtml(value, opts) + '</div></div>';
     }
-    function grid(cells) { return '<div class="grid-2" style="gap:16px; margin-bottom:14px;">' + cells.join('') + '</div>'; }
-    function card(inner) { return '<div class="nyc-form-card">' + inner + '</div>'; }
-    function title(t) { return '<div class="info-group-title">' + esc(t) + '</div>'; }
+    function row(cells, cols) { cells = (cells || []).filter(Boolean); return cells.length ? '<div class="ro-grid ro-g' + (cols || 4) + '">' + cells.join('') + '</div>' : ''; }
+    function sec(t, inner, opts) {
+        opts = opts || {};
+        return '<section class="ro-card' + (opts.cls ? ' ' + opts.cls : '') + '"' + (opts.id ? ' id="' + opts.id + '"' : '') + '><div class="ro-card-h">' + esc(t) + '</div><div class="ro-card-b">' + inner + '</div></section>';
+    }
+    // Lĩnh vực phát sinh thiệt hại: hiển thị dạng câu (viết hoa chữ cái đầu)
+    function sentence(s) { s = String(s || '').trim(); if (!s) return ''; s = s.toLocaleLowerCase('vi'); return s.charAt(0).toLocaleUpperCase('vi') + s.slice(1); }
     function stripCode(w) { return String(w || '').replace(/^\s*\d+\s*-\s*/, ''); }
     var KIND = { both: 'Yêu cầu cả hai (Bồi thường tiền & Phục hồi danh dự)', money: 'Chỉ yêu cầu bồi thường thiệt hại bằng tiền', honor: 'Chỉ yêu cầu phục hồi danh dự' };
     var ROLE_NBTH = 'Người bị thiệt hại';
 
-    function fileLink(f) {
-        if (!f) return '<span style="color:var(--text-muted); font-style:italic;">Chưa có file</span>';
-        return '<a href="javascript:void(0)" onclick="DVC_TN.viewFile(this)" data-file="' + esc(f) + '" title="Xem file"><i class="fa-regular fa-file-pdf"></i> ' + esc(f) + '</a>';
+    function fileIco(f) {
+        var e = (String(f || '').split('.').pop() || '').toLowerCase();
+        if (e === 'pdf') return 'fa-solid fa-file-pdf ro-ico-pdf';
+        if (/^docx?$/.test(e)) return 'fa-solid fa-file-word ro-ico-word';
+        if (/^(xlsx?|csv)$/.test(e)) return 'fa-solid fa-file-excel ro-ico-xls';
+        if (/^(jpe?g|png|gif|bmp|webp)$/.test(e)) return 'fa-solid fa-file-image ro-ico-img';
+        return 'fa-solid fa-file ro-ico-file';
     }
-    function docTable(rows, groupHeaders, nameHead) {
-        var head = '<thead><tr><th style="width:60px; text-align:center;">STT</th><th style="text-align:center;">' + esc(nameHead || 'Tên tài liệu, văn bản') + '</th><th style="width:320px; text-align:center;">File đính kèm</th></tr></thead>';
-        var body = '';
-        if (groupHeaders) {
-            groupHeaders.forEach(function (gh, gi) {
-                var items = rows.filter(function (r) { return r.componentCode === gh.code; });
-                body += '<tr data-tp="' + gh.code + '"><td colspan="3" style="background:#f1f5f9; font-weight:700;">(' + gh.no + ') ' + esc(gh.name) + (gh.note ? ' <span style="font-weight:400; color:var(--text-muted);">' + esc(gh.note) + '</span>' : '') + '</td></tr>';
-                if (!items.length) body += '<tr><td colspan="3" style="text-align:center; color:var(--text-muted); font-style:italic;">' + esc(gh.empty || 'Không có dữ liệu') + '</td></tr>';
-                items.forEach(function (r, i) { body += '<tr class="dvc-doc-row" data-tp="' + gh.code + '"><td style="text-align:center;">' + (i + 1) + '</td><td>' + esc(r.name) + '</td><td>' + fileLink(r.file) + '</td></tr>'; });
-            });
-        } else {
-            if (!rows.length) body = '<tr><td colspan="3" style="text-align:center; color:var(--text-muted); font-style:italic;">Không có dữ liệu</td></tr>';
-            rows.forEach(function (r, i) { body += '<tr class="dvc-doc-row"><td style="text-align:center;">' + (i + 1) + '</td><td>' + esc(r.name) + '</td><td>' + fileLink(r.file) + '</td></tr>'; });
-        }
-        return '<div class="table-container" style="margin-bottom:20px;"><table class="custom-table" style="min-width:760px;">' + head + '<tbody>' + body + '</tbody></table></div>';
+    // Bảng tài liệu chỉ đọc: STT | Tên | File đính kèm (icon + tên tệp, click mở xem) | Thao tác (Xem file, Tải file)
+    // act.view(i) / act.dl(i): chuỗi onclick; phần tử có data-file = tên tệp
+    function roTable(rows, nameHead, act, emptyText) {
+        var head = '<thead><tr><th class="ro-c-stt">STT</th><th class="ro-c-name">' + esc(nameHead) + '</th><th class="ro-c-file">File đính kèm</th><th class="ro-c-act">Thao tác</th></tr></thead>';
+        var body = rows.length ? rows.map(function (r, i) {
+            var f = r.file, df = ' data-file="' + esc(f || '') + '"';
+            return '<tr><td class="ro-c-stt">' + (i + 1) + '</td><td class="ro-c-name">' + valHtml(r.name) + '</td><td class="ro-c-file">'
+                + (f ? '<a href="javascript:void(0)" class="ro-file" title="' + esc(f) + '"' + df + ' onclick="' + act.view(i) + '"><i class="' + fileIco(f) + '"></i><span>' + esc(f) + '</span></a>' : '<span class="ro-empty">' + EMPTY_V + '</span>')
+                + '</td><td class="ro-c-act">'
+                + (f ? '<span class="ro-acts"><button type="button" class="ro-ib" data-admin-icon-normalized="1" title="Xem file" aria-label="Xem file"' + df + ' onclick="' + act.view(i) + '"><i class="fa-solid fa-eye"></i></button>'
+                    + '<button type="button" class="ro-ib" data-admin-icon-normalized="1" title="Tải file" aria-label="Tải file"' + df + ' onclick="' + act.dl(i) + '"><i class="fa-solid fa-download"></i></button></span>' : '<span class="ro-empty">' + EMPTY_V + '</span>')
+                + '</td></tr>';
+        }).join('') : '<tr><td colspan="4" class="ro-tbl-empty">' + esc(emptyText || 'Không có dữ liệu') + '</td></tr>';
+        return '<div class="ro-tbl-wrap ga-skip" data-tlkt-skip="1"><table class="ro-table ga-skip">' + head + '<tbody>' + body + '</tbody></table></div>';
+    }
+    var DVC_ACT = { view: function () { return 'DVC_TN.viewFile(this)'; }, dl: function () { return 'DVC_TN.downloadFile(this)'; } };
+    function srcBadge(s) { var cls = 'badge-draft'; try { cls = getSourceBadge(s); } catch (e) { } return '<span class="badge ' + cls + '">' + esc(s) + '</span>'; }
+    // Khối Thông tin Hồ sơ yêu cầu: dòng 1 Nguồn | Loại hồ sơ | Hình thức | Lĩnh vực; dòng 2 Cơ quan GQBT | (Ngày văn bản YCBT - DVC) | Loại yêu cầu GQBT
+    // o.docDate / o.kind = undefined: không hiển thị trường
+    function overviewHtml(o) {
+        var r2 = [fld('Cơ quan giải quyết bồi thường', o.agency)];
+        if (o.docDate !== undefined) r2.push(fld('Ngày văn bản yêu cầu bồi thường', o.docDate));
+        if (o.kind !== undefined) r2.push(fld('Loại yêu cầu giải quyết bồi thường', o.kind, { span: o.docDate !== undefined ? 2 : 3 }));
+        return sec('Thông tin Hồ sơ yêu cầu', row([fld('Nguồn hồ sơ', o.source, { html: srcBadge(o.source) }), fld('Loại hồ sơ', o.type), fld('Hình thức tiếp nhận', o.method), fld('Lĩnh vực phát sinh thiệt hại', sentence(o.field))]) + row(r2));
     }
     function damageTable(list) {
         var TH = g.BTNN_TH;
@@ -452,116 +475,148 @@
         if (m === 'Qua phương tiện điện tử khác') return 'Địa chỉ, đầu mối nhận thông báo qua phương tiện điện tử khác';
         return 'Địa chỉ, đầu mối nhận thông báo (Tài khoản Cổng DVC / Số ĐDCN / VNeID)';
     }
+    // [tnp] Khối Người yêu cầu / Tổ chức bị thiệt hại đã chấm dứt tồn tại / Người bị thiệt hại - dùng chung MH03 mọi Nguồn hồ sơ:
+    // hiển thị theo Loại người yêu cầu / Loại người bị thiệt hại, không có dữ liệu hiển thị "---"
+    // [mh03ui] Lưới 4 cột theo nhóm: Phân loại | Định danh | Giấy tờ | (Người đại diện) | Liên hệ, địa bàn | Địa chỉ chi tiết
+    function addrRows(p, withEmail) {
+        return row([withEmail ? fld('Email', p.email) : '', fld('Quốc gia', p.country), fld('Tỉnh/Thành phố', stripCode(p.city)), fld('Phường/Xã', stripCode(p.ward))])
+            + row([fld('Địa chỉ chi tiết', p.address, { full: true })]);
+    }
+    function personRows(p) {
+        if (p.isOrg) return row([fld('Tên tổ chức', p.name, { span: 2 }), fld('Mã số tổ chức', p.orgCode), fld('Số điện thoại', p.phone)])
+            + row([fld('Số giấy tờ thành lập/đăng ký', p.orgDocNo, { span: 2 }), fld('Ngày cấp', p.orgDocDate), fld('Nơi cấp', p.orgDocPlace)])
+            + row([fld('Họ và tên người đại diện theo pháp luật', p.repName, { span: 2 }), fld('Chức vụ người đại diện', p.repPosition, { span: 2 })])
+            + addrRows(p, true);
+        return row([fld('Họ và tên', p.name, { span: 2 }), fld('Ngày sinh', p.dob), fld('Số điện thoại', p.phone)])
+            + row([fld('Loại giấy tờ thân nhân', p.docType), fld('Số giấy tờ thân nhân', p.docNo), fld('Ngày cấp', p.docDate), fld('Nơi cấp', p.docPlace)])
+            + addrRows(p, true);
+    }
+    function partyHtml(p) {
+        var role = p.role || ROLE_NBTH;
+        var orgRole = !!(W.isNbthOrgRole && W.isNbthOrgRole(role));
+        var nb = p.nb || {};
+        // Trạng thái người bị thiệt hại: chỉ hiển thị khi người bị thiệt hại là cá nhân (E-Form STT 10):
+        // Tư cách = Người bị thiệt hại và Loại người yêu cầu = Cá nhân; hoặc khối Người bị thiệt hại hiển thị và Loại người bị thiệt hại = Cá nhân
+        var personVictim = role === ROLE_NBTH ? !p.isOrg : (!orgRole && !nb.isOrg);
+        var head = [fld('Loại người yêu cầu', p.isOrg ? 'Tổ chức' : 'Cá nhân'), fld('Tư cách người yêu cầu bồi thường', role, { span: 2 })];
+        if (personVictim) head.push(fld('Trạng thái người bị thiệt hại', p.alive));
+        var h = sec('Thông tin người yêu cầu', row(head) + personRows(p));
+        if (role === ROLE_NBTH) return h;
+        if (orgRole) {
+            var o = p.org || {};
+            return h + sec('Thông tin tổ chức bị thiệt hại đã chấm dứt tồn tại', row([fld('Tên tổ chức bị thiệt hại', o.name, { span: 3 }), fld('Mã số tổ chức', o.code)]) + addrRows(o, false));
+        }
+        return h + sec('Thông tin người bị thiệt hại', row([fld('Loại người bị thiệt hại', nb.isOrg ? 'Tổ chức' : 'Cá nhân')]) + personRows(nb));
+    }
+    // Hồ sơ nguồn Dịch vụ công: dữ liệu bản ghi luồng
+    function partyFromRec(item, r, d) {
+        var nb = r.nbth || {}, oa = r.nbthOrgAddr || {};
+        return {
+            isOrg: (r.nycType || item.nycType) === 'Tổ chức', role: r.nycRole || item.nycRole || ROLE_NBTH,
+            name: r.nycName || item.nyc, dob: r.nycDob, alive: d.victimAlive === 'no' ? 'Đã mất' : 'Còn sống',
+            docType: r.nycDocType, docNo: r.nycDocNo, docDate: r.nycDocDate, docPlace: r.nycDocPlace,
+            orgCode: r.nycOrgCode, orgDocNo: r.nycOrgDocNo, orgDocDate: r.nycOrgDocDate, orgDocPlace: r.nycOrgDocPlace, repName: r.nycRepName, repPosition: r.nycRepPosition,
+            phone: r.nycPhone || item.nycPhone, email: r.nycEmail, country: r.nycCountry || 'Việt Nam', city: r.nycTinhThanh, ward: r.nycPhuongXa, address: r.nycAddressDetail,
+            org: { name: r.nbthOrgName, code: r.nbthOrgCode, country: oa.country || 'Việt Nam', city: oa.city, ward: oa.ward, address: oa.address },
+            nb: {
+                isOrg: nb.type === 'Tổ chức', name: nb.name, dob: nb.dob, docType: nb.docType, docNo: nb.docNo, docDate: nb.docDate, docPlace: nb.docPlace,
+                orgCode: nb.orgCode, orgDocNo: nb.orgDocNo, orgDocDate: nb.orgDocDate, orgDocPlace: nb.orgDocPlace, repName: nb.repName, repPosition: nb.repPosition,
+                phone: nb.phone, email: nb.email, country: nb.country || 'Việt Nam', city: nb.city, ward: nb.ward, address: nb.address
+            }
+        };
+    }
+    // Hồ sơ nguồn khác Dịch vụ công: giá trị đã nạp lên form ở chế độ xem; trường không có trên form lấy theo bản ghi
+    function tv(id) {
+        var e = document.getElementById(id);
+        if (!e) return '';
+        if (e.tagName === 'SELECT') { var o = e.options[e.selectedIndex]; return o && o.value ? o.text : ''; }
+        var v = String(e.value || '').trim();
+        var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v);
+        return m ? m[3] + '/' + m[2] + '/' + m[1] : v;
+    }
+    function radioVal(name) { var e = document.querySelector('input[name="' + name + '"]:checked'); return e ? e.value : ''; }
+    function partyFromForm(item) {
+        var c = item || {}, nb = c.nbth || {};
+        return {
+            isOrg: radioVal('formNycType') === 'Tổ chức', role: tv('formRequesterRole') || c.nycRole || ROLE_NBTH,
+            name: tv('formRequester'), dob: c.nycDob, alive: c.victimAlive === 'no' ? 'Đã mất' : (c.victimAlive ? 'Còn sống' : ''),
+            docType: tv('formNycDocType'), docNo: tv('formNycDocNo'), docDate: c.nycDocDate, docPlace: c.nycDocPlace,
+            orgCode: tv('formNycOrgCode'), orgDocNo: c.nycOrgDocNo, orgDocDate: c.nycOrgDocDate, orgDocPlace: c.nycOrgDocPlace, repName: c.nycRepName, repPosition: c.nycRepPosition,
+            phone: tv('formPhone'), email: tv('formEmail'), country: tv('formCountry'), city: tv('formCity'), ward: tv('formWard'), address: tv('formAddress'),
+            org: { name: tv('nbthOrgName'), code: tv('nbthOrgCode'), country: tv('nbthOrgCountry'), city: tv('nbthOrgCity'), ward: tv('nbthOrgWard'), address: tv('nbthOrgAddress') },
+            nb: {
+                isOrg: radioVal('nbthType') === 'Tổ chức', name: tv('nbthName'), dob: tv('nbthDob'), docType: tv('nbthDocType'), docNo: tv('nbthDocNo'), docDate: nb.docDate, docPlace: nb.docPlace,
+                orgCode: tv('nbthPOrgCode'), orgDocNo: nb.orgDocNo, orgDocDate: nb.orgDocDate, orgDocPlace: nb.orgDocPlace, repName: nb.repName, repPosition: nb.repPosition,
+                phone: tv('nbthPhone'), email: tv('nbthEmail'), country: tv('nbthCountry'), city: tv('nbthCity'), ward: tv('nbthWard'), address: tv('nbthAddress')
+            }
+        };
+    }
     function buildHtml(item, rec) {
         var d = (rec && rec.dvcData) || {};
         var r = rec || {};
-        var isOrg = (r.nycType || item.nycType) === 'Tổ chức';
-        var role = r.nycRole || item.nycRole || ROLE_NBTH;
         var kind = r.requestKind || item.requestKind || '';
-        var orgRole = !!(W.isNbthOrgRole && W.isNbthOrgRole(role));
-        // Trạng thái người bị thiệt hại: chỉ hiển thị khi người bị thiệt hại là cá nhân (E-Form STT 10):
-        // Tư cách = Người bị thiệt hại và Loại người yêu cầu = Cá nhân; hoặc khối Người bị thiệt hại hiển thị và Loại người bị thiệt hại = Cá nhân
-        var personVictim = role === ROLE_NBTH ? !isOrg : (!orgRole && (r.nbth || {}).type !== 'Tổ chức');
-        var alive = fld('Trạng thái người bị thiệt hại', d.victimAlive === 'no' ? 'Đã mất' : 'Còn sống');
         var h = '';
         // I. Thông tin Hồ sơ yêu cầu
-        h += title('Thông tin Hồ sơ yêu cầu') + card(
-            grid([fld('Loại hồ sơ', W.REQUEST_TYPE_YCBT || 'Giải quyết yêu cầu bồi thường'), fld('Loại yêu cầu giải quyết bồi thường', KIND[kind] || '')])
-            + grid([fld('Nguồn hồ sơ', DVC), fld('Hình thức tiếp nhận', W.RECEIVE_METHODS.MOI_TRUONG_SO)])
-            + grid([fld('Lĩnh vực phát sinh thiệt hại', r.linhVuc || item.linhVuc), fld('Ngày văn bản yêu cầu bồi thường', d.requestDocDate)])
-            + grid([fld('Cơ quan giải quyết bồi thường', W.unitName(r.rootUnitId || item.rootUnitId))])
-            + '<div style="margin-bottom:0;">' + grid([fld('Vụ việc liên quan', r.vuViecLienQuan || '')]) + '</div>'
-        );
-        // II. Thông tin chi tiết người yêu cầu bồi thường (cột trái: cá nhân & liên hệ; cột phải: pháp lý & địa chỉ)
-        var nyc = grid([fld('Loại người yêu cầu', isOrg ? 'Tổ chức' : 'Cá nhân'), fld('Tư cách người yêu cầu bồi thường', role)]);
-        if (isOrg) {
-            nyc += grid([fld('Tên tổ chức', r.nycName || item.nyc), fld('Mã số tổ chức', r.nycOrgCode)])
-                + grid([fld('Họ và tên người đại diện theo pháp luật', r.nycRepName), fld('Chức vụ người đại diện', r.nycRepPosition)]);
-        } else {
-            nyc += grid([fld('Họ và tên', r.nycName || item.nyc), fld('Ngày sinh', r.nycDob)]);
-        }
-        if (personVictim) nyc += grid([alive]);
-        nyc += grid([fld('Số điện thoại', r.nycPhone || item.nycPhone), fld('Email', r.nycEmail)]);
-        nyc += isOrg
-            ? grid([fld('Số giấy tờ thành lập/đăng ký', r.nycOrgDocNo), fld('Ngày cấp', r.nycOrgDocDate)]) + grid([fld('Nơi cấp', r.nycOrgDocPlace)])
-            : grid([fld('Loại giấy tờ thân nhân', r.nycDocType), fld('Số giấy tờ thân nhân', r.nycDocNo)]) + grid([fld('Ngày cấp', r.nycDocDate), fld('Nơi cấp', r.nycDocPlace)]);
-        nyc += grid([fld('Quốc gia', r.nycCountry || 'Việt Nam'), fld('Tỉnh/Thành phố', r.nycTinhThanh)])
-            + grid([fld('Phường/Xã', stripCode(r.nycPhuongXa)), fld('Địa chỉ chi tiết', r.nycAddressDetail)]);
-        h += title('Thông tin chi tiết người yêu cầu bồi thường') + card(nyc);
-        // Thông tin người bị thiệt hại (Tư cách khác Người bị thiệt hại)
-        if (role !== ROLE_NBTH) {
-            if (orgRole) {
-                var oa = r.nbthOrgAddr || {};
-                h += title('Thông tin tổ chức bị thiệt hại đã chấm dứt tồn tại') + card(
-                    grid([fld('Tên tổ chức bị thiệt hại', r.nbthOrgName), fld('Mã số tổ chức', r.nbthOrgCode)])
-                    + grid([fld('Quốc gia', oa.country || 'Việt Nam'), fld('Tỉnh/Thành phố', oa.city)])
-                    + grid([fld('Phường/Xã', stripCode(oa.ward)), fld('Địa chỉ chi tiết', oa.address)])
-                );
-            } else {
-                var nb = r.nbth || {};
-                var nbOrg = nb.type === 'Tổ chức';
-                h += title('Thông tin người bị thiệt hại') + card(
-                    grid([fld('Loại người bị thiệt hại', nbOrg ? 'Tổ chức' : 'Cá nhân'), fld(nbOrg ? 'Tên tổ chức' : 'Họ và tên', nb.name)])
-                    + (nbOrg
-                        ? grid([fld('Mã số tổ chức', nb.orgCode)]) + grid([fld('Họ và tên người đại diện theo pháp luật', nb.repName), fld('Chức vụ người đại diện', nb.repPosition)])
-                        : grid([fld('Ngày sinh', nb.dob)]))
-                    + grid([fld('Số điện thoại', nb.phone), fld('Email', nb.email)])
-                    + (nbOrg
-                        ? grid([fld('Số giấy tờ thành lập/đăng ký', nb.orgDocNo), fld('Ngày cấp', nb.orgDocDate)]) + grid([fld('Nơi cấp', nb.orgDocPlace)])
-                        : grid([fld('Loại giấy tờ thân nhân', nb.docType), fld('Số giấy tờ thân nhân', nb.docNo)]) + grid([fld('Ngày cấp', nb.docDate), fld('Nơi cấp', nb.docPlace)]))
-                    + grid([fld('Quốc gia', nb.country || 'Việt Nam'), fld('Tỉnh/Thành phố', nb.city)])
-                    + grid([fld('Phường/Xã', stripCode(nb.ward)), fld('Địa chỉ chi tiết', nb.address)])
-                );
-            }
-        }
+        h += overviewHtml({ source: DVC, type: W.REQUEST_TYPE_YCBT || 'Giải quyết yêu cầu bồi thường', method: W.RECEIVE_METHODS.MOI_TRUONG_SO, field: r.linhVuc || item.linhVuc,
+            agency: W.unitName(r.rootUnitId || item.rootUnitId), docDate: d.requestDocDate || '', kind: KIND[kind] || '' });
+        // II. Thông tin người yêu cầu; Thông tin tổ chức bị thiệt hại đã chấm dứt tồn tại / Thông tin người bị thiệt hại (theo Tư cách)
+        h += partyHtml(partyFromRec(item, r, d));
         // Văn bản làm căn cứ yêu cầu bồi thường (Thành phần hồ sơ 2): bảng văn bản trước, sau đó Hành vi, Mối quan hệ nhân quả (như MH02)
-        h += title('Văn bản làm căn cứ yêu cầu bồi thường') + '<div id="dvcBasisTable">' + docTable((r.vanBanCanCu || []).map(function (x) { return { name: x.name, file: x.file, componentCode: 'VB_CAN_CU_YCBT' }; }), null, 'Tên văn bản căn cứ') + '</div>'
-            + card('<div style="display:grid; gap:14px;">' + fld('Hành vi gây thiệt hại của người thi hành công vụ', r.hanhVi || item.hanhVi, { area: true, rows: 3 })
-            + fld('Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại', d.nhanQua, { area: true, rows: 3 }) + '</div>');
+        h += sec('Văn bản làm căn cứ yêu cầu bồi thường', '<div id="dvcBasisTable">' + roTable((r.vanBanCanCu || []).map(function (x) { return { name: x.name, file: x.file }; }), 'Tên văn bản căn cứ', DVC_ACT) + '</div>'
+            + '<div class="ro-sub">' + row([fld('Hành vi gây thiệt hại của người thi hành công vụ', r.hanhVi || item.hanhVi, { full: true, area: true })])
+            + row([fld('Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại', d.nhanQua, { full: true, area: true })]) + '</div>');
         // Phương thức đề nghị nhận thông báo
-        h += title('Phương thức đề nghị nhận thông báo về việc giải quyết yêu cầu bồi thường') + card(
-            grid([fld('Phương thức nhận thông báo', r.notifyMethod), fld(notifyAddrLabel(r.notifyMethod), r.notifyAddress)]).replace('margin-bottom:14px;', 'margin-bottom:0;')
-        );
+        h += sec('Phương thức đề nghị nhận thông báo về việc giải quyết yêu cầu bồi thường',
+            row([fld('Phương thức nhận thông báo', r.notifyMethod), fld(notifyAddrLabel(r.notifyMethod), r.notifyAddress, { span: 3 })]));
         // Thiệt hại yêu cầu bồi thường / Tạm ứng / Người nhận (ẩn khi Chỉ yêu cầu phục hồi danh dự, như MH02)
         if (kind !== 'honor') {
             var dmg = d.thietHaiList || [];
-            h += title('Thiệt hại yêu cầu bồi thường') + '<div class="table-container" style="margin-bottom:20px;">' + damageTable(dmg) + '</div>';
+            h += sec('Thiệt hại yêu cầu bồi thường', '<div class="table-container">' + damageTable(dmg) + '</div>');
             var adv = Number(d.advanceNum) > 0;
-            h += title('Đề nghị tạm ứng kinh phí') + card(
-                grid([fld('Có đề nghị tạm ứng kinh phí bồi thường (Điều 44)', adv ? 'Có' : 'Không')])
-                + (adv ? grid([fld('Tạm ứng Thiệt hại tinh thần (đồng)', Number(d.advanceTinhThan) > 0 ? money(d.advanceTinhThan) : ''), fld('Tạm ứng Thiệt hại khác tính được ngay (đồng)', Number(d.advanceKhac) > 0 ? money(d.advanceKhac) : '')])
-                    + grid([fld('Tổng số tiền đề nghị tạm ứng', money(d.advanceNum))]) : '')
-            );
+            h += sec('Đề nghị tạm ứng kinh phí', row([fld('Có đề nghị tạm ứng kinh phí bồi thường (Điều 44)', adv ? 'Có' : 'Không'),
+                adv ? fld('Tạm ứng Thiệt hại tinh thần (đồng)', Number(d.advanceTinhThan) > 0 ? money(d.advanceTinhThan) : '') : '',
+                adv ? fld('Tạm ứng Thiệt hại khác tính được ngay (đồng)', Number(d.advanceKhac) > 0 ? money(d.advanceKhac) : '') : '',
+                adv ? fld('Tổng số tiền đề nghị tạm ứng', money(d.advanceNum)) : '']));
             // Thông tin người nhận & phương thức chi trả: hiển thị khi có đề nghị tạm ứng hoặc có thiệt hại yêu cầu bồi thường (như MH02)
             if (adv || dmg.length) {
                 var bank = d.advanceRecKenh === 'chuyen-khoan';
-                h += title('Thông tin người nhận & phương thức chi trả') + card(
-                    grid([fld('Họ và tên người nhận', d.advanceRecName), fld('Giấy tờ thân nhân', d.advanceRecCard)])
-                    + grid([fld('Địa chỉ chi tiết', d.advanceRecAddress), fld('Phương thức nhận tiền', bank ? 'Nhận qua chuyển khoản' : 'Nhận tiền mặt')])
-                    + (bank ? grid([fld('Chủ tài khoản', d.advanceBankUser), fld('Số tài khoản', d.advanceBankAccount)]) + grid([fld('Tên ngân hàng', d.advanceBankName), fld('Chi nhánh', d.advanceBankBranch)]) : '')
-                );
+                h += sec('Thông tin người nhận & phương thức chi trả',
+                    row([fld('Họ và tên người nhận', d.advanceRecName), fld('Giấy tờ thân nhân', d.advanceRecCard), fld('Địa chỉ chi tiết', d.advanceRecAddress, { span: 2 })])
+                    + row([fld('Phương thức nhận tiền', bank ? 'Nhận qua chuyển khoản' : 'Nhận tiền mặt')])
+                    + (bank ? row([fld('Chủ tài khoản', d.advanceBankUser), fld('Số tài khoản', d.advanceBankAccount), fld('Tên ngân hàng', d.advanceBankName), fld('Chi nhánh', d.advanceBankBranch)]) : ''));
             }
         }
-        // Nội dung khác & Tài liệu đính kèm: khối Yêu cầu phục hồi danh dự chỉ khi Loại yêu cầu có phục hồi danh dự (như MH02)
+        // Nội dung khác: khối Yêu cầu phục hồi danh dự chỉ khi Loại yêu cầu có phục hồi danh dự (như MH02)
         var honorOn = d.restoreHonor || kind === 'honor';
         var forms = [];
         if (d.phddFormApology) forms.push('Trực tiếp xin lỗi và cải chính công khai tại nơi cư trú / trụ sở (Điều 58)');
         if (d.phddFormNews) forms.push('Đăng báo xin lỗi và cải chính công khai (Điều 59)');
         var other = String(d.otherRestore || '').trim();
-        h += title('Nội dung khác & Tài liệu đính kèm') + card(
+        h += sec('Nội dung khác',
             (kind === 'both' || kind === 'honor'
-                ? grid([fld('Đề nghị cơ quan giải quyết chủ động tiến hành phục hồi danh dự (Điều 57)', honorOn ? 'Có' : 'Không'), fld('Hình thức đề nghị phục hồi danh dự mong muốn (Điều 56)', forms.join('; '))])
+                ? row([fld('Đề nghị cơ quan giải quyết chủ động tiến hành phục hồi danh dự (Điều 57)', honorOn ? 'Có' : 'Không', { span: 2 }), fld('Hình thức đề nghị phục hồi danh dự mong muốn (Điều 56)', forms.join('; '), { span: 2 })])
                 : '')
-            + grid([fld('Yêu cầu khôi phục quyền và lợi ích hợp pháp khác (nếu có)', other ? 'Có' : 'Không')])
-            + (other ? '<div style="display:grid;">' + fld('Nội dung yêu cầu khôi phục quyền và lợi ích hợp pháp khác', other, { area: true }) + '</div>' : '')
-        );
-        // Thành phần hồ sơ (1), (3), (4) - Danh mục tài liệu gửi kèm; (2) tại khối Văn bản làm căn cứ yêu cầu bồi thường
-        var docs = (r.attachedDocs || []).map(function (x) { return { name: x.name, file: x.file, componentCode: x.componentCode || 'TAI_LIEU_KHAC' }; });
-        h += title('Danh mục tài liệu gửi kèm') + '<div id="dvcDocsTable">' + docTable(docs, [
-            { code: 'VB_YEU_CAU_BT', no: 1, name: TP[0].name },
-            { code: 'VB_UY_QUYEN_YCBT', no: 3, name: TP[2].name, empty: role === ROLE_NBTH ? 'Không áp dụng (Người yêu cầu là Người bị thiệt hại)' : 'Không có dữ liệu' },
-            { code: 'TAI_LIEU_KHAC', no: 4, name: TP[3].name }
-        ]) + '</div>';
+            + row([fld('Yêu cầu khôi phục quyền và lợi ích hợp pháp khác (nếu có)', other ? 'Có' : 'Không', { span: 2 })])
+            + (other ? row([fld('Nội dung yêu cầu khôi phục quyền và lợi ích hợp pháp khác', other, { full: true, area: true })]) : ''));
+        // Bảng tài liệu đính kèm: tài liệu nhận từ Dịch vụ công (Thành phần hồ sơ (1), (3), (4)); (2) tại khối Văn bản làm căn cứ yêu cầu bồi thường
+        var docs = (r.attachedDocs || []).map(function (x) { return { name: x.name, file: x.file }; });
+        h += sec('Bảng tài liệu đính kèm', '<div id="dvcDocsTable">' + roTable(docs, 'Tên tài liệu, văn bản', DVC_ACT) + '</div>');
+        return h;
+    }
+    // [mh03ui] MH03 hồ sơ nguồn khác Dịch vụ công: dựng toàn bộ nội dung chỉ đọc từ giá trị đã nạp lên form (giữ nguyên dữ liệu, điều kiện hiển thị của form)
+    function stdHtml(item) {
+        var kg = document.getElementById('formRequestKindGroup');
+        var kindOn = !!kg && kg.style.display !== 'none';
+        var src = ''; try { src = getSourceOf(item); } catch (e) { }
+        var h = overviewHtml({ source: src, type: tv('formRequestType'), method: tv('formReceiveMethod'), field: tv('formFieldGroup'), agency: agencyName(item),
+            kind: kindOn ? tv('formRequestKindText') : undefined });
+        h += partyHtml(partyFromForm(item));
+        h += sec('Thông tin hành vi gây thiệt hại', row([fld('Hành vi gây thiệt hại của người thi hành công vụ', tv('formHanhVi'), { full: true, area: true })]));
+        // Văn bản làm căn cứ / Bảng tài liệu đính kèm: không có dữ liệu thì không hiển thị khối (như trước)
+        var basis = typeof basisRows !== 'undefined' && Array.isArray(basisRows) ? basisRows : [];
+        var docs = typeof docRows !== 'undefined' && Array.isArray(docRows) ? docRows : [];
+        if (basis.length) h += sec('Văn bản làm căn cứ yêu cầu bồi thường', roTable(basis, 'Tên văn bản căn cứ', { view: function (i) { return 'viewBasisFile(' + i + ')'; }, dl: function (i) { return 'downloadBasisFile(' + i + ')'; } }));
+        if (docs.length) h += sec('Bảng tài liệu đính kèm', roTable(docs, 'Tên tài liệu, văn bản', { view: function (i) { return 'viewDocFile(' + i + ')'; }, dl: function (i) { return 'downloadDocFile(' + i + ')'; } }));
         return h;
     }
 
@@ -574,10 +629,12 @@
         v.style.display = 'none';
         wf.parentNode.insertBefore(v, wf);
         var s = document.createElement('style');
-        s.textContent = '#formView .dvc-std-hide{display:none !important;} #dvcDetailView .bth-table td{vertical-align:top;}';
+        s.textContent = '#formView .dvc-std-hide, #formView .tnp-hide{display:none !important;} #dvcDetailView .bth-table td{vertical-align:top;}';
         document.head.appendChild(s);
         return v;
     }
+    // Khối luôn giữ tại MH03 (không ẩn khi thay form bằng nội dung chỉ đọc)
+    var KEEP = { formMetaGrid: 1, wfInfoBlock: 1, dvcDetailView: 1, ptnDetailBlock: 1, tnStdView: 1 };
     function setStdBlocks(hide) {
         var body = document.querySelector('#formView .inline-form-body');
         if (!body) return;
@@ -588,13 +645,46 @@
     }
     function isDvcItem(item) { try { return !!item && getSourceOf(item) === DVC; } catch (e) { return false; } }
 
+    function agencyName(item) {
+        var id = item.rootUnitId || '';
+        try { if (!id && typeof getSeedRootUnit === 'function') id = getSeedRootUnit(item); } catch (e) { }
+        return (id && W.unitName ? W.unitName(id) : '') || item.agency || '';
+    }
+    // [tnp][mh03ui] MH03 hồ sơ nguồn khác Dịch vụ công: ẩn toàn bộ khối nhập liệu của form, hiển thị #tnStdView (stdHtml) ngay dưới thanh thông tin chung;
+    // khối Lý do bị trả lại / Thông tin Phiếu tiếp nhận (#ptnDetailBlock), Quá trình phân công / Lịch sử xử lý (#wfInfoBlock) giữ nguyên vị trí
+    function setStdView(on, item) {
+        var body = document.querySelector('#formView .inline-form-body');
+        if (!body) return;
+        var v = document.getElementById('tnStdView');
+        if (!v) {
+            v = document.createElement('div');
+            v.id = 'tnStdView';
+            v.setAttribute('data-tlkt-skip', '1');
+            var meta = document.getElementById('formMetaGrid');
+            body.insertBefore(v, meta ? meta.nextSibling : body.firstChild);
+        }
+        Array.prototype.forEach.call(body.children, function (c) { if (!KEEP[c.id]) c.classList.toggle('tnp-hide', !!on); });
+        v.style.display = on ? 'block' : 'none';
+        v.innerHTML = on ? stdHtml(item) : '';
+    }
+    // Thanh thông tin chung (Mã vụ việc, Thời điểm tiếp nhận, Cán bộ tiếp nhận): không có dữ liệu hiển thị "---"
+    function metaEmpty(on) {
+        ['formCodeText', 'formReceivedAtText', 'formReceivedByText'].forEach(function (id) {
+            var e = document.getElementById(id);
+            if (e && on && isEmptyV(e.textContent)) e.innerHTML = '<span class="ro-empty">' + EMPTY_V + '</span>';
+        });
+    }
+
     function afterOpen(id, isReadOnly) {
         var view = ensureView();
         var item = id ? getDetailItem(id) : null;
-        var on = !!isReadOnly && isDvcItem(item) && document.getElementById('formView').style.display !== 'none';
+        var shown = document.getElementById('formView').style.display !== 'none';
+        var on = !!isReadOnly && isDvcItem(item) && shown;
         setStdBlocks(on);
+        setStdView(!!isReadOnly && !!item && !on && shown, item);
         view.style.display = on ? 'block' : 'none';
         view.innerHTML = on ? buildHtml(item, W.getRecord(item.code)) : '';
+        metaEmpty(!!isReadOnly && !!item);
         if (on) document.getElementById('formTitle').innerHTML = '<i class="fa-solid fa-circle-info"></i> CHI TIẾT HỒ SƠ TIẾP NHẬN';
     }
     if (typeof g.openReceptionForm === 'function') {
@@ -609,6 +699,7 @@
         var origClose = g.closeReceptionForm;
         g.closeReceptionForm = function () {
             setStdBlocks(false);
+            try { setStdView(false, null); } catch (e) { }
             var v = document.getElementById('dvcDetailView');
             if (v) { v.style.display = 'none'; v.innerHTML = ''; }
             return origClose.apply(this, arguments);
@@ -617,6 +708,7 @@
 
     g.DVC_TN = {
         TP: TP, DATA: DATA, enrich: enrichDvcRecords, buildHtml: buildHtml,
-        viewFile: function (a) { if (typeof g.showToast === 'function') g.showToast('Mở xem tệp ' + (a.getAttribute('data-file') || '') + ' tại tab mới.', 'info'); }
+        viewFile: function (a) { if (typeof g.showToast === 'function') g.showToast('Mở xem tệp ' + (a.getAttribute('data-file') || '') + ' tại tab mới.', 'info'); },
+        downloadFile: function (a) { if (typeof g.showToast === 'function') g.showToast('Đã tải tệp ' + (a.getAttribute('data-file') || '') + ' (giả lập).', 'info'); }
     };
 })(window);

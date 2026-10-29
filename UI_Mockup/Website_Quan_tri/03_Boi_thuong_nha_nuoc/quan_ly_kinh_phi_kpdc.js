@@ -82,10 +82,10 @@ var KPDC_KP_SEED = [
     ['P20', 'KP-2026-020', 'BT-2026-025', 'Cấp tạm ứng', 'Hoàn thành', 60000000],
     ['P96', 'KP-2026-096', 'BT-2026-015', 'Cấp tạm ứng', 'Chờ chi trả', 0],
     ['P97', 'KP-2026-097', 'BT-2026-028', 'Cấp tạm ứng', 'Chờ chi trả', 0],
-    ['P_KPUX_1', 'KP-2026-121', 'BT-2026-061', 'Chi trả tiền bồi thường', 'Chờ chi trả', 0],
-    ['P_KPUX_2', 'KP-2026-122', 'BT-2026-062', 'Chi trả tiền bồi thường', 'Chờ chi trả', 0],
+    ['P_KPUX_1', 'KP-2026-121', 'BT-2026-075', 'Chi trả tiền bồi thường', 'Chờ chi trả', 0],
+    ['P_KPUX_2', 'KP-2026-122', 'BT-2026-076', 'Chi trả tiền bồi thường', 'Chờ chi trả', 0],
     ['P_KPUX_3', 'KP-2026-123', 'BT-2023-047', 'Chi trả tiền bồi thường', 'Chờ chi trả', 0],
-    ['P_KPUX_4', 'KP-2026-124', 'BT-2026-064', 'Chi trả tiền bồi thường', 'Hoàn thành', 92000000],
+    ['P_KPUX_4', 'KP-2026-124', 'BT-2026-077', 'Chi trả tiền bồi thường', 'Hoàn thành', 92000000],
     ['P_KPDC_S4', 'KP-2026-904', 'BT-2026-002', 'Chi trả tiền bồi thường', 'Chờ duyệt', 0],
     ['P_KPDC_S6', 'KP-2026-906', 'BT-2026-541', 'Cấp tạm ứng', 'Hoàn thành', 25000000],
     ['P_KPDC_S9', 'KP-2026-909', 'BT-2026-504', 'Cấp tạm ứng', 'Hoàn thành', 30000000]

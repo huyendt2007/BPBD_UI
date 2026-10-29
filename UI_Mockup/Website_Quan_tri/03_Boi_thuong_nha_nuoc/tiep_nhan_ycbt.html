@@ -274,6 +274,92 @@
         .tn-tab { border: 0; background: transparent; padding: 12px 16px; font-size: 13.5px; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 3px solid transparent; display: inline-flex; align-items: center; gap: 8px; }
         .tn-tab.active { color: var(--primary-light); border-bottom-color: var(--primary-light); }
         .tn-tab-count { min-width: 20px; padding: 1px 7px; border-radius: 10px; background: #e2e8f0; color: #334155; font-size: 11.5px; font-weight: 700; text-align: center; }
+
+        /* ===== [mh03ui] MH03 - Chi tiết hồ sơ tiếp nhận (chỉ đọc): nền xám nhạt, mỗi khối 1 card trắng, cặp Nhãn - Giá trị, lưới 3/4 cột ===== */
+        #formView.readonly-mode .inline-form-body { background: #F8FAFC; padding: 20px 24px 56px; }
+        #formView.readonly-mode #formMetaGrid { background: #fff; border: 1px solid #E2E8F0; border-radius: 8px; padding: 16px 20px; gap: 16px 24px; margin-bottom: 16px; box-shadow: 0 1px 2px rgba(15, 23, 42, .04); }
+        #formView.readonly-mode #formMetaGrid .meta-item label { font-size: 12.5px; font-weight: 400; color: #6B7280; margin-bottom: 4px; }
+        #formView.readonly-mode #formMetaGrid .meta-item strong { font-size: 14px; font-weight: 600; color: #111827; }
+        .ro-card { background: #fff; border: 1px solid #E2E8F0; border-radius: 8px; margin-bottom: 16px; box-shadow: 0 1px 2px rgba(15, 23, 42, .04); }
+        .ro-card-h { padding: 12px 20px; border-bottom: 1px solid #EEF2F7; font-size: 13px; font-weight: 700; color: #1e3a8a; text-transform: uppercase; letter-spacing: .3px; }
+        .ro-card-b { padding: 16px 20px; }
+        .ro-card-warn { background: #fffbeb; border-color: #fde68a; border-left: 4px solid #f59e0b; }
+        .ro-card-warn .ro-card-h { color: #b45309; border-bottom-color: #fde68a; }
+        .ro-grid { display: grid; gap: 16px 24px; }
+        .ro-grid + .ro-grid { margin-top: 16px; }
+        .ro-g4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        .ro-g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .ro-span-2 { grid-column: span 2; }
+        .ro-span-3 { grid-column: span 3; }
+        .ro-full { grid-column: 1 / -1; }
+        .ro-f { min-width: 0; }
+        .ro-l { font-size: 12.5px; color: #6B7280; line-height: 1.35; margin-bottom: 4px; }
+        .ro-v { font-size: 14px; color: #111827; font-weight: 500; line-height: 1.45; overflow-wrap: anywhere; }
+        .ro-area .ro-v { white-space: pre-line; }
+        .ro-empty { color: #9CA3AF; font-style: italic; font-weight: 400; }
+        .ro-sub { margin-top: 16px; padding-top: 16px; border-top: 1px dashed #E2E8F0; }
+        /* Bảng tài liệu chỉ đọc: STT 5% | Tên 45% | File đính kèm 35% (căn trái) | Thao tác 15% (căn giữa) */
+        .ro-tbl-wrap { border: 1px solid #E2E8F0; border-radius: 8px; overflow-x: auto; background: #fff; }
+        table.ro-table { width: 100%; min-width: 640px; border-collapse: collapse; table-layout: fixed; font-size: 13.5px; }
+        .ro-table th { background: #F8FAFC; color: #475569; font-size: 12.5px; font-weight: 600; text-align: left; padding: 10px 12px; border-bottom: 1px solid #E2E8F0; }
+        .ro-table td { padding: 10px 12px; border-bottom: 1px solid #F1F5F9; color: #111827; vertical-align: middle; }
+        .ro-table tbody tr:last-child > td { border-bottom: 0; }
+        .ro-table tbody tr:hover > td { background: #F1F5F9 !important; }
+        .ro-table .ro-c-stt { width: 5%; text-align: center; }
+        .ro-table .ro-c-name { width: 45%; text-align: left; }
+        .ro-table .ro-c-file { width: 35%; text-align: left; }
+        .ro-table .ro-c-act { width: 15%; text-align: center; }
+        .ro-table td.ro-tbl-empty { text-align: center; color: #9CA3AF; font-style: italic; padding: 16px; }
+        .ro-file { display: inline-flex; align-items: center; gap: 8px; max-width: 100%; min-width: 0; color: #2563EB; font-weight: 500; cursor: pointer; text-decoration: none; vertical-align: middle; }
+        .ro-file > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .ro-file:hover > span, .ro-file:focus > span { text-decoration: underline; }
+        .ro-file i { flex: none; font-size: 15px; }
+        .ro-ico-pdf { color: #DC2626; } .ro-ico-word { color: #2563EB; } .ro-ico-xls { color: #16A34A; } .ro-ico-img { color: #0D9488; } .ro-ico-file { color: #64748B; }
+        .ro-acts { display: inline-flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; }
+        .ro-ib { width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; border: 1px solid #bfdbfe; background: #eff6ff; color: #2563eb; cursor: pointer; padding: 0; font-size: 13px; }
+        .ro-ib:hover, .ro-ab:hover { filter: brightness(0.95); }
+        .ro-ab { height: 30px; display: inline-flex; align-items: center; gap: 6px; border-radius: 6px; border: 1px solid #bfdbfe; background: #eff6ff; color: #2563eb; cursor: pointer; padding: 0 12px; font: inherit; font-size: 12.5px; font-weight: 500; white-space: nowrap; }
+        /* Khung tệp Phiếu tiếp nhận: cùng phong cách bảng tài liệu */
+        .ro-filebox { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; border: 1px solid #E2E8F0; border-radius: 8px; padding: 10px 12px; background: #fff; }
+        .ro-filebox:hover { background: #F8FAFC; }
+        .ro-file-none { display: inline-flex; align-items: center; gap: 8px; }
+        /* Tài liệu ban hành / không ban hành kèm theo (tlktViewHtml) trong khối Thông tin Phiếu tiếp nhận */
+        .ro-tlkt { margin-top: 16px; }
+        .ro-tlkt .tlkt-view-box { border: 0; padding: 0; margin: 0 0 16px; background: transparent; }
+        .ro-tlkt .tlkt-view-box:last-child { margin-bottom: 0; }
+        .ro-tlkt .tlkt-sec-title { font-size: 12.5px; font-weight: 600; color: #475569; text-transform: none; margin-bottom: 8px; }
+        .ro-tlkt .tlkt-sec-title i { color: #64748B; }
+        .ro-tlkt .tlkt-wrap { border-color: #E2E8F0; border-radius: 8px; }
+        .ro-tlkt .tlkt-table { font-size: 13.5px; }
+        .ro-tlkt .tlkt-table th { background: #F8FAFC !important; color: #475569; font-size: 12.5px; font-weight: 600; text-align: left !important; padding: 10px 12px !important; }
+        .ro-tlkt .tlkt-table td { padding: 10px 12px !important; color: #111827; vertical-align: middle; }
+        .ro-tlkt .tlkt-table th:nth-child(1), .ro-tlkt .tlkt-table td:nth-child(1) { width: 5% !important; text-align: center !important; }
+        .ro-tlkt .tlkt-table th:nth-child(2) { width: 45% !important; }
+        .ro-tlkt .tlkt-table th:nth-child(3) { width: 35% !important; }
+        .ro-tlkt .tlkt-table th:nth-child(4), .ro-tlkt .tlkt-table td:nth-child(4) { width: 15% !important; text-align: center !important; }
+        .ro-tlkt .tlkt-table td.tlkt-fc { text-align: left !important; }
+        .ro-tlkt .tlkt-table td.tlkt-fc .tlkt-file { justify-content: flex-start !important; font-size: 13.5px; }
+        .ro-tlkt .tlkt-table td.tlkt-fc .tlkt-file.ro-file { color: #2563EB; cursor: pointer; }
+        .ro-tlkt .tlkt-table td.tlkt-fc .tlkt-file.ro-file:hover span { text-decoration: underline; }
+        .ro-tlkt .tlkt-table tbody tr:hover > td { background: #F1F5F9 !important; }
+        /* Quá trình phân công / Lịch sử xử lý: card (tiêu đề + nội dung) */
+        #formView.readonly-mode #wfInfoBlock > .info-group-title { background: #fff; border: 1px solid #E2E8F0; border-bottom-color: #EEF2F7; border-radius: 8px 8px 0 0; margin: 0 !important; padding: 12px 20px; color: #1e3a8a; letter-spacing: .3px; }
+        #formView.readonly-mode #wfRoutes, #formView.readonly-mode #wfHistory { background: #fff; border: 1px solid #E2E8F0; border-top: 0; border-radius: 0 0 8px 8px; padding: 16px 20px; margin-bottom: 16px; box-shadow: 0 1px 2px rgba(15, 23, 42, .04); }
+        #formView.readonly-mode #wfHistory { margin-bottom: 0; }
+        /* Thanh thao tác cố định (chỉ MH03): [Xóa] bên trái (viền đỏ); bên phải: các nút nghiệp vụ, [Đóng], [Sửa] */
+        #formView.readonly-mode .inline-form-footer > div { align-items: center; }
+        #formView.readonly-mode #btnFormDelete { order: -1; margin-right: auto; background-color: #fff !important; color: #DC2626 !important; border: 1px solid #FCA5A5 !important; }
+        #formView.readonly-mode #btnFormDelete:hover { background-color: #FEF2F2 !important; border-color: #F87171 !important; }
+        #formView.readonly-mode #btnFormBack { order: 1; }
+        #formView.readonly-mode #btnFormEdit { order: 2; }
+        @media (max-width: 1100px) {
+            .ro-g4, .ro-g3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .ro-span-3 { grid-column: 1 / -1; }
+        }
+        @media (max-width: 640px) {
+            .ro-g4, .ro-g3 { grid-template-columns: 1fr; }
+            .ro-span-2, .ro-span-3 { grid-column: auto; }
+        }
     </style>
 </head>
 
@@ -445,10 +531,7 @@
                     <span class="form-label">Nguồn hồ sơ</span>
                     <div id="formSourceBadge"></div>
                 </div>
-                <!-- Khối Tổng quan vụ việc: 
-                     - Khi Thêm mới: 1 dòng 3 cột (Loại hồ sơ, Hình thức tiếp nhận, Lĩnh vực phát sinh thiệt hại), không hiển thị Vụ việc liên quan.
-                     - Khi Xem chi tiết / Sửa: hiển thị 2 dòng x 2 cột (kèm Vụ việc liên quan).
-                -->
+                <!-- Khối Tổng quan vụ việc: 1 dòng 3 cột (Loại hồ sơ, Hình thức tiếp nhận, Lĩnh vực phát sinh thiệt hại) -->
                 <div id="overviewFieldsContainer" class="grid-3" style="gap: 16px; margin-bottom: 14px;">
                     <div class="form-group" style="margin-bottom: 0;">
                         <span class="form-label">Loại hồ sơ<span class="required">*</span></span>
@@ -475,13 +558,6 @@
                             <option value="thi hành án dân sự">TRONG HOẠT ĐỘNG THI HÀNH ÁN DÂN SỰ</option>
                         </select>
                         <div class="error-message">Đây là trường bắt buộc</div>
-                    </div>
-                    <!-- Vụ việc liên quan: không hiển thị khi thêm mới; dùng khi mở lại hồ sơ đã tồn tại -->
-                    <div class="form-group" id="formVuViecLienQuanGroup" style="margin-bottom: 0; display: none;">
-                        <span class="form-label">Vụ việc liên quan</span>
-                        <input id="formVuViecLienQuan" class="form-control" list="vuViecLienQuanOptions" placeholder="Gõ Mã vụ việc hoặc Họ và tên người yêu cầu..." autocomplete="off">
-                        <datalist id="vuViecLienQuanOptions"></datalist>
-                        <div class="error-message" id="formVuViecLienQuanError">Vụ việc không tồn tại trên hệ thống</div>
                     </div>
                 </div>
                 <!-- Loại yêu cầu giải quyết bồi thường: chỉ hiển thị khi Loại hồ sơ = Giải quyết yêu cầu bồi thường; dòng riêng ngay dưới khối tổng quan.
@@ -813,9 +889,6 @@
                     <button class="btn btn-secondary" id="btnFormBack" style="display:none;" onclick="closeReceptionForm()">
                         <i class="fa-solid fa-xmark"></i> Đóng
                     </button>
-                    <button class="btn btn-secondary" id="btnFormPrintReceipt" style="display:none;" onclick="if (window.PTN && editingId) PTN.open(editingId)">
-                        <i class="fa-solid fa-file-signature"></i> Trình ký Phiếu tiếp nhận
-                    </button>
                     <button class="btn btn-primary" id="btnFormEdit" style="display:none;" onclick="switchToEditMode()">
                         <i class="fa-solid fa-pen-to-square"></i> Sửa
                     </button>
@@ -829,7 +902,7 @@
                         <i class="fa-solid fa-rotate-left"></i> Thu hồi
                     </button>
                     <button class="btn btn-primary" id="btnFormSave" onclick="saveReceptionInfo()">
-                        <i class="fa-solid fa-floppy-disk"></i> Lưu thông tin
+                        <i class="fa-solid fa-file-signature"></i> Lưu và trình ký
                     </button>
                 </div>
             </div>
@@ -1713,26 +1786,6 @@
             return u ? u.id : CURRENT_USER.id;
         }
 
-        // Vụ việc liên quan: chọn từ danh sách vụ việc trên hệ thống, hiển thị "Mã vụ việc - Họ và tên người yêu cầu"
-        function vuViecLabel(code) {
-            if (!code) return "";
-            const v = (BTNN_WF.listVuViec ? BTNN_WF.listVuViec() : []).find(x => x.code === code);
-            return v && v.nycName ? `${code} - ${v.nycName}` : code;
-        }
-        function fillVuViecLienQuanOptions(excludeCode) {
-            const list = (BTNN_WF.listVuViec ? BTNN_WF.listVuViec() : []).filter(v => v.code !== excludeCode);
-            document.getElementById("vuViecLienQuanOptions").innerHTML = list
-                .map(v => `<option value="${escapeHtml(v.nycName ? `${v.code} - ${v.nycName}` : v.code)}"></option>`).join("");
-        }
-        // Trả về Mã vụ việc đã chọn; null khi giá trị nhập không thuộc danh sách
-        function readVuViecLienQuan(excludeCode) {
-            const raw = getValue("formVuViecLienQuan").trim();
-            if (!raw) return "";
-            const m = raw.match(/^VVBT-\d{4}-\d+/i);
-            const code = m ? m[0].toUpperCase() : "";
-            const ok = code && code !== excludeCode && (BTNN_WF.listVuViec ? BTNN_WF.listVuViec() : []).some(v => v.code === code);
-            return ok ? code : null;
-        }
 
         // Dữ liệu chuyển sang hồ sơ luồng (dùng chung với phân hệ Xác định CQGQBT / Giải quyết YCBT)
         function buildWorkflowData(claim) {
@@ -2004,7 +2057,7 @@
                     const status = item.status || "Chờ phân công";
                     const offStyle = "opacity:0.35; pointer-events:none; cursor:not-allowed;";
                     // Cột Thao tác theo tab; thao tác của tab không thỏa điều kiện hiển thị mờ
-                    // Tab Chờ xử lý: Phân công | Trình ký Phiếu tiếp nhận | Sửa | Xóa. Tab Đã xử lý: Trình ký Phiếu tiếp nhận | Thu hồi
+                    // Tab Chờ xử lý: Phân công | Sửa | Xóa. Tab Đã xử lý: Thu hồi. [z2] Trình ký Phiếu tiếp nhận chỉ qua Sửa -> "Lưu và trình ký" (MH02)
                     // Phân công: Lãnh đạo thuộc Nhóm lãnh đạo của đơn vị đang phân công; Thu hồi: bên nhận chưa xử lý
                     const canAssign = receptionTab === "pending" && rec && BTNN_WF.canAssign(rec, CURRENT_USER.id);
                     const canRecall = receptionTab === "done" && BTNN_LD.canRecall(rec, CURRENT_USER.id);
@@ -2021,17 +2074,15 @@
                     const deleteTitle = editable ? "Xóa" : "Xóa - Chỉ khả dụng khi hồ sơ Nguồn Tiếp nhận mới ở trạng thái Bị trả lại, do người dùng hiện tại tiếp nhận";
                     const deleteStyle = editable ? "" : offStyle;
 
-                    // Trình ký Phiếu tiếp nhận (tiep_nhan_ptn.js): Nguồn Tiếp nhận mới + Hình thức Trực tiếp / Qua dịch vụ bưu chính
-                    const printBtn = window.PTN ? PTN.gridButtonHtml(item, offStyle) : "";
                     const editBtn = `<button class="icon-btn edit${editDisabled ? ' disabled-action' : ''}" title="${editTitle}" style="${editStyle}" onclick="event.stopPropagation(); openReceptionForm('${escapeAttr(item.id)}')"><i class="fa-solid fa-pen-to-square"></i></button>`;
                     const deleteBtn = `<button class="icon-btn delete${deleteDisabled ? ' disabled-action' : ''}" title="${deleteTitle}" style="${deleteStyle}" onclick="event.stopPropagation(); confirmDeleteReception('${escapeAttr(item.id)}')"><i class="fa-solid fa-trash-can"></i></button>`;
                     // [ldtn] Lãnh đạo (thuộc Nhóm lãnh đạo): chỉ Ký duyệt, Từ chối, Phân công, Thu hồi; không hiển thị Trình ký Phiếu tiếp nhận, Sửa, Xóa.
                     // [tnld2] Lãnh đạo, cả 02 tab: Ký duyệt | Từ chối | Phân công luôn hiển thị, cố định vị trí (không đủ điều kiện hiển thị mờ); tab Đã xử lý thêm Thu hồi.
-                    // Cán bộ: Trình ký Phiếu tiếp nhận, Sửa, Xóa (không thỏa điều kiện hiển thị mờ)
+                    // Cán bộ: Sửa, Xóa (không thỏa điều kiện hiển thị mờ)
                     const leaderUser = BTNN_LD.isLeaderUser(CURRENT_USER.id);
                     const actionsHtml = leaderUser
                         ? (window.PTN ? PTN.gridLeaderButtonsHtml(item, offStyle) : "") + assignBtn + (receptionTab === "done" ? recallBtn : "")
-                        : printBtn + (receptionTab === "done" ? "" : editBtn + deleteBtn);
+                        : (receptionTab === "done" ? "" : editBtn + deleteBtn);
 
                     return `
                         <tr onclick="handleRowClick('${escapeAttr(item.id)}')">
@@ -2193,7 +2244,6 @@
         function syncFormActionButtons(claim, isReadOnly) {
             const btnFormCancel = document.getElementById("btnFormCancel");
             const btnFormBack = document.getElementById("btnFormBack");
-            const btnFormPrint = document.getElementById("btnFormPrintReceipt");
             const btnFormEdit = document.getElementById("btnFormEdit");
             const btnFormDelete = document.getElementById("btnFormDelete");
             const btnFormSave = document.getElementById("btnFormSave");
@@ -2201,24 +2251,23 @@
             const btnFormRecall = document.getElementById("btnFormRecall");
 
             if (isReadOnly) {
-                // MH03 - Chi tiết hồ sơ tiếp nhận: Đóng, Trình ký Phiếu tiếp nhận, Sửa, Xóa, Phân công, Thu hồi
+                // MH03 - Chi tiết hồ sơ tiếp nhận: Đóng, Sửa, Xóa, Phân công, Thu hồi (Trình ký Phiếu tiếp nhận chỉ qua "Lưu và trình ký" tại MH02 - [z1])
                 // Nút không thỏa điều kiện hiển thị: không hiển thị trên thanh thao tác
                 // [ldtn] Lãnh đạo: chỉ Phân công, Ký duyệt, Từ chối (tiep_nhan_ptn.js), Thu hồi; không hiển thị Trình ký Phiếu tiếp nhận, Sửa, Xóa
                 const leaderUser = BTNN_LD.isLeaderUser(CURRENT_USER.id);
-                const canPrint = !leaderUser && !!claim && canSubmitReceipt(claim);
                 const canEdit = !leaderUser && !!claim && canEditReception(claim);
                 const rec = claim ? BTNN_WF.getRecord(claim.code) : null;
                 // [ldtn] Cán bộ (không thuộc Nhóm lãnh đạo): không hiển thị Phân công, Thu hồi
                 const canAssign = leaderUser && !!rec && BTNN_WF.canAssign(rec, CURRENT_USER.id);
                 const canRecall = leaderUser && !!rec && BTNN_LD.canRecall(rec, CURRENT_USER.id);
-                // [tnld2] Lãnh đạo: Phân công luôn hiển thị, cố định sau Ký duyệt / Từ chối; không đủ điều kiện hiển thị mờ (disabled + tooltip lý do)
+                // [mh03btn] MH03: Phân công chỉ hiển thị khi được phép (không hiển thị mờ / disabled)
                 if (btnFormAssign) {
-                    btnFormAssign.style.display = leaderUser ? "inline-flex" : "none";
-                    btnFormAssign.disabled = !canAssign;
-                    btnFormAssign.classList.toggle("disabled-action", !canAssign);
-                    btnFormAssign.style.opacity = canAssign ? "" : "0.5";
-                    btnFormAssign.style.cursor = canAssign ? "" : "not-allowed";
-                    btnFormAssign.title = canAssign ? "Phân công" : "Phân công - Chỉ khả dụng khi hồ sơ Chờ phân công / Đang phân công và người dùng thuộc Nhóm lãnh đạo của đơn vị đang phân công";
+                    btnFormAssign.style.display = canAssign ? "inline-flex" : "none";
+                    btnFormAssign.disabled = false;
+                    btnFormAssign.classList.remove("disabled-action");
+                    btnFormAssign.style.opacity = "";
+                    btnFormAssign.style.cursor = "";
+                    btnFormAssign.title = "Phân công";
                 }
                 if (btnFormRecall) btnFormRecall.style.display = canRecall ? "inline-flex" : "none";
 
@@ -2228,12 +2277,6 @@
                     btnFormBack.style.display = "inline-flex";
                     btnFormBack.innerHTML = `<i class="fa-solid fa-xmark"></i> Đóng`;
                     btnFormBack.title = "Đóng màn hình xem chi tiết";
-                }
-
-                // 2. Nút Trình ký Phiếu tiếp nhận (tiep_nhan_ptn.js)
-                if (btnFormPrint) {
-                    btnFormPrint.style.display = canPrint ? "inline-flex" : "none";
-                    btnFormPrint.title = "Trình ký Phiếu tiếp nhận";
                 }
 
                 // 3. Nút Sửa
@@ -2248,7 +2291,7 @@
                     btnFormDelete.title = "Xóa hồ sơ tiếp nhận";
                 }
 
-                // Ẩn nút Lưu thông tin khi ở chế độ xem chi tiết
+                // Ẩn nút Lưu và trình ký khi ở chế độ xem chi tiết
                 if (btnFormSave) btnFormSave.style.display = "none";
             } else {
                 // MH02 - Thêm mới hoặc Sửa
@@ -2259,7 +2302,7 @@
                 }
                 if (btnFormBack) btnFormBack.style.display = "none";
 
-                // Nút Lưu thông tin
+                // Nút Lưu và trình ký
                 if (btnFormSave) btnFormSave.style.display = "inline-flex";
 
                 // Ẩn Sửa, Xóa, Phân công, Thu hồi khi đang ở form sửa
@@ -2268,8 +2311,6 @@
                 if (btnFormAssign) btnFormAssign.style.display = "none";
                 if (btnFormRecall) btnFormRecall.style.display = "none";
 
-                // Trình ký Phiếu tiếp nhận: chỉ tại màn Xem chi tiết (MH03), không hiển thị tại form Thêm mới / Sửa
-                if (btnFormPrint) btnFormPrint.style.display = "none";
             }
         }
 
@@ -2327,27 +2368,11 @@
                 setValue("formFieldGroup", claim ? (claim.fieldGroup || "") : "");
             }
             setRequestKind(claim ? claim.requestKind : REQUEST_KIND_DEFAULT, isReadOnly && !!claim);
-            // Vụ việc liên quan: Bỏ đi khi thêm mới; Xem chi tiết / Sửa hiển thị theo dữ liệu bản ghi trên lưới 2 cột
+            // Khối tổng quan: 3 trường xếp thành lưới 3 cột (Tiếp nhận hồ sơ không có trường Vụ việc liên quan)
             const ovContainer = document.getElementById("overviewFieldsContainer");
-            const vvlqGroup = document.getElementById("formVuViecLienQuanGroup");
-            if (!claim) {
-                // Thêm mới: Bỏ đi thông tin Vụ việc liên quan, 3 trường tổng quan xếp thành lưới 3 cột
-                if (vvlqGroup) vvlqGroup.style.display = "none";
-                if (ovContainer) {
-                    ovContainer.classList.remove("grid-2");
-                    ovContainer.classList.add("grid-3");
-                }
-                setValue("formVuViecLienQuan", "");
-            } else {
-                // Mở lại bản ghi đã tồn tại (Sửa / Chi tiết): hiển thị Vụ việc liên quan trên lưới 2 cột
-                if (vvlqGroup) vvlqGroup.style.display = "block";
-                if (ovContainer) {
-                    ovContainer.classList.remove("grid-3");
-                    ovContainer.classList.add("grid-2");
-                }
-                fillVuViecLienQuanOptions(claim ? claim.maVuViec : "");
-                const vvlq = claim ? vuViecLabel(claim.vuViecLienQuan) : "";
-                setValue("formVuViecLienQuan", vvlq || (isReadOnly && claim ? "-" : ""));
+            if (ovContainer) {
+                ovContainer.classList.remove("grid-2");
+                ovContainer.classList.add("grid-3");
             }
             fillNbth(claim ? claim.nbth : null);
             if (isReadOnly && claim && claim.nbth && claim.nbth.docType) setSelectDisplay("nbthDocType", BTNN_WF.normalizePersonalDocType(claim.nbth.docType));
@@ -2389,7 +2414,7 @@
             renderBasisRows();
 
             // Toggle input disable state
-            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formPhone", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress", "formNycDocType", "formNycDocNo", "formNycOrgCode", "formEmail", "formCountry", "nbthOrgName", "nbthOrgCode", "formVuViecLienQuan", "formHanhVi"];
+            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formPhone", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress", "formNycDocType", "formNycDocNo", "formNycOrgCode", "formEmail", "formCountry", "nbthOrgName", "nbthOrgCode", "formHanhVi"];
             controlIds.forEach(ctrlId => {
                 const el = document.getElementById(ctrlId);
                 if (el) el.disabled = isReadOnly;
@@ -2414,7 +2439,7 @@
             basisRows = [];
             const formView = document.getElementById("formView");
             if (formView) formView.classList.remove("readonly-mode");
-            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formPhone", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress", "formNycDocType", "formNycDocNo", "formNycOrgCode", "formEmail", "formCountry", "nbthOrgName", "nbthOrgCode", "formVuViecLienQuan", "formHanhVi"];
+            const controlIds = ["formRequestType", "formReceiveMethod", "formFieldGroup", "formRequester", "formPhone", "formRequesterRole", "formCity", "formWard", "formAddress", "nbthName", "nbthDob", "nbthDocType", "nbthDocNo", "nbthCity", "nbthWard", "nbthAddress", "formNycDocType", "formNycDocNo", "formNycOrgCode", "formEmail", "formCountry", "nbthOrgName", "nbthOrgCode", "formHanhVi"];
             controlIds.forEach(ctrlId => {
                 const el = document.getElementById(ctrlId);
                 if (el) el.disabled = false;
@@ -2455,18 +2480,6 @@
                 if (!firstInvalid) firstInvalid = el;
             }
 
-            // Vụ việc liên quan: không hiển thị khi thêm mới; chỉ kiểm tra khi sửa hồ sơ đã tồn tại
-            const editingClaim = editingId ? claimsList.find(item => item.id === editingId) : null;
-            let vuViecLienQuanVal = "";
-            if (editingClaim) {
-                vuViecLienQuanVal = readVuViecLienQuan(editingClaim.maVuViec);
-                if (vuViecLienQuanVal === null) {
-                    const el = document.getElementById("formVuViecLienQuan");
-                    el.classList.add("is-invalid");
-                    document.getElementById("formVuViecLienQuanError").style.display = "block";
-                    if (!firstInvalid) firstInvalid = el;
-                }
-            }
 
             const hasInvalidDoc = docRows.some((doc, idx) => {
                 const nameEl = document.getElementById(`docName_${idx}`);
@@ -2480,8 +2493,6 @@
             });
             // [nbth] Dòng mặc định Văn bản yêu cầu bồi thường bắt buộc có file; định dạng Số điện thoại/Email khối Người bị thiệt hại (tiep_nhan_nbth.js)
             if (typeof nbthValidateReception === "function") { const nbthBad = nbthValidateReception(); if (nbthBad && !firstInvalid) firstInvalid = nbthBad; }
-            // [tnd] Thông tin Phiếu tiếp nhận (Mẫu 02/BTNN): Số, ký hiệu văn bản / Ngày văn bản bắt buộc (tiep_nhan_ptn.js)
-            if (window.PTN && PTN.formActive()) { const ptnBad = PTN.validateForm(); if (ptnBad && !firstInvalid) firstInvalid = ptnBad; }
 
             if (firstInvalid || hasInvalidDoc) {
                 showToast("Vui lòng nhập đầy đủ thông tin bắt buộc!", "error");
@@ -2497,21 +2508,24 @@
             const vanBanCanCuVal = getCleanBasisRows();
 
             if (editingId) {
-                const claim = claimsList.find(item => item.id === editingId);
-                if (!claim) return;
+                const orig = claimsList.find(item => item.id === editingId);
+                if (!orig) return;
                 // [tnd] Kiểm tra lại quyền Sửa (chỉ hồ sơ Bị trả lại do người dùng tiếp nhận)
-                if (!canEditReception(claim)) {
+                if (!canEditReception(orig)) {
                     showToast("Hồ sơ không còn ở trạng thái Bị trả lại, không thể cập nhật!", "error");
                     closeReceptionForm();
                     return;
                 }
                 // Kiểm tra lại phía máy chủ: lãnh đạo có thể đã thao tác trong lúc đang cập nhật
-                const wfCurrent = BTNN_WF.getRecord(claim.code);
+                const wfCurrent = BTNN_WF.getRecord(orig.code);
                 if (wfCurrent && !BTNN_WF.canEditAtReception(wfCurrent)) {
                     showToast("Hồ sơ đã được lãnh đạo phân công, không thể cập nhật!", "error");
                     closeReceptionForm();
                     return;
                 }
+                // [ptnmh02] Hồ sơ Bị trả lại (luồng duyệt tiếp nhận): dữ liệu form gán vào bản sao, chỉ ghi nhận khi Trình Lãnh đạo / Ban hành văn bản thành công
+                const resubmit = !wfCurrent && !!window.PTN && PTN.holds(orig);
+                const claim = resubmit ? JSON.parse(JSON.stringify(orig)) : orig;
                 claim.requestType = getValue("formRequestType");
                 // Loại yêu cầu giải quyết bồi thường: chỉ lưu khi Loại hồ sơ = Giải quyết yêu cầu bồi thường
                 if (claim.requestType === REQUEST_TYPE_YCBT) claim.requestKind = getRequestKind(); else delete claim.requestKind;
@@ -2526,7 +2540,6 @@
                 claim.nycAddressDetail = getValue("formAddress");
                 claim.address = getValue("formAddress");
                 claim.vanBanCanCu = vanBanCanCuVal;
-                claim.vuViecLienQuan = vuViecLienQuanVal;
                 claim.hanhVi = getValue("formHanhVi");
                 delete claim.vanBanCanCuTen;
                 delete claim.vanBanCanCuFile;
@@ -2539,11 +2552,10 @@
                     desc: "Đã cập nhật thông tin tổng quan và tài liệu đính kèm của vụ việc.",
                     status: "completed"
                 });
-                // [tnd] Hồ sơ Bị trả lại: nút "Trình ký" = ghi nhận thông tin cập nhật, mở popup Trình ký Phiếu tiếp nhận (điền sẵn lần trình trước);
-                // Trình Lãnh đạo -> Chờ duyệt tiếp nhận từ cấp 1 (tiep_nhan_ptn.js). Đóng popup không trình: hồ sơ giữ Bị trả lại.
-                if (!wfCurrent && window.PTN && PTN.holds(claim)) {
-                    saveClaims();
-                    PTN.open(claim.id);
+                // [tnd] Hồ sơ Bị trả lại: "Lưu và trình ký" mở popup Trình ký Phiếu tiếp nhận (điền sẵn lần trình trước) (tiep_nhan_ptn.js);
+                // Trình Lãnh đạo (Chờ duyệt tiếp nhận) / Ban hành văn bản (Chờ phân công) thành công mới ghi nhận dữ liệu form. Hủy bỏ: không ghi nhận, hồ sơ giữ Bị trả lại.
+                if (resubmit) {
+                    PTN.openResubmit(claim, () => { Object.keys(orig).forEach(k => { if (!(k in claim)) delete orig[k]; }); Object.assign(orig, claim); saveClaims(); });
                     return;
                 }
                 if (wfCurrent) {
@@ -2584,7 +2596,6 @@
                 nycAddressDetail: getValue("formAddress"),
                 address: getValue("formAddress"),
                 vanBanCanCu: vanBanCanCuVal,
-                vuViecLienQuan: vuViecLienQuanVal,
                 hanhVi: getValue("formHanhVi"),
                 status: "Chờ phân công",
                 agency: BTNN_WF.unitName(CURRENT_ROOT_UNIT),
@@ -2600,11 +2611,10 @@
                     status: "completed"
                 }]
             });
-            // [tnd] Nguồn Tiếp nhận mới + Hình thức Trực tiếp / Qua dịch vụ bưu chính: sinh Phiếu tiếp nhận (Dự thảo), trình Lãnh đạo các cấp theo luồng đã cấu hình
-            // -> Chờ duyệt tiếp nhận; hồ sơ luồng phân công tạo khi Lãnh đạo cấp cuối ký duyệt Phiếu tiếp nhận
-            // [ptnxd] Loại hồ sơ Xác định cơ quan giải quyết bồi thường: không sinh Phiếu tiếp nhận theo Mẫu 02/BTNN; mở Popup Trình ký Phiếu tiếp nhận
-            // như Xác định CQGQBT (tiep_nhan_ptn.js); hồ sơ chỉ lưu khi Trình Lãnh đạo (Chờ duyệt tiếp nhận) / Ban hành văn bản (Chờ phân công) thành công
-            if (window.PTN && PTN.eligible(newClaim) && PTN.noTemplate && PTN.noTemplate(newClaim)) {
+            // [ptnmh02] Nguồn Tiếp nhận mới + Hình thức Trực tiếp / Qua dịch vụ bưu chính (cả hai Loại hồ sơ): "Lưu và trình ký" mở Popup Trình ký Phiếu tiếp nhận
+            // (Giải quyết YCBT: sinh văn bản theo Mẫu 02/BTNN / Tải lên từ máy; Xác định CQGQBT: như Không thụ lý - Xác định CQGQBT) (tiep_nhan_ptn.js);
+            // hồ sơ chỉ lưu khi Trình Lãnh đạo (Chờ duyệt tiếp nhận) / Ban hành văn bản (Chờ phân công) thành công; Hủy bỏ: không lưu, giữ dữ liệu form
+            if (window.PTN && PTN.eligible(newClaim)) {
                 PTN.openNew(newClaim, buildWorkflowData(newClaim), recStatus => {
                     newClaim.status = recStatus;
                     newClaim.timeline[0].desc = `Đã tiếp nhận thông tin ban đầu. Trạng thái: ${recStatus}.`;
@@ -2612,16 +2622,6 @@
                     saveClaims();
                     closeReceptionForm();
                 });
-                return;
-            }
-            if (window.PTN && PTN.eligible(newClaim)) {
-                const sub = PTN.autoSubmit(newClaim, buildWorkflowData(newClaim), PTN.formMeta());
-                if (!sub.ok) { showToast(sub.message, "error"); return; }
-                newClaim.timeline[0].desc = `Đã tiếp nhận thông tin ban đầu. Trạng thái: ${PTN.REC_ST.REVIEW}.`;
-                claimsList.unshift(newClaim);
-                saveClaims();
-                showToast(`Đã lưu thông tin. Hồ sơ ${newCode} trình Lãnh đạo ký duyệt Phiếu tiếp nhận [${PTN.REC_ST.REVIEW}]!`, "success");
-                closeReceptionForm();
                 return;
             }
             claimsList.unshift(newClaim);
@@ -2740,12 +2740,6 @@
             return !!window.PTN && PTN.holds(item) && PTN.recStatusOf(item.code) === PTN.REC_ST.REJECT
                 && getSourceOf(item) === SOURCES.TIEP_NHAN
                 && (item.receivedBy || CURRENT_OFFICER) === CURRENT_OFFICER;
-        }
-
-        // Trình ký Phiếu tiếp nhận (tiep_nhan_ptn.js): Nguồn Tiếp nhận mới, Hình thức tiếp nhận Trực tiếp / Qua dịch vụ bưu chính,
-        // Cán bộ tiếp nhận hồ sơ, Phiếu tiếp nhận chưa trình hoặc Bị trả lại
-        function canSubmitReceipt(item) {
-            return !!window.PTN && PTN.canSubmit(item);
         }
 
         function openClaimDetail(code) {
@@ -3083,10 +3077,10 @@
     <!-- [nbth] Văn bản yêu cầu bồi thường mặc định; Người bị thiệt hại Cá nhân/Tổ chức; địa bàn tổ chức bị thiệt hại đã chấm dứt tồn tại -->
     <script src="tiep_nhan_nbth.js?v=20261027nbthe3"></script>
     <!-- Trình ký Phiếu tiếp nhận (Mẫu 02/BTNN): thay thao tác In Phiếu tiếp nhận -->
-    <script src="tiep_nhan_ptn.js?v=20261029ptnxs1"></script>
+    <script src="tiep_nhan_ptn.js?v=20261029mh03d"></script>
     <!-- [dvc] Hồ sơ nguồn Dịch vụ công: Xem chi tiết đầy đủ theo bố cục Nhập liệu hồ sơ vụ việc; dữ liệu mẫu đầy đủ (bảng thiệt hại DM_27 dùng btnn_thiet_hai.js) -->
     <script src="btnn_thiet_hai.js?v=20261028dm27"></script>
-    <script src="tiep_nhan_dvc.js?v=20261029dvce2"></script>
+    <script src="tiep_nhan_dvc.js?v=20261029mh03a"></script>
     <script src="../../Common/grid_align.js?v=20261029ga7"></script>
 </body>
 

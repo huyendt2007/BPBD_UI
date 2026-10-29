@@ -13,7 +13,7 @@
 
 \- Màn hình không có thao tác thêm mới, cập nhật, trình duyệt, ký duyệt hoặc xử lý nghiệp vụ.
 
-\- Xem chi tiết vụ việc của cơ quan khác: chỉ hiển thị văn bản đã ký và `Tài liệu ban hành kèm theo`; không hiển thị `Tài liệu không ban hành kèm theo` theo [Quy tắc Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo - Xác định cơ quan giải quyết bồi thường - Công tác bồi thường nhà nước (Website Quản trị)](SRS_BTNN_GiaiQuyetBT__Xac%20định%20cơ%20quan%20GQBT.md#xd-tai-lieu-trinh-ky).
+\- Xem chi tiết vụ việc của cơ quan khác: chỉ hiển thị văn bản đã ký và `Tài liệu ban hành kèm theo`; không hiển thị `Tài liệu không ban hành kèm theo` theo [Quy tắc Tài liệu ban hành kèm theo / Tài liệu không ban hành kèm theo - Danh mục và Phụ lục - Tài liệu tổng hợp](../../Tai%20lieu%20tong%20hop/04_Danh_muc_va_Phu_luc.md#quy-tac-tai-lieu-ban-hanh-kem-theo).
 
 <a id="tcvv-pham-vi-trang-thai"></a>
 \- **Phạm vi danh sách**: toàn bộ vụ việc của mọi cơ quan giải quyết bồi thường trên toàn hệ thống, từ trạng thái `Chờ tiếp nhận` trở đi, gồm các Trạng thái vụ việc:

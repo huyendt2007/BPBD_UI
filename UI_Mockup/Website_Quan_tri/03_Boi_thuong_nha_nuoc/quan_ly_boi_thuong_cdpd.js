@@ -3,7 +3,7 @@
  * 1. Form Tạo yêu cầu: trường "Hình thức tạo hồ sơ" (Tiếp nhận yêu cầu bồi thường | Cán bộ chủ động phục hồi danh dự).
  *    Chọn "Cán bộ chủ động phục hồi danh dự": Loại yêu cầu khóa "Chỉ yêu cầu phục hồi danh dự"; Hình thức tiếp nhận hệ thống gán
  *    "Cán bộ chủ động phục hồi danh dự khi có đủ thông tin" (DM_25 - CAN_BO_PHUC_HOI_DANH_DU); Nguồn hồ sơ giữ "Tiếp nhận mới";
- *    ẩn Tìm nhanh XĐCQ, Ngày văn bản yêu cầu bồi thường, Yêu cầu khôi phục quyền, lợi ích khác; Tư cách khóa "Người bị thiệt hại";
+ *    ẩn Ngày văn bản yêu cầu bồi thường, Yêu cầu khôi phục quyền, lợi ích khác; Tư cách khóa "Người bị thiệt hại";
  *    Văn bản làm căn cứ bắt buộc tối thiểu 01 dòng có tệp; không cho chọn vụ việc đang có hồ sơ chưa kết thúc.
  *    Không có Lưu nháp: nút "Trình Lãnh đạo" -> popup trình.
  * 2. Popup Trình ký Thông báo tổ chức thực hiện phục hồi danh dự (hồ sơ chủ động): Ký số (Stepper 02 bước, CHỈ Tải lên từ máy,
@@ -149,6 +149,8 @@ function cdpdLockRole() {
 // Chế độ form: on = Cán bộ chủ động phục hồi danh dự; isNew = Thêm mới (khôi phục giá trị mặc định khi bỏ chế độ)
 function cdpdApplyMode(on, isNew) {
     cdpdOn = !!on;
+    // Tìm kiếm vụ việc đã có Mã vụ việc: danh sách trạng thái theo chế độ; bỏ chọn vụ việc không còn hợp lệ
+    if (typeof claimVvRevalidate === 'function') claimVvRevalidate();
     var show = cdpdShow;
     show(cdpdEl('cdpdModeNote'), on);
     // Loại yêu cầu: khóa Chỉ yêu cầu phục hồi danh dự
@@ -159,8 +161,6 @@ function cdpdApplyMode(on, isNew) {
     });
     if (on) handleRequestTypeChange('honor');
     else if (isNew) { document.getElementsByName('claimRequestType').forEach(function (r) { r.checked = r.value === 'both'; }); handleRequestTypeChange('both'); }
-    // Tìm nhanh từ vụ việc Xác định CQGQBT
-    if (on) show(cdpdEl('quickSearchContainer'), false); else if (typeof gqnlApplyQuickSearchVisibility === 'function') gqnlApplyQuickSearchVisibility();
     // Hình thức tiếp nhận: hệ thống gán, chỉ đọc
     var sel = cdpdEl('claimHinhThucTiepNhan'), txt = cdpdEl('cdpdHttnText');
     show(sel, !on); show(txt, on);

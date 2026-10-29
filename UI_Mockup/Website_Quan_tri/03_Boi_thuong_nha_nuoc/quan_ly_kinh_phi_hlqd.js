@@ -111,10 +111,10 @@
     // PHẢI ĐỒNG BỘ với seed GQ YCBT: quan_ly_boi_thuong_hlqd.js (hlqdClaims) và Quyết định mẫu: quyet_dinh_gqbt_hlqd.js (qdhlSeedDefs).
     // claimsList có hồ sơ thì luôn ưu tiên dữ liệu đó; không ghi bản sao vào claimsList.
     var CLAIM_COPY = {
-        'BT-2026-191': { status: 'Chờ chi trả', vv: 'VVBT-2026-191', nyc: 'Trần Thị Thu Hương', decNo: '41/QĐ-STP', decDate: '05/10/2026', amount: 180000000, unitId: 'STP-HN' },
-        'BT-2026-192': { status: 'Chờ chi trả', vv: 'VVBT-2026-192', nyc: 'Nguyễn Văn Phúc', decNo: '33/QĐ-BTP', decDate: '01/10/2026', amount: 300000000, unitId: 'BTP-01' },
-        'BT-2026-193': { status: 'Hoàn thành', vv: 'VVBT-2026-193', nyc: 'Lê Minh Đức', decNo: '38/QĐ-STP', decDate: '15/09/2026', amount: 120000000, unitId: 'STP-HN' },
-        'BT-2026-194': { status: 'Chờ chi trả', vv: 'VVBT-2026-194', nyc: 'Phạm Thị Ngọc Ánh', decNo: '40/QĐ-STP', decDate: '02/10/2026', amount: 95000000, unitId: 'STP-HN' }
+        'BT-2026-191': { status: 'Chờ chi trả', vv: 'VVBT-2026-391', nyc: 'Trần Thị Thu Hương', decNo: '41/QĐ-STP', decDate: '05/10/2026', amount: 180000000, unitId: 'STP-HN' },
+        'BT-2026-192': { status: 'Chờ chi trả', vv: 'VVBT-2026-392', nyc: 'Nguyễn Văn Phúc', decNo: '33/QĐ-BTP', decDate: '01/10/2026', amount: 300000000, unitId: 'BTP-01' },
+        'BT-2026-193': { status: 'Hoàn thành', vv: 'VVBT-2026-393', nyc: 'Lê Minh Đức', decNo: '38/QĐ-STP', decDate: '15/09/2026', amount: 120000000, unitId: 'STP-HN' },
+        'BT-2026-194': { status: 'Chờ chi trả', vv: 'VVBT-2026-394', nyc: 'Phạm Thị Ngọc Ánh', decNo: '40/QĐ-STP', decDate: '02/10/2026', amount: 95000000, unitId: 'STP-HN' }
     };
     function claimStored(code) {
         var l = rj('claimsList', []);
