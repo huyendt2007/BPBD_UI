@@ -1,5 +1,5 @@
 # TÀI LIỆU HƯỚNG DẪN TÍCH HỢP API
-## Kết nối Cổng Dịch vụ công Quốc gia với Hệ thống quản lý bồi thường nhà nước (BTNN)
+## Kết nối Dịch vụ công với Hệ thống quản lý bồi thường nhà nước (BTNN)
 
 | Mục | Nội dung |
 | :--- | :--- |
