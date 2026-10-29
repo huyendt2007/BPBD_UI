@@ -1,13 +1,21 @@
 # TÀI LIỆU HƯỚNG DẪN TÍCH HỢP API
-## Kết nối Cổng Dịch vụ công Quốc gia với Hệ thống quản lý bồi thường nhà nước (BTNN)
+## Kết nối Dịch vụ công với Hệ thống quản lý bồi thường nhà nước (BTNN)
 
 | Mục | Nội dung |
 | :--- | :--- |
-| Phiên bản | 1.0 |
-| Ngày | 27/10/2026 |
+| Phiên bản | 1.2 |
+| Ngày | 29/10/2026 |
 | Môi trường | Thử nghiệm (DEV) |
 | Đối tác | Dịch vụ công (mã đối tác `DVC`) |
 | Tài liệu nghiệp vụ liên quan | `EForm_DVC_YeuCauBoiThuong.md`, `Ket_noi_chia_se_Dich_vu_cong_BTNN.md` (cùng thư mục) |
+
+**Lịch sử thay đổi**
+
+| Phiên bản | Ngày | Nội dung |
+| :--- | :--- | :--- |
+| 1.0 | 27/10/2026 | Bản đầu |
+| 1.1 | 29/10/2026 | Theo E-Form 83 trường: khối `dossier_components`, `advance`, `payee`, `honor_restoration`, `other_rights`, `damages`; bổ sung độ dài tối đa thực tế, mã lỗi `TOO_MANY_ROWS`, `SECRET_NOT_ISSUED`, `GATEWAY_NOT_CONFIGURED`, khuôn `X-Idempotency-Key`, điều kiện Luồng tiếp nhận |
+| 1.2 | 29/10/2026 | `org-units`: `province_code` là tỉnh suy ra theo cây đơn vị, thêm tham số `claim_intake_only`, mặc định chỉ trả đơn vị còn hiệu lực; `ping` trả phong bì chuẩn kèm `data.server_time`; API tra trạng thái thêm khối `data.progress` (trạng thái hồ sơ và văn bản đã ban hành); thêm ca kiểm thử 16-18 |
 
 ---
 
@@ -16,7 +24,7 @@
 Hệ thống BTNN cung cấp cho Cổng Dịch vụ công (DVC) hai nhóm API:
 
 1. **API chia sẻ danh mục** (chỉ đọc): DVC lấy các danh mục để dựng E-Form "Yêu cầu bồi thường nhà nước" - Quốc gia, Loại giấy tờ pháp lý, Địa bàn, Lĩnh vực phát sinh thiệt hại, Hình thức tiếp nhận, Tư cách người yêu cầu, Loại thiệt hại yêu cầu bồi thường, Phương thức nhận tiền bồi thường/tạm ứng, Loại yêu cầu giải quyết bồi thường, Cơ quan giải quyết bồi thường.
-2. **API nhận hồ sơ**: DVC gửi hồ sơ E-Form người dân/tổ chức đã nộp sang BTNN; hệ thống tạo hồ sơ ở màn **Tiếp nhận hồ sơ** của Cơ quan giải quyết bồi thường. DVC tra được trạng thái xử lý.
+2. **API nhận hồ sơ**: DVC gửi hồ sơ E-Form người dân/tổ chức đã nộp sang BTNN; hệ thống tạo hồ sơ ở màn **Tiếp nhận hồ sơ** của Cơ quan giải quyết bồi thường. DVC tra được trạng thái xử lý và tiến độ giải quyết (trạng thái hồ sơ, các văn bản đã ban hành).
 
 ```
                  (1) Lấy token (client_credentials)
@@ -33,6 +41,8 @@ Hệ thống BTNN cung cấp cho Cổng Dịch vụ công (DVC) hai nhóm API:
 ```
 
 Mọi dữ liệu trao đổi là JSON, mã hóa UTF-8, qua HTTPS.
+
+Thông báo trạng thái chủ động từ BTNN sang DVC: chờ chốt thông tin với DVC; hiện DVC tra trạng thái và tiến độ qua API tra trạng thái (mục 7.8).
 
 ---
 
@@ -58,14 +68,14 @@ Mọi dữ liệu trao đổi là JSON, mã hóa UTF-8, qua HTTPS.
 
 | Bước | Việc | Bên làm | Kết quả cần đạt |
 | :--- | :--- | :--- | :--- |
-| 1 | Chuẩn bị: DVC gửi IP máy chủ gọi API và đầu mối kỹ thuật. BTNN khai IP, cấp các mã API (mục 2 và 6), gửi client secret + khóa HMAC | Hai bên | DVC nhận đủ thông tin mục 2 |
+| 1 | Chuẩn bị: DVC gửi IP máy chủ gọi API và đầu mối kỹ thuật. BTNN khai IP, cấp các mã API (mục 2 và 6), gửi client secret + khóa HMAC. Cơ quan đã có Luồng tiếp nhận hồ sơ "Giải quyết yêu cầu bồi thường" lấy bằng `org-units?claim_intake_only=true` (mục 6.4); cơ quan chưa có luồng thì hồ sơ dừng ở `RECEIVED` (mục 7.8) | Hai bên | DVC nhận đủ thông tin mục 2 |
 | 2 | Lấy token Keycloak (mục 4) | DVC | Nhận được `access_token` |
-| 3 | Ký gói tin và gọi thử `GET /api/share/v1/partner/ping` (mục 5) | DVC | HTTP 200. Lỗi thì đối chiếu bảng mục 8 |
+| 3 | Ký gói tin và gọi thử `GET /api/share/v1/partner/ping` (mục 5) | DVC | HTTP 200, có `data.server_time`. Lỗi thì đối chiếu bảng mục 8 |
 | 4 | Đồng bộ danh mục lần đầu: gọi đủ các API ở mục 6.1, đi hết các trang, lưu `server_time` | DVC | Có đủ dữ liệu danh mục trên hệ thống DVC |
-| 5 | Dựng E-Form theo `EForm_DVC_YeuCauBoiThuong.md`, gắn từng ô với danh mục tương ứng và áp đúng quy tắc lọc (mục 6.6) | DVC | E-Form hiển thị đúng giá trị, lọc đúng |
+| 5 | Dựng E-Form theo `EForm_DVC_YeuCauBoiThuong.md`, gắn từng ô với danh mục tương ứng và áp đúng quy tắc lọc (mục 6.6); ô Cơ quan giải quyết dùng `province_code` + `claim_intake_only=true` | DVC | E-Form hiển thị đúng giá trị, lọc đúng |
 | 6 | Lập lịch đồng bộ định kỳ bằng `last_sync_time` (mục 6.5), đề xuất mỗi ngày 1 lần hoặc mỗi giờ | DVC | Danh mục DVC luôn khớp BTNN |
 | 7 | Gửi hồ sơ thử (mục 7) theo bộ ca kiểm thử mục 9; BTNN đối chiếu hồ sơ trên màn Tiếp nhận | Hai bên | Mọi ca đạt kết quả mong đợi |
-| 8 | Xử lý gửi lại / chống trùng và tra trạng thái (mục 7.7, 7.8) | DVC | Gửi lại không tạo hồ sơ trùng; hiển thị được trạng thái cho người nộp |
+| 8 | Xử lý gửi lại / chống trùng và tra trạng thái (mục 7.7, 7.8) | DVC | Gửi lại không tạo hồ sơ trùng; hiển thị được trạng thái và tiến độ (`data.progress`) cho người nộp |
 | 9 | Nghiệm thu trên môi trường thử nghiệm; khi chuyển chính thức BTNN gửi địa chỉ và bí mật mới | Hai bên | Biên bản nghiệm thu |
 
 ---
@@ -128,7 +138,7 @@ curl -X POST "https://79.108.216.21/realms/bpbd-admin/protocol/openid-connect/to
 | `X-Timestamp` | Thời điểm gọi, **giây** epoch UTC (vd `1793015400`). Lệch đồng hồ máy chủ BTNN tối đa 5 phút |
 | `X-Nonce` | Chuỗi ngẫu nhiên 8-100 ký tự `A-Z a-z 0-9 _ -`, **mỗi lượt gọi một giá trị mới** (không dùng lại) |
 | `X-Signature` | Chữ ký HMAC-SHA256 dạng hex chữ thường (mục 5.2) |
-| `X-Idempotency-Key` | Tùy chọn, dùng khi gửi hồ sơ (mục 7.7) |
+| `X-Idempotency-Key` | Tùy chọn, dùng khi gửi hồ sơ (mục 7.7). Khuôn `A-Z a-z 0-9 . _ : -`, 1-100 ký tự; sai khuôn trả 400 `VALIDATION_ERROR` |
 | `Content-Type` | `application/json` cho API POST |
 
 ### 5.2. Cách tạo chữ ký
@@ -250,7 +260,11 @@ curl "https://79.108.216.78:9982$PATH_Q" \
 
 ### 5.4. Gọi thử kết nối
 
-`GET /api/share/v1/partner/ping` - trả HTTP 200 khi token, chữ ký, IP và mã đối tác đều đúng. Đây là bước 3 của mục 3.
+`GET /api/share/v1/partner/ping` - trả HTTP 200 khi token, chữ ký, IP và mã đối tác đều đúng. Đây là bước 3 của mục 3. Không cần được cấp mã API riêng. Phản hồi theo khuôn chuẩn của cổng (mục 6.3), `data.server_time` là giờ máy chủ BTNN (+07:00), dùng để đối chiếu giờ máy DVC (`X-Timestamp` lệch quá 5 phút bị 401 `TIMESTAMP_INVALID`):
+
+```json
+{ "code": "SUCCESS", "message": null, "data": { "server_time": "2026-10-29T10:00:00+07:00" } }
+```
 
 ---
 
@@ -272,7 +286,7 @@ Mỗi danh mục là một API riêng, có mã API riêng; DVC chỉ gọi đư�
 | Phương thức nhận tiền bồi thường/tạm ứng [DM_28] | `GET /api/share/v1/catalogs/DM_28` | `SHARE_CATALOG_DM_28` | `TIEN_MAT`, `CHUYEN_KHOAN` |
 | Loại yêu cầu giải quyết bồi thường | `GET /api/share/v1/catalogs/RESOLUTION_SCOPE` | `SHARE_CATALOG_RESOLUTION_SCOPE` | `CA_HAI`, `CHI_BOI_THUONG`, `CHI_PHUC_HOI` |
 | Danh mục địa bàn | `GET /api/share/v1/areas` | `SHARE_AREA` | Tỉnh/Thành phố và Phường/Xã (mục 6.4) |
-| Cơ quan giải quyết bồi thường | `GET /api/share/v1/org-units` | `SHARE_ORG_UNIT` | Lọc theo Tỉnh/Thành phố (mục 6.4) |
+| Cơ quan giải quyết bồi thường | `GET /api/share/v1/org-units` | `SHARE_ORG_UNIT` | Lọc theo Tỉnh/Thành phố và chỉ lấy cơ quan đã có Luồng tiếp nhận (mục 6.4) |
 
 ### 6.2. Tham số chung (đều không bắt buộc)
 
@@ -281,11 +295,13 @@ Mỗi danh mục là một API riêng, có mã API riêng; DVC chỉ gọi đư�
 | `last_sync_time` | Mốc đồng bộ lần trước, ISO-8601 **có múi giờ**, vd `2026-10-26T09:00:00+07:00` (trong URL viết `%2B07:00`). Có mốc: chỉ trả bản ghi tạo/sửa từ mốc đó, **kèm bản ghi đã xóa (`is_deleted=true`) và ngừng hoạt động (`is_active=false`)**. Không có mốc: trả toàn bộ bản ghi còn hiệu lực |
 | `include_inactive` | `true` = lấy cả bản ghi ngừng hoạt động. Mặc định `false`. Chỉ có nghĩa khi không có `last_sync_time` |
 | `page` | Trang, bắt đầu từ 0 |
-| `size` | Số bản ghi một trang, mặc định 500, tối đa 1000 |
+| `size` | Số bản ghi một trang, mặc định 500, tối đa 1000. Ngoài khoảng 1-1000 trả 400 `VALIDATION_ERROR`, không tự cắt |
 | `keyword` | Tìm theo mã hoặc tên, không phân biệt hoa thường |
 | `parent_code` / `parent_id` | Chỉ lấy con **trực tiếp** của bản ghi cha |
-| `include_descendants` | `true` = lấy **cả nhánh con cháu** của cha (đi cùng `parent_code`/`parent_id`) |
-| `root_only` | `true` = chỉ lấy cấp gốc (không có cha) |
+| `include_descendants` | `true` = lấy **cả nhánh con cháu** của cha, tối đa 20 tầng (phải đi cùng `parent_code`/`parent_id`, không thì 400) |
+| `root_only` | `true` = chỉ lấy cấp gốc (không có cha); không đi cùng `parent_code`/`parent_id` (không thì 400) |
+
+Tham số sai kiểu hoặc sai giá trị (`page` âm, `size` ngoài khoảng, `true`/`false` sai, `last_sync_time` không đúng ISO-8601, `level` khác `PROVINCE`/`WARD`) trả 400 `VALIDATION_ERROR` kèm tên tham số.
 
 Mỗi bản ghi có `parent_id`, `parent_code`, `depth` (độ sâu, cấp gốc = 0) và `has_children`. Sắp xếp cố định theo thời điểm thay đổi rồi `id`, nên đi hết các trang không sót, không trùng.
 
@@ -335,14 +351,28 @@ Trường chuẩn của bản ghi danh mục: `id, type_code, code, name_vi, nam
 | `level` | `PROVINCE` (Tỉnh/Thành phố) hoặc `WARD` (Phường/Xã); bỏ trống = cả hai |
 | `province_code` | Lọc Phường/Xã thuộc tỉnh đó |
 
-Trường trả về: `id, code, name, level, province_code, unit_type, parent_id, parent_code, depth, has_children, is_active, is_deleted, created_at, updated_at` (Phường/Xã có `parent_code` = mã tỉnh).
+Trường trả về: `id, code, name, level, province_code, unit_type, parent_id, parent_code, depth, has_children, established_date, dissolved_date, arrangement_status, legal_basis, is_active, is_deleted, created_at, updated_at` (Phường/Xã có `parent_code` = mã tỉnh). Bỏ `level` và có `province_code` thì kết quả gồm cả chính Tỉnh/Thành phố đó.
 
 ```
 GET /api/share/v1/areas?level=PROVINCE
 GET /api/share/v1/areas?level=WARD&province_code=01
 ```
 
-**Cơ quan giải quyết bồi thường** - `GET /api/share/v1/org-units?province_code=<mã tỉnh>`: danh sách đơn vị trong Cơ cấu tổ chức thuộc tỉnh đã chọn. `code` của đơn vị là giá trị gửi ở trường `agency.agency_code` khi nộp hồ sơ. Trường trả về: `id, code, name, short_name, parent_id, parent_code, depth, has_children, unit_type, unit_level, org_type, province_code, ward_code, address, phone, email, is_active, is_deleted, created_at, updated_at`.
+**Cơ quan giải quyết bồi thường** - `GET /api/share/v1/org-units`: danh sách đơn vị trong Cơ cấu tổ chức. `code` của đơn vị là giá trị gửi ở trường `agency.agency_code` khi nộp hồ sơ. Để dựng ô Cơ quan giải quyết, DVC gọi với `province_code` + `claim_intake_only=true`:
+
+```
+GET /api/share/v1/org-units?province_code=01&claim_intake_only=true
+```
+
+| Tham số riêng | Ý nghĩa |
+| :--- | :--- |
+| `province_code` | Mã Tỉnh/Thành phố: chỉ lấy đơn vị thuộc tỉnh đó. Tỉnh của đơn vị là tỉnh **suy ra theo cây đơn vị**: tỉnh khai ở chính đơn vị, không có thì của đơn vị cha gần nhất (tối đa 20 tầng); cơ quan trung ương không khai tỉnh được tính là Hà Nội (`01`). Đây cũng là quy tắc kiểm `agency.province_code` / `agency.agency_code` khi nộp hồ sơ: đơn vị có trong danh sách của tỉnh X thì được nhận với `agency.province_code` = X, và ngược lại |
+| `claim_intake_only` | `true` = chỉ đơn vị đã có Luồng tiếp nhận hồ sơ "Giải quyết yêu cầu bồi thường" (nhận được hồ sơ nộp qua DVC). Mặc định `false`; giá trị khác `true`/`false` trả 400 `VALIDATION_ERROR`. Khuyến nghị DVC luôn dùng `true` để hồ sơ nộp vào được chuyển ngay sang màn Tiếp nhận |
+| `unit_level` | `CENTRAL`, `PROVINCE`, `WARD`, `DEPARTMENT`, `DISTRICT` |
+| `unit_type` | `INTERNAL`, `EXTERNAL` |
+| `org_type` | Loại cơ quan (mã danh mục DM_57) |
+
+Không có `last_sync_time` và không `include_inactive`: chỉ trả đơn vị đang hoạt động và còn hiệu lực (`effective_to` trống hoặc chưa qua). Trường trả về: `id, code, name, short_name, parent_id, parent_code, depth, has_children, unit_type, unit_level, org_type, province_code, ward_code, address, phone, email, tax_code, sort_order, effective_from, effective_to, is_active, is_deleted, created_at, updated_at`; trong đó `province_code` là tỉnh suy ra như trên.
 
 ### 6.5. Đồng bộ tăng dần
 
@@ -358,7 +388,7 @@ GET /api/share/v1/areas?level=WARD&province_code=01
 | Tư cách người yêu cầu | `Loại người yêu cầu` = Cá nhân: giá trị DM_26 có `for_individual` = `true`; = Tổ chức: có `for_organization` = `true` |
 | Tỉnh/Thành phố | `areas?level=PROVINCE` |
 | Phường/Xã | `areas?level=WARD&province_code=<tỉnh đã chọn>` |
-| Cơ quan giải quyết bồi thường | `org-units?province_code=<Tỉnh/Thành phố cơ quan giải quyết>` |
+| Cơ quan giải quyết bồi thường | `org-units?province_code=<Tỉnh/Thành phố cơ quan giải quyết>&claim_intake_only=true` (chỉ cơ quan đã có Luồng tiếp nhận; tỉnh suy ra theo cây, mục 6.4) |
 | Hình thức tiếp nhận | Cố định `DICH_VU_CONG` |
 | Bảng thiệt hại yêu cầu bồi thường | Dựng bảng 02 cấp từ `DM_27` theo `parent_code`, thứ tự `sort_order`; nhóm `TH_KHAC` ở cuối, người nộp tự thêm dòng |
 | Phương thức nhận tiền | Giá trị `DM_28` |
@@ -376,7 +406,7 @@ GET /api/share/v1/areas?level=WARD&province_code=01
 
 1. DVC gửi hồ sơ. Cổng kiểm hợp lệ toàn bộ; hợp lệ thì trả **số tiếp nhận** và trạng thái `RECEIVED`.
 2. Trong khoảng 1 phút, hệ thống tự chuyển hồ sơ vào màn **Tiếp nhận hồ sơ** của Cơ quan giải quyết: Nguồn hồ sơ "Dịch vụ công", Hình thức tiếp nhận "Dịch vụ công", trạng thái "Chờ phân công". Hồ sơ có mã `BT-yyyy-nnn`.
-3. DVC tra trạng thái để biết hồ sơ đã vào hệ thống (`ACCEPTED`, kèm mã hồ sơ) hoặc bị từ chối (`REJECTED`, kèm lý do).
+3. DVC tra trạng thái để biết hồ sơ đã vào hệ thống (`ACCEPTED`, kèm mã hồ sơ) hoặc bị từ chối (`REJECTED`, kèm lý do). Sau khi vào hệ thống, cùng API này trả thêm tiến độ giải quyết (`progress`: trạng thái hồ sơ và các văn bản đã ban hành).
 
 ### 7.2. Thân request
 
@@ -391,12 +421,15 @@ Ngoài các trường E-Form, bắt buộc có:
 
 Giá trị mặc định khi không gửi: `requester.requester_type` = `CA_NHAN`, `requester.requester_role` = `NGUOI_BI_THIET_HAI`, `overview.resolution_scope` = `CA_HAI`, `*.country_code` = `VN`.
 
+Các trường sau E-Form có giá trị mặc định nhưng API **không** tự điền: `requester.victim_status` (E-Form: Còn sống), `victim.victim_type` (Cá nhân), `payee.payment_method` (Nhận tiền mặt). Hồ sơ thuộc nhánh cần các trường này mà không gửi thì bị `REQUIRED`. `honor_restoration.forms[]` không có mặc định (E-Form chọn sẵn `XIN_LOI_TRUC_TIEP`): API chỉ lưu các hình thức đã gửi. `advance.spiritual_amount`, `advance.other_amount` và `honor_restoration.forms[]` chỉ được nhận khi `requested` = `true`, ngược lại bị bỏ qua.
+
 <a id="api-anh-xa-eform"></a>
 ### 7.3. Ánh xạ trường E-Form sang JSON
 
 - STT theo bảng III của `EForm_DVC_YeuCauBoiThuong.md`.
-- Độ dài tối đa theo kiểu dữ liệu tại E-Form.
+- Độ dài tối đa (ký tự) theo kiểu dữ liệu tại E-Form, trừ các trường sau theo giới hạn thực tế của hệ thống: `payee.address` 500 (E-Form 1000); `submitted_at` 40; `agency.province_code`, `agency.agency_code`, `overview.resolution_scope`, `overview.damage_field`, `requester.requester_role`, `notification.method`, `payee.payment_method`, `damages[].item_code` 50; `requester.victim_status`, `*.requester_type`, `victim.victim_type` 20; `*.country_code` 10; `dossier_components.*.file_name` 255.
 - Trường E-Form chỉ đọc, tự tính (STT 56, 63, 67) không gửi; Hệ thống BTNN tự tính.
+- Số tiền là số JSON nguyên (không gửi dạng chuỗi); `damages` tối đa 100 dòng.
 
 | STT | Trường E-Form | Trường JSON | Bắt buộc |
 | :--- | :--- | :--- | :--- |
@@ -428,11 +461,11 @@ Giá trị mặc định khi không gửi: `requester.requester_type` = `CA_NHAN
 | 24 | Tỉnh/Thành phố | `requester.province` | Có |
 | 25 | Phường/Xã | `requester.ward` | Có |
 | 26 | Địa chỉ chi tiết | `requester.address_detail` | Có |
-| 27 | Loại người bị thiệt hại (mục 7.3.1) | `victim.victim_type` | Có khi có khối `victim` |
+| 27 | Loại người bị thiệt hại (mục 7.3.1) | `victim.victim_type` | Có khi thuộc nhánh nhận khối `victim` |
 | 28 | Họ và tên - Cá nhân | `victim.full_name` | Có khi `victim_type` = `CA_NHAN` |
 | 28 | Tên tổ chức - Tổ chức | `victim.org_name` | Có khi `victim_type` = `TO_CHUC` |
 | 29 | Ngày sinh | `victim.birth_date` | Có khi `victim_type` = `CA_NHAN` |
-| 30 | Số điện thoại | `victim.phone` | Có khi có khối `victim` |
+| 30 | Số điện thoại | `victim.phone` | Có khi thuộc nhánh nhận khối `victim` |
 | 31 | Email | `victim.email` | Không |
 | 32 | Loại giấy tờ thân nhân [DM_10] | `victim.id_doc_type` | Có khi `victim_type` = `CA_NHAN` |
 | 33 | Số giấy tờ thân nhân | `victim.id_doc_no` | Có khi `victim_type` = `CA_NHAN` |
@@ -445,15 +478,15 @@ Giá trị mặc định khi không gửi: `requester.requester_type` = `CA_NHAN
 | 40 | Họ và tên người đại diện theo pháp luật | `victim.legal_rep_name` | Có khi `victim_type` = `TO_CHUC` |
 | 41 | Chức vụ người đại diện | `victim.legal_rep_position` | Có khi `victim_type` = `TO_CHUC` |
 | 42 | Quốc gia [DM_09] | `victim.country_code` | Không (mặc định `VN`) |
-| 43 | Tỉnh/Thành phố | `victim.province` | Có khi có khối `victim` |
-| 44 | Phường/Xã | `victim.ward` | Có khi có khối `victim` |
-| 45 | Địa chỉ chi tiết | `victim.address_detail` | Có khi có khối `victim` |
-| 46 | Tên tổ chức bị thiệt hại | `dissolved_org.org_name` | Có khi có khối `dissolved_org` |
+| 43 | Tỉnh/Thành phố | `victim.province` | Có khi thuộc nhánh nhận khối `victim` |
+| 44 | Phường/Xã | `victim.ward` | Có khi thuộc nhánh nhận khối `victim` |
+| 45 | Địa chỉ chi tiết | `victim.address_detail` | Có khi thuộc nhánh nhận khối `victim` |
+| 46 | Tên tổ chức bị thiệt hại | `dissolved_org.org_name` | Có khi thuộc nhánh nhận khối `dissolved_org` |
 | 47 | Mã số tổ chức | `dissolved_org.org_code` | Không |
 | 48 | Quốc gia [DM_09] | `dissolved_org.country_code` | Không (mặc định `VN`) |
-| 49 | Tỉnh/Thành phố | `dissolved_org.province` | Có khi có khối `dissolved_org` |
-| 50 | Phường/Xã | `dissolved_org.ward` | Có khi có khối `dissolved_org` |
-| 51 | Địa chỉ chi tiết | `dissolved_org.address_detail` | Có khi có khối `dissolved_org` |
+| 49 | Tỉnh/Thành phố | `dissolved_org.province` | Có khi thuộc nhánh nhận khối `dissolved_org` |
+| 50 | Phường/Xã | `dissolved_org.ward` | Có khi thuộc nhánh nhận khối `dissolved_org` |
+| 51 | Địa chỉ chi tiết | `dissolved_org.address_detail` | Có khi thuộc nhánh nhận khối `dissolved_org` |
 | 52 | Hành vi gây thiệt hại của người thi hành công vụ | `overview.damage_act` | Có |
 | 53 | Mối quan hệ nhân quả giữa thiệt hại thực tế xảy ra và hành vi gây thiệt hại | `overview.causal_relation` | Có |
 | 54 | Phương thức nhận thông báo (mục 7.3.1) | `notification.method` | Có |
@@ -467,10 +500,10 @@ Giá trị mặc định khi không gửi: `requester.requester_type` = `CA_NHAN
 | 64 | Có đề nghị tạm ứng kinh phí bồi thường (Điều 44) | `advance.requested` (`true`/`false`) | Không (mặc định `false`) |
 | 65 | Tạm ứng Thiệt hại tinh thần (đồng) | `advance.spiritual_amount` | Không |
 | 66 | Tạm ứng Thiệt hại khác tính được ngay (đồng) | `advance.other_amount` | Không |
-| 68 | Họ và tên người nhận | `payee.full_name` | Có khi có khối `payee` |
-| 69 | Giấy tờ thân nhân | `payee.id_doc_no` | Có khi có khối `payee` |
-| 70 | Địa chỉ chi tiết | `payee.address` | Có khi có khối `payee` |
-| 71 | Phương thức nhận tiền [DM_28] | `payee.payment_method` | Có khi có khối `payee` |
+| 68 | Họ và tên người nhận | `payee.full_name` | Có khi thuộc nhánh nhận khối `payee` |
+| 69 | Giấy tờ thân nhân | `payee.id_doc_no` | Có khi thuộc nhánh nhận khối `payee` |
+| 70 | Địa chỉ chi tiết | `payee.address` | Có khi thuộc nhánh nhận khối `payee` |
+| 71 | Phương thức nhận tiền [DM_28] | `payee.payment_method` | Có khi thuộc nhánh nhận khối `payee` |
 | 72 | Chủ tài khoản | `payee.account_holder` | Có khi `payment_method` = `CHUYEN_KHOAN` |
 | 73 | Số tài khoản | `payee.account_no` | Có khi `payment_method` = `CHUYEN_KHOAN` |
 | 74 | Tên ngân hàng | `payee.bank_name` | Có khi `payment_method` = `CHUYEN_KHOAN` |
@@ -495,6 +528,7 @@ Giá trị mặc định khi không gửi: `requester.requester_type` = `CA_NHAN
 | `honor_restoration` | `resolution_scope` = `CA_HAI` hoặc `CHI_PHUC_HOI` | H.1 - Yêu cầu cơ quan phục hồi danh dự |
 | `dossier_components.VB_UY_QUYEN_YCBT` | `requester_role` khác `NGUOI_BI_THIET_HAI` | I - Thành phần hồ sơ |
 
+- Khối thuộc nhánh nhận (`victim`, `dissolved_org`, `damages`, `payee`) là khối **bắt buộc**: thiếu khối thì lỗi `REQUIRED` tại chính tên khối. Các dòng "Có khi thuộc nhánh nhận khối ..." ở bảng trên chỉ áp dụng khi khối thuộc nhánh nhận.
 - `requester.victim_status`: chỉ nhận khi người bị thiệt hại là cá nhân (`requester_type` = `CA_NHAN` và `requester_role` = `NGUOI_BI_THIET_HAI`, hoặc `victim.victim_type` = `CA_NHAN`); `requester_role` = `NGUOI_THUA_KE` hoặc `NGUOI_DAI_DIEN_THUA_KE`: luôn lưu `DA_MAT`.
 - `damages`: khi khối được nhận, tối thiểu 01 dòng; mỗi `item_code` mục chi tiết xuất hiện tối đa 01 lần; `TH_KHAC` được lặp nhiều dòng, mỗi dòng 01 thiệt hại khác (`other_name`, `calculation`, `amount`).
 - `resolution_scope` = `CHI_PHUC_HOI`: `honor_restoration.requested` luôn lưu `true`.
@@ -521,7 +555,8 @@ Giá trị mặc định khi không gửi: `requester.requester_type` = `CA_NHAN
 - `dossier_components` là đối tượng, khóa là mã thành phần, giá trị là **01 tệp**: `"VB_YEU_CAU_BT": { "file_name": "don-yeu-cau.pdf", "content_base64": "<base64 chuẩn>" }`.
 - Mã thành phần: `VB_YEU_CAU_BT`, `VB_CAN_CU_YCBT`, `VB_UY_QUYEN_YCBT`, `TAI_LIEU_KHAC`; mã khác bị từ chối.
 - Mỗi thành phần đúng 01 tệp; gửi mảng hoặc nhiều tệp cho 01 thành phần bị từ chối.
-- Định dạng nhận: pdf, doc, docx, jpg, jpeg, png; kiểm theo **nội dung tệp**, không theo đuôi.
+- Định dạng nhận: pdf, doc, docx, jpg, jpeg, png; kiểm theo **nội dung tệp**. Riêng docx và doc còn phải có đúng đuôi `.docx` / `.doc` (pdf, jpg, png không đòi đuôi).
+- `file_name` bắt buộc, tối đa 255 ký tự; nếu chứa đường dẫn thì chỉ giữ phần tên tệp cuối.
 - Tối đa 20MB mỗi tệp; cả gói tin tối đa 64MB (một tệp 20MB khoảng 27MB khi mã base64).
 - Tên tài liệu lưu tại Hệ thống BTNN:
   - `VB_YEU_CAU_BT`: `Văn bản yêu cầu bồi thường`.
@@ -538,7 +573,7 @@ Cá nhân là người thừa kế của người bị thiệt hại (có khối
 {
   "dvc_dossier_code": "H48.12.2026.000123",
   "submitted_at": "2026-10-27T09:30:00+07:00",
-  "agency": { "province_code": "01", "agency_code": "MA_CO_QUAN_GIAI_QUYET" },
+  "agency": { "province_code": "01", "agency_code": "H01.02" },
   "overview": {
     "receipt_form": "DICH_VU_CONG",
     "resolution_scope": "CA_HAI",
@@ -559,7 +594,7 @@ Cá nhân là người thừa kế của người bị thiệt hại (có khối
     "id_doc_no": "001090000001",
     "country_code": "VN",
     "province": "01",
-    "ward": "00001",
+    "ward": "00008",
     "address_detail": "Số 1 phố Huế"
   },
   "victim": {
@@ -599,7 +634,7 @@ Cá nhân là người thừa kế của người bị thiệt hại (có khối
 }
 ```
 
-Giá trị `MA_CO_QUAN_GIAI_QUYET`, `01`, `00001`, `00004` là ví dụ: dùng mã thật lấy từ API mục 6. Người yêu cầu là tổ chức: `requester_type` = `TO_CHUC`, dùng `org_name`, `org_code`, `legal_rep_name`, `legal_rep_position` thay cho `full_name`, `birth_date`, `id_doc_type`, `id_doc_no`.
+Giá trị `H01.02` (Sở Tư pháp Thành phố Hà Nội), `01`, `00008`, `00004` là mã có thật trên môi trường thử nghiệm; mã `TH_TT_04` theo danh mục DM_27 02 cấp (mục 6.1). Luôn dùng mã lấy từ API mục 6. Người yêu cầu là tổ chức: `requester_type` = `TO_CHUC`, dùng `org_name`, `org_code`, `legal_rep_name`, `legal_rep_position` thay cho `full_name`, `birth_date`, `id_doc_type`, `id_doc_no`.
 
 ### 7.6. Quy tắc kiểm hợp lệ
 
@@ -623,9 +658,10 @@ Mọi lỗi được gom và trả **một lượt**. Giá trị danh mục ph�
 | `notification.method`, `requester.victim_status`, `*.requester_type`, `victim.victim_type`, `honor_restoration.forms[]` | Có trong mục 7.3.1 | `NOT_IN_CATALOG` |
 | `overview.receipt_form` | Có thì phải là `DICH_VU_CONG` | `NOT_ALLOWED` |
 | `agency.province_code` | Mã Tỉnh/Thành phố trong danh mục địa bàn | `NOT_IN_CATALOG` |
-| `agency.agency_code` | Đơn vị còn hiệu lực, thuộc Tỉnh/Thành phố cơ quan giải quyết | `NOT_IN_CATALOG` / `AGENCY_NOT_IN_PROVINCE` |
+| `agency.agency_code` | Đơn vị còn hiệu lực (đang hoạt động, chưa quá ngày hết hiệu lực `effective_to`), thuộc Tỉnh/Thành phố cơ quan giải quyết (tỉnh suy ra theo cây đơn vị như mục 6.4) | `NOT_IN_CATALOG` / `AGENCY_NOT_IN_PROVINCE` |
 | `damages[].item_code` | Mã mục chi tiết DM_27 (`depth` = 1) hoặc `TH_KHAC`; mục chi tiết không lặp | `NOT_IN_CATALOG` / `DUPLICATE_ITEM` |
 | `damages` | Khối được nhận mà không có dòng | `REQUIRED` |
+| `damages` | Tối đa 100 dòng | `TOO_MANY_ROWS` |
 | `damages[].amount`, `advance.spiritual_amount`, `advance.other_amount` | Số nguyên lớn hơn 0 | `INVALID_AMOUNT` |
 | `advance.spiritual_amount` | Nhỏ hơn tổng `amount` các dòng thuộc nhóm `TH_TT`; không có dòng nhóm `TH_TT` thì không nhận | `ADVANCE_EXCEEDED` |
 | `advance.other_amount` | Nhỏ hơn tổng `amount` các dòng không thuộc nhóm `TH_TT` | `ADVANCE_EXCEEDED` |
@@ -652,12 +688,13 @@ Mọi lỗi được gom và trả **một lượt**. Giá trị danh mục ph�
     "note": null,
     "received_time": "2026-10-27T09:30:05+07:00",
     "processed_time": null,
-    "duplicate": false
+    "duplicate": false,
+    "progress": null
   }
 }
 ```
 
-**Sai dữ liệu (HTTP 400, `VALIDATION_ERROR`)** - chi tiết từng trường ở `data.errors`:
+**Sai dữ liệu (HTTP 400, `VALIDATION_ERROR`)** - chi tiết từng trường ở `data.errors`. Riêng thân rỗng, không phải JSON hoặc không phải đối tượng JSON, và `X-Idempotency-Key` sai khuôn: trả 400 `VALIDATION_ERROR` với `data` = `null`, không có `errors`:
 
 ```json
 {
@@ -674,7 +711,7 @@ Mọi lỗi được gom và trả **một lượt**. Giá trị danh mục ph�
 }
 ```
 
-**Chống trùng.** Gửi lại cùng `dvc_dossier_code` (hoặc cùng `X-Idempotency-Key`) trả **kết quả cũ** (HTTP 200, `duplicate` = `true`), không tạo hồ sơ thứ hai và không kiểm lại nội dung. Vì vậy khi mất kết nối, DVC cứ gửi lại cùng mã. Hồ sơ đã bị từ chối vẫn giữ mã: nộp lại phải dùng mã hồ sơ DVC mới.
+**Chống trùng.** Gửi lại cùng `dvc_dossier_code` (hoặc cùng `X-Idempotency-Key`) trả **kết quả cũ** (HTTP 200, `duplicate` = `true`), không tạo hồ sơ thứ hai và không kiểm lại nội dung. Vì vậy khi mất kết nối, DVC cứ gửi lại cùng mã. Không gửi `X-Idempotency-Key` thì hệ thống dùng SHA-256 của thân làm khóa, nên gửi lại đúng nguyên byte cũ cũng trùng. Hồ sơ trả 400 (sai dữ liệu) **không** được ghi nhận nên không chiếm mã: sửa rồi gửi lại cùng `dvc_dossier_code` được. Hồ sơ đã bị từ chối (`REJECTED`) vẫn giữ mã: nộp lại phải dùng mã hồ sơ DVC mới.
 
 ### 7.8. Tra trạng thái
 
@@ -683,8 +720,60 @@ Mọi lỗi được gom và trả **một lượt**. Giá trị danh mục ph�
 | `status` | Ý nghĩa | Thông tin kèm |
 | :--- | :--- | :--- |
 | `RECEIVED` | Đã nhận, đang chờ chuyển vào màn Tiếp nhận | `note` có lý do nếu hệ thống chưa chuyển được |
-| `ACCEPTED` | Đã vào màn Tiếp nhận hồ sơ, chờ cơ quan phân công xử lý | `dossier_code` = mã hồ sơ `BT-yyyy-nnn` |
+| `ACCEPTED` | Đã vào màn Tiếp nhận hồ sơ, chờ cơ quan phân công xử lý | `dossier_code` = mã hồ sơ `BT-yyyy-nnn`; `note` = "Đã chuyển vào màn Tiếp nhận của <cơ quan>, mã vụ việc VVBT-yyyy-nnn." |
 | `REJECTED` | Bị từ chối | `note` là lý do |
+
+`status_name` theo `status`: `RECEIVED` = "Đã tiếp nhận, chờ chuyển vào màn Tiếp nhận"; `ACCEPTED` = "Đã chuyển vào màn Tiếp nhận của Hệ thống quản lý bồi thường nhà nước"; `REJECTED` = "Bị từ chối".
+
+**Tiến độ xử lý (`data.progress`).** Hồ sơ `ACCEPTED` có thêm khối `progress`; hồ sơ `RECEIVED`, `REJECTED` và phản hồi của lượt gửi hồ sơ (mục 7.7) có `progress` = `null`. Các trường khác không đổi.
+
+| Trường | Kiểu | Ý nghĩa |
+| :--- | :--- | :--- |
+| `progress.claim_status` | Chuỗi | Mã trạng thái hiện tại của hồ sơ theo danh mục DM_24 (vd `CHO_PHAN_CONG`, `DANG_XAC_MINH`, `YEU_CAU_BO_SUNG`, `HOAN_THANH`) |
+| `progress.claim_status_name` | Chuỗi | Tên trạng thái theo DM_24 (`null` nếu mã không còn trong danh mục) |
+| `progress.updated_time` | Thời điểm ISO-8601 (+07:00) | Lần cập nhật hồ sơ gần nhất |
+| `progress.documents[]` | Mảng | Văn bản **đã ban hành**, cũ trước; rỗng nếu chưa có. Mỗi loại văn bản chỉ lấy lần ban hành mới nhất |
+| `progress.documents[].type` | Chuỗi | `THONG_BAO_THU_LY`, `THONG_BAO_KHONG_THU_LY`, `YEU_CAU_BO_SUNG`, `DUNG_GIAI_QUYET`, `QUYET_DINH_GIAI_QUYET` |
+| `progress.documents[].type_name` | Chuỗi | Tên loại: Thông báo thụ lý (Mẫu 04); Thông báo không thụ lý; Văn bản yêu cầu bổ sung hồ sơ; Văn bản dừng giải quyết; Quyết định giải quyết bồi thường |
+| `progress.documents[].doc_no` | Chuỗi | Số văn bản |
+| `progress.documents[].doc_date` | Ngày `yyyy-MM-dd` | Ngày văn bản |
+| `progress.documents[].issued_time` | Thời điểm ISO-8601 (+07:00) | Thời điểm ban hành (cấp duyệt cuối; văn bản yêu cầu bổ sung: lúc phát hành) |
+
+Chỉ trả những gì người yêu cầu được biết: văn bản yêu cầu bổ sung và Quyết định giải quyết chỉ khi đã phát hành; không có ý kiến nội bộ, người duyệt, phiếu chờ duyệt hay dự thảo. `claim_status` là trạng thái nội bộ của hồ sơ nên có thể là trạng thái trung gian (vd `CHO_PHAN_CONG`, `CHO_PHE_DUYET`).
+
+Ví dụ phản hồi của hồ sơ đã được thụ lý:
+
+```json
+{
+  "code": "SUCCESS",
+  "message": null,
+  "data": {
+    "dvc_dossier_code": "H48.12.2026.000123",
+    "receipt_no": "API-20261027-000123",
+    "status": "ACCEPTED",
+    "status_name": "Đã chuyển vào màn Tiếp nhận của Hệ thống quản lý bồi thường nhà nước",
+    "dossier_code": "BT-2026-007",
+    "note": "Đã chuyển vào màn Tiếp nhận của Tòa án nhân dân tối cao, mã vụ việc VVBT-2026-012.",
+    "received_time": "2026-10-27T09:30:05+07:00",
+    "processed_time": "2026-10-27T09:31:02+07:00",
+    "duplicate": false,
+    "progress": {
+      "claim_status": "DANG_XAC_MINH",
+      "claim_status_name": "Đang xác minh thiệt hại",
+      "updated_time": "2026-10-29T08:15:30+07:00",
+      "documents": [
+        {
+          "type": "THONG_BAO_THU_LY",
+          "type_name": "Thông báo thụ lý (Mẫu 04)",
+          "doc_no": "12/TB-TLBT",
+          "doc_date": "2026-10-28",
+          "issued_time": "2026-10-28T16:40:00+07:00"
+        }
+      ]
+    }
+  }
+}
+```
 
 Mã hồ sơ không có hoặc không phải của DVC: HTTP 404 `NOT_FOUND`. Thiếu tham số: 400 `VALIDATION_ERROR`.
 
@@ -698,7 +787,8 @@ Mã hồ sơ không có hoặc không phải của DVC: HTTP 404 `NOT_FOUND`. Th
 | 401 | `PARTNER_UNKNOWN` | Sai `X-Partner-Code` hoặc đối tác ngừng hoạt động | Kiểm mã `DVC`; liên hệ BTNN |
 | 401 | `TIMESTAMP_INVALID` | `X-Timestamp` lệch quá 5 phút | Đồng bộ giờ máy chủ (NTP), dùng giây epoch |
 | 401 | `INVALID_SIGNATURE` | Chữ ký sai | Kiểm chuỗi cần ký (mục 5.2): `PATH` gồm query, băm đúng byte thân, đúng khóa |
-| 401 | `NONCE_REPLAY` | `X-Nonce` đã dùng | Mỗi lượt gọi một nonce mới |
+| 401 | `NONCE_REPLAY` | `X-Nonce` đã dùng hoặc sai khuôn (mục 5.1) | Mỗi lượt gọi một nonce mới, đúng khuôn |
+| 401 | `SECRET_NOT_ISSUED` | BTNN chưa cấp khóa ký HMAC cho đối tác | Liên hệ BTNN |
 | 403 | `CLIENT_MISMATCH` | Token không phải của `CLIENT_DVC` | Lấy token bằng đúng client của DVC |
 | 403 | `IP_DENIED` | IP không nằm trong danh sách cho phép | Báo BTNN khai thêm IP |
 | 403 | `API_FORBIDDEN` | DVC chưa được cấp mã API này | Báo BTNN cấp mã |
@@ -707,6 +797,7 @@ Mã hồ sơ không có hoặc không phải của DVC: HTTP 404 `NOT_FOUND`. Th
 | 404 | `NOT_FOUND` | Không tìm thấy dữ liệu | |
 | 413 | `BODY_TOO_LARGE` | Thân quá 64MB | Giảm dung lượng tệp |
 | 429 | `RATE_LIMITED` | Vượt hạn mức lượt gọi/phút | Giãn nhịp gọi, thử lại sau |
+| 503 | `GATEWAY_NOT_CONFIGURED` | Cổng API BTNN chưa cấu hình xong khóa mã hóa (lỗi phía BTNN) | Liên hệ BTNN |
 | 5xx | | Lỗi máy chủ BTNN | Thử lại sau; kéo dài thì báo BTNN kèm thời điểm gọi |
 
 ---
@@ -716,7 +807,7 @@ Mã hồ sơ không có hoặc không phải của DVC: HTTP 404 `NOT_FOUND`. Th
 | STT | Ca kiểm | Kết quả mong đợi |
 | :--- | :--- | :--- |
 | 1 | Lấy token đúng client | Có `access_token` |
-| 2 | Gọi `partner/ping` đủ header, ký đúng | HTTP 200 |
+| 2 | Gọi `partner/ping` đủ header, ký đúng | HTTP 200, `data.server_time` là giờ máy chủ |
 | 3 | Gọi `partner/ping` với chữ ký sai / nonce dùng lại / giờ lệch > 5 phút | 401 `INVALID_SIGNATURE` / `NONCE_REPLAY` / `TIMESTAMP_INVALID` |
 | 4 | Đồng bộ lần đầu đủ các danh mục mục 6.1 | Đủ dữ liệu, `has_more=false` ở trang cuối |
 | 5 | Đồng bộ lại với `last_sync_time` | Chỉ nhận bản ghi thay đổi (kể cả đã xóa/ngừng) |
@@ -730,6 +821,9 @@ Mã hồ sơ không có hoặc không phải của DVC: HTTP 404 `NOT_FOUND`. Th
 | 13 | Gửi tệp sai định dạng / quá 20MB / thiếu `VB_YEU_CAU_BT` / 02 tệp cho 01 thành phần | 400 `INVALID_FILE_TYPE` / `FILE_TOO_LARGE` / `REQUIRED` / `TOO_MANY_FILES` |
 | 14 | Gửi lại hồ sơ cùng `dvc_dossier_code` | 200, `duplicate=true`, cùng số tiếp nhận, không có hồ sơ thứ hai |
 | 15 | Tra trạng thái mã không tồn tại | 404 |
+| 16 | Gọi `org-units` với `province_code` + `claim_intake_only=true`; gửi `claim_intake_only=abc` | Chỉ đơn vị thuộc tỉnh đó và đã có Luồng tiếp nhận, `province_code` mỗi dòng là tỉnh suy ra; giá trị sai: 400 `VALIDATION_ERROR` |
+| 17 | Gửi hồ sơ tới cơ quan lấy từ ca 16, tra trạng thái trước và sau khi hồ sơ vào màn Tiếp nhận | `RECEIVED` với `progress` = `null`; sau ~1 phút `ACCEPTED` với `progress.claim_status`, `documents[]` (rỗng đến khi BTNN ban hành văn bản) |
+| 18 | Sau khi BTNN ban hành Thông báo thụ lý, tra trạng thái | `progress.documents[]` có `type` = `THONG_BAO_THU_LY` kèm `doc_no`, `doc_date`, `issued_time` |
 
 ---
 
